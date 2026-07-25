@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
+import { markDismissed, clearDismissed } from '@/lib/security/mfaChallengeDismissal';
 
 interface MfaChallengeDialogProps {
   open: boolean;
