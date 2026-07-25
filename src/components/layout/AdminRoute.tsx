@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { EnhancedErrorBoundary } from '@/components/errors/EnhancedErrorBoundary';
 import { EmptyState } from '@/components/common/EmptyState';
 import { lazyWithRetry } from '@/lib/lazyWithRetry';
+import { isDismissed, clearIfElevated } from '@/lib/security/mfaChallengeDismissal';
 
 const MfaEnrollmentDialog = lazyWithRetry(() =>
   import('@/components/security/MfaEnrollmentDialog').then((m) => ({
