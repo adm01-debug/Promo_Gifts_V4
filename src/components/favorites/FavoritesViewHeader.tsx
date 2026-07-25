@@ -1,9 +1,8 @@
-import { Heart, Share2, Users, FileText, Presentation } from 'lucide-react';
+import { Heart, Share2, Users, FileText } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { FavoritesSortBar, type FavoritesSort } from './FavoritesSortBar';
-import { ExportFavoritesButton } from './ExportFavoritesButton';
 import { FavoritesHeatmap } from './FavoritesHeatmap';
 import { formatCurrency } from '@/lib/format';
 import type { FavoriteList, FavoriteListItem } from '@/hooks/favorites';
@@ -106,17 +105,6 @@ export function FavoritesViewHeader({
             onTogglePriceDrops={onTogglePriceDrops}
             priceDropCount={priceDropCount}
           />
-          {products.length > 0 && (
-            <>
-              {onPresent && (
-                <Button variant="outline" size="sm" onClick={onPresent} title="Modo apresentação">
-                  <Presentation className="h-3.5 w-3.5" />
-                  <span className="ml-1.5 hidden text-xs sm:inline">Apresentar</span>
-                </Button>
-              )}
-              <ExportFavoritesButton products={products} rawItems={rawItems} listName={name} />
-            </>
-          )}
         </div>
       </div>
 
