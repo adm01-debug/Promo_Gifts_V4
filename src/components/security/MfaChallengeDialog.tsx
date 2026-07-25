@@ -18,6 +18,11 @@ import {
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { markDismissed, clearDismissed } from '@/lib/security/mfaChallengeDismissal';
+import {
+  getLastInternalRoute,
+  clearLastInternalRoute,
+  isSafeReturnPath,
+} from '@/lib/security/lastInternalRoute';
 
 interface MfaChallengeDialogProps {
   open: boolean;
@@ -88,17 +93,33 @@ export function MfaChallengeDialog({ open }: MfaChallengeDialogProps) {
     // do guard AdminRoute/DevRoute) tentar reabrir o dialog, o próprio guard
     // consulta este flag via `isDismissed()` e redireciona o usuário para "/"
     // em vez de re-renderizar o challenge — quebrando o loop.
-    markDismissed(user?.id ?? null);
+    const userId = user?.id ?? null;
+    markDismissed(userId);
 
-    // `window.history.length > 1` é enganoso: conta navegações de origens
-    // anteriores (ex.: aba nova aberta direto em /admin/* pode ter length=2
-    // e `navigate(-1)` sairia do app para about:blank ou o site anterior).
+    // Estratégia de retorno (em ordem de preferência):
     //
-    // React Router v6 mantém `idx` em `history.state` — inicia em 0 na
-    // entrada direta e incrementa a cada push interno. Só usamos back()
-    // quando `idx > 0`, garantindo que voltamos para uma rota do próprio app.
-    // Caso contrário, fallback para "/" (rota autenticada segura, fora do
-    // gate AAL2 — não reabre o dialog).
+    // 1) Última rota interna "segura" rastreada por `LastInternalRouteTracker`
+    //    (sessionStorage por userId). Cobre casos onde `history.state.idx` é
+    //    enganoso: entrada direta em /admin/*, deep link, replace/redirect que
+    //    zeram o stack, ou nova aba herdando um idx > 0 do referrer externo.
+    //    Só usamos se a rota lembrada NÃO for a atual (evita no-op) e passar
+    //    no filtro `isSafeReturnPath` (não-AAL2, não-auth).
+    //
+    // 2) `history.state.idx > 0` do React Router — indica navegação interna
+    //    real dentro do app; back() é seguro. `window.history.length` é
+    //    intencionalmente ignorado (conta origens externas).
+    //
+    // 3) Fallback "/" — rota autenticada segura, fora do gate AAL2.
+    const remembered = getLastInternalRoute(userId);
+    const currentPath = window.location.pathname;
+    if (remembered && isSafeReturnPath(remembered) && remembered !== currentPath) {
+      // Consumimos a rota: ao voltar novamente, o tracker já terá gravado
+      // a nova rota corrente, então não precisamos preservá-la.
+      clearLastInternalRoute(userId);
+      navigate(remembered, { replace: true });
+      return;
+    }
+
     const rrIdx = (window.history.state as { idx?: number } | null)?.idx ?? 0;
     if (rrIdx > 0) {
       navigate(-1);
