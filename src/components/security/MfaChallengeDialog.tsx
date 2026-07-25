@@ -84,6 +84,12 @@ export function MfaChallengeDialog({ open }: MfaChallengeDialogProps) {
   function handleGoBack() {
     // Mantém a sessão ativa — apenas sai da área que exige AAL2.
     //
+    // Marca o "dispensado" antes de navegar: se o destino (ou uma reavaliação
+    // do guard AdminRoute/DevRoute) tentar reabrir o dialog, o próprio guard
+    // consulta este flag via `isDismissed()` e redireciona o usuário para "/"
+    // em vez de re-renderizar o challenge — quebrando o loop.
+    markDismissed(user?.id ?? null);
+
     // `window.history.length > 1` é enganoso: conta navegações de origens
     // anteriores (ex.: aba nova aberta direto em /admin/* pode ter length=2
     // e `navigate(-1)` sairia do app para about:blank ou o site anterior).
@@ -100,6 +106,7 @@ export function MfaChallengeDialog({ open }: MfaChallengeDialogProps) {
       navigate('/', { replace: true });
     }
   }
+
 
 
   return (
