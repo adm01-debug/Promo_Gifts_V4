@@ -23,7 +23,7 @@ interface MfaChallengeDialogProps {
 }
 
 export function MfaChallengeDialog({ open }: MfaChallengeDialogProps) {
-  const { refreshAAL, signOut } = useAuth();
+  const { refreshAAL } = useAuth();
   const navigate = useNavigate();
   const [code, setCode] = useState('');
   const [factorId, setFactorId] = useState<string | null>(null);
@@ -77,9 +77,13 @@ export function MfaChallengeDialog({ open }: MfaChallengeDialogProps) {
     }
   }
 
-  async function handleSignOut() {
-    await signOut();
-    navigate('/login', { replace: true });
+  function handleGoBack() {
+    // Mantém a sessão ativa — apenas sai da área que exige AAL2.
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate('/', { replace: true });
+    }
   }
 
   return (
@@ -117,8 +121,8 @@ export function MfaChallengeDialog({ open }: MfaChallengeDialogProps) {
             }}
           />
           <div className="flex justify-between">
-            <Button variant="ghost" onClick={handleSignOut}>
-              Sair
+            <Button variant="ghost" onClick={handleGoBack}>
+              Voltar
             </Button>
             <Button onClick={verify} disabled={loading || verified || code.length !== 6}>
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
