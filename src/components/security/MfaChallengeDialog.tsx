@@ -24,7 +24,7 @@ interface MfaChallengeDialogProps {
 }
 
 export function MfaChallengeDialog({ open }: MfaChallengeDialogProps) {
-  const { refreshAAL } = useAuth();
+  const { refreshAAL, user } = useAuth();
   const navigate = useNavigate();
   const [code, setCode] = useState('');
   const [factorId, setFactorId] = useState<string | null>(null);
