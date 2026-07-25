@@ -1,9 +1,8 @@
-import { Heart, Share2, Users, FileText, Presentation } from 'lucide-react';
+import { Heart, Share2, Users, FileText } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { FavoritesSortBar, type FavoritesSort } from './FavoritesSortBar';
-import { ExportFavoritesButton } from './ExportFavoritesButton';
 import { FavoritesHeatmap } from './FavoritesHeatmap';
 import { formatCurrency } from '@/lib/format';
 import type { FavoriteList, FavoriteListItem } from '@/hooks/favorites';
