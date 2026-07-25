@@ -227,6 +227,19 @@ export const Sel = {
     tab: (id: string) => TID(`admin-tab-${id}`),
   },
 
+  // ---------- Segurança / MFA ----------
+  mfa: {
+    /** Dialog de challenge TOTP (AAL2 elevation). */
+    challengeDialog: TID("mfa-challenge-dialog"),
+    /** Input de código de 6 dígitos. */
+    challengeCodeInput: TID("mfa-challenge-code-input"),
+    /** Botão "Voltar" — sai da área AAL2 sem deslogar. */
+    challengeGoBack: TID("mfa-challenge-go-back"),
+    /** Botão "Verificar". */
+    challengeVerify: TID("mfa-challenge-verify"),
+  },
+
+
   // ---------- Orçamentos ----------
   quote: {
     newButton: TID("quote-new-button"),

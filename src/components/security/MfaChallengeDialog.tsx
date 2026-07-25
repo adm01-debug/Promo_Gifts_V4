@@ -97,6 +97,7 @@ export function MfaChallengeDialog({ open }: MfaChallengeDialogProps) {
         className="max-w-md"
         onPointerDownOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
+        data-testid="mfa-challenge-dialog"
       >
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -116,15 +117,20 @@ export function MfaChallengeDialog({ open }: MfaChallengeDialogProps) {
             autoFocus
             inputMode="numeric"
             disabled={loading || verified}
+            data-testid="mfa-challenge-code-input"
             onKeyDown={(e) => {
               if (e.key === 'Enter' && code.length === 6 && !loading && !verified) verify();
             }}
           />
           <div className="flex justify-between">
-            <Button variant="ghost" onClick={handleGoBack}>
+            <Button variant="ghost" onClick={handleGoBack} data-testid="mfa-challenge-go-back">
               Voltar
             </Button>
-            <Button onClick={verify} disabled={loading || verified || code.length !== 6}>
+            <Button
+              onClick={verify}
+              disabled={loading || verified || code.length !== 6}
+              data-testid="mfa-challenge-verify"
+            >
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Verificar
             </Button>
