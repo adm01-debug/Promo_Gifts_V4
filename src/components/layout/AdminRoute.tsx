@@ -88,6 +88,16 @@ export function AdminRoute({ children }: AdminRouteProps) {
   // de AAL hidrata; tratar apenas `aal1` liberava painel admin por uma janela
   // curta em rotas críticas.
   if (hasMFA && mfaRequired && currentAAL !== 'aal2') {
+    // Quebra de loop: se o usuário já clicou em "Voltar" no dialog nesta
+    // sessão, a reavaliação do guard (mount de outra rota admin, hidratação
+    // tardia de AAL, etc.) NÃO deve reabrir o challenge — redireciona para
+    // "/" e mantém o flag até que o próprio usuário volte para admin
+    // conscientemente (a rota `/` limpa o flag ao remontar via
+    // `clearIfElevated`; navegação subsequente para /admin reinicia o fluxo
+    // apenas se o usuário chegar em AAL2).
+    if (isDismissed(user.id)) {
+      return <Navigate to="/" replace />;
+    }
     return (
       <>
         <div className="flex min-h-screen items-center justify-center bg-background">
@@ -99,6 +109,10 @@ export function AdminRoute({ children }: AdminRouteProps) {
       </>
     );
   }
+
+  // Sessão elevada → limpa flag remanescente de sessões passadas.
+  clearIfElevated(user.id, currentAAL);
+
 
   return (
     <EnhancedErrorBoundary
