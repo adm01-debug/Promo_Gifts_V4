@@ -79,12 +79,24 @@ export function MfaChallengeDialog({ open }: MfaChallengeDialogProps) {
 
   function handleGoBack() {
     // Mantém a sessão ativa — apenas sai da área que exige AAL2.
-    if (window.history.length > 1) {
+    //
+    // `window.history.length > 1` é enganoso: conta navegações de origens
+    // anteriores (ex.: aba nova aberta direto em /admin/* pode ter length=2
+    // e `navigate(-1)` sairia do app para about:blank ou o site anterior).
+    //
+    // React Router v6 mantém `idx` em `history.state` — inicia em 0 na
+    // entrada direta e incrementa a cada push interno. Só usamos back()
+    // quando `idx > 0`, garantindo que voltamos para uma rota do próprio app.
+    // Caso contrário, fallback para "/" (rota autenticada segura, fora do
+    // gate AAL2 — não reabre o dialog).
+    const rrIdx = (window.history.state as { idx?: number } | null)?.idx ?? 0;
+    if (rrIdx > 0) {
       navigate(-1);
     } else {
       navigate('/', { replace: true });
     }
   }
+
 
   return (
     <Dialog

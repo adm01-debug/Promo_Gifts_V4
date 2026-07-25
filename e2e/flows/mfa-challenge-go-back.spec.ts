@@ -76,10 +76,19 @@ test.describe("MfaChallengeDialog — botão Voltar", () => {
         test.skip(true, "MfaChallengeDialog não abriu — admin sem MFA enrolado.");
       }
 
+      // Snapshot do `idx` do React Router antes do clique: em aba nova
+      // entrando direto em /admin/*, deve ser 0 → força o fallback para "/".
+      const rrIdxBefore = await fresh.evaluate(
+        () => (window.history.state as { idx?: number } | null)?.idx ?? 0,
+      );
+      expect(rrIdxBefore, "entrada direta deve ter idx=0").toBe(0);
+
       await clickTestId(fresh, "mfa-challenge-go-back");
       await waitForTestIdHidden(fresh, "mfa-challenge-dialog");
       await expectOnRoute(fresh, /\/$/);
       await expect(fresh).not.toHaveURL(/\/(login|auth)(\?|#|$)/);
+      // O dialog NÃO pode reaparecer em "/" (rota fora do gate AAL2).
+      await expect(fresh.locator(Sel.mfa.challengeDialog)).toHaveCount(0);
       expect(await hasSupabaseSession(fresh)).toBe(true);
     } finally {
       await fresh.close();
