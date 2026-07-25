@@ -17,6 +17,7 @@ import { ThemeInitializer } from '@/components/ThemeInitializer';
 import { useAppBootstrap } from '@/hooks/common/useAppBootstrap';
 import { AppRoutes } from '@/routes/AppRoutes';
 import { RoutePrefetcher } from '@/routes/RoutePrefetcher';
+import { LastInternalRouteTracker } from '@/components/security/LastInternalRouteTracker';
 import { isSupabaseLighthousePlaceholder } from '@/lib/env/supabase-placeholder';
 import { CloudStatusProvider } from '@/contexts/CloudStatusContext';
 import { lazyWithRetry } from '@/lib/lazyWithRetry';
@@ -106,6 +107,7 @@ const App = () => {
                             <OptionalGlobalOfflineAlert />
                             <RouteScrollReset />
                             <RoutePrefetcher />
+                            <LastInternalRouteTracker />
                             <AppRoutes />
                           </EnhancedErrorBoundary>
                         </MotionProvider>
