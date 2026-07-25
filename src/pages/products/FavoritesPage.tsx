@@ -126,7 +126,7 @@ export default function FavoritesPage() {
   });
   const [showTrash, setShowTrash] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [presenting, setPresenting] = useState(false);
+  const [ariaAnnouncement2, _unused] = useState('');
   const [ariaAnnouncement, setAriaAnnouncement] = useState('');
 
   useEffect(() => {
