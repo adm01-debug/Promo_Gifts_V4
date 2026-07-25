@@ -18,11 +18,9 @@ interface Props {
   onlyPriceDrops?: boolean;
   onTogglePriceDrops?: (v: boolean) => void;
   priceDropCount?: number | null;
-  /** Produtos da view atual — usado para CTA orçamento + export */
+  /** Produtos da view atual — usado para CTA orçamento */
   products?: Product[];
   rawItems?: FavoriteListItem[];
-  /** Abrir modo apresentação */
-  onPresent?: () => void;
 }
 
 export function FavoritesViewHeader({
@@ -36,8 +34,7 @@ export function FavoritesViewHeader({
   onTogglePriceDrops,
   priceDropCount,
   products = [],
-  rawItems,
-  onPresent,
+  rawItems: _rawItems,
 }: Props) {
   const navigate = useNavigate();
   const color = list?.color ?? 'hsl(var(--destructive))';
