@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { logAccessDenied } from '@/lib/access/log-access-denied';
 import { DevAccessDeniedPage } from '@/components/access/DevAccessDeniedPage';
 import { lazyWithRetry } from '@/lib/lazyWithRetry';
+import { isDismissed, clearIfElevated } from '@/lib/security/mfaChallengeDismissal';
 
 const MfaEnrollmentDialog = lazyWithRetry(() =>
   import('@/components/security/MfaEnrollmentDialog').then((m) => ({
