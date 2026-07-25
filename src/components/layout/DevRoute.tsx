@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { logAccessDenied } from '@/lib/access/log-access-denied';
 import { DevAccessDeniedPage } from '@/components/access/DevAccessDeniedPage';
 import { lazyWithRetry } from '@/lib/lazyWithRetry';
+import { isDismissed, clearIfElevated } from '@/lib/security/mfaChallengeDismissal';
 
 const MfaEnrollmentDialog = lazyWithRetry(() =>
   import('@/components/security/MfaEnrollmentDialog').then((m) => ({
@@ -135,6 +136,11 @@ export function DevRoute({ children }: DevRouteProps) {
   }
 
   if (isDev && hasMFA && mfaRequired && currentAAL !== 'aal2') {
+    // Loop-break: se "Voltar" já foi acionado nesta sessão, redireciona em vez
+    // de reabrir o challenge (paridade com AdminRoute).
+    if (isDismissed(user.id)) {
+      return <Navigate to="/" replace />;
+    }
     return (
       <>
         <div className="flex min-h-screen items-center justify-center bg-background">
@@ -146,6 +152,10 @@ export function DevRoute({ children }: DevRouteProps) {
       </>
     );
   }
+
+  // Sessão elevada em rota dev → limpa flag remanescente.
+  clearIfElevated(user.id, currentAAL);
+
 
   if (!isDev) {
     return (

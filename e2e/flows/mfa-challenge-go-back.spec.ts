@@ -95,7 +95,9 @@ test.describe("MfaChallengeDialog — botão Voltar", () => {
     }
   });
 
-  test("guard readmite: revisitar a área AAL2 reabre o dialog", async ({ page }) => {
+  test("loop-break: após Voltar, revisitar admin não reabre o dialog (redireciona)", async ({
+    page,
+  }) => {
     await loginAs(page, "admin");
     await gotoAndSettle(page, HOME_ROUTE);
     await gotoAndSettle(page, ADMIN_ROUTE);
@@ -104,9 +106,23 @@ test.describe("MfaChallengeDialog — botão Voltar", () => {
     await clickTestId(page, "mfa-challenge-go-back");
     await waitForTestIdHidden(page, "mfa-challenge-dialog");
 
-    // Sessão continua válida → nova visita deve reabrir (não deslogou).
-    await gotoAndSettle(page, ADMIN_ROUTE);
-    await waitForTestIdVisible(page, "mfa-challenge-dialog");
+    // Sessão continua válida — não deslogou.
     expect(await hasSupabaseSession(page)).toBe(true);
+
+    // Revisita direta à rota admin: guard deve redirecionar para "/" em vez
+    // de reabrir o challenge (flag de dispensa em sessionStorage).
+    await gotoAndSettle(page, ADMIN_ROUTE);
+    await expectOnRoute(page, /\/$/);
+    await expect(page.locator(Sel.mfa.challengeDialog)).toHaveCount(0);
+
+    // Nova aba (sessionStorage isolado) — dialog volta a aparecer normalmente,
+    // confirmando que a supressão é escopada à aba e não deslogou.
+    const freshTab = await page.context().newPage();
+    try {
+      await gotoAndSettle(freshTab, ADMIN_ROUTE);
+      await waitForTestIdVisible(freshTab, "mfa-challenge-dialog");
+    } finally {
+      await freshTab.close();
+    }
   });
 });

@@ -17,13 +17,14 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
+import { markDismissed, clearDismissed } from '@/lib/security/mfaChallengeDismissal';
 
 interface MfaChallengeDialogProps {
   open: boolean;
 }
 
 export function MfaChallengeDialog({ open }: MfaChallengeDialogProps) {
-  const { refreshAAL } = useAuth();
+  const { refreshAAL, user } = useAuth();
   const navigate = useNavigate();
   const [code, setCode] = useState('');
   const [factorId, setFactorId] = useState<string | null>(null);
@@ -64,6 +65,9 @@ export function MfaChallengeDialog({ open }: MfaChallengeDialogProps) {
       });
       if (vErr) throw vErr;
       setVerified(true); // trava a UI; inFlightRef permanece travado ate o dialog fechar
+      // Sessão elevada com sucesso — remove flag "dispensado" para não
+      // impactar navegações admin subsequentes.
+      clearDismissed(user?.id ?? null);
       await refreshAAL();
       toast.success('Acesso administrativo liberado');
     } catch {
@@ -80,6 +84,12 @@ export function MfaChallengeDialog({ open }: MfaChallengeDialogProps) {
   function handleGoBack() {
     // Mantém a sessão ativa — apenas sai da área que exige AAL2.
     //
+    // Marca o "dispensado" antes de navegar: se o destino (ou uma reavaliação
+    // do guard AdminRoute/DevRoute) tentar reabrir o dialog, o próprio guard
+    // consulta este flag via `isDismissed()` e redireciona o usuário para "/"
+    // em vez de re-renderizar o challenge — quebrando o loop.
+    markDismissed(user?.id ?? null);
+
     // `window.history.length > 1` é enganoso: conta navegações de origens
     // anteriores (ex.: aba nova aberta direto em /admin/* pode ter length=2
     // e `navigate(-1)` sairia do app para about:blank ou o site anterior).
@@ -96,6 +106,7 @@ export function MfaChallengeDialog({ open }: MfaChallengeDialogProps) {
       navigate('/', { replace: true });
     }
   }
+
 
 
   return (
