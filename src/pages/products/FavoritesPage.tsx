@@ -46,7 +46,7 @@ import { FavoritesViewHeader } from '@/components/favorites/FavoritesViewHeader'
 import { ItemNoteEditor } from '@/components/favorites/ItemNoteEditor';
 import { PriceDropBadge } from '@/components/favorites/PriceDropBadge';
 import { FavoritesEmptyStateSmart } from '@/components/favorites/FavoritesEmptyStateSmart';
-import { FavoritePresentationLauncher } from '@/components/favorites/FavoritePresentationLauncher';
+
 import { useUndoStack } from '@/hooks/common';
 import type { FavoritesSort } from '@/components/favorites/FavoritesSortBar';
 
@@ -126,7 +126,7 @@ export default function FavoritesPage() {
   });
   const [showTrash, setShowTrash] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [presenting, setPresenting] = useState(false);
+  
   const [ariaAnnouncement, setAriaAnnouncement] = useState('');
 
   useEffect(() => {
@@ -585,7 +585,6 @@ export default function FavoritesPage() {
                   priceDropCount={priceDropCount}
                   products={productsWithVariant}
                   rawItems={isRemoteListView ? rawItems : undefined}
-                  onPresent={productsWithVariant.length > 0 ? () => setPresenting(true) : undefined}
                 />
 
                 {stats && (
@@ -890,13 +889,6 @@ export default function FavoritesPage() {
         {ariaAnnouncement}
       </div>
 
-      {presenting && (
-        <FavoritePresentationLauncher
-          products={productsWithVariant}
-          listName={activeList?.name ?? 'Favoritos'}
-          onClose={() => setPresenting(false)}
-        />
-      )}
     </>
   );
 }
