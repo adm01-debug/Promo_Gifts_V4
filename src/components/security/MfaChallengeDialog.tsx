@@ -65,6 +65,9 @@ export function MfaChallengeDialog({ open }: MfaChallengeDialogProps) {
       });
       if (vErr) throw vErr;
       setVerified(true); // trava a UI; inFlightRef permanece travado ate o dialog fechar
+      // Sessão elevada com sucesso — remove flag "dispensado" para não
+      // impactar navegações admin subsequentes.
+      clearDismissed(user?.id ?? null);
       await refreshAAL();
       toast.success('Acesso administrativo liberado');
     } catch {
