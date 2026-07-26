@@ -46,9 +46,37 @@ interface State {
   isAutoRecovering: boolean;
   isClearingCache: boolean;
   copied: boolean;
+  /**
+   * Identificador curto e estável do incidente. Exibido para TODOS os
+   * usuários (inclusive não-dev) e presente no console/telemetria, para
+   * correlacionar o que o usuário vê com a stack real — sem expor stack
+   * na UI e sem mascarar a causa para quem investiga.
+   */
+  errorId: string | null;
 }
 
 const MAX_AUTO_RETRIES = 2;
+
+/**
+ * Tempo máximo em estado "Recuperando automaticamente…". Se o reload
+ * disparado por `attemptChunkRecovery` não substituir o documento (ex.:
+ * navegação bloqueada, SW travado), saímos do spinner e mostramos a UI
+ * de erro com CTAs manuais em vez de deixar o usuário preso.
+ */
+const AUTO_RECOVERY_WATCHDOG_MS = 10_000;
+
+/** Gera um id curto de incidente sem depender de crypto.randomUUID. */
+function createErrorId(): string {
+  try {
+    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+      return crypto.randomUUID().slice(0, 8);
+    }
+  } catch {
+    /* noop */
+  }
+  return Math.random().toString(36).slice(2, 10);
+}
+
 
 /**
  * EnhancedErrorBoundary — **único** error boundary canônico do projeto.
@@ -76,8 +104,15 @@ const MAX_AUTO_RETRIES = 2;
  */
 class EnhancedErrorBoundary extends PureComponent<Props, State> {
   static getDerivedStateFromError(error: Error): Partial<State> {
-    return { hasError: true, error };
+    // `isAutoRecovering: false` é intencional: um NOVO erro deve sempre
+    // sair do spinner de recuperação, senão um segundo throw durante o
+    // recovery prendia a UI num spinner infinito.
+    return { hasError: true, error, isAutoRecovering: false, errorId: createErrorId() };
   }
+
+  private watchdogTimer: ReturnType<typeof setTimeout> | null = null;
+  private copyTimer: ReturnType<typeof setTimeout> | null = null;
+  private erroredPath: string | null = null;
 
   constructor(props: Props) {
     super(props);
@@ -90,20 +125,69 @@ class EnhancedErrorBoundary extends PureComponent<Props, State> {
       isAutoRecovering: false,
       isClearingCache: false,
       copied: false,
+      errorId: null,
     };
   }
 
+  override componentDidMount(): void {
+    // Navegação para trás/frente após o erro deve devolver uma UI viva,
+    // não a tela de erro congelada da rota anterior.
+    if (typeof window !== 'undefined') {
+      window.addEventListener('popstate', this.handleLocationChange);
+    }
+  }
+
+  override componentWillUnmount(): void {
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('popstate', this.handleLocationChange);
+    }
+    if (this.watchdogTimer) clearTimeout(this.watchdogTimer);
+    if (this.copyTimer) clearTimeout(this.copyTimer);
+  }
+
+  private handleLocationChange = () => {
+    if (!this.state.hasError) return;
+    const current =
+      typeof window !== 'undefined' ? window.location.pathname + window.location.search : null;
+    if (current !== this.erroredPath) this.handleRetry();
+  };
+
   override componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     this.setState({ errorInfo });
+    const errorId = this.state.errorId ?? createErrorId();
+    this.erroredPath =
+      typeof window !== 'undefined' ? window.location.pathname + window.location.search : null;
+
+    // 1) Stack REAL no console do navegador — sempre, em qualquer ambiente e
+    //    para qualquer role. É o único canal que preserva a causa original
+    //    (message + stack + component stack) sem sanitização, e o que permite
+    //    diagnosticar o incidente a partir do id mostrado ao usuário.
+    //    Usa console.error diretamente (não o logger) para não depender de
+    //    níveis/sanitização/transporte.
+    try {
+      // eslint-disable-next-line no-console
+      console.error(
+        `[EnhancedErrorBoundary] incidente ${errorId} @ ${this.erroredPath ?? 'n/a'}`,
+        error,
+      );
+      if (errorInfo.componentStack) {
+        // eslint-disable-next-line no-console
+        console.error(`[EnhancedErrorBoundary] component stack ${errorId}:`, errorInfo.componentStack);
+      }
+    } catch {
+      /* noop */
+    }
 
     // Remote telemetry logging
     telemetryService.logError('React_Boundary_Error', error, {
+      errorId,
       componentStack: errorInfo.componentStack?.slice(0, 1000),
       retryCount: this.state.retryCount,
     });
 
     // Structured logging
     logger.error('[GlobalErrorBoundary]', {
+      errorId,
       message: error.message,
       stack: error.stack,
       componentStack: errorInfo.componentStack,
@@ -115,25 +199,37 @@ class EnhancedErrorBoundary extends PureComponent<Props, State> {
     // Report to centralized error tracking
     reportError(error, {
       type: 'react_error_boundary',
+      errorId,
       componentStack: errorInfo.componentStack?.slice(0, 1000),
       retryCount: this.state.retryCount,
     });
     if (this.isChunkError(error) && this.state.retryCount < MAX_AUTO_RETRIES) {
       this.setState({ isAutoRecovering: true });
+      // Watchdog: garante saída do spinner se o reload não acontecer.
+      if (this.watchdogTimer) clearTimeout(this.watchdogTimer);
+      this.watchdogTimer = setTimeout(() => {
+        this.watchdogTimer = null;
+        this.setState((prev) => (prev.isAutoRecovering ? { isAutoRecovering: false } : null));
+      }, AUTO_RECOVERY_WATCHDOG_MS);
       // Aciona recovery agressivo (hard reload + cache bust + purga SW).
       // Se o recovery atingir o limite de reloads na janela de 30s, ele
       // resolve com `false` — caímos no fallback estático abaixo em vez
       // de loop infinito (= tela branca).
-      void attemptChunkRecovery(error).then((reloaded) => {
-        if (!reloaded) {
-          // Recovery desistiu: mostra a tela de erro com CTA manual.
+      void attemptChunkRecovery(error)
+        .then((reloaded) => {
+          if (!reloaded) {
+            // Recovery desistiu: mostra a tela de erro com CTA manual.
+            this.setState({ isAutoRecovering: false });
+            return;
+          }
+          // Reload em andamento — mantém estado de "recuperando" até a
+          // navegação substituir o documento.
+          this.setState((prev) => ({ retryCount: prev.retryCount + 1 }));
+        })
+        .catch(() => {
+          // Falha no próprio pipeline de recovery não deve mascarar o erro.
           this.setState({ isAutoRecovering: false });
-          return;
-        }
-        // Reload em andamento — mantém estado de "recuperando" até a
-        // navegação substituir o documento.
-        this.setState((prev) => ({ retryCount: prev.retryCount + 1 }));
-      });
+        });
     }
   }
 
@@ -142,13 +238,21 @@ class EnhancedErrorBoundary extends PureComponent<Props, State> {
   }
 
   handleRetry = () => {
+    this.erroredPath = null;
+    if (this.watchdogTimer) {
+      clearTimeout(this.watchdogTimer);
+      this.watchdogTimer = null;
+    }
     this.setState({
       hasError: false,
       error: null,
       errorInfo: null,
       showDetails: false,
+      isAutoRecovering: false,
+      errorId: null,
     });
   };
+
 
   handleReload = () => {
     window.location.reload();
@@ -187,8 +291,9 @@ class EnhancedErrorBoundary extends PureComponent<Props, State> {
   };
 
   handleCopyError = async () => {
-    const { error, errorInfo } = this.state;
+    const { error, errorInfo, errorId } = this.state;
     const payload = [
+      `Incidente: ${errorId ?? 'n/a'}`,
       `URL: ${typeof window !== 'undefined' ? window.location.href : 'n/a'}`,
       `Mensagem: ${error?.message ?? 'n/a'}`,
       `Stack:\n${error?.stack ?? 'n/a'}`,
@@ -197,11 +302,16 @@ class EnhancedErrorBoundary extends PureComponent<Props, State> {
     try {
       await navigator.clipboard.writeText(payload);
       this.setState({ copied: true });
-      setTimeout(() => this.setState({ copied: false }), 2000);
+      if (this.copyTimer) clearTimeout(this.copyTimer);
+      this.copyTimer = setTimeout(() => {
+        this.copyTimer = null;
+        this.setState({ copied: false });
+      }, 2000);
     } catch {
       /* noop */
     }
   };
+
 
   override render() {
     if (this.state.isAutoRecovering) {
@@ -221,7 +331,9 @@ class EnhancedErrorBoundary extends PureComponent<Props, State> {
         return this.props.fallback;
       }
 
-      const { error, errorInfo, showDetails, retryCount, isClearingCache, copied } = this.state;
+      const { error, errorInfo, showDetails, retryCount, isClearingCache, copied, errorId } =
+        this.state;
+
       const isChunk = error ? this.isChunkError(error) : false;
       const currentPath =
         typeof window !== 'undefined' ? window.location.pathname + window.location.search : '';
@@ -264,7 +376,28 @@ class EnhancedErrorBoundary extends PureComponent<Props, State> {
                   Tentativas de recuperação: {retryCount}/{MAX_AUTO_RETRIES}
                 </p>
               )}
+              {/* Id do incidente — visível para TODOS. Não expõe stack, mas
+                  permite casar o relato do usuário com a stack real que foi
+                  impressa no console e enviada à telemetria. */}
+              {errorId && (
+                <p className="font-mono text-[11px] text-muted-foreground/70">
+                  código do incidente: <span data-testid="error-boundary-incident-id">{errorId}</span>
+                </p>
+              )}
+              {/* Copiar detalhes técnicos (clipboard, não renderizado na tela)
+                  — disponível para qualquer usuário para que o suporte receba
+                  a causa real em vez de "deu erro". */}
+              <button
+                onClick={this.handleCopyError}
+                data-testid="error-boundary-copy"
+                className="mx-auto inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-[11px] text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                aria-label="Copiar detalhes técnicos do erro"
+              >
+                {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                {copied ? 'Detalhes copiados' : 'Copiar detalhes para o suporte'}
+              </button>
             </div>
+
 
             {/* Error message — restrito a usuários `dev` (gate de infra). Não-dev veem apenas a copy amigável acima. */}
             {error?.message && (
