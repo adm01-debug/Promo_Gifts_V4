@@ -62,6 +62,26 @@ export function getLastInternalRoute(userId: string | null | undefined): string 
   }
 }
 
+/**
+ * Destino seguro para redirecionar quando um guard (AdminRoute/DevRoute)
+ * reavalia permissões após o usuário ter dispensado o challenge.
+ *
+ * Prioriza a última rota interna lembrada; cai em "/" quando não houver
+ * rota válida ou quando ela coincidir com a rota atualmente bloqueada
+ * (evita redirect em loop para a própria rota gated).
+ */
+export function resolveSafeReturnPath(
+  userId: string | null | undefined,
+  currentPath?: string | null,
+): string {
+  const remembered = getLastInternalRoute(userId);
+  if (!remembered) return '/';
+  if (currentPath && (remembered === currentPath || remembered.startsWith(`${currentPath}?`))) {
+    return '/';
+  }
+  return remembered;
+}
+
 export function clearLastInternalRoute(userId: string | null | undefined): void {
   if (!userId) return;
   const ss = safeSession();
