@@ -46,9 +46,37 @@ interface State {
   isAutoRecovering: boolean;
   isClearingCache: boolean;
   copied: boolean;
+  /**
+   * Identificador curto e estável do incidente. Exibido para TODOS os
+   * usuários (inclusive não-dev) e presente no console/telemetria, para
+   * correlacionar o que o usuário vê com a stack real — sem expor stack
+   * na UI e sem mascarar a causa para quem investiga.
+   */
+  errorId: string | null;
 }
 
 const MAX_AUTO_RETRIES = 2;
+
+/**
+ * Tempo máximo em estado "Recuperando automaticamente…". Se o reload
+ * disparado por `attemptChunkRecovery` não substituir o documento (ex.:
+ * navegação bloqueada, SW travado), saímos do spinner e mostramos a UI
+ * de erro com CTAs manuais em vez de deixar o usuário preso.
+ */
+const AUTO_RECOVERY_WATCHDOG_MS = 10_000;
+
+/** Gera um id curto de incidente sem depender de crypto.randomUUID. */
+function createErrorId(): string {
+  try {
+    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+      return crypto.randomUUID().slice(0, 8);
+    }
+  } catch {
+    /* noop */
+  }
+  return Math.random().toString(36).slice(2, 10);
+}
+
 
 /**
  * EnhancedErrorBoundary — **único** error boundary canônico do projeto.
