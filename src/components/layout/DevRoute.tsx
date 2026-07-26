@@ -7,6 +7,7 @@ import { logAccessDenied } from '@/lib/access/log-access-denied';
 import { DevAccessDeniedPage } from '@/components/access/DevAccessDeniedPage';
 import { lazyWithRetry } from '@/lib/lazyWithRetry';
 import { isDismissed, clearIfElevated } from '@/lib/security/mfaChallengeDismissal';
+import { resolveSafeReturnPath } from '@/lib/security/lastInternalRoute';
 
 const MfaEnrollmentDialog = lazyWithRetry(() =>
   import('@/components/security/MfaEnrollmentDialog').then((m) => ({
@@ -139,7 +140,10 @@ export function DevRoute({ children }: DevRouteProps) {
     // Loop-break: se "Voltar" já foi acionado nesta sessão, redireciona em vez
     // de reabrir o challenge (paridade com AdminRoute).
     if (isDismissed(user.id)) {
-      return <Navigate to="/" replace />;
+      // Retorna exatamente para a última rota interna segura (sessionStorage
+      // por userId) em vez de sempre "/": cobre histórico curto, deep link e
+      // nova aba, onde `navigate(-1)` não teria destino interno confiável.
+      return <Navigate to={resolveSafeReturnPath(user.id, location.pathname)} replace />;
     }
     return (
       <>

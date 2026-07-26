@@ -6,6 +6,7 @@ import { EnhancedErrorBoundary } from '@/components/errors/EnhancedErrorBoundary
 import { EmptyState } from '@/components/common/EmptyState';
 import { lazyWithRetry } from '@/lib/lazyWithRetry';
 import { isDismissed, clearIfElevated } from '@/lib/security/mfaChallengeDismissal';
+import { resolveSafeReturnPath } from '@/lib/security/lastInternalRoute';
 
 const MfaEnrollmentDialog = lazyWithRetry(() =>
   import('@/components/security/MfaEnrollmentDialog').then((m) => ({
@@ -96,7 +97,10 @@ export function AdminRoute({ children }: AdminRouteProps) {
     // `clearIfElevated`; navegação subsequente para /admin reinicia o fluxo
     // apenas se o usuário chegar em AAL2).
     if (isDismissed(user.id)) {
-      return <Navigate to="/" replace />;
+      // Retorna exatamente para a última rota interna segura (sessionStorage
+      // por userId) em vez de sempre "/": cobre histórico curto, deep link e
+      // nova aba, onde `navigate(-1)` não teria destino interno confiável.
+      return <Navigate to={resolveSafeReturnPath(user.id, location.pathname)} replace />;
     }
     return (
       <>
