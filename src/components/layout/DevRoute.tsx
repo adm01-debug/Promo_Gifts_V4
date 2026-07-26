@@ -7,7 +7,8 @@ import { logAccessDenied } from '@/lib/access/log-access-denied';
 import { DevAccessDeniedPage } from '@/components/access/DevAccessDeniedPage';
 import { lazyWithRetry } from '@/lib/lazyWithRetry';
 import { isDismissed, clearIfElevated } from '@/lib/security/mfaChallengeDismissal';
-import { resolveSafeReturnPath } from '@/lib/security/lastInternalRoute';
+import { resolveSafeReturnPath, getLastInternalRoute } from '@/lib/security/lastInternalRoute';
+import { trackMfaGuardDismissedRedirect } from '@/lib/analytics/mfaNavigationAnalytics';
 
 const MfaEnrollmentDialog = lazyWithRetry(() =>
   import('@/components/security/MfaEnrollmentDialog').then((m) => ({
@@ -143,7 +144,14 @@ export function DevRoute({ children }: DevRouteProps) {
       // Retorna exatamente para a última rota interna segura (sessionStorage
       // por userId) em vez de sempre "/": cobre histórico curto, deep link e
       // nova aba, onde `navigate(-1)` não teria destino interno confiável.
-      return <Navigate to={resolveSafeReturnPath(user.id, location.pathname)} replace />;
+      const dismissedTarget = resolveSafeReturnPath(user.id, location.pathname);
+      trackMfaGuardDismissedRedirect({
+        guard: 'dev',
+        fromPath: location.pathname,
+        toPath: dismissedTarget,
+        rememberedRoute: getLastInternalRoute(user.id),
+      });
+      return <Navigate to={dismissedTarget} replace />;
     }
     return (
       <>

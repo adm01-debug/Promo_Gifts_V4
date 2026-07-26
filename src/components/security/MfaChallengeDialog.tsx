@@ -19,6 +19,11 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { markDismissed, clearDismissed } from '@/lib/security/mfaChallengeDismissal';
 import {
+  trackMfaGoBack,
+  inferGoBackOrigin,
+  hasSameOriginReferrer,
+} from '@/lib/analytics/mfaNavigationAnalytics';
+import {
   getLastInternalRoute,
   clearLastInternalRoute,
   isSafeReturnPath,
@@ -112,18 +117,36 @@ export function MfaChallengeDialog({ open }: MfaChallengeDialogProps) {
     // 3) Fallback "/" — rota autenticada segura, fora do gate AAL2.
     const remembered = getLastInternalRoute(userId);
     const currentPath = window.location.pathname;
+    const rrIdxSnapshot = (window.history.state as { idx?: number } | null)?.idx ?? 0;
+    const sameOriginReferrer = hasSameOriginReferrer();
+    const origin = inferGoBackOrigin({
+      historyIdx: rrIdxSnapshot,
+      rememberedRoute: remembered,
+      sameOriginReferrer,
+    });
+    const telemetryBase = {
+      fromPath: currentPath,
+      rememberedRoute: remembered,
+      historyIdx: rrIdxSnapshot,
+      origin,
+      sameOriginReferrer,
+      guard: currentPath.startsWith('/dev') ? ('dev' as const) : ('admin' as const),
+    };
+
     if (remembered && isSafeReturnPath(remembered) && remembered !== currentPath) {
       // Consumimos a rota: ao voltar novamente, o tracker já terá gravado
       // a nova rota corrente, então não precisamos preservá-la.
       clearLastInternalRoute(userId);
+      trackMfaGoBack({ ...telemetryBase, toPath: remembered, strategy: 'remembered_route' });
       navigate(remembered, { replace: true });
       return;
     }
 
-    const rrIdx = (window.history.state as { idx?: number } | null)?.idx ?? 0;
-    if (rrIdx > 0) {
+    if (rrIdxSnapshot > 0) {
+      trackMfaGoBack({ ...telemetryBase, toPath: '-1', strategy: 'history_back' });
       navigate(-1);
     } else {
+      trackMfaGoBack({ ...telemetryBase, toPath: '/', strategy: 'home_fallback' });
       navigate('/', { replace: true });
     }
   }
