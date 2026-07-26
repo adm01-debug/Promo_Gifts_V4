@@ -5,6 +5,7 @@ import { callAiWithTracking, QuotaExceededError } from '../_shared/ai-usage.ts';
 import { SYSTEM_PROMPT, VOICE_COMMAND_TOOL, TOOL_CHOICE } from './systemPrompt.ts';
 import { parseAiResponse } from './parseAiResponse.ts';
 import { runBotProtection } from '../_shared/bot-protection.ts';
+import { requireAiApiKey } from '../_shared/ai-credentials.ts';
 
 const TranscriptSchema = z.object({
   transcript: z.string().min(1, 'transcript cannot be empty').max(1000, 'transcript too long'),
@@ -35,19 +36,13 @@ Deno.serve(async (req) => {
     }, corsHeaders);
     if (!protection.allowed) return protection.blockResponse!;
 
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      // Degradação controlada: a chave de IA não está provisionada neste projeto.
-      // Retorna 503 com código estável para a UI exibir aviso amigável (sem tela branca).
-      console.error('voice-agent: LOVABLE_API_KEY ausente no ambiente da edge function');
-      return new Response(
-        JSON.stringify({
-          error: 'ai_not_configured',
-          message: 'Assistente de voz indisponível no momento.',
-        }),
-        { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+    const ai = await requireAiApiKey(
+      'voice-agent',
+      corsHeaders,
+      'Assistente de voz indisponível no momento. Tente novamente mais tarde.',
+    );
+    if (!ai.apiKey) return ai.response!;
+    const LOVABLE_API_KEY = ai.apiKey;
 
 
     let body: unknown;

@@ -6,6 +6,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { authenticateRequest, authErrorResponse } from "../_shared/auth.ts";
 import { parseContract } from "../_shared/contracts/index.ts";
 import {
+import { resolveAiApiKey } from "../_shared/ai-credentials.ts";
   MarketIntelligenceInsightsSchemas,
 } from "../_shared/contracts/schemas/market-intelligence-insights.ts";
 
@@ -317,7 +318,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    const { apiKey: LOVABLE_API_KEY } = await resolveAiApiKey("market-intelligence-insights");
     if (!LOVABLE_API_KEY) {
       log("warn", "missing_api_key", { user_id: userId });
       return new Response(JSON.stringify(buildFallback(summary, focus)), {

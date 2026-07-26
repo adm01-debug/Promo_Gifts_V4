@@ -9,6 +9,7 @@ import { safeErrorResponse } from "../_shared/error-response.ts";
 // ============================================================
 import { z } from '../_shared/zod-validate.ts';
 import { runBotProtection } from '../_shared/bot-protection.ts';
+import { requireAiApiKey } from '../_shared/ai-credentials.ts';
 
 const PALETTE = [
   '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6',
@@ -67,12 +68,13 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      return new Response(JSON.stringify({ error: 'LOVABLE_API_KEY ausente' }), {
-        status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
+    const ai = await requireAiApiKey(
+      'kit-identity-suggest',
+      corsHeaders,
+      'Sugestão de identidade por IA indisponível no momento.',
+    );
+    if (!ai.apiKey) return ai.response!;
+    const LOVABLE_API_KEY = ai.apiKey;
 
     const itemList = items.map((i) => i?.name).filter(Boolean).join(', ').slice(0, 800);
 

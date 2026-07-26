@@ -3,6 +3,7 @@ import { authenticateRequest, requireRole, authErrorResponse } from '../_shared/
 import { parseContract } from '../_shared/contracts/index.ts';
 import { KitAiBuilderSchemas } from '../_shared/contracts/schemas/kit-ai-builder.ts';
 import { safeErrorFields } from '../_shared/log-safety.ts';
+import { requireAiApiKey } from '../_shared/ai-credentials.ts';
 // ============================================================
 // EDGE FUNCTION: kit-ai-builder
 // Recebe um prompt natural e devolve uma sugestão estruturada de kit
@@ -36,13 +37,13 @@ Deno.serve(async (req: Request) => {
     const { data: body, responseHeaders } = contractResult;
     const prompt = body.prompt.trim();
 
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      return new Response(JSON.stringify({ error: 'LOVABLE_API_KEY não configurado' }), {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
+    const ai = await requireAiApiKey(
+      'kit-ai-builder',
+      corsHeaders,
+      'Montagem de kit por IA indisponível no momento. Tente novamente mais tarde.',
+    );
+    if (!ai.apiKey) return ai.response!;
+    const LOVABLE_API_KEY = ai.apiKey;
 
     const systemPrompt = `Você é especialista em montagem de kits corporativos de brindes promocionais brasileiros.
 Receba a descrição do cliente e devolva sugestões objetivas de:

@@ -3,6 +3,7 @@ import { authenticateRequest, authErrorResponse } from '../_shared/auth.ts';
 import { callAiWithTracking, QuotaExceededError } from '../_shared/ai-usage.ts';
 import { z } from '../_shared/zod-validate.ts';
 import { runBotProtection } from '../_shared/bot-protection.ts';
+import { requireAiApiKey } from "../_shared/ai-credentials.ts";
 
 Deno.serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
@@ -22,8 +23,9 @@ Deno.serve(async (req) => {
       customIdentifier: `user:${user.id}`,
     }, corsHeaders);
     if (!protection.allowed) return protection.blockResponse!;
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
+    const ai = await requireAiApiKey("generate-ad-prompt", corsHeaders);
+    if (!ai.apiKey) return ai.response!;
+    const LOVABLE_API_KEY = ai.apiKey;
 
     const AdPromptSchema = z.object({
       productName: z.string().trim().min(1, 'Product name is required').max(255),

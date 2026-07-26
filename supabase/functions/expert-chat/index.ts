@@ -15,6 +15,7 @@ import { resolveCredential, getCredential } from '../_shared/credentials.ts';
 import { extractAndParseAIJSON, safeJson } from '../_shared/json-parser.ts';
 import { safeErrorFields } from '../_shared/log-safety.ts';
 import { assertSwitchEnabled } from '../_shared/kill_switch.ts';
+import { requireAiApiKey } from '../_shared/ai-credentials.ts';
 
 // ============================================
 // SCHEMAS
@@ -683,8 +684,13 @@ Deno.serve(async (req) => {
       hasPersonalization: Boolean(hasPersonalization),
     };
 
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) throw new Error('LOVABLE_API_KEY não está configurada');
+    const ai = await requireAiApiKey(
+      'expert-chat',
+      corsHeaders,
+      'Assistente de IA indisponível no momento. Tente novamente mais tarde.',
+    );
+    if (!ai.apiKey) return ai.response!;
+    const LOVABLE_API_KEY = ai.apiKey;
 
     const supabase = auth.localServiceClient;
 
