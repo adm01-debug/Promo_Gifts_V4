@@ -6,7 +6,8 @@ import { EnhancedErrorBoundary } from '@/components/errors/EnhancedErrorBoundary
 import { EmptyState } from '@/components/common/EmptyState';
 import { lazyWithRetry } from '@/lib/lazyWithRetry';
 import { isDismissed, clearIfElevated } from '@/lib/security/mfaChallengeDismissal';
-import { resolveSafeReturnPath } from '@/lib/security/lastInternalRoute';
+import { resolveSafeReturnPath, getLastInternalRoute } from '@/lib/security/lastInternalRoute';
+import { trackMfaGuardDismissedRedirect } from '@/lib/analytics/mfaNavigationAnalytics';
 
 const MfaEnrollmentDialog = lazyWithRetry(() =>
   import('@/components/security/MfaEnrollmentDialog').then((m) => ({
@@ -100,7 +101,14 @@ export function AdminRoute({ children }: AdminRouteProps) {
       // Retorna exatamente para a última rota interna segura (sessionStorage
       // por userId) em vez de sempre "/": cobre histórico curto, deep link e
       // nova aba, onde `navigate(-1)` não teria destino interno confiável.
-      return <Navigate to={resolveSafeReturnPath(user.id, location.pathname)} replace />;
+      const dismissedTarget = resolveSafeReturnPath(user.id, location.pathname);
+      trackMfaGuardDismissedRedirect({
+        guard: 'admin',
+        fromPath: location.pathname,
+        toPath: dismissedTarget,
+        rememberedRoute: getLastInternalRoute(user.id),
+      });
+      return <Navigate to={dismissedTarget} replace />;
     }
     return (
       <>
