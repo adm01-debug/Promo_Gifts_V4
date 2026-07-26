@@ -148,6 +148,7 @@
     "audit:credentials:all": "node scripts/audit-credentials.mjs",
     "audit:credentials:update-baseline": "node scripts/audit-credentials.mjs --update-baseline .audit-credentials-baseline.json",
     "check:no-inline-cors": "node scripts/check-no-inline-cors.mjs",
+    "check:ai-key-contract": "node scripts/simulate-ai-key-scenarios.mjs",
     "check:iframe-sandbox": "node scripts/check-iframe-sandbox.mjs",
     "check:lint-0029": "node scripts/check-lint-0029-drift.mjs",
     "check:lint-0011": "node scripts/check-lint-0011-drift.mjs",

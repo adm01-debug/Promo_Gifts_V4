@@ -11,6 +11,7 @@ import { fetchWithBreaker, CircuitOpenError, circuitOpenResponse } from '../_sha
 // LOVABLE_API_KEY was previously read at module scope (Deno.env.get at cold-start), which means
 // key rotations via /admin/conexoes had no effect until the isolate was recycled.
 import { resolveCredential } from '../_shared/credentials.ts';
+import { aiNotConfiguredResponse } from '../_shared/ai-credentials.ts';
 /**
  * Edge function `bi-copilot` - responde perguntas do vendedor sobre um cliente
  * com base no contexto BI (score, sazonalidade, afinidade, tendencias, benchmarks).
@@ -55,9 +56,10 @@ Deno.serve(async (req) => {
     const { value: LOVABLE_API_KEY } = await resolveCredential('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
       log.error('missing_config', { reason: 'LOVABLE_API_KEY not set' });
-      return new Response(
-        JSON.stringify({ error: 'LOVABLE_API_KEY ausente - habilite Lovable AI.' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      return aiNotConfiguredResponse(
+        corsHeaders,
+        'bi-copilot',
+        'Copiloto de BI indisponível no momento. Tente novamente mais tarde.',
       );
     }
 

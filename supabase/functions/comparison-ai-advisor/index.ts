@@ -5,6 +5,7 @@ import { authenticateRequest, requireRole, authErrorResponse } from '../_shared/
 
 import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts';
 import { safeErrorFields } from '../_shared/log-safety.ts';
+import { requireAiApiKey } from '../_shared/ai-credentials.ts';
 
 const ProductSchema = z.object({
   id: z.union([z.string(), z.number()]).transform(String),
@@ -84,13 +85,13 @@ Deno.serve(async (req) => {
       );
     }
 
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      return new Response(JSON.stringify({ error: 'ai_not_configured' }), {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
+    const ai = await requireAiApiKey(
+      'comparison-ai-advisor',
+      corsHeaders,
+      'Análise comparativa por IA indisponível no momento.',
+    );
+    if (!ai.apiKey) return ai.response!;
+    const LOVABLE_API_KEY = ai.apiKey;
 
     const products = parsed.data.products;
     const userPrompt = `Você é um especialista em brindes corporativos B2B.

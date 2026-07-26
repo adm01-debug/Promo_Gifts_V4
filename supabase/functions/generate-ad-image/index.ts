@@ -3,6 +3,7 @@ import { authenticateRequest, authErrorResponse } from '../_shared/auth.ts';
 import { callAiWithTracking, QuotaExceededError } from '../_shared/ai-usage.ts';
 import { z } from "https://deno.land/x/zod@v3.23.8/mod.ts";
 import { runBotProtection } from '../_shared/bot-protection.ts';
+import { requireAiApiKey } from "../_shared/ai-credentials.ts";
 
 const BodySchema = z.object({
   productImageUrl: z.string().url(),
@@ -62,10 +63,9 @@ Deno.serve(async (req) => {
       customIdentifier: `user:${user.id}`,
     }, corsHeaders);
     if (!protection.allowed) return protection.blockResponse!;
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
-    }
+    const ai = await requireAiApiKey("generate-ad-image", corsHeaders);
+    if (!ai.apiKey) return ai.response!;
+    const LOVABLE_API_KEY = ai.apiKey;
 
     let rawBody: unknown;
     try {

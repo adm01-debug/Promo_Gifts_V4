@@ -54,6 +54,14 @@ jobs:
       - name: 🌐 Edge CORS x-request-id gate
         run: node scripts/check-edge-cors-headers.mjs
 
+      # 🤖 Contrato "IA não configurada": nenhuma edge pode ler LOVABLE_API_KEY
+      # direto do env nem lançar/retornar 500 quando a chave está ausente.
+      # Roda também ~1.2k cenários simulados da árvore de decisão.
+      - name: 🤖 AI key contract gate (503 ai_not_configured)
+        run: node scripts/simulate-ai-key-scenarios.mjs
+
+
+
       - name: Run Vitest (magazine module)
         run: |
           npx vitest run \
