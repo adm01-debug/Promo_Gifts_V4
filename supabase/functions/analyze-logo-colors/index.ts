@@ -5,6 +5,7 @@ import { z } from '../_shared/zod-validate.ts';
 import { runBotProtection } from '../_shared/bot-protection.ts';
 import { safeErrorFields } from '../_shared/log-safety.ts';
 import { resolveCredential } from '../_shared/credentials.ts';
+import { aiNotConfiguredResponse } from '../_shared/ai-credentials.ts';
 
 // BUG-A02 FIX (26/05/2026): SSRF — validação de URL antes de fetch externo.
 const ALLOWED_IMAGE_DOMAINS = [
@@ -120,9 +121,10 @@ Deno.serve(async (req) => {
     // (erro interno). Status 503 é mais preciso — o serviço não está disponível por falta de
     // credencial, não por bug de código. Facilita triagem de alertas.
     if (!LOVABLE_API_KEY) {
-      return new Response(
-        JSON.stringify({ error: 'LOVABLE_API_KEY não configurada. Configure em /admin/conexoes > AI Models.' }),
-        { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      return aiNotConfiguredResponse(
+        corsHeaders,
+        'analyze-logo-colors',
+        'Análise de cores por IA indisponível no momento.',
       );
     }
 
