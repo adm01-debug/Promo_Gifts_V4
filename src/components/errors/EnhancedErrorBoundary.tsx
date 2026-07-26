@@ -376,7 +376,28 @@ class EnhancedErrorBoundary extends PureComponent<Props, State> {
                   Tentativas de recuperação: {retryCount}/{MAX_AUTO_RETRIES}
                 </p>
               )}
+              {/* Id do incidente — visível para TODOS. Não expõe stack, mas
+                  permite casar o relato do usuário com a stack real que foi
+                  impressa no console e enviada à telemetria. */}
+              {errorId && (
+                <p className="font-mono text-[11px] text-muted-foreground/70">
+                  código do incidente: <span data-testid="error-boundary-incident-id">{errorId}</span>
+                </p>
+              )}
+              {/* Copiar detalhes técnicos (clipboard, não renderizado na tela)
+                  — disponível para qualquer usuário para que o suporte receba
+                  a causa real em vez de "deu erro". */}
+              <button
+                onClick={this.handleCopyError}
+                data-testid="error-boundary-copy"
+                className="mx-auto inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-[11px] text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                aria-label="Copiar detalhes técnicos do erro"
+              >
+                {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                {copied ? 'Detalhes copiados' : 'Copiar detalhes para o suporte'}
+              </button>
             </div>
+
 
             {/* Error message — restrito a usuários `dev` (gate de infra). Não-dev veem apenas a copy amigável acima. */}
             {error?.message && (
