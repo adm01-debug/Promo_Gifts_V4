@@ -331,7 +331,9 @@ class EnhancedErrorBoundary extends PureComponent<Props, State> {
         return this.props.fallback;
       }
 
-      const { error, errorInfo, showDetails, retryCount, isClearingCache, copied } = this.state;
+      const { error, errorInfo, showDetails, retryCount, isClearingCache, copied, errorId } =
+        this.state;
+
       const isChunk = error ? this.isChunkError(error) : false;
       const currentPath =
         typeof window !== 'undefined' ? window.location.pathname + window.location.search : '';
