@@ -291,8 +291,9 @@ class EnhancedErrorBoundary extends PureComponent<Props, State> {
   };
 
   handleCopyError = async () => {
-    const { error, errorInfo } = this.state;
+    const { error, errorInfo, errorId } = this.state;
     const payload = [
+      `Incidente: ${errorId ?? 'n/a'}`,
       `URL: ${typeof window !== 'undefined' ? window.location.href : 'n/a'}`,
       `Mensagem: ${error?.message ?? 'n/a'}`,
       `Stack:\n${error?.stack ?? 'n/a'}`,
@@ -301,11 +302,16 @@ class EnhancedErrorBoundary extends PureComponent<Props, State> {
     try {
       await navigator.clipboard.writeText(payload);
       this.setState({ copied: true });
-      setTimeout(() => this.setState({ copied: false }), 2000);
+      if (this.copyTimer) clearTimeout(this.copyTimer);
+      this.copyTimer = setTimeout(() => {
+        this.copyTimer = null;
+        this.setState({ copied: false });
+      }, 2000);
     } catch {
       /* noop */
     }
   };
+
 
   override render() {
     if (this.state.isAutoRecovering) {
