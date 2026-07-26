@@ -37,8 +37,18 @@ Deno.serve(async (req) => {
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY is not configured');
+      // Degradação controlada: a chave de IA não está provisionada neste projeto.
+      // Retorna 503 com código estável para a UI exibir aviso amigável (sem tela branca).
+      console.error('voice-agent: LOVABLE_API_KEY ausente no ambiente da edge function');
+      return new Response(
+        JSON.stringify({
+          error: 'ai_not_configured',
+          message: 'Assistente de voz indisponível no momento.',
+        }),
+        { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
+
 
     let body: unknown;
     try {

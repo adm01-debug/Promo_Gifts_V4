@@ -26,6 +26,14 @@ export async function processVoiceTranscript(transcript: string): Promise<VoiceA
       signal: controller.signal,
     });
 
+    if (response.status === 503) {
+      return {
+        action: 'answer',
+        response: 'Assistente de voz indisponível no momento. Tente novamente mais tarde.',
+        data: {},
+      };
+    }
+
     if (!response.ok) {
       const errorBody = await response.text().catch(() => '');
       throw new Error(`AI processing failed: ${response.status} ${errorBody}`);
