@@ -1,4 +1,5 @@
 import { lazy, Suspense } from 'react';
+import { SectionErrorBoundary } from '@/components/errors/SectionErrorBoundary';
 import { PageSEO } from '@/components/seo/PageSEO';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -219,36 +220,48 @@ export default function AdminTelemetriaPage() {
         </div>
 
         {/* Saúde da Aplicação — KPIs 4xx/5xx por rota, webhooks, latência por edge fn + lookup por request-id */}
-        <Suspense fallback={<CardSkeleton height={520} label="Carregando saúde da aplicação" />}>
-          <AppHealthDashboard />
-        </Suspense>
+        <SectionErrorBoundary section="telemetry.AppHealthDashboard" label="saúde da aplicação">
+          <Suspense fallback={<CardSkeleton height={520} label="Carregando saúde da aplicação" />}>
+            <AppHealthDashboard />
+          </Suspense>
+        </SectionErrorBoundary>
 
         {/* Blocos analíticos degradados (RLS / relação ausente / quota) — eventos
              `intelligence_block_degraded` coletados na sessão atual. */}
-        <Suspense fallback={<CardSkeleton height={220} label="Carregando blocos degradados" />}>
-          <DegradedBlocksCard />
-        </Suspense>
+        <SectionErrorBoundary section="telemetry.DegradedBlocksCard" label="blocos degradados">
+          <Suspense fallback={<CardSkeleton height={220} label="Carregando blocos degradados" />}>
+            <DegradedBlocksCard />
+          </Suspense>
+        </SectionErrorBoundary>
 
         {/* Onda 21 — Painel live in-memory da superfície invokeEdgeSafe (sessão atual) */}
-        <Suspense fallback={<CardSkeleton height={360} label="Carregando edge invokes live" />}>
-          <EdgeInvokeLivePanel />
-        </Suspense>
+        <SectionErrorBoundary section="telemetry.EdgeInvokeLivePanel" label="edge invokes ao vivo">
+          <Suspense fallback={<CardSkeleton height={360} label="Carregando edge invokes live" />}>
+            <EdgeInvokeLivePanel />
+          </Suspense>
+        </SectionErrorBoundary>
 
         {/* Guardrail automático: interrompe regressões antes que afetem usuários */}
-        <Suspense fallback={<BannerSkeleton />}>
-          <RegressionGuardrailBanner />
-        </Suspense>
+        <SectionErrorBoundary section="telemetry.RegressionGuardrailBanner" label="guardrail de regressão">
+          <Suspense fallback={<BannerSkeleton />}>
+            <RegressionGuardrailBanner />
+          </Suspense>
+        </SectionErrorBoundary>
 
         {/* Auditoria dos handoffs do QuoteBuilder — confirma que carrinho/coleção/simulador/URL
              continuam alimentando o QuoteBuilder após deploy e sem regressões do autosave. */}
-        <Suspense fallback={<CardSkeleton height={320} label="Carregando handoffs do QuoteBuilder" />}>
-          <QuoteBuilderHandoffCard />
-        </Suspense>
+        <SectionErrorBoundary section="telemetry.QuoteBuilderHandoffCard" label="handoffs do QuoteBuilder">
+          <Suspense fallback={<CardSkeleton height={320} label="Carregando handoffs do QuoteBuilder" />}>
+            <QuoteBuilderHandoffCard />
+          </Suspense>
+        </SectionErrorBoundary>
 
         {/* Fila automática de otimizações — executa todas em sequência sem pausas */}
-        <Suspense fallback={<CardSkeleton height={140} label="Carregando fila de otimizações" />}>
-          <OptimizationQueuePanel />
-        </Suspense>
+        <SectionErrorBoundary section="telemetry.OptimizationQueuePanel" label="fila de otimizações">
+          <Suspense fallback={<CardSkeleton height={140} label="Carregando fila de otimizações" />}>
+            <OptimizationQueuePanel />
+          </Suspense>
+        </SectionErrorBoundary>
 
         <div className="grid grid-cols-2 gap-4">
           {[
@@ -306,34 +319,46 @@ export default function AdminTelemetriaPage() {
         </div>
 
         {/* Cold vs Warm path do isolate atual do crm-db-bridge (poll ?op=diag) */}
-        <Suspense fallback={<CardSkeleton height={260} label="Carregando snapshot cold/warm" />}>
-          <ColdVsWarmCrmCard />
-        </Suspense>
+        <SectionErrorBoundary section="telemetry.ColdVsWarmCrmCard" label="snapshot cold/warm do CRM">
+          <Suspense fallback={<CardSkeleton height={260} label="Carregando snapshot cold/warm" />}>
+            <ColdVsWarmCrmCard />
+          </Suspense>
+        </SectionErrorBoundary>
 
         {/* Estado do circuit-breaker do crm-db-bridge (poll ?op=breaker_status) */}
-        <Suspense fallback={<CardSkeleton height={200} label="Carregando estado do breaker" />}>
-          <BreakerStatusCard />
-        </Suspense>
+        <SectionErrorBoundary section="telemetry.BreakerStatusCard" label="estado do breaker">
+          <Suspense fallback={<CardSkeleton height={200} label="Carregando estado do breaker" />}>
+            <BreakerStatusCard />
+          </Suspense>
+        </SectionErrorBoundary>
 
         {/* Métricas das otimizações Onda 2 (cache hit rate + retries evitados) */}
-        <Suspense fallback={<GridCardsSkeleton count={3} height={100} />}>
-          <OptimizationMetricsCards />
-        </Suspense>
+        <SectionErrorBoundary section="telemetry.OptimizationMetricsCards" label="métricas de otimização">
+          <Suspense fallback={<GridCardsSkeleton count={3} height={100} />}>
+            <OptimizationMetricsCards />
+          </Suspense>
+        </SectionErrorBoundary>
 
         {/* Alerta de regressão de latência em listings de products (limit > 50) */}
-        <Suspense fallback={<BannerSkeleton />}>
-          <ProductsListingLatencyAlert />
-        </Suspense>
+        <SectionErrorBoundary section="telemetry.ProductsListingLatencyAlert" label="alerta de latência">
+          <Suspense fallback={<BannerSkeleton />}>
+            <ProductsListingLatencyAlert />
+          </Suspense>
+        </SectionErrorBoundary>
 
         {/* Comparativo antes vs depois do resolveProductsSelect (lightweight forçado em listings limit>50) */}
-        <Suspense fallback={<CardSkeleton height={160} label="Carregando comparativo" />}>
-          <ResolveProductsSelectComparisonCard />
-        </Suspense>
+        <SectionErrorBoundary section="telemetry.ResolveProductsSelectComparisonCard" label="comparativo de resolução">
+          <Suspense fallback={<CardSkeleton height={160} label="Carregando comparativo" />}>
+            <ResolveProductsSelectComparisonCard />
+          </Suspense>
+        </SectionErrorBoundary>
 
         {/* Gráficos segmentados por endpoint/timestamp/error_kind — escopo limit > 50 */}
-        <Suspense fallback={<ChartsSkeleton />}>
-          <HighLimitTelemetryCard />
-        </Suspense>
+        <SectionErrorBoundary section="telemetry.HighLimitTelemetryCard" label="telemetria de limites altos">
+          <Suspense fallback={<ChartsSkeleton />}>
+            <HighLimitTelemetryCard />
+          </Suspense>
+        </SectionErrorBoundary>
 
         {/* Stats */}
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
@@ -403,9 +428,11 @@ export default function AdminTelemetriaPage() {
           </Card>
         )}
 
-        <Suspense fallback={<ChartsSkeleton />}>
-          <TelemetryCharts rows={rows} timeFilter={timeFilter} />
-        </Suspense>
+        <SectionErrorBoundary section="telemetry.TelemetryCharts" label="gráficos de telemetria">
+          <Suspense fallback={<ChartsSkeleton />}>
+            <TelemetryCharts rows={rows} timeFilter={timeFilter} />
+          </Suspense>
+        </SectionErrorBoundary>
 
         {/* Filters */}
         <div className="flex items-center gap-3">
