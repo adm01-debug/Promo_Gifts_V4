@@ -230,7 +230,8 @@
     "e2e:cart-header": "playwright test e2e/visual/cart-header-actions.spec.ts --project=chromium-authed",
     "e2e:cart-header:update": "playwright test e2e/visual/cart-header-actions.spec.ts --project=chromium-authed --update-snapshots",
     "lint:config": "node scripts/check-eslint-config-parses.mjs",
-    "lint:lockfile": "node scripts/check-lockfile-sync.mjs"
+    "lint:lockfile": "node scripts/check-lockfile-sync.mjs",
+    "simulate:bi-degradation": "node scripts/simulate-bi-partial-degradation.mjs"
   },
   "lint-staged": {
     "src/**/*.{ts,tsx}": [
