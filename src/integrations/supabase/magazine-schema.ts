@@ -84,6 +84,9 @@ type MagazineItemInsertShape = Optional<
 >;
 
 export interface MagazineDatabase {
+  __InternalSupabase: {
+    PostgrestVersion: '14.5';
+  };
   public: {
     CompositeTypes: { [_ in never]: never };
     Enums: { [_ in never]: never };
