@@ -5,6 +5,7 @@
 import { useState, useMemo } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { PageSEO } from '@/components/seo/PageSEO';
+import { SectionErrorBoundary } from '@/components/errors/SectionErrorBoundary';
 import {
   Brain,
   Building2,
@@ -262,47 +263,78 @@ export default function BusinessIntelligencePage() {
           <BICategoryFocusProvider>
             <div className="space-y-4">
               {/* HERO — Health Score + insight cross-zona + CTA */}
-              <ClientHealthHero
-                clientId={clientId}
-                ramoAtividade={ramoAtividade}
-                clientName={clientName}
-                data-tour="health-hero"
-              />
-              <div data-tour="health-hero" />
-
-              <div data-tour="churn-banner">
-                <ChurnRiskBanner
-                  clientId={clientId}
-                  clientName={clientName}
-                  clientPhone={clientPhone}
-                />
-              </div>
-
-              {/* PROTAGONISTA — Eixo CATEGORIA: cliente × setor */}
-              <div data-tour="category-radar">
-                <ClientCategoryRadar
+              <SectionErrorBoundary section="bi.health_hero" label="o Health Score do cliente">
+                <ClientHealthHero
                   clientId={clientId}
                   ramoAtividade={ramoAtividade}
                   clientName={clientName}
+                  data-tour="health-hero"
                 />
-              </div>
+              </SectionErrorBoundary>
+              <div data-tour="health-hero" />
+
+              <SectionErrorBoundary section="bi.churn_banner" label="o alerta de churn">
+                <div data-tour="churn-banner">
+                  <ChurnRiskBanner
+                    clientId={clientId}
+                    clientName={clientName}
+                    clientPhone={clientPhone}
+                  />
+                </div>
+              </SectionErrorBoundary>
+
+              {/* PROTAGONISTA — Eixo CATEGORIA: cliente × setor */}
+              <SectionErrorBoundary section="bi.category_radar" label="o radar de categorias">
+                <div data-tour="category-radar">
+                  <ClientCategoryRadar
+                    clientId={clientId}
+                    ramoAtividade={ramoAtividade}
+                    clientName={clientName}
+                  />
+                </div>
+              </SectionErrorBoundary>
 
               <CategoryFocusBar />
 
-              <ClientOverview360 clientId={clientId} />
-              <div data-tour="orders-timeline">
-                <EnrichedOrdersTimeline clientId={clientId} />
-              </div>
+              <SectionErrorBoundary section="bi.overview_360" label="o panorama 360°">
+                <ClientOverview360 clientId={clientId} />
+              </SectionErrorBoundary>
 
-              <ClientVsIndustryComparison clientId={clientId} ramoAtividade={ramoAtividade} />
-              <ClientAffinityProducts clientId={clientId} />
-              <BundleSuggestions clientId={clientId} />
-              <IndustryTrendingProducts ramoAtividade={ramoAtividade} clientId={clientId} />
-              <div data-tour="seasonality">
-                <ClientSeasonalityHeatmap clientId={clientId} ramoAtividade={ramoAtividade} />
-              </div>
-              <ClientLookalikes clientId={clientId} ramoAtividade={ramoAtividade} />
-              <EmpiricalRecommendations ramoAtividade={ramoAtividade} clientId={clientId} />
+              <SectionErrorBoundary section="bi.orders_timeline" label="a linha do tempo de pedidos">
+                <div data-tour="orders-timeline">
+                  <EnrichedOrdersTimeline clientId={clientId} />
+                </div>
+              </SectionErrorBoundary>
+
+              <SectionErrorBoundary section="bi.client_vs_industry" label="o comparativo com o setor">
+                <ClientVsIndustryComparison clientId={clientId} ramoAtividade={ramoAtividade} />
+              </SectionErrorBoundary>
+
+              <SectionErrorBoundary section="bi.affinity" label="os produtos de afinidade">
+                <ClientAffinityProducts clientId={clientId} />
+              </SectionErrorBoundary>
+
+              <SectionErrorBoundary section="bi.bundles" label="as sugestões de bundle">
+                <BundleSuggestions clientId={clientId} />
+              </SectionErrorBoundary>
+
+              <SectionErrorBoundary section="bi.industry_trending" label="as tendências do setor">
+                <IndustryTrendingProducts ramoAtividade={ramoAtividade} clientId={clientId} />
+              </SectionErrorBoundary>
+
+              <SectionErrorBoundary section="bi.seasonality" label="a sazonalidade do cliente">
+                <div data-tour="seasonality">
+                  <ClientSeasonalityHeatmap clientId={clientId} ramoAtividade={ramoAtividade} />
+                </div>
+              </SectionErrorBoundary>
+
+              <SectionErrorBoundary section="bi.lookalikes" label="os clientes lookalike">
+                <ClientLookalikes clientId={clientId} ramoAtividade={ramoAtividade} />
+              </SectionErrorBoundary>
+
+              <SectionErrorBoundary section="bi.recommendations" label="as recomendações empíricas">
+                <EmpiricalRecommendations ramoAtividade={ramoAtividade} clientId={clientId} />
+              </SectionErrorBoundary>
             </div>
           </BICategoryFocusProvider>
         )}
