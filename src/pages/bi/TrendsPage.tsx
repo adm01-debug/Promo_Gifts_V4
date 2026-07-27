@@ -14,6 +14,7 @@ import { TrendingUp, Search, Package, Calendar, RefreshCw, Download } from 'luci
 import { format, subDays } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { PageSEO } from '@/components/seo/PageSEO';
+import { SectionErrorBoundary } from '@/components/errors/SectionErrorBoundary';
 import { ProductsTabContent, SearchesTabContent } from '@/pages/trends/TrendsCharts';
 import { TrendsKpiCards } from '@/pages/trends/TrendsKpiCards';
 import { UnmetDemandCard } from '@/components/intelligence/UnmetDemandCard';
@@ -487,22 +488,35 @@ export default function TrendsPage() {
         </div>
 
         {/* IA — só para managers */}
-        {canManage && <TrendsInsightsCard days={days} />}
+        {canManage && (
+          <SectionErrorBoundary section="trends-insights" label="os insights de IA">
+            <TrendsInsightsCard days={days} />
+          </SectionErrorBoundary>
+        )}
 
         {/* KPIs */}
-        <TrendsKpiCards current={kpiCurrent} previous={kpiPrevious} />
+        <SectionErrorBoundary section="trends-kpis" label="os indicadores">
+          <TrendsKpiCards current={kpiCurrent} previous={kpiPrevious} />
+        </SectionErrorBoundary>
 
         {/* Funil + Demanda Reprimida */}
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <ConversionFunnel days={days} />
-          <UnmetDemandCard days={days} />
+          <SectionErrorBoundary section="trends-funnel" label="o funil de conversão">
+            <ConversionFunnel days={days} />
+          </SectionErrorBoundary>
+          <SectionErrorBoundary section="trends-unmet-demand" label="a demanda reprimida">
+            <UnmetDemandCard days={days} />
+          </SectionErrorBoundary>
         </div>
 
         {/* Buscas Quentes — interesse real do mercado */}
-        <HotSearchesCard days={days} />
+        <SectionErrorBoundary section="trends-hot-searches" label="as buscas quentes">
+          <HotSearchesCard days={days} />
+        </SectionErrorBoundary>
 
         {/* Forecast Chart com toggles vs anterior + previsão + anomalias */}
-        <TrendsForecastChart
+        <SectionErrorBoundary section="trends-forecast" label="o gráfico de tendências">
+          <TrendsForecastChart
           dailyTrends={displayDaily?.current}
           previousTrends={displayDaily?.previous}
           isLoading={displayLoadingDaily}
@@ -510,12 +524,17 @@ export default function TrendsPage() {
           onToggleForecast={setShowForecast}
           showCompare={showCompare}
           onToggleCompare={setShowCompare}
-        />
+          />
+        </SectionErrorBoundary>
 
         {/* Heatmap + Top Categorias */}
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <TrendsHeatmap days={days} />
-          <TopCategoriesCard days={days} />
+          <SectionErrorBoundary section="trends-heatmap" label="o mapa de calor">
+            <TrendsHeatmap days={days} />
+          </SectionErrorBoundary>
+          <SectionErrorBoundary section="trends-top-categories" label="as principais categorias">
+            <TopCategoriesCard days={days} />
+          </SectionErrorBoundary>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
@@ -541,10 +560,20 @@ export default function TrendsPage() {
             </Button>
           </div>
           <TabsContent value="products" className="space-y-4">
-            <ProductsTabContent topProducts={displayProducts} isLoading={displayLoadingProducts} />
+            <SectionErrorBoundary section="trends-products-tab" label="os produtos em alta">
+              <ProductsTabContent
+                topProducts={displayProducts}
+                isLoading={displayLoadingProducts}
+              />
+            </SectionErrorBoundary>
           </TabsContent>
           <TabsContent value="searches" className="space-y-4">
-            <SearchesTabContent topSearches={displaySearches} isLoading={displayLoadingSearches} />
+            <SectionErrorBoundary section="trends-searches-tab" label="os termos mais buscados">
+              <SearchesTabContent
+                topSearches={displaySearches}
+                isLoading={displayLoadingSearches}
+              />
+            </SectionErrorBoundary>
           </TabsContent>
         </Tabs>
       </div>
