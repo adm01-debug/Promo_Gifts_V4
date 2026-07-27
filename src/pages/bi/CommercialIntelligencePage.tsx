@@ -14,6 +14,7 @@ import { CategoryRanking } from '@/components/intelligence/CategoryRanking';
 import { SupplierSales } from '@/components/intelligence/SupplierSales';
 import { GoldSyncBadge } from '@/components/intelligence/GoldSyncBadge';
 import { ZeroResultDiagnosisCallout } from '@/components/intelligence/ZeroResultDiagnosisCallout';
+import { SectionErrorBoundary } from '@/components/errors/SectionErrorBoundary';
 import { Brain, Clock } from 'lucide-react';
 import { useDebouncedFilters } from '@/hooks/common';
 import { useCommercialKPIs } from '@/hooks/intelligence';
@@ -204,21 +205,45 @@ export default function CommercialIntelligencePage() {
 
         {/* KPI Summary */}
         <div className="animate-fade-in" style={{ animationDelay: '50ms' }}>
-          <IntelligenceKPICards
-            days={filters.days}
-            categoryId={filters.categoryId}
-            supplierId={filters.supplierId}
-            productId={filters.productId}
-            categoryName={filters.categoryName}
-            supplierName={filters.supplierName}
-          />
+          <SectionErrorBoundary section="kpis" label="os indicadores">
+            <IntelligenceKPICards
+              days={filters.days}
+              categoryId={filters.categoryId}
+              supplierId={filters.supplierId}
+              productId={filters.productId}
+              categoryName={filters.categoryName}
+              supplierName={filters.supplierName}
+            />
+          </SectionErrorBoundary>
         </div>
 
         {/* Diagnóstico automático quando o painel retorna zero */}
         {showZeroDiagnosis && (
           <div className="animate-fade-in" style={{ animationDelay: '75ms' }}>
-            <ZeroResultDiagnosisCallout
-              enabled={showZeroDiagnosis}
+            <SectionErrorBoundary section="zero-diagnosis" label="o diagnóstico automático">
+              <ZeroResultDiagnosisCallout
+                enabled={showZeroDiagnosis}
+                days={filters.days}
+                categoryId={filters.categoryId}
+                supplierId={filters.supplierId}
+                productId={filters.productId}
+                categoryName={filters.categoryName}
+                supplierName={filters.supplierName}
+                productName={filters.productName}
+                onClearFilter={clearFilter}
+                onWidenWindow={widenWindow}
+                onApplySubstitute={applySubstitute}
+                canUndo={!!undoSnapshot}
+                onUndo={undoLastAction}
+              />
+            </SectionErrorBoundary>
+          </div>
+        )}
+
+        {/* AI Insights */}
+        <div className="animate-fade-in" style={{ animationDelay: '100ms' }}>
+          <SectionErrorBoundary section="ai-insights" label="os insights de IA">
+            <MarketIntelligenceInsightsCard
               days={filters.days}
               categoryId={filters.categoryId}
               supplierId={filters.supplierId}
@@ -226,51 +251,39 @@ export default function CommercialIntelligencePage() {
               categoryName={filters.categoryName}
               supplierName={filters.supplierName}
               productName={filters.productName}
-              onClearFilter={clearFilter}
-              onWidenWindow={widenWindow}
-              onApplySubstitute={applySubstitute}
-              canUndo={!!undoSnapshot}
-              onUndo={undoLastAction}
             />
-          </div>
-        )}
-
-        {/* AI Insights */}
-        <div className="animate-fade-in" style={{ animationDelay: '100ms' }}>
-          <MarketIntelligenceInsightsCard
-            days={filters.days}
-            categoryId={filters.categoryId}
-            supplierId={filters.supplierId}
-            productId={filters.productId}
-            categoryName={filters.categoryName}
-            supplierName={filters.supplierName}
-            productName={filters.productName}
-          />
+          </SectionErrorBoundary>
         </div>
 
         {/* 1. Market Intelligence */}
         <div className="animate-fade-in" style={{ animationDelay: '150ms' }}>
-          <MarketIntelligenceChart
-            days={filters.days}
-            supplierId={filters.supplierId}
-            productId={filters.productId}
-          />
+          <SectionErrorBoundary section="market-chart" label="a inteligência de mercado">
+            <MarketIntelligenceChart
+              days={filters.days}
+              supplierId={filters.supplierId}
+              productId={filters.productId}
+            />
+          </SectionErrorBoundary>
         </div>
 
         {/* 2. Product Ranking Search — main feature */}
         <div className="animate-fade-in" style={{ animationDelay: '200ms' }}>
-          <ProductRankingSearch />
+          <SectionErrorBoundary section="product-ranking" label="o ranking de produtos">
+            <ProductRankingSearch />
+          </SectionErrorBoundary>
         </div>
 
         {/* 3. Ranking de Categorias */}
         <div className="animate-fade-in" style={{ animationDelay: '250ms' }}>
-          <CategoryRanking
-            days={filters.days}
-            categoryId={filters.categoryId}
-            supplierId={filters.supplierId}
-            productId={filters.productId}
-            categoryName={filters.categoryName}
-          />
+          <SectionErrorBoundary section="category-ranking" label="o ranking de categorias">
+            <CategoryRanking
+              days={filters.days}
+              categoryId={filters.categoryId}
+              supplierId={filters.supplierId}
+              productId={filters.productId}
+              categoryName={filters.categoryName}
+            />
+          </SectionErrorBoundary>
         </div>
 
         {/* 4+5. Produtos em Alta + Vendas por Fornecedor */}
@@ -278,25 +291,31 @@ export default function CommercialIntelligencePage() {
           className="grid animate-fade-in grid-cols-1 gap-6 lg:grid-cols-2"
           style={{ animationDelay: '300ms' }}
         >
-          <TrendingProducts
-            days={filters.days}
-            categoryId={filters.categoryId}
-            supplierId={filters.supplierId}
-            productId={filters.productId}
-            categoryName={filters.categoryName}
-          />
-          <SupplierSales
-            days={filters.days}
-            categoryId={filters.categoryId}
-            supplierId={filters.supplierId}
-            productId={filters.productId}
-            categoryName={filters.categoryName}
-          />
+          <SectionErrorBoundary section="trending-products" label="os produtos em alta">
+            <TrendingProducts
+              days={filters.days}
+              categoryId={filters.categoryId}
+              supplierId={filters.supplierId}
+              productId={filters.productId}
+              categoryName={filters.categoryName}
+            />
+          </SectionErrorBoundary>
+          <SectionErrorBoundary section="supplier-sales" label="as vendas por fornecedor">
+            <SupplierSales
+              days={filters.days}
+              categoryId={filters.categoryId}
+              supplierId={filters.supplierId}
+              productId={filters.productId}
+              categoryName={filters.categoryName}
+            />
+          </SectionErrorBoundary>
         </div>
 
         {/* 5. Vendas Internas */}
         <div className="animate-fade-in" style={{ animationDelay: '350ms' }}>
-          <SalesOverviewChart days={filters.days} />
+          <SectionErrorBoundary section="sales-overview" label="as vendas internas">
+            <SalesOverviewChart days={filters.days} />
+          </SectionErrorBoundary>
         </div>
       </div>
     </>
