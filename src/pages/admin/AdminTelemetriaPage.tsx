@@ -109,6 +109,11 @@ const ColdVsWarmCrmCard = lazy(() =>
     default: m.ColdVsWarmCrmCard,
   })),
 );
+const DegradedBlocksCard = lazy(() =>
+  import('@/components/admin/telemetry/DegradedBlocksCard').then((m) => ({
+    default: m.DegradedBlocksCard,
+  })),
+);
 const BreakerStatusCard = lazy(() =>
   import('@/components/admin/telemetry/BreakerStatusCard').then((m) => ({
     default: m.BreakerStatusCard,
@@ -216,6 +221,12 @@ export default function AdminTelemetriaPage() {
         {/* Saúde da Aplicação — KPIs 4xx/5xx por rota, webhooks, latência por edge fn + lookup por request-id */}
         <Suspense fallback={<CardSkeleton height={520} label="Carregando saúde da aplicação" />}>
           <AppHealthDashboard />
+        </Suspense>
+
+        {/* Blocos analíticos degradados (RLS / relação ausente / quota) — eventos
+             `intelligence_block_degraded` coletados na sessão atual. */}
+        <Suspense fallback={<CardSkeleton height={220} label="Carregando blocos degradados" />}>
+          <DegradedBlocksCard />
         </Suspense>
 
         {/* Onda 21 — Painel live in-memory da superfície invokeEdgeSafe (sessão atual) */}
