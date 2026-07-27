@@ -31,6 +31,7 @@ import { useRuptureAlerts } from '@/hooks/stock/useRuptureAlerts';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useListUrlState } from '@/hooks/common/useListUrlState';
 import { isFeatureEnabled } from '@/lib/feature-flags';
+import { SectionErrorBoundary } from '@/components/errors/SectionErrorBoundary';
 
 const SupplierReliabilityTab = lazyWithRetry(() =>
   import('./supplier-reliability/SupplierReliabilityTab').then((m) => ({
@@ -501,9 +502,14 @@ export function StockDashboard() {
 
         {reliabilityFlag && (
           <TabsContent value="reliability" className="space-y-5">
-            <Suspense fallback={<Skeleton className="h-64 w-full" />}>
-              <SupplierReliabilityTab />
-            </Suspense>
+            <SectionErrorBoundary
+              section="stock-supplier-reliability"
+              label="a confiabilidade de fornecedores"
+            >
+              <Suspense fallback={<Skeleton className="h-64 w-full" />}>
+                <SupplierReliabilityTab />
+              </Suspense>
+            </SectionErrorBoundary>
           </TabsContent>
         )}
 
@@ -691,12 +697,14 @@ export function StockDashboard() {
           )}
           {/* Scroll é gerenciado internamente pela tabela para preservar o sticky
               do toolbar (busca + paginação) e do <thead>. */}
-          <VariantStockTable
-            products={productStocks}
-            isLoading={isFetching}
-            targetQuantity={filters.minQuantityNeeded}
-            ruptureFilterActive={isRuptureRiskActive}
-          />
+          <SectionErrorBoundary section="stock-variant-table" label="a tabela de estoque">
+            <VariantStockTable
+              products={productStocks}
+              isLoading={isFetching}
+              targetQuantity={filters.minQuantityNeeded}
+              ruptureFilterActive={isRuptureRiskActive}
+            />
+          </SectionErrorBoundary>
         </CardContent>
       </Card>
 
@@ -716,9 +724,14 @@ export function StockDashboard() {
           Painel de Risco do Fornecedor
         </button>
         {riskPanelOpen && (
-          <Suspense fallback={<Skeleton className="h-48 w-full" />}>
-            <SupplierRiskPanel products={allProductStocks} />
-          </Suspense>
+          <SectionErrorBoundary
+            section="stock-supplier-risk"
+            label="o painel de risco do fornecedor"
+          >
+            <Suspense fallback={<Skeleton className="h-48 w-full" />}>
+              <SupplierRiskPanel products={allProductStocks} />
+            </Suspense>
+          </SectionErrorBoundary>
         )}
       </div>
 
