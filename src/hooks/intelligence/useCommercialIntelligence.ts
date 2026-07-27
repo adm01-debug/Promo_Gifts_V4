@@ -13,6 +13,16 @@ import {
   aggregateSegments,
   aggregateClients,
 } from '@/hooks/intelligence/intelligenceHelpers';
+import { degradeOrThrow } from '@/lib/intelligence/degradation';
+
+/** Tipos derivados dos agregadores — usados como fallback degradado. */
+type ClientAggregate = ReturnType<typeof aggregateClients>[number];
+interface SupplierSalesRow {
+  supplierName: string;
+  orderCount: number;
+  revenue: number;
+  productCount: number;
+}
 
 // Re-export types
 export type { FilterParams } from '@/hooks/intelligence/intelligenceHelpers';
