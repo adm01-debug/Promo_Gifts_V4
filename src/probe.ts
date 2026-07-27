@@ -1,6 +1,4 @@
-import type { SupabaseClient } from '@supabase/supabase-js';
+import type { GenericSchema } from '@supabase/postgrest-js/dist/cjs/types';
 import type { MagazineDatabase } from '@/integrations/supabase/magazine-schema';
-type C = SupabaseClient<MagazineDatabase>;
-declare const c: C;
-const q = c.from('magazines').insert({ owner_id: 'x', title: 't' });
-export type Q = typeof q;
+type A = MagazineDatabase['public'] extends GenericSchema ? true : false;
+export const a: A = true;
