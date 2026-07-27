@@ -85,9 +85,9 @@ type MagazineItemInsertShape = Optional<
 
 export interface MagazineDatabase {
   public: {
-    CompositeTypes: Record<string, never>;
-    Enums: Record<string, never>;
-    Functions: Record<string, never>;
+    CompositeTypes: { [_ in never]: never };
+    Enums: { [_ in never]: never };
+    Functions: { [_ in never]: never };
     Tables: {
       magazine_items: {
         Insert: MagazineItemInsertShape;
@@ -102,7 +102,7 @@ export interface MagazineDatabase {
         Update: Partial<MagazineRowShape>;
       };
     };
-    Views: Record<string, never>;
+    Views: { [_ in never]: never };
   };
 }
 
