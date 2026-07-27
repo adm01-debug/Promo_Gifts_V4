@@ -14,6 +14,7 @@ import { CategoryRanking } from '@/components/intelligence/CategoryRanking';
 import { SupplierSales } from '@/components/intelligence/SupplierSales';
 import { GoldSyncBadge } from '@/components/intelligence/GoldSyncBadge';
 import { ZeroResultDiagnosisCallout } from '@/components/intelligence/ZeroResultDiagnosisCallout';
+import { SectionErrorBoundary } from '@/components/errors/SectionErrorBoundary';
 import { Brain, Clock } from 'lucide-react';
 import { useDebouncedFilters } from '@/hooks/common';
 import { useCommercialKPIs } from '@/hooks/intelligence';
