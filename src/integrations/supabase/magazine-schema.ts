@@ -23,7 +23,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import type { Database, Json } from '@/integrations/supabase/types';
 
-export interface MagazineRowShape {
+export type MagazineRowShape = {
   archived_at: string | null;
   branding: Json;
   content_settings: Json;
@@ -41,9 +41,9 @@ export interface MagazineRowShape {
   title: string;
   updated_at: string;
   view_count: number | null;
-}
+};
 
-export interface MagazineItemRowShape {
+export type MagazineItemRowShape = {
   created_at: string;
   id: string;
   magazine_id: string;
@@ -54,7 +54,7 @@ export interface MagazineItemRowShape {
   product_snapshot: Json;
   updated_at: string;
   variant_color_name: string | null;
-}
+};
 
 type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
