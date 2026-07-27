@@ -13,6 +13,7 @@
  * o SectionErrorBoundary local isole o bloco.
  */
 import { logger } from '@/lib/logger';
+import { recordDegradation } from '@/lib/intelligence/degradationRegistry';
 
 export type DegradationReason =
   | 'missing_relation'
@@ -85,10 +86,9 @@ export function degradeOrThrow<T>(error: unknown, scope: string, fallback: T): T
   if (!reason) throw error;
 
   const e = error as SupabaseLikeError;
-  logger.warn('intelligence_block_degraded', {
-    scope,
-    reason,
-    code: e.code ?? null,
-  });
+  const code = typeof e.code === 'string' ? e.code : null;
+  logger.warn('intelligence_block_degraded', { scope, reason, code });
+  // Coletor in-memory consumido pelo painel /admin/telemetria.
+  recordDegradation({ scope, reason, code });
   return fallback;
 }
