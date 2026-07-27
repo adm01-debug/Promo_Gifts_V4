@@ -111,8 +111,4 @@ export interface MagazineDatabase {
  * O cast é intencional e centralizado neste arquivo (nenhum `as any` espalhado
  * pelo serviço).
  */
-export const magazineDb = supabase as unknown as SupabaseClient<
-  MagazineDatabase,
-  'public',
-  MagazineDatabase['public']
->;
+export const magazineDb = supabase as unknown as SupabaseClient<MagazineDatabase>;
