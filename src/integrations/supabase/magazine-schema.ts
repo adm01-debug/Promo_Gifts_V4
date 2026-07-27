@@ -21,7 +21,7 @@
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import type { Json } from '@/integrations/supabase/types';
+import type { Database, Json } from '@/integrations/supabase/types';
 
 export interface MagazineRowShape {
   archived_at: string | null;
@@ -83,15 +83,13 @@ type MagazineItemInsertShape = Optional<
   'created_at' | 'id' | 'overrides' | 'page_number' | 'updated_at' | 'variant_color_name'
 >;
 
-export interface MagazineDatabase {
-  __InternalSupabase: {
-    PostgrestVersion: '14.5';
-  };
-  public: {
-    CompositeTypes: { [_ in never]: never };
-    Enums: { [_ in never]: never };
-    Functions: { [_ in never]: never };
-    Tables: {
+/**
+ * Deriva do `Database` real: preserva Functions/Enums/Views existentes e apenas
+ * ACRESCENTA as tabelas de revista que sumiram na regeneração.
+ */
+export type MagazineDatabase = Omit<Database, 'public'> & {
+  public: Omit<Database['public'], 'Tables'> & {
+    Tables: Database['public']['Tables'] & {
       magazine_items: {
         Insert: MagazineItemInsertShape;
         Relationships: [];
@@ -105,9 +103,8 @@ export interface MagazineDatabase {
         Update: Partial<MagazineRowShape>;
       };
     };
-    Views: { [_ in never]: never };
   };
-}
+};
 
 /**
  * Mesmo client em runtime — apenas com a visão de tipos das tabelas de revista.
