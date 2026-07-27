@@ -382,7 +382,7 @@ export function useSegmentAnalysis(
           .select('order_id')
           .gte('created_at', since)
           .in('product_id', pids);
-        if (oiErr) throw oiErr;
+        if (oiErr) return degradeOrThrow(oiErr, 'segments.order_items', [] as SegmentData[]);
         const orderIds = [
           ...new Set((oi || []).map((o) => o.order_id).filter(Boolean)),
         ] as string[];
@@ -394,7 +394,7 @@ export function useSegmentAnalysis(
           .from('orders')
           .select('id, client_company, total')
           .in('id', orderIds.slice(0, 200));
-        if (ordersErr) throw ordersErr;
+        if (ordersErr) return degradeOrThrow(ordersErr, 'segments.orders', [] as SegmentData[]);
         return aggregateSegments(orders || []);
       }
       // BUG-COMMERCIALINTEL-SEGMENTS-ALLORDERS-SELECT-SILENT-FAIL FIX
@@ -403,7 +403,7 @@ export function useSegmentAnalysis(
         .from('orders')
         .select('client_company, total')
         .gte('created_at', since);
-      if (ordersErr) throw ordersErr;
+      if (ordersErr) return degradeOrThrow(ordersErr, 'segments.orders_all', [] as SegmentData[]);
       return aggregateSegments(orders || []);
     },
     staleTime: 1000 * 60 * 5,
@@ -539,7 +539,8 @@ export function useTopClients(
           .select('order_id, quantity, unit_price')
           .gte('created_at', since)
           .in('product_id', pids);
-        if (oiErr) throw oiErr;
+        if (oiErr)
+          return degradeOrThrow(oiErr, 'top_clients.order_items', [] as ClientAggregate[]);
         const orderIds = [
           ...new Set((oi || []).map((o) => o.order_id).filter(Boolean)),
         ] as string[];
@@ -550,7 +551,8 @@ export function useTopClients(
           .from('orders')
           .select('id, client_name, client_company, total')
           .in('id', orderIds.slice(0, 200));
-        if (ordersFilteredErr) throw ordersFilteredErr;
+        if (ordersFilteredErr)
+          return degradeOrThrow(ordersFilteredErr, 'top_clients.orders', [] as ClientAggregate[]);
         return aggregateClients(orders || []);
       }
       // BUG-TOPCLIENTS-ALLORDERS-SELECT-SILENT-FAIL FIX
@@ -559,7 +561,8 @@ export function useTopClients(
         .from('orders')
         .select('client_name, client_company, total')
         .gte('created_at', since);
-      if (ordersErr) throw ordersErr;
+      if (ordersErr)
+        return degradeOrThrow(ordersErr, 'top_clients.orders_all', [] as ClientAggregate[]);
       return aggregateClients(orders || []);
     },
     staleTime: 1000 * 60 * 5,
@@ -597,7 +600,8 @@ export function useCategoryRanking(
             .from('order_items')
             .select('product_id, quantity, unit_price')
             .gte('created_at', since);
-      if (orderErr) throw orderErr;
+      if (orderErr)
+        return degradeOrThrow(orderErr, 'category_ranking.order_items', [] as CategoryRankingItem[]);
 
       const { fetchPromobrindProducts } = await import('@/lib/external-db');
       const products = await fetchPromobrindProducts({ limit: 5000 });
@@ -698,7 +702,8 @@ export function useSupplierSales(
             .from('order_items')
             .select('product_id, product_name, quantity, unit_price')
             .gte('created_at', since);
-      if (orderErr) throw orderErr;
+      if (orderErr)
+        return degradeOrThrow(orderErr, 'supplier_sales.order_items', [] as SupplierSalesRow[]);
       if (!orderItems?.length) return [];
 
       const { fetchPromobrindProducts } = await import('@/lib/external-db');
