@@ -18,6 +18,12 @@
  * Fonte da verdade das colunas: BD Gold `doufsxqlfjyuvxuezpln`
  * (migrações `supabase/migrations/*magazine*`). Qualquer divergência deve ser
  * corrigida AQUI, nunca no `types.ts`.
+ *
+ * ATENÇÃO: os shapes abaixo DEVEM ser `type` (não `interface`). O contrato
+ * `GenericTable` do postgrest-js exige `Row/Insert/Update extends
+ * Record<string, unknown>`, e interfaces não possuem index signature implícita
+ * — usar `interface` faz o schema silenciosamente colapsar para `never` e todas
+ * as queries voltam a falhar na tipagem.
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
