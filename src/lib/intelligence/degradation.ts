@@ -14,6 +14,8 @@
  */
 import { logger } from '@/lib/logger';
 import { recordDegradation } from '@/lib/intelligence/degradationRegistry';
+import { sinkDegradation } from '@/lib/intelligence/degradationSink';
+
 
 export type DegradationReason =
   | 'missing_relation'
@@ -90,5 +92,8 @@ export function degradeOrThrow<T>(error: unknown, scope: string, fallback: T): T
   logger.warn('intelligence_block_degraded', { scope, reason, code });
   // Coletor in-memory consumido pelo painel /admin/telemetria.
   recordDegradation({ scope, reason, code });
+  // Espelho cross-sessão em `frontend_telemetry` (com throttle por bloco/motivo).
+  sinkDegradation({ scope, reason, code });
   return fallback;
 }
+
