@@ -1,26 +1,26 @@
 # Graph Report - promo-gifts-v4  (2026-08-09)
 
 ## Corpus Check
-- 6323 files · ~4,275,604 words
+- 6323 files · ~4,275,620 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 33092 nodes · 40459 edges · 5073 communities (3754 shown, 1319 thin omitted)
+- 33090 nodes · 40457 edges · 5071 communities (3756 shown, 1315 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 335 edges (avg confidence: 0.66)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `f4bd399d`
+- Built from commit: `4126d7a5`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - ALL_IN_ONE.sql
-- gotoAndSettle
+- nav.ts
 - scripts
 - helpers/auth.ts
 - cart-mock.ts
-- fixtures/selectors.ts
+- gotoAndSettle
 - getCorsHeaders
 - cors.ts
 - contracts/index.ts
@@ -207,7 +207,7 @@
 - mockupGenerationService.ts
 - raw-row.adapter.ts
 - useMagazineGoldImport.test.ts
-- public.fn_aggregate_stock_daily
+- public.debug_image_type
 - Auditoria de Front-end via MCP — promo-gifts-v4
 - Manual de Migração — PARTE 2 (Fases 3 a 16)
 - check-seller-scope.mjs
@@ -254,7 +254,7 @@
 - ProposalProductTable.tsx
 - ProductColorSelector.tsx
 - ProductPersonalizationRules.tsx
-- TTLCache
+- ColorSwatch.ssot.test.tsx
 - GlobalSearchPalette.tsx
 - useMockupTechniques.ts
 - novelty-core.ts
@@ -397,7 +397,7 @@
 - Bugs Encontrados e Corrigidos
 - 📚 Guia de Uso dos Hooks
 - Bugs — Detalhe Completo
-- s
+- ExpectedKeysMatchPanel.tsx
 - Plano de Automação de Ingestão (n8n) — Arquitetura Medallion
 - Melhorias Executadas
 - Relatório de Testes V5 — SM De→Para Completo
@@ -642,7 +642,7 @@
 - safeToast.ts
 - bridgeCallMetrics.ts
 - CartsListPage.tsx
-- CartHeaderExhaustiveFuzz.test.ts
+- t
 - quote-builder-freight-block-fuzz.test.tsx
 - useQuotesListPage.expiring.test.ts
 - tecnica-unificada.ts
@@ -989,7 +989,7 @@
 - check-collapse-baselines.mjs
 - route-test-matrix.mjs
 - tsc-baseline-generate.mjs
-- ExpectedKeysMatchPanel.tsx
+- 22-header-sticky.spec.ts
 - AnomalyCards.tsx
 - ClientHealthHero.tsx
 - CartLimitExhaustive.test.tsx
@@ -1152,11 +1152,11 @@
 - SidebarNavGroup.harmony.test.tsx
 - fixtures/index.ts
 - pdfContrastReport.test.ts
-- ProductCardImage.tsx
+- product_variants
 - ProductIntelligence.tsx
 - ProductQuickActions.tsx
 - RecentReplenishmentsWidget.tsx
-- ColorSwatch.ssot.test.tsx
+- supabase/types.ts
 - breadcrumb.tsx
 - LoadingButton.tsx
 - drawer.tsx
@@ -1305,7 +1305,7 @@
 - PersonalizationConfig.tsx
 - Breadcrumbs.tsx
 - PdfGenerationModule.test.ts
-- RelatedProducts.tsx
+- public.fn_promote_padronizacao
 - swatchSizing.ts
 - QuickQuoteFAB.tsx
 - QuoteBuilderSummaryAlignment.fuzz.test.ts
@@ -1691,7 +1691,7 @@
 - Fonte 5 — Category Pages Scraping
 - Fonte 4 — Scraping do site `xbzbrindes.com.br`
 - Testing Guide
-- session-recovery.spec.ts
+- flows/p0/_mocks.ts
 - color-swatch-selection.spec.ts
 - 03e-quickview-actions-order.spec.ts
 - 04h-quote-summary-reorder.spec.ts
@@ -1998,11 +1998,11 @@
 - quickview-dataset.ts
 - magazine-viewer.spec.ts
 - product-colors-full.spec.ts
-- quote-item-detail-sheet-a11y.spec.ts
-- quote-item-images-aspect-ratio.spec.ts
-- quote-item-images-cls.spec.ts
-- quote-row-menu-width.spec.ts
-- quote-view-overflow-regression.spec.ts
+- table
+- ProductCategoryBadges.tsx
+- forms.ts
+- 🎯 **JUSTIFICATIVA DA DECISÃO:**
+- quote-freight-block.spec.ts
 - confirm-dialog-height-26px.spec.ts
 - date-picker-field-visual.spec.ts
 - magazine-ring-visual.spec.ts
@@ -2362,7 +2362,7 @@
 - 🔔 9. NOTIFICAÇÕES
 - 📝 Tom de comunicação esperado
 - 🚀 Próximos passos sugeridos (em ordem)
-- 🎓 **BOAS PRÁTICAS:**
+- integration/webhook-inbound.test.ts
 - Prompt Exaustivo — Implementação do Módulo Magazine no BD Canônico Gold
 - 14. Exemplo Real — Preços de Personalização `51102`
 - 5. Personalização — Localizações e Técnicas
@@ -2732,7 +2732,7 @@
 - ai-features.test.ts
 - auth-security.test.ts
 - integration/cnpj-lookup.test.ts
-- connections.test.ts
+- clsx
 - data-ops.test.ts
 - receive-crm-callback.guards.test.ts
 - parseAiResponse.test.ts
@@ -2765,7 +2765,7 @@
 - price-freshness-timezone.test.ts
 - utils/product-sorting.test.ts
 - route-test-matrix.md
-- canvas-confetti
+- fuse.js
 - cmdk
 - date-fns
 - @dnd-kit/core
@@ -2802,7 +2802,7 @@
 - @fontsource/dm-serif-display
 - @fontsource/great-vibes
 - @fontsource/inter
-- @fontsource/playfair-display
+- @radix-ui/react-avatar
 - framer-motion
 - fix-category-descendants-gap3.md
 - globals
@@ -2826,9 +2826,9 @@
 - qrcode.react
 - @radix-ui/react-accordion
 - @radix-ui/react-alert-dialog
-- @radix-ui/react-aspect-ratio
-- @radix-ui/react-checkbox
-- @radix-ui/react-collapsible
+- @radix-ui/react-hover-card
+- @radix-ui/react-toggle
+- remark-gfm
 - @radix-ui/react-dialog
 - @radix-ui/react-dropdown-menu
 - @radix-ui/react-label
@@ -2850,14 +2850,12 @@
 - react-hook-form
 - react-hot-toast
 - react-markdown
-- react-router
 - react-router-dom
 - recharts
 - rollup
 - rollup-plugin-visualizer
 - @sentry/react
 - sonner
-- @supabase/supabase-js
 - tailwind-merge
 - @tanstack/react-query
 - @tanstack/react-virtual
@@ -3392,27 +3390,27 @@
 ## Surprising Connections (you probably didn't know these)
 - `readViewModeSnapshot()` --indirect_call--> `localStorage()`  [INFERRED]
   e2e/carrinhos/viewmode-navigation-persistence.spec.ts → scripts/qa/smoke-cart-view-mode-prefs.ts
+- `expectVisibleAny()` --indirect_call--> `s()`  [INFERRED]
+  e2e/helpers/forms.ts → src/tests/PR1318.exhaustive.test.ts
 - `performTechnicalAudit()` --indirect_call--> `table()`  [INFERRED]
   src/audit-debug.ts → e2e/quotes/quote-items-personalization-column.spec.ts
 - `PromptBank()` --indirect_call--> `key()`  [INFERRED]
   src/components/magic-up/PromptBank.tsx → scripts/qa/validate-quote-conditions-workflows.mjs
 - `QuoteAutoSave()` --indirect_call--> `key()`  [INFERRED]
   src/components/quotes/QuoteAutoSave.tsx → scripts/qa/validate-quote-conditions-workflows.mjs
-- `ClientHealthHero()` --indirect_call--> `t()`  [INFERRED]
-  src/components/bi/ClientHealthHero.tsx → supabase/functions/log-login-attempt/index_test.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (5073 total, 1319 thin omitted)
+## Communities (5071 total, 1315 thin omitted)
 
 ### Community 0 - "ALL_IN_ONE.sql"
 Cohesion: 0.00
 Nodes (39): analytics_events, audit_trail, cache_entries, feature_flags, notification_templates, optimization_logs, public.analytics_events, public.audit_log (+31 more)
 
-### Community 2 - "gotoAndSettle"
+### Community 2 - "nav.ts"
 Cohesion: 0.02
-Nodes (97): VIEWPORTS, BAD_JWT_BODY, VIEWPORTS, VIEWPORTS, ROUTES, Case, CASES, ROUTES (+89 more)
+Nodes (67): VIEWPORTS, BAD_JWT_BODY, VIEWPORTS, VIEWPORTS, ROUTES, Case, CASES, ROUTES (+59 more)
 
 ### Community 3 - "scripts"
 Cohesion: 0.01
@@ -3420,15 +3418,15 @@ Nodes (229): scripts, audit:credentials, audit:credentials:all, audit:credential
 
 ### Community 4 - "helpers/auth.ts"
 Cohesion: 0.02
-Nodes (71): setup(), VIEWPORTS, VIEWPORTS, DPRS, VIEWPORTS, setup(), VIEWPORTS, setup() (+63 more)
+Nodes (72): setup(), VIEWPORTS, VIEWPORTS, DPRS, VIEWPORTS, setup(), VIEWPORTS, setup() (+64 more)
 
 ### Community 5 - "cart-mock.ts"
-Cohesion: 0.02
-Nodes (107): bootWithCarts(), STALE_DRAFT, STALE_DRAFT, VIEWPORTS, buildMixedCarts(), buildCarts(), buildCarts(), bootstrap() (+99 more)
-
-### Community 6 - "fixtures/selectors.ts"
 Cohesion: 0.03
-Nodes (75): RULESET, NON_DEFAULT_SORTS, SORT_VALUES, SortValue, test, PageSlug, Sel, TID_PREFIX() (+67 more)
+Nodes (106): bootWithCarts(), STALE_DRAFT, STALE_DRAFT, VIEWPORTS, buildMixedCarts(), buildCarts(), buildCarts(), bootstrap() (+98 more)
+
+### Community 6 - "gotoAndSettle"
+Cohesion: 0.02
+Nodes (84): RULESET, NON_DEFAULT_SORTS, SORT_VALUES, SortValue, test, PageSlug, Sel, TID_PREFIX() (+76 more)
 
 ### Community 7 - "getCorsHeaders"
 Cohesion: 0.04
@@ -3471,8 +3469,8 @@ Cohesion: 0.05
 Nodes (17): SAMPLE_PRODUCTS, PRODUCT_LIST, AuthedRouteSpec, buildAuthedRouteSuite(), buildPublicTokenSuite(), buildRouteMeta(), label(), PublicTokenRouteSpec (+9 more)
 
 ### Community 17 - "products"
-Cohesion: 0.04
-Nodes (76): public.mockup_approval_links, public.calculate_seo_score(), public.classify_pendrive(), public.consolidate_variant_stock(), public.fn_apply_asia_properties_to_product(), public.fn_auto_link_product_to_color_categories(), public.fn_auto_set_same_supplier(), public.fn_backfill_product_attributes_safe() (+68 more)
+Cohesion: 0.05
+Nodes (58): public.mockup_approval_links, public.calculate_seo_score(), public.fn_apply_asia_properties_to_product(), public.fn_auto_set_same_supplier(), public.fn_auto_vincular_cor_variante(), public.fn_backfill_product_attributes_safe(), public.fn_backfill_product_categories(), public.fn_calculate_health_score() (+50 more)
 
 ### Community 18 - "QuotesStatusChips.tsx"
 Cohesion: 0.05
@@ -3499,7 +3497,7 @@ Cohesion: 0.05
 Nodes (46): cleanExpiredFlag(), buildCredsHealthSnapshot(), BodySchema, corsHeadersRef, CHECKERS, CheckResult, DatabaseChecker, ExternalDatabaseChecker (+38 more)
 
 ### Community 24 - "DiscountApprovalPO"
-Cohesion: 0.06
+Cohesion: 0.07
 Nodes (20): requireAdmin(), decideViaDetail(), BADGE_SEL, SessionInfo, WIDGET_SEL, DiscountApprovalPO, DiscountStatus, PageSeedOptions (+12 more)
 
 ### Community 25 - "QuoteItemsTable.tsx"
@@ -3575,8 +3573,8 @@ Cohesion: 0.08
 Nodes (45): public.achievements, public.analytics_events, public.audit_log, public.bitrix_clients, public.categories, public.client_contacts, public.client_notes, public.collection_products (+37 more)
 
 ### Community 43 - "categories"
-Cohesion: 0.04
-Nodes (39): analytics.mv_product_intelligence, categories, business, productivity, shopping, public.classify_bolsa_termica(), public.classify_bone(), public.classify_fone_ouvido() (+31 more)
+Cohesion: 0.05
+Nodes (34): analytics.mv_product_intelligence, categories, business, productivity, shopping, public.classify_bolsa_termica(), public.classify_bone(), public.classify_fone_ouvido() (+26 more)
 
 ### Community 44 - "invokeTelemetrySink.ts"
 Cohesion: 0.07
@@ -3624,7 +3622,7 @@ Nodes (27): KeyboardHelpOverlay, Props, Shortcut, SHORTCUTS, DeferredPreview, Ma
 
 ### Community 55 - "mockEdgeFunctionFetch"
 Cohesion: 0.09
-Nodes (21): VALID_PAYLOAD, CATEGORIES_RESPONSE, CT, VALID, AUTH, CT, PRODUCT_CREATED_PAYLOAD, PRODUCT_UPDATED_PAYLOAD (+13 more)
+Nodes (21): VALID_PAYLOAD, CATEGORIES_RESPONSE, AUTH, CT, CT, VALID, AUTH, CT (+13 more)
 
 ### Community 56 - "VariantStockTable.tsx"
 Cohesion: 0.07
@@ -3711,8 +3709,8 @@ Cohesion: 0.05
 Nodes (36): 1.1 Top riscos (ação imediata), 1.2 Scorecard por categoria, 1. Sumário Executivo, 2. Metodologia & Escopo, 3.A Segurança, 3.B Banco de Dados — Modelagem & Performance, 3.C Migrations, Drift & Reprodutibilidade, 3.D Integrações Externas (+28 more)
 
 ### Community 77 - "supplier_products_raw"
-Cohesion: 0.06
-Nodes (36): produto_ramo_atividade, ramo_atividade, ramo_atividade_filho, recommended, tags, public.debug_automations(), public.fn_auto_link_feminine_color(), public.fn_auto_link_properties() (+28 more)
+Cohesion: 0.10
+Nodes (22): public.fn_auto_link_properties(), public.fn_auto_link_tags(), public.fn_batch_populate_packing(), public.fn_expire_novelties_with_stats(), public.fn_extract_asia_variants(), public.fn_find_material_type_id(), public.fn_is_thermal_product(), public.fn_populate_novelties_from_supplier() (+14 more)
 
 ### Community 78 - "auth/index.ts"
 Cohesion: 0.09
@@ -3771,8 +3769,8 @@ Cohesion: 0.06
 Nodes (34): 1. 465 Performance Lints, 2. Query `system_settings` sem cache no Frontend, 3. Tabelas de Log sem TTL/Particionamento, 4. 23 Funções Fazendo o Mesmo Trabalho (`updated_at`), 5. Auth Connection Strategy, 🚨 COLAPSO #1 — CASCADE DE TRIGGERS (ROOT CAUSE PRINCIPAL), 🚨 COLAPSO #2 — 401 ÍNDICES NÃO UTILIZADOS, 🚨 COLAPSO #3 — 804 SECURITY LINTS (+26 more)
 
 ### Community 92 - "client.ts"
-Cohesion: 0.07
-Nodes (26): performTechnicalAudit(), lovable, lovableAuth, SignInOptions, authLog, envKey, envUrl, envUrlIsValid (+18 more)
+Cohesion: 0.10
+Nodes (16): performTechnicalAudit(), lovable, lovableAuth, SignInOptions, authLog, envKey, envUrl, envUrlIsValid (+8 more)
 
 ### Community 93 - "CompareTableView.tsx"
 Cohesion: 0.07
@@ -3919,8 +3917,8 @@ Cohesion: 0.09
 Nodes (26): BRIDGE_ALIASES, COLUMN_MAP, dbInvoke(), dbInvokeSingle(), dbInvokeWrite(), FTS_TABLES, InvokeOptions, InvokeResult (+18 more)
 
 ### Community 129 - "v_system_alerts"
-Cohesion: 0.07
-Nodes (28): ai_queue_stale, cron_alerts, import_stalled, locked_by_residual, products_no_image, products_no_ncm, stale_sync, stock_critical (+20 more)
+Cohesion: 0.11
+Nodes (18): ai_queue_stale, cron_alerts, import_stalled, locked_by_residual, products_no_image, products_no_ncm, stale_sync, stock_critical (+10 more)
 
 ### Community 130 - "4. Gaps Estruturais (P1)"
 Cohesion: 0.07
@@ -4001,7 +3999,7 @@ Nodes (17): categorizeImages(), CDN_VARIANTS, CdnVariant, COLOR_SPECIFIC_TYPES, 
 
 ### Community 148 - "public.fn_claim_ai_description_batch"
 Cohesion: 0.09
-Nodes (28): public.create_material_with_equivalence(), public.fn_auto_link_eco(), public.fn_auto_link_eco_material(), public.fn_auto_vincular_cor_variante(), public.fn_backfill_eco_links(), public.fn_backfill_feminine_links(), public.fn_batch_extract_materials_from_name(), public.fn_claim_ai_description_batch() (+20 more)
+Nodes (26): public.create_material_with_equivalence(), public.fn_auto_link_eco(), public.fn_auto_link_eco_material(), public.fn_backfill_eco_links(), public.fn_backfill_feminine_links(), public.fn_batch_extract_materials_from_name(), public.fn_claim_ai_description_batch(), public.fn_complete_ai_description() (+18 more)
 
 ### Community 149 - "personalization-payloads.ts"
 Cohesion: 0.10
@@ -4179,9 +4177,9 @@ Nodes (23): adaptFaixaPrecoRow(), adaptFaixaPrecoRows(), adaptPrintAreaTechnique
 Cohesion: 0.11
 Nodes (19): MagazineCardThumbnail, CapturedLog, capturedLogs, fetchCalls, fetchMock, FetchReply, importReply, makeResponse() (+11 more)
 
-### Community 193 - "public.fn_aggregate_stock_daily"
-Cohesion: 0.09
-Nodes (25): public.check_login_rate_limit(), public.check_video_health(), public.debug_image_type(), public.fn_aggregate_stock_daily(), public.fn_auto_classify_packing(), public.fn_capacity_forecast(), public.fn_get_product_packaging_summary(), public.fn_video_queue_stats() (+17 more)
+### Community 193 - "public.debug_image_type"
+Cohesion: 0.12
+Nodes (18): public.check_login_rate_limit(), public.check_video_health(), public.debug_image_type(), public.fn_auto_classify_packing(), public.fn_get_product_packaging_summary(), public.fn_video_queue_stats(), public.get_cloudflare_stats(), public.get_image_type_by_suffix() (+10 more)
 
 ### Community 194 - "Auditoria de Front-end via MCP — promo-gifts-v4"
 Cohesion: 0.08
@@ -4192,8 +4190,8 @@ Cohesion: 0.08
 Nodes (24): 11. Fase 1.1 — Drop de tabelas legacy "fantasma" {#11-fase-11}, 12. Limitação conhecida — desbloqueio definitivo do app {#12-limitação-conhecida}, 13. Padrões e princípios {#13-padrões-e-princípios}, 14. Templates de SQL prontos {#14-templates-prontos}, 9. Fase 3.5 — Drift residual + allowlist {#9-fase-35}, Apêndice A — Fluxo BPM completo (visão única), Apêndice B — Indicadores e KPIs sugeridos, Apêndice C — Glossário (+16 more)
 
 ### Community 196 - "check-seller-scope.mjs"
-Cohesion: 0.08
-Nodes (16): table(), asJson, IGNORE_DIR, IGNORE_FILE_PATHS, IGNORE_FILE_SUFFIX, ROOT, SCOPE_SIGNALS, SRC (+8 more)
+Cohesion: 0.13
+Nodes (9): asJson, IGNORE_DIR, IGNORE_FILE_PATHS, IGNORE_FILE_SUFFIX, ROOT, SCOPE_SIGNALS, SRC, TABLES (+1 more)
 
 ### Community 197 - "UserWithRole"
 Cohesion: 0.12
@@ -4360,12 +4358,12 @@ Cohesion: 0.14
 Nodes (17): colorTooltipClassName, ColorTooltipContent(), ColorTooltipContentProps, ColorMedia, GalleryColorVariations(), GalleryColorVariationsProps, COLOR_SELECTOR_CHECK_CLASSES, COLOR_SELECTOR_SWATCH_CLASSES (+9 more)
 
 ### Community 239 - "ProductPersonalizationRules.tsx"
-Cohesion: 0.12
-Nodes (16): formatWeight(), KitComposition(), KitCompositionProps, isCircularLocation(), ProductCustomizationOptions(), ProductCustomizationOptionsProps, ComponentInfo, DbLocation (+8 more)
-
-### Community 240 - "TTLCache"
 Cohesion: 0.10
-Nodes (3): many, rerankProducts(), TTLCache
+Nodes (18): isCircularLocation(), ProductCustomizationOptions(), ProductCustomizationOptionsProps, ComponentInfo, DbLocation, DbTechnique, LocationInfo, ProductPersonalizationRules() (+10 more)
+
+### Community 240 - "ColorSwatch.ssot.test.tsx"
+Cohesion: 0.10
+Nodes (8): many, assertInvariants(), buildColor(), COLORS, hexToRgb(), renderOne(), SIZES, STOCK
 
 ### Community 241 - "GlobalSearchPalette.tsx"
 Cohesion: 0.17
@@ -4404,8 +4402,8 @@ Cohesion: 0.12
 Nodes (17): breaker, BreakerInternal, BreakerState, FallbackReason, fallbackResponse(), getBreakerState(), handleLogLoginAttempt(), LoginAttemptSchema (+9 more)
 
 ### Community 250 - "supplier_products_raw"
-Cohesion: 0.10
-Nodes (22): public.fn_auto_link_properties(), public.fn_auto_link_tags(), public.fn_batch_populate_packing(), public.fn_expire_novelties_with_stats(), public.fn_extract_asia_variants(), public.fn_find_material_type_id(), public.fn_is_thermal_product(), public.fn_populate_novelties_from_supplier() (+14 more)
+Cohesion: 0.06
+Nodes (36): produto_ramo_atividade, ramo_atividade, ramo_atividade_filho, recommended, tags, public.debug_automations(), public.fn_auto_link_feminine_color(), public.fn_super_filtro_product_ids() (+28 more)
 
 ### Community 251 - "external-db-bridge-telemetry.test.ts"
 Cohesion: 0.09
@@ -4417,7 +4415,7 @@ Nodes (21): BUG-GS-01 — `HighlightMatch.tsx`: regex.test() com flag global ava
 
 ### Community 253 - "dependencies"
 Cohesion: 0.10
-Nodes (21): class-variance-authority, clsx, dompurify, @elevenlabs/react, fuse.js, dependencies, class-variance-authority, clsx (+13 more)
+Nodes (21): canvas-confetti, class-variance-authority, dompurify, @elevenlabs/react, @fontsource/playfair-display, dependencies, canvas-confetti, class-variance-authority (+13 more)
 
 ### Community 254 - "Auditoria de Migração: `process_spot_products` → `fn_process_raw_v2`"
 Cohesion: 0.10
@@ -4441,7 +4439,7 @@ Nodes (20): 10. Entrada para o MIGRATIONS_SYNC_LOG.md (colar no merge), 11. Como
 
 ### Community 259 - "🚫 POLÍTICA DE IDIOMA - GIFTS-STORE"
 Cohesion: 0.10
-Nodes (21): 📝 **ALTERAÇÕES FEITAS NOS DOCUMENTOS:**, **ANALISE_EXAUSTIVA_GIFTS_STORE.md:**, 🇧🇷 DECISÃO DE NEGÓCIO: EXCLUSIVAMENTE PORTUGUÊS DO BRASIL, **DIAGRAMAS_PROCESSOS_GIFTS_STORE.md:**, 🎯 **JUSTIFICATIVA DA DECISÃO:**, ✅ **Já está conforme:**, **Motivos de negócio:**, **Motivos técnicos:** (+13 more)
+Nodes (21): 📝 **ALTERAÇÕES FEITAS NOS DOCUMENTOS:**, **ANALISE_EXAUSTIVA_GIFTS_STORE.md:**, 🎓 **BOAS PRÁTICAS:**, 🇧🇷 DECISÃO DE NEGÓCIO: EXCLUSIVAMENTE PORTUGUÊS DO BRASIL, **DIAGRAMAS_PROCESSOS_GIFTS_STORE.md:**, ✅ **FAZER:**, ✅ **Já está conforme:**, ❌ **NÃO FAZER:** (+13 more)
 
 ### Community 260 - "Manual de Migração: Lovable Cloud → Supabase Oficial (SSOT)"
 Cohesion: 0.10
@@ -4652,8 +4650,8 @@ Cohesion: 0.11
 Nodes (18): A11y (30 casos), Auditoria — Galeria de Templates de Revista (Hardening 10/10), Dados (60 casos), Fase 0 — Simulação de cenários (200 casos), Fora de escopo (backlog), Onda 13 — E2E Playwright versionado ✅, Onda 14 — Gate `@smoke` de governança ✅, Onda 15 — Regressão visual (screenshot baseline) ✅ (+10 more)
 
 ### Community 312 - "cart-header-fuzz-report.mjs"
-Cohesion: 0.11
-Nodes (17): buckets, __dirname, INVARIANTS, JSON_TMP, orphans, OUT_DIR, OUT_FILE, raw (+9 more)
+Cohesion: 0.14
+Nodes (13): buckets, __dirname, INVARIANTS, JSON_TMP, orphans, OUT_DIR, OUT_FILE, raw (+5 more)
 
 ### Community 313 - "validate-ssot-report.mjs"
 Cohesion: 0.11
@@ -4935,9 +4933,9 @@ Nodes (16): 1. Callbacks de Pai → Sempre via Ref, 2. mountedRef vs isMounted L
 Cohesion: 0.12
 Nodes (16): Arquivos Modificados, Auditoria Exaustiva — Super Filtro, BUG-01 — Double-filter na busca fuzzy, BUG-02 — clearSingleFilter priceRange corrompe array, BUG-03 — inStock ignora estoque das variacoes, BUG-04 — parseInt trunca precos decimais da URL, BUG-05 — activeFiltersSummary com 11 tipos ausentes, BUG-06 e BUG-13 — Voice sort "popularity" sem case em sortProducts (+8 more)
 
-### Community 383 - "s"
-Cohesion: 0.12
-Nodes (7): expectVisibleAny(), fails, ROOT, ExpectedKeysMatchPanel(), mkBug(), p(), s()
+### Community 383 - "ExpectedKeysMatchPanel.tsx"
+Cohesion: 0.10
+Nodes (14): fails, ROOT, ENV_KEYS, EnvDiagnosis, EXPECTED_ENV_KEYS, EXPECTED_SECRET_NAMES, ExpectedKeysMatchPanel(), ExpectedKeysMatchPanelProps (+6 more)
 
 ### Community 384 - "Plano de Automação de Ingestão (n8n) — Arquitetura Medallion"
 Cohesion: 0.12
@@ -5911,9 +5909,9 @@ Nodes (12): aggregateByEndpoint(), BridgeAggregateRow, BridgeOperation, clearBri
 Cohesion: 0.18
 Nodes (9): CartRowProps, CartsListContent(), cartSubtotal(), DEADLINE_FILTER_OPTIONS, fold(), SORT_OPTIONS, SortKey, StatusChipProps (+1 more)
 
-### Community 628 - "CartHeaderExhaustiveFuzz.test.ts"
-Cohesion: 0.15
-Nodes (9): ACTIONS_CLS, BLOCK_CLS, BP_MIN, BP_ORDER, Breakpoint, HEADER_CLS, SRC, STATE_MATRIX (+1 more)
+### Community 628 - "t"
+Cohesion: 0.11
+Nodes (13): fetchPrintAreasFromProduct(), PrintAreaFromProduct, ACTIONS_CLS, BLOCK_CLS, BP_MIN, BP_ORDER, Breakpoint, HEADER_CLS (+5 more)
 
 ### Community 629 - "quote-builder-freight-block-fuzz.test.tsx"
 Cohesion: 0.15
@@ -5952,8 +5950,8 @@ Cohesion: 0.17
 Nodes (12): ♿ Acessibilidade (BUG-GS-12), 🔍 Auditoria Exaustiva — Módulo BUSCA GLOBAL (2026-05-27), 🧹 Código Morto / Dead Code (BUG-GS-09, 13), 🔒 Error Handling (BUG-GS-07), 🐛 LocalStorage Unification (BUG-GS-05), 🧪 Novos Testes (T15–T17), 📊 Popular Products Query (BUG-GS-10), 🐛 Regex Stateful Bug (BUG-GS-01) (+4 more)
 
 ### Community 638 - "key"
-Cohesion: 0.20
-Nodes (10): RFC-6749, key(), NICHE_TECHNIQUE_MAP, NicheRecommendationBadge(), NicheRecommendationBadgeProps, useNicheRecommendations(), normalizeKey(), OAuthErrorCopy (+2 more)
+Cohesion: 0.12
+Nodes (12): RFC-6749, key(), NICHE_TECHNIQUE_MAP, NicheRecommendationBadge(), NicheRecommendationBadgeProps, useNicheRecommendations(), normalizeKey(), OAuthErrorCopy (+4 more)
 
 ### Community 639 - "Improvements Executed (M-A → M-H)"
 Cohesion: 0.17
@@ -7279,9 +7277,9 @@ Nodes (6): critical, pct, raw, repo, rows, testFiles
 Cohesion: 0.22
 Nodes (8): baseline, BASELINE_PATH, counts, lines, res, ROOT, sorted, TSC_BIN
 
-### Community 976 - "ExpectedKeysMatchPanel.tsx"
-Cohesion: 0.22
-Nodes (8): ENV_KEYS, EnvDiagnosis, EXPECTED_ENV_KEYS, EXPECTED_SECRET_NAMES, ExpectedKeysMatchPanelProps, ExtRow, SECRET_SUFFIXES, SecretRow
+### Community 976 - "22-header-sticky.spec.ts"
+Cohesion: 0.09
+Nodes (25): assertFeatureLoads(), pathOf(), ROUTE_BY_FEATURE, SMOKE_COVERAGE, PROTECTED_NAV_SEQUENCE, VIEWPORTS, applySort(), CardData (+17 more)
 
 ### Community 977 - "AnomalyCards.tsx"
 Cohesion: 0.33
@@ -7927,9 +7925,9 @@ Nodes (4): PROPOSAL_COMPLEX, PROPOSAL_FIXTURES, PROPOSAL_MINIMAL, ProposalFixtur
 Cohesion: 0.32
 Nodes (7): contrastRatio(), hexToRgb(), Pair, PAIRS, relativeLuminance(), REPORT_PATH, PDF_TOKENS
 
-### Community 1139 - "ProductCardImage.tsx"
-Cohesion: 0.29
-Nodes (5): DEFAULT_IMAGE_CONFIG, ProductCardImage, ProductCardImageProps, VALID_STOCK_STATUSES, baseProduct
+### Community 1139 - "product_variants"
+Cohesion: 0.07
+Nodes (34): public.classify_pendrive(), public.consolidate_variant_stock(), public.fn_aggregate_stock_daily(), public.fn_calculate_sale_price(), public.fn_capacity_forecast(), public.fn_get_price_by_quantity(), public.fn_import_stock_from_spot(), public.fn_mark_removed_from_spot() (+26 more)
 
 ### Community 1140 - "ProductIntelligence.tsx"
 Cohesion: 0.25
@@ -7943,9 +7941,9 @@ Nodes (6): ActionKey, actions, categoryIcons, ModalType, ProductQuickActions(), 
 Cohesion: 0.39
 Nodes (7): daysSinceNoon(), formatDaysAgo(), getRecencyVariant(), Recency, RECENCY_STYLES, RecentReplenishmentsWidget(), SupplierBreakdown
 
-### Community 1143 - "ColorSwatch.ssot.test.tsx"
-Cohesion: 0.32
-Nodes (7): assertInvariants(), buildColor(), COLORS, hexToRgb(), renderOne(), SIZES, STOCK
+### Community 1143 - "supabase/types.ts"
+Cohesion: 0.18
+Nodes (10): CompositeTypes, Constants, Database, DatabaseWithoutInternals, DefaultSchema, Enums, Json, Tables (+2 more)
 
 ### Community 1144 - "breadcrumb.tsx"
 Cohesion: 0.25
@@ -8531,9 +8529,9 @@ Nodes (6): BreadcrumbItem, Breadcrumbs(), BreadcrumbsProps, generateBreadcrumbs(
 Cohesion: 0.43
 Nodes (5): estimateItemHeight(), itemsBudget(), makeData(), makeItem(), paginateItems()
 
-### Community 1293 - "RelatedProducts.tsx"
-Cohesion: 0.33
-Nodes (5): formatRelatedPrice(), ProductMiniCard(), relatedPriceFormatter, RelatedProducts(), RelatedProductsProps
+### Community 1293 - "public.fn_promote_padronizacao"
+Cohesion: 0.18
+Nodes (8): public.fn_classify_category_residual(), public.fn_promote_padronizacao(), public.categories, public.products, public.produtos_padronizacao, public.supplier_categories, public.supplier_category_mappings, public.supplier_products_raw
 
 ### Community 1294 - "swatchSizing.ts"
 Cohesion: 0.38
@@ -9261,8 +9259,8 @@ Cohesion: 0.47
 Nodes (3): OnboardingTour(), TooltipPosition, RestartTourButton
 
 ### Community 1492 - "KitComponentCard.tsx"
-Cohesion: 0.40
-Nodes (3): formatWeight(), KitComponentCard(), KitComponentCardProps
+Cohesion: 0.27
+Nodes (6): formatWeight(), KitComponentCard(), KitComponentCardProps, formatWeight(), KitComposition(), KitCompositionProps
 
 ### Community 1493 - "PackagingModal.tsx"
 Cohesion: 0.33
@@ -9951,6 +9949,10 @@ Nodes (5): Campos capturados (`site_data` JSONB em `supplier_products_raw`), Col
 ### Community 1685 - "Testing Guide"
 Cohesion: 0.40
 Nodes (4): Running Tests, Test Structure, Testing Guide, Writing Tests
+
+### Community 1686 - "flows/p0/_mocks.ts"
+Cohesion: 0.40
+Nodes (5): mockAllEdgeFunctions5xx(), mockBitrixWebhookFail(), mockCrmBridgeOffline(), mockEdgeFunctionFailure(), mockExternalDbOffline()
 
 ### Community 1687 - "color-swatch-selection.spec.ts"
 Cohesion: 0.70
@@ -10900,9 +10902,17 @@ Nodes (4): Campos desbloqueados com autenticação, Como configurar o cookie, Fo
 Cohesion: 0.50
 Nodes (3): Catálogo de casos (aplicar a cada função), Matriz de testes por função (Edge Functions), Matriz por função
 
-### Community 2011 - "quote-view-overflow-regression.spec.ts"
-Cohesion: 0.50
-Nodes (3): BAD_CB, open(), SAFE_OVERFLOW
+### Community 2007 - "table"
+Cohesion: 0.22
+Nodes (7): table(), groupTablesByTechnique(), CRITICAL_TABLES, _EXPECTED_POLICIES, RLSCheck, RLSValidationResult, validateRLSPolicies()
+
+### Community 2008 - "ProductCategoryBadges.tsx"
+Cohesion: 0.29
+Nodes (5): CategoryBadgeItem, ProductCategoryBadges, ProductCategoryBadgesProps, defaultProps, mockNavigate
+
+### Community 2010 - "🎯 **JUSTIFICATIVA DA DECISÃO:**"
+Cohesion: 0.67
+Nodes (3): 🎯 **JUSTIFICATIVA DA DECISÃO:**, **Motivos de negócio:**, **Motivos técnicos:**
 
 ### Community 2013 - "date-picker-field-visual.spec.ts"
 Cohesion: 0.50
@@ -11528,10 +11538,6 @@ Nodes (3): ❌ Evite, ✅ Faça, 📝 Tom de comunicação esperado
 Cohesion: 0.67
 Nodes (3): O que NÃO fazer agora, 🚀 Próximos passos sugeridos (em ordem), Sequência recomendada pra próxima sessão
 
-### Community 2387 - "🎓 **BOAS PRÁTICAS:**"
-Cohesion: 0.67
-Nodes (3): 🎓 **BOAS PRÁTICAS:**, ✅ **FAZER:**, ❌ **NÃO FAZER:**
-
 ### Community 2389 - "14. Exemplo Real — Preços de Personalização `51102`"
 Cohesion: 0.67
 Nodes (3): 14. Exemplo Real — Preços de Personalização `51102`, Silk Screen Circular 1 cor no Corpo (40 × 25 mm) — Padrão, Tampografia 1 cor no Corpo (45 × 6 mm)
@@ -11585,24 +11591,24 @@ Cohesion: 0.67
 Nodes (3): public.fn_create_quote_v3(), v_item.value, v_pers.value
 
 ## Knowledge Gaps
-- **12575 isolated node(s):** `$schema`, `mode`, `include`, `exclude`, `Gerido por scripts/eslint-baseline-scope-add.mjs. Ver docs no próprio arquivo inicial.` (+12570 more)
+- **12574 isolated node(s):** `$schema`, `mode`, `include`, `exclude`, `Gerido por scripts/eslint-baseline-scope-add.mjs. Ver docs no próprio arquivo inicial.` (+12569 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **1319 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **1315 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `t()` connect `cart-header-fuzz-report.mjs` to `DesignStep.tsx`, `build-cors-snapshot.mjs`, `audit-db-frontend-coverage.mjs`, `useProductMatch.ts`, `useGravacaoPriceV2.ts`, `fuzz-testing.mjs`, `ClientHealthHero.tsx`, `public.audit_rls_coverage`, `log-login-attempt/index.ts`, `engraving/types.ts`, `public.fn_refresh_media_health`?**
-  _High betweenness centrality (0.022) - this node is a cross-community bridge._
-- **Why does `key()` connect `key` to `postgrest.ts`, `MockupConfigPanel.tsx`, `07-rls-enforcement.spec.ts`, `cart-mock.ts`, `simulator/TechniqueCard.tsx`, `getCorsHeaders`, `autosave-indicator.spec.ts`, `RamoAtividadeService`, `PromptGenerator.tsx`, `TTLCache`, `api.ts`, `crm-db-bridge/index.ts`, `VariantStockTable.tsx`, `validate-quote-conditions-workflows.mjs`, `engraving/types.ts`, `feature-flags.ts`, `mockupGenerationService.ts`, `logger.ts`?**
-  _High betweenness centrality (0.020) - this node is a cross-community bridge._
-- **Why does `public.audit_rls_coverage()` connect `public.fn_refresh_media_health` to `ALL_IN_ONE.sql`, `public.audit_rls_coverage`, `cart-header-fuzz-report.mjs`?**
-  _High betweenness centrality (0.014) - this node is a cross-community bridge._
+- **Why does `t()` connect `t` to `DesignStep.tsx`, `build-cors-snapshot.mjs`, `audit-db-frontend-coverage.mjs`, `useProductMatch.ts`, `useGravacaoPriceV2.ts`, `fuzz-testing.mjs`, `ClientHealthHero.tsx`, `public.audit_rls_coverage`, `cart-header-fuzz-report.mjs`, `log-login-attempt/index.ts`, `engraving/types.ts`, `public.fn_refresh_media_health`?**
+  _High betweenness centrality (0.025) - this node is a cross-community bridge._
+- **Why does `key()` connect `key` to `postgrest.ts`, `MockupConfigPanel.tsx`, `07-rls-enforcement.spec.ts`, `cart-mock.ts`, `simulator/TechniqueCard.tsx`, `getCorsHeaders`, `autosave-indicator.spec.ts`, `RamoAtividadeService`, `PromptGenerator.tsx`, `ColorSwatch.ssot.test.tsx`, `api.ts`, `crm-db-bridge/index.ts`, `VariantStockTable.tsx`, `validate-quote-conditions-workflows.mjs`, `engraving/types.ts`, `feature-flags.ts`, `mockupGenerationService.ts`, `logger.ts`?**
+  _High betweenness centrality (0.024) - this node is a cross-community bridge._
+- **Why does `public.audit_rls_coverage()` connect `public.fn_refresh_media_health` to `ALL_IN_ONE.sql`, `public.audit_rls_coverage`, `t`?**
+  _High betweenness centrality (0.016) - this node is a cross-community bridge._
 - **What connects `$schema`, `mode`, `include` to the rest of the system?**
-  _12575 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _12574 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `ALL_IN_ONE.sql` be split into smaller, more focused modules?**
   _Cohesion score 0.0023894862604540022 - nodes in this community are weakly interconnected._
 - **Should `20260513000000_reconcile_orphan_functions_from_prod.sql` be split into smaller, more focused modules?**
   _Cohesion score 0.0040650406504065045 - nodes in this community are weakly interconnected._
-- **Should `gotoAndSettle` be split into smaller, more focused modules?**
-  _Cohesion score 0.021693393800551686 - nodes in this community are weakly interconnected._
+- **Should `nav.ts` be split into smaller, more focused modules?**
+  _Cohesion score 0.023368193292463035 - nodes in this community are weakly interconnected._

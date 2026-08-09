@@ -3120,8 +3120,8 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1786272562.7473927,
-    "ast_hash": "f3aaba3005f60b011b996287d58d451e",
+    "mtime": 1786276564.4455554,
+    "ast_hash": "77362f5375e3732317f16b7b9799ed49",
     "semantic_hash": ""
   },
   "playwright.config.ts": {
@@ -4160,8 +4160,8 @@
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1786272562.775393,
-    "ast_hash": "d6a928faa425095f12a1bed12a98b011",
+    "mtime": 1786277007.1955345,
+    "ast_hash": "0ba9d9cc953cc2726ab27005623c7e93",
     "semantic_hash": ""
   },
   "src/audit-debug.ts": {
