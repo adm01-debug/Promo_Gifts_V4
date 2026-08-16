@@ -330,7 +330,7 @@ Métricas declaradas × medidas hoje:
 3. **P1-2/P1-3** — REVOKE em 380 funções `SECURITY DEFINER` executáveis por `anon`; converter 104 views para `security_invoker` → `NAO_VERIFICADO`
 4. **P1-4** — tornar E2E/Full CI/Credentials Audit bloqueantes → `NAO_VERIFICADO` (Q12)
 5. **P1-5** — sanitizer (`src/lib/security/sanitize.ts:71`), `Math.random()` em contexto de segurança, allowlist de host por substring → **parcialmente corrigido**: `src/pages/magazine/hooks/useMagazineReaderState.ts:114` já traz *"Fallback: use getRandomValues (CSPRNG) instead of Math.random"* (`grep -n "Math.random\|crypto.getRandomValues"` → só o comentário do fix). Os demais achados CodeQL: `NAO_VERIFICADO`
-6. **P1-6** — canonizar migrations que hardcodam `pqpdolkaeqlyzpdpbizo` → `NAO_VERIFICADO`
+6. **P1-6** — canonizar migrations que hardcodam o ID do **projeto legado** `pqpdolkaeqlyzpdpbizo` [LEGACY_INFORMATIVO — menção histórica; **não use** este ID. O canônico é `doufsxqlfjyuvxuezpln`] → `NAO_VERIFICADO`
 7. **P1-7** — HMAC fail-closed em `webhook-inbound` → `NAO_VERIFICADO`
 
 ### E.4 Roadmap de integrações (`docs/NOTIFICATION_SYSTEM.md:295`–`:301`, 02/01/2026)
