@@ -76,7 +76,9 @@ Mais **11 integrações que existem apenas em documentação** (Twilio, Mercado 
 
 ### 2.5 Código sem consumidor
 
-Somando as medições de cada lote: **≈21.000 linhas** de código de produção que nenhum caminho de execução alcança. *(Pequenas sobreposições nas fronteiras entre lotes são possíveis; cada número individual está no documento do respectivo lote, com prova de ausência de chamador.)*
+Somando as medições de cada lote: **≈21.000 linhas** de código de produção que nenhum caminho de execução alcança.
+
+> ⚠️ **Confiança MÉDIA — rebaixada na autoauditoria (§9).** Este número é a soma de grandezas heterogêneas relatadas por 5 lotes distintos (3.384 + 1.980 + 8.900 + 5.400 + 1.513), e **não consegui reproduzi-lo mecanicamente** somando as linhas dos arquivos individualmente listados. Os números *por lote* estão cada um com prova de ausência de chamador no documento respectivo e são confiáveis; **o agregado é uma estimativa de ordem de grandeza, não uma medição.** Trate como "dezenas de milhares", não como 21.000 exatos.
 
 ---
 
@@ -145,7 +147,9 @@ Contraexemplo do jeito certo, que existe no repo: **Tendências** usa `?demo=1` 
 
 A hipótese do método se confirmou com precisão: **páginas administrativas têm lastro real; features de negócio prometidas, não.**
 
-Números de status errados por ordem de grandeza: 11 vs **107** workflows · 155 vs **555** specs Playwright · 349 vs **1.191** arquivos de teste · 82 vs **106** edge functions.
+Números de status errados por ordem de grandeza: 11 vs **107** workflows · 155 vs **555** specs Playwright · 349 vs **~1.796** arquivos de teste · 82 vs **104** edge functions.
+
+> **Correção aplicada em 2026-08-16 (autoauditoria — ver §9).** Esta linha dizia *"349 vs **1.191** arquivos de teste · 82 vs **106** edge functions"*. Os dois números vinham do lote 12 e estavam errados: contei 1.798 arquivos de teste (o lote 10 mediu 1.796) e **104** edge functions com `index.ts` (o lote 07 mediu 104, e o painel do Supabase confirma 104 implantadas). Eu havia repassado a medição pior sem cruzá-la com a melhor — exatamente o erro que este método manda evitar.
 
 E `docs/03_ARQUITETURA_DO_SISTEMA.md` descreve multi-tenant, enquanto `src/contexts/OrganizationContext.tsx:2` declara **"SINGLE-TENANT"**.
 
@@ -271,3 +275,64 @@ O método exige não confiar no próprio relato. O que foi feito:
 - **Contraprova contra artefato de nomenclatura:** antes de afirmar o drift, busquei as versões aplicadas em todo o repositório — zero ocorrências.
 
 **Nada foi alterado em produção.**
+
+---
+
+## 9. AUTOAUDITORIA — falhas e lacunas encontradas no próprio trabalho
+
+Depois de fechar a auditoria, submeti-a ao mesmo tratamento que apliquei ao sistema. Achei quatro problemas. Os três primeiros são **falhas minhas de fatiamento e de repasse**, não dos lotes.
+
+### 9.1 🔴 O fatiamento deixou buracos de costura — 43 arquivos sem dono
+
+Ao definir os 12 escopos, atribuí `src/components/admin` a um lote, 11 subdiretórios ao lote comercial e 28 ao lote de ferramentas. **Sobraram 18 subdiretórios e 3 arquivos de raiz que não entraram em escopo nenhum.**
+
+| Medida | Valor |
+|---|---:|
+| Arquivos de produção fora de qualquer escopo | **43** |
+| Linhas | **4.859** |
+| Destes, nunca citados em documento algum | **26** |
+| Cobertura real de `src/` (1.934 arquivos de produção) | **97,8%**, não 100% |
+
+Diretórios órfãos: `a11y`, `access`, `audit`, `clients`, `dev`, `goals`, `materials`, `mobile`, `navigation`, `onboarding`, `presentation`, `providers`, `ramo-atividade`, `reports`, `seo`, `settings`, `word-magic` — mais `ThemeInitializer.tsx`, `RoleBadge.tsx`, `LoadingScreen.tsx`.
+
+Alguns pesam: `providers/AppProviders.tsx` (composição da árvore React), `presentation/PresentationMode.tsx`, `reports/ScheduledReportsManager.tsx` (que é justamente a UI do fio partido dos relatórios agendados, R5). **Nenhum deles foi classificado.** É o erro previsto: *arquivos que caem entre dois escopos*.
+
+### 9.2 🟠 Um terceiro lugar onde mora DDL — `qa/`, também sem lote
+
+`qa/` (87 arquivos) não foi atribuído a lote nenhum. É majoritariamente documentação (57 `.md`), mas contém **`qa/migrations-draft/` com 13 arquivos `.sql` de DDL** — fora de `supabase/migrations/`, fora do pipeline.
+
+Verifiquei três no banco vivo:
+
+| Objeto do draft | Aplicado em produção? |
+|---|---|
+| `crm_callback_events` | ✅ sim — o draft foi promovido a migration real |
+| `get_edge_invoke_summary` (draft de 23/07) | ❌ **não** |
+| `reposicao_variants_summary` | ❌ **não** |
+
+Isso **acrescenta** ao risco R1: o schema não vive em dois lugares (repo × banco), vive em **três** — `supabase/migrations/`, o banco, e este rascunhário com DDL pendente e sem rastreio.
+
+### 9.3 🟠 Repassei dois números errados de um lote sem cruzá-los
+
+Corrigidos em §3 (R7), com o texto original preservado: `1.191` arquivos de teste (real: ~1.796) e `106` edge functions (real: **104**). Ambos vinham do lote 12 e **contradiziam medições melhores de outros lotes do meu próprio pacote** — o documento chegou a se contradizer entre §3 e §7. É precisamente o defeito que o método alerta: *se você repassar uma premissa errada, ela se multiplica.*
+
+Também rebaixei a confiança do agregado de "≈21.000 linhas mortas" (§2.5) de medição para **estimativa de ordem de grandeza**, por não conseguir reproduzi-lo mecanicamente.
+
+### 9.4 🟡 Escopos menores sem cobertura declarada
+
+`tailwind.config.ts` (350 linhas), `test-hooks-safety.mjs` (409) e `test-magazine-fix.mjs` (330) não são citados por nenhum documento. `medallion/` (22 arquivos) e `api/` foram tocados apenas de raspão.
+
+### 9.5 ✅ O que resistiu ao teste
+
+A autoauditoria também serve para dizer o que **não** quebrou:
+
+- **Aritmética confere.** Todos os totais e percentuais de §2 fecham: 291+348+284 = 923; 269+310+245 = 824 (89%); 73+17+13+1 = 104; 18+22+1+3 = 44; 135+68+188 = 391 (34,5% vazias); 19+14+11+6+12+3 = 65.
+- **Amostrei dois achados que eu ainda não havia verificado pessoalmente, e ambos se sustentaram:**
+  - *Constantes de SELECT* (lote 03): confirmado que `category_name` e `base_price` aparecem em **zero** das 6 constantes, e `tags` só nas 2 de detalhe. Minha suspeita inicial de que o lote havia errado é que estava errada.
+  - *Gate SECURITY DEFINER* (lote 09): confirmado que `required-checks.json:25` o exige, que ele vive em `magazine-unit-tests.yml:93`, e que os `paths` do `pull_request` **não incluem `supabase/migrations/**`**.
+- **Nenhum dos 12 achados graves verificados anteriormente caiu.** A taxa de superdimensionamento dos lotes foi zero nas amostras — o problema esteve na minha costura e no meu repasse, não na medição deles.
+
+### 9.6 Veredito da autoauditoria
+
+O **critério de pronto do método exige "100% dos arquivos de código inventariados, verificado por recontagem"**. Com a medição acima, isso é **falso**: a cobertura real de `src/` é **97,8%**, e `qa/` mais três arquivos de configuração ficaram fora.
+
+**Corrigir isso custa um lote adicional** cobrindo os 43 arquivos órfãos + `qa/migrations-draft/` + os configs. Nenhuma das conclusões estruturais (§1, §3) depende deles — os 43 arquivos são componentes de apoio, e `qa/` é rascunho —, mas **a afirmação de cobertura total não se sustenta e não vou fingir que sim.**
