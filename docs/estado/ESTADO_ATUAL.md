@@ -90,6 +90,8 @@ Somando as medições de cada lote: **≈21.000 linhas** de código de produçã
 
 Confirmado por caminho independente: a análise estática das migrations mostra que `supplier_products_raw` (a camada **Bronze**) é referenciada em 127 migrations e **nunca tem `CREATE TABLE`**; o módulo Magazine inteiro não tem criação de tabela declarada; 13 de 120 relações usadas pelo frontend não existem no repo.
 
+**O caso mais eloquente, achado pelo lote 14 e confirmado por mim:** o `CREATE TABLE` de `magazines` / `magazine_items` / `magazine_templates` **não existe em `supabase/migrations/`**. Existe em um único lugar no repositório inteiro — `qa/migrations-draft/_archived/2026-07-12_magazines.sql`, um **rascunho arquivado**. As migrations de julho já pressupõem as tabelas criadas, e `types.ts` tem zero ocorrências de `magazine`. É por isso que o módulo sobrevive por um contrato manual (`magazine-schema.ts`): o schema de uma feature inteira nunca entrou no controle de versão.
+
 **Consequência:** perder o projeto Supabase significa perder o schema. Não há backup estrutural no git.
 
 > **Correção de leitura, registrada em voz alta:** minha primeira formulação foi *"96 migrations do repo nunca foram aplicadas"*. Isso estava **superdimensionado**. Amostrei 3 arquivos e verifiquei objeto a objeto no banco: `get_profile_and_roles` existe, `idx_user_roles_user_id_role` existe, mas as policies `user_sees_own_notifications` e `enable_read_for_requesting_user` **não existem**. A leitura correta é que o registro de versões não corresponde ao conteúdo — parte foi aplicada sob outro identificador, e ao menos uma migration de RLS (`20260712_fix_rls_policies_critical.sql`) está aplicada **pela metade**. O total de "nunca aplicadas" permanece `NAO_VERIFICADO`.
@@ -129,7 +131,7 @@ Contraexemplo do jeito certo, que existe no repo: **Tendências** usa `?demo=1` 
 
 - **Todo webhook de entrada é perdido.** `webhook-inbound/index.ts:182` grava em `webhook_events` — **verifiquei no banco: a tabela não existe**. A RPC `increment_webhook_stats` existe, mas com assinatura `(p_endpoint_id uuid, p_is_invalid boolean)`, diferente da chamada. O painel lê `inbound_webhook_events`, que também não existe. A via de saída está igualmente morta: o cron `process-webhook-outbox` está **desativado**, o que explica as 5 tabelas `webhook_*` vazias.
 - **Técnicas de personalização gravam na tabela errada.** `useTecnicasList` lê de `tabela_preco_gravacao_oficial` e `useTecnicaMutations` aplica o `id` em `personalization_techniques` — outra tabela, outra PK. O UPDATE atinge 0 linhas sem erro e a tela exibe *"Técnica atualizada!"*.
-- **Relatórios agendados não têm agendador.** A UI cria `scheduled_reports`; nenhuma automação os envia. Tabela vazia em produção.
+- **Relatórios agendados não têm gatilho.** A UI cria `scheduled_reports` e a tabela está vazia em produção. *Precisão adicionada pelo lote 14:* o código de envio **existe** — `supabase/functions/process-scheduled-reports` e `send-scheduled-reports` são funções reais e implantadas. O que não existe é quem as chame: nenhum `cron.schedule`, nenhum `functions.invoke()`. As únicas menções fora de `supabase/functions/` são listas de allowlist de CORS e de logging. São **edge functions órfãs esperando um agendador**, não código ausente.
 - **VirusTotal falha aberto.** Sem `VIRUSTOTAL_API_KEY`, o upload é aceito e registrado como *"Arquivo recebido para análise"* — indistinguível de varredura real.
 - **`viacep` e `ipify` são bloqueados pela própria CSP do projeto** e falham em silêncio por causa de `catch{}`.
 
@@ -331,8 +333,25 @@ A autoauditoria também serve para dizer o que **não** quebrou:
   - *Gate SECURITY DEFINER* (lote 09): confirmado que `required-checks.json:25` o exige, que ele vive em `magazine-unit-tests.yml:93`, e que os `paths` do `pull_request` **não incluem `supabase/migrations/**`**.
 - **Nenhum dos 12 achados graves verificados anteriormente caiu.** A taxa de superdimensionamento dos lotes foi zero nas amostras — o problema esteve na minha costura e no meu repasse, não na medição deles.
 
-### 9.6 Veredito da autoauditoria
+### 9.6 Lacuna FECHADA — lote 14
 
-O **critério de pronto do método exige "100% dos arquivos de código inventariados, verificado por recontagem"**. Com a medição acima, isso é **falso**: a cobertura real de `src/` é **97,8%**, e `qa/` mais três arquivos de configuração ficaram fora.
+As três lacunas de 9.1, 9.2 e 9.4 foram cobertas por um lote adicional (`14_LACUNAS_COBERTURA.md`): **62 arquivos no escopo, 62 classificados** — 46 de `src/components`, os 13 `.sql` de `qa/migrations-draft/` e os 3 arquivos de configuração, mais os 74 arquivos restantes de `qa/` caracterizados em altitude.
 
-**Corrigir isso custa um lote adicional** cobrindo os 43 arquivos órfãos + `qa/migrations-draft/` + os configs. Nenhuma das conclusões estruturais (§1, §3) depende deles — os 43 arquivos são componentes de apoio, e `qa/` é rascunho —, mas **a afirmação de cobertura total não se sustenta e não vou fingir que sim.**
+**Cobertura de `src/` agora: 100%.**
+
+O lote não só fechou o buraco — ele **produziu achados que os 13 primeiros não tinham**, o que confirma que a lacuna era material e não formalidade:
+
+- **`magazine_*` não tem DDL versionada.** Incorporado ao R1 acima. Sozinho, justifica o lote.
+- **`sales_goals`: CRUD completo, UI de 300 linhas, zero consumidores.** `useSalesGoals.ts` tem as 6 operações; `SalesGoalsCard.tsx` não é renderizado em lugar nenhum. Explica por que a tabela aparece vazia na §2.4.
+- **Precisão sobre relatórios agendados** — incorporada ao R5.
+- **Os dois `.mjs` da raiz são mortos *e* são testes-espelho.** `test-hooks-safety.mjs` e `test-magazine-fix.mjs` não são chamados por nada, e `grep "^import\|require("` neles retorna **vazio**: reimplementam internamente a lógica que dizem testar, então passariam mesmo com o código de produção regredido.
+- **Mortos com prova:** `AuditReport.tsx` (dispara a edge `audit-suite` — a mesma sem autorização do R3 — e não tem importador), `RestartTourButton.tsx`, `LoadingScreen.tsx`, e 4 barrels órfãos.
+- **`REVIEWS.json` de `qa/migrations-draft/` está dessincronizado nos dois sentidos**: ack obsoleto para um rascunho já promovido, e dois pendentes sem ack.
+
+### 9.7 Veredito final da autoauditoria
+
+O critério de pronto exige *"100% dos arquivos de código inventariados, verificado por recontagem"*. Após o lote 14, **`src/` está em 100%** e `qa/` mais os configs estão cobertos.
+
+O que **permanece** declarado como não coberto: build e testes não executados (`node_modules` ausente e install quebrado), comportamento em navegador, conteúdo dos dados, provisionamento real de credenciais, logs de runtime das edge functions, storage e realtime — tudo detalhado na §5. E o total exato de migrations "nunca aplicadas" segue `NAO_VERIFICADO`.
+
+A lição que fica registrada: **as três falhas desta auditoria foram minhas — fatiamento com buracos de costura e repasse de número sem cruzamento — e nenhuma foi dos lotes.** Nas amostras, a taxa de superdimensionamento deles foi zero.
