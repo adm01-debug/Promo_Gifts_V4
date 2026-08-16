@@ -556,9 +556,14 @@ consumidor. Não é abandono, mas é a maior concentração de caminhos redundan
 | **Escopo declarado** | **474** | 88.433 | `find src/{hooks,services,contexts,stores}` |
 | — arquivos de teste | 126 | 27.191 | fora do alvo da classificação |
 | — **módulos de produção classificados** | **348** | 61.242 | 100% do não-teste |
-| Lidos integralmente (conteúdo inspecionado) | 62 | ~19.400 | leitura direta + `sed`/`grep -n` alvo |
-| Analisados por varredura mecânica (exports + consumidores + I/O + stubs) | **348** | 61.242 | script determinístico, 348 × ~1.400 arquivos |
+| Analisados por varredura mecânica (exports + consumidores + I/O + stubs) | **348** | 61.242 | script determinístico, 348 × ~1.400 arquivos de `src/` |
+| Com trechos lidos diretamente (cabeçalho, região do mock, região do I/O) | ~40 | — | `Read` / `sed -n` / `grep -n -C` alvo, listados nas seções B, C e D |
 | **Não alcançados** | **0** | 0 | — |
+
+Nenhum dos 348 foi lido linha a linha — 419 hooks não comportam isso, e a instrução de
+altitude era explícita. O que garante a cobertura é que **a varredura mecânica é
+exaustiva**: nenhum arquivo ficou de fora dela. A leitura direta foi usada só para
+confirmar hipóteses que o grep levantou (todo mock de §C, todo par de §D, todo item de §B).
 
 Cada um dos 348 módulos passou por: extração de exports, busca de consumidores com
 fronteira de palavra em todo `src/`, detecção de 6 vetores de I/O, detecção de padrões de
