@@ -158,7 +158,7 @@ Classificação: **⬛ MORTO_OU_ABANDONADO**.
 
 ### Silver — geração 2 (CANÔNICA)
 - `public.produtos_padronizacao` — `supabase/migrations/20260603221821_silver_02_produtos_padronizacao.sql:12`
-- `public.produtos_padronizacao_variantes` — `supabase/migrations/20260603223723_silver_05_variantes_e_chave_pai.sql` (mesmo arquivo, `CREATE TABLE` na linha 37 de `20260603221821_*`)
+- `public.produtos_padronizacao_variantes` — `supabase/migrations/20260603223723_silver_05_variantes_e_chave_pai.sql:37`
 - Contrato documentado em SQL: `supabase/migrations/20260605011700_pad_silver_comments_documentation.sql:2`
   > *"Camada SILVER (medallion). Conforma produtos do BRONZE (supplier_products_raw via raw_id) e os equivale ao GOLD (products via product_id). Fluxo: pending -> standardized -> promoted | rejected."*
 - FKs de amarração das três camadas: `.../20260605011700_...sql:4` (`raw_id -> supplier_products_raw (BRONZE)`) e `:5` (`product_id -> products (GOLD)`).
