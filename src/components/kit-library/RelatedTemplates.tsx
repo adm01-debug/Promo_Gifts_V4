@@ -1,0 +1,63 @@
+/**
+ * RelatedTemplates — Mostra 2-3 templates da mesma categoria sob o template atual.
+ */
+import type { ComponentType } from 'react';
+import * as Lucide from 'lucide-react';
+import { Package } from 'lucide-react';
+import { formatCurrency } from '@/lib/kit-builder';
+import { cn } from '@/lib/utils';
+import type { KitTemplateRow } from '@/hooks/kit-builder';
+
+interface Props {
+  current: KitTemplateRow;
+  all: KitTemplateRow[];
+  onSelect: (t: KitTemplateRow) => void;
+}
+
+export function RelatedTemplates({ current, all, onSelect }: Props) {
+  const related = all
+    .filter((t) => t.id !== current.id && t.category === current.category && t.is_active)
+    .slice(0, 3);
+
+  if (related.length === 0) return null;
+
+  return (
+    <div className="space-y-2 border-t border-border/40 pt-3">
+      <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+        Quem usou também usou
+      </p>
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+        {related.map((t) => {
+          const Icon =
+            (Lucide as unknown as Record<string, ComponentType<{ className?: string }>>)[
+              t.icon
+            ] || Package;
+          return (
+            <button
+              key={t.id}
+              type="button"
+              onClick={() => onSelect(t)}
+              className={cn(
+                'flex items-center gap-2 rounded-lg border p-2 text-left',
+                'transition-colors hover:border-primary/40 hover:bg-muted/60',
+              )}
+            >
+              <div
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border"
+                style={{ background: `${t.color}1A`, borderColor: `${t.color}40`, color: t.color }}
+              >
+                <Icon className="h-4 w-4" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-xs font-medium">{t.name}</p>
+                <p className="text-[10px] text-muted-foreground">
+                  {formatCurrency(Number(t.total_price))}
+                </p>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}

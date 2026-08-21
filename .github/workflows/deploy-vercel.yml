@@ -1,0 +1,230 @@
+name: Deploy to Vercel
+
+# Build e deploy automático para Vercel a cada push em main.
+# PRs geram preview deploys; main vai para produção.
+#
+# === GitHub Secrets necessários (Settings → Secrets and variables → Actions) ===
+#
+# Vercel:
+#   - VERCEL_TOKEN     → https://vercel.com/account/tokens
+#   - VERCEL_ORG_ID    → cat .vercel/project.json (após `vercel link` local)
+#   - VERCEL_PROJECT_ID→ idem
+#
+# App (injetados no build do Vite):
+#   - VITE_SUPABASE_URL
+#   - VITE_SUPABASE_PUBLISHABLE_KEY
+#   - VITE_SUPABASE_PROJECT_ID
+#   - VITE_EXTERNAL_SUPABASE_URL
+#   - VITE_EXTERNAL_SUPABASE_ANON_KEY
+#   - VITE_CRM_SUPABASE_URL          (opcional)
+#   - VITE_CRM_SUPABASE_ANON_KEY     (opcional)
+#
+# Secrets server-side (edge functions) NÃO entram aqui — vão no painel
+# Supabase → Edge Functions → Secrets do projeto principal.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vercel-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+  # Variáveis VITE_* lidas pelo `vite build` durante o vercel build
+  VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+  VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+  VITE_SUPABASE_PROJECT_ID: ${{ secrets.VITE_SUPABASE_PROJECT_ID }}
+  VITE_EXTERNAL_SUPABASE_URL: ${{ secrets.VITE_EXTERNAL_SUPABASE_URL }}
+  VITE_EXTERNAL_SUPABASE_ANON_KEY: ${{ secrets.VITE_EXTERNAL_SUPABASE_ANON_KEY }}
+  VITE_CRM_SUPABASE_URL: ${{ secrets.VITE_CRM_SUPABASE_URL }}
+  VITE_CRM_SUPABASE_ANON_KEY: ${{ secrets.VITE_CRM_SUPABASE_ANON_KEY }}
+
+jobs:
+  # Gate: só roda o deploy quando VERCEL_TOKEN está configurado.
+  # Sem isso o job inteiro falha tentando autenticar contra Vercel.
+  # Enquanto o Lovable bot faz o auto-deploy, manter este gate como
+  # "skipped" não bloqueia outros workflows nem cria red flags no CI.
+  # Para ativar: Settings → Secrets and variables → Actions → adicionar
+  # VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID + as VITE_* listadas
+  # no header deste arquivo.
+  check-secrets:
+    name: Check deploy prerequisites
+    runs-on: ubuntu-latest
+    outputs:
+      can_deploy: ${{ steps.check.outputs.can_deploy }}
+    steps:
+      - id: check
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          if [ -n "$VERCEL_TOKEN" ]; then
+            echo "can_deploy=true" >> "$GITHUB_OUTPUT"
+            echo "✅ VERCEL_TOKEN configurado — deploy seguirá adiante." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "can_deploy=false" >> "$GITHUB_OUTPUT"
+            {
+              echo "## ⏭️  Deploy via GitHub Actions desabilitado"
+              echo ""
+              echo "VERCEL_TOKEN não está configurado nos secrets do repo."
+              echo "Enquanto isso, o Lovable bot continua fazendo auto-deploy."
+              echo ""
+              echo "Para ativar este workflow: Settings → Secrets and variables → Actions."
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  deploy:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+    needs: check-secrets
+    if: needs.check-secrets.outputs.can_deploy == 'true'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Pull Vercel environment (production)
+        if: github.ref == 'refs/heads/main'
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Pull Vercel environment (preview)
+        if: github.ref != 'refs/heads/main'
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build (production)
+        if: github.ref == 'refs/heads/main'
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build (preview)
+        if: github.ref != 'refs/heads/main'
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+
+      # Captura o deploy de produção atual ANTES de subir o novo, para rollback
+      - name: Snapshot current production deploy
+        id: prev
+        if: github.ref == 'refs/heads/main'
+        run: |
+          PREV=$(vercel ls --prod --token=${{ secrets.VERCEL_TOKEN }} 2>/dev/null \
+            | awk '/https:\/\// {print $2; exit}')
+          echo "url=${PREV:-}" >> "$GITHUB_OUTPUT"
+          echo "Previous prod: ${PREV:-<none>}"
+
+      - name: Deploy to Vercel (production)
+        id: deploy_prod
+        if: github.ref == 'refs/heads/main'
+        run: |
+          URL=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+          echo "🚀 Production: $URL" >> "$GITHUB_STEP_SUMMARY"
+
+      # Smoke check em 2 etapas:
+      #   1) /api/health  → confirma que o BUILD CORRETO está servido (commit==SHA)
+      #   2) /api/ready   → confirma que as DEPENDÊNCIAS (Supabase) respondem
+      - name: Smoke test new production deploy
+        id: smoke
+        if: github.ref == 'refs/heads/main' && steps.deploy_prod.outputs.url != ''
+        run: |
+          BASE="${{ steps.deploy_prod.outputs.url }}"
+          EXPECTED_SHA="${{ github.sha }}"
+          # correlationId compartilhado entre as duas probes — eco no x-request-id
+          # e ecoado de volta no payload (.requestId), tornando o log da Vercel
+          # rastreável a partir da run do GH Actions.
+          REQ_ID="gh-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-${GITHUB_SHA:0:7}"
+          echo "🔖 correlationId: $REQ_ID"
+
+          echo "▶ /api/health (build identity)"
+          HEALTH_OK=0
+          for i in 1 2 3 4 5; do
+            CODE=$(curl -s -o /tmp/health.json -D /tmp/health.h \
+              -H "x-request-id: $REQ_ID" \
+              -w "%{http_code}" "$BASE/api/health" || echo "000")
+            if [ "$CODE" = "200" ]; then
+              STATUS=$(jq -r '.status // empty' /tmp/health.json 2>/dev/null)
+              COMMIT=$(jq -r '.commit // empty' /tmp/health.json 2>/dev/null)
+              VERSION=$(jq -r '.version // empty' /tmp/health.json 2>/dev/null)
+              ECHO_ID=$(jq -r '.requestId // empty' /tmp/health.json 2>/dev/null)
+              if [ "$STATUS" = "ok" ] && [ "$COMMIT" = "$EXPECTED_SHA" ]; then
+                echo "✅ Health OK — v$VERSION @ ${COMMIT:0:7} (requestId=$ECHO_ID)"
+                HEALTH_OK=1
+                break
+              fi
+              echo "Health payload mismatch — status=$STATUS commit=$COMMIT (expected $EXPECTED_SHA) requestId=$ECHO_ID"
+            else
+              echo "Attempt $i: HTTP $CODE"
+            fi
+            sleep 5
+          done
+          if [ "$HEALTH_OK" != "1" ]; then
+            echo "❌ /api/health falhou (correlationId=$REQ_ID)"
+            cat /tmp/health.json 2>/dev/null || true
+            exit 1
+          fi
+
+          echo "▶ /api/ready (dependency probe)"
+          READY_OK=0
+          for i in 1 2 3 4 5; do
+            CODE=$(curl -s -o /tmp/ready.json \
+              -H "x-request-id: $REQ_ID" \
+              -w "%{http_code}" "$BASE/api/ready" || echo "000")
+            STATUS=$(jq -r '.status // empty' /tmp/ready.json 2>/dev/null)
+            if [ "$CODE" = "200" ] && { [ "$STATUS" = "ready" ] || [ "$STATUS" = "degraded" ]; }; then
+              echo "✅ Ready ($STATUS)"
+              jq -r '.checks | to_entries[] | "  - \(.key): \(.value.status)\(if .value.latency_ms then " (\(.value.latency_ms)ms)" else "" end)"' /tmp/ready.json 2>/dev/null || true
+              {
+                echo "## ✅ Smoke check"
+                echo "- version: \`$VERSION\`"
+                echo "- commit: \`${COMMIT:0:7}\`"
+                echo "- ready: \`$STATUS\`"
+                echo "- correlationId: \`$REQ_ID\`"
+              } >> "$GITHUB_STEP_SUMMARY"
+              READY_OK=1
+              [ "$STATUS" = "degraded" ] && echo "⚠️  Dependências em estado *degraded* — aceitando, mas vale investigar." >> "$GITHUB_STEP_SUMMARY"
+              break
+            fi
+            echo "Attempt $i: HTTP $CODE status=$STATUS"
+            sleep 5
+          done
+          if [ "$READY_OK" != "1" ]; then
+            echo "❌ /api/ready falhou (correlationId=$REQ_ID)"
+            cat /tmp/ready.json 2>/dev/null || true
+            exit 1
+          fi
+
+      # Rollback automático: promove o deploy anterior se algo acima falhar
+      - name: Rollback to previous production
+        if: failure() && github.ref == 'refs/heads/main' && steps.prev.outputs.url != ''
+        run: |
+          PREV="${{ steps.prev.outputs.url }}"
+          REQ_ID="gh-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-${GITHUB_SHA:0:7}"
+          echo "↩️  Rolling back to: $PREV (correlationId=$REQ_ID)"
+          vercel rollback "$PREV" --yes --token=${{ secrets.VERCEL_TOKEN }}
+          {
+            echo "## ⚠️ Rollback executado"
+            echo ""
+            echo "O deploy/smoke check falhou. Produção revertida para:"
+            echo ""
+            echo "\`$PREV\`"
+            echo ""
+            echo "**correlationId:** \`$REQ_ID\` — busque por este ID nos logs da Vercel para encontrar a request exata que falhou."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Deploy to Vercel (preview)
+        if: github.ref != 'refs/heads/main'
+        run: |
+          URL=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+          echo "👀 Preview: $URL" >> "$GITHUB_STEP_SUMMARY"

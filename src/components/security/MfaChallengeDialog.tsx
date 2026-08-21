@@ -1,0 +1,209 @@
+/**
+ * MfaChallengeDialog — pede código TOTP para elevar sessão para AAL2.
+ * Usado no AdminRoute quando admin/manager já tem MFA mas a sessão atual está em aal1.
+ */
+import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Loader2, ShieldCheck } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { toast } from 'sonner';
+import { markDismissed, clearDismissed } from '@/lib/security/mfaChallengeDismissal';
+import {
+  trackMfaGoBack,
+  inferGoBackOrigin,
+  hasSameOriginReferrer,
+} from '@/lib/analytics/mfaNavigationAnalytics';
+import {
+  getLastInternalRoute,
+  clearLastInternalRoute,
+  isSafeReturnPath,
+} from '@/lib/security/lastInternalRoute';
+
+interface MfaChallengeDialogProps {
+  open: boolean;
+}
+
+export function MfaChallengeDialog({ open }: MfaChallengeDialogProps) {
+  const { refreshAAL, user } = useAuth();
+  const navigate = useNavigate();
+  const [code, setCode] = useState('');
+  const [factorId, setFactorId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [verified, setVerified] = useState(false);
+  // Trava sincrona contra double-submit: o state (loading) atualiza de forma assincrona,
+  // entao Enter repetido durante a requisicao poderia disparar verify() de novo (challenge+verify
+  // duplicados -> 422). O ref e setado no mesmo tick e e a fonte de verdade do gate.
+  const inFlightRef = useRef(false);
+
+  useEffect(() => {
+    if (!open) {
+      setCode('');
+      setFactorId(null);
+      setVerified(false);
+      inFlightRef.current = false;
+      return;
+    }
+    (async () => {
+      const { data } = await supabase.auth.mfa.listFactors();
+      const verifiedFactor = data?.totp?.find((f) => f.status === 'verified');
+      setFactorId(verifiedFactor?.id ?? null);
+    })();
+  }, [open]);
+
+  async function verify() {
+    // Gate idempotente: bloqueia codigo invalido, requisicao em andamento e pos-sucesso.
+    if (!factorId || code.length !== 6 || inFlightRef.current || verified) return;
+    inFlightRef.current = true;
+    setLoading(true);
+    try {
+      const { data: challenge, error: cErr } = await supabase.auth.mfa.challenge({ factorId });
+      if (cErr) throw cErr;
+      const { error: vErr } = await supabase.auth.mfa.verify({
+        factorId,
+        challengeId: challenge.id,
+        code,
+      });
+      if (vErr) throw vErr;
+      setVerified(true); // trava a UI; inFlightRef permanece travado ate o dialog fechar
+      // Sessão elevada com sucesso — remove flag "dispensado" para não
+      // impactar navegações admin subsequentes.
+      clearDismissed(user?.id ?? null);
+      await refreshAAL();
+      toast.success('Acesso administrativo liberado');
+    } catch {
+      inFlightRef.current = false; // libera para nova tentativa
+      toast.error('Código inválido', {
+        description: 'Tente novamente',
+      });
+      setCode('');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function handleGoBack() {
+    // Mantém a sessão ativa — apenas sai da área que exige AAL2.
+    //
+    // Marca o "dispensado" antes de navegar: se o destino (ou uma reavaliação
+    // do guard AdminRoute/DevRoute) tentar reabrir o dialog, o próprio guard
+    // consulta este flag via `isDismissed()` e redireciona o usuário para "/"
+    // em vez de re-renderizar o challenge — quebrando o loop.
+    const userId = user?.id ?? null;
+    markDismissed(userId);
+
+    // Estratégia de retorno (em ordem de preferência):
+    //
+    // 1) Última rota interna "segura" rastreada por `LastInternalRouteTracker`
+    //    (sessionStorage por userId). Cobre casos onde `history.state.idx` é
+    //    enganoso: entrada direta em /admin/*, deep link, replace/redirect que
+    //    zeram o stack, ou nova aba herdando um idx > 0 do referrer externo.
+    //    Só usamos se a rota lembrada NÃO for a atual (evita no-op) e passar
+    //    no filtro `isSafeReturnPath` (não-AAL2, não-auth).
+    //
+    // 2) `history.state.idx > 0` do React Router — indica navegação interna
+    //    real dentro do app; back() é seguro. `window.history.length` é
+    //    intencionalmente ignorado (conta origens externas).
+    //
+    // 3) Fallback "/" — rota autenticada segura, fora do gate AAL2.
+    const remembered = getLastInternalRoute(userId);
+    const currentPath = window.location.pathname;
+    const rrIdxSnapshot = (window.history.state as { idx?: number } | null)?.idx ?? 0;
+    const sameOriginReferrer = hasSameOriginReferrer();
+    const origin = inferGoBackOrigin({
+      historyIdx: rrIdxSnapshot,
+      rememberedRoute: remembered,
+      sameOriginReferrer,
+    });
+    const telemetryBase = {
+      fromPath: currentPath,
+      rememberedRoute: remembered,
+      historyIdx: rrIdxSnapshot,
+      origin,
+      sameOriginReferrer,
+      guard: currentPath.startsWith('/dev') ? ('dev' as const) : ('admin' as const),
+    };
+
+    if (remembered && isSafeReturnPath(remembered) && remembered !== currentPath) {
+      // Consumimos a rota: ao voltar novamente, o tracker já terá gravado
+      // a nova rota corrente, então não precisamos preservá-la.
+      clearLastInternalRoute(userId);
+      trackMfaGoBack({ ...telemetryBase, toPath: remembered, strategy: 'remembered_route' });
+      navigate(remembered, { replace: true });
+      return;
+    }
+
+    if (rrIdxSnapshot > 0) {
+      trackMfaGoBack({ ...telemetryBase, toPath: '-1', strategy: 'history_back' });
+      navigate(-1);
+    } else {
+      trackMfaGoBack({ ...telemetryBase, toPath: '/', strategy: 'home_fallback' });
+      navigate('/', { replace: true });
+    }
+  }
+
+
+
+  return (
+    <Dialog
+      open={open}
+      onOpenChange={() => {
+        /* não permite fechar sem verificar */
+      }}
+    >
+      <DialogContent
+        className="max-w-md"
+        onPointerDownOutside={(e) => e.preventDefault()}
+        onEscapeKeyDown={(e) => e.preventDefault()}
+        data-testid="mfa-challenge-dialog"
+      >
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <ShieldCheck className="h-5 w-5 text-primary" />
+            Verificação em duas etapas
+          </DialogTitle>
+          <DialogDescription>
+            Para acessar a área administrativa, digite o código do seu app autenticador.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4">
+          <Input
+            value={code}
+            onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+            placeholder="000000"
+            className="h-14 text-center font-mono text-2xl tracking-[0.5em]"
+            autoFocus
+            inputMode="numeric"
+            disabled={loading || verified}
+            data-testid="mfa-challenge-code-input"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && code.length === 6 && !loading && !verified) verify();
+            }}
+          />
+          <div className="flex justify-between">
+            <Button variant="ghost" onClick={handleGoBack} data-testid="mfa-challenge-go-back">
+              Voltar
+            </Button>
+            <Button
+              onClick={verify}
+              disabled={loading || verified || code.length !== 6}
+              data-testid="mfa-challenge-verify"
+            >
+              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Verificar
+            </Button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}

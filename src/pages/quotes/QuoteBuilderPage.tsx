@@ -1,0 +1,825 @@
+/**
+ * QuoteBuilderPage — Módulo de criação/edição de orçamentos
+ * Refatorado: lógica em useQuoteBuilderState, UI em sub-componentes.
+ */
+
+import { useEffect, useState } from 'react';
+import { PageSEO } from '@/components/seo/PageSEO';
+import { cn } from '@/lib/utils';
+
+import { Button } from '@/components/ui/button';
+import { CurrencyInput } from '@/components/ui/currency-input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { DeliveryModeToggle } from '@/pages/quotes/components/DeliveryModeToggle';
+
+import {
+  FileText,
+  Package,
+  
+  AlertTriangle,
+  Calendar as CalendarIcon,
+  Sparkles,
+  ExternalLink,
+  Info,
+  MessageSquare,
+  ChevronDown,
+  RotateCcw,
+} from 'lucide-react';
+// FIX-C01: adicionado startOfDay para corrigir Calendar disabled — hoje sempre era bloqueado
+import { format, addDays, startOfDay } from 'date-fns';
+
+
+import { QuoteItemEditorSheet } from '@/components/quotes/QuoteItemEditorSheet';
+import { CompanyContactSelector } from '@/components/quotes/CompanyContactSelector';
+import { QuoteAutoSave } from '@/components/quotes/QuoteAutoSave';
+import { QuoteConcurrencyAlert } from '@/components/quotes/QuoteConcurrencyAlert';
+import { QuoteBuilderStepper } from '@/components/quotes/QuoteBuilderStepper';
+import { QuoteBuilderSummaryColumn } from '@/components/quotes/QuoteBuilderSummaryColumn';
+import { QuoteBuilderSkeleton } from '@/components/quotes/QuoteBuilderSkeleton';
+
+
+import { QuoteBuilderProductSearch } from '@/components/quotes/QuoteBuilderProductSearch';
+import { useQuoteBuilderState } from '@/hooks/quotes';
+import { useUnsavedChangesGuard } from '@/hooks/common';
+import { UnsavedChangesDialog } from '@/components/common/UnsavedChangesDialog';
+import { ConfirmDialog } from '@/components/common/ConfirmDialog';
+import { getQuoteStatusLabel } from '@/lib/quote-status-config';
+import { formatQuoteNumberLabel } from '@/utils/quote-number';
+import { useNextQuoteNumberPreview } from '@/hooks/quotes/useNextQuoteNumberPreview';
+
+/**
+ * Subtítulo dinâmico do quote_number.
+ * - Modo edição com número válido → "Nº NNNNN/YY · <status>"
+ * - Modo edição sem número (null/malformado) → fallback "Nº indisponível"
+ * - Modo criação → prévia "Próx. ~N/YY" (estimativa client-side)
+ */
+function QuoteNumberSubtitle({
+  rawQuoteNumber,
+  isEditMode,
+  currentStatus,
+}: {
+  rawQuoteNumber: string | null | undefined;
+  isEditMode: boolean;
+  currentStatus: string | null | undefined;
+}) {
+  const formatted = formatQuoteNumberLabel(rawQuoteNumber);
+  const preview = useNextQuoteNumberPreview(!isEditMode);
+  const statusLabel = currentStatus ? getQuoteStatusLabel(currentStatus) : null;
+
+  return (
+    <p
+      data-testid="quote-number-display"
+      className="truncate font-mono text-[11px] text-muted-foreground sm:text-xs"
+      title={formatted ? `Número do orçamento: ${formatted}` : undefined}
+    >
+      {isEditMode ? (
+        formatted ? (
+          <span data-testid="quote-number-display-valid">
+            Nº <span className="font-semibold text-foreground">{formatted}</span>
+            {statusLabel ? <span className="ml-1 opacity-70">· {statusLabel}</span> : null}
+          </span>
+        ) : rawQuoteNumber ? (
+          // Existe valor no banco mas fora do formato canônico NNNNN/YY.
+          <span data-testid="quote-number-display-malformed" className="italic">
+            Nº em formato inválido — contate o suporte
+          </span>
+        ) : (
+          <span data-testid="quote-number-display-missing" className="italic">
+            Nº indisponível
+          </span>
+        )
+      ) : preview ? (
+        <span data-testid="quote-number-display-preview">
+          Próx. <span className="font-semibold text-foreground">{preview}</span>{' '}
+          <span className="opacity-70">(gerado ao salvar)</span>
+        </span>
+      ) : (
+        <span data-testid="quote-number-display-fallback" className="italic">
+          Nº a ser gerado ao salvar
+        </span>
+      )}
+    </p>
+  );
+}
+
+export default function QuoteBuilderPage() {
+  const s = useQuoteBuilderState();
+  const { conflictInfo, dismissConflict, overwriteAndSave } = s;
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [resetDialogOpen, setResetDialogOpen] = useState(false);
+  // FIX-E04: tracks the last successful server save so QuoteAutoSave can reset its baseline.
+  const [serverSavedAt, setServerSavedAt] = useState<number | undefined>(undefined);
+  const conditionsStorageKey = `quote-builder:conditions-collapsed:${s.quoteId ?? 'new'}`;
+  const [conditionsCollapsed, setConditionsCollapsed] = useState<boolean>(false);
+  // Rehidrata o estado de colapso quando o ID do orçamento muda (incl. transição novo → salvo).
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      setConditionsCollapsed(window.localStorage.getItem(conditionsStorageKey) === '1');
+    } catch {
+      setConditionsCollapsed(false);
+    }
+  }, [conditionsStorageKey]);
+  const toggleConditionsCollapsed = () => {
+    setConditionsCollapsed((prev) => {
+      const next = !prev;
+      try {
+        window.localStorage.setItem(conditionsStorageKey, next ? '1' : '0');
+      } catch {
+        /* noop */
+      }
+      return next;
+    });
+  };
+  const { showDialog, confirmLeave, cancelLeave, message } = useUnsavedChangesGuard({
+    hasUnsavedChanges,
+  });
+
+  if (s.loadingQuote) {
+    return <QuoteBuilderSkeleton />;
+  }
+
+  // FIX-E04: wrap handleSaveQuote to signal QuoteAutoSave when a server save succeeds.
+  const handleSaveQuoteWithSignal = async (
+    ...args: Parameters<typeof s.handleSaveQuote>
+  ) => {
+    const result = await s.handleSaveQuote(...args);
+    // handleSaveQuote returns updated_at string on success, undefined on failure/early-return
+    if (result !== undefined) setServerSavedAt(Date.now());
+    return result;
+  };
+
+  return (
+    <>
+      <PageSEO
+        title={s.quoteId ? 'Editar Orçamento' : 'Novo Orçamento'}
+        description="Crie e edite orçamentos com seleção de produtos e personalização."
+        path="/orcamentos/novo"
+        noIndex
+      />
+
+      <QuoteAutoSave
+        quoteId={s.quoteId}
+        data={{
+          clientId: s.clientId,
+          contactId: s.contactId,
+          validUntil: s.validUntil,
+          discountType: s.discountType,
+          discountValue: s.discountValue,
+          // Inclui a margem de negociação na detecção de alterações para que
+          // ajustar SÓ o markup também dispare o aviso de "alterações não salvas".
+          negotiationMarkup: s.negotiationMarkup,
+          paymentMethod: s.paymentMethod,
+          paymentTerms: s.paymentTerms,
+          deliveryTime: s.deliveryTime,
+          shippingType: s.shippingType,
+          shippingCost: s.shippingCost,
+          notes: s.notes,
+          items: s.items,
+        }}
+        onChange={setHasUnsavedChanges}
+        serverSavedAt={serverSavedAt}
+        className="sr-only pointer-events-none"
+      />
+
+      {conflictInfo && (
+        <div className="px-4 pt-4 lg:px-6 xl:px-8">
+          <QuoteConcurrencyAlert
+            conflict={conflictInfo}
+            onReload={() => {
+              dismissConflict();
+              window.location.reload();
+            }}
+            onOverwrite={() => overwriteAndSave()}
+          />
+        </div>
+      )}
+
+      <div className="mx-auto w-full max-w-[1920px] animate-fade-in space-y-2 px-3 pb-[calc(6rem+env(safe-area-inset-bottom))] pt-2 sm:space-y-3 sm:px-4 sm:pb-24 sm:pt-3 lg:px-6 lg:pb-28 xl:px-8">
+        <div aria-live="polite" className="sr-only" role="status" id="quote-builder-announcer" />
+
+        {/* LAYOUT-FIX: header + stepper na MESMA linha (inline à direita do título)
+            e sticky no topo para preservar contexto sem consumir altura extra. */}
+        <div
+          className="sticky isolate z-40 -mx-3 bg-background px-3 py-2 sm:-mx-4 sm:px-4 lg:-mx-6 lg:px-6 xl:-mx-8 xl:px-8"
+          style={{ top: 'calc(var(--header-h, 56px) + var(--breadcrumb-h, 40px))' }}
+        >
+          <div className="flex flex-row items-center gap-2 sm:gap-4 lg:gap-6">
+            <div className="flex min-w-0 shrink items-center gap-2 sm:gap-3">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary sm:h-10 sm:w-10">
+                <FileText className="h-4 w-4 sm:h-5 sm:w-5" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <h1
+                  data-testid={
+                    s.isEditMode ? 'page-title-orcamento-editar' : 'page-title-orcamento-novo'
+                  }
+                  className="truncate font-display text-lg font-bold leading-tight tracking-tight sm:text-xl"
+                >
+                  {s.isEditMode
+                    ? s.currentStatus === 'draft'
+                      ? 'Editar Rascunho'
+                      : s.currentStatus
+                        ? `Editar Proposta · ${getQuoteStatusLabel(s.currentStatus)}`
+                        : 'Editar Orçamento'
+                    : 'Novo Orçamento'}
+                </h1>
+                <QuoteNumberSubtitle
+                  rawQuoteNumber={s.quoteNumber}
+                  isEditMode={s.isEditMode}
+                  currentStatus={s.currentStatus}
+                />
+              </div>
+            </div>
+
+            {/* RESET — descarta empresa, contato, itens e condições do orçamento
+                em construção. Em modo edição, redireciona para /orcamentos/novo
+                para não sobrescrever o orçamento persistido. */}
+            <TooltipProvider delayDuration={200}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    data-testid="quote-reset-button"
+                    onClick={() => setResetDialogOpen(true)}
+                    className="shrink-0 gap-1.5 text-muted-foreground hover:text-destructive"
+                  >
+                    <RotateCcw className="h-3.5 w-3.5" />
+                    <span className="hidden sm:inline">Reset</span>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  Limpar empresa, contato, itens e condições do orçamento atual
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
+            {/* Stepper ocupa todo o espaço restante após o botão Reset,
+                estendendo a timeline até a borda direita da página. */}
+            <div className="min-w-0 w-full flex-1 lg:flex lg:justify-end">
+              <QuoteBuilderStepper
+                completedSteps={s.completedSteps}
+                activeStep={s.activeStep}
+                onStepClick={s.goToStep}
+                compact
+              />
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+        <div data-testid="quote-builder-grid" className="grid min-w-0 gap-4 lg:grid-cols-12">
+          {/* COL 1 — Cliente + Condições */}
+          <div className="min-w-0 lg:col-span-5">
+            <div className="space-y-3 pr-1">
+              <div
+                className={cn(
+                  'space-y-4 rounded-2xl border bg-card p-4',
+                  s.validationErrors.includes('empresa') || s.validationErrors.includes('contato')
+                    ? 'border-destructive/50'
+                    : 'border-border/50',
+                )}
+              >
+                <CompanyContactSelector
+                  companyId={s.clientId}
+                  contactId={s.contactId}
+                  onCompanyChange={s.setClientId}
+                  onContactChange={s.setContactId}
+                  onCompanyInfoChange={s.setCompanyInfo}
+                  onContactInfoChange={s.setContactInfo}
+                />
+                {(s.validationErrors.includes('empresa') ||
+                  s.validationErrors.includes('contato')) && (
+                  <p className="flex items-center gap-1 text-xs text-destructive">
+                    <AlertTriangle className="h-3 w-3 shrink-0" />
+                    {s.validationErrors.includes('empresa')
+                      ? 'Selecione uma empresa'
+                      : 'Selecione um contato'}
+                  </p>
+                )}
+              </div>
+
+              {/* Condições Comerciais (inclui Validade + Forma + Prazo de Pagamento na mesma linha) */}
+              <div
+                className={cn(
+                  'space-y-3 rounded-2xl border bg-card p-4',
+                  s.validationErrors.includes('prazo_pagamento') ||
+                    s.validationErrors.includes('prazo_entrega') ||
+                    s.validationErrors.includes('frete') ||
+                    s.validationErrors.includes('valor_frete')
+                    ? 'border-destructive/50'
+                    : 'border-border/50',
+                )}
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <h3 className="flex items-center gap-2 font-display text-sm font-semibold">
+                    <Package className="h-4 w-4 text-primary" />
+                    Condições
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={toggleConditionsCollapsed}
+                    aria-expanded={!conditionsCollapsed}
+                    aria-controls="quote-conditions-body"
+                    aria-label={conditionsCollapsed ? 'Expandir condições' : 'Colapsar condições'}
+                    title={conditionsCollapsed ? 'Expandir' : 'Colapsar'}
+                    className="inline-flex h-7 w-7 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    <ChevronDown
+                      className={cn(
+                        'h-4 w-4 transition-transform duration-200',
+                        conditionsCollapsed && '-rotate-90',
+                      )}
+                    />
+                  </button>
+                </div>
+                {!conditionsCollapsed && (
+                  <div id="quote-conditions-body" className="space-y-3">
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  {/* Validade | Proposta */}
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground">
+                      <span className="mr-1">📅</span>Validade | Proposta
+                    </Label>
+                    <Select
+                      value={s.validityDays}
+                      onValueChange={(val) => {
+                        s.setValidityDays(val);
+                        s.setValidUntil(
+                          format(addDays(new Date(), parseInt(val, 10) || 1), 'yyyy-MM-dd'),
+                        );
+                      }}
+                    >
+                      <SelectTrigger className="h-8 text-xs [&>span]:flex-1 [&>span]:text-left [&>span]:leading-none">
+                        <SelectValue placeholder="Selecione" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1">1 dia</SelectItem>
+                        <SelectItem value="3">3 dias</SelectItem>
+                        <SelectItem value="7">7 dias</SelectItem>
+                        <SelectItem value="15">15 dias</SelectItem>
+                        <SelectItem value="30">30 dias</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Forma | Pagamento */}
+                  <div className="space-y-1.5">
+                    <Label
+                      className={cn(
+                        'text-xs',
+                        s.validationErrors.includes('forma_pagamento')
+                          ? 'text-destructive'
+                          : 'text-muted-foreground',
+                      )}
+                    >
+                      Forma | Pagamento{' '}
+                      {s.validationErrors.includes('forma_pagamento') && (
+                        <span className="ml-1">*</span>
+                      )}
+                    </Label>
+                    <Select
+                      data-testid="payment-method-select-root"
+                      value={s.paymentMethod}
+                      onValueChange={s.setPaymentMethod}
+                    >
+                      <SelectTrigger
+                        data-testid="payment-method-select"
+                        className={cn(
+                          'h-8 text-xs [&>span]:flex-1 [&>span]:text-left [&>span]:leading-none',
+                          s.validationErrors.includes('forma_pagamento') && 'border-destructive',
+                        )}
+                      >
+                        <SelectValue placeholder="Selecione" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="boleto">Boleto Bancário</SelectItem>
+                        <SelectItem value="pix_transferencia">
+                          Transferência Bancária / Pix
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Prazo | Pagamento */}
+                  <div className="space-y-1.5">
+                    <Label
+                      className={cn(
+                        'text-xs',
+                        s.validationErrors.includes('prazo_pagamento')
+                          ? 'text-destructive'
+                          : 'text-muted-foreground',
+                      )}
+                    >
+                      Prazo | Pagamento{' '}
+                      {s.validationErrors.includes('prazo_pagamento') && (
+                        <span className="ml-1">*</span>
+                      )}
+                    </Label>
+                    <Select
+                      data-testid="payment-terms-select-root"
+                      value={s.paymentTerms}
+                      onValueChange={s.setPaymentTerms}
+                    >
+                      <SelectTrigger
+                        data-testid="payment-terms-select"
+                        className={cn(
+                          'h-8 text-xs [&>span]:flex-1 [&>span]:text-left [&>span]:leading-none',
+                          s.validationErrors.includes('prazo_pagamento') && 'border-destructive',
+                        )}
+                      >
+                        <SelectValue placeholder="Selecione" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="7_dias">7 dias a partir da entrega</SelectItem>
+                        <SelectItem value="14_dias">14 dias a partir da entrega</SelectItem>
+                        <SelectItem value="21_dias">21 dias a partir da entrega</SelectItem>
+                        <SelectItem value="28_dias">28 dias a partir da entrega</SelectItem>
+                        <SelectItem value="7_14_dias">7 e 14 dias a partir da entrega</SelectItem>
+                        <SelectItem value="50_50">50/50 | 50% entrada / 50% após entrega</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  </div>
+
+
+                {/* Entrega */}
+                <div className="mt-1 space-y-1.5 border-t border-border/30 pt-3">
+                  <div
+                    className="flex flex-wrap items-center justify-between gap-2"
+                    data-testid="delivery-label-container"
+                  >
+                    <div className="flex items-center gap-1.5">
+                      <Label
+                        data-testid="delivery-label"
+                        className={cn(
+                          'text-xs',
+                          s.validationErrors.includes('prazo_entrega')
+                            ? 'text-destructive'
+                            : 'text-muted-foreground',
+                        )}
+                      >
+                        Prazo | Entrega{' '}
+                        {s.validationErrors.includes('prazo_entrega') && (
+                          <span className="ml-1">*</span>
+                        )}
+                      </Label>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span
+                              data-testid="delivery-info-tooltip-trigger"
+                              className="inline-flex cursor-help align-middle text-muted-foreground/60 transition-colors hover:text-primary"
+                            >
+                              <Info
+                                className="h-3 w-3"
+                                aria-label="Informação sobre prazo de entrega"
+                              />
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent
+                            data-testid="delivery-info-tooltip-content"
+                            side="top"
+                            className="max-w-xs text-[11px] leading-relaxed"
+                          >
+                            Antes de assumir o compromisso com seu Cliente, valide com todo o time
+                            (Fornecedores, Coordenador de Compras, Coordenador de Logística) a
+                            viabilidade do prazo.
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                      <DeliveryModeToggle
+                        value={s.deliveryMode}
+                        onChange={s.handleDeliveryModeChange}
+                      />
+
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+
+                    <div>
+                   {s.deliveryMode === 'prazo' ? (
+                    <Select
+                      data-testid="delivery-time-select-root"
+                      value={s.deliveryTime}
+                      onValueChange={s.setDeliveryTime}
+                    >
+                      <SelectTrigger
+                        data-testid="delivery-time-select"
+                        className={cn(
+                          'h-8 text-xs [&>span]:flex-1 [&>span]:text-left [&>span]:leading-none',
+                          s.validationErrors.includes('prazo_entrega') && 'border-destructive',
+                        )}
+                      >
+                        <SelectValue placeholder="Selecione" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="7_dias">7 dias | Após aprovação</SelectItem>
+                        <SelectItem value="14_dias">14 dias | Após aprovação</SelectItem>
+                        <SelectItem value="21_dias">21 dias | Após aprovação</SelectItem>
+                        <SelectItem value="28_dias">28 dias | Após aprovação</SelectItem>
+                        <SelectItem value="45_dias">45 dias | Após aprovação</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          data-testid="delivery-date-picker"
+                          variant="outline"
+                          className={cn(
+                            'h-8 w-full justify-start text-left text-xs font-normal',
+                            !s.deliveryDate && 'text-muted-foreground',
+                            s.validationErrors.includes('prazo_entrega') && 'border-destructive',
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-3.5 w-3.5" />
+                          {s.deliveryDate
+                            ? format(s.deliveryDate, 'dd/MM/yyyy')
+                            : 'Selecione a data'}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        className="w-[var(--radix-popover-trigger-width)] rounded-2xl border border-border/50 bg-card p-2 shadow-xl"
+                        align="start"
+                      >
+                        <Calendar
+                          mode="single"
+                          selected={s.deliveryDate}
+                          onSelect={s.handleDeliveryDateChange}
+                          disabled={(date) => date < startOfDay(new Date())}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                   )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Frete */}
+                <div className="mt-1 border-t border-border/30 pt-3">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end" data-testid="freight-grid">
+                    <div className="space-y-1" data-testid="freight-grid-col-1">
+                      <Label
+                        htmlFor="freight-select"
+                        className={cn(
+                          'text-xs',
+                          s.validationErrors.includes('frete')
+                            ? 'text-destructive'
+                            : 'text-muted-foreground',
+                        )}
+                      >
+                        Frete {s.validationErrors.includes('frete') && <span className="ml-1">*</span>}
+                      </Label>
+                      <Select
+                        data-testid="shipping-type-select-root"
+                        value={s.shippingType}
+                        onValueChange={s.setShippingType}
+                      >
+                        <SelectTrigger
+                          id="freight-select"
+                          data-testid="shipping-type-select"
+                          aria-label="Modalidade de frete"
+                          className={cn(
+                            'h-8 text-xs [&>span]:flex-1 [&>span]:text-left [&>span]:leading-none',
+                            s.validationErrors.includes('frete') && 'border-destructive',
+                          )}
+                        >
+                          <SelectValue placeholder="Selecione" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="cif">CIF | Frete grátis</SelectItem>
+                          <SelectItem value="fob">FOB | Repassado ao cliente</SelectItem>
+                          <SelectItem value="fob_pre">FOB | Valor pré negociado</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    {s.shippingType === 'fob_pre' && (
+                      <div className="space-y-1" data-testid="freight-grid-col-2">
+                        <Label
+                          htmlFor="freight-value"
+                          className={cn(
+                            'text-xs',
+                            s.validationErrors.includes('valor_frete')
+                              ? 'text-destructive'
+                              : 'text-muted-foreground',
+                          )}
+                        >
+                          Valor R${' '}
+                          {s.validationErrors.includes('valor_frete') && (
+                            <span className="ml-1">*</span>
+                          )}
+                        </Label>
+                        <CurrencyInput
+                          id="freight-value"
+                          data-testid="shipping-cost-input"
+                          aria-label="Valor do frete em reais"
+                          value={s.shippingCost || 0}
+                          onChange={(n) => s.setShippingCost(Math.max(0, n))}
+                          className={cn(
+                            'h-8 text-xs',
+                            s.validationErrors.includes('valor_frete') && 'border-destructive',
+                          )}
+                        />
+                      </div>
+                    )}
+                  </div>
+                  {s.validationErrors.includes('frete') && (
+                    <p className="mt-0.5 flex items-center gap-1 text-[10px] text-destructive">
+                      <AlertTriangle className="h-3 w-3" />
+                      Selecione a modalidade de frete
+                    </p>
+                  )}
+                </div>
+
+
+
+
+
+
+                {s.companyInfo?.id && (
+                  <a
+                    href={`/ferramentas/bi?clientId=${s.companyInfo.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-3 rounded-2xl border border-dashed border-primary/30 bg-primary/5 p-3 transition-colors hover:border-primary/50 hover:bg-primary/10"
+                  >
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                      <Sparkles className="h-4 w-4 text-primary" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-display text-sm font-semibold leading-tight">
+                        Inteligência completa deste cliente
+                      </p>
+                      <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">
+                        Histórico, afinidade, sazonalidade e tendência do setor
+                      </p>
+                    </div>
+                    <ExternalLink className="h-3.5 w-3.5 shrink-0 text-muted-foreground transition-colors group-hover:text-primary" />
+                  </a>
+                )}
+                  </div>
+                )}
+              </div>
+
+              {/* BUG-K FIX: Notes UI — previously only populated via templates */}
+              <div className="space-y-3 rounded-2xl border border-border/50 bg-card p-4">
+                <h3 className="flex items-center gap-2 font-display text-sm font-semibold">
+                  <MessageSquare className="h-4 w-4 text-primary" />
+                  Observações
+                </h3>
+                <div className="space-y-1.5">
+                  <Label className="text-xs text-muted-foreground">Para o cliente</Label>
+                  <Textarea
+                    data-testid="quote-notes-input"
+                    value={s.notes || ''}
+                    onChange={(e) => s.setNotes(e.target.value)}
+                    placeholder="Observações visíveis na proposta..."
+                    rows={3}
+                    maxLength={2000}
+                    className="resize-none text-xs"
+                  />
+                  {s.notes && (
+                    <p className="text-right text-[10px] text-muted-foreground">
+                      {s.notes.length}/2000
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* COL 2 removida — agora migrada para QuoteItemEditorSheet (drawer lateral) */}
+
+
+          {/* COL 3 — Resumo */}
+          <QuoteBuilderSummaryColumn
+            items={s.items}
+            activeItemIndex={s.activeItemIndex}
+            setActiveItemIndex={s.setActiveItemIndex}
+            removeItem={s.removeItem}
+            discountType={s.discountType}
+            setDiscountType={s.setDiscountType}
+            discountValue={s.discountValue}
+            setDiscountValue={s.setDiscountValue}
+            discountAmount={s.discountAmount}
+            total={s.total}
+            shippingType={s.shippingType}
+            shippingCost={s.shippingCost}
+            isFormValid={s.isFormValid}
+            isDraftValid={s.isDraftValid}
+            validationErrors={s.validationErrors}
+            quotesLoading={s.quotesLoading}
+            isEditMode={s.isEditMode}
+            formatCurrency={s.formatCurrency}
+            calculateItemPersonalizationTotal={s.calculateItemPersonalizationTotal}
+            calculateItemTotal={s.calculateItemTotal}
+            onSave={handleSaveQuoteWithSignal}
+            maxDiscountPercent={s.maxDiscountPercent}
+            isDiscountExceeded={s.isDiscountExceeded}
+            negotiationMarkup={s.negotiationMarkup}
+            setNegotiationMarkup={s.setNegotiationMarkup}
+            realSubtotal={s.realSubtotal}
+            realDiscountPercent={s.realDiscountPercent}
+            confirmItemPrice={s.confirmItemPrice}
+            confirmAllStalePrices={s.confirmAllStalePrices}
+            onReorder={(newItems) => s.setItems(newItems)}
+            quoteId={s.quoteId ?? null}
+            setSkipAutosaveSortOrder={s.setSkipAutosaveSortOrder}
+            onAddProduct={() => s.setProductSearchOpen(true)}
+            onRestore={(item, index) =>
+              s.setItems((prev) => {
+                const next = [...prev];
+                next.splice(Math.min(index, next.length), 0, item);
+                return next;
+              })
+            }
+          />
+        </div>
+      </div>
+
+      <QuoteBuilderProductSearch
+        open={s.productSearchOpen}
+        onOpenChange={s.setProductSearchOpen}
+        productSearch={s.productSearch}
+        setProductSearch={s.setProductSearch}
+        filteredProducts={s.filteredProducts}
+        selectedProductForColor={s.selectedProductForColor}
+        setSelectedProductForColor={s.setSelectedProductForColor}
+        onProductClick={s.handleProductClick}
+        onAddWithColor={s.addProductWithColor}
+        formatCurrency={s.formatCurrency}
+      />
+
+      <QuoteItemEditorSheet
+        open={s.activeItemIndex !== null && !!s.items[s.activeItemIndex ?? -1]}
+        onOpenChange={(open) => {
+          if (!open) s.setActiveItemIndex(null);
+        }}
+        item={s.activeItemIndex !== null ? s.items[s.activeItemIndex] ?? null : null}
+        index={s.activeItemIndex}
+        onUpdateQuantity={s.updateItemQuantity}
+        onUpdatePrice={s.updateItemPrice}
+        onRemove={s.removeItem}
+        onRestore={(item, index) =>
+          s.setItems((prev) => {
+            const next = [...prev];
+            next.splice(Math.min(index, next.length), 0, item);
+            return next;
+          })
+        }
+        onConfirmPrice={s.confirmItemPrice}
+        onPersonalizationsChange={s.handlePersonalizationsChange}
+        formatCurrency={s.formatCurrency}
+        onAddProduct={() => s.setProductSearchOpen(true)}
+        hasUnsavedChanges={hasUnsavedChanges}
+      />
+
+
+      <UnsavedChangesDialog
+        open={showDialog}
+        onConfirm={confirmLeave}
+        onCancel={cancelLeave}
+        message={message}
+      />
+
+      <ConfirmDialog
+        open={resetDialogOpen}
+        onOpenChange={setResetDialogOpen}
+        onConfirm={() => {
+          s.resetQuote();
+          setResetDialogOpen(false);
+          setHasUnsavedChanges(false);
+        }}
+        title={s.isEditMode ? 'Sair desta edição?' : 'Limpar orçamento atual?'}
+        description={
+          s.isEditMode
+            ? 'Você será redirecionado para um novo orçamento em branco. Alterações não salvas serão descartadas.'
+            : 'Empresa, contato, produtos e condições inseridos serão removidos. Esta ação não pode ser desfeita.'
+        }
+        confirmText={s.isEditMode ? 'Sair e começar do zero' : 'Sim, limpar tudo'}
+        cancelText="Cancelar"
+        variant="destructive"
+      />
+    </>
+  );
+}

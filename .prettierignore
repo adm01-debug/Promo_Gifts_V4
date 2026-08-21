@@ -1,0 +1,16 @@
+dist
+build
+node_modules
+coverage
+.next
+*.min.js
+*.min.css
+src/integrations/supabase/types.ts
+src/integrations/supabase/client.ts
+bun.lock
+bun.lockb
+package-lock.json
+supabase/migrations
+
+# Bug Lovable: TSX sintaticamente inválido (brace imbalance) — aguardando fix
+src/pages/tools/VisualSearchPage.tsx

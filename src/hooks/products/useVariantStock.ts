@@ -1,0 +1,293 @@
+/**
+ * useVariantStock — Hook de estoque por variante (refatorado)
+ * Fetcher em stock/stockFetcher.ts, alertas em stock/stockAlerts.ts
+ */
+import { useState, useMemo, useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  type ProductStockSummary,
+  type StockFilters,
+  type StockDashboardSummary,
+  type VariantStock,
+  defaultStockFilters,
+} from '@/types/stock';
+import { fetchAndProcessStockData } from '@/hooks/stock/stockFetcher';
+import { applyStockFilters, buildStockIndexes } from '@/lib/inventory/stock-filter';
+
+/** Hook principal do dashboard de estoque: busca dados, aplica filtros e expõe ações de refresh/dismiss. */
+export function useVariantStock() {
+  const [filters, setFilters] = useState<StockFilters>(defaultStockFilters);
+  const [dismissedAlerts, setDismissedAlerts] = useState<Set<string>>(new Set());
+  const queryClient = useQueryClient();
+
+  const { data, isLoading, isFetching, error } = useQuery({
+    queryKey: ['variant-stock-data'],
+    queryFn: fetchAndProcessStockData,
+    staleTime: 10 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    retry: 3,
+    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000),
+  });
+
+  const productStocks = useMemo(() => data?.productStocks ?? [], [data?.productStocks]);
+  const rawAlerts = useMemo(() => data?.alerts ?? [], [data?.alerts]);
+  const futureStock = useMemo(() => data?.futureStock ?? [], [data?.futureStock]);
+  const degradedTables = useMemo(() => data?.degradedTables ?? [], [data?.degradedTables]);
+  const isDegraded = degradedTables.length > 0;
+
+  const alerts = useMemo(() => {
+    if (dismissedAlerts.size === 0) return rawAlerts;
+    return rawAlerts.filter((a) => !dismissedAlerts.has(a.id));
+  }, [rawAlerts, dismissedAlerts]);
+
+  const loadingProgress = useMemo(() => {
+    if (isLoading) return { step: 'Carregando dados em paralelo...', current: 0, total: 3 };
+    return { step: '', current: 3, total: 3 };
+  }, [isLoading]);
+
+  const fetchStockData = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: ['variant-stock-data'] });
+  }, [queryClient]);
+
+  const summary = useMemo((): StockDashboardSummary => {
+    // Single-loop aggregation for O(n) instead of O(8n)
+    let totalVariants = 0;
+    let productsInStock = 0,
+      productsLowStock = 0,
+      productsCritical = 0,
+      productsOutOfStock = 0;
+    let variantsInStock = 0,
+      variantsLowStock = 0,
+      variantsCritical = 0,
+      variantsOutOfStock = 0;
+    let daysSum = 0;
+    const colorSet = new Set<string>();
+
+    for (const p of productStocks) {
+      switch (p.overallStatus) {
+        case 'in_stock':
+        case 'incoming':
+        case 'overstocked':
+          // SSOT: produtos com reposição em trânsito ou excesso de estoque
+          // ainda estão saudáveis no dashboard; contar como "in stock"
+          // garante que os 4 buckets fechem com `totalProducts` (bug #2 —
+          // 305 produtos ficavam fora dos 4 cartões).
+          productsInStock++;
+          break;
+        case 'low_stock':
+          productsLowStock++;
+          break;
+        case 'critical':
+          productsCritical++;
+          break;
+        case 'out_of_stock':
+          productsOutOfStock++;
+          break;
+      }
+
+      for (const v of p.variants) {
+        totalVariants++;
+        if (v.colorName) colorSet.add(v.colorName);
+        daysSum += v.daysUntilStockout || 0;
+        switch (v.status) {
+          case 'in_stock':
+          case 'incoming':
+          case 'overstocked':
+            variantsInStock++;
+            break;
+          case 'low_stock':
+            variantsLowStock++;
+            break;
+          case 'critical':
+            variantsCritical++;
+            break;
+          case 'out_of_stock':
+            variantsOutOfStock++;
+            break;
+        }
+      }
+    }
+
+    let criticalAlerts = 0;
+    for (const a of alerts) {
+      if (a.severity === 'error') criticalAlerts++;
+    }
+
+    return {
+      totalProducts: productStocks.length,
+      totalVariants,
+      totalColors: colorSet.size,
+      productsInStock,
+      productsLowStock,
+      productsCritical,
+      productsOutOfStock,
+      variantsInStock,
+      variantsLowStock,
+      variantsCritical,
+      variantsOutOfStock,
+      totalStockValue: 0,
+      totalAvailableValue: 0,
+      averageDaysOfStock: daysSum / Math.max(1, totalVariants),
+      stockTurnoverRate: 0,
+      totalAlerts: alerts.length,
+      criticalAlerts,
+      incomingStockValue: 0,
+    };
+  }, [productStocks, alerts]);
+
+  // Uma única passagem O(N×M) para todas as facetas de filtro — 4 scans colapsados em 1.
+  const { availableCategories, availableSuppliers, availableColorGroups, allColors } =
+    useMemo(() => {
+      const catMap = new Map<string, number>();
+      const supMap = new Map<string, number>();
+      const colorGroupMap = new Map<string, number>();
+      const colorSet = new Set<string>();
+
+      for (const prod of productStocks) {
+        const cat = prod.categoryName || 'Sem categoria';
+        catMap.set(cat, (catMap.get(cat) || 0) + 1);
+        const sup = prod.supplierName || 'Sem fornecedor';
+        supMap.set(sup, (supMap.get(sup) || 0) + 1);
+        for (const v of prod.variants) {
+          if (v.colorName) {
+            colorSet.add(v.colorName);
+            if (v.colorName !== 'Padrão') {
+              colorGroupMap.set(v.colorName, (colorGroupMap.get(v.colorName) || 0) + 1);
+            }
+          }
+        }
+      }
+
+      return {
+        availableCategories: Array.from(catMap.entries())
+          .map(([name, count]) => ({ name, count }))
+          .sort((a, b) => a.name.localeCompare(b.name)),
+        availableSuppliers: Array.from(supMap.entries())
+          .map(([name, count]) => ({ name, count }))
+          .sort((a, b) => a.name.localeCompare(b.name)),
+        availableColorGroups: Array.from(colorGroupMap.entries())
+          .map(([name, count]) => ({ name, count }))
+          .sort((a, b) => b.count - a.count),
+        allColors: Array.from(colorSet).sort(),
+      };
+    }, [productStocks]);
+
+  // Índices normalizados (cor/categoria/fornecedor → produtos) — reutilizados entre mudanças de
+  // filtro sem reconstrução. Desacoplado de `alerts` — productsWithAlerts é construído lazy em
+  // applyStockFilters, evitando rebuild do índice inteiro ao descartar alertas.
+  const stockIndexes = useMemo(() => buildStockIndexes(productStocks), [productStocks]);
+
+  const filteredProducts = useMemo(
+    () => applyStockFilters(productStocks, filters, alerts, stockIndexes),
+    [productStocks, filters, alerts, stockIndexes],
+  );
+
+  const criticalAlerts = useMemo(() => alerts.filter((a) => a.severity === 'error'), [alerts]);
+
+  const updateFilter = useCallback(
+    <K extends keyof StockFilters>(key: K, value: StockFilters[K]) => {
+      setFilters((prev) => ({ ...prev, [key]: value }));
+    },
+    [],
+  );
+
+  const resetFilters = useCallback(() => setFilters(defaultStockFilters), []);
+
+  const dismissAlert = useCallback((alertId: string) => {
+    setDismissedAlerts((prev) => new Set(prev).add(alertId));
+  }, []);
+
+  const dismissAllAlerts = useCallback(() => {
+    setDismissedAlerts((prev) => {
+      const next = new Set(prev);
+      rawAlerts.forEach((a) => next.add(a.id));
+      return next;
+    });
+  }, [rawAlerts]);
+
+  const dismissAlertsBySeverity = useCallback(
+    (severity: 'error' | 'info' | 'warning') => {
+      setDismissedAlerts((prev) => {
+        const next = new Set(prev);
+        rawAlerts.filter((a) => a.severity === severity).forEach((a) => next.add(a.id));
+        return next;
+      });
+    },
+    [rawAlerts],
+  );
+
+  const getProductStock = useCallback(
+    (productId: string): ProductStockSummary | undefined => {
+      return productStocks.find((p) => p.productId === productId);
+    },
+    [productStocks],
+  );
+
+  const getColorStock = useCallback(
+    (productId: string, colorName: string): VariantStock[] => {
+      const product = productStocks.find((p) => p.productId === productId);
+      return product?.variants.filter((v) => v.colorName === colorName) ?? [];
+    },
+    [productStocks],
+  );
+
+  return {
+    isLoading,
+    isFetching,
+    loadingProgress,
+    productStocks: filteredProducts,
+    allProductStocks: productStocks,
+    summary,
+    alerts,
+    criticalAlerts,
+    futureStock,
+    filters,
+    allColors,
+    availableCategories,
+    availableSuppliers,
+    availableColorGroups,
+    fetchStockData,
+    updateFilter,
+    resetFilters,
+    dismissAlert,
+    dismissAllAlerts,
+    dismissAlertsBySeverity,
+    error,
+    isDegraded,
+    degradedTables,
+    setFilters,
+    getProductStock,
+    getColorStock,
+  };
+}
+
+/** Versão simplificada do hook de estoque escoped a um único produto. */
+export function useProductVariantStock(productId: string) {
+  const {
+    productStocks: _productStocks,
+    alerts,
+    isLoading,
+    fetchStockData,
+    allProductStocks,
+  } = useVariantStock();
+
+  const productStock = useMemo(
+    () => allProductStocks.find((p) => p.productId === productId),
+    [allProductStocks, productId],
+  );
+  const productAlerts = useMemo(
+    () => alerts.filter((a) => a.productId === productId),
+    [alerts, productId],
+  );
+
+  return {
+    isLoading,
+    productStock,
+    variants: productStock?.variants ?? [],
+    colors: productStock?.availableColors ?? [],
+    alerts: productAlerts,
+    refresh: fetchStockData,
+  };
+}

@@ -1,0 +1,273 @@
+# Guia de Contribuição
+
+> Padrão de trabalho da Promo Brindes. Aplica-se a todo este repositório.
+
+> 🔒 **Banco canônico (SSOT):** `doufsxqlfjyuvxuezpln`
+> (`https://doufsxqlfjyuvxuezpln.supabase.co`). Toda alteração de schema,
+> migration ou edge function tem como alvo exclusivo este projeto. Detalhes
+> e aviso sobre o projeto legado em [`SUPABASE_CONNECTION.md`](SUPABASE_CONNECTION.md).
+
+
+## 🎯 Princípio
+
+**Toda alteração em `main` passa por Pull Request.** Sem exceção. Mesmo configs.
+
+Razão: rastreabilidade + revisão automática (CodeRabbit) + ponto de gate antes de deploy.
+
+## 🔄 Fluxo de trabalho
+
+1. **Criar branch** a partir de `main`:
+   ```bash
+   git checkout main
+   git pull
+   git checkout -b <tipo>/<descricao-curta>
+   ```
+
+2. **Tipos de branch** (prefixo obrigatório):
+   - `feat/` — funcionalidade nova
+   - `fix/` — correção de bug
+   - `chore/` — manutenção, deps, configs
+   - `docs/` — documentação
+   - `refactor/` — refatoração sem mudança de comportamento
+   - `hotfix/` — correção urgente em produção
+
+3. **Commits** seguindo Conventional Commits:
+   ```
+   <tipo>(<escopo opcional>): descrição curta
+
+   Corpo opcional explicando o porquê.
+
+   Refs: #issue
+   ```
+   Exemplos:
+   - `feat(bitrix): adiciona sync de contatos para SPA Lalamove`
+   - `fix(edge-function): corrige timeout em webhook-evolution`
+   - `chore(deps): atualiza @supabase/supabase-js para 2.39.0`
+
+4. **Abrir Pull Request** com base em `main`.
+   - Preencher o template
+   - Aguardar revisão automática do **CodeRabbit** (~3 min)
+   - Endereçar comentários críticos
+   - Solicitar aprovação humana se mudança não-trivial
+
+5. **Merge** somente após:
+   - ✅ CodeRabbit revisou
+   - ✅ Comentários críticos / security resolvidos
+   - ✅ CI passou (se aplicável)
+   - ✅ Aprovação humana (para mudanças em produção)
+
+## 🚫 Proibido
+
+- `git push --force` em `main`
+- Commit direto em `main` (use sempre PR)
+- Commitar `.env`, tokens, chaves SSH ou qualquer credencial
+- Merge sem revisão do CodeRabbit
+- Renomear ou deletar tabelas/colunas Supabase sem backup `_backup_*_YYYYMMDD`
+- Editar Edge Functions direto no Dashboard do Supabase (ver seção "🔁 Edge Functions")
+
+## 🔐 Secrets
+
+- **Nunca** commitar tokens, credenciais ou URLs com auth embutida
+- Usar `Deno.env.get()` em Edge Functions
+- Usar `process.env` (com validação) em Node.js
+- Configurar via dashboard Supabase, n8n credentials ou GitHub Secrets
+
+## 🧪 Antes de abrir PR
+
+Checklist mínimo:
+- [ ] Código roda local (ou justifica por que não dá pra testar local)
+- [ ] Sem `console.log` esquecidos com payloads sensíveis
+- [ ] Sem secrets hardcoded
+- [ ] Migrations SQL com backup das tabelas afetadas
+- [ ] Variáveis de ambiente documentadas se forem novas
+- [ ] `npm run ssot:all` verde (Gate 0 + guard canônico + hosts em docs)
+
+## 🔒 Checklist de SSOT (revisão de PR — obrigatório)
+
+> **Banco canônico:** `doufsxqlfjyuvxuezpln` — `https://doufsxqlfjyuvxuezpln.supabase.co`  
+> **Legado (informacional apenas):** `pqpdolkaeqlyzpdpbizo` — sem dados reais, NUNCA operacional.
+
+Todo revisor de PR (humano ou automático) DEVE marcar cada item abaixo antes do merge.
+Qualquer "não" bloqueia o merge.
+
+### 1. Código runtime
+- [ ] `src/integrations/supabase/client.ts` continua apontando para `doufsxqlfjyuvxuezpln`
+- [ ] `supabase/config.toml` continua com `project_id = "doufsxqlfjyuvxuezpln"`
+- [ ] Nenhum arquivo em `src/` ou `supabase/functions/` menciona o ID legado `pqpdolkaeqlyzpdpbizo` fora de comentário — projeto legado, NUNCA usar
+- [ ] Campos críticos do tipo `Product` intactos: `price`, `sale_price`, `shortDescription`, `category_id`, `category_name`
+
+### 2. Documentação (`.md`)
+- [ ] Nenhuma instrução operacional nova cita o ID legado `pqpdolkaeqlyzpdpbizo` — projeto legado, NUNCA operacional (deploy, migration, `supabase link`, `--project-ref`, connect)
+- [ ] Toda URL `https://<ref>.supabase.co` operacional aponta para o canônico
+- [ ] Menções históricas ao legado estão em pasta de arquivo (`docs/redeploy/`, `docs/audit/`, `docs/incidents/`, `docs/sessoes/`) OU trazem marcador na mesma linha / nas 3 anteriores: `[LEGACY_INFORMATIVO]`, `projeto legado`, `deprecated`, `⚠️`, `não use`, `NUNCA apontar`
+- [ ] Novos exemplos de `.env` usam placeholders (`<project_ref>`, `your_project`) e não IDs reais
+
+### 3. Migrations e schema
+- [ ] Toda migration SQL foi aplicada no canônico (`doufsxqlfjyuvxuezpln`), nunca no legado
+- [ ] `types.ts` regenerado contra o canônico após alterações de schema
+- [ ] Contagem de `export type` em `src/integrations/supabase/types.ts` não regrediu sem justificativa (Regra #4 do `CLAUDE.md`)
+
+### 4. Gates automáticos verdes
+Rodar antes do merge (ou aguardar CI):
+
+```bash
+npm run ssot:all
+```
+
+Isto executa em sequência:
+1. `scripts/validate-supabase-config.mjs` — Gate 0 (SSOT do client)
+2. `scripts/guard-canonical-project.mjs` — runtime + arquivos críticos + docs operacionais
+3. `scripts/check-docs-supabase-hosts.mjs` — verificação de hosts/links em `.md`
+
+Todos devem sair com exit 0. Falha em qualquer um bloqueia o merge.
+
+### 5. Se o PR precisa mencionar o legado
+Legítimo em três cenários:
+- **Log histórico** — colocar o arquivo sob `docs/redeploy/` ou `docs/audit/` (arquivos históricos por convenção).
+- **Aviso didático** — adicionar marcador de legado explícito na linha ou logo acima.
+- **Incidente/pós-mortem** — publicar em `docs/incidents/`.
+
+Se nenhum encaixa, o PR está introduzindo instrução operacional legado — **rejeitar**.
+
+
+
+## 🎓 Convenções específicas
+
+### Edge Functions Supabase
+- Sempre validar payload de webhook (assinatura HMAC ou shared secret)
+- Sempre retornar JSON estruturado em erros
+- Nunca vazar mensagem de erro com detalhes internos para o cliente
+
+### Migrations Supabase
+
+> **Decision 013 (ADR 0006, 2026-05-12):** O banco Supabase é a fonte da verdade.  
+> `supabase/migrations/` é histórico legado — não representa o estado atual do banco.  
+> Ver `docs/adr/0006-migration-baseline.md` para contexto completo.
+
+#### ⛔ NUNCA rodar `supabase db push` neste projeto
+O banco tem 209 migrations aplicadas que **não têm intersecção** com as 332 no repo.
+Rodar `db push` destruiria o banco. Ver `supabase/migrations/README.md`.
+
+#### Processo correto para DDL
+1. Escreva o SQL da migration
+2. Aplique via **MCP `apply_migration`** ou **Supabase Dashboard → SQL Editor**
+3. Confirme que a versão apareceu em `schema_migrations` no banco
+4. Commite o arquivo `.sql` no repo em `supabase/migrations/` com timestamp atual
+
+#### Regras de migration
+- Operações destrutivas isoladas em migrations próprias
+- Backup antes de DROP em tabela `_backup_<original>_YYYYMMDD`
+- RLS ON em qualquer tabela nova
+- `CREATE INDEX CONCURRENTLY` para índices em tabelas com dados (não bloqueia writes)
+
+### Bitrix24
+- `crm.item.get` com `entityTypeId=4` para Smart Companies (não usar `crm.company.get`)
+- OAuth2 sempre — webhook clássico está deprecado para nosso uso
+
+## 🔁 Edge Functions — fonte de verdade
+
+**Regra:** O repositório é a única fonte de verdade. Toda Edge Function vive em `supabase/functions/<slug>/index.ts` e chega ao canônico via CI.
+
+### Como funciona
+
+1. PR mergeado em `main` que toca `supabase/functions/**` dispara o workflow `Deploy Edge Functions` automaticamente.
+2. O workflow faz `supabase functions deploy` para o projeto canônico (`doufsxqlfjyuvxuezpln`).
+3. O workflow `edge-functions-drift-check` roda em cron diário 06:00 BRT, em todo PR que toca `supabase/functions/**`, e por dispatch manual. Compara hash sha256 entre repo e canônico. Falha o build se houver qualquer divergência.
+
+### Proibido
+
+- **Editar uma function direto no Dashboard do Supabase.** Cria drift e dispara issue automática com label `drift-check`.
+- Deletar function via Dashboard sem antes remover a pasta do repo via PR.
+- Disparar `supabase functions deploy` da máquina pessoal contra o canônico sem PR correspondente.
+
+### Permitido
+
+- Inspecionar logs no Dashboard.
+- Disparar `Deploy Edge Functions` manualmente via Actions UI (já roda do código do repo).
+- `supabase functions download` para coleta de evidência ou auditoria local.
+
+### Se você precisar de um hotfix urgente
+
+Mesmo emergência: a) commit no repo na branch `hotfix/<slug>`, b) merge fast-track no main, c) deixar o auto-deploy reconciliar. **Sem janela** para edição direta no Dashboard. O auto-deploy leva tipicamente 1-2 minutos por function.
+
+## 🛡️ Branch Protection Sentinel
+
+O workflow `.github/workflows/branch-protection-sentinel.yml` audita cada push em `main` e bloqueia padrões fora do esperado. Ele é defesa em profundidade — a prevenção real vem da Branch Protection nativa do GitHub (ver `.github/BRANCH_PROTECTION_SETUP.md`).
+
+### Padrões aceitos pelo sentinel
+
+| # | Padrão | Quando usar |
+|---|---|---|
+| 1 | **Squash merge** — subject termina em `(#NNN)` | PRs normais (recomendado) |
+| 2 | **Merge commit** — começa com `Merge pull request #NNN` | Quando se opta por merge commit |
+| 3 | **Bot oficial** — `github-actions[bot]`, `dependabot[bot]`, `renovate[bot]` | Automações GitHub |
+| 4 | **Família Lovable** — `lovable-*[bot]`, `gpt-engineer-*[bot]` | Builds Lovable Cloud |
+| 5 | **Release** — `chore(release): vX.Y.Z` | Tags de release |
+| 6 | **Allowlist estreita** — `docs(redeploy):`, `chore(workflows):`, `chore(docs):` | Push direto para casos documentados |
+| 7 | **Bypass de emergência** — `[skip-sentinel: motivo 5+ chars]` na mensagem | Hotfix / rollback urgente |
+
+### Bypass `[skip-sentinel]` — uso e abuso
+
+Para emergências onde abrir PR é impraticável (rollback de produção, secret expirado, deploy quebrando):
+
+```text
+fix: revert deploy quebrado [skip-sentinel: rollback emergencial INC-42]
+```
+
+**Regras:**
+- Motivo obrigatório, mínimo 5 caracteres não-espaço
+- Cada uso fica registrado no Summary do workflow + history do Git (auditável)
+- Se virar prática rotineira, é sinal de processo quebrado — abra issue pra discutir
+
+Exemplos **rejeitados**:
+- `[skip-sentinel]` (sem motivo)
+- `[skip-sentinel: ok]` (motivo curto demais)
+
+### Alterando regras do sentinel
+
+Mudanças em `scripts/sentinel-check.sh` ou nos workflows do sentinel disparam automaticamente o `Sentinel Self-Test`, que valida contra matriz de fixtures. PR só passa se 100% verde.
+
+Registre toda mudança em `.github/SENTINEL_CHANGELOG.md` — sobrevive a trocas de sessão e auditorias.
+
+### Documentos relacionados
+
+- `.github/workflows/branch-protection-sentinel.yml` — workflow principal
+- `.github/workflows/sentinel-self-test.yml` — matriz de fixtures
+- `scripts/sentinel-check.sh` — lógica de validação (testável)
+- `scripts/sentinel-validate-history.sh` — auditoria retroativa contra histórico
+- `.github/BRANCH_PROTECTION_SETUP.md` — como ligar Branch Protection real
+- `.github/SENTINEL_CHANGELOG.md` — histórico de regras do sentinel
+
+## 🔗 Cross-reference Issue ↔ PR (obrigatório)
+
+**Padrão do projeto**: toda issue de `tracking` / `tech-debt` / `discussion` deve ter referência bidirecional à PR que a originou (ou à PR que vai resolvê-la).
+
+### Quando uma PR descobre uma nova questão (que não vai resolver agora)
+
+1. **Abra a issue ANTES de mergear a PR**:
+   - Use o template **📌 Tracking / Discussion**
+   - Preencha o campo "PR de origem" (`#152`, por exemplo) — é **obrigatório**
+   - O bot `Cross-reference PR ↔ Issue` automaticamente adicionará comentário na PR
+2. **Mencione a issue no body da PR**:
+   - `Closes part of #155` ou `Refs #155`
+   - O bot automaticamente adicionará comentário na issue
+
+### Quando uma PR vai resolver uma issue existente
+
+1. **Mencione no body da PR**: `Closes #123`
+2. O bot adicionará comentário na issue avisando da PR aberta
+3. Quando a PR for mergeada, o bot adicionará comentário final com merge SHA
+4. GitHub fecha a issue automaticamente (devido ao `Closes`)
+
+### Por que isso importa
+
+Sem cross-reference, daqui a 3 meses ninguém lembra:
+- Por que essa issue foi aberta?
+- Quem fez o trabalho relacionado?
+- Tem PR antiga abandonada sobre o tema?
+
+Com cross-reference automática, qualquer dev (ou Claude em sessão futura) tem o contexto em 30 segundos: abrir a issue → ver comentário do bot → clicar na PR → ver merge SHA → ler diff e docs.
+
+### Workflow que faz isso
+
+`.github/workflows/cross-reference-issues.yml` — roda em `pull_request` e `issues` events. Idempotente (não duplica comentários).
