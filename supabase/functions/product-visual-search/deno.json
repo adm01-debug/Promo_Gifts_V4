@@ -1,0 +1,10 @@
+{
+  "$schema": "https://deno.land/x/denon/schema/v2.json",
+  "description": "Roboflow-powered product image search",
+  "main": "index.ts",
+  "scripts": {
+    "start": "deno run --allow-net --allow-env --allow-read index.ts",
+    "dev": "denon start",
+    "test": "deno test --allow-net --allow-env index.test.ts"
+  }
+}

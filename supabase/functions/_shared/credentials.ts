@@ -39,6 +39,13 @@ const ALIASES: Record<string, string[]> = {
   EXTERNAL_CRM_URL: ["CRM_SUPABASE_URL"],
   EXTERNAL_CRM_SERVICE_ROLE_KEY: ["CRM_SUPABASE_SERVICE_KEY"],
   EXTERNAL_CRM_ANON_KEY: ["CRM_SUPABASE_ANON_KEY"],
+  // FIX 2026-08-15: visual-search pedia HF_ACCESS_TOKEN, mas o secret
+  // configurado no projeto (Supabase Edge Function secrets) se chama
+  // HUGGINGFACE_API_KEY — nome diferente, mesma credencial. Sem esse alias,
+  // resolveCredential('HF_ACCESS_TOKEN') sempre retornava null e a busca
+  // visual quebrava com 503 "AI_CREDENTIALS_MISSING" mesmo com a chave
+  // configurada.
+  HF_ACCESS_TOKEN: ["HUGGINGFACE_API_KEY"],
 };
 
 // =============================================================================

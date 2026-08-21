@@ -79,15 +79,20 @@ export function useProductsColorsBatch(productIds: string[]) {
     () => [...new Set(productIds)].filter((id) => UUID_RE.test(id)).sort(),
     [productIds],
   );
-  // Query key que inclui os IDs específicos solicitados
-  const queryKey = useMemo(() => ['products-colors-batch', stableIds], [stableIds]);
+
+  // ⚠️ PERF-2026-08-19: queryKey estável SEM incluir todos os IDs (causava
+  // cache miss a cada re-render quando a lista de IDs mudava — virtualização
+  // e load-more recriam o array). Mantém uma única chave para o módulo, e o
+  // resultado do useMemo abaixo filtra apenas os IDs solicitados no momento.
+  const queryKey = useMemo(() => ['products-colors-batch', 'module'] as const, []);
 
   const enabled = stableIds.length > 0;
 
   const query = useQuery({
     queryKey,
-    queryFn: async ({ queryKey: fnQueryKey }): Promise<Map<string, ProductColorDot[]>> => {
-      const [, ids] = fnQueryKey as [string, string[]];
+    queryFn: async (): Promise<Map<string, ProductColorDot[]>> => {
+      // Usa stableIds do escopo do hook (atualizado via useMemo)
+      const ids = stableIds;
 
       // Identifica apenas o que ainda não temos no cache global
       const missingIds = ids.filter((id) => !GLOBAL_COLORS_CACHE.has(id));

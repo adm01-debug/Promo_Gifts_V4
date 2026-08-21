@@ -144,9 +144,9 @@ export default function MagicUp() {
         />
         <MagicUpProgress step={m.step} />
 
-        {m.loadingProducts && <MagicUpSkeleton />}
+        {!m.initialProductsLoaded && <MagicUpSkeleton />}
 
-        {!m.loadingProducts && (
+        {m.initialProductsLoaded && (
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <MagicUpConfigPanel m={m} />
             <MagicUpResultPanel m={m} />

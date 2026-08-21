@@ -95,9 +95,12 @@ export default function Auth() {
   const [socialError, setSocialError] = useState<OAuthErrorCopy | null>(null);
 
   const emailInputRef = useRef<HTMLInputElement | null>(null);
-  // P2-05: honeypot anti-bot. Campo invisível (name="website") fora do
-  // react-hook-form. Humanos não preenchem; bots automáticos costumam preencher
-  // todo input encontrado. Lemos via ref no submit pra decidir se rejeita.
+  // P2-05: honeypot anti-bot. Campo invisível fora do react-hook-form. Humanos
+  // não preenchem; bots automáticos costumam preencher todo input encontrado.
+  // Lemos via ref no submit pra decidir se rejeita.
+  // FIX 2026-08-15: name/id evita palavras-chave reconhecidas por autofill de
+  // navegador (ex: "website"), que causavam falso-positivo — Chrome/gerenciadores
+  // de senha preenchem esses campos mesmo com autoComplete="off" e aria-hidden.
   const honeypotRef = useRef<HTMLInputElement | null>(null);
   // Função `retry` publicada pelo SocialLoginButtons para reexecutar o Google login.
   const googleRetryRef = useRef<(() => void) | null>(null);
@@ -720,11 +723,15 @@ export default function Auth() {
                     {/*
                       P2-05: honeypot anti-bot. Não remova.
                       - tabIndex={-1}: pula no Tab
-                      - autoComplete="off": browsers não tentam preencher
+                      - autoComplete="off": tentativa de sinalizar a browsers
+                        (não confiável sozinho, ver abaixo)
                       - aria-hidden + position absolute fora da viewport:
                         leitores de tela e usuários humanos nunca veem
-                      - name="website": bots genéricos preenchem campos
-                        com nomes plausíveis automaticamente
+                      - name/id ofuscados (não "website"/"url"/"company"...):
+                        bots genéricos ainda preenchem por heurística de nome,
+                        mas evita que o autofill de navegador/gerenciador de
+                        senha (que ignora autoComplete="off" para campos com
+                        nomes reconhecidos) dispare falso-positivo em humanos
                     */}
                     <div
                       aria-hidden="true"
@@ -736,11 +743,11 @@ export default function Auth() {
                         overflow: 'hidden',
                       }}
                     >
-                      <label htmlFor="website-hp">Website (deixe em branco)</label>
+                      <label htmlFor="hp-field-x9k2">Deixe em branco</label>
                       <input
                         ref={honeypotRef}
-                        id="website-hp"
-                        name="website"
+                        id="hp-field-x9k2"
+                        name="hp_field_x9k2"
                         type="text"
                         tabIndex={-1}
                         autoComplete="off"

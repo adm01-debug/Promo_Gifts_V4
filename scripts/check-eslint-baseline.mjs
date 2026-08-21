@@ -24,26 +24,9 @@ import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync, mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, relative } from 'node:path';
-// Import de namespace, NÃO default: minimatch v10 removeu o export default, e um
-// `import x from 'minimatch'` quebra no *bind* do módulo — antes de qualquer fallback
-// em runtime rodar. O namespace funciona nas três gerações:
-//   v3  (CJS)      -> a função vem em .default via interop
-//   v9  (ESM)      -> named { minimatch }
-//   v10 (ESM)      -> named { minimatch }, sem default
-import * as minimatchNs from 'minimatch';
-const minimatch =
-  typeof minimatchNs === 'function'
-    ? minimatchNs
-    : (minimatchNs.minimatch ?? minimatchNs.default);
-
-if (typeof minimatch !== 'function') {
-  console.error(
-    `[check-eslint-baseline] minimatch nao expos uma funcao utilizavel ` +
-      `(exports: ${Object.keys(minimatchNs).join(', ') || 'nenhum'}). ` +
-      `Verifique a versao instalada de minimatch.`,
-  );
-  process.exit(1);
-}
+import minimatchPkg from 'minimatch';
+// minimatch v3 (CJS) exporta a função como default; v9 (ESM) expõe named { minimatch }.
+const minimatch = typeof minimatchPkg === 'function' ? minimatchPkg : minimatchPkg.minimatch;
 
 const ROOT = process.cwd();
 const BASELINE_PATH = join(ROOT, '.eslint-baseline.json');

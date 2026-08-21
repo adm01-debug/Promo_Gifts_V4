@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { Palette, Check, Ruler } from 'lucide-react';
@@ -65,6 +65,17 @@ export function ProductVariantSelector({
       return a.name.localeCompare(b.name);
     });
   }, [variants, hasSizes]);
+
+  // FIX 2026-08-15: quando há uma única cor, não existe ambiguidade pro usuário
+  // resolver — mas o branch abaixo (variants.length === 1) renderiza só uma caixa
+  // informativa, sem button/onClick. Sem isso, selectedVariant nunca é setado e o
+  // wizard trava pra sempre no passo "Selecione a Cor", já que o passo seguinte
+  // (Personalizações) só renderiza com hasVariants === false || selectedVariant.
+  useEffect(() => {
+    if (variants.length === 1 && !hasSizes && selectedVariant?.code !== variants[0].code) {
+      onSelect(variants[0]);
+    }
+  }, [variants, hasSizes, selectedVariant, onSelect]);
 
   if (!variants || variants.length === 0) return null;
 

@@ -6,7 +6,7 @@ import { useMobileSidebarFix } from '@/hooks/ui/useMobileSidebarFix';
 import { useGlobalShortcuts } from '@/hooks/ui/useGlobalShortcuts';
 
 import { SkipToContent } from '@/components/common/SkipToContent';
-
+import { PageTransition } from '@/components/effects/PageTransition';
 import { lazyWithRetry } from '@/lib/lazyWithRetry';
 
 // Lazy load heavy layout components to reduce MainLayout chunk size
@@ -14,12 +14,26 @@ const Header = lazyWithRetry(() => import('./Header').then((m) => ({ default: m.
 const SidebarReorganized = lazyWithRetry(() =>
   import('./SidebarReorganized').then((m) => ({ default: m.SidebarReorganized })),
 );
-const PageTransition = lazyWithRetry(() =>
-  import('@/components/effects/PageTransition').then((m) => ({ default: m.PageTransition })),
-);
 const StarBackground = lazyWithRetry(() =>
   import('@/components/effects/StarBackground').then((m) => ({ default: m.StarBackground })),
 );
+
+// PERFORMANCE FIX: Pré-carrega componentes em background após primeiro render
+// Usa requestIdleCallback para não bloquear o thread principal
+const preloadComponents = () => {
+  if (typeof window === 'undefined') return;
+  const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 50));
+  idle(() => {
+    // Pré-carrega Header e Sidebar juntos
+    Promise.all([
+      import('./Header'),
+      import('./SidebarReorganized'),
+      import('@/components/effects/StarBackground'),
+    ]).catch(() => {
+      // Silenciosamente ignora erros de pré-carregamento
+    });
+  });
+};
 
 // Context providers must be imported synchronously (consumers render inside them)
 import { SellerCartProvider } from '@/contexts/SellerCartContext';
@@ -42,6 +56,14 @@ export function MainLayout({ children }: MainLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   const isHome = location.pathname === '/';
+  const hasPreloaded = useRef(false);
+
+  // PERFORMANCE FIX: Pré-carrega componentes após primeiro render
+  useEffect(() => {
+    if (hasPreloaded.current) return;
+    hasPreloaded.current = true;
+    preloadComponents();
+  }, []);
 
   useScrollLockFix();
   useMobileSidebarFix(() => setSidebarOpen(false), sidebarOpen);
@@ -158,7 +180,7 @@ export function MainLayout({ children }: MainLayoutProps) {
             aria-label="Conteúdo principal"
             aria-labelledby="main-heading"
           >
-            <Suspense fallback={<div>{children || <Outlet />}</div>}>
+            <Suspense fallback={<div className="p-6" />}>
               {/*
                 FIX scroll quebrado em /produto/:id, /novidades, /reposicao:
                 a variant `fade-slide` deixa `transform: translateY(0px)` inline
@@ -170,7 +192,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                 a barra de rolagem. `fade` só anima opacity → sem transform
                 residual → scroll/sticky voltam a funcionar.
               */}
-              <PageTransition variant="fade" duration={0.6}>
+              <PageTransition variant="fade" duration={0.3}>
                 {children || <Outlet />}
               </PageTransition>
             </Suspense>

@@ -190,6 +190,8 @@ export function ReplenishmentProductGrid() {
   }, [filteredProducts]);
 
   // Batch-load cores das variantes para os produtos visíveis
+  // ⚠️ PERF-2026-08-19: useProductsColorsBatch agora tem cache global estável,
+  // mas ainda assim evitamos disparar refetch em cada mudança de array virtualizado.
   const visibleProductIds = useMemo(
     () => filteredProducts.map((p) => p.product_id),
     [filteredProducts],
@@ -380,7 +382,10 @@ export function ReplenishmentProductGrid() {
         selectedIds={sel.selectedIds}
         onToggleSelect={sel.toggleSelect}
         onProductClick={handleProductClick}
-        colorsByProduct={colorsByProduct}
+        // ⚠️ PERF-2026-08-19: Não passamos colorsByProduct aqui — o filho
+        // (VirtualizedReplenishmentGrid) carrega cores APENAS para os IDs
+        // visíveis no virtualizador. Table/list mantêm cores externas porque
+        // renderizam todos os itens de uma vez.
       />
     );
   };

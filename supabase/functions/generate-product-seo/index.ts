@@ -4,7 +4,7 @@ import { callAiWithTracking, QuotaExceededError } from '../_shared/ai-usage.ts';
 import { z } from '../_shared/zod-validate.ts';
 import { runBotProtection } from '../_shared/bot-protection.ts';
 import { safeErrorFields } from '../_shared/log-safety.ts';
-import { requireAiApiKey } from '../_shared/ai-credentials.ts';
+import { resolveAiApiKey } from '../_shared/ai-credentials.ts';
 
 Deno.serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
@@ -61,9 +61,10 @@ Deno.serve(async (req) => {
     }
     const { product } = parsed.data;
 
-    const ai = await requireAiApiKey('generate-product-seo', corsHeaders);
-    if (!ai.apiKey) return ai.response!;
-    const LOVABLE_API_KEY = ai.apiKey;
+    // BUG-CRED-2 FIX (2026-08-17): não bloqueia mais em LOVABLE_API_KEY ausente — esta
+    // função tem routing multi-provider ativo (deepseek/DEEPSEEK_API_KEY) que
+    // callAiWithTracking tenta primeiro e não depende do Lovable Gateway.
+    const { apiKey: LOVABLE_API_KEY } = await resolveAiApiKey('generate-product-seo');
 
     const systemPrompt = `Você é um especialista em SEO e marketing para e-commerce de brindes corporativos e produtos promocionais no Brasil.
 Gere conteúdo de alta qualidade, otimizado para buscadores brasileiros (Google Brasil).
@@ -98,7 +99,7 @@ Retorne um JSON com exatamente essas chaves: meta_title, meta_description, meta_
       userId: auth.userId,
       functionName: 'generate-product-seo',
       model,
-      apiKey: LOVABLE_API_KEY,
+      apiKey: LOVABLE_API_KEY ?? '',
       requestBody: {
         messages: [
           { role: 'system', content: systemPrompt },

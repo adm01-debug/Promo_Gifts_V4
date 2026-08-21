@@ -364,12 +364,16 @@ export function NoveltyProductGrid() {
   }, [filteredProducts]);
 
   // Batch-load cores das variantes para os produtos visíveis (visualização atual).
-  // Grid: apenas paginatedProducts (virtualizados). List/table: todos filtrados,
-  // pois todos estão no DOM (sem virtualização no momento).
+  // ⚠️ PERF-2026-08-19: Pré-filtra para apenas produtos VISÍVEIS (virtualizados).
+  // Antes passava TODOS os filteredProducts (até 550+) para o hook de cores,
+  // gerando N queries ao banco mesmo com virtualização mostrando só ~30 cards.
+  // Mantém-se o fallback de list/table (não virtualizados) onde precisa de tudo.
   const visibleProductIds = useMemo(() => {
     if (viewMode === 'list' || viewMode === 'table') {
+      // list/table renderizam todos filtrados (sem virtualização)
       return filteredProducts.map((n) => n.product_id);
     }
+    // grid (virtualizado): usa apenas paginatedProducts (~40-60 visíveis + overscan)
     return paginatedProducts.map((n) => n.product_id);
   }, [viewMode, filteredProducts, paginatedProducts]);
   const { data: colorsByProduct } = useProductsColorsBatch(visibleProductIds);
@@ -569,7 +573,10 @@ export function NoveltyProductGrid() {
           selectedIds={sel.selectedIds}
           onToggleSelect={sel.toggleSelect}
           onProductClick={handleProductClick}
-          colorsByProduct={colorsByProduct}
+          // ⚠️ PERF-2026-08-19: Não passamos colorsByProduct — o filho
+          // (VirtualizedNoveltyGrid) carrega cores APENAS para os IDs visíveis
+          // no virtualizador. List/table mantêm cores externas porque renderizam
+          // todos os itens de uma vez.
           hasMore={hasMore}
           isLoadingMore={false}
           onLoadMore={handleLoadMore}

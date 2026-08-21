@@ -28,6 +28,19 @@
     'manifest.json',
     'failed, code 401',
     'Failed to load resource: the server responded with a status of 401',
+    // PERFORMANCE: Remove mensagens de métricas de performance do layout
+    '[Performance] Main Layout Mount',
+    // PREWARM: Remove mensagem de prewarm
+    '[Prewarm] Skipped — already done this session',
+    // SALES RANKING: Remove logs de ranking de vendas
+    '[PromoSalesRanking]',
+    '[usePromoSales90dByProduct]',
+    '[SupplierSalesRanking]',
+    '[useProductLeafCategories]',
+    // STOCK VELOCITY: Remove logs de prefetch de velocidade de estoque
+    '[StockVelocityPrefetch]',
+    // TELEMETRY UX: Remove logs de hover (muito frequentes, poluem o console)
+    '[Telemetry] ux_action: product_hover',
   ];
 
   const shouldSilence = (args: unknown[]) => {

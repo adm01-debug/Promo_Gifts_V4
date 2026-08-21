@@ -302,8 +302,11 @@ export default function VisualSearchPage() {
           imageBase64: base64.split(',')[1],
           category: selectedCategoryNames.length ? selectedCategoryNames.join(', ') : undefined,
           color: selectedColorNames.length ? selectedColorNames.join(', ') : undefined,
-          manualKeywords // Opcional para refinamento via clique nas tags
-        }
+          manualKeywords, // Opcional para refinamento via clique nas tags
+        },
+        // FIX 2026-08-15: default invokeEdge é 8s. MiniMax (reasoning) + imagem
+        // facilmente passa disso, abortando mesmo com a IA respondendo normal.
+        timeoutMs: 45_000,
       });
 
       if (error) throw new Error(error.message);

@@ -15,8 +15,25 @@ export function useAdvancedPriceSearch() {
   const [filters, setFilters] = useState<SearchFilters>(DEFAULT_FILTERS);
   const [viewMode, setViewMode] = useState<ViewMode>('cards');
   const [isSearching, setIsSearching] = useState(false);
+  // Snapshot dos filtros no momento em que "Buscar" foi clicado. A busca reage
+  // a isso, não a cada tecla digitada em searchQuery — evita refetch a cada
+  // caractere.
+  const [committedQuery, setCommittedQuery] = useState('');
 
-  const { data: products = [], isLoading: loadingProducts } = useProducts();
+  // FIX 2026-08-15: useProducts() sem argumento nenhum disparava paginação
+  // client-side ilimitada (até 7.406 produtos, ~37 requisições sequenciais)
+  // com timeout de 30s. Se o timeout batesse antes de terminar, a busca
+  // retornava incompleta EM SILÊNCIO (só um logger.warn) — produtos como
+  // "caneta" (ordenados no meio do catálogo) podiam nunca ser carregados,
+  // fazendo a busca por preço mostrar "0 produtos" mesmo havendo 536 canetas
+  // reais até R$15. Passar `limit` sempre evita o loop de paginação (vai pelo
+  // caminho de request único e limitado); passar `search` quando preenchido
+  // filtra no servidor via ILIKE, cobrindo o catálogo inteiro pra esse termo
+  // (não só os primeiros N alfabéticos).
+  const { data: products = [], isLoading: loadingProducts } = useProducts({
+    search: committedQuery || undefined,
+    limit: 3000,
+  });
   const { data: techniques, isLoading: loadingTechniques } = useExternalTechniques();
 
   const { data: priceTables = [], isLoading: loadingPriceTables } = useQuery({
@@ -106,7 +123,14 @@ export function useAdvancedPriceSearch() {
         }
       }
 
-      const calculatedUnitPrice = productPrice + customizationPrice + handlingPrice;
+      // FIX 2026-08-15: priceType era coletado do filtro "Tipo de Preço" mas
+      // nunca lido aqui — o toggle "Com/Sem personalização" não tinha efeito
+      // nenhum no preço calculado. priceBreakdown mantém os componentes de
+      // custo sempre visíveis (pra contexto), só o preço "oficial" muda.
+      const includesPersonalization = filters.priceType === 'with_personalization';
+      const calculatedUnitPrice = includesPersonalization
+        ? productPrice + customizationPrice + handlingPrice
+        : productPrice;
 
       return {
         ...product,
@@ -122,13 +146,34 @@ export function useAdvancedPriceSearch() {
         setupPrice,
         handlingPrice,
         totalPrice:
-          (productPrice + customizationPrice + handlingPrice) * filters.minQuantity + setupPrice,
+          calculatedUnitPrice * filters.minQuantity + (includesPersonalization ? setupPrice : 0),
         matchingTechnique: matchingTable,
       };
     });
 
-    return withPrices;
+    // FIX 2026-08-15: filters.priceRange era atualizado pelos inputs/slider
+    // mas nunca aplicado aqui — produtos fora da faixa (ex.: R$56 com máximo
+    // de R$13) apareciam nos resultados normalmente.
+    const [minPrice, maxPrice] = filters.priceRange;
+    return withPrices.filter(
+      (p) => p.calculatedUnitPrice >= minPrice && p.calculatedUnitPrice <= maxPrice,
+    );
   }, [isSearching, products, filters, priceTables]);
+
+  // Comita o texto de busca atual (dispara o fetch server-side narrowed) e
+  // ativa a exibição de resultados. Separado de setIsSearching puro pra
+  // garantir que a query do useProducts sempre reflita o texto que estava no
+  // input quando "Buscar" foi clicado, não o texto sendo digitado agora.
+  const runSearch = () => {
+    setCommittedQuery(filters.searchQuery);
+    setIsSearching(true);
+  };
+
+  const resetSearch = () => {
+    setFilters(DEFAULT_FILTERS);
+    setCommittedQuery('');
+    setIsSearching(false);
+  };
 
   return {
     filters,
@@ -136,7 +181,8 @@ export function useAdvancedPriceSearch() {
     viewMode,
     setViewMode,
     isSearching,
-    setIsSearching,
+    runSearch,
+    resetSearch,
     filteredProducts,
     categories,
     availableColors,

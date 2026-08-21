@@ -1,10 +1,11 @@
-import { useRef } from 'react';
+import { useRef, useMemo } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import type { ReplenishmentWithDetails } from '@/hooks/products';
 import type { ColumnCount } from '@/components/products/ColumnSelector';
 import { useResponsiveColumns, getGridColsClass, getGridGapClass } from './grid-layout';
 import { ReplenishmentGridCard } from './ReplenishmentCards';
 import type { ColorDotLike } from '@/components/products/ProductColorSwatches';
+import { useProductsColorsBatch } from '@/hooks/products/useProductsColorsBatch';
 
 interface VirtualizedGridProps {
   products: ReplenishmentWithDetails[];
@@ -28,7 +29,7 @@ export function VirtualizedReplenishmentGrid({
   selectedIds,
   onToggleSelect,
   onProductClick,
-  colorsByProduct,
+  colorsByProduct: externalColorsByProduct,
 }: VirtualizedGridProps) {
   const parentRef = useRef<HTMLDivElement>(null);
 
@@ -45,6 +46,30 @@ export function VirtualizedReplenishmentGrid({
   });
 
   const effectiveCols = gridColumns;
+
+  // ⚠️ PERF-2026-08-19: Carrega cores APENAS dos IDs visíveis (virtualizados).
+  // Antes o pai passava TODOS os products (até 662 no Reposição) para
+  // useProductsColorsBatch, gerando N queries ao banco. Agora só os ~30-40
+  // visíveis são processados. Cache global do hook cuida do restante quando
+  // o usuário rola.
+  const virtualItems = virtualizer.getVirtualItems();
+  const visibleProductIds = useMemo(() => {
+    const ids: string[] = [];
+    for (const item of virtualItems) {
+      const startIdx = item.index * numCols;
+      const endIdx = Math.min(startIdx + numCols, products.length);
+      for (let i = startIdx; i < endIdx; i++) {
+        const p = products[i];
+        if (p?.product_id) ids.push(p.product_id);
+      }
+    }
+    return [...new Set(ids)];
+  }, [virtualItems, products, numCols]);
+
+  const { data: internalColorsByProduct } = useProductsColorsBatch(visibleProductIds);
+
+  // Preferir cores externas (do pai) — fallback para internas se pai não passar
+  const colorsByProduct = externalColorsByProduct ?? internalColorsByProduct;
 
   return (
     <div

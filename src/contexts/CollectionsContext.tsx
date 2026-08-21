@@ -1,4 +1,4 @@
-import { createContext, useContext, type ReactNode, useCallback, useMemo } from 'react';
+import { createContext, useContext, type ReactNode, useCallback, useMemo, useState, useEffect, useRef } from 'react';
 import {
   useCollections,
   type Collection,
@@ -52,7 +52,35 @@ interface CollectionsContextType {
 const CollectionsContext = createContext<CollectionsContextType | undefined>(undefined);
 
 export function CollectionsProvider({ children }: { children: ReactNode }) {
-  const collectionsHook = useCollections();
+  // PERFORMANCE FIX: Lazy load - só carrega coleções quando necessário
+  // Usa evento 'collections:access' para ativar
+  const [enabled, setEnabled] = useState(false);
+  const enabledRef = useRef(false);
+
+  // Usa MutationObserver para detectar quando elementos de coleção são adicionados ao DOM
+  useEffect(() => {
+    if (enabledRef.current) return;
+
+    //ativa se já existir elemento com collections
+    const existingCollections = document.querySelector('[data-collections]');
+    if (existingCollections) {
+      setEnabled(true);
+      enabledRef.current = true;
+      return;
+    }
+
+    //ativa quando coleção for acessada via evento
+    const handler = () => {
+      setEnabled(true);
+      enabledRef.current = true;
+    };
+
+    window.addEventListener('collections:access', handler);
+    return () => window.removeEventListener('collections:access', handler);
+  }, []);
+
+  // Também ativa se o hook for chamado diretamente
+  const collectionsHook = useCollections({ enabled });
   const { getProductsByIds } = useProductsContext();
 
   const getCollectionProducts = useCallback(

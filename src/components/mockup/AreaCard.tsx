@@ -3,6 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Trash2, MapPin, Upload, RefreshCw, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 import type { PersonalizationArea } from './MultiAreaManager';
 
 interface AreaCardProps {
@@ -34,8 +35,14 @@ export const AreaCard = memo(
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       e.stopPropagation();
       const file = e.target.files?.[0];
-      if (file?.type.startsWith('image/')) {
-        onLogoUpload(file);
+      if (file) {
+        if (file.type.startsWith('image/')) {
+          onLogoUpload(file);
+        } else {
+          toast.error(
+            `${file.name}: use uma imagem (PNG, JPG, SVG) para posicionar o logo. Arquivos vetoriais (.cdr, .ai, .eps) podem ser anexados em "Arquivos de Arte (Vetor)".`,
+          );
+        }
       }
       // Reset input so the same file can be re-selected
       e.target.value = '';

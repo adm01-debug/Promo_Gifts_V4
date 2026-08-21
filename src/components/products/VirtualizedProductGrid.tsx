@@ -99,16 +99,56 @@ function VirtualizedProductGridInner({
 
   // Hidrata cores nos cards cujo fetch principal (lightweight) não trouxe `colors`.
   // Mesmo padrão usado no ProductGrid (Novidades/Reposição) — SSOT em useProductsColorsBatch.
+  //
+  // ⚠️ PERF-2026-08-19: Pré-filtra para apenas produtos VISÍVEIS (virtualizados) +
+  // overscan, evitando N+1 massivo (7.418 produtos → ~30 visíveis). Reduz queries
+  // ao banco em ~99% e melhora muito a fluidez do scroll.
+  const estimatedRowHeight =
+    viewMode === 'list'
+      ? 88 // Altura fixa do ListItem (88px)
+      : 520; // Altura média do Grid Card (pode variar ligeiramente por zoom)
+
+  const _rowCountForIds = Math.ceil(products.length / effectiveColumns);
+  const virtualizer = useVirtualizer({
+    count: hasMore ? _rowCountForIds + 1 : _rowCountForIds,
+    getScrollElement: () => parentRef.current,
+    estimateSize: (index) => {
+      if (hasMore && index === _rowCountForIds) return 120;
+      return estimatedRowHeight;
+    },
+    overscan: viewMode === 'list' ? 10 : 5,
+    scrollMargin: 0,
+  });
+
+  // IDs visíveis (com overscan) — base para prefetch de cores e stock velocity
+  const visibleProductIds = useMemo(() => {
+    const items = virtualizer.getVirtualItems();
+    const ids: string[] = [];
+    for (const item of items) {
+      const startIdx = item.index * effectiveColumns;
+      const endIdx = Math.min(startIdx + effectiveColumns, products.length);
+      for (let i = startIdx; i < endIdx; i++) {
+        const p = products[i];
+        if (p?.id) ids.push(p.id);
+      }
+    }
+    return [...new Set(ids)];
+  }, [virtualizer.getVirtualItems(), products, effectiveColumns]);
+
   const idsNeedingColors = useMemo(
-    () => products.filter((p) => !p.colors || p.colors.length === 0).map((p) => p.id),
-    [products],
+    () => {
+      const idSet = new Set(visibleProductIds);
+      return products
+        .filter((p) => idSet.has(p.id) && (!p.colors || p.colors.length === 0))
+        .map((p) => p.id);
+    },
+    [products, visibleProductIds],
   );
   const { data: colorsByProduct } = useProductsColorsBatch(idsNeedingColors);
 
-  // ANTI N+1: prefetch batch de mv_stock_velocity para todos os produtos visíveis.
-  // Popula React Query cache via setQueryData; hooks individuais nos cards usam o cache.
-  const _allProductIds = useMemo(() => products.map((p) => p.id), [products]);
-  useStockVelocityPrefetch(_allProductIds);
+  // ANTI N+1: prefetch batch de mv_stock_velocity apenas para produtos visíveis
+  // (com overscan). Antes passava os 7.418 — agora ~30-50 por vez.
+  useStockVelocityPrefetch(visibleProductIds);
   const hydratedProducts = useMemo(() => {
     if (colorsByProduct.size === 0) return products;
     return products.map((p) => {
@@ -129,24 +169,6 @@ function VirtualizedProductGridInner({
       };
     });
   }, [products, colorsByProduct]);
-
-  // Calculate rows based on columns
-  const rowCount = Math.ceil(products.length / effectiveColumns);
-  const estimatedRowHeight =
-    viewMode === 'list'
-      ? 88 // Altura fixa do ListItem (88px)
-      : 520; // Altura média do Grid Card (pode variar ligeiramente por zoom)
-
-  const virtualizer = useVirtualizer({
-    count: hasMore ? rowCount + 1 : rowCount,
-    getScrollElement: () => parentRef.current,
-    estimateSize: (index) => {
-      if (hasMore && index === rowCount) return 120; // Espaço para loader/skeleton
-      return estimatedRowHeight;
-    },
-    overscan: viewMode === 'list' ? 10 : 5,
-    scrollMargin: 0,
-  });
 
   const virtualItems = virtualizer.getVirtualItems();
 
@@ -304,7 +326,7 @@ function VirtualizedProductGridInner({
           }}
         >
           {virtualItems.map((virtualRow) => {
-            const isLoaderRow = virtualRow.index === rowCount && hasMore;
+            const isLoaderRow = virtualRow.index === _rowCountForIds && hasMore;
 
             if (isLoaderRow) {
               return (

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Fuse from 'fuse.js';
 import { Check, ChevronsUpDown, Package, Search, X, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -13,8 +12,6 @@ import {
 } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Badge } from '@/components/ui/badge';
-import { useDebounce } from '@/hooks/common';
-import { createProductFuseOptions, rankProductSearchResults } from '@/utils/product-search';
 
 interface Product {
   id: string;
@@ -26,7 +23,14 @@ interface Product {
 }
 
 interface ProductSearchComboboxProps {
+  /** Resultados já vindos do servidor para o `search` atual — este componente não filtra localmente. */
   products: Product[];
+  /** Termo de busca atual, controlado pelo caller (ex.: `m.productSearch`). */
+  search: string;
+  /** Chamado a cada digitação — o caller é responsável por debounce + fetch server-side. */
+  onSearchChange: (search: string) => void;
+  /** `true` enquanto o caller está buscando/carregando `products` para o `search` atual. */
+  isSearching?: boolean;
   selectedProduct: Product | null;
   onSelect: (product: Product | null) => void;
   disabled?: boolean;
@@ -36,6 +40,9 @@ interface ProductSearchComboboxProps {
 
 export function ProductSearchCombobox({
   products,
+  search,
+  onSearchChange,
+  isSearching = false,
   selectedProduct,
   onSelect,
   disabled = false,
@@ -43,28 +50,11 @@ export function ProductSearchCombobox({
   className,
 }: ProductSearchComboboxProps) {
   const [open, setOpen] = React.useState(false);
-  const [search, setSearch] = React.useState('');
-  const [isSearching, setIsSearching] = React.useState(false);
 
-  const debouncedSearch = useDebounce(search, 350);
-
-  const fuse = React.useMemo(
-    () => new Fuse(products, createProductFuseOptions<Product>()),
-    [products],
-  );
-
-  const filteredProducts = React.useMemo(() => {
-    setIsSearching(false);
-    if (!debouncedSearch.trim() || debouncedSearch.trim().length < 2) return products;
-    return rankProductSearchResults(products, debouncedSearch.trim(), fuse);
-  }, [products, debouncedSearch, fuse]);
-
-  // Show searching indicator when typing
-  React.useEffect(() => {
-    if (search !== debouncedSearch) {
-      setIsSearching(true);
-    }
-  }, [search, debouncedSearch]);
+  // BUG-MAGICUP-PRODSEARCH-1 FIX (2026-08-17): filtragem local com Fuse.js sobre
+  // `products` foi removida — `products` agora já vem filtrado pelo servidor
+  // (ver useMagicUpState), então este componente só renderiza o que recebe.
+  const filteredProducts = products;
 
   const getProductImage = (product: Product): string | null => {
     // Prioridade: primary_image_url (CF) > og_image_url > images[0]
@@ -82,13 +72,13 @@ export function ProductSearchCombobox({
   const handleSelect = (product: Product) => {
     onSelect(product);
     setOpen(false);
-    setSearch('');
+    onSearchChange('');
   };
 
   const handleClear = (e: React.MouseEvent) => {
     e.stopPropagation();
     onSelect(null);
-    setSearch('');
+    onSearchChange('');
   };
 
   return (
@@ -138,15 +128,30 @@ export function ProductSearchCombobox({
                 <p className="text-xs text-muted-foreground">SKU: {selectedProduct.sku}</p>
               </div>
 
-              {/* Clear button */}
+              {/* Clear button — asChild renders a <span>, not a nested <button>: the
+                  trigger above is itself a <button> (PopoverTrigger asChild), and
+                  <button> inside <button> is invalid HTML (hydration warning + browsers
+                  reparent/auto-close nested buttons unpredictably). */}
               <Button
+                asChild
                 size="icon"
                 variant="ghost"
                 className="h-6 w-6 flex-shrink-0 hover:bg-destructive/10 hover:text-destructive"
-                onClick={handleClear}
-                aria-label="Remover produto selecionado"
               >
-                <X aria-hidden="true" className="h-3.5 w-3.5" />
+                <span
+                  role="button"
+                  tabIndex={0}
+                  onClick={handleClear}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleClear(e as unknown as React.MouseEvent);
+                    }
+                  }}
+                  aria-label="Remover produto selecionado"
+                >
+                  <X aria-hidden="true" className="h-3.5 w-3.5" />
+                </span>
               </Button>
             </div>
           ) : (
@@ -169,7 +174,7 @@ export function ProductSearchCombobox({
             data-testid="mockup-product-search-input"
             placeholder="Buscar por nome ou SKU..."
             value={search}
-            onValueChange={setSearch}
+            onValueChange={onSearchChange}
             autoFocus
           />
           <CommandList className="max-h-[400px]">

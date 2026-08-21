@@ -1,7 +1,7 @@
 /**
  * useGlobalSearch — Hook that encapsulates all search logic for GlobalSearchPalette.
  */
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { useSearchStore } from '@/stores/useSearchStore';
 import { useOracleVoiceBridge } from '@/stores/oracleVoiceBridge';
 import Fuse from 'fuse.js';
@@ -125,7 +125,13 @@ export function useGlobalSearch() {
     clearHistory,
   } = useSearchHistory('general');
 
-  const history = globalHistory.map((h) => h.label);
+  // FIX 2026-08-15: globalHistory.map(...) built a new array every render,
+  // making `history`'s identity change on every render. The typing-suggestions
+  // effect below depends on `history`, so it re-ran every render and called
+  // setTypingSuggestions([]) with a fresh (referentially different) empty array
+  // each time — an infinite render loop ("Maximum update depth exceeded").
+  // useMemo keeps the reference stable unless globalHistory actually changes.
+  const history = useMemo(() => globalHistory.map((h) => h.label), [globalHistory]);
 
   const { addCommand: addVoiceCommand } = useVoiceCommandHistory();
 

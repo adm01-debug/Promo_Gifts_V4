@@ -320,6 +320,8 @@ export interface CrmCompanyFilters {
   is_customer?: boolean;
   is_supplier?: boolean;
   is_carrier?: boolean;
+  /** Quando false, a query não é executada. Útil para lazy loading. */
+  enabled?: boolean;
 }
 
 // ============================================

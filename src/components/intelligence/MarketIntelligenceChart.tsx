@@ -260,14 +260,19 @@ export function MarketIntelligenceChart({
               <Target className="h-4 w-4" aria-hidden="true" />
               Inteligência de Mercado
             </CardTitle>
-            <CardDescription className="mt-1">
-              Como o mercado está comprando · visão macro · {days} dias
+            {/* FIX 2026-08-15: Badge (renderiza <div>) não pode ficar dentro de
+                CardDescription (renderiza <p>) — <div> em <p> é HTML inválido
+                e disparava erro de hydration nesting no console. */}
+            <div className="mt-1 flex flex-wrap items-center gap-2">
+              <CardDescription className="mt-0">
+                Como o mercado está comprando · visão macro · {days} dias
+              </CardDescription>
               {isDemo && (
-                <Badge variant="outline" className="ml-2 px-1.5 py-0 text-[10px]">
+                <Badge variant="outline" className="px-1.5 py-0 text-[10px]">
                   dados ilustrativos
                 </Badge>
               )}
-            </CardDescription>
+            </div>
           </div>
           <div className="flex items-center gap-2">
             {trendRatio > 1.3 && (

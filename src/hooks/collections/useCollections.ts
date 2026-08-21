@@ -125,15 +125,17 @@ function dbToCollection(row: DbCollectionRow, items: DbCollectionItemRow[]): Col
   };
 }
 
-export function useCollections() {
+export function useCollections(options?: { enabled?: boolean }) {
   const [collections, setCollections] = useState<Collection[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
   // BUG-HEAD-GUARD FIX (2026-06-23): HEAD em collections sem guard.
   const { user, rolesLoaded } = useAuth();
 
   // Load collections from DB
+  // PERFORMANCE FIX: Verifica enabled antes de carregar
   const loadCollections = useCallback(async () => {
     if (!user?.id) return;
+    if (options?.enabled === false) return; // Lazy load - não carrega se disabled
 
     const { data: colRows, error } = await supabase
       .from('collections')
@@ -182,8 +184,10 @@ export function useCollections() {
   }, [user?.id]);
 
   // Migrate localStorage data on first load
+  // PERFORMANCE FIX: Só carrega se enabled !== false
   useEffect(() => {
     if (!user?.id || !rolesLoaded) return; // BUG-HEAD-GUARD
+    if (options?.enabled === false) return; // Lazy load - não carrega se disabled
 
     const migrateAndLoad = async () => {
       try {
@@ -267,7 +271,7 @@ export function useCollections() {
     };
 
     migrateAndLoad();
-  }, [user?.id, rolesLoaded, loadCollections]);
+  }, [user?.id, rolesLoaded, loadCollections, options?.enabled]);
 
   const createCollection = useCallback(
     (

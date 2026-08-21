@@ -4,8 +4,7 @@ import { callAiWithTracking, QuotaExceededError } from '../_shared/ai-usage.ts';
 import { z } from '../_shared/zod-validate.ts';
 import { runBotProtection } from '../_shared/bot-protection.ts';
 import { safeErrorFields } from '../_shared/log-safety.ts';
-import { resolveCredential } from '../_shared/credentials.ts';
-import { aiNotConfiguredResponse } from '../_shared/ai-credentials.ts';
+import { resolveAiApiKey } from '../_shared/ai-credentials.ts';
 
 // BUG-A02 FIX (26/05/2026): SSRF — validação de URL antes de fetch externo.
 const ALLOWED_IMAGE_DOMAINS = [
@@ -114,19 +113,16 @@ Deno.serve(async (req) => {
       );
     }
 
-    // BUG-A03 FIX (26/05/2026): LOVABLE_API_KEY via Deno.env.get() direto — sem SSOT.
-    // Agora usa resolveCredential() para buscar do banco (integration_credentials).
-    const { value: LOVABLE_API_KEY } = await resolveCredential('LOVABLE_API_KEY');
-    // BUG-CRED-1 FIX (2026-06-23): retorna 503 (dependência não configurada) em vez de 500
-    // (erro interno). Status 503 é mais preciso — o serviço não está disponível por falta de
-    // credencial, não por bug de código. Facilita triagem de alertas.
-    if (!LOVABLE_API_KEY) {
-      return aiNotConfiguredResponse(
-        corsHeaders,
-        'analyze-logo-colors',
-        'Análise de cores por IA indisponível no momento.',
-      );
-    }
+    // BUG-CRED-2 FIX (2026-08-17): esta função tem routing multi-provider ativo em
+    // ai_function_routing (google/gemini-2.5-flash), que callAiWithTracking tenta
+    // PRIMEIRO e não depende de LOVABLE_API_KEY — cada provider resolve seu próprio
+    // secret (GEMINI_API_KEY, OPENAI_API_KEY, etc). O gate antigo bloqueava a
+    // requisição com 503 sempre que só o Lovable Gateway estivesse ausente, mesmo
+    // com um provider do router plenamente configurado e saudável. Agora resolve o
+    // LOVABLE_API_KEY apenas como credencial best-effort para o fallback legacy do
+    // callAiWithTracking (usado só se o router falhar por falta de credencial em
+    // todos os providers) — sem bloquear a chamada principal.
+    const { apiKey: LOVABLE_API_KEY } = await resolveAiApiKey('analyze-logo-colors');
 
     const model = 'google/gemini-2.5-flash';
 
@@ -134,7 +130,7 @@ Deno.serve(async (req) => {
       userId: auth.userId,
       functionName: 'analyze-logo-colors',
       model,
-      apiKey: LOVABLE_API_KEY,
+      apiKey: LOVABLE_API_KEY ?? '',
       requestBody: {
         messages: [
           {
