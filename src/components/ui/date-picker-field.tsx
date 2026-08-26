@@ -23,8 +23,9 @@
  * Acessibilidade:
  *   - `role="button"` implícito (é `<button>`), com `aria-haspopup="dialog"`
  *     via Radix Popover.
- *   - `aria-invalid` e `aria-describedby` propagados ao trigger para associar
- *     mensagens de erro (mantém contrato com os testes existentes).
+ *   - `aria-describedby` propaga ao trigger para associar mensagens de erro.
+ *   - `aria-invalid` entra como intenção de erro, mas vira `data-invalid` no
+ *     trigger porque o elemento renderizado e focável é um `<button>`.
  *   - Botão de limpar (X) no trigger é `role="button"` com `tabIndex={0}` e
  *     `onKeyDown` (Enter/Space) — segue política do projeto para divs
  *     clicáveis (aqui em `<span>` para não aninhar `<button>` dentro do
@@ -62,7 +63,7 @@ export interface DatePickerFieldProps {
   id?: string;
   /** Espelhado no `<button>` trigger, por compatibilidade com testes. */
   'data-testid'?: string;
-  /** Espelhado no `<button>` trigger. */
+  /** Consumido como estado de erro e refletido no trigger via `data-invalid`. */
   'aria-invalid'?: boolean;
   /** Espelhado no `<button>` trigger. */
   'aria-describedby'?: string;
@@ -140,6 +141,7 @@ export function DatePickerField(props: DatePickerFieldProps) {
           disabled={disabled}
           data-testid={props['data-testid']}
           aria-describedby={props['aria-describedby']}
+          data-invalid={props['aria-invalid'] ? 'true' : undefined}
           aria-label={props['aria-label']}
           data-empty={!selectedDate || undefined}
           data-variant={variant}

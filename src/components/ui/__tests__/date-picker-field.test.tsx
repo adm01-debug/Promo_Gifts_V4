@@ -6,7 +6,8 @@
  *  - Formato ISO: seleção emite `yyyy-MM-dd`; "Hoje" emite ISO local.
  *  - Limpeza: X inline emite `""` e não abre o popover.
  *  - A11y:
- *      • `aria-invalid` e `aria-describedby` propagam ao `<button>` trigger.
+ *      • `aria-describedby` propaga ao `<button>` trigger.
+ *      • Estado inválido é refletido via `data-invalid` no trigger.
  *      • Botão X inline tem `role="button"`, `tabIndex={0}` e responde a
  *        Enter/Space.
  *      • Popover mantém foco dentro do calendário ao abrir (Radix + Calendar
@@ -86,7 +87,7 @@ describe('DatePickerField — comportamento e a11y', () => {
     expect(onChange).toHaveBeenCalledWith('');
   });
 
-  it('propaga aria-invalid e aria-describedby ao trigger', () => {
+  it('reflete estado inválido via data-invalid e preserva aria-describedby no trigger', () => {
     render(
       <DatePickerField
         data-testid="dp"
@@ -98,7 +99,7 @@ describe('DatePickerField — comportamento e a11y', () => {
       />,
     );
     const trigger = screen.getByTestId('dp');
-    expect(trigger).toHaveAttribute('aria-invalid', 'true');
+    expect(trigger).toHaveAttribute('data-invalid', 'true');
     expect(trigger).toHaveAttribute('aria-describedby', 'err-1');
   });
 
