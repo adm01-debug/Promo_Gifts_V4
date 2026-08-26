@@ -4,7 +4,7 @@
  * Podem ser usados dentro do `VerticalCategoryStripe` ou em qualquer chip/badge.
  */
 
-import type { SVGProps } from 'react';
+import type { ReactElement, SVGProps } from 'react';
 import {
   Cpu,
   GlassWater,
@@ -27,7 +27,7 @@ import type { MagazineCategory } from '@/types/magazine';
 
 type IconProps = SVGProps<SVGSVGElement> & { size?: number };
 
-const MAP: Record<MagazineCategory, (p: IconProps) => JSX.Element> = {
+const MAP: Record<MagazineCategory, (p: IconProps) => ReactElement> = {
   technology: (p) => <Cpu strokeWidth={1.6} {...p} />,
   drinkwares: (p) => <GlassWater strokeWidth={1.6} {...p} />,
   general: (p) => <Gift strokeWidth={1.6} {...p} />,
@@ -43,7 +43,6 @@ const MAP: Record<MagazineCategory, (p: IconProps) => JSX.Element> = {
   giftsets: (p) => <Boxes strokeWidth={1.6} {...p} />,
   customized: (p) => <Sparkles strokeWidth={1.6} {...p} />,
 };
-
 
 export function CategoryIcon({
   category,

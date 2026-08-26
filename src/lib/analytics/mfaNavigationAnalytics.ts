@@ -23,21 +23,21 @@ const E2E_BUFFER_LIMIT = 200;
 
 /** Como o destino do "Voltar" foi resolvido. */
 export type GoBackStrategy =
-  /** Rota interna segura lembrada em sessionStorage (SSOT lastInternalRoute). */
-  | 'remembered_route'
   /** `history.state.idx > 0` do React Router → `navigate(-1)`. */
   | 'history_back'
   /** Nenhum histórico interno confiável → fallback "/". */
-  | 'home_fallback';
+  | 'home_fallback'
+  /** Rota interna segura lembrada em sessionStorage (SSOT lastInternalRoute). */
+  | 'remembered_route';
 
 /** Origem da entrada na rota gated, inferida no momento do "Voltar". */
 export type GoBackOrigin =
-  /** Navegação interna do app (idx > 0 e/ou rota lembrada presente). */
-  | 'internal'
   /** Deep link / nova aba: idx === 0 e sem rota lembrada. */
   | 'deep_link'
   /** Chegou via referrer externo (documento com referrer de outra origem). */
   | 'external_referrer'
+  /** Navegação interna do app (idx > 0 e/ou rota lembrada presente). */
+  | 'internal'
   | 'unknown';
 
 export interface MfaGoBackPayload {

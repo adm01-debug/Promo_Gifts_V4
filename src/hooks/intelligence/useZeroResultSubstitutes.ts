@@ -46,8 +46,7 @@ interface Params {
   limit?: number;
 }
 
-const getSince = (days: number) =>
-  new Date(Date.now() - days * 86_400_000).toISOString();
+const getSince = (days: number) => new Date(Date.now() - days * 86_400_000).toISOString();
 
 const SAMPLE_SIZE = 800;
 const ENRICH_LIMIT = 250;
@@ -56,7 +55,7 @@ const ENRICH_LIMIT = 250;
 function accumulate(
   target: Map<string, { quotes: number; orders: number }>,
   key: string | null | undefined,
-  bucket: 'quotes' | 'orders',
+  bucket: 'orders' | 'quotes',
   add = 1,
 ) {
   if (!key) return;
@@ -124,8 +123,8 @@ export function useZeroResultSubstitutes({
       ]);
 
       const perProduct = new Map<string, { quotes: number; orders: number }>();
-      (qi ?? []).forEach((r) => accumulate(perProduct, r.product_id as string, 'quotes'));
-      (oi ?? []).forEach((r) => accumulate(perProduct, r.product_id as string, 'orders'));
+      (qi ?? []).forEach((r) => accumulate(perProduct, r.product_id!, 'quotes'));
+      (oi ?? []).forEach((r) => accumulate(perProduct, r.product_id!, 'orders'));
 
       const productIds = Array.from(perProduct.keys()).slice(0, ENRICH_LIMIT);
       if (productIds.length === 0) {
@@ -226,7 +225,12 @@ export function useZeroResultSubstitutes({
         ? toRanked(perCategory, (id) => catNameById.get(id), categoryId, contributorsByCategory)
         : [];
       const suppliersRanked = wantSupplier
-        ? toRanked(perSupplier, (id) => supplierNameById.get(id), supplierId, contributorsBySupplier)
+        ? toRanked(
+            perSupplier,
+            (id) => supplierNameById.get(id),
+            supplierId,
+            contributorsBySupplier,
+          )
         : [];
       const productsRanked = wantProduct
         ? Array.from(perProduct.entries())

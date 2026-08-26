@@ -23,7 +23,7 @@ interface Props {
   uploadCount: number;
   uploadProgress: number;
   isDragOverZone: boolean;
-  fileInputRef: React.RefObject<HTMLInputElement>;
+  fileInputRef: React.RefObject<HTMLInputElement | null>;
   handleFilesChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleDropZone: (e: React.DragEvent) => void;
   handleDropZoneDragOver: (e: React.DragEvent) => void;

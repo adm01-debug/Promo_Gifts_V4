@@ -9,7 +9,7 @@
  *  - Filtro de busca aceita keywords (ex: "cron" → Intervalo de Auto-Test).
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, fireEvent, act, renderHook } from "@testing-library/react";
+import { render, screen, fireEvent, act, renderHook, within } from "@testing-library/react";
 import {
   ZoneCommandPalette,
   useZoneCommandPaletteShortcut,
@@ -93,10 +93,13 @@ describe("ZoneCommandPalette — interação", () => {
     const onOpenChange = vi.fn();
     render(<ZoneCommandPalette open onOpenChange={onOpenChange} />);
 
-    // O grupo "Ir para zona" usa value="zona Operação".
-    const operationItem = screen
-      .getAllByRole("option")
-      .find((el) => el.getAttribute("data-value") === "zona operação")!;
+    // Valida pelo conteúdo apresentado ao usuário. O data-value é um detalhe
+    // interno do cmdk e mudou sua normalização entre versões compatíveis.
+    const zoneGroup = screen.getByText("Ir para zona").closest('[cmdk-group]');
+    expect(zoneGroup).not.toBeNull();
+    const operationItem = within(zoneGroup as HTMLElement)
+      .getByText(/^Operação$/)
+      .closest('[role="option"]');
     expect(operationItem).toBeDefined();
     fireEvent.click(operationItem);
 

@@ -1,4 +1,13 @@
-import { createContext, useContext, type ReactNode, useCallback, useMemo, useState, useEffect, useRef } from 'react';
+import {
+  createContext,
+  useContext,
+  type ReactNode,
+  useCallback,
+  useMemo,
+  useState,
+  useEffect,
+  useRef,
+} from 'react';
 import {
   useCollections,
   type Collection,
@@ -61,7 +70,7 @@ export function CollectionsProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (enabledRef.current) return;
 
-    //ativa se já existir elemento com collections
+    // ativa se já existir elemento com collections
     const existingCollections = document.querySelector('[data-collections]');
     if (existingCollections) {
       setEnabled(true);
@@ -69,7 +78,7 @@ export function CollectionsProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    //ativa quando coleção for acessada via evento
+    // ativa quando coleção for acessada via evento
     const handler = () => {
       setEnabled(true);
       enabledRef.current = true;

@@ -58,7 +58,7 @@ export function useLivePricePreview({
 }: UseLivePricePreviewParams) {
   const [estimate, setEstimate] = useState<LivePriceEstimate | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const abortRef = useRef(false);
 
   useEffect(() => {

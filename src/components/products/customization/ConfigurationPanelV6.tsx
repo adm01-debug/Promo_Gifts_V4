@@ -7,7 +7,17 @@
  */
 
 import { useState, useMemo, useRef, useEffect, useId, useCallback, type ReactNode } from 'react';
-import { Loader2, Palette, Ruler, AlertCircle, Check, Pencil, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
+import {
+  Loader2,
+  Palette,
+  Ruler,
+  AlertCircle,
+  Check,
+  Pencil,
+  Trash2,
+  ChevronDown,
+  ChevronUp,
+} from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -38,7 +48,7 @@ interface ConfigurationPanelV6Props {
 }
 
 type CollapsedInteractionProps = {
-  inert?: '';
+  inert?: boolean;
 };
 
 export function ConfigurationPanelV6({
@@ -95,7 +105,8 @@ export function ConfigurationPanelV6({
   );
   const setCollapsed = useCallback(
     (next: boolean | ((v: boolean) => boolean)) => {
-      const value = typeof next === 'function' ? (next as (v: boolean) => boolean)(collapsed) : next;
+      const value =
+        typeof next === 'function' ? (next as (v: boolean) => boolean)(collapsed) : next;
       setCollapsedPref(technique.technique_id, value);
     },
     [collapsed, setCollapsedPref, technique.technique_id],
@@ -103,7 +114,7 @@ export function ConfigurationPanelV6({
 
   const contentId = useId();
   const isLocked = isConfirmed && !editing;
-  const collapsedInteractionProps: CollapsedInteractionProps = collapsed ? { inert: '' } : {};
+  const collapsedInteractionProps: CollapsedInteractionProps = collapsed ? { inert: true } : {};
 
   const larguraNum = parseFloat(largura) || 0;
   const alturaNum = parseFloat(altura) || 0;
@@ -208,9 +219,9 @@ export function ConfigurationPanelV6({
               const iconNode =
                 confirmedIcon === null
                   ? null
-                  : confirmedIcon ?? (
+                  : (confirmedIcon ?? (
                       <Check className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden />
-                    );
+                    ));
               return (
                 <p
                   className="flex min-w-0 items-center gap-1.5 text-xs font-semibold text-foreground"
@@ -241,12 +252,14 @@ export function ConfigurationPanelV6({
             </p>
           )}
           <div className="flex items-center gap-2">
-
-
             <button
               type="button"
               onClick={() => setCollapsed((v) => !v)}
-              aria-label={collapsed ? 'Expandir configurações da gravação' : 'Recolher configurações da gravação'}
+              aria-label={
+                collapsed
+                  ? 'Expandir configurações da gravação'
+                  : 'Recolher configurações da gravação'
+              }
               aria-expanded={!collapsed}
               aria-controls={contentId}
               className="inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background sm:h-6 sm:w-6"
@@ -270,249 +283,262 @@ export function ConfigurationPanelV6({
         >
           <div className="min-h-0 overflow-hidden">
             <div className="space-y-4">
+              {/* Dimension inputs (conditional) */}
+              {technique.usa_dimensao && (
+                <div className="space-y-2">
+                  <div className="flex flex-wrap items-center gap-1.5 text-sm text-foreground">
+                    <Ruler className="h-3.5 w-3.5" />
+                    <span className="font-medium">Tamanho da gravação</span>
+                    <span className="text-xs text-muted-foreground">
+                      Máx. {technique.efetiva_largura_max} × {technique.efetiva_altura_max} cm
+                    </span>
+                  </div>
 
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1">
+                      <Label className="text-xs text-muted-foreground">Largura (cm)</Label>
+                      <Input
+                        type="number"
+                        step="0.1"
+                        min="0.1"
+                        max={technique.efetiva_largura_max}
+                        value={largura}
+                        onChange={(e) => setLargura(e.target.value)}
+                        placeholder={`até ${technique.efetiva_largura_max}`}
+                        className="h-9 text-sm"
+                        disabled={isLocked}
+                        data-testid="customization-width-input"
+                      />
+                    </div>
+                    <span className="mt-5 text-muted-foreground">×</span>
+                    <div className="flex-1">
+                      <Label className="text-xs text-muted-foreground">Altura (cm)</Label>
+                      <Input
+                        type="number"
+                        step="0.1"
+                        min="0.1"
+                        max={technique.efetiva_altura_max}
+                        value={altura}
+                        onChange={(e) => setAltura(e.target.value)}
+                        placeholder={`até ${technique.efetiva_altura_max}`}
+                        className="h-9 text-sm"
+                        disabled={isLocked}
+                        data-testid="customization-height-input"
+                      />
+                    </div>
+                  </div>
 
-
-        {/* Dimension inputs (conditional) */}
-        {technique.usa_dimensao && (
-          <div className="space-y-2">
-            <div className="flex items-center gap-1.5 text-sm text-foreground flex-wrap">
-              <Ruler className="h-3.5 w-3.5" />
-              <span className="font-medium">Tamanho da gravação</span>
-              <span className="text-xs text-muted-foreground">
-                Máx. {technique.efetiva_largura_max} × {technique.efetiva_altura_max} cm
-              </span>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <div className="flex-1">
-                <Label className="text-xs text-muted-foreground">Largura (cm)</Label>
-                <Input
-                  type="number"
-                  step="0.1"
-                  min="0.1"
-                  max={technique.efetiva_largura_max}
-                  value={largura}
-                  onChange={(e) => setLargura(e.target.value)}
-                  placeholder={`até ${technique.efetiva_largura_max}`}
-                  className="h-9 text-sm"
-                  disabled={isLocked}
-                  data-testid="customization-width-input"
-                />
-              </div>
-              <span className="mt-5 text-muted-foreground">×</span>
-              <div className="flex-1">
-                <Label className="text-xs text-muted-foreground">Altura (cm)</Label>
-                <Input
-                  type="number"
-                  step="0.1"
-                  min="0.1"
-                  max={technique.efetiva_altura_max}
-                  value={altura}
-                  onChange={(e) => setAltura(e.target.value)}
-                  placeholder={`até ${technique.efetiva_altura_max}`}
-                  className="h-9 text-sm"
-                  disabled={isLocked}
-                  data-testid="customization-height-input"
-                />
-              </div>
-            </div>
-
-            {dimensionError && larguraNum > 0 && alturaNum > 0 && (
-              <div className="flex items-center gap-1.5 text-xs text-destructive">
-                <AlertCircle className="h-3 w-3" />
-                {dimensionError}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Color selector (conditional) */}
-        {technique.cobra_por_cor && technique.max_cores > 1 && (
-          <div className="space-y-1.5">
-            <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-              <Palette className="h-3 w-3" />
-              Nº de cores
-            </div>
-            <div role="radiogroup" aria-label="Número de cores" className="inline-flex rounded-lg border border-border/60 bg-card p-0.5">
-              {Array.from({ length: technique.max_cores }, (_, i) => i + 1).map((n) => (
-                <button
-                  key={n}
-                  type="button"
-                  role="radio"
-                  aria-checked={n === numCores}
-                  aria-label={`${n} ${n === 1 ? 'cor' : 'cores'}${n === 2 ? ' — 10% de desconto' : ''}${n === 3 ? ' — 15% de desconto' : ''}`}
-                  disabled={isLocked}
-                  className={cn(
-                    'h-7 rounded-md px-2.5 text-[12px] font-medium tabular-nums transition-colors',
-                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-1 focus-visible:ring-offset-background',
-                    isLocked && 'cursor-not-allowed opacity-50',
-                    n === numCores
-                      ? 'bg-primary text-primary-foreground shadow-sm'
-                      : 'text-muted-foreground hover:text-foreground',
+                  {dimensionError && larguraNum > 0 && alturaNum > 0 && (
+                    <div className="flex items-center gap-1.5 text-xs text-destructive">
+                      <AlertCircle className="h-3 w-3" />
+                      {dimensionError}
+                    </div>
                   )}
-                  data-testid={`customization-color-button-${n}`}
-                  onClick={() => !isLocked && setNumCores(n)}
+                </div>
+              )}
+
+              {/* Color selector (conditional) */}
+              {technique.cobra_por_cor && technique.max_cores > 1 && (
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                    <Palette className="h-3 w-3" />
+                    Nº de cores
+                  </div>
+                  <div
+                    role="radiogroup"
+                    aria-label="Número de cores"
+                    className="inline-flex rounded-lg border border-border/60 bg-card p-0.5"
+                  >
+                    {Array.from({ length: technique.max_cores }, (_, i) => i + 1).map((n) => (
+                      <button
+                        key={n}
+                        type="button"
+                        role="radio"
+                        aria-checked={n === numCores}
+                        aria-label={`${n} ${n === 1 ? 'cor' : 'cores'}${n === 2 ? ' — 10% de desconto' : ''}${n === 3 ? ' — 15% de desconto' : ''}`}
+                        disabled={isLocked}
+                        className={cn(
+                          'h-7 rounded-md px-2.5 text-[12px] font-medium tabular-nums transition-colors',
+                          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-1 focus-visible:ring-offset-background',
+                          isLocked && 'cursor-not-allowed opacity-50',
+                          n === numCores
+                            ? 'bg-primary text-primary-foreground shadow-sm'
+                            : 'text-muted-foreground hover:text-foreground',
+                        )}
+                        data-testid={`customization-color-button-${n}`}
+                        onClick={() => !isLocked && setNumCores(n)}
+                      >
+                        {n} {n === 1 ? 'cor' : 'cores'}
+                        {n === 2 && <span className="ml-1 text-success/80">−10%</span>}
+                        {n === 3 && <span className="ml-1 text-success/80">−15%</span>}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Full color info */}
+              {!technique.cobra_por_cor && (
+                <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                  <Palette className="h-3 w-3" />
+                  Full Color — sem limite de cores
+                </div>
+              )}
+
+              {/* Loading */}
+              {loading && (
+                <div className="flex items-center gap-2 rounded-lg bg-muted/40 px-3 py-2 text-[12px] text-muted-foreground">
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  Calculando preço...
+                </div>
+              )}
+
+              {/* Error */}
+              {error && !loading && (
+                <div className="flex items-center gap-2 rounded-lg border border-destructive/20 bg-destructive/10 px-3 py-2 text-[12px] text-destructive">
+                  <AlertCircle className="h-3.5 w-3.5" />
+                  {error}
+                </div>
+              )}
+
+              {/* Price result — "fichinha": label à esquerda, valores tabulares à direita */}
+              {price && !loading && (
+                <div
+                  className="space-y-1.5 rounded-md border border-primary/20 bg-primary/[0.04] p-2.5"
+                  aria-live="polite"
                 >
-                  {n} {n === 1 ? 'cor' : 'cores'}
-                  {n === 2 && <span className="ml-1 text-success/80">−10%</span>}
-                  {n === 3 && <span className="ml-1 text-success/80">−15%</span>}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
+                  <div className="flex items-center justify-between gap-2 border-b border-border/40 pb-1.5">
+                    <div className="flex min-w-0 items-center gap-1.5">
+                      <Check className="h-3 w-3 shrink-0 text-primary" aria-hidden />
+                      <span className="truncate text-[11px] font-medium text-foreground">
+                        {price.nome_tabela}
+                      </span>
+                    </div>
+                    <span className="shrink-0 text-[10px] tabular-nums text-muted-foreground">
+                      {price.quantidade} pç
+                      {technique.usa_dimensao && larguraNum > 0 && alturaNum > 0 && (
+                        <>
+                          {' '}
+                          · {larguraNum}×{alturaNum}cm
+                        </>
+                      )}
+                      {(price.num_cores ?? 0) > 1 && <> · {price.num_cores}c</>}
+                    </span>
+                  </div>
 
-        {/* Full color info */}
-        {!technique.cobra_por_cor && (
-          <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-            <Palette className="h-3 w-3" />
-            Full Color — sem limite de cores
-          </div>
-        )}
+                  <dl className="space-y-1 text-[11px]">
+                    <div className="flex items-center justify-between">
+                      <dt className="text-muted-foreground">Preço unitário</dt>
+                      <dd className="font-medium tabular-nums text-foreground">
+                        R$ {(price.preco_unitario ?? 0).toFixed(2)}
+                      </dd>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <dt className="text-muted-foreground">Setup + gravação</dt>
+                      <dd className="font-medium tabular-nums text-foreground">
+                        R$ {((price.valor_gravacao ?? 0) + (price.setup_total ?? 0)).toFixed(2)}
+                      </dd>
+                    </div>
+                    <div className="flex items-center justify-between border-t border-border/40 pt-1.5">
+                      <dt className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                        Total
+                      </dt>
+                      <dd
+                        className="text-[15px] font-semibold tabular-nums text-primary"
+                        data-testid="customization-total-price"
+                      >
+                        R$ {(price.total_cobrado ?? 0).toFixed(2)}
+                      </dd>
+                    </div>
+                  </dl>
+                </div>
+              )}
 
-        {/* Loading */}
-        {loading && (
-          <div className="flex items-center gap-2 rounded-lg bg-muted/40 px-3 py-2 text-[12px] text-muted-foreground">
-            <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            Calculando preço...
-          </div>
-        )}
+              {/* Waiting for inputs */}
+              {!price && !loading && !error && (
+                <div className="rounded-lg bg-muted/30 p-3 text-center text-xs text-muted-foreground">
+                  {technique.usa_dimensao && (larguraNum <= 0 || alturaNum <= 0)
+                    ? 'Preencha largura e altura para calcular o preço'
+                    : 'Aguardando cálculo...'}
+                </div>
+              )}
 
-        {/* Error */}
-        {error && !loading && (
-          <div className="flex items-center gap-2 rounded-lg border border-destructive/20 bg-destructive/10 px-3 py-2 text-[12px] text-destructive">
-            <AlertCircle className="h-3.5 w-3.5" />
-            {error}
-          </div>
-        )}
-
-        {/* Price result — "fichinha": label à esquerda, valores tabulares à direita */}
-        {price && !loading && (
-          <div
-            className="space-y-1.5 rounded-md border border-primary/20 bg-primary/[0.04] p-2.5"
-            aria-live="polite"
-          >
-            <div className="flex items-center justify-between gap-2 border-b border-border/40 pb-1.5">
-              <div className="flex min-w-0 items-center gap-1.5">
-                <Check className="h-3 w-3 shrink-0 text-primary" aria-hidden />
-                <span className="truncate text-[11px] font-medium text-foreground">
-                  {price.nome_tabela}
-                </span>
-              </div>
-              <span className="shrink-0 text-[10px] tabular-nums text-muted-foreground">
-                {price.quantidade} pç
-                {technique.usa_dimensao && larguraNum > 0 && alturaNum > 0 && (
-                  <> · {larguraNum}×{alturaNum}cm</>
+              {/* AÇÕES — Confirmar / Editar / Remover */}
+              <div className="flex flex-col gap-2 pt-1">
+                {showConfirmError && (
+                  <div className="flex items-center gap-1.5 rounded border border-destructive/20 bg-destructive/10 p-2 text-[11px] text-destructive animate-in fade-in slide-in-from-top-1">
+                    <AlertCircle className="h-3.5 w-3.5" />
+                    <span>
+                      {dimensionError ||
+                        (error ? 'Erro ao calcular preço' : 'Aguarde o cálculo do preço')}
+                    </span>
+                  </div>
                 )}
-                {(price.num_cores ?? 0) > 1 && <> · {price.num_cores}c</>}
-              </span>
-            </div>
 
-            <dl className="space-y-1 text-[11px]">
-              <div className="flex items-center justify-between">
-                <dt className="text-muted-foreground">Preço unitário</dt>
-                <dd className="font-medium tabular-nums text-foreground">
-                  R$ {(price.preco_unitario ?? 0).toFixed(2)}
-                </dd>
+                <div className="flex items-center gap-1.5">
+                  {!isConfirmed && (
+                    <Button
+                      type="button"
+                      size="sm"
+                      className="h-8 flex-1 text-xs"
+                      onClick={handleConfirm}
+                      data-testid="customization-confirm-button"
+                      aria-label="Adicionar gravação ao orçamento"
+                    >
+                      <Check className="mr-1 h-3.5 w-3.5" aria-hidden />
+                      Adicionar ao orçamento
+                    </Button>
+                  )}
+                  {isConfirmed && !editing && (
+                    <>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        className="h-8 flex-1 text-xs"
+                        onClick={handleEdit}
+                        aria-label="Editar gravação confirmada"
+                      >
+                        <Pencil className="mr-1 h-3.5 w-3.5" aria-hidden />
+                        Editar
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="ghost"
+                        className="h-8 text-xs text-destructive hover:bg-destructive/10 hover:text-destructive"
+                        onClick={handleRemove}
+                        aria-label="Remover gravação do orçamento"
+                      >
+                        <Trash2 className="mr-1 h-3.5 w-3.5" aria-hidden />
+                        Remover
+                      </Button>
+                    </>
+                  )}
+                  {isConfirmed && editing && (
+                    <>
+                      <Button
+                        type="button"
+                        size="sm"
+                        className="h-8 flex-1 text-xs"
+                        onClick={handleConfirm}
+                      >
+                        <Check className="mr-1 h-3.5 w-3.5" aria-hidden />
+                        Atualizar
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="ghost"
+                        className="h-8 text-xs"
+                        onClick={() => setEditing(false)}
+                      >
+                        Cancelar
+                      </Button>
+                    </>
+                  )}
+                </div>
               </div>
-              <div className="flex items-center justify-between">
-                <dt className="text-muted-foreground">Setup + gravação</dt>
-                <dd className="font-medium tabular-nums text-foreground">
-                  R$ {((price.valor_gravacao ?? 0) + (price.setup_total ?? 0)).toFixed(2)}
-                </dd>
-              </div>
-              <div className="flex items-center justify-between border-t border-border/40 pt-1.5">
-                <dt className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
-                  Total
-                </dt>
-                <dd
-                  className="text-[15px] font-semibold tabular-nums text-primary"
-                  data-testid="customization-total-price"
-                >
-                  R$ {(price.total_cobrado ?? 0).toFixed(2)}
-                </dd>
-              </div>
-            </dl>
-          </div>
-        )}
-
-
-
-        {/* Waiting for inputs */}
-        {!price && !loading && !error && (
-          <div className="rounded-lg bg-muted/30 p-3 text-center text-xs text-muted-foreground">
-            {technique.usa_dimensao && (larguraNum <= 0 || alturaNum <= 0)
-              ? 'Preencha largura e altura para calcular o preço'
-              : 'Aguardando cálculo...'}
-          </div>
-        )}
-
-        {/* AÇÕES — Confirmar / Editar / Remover */}
-        <div className="flex flex-col gap-2 pt-1">
-          {showConfirmError && (
-            <div className="flex items-center gap-1.5 rounded border border-destructive/20 bg-destructive/10 p-2 text-[11px] text-destructive animate-in fade-in slide-in-from-top-1">
-              <AlertCircle className="h-3.5 w-3.5" />
-              <span>
-                {dimensionError ||
-                  (error ? 'Erro ao calcular preço' : 'Aguarde o cálculo do preço')}
-              </span>
-            </div>
-          )}
-
-          <div className="flex items-center gap-1.5">
-            {!isConfirmed && (
-              <Button
-                type="button"
-                size="sm"
-                className="h-8 flex-1 text-xs"
-                onClick={handleConfirm}
-                data-testid="customization-confirm-button"
-                aria-label="Adicionar gravação ao orçamento"
-              >
-                <Check className="mr-1 h-3.5 w-3.5" aria-hidden />
-                Adicionar ao orçamento
-              </Button>
-            )}
-            {isConfirmed && !editing && (
-              <>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  className="h-8 flex-1 text-xs"
-                  onClick={handleEdit}
-                  aria-label="Editar gravação confirmada"
-                >
-                  <Pencil className="mr-1 h-3.5 w-3.5" aria-hidden />
-                  Editar
-                </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="ghost"
-                  className="h-8 text-xs text-destructive hover:bg-destructive/10 hover:text-destructive"
-                  onClick={handleRemove}
-                  aria-label="Remover gravação do orçamento"
-                >
-                  <Trash2 className="mr-1 h-3.5 w-3.5" aria-hidden />
-                  Remover
-                </Button>
-              </>
-            )}
-            {isConfirmed && editing && (
-              <>
-                <Button type="button" size="sm" className="h-8 flex-1 text-xs" onClick={handleConfirm}>
-                  <Check className="mr-1 h-3.5 w-3.5" aria-hidden />
-                  Atualizar
-                </Button>
-                <Button type="button" size="sm" variant="ghost" className="h-8 text-xs" onClick={() => setEditing(false)}>
-                  Cancelar
-                </Button>
-              </>
-            )}
-          </div>
-        </div>
             </div>
           </div>
         </div>

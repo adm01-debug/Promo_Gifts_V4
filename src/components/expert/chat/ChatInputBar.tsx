@@ -8,8 +8,8 @@ interface ChatInputBarProps {
   input: string;
   setInput: (v: string) => void;
   isLoading: boolean;
-  inputRef: RefObject<HTMLTextAreaElement>;
-  isFromVoiceRef: React.MutableRefObject<boolean>;
+  inputRef: RefObject<HTMLTextAreaElement | null>;
+  isFromVoiceRef: React.RefObject<boolean | null>;
   onKeyDown: (e: React.KeyboardEvent) => void;
   onSend: () => void;
   onStopGenerating: () => void;

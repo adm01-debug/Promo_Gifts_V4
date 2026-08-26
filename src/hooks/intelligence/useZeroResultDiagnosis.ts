@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
-export type FilterKey = 'category' | 'supplier' | 'product';
+export type FilterKey = 'category' | 'product' | 'supplier';
 
 export interface LeaveOneOutPreview {
   quotes: number | null;
@@ -36,19 +36,15 @@ interface Params {
   productName?: string | null;
 }
 
-const getSince = (days: number) =>
-  new Date(Date.now() - days * 86_400_000).toISOString();
+const getSince = (days: number) => new Date(Date.now() - days * 86_400_000).toISOString();
 
 /**
  * Conta orçamentos (proxy de "atividade comercial") na janela, opcionalmente
  * restringido a um conjunto de product_ids. Usa `count: 'exact', head: true`
  * (sem payload) para ser barato mesmo em bases grandes.
  */
-async function countQuotesInWindow(
-  sinceIso: string,
-  productIds: string[] | null,
-): Promise<number> {
-  if (productIds && productIds.length === 0) return 0;
+async function countQuotesInWindow(sinceIso: string, productIds: string[] | null): Promise<number> {
+  if (productIds?.length === 0) return 0;
 
   if (!productIds) {
     const { count } = await supabase
@@ -71,11 +67,8 @@ async function countQuotesInWindow(
  * Conta pedidos (orders) na janela, opcionalmente restringido a product_ids
  * via order_items. Mesmo padrão de countQuotesInWindow.
  */
-async function countOrdersInWindow(
-  sinceIso: string,
-  productIds: string[] | null,
-): Promise<number> {
-  if (productIds && productIds.length === 0) return 0;
+async function countOrdersInWindow(sinceIso: string, productIds: string[] | null): Promise<number> {
+  if (productIds?.length === 0) return 0;
 
   if (!productIds) {
     const { count } = await supabase

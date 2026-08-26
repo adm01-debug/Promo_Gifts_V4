@@ -121,6 +121,10 @@ global.WebSocket = class WebSocket {
 // Sem este mock, testes de SidebarNavGroup.history/suspense falhavam em CI.
 window.scrollTo = vi.fn() as unknown as typeof window.scrollTo;
 Element.prototype.scrollTo = vi.fn() as unknown as Element['scrollTo'];
+// Element.scrollIntoView existe nos browsers, mas não no jsdom. cmdk chama o
+// método ao mover o item ativo; manter o stub global evita falsos negativos em
+// testes de palettes sem mascarar comportamento da aplicação em produção.
+Element.prototype.scrollIntoView = vi.fn() as unknown as Element['scrollIntoView'];
 
 // Fix: @remix-run/router cria objetos Request com AbortSignal durante navegação.
 // Em Node.js 20+, o construtor nativo de Request (undici) verifica

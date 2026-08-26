@@ -1,14 +1,12 @@
 #!/usr/bin/env node
 import { readFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const PACKAGE_JSON = resolve(ROOT, "package.json");
 
-const src = readFileSync(PACKAGE_JSON, "utf8");
-
-function skipString(text, i) {
+export function skipString(text, i) {
   const quote = text[i];
   i++;
   while (i < text.length) {
@@ -22,19 +20,19 @@ function skipString(text, i) {
   throw new Error("String não terminada");
 }
 
-function skipWhitespace(text, i) {
+export function skipWhitespace(text, i) {
   while (i < text.length && /\s/.test(text[i])) i++;
   return i;
 }
 
-function findObjectStartByKey(text, key) {
+export function findObjectStartByKey(text, key) {
   const pattern = new RegExp(`"${key}"\\s*:\\s*{`, "g");
   const m = pattern.exec(text);
   if (!m) return -1;
   return m.index + m[0].lastIndexOf("{");
 }
 
-function readPropertyName(text, i) {
+export function readPropertyName(text, i) {
   if (text[i] !== '"') return null;
   const start = i + 1;
   i = skipString(text, i);
@@ -42,7 +40,7 @@ function readPropertyName(text, i) {
   return { key: raw, next: i };
 }
 
-function findDuplicateKeysInObject(text, objStartIndex) {
+export function findDuplicateKeysInObject(text, objStartIndex) {
   const seen = new Map();
   const duplicates = [];
   let i = objStartIndex + 1;
@@ -69,7 +67,10 @@ function findDuplicateKeysInObject(text, objStartIndex) {
         }
       }
 
-      i = skipString(text, prop.next - 1);
+      // `readPropertyName()` já avançou além da string atual.
+      // Voltar para a aspa de fechamento faz o parser reler o token e
+      // pode desalinhar o cursor dentro dos valores.
+      i = prop.next;
       continue;
     }
 
@@ -81,21 +82,42 @@ function findDuplicateKeysInObject(text, objStartIndex) {
   return duplicates;
 }
 
-const scriptsStart = findObjectStartByKey(src, "scripts");
-if (scriptsStart === -1) {
-  console.error("❌ package.json sem objeto scripts.");
-  process.exit(2);
+export function checkPackageDuplicateScriptsFromSource(src) {
+  const scriptsStart = findObjectStartByKey(src, "scripts");
+  if (scriptsStart === -1) {
+    return { code: 2, duplicates: [], hasScriptsObject: false };
+  }
+
+  const duplicates = findDuplicateKeysInObject(src, scriptsStart);
+  return { code: duplicates.length === 0 ? 0 : 1, duplicates, hasScriptsObject: true };
 }
 
-const duplicates = findDuplicateKeysInObject(src, scriptsStart);
-
-if (duplicates.length === 0) {
-  console.log("✅ Nenhuma chave duplicada em package.json > scripts.");
-  process.exit(0);
+export function checkPackageDuplicateScriptsFromFile(packageJsonPath = PACKAGE_JSON) {
+  const src = readFileSync(packageJsonPath, "utf8");
+  return checkPackageDuplicateScriptsFromSource(src);
 }
 
-console.error("❌ Chaves duplicadas detectadas em package.json > scripts:\n");
-for (const d of duplicates) {
-  console.error(`- \"${d.key}\" (primeira em L${d.firstLine}, duplicada em L${d.duplicateLine})`);
+export function runCli(packageJsonPath = PACKAGE_JSON) {
+  const result = checkPackageDuplicateScriptsFromFile(packageJsonPath);
+
+  if (!result.hasScriptsObject) {
+    console.error("❌ package.json sem objeto scripts.");
+    return result.code;
+  }
+
+  if (result.duplicates.length === 0) {
+    console.log("✅ Nenhuma chave duplicada em package.json > scripts.");
+    return result.code;
+  }
+
+  console.error("❌ Chaves duplicadas detectadas em package.json > scripts:\n");
+  for (const d of result.duplicates) {
+    console.error(`- \"${d.key}\" (primeira em L${d.firstLine}, duplicada em L${d.duplicateLine})`);
+  }
+
+  return result.code;
 }
-process.exit(1);
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  process.exitCode = runCli();
+}

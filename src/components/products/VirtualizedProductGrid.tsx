@@ -119,12 +119,12 @@ function VirtualizedProductGridInner({
     overscan: viewMode === 'list' ? 10 : 5,
     scrollMargin: 0,
   });
+  const virtualItems = virtualizer.getVirtualItems();
 
   // IDs visíveis (com overscan) — base para prefetch de cores e stock velocity
   const visibleProductIds = useMemo(() => {
-    const items = virtualizer.getVirtualItems();
     const ids: string[] = [];
-    for (const item of items) {
+    for (const item of virtualItems) {
       const startIdx = item.index * effectiveColumns;
       const endIdx = Math.min(startIdx + effectiveColumns, products.length);
       for (let i = startIdx; i < endIdx; i++) {
@@ -133,17 +133,14 @@ function VirtualizedProductGridInner({
       }
     }
     return [...new Set(ids)];
-  }, [virtualizer.getVirtualItems(), products, effectiveColumns]);
+  }, [virtualItems, products, effectiveColumns]);
 
-  const idsNeedingColors = useMemo(
-    () => {
-      const idSet = new Set(visibleProductIds);
-      return products
-        .filter((p) => idSet.has(p.id) && (!p.colors || p.colors.length === 0))
-        .map((p) => p.id);
-    },
-    [products, visibleProductIds],
-  );
+  const idsNeedingColors = useMemo(() => {
+    const idSet = new Set(visibleProductIds);
+    return products
+      .filter((p) => idSet.has(p.id) && (!p.colors || p.colors.length === 0))
+      .map((p) => p.id);
+  }, [products, visibleProductIds]);
   const { data: colorsByProduct } = useProductsColorsBatch(idsNeedingColors);
 
   // ANTI N+1: prefetch batch de mv_stock_velocity apenas para produtos visíveis
@@ -169,8 +166,6 @@ function VirtualizedProductGridInner({
       };
     });
   }, [products, colorsByProduct]);
-
-  const virtualItems = virtualizer.getVirtualItems();
 
   // Infinite scroll: load more when reaching the bottom
   const handleScroll = useCallback(() => {

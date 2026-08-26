@@ -1,5 +1,5 @@
 import { defineConfig, type Plugin } from 'vitest/config';
-import react from '@vitejs/plugin-react-swc';
+import react from '@vitejs/plugin-react';
 import path from 'path';
 
 /**
@@ -70,14 +70,9 @@ export default defineConfig({
     ],
     // CI runners (GitHub Actions ubuntu-latest) têm 2 vCPU (4 vThreads).
     // Default thread pool causava timeout de 75min — mitigado com
-    // maxThreads: 2 para evitar contenção.
+    // maxWorkers: 2 para evitar contenção.
     pool: 'threads',
-    poolOptions: {
-      threads: {
-        maxThreads: 2,
-        singleThread: false,
-      },
-    },
+    maxWorkers: 2,
     retry: 2,
     // Suíte grande (896 arquivos) em runners de 2 vCPU: o default de 5s estoura sob carga
     // paralela em testes pesados (fuzz, integração com portal Radix, await import dinâmico).

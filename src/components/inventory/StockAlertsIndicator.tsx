@@ -1,4 +1,10 @@
-import { useState, forwardRef, useMemo } from 'react';
+import {
+  useState,
+  forwardRef,
+  useMemo,
+  type ComponentPropsWithoutRef,
+  type ReactElement,
+} from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Package,
@@ -119,7 +125,7 @@ const TABS: TabDef[] = [
 
 // ─── Trigger ─────────────────────────────────────────────────────
 
-interface TriggerProps extends React.ComponentPropsWithoutRef<typeof Button> {
+interface TriggerProps extends ComponentPropsWithoutRef<typeof Button> {
   total: number;
   badgeColor: string;
   isLoading: boolean;
@@ -159,7 +165,7 @@ NotificationTrigger.displayName = 'NotificationTrigger';
 
 // ─── Item helpers ────────────────────────────────────────────────
 
-function getKindBadge(kind: StockNotificationKind): JSX.Element {
+function getKindBadge(kind: StockNotificationKind): ReactElement {
   if (kind === 'stockout')
     return (
       <Badge variant="destructive" className="px-1.5 py-0 text-[10px]">
@@ -179,7 +185,7 @@ function getKindBadge(kind: StockNotificationKind): JSX.Element {
   );
 }
 
-function getKindIcon(kind: StockNotificationKind): JSX.Element {
+function getKindIcon(kind: StockNotificationKind): ReactElement {
   if (kind === 'stockout') return <AlertCircle className="h-3.5 w-3.5 text-destructive" />;
   if (kind === 'low') return <TrendingDown className="h-3.5 w-3.5 text-warning" />;
   if (kind === 'new') return <Sparkles className="h-3.5 w-3.5 text-primary" />;
@@ -261,10 +267,10 @@ export function StockAlertsIndicator() {
     activeTab === 'stockout'
       ? stockoutQuery
       : activeTab === 'low'
-      ? lowQuery
-      : activeTab === 'new'
-      ? noveltyQuery
-      : restocksQuery;
+        ? lowQuery
+        : activeTab === 'new'
+          ? noveltyQuery
+          : restocksQuery;
   const isListLoading = activeQuery.isLoading;
   const listError = activeQuery.isError ? activeQuery.error : null;
 
@@ -356,7 +362,6 @@ export function StockAlertsIndicator() {
             );
           })}
         </div>
-
 
         {/* Filtro de período */}
         <div className="flex items-center gap-1.5 border-b border-border/20 bg-muted/20 px-4 py-1.5">

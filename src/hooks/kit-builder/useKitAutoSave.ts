@@ -33,7 +33,7 @@ export function useKitAutoSave(
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [autoSavedKitId, setAutoSavedKitId] = useState<string | null>(currentKitId || null);
-  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const snapshotRef = useRef<string>('');
   const isFirstRender = useRef(true);
 

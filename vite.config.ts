@@ -1,5 +1,5 @@
 import { defineConfig, type UserConfig } from 'vite';
-import react from '@vitejs/plugin-react-swc';
+import react from '@vitejs/plugin-react';
 import path from 'path';
 import { componentTagger } from 'lovable-tagger';
 import { visualizer } from 'rollup-plugin-visualizer';
@@ -10,7 +10,7 @@ import { visualizer } from 'rollup-plugin-visualizer';
  * Otimizações aplicadas:
  * - manualChunks expandido: index chunk → granular splits por domínio
  * - cssCodeSplit habilitado
- * - esbuild com legalComments:none, treeShaking:true
+ * - Oxc/Rolldown com comentários legais removidos e tree-shaking explícito
  * - optimizeDeps.include expandido para pré-bundling mais preciso
  */
 export default defineConfig(({ mode }) => {
@@ -37,24 +37,26 @@ export default defineConfig(({ mode }) => {
       dedupe: ['react', 'react-dom'],
     },
 
-    esbuild: {
-      pure: isProd ? ['console.log', 'console.debug', 'console.info'] : [],
-      drop: (isProd ? ['debugger'] : []) as ('console' | 'debugger')[],
-      legalComments: 'none',
-      treeShaking: true,
-    },
-
     build: {
       outDir: 'dist',
       sourcemap: uploadSourcemaps ? 'hidden' : false,
-      minify: 'esbuild',
+      minify: 'oxc',
       target: 'esnext',
       chunkSizeWarningLimit: 2000,
       cssCodeSplit: true,
       reportCompressedSize: false,
 
-      rollupOptions: {
+      rolldownOptions: {
+        // Equivalente semântico do antigo `esbuild.pure`: remove somente as
+        // chamadas informativas em produção, preservando warn/error e os
+        // efeitos colaterais dos argumentos.
+        treeshake: {
+          manualPureFunctions: isProd
+            ? ['console.log', 'console.debug', 'console.info']
+            : [],
+        },
         output: {
+          comments: { legal: false },
           // Nomes de chunk mais legíveis (sem hash aleatório no nome)
           chunkFileNames: (chunkInfo) => {
             const name = chunkInfo.name || 'chunk';
@@ -181,8 +183,12 @@ export default defineConfig(({ mode }) => {
     },
 
     optimizeDeps: {
-      esbuildOptions: {
-        target: 'esnext',
+      // Vite 8 usa Rolldown também no pré-bundle de dependências. Manter o
+      // alvo aqui evita o adaptador legado `esbuildOptions` e seu warning.
+      rolldownOptions: {
+        transform: {
+          target: 'esnext',
+        },
       },
       include: [
         'react',

@@ -81,7 +81,7 @@ export function useCustomizationPriceReactive(
   const [price, setPrice] = useState<CustomizationPriceResponseV6 | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     if (!techniqueId || quantidade <= 0) {

@@ -51,7 +51,7 @@ function buildDiagnosisMention(
   days: number,
   names: { category?: string | null; supplier?: string | null; product?: string | null },
 ): string | null {
-  if (!diag || !diag.culprit) return null;
+  if (!diag?.culprit) return null;
   const c = diag.culprit;
   if (c === 'window') {
     const w = diag.widenedPreview;
@@ -62,9 +62,10 @@ function buildDiagnosisMention(
   }
   if (c === 'intersection') {
     const w = diag.widenedPreview;
-    const tail = w && (w.quotes > 0 || w.orders > 0)
-      ? ` Ampliando a janela para ${w.days} dias, viriam ${w.quotes} orçamento(s) e ${w.orders} pedido(s).`
-      : '';
+    const tail =
+      w && (w.quotes > 0 || w.orders > 0)
+        ? ` Ampliando a janela para ${w.days} dias, viriam ${w.quotes} orçamento(s) e ${w.orders} pedido(s).`
+        : '';
     return `Diagnóstico: a combinação atual de filtros está vazia na janela de ${days} dias.${tail}`;
   }
   const label = FILTER_LABEL[c];
@@ -78,13 +79,11 @@ function buildDiagnosisMention(
   const q = diag.leaveOneOut[c];
   const o = diag.leaveOneOutOrders[c];
   const preview =
-    q != null && o != null
-      ? ` — removê-lo recuperaria ${q} orçamento(s) e ${o} pedido(s)`
-      : '';
+    q !== null && o !== null ? ` — removê-lo recuperaria ${q} orçamento(s) e ${o} pedido(s)` : '';
   return `Diagnóstico: o filtro de ${label}${nameSuffix} está zerando os dados${preview}.`;
 }
 
-export type InsightFocus = 'auto' | 'conversion' | 'ticket' | 'rupture';
+export type InsightFocus = 'auto' | 'conversion' | 'rupture' | 'ticket';
 
 interface Props {
   days: number;
@@ -114,9 +113,24 @@ const FOCUS_OPTIONS: Array<{
   Icon: typeof Target;
 }> = [
   { value: 'auto', label: 'Automático', hint: 'A IA escolhe o gargalo mais crítico.', Icon: Wand2 },
-  { value: 'conversion', label: 'Conversão', hint: 'Foca em orçamentos que não viraram pedido.', Icon: Target },
-  { value: 'ticket', label: 'Ticket médio', hint: 'Foca em cross-sell, upsell e mix.', Icon: Wallet },
-  { value: 'rupture', label: 'Ruptura / Estoque', hint: 'Foca em risco de falta e reposição.', Icon: PackageX },
+  {
+    value: 'conversion',
+    label: 'Conversão',
+    hint: 'Foca em orçamentos que não viraram pedido.',
+    Icon: Target,
+  },
+  {
+    value: 'ticket',
+    label: 'Ticket médio',
+    hint: 'Foca em cross-sell, upsell e mix.',
+    Icon: Wallet,
+  },
+  {
+    value: 'rupture',
+    label: 'Ruptura / Estoque',
+    hint: 'Foca em risco de falta e reposição.',
+    Icon: PackageX,
+  },
 ];
 
 export function MarketIntelligenceInsightsCard({
@@ -176,7 +190,6 @@ export function MarketIntelligenceInsightsCard({
     staleTime: 1000 * 60 * 5,
     retry: false,
   });
-
 
   const { data: diagnosis } = useZeroResultDiagnosis({
     enabled: data?.empty === true,

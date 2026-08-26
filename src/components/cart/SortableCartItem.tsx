@@ -77,7 +77,7 @@ export const SortableCartItem = memo(
     const isRow = variant === 'row';
     const [notesOpen, setNotesOpen] = useState(!!item.notes);
     const [localNotes, setLocalNotes] = useState(item.notes || '');
-    const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+    const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
     // Sync localNotes from server when no pending debounce (user not typing).
     // Keeps the field current after React Query refetches without clobbering an
@@ -165,8 +165,7 @@ export const SortableCartItem = memo(
           <div
             className={cn(
               'group/img-container relative aspect-square overflow-hidden bg-muted/20',
-              isRow &&
-                'aspect-auto h-40 w-full shrink-0 sm:h-auto sm:w-40 md:w-48 lg:w-56',
+              isRow && 'aspect-auto h-40 w-full shrink-0 sm:h-auto sm:w-40 md:w-48 lg:w-56',
             )}
           >
             <button
@@ -356,7 +355,7 @@ export const SortableCartItem = memo(
           </div>
 
           {/* Product info */}
-          <div className={cn('space-y-2.5 p-3.5', isRow && 'flex-1 min-w-0')}>
+          <div className={cn('space-y-2.5 p-3.5', isRow && 'min-w-0 flex-1')}>
             <div className="flex flex-col gap-1.5">
               <div className="flex items-center justify-between">
                 {item.product_sku && (

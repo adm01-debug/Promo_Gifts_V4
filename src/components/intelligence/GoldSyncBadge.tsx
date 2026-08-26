@@ -55,7 +55,7 @@ export function GoldSyncBadge({ windowDays, className }: GoldSyncBadgeProps) {
   }
 
   const inWindow = data.hasOrdersInWindow(windowDays);
-  const state: 'in-window' | 'stale' | 'empty' = !data.lastOrderAt
+  const state: 'empty' | 'in-window' | 'stale' = !data.lastOrderAt
     ? 'empty'
     : inWindow
       ? 'in-window'

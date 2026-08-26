@@ -125,9 +125,14 @@ function breakerRecordSuccess(op: string): void {
 }
 
 /** Somente para testes. */
-export function __resetBreakers(): void {
+function resetBreakersForTests(): void {
   breakers.clear();
 }
+
+// Mantém a API histórica dos testes sem abrir exceção permanente na convenção
+// de nomes do código de produção.
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export { resetBreakersForTests as __resetBreakers };
 
 function jitter(base: number): number {
   if (base === 0) return 0;

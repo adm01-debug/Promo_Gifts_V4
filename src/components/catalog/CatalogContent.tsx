@@ -30,7 +30,7 @@ interface CatalogContentProps {
   hasMoreProducts: boolean;
   isLoadingMore: boolean;
   totalEstimate: number | null;
-  loadMoreRef: RefObject<HTMLDivElement>;
+  loadMoreRef: RefObject<HTMLDivElement | null>;
   itemsPerPage: number;
   navigate: (path: string) => void;
   handleViewProduct: (p: Product) => void;
@@ -170,7 +170,10 @@ export const CatalogContent = memo(
       return (
         <SparklineSalesProvider productIds={productIds}>
           <ProductLeafCategoryProvider productIds={productIds}>
-            <div className="h-[calc(100vh-var(--header-h,56px)-var(--breadcrumb-h,0px)-200px)] min-h-[500px] w-full" style={swatchSizeStyle(viewMode, gridColumns)}>
+            <div
+              className="h-[calc(100vh-var(--header-h,56px)-var(--breadcrumb-h,0px)-200px)] min-h-[500px] w-full"
+              style={swatchSizeStyle(viewMode, gridColumns)}
+            >
               <VirtualizedProductGrid
                 products={paginatedProducts}
                 isLoading={isLoadingMore}

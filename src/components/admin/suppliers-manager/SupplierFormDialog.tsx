@@ -68,8 +68,8 @@ interface SupplierFormDialogProps {
   showCarrierDropdown: boolean;
   setShowCarrierDropdown: (v: boolean) => void;
   searchCarriers: (term: string) => void;
-  carrierSearchTimeout: React.MutableRefObject<ReturnType<typeof setTimeout> | undefined>;
-  logoInputRef: React.RefObject<HTMLInputElement>;
+  carrierSearchTimeout: React.RefObject<ReturnType<typeof setTimeout> | undefined>;
+  logoInputRef: React.RefObject<HTMLInputElement | null>;
   updateField: (field: string, value: unknown) => void;
   handleSave: () => void;
   handleLogoUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;

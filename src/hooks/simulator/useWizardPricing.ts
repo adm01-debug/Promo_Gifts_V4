@@ -25,7 +25,7 @@ export function useWizardPricing({ state, dispatch }: UseWizardPricingParams) {
   // EFEITO: Recalcular preços ao mudar quantidade
   // ============================================
 
-  const recalcTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const recalcTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     const persToRecalc = state.personalizations.filter((p) => p.pricing._needsRecalc === true);
