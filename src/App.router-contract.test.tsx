@@ -2,12 +2,17 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import type { ReactElement, ReactNode } from 'react';
 
-const browserRouterSpy =
-  vi.fn<({ children }: { children?: ReactNode; future?: unknown }) => ReactElement>();
+type BrowserRouterSpyProps = {
+  children?: ReactNode;
+  future?: unknown;
+  useTransitions?: boolean;
+};
+
+const browserRouterSpy = vi.fn<(props: BrowserRouterSpyProps) => ReactElement>();
 
 vi.mock('react-router-dom', () => ({
-  BrowserRouter: ({ children, future }: { children?: ReactNode; future?: unknown }) => {
-    browserRouterSpy({ children, future });
+  BrowserRouter: ({ children, future, useTransitions }: BrowserRouterSpyProps) => {
+    browserRouterSpy({ children, future, useTransitions });
     return <>{children}</>;
   },
 }));
@@ -67,7 +72,7 @@ vi.mock('@/lib/lazyWithRetry', () => ({
 }));
 
 describe('App router contract', () => {
-  it('mounts BrowserRouter without deprecated future flags and keeps routes mounted', async () => {
+  it('desativa startTransition sem flags future obsoletas e mantém as rotas montadas', async () => {
     const { default: App } = await import('./App');
 
     render(<App />);
@@ -75,5 +80,6 @@ describe('App router contract', () => {
     expect(screen.getByTestId('app-routes')).toBeInTheDocument();
     expect(browserRouterSpy).toHaveBeenCalledTimes(1);
     expect(browserRouterSpy.mock.calls[0]?.[0]?.future).toBeUndefined();
+    expect(browserRouterSpy.mock.calls[0]?.[0]?.useTransitions).toBe(false);
   });
 });
