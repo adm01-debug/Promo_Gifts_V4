@@ -36,7 +36,11 @@ export default defineConfig({
     // sem isso. Snapshot file mantém timestamps em America/Sao_Paulo.
     env: { TZ: 'America/Sao_Paulo' },
     environment: 'jsdom',
-    setupFiles: ['./tests/setup.ts', './tests/setup-ref-warning-capture.ts'],
+    setupFiles: [
+      './tests/setup.ts',
+      './tests/setup-ref-warning-capture.ts',
+      './tests/setup-strict-side-effects.ts',
+    ],
     include: [
       'tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       'src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
@@ -74,6 +78,10 @@ export default defineConfig({
     pool: 'threads',
     maxWorkers: 2,
     retry: 2,
+    // Não permita que uma rejeição não tratada seja só reportada: o default do
+    // Vitest já é false, mas a declaração explícita protege esse contrato em
+    // upgrades de toolchain e torna a intenção auditável.
+    dangerouslyIgnoreUnhandledErrors: false,
     // Suíte grande (896 arquivos) em runners de 2 vCPU: o default de 5s estoura sob carga
     // paralela em testes pesados (fuzz, integração com portal Radix, await import dinâmico).
     // Timeouts globais generosos eliminam a flakiness sem mascarar lógica (o timeout só conta

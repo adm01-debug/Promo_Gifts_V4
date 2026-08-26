@@ -620,6 +620,7 @@ Os marcadores `[AUTORIZAÇÃO BD]`, `[AUTORIZAÇÃO GITHUB]`, `[AUTORIZAÇÃO DE
 - [ ] 45. `e2e-cleanup` já tem teste de caracterização hermético e ADR, mas continua dependente de decisão do PO: isolar ao ambiente de teste ou registrar no canal canônico.
 - [ ] 46. A ausência de `fn_ema_pipeline_health` já está comprovada e protegida por teste de contrato; ainda falta decidir RPC equivalente ou especificação nova.
 - [ ] 94. Lote inicial aplicado em RPC/ACL/lint: os gates live agora distinguem `static-pass` de `inconclusive` e os workflows principais usam `--require-live`; ainda faltam schema, smoke, carga, E2E e classificação dos consumers advisory.
+- [ ] 95. O núcleo de regressão cresceu de 35 para 37 arquivos e passou a rodar com `STRICT_TEST_SIDE_EFFECTS=1`: `fetch` não mockado e `console.error` não interceptado falham o teste; `dangerouslyIgnoreUnhandledErrors: false` ficou explícito. A intenção de `focus: "auto"` foi confirmada no schema e no runtime, e o `poolOptions` legado não existe no config ativo. A expansão do mesmo guard para as suítes não-core depende da classificação dos mocks legítimos já existentes.
 - [ ] 69–80. A governança read-only agora tem matriz de evidência, donos a confirmar e próximos testes por RLS/ACL/SECDEF/jobs; a execução exige confirmação por objeto e, quando aplicável, autorização do PO/DBA.
 
 ### Bloqueadas por autorização ou capacidade externa
@@ -635,7 +636,8 @@ Os marcadores `[AUTORIZAÇÃO BD]`, `[AUTORIZAÇÃO GITHUB]`, `[AUTORIZAÇÃO DE
 
 ### Verificações desta rodada
 
-- [x] `corepack npm run test:ci-core` -> 35 arquivos, 882 testes, tudo verde.
+- [x] `corepack npm run test:ci-core` -> 37 arquivos, 885 testes, tudo verde sob `STRICT_TEST_SIDE_EFFECTS=1`.
+- [x] Fixture negativa do guard estrito -> subprocesso hermético confirmou reprovação de `fetch` e `console.error` não mockados.
 - [x] `corepack npm run qa:full` -> verde de ponta a ponta.
 - [x] `corepack npm run build -- --logLevel warn` -> verde; restam apenas warnings não bloqueantes de chunk/import dinâmico.
 - [x] `corepack npm run check:bundle-size` -> verde após baseline limpa; alerta de tamanho de `products` preservado.
@@ -646,6 +648,12 @@ Os marcadores `[AUTORIZAÇÃO BD]`, `[AUTORIZAÇÃO GITHUB]`, `[AUTORIZAÇÃO DE
 - [x] `node scripts/check-supabase-reference-catalog.mjs`
 - [x] `npm run check:schema-reference-drift` -> retrato documental E1/E2 reproduzido, sem inferir alteração de objetos.
 - [x] `git diff --check`
+
+### Execução ampla não conclusiva — baseline preservada
+
+`corepack npm run test:quality` foi iniciado somente para diagnóstico, com o modo estrito desligado, e encontrou falhas antes de terminar (incluindo `mockup-audit`, `discountApprovalFlow`, `magazine-service-fuzz` e testes de UI); o processo encerrou com sinal `143` durante um caso lento de PDF. Não foi usado como aprovação nem como motivo para alterar testes em massa.
+
+Para separar regressão de baseline, o subconjunto inicial foi reproduzido no commit-base isolado `b9dbeeabd`: os mesmos dois arquivos falharam com 6 falhas, 356 passes e 1 skip. A causa observável de `discountApprovalFlow` é ausência de `QueryClientProvider`; em `mockup-audit`, a asserção estática ainda procura a chamada textual legada `supabase.functions.invoke`. Esses achados permanecem pendentes de lote próprio, sem alteração automática.
 
 ## Critério para encerrar a estabilização
 
