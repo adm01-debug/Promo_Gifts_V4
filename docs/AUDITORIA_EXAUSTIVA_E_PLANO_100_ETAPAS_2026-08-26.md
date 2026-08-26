@@ -600,7 +600,7 @@ Os marcadores `[AUTORIZAÇÃO BD]`, `[AUTORIZAÇÃO GITHUB]`, `[AUTORIZAÇÃO DE
 - [x] 21. Remoção da prop obsoleta `future` de `BrowserRouter`, preservando o comportamento atual.
 - [x] 22. Correção dos usos de `motion` em `PageTransition.tsx`, eliminando bloqueio de typecheck.
 - [x] 23. Correção do import de `minimatch` em `check-eslint-baseline.mjs`; o gate de lint voltou a executar de ponta a ponta.
-- [x] 24. Correção do parser de `check-package-duplicate-scripts.mjs`; o verificador voltou a analisar os 228 scripts sem crash.
+- [x] 24. Correção do parser de `check-package-duplicate-scripts.mjs`; o verificador voltou a analisar os 232 scripts atuais sem crash.
 - [x] 43. Helpers compartilhados de segurança passaram a registrar no `bot_detection_log` existente e compatível, preservando a resposta primária quando a auditoria falha.
 - [x] 44. `visual-search` passou a registrar falhas no canal canônico `edge_function_invocations`, com contrato Deno cobrindo falha primária e falha do próprio logger.
 - [x] 50. A chamada ineficaz a `set_config` como RPC pública foi removida e recebeu teste de contrato; nenhuma RPC ou migration nova foi criada.
@@ -640,6 +640,7 @@ Os marcadores `[AUTORIZAÇÃO BD]`, `[AUTORIZAÇÃO GITHUB]`, `[AUTORIZAÇÃO DE
 - [x] `corepack npm run test:ci-core` -> 37 arquivos, 885 testes, tudo verde sob `STRICT_TEST_SIDE_EFFECTS=1`.
 - [x] Fixture negativa do guard estrito -> subprocesso hermético confirmou reprovação de `fetch` e `console.error` não mockados.
 - [x] `corepack npm run qa:full` -> verde de ponta a ponta.
+- [x] `corepack npm run test:quality` -> 977 arquivos aprovados, 125 ignorados intencionalmente; 23.435 testes aprovados e 1.101 ignorados, encerrando com código 0.
 - [x] `corepack npm run build -- --logLevel warn` -> verde; restam apenas warnings não bloqueantes de chunk/import dinâmico.
 - [x] `corepack npm run check:bundle-size` -> verde após baseline limpa; alerta de tamanho de `products` preservado.
 - [x] `node scripts/check-migration-filename-contract.mjs` e teste Vitest correspondente -> verde; nenhum arquivo de migration foi alterado.
@@ -651,13 +652,15 @@ Os marcadores `[AUTORIZAÇÃO BD]`, `[AUTORIZAÇÃO GITHUB]`, `[AUTORIZAÇÃO DE
 - [x] `npm run check:schema-reference-drift` -> retrato documental E1/E2 reproduzido, sem inferir alteração de objetos.
 - [x] `git diff --check`
 
-### Execução ampla não conclusiva — baseline preservada
+### Histórico de diagnóstico e execução ampla final
 
 `corepack npm run test:quality` foi iniciado somente para diagnóstico, com o modo estrito desligado, e encontrou falhas antes de terminar (incluindo então `mockup-audit`, `discountApprovalFlow`, `magazine-service-fuzz` e testes de UI); o processo encerrou com sinal `143` durante um caso lento de PDF. Não foi usado como aprovação nem como motivo para alterar testes em massa.
 
 Para separar regressão de baseline, o subconjunto inicial foi reproduzido no commit-base isolado `b9dbeeabd`: os mesmos dois arquivos falharam com 6 falhas, 356 passes e 1 skip. O lote mínimo posterior corrigiu somente a infraestrutura de teste: `discountApprovalFlow` passou a usar `renderHookWithProviders`, que reproduz o `QueryClientProvider` existente no app; `mockup-audit` deixou de procurar a chamada textual legada `supabase.functions.invoke` e verifica a pré-validação no bloco atual de `generateMockupApi`. Ambos passaram com 362 testes e 1 skip, inclusive sob o guard estrito. O bloco live permaneceu opt-in e não foi acionado.
 
 Uma nova execução integral de `corepack npm run test:quality`, depois do reparo do caso de PDF, chegou ao fim sem sinal `143`, mas ainda fechou com **79 falhas de teste e 8 suítes que não iniciaram**. O resultado foi classificado, não tratado como aprovação: há mocks desatualizados após a migração para `invokeEdge` e `SAFE_MESSAGES`, expectativas síncronas para fluxos agora assíncronos, contagens/baselines estáticos vencidos, testes live sem descritores ou credenciais e alguns defeitos de contrato reais a corrigir (principalmente a preservação de mensagem de erro no fluxo de mockup). As correções devem seguir por famílias, com reprodução isolada e sem usar o resultado amplo para editar testes em massa.
+
+Após a classificação e os lotes mínimos descritos nos commits desta rodada, a execução final de `corepack npm run test:quality` encerrou normalmente em **393,07 s**, com código 0: **977 arquivos aprovados, 125 ignorados; 23.435 testes aprovados, 1.101 ignorados**. Os ignores remanescentes são caminhos opt-in/live sem credenciais reais ou cenários explicitamente indisponíveis no ambiente local; não foram tratados como aprovação de infraestrutura externa. Os avisos de `canvas`, navegação jsdom e mocks legados de PDF foram registrados como ruído de ambiente/futuro endurecimento, sem falha de contrato nesta execução.
 
 ## Critério para encerrar a estabilização
 
