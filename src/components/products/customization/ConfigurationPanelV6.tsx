@@ -21,6 +21,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { useCustomizationPriceReactive } from '@/hooks/simulation';
 import type { TechniqueOption, CustomizationPriceResponseV6 } from '@/types/customization';
@@ -229,10 +230,10 @@ export function ConfigurationPanelV6({
                 >
                   {iconNode}
                   {showSkeleton ? (
-                    <span
+                    <Skeleton
                       aria-hidden
                       data-testid="customization-confirmed-skeleton"
-                      className="inline-block h-3.5 w-24 animate-pulse rounded bg-muted"
+                      className="h-3.5 w-24"
                     />
                   ) : (
                     <span
