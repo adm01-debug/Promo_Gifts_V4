@@ -76,7 +76,7 @@ export function ProductSearchCombobox({
     onSearchChange('');
   };
 
-  const handleClear = (e: React.MouseEvent) => {
+  const handleClear = (e: React.KeyboardEvent | React.MouseEvent) => {
     e.stopPropagation();
     onSelect(null);
     onSearchChange('');
