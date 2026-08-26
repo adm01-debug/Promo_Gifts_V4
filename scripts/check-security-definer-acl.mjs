@@ -16,8 +16,9 @@
  *
  * Como funciona:
  *   1. Se o ambiente NÃO tem credenciais Supabase (PR de fork, sandbox
- *      sem secrets), o script termina com sucesso e log de skip — o
- *      gate é defensivo, não pode quebrar PRs sem acesso ao banco.
+ *      sem secrets), o script emite `static-pass` no modo advisory ou
+ *      `inconclusive` quando `--require-live`/`REQUIRE_LIVE=1` exigir
+ *      evidência remota verificável.
  *   2. Caso contrário, chama o RPC `audit_security_definer_acl()`
  *      (criado na migração) via REST. Cada linha retornada é uma
  *      violação. Falha com exit 1 e imprime tabela legível.
@@ -116,7 +117,7 @@ try {
     },
     body: "{}",
   });
-} catch (err) {
+} catch {
   concludeCheck({
     check: "security-definer-acl",
     status: CHECK_RESULT_STATUS.INCONCLUSIVE,
@@ -124,7 +125,6 @@ try {
     details: {
       reason: "network-error",
       maskedUrl: maskUrl(url),
-      error: err.message,
     },
     stream: "stdout",
   });
@@ -140,7 +140,7 @@ if (!res.ok) {
       reason: "http-error",
       maskedUrl: maskUrl(url),
       httpStatus: res.status,
-      bodyPreview: text.slice(0, 240),
+      bodyLength: text.length,
     },
     stream: "stdout",
   });

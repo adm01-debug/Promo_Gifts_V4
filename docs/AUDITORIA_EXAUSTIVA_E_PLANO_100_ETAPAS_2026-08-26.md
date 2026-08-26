@@ -609,6 +609,7 @@ Os marcadores `[AUTORIZAÇÃO BD]`, `[AUTORIZAÇÃO GITHUB]`, `[AUTORIZAÇÃO DE
 - [x] 56. Inventário de 20 caminhos de mocks/fallbacks e consumidores downstream, sem alterar a UI ou apresentar dados como reais.
 - [x] 60. Teste de isolamento de demo garantindo que Trends só usa mock com `?demo=1` e que ProductMatch mock fica restrito ao contexto previsto.
 - [x] 67. Fotografia `pg_catalog` versionada localmente nesta rodada para sustentar a reconciliação dos próximos passos sem tocar no banco.
+- [x] 68. Diff recorrente e somente documental entre `SCHEMA_REFERENCE.md` e a fotografia `pg_catalog`, com aviso explícito de que delta agregado não prova perda/intenção por objeto.
 - [x] 87. Gate forward-only bloqueando migrations novas sem timestamp UTC válido ou versão única, mantendo o legado explicitamente baselined.
 - [x] 97. Baseline de bundle impossível foi reconstituída em checkout limpo, com hashes e gate novamente mensurável; o alerta de `products` foi preservado.
 
@@ -618,8 +619,7 @@ Os marcadores `[AUTORIZAÇÃO BD]`, `[AUTORIZAÇÃO GITHUB]`, `[AUTORIZAÇÃO DE
 - [ ] 41. `bitrix-sync` já foi separado analiticamente por ação e tem caracterização do falso verde; ainda falta a decisão sobre persistência local e contrato final por ação.
 - [ ] 45. `e2e-cleanup` já tem teste de caracterização hermético e ADR, mas continua dependente de decisão do PO: isolar ao ambiente de teste ou registrar no canal canônico.
 - [ ] 46. A ausência de `fn_ema_pipeline_health` já está comprovada e protegida por teste de contrato; ainda falta decidir RPC equivalente ou especificação nova.
-- [ ] 68. A comparação estruturada com `docs/SCHEMA_REFERENCE.md` já está embutida na auditoria, mas ainda não foi automatizada como diff dedicado e recorrente.
-- [ ] 94. Parte dos checks já foi caracterizada como potencial falso verde/inconclusivo, porém a regra geral de CI ainda não foi convertida para falhar explicitamente como `blocked/inconclusive`.
+- [ ] 94. Lote inicial aplicado em RPC/ACL/lint: os gates live agora distinguem `static-pass` de `inconclusive` e os workflows principais usam `--require-live`; ainda faltam schema, smoke, carga, E2E e classificação dos consumers advisory.
 - [ ] 69–80. A governança read-only agora tem matriz de evidência, donos a confirmar e próximos testes por RLS/ACL/SECDEF/jobs; a execução exige confirmação por objeto e, quando aplicável, autorização do PO/DBA.
 
 ### Bloqueadas por autorização ou capacidade externa
@@ -635,7 +635,7 @@ Os marcadores `[AUTORIZAÇÃO BD]`, `[AUTORIZAÇÃO GITHUB]`, `[AUTORIZAÇÃO DE
 
 ### Verificações desta rodada
 
-- [x] `corepack npm run test:ci-core` -> 28 arquivos, 855 testes, tudo verde.
+- [x] `corepack npm run test:ci-core` -> 34 arquivos, 880 testes, tudo verde.
 - [x] `corepack npm run qa:full` -> verde de ponta a ponta.
 - [x] `corepack npm run build -- --logLevel warn` -> verde; restam apenas warnings não bloqueantes de chunk/import dinâmico.
 - [x] `corepack npm run check:bundle-size` -> verde após baseline limpa; alerta de tamanho de `products` preservado.
@@ -644,6 +644,7 @@ Os marcadores `[AUTORIZAÇÃO BD]`, `[AUTORIZAÇÃO GITHUB]`, `[AUTORIZAÇÃO DE
 - [x] `deno test --config supabase/functions/deno.json --allow-env --allow-net supabase/functions/e2e-cleanup/handler_characterization_test.ts`
 - [x] `corepack npm exec vitest run src/hooks/stock/__tests__/ema-pipeline-health.contract.test.tsx tests/contracts/demo-data-isolation.contract.test.ts`
 - [x] `node scripts/check-supabase-reference-catalog.mjs`
+- [x] `npm run check:schema-reference-drift` -> retrato documental E1/E2 reproduzido, sem inferir alteração de objetos.
 - [x] `git diff --check`
 
 ## Critério para encerrar a estabilização

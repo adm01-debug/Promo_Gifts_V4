@@ -1,3 +1,5 @@
+import { appendFileSync } from 'node:fs';
+
 export const CHECK_RESULT_STATUS = {
   PASSED: 'passed',
   FAILED: 'failed',
@@ -25,7 +27,9 @@ export function maskUrl(rawUrl) {
         : `${projectRef.slice(0, 3)}***${projectRef.slice(-3)}`;
     return `${parsed.protocol}//${maskedRef}.${parts.slice(1).join('.')}`;
   } catch {
-    return rawUrl;
+    // Nunca devolva a string original: uma URL inválida pode conter token,
+    // credencial Basic ou outro material que não deve parar no log do CI.
+    return '[invalid-url]';
   }
 }
 
@@ -50,6 +54,18 @@ export function emitCheckResult({
 
   writer.write(`${formatCheckResultLine({ check, status, summary })}\n`);
   writer.write(`[${check}] result=${JSON.stringify(payload)}\n`);
+
+  if (process.env.GITHUB_STEP_SUMMARY) {
+    try {
+      appendFileSync(
+        process.env.GITHUB_STEP_SUMMARY,
+        `\n### ${check}\n- Status: **${status.toUpperCase()}**\n- Resumo: ${summary}\n`,
+      );
+    } catch (error) {
+      // A observabilidade adicional não pode esconder o resultado primário.
+      writer.write(`[${check}] warning: não foi possível escrever GITHUB_STEP_SUMMARY (${error.message})\n`);
+    }
+  }
   return payload;
 }
 

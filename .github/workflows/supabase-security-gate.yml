@@ -5,7 +5,9 @@ name: Gate 5 — Supabase Security Audit
 #   SUPABASE_ACCESS_TOKEN      → Supabase CLI personal access token
 #   VITE_SUPABASE_URL          → https://doufsxqlfjyuvxuezpln.supabase.co
 #   VITE_SUPABASE_PROJECT_ID   → doufsxqlfjyuvxuezpln
-#   VITE_SUPABASE_PUBLISHABLE_KEY → anon key (scripts têm fallback graceful se anon não tiver acesso a system tables)
+#   VITE_SUPABASE_PUBLISHABLE_KEY → chave publishable; se ela não puder gerar
+#                                    evidência live, o Gate 5 fica inconclusivo
+#                                    em vez de aprovado sem verificação.
 
 on:
   push:
@@ -74,18 +76,22 @@ jobs:
 
       # ─────────────────────────────────────────────
       # CHECK 3: smoke test da RPC get_profile_and_roles
+      # A ausência de audit/smoke verificável é inconclusiva (exit 2), nunca
+      # uma aprovação de segurança implícita.
       # ─────────────────────────────────────────────
       - name: 🩺 RPC get_profile_and_roles smoke test
-        run: node scripts/check-rpc-get-profile-and-roles.mjs
+        run: node scripts/check-rpc-get-profile-and-roles.mjs --require-live
         env:
           SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
 
       # ─────────────────────────────────────────────
       # CHECK 4: verifica que anon NÃO tem EXECUTE na RPC
+      # O acesso negado a information_schema também é inconclusivo até que uma
+      # credencial/read-model autorizado produza evidência verificável.
       # ─────────────────────────────────────────────
       - name: 🚫 Verify anon cannot execute RPC
-        run: node scripts/check-rpc-permissions.mjs
+        run: node scripts/check-rpc-permissions.mjs --require-live
         env:
           SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}

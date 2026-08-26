@@ -1,67 +1,120 @@
 #!/usr/bin/env node
 /**
- * check-rpc-permissions.mjs
- * Gate 5 — CHECK 4: Verifica que 'anon' NAO tem EXECUTE na RPC
- * get_profile_and_roles e que 'authenticated' TEM EXECUTE.
+ * Gate 5 — confirma a postura de EXECUTE da RPC get_profile_and_roles.
  *
- * Usa fetch nativo (Node 18+) — sem dependência do realtime client.
+ * `--require-live` (ou REQUIRE_LIVE=1) torna qualquer falta de evidência
+ * remota verificável um exit 2/inconclusive. Assim, um workflow que declara
+ * validar permissões não pode passar apenas porque information_schema não foi
+ * exposto pelo PostgREST ou porque houve erro de credencial/rede.
  */
+import {
+  CHECK_RESULT_STATUS,
+  concludeCheck,
+  shouldRequireLive,
+} from "./check-result-contract.mjs";
 
+const CHECK = "RPC get_profile_and_roles permissions";
+const REQUIRE_LIVE = shouldRequireLive();
 const SUPABASE_URL = process.env.SUPABASE_URL;
-const SERVICE_KEY  = process.env.SUPABASE_SERVICE_KEY;
+const SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
-if (!SUPABASE_URL || !SERVICE_KEY) {
-  console.error('SUPABASE_URL e SUPABASE_SERVICE_KEY sao obrigatorios.');
-  process.exit(1);
-}
-
-// information_schema.routine_privileges não é acessível via PostgREST sem exposição explícita.
-// Verificamos via pg_proc / aclexplode através de um RPC de auditoria já existente.
-// Se não acessível, considera OK (verificado via MCP na migration).
-let resp;
-try {
-  resp = await fetch(`${SUPABASE_URL}/rest/v1/information_schema.routine_privileges?select=grantee,privilege_type&specific_schema=eq.public&routine_name=eq.get_profile_and_roles`, {
-    headers: {
-      'apikey': SERVICE_KEY,
-      'Authorization': `Bearer ${SERVICE_KEY}`,
-    },
+function conclude(status, reason, summary, details = {}) {
+  concludeCheck({
+    check: CHECK,
+    status,
+    summary,
+    details: { reason, requireLive: REQUIRE_LIVE, ...details },
   });
-} catch (err) {
-  console.log('✅ Verificacao de permissoes pulada (information_schema inacessivel via PostgREST).');
-  console.log('   Permissoes verificadas via Supabase MCP na migration aplicada:');
-  console.log('   anon=false, authenticated=true — confirmado na auditoria pre-deploy.');
-  process.exit(0);
 }
 
-if (!resp.ok) {
-  console.log('✅ Verificacao de permissoes pulada (information_schema inacessivel via PostgREST).');
-  console.log('   Permissoes verificadas via Supabase MCP na migration aplicada:');
-  console.log('   anon=false, authenticated=true — confirmado na auditoria pre-deploy.');
-  process.exit(0);
+async function main() {
+  if (!SUPABASE_URL || !SERVICE_KEY) {
+    return conclude(
+      REQUIRE_LIVE ? CHECK_RESULT_STATUS.INCONCLUSIVE : CHECK_RESULT_STATUS.STATIC_PASS,
+      "missing_credentials",
+      REQUIRE_LIVE
+        ? "SUPABASE_URL e SUPABASE_SERVICE_KEY são necessários para consultar permissões live."
+        : "Sem credenciais, a verificação ficou explicitamente em modo estático.",
+    );
+  }
+
+  const endpoint = `${SUPABASE_URL.replace(/\/$/, "")}/rest/v1/information_schema.routine_privileges?select=grantee,privilege_type&specific_schema=eq.public&routine_name=eq.get_profile_and_roles`;
+  let response;
+  try {
+    response = await fetch(endpoint, {
+      headers: {
+        apikey: SERVICE_KEY,
+        Authorization: `Bearer ${SERVICE_KEY}`,
+      },
+    });
+  } catch {
+    return conclude(
+      CHECK_RESULT_STATUS.INCONCLUSIVE,
+      "network_error",
+      "A consulta live de permissões não pôde alcançar o PostgREST.",
+    );
+  }
+
+  if (!response.ok) {
+    return conclude(
+      CHECK_RESULT_STATUS.INCONCLUSIVE,
+      "http_error",
+      "O PostgREST não disponibilizou uma resposta verificável para information_schema.routine_privileges.",
+      { httpStatus: response.status },
+    );
+  }
+
+  let privileges;
+  try {
+    privileges = await response.json();
+  } catch {
+    return conclude(
+      CHECK_RESULT_STATUS.INCONCLUSIVE,
+      "invalid_payload",
+      "A consulta live de permissões retornou JSON inválido.",
+    );
+  }
+
+  if (!Array.isArray(privileges)) {
+    return conclude(
+      CHECK_RESULT_STATUS.INCONCLUSIVE,
+      "unexpected_payload",
+      "A consulta live de permissões não retornou a lista esperada de grants.",
+    );
+  }
+
+  const grantees = privileges
+    .filter((row) => row && row.privilege_type === "EXECUTE")
+    .map((row) => row.grantee)
+    .filter((grantee) => typeof grantee === "string");
+  const anonHasExecute = grantees.includes("anon");
+  const authenticatedHasExecute = grantees.includes("authenticated");
+
+  if (anonHasExecute || !authenticatedHasExecute) {
+    const violations = [
+      ...(anonHasExecute ? ["anon possui EXECUTE"] : []),
+      ...(!authenticatedHasExecute ? ["authenticated não possui EXECUTE"] : []),
+    ];
+    return conclude(
+      CHECK_RESULT_STATUS.FAILED,
+      "permission_violation",
+      `A evidência live encontrou permissão incompatível: ${violations.join("; ")}.`,
+      { grantees },
+    );
+  }
+
+  return conclude(
+    CHECK_RESULT_STATUS.PASSED,
+    "live_permissions_verified",
+    "A evidência live confirma anon=false e authenticated=true para EXECUTE.",
+    { grantees },
+  );
 }
 
-const privData = await resp.json();
-const grantees = (privData ?? []).map((r) => r.grantee);
-const anonHasExecute = grantees.includes('anon');
-const authenticatedHasExecute = grantees.includes('authenticated');
-
-let hasErrors = false;
-
-if (anonHasExecute) {
-  console.error('❌ anon TEM EXECUTE na RPC get_profile_and_roles — CRITICO!');
-  console.error('   Execute: REVOKE ALL ON FUNCTION public.get_profile_and_roles(uuid) FROM anon;');
-  hasErrors = true;
-}
-
-if (!authenticatedHasExecute) {
-  console.error('❌ authenticated NAO TEM EXECUTE na RPC get_profile_and_roles!');
-  console.error('   Execute: GRANT EXECUTE ON FUNCTION public.get_profile_and_roles(uuid) TO authenticated;');
-  hasErrors = true;
-}
-
-if (hasErrors) {
-  process.exit(1);
-}
-
-console.log('✅ Permissoes da RPC corretas: anon=false, authenticated=true.');
-process.exit(0);
+main().catch(() => {
+  conclude(
+    CHECK_RESULT_STATUS.INCONCLUSIVE,
+    "unexpected_error",
+    "O check encontrou um erro inesperado antes de produzir evidência live.",
+  );
+});
