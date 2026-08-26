@@ -3,6 +3,10 @@
 // Combines: (1) User-Agent blacklist, (2) DB-backed rate limit, (3) bot logging.
 
 import { createClient } from "npm:@supabase/supabase-js@2.49.4";
+import {
+  type SecurityEventClient,
+  writeSecurityEvent,
+} from "./security.ts";
 
 // Known scraper / automation User-Agents (case-insensitive substring match)
 const BOT_UA_PATTERNS = [
@@ -111,14 +115,14 @@ export async function runBotProtection(
 
   const logBlock = async (reason: string, blocked: boolean, metadata: Record<string, unknown> = {}) => {
     try {
-      await admin.from('bot_detection_log').insert({
-        ip_address: ip,
-        user_agent: ua,
-        endpoint: opts.endpoint,
-        detection_reason: reason,
+      await writeSecurityEvent(
+        admin as unknown as SecurityEventClient,
+        reason,
+        opts.endpoint,
+        ip,
+        { ...metadata, userAgent: ua },
         blocked,
-        metadata,
-      });
+      );
     } catch (err) {
       console.error('[bot-protection] Failed to log:', err);
     }
