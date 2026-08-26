@@ -21,6 +21,12 @@ import { z } from '../_shared/zod-validate.ts';
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SUPABASE_SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
+function createServiceRoleClient() {
+  return createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+}
+
+type ProductVisualSearchClient = ReturnType<typeof createServiceRoleClient>;
+
 // Roboflow API configuration
 const ROBOFLOW_API_BASE = 'https://detect.roboflow.com';
 const ROBOFLOW_INFERENCE_BASE = 'https://infer.roboflow.com';
@@ -80,6 +86,15 @@ interface ImgRow {
   product_id: string;
 }
 
+interface ExactHashDatabaseRow {
+  product_id: string;
+  id: string;
+}
+
+interface ProductIdDatabaseRow {
+  id: string;
+}
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -110,6 +125,18 @@ function normalizeImages(images: unknown, fallback?: unknown): string[] {
 function toNumber(value: unknown): number {
   const n = typeof value === 'number' ? value : parseFloat(String(value ?? ''));
   return Number.isFinite(n) ? n : 0;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+function isExactHashDatabaseRow(value: unknown): value is ExactHashDatabaseRow {
+  return isRecord(value) && typeof value.product_id === 'string' && typeof value.id === 'string';
+}
+
+function isProductIdDatabaseRow(value: unknown): value is ProductIdDatabaseRow {
+  return isRecord(value) && typeof value.id === 'string';
 }
 
 // ---------------------------------------------------------------------------
@@ -148,7 +175,10 @@ async function callRoboflowInference(
 
 // Compute SHA-256 hash of image bytes (for exact matching)
 async function computeImageHash(imageBytes: Uint8Array): Promise<string> {
-  const hashBuffer = await crypto.subtle.digest('SHA-256', imageBytes);
+  // Uint8Array.from creates an ArrayBuffer-backed view accepted by the Web Crypto
+  // BufferSource type in Deno 2, even when the source view is ArrayBufferLike.
+  const digestInput = Uint8Array.from(imageBytes);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', digestInput);
   return Array.from(new Uint8Array(hashBuffer))
     .map(b => b.toString(16).padStart(2, '0'))
     .join('');
@@ -159,7 +189,7 @@ async function computeImageHash(imageBytes: Uint8Array): Promise<string> {
 // ---------------------------------------------------------------------------
 
 async function searchByExactHash(
-  client: ReturnType<typeof createClient>,
+  client: ProductVisualSearchClient,
   imageHash: string
 ): Promise<Array<{ product_id: string; image_id: string }>> {
   const { data, error } = await client
@@ -172,11 +202,13 @@ async function searchByExactHash(
     console.error('Error searching by hash:', error);
     return [];
   }
-  return (data ?? []) as Array<{ product_id: string; image_id: string }>;
+  return (data ?? [])
+    .filter(isExactHashDatabaseRow)
+    .map(({ product_id, id }) => ({ product_id, image_id: id }));
 }
 
 async function searchBySimilarity(
-  client: ReturnType<typeof createClient>,
+  client: ProductVisualSearchClient,
   searchTerms: string[],
   limit: number = 50
 ): Promise<string[]> {
@@ -204,11 +236,11 @@ async function searchBySimilarity(
     return [];
   }
 
-  return (data ?? []).map((p: { id: string }) => p.id);
+  return (data ?? []).filter(isProductIdDatabaseRow).map(({ id }) => id);
 }
 
 async function getProductDetails(
-  client: ReturnType<typeof createClient>,
+  client: ProductVisualSearchClient,
   productIds: string[]
 ): Promise<Map<string, any>> {
   if (productIds.length === 0) return new Map();
@@ -253,7 +285,7 @@ Deno.serve(async (req: Request) => {
   }
 
   const requestId = getOrCreateRequestId(req);
-  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+  const supabase = createServiceRoleClient();
 
   let userId: string | undefined;
 
