@@ -9,6 +9,7 @@
  * Run: npx vitest run src/hooks/mockup/__tests__/mockupGenerationService.test.ts
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { __resetBreakers } from '@/lib/auth/safeAuthCall';
 
 // ─── Supabase client mock (chainable, thenable query builder) ────────────────
 const calls: Array<{ table: string; method: string; args: unknown[] }> = [];
@@ -111,6 +112,7 @@ const area = (over: Partial<PersonalizationArea> = {}): PersonalizationArea => (
 const silk: Technique = { id: 'tech-1', name: 'Serigrafia', code: 'silk' };
 
 beforeEach(() => {
+  __resetBreakers();
   calls.length = 0;
   tableResults = {};
   captured.insert = undefined;

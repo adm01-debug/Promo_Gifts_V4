@@ -100,7 +100,7 @@ describe('safeInvokeCall — Onda 17', () => {
         context: { status: 500, body: JSON.stringify({ error: 'db offline' }) },
       },
     });
-    const norm = normalizeInvokeError({
+    const norm = await normalizeInvokeError({
       name: 'FunctionsHttpError',
       message: 'fallback',
       context: { status: 500, body: JSON.stringify({ error: 'db offline' }) },
@@ -108,6 +108,15 @@ describe('safeInvokeCall — Onda 17', () => {
     expect(norm.message).toBe('db offline');
     const r = await invokeEdgeSafe('x', { maxRetries: 1 });
     expect(r.kind).toBe('err');
+  });
+
+  it('Response no context preserva a mensagem pública do corpo', async () => {
+    const error = Object.assign(new Error('Edge Function returned a non-2xx status code'), {
+      name: 'FunctionsHttpError',
+      context: new Response(JSON.stringify({ message: 'canvas exploded' }), { status: 500 }),
+    });
+    const norm = await normalizeInvokeError(error);
+    expect(norm).toMatchObject({ message: 'canvas exploded', status: 500 });
   });
 
   it('AbortSignal externo já abortado → err imediato', async () => {
