@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Skeleton } from '@/components/ui/skeleton';
+import { PageSEO } from '@/components/seo/PageSEO';
 import { ArrowLeft, CheckCircle2, XCircle, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 import { sanitizeError } from '@/lib/security/sanitize-error';
@@ -105,143 +106,154 @@ export default function DiscountRequestDetailPage() {
     [data],
   );
 
-  if (!rolesLoaded || isLoading) {
-    return (
-      <div className="container mx-auto max-w-3xl space-y-3 p-6">
-        <Skeleton className="h-8 w-40" />
-        <Skeleton className="h-64 w-full" />
-      </div>
-    );
-  }
-
-  if (!isAdmin) {
-    return (
-      <div
-        className="container mx-auto max-w-3xl p-6"
-        data-testid="app-access-denied"
-        data-status="forbidden"
-      >
-        <p className="text-sm text-muted-foreground">Acesso restrito ao gestor comercial.</p>
-      </div>
-    );
-  }
-
-  if (!data) {
-    return (
-      <div
-        className="container mx-auto max-w-3xl p-6"
-        data-testid="discount-request-not-found"
-        data-status="not-found"
-      >
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => navigate(-1)}
-          data-testid="discount-request-back"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" /> Voltar
-        </Button>
-        <p
-          className="mt-4 text-sm text-muted-foreground"
-          data-testid="discount-request-not-found-message"
-        >
-          Solicitação não encontrada.
-        </p>
-      </div>
-    );
-  }
-
-  const status = STATUS_LABEL[data.status];
-
   return (
-    <div className="container mx-auto max-w-3xl space-y-4 p-6" data-testid="discount-request-detail">
-      <div className="flex items-center justify-between gap-2">
-        <Button variant="ghost" size="sm" onClick={() => navigate('/admin/usuarios?tab=discounts')}>
-          <ArrowLeft className="mr-2 h-4 w-4" /> Fila de aprovações
-        </Button>
-        <Badge variant={status.variant} data-testid="discount-request-status" data-status={data.status}>
-          {status.label}
-        </Badge>
-      </div>
-
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="flex flex-wrap items-center justify-between gap-2 text-lg">
-            <span>Orçamento {data.quotes?.quote_number ?? '—'}</span>
-            <Link
-              to={`/orcamentos/${data.quote_id}`}
-              className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+    <>
+      <PageSEO
+        title="Detalhe da Aprovação de Desconto"
+        description="Visualize o histórico e registre a decisão de uma solicitação de aprovação de desconto."
+        path={id ? `/admin/aprovacoes-desconto/${id}` : '/admin/aprovacoes-desconto'}
+      />
+      {!rolesLoaded || isLoading ? (
+        <div className="container mx-auto max-w-3xl space-y-3 p-6">
+          <Skeleton className="h-8 w-40" />
+          <Skeleton className="h-64 w-full" />
+        </div>
+      ) : !isAdmin ? (
+        <div
+          className="container mx-auto max-w-3xl p-6"
+          data-testid="app-access-denied"
+          data-status="forbidden"
+        >
+          <p className="text-sm text-muted-foreground">Acesso restrito ao gestor comercial.</p>
+        </div>
+      ) : !data ? (
+        <div
+          className="container mx-auto max-w-3xl p-6"
+          data-testid="discount-request-not-found"
+          data-status="not-found"
+        >
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate(-1)}
+            data-testid="discount-request-back"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" /> Voltar
+          </Button>
+          <p
+            className="mt-4 text-sm text-muted-foreground"
+            data-testid="discount-request-not-found-message"
+          >
+            Solicitação não encontrada.
+          </p>
+        </div>
+      ) : (
+        <div
+          className="container mx-auto max-w-3xl space-y-4 p-6"
+          data-testid="discount-request-detail"
+        >
+          <div className="flex items-center justify-between gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/admin/usuarios?tab=discounts')}
             >
-              Abrir orçamento <ExternalLink className="h-3 w-3" />
-            </Link>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3 text-sm">
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <Metric label="Vendedor" value={sellerLabel} />
-            <Metric label="Cliente" value={data.quotes?.client_name || data.quotes?.client_company || '—'} />
-            <Metric
-              label="Solicitado"
-              value={`${Number(data.requested_discount_percent).toFixed(2)}%`}
-            />
-            <Metric
-              label="Limite do vendedor"
-              value={`${Number(data.max_allowed_percent).toFixed(2)}%`}
-            />
+              <ArrowLeft className="mr-2 h-4 w-4" /> Fila de aprovações
+            </Button>
+            <Badge
+              variant={STATUS_LABEL[data.status].variant}
+              data-testid="discount-request-status"
+              data-status={data.status}
+            >
+              {STATUS_LABEL[data.status].label}
+            </Badge>
           </div>
-          {data.seller_notes && (
-            <div className="rounded bg-muted/40 p-3">
-              <p className="text-xs font-medium text-muted-foreground">Justificativa do vendedor</p>
-              <p className="mt-1 whitespace-pre-wrap text-sm">{data.seller_notes}</p>
-            </div>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="flex flex-wrap items-center justify-between gap-2 text-lg">
+                <span>Orçamento {data.quotes?.quote_number ?? '—'}</span>
+                <Link
+                  to={`/orcamentos/${data.quote_id}`}
+                  className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+                >
+                  Abrir orçamento <ExternalLink className="h-3 w-3" />
+                </Link>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                <Metric label="Vendedor" value={sellerLabel} />
+                <Metric
+                  label="Cliente"
+                  value={data.quotes?.client_name || data.quotes?.client_company || '—'}
+                />
+                <Metric
+                  label="Solicitado"
+                  value={`${Number(data.requested_discount_percent).toFixed(2)}%`}
+                />
+                <Metric
+                  label="Limite do vendedor"
+                  value={`${Number(data.max_allowed_percent).toFixed(2)}%`}
+                />
+              </div>
+              {data.seller_notes && (
+                <div className="rounded bg-muted/40 p-3">
+                  <p className="text-xs font-medium text-muted-foreground">
+                    Justificativa do vendedor
+                  </p>
+                  <p className="mt-1 whitespace-pre-wrap text-sm">{data.seller_notes}</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {data.status === 'pending' && (
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Decisão</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Textarea
+                  placeholder="Notas para o vendedor (opcional)"
+                  value={adminNotes}
+                  onChange={(e) => setAdminNotes(e.target.value)}
+                  rows={3}
+                  data-testid="discount-request-admin-notes"
+                />
+                <div className="grid grid-cols-2 gap-2">
+                  <Button
+                    variant="outline"
+                    className="border-destructive/50 text-destructive hover:bg-destructive/10"
+                    onClick={() => respond.mutate(false)}
+                    disabled={respond.isPending}
+                    data-testid="discount-request-reject"
+                  >
+                    <XCircle className="mr-2 h-4 w-4" /> Rejeitar
+                  </Button>
+                  <Button
+                    onClick={() => respond.mutate(true)}
+                    disabled={respond.isPending}
+                    data-testid="discount-request-approve"
+                  >
+                    <CheckCircle2 className="mr-2 h-4 w-4" /> Aprovar
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           )}
-        </CardContent>
-      </Card>
 
-      {data.status === 'pending' && (
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base">Decisão</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <Textarea
-              placeholder="Notas para o vendedor (opcional)"
-              value={adminNotes}
-              onChange={(e) => setAdminNotes(e.target.value)}
-              rows={3}
-              data-testid="discount-request-admin-notes"
-            />
-            <div className="grid grid-cols-2 gap-2">
-              <Button
-                variant="outline"
-                className="border-destructive/50 text-destructive hover:bg-destructive/10"
-                onClick={() => respond.mutate(false)}
-                disabled={respond.isPending}
-                data-testid="discount-request-reject"
-              >
-                <XCircle className="mr-2 h-4 w-4" /> Rejeitar
-              </Button>
-              <Button
-                onClick={() => respond.mutate(true)}
-                disabled={respond.isPending}
-                data-testid="discount-request-approve"
-              >
-                <CheckCircle2 className="mr-2 h-4 w-4" /> Aprovar
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">Linha do tempo</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <DiscountApprovalAuditTrail requestId={data.id} defaultOpen />
+            </CardContent>
+          </Card>
+        </div>
       )}
-
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base">Linha do tempo</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <DiscountApprovalAuditTrail requestId={data.id} defaultOpen />
-        </CardContent>
-      </Card>
-    </div>
+    </>
   );
 }
 
