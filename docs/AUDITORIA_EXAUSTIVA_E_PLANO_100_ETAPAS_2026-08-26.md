@@ -11,7 +11,7 @@
 
 ## Conclusão executiva
 
-O sistema tem, de fato, uma superfície funcional e visual grande e madura. O build de produção conclui, os guardas do Supabase canônico passam e a suíte selecionada `test:ci-core` apresenta 839 de 840 casos aprovados. Essa suíte cobre somente 26 dos 1.207 arquivos `test/spec` encontrados em `src`/`tests`, além de não cobrir os 568 arquivos `test/spec` em `e2e`; portanto ela é um sinal positivo localizado, não uma taxa geral de aprovação. A orientação correta é preservar o design e trabalhar por contratos, com mudanças pequenas, reversíveis e protegidas por testes de regressão.
+O sistema tem, de fato, uma superfície funcional e visual grande e madura. O build de produção conclui, os guardas do Supabase canônico passam e a suíte selecionada `test:ci-core` apresenta 855 de 855 casos aprovados. Essa suíte cobre somente 28 dos 1.207 arquivos `test/spec` encontrados em `src`/`tests`, além de não cobrir os 568 arquivos `test/spec` em `e2e`; portanto ela é um sinal positivo localizado, não uma taxa geral de aprovação. A orientação correta é preservar o design e trabalhar por contratos, com mudanças pequenas, reversíveis e protegidas por testes de regressão.
 
 O banco canônico não apresenta sinal de colapso estrutural nem evidência de perda generalizada de schema. As 391 relações tabulares (`relkind r/p`) possuem chave primária; todos os 1.170 índices estão válidos/prontos; não há constraint não validada nem trigger de usuário desabilitado. A hipótese predominante é que a maior parte das diferenças desde julho seja evolução intencional, mas a classificação permanece provisória até reconciliar principalmente os 72 índices a menos, ACLs e objetos live-only.
 
@@ -592,17 +592,25 @@ Os marcadores `[AUTORIZAÇÃO BD]`, `[AUTORIZAÇÃO GITHUB]`, `[AUTORIZAÇÃO DE
 
 ### Concluídas e comprovadas
 
+- [x] 25. Gate de cobertura crítica refeito com produtor atual e seis testes/36 asserções; os três módulos-alvo são medidos por artefato atual.
+- [x] 28–29. Tipos protegidos e campos críticos de `Product` foram restaurados/verificados sem remover objetos vivos.
+- [x] 31. `useStockVelocityPrefetch` passou a consumir `mv_stock_velocity` tipada, sem recorrer a `as any`.
 - [x] 16. Compatibilização do toolchain React 19 com instalação/testes locais viáveis no branch de estabilização.
 - [x] 17. Alinhamento de React/Router/Vite/Vitest/`@types` suficiente para `qa:full`, `build` e `test:ci-core` verdes.
 - [x] 21. Remoção da prop obsoleta `future` de `BrowserRouter`, preservando o comportamento atual.
 - [x] 22. Correção dos usos de `motion` em `PageTransition.tsx`, eliminando bloqueio de typecheck.
 - [x] 23. Correção do import de `minimatch` em `check-eslint-baseline.mjs`; o gate de lint voltou a executar de ponta a ponta.
 - [x] 24. Correção do parser de `check-package-duplicate-scripts.mjs`; o verificador voltou a analisar os 228 scripts sem crash.
+- [x] 43. Helpers compartilhados de segurança passaram a registrar no `bot_detection_log` existente e compatível, preservando a resposta primária quando a auditoria falha.
 - [x] 44. `visual-search` passou a registrar falhas no canal canônico `edge_function_invocations`, com contrato Deno cobrindo falha primária e falha do próprio logger.
+- [x] 50. A chamada ineficaz a `set_config` como RPC pública foi removida e recebeu teste de contrato; nenhuma RPC ou migration nova foi criada.
 - [x] 53. Detector AST de referências Supabase revisando `.from()`/`.rpc()` com separação explícita entre PostgREST canônico, Storage, clientes externos, placeholders e dispatch dinâmico.
 - [x] 54. Contract test e gate local para o catálogo temporário de referências Supabase, hoje aprovados no branch.
+- [x] 56. Inventário de 20 caminhos de mocks/fallbacks e consumidores downstream, sem alterar a UI ou apresentar dados como reais.
 - [x] 60. Teste de isolamento de demo garantindo que Trends só usa mock com `?demo=1` e que ProductMatch mock fica restrito ao contexto previsto.
 - [x] 67. Fotografia `pg_catalog` versionada localmente nesta rodada para sustentar a reconciliação dos próximos passos sem tocar no banco.
+- [x] 87. Gate forward-only bloqueando migrations novas sem timestamp UTC válido ou versão única, mantendo o legado explicitamente baselined.
+- [x] 97. Baseline de bundle impossível foi reconstituída em checkout limpo, com hashes e gate novamente mensurável; o alerta de `products` foi preservado.
 
 ### Parciais com evidência pronta
 
@@ -610,9 +618,9 @@ Os marcadores `[AUTORIZAÇÃO BD]`, `[AUTORIZAÇÃO GITHUB]`, `[AUTORIZAÇÃO DE
 - [ ] 41. `bitrix-sync` já foi separado analiticamente por ação e tem caracterização do falso verde; ainda falta a decisão sobre persistência local e contrato final por ação.
 - [ ] 45. `e2e-cleanup` já tem teste de caracterização hermético e ADR, mas continua dependente de decisão do PO: isolar ao ambiente de teste ou registrar no canal canônico.
 - [ ] 46. A ausência de `fn_ema_pipeline_health` já está comprovada e protegida por teste de contrato; ainda falta decidir RPC equivalente ou especificação nova.
-- [ ] 50. A tentativa de usar `set_config` como RPC pública já foi caracterizada/documentada; ainda falta a decisão sobre contrato substituto ou remoção definitiva da atribuição ineficaz.
 - [ ] 68. A comparação estruturada com `docs/SCHEMA_REFERENCE.md` já está embutida na auditoria, mas ainda não foi automatizada como diff dedicado e recorrente.
 - [ ] 94. Parte dos checks já foi caracterizada como potencial falso verde/inconclusivo, porém a regra geral de CI ainda não foi convertida para falhar explicitamente como `blocked/inconclusive`.
+- [ ] 69–80. A governança read-only agora tem matriz de evidência, donos a confirmar e próximos testes por RLS/ACL/SECDEF/jobs; a execução exige confirmação por objeto e, quando aplicável, autorização do PO/DBA.
 
 ### Bloqueadas por autorização ou capacidade externa
 
@@ -627,9 +635,11 @@ Os marcadores `[AUTORIZAÇÃO BD]`, `[AUTORIZAÇÃO GITHUB]`, `[AUTORIZAÇÃO DE
 
 ### Verificações desta rodada
 
-- [x] `corepack npm run test:ci-core` -> 27 arquivos, 843 testes, tudo verde.
+- [x] `corepack npm run test:ci-core` -> 28 arquivos, 855 testes, tudo verde.
 - [x] `corepack npm run qa:full` -> verde de ponta a ponta.
 - [x] `corepack npm run build -- --logLevel warn` -> verde; restam apenas warnings não bloqueantes de chunk/import dinâmico.
+- [x] `corepack npm run check:bundle-size` -> verde após baseline limpa; alerta de tamanho de `products` preservado.
+- [x] `node scripts/check-migration-filename-contract.mjs` e teste Vitest correspondente -> verde; nenhum arquivo de migration foi alterado.
 - [x] `deno test --config supabase/functions/deno.json --allow-env --allow-net supabase/functions/visual-search/observability_contract_test.ts`
 - [x] `deno test --config supabase/functions/deno.json --allow-env --allow-net supabase/functions/e2e-cleanup/handler_characterization_test.ts`
 - [x] `corepack npm exec vitest run src/hooks/stock/__tests__/ema-pipeline-health.contract.test.tsx tests/contracts/demo-data-isolation.contract.test.ts`
