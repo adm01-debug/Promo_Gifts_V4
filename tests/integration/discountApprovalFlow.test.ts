@@ -19,7 +19,8 @@
  *   bunx vitest run tests/integration/discountApprovalFlow.test.ts
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { renderHook, act } from "@testing-library/react";
+import { act } from "@testing-library/react";
+import { renderHookWithProviders } from "../hooks/_helpers/render-hook-providers";
 
 // ─────────────────────────────────────────────────────────────
 // Hoisted mock state — accessible inside vi.mock factories
@@ -178,7 +179,7 @@ beforeEach(() => {
 describe("E2E: Vendedor solicita aprovação de desconto", () => {
   it("cria request, atualiza quote, loga histórico e notifica admins", async () => {
     setUser("seller");
-    const { result } = renderHook(() => useDiscountApproval());
+    const { result } = renderHookWithProviders(() => useDiscountApproval());
 
     let success = false;
     await act(async () => {
@@ -227,7 +228,7 @@ describe("E2E: Vendedor solicita aprovação de desconto", () => {
 
   it("retorna false se não houver usuário autenticado", async () => {
     setUser("none");
-    const { result } = renderHook(() => useDiscountApproval());
+    const { result } = renderHookWithProviders(() => useDiscountApproval());
     let success = true;
     await act(async () => {
       success = await result.current.requestApproval(QUOTE_ID, 15, 10);
@@ -238,7 +239,7 @@ describe("E2E: Vendedor solicita aprovação de desconto", () => {
   it("não envia notificação se nenhum admin existir", async () => {
     setUser("seller");
     H.setOverride("user_roles", { list: [] });
-    const { result } = renderHook(() => useDiscountApproval());
+    const { result } = renderHookWithProviders(() => useDiscountApproval());
     await act(async () => {
       await result.current.requestApproval(QUOTE_ID, 15, 10);
     });
@@ -253,7 +254,7 @@ describe("E2E: Vendedor solicita aprovação de desconto", () => {
 describe("E2E: Admin aprova solicitação", () => {
   it("atualiza request, muda quote para 'pending', loga histórico e notifica vendedor", async () => {
     setUser("admin");
-    const { result } = renderHook(() => useDiscountApproval());
+    const { result } = renderHookWithProviders(() => useDiscountApproval());
 
     let success = false;
     await act(async () => {
@@ -311,7 +312,7 @@ describe("E2E: Admin rejeita solicitação", () => {
       },
     });
 
-    const { result } = renderHook(() => useDiscountApproval());
+    const { result } = renderHookWithProviders(() => useDiscountApproval());
 
     let success = false;
     await act(async () => {

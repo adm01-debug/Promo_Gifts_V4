@@ -620,7 +620,7 @@ Os marcadores `[AUTORIZAÇÃO BD]`, `[AUTORIZAÇÃO GITHUB]`, `[AUTORIZAÇÃO DE
 - [ ] 45. `e2e-cleanup` já tem teste de caracterização hermético e ADR, mas continua dependente de decisão do PO: isolar ao ambiente de teste ou registrar no canal canônico.
 - [ ] 46. A ausência de `fn_ema_pipeline_health` já está comprovada e protegida por teste de contrato; ainda falta decidir RPC equivalente ou especificação nova.
 - [ ] 94. Lote inicial aplicado em RPC/ACL/lint: os gates live agora distinguem `static-pass` de `inconclusive` e os workflows principais usam `--require-live`; ainda faltam schema, smoke, carga, E2E e classificação dos consumers advisory.
-- [ ] 95. O núcleo de regressão cresceu de 35 para 37 arquivos e passou a rodar com `STRICT_TEST_SIDE_EFFECTS=1`: `fetch` não mockado e `console.error` não interceptado falham o teste; `dangerouslyIgnoreUnhandledErrors: false` ficou explícito. A intenção de `focus: "auto"` foi confirmada no schema e no runtime, e o `poolOptions` legado não existe no config ativo. A expansão do mesmo guard para as suítes não-core depende da classificação dos mocks legítimos já existentes.
+- [ ] 95. O núcleo de regressão cresceu de 35 para 37 arquivos e passou a rodar com `STRICT_TEST_SIDE_EFFECTS=1`: `fetch` não mockado e `console.error` não interceptado falham o teste; `dangerouslyIgnoreUnhandledErrors: false` ficou explícito. A intenção de `focus: "auto"` foi confirmada no schema e no runtime, e o `poolOptions` legado não existe no config ativo. O fluxo mockado de aprovação de desconto voltou a usar o provider padronizado, e a auditoria estática de mockup passou a verificar o caminho atual até a Edge Function. A expansão do mesmo guard para as suítes não-core depende da classificação dos mocks legítimos já existentes.
 - [ ] 69–80. A governança read-only agora tem matriz de evidência, donos a confirmar e próximos testes por RLS/ACL/SECDEF/jobs; a execução exige confirmação por objeto e, quando aplicável, autorização do PO/DBA.
 
 ### Bloqueadas por autorização ou capacidade externa
@@ -645,15 +645,16 @@ Os marcadores `[AUTORIZAÇÃO BD]`, `[AUTORIZAÇÃO GITHUB]`, `[AUTORIZAÇÃO DE
 - [x] `deno test --config supabase/functions/deno.json --allow-env --allow-net supabase/functions/visual-search/observability_contract_test.ts`
 - [x] `deno test --config supabase/functions/deno.json --allow-env --allow-net supabase/functions/e2e-cleanup/handler_characterization_test.ts`
 - [x] `corepack npm exec vitest run src/hooks/stock/__tests__/ema-pipeline-health.contract.test.tsx tests/contracts/demo-data-isolation.contract.test.ts`
+- [x] `STRICT_TEST_SIDE_EFFECTS=1 corepack npm exec vitest run tests/integration/discountApprovalFlow.test.ts src/hooks/mockup/__tests__/mockup-audit.test.ts --maxWorkers=1` -> 362 testes verdes e 1 skip opt-in; nenhum caminho live foi executado.
 - [x] `node scripts/check-supabase-reference-catalog.mjs`
 - [x] `npm run check:schema-reference-drift` -> retrato documental E1/E2 reproduzido, sem inferir alteração de objetos.
 - [x] `git diff --check`
 
 ### Execução ampla não conclusiva — baseline preservada
 
-`corepack npm run test:quality` foi iniciado somente para diagnóstico, com o modo estrito desligado, e encontrou falhas antes de terminar (incluindo `mockup-audit`, `discountApprovalFlow`, `magazine-service-fuzz` e testes de UI); o processo encerrou com sinal `143` durante um caso lento de PDF. Não foi usado como aprovação nem como motivo para alterar testes em massa.
+`corepack npm run test:quality` foi iniciado somente para diagnóstico, com o modo estrito desligado, e encontrou falhas antes de terminar (incluindo então `mockup-audit`, `discountApprovalFlow`, `magazine-service-fuzz` e testes de UI); o processo encerrou com sinal `143` durante um caso lento de PDF. Não foi usado como aprovação nem como motivo para alterar testes em massa.
 
-Para separar regressão de baseline, o subconjunto inicial foi reproduzido no commit-base isolado `b9dbeeabd`: os mesmos dois arquivos falharam com 6 falhas, 356 passes e 1 skip. A causa observável de `discountApprovalFlow` é ausência de `QueryClientProvider`; em `mockup-audit`, a asserção estática ainda procura a chamada textual legada `supabase.functions.invoke`. Esses achados permanecem pendentes de lote próprio, sem alteração automática.
+Para separar regressão de baseline, o subconjunto inicial foi reproduzido no commit-base isolado `b9dbeeabd`: os mesmos dois arquivos falharam com 6 falhas, 356 passes e 1 skip. O lote mínimo posterior corrigiu somente a infraestrutura de teste: `discountApprovalFlow` passou a usar `renderHookWithProviders`, que reproduz o `QueryClientProvider` existente no app; `mockup-audit` deixou de procurar a chamada textual legada `supabase.functions.invoke` e verifica a pré-validação no bloco atual de `generateMockupApi`. Ambos passaram com 362 testes e 1 skip, inclusive sob o guard estrito. O bloco live permaneceu opt-in e não foi acionado.
 
 ## Critério para encerrar a estabilização
 
