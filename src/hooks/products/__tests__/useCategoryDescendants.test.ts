@@ -41,9 +41,13 @@ describe('useCategoryDescendants', () => {
     const { result } = renderHook(() => useCategoryDescendants(['cat-1']));
     await waitFor(() => expect(result.current.descendantIds.length).toBe(3));
     expect(result.current.descendantIds).toContain('desc-1');
-    expect(mockInvoke).toHaveBeenCalledWith('categories-api', {
-      body: { action: 'descendants', categoryIds: ['cat-1'] },
-    });
+    expect(mockInvoke).toHaveBeenCalledWith(
+      'categories-api',
+      expect.objectContaining({
+        body: { action: 'descendants', categoryIds: ['cat-1'] },
+        headers: expect.objectContaining({ 'X-Request-Id': expect.any(String) }),
+      }),
+    );
   });
 
   it('array inline nao causa render-loop (chave estavel)', () => {
