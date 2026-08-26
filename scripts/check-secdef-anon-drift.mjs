@@ -27,6 +27,12 @@
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import path from 'path';
+import {
+  CHECK_RESULT_STATUS,
+  concludeCheck,
+  maskUrl,
+  shouldRequireLive,
+} from './check-result-contract.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -35,6 +41,7 @@ const ALLOWLIST_PATH = path.join(ROOT, '.security/secdef-anon-allowlist.json');
 const argv = process.argv.slice(2);
 const fromFileArg = argv.find((a) => a.startsWith('--from-file='));
 const UPDATE = argv.includes('--update-allowlist');
+const REQUIRE_LIVE = shouldRequireLive(argv);
 
 const SQL = `
   SELECT n.nspname||'.'||p.proname||'('||pg_get_function_identity_arguments(p.oid)||')' AS fn
@@ -47,7 +54,9 @@ const SQL = `
 async function fetchLive() {
   const URL = process.env.VITE_SUPABASE_URL;
   const KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!URL || !KEY) return null;
+  if (!URL || !KEY) {
+    return { kind: 'missing-config', maskedUrl: maskUrl(URL) };
+  }
   const endpoint = `${URL.replace(/\/$/, '')}/pg-meta/default/query`;
   const res = await fetch(endpoint, {
     method: 'POST',
@@ -59,12 +68,26 @@ async function fetchLive() {
     body: JSON.stringify({ query: SQL }),
   });
   if (!res.ok) {
-    process.stderr.write(`[secdef-anon] pg-meta HTTP ${res.status}: ${await res.text()}\n`);
-    return null;
+    return {
+      kind: 'http-error',
+      maskedUrl: maskUrl(URL),
+      httpStatus: res.status,
+      body: await res.text(),
+    };
   }
   const rows = await res.json();
-  if (!Array.isArray(rows)) return null;
-  return rows.map((r) => r.fn).filter(Boolean);
+  if (!Array.isArray(rows)) {
+    return {
+      kind: 'invalid-response',
+      maskedUrl: maskUrl(URL),
+      responseType: typeof rows,
+    };
+  }
+  return {
+    kind: 'live',
+    maskedUrl: maskUrl(URL),
+    functions: rows.map((r) => r.fn).filter(Boolean),
+  };
 }
 
 function loadAllowlist() {
@@ -89,11 +112,39 @@ async function main() {
       typeof r === 'string' ? r : r.fn,
     );
   } else {
-    actual = await fetchLive();
-    if (actual === null) {
-      process.stderr.write('[secdef-anon] sem credenciais pg-meta — skip (dev local).\n');
-      process.exit(0);
+    const live = await fetchLive();
+    if (live.kind !== 'live') {
+      if (live.kind === 'missing-config') {
+        return concludeCheck({
+          check: 'secdef-anon',
+          status: REQUIRE_LIVE
+            ? CHECK_RESULT_STATUS.INCONCLUSIVE
+            : CHECK_RESULT_STATUS.STATIC_PASS,
+          summary: REQUIRE_LIVE
+            ? 'sem credenciais pg-meta; evidência live obrigatória não disponível'
+            : 'sem credenciais pg-meta; verificação ficou em modo estático',
+          details: {
+            reason: live.kind,
+            requireLive: REQUIRE_LIVE,
+            maskedUrl: live.maskedUrl,
+          },
+        });
+      }
+
+      return concludeCheck({
+        check: 'secdef-anon',
+        status: CHECK_RESULT_STATUS.INCONCLUSIVE,
+        summary: `pg-meta indisponível para consulta live (${live.kind})`,
+        details: {
+          reason: live.kind,
+          maskedUrl: live.maskedUrl,
+          httpStatus: live.httpStatus,
+          responseType: live.responseType,
+          bodyPreview: live.body?.slice(0, 240),
+        },
+      });
     }
+    actual = live.functions;
   }
 
   const { doc, set: allowed } = loadAllowlist();
