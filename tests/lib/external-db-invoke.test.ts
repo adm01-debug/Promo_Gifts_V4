@@ -1,20 +1,31 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-vi.mock('@/integrations/supabase/client', () => {
-  const mockInvoke = vi.fn();
-  return {
-    supabase: {
-      functions: {
-        invoke: mockInvoke,
-      },
-    },
-    __mockInvoke: mockInvoke,
-  };
-});
+const { mockInvoke, mockGetKillSwitchState } = vi.hoisted(() => ({
+  mockInvoke: vi.fn(),
+  mockGetKillSwitchState: vi.fn(),
+}));
 
-import { __mockInvoke as mockInvoke } from '@/integrations/supabase/client';
+vi.mock('@/lib/edge/safeInvokeCall', () => ({
+  invokeEdge: mockInvoke,
+}));
+
+vi.mock('@/lib/external-db/kill-switch-client', () => ({
+  getKillSwitchState: mockGetKillSwitchState,
+  invalidateKillSwitchCache: vi.fn(),
+  KillSwitchActiveError: class KillSwitchActiveError extends Error {
+    constructor(switchName: string, message: string) {
+      super(message);
+      this.name = 'KillSwitchActiveError';
+      Object.assign(this, { switchName });
+    }
+  },
+}));
+
 import { invokeWithRetry, extractFunctionErrorMessage } from '@/lib/external-db/invoke';
 
+beforeEach(() => {
+  mockGetKillSwitchState.mockResolvedValue({ enabled: true, source: 'network' });
+});
 describe('extractFunctionErrorMessage', () => {
   it('returns message from Error instance', async () => {
     const err = new Error('Something failed');
@@ -24,6 +35,16 @@ describe('extractFunctionErrorMessage', () => {
   it('returns generic message for non-Error', async () => {
     expect(await extractFunctionErrorMessage('string error')).toBe('Erro ao acessar banco externo');
     expect(await extractFunctionErrorMessage(null)).toBe('Erro ao acessar banco externo');
+  });
+
+  it('aceita envelope compatível de invokeEdge sem exigir instanceof Error', async () => {
+    expect(
+      await extractFunctionErrorMessage({
+        message: 'Serviço temporariamente indisponível.',
+        name: 'server',
+        status: 503,
+      }),
+    ).toBe('Serviço temporariamente indisponível.');
   });
 
   it('extracts detailed message from Response context', async () => {
@@ -71,6 +92,49 @@ describe('invokeWithRetry', () => {
     const result = await invokeWithRetry({ table: 'products', operation: 'select' }, 3);
     expect(result.error).toBe(nonRetryableError);
     expect(mockInvoke).toHaveBeenCalledTimes(1);
+  });
+
+  it('preserva 410 do invokeEdge, converte para Error e não repete a chamada', async () => {
+    (mockInvoke as any).mockResolvedValueOnce({
+      data: null,
+      error: {
+        message: 'Operação indisponível.',
+        name: 'server',
+        status: 410,
+        request_id: 'req-kill-switch',
+      },
+      requestId: 'req-kill-switch',
+    });
+
+    const result = await invokeWithRetry({ table: 'products', operation: 'select' }, 3);
+
+    expect(result.error).toBeInstanceOf(Error);
+    expect(result.error).toMatchObject({
+      message: expect.stringMatching(/descontinuada/i),
+      name: 'KillSwitchActiveError',
+    });
+    expect(mockInvoke).toHaveBeenCalledTimes(1);
+  });
+
+  it('usa status 503 do envelope compatível para retentar mesmo com mensagem sanitizada', async () => {
+    (mockInvoke as any)
+      .mockResolvedValueOnce({
+        data: null,
+        error: {
+          message: 'Operação não pôde ser concluída. Tente novamente em instantes.',
+          name: 'server',
+          status: 503,
+          request_id: 'req-retry',
+        },
+        requestId: 'req-retry',
+      })
+      .mockResolvedValueOnce({ data: { records: [] }, error: null, requestId: 'req-retry' });
+
+    const result = await invokeWithRetry({ table: 'products', operation: 'select' }, 1);
+
+    expect(result.error).toBeNull();
+    expect(result.data).toEqual({ records: [] });
+    expect(mockInvoke).toHaveBeenCalledTimes(2);
   });
 
   it('exhausts retries and returns error', async () => {
