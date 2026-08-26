@@ -224,7 +224,7 @@ export function ConfigurationPanelV6({
                       <Check className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden />
                     ));
               return (
-                <p
+                <div
                   className="flex min-w-0 items-center gap-1.5 text-xs font-semibold text-foreground"
                   data-testid="customization-confirmed-header"
                 >
@@ -244,7 +244,7 @@ export function ConfigurationPanelV6({
                       {title}
                     </span>
                   )}
-                </p>
+                </div>
               );
             })()
           ) : (
