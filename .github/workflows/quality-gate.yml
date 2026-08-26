@@ -58,6 +58,12 @@ jobs:
       - name: Gate 2.4 — Migration path references (bloqueante)
         run: node scripts/check-migration-path-references.mjs
 
+      # GATE 2.4.1: contrato AST de relações/RPCs Supabase. O catálogo inicial
+      # é uma fotografia read-only de pg_catalog; Storage, bancos externos,
+      # aliases documentados e dispatch dinâmico legado têm tratamento explícito.
+      - name: Gate 2.4.1 — Supabase reference catalog (bloqueante)
+        run: node scripts/check-supabase-reference-catalog.mjs
+
 
       # GATE 2.5: Product type fields — campos críticos nunca podem ser removidos
       # Previne: remoção de price/shortDescription/category_id durante merge (gap C2)

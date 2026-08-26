@@ -81,6 +81,28 @@ function normalizeImages(images: unknown, fallback?: unknown): string[] {
   return list;
 }
 
+function errorMessage(error: unknown): string {
+  const raw = error instanceof Error
+    ? error.message
+    : typeof error === 'object' && error !== null && typeof (error as { message?: unknown }).message === 'string'
+    ? (error as { message: string }).message
+    : String(error);
+
+  // A telemetria não deve se tornar uma cópia acidental de credenciais presentes
+  // em mensagens de SDK/provedor. Mantemos uma causa curta e redigida.
+  return raw
+    .replace(/(bearer\s+)[^\s]+/gi, '$1[redacted]')
+    .replace(/([?&](?:api[_-]?key|token|key)=)[^&\s]+/gi, '$1[redacted]')
+    .slice(0, 1_000);
+}
+
+function errorStatus(error: unknown): number {
+  const status = typeof error === 'object' && error !== null
+    ? (error as { status?: unknown }).status
+    : undefined;
+  return typeof status === 'number' ? status : 500;
+}
+
 Deno.serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
   if (req.method === 'OPTIONS') {
@@ -88,6 +110,7 @@ Deno.serve(async (req) => {
   }
 
   const requestId = getOrCreateRequestId(req);
+  const startedAtMs = Date.now();
   const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
   const supabaseServiceRole = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
   const serviceClient = createClient(supabaseUrl, supabaseServiceRole);
@@ -96,22 +119,38 @@ Deno.serve(async (req) => {
   let usedProvider = 'none';
   let currentStep = 'initializing';
 
-  const logToDb = async (error: any, metadata: any = {}) => {
+  const logToDb = async (
+    error: unknown,
+    statusCode: number,
+    metadata: Record<string, unknown> = {},
+  ) => {
     try {
-      await serviceClient.from('system_error_logs').insert({
-        user_id: userId,
-        function_name: 'visual-search',
-        error_message: error.message || String(error),
-        stack_trace: error.stack,
-        metadata: {
-          ...metadata,
-          requestId,
-          currentStep,
-          timestamp: new Date().toISOString(),
-        },
-      });
+      const { error: telemetryError } = await serviceClient
+        .from('edge_function_invocations')
+        .insert({
+          function_slug: 'visual-search',
+          // O bypass de simulação usa um UUID sentinela que não pertence a
+          // auth.users; gravar null evita violar a FK da telemetria canônica.
+          invoked_by: userId === '00000000-0000-0000-0000-000000000000' ? null : userId ?? null,
+          request_method: req.method,
+          request_metadata: {
+            ...metadata,
+            request_id: requestId,
+            current_step: currentStep,
+          },
+          status_code: statusCode,
+          duration_ms: Date.now() - startedAtMs,
+          error_message: errorMessage(error),
+        });
+
+      if (telemetryError) {
+        console.error(
+          `[${requestId}] Failed to record visual-search telemetry:`,
+          telemetryError.message,
+        );
+      }
     } catch (dbErr) {
-      console.error('Critical: Failed to log error to DB', dbErr);
+      console.error(`[${requestId}] Failed to record visual-search telemetry:`, dbErr);
     }
   };
 
@@ -164,6 +203,7 @@ Deno.serve(async (req) => {
 
     if (!AI_MINIMAX_API_KEY && !AI_LOVABLE_API_KEY) {
       console.error('[visual-search] Nenhuma credencial de IA configurada. Configure MINIMAX_API_KEY ou LOVABLE_API_KEY.');
+      await logToDb(new Error('AI_CREDENTIALS_MISSING'), 503, { provider: usedProvider });
       return new Response(
         JSON.stringify({
           error: 'Busca visual temporariamente indisponível. Configure as credenciais de IA no painel administrativo.',
@@ -469,7 +509,7 @@ Responda APENAS em JSON com este formato:
     const hasFilters = selectedCategoryIds.length > 0 || selectedColors.length > 0;
     const finalProducts = candidates.map((p) => {
       const categoryName = categoryNameById.get(p.category_id) ?? '';
-      const productColors = (Array.isArray(p.colors) ? p.colors : []).map((c: unknown) =>
+      const productColors: string[] = (Array.isArray(p.colors) ? p.colors : []).map((c: unknown) =>
         String(c).toLowerCase(),
       );
 
@@ -546,16 +586,16 @@ Responda APENAS em JSON com este formato:
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       },
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     // Auth errors → status correto (401/403) em vez de 500 genérico.
-    const status = typeof error?.status === 'number' ? error.status : 500;
+    const status = errorStatus(error);
     console.error(`[${requestId}] Visual search error at step "${currentStep}":`, error);
 
-    await logToDb(error, { provider: usedProvider });
+    await logToDb(error, status, { provider: usedProvider });
 
     return new Response(
       JSON.stringify({
-        error: error?.message || 'Erro interno',
+        error: errorMessage(error) || 'Erro interno',
         step: currentStep,
         requestId,
       }),

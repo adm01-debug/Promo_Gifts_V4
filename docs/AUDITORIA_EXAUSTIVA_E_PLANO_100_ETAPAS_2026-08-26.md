@@ -588,6 +588,54 @@ O caminho crítico é: restaurar o sinal de CI e a instalação determinística;
 
 Os marcadores `[AUTORIZAÇÃO BD]`, `[AUTORIZAÇÃO GITHUB]`, `[AUTORIZAÇÃO DESIGN]`, `[AUTORIZAÇÃO EXTERNA]` e `[AUTORIZAÇÃO DEPLOY]` exigem aprovação explícita no escopo indicado. `[VALIDAÇÃO PO]` cobre remoção, consolidação ou aposentadoria. Ausência de marcador não amplia autorização: este documento é plano, não ordem de execução.
 
+## Execução validada em 26/08/2026
+
+### Concluídas e comprovadas
+
+- [x] 16. Compatibilização do toolchain React 19 com instalação/testes locais viáveis no branch de estabilização.
+- [x] 17. Alinhamento de React/Router/Vite/Vitest/`@types` suficiente para `qa:full`, `build` e `test:ci-core` verdes.
+- [x] 21. Remoção da prop obsoleta `future` de `BrowserRouter`, preservando o comportamento atual.
+- [x] 22. Correção dos usos de `motion` em `PageTransition.tsx`, eliminando bloqueio de typecheck.
+- [x] 23. Correção do import de `minimatch` em `check-eslint-baseline.mjs`; o gate de lint voltou a executar de ponta a ponta.
+- [x] 24. Correção do parser de `check-package-duplicate-scripts.mjs`; o verificador voltou a analisar os 228 scripts sem crash.
+- [x] 44. `visual-search` passou a registrar falhas no canal canônico `edge_function_invocations`, com contrato Deno cobrindo falha primária e falha do próprio logger.
+- [x] 53. Detector AST de referências Supabase revisando `.from()`/`.rpc()` com separação explícita entre PostgREST canônico, Storage, clientes externos, placeholders e dispatch dinâmico.
+- [x] 54. Contract test e gate local para o catálogo temporário de referências Supabase, hoje aprovados no branch.
+- [x] 60. Teste de isolamento de demo garantindo que Trends só usa mock com `?demo=1` e que ProductMatch mock fica restrito ao contexto previsto.
+- [x] 67. Fotografia `pg_catalog` versionada localmente nesta rodada para sustentar a reconciliação dos próximos passos sem tocar no banco.
+
+### Parciais com evidência pronta
+
+- [ ] 39. `simulation-orchestrator` já tem caracterização e endurecimento inicial, mas ainda depende de decisão sobre persistência/canal canônico e validação em staging.
+- [ ] 41. `bitrix-sync` já foi separado analiticamente por ação e tem caracterização do falso verde; ainda falta a decisão sobre persistência local e contrato final por ação.
+- [ ] 45. `e2e-cleanup` já tem teste de caracterização hermético e ADR, mas continua dependente de decisão do PO: isolar ao ambiente de teste ou registrar no canal canônico.
+- [ ] 46. A ausência de `fn_ema_pipeline_health` já está comprovada e protegida por teste de contrato; ainda falta decidir RPC equivalente ou especificação nova.
+- [ ] 50. A tentativa de usar `set_config` como RPC pública já foi caracterizada/documentada; ainda falta a decisão sobre contrato substituto ou remoção definitiva da atribuição ineficaz.
+- [ ] 68. A comparação estruturada com `docs/SCHEMA_REFERENCE.md` já está embutida na auditoria, mas ainda não foi automatizada como diff dedicado e recorrente.
+- [ ] 94. Parte dos checks já foi caracterizada como potencial falso verde/inconclusivo, porém a regra geral de CI ainda não foi convertida para falhar explicitamente como `blocked/inconclusive`.
+
+### Bloqueadas por autorização ou capacidade externa
+
+- [ ] 11. Restaurar capacidade/orçamento do GitHub Actions.
+- [ ] 12. Reexecutar e classificar os 30 workflows vermelhos depois que o GitHub Actions voltar a rodar.
+- [ ] 13. Reorganizar workflows obrigatórios/agendados/opcionais.
+- [ ] 14. Revalidar branch protection e Required Checks remotamente.
+- [ ] 47. Qualquer criação de RPC nova continua bloqueada por `[AUTORIZAÇÃO BD]`.
+- [ ] 73, 78, 79, 80, 90. Correções de RLS/jobs/migrations/deploy seguem bloqueadas por autorização explícita de banco/deploy.
+- [ ] 92. Smokes com credenciais externas de teste continuam pendentes de `[AUTORIZAÇÃO EXTERNA]`.
+- [ ] 98–100. Limpeza autorizada e release continuam fora de escopo até zerar P1 e concluir as decisões pendentes.
+
+### Verificações desta rodada
+
+- [x] `corepack npm run test:ci-core` -> 27 arquivos, 843 testes, tudo verde.
+- [x] `corepack npm run qa:full` -> verde de ponta a ponta.
+- [x] `corepack npm run build -- --logLevel warn` -> verde; restam apenas warnings não bloqueantes de chunk/import dinâmico.
+- [x] `deno test --config supabase/functions/deno.json --allow-env --allow-net supabase/functions/visual-search/observability_contract_test.ts`
+- [x] `deno test --config supabase/functions/deno.json --allow-env --allow-net supabase/functions/e2e-cleanup/handler_characterization_test.ts`
+- [x] `corepack npm exec vitest run src/hooks/stock/__tests__/ema-pipeline-health.contract.test.tsx tests/contracts/demo-data-isolation.contract.test.ts`
+- [x] `node scripts/check-supabase-reference-catalog.mjs`
+- [x] `git diff --check`
+
 ## Critério para encerrar a estabilização
 
 O sistema estará tecnicamente pronto quando houver instalação limpa sem flags permissivas, build/typecheck/lint/testes verdes, CI realmente executando, contratos DB↔TypeScript sincronizados, zero referência executável a objeto inexistente, migrations reproduzíveis em banco descartável, fluxos críticos aprovados pelo PO, regressão visual sem alteração indesejada e rollback testado.
