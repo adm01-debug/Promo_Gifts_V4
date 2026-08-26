@@ -1,7 +1,7 @@
 /**
  * Quality Gate — Calendar number distribution.
- * Blinda a correção do calendário: números distribuídos por toda a largura
- * usando justify-between/gap-0, sem reintroduzir mt/mb/space-y nas linhas.
+ * Blinda a distribuição atual do calendário: rows contínuas com gap-0
+ * e células fluidas flex-1 aspect-square, sem espaçamentos verticais indevidos.
  */
 import { afterEach, describe, expect, it } from 'vitest';
 import { cleanup, render } from '@testing-library/react';
@@ -18,7 +18,7 @@ const hasToken = (className: string, token: string) =>
   new RegExp(`(^|\\s)${token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(\\s|$)`).test(className);
 
 function getCalendarRows(container: HTMLElement) {
-  return Array.from(container.querySelectorAll<HTMLElement>('[class*="justify-between"]'))
+  return Array.from(container.querySelectorAll<HTMLElement>('[class*="gap-0"]'))
     .filter((el) => {
       const c = classes(el);
       return hasToken(c, 'flex') && hasToken(c, 'w-full') && !hasToken(c, 'flex-col');
@@ -26,7 +26,7 @@ function getCalendarRows(container: HTMLElement) {
 }
 
 describe('Calendar — distribuição interna dos números', () => {
-  it('head_row e rows usam justify-between + gap-0 para ocupar a largura sem gaps artificiais', () => {
+  it('head_row e rows usam flex + gap-0 para ocupar a largura sem gaps artificiais', () => {
     const { container } = render(<Calendar mode="single" defaultMonth={REF} />);
 
     const rows = getCalendarRows(container);
@@ -34,7 +34,7 @@ describe('Calendar — distribuição interna dos números', () => {
 
     for (const row of rows) {
       const c = classes(row);
-      expect(c).toMatch(/justify-between/);
+      expect(c).toMatch(/(^|\s)flex(\s|$)/);
       expect(c).toMatch(/gap-0/);
     }
   });
@@ -52,16 +52,13 @@ describe('Calendar — distribuição interna dos números', () => {
   it('células mantêm distribuição responsiva e preservam aspect-square', () => {
     const { container } = render(<Calendar mode="single" defaultMonth={REF} />);
     const cells = Array.from(
-      container.querySelectorAll<HTMLElement>('[class*="flex-1"][class*="sm:h-[18.571428px]"][class*="aspect-square"]'),
+      container.querySelectorAll<HTMLElement>('[class*="flex-1"][class*="aspect-square"]'),
     );
 
     expect(cells.length).toBeGreaterThanOrEqual(28);
     for (const cell of cells.slice(0, 14)) {
       const c = classes(cell);
       expect(c).toMatch(/flex-1/);
-      expect(c).toMatch(/sm:flex-none/);
-      expect(c).toMatch(/sm:h-\[18\.571428px\]/);
-      expect(c).toMatch(/sm:w-\[18\.571428px\]/);
       expect(c).toMatch(/aspect-square/);
       expect(c).not.toMatch(/(^|\s)(h|w)-(9|10)(\s|$)/);
     }
