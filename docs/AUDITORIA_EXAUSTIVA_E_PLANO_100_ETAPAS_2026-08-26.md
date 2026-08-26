@@ -635,7 +635,7 @@ Os marcadores `[AUTORIZAÇÃO BD]`, `[AUTORIZAÇÃO GITHUB]`, `[AUTORIZAÇÃO DE
 
 ### Verificações desta rodada
 
-- [x] `corepack npm run test:ci-core` -> 34 arquivos, 880 testes, tudo verde.
+- [x] `corepack npm run test:ci-core` -> 35 arquivos, 882 testes, tudo verde.
 - [x] `corepack npm run qa:full` -> verde de ponta a ponta.
 - [x] `corepack npm run build -- --logLevel warn` -> verde; restam apenas warnings não bloqueantes de chunk/import dinâmico.
 - [x] `corepack npm run check:bundle-size` -> verde após baseline limpa; alerta de tamanho de `products` preservado.

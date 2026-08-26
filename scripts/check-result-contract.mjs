@@ -1,4 +1,5 @@
 import { appendFileSync } from 'node:fs';
+import { isIP } from 'node:net';
 
 export const CHECK_RESULT_STATUS = {
   PASSED: 'passed',
@@ -16,16 +17,20 @@ export function maskUrl(rawUrl) {
   if (!rawUrl) return null;
   try {
     const parsed = new URL(rawUrl);
-    const host = parsed.host;
-    if (!host) return rawUrl;
-    const parts = host.split('.');
-    if (parts.length < 3) return `${parsed.protocol}//${host}`;
+    const hostname = parsed.hostname;
+    const port = parsed.port ? `:${parsed.port}` : '';
+    if (!hostname) return '[invalid-url]';
+    if (hostname === 'localhost' || isIP(hostname)) {
+      return `${parsed.protocol}//${hostname}${port}`;
+    }
+    const parts = hostname.split('.');
+    if (parts.length < 3) return `${parsed.protocol}//${hostname}${port}`;
     const projectRef = parts[0];
     const maskedRef =
       projectRef.length <= 6
         ? `${projectRef.slice(0, 2)}***`
         : `${projectRef.slice(0, 3)}***${projectRef.slice(-3)}`;
-    return `${parsed.protocol}//${maskedRef}.${parts.slice(1).join('.')}`;
+    return `${parsed.protocol}//${maskedRef}.${parts.slice(1).join('.')}${port}`;
   } catch {
     // Nunca devolva a string original: uma URL inválida pode conter token,
     // credencial Basic ou outro material que não deve parar no log do CI.
