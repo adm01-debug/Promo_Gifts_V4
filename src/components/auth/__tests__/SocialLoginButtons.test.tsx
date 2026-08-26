@@ -14,17 +14,15 @@ import { render, screen, act } from '@testing-library/react';
 import { createRef } from 'react';
 import { SocialLoginButtons } from '../SocialLoginButtons';
 
-const signInWithOAuthMock = vi.fn();
+const signInWithOAuthSafeMock = vi.fn();
 const toastMock = vi.fn();
 
 // useToast is imported from the direct subpath; cover both aliases.
 const mockUseToast = vi.hoisted(() => vi.fn());
 
-vi.mock('@/integrations/supabase/client', () => ({
-  supabase: {
-    auth: {
-      signInWithOAuth: (...args: unknown[]) => signInWithOAuthMock(...args),
-    },
+vi.mock('@/services/authService', () => ({
+  authService: {
+    signInWithOAuthSafe: (...args: unknown[]) => signInWithOAuthSafeMock(...args),
   },
 }));
 
@@ -47,7 +45,7 @@ function getGoogleButton(): HTMLButtonElement {
 
 describe('SocialLoginButtons (Google)', () => {
   beforeEach(() => {
-    signInWithOAuthMock.mockReset();
+    signInWithOAuthSafeMock.mockReset();
     toastMock.mockReset();
     mockUseToast.mockReturnValue({ toast: toastMock });
     sessionStorage.clear();
@@ -58,8 +56,8 @@ describe('SocialLoginButtons (Google)', () => {
   });
 
   it('1) click → spinner visível + label "Conectando ao Google…" + aria-busy', async () => {
-    // signInWithOAuth nunca resolve (simula redirect em andamento)
-    signInWithOAuthMock.mockImplementation(() => new Promise(() => {}));
+    // signInWithOAuthSafe nunca resolve (simula redirect em andamento)
+    signInWithOAuthSafeMock.mockImplementation(() => new Promise(() => {}));
     render(<SocialLoginButtons />);
     const btn = getGoogleButton();
     expect(btn).toHaveTextContent('Continuar com Google');
@@ -72,19 +70,17 @@ describe('SocialLoginButtons (Google)', () => {
     expect(btn).toHaveAttribute('aria-busy', 'true');
     expect(btn).toBeDisabled();
     expect(btn).toHaveTextContent('Conectando ao Google…');
-    expect(signInWithOAuthMock).toHaveBeenCalledWith(
+    expect(signInWithOAuthSafeMock).toHaveBeenCalledWith(
       expect.objectContaining({
         provider: 'google',
-        options: expect.objectContaining({
-          redirectTo: expect.stringMatching(/\/auth\/callback$/),
-        }),
+        redirectTo: expect.stringMatching(/\/auth\/callback$/),
       }),
     );
   });
 
   it('2) após 6s sem retorno → aparece o aviso "isto pode levar alguns segundos"', async () => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
-    signInWithOAuthMock.mockImplementation(() => new Promise(() => {}));
+    signInWithOAuthSafeMock.mockImplementation(() => new Promise(() => {}));
     render(<SocialLoginButtons />);
     // eslint-disable-next-line @typescript-eslint/require-await
     await act(async () => {
@@ -100,7 +96,7 @@ describe('SocialLoginButtons (Google)', () => {
 
   it('3) timeout 15s → toast destrutivo + onError(autoFallback=true)', async () => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
-    signInWithOAuthMock.mockImplementation(() => new Promise(() => {}));
+    signInWithOAuthSafeMock.mockImplementation(() => new Promise(() => {}));
     const onError = vi.fn();
     render(<SocialLoginButtons onError={onError} />);
     // eslint-disable-next-line @typescript-eslint/require-await
@@ -127,8 +123,13 @@ describe('SocialLoginButtons (Google)', () => {
   });
 
   it('4) provider error "unsupported provider" → mensagem PT-BR + onError sem autoFallback', async () => {
-    signInWithOAuthMock.mockResolvedValue({
-      error: { message: 'Unsupported provider: provider is not enabled' },
+    signInWithOAuthSafeMock.mockResolvedValue({
+      kind: 'err',
+      errorKind: 'unknown',
+      userMessage: 'Unsupported provider: provider is not enabled',
+      raw: {},
+      attempts: 1,
+      elapsedMs: 1,
     });
     const onError = vi.fn();
     render(<SocialLoginButtons onError={onError} />);
@@ -154,7 +155,14 @@ describe('SocialLoginButtons (Google)', () => {
   });
 
   it('5) exceção de rede (Failed to fetch) → mensagem "Sem conexão"', async () => {
-    signInWithOAuthMock.mockRejectedValue(new Error('Failed to fetch'));
+    signInWithOAuthSafeMock.mockResolvedValue({
+      kind: 'err',
+      errorKind: 'network',
+      userMessage: 'Failed to fetch',
+      raw: new Error('Failed to fetch'),
+      attempts: 1,
+      elapsedMs: 1,
+    });
     const onError = vi.fn();
     render(<SocialLoginButtons onError={onError} />);
     // eslint-disable-next-line @typescript-eslint/require-await
@@ -175,7 +183,7 @@ describe('SocialLoginButtons (Google)', () => {
   });
 
   it('6) visibilitychange (aba volta a ficar visível) → libera o spinner', async () => {
-    signInWithOAuthMock.mockImplementation(() => new Promise(() => {}));
+    signInWithOAuthSafeMock.mockImplementation(() => new Promise(() => {}));
     render(<SocialLoginButtons />);
     // eslint-disable-next-line @typescript-eslint/require-await
     await act(async () => {
@@ -198,8 +206,13 @@ describe('SocialLoginButtons (Google)', () => {
   });
 
   it('7) retryRef.current() reexecuta handleGoogleLogin', async () => {
-    signInWithOAuthMock.mockResolvedValue({
-      error: { message: 'Unsupported provider: provider is not enabled' },
+    signInWithOAuthSafeMock.mockResolvedValue({
+      kind: 'err',
+      errorKind: 'unknown',
+      userMessage: 'Unsupported provider: provider is not enabled',
+      raw: {},
+      attempts: 1,
+      elapsedMs: 1,
     });
     const retryRef = createRef<(() => void) | null>() as React.MutableRefObject<
       (() => void) | null
@@ -215,7 +228,7 @@ describe('SocialLoginButtons (Google)', () => {
     await act(async () => {
       await Promise.resolve();
     });
-    expect(signInWithOAuthMock).toHaveBeenCalledTimes(1);
+    expect(signInWithOAuthSafeMock).toHaveBeenCalledTimes(1);
     expect(typeof retryRef.current).toBe('function');
 
     // 2ª chamada via retry (ex: botão "Tentar novamente" do banner)
@@ -226,7 +239,7 @@ describe('SocialLoginButtons (Google)', () => {
     await act(async () => {
       await Promise.resolve();
     });
-    expect(signInWithOAuthMock).toHaveBeenCalledTimes(2);
+    expect(signInWithOAuthSafeMock).toHaveBeenCalledTimes(2);
   });
 
   it('8) pending em sessionStorage no mount → spinner reidrata sem clique', () => {
@@ -242,7 +255,7 @@ describe('SocialLoginButtons (Google)', () => {
   });
 
   it('9) click marca __oauth_pending em sessionStorage', async () => {
-    signInWithOAuthMock.mockImplementation(() => new Promise(() => {}));
+    signInWithOAuthSafeMock.mockImplementation(() => new Promise(() => {}));
     render(<SocialLoginButtons />);
     expect(sessionStorage.getItem('__oauth_pending')).toBeNull();
     // eslint-disable-next-line @typescript-eslint/require-await
@@ -255,8 +268,13 @@ describe('SocialLoginButtons (Google)', () => {
   });
 
   it('10) erro do provider limpa __oauth_pending', async () => {
-    signInWithOAuthMock.mockResolvedValue({
-      error: { message: 'Unsupported provider: provider is not enabled' },
+    signInWithOAuthSafeMock.mockResolvedValue({
+      kind: 'err',
+      errorKind: 'unknown',
+      userMessage: 'Unsupported provider: provider is not enabled',
+      raw: {},
+      attempts: 1,
+      elapsedMs: 1,
     });
     render(<SocialLoginButtons />);
     // eslint-disable-next-line @typescript-eslint/require-await

@@ -191,7 +191,7 @@ describe('Matriz de cenários — engine × falha', () => {
   // Cada engine testado no cenário de popup bloqueado (openInNewTab → null).
   it.each(Object.entries(UA_MATRIX))(
     '%s: emite print_start com browser correto',
-    async ([_name, { ua, expected }]) => {
+    async (_name, { ua, expected }) => {
       setUA(ua);
       vi.stubGlobal(
         'open',

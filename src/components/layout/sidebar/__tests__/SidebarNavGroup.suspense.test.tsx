@@ -17,11 +17,8 @@
  */
 import React from 'react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { act, render, screen } from '@testing-library/react';
-import { createMemoryRouter, RouterProvider, Outlet, useLocation } from 'react-router-dom';
-// react-router-dom exports `Router` as a component value, not a type. Derive the
-// data-router type from the factory's return instead.
-type Router = ReturnType<typeof createMemoryRouter>;
+import { act, fireEvent, render, screen } from '@testing-library/react';
+import { createMemoryRouter, MemoryRouter, Outlet, RouterProvider, useLocation } from 'react-router-dom';
 import { Plus, FileText, ShoppingCart } from 'lucide-react';
 import { type NavGroup, SidebarNavGroup } from '../SidebarNavGroup';
 import { isNavItemActive } from '@/lib/navigation/active-match';
@@ -78,15 +75,25 @@ function ControlledSidebarGroup() {
   );
 }
 
-/** Cria um componente "lazy" cujo resolve é controlado externamente. */
-function makeDeferredLazy(label: string) {
+/** Cria uma página cuja renderização suspende até o resolve controlado pelo teste. */
+function makeDeferredPage(label: string) {
+  let resolved = false;
   let resolveFn: (() => void) | null = null;
-  const promise = new Promise<{ default: React.ComponentType }>((resolve) => {
-    resolveFn = () => resolve({ default: () => <div data-testid={`page-${label}`}>{label}</div> });
+  const gate = new Promise<void>((resolve) => {
+    resolveFn = () => {
+      resolved = true;
+      resolve();
+    };
   });
-  const Lazy = React.lazy(() => promise);
+
+  function DeferredPage() {
+    // eslint-disable-next-line @typescript-eslint/only-throw-error -- Suspense usa o thenable pendente como sinal de carregamento.
+    if (!resolved) throw gate;
+    return <div data-testid={`page-${label}`}>{label}</div>;
+  }
+
   return {
-    Lazy,
+    DeferredPage,
     resolve: () => {
       if (!resolveFn) throw new Error('resolveFn missing');
       resolveFn();
@@ -94,30 +101,26 @@ function makeDeferredLazy(label: string) {
   };
 }
 
+function SuspendedRoute({ deferredPath, Page }: { deferredPath: string; Page: React.ComponentType }) {
+  const location = useLocation();
+  if (location.pathname !== deferredPath) {
+    return <div data-testid="page-other">other</div>;
+  }
+  return <Page />;
+}
+
 function setupRouterWithSuspense(initialPath: string, deferredPath: string) {
-  const { Lazy, resolve } = makeDeferredLazy(deferredPath);
-  const router = createMemoryRouter(
-    [
-      {
-        path: '*',
-        element: (
-          <>
-            <ControlledSidebarGroup />
-            <React.Suspense fallback={<div data-testid="route-fallback">carregando…</div>}>
-              <Outlet />
-            </React.Suspense>
-          </>
-        ),
-        children: [
-          { path: deferredPath.replace(/^\//, ''), element: <Lazy /> },
-          { path: '*', element: <div data-testid="page-other">other</div> },
-        ],
-      },
-    ],
-    { initialEntries: [initialPath] },
+  const { DeferredPage, resolve } = makeDeferredPage(deferredPath);
+  // Espelha o BrowserRouter do App: a URL deve refletir a navegação antes de o chunk resolver.
+  render(
+    <MemoryRouter initialEntries={[initialPath]} useTransitions={false}>
+      <ControlledSidebarGroup />
+      <React.Suspense fallback={<div data-testid="route-fallback">carregando…</div>}>
+        <SuspendedRoute deferredPath={deferredPath} Page={DeferredPage} />
+      </React.Suspense>
+    </MemoryRouter>,
   );
-  render(<RouterProvider router={router} />);
-  return { router, resolve };
+  return { resolve };
 }
 
 function getNavLink(label: string): HTMLAnchorElement {
@@ -132,21 +135,19 @@ function getHeader(): HTMLButtonElement {
 function isGroupExpanded(): boolean {
   return getHeader().getAttribute('aria-expanded') === 'true';
 }
-async function pushTo(router: Router, path: string) {
-  await act(async () => {
-    await router.navigate(path);
-  });
+function navigateWithLink(label: string) {
+  fireEvent.click(getNavLink(label), { button: 0 });
 }
 
 describe('SidebarNavGroup — sem flicker durante Suspense (rota lazy)', () => {
   it('ao navegar para /orcamentos/novo enquanto o chunk ainda NÃO resolveu, o destaque já está no item correto', async () => {
-    const { router, resolve } = setupRouterWithSuspense('/dashboard', '/orcamentos/novo');
+    const { resolve } = setupRouterWithSuspense('/dashboard', '/orcamentos/novo');
 
     // Estado inicial: rota neutra, ninguém ativo, mas grupo aberto via defaultOpen.
     expect(isLinkActive('Novo Orçamento')).toBe(false);
     expect(isGroupExpanded()).toBe(true);
 
-    await pushTo(router, '/orcamentos/novo');
+    navigateWithLink('Novo Orçamento');
 
     // Mesmo com o chunk ainda pendente (fallback visível), a sidebar JÁ
     // reflete o destaque e a expansão — sem esperar o resolve.
@@ -168,14 +169,14 @@ describe('SidebarNavGroup — sem flicker durante Suspense (rota lazy)', () => {
   });
 
   it('o aria-expanded do grupo NÃO oscila entre true e false durante o ciclo Suspense', async () => {
-    const { router, resolve } = setupRouterWithSuspense('/dashboard', '/orcamentos/novo');
+    const { resolve } = setupRouterWithSuspense('/dashboard', '/orcamentos/novo');
 
     // Snapshot do aria-expanded em cada fase do ciclo.
     const phases: { label: string; expanded: string | null }[] = [];
 
     phases.push({ label: 'antes', expanded: getHeader().getAttribute('aria-expanded') });
 
-    await pushTo(router, '/orcamentos/novo');
+    navigateWithLink('Novo Orçamento');
     phases.push({ label: 'durante-fallback', expanded: getHeader().getAttribute('aria-expanded') });
 
     await act(async () => {
@@ -193,11 +194,11 @@ describe('SidebarNavGroup — sem flicker durante Suspense (rota lazy)', () => {
   });
 
   it("o aria-current do link Novo Orçamento permanece 'page' durante TODA a janela Suspense", async () => {
-    const { router, resolve } = setupRouterWithSuspense('/dashboard', '/orcamentos/novo');
+    const { resolve } = setupRouterWithSuspense('/dashboard', '/orcamentos/novo');
 
     expect(getNavLink('Novo Orçamento').getAttribute('aria-current')).not.toBe('page');
 
-    await pushTo(router, '/orcamentos/novo');
+    navigateWithLink('Novo Orçamento');
     // Sem flicker: aria-current já está correto durante o fallback.
     expect(getNavLink('Novo Orçamento').getAttribute('aria-current')).toBe('page');
     expect(screen.getByTestId('route-fallback')).toBeInTheDocument();
@@ -212,14 +213,11 @@ describe('SidebarNavGroup — sem flicker durante Suspense (rota lazy)', () => {
 
 describe('SidebarNavGroup — sem flicker em navegações rápidas em sequência (double-click)', () => {
   it('dois pushes consecutivos /carrinhos -> /orcamentos/novo aplicam só o destaque final, sem estado intermediário inconsistente', async () => {
-    const { router, resolve } = setupRouterWithSuspense('/dashboard', '/orcamentos/novo');
+    const { resolve } = setupRouterWithSuspense('/dashboard', '/orcamentos/novo');
 
-    // eslint-disable-next-line @typescript-eslint/require-await
-    await act(async () => {
-      // dispara DUAS navegações no mesmo tick — apenas a última deve valer.
-      router.navigate('/carrinhos');
-      router.navigate('/orcamentos/novo');
-    });
+    // dispara DUAS navegações no mesmo tick — apenas a última deve valer.
+    navigateWithLink('Carrinhos');
+    navigateWithLink('Novo Orçamento');
 
     // Após o batching, o destaque reflete o destino FINAL.
     expect(isLinkActive('Novo Orçamento')).toBe(true);
@@ -238,18 +236,18 @@ describe('SidebarNavGroup — sem flicker em navegações rápidas em sequência
   });
 
   it('clique repetido no MESMO link (/orcamentos/novo) não desativa nem fecha o grupo entre os cliques', async () => {
-    const { router, resolve } = setupRouterWithSuspense('/orcamentos/novo', '/orcamentos/novo');
+    const { resolve } = setupRouterWithSuspense('/orcamentos/novo', '/orcamentos/novo');
 
     // Estado inicial já em /orcamentos/novo (Suspense em curso para o conteúdo).
     expect(isLinkActive('Novo Orçamento')).toBe(true);
     expect(isGroupExpanded()).toBe(true);
 
     // Re-navegar para a mesma URL — não pode "resetar" o estado visual.
-    await pushTo(router, '/orcamentos/novo');
+    navigateWithLink('Novo Orçamento');
     expect(isLinkActive('Novo Orçamento')).toBe(true);
     expect(isGroupExpanded()).toBe(true);
 
-    await pushTo(router, '/orcamentos/novo');
+    navigateWithLink('Novo Orçamento');
     expect(isLinkActive('Novo Orçamento')).toBe(true);
     expect(isGroupExpanded()).toBe(true);
 

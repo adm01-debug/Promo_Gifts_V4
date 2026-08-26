@@ -402,21 +402,19 @@ describe('magazineService — race conditions (concorrência)', () => {
 });
 
 describe('magazineService — títulos exóticos', () => {
-  // NOTA (GAP identificado): magazineService.create usa `input.title ?? 'Nova Revista'`,
-  // que preserva string vazia. A UI depende de canPublish() para bloquear publicação
-  // de revistas sem título. Se defesa no service for desejada, trocar `??` por
-  // fallback explícito para strings vazias/whitespace-only.
-  const exotic = [' ', 'á', '中文', '😀🎉', 'a'.repeat(500), '\n\t', '<b>x</b>'];
+  // O serviço normaliza espaços de borda e aplica o título padrão a entradas vazias.
+  // A validação de publicação continua cobrindo o estado editável da UI.
+  const exotic = ['á', '中文', '😀🎉', 'a'.repeat(500), '<b>x</b>'];
   it.each(exotic)('title=%j preservado no round-trip', async (t) => {
     const m = await magazineService.create({ ownerId: 'u', title: t });
     const got = await magazineService.get(m.id);
     expect(got?.title).toBe(t);
   });
 
-  it('title="" é preservado pelo service (bloqueio fica na UI via canPublish)', async () => {
-    const m = await magazineService.create({ ownerId: 'u', title: '' });
+  it.each([' ', '\n\t', ''])('title=%j usa o default quando vazio após normalização', async (t) => {
+    const m = await magazineService.create({ ownerId: 'u', title: t });
     const got = await magazineService.get(m.id);
-    expect(got?.title).toBe('');
+    expect(got?.title).toBe('Nova Revista');
   });
 
   it('title=undefined cai no default "Nova Revista"', async () => {
