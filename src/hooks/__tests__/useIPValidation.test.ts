@@ -38,7 +38,15 @@ describe('useIPValidation', () => {
       const ip = await result.current.fetchCurrentIP();
 
       expect(ip).toBe('1.2.3.4');
-      expect(supabase.functions.invoke).toHaveBeenCalledWith('get-visitor-info');
+      expect(supabase.functions.invoke).toHaveBeenCalledWith(
+        'get-visitor-info',
+        expect.objectContaining({
+          body: undefined,
+          headers: expect.objectContaining({
+            'X-Request-Id': expect.any(String),
+          }),
+        }),
+      );
       // Should NOT call ipify if visitor info succeeds
       expect(mockFetch).not.toHaveBeenCalled();
     });

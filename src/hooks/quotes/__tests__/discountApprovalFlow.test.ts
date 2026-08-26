@@ -11,7 +11,9 @@
  * `useQuoteBuilderState` (`realDiscountPercent > maxDiscountPercent`). Aqui
  * apenas re-asseguramos que o hook respeita o contrato quando chamado.
  */
+import React from 'react';
 import { renderHook, act } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { supabase } from '@/integrations/supabase/client';
 import { useDiscountApproval } from '../useDiscountApproval';
@@ -20,7 +22,9 @@ vi.mock('@/contexts/AuthContext', () => ({
   useAuth: () => ({ user: { id: 'seller-1', email: 's@x.com' } }),
 }));
 vi.mock('sonner', () => ({ toast: { success: vi.fn(), error: vi.fn(), info: vi.fn() } }));
-vi.mock('@/lib/logger', () => ({ logger: { log: vi.fn(), error: vi.fn(), warn: vi.fn() } }));
+vi.mock('@/lib/logger', () => ({
+  logger: { log: vi.fn(), info: vi.fn(), error: vi.fn(), warn: vi.fn() },
+}));
 vi.mock('@/lib/security/rls-denial-logger', () => ({ logRlsDenial: vi.fn() }));
 
 vi.mock('@/integrations/supabase/client', () => ({
@@ -80,6 +84,19 @@ function installFrom({ existingPending = null }: DarHandlers = {}) {
   return { insertSpy };
 }
 
+function createWrapper() {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: { retry: false, gcTime: 0, staleTime: 0 },
+      mutations: { retry: false },
+    },
+  });
+
+  return function Wrapper({ children }: { children: React.ReactNode }) {
+    return React.createElement(QueryClientProvider, { client: queryClient }, children);
+  };
+}
+
 beforeEach(() => {
   vi.clearAllMocks();
 });
@@ -87,7 +104,7 @@ beforeEach(() => {
 describe('fluxo de alçada — useDiscountApproval', () => {
   it('cenário 1 (sem markup, real > limite): chama INSERT exatamente uma vez', async () => {
     const { insertSpy } = installFrom({ existingPending: null });
-    const { result } = renderHook(() => useDiscountApproval());
+    const { result } = renderHook(() => useDiscountApproval(), { wrapper: createWrapper() });
 
     await act(async () => {
       await result.current.requestApproval('quote-1', 30, 10, 'cliente estratégico');
@@ -106,8 +123,14 @@ describe('fluxo de alçada — useDiscountApproval', () => {
   });
 
   it('cenário 2 (dedup): NÃO insere quando já existe pending para o mesmo quote', async () => {
-    const { insertSpy } = installFrom({ existingPending: { id: 'existing-dar-1' } });
-    const { result } = renderHook(() => useDiscountApproval());
+    const { insertSpy } = installFrom({
+      existingPending: {
+        id: 'existing-dar-1',
+        requested_discount_percent: 30,
+        max_allowed_percent: 10,
+      },
+    });
+    const { result } = renderHook(() => useDiscountApproval(), { wrapper: createWrapper() });
 
     let outcome: boolean | undefined;
     await act(async () => {
@@ -155,7 +178,7 @@ describe('fluxo de alçada — useDiscountApproval', () => {
       } as never;
     });
 
-    const { result } = renderHook(() => useDiscountApproval());
+    const { result } = renderHook(() => useDiscountApproval(), { wrapper: createWrapper() });
 
     await act(async () => {
       await result.current.requestApproval('quote-1', 30, 10, 'primeira');
