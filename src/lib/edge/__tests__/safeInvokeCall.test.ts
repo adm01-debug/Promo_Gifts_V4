@@ -119,6 +119,15 @@ describe('safeInvokeCall — Onda 17', () => {
     expect(norm).toMatchObject({ message: 'canvas exploded', status: 500 });
   });
 
+  it('Response com body texto puro usa fallback textual quando JSON falha', async () => {
+    const error = Object.assign(new Error('Edge Function returned a non-2xx status code'), {
+      name: 'FunctionsHttpError',
+      context: new Response('upstream html proxy error', { status: 502 }),
+    });
+    const norm = await normalizeInvokeError(error);
+    expect(norm).toMatchObject({ message: 'upstream html proxy error', status: 502 });
+  });
+
   it('AbortSignal externo já abortado → err imediato', async () => {
     const ctrl = new AbortController();
     ctrl.abort();

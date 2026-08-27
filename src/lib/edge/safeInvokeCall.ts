@@ -79,23 +79,28 @@ async function extractContextMessage(context: InvokeErrorContext | undefined): P
   if (!context) return '';
 
   if (typeof context.json === 'function') {
-    let response = context;
-    if (typeof context.clone === 'function') {
+    const getClone = (): InvokeErrorContext => {
+      if (typeof context.clone !== 'function') return context;
       try {
-        response = context.clone();
+        return context.clone();
       } catch {
         // Response já consumida: tenta o contexto original e preserva o fallback seguro.
+        return context;
       }
-    }
+    };
+
+    const jsonSource = getClone();
     try {
-      const message = extractBodyMessage(await response.json?.());
+      const message = extractBodyMessage(await jsonSource.json?.());
       if (message) return message;
     } catch {
       // JSON inválido/indisponível: tenta o texto ou o body já materializado abaixo.
     }
-    if (typeof response.text === 'function') {
+
+    const textSource = getClone();
+    if (typeof textSource.text === 'function') {
       try {
-        const message = extractBodyMessage(await response.text());
+        const message = extractBodyMessage(await textSource.text());
         if (message) return message;
       } catch {
         // A mensagem base seguirá como fallback seguro.
