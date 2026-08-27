@@ -662,6 +662,36 @@ Uma nova execução integral de `corepack npm run test:quality`, depois do repar
 
 Após a classificação e os lotes mínimos descritos nos commits desta rodada, a execução final de `corepack npm run test:quality` encerrou normalmente em **393,07 s**, com código 0: **977 arquivos aprovados, 125 ignorados; 23.435 testes aprovados, 1.101 ignorados**. Os ignores remanescentes são caminhos opt-in/live sem credenciais reais ou cenários explicitamente indisponíveis no ambiente local; não foram tratados como aprovação de infraestrutura externa. Os avisos de `canvas`, navegação jsdom e mocks legados de PDF foram registrados como ruído de ambiente/futuro endurecimento, sem falha de contrato nesta execução.
 
+## Validação complementar em 27/08/2026
+
+Esta rodada manteve a regra de não tocar em schema, dados, grants, jobs ou migrations do Supabase canônico. As mudanças ficaram restritas ao código da aplicação, testes locais e este documento.
+
+### Correções implementadas e reconfirmadas
+
+- [x] Fluxo de aprovação de desconto: a atualização de `quotes` agora precisa confirmar sucesso antes de registrar `quote_history` ou notificar o vendedor; o teste de integração cobre explicitamente o caminho de falha da escrita principal.
+- [x] CRM resiliente sem falso verde: `statement_timeout` continua degradando leituras (`select`/`search`) para `stale`, mas escritas (`insert`/`update`/`delete`) agora rejeitam com resultado indeterminado em vez de parecer sucesso vazio.
+- [x] Telemetria/admin: os snapshots de `invokeTelemetrySink` e `secretsManagerCallMetrics` ficaram estáveis para `useSyncExternalStore`, e a página de telemetria recebeu seletores/test IDs menos frágeis para exportações e tabela.
+- [x] Acessibilidade/teclado: o `DatePickerField` removeu o aninhamento de controle interativo e passou a usar botão real para limpar; `PresetsBar`, `KitComposition`, `VoiceSearchOverlay` e `ProductStatusBadge` tiveram o comportamento de teclado alinhado e coberto por testes.
+- [x] Live suite opt-in: casos happy-path sem JWT de teste agora usam `skip` explícito, evitando falso verde silencioso.
+- [x] Watchers de coleções/favoritos: `workspace_notifications.insert()` passou a ser verificado antes de incrementar o contador de notificações enviadas; falha de persistência agora aborta a execução em vez de confirmar sucesso contraditório.
+
+### Verificações executadas hoje
+
+- [x] `node scripts/validate-supabase-config.mjs` -> verde.
+- [x] `git diff --check` -> verde.
+- [x] `corepack npm run build -- --logLevel warn` -> verde; restaram apenas warnings não bloqueantes de chunk/import dinâmico.
+- [x] `corepack npm run qa:full` -> verde com código 0 nesta fotografia do worktree.
+- [x] `corepack npm exec -- vitest run src/components/ui/__tests__/date-picker-field.test.tsx src/components/filters/__tests__/PresetsBar.test.tsx src/components/products/__tests__/ProductStatusBadge.test.tsx tests/components/KitComposition.test.tsx tests/components/search/VoiceSearchOverlay.test.tsx src/lib/edge/__tests__/invokeTelemetrySink.test.ts src/lib/telemetry/__tests__/secretsManagerCallMetrics.test.ts tests/pages/AdminTelemetriaPage.test.tsx tests/edge-functions/live/product-visual-search.test.ts tests/pages/DiscountRequestDetailPage.test.tsx tests/components/AdminRoute.test.tsx tests/lib/crm-db-fixed.test.ts tests/integration/discountApprovalFlow.test.ts --maxWorkers=1 --retry=0` -> **12 arquivos verdes, 1 skip, 186 testes verdes, 12 skips**.
+- [x] `deno test --no-config --allow-read supabase/functions/collections-watcher/notification-insert.contract_test.ts supabase/functions/favorites-watcher/notification-insert.contract_test.ts` -> **6/6 verdes**.
+- [x] `deno check --config supabase/functions/deno.json supabase/functions/collections-watcher/index.ts supabase/functions/favorites-watcher/index.ts` -> verde.
+- [ ] `node scripts/map-drafts-to-migrations.mjs --check` -> continua bloqueando corretamente o rascunho `2026-07-23_get_edge_invoke_summary.sql` sem revisão registrada; não foi mascarado.
+
+### Observações e limites honestos desta rodada
+
+- [ ] O rerun integral de `corepack npm run test:quality` em 27/08/2026 ficou ativo por vários minutos, emitindo apenas o ruído já conhecido de JSDOM (`Could not parse CSS stylesheet`, `HTMLCanvasElement.getContext`, `navigation to another Document`) e sem devolver sumário final útil antes de ser interrompido com código `143`. Portanto, esta rodada **não** usa esse rerun como prova de aprovação; a última aprovação integral válida continua sendo a já registrada em 26/08/2026.
+- [ ] A trilha de aprovação de desconto ainda não é atômica no banco; ela apenas deixou de gerar histórico/notificação contraditórios no cliente. Qualquer consolidação via RPC/transação continua dependendo de catálogo real e `[AUTORIZAÇÃO BD]`.
+- [ ] A reconciliação de schema `pg_catalog` ↔ `types.ts` e qualquer ação sobre grants/RLS/jobs seguem fora desta rodada por dependerem de capacidade externa e autorização explícita.
+
 ## Critério para encerrar a estabilização
 
 O sistema estará tecnicamente pronto quando houver instalação limpa sem flags permissivas, build/typecheck/lint/testes verdes, CI realmente executando, contratos DB↔TypeScript sincronizados, zero referência executável a objeto inexistente, migrations reproduzíveis em banco descartável, fluxos críticos aprovados pelo PO, regressão visual sem alteração indesejada e rollback testado.
