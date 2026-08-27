@@ -45,6 +45,22 @@ vi.mock("@/components/common/BackButton", () => ({
   BackButton: () => null,
 }));
 
+// O contrato desta suíte é a posição/semântica da breadcrumb. Header, sidebar
+// e background são carregados lazy e trazem dependências de carrinho/telemetria
+// que pertencem a suas próprias suítes; isolá-los evita que estado de outro
+// arquivo faça o teste de layout falhar durante a montagem do Header.
+vi.mock("@/components/layout/Header", () => ({
+  Header: () => null,
+}));
+
+vi.mock("@/components/layout/SidebarReorganized", () => ({
+  SidebarReorganized: () => null,
+}));
+
+vi.mock("@/components/effects/StarBackground", () => ({
+  StarBackground: () => null,
+}));
+
 vi.mock("@/hooks/useScrollLockFix", () => ({
   useScrollLockFix: vi.fn(),
 }));
