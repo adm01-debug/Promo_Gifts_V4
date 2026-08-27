@@ -73,8 +73,10 @@ const H = vi.hoisted(() => {
       limit: () => builder,
       single: () => Promise.resolve({ data: results.single ?? null, error: null }),
       maybeSingle: () => Promise.resolve({ data: results.maybeSingle ?? null, error: null }),
-      then: (resolve: (v: { data: unknown; error: null }) => unknown) =>
-        resolve({ data: results.list ?? [], error: null }),
+      then: (resolve: (v: { data: unknown; error: unknown }) => unknown) => {
+        const updateError = currentMethod === "update" ? (results.updateError ?? null) : null;
+        resolve({ data: results.list ?? [], error: updateError });
+      },
     });
     return builder;
   }
@@ -292,6 +294,23 @@ describe("E2E: Admin aprova solicitação", () => {
       category: "discount",
     });
     expect((notif?.payload as { title: string }).title).toContain("aprovado");
+  });
+
+  it("não confirma aprovação nem notifica vendedor se a atualização do orçamento falha", async () => {
+    setUser("admin");
+    H.setOverride("quotes", { updateError: { message: "quote update failed" } });
+    const { result } = renderHookWithProviders(() => useDiscountApproval());
+
+    let success = true;
+    await act(async () => {
+      success = await result.current.respondToApproval(REQUEST_ID, true, "Aprovado");
+    });
+
+    expect(success).toBe(false);
+    expect(toast.success).not.toHaveBeenCalled();
+    expect(toast.error).toHaveBeenCalledWith("Erro ao responder solicitação");
+    expect(ops.find(o => o.table === "quote_history" && o.method === "insert")).toBeUndefined();
+    expect(ops.find(o => o.table === "workspace_notifications" && o.method === "insert")).toBeUndefined();
   });
 });
 

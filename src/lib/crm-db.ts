@@ -427,6 +427,16 @@ function isStatementTimeout(msg: string, status = 0): boolean {
 }
 
 /**
+ * Uma leitura pode degradar para uma lista vazia identificada como stale sem
+ * confirmar um efeito de negócio. Escritas não têm essa propriedade: depois de
+ * um timeout o caller precisa tratar o resultado como indeterminado, nunca como
+ * sucesso com retorno vazio.
+ */
+function canDegradeCrmRead(operation: CrmQuery['operation']): boolean {
+  return operation === 'select' || operation === 'search';
+}
+
+/**
  * Padroes que indicam erros DEFINITIVOS — nunca fazer retry.
  */
 const NON_RETRYABLE_PATTERNS = [
@@ -542,13 +552,12 @@ export async function invokeCrmDb<T>(query: CrmQuery): Promise<CrmResponse<T>> {
     };
 
     for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
-      const { data, error: invokeError } = await invokeEdge<Record<string, unknown> & { error?: string }>(
-        'crm-db-bridge',
-        {
-          body: query,
-          headers: { [REQUEST_ID_HEADER]: requestId },
-        },
-      );
+      const { data, error: invokeError } = await invokeEdge<
+        Record<string, unknown> & { error?: string }
+      >('crm-db-bridge', {
+        body: query,
+        headers: { [REQUEST_ID_HEADER]: requestId },
+      });
       const error = invokeError ? toCrmBridgeError(invokeError) : null;
 
       if (!error && !data?.error) {
@@ -560,21 +569,26 @@ export async function invokeCrmDb<T>(query: CrmQuery): Promise<CrmResponse<T>> {
       const msg = error ? await extractCrmErrorMessage(error) : data?.error || 'Unknown CRM error';
       const status = extractCrmErrorStatus(error);
 
-      // statement_timeout: degrada graciosamente (evita blank screen). O usuário
-      // recebe lista vazia + flag `stale` — a UI pode mostrar toast/refinar filtros.
+      // statement_timeout em leitura degrada graciosamente (evita blank screen).
+      // Em escrita, o resultado é indeterminado e deve rejeitar: retornar []
+      // faria insert/update/delete parecerem concluídos sem confirmação.
       if (isStatementTimeout(msg, status)) {
         record(false, null, msg);
-        logger.warn('[CRM-DB] statement_timeout — retornando resultado vazio', {
+        logger.warn('[CRM-DB] statement_timeout', {
           requestId,
           table: query.table,
+          operation: query.operation,
           message: safeCrmLogMessage(msg),
         });
-        return {
-          data: [],
-          count: 0,
-          stale: true,
-          error: 'statement_timeout',
-        } as unknown as CrmResponse<T>;
+        if (canDegradeCrmRead(query.operation)) {
+          return {
+            data: [],
+            count: 0,
+            stale: true,
+            error: 'statement_timeout',
+          } as unknown as CrmResponse<T>;
+        }
+        throw crmOperationError('CRM DB write outcome indeterminate', msg, error);
       }
 
       // Rate-limit: ativa circuit breaker (que drena a fila) e nao faz retry

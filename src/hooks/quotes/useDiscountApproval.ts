@@ -367,35 +367,38 @@ export function useDiscountApproval() {
 
         // Update quote status: approved → pending (ready to send), rejected → draft (needs adjustment)
         const newStatus = approved ? 'pending' : 'draft';
-        const [quoteUpdateResult, historyResult] = await Promise.all([
-          supabase
-            // rls-allow: fluxo de aprovação admin/seller; RLS filtra por papel
-            .from('quotes')
-            .update({ status: newStatus })
-            .eq('id', typedReq.quote_id),
-          // Log in quote history for auditability
-          supabase.from('quote_history').insert({
-            quote_id: typedReq.quote_id,
-            user_id: user.id,
-            action: approved ? 'discount_approved' : 'discount_rejected',
-            description: approved
-              ? `Desconto de ${typedReq.requested_discount_percent}% aprovado pelo admin`
-              : `Desconto de ${typedReq.requested_discount_percent}% rejeitado pelo admin`,
-            field_changed: 'discount',
-            old_value: `${typedReq.max_allowed_percent}%`,
-            new_value: `${typedReq.requested_discount_percent}%`,
-            metadata: {
-              admin_notes: adminNotes || null,
-              status: approved ? 'approved' : 'rejected',
-            },
-          }),
-        ]);
+        const quoteUpdateResult = await supabase
+          // rls-allow: fluxo de aprovação admin/seller; RLS filtra por papel
+          .from('quotes')
+          .update({ status: newStatus })
+          .eq('id', typedReq.quote_id);
 
         if (quoteUpdateResult.error) {
           logger.error('Failed to update quote status:', quoteUpdateResult.error);
+          throw quoteUpdateResult.error;
         }
-        if (historyResult.error) {
-          logger.error('Failed to log quote history:', historyResult.error);
+
+        // O histórico só é registrado depois que o estado do orçamento foi
+        // confirmado. Assim, uma falha da escrita principal não produz uma
+        // trilha de auditoria ou notificação contraditória.
+        const { error: historyError } = await supabase.from('quote_history').insert({
+          quote_id: typedReq.quote_id,
+          user_id: user.id,
+          action: approved ? 'discount_approved' : 'discount_rejected',
+          description: approved
+            ? `Desconto de ${typedReq.requested_discount_percent}% aprovado pelo admin`
+            : `Desconto de ${typedReq.requested_discount_percent}% rejeitado pelo admin`,
+          field_changed: 'discount',
+          old_value: `${typedReq.max_allowed_percent}%`,
+          new_value: `${typedReq.requested_discount_percent}%`,
+          metadata: {
+            admin_notes: adminNotes || null,
+            status: approved ? 'approved' : 'rejected',
+          },
+        });
+
+        if (historyError) {
+          logger.error('Failed to log quote history:', historyError);
         }
 
         // Notify the seller

@@ -88,6 +88,30 @@ describe('invokeCrmDb', () => {
     expect(result.data).toEqual([{ id: '1' }]);
     expect(mockInvoke).toHaveBeenCalledTimes(2);
   });
+
+  it.each(['select', 'search'] as const)(
+    'degrada statement_timeout apenas para leitura %s',
+    async (operation) => {
+      mockInvoke.mockResolvedValueOnce({ data: null, error: new Error('statement timeout (57014)') });
+
+      await expect(invokeCrmDb({ table: 'companies', operation })).resolves.toMatchObject({
+        data: [],
+        stale: true,
+        error: 'statement_timeout',
+      });
+    },
+  );
+
+  it.each([
+    ['insert', () => insertCrm('quotes', { client_name: 'Test' })],
+    ['update', () => updateCrm('quotes', '1', { status: 'approved' })],
+    ['delete', () => deleteCrm('quotes', '1')],
+  ] as const)('rejeita statement_timeout indeterminado em escrita %s', async (_operation, write) => {
+    mockInvoke.mockResolvedValueOnce({ data: null, error: new Error('statement timeout (57014)') });
+
+    await expect(write()).rejects.toThrow('CRM DB write outcome indeterminate');
+    expect(mockInvoke).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe('selectCrm', () => {
