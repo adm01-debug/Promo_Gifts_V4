@@ -674,6 +674,8 @@ Esta rodada manteve a regra de não tocar em schema, dados, grants, jobs ou migr
 - [x] Acessibilidade/teclado: o `DatePickerField` removeu o aninhamento de controle interativo e passou a usar botão real para limpar; `PresetsBar`, `KitComposition`, `VoiceSearchOverlay` e `ProductStatusBadge` tiveram o comportamento de teclado alinhado e coberto por testes.
 - [x] Live suite opt-in: casos happy-path sem JWT de teste agora usam `skip` explícito, evitando falso verde silencioso.
 - [x] Watchers de coleções/favoritos: `workspace_notifications.insert()` passou a ser verificado antes de incrementar o contador de notificações enviadas; falha de persistência agora aborta a execução em vez de confirmar sucesso contraditório.
+- [x] Contrato SSOT local: o teste de fallback deixou de exigir URL canônica quando o próprio contrato permite `localhost`; continua proibindo o projeto legado e confirma que o cliente preserva a URL local resolvida.
+- [x] Harness de `MainLayout`: o teste de breadcrumbs agora isola Header, Sidebar e background lazy, pois seu contrato não é o carrinho/telemetria desses componentes; isso elimina falha cruzada de montagem sem esconder comportamento da breadcrumb.
 
 ### Verificações executadas hoje
 
@@ -684,11 +686,16 @@ Esta rodada manteve a regra de não tocar em schema, dados, grants, jobs ou migr
 - [x] `corepack npm exec -- vitest run src/components/ui/__tests__/date-picker-field.test.tsx src/components/filters/__tests__/PresetsBar.test.tsx src/components/products/__tests__/ProductStatusBadge.test.tsx tests/components/KitComposition.test.tsx tests/components/search/VoiceSearchOverlay.test.tsx src/lib/edge/__tests__/invokeTelemetrySink.test.ts src/lib/telemetry/__tests__/secretsManagerCallMetrics.test.ts tests/pages/AdminTelemetriaPage.test.tsx tests/edge-functions/live/product-visual-search.test.ts tests/pages/DiscountRequestDetailPage.test.tsx tests/components/AdminRoute.test.tsx tests/lib/crm-db-fixed.test.ts tests/integration/discountApprovalFlow.test.ts --maxWorkers=1 --retry=0` -> **12 arquivos verdes, 1 skip, 186 testes verdes, 12 skips**.
 - [x] `deno test --no-config --allow-read supabase/functions/collections-watcher/notification-insert.contract_test.ts supabase/functions/favorites-watcher/notification-insert.contract_test.ts` -> **6/6 verdes**.
 - [x] `deno check --config supabase/functions/deno.json supabase/functions/collections-watcher/index.ts supabase/functions/favorites-watcher/index.ts` -> verde.
+- [x] `corepack npm exec -- vitest run src/components --maxWorkers=1 --retry=0` -> **230 arquivos verdes, 3 skips; 5.649 testes verdes, 43 skips**.
+- [x] `corepack npm exec -- vitest run src/hooks src/lib src/pages src/services src/contexts src/routes src/logic src/stores src/integrations src/types src/utils src/tests src/App.router-contract.test.tsx --maxWorkers=1 --retry=0` -> **370 arquivos verdes, 4 skips; 9.676 testes verdes, 11 skips**.
+- [x] `corepack npm exec -- vitest run tests --exclude 'tests/hooks/**' --maxWorkers=1 --retry=0` -> **937 arquivos verdes, 124 skips; 22.925 testes verdes, 1.098 skips**.
+- [x] `corepack npm exec -- vitest run e2e/scripts/__tests__ scripts/__tests__ --maxWorkers=1 --retry=0` -> **6 arquivos verdes, 1 skip; 78 testes verdes, 4 skips**.
+- [x] Contratos adicionais do hook de descontos (`tests/hooks/useDiscountApproval.test.ts`, `src/hooks/quotes/__tests__/discountApprovalFlow.test.ts`, `src/hooks/quotes/__tests__/useDiscountApproval.test.ts`) -> **3 arquivos, 83 testes verdes**.
 - [ ] `node scripts/map-drafts-to-migrations.mjs --check` -> continua bloqueando corretamente o rascunho `2026-07-23_get_edge_invoke_summary.sql` sem revisão registrada; não foi mascarado.
 
 ### Observações e limites honestos desta rodada
 
-- [ ] O rerun integral de `corepack npm run test:quality` em 27/08/2026 ficou ativo por vários minutos, emitindo apenas o ruído já conhecido de JSDOM (`Could not parse CSS stylesheet`, `HTMLCanvasElement.getContext`, `navigation to another Document`) e sem devolver sumário final útil antes de ser interrompido com código `143`. Portanto, esta rodada **não** usa esse rerun como prova de aprovação; a última aprovação integral válida continua sendo a já registrada em 26/08/2026.
+- [ ] O rerun monolítico de `corepack npm run test:quality` em 27/08/2026 foi interrompido com código `143`, portanto ele não é usado como prova de aprovação. A validação desta rodada foi repetida em blocos seriais documentados acima, que também revelaram e corrigiram dois defeitos de harness; a última aprovação integral em um único comando continua sendo a registrada em 26/08/2026.
 - [ ] A trilha de aprovação de desconto ainda não é atômica no banco; ela apenas deixou de gerar histórico/notificação contraditórios no cliente. Qualquer consolidação via RPC/transação continua dependendo de catálogo real e `[AUTORIZAÇÃO BD]`.
 - [ ] A reconciliação de schema `pg_catalog` ↔ `types.ts` e qualquer ação sobre grants/RLS/jobs seguem fora desta rodada por dependerem de capacidade externa e autorização explícita.
 
