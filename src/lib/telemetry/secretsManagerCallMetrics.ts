@@ -28,6 +28,7 @@ const MAX_SAMPLES = 200;
 
 let nextId = 1;
 const samples: SecretsManagerCallSample[] = [];
+let snapshot: readonly SecretsManagerCallSample[] = [];
 const listeners = new Set<() => void>();
 
 const EMIT_THROTTLE_MS = 100;
@@ -66,11 +67,12 @@ export function recordSecretsManagerCall(
   };
   samples.push(entry);
   if (samples.length > MAX_SAMPLES) samples.splice(0, samples.length - MAX_SAMPLES);
+  snapshot = samples.slice();
   emit();
 }
 
 export function getSecretsManagerSamples(): readonly SecretsManagerCallSample[] {
-  return samples;
+  return snapshot;
 }
 
 export function subscribeSecretsManagerCalls(listener: () => void): () => void {
@@ -82,5 +84,6 @@ export function subscribeSecretsManagerCalls(listener: () => void): () => void {
 
 export function clearSecretsManagerSamples(): void {
   samples.length = 0;
+  snapshot = [];
   emit();
 }

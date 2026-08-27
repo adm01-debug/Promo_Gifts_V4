@@ -58,6 +58,24 @@ describe('invokeTelemetrySink — buffer', () => {
     clearInvokeSink();
     expect(getInvokeEventsSnapshot().length).toBe(0);
   });
+
+  it('mantém referência estável do snapshot quando o buffer não muda', () => {
+    const emptyA = getInvokeEventsSnapshot();
+    const emptyB = getInvokeEventsSnapshot();
+    expect(emptyB).toBe(emptyA);
+
+    recordInvokeEvent(ev({ kind: 'start', fn: 'f' }));
+    const filledA = getInvokeEventsSnapshot();
+    const filledB = getInvokeEventsSnapshot();
+    expect(filledA).not.toBe(emptyA);
+    expect(filledB).toBe(filledA);
+
+    clearInvokeSink();
+    const clearedA = getInvokeEventsSnapshot();
+    const clearedB = getInvokeEventsSnapshot();
+    expect(clearedA).not.toBe(filledA);
+    expect(clearedB).toBe(clearedA);
+  });
 });
 
 describe('aggregateInvokeEvents — semântica', () => {

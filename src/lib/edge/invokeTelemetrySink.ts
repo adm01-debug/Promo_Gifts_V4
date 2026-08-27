@@ -54,6 +54,7 @@ export interface InvokeGlobalSummary {
 const MAX_EVENTS = 500;
 const buffer: InvokeEvent[] = [];
 const listeners = new Set<() => void>();
+let snapshot: readonly InvokeEvent[] = [];
 
 function notify(): void {
   for (const l of listeners) {
@@ -69,6 +70,7 @@ export function recordInvokeEvent(ev: InvokeEvent): void {
   try {
     buffer.push(ev);
     if (buffer.length > MAX_EVENTS) buffer.splice(0, buffer.length - MAX_EVENTS);
+    snapshot = buffer.slice();
     notify();
   } catch {
     /* nunca lança */
@@ -81,11 +83,12 @@ export function subscribeInvokeSink(fn: () => void): () => void {
 }
 
 export function getInvokeEventsSnapshot(): readonly InvokeEvent[] {
-  return buffer.slice();
+  return snapshot;
 }
 
 export function clearInvokeSink(): void {
   buffer.length = 0;
+  snapshot = [];
   notify();
 }
 
