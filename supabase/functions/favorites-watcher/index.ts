@@ -108,7 +108,7 @@ Deno.serve(async (req) => {
         ? `${top[0].name} caiu ${top[0].pct.toFixed(0)}% desde que você salvou.`
         : `${drops.length} produtos favoritos com queda de preço. Maior: ${top[0].name} (−${top[0].pct.toFixed(0)}%).`;
 
-      await service.from("workspace_notifications").insert({
+      const { error: notificationError } = await service.from("workspace_notifications").insert({
         user_id: userId,
         title: "💸 Queda de preço nos favoritos",
         message,
@@ -123,6 +123,11 @@ Deno.serve(async (req) => {
           top_drops: top,
         },
       });
+      if (notificationError) {
+        throw new Error(
+          `[favorites-watcher] workspace_notifications insert failed: ${notificationError.message}`,
+        );
+      }
       notified++;
     }
 
