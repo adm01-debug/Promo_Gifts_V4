@@ -43,7 +43,10 @@ interface RequestRow {
   seller?: { full_name?: string | null; email?: string | null } | null;
 }
 
-const STATUS_LABEL: Record<RequestRow['status'], { label: string; variant: 'default' | 'destructive' | 'outline' }> = {
+const STATUS_LABEL: Record<
+  RequestRow['status'],
+  { label: string; variant: 'default' | 'destructive' | 'outline' }
+> = {
   pending: { label: 'Pendente', variant: 'outline' },
   approved: { label: 'Aprovado', variant: 'default' },
   rejected: { label: 'Rejeitado', variant: 'destructive' },
@@ -88,10 +91,11 @@ export default function DiscountRequestDetailPage() {
         })
         .eq('id', id);
       if (error) throw error;
-      await supabase
+      const { error: quoteError } = await supabase
         .from('quotes') // rls-allow: admin (admin-routes); atualiza status do orçamento vinculado; RLS admin policy
         .update({ status: approved ? 'pending' : 'draft' })
         .eq('id', data.quote_id);
+      if (quoteError) throw quoteError;
     },
     onSuccess: () => {
       toast.success('Decisão registrada');
