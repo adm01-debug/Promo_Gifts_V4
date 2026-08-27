@@ -26,10 +26,8 @@
  *   - `aria-describedby` propaga ao trigger para associar mensagens de erro.
  *   - `aria-invalid` entra como intenção de erro, mas vira `data-invalid` no
  *     trigger porque o elemento renderizado e focável é um `<button>`.
- *   - Botão de limpar (X) no trigger é `role="button"` com `tabIndex={0}` e
- *     `onKeyDown` (Enter/Space) — segue política do projeto para divs
- *     clicáveis (aqui em `<span>` para não aninhar `<button>` dentro do
- *     Popover trigger).
+ *   - Botão de limpar (X) é um `<button>` real, irmão do trigger do Popover;
+ *     isso preserva a semântica de teclado sem aninhar controles interativos.
  *   - `initialFocus` no Calendar move foco ao abrir; ao selecionar, foco
  *     retorna ao trigger via Radix.
  */
@@ -131,66 +129,64 @@ export function DatePickerField(props: DatePickerFieldProps) {
 
   const isCompact = variant === 'compact';
   const Icon = isCompact ? CalendarClock : CalendarIcon;
+  const hasInlineClear = allowClear && selectedDate && !disabled;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <button
-          type="button"
-          id={id}
-          disabled={disabled}
-          data-testid={props['data-testid']}
-          aria-describedby={props['aria-describedby']}
-          data-invalid={props['aria-invalid'] ? 'true' : undefined}
-          aria-label={props['aria-label']}
-          data-empty={!selectedDate || undefined}
-          data-variant={variant}
-          className={cn(
-            'inline-flex items-center gap-2 rounded-md border bg-background text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 focus-visible:ring-2 focus-visible:ring-primary/40 disabled:cursor-not-allowed disabled:opacity-50',
-            isCompact
-              ? 'h-7 gap-1.5 border-border/30 bg-background/50 px-2 text-xs hover:border-primary/40'
-              : 'h-9 justify-start border-input px-3 text-sm hover:border-primary/40',
-            props['aria-invalid']
-              ? 'border-destructive/60 focus:border-destructive focus:ring-destructive/20'
-              : 'focus:border-primary/40',
-            !selectedDate && 'text-muted-foreground',
-            className,
-          )}
-        >
-          <Icon
-            aria-hidden="true"
-            className={cn(isCompact ? 'h-3 w-3 text-primary' : 'h-4 w-4 text-muted-foreground')}
-          />
-          <span className="flex-1 text-left tabular-nums">{label}</span>
-          {allowClear && selectedDate && !disabled && (
-            <span
-              role="button"
-              tabIndex={0}
-              aria-label="Limpar data"
-              data-testid={
-                props['data-testid'] ? `${props['data-testid']}-clear` : 'date-picker-clear'
-              }
-              onClick={(e) => {
-                e.stopPropagation();
-                handleClear();
-              }}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleClear();
-                }
-              }}
-              className={cn(
-                'inline-flex items-center justify-center rounded-full text-muted-foreground hover:bg-muted hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40',
-                isCompact ? 'h-4 w-4' : 'h-5 w-5',
-              )}
-            >
-              <XIcon aria-hidden="true" className={isCompact ? 'h-3 w-3' : 'h-3.5 w-3.5'} />
-            </span>
-          )}
-        </button>
-      </PopoverTrigger>
+      <div className={cn('relative', isCompact ? 'inline-flex' : 'block')}>
+        <PopoverTrigger asChild>
+          <button
+            type="button"
+            id={id}
+            disabled={disabled}
+            data-testid={props['data-testid']}
+            aria-describedby={props['aria-describedby']}
+            data-invalid={props['aria-invalid'] ? 'true' : undefined}
+            aria-label={props['aria-label']}
+            data-empty={!selectedDate || undefined}
+            data-variant={variant}
+            className={cn(
+              'inline-flex items-center gap-2 rounded-md border bg-background text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 focus-visible:ring-2 focus-visible:ring-primary/40 disabled:cursor-not-allowed disabled:opacity-50',
+              isCompact
+                ? 'h-7 gap-1.5 border-border/30 bg-background/50 px-2 text-xs hover:border-primary/40'
+                : 'h-9 w-full justify-start border-input px-3 text-sm hover:border-primary/40',
+              hasInlineClear && (isCompact ? 'pr-6' : 'pr-9'),
+              props['aria-invalid']
+                ? 'border-destructive/60 focus:border-destructive focus:ring-destructive/20'
+                : 'focus:border-primary/40',
+              !selectedDate && 'text-muted-foreground',
+              className,
+            )}
+          >
+            <Icon
+              aria-hidden="true"
+              className={cn(isCompact ? 'h-3 w-3 text-primary' : 'h-4 w-4 text-muted-foreground')}
+            />
+            <span className="flex-1 text-left tabular-nums">{label}</span>
+          </button>
+        </PopoverTrigger>
+        {hasInlineClear && (
+          <button
+            type="button"
+            aria-label="Limpar data"
+            data-testid={
+              props['data-testid'] ? `${props['data-testid']}-clear` : 'date-picker-clear'
+            }
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleClear();
+            }}
+            className={cn(
+              'absolute top-1/2 -translate-y-1/2 rounded-full text-muted-foreground hover:bg-muted hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40',
+              isCompact ? 'right-1 h-4 w-4' : 'right-2 h-5 w-5',
+            )}
+          >
+            <span className="sr-only">Limpar data</span>
+            <XIcon aria-hidden="true" className={isCompact ? 'h-3 w-3' : 'h-3.5 w-3.5'} />
+          </button>
+        )}
+      </div>
       <PopoverContent
         align="start"
         className="w-auto p-0"

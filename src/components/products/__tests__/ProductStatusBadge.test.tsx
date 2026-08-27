@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { ProductStatusBadge } from '../ProductStatusBadge';
@@ -104,5 +104,25 @@ describe('ProductStatusBadge — consistency across contexts', () => {
     expect(badge).not.toBeNull();
     (badge as HTMLElement).click();
     expect(clicked).toBe(true);
+  });
+
+  it('só entra na navegação por teclado quando é clicável', () => {
+    const { rerender } = render(
+      <Wrapper>
+        <ProductStatusBadge type="out-of-stock" size="sm" />
+      </Wrapper>,
+    );
+    expect(screen.getByRole('status')).not.toHaveAttribute('tabindex');
+
+    const onClick = vi.fn();
+    rerender(
+      <Wrapper>
+        <ProductStatusBadge type="out-of-stock" size="sm" onClick={onClick} />
+      </Wrapper>,
+    );
+    const clickableBadge = screen.getByRole('button');
+    expect(clickableBadge).toHaveAttribute('tabindex', '0');
+    fireEvent.keyDown(clickableBadge, { key: ' ' });
+    expect(onClick).toHaveBeenCalledTimes(1);
   });
 });

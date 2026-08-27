@@ -332,7 +332,11 @@ export const PresetsBar = React.forwardRef<HTMLDivElement, PresetsBarProps>(
                             onKeyDown={(e) => {
                               if (e.key === 'Enter' || e.key === ' ') {
                                 e.preventDefault();
-                                handleApplyPreset(preset);
+                                if (isActive) {
+                                  handleClearPreset();
+                                } else {
+                                  handleApplyPreset(preset);
+                                }
                               }
                             }}
                           >

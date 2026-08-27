@@ -39,6 +39,12 @@ describe('KitComposition', () => {
     expect(screen.getByText(/3 componentes/i)).toBeInTheDocument();
   });
 
+  it.each(['Enter', ' '])('abre o diálogo pelo teclado (%s)', (key) => {
+    render(<KitComposition items={[ITEM_A]} />);
+    fireEvent.keyDown(screen.getByRole('button', { name: /composição do kit/i }), { key });
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+  });
+
   it('renders header with correct component and piece counts in dialog', () => {
     render(<KitComposition items={[PACKAGING, ITEM_A, ITEM_B]} />);
     openDialog();
