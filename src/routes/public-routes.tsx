@@ -11,15 +11,30 @@ import {
   PublicMagazineView,
 } from './lazy-pages';
 
-// Dev-only harness (sem auth) para validação visual de componentes.
-const ColorSwatchesHarness = lazy(() => import('@/pages/dev/ColorSwatchesHarness'));
-const ConfirmDialogHarness = lazy(() => import('@/pages/dev/ConfirmDialogHarness'));
-const AlertDialogHarness = lazy(() => import('@/pages/dev/AlertDialogHarness'));
-const DialogHarness = lazy(() => import('@/pages/dev/DialogHarness'));
-const UndoToastHarness = lazy(() => import('@/pages/dev/UndoToastHarness'));
-const CnpjFormHarness = lazy(() => import('@/pages/dev/CnpjFormHarness'));
-const MagazineRingHarness = lazy(() => import('@/pages/dev/MagazineRingHarness'));
-const TabSkipHarness = lazy(() => import('@/pages/dev/TabSkipHarness'));
+// Dev-only harnesses. The import itself is gated so production builds neither
+// expose the public routes nor ship their implementation chunks.
+const ColorSwatchesHarness = import.meta.env.DEV
+  ? lazy(() => import('@/pages/dev/ColorSwatchesHarness'))
+  : null;
+const ConfirmDialogHarness = import.meta.env.DEV
+  ? lazy(() => import('@/pages/dev/ConfirmDialogHarness'))
+  : null;
+const AlertDialogHarness = import.meta.env.DEV
+  ? lazy(() => import('@/pages/dev/AlertDialogHarness'))
+  : null;
+const DialogHarness = import.meta.env.DEV ? lazy(() => import('@/pages/dev/DialogHarness')) : null;
+const UndoToastHarness = import.meta.env.DEV
+  ? lazy(() => import('@/pages/dev/UndoToastHarness'))
+  : null;
+const CnpjFormHarness = import.meta.env.DEV
+  ? lazy(() => import('@/pages/dev/CnpjFormHarness'))
+  : null;
+const MagazineRingHarness = import.meta.env.DEV
+  ? lazy(() => import('@/pages/dev/MagazineRingHarness'))
+  : null;
+const TabSkipHarness = import.meta.env.DEV
+  ? lazy(() => import('@/pages/dev/TabSkipHarness'))
+  : null;
 
 /**
  * Public routes — accessible without authentication.
@@ -39,13 +54,19 @@ export const publicRoutes = (
     <Route path="/termos" element={<TermsPage />} />
     <Route path="/privacidade" element={<PrivacyPage />} />
     <Route path="/revista-publica/:token" element={<PublicMagazineView />} />
-    <Route path="/__test/color-swatches" element={<ColorSwatchesHarness />} />
-    <Route path="/__test/confirm-dialog" element={<ConfirmDialogHarness />} />
-    <Route path="/__test/alert-dialog" element={<AlertDialogHarness />} />
-    <Route path="/__test/dialog" element={<DialogHarness />} />
-    <Route path="/__test/undo-toast" element={<UndoToastHarness />} />
-    <Route path="/__test/cnpj-form" element={<CnpjFormHarness />} />
-    <Route path="/__test/magazine-ring" element={<MagazineRingHarness />} />
-    <Route path="/__test/tab-skip" element={<TabSkipHarness />} />
+    {ColorSwatchesHarness && (
+      <Route path="/__test/color-swatches" element={<ColorSwatchesHarness />} />
+    )}
+    {ConfirmDialogHarness && (
+      <Route path="/__test/confirm-dialog" element={<ConfirmDialogHarness />} />
+    )}
+    {AlertDialogHarness && <Route path="/__test/alert-dialog" element={<AlertDialogHarness />} />}
+    {DialogHarness && <Route path="/__test/dialog" element={<DialogHarness />} />}
+    {UndoToastHarness && <Route path="/__test/undo-toast" element={<UndoToastHarness />} />}
+    {CnpjFormHarness && <Route path="/__test/cnpj-form" element={<CnpjFormHarness />} />}
+    {MagazineRingHarness && (
+      <Route path="/__test/magazine-ring" element={<MagazineRingHarness />} />
+    )}
+    {TabSkipHarness && <Route path="/__test/tab-skip" element={<TabSkipHarness />} />}
   </>
 );
