@@ -30,6 +30,7 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 import { supabase } from '@/integrations/supabase/client';
+import type { Tables } from '@/integrations/supabase/types';
 import { ExportButton } from './ExportButton';
 import {
   Inbox,
@@ -56,17 +57,18 @@ import { cn } from '@/lib/utils';
 
 type Period = '7d' | '24h' | '30d';
 
-interface EventRow {
-  id: string;
-  endpoint_id: string;
-  event_type: string | null;
-  signature_valid: boolean;
-  processed: boolean;
-  source_ip: string | null;
-  received_at: string;
-  payload: unknown;
-  error: string | null;
-}
+type EventRow = Pick<
+  Tables<'inbound_webhook_events'>,
+  | 'created_at'
+  | 'endpoint_id'
+  | 'error_message'
+  | 'event_type'
+  | 'id'
+  | 'ip_address'
+  | 'payload'
+  | 'processed'
+  | 'signature_valid'
+>;
 
 interface Endpoint {
   id: string;
@@ -92,30 +94,39 @@ export function InboundEventsPanel() {
   const [endpoints, setEndpoints] = useState<Endpoint[]>([]);
   const [rows, setRows] = useState<EventRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [page, setPage] = useState(0);
   const [selected, setSelected] = useState<EventRow | null>(null);
   const pageSize = 15;
 
   const load = useCallback(async () => {
     setLoading(true);
+    setLoadError(null);
     const since = new Date(Date.now() - PERIOD_HOURS[period] * 60 * 60 * 1000).toISOString();
     let q = supabase
       .from('inbound_webhook_events')
       .select(
-        'id, endpoint_id, event_type, signature_valid, processed, source_ip, received_at, payload, error',
+        'id, endpoint_id, event_type, signature_valid, processed, ip_address, created_at, payload, error_message',
       )
-      .gte('received_at', since)
-      .order('received_at', { ascending: false })
+      .gte('created_at', since)
+      .order('created_at', { ascending: false })
       .limit(500);
     if (endpointFilter !== 'all') q = q.eq('endpoint_id', endpointFilter);
     if (onlyInvalid) q = q.eq('signature_valid', false);
     if (onlyUnprocessed) q = q.eq('processed', false);
-    const [{ data: ev }, { data: ep }] = await Promise.all([
-      q,
-      supabase.from('inbound_webhook_endpoints').select('id, name, slug, source_system'),
-    ]);
-    setRows((ev ?? []) as unknown as EventRow[]);
-    setEndpoints((ep ?? []) as Endpoint[]);
+    const [{ data: ev, error: eventsError }, { data: ep, error: endpointsError }] =
+      await Promise.all([
+        q,
+        supabase.from('inbound_webhook_endpoints').select('id, name, slug, source_system'),
+      ]);
+    if (eventsError || endpointsError) {
+      setRows([]);
+      setEndpoints([]);
+      setLoadError('Não foi possível carregar os eventos inbound. Tente novamente.');
+    } else {
+      setRows(ev ?? []);
+      setEndpoints(ep ?? []);
+    }
     setPage(0);
     setLoading(false);
   }, [period, endpointFilter, onlyInvalid, onlyUnprocessed]);
@@ -154,7 +165,7 @@ export function InboundEventsPanel() {
       const ep = epMap.get(r.endpoint_id);
       const name = ep ? ep.name : 'Desconhecido';
       epCount[name] = (epCount[name] ?? 0) + 1;
-      const day = format(new Date(r.received_at), 'dd/MM');
+      const day = format(new Date(r.created_at), 'dd/MM');
       if (!buckets[day]) buckets[day] = {};
       buckets[day][name] = (buckets[day][name] ?? 0) + 1;
     }
@@ -339,22 +350,22 @@ export function InboundEventsPanel() {
             <ExportButton
               filename={`inbound-events_${period}`}
               rows={rows.map((r) => ({
-                received_at: r.received_at,
+                created_at: r.created_at,
                 endpoint: epMap.get(r.endpoint_id)?.name ?? r.endpoint_id,
                 event_type: r.event_type ?? '',
                 signature_valid: r.signature_valid,
                 processed: r.processed,
-                source_ip: r.source_ip ?? '',
-                error: r.error ?? '',
+                ip_address: r.ip_address ?? '',
+                error_message: r.error_message ?? '',
               }))}
               columns={[
-                { key: 'received_at', header: 'received_at' },
+                { key: 'created_at', header: 'created_at' },
                 { key: 'endpoint', header: 'endpoint' },
                 { key: 'event_type', header: 'event_type' },
                 { key: 'signature_valid', header: 'signature_valid' },
                 { key: 'processed', header: 'processed' },
-                { key: 'source_ip', header: 'source_ip' },
-                { key: 'error', header: 'error' },
+                { key: 'ip_address', header: 'ip_address' },
+                { key: 'error_message', header: 'error_message' },
               ]}
             />
           </div>
@@ -363,6 +374,10 @@ export function InboundEventsPanel() {
           {loading ? (
             <div className="flex items-center justify-center gap-2 p-8 text-center text-sm text-muted-foreground">
               <Loader2 className="h-4 w-4 animate-spin" /> Carregando…
+            </div>
+          ) : loadError ? (
+            <div className="flex items-center justify-center gap-2 p-8 text-center text-sm text-destructive">
+              <AlertTriangle className="h-4 w-4" /> {loadError}
             </div>
           ) : rows.length === 0 ? (
             <div className="p-8 text-center text-sm text-muted-foreground">
@@ -392,7 +407,7 @@ export function InboundEventsPanel() {
                         onClick={() => setSelected(r)}
                       >
                         <TableCell className="whitespace-nowrap text-xs">
-                          {formatDistanceToNow(new Date(r.received_at), {
+                          {formatDistanceToNow(new Date(r.created_at), {
                             locale: ptBR,
                             addSuffix: true,
                           })}
@@ -420,7 +435,7 @@ export function InboundEventsPanel() {
                           </Badge>
                         </TableCell>
                         <TableCell className="font-mono text-xs text-muted-foreground">
-                          {r.source_ip ?? '—'}
+                          {r.ip_address ?? '—'}
                         </TableCell>
                         <TableCell>
                           <Button size="sm" variant="ghost" className="h-6 px-2 text-[10px]">
@@ -473,7 +488,7 @@ export function InboundEventsPanel() {
                   <span>·</span>
                   <span className="font-mono">{selected.event_type ?? '(sem tipo)'}</span>
                   <span>·</span>
-                  <span>{format(new Date(selected.received_at), 'dd/MM/yyyy HH:mm:ss')}</span>
+                  <span>{format(new Date(selected.created_at), 'dd/MM/yyyy HH:mm:ss')}</span>
                 </span>
               )}
             </SheetDescription>
@@ -486,9 +501,9 @@ export function InboundEventsPanel() {
                   confiável.
                 </div>
               )}
-              {selected.error && (
+              {selected.error_message && (
                 <div className="rounded border border-warning/20 bg-warning/10 p-2 text-xs text-warning">
-                  <strong>Erro:</strong> {selected.error}
+                  <strong>Erro:</strong> {selected.error_message}
                 </div>
               )}
               <pre className="max-h-[60vh] overflow-auto rounded bg-muted p-3 font-mono text-[11px]">

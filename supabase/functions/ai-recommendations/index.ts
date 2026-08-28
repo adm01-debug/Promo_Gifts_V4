@@ -6,6 +6,7 @@ import { safeJson } from '../_shared/json-parser.ts';
 import { resolveCredential } from '../_shared/credentials.ts';
 import { safeErrorFields } from '../_shared/log-safety.ts';
 import { applyRateLimit, rateLimiters } from '../_shared/rate-limiter.ts';
+import { assertSwitchEnabled } from '../_shared/kill_switch.ts';
 
 const AI_ENDPOINT = 'https://ai.gateway.lovable.dev/v1/chat/completions';
 const AI_MODEL = 'google/gemini-2.5-flash';
@@ -30,6 +31,9 @@ const RecommendationRequestSchema = z.object({
 Deno.serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
+
+  const killResponse = await assertSwitchEnabled('edge_ai_recommendations', req, corsHeaders);
+  if (killResponse) return killResponse;
 
   try {
     let user: { id: string };

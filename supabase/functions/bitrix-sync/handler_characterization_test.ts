@@ -5,10 +5,8 @@
  * e simula Auth, PostgREST e Bitrix em memoria via fetch. Nao chama o Bitrix,
  * nao usa credenciais reais e nao grava no Supabase.
  *
- * O objetivo e congelar o contrato observado por grupo de acao, inclusive o
- * falso verde legado de `sync_full`: erro no upsert permanece dentro de um
- * envelope HTTP 200/success:true. A correcao desse comportamento precisa de
- * decisao explicita no ADR correspondente, pois muda o contrato externo.
+ * O objetivo e congelar o contrato observado por grupo de acao e garantir que
+ * `sync_full` nunca reporte sucesso quando o upsert local falhar.
  *
  * Rodar:
  * deno test --allow-env --allow-net supabase/functions/bitrix-sync/handler_characterization_test.ts
@@ -361,21 +359,14 @@ Deno.test({
         );
       }
 
-      // sync_full: somente empresas da primeira pagina sao buscadas. Quando o
-      // storage falha, o comportamento atual e falso verde: HTTP 200 / success
-      // true com a mensagem de erro dentro de data.error.
+      // sync_full: somente empresas da primeira pagina sao buscadas. Uma falha
+      // de storage deve interromper o fluxo e jamais produzir success:true.
       bitrixClientsUpsertFails = true;
       captured.length = 0;
       const syncOutcome = await invoke("sync_full");
-      assertEquals(syncOutcome.status, 200);
-      assertEquals(syncOutcome.body.success, true);
-      const syncData = syncOutcome.body.data as Record<string, unknown>;
-      assertEquals(syncData.synced, 1);
-      assert(
-        typeof syncData.error === "string" &&
-          syncData.error.includes("bitrix_clients"),
-        "sync_full deve expor o erro de upsert no payload legado para que o falso verde fique reproduzivel",
-      );
+      assertEquals(syncOutcome.status, 500);
+      assertEquals(syncOutcome.body.success, undefined);
+      assertEquals(syncOutcome.body.error, "Failed to persist Bitrix clients");
       const syncExternal = lastExternalRequest();
       assertJsonEquals(JSON.parse(syncExternal.body), {
         select: ["ID", "TITLE", "EMAIL", "PHONE"],
@@ -385,8 +376,17 @@ Deno.test({
       assertEquals(syncWrite.method, "POST");
       assertEquals(syncWrite.query.get("on_conflict"), "bitrix_id");
 
-      // Leitura armazenada: sao duas tabelas distintas, ambas limitadas a 100.
       bitrixClientsUpsertFails = false;
+      captured.length = 0;
+      const successfulSync = await invoke("sync_full");
+      assertEquals(successfulSync.status, 200);
+      assertEquals(successfulSync.body.success, true);
+      assertEquals(
+        (successfulSync.body.data as Record<string, unknown>).synced,
+        1,
+      );
+
+      // Leitura armazenada: sao duas tabelas distintas, ambas limitadas a 100.
       captured.length = 0;
       const clientsOutcome = await invoke("get_stored_clients");
       assertEquals(clientsOutcome.status, 200);
