@@ -185,6 +185,7 @@ describe('contract: market-intelligence-insights', () => {
         supplierName: 'Fornecedor B',
         productName: 'Produto C',
         forceRefresh: true,
+        focus: 'auto',
       });
     }
   });

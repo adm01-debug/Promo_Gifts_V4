@@ -23,6 +23,7 @@
  */
 import { describe, it, expect, beforeAll } from 'vitest';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import { hasLiveSupabaseCredentials } from '../_helpers/live-supabase-env';
 
 type ExpectedPolicy = {
   policyname: string;
@@ -161,9 +162,9 @@ describe('RLS regression — owner-only tables (contrato estático)', () => {
 });
 
 // ---------- Live drift check ----------
-const URL = process.env.VITE_SUPABASE_URL;
+const URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const liveEnabled = Boolean(URL && SERVICE_KEY);
+const liveEnabled = hasLiveSupabaseCredentials(URL, SERVICE_KEY);
 const dLive = liveEnabled ? describe : describe.skip;
 
 dLive('RLS regression — drift vs. DB real (live)', () => {
@@ -225,8 +226,8 @@ dLive('RLS regression — drift vs. DB real (live)', () => {
 });
 
 // ---------- Anon deny reforçado ----------
-const ANON_KEY = process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-const anonEnabled = Boolean(URL && ANON_KEY);
+const ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+const anonEnabled = hasLiveSupabaseCredentials(URL, ANON_KEY);
 const dAnon = anonEnabled ? describe : describe.skip;
 
 dAnon('RLS regression — anon não consegue SELECT nas 3 tabelas', () => {

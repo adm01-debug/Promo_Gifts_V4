@@ -29,6 +29,7 @@ vi.mock('@/contexts/AuthContext', async (importOriginal) => {
       isSupervisorOrAbove: true,
       isAdmin: true,
       isLoading: false,
+      rolesLoaded: true,
     }),
   };
 });

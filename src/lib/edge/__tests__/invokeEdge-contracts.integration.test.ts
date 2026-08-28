@@ -76,6 +76,7 @@ describe('invokeEdge contract — secrets-manager', () => {
     });
     expect(r.data).toBeNull();
     expect(r.error?.name).toBe('credential');
+    expect(r.error?.status).toBe(403);
     expect(r.error?.request_id).toBeDefined();
   });
 
@@ -118,8 +119,16 @@ describe('invokeEdge contract — visual-search', () => {
     httpErr(500);
     const r = await invokeEdge('visual-search', { body: {}, maxRetries: 1 });
     expect(r.error?.name).toBe('server');
+    expect(r.error?.status).toBe(500);
     expect(r.error?.request_id).toBeTruthy();
     expect(r.requestId).toBe(r.error?.request_id);
+  });
+
+  it('410 mantém o status para consumidores que aplicam kill-switch legado', async () => {
+    httpErr(410, { error: 'gone' });
+    const r = await invokeEdge('visual-search', { body: {}, maxRetries: 1 });
+    expect(r.data).toBeNull();
+    expect(r.error?.status).toBe(410);
   });
 
   it('erro semântico em envelope 200 (e.g. imagem inválida) chega ao caller', async () => {

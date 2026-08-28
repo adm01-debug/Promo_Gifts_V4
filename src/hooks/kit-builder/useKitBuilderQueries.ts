@@ -67,8 +67,8 @@ export function useKitBuilderQueries() {
   const [itemExtraFilters, setItemExtraFilters] = useState<Omit<ItemFilters, 'search'>>({});
 
   // Debounce with cleanup
-  const boxTimerRef = useRef<ReturnType<typeof setTimeout>>();
-  const itemTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const boxTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const itemTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     if (boxTimerRef.current) clearTimeout(boxTimerRef.current);

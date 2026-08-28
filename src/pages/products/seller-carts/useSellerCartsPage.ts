@@ -5,7 +5,12 @@
 import { useState, useCallback, useMemo, useRef, useEffect, useContext } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useSellerCartContext } from '@/contexts/SellerCartContext';
-import { useCartTemplates, type CartTemplateItem, type SellerCart, type AddToCartInput } from '@/hooks/products';
+import {
+  useCartTemplates,
+  type CartTemplateItem,
+  type SellerCart,
+  type AddToCartInput,
+} from '@/hooks/products';
 import { ProductsContext } from '@/contexts/ProductsContext';
 import { supabase } from '@/integrations/supabase/client';
 import {
@@ -85,7 +90,7 @@ export function useSellerCartsPage() {
 
   const [cartNotesOpen, setCartNotesOpen] = useState(false);
   const [localCartNotes, setLocalCartNotes] = useState('');
-  const debounceNotesRef = useRef<ReturnType<typeof setTimeout>>();
+  const debounceNotesRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   // Always mirrors localCartNotes without stale-closure risk in effects/timers.
   const localCartNotesRef = useRef(localCartNotes);
   localCartNotesRef.current = localCartNotes;
@@ -272,8 +277,6 @@ export function useSellerCartsPage() {
     };
   }, [shippingDeadlineDraft]);
 
-
-
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
@@ -361,7 +364,6 @@ export function useSellerCartsPage() {
       toast.error('Erro ao limpar carrinho. Tente novamente.');
       return;
     }
-
 
     showUndoToast({
       title: `Carrinho limpo`,

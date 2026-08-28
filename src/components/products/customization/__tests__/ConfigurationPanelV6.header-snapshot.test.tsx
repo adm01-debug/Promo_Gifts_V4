@@ -2,7 +2,7 @@
  * Snapshot do cabeçalho da gravação confirmada em ConfigurationPanelV6.
  *
  * Garante estabilidade da estrutura DOM em duas etapas:
- *  1. Loading → skeleton animate-pulse presente, sem título.
+ *  1. Loading → skeleton compartilhado presente, sem título.
  *  2. Loaded → skeleton removido, título formatado exibido.
  *
  * Se a estrutura mudar (ex.: perder o wrapper que sustenta a altura durante
@@ -70,17 +70,17 @@ describe('ConfigurationPanelV6 — snapshot do cabeçalho', () => {
 
     const { header } = renderHeader();
 
-    // Skeleton presente com animate-pulse e largura fixa.
+    // Skeleton compartilhado presente com shimmer e largura fixa.
     const skeleton = header.querySelector('[data-testid="customization-confirmed-skeleton"]');
     expect(skeleton).not.toBeNull();
-    expect(skeleton?.className).toMatch(/animate-pulse/);
+    expect(skeleton?.className).toMatch(/skeleton-shimmer/);
     expect(skeleton?.className).toMatch(/w-24/);
 
     // Título ainda não renderizado.
     expect(header.querySelector('[data-testid="customization-confirmed-title"]')).toBeNull();
 
     expect(header.outerHTML).toMatchInlineSnapshot(
-      `"<p class="flex min-w-0 items-center gap-1.5 text-xs font-semibold text-foreground" data-testid="customization-confirmed-header"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg><span aria-hidden="true" data-testid="customization-confirmed-skeleton" class="inline-block h-3.5 w-24 animate-pulse rounded bg-muted"></span></p>"`,
+      `"<div class="flex min-w-0 items-center gap-1.5 text-xs font-semibold text-foreground" data-testid="customization-confirmed-header"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg><div class="rounded-md bg-muted skeleton-shimmer h-3.5 w-24" aria-hidden="true" data-testid="customization-confirmed-skeleton"></div></div>"`,
     );
   });
 
@@ -103,7 +103,7 @@ describe('ConfigurationPanelV6 — snapshot do cabeçalho', () => {
     expect(title?.className).toMatch(/truncate/);
 
     expect(header.outerHTML).toMatchInlineSnapshot(
-      `"<p class="flex min-w-0 items-center gap-1.5 text-xs font-semibold text-foreground" data-testid="customization-confirmed-header"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg><span class="truncate whitespace-nowrap" title="Fiber Laser | Plana" data-testid="customization-confirmed-title">Fiber Laser | Plana</span></p>"`,
+      `"<div class="flex min-w-0 items-center gap-1.5 text-xs font-semibold text-foreground" data-testid="customization-confirmed-header"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg><span class="truncate whitespace-nowrap" title="Fiber Laser | Plana" data-testid="customization-confirmed-title">Fiber Laser | Plana</span></div>"`,
     );
   });
 });

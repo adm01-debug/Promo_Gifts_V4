@@ -15,7 +15,7 @@ Deno.test("webhook-inbound contract: default v2 rejects non-envelope payload", a
 
   assertEquals(result.response.status, 422);
   const body = await result.response.json();
-  assertEquals(body.code, "validation_error");
+  assertEquals(body.code, "validation_failed");
 });
 
 Deno.test("webhook-inbound contract: v1 passthrough still parses when explicitly requested", async () => {

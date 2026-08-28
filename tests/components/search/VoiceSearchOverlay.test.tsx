@@ -414,5 +414,15 @@ describe("VoiceSearchOverlay", () => {
       fireEvent.keyDown(document, { key: "Escape" });
       expect(defaultProps.onClose).toHaveBeenCalledTimes(1);
     });
+
+    it.each(["Enter", " "])("ativa o orbe pelo teclado (%s) sem comportamento padrão", (key) => {
+      render(<VoiceSearchOverlay {...defaultProps} phase="error" error="microfone indisponível" />);
+      const orb = screen.getByRole("button", { name: "Iniciar microfone" });
+      const event = new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true });
+      orb.dispatchEvent(event);
+
+      expect(defaultProps.onStartListening).toHaveBeenCalledTimes(1);
+      expect(event.defaultPrevented).toBe(true);
+    });
   });
 });

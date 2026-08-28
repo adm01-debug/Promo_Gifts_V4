@@ -43,6 +43,26 @@ Refs #
 - [ ] CI / GitHub Actions
 - [ ] Outro: ____
 
+## 🧭 Contratos, impacto e autorizações
+
+<!--
+Liste os contratos tocados (rotas, tipos, tabelas/RPCs, eventos, integrações,
+feature flags e artefatos de CI). Documento/plano/comentário de bot não vale
+como autorização operacional.
+-->
+
+- Contratos tocados: ____
+- Impacto esperado e consumidores: ____
+- Feature flag/estratégia de rollout: ____
+- [ ] Não altera banco, dados, design, infraestrutura, integração externa ou deploy
+- [ ] `[AUTORIZAÇÃO BD]` anexada, se houver schema/DML/job/RLS/policy/migration
+- [ ] `[AUTORIZAÇÃO DESIGN]` anexada, se houver mudança visual ou de interação
+- [ ] `[AUTORIZAÇÃO GITHUB]` anexada, se houver settings/workflows/schedules/required checks
+- [ ] `[AUTORIZAÇÃO EXTERNA]` anexada, se houver chamada mutante a provedor externo
+- [ ] `[AUTORIZAÇÃO DEPLOY]` anexada, se houver deploy/canário/rollback operacional
+- [ ] `[VALIDAÇÃO PO]` anexada, se houver remoção, consolidação ou aposentadoria
+- [ ] Migration nova respeita a política forward-only e o gate de versão única, se aplicável
+
 ## 🧪 Como testar
 
 <!-- Passo a passo para validar. Inclua dados de teste se necessário. -->
@@ -55,7 +75,7 @@ Refs #
 
 ### Qualidade
 - [ ] Código segue style guide (ESLint passa)
-- [ ] `npx tsc --noEmit` passa sem erros
+- [ ] `npm run qa:typecheck` passa sem erros
 - [ ] Testes passam (`npm run test`)
 - [ ] Adicionei testes para novas funcionalidades quando aplicável
 - [ ] CodeRabbit revisou o PR (ou justificativa para skip)

@@ -13,6 +13,7 @@ import { MOCK_MATCH_PRODUCTS } from '@/data/mock-match-products';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
+import { Clickable } from '@/components/shared/Clickable';
 import { cn } from '@/lib/utils';
 import { dedupeById } from '@/utils/product-search';
 import { Zap, Target, Loader2 } from 'lucide-react';
@@ -183,27 +184,22 @@ export default function ProductMatchPage() {
                   {MATCH_TYPES.map((type) => {
                     const isActive = activeMatchTypes.includes(type);
                     return (
-                      <Badge
+                      <Clickable
                         key={type}
+                        as={Badge}
                         onClick={() => toggleMatchType(type)}
-                        role="button"
-                        tabIndex={0}
-                        aria-pressed={isActive}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            toggleMatchType(type);
-                          }
-                        }}
+                        isPressed={isActive}
+                        showFocusRing={false}
                         className={cn(
                           'cursor-pointer select-none gap-1 text-[10px] transition-opacity',
                           isActive
                             ? MATCH_TYPE_CONFIG[type].color
-                            : 'bg-muted text-muted-foreground opacity-50 hover:opacity-75',
+                            : 'bg-muted text-muted-foreground opacity-50 hover:opacity-75 focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background',
                         )}
+                        aria-label={`Filtrar matches por ${MATCH_TYPE_CONFIG[type].label.toLowerCase()}`}
                       >
                         {MATCH_TYPE_CONFIG[type].label}: {stats[type]}
-                      </Badge>
+                      </Clickable>
                     );
                   })}
                   {cohortLoading && (

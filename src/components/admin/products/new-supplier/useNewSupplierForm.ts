@@ -53,7 +53,7 @@ export function useNewSupplierForm(onCreated: (id: string) => void) {
   >([]);
   const [searchingCarriers, setSearchingCarriers] = useState(false);
   const [showCarrierDropdown, setShowCarrierDropdown] = useState(false);
-  const carrierSearchTimeout = useRef<ReturnType<typeof setTimeout>>();
+  const carrierSearchTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   // BUG-24 FIX: cleanup carrier search timeout on unmount
   useEffect(() => {
@@ -544,7 +544,6 @@ export function useNewSupplierForm(onCreated: (id: string) => void) {
       } else {
         toast.error('Erro ao criar fornecedor');
       }
-
     } finally {
       setSaving(false);
     }

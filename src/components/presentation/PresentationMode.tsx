@@ -37,7 +37,7 @@ export function PresentationMode({
   const [showGrid, setShowGrid] = useState(false);
   const [cursorHidden, setCursorHidden] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const cursorTimer = useRef<ReturnType<typeof setTimeout>>();
+  const cursorTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const totalSlides = slides.length + 1; // +1 for title slide
 

@@ -88,11 +88,8 @@ const App = () => {
           <AccessibilityProvider>
             <AriaLiveProvider>
               <TooltipProvider delayDuration={400} skipDelayDuration={200}>
-                {/*
-                 * Keep v7_startTransition disabled: under concurrent root work it can
-                 * update history before the matching route render commits.
-                 */}
-                <BrowserRouter future={{ v7_relativeSplatPath: true }}>
+                {/* Keep router transitions disabled so history and matching route commit together. */}
+                <BrowserRouter useTransitions={false}>
                   <AuthProvider>
                     <AppBootstrapContainer>
                       <AppBootstrap>

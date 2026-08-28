@@ -21,7 +21,7 @@ vi.mock('@/lib/logger', () => ({
   logger: { error: vi.fn(), warn: vi.fn(), info: vi.fn(), debug: vi.fn() },
 }));
 vi.mock('@/lib/chunk-recovery', () => ({
-  attemptChunkRecovery: vi.fn(async () => false),
+  attemptChunkRecovery: vi.fn(() => Promise.resolve(false)),
   isChunkLoadError: vi.fn(() => false),
 }));
 // DevOnly é gate de role: neutralizado para o teste focar no que é público.

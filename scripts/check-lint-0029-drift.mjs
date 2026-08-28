@@ -9,18 +9,25 @@
  * Fontes de dados (na ordem):
  *   1. `--from-file=<path.json>` — lista `[{fn:string}, ...]` (usado em testes).
  *   2. `VITE_SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` — consulta pg-meta.
- *   3. Sem nenhum dos dois → skip com warning (não falha CI local).
+ *   3. Sem nenhum dos dois → `static-pass` no modo advisory ou
+ *      `inconclusive` quando `--require-live` exigir evidência live.
  *
  * Modo interativo do PO:
  *   `--update-allowlist` grava o snapshot atual em disco (usar apenas
  *   após revisão humana das novas funções).
  *
- * Exit codes: 0 (ok/skip), 1 (drift — falha), 2 (erro de config).
+ * Exit codes: 0 (`passed`/`static-pass`), 1 (drift — falha), 2 (`inconclusive`/erro de config).
  */
 
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import path from 'path';
+import {
+  CHECK_RESULT_STATUS,
+  concludeCheck,
+  maskUrl,
+  shouldRequireLive,
+} from './check-result-contract.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -29,6 +36,7 @@ const ALLOWLIST_PATH = path.join(ROOT, '.security/lint-0029-allowlist.json');
 const argv = process.argv.slice(2);
 const fromFileArg = argv.find((a) => a.startsWith('--from-file='));
 const UPDATE = argv.includes('--update-allowlist');
+const REQUIRE_LIVE = shouldRequireLive(argv);
 
 const SQL = `
   SELECT n.nspname||'.'||p.proname||'('||pg_get_function_identity_arguments(p.oid)||')' AS fn
@@ -41,24 +49,50 @@ const SQL = `
 async function fetchLive() {
   const URL = process.env.VITE_SUPABASE_URL;
   const KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!URL || !KEY) return null;
-  const endpoint = `${URL.replace(/\/$/, '')}/pg-meta/default/query`;
-  const res = await fetch(endpoint, {
-    method: 'POST',
-    headers: {
-      apikey: KEY,
-      Authorization: `Bearer ${KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ query: SQL }),
-  });
-  if (!res.ok) {
-    process.stderr.write(`[lint-0029] pg-meta HTTP ${res.status}: ${await res.text()}\n`);
-    return null;
+  if (!URL || !KEY) {
+    return { kind: 'missing-config', maskedUrl: maskUrl(URL) };
   }
-  const rows = await res.json();
-  if (!Array.isArray(rows)) return null;
-  return rows.map((r) => r.fn).filter(Boolean);
+  const endpoint = `${URL.replace(/\/$/, '')}/pg-meta/default/query`;
+  let res;
+  try {
+    res = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        apikey: KEY,
+        Authorization: `Bearer ${KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ query: SQL }),
+    });
+  } catch {
+    return { kind: 'network-error', maskedUrl: maskUrl(URL) };
+  }
+  if (!res.ok) {
+    return {
+      kind: 'http-error',
+      maskedUrl: maskUrl(URL),
+      httpStatus: res.status,
+      bodyLength: (await res.text()).length,
+    };
+  }
+  let rows;
+  try {
+    rows = await res.json();
+  } catch {
+    return { kind: 'invalid-json', maskedUrl: maskUrl(URL) };
+  }
+  if (!Array.isArray(rows)) {
+    return {
+      kind: 'invalid-response',
+      maskedUrl: maskUrl(URL),
+      responseType: typeof rows,
+    };
+  }
+  return {
+    kind: 'live',
+    maskedUrl: maskUrl(URL),
+    functions: rows.map((r) => r.fn).filter(Boolean),
+  };
 }
 
 function loadAllowlist() {
@@ -83,11 +117,39 @@ async function main() {
       typeof r === 'string' ? r : r.fn,
     );
   } else {
-    actual = await fetchLive();
-    if (actual === null) {
-      process.stderr.write('[lint-0029] sem credenciais pg-meta — skip (dev local).\n');
-      process.exit(0);
+    const live = await fetchLive();
+    if (live.kind !== 'live') {
+      if (live.kind === 'missing-config') {
+        return concludeCheck({
+          check: 'lint-0029',
+          status: REQUIRE_LIVE
+            ? CHECK_RESULT_STATUS.INCONCLUSIVE
+            : CHECK_RESULT_STATUS.STATIC_PASS,
+          summary: REQUIRE_LIVE
+            ? 'sem credenciais pg-meta; evidência live obrigatória não disponível'
+            : 'sem credenciais pg-meta; verificação ficou em modo estático',
+          details: {
+            reason: live.kind,
+            requireLive: REQUIRE_LIVE,
+            maskedUrl: live.maskedUrl,
+          },
+        });
+      }
+
+      return concludeCheck({
+        check: 'lint-0029',
+        status: CHECK_RESULT_STATUS.INCONCLUSIVE,
+        summary: `pg-meta indisponível para consulta live (${live.kind})`,
+        details: {
+          reason: live.kind,
+          maskedUrl: live.maskedUrl,
+          httpStatus: live.httpStatus,
+          responseType: live.responseType,
+          bodyLength: live.bodyLength,
+        },
+      });
     }
+    actual = live.functions;
   }
 
   const { doc, set: allowed } = loadAllowlist();

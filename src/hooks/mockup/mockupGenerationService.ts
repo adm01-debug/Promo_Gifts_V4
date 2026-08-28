@@ -327,6 +327,8 @@ async function extractEdgeErrorMessage(error: unknown): Promise<string> {
       /* body was not JSON — fall through to the generic message */
     }
   }
+  const message = (error as { message?: unknown } | null)?.message;
+  if (typeof message === 'string' && message.trim()) return message;
   return error instanceof Error ? error.message : 'Falha ao gerar mockup.';
 }
 

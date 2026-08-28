@@ -293,8 +293,11 @@ describe('StockDashboard — stat card filters', () => {
 
   it('clica em "Estoque Futuro" — alterna filtro e abre dialog quando há previsões', async () => {
     const user = userEvent.setup();
+    const expectedSoon = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
     mockUseVariantStock.mockReturnValue(
-      buildHookValue({ futureStock: [futureEntry({ productName: 'Reposição X' })] }),
+      buildHookValue({
+        futureStock: [futureEntry({ productName: 'Reposição X', expectedDate: expectedSoon })],
+      }),
     );
     renderDashboard();
     await user.click(screen.getByRole('button', { name: /^Estoque Futuro/ }));

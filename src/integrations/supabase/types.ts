@@ -2907,6 +2907,182 @@ export type Database = {
         }
         Relationships: []
       }
+      magazine_items: {
+        Row: {
+          created_at: string
+          id: string
+          magazine_id: string
+          overrides: Json
+          page_number: number | null
+          position: number
+          product_id: string
+          product_snapshot: Json
+          updated_at: string
+          variant_color_name: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          magazine_id: string
+          overrides?: Json
+          page_number?: number | null
+          position?: number
+          product_id: string
+          product_snapshot: Json
+          updated_at?: string
+          variant_color_name?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          magazine_id?: string
+          overrides?: Json
+          page_number?: number | null
+          position?: number
+          product_id?: string
+          product_snapshot?: Json
+          updated_at?: string
+          variant_color_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "magazine_items_magazine_id_fkey"
+            columns: ["magazine_id"]
+            isOneToOne: false
+            referencedRelation: "magazines"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      magazine_templates: {
+        Row: {
+          branding: Json
+          content_settings: Json
+          created_at: string
+          id: string
+          name: string
+          organization_id: string | null
+          owner_id: string
+          shared_in_org: boolean
+          template_id: string
+          updated_at: string
+        }
+        Insert: {
+          branding?: Json
+          content_settings?: Json
+          created_at?: string
+          id?: string
+          name: string
+          organization_id?: string | null
+          owner_id: string
+          shared_in_org?: boolean
+          template_id: string
+          updated_at?: string
+        }
+        Update: {
+          branding?: Json
+          content_settings?: Json
+          created_at?: string
+          id?: string
+          name?: string
+          organization_id?: string | null
+          owner_id?: string
+          shared_in_org?: boolean
+          template_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "magazine_templates_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "magazine_templates_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "magazine_templates_catalog"
+            referencedColumns: ["template_id"]
+          },
+        ]
+      }
+      magazines: {
+        Row: {
+          archived_at: string | null
+          branding: Json
+          content_settings: Json
+          created_at: string
+          deleted_at: string | null
+          id: string
+          organization_id: string | null
+          owner_id: string
+          page_order: Json | null
+          public_token: string | null
+          published_at: string | null
+          status: Database["public"]["Enums"]["magazine_status"]
+          subtitle: string
+          template_id: string
+          title: string
+          updated_at: string
+          view_count: number
+        }
+        Insert: {
+          archived_at?: string | null
+          branding?: Json
+          content_settings?: Json
+          created_at?: string
+          deleted_at?: string | null
+          id?: string
+          organization_id?: string | null
+          owner_id: string
+          page_order?: Json | null
+          public_token?: string | null
+          published_at?: string | null
+          status?: Database["public"]["Enums"]["magazine_status"]
+          subtitle?: string
+          template_id?: string
+          title?: string
+          updated_at?: string
+          view_count?: number
+        }
+        Update: {
+          archived_at?: string | null
+          branding?: Json
+          content_settings?: Json
+          created_at?: string
+          deleted_at?: string | null
+          id?: string
+          organization_id?: string | null
+          owner_id?: string
+          page_order?: Json | null
+          public_token?: string | null
+          published_at?: string | null
+          status?: Database["public"]["Enums"]["magazine_status"]
+          subtitle?: string
+          template_id?: string
+          title?: string
+          updated_at?: string
+          view_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "magazines_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "magazines_template_id_fk"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "magazine_templates_catalog"
+            referencedColumns: ["template_id"]
+          },
+        ]
+      }
       magic_up_brand_kits: {
         Row: {
           client_id: string | null
@@ -4183,6 +4359,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      personalization_techniques: {
+        Row: {
+          base_cost_multiplier: number | null
+          code: string
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          prompt_suffix: string
+          requires_color_count: boolean | null
+          updated_at: string
+        }
+        Insert: {
+          base_cost_multiplier?: number | null
+          code: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          prompt_suffix: string
+          requires_color_count?: boolean | null
+          updated_at?: string
+        }
+        Update: {
+          base_cost_multiplier?: number | null
+          code?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          prompt_suffix?: string
+          requires_color_count?: boolean | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       password_reset_requests: {
         Row: {
@@ -6257,6 +6472,162 @@ export type Database = {
           },
         ]
       }
+      supplier_products_raw: {
+        Row: {
+          attempts: number
+          content_hash: string
+          created_at: string
+          id: string
+          images_processed: boolean | null
+          images_status: Database["public"]["Enums"]["supplier_raw_status"]
+          import_batch_id: string | null
+          imported_at: string
+          last_error: Json | null
+          process_errors: Json | null
+          processed_at: string | null
+          product_id: string | null
+          raw_data: Json
+          site_attempts: number
+          site_data: Json | null
+          site_enqueued_at: string | null
+          site_fetch_req_id: number | null
+          site_hash: string | null
+          site_last_error: string | null
+          site_processed_at: string | null
+          site_promoted_at: string | null
+          site_scraped_at: string | null
+          site_source_url: string | null
+          site_status: Database["public"]["Enums"]["supplier_raw_status"] | null
+          source_channel: string
+          source_endpoint: string | null
+          source_event_id: string | null
+          status: Database["public"]["Enums"]["supplier_raw_status"]
+          stock_data: Json | null
+          stock_hash: string | null
+          stock_processed_at: string | null
+          stock_status: Database["public"]["Enums"]["supplier_raw_status"]
+          stock_synced_at: string | null
+          supplier_id: string
+          supplier_reference: string
+          supplier_sku: string | null
+          updated_at: string
+          variant_id: string | null
+        }
+        Insert: {
+          attempts?: number
+          content_hash: string
+          created_at?: string
+          id?: string
+          images_processed?: boolean | null
+          images_status?: Database["public"]["Enums"]["supplier_raw_status"]
+          import_batch_id?: string | null
+          imported_at?: string
+          last_error?: Json | null
+          process_errors?: Json | null
+          processed_at?: string | null
+          product_id?: string | null
+          raw_data: Json
+          site_attempts?: number
+          site_data?: Json | null
+          site_enqueued_at?: string | null
+          site_fetch_req_id?: number | null
+          site_hash?: string | null
+          site_last_error?: string | null
+          site_processed_at?: string | null
+          site_promoted_at?: string | null
+          site_scraped_at?: string | null
+          site_source_url?: string | null
+          site_status?:
+            | Database["public"]["Enums"]["supplier_raw_status"]
+            | null
+          source_channel?: string
+          source_endpoint?: string | null
+          source_event_id?: string | null
+          status?: Database["public"]["Enums"]["supplier_raw_status"]
+          stock_data?: Json | null
+          stock_hash?: string | null
+          stock_processed_at?: string | null
+          stock_status?: Database["public"]["Enums"]["supplier_raw_status"]
+          stock_synced_at?: string | null
+          supplier_id: string
+          supplier_reference: string
+          supplier_sku?: string | null
+          updated_at?: string
+          variant_id?: string | null
+        }
+        Update: {
+          attempts?: number
+          content_hash?: string
+          created_at?: string
+          id?: string
+          images_processed?: boolean | null
+          images_status?: Database["public"]["Enums"]["supplier_raw_status"]
+          import_batch_id?: string | null
+          imported_at?: string
+          last_error?: Json | null
+          process_errors?: Json | null
+          processed_at?: string | null
+          product_id?: string | null
+          raw_data?: Json
+          site_attempts?: number
+          site_data?: Json | null
+          site_enqueued_at?: string | null
+          site_fetch_req_id?: number | null
+          site_hash?: string | null
+          site_last_error?: string | null
+          site_processed_at?: string | null
+          site_promoted_at?: string | null
+          site_scraped_at?: string | null
+          site_source_url?: string | null
+          site_status?:
+            | Database["public"]["Enums"]["supplier_raw_status"]
+            | null
+          source_channel?: string
+          source_endpoint?: string | null
+          source_event_id?: string | null
+          status?: Database["public"]["Enums"]["supplier_raw_status"]
+          stock_data?: Json | null
+          stock_hash?: string | null
+          stock_processed_at?: string | null
+          stock_status?: Database["public"]["Enums"]["supplier_raw_status"]
+          stock_synced_at?: string | null
+          supplier_id?: string
+          supplier_reference?: string
+          supplier_sku?: string | null
+          updated_at?: string
+          variant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_products_raw_import_batch_id_fkey"
+            columns: ["import_batch_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_import_batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "supplier_products_raw_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "supplier_products_raw_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "supplier_products_raw_variant_id_fkey"
+            columns: ["variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       suppliers: {
         Row: {
           active: boolean | null
@@ -7107,6 +7478,35 @@ export type Database = {
       }
     }
     Views: {
+      mv_stock_velocity: {
+        Row: {
+          active_days_30d: number | null
+          active_days_7d: number | null
+          active_days_90d: number | null
+          avg_daily_depletion_30d: number | null
+          avg_daily_depletion_7d: number | null
+          avg_daily_depletion_90d: number | null
+          avg_days_between_restocks: number | null
+          current_price: number | null
+          current_stock: number | null
+          days_to_stockout: number | null
+          last_update_date: string | null
+          price_changes_30d: number | null
+          product_id: string | null
+          refreshed_at: string | null
+          restock_events_30d: number | null
+          supplier_branch_id: string | null
+          supplier_id: string | null
+          total_depleted_30d: number | null
+          total_depleted_7d: number | null
+          total_depleted_90d: number | null
+          total_restocked_30d: number | null
+          variant_id: string | null
+          variant_supplier_source_id: string | null
+          velocity_trend: number | null
+        }
+        Relationships: []
+      }
       product_popularity_30d: {
         Row: {
           category_name: string | null
@@ -8025,6 +8425,7 @@ export type Database = {
         | "system"
         | "tool_call"
         | "tool_result"
+      magazine_status: "draft" | "published" | "archived"
       org_role: "owner" | "admin" | "member"
       role_migration_item_status:
         | "pending"
@@ -8048,6 +8449,13 @@ export type Database = {
         | "secret_revoke"
         | "mcp_key_revoke"
         | "mcp_key_rotate"
+      supplier_raw_status:
+        | "pending"
+        | "processing"
+        | "processed"
+        | "failed"
+        | "skipped"
+        | "quarantined"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -8192,6 +8600,7 @@ export const Constants = {
         "tool_call",
         "tool_result",
       ],
+      magazine_status: ["draft", "published", "archived"],
       org_role: ["owner", "admin", "member"],
       role_migration_item_status: [
         "pending",
@@ -8217,6 +8626,14 @@ export const Constants = {
         "secret_revoke",
         "mcp_key_revoke",
         "mcp_key_rotate",
+      ],
+      supplier_raw_status: [
+        "pending",
+        "processing",
+        "processed",
+        "failed",
+        "skipped",
+        "quarantined",
       ],
     },
   },

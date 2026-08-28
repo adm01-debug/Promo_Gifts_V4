@@ -37,6 +37,25 @@ import {
 } from '@/components/pdf/ProposalHtmlTemplate';
 import { downloadPDF } from '@/utils/proposalPdfReactGenerator';
 
+const { html2canvasMock, jsPdfCtorMock, jsPdfInstanceFactory } = vi.hoisted(() => ({
+  html2canvasMock: vi.fn(),
+  jsPdfCtorMock: vi.fn(),
+  jsPdfInstanceFactory: () => ({
+    internal: { pageSize: { getWidth: () => 210, getHeight: () => 297 } },
+    addPage: vi.fn(),
+    addImage: vi.fn(),
+    output: vi.fn().mockReturnValue(new Blob()),
+  }),
+}));
+
+vi.mock('html2canvas', () => ({
+  default: html2canvasMock,
+}));
+
+vi.mock('jspdf', () => ({
+  jsPDF: jsPdfCtorMock,
+}));
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Helpers / Fixtures
 // ─────────────────────────────────────────────────────────────────────────────
@@ -635,20 +654,10 @@ describe('downloadPDF', () => {
 
 describe('generateProposalPDFv2 — error handling & cleanup', () => {
   beforeEach(() => {
-    // Mock html2canvas para lançar erro
-    vi.mock('html2canvas', () => ({
-      default: vi.fn().mockRejectedValue(new Error('CORS error')),
-    }));
-
-    // Mock mínimo de jsPDF
-    vi.mock('jspdf', () => ({
-      jsPDF: vi.fn().mockImplementation(() => ({
-        internal: { pageSize: { getWidth: () => 210, getHeight: () => 297 } },
-        addPage: vi.fn(),
-        addImage: vi.fn(),
-        output: vi.fn().mockReturnValue(new Blob()),
-      })),
-    }));
+    html2canvasMock.mockReset();
+    html2canvasMock.mockRejectedValue(new Error('CORS error'));
+    jsPdfCtorMock.mockReset();
+    jsPdfCtorMock.mockImplementation(() => jsPdfInstanceFactory());
   });
 
   afterEach(() => {

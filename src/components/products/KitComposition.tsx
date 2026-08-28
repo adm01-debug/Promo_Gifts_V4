@@ -62,7 +62,12 @@ export function KitComposition({ items, onViewProduct }: KitCompositionProps) {
         onClick={() => setDialogOpen(true)}
         role="button"
         tabIndex={0}
-        onKeyDown={(e) => e.key === 'Enter' && setDialogOpen(true)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setDialogOpen(true);
+          }
+        }}
       >
         <div className="flex items-center justify-between px-5 py-4">
           <div className="flex items-center gap-3">

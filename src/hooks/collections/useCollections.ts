@@ -181,7 +181,7 @@ export function useCollections(options?: { enabled?: boolean }) {
 
     setCollections(mapped);
     setIsLoaded(true);
-  }, [user?.id]);
+  }, [user?.id, options?.enabled]);
 
   // Migrate localStorage data on first load
   // PERFORMANCE FIX: Só carrega se enabled !== false

@@ -3,17 +3,20 @@
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-const { mockInvoke } = vi.hoisted(() => {
+const { mockInvoke, mockGetSession } = vi.hoisted(() => {
   const mockInvoke = vi.fn();
-  return { mockInvoke };
+  const mockGetSession = vi.fn();
+  return { mockInvoke, mockGetSession };
 });
 
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
-    functions: {
-      invoke: mockInvoke,
-    },
+    auth: { getSession: mockGetSession },
   },
+}));
+
+vi.mock('@/lib/edge/safeInvokeCall', () => ({
+  invokeEdge: mockInvoke,
 }));
 
 vi.mock('@/lib/logger', () => ({
@@ -27,9 +30,20 @@ import {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  mockGetSession.mockResolvedValue({ data: { session: { access_token: 'test-access-token' } } });
 });
 
 describe('invokeCrmDb', () => {
+  it('bloqueia a ponte antes do invoke quando não há sessão autenticada', async () => {
+    mockGetSession.mockResolvedValueOnce({ data: { session: null } });
+
+    await expect(invokeCrmDb({ table: 'companies', operation: 'select' })).rejects.toMatchObject({
+      message: 'CRM unauthenticated: no active session',
+      code: 'UNAUTHENTICATED',
+    });
+    expect(mockInvoke).not.toHaveBeenCalled();
+  });
+
   it('returns data on success', async () => {
     mockInvoke.mockResolvedValueOnce({ data: { data: [{ id: '1' }] }, error: null });
     const result = await invokeCrmDb({ table: 'companies', operation: 'select' });
@@ -53,6 +67,50 @@ describe('invokeCrmDb', () => {
     const result = await invokeCrmDb({ table: 'companies', operation: 'select' });
     expect(result.data).toEqual([{ id: '1' }]);
     expect(mockInvoke).toHaveBeenCalledTimes(2);
+  });
+
+  it('retries when invokeEdge preserva status 502 com mensagem pública sanitizada', async () => {
+    mockInvoke
+      .mockResolvedValueOnce({
+        data: null,
+        error: {
+          message: 'Operação não pôde ser concluída. Tente novamente em instantes.',
+          name: 'server',
+          status: 502,
+          request_id: 'crm-retry',
+        },
+        requestId: 'crm-retry',
+      })
+      .mockResolvedValueOnce({ data: { data: [{ id: '1' }] }, error: null, requestId: 'crm-retry' });
+
+    const result = await invokeCrmDb({ table: 'companies', operation: 'select' });
+
+    expect(result.data).toEqual([{ id: '1' }]);
+    expect(mockInvoke).toHaveBeenCalledTimes(2);
+  });
+
+  it.each(['select', 'search'] as const)(
+    'degrada statement_timeout apenas para leitura %s',
+    async (operation) => {
+      mockInvoke.mockResolvedValueOnce({ data: null, error: new Error('statement timeout (57014)') });
+
+      await expect(invokeCrmDb({ table: 'companies', operation })).resolves.toMatchObject({
+        data: [],
+        stale: true,
+        error: 'statement_timeout',
+      });
+    },
+  );
+
+  it.each([
+    ['insert', () => insertCrm('quotes', { client_name: 'Test' })],
+    ['update', () => updateCrm('quotes', '1', { status: 'approved' })],
+    ['delete', () => deleteCrm('quotes', '1')],
+  ] as const)('rejeita statement_timeout indeterminado em escrita %s', async (_operation, write) => {
+    mockInvoke.mockResolvedValueOnce({ data: null, error: new Error('statement timeout (57014)') });
+
+    await expect(write()).rejects.toThrow('CRM DB write outcome indeterminate');
+    expect(mockInvoke).toHaveBeenCalledTimes(1);
   });
 });
 
@@ -81,6 +139,21 @@ describe('selectCrmById', () => {
     mockInvoke.mockResolvedValue({ data: null, error: new Error('404 not found') });
     const result = await selectCrmById('companies', 'nonexistent');
     expect(result).toBeNull();
+  });
+
+  it('returns null on 404 preservado pelo envelope invokeEdge', async () => {
+    mockInvoke.mockResolvedValue({
+      data: null,
+      error: {
+        message: 'Operação não pôde ser concluída. Tente novamente em instantes.',
+        name: 'credential',
+        status: 404,
+        request_id: 'crm-not-found',
+      },
+      requestId: 'crm-not-found',
+    });
+
+    await expect(selectCrmById('companies', 'nonexistent')).resolves.toBeNull();
   });
 });
 

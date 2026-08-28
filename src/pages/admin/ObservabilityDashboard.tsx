@@ -13,6 +13,7 @@
 import { useKillSwitchObservability } from '@/hooks/admin/useKillSwitchObservability';
 import { useSmokeTests } from '@/hooks/admin/useSmokeTests';
 import { PageSEO } from '@/components/seo/PageSEO';
+import type { ReactElement } from 'react';
 
 function formatDate(iso: string | null): string {
   if (!iso) return '—';
@@ -35,7 +36,7 @@ function formatRelative(iso: string | null): string {
   return `há ${days}d`;
 }
 
-export default function ObservabilityDashboard(): JSX.Element {
+export default function ObservabilityDashboard(): ReactElement {
   const ksData = useKillSwitchObservability();
   const smoke = useSmokeTests();
 

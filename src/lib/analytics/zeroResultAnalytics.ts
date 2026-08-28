@@ -22,7 +22,7 @@ export const ZERO_RESULT_ACTIONS = [
 ] as const;
 export type ZeroResultAction = (typeof ZERO_RESULT_ACTIONS)[number];
 
-export type ZeroResultCulprit = FilterKey | 'window' | 'intersection' | null;
+export type ZeroResultCulprit = FilterKey | 'intersection' | 'window' | null;
 
 export interface ZeroResultActionClickedPayload {
   action: ZeroResultAction;
@@ -83,9 +83,7 @@ function pushToE2EBuffer(evt: ZeroResultAnalyticsEvent): void {
   }
 }
 
-export function trackZeroResultActionClicked(
-  payload: ZeroResultActionClickedPayload,
-): void {
+export function trackZeroResultActionClicked(payload: ZeroResultActionClickedPayload): void {
   const evt: ZeroResultAnalyticsEvent = {
     name: 'bi.zero_result.action_clicked',
     ts: new Date().toISOString(),

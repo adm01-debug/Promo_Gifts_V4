@@ -88,9 +88,11 @@ describe('SSOT Supabase — fallback em runtime', () => {
       expect(url).toContain(CANONICAL);
       expect(url).not.toContain(FORBIDDEN);
     } else {
-      // Fallback: valida via supabase client interno
+      // Em dev local, o cliente precisa preservar exatamente o endpoint local
+      // resolvido — forçar o canônico aqui contradiz o contrato coberto abaixo.
       const client = (mod as unknown as { supabase?: { supabaseUrl?: string } }).supabase;
-      expect(client?.supabaseUrl ?? '').toContain(CANONICAL);
+      expect(client?.supabaseUrl ?? '').toBe(url);
+      expect(client?.supabaseUrl ?? '').not.toContain(FORBIDDEN);
     }
   });
 

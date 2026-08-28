@@ -12,9 +12,7 @@ import { ArrowUpDown, ArrowUp, ArrowDown, Loader2 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { ProductTableRow } from './table-view/ProductTableRow';
-import {
-  type ActiveColorFilter,
-} from '@/utils/color-image-resolver';
+import { type ActiveColorFilter } from '@/utils/color-image-resolver';
 import { useNavigate } from 'react-router-dom';
 
 import { cn } from '@/lib/utils';
@@ -61,7 +59,7 @@ interface ProductTableViewProps {
   isLoadingMore?: boolean;
   totalEstimate?: number | null;
   filteredCount?: number;
-  loadMoreRef?: React.RefObject<HTMLDivElement>;
+  loadMoreRef?: React.RefObject<HTMLDivElement | null>;
   itemsPerPage?: number;
   onLoadMore?: () => void;
   // GAP-20 FIX: chave de reset de scroll (mesma de useCatalogState/VirtualizedProductGrid).
@@ -318,7 +316,7 @@ export const ProductTableView = memo(
       [onProductClick, navigate],
     );
 
-        const openVariantPicker = useCallback((product: Product, mode: VariantActionMode) => {
+    const openVariantPicker = useCallback((product: Product, mode: VariantActionMode) => {
       setVariantPickerProduct(product);
       setVariantPickerMode(mode);
       setVariantPickerOpen(true);

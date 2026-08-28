@@ -16,8 +16,9 @@
  *
  * Como funciona:
  *   1. Se o ambiente NÃO tem credenciais Supabase (PR de fork, sandbox
- *      sem secrets), o script termina com sucesso e log de skip — o
- *      gate é defensivo, não pode quebrar PRs sem acesso ao banco.
+ *      sem secrets), o script emite `static-pass` no modo advisory ou
+ *      `inconclusive` quando `--require-live`/`REQUIRE_LIVE=1` exigir
+ *      evidência remota verificável.
  *   2. Caso contrário, chama o RPC `audit_security_definer_acl()`
  *      (criado na migração) via REST. Cada linha retornada é uma
  *      violação. Falha com exit 1 e imprime tabela legível.
@@ -41,10 +42,17 @@
 
 import { readFileSync } from "fs";
 import { resolve } from "path";
+import {
+  CHECK_RESULT_STATUS,
+  concludeCheck,
+  maskUrl,
+  shouldRequireLive,
+} from "./check-result-contract.mjs";
 
 // Parse --baseline flag
 let baselineFile = null;
 const args = process.argv.slice(2);
+const REQUIRE_LIVE = shouldRequireLive(args);
 for (let i = 0; i < args.length; i++) {
   if (args[i] === "--baseline" && args[i + 1]) {
     baselineFile = resolve(args[i + 1]);
@@ -78,9 +86,21 @@ const key =
   process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
 if (!url || !key) {
-  console.log("⚠️  SECURITY DEFINER ACL gate: credenciais Supabase ausentes — skip.");
-  console.log("   Defina VITE_SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY no CI para habilitar.");
-  process.exit(0);
+  concludeCheck({
+    check: "security-definer-acl",
+    status: REQUIRE_LIVE
+      ? CHECK_RESULT_STATUS.INCONCLUSIVE
+      : CHECK_RESULT_STATUS.STATIC_PASS,
+    summary: REQUIRE_LIVE
+      ? "credenciais Supabase ausentes; evidência live obrigatória não disponível"
+      : "credenciais Supabase ausentes; gate executado em modo estático",
+    details: {
+      reason: "missing-config",
+      requireLive: REQUIRE_LIVE,
+      maskedUrl: maskUrl(url),
+    },
+    stream: "stdout",
+  });
 }
 
 const endpoint = `${url.replace(/\/$/, "")}/rest/v1/rpc/audit_security_definer_acl`;
@@ -97,22 +117,49 @@ try {
     },
     body: "{}",
   });
-} catch (err) {
-  console.error(`❌ Falha de rede ao chamar audit_security_definer_acl: ${err.message}`);
-  process.exit(1);
+} catch {
+  concludeCheck({
+    check: "security-definer-acl",
+    status: CHECK_RESULT_STATUS.INCONCLUSIVE,
+    summary: "falha de rede ao chamar audit_security_definer_acl",
+    details: {
+      reason: "network-error",
+      maskedUrl: maskUrl(url),
+    },
+    stream: "stdout",
+  });
 }
 
 if (!res.ok) {
   const text = await res.text();
-  console.error(`❌ HTTP ${res.status} ao chamar audit_security_definer_acl:\n${text}`);
-  process.exit(1);
+  concludeCheck({
+    check: "security-definer-acl",
+    status: CHECK_RESULT_STATUS.INCONCLUSIVE,
+    summary: `HTTP ${res.status} ao chamar audit_security_definer_acl`,
+    details: {
+      reason: "http-error",
+      maskedUrl: maskUrl(url),
+      httpStatus: res.status,
+      bodyLength: text.length,
+    },
+    stream: "stdout",
+  });
 }
 
 const rows = await res.json();
 
 if (!Array.isArray(rows)) {
-  console.error("❌ Resposta inesperada (esperava array):", rows);
-  process.exit(1);
+  concludeCheck({
+    check: "security-definer-acl",
+    status: CHECK_RESULT_STATUS.INCONCLUSIVE,
+    summary: "RPC retornou resposta inesperada (esperava array)",
+    details: {
+      reason: "invalid-response",
+      maskedUrl: maskUrl(url),
+      responseType: typeof rows,
+    },
+    stream: "stdout",
+  });
 }
 
 // Filter out known-OK violations from baseline

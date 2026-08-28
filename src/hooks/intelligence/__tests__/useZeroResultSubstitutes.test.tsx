@@ -37,10 +37,10 @@ function makeBuilder(table: string) {
   builder.gte = chain;
   builder.not = chain;
   builder.order = chain;
-  builder.limit = vi.fn(async () => {
-    if (table === 'quote_items') return { data: quoteRows, error: null };
-    if (table === 'order_items') return { data: orderRows, error: null };
-    return { data: [], error: null };
+  builder.limit = vi.fn(() => {
+    if (table === 'quote_items') return Promise.resolve({ data: quoteRows, error: null });
+    if (table === 'order_items') return Promise.resolve({ data: orderRows, error: null });
+    return Promise.resolve({ data: [], error: null });
   });
   return builder;
 }
@@ -64,8 +64,8 @@ let extProducts: ExtProduct[] = [];
 let extCategories: { id: string; name: string }[] = [];
 
 vi.mock('@/lib/external-db', () => ({
-  fetchPromobrindProducts: vi.fn(async () => extProducts),
-  fetchPromobrindCategories: vi.fn(async () => extCategories),
+  fetchPromobrindProducts: vi.fn(() => Promise.resolve(extProducts)),
+  fetchPromobrindCategories: vi.fn(() => Promise.resolve(extCategories)),
 }));
 
 // import depois dos mocks
@@ -98,13 +98,12 @@ describe('useZeroResultSubstitutes — score & ranking', () => {
     // P2: 0 quotes, 2 orders → score 4  (deve ficar acima de P1)
     // P3: 1 quote,  1 order  → score 3  (empate com P1, ordem irrelevante entre eles)
     quoteRows = [
-      { product_id: 'p1' }, { product_id: 'p1' }, { product_id: 'p1' },
+      { product_id: 'p1' },
+      { product_id: 'p1' },
+      { product_id: 'p1' },
       { product_id: 'p3' },
     ];
-    orderRows = [
-      { product_id: 'p2' }, { product_id: 'p2' },
-      { product_id: 'p3' },
-    ];
+    orderRows = [{ product_id: 'p2' }, { product_id: 'p2' }, { product_id: 'p3' }];
     extProducts = [
       { id: 'p1', name: 'Produto 1', category_id: 'c1', supplier_id: 's1' },
       { id: 'p2', name: 'Produto 2', category_id: 'c1', supplier_id: 's1' },
@@ -128,7 +127,10 @@ describe('useZeroResultSubstitutes — score & ranking', () => {
     const products = result.current.data!.products;
     expect(products[0]).toMatchObject({ id: 'p2', quotes: 0, orders: 2, score: 4 });
     // p1 e p3 têm score 3 — ambos aparecem depois de p2
-    const rest = products.slice(1).map((p) => p.id).sort();
+    const rest = products
+      .slice(1)
+      .map((p) => p.id)
+      .sort();
     expect(rest).toEqual(['p1', 'p3']);
     for (const p of products) {
       expect(p.score).toBe(p.quotes + p.orders * 2);
@@ -139,13 +141,19 @@ describe('useZeroResultSubstitutes — score & ranking', () => {
     // Categoria cA: p1 (2q, 1o) + p2 (0q, 3o) = 2q, 4o → score 2 + 8 = 10
     // Categoria cB: p3 (5q, 0o)              = 5q, 0o → score 5
     quoteRows = [
-      { product_id: 'p1' }, { product_id: 'p1' },
-      { product_id: 'p3' }, { product_id: 'p3' }, { product_id: 'p3' },
-      { product_id: 'p3' }, { product_id: 'p3' },
+      { product_id: 'p1' },
+      { product_id: 'p1' },
+      { product_id: 'p3' },
+      { product_id: 'p3' },
+      { product_id: 'p3' },
+      { product_id: 'p3' },
+      { product_id: 'p3' },
     ];
     orderRows = [
       { product_id: 'p1' },
-      { product_id: 'p2' }, { product_id: 'p2' }, { product_id: 'p2' },
+      { product_id: 'p2' },
+      { product_id: 'p2' },
+      { product_id: 'p2' },
     ];
     extProducts = [
       { id: 'p1', name: 'P1', category_id: 'cA', supplier_id: 's1', brand: 'Marca A' },
@@ -202,7 +210,13 @@ describe('useZeroResultSubstitutes — score & ranking', () => {
     await waitFor(() => expect(result.current.data).toBeDefined());
     const sups = result.current.data!.suppliers;
     expect(sups).toHaveLength(1);
-    expect(sups[0]).toMatchObject({ id: 'sA', name: 'Fornecedor A', quotes: 2, orders: 2, score: 6 });
+    expect(sups[0]).toMatchObject({
+      id: 'sA',
+      name: 'Fornecedor A',
+      quotes: 2,
+      orders: 2,
+      score: 6,
+    });
   });
 
   it('exclui o valor atualmente filtrado (não recomenda o mesmo)', async () => {
@@ -266,7 +280,7 @@ describe('useZeroResultSubstitutes — score & ranking', () => {
     expect(result.current.data!.categories).toHaveLength(3);
   });
 
-  it('não dispara query quando culprit é `window`', async () => {
+  it('não dispara query quando culprit é `window`', () => {
     const { result } = renderHook(
       () =>
         useZeroResultSubstitutes({

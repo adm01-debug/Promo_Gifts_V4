@@ -2,30 +2,98 @@
 import { createClient } from "npm:@supabase/supabase-js@2.49.4";
 
 /**
- * Log a security event to the audit_logs table.
+ * Relação de telemetria que aceita bloqueios sem usuário ou UUID de entidade.
+ *
+ * `audit_log` é reservado para INSERT/UPDATE/DELETE sobre entidades UUID; não é
+ * compatível com rate limit. Esta forma é confirmada via pg_catalog no Gold.
+ */
+export const SECURITY_EVENT_TABLE = 'bot_detection_log';
+
+export type SecurityEventRow = {
+  detection_type: string;
+  action_taken: string;
+  blocked: boolean;
+  ip_address: string;
+  user_agent: string | null;
+  metadata: Record<string, unknown>;
+};
+
+export type SecurityEventClient = {
+  from: (relation: typeof SECURITY_EVENT_TABLE) => {
+    insert: (row: SecurityEventRow) => Promise<{ error: { message?: string } | null }>;
+  };
+};
+
+/**
+ * Preserva o contrato visual existente: `endpoint` e `request_count` são lidos
+ * de `metadata` pelo painel administrativo porque o schema Gold não tem mais
+ * essas colunas legadas.
+ */
+export function buildSecurityEventRow(
+  eventType: string,
+  endpoint: string,
+  identifier: string,
+  metadata: Record<string, unknown> = {},
+  blocked = true,
+): SecurityEventRow {
+  const count = metadata.count;
+  const requestCount = typeof count === 'number' && Number.isFinite(count)
+    ? count
+    : undefined;
+
+  return {
+    detection_type: eventType,
+    action_taken: blocked ? 'blocked' : 'observed',
+    blocked,
+    ip_address: identifier,
+    user_agent: typeof metadata.userAgent === 'string' ? metadata.userAgent : null,
+    metadata: {
+      ...metadata,
+      endpoint,
+      ...(requestCount === undefined ? {} : { request_count: requestCount }),
+    },
+  };
+}
+
+/**
+ * Escrita best-effort: telemetria de segurança não pode derrubar a requisição
+ * protegida. Retorna `false` para que testes/observabilidade possam distinguir
+ * erro de auditoria sem transformar o caminho principal em falso sucesso.
+ */
+export async function writeSecurityEvent(
+  client: SecurityEventClient,
+  eventType: string,
+  endpoint: string,
+  identifier: string,
+  metadata: Record<string, unknown> = {},
+  blocked = true,
+): Promise<boolean> {
+  try {
+    const { error } = await client
+      .from(SECURITY_EVENT_TABLE)
+      .insert(buildSecurityEventRow(eventType, endpoint, identifier, metadata, blocked));
+
+    if (!error) return true;
+    console.error('[security] Error logging audit event:', error.message ?? 'unknown error');
+  } catch (error) {
+    console.error('[security] Error logging audit event:', error);
+  }
+  return false;
+}
+
+/**
+ * Loga bloqueios de segurança no contrato live de `bot_detection_log`.
  */
 export async function logSecurityEvent(
   eventType: string,
   endpoint: string,
   identifier: string,
-  metadata: Record<string, any> = {}
-) {
+  metadata: Record<string, unknown> = {},
+): Promise<boolean> {
   const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
   const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-  const supabase = createClient(supabaseUrl, serviceRoleKey);
-
-  const { error } = await supabase
-    .from('audit_logs')
-    .insert({
-      event_type: eventType,
-      endpoint,
-      identifier,
-      metadata,
-    });
-
-  if (error) {
-    console.error('[security] Error logging audit event:', error.message);
-  }
+  const supabase = createClient(supabaseUrl, serviceRoleKey) as unknown as SecurityEventClient;
+  return writeSecurityEvent(supabase, eventType, endpoint, identifier, metadata);
 }
 
 /**

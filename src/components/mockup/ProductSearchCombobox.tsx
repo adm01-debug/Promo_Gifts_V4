@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Check, ChevronsUpDown, Package, Search, X, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { Clickable } from '@/components/shared/Clickable';
 import {
   Command,
   CommandEmpty,
@@ -75,7 +76,7 @@ export function ProductSearchCombobox({
     onSearchChange('');
   };
 
-  const handleClear = (e: React.MouseEvent) => {
+  const handleClear = (e: React.KeyboardEvent | React.MouseEvent) => {
     e.stopPropagation();
     onSelect(null);
     onSearchChange('');
@@ -138,20 +139,15 @@ export function ProductSearchCombobox({
                 variant="ghost"
                 className="h-6 w-6 flex-shrink-0 hover:bg-destructive/10 hover:text-destructive"
               >
-                <span
-                  role="button"
-                  tabIndex={0}
+                <Clickable
+                  as="span"
+                  showFocusRing={false}
                   onClick={handleClear}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      handleClear(e as unknown as React.MouseEvent);
-                    }
-                  }}
                   aria-label="Remover produto selecionado"
+                  className="inline-flex h-full w-full items-center justify-center rounded-sm focus-visible:ring-1 focus-visible:ring-destructive/40"
                 >
                   <X aria-hidden="true" className="h-3.5 w-3.5" />
-                </span>
+                </Clickable>
               </Button>
             </div>
           ) : (

@@ -111,7 +111,7 @@ Deno.serve(async (req) => {
         ? `${top[0].name} caiu ${top[0].pct.toFixed(0)}% desde que você adicionou à coleção.`
         : `${drops.length} produtos em coleções com queda de preço. Maior: ${top[0].name} (−${top[0].pct.toFixed(0)}%).`;
 
-      await service.from("workspace_notifications").insert({
+      const { error: notificationError } = await service.from("workspace_notifications").insert({
         user_id: userId,
         title: "💸 Queda de preço nas coleções",
         message,
@@ -126,6 +126,11 @@ Deno.serve(async (req) => {
           top_drops: top,
         },
       });
+      if (notificationError) {
+        throw new Error(
+          `[collections-watcher] workspace_notifications insert failed: ${notificationError.message}`,
+        );
+      }
       notified++;
     }
 

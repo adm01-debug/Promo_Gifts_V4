@@ -1,4 +1,5 @@
 import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { m as motion } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 import { performanceTracker } from '@/utils/performance';
 

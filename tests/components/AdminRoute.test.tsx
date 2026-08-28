@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import type { ReactElement } from 'react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { AdminRoute } from '@/components/layout/AdminRoute';
 
@@ -8,7 +9,18 @@ vi.mock('@/contexts/AuthContext', () => ({
   useAuth: () => mockUseAuth(),
 }));
 
-function renderWithRouter(ui: React.ReactElement, initialRoute = '/admin') {
+// O contrato deste spec é o gate de rota; os diálogos MFA têm suas próprias
+// suítes. Sem estes mocks, os dois ramos MFA iniciam imports lazy reais que
+// carregam o client Supabase depois da asserção e podem escrever no console
+// durante o teardown do worker do Vitest.
+vi.mock('@/components/security/MfaEnrollmentDialog', () => ({
+  MfaEnrollmentDialog: () => null,
+}));
+vi.mock('@/components/security/MfaChallengeDialog', () => ({
+  MfaChallengeDialog: () => null,
+}));
+
+function renderWithRouter(ui: ReactElement, initialRoute = '/admin') {
   return render(
     <MemoryRouter initialEntries={[initialRoute]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Routes>

@@ -71,9 +71,13 @@ vi.mock('sonner', () => ({
   toast: { success: vi.fn(), error: vi.fn(), info: vi.fn(), warning: vi.fn() },
 }));
 
-vi.mock('@/lib/security/sanitize-error', () => ({
-  sanitizeError: (e: Error) => e.message,
-}));
+vi.mock('@/lib/security/sanitize-error', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    sanitizeError: (e: Error) => e.message,
+  };
+});
 
 import { SellerCartProvider, useSellerCartContext } from '../SellerCartContext';
 import type { SellerCart } from '@/hooks/products';

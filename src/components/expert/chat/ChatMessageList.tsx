@@ -33,7 +33,7 @@ interface ChatMessageListProps {
   clientId?: string;
   clientName?: string;
   conversationsCount: number;
-  scrollRef: RefObject<HTMLDivElement>;
+  scrollRef: RefObject<HTMLDivElement | null>;
   onScroll: () => void;
   onScrollToBottom: () => void;
   onAutoSend: (text: string) => void;
@@ -343,8 +343,7 @@ export function ChatMessageList({
                       {
                         emoji: '💬',
                         label: 'Msg WhatsApp',
-                        prompt:
-                          'Crie uma mensagem para enviar a este cliente por WhatsApp.',
+                        prompt: 'Crie uma mensagem para enviar a este cliente por WhatsApp.',
                       },
                     ]
                   : []),

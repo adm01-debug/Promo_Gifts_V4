@@ -18,7 +18,7 @@ export function useRecentlyViewed() {
   // and when addToRecentlyViewed is called again before the previous 1s window
   // has elapsed. Previously setTimeout was called without storing the id,
   // leaving a pending callback that would fire after unmount.
-  const dedupeTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const dedupeTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     try {

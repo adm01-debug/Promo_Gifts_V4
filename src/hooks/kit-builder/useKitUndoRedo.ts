@@ -32,7 +32,7 @@ export function useKitUndoRedo() {
   // would fire and attempt to mutate a ref on a component that may have been
   // destroyed. Also: if undo was called rapidly, multiple timers could stack,
   // each resetting isRestoringRef independently.
-  const restoreTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const restoreTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   // Cleanup the restore timer on unmount
   useEffect(() => {

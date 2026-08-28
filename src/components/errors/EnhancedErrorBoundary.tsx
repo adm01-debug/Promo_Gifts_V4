@@ -77,7 +77,6 @@ function createErrorId(): string {
   return Math.random().toString(36).slice(2, 10);
 }
 
-
 /**
  * EnhancedErrorBoundary — **único** error boundary canônico do projeto.
  *
@@ -145,7 +144,7 @@ class EnhancedErrorBoundary extends PureComponent<Props, State> {
     if (this.copyTimer) clearTimeout(this.copyTimer);
   }
 
-  private handleLocationChange = () => {
+  private readonly handleLocationChange = () => {
     if (!this.state.hasError) return;
     const current =
       typeof window !== 'undefined' ? window.location.pathname + window.location.search : null;
@@ -172,7 +171,10 @@ class EnhancedErrorBoundary extends PureComponent<Props, State> {
       );
       if (errorInfo.componentStack) {
         // eslint-disable-next-line no-console
-        console.error(`[EnhancedErrorBoundary] component stack ${errorId}:`, errorInfo.componentStack);
+        console.error(
+          `[EnhancedErrorBoundary] component stack ${errorId}:`,
+          errorInfo.componentStack,
+        );
       }
     } catch {
       /* noop */
@@ -253,7 +255,6 @@ class EnhancedErrorBoundary extends PureComponent<Props, State> {
     });
   };
 
-
   handleReload = () => {
     window.location.reload();
   };
@@ -311,7 +312,6 @@ class EnhancedErrorBoundary extends PureComponent<Props, State> {
       /* noop */
     }
   };
-
 
   override render() {
     if (this.state.isAutoRecovering) {
@@ -381,7 +381,8 @@ class EnhancedErrorBoundary extends PureComponent<Props, State> {
                   impressa no console e enviada à telemetria. */}
               {errorId && (
                 <p className="font-mono text-[11px] text-muted-foreground/70">
-                  código do incidente: <span data-testid="error-boundary-incident-id">{errorId}</span>
+                  código do incidente:{' '}
+                  <span data-testid="error-boundary-incident-id">{errorId}</span>
                 </p>
               )}
               {/* Copiar detalhes técnicos (clipboard, não renderizado na tela)
@@ -397,7 +398,6 @@ class EnhancedErrorBoundary extends PureComponent<Props, State> {
                 {copied ? 'Detalhes copiados' : 'Copiar detalhes para o suporte'}
               </button>
             </div>
-
 
             {/* Error message — restrito a usuários `dev` (gate de infra). Não-dev veem apenas a copy amigável acima. */}
             {error?.message && (

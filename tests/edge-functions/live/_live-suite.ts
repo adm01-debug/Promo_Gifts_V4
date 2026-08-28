@@ -147,15 +147,19 @@ export function runLiveSuite(desc: LiveSuiteDescriptor): void {
     // Happy-path só p/ funções não-destrutivas — ou destrutivas que suportam
     // dry-run seguro (read-only). Nunca disparar efeito real.
     if (hp && (!isDestructive(fn) || SUPPORTS_DRY_RUN.has(fn))) {
-      it("happy-path → status esperado + shape válido", async () => {
+      it("happy-path → status esperado + shape válido", async (ctx) => {
         if (hp.costly && !ALLOW_COSTLY) {
           // Geração cara: pular sem credencial/flag explícita.
+          ctx.skip();
           return;
         }
         const hpRole = hp.role ?? role;
         if (hpRole !== "anon") {
           const jwt = await getJwt(hpRole);
-          if (!jwt) return; // sem conta de teste p/ esse tier → skip gracioso
+          if (!jwt) {
+            ctx.skip();
+            return;
+          }
         }
         const res = await callEdge(fn, {
           method: hp.method ?? method,

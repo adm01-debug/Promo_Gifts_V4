@@ -180,12 +180,18 @@ describe('Analise estatica — mockupGenerationService.ts', () => {
     it('funcao assertNotSvg definida', () => {
       expect(src).toContain('function assertNotSvg');
     });
-    it('assertNotSvg chamada antes de supabase.functions.invoke', () => {
-      const assertPos = src.indexOf('assertNotSvg');
-      const invokePos = src.indexOf('supabase.functions.invoke');
-      expect(assertPos).toBeGreaterThan(-1);
-      expect(invokePos).toBeGreaterThan(-1);
-      expect(assertPos).toBeLessThan(invokePos);
+    it('valida SVG antes do caminho que invoca a edge function', () => {
+      const generateMockupApiBlock = src.split('export async function generateMockupApi')[1];
+      expect(generateMockupApiBlock).toBeDefined();
+
+      const validationPos = generateMockupApiBlock.indexOf('assertNotSvg(areasWithLogos)');
+      const invocationPos = generateMockupApiBlock.indexOf(
+        'invokeMockupForArea(params, areasWithLogos[0])',
+      );
+
+      expect(validationPos).toBeGreaterThan(-1);
+      expect(invocationPos).toBeGreaterThan(-1);
+      expect(validationPos).toBeLessThan(invocationPos);
     });
     it('detecta data URL SVG', () => {
       expect(src).toMatch(/area\.logoPreview\??\.\s*startsWith\('data:image\/svg'\)/);

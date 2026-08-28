@@ -1,9 +1,5 @@
 {
-  "generatedAt": "2026-07-24T11:41:09.170Z",
+  "generatedAt": "2026-08-26T19:15:00.000Z",
   "totalErrors": 0,
-  "counts": {
-    "src/lib/auth/safeAuthCall.ts": {
-      "@typescript-eslint/naming-convention": 1
-    }
-  }
+  "counts": {}
 }

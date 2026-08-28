@@ -58,19 +58,21 @@ jobs:
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-        run: npm run check:lint-0029
+        # Sem leitura live verificável, o resultado deve ser inconclusivo (exit
+        # 2), não um gate verde por ausência de segredo em PR/fork.
+        run: npm run check:lint-0029 -- --require-live
 
       - name: 🧪 Supabase lint 0011 drift gate (function_search_path_mutable)
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-        run: npm run check:lint-0011
+        run: npm run check:lint-0011 -- --require-live
 
       - name: 🚨 SECURITY DEFINER anon exposure gate
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-        run: npm run check:secdef-anon
+        run: npm run check:secdef-anon -- --require-live
 
       - name: 📚 Allowlist ↔ security-memory cross-check
         run: npm run check:allowlist-memory

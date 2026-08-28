@@ -104,23 +104,23 @@ describe('resolveSafeReturnPath — deep link / referrer curto', () => {
 
   it('rota lembrada igual à rota bloqueada → "/" (quebra loop)', () => {
     // Cenário defensivo: storage corrompido/manual com a própria rota gated.
-    window.sessionStorage.setItem('mfa-last-internal-route:' + USER, '/admin/usuarios');
+    window.sessionStorage.setItem(`mfa-last-internal-route:${USER}`, '/admin/usuarios');
     expect(resolveSafeReturnPath(USER, '/admin/usuarios')).toBe('/');
   });
 
   it('rota lembrada com query da própria rota bloqueada → "/"', () => {
-    window.sessionStorage.setItem('mfa-last-internal-route:' + USER, '/dev/status?tab=1');
+    window.sessionStorage.setItem(`mfa-last-internal-route:${USER}`, '/dev/status?tab=1');
     expect(resolveSafeReturnPath(USER, '/dev/status')).toBe('/');
   });
 
   it('storage com valor gated (injeção manual) é ignorado na leitura', () => {
-    window.sessionStorage.setItem('mfa-last-internal-route:' + USER, '/admin/secrets');
+    window.sessionStorage.setItem(`mfa-last-internal-route:${USER}`, '/admin/secrets');
     expect(getLastInternalRoute(USER)).toBeNull();
     expect(resolveSafeReturnPath(USER, '/dev/status')).toBe('/');
   });
 
   it('storage com URL absoluta externa é ignorado (open redirect)', () => {
-    window.sessionStorage.setItem('mfa-last-internal-route:' + USER, 'https://evil.example/');
+    window.sessionStorage.setItem(`mfa-last-internal-route:${USER}`, 'https://evil.example/');
     expect(resolveSafeReturnPath(USER, '/admin')).toBe('/');
   });
 
@@ -175,7 +175,7 @@ describe('sequências de navegação (simulação de stack)', () => {
       const current = paths[Math.floor(Math.random() * paths.length)];
       // metade grava via API (com filtro), metade injeta cru no storage
       if (i % 2 === 0) rememberLastInternalRoute(USER, remembered);
-      else window.sessionStorage.setItem('mfa-last-internal-route:' + USER, remembered);
+      else window.sessionStorage.setItem(`mfa-last-internal-route:${USER}`, remembered);
 
       const dest = resolveSafeReturnPath(USER, current);
       expect(isSafeReturnPath(dest)).toBe(true);

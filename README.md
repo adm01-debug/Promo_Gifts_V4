@@ -2,8 +2,8 @@
 
 > Sistema completo de catálogo, orçamentos, simulação de preços e inteligência comercial para vendedores de brindes promocionais.
 
-[![Stack](https://img.shields.io/badge/Stack-React%2018%20%2B%20TypeScript%205%20%2B%20Supabase-blue)]()
-[![Build](https://img.shields.io/badge/Build-Vite%205-purple)]()
+[![Stack](https://img.shields.io/badge/Stack-React%2019%20%2B%20TypeScript%205%20%2B%20Supabase-blue)]()
+[![Build](https://img.shields.io/badge/Build-Vite%208-purple)]()
 [![Design](https://img.shields.io/badge/UI-Tailwind%20CSS%20%2B%20shadcn%2Fui-cyan)]()
 [![Stock Rupture E2E](https://github.com/promo-gifts/promo-gifts-v4/actions/workflows/stock-rupture-horizon-e2e.yml/badge.svg)](https://github.com/promo-gifts/promo-gifts-v4/actions/workflows/stock-rupture-horizon-e2e.yml)
 
@@ -49,7 +49,7 @@
 
 | Camada | Tecnologia |
 |---|---|
-| **Frontend** | React 18, TypeScript 5 (strict mode), Vite 5 |
+| **Frontend** | React 19, TypeScript 5 (strict mode), Vite 8 |
 | **Estilização** | Tailwind CSS 3, shadcn/ui, Framer Motion |
 | **Estado** | TanStack Query (server state), Zustand (client state) |
 | **Backend** | Supabase (Auth, DB, Storage, Edge Functions) |
@@ -65,7 +65,7 @@
 ```
 ┌─────────────────────────────────────────────────┐
 │                   Frontend (SPA)                 │
-│  React 18 + TypeScript + TanStack Query          │
+│  React 19 + TypeScript + TanStack Query          │
 ├─────────────────────────────────────────────────┤
 │              Supabase Edge Functions             │
 │  expert-chat │ external-db-bridge │ mockup-gen   │
@@ -88,8 +88,8 @@
 
 ### Pré-requisitos
 
-- **Node.js 20+** (testado em 22.x)
-- **npm 10+** (gerenciador oficial deste projeto)
+- **Node.js 20.20.2** no CI (fixado em `.nvmrc`); versões suportadas em `engines.node` também são aceitas localmente
+- **npm 10.9.7** via Corepack (gerenciador canônico do projeto)
 - Conta no **Supabase** (3 projetos: principal, externo de catálogo e CRM)
 - Acesso ao repositório e às chaves dos serviços externos (CNPJá, etc.)
 
@@ -98,7 +98,8 @@
 ```bash
 git clone <repo-url>
 cd promo-brindes
-npm install
+corepack enable
+corepack npm ci
 ```
 
 ### 2. Configurar Supabase
@@ -180,6 +181,7 @@ npx supabase secrets set EXTERNAL_SUPABASE_URL="https://..." \
 npm run dev          # http://localhost:8080
 npm run test         # Vitest
 npm run build        # build de produção
+npm run check:runtime # confirma Node/npm e o package manager canônico
 ```
 
 ### Comandos disponíveis
@@ -215,7 +217,7 @@ Specs de snapshot rodam contra harnesses públicas (`/__test/alert-dialog`, `/__
 
 **Bootstrap (1x por máquina):**
 ```bash
-npm run e2e:bootstrap        # bun install --frozen-lockfile + playwright install --with-deps chromium
+npm run e2e:bootstrap        # npm ci + playwright install --with-deps chromium
 ```
 
 **Rodar os specs (valida contra baselines PNG atuais):**
@@ -836,5 +838,3 @@ acima. Para regravar baselines no CI use `workflow_dispatch` com
 (use com cuidado, sempre revise o diff). Falhas publicam o artifact
 `customization-collapse-e2e` com `test-results/` (diffs antes/depois) e o
 relatório HTML do Playwright.
-
-
