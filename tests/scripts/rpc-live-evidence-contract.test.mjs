@@ -78,7 +78,7 @@ function runCheck(script, { url, includeCredentials = true } = {}) {
 }
 
 describe("RPC live-evidence checks", () => {
-  it("classifica information_schema indisponível como inconclusivo em modo live obrigatório", async () => {
+  it("classifica uma negativa sem prova 42501 como inconclusiva em modo live obrigatório", async () => {
     const url = await startServer((_request, response) => json(response, 403, { message: "forbidden" }));
 
     const outcome = await runCheck("check-rpc-permissions.mjs", { url });
@@ -86,20 +86,20 @@ describe("RPC live-evidence checks", () => {
     expect(outcome.exitCode).toBe(2);
     expect(outcome.result).toMatchObject({
       status: "inconclusive",
-      reason: "http_error",
+      reason: "unverified_denial",
       httpStatus: 403,
     });
   });
 
-  it("aprova permissões apenas após receber grants live verificáveis", async () => {
+  it("aprova a permissão apenas após anon receber a negativa 42501 da RPC exata", async () => {
     const url = await startServer((request, response) => {
       expect(new URL(request.url, "http://fixture").pathname).toBe(
-        "/rest/v1/information_schema.routine_privileges",
+        "/rest/v1/rpc/get_profile_and_roles",
       );
-      json(response, 200, [
-        { grantee: "authenticated", privilege_type: "EXECUTE" },
-        { grantee: "service_role", privilege_type: "EXECUTE" },
-      ]);
+      json(response, 401, {
+        code: "42501",
+        message: "permission denied for function get_profile_and_roles",
+      });
     });
 
     const outcome = await runCheck("check-rpc-permissions.mjs", { url });
@@ -107,7 +107,22 @@ describe("RPC live-evidence checks", () => {
     expect(outcome.exitCode).toBe(0);
     expect(outcome.result).toMatchObject({
       status: "passed",
-      reason: "live_permissions_verified",
+      reason: "anon_denied_live",
+      httpStatus: 401,
+      postgrestCode: "42501",
+    });
+  });
+
+  it("falha quando anon consegue alcançar a execução da RPC", async () => {
+    const url = await startServer((_request, response) => json(response, 200, { profile: null, roles: [] }));
+
+    const outcome = await runCheck("check-rpc-permissions.mjs", { url });
+
+    expect(outcome.exitCode).toBe(1);
+    expect(outcome.result).toMatchObject({
+      status: "failed",
+      reason: "permission_violation",
+      httpStatus: 200,
     });
   });
 
