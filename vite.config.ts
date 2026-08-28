@@ -15,7 +15,6 @@ import { visualizer } from 'rollup-plugin-visualizer';
  */
 export default defineConfig(({ mode }) => {
   const isProd = mode === 'production';
-  const uploadSourcemaps = isProd && !!process.env.SENTRY_AUTH_TOKEN;
 
   const config: UserConfig & { test?: any } = {
     plugins: [
@@ -39,7 +38,12 @@ export default defineConfig(({ mode }) => {
 
     build: {
       outDir: 'dist',
-      sourcemap: uploadSourcemaps ? 'hidden' : false,
+      // Não gere source maps órfãos. O plugin de upload foi removido do
+      // toolchain, então SENTRY_AUTH_TOKEN sozinho apenas colocava os .map no
+      // deploy público e fazia o gate confundir código tree-shaken com runtime.
+      // Ao restaurar um uploader, ele deve apagar os mapas após o envio antes
+      // de check-production-harnesses e do empacotamento da Vercel.
+      sourcemap: false,
       minify: 'oxc',
       target: 'esnext',
       chunkSizeWarningLimit: 2000,
