@@ -1,6 +1,5 @@
-import "https://deno.land/std@0.224.0/dotenv/load.ts";
 import { assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
-import { z } from "https://deno.land/x/zod@v3.23.8/mod.ts";
+import { z } from "../_shared/contracts/_zod.ts";
 
 // Mirror the schema from the function
 const BodySchema = z.object({
@@ -55,9 +54,9 @@ function assertPredictableValidationError(
 }
 
 Deno.test("rejects empty body", () => {
-  assertPredictableValidationError({}, ["productImageUrl", "scenePrompt"], [
-    "Either logoBase64 or logoUrl must be provided",
-  ]);
+  // Zod does not execute the object-level refine while required base fields
+  // are invalid; the two required field errors are therefore the contract.
+  assertPredictableValidationError({}, ["productImageUrl", "scenePrompt"]);
 });
 
 Deno.test("required fields - missing cases", () => {
