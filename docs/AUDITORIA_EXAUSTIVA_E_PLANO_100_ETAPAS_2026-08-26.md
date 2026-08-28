@@ -915,9 +915,43 @@ ou aplicada.
 - [ ] O workflow CRM no-mock permanece corretamente bloqueado: faltam no GitHub
   os secrets `CRM_CALLBACK_API_KEY`, `E2E_ADMIN_EMAIL` e
   `E2E_ADMIN_PASSWORD`. O gate não foi convertido em skip/falso verde.
-- [ ] O CodeQL continua dependente de habilitar code scanning no repositório e o
-  Vercel recusou a criação automática do preview antes do build; ambos exigem
-  configuração externa, não alteração funcional no código.
+- [ ] O CodeQL continua dependente de habilitar code scanning no repositório.
+  O bloqueio anterior do Vercel foi resolvido e está documentado no fechamento
+  final abaixo.
+
+### Fechamento final de GitHub e produção em 28/08/2026
+
+- [x] O PR #1800 foi mesclado em `main` no commit
+  `050678a44694487b5311b7f008fde23e1863baef`, preservando o SSOT
+  `doufsxqlfjyuvxuezpln`, os campos críticos de `Product` e todo o histórico de
+  migrations sem replay ou reescrita.
+- [x] O primeiro deploy desse merge concluiu o build, mas o gate de produção
+  encontrou textos de harness somente em source maps ocultos. A causa foi
+  reproduzida: `SENTRY_AUTH_TOKEN` ativava `sourcemap: hidden`, embora o projeto
+  não possuísse uploader/plugin do Sentry, deixando mapas órfãos no artefato.
+- [x] O PR #1801 corrigiu o contrato: enquanto não houver uploader que remova os
+  mapas após o envio, a produção usa `sourcemap: false`. Um teste de configuração
+  impede regressão para o gatilho incompleto baseado apenas no token. O hotfix
+  foi mesclado em `main` no commit
+  `8c9d71f993a6e0ae80c84c07dfdf6370e38b9e50`.
+- [x] A reprodução local com `SENTRY_AUTH_TOKEN` fictício passou no build e em
+  `check-production-harnesses`, sem gerar `.map`. O deployment Vercel
+  `dpl_ExqmBED9pweaSeyHCDic42CqxU6Z` do merge #1801 ficou `READY` e recebeu os
+  aliases `promogifts.com.br`, `www.promogifts.com.br`,
+  `promo-gifts-v4-juca1.vercel.app` e o alias de `main`.
+- [x] Smokes HTTP no domínio oficial retornaram 200 com HTML em `/`, `/auth`,
+  `/produtos`, `/categorias` e `/contato`. O JavaScript publicado contém o ID
+  canônico e não contém o ID legado nem URL HTTP/WSS para o projeto proibido.
+  A única ocorrência do ID legado no HTML é um comentário explicando a remoção
+  do antigo preconnect; não há referência executável.
+- [ ] Os jobs novos do GitHub Actions continuam impedidos de iniciar pelo limite
+  de budget da conta. Isso não foi tratado como verde: a validação equivalente
+  foi executada localmente, mas a evidência hospedada depende da renovação ou
+  ampliação do budget.
+- [ ] Continuam externos ao código: habilitar CodeQL/code scanning, cadastrar
+  `CRM_CALLBACK_API_KEY`, `E2E_ADMIN_EMAIL` e `E2E_ADMIN_PASSWORD`, endurecer o
+  ruleset com status checks/aprovações e obter validação nominal do PO para
+  limpezas, canários mutantes, regressão visual e alterações futuras de banco.
 
 ## Critério para encerrar a estabilização
 
