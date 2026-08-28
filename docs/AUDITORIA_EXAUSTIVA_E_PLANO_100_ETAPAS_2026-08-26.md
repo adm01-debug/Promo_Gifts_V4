@@ -772,6 +772,118 @@ configuração remota foi alterado.
   mutante, canário de negócio e rollback exercitado continuam pendentes.
 - [ ] Itens com `[VALIDAÇÃO PO]` não foram apagados, aposentados ou “limpos”.
 
+## Continuação forward-only validada em 28/08/2026
+
+Esta continuação usa a worktree isolada
+`/tmp/promo-gifts-codex-completion-20260828`, branch
+`codex/plan-100-forward-only-20260828`, sobre o merge canônico
+`bf16e5eb4` do PR #1799. O worktree principal compartilhado com Claude/Hermes
+permaneceu intocado. Nenhuma migration histórica foi editada, renomeada, apagada
+ou aplicada.
+
+### Cenários simulados antes das novas correções
+
+- [x] Restauração do dump estrutural canônico em PostgreSQL 17 descartável:
+  391 tabelas, 196 views/materialized views, 1.280 funções e 15 enums
+  reconstruídos; as materialized views foram atualizadas com sucesso. O único
+  encerramento não reproduzido foi um event trigger de plataforma ausente na
+  imagem descartável, sem perda dos objetos de aplicação já carregados.
+- [x] `fn_rupture_health_check()` e `fn_rupture_quick_stats()` foram executadas
+  no banco descartável, incluindo o estado vazio; nenhuma chamada atingiu o
+  banco canônico.
+- [x] O ledger canônico foi exportado por acesso somente leitura para arquivo
+  temporário e saneado antes de versionar: nenhum SQL, rollback, autor, chave de
+  idempotência, dado ou segredo bruto foi incluído no repositório.
+- [x] O replay integral de `supabase/migrations` foi rejeitado como cenário
+  inseguro: o ledger e o diretório local não são equivalentes por versão nem por
+  bytes. Portanto, `supabase db push` continua proibido nesta árvore legada.
+
+### Contratos, código e Edge Functions concluídos
+
+- [x] `src/integrations/supabase/types.ts` foi regenerado diretamente do projeto
+  canônico. O contrato passou de 158 tabelas/5 views para 391 tabelas/196 views,
+  preservando todas as relações protegidas pelo `AGENTS.md` e os campos críticos
+  de `Product`.
+- [x] Os hooks EMA deixaram de depender da RPC inexistente
+  `fn_ema_pipeline_health`. A nova Edge Function `ema-pipeline-health`, protegida
+  pela autorização central de papel `dev`, agrega as RPCs canônicas já existentes
+  e possui contrato de handler e descritor live.
+- [x] O manifesto de autorização cobre 107/107 Edge Functions e a suíte live
+  possui descritor para 106/106 funções implantáveis; o diretório `_shared` não é
+  uma função implantável.
+- [x] `crm-callback-alerts` agora exige Bearer de `service_role` em comparação de
+  tempo constante mesmo com `verify_jwt=false`, mantendo compatibilidade com o
+  cron existente.
+- [x] Erros de parsing/import em `generate-ad-image`,
+  `market-intelligence-insights` e quatro specs Playwright foram corrigidos. A
+  coleção completa agora encontra 28.360 casos em 516 arquivos sem erro de
+  sintaxe/import.
+- [x] Logger, structured logger e tooltip passaram a tolerar execução Node sem
+  `import.meta.env`, eliminando falhas de coleta/teste sem alterar runtime web.
+- [x] O teste de ordenação de filtros passou a isolar `useColorSystem`; a consulta
+  assíncrona que escapava depois do `afterEach` não gera mais tentativa de rede
+  nem `console.error` tardio sob `STRICT_TEST_SIDE_EFFECTS=1`.
+
+### Dependências, CI, SEO e acessibilidade
+
+- [x] Instalação limpa real com `npm ci` aprovou 888 pacotes sem
+  `--legacy-peer-deps`; `npm ls --depth=0` ficou íntegro. Node foi fixado em
+  22.22.1 no projeto e nos workflows.
+- [x] `nanoid` foi fixado em versão corrigida. Permanecem duas vulnerabilidades
+  altas transitivas em `image-size`/`pptxgenjs`, sem correção publicada na versão
+  atual do pacote pai; não foram mascaradas nem aceitas como resolvidas.
+- [x] Todos os workflows passam no `actionlint`. Foram corrigidos contextos
+  inválidos de `matrix`, interpolação insegura de mensagem de commit, chaves YAML
+  duplicadas, combinação ilegal de `paths`/`paths-ignore` e configuração quebrada
+  de dry-run/lock do workflow visual.
+- [x] O gate de restauração de carrinho usa a assinatura real
+  `restore_seller_cart(jsonb)`, exige `service_role` no modo estrito e valida o
+  contrato antes de qualquer escrita; o falso negativo via `anon` foi removido.
+- [x] O `canonical` estático e o `PageSEO` passaram a compartilhar um único nó
+  por rota, eliminando URLs conflitantes. O progressbar do live region recebeu
+  nome e texto acessíveis. Três execuções Lighthouse consecutivas em `/auth`
+  obtiveram performance 0,89, acessibilidade 1,00, boas práticas 1,00 e SEO 1,00.
+
+### Evidências reproduzidas após instalação limpa
+
+- [x] `npm run qa:full` — runtime, catálogo, migration gate, lint baseline,
+  typecheck e ESLint verdes.
+- [x] `npm run test:ci-core` — 38 arquivos e 887 testes verdes.
+- [x] `npm run test:edge:integration:all` — 40 arquivos e 969 testes verdes.
+- [x] `npm run build` — build Vite 8 verde, guarda canônica e ausência de harness
+  produtivo confirmadas.
+- [x] `npx playwright test --list` — 28.360 casos coletados em 516 arquivos.
+- [x] `actionlint .github/workflows/*.yml` e `git diff --check` — verdes.
+- [x] Manifesto do ledger sanitizado em
+  `docs/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json`: 2.354 versões,
+  114 matches exatos em bytes, 993 matches somente por versão, 1.247 versões sem
+  arquivo local e 531 arquivos versionados locais sem versão no ledger.
+
+### Estado remoto e limites que continuam explícitos
+
+- [x] O PR #1799 foi mesclado em `main` no commit `bf16e5eb4`; a afirmação
+  histórica acima de que ele ainda estava aberto foi superada por este registro.
+- [x] A capacidade do GitHub Actions está ativa e os jobs realmente executam.
+  As causas reproduzíveis centrais do PR #1799 — OOM, coleta E2E, integração Edge,
+  Bun lock, typecheck de magazine, restauração de carrinho e Lighthouse — foram
+  corrigidas nesta branch.
+- [ ] O repositório não possui Required Checks/branch protection efetivos na API;
+  isso exige decisão administrativa antes de tornar `main` tecnicamente
+  bloqueante.
+- [ ] O upload do CodeQL continua bloqueado porque code scanning não está
+  habilitado nas configurações do repositório (HTTP 403). O workflow não foi
+  enfraquecido para esconder o problema.
+- [ ] As quatro Edge Functions alteradas nesta continuação ainda não foram
+  implantadas: `ema-pipeline-health`, `crm-callback-alerts`,
+  `generate-ad-image` e `market-intelligence-insights`. O deploy só ocorrerá
+  depois de os bytes entrarem no GitHub e passarem no novo PR.
+- [ ] Nenhum DDL/DML/grant/policy/job foi aplicado ao Supabase canônico. O
+  catálogo demonstrou que nenhuma migration forward-only adicional é necessária
+  para as correções desta continuação; mudanças futuras de RLS/ACL/jobs continuam
+  dependendo de autorização específica por objeto.
+- [ ] Nenhum candidato de limpeza foi removido. Logos, relatórios, snapshots,
+  fixtures e migrations permanecem preservados até `[VALIDAÇÃO PO]` nominal.
+
 ## Critério para encerrar a estabilização
 
 O sistema estará tecnicamente pronto quando houver instalação limpa sem flags permissivas, build/typecheck/lint/testes verdes, CI realmente executando, contratos DB↔TypeScript sincronizados, zero referência executável a objeto inexistente, migrations reproduzíveis em banco descartável, fluxos críticos aprovados pelo PO, regressão visual sem alteração indesejada e rollback testado.

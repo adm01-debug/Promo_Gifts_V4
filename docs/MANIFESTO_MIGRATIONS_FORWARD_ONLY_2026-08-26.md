@@ -679,3 +679,39 @@ Até lá, o estado correto é: **manifesto local íntegro; equivalência global 
 | Banco/deploy | nenhuma chamada ou mutação executada |
 
 O gate de referências não foi “verdeado” nesta entrega porque o escopo proíbe editar os 32 pares de origem. O resultado vermelho é evidência preservada, não falha mascarada por atualização de baseline.
+
+## 14. Addendum somente leitura — ledger canônico de 28/08/2026
+
+A lacuna de evidência descrita nas seções 3.3 e 11 foi parcialmente fechada sem
+mutar produção. O Supabase CLI ligado a `doufsxqlfjyuvxuezpln` exportou os dados de
+`supabase_migrations` para um arquivo temporário. Esse arquivo bruto não foi
+versionado, pois contém os SQLs históricos e poderia carregar material sensível.
+
+O arquivo versionado
+`docs/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json` guarda somente versão,
+nome, cardinalidade, SHA-256 por statement, SHA-256 da concatenação ordenada e
+presença booleana de metadados. `statements`, `rollback`, `created_by` e
+`idempotency_key` foram explicitamente excluídos.
+
+| Medida viva | Resultado |
+|---|---:|
+| Entradas/versões distintas no ledger | 2.354 / 2.354 |
+| Intervalo | `001` a `20260718135800` |
+| Entradas com match local exato em bytes | 114 |
+| Entradas com versão local, sem igualdade exata | 993 |
+| Entradas sem versão local | 1.247 |
+| Entradas com `statements IS NULL` | 428 |
+| Entradas com array de statements vazio | 55 |
+| Arquivos locais versionados sem versão no ledger | 531 |
+| Raiz SHA-256 das entradas sanitizadas | `f656c556cf46dc0e915f4899317880f84f7d7aed11ea20ff15ba2886b71e8be2` |
+
+A etapa 81 agora possui o inventário completo e hashes brutos por statement. Ela
+ainda não está encerrada semanticamente: 993 matches nominais exigem comparação
+normalizada/de efeito, 1.247 versões ledger-only precisam de proveniência e 531
+arquivos local-only não podem ser chamados de pendentes sem prova. Revisão DBA e
+effect fingerprint continuam obrigatórios.
+
+Em paralelo, o dump estrutural canônico foi restaurado em PostgreSQL 17
+descartável e reconstruiu 391 tabelas, 196 views/materialized views, 1.280 funções
+e 15 enums. Isso valida a fotografia estrutural, não transforma o diretório legado
+em uma cadeia replayável. O freeze e a proibição de `supabase db push` permanecem.
