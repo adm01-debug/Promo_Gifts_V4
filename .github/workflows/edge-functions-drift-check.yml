@@ -106,21 +106,20 @@ jobs:
 
           for slug in $(comm -12 /tmp/repo_slugs.txt /tmp/canonical_slugs.txt); do
             target_dir="/tmp/canonical_download/$slug"
-            mkdir -p "$target_dir"
+            mkdir -p "$target_dir/supabase"
 
             if ! supabase functions download "$slug" \
                   --project-ref "$SUPABASE_PROJECT_REF" \
-                  --no-verify-jwt \
-                  --legacy-bundle false \
-                  --output-dir "$target_dir" > /tmp/dl.log 2>&1; then
-              echo "::warning::Falha ao baixar $slug"
+                  --use-api \
+                  --workdir "$target_dir" > /tmp/dl.log 2>&1; then
+              echo "::warning::Falha ao baixar $slug: $(tail -n 1 /tmp/dl.log)"
               missing_in_dl=$((missing_in_dl+1))
               echo "$slug,download_failed,,," >> /tmp/drift_report.csv
               continue
             fi
 
             repo_file="supabase/functions/$slug/index.ts"
-            canon_file="$target_dir/index.ts"
+            canon_file="$target_dir/supabase/functions/$slug/index.ts"
             if [ ! -f "$canon_file" ]; then
               canon_file="$(find "$target_dir" -name index.ts -print -quit || true)"
             fi
@@ -172,19 +171,27 @@ jobs:
           path: /tmp/drift_report.csv
 
       - name: Comment on PR (drift)
-        if: github.event_name == 'pull_request' && (steps.hash_diff.outputs.drift_count != '0' || steps.slug_diff.outputs.has_orphans == 'true' || steps.slug_diff.outputs.has_missing == 'true')
+        if: github.event_name == 'pull_request' && (steps.hash_diff.outputs.drift_count != '0' || steps.hash_diff.outputs.missing_in_dl != '0' || steps.slug_diff.outputs.has_orphans == 'true' || steps.slug_diff.outputs.has_missing == 'true')
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
             const csv = fs.readFileSync('/tmp/drift_report.csv', 'utf-8');
             const drifted = csv.split('\n').filter(l => l.includes(',DRIFT,'));
+            const downloadFailed = csv.split('\n').filter(l => l.includes(',download_failed,'));
             const orphans = fs.readFileSync('/tmp/orphans.txt', 'utf-8').trim();
             const missing = fs.readFileSync('/tmp/missing_deploy.txt', 'utf-8').trim();
             let body = '## 🛡️ Drift check — GitHub × Supabase\n\n';
             if (drifted.length > 0) {
               body += `**🟧 ${drifted.length} function(s) com conteúdo divergente:**\n\n`;
               for (const line of drifted) {
+                body += `- \`${line.split(',')[0]}\`\n`;
+              }
+              body += '\n';
+            }
+            if (downloadFailed.length > 0) {
+              body += `**⚠️ ${downloadFailed.length} função(ões) sem comparação por falha de download:**\n\n`;
+              for (const line of downloadFailed) {
                 body += `- \`${line.split(',')[0]}\`\n`;
               }
               body += '\n';
@@ -204,15 +211,16 @@ jobs:
             });
 
       - name: Open issue (scheduled drift)
-        if: github.event_name == 'schedule' && (steps.hash_diff.outputs.drift_count != '0' || steps.slug_diff.outputs.has_orphans == 'true' || steps.slug_diff.outputs.has_missing == 'true')
+        if: github.event_name == 'schedule' && (steps.hash_diff.outputs.drift_count != '0' || steps.hash_diff.outputs.missing_in_dl != '0' || steps.slug_diff.outputs.has_orphans == 'true' || steps.slug_diff.outputs.has_missing == 'true')
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
             const csv = fs.readFileSync('/tmp/drift_report.csv', 'utf-8');
             const drifted = csv.split('\n').filter(l => l.includes(',DRIFT,'));
+            const downloadFailed = csv.split('\n').filter(l => l.includes(',download_failed,'));
             const today = new Date().toISOString().slice(0,10);
-            const title = `[drift-check] ${drifted.length} function(s) divergentes em ${today}`;
+            const title = `[drift-check] ${drifted.length} divergência(s), ${downloadFailed.length} download(s) inconclusivo(s) em ${today}`;
             const existing = await github.rest.issues.listForRepo({
               owner: context.repo.owner, repo: context.repo.repo,
               state: 'open', labels: 'drift-check'
@@ -220,6 +228,7 @@ jobs:
             const dup = existing.data.find(i => i.title.startsWith('[drift-check]'));
             const body = `Detectadas ${drifted.length} divergências no cron diário.\n\n` +
                          drifted.map(l => `- \`${l.split(',')[0]}\``).join('\n') +
+                         (downloadFailed.length ? `\n\nDownloads inconclusivos: ${downloadFailed.map(l => `\`${l.split(',')[0]}\``).join(', ')}` : '') +
                          '\n\nVer artefato `drift-report` desta execução para os hashes.';
             if (dup) {
               await github.rest.issues.createComment({
@@ -240,7 +249,7 @@ jobs:
       # enforce após primeira execução limpa.
       # ---------------------------------------------------------------
       - name: Fail if drift detected
-        if: steps.hash_diff.outputs.drift_count != '0' || steps.slug_diff.outputs.has_orphans == 'true' || steps.slug_diff.outputs.has_missing == 'true'
+        if: steps.hash_diff.outputs.drift_count != '0' || steps.hash_diff.outputs.missing_in_dl != '0' || steps.slug_diff.outputs.has_orphans == 'true' || steps.slug_diff.outputs.has_missing == 'true'
         run: |
           echo "::error::Drift detectado entre GitHub e canônico. Veja sumário do job e artefato drift-report.csv."
           echo "::error::Resoluções possíveis:"
