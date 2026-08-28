@@ -1,10 +1,11 @@
 /**
- * useEmaPipelineHealth — RPC `fn_ema_pipeline_health()` retornando status
- * dos componentes do pipeline noturno (crons EMA, mat.view, ETL).
+ * useEmaPipelineHealth — boundary dev `ema-pipeline-health` retornando status
+ * dos componentes do pipeline noturno sem expor RPCs SECURITY DEFINER ao browser.
  * Refresh agressivo (60s) — UI de monitoramento admin.
  */
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import type { EmaHealthResponseV1 } from '@/types/ema-health';
 
 export interface EmaPipelineHealthRow {
   componente: string;
@@ -21,13 +22,21 @@ export function useEmaPipelineHealth() {
     refetchInterval: 60_000,
     retry: 1,
     queryFn: async (): Promise<EmaPipelineHealthRow[]> => {
-      const { data, error } = await (
-        supabase as unknown as {
-          rpc: (n: string) => Promise<{ data: EmaPipelineHealthRow[] | null; error: Error | null }>;
-        }
-      ).rpc('fn_ema_pipeline_health');
+      const { data, error } = await supabase.functions.invoke<EmaHealthResponseV1>(
+        'ema-pipeline-health',
+        { method: 'GET' },
+      );
       if (error) throw error;
-      return data ?? [];
+      if (data?.version !== 1 || !Array.isArray(data.components)) {
+        throw new Error('Resposta inválida de ema-pipeline-health');
+      }
+      return data.components.map((component) => ({
+        componente: component.id,
+        status: component.status,
+        ultima_execucao: component.last_refreshed_at,
+        proxima_execucao: component.next_scheduled_at,
+        detalhe: component.detail,
+      }));
     },
   });
 }
