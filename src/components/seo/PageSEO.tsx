@@ -41,6 +41,30 @@ export const PageSEO = React.forwardRef<HTMLElement, PageSEOProps>(
     const url = path ? `${BASE_URL}${path}` : BASE_URL;
     const image = ogImage || DEFAULT_OG_IMAGE;
 
+    React.useEffect(() => {
+      const selector = 'link[rel="canonical"][data-static-seo="canonical"]';
+      let canonical = document.head.querySelector<HTMLLinkElement>(selector);
+      const created = !canonical;
+
+      if (!canonical) {
+        canonical = document.createElement('link');
+        canonical.rel = 'canonical';
+        canonical.dataset.staticSeo = 'canonical';
+        document.head.append(canonical);
+      }
+
+      const previousHref = canonical.getAttribute('href');
+      canonical.href = url;
+
+      return () => {
+        if (created) {
+          canonical.remove();
+        } else if (previousHref) {
+          canonical.href = previousHref;
+        }
+      };
+    }, [url]);
+
     return (
       <Helmet>
         <title>{fullTitle}</title>
@@ -62,8 +86,6 @@ export const PageSEO = React.forwardRef<HTMLElement, PageSEOProps>(
         <meta name="twitter:description" content={desc} />
         <meta name="twitter:image" content={image} />
         <meta name="twitter:url" content={url} />
-
-        <link rel="canonical" href={url} />
 
         {jsonLd && <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>}
       </Helmet>

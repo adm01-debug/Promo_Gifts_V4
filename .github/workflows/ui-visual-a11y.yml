@@ -21,30 +21,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-node@v4
         with:
-          bun-version: latest
+          node-version-file: .nvmrc
+          cache: npm
       - name: Install
-        run: bun install --frozen-lockfile
+        run: npm ci
       - name: Vitest — ConfirmDialog (responsive + a11y + keyboard + layout)
-        run: bunx vitest run src/components/ui/__tests__/ConfirmDialog.*.test.tsx
+        run: npx vitest run src/components/ui/__tests__/ConfirmDialog.*.test.tsx
       - name: Cache Playwright browsers
         uses: actions/cache@v4
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('bun.lockb', 'package-lock.json', 'package.json') }}
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             playwright-${{ runner.os }}-
       - name: Playwright — install chromium (skip se cache hit)
         run: |
           if [ "${{ steps.playwright-cache.outputs.cache-hit }}" != "true" ]; then
-            bunx playwright install --with-deps chromium
+            npx playwright install --with-deps chromium
           else
-            bunx playwright install-deps chromium
+            npx playwright install-deps chromium
           fi
       - name: Playwright — visual + boundingBox
-        run: bunx playwright test e2e/ui/confirm-dialog-visual.spec.ts
+        run: npx playwright test e2e/ui/confirm-dialog-visual.spec.ts
       - name: Upload Playwright report (screenshots + vídeos + traces)
         if: failure()
         uses: actions/upload-artifact@v4
@@ -60,28 +61,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-node@v4
         with:
-          bun-version: latest
+          node-version-file: .nvmrc
+          cache: npm
       - name: Install
-        run: bun install --frozen-lockfile
+        run: npm ci
       - name: Cache Playwright browsers
         uses: actions/cache@v4
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('bun.lockb', 'package-lock.json', 'package.json') }}
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             playwright-${{ runner.os }}-
       - name: Playwright — install chromium (skip se cache hit)
         run: |
           if [ "${{ steps.playwright-cache.outputs.cache-hit }}" != "true" ]; then
-            bunx playwright install --with-deps chromium
+            npx playwright install --with-deps chromium
           else
-            bunx playwright install-deps chromium
+            npx playwright install-deps chromium
           fi
       - name: Playwright — AlertDialog visual + boundingBox
-        run: bunx playwright test e2e/ui/alert-dialog-visual.spec.ts
+        run: npx playwright test e2e/ui/alert-dialog-visual.spec.ts
       - name: Upload Playwright report (screenshots + vídeos + traces)
         if: failure()
         uses: actions/upload-artifact@v4
@@ -97,10 +99,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-node@v4
         with:
-          bun-version: latest
+          node-version-file: .nvmrc
+          cache: npm
       - name: Install
-        run: bun install --frozen-lockfile
+        run: npm ci
       - name: Vitest — OptimizedImage
-        run: bunx vitest run src/components/ui/__tests__/OptimizedImage.test.tsx
+        run: npx vitest run src/components/ui/__tests__/OptimizedImage.test.tsx

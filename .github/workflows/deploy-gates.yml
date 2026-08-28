@@ -48,6 +48,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: [ssot-gate]
+    env:
+      NODE_OPTIONS: --max-old-space-size=4096
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -154,16 +156,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-      - name: Verificar pg_proc via PostgREST (schema cache)
+      - name: Verificar assinatura publicada da RPC
         run: npm run check:restore-seller-cart-rpc
         env:
           CANONICAL_SUPABASE_URL: https://doufsxqlfjyuvxuezpln.supabase.co
-          CANONICAL_SUPABASE_ANON_KEY: ${{ secrets.CANONICAL_SUPABASE_ANON_KEY }}
-          # Fallback: VITE_SUPABASE_PUBLISHABLE_KEY é a anon key do projeto canônico;
-          # o script já verifica CANONICAL_SUPABASE_ANON_KEY || SUPABASE_ANON_KEY.
-          SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
-          # STRICT=1 → falha o pipeline se a anon key não estiver configurada
-          # como secret. Remova/comente esta linha para permitir skip silencioso.
+          # A RPC é deliberadamente invisível para anon. O smoke precisa de
+          # service_role para distinguir assinatura ausente de ACL correta.
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           STRICT: '1'
 
   build:

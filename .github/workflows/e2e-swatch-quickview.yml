@@ -34,7 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: lts/*, cache: npm }
+        with: { node-version: '22.22.1', cache: npm }
       - run: npm ci
       - name: Install Playwright + deps (${{ matrix.browser }})
         run: npx playwright install --with-deps ${{ matrix.browser }}

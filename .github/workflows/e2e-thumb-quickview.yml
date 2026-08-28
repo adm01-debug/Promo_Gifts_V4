@@ -29,11 +29,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: lts/*, cache: npm }
+        with: { node-version: '22.22.1', cache: npm }
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - name: Smoke
-        run: npx playwright test e2e/flows/03b-thumb-quickview.smoke.spec.ts --reporter=line
+        # O smoke instala somente Chromium; os três engines são cobertos pela
+        # matriz bloqueante abaixo. Sem escopo, o Playwright tentava iniciar
+        # Firefox/WebKit não instalados e produzia 25 falsos negativos.
+        run: npx playwright test e2e/flows/03b-thumb-quickview.smoke.spec.ts --project=chromium-public --reporter=line
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
@@ -55,7 +58,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: lts/*, cache: npm }
+        with: { node-version: '22.22.1', cache: npm }
       - run: npm ci
       - name: Install Playwright + deps (${{ matrix.browser }})
         run: npx playwright install --with-deps ${{ matrix.browser }}

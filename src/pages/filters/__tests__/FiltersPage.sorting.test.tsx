@@ -44,6 +44,13 @@ vi.mock('@/hooks/products/useProductsByMaterial', () => ({
   })),
 }));
 
+vi.mock('@/hooks/products/useColorSystem', () => ({
+  useColorSystem: vi.fn(() => ({
+    data: { groups: [], nuances: [] },
+    isLoading: false,
+  })),
+}));
+
 vi.mock('@/hooks/intelligence/usePromoSalesRanking', () => ({
   usePromoSalesRanking: vi.fn(() => ({ data: undefined })),
 }));

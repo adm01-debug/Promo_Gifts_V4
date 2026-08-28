@@ -22,6 +22,7 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 import { buildPublicCorsHeaders, handleCorsPreflight } from "../_shared/cors.ts";
 import { createStructuredLogger } from "../_shared/structured-logger.ts";
 import { getOrCreateRequestId } from "../_shared/request-id.ts";
+import { constantTimeEqual } from "../_shared/dispatcher-auth.ts";
 
 const CORS = buildPublicCorsHeaders();
 
@@ -104,6 +105,18 @@ Deno.serve(async (req) => {
   const url = Deno.env.get("SUPABASE_URL");
   const svc = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
   if (!url || !svc) return log.respond(json(500, { error: "missing_env" }));
+
+  // A chamada canônica vem do pg_cron com a service role no Bearer (ver
+  // docs/sql/crm_callback_alerts_cron.sql). Antes este endpoint verify_jwt=false
+  // aceitava qualquer caller e expunha volumetria do CRM/disparava Sentry.
+  const authHeader = req.headers.get("Authorization") ?? "";
+  const bearer = authHeader.toLowerCase().startsWith("bearer ")
+    ? authHeader.slice(7).trim()
+    : "";
+  if (!bearer || !constantTimeEqual(bearer, svc)) {
+    log.warn("crm_alerts_unauthorized");
+    return log.respond(json(401, { error: "unauthorized" }));
+  }
   const admin = createClient(url, svc, { auth: { persistSession: false } });
 
   // 1) carregar thresholds

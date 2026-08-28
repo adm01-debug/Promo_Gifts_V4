@@ -4,9 +4,9 @@ import { getCorsHeaders } from "../_shared/cors.ts";
 // v2: server-side cache, structured logging, telemetry, quota check, smart empty state.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { authenticateRequest, authErrorResponse } from "../_shared/auth.ts";
+import { resolveAiApiKey } from "../_shared/ai-credentials.ts";
 import { parseContract } from "../_shared/contracts/index.ts";
 import {
-import { resolveAiApiKey } from "../_shared/ai-credentials.ts";
   MarketIntelligenceInsightsSchemas,
 } from "../_shared/contracts/schemas/market-intelligence-insights.ts";
 

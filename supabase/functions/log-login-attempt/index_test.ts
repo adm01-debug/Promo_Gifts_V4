@@ -165,7 +165,18 @@ globalThis.addEventListener("unload", () => {
  * Deno detecta como leaks. Isso é benigno em teste isolado.
  */
 function t(name: string, fn: () => Promise<void> | void) {
-  Deno.test({ name, sanitizeOps: false, sanitizeResources: false, fn });
+  Deno.test({
+    name,
+    sanitizeOps: false,
+    sanitizeResources: false,
+    async fn() {
+      // Cada cenário deve começar com um worker lógico novo. Sem este reset,
+      // falhas exercitadas por um caso abrem o circuit breaker do caso seguinte
+      // e transformam a suíte em dependente da ordem de execução.
+      __resetBreakerForTests();
+      await fn();
+    },
+  });
 }
 
 
@@ -443,4 +454,3 @@ t("breaker: sucesso reseta contador (não abre nunca se intercalado)", async () 
 globalThis.addEventListener("beforeunload", () => {
   mock.shutdown();
 });
-

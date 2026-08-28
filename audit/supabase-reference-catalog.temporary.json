@@ -2,7 +2,7 @@
   "schema_version": 1,
   "status": "temporary-stage-054",
   "project_ref": "doufsxqlfjyuvxuezpln",
-  "captured_at": "2026-08-26",
+  "captured_at": "2026-08-28",
   "source": {
     "method": "read-only pg_catalog",
     "relations": "pg_class + pg_namespace (schema public; relkind r/p/v/m/f)",
@@ -231,6 +231,8 @@
     "fn_get_stockout_alerts",
     "fn_global_search",
     "fn_run_and_persist_smoke_tests",
+    "fn_rupture_health_check",
+    "fn_rupture_quick_stats",
     "fn_save_ai_enrichment_results",
     "fn_should_apply_kill_switch",
     "fn_super_filtro_product_ids",

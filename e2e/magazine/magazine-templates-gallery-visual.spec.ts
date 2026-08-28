@@ -14,10 +14,10 @@
  *   - Executa apenas em `chromium` (viewport determinístico) para não
  *     explodir a matriz de snapshots.
  */
-import { test, expect, requireAuth } from './fixtures/test-base';
-import { gotoAndSettle } from './helpers/nav';
-import { waitForTestIdVisible } from './helpers/waits';
-import { Sel } from './fixtures/selectors';
+import { test, expect, requireAuth } from '../fixtures/test-base';
+import { gotoAndSettle } from '../helpers/nav';
+import { waitForTestIdVisible } from '../helpers/waits';
+import { Sel } from '../fixtures/selectors';
 
 const KNOWN_IDS = [
   'editorial-vogue',

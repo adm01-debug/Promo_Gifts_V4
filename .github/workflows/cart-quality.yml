@@ -48,6 +48,10 @@ on:
       - 'scripts/check-required-checks.mjs'
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
   # ─────────────────────────────────────────────────────────────────────────
   # 0) Classifica o diff em buckets para ligar/desligar jobs por escopo real.
@@ -91,7 +95,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22.22.1'
       - name: Validar SSOT de required checks (cart-quality → carrinhos)
         run: node scripts/check-required-checks.mjs
 
@@ -113,7 +117,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22.22.1'
           cache: 'npm'
       - name: Install dependencies
         run: npm ci
@@ -161,7 +165,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: lts/*
+          node-version: '22.22.1'
           cache: 'npm'
       - name: Install dependencies
         run: npm ci

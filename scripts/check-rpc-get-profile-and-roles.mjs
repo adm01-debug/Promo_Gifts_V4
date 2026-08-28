@@ -109,7 +109,7 @@ async function main() {
   let smokeResponse;
   try {
     smokeResponse = await postRpc("get_profile_and_roles", {
-      user_id: "00000000-0000-0000-0000-000000000000",
+      _user_id: "00000000-0000-0000-0000-000000000000",
     });
   } catch {
     conclude(
@@ -122,7 +122,7 @@ async function main() {
   if (smokeResponse.status === 404) {
     let existsResponse;
     try {
-      existsResponse = await postRpc("fn_rpc_exists", { fname: "get_profile_and_roles" });
+      existsResponse = await postRpc("fn_rpc_exists", { _fname: "get_profile_and_roles" });
     } catch {
       conclude(
         CHECK_RESULT_STATUS.INCONCLUSIVE,
@@ -172,6 +172,34 @@ async function main() {
       "audit_and_existence_verified",
       "O audit está limpo e fn_rpc_exists confirmou a RPC protegida contra anon.",
       { smokeHttpStatus: smokeResponse.status },
+    );
+  }
+
+  if ([401, 403].includes(smokeResponse.status)) {
+    let deniedPayload;
+    try {
+      deniedPayload = await smokeResponse.json();
+    } catch {
+      conclude(
+        CHECK_RESULT_STATUS.INCONCLUSIVE,
+        "protected_endpoint_invalid_payload",
+        "A RPC negou acesso, mas a resposta não permitiu comprovar qual função foi protegida.",
+        { httpStatus: smokeResponse.status },
+      );
+    }
+
+    const isExpectedPrivilegeDenial =
+      deniedPayload?.code === "42501" &&
+      typeof deniedPayload?.message === "string" &&
+      deniedPayload.message.includes("permission denied for function get_profile_and_roles");
+
+    conclude(
+      isExpectedPrivilegeDenial ? CHECK_RESULT_STATUS.PASSED : CHECK_RESULT_STATUS.INCONCLUSIVE,
+      isExpectedPrivilegeDenial ? "protected_endpoint_verified" : "protected_endpoint_unverified",
+      isExpectedPrivilegeDenial
+        ? "O audit está limpo e o PostgREST confirmou que a RPC existe e bloqueia anon."
+        : "A negativa do PostgREST não comprovou existência e proteção da RPC esperada.",
+      { httpStatus: smokeResponse.status, postgrestCode: deniedPayload?.code },
     );
   }
 

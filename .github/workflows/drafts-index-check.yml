@@ -37,9 +37,7 @@ on:
       - 'scripts/check-draft-canonical-target.mjs'
       - 'scripts/build-drafts-pr-comment.mjs'
   workflow_dispatch:
-  workflow_dispatch:
 
-permissions:
 permissions:
   contents: read
   pull-requests: write

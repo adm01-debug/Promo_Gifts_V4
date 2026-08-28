@@ -8,10 +8,6 @@ on:
     paths:
       - "e2e/ui/magazine-ring-visual.spec.ts"
       - "src/pages/dev/MagazineRingHarness.tsx"
-    paths-ignore:
-      # Evita loop: o próprio job commita PNGs neste diretório.
-      - "e2e/ui/magazine-ring-visual.spec.ts-snapshots/**"
-      - "**/*.png"
 
 permissions:
   contents: write
