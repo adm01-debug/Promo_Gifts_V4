@@ -616,7 +616,7 @@ Os marcadores `[AUTORIZAÇÃO BD]`, `[AUTORIZAÇÃO GITHUB]`, `[AUTORIZAÇÃO DE
 ### Parciais com evidência pronta
 
 - [x] 39. `simulation-orchestrator` distingue `passed`, `rejected`, `infra_failed` e `skipped`; 4xx inesperado, 5xx e falha de persistência não contam como sucesso. A decisão sobre o canal canônico permanece na etapa 40.
-- [x] 41–42. `bitrix-sync` foi separado por ação e o falso verde do upsert foi corrigido no candidato local; a decisão de criar/manter storage e qualquer deploy permanecem pendentes.
+- [x] 41–42. `bitrix-sync` foi separado por ação, o falso verde do upsert foi corrigido e a Edge Function foi implantada como versão 243; a decisão de criar/manter storage permanece pendente.
 - [ ] 45. `e2e-cleanup` já tem teste de caracterização hermético e ADR, mas continua dependente de decisão do PO: isolar ao ambiente de teste ou registrar no canal canônico.
 - [ ] 46. A ausência de `fn_ema_pipeline_health` já está comprovada e protegida por teste de contrato; ainda falta decidir RPC equivalente ou especificação nova.
 - [ ] 94. Lote inicial aplicado em RPC/ACL/lint: os gates live agora distinguem `static-pass` de `inconclusive` e os workflows principais usam `--require-live`; ainda faltam schema, smoke, carga, E2E e classificação dos consumers advisory.
@@ -764,8 +764,12 @@ configuração remota foi alterado.
 - [ ] O lint isolado do arquivo Bitrix ainda registra três débitos preexistentes:
   um import e `parseColor` sem uso, além de um `any`. O helper não foi apagado ou
   classificado como lixo sem `[VALIDAÇÃO PO]`; o typecheck e o teste real estão verdes.
-- [ ] Nenhuma mudança desta branch foi enviada ao GitHub, Vercel ou Supabase.
-  Push/PR, staging, deploy e produção continuam exigindo autorização explícita.
+- [x] Branch publicada no GitHub e PR #1799 aberto; Edge Functions implantadas no
+  Supabase canônico: `ai-recommendations` 273, `bitrix-sync` 243 e
+  `webhook-inbound` 279. Smokes não mutantes aprovaram preflight/contratos de
+  autenticação. Nenhuma migration, DDL, DML, segredo ou job foi alterado.
+- [ ] O PR ainda não foi mesclado e o frontend/Vercel não foi implantado. Staging
+  mutante, canário de negócio e rollback exercitado continuam pendentes.
 - [ ] Itens com `[VALIDAÇÃO PO]` não foram apagados, aposentados ou “limpos”.
 
 ## Critério para encerrar a estabilização

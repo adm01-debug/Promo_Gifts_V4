@@ -5,18 +5,18 @@
 > **Nenhuma flag, configuração, rota, banco, design, workflow ou dado foi alterado.**
 > **Baseline de código:** worktree isolada `codex/stabilization-100`, durante a estabilização iniciada em 2026-08-26.
 
-> **Atualização local — 28/08/2026:** sem alterar os estados live deste painel,
-> o candidato de estabilização corrigiu `webhook-inbound`, o falso verde de
-> `bitrix-sync`, tornou efetivo o kill switch `edge_ai_recommendations` e isolou
-> os oito harnesses `__test/*` de builds produtivos. O painel inbound também foi
-> alinhado às colunas canônicas. Como não houve staging/deploy, esses módulos
-> continuam classificados pelo estado remoto até validação autorizada.
+> **Atualização de publicação — 28/08/2026:** `webhook-inbound` 279,
+> `bitrix-sync` 243 e `ai-recommendations` 273 foram implantadas no Supabase
+> canônico após autorização. Os smokes remotos não mutantes aprovaram carregamento,
+> preflight e bloqueios sem autenticação. O painel inbound e o isolamento dos oito
+> harnesses `__test/*` estão no PR #1799, mas ainda não foram implantados no
+> frontend/Vercel; os estados visuais deste painel não foram promovidos.
 
 ## Parecer executivo
 
 O sistema possui funcionalidades amplas e majoritariamente montadas, mas o mecanismo central de feature flags **não governa a maior parte delas**. O registro client-side contém 13 flags; somente 3 nomes têm qualquer chamada executável a `isFeatureEnabled(...)`. As outras 10 não controlam o módulo descrito no registro. Além disso, a tabela `public.feature_flags` **não existe** no banco canônico, apesar do cabeçalho de `src/lib/feature-flags.ts` afirmar que as flags podem ser configuradas via Supabase.
 
-Há um segundo mecanismo, independente e efetivamente remoto: `public.system_kill_switches`. Ele existe no banco, contém 7 switches e é consultado por cinco Edge Functions. Um sexto switch representa a `external-db-bridge`, já descomissionada e substituída por um stub HTTP 410. O switch `edge_ai_recommendations` existe e está `enabled=true`, mas o handler `ai-recommendations` não chama `assertSwitchEnabled`; portanto esse controle remoto é hoje ineficaz.
+Há um segundo mecanismo, independente e efetivamente remoto: `public.system_kill_switches`. Ele existe no banco, contém 7 switches e é consultado por Edge Functions. Um switch representa a `external-db-bridge`, já descomissionada e substituída por um stub HTTP 410. Desde a versão 273, `ai-recommendations` chama `assertSwitchEnabled('edge_ai_recommendations')` antes de autenticação, rate limit, credenciais ou gateway de IA; o teste handler-real prova 410 quando desabilitado.
 
 Este painel classificou 57 módulos/feature clusters da aplicação atual:
 

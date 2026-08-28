@@ -1,19 +1,19 @@
 # ADR — contrato canônico do `webhook-inbound`
 
 - **Data da auditoria:** 2026-08-26
-- **Status:** IMPLEMENTADO LOCALMENTE — D1–D6 adotam as opções recomendadas; D7, staging e deploy continuam pendentes
+- **Status:** IMPLANTADO NO CANÔNICO — D1–D6 na versão remota 279; D7 e smoke mutante de staging continuam pendentes
 - **Escopo do plano:** etapas 36–38
 - **Sistema:** Promo Gifts V4 / Supabase `doufsxqlfjyuvxuezpln`
-- **Natureza desta entrega:** documentação e teste local de caracterização; nenhuma alteração em produção
+- **Natureza desta entrega:** código, caracterização hermética e deploy autorizado da Edge Function; sem DDL/DML
 
-> **Atualização de execução — 2026-08-28:** a ordem do PO para executar o plano
-> autorizou a correção local de código. O handler, o painel administrativo e os
-> testes reais foram reconciliados na branch isolada, sem DDL, migration, escrita
-> no banco canônico ou deploy. Esta atualização não transforma validação local em
-> aprovação de produção: retenção/cron (D7), smoke de staging e rollout continuam
-> sujeitos às autorizações específicas do plano.
+> **Atualização de publicação — 2026-08-28:** após autorização explícita do PO,
+> a branch foi publicada no PR #1799 e a Edge Function `webhook-inbound` foi
+> implantada no Supabase canônico como versão 279. Preflight remoto retornou 200
+> e POST sem `slug` retornou 400/`missing_slug`, comprovando carregamento e contrato
+> básico. Não houve DDL, migration, DML, rotação de segredo ou deploy do frontend.
+> Retenção/cron (D7) e smoke mutante com produtor dedicado continuam pendentes.
 
-### Contrato implementado localmente em 28/08/2026
+### Contrato implementado e implantado em 28/08/2026
 
 - `slug` obrigatório, endpoint ativo e segredo isolado por `hmac_secret_ref`;
 - HMAC canônico e aliases temporários, com rejeição de headers conflitantes;
@@ -444,8 +444,10 @@ deno test --config supabase/functions/deno.json --allow-env --allow-net \
 ```
 
 Resultado local: check/lint aprovados e testes handler/schema verdes. A suíte não
-faz rede externa nem escreve no banco. O smoke mutante de staging e o deploy não
-foram executados.
+faz rede externa nem escreve no banco. Depois da autorização, a versão 279 ficou
+`ACTIVE`, com `verify_jwt=false` preservado; smoke remoto não mutante aprovou
+`OPTIONS` 200 e o contrato de `slug` ausente 400. O smoke mutante de staging não
+foi executado.
 
 ## 14. Decisões necessárias antes de alterar produção
 
@@ -514,7 +516,7 @@ Marcar uma opção por decisão:
 - [x] alinhar CORS do endpoint sem ampliar a allowlist global desnecessariamente;
 - [x] executar Deno check/test, Vitest focal e gates de segurança locais;
 - [ ] validar em ambiente efêmero/staging com segredo dedicado;
-- [ ] obter autorização explícita antes de deploy;
+- [x] obter autorização explícita e implantar somente a Edge Function, sem DDL/DML;
 - [x] corrigir o painel UI sem redesign, usando os nomes tipados do catálogo canônico;
 - [ ] abrir separadamente `[AUTORIZAÇÃO BD]` para retenção/cron, se D7-A for aprovado.
 

@@ -1,7 +1,7 @@
 # ADR — contrato por ação do `bitrix-sync`
 
 - **Data:** 2026-08-26
-- **Estado:** falso verde corrigido localmente; decisão de persistência/deploy continua pendente
+- **Estado:** falso verde corrigido e Edge Function implantada na versão 243; decisão de persistência continua pendente
 - **Escopo:** etapas 41–42 do plano de estabilização
 - **Fontes de evidência:** `supabase/functions/bitrix-sync/index.ts`, `tests/contracts/webhook-schemas.ts`, busca de consumidores locais e consulta somente leitura a `pg_catalog` no projeto canônico `doufsxqlfjyuvxuezpln`.
 
@@ -10,7 +10,9 @@
 > **Atualização de execução — 2026-08-28:** `sync_full` agora retorna HTTP 500
 > e omite `success:true` quando o upsert falha. O teste handler-real exige tanto
 > o caminho de falha explícita quanto o sucesso com persistência sintética. Não
-> foram criadas tabelas, migrations ou alterações no banco, e nenhum deploy ou
+> foram criadas tabelas, migrations ou alterações no banco. Após autorização do
+> PO, a Edge Function foi implantada como versão 243, preservando
+> `verify_jwt=true`; smoke remoto sem autenticação retornou 401 no gateway. Nenhum
 > request Bitrix real foi executado.
 
 `bitrix-sync` não é um único fluxo. Ele contém quatro contratos diferentes, dos quais apenas a API direta é operacionalmente independente de tabelas locais. A decisão proposta é **não promover nem alterar as ações persistidas** até o PO escolher uma fonte de verdade para o espelho local e autorizar explicitamente qualquer migration/DDL.
@@ -18,7 +20,7 @@
 As ações persistidas continuam indisponíveis enquanto as tabelas não forem
 aprovadas/existirem, mas essa indisponibilidade deixou de ser mascarada como
 sucesso. A decisão de manter espelho local, operar só por API ou substituir o
-adaptador permanece necessária antes de qualquer migration ou deploy.
+adaptador permanece necessária antes de qualquer migration ou uso dos caminhos de espelho.
 
 ```mermaid
 flowchart TD
@@ -70,7 +72,7 @@ Isto explica por que `sync_full`, as leituras armazenadas e os logs não têm um
 ## Gaps comprovados
 
 - `sync_full` não pagina e não sincroniza deals; a contagem `synced` é de empresas lidas, não de linhas efetivamente persistidas.
-- Falha de upsert já não é mascarada no candidato local; falta validar o contrato em staging antes de deploy.
+- Falha de upsert já não é mascarada na versão 243; falta validar o caminho autenticado em staging antes de liberar `sync_full` para uso.
 - Os três caminhos de storage apontam para objetos ausentes no banco canônico.
 - `get_company` e `get_deal_products` usam `0` quando o id não é numérico/ausente; o upstream recebe a chamada em vez de o handler retornar `400`.
 - `create_deal`/`update_deal` aceitam records livres. Isso preserva a flexibilidade do Bitrix, mas impede validar localmente campos de domínio/idempotência.
