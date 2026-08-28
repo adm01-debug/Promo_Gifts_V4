@@ -61,8 +61,6 @@ jobs:
             e2e/quotes/quote-summary-action-buttons-states.spec.ts \
             --project=chromium-authed --retries=2 \
             --trace=retain-on-failure \
-            --screenshot=only-on-failure \
-            --video=retain-on-failure \
             --reporter=html,github
       - name: Upload Playwright HTML report
         if: always()
