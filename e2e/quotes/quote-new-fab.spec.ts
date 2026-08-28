@@ -18,7 +18,7 @@ import { QUOTE_BREAKPOINTS } from './_helpers/quote-scenarios';
 
 test.describe('QuotesListPage · FAB Novo Orçamento', () => {
   test.skip(
-    (_args, testInfo) => testInfo.project.name !== 'chromium-authed',
+    ({}, testInfo) => testInfo.project.name !== 'chromium-authed',
     'Visual/responsive regression roda só no Chromium autenticado.',
   );
   test.beforeEach(() => requireAuth());

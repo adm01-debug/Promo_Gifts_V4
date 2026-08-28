@@ -65,7 +65,7 @@ function emit(
     }
   }
 
-  const isDev = import.meta.env.DEV;
+  const isDev = import.meta.env?.DEV ?? false;
   const tag = `[${scope}:${event}]`;
 
   // DEV: console nativo por nível — info/debug não poluem o painel de warnings.

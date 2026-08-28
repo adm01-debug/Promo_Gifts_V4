@@ -9,7 +9,7 @@
 import { useEffect, useMemo, useRef, type ReactNode } from 'react';
 import { useHorizontalScroll } from '@/hooks/useHorizontalScroll';
 import { cn } from '@/lib/utils';
-import type { Quote } from '@/hooks/quotes';
+import type { Quote } from '@/hooks/quotes/quoteTypes';
 import { createClientLogger } from '@/lib/telemetry/structuredLogger';
 import {
   Tooltip,

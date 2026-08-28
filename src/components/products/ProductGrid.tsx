@@ -174,7 +174,7 @@ const columnClasses: Record<number, string> = {
 };
 
 // eslint-disable-next-line prefer-arrow-callback
-export const ProductGrid = memo(function ProductGrid({
+export const ProductGrid = memo(function ProductGridComponent({
   products,
   isLoading,
   isError,

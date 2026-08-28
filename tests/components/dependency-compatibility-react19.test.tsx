@@ -28,6 +28,7 @@ describe('dependências de UI compatíveis com React 19', () => {
       'href',
       'https://www.promogifts.com.br/compatibilidade',
     );
+    expect(document.head.querySelectorAll('link[rel="canonical"]')).toHaveLength(1);
   });
 
   it('renderiza QR code SVG com qrcode.react 4', () => {
