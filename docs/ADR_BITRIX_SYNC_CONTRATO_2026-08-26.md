@@ -1,15 +1,24 @@
 # ADR — contrato por ação do `bitrix-sync`
 
 - **Data:** 2026-08-26
-- **Estado:** proposto; nenhuma alteração de banco, deploy ou integração externa foi feita
+- **Estado:** falso verde corrigido localmente; decisão de persistência/deploy continua pendente
 - **Escopo:** etapas 41–42 do plano de estabilização
 - **Fontes de evidência:** `supabase/functions/bitrix-sync/index.ts`, `tests/contracts/webhook-schemas.ts`, busca de consumidores locais e consulta somente leitura a `pg_catalog` no projeto canônico `doufsxqlfjyuvxuezpln`.
 
 ## Decisão pendente
 
+> **Atualização de execução — 2026-08-28:** `sync_full` agora retorna HTTP 500
+> e omite `success:true` quando o upsert falha. O teste handler-real exige tanto
+> o caminho de falha explícita quanto o sucesso com persistência sintética. Não
+> foram criadas tabelas, migrations ou alterações no banco, e nenhum deploy ou
+> request Bitrix real foi executado.
+
 `bitrix-sync` não é um único fluxo. Ele contém quatro contratos diferentes, dos quais apenas a API direta é operacionalmente independente de tabelas locais. A decisão proposta é **não promover nem alterar as ações persistidas** até o PO escolher uma fonte de verdade para o espelho local e autorizar explicitamente qualquer migration/DDL.
 
-Enquanto isso, o comportamento legado permanece preservado e está caracterizado por teste local. Em particular, não se deve interpretar `HTTP 200` de `sync_full` como sincronização concluída: hoje o handler pode responder `{ success: true, data: { synced, error } }` quando o upsert falha.
+As ações persistidas continuam indisponíveis enquanto as tabelas não forem
+aprovadas/existirem, mas essa indisponibilidade deixou de ser mascarada como
+sucesso. A decisão de manter espelho local, operar só por API ou substituir o
+adaptador permanece necessária antes de qualquer migration ou deploy.
 
 ```mermaid
 flowchart TD
@@ -22,7 +31,7 @@ flowchart TD
     K --> F[sync_full]
     F --> BL[Bitrix crm.company.list\nprimeira página]
     BL --> U[upsert bitrix_clients]
-    U -->|erro atual| FG[HTTP 200 success true\ndata.error: falso verde]
+    U -->|erro| FG[HTTP 500\nsem success true]
     U -->|ok| O
     K --> S[leituras armazenadas]
     S --> SC[bitrix_clients / bitrix_deals\nselect * limit 100]
@@ -38,7 +47,7 @@ flowchart TD
 |---|---|---|---|---|
 | API direta, leitura | `get_companies`, `get_company`, `search_companies`, `get_deals`, `get_deal_products` | Chama Bitrix REST; não usa tabela local de espelho | Envelope `{ success: true, data }` quando Bitrix responde 2xx | Parcialmente verificável localmente; requer credencial/Bitrix para smoke real |
 | API direta, mutação | `create_deal`, `update_deal` | Cria/altera deal remoto em Bitrix | Mesmo envelope; sem validação estruturada dos campos de negócio além de presença | Contrato externo ativo/desconhecido; não foi invocado nesta auditoria |
-| Persistência | `sync_full` | Lê **somente a primeira página** de `crm.company.list`, depois faz upsert em `public.bitrix_clients` por `bitrix_id` | `synced` é a quantidade lida; o erro de upsert vira `data.error` sem falhar a resposta | Falso verde reproduzível; storage não existe no banco canônico |
+| Persistência | `sync_full` | Lê **somente a primeira página** de `crm.company.list`, depois faz upsert em `public.bitrix_clients` por `bitrix_id` | sucesso retorna `synced`; erro de upsert encerra com HTTP 500 e mensagem pública estável | Falso verde corrigido localmente; storage não existe no banco canônico |
 | Leitura de espelho | `get_stored_clients`, `get_stored_deals` | `select('*').limit(100)` em `public.bitrix_clients` e `public.bitrix_deals` | Falha 500 se a tabela falhar/não existir | Parcial/inoperante no banco canônico atual |
 | Logs | `get_sync_logs` | `select('*').order('created_at', desc).limit(50)` em `public.sync_logs` | Falha 500 se a tabela falhar/não existir | Parcial/inoperante; nome diverge da documentação histórica |
 
@@ -61,7 +70,7 @@ Isto explica por que `sync_full`, as leituras armazenadas e os logs não têm um
 ## Gaps comprovados
 
 - `sync_full` não pagina e não sincroniza deals; a contagem `synced` é de empresas lidas, não de linhas efetivamente persistidas.
-- Falha de upsert é mascarada no envelope positivo; a mensagem existe em `data.error`, mas callers que olham apenas HTTP/success recebem falso verde.
+- Falha de upsert já não é mascarada no candidato local; falta validar o contrato em staging antes de deploy.
 - Os três caminhos de storage apontam para objetos ausentes no banco canônico.
 - `get_company` e `get_deal_products` usam `0` quando o id não é numérico/ausente; o upstream recebe a chamada em vez de o handler retornar `400`.
 - `create_deal`/`update_deal` aceitam records livres. Isso preserva a flexibilidade do Bitrix, mas impede validar localmente campos de domínio/idempotência.
@@ -72,7 +81,8 @@ Isto explica por que `sync_full`, as leituras armazenadas e os logs não têm um
 `supabase/functions/bitrix-sync/handler_characterization_test.ts` intercepta o `Deno.serve` real e usa apenas um `fetch` sintético local. Ele prova:
 
 - os sete caminhos de API direta, seus endpoints e payloads Bitrix;
-- o falso verde de `sync_full` quando `bitrix_clients` retorna erro de schema;
+- que `sync_full` retorna 500, sem `success:true`, quando `bitrix_clients` retorna erro de schema;
+- que o mesmo caminho retorna 200/`success:true` quando o upsert sintético funciona;
 - limites e tabelas das leituras armazenadas;
 - que logs consultam `sync_logs`, por `created_at desc`, limite 50.
 

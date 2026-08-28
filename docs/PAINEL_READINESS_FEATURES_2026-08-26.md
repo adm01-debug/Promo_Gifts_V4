@@ -5,6 +5,13 @@
 > **Nenhuma flag, configuração, rota, banco, design, workflow ou dado foi alterado.**
 > **Baseline de código:** worktree isolada `codex/stabilization-100`, durante a estabilização iniciada em 2026-08-26.
 
+> **Atualização local — 28/08/2026:** sem alterar os estados live deste painel,
+> o candidato de estabilização corrigiu `webhook-inbound`, o falso verde de
+> `bitrix-sync`, tornou efetivo o kill switch `edge_ai_recommendations` e isolou
+> os oito harnesses `__test/*` de builds produtivos. O painel inbound também foi
+> alinhado às colunas canônicas. Como não houve staging/deploy, esses módulos
+> continuam classificados pelo estado remoto até validação autorizada.
+
 ## Parecer executivo
 
 O sistema possui funcionalidades amplas e majoritariamente montadas, mas o mecanismo central de feature flags **não governa a maior parte delas**. O registro client-side contém 13 flags; somente 3 nomes têm qualquer chamada executável a `isFeatureEnabled(...)`. As outras 10 não controlam o módulo descrito no registro. Além disso, a tabela `public.feature_flags` **não existe** no banco canônico, apesar do cabeçalho de `src/lib/feature-flags.ts` afirmar que as flags podem ser configuradas via Supabase.

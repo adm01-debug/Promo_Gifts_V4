@@ -1,10 +1,33 @@
 # ADR — contrato canônico do `webhook-inbound`
 
 - **Data da auditoria:** 2026-08-26
-- **Status:** PROPOSTO — aguardando decisões D1–D7 e autorização de implantação
+- **Status:** IMPLEMENTADO LOCALMENTE — D1–D6 adotam as opções recomendadas; D7, staging e deploy continuam pendentes
 - **Escopo do plano:** etapas 36–38
 - **Sistema:** Promo Gifts V4 / Supabase `doufsxqlfjyuvxuezpln`
 - **Natureza desta entrega:** documentação e teste local de caracterização; nenhuma alteração em produção
+
+> **Atualização de execução — 2026-08-28:** a ordem do PO para executar o plano
+> autorizou a correção local de código. O handler, o painel administrativo e os
+> testes reais foram reconciliados na branch isolada, sem DDL, migration, escrita
+> no banco canônico ou deploy. Esta atualização não transforma validação local em
+> aprovação de produção: retenção/cron (D7), smoke de staging e rollout continuam
+> sujeitos às autorizações específicas do plano.
+
+### Contrato implementado localmente em 28/08/2026
+
+- `slug` obrigatório, endpoint ativo e segredo isolado por `hmac_secret_ref`;
+- HMAC canônico e aliases temporários, com rejeição de headers conflitantes;
+- V2 strict por padrão; V1 somente com flag + allowlist e objeto JSON não vazio;
+- `allowed_events` e `allowed_ips` aplicados antes da persistência;
+- conflito de evento ou idempotency key rejeitado, sem escolha silenciosa;
+- destino `inbound_webhook_events`, headers sanitizados, ingestão marcada como
+  processada e resposta sem alegação de fila inexistente;
+- replay sequencial e corrida `23505` tratados como duplicidade HTTP 200;
+- painel alinhado a `created_at`, `ip_address` e `error_message` e falha de leitura
+  deixou de parecer lista vazia.
+
+As seções “as-is” abaixo preservam a fotografia histórica que motivou a correção.
+Para o estado atual da branch, prevalece esta atualização e a evidência da seção 13.
 
 ## 1. Decisão executiva
 
@@ -404,39 +427,59 @@ node node_modules/vitest/vitest.mjs run \
 
 Resultado: 3 arquivos, 134 testes aprovados. Esse resultado valida os testes simulados/schemas, não o handler real, conforme seção 12.
 
+### Revalidação do candidato corrigido em 28/08/2026
+
+O teste handler-real foi ampliado e passou a executar o contrato corrigido. Ele
+agora cobre preflight, slug ausente/desconhecido, isolamento de segredo entre
+dois endpoints, IP, três headers HMAC e conflito, JSON inválido, V2, V1
+bloqueado/liberado, payload V1 inválido, evento permitido, conflitos de evento e
+idempotência, replay, bypass interno exato, corrida `23505` e erro de persistência.
+
+```text
+deno check --config supabase/functions/deno.json supabase/functions/webhook-inbound/index.ts
+deno lint supabase/functions/webhook-inbound/index.ts supabase/functions/webhook-inbound/handler_characterization_test.ts
+deno test --config supabase/functions/deno.json --allow-env --allow-net \
+  supabase/functions/_shared/contracts/schemas/webhook-inbound.test.ts \
+  supabase/functions/webhook-inbound/handler_characterization_test.ts
+```
+
+Resultado local: check/lint aprovados e testes handler/schema verdes. A suíte não
+faz rede externa nem escreve no banco. O smoke mutante de staging e o deploy não
+foram executados.
+
 ## 14. Decisões necessárias antes de alterar produção
 
 Marcar uma opção por decisão:
 
 ### D1 — Identidade e segredo
 
-- [ ] **D1-A (recomendada):** `slug` obrigatório + segredo por `hmac_secret_ref`; global apenas em janela de compatibilidade explicitamente confirmada.
+- [x] **D1-A (implementada localmente):** `slug` obrigatório + segredo por `hmac_secret_ref`; sem fallback global silencioso.
 - [ ] D1-B: manter segredo global e não usar endpoints configurados.
 
 ### D2 — Headers HMAC legados
 
-- [ ] **D2-A (recomendada):** canônico `x-webhook-signature`; aceitar temporariamente `x-signature-256` e `x-hub-signature-256`, rejeitando conflito.
+- [x] **D2-A (implementada localmente):** canônico `x-webhook-signature`; aceitar temporariamente `x-signature-256` e `x-hub-signature-256`, rejeitando conflito.
 - [ ] D2-B: aceitar imediatamente só o header canônico.
 
 ### D3 — V1 após o sunset
 
-- [ ] **D3-A (recomendada):** V1 bloqueado por padrão; compat apenas com flag + allowlist e payload no mínimo objeto não vazio.
+- [x] **D3-A (implementada localmente):** V1 bloqueado por padrão; compat apenas com flag + allowlist e payload no mínimo objeto não vazio.
 - [ ] D3-B: V1 continua `z.any()` para allowlist explícita.
 - [ ] D3-C: V1 removido imediatamente.
 
 ### D4 — Eventos permitidos
 
-- [ ] **D4-A (recomendada):** lista vazia permite todos; lista preenchida retorna 403 para evento não permitido.
+- [x] **D4-A (implementada localmente):** lista vazia permite todos; lista preenchida retorna 403 para evento não permitido.
 - [ ] D4-B: evento não permitido retorna 422.
 
 ### D5 — Significado de `processed`
 
-- [ ] **D5-A (recomendada agora):** ingestão concluída; gravar `true`/`processed_at`, responder `received`, sem alegar fila.
+- [x] **D5-A (implementada localmente):** ingestão concluída; gravar `true`/`processed_at`, responder `received`, sem alegar fila.
 - [ ] D5-B: efeito de negócio; gravar `false`, mas somente após identificar/implementar worker, retry e dead-letter.
 
 ### D6 — Sucesso de criação
 
-- [ ] **D6-A (recomendada por compatibilidade):** evento novo retorna 200; duplicata retorna 200.
+- [x] **D6-A (implementada localmente):** evento novo retorna 200; duplicata retorna 200.
 - [ ] D6-B: evento novo retorna 201; duplicata retorna 200.
 
 ### D7 — Retenção/idempotência
@@ -453,7 +496,7 @@ Marcar uma opção por decisão:
 - [x] provar fail-closed sem segredo;
 - [x] provar bearer exato e rejeição de substring;
 - [x] simular falhas de slug, versão, idempotência, destino, worker e retenção;
-- [ ] aprovar D1–D7.
+- [ ] D1–D6 foram adotadas no candidato local; D7 continua pendente de `[AUTORIZAÇÃO BD]` e decisão de retenção.
 
 ### Etapa 37 — ADR/contrato
 
@@ -461,32 +504,32 @@ Marcar uma opção por decisão:
 - [x] reconciliar handler, UI, schemas, migrations, histórico e live;
 - [x] propor contrato normativo e matriz de respostas;
 - [x] separar correção de código de mudança de banco;
-- [ ] promover status deste ADR de PROPOSTO para ACEITO após decisão do PO.
+- [x] registrar D1–D6 como contrato do candidato local; aceite de produção continua condicionado a staging/rollout.
 
 ### Etapa 38 — correção e validação
 
-- [ ] corrigir o handler sem restaurar vulnerabilidades históricas;
-- [ ] criar testes handler-real separados para slug, V1/V2, aliases, IP/event allowlist, persistência e corrida idempotente;
+- [x] corrigir o handler sem restaurar vulnerabilidades históricas;
+- [x] criar testes handler-real para slug, V1/V2, aliases, isolamento de segredo, IP/event allowlist, persistência e corrida idempotente;
 - [ ] atualizar/remover testes totalmente stubados que se apresentam como integração;
-- [ ] alinhar CORS do endpoint sem ampliar a allowlist global desnecessariamente;
-- [ ] executar Deno check/test, Vitest focal e gates de segurança;
+- [x] alinhar CORS do endpoint sem ampliar a allowlist global desnecessariamente;
+- [x] executar Deno check/test, Vitest focal e gates de segurança locais;
 - [ ] validar em ambiente efêmero/staging com segredo dedicado;
 - [ ] obter autorização explícita antes de deploy;
-- [ ] abrir separadamente correção do painel UI com o owner;
+- [x] corrigir o painel UI sem redesign, usando os nomes tipados do catálogo canônico;
 - [ ] abrir separadamente `[AUTORIZAÇÃO BD]` para retenção/cron, se D7-A for aprovado.
 
 ## 16. Critérios de aceite para fechar a etapa 38
 
-- [ ] nenhuma assinatura inválida ou payload inválido cria evento;
-- [ ] cada evento válido está ligado ao endpoint correto;
-- [ ] segredo de um endpoint não autentica outro endpoint;
-- [ ] V2 sem `event`, `occurred_at` ou `data` recebe erro de contrato;
-- [ ] V1 segue exatamente a decisão aprovada e emite headers deprecation quando ativo;
-- [ ] retry sequencial e concorrente não duplica linha/efeito;
-- [ ] destino e nomes de colunas correspondem ao catálogo live;
-- [ ] RPC usa `p_endpoint_id`/`p_is_invalid`;
-- [ ] resposta não afirma fila inexistente;
-- [ ] logs não contêm body, authorization, assinatura nem segredo;
+- [x] nenhuma assinatura inválida ou payload inválido cria evento;
+- [x] cada evento válido está ligado ao endpoint correto;
+- [x] segredo de um endpoint não autentica outro endpoint;
+- [x] V2 sem `event`, `occurred_at` ou `data` recebe erro de contrato;
+- [x] V1 segue D3-A e emite os headers do parser compartilhado quando ativo;
+- [x] retry sequencial e corrida concorrente `23505` não duplicam linha/efeito;
+- [x] destino e nomes de colunas correspondem ao catálogo tipado/live documentado;
+- [x] RPC usa `p_endpoint_id`/`p_is_invalid`;
+- [x] resposta não afirma fila inexistente;
+- [x] persistência sanitiza headers e não grava body em logs, authorization, assinatura nem segredo;
 - [ ] testes handler-real rodam sem rede e o teste staging não aponta para produção;
 - [ ] qualquer DDL/cron/retention permanece fora do deploy de código sem autorização específica.
 

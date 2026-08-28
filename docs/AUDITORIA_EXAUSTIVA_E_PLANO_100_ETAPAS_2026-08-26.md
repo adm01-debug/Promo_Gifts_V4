@@ -615,8 +615,8 @@ Os marcadores `[AUTORIZAÇÃO BD]`, `[AUTORIZAÇÃO GITHUB]`, `[AUTORIZAÇÃO DE
 
 ### Parciais com evidência pronta
 
-- [ ] 39. `simulation-orchestrator` já tem caracterização e endurecimento inicial, mas ainda depende de decisão sobre persistência/canal canônico e validação em staging.
-- [ ] 41. `bitrix-sync` já foi separado analiticamente por ação e tem caracterização do falso verde; ainda falta a decisão sobre persistência local e contrato final por ação.
+- [x] 39. `simulation-orchestrator` distingue `passed`, `rejected`, `infra_failed` e `skipped`; 4xx inesperado, 5xx e falha de persistência não contam como sucesso. A decisão sobre o canal canônico permanece na etapa 40.
+- [x] 41–42. `bitrix-sync` foi separado por ação e o falso verde do upsert foi corrigido no candidato local; a decisão de criar/manter storage e qualquer deploy permanecem pendentes.
 - [ ] 45. `e2e-cleanup` já tem teste de caracterização hermético e ADR, mas continua dependente de decisão do PO: isolar ao ambiente de teste ou registrar no canal canônico.
 - [ ] 46. A ausência de `fn_ema_pipeline_health` já está comprovada e protegida por teste de contrato; ainda falta decidir RPC equivalente ou especificação nova.
 - [ ] 94. Lote inicial aplicado em RPC/ACL/lint: os gates live agora distinguem `static-pass` de `inconclusive` e os workflows principais usam `--require-live`; ainda faltam schema, smoke, carga, E2E e classificação dos consumers advisory.
@@ -698,6 +698,75 @@ Esta rodada manteve a regra de não tocar em schema, dados, grants, jobs ou migr
 - [ ] O rerun monolítico de `corepack npm run test:quality` em 27/08/2026 foi interrompido com código `143`, portanto ele não é usado como prova de aprovação. A validação desta rodada foi repetida em blocos seriais documentados acima, que também revelaram e corrigiram dois defeitos de harness; a última aprovação integral em um único comando continua sendo a registrada em 26/08/2026.
 - [ ] A trilha de aprovação de desconto ainda não é atômica no banco; ela apenas deixou de gerar histórico/notificação contraditórios no cliente. Qualquer consolidação via RPC/transação continua dependendo de catálogo real e `[AUTORIZAÇÃO BD]`.
 - [ ] A reconciliação de schema `pg_catalog` ↔ `types.ts` e qualquer ação sobre grants/RLS/jobs seguem fora desta rodada por dependerem de capacidade externa e autorização explícita.
+
+## Execução complementar em 28/08/2026
+
+Esta rodada ocorreu na worktree isolada
+`codex/stabilization-completion-100`, derivada de `7b38096c9`. O worktree
+principal e os arquivos ainda editados por outros agentes não foram incorporados
+nem sobrescritos. Nenhum schema, dado, migration, job, grant, segredo, deploy ou
+configuração remota foi alterado.
+
+### Correções novas comprovadas
+
+- [x] Etapas 36–38: `webhook-inbound` voltou ao domínio canônico por `slug`,
+  segredo por endpoint, V2 strict/V1 restrito, HMAC com aliases controlados,
+  allowlists, persistência em `inbound_webhook_events`, idempotência sequencial e
+  concorrente, headers sanitizados e resposta sem fila fictícia.
+- [x] Etapas 41–42: `bitrix-sync.sync_full` deixou de responder
+  `HTTP 200/success:true` quando o upsert falha; o teste do handler real cobre
+  falha explícita e sucesso sintético.
+- [x] Painel inbound: consultas e exportação usam `created_at`, `ip_address` e
+  `error_message`; falha de leitura agora aparece como erro, não como lista vazia.
+- [x] Kill switch `edge_ai_recommendations`: o handler consulta o controle remoto
+  existente antes de autenticação, rate limit, credenciais ou gateway de IA; o
+  teste real prova 410 e nenhuma chamada posterior.
+- [x] Harnesses `__test/*`: as oito rotas/imports agora existem somente em DEV;
+  um gate pós-build reprova qualquer rota ou chunk correspondente em `dist/`.
+- [x] Regressão de `FiltersPage`: o teste de ordenação passou a isolar o ranking
+  de fornecedor, eliminando acesso Supabase fora do contrato da suíte estrita.
+- [x] Contrato compartilhado do webhook: expectativa antiga
+  `validation_error` foi alinhada ao envelope canônico `validation_failed`.
+- [x] Etapa 39: o handler real do `simulation-orchestrator` foi revalidado com
+  4/4 cenários; persistência indisponível retorna 503 e alvos gated retornam 424.
+
+### Evidências desta rodada
+
+- [x] `npm run test:ci-core` → **38 arquivos, 887/887 testes verdes** com
+  `STRICT_TEST_SIDE_EFFECTS=1`.
+- [x] `npm run qa:full` → runtime, scripts, catálogo Supabase, migrations, lint,
+  typecheck e ESLint completos verdes.
+- [x] `npm run build` → verde; busca no bundle confirmou zero
+  rota/chunk `__test`, agora protegida por `check-production-harnesses.mjs`.
+- [x] `npm run test:quality` → **981 arquivos e 23.455 testes verdes**; 125
+  arquivos/1.101 testes opt-in ou indisponíveis foram ignorados conforme contrato.
+- [x] Deno handler-real/contratos críticos → webhook, Bitrix e kill switch de IA
+  com **5/5 testes verdes**; `deno check` verde nas três funções e `deno lint`
+  verde nos módulos novos de webhook/IA.
+- [x] Bundle dentro do orçamento: **10,86 MB / 13,06 MB**, maior chunk
+  **812,6 KB / 970,2 KB**; cobertura crítica com **327/327 testes verdes**.
+- [x] Simulação diária local: **1.520 cenários**, zero falhas, cobrindo cálculo
+  de orçamento, freshness de preço, CNPJ, invoke policy, idempotência de webhook
+  e publicação de magazine; evidência em `qa/reports/daily-flows-simulation-2026-08-28.*`.
+- [x] Vitest focal de contratos → webhooks, matriz de cenários, parsing de IA e
+  transição de rotas: **118 testes verdes e 14 skips declarados**.
+- [x] `git diff --check` e guarda do Supabase canônico verdes.
+
+### Limites que permanecem obrigatórios
+
+- [ ] O checklist comprovado está em **32/100**, não em 100/100. As 68 etapas
+  abertas incluem decisões de produto/design, staging, credenciais externas,
+  reconciliação de migrations, banco descartável, RLS/jobs, limpeza e release.
+- [ ] D7 do webhook (retenção/cron) exige `[AUTORIZAÇÃO BD]`; o código local não
+  corrige nem executa a função/cron live.
+- [ ] Bitrix ainda não possui storage canônico aprovado; a correção impede falso
+  verde, mas não inventa as tabelas ausentes.
+- [ ] O lint isolado do arquivo Bitrix ainda registra três débitos preexistentes:
+  um import e `parseColor` sem uso, além de um `any`. O helper não foi apagado ou
+  classificado como lixo sem `[VALIDAÇÃO PO]`; o typecheck e o teste real estão verdes.
+- [ ] Nenhuma mudança desta branch foi enviada ao GitHub, Vercel ou Supabase.
+  Push/PR, staging, deploy e produção continuam exigindo autorização explícita.
+- [ ] Itens com `[VALIDAÇÃO PO]` não foram apagados, aposentados ou “limpos”.
 
 ## Critério para encerrar a estabilização
 
