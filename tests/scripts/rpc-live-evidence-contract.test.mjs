@@ -158,6 +158,30 @@ describe("RPC live-evidence checks", () => {
     });
   });
 
+  it("aprova a RPC protegida quando o PostgREST comprova existência por 42501", async () => {
+    const url = await startServer((request, response) => {
+      const path = new URL(request.url, "http://fixture").pathname;
+      if (path.endsWith("/audit_security_definer_acl")) return json(response, 200, []);
+      if (path.endsWith("/get_profile_and_roles")) {
+        return json(response, 401, {
+          code: "42501",
+          message: "permission denied for function get_profile_and_roles",
+        });
+      }
+      return json(response, 404, { error: "fixture route not found" });
+    });
+
+    const outcome = await runCheck("check-rpc-get-profile-and-roles.mjs", { url });
+
+    expect(outcome.exitCode).toBe(0);
+    expect(outcome.result).toMatchObject({
+      status: "passed",
+      reason: "protected_endpoint_verified",
+      httpStatus: 401,
+      postgrestCode: "42501",
+    });
+  });
+
   it("não aceita audit inacessível como smoke aprovado", async () => {
     const url = await startServer((_request, response) => json(response, 503, { message: "unavailable" }));
 

@@ -48,6 +48,10 @@ on:
       - 'scripts/check-required-checks.mjs'
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
   # ─────────────────────────────────────────────────────────────────────────
   # 0) Classifica o diff em buckets para ligar/desligar jobs por escopo real.
