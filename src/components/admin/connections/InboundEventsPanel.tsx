@@ -74,7 +74,7 @@ interface Endpoint {
   id: string;
   name: string;
   slug: string;
-  source_system: string;
+  source_system: string | null;
 }
 
 const PERIOD_HOURS: Record<Period, number> = { '24h': 24, '7d': 24 * 7, '30d': 24 * 30 };
@@ -162,7 +162,7 @@ export function InboundEventsPanel() {
     }
     const epCount: Record<string, number> = {};
     for (const r of rows) {
-      const ep = epMap.get(r.endpoint_id);
+      const ep = r.endpoint_id ? epMap.get(r.endpoint_id) : undefined;
       const name = ep ? ep.name : 'Desconhecido';
       epCount[name] = (epCount[name] ?? 0) + 1;
       const day = format(new Date(r.created_at), 'dd/MM');
@@ -351,7 +351,7 @@ export function InboundEventsPanel() {
               filename={`inbound-events_${period}`}
               rows={rows.map((r) => ({
                 created_at: r.created_at,
-                endpoint: epMap.get(r.endpoint_id)?.name ?? r.endpoint_id,
+                endpoint: r.endpoint_id ? (epMap.get(r.endpoint_id)?.name ?? r.endpoint_id) : '',
                 event_type: r.event_type ?? '',
                 signature_valid: r.signature_valid,
                 processed: r.processed,
@@ -399,7 +399,7 @@ export function InboundEventsPanel() {
                 </TableHeader>
                 <TableBody>
                   {paged.map((r) => {
-                    const ep = epMap.get(r.endpoint_id);
+                    const ep = r.endpoint_id ? epMap.get(r.endpoint_id) : undefined;
                     return (
                       <TableRow
                         key={r.id}
@@ -484,7 +484,9 @@ export function InboundEventsPanel() {
             <SheetDescription>
               {selected && (
                 <span className="space-x-2">
-                  <span>{epMap.get(selected.endpoint_id)?.name ?? '—'}</span>
+                  <span>
+                    {selected.endpoint_id ? (epMap.get(selected.endpoint_id)?.name ?? '—') : '—'}
+                  </span>
                   <span>·</span>
                   <span className="font-mono">{selected.event_type ?? '(sem tipo)'}</span>
                   <span>·</span>
