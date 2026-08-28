@@ -85,6 +85,7 @@ export function mapLightweightToProduct(
     category_id: resolvedCategoryId,
     category_name: resolvedCategoryName,
     price: typeof price === 'number' ? price : 0,
+    sale_price: typeof p.sale_price === 'number' ? p.sale_price : undefined,
     image_url: imageUrl,
     set_image_url: setImageUrl,
     images: [imageUrl],

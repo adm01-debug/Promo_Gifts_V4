@@ -99,7 +99,7 @@ export const DESCRIPTORS: Record<string, Descriptor> = {
     ],
   },
   "simulation-orchestrator": {
-    invalidInputs: [{ label: "HMAC ausente", body: { action: "simulate" }, role: "anon" }],
+    invalidInputs: [{ label: "JWT dev ausente", body: { mode: "resilience" }, role: "anon" }],
   },
 
   // ---------------- Uploads ----------------

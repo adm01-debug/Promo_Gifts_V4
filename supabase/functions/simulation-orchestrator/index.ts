@@ -1,4 +1,4 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
+import { authorize } from "../_shared/authorize.ts";
 import { parseContract } from "../_shared/contracts/index.ts";
 import {
   SimulationOrchestratorSchemas,
@@ -111,6 +111,9 @@ Deno.serve(async (req) => {
   }
 
   try {
+    const auth = await authorize(req, { requireRole: "dev" });
+    if (!auth.ok) return log.respond(auth.response);
+
     const contractResult = await parseContract(
       req,
       SimulationOrchestratorSchemas,
@@ -130,25 +133,7 @@ Deno.serve(async (req) => {
     ];
     const mode = parsedBody.mode ?? "resilience";
 
-    const supabaseUrl = Deno.env.get("SUPABASE_URL");
-    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-    if (!supabaseUrl || !serviceRoleKey) {
-      log.error("simulation_configuration_unavailable", {
-        has_supabase_url: Boolean(supabaseUrl),
-        has_service_role: Boolean(serviceRoleKey),
-      });
-      return log.respond(jsonResponse(
-        {
-          error: "simulation_configuration_unavailable",
-          outcome: "infra_failed",
-          request_id: requestId,
-        },
-        503,
-        { ...corsHeaders, ...responseHeaders },
-      ));
-    }
-
-    const supabase = createClient(supabaseUrl, serviceRoleKey);
+    const supabase = auth.supabaseAdmin;
     const startTime = new Date().toISOString();
     const { data: run, error: runError } = await supabase
       .from("simulation_runs")

@@ -161,12 +161,7 @@ describe('requestApproval', () => {
     expect(outcome).toBe(false);
   });
 
-  // BUG-NOTIFY-ADMIN-SILENT-FAIL regression:
-  // Previously { error } was not destructured from the user_roles query in Promise.all.
-  // If the query failed, adminRoles was null, the guard `if (adminRoles && ...)` silently
-  // skipped notification, and nothing was logged — admins never knew a discount approval
-  // had been requested. Fixed to warn and continue (non-fatal secondary op).
-  it('BUG-NOTIFY-ADMIN-SILENT-FAIL: loga warn mas retorna true quando user_roles query falha', async () => {
+  it('delega notificação de admins exclusivamente ao trigger canônico', async () => {
     vi.mocked(supabase.from).mockImplementation((table: string) => {
       if (table === 'discount_approval_requests') {
         const maybeSingleFn = vi.fn().mockResolvedValue({ data: null, error: null });
@@ -210,20 +205,15 @@ describe('requestApproval', () => {
       } as never;
     });
 
-    const { logger } = await import('@/lib/logger');
     const { result } = renderHook(() => useDiscountApproval());
     let outcome: boolean | undefined;
     await act(async () => {
       outcome = await result.current.requestApproval('q-admin-notify-fail', 15, 10);
     });
 
-    // Non-fatal: the approval request was committed, still returns true
     expect(outcome).toBe(true);
-    // Warn must be logged so ops can detect missing admin notification
-    expect(vi.mocked(logger.warn)).toHaveBeenCalledWith(
-      'Failed to fetch admin roles for discount notification:',
-      expect.anything(),
-    );
+    expect(vi.mocked(supabase.from)).not.toHaveBeenCalledWith('user_roles');
+    expect(vi.mocked(supabase.from)).not.toHaveBeenCalledWith('workspace_notifications');
   });
 
   // BUG-APPROVAL-DEDUP-SILENT-FAIL regression:
@@ -251,15 +241,11 @@ describe('requestApproval', () => {
       if (table === 'quotes') {
         return {
           update: vi.fn().mockReturnValue({ eq: vi.fn().mockResolvedValue({ error: null }) }),
-          select: vi
-            .fn()
-            .mockReturnValue({
-              eq: vi
-                .fn()
-                .mockReturnValue({
-                  maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
-                }),
+          select: vi.fn().mockReturnValue({
+            eq: vi.fn().mockReturnValue({
+              maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
             }),
+          }),
         } as never;
       }
       if (table === 'user_roles') {
@@ -271,15 +257,11 @@ describe('requestApproval', () => {
       }
       return {
         insert: vi.fn().mockResolvedValue({ error: null }),
-        select: vi
-          .fn()
-          .mockReturnValue({
-            eq: vi
-              .fn()
-              .mockReturnValue({
-                maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
-              }),
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
           }),
+        }),
       } as never;
     });
 
@@ -329,7 +311,8 @@ describe('respondToApproval', () => {
       if (table === 'discount_approval_requests') {
         const innerSingleFn = vi.fn().mockResolvedValue({ data: fakeRequest, error: null });
         const innerSelectAfterEq = vi.fn().mockReturnValue({ single: innerSingleFn });
-        const eqFn = vi.fn().mockReturnValue({ select: innerSelectAfterEq });
+        const statusEqFn = vi.fn().mockReturnValue({ select: innerSelectAfterEq });
+        const eqFn = vi.fn().mockReturnValue({ eq: statusEqFn });
         return { update: vi.fn().mockReturnValue({ eq: eqFn }) } as never;
       }
       if (table === 'quotes') {
@@ -366,13 +349,7 @@ describe('respondToApproval', () => {
     expect(vi.mocked(toast.success)).toHaveBeenCalled();
   });
 
-  // BUG-NOTIFY-SELLER-SILENT-FAIL regression:
-  // Previously workspace_notifications.insert used bare `await supabase...` without
-  // destructuring { error } — Supabase JS v2 never throws on DB errors, so an RLS
-  // denial or constraint violation was silently ignored and the seller was never
-  // notified of the admin's decision. Fixed to log the error but still return true
-  // (non-fatal: the approval decision is already committed to the DB).
-  it('BUG-NOTIFY-SELLER-SILENT-FAIL: loga erro mas retorna true quando workspace_notifications falha', async () => {
+  it('delega notificação do vendedor exclusivamente ao trigger canônico', async () => {
     const fakeRequest = {
       id: 'req-notify-fail',
       quote_id: 'q-notify-fail',
@@ -385,7 +362,8 @@ describe('respondToApproval', () => {
       if (table === 'discount_approval_requests') {
         const singleFn = vi.fn().mockResolvedValue({ data: fakeRequest, error: null });
         const selectAfterEq = vi.fn().mockReturnValue({ single: singleFn });
-        const eqFn = vi.fn().mockReturnValue({ select: selectAfterEq });
+        const statusEqFn = vi.fn().mockReturnValue({ select: selectAfterEq });
+        const eqFn = vi.fn().mockReturnValue({ eq: statusEqFn });
         return { update: vi.fn().mockReturnValue({ eq: eqFn }) } as never;
       }
       if (table === 'quotes') {
@@ -396,27 +374,72 @@ describe('respondToApproval', () => {
       if (table === 'quote_history') {
         return { insert: vi.fn().mockResolvedValue({ error: null }) } as never;
       }
-      if (table === 'workspace_notifications') {
-        // Simulate RLS denial or constraint violation on seller notification
-        return { insert: vi.fn().mockResolvedValue({ error: { message: 'RLS denied' } }) } as never;
-      }
       return { insert: vi.fn().mockResolvedValue({ error: null }) } as never;
     });
 
-    const { logger } = await import('@/lib/logger');
     const { result } = renderHook(() => useDiscountApproval());
     let outcome: boolean | undefined;
     await act(async () => {
       outcome = await result.current.respondToApproval('req-notify-fail', true, 'ok');
     });
 
-    // Non-fatal: approval was committed, so still returns true
     expect(outcome).toBe(true);
-    // Error must be logged so ops can detect notification failures
-    expect(vi.mocked(logger.error)).toHaveBeenCalledWith(
-      'Failed to notify seller of approval decision:',
-      expect.anything(),
-    );
+    expect(vi.mocked(supabase.from)).not.toHaveBeenCalledWith('workspace_notifications');
+  });
+
+  it('compensa a decisão para pending quando a atualização do orçamento falha', async () => {
+    const fakeRequest = {
+      id: 'req-compensate',
+      quote_id: 'q-compensate',
+      seller_id: 'seller-001',
+      requested_discount_percent: 20,
+      max_allowed_percent: 15,
+    };
+    const compensationUpdate = vi.fn();
+    let darCalls = 0;
+
+    vi.mocked(supabase.from).mockImplementation((table: string) => {
+      if (table === 'discount_approval_requests') {
+        darCalls += 1;
+        if (darCalls === 1) {
+          const single = vi.fn().mockResolvedValue({ data: fakeRequest, error: null });
+          const statusEq = vi.fn().mockReturnValue({ select: vi.fn().mockReturnValue({ single }) });
+          return {
+            update: vi.fn().mockReturnValue({ eq: vi.fn().mockReturnValue({ eq: statusEq }) }),
+          } as never;
+        }
+
+        compensationUpdate.mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            eq: vi.fn().mockResolvedValue({ error: null }),
+          }),
+        });
+        return { update: compensationUpdate } as never;
+      }
+      if (table === 'quotes') {
+        return {
+          update: vi.fn().mockReturnValue({
+            eq: vi.fn().mockResolvedValue({ error: { message: 'quote update failed' } }),
+          }),
+        } as never;
+      }
+      return { insert: vi.fn().mockResolvedValue({ error: null }) } as never;
+    });
+
+    const { result } = renderHook(() => useDiscountApproval());
+    let outcome: boolean | undefined;
+    await act(async () => {
+      outcome = await result.current.respondToApproval('req-compensate', true, 'ok');
+    });
+
+    expect(outcome).toBe(false);
+    expect(compensationUpdate).toHaveBeenCalledWith({
+      status: 'pending',
+      admin_id: null,
+      admin_notes: null,
+      responded_at: null,
+      valid_until: null,
+    });
   });
 });
 

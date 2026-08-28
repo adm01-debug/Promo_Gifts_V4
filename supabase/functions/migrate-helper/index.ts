@@ -1,35 +1,24 @@
-// Edge function temporária para migração de banco.
-// Cole em: Cloud > Edge Functions > migrate-helper > View code
-// Após a migração, remova esta função.
+// migrate-helper foi um utilitário temporário e não deve executar migrações,
+// revelar credenciais nem ser implantado como caminho administrativo.
+import { authorize } from '../_shared/authorize.ts';
+import { buildPublicCorsHeaders } from '../_shared/cors.ts';
 
-const ACCESS_KEY = "85e73b214fd81b8a2e14786ce2bb6326b0ceb94623593fc5";
-const cors = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-access-key",
-  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-};
+const corsHeaders = buildPublicCorsHeaders({ allowMethods: 'GET, POST, OPTIONS' });
 
 Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: cors });
-  const key = req.headers.get("x-access-key");
-  if (key !== ACCESS_KEY) return new Response(JSON.stringify({ error: "unauthorized" }), { status: 401, headers: { ...cors, "Content-Type": "application/json" } });
+  if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
 
-  const url = new URL(req.url);
-  const action = url.searchParams.get("action") || "ping";
+  const auth = await authorize(req, { requireRole: 'dev' });
+  if (!auth.ok) return auth.response;
 
-  try {
-    if (action === "ping") {
-      return new Response(JSON.stringify({ ok: true, project_ref: Deno.env.get("SUPABASE_URL") }), { headers: { ...cors, "Content-Type": "application/json" } });
-    }
-    if (action === "credentials") {
-      return new Response(JSON.stringify({
-        url: Deno.env.get("SUPABASE_URL"),
-        service_role: Deno.env.get("SUPABASE_SERVICE_ROLE_KEY"),
-        db_url: Deno.env.get("SUPABASE_DB_URL"),
-      }), { headers: { ...cors, "Content-Type": "application/json" } });
-    }
-    return new Response(JSON.stringify({ error: "unknown_action" }), { status: 400, headers: { ...cors, "Content-Type": "application/json" } });
-  } catch (e) {
-    return new Response(JSON.stringify({ error: String(e) }), { status: 500, headers: { ...cors, "Content-Type": "application/json" } });
-  }
+  return new Response(
+    JSON.stringify({
+      error: 'migration_helper_disabled',
+      message: 'This temporary migration helper is permanently disabled.',
+    }),
+    {
+      status: 410,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    },
+  );
 });

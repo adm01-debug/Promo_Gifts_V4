@@ -10,6 +10,18 @@ import { assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
 
 type EdgeHandler = (request: Request) => Response | Promise<Response>;
 
+const ENV_NAMES = [
+  "SUPABASE_URL",
+  "SUPABASE_ANON_KEY",
+  "SUPABASE_SERVICE_ROLE_KEY",
+] as const;
+const originalEnv = new Map(
+  ENV_NAMES.map((name) => [name, Deno.env.get(name)] as const),
+);
+Deno.env.set("SUPABASE_URL", "https://local-simulation-test.invalid");
+Deno.env.set("SUPABASE_ANON_KEY", "anon-test-only");
+Deno.env.set("SUPABASE_SERVICE_ROLE_KEY", "service-role-test-only");
+
 let handler: EdgeHandler | undefined;
 const serveDescriptor = Object.getOwnPropertyDescriptor(Deno, "serve");
 
@@ -33,11 +45,6 @@ if (!handler) {
 }
 
 const originalFetch = globalThis.fetch;
-const ENV_NAMES = ["SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY"] as const;
-const originalEnv = new Map(
-  ENV_NAMES.map((name) => [name, Deno.env.get(name)] as const),
-);
-
 type PersistenceMode =
   | "run_insert_fails"
   | "available"
@@ -62,6 +69,19 @@ function localSupabaseFetch(
   const request = new Request(input, init);
   const url = new URL(request.url);
   dbCalls.push({ method: request.method, path: url.pathname });
+
+  if (url.pathname === "/auth/v1/user") {
+    return Promise.resolve(json({
+      user: {
+        id: "00000000-0000-4000-8000-000000000001",
+        email: "dev@local.invalid",
+      },
+    }));
+  }
+
+  if (url.pathname === "/rest/v1/user_roles" && request.method === "GET") {
+    return Promise.resolve(json([{ role: "dev" }]));
+  }
 
   if (url.pathname.startsWith("/functions/v1/")) {
     targetCalls.push(url.pathname);
@@ -110,12 +130,17 @@ function localSupabaseFetch(
   );
 }
 
-function request(body: Record<string, unknown> = {}): Request {
+function request(
+  body: Record<string, unknown> = {},
+  authenticated = true,
+): Request {
+  const headers = new Headers({ "content-type": "application/json" });
+  if (authenticated) headers.set("authorization", "Bearer local-dev-token");
   return new Request(
     "https://local-simulation-test.invalid/functions/v1/simulation-orchestrator",
     {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers,
       body: JSON.stringify(body),
     },
   );
@@ -128,10 +153,10 @@ Deno.test({
   sanitizeResources: false,
   fn: async () => {
     globalThis.fetch = localSupabaseFetch as typeof fetch;
-    Deno.env.set("SUPABASE_URL", "https://local-simulation-test.invalid");
-    Deno.env.set("SUPABASE_SERVICE_ROLE_KEY", "service-role-test-only");
-
     try {
+      const anonymous = await handler!(request({}, false));
+      assertEquals(anonymous.status, 401);
+
       persistenceMode = "run_insert_fails";
       targetCalls.length = 0;
       dbCalls.length = 0;
