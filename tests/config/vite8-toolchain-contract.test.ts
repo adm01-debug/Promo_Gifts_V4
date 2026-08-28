@@ -17,4 +17,10 @@ describe('Vite 8 toolchain contract', () => {
     expect(packageJson).toContain('"@vitejs/plugin-react"');
     expect(packageJson).not.toContain('"@vitejs/plugin-react-swc"');
   });
+
+  it('does not publish orphan source maps when no uploader is configured', () => {
+    expect(viteConfig).toContain('sourcemap: false');
+    expect(viteConfig).not.toContain('!!process.env.SENTRY_AUTH_TOKEN');
+    expect(packageJson).not.toContain('"@sentry/vite-plugin"');
+  });
 });
