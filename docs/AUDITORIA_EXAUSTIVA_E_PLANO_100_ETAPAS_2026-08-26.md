@@ -848,7 +848,8 @@ ou aplicada.
 
 - [x] `npm run qa:full` — runtime, catálogo, migration gate, lint baseline,
   typecheck e ESLint verdes.
-- [x] `npm run test:ci-core` — 38 arquivos e 887 testes verdes.
+- [x] `npm run test:ci-core` — 38 arquivos e 888 testes verdes após adicionar
+  o contrato live de ACL da RPC protegida.
 - [x] `npm run test:edge:integration:all` — 40 arquivos e 969 testes verdes.
 - [x] `npm run build` — build Vite 8 verde, guarda canônica e ausência de harness
   produtivo confirmadas.
@@ -863,10 +864,13 @@ ou aplicada.
 
 - [x] O PR #1799 foi mesclado em `main` no commit `bf16e5eb4`; a afirmação
   histórica acima de que ele ainda estava aberto foi superada por este registro.
-- [x] A capacidade do GitHub Actions está ativa e os jobs realmente executam.
-  As causas reproduzíveis centrais do PR #1799 — OOM, coleta E2E, integração Edge,
-  Bun lock, typecheck de magazine, restauração de carrinho e Lighthouse — foram
-  corrigidas nesta branch.
+- [ ] A capacidade do GitHub Actions executou os jobs até o commit
+  `6196ed1a6`: 20 workflows dessa rodada chegaram a verde, incluindo Gate 5,
+  SSOT, build/bundle e contratos. Na rodada final o orçamento foi esgotado e 60
+  workflows terminaram antes do primeiro step com a anotação oficial
+  `Actions budget is preventing further use`; esses registros são falha de
+  capacidade, não evidência de regressão. As causas reproduzíveis encontradas
+  antes do bloqueio foram corrigidas e testadas localmente.
 - [x] Existe o ruleset ativo `Protect main`, exigindo PR e bloqueando delete e
   non-fast-forward.
 - [ ] O ruleset não exige nenhum status check, zero aprovações e permite bypass
@@ -875,16 +879,45 @@ ou aplicada.
 - [ ] O upload do CodeQL continua bloqueado porque code scanning não está
   habilitado nas configurações do repositório (HTTP 403). O workflow não foi
   enfraquecido para esconder o problema.
-- [ ] As quatro Edge Functions alteradas nesta continuação ainda não foram
-  implantadas: `ema-pipeline-health`, `crm-callback-alerts`,
-  `generate-ad-image` e `market-intelligence-insights`. O deploy só ocorrerá
-  depois de os bytes entrarem no GitHub e passarem no novo PR.
+- [x] As quatro Edge Functions desta continuação foram implantadas no canônico:
+  `ema-pipeline-health` v1, `crm-callback-alerts` v55,
+  `generate-ad-image` v273 e `market-intelligence-insights` v263. O download
+  posterior confirmou os quatro hashes `index.ts` idênticos ao GitHub; 32/32
+  cenários live não mutantes passaram, com um happy-path de IA ignorado por
+  ausência deliberada de credencial de teste.
 - [ ] Nenhum DDL/DML/grant/policy/job foi aplicado ao Supabase canônico. O
   catálogo demonstrou que nenhuma migration forward-only adicional é necessária
   para as correções desta continuação; mudanças futuras de RLS/ACL/jobs continuam
   dependendo de autorização específica por objeto.
 - [ ] Nenhum candidato de limpeza foi removido. Logos, relatórios, snapshots,
   fixtures e migrations permanecem preservados até `[VALIDAÇÃO PO]` nominal.
+
+### Fechamento operacional do PR #1800
+
+- [x] O Gate 5 passou a reconhecer de forma estrita o grant `anon` intencional
+  de `fn_product_active_for_rls(uuid)`, exigido por duas policies de catálogo e
+  pelo tripwire `fn_verify_anon_catalog_grants`; qualquer outro achado continua
+  bloqueante.
+- [x] `get_profile_and_roles(_user_id uuid)` e `fn_rpc_exists(_fname text)` usam
+  agora as assinaturas canônicas. A proibição de EXECUTE para `anon` é comprovada
+  pelo endpoint live com SQLSTATE `42501`, sem tentar auditar
+  `information_schema` via PostgREST.
+- [x] O drift check de Edge foi atualizado para a Supabase CLI atual. A última
+  comparação completa antes do deploy encontrou 102 funções alinhadas e somente
+  as quatro alterações desta branch; todas as quatro ficaram alinhadas após o
+  deploy controlado.
+- [x] O handler-direct de `log-login-attempt` usa o `deno.json` canônico e seus
+  38 testes isolam o circuit breaker por cenário, eliminando dependência de
+  ordem sem enfraquecer os casos de abertura/recuperação.
+- [x] O smoke Thumb QuickView executa apenas o Chromium que instala; a matriz
+  bloqueante posterior preserva Chromium, Firefox e WebKit. A coleta focal lista
+  cinco testes no smoke, em vez de tentar 25 cenários em browsers ausentes.
+- [ ] O workflow CRM no-mock permanece corretamente bloqueado: faltam no GitHub
+  os secrets `CRM_CALLBACK_API_KEY`, `E2E_ADMIN_EMAIL` e
+  `E2E_ADMIN_PASSWORD`. O gate não foi convertido em skip/falso verde.
+- [ ] O CodeQL continua dependente de habilitar code scanning no repositório e o
+  Vercel recusou a criação automática do preview antes do build; ambos exigem
+  configuração externa, não alteração funcional no código.
 
 ## Critério para encerrar a estabilização
 
