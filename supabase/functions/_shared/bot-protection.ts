@@ -80,6 +80,12 @@ interface BotProtectionOptions {
   blockSeconds?: number;       // default 3600 (1h)
   allowSearchBots?: boolean;   // default true
   customIdentifier?: string;   // override IP-based identifier
+  /**
+   * Signed server-to-server endpoints legitimately use curl/undici/axios.
+   * This skips only User-Agent classification; IP overrides and persistent
+   * rate limiting remain active. Never use it on an unsigned public endpoint.
+   */
+  skipUserAgentCheck?: boolean;
 }
 
 export interface BotProtectionResult {
@@ -151,18 +157,20 @@ export async function runBotProtection(
   }
 
   // 1. Bot UA check
-  const botCheck = detectBot(ua);
-  const allowSearch = opts.allowSearchBots !== false;
+  if (!opts.skipUserAgentCheck) {
+    const botCheck = detectBot(ua);
+    const allowSearch = opts.allowSearchBots !== false;
 
-  if (botCheck.isBot && !(allowSearch && botCheck.isAllowedBot)) {
-    await logBlock(botCheck.reason || 'bot_detected', true, { matched: botCheck.matchedPattern });
-    return {
-      allowed: false,
-      blockResponse: new Response(
-        JSON.stringify({ error: 'Forbidden', message: 'Automated access not allowed' }),
-        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
-      ),
-    };
+    if (botCheck.isBot && !(allowSearch && botCheck.isAllowedBot)) {
+      await logBlock(botCheck.reason || 'bot_detected', true, { matched: botCheck.matchedPattern });
+      return {
+        allowed: false,
+        blockResponse: new Response(
+          JSON.stringify({ error: 'Forbidden', message: 'Automated access not allowed' }),
+          { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+        ),
+      };
+    }
   }
 
   // 2. Persistent rate limit via DB function

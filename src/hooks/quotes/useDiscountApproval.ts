@@ -235,50 +235,13 @@ export function useDiscountApproval() {
             if (auditErr) logger.error('Failed to log audit trail:', auditErr);
           }
 
-          // Notify all admins — both queries are independent, run in parallel
-          // BUG-NOTIFY-ADMIN-SILENT-FAIL FIX: previously { error } was not destructured from
-          // the user_roles query. If the query failed (RLS denial, network error), adminRoles
-          // was null, the `if (adminRoles && ...)` guard silently skipped notification, and
-          // nothing was logged — admins never knew a discount approval had been requested.
-          const [{ data: adminRoles, error: rolesErr }, { data: profile }] = await Promise.all([
-            supabase.from('user_roles').select('user_id').eq('role', 'admin'),
-            supabase.from('profiles').select('full_name').eq('user_id', user.id).maybeSingle(),
-          ]);
-          if (rolesErr)
-            logger.warn('Failed to fetch admin roles for discount notification:', rolesErr);
-          if (adminRoles && adminRoles.length > 0) {
-            const sellerName = profile?.full_name || 'Vendedor';
-            const msg =
-              markup > 0
-                ? `${sellerName} solicitou desconto real de ${requestedPercent.toFixed(2)}% (aparente ${apparent.toFixed(1)}% com markup +${markup.toFixed(1)}%, limite ${maxAllowedPercent}%)`
-                : `${sellerName} solicitou ${requestedPercent.toFixed(1)}% de desconto (limite: ${maxAllowedPercent}%)`;
-            const deepLink = newRequestId
-              ? `/admin/usuarios?tab=discounts&request=${newRequestId}`
-              : '/admin/usuarios?tab=discounts';
-            const { error: notifyErr } = await supabase.from('workspace_notifications').insert(
-              adminRoles.map((a) => ({
-                user_id: a.user_id,
-                title: 'Solicitação de desconto',
-                message: msg,
-                type: 'warning',
-                category: 'discount',
-                action_url: deepLink,
-                metadata: {
-                  request_id: newRequestId,
-                  quote_id: quoteId,
-                  seller_id: user.id,
-                  seller_name: sellerName,
-                  requested_discount_percent: requestedPercent,
-                  max_allowed_percent: maxAllowedPercent,
-                  real_discount_percent: requestedPercent,
-                  apparent_discount_percent: apparent,
-                  negotiation_markup_percent: markup,
-                  seller_notes: sellerNotes || null,
-                },
-              })),
+          // A notificação é responsabilidade exclusiva de
+          // trg_notify_discount_approval/notify_discount_approval_request.
+          // Escrever também pelo cliente gerava uma notificação duplicada por admin.
+          if (!newRequestId) {
+            logger.warn(
+              'Approval inserted without returned id; database trigger remains authoritative',
             );
-
-            if (notifyErr) logger.error('Failed to notify admins of approval request:', notifyErr);
           }
 
           toast.success('Solicitação de aprovação enviada ao admin!');
@@ -349,6 +312,7 @@ export function useDiscountApproval() {
             valid_until: validUntilDate,
           })
           .eq('id', requestId)
+          .eq('status', 'pending')
           .select()
           .single();
         if (updateError) {
@@ -375,6 +339,23 @@ export function useDiscountApproval() {
 
         if (quoteUpdateResult.error) {
           logger.error('Failed to update quote status:', quoteUpdateResult.error);
+          // Compensação de melhor esforço: mantém o DAR pendente se a segunda
+          // escrita falhar. A atomicidade real entre tabelas requer RPC/trigger
+          // dedicado; não existe transação multi-tabela no cliente PostgREST.
+          const { error: compensationError } = await supabase
+            .from('discount_approval_requests')
+            .update({
+              status: 'pending',
+              admin_id: null,
+              admin_notes: null,
+              responded_at: null,
+              valid_until: null,
+            })
+            .eq('id', requestId)
+            .eq('status', approved ? 'approved' : 'rejected');
+          if (compensationError) {
+            logger.error('Failed to compensate discount approval decision:', compensationError);
+          }
           throw quoteUpdateResult.error;
         }
 
@@ -401,23 +382,8 @@ export function useDiscountApproval() {
           logger.error('Failed to log quote history:', historyError);
         }
 
-        // Notify the seller
-        // BUG-NOTIFY-SELLER-SILENT-FAIL FIX: previously a bare `await supabase...` was used
-        // here — Supabase JS v2 never throws on DB errors, so any RLS denial or constraint
-        // violation was silently swallowed. The seller would never receive the decision
-        // notification and nothing was logged. Destructure { error } and log on failure.
-        const { error: sellerNotifyErr } = await supabase.from('workspace_notifications').insert({
-          user_id: typedReq.seller_id,
-          title: approved ? 'Desconto aprovado ✅' : 'Desconto rejeitado ❌',
-          message: approved
-            ? `Seu desconto de ${typedReq.requested_discount_percent}% foi aprovado. O orçamento está pronto para envio.`
-            : `Seu desconto de ${typedReq.requested_discount_percent}% foi rejeitado.${adminNotes ? ` Motivo: ${adminNotes}` : ' Ajuste o desconto e tente novamente.'}`,
-          type: approved ? 'success' : 'error',
-          category: 'discount',
-          action_url: `/orcamentos/${typedReq.quote_id}`,
-        });
-        if (sellerNotifyErr)
-          logger.error('Failed to notify seller of approval decision:', sellerNotifyErr);
+        // O trigger canônico trg_notify_discount_approval notifica o vendedor
+        // na transição pending -> approved/rejected. Não duplicar pelo cliente.
 
         toast.success(approved ? 'Desconto aprovado!' : 'Desconto rejeitado');
         invalidateWidget();

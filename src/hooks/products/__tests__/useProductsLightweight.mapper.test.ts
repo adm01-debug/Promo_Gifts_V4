@@ -50,6 +50,20 @@ describe('mapLightweightToProduct', () => {
     expect(PRODUCT_SELECT_LIGHTWEIGHT).toContain('created_at');
   });
 
+  it('preserva sale_price como campo canônico além do fallback price', () => {
+    const product = mapLightweightToProduct({ ...baseProduct, sale_price: 19.9, cost_price: 8 });
+
+    expect(product.price).toBe(19.9);
+    expect(product.sale_price).toBe(19.9);
+  });
+
+  it('não inventa sale_price quando somente cost_price está disponível', () => {
+    const product = mapLightweightToProduct({ ...baseProduct, sale_price: null, cost_price: 8 });
+
+    expect(product.price).toBe(8);
+    expect(product.sale_price).toBeUndefined();
+  });
+
   // REGRESSÃO — toggles "Destaques", "Promoções", "Com Personalização" e
   // "Com Embalagem Nativa" do Super Filtro. Estes campos eram hardcoded
   // (featured/onSale=false) ou ausentes do mapeamento, deixando os filtros

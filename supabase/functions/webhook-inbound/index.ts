@@ -215,6 +215,9 @@ Deno.serve(async (req) => {
         windowSeconds: 60,
         blockSeconds: 1800,
         allowSearchBots: false,
+        // Endpoint HMAC below authenticates the automation. Keep IP controls and
+        // DB-backed rate limiting, but do not reject legitimate curl/undici UAs.
+        skipUserAgentCheck: true,
       },
       corsHeaders,
     );

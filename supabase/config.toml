@@ -153,4 +153,7 @@ enable_signup = false
 enable_anonymous_sign_ins = false
 
 [functions.migrate-helper]
-verify_jwt = false
+verify_jwt = true
+
+[functions.simulation-orchestrator]
+verify_jwt = true

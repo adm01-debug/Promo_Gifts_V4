@@ -294,6 +294,16 @@ Deno.test({
       assertEquals(invalidSignature.body.code, "invalid_signature");
       assertEquals(storedEvents.length, 0);
 
+      const automationUaStillReachesHmac = await invoke(
+        requestFor(v2Payload, {
+          signature: "sha256=deadbeef",
+          headers: { "user-agent": "undici" },
+        }),
+      );
+      assertEquals(automationUaStillReachesHmac.status, 401);
+      assertEquals(automationUaStillReachesHmac.body.code, "invalid_signature");
+      assertEquals(storedEvents.length, 0);
+
       const blockedIp = await invoke(requestFor(v2Payload, {
         signature,
         headers: { "x-forwarded-for": "198.51.100.25" },
