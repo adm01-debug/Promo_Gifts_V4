@@ -867,9 +867,11 @@ ou aplicada.
   As causas reproduzíveis centrais do PR #1799 — OOM, coleta E2E, integração Edge,
   Bun lock, typecheck de magazine, restauração de carrinho e Lighthouse — foram
   corrigidas nesta branch.
-- [ ] O repositório não possui Required Checks/branch protection efetivos na API;
-  isso exige decisão administrativa antes de tornar `main` tecnicamente
-  bloqueante.
+- [x] Existe o ruleset ativo `Protect main`, exigindo PR e bloqueando delete e
+  non-fast-forward.
+- [ ] O ruleset não exige nenhum status check, zero aprovações e permite bypass
+  permanente ao papel administrativo; isso exige decisão administrativa antes
+  de tornar os gates tecnicamente bloqueantes para `main`.
 - [ ] O upload do CodeQL continua bloqueado porque code scanning não está
   habilitado nas configurações do repositório (HTTP 403). O workflow não foi
   enfraquecido para esconder o problema.
