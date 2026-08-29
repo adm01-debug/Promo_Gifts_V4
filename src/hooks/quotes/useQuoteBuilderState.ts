@@ -7,7 +7,6 @@ import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { useNavigate, useParams, useSearchParams, useLocation } from 'react-router-dom';
 import {
   useAutoSaveQuote,
-  useDiscountApproval,
   useQuoteItems,
   useQuotes,
   useSellerDiscountLimits,
@@ -142,9 +141,8 @@ export function useQuoteBuilderState() {
 
   const { user } = useAuth();
   const { createQuote, updateQuote, fetchQuote, isLoading: quotesLoading } = useQuotes();
-  
+
   const { myLimit: maxDiscountPercent } = useSellerDiscountLimits();
-  const { requestApproval } = useDiscountApproval();
 
   // ── State ──
   const [clientId, setClientId] = useState('');
@@ -258,7 +256,7 @@ export function useQuoteBuilderState() {
   const [productSearchOpen, setProductSearchOpen] = useState(false);
   const [productSearch, setProductSearch] = useState('');
   const [selectedProductForColor, setSelectedProductForColor] = useState<Product | null>(null);
-  
+
   const [loadingQuote, setLoadingQuote] = useState(isEditMode);
 
   const debouncedProductSearch = useDebounce(productSearch, 400);
@@ -949,7 +947,6 @@ export function useQuoteBuilderState() {
     );
   }, [setItems]);
 
-
   // ── Validation ──
   const validationErrors = useMemo(
     () =>
@@ -1095,7 +1092,10 @@ export function useQuoteBuilderState() {
               .eq('id', quoteId)
               .single();
             if (conflictCheckErr)
-              logger.warn('Conflict check query failed, proceeding without check:', conflictCheckErr);
+              logger.warn(
+                'Conflict check query failed, proceeding without check:',
+                conflictCheckErr,
+              );
 
             const remoteTs = remoteQuote?.updated_at;
             if (remoteTs && new Date(remoteTs) > new Date(baselineUpdatedAtRef.current)) {
@@ -1114,24 +1114,19 @@ export function useQuoteBuilderState() {
             }
           }
           // QBP-08 FIX: passar versão ao atualizar para ativar lock server-side
-          result = await updateQuote(quoteId, quoteData, items, quoteVersionRef.current ?? undefined);
+          result = await updateQuote(
+            quoteId,
+            quoteData,
+            items,
+            quoteVersionRef.current ?? undefined,
+            status === 'pending_approval' ? sellerNotes : undefined,
+          );
         } else {
-          result = await createQuote(quoteData, items);
-        }
-
-        if (result?.id && status === 'pending_approval' && maxDiscountPercent !== null) {
-          // BUG-APPROVAL-CATCH FIX: wrap requestApproval in its own try-catch.
-          // If this fails, the quote is already saved as pending_approval, so we
-          // warn the user rather than letting the exception silently bubble up.
-          try {
-            await requestApproval(result.id, realDiscountPercent, maxDiscountPercent, sellerNotes);
-          } catch (approvalError) {
-            logger.error('Erro ao criar solicitação de aprovação:', approvalError);
-            toast.warning(
-              'Orçamento salvo, mas a solicitação de aprovação não pôde ser criada. Contate o administrador.',
-              { duration: 8000 },
-            );
-          }
+          result = await createQuote(
+            quoteData,
+            items,
+            status === 'pending_approval' ? sellerNotes : undefined,
+          );
         }
 
         if (result?.id) {
@@ -1168,7 +1163,6 @@ export function useQuoteBuilderState() {
       discountValue,
       discountAmount,
       negotiationMarkup,
-      realDiscountPercent,
       notes,
       validUntil,
       paymentMethod,
@@ -1183,8 +1177,6 @@ export function useQuoteBuilderState() {
       navigate,
       updateQuote,
       createQuote,
-      maxDiscountPercent,
-      requestApproval,
       clearAutoSave,
     ],
   );

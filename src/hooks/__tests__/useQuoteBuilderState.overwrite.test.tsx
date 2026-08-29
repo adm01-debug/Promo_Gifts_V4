@@ -157,7 +157,7 @@ describe('useQuoteBuilderState — overwrite preserva status', () => {
     expect(quoteArg.status).toBe('pending');
   });
 
-  it('overwrite de "pending_approval" preserva a justificativa do vendedor no requestApproval', async () => {
+  it('overwrite de "pending_approval" envia a justificativa no save transacional', async () => {
     const { result } = renderHook(() => useQuoteBuilderState(), { wrapper });
 
     await waitFor(() => expect(result.current.loadingQuote).toBe(false));
@@ -172,7 +172,8 @@ describe('useQuoteBuilderState — overwrite preserva status', () => {
     expect(result.current.conflictInfo).not.toBeNull();
     expect(requestApprovalSpy).not.toHaveBeenCalled();
 
-    // 2) Sobrescrever mesmo assim → mantém 'pending_approval' E a justificativa.
+    // 2) Sobrescrever mesmo assim → o wrapper de save recebe status e
+    // justificativa na mesma transação que cria/reutiliza o DAR.
     await act(async () => {
       await result.current.overwriteAndSave();
     });
@@ -180,9 +181,8 @@ describe('useQuoteBuilderState — overwrite preserva status', () => {
     expect(updateQuoteSpy).toHaveBeenCalledTimes(1);
     const [, quoteArg] = updateQuoteSpy.mock.calls[0] as unknown as [string, { status: string }];
     expect(quoteArg.status).toBe('pending_approval');
-    expect(requestApprovalSpy).toHaveBeenCalledTimes(1);
-    // requestApproval(quoteId, realDiscountPercent, maxDiscountPercent, sellerNotes)
-    const approvalArgs = requestApprovalSpy.mock.calls[0] as unknown as unknown[];
-    expect(approvalArgs[3]).toBe(justification);
+    expect(requestApprovalSpy).not.toHaveBeenCalled();
+    const saveArgs = updateQuoteSpy.mock.calls[0] as unknown as unknown[];
+    expect(saveArgs[4]).toBe(justification);
   });
 });

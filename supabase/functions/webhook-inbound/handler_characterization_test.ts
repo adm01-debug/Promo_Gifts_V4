@@ -485,3 +485,47 @@ Deno.test({
     }
   },
 });
+
+Deno.test({
+  name:
+    "webhook-inbound adversarial: unsigned idempotency header cannot bypass replay detection",
+  sanitizeOps: false,
+  sanitizeResources: false,
+  fn: async () => {
+    Deno.env.set("SUPABASE_URL", SUPABASE_URL);
+    Deno.env.set("SUPABASE_SERVICE_ROLE_KEY", SERVICE_ROLE_KEY);
+    Deno.env.set("WEBHOOK_ENDPOINT_SECRET", ENDPOINT_SECRET);
+    Deno.env.set("WEBHOOK_SECOND_ENDPOINT_SECRET", SECOND_ENDPOINT_SECRET);
+    globalThis.fetch = localFetch as typeof fetch;
+    storedEvents.length = 0;
+    try {
+      const body = JSON.stringify({
+        event: "order.created",
+        occurred_at: "2026-08-29T10:00:00.000Z",
+        data: { order_id: "REPLAY-WITH-UNSIGNED-HEADER" },
+      });
+      const signature = await hmacHex(body);
+      const first = await invoke(requestFor(body, { signature }));
+      assertEquals(first.status, 200);
+      assertEquals(first.body.duplicate, false);
+
+      const replay = await invoke(requestFor(body, {
+        signature,
+        headers: {
+          "x-idempotency-key": "550e8400-e29b-41d4-a716-446655440099",
+        },
+      }));
+      assertEquals(replay.status, 200);
+      assertEquals(replay.body.duplicate, true);
+      assertEquals(storedEvents.length, 1);
+    } finally {
+      globalThis.fetch = originalFetch;
+      storedEvents.length = 0;
+      for (const name of ENV_NAMES) {
+        const value = originalEnv.get(name);
+        if (value === undefined) Deno.env.delete(name);
+        else Deno.env.set(name, value);
+      }
+    }
+  },
+});

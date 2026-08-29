@@ -42,12 +42,16 @@ export interface InvokeOptions {
   isDev?: boolean;
   /** Reaproveita um request_id existente (ex.: continuação de fluxo). */
   requestId?: string;
+  /** Preserva o JSON de respostas HTTP não-2xx para consumidores que exibem
+   * relatórios estruturados (o erro continua não-nulo e deve ser tratado). */
+  preserveErrorData?: boolean;
 }
 
 interface NormalizedError {
   message: string;
   status: number;
   name?: string;
+  body?: unknown;
 }
 
 interface InvokeErrorContext {
@@ -75,8 +79,8 @@ function extractBodyMessage(body: unknown): string {
   return '';
 }
 
-async function extractContextMessage(context: InvokeErrorContext | undefined): Promise<string> {
-  if (!context) return '';
+async function extractContextBody(context: InvokeErrorContext | undefined): Promise<unknown> {
+  if (!context) return undefined;
 
   if (typeof context.json === 'function') {
     const getClone = (): InvokeErrorContext => {
@@ -91,8 +95,7 @@ async function extractContextMessage(context: InvokeErrorContext | undefined): P
 
     const jsonSource = getClone();
     try {
-      const message = extractBodyMessage(await jsonSource.json?.());
-      if (message) return message;
+      return await jsonSource.json?.();
     } catch {
       // JSON inválido/indisponível: tenta o texto ou o body já materializado abaixo.
     }
@@ -100,15 +103,14 @@ async function extractContextMessage(context: InvokeErrorContext | undefined): P
     const textSource = getClone();
     if (typeof textSource.text === 'function') {
       try {
-        const message = extractBodyMessage(await textSource.text());
-        if (message) return message;
+        return await textSource.text();
       } catch {
         // A mensagem base seguirá como fallback seguro.
       }
     }
   }
 
-  return extractBodyMessage(context.body);
+  return context.body;
 }
 
 /**
@@ -127,7 +129,8 @@ export async function normalizeInvokeError(err: unknown): Promise<NormalizedErro
   const baseMsg = e.message ?? '';
   const ctx = e.context;
   const status = ctx?.status ?? 0;
-  const bodyMsg = await extractContextMessage(ctx);
+  const body = await extractContextBody(ctx);
+  const bodyMsg = extractBodyMessage(body);
 
   let outName = name;
   if (
@@ -142,7 +145,7 @@ export async function normalizeInvokeError(err: unknown): Promise<NormalizedErro
     outName = 'TypeError';
   }
 
-  return { message: bodyMsg || baseMsg || 'edge error', status, name: outName };
+  return { message: bodyMsg || baseMsg || 'edge error', status, name: outName, body };
 }
 
 /** Logger SSOT do wrapper. Único ponto de emissão da superfície invoke. */
@@ -282,8 +285,12 @@ export async function invokeEdge<T = unknown>(
   if (r.kind === 'ok') {
     return { data: (r.data ?? null) as T | null, error: null, requestId: r.requestId };
   }
+  const raw = r.raw as NormalizedError | null;
   return {
-    data: null,
+    data:
+      options.preserveErrorData && raw?.body !== null && raw?.body !== undefined
+        ? (raw.body as T)
+        : null,
     error: {
       message: r.userMessage,
       name: r.errorKind,

@@ -15,10 +15,7 @@ import {
   round2,
 } from '@/hooks/quotes/quoteHelpers';
 import { sanitizeMessage } from '@/lib/security/sanitize-message';
-import {
-  QUOTE_STATUS_CONFIG,
-  isValidQuoteTransition,
-} from '@/lib/quote-status-config';
+import { QUOTE_STATUS_CONFIG, isValidQuoteTransition } from '@/lib/quote-status-config';
 import { quoteStatusSchema, type QuoteStatus } from '@/types/quote';
 import { createClientLogger } from '@/lib/telemetry/structuredLogger';
 import { logInvalidStatusTransition } from '@/lib/telemetry/quoteStatusTelemetry';
@@ -146,10 +143,7 @@ export const quoteService = {
     // consistentes mostrando ex. "94297-7.1" em vez de "94297".
     try {
       const candidates = items.filter(
-        (it) =>
-          it.product_id &&
-          it.color_name &&
-          (!it.product_sku?.includes('-')),
+        (it) => it.product_id && it.color_name && !it.product_sku?.includes('-'),
       );
       if (candidates.length > 0) {
         const variantProductIds = Array.from(
@@ -163,7 +157,11 @@ export const quoteService = {
         if (variants && variants.length > 0) {
           const norm = (s: string) => s.trim().toLowerCase();
           const variantMap = new Map<string, string>();
-          for (const v of variants as Array<{ product_id: string; sku: string; color_name: string | null }>) {
+          for (const v of variants as Array<{
+            product_id: string;
+            sku: string;
+            color_name: string | null;
+          }>) {
             if (!v.color_name || !v.sku) continue;
             variantMap.set(`${v.product_id}|${norm(v.color_name)}`, v.sku);
           }
@@ -176,25 +174,20 @@ export const quoteService = {
               // Fallback: variante não encontrada — mantém o SKU base sem expor
               // o nome da cor no badge composto. Registra aviso para investigação
               // (variante removida/renomeada, color_name divergente, etc.).
-              logger.warn(
-                '[quoteService.fetchQuote] variant sku not found — keeping base SKU',
-                {
-                  product_id: it.product_id,
-                  color_name: it.color_name,
-                  base_sku: it.product_sku ?? null,
-                },
-              );
+              logger.warn('[quoteService.fetchQuote] variant sku not found — keeping base SKU', {
+                product_id: it.product_id,
+                color_name: it.color_name,
+                base_sku: it.product_sku ?? null,
+              });
             }
           }
         }
-
       }
     } catch (err) {
       logger.warn('[quoteService.fetchQuote] variant sku hydration failed', err);
     }
 
     return { ...quoteData, status: sanitizeQuoteStatus(quoteData), items } as Quote;
-
   },
 
   async createQuote(
@@ -202,6 +195,7 @@ export const quoteService = {
     items: QuoteItem[],
     userId: string,
     orgId: string | null,
+    approvalSellerNotes?: string,
   ): Promise<Quote> {
     const totals = calculateQuoteTotals(quote, items);
     const insertPayload = buildInsertPayload(quote, userId, orgId, totals);
@@ -216,11 +210,15 @@ export const quoteService = {
       ),
     }));
 
+    const requiresApproval = quote.status === 'pending_approval';
     const { data: created, error } = await supabase.rpc(
-      'create_quote_transactional' as never,
+      (requiresApproval
+        ? 'create_quote_with_discount_approval_transactional'
+        : 'create_quote_transactional') as never,
       {
         _quote: insertPayload,
         _items: itemsPayload,
+        ...(requiresApproval ? { _seller_notes: approvalSellerNotes?.trim() || null } : {}),
       } as never,
     );
 
@@ -277,6 +275,7 @@ export const quoteService = {
     quote: Partial<Quote>,
     items: QuoteItem[],
     expectedVersion?: number | null,
+    approvalSellerNotes?: string,
   ): Promise<Quote> {
     const totals = calculateQuoteTotals(quote, items);
     const updatePayload = buildUpdatePayload(quote, totals);
@@ -291,14 +290,18 @@ export const quoteService = {
       ),
     }));
 
+    const requiresApproval = quote.status === 'pending_approval';
     const { data: updated, error } = await supabase.rpc(
-      'update_quote_transactional' as never,
+      (requiresApproval
+        ? 'update_quote_with_discount_approval_transactional'
+        : 'update_quote_transactional') as never,
       {
         _quote_id: quoteId,
         _quote_patch: updatePayload,
         _items: itemsPayload,
         // QBP-08 FIX: passar versão para ativar lock server-side
         _expected_version: expectedVersion ?? null,
+        ...(requiresApproval ? { _seller_notes: approvalSellerNotes?.trim() || null } : {}),
       } as never,
     );
 
@@ -402,8 +405,7 @@ export const quoteService = {
       // flagrar um futuro 11º status adicionado no FE sem a migration par.
       const pgError = error as { code?: string; message?: string; hint?: string | null };
       const isCheckViolation =
-        pgError.code === '23514' ||
-        /valid_quote_status/i.test(pgError.message ?? '');
+        pgError.code === '23514' || /valid_quote_status/i.test(pgError.message ?? '');
       if (isCheckViolation) {
         logInvalidStatusTransition({
           quoteId,

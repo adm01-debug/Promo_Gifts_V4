@@ -111,7 +111,10 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const auth = await authorize(req, { requireRole: "dev" });
+    const auth = await authorize(req, {
+      requireRole: "dev",
+      requireAal2: true,
+    });
     if (!auth.ok) return log.respond(auth.response);
 
     const contractResult = await parseContract(
@@ -133,104 +136,19 @@ Deno.serve(async (req) => {
     ];
     const mode = parsedBody.mode ?? "resilience";
 
-    const supabase = auth.supabaseAdmin;
     const startTime = new Date().toISOString();
-    const { data: run, error: runError } = await supabase
-      .from("simulation_runs")
-      .insert({ mode, status: "running" })
-      .select()
-      .single();
-
-    if (runError || !run?.id) {
-      log.error("simulation_run_persistence_unavailable", { error: runError });
-      return log.respond(jsonResponse(
-        {
-          error: "simulation_persistence_unavailable",
-          outcome: "infra_failed",
-          request_id: requestId,
-        },
-        503,
-        { ...corsHeaders, ...responseHeaders },
-      ));
-    }
-
     const scenarios = targetFunctions.map((target) =>
       skippedScenario(target, targetGate(target))
     );
-    const report = buildReport(run.id, count, scenarios, startTime);
+    const report = buildReport(
+      crypto.randomUUID(),
+      count,
+      scenarios,
+      startTime,
+    );
 
-    const { error: logsError } = await supabase
-      .from("simulation_logs")
-      .insert(scenarios.map((scenario) => ({
-        run_id: run.id,
-        fn_name: scenario.fnName,
-        status_code: scenario.statusCode ?? null,
-        error_message: scenario.reason ?? scenario.outcome,
-        payload: {
-          outcome: scenario.outcome,
-          expectation: scenario.expectation,
-          expectation_met: scenario.expectationMet,
-          mode,
-        },
-        latency_ms: scenario.latencyMs ?? null,
-      })));
-
-    if (logsError) {
-      log.error("simulation_log_persistence_unavailable", { error: logsError });
-      try {
-        const { error: markError } = await supabase
-          .from("simulation_runs")
-          .update({
-            status: "failed",
-            metadata: { reason: "simulation_log_persistence_unavailable" },
-          })
-          .eq("id", run.id);
-        if (markError) throw markError;
-      } catch (markError) {
-        log.error("simulation_run_failure_mark_unavailable", {
-          error: markError,
-        });
-      }
-      return log.respond(jsonResponse(
-        {
-          error: "simulation_persistence_unavailable",
-          outcome: "infra_failed",
-          request_id: requestId,
-        },
-        503,
-        { ...corsHeaders, ...responseHeaders },
-      ));
-    }
-
-    try {
-      const { error: markError } = await supabase
-        .from("simulation_runs")
-        .update({
-          status: "failed",
-          metadata: {
-            mode,
-            requested_scenarios: count,
-            outcomes: report.outcomes,
-            reason: "all_targets_gated",
-          },
-        })
-        .eq("id", run.id);
-      if (markError) throw markError;
-    } catch (markError) {
-      log.error("simulation_run_completion_persistence_unavailable", {
-        error: markError,
-      });
-      return log.respond(jsonResponse(
-        {
-          error: "simulation_persistence_unavailable",
-          outcome: "infra_failed",
-          request_id: requestId,
-        },
-        503,
-        { ...corsHeaders, ...responseHeaders },
-      ));
-    }
-
+    // Relatório deliberadamente efêmero: enquanto todos os alvos estiverem
+    // gated, não há motivo para criar runs/logs que aparentem execução real.
     const responseStatus = responseStatusForSummary(report.outcomes);
     log.warn("simulation_targets_gated", {
       mode,

@@ -116,7 +116,6 @@ export function useQuotes() {
     staleTime: 30_000,
   });
 
-
   const { data: techniques = [], refetch: fetchTechniques } = useQuery({
     queryKey: ['techniques'],
     queryFn: () => quoteService.fetchTechniques(),
@@ -125,9 +124,17 @@ export function useQuotes() {
   });
 
   const createMutation = useMutation({
-    mutationFn: ({ quote, items }: { quote: Partial<Quote>; items: QuoteItem[] }) => {
+    mutationFn: ({
+      quote,
+      items,
+      approvalSellerNotes,
+    }: {
+      quote: Partial<Quote>;
+      items: QuoteItem[];
+      approvalSellerNotes?: string;
+    }) => {
       if (!userId) throw new Error('Usuario nao autenticado');
-      return quoteService.createQuote(quote, items, userId, orgId);
+      return quoteService.createQuote(quote, items, userId, orgId, approvalSellerNotes);
     },
     onSuccess: (newQuote) => {
       queryClient.invalidateQueries({ queryKey: ['quotes'] });
@@ -149,12 +156,14 @@ export function useQuotes() {
       quote,
       items,
       expectedVersion,
+      approvalSellerNotes,
     }: {
       quoteId: string;
       quote: Partial<Quote>;
       items: QuoteItem[];
       expectedVersion?: number | null;
-    }) => quoteService.updateQuote(quoteId, quote, items, expectedVersion),
+      approvalSellerNotes?: string;
+    }) => quoteService.updateQuote(quoteId, quote, items, expectedVersion, approvalSellerNotes),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['quotes'] });
       toast.success('Orçamento atualizado!');
@@ -201,9 +210,13 @@ export function useQuotes() {
     }
   }, []);
 
-  const createQuote = async (quote: Partial<Quote>, items: QuoteItem[]) => {
+  const createQuote = async (
+    quote: Partial<Quote>,
+    items: QuoteItem[],
+    approvalSellerNotes?: string,
+  ) => {
     if (!user) return null;
-    return createMutation.mutateAsync({ quote, items });
+    return createMutation.mutateAsync({ quote, items, approvalSellerNotes });
   };
 
   /**
@@ -215,9 +228,16 @@ export function useQuotes() {
     quote: Partial<Quote>,
     items: QuoteItem[],
     expectedVersion?: number | null,
+    approvalSellerNotes?: string,
   ) => {
     if (!user) return null;
-    return updateMutation.mutateAsync({ quoteId, quote, items, expectedVersion });
+    return updateMutation.mutateAsync({
+      quoteId,
+      quote,
+      items,
+      expectedVersion,
+      approvalSellerNotes,
+    });
   };
 
   const updateQuoteStatus = async (quoteId: string, status: Quote['status']) => {
