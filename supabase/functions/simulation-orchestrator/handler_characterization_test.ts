@@ -134,7 +134,7 @@ Deno.test({
           "product-webhook",
         ],
       }));
-      assertEquals(gated.status, 200);
+      assertEquals(gated.status, 424);
       const report = await gated.json();
       assertEquals(report.status, "blocked");
       assertEquals(report.requestedScenarios, 100);

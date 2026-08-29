@@ -22,7 +22,7 @@ vi.mock('@/integrations/supabase/lazy-client', () => ({
   getSupabaseClient: () => Promise.resolve({ functions: { invoke: mockInvoke } }),
 }));
 
-import { invokeEdgeSafe, normalizeInvokeError } from '@/lib/edge/safeInvokeCall';
+import { invokeEdge, invokeEdgeSafe, normalizeInvokeError } from '@/lib/edge/safeInvokeCall';
 
 describe('safeInvokeCall — Onda 17', () => {
   beforeEach(() => {
@@ -126,6 +126,25 @@ describe('safeInvokeCall — Onda 17', () => {
     });
     const norm = await normalizeInvokeError(error);
     expect(norm).toMatchObject({ message: 'upstream html proxy error', status: 502 });
+  });
+
+  it('preserveErrorData mantém relatório estruturado sem apagar o erro HTTP', async () => {
+    const blocked = { status: 'blocked', skipped: 3 };
+    mockInvoke.mockResolvedValue({
+      data: null,
+      error: Object.assign(new Error('non-2xx'), {
+        name: 'FunctionsHttpError',
+        context: new Response(JSON.stringify(blocked), { status: 424 }),
+      }),
+    });
+
+    const result = await invokeEdge<typeof blocked>('simulation-orchestrator', {
+      preserveErrorData: true,
+      maxRetries: 1,
+    });
+
+    expect(result.error?.status).toBe(424);
+    expect(result.data).toEqual(blocked);
   });
 
   it('AbortSignal externo já abortado → err imediato', async () => {

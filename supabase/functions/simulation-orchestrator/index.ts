@@ -7,6 +7,7 @@ import { buildPublicCorsHeaders } from "../_shared/cors.ts";
 import { getOrCreateRequestId } from "../_shared/request-id.ts";
 import { createStructuredLogger } from "../_shared/structured-logger.ts";
 import {
+  responseStatusForSummary,
   type SimulationScenarioResult,
   skippedScenario,
   summarizeSimulationOutcomes,
@@ -148,7 +149,7 @@ Deno.serve(async (req) => {
 
     // Relatório deliberadamente efêmero: enquanto todos os alvos estiverem
     // gated, não há motivo para criar runs/logs que aparentem execução real.
-    const responseStatus = 200;
+    const responseStatus = responseStatusForSummary(report.outcomes);
     log.warn("simulation_targets_gated", {
       mode,
       requested_scenarios: count,

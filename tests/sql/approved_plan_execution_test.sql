@@ -140,12 +140,33 @@ FOR EACH ROW EXECUTE FUNCTION public.test_dar_events();
 
 \ir ../../supabase/migrations/20260829111000_discount_approval_transactional_integrity.sql
 \ir ../../supabase/migrations/20260829112000_discount_approval_reuse_status.sql
+\ir ../../supabase/migrations/20260829113000_discount_integrity_owner_and_reparent.sql
 
 INSERT INTO public.user_roles(user_id,role) VALUES
  ('10000000-0000-4000-8000-000000000010','admin');
 INSERT INTO public.seller_discount_limits(user_id,max_discount_percent) VALUES
  ('10000000-0000-4000-8000-000000000001',10),
  ('10000000-0000-4000-8000-000000000002',5);
+
+-- Sem desconto e gestores preservam as exceções do validador original, mesmo
+-- sem seller_discount_limits.
+SELECT set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000003',false);
+SELECT set_config('request.jwt.claim.role','authenticated',false);
+INSERT INTO public.quotes(id,quote_number,client_name,seller_id,created_by,organization_id,
+  status,subtotal,total,real_discount_percent)
+VALUES('30000000-0000-4000-8000-000000000010','Q-ZERO','Cliente',
+  '10000000-0000-4000-8000-000000000003','10000000-0000-4000-8000-000000000003',
+  '20000000-0000-4000-8000-000000000001','draft',100,100,0);
+INSERT INTO public.quote_items(id,quote_id,product_name,product_sku,quantity,unit_price,subtotal)
+VALUES('40000000-0000-4000-8000-000000000010',
+  '30000000-0000-4000-8000-000000000010','Destino','DST-1',1,1,1);
+
+SELECT set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000010',false);
+INSERT INTO public.quotes(id,quote_number,client_name,seller_id,created_by,organization_id,
+  status,subtotal,total,real_discount_percent)
+VALUES('30000000-0000-4000-8000-000000000011','Q-MANAGER','Cliente',
+  '10000000-0000-4000-8000-000000000010','10000000-0000-4000-8000-000000000010',
+  '20000000-0000-4000-8000-000000000001','pending',100,10,90);
 
 -- Solicitação: deriva valores, é idempotente e produz eventos uma vez.
 SELECT set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',false);
@@ -155,8 +176,16 @@ INSERT INTO public.quotes(id,quote_number,client_name,seller_id,created_by,organ
 VALUES('30000000-0000-4000-8000-000000000001','Q-1','Cliente',
   '10000000-0000-4000-8000-000000000001','10000000-0000-4000-8000-000000000001',
   '20000000-0000-4000-8000-000000000001','pending_approval',100,80,20);
-INSERT INTO public.quote_items(quote_id,product_name,product_sku,quantity,unit_price,subtotal)
-VALUES('30000000-0000-4000-8000-000000000001','Caneta','CAN-1',10,10,100);
+INSERT INTO public.quote_items(id,quote_id,product_name,product_sku,quantity,unit_price,subtotal)
+VALUES('40000000-0000-4000-8000-000000000001',
+  '30000000-0000-4000-8000-000000000001','Caneta','CAN-1',10,10,100);
+INSERT INTO public.quote_item_personalizations(
+  id,quote_item_id,technique_id,colors_count,positions_count,total_cost
+) VALUES (
+  '50000000-0000-4000-8000-000000000001',
+  '40000000-0000-4000-8000-000000000001',
+  '60000000-0000-4000-8000-000000000001',2,1,25
+);
 
 SELECT (public.request_discount_approval_transactional(
   '30000000-0000-4000-8000-000000000001','cliente estratégico')).id AS request_id \gset
@@ -257,8 +286,16 @@ UPDATE discount_approval_requests SET valid_until=NULL
 WHERE id=current_setting('app.test.request_id')::uuid;
 BEGIN;
 DELETE FROM quote_items WHERE quote_id='30000000-0000-4000-8000-000000000001';
-INSERT INTO quote_items(quote_id,product_name,product_sku,quantity,unit_price,subtotal)
-VALUES('30000000-0000-4000-8000-000000000001','Caneta','CAN-1',10,10,100);
+INSERT INTO quote_items(id,quote_id,product_name,product_sku,quantity,unit_price,subtotal)
+VALUES('40000000-0000-4000-8000-000000000001',
+  '30000000-0000-4000-8000-000000000001','Caneta','CAN-1',10,10,100);
+INSERT INTO quote_item_personalizations(
+  id,quote_item_id,technique_id,colors_count,positions_count,total_cost
+) VALUES (
+  '50000000-0000-4000-8000-000000000001',
+  '40000000-0000-4000-8000-000000000001',
+  '60000000-0000-4000-8000-000000000001',2,1,25
+);
 SET CONSTRAINTS ALL IMMEDIATE;
 COMMIT;
 
@@ -272,6 +309,34 @@ DO $$ BEGIN
   IF EXISTS (SELECT 1 FROM quote_items
              WHERE quote_id='30000000-0000-4000-8000-000000000001' AND unit_price=11) THEN
     RAISE EXCEPTION 'changed item survived rollback';
+  END IF;
+END $$;
+
+-- Reparent deve validar o pai antigo e o novo. Alterar o pai antigo aprovado
+-- por item ou personalização é revertido.
+DO $$ BEGIN
+  BEGIN
+    UPDATE quote_items SET quote_id='30000000-0000-4000-8000-000000000010'
+    WHERE id='40000000-0000-4000-8000-000000000001';
+    SET CONSTRAINTS ALL IMMEDIATE;
+    RAISE EXCEPTION 'item reparent should invalidate old approved quote';
+  EXCEPTION WHEN check_violation THEN NULL; END;
+  IF (SELECT quote_id FROM quote_items WHERE id='40000000-0000-4000-8000-000000000001')
+     <> '30000000-0000-4000-8000-000000000001'::uuid THEN
+    RAISE EXCEPTION 'item reparent survived rollback';
+  END IF;
+
+  BEGIN
+    UPDATE quote_item_personalizations
+    SET quote_item_id='40000000-0000-4000-8000-000000000010'
+    WHERE id='50000000-0000-4000-8000-000000000001';
+    SET CONSTRAINTS ALL IMMEDIATE;
+    RAISE EXCEPTION 'personalization reparent should invalidate old approved quote';
+  EXCEPTION WHEN check_violation THEN NULL; END;
+  IF (SELECT quote_item_id FROM quote_item_personalizations
+      WHERE id='50000000-0000-4000-8000-000000000001')
+     <> '40000000-0000-4000-8000-000000000001'::uuid THEN
+    RAISE EXCEPTION 'personalization reparent survived rollback';
   END IF;
 END $$;
 

@@ -64,8 +64,14 @@ export default function SimulationPage() {
         mode === 'audit' ? 'audit-suite' : 'simulation-orchestrator',
         {
           body: mode === 'audit' ? {} : { count: mode === 'load' ? 500 : 100, mode },
+          preserveErrorData: mode !== 'audit',
         },
       );
+      if (error?.status === 424 && data?.status === 'blocked') {
+        setReport(data);
+        toast.warning('Plano validado: nenhuma carga real foi executada.');
+        return;
+      }
       if (error) throw new Error(error.message);
       setReport(data);
       if (data?.status === 'blocked') {

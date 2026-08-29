@@ -29,7 +29,12 @@ describe('SimulationPage blocked plan', () => {
         details: [],
         latencies: [],
       },
-      error: null,
+      error: {
+        message: 'simulation targets gated',
+        name: 'unknown',
+        status: 424,
+        request_id: 'req-test',
+      },
     });
 
     render(<SimulationPage />);
