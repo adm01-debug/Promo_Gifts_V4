@@ -156,8 +156,5 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
       - run: npm ci
-      - name: Run 1000 fuzzing scenarios
+      - name: Run 1000 hermetic fuzzing scenarios
         run: npx vitest run tests/integration/massive-fuzzing.test.ts
-        env:
-          VITE_SUPABASE_URL: ${{ vars.SUPABASE_URL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}

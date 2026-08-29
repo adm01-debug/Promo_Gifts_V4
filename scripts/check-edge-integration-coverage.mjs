@@ -25,7 +25,11 @@ const TESTS_DIR = "tests/edge-functions/integration";
 function listEdgeFunctions() {
   if (!existsSync(FUNCTIONS_DIR)) return [];
   return readdirSync(FUNCTIONS_DIR, { withFileTypes: true })
-    .filter((d) => d.isDirectory() && !d.name.startsWith("_"))
+    .filter((d) =>
+      d.isDirectory() &&
+      !d.name.startsWith("_") &&
+      existsSync(join(FUNCTIONS_DIR, d.name, "index.ts"))
+    )
     .map((d) => d.name);
 }
 

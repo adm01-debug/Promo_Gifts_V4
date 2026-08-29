@@ -1030,6 +1030,14 @@ com outros agentes e o Supabase canônico não receberam mutação nesta rodada.
   verdes; somente avisos conhecidos de imports estático/dinâmico ineficazes.
 - [x] `npm run lint:check`, TypeScript e ESLint — **0 erros e 0 warnings**;
   actionlint e `git diff --check` verdes.
+- [x] A primeira execução hospedada expôs dois gaps adicionais sem rebaixar os
+  gates: o medidor de Edge contava o diretório não implantável `functions/tests`
+  e `massive-fuzzing` tentava `localhost:54321` quando havia service-role sem URL.
+  O denominador agora exige `index.ts` (**65/107 = 61%**) e o fuzz executa 1.000
+  cenários herméticos, determinísticos e sem rede/produção.
+- [x] `ema-pipeline-health` ganhou contrato cliente para happy-path, freshness
+  `UNKNOWN`, autenticação 401 e indisponibilidade 503, complementando os testes
+  Deno e live já existentes.
 
 ### Gaps e funções ainda parciais confirmadas
 

@@ -315,7 +315,7 @@ critério de aceite.
 | 092 | ⏸ | Happy-path CRM/webhook/e-mail depende de segredos/JWTs de teste ainda ausentes. |
 | 093 | 🟡 | Logging/request IDs foram melhorados; falta provar rastreio completo frontend → Edge → banco. |
 | 094 | 🟡 | Gates `--require-live` e bloqueios por secret evitam falso verde local; falta confirmação hospedada de todos os dashboards desta branch. |
-| 095 | 🟡 | A suíte ampla passou dezenas de milhares de testes e side-effects estritos; cobertura de todas as jornadas e flakes remotos segue aberta. |
+| 095 | 🟡 | A suíte ampla passou dezenas de milhares de testes; o fuzz de 1.000 cenários agora é hermético e Edge coverage mede 65/107 implantáveis. Cobertura de todas as jornadas e flakes remotos segue aberta. |
 | 096 | 🟡 | Dialogs compartilham testes visual/a11y; as mesmas fixtures ainda não cobrem todos os E2E críticos. |
 | 097 | ✅ | Bundle/chunks são medidos com orçamento realista; build atual permanece abaixo do limite. |
 | 098 | ⏸ | Nenhum duplicado/ativo foi removido sem validação nominal do PO e consumidores externos. |
