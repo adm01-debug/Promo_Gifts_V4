@@ -8,7 +8,7 @@ import { visualizer } from 'rollup-plugin-visualizer';
  * Vite Configuration - Production Ready (perf/deep-optimization-2026)
  *
  * Otimizações aplicadas:
- * - manualChunks expandido: index chunk → granular splits por domínio
+ * - codeSplitting do Rolldown: vendors estáveis sem capturar dependências de rotas lazy
  * - cssCodeSplit habilitado
  * - Oxc/Rolldown com comentários legais removidos e tree-shaking explícito
  * - optimizeDeps.include expandido para pré-bundling mais preciso
@@ -55,9 +55,7 @@ export default defineConfig(({ mode }) => {
         // chamadas informativas em produção, preservando warn/error e os
         // efeitos colaterais dos argumentos.
         treeshake: {
-          manualPureFunctions: isProd
-            ? ['console.log', 'console.debug', 'console.info']
-            : [],
+          manualPureFunctions: isProd ? ['console.log', 'console.debug', 'console.info'] : [],
         },
         output: {
           comments: { legal: false },
@@ -66,102 +64,79 @@ export default defineConfig(({ mode }) => {
             const name = chunkInfo.name || 'chunk';
             return `assets/${name}-[hash].js`;
           },
-          manualChunks(id: string) {
-            // ── Runtime interno do Vite ────────────────────────────────────
-            if (id.includes('vite/preload-helper')) return 'runtime-vendor';
-
-            // ── React core (react + react-dom) ─────────────────────────────
-            if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) {
-              return 'react-vendor';
-            }
-
-            // ── React Router ───────────────────────────────────────────────
-            if (id.includes('node_modules/react-router')) return 'router-vendor';
-
-            // ── TanStack Query (react-query) ────────────────────────────────
-            if (id.includes('node_modules/@tanstack/')) return 'query-vendor';
-
-            // ── Supabase SDK ───────────────────────────────────────────────
-            if (id.includes('node_modules/@supabase/')) return 'supabase-vendor';
-
-            // ── Radix UI + cmdk ────────────────────────────────────────────
-            if (id.includes('node_modules/@radix-ui/') || id.includes('node_modules/cmdk/')) {
-              return 'ui-vendor';
-            }
-
-            // ── Lucide React (ícones) ──────────────────────────────────────
-            // Mantido em chunk próprio — tree-shaking por rota já acontece,
-            // mas um chunk dedicado reduz waterfall no critical path.
-            if (id.includes('node_modules/lucide-react/')) return 'icons-vendor';
-
-            // ── Framer Motion ──────────────────────────────────────────────
-            // NÃO force-chunked: LazyMotion precisa do split dinâmico próprio.
-            // Deixar o Rollup dividir mantém domMax carregado sob demanda.
-
-            // ── date-fns ───────────────────────────────────────────────────
-            if (id.includes('node_modules/date-fns/')) return 'date-vendor';
-
-            // ── Recharts + D3 (gráficos) ───────────────────────────────────
-            if (id.includes('node_modules/recharts/') || id.includes('node_modules/d3-')) {
-              return 'charts-vendor';
-            }
-
-            // ── Zod (validação) ────────────────────────────────────────────
-            if (id.includes('node_modules/zod/')) return 'zod-vendor';
-
-            // ── React Hook Form ────────────────────────────────────────────
-            if (
-              id.includes('node_modules/react-hook-form/') ||
-              id.includes('node_modules/@hookform/')
-            ) {
-              return 'form-vendor';
-            }
-
-            // ── Sonner (toast) ─────────────────────────────────────────────
-            if (id.includes('node_modules/sonner/')) return 'toast-vendor';
-
-            // ── PDF / image export (jsPDF + html2canvas) ───────────────────
-            // Carregado APENAS em páginas de exportação — chunk próprio evita
-            // que 620 KB entre no critical path do catálogo.
-            if (id.includes('node_modules/jspdf') || id.includes('node_modules/html2canvas')) {
-              return 'export-vendor';
-            }
-
-            // ── XLSX ───────────────────────────────────────────────────────
-            if (id.includes('node_modules/@e965/xlsx') || id.includes('node_modules/xlsx')) {
-              return 'xlsx-vendor';
-            }
-
-            // ── DnD Kit ────────────────────────────────────────────────────
-            if (id.includes('node_modules/@dnd-kit/')) return 'dnd-vendor';
-
-            // ── Sentry ─────────────────────────────────────────────────────
-            if (id.includes('node_modules/@sentry/')) return 'sentry-vendor';
-
-            // ── Markdown (react-markdown, remark) ──────────────────────────
-            if (id.includes('node_modules/react-markdown/') || id.includes('node_modules/remark-')) {
-              return 'markdown-vendor';
-            }
-
-            // ── PPTX ───────────────────────────────────────────────────────
-            if (id.includes('node_modules/pptxgenjs/')) return 'pptx-vendor';
-
-            // ── Utilitários pequenos (clsx, tailwind-merge, class-variance-authority) ─
-            if (
-              id.includes('node_modules/clsx/') ||
-              id.includes('node_modules/tailwind-merge/') ||
-              id.includes('node_modules/class-variance-authority/')
-            ) {
-              return 'utils-vendor';
-            }
-
-            // ── Zustand ────────────────────────────────────────────────────
-            if (id.includes('node_modules/zustand/')) return 'zustand-vendor';
-
-            // NOTA: domain splits (admin, bi, kit, quotes, tools) removidos.
-            // React.lazy() + dynamic imports já criam chunks automáticos por
-            // rota. O manualChunks manual gerava circular deps que causavam
-            // TDZ em runtime: 'Cannot access X before initialization'.
+          // Vite 8 descontinuou a função `manualChunks`. A opção nativa do
+          // Rolldown evita que um grupo capture recursivamente React ou o helper
+          // de preload e os arraste para o critical path de todas as páginas.
+          codeSplitting: {
+            includeDependenciesRecursively: false,
+            groups: [
+              { name: 'runtime-vendor', test: /vite[\\/]preload-helper/, priority: 100 },
+              {
+                name: 'react-vendor',
+                test: /node_modules[\\/](?:\\.deno[\\/][^/]+[\\/]node_modules[\\/])?(?:react|react-dom)[\\/]/,
+                priority: 90,
+              },
+              {
+                // Somente os ícones usados pelo shell/login. Agrupá-los evita
+                // dezenas de requests de ~500 B sem puxar toda a biblioteca.
+                name: 'critical-icons',
+                test: /node_modules[\\/](?:\\.deno[\\/][^/]+[\\/]node_modules[\\/])?lucide-react[\\/].*[\\/](?:createLucideIcon|defaultAttributes|Icon|icons[\\/](?:bell|bug|check|chevron-down|chevron-up|circle-alert|copy|file-text|folder-open|heart|house|inbox|package|plus|refresh-cw|rotate-ccw|search|shield-alert|shopping-cart|trash-2|trending-up|triangle-alert|users)|shared[\\/]src[\\/]utils[\\/](?:mergeClasses|toKebabCase|toCamelCase|toPascalCase|hasA11yProp))\.[cm]?[jt]s$/,
+                priority: 85,
+              },
+              {
+                name: 'router-vendor',
+                test: /node_modules[\\/](?:react-router|react-router-dom)[\\/]/,
+                priority: 80,
+              },
+              { name: 'query-vendor', test: /node_modules[\\/]@tanstack[\\/]/, priority: 70 },
+              { name: 'supabase-vendor', test: /node_modules[\\/]@supabase[\\/]/, priority: 70 },
+              {
+                // Módulos pequenos compartilhados pelo shell e por rotas lazy.
+                // Sem este grupo, o preview HTTP/1 do gate abre mais de vinte
+                // requests antes do primeiro paint, embora somem poucos KiB.
+                name: 'app-shell',
+                test: /src[\\/].*[\\/](?:requestId|structuredLogger|sentry|client|logger|chunk-recovery|VisuallyHidden|lazy-client|sanitize-error|sanitize-message|safeAuthCall|supabase-untyped|to-error-message|authService|AuthContext|providers|DevInfraGate|safeToast|rate-limit|auth-utils|post-login-redirect|session-recovery|supabase-direct|supabase-placeholder|useProfileRoles|useAuthMFA|useProductsColorsBatch|useDevGate|DevOnly|utils|skeleton|ModernSkeletons|skeleton\.config|SkeletonMonitor|SkeletonLoaders|ThemeContext|useCloudStatus|useErrorHandler|bridge-status-events|error-reporter|theme-presets|telemetryService|use-overlay-interactivity)\.(?:ts|tsx)$/,
+                priority: 65,
+              },
+              { name: 'ui-vendor', test: /node_modules[\\/](?:@radix-ui|cmdk)[\\/]/, priority: 60 },
+              { name: 'date-vendor', test: /node_modules[\\/]date-fns[\\/]/, priority: 50 },
+              {
+                name: 'charts-vendor',
+                test: /node_modules[\\/](?:recharts|d3-[^/]+)[\\/]/,
+                priority: 50,
+              },
+              { name: 'zod-vendor', test: /node_modules[\\/]zod[\\/]/, priority: 50 },
+              {
+                name: 'form-vendor',
+                test: /node_modules[\\/](?:react-hook-form|@hookform)[\\/]/,
+                priority: 50,
+              },
+              { name: 'toast-vendor', test: /node_modules[\\/]sonner[\\/]/, priority: 50 },
+              {
+                name: 'export-vendor',
+                test: /node_modules[\\/](?:jspdf|html2canvas)[\\/]/,
+                priority: 40,
+              },
+              {
+                name: 'xlsx-vendor',
+                test: /node_modules[\\/](?:@e965[\\/]xlsx|xlsx)[\\/]/,
+                priority: 40,
+              },
+              { name: 'dnd-vendor', test: /node_modules[\\/]@dnd-kit[\\/]/, priority: 40 },
+              { name: 'sentry-vendor', test: /node_modules[\\/]@sentry[\\/]/, priority: 40 },
+              {
+                name: 'markdown-vendor',
+                test: /node_modules[\\/](?:react-markdown|remark-[^/]+)[\\/]/,
+                priority: 40,
+              },
+              { name: 'pptx-vendor', test: /node_modules[\\/]pptxgenjs[\\/]/, priority: 40 },
+              {
+                name: 'utils-vendor',
+                test: /node_modules[\\/](?:clsx|tailwind-merge|class-variance-authority)[\\/]/,
+                priority: 30,
+              },
+              { name: 'zustand-vendor', test: /node_modules[\\/]zustand[\\/]/, priority: 30 },
+            ],
           },
         },
       },
@@ -179,7 +154,6 @@ export default defineConfig(({ mode }) => {
         Expires: '0',
       },
     },
-
 
     preview: {
       port: 4173,
