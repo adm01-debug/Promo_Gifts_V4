@@ -233,7 +233,7 @@ critério de aceite.
 | 010 | ✅ | Definition of Done e gates de saída foram formalizados neste plano e nos workflows. |
 | 011 | ✅ | Capacidade do Actions foi restaurada e jobs voltaram a executar; a renovação foi confirmada pelo PO. |
 | 012 | 🟡 | Falhas recentes foram classificadas e reproduzidas; não há painel causal fechado para os 30 runs históricos. |
-| 013 | 🟡 | Runners e dependências foram corrigidos; a execução hospedada ainda revelou que `ui-visual-a11y` instalava somente Chromium enquanto coletava projetos Firefox/WebKit. O workflow agora instala os três engines com cache segregado, mas a reorganização completa de 100+ workflows não foi concluída. |
+| 013 | 🟡 | Runners e dependências foram corrigidos; a execução hospedada ainda revelou que `ui-visual-a11y` instalava somente Chromium, mas coletava acidentalmente todos os projetos. O workflow agora fixa `chromium-public`, coerente com os baselines e com `e2e:dialogs`; a reorganização completa de 100+ workflows não foi concluída. |
 | 014 | ⏸ | Ruleset protege `main`, mas o required check final só pode ser fixado após o gate hospedado ficar verde. |
 | 015 | ✅ | npm é canônico: `packageManager: npm@10.9.7`, runtime fixado e produção sem comando Bun. |
 | 016 | ✅ | React 19 e command menus reconciliados; `npm ci` funciona sem peer-deps permissivo. |
@@ -314,7 +314,7 @@ critério de aceite.
 | 091 | 🟡 | Webhook, CRM e funções críticas ganharam contratos; padronização de todas as integrações não terminou. |
 | 092 | ⏸ | Happy-path CRM/webhook/e-mail depende de segredos/JWTs de teste ainda ausentes. |
 | 093 | 🟡 | Logging/request IDs foram melhorados; falta provar rastreio completo frontend → Edge → banco. |
-| 094 | 🟡 | Gates `--require-live` e bloqueios por secret evitam falso verde local; Edge coverage e fuzz hermético passaram hospedados. A reexecução visual cross-browser e os demais dashboards da branch ainda precisam encerrar. |
+| 094 | 🟡 | Gates `--require-live` e bloqueios por secret evitam falso verde local; Edge coverage e fuzz hermético passaram hospedados. A reexecução visual Chromium e os demais dashboards da branch ainda precisam encerrar. |
 | 095 | 🟡 | A suíte ampla passou dezenas de milhares de testes; o fuzz de 1.000 cenários agora é hermético e Edge coverage mede 65/107 implantáveis. Cobertura de todas as jornadas e flakes remotos segue aberta. |
 | 096 | 🟡 | Dialogs compartilham testes visual/a11y; as mesmas fixtures ainda não cobrem todos os E2E críticos. |
 | 097 | ✅ | Bundle/chunks são medidos com orçamento realista; build atual permanece abaixo do limite. |

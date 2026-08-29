@@ -1038,11 +1038,11 @@ com outros agentes e o Supabase canônico não receberam mutação nesta rodada.
 - [x] `ema-pipeline-health` ganhou contrato cliente para happy-path, freshness
   `UNKNOWN`, autenticação 401 e indisponibilidade 503, complementando os testes
   Deno e live já existentes.
-- [x] A validação hospedada do AlertDialog revelou um erro de provisionamento,
-  não de pixel: o job coletava projetos Chromium, Firefox e WebKit, mas instalava
-  somente Chromium. Os dois jobs visuais cross-browser agora instalam os três
-  engines e usam uma chave de cache que representa esse conjunto; nenhum baseline
-  ou componente visual foi afrouxado para esconder a falha.
+- [x] A validação hospedada do AlertDialog revelou um erro de coleta, não de
+  pixel: o job instalava Chromium, mas o comando sem `--project` coletava também
+  Firefox, WebKit e projetos autenticados/móveis. Os dois jobs agora fixam
+  `chromium-public`, coerente com os baselines versionados e com o script
+  `e2e:dialogs`; nenhum baseline ou componente visual foi afrouxado.
 
 ### Gaps e funções ainda parciais confirmadas
 
