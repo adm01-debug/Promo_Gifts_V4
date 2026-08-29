@@ -195,6 +195,7 @@ FOR EACH ROW EXECUTE FUNCTION public.test_dar_events();
 \ir ../../supabase/migrations/20260829115000_discount_approval_pending_reuse_and_markup_audit.sql
 \ir ../../supabase/migrations/20260829120000_quote_save_with_discount_approval_transactional.sql
 \ir ../../supabase/migrations/20260829121000_discount_approval_orphan_fail_closed.sql
+\ir ../../supabase/migrations/20260829122000_discount_approval_responsible_seller_and_audit_correlation.sql
 
 INSERT INTO public.user_roles(user_id,role) VALUES
  ('10000000-0000-4000-8000-000000000010','admin');
@@ -231,6 +232,27 @@ DO $$ BEGIN
   IF (SELECT count(*) FROM discount_approval_requests
       WHERE quote_id='30000000-0000-4000-8000-000000000020' AND status='pending') <> 1 THEN
     RAISE EXCEPTION 'pending DAR deletion survived rollback';
+  END IF;
+END $$;
+
+-- O criador pode solicitar para uma quote atribuída, mas limite e seller do
+-- DAR são sempre os do vendedor responsável (seller_id).
+BEGIN;
+INSERT INTO public.quotes(id,quote_number,client_name,seller_id,created_by,organization_id,
+  status,subtotal,total,real_discount_percent)
+VALUES('30000000-0000-4000-8000-000000000022','Q-ASSIGNED','Cliente',
+  '10000000-0000-4000-8000-000000000002','10000000-0000-4000-8000-000000000001',
+  '20000000-0000-4000-8000-000000000001','pending_approval',100,80,20);
+SELECT (public.request_discount_approval_transactional(
+  '30000000-0000-4000-8000-000000000022','criador autorizado')).id;
+COMMIT;
+DO $$ BEGIN
+  IF (SELECT seller_id FROM discount_approval_requests
+      WHERE quote_id='30000000-0000-4000-8000-000000000022')
+       <> '10000000-0000-4000-8000-000000000002'::uuid
+     OR (SELECT max_allowed_percent FROM discount_approval_requests
+         WHERE quote_id='30000000-0000-4000-8000-000000000022') <> 5 THEN
+    RAISE EXCEPTION 'responsible seller/limit derivation failed';
   END IF;
 END $$;
 
@@ -274,6 +296,19 @@ INSERT INTO public.quote_item_personalizations(
   '60000000-0000-4000-8000-000000000001',2,1,25
 );
 
+-- Uma auditoria correlacionada de outra solicitação no mesmo minuto não pode
+-- suprimir a auditoria da solicitação atual.
+INSERT INTO public.admin_audit_log(
+  user_id,action,resource_type,resource_id,request_id,details
+) VALUES (
+  '10000000-0000-4000-8000-000000000001','quote_negotiation_markup_applied','quote',
+  '30000000-0000-4000-8000-000000000001','70000000-0000-4000-8000-000000000001',
+  jsonb_build_object(
+    'approval_request_id','70000000-0000-4000-8000-000000000001',
+    'context','discount_approval_request'
+  )
+);
+
 SELECT (public.request_discount_approval_transactional(
   '30000000-0000-4000-8000-000000000001','cliente estratégico')).id AS request_id \gset
 SELECT (public.request_discount_approval_transactional(
@@ -302,6 +337,11 @@ DO $$ BEGIN
          WHERE request_id=current_setting('app.test.request_id')
            AND action='quote_negotiation_markup_applied') <> 1 THEN
     RAISE EXCEPTION 'request event cardinality mismatch';
+  END IF;
+  IF (SELECT count(*) FROM admin_audit_log
+      WHERE resource_id='30000000-0000-4000-8000-000000000001'
+        AND action='quote_negotiation_markup_applied') <> 2 THEN
+    RAISE EXCEPTION 'distinct correlated markup audits were collapsed';
   END IF;
 END $$;
 
