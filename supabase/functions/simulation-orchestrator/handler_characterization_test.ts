@@ -2,9 +2,8 @@
  * Caracterizacao local do handler real de simulation-orchestrator.
  *
  * Intercepta Deno.serve e o fetch do cliente Supabase; nenhum request de rede,
- * deploy ou escrita no banco e realizado. O foco e impedir falso verde quando
- * a persistencia de runs/logs esta indisponivel e deixar alvos sem contrato
- * seguro explicitamente como skipped.
+ * deploy ou escrita no banco e realizado. O foco e exigir AAL2, impedir falso
+ * verde e deixar alvos sem contrato seguro explicitamente como skipped.
  */
 import { assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
 
@@ -45,13 +44,6 @@ if (!handler) {
 }
 
 const originalFetch = globalThis.fetch;
-type PersistenceMode =
-  | "run_insert_fails"
-  | "available"
-  | "logs_insert_fails"
-  | "run_update_fails";
-
-let persistenceMode: PersistenceMode = "available";
 const targetCalls: string[] = [];
 const dbCalls: Array<{ method: string; path: string }> = [];
 
@@ -90,52 +82,24 @@ function localSupabaseFetch(
     );
   }
 
-  if (
-    url.pathname === "/rest/v1/simulation_runs" && request.method === "POST"
-  ) {
-    if (persistenceMode === "run_insert_fails") {
-      return Promise.resolve(
-        json({ code: "PGRST205", message: "relation not found" }, 404),
-      );
-    }
-    return Promise.resolve(
-      json({ id: "00000000-0000-4000-8000-000000000099" }, 201),
-    );
-  }
-
-  if (
-    url.pathname === "/rest/v1/simulation_logs" && request.method === "POST"
-  ) {
-    if (persistenceMode === "logs_insert_fails") {
-      return Promise.resolve(
-        json({ code: "PGRST205", message: "relation not found" }, 404),
-      );
-    }
-    return Promise.resolve(json([], 201));
-  }
-
-  if (
-    url.pathname === "/rest/v1/simulation_runs" && request.method === "PATCH"
-  ) {
-    if (persistenceMode === "run_update_fails") {
-      return Promise.resolve(
-        json({ code: "PGRST205", message: "relation not found" }, 404),
-      );
-    }
-    return Promise.resolve(new Response(null, { status: 204 }));
-  }
-
   return Promise.resolve(
     json({ message: `unexpected local request: ${url.pathname}` }, 500),
   );
 }
 
+function mockJwt(aal: "aal1" | "aal2"): string {
+  const encode = (value: Record<string, unknown>) =>
+    btoa(JSON.stringify(value)).replace(/=/g, "").replace(/\+/g, "-")
+      .replace(/\//g, "_");
+  return `${encode({ alg: "none", typ: "JWT" })}.${encode({ aal })}.test`;
+}
+
 function request(
   body: Record<string, unknown> = {},
-  authenticated = true,
+  aal: "aal1" | "aal2" | null = "aal2",
 ): Request {
   const headers = new Headers({ "content-type": "application/json" });
-  if (authenticated) headers.set("authorization", "Bearer local-dev-token");
+  if (aal) headers.set("authorization", `Bearer ${mockJwt(aal)}`);
   return new Request(
     "https://local-simulation-test.invalid/functions/v1/simulation-orchestrator",
     {
@@ -148,28 +112,19 @@ function request(
 
 Deno.test({
   name:
-    "simulation-orchestrator real handler: persistencia e alvos gated nao viram verde",
+    "simulation-orchestrator real handler: AAL2 e alvos gated nao viram verde",
   sanitizeOps: false,
   sanitizeResources: false,
   fn: async () => {
     globalThis.fetch = localSupabaseFetch as typeof fetch;
     try {
-      const anonymous = await handler!(request({}, false));
+      const anonymous = await handler!(request({}, null));
       assertEquals(anonymous.status, 401);
 
-      persistenceMode = "run_insert_fails";
-      targetCalls.length = 0;
-      dbCalls.length = 0;
-      const noRun = await handler!(request());
-      assertEquals(noRun.status, 503);
-      assertEquals(await noRun.json(), {
-        error: "simulation_persistence_unavailable",
-        outcome: "infra_failed",
-        request_id: noRun.headers.get("x-request-id"),
-      });
-      assertEquals(targetCalls, []);
+      const aal1 = await handler!(request({}, "aal1"));
+      assertEquals(aal1.status, 403);
+      assertEquals((await aal1.json()).error, "aal2_required");
 
-      persistenceMode = "available";
       targetCalls.length = 0;
       dbCalls.length = 0;
       const gated = await handler!(request({
@@ -179,8 +134,10 @@ Deno.test({
           "product-webhook",
         ],
       }));
-      assertEquals(gated.status, 424);
+      assertEquals(gated.status, 200);
       const report = await gated.json();
+      assertEquals(report.status, "blocked");
+      assertEquals(report.requestedScenarios, 100);
       assertEquals(report.successes, 0);
       assertEquals(report.failures, 3);
       assertEquals(report.skipped, 3);
@@ -193,26 +150,12 @@ Deno.test({
         expectation_failed: 3,
       });
       assertEquals(targetCalls, []);
-
-      persistenceMode = "logs_insert_fails";
-      targetCalls.length = 0;
-      dbCalls.length = 0;
-      const noLogs = await handler!(
-        request({ targetFunctions: ["webhook-inbound"] }),
+      assertEquals(
+        dbCalls.some(({ path }) =>
+          path.includes("simulation_runs") || path.includes("simulation_logs")
+        ),
+        false,
       );
-      assertEquals(noLogs.status, 503);
-      assertEquals((await noLogs.json()).outcome, "infra_failed");
-      assertEquals(targetCalls, []);
-
-      persistenceMode = "run_update_fails";
-      targetCalls.length = 0;
-      dbCalls.length = 0;
-      const noFinalUpdate = await handler!(
-        request({ targetFunctions: ["webhook-inbound"] }),
-      );
-      assertEquals(noFinalUpdate.status, 503);
-      assertEquals((await noFinalUpdate.json()).outcome, "infra_failed");
-      assertEquals(targetCalls, []);
     } finally {
       globalThis.fetch = originalFetch;
       for (const [name, value] of originalEnv) {

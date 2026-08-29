@@ -35,9 +35,13 @@ interface SimulationTestResult {
 }
 
 interface SimulationReport {
+  id?: string;
+  status?: 'blocked';
+  requestedScenarios?: number;
   totalScenarios: number;
   successes: number;
   failures: number;
+  skipped?: number;
   startTime: string;
   endTime: string;
   consistencyChecks: { passed: number; failed: number };
@@ -64,7 +68,11 @@ export default function SimulationPage() {
       );
       if (error) throw new Error(error.message);
       setReport(data);
-      toast.success(`Simulação de ${mode} concluída!`);
+      if (data?.status === 'blocked') {
+        toast.warning('Plano validado: nenhuma carga real foi executada.');
+      } else {
+        toast.success(`Simulação de ${mode} concluída!`);
+      }
     } catch (err) {
       logger.error('Freight simulation failed', err);
       toast.error('Falha ao executar simulação');
@@ -87,7 +95,7 @@ export default function SimulationPage() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">QG de Elite: Testes & Simulação</h1>
           <p className="text-muted-foreground">
-            Validação massiva de resiliência, carga e segurança (fuzzing).
+            Planejamento seguro de resiliência, carga e segurança, sem executar alvos bloqueados.
           </p>
         </div>
         <div className="flex gap-2">
@@ -114,7 +122,7 @@ export default function SimulationPage() {
             className="gap-2 bg-indigo-600 hover:bg-indigo-700"
           >
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Play className="h-4 w-4" />}
-            Teste de Carga
+            Plano de Carga
           </Button>
         </div>
       </div>
@@ -128,6 +136,18 @@ export default function SimulationPage() {
         </TabsList>
 
         <TabsContent value="overview" className="mt-6 space-y-6">
+          {report?.status === 'blocked' && (
+            <div
+              role="status"
+              className="rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900"
+            >
+              <p className="font-semibold">Execução bloqueada com segurança</p>
+              <p>
+                Foram solicitados {report.requestedScenarios ?? 0} cenários; {report.skipped ?? 0}{' '}
+                alvos permaneceram bloqueados e nenhuma carga real foi executada.
+              </p>
+            </div>
+          )}
           <div className="grid gap-4 md:grid-cols-4">
             <Card className="bg-gradient-to-br from-white to-slate-50">
               <CardHeader className="pb-2">

@@ -135,14 +135,15 @@ function resolveIdempotencyKey(
   if (headerKey && !validLength(headerKey)) return { ok: false };
   if (payloadKey && !validLength(payloadKey)) return { ok: false };
   if (headerKey && payloadKey && headerKey !== payloadKey) return { ok: false };
-  if (headerKey || payloadKey) {
-    return { ok: true, key: headerKey || payloadKey };
-  }
+  if (payloadKey) return { ok: true, key: payloadKey };
 
   const normalizedSignature = normalizeSignature(signature);
   return {
     ok: true,
-    key: normalizedSignature ? `sig:${normalizedSignature}` : null,
+    // Chamadas HMAC externas derivam o fallback de material assinado. Assim um
+    // header não assinado não consegue alterar a chave de detecção de replay.
+    // Header-only continua disponível para chamadas internas autenticadas.
+    key: normalizedSignature ? `sig:${normalizedSignature}` : headerKey || null,
   };
 }
 

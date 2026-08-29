@@ -81,6 +81,16 @@ jobs:
             tests/contracts/webhook-scenario-matrix.test.ts \
             --reporter=dot
 
+  database-integrity:
+    name: Gate 2.5 - PostgreSQL Transactional Integrity
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [ssot-gate]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate discount approval, grants and trigger races on PG17
+        run: scripts/test-approved-plan-database.sh
+
   e2e-smoke:
     name: Gate 3 - E2E Smoke
     runs-on: ubuntu-latest
@@ -184,3 +194,31 @@ jobs:
           name: dist-${{ github.run_id }}
           path: dist/
           retention-days: 7
+
+  deploy-ready:
+    name: Gate Final - Deploy Ready
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    needs:
+      - ssot-gate
+      - lint-typecheck
+      - unit-tests
+      - database-integrity
+      - e2e-smoke
+      - lighthouse
+      - seo-sanity
+      - restore-cart-rpc-gate
+      - build
+    steps:
+      - name: Require every blocking gate to pass
+        env:
+          GATE_RESULTS: ${{ join(needs.*.result, ',') }}
+        run: |
+          if [[ ",${GATE_RESULTS}," == *,failure,* || \
+                ",${GATE_RESULTS}," == *,cancelled,* || \
+                ",${GATE_RESULTS}," == *,skipped,* ]]; then
+            echo "Blocking gate result: ${GATE_RESULTS}" >&2
+            exit 1
+          fi
+          echo "All blocking deploy gates passed: ${GATE_RESULTS}"
