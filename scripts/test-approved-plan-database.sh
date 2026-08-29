@@ -34,7 +34,7 @@ race_dir=$(mktemp -d /tmp/promo-approved-plan-race-XXXXXX)
 
 "${psql_base[@]}" -q -c "
   SET request.jwt.claim.sub='${seller}';
-  SET request.jwt.claim.role='authenticated';
+  SET request.jwt.claim.role='service_role';
   INSERT INTO quotes(id,quote_number,client_name,seller_id,created_by,organization_id,status,subtotal,total,real_discount_percent)
   VALUES('${race_quote}','Q-RACE','Cliente','${seller}','${seller}','${org}','pending_approval',100,80,20),
         ('${decision_quote}','Q-DECISION','Cliente','${seller}','${seller}','${org}','pending_approval',100,80,20);

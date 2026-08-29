@@ -204,6 +204,29 @@ describe('createQuote', () => {
       [],
       mockUser.id,
       'org-001',
+      undefined,
+    );
+  });
+
+  it('encaminha justificativa para o save transacional de aprovação', async () => {
+    const { quoteService } = await import('@/services/quoteService');
+    const { result } = renderHook(() => useQuotes(), { wrapper: makeWrapper() });
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    await act(async () => {
+      await result.current.createQuote(
+        { status: 'pending_approval' } as never,
+        [],
+        'Cliente estratégico',
+      );
+    });
+
+    expect(vi.mocked(quoteService.createQuote)).toHaveBeenCalledWith(
+      expect.objectContaining({ status: 'pending_approval' }),
+      [],
+      mockUser.id,
+      'org-001',
+      'Cliente estratégico',
     );
   });
 });

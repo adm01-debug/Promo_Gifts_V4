@@ -143,6 +143,38 @@ RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RETURN NEW; END $$;
 CREATE TRIGGER trg_quotes_validate_discount BEFORE INSERT OR UPDATE ON public.quotes
 FOR EACH ROW EXECUTE FUNCTION public.fn_quotes_validate_discount();
 
+-- Contratos mínimos dos RPCs de persistência usados pelos wrappers atômicos.
+CREATE OR REPLACE FUNCTION public.create_quote_transactional(_quote jsonb, _items jsonb)
+RETURNS public.quotes LANGUAGE plpgsql SET search_path TO public AS $$
+DECLARE _saved public.quotes;
+BEGIN
+  INSERT INTO public.quotes(
+    id,quote_number,client_name,seller_id,created_by,organization_id,status,
+    subtotal,total,discount_percent,negotiation_markup_percent,real_discount_percent
+  ) VALUES (
+    COALESCE((_quote->>'id')::uuid,gen_random_uuid()),
+    COALESCE(_quote->>'quote_number','Q-WRAPPER'),COALESCE(_quote->>'client_name','Cliente'),
+    auth.uid(),auth.uid(),(_quote->>'organization_id')::uuid,
+    COALESCE(_quote->>'status','draft'),COALESCE((_quote->>'subtotal')::numeric,100),
+    COALESCE((_quote->>'total')::numeric,80),COALESCE((_quote->>'discount_percent')::numeric,20),
+    COALESCE((_quote->>'negotiation_markup_percent')::numeric,0),
+    COALESCE((_quote->>'real_discount_percent')::numeric,20)
+  ) RETURNING * INTO _saved;
+  RETURN _saved;
+END $$;
+CREATE OR REPLACE FUNCTION public.update_quote_transactional(
+  _quote_id uuid,_quote_patch jsonb,_items jsonb,_expected_version integer DEFAULT NULL
+) RETURNS public.quotes LANGUAGE plpgsql SET search_path TO public AS $$
+DECLARE _saved public.quotes;
+BEGIN
+  UPDATE public.quotes SET
+    status=COALESCE(_quote_patch->>'status',status),
+    real_discount_percent=COALESCE((_quote_patch->>'real_discount_percent')::numeric,real_discount_percent),
+    updated_at=now()
+  WHERE id=_quote_id RETURNING * INTO STRICT _saved;
+  RETURN _saved;
+END $$;
+
 CREATE OR REPLACE FUNCTION public.test_dar_events() RETURNS trigger
 LANGUAGE plpgsql AS $$
 DECLARE _event text;
@@ -161,12 +193,46 @@ FOR EACH ROW EXECUTE FUNCTION public.test_dar_events();
 \ir ../../supabase/migrations/20260829112000_discount_approval_reuse_status.sql
 \ir ../../supabase/migrations/20260829113000_discount_integrity_owner_and_reparent.sql
 \ir ../../supabase/migrations/20260829115000_discount_approval_pending_reuse_and_markup_audit.sql
+\ir ../../supabase/migrations/20260829120000_quote_save_with_discount_approval_transactional.sql
+\ir ../../supabase/migrations/20260829121000_discount_approval_orphan_fail_closed.sql
 
 INSERT INTO public.user_roles(user_id,role) VALUES
  ('10000000-0000-4000-8000-000000000010','admin');
 INSERT INTO public.seller_discount_limits(user_id,max_discount_percent) VALUES
  ('10000000-0000-4000-8000-000000000001',10),
  ('10000000-0000-4000-8000-000000000002',5);
+
+-- O wrapper cria quote e DAR na mesma chamada/transaction boundary.
+SELECT set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',false);
+SELECT set_config('request.jwt.claim.role','authenticated',false);
+SELECT (public.create_quote_with_discount_approval_transactional(
+  jsonb_build_object(
+    'id','30000000-0000-4000-8000-000000000020',
+    'quote_number','Q-WRAPPER','organization_id','20000000-0000-4000-8000-000000000001',
+    'status','pending_approval','subtotal',100,'total',80,
+    'discount_percent',20,'real_discount_percent',20
+  ),'[]'::jsonb,'wrapper atomic')).id;
+DO $$ BEGIN
+  IF (SELECT status FROM quotes WHERE id='30000000-0000-4000-8000-000000000020')
+       <> 'pending_approval'
+     OR (SELECT count(*) FROM discount_approval_requests
+         WHERE quote_id='30000000-0000-4000-8000-000000000020' AND status='pending') <> 1 THEN
+    RAISE EXCEPTION 'atomic quote/request wrapper invariant failed';
+  END IF;
+END $$;
+
+DO $$ BEGIN
+  BEGIN
+    DELETE FROM discount_approval_requests
+    WHERE quote_id='30000000-0000-4000-8000-000000000020' AND status='pending';
+    SET CONSTRAINTS ALL IMMEDIATE;
+    RAISE EXCEPTION 'pending DAR deletion should fail closed';
+  EXCEPTION WHEN check_violation THEN NULL; END;
+  IF (SELECT count(*) FROM discount_approval_requests
+      WHERE quote_id='30000000-0000-4000-8000-000000000020' AND status='pending') <> 1 THEN
+    RAISE EXCEPTION 'pending DAR deletion survived rollback';
+  END IF;
+END $$;
 
 -- Sem desconto e gestores preservam as exceções do validador original, mesmo
 -- sem seller_discount_limits.
@@ -191,6 +257,7 @@ VALUES('30000000-0000-4000-8000-000000000011','Q-MANAGER','Cliente',
 -- Solicitação: deriva valores, é idempotente e produz eventos uma vez.
 SELECT set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',false);
 SELECT set_config('request.jwt.claim.role','authenticated',false);
+BEGIN;
 INSERT INTO public.quotes(id,quote_number,client_name,seller_id,created_by,organization_id,
   status,subtotal,total,real_discount_percent,discount_percent,negotiation_markup_percent)
 VALUES('30000000-0000-4000-8000-000000000001','Q-1','Cliente',
@@ -211,6 +278,7 @@ SELECT (public.request_discount_approval_transactional(
   '30000000-0000-4000-8000-000000000001','cliente estratégico')).id AS request_id \gset
 SELECT (public.request_discount_approval_transactional(
   '30000000-0000-4000-8000-000000000001','retry')).id AS retry_id \gset
+COMMIT;
 SELECT set_config('app.test.request_id', :'request_id', false);
 SELECT set_config('app.test.retry_id', :'retry_id', false);
 
@@ -271,11 +339,13 @@ DO $$ BEGIN
 END $$;
 
 -- Falha após INSERT do DAR reverte DAR, eventos e histórico.
+SELECT set_config('request.jwt.claim.role','service_role',false);
 INSERT INTO public.quotes(id,quote_number,client_name,seller_id,created_by,organization_id,
   status,subtotal,total,real_discount_percent)
 VALUES('30000000-0000-4000-8000-000000000002','Q-2','Cliente',
   '10000000-0000-4000-8000-000000000001','10000000-0000-4000-8000-000000000001',
   '20000000-0000-4000-8000-000000000001','pending_approval',100,80,20);
+SELECT set_config('request.jwt.claim.role','authenticated',false);
 CREATE OR REPLACE FUNCTION public.test_fail_quote_update() RETURNS trigger LANGUAGE plpgsql AS $$
 BEGIN
   IF current_setting('app.test_fail_quote_update',true)='on' THEN
@@ -319,10 +389,12 @@ END $$;
 -- Reutilização de aprovação válida também reconcilia pending_approval->pending,
 -- sem criar um novo DAR nem novo histórico.
 SELECT set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',false);
+BEGIN;
 UPDATE quotes SET status='pending_approval'
 WHERE id='30000000-0000-4000-8000-000000000001';
 SELECT (public.request_discount_approval_transactional(
   '30000000-0000-4000-8000-000000000001','reuse')).id AS reused_id \gset
+COMMIT;
 SELECT set_config('app.test.reused_id', :'reused_id', false);
 DO $$ BEGIN
   IF current_setting('app.test.reused_id')::uuid <> current_setting('app.test.request_id')::uuid
@@ -402,6 +474,7 @@ END $$;
 -- Rejeição transacional libera somente pending_approval->draft e mantém o
 -- snapshot rejeitado imutável.
 SELECT set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000002',false);
+BEGIN;
 INSERT INTO public.quotes(id,quote_number,client_name,seller_id,created_by,organization_id,
   status,subtotal,total,real_discount_percent)
 VALUES('30000000-0000-4000-8000-000000000003','Q-3','Cliente',
@@ -411,6 +484,7 @@ INSERT INTO quote_items(quote_id,product_name,product_sku,quantity,unit_price,su
 VALUES('30000000-0000-4000-8000-000000000003','Agenda','AG-1',10,10,100);
 SELECT (public.request_discount_approval_transactional(
   '30000000-0000-4000-8000-000000000003','rejeitar')).id AS reject_id \gset
+COMMIT;
 SELECT set_config('app.test.reject_id', :'reject_id', false);
 SELECT set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000010',false);
 SELECT (public.respond_discount_approval_transactional(:'reject_id',false,'acima da política')).status;
