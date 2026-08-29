@@ -35,13 +35,26 @@ FROM public.kit_component_print_areas kpa
 JOIN public.product_kit_components pkc ON pkc.id=kpa.kit_component_id
 JOIN public.products p ON p.id=pkc.kit_product_id
 WHERE kpa.is_active AND p.is_active AND p.is_deleted IS NOT TRUE;
-GRANT SELECT ON public.product_kit_components, public.kit_component_print_areas TO anon;
 
 \ir ../../supabase/migrations/20260829110000_kit_print_areas_anon_minimum_grant.sql
+\ir ../../supabase/migrations/20260829114000_kit_print_areas_anon_complete_minimum_grant.sql
+
+INSERT INTO public.products(id,is_active,is_deleted,secret_cost)
+VALUES('01000000-0000-4000-8000-000000000001',true,false,999);
+INSERT INTO public.product_kit_components(id,kit_product_id)
+VALUES('02000000-0000-4000-8000-000000000001','01000000-0000-4000-8000-000000000001');
+INSERT INTO public.kit_component_print_areas(id,kit_component_id,location_name,is_active)
+VALUES('03000000-0000-4000-8000-000000000001','02000000-0000-4000-8000-000000000001','Frente',true);
+
+SET ROLE anon;
+SELECT count(*) AS anon_view_rows FROM public.v_kit_component_print_areas_public;
+RESET ROLE;
 
 DO $$ BEGIN
   IF has_column_privilege('anon','public.products','secret_cost','SELECT')
-     OR has_table_privilege('anon','public.products','SELECT') THEN
+     OR has_table_privilege('anon','public.products','SELECT')
+     OR has_table_privilege('anon','public.product_kit_components','SELECT')
+     OR has_table_privilege('anon','public.kit_component_print_areas','SELECT') THEN
     RAISE EXCEPTION 'anon grant is broader than the view predicate';
   END IF;
 END $$;
@@ -88,6 +101,12 @@ CREATE TABLE public.quote_history (
   user_id uuid NOT NULL, action text NOT NULL, field_changed text,
   old_value text, new_value text, description text NOT NULL,
   metadata jsonb DEFAULT '{}', created_at timestamptz DEFAULT now()
+);
+CREATE TABLE public.admin_audit_log (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(), user_id uuid NOT NULL,
+  action text NOT NULL, resource_type text NOT NULL, resource_id text,
+  request_id text, source text, status text, details jsonb DEFAULT '{}',
+  created_at timestamptz NOT NULL DEFAULT now()
 );
 CREATE TABLE public.test_dar_audit (
   id bigint GENERATED ALWAYS AS IDENTITY, request_id uuid, event text
@@ -141,6 +160,7 @@ FOR EACH ROW EXECUTE FUNCTION public.test_dar_events();
 \ir ../../supabase/migrations/20260829111000_discount_approval_transactional_integrity.sql
 \ir ../../supabase/migrations/20260829112000_discount_approval_reuse_status.sql
 \ir ../../supabase/migrations/20260829113000_discount_integrity_owner_and_reparent.sql
+\ir ../../supabase/migrations/20260829115000_discount_approval_pending_reuse_and_markup_audit.sql
 
 INSERT INTO public.user_roles(user_id,role) VALUES
  ('10000000-0000-4000-8000-000000000010','admin');
@@ -172,10 +192,10 @@ VALUES('30000000-0000-4000-8000-000000000011','Q-MANAGER','Cliente',
 SELECT set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',false);
 SELECT set_config('request.jwt.claim.role','authenticated',false);
 INSERT INTO public.quotes(id,quote_number,client_name,seller_id,created_by,organization_id,
-  status,subtotal,total,real_discount_percent)
+  status,subtotal,total,real_discount_percent,discount_percent,negotiation_markup_percent)
 VALUES('30000000-0000-4000-8000-000000000001','Q-1','Cliente',
   '10000000-0000-4000-8000-000000000001','10000000-0000-4000-8000-000000000001',
-  '20000000-0000-4000-8000-000000000001','pending_approval',100,80,20);
+  '20000000-0000-4000-8000-000000000001','pending_approval',100,80,20,30,10);
 INSERT INTO public.quote_items(id,quote_id,product_name,product_sku,quantity,unit_price,subtotal)
 VALUES('40000000-0000-4000-8000-000000000001',
   '30000000-0000-4000-8000-000000000001','Caneta','CAN-1',10,10,100);
@@ -209,8 +229,44 @@ DO $$ BEGIN
      OR (SELECT count(*) FROM test_notifications
          WHERE request_id=current_setting('app.test.request_id')::uuid AND event='requested') <> 1
      OR (SELECT count(*) FROM quote_history WHERE quote_id='30000000-0000-4000-8000-000000000001'
-         AND action='discount_approval_requested') <> 1 THEN
+         AND action='discount_approval_requested') <> 1
+     OR (SELECT count(*) FROM admin_audit_log
+         WHERE request_id=current_setting('app.test.request_id')
+           AND action='quote_negotiation_markup_applied') <> 1 THEN
     RAISE EXCEPTION 'request event cardinality mismatch';
+  END IF;
+END $$;
+
+-- Uma linha pending deixada pelo fallback legado é reutilizada sem duplicar,
+-- reconcilia draft->pending_approval e recebe o audit de markup ausente.
+SELECT set_config('request.jwt.claim.role','service_role',false);
+INSERT INTO public.quotes(id,quote_number,client_name,seller_id,created_by,organization_id,
+  status,subtotal,total,real_discount_percent,discount_percent,negotiation_markup_percent)
+VALUES('30000000-0000-4000-8000-000000000012','Q-PENDING-REUSE','Cliente',
+  '10000000-0000-4000-8000-000000000001','10000000-0000-4000-8000-000000000001',
+  '20000000-0000-4000-8000-000000000001','draft',100,80,20,25,5);
+INSERT INTO public.discount_approval_requests(
+  quote_id,seller_id,requested_discount_percent,max_allowed_percent,status,quote_snapshot_hash
+)
+SELECT '30000000-0000-4000-8000-000000000012',
+       '10000000-0000-4000-8000-000000000001',20,10,'pending',
+       public.compute_quote_snapshot_hash('30000000-0000-4000-8000-000000000012')
+RETURNING id AS pending_reuse_id \gset
+SELECT set_config('request.jwt.claim.role','authenticated',false);
+SELECT (public.request_discount_approval_transactional(
+  '30000000-0000-4000-8000-000000000012','retry legado')).id AS pending_reused_id \gset
+SELECT set_config('app.test.pending_reuse_id', :'pending_reuse_id', false);
+SELECT set_config('app.test.pending_reused_id', :'pending_reused_id', false);
+DO $$ BEGIN
+  IF current_setting('app.test.pending_reuse_id') <> current_setting('app.test.pending_reused_id')
+     OR (SELECT status FROM quotes
+         WHERE id='30000000-0000-4000-8000-000000000012') <> 'pending_approval'
+     OR (SELECT count(*) FROM discount_approval_requests
+         WHERE quote_id='30000000-0000-4000-8000-000000000012') <> 1
+     OR (SELECT count(*) FROM admin_audit_log
+         WHERE request_id=current_setting('app.test.pending_reuse_id')
+           AND action='quote_negotiation_markup_applied') <> 1 THEN
+    RAISE EXCEPTION 'pending reuse/status/markup audit invariant failed';
   END IF;
 END $$;
 
@@ -275,7 +331,10 @@ DO $$ BEGIN
          WHERE quote_id='30000000-0000-4000-8000-000000000001') <> 1
      OR (SELECT count(*) FROM quote_history
          WHERE quote_id='30000000-0000-4000-8000-000000000001'
-           AND action='discount_approval_requested') <> 1 THEN
+           AND action='discount_approval_requested') <> 1
+     OR (SELECT count(*) FROM admin_audit_log
+         WHERE request_id=current_setting('app.test.request_id')
+           AND action='quote_negotiation_markup_applied') <> 1 THEN
     RAISE EXCEPTION 'approved snapshot reuse did not reconcile quote idempotently';
   END IF;
 END $$;
