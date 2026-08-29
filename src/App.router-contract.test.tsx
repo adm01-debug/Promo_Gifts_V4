@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ReactElement, ReactNode } from 'react';
 
 type BrowserRouterSpyProps = {
@@ -72,6 +72,8 @@ vi.mock('@/lib/lazyWithRetry', () => ({
 }));
 
 describe('App router contract', () => {
+  beforeEach(() => browserRouterSpy.mockClear());
+
   it('desativa startTransition sem flags future obsoletas e mantém as rotas montadas', async () => {
     const { default: App } = await import('./App');
 

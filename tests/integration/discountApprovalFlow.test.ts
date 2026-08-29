@@ -4,9 +4,8 @@
  * Testa o fluxo completo: vendedor solicita > admin aprova/rejeita > notificações.
  *
  * Modos:
- *  1) MOCK (default em CI): simula a sequência de chamadas ao Supabase com mocks
- *     orquestrados, validando a ORDEM e o PAYLOAD de cada operação do hook
- *     `useDiscountApproval`.
+ *  1) MOCK (default em CI): valida o contrato das duas RPCs transacionais e
+ *     garante que o cliente não duplica as notificações criadas pelo trigger.
  *  2) LIVE (opt-in): se as variáveis de ambiente abaixo estiverem definidas,
  *     o teste executa contra o Supabase real, autenticando dois usuários fixos
  *     criados via painel Auth + a função RPC `seed_discount_test_users`.
@@ -83,6 +82,37 @@ const H = vi.hoisted(() => {
 
   let overrides: Record<string, Record<string, unknown>> = {};
 
+  async function rpcImpl(fn: string, payload: Record<string, unknown>) {
+    ops.push({ table: fn, method: "rpc", payload });
+    const override = overrides[fn];
+    if (override) {
+      return { data: override.data ?? null, error: override.error ?? null };
+    }
+    if (fn === "request_discount_approval_transactional") {
+      return {
+        data: {
+          id: REQUEST_ID,
+          quote_id: QUOTE_ID,
+          seller_id: SELLER_ID,
+          status: "pending",
+        },
+        error: null,
+      };
+    }
+    if (fn === "respond_discount_approval_transactional") {
+      return {
+        data: {
+          id: REQUEST_ID,
+          quote_id: QUOTE_ID,
+          seller_id: SELLER_ID,
+          status: payload._approved ? "approved" : "rejected",
+        },
+        error: null,
+      };
+    }
+    return { data: null, error: null };
+  }
+
   function defaultResults(table: string): Record<string, unknown> {
     if (overrides[table]) return overrides[table];
     switch (table) {
@@ -115,6 +145,7 @@ const H = vi.hoisted(() => {
     SELLER_ID, ADMIN_ID, QUOTE_ID, REQUEST_ID,
     ops,
     fromImpl: (table: string) => makeBuilder(table, defaultResults(table)),
+    rpcImpl,
     setOverride: (table: string, results: Record<string, unknown>) => {
       overrides[table] = results;
     },
@@ -129,7 +160,10 @@ const H = vi.hoisted(() => {
 // ─────────────────────────────────────────────────────────────
 
 vi.mock("@/integrations/supabase/client", () => ({
-  supabase: { from: (table: string) => H.fromImpl(table) },
+  supabase: {
+    from: (table: string) => H.fromImpl(table),
+    rpc: (fn: string, payload: Record<string, unknown>) => H.rpcImpl(fn, payload),
+  },
 }));
 
 vi.mock("@/contexts/AuthContext", () => ({
@@ -179,7 +213,7 @@ beforeEach(() => {
 // 1. Vendedor solicita aprovação (happy path)
 // ─────────────────────────────────────────────────────────────
 describe("E2E: Vendedor solicita aprovação de desconto", () => {
-  it("cria request, atualiza quote, loga histórico e notifica admins", async () => {
+  it("delega criação, snapshot, histórico e notificação à RPC transacional", async () => {
     setUser("seller");
     const { result } = renderHookWithProviders(() => useDiscountApproval());
 
@@ -193,39 +227,20 @@ describe("E2E: Vendedor solicita aprovação de desconto", () => {
       expect.stringContaining("Solicitação de aprovação enviada")
     );
 
-    // Operação 1: insert em discount_approval_requests
-    const reqInsert = ops.find(o => o.table === "discount_approval_requests" && o.method === "insert");
-    expect(reqInsert).toBeDefined();
-    expect(reqInsert?.payload).toMatchObject({
-      quote_id: QUOTE_ID,
-      seller_id: SELLER_ID,
-      requested_discount_percent: 15,
-      max_allowed_percent: 10,
-      seller_notes: "Cliente VIP",
-    });
-
-    // Operação 2: update do quote para pending_approval
-    const quoteUpdate = ops.find(o => o.table === "quotes" && o.method === "update");
-    expect(quoteUpdate?.payload).toEqual({ status: "pending_approval" });
-    expect(quoteUpdate?.filter).toEqual({ col: "id", val: QUOTE_ID });
-
-    // Operação 3: insert em quote_history
-    const history = ops.find(o => o.table === "quote_history" && o.method === "insert");
-    expect(history?.payload).toMatchObject({
-      action: "discount_approval_requested",
-      field_changed: "discount",
-      new_value: "15%",
-    });
-
-    // Operação 4: notificações para admins
-    const notifs = ops.find(o => o.table === "workspace_notifications" && o.method === "insert");
-    expect(notifs).toBeDefined();
-    const payload = notifs?.payload as Array<{ user_id: string; category: string }>;
-    expect(Array.isArray(payload)).toBe(true);
-    expect(payload[0]).toMatchObject({
-      user_id: ADMIN_ID,
-      category: "discount",
-    });
+    expect(ops).toEqual([{
+      table: "request_discount_approval_transactional",
+      method: "rpc",
+      payload: {
+        _quote_id: QUOTE_ID,
+        _seller_notes: "Cliente VIP",
+      },
+    }]);
+    expect(ops.some(o => [
+      "discount_approval_requests",
+      "quotes",
+      "quote_history",
+      "workspace_notifications",
+    ].includes(o.table))).toBe(false);
   });
 
   it("retorna false se não houver usuário autenticado", async () => {
@@ -236,17 +251,17 @@ describe("E2E: Vendedor solicita aprovação de desconto", () => {
       success = await result.current.requestApproval(QUOTE_ID, 15, 10);
     });
     expect(success).toBe(false);
+    expect(ops).toEqual([]);
   });
 
-  it("não envia notificação se nenhum admin existir", async () => {
+  it("não consulta admins nem escreve notificação diretamente pelo cliente", async () => {
     setUser("seller");
-    H.setOverride("user_roles", { list: [] });
     const { result } = renderHookWithProviders(() => useDiscountApproval());
     await act(async () => {
       await result.current.requestApproval(QUOTE_ID, 15, 10);
     });
-    const notifs = ops.find(o => o.table === "workspace_notifications" && o.method === "insert");
-    expect(notifs).toBeUndefined();
+    expect(ops.some(o => o.table === "user_roles")).toBe(false);
+    expect(ops.some(o => o.table === "workspace_notifications")).toBe(false);
   });
 });
 
@@ -254,7 +269,7 @@ describe("E2E: Vendedor solicita aprovação de desconto", () => {
 // 2. Admin aprova
 // ─────────────────────────────────────────────────────────────
 describe("E2E: Admin aprova solicitação", () => {
-  it("atualiza request, muda quote para 'pending', loga histórico e notifica vendedor", async () => {
+  it("delega decisão, quote, histórico e notificação à RPC transacional", async () => {
     setUser("admin");
     const { result } = renderHookWithProviders(() => useDiscountApproval());
 
@@ -266,39 +281,22 @@ describe("E2E: Admin aprova solicitação", () => {
     expect(success).toBe(true);
     expect(toast.success).toHaveBeenCalledWith("Desconto aprovado!");
 
-    // Update no request
-    const reqUpdate = ops.find(o => o.table === "discount_approval_requests" && o.method === "update");
-    expect(reqUpdate?.payload).toMatchObject({
-      status: "approved",
-      admin_id: ADMIN_ID,
-      admin_notes: "Aprovado",
-    });
-    expect(reqUpdate?.payload).toHaveProperty("responded_at");
-
-    // Quote vai para pending
-    const quoteUpdate = ops.find(o => o.table === "quotes" && o.method === "update");
-    expect(quoteUpdate?.payload).toEqual({ status: "pending" });
-
-    // Histórico de aprovação
-    const history = ops.find(o => o.table === "quote_history" && o.method === "insert");
-    expect(history?.payload).toMatchObject({
-      action: "discount_approved",
-      field_changed: "discount",
-    });
-
-    // Notificação ao vendedor
-    const notif = ops.find(o => o.table === "workspace_notifications" && o.method === "insert");
-    expect(notif?.payload).toMatchObject({
-      user_id: SELLER_ID,
-      type: "success",
-      category: "discount",
-    });
-    expect((notif?.payload as { title: string }).title).toContain("aprovado");
+    expect(ops).toEqual([{
+      table: "respond_discount_approval_transactional",
+      method: "rpc",
+      payload: {
+        _request_id: REQUEST_ID,
+        _approved: true,
+        _admin_notes: "Aprovado",
+      },
+    }]);
   });
 
-  it("não confirma aprovação nem notifica vendedor se a atualização do orçamento falha", async () => {
+  it("não confirma aprovação se a transação falha", async () => {
     setUser("admin");
-    H.setOverride("quotes", { updateError: { message: "quote update failed" } });
+    H.setOverride("respond_discount_approval_transactional", {
+      error: { code: "40001", message: "transaction failed" },
+    });
     const { result } = renderHookWithProviders(() => useDiscountApproval());
 
     let success = true;
@@ -308,9 +306,12 @@ describe("E2E: Admin aprova solicitação", () => {
 
     expect(success).toBe(false);
     expect(toast.success).not.toHaveBeenCalled();
-    expect(toast.error).toHaveBeenCalledWith("Erro ao responder solicitação");
-    expect(ops.find(o => o.table === "quote_history" && o.method === "insert")).toBeUndefined();
-    expect(ops.find(o => o.table === "workspace_notifications" && o.method === "insert")).toBeUndefined();
+    expect(toast.error).toHaveBeenCalledWith(
+      "A solicitação mudou durante a decisão. Atualize a fila e tente novamente.",
+      { duration: 8000 },
+    );
+    expect(ops).toHaveLength(1);
+    expect(ops[0].table).toBe("respond_discount_approval_transactional");
   });
 });
 
@@ -318,18 +319,8 @@ describe("E2E: Admin aprova solicitação", () => {
 // 3. Admin rejeita
 // ─────────────────────────────────────────────────────────────
 describe("E2E: Admin rejeita solicitação", () => {
-  it("muda quote para 'draft' e notifica vendedor com type=error", async () => {
+  it("delega rejeição e notificação ao banco sem escrita duplicada", async () => {
     setUser("admin");
-    H.setOverride("discount_approval_requests", {
-      single: {
-        id: REQUEST_ID,
-        quote_id: QUOTE_ID,
-        seller_id: SELLER_ID,
-        requested_discount_percent: 20,
-        max_allowed_percent: 10,
-        status: "rejected",
-      },
-    });
 
     const { result } = renderHookWithProviders(() => useDiscountApproval());
 
@@ -341,16 +332,15 @@ describe("E2E: Admin rejeita solicitação", () => {
     expect(success).toBe(true);
     expect(toast.success).toHaveBeenCalledWith("Desconto rejeitado");
 
-    const quoteUpdate = ops.find(o => o.table === "quotes" && o.method === "update");
-    expect(quoteUpdate?.payload).toEqual({ status: "draft" });
-
-    const notif = ops.find(o => o.table === "workspace_notifications" && o.method === "insert");
-    expect(notif?.payload).toMatchObject({
-      user_id: SELLER_ID,
-      type: "error",
-      category: "discount",
-    });
-    expect((notif?.payload as { message: string }).message).toContain("Margem insuficiente");
+    expect(ops).toEqual([{
+      table: "respond_discount_approval_transactional",
+      method: "rpc",
+      payload: {
+        _request_id: REQUEST_ID,
+        _approved: false,
+        _admin_notes: "Margem insuficiente",
+      },
+    }]);
   });
 });
 
@@ -394,6 +384,8 @@ liveDescribe("E2E LIVE: fluxo real contra Supabase", () => {
         subtotal: 1000,
         total: 850,
         discount_percent: 15,
+        real_discount_percent: 15,
+        negotiation_markup_percent: 0,
         discount_amount: 150,
         status: "draft",
       })
@@ -401,16 +393,11 @@ liveDescribe("E2E LIVE: fluxo real contra Supabase", () => {
       .single();
     expect(qErr).toBeNull();
 
-    // 5. Request
-    const { error: reqErr } = await supa
-      .from("discount_approval_requests")
-      .insert({
-        quote_id: quote!.id,
-        seller_id: sellerId,
-        requested_discount_percent: 15,
-        max_allowed_percent: 10,
-        seller_notes: "Test E2E",
-      });
+    // 5. Request transacional; trigger notifica os admins.
+    const { data: request, error: reqErr } = await supa.rpc(
+      "request_discount_approval_transactional",
+      { _quote_id: quote!.id, _seller_notes: "Test E2E" },
+    );
     expect(reqErr).toBeNull();
 
     // 6. Admin login & approve
@@ -420,23 +407,13 @@ liveDescribe("E2E LIVE: fluxo real contra Supabase", () => {
       password: ADMIN_PWD!,
     });
     expect(adminLogin.error).toBeNull();
-    const adminId = adminLogin.data.user!.id;
+    expect(adminLogin.data.user).toBeTruthy();
 
-    const { data: pending } = await supa
-      .from("discount_approval_requests")
-      .select("id")
-      .eq("quote_id", quote!.id)
-      .single();
-
-    const { error: updErr } = await supa
-      .from("discount_approval_requests")
-      .update({
-        status: "approved",
-        admin_id: adminId,
-        admin_notes: "OK E2E",
-        responded_at: new Date().toISOString(),
-      })
-      .eq("id", pending!.id);
+    const { error: updErr } = await supa.rpc("respond_discount_approval_transactional", {
+      _request_id: (request as { id: string }).id,
+      _approved: true,
+      _admin_notes: "OK E2E",
+    });
     expect(updErr).toBeNull();
 
     // 7. Verifica notificação criada pelo trigger

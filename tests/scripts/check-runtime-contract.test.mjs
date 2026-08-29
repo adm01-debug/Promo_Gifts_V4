@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
 import { evaluateRuntimeContract, parseVersion } from '../../scripts/check-runtime-contract.mjs';
 
 describe('check-runtime-contract', () => {
@@ -15,7 +16,7 @@ describe('check-runtime-contract', () => {
     });
 
     expect(result.ok).toBe(true);
-    expect(result.details.expectedNode).toBe('20.20.2');
+    expect(result.details.expectedNode).toBe(readFileSync('.nvmrc', 'utf8').trim());
     expect(result.details.packageManager).toBe('npm@10.9.7');
   });
 

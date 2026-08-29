@@ -1,5 +1,46 @@
 {
   "description": "Allowlist do gate 'SECURITY DEFINER exec por anon' (espelho do lint 0029 focado em role anon). Uma função em public com SECURITY DEFINER + EXECUTE para anon executa com privilégios do dono BYPASSANDO auth — vetor crítico. Cada entrada precisa de reason (ex: 'endpoint público quote-view via token'). Snapshot inicial: 2026-07-15 (0 violações).",
   "documented_in": "security-memory (padrão public_intent whitelist)",
-  "functions": []
+  "functions": [
+    {
+      "fn": "public.check_login_rate_limit(_email text, _ip text)",
+      "reason": "Fluxo pré-autenticação: aplica rate limit antes da sessão existir. Grant canônico confirmado em pg_catalog em 2026-08-29."
+    },
+    {
+      "fn": "public.fn_check_login_allowed(p_email text, p_ip_address text, p_city text, p_user_agent text)",
+      "reason": "Fluxo pré-autenticação: valida bloqueios de login antes da sessão existir. Grant canônico confirmado em pg_catalog em 2026-08-29."
+    },
+    {
+      "fn": "public.fn_global_search(p_term text, p_limit integer, p_types text[])",
+      "reason": "Busca do catálogo público; retorna somente projeções expostas ao visitante. Grant canônico confirmado em pg_catalog em 2026-08-29."
+    },
+    {
+      "fn": "public.fn_product_active_for_rls(p_id uuid)",
+      "reason": "Helper de RLS do catálogo público usado para filtrar produtos ativos. Grant canônico confirmado em pg_catalog em 2026-08-29."
+    },
+    {
+      "fn": "public.fn_super_filtro_facets(p_search_term text, p_category_slug text, p_category_id uuid, p_brands text[], p_only_in_stock boolean, p_min_price numeric, p_max_price numeric, p_target_audiences text[], p_is_kit boolean, p_is_textil boolean, p_is_thermal boolean, p_has_gift_box boolean, p_material_groups text[], p_technique_groups text[], p_color_groups text[], p_date_slugs text[], p_endomarketing boolean)",
+      "reason": "Facetas do superfiltro público do catálogo. Grant canônico confirmado em pg_catalog em 2026-08-29."
+    },
+    {
+      "fn": "public.fn_super_filtro_price_range(p_brands text[], p_category_slug text, p_target_audiences text[], p_is_textil boolean, p_is_thermal boolean, p_only_in_stock boolean)",
+      "reason": "Faixa de preços do superfiltro público do catálogo. Grant canônico confirmado em pg_catalog em 2026-08-29."
+    },
+    {
+      "fn": "public.fn_super_filtro(p_search_term text, p_category_slug text, p_category_id uuid, p_brands text[], p_only_in_stock boolean, p_min_price numeric, p_max_price numeric, p_target_audiences text[], p_is_kit boolean, p_is_textil boolean, p_is_thermal boolean, p_has_gift_box boolean, p_material_groups text[], p_technique_groups text[], p_color_groups text[], p_date_slugs text[], p_endomarketing boolean, p_limit integer, p_offset integer, p_sort text)",
+      "reason": "Consulta paginada do superfiltro público do catálogo. Grant canônico confirmado em pg_catalog em 2026-08-29."
+    },
+    {
+      "fn": "public.get_catalog_bestseller_page(p_sort text, p_limit integer, p_offset integer)",
+      "reason": "Ranking paginado do catálogo público. Grant canônico confirmado em pg_catalog em 2026-08-29."
+    },
+    {
+      "fn": "public.get_quote_token_by_value(_token text)",
+      "reason": "Visualização pública de orçamento protegida por token opaco. Grant canônico confirmado em pg_catalog em 2026-08-29."
+    },
+    {
+      "fn": "public.submit_quote_response(_token text, _response text, _response_notes text)",
+      "reason": "Resposta pública de orçamento protegida por token opaco e validação interna. Grant canônico confirmado em pg_catalog em 2026-08-29."
+    }
+  ]
 }

@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "project_ref": "doufsxqlfjyuvxuezpln",
+  "captured_at": "2026-08-29",
+  "functions": [
+    {
+      "slug": "mcp-query",
+      "owner": "MCP Worker PROMO FINANCE V2",
+      "reason": "Gateway operacional do MCP externo, gerenciado fora do ciclo de deploy do aplicativo Promo_Gifts_V4. Mantê-lo fora deste repositório evita que o deploy geral de Edge Functions sobrescreva uma integração externa sem revisão específica."
+    }
+  ]
+}

@@ -73,6 +73,23 @@ jobs:
 
       - name: Start Supabase stack
         run: |
+          # Este job valida contratos HTTP das Edge Functions, não replay de
+          # migrations. O histórico possui migrations canônicas que alteram
+          # objetos gerenciados pelo Supabase (ex.: realtime.messages) e não
+          # podem ser executadas pelo owner local. Isolamos o diretório apenas
+          # durante o bootstrap e o restauramos antes de servir as funções.
+          migrations_dir="supabase/migrations"
+          migrations_hold="/tmp/contract-smoke-migrations"
+          restore_migrations() {
+            if [ -d "$migrations_hold" ]; then
+              mv "$migrations_hold" "$migrations_dir"
+            fi
+          }
+          trap restore_migrations EXIT
+          if [ -d "$migrations_dir" ]; then
+            mv "$migrations_dir" "$migrations_hold"
+          fi
+
           start_stack() {
             supabase start --debug > /tmp/supabase-start.log 2>&1
           }

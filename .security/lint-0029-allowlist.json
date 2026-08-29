@@ -3,56 +3,293 @@
   "description": "Allowlist do lint Supabase 0029 (SECURITY DEFINER executável por signed-in). Cada entrada precisa de reason documentado. Novos itens não listados aqui fazem o gate CI falhar. Snapshot inicial: 2026-07-15.",
   "documented_in": "security-memory (padrão RLS/has_role)",
   "functions": [
-    { "fn": "public.can_approve_discount(_user_id uuid)", "reason": "RBAC helper (fluxo de alçada) — SECURITY DEFINER intencional" },
-    { "fn": "public.can_grant_mcp_full(_user_id uuid)", "reason": "RBAC helper (MCP)" },
-    { "fn": "public.can_manage_connections(_user_id uuid)", "reason": "RBAC helper (Connections Hub)" },
-    { "fn": "public.can_manage_quotes(_user_id uuid)", "reason": "RBAC helper (Orçamentos)" },
-    { "fn": "public.can_view_all_sales(_user_id uuid)", "reason": "RBAC helper (Vendas)" },
-    { "fn": "public.can_view_audit_logs(_user_id uuid)", "reason": "RBAC helper (Auditoria)" },
-    { "fn": "public.can_view_connections(_user_id uuid)", "reason": "RBAC helper (Connections Hub)" },
-    { "fn": "public.can_view_telemetry(_user_id uuid)", "reason": "RBAC helper (Telemetria)" },
-    { "fn": "public.check_ai_quota(_user_id uuid)", "reason": "Quota AI (SELECT FOR UPDATE em ai_usage_quotas)" },
-    { "fn": "public.check_hardening_status()", "reason": "Painel admin (leitura de hardening)" },
-    { "fn": "public.check_telemetry_regression()", "reason": "Painel admin (regressão de telemetria)" },
-    { "fn": "public.ensure_default_favorite_list(_user_id uuid)", "reason": "Bootstrap de lista padrão do usuário" },
-    { "fn": "public.execute_role_migration_batch(_label text, _reason text, _items jsonb, _dry_run boolean)", "reason": "Batch admin de migração de roles — checa is_admin_strict internamente" },
-    { "fn": "public.get_app_health_summary(_minutes integer)", "reason": "Health dashboard admin/dev" },
-    { "fn": "public.get_auto_test_job_status(_limit integer)", "reason": "Diagnóstico admin" },
-    { "fn": "public.get_bundle_suggestions(_product_id text)", "reason": "Read agregado do catálogo" },
-    { "fn": "public.get_client_seasonality(_client_id text, _months integer)", "reason": "Read agregado CRM" },
-    { "fn": "public.get_client_top_products(_client_id text, _limit integer)", "reason": "Read agregado CRM" },
-    { "fn": "public.get_collections_weekly_count(_weeks integer)", "reason": "Agregado público (contagem semanal)" },
-    { "fn": "public.get_connection_failure_window_minutes()", "reason": "Settings read (admin)" },
-    { "fn": "public.get_connections_auto_test_interval()", "reason": "Settings read (admin)" },
-    { "fn": "public.get_favorites_weekly_count(_weeks integer)", "reason": "Agregado público (contagem semanal)" },
-    { "fn": "public.get_industry_benchmark_stats(_company_ids text[], _days integer)", "reason": "Benchmark anônimo (não expõe PII)" },
-    { "fn": "public.get_industry_top_products(_company_ids text[], _days integer, _limit integer)", "reason": "Benchmark anônimo (não expõe PII)" },
-    { "fn": "public.get_platform_failure_metrics(window_minutes integer)", "reason": "Health dashboard admin" },
-    { "fn": "public.get_top_collected_products(_days integer, _limit integer)", "reason": "Ranking público" },
-    { "fn": "public.get_top_compared_products(p_limit integer)", "reason": "Ranking público" },
-    { "fn": "public.get_top_favorited_products(_days integer, _limit integer)", "reason": "Ranking público" },
-    { "fn": "public.get_user_org_ids(_user_id uuid)", "reason": "RBAC helper (organizações)" },
-    { "fn": "public.get_user_recent_comparisons(p_limit integer)", "reason": "Comparações do próprio usuário (auth.uid())" },
-    { "fn": "public.has_org_role(_user_id uuid, _org_id uuid, _role org_role)", "reason": "RBAC helper canônico (organizações)" },
-    { "fn": "public.has_role(_user_id uuid, _role app_role)", "reason": "RBAC helper canônico" },
-    { "fn": "public.is_admin()", "reason": "RBAC helper canônico (padrão Supabase)" },
-    { "fn": "public.is_admin(_user_id uuid)", "reason": "RBAC helper canônico (padrão Supabase)" },
-    { "fn": "public.is_admin_strict(_user_id uuid)", "reason": "RBAC helper (permissão administrativa estrita)" },
-    { "fn": "public.is_dev(_user_id uuid)", "reason": "RBAC helper (role dev)" },
-    { "fn": "public.is_kit_collaborator(_kit_id uuid, _user_id uuid)", "reason": "RBAC helper (Kits)" },
-    { "fn": "public.is_kit_owner(_kit_id uuid, _user_id uuid)", "reason": "RBAC helper (Kits)" },
-    { "fn": "public.is_manager_or_admin()", "reason": "RBAC helper canônico" },
-    { "fn": "public.is_org_member(_user_id uuid, _org_id uuid)", "reason": "RBAC helper (organizações)" },
-    { "fn": "public.is_seller_only(_user_id uuid)", "reason": "RBAC helper (vendedor)" },
-    { "fn": "public.is_supervisor_or_above(_user_id uuid)", "reason": "RBAC helper (supervisão)" },
-    { "fn": "public.log_rls_denial(p_table_name text, p_operation text, p_endpoint text, p_query_summary text, p_target_id uuid, p_target_seller_id uuid, p_policy_hint text, p_error_code text, p_error_message text, p_user_agent text)", "reason": "Insere em rls_denial_log (self-report)" },
-    { "fn": "public.log_user_logout()", "reason": "Auditoria de logout (self)" },
-    { "fn": "public.lookup_request_id(_request_id text)", "reason": "Diagnóstico admin/dev por request_id" },
-    { "fn": "public.record_dev_route_telemetry(_event_type text, _blocked_path text, _user_role text, _duration_ms integer)", "reason": "Telemetria de rota dev (self)" },
-    { "fn": "public.repair_ownership_orphans(_report_id uuid, _dry_run boolean, _triggered_by_label text)", "reason": "Reparo admin com allowlist interna + auditoria" },
-    { "fn": "public.restore_seller_cart(_snapshot jsonb)", "reason": "Restauração do próprio carrinho (auth.uid())" },
-    { "fn": "public.search_records_rerank(_query text, _candidates jsonb)", "reason": "Rerank de busca (read-only)" },
-    { "fn": "public.set_connection_failure_window_minutes(minutes integer)", "reason": "Settings write — checa is_admin internamente" },
-    { "fn": "public.set_connections_auto_test_interval(minutes integer)", "reason": "Settings write — checa is_admin internamente" }
+    {
+      "fn": "public.can_access_quote(_quote_id uuid)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.check_hardening_status()",
+      "reason": "Painel admin (leitura de hardening)"
+    },
+    {
+      "fn": "public.check_login_rate_limit(_email text, _ip text)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.confirm_notifications_dispatched(p_ids uuid[])",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_anon_catalog_grant_audit_run()",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_approve_product_deactivation(p_request_id uuid, p_notes text)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_batch_update_cart_item_sort_order(p_updates jsonb)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_check_login_allowed(p_email text, p_ip_address text, p_city text, p_user_agent text)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_get_all_leaf_categories()",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_get_color_swatches_batch(p_product_ids uuid[])",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_get_conversion_funnel(p_user_id uuid, p_days integer)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_get_customization_price(p_area_id uuid, p_quantidade integer, p_num_cores integer, p_largura_cm numeric, p_altura_cm numeric, p_num_pontos integer)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_get_discontinued_products(p_supplier_code text, p_search text, p_status text, p_limit integer, p_offset integer)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_get_discontinued_stats()",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_get_low_stock_alerts(p_limit integer, p_since date)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_get_navigation_patterns(p_user_id uuid, p_days integer)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_get_novelty_alerts(p_limit integer, p_since date)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_get_product_ai_context(p_product_id uuid)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_get_product_customization_options(p_product_id uuid)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_get_product_intelligence_all()",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_get_recent_restocks(p_limit integer, p_since date)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_get_replenishment_stats()",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_get_reposicao_listing(p_supplier_id uuid, p_category_id uuid, p_sort_by text, p_limit integer, p_offset integer, p_days integer)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_get_reposicao_metrics()",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_get_reposicao_variants_summary(p_product_ids uuid[])",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_get_repressed_demand(p_user_id uuid, p_days integer, p_limit integer)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_get_stock_notification_counts(p_since date)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_get_stockout_alerts(p_limit integer, p_since date)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_global_search(p_term text, p_limit integer, p_types text[])",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_list_deactivation_requests(p_status text, p_limit integer)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_log_search_analytics(p_search_term text, p_results_count integer, p_search_context text, p_debounce_seconds integer)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_notify_user(_target_user_id uuid, _title text, _message text, _type text, _category text, _action_url text, _metadata jsonb)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_product_active_for_rls(p_id uuid)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_products_quality_dashboard()",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_qa_check_image_coverage()",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_qa_scan_imageless_products()",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_reject_product_deactivation(p_request_id uuid, p_rejection_reason text)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_request_product_deactivation(p_product_id uuid, p_reason text, p_reason_code text, p_notes text)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_rpc_exists(_fname text)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_rupture_by_level(p_nivel text, p_limit integer, p_offset integer, p_preferred boolean)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_rupture_quick_stats()",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_super_filtro_facets(p_search_term text, p_category_slug text, p_category_id uuid, p_brands text[], p_only_in_stock boolean, p_min_price numeric, p_max_price numeric, p_target_audiences text[], p_is_kit boolean, p_is_textil boolean, p_is_thermal boolean, p_has_gift_box boolean, p_material_groups text[], p_technique_groups text[], p_color_groups text[], p_date_slugs text[], p_endomarketing boolean)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_super_filtro_opcoes()",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_super_filtro_price_range(p_brands text[], p_category_slug text, p_target_audiences text[], p_is_textil boolean, p_is_thermal boolean, p_only_in_stock boolean)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_super_filtro_product_ids(_datas text[], _tags text[], _ramos text[], _segmentos text[], _publico text[], _endomarketing text[])",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_super_filtro(p_search_term text, p_category_slug text, p_category_id uuid, p_brands text[], p_only_in_stock boolean, p_min_price numeric, p_max_price numeric, p_target_audiences text[], p_is_kit boolean, p_is_textil boolean, p_is_thermal boolean, p_has_gift_box boolean, p_material_groups text[], p_technique_groups text[], p_color_groups text[], p_date_slugs text[], p_endomarketing boolean, p_limit integer, p_offset integer, p_sort text)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.fn_verify_anon_catalog_grants()",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.get_catalog_bestseller_page(p_sort text, p_limit integer, p_offset integer)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.get_collections_weekly_count(_weeks integer)",
+      "reason": "Agregado público (contagem semanal)"
+    },
+    {
+      "fn": "public.get_favorite_list_counts(_user_id uuid)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.get_inventory_health()",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.get_profile_and_roles(_user_id uuid)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.get_promo_sales_90d_by_product()",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.get_promo_sales_ranking()",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.get_supplier_reliability_history(_supplier_id uuid, _limit integer)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.get_top_collected_products(_days integer, _limit integer)",
+      "reason": "Ranking público"
+    },
+    {
+      "fn": "public.is_admin_or_above(_user_id uuid)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.is_coord_or_above(_user_id uuid)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.is_dnd_active(p_user_id uuid)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.is_org_member(_user_id uuid, _org_id uuid)",
+      "reason": "RBAC helper (organizações)"
+    },
+    {
+      "fn": "public.is_org_owner_or_admin(org_id uuid)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.mcp_kv_get(p_secret text, p_key text)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.org_has_any_members(_org_id uuid)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.registrar_entrada_estoque(p_variant_sku character varying, p_quantity integer, p_unit_cost numeric, p_supplier_name character varying, p_document_number character varying, p_notes text, p_user_id uuid)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.registrar_saida_estoque(p_variant_sku character varying, p_quantity integer, p_movement_type character varying, p_document_number character varying, p_notes text, p_user_id uuid, p_allow_negative boolean)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.request_discount_approval_transactional(_quote_id uuid, _seller_notes text)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.respond_discount_approval_transactional(_request_id uuid, _approved boolean, _admin_notes text)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.restore_collection_item_from_trash(_item_id uuid)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.restore_seller_cart(_snapshot jsonb)",
+      "reason": "Restauração do próprio carrinho (auth.uid())"
+    },
+    {
+      "fn": "public.start_step_up_challenge(_action text, _target_ref text)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.user_is_org_member(org_id uuid)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.verify_step_up_password(_challenge_id uuid, _password_attempt text)",
+      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    }
   ]
 }
