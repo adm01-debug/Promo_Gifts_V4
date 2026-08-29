@@ -4,7 +4,7 @@
  *
  * Comando READ-ONLY de verificação pós-deploy. Valida no banco externo:
  *   ✔ Trigger contém advisory_xact_lock (lock por ano)
- *   ✔ UNIQUE INDEX uniq_quotes_quote_number presente e válido
+ *   ✔ Índice/constraint UNIQUE válido em quotes.quote_number
  *   ✔ Zero duplicidades em quote_number
  *   ✔ Sequência por ano sem gaps suspeitos
  *   ✔ Consistência entre prévia (~max+1) e maior número salvo
@@ -16,16 +16,50 @@
  * Uso:
  *   node scripts/verify-quote-number-hardening.mjs
  *
- * Requer: PGHOST/PGUSER/PGPASSWORD/PGDATABASE ou $DATABASE_URL configurados
- * para o banco externo (doufsxqlfjyuvxuezpln).
+ * Requer um dos modos abaixo para o banco externo (doufsxqlfjyuvxuezpln):
+ *   - SUPABASE_ACCESS_TOKEN + SUPABASE_PROJECT_REF (Management API read-only); ou
+ *   - PGHOST/PGUSER/PGPASSWORD/PGDATABASE ou DATABASE_URL (psql).
  */
 import { execSync } from 'node:child_process';
 
-const psql = (sql) =>
-  execSync(`psql -At -F '|' -c ${JSON.stringify(sql)}`, {
+const projectRef = process.env.SUPABASE_PROJECT_REF;
+const accessToken = process.env.SUPABASE_ACCESS_TOKEN;
+
+const query = async (sql) => {
+  if (accessToken && projectRef) {
+    const response = await fetch(
+      `https://api.supabase.com/v1/projects/${encodeURIComponent(projectRef)}/database/query/read-only`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query: sql }),
+      },
+    );
+
+    if (!response.ok) {
+      const detail = (await response.text()).slice(0, 500);
+      throw new Error(`Management API ${response.status}: ${detail}`);
+    }
+
+    const rows = await response.json();
+    if (!Array.isArray(rows)) {
+      throw new Error('Management API retornou payload inesperado');
+    }
+
+    return rows
+      .map((row) => Object.values(row).map((value) => value ?? '').join('|'))
+      .join('\n')
+      .trim();
+  }
+
+  return execSync(`psql -At -F '|' -c ${JSON.stringify(sql)}`, {
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'pipe'],
   }).trim();
+};
 
 const checks = [];
 const record = (label, ok, detail = '') =>
@@ -33,8 +67,8 @@ const record = (label, ok, detail = '') =>
 
 // 1. Trigger tem advisory lock?
 try {
-  const def = psql(
-    `SELECT pg_get_functiondef('public.generate_quote_number'::regproc)`,
+  const def = await query(
+    `SELECT pg_catalog.pg_get_functiondef('public.generate_quote_number'::regproc)`,
   );
   record(
     'trigger contém advisory_xact_lock',
@@ -45,34 +79,47 @@ try {
   record('trigger contém advisory_xact_lock', false, e.message);
 }
 
-// 2. UNIQUE INDEX presente e válido?
+// 2. Existe proteção UNIQUE equivalente e válida?
+// Não acoplamos o gate ao nome: o canônico já pode ter a constraint nativa
+// quotes_quote_number_key, semanticamente equivalente ao índice proposto.
 try {
-  const row = psql(`
-    SELECT i.indexname,
+  const row = await query(`
+    SELECT c.relname AS indexname,
            ix.indisvalid::text
-      FROM pg_indexes i
-      JOIN pg_class c  ON c.relname = i.indexname
-      JOIN pg_index ix ON ix.indexrelid = c.oid
-     WHERE i.schemaname='public'
-       AND i.indexname='uniq_quotes_quote_number'
+      FROM pg_catalog.pg_index AS ix
+      JOIN pg_catalog.pg_class AS c ON c.oid = ix.indexrelid
+      JOIN pg_catalog.pg_class AS t ON t.oid = ix.indrelid
+      JOIN pg_catalog.pg_namespace AS n ON n.oid = t.relnamespace
+      JOIN pg_catalog.pg_attribute AS a
+        ON a.attrelid = t.oid
+       AND a.attname = 'quote_number'
+     WHERE n.nspname = 'public'
+       AND t.relname = 'quotes'
+       AND ix.indisunique
+       AND ix.indnkeyatts = 1
+       AND ix.indpred IS NULL
+       AND ix.indexprs IS NULL
+       AND ix.indkey[0] = a.attnum
+     ORDER BY ix.indisvalid DESC, c.relname
+     LIMIT 1
   `);
   if (!row) {
-    record('UNIQUE INDEX uniq_quotes_quote_number presente', false, 'índice não existe');
+    record('UNIQUE válido em quotes.quote_number', false, 'proteção UNIQUE não existe');
   } else {
-    const [, valid] = row.split('|');
+    const [indexName, valid] = row.split('|');
     record(
-      'UNIQUE INDEX uniq_quotes_quote_number presente e válido',
+      'UNIQUE válido em quotes.quote_number',
       valid === 'true',
-      valid === 'true' ? '' : 'índice INVALID — DROP CONCURRENTLY e recriar',
+      valid === 'true' ? `índice=${indexName}` : `índice ${indexName} INVALID — recriar`,
     );
   }
 } catch (e) {
-  record('UNIQUE INDEX uniq_quotes_quote_number presente', false, e.message);
+  record('UNIQUE válido em quotes.quote_number', false, e.message);
 }
 
 // 3. Zero duplicidades em quote_number?
 try {
-  const dup = psql(`
+  const dup = await query(`
     SELECT COUNT(*)::text
       FROM (
         SELECT quote_number
@@ -94,7 +141,7 @@ try {
 
 // 4. Sequência por ano — detecta gaps suspeitos (> 5% dos números)
 try {
-  const rows = psql(`
+  const rows = await query(`
     WITH parsed AS (
       SELECT split_part(quote_number,'/',2) AS yy,
              split_part(quote_number,'/',1)::int AS seq
@@ -132,10 +179,10 @@ try {
 try {
   const yy = new Date().getFullYear() % 100;
   const yyStr = String(yy).padStart(2, '0');
-  const result = psql(`
+  const result = await query(`
     SELECT MAX(split_part(quote_number,'/',1)::int)::text
       FROM public.quotes
-     WHERE quote_number LIKE '%/' || ${JSON.stringify(yyStr)}
+     WHERE quote_number LIKE '%/' || '${yyStr}'
   `);
   record(
     `prévia client-side bate com MAX do banco para /${yyStr}`,

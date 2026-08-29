@@ -61,7 +61,9 @@ jobs:
         with: { node-version: '22.22.1', cache: npm }
       - run: npm ci
       - name: Install Playwright + deps (${{ matrix.browser }})
-        run: npx playwright install --with-deps ${{ matrix.browser }}
+        # Projects *-authed dependem do setup Chromium, mesmo quando a suíte
+        # alvo roda em Firefox/WebKit.
+        run: npx playwright install --with-deps chromium ${{ matrix.browser }}
       - name: Run thumb-quickview suite
         run: |
           npx playwright test e2e/flows/03b-product-thumb-quickview.spec.ts \

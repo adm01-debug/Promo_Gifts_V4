@@ -121,7 +121,8 @@ jobs:
         run: npm ci
 
       - name: Install Playwright browser (${{ matrix.browser }})
-        run: npx playwright install --with-deps ${{ matrix.browser }}
+        # O dependency project `setup` usa Chromium antes do projeto alvo.
+        run: npx playwright install --with-deps chromium ${{ matrix.browser }}
 
       # retries=0: qualquer invariant quebrado FALHA o build. Sem "tentar de novo".
       - name: Playwright — invariants do header/sidebar (shard ${{ matrix.shard }}/${{ matrix.total_shards }})
