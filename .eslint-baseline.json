@@ -1,9 +1,67 @@
 {
-  "generatedAt": "2026-07-24T11:41:09.170Z",
-  "totalErrors": 0,
+  "generatedAt": "2026-08-09T14:27:09.506Z",
+  "totalErrors": 35,
   "counts": {
+    "src/components/errors/EnhancedErrorBoundary.tsx": {
+      "@typescript-eslint/prefer-readonly": 1
+    },
+    "src/components/errors/__tests__/EnhancedErrorBoundary.capture.test.tsx": {
+      "@typescript-eslint/require-await": 1
+    },
+    "src/components/intelligence/GoldSyncBadge.tsx": {
+      "@typescript-eslint/sort-type-constituents": 1
+    },
+    "src/components/intelligence/MarketIntelligenceInsightsCard.tsx": {
+      "@typescript-eslint/prefer-optional-chain": 1,
+      "@typescript-eslint/sort-type-constituents": 1,
+      "eqeqeq": 2,
+      "no-eq-null": 2
+    },
+    "src/hooks/intelligence/__tests__/useZeroResultSubstitutes.test.tsx": {
+      "@typescript-eslint/require-await": 4
+    },
+    "src/hooks/intelligence/useZeroResultDiagnosis.ts": {
+      "@typescript-eslint/prefer-optional-chain": 2,
+      "@typescript-eslint/sort-type-constituents": 1
+    },
+    "src/hooks/intelligence/useZeroResultSubstitutes.ts": {
+      "@typescript-eslint/non-nullable-type-assertion-style": 2,
+      "@typescript-eslint/sort-type-constituents": 1
+    },
+    "src/hooks/voice/__tests__/processTranscript.aiNotConfigured.test.ts": {
+      "@typescript-eslint/require-await": 1
+    },
+    "src/lib/analytics/__tests__/intelligenceAnalytics.failure-event.test.ts": {
+      "no-promise-executor-return": 1
+    },
+    "src/lib/analytics/__tests__/intelligenceAnalytics.failures.test.ts": {
+      "no-promise-executor-return": 1
+    },
+    "src/lib/analytics/intelligenceAnalytics.ts": {
+      "@typescript-eslint/sort-type-constituents": 1
+    },
+    "src/lib/analytics/mfaNavigationAnalytics.ts": {
+      "@typescript-eslint/sort-type-constituents": 2
+    },
+    "src/lib/analytics/zeroResultAnalytics.ts": {
+      "@typescript-eslint/sort-type-constituents": 1
+    },
     "src/lib/auth/safeAuthCall.ts": {
       "@typescript-eslint/naming-convention": 1
+    },
+    "src/lib/intelligence/degradationSink.ts": {
+      "@typescript-eslint/naming-convention": 1
+    },
+    "src/lib/security/__tests__/lastInternalRoute.deeplink.test.ts": {
+      "prefer-template": 5
+    },
+    "src/lib/security/lastInternalRoute.ts": {
+      "@typescript-eslint/prefer-optional-chain": 1
+    },
+    "src/services/magazineService.ts": {
+      "@typescript-eslint/no-unused-vars": 1,
+      "no-duplicate-imports": 1,
+      "unused-imports/no-unused-imports": 1
     }
   }
 }

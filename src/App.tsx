@@ -91,8 +91,10 @@ const App = () => {
                 {/*
                  * Keep v7_startTransition disabled: under concurrent root work it can
                  * update history before the matching route render commits.
+                 * relativeSplatPath e comportamento padrao desde o react-router v7,
+                 * por isso a flag future foi removida (nao existe mais no tipo).
                  */}
-                <BrowserRouter future={{ v7_relativeSplatPath: true }}>
+                <BrowserRouter>
                   <AuthProvider>
                     <AppBootstrapContainer>
                       <AppBootstrap>

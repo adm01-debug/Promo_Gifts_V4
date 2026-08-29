@@ -30,6 +30,9 @@ if [ "$HAS_NON_DELETE" = "0" ]; then
 fi
 
 # ─────────────────────────────────────────────────────────────────
+# Aumenta heap do Node para projetos grandes (evita OOM no ESLint).
+export NODE_OPTIONS=${NODE_OPTIONS:-"--max-old-space-size=3584"}
+
 # Modo normal
 # ─────────────────────────────────────────────────────────────────
 if [ "${HUSKY_FULL:-0}" = "1" ]; then
