@@ -1042,7 +1042,9 @@ com outros agentes e o Supabase canônico não receberam mutação nesta rodada.
   pixel: o job instalava Chromium, mas o comando sem `--project` coletava também
   Firefox, WebKit e projetos autenticados/móveis. Os dois jobs agora fixam
   `chromium-public`, coerente com os baselines versionados e com o script
-  `e2e:dialogs`; nenhum baseline ou componente visual foi afrouxado.
+  `e2e:dialogs`; nenhum baseline ou componente visual foi afrouxado. A correção
+  foi confirmada no GitHub Actions run `33258159195`: AlertDialog, ConfirmDialog e
+  OptimizedImage encerraram com `success`.
 
 ### Gaps e funções ainda parciais confirmadas
 

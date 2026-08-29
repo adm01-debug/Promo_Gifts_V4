@@ -314,7 +314,7 @@ critério de aceite.
 | 091 | 🟡 | Webhook, CRM e funções críticas ganharam contratos; padronização de todas as integrações não terminou. |
 | 092 | ⏸ | Happy-path CRM/webhook/e-mail depende de segredos/JWTs de teste ainda ausentes. |
 | 093 | 🟡 | Logging/request IDs foram melhorados; falta provar rastreio completo frontend → Edge → banco. |
-| 094 | 🟡 | Gates `--require-live` e bloqueios por secret evitam falso verde local; Edge coverage e fuzz hermético passaram hospedados. A reexecução visual Chromium e os demais dashboards da branch ainda precisam encerrar. |
+| 094 | 🟡 | Gates `--require-live` e bloqueios por secret evitam falso verde local; Edge coverage, fuzz hermético e UI visual Chromium passaram hospedados. Os demais dashboards e integrações condicionadas a segredos ainda precisam encerrar. |
 | 095 | 🟡 | A suíte ampla passou dezenas de milhares de testes; o fuzz de 1.000 cenários agora é hermético e Edge coverage mede 65/107 implantáveis. Cobertura de todas as jornadas e flakes remotos segue aberta. |
 | 096 | 🟡 | Dialogs compartilham testes visual/a11y; as mesmas fixtures ainda não cobrem todos os E2E críticos. |
 | 097 | ✅ | Bundle/chunks são medidos com orçamento realista; build atual permanece abaixo do limite. |
