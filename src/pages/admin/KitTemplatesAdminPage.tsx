@@ -1,9 +1,8 @@
 /**
  * Admin: gerenciar templates de kits sugeridos pelo sistema.
  */
-import { useMemo, useState, type ComponentType } from 'react';
-import * as Lucide from 'lucide-react';
-import { Package, Plus, Pencil, Trash2, EyeOff, Eye, Loader2, Sparkles } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { Plus, Pencil, Trash2, EyeOff, Eye, Loader2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -25,6 +24,10 @@ import { useAdminKitTemplates } from '@/hooks/admin';
 import type { KitTemplateRow } from '@/hooks/kit-builder';
 import { formatCurrency } from '@/lib/kit-builder';
 import { cn } from '@/lib/utils';
+import {
+  getKitTemplateIcon,
+  KIT_TEMPLATE_ICON_NAMES,
+} from '@/components/kit-library/kit-template-icons';
 
 const PRESET_COLORS = [
   '#3B82F6',
@@ -36,21 +39,6 @@ const PRESET_COLORS = [
   '#22C55E',
   '#6366F1',
 ];
-const PRESET_ICONS = [
-  'Package',
-  'Gift',
-  'Heart',
-  'Star',
-  'Crown',
-  'Sparkles',
-  'Briefcase',
-  'Coffee',
-  'Laptop',
-  'Leaf',
-  'Trophy',
-  'Users',
-];
-
 interface FormState {
   id?: string;
   name: string;
@@ -167,10 +155,7 @@ export default function KitTemplatesAdminPage() {
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {filtered.map((t) => {
-              const Icon =
-                (Lucide as unknown as Record<string, ComponentType<{ className?: string }>>)[
-                  t.icon
-                ] || Package;
+              const Icon = getKitTemplateIcon(t.icon);
               return (
                 <Card key={t.id} className={cn('overflow-hidden', !t.is_active && 'opacity-60')}>
                   <div className="h-1.5 w-full" style={{ background: t.color }} />
@@ -344,14 +329,8 @@ export default function KitTemplatesAdminPage() {
                 <div className="space-y-1.5">
                   <Label className="text-xs">Ícone</Label>
                   <div className="grid grid-cols-6 gap-2">
-                    {PRESET_ICONS.map((name) => {
-                      const Cmp = (
-                        Lucide as unknown as Record<
-                          string,
-                          ComponentType<{ className?: string }>
-                        >
-                      )[name];
-                      if (!Cmp) return null;
+                    {KIT_TEMPLATE_ICON_NAMES.map((name) => {
+                      const Cmp = getKitTemplateIcon(name);
                       const active = editing.icon === name;
                       return (
                         <button

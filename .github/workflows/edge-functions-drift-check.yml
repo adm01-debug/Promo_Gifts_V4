@@ -23,6 +23,8 @@ on:
   pull_request:
     paths:
       - 'supabase/functions/**'
+      - 'audit/edge-functions-canonical-only.json'
+      - '.github/workflows/edge-functions-drift-check.yml'
   workflow_dispatch:
 
 permissions:
@@ -55,6 +57,25 @@ jobs:
           echo "Found $(echo "$slugs" | wc -l) slugs in repo"
           echo "$slugs" > /tmp/repo_slugs.txt
 
+          allowlist="audit/edge-functions-canonical-only.json"
+          jq -e '
+            (.project_ref == "doufsxqlfjyuvxuezpln") and
+            (.functions | type == "array") and
+            all(.functions[];
+              (.slug | type == "string" and length > 0) and
+              (.owner | type == "string" and length > 0) and
+              (.reason | type == "string" and length > 0)
+            )
+          ' "$allowlist" >/dev/null
+          jq -r '.functions[].slug' "$allowlist" | sort -u > /tmp/canonical_only_allowlist.txt
+
+          declared=$(jq '.functions | length' "$allowlist")
+          unique=$(wc -l < /tmp/canonical_only_allowlist.txt)
+          if [ "$declared" -ne "$unique" ]; then
+            echo "::error::Slugs duplicados em $allowlist"
+            exit 1
+          fi
+
       - name: List edge functions in canonical
         run: |
           set -euo pipefail
@@ -67,7 +88,10 @@ jobs:
         run: |
           set -euo pipefail
           comm -23 /tmp/repo_slugs.txt /tmp/canonical_slugs.txt > /tmp/missing_deploy.txt || true
-          comm -13 /tmp/repo_slugs.txt /tmp/canonical_slugs.txt > /tmp/orphans.txt || true
+          comm -13 /tmp/repo_slugs.txt /tmp/canonical_slugs.txt > /tmp/canonical_not_in_repo.txt || true
+          comm -23 /tmp/canonical_not_in_repo.txt /tmp/canonical_only_allowlist.txt > /tmp/orphans.txt || true
+          comm -12 /tmp/canonical_not_in_repo.txt /tmp/canonical_only_allowlist.txt > /tmp/canonical_only_present.txt || true
+          comm -23 /tmp/canonical_only_allowlist.txt /tmp/canonical_slugs.txt > /tmp/canonical_only_stale.txt || true
           {
             echo "## Slug-level diff"
             echo
@@ -83,6 +107,18 @@ jobs:
               sed 's/^/- /' /tmp/orphans.txt
             else
               echo "- _(none)_"
+            fi
+            echo
+            echo "**🟦 Canonical-only documentadas:**"
+            if [ -s /tmp/canonical_only_present.txt ]; then
+              sed 's/^/- /' /tmp/canonical_only_present.txt
+            else
+              echo "- _(none)_"
+            fi
+            if [ -s /tmp/canonical_only_stale.txt ]; then
+              echo
+              echo "**⚠️ Entradas canonical-only ausentes no canônico:**"
+              sed 's/^/- /' /tmp/canonical_only_stale.txt
             fi
           } >> "$GITHUB_STEP_SUMMARY"
 

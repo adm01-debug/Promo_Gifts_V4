@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll } from 'vitest';
 import { spawnSync } from 'child_process';
-import { writeFileSync, mkdtempSync } from 'fs';
+import { writeFileSync, mkdtempSync, readFileSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 
@@ -29,8 +29,15 @@ function runWithoutCreds(args: string[] = []) {
 }
 
 describe('check-lint-0029-drift', () => {
+  let allowlisted: string[] = [];
+
+  beforeAll(() => {
+    const doc = JSON.parse(readFileSync('.security/lint-0029-allowlist.json', 'utf8'));
+    allowlisted = doc.functions.map((entry: { fn: string }) => entry.fn);
+  });
+
   it('passa quando todos os findings estão na allowlist', () => {
-    const p = fixture(['public.has_role(_user_id uuid, _role app_role)', 'public.is_admin()']);
+    const p = fixture(allowlisted.slice(0, 2));
     const r = run(p);
     expect(r.status).toBe(0);
     expect(r.stderr).toMatch(/todos documentados/);
@@ -38,7 +45,7 @@ describe('check-lint-0029-drift', () => {
 
   it('falha quando surge finding novo não documentado', () => {
     const p = fixture([
-      'public.has_role(_user_id uuid, _role app_role)',
+      ...allowlisted,
       'public.nova_funcao_perigosa(param uuid)', // não está na allowlist
     ]);
     const r = run(p);
@@ -49,7 +56,7 @@ describe('check-lint-0029-drift', () => {
 
   it('avisa (mas não falha por si só) quando allowlist tem entradas órfãs', () => {
     // Só uma função no DB — resto da allowlist fica órfão.
-    const p = fixture(['public.has_role(_user_id uuid, _role app_role)']);
+    const p = fixture(allowlisted.slice(0, 1));
     const r = run(p);
     // Ainda passa (0) porque não há findings NOVOS; drift stale é warning.
     expect(r.status).toBe(0);

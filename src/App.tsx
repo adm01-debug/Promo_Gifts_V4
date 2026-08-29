@@ -94,7 +94,7 @@ const App = () => {
                  * relativeSplatPath e comportamento padrao desde o react-router v7,
                  * por isso a flag future foi removida (nao existe mais no tipo).
                  */}
-                <BrowserRouter>
+                <BrowserRouter useTransitions={false}>
                   <AuthProvider>
                     <AppBootstrapContainer>
                       <AppBootstrap>

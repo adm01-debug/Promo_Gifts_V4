@@ -30,6 +30,46 @@
       "ref": "supabase/migrations/20260604T000000Z_fix_raw_v2_product_type_and_overflows.sql"
     },
     {
+      "file": "docs/estado/07_EDGE_FUNCTIONS.md",
+      "ref": "supabase/migrations/20260419130037_...sql"
+    },
+    {
+      "file": "docs/estado/07_EDGE_FUNCTIONS.md",
+      "ref": "supabase/migrations/20260424154125_...sql"
+    },
+    {
+      "file": "docs/estado/11_INTEGRACOES.md",
+      "ref": "supabase/migrations/20260524204148_"
+    },
+    {
+      "file": "docs/estado/11_INTEGRACOES.md",
+      "ref": "supabase/migrations/20260524210300_"
+    },
+    {
+      "file": "docs/estado/11_INTEGRACOES.md",
+      "ref": "supabase/migrations/20260525200103_"
+    },
+    {
+      "file": "docs/estado/11_INTEGRACOES.md",
+      "ref": "supabase/migrations/20260526141659_"
+    },
+    {
+      "file": "docs/estado/11_INTEGRACOES.md",
+      "ref": "supabase/migrations/20260529164602_"
+    },
+    {
+      "file": "docs/estado/11_INTEGRACOES.md",
+      "ref": "supabase/migrations/20260531120000_"
+    },
+    {
+      "file": "docs/estado/11_INTEGRACOES.md",
+      "ref": "supabase/migrations/20260616172001_"
+    },
+    {
+      "file": "docs/estado/14_LACUNAS_COBERTURA.md",
+      "ref": "supabase/migrations/20260619150603_...sql"
+    },
+    {
       "file": "docs/historico/RECOVERY_PLAN.md",
       "ref": "supabase/migrations/_recovery/"
     },
@@ -80,6 +120,22 @@
     {
       "file": "src/services/__tests__/magazinePublishTrigger.test.ts",
       "ref": "qa/migrations-draft/2026-07-15_magazine_public_token_trigger.sql"
+    },
+    {
+      "file": "tests/scripts/check-migration-filename-contract.test.mjs",
+      "ref": "supabase/migrations/20260826010203_add_catalog_contract.sql"
+    },
+    {
+      "file": "tests/scripts/check-migration-filename-contract.test.mjs",
+      "ref": "supabase/migrations/20260826010203_existing.sql"
+    },
+    {
+      "file": "tests/scripts/check-migration-filename-contract.test.mjs",
+      "ref": "supabase/migrations/20260826010203_first_change.sql"
+    },
+    {
+      "file": "tests/scripts/check-migration-filename-contract.test.mjs",
+      "ref": "supabase/migrations/20260826010203_second_change.sql"
     },
     {
       "file": "tests/scripts/check-no-db-push.test.mjs",

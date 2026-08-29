@@ -1,9 +1,7 @@
 /**
  * Preview rico do template antes de clonar — com seção "Quem usou também usou".
  */
-import type { ComponentType } from 'react';
-import * as Lucide from 'lucide-react';
-import { Package, Loader2, Sparkles, Wand2 } from 'lucide-react';
+import { Loader2, Sparkles, Wand2 } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -18,6 +16,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { formatCurrency } from '@/lib/kit-builder';
 import { RelatedTemplates } from '@/components/kit-library/RelatedTemplates';
 import type { KitTemplateRow } from '@/hooks/kit-builder';
+import { getKitTemplateIcon } from '@/components/kit-library/kit-template-icons';
 
 interface Props {
   template: KitTemplateRow | null;
@@ -40,10 +39,7 @@ export function KitTemplatePreviewDialog({
 }: Props) {
   if (!template) return null;
 
-  const Icon =
-    (Lucide as unknown as Record<string, ComponentType<{ className?: string }>>)[
-      template.icon
-    ] || Package;
+  const Icon = getKitTemplateIcon(template.icon);
 
   const items = Array.isArray(template.items_data) ? template.items_data : [];
   const box = template.box_data as { name?: string; sku?: string } | null;

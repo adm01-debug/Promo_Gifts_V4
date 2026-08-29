@@ -1,9 +1,7 @@
 /**
  * Kit Card — Cartão visual rico para "Meus Kits" e "Sugeridos".
  */
-import type { ComponentType } from 'react';
-import * as Lucide from 'lucide-react';
-import { Package, Star, Pencil, Copy, Trash2, Wand2, Tag as TagIcon, Layers, Pin } from 'lucide-react';
+import { Star, Pencil, Copy, Trash2, Wand2, Tag as TagIcon, Layers, Pin } from 'lucide-react';
 import { TruncatedTooltip } from '@/components/ui/truncated-tooltip';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -11,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { formatCurrency } from '@/lib/kit-builder';
 import { cn } from '@/lib/utils';
+import { getKitTemplateIcon } from '@/components/kit-library/kit-template-icons';
 
 export interface KitCardData {
   id: string;
@@ -50,9 +49,7 @@ export function KitCard({
   onUseTemplate,
   isBusy,
 }: Props) {
-  const Icon =
-    (Lucide as unknown as Record<string, ComponentType<{ className?: string }>>)[data.icon] ||
-    Package;
+  const Icon = getKitTemplateIcon(data.icon);
 
   return (
     <Card

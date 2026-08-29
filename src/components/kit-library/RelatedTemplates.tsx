@@ -1,12 +1,10 @@
 /**
  * RelatedTemplates — Mostra 2-3 templates da mesma categoria sob o template atual.
  */
-import type { ComponentType } from 'react';
-import * as Lucide from 'lucide-react';
-import { Package } from 'lucide-react';
 import { formatCurrency } from '@/lib/kit-builder';
 import { cn } from '@/lib/utils';
 import type { KitTemplateRow } from '@/hooks/kit-builder';
+import { getKitTemplateIcon } from '@/components/kit-library/kit-template-icons';
 
 interface Props {
   current: KitTemplateRow;
@@ -28,10 +26,7 @@ export function RelatedTemplates({ current, all, onSelect }: Props) {
       </p>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
         {related.map((t) => {
-          const Icon =
-            (Lucide as unknown as Record<string, ComponentType<{ className?: string }>>)[
-              t.icon
-            ] || Package;
+          const Icon = getKitTemplateIcon(t.icon);
           return (
             <button
               key={t.id}

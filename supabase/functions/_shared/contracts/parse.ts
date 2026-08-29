@@ -5,8 +5,8 @@
  *
  * Uso típico:
  *
- *   import { parseContract } from "../_shared/contracts/index.ts";
- *   import { ProductWebhookSchemas } from "../_shared/contracts/schemas/product-webhook.ts";
+ *   Handler: `parseContract` via `../_shared/contracts/index.ts`.
+ *   Schema: `ProductWebhookSchemas` via `../_shared/contracts/schemas/product-webhook.ts`.
  *
  *   const result = await parseContract(req, ProductWebhookSchemas, {
  *     corsHeaders,

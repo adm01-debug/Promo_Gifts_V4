@@ -36,8 +36,8 @@ describe('check-secdef-anon-drift', () => {
     allowlisted = doc.functions.map((e: { fn: string }) => e.fn);
   });
 
-  it('passa quando snapshot vem vazio e allowlist também', () => {
-    const p = fixture([]);
+  it('passa quando todos os findings do snapshot estão documentados', () => {
+    const p = fixture(allowlisted);
     const r = run(p);
     expect(r.status).toBe(0);
     expect(r.stderr).toMatch(/todos documentados/);

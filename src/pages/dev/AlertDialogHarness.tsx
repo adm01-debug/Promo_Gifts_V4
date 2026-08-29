@@ -31,20 +31,25 @@ export default function AlertDialogHarness() {
         <AlertDialog open>
           <AlertDialogContent
             data-testid="alert-dialog-content"
-            className="!max-w-[358px] w-[92vw]"
+            className="w-[92vw] !max-w-[358px]"
           >
             <AlertDialogHeader>
               <AlertDialogTitle>Descartar alterações?</AlertDialogTitle>
               <AlertDialogDescription>
-                Você tem alterações não salvas neste item. Deseja realmente fechar e
-                descartá-las?
+                Você tem alterações não salvas neste item. Deseja realmente fechar e descartá-las?
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel data-testid="alert-dialog-cancel">
+              <AlertDialogCancel
+                data-testid="alert-dialog-cancel"
+                className="max-[219px]:h-auto max-[219px]:min-h-[44px] max-[219px]:w-full max-[219px]:min-w-0 max-[219px]:max-w-full max-[219px]:whitespace-normal max-[219px]:px-2 max-[219px]:py-1 max-[219px]:text-xs max-[219px]:leading-tight"
+              >
                 Continuar editando
               </AlertDialogCancel>
-              <AlertDialogAction data-testid="alert-dialog-confirm">
+              <AlertDialogAction
+                data-testid="alert-dialog-confirm"
+                className="max-[219px]:h-auto max-[219px]:min-h-[44px] max-[219px]:w-full max-[219px]:min-w-0 max-[219px]:max-w-full max-[219px]:whitespace-normal max-[219px]:px-2 max-[219px]:py-1 max-[219px]:text-xs max-[219px]:leading-tight"
+              >
                 Descartar e fechar
               </AlertDialogAction>
             </AlertDialogFooter>

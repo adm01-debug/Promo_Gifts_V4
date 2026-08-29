@@ -8,8 +8,10 @@
  *
  * Fontes de dados (na ordem):
  *   1. `--from-file=<path.json>` — lista `[{fn:string}, ...]` (usado em testes).
- *   2. `VITE_SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` — consulta pg-meta.
- *   3. Sem nenhum dos dois → `static-pass` no modo advisory ou
+ *   2. `SUPABASE_ACCESS_TOKEN` + `SUPABASE_PROJECT_REF` — Management API
+ *      read-only (CI/canônico).
+ *   3. `VITE_SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` — pg-meta local.
+ *   4. Sem nenhum dos dois → `static-pass` no modo advisory ou
  *      `inconclusive` quando `--require-live` exigir evidência live.
  *
  * Modo interativo do PO:
@@ -28,6 +30,7 @@ import {
   maskUrl,
   shouldRequireLive,
 } from './check-result-contract.mjs';
+import { querySupabaseReadOnly } from './supabase-read-only-query.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -47,51 +50,15 @@ const SQL = `
 `.trim();
 
 async function fetchLive() {
-  const URL = process.env.VITE_SUPABASE_URL;
-  const KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!URL || !KEY) {
-    return { kind: 'missing-config', maskedUrl: maskUrl(URL) };
-  }
-  const endpoint = `${URL.replace(/\/$/, '')}/pg-meta/default/query`;
-  let res;
-  try {
-    res = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        apikey: KEY,
-        Authorization: `Bearer ${KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ query: SQL }),
-    });
-  } catch {
-    return { kind: 'network-error', maskedUrl: maskUrl(URL) };
-  }
-  if (!res.ok) {
-    return {
-      kind: 'http-error',
-      maskedUrl: maskUrl(URL),
-      httpStatus: res.status,
-      bodyLength: (await res.text()).length,
-    };
-  }
-  let rows;
-  try {
-    rows = await res.json();
-  } catch {
-    return { kind: 'invalid-json', maskedUrl: maskUrl(URL) };
-  }
-  if (!Array.isArray(rows)) {
-    return {
-      kind: 'invalid-response',
-      maskedUrl: maskUrl(URL),
-      responseType: typeof rows,
-    };
+  const result = await querySupabaseReadOnly(SQL);
+  if (result.kind !== 'live') {
+    return { ...result, maskedUrl: maskUrl(result.target) };
   }
   return {
     kind: 'live',
-    maskedUrl: maskUrl(URL),
-    functions: rows.map((r) => r.fn).filter(Boolean),
+    source: result.source,
+    maskedUrl: maskUrl(result.target),
+    functions: result.rows.map((r) => r.fn).filter(Boolean),
   };
 }
 

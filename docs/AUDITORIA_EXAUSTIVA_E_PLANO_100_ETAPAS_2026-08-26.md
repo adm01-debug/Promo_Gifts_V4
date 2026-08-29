@@ -958,3 +958,123 @@ ou aplicada.
 O sistema estará tecnicamente pronto quando houver instalação limpa sem flags permissivas, build/typecheck/lint/testes verdes, CI realmente executando, contratos DB↔TypeScript sincronizados, zero referência executável a objeto inexistente, migrations reproduzíveis em banco descartável, fluxos críticos aprovados pelo PO, regressão visual sem alteração indesejada e rollback testado.
 
 Até lá, a estratégia mais segura é evolução incremental. O design existente deve ser tratado como contrato e o banco canônico como SSOT; nenhuma “faxina” deve preceder prova de uso, dependência e autorização.
+
+---
+
+## Revisão exaustiva de implementação — 29/08/2026
+
+Esta revisão foi executada na branch isolada
+`codex/actions-gates-20260829`, partindo do commit
+`0de3631b2bcc1160d37ac6e418bbe63488663581`. A worktree principal compartilhada
+com outros agentes e o Supabase canônico não receberam mutação nesta rodada.
+
+### Resultado do plano de 100 etapas
+
+- [x] Os 100 itens foram reconciliados individualmente em
+  `docs/PLANO_MELHORIAS_CORRECOES_100_ETAPAS_CHECKLIST_2026-08-26.md`, sem
+  transformar implementação parcial em conclusão por inferência.
+- [x] Estado comprovado: **42 concluídas, 42 parciais, 15 dependentes de
+  decisão/autorização/infraestrutura externa e 1 pendente de release**.
+- [x] Dez etapas documentadas como abertas no retrato anterior foram encerradas
+  por evidência posterior: npm canônico (015), lock/install limpos (018–019),
+  geração/comparação/atualização integral de tipos (026–027/030), fronteira EMA
+  baseada em RPCs existentes (046–047) e fotografia/diff `pg_catalog` (067–068).
+- [ ] O projeto não está em 100/100. Permanecem abertos produto/design, fixtures
+  críticas, branch protection, staging, credenciais externas, lifecycle de
+  módulos parciais, ledger reproduzível, RLS/jobs, observabilidade ponta a ponta,
+  limpeza nominal e release candidate.
+
+### Melhorias desta rodada submetidas a revalidação
+
+- [x] Gate de smoke passou a usar o projeto Playwright dedicado
+  `chromium-smoke`, eliminando coleta acidental de 438 testes e retries do projeto
+  público; o recorte correto contém 55 testes, dos quais 10 executam localmente e
+  45 exigem ambiente/credencial declarada.
+- [x] Drift de segurança (`lint-0011`, `lint-0029` e grants `anon`) usa um helper
+  comum de SQL somente leitura, com Management API canônica como fonte primária
+  e pg-meta local apenas como fallback explícito.
+- [x] Allowlists foram atualizadas a partir do catálogo canônico: 72 assinaturas
+  `lint-0029`, zero `lint-0011` e 10 assinaturas `anon`, todas com razão literal
+  registrada em `docs/security/ALLOWLISTS_MEMORY.md`.
+- [x] Drift de Edge Functions diferencia função canônica intencional de orphan
+  desconhecido. `mcp-query` foi documentada como gateway externo gerenciado e as
+  107 funções do repositório tiveram hash comparado ao deploy canônico.
+- [x] Os RPCs transacionais de aprovação de desconto foram incluídos no catálogo
+  de referência; o hook não faz mais sequência cliente de escritas em orçamento,
+  auditoria e notificação.
+- [x] O contrato local do Supabase foi inicializado em ambiente descartável sem
+  tentar reaplicar o arquivo histórico legado sobre a migration forward-only em
+  teste. A restauração do diretório ocorre por `trap`, inclusive em falha.
+- [x] O workflow CodeQL ganhou preflight de capacidade: análise executa quando
+  code scanning está habilitado, a indisponibilidade específica do produto é
+  registrada como notice e qualquer resposta inesperada continua bloqueante.
+- [x] Baselines visuais Linux foram produzidas para alert dialog, confirm dialog,
+  dialog e undo toast; 32/32 cenários passaram sem alterar o componente
+  compartilhado de design.
+- [x] A simulação diária de 29/08 executou 1.520 cenários, zero falhas, com
+  relatório versionável em `qa/reports/daily-flows-simulation-2026-08-29.*`.
+
+### Evidência local reproduzida após a reconciliação
+
+- [x] `npm run test:quality` — **985 arquivos e 23.491 testes verdes**;
+  128 arquivos/1.133 testes foram ignorados por contratos opt-in ou ambiente
+  indisponível. Duração: 384,48 s.
+- [x] Contratos focais de router, runtime, aprovação transacional e drift de
+  segurança — **23 testes verdes e 1 live opt-in ignorado**.
+- [x] `npm run e2e:dialogs` — **32/32** cenários visuais Linux verdes em
+  180/320/375/768 px.
+- [x] `npm run test:e2e:smoke` — **10 verdes e 45 skips declarados**, usando
+  `chromium-smoke`, em 21,6 s.
+- [x] `npm run test:deploy-gate` — **327/327 testes verdes**.
+- [x] `npm run build` — **6.186 módulos**, build e guarda de harness produtivo
+  verdes; somente avisos conhecidos de imports estático/dinâmico ineficazes.
+- [x] `npm run lint:check`, TypeScript e ESLint — **0 erros e 0 warnings**;
+  actionlint e `git diff --check` verdes.
+- [x] A primeira execução hospedada expôs dois gaps adicionais sem rebaixar os
+  gates: o medidor de Edge contava o diretório não implantável `functions/tests`
+  e `massive-fuzzing` tentava `localhost:54321` quando havia service-role sem URL.
+  O denominador agora exige `index.ts` (**65/107 = 61%**) e o fuzz executa 1.000
+  cenários herméticos, determinísticos e sem rede/produção.
+- [x] `ema-pipeline-health` ganhou contrato cliente para happy-path, freshness
+  `UNKNOWN`, autenticação 401 e indisponibilidade 503, complementando os testes
+  Deno e live já existentes.
+- [x] A validação hospedada do AlertDialog revelou um erro de coleta, não de
+  pixel: o job instalava Chromium, mas o comando sem `--project` coletava também
+  Firefox, WebKit e projetos autenticados/móveis. Os dois jobs agora fixam
+  `chromium-public`, coerente com os baselines versionados e com o script
+  `e2e:dialogs`; nenhum baseline ou componente visual foi afrouxado. A correção
+  foi confirmada no GitHub Actions run `33258159195`: AlertDialog, ConfirmDialog e
+  OptimizedImage encerraram com `success`.
+
+### Gaps e funções ainda parciais confirmadas
+
+- [ ] `simulation-orchestrator` permanece fail-closed, mas a decisão de
+  persistência/lifecycle, sandbox de produto e UI efêmera versus persistente não
+  foi tomada.
+- [ ] `runAuthAudit` continua dormente e degradando com segurança quando a RPC
+  ausente é chamada; não há justificativa para criar backend sem caller aprovado.
+- [ ] `stock_notes` continua sem objeto canônico e sem consumidor ativo; feature
+  completa ou aposentadoria requer decisão do PO.
+- [ ] `e2e_cleanup_audit` ainda precisa ser isolada a teste ou formalizada.
+- [ ] O storage Bitrix não foi inventado; somente o falso verde de persistência
+  foi corrigido.
+- [ ] O manifesto do ledger classifica 2.354 versões, mas 1.247 não têm arquivo
+  local e 531 arquivos versionados não têm versão viva. Os 33 nomes sem versão
+  têm inventário, porém zero equivalências exatas com o ledger. Replay integral
+  continua inseguro.
+- [ ] As 530 rotinas `SECURITY DEFINER`, jobs críticos, grants efetivos e objetos
+  com RLS excepcional têm inventário e gates parciais, não revisão nominal
+  integral por owner/caller/finalidade.
+- [ ] Happy-path autenticado de CRM/webhook/e-mail e confirmação live de
+  notificação única na aprovação de desconto dependem de segredos/JWTs de teste.
+
+### Limitação dos MCPs de banco nesta sessão
+
+Os dois endpoints MCP disponíveis com nomes de produção/canônico foram consultados
+somente para identificação. Nenhum corresponde ao SSOT `doufsxqlfjyuvxuezpln`:
+um expôs contagens significativamente menores e outro expôs PostgreSQL 15 com
+tabelas de uma aplicação diferente. Seus resultados foram descartados. Evidência
+canônica desta revisão vem de snapshots `pg_catalog` versionados e de consultas
+read-only da Supabase Management API executadas com o project ref protegido.
+Corrigir a configuração desses MCPs permanece um gap operacional; não autoriza
+inferir, comparar ou alterar schema no endpoint errado.

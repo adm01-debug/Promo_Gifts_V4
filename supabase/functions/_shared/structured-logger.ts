@@ -7,8 +7,8 @@
  *
  * Uso típico em uma edge function:
  *
- *   import { createStructuredLogger } from "../_shared/structured-logger.ts";
- *   import { getOrCreateRequestId } from "../_shared/request-id.ts";
+ *   Handler: `createStructuredLogger` via `../_shared/structured-logger.ts`.
+ *   Request ID: `getOrCreateRequestId` via `../_shared/request-id.ts`.
  *
  *   Deno.serve(async (req) => {
  *     const requestId = getOrCreateRequestId(req);

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "status": "temporary-stage-054",
   "project_ref": "doufsxqlfjyuvxuezpln",
-  "captured_at": "2026-08-28",
+  "captured_at": "2026-08-29",
   "source": {
     "method": "read-only pg_catalog",
     "relations": "pg_class + pg_namespace (schema public; relkind r/p/v/m/f)",
@@ -280,7 +280,9 @@
     "register_ai_routing_decision",
     "release_webhook_delivery_lock",
     "repair_ownership_orphans",
+    "request_discount_approval_transactional",
     "request_step_up_challenge",
+    "respond_discount_approval_transactional",
     "restore_favorite_from_trash",
     "restore_seller_cart",
     "search_products_semantic",
