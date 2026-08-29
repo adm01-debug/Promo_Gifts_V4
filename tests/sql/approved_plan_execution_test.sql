@@ -139,6 +139,7 @@ CREATE TRIGGER trg_test_dar_events AFTER INSERT OR UPDATE ON public.discount_app
 FOR EACH ROW EXECUTE FUNCTION public.test_dar_events();
 
 \ir ../../supabase/migrations/20260829111000_discount_approval_transactional_integrity.sql
+\ir ../../supabase/migrations/20260829112000_discount_approval_reuse_status.sql
 
 INSERT INTO public.user_roles(user_id,role) VALUES
  ('10000000-0000-4000-8000-000000000010','admin');
@@ -227,6 +228,26 @@ DO $$ BEGIN
      OR (SELECT count(*) FROM quote_history WHERE quote_id='30000000-0000-4000-8000-000000000001'
          AND action='discount_approved') <> 1 THEN
     RAISE EXCEPTION 'approval idempotency/cardinality mismatch';
+  END IF;
+END $$;
+
+-- Reutilização de aprovação válida também reconcilia pending_approval->pending,
+-- sem criar um novo DAR nem novo histórico.
+SELECT set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',false);
+UPDATE quotes SET status='pending_approval'
+WHERE id='30000000-0000-4000-8000-000000000001';
+SELECT (public.request_discount_approval_transactional(
+  '30000000-0000-4000-8000-000000000001','reuse')).id AS reused_id \gset
+SELECT set_config('app.test.reused_id', :'reused_id', false);
+DO $$ BEGIN
+  IF current_setting('app.test.reused_id')::uuid <> current_setting('app.test.request_id')::uuid
+     OR (SELECT status FROM quotes WHERE id='30000000-0000-4000-8000-000000000001') <> 'pending'
+     OR (SELECT count(*) FROM discount_approval_requests
+         WHERE quote_id='30000000-0000-4000-8000-000000000001') <> 1
+     OR (SELECT count(*) FROM quote_history
+         WHERE quote_id='30000000-0000-4000-8000-000000000001'
+           AND action='discount_approval_requested') <> 1 THEN
+    RAISE EXCEPTION 'approved snapshot reuse did not reconcile quote idempotently';
   END IF;
 END $$;
 
