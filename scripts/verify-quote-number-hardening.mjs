@@ -85,7 +85,8 @@ try {
 try {
   const row = await query(`
     SELECT c.relname AS indexname,
-           ix.indisvalid::text
+           ix.indisvalid::text,
+           COALESCE(pg_catalog.pg_get_expr(ix.indpred, ix.indrelid), '') AS predicate
       FROM pg_catalog.pg_index AS ix
       JOIN pg_catalog.pg_class AS c ON c.oid = ix.indexrelid
       JOIN pg_catalog.pg_class AS t ON t.oid = ix.indrelid
@@ -97,7 +98,15 @@ try {
        AND t.relname = 'quotes'
        AND ix.indisunique
        AND ix.indnkeyatts = 1
-       AND ix.indpred IS NULL
+       AND (
+         ix.indpred IS NULL
+         OR pg_catalog.regexp_replace(
+              pg_catalog.lower(pg_catalog.pg_get_expr(ix.indpred, ix.indrelid)),
+              '[[:space:]()]',
+              '',
+              'g'
+            ) = 'quote_numberisnotnull'
+       )
        AND ix.indexprs IS NULL
        AND ix.indkey[0] = a.attnum
      ORDER BY ix.indisvalid DESC, c.relname
@@ -106,11 +115,14 @@ try {
   if (!row) {
     record('UNIQUE válido em quotes.quote_number', false, 'proteção UNIQUE não existe');
   } else {
-    const [indexName, valid] = row.split('|');
+    const [indexName, valid, predicate] = row.split('|');
+    const predicateDetail = predicate ? ` predicado=${predicate}` : '';
     record(
       'UNIQUE válido em quotes.quote_number',
       valid === 'true',
-      valid === 'true' ? `índice=${indexName}` : `índice ${indexName} INVALID — recriar`,
+      valid === 'true'
+        ? `índice=${indexName}${predicateDetail}`
+        : `índice ${indexName} INVALID — recriar`,
     );
   }
 } catch (e) {
