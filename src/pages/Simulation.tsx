@@ -50,6 +50,26 @@ interface SimulationReport {
   results?: SimulationTestResult[];
 }
 
+function isBlockedSimulationReport(value: unknown): value is SimulationReport {
+  if (!value || typeof value !== 'object') return false;
+  const report = value as Record<string, unknown>;
+  const checks = report.consistencyChecks;
+  return (
+    report.status === 'blocked' &&
+    typeof report.totalScenarios === 'number' &&
+    typeof report.successes === 'number' &&
+    typeof report.failures === 'number' &&
+    typeof report.startTime === 'string' &&
+    typeof report.endTime === 'string' &&
+    Array.isArray(report.details) &&
+    Array.isArray(report.latencies) &&
+    !!checks &&
+    typeof checks === 'object' &&
+    typeof (checks as Record<string, unknown>).passed === 'number' &&
+    typeof (checks as Record<string, unknown>).failed === 'number'
+  );
+}
+
 export default function SimulationPage() {
   const [loading, setLoading] = useState(false);
   const [report, setReport] = useState<SimulationReport | null>(null);
@@ -67,7 +87,10 @@ export default function SimulationPage() {
           preserveErrorData: mode !== 'audit',
         },
       );
-      if (error?.status === 424 && data?.status === 'blocked') {
+      if (error?.status === 424) {
+        if (!isBlockedSimulationReport(data)) {
+          throw new Error('Relatório bloqueado inválido');
+        }
         setReport(data);
         toast.warning('Plano validado: nenhuma carga real foi executada.');
         return;

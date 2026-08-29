@@ -50,4 +50,23 @@ describe('SimulationPage blocked plan', () => {
     expect(toast.warning).toHaveBeenCalled();
     expect(toast.success).not.toHaveBeenCalled();
   });
+
+  it('rejeita payload 424 incompleto antes de renderizar o relatório', async () => {
+    vi.mocked(invokeEdge).mockResolvedValue({
+      data: { status: 'blocked', details: [] } as never,
+      error: {
+        message: 'simulation targets gated',
+        name: 'unknown',
+        status: 424,
+        request_id: 'req-invalid',
+      },
+    });
+
+    render(<SimulationPage />);
+    fireEvent.click(screen.getByRole('button', { name: /plano de carga/i }));
+
+    await waitFor(() => expect(toast.error).toHaveBeenCalledWith('Falha ao executar simulação'));
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    expect(toast.warning).not.toHaveBeenCalled();
+  });
 });

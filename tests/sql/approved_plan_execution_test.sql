@@ -196,6 +196,7 @@ FOR EACH ROW EXECUTE FUNCTION public.test_dar_events();
 \ir ../../supabase/migrations/20260829120000_quote_save_with_discount_approval_transactional.sql
 \ir ../../supabase/migrations/20260829121000_discount_approval_orphan_fail_closed.sql
 \ir ../../supabase/migrations/20260829122000_discount_approval_responsible_seller_and_audit_correlation.sql
+\ir ../../supabase/migrations/20260829123000_discount_approval_audit_exact_correlation.sql
 
 INSERT INTO public.user_roles(user_id,role) VALUES
  ('10000000-0000-4000-8000-000000000010','admin');
@@ -396,13 +397,17 @@ END $$;
 CREATE TRIGGER trg_test_fail_quote_update BEFORE UPDATE ON public.quotes
 FOR EACH ROW EXECUTE FUNCTION public.test_fail_quote_update();
 
-DO $$ BEGIN
+DO $$
+DECLARE _injected boolean := false;
+BEGIN
   PERFORM set_config('app.test_fail_quote_update','on',true);
   BEGIN
     PERFORM public.request_discount_approval_transactional(
       '30000000-0000-4000-8000-000000000002','must rollback');
+  EXCEPTION WHEN raise_exception THEN _injected := true; END;
+  IF NOT _injected THEN
     RAISE EXCEPTION 'failure injection did not fire';
-  EXCEPTION WHEN raise_exception THEN NULL; END;
+  END IF;
   PERFORM set_config('app.test_fail_quote_update','off',true);
   IF EXISTS (SELECT 1 FROM discount_approval_requests WHERE quote_id='30000000-0000-4000-8000-000000000002')
      OR EXISTS (SELECT 1 FROM quote_history WHERE quote_id='30000000-0000-4000-8000-000000000002') THEN

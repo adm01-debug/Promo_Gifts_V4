@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { supabase } from '@/integrations/supabase/client';
 import { useDiscountApproval } from '../useDiscountApproval';
+import { toast } from 'sonner';
 
 vi.mock('@/contexts/AuthContext', () => ({
   useAuth: () => ({ user: { id: 'seller-1', email: 'seller@test.invalid' } }),
@@ -70,5 +71,27 @@ describe('useDiscountApproval transactional RPCs', () => {
       _admin_notes: 'ajustar preço',
     });
     expect(supabase.from).not.toHaveBeenCalled();
+  });
+
+  it('traduz conflito de snapshot em orientação acionável e segura', async () => {
+    vi.mocked(supabase.rpc).mockResolvedValue({
+      data: null,
+      error: {
+        code: '23514',
+        message: 'Snapshot ou percentual mudou; solicite nova aprovação.',
+      },
+    } as never);
+    const { result } = renderHook(() => useDiscountApproval(), { wrapper });
+
+    let ok = true;
+    await act(async () => {
+      ok = await result.current.respondToApproval('dar-stale', true);
+    });
+
+    expect(ok).toBe(false);
+    expect(toast.error).toHaveBeenCalledWith(
+      'O orçamento mudou após a solicitação. Atualize a fila e solicite uma nova aprovação.',
+      { duration: 8000 },
+    );
   });
 });

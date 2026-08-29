@@ -48,6 +48,25 @@ const inflightApprovals = new Map<string, Promise<boolean>>();
 const idempotencyKey = (q: string, req: number, max: number): string =>
   `${q}::${Number(req).toFixed(4)}::${Number(max).toFixed(4)}`;
 
+function approvalDecisionErrorMessage(error: unknown): string {
+  const candidate = (error ?? {}) as { code?: string; message?: string };
+  const code = candidate.code ?? '';
+  const message = candidate.message ?? '';
+  if (code === '23514' && /snapshot|percentual/i.test(message)) {
+    return 'O orçamento mudou após a solicitação. Atualize a fila e solicite uma nova aprovação.';
+  }
+  if (code === '23514' && /decisão terminal conflitante/i.test(message)) {
+    return 'Esta solicitação já recebeu outra decisão. Atualize a fila antes de continuar.';
+  }
+  if (code === '40001') {
+    return 'A solicitação mudou durante a decisão. Atualize a fila e tente novamente.';
+  }
+  if (code === 'P0002') {
+    return 'Solicitação não encontrada. Atualize a fila de aprovações.';
+  }
+  return 'Erro ao responder solicitação';
+}
+
 export function useDiscountApproval() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -449,7 +468,7 @@ export function useDiscountApproval() {
         return true;
       } catch (err) {
         logger.error('Error responding to approval:', err);
-        toast.error('Erro ao responder solicitação');
+        toast.error(approvalDecisionErrorMessage(err), { duration: 8000 });
         return false;
       }
     },
