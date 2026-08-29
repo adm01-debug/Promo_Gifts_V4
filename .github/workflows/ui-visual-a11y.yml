@@ -34,16 +34,11 @@ jobs:
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          key: playwright-all-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
           restore-keys: |
-            playwright-${{ runner.os }}-
-      - name: Playwright — install chromium (skip se cache hit)
-        run: |
-          if [ "${{ steps.playwright-cache.outputs.cache-hit }}" != "true" ]; then
-            npx playwright install --with-deps chromium
-          else
-            npx playwright install-deps chromium
-          fi
+            playwright-all-${{ runner.os }}-
+      - name: Playwright — install browsers exercised by the visual suite
+        run: npx playwright install --with-deps chromium firefox webkit
       - name: Playwright — visual + boundingBox
         run: npx playwright test e2e/ui/confirm-dialog-visual.spec.ts
       - name: Upload Playwright report (screenshots + vídeos + traces)
@@ -72,16 +67,11 @@ jobs:
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          key: playwright-all-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
           restore-keys: |
-            playwright-${{ runner.os }}-
-      - name: Playwright — install chromium (skip se cache hit)
-        run: |
-          if [ "${{ steps.playwright-cache.outputs.cache-hit }}" != "true" ]; then
-            npx playwright install --with-deps chromium
-          else
-            npx playwright install-deps chromium
-          fi
+            playwright-all-${{ runner.os }}-
+      - name: Playwright — install browsers exercised by the visual suite
+        run: npx playwright install --with-deps chromium firefox webkit
       - name: Playwright — AlertDialog visual + boundingBox
         run: npx playwright test e2e/ui/alert-dialog-visual.spec.ts
       - name: Upload Playwright report (screenshots + vídeos + traces)
