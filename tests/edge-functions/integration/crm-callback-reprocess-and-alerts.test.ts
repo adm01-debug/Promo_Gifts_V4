@@ -46,6 +46,11 @@ describe("crm-callback-reprocess — source invariants", () => {
 });
 
 describe("crm-callback-alerts — source invariants", () => {
+  it("exige Bearer service-role em comparação constante", () => {
+    expect(ALERTS).toContain('authHeader.toLowerCase().startsWith("bearer ")');
+    expect(ALERTS).toContain("constantTimeEqual(bearer, svc)");
+    expect(ALERTS).toContain('json(401, { error: "unauthorized" })');
+  });
   it("thresholds default expostos", () => {
     expect(ALERTS).toMatch(/window_minutes:\s*5/);
     expect(ALERTS).toMatch(/failure_pct_warn:\s*20/);

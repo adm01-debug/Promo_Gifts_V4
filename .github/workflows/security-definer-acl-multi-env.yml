@@ -54,11 +54,6 @@ jobs:
     name: "ACL check — ${{ matrix.env_name }}"
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # Filtra a matriz quando o dispatch escolhe um ambiente específico.
-    if: >-
-      github.event_name != 'workflow_dispatch' ||
-      github.event.inputs.environment == 'all' ||
-      github.event.inputs.environment == matrix.env_name
     # `environment:` escopa os secrets ao ambiente correspondente.
     environment: ${{ matrix.env_name }}
     strategy:
@@ -70,7 +65,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: '22.22.1'
           cache: npm
 
       - name: Install dependencies
@@ -81,12 +76,20 @@ jobs:
         env:
           URL: ${{ secrets.VITE_SUPABASE_URL }}
           KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          REQUESTED_ENV: ${{ github.event.inputs.environment || 'all' }}
+          CURRENT_ENV: ${{ matrix.env_name }}
         run: |
-          if [ -z "$URL" ] || [ -z "$KEY" ]; then
+          if [ "$REQUESTED_ENV" != "all" ] && [ "$REQUESTED_ENV" != "$CURRENT_ENV" ]; then
             echo "has_creds=false" >> "$GITHUB_OUTPUT"
+            echo "selected=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Ambiente '$CURRENT_ENV' não selecionado."
+          elif [ -z "$URL" ] || [ -z "$KEY" ]; then
+            echo "has_creds=false" >> "$GITHUB_OUTPUT"
+            echo "selected=true" >> "$GITHUB_OUTPUT"
             echo "::warning title=Secrets ausentes::Ambiente '${{ matrix.env_name }}' sem VITE_SUPABASE_URL/SUPABASE_SERVICE_ROLE_KEY — job será pulado."
           else
             echo "has_creds=true" >> "$GITHUB_OUTPUT"
+            echo "selected=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Gate script — audit_security_definer_acl RPC

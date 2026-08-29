@@ -17,17 +17,19 @@ export interface AuthorizeOptions {
   requireRole?: AppRole;
   /** Forçar verificação adicional via has_role() RPC (server-side, RLS-safe). */
   enforceServerSide?: boolean;
+  /** Exige sessão MFA com claim JWT `aal=aal2` depois de validar o token. */
+  requireAal2?: boolean;
 }
 
 export type AuthorizeResult =
   | {
-      ok: true;
-      user: { id: string; email?: string };
-      role: AppRole | null;
-      token: string;
-      supabaseUser: SupabaseClient;
-      supabaseAdmin: SupabaseClient;
-    }
+    ok: true;
+    user: { id: string; email?: string };
+    role: AppRole | null;
+    token: string;
+    supabaseUser: SupabaseClient;
+    supabaseAdmin: SupabaseClient;
+  }
   | { ok: false; response: Response };
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
@@ -57,18 +59,35 @@ function jsonResponse(
   });
 }
 
+function readJwtAal(token: string): string | null {
+  try {
+    const payload = token.split(".")[1];
+    if (!payload) return null;
+    const normalized = payload.replace(/-/g, "+").replace(/_/g, "/");
+    const padded = normalized.padEnd(Math.ceil(normalized.length / 4) * 4, "=");
+    const decoded = JSON.parse(atob(padded)) as { aal?: unknown };
+    return typeof decoded.aal === "string" ? decoded.aal : null;
+  } catch {
+    return null;
+  }
+}
+
 export async function authorize(
   req: Request,
   opts: AuthorizeOptions = {},
 ): Promise<AuthorizeResult> {
   const corsHeaders = getCorsHeaders(req);
-  const authHeader = req.headers.get("Authorization") || req.headers.get("authorization");
+  const authHeader = req.headers.get("Authorization") ||
+    req.headers.get("authorization");
 
   if (!authHeader || !authHeader.toLowerCase().startsWith("bearer ")) {
     return {
       ok: false,
       response: jsonResponse(
-        { error: "missing_authorization", message: "Authorization header required" },
+        {
+          error: "missing_authorization",
+          message: "Authorization header required",
+        },
         401,
         corsHeaders,
       ),
@@ -96,13 +115,31 @@ export async function authorize(
     auth: { persistSession: false, autoRefreshToken: false },
   });
 
-  const { data: userResp, error: userErr } = await supabaseUser.auth.getUser(token);
+  const { data: userResp, error: userErr } = await supabaseUser.auth.getUser(
+    token,
+  );
   if (userErr || !userResp?.user) {
     return {
       ok: false,
       response: jsonResponse(
         { error: "invalid_token", message: "Token is invalid or expired" },
         401,
+        corsHeaders,
+      ),
+    };
+  }
+
+  // O payload só é consultado depois de getUser validar assinatura, expiração e
+  // usuário. Tokens sem claim, malformados ou AAL1 falham fechados.
+  if (opts.requireAal2 && readJwtAal(token) !== "aal2") {
+    return {
+      ok: false,
+      response: jsonResponse(
+        {
+          error: "aal2_required",
+          message: "MFA assurance level 2 is required",
+        },
+        403,
         corsHeaders,
       ),
     };
@@ -116,7 +153,10 @@ export async function authorize(
     return {
       ok: false,
       response: jsonResponse(
-        { error: "token_revoked", message: "Sessao foi revogada. Faca login novamente." },
+        {
+          error: "token_revoked",
+          message: "Sessao foi revogada. Faca login novamente.",
+        },
         401,
         corsHeaders,
       ),
@@ -140,12 +180,16 @@ export async function authorize(
   }
 
   // Normaliza roles desconhecidas para rank 0 (sem privilegio) de forma segura.
-  const rankOf = (r: AppRole | string | null): number =>
-    (r != null && r in ROLE_RANK ? ROLE_RANK[r as AppRole] : 0);
+  const rankOf = (
+    r: AppRole | string | null,
+  ): number => (r != null && r in ROLE_RANK ? ROLE_RANK[r as AppRole] : 0);
 
   const userRoles = (roles ?? []).map((r) => r.role as AppRole);
   const highestRole: AppRole | null = userRoles.length
-    ? (userRoles.reduce((acc, r) => (rankOf(r) > rankOf(acc) ? r : acc), userRoles[0]) as AppRole)
+    ? (userRoles.reduce(
+      (acc, r) => (rankOf(r) > rankOf(acc) ? r : acc),
+      userRoles[0],
+    ) as AppRole)
     : null;
 
   if (opts.requireRole) {
@@ -157,7 +201,9 @@ export async function authorize(
         response: jsonResponse(
           {
             error: "insufficient_role",
-            message: `Role '${opts.requireRole}' required (you have '${highestRole ?? "none"}')`,
+            message: `Role '${opts.requireRole}' required (you have '${
+              highestRole ?? "none"
+            }')`,
           },
           403,
           corsHeaders,
@@ -190,7 +236,10 @@ export async function authorize(
         return {
           ok: false,
           response: jsonResponse(
-            { error: "insufficient_role_server", message: "Server-side role check failed" },
+            {
+              error: "insufficient_role_server",
+              message: "Server-side role check failed",
+            },
             403,
             corsHeaders,
           ),

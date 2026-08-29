@@ -7,6 +7,10 @@ import path from 'path';
  */
 export default defineConfig({
   testDir: './e2e',
+  // E2E specs import application modules that use the canonical `@/` alias.
+  // Pin one config for the whole dependency graph so Playwright does not fall
+  // back to the root tsconfig (which intentionally only covers vite.config.ts).
+  tsconfig: './e2e/tsconfig.json',
   // Apenas specs Playwright. Sem isto, o testMatch padrão também casa arquivos
   // *.test.ts — e o Vitest e2e/scripts/__tests__/generate-fixtures.test.ts
   // importa `vitest`, cujo `expect` colide com o do Playwright no mesmo processo

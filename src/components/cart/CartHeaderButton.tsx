@@ -146,7 +146,12 @@ export function CartHeaderButton() {
 
   // Enriquecimento de CNPJ: carrinhos legados guardam ramo em `company_location`.
   // Buscamos CNPJ do CRM (cache 10min compartilhado) para exibir CNPJ no popover.
-  const { data: crmCompanies = [] } = useCrmCompanies({ is_customer: true });
+  // PERFORMANCE FIX: Query só executa quando o popover está aberto.
+  // Isso remove ~200-500ms do tempo de mount do MainLayout.
+  const { data: crmCompanies = [] } = useCrmCompanies({
+    is_customer: true,
+    enabled: open, // Só busca quando o carrinho está aberto
+  });
   const cnpjByCompanyId = new Map<string, string>();
   for (const c of crmCompanies) {
     if (c.cnpj) cnpjByCompanyId.set(c.id, c.cnpj);

@@ -19,7 +19,7 @@ import { logger } from '@/lib/logger';
 import { maskSensitiveText } from '@/lib/sensitive-masking';
 import { recordBridgeCall, estimatePayloadBytes } from '@/lib/telemetry/bridgeCallMetrics';
 import { newRequestId, REQUEST_ID_HEADER } from '@/lib/telemetry/requestId';
-import { invokeEdge } from '@/lib/edge/safeInvokeCall';
+import { invokeEdge, type InvokeCompatError } from '@/lib/edge/safeInvokeCall';
 
 export interface CrmQuery {
   table: string;
@@ -57,6 +57,34 @@ function safeCrmErrorFields(error: unknown): Record<string, unknown> {
     };
   }
   return { message: safeCrmLogMessage(error) };
+}
+
+function extractCrmErrorStatus(error: unknown): number {
+  if (!error || typeof error !== 'object') return 0;
+  const status = (error as { status?: unknown }).status;
+  return typeof status === 'number' && Number.isFinite(status) ? status : 0;
+}
+
+function toCrmBridgeError(error: Error | InvokeCompatError): Error {
+  if (error instanceof Error) return error;
+
+  // `invokeEdge` usa um envelope compatível; esta camada histórica expõe
+  // instâncias de Error. Preservamos status/request_id para que 429, 404 e
+  // falhas transitórias continuem dirigindo o fluxo correto.
+  const normalized = new Error(error.message);
+  normalized.name = error.name;
+  Object.assign(normalized, {
+    status: error.status,
+    request_id: error.request_id,
+  });
+  return normalized;
+}
+
+function crmOperationError(prefix: string, message: string, source?: unknown): Error {
+  const error = new Error(`${prefix}: ${message}`);
+  const status = extractCrmErrorStatus(source);
+  if (status) Object.assign(error, { status });
+  return error;
 }
 
 /**
@@ -108,7 +136,8 @@ function activateRateLimitCooldown(): void {
 }
 
 /** Verifica se o erro indica rate-limit (429). */
-function isRateLimitError(msg: string): boolean {
+function isRateLimitError(msg: string, status = 0): boolean {
+  if (status === 429) return true;
   const lower = msg.toLowerCase();
   return (
     lower.includes('429') ||
@@ -313,7 +342,7 @@ export async function invokeCrmBatch(queries: CrmBatchQuery[]): Promise<CrmBatch
     const body = { operation: 'batch', queries };
     const reqBytes = estimatePayloadBytes(body);
     const requestId = newRequestId();
-    const { data, error } = await invokeEdge<{
+    const { data, error: invokeError } = await invokeEdge<{
       success?: boolean;
       error?: string;
       results?: unknown;
@@ -322,6 +351,7 @@ export async function invokeCrmBatch(queries: CrmBatchQuery[]): Promise<CrmBatch
       body,
       headers: { [REQUEST_ID_HEADER]: requestId },
     });
+    const error = invokeError ? toCrmBridgeError(invokeError) : null;
 
     const serverRequestId =
       data && typeof data === 'object' && 'request_id' in data
@@ -343,12 +373,12 @@ export async function invokeCrmBatch(queries: CrmBatchQuery[]): Promise<CrmBatch
 
     if (error) {
       const msg = error.message ?? '';
-      if (isRateLimitError(msg)) activateRateLimitCooldown();
+      if (isRateLimitError(msg, extractCrmErrorStatus(error))) activateRateLimitCooldown();
       logger.error('[CRM-DB] Batch error', {
         requestId,
         ...safeCrmErrorFields(error),
       });
-      throw new Error(`CRM batch error: ${error.message}`);
+      throw crmOperationError('CRM batch error', error.message, error);
     }
 
     if (!data?.success) {
@@ -390,9 +420,20 @@ const RETRYABLE_PATTERNS = [
 
 // statement_timeout (57014) NAO deve ser retriado — apenas amplifica a carga
 // no CRM e prolonga o 504 percebido pelo usuário. Tratado como degradação.
-function isStatementTimeout(msg: string): boolean {
+function isStatementTimeout(msg: string, status = 0): boolean {
+  if (status === 504) return true;
   const lower = msg.toLowerCase();
   return lower.includes('statement timeout') || lower.includes('57014') || lower.includes('504');
+}
+
+/**
+ * Uma leitura pode degradar para uma lista vazia identificada como stale sem
+ * confirmar um efeito de negócio. Escritas não têm essa propriedade: depois de
+ * um timeout o caller precisa tratar o resultado como indeterminado, nunca como
+ * sucesso com retorno vazio.
+ */
+function canDegradeCrmRead(operation: CrmQuery['operation']): boolean {
+  return operation === 'select' || operation === 'search';
 }
 
 /**
@@ -416,7 +457,9 @@ const NON_RETRYABLE_PATTERNS = [
   'syntax error',
 ];
 
-function isRetryableCrmError(msg: string): boolean {
+function isRetryableCrmError(msg: string, status = 0): boolean {
+  if ([400, 401, 403, 404, 410, 429].includes(status)) return false;
+  if ([502, 503].includes(status)) return true;
   const lower = msg.toLowerCase();
   // Qualquer padrao definitivo bloqueia retry
   if (NON_RETRYABLE_PATTERNS.some((p) => lower.includes(p.toLowerCase()))) return false;
@@ -509,13 +552,13 @@ export async function invokeCrmDb<T>(query: CrmQuery): Promise<CrmResponse<T>> {
     };
 
     for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
-      const { data, error } = await invokeEdge<Record<string, unknown> & { error?: string }>(
-        'crm-db-bridge',
-        {
-          body: query,
-          headers: { [REQUEST_ID_HEADER]: requestId },
-        },
-      );
+      const { data, error: invokeError } = await invokeEdge<
+        Record<string, unknown> & { error?: string }
+      >('crm-db-bridge', {
+        body: query,
+        headers: { [REQUEST_ID_HEADER]: requestId },
+      });
+      const error = invokeError ? toCrmBridgeError(invokeError) : null;
 
       if (!error && !data?.error) {
         record(true, data);
@@ -524,36 +567,42 @@ export async function invokeCrmDb<T>(query: CrmQuery): Promise<CrmResponse<T>> {
       }
 
       const msg = error ? await extractCrmErrorMessage(error) : data?.error || 'Unknown CRM error';
+      const status = extractCrmErrorStatus(error);
 
-      // statement_timeout: degrada graciosamente (evita blank screen). O usuário
-      // recebe lista vazia + flag `stale` — a UI pode mostrar toast/refinar filtros.
-      if (isStatementTimeout(msg)) {
+      // statement_timeout em leitura degrada graciosamente (evita blank screen).
+      // Em escrita, o resultado é indeterminado e deve rejeitar: retornar []
+      // faria insert/update/delete parecerem concluídos sem confirmação.
+      if (isStatementTimeout(msg, status)) {
         record(false, null, msg);
-        logger.warn('[CRM-DB] statement_timeout — retornando resultado vazio', {
+        logger.warn('[CRM-DB] statement_timeout', {
           requestId,
           table: query.table,
+          operation: query.operation,
           message: safeCrmLogMessage(msg),
         });
-        return {
-          data: [],
-          count: 0,
-          stale: true,
-          error: 'statement_timeout',
-        } as unknown as CrmResponse<T>;
+        if (canDegradeCrmRead(query.operation)) {
+          return {
+            data: [],
+            count: 0,
+            stale: true,
+            error: 'statement_timeout',
+          } as unknown as CrmResponse<T>;
+        }
+        throw crmOperationError('CRM DB write outcome indeterminate', msg, error);
       }
 
       // Rate-limit: ativa circuit breaker (que drena a fila) e nao faz retry
-      if (isRateLimitError(msg)) {
+      if (isRateLimitError(msg, status)) {
         activateRateLimitCooldown();
         record(false, null, msg);
         logger.error('[CRM-DB] Edge function error', {
           requestId,
           message: safeCrmLogMessage(msg),
         });
-        throw new Error(`CRM DB error: ${msg}`);
+        throw crmOperationError('CRM DB error', msg, error);
       }
 
-      if (attempt < MAX_RETRIES && isRetryableCrmError(msg)) {
+      if (attempt < MAX_RETRIES && isRetryableCrmError(msg, status)) {
         const delay = INITIAL_BACKOFF_MS * 2 ** attempt;
         logger.warn(`[CRM-DB] Retry ${attempt + 1}/${MAX_RETRIES} after ${delay}ms`, {
           requestId,
@@ -572,14 +621,14 @@ export async function invokeCrmDb<T>(query: CrmQuery): Promise<CrmResponse<T>> {
           requestId,
           message: safeCrmLogMessage(msg),
         });
-        throw new Error(`CRM DB error: ${msg}`);
+        throw crmOperationError('CRM DB error', msg, error);
       }
 
       logger.error('[CRM-DB] Query error', {
         requestId,
         message: safeCrmLogMessage(msg),
       });
-      throw new Error(`CRM query error: ${msg}`);
+      throw crmOperationError('CRM query error', msg);
     }
 
     record(false, null, 'max retries exceeded');
@@ -628,7 +677,7 @@ export async function selectCrmById<T>(
     });
     return result.data || null;
   } catch (err) {
-    if (String(err).includes('404')) return null;
+    if (extractCrmErrorStatus(err) === 404 || String(err).includes('404')) return null;
     throw err;
   }
 }

@@ -19,6 +19,7 @@ describe('Daily Scenario: Navigation & Access RBAC Simulation', () => {
     // Technical routes should be dev-only
     expect(isDevOnlyPath('/admin/telemetria')).toBe(true);
     expect(isDevOnlyPath('/admin/conexoes')).toBe(true);
+    expect(isDevOnlyPath('/simulacao')).toBe(true);
 
     // Non-technical admin routes
     expect(isDevOnlyPath('/admin/usuarios')).toBe(false);

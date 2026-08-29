@@ -28,15 +28,16 @@
  */
 import { test, expect, describe } from "vitest";
 import { createClient } from "@supabase/supabase-js";
+import { hasLiveSupabaseCredentials } from "../_helpers/live-supabase-env";
 
-const url = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
+const url = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
 const anonKey =
   process.env.SUPABASE_ANON_KEY ||
   process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-const hasAnyKey = !!url && (!!anonKey || !!serviceRoleKey);
-const hasServiceRole = !!url && !!serviceRoleKey;
+const hasAnyKey = hasLiveSupabaseCredentials(url, serviceRoleKey ?? anonKey);
+const hasServiceRole = hasLiveSupabaseCredentials(url, serviceRoleKey);
 
 /**
  * Códigos que sinalizam "RPC não existe no schema cache".

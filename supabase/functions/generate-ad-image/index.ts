@@ -1,29 +1,34 @@
 import { getCorsHeaders, handleCorsPreflightIfNeeded } from '../_shared/cors.ts';
 import { authenticateRequest, authErrorResponse } from '../_shared/auth.ts';
 import { callAiWithTracking, QuotaExceededError } from '../_shared/ai-usage.ts';
-import { z } from "https://deno.land/x/zod@v3.23.8/mod.ts";
+import { z } from "../_shared/contracts/_zod.ts";
 import { runBotProtection } from '../_shared/bot-protection.ts';
-import { requireAiApiKey } from "../_shared/ai-credentials.ts";
+import { resolveAiApiKey } from "../_shared/ai-credentials.ts";
 
+// BUG-MAGICUP-ADPROMPT-1 FIX (2026-08-17): campos abaixo eram `.optional()` sem
+// `.nullable()` — o cliente (useMagicUpGeneration.ts) sempre envia `null`
+// explícito (não `undefined`) para "sem valor" (ex.: `productColor: ... || null`,
+// `techniqueName: ... || null`), o que fazia o Zod rejeitar toda requisição sem
+// cor/técnica/local selecionados (400).
 const BodySchema = z.object({
   productImageUrl: z.string().url(),
   logoBase64: z.string().optional(),
   logoUrl: z.string().url().optional(),
-  productName: z.string().optional(),
-  productColor: z.string().optional(),
-  techniqueName: z.string().optional(),
-  locationName: z.string().optional(),
+  productName: z.string().nullable().optional(),
+  productColor: z.string().nullable().optional(),
+  techniqueName: z.string().nullable().optional(),
+  locationName: z.string().nullable().optional(),
   scenePrompt: z.string().min(1, "Scene prompt is required"),
-  sceneCategory: z.string().optional(),
-  brandColorHex: z.string().optional(),
-  brandColorName: z.string().optional(),
-  campaignBrief: z.record(z.unknown()).optional(),
-  outputChannel: z.string().optional(),
-  aspectRatio: z.string().optional(),
-  qualityMode: z.string().optional(),
-  compositionMode: z.string().optional(),
-  creativeMode: z.string().optional(),
-  negativePrompt: z.array(z.string()).optional(),
+  sceneCategory: z.string().nullable().optional(),
+  brandColorHex: z.string().nullable().optional(),
+  brandColorName: z.string().nullable().optional(),
+  campaignBrief: z.record(z.unknown()).nullable().optional(),
+  outputChannel: z.string().nullable().optional(),
+  aspectRatio: z.string().nullable().optional(),
+  qualityMode: z.string().nullable().optional(),
+  compositionMode: z.string().nullable().optional(),
+  creativeMode: z.string().nullable().optional(),
+  negativePrompt: z.array(z.string()).nullable().optional(),
   brandKit: z.object({
     primaryColor: z.string().nullable().optional(),
     secondaryColor: z.string().nullable().optional(),
@@ -63,9 +68,10 @@ Deno.serve(async (req) => {
       customIdentifier: `user:${user.id}`,
     }, corsHeaders);
     if (!protection.allowed) return protection.blockResponse!;
-    const ai = await requireAiApiKey("generate-ad-image", corsHeaders);
-    if (!ai.apiKey) return ai.response!;
-    const LOVABLE_API_KEY = ai.apiKey;
+    // BUG-CRED-2 FIX (2026-08-17): não bloqueia mais em LOVABLE_API_KEY ausente — esta
+    // função tem routing multi-provider ativo (google/GEMINI_API_KEY) que
+    // callAiWithTracking tenta primeiro e não depende do Lovable Gateway.
+    const { apiKey: LOVABLE_API_KEY } = await resolveAiApiKey("generate-ad-image");
 
     let rawBody: unknown;
     try {
@@ -214,7 +220,7 @@ Style: Professional commercial photography, advertising campaign quality, magazi
       userId: user.id,
       functionName,
       model,
-      apiKey: LOVABLE_API_KEY,
+      apiKey: LOVABLE_API_KEY ?? '',
       requestBody: {
         messages: [
           {

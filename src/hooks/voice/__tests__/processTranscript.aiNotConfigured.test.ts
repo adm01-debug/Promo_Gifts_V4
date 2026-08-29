@@ -8,7 +8,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 vi.mock('@/integrations/supabase/client', () => ({
-  supabase: { auth: { getSession: async () => ({ data: { session: null } }) } },
+  supabase: { auth: { getSession: () => Promise.resolve({ data: { session: null } }) } },
   SUPABASE_URL: 'https://example.supabase.co',
   SUPABASE_PUBLISHABLE_KEY: 'anon-key',
 }));
@@ -39,9 +39,11 @@ describe('processVoiceTranscript — IA não configurada', () => {
   });
 
   it('continua lançando em falhas genuínas (500)', async () => {
-    globalThis.fetch = vi.fn().mockResolvedValue(
-      new Response(JSON.stringify({ error: 'AI processing failed' }), { status: 500 }),
-    ) as unknown as typeof fetch;
+    globalThis.fetch = vi
+      .fn()
+      .mockResolvedValue(
+        new Response(JSON.stringify({ error: 'AI processing failed' }), { status: 500 }),
+      ) as unknown as typeof fetch;
 
     await expect(processVoiceTranscript('oi')).rejects.toThrow(/AI processing failed/);
   });

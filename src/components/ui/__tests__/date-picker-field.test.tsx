@@ -6,9 +6,10 @@
  *  - Formato ISO: seleção emite `yyyy-MM-dd`; "Hoje" emite ISO local.
  *  - Limpeza: X inline emite `""` e não abre o popover.
  *  - A11y:
- *      • `aria-invalid` e `aria-describedby` propagam ao `<button>` trigger.
- *      • Botão X inline tem `role="button"`, `tabIndex={0}` e responde a
- *        Enter/Space.
+ *      • `aria-describedby` propaga ao `<button>` trigger.
+ *      • Estado inválido é refletido via `data-invalid` no trigger.
+ *      • Botão X inline é um `<button>` real, fora do trigger do popover, e
+ *        responde a clique/teclado sem aninhar interativos.
  *      • Popover mantém foco dentro do calendário ao abrir (Radix + Calendar
  *        com `initialFocus`).
  *  - Estado desabilitado: X inline não aparece.
@@ -48,12 +49,7 @@ describe('DatePickerField — comportamento e a11y', () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(
-      <DatePickerField
-        data-testid="dp"
-        value="2026-07-01"
-        onChange={onChange}
-        aria-label="Data"
-      />,
+      <DatePickerField data-testid="dp" value="2026-07-01" onChange={onChange} aria-label="Data" />,
     );
     const trigger = screen.getByTestId('dp');
     expect(trigger).toHaveTextContent('01/07/2026');
@@ -86,7 +82,7 @@ describe('DatePickerField — comportamento e a11y', () => {
     expect(onChange).toHaveBeenCalledWith('');
   });
 
-  it('propaga aria-invalid e aria-describedby ao trigger', () => {
+  it('reflete estado inválido via data-invalid e preserva aria-describedby no trigger', () => {
     render(
       <DatePickerField
         data-testid="dp"
@@ -98,20 +94,21 @@ describe('DatePickerField — comportamento e a11y', () => {
       />,
     );
     const trigger = screen.getByTestId('dp');
-    expect(trigger).toHaveAttribute('aria-invalid', 'true');
+    expect(trigger).toHaveAttribute('data-invalid', 'true');
     expect(trigger).toHaveAttribute('aria-describedby', 'err-1');
   });
 
-  it('botão X inline tem role="button", aria-label e funciona por clique', async () => {
+  it('botão X inline usa botão real, fica fora do trigger e funciona por clique', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(
       <DatePickerField data-testid="dp" value="2026-07-11" onChange={onChange} aria-label="Data" />,
     );
+    const trigger = screen.getByTestId('dp');
     const clearBtn = screen.getByTestId('dp-clear');
-    expect(clearBtn).toHaveAttribute('role', 'button');
-    expect(clearBtn).toHaveAttribute('tabindex', '0');
+    expect(clearBtn.tagName).toBe('BUTTON');
     expect(clearBtn).toHaveAttribute('aria-label', 'Limpar data');
+    expect(trigger).not.toContainElement(clearBtn);
 
     await user.click(clearBtn);
     expect(onChange).toHaveBeenCalledWith('');

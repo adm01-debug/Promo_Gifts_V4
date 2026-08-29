@@ -46,7 +46,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '22.22.1'
           cache: 'npm'
       - run: npm ci
       - name: Install Playwright Chromium
@@ -61,8 +61,6 @@ jobs:
             e2e/quotes/quote-summary-action-buttons-states.spec.ts \
             --project=chromium-authed --retries=2 \
             --trace=retain-on-failure \
-            --screenshot=only-on-failure \
-            --video=retain-on-failure \
             --reporter=html,github
       - name: Upload Playwright HTML report
         if: always()
@@ -136,6 +134,3 @@ jobs:
             } else {
               await github.rest.issues.createComment({ owner, repo, issue_number, body });
             }
-
-          if-no-files-found: ignore
-

@@ -48,6 +48,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: [ssot-gate]
+    env:
+      NODE_OPTIONS: --max-old-space-size=4096
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -78,6 +80,16 @@ jobs:
           TZ=America/Sao_Paulo npx vitest run \
             tests/contracts/webhook-scenario-matrix.test.ts \
             --reporter=dot
+
+  database-integrity:
+    name: Gate 2.5 - PostgreSQL Transactional Integrity
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [ssot-gate]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate discount approval, grants and trigger races on PG17
+        run: scripts/test-approved-plan-database.sh
 
   e2e-smoke:
     name: Gate 3 - E2E Smoke
@@ -154,16 +166,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-      - name: Verificar pg_proc via PostgREST (schema cache)
+      - name: Verificar assinatura publicada da RPC
         run: npm run check:restore-seller-cart-rpc
         env:
           CANONICAL_SUPABASE_URL: https://doufsxqlfjyuvxuezpln.supabase.co
-          CANONICAL_SUPABASE_ANON_KEY: ${{ secrets.CANONICAL_SUPABASE_ANON_KEY }}
-          # Fallback: VITE_SUPABASE_PUBLISHABLE_KEY é a anon key do projeto canônico;
-          # o script já verifica CANONICAL_SUPABASE_ANON_KEY || SUPABASE_ANON_KEY.
-          SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
-          # STRICT=1 → falha o pipeline se a anon key não estiver configurada
-          # como secret. Remova/comente esta linha para permitir skip silencioso.
+          # A RPC é deliberadamente invisível para anon. O smoke precisa de
+          # service_role para distinguir assinatura ausente de ACL correta.
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           STRICT: '1'
 
   build:
@@ -185,3 +194,31 @@ jobs:
           name: dist-${{ github.run_id }}
           path: dist/
           retention-days: 7
+
+  deploy-ready:
+    name: Gate Final - Deploy Ready
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    needs:
+      - ssot-gate
+      - lint-typecheck
+      - unit-tests
+      - database-integrity
+      - e2e-smoke
+      - lighthouse
+      - seo-sanity
+      - restore-cart-rpc-gate
+      - build
+    steps:
+      - name: Require every blocking gate to pass
+        env:
+          GATE_RESULTS: ${{ join(needs.*.result, ',') }}
+        run: |
+          if [[ ",${GATE_RESULTS}," == *,failure,* || \
+                ",${GATE_RESULTS}," == *,cancelled,* || \
+                ",${GATE_RESULTS}," == *,skipped,* ]]; then
+            echo "Blocking gate result: ${GATE_RESULTS}" >&2
+            exit 1
+          fi
+          echo "All blocking deploy gates passed: ${GATE_RESULTS}"

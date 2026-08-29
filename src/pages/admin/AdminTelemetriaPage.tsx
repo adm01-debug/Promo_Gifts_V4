@@ -195,6 +195,7 @@ export default function AdminTelemetriaPage() {
               size="sm"
               onClick={() => exportCSV(rows, timeFilter)}
               disabled={!rows.length}
+              data-testid="telemetry-export-csv"
             >
               <Download className="mr-1.5 h-3.5 w-3.5" />
               CSV
@@ -204,6 +205,7 @@ export default function AdminTelemetriaPage() {
               size="sm"
               onClick={() => exportPDF(rows, timeFilter, customDateFrom, customDateTo)}
               disabled={!rows.length}
+              data-testid="telemetry-export-pdf"
             >
               <FileText className="mr-1.5 h-3.5 w-3.5" />
               PDF
@@ -242,7 +244,10 @@ export default function AdminTelemetriaPage() {
         </SectionErrorBoundary>
 
         {/* Guardrail automático: interrompe regressões antes que afetem usuários */}
-        <SectionErrorBoundary section="telemetry.RegressionGuardrailBanner" label="guardrail de regressão">
+        <SectionErrorBoundary
+          section="telemetry.RegressionGuardrailBanner"
+          label="guardrail de regressão"
+        >
           <Suspense fallback={<BannerSkeleton />}>
             <RegressionGuardrailBanner />
           </Suspense>
@@ -250,14 +255,22 @@ export default function AdminTelemetriaPage() {
 
         {/* Auditoria dos handoffs do QuoteBuilder — confirma que carrinho/coleção/simulador/URL
              continuam alimentando o QuoteBuilder após deploy e sem regressões do autosave. */}
-        <SectionErrorBoundary section="telemetry.QuoteBuilderHandoffCard" label="handoffs do QuoteBuilder">
-          <Suspense fallback={<CardSkeleton height={320} label="Carregando handoffs do QuoteBuilder" />}>
+        <SectionErrorBoundary
+          section="telemetry.QuoteBuilderHandoffCard"
+          label="handoffs do QuoteBuilder"
+        >
+          <Suspense
+            fallback={<CardSkeleton height={320} label="Carregando handoffs do QuoteBuilder" />}
+          >
             <QuoteBuilderHandoffCard />
           </Suspense>
         </SectionErrorBoundary>
 
         {/* Fila automática de otimizações — executa todas em sequência sem pausas */}
-        <SectionErrorBoundary section="telemetry.OptimizationQueuePanel" label="fila de otimizações">
+        <SectionErrorBoundary
+          section="telemetry.OptimizationQueuePanel"
+          label="fila de otimizações"
+        >
           <Suspense fallback={<CardSkeleton height={140} label="Carregando fila de otimizações" />}>
             <OptimizationQueuePanel />
           </Suspense>
@@ -319,7 +332,10 @@ export default function AdminTelemetriaPage() {
         </div>
 
         {/* Cold vs Warm path do isolate atual do crm-db-bridge (poll ?op=diag) */}
-        <SectionErrorBoundary section="telemetry.ColdVsWarmCrmCard" label="snapshot cold/warm do CRM">
+        <SectionErrorBoundary
+          section="telemetry.ColdVsWarmCrmCard"
+          label="snapshot cold/warm do CRM"
+        >
           <Suspense fallback={<CardSkeleton height={260} label="Carregando snapshot cold/warm" />}>
             <ColdVsWarmCrmCard />
           </Suspense>
@@ -333,28 +349,40 @@ export default function AdminTelemetriaPage() {
         </SectionErrorBoundary>
 
         {/* Métricas das otimizações Onda 2 (cache hit rate + retries evitados) */}
-        <SectionErrorBoundary section="telemetry.OptimizationMetricsCards" label="métricas de otimização">
+        <SectionErrorBoundary
+          section="telemetry.OptimizationMetricsCards"
+          label="métricas de otimização"
+        >
           <Suspense fallback={<GridCardsSkeleton count={3} height={100} />}>
             <OptimizationMetricsCards />
           </Suspense>
         </SectionErrorBoundary>
 
         {/* Alerta de regressão de latência em listings de products (limit > 50) */}
-        <SectionErrorBoundary section="telemetry.ProductsListingLatencyAlert" label="alerta de latência">
+        <SectionErrorBoundary
+          section="telemetry.ProductsListingLatencyAlert"
+          label="alerta de latência"
+        >
           <Suspense fallback={<BannerSkeleton />}>
             <ProductsListingLatencyAlert />
           </Suspense>
         </SectionErrorBoundary>
 
         {/* Comparativo antes vs depois do resolveProductsSelect (lightweight forçado em listings limit>50) */}
-        <SectionErrorBoundary section="telemetry.ResolveProductsSelectComparisonCard" label="comparativo de resolução">
+        <SectionErrorBoundary
+          section="telemetry.ResolveProductsSelectComparisonCard"
+          label="comparativo de resolução"
+        >
           <Suspense fallback={<CardSkeleton height={160} label="Carregando comparativo" />}>
             <ResolveProductsSelectComparisonCard />
           </Suspense>
         </SectionErrorBoundary>
 
         {/* Gráficos segmentados por endpoint/timestamp/error_kind — escopo limit > 50 */}
-        <SectionErrorBoundary section="telemetry.HighLimitTelemetryCard" label="telemetria de limites altos">
+        <SectionErrorBoundary
+          section="telemetry.HighLimitTelemetryCard"
+          label="telemetria de limites altos"
+        >
           <Suspense fallback={<ChartsSkeleton />}>
             <HighLimitTelemetryCard />
           </Suspense>
@@ -541,7 +569,7 @@ export default function AdminTelemetriaPage() {
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full text-sm">
+                <table className="w-full text-sm" data-testid="telemetry-queries-table">
                   <thead>
                     <tr className="border-b bg-muted/30">
                       <th className="p-3 text-left font-medium text-muted-foreground">Quando</th>

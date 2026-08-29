@@ -12,6 +12,7 @@
 
 /** Prefixos de rota considerados "técnicas" (devOnly). */
 export const DEV_ONLY_ROUTE_PREFIXES = [
+  '/simulacao',
   '/admin/telemetria',
   '/admin/conexoes',
   '/admin/seguranca',

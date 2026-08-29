@@ -1,117 +1,138 @@
-# Faxina do Banco de Dados — 2026-06-20 · Tier 1c + 3b + 1d (tabelas órfãs + funções mortas em massa)
+# Faxina do Banco de Dados — 2026-06-20 · Tier 3b (funções + views, lote 1)
 
 **Projeto:** `doufsxqlfjyuvxuezpln` (Gestão de Produtos — SSOT de produção)
-**Continuação de:** `docs/FAXINA_DB_2026-06-20.md` (Tier 1) e `docs/FAXINA_DB_2026-06-20_TIER3.md` (Tier 3 views + 11 funções).
-**Mesma sessão/manifesto/rollback:** `archive._cleanup_manifest` (`session='claude-faxina-2026-06-20'`), `scripts/faxina-rollback.sql`.
+**Continuação de:** `FAXINA_DB_2026-06-20.md` (Tier 1) e `FAXINA_DB_2026-06-20_TIER3.md` (Tier 3).
+**Migration:** `supabase/migrations/20260620190000_faxina_tier3b_b1_archive_dead_fns_views.sql`
+**Reversão:** `scripts/faxina-rollback.sql` (dirigida por `archive._cleanup_manifest`).
 
 ---
 
-## 1. Resumo executivo
+## 1. O que foi arquivado neste lote (11 objetos)
 
-Esta entrega completa o **Tier 3b** (as ~570 funções "mortas pelo lado do banco" que a fase anterior
-deixou para um lote gateado por `.rpc()`) e aproveita o efeito de segunda ordem para limpar mais tabelas.
+| Tipo | Qtd | public antes → depois |
+|---|---|---|
+| Funções | **8** | 676 → **668** |
+| Views | **3** | 58 → **55** |
 
-| Objeto | Antes (início desta sessão) | Depois | Δ |
-|---|---|---|---|
-| `public` **funções** | 1142 | **676** | **−466** |
-| `public` funções `SECURITY DEFINER` | 432¹ | **280** | **−152** |
-| `public` **tabelas** | 309 | **298** | **−12 (movidas)²** |
-| `archive` funções | 33 | **499** | +466 |
-| `archive` tabelas | 77 | **89** | +12 |
+**Funções (8):** `fn_simular_combo_gravacao_v10`, `fn_simular_combo_gravacao_v11`
+(superadas por `_v12`, que permanece viva no public), `classify_headphone`,
+`classify_powerbank`, `classify_speaker` (classificadores legados, superados pelo cron
+`pipeline-classify-categories` → `fn_backfill_product_categories`),
+`fn_asia_legacy_dispatch_batch`, `fn_asia_legacy_harvest_batch`, `fn_asia_wp_to_canonical`
+(caminho de ingestão Asia legado, superado pelo edge fn `asia-ingestion` + crons atuais).
 
-¹ valor do inventário inicial (`docs/FAXINA_DB_2026-06-20.md`). ² `analytics_events` foi **preservada**
-pelo gate em runtime (recebeu escritas → telemetria viva); 22 candidatas do Tier 1d foram **preservadas**
-porque uma view/função viva ainda as referencia.
+**Views (3):** `v_audit_paradoxos_gravacao`, `v_product_videos_ready`, `vw_color_mapping`
+(views internas órfãs; nenhuma `*_public`).
 
-**Total movido nesta sessão: 478 objetos** (12 tabelas + 466 funções), **100% reversível**
-(`ALTER … SET SCHEMA archive`, sem `DROP`), cada um com linha de evidência no manifesto.
+> Verificação pós-move: `v_products_public`, `v_variant_sale_prices_public`, `products` e a
+> base `fn_simular_combo_gravacao` continuam no `public`; os objetos movidos resolvem `NULL`
+> em `public` e existem em `archive`. **Zero dano colateral.**
 
-> Princípio inalterado: mover um objeto **em uso** para `archive` quebra produção como um `DROP`.
-> Nada foi movido sem **prova de morte** por múltiplos sinais independentes.
+### Lote 2 (migration `20260620191500_…b2_archive_legacy_supplier_fns.sql`) — +19 funções
 
----
+Helpers legados de ingestão/fornecedor (DB-orphan + code-absent, corpos confirmados como
+wrappers órfãos ou versões superadas). `public` funções **668 → 649**.
 
-## 2. Metodologia — gates obrigatórios (re-verificados em runtime na própria migration)
+`fn_ingest_asia_api_batch`, `fn_ingest_asia_product`, `fn_classify_spot_image`,
+`fn_spot_process_batch`, `comparar_precos_spot`, `fn_resolve_supplier`,
+`fn_color_link_all_suppliers`, `fn_tag_product_complete`, `fn_import_product_properties`,
+`extract_xbz_image_metadata`, `fn_get_asia_api_key`, `fn_get_asia_secret_key`,
+`fn_get_cf_credentials`, `fn_extract_color_from_name`, `fn_extract_material_from_name`,
+`fn_recomendar_tecnica`, `fn_list_deactivation_requests`, `create_material_with_equivalence`,
+`fn_expire_novelties` (superada por `fn_expire_novelties_with_stats`).
 
-### 2a. Funções (Tier 3b) — 6 gates
-Uma função só foi arquivada se passou em **todos**:
-1. **Não é de extensão** (`pg_depend deptype='e'` = 0).
-2. **0 dependentes estruturais** em `pg_depend` (triggers, policies, views, defaults, constraints, colunas geradas).
-3. **0 referências no corpo de qualquer outra função `public`** (`pg_proc.prosrc`).
-4. **0 referências em comandos de cron** (`cron.job.command`).
-5. **0 referências em expressões de RLS policy** + **não é função de trigger anexada** (defesa em profundidade).
-6. **0 referências no repositório** — `\b<nome>\b` em `src/ + supabase/functions/ + tests/ + e2e/ + scripts/`,
-   **excluindo** `types.ts` gerado (que lista TODA função, viva ou morta).
+Sucessores vivos preservados: `fn_process_asia_stock_pending`, `fn_spot_stock_fast_sync`,
+`fn_apply_auto_tag_rules`, edge fn `asia-ingestion`, `materials-api`.
 
-➡️ O gate #6 é decisivo: 554 funções eram "mortas pelo lado do banco", mas **89** estão **vivas via
-`.rpc()`** no frontend/edge (ex.: `has_role`, `search_products_semantic`, `fn_global_search`,
-`request_step_up_challenge`, `validate_mcp_key`). Estas foram **preservadas**. Restaram **466** mortas reais.
-
-**Exemplos de duplicidade/resíduo arquivado:** `has_permission` (substituída por `has_role`),
-`vault_get_secret/_set/_delete` (substituídas por `get_edge_function_secret`), API antiga de step-up
-(`start_step_up_challenge`, `verify_step_up_password`…), `generate_order_number(_v3)`,
-`fn_*_v2/_v3` superados, dezenas de `classify_*` legados, helpers de ingestão de fornecedores desativados
-(`fn_asia_legacy_*`, `fn_cf_*_legacy_*`, `fn_*_to_silver/_gold` órfãos), `fn_handle_new_user` (trigger removido).
-
-### 2b. Tabelas (Tier 1c + 1d) — gates estruturais + uso + repo
-0 escritas em toda a vida do banco (`pg_stat` nunca resetado), não está em `supabase_realtime`,
-0 FK de entrada de tabela **ativa**, 0 refs em view/função `public`/cron/policy, 0 refs no repo,
-**não é partição** (parent/child). A migration **re-verifica tudo em runtime e pula na menor dúvida**.
+**Acumulado Tier 3b (lotes 1+2): 30 objetos** (27 funções + 3 views). `public`: 300 tabelas ·
+55 views · **649 funções**.
 
 ---
 
-## 3. O que foi arquivado
+## 2. Metodologia (6 gates — endurecida vs. Tier 3)
 
-- **Tier 1c (5 tabelas):** `attribute_definitions`, `attribute_groups`, `category_target_audiences`,
-  `company_email_patterns`, `target_audiences` (subsistema "attributes/target audiences" abandonado;
-  os referenciadores remanescentes já estavam em `archive`/`backup`).
-  `analytics_events` foi **preservada** (gate de escrita).
-- **Tier 3b (466 funções):** ver migration `20260620190500_faxina_tier3b_archive_dead_functions_bulk.sql`
-  e manifesto (`evidence->>'phase' = 'tier3b_function'`).
-- **Tier 1d (7 tabelas, liberadas após a remoção das funções):** `category_accessory_categories`,
-  `classify_functions_registry`, `edge_function_invocations`, `enrichment_log`, `magic_up_reactions`,
-  `quote_drafts`, `supplier_customization_options_raw`.
+Reproduzimos os 5 gates do Tier 3 e **fechamos uma falha de detecção** que o lote anterior
+não cobria explicitamente para funções:
 
-Migrations (espelham o que foi aplicado em produção via MCP):
-`20260620190000_faxina_tier1c_archive_orphan_tables.sql`,
-`20260620190500_faxina_tier3b_archive_dead_functions_bulk.sql`,
-`20260620191000_faxina_tier1d_archive_orphan_tables.sql`.
+1. **Estrutural / DB-orphan** — 0 refs em: corpos de função (`pg_proc.prosrc`), defs de
+   views/matviews, `cron.job.command`, **`pg_policies` (qual + with_check)**,
+   **defaults (`pg_attrdef`, inclui colunas geradas)**, **constraints (`pg_get_constraintdef`)**,
+   **índices (`pg_get_indexdef`)** e triggers (`pg_trigger`).
+   → *Sem este gate, helpers de RLS como `has_org_role`, `user_belongs_to_org`,
+   `is_org_owner_or_admin` apareciam como "órfãos" e sua remoção quebraria o RLS.*
+2. **code-absent** — 0 ocorrências como string em `src/`, `supabase/functions/`, `tests/`,
+   `e2e/`, `scripts/` (ignorando apenas `supabase/migrations/`, `types.ts`, `*.md`).
+   Usuário confirmou **sem consumidores externos** → code-absent = prova completa.
+3. **Perfil de resíduo inequívoco** — versionado-superado / legacy / classify / view interna.
+4. **Sem overload vivo** — cada nome tem 1 overload, todos cobertos pelo gate 1.
+5. **Não-`*_public`** — views `*_public` nunca são movidas (superfície PostgREST).
+6. **Reversível + manifesto** — `ALTER … SET SCHEMA archive`, registrado objeto-a-objeto.
+
+### Armadilhas reais encontradas (e evitadas)
+- **`n_live_tup` mente em tabelas particionadas:** `supplier_products_raw_history` reportava
+  `0 linhas / 0 bytes` mas tem **215.889 linhas** (pai de partição mensal, escrito por trigger
+  + cron de purga). Teria sido um falso-positivo catastrófico.
+- **`organization_members`** reportava 0 scans (acesso via funções SECURITY DEFINER) mas é
+  tabela multi-tenant viva (17 linhas, RLS, 4 policies, 64 arquivos no repo).
+- **`fn_spot_reconcile_variant_to_legacy`** (nome "legacy") tinha `db_refs=1` → **excluído**.
+- **Bug de método no `ripgrep`:** `--glob '!x' '!y'` (espaço) falha silenciosamente e faz
+  *tudo* parecer code-absent. Forma correta: `--glob='!x'`. Todos os candidatos foram
+  re-verificados com a forma correta.
+- **`track_functions = 'none'`:** não há contagem de chamadas em runtime para funções —
+  por isso o gate `code-absent` (com "sem consumidores externos") é o sinal decisivo.
 
 ---
 
-## 4. Verificação pós-execução
+## 3. Estado atual do `public` (pós-lote)
 
-- **Integridade:** 0 objetos em `public` (view/matview) referenciando qualquer objeto arquivado nesta sessão ✓
-- **RPCs vivas preservadas:** amostra de 15/15 ainda em `public` (`has_role`, `fn_global_search`,
-  `search_products_semantic`, `request_step_up_challenge`, `consume_step_up_token`, `validate_mcp_key`,
-  `audit_ownership_orphans`, …) ✓
-- **Funções de cron preservadas:** 7/7 (`fn_import_stock_xbz`, `fn_pipeline_promote_tick`,
-  `fn_aggregate_stock_daily`, `fn_process_asia_stock_pending`, `fn_sm_site_tick`, `fn_cf_recon_dispatch`,
-  `fn_sync_product_novelties`) ✓
-- **Mortas conhecidas removidas de `public`:** `has_permission`, `convert_quote_to_order`, `vault_get_secret`,
-  `is_org_member`, `fn_handle_new_user` → todas em `archive` ✓
-- **Tabelas protegidas pelo `CLAUDE.md` intactas:** 8/8 (`products`, `product_variants`, `suppliers`,
-  `supplier_products_raw`, `personalization_techniques`, `categories`, `product_images`, `tags`) ✓
-- `client.ts` / `validate-supabase-config.mjs` **não tocados** (Gate 0 SSOT verde) ✓
+`public`: **300 tabelas · 55 views · 668 funções.**
+Inventário completo do banco (para contexto): `archive` (89→100+ objetos), `backup` (42 tabelas),
+`supplier_stricker` (17), `cf_recon`, `prod_audit`, `analytics` (7 MV), além de **102 crons
+ativos** e **~98 edge functions** (todos preservados — são a espinha dorsal do pipeline Medallion).
+
+---
+
+## 4. Pool de candidatos para os próximos lotes (NÃO movidos — requerem 1 verificação extra)
+
+Conjunto DB-orphan **e** code-absent restante (após este lote), a tratar em lotes pequenos com
+verificação pós-lote. Antes de mover cada um: confirmar que não é chamado dinamicamente por uma
+função viva (`EXECUTE format(... %I ...)`) e que existe um sucessor vivo.
+
+- **Helpers de ingestão de fornecedores (legado):** `fn_ingest_asia_api_batch`,
+  `fn_ingest_asia_product`, `fn_classify_spot_image`, `fn_spot_process_batch`,
+  `comparar_precos_spot`, `fn_resolve_supplier`, `fn_color_link_all_suppliers`,
+  `fn_tag_product_complete`, `fn_import_product_properties`, `extract_xbz_image_metadata`.
+- **Secret-fetchers (verificar pipeline ativo antes):** `fn_get_asia_api_key`,
+  `fn_get_asia_secret_key`, `fn_get_cf_credentials`.
+- **Optimization queue (feature possivelmente desativada):** `claim_next_optimization`,
+  `complete_optimization`, `enqueue_optimization`, `reset_optimization_queue`.
+- **Outros DB-orphan + code-absent** (~100): revisar por subsistema (step-up, telemetria,
+  rate-limit legados, etc.). Lista completa reproduzível com a query do gate 1 + repo-gate.
+
+### Sub-lote pré-verificado code-absent (batch B — 15 nomes) — confirmar corpo/sucessor antes de mover
+`generate_variant_sku`, `get_cost_for_quantity`, `get_sale_price_for_quantity`, `get_variant_price`
+(provável: cálculo migrou para a view `v_variant_sale_prices_public` — **confirmar**),
+`insert_supplier_product_raw`, `upsert_supplier_customization_raw`, `upsert_supplier_stock_raw`
+(helpers de bronze — provável sucessor no pipeline atual),
+`log_login_attempt` (provável: superado pelo **edge fn** `log-login-attempt`),
+`log_step_up_audit`, `log_voice_command`, `mcp_audit_actor`, `mcp_audit_violation`,
+`step_up_user_settings_get`, `step_up_user_settings_set`, `user_can_skip_step_up`.
+> ⚠️ Apesar de DB-orphan + code-absent, vários "soam" críticos (preço/auth). Regra CLAUDE.md:
+> não classificar como morto sem verificar. Mover só após ler o corpo e confirmar sucessor vivo.
+
+### Fora de escopo (decisão de produto / risco) — **mantidos**
+- **Tier 2:** tabelas vazias mas referenciadas pelo frontend (features "ligadas, não usadas").
+- **`*_public` views** code-absent (ex.: `v_tags_public`, `v_product_properties_public`) —
+  superfície de API; só remover com confirmação de que nenhum cliente PostgREST as consome.
+- **`backup` schema (42 tabelas)** — Tier 4 (decisão DROP vs. manter como arquivo morto).
 
 ---
 
 ## 5. Rollback
 
-Tudo coberto por `scripts/faxina-rollback.sql` (mesma `session='claude-faxina-2026-06-20'`), que restaura
-tabelas/views/funções a partir do `archive._cleanup_manifest`. Restauração pontual:
-`ALTER TABLE archive.<t> SET SCHEMA public;` · `ALTER FUNCTION archive.<f>(<args>) SET SCHEMA public;`
-
----
-
-## 6. O que permanece (roadmap)
-
-- **Tier 2** — features "ligadas mas não usadas" (tabelas referenciadas pelo frontend): **decisão de produto**,
-  não arquivadas (arquivá-las = remover a feature).
-- **Funções vivas via `.rpc()` porém "db-side dead"** (as 89 preservadas): podem incluir features inativas;
-  só o time decide aposentá-las.
-- **Tier 4** — schema `backup` (42 tabelas), partições vazias `supplier_products_raw_history_p2026_07..10`,
-  consolidação de dados duplicados em tabelas canônicas.
-- **types.ts** — pode ser regenerado para refletir os objetos arquivados (opcional; sem impacto de runtime,
-  pois nada no código referencia os objetos removidos). Não regenerado aqui para manter o PR focado e evitar
-  conflito com o fluxo do Lovable.
+```sql
+\i scripts/faxina-rollback.sql   -- restaura tudo desta sessão a partir do manifesto
+-- ou, individual:
+ALTER FUNCTION archive.classify_speaker(text) SET SCHEMA public;
+ALTER VIEW     archive.vw_color_mapping        SET SCHEMA public;
+```

@@ -84,8 +84,13 @@ export const LogoPositionEditor = memo(
       return null;
     }, [techniqueColorConfig]);
 
-    // cm→px conversion using product physical dimensions
-    const boundsReady = productBounds.detected;
+    // cm→px conversion using product physical dimensions.
+    // BUG-BOUNDS-1 FIX (2026-08-17): gate on `loading`, not `detected` — `detected`
+    // is false (permanently) for most supplier-CDN images (tainted canvas, no CORS),
+    // which was blocking the positioning canvas forever after a logo upload even
+    // though the fallback bounds (heuristic fractions + real aspect ratio) are
+    // perfectly usable for cm→px scaling.
+    const boundsReady = !productBounds.loading;
     const logoDisplay = useMemo(() => {
       if (!boundsReady) return null;
 

@@ -22,7 +22,7 @@ vi.mock('@/integrations/supabase/lazy-client', () => ({
   getSupabaseClient: () => Promise.resolve({ functions: { invoke: mockInvoke } }),
 }));
 
-import { invokeEdgeSafe, normalizeInvokeError } from '@/lib/edge/safeInvokeCall';
+import { invokeEdge, invokeEdgeSafe, normalizeInvokeError } from '@/lib/edge/safeInvokeCall';
 
 describe('safeInvokeCall — Onda 17', () => {
   beforeEach(() => {
@@ -100,7 +100,7 @@ describe('safeInvokeCall — Onda 17', () => {
         context: { status: 500, body: JSON.stringify({ error: 'db offline' }) },
       },
     });
-    const norm = normalizeInvokeError({
+    const norm = await normalizeInvokeError({
       name: 'FunctionsHttpError',
       message: 'fallback',
       context: { status: 500, body: JSON.stringify({ error: 'db offline' }) },
@@ -108,6 +108,43 @@ describe('safeInvokeCall — Onda 17', () => {
     expect(norm.message).toBe('db offline');
     const r = await invokeEdgeSafe('x', { maxRetries: 1 });
     expect(r.kind).toBe('err');
+  });
+
+  it('Response no context preserva a mensagem pública do corpo', async () => {
+    const error = Object.assign(new Error('Edge Function returned a non-2xx status code'), {
+      name: 'FunctionsHttpError',
+      context: new Response(JSON.stringify({ message: 'canvas exploded' }), { status: 500 }),
+    });
+    const norm = await normalizeInvokeError(error);
+    expect(norm).toMatchObject({ message: 'canvas exploded', status: 500 });
+  });
+
+  it('Response com body texto puro usa fallback textual quando JSON falha', async () => {
+    const error = Object.assign(new Error('Edge Function returned a non-2xx status code'), {
+      name: 'FunctionsHttpError',
+      context: new Response('upstream html proxy error', { status: 502 }),
+    });
+    const norm = await normalizeInvokeError(error);
+    expect(norm).toMatchObject({ message: 'upstream html proxy error', status: 502 });
+  });
+
+  it('preserveErrorData mantém relatório estruturado sem apagar o erro HTTP', async () => {
+    const blocked = { status: 'blocked', skipped: 3 };
+    mockInvoke.mockResolvedValue({
+      data: null,
+      error: Object.assign(new Error('non-2xx'), {
+        name: 'FunctionsHttpError',
+        context: new Response(JSON.stringify(blocked), { status: 424 }),
+      }),
+    });
+
+    const result = await invokeEdge<typeof blocked>('simulation-orchestrator', {
+      preserveErrorData: true,
+      maxRetries: 1,
+    });
+
+    expect(result.error?.status).toBe(424);
+    expect(result.data).toEqual(blocked);
   });
 
   it('AbortSignal externo já abortado → err imediato', async () => {

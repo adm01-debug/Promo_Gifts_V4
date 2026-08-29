@@ -1,5 +1,5 @@
-import { type ReactNode, useEffect } from 'react';
-import { m as motion, AnimatePresence } from 'framer-motion';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { m as motion } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 import { performanceTracker } from '@/utils/performance';
 
@@ -18,76 +18,71 @@ interface PageTransitionProps {
   className?: string;
 }
 
-const variants = {
-  fade: {
-    initial: { opacity: 0 },
-    animate: { opacity: 1 },
-    exit: { opacity: 0 },
-  },
-  'slide-up': {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -20 },
-  },
-  'slide-left': {
-    initial: { opacity: 0, x: 20 },
-    animate: { opacity: 1, x: 0 },
-    exit: { opacity: 0, x: -20 },
-  },
-  'slide-right': {
-    initial: { opacity: 0, x: -20 },
-    animate: { opacity: 1, x: 0 },
-    exit: { opacity: 0, x: 20 },
-  },
-  scale: {
-    initial: { opacity: 0, scale: 0.95 },
-    animate: { opacity: 1, scale: 1 },
-    exit: { opacity: 0, scale: 1.05 },
-  },
-  'fade-slide': {
-    initial: { opacity: 0, y: 10 },
-    animate: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -8 },
-  },
-};
-
+/**
+ * PageTransition (simples): DIV com key da pathname + classe CSS de fade.
+ *
+ * HISTÓRICO: usava framer-motion `AnimatePresence` + `motion.div` com
+ * `initial={{opacity:0}} animate={{opacity:1}}`. Isso quebrou em algumas
+ * navegações SPA (motion.div ficava invisível mesmo após `onAnimationComplete`
+ * — problema de reconciliação entre AnimatePresence e Suspense). Substituí
+ * por transição CSS pura que sempre respeita opacity:1 ao final.
+ */
 export function PageTransition({
   children,
-  variant = 'fade-slide',
-  duration = 0.5,
+  variant: _variant = 'fade',
+  duration: _duration = 0.3,
   className,
 }: PageTransitionProps) {
   const location = useLocation();
-  const selectedVariant = variants[variant];
+  const [mountedKey, setMountedKey] = useState(location.pathname);
+  // opacity inicia em 1 para que o conteudo apareca imediatamente no
+  // primeiro render (hard reload / abrir URL direto). Animacao fade acontece
+  // apenas em navegacoes SPA subsequentes.
+  const [opacity, setOpacity] = useState(1);
+  const prevPathRef = useRef(location.pathname);
 
   useEffect(() => {
+    const pathnameChanged = prevPathRef.current !== location.pathname;
+
+    if (!pathnameChanged) {
+      // First render OU mesma pathname: nada a fazer.
+      return;
+    }
+
+    // Pathname mudou (navegacao SPA): fade-out/fade-in.
+    prevPathRef.current = location.pathname;
+    setMountedKey(location.pathname);
+    setOpacity(0);
     performanceTracker.mark(`page-transition-start:${location.pathname}`);
+
+    // requestAnimationFrame garante que o CSS pegue opacity:0 antes da
+    // transicao animar para 1.
+    requestAnimationFrame(() => {
+      setOpacity(1);
+    });
+  }, [location.pathname]);
+
+  useEffect(() => {
+    performanceTracker.mark(`page-transition-end:${location.pathname}`);
+    performanceTracker.measure(
+      `Page Animation: ${location.pathname}`,
+      `page-transition-start:${location.pathname}`,
+      `page-transition-end:${location.pathname}`,
+    );
   }, [location.pathname]);
 
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={location.pathname}
-        initial={selectedVariant.initial}
-        animate={selectedVariant.animate}
-        exit={selectedVariant.exit}
-        onAnimationComplete={() => {
-          performanceTracker.mark(`page-transition-end:${location.pathname}`);
-          performanceTracker.measure(
-            `Page Animation: ${location.pathname}`,
-            `page-transition-start:${location.pathname}`,
-            `page-transition-end:${location.pathname}`,
-          );
-        }}
-        transition={{
-          duration: Math.min(duration, 0.3),
-          ease: [0.4, 0, 0.2, 1],
-        }}
-        className={className}
-      >
-        {children}
-      </motion.div>
-    </AnimatePresence>
+    <div
+      key={mountedKey}
+      data-pathname={location.pathname}
+      style={{
+        opacity,
+        transition: 'opacity 300ms ease-out',
+      }}
+      className={className}
+    >
+      {children}
+    </div>
   );
 }
 

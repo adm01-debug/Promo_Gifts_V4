@@ -24,9 +24,7 @@ import {
 import { validateBranding } from '@/lib/security/magazine-guard';
 
 import type { Product } from '@/types/product-catalog';
-import type { MagazineDatabase } from '@/integrations/supabase/magazine-schema';
-import { magazineDb } from '@/integrations/supabase/magazine-schema';
-import { supabase } from '@/integrations/supabase/client';
+import { type MagazineDatabase, magazineDb } from '@/integrations/supabase/magazine-schema';
 import { logger } from '@/lib/logger';
 import { newRequestId, REQUEST_ID_HEADER } from '@/lib/telemetry/requestId';
 
@@ -310,7 +308,11 @@ export const magazineService = {
       content_settings: { ...DEFAULT_MAGAZINE_CONTENT },
       status: 'draft' as const,
     };
-    const { data, error } = await magazineDb.from('magazines').insert(insertRow).select('*').single();
+    const { data, error } = await magazineDb
+      .from('magazines')
+      .insert(insertRow)
+      .select('*')
+      .single();
     if (error || !data) {
       throw new Error(`[magazineService.create] ${error?.message ?? 'insert falhou'}`);
     }
@@ -424,7 +426,10 @@ export const magazineService = {
       return current;
     }
     // Bumpa updated_at do header
-    await magazineDb.from('magazines').update({ updated_at: new Date().toISOString() }).eq('id', id);
+    await magazineDb
+      .from('magazines')
+      .update({ updated_at: new Date().toISOString() })
+      .eq('id', id);
     return hydrate(id);
   },
 
@@ -438,7 +443,10 @@ export const magazineService = {
       logger.warn('[magazineService.removeItem] error:', error.message);
       return this.get(id);
     }
-    await magazineDb.from('magazines').update({ updated_at: new Date().toISOString() }).eq('id', id);
+    await magazineDb
+      .from('magazines')
+      .update({ updated_at: new Date().toISOString() })
+      .eq('id', id);
     return hydrate(id);
   },
 
@@ -459,7 +467,10 @@ export const magazineService = {
       logger.warn('[magazineService.reorderItems] partial failure:', firstError?.message);
       return null;
     }
-    await magazineDb.from('magazines').update({ updated_at: new Date().toISOString() }).eq('id', id);
+    await magazineDb
+      .from('magazines')
+      .update({ updated_at: new Date().toISOString() })
+      .eq('id', id);
     return hydrate(id);
   },
 
@@ -489,7 +500,10 @@ export const magazineService = {
         return null;
       }
     }
-    await magazineDb.from('magazines').update({ updated_at: new Date().toISOString() }).eq('id', id);
+    await magazineDb
+      .from('magazines')
+      .update({ updated_at: new Date().toISOString() })
+      .eq('id', id);
     return hydrate(id);
   },
 

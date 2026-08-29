@@ -116,7 +116,14 @@ export function AriaLiveProvider({ children }: { children: ReactNode }) {
       </div>
 
       {/* Progress announcements */}
-      <div role="progressbar" aria-live="polite" aria-atomic="true" className="sr-only">
+      <div
+        role="progressbar"
+        aria-label="Progresso da operação"
+        aria-valuetext={progressMessage || 'Nenhuma operação em andamento'}
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+      >
         {progressMessage}
       </div>
     </AriaLiveContext.Provider>

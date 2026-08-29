@@ -16,7 +16,7 @@ exports[`NegotiationMarkupCard — snapshots visuais por viewport > snapshot em 
       >
         <svg
           aria-hidden="true"
-          class="lucide lucide-chart-no-axes-combined h-3.5 w-3.5 text-primary"
+          class="lucide lucide-chart-column h-3.5 w-3.5 text-primary"
           fill="none"
           height="24"
           stroke="currentColor"
@@ -28,22 +28,16 @@ exports[`NegotiationMarkupCard — snapshots visuais por viewport > snapshot em 
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
-            d="M12 16v5"
+            d="M3 3v16a2 2 0 0 0 2 2h16"
           />
           <path
-            d="M16 14.639V21"
+            d="M18 17V9"
           />
           <path
-            d="M20 10.656V21"
+            d="M13 17V5"
           />
           <path
-            d="m22 3-8.646 8.646a.5.5 0 0 1-.708 0L9.354 8.354a.5.5 0 0 0-.707 0L2 15"
-          />
-          <path
-            d="M4 18.463V21"
-          />
-          <path
-            d="M8 14.656V21"
+            d="M8 17v-3"
           />
         </svg>
       </div>
@@ -332,7 +326,7 @@ exports[`NegotiationMarkupCard — snapshots visuais por viewport > snapshot em 
       >
         <svg
           aria-hidden="true"
-          class="lucide lucide-chart-no-axes-combined h-3.5 w-3.5 text-primary"
+          class="lucide lucide-chart-column h-3.5 w-3.5 text-primary"
           fill="none"
           height="24"
           stroke="currentColor"
@@ -344,22 +338,16 @@ exports[`NegotiationMarkupCard — snapshots visuais por viewport > snapshot em 
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
-            d="M12 16v5"
+            d="M3 3v16a2 2 0 0 0 2 2h16"
           />
           <path
-            d="M16 14.639V21"
+            d="M18 17V9"
           />
           <path
-            d="M20 10.656V21"
+            d="M13 17V5"
           />
           <path
-            d="m22 3-8.646 8.646a.5.5 0 0 1-.708 0L9.354 8.354a.5.5 0 0 0-.707 0L2 15"
-          />
-          <path
-            d="M4 18.463V21"
-          />
-          <path
-            d="M8 14.656V21"
+            d="M8 17v-3"
           />
         </svg>
       </div>

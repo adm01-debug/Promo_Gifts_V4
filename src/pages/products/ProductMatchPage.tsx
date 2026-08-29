@@ -13,6 +13,7 @@ import { MOCK_MATCH_PRODUCTS } from '@/data/mock-match-products';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
+import { Clickable } from '@/components/shared/Clickable';
 import { cn } from '@/lib/utils';
 import { dedupeById } from '@/utils/product-search';
 import { Zap, Target, Loader2 } from 'lucide-react';
@@ -59,6 +60,13 @@ export default function ProductMatchPage() {
   }, [browseProducts, categoryCohort, selectedProduct]);
 
   const { matches } = useProductMatch(selectedProduct, matchPool, filters);
+  // Contagem dos badges usa os matches SEM o filtro de tipo (matchTypes fixo em
+  // todos), senão desativar um badge zeraria o próprio contador dele — o usuário
+  // não conseguiria saber quantos itens estão escondidos pra reativar.
+  const { matches: allTypeMatches } = useProductMatch(selectedProduct, matchPool, {
+    ...filters,
+    matchTypes: MATCH_TYPES,
+  });
 
   const stats = useMemo(() => {
     const byType: Record<MatchResult['matchType'], number> = {
@@ -66,9 +74,9 @@ export default function ProductMatchPage() {
       similar: 0,
       complementary: 0,
     };
-    matches.forEach((m) => byType[m.matchType]++);
+    allTypeMatches.forEach((m) => byType[m.matchType]++);
     return byType;
-  }, [matches]);
+  }, [allTypeMatches]);
 
   // Opções de categoria (id + nome resolvido) presentes no pool de match.
   const categoryOptions: CategoryOption[] = useMemo(() => {
@@ -94,6 +102,20 @@ export default function ProductMatchPage() {
   const handleSelectProduct = useCallback((product: Product) => {
     setSelectedProduct(product);
     setFilters({});
+  }, []);
+
+  const activeMatchTypes = filters.matchTypes ?? MATCH_TYPES;
+  // Clicar num badge ISOLA aquele tipo (mostra só ele); clicar de novo no único
+  // tipo já isolado volta a mostrar todos. Não é um multi-toggle independente —
+  // é um filtro de "foco em um tipo por vez", que é o que o usuário espera ao
+  // clicar em "Idêntico: 2" (ver só os 2 idênticos, não os 149 restantes também).
+  const toggleMatchType = useCallback((type: MatchResult['matchType']) => {
+    setFilters((prev) => {
+      const current = prev.matchTypes ?? MATCH_TYPES;
+      const isOnlyThisActive = current.length === 1 && current[0] === type;
+      const matchTypes = isOnlyThisActive ? MATCH_TYPES : [type];
+      return { ...prev, matchTypes };
+    });
   }, []);
 
   const handleNavigate = useCallback((id: string) => navigate(`/produto/${id}`), [navigate]);
@@ -159,14 +181,27 @@ export default function ProductMatchPage() {
                 <SelectedProductCard product={selectedProduct} />
 
                 <div className="flex flex-wrap items-center gap-2">
-                  {MATCH_TYPES.map((type) => (
-                    <Badge
-                      key={type}
-                      className={cn('gap-1 text-[10px]', MATCH_TYPE_CONFIG[type].color)}
-                    >
-                      {MATCH_TYPE_CONFIG[type].label}: {stats[type]}
-                    </Badge>
-                  ))}
+                  {MATCH_TYPES.map((type) => {
+                    const isActive = activeMatchTypes.includes(type);
+                    return (
+                      <Clickable
+                        key={type}
+                        as={Badge}
+                        onClick={() => toggleMatchType(type)}
+                        isPressed={isActive}
+                        showFocusRing={false}
+                        className={cn(
+                          'cursor-pointer select-none gap-1 text-[10px] transition-opacity',
+                          isActive
+                            ? MATCH_TYPE_CONFIG[type].color
+                            : 'bg-muted text-muted-foreground opacity-50 hover:opacity-75 focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+                        )}
+                        aria-label={`Filtrar matches por ${MATCH_TYPE_CONFIG[type].label.toLowerCase()}`}
+                      >
+                        {MATCH_TYPE_CONFIG[type].label}: {stats[type]}
+                      </Clickable>
+                    );
+                  })}
                   {cohortLoading && (
                     <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
                       <Loader2 className="h-3 w-3 animate-spin" />

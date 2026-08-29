@@ -4,19 +4,25 @@
 //   - Endpoint inclui o model no path: /models/{model}:generateContent
 //   - "messages" → "contents" com role "user"|"model" (não "assistant")
 //   - System message → "systemInstruction" (top-level)
-//   - Content parts: text, inline_data (base64), file_data (URL)
+//   - Content parts: text, inlineData (base64), fileData (URL) — camelCase in JSON
 //   - Tools: functionDeclarations + functionCall response
-//   - Image generation: response parts contém inline_data
+//   - Image generation: response parts contém inlineData
 //   - Header: x-goog-api-key (sem prefixo Bearer)
 // =============================================================================
 
 import type { Adapter, AdapterCallOpts, ContentPart, ToolCall, UnifiedMessage, UnifiedResponse } from "./types.ts";
 import { AdapterError } from "./types.ts";
 
+// BUG-AI-ROUTER-GEMINI-1 FIX (2026-08-17): a API REST do Gemini (v1beta) usa
+// camelCase em JSON (inlineData/mimeType/fileData/fileUri) — o mapeamento
+// snake_case (proto/gRPC) nunca bate nem no envio (imagens do produto/logo
+// via file_data eram ignoradas) nem no parsing da resposta (p.inline_data
+// nunca existia, então `images` ficava sempre vazio e o caller via
+// "Nenhuma imagem gerada na resposta" mesmo com o modelo respondendo OK).
 interface GooglePart {
   text?: string;
-  inline_data?: { mime_type: string; data: string };
-  file_data?: { file_uri: string; mime_type?: string };
+  inlineData?: { mimeType: string; data: string };
+  fileData?: { fileUri: string; mimeType?: string };
   functionCall?: { name: string; args?: Record<string, unknown> };
   functionResponse?: { name: string; response: Record<string, unknown> };
 }
@@ -39,9 +45,9 @@ function partsForGoogle(content: string | ContentPart[]): GooglePart[] {
     if (part.type === "image_url") {
       const url = part.image_url?.url ?? "";
       const m = url.match(/^data:(image\/[^;]+);base64,(.+)$/);
-      if (m) return { inline_data: { mime_type: m[1], data: m[2] } };
-      // External URL — Google supports file_data with URI; mime defaults to jpeg
-      return { file_data: { file_uri: url, mime_type: "image/jpeg" } };
+      if (m) return { inlineData: { mimeType: m[1], data: m[2] } };
+      // External URL — Google supports fileData with URI; mime defaults to jpeg
+      return { fileData: { fileUri: url, mimeType: "image/jpeg" } };
     }
     return { text: JSON.stringify(part) };
   });
@@ -140,7 +146,7 @@ export const googleGenaiAdapter: Adapter = {
     const toolCalls: ToolCall[] = [];
     for (const p of parts) {
       if (p.text) textOut += p.text;
-      else if (p.inline_data) images.push(`data:${p.inline_data.mime_type};base64,${p.inline_data.data}`);
+      else if (p.inlineData) images.push(`data:${p.inlineData.mimeType};base64,${p.inlineData.data}`);
       else if (p.functionCall) toolCalls.push({ name: p.functionCall.name, arguments: p.functionCall.args ?? {} });
     }
 

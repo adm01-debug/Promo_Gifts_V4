@@ -306,7 +306,11 @@ export const VoiceSearchOverlay = React.forwardRef<HTMLDivElement, VoiceSearchOv
                     }
                     tabIndex={0}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') handleOrbClick();
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleOrbClick();
+                      }
                     }}
                   >
                     <VoiceOrb phase={phase} isBooting={showBooting} />

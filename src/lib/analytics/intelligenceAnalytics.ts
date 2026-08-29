@@ -29,7 +29,7 @@ export interface SubstituteAppliedPayload {
   /** Janela em dias no momento do clique. */
   days: number;
   /** Culpado do diagnóstico antes da aplicação, quando disponível. */
-  culpritBefore?: FilterKey | 'window' | 'intersection' | null;
+  culpritBefore?: FilterKey | 'intersection' | 'window' | null;
 }
 
 export interface IntelligenceAnalyticsEvent {

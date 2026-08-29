@@ -179,7 +179,11 @@ Deno.serve(async (req) => {
           })),
           { onConflict: 'bitrix_id' },
         );
-        result = { synced: companies.length, error: syncError?.message };
+        if (syncError) {
+          console.error('bitrix-sync persistence error:', safeErrorFields(syncError));
+          throw new Error('Failed to persist Bitrix clients');
+        }
+        result = { synced: companies.length };
         break;
       }
 

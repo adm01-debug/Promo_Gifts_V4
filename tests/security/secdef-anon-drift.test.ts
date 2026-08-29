@@ -17,6 +17,17 @@ function run(fromFile: string) {
   });
 }
 
+function runWithoutCreds(args: string[] = []) {
+  return spawnSync('node', ['scripts/check-secdef-anon-drift.mjs', ...args], {
+    encoding: 'utf8',
+    env: {
+      PATH: process.env.PATH,
+      HOME: process.env.HOME,
+      TMPDIR: process.env.TMPDIR,
+    },
+  });
+}
+
 describe('check-secdef-anon-drift', () => {
   let allowlisted: string[] = [];
 
@@ -54,5 +65,19 @@ describe('check-secdef-anon-drift', () => {
     const r = run(p);
     expect(r.status).toBe(0);
     expect(r.stderr).toMatch(/não existem mais no DB/);
+  });
+
+  it('reporta static-pass quando falta credencial e live não é obrigatório', () => {
+    const r = runWithoutCreds();
+    expect(r.status).toBe(0);
+    expect(r.stderr).toMatch(/static-pass/);
+    expect(r.stderr).toMatch(/modo estático/);
+  });
+
+  it('reporta inconclusive quando falta credencial e live é obrigatório', () => {
+    const r = runWithoutCreds(['--require-live']);
+    expect(r.status).toBe(2);
+    expect(r.stderr).toMatch(/inconclusive/);
+    expect(r.stderr).toMatch(/evidência live obrigatória/);
   });
 });

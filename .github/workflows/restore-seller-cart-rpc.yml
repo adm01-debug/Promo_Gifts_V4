@@ -44,10 +44,6 @@ jobs:
             environment: staging
           - env_name: production
             environment: production
-    if: >-
-      github.event_name != 'workflow_dispatch' ||
-      github.event.inputs.environment == 'all' ||
-      github.event.inputs.environment == matrix.env_name
     environment: ${{ matrix.environment }}
     env:
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
@@ -57,12 +53,21 @@ jobs:
     steps:
       - name: Check credentials
         id: creds
+        env:
+          REQUESTED_ENV: ${{ github.event.inputs.environment || 'all' }}
+          CURRENT_ENV: ${{ matrix.env_name }}
         run: |
-          if [ -z "$VITE_SUPABASE_URL" ] || { [ -z "$SUPABASE_ANON_KEY" ] && [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; }; then
+          if [ "$REQUESTED_ENV" != "all" ] && [ "$REQUESTED_ENV" != "$CURRENT_ENV" ]; then
             echo "has_creds=false" >> "$GITHUB_OUTPUT"
+            echo "selected=false" >> "$GITHUB_OUTPUT"
+            echo "Ambiente $CURRENT_ENV não selecionado." >> "$GITHUB_STEP_SUMMARY"
+          elif [ -z "$VITE_SUPABASE_URL" ] || { [ -z "$SUPABASE_ANON_KEY" ] && [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; }; then
+            echo "has_creds=false" >> "$GITHUB_OUTPUT"
+            echo "selected=true" >> "$GITHUB_OUTPUT"
             echo "⚠️  Secrets ausentes para ${{ matrix.env_name }} — pulando." >> "$GITHUB_STEP_SUMMARY"
           else
             echo "has_creds=true" >> "$GITHUB_OUTPUT"
+            echo "selected=true" >> "$GITHUB_OUTPUT"
           fi
 
       - uses: actions/checkout@v4

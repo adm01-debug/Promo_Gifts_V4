@@ -22,7 +22,8 @@ concurrency:
 
 env:
   TZ: America/Sao_Paulo
-  NODE_VERSION: "20"
+  NODE_VERSION: '22.22.1'
+  NODE_OPTIONS: --max-old-space-size=4096
   VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
   VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
 

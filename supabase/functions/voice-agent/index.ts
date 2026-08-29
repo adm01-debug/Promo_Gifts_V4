@@ -5,7 +5,7 @@ import { callAiWithTracking, QuotaExceededError } from '../_shared/ai-usage.ts';
 import { SYSTEM_PROMPT, VOICE_COMMAND_TOOL, TOOL_CHOICE } from './systemPrompt.ts';
 import { parseAiResponse } from './parseAiResponse.ts';
 import { runBotProtection } from '../_shared/bot-protection.ts';
-import { requireAiApiKey } from '../_shared/ai-credentials.ts';
+import { resolveAiApiKey } from '../_shared/ai-credentials.ts';
 
 const TranscriptSchema = z.object({
   transcript: z.string().min(1, 'transcript cannot be empty').max(1000, 'transcript too long'),
@@ -36,13 +36,10 @@ Deno.serve(async (req) => {
     }, corsHeaders);
     if (!protection.allowed) return protection.blockResponse!;
 
-    const ai = await requireAiApiKey(
-      'voice-agent',
-      corsHeaders,
-      'Assistente de voz indisponível no momento. Tente novamente mais tarde.',
-    );
-    if (!ai.apiKey) return ai.response!;
-    const LOVABLE_API_KEY = ai.apiKey;
+    // BUG-CRED-2 FIX (2026-08-17): não bloqueia mais em LOVABLE_API_KEY ausente — esta
+    // função tem routing multi-provider ativo (deepseek/DEEPSEEK_API_KEY) que
+    // callAiWithTracking tenta primeiro e não depende do Lovable Gateway.
+    const { apiKey: LOVABLE_API_KEY } = await resolveAiApiKey('voice-agent');
 
 
     let body: unknown;
@@ -69,7 +66,7 @@ Deno.serve(async (req) => {
       userId: authUserId,
       functionName: "voice-agent",
       model: 'google/gemini-3-flash-preview',
-      apiKey: LOVABLE_API_KEY,
+      apiKey: LOVABLE_API_KEY ?? '',
       requestBody: {
         messages: [
           { role: 'system', content: SYSTEM_PROMPT },

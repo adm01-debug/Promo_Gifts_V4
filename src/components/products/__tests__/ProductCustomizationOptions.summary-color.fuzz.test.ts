@@ -65,6 +65,19 @@ describe('Gate summary-color-tokens — fuzz exaustivo', () => {
     expect(errs.some((e) => e.includes('não encontrado'))).toBe(true);
   });
 
+  it('detecta marcadores ausentes ou fora de ordem', () => {
+    const withoutStart = audit(baseSource.replace('/* summary-color-gate:start */', ''));
+    const reversedMarkers = audit(
+      baseSource
+        .replace('/* summary-color-gate:start */', '/* marker temporário */')
+        .replace('/* summary-color-gate:end */', '/* summary-color-gate:start */')
+        .replace('/* marker temporário */', '/* summary-color-gate:end */'),
+    );
+
+    expect(withoutStart.some((e) => e.includes('marcadores'))).toBe(true);
+    expect(reversedMarkers.some((e) => e.includes('marcadores'))).toBe(true);
+  });
+
   it('detecta arquivo inexistente', () => {
     const errs = (auditFile as (rel: string) => string[])('src/_nao_existe_.tsx');
     expect(errs.some((e) => e.includes('ausente'))).toBe(true);

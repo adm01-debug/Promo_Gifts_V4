@@ -1,19 +1,20 @@
 #!/usr/bin/env node
 /**
  * Deploy gate: confirma que a RPC `restore_seller_cart` está presente
- * no banco canônico (Supabase) consultando indiretamente o pg_proc.
+ * no banco canônico (Supabase) exercitando sua assinatura publicada.
  *
  * Como funciona:
- *   Sem service_role no CI público, não podemos rodar `SELECT ... FROM pg_proc`
- *   direto. Em vez disso, chamamos o endpoint PostgREST da RPC. O PostgREST
- *   consulta o schema cache (que é populado a partir do pg_proc) e responde:
+ *   Chamamos o endpoint PostgREST com o argumento obrigatório `_snapshot`.
+ *   A função é deliberadamente invisível para `anon`, portanto o gate estrito
+ *   usa service_role para distinguir assinatura ausente de ACL correta:
  *     • HTTP 404 + code "PGRST202" → função AUSENTE no schema cache → FALHA
  *     • Qualquer outra resposta (200, 400 validação, 401, 403 RLS, 500 lógica)
  *       → função PRESENTE (endpoint existe) → PASSA
  *
  * Variáveis de ambiente:
  *   SUPABASE_URL           (fallback: VITE_SUPABASE_URL)
- *   SUPABASE_ANON_KEY      (fallback: VITE_SUPABASE_ANON_KEY / VITE_SUPABASE_PUBLISHABLE_KEY)
+ *   SUPABASE_SERVICE_ROLE_KEY (preferida; obrigatória no modo estrito)
+ *   SUPABASE_ANON_KEY         (fallback apenas para diagnóstico)
  *   STRICT=1               → falha se credenciais ausentes (default: skip)
  *   RPC_NAME               → override do nome (default: restore_seller_cart)
  *
@@ -32,6 +33,7 @@ const CANONICAL_URL = 'https://doufsxqlfjyuvxuezpln.supabase.co';
 
 const url = process.env.CANONICAL_SUPABASE_URL || process.env.SUPABASE_URL || CANONICAL_URL;
 
+const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 const anonKey =
   process.env.CANONICAL_SUPABASE_ANON_KEY ||
   process.env.SUPABASE_ANON_KEY ||
@@ -56,10 +58,18 @@ function skip(msg) {
 async function main() {
   log(`Verificando presença da RPC \`${RPC_NAME}\` em ${url}`);
 
-  if (!anonKey) {
-    const msg = 'SUPABASE_ANON_KEY ausente — não é possível consultar o schema cache.';
+  const apiKey = serviceRoleKey || anonKey;
+  if (!apiKey) {
+    const msg = 'Credencial Supabase ausente — não é possível verificar a assinatura publicada.';
     if (STRICT) fail(msg);
     return skip(msg);
+  }
+
+  if (STRICT && !serviceRoleKey) {
+    fail(
+      'SUPABASE_SERVICE_ROLE_KEY ausente. A RPC não possui EXECUTE para anon; ' +
+        'um 404 anônimo seria inconclusivo, não prova de ausência.',
+    );
   }
 
   const endpoint = `${url.replace(/\/$/, '')}/rest/v1/rpc/${RPC_NAME}`;
@@ -70,12 +80,12 @@ async function main() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        apikey: anonKey,
-        Authorization: `Bearer ${anonKey}`,
+        apikey: apiKey,
+        Authorization: `Bearer ${apiKey}`,
       },
-      // Payload propositalmente inválido — não queremos executar de fato,
-      // só provar que o endpoint (portanto a função) existe no schema cache.
-      body: JSON.stringify({}),
+      // String inválida para o contrato jsonb-object: a função responde antes
+      // de qualquer escrita e comprova a resolução de `_snapshot jsonb`.
+      body: JSON.stringify({ _snapshot: 'not-an-object' }),
     });
   } catch (err) {
     const msg = `Falha de rede ao consultar PostgREST: ${err?.message || err}`;
@@ -110,8 +120,8 @@ async function main() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          apikey: anonKey,
-          Authorization: `Bearer ${anonKey}`,
+          apikey: apiKey,
+          Authorization: `Bearer ${apiKey}`,
         },
         body: JSON.stringify({ fname: RPC_NAME }),
       });
@@ -151,8 +161,8 @@ async function main() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          apikey: anonKey,
-          Authorization: `Bearer ${anonKey}`,
+          apikey: apiKey,
+          Authorization: `Bearer ${apiKey}`,
         },
         body: JSON.stringify({ fname: RPC_NAME }),
       });

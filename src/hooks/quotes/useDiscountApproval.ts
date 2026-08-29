@@ -48,6 +48,25 @@ const inflightApprovals = new Map<string, Promise<boolean>>();
 const idempotencyKey = (q: string, req: number, max: number): string =>
   `${q}::${Number(req).toFixed(4)}::${Number(max).toFixed(4)}`;
 
+function approvalDecisionErrorMessage(error: unknown): string {
+  const candidate = (error ?? {}) as { code?: string; message?: string };
+  const code = candidate.code ?? '';
+  const message = candidate.message ?? '';
+  if (code === '23514' && /snapshot|percentual/i.test(message)) {
+    return 'O orçamento mudou após a solicitação. Atualize a fila e solicite uma nova aprovação.';
+  }
+  if (code === '23514' && /decisão terminal conflitante/i.test(message)) {
+    return 'Esta solicitação já recebeu outra decisão. Atualize a fila antes de continuar.';
+  }
+  if (code === '40001') {
+    return 'A solicitação mudou durante a decisão. Atualize a fila e tente novamente.';
+  }
+  if (code === 'P0002') {
+    return 'Solicitação não encontrada. Atualize a fila de aprovações.';
+  }
+  return 'Erro ao responder solicitação';
+}
+
 export function useDiscountApproval() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -82,6 +101,40 @@ export function useDiscountApproval() {
       }
       const promise = (async (): Promise<boolean> => {
         try {
+          // Caminho canônico: uma única transação deriva percentuais/limite no
+          // servidor, cria/reutiliza o DAR e move o orçamento. O fallback abaixo
+          // existe somente para mocks/clients legados sem o método rpc durante o
+          // rollout; erro da RPC nunca cai nas escritas multi-etapa antigas.
+          if (typeof supabase.rpc === 'function') {
+            const { data, error } = await supabase.rpc(
+              'request_discount_approval_transactional' as never,
+              {
+                _quote_id: quoteId,
+                _seller_notes: sellerNotes?.trim() || null,
+              } as never,
+            );
+            if (error) {
+              await logRlsDenial(error, {
+                table: 'discount_approval_requests',
+                op: 'INSERT',
+                endpoint: 'useDiscountApproval.requestApproval.rpc',
+                targetId: quoteId,
+                targetSellerId: user.id,
+                policyHint: 'request_discount_approval_transactional',
+                querySummary: 'percentuais derivados no servidor',
+              });
+              throw error;
+            }
+            const status = (data as { status?: string } | null)?.status;
+            toast.success(
+              status === 'approved'
+                ? 'Este snapshot já possui aprovação válida.'
+                : 'Solicitação de aprovação enviada ao admin!',
+            );
+            invalidateWidget();
+            return true;
+          }
+
           // BUG-040: Dedup guard — idempotent under double-clicks / retries.
           // A pending row for this quote already satisfies the intent; skip the
           // duplicate INSERT to avoid confusing the admin approval queue.
@@ -235,50 +288,13 @@ export function useDiscountApproval() {
             if (auditErr) logger.error('Failed to log audit trail:', auditErr);
           }
 
-          // Notify all admins — both queries are independent, run in parallel
-          // BUG-NOTIFY-ADMIN-SILENT-FAIL FIX: previously { error } was not destructured from
-          // the user_roles query. If the query failed (RLS denial, network error), adminRoles
-          // was null, the `if (adminRoles && ...)` guard silently skipped notification, and
-          // nothing was logged — admins never knew a discount approval had been requested.
-          const [{ data: adminRoles, error: rolesErr }, { data: profile }] = await Promise.all([
-            supabase.from('user_roles').select('user_id').eq('role', 'admin'),
-            supabase.from('profiles').select('full_name').eq('user_id', user.id).maybeSingle(),
-          ]);
-          if (rolesErr)
-            logger.warn('Failed to fetch admin roles for discount notification:', rolesErr);
-          if (adminRoles && adminRoles.length > 0) {
-            const sellerName = profile?.full_name || 'Vendedor';
-            const msg =
-              markup > 0
-                ? `${sellerName} solicitou desconto real de ${requestedPercent.toFixed(2)}% (aparente ${apparent.toFixed(1)}% com markup +${markup.toFixed(1)}%, limite ${maxAllowedPercent}%)`
-                : `${sellerName} solicitou ${requestedPercent.toFixed(1)}% de desconto (limite: ${maxAllowedPercent}%)`;
-            const deepLink = newRequestId
-              ? `/admin/usuarios?tab=discounts&request=${newRequestId}`
-              : '/admin/usuarios?tab=discounts';
-            const { error: notifyErr } = await supabase.from('workspace_notifications').insert(
-              adminRoles.map((a) => ({
-                user_id: a.user_id,
-                title: 'Solicitação de desconto',
-                message: msg,
-                type: 'warning',
-                category: 'discount',
-                action_url: deepLink,
-                metadata: {
-                  request_id: newRequestId,
-                  quote_id: quoteId,
-                  seller_id: user.id,
-                  seller_name: sellerName,
-                  requested_discount_percent: requestedPercent,
-                  max_allowed_percent: maxAllowedPercent,
-                  real_discount_percent: requestedPercent,
-                  apparent_discount_percent: apparent,
-                  negotiation_markup_percent: markup,
-                  seller_notes: sellerNotes || null,
-                },
-              })),
+          // A notificação é responsabilidade exclusiva de
+          // trg_notify_discount_approval/notify_discount_approval_request.
+          // Escrever também pelo cliente gerava uma notificação duplicada por admin.
+          if (!newRequestId) {
+            logger.warn(
+              'Approval inserted without returned id; database trigger remains authoritative',
             );
-
-            if (notifyErr) logger.error('Failed to notify admins of approval request:', notifyErr);
           }
 
           toast.success('Solicitação de aprovação enviada ao admin!');
@@ -334,6 +350,31 @@ export function useDiscountApproval() {
     async (requestId: string, approved: boolean, adminNotes?: string): Promise<boolean> => {
       if (!user) return false;
       try {
+        if (typeof supabase.rpc === 'function') {
+          const { error } = await supabase.rpc(
+            'respond_discount_approval_transactional' as never,
+            {
+              _request_id: requestId,
+              _approved: approved,
+              _admin_notes: adminNotes?.trim() || null,
+            } as never,
+          );
+          if (error) {
+            await logRlsDenial(error, {
+              table: 'discount_approval_requests',
+              op: 'UPDATE',
+              endpoint: 'useDiscountApproval.respondToApproval.rpc',
+              targetId: requestId,
+              policyHint: 'respond_discount_approval_transactional',
+              querySummary: `decision=${approved ? 'approved' : 'rejected'}`,
+            });
+            throw error;
+          }
+          toast.success(approved ? 'Desconto aprovado!' : 'Desconto rejeitado');
+          invalidateWidget();
+          return true;
+        }
+
         const validUntilDate = approved
           ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
           : null;
@@ -349,6 +390,7 @@ export function useDiscountApproval() {
             valid_until: validUntilDate,
           })
           .eq('id', requestId)
+          .eq('status', 'pending')
           .select()
           .single();
         if (updateError) {
@@ -367,61 +409,66 @@ export function useDiscountApproval() {
 
         // Update quote status: approved → pending (ready to send), rejected → draft (needs adjustment)
         const newStatus = approved ? 'pending' : 'draft';
-        const [quoteUpdateResult, historyResult] = await Promise.all([
-          supabase
-            // rls-allow: fluxo de aprovação admin/seller; RLS filtra por papel
-            .from('quotes')
-            .update({ status: newStatus })
-            .eq('id', typedReq.quote_id),
-          // Log in quote history for auditability
-          supabase.from('quote_history').insert({
-            quote_id: typedReq.quote_id,
-            user_id: user.id,
-            action: approved ? 'discount_approved' : 'discount_rejected',
-            description: approved
-              ? `Desconto de ${typedReq.requested_discount_percent}% aprovado pelo admin`
-              : `Desconto de ${typedReq.requested_discount_percent}% rejeitado pelo admin`,
-            field_changed: 'discount',
-            old_value: `${typedReq.max_allowed_percent}%`,
-            new_value: `${typedReq.requested_discount_percent}%`,
-            metadata: {
-              admin_notes: adminNotes || null,
-              status: approved ? 'approved' : 'rejected',
-            },
-          }),
-        ]);
+        const quoteUpdateResult = await supabase
+          // rls-allow: fluxo de aprovação admin/seller; RLS filtra por papel
+          .from('quotes')
+          .update({ status: newStatus })
+          .eq('id', typedReq.quote_id);
 
         if (quoteUpdateResult.error) {
           logger.error('Failed to update quote status:', quoteUpdateResult.error);
-        }
-        if (historyResult.error) {
-          logger.error('Failed to log quote history:', historyResult.error);
+          // Compensação de melhor esforço: mantém o DAR pendente se a segunda
+          // escrita falhar. A atomicidade real entre tabelas requer RPC/trigger
+          // dedicado; não existe transação multi-tabela no cliente PostgREST.
+          const { error: compensationError } = await supabase
+            .from('discount_approval_requests')
+            .update({
+              status: 'pending',
+              admin_id: null,
+              admin_notes: null,
+              responded_at: null,
+              valid_until: null,
+            })
+            .eq('id', requestId)
+            .eq('status', approved ? 'approved' : 'rejected');
+          if (compensationError) {
+            logger.error('Failed to compensate discount approval decision:', compensationError);
+          }
+          throw quoteUpdateResult.error;
         }
 
-        // Notify the seller
-        // BUG-NOTIFY-SELLER-SILENT-FAIL FIX: previously a bare `await supabase...` was used
-        // here — Supabase JS v2 never throws on DB errors, so any RLS denial or constraint
-        // violation was silently swallowed. The seller would never receive the decision
-        // notification and nothing was logged. Destructure { error } and log on failure.
-        const { error: sellerNotifyErr } = await supabase.from('workspace_notifications').insert({
-          user_id: typedReq.seller_id,
-          title: approved ? 'Desconto aprovado ✅' : 'Desconto rejeitado ❌',
-          message: approved
-            ? `Seu desconto de ${typedReq.requested_discount_percent}% foi aprovado. O orçamento está pronto para envio.`
-            : `Seu desconto de ${typedReq.requested_discount_percent}% foi rejeitado.${adminNotes ? ` Motivo: ${adminNotes}` : ' Ajuste o desconto e tente novamente.'}`,
-          type: approved ? 'success' : 'error',
-          category: 'discount',
-          action_url: `/orcamentos/${typedReq.quote_id}`,
+        // O histórico só é registrado depois que o estado do orçamento foi
+        // confirmado. Assim, uma falha da escrita principal não produz uma
+        // trilha de auditoria ou notificação contraditória.
+        const { error: historyError } = await supabase.from('quote_history').insert({
+          quote_id: typedReq.quote_id,
+          user_id: user.id,
+          action: approved ? 'discount_approved' : 'discount_rejected',
+          description: approved
+            ? `Desconto de ${typedReq.requested_discount_percent}% aprovado pelo admin`
+            : `Desconto de ${typedReq.requested_discount_percent}% rejeitado pelo admin`,
+          field_changed: 'discount',
+          old_value: `${typedReq.max_allowed_percent}%`,
+          new_value: `${typedReq.requested_discount_percent}%`,
+          metadata: {
+            admin_notes: adminNotes || null,
+            status: approved ? 'approved' : 'rejected',
+          },
         });
-        if (sellerNotifyErr)
-          logger.error('Failed to notify seller of approval decision:', sellerNotifyErr);
+
+        if (historyError) {
+          logger.error('Failed to log quote history:', historyError);
+        }
+
+        // O trigger canônico trg_notify_discount_approval notifica o vendedor
+        // na transição pending -> approved/rejected. Não duplicar pelo cliente.
 
         toast.success(approved ? 'Desconto aprovado!' : 'Desconto rejeitado');
         invalidateWidget();
         return true;
       } catch (err) {
         logger.error('Error responding to approval:', err);
-        toast.error('Erro ao responder solicitação');
+        toast.error(approvalDecisionErrorMessage(err), { duration: 8000 });
         return false;
       }
     },

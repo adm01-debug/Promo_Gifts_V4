@@ -85,6 +85,7 @@
 | `validate-access` | `/functions/v1/validate-access` | `POST` | JWT (padrão Supabase, salvo override) | Ver `index.ts`/Zod local | JSON (`success`/`data`/`error`) | não mapeado formalmente |
 | `verify-email` | `/functions/v1/verify-email` | `POST` | JWT (padrão Supabase, salvo override) | Ver `index.ts`/Zod local | JSON (`success`/`data`/`error`) | não mapeado formalmente |
 | `visual-search` | `/functions/v1/visual-search` | `POST` | JWT (padrão Supabase, salvo override) | Ver `index.ts`/Zod local | JSON (`success`/`data`/`error`) | não mapeado formalmente |
+| `product-visual-search` | `/functions/v1/product-visual-search` | `POST` | JWT (padrão Supabase, salvo override) | Zod (imageBase64, searchTerms) | JSON (analysis/products) | Roboflow API (requer ROBOFLOW_API_KEY) |
 | `voice-agent` | `/functions/v1/voice-agent` | `POST` | JWT (padrão Supabase, salvo override) | Ver `index.ts`/Zod local | JSON (`success`/`data`/`error`) | não mapeado formalmente |
 | `webhook-dispatcher` | `/functions/v1/webhook-dispatcher` | `POST` | Service/secret | Zod dispatcher | resultado dispatch | fallback legacy_no_auth (audit SEC-003) |
 | `webhook-inbound` | `/functions/v1/webhook-inbound` | `POST` | Public (assinatura/webhook) | Zod webhook inbound | ack + id evento | HMAC inválido |

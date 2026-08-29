@@ -44,12 +44,23 @@ vi.mock('@/hooks/products/useProductsByMaterial', () => ({
   })),
 }));
 
+vi.mock('@/hooks/products/useColorSystem', () => ({
+  useColorSystem: vi.fn(() => ({
+    data: { groups: [], nuances: [] },
+    isLoading: false,
+  })),
+}));
+
 vi.mock('@/hooks/intelligence/usePromoSalesRanking', () => ({
   usePromoSalesRanking: vi.fn(() => ({ data: undefined })),
 }));
 
 vi.mock('@/hooks/intelligence/usePromoSales90dByProduct', () => ({
   usePromoSales90dByProduct: vi.fn(() => ({ data: undefined })),
+}));
+
+vi.mock('@/hooks/products/useSupplierSalesRanking', () => ({
+  useSupplierSalesRanking: vi.fn(() => ({ data: new Map() })),
 }));
 
 const queryClient = new QueryClient({

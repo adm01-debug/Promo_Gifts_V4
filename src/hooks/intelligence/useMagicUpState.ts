@@ -7,6 +7,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { normalizeProductSearch } from '@/utils/product-search';
 import type { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAriaLive } from '@/components/a11y';
@@ -105,6 +106,16 @@ export function useMagicUpState() {
   // Product
   const [products, setProducts] = useState<MagicUpProduct[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
+  // BUG-MAGICUP-REMOUNT-1 FIX (2026-08-17): `loadingProducts` now toggles on
+  // every debounced search (not just once at page mount), since product
+  // loading became search-driven. The page-level skeleton must gate on a
+  // one-time "first load done" flag instead — otherwise every keystroke
+  // unmounts/remounts the whole config+result panel tree (page jumps to top,
+  // combobox popover closes) because MagicUp.tsx swaps the entire subtree
+  // for a skeleton whenever `loadingProducts` is true.
+  const [initialProductsLoaded, setInitialProductsLoaded] = useState(false);
+  const [productSearch, setProductSearch] = useState('');
+  const [debouncedProductSearch, setDebouncedProductSearch] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<MagicUpProduct | null>(null);
   const [colors, setColors] = useState<ProductColor[]>([]);
   const [productImages, setProductImages] = useState<ProductImage[]>([]);
@@ -266,30 +277,75 @@ export function useMagicUpState() {
     enabled: !!user?.id && !!selectedClient?.id,
   });
 
-  // ─── Load Products ──────────────────────────────────────────────
+  // ─── Product search debounce ──────────────────────────────────
   useEffect(() => {
+    const t = setTimeout(() => setDebouncedProductSearch(productSearch), 300);
+    return () => clearTimeout(t);
+  }, [productSearch]);
+
+  // ─── Load Products ──────────────────────────────────────────────
+  // BUG-MAGICUP-PRODSEARCH-1 FIX (2026-08-17): antes carregava o catálogo
+  // inteiro (7k+ produtos ativos) via fetchPromobrindProducts() sem limit,
+  // que pagina até um timeout de 30s ordenando por nome — para catálogos
+  // grandes, produtos cujo nome cai depois do ponto de corte (ex.: "Mochila")
+  // nunca chegavam a ser carregados, e a busca local (Fuse.js) dava 0
+  // resultados mesmo com centenas de produtos correspondentes no banco.
+  // Agora busca no servidor conforme o usuário digita, igual ao padrão já
+  // usado para clientes (debouncedClientSearch acima).
+  //
+  // BUG-MAGICUP-PRODSEARCH-2 FIX (2026-08-17): a busca server-side usa full-text
+  // search (search_vector, stemming PT-BR) sobre nome+descrição+categoria — por
+  // isso "mochila" também retorna bolsas cuja categoria é "Sacochila (Mochila
+  // Saco)" ou cuja descrição menciona "alça tipo mochila". Esses matches são
+  // tecnicamente relevantes, mas a query só ordena por nome (A-Z), então esses
+  // resultados "peninsulares" enterravam os produtos literalmente chamados
+  // "Mochila ...". Busca um pool maior (150) e reordena no cliente: produtos
+  // cujo nome contém o termo digitado vêm primeiro, o resto do FTS depois —
+  // aí corta para os 50 exibidos.
+  useEffect(() => {
+    let cancelled = false;
     (async () => {
       setLoadingProducts(true);
       try {
         const { fetchPromobrindProducts } = await import('@/lib/external-db');
-        const data = await fetchPromobrindProducts();
-        setProducts(
-          data.map((p) => ({
-            id: p.id,
-            name: p.name,
-            sku: p.sku,
-            images: p.images || [],
-            primary_image_url: p.primary_image_url || p.image_url || null,
-            og_image_url: p.og_image_url || null,
-          })) as unknown as MagicUpProduct[],
-        );
+        const search = debouncedProductSearch || undefined;
+        const data = await fetchPromobrindProducts({
+          search,
+          limit: search ? 150 : 50,
+        });
+        if (cancelled) return;
+        const mapped = data.map((p) => ({
+          id: p.id,
+          name: p.name,
+          sku: p.sku,
+          images: p.images || [],
+          primary_image_url: p.primary_image_url || p.image_url || null,
+          og_image_url: p.og_image_url || null,
+        })) as unknown as MagicUpProduct[];
+        const ranked = search
+          ? (() => {
+              const term = normalizeProductSearch(search);
+              const nameMatches = mapped.filter((p) =>
+                normalizeProductSearch(p.name).includes(term),
+              );
+              const rest = mapped.filter((p) => !normalizeProductSearch(p.name).includes(term));
+              return [...nameMatches, ...rest].slice(0, 50);
+            })()
+          : mapped;
+        setProducts(ranked);
       } catch {
-        toast.error('Erro ao carregar produtos');
+        if (!cancelled) toast.error('Erro ao carregar produtos');
       } finally {
-        setLoadingProducts(false);
+        if (!cancelled) {
+          setLoadingProducts(false);
+          setInitialProductsLoaded(true);
+        }
       }
     })();
-  }, []);
+    return () => {
+      cancelled = true;
+    };
+  }, [debouncedProductSearch]);
 
   // ─── Load Colors & Images on Product Change ──────────────────────
   useEffect(() => {
@@ -891,6 +947,9 @@ CENÁRIO: ${effectivePrompt}`;
   return {
     products,
     loadingProducts,
+    initialProductsLoaded,
+    productSearch,
+    setProductSearch,
     selectedProduct,
     colors,
     productImages,

@@ -19,7 +19,8 @@
  *   bunx vitest run tests/integration/discountApprovalFlow.test.ts
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { renderHook, act } from "@testing-library/react";
+import { act } from "@testing-library/react";
+import { renderHookWithProviders } from "../hooks/_helpers/render-hook-providers";
 
 // ─────────────────────────────────────────────────────────────
 // Hoisted mock state — accessible inside vi.mock factories
@@ -72,8 +73,10 @@ const H = vi.hoisted(() => {
       limit: () => builder,
       single: () => Promise.resolve({ data: results.single ?? null, error: null }),
       maybeSingle: () => Promise.resolve({ data: results.maybeSingle ?? null, error: null }),
-      then: (resolve: (v: { data: unknown; error: null }) => unknown) =>
-        resolve({ data: results.list ?? [], error: null }),
+      then: (resolve: (v: { data: unknown; error: unknown }) => unknown) => {
+        const updateError = currentMethod === "update" ? (results.updateError ?? null) : null;
+        resolve({ data: results.list ?? [], error: updateError });
+      },
     });
     return builder;
   }
@@ -178,7 +181,7 @@ beforeEach(() => {
 describe("E2E: Vendedor solicita aprovação de desconto", () => {
   it("cria request, atualiza quote, loga histórico e notifica admins", async () => {
     setUser("seller");
-    const { result } = renderHook(() => useDiscountApproval());
+    const { result } = renderHookWithProviders(() => useDiscountApproval());
 
     let success = false;
     await act(async () => {
@@ -227,7 +230,7 @@ describe("E2E: Vendedor solicita aprovação de desconto", () => {
 
   it("retorna false se não houver usuário autenticado", async () => {
     setUser("none");
-    const { result } = renderHook(() => useDiscountApproval());
+    const { result } = renderHookWithProviders(() => useDiscountApproval());
     let success = true;
     await act(async () => {
       success = await result.current.requestApproval(QUOTE_ID, 15, 10);
@@ -238,7 +241,7 @@ describe("E2E: Vendedor solicita aprovação de desconto", () => {
   it("não envia notificação se nenhum admin existir", async () => {
     setUser("seller");
     H.setOverride("user_roles", { list: [] });
-    const { result } = renderHook(() => useDiscountApproval());
+    const { result } = renderHookWithProviders(() => useDiscountApproval());
     await act(async () => {
       await result.current.requestApproval(QUOTE_ID, 15, 10);
     });
@@ -253,7 +256,7 @@ describe("E2E: Vendedor solicita aprovação de desconto", () => {
 describe("E2E: Admin aprova solicitação", () => {
   it("atualiza request, muda quote para 'pending', loga histórico e notifica vendedor", async () => {
     setUser("admin");
-    const { result } = renderHook(() => useDiscountApproval());
+    const { result } = renderHookWithProviders(() => useDiscountApproval());
 
     let success = false;
     await act(async () => {
@@ -292,6 +295,23 @@ describe("E2E: Admin aprova solicitação", () => {
     });
     expect((notif?.payload as { title: string }).title).toContain("aprovado");
   });
+
+  it("não confirma aprovação nem notifica vendedor se a atualização do orçamento falha", async () => {
+    setUser("admin");
+    H.setOverride("quotes", { updateError: { message: "quote update failed" } });
+    const { result } = renderHookWithProviders(() => useDiscountApproval());
+
+    let success = true;
+    await act(async () => {
+      success = await result.current.respondToApproval(REQUEST_ID, true, "Aprovado");
+    });
+
+    expect(success).toBe(false);
+    expect(toast.success).not.toHaveBeenCalled();
+    expect(toast.error).toHaveBeenCalledWith("Erro ao responder solicitação");
+    expect(ops.find(o => o.table === "quote_history" && o.method === "insert")).toBeUndefined();
+    expect(ops.find(o => o.table === "workspace_notifications" && o.method === "insert")).toBeUndefined();
+  });
 });
 
 // ─────────────────────────────────────────────────────────────
@@ -311,7 +331,7 @@ describe("E2E: Admin rejeita solicitação", () => {
       },
     });
 
-    const { result } = renderHook(() => useDiscountApproval());
+    const { result } = renderHookWithProviders(() => useDiscountApproval());
 
     let success = false;
     await act(async () => {

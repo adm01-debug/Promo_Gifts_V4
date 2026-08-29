@@ -86,7 +86,7 @@ describe('UndoToastContent — countdown + pause-on-hover', () => {
     expect(screen.getByText('2s')).toBeInTheDocument();
   });
 
-  it('chama onUndo no clique e apenas uma vez por instância', () => {
+  it('chama onUndo no clique e apenas uma vez por instância', async () => {
     const onUndo = vi.fn();
     render(
       <UndoToastContent
@@ -99,7 +99,12 @@ describe('UndoToastContent — countdown + pause-on-hover', () => {
     const btn = screen.getByRole('button', { name: /desfazer ação/i });
     fireEvent.click(btn);
     fireEvent.click(btn);
-    expect(onUndo).toHaveBeenCalledTimes(2); // o wrapper que faz o guard; o componente apenas dispara
+    await act(async () => {
+      await Promise.resolve();
+    });
+    // `pendingRef` também protege o componente antes do re-render; a segunda
+    // interação concorrente não pode iniciar outra restauração.
+    expect(onUndo).toHaveBeenCalledTimes(1);
   });
 
   it('dispara onTimeout quando o contador chega a 0 (sem chamar onUndo)', () => {

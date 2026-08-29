@@ -11,7 +11,7 @@
  * a lista padrão — usado em fuzz tests in-process.
  */
 import { readFileSync, existsSync } from 'node:fs';
-import { resolve, dirname } from 'node:path';
+import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 // Resolve ROOT de forma resiliente — sob Vitest/Vite o `import.meta.url`
@@ -27,8 +27,8 @@ function resolveRoot() {
 }
 export const ROOT = resolveRoot();
 export const TITLE = 'Resumo das Configurações';
-export const WINDOW_BEFORE = 400;
-export const WINDOW_AFTER = 5000;
+export const START_MARKER = '/* summary-color-gate:start */';
+export const END_MARKER = '/* summary-color-gate:end */';
 
 export const REQUIRED = [
   /\bbg-success\b/,
@@ -52,12 +52,18 @@ export const FORBIDDEN = [
  */
 export function auditSource(src, label = '<source>') {
   const errors = [];
-  const idx = src.indexOf(TITLE);
-  if (idx === -1) {
+  const start = src.indexOf(START_MARKER);
+  const end = src.indexOf(END_MARKER);
+  if (start === -1 || end === -1 || end <= start) {
+    errors.push(`${label}: marcadores do bloco ${TITLE} ausentes ou inválidos`);
+    return errors;
+  }
+
+  const block = src.slice(start + START_MARKER.length, end);
+  if (!block.includes(TITLE)) {
     errors.push(`${label}: título "${TITLE}" não encontrado — renomeou?`);
     return errors;
   }
-  const block = src.slice(Math.max(0, idx - WINDOW_BEFORE), idx + WINDOW_AFTER);
   for (const re of REQUIRED) {
     if (!re.test(block))
       errors.push(`${label}: token obrigatório ausente no bloco ${TITLE}: ${re}`);

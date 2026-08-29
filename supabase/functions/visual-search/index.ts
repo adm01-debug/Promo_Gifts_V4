@@ -12,6 +12,17 @@ import { resolveCredential } from '../_shared/credentials.ts';
 // BUG-VS-CREDS: status code 503 já estava correto no repo mas a version
 // deployada (v189) ainda tinha o bug. Este comentário força um novo deploy.
 
+// FIX 2026-08-15: substituído Hugging Face (api-inference.huggingface.co
+// parou de resolver via DNS — endpoint legado descontinuado pelo provider)
+// por MiniMax (https://api.minimax.io/v1/chat/completions, modelo
+// MiniMax-M3, API compatível com OpenAI chat completions + vision).
+// SSOT: resolveCredential (DB-first → env fallback), não Deno.env.get
+// direto — alinhado com ai-recommendations/elevenlabs e o audit de credenciais.
+// ROLLBACK-2026-08-15 v2: tentativa RoboFlow (foundation yolov8n-640 →
+// custom fatorx) revertida — modelo custom ainda não publicado; foundation
+// classificava errado (caneta → "bottle"). Restaurado para MiniMax como
+// primary, Lovable como fallback.
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -70,6 +81,28 @@ function normalizeImages(images: unknown, fallback?: unknown): string[] {
   return list;
 }
 
+function errorMessage(error: unknown): string {
+  const raw = error instanceof Error
+    ? error.message
+    : typeof error === 'object' && error !== null && typeof (error as { message?: unknown }).message === 'string'
+    ? (error as { message: string }).message
+    : String(error);
+
+  // A telemetria não deve se tornar uma cópia acidental de credenciais presentes
+  // em mensagens de SDK/provedor. Mantemos uma causa curta e redigida.
+  return raw
+    .replace(/(bearer\s+)[^\s]+/gi, '$1[redacted]')
+    .replace(/([?&](?:api[_-]?key|token|key)=)[^&\s]+/gi, '$1[redacted]')
+    .slice(0, 1_000);
+}
+
+function errorStatus(error: unknown): number {
+  const status = typeof error === 'object' && error !== null
+    ? (error as { status?: unknown }).status
+    : undefined;
+  return typeof status === 'number' ? status : 500;
+}
+
 Deno.serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
   if (req.method === 'OPTIONS') {
@@ -77,6 +110,7 @@ Deno.serve(async (req) => {
   }
 
   const requestId = getOrCreateRequestId(req);
+  const startedAtMs = Date.now();
   const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
   const supabaseServiceRole = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
   const serviceClient = createClient(supabaseUrl, supabaseServiceRole);
@@ -85,53 +119,43 @@ Deno.serve(async (req) => {
   let usedProvider = 'none';
   let currentStep = 'initializing';
 
-  const logToDb = async (error: any, metadata: any = {}) => {
+  const logToDb = async (
+    error: unknown,
+    statusCode: number,
+    metadata: Record<string, unknown> = {},
+  ) => {
     try {
-      await serviceClient.from('system_error_logs').insert({
-        user_id: userId,
-        function_name: 'visual-search',
-        error_message: error.message || String(error),
-        stack_trace: error.stack,
-        metadata: {
-          ...metadata,
-          requestId,
-          currentStep,
-          timestamp: new Date().toISOString(),
-        },
-      });
+      const { error: telemetryError } = await serviceClient
+        .from('edge_function_invocations')
+        .insert({
+          function_slug: 'visual-search',
+          // O bypass de simulação usa um UUID sentinela que não pertence a
+          // auth.users; gravar null evita violar a FK da telemetria canônica.
+          invoked_by: userId === '00000000-0000-0000-0000-000000000000' ? null : userId ?? null,
+          request_method: req.method,
+          request_metadata: {
+            ...metadata,
+            request_id: requestId,
+            current_step: currentStep,
+          },
+          status_code: statusCode,
+          duration_ms: Date.now() - startedAtMs,
+          error_message: errorMessage(error),
+        });
+
+      if (telemetryError) {
+        console.error(
+          `[${requestId}] Failed to record visual-search telemetry:`,
+          telemetryError.message,
+        );
+      }
     } catch (dbErr) {
-      console.error('Critical: Failed to log error to DB', dbErr);
+      console.error(`[${requestId}] Failed to record visual-search telemetry:`, dbErr);
     }
   };
 
   try {
-    // 1. Authentication & Config Validation
-    currentStep = 'config_validation';
-    const AI_LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    // SSOT: HF_ACCESS_TOKEN resolvido via resolveCredential (DB-first → env fallback),
-    // não Deno.env.get direto — alinhado com ai-recommendations/elevenlabs e o audit de credenciais.
-    const { value: AI_HF_ACCESS_TOKEN } = await resolveCredential('HF_ACCESS_TOKEN');
-
-    if (!AI_LOVABLE_API_KEY && !AI_HF_ACCESS_TOKEN) {
-      // BUG-VS-CREDS (2026-06-23): Retorna 503 (não 500) para credencial ausente.
-      // 500 implica bug no código; 503 implica serviço/infra não configurado.
-      // Ação: configurar HF_ACCESS_TOKEN ou LOVABLE_API_KEY como Supabase EF secret
-      // via dashboard ou inserir em integration_credentials.
-      console.error('[visual-search] Nenhuma credencial de IA configurada. Configure HF_ACCESS_TOKEN ou LOVABLE_API_KEY.');
-      return new Response(
-        JSON.stringify({
-          error: 'Busca visual temporariamente indisponível. Configure as credenciais de IA no painel administrativo.',
-          code: 'AI_CREDENTIALS_MISSING',
-          step: currentStep,
-          requestId,
-        }),
-        {
-          status: 503,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        },
-      );
-    }
-
+    // 1. Authentication (sempre primeiro — AI calls são feitas depois)
     // Bypass mechanism for simulations/tests
     const bypassKey = Deno.env.get('SIMULATION_BYPASS_KEY');
     const providedBypass = req.headers.get('X-Simulation-Bypass');
@@ -170,7 +194,28 @@ Deno.serve(async (req) => {
       return new Response(rl.body, { status: rl.status, headers });
     }
 
-    // 3. Input Validation
+    // 3. AI Credentials (após auth validada — evita DB lookups se user não autenticado)
+    currentStep = 'config_validation';
+    // FIX 2026-08-15: HuggingFace descontinuado → MiniMax como primary.
+    // SSOT: resolveCredential (DB-first → env fallback), não Deno.env.get direto.
+    const { value: AI_MINIMAX_API_KEY } = await resolveCredential('MINIMAX_API_KEY');
+    const { value: AI_LOVABLE_API_KEY } = await resolveCredential('LOVABLE_API_KEY');
+
+    if (!AI_MINIMAX_API_KEY && !AI_LOVABLE_API_KEY) {
+      console.error('[visual-search] Nenhuma credencial de IA configurada. Configure MINIMAX_API_KEY ou LOVABLE_API_KEY.');
+      await logToDb(new Error('AI_CREDENTIALS_MISSING'), 503, { provider: usedProvider });
+      return new Response(
+        JSON.stringify({
+          error: 'Busca visual temporariamente indisponível. Configure as credenciais de IA no painel administrativo.',
+          code: 'AI_CREDENTIALS_MISSING',
+          step: currentStep,
+          requestId,
+        }),
+        { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      );
+    }
+
+    // 4. Input Validation
     currentStep = 'input_validation';
     const ImageSchema = z.object({
       imageBase64: z.string().min(10, 'Image is required').max(10_000_000, 'Image too large'),
@@ -259,34 +304,33 @@ Responda APENAS em JSON com este formato:
 
     let analysisContent = '';
 
-    if (AI_HF_ACCESS_TOKEN) {
+    if (AI_MINIMAX_API_KEY) {
       try {
-        const hfModel = 'meta-llama/Llama-3.2-11B-Vision-Instruct';
-        const hfResponse = await fetch(
-          `https://api-inference.huggingface.co/models/${hfModel}/v1/chat/completions`,
+        const minimaxResponse = await fetch(
+          'https://api.minimax.io/v1/chat/completions',
           {
             headers: {
-              Authorization: `Bearer ${AI_HF_ACCESS_TOKEN}`,
+              Authorization: `Bearer ${AI_MINIMAX_API_KEY}`,
               'Content-Type': 'application/json',
             },
             method: 'POST',
             body: JSON.stringify({
-              model: hfModel,
+              model: 'MiniMax-M3',
               messages: requestBody.messages,
               max_tokens: 1024,
             }),
           },
         );
 
-        if (hfResponse.ok) {
-          const hfData = await hfResponse.json();
-          analysisContent = hfData.choices?.[0]?.message?.content || '';
-          usedProvider = 'huggingface';
+        if (minimaxResponse.ok) {
+          const minimaxData = await minimaxResponse.json();
+          analysisContent = minimaxData.choices?.[0]?.message?.content || '';
+          usedProvider = 'minimax';
         } else {
-          console.warn(`HF Provider failed: ${hfResponse.status} ${hfResponse.statusText}`);
+          console.warn(`[${requestId}] MiniMax Provider failed: ${minimaxResponse.status} ${minimaxResponse.statusText}`);
         }
       } catch (err) {
-        console.error('HF Error:', err);
+        console.error(`[${requestId}] MiniMax Error:`, err);
       }
     }
 
@@ -307,13 +351,11 @@ Responda APENAS em JSON com este formato:
           usedProvider = 'lovable';
         }
       } catch (err) {
-        console.error('Lovable AI Error:', err);
+        console.error(`[${requestId}] Lovable AI Error:`, err);
       }
     }
 
     if (!analysisContent) {
-      // BUG-VS-AI-FAIL (2026-06-23): providers AI retornaram sem conteúdo.
-      // Retorna 503 (não 500) — falha de provider, não bug no código.
       console.error('[visual-search] Ambos os providers de IA falharam em retornar análise.');
       return new Response(
         JSON.stringify({
@@ -323,10 +365,7 @@ Responda APENAS em JSON com este formato:
           requestId,
           usedProvider,
         }),
-        {
-          status: 503,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        },
+        { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
       );
     }
 
@@ -470,7 +509,7 @@ Responda APENAS em JSON com este formato:
     const hasFilters = selectedCategoryIds.length > 0 || selectedColors.length > 0;
     const finalProducts = candidates.map((p) => {
       const categoryName = categoryNameById.get(p.category_id) ?? '';
-      const productColors = (Array.isArray(p.colors) ? p.colors : []).map((c: unknown) =>
+      const productColors: string[] = (Array.isArray(p.colors) ? p.colors : []).map((c: unknown) =>
         String(c).toLowerCase(),
       );
 
@@ -547,16 +586,16 @@ Responda APENAS em JSON com este formato:
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       },
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     // Auth errors → status correto (401/403) em vez de 500 genérico.
-    const status = typeof error?.status === 'number' ? error.status : 500;
+    const status = errorStatus(error);
     console.error(`[${requestId}] Visual search error at step "${currentStep}":`, error);
 
-    await logToDb(error, { provider: usedProvider });
+    await logToDb(error, status, { provider: usedProvider });
 
     return new Response(
       JSON.stringify({
-        error: error?.message || 'Erro interno',
+        error: errorMessage(error) || 'Erro interno',
         step: currentStep,
         requestId,
       }),

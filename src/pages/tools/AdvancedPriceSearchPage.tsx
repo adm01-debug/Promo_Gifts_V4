@@ -39,7 +39,6 @@ import { PageSEO } from '@/components/seo/PageSEO';
 import { useAdvancedPriceSearch } from '@/pages/advanced-price-search/useAdvancedPriceSearch';
 import {
   type SearchFilters,
-  DEFAULT_FILTERS,
   formatCurrency,
   QUANTITY_OPTIONS,
 } from '@/pages/advanced-price-search/types';
@@ -76,7 +75,8 @@ export default function AdvancedPriceSearchPage() {
     viewMode,
     setViewMode,
     isSearching,
-    setIsSearching,
+    runSearch,
+    resetSearch,
     filteredProducts,
     categories,
     availableColors,
@@ -100,12 +100,9 @@ export default function AdvancedPriceSearchPage() {
     }));
   };
 
-  const handleSearch = () => setIsSearching(true);
+  const handleSearch = () => runSearch();
 
-  const handleReset = () => {
-    setFilters(DEFAULT_FILTERS);
-    setIsSearching(false);
-  };
+  const handleReset = () => resetSearch();
 
   return (
     <>

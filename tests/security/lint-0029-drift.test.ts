@@ -17,6 +17,17 @@ function run(fromFile: string) {
   });
 }
 
+function runWithoutCreds(args: string[] = []) {
+  return spawnSync('node', ['scripts/check-lint-0029-drift.mjs', ...args], {
+    encoding: 'utf8',
+    env: {
+      PATH: process.env.PATH,
+      HOME: process.env.HOME,
+      TMPDIR: process.env.TMPDIR,
+    },
+  });
+}
+
 describe('check-lint-0029-drift', () => {
   it('passa quando todos os findings estão na allowlist', () => {
     const p = fixture(['public.has_role(_user_id uuid, _role app_role)', 'public.is_admin()']);
@@ -43,5 +54,19 @@ describe('check-lint-0029-drift', () => {
     // Ainda passa (0) porque não há findings NOVOS; drift stale é warning.
     expect(r.status).toBe(0);
     expect(r.stderr).toMatch(/não existem mais no DB/);
+  });
+
+  it('reporta static-pass quando falta credencial e live não é obrigatório', () => {
+    const r = runWithoutCreds();
+    expect(r.status).toBe(0);
+    expect(r.stderr).toMatch(/static-pass/);
+    expect(r.stderr).toMatch(/modo estático/);
+  });
+
+  it('reporta inconclusive quando falta credencial e live é obrigatório', () => {
+    const r = runWithoutCreds(['--require-live']);
+    expect(r.status).toBe(2);
+    expect(r.stderr).toMatch(/inconclusive/);
+    expect(r.stderr).toMatch(/evidência live obrigatória/);
   });
 });

@@ -90,12 +90,14 @@ jobs:
 
       - name: Detectar pedido de atualização de baselines
         id: detect
+        env:
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
           should_update="false"
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.update_baselines }}" = "true" ]; then
             should_update="true"
           fi
-          if echo "${{ github.event.head_commit.message }}" | grep -qi '\[update-visual-baselines\]'; then
+          if printf '%s\n' "$COMMIT_MESSAGE" | grep -qi '\[update-visual-baselines\]'; then
             should_update="true"
           fi
           echo "should_update=$should_update" >> "$GITHUB_OUTPUT"

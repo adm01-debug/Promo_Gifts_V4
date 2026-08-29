@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 /**
  * check-security-definer-audit.mjs
- * Gate 5 — CHECK 2: Todas as funcoes SECURITY DEFINER em public
- * devem ter SET search_path explícito para evitar privilege escalation.
+ * Gate 5 — CHECK 2: audita ACLs de funcoes SECURITY DEFINER em public.
  *
- * Falha (exit 1) se qualquer funcao SECURITY DEFINER NAO tiver search_path.
+ * Falha (exit 1) para grants públicos não reconhecidos pelo contrato canônico.
  *
  * Usa fetch nativo (Node 18+) para chamar o endpoint REST do Supabase,
  * evitando a dependência do cliente realtime que requer WebSocket (Node 22+).
@@ -41,14 +40,39 @@ try {
   process.exit(1);
 }
 
-const problems = (data ?? []).filter((row) => row.problem && row.problem.length > 0);
+// fn_product_active_for_rls(uuid) is deliberately executable by anon: two
+// catalog RLS policies call it without granting anon direct SELECT on products.
+// The canonical fn_verify_anon_catalog_grants() tripwire also requires this
+// grant. Keep the exception signature- and finding-specific so no unrelated
+// SECURITY DEFINER finding is suppressed.
+const intentionalFindings = new Set([
+  'fn_product_active_for_rls|p_id uuid|anon has EXECUTE (not in public-intent whitelist)|anon',
+]);
+
+const findingKey = (row) => [
+  row.function_name,
+  row.arguments,
+  row.problem,
+  row.granted_to,
+].join('|');
+
+const findings = (data ?? []).filter((row) => row.problem && row.problem.length > 0);
+const tolerated = findings.filter((row) => intentionalFindings.has(findingKey(row)));
+const problems = findings.filter((row) => !intentionalFindings.has(findingKey(row)));
+
+if (tolerated.length > 0) {
+  console.log('ℹ️  SECURITY DEFINER grants intencionais confirmados:');
+  tolerated.forEach((row) => {
+    console.log(`  - ${row.function_name}(${row.arguments}): ${row.problem}`);
+  });
+}
 
 if (problems.length > 0) {
-  console.error('\n❌ SECURITY DEFINER sem search_path detectadas:');
+  console.error('\n❌ ACLs SECURITY DEFINER não autorizadas:');
   problems.forEach((row) => {
     console.error(`  - ${row.function_name}(${row.arguments}): ${row.problem}`);
   });
-  console.error('\nAdicione SET search_path = public nas funcoes acima.');
+  console.error('\nRevise os grants e a intenção pública das funções acima.');
   process.exit(1);
 }
 

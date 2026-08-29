@@ -2,10 +2,10 @@
  * Snapshot visual — confirma classes/mensagens de feedback do PopoverQtyInput
  * nos estados `sanitized` (vírgula), `clamped` (9999999) e `invalid` (vazio).
  *
- * Não é screenshot pixel-perfect: capturamos o `outerHTML` do input + do
- * `role=status` correspondente com `toMatchSnapshot()` (arquivo externo
- * gerado no primeiro run). Regressões de classe/ARIA/mensagem quebram o
- * snapshot com diff legível.
+ * Não é screenshot pixel-perfect: capturamos uma serialização estável do
+ * input + do `role=status` correspondente com `toMatchSnapshot()` (arquivo
+ * externo gerado no primeiro run). Regressões de classe/ARIA/mensagem quebram
+ * o snapshot com diff legível, sem depender da ordem de atributos do jsdom.
  */
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
@@ -25,11 +25,44 @@ function Controlled({ itemId, initial = 10 }: { itemId: string; initial?: number
   );
 }
 
+const INPUT_ATTRIBUTE_ORDER = [
+  'type',
+  'inputmode',
+  'pattern',
+  'autocomplete',
+  'aria-label',
+  'data-testid',
+  'data-feedback',
+  'class',
+  'value',
+  'aria-invalid',
+  'aria-describedby',
+];
+
+function stableOuterHtml(element: HTMLElement): string {
+  const clone = element.cloneNode(false) as HTMLElement;
+  for (const attribute of Array.from(clone.attributes)) {
+    clone.removeAttribute(attribute.name);
+  }
+
+  const attributes = Array.from(element.attributes).sort((a, b) => {
+    const aIndex = INPUT_ATTRIBUTE_ORDER.indexOf(a.name);
+    const bIndex = INPUT_ATTRIBUTE_ORDER.indexOf(b.name);
+    const aRank = aIndex === -1 ? INPUT_ATTRIBUTE_ORDER.length : aIndex;
+    const bRank = bIndex === -1 ? INPUT_ATTRIBUTE_ORDER.length : bIndex;
+    return aRank - bRank || a.name.localeCompare(b.name);
+  });
+  for (const attribute of attributes) {
+    clone.setAttribute(attribute.name, attribute.value);
+  }
+  return clone.outerHTML;
+}
+
 function snapshotBundle(itemId: string): string {
   const input = screen.getByTestId(`cart-item-qty-${itemId}`) as HTMLInputElement;
   const live = document.getElementById(`cart-item-qty-fb-${itemId}`);
   return [
-    `INPUT: ${input.outerHTML}`,
+    `INPUT: ${stableOuterHtml(input)}`,
     `LIVE : ${live ? live.outerHTML : '<none>'}`,
   ].join('\n');
 }

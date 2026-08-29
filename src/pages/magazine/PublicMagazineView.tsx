@@ -40,6 +40,7 @@ import { toast } from 'sonner';
 import { magazineService } from '@/services/magazineService';
 import type { Magazine } from '@/types/magazine';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { paginateMagazine } from './pagination';
 import { MagazinePageRenderer } from './components/MagazinePageRenderer';
 import { PublicMagazineToc } from './components/PublicMagazineToc';
@@ -349,12 +350,9 @@ export default function PublicMagazineView() {
     return (
       <div className="min-h-screen bg-neutral-950 py-6" aria-busy="true" aria-live="polite">
         <div className="mx-auto flex max-w-[1100px] flex-col gap-4 px-4">
-          <div className="h-8 w-1/2 animate-pulse rounded bg-white/10" />
-          <div className="h-6 w-1/3 animate-pulse rounded bg-white/10" />
-          <div
-            className="mag-preview-wrapper animate-pulse rounded-xl bg-white/5"
-            role="presentation"
-          />
+          <Skeleton className="h-8 w-1/2 bg-white/10" />
+          <Skeleton className="h-6 w-1/3 bg-white/10" />
+          <Skeleton className="mag-preview-wrapper rounded-xl bg-white/5" aria-hidden />
         </div>
       </div>
     );

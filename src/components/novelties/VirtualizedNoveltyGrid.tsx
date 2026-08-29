@@ -1,4 +1,4 @@
-import { useEffect, useRef, type RefObject } from 'react';
+import { useEffect, useRef, useMemo, type RefObject } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import type { NoveltyWithDetails } from '@/hooks/products';
 import type { ColumnCount } from '@/components/products/ColumnSelector';
@@ -9,6 +9,7 @@ import {
 } from '@/components/replenishments/grid-layout';
 import { NoveltyGridCard } from './NoveltyCards';
 import type { ColorDotLike } from '@/components/products/ProductColorSwatches';
+import { useProductsColorsBatch } from '@/hooks/products/useProductsColorsBatch';
 
 interface VirtualizedNoveltyGridProps {
   products: NoveltyWithDetails[];
@@ -45,7 +46,7 @@ export function VirtualizedNoveltyGrid({
   onToggleSelect,
   onProductClick,
   onStatusClick,
-  colorsByProduct,
+  colorsByProduct: externalColorsByProduct,
   hasMore = false,
   isLoadingMore = false,
   onLoadMore,
@@ -66,6 +67,28 @@ export function VirtualizedNoveltyGrid({
     overscan: 5,
     measureElement: (el) => el.getBoundingClientRect().height,
   });
+
+  // ⚠️ PERF-2026-08-19: Carrega cores APENAS dos IDs visíveis (virtualizados).
+  // Antes o pai (NoveltyProductGrid) passava TODOS os paginatedProducts
+  // (até 550+) para useProductsColorsBatch. Cache global cuida do resto
+  // quando o usuário rola.
+  const virtualItems = virtualizer.getVirtualItems();
+  const visibleProductIds = useMemo(() => {
+    const ids: string[] = [];
+    for (const item of virtualItems) {
+      const startIdx = item.index * numCols;
+      const endIdx = Math.min(startIdx + numCols, products.length);
+      for (let i = startIdx; i < endIdx; i++) {
+        const p = products[i];
+        if (p?.product_id) ids.push(p.product_id);
+      }
+    }
+    return [...new Set(ids)];
+  }, [virtualItems, products, numCols]);
+
+  const { data: internalColorsByProduct } = useProductsColorsBatch(visibleProductIds);
+  // Preferir cores externas (do pai) — fallback para internas
+  const colorsByProduct = externalColorsByProduct ?? internalColorsByProduct;
 
   // Reset de scroll ao topo quando os filtros mudam (skip 1º render).
   const isFirstScrollRef = useRef(true);

@@ -265,6 +265,7 @@ export function ProductCustomizationOptions({
   const hasAnyItemCollapsed =
     summaryCollapsed || summaryItems.some((it) => collapsedItems.has(it.locationCode));
 
+  /* summary-color-gate:start */
   const summary = pricesRef.current.size > 0 && (
     <div
       className="animate-in fade-in slide-in-from-bottom-2 motion-reduce:animate-none"
@@ -420,6 +421,7 @@ export function ProductCustomizationOptions({
       </div>
     </div>
   );
+  /* summary-color-gate:end */
 
   return (
     <TooltipProvider>

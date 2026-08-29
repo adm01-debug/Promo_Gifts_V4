@@ -1,4 +1,5 @@
 import { Navigate, Route } from 'react-router-dom';
+import { DevRoute } from '@/components/layout/DevRoute';
 import {
   AdvancedPriceSearchPage,
   BusinessIntelligencePage,
@@ -53,7 +54,9 @@ export const toolsRoutes = (
     <Route path="/ferramentas/bi/comparar" element={<ClientComparatorPage />} />
     <Route path="/match" element={<ProductMatchPage />} />
     <Route path="/dropbox" element={<DropboxBrowserPage />} />
-    <Route path="/simulacao" element={<SimulationPage />} />
+    <Route element={<DevRoute />}>
+      <Route path="/simulacao" element={<SimulationPage />} />
+    </Route>
     <Route path="/ferramentas/cobertura" element={<CoverageInsightsDashboardPage />} />
     <Route path="/raio-x" element={<VisualSearchPage />} />
     <Route path="/magazine" element={<MagazineListPage />} />
@@ -62,6 +65,5 @@ export const toolsRoutes = (
     <Route path="/magazine/:id/print" element={<MagazinePrintPage />} />
     <Route path="/magazine/print" element={<MagazinePrintPage />} />
     <Route path="/promoflix-playground" element={<PromoFlixPlayground />} />
-
   </>
 );

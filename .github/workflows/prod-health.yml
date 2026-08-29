@@ -109,12 +109,14 @@ jobs:
       # SUMÁRIO: Status consolidado de todos os checks
       - name: Step Summary — Consolidado
         if: always()
+        env:
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message || 'workflow_dispatch' }}
         run: |
           {
             echo "## 🏥 Production Health Check — $(date -u '+%Y-%m-%d %H:%M UTC')"
             echo ""
             echo "### Commit analisado"
-            echo "\`${{ github.sha }}\` — ${{ github.event.head_commit.message || 'workflow_dispatch' }}"
+            echo "\`${{ github.sha }}\` — $COMMIT_MESSAGE"
             echo ""
             echo "### Resultados"
             echo ""

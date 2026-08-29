@@ -17,6 +17,17 @@ function run(fromFile: string) {
   });
 }
 
+function runWithoutCreds(args: string[] = []) {
+  return spawnSync('node', ['scripts/check-lint-0011-drift.mjs', ...args], {
+    encoding: 'utf8',
+    env: {
+      PATH: process.env.PATH,
+      HOME: process.env.HOME,
+      TMPDIR: process.env.TMPDIR,
+    },
+  });
+}
+
 describe('check-lint-0011-drift', () => {
   let allowlisted: string[] = [];
 
@@ -61,5 +72,19 @@ describe('check-lint-0011-drift', () => {
     // Aqui só validamos o exit-code contract em condições normais (não removemos
     // o allowlist real do repo). Cobertura defensiva vive no manual do script.
     expect([0, 1, 2]).toContain(0);
+  });
+
+  it('reporta static-pass quando falta credencial e live não é obrigatório', () => {
+    const r = runWithoutCreds();
+    expect(r.status).toBe(0);
+    expect(r.stderr).toMatch(/static-pass/);
+    expect(r.stderr).toMatch(/modo estático/);
+  });
+
+  it('reporta inconclusive quando falta credencial e live é obrigatório', () => {
+    const r = runWithoutCreds(['--require-live']);
+    expect(r.status).toBe(2);
+    expect(r.stderr).toMatch(/inconclusive/);
+    expect(r.stderr).toMatch(/evidência live obrigatória/);
   });
 });

@@ -120,6 +120,8 @@ jobs:
         if: |
           steps.check_changes.outputs.has_fixes == 'true' &&
           steps.tsc_check.outputs.tsc_ok == 'true'
+        env:
+          TRIGGER_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
           git config user.email "adm01@promobrindes.com.br"
           git config user.name "adm01-debug"
@@ -127,7 +129,7 @@ jobs:
 
           FILES_FIXED=$(git diff --cached --name-only | tr '\n' ', ' | sed 's/,$//')
           TRIGGER_SHA="${{ github.sha }}"
-          TRIGGER_MSG=$(echo "${{ github.event.head_commit.message }}" | head -1 | cut -c1-80)
+          TRIGGER_MSG=$(printf '%s\n' "$TRIGGER_MESSAGE" | head -1 | cut -c1-80)
 
           git commit -m "fix(autoheal): ESLint --fix automático [autoheal] [skip ci]
 
@@ -154,10 +156,12 @@ jobs:
           steps.check_changes.outputs.has_fixes == 'true' &&
           steps.tsc_check.outputs.tsc_ok == 'false'
         uses: actions/github-script@v7
+        env:
+          TRIGGER_MESSAGE: ${{ github.event.head_commit.message }}
         with:
           script: |
             const sha = '${{ github.sha }}';
-            const msg = `${{ github.event.head_commit.message }}`.split('\n')[0].slice(0, 200);
+            const msg = (process.env.TRIGGER_MESSAGE || '').split('\n')[0].slice(0, 200);
             const runUrl = `https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
             await github.rest.issues.create({
               owner: context.repo.owner,

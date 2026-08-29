@@ -99,7 +99,7 @@ export const DESCRIPTORS: Record<string, Descriptor> = {
     ],
   },
   "simulation-orchestrator": {
-    invalidInputs: [{ label: "HMAC ausente", body: { action: "simulate" }, role: "anon" }],
+    invalidInputs: [{ label: "JWT dev ausente", body: { mode: "resilience" }, role: "anon" }],
   },
 
   // ---------------- Uploads ----------------
@@ -184,6 +184,15 @@ export const DESCRIPTORS: Record<string, Descriptor> = {
   },
   "voice-agent": {},
   "visual-search": {},
+  "product-visual-search": {
+    // Roboflow-powered product image search
+    // Requires ROBOFLOW_API_KEY credential (checked at runtime → 503 without it)
+    // No happy-path: calls external Roboflow API which requires real API key
+    invalidInputs: [
+      { label: "imageBase64 muito curta", body: { imageBase64: "abc" } },
+      { label: "sem imageBase64", body: {} },
+    ],
+  },
 };
 
 const DEFAULT: Descriptor = {};

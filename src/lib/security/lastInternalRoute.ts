@@ -32,14 +32,11 @@ function keyFor(userId: string): string {
 }
 
 export function isSafeReturnPath(path: string | null | undefined): boolean {
-  if (!path || !path.startsWith('/')) return false;
+  if (!path?.startsWith('/')) return false;
   return !UNSAFE_PREFIXES.some((p) => path === p || path.startsWith(`${p}/`));
 }
 
-export function rememberLastInternalRoute(
-  userId: string | null | undefined,
-  path: string,
-): void {
+export function rememberLastInternalRoute(userId: string | null | undefined, path: string): void {
   if (!userId || !isSafeReturnPath(path)) return;
   const ss = safeSession();
   if (!ss) return;

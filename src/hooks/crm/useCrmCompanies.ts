@@ -55,6 +55,7 @@ export function useCrmCompanies(filters?: CrmCompanyFilters) {
       logger.debug('[CRM-DB] useCrmCompanies: Busca concluída (select). Total:', results.length);
       return results;
     },
+    enabled: filters?.enabled !== false, // Default: true, só desabilita se explicitamente false
     staleTime: 10 * 60 * 1000,
   });
 }

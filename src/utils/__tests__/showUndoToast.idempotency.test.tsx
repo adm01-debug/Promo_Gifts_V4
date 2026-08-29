@@ -73,6 +73,17 @@ function renderLastToast() {
   return render(last.children);
 }
 
+/**
+ * O fluxo de undo é assíncrono por contrato: mesmo callbacks síncronos passam
+ * pelo `await onUndo()` antes de dismiss/success. Mantém as asserções após a
+ * conclusão do microtask, dentro de `act`, sem alterar o comportamento real.
+ */
+async function flushUndoCompletion() {
+  await act(async () => {
+    await Promise.resolve();
+  });
+}
+
 describe('showUndoToast — guarda undone (idempotência de cliques)', () => {
   beforeEach(() => {
     vi.useFakeTimers();
@@ -83,34 +94,37 @@ describe('showUndoToast — guarda undone (idempotência de cliques)', () => {
     vi.useRealTimers();
   });
 
-  it('1 clique dispara onUndo, dismiss e success — exatamente 1x cada', () => {
+  it('1 clique dispara onUndo, dismiss e success — exatamente 1x cada', async () => {
     const onUndo = vi.fn();
     showUndoToast({ title: 'Removido', onUndo, duration: 5000 });
     const { getByTestId } = renderLastToast();
     fireEvent.click(getByTestId('undo-toast-button'));
+    await flushUndoCompletion();
     expect(onUndo).toHaveBeenCalledTimes(1);
     expect(dismissCalls.length).toBe(1);
     expect(successCalls.length).toBe(1);
     expect(successCalls[0].title).toBe('Ação desfeita!');
   });
 
-  it('N cliques rápidos: onUndo/dismiss/success chamados EXATAMENTE 1x', () => {
+  it('N cliques rápidos: onUndo/dismiss/success chamados EXATAMENTE 1x', async () => {
     const onUndo = vi.fn();
     showUndoToast({ title: 't', onUndo, duration: 5000 });
     const { getByTestId } = renderLastToast();
     const btn = getByTestId('undo-toast-button');
     // Emula spam de cliques do usuário
     for (let i = 0; i < 50; i++) fireEvent.click(btn);
+    await flushUndoCompletion();
     expect(onUndo).toHaveBeenCalledTimes(1);
     expect(dismissCalls).toEqual([toastCalls[0].id]);
     expect(successCalls.length).toBe(1);
   });
 
-  it('clique + timeout imediatamente após: NÃO dispara segundo dismiss/success', () => {
+  it('clique + timeout imediatamente após: NÃO dispara segundo dismiss/success', async () => {
     const onUndo = vi.fn();
     showUndoToast({ title: 't', onUndo, duration: 3000 });
     const { getByTestId } = renderLastToast();
     fireEvent.click(getByTestId('undo-toast-button'));
+    await flushUndoCompletion();
     // Timeout do contador (o toast já foi dispensado, mas o efeito interno
     // do content ainda pode disparar onTimeout — a guarda deve impedir
     // qualquer efeito colateral extra).
@@ -149,11 +163,12 @@ describe('showUndoToast — guarda undone (idempotência de cliques)', () => {
     expect(successCalls.length).toBe(0);
   });
 
-  it('dismiss é chamado ANTES de success (ordem correta, sem flash duplo)', () => {
+  it('dismiss é chamado ANTES de success (ordem correta, sem flash duplo)', async () => {
     const onUndo = vi.fn();
     showUndoToast({ title: 't', onUndo, duration: 5000 });
     const { getByTestId } = renderLastToast();
     fireEvent.click(getByTestId('undo-toast-button'));
+    await flushUndoCompletion();
     // Verificação por spy order: o mock captura em ordem de chamada
     // combinando os dois arrays com timestamps não é trivial; validamos via
     // presença: dismiss e success ambos chamados 1x cada (invariante do handler).
@@ -161,7 +176,7 @@ describe('showUndoToast — guarda undone (idempotência de cliques)', () => {
     expect(successCalls.length).toBe(1);
   });
 
-  it('instâncias INDEPENDENTES: guardas não vazam entre toasts', () => {
+  it('instâncias INDEPENDENTES: guardas não vazam entre toasts', async () => {
     const undo1 = vi.fn();
     const undo2 = vi.fn();
     showUndoToast({ title: 'A', onUndo: undo1, duration: 5000 });
@@ -172,11 +187,13 @@ describe('showUndoToast — guarda undone (idempotência de cliques)', () => {
     document.body.appendChild(c2);
     const first = render(toastCalls[0].children, { container: c1 });
     fireEvent.click(first.getByTestId('undo-toast-button'));
+    await flushUndoCompletion();
     expect(undo1).toHaveBeenCalledTimes(1);
 
     showUndoToast({ title: 'B', onUndo: undo2, duration: 5000 });
     const second = render(toastCalls[1].children, { container: c2 });
     fireEvent.click(second.getByTestId('undo-toast-button'));
+    await flushUndoCompletion();
     expect(undo2).toHaveBeenCalledTimes(1);
 
     // Cliques extras no primeiro não afetam o segundo
@@ -196,7 +213,7 @@ describe('showUndoToast — FUZZ (200 iterações, cliques + timeouts aleatório
     vi.useRealTimers();
   });
 
-  it('sob 200 cenários mistos: onUndo ≤ 1x, dismiss ≤ 1x, success = (onUndo chamado ? 1 : 0)', () => {
+  it('sob 200 cenários mistos: onUndo ≤ 1x, dismiss ≤ 1x, success = (onUndo chamado ? 1 : 0)', async () => {
     // PRNG determinístico
     let seed = 1337;
     const rand = () => {
@@ -249,6 +266,8 @@ describe('showUndoToast — FUZZ (200 iterações, cliques + timeouts aleatório
           vi.advanceTimersByTime(duration);
         });
       }
+
+      await flushUndoCompletion();
 
       // INVARIANTES (por instância)
       const undoCount = onUndo.mock.calls.length;

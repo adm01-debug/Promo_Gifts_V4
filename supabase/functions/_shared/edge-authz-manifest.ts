@@ -131,6 +131,19 @@ export const EDGE_AUTHZ_MANIFEST: Record<string, AuthzEntry> = {
   "tests": { category: "dev", rationale: "Pasta de Deno tests, não é edge deployada", enforcedBy: "custom", skipAnonBypassTest: true, skipAuthBypassTest: true },
   "e2e-cleanup": { category: "dev", rationale: "Cleanup E2E — JWT + service-role + e2e-shared-secret", enforcedBy: "custom" },
   "full-op-diagnostics": { category: "dev", rationale: "Diagnóstico — has_role(dev) inline", enforcedBy: "custom" },
+  "migrate-helper": { category: "dev", rationale: "Desativada com 410; JWT dev impede acesso ao handler legado", enforcedBy: "shared-authorize" },
+  "ema-pipeline-health": { category: "dev", rationale: "Saúde técnica EMA — JWT dev e fontes service-role canônicas" },
+  "crm-callback-reprocess": { category: "supervisor", rationale: "Reprocessamento de dead-letter — JWT admin/dev inline", enforcedBy: "custom" },
+  "intelligence-substitute-applied": { category: "authenticated", rationale: "Telemetria de substituição — JWT obrigatório via helper compartilhado", enforcedBy: "custom" },
+  "magazine-import-local": { category: "authenticated", rationale: "Import do próprio usuário com JWT e RLS", enforcedBy: "custom" },
+  "product-visual-search": { category: "scoped", rationale: "JWT de usuário ou bypass secreto de simulação", enforcedBy: "custom" },
+  "quote-sync-promo-champions": { category: "authenticated", rationale: "JWT e ownership do orçamento antes do sync", enforcedBy: "custom" },
+
+  // Magazine pública: token público de alta entropia + validação in-function.
+  "magazine-public-view": { category: "public", rationale: "Leitura por public_token publicado", enforcedBy: "custom", skipAnonBypassTest: true },
+  "magazine-public-react": { category: "public", rationale: "Reação anônima limitada por public_token", enforcedBy: "custom", skipAnonBypassTest: true },
+  "magazine-reader-state-read": { category: "public", rationale: "Estado anônimo pseudonimizado por token+fingerprint", enforcedBy: "custom", skipAnonBypassTest: true },
+  "magazine-reader-state-write": { category: "public", rationale: "Upsert anônimo pseudonimizado por token+fingerprint", enforcedBy: "custom", skipAnonBypassTest: true },
   "mcp-keys-issue": { category: "dev", rationale: "MCP keys — has_role(dev) + step-up token", enforcedBy: "custom" },
   "mcp-keys-revoke": { category: "dev", rationale: "MCP keys — has_role(dev) inline", enforcedBy: "custom" },
   "mcp-keys-rotate": { category: "dev", rationale: "MCP keys — has_role(dev) + step-up token", enforcedBy: "custom" },
@@ -144,11 +157,12 @@ export const EDGE_AUTHZ_MANIFEST: Record<string, AuthzEntry> = {
   // ---------------- Scoped (auth custom) ----------------
   "mcp-server": { category: "scoped", rationale: "Token MCP com escopos read/write/admin", enforcedBy: "custom" },
   "crm-db-bridge": { category: "scoped", rationale: "JWT + RBAC custom interno", enforcedBy: "custom" },
-  "simulation-orchestrator": { category: "scoped", rationale: "Orquestrador de simulacoes — HMAC N8N_PRODUCT_WEBHOOK_SECRET", enforcedBy: "custom" },
+  "simulation-orchestrator": { category: "dev", rationale: "Orquestrador de simulacoes — JWT dev via authorize compartilhado", enforcedBy: "shared-authorize" },
   "receive-crm-callback": { category: "scoped", rationale: "Callback do CRM Promo Champions — x-api-key custom (timing-safe)", enforcedBy: "custom", skipAnonBypassTest: true, skipAuthBypassTest: true },
 
   // ---------------- Service (server-to-server) ----------------
   "sync-external-db": { category: "service", rationale: "Sync DB externo — service_role_key server-to-server", enforcedBy: "custom" },
+  "crm-callback-alerts": { category: "service", rationale: "Cron de alertas — Bearer service_role em comparação constante", enforcedBy: "custom" },
   "asia-ingestion": { category: "service", rationale: "Sync paginado catálogo ASIA — cron/service via x-cron-secret (ASIA_INGESTION_CRON_SECRET)", enforcedBy: "custom" },
   "backfill-image-dimensions": { category: "service", rationale: "Backfill dimensões product_images — cron via x-cron-secret (BACKFILL_DIM_CRON_SECRET)", enforcedBy: "custom" },
   "generate-blurhashes": { category: "service", rationale: "Gera blurhashes — cron via authorizeCron (service_role + x-cron-secret)", enforcedBy: "custom" },

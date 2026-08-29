@@ -83,9 +83,13 @@ vi.mock('sonner', () => ({
   },
 }));
 
-vi.mock('@/lib/security/sanitize-error', () => ({
-  sanitizeError: (e: unknown) => (e instanceof Error ? e.message : String(e)),
-}));
+vi.mock('@/lib/security/sanitize-error', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    sanitizeError: (e: unknown) => (e instanceof Error ? e.message : String(e)),
+  };
+});
 
 vi.mock('@/hooks/products/useDebouncedCartItemActions', () => ({
   useDebouncedCartItemActions: () => ({

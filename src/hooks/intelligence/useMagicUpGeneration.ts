@@ -164,6 +164,11 @@ export function useMagicUpGeneration(deps: GenerationDeps) {
           compositionMode?: string;
           error?: string;
         }>('generate-ad-image', {
+          // BUG-MAGICUP-TIMEOUT-1 FIX (2026-08-17): default invokeEdge timeout is
+          // 10s; image generation (especially "pro" mode, multimodal) routinely
+          // takes longer, causing edge.generate-ad-image_thrown → exhausted after
+          // 2 retries at 10s each even when the call would have succeeded.
+          timeoutMs: 60_000,
           headers: log.headers(),
           body: {
             productImageUrl: deps.currentImage,

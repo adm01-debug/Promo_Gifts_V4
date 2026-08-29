@@ -42,49 +42,95 @@ export interface InvokeOptions {
   isDev?: boolean;
   /** Reaproveita um request_id existente (ex.: continuação de fluxo). */
   requestId?: string;
+  /** Preserva o JSON de respostas HTTP não-2xx para consumidores que exibem
+   * relatórios estruturados (o erro continua não-nulo e deve ser tratado). */
+  preserveErrorData?: boolean;
 }
 
 interface NormalizedError {
   message: string;
   status: number;
   name?: string;
+  body?: unknown;
+}
+
+interface InvokeErrorContext {
+  status?: number;
+  statusText?: string;
+  body?: unknown;
+  json?: () => Promise<unknown>;
+  text?: () => Promise<string>;
+  clone?: () => InvokeErrorContext;
+}
+
+function extractBodyMessage(body: unknown): string {
+  if (typeof body === 'string') {
+    try {
+      return extractBodyMessage(JSON.parse(body));
+    } catch {
+      return body.slice(0, 200);
+    }
+  }
+  if (body && typeof body === 'object') {
+    const payload = body as { error?: unknown; message?: unknown };
+    if (typeof payload.message === 'string') return payload.message;
+    if (typeof payload.error === 'string') return payload.error;
+  }
+  return '';
+}
+
+async function extractContextBody(context: InvokeErrorContext | undefined): Promise<unknown> {
+  if (!context) return undefined;
+
+  if (typeof context.json === 'function') {
+    const getClone = (): InvokeErrorContext => {
+      if (typeof context.clone !== 'function') return context;
+      try {
+        return context.clone();
+      } catch {
+        // Response já consumida: tenta o contexto original e preserva o fallback seguro.
+        return context;
+      }
+    };
+
+    const jsonSource = getClone();
+    try {
+      return await jsonSource.json?.();
+    } catch {
+      // JSON inválido/indisponível: tenta o texto ou o body já materializado abaixo.
+    }
+
+    const textSource = getClone();
+    if (typeof textSource.text === 'function') {
+      try {
+        return await textSource.text();
+      } catch {
+        // A mensagem base seguirá como fallback seguro.
+      }
+    }
+  }
+
+  return context.body;
 }
 
 /**
  * Normaliza qualquer erro do supabase.functions.invoke em `{message,status,name}`.
  */
-export function normalizeInvokeError(err: unknown): NormalizedError {
+export async function normalizeInvokeError(err: unknown): Promise<NormalizedError> {
   if (!err || typeof err !== 'object') {
     return { message: String(err ?? 'unknown'), status: 0 };
   }
   const e = err as {
     name?: string;
     message?: string;
-    context?: { status?: number; statusText?: string; body?: unknown };
+    context?: InvokeErrorContext;
   };
   const name = e.name ?? '';
   const baseMsg = e.message ?? '';
   const ctx = e.context;
   const status = ctx?.status ?? 0;
-  let bodyMsg = '';
-
-  if (ctx?.body) {
-    try {
-      if (typeof ctx.body === 'string') {
-        try {
-          const parsed = JSON.parse(ctx.body) as { error?: string; message?: string };
-          bodyMsg = parsed.error ?? parsed.message ?? '';
-        } catch {
-          bodyMsg = ctx.body.slice(0, 200);
-        }
-      } else if (typeof ctx.body === 'object') {
-        const b = ctx.body as { error?: string; message?: string };
-        bodyMsg = b.error ?? b.message ?? '';
-      }
-    } catch {
-      bodyMsg = '';
-    }
-  }
+  const body = await extractContextBody(ctx);
+  const bodyMsg = extractBodyMessage(body);
 
   let outName = name;
   if (
@@ -99,7 +145,7 @@ export function normalizeInvokeError(err: unknown): NormalizedError {
     outName = 'TypeError';
   }
 
-  return { message: bodyMsg || baseMsg || 'edge error', status, name: outName };
+  return { message: bodyMsg || baseMsg || 'edge error', status, name: outName, body };
 }
 
 /** Logger SSOT do wrapper. Único ponto de emissão da superfície invoke. */
@@ -146,7 +192,7 @@ export async function invokeEdgeSafe<T = unknown>(
       headers: outboundHeaders,
     });
     if (error) {
-      return { data: null, error: normalizeInvokeError(error) };
+      return { data: null, error: await normalizeInvokeError(error) };
     }
     return { data: (data ?? null) as T | null, error: null };
   };
@@ -225,6 +271,12 @@ export interface InvokeCompatError {
   request_id: string;
 }
 
+function extractCompatStatus(raw: unknown): number {
+  if (!raw || typeof raw !== 'object') return 0;
+  const status = (raw as { status?: unknown }).status;
+  return typeof status === 'number' && Number.isFinite(status) && status >= 0 ? status : 0;
+}
+
 export async function invokeEdge<T = unknown>(
   fnName: string,
   options: InvokeOptions = {},
@@ -233,12 +285,19 @@ export async function invokeEdge<T = unknown>(
   if (r.kind === 'ok') {
     return { data: (r.data ?? null) as T | null, error: null, requestId: r.requestId };
   }
+  const raw = r.raw as NormalizedError | null;
   return {
-    data: null,
+    data:
+      options.preserveErrorData && raw?.body !== null && raw?.body !== undefined
+        ? (raw.body as T)
+        : null,
     error: {
       message: r.userMessage,
       name: r.errorKind,
-      status: 0,
+      // O adaptador mantém o contrato histórico de erro, mas não pode apagar
+      // o status HTTP: consumidores legados usam 410 para o kill-switch e
+      // 502/503/504 para sua política específica de retry.
+      status: extractCompatStatus(r.raw),
       request_id: r.requestId,
     },
     requestId: r.requestId,

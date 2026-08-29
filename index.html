@@ -114,7 +114,13 @@
     <meta name="author" content="Promo Gifts" />
     <meta name="keywords" content="produtos promocionais, brindes corporativos, catálogo promocional, orçamentos, mockups, personalização, bordado, serigrafia, gravação laser" />
     <meta name="robots" content="index, follow" />
-    <link rel="canonical" href="https://www.promogifts.com.br" data-rh="true" />
+    <!-- Mantido como fallback para crawlers sem JavaScript. PageSEO atualiza este
+         mesmo nó por rota para evitar dois canonicals conflitantes no DOM. -->
+    <link
+      rel="canonical"
+      href="https://www.promogifts.com.br"
+      data-static-seo="canonical"
+    />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />

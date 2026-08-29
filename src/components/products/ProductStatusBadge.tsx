@@ -312,7 +312,7 @@ export function ProductStatusBadge({
 
   const badge = (
     <Badge
-      tabIndex={0}
+      tabIndex={isClickable ? 0 : undefined}
       role={isClickable ? 'button' : 'status'}
       aria-label={
         type === 'packaging'

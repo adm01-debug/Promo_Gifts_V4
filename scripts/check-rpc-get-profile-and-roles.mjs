@@ -1,101 +1,229 @@
 #!/usr/bin/env node
 /**
- * check-rpc-get-profile-and-roles.mjs
- * Gate 5 — CHECK 3: Verifica que a RPC get_profile_and_roles existe e
- * nao aparece com problemas no audit_security_definer_acl.
- *
- * Usa fetch nativo (Node 18+) — sem dependência do realtime client.
+ * Gate 5 — verifica que get_profile_and_roles existe e não aparece no audit
+ * SECURITY DEFINER. Nenhum ramo sem audit e smoke verificáveis é tratado como
+ * aprovação quando o caller usa `--require-live`.
  */
+import {
+  CHECK_RESULT_STATUS,
+  concludeCheck,
+  shouldRequireLive,
+} from "./check-result-contract.mjs";
 
+const CHECK = "RPC get_profile_and_roles evidence";
+const REQUIRE_LIVE = shouldRequireLive();
 const SUPABASE_URL = process.env.SUPABASE_URL;
-const SERVICE_KEY  = process.env.SUPABASE_SERVICE_KEY;
+const SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
-if (!SUPABASE_URL || !SERVICE_KEY) {
-  console.error('SUPABASE_URL e SUPABASE_SERVICE_KEY sao obrigatorios.');
-  process.exit(1);
-}
-
-// CHECK A: get_profile_and_roles nao deve ter problemas no audit de ACL
-const auditUrl = `${SUPABASE_URL}/rest/v1/rpc/audit_security_definer_acl`;
-let auditData;
-try {
-  const resp = await fetch(auditUrl, {
-    method: 'POST',
-    headers: {
-      'apikey': SERVICE_KEY,
-      'Authorization': `Bearer ${SERVICE_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: '{}',
+function conclude(status, reason, summary, details = {}) {
+  concludeCheck({
+    check: CHECK,
+    status,
+    summary,
+    details: { reason, requireLive: REQUIRE_LIVE, ...details },
   });
-  if (resp.ok) {
-    auditData = await resp.json();
-  }
-} catch (_) {
-  // nao bloqueia se audit inacessivel
 }
 
-if (auditData) {
-  const problems = (auditData ?? []).filter(
-    (row) => row.function_name === 'get_profile_and_roles' && row.problem?.length > 0
+function requestHeaders() {
+  return {
+    apikey: SERVICE_KEY,
+    Authorization: `Bearer ${SERVICE_KEY}`,
+    "Content-Type": "application/json",
+  };
+}
+
+async function postRpc(name, body) {
+  return fetch(`${SUPABASE_URL.replace(/\/$/, "")}/rest/v1/rpc/${name}`, {
+    method: "POST",
+    headers: requestHeaders(),
+    body: JSON.stringify(body),
+  });
+}
+
+async function main() {
+  if (!SUPABASE_URL || !SERVICE_KEY) {
+    conclude(
+      REQUIRE_LIVE ? CHECK_RESULT_STATUS.INCONCLUSIVE : CHECK_RESULT_STATUS.STATIC_PASS,
+      "missing_credentials",
+      REQUIRE_LIVE
+        ? "SUPABASE_URL e SUPABASE_SERVICE_KEY são necessários para auditar a RPC live."
+        : "Sem credenciais, a verificação ficou explicitamente em modo estático.",
+    );
+  }
+
+  let auditResponse;
+  try {
+    auditResponse = await postRpc("audit_security_definer_acl", {});
+  } catch {
+    conclude(
+      CHECK_RESULT_STATUS.INCONCLUSIVE,
+      "audit_network_error",
+      "O audit SECURITY DEFINER não pôde ser consultado no alvo live.",
+    );
+  }
+
+  if (!auditResponse.ok) {
+    conclude(
+      CHECK_RESULT_STATUS.INCONCLUSIVE,
+      "audit_http_error",
+      "O audit SECURITY DEFINER não retornou evidência verificável.",
+      { httpStatus: auditResponse.status },
+    );
+  }
+
+  let auditData;
+  try {
+    auditData = await auditResponse.json();
+  } catch {
+    conclude(
+      CHECK_RESULT_STATUS.INCONCLUSIVE,
+      "audit_invalid_payload",
+      "O audit SECURITY DEFINER retornou JSON inválido.",
+    );
+  }
+
+  if (!Array.isArray(auditData)) {
+    conclude(
+      CHECK_RESULT_STATUS.INCONCLUSIVE,
+      "audit_unexpected_payload",
+      "O audit SECURITY DEFINER não retornou a lista esperada de achados.",
+    );
+  }
+
+  const securityProblems = auditData.filter(
+    (row) =>
+      row &&
+      row.function_name === "get_profile_and_roles" &&
+      typeof row.problem === "string" &&
+      row.problem.length > 0,
   );
-  if (problems.length > 0) {
-    console.error('❌ RPC get_profile_and_roles tem problemas de seguranca no audit:');
-    problems.forEach((row) => {
-      console.error(`  - ${row.problem} (granted_to: ${row.granted_to})`);
+  if (securityProblems.length > 0) {
+    conclude(
+      CHECK_RESULT_STATUS.FAILED,
+      "audit_violation",
+      "O audit SECURITY DEFINER encontrou problema(s) na RPC get_profile_and_roles.",
+      { problems: securityProblems.map((row) => ({ problem: row.problem, grantedTo: row.granted_to })) },
+    );
+  }
+
+  let smokeResponse;
+  try {
+    smokeResponse = await postRpc("get_profile_and_roles", {
+      _user_id: "00000000-0000-0000-0000-000000000000",
     });
-    process.exit(1);
+  } catch {
+    conclude(
+      CHECK_RESULT_STATUS.INCONCLUSIVE,
+      "smoke_network_error",
+      "O smoke da RPC não pôde alcançar o PostgREST após o audit aprovado.",
+    );
   }
-}
 
-// CHECK B: RPC deve existir no pg_proc (smoke test)
-// A partir de migration 022, anon NAO tem EXECUTE em get_profile_and_roles
-// (REVOKE deliberado — grant era segurança falsa). PostgREST retorna 404
-// tanto quando a função não existe quanto quando anon não tem permissão.
-// Usamos fn_rpc_exists() para distinguir os dois casos.
-const smokeResp = await fetch(`${SUPABASE_URL}/rest/v1/rpc/get_profile_and_roles`, {
-  method: 'POST',
-  headers: {
-    'apikey': SERVICE_KEY,
-    'Authorization': `Bearer ${SERVICE_KEY}`,
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({ user_id: '00000000-0000-0000-0000-000000000000' }),
-}).catch(() => null);
-
-if (!smokeResp) {
-  // Rede inacessivel — verifica via audit foi suficiente
-  console.log('✅ RPC get_profile_and_roles: sem problemas no audit (smoke test inacessivel).');
-  process.exit(0);
-}
-
-if (smokeResp.status === 404) {
-  // PostgREST retorna 404 tanto para "função inexistente" quanto para
-  // "anon sem EXECUTE". Chamar fn_rpc_exists() distingue o caso.
-  const existsResp = await fetch(`${SUPABASE_URL}/rest/v1/rpc/fn_rpc_exists`, {
-    method: 'POST',
-    headers: {
-      'apikey': SERVICE_KEY,
-      'Authorization': `Bearer ${SERVICE_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ fname: 'get_profile_and_roles' }),
-  }).catch(() => null);
-
-  if (existsResp && existsResp.ok) {
-    const exists = await existsResp.json();
-    if (exists === true) {
-      // Função existe em pg_proc; anon corretamente negado (REVOKE intencional)
-      console.log('✅ RPC get_profile_and_roles existe em pg_proc (anon sem EXECUTE — intencional).');
-      process.exit(0);
+  if (smokeResponse.status === 404) {
+    let existsResponse;
+    try {
+      existsResponse = await postRpc("fn_rpc_exists", { _fname: "get_profile_and_roles" });
+    } catch {
+      conclude(
+        CHECK_RESULT_STATUS.INCONCLUSIVE,
+        "existence_network_error",
+        "O PostgREST retornou 404 e fn_rpc_exists não pôde confirmar a existência da RPC.",
+      );
     }
+
+    if (!existsResponse.ok) {
+      conclude(
+        CHECK_RESULT_STATUS.INCONCLUSIVE,
+        "existence_http_error",
+        "O PostgREST retornou 404 e fn_rpc_exists não forneceu evidência de existência.",
+        { httpStatus: existsResponse.status },
+      );
+    }
+
+    let exists;
+    try {
+      exists = await existsResponse.json();
+    } catch {
+      conclude(
+        CHECK_RESULT_STATUS.INCONCLUSIVE,
+        "existence_invalid_payload",
+        "fn_rpc_exists retornou JSON inválido.",
+      );
+    }
+
+    if (exists !== true && exists !== false) {
+      conclude(
+        CHECK_RESULT_STATUS.INCONCLUSIVE,
+        "existence_unexpected_payload",
+        "fn_rpc_exists não retornou um booleano verificável.",
+      );
+    }
+
+    if (!exists) {
+      conclude(
+        CHECK_RESULT_STATUS.FAILED,
+        "rpc_missing",
+        "fn_rpc_exists confirmou que get_profile_and_roles não existe no schema público.",
+      );
+    }
+
+    conclude(
+      CHECK_RESULT_STATUS.PASSED,
+      "audit_and_existence_verified",
+      "O audit está limpo e fn_rpc_exists confirmou a RPC protegida contra anon.",
+      { smokeHttpStatus: smokeResponse.status },
+    );
   }
 
-  console.error('❌ RPC get_profile_and_roles NAO encontrada no schema public!');
-  console.error('   Execute: supabase db push para aplicar as migrations pendentes.');
-  process.exit(1);
+  if ([401, 403].includes(smokeResponse.status)) {
+    let deniedPayload;
+    try {
+      deniedPayload = await smokeResponse.json();
+    } catch {
+      conclude(
+        CHECK_RESULT_STATUS.INCONCLUSIVE,
+        "protected_endpoint_invalid_payload",
+        "A RPC negou acesso, mas a resposta não permitiu comprovar qual função foi protegida.",
+        { httpStatus: smokeResponse.status },
+      );
+    }
+
+    const isExpectedPrivilegeDenial =
+      deniedPayload?.code === "42501" &&
+      typeof deniedPayload?.message === "string" &&
+      deniedPayload.message.includes("permission denied for function get_profile_and_roles");
+
+    conclude(
+      isExpectedPrivilegeDenial ? CHECK_RESULT_STATUS.PASSED : CHECK_RESULT_STATUS.INCONCLUSIVE,
+      isExpectedPrivilegeDenial ? "protected_endpoint_verified" : "protected_endpoint_unverified",
+      isExpectedPrivilegeDenial
+        ? "O audit está limpo e o PostgREST confirmou que a RPC existe e bloqueia anon."
+        : "A negativa do PostgREST não comprovou existência e proteção da RPC esperada.",
+      { httpStatus: smokeResponse.status, postgrestCode: deniedPayload?.code },
+    );
+  }
+
+  if ([200, 204, 400, 422].includes(smokeResponse.status)) {
+    conclude(
+      CHECK_RESULT_STATUS.PASSED,
+      "audit_and_smoke_verified",
+      "O audit está limpo e o PostgREST respondeu de forma compatível com uma RPC existente.",
+      { smokeHttpStatus: smokeResponse.status },
+    );
+  }
+
+  conclude(
+    CHECK_RESULT_STATUS.INCONCLUSIVE,
+    "smoke_unexpected_http_status",
+    "O smoke da RPC não forneceu uma resposta que comprove existência/saúde do endpoint.",
+    { httpStatus: smokeResponse.status },
+  );
 }
 
-// 200, 204, 400 (param inválido) ou outros 4xx são aceitáveis — função existe
-console.log(`✅ RPC get_profile_and_roles OK (status smoke: ${smokeResp.status}) — sem problemas no audit.`);
-process.exit(0);
+main().catch(() => {
+  conclude(
+    CHECK_RESULT_STATUS.INCONCLUSIVE,
+    "unexpected_error",
+    "O check encontrou um erro inesperado antes de produzir evidência live.",
+  );
+});

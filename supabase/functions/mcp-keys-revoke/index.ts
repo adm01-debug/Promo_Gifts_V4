@@ -175,13 +175,10 @@ Deno.serve(async (req) => {
       return jsonResponse({ error: "already_revoked" }, 409, requestId);
     }
 
-    // postgrest-js 2.95+ removeu .then/.catch do RPC builder — usar try/catch.
-    // Falhas em set_config são silenciadas (best-effort para o trigger de auditoria).
-    try {
-      await admin.rpc("set_config" as never, { setting_name: "request.mcp_actor", new_value: userId, is_local: true } as never);
-    } catch {
-      // intentionally swallowed
-    }
+    // `set_config` existe somente em pg_catalog, não como RPC pública. Além de
+    // falhar via PostgREST, uma chamada RPC teria transação própria e não
+    // propagaria `request.mcp_actor` para o UPDATE seguinte. A autoria já é
+    // registrada explicitamente por writeAuditEntry abaixo.
 
     const revokedAt = new Date().toISOString();
     const { error: updErr } = await admin

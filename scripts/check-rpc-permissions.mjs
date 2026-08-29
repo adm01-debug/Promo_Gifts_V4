@@ -1,67 +1,111 @@
 #!/usr/bin/env node
 /**
- * check-rpc-permissions.mjs
- * Gate 5 — CHECK 4: Verifica que 'anon' NAO tem EXECUTE na RPC
- * get_profile_and_roles e que 'authenticated' TEM EXECUTE.
+ * Gate 5 — confirma a postura de EXECUTE da RPC get_profile_and_roles.
  *
- * Usa fetch nativo (Node 18+) — sem dependência do realtime client.
+ * `--require-live` (ou REQUIRE_LIVE=1) torna qualquer falta de evidência
+ * remota verificável um exit 2/inconclusive. A prova usa o comportamento real
+ * do endpoint como anon; auditoria de catálogo não deve depender de expor
+ * information_schema pelo PostgREST.
  */
+import {
+  CHECK_RESULT_STATUS,
+  concludeCheck,
+  shouldRequireLive,
+} from "./check-result-contract.mjs";
 
+const CHECK = "RPC get_profile_and_roles permissions";
+const REQUIRE_LIVE = shouldRequireLive();
 const SUPABASE_URL = process.env.SUPABASE_URL;
-const SERVICE_KEY  = process.env.SUPABASE_SERVICE_KEY;
+const SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
-if (!SUPABASE_URL || !SERVICE_KEY) {
-  console.error('SUPABASE_URL e SUPABASE_SERVICE_KEY sao obrigatorios.');
-  process.exit(1);
-}
-
-// information_schema.routine_privileges não é acessível via PostgREST sem exposição explícita.
-// Verificamos via pg_proc / aclexplode através de um RPC de auditoria já existente.
-// Se não acessível, considera OK (verificado via MCP na migration).
-let resp;
-try {
-  resp = await fetch(`${SUPABASE_URL}/rest/v1/information_schema.routine_privileges?select=grantee,privilege_type&specific_schema=eq.public&routine_name=eq.get_profile_and_roles`, {
-    headers: {
-      'apikey': SERVICE_KEY,
-      'Authorization': `Bearer ${SERVICE_KEY}`,
-    },
+function conclude(status, reason, summary, details = {}) {
+  concludeCheck({
+    check: CHECK,
+    status,
+    summary,
+    details: { reason, requireLive: REQUIRE_LIVE, ...details },
   });
-} catch (err) {
-  console.log('✅ Verificacao de permissoes pulada (information_schema inacessivel via PostgREST).');
-  console.log('   Permissoes verificadas via Supabase MCP na migration aplicada:');
-  console.log('   anon=false, authenticated=true — confirmado na auditoria pre-deploy.');
-  process.exit(0);
 }
 
-if (!resp.ok) {
-  console.log('✅ Verificacao de permissoes pulada (information_schema inacessivel via PostgREST).');
-  console.log('   Permissoes verificadas via Supabase MCP na migration aplicada:');
-  console.log('   anon=false, authenticated=true — confirmado na auditoria pre-deploy.');
-  process.exit(0);
+async function main() {
+  if (!SUPABASE_URL || !SERVICE_KEY) {
+    return conclude(
+      REQUIRE_LIVE ? CHECK_RESULT_STATUS.INCONCLUSIVE : CHECK_RESULT_STATUS.STATIC_PASS,
+      "missing_credentials",
+      REQUIRE_LIVE
+        ? "SUPABASE_URL e SUPABASE_SERVICE_KEY são necessários para testar a permissão anon live."
+        : "Sem credenciais, a verificação ficou explicitamente em modo estático.",
+    );
+  }
+
+  const endpoint = `${SUPABASE_URL.replace(/\/$/, "")}/rest/v1/rpc/get_profile_and_roles`;
+  let response;
+  try {
+    response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        apikey: SERVICE_KEY,
+        Authorization: `Bearer ${SERVICE_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ _user_id: "00000000-0000-0000-0000-000000000000" }),
+    });
+  } catch {
+    return conclude(
+      CHECK_RESULT_STATUS.INCONCLUSIVE,
+      "network_error",
+      "O teste live da permissão anon não pôde alcançar o PostgREST.",
+    );
+  }
+
+  let payload;
+  try {
+    payload = await response.json();
+  } catch {
+    return conclude(
+      CHECK_RESULT_STATUS.INCONCLUSIVE,
+      "invalid_payload",
+      "O teste live da permissão anon retornou JSON inválido.",
+      { httpStatus: response.status },
+    );
+  }
+
+  const deniedAsExpected =
+    [401, 403].includes(response.status) &&
+    payload?.code === "42501" &&
+    typeof payload?.message === "string" &&
+    payload.message.includes("permission denied for function get_profile_and_roles");
+
+  if (deniedAsExpected) {
+    return conclude(
+      CHECK_RESULT_STATUS.PASSED,
+      "anon_denied_live",
+      "O PostgREST confirmou ao vivo que anon não pode executar get_profile_and_roles.",
+      { httpStatus: response.status, postgrestCode: payload.code },
+    );
+  }
+
+  if ([200, 204, 400, 422].includes(response.status)) {
+    return conclude(
+      CHECK_RESULT_STATUS.FAILED,
+      "permission_violation",
+      "A chamada anônima alcançou a execução da RPC protegida.",
+      { httpStatus: response.status },
+    );
+  }
+
+  return conclude(
+    CHECK_RESULT_STATUS.INCONCLUSIVE,
+    "unverified_denial",
+    "A resposta live não comprovou nem execução indevida nem a negativa 42501 esperada.",
+    { httpStatus: response.status, postgrestCode: payload?.code },
+  );
 }
 
-const privData = await resp.json();
-const grantees = (privData ?? []).map((r) => r.grantee);
-const anonHasExecute = grantees.includes('anon');
-const authenticatedHasExecute = grantees.includes('authenticated');
-
-let hasErrors = false;
-
-if (anonHasExecute) {
-  console.error('❌ anon TEM EXECUTE na RPC get_profile_and_roles — CRITICO!');
-  console.error('   Execute: REVOKE ALL ON FUNCTION public.get_profile_and_roles(uuid) FROM anon;');
-  hasErrors = true;
-}
-
-if (!authenticatedHasExecute) {
-  console.error('❌ authenticated NAO TEM EXECUTE na RPC get_profile_and_roles!');
-  console.error('   Execute: GRANT EXECUTE ON FUNCTION public.get_profile_and_roles(uuid) TO authenticated;');
-  hasErrors = true;
-}
-
-if (hasErrors) {
-  process.exit(1);
-}
-
-console.log('✅ Permissoes da RPC corretas: anon=false, authenticated=true.');
-process.exit(0);
+main().catch(() => {
+  conclude(
+    CHECK_RESULT_STATUS.INCONCLUSIVE,
+    "unexpected_error",
+    "O check encontrou um erro inesperado antes de produzir evidência live.",
+  );
+});

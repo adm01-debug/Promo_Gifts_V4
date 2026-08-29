@@ -3,7 +3,7 @@ import { authenticateRequest, authErrorResponse } from '../_shared/auth.ts';
 import { callAiWithTracking, QuotaExceededError } from '../_shared/ai-usage.ts';
 import { runBotProtection } from '../_shared/bot-protection.ts';
 import { z } from "https://deno.land/x/zod@v3.23.8/mod.ts";
-import { requireAiApiKey } from '../_shared/ai-credentials.ts';
+import { resolveAiApiKey } from '../_shared/ai-credentials.ts';
 
 const CriterionSchema = z.object({
   id: z.string().min(1),
@@ -64,9 +64,10 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ error: 'Validation failed', details: parsed.error.flatten().fieldErrors }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    const ai = await requireAiApiKey('magic-up-score', corsHeaders);
-    if (!ai.apiKey) return ai.response!;
-    const LOVABLE_API_KEY = ai.apiKey;
+    // BUG-CRED-2 FIX (2026-08-17): não bloqueia mais em LOVABLE_API_KEY ausente — esta
+    // função tem routing multi-provider ativo (deepseek/DEEPSEEK_API_KEY) que
+    // callAiWithTracking tenta primeiro e não depende do Lovable Gateway.
+    const { apiKey: LOVABLE_API_KEY } = await resolveAiApiKey('magic-up-score');
 
     const model = 'google/gemini-2.5-pro';
     const context = JSON.stringify({
@@ -84,7 +85,7 @@ Deno.serve(async (req) => {
       userId: auth.userId,
       functionName: 'magic-up-score',
       model,
-      apiKey: LOVABLE_API_KEY,
+      apiKey: LOVABLE_API_KEY ?? '',
       requestBody: {
         model,
         messages: [{

@@ -21,7 +21,7 @@ export function DebouncedPriceInput({
   debounceMs = 600,
 }: DebouncedPriceInputProps) {
   const [localValue, setLocalValue] = useState(String(value));
-  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   // Sync external value → local (only when not focused)
   useEffect(() => {

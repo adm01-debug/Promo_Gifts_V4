@@ -122,6 +122,8 @@ export function sinkDegradation(input: DegradationSinkInput): ThrottleDecision {
 }
 
 /** Isolamento entre testes. */
-export function __resetDegradationSink(): void {
+function resetDegradationSinkForTests(): void {
   throttle = createDegradationThrottle();
 }
+
+export { resetDegradationSinkForTests as __resetDegradationSink };

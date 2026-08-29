@@ -61,15 +61,19 @@ vi.mock('sonner', () => ({
   },
 }));
 
-vi.mock('@/lib/security/sanitize-error', () => ({
-  sanitizeError: (e: unknown) => {
-    if (e instanceof Error) return e.message;
-    if (e && typeof e === 'object' && 'message' in e) {
-      return String((e as { message: unknown }).message);
-    }
-    return String(e);
-  },
-}));
+vi.mock('@/lib/security/sanitize-error', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    sanitizeError: (e: unknown) => {
+      if (e instanceof Error) return e.message;
+      if (e && typeof e === 'object' && 'message' in e) {
+        return String((e as { message: unknown }).message);
+      }
+      return String(e);
+    },
+  };
+});
 
 vi.mock('@/hooks/products/useDebouncedCartItemActions', () => ({
   useDebouncedCartItemActions: () => ({

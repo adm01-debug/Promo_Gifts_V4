@@ -8,7 +8,9 @@
  *   logger.error('Failed to fetch', { url, status });
  */
 
-const isDev = import.meta.env.DEV;
+// Vite defines import.meta.env in the browser build. Node-based contract tools
+// (notably Playwright's test collector) can import this module before Vite runs.
+const isDev = import.meta.env?.DEV ?? false;
 
 const SENSITIVE_KEY_RE = /(token|secret|password|authorization|cookie|api[_-]?key|jwt)/i;
 

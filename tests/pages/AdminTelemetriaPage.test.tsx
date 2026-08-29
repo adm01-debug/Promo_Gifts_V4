@@ -338,12 +338,13 @@ describe('AdminTelemetriaPage - Table Display', () => {
     setupSupabaseMock(rows);
     render(<AdminTelemetriaPage />);
     await waitFor(() => {
-      expect(screen.getByText('Quando')).toBeInTheDocument();
-      expect(screen.getByText('Operação')).toBeInTheDocument();
-      expect(screen.getByText('Tabela/RPC')).toBeInTheDocument();
-      expect(screen.getByText('Duração')).toBeInTheDocument();
-      expect(screen.getByText('Records')).toBeInTheDocument();
-      expect(screen.getByText('Severidade')).toBeInTheDocument();
+      const table = screen.getByTestId('telemetry-queries-table');
+      expect(within(table).getByText('Quando')).toBeInTheDocument();
+      expect(within(table).getByText('Operação')).toBeInTheDocument();
+      expect(within(table).getByText('Tabela/RPC')).toBeInTheDocument();
+      expect(within(table).getByText('Duração')).toBeInTheDocument();
+      expect(within(table).getByText('Records')).toBeInTheDocument();
+      expect(within(table).getByText('Severidade')).toBeInTheDocument();
     });
   });
 
@@ -536,7 +537,7 @@ describe('AdminTelemetriaPage - Exports', () => {
     setupSupabaseMock([]);
     render(<AdminTelemetriaPage />);
     await waitFor(() => {
-      const csvBtn = screen.getByText('CSV').closest('button');
+      const csvBtn = screen.getByTestId('telemetry-export-csv');
       expect(csvBtn).toBeDisabled();
     });
   });
@@ -545,7 +546,7 @@ describe('AdminTelemetriaPage - Exports', () => {
     setupSupabaseMock([]);
     render(<AdminTelemetriaPage />);
     await waitFor(() => {
-      const pdfBtn = screen.getByText('PDF').closest('button');
+      const pdfBtn = screen.getByTestId('telemetry-export-pdf');
       expect(pdfBtn).toBeDisabled();
     });
   });
@@ -555,7 +556,7 @@ describe('AdminTelemetriaPage - Exports', () => {
     setupSupabaseMock(rows);
     render(<AdminTelemetriaPage />);
     await waitFor(() => {
-      const csvBtn = screen.getByText('CSV').closest('button');
+      const csvBtn = screen.getByTestId('telemetry-export-csv');
       expect(csvBtn).not.toBeDisabled();
     });
   });
@@ -565,7 +566,7 @@ describe('AdminTelemetriaPage - Exports', () => {
     setupSupabaseMock(rows);
     render(<AdminTelemetriaPage />);
     await waitFor(() => {
-      const pdfBtn = screen.getByText('PDF').closest('button');
+      const pdfBtn = screen.getByTestId('telemetry-export-pdf');
       expect(pdfBtn).not.toBeDisabled();
     });
   });

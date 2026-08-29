@@ -23,7 +23,7 @@ import {
   KillSwitchActiveError,
 } from './kill-switch-client';
 import { recordKillSwitchHit } from './kill-switch-telemetry';
-import { invokeEdge } from '@/lib/edge/safeInvokeCall';
+import { invokeEdge, type InvokeCompatError } from '@/lib/edge/safeInvokeCall';
 
 const KILL_SWITCH_NAME = 'edge_external_db_bridge';
 
@@ -98,29 +98,48 @@ function matches(msg: string, patterns: string[]): boolean {
   return patterns.some((p) => lower.includes(p.toLowerCase()));
 }
 
-function isNonRetryableError(msg: string): boolean {
+function extractErrorStatus(error: unknown): number {
+  if (!error || typeof error !== 'object') return 0;
+  const directStatus = (error as { status?: unknown }).status;
+  if (typeof directStatus === 'number' && Number.isFinite(directStatus)) return directStatus;
+
+  const context = (error as { context?: unknown }).context;
+  if (context && typeof context === 'object') {
+    const contextStatus = (context as { status?: unknown }).status;
+    if (typeof contextStatus === 'number' && Number.isFinite(contextStatus)) return contextStatus;
+  }
+  return 0;
+}
+
+function isNonRetryableError(msg: string, status = 0): boolean {
+  if (status === 503) return false;
+  if ([400, 401, 403, 410].includes(status)) return true;
   if (/\b503\b/.test(msg) || /service is temporarily unavailable/i.test(msg)) return false;
   if (matches(msg, NON_RETRYABLE_PATTERNS)) return true;
   return NON_RETRYABLE_HTTP_RE.test(msg);
 }
 
-function isRetryableError(msg: string): boolean {
-  if (isNonRetryableError(msg)) return false;
+function isRetryableError(msg: string, status = 0): boolean {
+  if ([502, 503, 504].includes(status)) return true;
+  if (isNonRetryableError(msg, status)) return false;
   return matches(msg, RETRYABLE_PATTERNS);
 }
 
 function isKillSwitch410(error: unknown): boolean {
-  if (!(error instanceof Error)) return false;
-  const maybeContext = error as Error & { context?: Response };
+  if (!error || typeof error !== 'object') return false;
+  if (extractErrorStatus(error) === 410) return true;
+  const maybeContext = error as { context?: Response; message?: unknown };
   if (maybeContext.context instanceof Response && maybeContext.context.status === 410) {
     return true;
   }
-  return /\b410\b/.test(error.message) || /\bgone\b/i.test(error.message);
+  const message = typeof maybeContext.message === 'string' ? maybeContext.message : '';
+  return /\b410\b/.test(message) || /\bgone\b/i.test(message);
 }
 
 export async function extractFunctionErrorMessage(error: unknown): Promise<string> {
-  if (error instanceof Error) {
-    const maybeContext = error as Error & { context?: Response };
+  if (error && typeof error === 'object') {
+    const maybeContext = error as { context?: Response; message?: unknown };
+    const baseMessage = typeof maybeContext.message === 'string' ? maybeContext.message : '';
     if (maybeContext.context instanceof Response) {
       try {
         const raw = await maybeContext.context.clone().text();
@@ -142,19 +161,34 @@ export async function extractFunctionErrorMessage(error: unknown): Promise<strin
             ]
               .filter(Boolean)
               .join(' | ');
-            if (detailed) return `${error.message} | ${detailed}`;
+            if (detailed) return baseMessage ? `${baseMessage} | ${detailed}` : detailed;
           } catch {
-            return `${error.message} | ${raw}`;
+            return baseMessage ? `${baseMessage} | ${raw}` : raw;
           }
         }
       } catch {
         // ignore parse failure
       }
     }
-    return error.message;
+    if (baseMessage) return baseMessage;
   }
 
   return 'Erro ao acessar banco externo';
+}
+
+function toExternalDbError(error: Error | InvokeCompatError): Error {
+  if (error instanceof Error) return error;
+
+  // `invokeEdge` devolve um envelope compatível para call sites modernos. O
+  // módulo legado, porém, ainda promete `Error` aos seus consumidores. Reidrata
+  // a instância e preserva metadata operacional para retry/telemetria.
+  const normalized = new Error(error.message);
+  normalized.name = error.name;
+  Object.assign(normalized, {
+    status: error.status,
+    request_id: error.request_id,
+  });
+  return normalized;
 }
 
 export async function invokeWithRetry(
@@ -232,10 +266,11 @@ export async function invokeWithRetry(
   }
 
   for (let attempt = 0; attempt <= retries; attempt++) {
-    const { data, error } = await invokeEdge('external-db-bridge', {
+    const { data, error: invokeError } = await invokeEdge('external-db-bridge', {
       body,
       headers: { [REQUEST_ID_HEADER]: requestId },
     });
+    const error = invokeError ? toExternalDbError(invokeError) : null;
 
     if (!error) {
       if (sawColdStart) emitBridgeStatus({ type: 'recovered' });
@@ -269,13 +304,14 @@ export async function invokeWithRetry(
     }
 
     const msg = await extractFunctionErrorMessage(error);
+    const status = extractErrorStatus(error);
 
-    if (isNonRetryableError(msg)) {
+    if (isNonRetryableError(msg, status)) {
       logger.warn(`[external-db] Fail-fast (deterministic error, no retry): ${msg}`);
       return finalize({ data, error });
     }
 
-    if (attempt < retries && isRetryableError(msg)) {
+    if (attempt < retries && isRetryableError(msg, status)) {
       const base = INITIAL_BACKOFF_MS * 2 ** attempt;
       const jitter = Math.floor(Math.random() * 200);
       const delay = Math.min(base + jitter, 4000);

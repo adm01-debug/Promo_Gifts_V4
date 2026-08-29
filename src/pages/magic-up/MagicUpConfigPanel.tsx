@@ -231,6 +231,9 @@ function ProductCard({ m }: { m: MagicUpStateReturn }) {
       <CardContent className="space-y-4">
         <ProductSearchCombobox
           products={m.products}
+          search={m.productSearch}
+          onSearchChange={m.setProductSearch}
+          isSearching={m.loadingProducts}
           selectedProduct={m.selectedProduct}
           onSelect={(p) =>
             m.handleSelectProduct(p ? (m.products.find((x) => x.id === p.id) ?? null) : null)

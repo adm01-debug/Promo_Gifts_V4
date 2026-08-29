@@ -1,11 +1,12 @@
 /**
  * useEmaRiskSummary — Dados para o StockHeroRiskBanner.
- * Chama fn_ema_risk_summary() (contagem por nivel_alerta) e
- * fn_ema_pipeline_health() (frescor do ETL) em paralelo.
+ * Chama fn_rupture_quick_stats() (fonte canônica por nivel_alerta) e o
+ * boundary dev ema-pipeline-health (frescor do read model) em paralelo.
  * Sem feature flag — o banner é sempre visível quando dados disponíveis.
  */
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import type { EmaHealthResponseV1 } from '@/types/ema-health';
 
 export interface EmaRiskSummaryRow {
   nivel_alerta: string;
@@ -21,15 +22,6 @@ export interface EmaEtlHealth {
   status: EtlStatus;
 }
 
-type AnyRpc = (fn: string) => Promise<{ data: unknown; error: Error | null }>;
-
-interface HealthRow {
-  componente: string;
-  status: string;
-  valor: string;
-  observacao: string;
-}
-
 export interface UseEmaRiskSummaryResult {
   rows: EmaRiskSummaryRow[];
   totalVariants: number;
@@ -39,8 +31,6 @@ export interface UseEmaRiskSummaryResult {
 }
 
 export function useEmaRiskSummary(): UseEmaRiskSummaryResult {
-  const rpc = supabase.rpc as unknown as AnyRpc;
-
   const query = useQuery({
     queryKey: ['ema-risk-summary-banner'],
     staleTime: 5 * 60_000,
@@ -48,25 +38,32 @@ export function useEmaRiskSummary(): UseEmaRiskSummaryResult {
     retry: 1,
     queryFn: async () => {
       const [summaryRes, healthRes] = await Promise.all([
-        rpc('fn_ema_risk_summary'),
-        rpc('fn_ema_pipeline_health'),
+        supabase.rpc('fn_rupture_quick_stats'),
+        supabase.functions.invoke<EmaHealthResponseV1>('ema-pipeline-health', { method: 'GET' }),
       ]);
       if (summaryRes.error) throw summaryRes.error;
+      if (healthRes.error) throw healthRes.error;
+      if (healthRes.data?.version !== 1) {
+        throw new Error('Resposta inválida de ema-pipeline-health');
+      }
       return {
-        rows: (summaryRes.data as EmaRiskSummaryRow[]) ?? [],
-        health: (healthRes.data as HealthRow[]) ?? [],
+        rows: (summaryRes.data ?? []).map((row) => ({
+          nivel_alerta: row.nivel_alerta,
+          prioridade: row.prioridade,
+          total: row.total_variantes,
+        })),
+        health: healthRes.data,
       };
     },
   });
 
   const rows = query.data?.rows ?? [];
-  const health = query.data?.health ?? [];
+  const health = query.data?.health;
   const totalVariants = rows.reduce((s, r) => s + (r.total ?? 0), 0);
 
-  const frescorComp = health.find((h) => h.componente === 'EMA_FRESCOR');
   const etlHealth: EmaEtlHealth = {
-    freshness: frescorComp?.valor ?? null,
-    status: frescorComp ? (frescorComp.status as EtlStatus) : 'WARN',
+    freshness: health?.freshness.last_refreshed_at ?? null,
+    status: health?.freshness.status === 'UNKNOWN' ? 'WARN' : (health?.freshness.status ?? 'WARN'),
   };
 
   return {

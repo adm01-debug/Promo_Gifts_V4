@@ -19,6 +19,20 @@ export function isAbortError(err: unknown): boolean {
   if (err instanceof Error && err.name === 'AbortError') return true;
   // Supabase wrapper — 'AbortError: ' com colon+espaço para evitar GAP-H04
   if (err instanceof Error && err.message?.startsWith('AbortError: ')) return true;
+  // FIX 2026-08-15: fetch abortado pelo postgrest-js chega como objeto plano
+  // no formato PostgrestError ({message, details, hint, code}), não como
+  // Error/DOMException — os checks acima não pegam esse formato, poluindo
+  // o console com "[useProducts] Error fetching products" em toda navegação
+  // rápida entre páginas (cancelamento normal do React Query).
+  if (
+    typeof err === 'object' &&
+    err !== null &&
+    'message' in err &&
+    typeof (err as { message?: unknown }).message === 'string' &&
+    (err as { message: string }).message.startsWith('AbortError: ')
+  ) {
+    return true;
+  }
   return false;
 }
 

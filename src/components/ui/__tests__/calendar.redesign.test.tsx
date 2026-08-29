@@ -1,7 +1,7 @@
 /**
  * Quality Gate — Calendar iOS-style redesign.
- * Valida invariantes do novo visual: header grande, weekdays de 1 letra,
- * domingo destrutivo, hoje invertido, selecionado primário, outside oculto.
+ * Valida invariantes do visual atual: header em duas linhas, weekdays de 1 letra,
+ * domingo destrutivo, hoje em vermelho, selecionado destrutivo, outside oculto.
  */
 import { describe, it, expect, afterEach } from 'vitest';
 import { render, cleanup } from '@testing-library/react';
@@ -21,11 +21,11 @@ function byClass(substr: string): HTMLElement | null {
 }
 
 describe('Calendar iOS redesign', () => {
-  it('renderiza mês pt-BR capitalizado ("Julho 2026")', () => {
+  it('renderiza mês pt-BR capitalizado em duas linhas ("Julho" + "2026")', () => {
     render(<Calendar mode="single" defaultMonth={REF} />);
     const caption = byClass('capitalize');
     expect(caption).toBeTruthy();
-    expect(caption!.textContent?.toLowerCase()).toMatch(/julho.*2026/);
+    expect(caption!.textContent?.toLowerCase()).toMatch(/julho\s*2026/);
   });
 
   it('caption tem text-[15px] + font-bold + tracking-tight', () => {
@@ -53,26 +53,22 @@ describe('Calendar iOS redesign', () => {
     expect(sundays.length).toBeGreaterThanOrEqual(1);
   });
 
-  it('day_today: bg-foreground + text-background (círculo invertido)', () => {
+  it('day_today destaca o dia atual em vermelho', () => {
     render(<Calendar mode="single" defaultMonth={new Date()} />);
-    const today =
-      document.querySelector('button[aria-current="date"]') ??
-      Array.from(document.querySelectorAll<HTMLElement>('button')).find((b) =>
-        (b.getAttribute('class') ?? '').includes('bg-foreground'),
-      );
+    const today = Array.from(document.querySelectorAll<HTMLElement>('button[name="day"]')).find(
+      (b) => classes(b).includes('text-destructive'),
+    );
     expect(today).toBeTruthy();
     const c = classes(today);
-    expect(c).toMatch(/bg-foreground/);
-    expect(c).toMatch(/text-background/);
-    expect(c).toMatch(/rounded-full|rounded-lg/);
+    expect(c).toMatch(/text-destructive/);
   });
 
-  it('day_selected: bg-primary + text-primary-foreground', () => {
+  it('day_selected: bg-destructive + text-primary-foreground', () => {
     render(<Calendar mode="single" selected={REF} defaultMonth={REF} />);
     const sel = document.querySelector('button[aria-selected="true"]');
     expect(sel).toBeTruthy();
     const c = classes(sel);
-    expect(c).toMatch(/bg-primary/);
+    expect(c).toMatch(/bg-destructive/);
     expect(c).toMatch(/text-primary-foreground/);
   });
 

@@ -3,7 +3,7 @@ import { authenticateRequest, authErrorResponse } from '../_shared/auth.ts';
 import { callAiWithTracking, QuotaExceededError } from '../_shared/ai-usage.ts';
 import { z } from '../_shared/zod-validate.ts';
 import { runBotProtection } from '../_shared/bot-protection.ts';
-import { requireAiApiKey } from "../_shared/ai-credentials.ts";
+import { resolveAiApiKey } from "../_shared/ai-credentials.ts";
 
 Deno.serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
@@ -23,28 +23,34 @@ Deno.serve(async (req) => {
       customIdentifier: `user:${user.id}`,
     }, corsHeaders);
     if (!protection.allowed) return protection.blockResponse!;
-    const ai = await requireAiApiKey("generate-ad-prompt", corsHeaders);
-    if (!ai.apiKey) return ai.response!;
-    const LOVABLE_API_KEY = ai.apiKey;
+    // BUG-CRED-2 FIX (2026-08-17): não bloqueia mais em LOVABLE_API_KEY ausente — esta
+    // função tem routing multi-provider ativo (deepseek/DEEPSEEK_API_KEY) que
+    // callAiWithTracking tenta primeiro e não depende do Lovable Gateway.
+    const { apiKey: LOVABLE_API_KEY } = await resolveAiApiKey("generate-ad-prompt");
 
+    // BUG-MAGICUP-ADPROMPT-1 FIX (2026-08-17): campos abaixo eram `.optional()`
+    // sem `.nullable()` — o cliente (PromptGenerator.tsx) sempre envia `null`
+    // explícito (não `undefined`) para "sem valor" (ex.: `productCategory: null`,
+    // `techniqueName: selectedTech?.nome || null`), o que fazia o Zod rejeitar
+    // TODA requisição sem produto com técnica/local selecionados (400).
     const AdPromptSchema = z.object({
       productName: z.string().trim().min(1, 'Product name is required').max(255),
-      productColor: z.string().max(100).optional(),
-      productCategory: z.string().max(100).optional(),
-      techniqueName: z.string().max(100).optional(),
-      locationName: z.string().max(100).optional(),
-      maxWidth: z.union([z.string(), z.number()]).optional(),
-      maxHeight: z.union([z.string(), z.number()]).optional(),
-      dimensionUnit: z.string().max(10).optional(),
-      isCurved: z.boolean().optional(),
-      clientSegment: z.string().max(200).optional(),
-      clientName: z.string().max(200).optional(),
-      brandColorName: z.string().max(100).optional(),
-      objective: z.string().max(500).optional(),
-      tone: z.string().max(100).optional(),
-      targetAudience: z.string().max(200).optional(),
-      season: z.string().max(100).optional(),
-      numberOfPrompts: z.number().int().min(1).max(6).optional(),
+      productColor: z.string().max(100).nullable().optional(),
+      productCategory: z.string().max(100).nullable().optional(),
+      techniqueName: z.string().max(100).nullable().optional(),
+      locationName: z.string().max(100).nullable().optional(),
+      maxWidth: z.union([z.string(), z.number()]).nullable().optional(),
+      maxHeight: z.union([z.string(), z.number()]).nullable().optional(),
+      dimensionUnit: z.string().max(10).nullable().optional(),
+      isCurved: z.boolean().nullable().optional(),
+      clientSegment: z.string().max(200).nullable().optional(),
+      clientName: z.string().max(200).nullable().optional(),
+      brandColorName: z.string().max(100).nullable().optional(),
+      objective: z.string().max(500).nullable().optional(),
+      tone: z.string().max(100).nullable().optional(),
+      targetAudience: z.string().max(200).nullable().optional(),
+      season: z.string().max(100).nullable().optional(),
+      numberOfPrompts: z.number().int().min(1).max(6).nullable().optional(),
     });
 
     let rawBody: unknown;
@@ -140,7 +146,7 @@ Create ${numPrompts} distinct scene concepts that:
       userId: user.id,
       functionName: "generate-ad-prompt",
       model,
-      apiKey: LOVABLE_API_KEY,
+      apiKey: LOVABLE_API_KEY ?? '',
       requestBody: {
         messages: [
           { role: "system", content: systemPrompt },

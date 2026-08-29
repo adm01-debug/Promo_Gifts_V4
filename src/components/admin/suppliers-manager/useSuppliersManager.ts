@@ -64,7 +64,7 @@ export function useSuppliersManager() {
   >([]);
   const [searchingCarriers, setSearchingCarriers] = useState(false);
   const [showCarrierDropdown, setShowCarrierDropdown] = useState(false);
-  const carrierSearchTimeout = useRef<ReturnType<typeof setTimeout>>();
+  const carrierSearchTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const logoInputRef = useRef<HTMLInputElement>(null);
 
   // BUG-23 FIX: cleanup carrier search timeout on unmount

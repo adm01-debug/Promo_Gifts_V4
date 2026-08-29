@@ -48,8 +48,8 @@ describe('QuoteBuilderSummaryColumn — alinhamento vertical dos botões', () =>
   });
 
   it('cada botão tem tooltip comercial em PT-BR', () => {
-    expect(SRC).toMatch(/>Ajustar este item</);
-    expect(SRC).toMatch(/>Remover do orçamento</);
+    expect(SRC).toMatch(/Ajustar\s+este\s+item/);
+    expect(SRC).toMatch(/Remover\s+do\s+orçamento/);
     // toggle expand/recolher
     expect(SRC).toMatch(/aria-label=\{isCollapsed \? 'Expandir' : 'Recolher'\}/);
   });
