@@ -33,6 +33,130 @@ que parte do código, inventário ou teste já exista.
 | P1 | 26 | necessária para completar feature, contrato, auditoria ou jornada |
 | P2 | 1 | dívida controlada que não pode crescer enquanto aguarda o lote correto |
 
+## Revisão exaustiva de implementação — 30/08/2026
+
+Esta revisão confrontou cada critério de aceite com quatro fontes independentes:
+
+1. `origin/main` em `7ea9b5870a641042a955f380a1b90fa00f155eac`;
+2. PRs técnicos #1803, #1804 e #1805, todos mergeados, e o PR documental
+   #1806 em rascunho no commit `4d3ab77b3f4f53b91fc064d4c84713a6d83e3ed5`;
+3. GitHub Actions, ruleset, Dependabot e Vercel observados remotamente;
+4. Supabase canônico consultado pela Management API **read-only**, autenticada para
+   `doufsxqlfjyuvxuezpln`, com PostgreSQL 17.6 e usuário
+   `supabase_read_only_user`.
+
+O Graphify foi usado apenas para navegação porque seu grafo antecede as mudanças
+mais recentes. Nenhuma conclusão abaixo depende exclusivamente dele. O MCP
+`supabase_producao` respondeu `401` na Management API e o MCP
+`supabase_canonico_selfhosted` apontou para outro PostgreSQL 15; ambos foram
+descartados como fonte canônica nesta rodada.
+
+### Veredito quantitativo
+
+| Estado de aceite das 50 etapas | Quantidade | Interpretação |
+|---|---:|---|
+| ✅ Concluída | **0** | nenhum critério integral novo ficou comprovado depois da criação deste plano |
+| 🟡 Parcial | **34** | há código, teste, inventário ou rascunho, mas falta parte objetiva do aceite |
+| ⬜ Não iniciada | **4** | não existe entrega correspondente ao critério restante |
+| ⛔ Bloqueada | **11** | depende de decisão, autorização ou ambiente externo ainda ausente |
+| ⚙️ Condicional não acionada | **1** | a etapa 023 só deve existir se persistência de simulação for aprovada |
+| **Total** | **50** | todos os checkboxes permanecem abertos |
+
+O resultado **não significa que nada foi feito**. As migrations e as Edge Functions
+críticas estão implantadas, e os testes locais de banco passam. Significa que o
+plano foi corretamente escrito como trabalho de aceite restante: implementação
+parcial, deploy estrutural ou teste mockado não encerram uma etapa mais ampla.
+
+### Matriz de rastreabilidade etapa por etapa
+
+| Etapa | Estado | Implementado e comprovado | Falta para o aceite integral |
+|---:|:---:|---|---|
+| 001 | 🟡 | matriz v0.2 no PR #1806 | aprovação dos 12 fluxos pelo PO |
+| 002 | 🟡 | mapa rota→dados→teste em rascunho | owners, dependências dinâmicas e 100% das rotas validadas |
+| 003 | 🟡 | mapa de 14 domínios | owners/substitutos reais e CODEOWNERS autorizado |
+| 004 | 🟡 | readiness v0.1 e cinco flags sem consumidor identificadas | lifecycle, owner, prazo e aceite nominal por feature/job/Edge |
+| 005 | 🟡 | protocolo, ledgers e template de PR | validação do PO e uso comprovado em PR de código concorrente |
+| 006 | ⬜ | falhas atuais foram diagnosticadas pontualmente | painel causal histórico completo com recorrência, owner e links |
+| 007 | ⬜ | workflows possuem gates e metadados dispersos | catálogo dos 107 workflows e decisão nominal sobre redundância/`continue-on-error` |
+| 008 | ⛔ | `Gate Final - Deploy Ready` existe no workflow | ruleset `Protect main` não exige status checks; falta autorização e teste de bloqueio |
+| 009 | ⛔ | integração Vercel responde ao PR | preview do PR #1806 falhou antes do build; falta corrigir acesso/configuração externa |
+| 010 | 🟡 | CodeQL e Gitleaks passaram no PR | dois alertas Dependabot altos de `image-size` continuam abertos |
+| 011 | 🟡 | fixtures de carrinho, desconto, estoque e orçamento existem | dataset unificado, idempotente e anonimizado para todos os fluxos críticos |
+| 012 | 🟡 | há 33 specs visuais e baselines de dialogs | cobertura da matriz 001 e shard 2/2 verde; hoje há 1 falha e 9 flakes |
+| 013 | 🟡 | existem testes visuais, funcionais e a11y | mesma fixture/matriz por fluxo, viewport e navegador sem setups contraditórios |
+| 014 | 🟡 | core hermético e fuzz dry-run passam | contratos Edge falham e testes live/autenticados ainda ficam `skipped` |
+| 015 | 🟡 | rollback web e snapshots de schema documentados | restore real cronometrado de dados em PG17, RTO/RPO e rollback Edge |
+| 016 | 🟡 | saldo produtivo caiu de 54 para 1 `as any`; ratchet passa | fechar a revisão dos 54 casos originais e provar contratos de todos os lotes |
+| 017 | 🟡 | TS está em 0 erros e lint em 0/0 | classificar 177 `eslint-disable` e a supressão TS restante com owner/expiração |
+| 018 | 🟡 | scanners de any, request-id, ACL e contratos existem | scanner de contratos ainda reporta oito Edge Functions sem registro; gate `lint-untyped-from` é consultivo |
+| 019 | 🟡 | envelopes, Zod, HMAC e testes focais cobrem integrações importantes | oito contratos faltantes e smoke HTTP atual com 11 falhas/133 cenários |
+| 020 | 🟡 | `request_id` está coberto em 17 edges críticas | provar uma jornada UI→Edge→RPC/outbox→provedor por um único ID |
+| 021 | 🟡 | função implantada é efêmera e fail-closed | ADR vigente ainda descreve persistência e “não implantado”; falta decisão de produto aprovada |
+| 022 | 🟡 | AAL2, quatro outcomes, 424 e zero rede para alvos bloqueados passam em teste | sucesso/rejeição/replay/segredo inválido/timeout em sandbox autorizado |
+| 023 | ⚙️ | alternativa efêmera existe e não cria tabelas | somente preparar SQL se o PO trocar a decisão para persistente |
+| 024 | ⛔ | `runAuthAudit` foi provado dormente e fail-soft | decisão nominal de ligar, adaptar ou aposentar |
+| 025 | ⛔ | RPC histórica e revogação estão inventariadas | depende da 024 e, se mantida, de contrato/AAL/grants/migration autorizados |
+| 026 | ⛔ | hook `useStockNotes` e ausência live de `stock_notes` confirmados | decisão funcional do PO |
+| 027 | ⛔ | consumidores potenciais foram localizados | depende da 026 e de autorização nominal para criar ou remover |
+| 028 | 🟡 | Edge `e2e-cleanup` e referência à tabela foram caracterizadas | `e2e_cleanup_audit` segue ausente no canônico e o contrato não foi isolado/formalizado |
+| 029 | 🟡 | falso verde do Bitrix foi removido; deploy atual coincide com o repo | storage/retention/RLS/owner ainda não foram decididos; tabelas live ausentes |
+| 030 | 🟡 | 13 migrations, RPCs, grants e quatro triggers diferidos existem no canônico; PG17 local passa | happy-path live autorizado, concorrência e prova de notificação única |
+| 031 | 🟡 | freshness/confidence existem em campos específicos | provenance estrutural por campo e propagação uniforme em UI/exportações |
+| 032 | ⬜ | persistência/autosave parcial existe | `handleSaveKit` continua vazio e falhas de catálogo ainda caem silenciosamente em `MOCK_*` |
+| 033 | 🟡 | badges de freshness/confidence existem em alguns módulos | contrato global que separe dado real, estimativa e simulação |
+| 034 | 🟡 | ampla cobertura local/mockada de orçamento | jornada repetível em staging com desconto, PDF, share e teardown reais |
+| 035 | 🟡 | specs locais de magazine e reader existem | jornada staging multi-perfil, publicação e reação idempotente |
+| 036 | 🟡 | testes locais/mockados de mockup existem | sandbox de provedor, compensação, custo e teardown em staging |
+| 037 | 🟡 | specs e módulos de kit existem | staging dono/colaborador/público; a etapa 032 impede aceite |
+| 038 | ⬜ | há testes RLS pontuais | não existe matriz executável 2 usuários × 2 organizações |
+| 039 | ⛔ | dry-runs e descriptors existem | JWTs/segredos dedicados de staging; live fuzz do PR foi `skipped` |
+| 040 | 🟡 | repo tem 107 funções; quatro deploys críticos foram comparados byte a byte | inventário completo repo×deploy×config com hash, caller, owner e último uso; MCP nominal falhou 401 |
+| 041 | 🟡 | fotografia `pg_catalog` e relações vazias foram inventariadas | owner/lifecycle e dependências por coluna para todas as relações |
+| 042 | 🟡 | 1.242→1.170 índices e candidatos foram levantados historicamente | janela representativa, planos, write cost, owner e rollback por candidato |
+| 043 | 🟡 | lints/allowlists e grants da view de kits foram aplicados | matriz executável por papel; `fn_super_filtro` segue com EXECUTE para PUBLIC/anon |
+| 044 | 🟡 | inventário e gates de ACL existem | revisão humana das atuais 535 `SECURITY DEFINER`; 10 anon, 72 authenticated e 1 PUBLIC |
+| 045 | 🟡 | três jobs foram confirmados live | outbox e pipeline continuam inativos; vacuum ativo ainda sem causa/runbook final |
+| 046 | 🟡 | manifesto local e ledger sanitizado existem; 13 migrations recentes estão live | reconciliar ledger atual completo, colisões/hashes/efeitos e obter revisão DBA |
+| 047 | ⛔ | harnesses PG17 focais passam | replay integral depende do manifesto 046 aprovado |
+| 048 | ⛔ | dump/referência/canônico foram comparados parcialmente | comparação pós-replay integral e classificação de todo delta |
+| 049 | ⛔ | migrations aprovadas anteriormente chegaram ao canônico | esta etapa exige staging, allowlist nominal, canário e rollback para o lote restante |
+| 050 | ⛔ | build/typecheck e a maioria dos checks passam | 6 checks remotos falham, 4 são skipped, Vercel falha, P0/P1 seguem abertos |
+
+### Evidências novas que alteram a ordem de trabalho
+
+- **Banco canônico atualizado estruturalmente:** as migrations
+  `20260828141000`–`20260828141200` e `20260829110000`–`20260829123000`
+  estão no ledger live. A view de kits possui `security_invoker=true`; as RPCs
+  transacionais e os quatro triggers diferidos de desconto estão ativos.
+- **Edges realmente implantadas:** downloads read-only de `webhook-inbound`,
+  `simulation-orchestrator`, `migrate-helper` e `bitrix-sync` coincidem com os
+  arquivos executáveis do repositório; as diferenças são testes não enviados e
+  um comentário de documentação no logger compartilhado.
+- **CI não está pronta para release:** o PR #1806 registra 70 sucessos, 6
+  falhas, 4 skips e 1 neutral. As causas primárias são invocação Edge direta,
+  corrida de criação do banco PG17 no runner, 11 cenários HTTP de contrato,
+  regressão/flake visual e Vercel; `Gate Final` é falha derivada.
+- **Ruleset insuficiente:** `Protect main` está ativo, mas possui somente delete,
+  non-fast-forward e PR sem aprovações; nenhum required status check está
+  configurado e o papel de administração possui bypass permanente.
+- **Dívidas funcionais inequívocas:** `handleSaveKit` continua vazio;
+  `stock_notes`, `simulation_*`, `e2e_cleanup_audit` e storage Bitrix continuam
+  ausentes no canônico; isso é pendência/decisão, não autoriza DDL nem remoção.
+
+### Ordem revisada de fechamento
+
+1. Aprovar 001–005 e corrigir a documentação divergente da simulação.
+2. Corrigir os quatro defeitos causais exercitáveis de CI: invocação direta,
+   corrida PG17, contratos HTTP e seleção/estabilidade visual.
+3. Revalidar Vercel e somente então configurar `Gate Final - Deploy Ready` como
+   required check, com teste controlado do ruleset.
+4. Fechar 016–020, 028–033 e o kit fail-explicit antes de declarar jornadas prontas.
+5. Executar 034–040 em staging com credenciais dedicadas e matriz 2×2.
+6. Atualizar o manifesto do ledger live e executar 041–048 sem qualquer mutação
+   canônica até autorização nominal por objeto.
+7. Manter 049–050 bloqueadas até todos os P0/P1 e skips obrigatórios estarem
+   fechados.
+
 ## Regras invioláveis de execução
 
 1. A worktree principal compartilhada não deve ser sobrescrita; cada agente trabalha
