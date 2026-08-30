@@ -19,7 +19,7 @@ Guards: `public` (sem sessão) < `ProtectedRoute` (sessão) < `AdminRoute` (supe
 | `/auth/callback` | `SSOCallbackPage` | `supabase.auth` (troca de código SSO) | **lacuna:** sem E2E dedicado |
 | `/unauthorized` | `Unauthorized` | — (estática) | **lacuna** |
 | `/termos`, `/privacidade` | `TermsPage`, `PrivacyPage` | — (estáticas) | **lacuna** |
-| `/revista-publica/:token` | `PublicMagazineView` | Edge `magazine-public-view` (leitura) e `magazine-public-react` (reações anônimas por token — ambas `verify_jwt=false`); DB `magazines`, `magazine_items`, `magazine_public_reactions` | `e2e/magazine/magazine-viewer.spec.ts` |
+| `/revista-publica/:token` | `PublicMagazineView` | Edge `magazine-public-view` (leitura — dependência efetiva via `magazineService.getPublicByToken()`); DB `magazines`, `magazine_items`. Edge `magazine-public-react` (reações anônimas por token, `verify_jwt=false`) existe implantada, porém **sem caller na aplicação** — integração não implementada; **lacuna:** teste E2E de reação pública | `e2e/magazine/magazine-viewer.spec.ts` |
 | `/debug/images` | `OptimizedImageDemo` | — (demo de imagens) | `e2e/visual/` (projeto público) |
 | `*` (catch-all) | `NotFound` | — | `e2e/smoke.spec.ts` (3 testes); **lacuna:** sem spec E2E dedicada de 404 público sem sessão |
 
@@ -107,7 +107,7 @@ rewrite correspondente em `vercel.json` e com as 5 edges citadas abaixo **inexis
 | `/ferramentas/bi`, `/ferramentas/bi/comparar` | `BusinessIntelligencePage`, `ClientComparatorPage` | BI Gold; Edge `bi-copilot` | **lacuna parcial** |
 | `/ferramentas/cobertura` | `CoverageInsightsDashboardPage` | BI Gold | **lacuna parcial** |
 | `/dropbox` | `DropboxBrowserPage` | Edge `dropbox-list` (externo) | **lacuna** |
-| `/magazine`, `/magazine/templates`, `/magazine/:id`, `/magazine/:id/print`, `/magazine/print` | `MagazineListPage`, `MagazineTemplatesGalleryPage`, `MagazineEditorPage`, `MagazinePrintPage` | `magazines`, `magazine_items`, `magazine_reader_state`; Edge `magazine-public-view`, `magazine-public-react` (reações anônimas), `magazine-reader-state-read/write`, `magazine-import-local` | `e2e/magazine/*`, `MagazineEditorPage.hooksOrder.test.tsx`, `useMagazinePublish.test.ts`, `useMagazineGoldImport.test.ts` |
+| `/magazine`, `/magazine/templates`, `/magazine/:id`, `/magazine/:id/print`, `/magazine/print` | `MagazineListPage`, `MagazineTemplatesGalleryPage`, `MagazineEditorPage`, `MagazinePrintPage` | `magazines`, `magazine_items`, `magazine_reader_state`; Edge `magazine-public-view`, `magazine-public-react` (reações anônimas — **sem caller na aplicação; lacuna de integração/E2E**), `magazine-reader-state-read/write`, `magazine-import-local` (autenticada no handler: exige `Authorization` + `auth.getUser()`, 401 sem usuário — `verify_jwt=false` no gateway é apenas compatibilidade HS256) | `e2e/magazine/*`, `MagazineEditorPage.hooksOrder.test.tsx`, `useMagazinePublish.test.ts`, `useMagazineGoldImport.test.ts` |
 | `/promoflix-playground` | `PromoFlixPlayground` | a inventariar | **lacuna** |
 | `/simulacao` (DevRoute) | `SimulationPage` | orquestrador de simulação (fail-closed pendente — etapa 020) | a inventariar |
 
