@@ -10,7 +10,7 @@
 
 ## Ativas agora
 
-_(vazio)_
+| `docs/{MAPA_ROTA_DADOS_TESTE,EXECUCAO_PLANO_50_ETAPAS,OWNERSHIP_DOMINIOS,READINESS_LIFECYCLE_FEATURES}_2026-08-29.md` | cline | `claude/audit-fixes-20260830` | 2026-08-30T20:30:00Z | 48 h | ativa — libera no merge |
 
 ## Histórico (liberadas/expiradas)
 

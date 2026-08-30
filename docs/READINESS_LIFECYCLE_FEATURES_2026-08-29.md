@@ -49,12 +49,17 @@
 
 ## 3. Superfícies externas gerenciadas
 
-Edge pública por token ainda presente no repo: `magazine-public-view`. As edges
+Edges públicas por token ainda presentes no repo (módulo Magazine): `magazine-public-view`
+(leitura) e `magazine-public-react` (reações anônimas) — ambas `verify_jwt=false` em
+`supabase/config.toml`; `magazine-reader-state-read`, `magazine-reader-state-write` e
+`magazine-import-local` também são públicas/sem login. As edges
 `quote-public-react`, `kit-public`, `collections-public-react`, `comparisons-public-react` e
 `bi-share-dossier` foram removidas na descontinuação das rotas por token (decisão PO de
 07/mai/2026; Onda 9 — ver MAPA §2/I-1); referências remanescentes vivem no SSOT RBAC e em specs
-E2E mockadas. Demais superfícies: Bitrix24, Promo Champions, Dropbox, Cloudflare Images,
-ElevenLabs, CNPJá — ver `vercel.json` CSP `connect-src` para a lista de origens permitidas.
+E2E mockadas. Demais superfícies externas: Bitrix24, Promo Champions, Dropbox, Cloudflare Images,
+ElevenLabs, CNPJá — destas, apenas Bitrix24, Cloudflare Images, ElevenLabs e CNPJá constam do
+`vercel.json` CSP `connect-src`; Dropbox e Promo Champions são consumidas server-side via Edge
+(`dropbox-list`; `crm-db-bridge`/`receive-crm-callback`), logo não aparecem no CSP.
 Mudanças exigem `[AUTORIZAÇÃO EXTERNA]`.
 
 ## 4. Critério de conclusão da etapa 004

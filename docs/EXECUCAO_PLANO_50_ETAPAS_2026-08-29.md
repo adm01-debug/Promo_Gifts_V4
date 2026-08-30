@@ -5,9 +5,12 @@
 > ⛔ bloqueada · ⚙️ condicional não acionada · ✅ concluída.
 > Regra: nenhum `[AUTORIZAÇÃO *]`/`[VALIDAÇÃO PO]` é dispensado sem aprovação registrada do PO.
 
-**Entrega da Onda 1:** PR #1806 (aberto) — branch `codex/actions-gates-20260829`, commits `87028e01a`,
-`96ddc6834`, `4de57455c`, `4d3ab77b3` e `e69b1848b` (2026-08-30). Aguardando
-`[VALIDAÇÃO PO]` dos 12 itens pendentes da matriz 001 antes do merge.
+**Entrega da Onda 1:** PR #1806 — branch `codex/actions-gates-20260829`, commits `87028e01a`,
+`96ddc6834`, `4de57455c`, `4d3ab77b3`, `e69b1848b` e `fa7804f73` (2026-08-30); **mergeado em
+2026-08-30T19:46:36Z** pelo PO (commit de merge `2b94f2bfa`, assinatura web-flow válida) com
+**10 arquivos alterados** (+743/−0 — o body do PR menciona 9; o plano-fonte também foi tocado).
+A validação dos 12 itens pendentes da matriz 001 não foi registrada em comentário antes do
+merge — segue como dívida de registro (os artefatos permanecem marcados RASCUNHO).
 
 **Revisão de cobertura de 30/08/2026:** 0 concluídas, 34 parciais, 4 não iniciadas,
 11 bloqueadas e 1 condicional não acionada. A matriz probatória completa está na seção
@@ -28,10 +31,10 @@
 | Etapa | Título canônico | Status | Evidência/gap dominante |
 |---|---|:---:|---|
 | 006 | Painel causal dos workflows históricos | ⬜ | não existe painel consolidado |
-| 007 | Catálogo de workflows | ⬜ | 107 workflows ainda sem classificação/owner integral |
+| 007 | Catálogo de workflows | ⬜ | 113 workflows ainda sem classificação/owner integral (107 era o total de edge functions, não de workflows) |
 | 008 | Required check final de `main` | ⛔ | ruleset ativo sem nenhum status check obrigatório |
 | 009 | Previews Vercel | ⛔ | preview do PR #1806 falhou antes do build |
-| 010 | CodeQL e vulnerabilidades altas | 🟡 | CodeQL verde; dois alertas altos de `image-size` abertos |
+| 010 | CodeQL e vulnerabilidades altas | 🟡 | CodeQL workflow verde; Dependabot: dois alertas altos de `image-size` (sem versão corrigida disponível); CodeQL: alertas high abertos sem triagem (ex.: #99 clear-text-logging de apiKey, #98/#38 insecure-randomness, #57 file-system-race) |
 | 011 | Fixtures críticas estáveis | 🟡 | fixtures pontuais, sem dataset integral por fluxo |
 | 012 | Baselines visuais críticos | 🟡 | shard 2/2: 1 falha, 9 flakes, 468 skips |
 | 013 | E2E + visual + a11y nas mesmas fixtures | 🟡 | cobertura existe, mas ainda fragmentada |
@@ -149,4 +152,26 @@ Evidência: Management API retornou PG17.6/usuário read-only; 13 migrations rec
   com as permissões declaradas.
 Autorizações: nenhuma para auditoria/documentação. Nenhum DDL, DML, deploy, setting ou segredo
   foi alterado.
+```
+
+```text
+Etapa: 001–005 — remediação pós-merge dos defeitos residuais da auditoria anti-falso-verde
+Data/agente: 2026-08-30 / Cline (branch claude/audit-fixes-20260830)
+Mudança: F1 — MAPA §5: "/comissoes coberto por smoke de redirect" era falso (nenhuma spec cobre;
+  registrado como lacuna). F5 — etapa 007: "107 workflows" → 113 (107 é o total de edge
+  functions). F3/G7 — este registro: PR #1806 mergeado em 19:46:36Z com 10 arquivos; estado
+  sincronizado. G4 — OWNERSHIP §1: "v0.1 da matriz" → v0.2 (o formato de 12 fluxos só existe
+  na v0.2; a v0.1 de 26/ago tem 9 fluxos). G5 — READINESS §3 e MAPA §1/§6: acrescentada a
+  edge pública magazine-public-react (reações anônimas por token) às superfícies do Magazine.
+  G1 — READINESS §3: Dropbox e Promo Champions não estão no CSP connect-src (consumo
+  server-side via dropbox-list / crm-db-bridge / receive-crm-callback). G8 — etapa 010:
+  acrescentados os alertas CodeQL high abertos à evidência. F2 — nota de contagem:
+  "34 marcas em 25 etapas" no body do PR usa a regra "43 marcas literais − 9 da tabela de
+  definições do plano-fonte"; regra agora explícita.
+Risco: baixo — docs-only; zero código/schema/workflow/settings.
+Rollback: git revert do commit desta remediação (branch claude/audit-fixes-20260830).
+Evidência: auditoria anti-falso-verde com 67 PASS / 3 FAIL / 6 GAP contra fontes primárias
+  (GitHub API, config.toml, vercel.json, ruleset, Dependabot/CodeQL, probe live); issue de
+  segurança do migrate-helper aberta em paralelo.
+Autorizações: nenhuma necessária (docs-only).
 ```
