@@ -5,9 +5,9 @@
 > ⛔ bloqueada · ⚙️ condicional não acionada · ✅ concluída.
 > Regra: nenhum `[AUTORIZAÇÃO *]`/`[VALIDAÇÃO PO]` é dispensado sem aprovação registrada do PO.
 
-**Entrega da Onda 1:** PR #1806 (rascunho) — branch `codex/actions-gates-20260829`, commits `87028e01a`,
-`96ddc6834`, `4de57455c` e `4d3ab77b3` (2026-08-30). Aguardando `[VALIDAÇÃO PO]` dos 12 itens
-pendentes da matriz 001 antes de sair de rascunho.
+**Entrega da Onda 1:** PR #1806 (aberto) — branch `codex/actions-gates-20260829`, commits `87028e01a`,
+`96ddc6834`, `4de57455c`, `4d3ab77b3` e `e69b1848b` (2026-08-30). Aguardando
+`[VALIDAÇÃO PO]` dos 12 itens pendentes da matriz 001 antes do merge.
 
 **Revisão de cobertura de 30/08/2026:** 0 concluídas, 34 parciais, 4 não iniciadas,
 11 bloqueadas e 1 condicional não acionada. A matriz probatória completa está na seção

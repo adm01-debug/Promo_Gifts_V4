@@ -39,7 +39,7 @@ Esta revisão confrontou cada critério de aceite com quatro fontes independente
 
 1. `origin/main` em `7ea9b5870a641042a955f380a1b90fa00f155eac`;
 2. PRs técnicos #1803, #1804 e #1805, todos mergeados, e o PR documental
-   #1806 em rascunho no commit `4d3ab77b3f4f53b91fc064d4c84713a6d83e3ed5`;
+   #1806, aberto, cuja baseline auditada era `4d3ab77b3f4f53b91fc064d4c84713a6d83e3ed5`;
 3. GitHub Actions, ruleset, Dependabot e Vercel observados remotamente;
 4. Supabase canônico consultado pela Management API **read-only**, autenticada para
    `doufsxqlfjyuvxuezpln`, com PostgreSQL 17.6 e usuário
