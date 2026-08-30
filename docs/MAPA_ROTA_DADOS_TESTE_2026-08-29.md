@@ -21,13 +21,14 @@ Guards: `public` (sem sessão) < `ProtectedRoute` (sessão) < `AdminRoute` (supe
 | `/termos`, `/privacidade` | `TermsPage`, `PrivacyPage` | — (estáticas) | **lacuna** |
 | `/revista-publica/:token` | `PublicMagazineView` | Edge `magazine-public-view`; DB `magazines`, `magazine_items` | `e2e/magazine/magazine-viewer.spec.ts` |
 | `/debug/images` | `OptimizedImageDemo` | — (demo de imagens) | `e2e/visual/` (projeto público) |
-| `*` (catch-all) | `NotFound` | — | smoke 92 / issue #167 (404 público sem sessão) |
+| `*` (catch-all) | `NotFound` | — | `e2e/smoke.spec.ts` (3 testes); **lacuna:** sem spec E2E dedicada de 404 público sem sessão |
 
 ## 2. Rotas públicas por token (servidas por Edge Functions, fora do roteador React)
 
 Declaradas no SSOT RBAC (`route-matrix.ts`) e testadas com Edge mockada
-(`e2e/routes/public/*` via `buildPublicTokenSuite`), mas **ausentes do roteador React** e sem
-rewrite correspondente em `vercel.json`:
+(`e2e/routes/public/*` via `buildPublicTokenSuite`), mas **ausentes do roteador React**, sem
+rewrite correspondente em `vercel.json` e com as 5 edges citadas abaixo **inexistentes** em
+`supabase/functions/` (verificado por listagem local em 30/ago/2026 — ver I-1 abaixo):
 
 | Rota | Edge Function | Testes |
 |---|---|---|
@@ -39,11 +40,16 @@ rewrite correspondente em `vercel.json`:
 | `/comparar-publica/:token` | `comparisons-public-react` | `e2e/routes/public/comparar-publica.spec.ts` |
 | `/dossie/:token` | `bi-share-dossier` | `e2e/routes/public/dossie.spec.ts` |
 
-> **Inconsistência registrada (I-1):** a camada de serving destas rotas não está no repo
-> (roteador React não as declara; `vercel.json` só reescreve SPA + `sitemap.xml`). Hipóteses:
-> rewrite não versionado no painel Vercel, ou URL pública aponta direto para a Edge.
-> **Ação:** confirmar com PO/plataforma antes de qualquer mudança nessas rotas (etapa 005 exige
-> registro de reserva + autorização para mexer na camada de serving).
+> **Inconsistência registrada (I-1) — contexto histórico localizado:** em 07/mai/2026 o PO decidiu
+> **descontinuar todas as rotas públicas com token** (não viável no modelo de negócio B2B); 7 rotas
+> frontend + 6 edge functions + código associado foram removidos na época, e a Onda 9 (14/mai/2026)
+> concluiu a limpeza de DB (`docs/hardening/ONDA-9-DROP-PUBLIC-TOKEN-TABLES.md`; migration
+> `20260514173516`; a migration de 07/mai `20260507161547_drop_public_token_tables.sql` permanece
+> no repo como timestamp histórico neutralizado). As 5 edges citadas na tabela acima não existem
+> mais — as specs E2E atuais as exercitam apenas via mocks. Hipótese prioritária: SSOT RBAC e
+> specs ficaram **defasados** após a descontinuação (não há camada de serving fora do repo).
+> **Ação:** confirmar com o PO e alinhar SSOT RBAC e specs em PR próprio (mudança de código —
+> segue o protocolo de reserva da etapa 005).
 
 ## 3. Catálogo e produto (ProtectedRoute)
 
@@ -64,10 +70,10 @@ rewrite correspondente em `vercel.json`:
 
 | Rota | Componente | Dados (DB/RPC/Edge) | Testes |
 |---|---|---|---|
-| `/orcamentos`, `/orcamentos/lista` | `QuotesListPage` | `quotes`, `quote_items`; RPCs transacionais (`create_quote_transactional` família) | `tests/integration/quote-persistence.test.ts`, `e2e/routes/app/orcamentos.spec.ts` |
+| `/orcamentos`, `/orcamentos/lista` | `QuotesListPage` | `quotes`, `quote_items`; RPCs transacionais (`create_quote_transactional` família) | `tests/sql/wave1_forward_only_migrations_test.sql` (cenários atômicos `create_quote_transactional`), `e2e/flows/04b-quote-create-end-to-end.spec.ts` |
 | `/orcamentos/dashboard` | `QuotesDashboardPage` | `quotes` agregados | inventário na v0.1 §5 |
 | `/orcamentos/kanban` | `QuotesKanbanPage` | `quotes` (status) | v0.1 §5 |
-| `/orcamentos/novo`, `/orcamentos/:id/editar` | `QuoteBuilderPage` (guard `ValidQuoteIdRoute` no editar) | RPCs transacionais; `discount_approval_requests`; Edge `sync-quote-bitrix` | `quote-save-atomicity`, `useQuoteConcurrencyGuard.test.ts`, `discountApprovalFlow.test.ts` |
+| `/orcamentos/novo`, `/orcamentos/:id/editar` | `QuoteBuilderPage` (guard `ValidQuoteIdRoute` no editar) | RPCs transacionais; `discount_approval_requests`; Edge `sync-quote-bitrix` | `tests/sql/wave1_forward_only_migrations_test.sql` (cenários atômicos), `src/hooks/quotes/__tests__/useQuoteConcurrencyGuard.test.ts`, `tests/integration/discountApprovalFlow.test.ts` |
 | `/orcamentos/:id` | `QuoteViewPage` (guard) | `quotes` + itens; PDF/share | `QuoteActionHandlers.test.ts` |
 | `/orcamentos/templates` → redirect | — | — | coberto por transition tests |
 

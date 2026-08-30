@@ -15,12 +15,12 @@
 | Busca global | ativo | shell + `/busca-preco`, `/match`, `/raio-x` | IA é externo gerenciado via Edge | v0.1 §4 |
 | Carrinho | ativo | `/carrinhos*` | `ff_cart_debounce_ms` (só timing) | v0.1 §6 |
 | Orçamento | ativo | `/orcamentos*` | — | v0.1 §5 |
-| Desconto (aprovações) | ativo | quote builder + `/admin/limites-desconto`, `/admin/aprovacoes-desconto/:id` | — | migrations `*_discount_approval_*` nesta branch |
+| Desconto (aprovações) | ativo | quote builder + `/admin/limites-desconto`, `/admin/aprovacoes-desconto/:id` | — | migrations `*_discount_approval_*` em main desde jun/2026 (commit `fb0131782`) |
 | Estoque | ativo | `/estoque` | `useEmaRupture` (on), `supplierReliability` (on) — só painéis | v0.1 §7 |
 | Mockup | ativo | `/mockup-generator`, `/magic-up`, `/mockups/historico` | `magic_up` (on); IA externo gerenciado | v0.1 §8 |
 | Magazine | parcial | `/magazine*`, `/revista-publica/:token` | `magazineModule` (on, **não consultada** no código — não é gate) | v0.1 §9 |
 | Kit builder | parcial | `/montar-kit`, `/meus-kits` | `custom_kits_v2` (**off**, não consultada) | **lacuna:** `handleSaveKit` vazio; handoff não atômico (v0.1 §10) |
-| BI comercial | ativo | `/ferramentas/bi*`, `/inteligencia-comercial`, `/tendencias`, `/ferramentas/cobertura` | `advanced_analytics` (on; roles admin/manager) | — |
+| BI comercial | ativo | `/ferramentas/bi*`, `/inteligencia-comercial`, `/tendencias`, `/ferramentas/cobertura` | `advanced_analytics` (on; roles admin/manager — **não consultada** no código; não é gate) | — |
 | CRM (clientes) | parcial | `/clientes*` | `crm_bridge_enabled` (on, **não consultada**) | v0.1 §11; Edge `crm-db-bridge` externo gerenciado |
 | Comissões | desativado | `/comissoes`, `/admin/comissoes` → `DeprecatedRoute` | — | módulo descontinuado |
 | Performance (admin) | desativado | `/admin/performance*` → `DeprecatedRoute` → BI | — | substituído por BI |
@@ -36,21 +36,26 @@
 | `mfa` | **off** | MFA/TOTP não ativo — decisão de segurança pendente do PO (matriz fluxo 11) |
 | `ai_recommendations` | on | via Edge (externo gerenciado) |
 | `presentation_mode` | on | orçamentos |
-| `voice_commands` | on | verificar superfície real de uso |
+| `advanced_analytics` | on, não consultada | BI não é gated de fato — corrigir ou remover (decisão na etapa 004) |
+| `voice_commands` | on, não consultada | nenhum consumidor em `src/` (só o registro declara) |
 | `e2e_tests` | off | correto: nunca ligar em produção |
-| `magazineModule` | on, não consultada | gate fictício — corrigir ou remover (etapa 004/028) |
+| `magazineModule` | on, não consultada | gate fictício — corrigir ou remover (decisão na etapa 004) |
 | `custom_kits_v2` | off, não consultada | não protege o builder atual (v0.1 §10) |
 | `crm_bridge_enabled` | on, não consultada | kill switch fictício — v0.1 §11 |
 
-> **Padrão registrado:** 3 flags declaradas e não consultadas. Toda flag nova deve ter consumidor
+> **Padrão registrado:** 5 flags declaradas e não consultadas (`magazineModule`, `custom_kits_v2`,
+> `crm_bridge_enabled`, `advanced_analytics`, `voice_commands`). Toda flag nova deve ter consumidor
 > real no caminho de produção; flag sem consumidor = dívida (candidata a remoção com `[VALIDAÇÃO PO]`).
 
 ## 3. Superfícies externas gerenciadas
 
-Edge públicas por token (`quote-public-react`, `kit-public`, `collections-public-react`,
-`comparisons-public-react`, `bi-share-dossier`, `magazine-public-view`), Bitrix24,
-Promo Champions, Dropbox, Cloudflare Images, ElevenLabs, CNPJá — ver `vercel.json` CSP
-`connect-src` para a lista de origens permitidas. Mudanças exigem `[AUTORIZAÇÃO EXTERNA]`.
+Edge pública por token ainda presente no repo: `magazine-public-view`. As edges
+`quote-public-react`, `kit-public`, `collections-public-react`, `comparisons-public-react` e
+`bi-share-dossier` foram removidas na descontinuação das rotas por token (decisão PO de
+07/mai/2026; Onda 9 — ver MAPA §2/I-1); referências remanescentes vivem no SSOT RBAC e em specs
+E2E mockadas. Demais superfícies: Bitrix24, Promo Champions, Dropbox, Cloudflare Images,
+ElevenLabs, CNPJá — ver `vercel.json` CSP `connect-src` para a lista de origens permitidas.
+Mudanças exigem `[AUTORIZAÇÃO EXTERNA]`.
 
 ## 4. Critério de conclusão da etapa 004
 

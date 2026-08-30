@@ -31,7 +31,7 @@
 | Autenticação + RBAC | `src/pages/auth/`, `src/routes/guards/`, `src/lib/rbac/` | TBD | TBD | Matriz v0.2 fluxo 11 |
 | CRM / integrações | Edge `crm-db-bridge`, `bitrix-sync`, `sync-quote-bitrix`, `src/pages/clients/` | TBD | TBD | Matriz v0.2 fluxo 12 |
 | Banco de dados | `supabase/migrations/`, `src/integrations/supabase/types.ts` | TBD | TBD | REGRA #1 (SSOT `doufsxqlfjyuvxuezpln`) |
-| Edge Functions | `supabase/functions/` | TBD | TBD | 108 funções; subset já em CODEOWNERS |
+| Edge Functions | `supabase/functions/` | TBD | TBD | 107 funções (convenção: diretórios de função; excluídos `_shared/`, `tests/`, `README.md`, `deno.json` — 111 entradas brutas); subset já em CODEOWNERS |
 | CI / qualidade | `.github/workflows/`, `scripts/`, `playwright.config.ts` | TBD | TBD | Gates 0–6 |
 | Arquivos protegidos | Tabela "ARQUIVOS PROTEGIDOS" do CLAUDE.md | `@adm01-debug` (vigente) | TBD | Incidente 401 (2026-06-11) |
 
