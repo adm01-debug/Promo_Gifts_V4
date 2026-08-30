@@ -4,6 +4,9 @@
 > Status: 🔵 rascunho em validação PO · ⬜ pendente · ⛔ bloqueado (gate explícito) · ✅ concluído.
 > Regra: nenhum `[AUTORIZAÇÃO *]`/`[VALIDAÇÃO PO]` é dispensado sem aprovação registrada do PO.
 
+**Entrega da Onda 1:** PR #1806 (rascunho) — branch `codex/actions-gates-20260829`, commit `87028e01a`
+(2026-08-30). Aguardando `[VALIDAÇÃO PO]` dos 12 itens pendentes da matriz 001 antes de sair de rascunho.
+
 ## Onda 1 — Governança (001–005)
 
 | Etapa | Título (resumo) | Status | Evidência | Gate pendente |
