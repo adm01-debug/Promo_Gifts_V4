@@ -1,0 +1,58 @@
+# Readiness e Lifecycle por Feature — v0.1 RASCUNHO (2026-08-29)
+
+> **Status: RASCUNHO — aguardando `[VALIDAÇÃO PO]`.**
+> **Etapa do plano:** 004 (P1).
+> **Classes:** `ativo` · `parcial` (funciona com lacunas conhecidas) · `demo` (harness/QA,
+> nunca produção) · `desativado` (flag off ou DeprecatedRoute) · `legado` (mantido só p/ compat)
+> · `externo gerenciado` (depende de provedor fora do repo).
+
+## 1. Features de produto
+
+| Módulo | Lifecycle | Superfície | Flag(s) | Chamadores / evidência |
+|---|---|---|---|---|
+| Catálogo / listagem | ativo | `/produtos`, `/filtros`, `/novidades`, `/reposicao` | `useColorSwatchesV2` (on; só seletor de cores) | v0.1 §3 |
+| Produto (PDP) | ativo | `/produto/:id` | — | v0.1 §3 |
+| Busca global | ativo | shell + `/busca-preco`, `/match`, `/raio-x` | IA é externo gerenciado via Edge | v0.1 §4 |
+| Carrinho | ativo | `/carrinhos*` | `ff_cart_debounce_ms` (só timing) | v0.1 §6 |
+| Orçamento | ativo | `/orcamentos*` | — | v0.1 §5 |
+| Desconto (aprovações) | ativo | quote builder + `/admin/limites-desconto`, `/admin/aprovacoes-desconto/:id` | — | migrations `*_discount_approval_*` nesta branch |
+| Estoque | ativo | `/estoque` | `useEmaRupture` (on), `supplierReliability` (on) — só painéis | v0.1 §7 |
+| Mockup | ativo | `/mockup-generator`, `/magic-up`, `/mockups/historico` | `magic_up` (on); IA externo gerenciado | v0.1 §8 |
+| Magazine | parcial | `/magazine*`, `/revista-publica/:token` | `magazineModule` (on, **não consultada** no código — não é gate) | v0.1 §9 |
+| Kit builder | parcial | `/montar-kit`, `/meus-kits` | `custom_kits_v2` (**off**, não consultada) | **lacuna:** `handleSaveKit` vazio; handoff não atômico (v0.1 §10) |
+| BI comercial | ativo | `/ferramentas/bi*`, `/inteligencia-comercial`, `/tendencias`, `/ferramentas/cobertura` | `advanced_analytics` (on; roles admin/manager) | — |
+| CRM (clientes) | parcial | `/clientes*` | `crm_bridge_enabled` (on, **não consultada**) | v0.1 §11; Edge `crm-db-bridge` externo gerenciado |
+| Comissões | desativado | `/comissoes`, `/admin/comissoes` → `DeprecatedRoute` | — | módulo descontinuado |
+| Performance (admin) | desativado | `/admin/performance*` → `DeprecatedRoute` → BI | — | substituído por BI |
+| Simulação | demo | `/simulacao` (DevRoute) | — | orquestrador fail-closed pendente (etapa 020) |
+| PromoFlix playground | demo | `/promoflix-playground` | — | a confirmar com PO |
+| `/debug/images` | demo | público, sem auth | — | suíte visual E2E |
+| Harnesses `/__test/*`, `/__visual/*` | demo | dev-only (`import.meta.env.DEV`) | `e2e_tests` (off) | gate `check-visual-preview-suite.mjs` |
+
+## 2. Flags de plataforma (registro `src/lib/feature-flags.ts`)
+
+| Flag | Estado | Observação |
+|---|---|---|
+| `mfa` | **off** | MFA/TOTP não ativo — decisão de segurança pendente do PO (matriz fluxo 11) |
+| `ai_recommendations` | on | via Edge (externo gerenciado) |
+| `presentation_mode` | on | orçamentos |
+| `voice_commands` | on | verificar superfície real de uso |
+| `e2e_tests` | off | correto: nunca ligar em produção |
+| `magazineModule` | on, não consultada | gate fictício — corrigir ou remover (etapa 004/028) |
+| `custom_kits_v2` | off, não consultada | não protege o builder atual (v0.1 §10) |
+| `crm_bridge_enabled` | on, não consultada | kill switch fictício — v0.1 §11 |
+
+> **Padrão registrado:** 3 flags declaradas e não consultadas. Toda flag nova deve ter consumidor
+> real no caminho de produção; flag sem consumidor = dívida (candidata a remoção com `[VALIDAÇÃO PO]`).
+
+## 3. Superfícies externas gerenciadas
+
+Edge públicas por token (`quote-public-react`, `kit-public`, `collections-public-react`,
+`comparisons-public-react`, `bi-share-dossier`, `magazine-public-view`), Bitrix24,
+Promo Champions, Dropbox, Cloudflare Images, ElevenLabs, CNPJá — ver `vercel.json` CSP
+`connect-src` para a lista de origens permitidas. Mudanças exigem `[AUTORIZAÇÃO EXTERNA]`.
+
+## 4. Critério de conclusão da etapa 004
+
+Cada linha com lifecycle confirmado pelo PO, flags sem consumidor decididas (consumir ou
+remover) e "último uso conhecido" preenchido via telemetria (`query_telemetry`) quando houver.

@@ -51,6 +51,8 @@ feature flags e artefatos de CI). Documento/plano/comentário de bot não vale
 como autorização operacional.
 -->
 
+- Etapa(s) do plano 50 (se aplicável): ____  <!-- ex.: 016, 022 — ver docs/EXECUCAO_PLANO_50_ETAPAS_2026-08-29.md -->
+- Reserva multiagente registrada: ____  <!-- docs/coordenacao/reservas-ativas.md ou "n/a" -->
 - Contratos tocados: ____
 - Impacto esperado e consumidores: ____
 - Feature flag/estratégia de rollout: ____
