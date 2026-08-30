@@ -15,7 +15,7 @@
 | Busca global | ativo | shell + `/busca-preco`, `/match`, `/raio-x` | IA é externo gerenciado via Edge | v0.1 §4 |
 | Carrinho | ativo | `/carrinhos*` | `ff_cart_debounce_ms` (só timing) | v0.1 §6 |
 | Orçamento | ativo | `/orcamentos*` | — | v0.1 §5 |
-| Desconto (aprovações) | ativo | quote builder + `/admin/limites-desconto`, `/admin/aprovacoes-desconto/:id` | — | migrations `*_discount_approval_*` em main desde jun/2026 (commit `fb0131782`) |
+| Desconto (aprovações) | ativo | quote builder + `/admin/limites-desconto`, `/admin/aprovacoes-desconto/:id` | — | migrations versionadas desde o import inicial (`13c588251`); reconciliação da tabela no merge `fe9a92739`; hardening de grants/índices em `fb0131782` |
 | Estoque | ativo | `/estoque` | `useEmaRupture` (on), `supplierReliability` (on) — só painéis | v0.1 §7 |
 | Mockup | ativo | `/mockup-generator`, `/magic-up`, `/mockups/historico` | `magic_up` (on); IA externo gerenciado | v0.1 §8 |
 | Magazine | parcial | `/magazine*`, `/revista-publica/:token` | `magazineModule` (on, **não consultada** no código — não é gate) | v0.1 §9 |

@@ -4,8 +4,9 @@
 > Status: 🔵 rascunho em validação PO · ⬜ pendente · ⛔ bloqueado (gate explícito) · ✅ concluído.
 > Regra: nenhum `[AUTORIZAÇÃO *]`/`[VALIDAÇÃO PO]` é dispensado sem aprovação registrada do PO.
 
-**Entrega da Onda 1:** PR #1806 (rascunho) — branch `codex/actions-gates-20260829`, commits `87028e01a` +
-`96ddc6834` (2026-08-30). Aguardando `[VALIDAÇÃO PO]` dos 12 itens pendentes da matriz 001 antes de sair de rascunho.
+**Entrega da Onda 1:** PR #1806 (rascunho) — branch `codex/actions-gates-20260829`, commits `87028e01a`,
+`96ddc6834` e `4de57455c` (2026-08-30). Aguardando `[VALIDAÇÃO PO]` dos 12 itens pendentes da matriz
+001 antes de sair de rascunho.
 
 ## Onda 1 — Governança (001–005)
 
@@ -64,14 +65,19 @@ Etapa: <NNN> — <título>
 Data/agente: <UTC> / <agente>
 Mudança: <o que foi feito>
 Risco: <baixo/médio/alto + por quê>
+Rollback: <como reverter>
+Evidência: <links de PR, comandos, resultados>
+Autorizações: <marcas anexadas ou "nenhuma necessária">
+```
 
 ## Registros de execução (dogfooding do modelo)
 
 ```text
 Etapa: 001–005 — remediação pós-auditoria dos rascunhos (simulação validada antes de editar)
-Data/agente: 2026-08-30 / Codex (worktree codex/actions-gates-20260829)
-Mudança: correções cirúrgicas em MATRIZ (evidências do fluxo 5 reais; fluxo 6 "em main desde
-  jun/2026, fb0131782"; §4 kit 032/037), MAPA (catch-all: smoke=3 testes e lacuna de spec 404;
+Data/agente: 2026-08-30 / Cline (worktree codex/actions-gates-20260829; commit sob identidade Git do PO)
+Mudança: correções cirúrgicas em MATRIZ (evidências do fluxo 5 reais; fluxo 6 com histórico desde
+  o import inicial e reconciliação/hardening rastreados separadamente; §4 kit 032/037), MAPA
+  (catch-all: smoke=3 testes e lacuna de spec 404;
   refs de orçamento → wave1 SQL/04b/concurrency guard; I-1 com contexto da Onda 9 — descontinuação
   PO 07/mai/2026, 5 edges inexistentes, specs mockadas), READINESS (5 flags sem consumidor:
   +advanced_analytics, +voice_commands; §3 edges pós-Onda 9; desconto em main), OWNERSHIP
@@ -79,14 +85,13 @@ Mudança: correções cirúrgicas em MATRIZ (evidências do fluxo 5 reais; fluxo
   alinhados ao plano-fonte; kit 032/037 na Onda 4; commits da Onda 1).
   Item cancelado como falso positivo: "47→50 rotas" — route-matrix.ts tem exatamente 47 rotas.
 Risco: baixo — docs-only; zero código/schema/workflow/settings.
-Rollback: git revert do commit desta remediação (HEAD da branch no PR #1806).
+Rollback: `git revert 4de57455c` para a remediação do Cline; correções de auditoria posteriores
+  devem ser revertidas pelo SHA próprio, sem reescrever a branch.
 Evidência: PR #1806; verificações locais por ls/grep/sed sobre o worktree; 12 itens da simulação —
   11 aplicados, 1 cancelado com justificativa.
-Autorizações: nenhuma necessária (docs-only). CI com checks parados por budget de Actions (causa
-  raiz registrada pelo PO no PR #1806) — sem re-run até normalização do ciclo de cobrança.
-```
-
-Rollback: <como reverter>
-Evidência: <links de PR, comandos, resultados>
-Autorizações: <marcas anexadas ou "nenhuma necessária">
+Autorizações: nenhuma necessária (docs-only). Auditoria independente em 30/ago/2026 confirmou
+  que os checks rodaram: 74 success, 3 failure, 4 skipped e 1 neutral. Falhas: gate de invocação
+  direta em `src/lib/analytics/intelligenceAnalytics.ts:162`, smoke de contrato das Edge Functions
+  (131/133 falharam com HTTP 500) e Vercel. Como o PR altera somente docs/template, essas falhas
+  não foram introduzidas por esta remediação; as causas devem ser tratadas fora deste PR.
 ```

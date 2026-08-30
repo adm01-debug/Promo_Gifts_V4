@@ -23,7 +23,7 @@ Guards: `public` (sem sessão) < `ProtectedRoute` (sessão) < `AdminRoute` (supe
 | `/debug/images` | `OptimizedImageDemo` | — (demo de imagens) | `e2e/visual/` (projeto público) |
 | `*` (catch-all) | `NotFound` | — | `e2e/smoke.spec.ts` (3 testes); **lacuna:** sem spec E2E dedicada de 404 público sem sessão |
 
-## 2. Rotas públicas por token (servidas por Edge Functions, fora do roteador React)
+## 2. Rotas públicas por token descontinuadas (legado no SSOT RBAC e nos testes)
 
 Declaradas no SSOT RBAC (`route-matrix.ts`) e testadas com Edge mockada
 (`e2e/routes/public/*` via `buildPublicTokenSuite`), mas **ausentes do roteador React**, sem
@@ -151,7 +151,7 @@ Fontes: `src/lib/rbac/route-matrix.ts` (47 rotas) × `src/routes/*.tsx`.
 
 | # | Drift | Evidência | Ação proposta |
 |---|---|---|---|
-| D-1 | 7 rotas públicas por token existem no RBAC mas não no roteador (ver §2) | `route-matrix.ts` vs `public-routes.tsx` | Confirmar camada de serving (I-1); depois alinhar SSOT |
+| D-1 | 7 rotas públicas por token descontinuadas ainda existem no RBAC, mas não no roteador (ver §2) | `route-matrix.ts` vs `public-routes.tsx` | Confirmar a descontinuação com o PO; depois remover as entradas e alinhar as specs em PR próprio |
 | D-2 | RBAC declara `/status`; roteador monta `/admin/status` | `route-matrix.ts` linha `/status` vs `admin-routes.tsx` | Corrigir o SSOT RBAC (PR docs/code) |
 | D-3 | RBAC não lista rotas de negócio (`/produto/:id`, `/orcamentos/*`, `/magazine*`, `/montar-kit`, `/clientes*`, `/estoque` está listada etc.) | comparação direta | Decidir escopo do SSOT RBAC: só rotas técnicas ou 100% das rotas (etapa 002 pede 100%) |
 | D-4 | `/tendencias` montada fora de `AdminRoute` apesar de estar na seção admin | `admin-routes.tsx` linha 64 | Confirmar guard intencional com PO |
