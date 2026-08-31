@@ -65,10 +65,11 @@ export default defineConfig(({ mode }) => {
             return `assets/${name}-[hash].js`;
           },
           // Vite 8 descontinuou a função `manualChunks`. A opção nativa do
-          // Rolldown evita que um grupo capture recursivamente React ou o helper
-          // de preload e os arraste para o critical path de todas as páginas.
+          // Rolldown inclui as dependências dos grupos no mesmo cálculo e evita
+          // ciclos entre chunks lazy (por exemplo ComparePage <-> charts-vendor).
+          // As prioridades abaixo continuam isolando React e o helper de preload.
           codeSplitting: {
-            includeDependenciesRecursively: false,
+            includeDependenciesRecursively: true,
             groups: [
               { name: 'runtime-vendor', test: /vite[\\/]preload-helper/, priority: 100 },
               {

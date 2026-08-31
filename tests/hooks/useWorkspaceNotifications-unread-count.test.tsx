@@ -12,34 +12,53 @@
  * lists, and the empty list. Both surfaces (console log payload + metrics
  * snapshot) must agree.
  */
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { renderHook, waitFor } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { renderHook, waitFor } from '@testing-library/react';
 
 const limitMock = vi.fn();
+const countSelectOptions = vi.hoisted(() => [] as Array<{ count?: string; head?: boolean }>);
+const countRanges = vi.hoisted(() => [] as Array<[number, number]>);
 
-vi.mock("@/integrations/supabase/client", () => {
+vi.mock('@/integrations/supabase/client', () => {
   // Chain thenable: select/eq/order/range/gte/limit encadeáveis em qualquer ordem;
   // `await chain` resolve via limitMock (mecanismo de injeção dos testes).
   let lastData = [];
   const buildSelectChain = () => {
-    let headCount = false;
+    let countRequest = false;
     const chain: Record<string, unknown> = {};
-    for (const m of ["select", "eq", "order", "range", "gte", "limit"]) {
+    for (const m of ['select', 'eq', 'order', 'range', 'gte', 'limit']) {
       chain[m] = (...args: unknown[]) => {
-        // O hook usa .select('id', { count:'exact', head:true }) só na query
-        // de contagem de não-lidos. Detectamos isso p/ resolver com `count`.
-        if (m === "select" && args[1] && (args[1] as { head?: boolean }).head) headCount = true;
-        if (m === "limit") return limitMock(...args);
+        if (
+          m === 'select' &&
+          args[0] === 'id' &&
+          (args[1] as { count?: string })?.count === 'exact'
+        ) {
+          countRequest = true;
+          countSelectOptions.push(args[1] as { count?: string; head?: boolean });
+        }
+        if (m === 'range' && countRequest) {
+          countRanges.push([Number(args[0]), Number(args[1])]);
+        }
+        if (m === 'limit') return limitMock(...args);
         return chain;
       };
     }
     chain.then = async (resolve, reject) => {
       try {
-        if (headCount) { resolve({ count: lastData.filter((n) => !n.is_read).length, error: null }); return; }
+        if (countRequest) {
+          resolve({
+            data: lastData.slice(0, 1),
+            count: lastData.filter((n) => !n.is_read).length,
+            error: null,
+          });
+          return;
+        }
         const base = await limitMock();
         lastData = (base && base.data) || [];
         resolve({ ...base, count: lastData.length });
-      } catch (e) { reject(e); }
+      } catch (e) {
+        reject(e);
+      }
     };
     return chain;
   };
@@ -52,8 +71,8 @@ vi.mock("@/integrations/supabase/client", () => {
   };
 });
 
-const STABLE_USER = { id: "user-unread-count-1" };
-vi.mock("@/contexts/AuthContext", () => ({
+const STABLE_USER = { id: 'user-unread-count-1' };
+vi.mock('@/contexts/AuthContext', () => ({
   useAuth: () => ({ user: STABLE_USER, rolesLoaded: true }),
 }));
 
@@ -78,8 +97,8 @@ function makeSeed(readFlags: boolean[]): SeedRow[] {
     user_id: STABLE_USER.id,
     title: `Title ${i + 1}`,
     message: `Body ${i + 1}`,
-    type: "info",
-    category: "general",
+    type: 'info',
+    category: 'general',
     is_read: isRead,
     action_url: null,
     metadata: {},
@@ -95,28 +114,33 @@ let consoleSpy: ReturnType<typeof vi.spyOn>;
 
 beforeEach(() => {
   sessionStorage.clear();
-  localStorage.setItem("debug:notifications", "1");
+  localStorage.setItem('debug:notifications', '1');
   limitMock.mockReset();
-  consoleSpy = vi.spyOn(console, "info").mockImplementation(() => {});
+  countSelectOptions.length = 0;
+  countRanges.length = 0;
+  consoleSpy = vi.spyOn(console, 'info').mockImplementation(() => {});
 });
 
 afterEach(() => {
   sessionStorage.clear();
-  localStorage.removeItem("debug:notifications");
+  localStorage.removeItem('debug:notifications');
   consoleSpy.mockRestore();
   vi.restoreAllMocks();
 });
 
 function findBadgeRenderLogs() {
   return consoleSpy.mock.calls
-    .filter((args) => typeof args[0] === "string" && (args[0] as string).includes("notifications.badge-render"))
+    .filter(
+      (args) =>
+        typeof args[0] === 'string' && (args[0] as string).includes('notifications.badge-render'),
+    )
     .map((args) => args[1] as Record<string, unknown>);
 }
 
 async function loadHookAndMetrics() {
   vi.resetModules();
-  const hookMod = await import("@/hooks/ui/useWorkspaceNotifications");
-  const metricsMod = await import("@/lib/notifications-metrics");
+  const hookMod = await import('@/hooks/ui/useWorkspaceNotifications');
+  const metricsMod = await import('@/lib/notifications-metrics');
   metricsMod.notificationsMetrics.reset();
   return {
     useWorkspaceNotifications: hookMod.useWorkspaceNotifications,
@@ -126,20 +150,20 @@ async function loadHookAndMetrics() {
 
 // ─── Cache-path scenarios ────────────────────────────────────────────────────
 const cacheScenarios: Array<{ name: string; flags: boolean[]; expected: number }> = [
-  { name: "0 unread (all read)", flags: [true, true, true], expected: 0 },
-  { name: "all unread", flags: [false, false, false, false], expected: 4 },
-  { name: "mixed 3/5 unread", flags: [false, true, false, true, false], expected: 3 },
-  { name: "single unread item", flags: [false], expected: 1 },
-  { name: "empty list", flags: [], expected: 0 },
+  { name: '0 unread (all read)', flags: [true, true, true], expected: 0 },
+  { name: 'all unread', flags: [false, false, false, false], expected: 4 },
+  { name: 'mixed 3/5 unread', flags: [false, true, false, true, false], expected: 3 },
+  { name: 'single unread item', flags: [false], expected: 1 },
+  { name: 'empty list', flags: [], expected: 0 },
 ];
 
-describe("useWorkspaceNotifications — unreadCount in cache-source badge-render logs", () => {
+describe('useWorkspaceNotifications — unreadCount in cache-source badge-render logs', () => {
   for (const sc of cacheScenarios) {
     it(`logs unreadCount=${sc.expected} when sessionStorage contains ${sc.name}`, async () => {
       const seed = makeSeed(sc.flags);
       sessionStorage.setItem(
         CACHE_KEY,
-        JSON.stringify({ cachedAt: Date.now() - 5_000, notifications: seed })
+        JSON.stringify({ cachedAt: Date.now() - 5_000, notifications: seed }),
       );
       // Background fetch must NOT change the unreadCount under test —
       // serve the same payload so the numbers stay stable.
@@ -157,8 +181,10 @@ describe("useWorkspaceNotifications — unreadCount in cache-source badge-render
       // Hook state mirrors the seed.
       expect(result.current.notifications.length).toBe(seed.length);
       expect(result.current.unreadCount).toBe(sc.expected);
+      expect(countSelectOptions).not.toContainEqual(expect.objectContaining({ head: true }));
+      expect(countRanges).toContainEqual([0, 0]);
 
-      const cacheLogs = findBadgeRenderLogs().filter((p) => p?.source === "cache");
+      const cacheLogs = findBadgeRenderLogs().filter((p) => p?.source === 'cache');
       expect(cacheLogs.length).toBeGreaterThanOrEqual(1);
 
       // Both surfaces (log + metrics) must report the SAME unreadCount.
@@ -166,7 +192,7 @@ describe("useWorkspaceNotifications — unreadCount in cache-source badge-render
       expect(cacheLogs[0].unreadCount).toBe(expectedUnread(seed));
 
       const snap = metrics.snapshot();
-      expect(snap.lastBadgeRender?.source).toBe("cache");
+      expect(snap.lastBadgeRender?.source).toBe('cache');
       expect(snap.lastBadgeRender?.unreadCount).toBe(sc.expected);
     });
   }
@@ -174,14 +200,14 @@ describe("useWorkspaceNotifications — unreadCount in cache-source badge-render
 
 // ─── Network-path scenarios ──────────────────────────────────────────────────
 const networkScenarios: Array<{ name: string; flags: boolean[]; expected: number }> = [
-  { name: "0 unread (all read)", flags: [true, true], expected: 0 },
-  { name: "all unread", flags: [false, false, false], expected: 3 },
-  { name: "mixed 2/4 unread", flags: [true, false, false, true], expected: 2 },
-  { name: "single unread item", flags: [false], expected: 1 },
-  { name: "empty list", flags: [], expected: 0 },
+  { name: '0 unread (all read)', flags: [true, true], expected: 0 },
+  { name: 'all unread', flags: [false, false, false], expected: 3 },
+  { name: 'mixed 2/4 unread', flags: [true, false, false, true], expected: 2 },
+  { name: 'single unread item', flags: [false], expected: 1 },
+  { name: 'empty list', flags: [], expected: 0 },
 ];
 
-describe("useWorkspaceNotifications — unreadCount in network-source badge-render logs", () => {
+describe('useWorkspaceNotifications — unreadCount in network-source badge-render logs', () => {
   for (const sc of networkScenarios) {
     it(`logs unreadCount=${sc.expected} when the initial fetch returns ${sc.name}`, async () => {
       const seed = makeSeed(sc.flags);
@@ -199,8 +225,10 @@ describe("useWorkspaceNotifications — unreadCount in network-source badge-rend
       // Hook state mirrors the fetched payload.
       expect(result.current.notifications.length).toBe(seed.length);
       expect(result.current.unreadCount).toBe(sc.expected);
+      expect(countSelectOptions).not.toContainEqual(expect.objectContaining({ head: true }));
+      expect(countRanges).toContainEqual([0, 0]);
 
-      const networkLogs = findBadgeRenderLogs().filter((p) => p?.source === "network");
+      const networkLogs = findBadgeRenderLogs().filter((p) => p?.source === 'network');
       expect(networkLogs.length).toBeGreaterThanOrEqual(1);
 
       // Both surfaces (log + metrics) agree.
@@ -208,7 +236,7 @@ describe("useWorkspaceNotifications — unreadCount in network-source badge-rend
       expect(networkLogs[0].unreadCount).toBe(expectedUnread(seed));
 
       const snap = metrics.snapshot();
-      expect(snap.lastBadgeRender?.source).toBe("network");
+      expect(snap.lastBadgeRender?.source).toBe('network');
       expect(snap.lastBadgeRender?.unreadCount).toBe(sc.expected);
 
       // The cache writeback after the fetch must preserve the same is_read
@@ -223,8 +251,8 @@ describe("useWorkspaceNotifications — unreadCount in network-source badge-rend
   }
 });
 
-describe("useWorkspaceNotifications — unreadCount cross-source consistency", () => {
-  it("reports the SAME unreadCount on cache and network paths for the same seed", async () => {
+describe('useWorkspaceNotifications — unreadCount cross-source consistency', () => {
+  it('reports the SAME unreadCount on cache and network paths for the same seed', async () => {
     const seed = makeSeed([false, true, false, true, false, true]); // 3 unread
     const expected = expectedUnread(seed);
 
@@ -244,12 +272,12 @@ describe("useWorkspaceNotifications — unreadCount cross-source consistency", (
     // module's state).
     sessionStorage.setItem(
       CACHE_KEY,
-      JSON.stringify({ cachedAt: Date.now() - 3_000, notifications: seed })
+      JSON.stringify({ cachedAt: Date.now() - 3_000, notifications: seed }),
     );
     mods = await loadHookAndMetrics();
     const second = renderHook(() => mods.useWorkspaceNotifications());
     await waitFor(() => {
-      expect(mods.metrics.snapshot().lastBadgeRender?.source).toBe("cache");
+      expect(mods.metrics.snapshot().lastBadgeRender?.source).toBe('cache');
     });
     const cacheUnread = mods.metrics.snapshot().lastBadgeRender?.unreadCount;
     expect(cacheUnread).toBe(expected);

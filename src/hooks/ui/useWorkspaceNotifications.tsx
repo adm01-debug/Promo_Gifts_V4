@@ -67,7 +67,7 @@ function debugLog(event: string, payload: Record<string, unknown>) {
 
 export function useWorkspaceNotifications() {
   // BUG-NOTIF-403 FIX: importar rolesLoaded para evitar race condition.
-  // Sem rolesLoaded, o hook disparava HEAD requests em workspace_notifications
+  // Sem rolesLoaded, o hook disparava requests em workspace_notifications
   // antes do JWT estar validado, causando "Falha ao carregar Buscar: HEAD ...".
   // rolesLoaded=true garante que fetchUserData() completou e o JWT está válido.
   // Espelha o fix de BUG-DAR-401 em DiscountApprovalHeaderBadge (2026-06-18).
@@ -97,18 +97,13 @@ export function useWorkspaceNotifications() {
   const clearAllInFlightRef = useRef(false);
   const didInitialFetchRef = useRef(false);
 
-  // BUG-NOTIF-HEAD-GENERATION FIX (2026-06-23 v2): Substituído AbortController por
-  // contador de geração. AbortController.abort() causava "Falha ao carregar Buscar: HEAD"
-  // no console mesmo quando o cancelamento era intencional — idêntico ao BUG-DAR-ABORT
-  // corrigido em DiscountApprovalHeaderBadge. Com contador de geração, a HEAD completa
-  // silenciosamente; resultados de chamadas concorrentes anteriores são descartados
-  // sem nenhum console error.
-  const headGenerationRef = useRef(0);
+  // Contador de geração: descarta respostas de contagem concorrentes sem abortar
+  // requests em voo ou permitir que uma resposta antiga sobrescreva a mais nova.
+  const countGenerationRef = useRef(0);
 
   // BUG-REALTIME-DEBOUNCE FIX (2026-06-22): coalesce rapid Realtime events into a
   // single fetch. n8n bulk-imports (e.g., 50 notifications in < 1s) fire 50 Realtime
-  // callbacks which previously triggered 50 simultaneous HEAD requests visible in
-  // the browser console as "Falha ao carregar Buscar: HEAD ..." flood.
+  // callbacks which previously triggered 50 simultaneous count requests.
   // A 500ms debounce window collapses all events into 1 fetch without perceptible delay.
   const realtimeDebouncerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -245,27 +240,25 @@ export function useWorkspaceNotifications() {
         setNotifications(items);
         setTotalCount(count ?? 0);
 
-        // BUG-NOTIF-HEAD-GENERATION FIX (2026-06-23 v2): Usa contador de geração
-        // em vez de AbortController. AbortController.abort() disparava console error
-        // "Falha ao carregar Buscar: HEAD" mesmo quando intencional — mesmo padrão
-        // anti-pattern corrigido em DiscountApprovalHeaderBadge (BUG-DAR-ABORT).
-        // Com geração, resultados de HEAD concorrentes anteriores são descartados
-        // silenciosamente, sem nenhum erro no console.
-        const thisGen = ++headGenerationRef.current;
+        // Usa GET com range mínimo em vez de HEAD. O PostgREST mantém a contagem
+        // total em Content-Range, transfere no máximo um id e evita falhas de HEAD
+        // observadas em navegadores/proxies. A geração descarta respostas obsoletas.
+        const thisGen = ++countGenerationRef.current;
 
         try {
           const { count: unread, error: unreadErr } = await untypedFrom('workspace_notifications')
-            .select('id', { count: 'exact', head: true })
+            .select('id', { count: 'exact' })
             .eq('user_id', user.id)
-            .eq('is_read', false);
+            .eq('is_read', false)
+            .range(0, 0);
           // Descarta resultado se uma chamada mais nova já iniciou
-          if (headGenerationRef.current === thisGen) {
+          if (countGenerationRef.current === thisGen) {
             setUnreadCount(unreadErr ? items.filter((n) => !n.is_read).length : (unread ?? 0));
           }
         } catch {
-          // Qualquer erro na HEAD: fallback para contagem local dos items carregados.
+          // Qualquer erro na contagem: fallback para contagem local dos itens carregados.
           // Geração previne que um catch obsoleto sobrescreva um resultado mais recente.
-          if (headGenerationRef.current === thisGen) {
+          if (countGenerationRef.current === thisGen) {
             setUnreadCount(items.filter((n) => !n.is_read).length);
           }
         }
@@ -420,12 +413,9 @@ export function useWorkspaceNotifications() {
   }, [user, rolesLoaded, fetchNotifications]);
 
   // Cleanup on unmount: emitir métricas + incrementar geração para descartar
-  // silenciosamente qualquer HEAD em voo.
-  // BUG-NOTIF-HEAD-GENERATION FIX: sem AbortController → sem console error.
-  // headGenerationRef++ descarta o resultado da HEAD em voo caso ela complete
-  // após o unmount, sem throw e sem log de erro no console.
+  // silenciosamente qualquer contagem em voo após o unmount.
   useEffect(() => {
-    const genRef = headGenerationRef;
+    const genRef = countGenerationRef;
     return () => {
       genRef.current++;
       notificationsMetrics.logBadgeBudgetSummary('hook-unmount');

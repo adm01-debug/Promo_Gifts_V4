@@ -102,7 +102,7 @@ export async function getNotifications(
  * BUG-SVC-NOTIF-001 FIX (2026-06-22): adicionado filtro user_id explícito.
  * Antes: confiava apenas na RLS (user_id = auth.uid()) para filtrar.
  * Agora: filtro duplo — guard de sessão + user_id na query.
- * Isso garante que o HEAD request gerado inclui user_id na URL,
+ * Isso garante que o request de contagem inclui user_id na URL,
  * tornando o cache de React Query user-specific e evitando
  * cross-user cache pollution em cenários de sign-in rápido.
  *
@@ -110,14 +110,17 @@ export async function getNotifications(
  * Fix aplicado preventivamente para quando for integrado.
  */
 export async function getUnreadCount(): Promise<number> {
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return 0;  // sem sessão → sem notificações
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return 0; // sem sessão → sem notificações
 
   const { count, error } = await supabase
     .from('workspace_notifications')
-    .select('id', { count: 'exact', head: true })
-    .eq('user_id', user.id)  // filtro explícito além da RLS
-    .eq('is_read', false);
+    .select('id', { count: 'exact' })
+    .eq('user_id', user.id) // filtro explícito além da RLS
+    .eq('is_read', false)
+    .range(0, 0); // GET mínimo: preserva count total sem depender de HEAD
 
   if (error) {
     logger.error('[notificationService] getUnreadCount error:', error.message);
