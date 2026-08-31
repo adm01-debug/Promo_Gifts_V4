@@ -60,6 +60,7 @@ jobs:
           assert_pass "squash 4 dígitos"            "fix: bug (#9999)"            "fix: bug (#9999)"            "alice"
           assert_pass "squash whitespace fim"       "feat: x (#1) "               "feat: x (#1) "               "alice"
           assert_pass "merge commit"                "Merge pull request #456 from x/y" "Merge pull request #456 from x/y" "alice"
+          assert_pass "merge customizado do repo"   "Merge PR #1812: consolida correcoes" "Merge PR #1812: consolida correcoes" "alice"
           assert_pass "revert via UI"               'Revert "feat: x (#1)" (#789)' 'Revert "feat: x (#1)" (#789)' "alice"
           assert_pass "dependabot"                  "Bump foo from 1 to 2"        "Bump foo from 1 to 2"        "dependabot[bot]"
           assert_pass "renovate"                    "fix(deps): update"           "fix(deps): update"           "renovate[bot]"

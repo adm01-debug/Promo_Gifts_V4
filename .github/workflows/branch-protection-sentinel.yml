@@ -3,6 +3,10 @@ name: Branch Protection Sentinel
 # ============================================================================
 # CHANGELOG (resumo — detalhes em .github/SENTINEL_CHANGELOG.md):
 #
+# v2.0.2 (2026-08-31) — compatibilidade com título de merge customizado
+#   • Reconhece `Merge PR #NNN:` além do padrão `Merge pull request #NNN`
+#   • Evita auditar novamente commits internos já revisados na PR
+#
 # v2.0.1 (2026-05-22) — Bug fixes pós-review (PR #110 → PR seguinte)
 #   • [10] Merge commit PR: audita apenas HEAD em vez de range completo
 #   • [2/12/16] Comando de recovery: revert específico OU PUSH_BEFORE SHA (não FAIL_COUNT)
@@ -78,7 +82,7 @@ jobs:
                 # Fix [10]: se HEAD é merge-commit de PR, audita apenas HEAD
                 # (commits feature da branch da PR já foram revisados na PR)
                 HEAD_SUBJECT=$(git log -1 --pretty=%s "$PUSH_AFTER")
-                if echo "$HEAD_SUBJECT" | grep -qE '^Merge pull request #[0-9]+'; then
+                if echo "$HEAD_SUBJECT" | grep -qE '^Merge (pull request|PR) #[0-9]+([[:space:]:]|$)'; then
                   COMMITS=$(git rev-parse "$PUSH_AFTER")
                   MODE="merge-commit PR (audita apenas HEAD ${PUSH_AFTER:0:7})"
                 else
@@ -151,7 +155,7 @@ jobs:
               echo "Push em \`main\` deve seguir um destes padrões:"
               echo ""
               echo "1. **Squash merge de PR** — mensagem termina em \`(#NNN)\`"
-              echo "2. **Merge commit de PR** — começa com \`Merge pull request #NNN\`"
+              echo "2. **Merge commit de PR** — começa com \`Merge pull request #NNN\` ou \`Merge PR #NNN:\`"
               echo "3. **Bot oficial** — \`github-actions[bot]\`, \`dependabot[bot]\`, \`renovate[bot]\`"
               echo "4. **Família Lovable** — qualquer \`lovable-*[bot]\` ou \`gpt-engineer-*[bot]\`"
               echo "5. **Release** — \`chore(release): ...\`"
