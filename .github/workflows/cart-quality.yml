@@ -3,9 +3,9 @@ name: Cart Quality — Typecheck, Unit & E2E
 # Pipeline unificado de qualidade do módulo Cart.
 # Consolida os antigos workflows `cart-unit.yml` e `e2e-carrinhos.yml`.
 #
-# IMPORTANTE: o job `carrinhos` PRESERVA o nome exato porque é required check
-# no Branch Protection (ver .github/required-checks.json → ruleset "main").
-# Não renomeie sem atualizar required-checks.json e o ruleset no GitHub.
+# O job `carrinhos` é um gate focal condicionado por paths. O required check
+# global de main é o agregador sempre presente `Gate Final - Deploy Ready`;
+# portanto este workflow não pode ser exigido globalmente sem risco de deadlock.
 #
 # Roteamento (per-job via dorny/paths-filter):
 #   required-checks-drift → SEMPRE (gate da SSOT)
@@ -85,7 +85,7 @@ jobs:
               - '.github/workflows/cart-quality.yml'
 
   # ─────────────────────────────────────────────────────────────────────────
-  # 1) Gate SSOT: required check ainda aponta para este workflow + job carrinhos
+  # 1) Gate SSOT: valida nomes e workflows declarados em required-checks.json
   # ─────────────────────────────────────────────────────────────────────────
   required-checks-drift:
     name: required-checks-drift
@@ -96,7 +96,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22.22.1'
-      - name: Validar SSOT de required checks (cart-quality → carrinhos)
+      - name: Validar SSOT de required checks
         run: node scripts/check-required-checks.mjs
 
   # ─────────────────────────────────────────────────────────────────────────
