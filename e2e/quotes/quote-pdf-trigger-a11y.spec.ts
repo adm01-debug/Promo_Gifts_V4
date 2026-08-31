@@ -15,11 +15,10 @@ import { requireAuth } from '../fixtures/test-base';
 import { gotoQuoteScenario } from './_helpers/quote-scenarios';
 
 test.describe('PDF export · a11y do gatilho (desktop)', () => {
-  test.skip(
-    ({ page: _page }, testInfo) => testInfo.project.name !== 'chromium-authed',
-    'Requer auth real.',
-  );
-  test.beforeEach(() => requireAuth());
+  test.beforeEach(async ({}, testInfo) => {
+    test.skip(testInfo.project.name !== 'chromium-authed', 'Requer auth real.');
+    requireAuth();
+  });
 
   test('pdf-preview-trigger tem aria-label e é o único controle de export no desktop', async ({
     page,

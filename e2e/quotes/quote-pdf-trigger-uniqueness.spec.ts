@@ -15,11 +15,10 @@ import {
 } from './_helpers/quote-scenarios';
 
 test.describe('PDF export · unicidade do gatilho (desktop)', () => {
-  test.skip(
-    ({ page: _page }, testInfo) => testInfo.project.name !== 'chromium-authed',
-    'Requer auth real.',
-  );
-  test.beforeEach(() => requireAuth());
+  test.beforeEach(async ({}, testInfo) => {
+    test.skip(testInfo.project.name !== 'chromium-authed', 'Requer auth real.');
+    requireAuth();
+  });
 
   test('apenas 1 `pdf-preview-trigger` e 1 `pdf-generate-confirm` após abrir o dialog', async ({
     page,

@@ -11,11 +11,10 @@ import { requireAuth } from '../fixtures/test-base';
 import { gotoAndSettle } from '../helpers/nav';
 
 test.describe('Quote subtítulo · diferenciação Novo/Rascunho/Enviada', () => {
-  test.skip(
-    ({ page: _page }, testInfo) => testInfo.project.name !== 'chromium-authed',
-    'Requer auth real.',
-  );
-  test.beforeEach(() => requireAuth());
+  test.beforeEach(async ({}, testInfo) => {
+    test.skip(testInfo.project.name !== 'chromium-authed', 'Requer auth real.');
+    requireAuth();
+  });
 
   test('modo Novo → h1 "Novo Orçamento" + subtítulo de prévia/fallback', async ({ page }) => {
     await gotoAndSettle(page, '/orcamentos/novo');

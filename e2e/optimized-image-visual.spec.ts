@@ -11,7 +11,11 @@ import { gotoAndSettle } from './helpers/nav';
 test.describe('OptimizedImage Visual Regression', () => {
   const DEBUG_URL = '/debug/images';
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page }, testInfo) => {
+    test.skip(
+      testInfo.project.name !== 'chromium-public',
+      'Baseline canônico do OptimizedImage roda somente no Chromium público.',
+    );
     await gotoAndSettle(page, DEBUG_URL);
     await expect(page.getByText('OptimizedImage Demo')).toBeVisible();
   });

@@ -28,11 +28,13 @@ const INTERMEDIATE_BREAKPOINTS = [
 ] as const;
 
 test.describe('PDF header · quote_number snapshot (768/1024)', () => {
-  test.skip(
-    ({ page: _page }, testInfo) => testInfo.project.name !== 'chromium-authed',
-    'Requer auth real para preview do PDF.',
-  );
-  test.beforeEach(() => requireAuth());
+  test.beforeEach(async ({}, testInfo) => {
+    test.skip(
+      testInfo.project.name !== 'chromium-authed',
+      'Requer auth real para preview do PDF.',
+    );
+    requireAuth();
+  });
 
   for (const bp of INTERMEDIATE_BREAKPOINTS) {
     test(`[${bp.name}] cabeçalho mantém numeração intacta`, async ({ page }) => {

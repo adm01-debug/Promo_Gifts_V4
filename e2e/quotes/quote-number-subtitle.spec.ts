@@ -14,11 +14,13 @@ import {
 } from './_helpers/quote-scenarios';
 
 test.describe('Novo Orçamento · quote_number subtítulo', () => {
-  test.skip(
-    ({ page: _page }, testInfo) => testInfo.project.name !== 'chromium-authed',
-    'Visual regression roda só no Chromium autenticado.',
-  );
-  test.beforeEach(() => requireAuth());
+  test.beforeEach(async ({}, testInfo) => {
+    test.skip(
+      testInfo.project.name !== 'chromium-authed',
+      'Visual regression roda só no Chromium autenticado.',
+    );
+    requireAuth();
+  });
 
   for (const vp of QUOTE_BREAKPOINTS) {
     test(`[${vp.name}] exibe quote-number-display e não exibe a frase legada`, async ({ page }) => {
