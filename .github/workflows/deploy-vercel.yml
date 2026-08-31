@@ -1,7 +1,8 @@
-name: Deploy to Vercel
+name: Deploy to Vercel (Manual Fallback)
 
-# Build e deploy automático para Vercel a cada push em main.
-# PRs geram preview deploys; main vai para produção.
+# Fallback manual para indisponibilidade do deploy nativo da integração Vercel/GitHub.
+# O caminho primário continua sendo a integração nativa; este workflow NÃO roda em
+# push nem pull_request, evitando deployments duplicados e corridas de alias.
 #
 # === GitHub Secrets necessários (Settings → Secrets and variables → Actions) ===
 #
@@ -10,52 +11,21 @@ name: Deploy to Vercel
 #   - VERCEL_ORG_ID    → cat .vercel/project.json (após `vercel link` local)
 #   - VERCEL_PROJECT_ID→ idem
 #
-# App (injetados no build do Vite):
-#   - VITE_SUPABASE_URL
-#   - VITE_SUPABASE_PUBLISHABLE_KEY
-#   - VITE_SUPABASE_PROJECT_ID
-#   - VITE_EXTERNAL_SUPABASE_URL
-#   - VITE_EXTERNAL_SUPABASE_ANON_KEY
-#   - VITE_CRM_SUPABASE_URL          (opcional)
-#   - VITE_CRM_SUPABASE_ANON_KEY     (opcional)
-#
-# Secrets server-side (edge functions) NÃO entram aqui — vão no painel
-# Supabase → Edge Functions → Secrets do projeto principal.
-
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: vercel-${{ github.ref }}
-  cancel-in-progress: true
+  group: vercel-manual-production
+  cancel-in-progress: false
 
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-  # Variáveis VITE_* lidas pelo `vite build` durante o vercel build
-  VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-  VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
-  VITE_SUPABASE_PROJECT_ID: ${{ secrets.VITE_SUPABASE_PROJECT_ID }}
-  VITE_EXTERNAL_SUPABASE_URL: ${{ secrets.VITE_EXTERNAL_SUPABASE_URL }}
-  VITE_EXTERNAL_SUPABASE_ANON_KEY: ${{ secrets.VITE_EXTERNAL_SUPABASE_ANON_KEY }}
-  VITE_CRM_SUPABASE_URL: ${{ secrets.VITE_CRM_SUPABASE_URL }}
-  VITE_CRM_SUPABASE_ANON_KEY: ${{ secrets.VITE_CRM_SUPABASE_ANON_KEY }}
 
 jobs:
-  # Gate: só roda o deploy quando VERCEL_TOKEN está configurado.
-  # Sem isso o job inteiro falha tentando autenticar contra Vercel.
-  # Enquanto o Lovable bot faz o auto-deploy, manter este gate como
-  # "skipped" não bloqueia outros workflows nem cria red flags no CI.
-  # Para ativar: Settings → Secrets and variables → Actions → adicionar
-  # VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID + as VITE_* listadas
-  # no header deste arquivo.
   check-secrets:
     name: Check deploy prerequisites
     runs-on: ubuntu-latest
@@ -65,19 +35,21 @@ jobs:
       - id: check
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          CHECK_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          CHECK_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
-          if [ -n "$VERCEL_TOKEN" ]; then
+          if [ "$GITHUB_REF" != "refs/heads/main" ]; then
+            echo "can_deploy=false" >> "$GITHUB_OUTPUT"
+            echo "❌ O fallback de produção deve ser executado a partir de main." >> "$GITHUB_STEP_SUMMARY"
+          elif [ -n "$VERCEL_TOKEN" ] && [ -n "$CHECK_ORG_ID" ] && [ -n "$CHECK_PROJECT_ID" ]; then
             echo "can_deploy=true" >> "$GITHUB_OUTPUT"
-            echo "✅ VERCEL_TOKEN configurado — deploy seguirá adiante." >> "$GITHUB_STEP_SUMMARY"
+            echo "✅ Pré-requisitos presentes — fallback manual seguirá adiante." >> "$GITHUB_STEP_SUMMARY"
           else
             echo "can_deploy=false" >> "$GITHUB_OUTPUT"
             {
-              echo "## ⏭️  Deploy via GitHub Actions desabilitado"
+              echo "## ❌ Fallback manual indisponível"
               echo ""
-              echo "VERCEL_TOKEN não está configurado nos secrets do repo."
-              echo "Enquanto isso, o Lovable bot continua fazendo auto-deploy."
-              echo ""
-              echo "Para ativar este workflow: Settings → Secrets and variables → Actions."
+              echo "Configure VERCEL_TOKEN, VERCEL_ORG_ID e VERCEL_PROJECT_ID nos secrets do repositório."
             } >> "$GITHUB_STEP_SUMMARY"
           fi
 
@@ -96,39 +68,31 @@ jobs:
           cache: npm
 
       - name: Install Vercel CLI
-        run: npm install --global vercel@latest
+        run: npm install --global vercel@59.5.0
 
       - name: Pull Vercel environment (production)
-        if: github.ref == 'refs/heads/main'
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
-      - name: Pull Vercel environment (preview)
-        if: github.ref != 'refs/heads/main'
-        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
-
       - name: Build (production)
-        if: github.ref == 'refs/heads/main'
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-
-      - name: Build (preview)
-        if: github.ref != 'refs/heads/main'
-        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
       # Captura o deploy de produção atual ANTES de subir o novo, para rollback
       - name: Snapshot current production deploy
         id: prev
-        if: github.ref == 'refs/heads/main'
         run: |
-          PREV=$(vercel ls --prod --token=${{ secrets.VERCEL_TOKEN }} 2>/dev/null \
-            | awk '/https:\/\// {print $2; exit}')
+          PREV=$(vercel list --environment production --status READY --limit 1 --json \
+            --token=${{ secrets.VERCEL_TOKEN }} \
+            | jq -r '.deployments[0].url // empty | if length > 0 then "https://" + . else "" end')
           echo "url=${PREV:-}" >> "$GITHUB_OUTPUT"
           echo "Previous prod: ${PREV:-<none>}"
 
       - name: Deploy to Vercel (production)
         id: deploy_prod
-        if: github.ref == 'refs/heads/main'
         run: |
-          URL=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
+          URL=$(vercel deploy --prebuilt --prod --yes \
+            --env "APP_COMMIT_SHA=${{ github.sha }}" \
+            --meta "githubCommitSha=${{ github.sha }}" \
+            --token=${{ secrets.VERCEL_TOKEN }})
           echo "url=$URL" >> "$GITHUB_OUTPUT"
           echo "🚀 Production: $URL" >> "$GITHUB_STEP_SUMMARY"
 
@@ -137,9 +101,10 @@ jobs:
       #   2) /api/ready   → confirma que as DEPENDÊNCIAS (Supabase) respondem
       - name: Smoke test new production deploy
         id: smoke
-        if: github.ref == 'refs/heads/main' && steps.deploy_prod.outputs.url != ''
+        if: steps.deploy_prod.outputs.url != ''
         run: |
-          BASE="${{ steps.deploy_prod.outputs.url }}"
+          DEPLOY_URL="${{ steps.deploy_prod.outputs.url }}"
+          BASE="https://www.promogifts.com.br"
           EXPECTED_SHA="${{ github.sha }}"
           # correlationId compartilhado entre as duas probes — eco no x-request-id
           # e ecoado de volta no payload (.requestId), tornando o log da Vercel
@@ -149,7 +114,8 @@ jobs:
 
           echo "▶ /api/health (build identity)"
           HEALTH_OK=0
-          for i in 1 2 3 4 5; do
+          echo "Deployment URL: $DEPLOY_URL; validating canonical alias: $BASE"
+          for i in $(seq 1 12); do
             CODE=$(curl -s -o /tmp/health.json -D /tmp/health.h \
               -H "x-request-id: $REQ_ID" \
               -w "%{http_code}" "$BASE/api/health" || echo "000")
@@ -177,7 +143,7 @@ jobs:
 
           echo "▶ /api/ready (dependency probe)"
           READY_OK=0
-          for i in 1 2 3 4 5; do
+          for i in $(seq 1 6); do
             CODE=$(curl -s -o /tmp/ready.json \
               -H "x-request-id: $REQ_ID" \
               -w "%{http_code}" "$BASE/api/ready" || echo "000")
@@ -207,7 +173,7 @@ jobs:
 
       # Rollback automático: promove o deploy anterior se algo acima falhar
       - name: Rollback to previous production
-        if: failure() && github.ref == 'refs/heads/main' && steps.prev.outputs.url != ''
+        if: failure() && steps.prev.outputs.url != ''
         run: |
           PREV="${{ steps.prev.outputs.url }}"
           REQ_ID="gh-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-${GITHUB_SHA:0:7}"
@@ -222,9 +188,3 @@ jobs:
             echo ""
             echo "**correlationId:** \`$REQ_ID\` — busque por este ID nos logs da Vercel para encontrar a request exata que falhou."
           } >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Deploy to Vercel (preview)
-        if: github.ref != 'refs/heads/main'
-        run: |
-          URL=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
-          echo "👀 Preview: $URL" >> "$GITHUB_STEP_SUMMARY"
