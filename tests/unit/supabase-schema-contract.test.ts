@@ -30,6 +30,9 @@ const REQUIRED_TABLES: (keyof PublicTables)[] = [
   'collection_items',
   'kit_templates',
   'custom_kits',
+  'magazines',
+  'magazine_items',
+  'magazine_templates',
 ];
 
 /**
@@ -51,7 +54,7 @@ describe('Supabase types.ts schema contract', () => {
     });
 
     // Explicit count so a diff is visible when the schema grows/shrinks significantly
-    expect(REQUIRED_TABLES.length).toBeGreaterThanOrEqual(13);
+    expect(REQUIRED_TABLES.length).toBeGreaterThanOrEqual(16);
   });
 
   it('has products table with critical columns', () => {

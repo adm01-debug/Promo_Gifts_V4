@@ -117,6 +117,24 @@ jobs:
             echo "❌ TypeScript falhou após fix — correções serão descartadas."
           fi
 
+      # Se o Lovable alterou TypeScript mas o ESLint não teve nada para corrigir,
+      # o workflow antigo terminava verde sem compilar o código. Isso mascarou a
+      # substituição de types.ts por um snapshot de outro projeto em 2026-08-31.
+      - name: Verificar contrato TypeScript quando não houve auto-fix
+        id: source_tsc_check
+        if: |
+          steps.changed_files.outputs.has_ts_files == 'true' &&
+          steps.check_changes.outputs.has_fixes != 'true'
+        run: |
+          if npm run typecheck; then
+            echo "tsc_ok=true" >> "$GITHUB_OUTPUT"
+            echo "✅ TypeScript do commit original compilou sem regressões."
+          else
+            echo "tsc_ok=false" >> "$GITHUB_OUTPUT"
+            echo "❌ Commit original introduziu regressão TypeScript."
+            exit 1
+          fi
+
       - name: Commitar correções ESLint
         if: |
           steps.check_changes.outputs.has_fixes == 'true' &&
@@ -204,7 +222,9 @@ jobs:
             TS="${{ steps.changed_files.outputs.has_ts_files }}"
             FIX="${{ steps.check_changes.outputs.has_fixes }}"
             TSC="${{ steps.tsc_check.outputs.tsc_ok }}"
+            SOURCE_TSC="${{ steps.source_tsc_check.outputs.tsc_ok }}"
             if   [ "$TS"  = "false" ]; then echo "✅ Nenhum arquivo TypeScript alterado."
+            elif [ "$SOURCE_TSC" = "false" ]; then echo "❌ **Commit original quebrou o contrato TypeScript.**"
             elif [ "$FIX" = "false" ]; then echo "✅ ESLint limpo — sem correções."
             elif [ "$TSC" = "true"  ]; then echo "✅ **Correções aplicadas e commitadas.**"
             elif [ "$TSC" = "false" ]; then echo "❌ **Fix quebrou TSC — issue criada.**"
