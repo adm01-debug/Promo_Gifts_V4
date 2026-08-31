@@ -6,7 +6,7 @@
       "destination": "/api/sitemap"
     },
     {
-      "source": "/((?!.*\\.[a-zA-Z0-9]{1,8}$).*)",
+      "source": "/((?!api(?:/|$)|.*\\.[a-zA-Z0-9]{1,8}$).*)",
       "destination": "/index.html"
     }
   ],
