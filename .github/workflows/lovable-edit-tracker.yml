@@ -68,7 +68,7 @@ jobs:
             if git cat-file -e "$PUSH_BEFORE" 2>/dev/null; then
               # Verifica se é merge commit de PR (não precisa analisar range)
               HEAD_SUBJECT=$(git log -1 --pretty=%s "$PUSH_AFTER")
-              if echo "$HEAD_SUBJECT" | grep -qE '^Merge pull request #[0-9]+'; then
+              if echo "$HEAD_SUBJECT" | grep -qE '^Merge (pull request|PR) #[0-9]+([[:space:]:]|$)'; then
                 COMMITS=$(git rev-parse "$PUSH_AFTER")
                 RANGE_DESC="merge commit de PR"
               else

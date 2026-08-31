@@ -40,9 +40,10 @@ if echo "$SUBJECT" | grep -qE '\(#[0-9]+\)[[:space:]]*$'; then
 fi
 
 # ----------------------------------------------------------------------------
-# Regra 2: Merge commit — começa com "Merge pull request #NNN"
+# Regra 2: Merge commit — aceita o título padrão e o título customizado usado
+# pelo repositório ("Merge pull request #NNN" ou "Merge PR #NNN:")
 # ----------------------------------------------------------------------------
-if echo "$SUBJECT" | grep -qE '^Merge pull request #[0-9]+'; then
+if echo "$SUBJECT" | grep -qE '^Merge (pull request|PR) #[0-9]+([[:space:]:]|$)'; then
   echo "merge-commit"
   exit 0
 fi

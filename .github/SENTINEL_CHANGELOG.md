@@ -5,6 +5,20 @@
 > sem ninguém perceber. Cada mudança aqui é uma decisão registrada para sobreviver
 > a trocas de sessão de chat, trocas de pessoa no plantão, etc.
 
+## v2.0.2 — 2026-08-31 — Compatibilidade com título de merge customizado
+
+**Contexto:** o merge válido do PR #1812 foi publicado pelo GitHub com o título
+customizado `Merge PR #1812: ...`. O sentinel reconhecia apenas o título padrão
+`Merge pull request #1812 ...`, classificou o merge como push comum e auditou
+novamente os commits internos já revisados na PR, gerando falso negativo.
+
+**Mudanças no comportamento:**
+
+- reconhece ambas as formas, com número de PR e delimitador explícito;
+- mantém a política fail-closed para qualquer título fora desses formatos;
+- alinha o tracker e o autoheal do Lovable à mesma convenção;
+- adiciona fixture de regressão para o formato efetivamente usado pelo repositório.
+
 ## v2.0.1 — 2026-05-22 — Bug fixes pós-review da v2.0.0
 
 **Contexto:** auditoria minuciosa dos review comments da PR #110 (4 bots: Copilot, CodeRabbit, codex, cubic) revelou 5 bugs reais na v2.0.0. Esta versão endereça os P1 e P2 mais críticos.
