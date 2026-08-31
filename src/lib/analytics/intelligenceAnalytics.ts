@@ -8,7 +8,7 @@
  * facilitar métricas de conversão em dashboards.
  */
 import { createClientLogger } from '@/lib/telemetry/structuredLogger';
-import { supabase } from '@/integrations/supabase/client';
+import { invokeEdge } from '@/lib/edge/safeInvokeCall';
 import type { FilterKey } from '@/hooks/intelligence/useZeroResultDiagnosis';
 
 const log = createClientLogger('bi.intelligence');
@@ -159,8 +159,11 @@ function mirrorToUsagePipeline(payload: SubstituteAppliedPayload, clientTs: stri
     clientTs,
   };
   try {
-    void supabase.functions
-      .invoke(MIRROR_FN, { body, headers: child.headers() })
+    void invokeEdge(MIRROR_FN, {
+      body,
+      headers: child.headers(),
+      op: 'analytics.intelligence_substitute_applied',
+    })
       .then(({ error }) => {
         if (error) {
           reportFailure('mirror_response', error, payload);

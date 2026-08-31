@@ -8,13 +8,12 @@
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('@/integrations/supabase/client', () => ({
-  supabase: {
-    functions: { invoke: vi.fn().mockResolvedValue({ data: null, error: null }) },
-  },
+const { invokeMock } = vi.hoisted(() => ({ invokeMock: vi.fn() }));
+
+vi.mock('@/lib/edge/safeInvokeCall', () => ({
+  invokeEdge: invokeMock,
 }));
 
-import { supabase } from '@/integrations/supabase/client';
 import {
   trackSubstituteApplied,
   type IntelligenceAnalyticsEvent,
@@ -30,7 +29,8 @@ function readBuffer(): IntelligenceAnalyticsEvent[] {
 describe('trackSubstituteApplied — contrato de payload', () => {
   beforeEach(() => {
     (window as unknown as Record<string, unknown>)[BUFFER_KEY] = [];
-    vi.mocked(supabase.functions.invoke).mockClear();
+    invokeMock.mockReset();
+    invokeMock.mockResolvedValue({ data: null, error: null });
   });
 
   afterEach(() => {
@@ -115,8 +115,8 @@ describe('trackSubstituteApplied — contrato de payload', () => {
     };
     trackSubstituteApplied(payload);
 
-    expect(supabase.functions.invoke).toHaveBeenCalledTimes(1);
-    const [fnName, opts] = vi.mocked(supabase.functions.invoke).mock.calls[0];
+    expect(invokeMock).toHaveBeenCalledTimes(1);
+    const [fnName, opts] = invokeMock.mock.calls[0];
     expect(fnName).toBe('intelligence-substitute-applied');
     const body = (opts as { body: Record<string, unknown> }).body;
     expect(body).toMatchObject({
@@ -133,7 +133,7 @@ describe('trackSubstituteApplied — contrato de payload', () => {
   it('normaliza substituteName ausente e culpritBefore ausente para null no mirror', () => {
     trackSubstituteApplied({ axis: 'productId', substituteId: 'p-1', days: 60 });
 
-    const [, opts] = vi.mocked(supabase.functions.invoke).mock.calls[0];
+    const [, opts] = invokeMock.mock.calls[0];
     const body = (opts as { body: Record<string, unknown> }).body;
     expect(body.substituteName).toBeNull();
     expect(body.culpritBefore).toBeNull();

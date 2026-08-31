@@ -105,6 +105,15 @@ jobs:
           echo "SUPABASE_ANON_KEY=$(supabase status --output json | jq -r '.ANON_KEY // .API.anon_key')" >> "$GITHUB_ENV"
           echo "SUPABASE_URL=$(supabase status --output json | jq -r '.API_URL // .API.url')" >> "$GITHUB_ENV"
 
+      - name: Install contract-only database fixture
+        run: |
+          psql "postgresql://postgres:postgres@127.0.0.1:54322/postgres" \
+            -v ON_ERROR_STOP=1 \
+            -f tests/sql/contract_smoke_schema.sql
+          # A fixture termina com `NOTIFY pgrst, 'reload schema'`; aguarda o
+          # listener do PostgREST consumir a invalidação antes do primeiro hit.
+          sleep 1
+
       - name: Serve Edge Functions
         run: |
           {
