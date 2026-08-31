@@ -13,7 +13,7 @@
   `@adm01-debug` como owner único.
 - Não há owners formais para domínios de produto (catálogo, orçamento, estoque, kits,
   revistas, integrações).
-- A v0.1 da matriz de fluxos tem **owner TBD em 11 dos 12 fluxos** (exceção: Magazine,
+- A v0.2 da matriz de fluxos tem **owner TBD em 11 dos 12 fluxos** (exceção: Magazine,
   "Promo Brindes Engineering", a confirmar).
 
 ## 2. Domínios propostos e owners (a nomear pelo PO)

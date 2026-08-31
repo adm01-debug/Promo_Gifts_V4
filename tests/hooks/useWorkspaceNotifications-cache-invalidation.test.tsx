@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { renderHook, act, waitFor } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { renderHook, act, waitFor } from '@testing-library/react';
 
 /**
  * Verifies that markAllAsRead and clearAll:
@@ -18,15 +18,17 @@ const updateMock = vi.fn(() => ({ eq: updateEqMock }));
 const deleteEqMock = vi.fn().mockResolvedValue({ error: null });
 const deleteMock = vi.fn(() => ({ eq: deleteEqMock }));
 
-vi.mock("@/integrations/supabase/client", () => {
+vi.mock('@/integrations/supabase/client', () => {
   let lastData = [];
   const buildSelectChain = () => {
-    let headCount = false;
+    let countRequest = false;
     const chain = {};
-    for (const m of ["select", "eq", "order", "range", "gte", "limit"]) {
+    for (const m of ['select', 'eq', 'order', 'range', 'gte', 'limit']) {
       chain[m] = (...args) => {
-        if (m === "select" && args[1] && args[1].head) headCount = true;
-        if (m === "limit") return limitMock(...args);
+        if (m === 'select' && args[0] === 'id' && args[1]?.count === 'exact') {
+          countRequest = true;
+        }
+        if (m === 'limit') return limitMock(...args);
         return chain;
       };
     }
@@ -34,11 +36,20 @@ vi.mock("@/integrations/supabase/client", () => {
     chain.delete = (...args) => deleteMock(...args);
     chain.then = async (resolve, reject) => {
       try {
-        if (headCount) { resolve({ count: lastData.filter((n) => !n.is_read).length, error: null }); return; }
+        if (countRequest) {
+          resolve({
+            data: lastData.slice(0, 1),
+            count: lastData.filter((n) => !n.is_read).length,
+            error: null,
+          });
+          return;
+        }
         const base = await limitMock();
         lastData = (base && base.data) || [];
         resolve({ ...base, count: lastData.length });
-      } catch (e) { reject(e); }
+      } catch (e) {
+        reject(e);
+      }
     };
     return chain;
   };
@@ -51,37 +62,37 @@ vi.mock("@/integrations/supabase/client", () => {
   };
 });
 
-const STABLE_USER = { id: "user-cache-inv-1" };
-vi.mock("@/contexts/AuthContext", () => ({
+const STABLE_USER = { id: 'user-cache-inv-1' };
+vi.mock('@/contexts/AuthContext', () => ({
   useAuth: () => ({ user: STABLE_USER, rolesLoaded: true }),
 }));
 
-const CACHE_KEY = "workspace_notifications_cache:user-cache-inv-1";
+const CACHE_KEY = 'workspace_notifications_cache:user-cache-inv-1';
 
 const SEED = [
   {
-    id: "n1",
+    id: 'n1',
     user_id: STABLE_USER.id,
-    title: "t1",
-    message: "m1",
-    type: "info",
-    category: "general",
+    title: 't1',
+    message: 'm1',
+    type: 'info',
+    category: 'general',
     is_read: false,
     action_url: null,
     metadata: {},
-    created_at: "2024-01-01T00:00:00Z",
+    created_at: '2024-01-01T00:00:00Z',
   },
   {
-    id: "n2",
+    id: 'n2',
     user_id: STABLE_USER.id,
-    title: "t2",
-    message: "m2",
-    type: "info",
-    category: "general",
+    title: 't2',
+    message: 'm2',
+    type: 'info',
+    category: 'general',
     is_read: false,
     action_url: null,
     metadata: {},
-    created_at: "2024-01-02T00:00:00Z",
+    created_at: '2024-01-02T00:00:00Z',
   },
 ];
 
@@ -106,12 +117,12 @@ afterEach(() => {
 
 async function loadHook() {
   vi.resetModules();
-  const mod = await import("@/hooks/ui/useWorkspaceNotifications");
+  const mod = await import('@/hooks/ui/useWorkspaceNotifications');
   return mod.useWorkspaceNotifications;
 }
 
-describe("useWorkspaceNotifications — cache invalidation after mutations", () => {
-  it("markAllAsRead removes the sessionStorage cache entry and triggers a silent re-fetch", async () => {
+describe('useWorkspaceNotifications — cache invalidation after mutations', () => {
+  it('markAllAsRead removes the sessionStorage cache entry and triggers a silent re-fetch', async () => {
     const useWorkspaceNotifications = await loadHook();
     const { result } = renderHook(() => useWorkspaceNotifications());
 
@@ -152,7 +163,7 @@ describe("useWorkspaceNotifications — cache invalidation after mutations", () 
     expect(parsed.notifications.every((n) => n.is_read)).toBe(true);
   });
 
-  it("clearAll removes the sessionStorage cache entry and triggers a silent re-fetch", async () => {
+  it('clearAll removes the sessionStorage cache entry and triggers a silent re-fetch', async () => {
     const useWorkspaceNotifications = await loadHook();
     const { result } = renderHook(() => useWorkspaceNotifications());
 
@@ -185,7 +196,7 @@ describe("useWorkspaceNotifications — cache invalidation after mutations", () 
     expect(parsed.notifications).toHaveLength(0);
   });
 
-  it("re-fetch after markAllAsRead bypasses the 5s prefetch TTL window", async () => {
+  it('re-fetch after markAllAsRead bypasses the 5s prefetch TTL window', async () => {
     // Regression guard: lastFetchAtRef must be reset to 0 inside markAllAsRead,
     // otherwise the silent re-fetch would be skipped because the initial fetch
     // happened <5s ago.
@@ -205,14 +216,14 @@ describe("useWorkspaceNotifications — cache invalidation after mutations", () 
   });
 });
 
-describe("useWorkspaceNotifications — cache TTL is honored, then invalidated by mutations", () => {
-  it("uses a fresh (within 60s TTL) sessionStorage entry to hydrate before any network call", async () => {
+describe('useWorkspaceNotifications — cache TTL is honored, then invalidated by mutations', () => {
+  it('uses a fresh (within 60s TTL) sessionStorage entry to hydrate before any network call', async () => {
     // Pre-seed cache with a fresh entry. The hook MUST hydrate from it before
     // (or independently of) the initial fetch — proving the cache is honored
     // within the TTL window.
     sessionStorage.setItem(
       CACHE_KEY,
-      JSON.stringify({ cachedAt: Date.now() - 1_000, notifications: SEED })
+      JSON.stringify({ cachedAt: Date.now() - 1_000, notifications: SEED }),
     );
 
     const useWorkspaceNotifications = await loadHook();
@@ -226,12 +237,12 @@ describe("useWorkspaceNotifications — cache TTL is honored, then invalidated b
     });
   });
 
-  it("markAllAsRead deletes the cache key BEFORE the silent re-fetch writes a new one", async () => {
+  it('markAllAsRead deletes the cache key BEFORE the silent re-fetch writes a new one', async () => {
     // Pre-seed a fresh cache so we can prove the entry observed mid-mutation
     // is the new one (post-invalidation), not the pre-mutation snapshot.
     sessionStorage.setItem(
       CACHE_KEY,
-      JSON.stringify({ cachedAt: Date.now(), notifications: SEED })
+      JSON.stringify({ cachedAt: Date.now(), notifications: SEED }),
     );
 
     // Reset the queue so we control exactly two calls: mount fetch + silent re-fetch.
@@ -239,7 +250,7 @@ describe("useWorkspaceNotifications — cache TTL is honored, then invalidated b
     // Capture the cache state at the exact moment the silent re-fetch runs.
     // Because the hook does: removeItem(CACHE_KEY) -> await fetch -> writeCache,
     // sessionStorage MUST be empty at the start of the .limit() call.
-    let cacheAtRefetchTime: string | null = "<unset>";
+    let cacheAtRefetchTime: string | null = '<unset>';
     limitMock
       // initial mount fetch
       .mockResolvedValueOnce({ data: SEED, error: null })
@@ -267,14 +278,14 @@ describe("useWorkspaceNotifications — cache TTL is honored, then invalidated b
     expect(parsed.notifications.every((n) => n.is_read)).toBe(true);
   });
 
-  it("clearAll deletes the cache key BEFORE the silent re-fetch writes a new one", async () => {
+  it('clearAll deletes the cache key BEFORE the silent re-fetch writes a new one', async () => {
     sessionStorage.setItem(
       CACHE_KEY,
-      JSON.stringify({ cachedAt: Date.now(), notifications: SEED })
+      JSON.stringify({ cachedAt: Date.now(), notifications: SEED }),
     );
 
     limitMock.mockReset();
-    let cacheAtRefetchTime: string | null = "<unset>";
+    let cacheAtRefetchTime: string | null = '<unset>';
     limitMock
       .mockResolvedValueOnce({ data: SEED, error: null })
       .mockImplementationOnce(async () => {

@@ -13,12 +13,24 @@ docker run -d --name "${container_name}" \
   -e POSTGRES_DB=approved_plan_test \
   -v "$(pwd):/workspace:ro" "${image}" >/dev/null
 
+database_ready=false
 for _attempt in $(seq 1 60); do
-  if docker exec "${container_name}" pg_isready -U postgres -d approved_plan_test >/dev/null 2>&1; then
+  # `pg_isready -d` only checks whether PostgreSQL accepts connections; during
+  # first boot it can return success before POSTGRES_DB has been created. A
+  # real query against the target database closes that initialization race.
+  if docker exec "${container_name}" psql -U postgres -d approved_plan_test \
+    -Atq -c 'SELECT 1' 2>/dev/null | grep -qx '1'; then
+    database_ready=true
     break
   fi
   sleep 1
 done
+
+if [[ "${database_ready}" != "true" ]]; then
+  echo "PostgreSQL target database did not become queryable within 60 seconds" >&2
+  docker logs "${container_name}" >&2 || true
+  exit 1
+fi
 
 docker exec "${container_name}" psql -v ON_ERROR_STOP=1 \
   -U postgres -d approved_plan_test \

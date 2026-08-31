@@ -49,12 +49,29 @@
 
 ## 3. Superfícies externas gerenciadas
 
-Edge pública por token ainda presente no repo: `magazine-public-view`. As edges
+Superfícies do módulo Magazine ainda presentes no repo, por fronteira de autenticação
+(`supabase/config.toml`):
+
+- **Anônima e efetivamente consumida** pela rota `/revista-publica/:token`:
+  `magazine-public-view` (leitura por token; `verify_jwt=false`; invocada por
+  `magazineService.getPublicByToken()`).
+- **Anônima implantada, mas sem caller na aplicação:** `magazine-public-react`
+  (reações anônimas por token; `verify_jwt=false`; nenhum caller em `src/` — capacidade
+  isolada; **lacuna:** integração UI + teste E2E).
+- **Anônimas por design (estado do leitor):** `magazine-reader-state-read`,
+  `magazine-reader-state-write`.
+- **Autenticada no handler, apesar de `verify_jwt=false` no gateway (compatibilidade
+  HS256):** `magazine-import-local` — exige header `Authorization` e valida
+  `auth.getUser()` (retorna 401 sem usuário válido); **não é superfície anônima**.
+
+As edges
 `quote-public-react`, `kit-public`, `collections-public-react`, `comparisons-public-react` e
 `bi-share-dossier` foram removidas na descontinuação das rotas por token (decisão PO de
 07/mai/2026; Onda 9 — ver MAPA §2/I-1); referências remanescentes vivem no SSOT RBAC e em specs
-E2E mockadas. Demais superfícies: Bitrix24, Promo Champions, Dropbox, Cloudflare Images,
-ElevenLabs, CNPJá — ver `vercel.json` CSP `connect-src` para a lista de origens permitidas.
+E2E mockadas. Demais superfícies externas: Bitrix24, Promo Champions, Dropbox, Cloudflare Images,
+ElevenLabs, CNPJá — destas, apenas Bitrix24, Cloudflare Images, ElevenLabs e CNPJá constam do
+`vercel.json` CSP `connect-src`; Dropbox e Promo Champions são consumidas server-side via Edge
+(`dropbox-list`; `crm-db-bridge`/`receive-crm-callback`), logo não aparecem no CSP.
 Mudanças exigem `[AUTORIZAÇÃO EXTERNA]`.
 
 ## 4. Critério de conclusão da etapa 004
