@@ -1,21 +1,29 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, requireAuth } from "../fixtures/test-base";
+import { installMockAuth, isMockAuthEnabled } from "../helpers/mock-auth";
+import { gotoAndSettle } from "../helpers/nav";
 
 test.describe("Novo Orçamento — Validações e Tooltips", () => {
   test.beforeEach(async ({ page }) => {
-    // Garantir que estamos logados e na página correta
-    await page.goto("/orcamentos/novo");
-    await page.waitForLoadState("networkidle");
+    requireAuth();
+    if (isMockAuthEnabled()) await installMockAuth(page);
+    await gotoAndSettle(page, "/orcamentos/novo");
   });
 
   test("deve exibir lista de erros de validação quando o formulário está incompleto", async ({ page }) => {
-    // 1. Verificar se o resumo mostra que campos estão pendentes
-    const validationBox = page.locator("text=Campos obrigatórios pendentes");
-    await expect(validationBox).toBeVisible();
+    // O resumo atual é um popover: primeiro valida o indicador e então o abre.
+    const pendingTrigger = page.getByTestId("quote-missing-fields-trigger");
+    await expect(pendingTrigger).toBeVisible();
+    await pendingTrigger.click();
 
-    // 2. Verificar itens específicos na lista de erros
-    await expect(page.locator("li:has-text('Empresa')")).toBeVisible();
-    await expect(page.locator("li:has-text('Contato')")).toBeVisible();
-    await expect(page.locator("li:has-text('Forma de Pagamento')")).toBeVisible();
+    const validationBox = page.getByTestId("quote-missing-fields-popover");
+    await expect(validationBox).toBeVisible();
+    await expect(validationBox).toContainText("Campos obrigatórios pendentes");
+
+    await expect(validationBox.locator("li").filter({ hasText: /^Empresa$/ })).toBeVisible();
+    await expect(validationBox.locator("li").filter({ hasText: /^Contato$/ })).toBeVisible();
+    await expect(
+      validationBox.locator("li").filter({ hasText: /^Forma de Pagamento$/ }),
+    ).toBeVisible();
   });
 
   test("deve exibir tooltip informativo no prazo de entrega", async ({ page }) => {
@@ -36,15 +44,24 @@ test.describe("Novo Orçamento — Validações e Tooltips", () => {
     // 1. Selecionar Frete FOB Pré-negociado
     const shippingSelect = page.getByTestId('shipping-type-select');
     await shippingSelect.click();
-    await page.getByRole('option', { name: /FOB | Valor pré negociado/i }).click();
+    await page.getByRole('option', { name: /FOB \| Valor pré negociado/i }).click();
 
-    // 2. Verificar se o erro "Valor do Frete" aparece na lista de resumo
-    await expect(page.locator("li:has-text('Valor do Frete')")).toBeVisible();
+    // 2. Abrir o resumo e verificar se o erro "Valor do Frete" aparece.
+    const pendingTrigger = page.getByTestId("quote-missing-fields-trigger");
+    await pendingTrigger.click();
+    const pendingPopover = page.getByTestId("quote-missing-fields-popover");
+    await expect(
+      pendingPopover.locator("li").filter({ hasText: /^Valor do Frete$/ }),
+    ).toBeVisible();
+    await page.keyboard.press("Escape");
 
     // 3. Preencher o valor e verificar se o erro some
     const shippingInput = page.getByTestId('shipping-cost-input');
     await shippingInput.fill("150,00");
-    
-    await expect(page.locator("li:has-text('Valor do Frete')")).not.toBeVisible();
+
+    await pendingTrigger.click();
+    await expect(
+      pendingPopover.locator("li").filter({ hasText: /^Valor do Frete$/ }),
+    ).toHaveCount(0);
   });
 });
