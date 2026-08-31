@@ -9,12 +9,15 @@
  *   5. Submete para aprovação
  *   6. Verifica status "em aprovação" no kanban
  */
-import { test, expect } from "@playwright/test";
+import { test, expect, requireAuth } from "../fixtures/test-base";
+import { installMockAuth, isMockAuthEnabled } from "../helpers/mock-auth";
+import { gotoAndSettle } from "../helpers/nav";
 
 test.describe("Fluxo completo de Orçamento", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/orcamentos/novo");
-    await page.waitForLoadState("networkidle");
+    requireAuth();
+    if (isMockAuthEnabled()) await installMockAuth(page);
+    await gotoAndSettle(page, "/orcamentos/novo");
   });
 
   test("@smoke navega para /orcamentos/novo sem crash", async ({ page }) => {

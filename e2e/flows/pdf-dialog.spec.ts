@@ -113,11 +113,13 @@ async function stabilizePdfPreview(page: import('@playwright/test').Page) {
 
 
 test.describe('PdfGenerationDialog · fluxo completo', () => {
-  test.skip(
-    ({}, testInfo) => !AUTHED_PROJECTS.has(testInfo.project.name),
-    'Requer projeto autenticado (multi-engine + mobile).',
-  );
-  test.beforeEach(() => requireAuth());
+  test.beforeEach(async ({}, testInfo) => {
+    test.skip(
+      !AUTHED_PROJECTS.has(testInfo.project.name),
+      'Requer projeto autenticado (multi-engine + mobile).',
+    );
+    requireAuth();
+  });
 
   test('abre, valida aviso + tooltip, gera PDF (nome + tamanho + conteúdo) e fecha limpo', async ({
     page,
@@ -143,7 +145,7 @@ test.describe('PdfGenerationDialog · fluxo completo', () => {
     if (!isMobile) {
       const title = await page.locator('[role="dialog"] .truncate').first().textContent();
       const normalized = (title ?? '').replace(/\s+/g, ' ').trim();
-      const m = normalized.match(/(\d{3,})\s*[\/\-]?\s*(\d{0,4})/);
+      const m = normalized.match(/(\d{3,})\s*[/-]?\s*(\d{0,4})/);
       if (m) {
         quoteNumberHead = m[1];
         quoteNumber = m[2] ? `${m[1]}/${m[2]}` : m[1];
@@ -689,5 +691,3 @@ test.describe('PdfGenerationDialog · fluxo completo', () => {
     });
   });
 });
-
-

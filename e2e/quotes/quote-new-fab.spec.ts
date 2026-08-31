@@ -17,11 +17,13 @@ import { gotoAndSettle } from '../helpers/nav';
 import { QUOTE_BREAKPOINTS } from './_helpers/quote-scenarios';
 
 test.describe('QuotesListPage · FAB Novo Orçamento', () => {
-  test.skip(
-    ({}, testInfo) => testInfo.project.name !== 'chromium-authed',
-    'Visual/responsive regression roda só no Chromium autenticado.',
-  );
-  test.beforeEach(() => requireAuth());
+  test.beforeEach(async ({}, testInfo) => {
+    test.skip(
+      testInfo.project.name !== 'chromium-authed',
+      'Visual/responsive regression roda só no Chromium autenticado.',
+    );
+    requireAuth();
+  });
 
   for (const vp of QUOTE_BREAKPOINTS) {
     test(`[${vp.name}] FAB acessível, posicionado e funcional`, async ({ page }) => {

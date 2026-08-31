@@ -24,11 +24,13 @@ import {
 } from './_helpers/quote-scenarios';
 
 test.describe('PDF exportado · quote_number no topo', () => {
-  test.skip(
-    ({ page: _page }, testInfo) => testInfo.project.name !== 'chromium-authed',
-    'Requer auth real para acessar export PDF.',
-  );
-  test.beforeEach(() => requireAuth());
+  test.beforeEach(async ({}, testInfo) => {
+    test.skip(
+      testInfo.project.name !== 'chromium-authed',
+      'Requer auth real para acessar export PDF.',
+    );
+    requireAuth();
+  });
 
   for (const scenario of ['rascunho', 'enviada'] as QuoteScenario[]) {
     test(`[${scenario}] PDF exportado contém quote_number e não contém frase legada`, async ({
@@ -140,4 +142,3 @@ test.describe('PDF exportado · quote_number no topo', () => {
     expect(txt).not.toContain(FORBIDDEN_PHRASE);
   });
 });
-
