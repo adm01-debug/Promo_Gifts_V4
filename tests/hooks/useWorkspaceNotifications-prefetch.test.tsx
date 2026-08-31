@@ -1,17 +1,23 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { renderHook, act, waitFor } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { renderHook, act, waitFor } from '@testing-library/react';
 
 // Track every call to .limit() so we can count actual fetches (initial + prefetch + polling)
 const limitMock = vi.fn();
 
-vi.mock("@/integrations/supabase/client", () => {
+vi.mock('@/integrations/supabase/client', () => {
   let lastData = [];
   const buildSelectChain = () => {
-    let headCount = false;
+    let countRequest = false;
     const chain: Record<string, unknown> = {};
-    for (const m of ["select", "eq", "order", "range", "gte"]) {
+    for (const m of ['select', 'eq', 'order', 'range', 'gte']) {
       chain[m] = (...args: unknown[]) => {
-        if (m === "select" && args[1] && (args[1] as { head?: boolean }).head) headCount = true;
+        if (
+          m === 'select' &&
+          args[0] === 'id' &&
+          (args[1] as { count?: string } | undefined)?.count === 'exact'
+        ) {
+          countRequest = true;
+        }
         return chain;
       };
     }
@@ -26,11 +32,20 @@ vi.mock("@/integrations/supabase/client", () => {
     });
     chain.then = async (resolve, reject) => {
       try {
-        if (headCount) { resolve({ count: lastData.filter((n) => !n.is_read).length, error: null }); return; }
+        if (countRequest) {
+          resolve({
+            data: lastData.slice(0, 1),
+            count: lastData.filter((n) => !n.is_read).length,
+            error: null,
+          });
+          return;
+        }
         const base = await limitMock();
         lastData = (base && base.data) || [];
         resolve({ ...base, count: lastData.length });
-      } catch (e) { reject(e); }
+      } catch (e) {
+        reject(e);
+      }
     };
     return chain;
   };
@@ -43,37 +58,37 @@ vi.mock("@/integrations/supabase/client", () => {
   };
 });
 
-const STABLE_USER = { id: "user-prefetch-1" };
-vi.mock("@/contexts/AuthContext", () => ({
+const STABLE_USER = { id: 'user-prefetch-1' };
+vi.mock('@/contexts/AuthContext', () => ({
   useAuth: () => ({ user: STABLE_USER, rolesLoaded: true }),
 }));
 
-const CACHE_KEY = "workspace_notifications_cache:user-prefetch-1";
+const CACHE_KEY = 'workspace_notifications_cache:user-prefetch-1';
 
 const SAMPLE_NOTIFICATIONS = [
   {
-    id: "n1",
-    user_id: "user-prefetch-1",
-    title: "Cached title",
-    message: "Cached message",
-    type: "info",
-    category: "general",
+    id: 'n1',
+    user_id: 'user-prefetch-1',
+    title: 'Cached title',
+    message: 'Cached message',
+    type: 'info',
+    category: 'general',
     is_read: false,
     action_url: null,
     metadata: {},
-    created_at: "2024-01-01T00:00:00Z",
+    created_at: '2024-01-01T00:00:00Z',
   },
   {
-    id: "n2",
-    user_id: "user-prefetch-1",
-    title: "Cached title 2",
-    message: "Cached message 2",
-    type: "success",
-    category: "general",
+    id: 'n2',
+    user_id: 'user-prefetch-1',
+    title: 'Cached title 2',
+    message: 'Cached message 2',
+    type: 'success',
+    category: 'general',
     is_read: true,
     action_url: null,
     metadata: {},
-    created_at: "2024-01-02T00:00:00Z",
+    created_at: '2024-01-02T00:00:00Z',
   },
 ];
 
@@ -89,12 +104,12 @@ afterEach(() => {
 
 async function loadHook() {
   vi.resetModules();
-  const mod = await import("@/hooks/ui/useWorkspaceNotifications");
+  const mod = await import('@/hooks/ui/useWorkspaceNotifications');
   return mod.useWorkspaceNotifications;
 }
 
-describe("useWorkspaceNotifications — prefetch TTL idempotency", () => {
-  it("does not refetch when prefetch is called within 5s of last fetch", async () => {
+describe('useWorkspaceNotifications — prefetch TTL idempotency', () => {
+  it('does not refetch when prefetch is called within 5s of last fetch', async () => {
     const useWorkspaceNotifications = await loadHook();
     const { result } = renderHook(() => useWorkspaceNotifications());
 
@@ -116,7 +131,7 @@ describe("useWorkspaceNotifications — prefetch TTL idempotency", () => {
     expect(limitMock).toHaveBeenCalledTimes(1);
   });
 
-  it("refetches when prefetch is called after the 5s TTL window", async () => {
+  it('refetches when prefetch is called after the 5s TTL window', async () => {
     const useWorkspaceNotifications = await loadHook();
     const { result } = renderHook(() => useWorkspaceNotifications());
 
@@ -125,7 +140,7 @@ describe("useWorkspaceNotifications — prefetch TTL idempotency", () => {
     // Move Date.now forward past the 5s threshold
     const realNow = Date.now;
     const baseTime = realNow();
-    vi.spyOn(Date, "now").mockImplementation(() => baseTime + 6_000);
+    vi.spyOn(Date, 'now').mockImplementation(() => baseTime + 6_000);
 
     await act(async () => {
       await result.current.prefetch();
@@ -135,7 +150,7 @@ describe("useWorkspaceNotifications — prefetch TTL idempotency", () => {
     vi.restoreAllMocks();
   });
 
-  it("never toggles isLoading=true during a silent prefetch", async () => {
+  it('never toggles isLoading=true during a silent prefetch', async () => {
     const useWorkspaceNotifications = await loadHook();
     const { result } = renderHook(() => useWorkspaceNotifications());
 
@@ -143,7 +158,7 @@ describe("useWorkspaceNotifications — prefetch TTL idempotency", () => {
     expect(result.current.isLoading).toBe(false);
 
     const baseTime = Date.now();
-    vi.spyOn(Date, "now").mockImplementation(() => baseTime + 6_000);
+    vi.spyOn(Date, 'now').mockImplementation(() => baseTime + 6_000);
 
     let observedLoadingDuringPrefetch = false;
     await act(async () => {
@@ -158,11 +173,11 @@ describe("useWorkspaceNotifications — prefetch TTL idempotency", () => {
   });
 });
 
-describe("useWorkspaceNotifications — sessionStorage hydration", () => {
-  it("hydrates notifications + unreadCount from a fresh cache entry, preventing the empty/skeleton state", async () => {
+describe('useWorkspaceNotifications — sessionStorage hydration', () => {
+  it('hydrates notifications + unreadCount from a fresh cache entry, preventing the empty/skeleton state', async () => {
     sessionStorage.setItem(
       CACHE_KEY,
-      JSON.stringify({ cachedAt: Date.now(), notifications: SAMPLE_NOTIFICATIONS })
+      JSON.stringify({ cachedAt: Date.now(), notifications: SAMPLE_NOTIFICATIONS }),
     );
 
     const useWorkspaceNotifications = await loadHook();
@@ -180,13 +195,13 @@ describe("useWorkspaceNotifications — sessionStorage hydration", () => {
     expect(result.current.isLoading && result.current.notifications.length === 0).toBe(false);
   });
 
-  it("ignores cache entries older than the 60s TTL", async () => {
+  it('ignores cache entries older than the 60s TTL', async () => {
     sessionStorage.setItem(
       CACHE_KEY,
       JSON.stringify({
         cachedAt: Date.now() - 120_000, // 2 minutes old
         notifications: SAMPLE_NOTIFICATIONS,
-      })
+      }),
     );
 
     const useWorkspaceNotifications = await loadHook();
@@ -196,7 +211,7 @@ describe("useWorkspaceNotifications — sessionStorage hydration", () => {
     expect(result.current.notifications).toHaveLength(0);
   });
 
-  it("writes a fresh cache entry after a successful fetch", async () => {
+  it('writes a fresh cache entry after a successful fetch', async () => {
     limitMock.mockResolvedValueOnce({ data: SAMPLE_NOTIFICATIONS, error: null });
 
     const useWorkspaceNotifications = await loadHook();
@@ -208,6 +223,6 @@ describe("useWorkspaceNotifications — sessionStorage hydration", () => {
     expect(raw).toBeTruthy();
     const parsed = JSON.parse(raw!) as { cachedAt: number; notifications: unknown[] };
     expect(parsed.notifications).toHaveLength(2);
-    expect(typeof parsed.cachedAt).toBe("number");
+    expect(typeof parsed.cachedAt).toBe('number');
   });
 });

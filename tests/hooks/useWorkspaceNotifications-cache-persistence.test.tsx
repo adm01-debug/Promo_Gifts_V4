@@ -6,31 +6,42 @@
  * so cacheAgeMs / elapsedMs / networkMs are reproducible to the millisecond
  * and the suite cannot flake on slow CI.
  */
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { renderHook, waitFor } from "@testing-library/react";
-import { installDeterministicClock, type DeterministicClock } from "../utils/deterministicTime";
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { renderHook, waitFor } from '@testing-library/react';
+import { installDeterministicClock, type DeterministicClock } from '../utils/deterministicTime';
 
 const limitMock = vi.fn();
 
-vi.mock("@/integrations/supabase/client", () => {
+vi.mock('@/integrations/supabase/client', () => {
   let lastData = [];
   const buildSelectChain = () => {
-    let headCount = false;
+    let countRequest = false;
     const chain = {};
-    for (const m of ["select", "eq", "order", "range", "gte", "limit"]) {
+    for (const m of ['select', 'eq', 'order', 'range', 'gte', 'limit']) {
       chain[m] = (...args) => {
-        if (m === "select" && args[1] && args[1].head) headCount = true;
-        if (m === "limit") return limitMock(...args);
+        if (m === 'select' && args[0] === 'id' && args[1]?.count === 'exact') {
+          countRequest = true;
+        }
+        if (m === 'limit') return limitMock(...args);
         return chain;
       };
     }
     chain.then = async (resolve, reject) => {
       try {
-        if (headCount) { resolve({ count: lastData.filter((n) => !n.is_read).length, error: null }); return; }
+        if (countRequest) {
+          resolve({
+            data: lastData.slice(0, 1),
+            count: lastData.filter((n) => !n.is_read).length,
+            error: null,
+          });
+          return;
+        }
         const base = await limitMock();
         lastData = (base && base.data) || [];
         resolve({ ...base, count: lastData.length });
-      } catch (e) { reject(e); }
+      } catch (e) {
+        reject(e);
+      }
     };
     return chain;
   };
@@ -43,8 +54,8 @@ vi.mock("@/integrations/supabase/client", () => {
   };
 });
 
-const STABLE_USER = { id: "user-cache-persistence-1" };
-vi.mock("@/contexts/AuthContext", () => ({
+const STABLE_USER = { id: 'user-cache-persistence-1' };
+vi.mock('@/contexts/AuthContext', () => ({
   useAuth: () => ({ user: STABLE_USER, rolesLoaded: true }),
 }));
 
@@ -55,14 +66,28 @@ const EPOCH = 1_700_000_000_000;
 
 const SEED = [
   {
-    id: "n1", user_id: STABLE_USER.id, title: "First", message: "Hello",
-    type: "info", category: "general", is_read: false, action_url: null,
-    metadata: { foo: "bar" }, created_at: "2024-01-01T00:00:00Z",
+    id: 'n1',
+    user_id: STABLE_USER.id,
+    title: 'First',
+    message: 'Hello',
+    type: 'info',
+    category: 'general',
+    is_read: false,
+    action_url: null,
+    metadata: { foo: 'bar' },
+    created_at: '2024-01-01T00:00:00Z',
   },
   {
-    id: "n2", user_id: STABLE_USER.id, title: "Second", message: "World",
-    type: "warning", category: "system", is_read: true, action_url: "/somewhere",
-    metadata: {}, created_at: "2024-01-02T00:00:00Z",
+    id: 'n2',
+    user_id: STABLE_USER.id,
+    title: 'Second',
+    message: 'World',
+    type: 'warning',
+    category: 'system',
+    is_read: true,
+    action_url: '/somewhere',
+    metadata: {},
+    created_at: '2024-01-02T00:00:00Z',
   },
 ];
 
@@ -71,30 +96,33 @@ let clock: DeterministicClock;
 
 beforeEach(() => {
   sessionStorage.clear();
-  localStorage.setItem("debug:notifications", "1");
+  localStorage.setItem('debug:notifications', '1');
   limitMock.mockReset();
-  consoleSpy = vi.spyOn(console, "info").mockImplementation(() => {});
+  consoleSpy = vi.spyOn(console, 'info').mockImplementation(() => {});
   clock = installDeterministicClock(EPOCH);
 });
 
 afterEach(() => {
   clock.uninstall();
   sessionStorage.clear();
-  localStorage.removeItem("debug:notifications");
+  localStorage.removeItem('debug:notifications');
   consoleSpy.mockRestore();
   vi.restoreAllMocks();
 });
 
 function findBadgeRenderLogs() {
   return consoleSpy.mock.calls
-    .filter((args) => typeof args[0] === "string" && (args[0] as string).includes("notifications.badge-render"))
+    .filter(
+      (args) =>
+        typeof args[0] === 'string' && (args[0] as string).includes('notifications.badge-render'),
+    )
     .map((args) => args[1] as Record<string, unknown>);
 }
 
 async function loadHookAndMetrics() {
   vi.resetModules();
-  const hookMod = await import("@/hooks/ui/useWorkspaceNotifications");
-  const metricsMod = await import("@/lib/notifications-metrics");
+  const hookMod = await import('@/hooks/ui/useWorkspaceNotifications');
+  const metricsMod = await import('@/lib/notifications-metrics');
   metricsMod.notificationsMetrics.reset();
   return {
     useWorkspaceNotifications: hookMod.useWorkspaceNotifications,
@@ -102,8 +130,8 @@ async function loadHookAndMetrics() {
   };
 }
 
-describe("useWorkspaceNotifications — deterministic cross-mount persistence", () => {
-  it("Mount #1 writes cachedAt=Date.now(); Mount #2 hydrates with exact cacheAgeMs", async () => {
+describe('useWorkspaceNotifications — deterministic cross-mount persistence', () => {
+  it('Mount #1 writes cachedAt=Date.now(); Mount #2 hydrates with exact cacheAgeMs', async () => {
     expect(sessionStorage.getItem(CACHE_KEY)).toBeNull();
     limitMock.mockResolvedValue({ data: SEED, error: null });
 
@@ -127,7 +155,7 @@ describe("useWorkspaceNotifications — deterministic cross-mount persistence", 
     expect(persisted.cachedAt).toBe(t0);
     expect(persisted.notifications).toHaveLength(SEED.length);
 
-    expect(metrics.snapshot().lastBadgeRender?.source).toBe("network");
+    expect(metrics.snapshot().lastBadgeRender?.source).toBe('network');
 
     first.unmount();
     metrics.reset();
@@ -142,7 +170,7 @@ describe("useWorkspaceNotifications — deterministic cross-mount persistence", 
       expect(second.result.current.notifications.length).toBe(SEED.length);
     });
 
-    const cacheLogs = findBadgeRenderLogs().filter((p) => p?.source === "cache");
+    const cacheLogs = findBadgeRenderLogs().filter((p) => p?.source === 'cache');
     expect(cacheLogs.length).toBeGreaterThanOrEqual(1);
 
     // cacheAgeMs is now PROVABLY 25 (no jitter possible).
@@ -150,20 +178,20 @@ describe("useWorkspaceNotifications — deterministic cross-mount persistence", 
     expect(cacheLogs[0].unreadCount).toBe(1);
 
     const snap = metrics.snapshot();
-    expect(snap.lastBadgeRender?.source).toBe("cache");
+    expect(snap.lastBadgeRender?.source).toBe('cache');
     expect(snap.lastBadgeRender?.cacheAgeMs).toBe(25);
     expect(snap.lastBadgeRender?.networkMs).toBeNull();
 
     second.unmount();
   });
 
-  it("Mount at EXACTLY CACHE_TTL_MS+1 falls back to network (boundary is deterministic)", async () => {
+  it('Mount at EXACTLY CACHE_TTL_MS+1 falls back to network (boundary is deterministic)', async () => {
     sessionStorage.setItem(
       CACHE_KEY,
       JSON.stringify({
         cachedAt: clock.now() - (CACHE_TTL_MS + 1),
         notifications: SEED,
-      })
+      }),
     );
     limitMock.mockResolvedValue({ data: SEED, error: null });
 
@@ -174,17 +202,17 @@ describe("useWorkspaceNotifications — deterministic cross-mount persistence", 
       expect(result.current.notifications.length).toBe(SEED.length);
     });
 
-    const cacheLogs = findBadgeRenderLogs().filter((p) => p?.source === "cache");
-    const networkLogs = findBadgeRenderLogs().filter((p) => p?.source === "network");
+    const cacheLogs = findBadgeRenderLogs().filter((p) => p?.source === 'cache');
+    const networkLogs = findBadgeRenderLogs().filter((p) => p?.source === 'network');
     expect(cacheLogs.length).toBe(0);
     expect(networkLogs.length).toBeGreaterThanOrEqual(1);
 
     // The fresh write-back must use the EXACT mocked Date.now().
-    const refreshed = JSON.parse(
-      sessionStorage.getItem(CACHE_KEY) as string
-    ) as { cachedAt: number };
+    const refreshed = JSON.parse(sessionStorage.getItem(CACHE_KEY) as string) as {
+      cachedAt: number;
+    };
     expect(refreshed.cachedAt).toBe(clock.now());
 
-    expect(metrics.snapshot().lastBadgeRender?.source).toBe("network");
+    expect(metrics.snapshot().lastBadgeRender?.source).toBe('network');
   });
 });
