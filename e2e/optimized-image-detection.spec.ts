@@ -16,24 +16,43 @@ test.describe('OptimizedImage Detection & Placeholders', () => {
     await expect(page.getByText('OptimizedImage Demo')).toBeVisible();
   });
 
-  test('should detect Cloudflare images and generate /thumbnail placeholder', async ({ page }) => {
-    // The "Cloudflare CDN" demo card renders an OptimizedImage whose root div
-    // carries data-detection-rule. Scope to it via the card image's unique alt
-    // ("Cloudflare CDN Demo") — the demo wrapper div is also relative/overflow-hidden,
-    // so a positional `.first()` on div.relative.overflow-hidden is ambiguous.
+  test('should detect Cloudflare images and request /thumbnail placeholder', async ({ page }) => {
+    // O host de demonstração é intencionalmente sintético. A imagem principal
+    // e o thumbnail podem falhar rápido e desmontar o placeholder antes de uma
+    // asserção DOM. O contrato estável é a URL que o browser efetivamente pede.
+    const thumbnailRequests: string[] = [];
+    page.on('request', (request) => {
+      try {
+        const url = new URL(request.url());
+        if (url.hostname === 'imagedelivery.net' && url.pathname.endsWith('/thumbnail')) {
+          thumbnailRequests.push(url.toString());
+        }
+      } catch {
+        // URLs não absolutas não fazem parte do contrato Cloudflare.
+      }
+    });
+
+    await page.setContent('<!doctype html><title>reset</title>');
+    await gotoAndSettle(page, DEMO_URL);
+
+    // BUG-OI-1 evita carregar thumbnails fora da viewport. O card precisa
+    // entrar em visão antes de esperarmos a requisição de placeholder.
     const container = page
       .locator('[data-detection-rule]')
       .filter({ has: page.locator('img[alt="Cloudflare CDN Demo"]') })
       .first();
-
     await expect(container).toHaveAttribute('data-detection-rule', 'cloudflare');
+    await container.scrollIntoViewIfNeeded();
+    await expect
+      .poll(() => thumbnailRequests.length, {
+        message: 'o card Cloudflare visível deve solicitar a variante /thumbnail',
+        timeout: 15_000,
+      })
+      .toBeGreaterThan(0);
 
-    const placeholderImg = container.locator('img[aria-hidden="true"]');
-    await expect(placeholderImg).toBeVisible();
-
-    const src = await placeholderImg.getAttribute('src');
-    expect(src).toContain('/thumbnail');
-    expect(src).not.toContain('/public');
+    const thumbnailUrl = thumbnailRequests[0];
+    expect(thumbnailUrl).toContain('/thumbnail');
+    expect(thumbnailUrl).not.toContain('/public');
   });
 
   test('should emit console.info only for debug mode or CF detection', async ({ page }) => {
