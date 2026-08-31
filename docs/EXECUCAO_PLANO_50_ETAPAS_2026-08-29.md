@@ -5,9 +5,12 @@
 > ⛔ bloqueada · ⚙️ condicional não acionada · ✅ concluída.
 > Regra: nenhum `[AUTORIZAÇÃO *]`/`[VALIDAÇÃO PO]` é dispensado sem aprovação registrada do PO.
 
-**Entrega da Onda 1:** PR #1806 (aberto) — branch `codex/actions-gates-20260829`, commits `87028e01a`,
-`96ddc6834`, `4de57455c`, `4d3ab77b3` e `e69b1848b` (2026-08-30). Aguardando
-`[VALIDAÇÃO PO]` dos 12 itens pendentes da matriz 001 antes do merge.
+**Entrega da Onda 1:** PR #1806 — branch `codex/actions-gates-20260829`, commits `87028e01a`,
+`96ddc6834`, `4de57455c`, `4d3ab77b3`, `e69b1848b` e `fa7804f73` (2026-08-30); **mergeado em
+2026-08-30T19:46:36Z** pelo PO (commit de merge `2b94f2bfa`, assinatura web-flow válida) com
+**10 arquivos alterados** (+743/−0 — o body do PR menciona 9; o plano-fonte também foi tocado).
+A validação dos 12 itens pendentes da matriz 001 não foi registrada em comentário antes do
+merge — segue como dívida de registro (os artefatos permanecem marcados RASCUNHO).
 
 **Revisão de cobertura de 30/08/2026:** 0 concluídas, 34 parciais, 4 não iniciadas,
 11 bloqueadas e 1 condicional não acionada. A matriz probatória completa está na seção
@@ -28,10 +31,10 @@
 | Etapa | Título canônico | Status | Evidência/gap dominante |
 |---|---|:---:|---|
 | 006 | Painel causal dos workflows históricos | ⬜ | não existe painel consolidado |
-| 007 | Catálogo de workflows | ⬜ | 107 workflows ainda sem classificação/owner integral |
+| 007 | Catálogo de workflows | ⬜ | universos distintos a reconciliar: **107 YAMLs versionados** em `.github/workflows/` (catálogo a classificar) × **113 registros ativos** na API Actions — delta de 6 sem arquivo: 1 estático órfão (`auto-regenerate-types.yml`, ativo na plataforma, arquivo removido do repo) + 5 workflows dinâmicos da plataforma (`dynamic/agents/copilot-pull-request-reviewer`, `dynamic/copilot-pull-request-reviewer/copilot-pull-request-reviewer`, `dynamic/copilot-swe-agent/copilot`, `dynamic/dependabot/dependabot-updates`, `dynamic/pages/pages-build-deployment`) |
 | 008 | Required check final de `main` | ⛔ | ruleset ativo sem nenhum status check obrigatório |
 | 009 | Previews Vercel | ⛔ | preview do PR #1806 falhou antes do build |
-| 010 | CodeQL e vulnerabilidades altas | 🟡 | CodeQL verde; dois alertas altos de `image-size` abertos |
+| 010 | CodeQL e vulnerabilidades altas | 🟡 | CodeQL workflow verde. Fotografia de 2026-08-30 ~22:00 UTC (Code Scanning API): **57 alertas abertos, 38 deles high** — exemplos, não inventário: #99 clear-text-logging de apiKey, #98/#38 insecure-randomness, #57 file-system-race; Dependabot: **2 high** em `image-size` (sem versão corrigida disponível) |
 | 011 | Fixtures críticas estáveis | 🟡 | fixtures pontuais, sem dataset integral por fluxo |
 | 012 | Baselines visuais críticos | 🟡 | shard 2/2: 1 falha, 9 flakes, 468 skips |
 | 013 | E2E + visual + a11y nas mesmas fixtures | 🟡 | cobertura existe, mas ainda fragmentada |
@@ -149,4 +152,58 @@ Evidência: Management API retornou PG17.6/usuário read-only; 13 migrations rec
   com as permissões declaradas.
 Autorizações: nenhuma para auditoria/documentação. Nenhum DDL, DML, deploy, setting ou segredo
   foi alterado.
+```
+
+```text
+Etapa: 001–005 — remediação pós-merge dos defeitos residuais da auditoria anti-falso-verde
+Data/agente: 2026-08-30 / Cline (branch claude/audit-fixes-20260830)
+Mudança: F1 — MAPA §5: "/comissoes coberto por smoke de redirect" era falso (nenhuma spec cobre;
+  registrado como lacuna). F5 — etapa 007: "107 workflows" → 113 (107 é o total de edge
+  functions). F3/G7 — este registro: PR #1806 mergeado em 19:46:36Z com 10 arquivos; estado
+  sincronizado. G4 — OWNERSHIP §1: "v0.1 da matriz" → v0.2 (o formato de 12 fluxos só existe
+  na v0.2; a v0.1 de 26/ago tem 9 fluxos). G5 — READINESS §3 e MAPA §1/§6: acrescentada a
+  edge pública magazine-public-react (reações anônimas por token) às superfícies do Magazine.
+  G1 — READINESS §3: Dropbox e Promo Champions não estão no CSP connect-src (consumo
+  server-side via dropbox-list / crm-db-bridge / receive-crm-callback). G8 — etapa 010:
+  acrescentados os alertas CodeQL high abertos à evidência. F2 — nota de contagem:
+  "34 marcas em 25 etapas" no body do PR usa a regra "43 marcas literais − 9 da tabela de
+  definições do plano-fonte"; regra agora explícita.
+Risco: baixo — docs-only; zero código/schema/workflow/settings.
+Rollback: git revert 2b04d5810a13add7eeb885e921711612188143c6 (commit desta remediação);
+  para o commit corretivo do handoff Codex, revert do próprio SHA registrado no log do PR #1808.
+Evidência: auditoria anti-falso-verde em sessão (30/ago/2026) — totais de sessão, NÃO
+  reproduzíveis a partir do diff (sem matriz versionada dos ~80 itens): 67 PASS / 3 FAIL /
+  6 GAP, contra fontes primárias (GitHub API, config.toml, vercel.json, ruleset,
+  Dependabot/CodeQL, probe live). Checks do PR #1808 na cabeça 2b04d5810: 83 = 72 success /
+  2 failure / 5 skipped / 2 neutral / 2 pending — as 2 falhas (quality-gate: invocação direta
+  em src/lib/analytics/intelligenceAnalytics.ts:162, migrar p/ invokeEdgeSafe; Smoke HTTP:
+  131/133 falhando com HTTP 500 em product-webhook/webhook-dispatcher/webhook-inbound) são
+  PREEXISTENTES, fora do escopo deste PR docs-only — PRs de código separados após decisão
+  do PO. Issue #1807 (migrate-helper): contenção técnica atual confirmada; remediação
+  operacional (rotação de credenciais + auditoria de logs) pendente do PO.
+Autorizações: nenhuma necessária (docs-only).
+```
+
+```text
+Etapa: 001–005 — correção do PR #1808 pós-auditoria independente (handoff Codex A1–A6)
+Data/agente: 2026-08-30 / Cline (branch claude/audit-fixes-20260830, commit corretivo)
+Mudança: A1 — etapa 007 distingue 107 YAMLs versionados × 113 registros ativos na API
+  Actions, com o delta dos 6 registros sem arquivo (1 órfão + 5 dinâmicos). A2 —
+  READINESS §3 e MAPA §6 reclassificam magazine-import-local como AUTENTICADA no
+  handler (Authorization + auth.getUser(), 401 sem usuário; verify_jwt=false no gateway
+  é compatibilidade HS256). A3 — MAPA §1/§6 e READINESS §3 separam três fronteiras:
+  anônima consumida (magazine-public-view), anônima sem caller (magazine-public-react,
+  com lacuna de integração/E2E) e handler-autenticada (import-local). A4 — rollback
+  determinístico: git revert 2b04d5810 (+ SHA próprio deste corretivo no log do PR).
+  A5 — etapa 010 com fotografia datada e fonte: 57 alertas Code Scanning abertos,
+  38 high (Code Scanning API, 30/ago ~22:00 UTC); Dependabot 2 high (image-size).
+  A6 — totais da auditoria qualificados como de sessão; checks do PR registrados com
+  causalidade; 2 falhas de CI declaradas fora de escopo.
+Risco: baixo — docs-only; nenhum código/schema/workflow/settings.
+Rollback: git revert do SHA deste commit (ver HEAD da branch no PR #1808).
+Evidência: git diff --check limpo; scripts de guarda (validate-supabase-config,
+  guard-canonical-project, check-docs-supabase-hosts) verdes; read-only GitHub:
+  107/113 + delta exato; sem caller para magazine-public-react; handler import-local
+  com 401 duplo; 38 high/57 open; checks 72/2/5/2/2 pending.
+Autorizações: nenhuma necessária (docs-only).
 ```
