@@ -23,6 +23,7 @@ import { buildPublicCorsHeaders, handleCorsPreflight } from "../_shared/cors.ts"
 import { createStructuredLogger } from "../_shared/structured-logger.ts";
 import { getOrCreateRequestId } from "../_shared/request-id.ts";
 import { constantTimeEqual } from "../_shared/dispatcher-auth.ts";
+import { fetchWithBreaker, CircuitOpenError, circuitOpenResponse } from "../_shared/external-fetch.ts";
 
 const CORS = buildPublicCorsHeaders();
 
@@ -79,7 +80,7 @@ async function sendSentry(
     fingerprint: ev.fingerprint,
   });
   const body = `${envelopeHeader}\n${itemHeader}\n${item}`;
-  const res = await fetch(url, {
+  const res = await fetchWithBreaker("sentry", url, {
     method: "POST",
     headers: {
       "Content-Type": "application/x-sentry-envelope",

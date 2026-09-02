@@ -55,7 +55,7 @@ export function ActiveIpsList() {
     setLoading(true);
     const { data, error } = await supabase
       .from('ip_access_control')
-      .select('*')
+      .select('id, ip_address, list_type, reason, expires_at, created_at, created_by')
       .order('created_at', { ascending: false });
     if (error) {
       toast({

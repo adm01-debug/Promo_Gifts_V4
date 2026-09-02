@@ -1,4 +1,5 @@
 import { getCorsHeaders } from "../_shared/cors.ts";
+import { fetchWithBreaker, CircuitOpenError, circuitOpenResponse } from "../_shared/external-fetch.ts";
 /**
  * Edge Function: send-transactional-email
  * Envia emails transacionais para eventos do sistema.
@@ -109,7 +110,7 @@ Deno.serve(async (req) => {
     }
 
     async function sendViaResend(apiKey: string, to: string, subj: string, htmlBody: string) {
-      const res = await fetch('https://api.resend.com/emails', {
+      const res = await fetchWithBreaker('resend', 'https://api.resend.com/emails', {
         method: 'POST',
         headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -291,17 +291,8 @@ Deno.serve(async (req: Request) => {
 
   try {
     // 1. Authentication
-    const bypassKey = Deno.env.get('SIMULATION_BYPASS_KEY');
-    const providedBypass = req.headers.get('X-Simulation-Bypass');
-
-    let auth;
-    if (bypassKey && providedBypass === bypassKey) {
-      console.log('Bypass authentication active');
-      userId = '00000000-0000-0000-0000-000000000000';
-    } else {
-      auth = await authenticateRequest(req);
-      userId = auth.userId;
-    }
+    const auth = await authenticateRequest(req);
+    userId = auth.userId;
 
     // 2. Bot protection
     const protection = await runBotProtection(

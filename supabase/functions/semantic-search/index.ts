@@ -7,6 +7,7 @@ import { callAiWithTracking, QuotaExceededError } from '../_shared/ai-usage.ts';
 import { z } from '../_shared/zod-validate.ts';
 import { rateLimiters, applyRateLimit } from '../_shared/rate-limiter.ts';
 import { runBotProtection } from '../_shared/bot-protection.ts';
+import { resolveCredential } from '../_shared/credentials.ts';
 
 // ========================================
 // AI CALL TIMEOUT GUARD (graceful degradation)
@@ -266,7 +267,9 @@ Deno.serve(async (req) => {
 
     // LOVABLE_API_KEY pode estar ausente (o router multi-provider e o caminho
     // primario). Nao lancamos mais — seguimos; se nada responder, cai no fallback.
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY") ?? "";
+    // BUG-016 FIX: usar resolveCredential (DB-first SSOT) em vez de Deno.env.get direto.
+    const { value: lovableApiKeyResolved } = await resolveCredential("LOVABLE_API_KEY");
+    const LOVABLE_API_KEY = lovableApiKeyResolved ?? "";
 
     const model = "google/gemini-2.5-flash";
 

@@ -10,6 +10,7 @@ import { safeErrorResponse } from "../_shared/error-response.ts";
 import { z } from '../_shared/zod-validate.ts';
 import { runBotProtection } from '../_shared/bot-protection.ts';
 import { requireAiApiKey } from '../_shared/ai-credentials.ts';
+import { fetchWithBreaker, CircuitOpenError, circuitOpenResponse } from '../_shared/external-fetch.ts';
 
 const PALETTE = [
   '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6',
@@ -86,7 +87,7 @@ Escolha o que melhor combina com o tema. Tag deve ser MARKETING, ex.: ONBOARDING
 
     const userPrompt = `Kit: "${name || 'sem nome'}"\nItens: ${itemList || 'nenhum'}\n${parsed.data.description ? `Descrição: ${parsed.data.description}` : ''}`;
 
-    const aiRes = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const aiRes = await fetchWithBreaker('lovable-ai', 'https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({

@@ -6,6 +6,7 @@ import { authenticateRequest, requireRole, authErrorResponse } from '../_shared/
 import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts';
 import { safeErrorFields } from '../_shared/log-safety.ts';
 import { requireAiApiKey } from '../_shared/ai-credentials.ts';
+import { fetchWithBreaker, CircuitOpenError, circuitOpenResponse } from '../_shared/external-fetch.ts';
 
 const ProductSchema = z.object({
   id: z.union([z.string(), z.number()]).transform(String),
@@ -102,7 +103,7 @@ ${products.map((p, i) => `${i + 1}. ${p.name} — R$ ${p.price.toFixed(2)} — e
 
 Considere preço, estoque, quantidade mínima, variedade de cores e disponibilidade. Use SOMENTE os nomes exatos passados acima ao indicar produtos.`;
 
-    const aiResp = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const aiResp = await fetchWithBreaker('lovable-ai', 'https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${LOVABLE_API_KEY}`,
