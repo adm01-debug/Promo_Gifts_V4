@@ -49,7 +49,7 @@ export const quoteService = {
     let query = supabase
       // rls-allow: escopo aplicado condicionalmente abaixo (self → seller_id; admin scope=all sem filtro); RLS reforça
       .from('quotes')
-      .select('*')
+      .select('id,quote_number,client_id,contact_id,client_name,client_email,client_phone,client_company,seller_id,status,payment_method,subtotal,discount_percent,discount_amount,total,valid_until,payment_terms,delivery_time,shipping_type,shipping_cost,notes,internal_notes,bitrix_deal_id,bitrix_quote_id,synced_to_bitrix,synced_at,client_response,client_response_at,client_response_notes,created_at,updated_at,sent_at')
       .order('created_at', { ascending: false })
       .limit(500);
 
@@ -70,12 +70,12 @@ export const quoteService = {
       supabase
         // rls-allow: lookup por id; RLS (can_access_quote) valida ownership
         .from('quotes')
-        .select('*')
+        .select('id,quote_number,client_id,contact_id,client_name,client_email,client_phone,client_company,seller_id,status,payment_method,subtotal,discount_percent,discount_amount,total,valid_until,payment_terms,delivery_time,shipping_type,shipping_cost,notes,internal_notes,bitrix_deal_id,bitrix_quote_id,synced_to_bitrix,synced_at,client_response,client_response_at,client_response_notes,created_at,updated_at,sent_at')
         .eq('id', quoteId)
         .single(),
       supabase
         .from('quote_items')
-        .select('*')
+        .select('id,quote_id,product_id,product_name,product_sku,product_image_url,quantity,unit_price,subtotal,color_name,color_hex,personalization_type,personalization_colors,personalization_price,personalization_notes,notes,display_order,sort_order,created_at,updated_at')
         .eq('quote_id', quoteId)
         .order('sort_order', { ascending: true }),
     ]);
@@ -89,7 +89,7 @@ export const quoteService = {
     if (itemIds.length > 0) {
       const { data: persData, error: pErr } = await supabase
         .from('quote_item_personalizations')
-        .select('*')
+        .select('id,quote_item_id,technique_id,technique_name,colors_count,positions_count,area_cm2,width_cm,height_cm,location_code,location_name,notes,personalized_quantity,unit_cost,setup_cost,total_cost,created_at,updated_at')
         .in('quote_item_id', itemIds);
       if (pErr) throw pErr;
       allPersonalizations = persData || [];
@@ -336,7 +336,7 @@ export const quoteService = {
     const { data: insertedItems, error: itemsErr } = await supabase
       .from('quote_items')
       .insert(itemsPayload)
-      .select('*');
+      .select('id');
 
     if (itemsErr) throw itemsErr;
 
