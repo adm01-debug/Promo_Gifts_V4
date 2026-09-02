@@ -38,6 +38,9 @@ export default defineConfig(({ mode }) => {
 
     build: {
       outDir: 'dist',
+      // Desabilita o polyfill de modulepreload (inline <script>) — elimina a necessidade
+      // de 'unsafe-inline' no script-src da CSP.
+      modulePreload: { polyfill: false },
       // Não gere source maps órfãos. O plugin de upload foi removido do
       // toolchain, então SENTRY_AUTH_TOKEN sozinho apenas colocava os .map no
       // deploy público e fazia o gate confundir código tree-shaken com runtime.
