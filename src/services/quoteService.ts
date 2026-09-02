@@ -75,7 +75,7 @@ export const quoteService = {
         .single(),
       supabase
         .from('quote_items')
-        .select('id,quote_id,product_id,product_name,product_sku,product_image_url,quantity,unit_price,subtotal,color_name,color_hex,personalization_type,personalization_colors,personalization_price,personalization_notes,notes,display_order,sort_order,created_at,updated_at')
+        .select('id,quote_id,product_id,product_name,product_sku,product_image_url,quantity,unit_price,subtotal,color_name,color_hex,personalization_config,personalization_cost,notes,sort_order,created_at,updated_at')
         .eq('quote_id', quoteId)
         .order('sort_order', { ascending: true }),
     ]);
