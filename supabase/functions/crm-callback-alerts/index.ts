@@ -24,6 +24,7 @@ import { createStructuredLogger } from "../_shared/structured-logger.ts";
 import { getOrCreateRequestId } from "../_shared/request-id.ts";
 import { constantTimeEqual } from "../_shared/dispatcher-auth.ts";
 import { fetchWithBreaker, CircuitOpenError, circuitOpenResponse } from "../_shared/external-fetch.ts";
+import { resolveCredential } from "../_shared/credentials.ts";
 
 const CORS = buildPublicCorsHeaders();
 
@@ -183,7 +184,7 @@ Deno.serve(async (req) => {
   log.info("crm_alerts_summary", summary);
 
   // 4) enviar para Sentry se severity > ok
-  const dsn = Deno.env.get("SENTRY_DSN_SERVER");
+  const { value: dsn } = await resolveCredential("SENTRY_DSN_SERVER");
   let sentry: any = { skipped: severity === "ok" ? "no_alert" : "no_dsn" };
   if (severity !== "ok" && dsn) {
     try {

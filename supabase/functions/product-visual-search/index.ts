@@ -285,7 +285,6 @@ Deno.serve(async (req: Request) => {
   }
 
   const requestId = getOrCreateRequestId(req);
-  const supabase = createServiceRoleClient();
 
   let userId: string | undefined;
 
@@ -293,6 +292,8 @@ Deno.serve(async (req: Request) => {
     // 1. Authentication
     const auth = await authenticateRequest(req);
     userId = auth.userId;
+
+    const supabase = createServiceRoleClient();
 
     // 2. Bot protection
     const protection = await runBotProtection(
@@ -322,7 +323,8 @@ Deno.serve(async (req: Request) => {
     }
 
     // 4. Model ID (can be passed in request or use default)
-    const modelId = Deno.env.get('ROBOFLOW_MODEL_ID') || DEFAULT_MODEL_ID;
+    const { value: resolvedModelId } = await resolveCredential('ROBOFLOW_MODEL_ID');
+    const modelId = resolvedModelId || DEFAULT_MODEL_ID;
 
     // 5. Input validation
     const InputSchema = z.object({

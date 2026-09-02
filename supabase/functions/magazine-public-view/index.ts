@@ -16,6 +16,7 @@ import { handleCorsPreflight, buildPublicCorsHeaders } from "../_shared/cors.ts"
 import { createStructuredLogger } from "../_shared/structured-logger.ts";
 import { getOrCreateRequestId } from "../_shared/request-id.ts";
 import { RateLimiter } from "../_shared/rate-limiter.ts";
+import { resolveCredential } from "../_shared/credentials.ts";
 
 const bodySchema = z.object({
   token: z.string().min(24).max(64).regex(/^[a-f0-9]+$/i, "token deve ser hexadecimal"),
@@ -31,8 +32,8 @@ function sha256Hex(input: string): Promise<string> {
 }
 
 // FIX R3: hash de IP feito na EDGE (Deno), nunca no Postgres — banco nunca vê IP cru nem salt
-async function hashIp(ip: string): Promise<string> {
-  const salt = Deno.env.get("MAGAZINE_IP_SALT") ?? "promo-gifts-v4-fallback-salt-2026";
+// salt é resolvido no handler (resolveCredential dentro do Deno.serve) e injetado aqui (FIX T34)
+function hashIp(ip: string, salt: string): Promise<string> {
   // Trunca IPv4 para /24 antes de hashear — reduz espaço de busca de brute-force (FIX M8)
   const truncated = ip.includes(".") ? ip.split(".").slice(0, 3).join(".") + ".0" : ip;
   return sha256Hex(truncated + salt);
@@ -78,8 +79,10 @@ Deno.serve(async (req) => {
     }
 
     const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    const { value: resolvedSalt } = await resolveCredential("MAGAZINE_IP_SALT");
+    const ipSalt = resolvedSalt ?? "promo-gifts-v4-fallback-salt-2026";
     const tokenHash = await sha256Hex(token);
-    const ipHash = await hashIp(ip);
+    const ipHash = await hashIp(ip, ipSalt);
 
     const { data: magazine, error } = await supabase
       .from("magazines")
