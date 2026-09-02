@@ -6,6 +6,7 @@
 import { useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { untypedRpc } from '@/lib/supabase-untyped';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { sanitizeError } from '@/lib/security/sanitize-error';
@@ -722,8 +723,7 @@ export function useSellerCarts() {
   const updateItemSortOrder = useMutation({
     mutationFn: async (items: { id: string; sort_order: number }[]) => {
       if (items.length === 0) return;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { error } = await (supabase.rpc as any)('fn_batch_update_cart_item_sort_order', {
+      const { error } = await untypedRpc('fn_batch_update_cart_item_sort_order', {
         p_updates: items,
       });
       if (error) throw error;

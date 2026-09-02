@@ -34,6 +34,7 @@ import {
   type AuthResult,
 } from "./auth.ts";
 import { authorizeCron } from "./dispatcher-auth.ts";
+import { getOrCreateRequestId, REQUEST_ID_HEADER } from "./request-id.ts";
 
 // ---------------------------------------------------------------------------
 // Tipos públicos
@@ -53,12 +54,28 @@ export interface EdgeContext {
   /** Presente apenas no modo 'jwt'. */
   user?: Pick<AuthResult, "userId" | "userRole" | "userRoles" | "localServiceClient">;
   corsHeaders: Record<string, string>;
+  /** Correlation ID — propagado do header X-Request-Id ou gerado na borda. */
+  requestId: string;
 }
 
 export type EdgeHandler = (
   req: Request,
   ctx: EdgeContext,
 ) => Promise<Response>;
+
+// ---------------------------------------------------------------------------
+// Helpers internos
+// ---------------------------------------------------------------------------
+
+/** Descrimina erros de auth lançados por authenticateRequest/requireRole. */
+interface HttpError { status: number; message?: string; }
+function isHttpError(err: unknown): err is HttpError {
+  return (
+    typeof err === "object" &&
+    err !== null &&
+    typeof (err as Record<string, unknown>).status === "number"
+  );
+}
 
 // ---------------------------------------------------------------------------
 // Factory
@@ -69,15 +86,21 @@ export function createEdge(
   handler: EdgeHandler,
 ): (req: Request) => Promise<Response> {
   return async (req: Request): Promise<Response> => {
+    // Correlation ID — propagado pelo cliente ou gerado aqui.
+    const requestId = getOrCreateRequestId(req);
+
     // CORS headers — modo public usa buildPublicCorsHeaders
     const corsHeaders =
       config.auth === "public"
         ? buildPublicCorsHeaders()
         : getCorsHeaders(req);
 
-    // Preflight OPTIONS — responde sempre
+    // Preflight OPTIONS — responde sempre (inclui X-Request-Id para correlação)
     if (req.method === "OPTIONS") {
-      return new Response(null, { headers: corsHeaders, status: 204 });
+      return new Response(null, {
+        headers: { ...corsHeaders, [REQUEST_ID_HEADER]: requestId },
+        status: 204,
+      });
     }
 
     try {
@@ -85,7 +108,7 @@ export function createEdge(
       if (config.auth === "jwt") {
         const auth = await authenticateRequest(req);
         if (config.role) requireRole(auth, config.role);
-        return await handler(req, { user: auth, corsHeaders });
+        return await handler(req, { user: auth, corsHeaders, requestId });
       }
 
       // ── Modo cron ─────────────────────────────────────────────────────────
@@ -96,22 +119,29 @@ export function createEdge(
           headerName: config.headerName ?? "x-cron-secret",
         });
         if (!result.ok) return result.response;
-        return await handler(req, { corsHeaders });
+        return await handler(req, { corsHeaders, requestId });
       }
 
       // ── Modo public ───────────────────────────────────────────────────────
-      return await handler(req, { corsHeaders });
+      return await handler(req, { corsHeaders, requestId });
 
     } catch (err) {
       // Erros lançados por authenticateRequest / requireRole (status + message)
-      if ((err as any)?.status) {
+      if (isHttpError(err)) {
         return authErrorResponse(err, corsHeaders);
       }
-      // Erros inesperados
-      console.error("[createEdge] unhandled error:", err);
+      // Erros inesperados — inclui requestId para correlação nos logs do cliente
+      console.error("[createEdge] unhandled error:", requestId, err);
       return new Response(
-        JSON.stringify({ error: "internal_error" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        JSON.stringify({ error: "internal_error", request_id: requestId }),
+        {
+          status: 500,
+          headers: {
+            ...corsHeaders,
+            "Content-Type": "application/json",
+            [REQUEST_ID_HEADER]: requestId,
+          },
+        },
       );
     }
   };
