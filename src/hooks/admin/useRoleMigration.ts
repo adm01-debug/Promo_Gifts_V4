@@ -62,7 +62,7 @@ export function useRoleMigration() {
     try {
       const { data, error } = await supabase
         .from('role_migration_batches')
-        .select('*')
+        .select('id, label, reason, initiated_by, dry_run, status, total_items, success_count, failed_count, skipped_count, started_at, finished_at, duration_ms, created_at')
         .order('created_at', { ascending: false })
         .limit(50);
       if (error) throw error;
@@ -105,7 +105,7 @@ export function useRoleMigration() {
   const fetchItems = useCallback(async (batchId: string): Promise<ItemRow[]> => {
     const { data, error } = await supabase
       .from('role_migration_items')
-      .select('*')
+      .select('id, batch_id, user_id, user_email, from_role, to_role, operation, status, error_message, duration_ms, processed_at')
       .eq('batch_id', batchId)
       .order('created_at', { ascending: true });
     if (error) throw error;

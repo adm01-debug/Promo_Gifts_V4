@@ -56,7 +56,7 @@ export function RecentAuditTable() {
     setLoading(true);
     const { data, error } = await supabase
       .from('admin_audit_log')
-      .select('*')
+      .select('id, user_id, action, resource_type, resource_id, details, ip_address, user_agent, created_at')
       .order('created_at', { ascending: false })
       .limit(50);
     if (error) {

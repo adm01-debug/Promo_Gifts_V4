@@ -156,19 +156,8 @@ Deno.serve(async (req) => {
 
   try {
     // 1. Authentication (sempre primeiro — AI calls são feitas depois)
-    // Bypass mechanism for simulations/tests
-    const bypassKey = Deno.env.get('SIMULATION_BYPASS_KEY');
-    const providedBypass = req.headers.get('X-Simulation-Bypass');
-
-    let auth;
-    if (bypassKey && providedBypass === bypassKey) {
-      console.log('Bypass authentication active');
-      userId = '00000000-0000-0000-0000-000000000000';
-      auth = { userId, localServiceClient: serviceClient };
-    } else {
-      auth = await authenticateRequest(req);
-      userId = auth.userId;
-    }
+    const auth = await authenticateRequest(req);
+    userId = auth.userId;
 
     const user = { id: userId };
 

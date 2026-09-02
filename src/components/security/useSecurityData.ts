@@ -83,7 +83,7 @@ export function useSecurityData(
     try {
       const { data: attempts } = await supabase
         .from('login_attempts')
-        .select('*')
+        .select('id, email, ip_address, success, failure_reason, user_agent, created_at')
         .eq('user_id', effectiveUserId)
         .order('created_at', { ascending: false })
         .limit(20);
@@ -98,7 +98,7 @@ export function useSecurityData(
 
       const { data: notifs } = await db
         .from('notifications')
-        .select('*')
+        .select('id, title, message, type, is_read, created_at')
         .eq('user_id', effectiveUserId)
         .eq('type', 'security')
         .order('created_at', { ascending: false })
