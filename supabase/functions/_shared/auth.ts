@@ -143,8 +143,9 @@ export function authErrorResponse(
   err: unknown,
   corsHeaders: Record<string, string>
 ): Response {
-  const status = (err as any)?.status || 500;
-  const message = (err as any)?.message || 'Erro de autenticação';
+  const e = err as Record<string, unknown>;
+  const status = typeof e?.status === 'number' ? e.status : 500;
+  const message = typeof e?.message === 'string' ? e.message : 'Erro de autenticação';
   return new Response(
     JSON.stringify({ error: message }),
     { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
