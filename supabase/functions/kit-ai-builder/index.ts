@@ -4,6 +4,7 @@ import { parseContract } from '../_shared/contracts/index.ts';
 import { KitAiBuilderSchemas } from '../_shared/contracts/schemas/kit-ai-builder.ts';
 import { safeErrorFields } from '../_shared/log-safety.ts';
 import { requireAiApiKey } from '../_shared/ai-credentials.ts';
+import { fetchWithBreaker, CircuitOpenError, circuitOpenResponse } from '../_shared/external-fetch.ts';
 // ============================================================
 // EDGE FUNCTION: kit-ai-builder
 // Recebe um prompt natural e devolve uma sugestão estruturada de kit
@@ -54,7 +55,7 @@ Receba a descrição do cliente e devolva sugestões objetivas de:
 - narrative: 1 frase vendedora explicando o conceito.
 Use português do Brasil. Seja conciso e prático.`;
 
-    const aiRes = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const aiRes = await fetchWithBreaker('lovable-ai', 'https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${LOVABLE_API_KEY}`,

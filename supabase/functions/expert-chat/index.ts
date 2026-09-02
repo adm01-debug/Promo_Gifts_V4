@@ -16,6 +16,7 @@ import { extractAndParseAIJSON, safeJson } from '../_shared/json-parser.ts';
 import { safeErrorFields } from '../_shared/log-safety.ts';
 import { assertSwitchEnabled } from '../_shared/kill_switch.ts';
 import { requireAiApiKey } from '../_shared/ai-credentials.ts';
+import { fetchWithBreaker, CircuitOpenError, circuitOpenResponse } from '../_shared/external-fetch.ts';
 
 // ============================================
 // SCHEMAS
@@ -165,7 +166,7 @@ MAPEAMENTO SEMÂNTICO (use para gerar synonyms):
 
 Seja GENEROSO nos sinônimos — quanto mais variações, melhor a busca.`;
 
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const response = await fetchWithBreaker('lovable-ai', 'https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${apiKey}`,

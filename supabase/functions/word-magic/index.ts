@@ -6,6 +6,7 @@ import { z } from '../_shared/zod-validate.ts';
 import { resolveCredential } from '../_shared/credentials.ts';
 import { createStructuredLogger } from '../_shared/structured-logger.ts';
 import { getOrCreateRequestId } from '../_shared/request-id.ts';
+import { fetchWithBreaker, CircuitOpenError, circuitOpenResponse } from '../_shared/external-fetch.ts';
 
 // ─── Constantes ─────────────────────────────────────────────────────────────────────────────
 
@@ -238,7 +239,7 @@ Deno.serve(async (req) => {
     let dsResponse!: Response;
     let generationMs = 0;
     try {
-      dsResponse = await fetch(DEEPSEEK_API_URL, {
+      dsResponse = await fetchWithBreaker('deepseek', DEEPSEEK_API_URL, {
         method:  'POST',
         headers: {
           'Authorization': `Bearer ${deepseekKey}`,

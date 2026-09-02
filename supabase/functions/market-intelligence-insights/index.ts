@@ -9,6 +9,7 @@ import { parseContract } from "../_shared/contracts/index.ts";
 import {
   MarketIntelligenceInsightsSchemas,
 } from "../_shared/contracts/schemas/market-intelligence-insights.ts";
+import { fetchWithBreaker, CircuitOpenError, circuitOpenResponse } from "../_shared/external-fetch.ts";
 
 const FUNCTION_NAME = "market-intelligence-insights";
 const CACHE_TTL_MS = 6 * 60 * 60 * 1000; // 6h
@@ -330,7 +331,7 @@ Deno.serve(async (req) => {
     const aiT0 = Date.now();
     const systemPrompt = `Você é analista comercial sênior. Gere insights ACIONÁVEIS e ESPECÍFICOS em pt-BR sobre o desempenho de vendas. Use números concretos do JSON fornecido. Seja direto: 1 frase por campo. Nunca invente dados. ${focusDirective(focus)}`;
 
-    const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const aiResp = await fetchWithBreaker("lovable-ai", "https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
