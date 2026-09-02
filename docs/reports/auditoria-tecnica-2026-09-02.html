@@ -1,0 +1,1694 @@
+<title>Auditoria Técnica — Promo Gifts V4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;450;500;600&display=swap">
+
+<style>
+  /* ── TOKENS ── */
+  :root {
+    --bg:       #0D1117;
+    --surface:  #161B27;
+    --card:     #1C2333;
+    --border:   #252D3D;
+    --border2:  #1E2537;
+    --accent:   #3B82F6;
+    --accent-d: #1D4ED8;
+    --text:     #E6EDF3;
+    --muted:    #7D8FA9;
+    --dim:      #4A5568;
+
+    --green:    #22C55E;
+    --yellow:   #F59E0B;
+    --red:      #EF4444;
+    --blue:     #60A5FA;
+
+    --green-bg: rgba(34,197,94,0.10);
+    --yellow-bg:rgba(245,158,11,0.10);
+    --red-bg:   rgba(239,68,68,0.10);
+    --blue-bg:  rgba(96,165,250,0.10);
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg:       #F0F4FF;
+      --surface:  #FFFFFF;
+      --card:     #F8FAFF;
+      --border:   #D8E2F3;
+      --border2:  #E5EDF8;
+      --text:     #0F172A;
+      --muted:    #64748B;
+      --dim:      #94A3B8;
+      --green-bg: rgba(34,197,94,0.08);
+      --yellow-bg:rgba(245,158,11,0.08);
+      --red-bg:   rgba(239,68,68,0.08);
+      --blue-bg:  rgba(96,165,250,0.08);
+    }
+  }
+  :root[data-theme="light"] {
+    --bg:       #F0F4FF;
+    --surface:  #FFFFFF;
+    --card:     #F8FAFF;
+    --border:   #D8E2F3;
+    --border2:  #E5EDF8;
+    --text:     #0F172A;
+    --muted:    #64748B;
+    --dim:      #94A3B8;
+    --green-bg: rgba(34,197,94,0.08);
+    --yellow-bg:rgba(245,158,11,0.08);
+    --red-bg:   rgba(239,68,68,0.08);
+    --blue-bg:  rgba(96,165,250,0.08);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    padding: 0 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 52px;
+    backdrop-filter: blur(12px);
+  }
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .topbar-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    background: var(--blue-bg);
+    border: 1px solid rgba(96,165,250,0.25);
+    padding: 3px 10px;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+  .topbar-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .overall-score {
+    display: flex;
+    align-items: baseline;
+    gap: 3px;
+  }
+  .overall-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--yellow);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .overall-denom {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .overall-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 28px 80px;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 48px 0 36px;
+    border-bottom: 1px solid var(--border2);
+    margin-bottom: 40px;
+  }
+  .hero-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .hero-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0 0 8px;
+    text-wrap: balance;
+    line-height: 1.2;
+  }
+  .hero-sub {
+    font-size: 15px;
+    color: var(--muted);
+    margin: 0 0 28px;
+  }
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .meta-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--dim);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .meta-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── INVENTORY ── */
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 8px;
+    margin-bottom: 48px;
+  }
+  .inv-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+  }
+  .inv-label {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 4px;
+  }
+  .inv-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .inv-value.small {
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  /* ── SCORECARD GRID ── */
+  .scorecard {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 6px;
+    margin-bottom: 56px;
+  }
+  .score-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    text-decoration: none;
+  }
+  .score-row:hover {
+    border-color: var(--accent);
+    background: var(--card);
+  }
+  .score-dim {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .score-dim .dim-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--dim);
+    margin-right: 6px;
+  }
+  .score-chip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 4px;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+  }
+  .chip-green  { color: var(--green);  background: var(--green-bg);  }
+  .chip-blue   { color: var(--blue);   background: var(--blue-bg);   }
+  .chip-yellow { color: var(--yellow); background: var(--yellow-bg); }
+  .chip-red    { color: var(--red);    background: var(--red-bg);    }
+
+  /* ── DIMENSION CARDS ── */
+  .dim-section {
+    margin-bottom: 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    scroll-margin-top: 64px;
+  }
+  .dim-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    background: var(--surface);
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+  }
+  .dim-header::-webkit-details-marker { display: none; }
+  .dim-header:hover { background: var(--card); }
+  .dim-num-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--dim);
+    width: 22px;
+    flex-shrink: 0;
+  }
+  .dim-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    flex: 1;
+  }
+  .dim-score-large {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 5px;
+    font-variant-numeric: tabular-nums;
+  }
+  .dim-chevron {
+    color: var(--dim);
+    font-size: 12px;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  details[open] .dim-chevron { transform: rotate(90deg); }
+
+  .dim-body {
+    padding: 0 20px 20px;
+    background: var(--card);
+    border-top: 1px solid var(--border2);
+  }
+  .dim-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 16px;
+  }
+  @media (max-width: 640px) { .dim-cols { grid-template-columns: 1fr; } }
+
+  .ev-block h4 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 8px;
+  }
+  .ev-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .ev-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 12.5px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .ev-list li .dot {
+    margin-top: 5px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot-green  { background: var(--green); }
+  .dot-red    { background: var(--red); }
+  .dot-yellow { background: var(--yellow); }
+
+  .gap-block {
+    margin-top: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    padding: 12px 16px;
+  }
+  .gap-block h4 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 8px;
+  }
+  .gap-block p {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* ── PESOS ── */
+  .weight-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .w-critical { background: rgba(239,68,68,0.15); color: var(--red); }
+  .w-high     { background: rgba(96,165,250,0.12); color: var(--blue); }
+  .w-normal   { background: rgba(125,143,169,0.12); color: var(--muted); }
+
+  /* ── ROADMAP ── */
+  .roadmap-section { margin-top: 56px; }
+  .roadmap-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .roadmap-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 18px;
+  }
+  .roadmap-card .onda {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border2);
+  }
+  .onda-qw  { color: #EF4444; }
+  .onda-s1  { color: #F59E0B; }
+  .onda-s2  { color: #3B82F6; }
+  .action-item {
+    display: flex;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border2);
+  }
+  .action-item:last-child { border-bottom: none; }
+  .action-rank {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--dim);
+    min-width: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .action-content {}
+  .action-title {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 2px;
+    line-height: 1.4;
+  }
+  .action-meta {
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin-right: 4px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── SUMMARY BAR ── */
+  .summary-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 48px 0 16px;
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .summary-score {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .summary-big {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--yellow);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .summary-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .summary-text {
+    flex: 1;
+    min-width: 200px;
+  }
+  .summary-text p {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.7;
+  }
+
+  /* ── PROGRESS BARS ── */
+  .progress-wrap { flex: 1; }
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+    font-size: 11px;
+  }
+  .progress-label {
+    width: 120px;
+    flex-shrink: 0;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .progress-bar-bg {
+    flex: 1;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+  .progress-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    width: 30px;
+    text-align: right;
+  }
+
+  hr.divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+  }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: var(--blue);
+  }
+</style>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="topbar-badge">Auditoria</span>
+    <span class="topbar-title">promo-gifts-v4 · doufsxqlfjyuvxuezpln</span>
+  </div>
+  <div class="topbar-right">
+    <div class="overall-score">
+      <div>
+        <div class="overall-label">Nota Geral</div>
+        <div style="display:flex;align-items:baseline;gap:3px;">
+          <span class="overall-num">7.8</span>
+          <span class="overall-denom">/10</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">Auditoria Técnica Exaustiva · 20 Dimensões · 2026-09-02</div>
+    <h1 class="hero-title">Promo Gifts V4</h1>
+    <p class="hero-sub">Catálogo B2B de brindes corporativos — React + TypeScript + Vite + Supabase PG17 + Vercel</p>
+    <div class="hero-meta">
+      <div class="meta-item">
+        <span class="meta-label">Projeto Supabase</span>
+        <span class="meta-value">doufsxqlfjyuvxuezpln</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Stack</span>
+        <span class="meta-value">React 18 · TS 5 · Vite · Supabase · Vercel</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Arquitetura DB</span>
+        <span class="meta-value">Medallion Bronze → Silver → Gold</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Auditor</span>
+        <span class="meta-value">Claude (Arquiteto Sênior + QA PhD)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- INVENTÁRIO -->
+  <div class="section-label">Fase 0 — Inventário do Sistema</div>
+  <div class="inventory-grid">
+    <div class="inv-card">
+      <div class="inv-label">Arquivos TS/TSX</div>
+      <div class="inv-value">2.553</div>
+    </div>
+    <div class="inv-card">
+      <div class="inv-label">Arquivos de Teste</div>
+      <div class="inv-value">1.832</div>
+    </div>
+    <div class="inv-card">
+      <div class="inv-label">Workflows CI</div>
+      <div class="inv-value">107</div>
+    </div>
+    <div class="inv-card">
+      <div class="inv-label">Edge Functions</div>
+      <div class="inv-value">107</div>
+    </div>
+    <div class="inv-card">
+      <div class="inv-label">Migrations SQL</div>
+      <div class="inv-value">1.686</div>
+    </div>
+    <div class="inv-card">
+      <div class="inv-label">Scripts NPM</div>
+      <div class="inv-value">200+</div>
+    </div>
+    <div class="inv-card">
+      <div class="inv-label">Nós no Grafo</div>
+      <div class="inv-value">33.090</div>
+    </div>
+    <div class="inv-card">
+      <div class="inv-label">Dependências</div>
+      <div class="inv-value">89 <span style="font-size:12px;color:var(--muted)">+27 dev</span></div>
+    </div>
+    <div class="inv-card">
+      <div class="inv-label">Supabase Projeto</div>
+      <div class="inv-value small">SUPABASE_-_GEST_O_DE_PRODUTOS</div>
+    </div>
+    <div class="inv-card">
+      <div class="inv-label">Deploy</div>
+      <div class="inv-value small">Vercel · main auto</div>
+    </div>
+  </div>
+
+  <!-- SCORECARD -->
+  <div class="section-label">Scorecard — 20 Dimensões</div>
+  <div class="scorecard">
+    <a class="score-row" href="#dim-1"><span class="score-dim"><span class="dim-num">01</span>Arquitetura</span><span class="score-chip chip-yellow">7.5</span></a>
+    <a class="score-row" href="#dim-2"><span class="score-dim"><span class="dim-num">02</span>Autenticação</span><span class="score-chip chip-blue">8.0</span></a>
+    <a class="score-row" href="#dim-3"><span class="score-dim"><span class="dim-num">03</span>Autorização</span><span class="score-chip chip-blue">8.0</span></a>
+    <a class="score-row" href="#dim-4"><span class="score-dim"><span class="dim-num">04</span>Banco de Dados</span><span class="score-chip chip-blue">8.0</span></a>
+    <a class="score-row" href="#dim-5"><span class="score-dim"><span class="dim-num">05</span>CI/CD</span><span class="score-chip chip-green">9.0</span></a>
+    <a class="score-row" href="#dim-6"><span class="score-dim"><span class="dim-num">06</span>Data Integrity</span><span class="score-chip chip-yellow">7.5</span></a>
+    <a class="score-row" href="#dim-7"><span class="score-dim"><span class="dim-num">07</span>Documentação</span><span class="score-chip chip-blue">8.0</span></a>
+    <a class="score-row" href="#dim-8"><span class="score-dim"><span class="dim-num">08</span>Infraestrutura</span><span class="score-chip chip-yellow">7.0</span></a>
+    <a class="score-row" href="#dim-9"><span class="score-dim"><span class="dim-num">09</span>Logging / Monitor.</span><span class="score-chip chip-blue">8.5</span></a>
+    <a class="score-row" href="#dim-10"><span class="score-dim"><span class="dim-num">10</span>Observabilidade</span><span class="score-chip chip-yellow">7.5</span></a>
+    <a class="score-row" href="#dim-11"><span class="score-dim"><span class="dim-num">11</span>Lógica de Negócio</span><span class="score-chip chip-yellow">7.5</span></a>
+    <a class="score-row" href="#dim-12"><span class="score-dim"><span class="dim-num">12</span>Manutenibilidade</span><span class="score-chip chip-yellow">7.0</span></a>
+    <a class="score-row" href="#dim-13"><span class="score-dim"><span class="dim-num">13</span>Operacionalidade</span><span class="score-chip chip-yellow">7.0</span></a>
+    <a class="score-row" href="#dim-14"><span class="score-dim"><span class="dim-num">14</span>Performance</span><span class="score-chip chip-yellow">7.5</span></a>
+    <a class="score-row" href="#dim-15"><span class="score-dim"><span class="dim-num">15</span>Qualidade Código</span><span class="score-chip chip-blue">8.0</span></a>
+    <a class="score-row" href="#dim-16"><span class="score-dim"><span class="dim-num">16</span>Segurança</span><span class="score-chip chip-blue">8.0</span></a>
+    <a class="score-row" href="#dim-17"><span class="score-dim"><span class="dim-num">17</span>Testes</span><span class="score-chip chip-blue">8.5</span></a>
+    <a class="score-row" href="#dim-18"><span class="score-dim"><span class="dim-num">18</span>Tipagem / Safety</span><span class="score-chip chip-blue">8.0</span></a>
+    <a class="score-row" href="#dim-19"><span class="score-dim"><span class="dim-num">19</span>Validação</span><span class="score-chip chip-yellow">7.5</span></a>
+    <a class="score-row" href="#dim-20"><span class="score-dim"><span class="dim-num">20</span>Operações (Proc.)</span><span class="score-chip chip-yellow">7.5</span></a>
+  </div>
+
+  <!-- SUMMARY BAR -->
+  <div class="summary-bar">
+    <div class="summary-score">
+      <div class="summary-big">7.8</div>
+      <div class="summary-label">/ 10 ponderado</div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-row">
+        <span class="progress-label">Crítico ×3</span>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:78.75%;background:var(--red);"></div></div>
+        <span class="progress-val" style="color:var(--red);">7.9</span>
+      </div>
+      <div class="progress-row">
+        <span class="progress-label">Alto ×2</span>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:80%;background:var(--blue);"></div></div>
+        <span class="progress-val" style="color:var(--blue);">8.0</span>
+      </div>
+      <div class="progress-row">
+        <span class="progress-label">Padrão ×1</span>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:77%;background:var(--yellow);"></div></div>
+        <span class="progress-val" style="color:var(--yellow);">7.7</span>
+      </div>
+    </div>
+    <div class="summary-text">
+      <p>Sistema <strong>acima da média de mercado</strong> para uma operação 1-dev. CI/CD e suíte de testes são destaques absolutos — difíceis de encontrar neste porte. Os gaps que bloqueiam o 9+ concentram em: observabilidade distribuída, CSP sem <code>unsafe-inline</code>, feature flags e <code>noUnusedLocals</code>.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- DIMENSÕES DETALHADAS -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="section-label">Fase 1 — Análise das 20 Dimensões</div>
+
+  <!-- DIM 1 -->
+  <details class="dim-section" id="dim-1" open>
+    <summary class="dim-header">
+      <span class="dim-num-badge">01</span>
+      <span class="dim-name">Arquitetura</span>
+      <span class="weight-tag w-high">Alto ×2</span>
+      <span class="dim-score-large chip-yellow">7.5 / 10</span>
+      <span class="dim-chevron">▶</span>
+    </summary>
+    <div class="dim-body">
+      <div class="dim-cols">
+        <div class="ev-block">
+          <h4>Positivo</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-green"></span>Feature-based src/: components, services, hooks, lib, types, contexts, pages, stores, routes — divisão clara</li>
+            <li><span class="dot dot-green"></span>Arquitetura Medallion Bronze→Silver→Gold no Supabase, separação de dados explícita</li>
+            <li><span class="dot dot-green"></span>ADRs documentados: <code>ADR_BITRIX_SYNC</code>, <code>ADR_BUNDLE_BASELINE</code>, <code>ADR_OBSERVABILIDADE_EDGE</code></li>
+            <li><span class="dot dot-green"></span>107 edge functions como camada backend — frontend nunca toca o banco diretamente</li>
+            <li><span class="dot dot-green"></span><code>src/logic/</code> separado para regras de negócio isoladas</li>
+            <li><span class="dot dot-green"></span>Services layer: quoteService, productService, orderService, authService</li>
+          </ul>
+        </div>
+        <div class="ev-block">
+          <h4>Gaps</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-red"></span>Graphify reporta 33.090 nós / 40.457 arestas — acoplamento elevado para o tamanho</li>
+            <li><span class="dot dot-red"></span>God nodes identificados: <code>MagazineEditorPage.tsx</code>, <code>QuoteItemsTable.tsx</code>, <code>ProductCard.tsx</code></li>
+            <li><span class="dot dot-yellow"></span>Sem boundary explícito de domínio (DDD) — módulos de catálogo, cotação e estoque compartilham camadas</li>
+            <li><span class="dot dot-yellow"></span>Sem dependency-graph automatizado para detectar ciclos de import (check:chunk-cycles existe mas manual)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="gap-block">
+        <h4>Para chegar a 10/10</h4>
+        <p>Quebrar os 3 god components identificados pelo Graphify (cada um em sub-componentes ≤ 200 linhas). Adicionar boundary explícito de domínio com barrel <code>index.ts</code> por módulo. Habilitar <code>check:chunk-cycles</code> como gate de CI. Documentar o grafo de dependências de módulos no ADR.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- DIM 2 -->
+  <details class="dim-section" id="dim-2">
+    <summary class="dim-header">
+      <span class="dim-num-badge">02</span>
+      <span class="dim-name">Autenticação</span>
+      <span class="weight-tag w-critical">Crítico ×3</span>
+      <span class="dim-score-large chip-blue">8.0 / 10</span>
+      <span class="dim-chevron">▶</span>
+    </summary>
+    <div class="dim-body">
+      <div class="dim-cols">
+        <div class="ev-block">
+          <h4>Positivo</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-green"></span>Supabase Auth com JWT e refresh automático</li>
+            <li><span class="dot dot-green"></span>MFA/2FA implementado: <code>useAuthMFA.ts</code> com AAL1/AAL2 e <code>step-up-verify</code> edge function</li>
+            <li><span class="dot dot-green"></span>Rate limiting via <code>check-login</code> edge function</li>
+            <li><span class="dot dot-green"></span>Audit trail: <code>log-login-attempt</code> edge function</li>
+            <li><span class="dot dot-green"></span>Detecção de novo dispositivo: <code>detect-new-device</code> edge function</li>
+            <li><span class="dot dot-green"></span><code>auth-fuzz-weekly.yml</code> — fuzzing semanal do fluxo de auth</li>
+            <li><span class="dot dot-green"></span><code>auth-stability.spec.ts</code> + <code>auth-session-recovery.spec.ts</code> em E2E</li>
+            <li><span class="dot dot-green"></span>Logging estruturado em todo fluxo de auth via <code>createClientLogger('auth.*')</code></li>
+          </ul>
+        </div>
+        <div class="ev-block">
+          <h4>Gaps</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-yellow"></span>MFA disponível mas não enforçado para roles administrativos — <code>hasMFA: false</code> é estado válido para admins</li>
+            <li><span class="dot dot-yellow"></span>Password policy: delegada ao Supabase sem documentação explícita dos parâmetros configurados</li>
+            <li><span class="dot dot-yellow"></span>Logout server-side: Supabase invalida o token mas não há revogação de sessões concorrentes visível</li>
+          </ul>
+        </div>
+      </div>
+      <div class="gap-block">
+        <h4>Para chegar a 10/10</h4>
+        <p>Enforce MFA obrigatório para roles <code>admin</code> e <code>editor</code> (verificar AAL no middleware de rota, não apenas disponibilizar). Documentar policy de senha no Supabase dashboard e no SECURITY.md. Adicionar endpoint de revogação de todas as sessões ativas do usuário.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- DIM 3 -->
+  <details class="dim-section" id="dim-3">
+    <summary class="dim-header">
+      <span class="dim-num-badge">03</span>
+      <span class="dim-name">Autorização</span>
+      <span class="weight-tag w-critical">Crítico ×3</span>
+      <span class="dim-score-large chip-blue">8.0 / 10</span>
+      <span class="dim-chevron">▶</span>
+    </summary>
+    <div class="dim-body">
+      <div class="dim-cols">
+        <div class="ev-block">
+          <h4>Positivo</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-green"></span>727 ocorrências de RLS/row level security nas migrations — cobertura ampla</li>
+            <li><span class="dot dot-green"></span>Edge functions dedicadas: <code>rls-audit</code>, <code>rls-integration-tests</code>, <code>rls-matrix-export</code></li>
+            <li><span class="dot dot-green"></span><code>verify_rls_policies.sql</code> migration que verifica integridade das policies</li>
+            <li><span class="dot dot-green"></span>E2E: <code>rbac-navigation.spec.ts</code>, <code>rbac-crud-uploads.spec.ts</code></li>
+            <li><span class="dot dot-green"></span>CODEOWNERS protege arquivos críticos exigindo review de <code>@adm01-debug</code></li>
+            <li><span class="dot dot-green"></span><code>check:secdef-anon</code> CI gate — detecta SECURITY DEFINER exposto ao anon</li>
+            <li><span class="dot dot-green"></span>Gate CI: <code>check:lint-0029</code> (SECURITY DEFINER exec) e <code>check:lint-0011</code> (search_path)</li>
+          </ul>
+        </div>
+        <div class="ev-block">
+          <h4>Gaps</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-red"></span>Modelo RBAC não documentado explicitamente — roles e suas permissões não em um ADR</li>
+            <li><span class="dot dot-yellow"></span>Autorização em nível de campo (column-level security) não verificada</li>
+            <li><span class="dot dot-yellow"></span>Audit trail de ações sensíveis: não há <code>audit_log</code> centralizado visível no schema</li>
+          </ul>
+        </div>
+      </div>
+      <div class="gap-block">
+        <h4>Para chegar a 10/10</h4>
+        <p>Criar ADR documentando o modelo RBAC com mapa explícito de role → permissions → tabelas. Implementar tabela <code>audit_log</code> com trigger para operações DML em tabelas críticas (quotes, orders, users). Adicionar teste negativo no <code>rls-matrix-export</code> cobrindo column-level access.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- DIM 4 -->
+  <details class="dim-section" id="dim-4">
+    <summary class="dim-header">
+      <span class="dim-num-badge">04</span>
+      <span class="dim-name">Banco de Dados</span>
+      <span class="weight-tag w-high">Alto ×2</span>
+      <span class="dim-score-large chip-blue">8.0 / 10</span>
+      <span class="dim-chevron">▶</span>
+    </summary>
+    <div class="dim-body">
+      <div class="dim-cols">
+        <div class="ev-block">
+          <h4>Positivo</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-green"></span>1.686 migrations versionadas com naming convention date-based</li>
+            <li><span class="dot dot-green"></span><code>NUMERIC</code> para todos os preços financeiros (não FLOAT) — evidenciado em 10+ migrations</li>
+            <li><span class="dot dot-green"></span>Índices gerenciados ativamente: <code>products_indexes_8_drop_dead_indexes</code> — limpeza proativa</li>
+            <li><span class="dot dot-green"></span>RLS em cobertura ampla, policies verificadas no CI</li>
+            <li><span class="dot dot-green"></span><code>db-schema-drift-check.yml</code> workflow detecta divergência entre schema esperado e real</li>
+            <li><span class="dot dot-green"></span>Constraints de qualidade: <code>products_quality_10_sku_promo_constraint</code>, <code>is_deleted_hardening</code></li>
+            <li><span class="dot dot-green"></span>Supabase gerencia connection pooling e SSL automaticamente</li>
+          </ul>
+        </div>
+        <div class="ev-block">
+          <h4>Gaps</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-red"></span>1.686 migrations = drift acumulado significativo; sem migrations de rollback (down scripts)</li>
+            <li><span class="dot dot-yellow"></span>Mode do connection pooler (transaction vs session) não documentado — impacta prepared statements</li>
+            <li><span class="dot dot-yellow"></span>Sem seed data para ambiente dev — cada dev recria dados manualmente</li>
+            <li><span class="dot dot-yellow"></span>Backup cross-region ou teste de restore não documentado explicitamente</li>
+          </ul>
+        </div>
+      </div>
+      <div class="gap-block">
+        <h4>Para chegar a 10/10</h4>
+        <p>Documentar modo do Supabase pooler (transaction mode) e suas implicações em <code>SUPABASE_CONNECTION.md</code>. Criar <code>supabase/seeds/</code> com fixtures para dev. Adicionar test de restore mensal documentado no runbook. Para as próximas migrations, adicionar seção de rollback comentada.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- DIM 5 -->
+  <details class="dim-section" id="dim-5">
+    <summary class="dim-header">
+      <span class="dim-num-badge">05</span>
+      <span class="dim-name">CI/CD</span>
+      <span class="weight-tag w-normal">Padrão ×1</span>
+      <span class="dim-score-large chip-green">9.0 / 10</span>
+      <span class="dim-chevron">▶</span>
+    </summary>
+    <div class="dim-body">
+      <div class="dim-cols">
+        <div class="ev-block">
+          <h4>Positivo</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-green"></span>107 workflows — pipeline mais maduro que a maioria das startups com 10× mais devs</li>
+            <li><span class="dot dot-green"></span>Gate 0: SSOT Supabase bloqueia todos os outros gates se falhar</li>
+            <li><span class="dot dot-green"></span>Gate 1-6: Lint+TS → Unit → E2E smoke → Lighthouse (perf≥75, a11y≥90, seo≥95) → SEO → Build</li>
+            <li><span class="dot dot-green"></span>Pre-commit hooks: lint-staged + lockfile check + ESLint config parse + SSOT validation</li>
+            <li><span class="dot dot-green"></span>CodeRabbit para revisão automática de PR</li>
+            <li><span class="dot dot-green"></span>Dependabot configurado + <code>codeql.yml</code> (static security analysis)</li>
+            <li><span class="dot dot-green"></span>Branch protection com CODEOWNERS e required checks via <code>required-checks.json</code></li>
+            <li><span class="dot dot-green"></span><code>auth-fuzz-weekly.yml</code> — segurança ativa semanal</li>
+            <li><span class="dot dot-green"></span>Semantic commits enforçados no CONTRIBUTING.md</li>
+          </ul>
+        </div>
+        <div class="ev-block">
+          <h4>Gaps</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-yellow"></span>Lighthouse gate perf≥75 é conservador — state-of-the-art é ≥90</li>
+            <li><span class="dot dot-yellow"></span>107 workflows = surface de manutenção alta; sem inventário de workflows ativos vs. obsoletos</li>
+            <li><span class="dot dot-yellow"></span>Rollback procedure: Vercel faz isso mas não há runbook documentado no repo</li>
+            <li><span class="dot dot-yellow"></span>Sem semantic versioning automatizado (CHANGELOG manual)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="gap-block">
+        <h4>Para chegar a 10/10</h4>
+        <p>Elevar gate Lighthouse de perf≥75 para ≥85. Criar <code>docs/runbook-rollback.md</code> com procedimento de rollback Vercel. Adicionar <code>release-please</code> ou similar para semantic versioning automático. Auditar os 107 workflows e arquivar os não ativados há &gt;90 dias.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- DIM 6 -->
+  <details class="dim-section" id="dim-6">
+    <summary class="dim-header">
+      <span class="dim-num-badge">06</span>
+      <span class="dim-name">Data Integrity</span>
+      <span class="weight-tag w-critical">Crítico ×3</span>
+      <span class="dim-score-large chip-yellow">7.5 / 10</span>
+      <span class="dim-chevron">▶</span>
+    </summary>
+    <div class="dim-body">
+      <div class="dim-cols">
+        <div class="ev-block">
+          <h4>Positivo</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-green"></span>NUMERIC(12,2) para preços — sem risco de arredondamento float em cálculos financeiros</li>
+            <li><span class="dot dot-green"></span>Zod em 63 arquivos — validação runtime em inputs críticos</li>
+            <li><span class="dot dot-green"></span>RLS garante integridade de acesso a nível de linha</li>
+            <li><span class="dot dot-green"></span>Constraints explícitas: SKU único, is_deleted hardening, NOT NULL nas colunas críticas</li>
+            <li><span class="dot dot-green"></span>Padrão upsert com constraint UNIQUE para deduplicação em ingestões</li>
+            <li><span class="dot dot-green"></span>UTF-8 em todo o pipeline</li>
+          </ul>
+        </div>
+        <div class="ev-block">
+          <h4>Gaps</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-red"></span>Transações atômicas multi-tabela: sem evidência de BEGIN/COMMIT explícito no service layer — operações de quote podem ser parcialmente aplicadas</li>
+            <li><span class="dot dot-red"></span>Optimistic locking: sem versioning/ETag em cart e quote — race conditions possíveis em edição simultânea</li>
+            <li><span class="dot dot-yellow"></span>Política de soft delete vs hard delete não documentada — mistura de <code>is_deleted</code> e DELETE real</li>
+            <li><span class="dot dot-yellow"></span>Idempotência de webhooks: não evidenciada (retry pode duplicar dados)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="gap-block">
+        <h4>Para chegar a 10/10</h4>
+        <p>Encapsular operações multi-tabela (quote + items + personalization) em funções PG com transação explícita. Adicionar coluna <code>version INTEGER</code> nas tabelas de quote/cart e validar no UPDATE (optimistic lock). Documentar política de soft delete no CLAUDE.md. Adicionar <code>idempotency_key</code> em endpoints de webhook.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- DIM 7 -->
+  <details class="dim-section" id="dim-7">
+    <summary class="dim-header">
+      <span class="dim-num-badge">07</span>
+      <span class="dim-name">Documentação</span>
+      <span class="weight-tag w-normal">Padrão ×1</span>
+      <span class="dim-score-large chip-blue">8.0 / 10</span>
+      <span class="dim-chevron">▶</span>
+    </summary>
+    <div class="dim-body">
+      <div class="dim-cols">
+        <div class="ev-block">
+          <h4>Positivo</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-green"></span>README.md extenso (38KB), CONTRIBUTING.md, CLAUDE.md detalhado para AI-first workflow</li>
+            <li><span class="dot dot-green"></span>ADRs: <code>ADR_BITRIX_SYNC</code>, <code>ADR_BUNDLE_BASELINE</code>, <code>ADR_OBSERVABILIDADE_EDGE</code>, <code>ADR_WEBHOOK_INBOUND</code> etc.</li>
+            <li><span class="dot dot-green"></span>SCHEMA_REFERENCE.md com queries canônicas via pg_catalog</li>
+            <li><span class="dot dot-green"></span>CHANGELOG.md + múltiplos AUDITORIA docs históricos</li>
+            <li><span class="dot dot-green"></span>docs/04_EXPLICACAO_DAS_POLICIES.md — explicação de RLS para o domínio</li>
+            <li><span class="dot dot-green"></span>SECURITY.md + ACCESSIBILITY.md + API.md</li>
+          </ul>
+        </div>
+        <div class="ev-block">
+          <h4>Gaps</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-red"></span>Sem especificação OpenAPI/Swagger para as 107 edge functions — consumidor das funções não tem contrato formal</li>
+            <li><span class="dot dot-yellow"></span>Diagrama ER: não encontrado (SCHEMA_REFERENCE existe mas sem visual)</li>
+            <li><span class="dot dot-yellow"></span>Runbook operacional (deploy, rollback, incidente) não em local único e rastreável</li>
+            <li><span class="dot dot-yellow"></span>Dicionário de dados: campos de negócio mapeados parcialmente — UF_CRM_* do Bitrix24 sem mapeamento explícito</li>
+          </ul>
+        </div>
+      </div>
+      <div class="gap-block">
+        <h4>Para chegar a 10/10</h4>
+        <p>Gerar OpenAPI spec para as edge functions principais (<code>quote-sync</code>, <code>webhook-inbound</code>, <code>cnpj-lookup</code>) via contratos Zod já existentes. Adicionar diagrama ER como SVG em <code>docs/</code> gerado pelo Supabase ou dbdiagram.io. Criar <code>docs/runbook.md</code> consolidado com seções de deploy, rollback e incidente.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- DIM 8 -->
+  <details class="dim-section" id="dim-8">
+    <summary class="dim-header">
+      <span class="dim-num-badge">08</span>
+      <span class="dim-name">Infraestrutura / DevOps</span>
+      <span class="weight-tag w-normal">Padrão ×1</span>
+      <span class="dim-score-large chip-yellow">7.0 / 10</span>
+      <span class="dim-chevron">▶</span>
+    </summary>
+    <div class="dim-body">
+      <div class="dim-cols">
+        <div class="ev-block">
+          <h4>Positivo</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-green"></span>Vercel com SSL auto-managed + CDN global embutido</li>
+            <li><span class="dot dot-green"></span>Cloudflare Images / imagedelivery.net para assets de imagem</li>
+            <li><span class="dot dot-green"></span>HSTS com preload e includeSubDomains (max-age=31536000)</li>
+            <li><span class="dot dot-green"></span>.env.example como referência canônica documentada e protegida por CODEOWNERS</li>
+            <li><span class="dot dot-green"></span>DB não acessível publicamente — Supabase gerencia isolamento de rede</li>
+            <li><span class="dot dot-green"></span><code>health-check</code> edge function para monitoramento ativo</li>
+          </ul>
+        </div>
+        <div class="ev-block">
+          <h4>Gaps</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-red"></span>Sem Infrastructure as Code — VPS (N8N, Evolution, RabbitMQ, MinIO) não tem IaC; configuração é tribal knowledge</li>
+            <li><span class="dot dot-red"></span>Sem ambiente de staging explícito — só prod e dev local</li>
+            <li><span class="dot dot-yellow"></span>Disaster Recovery: sem DR plan documentado e testado</li>
+            <li><span class="dot dot-yellow"></span>Backup cross-region: Supabase faz backups mas não há evidência de teste de restore periódico</li>
+          </ul>
+        </div>
+      </div>
+      <div class="gap-block">
+        <h4>Para chegar a 10/10</h4>
+        <p>Criar Ansible playbook ou Docker Compose + scripts de provisioning para a VPS (N8N, Evolution, RabbitMQ). Adicionar branch de staging no Supabase e ambiente de preview no Vercel. Documentar e agendar teste de restore semestral. Criar <code>docs/disaster-recovery.md</code> com RPO e RTO definidos.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- DIM 9 -->
+  <details class="dim-section" id="dim-9">
+    <summary class="dim-header">
+      <span class="dim-num-badge">09</span>
+      <span class="dim-name">Logging / Monitoring</span>
+      <span class="weight-tag w-normal">Padrão ×1</span>
+      <span class="dim-score-large chip-blue">8.5 / 10</span>
+      <span class="dim-chevron">▶</span>
+    </summary>
+    <div class="dim-body">
+      <div class="dim-cols">
+        <div class="ev-block">
+          <h4>Positivo</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-green"></span>Logger estruturado JSON com <code>createClientLogger(scope)</code> — campos padronizados: ts, level, scope, request_id, event</li>
+            <li><span class="dot dot-green"></span>Sentry integrado: WARN → captureMessage, ERROR → captureException com request_id como tag</li>
+            <li><span class="dot dot-green"></span>Request ID propagado entre frontend e edge functions via header</li>
+            <li><span class="dot dot-green"></span>Console strippado em prod via Vite <code>manualPureFunctions</code></li>
+            <li><span class="dot dot-green"></span>CSP violation reporting via report-uri.com — detecta injeções em produção</li>
+            <li><span class="dot dot-green"></span><code>check:toast-leaks</code> CI gate — previne PII em toasts de UI</li>
+            <li><span class="dot dot-green"></span><code>check:client-structured-logging</code> CI gate</li>
+            <li><span class="dot dot-green"></span>Logger com <code>.child(subScope)</code> para correlação hierárquica</li>
+          </ul>
+        </div>
+        <div class="ev-block">
+          <h4>Gaps</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-yellow"></span>Uptime monitoring externo (Uptime Robot, Better Stack) não evidenciado no repo</li>
+            <li><span class="dot dot-yellow"></span>Retenção de logs: não documentada — Sentry tem limite por plano</li>
+            <li><span class="dot dot-yellow"></span>Alertas automáticos por threshold (error rate, latência P99): não configurados visivelmente</li>
+            <li><span class="dot dot-yellow"></span>Dashboard de métricas de negócio: não encontrado</li>
+          </ul>
+        </div>
+      </div>
+      <div class="gap-block">
+        <h4>Para chegar a 10/10</h4>
+        <p>Adicionar uptime monitor externo (Better Stack gratuito) para a URL de produção e as principais edge functions. Configurar alert no Sentry para error rate &gt; 1% em janela de 5 minutos. Documentar política de retenção de logs. Criar dashboard de métricas de negócio (pedidos/hora, cotações/dia) no Supabase SQL.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- DIM 10 -->
+  <details class="dim-section" id="dim-10">
+    <summary class="dim-header">
+      <span class="dim-num-badge">10</span>
+      <span class="dim-name">Observabilidade</span>
+      <span class="weight-tag w-normal">Padrão ×1</span>
+      <span class="dim-score-large chip-yellow">7.5 / 10</span>
+      <span class="dim-chevron">▶</span>
+    </summary>
+    <div class="dim-body">
+      <div class="dim-cols">
+        <div class="ev-block">
+          <h4>Positivo</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-green"></span>Pilar Logs: JSON estruturado com request_id, escopo, Sentry</li>
+            <li><span class="dot dot-green"></span>Pilar Métricas: Lighthouse CI (LCP, CLS, FID monitorados por gate)</li>
+            <li><span class="dot dot-green"></span><code>check:observability</code> script de CI</li>
+            <li><span class="dot dot-green"></span><code>ADR_OBSERVABILIDADE_EDGE_CONTRATOS</code> e <code>ADR_PIPELINE_HEALTH_CONTRATO</code></li>
+            <li><span class="dot dot-green"></span>telemetryService.ts com abstração para envio de eventos</li>
+            <li><span class="dot dot-green"></span>CSP report-uri como canal de observabilidade de segurança</li>
+          </ul>
+        </div>
+        <div class="ev-block">
+          <h4>Gaps</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-red"></span>Pilar Traces: sem distributed tracing (OpenTelemetry) — impossível rastrear uma requisição de cotação do frontend até o Bitrix24</li>
+            <li><span class="dot dot-red"></span>SLOs/SLIs: não definidos — sem threshold de disponibilidade documentado</li>
+            <li><span class="dot dot-yellow"></span>Métricas RED (Rate, Errors, Duration) por endpoint: não instrumentadas</li>
+            <li><span class="dot dot-yellow"></span>Feature flags: sem sistema — rollback de feature requer redeploy</li>
+          </ul>
+        </div>
+      </div>
+      <div class="gap-block">
+        <h4>Para chegar a 10/10</h4>
+        <p>Implementar OpenTelemetry no frontend e nas edge functions críticas (<code>quote-sync</code>, <code>webhook-inbound</code>) para rastrear o caminho completo. Definir SLOs: disponibilidade ≥99.5%, P99 latência de quote &lt; 2s. Avaliar PostHog ou similar para feature flags sem infraestrutura adicional.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- DIM 11 -->
+  <details class="dim-section" id="dim-11">
+    <summary class="dim-header">
+      <span class="dim-num-badge">11</span>
+      <span class="dim-name">Lógica de Negócio</span>
+      <span class="weight-tag w-normal">Padrão ×1</span>
+      <span class="dim-score-large chip-yellow">7.5 / 10</span>
+      <span class="dim-chevron">▶</span>
+    </summary>
+    <div class="dim-body">
+      <div class="dim-cols">
+        <div class="ev-block">
+          <h4>Positivo</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-green"></span>Services layer isolado: quoteService, productService, orderService, magazineService</li>
+            <li><span class="dot dot-green"></span><code>src/logic/</code> com lógica de negócio separada de componentes</li>
+            <li><span class="dot dot-green"></span>NUMERIC para cálculos financeiros — sem float math</li>
+            <li><span class="dot dot-green"></span>Timezone-aware: <code>TZ=America/Sao_Paulo</code> enforçado nos testes e no Vitest</li>
+            <li><span class="dot dot-green"></span>Zod para validação de regras de negócio em runtime</li>
+            <li><span class="dot dot-green"></span>Cálculos de frete e replenishment com suítes de teste dedicadas</li>
+          </ul>
+        </div>
+        <div class="ev-block">
+          <h4>Gaps</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-red"></span>State machines de entidades (status de cotação, status de pedido) sem modelagem explícita — XState ou máquina manual documentada</li>
+            <li><span class="dot dot-yellow"></span>Regras de negócio parcialmente em componentes — QuoteItemsTable como god node sugere lógica não isolada</li>
+            <li><span class="dot dot-yellow"></span>Linguagem ubíqua: nomenclatura código vs. negócio nem sempre alinhada (supplier_products_raw vs. terminologia do vendedor)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="gap-block">
+        <h4>Para chegar a 10/10</h4>
+        <p>Documentar state machine de cotação (rascunho → revisão → aprovado → enviado → fechado) como diagrama e como enum tipado no TypeScript. Extrair lógica de cálculo de QuoteItemsTable para <code>src/logic/quote/</code>. Criar glossário de termos de negócio mapeado para entidades de código.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- DIM 12 -->
+  <details class="dim-section" id="dim-12">
+    <summary class="dim-header">
+      <span class="dim-num-badge">12</span>
+      <span class="dim-name">Manutenibilidade</span>
+      <span class="weight-tag w-normal">Padrão ×1</span>
+      <span class="dim-score-large chip-yellow">7.0 / 10</span>
+      <span class="dim-chevron">▶</span>
+    </summary>
+    <div class="dim-body">
+      <div class="dim-cols">
+        <div class="ev-block">
+          <h4>Positivo</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-green"></span>ESLint com 98KB de config — regras extensas e customizadas para o projeto</li>
+            <li><span class="dot dot-green"></span>Prettier configurado, lint-staged no pre-commit</li>
+            <li><span class="dot dot-green"></span><code>.tsc-baseline.json</code> — zero regressão de erros TS como gate</li>
+            <li><span class="dot dot-green"></span><code>.any-type-baseline.json</code> — dívida de <code>any</code> rastreada (não invisível)</li>
+            <li><span class="dot dot-green"></span><code>.eslint-baseline.json</code> — abordagem de ratchet: sem piora permitida</li>
+            <li><span class="dot dot-green"></span>Conventional commits + PR template com CodeRabbit</li>
+          </ul>
+        </div>
+        <div class="ev-block">
+          <h4>Gaps</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-red"></span><code>noUnusedLocals: false</code> e <code>noUnusedParameters: false</code> — dead code acumulado silenciosamente</li>
+            <li><span class="dot dot-red"></span>95 ocorrências de <code>as any</code> + 18 de <code>: any</code> — débito de tipo relevante</li>
+            <li><span class="dot dot-yellow"></span>God nodes no Graphify sugerem complexidade ciclomática elevada em componentes chave</li>
+            <li><span class="dot dot-yellow"></span>Dependências: 89 dependências de produção é alto — risco de supply chain e update burden</li>
+          </ul>
+        </div>
+      </div>
+      <div class="gap-block">
+        <h4>Para chegar a 10/10</h4>
+        <p>Habilitar <code>noUnusedLocals: true</code> e <code>noUnusedParameters: true</code> no tsconfig (inicialmente como warning via baseline). Criar task de redução dos 95 <code>as any</code> — sprint dedicado de type hardening. Adicionar <code>complexity</code> rule no ESLint com máximo 15 por função.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- DIM 13 -->
+  <details class="dim-section" id="dim-13">
+    <summary class="dim-header">
+      <span class="dim-num-badge">13</span>
+      <span class="dim-name">Operacionalidade</span>
+      <span class="weight-tag w-normal">Padrão ×1</span>
+      <span class="dim-score-large chip-yellow">7.0 / 10</span>
+      <span class="dim-chevron">▶</span>
+    </summary>
+    <div class="dim-body">
+      <div class="dim-cols">
+        <div class="ev-block">
+          <h4>Positivo</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-green"></span>Deploy automático via Vercel on push to main — zero-downtime nativo</li>
+            <li><span class="dot dot-green"></span>Rollback instantâneo via Vercel dashboard</li>
+            <li><span class="dot dot-green"></span>Hotfix documentado via <code>hotfix/</code> branch type no CONTRIBUTING.md</li>
+            <li><span class="dot dot-green"></span>Circuit breaker implementado em <code>src/lib/crm-db.ts</code> para 429/rate-limit do Bitrix24</li>
+            <li><span class="dot dot-green"></span>Branch protection impede deploy sem CI verde</li>
+          </ul>
+        </div>
+        <div class="ev-block">
+          <h4>Gaps</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-red"></span>Feature flags: sem sistema — toda mudança de comportamento requer redeploy</li>
+            <li><span class="dot dot-red"></span>Circuit breaker existe apenas para CRM — N8N, Evolution API, fornecedores sem proteção</li>
+            <li><span class="dot dot-yellow"></span>Graceful degradation: sem fallback documentado se Supabase ficar fora</li>
+            <li><span class="dot dot-yellow"></span>Incidente response: sem playbook de severidades ou post-mortem template</li>
+          </ul>
+        </div>
+      </div>
+      <div class="gap-block">
+        <h4>Para chegar a 10/10</h4>
+        <p>Estender o padrão de circuit breaker do CRM para as integrações com fornecedores (Asia Import, XBZ, SoMarcas). Criar <code>docs/incident-response.md</code> com severidades, SLA de resposta e template de post-mortem. Avaliar Unleash ou LaunchDarkly para feature flags — ou implementar via tabela Supabase simples.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- DIM 14 -->
+  <details class="dim-section" id="dim-14">
+    <summary class="dim-header">
+      <span class="dim-num-badge">14</span>
+      <span class="dim-name">Performance</span>
+      <span class="weight-tag w-normal">Padrão ×1</span>
+      <span class="dim-score-large chip-yellow">7.5 / 10</span>
+      <span class="dim-chevron">▶</span>
+    </summary>
+    <div class="dim-body">
+      <div class="dim-cols">
+        <div class="ev-block">
+          <h4>Positivo</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-green"></span>Lighthouse CI com gate (perf≥75, a11y≥90, seo≥95, pwa≥80)</li>
+            <li><span class="dot dot-green"></span>Bundle size baseline monitorado com limites por chunk (<code>bundle-size-baseline.json</code>)</li>
+            <li><span class="dot dot-green"></span>Vite com <code>manualChunks</code> customizado para vendor splitting inteligente</li>
+            <li><span class="dot dot-green"></span>Cloudflare Images com CDN global para imagens de produto</li>
+            <li><span class="dot dot-green"></span>Console strippado em prod — zero overhead de logging no bundle</li>
+            <li><span class="dot dot-green"></span>PERFORMANCE-ANALYSIS.md — análise documentada</li>
+            <li><span class="dot dot-green"></span>Índices de banco gerenciados ativamente (drop dead indexes)</li>
+          </ul>
+        </div>
+        <div class="ev-block">
+          <h4>Gaps</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-red"></span>Gate perf≥75 conservador — abaixo do que o Google considera "bom" (≥90)</li>
+            <li><span class="dot dot-yellow"></span>Cache de dados de API: sem evidência de React Query ou SWR — cada navegação pode re-fetchar</li>
+            <li><span class="dot dot-yellow"></span>N+1 queries: sem EXPLAIN ANALYZE automatizado para as queries mais frequentes</li>
+            <li><span class="dot dot-yellow"></span>Paginação server-side: <code>products-postgrest-load.spec.ts</code> existe mas sem garantia de cursor-based pagination</li>
+          </ul>
+        </div>
+      </div>
+      <div class="gap-block">
+        <h4>Para chegar a 10/10</h4>
+        <p>Elevar gate Lighthouse para perf≥85 em 30 dias e ≥90 em 90 dias. Adicionar React Query (TanStack Query) para cache e deduplicação de requests — o maior ganho de performance disponível sem mudança de infra. Criar script de análise das top 10 queries lentas via <code>pg_stat_statements</code> no Supabase.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- DIM 15 -->
+  <details class="dim-section" id="dim-15">
+    <summary class="dim-header">
+      <span class="dim-num-badge">15</span>
+      <span class="dim-name">Qualidade de Código</span>
+      <span class="weight-tag w-normal">Padrão ×1</span>
+      <span class="dim-score-large chip-blue">8.0 / 10</span>
+      <span class="dim-chevron">▶</span>
+    </summary>
+    <div class="dim-body">
+      <div class="dim-cols">
+        <div class="ev-block">
+          <h4>Positivo</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-green"></span>ESLint com 98KB de configuração — cobertura de regras extremamente detalhada para o projeto</li>
+            <li><span class="dot dot-green"></span>Prettier + Husky + lint-staged no pre-commit</li>
+            <li><span class="dot dot-green"></span>Abordagem de ratchet: baseline files impedem que a dívida cresça silenciosamente</li>
+            <li><span class="dot dot-green"></span>Gitleaks configurado (<code>.gitleaks.toml</code>) para detectar secrets no commit</li>
+            <li><span class="dot dot-green"></span>Conventional commits + PR template + CodeRabbit review</li>
+            <li><span class="dot dot-green"></span>Gates especializados: <code>check:no-inline-cors</code>, <code>check:iframe-sandbox</code>, <code>check:ai-key-contract</code></li>
+          </ul>
+        </div>
+        <div class="ev-block">
+          <h4>Gaps</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-yellow"></span>14 <code>console.log</code> restantes no source (strippados em prod mas presença indica falta de disciplina)</li>
+            <li><span class="dot dot-yellow"></span>95 <code>as any</code> + 18 <code>: any</code> — casting sem type guard</li>
+            <li><span class="dot dot-yellow"></span>ESLint config em 98KB sugere acumulação orgânica sem refatoração da config em si</li>
+          </ul>
+        </div>
+      </div>
+      <div class="gap-block">
+        <h4>Para chegar a 10/10</h4>
+        <p>Remover os 14 <code>console.log</code> restantes (substituir por <code>logger.debug()</code>). Criar regra ESLint customizada proibindo <code>as any</code> sem comentário justificativo. Refatorar <code>eslint.config.js</code> extraindo configurações por domínio em arquivos separados com <code>extends</code>.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- DIM 16 -->
+  <details class="dim-section" id="dim-16">
+    <summary class="dim-header">
+      <span class="dim-num-badge">16</span>
+      <span class="dim-name">Segurança</span>
+      <span class="weight-tag w-critical">Crítico ×3</span>
+      <span class="dim-score-large chip-blue">8.0 / 10</span>
+      <span class="dim-chevron">▶</span>
+    </summary>
+    <div class="dim-body">
+      <div class="dim-cols">
+        <div class="ev-block">
+          <h4>Positivo</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-green"></span>Headers completos: HSTS preload, X-Frame-Options DENY, X-Content-Type-Options, Referrer-Policy, Permissions-Policy</li>
+            <li><span class="dot dot-green"></span>CSP com report-uri para violações em produção</li>
+            <li><span class="dot dot-green"></span>frame-ancestors: none — elimina clickjacking</li>
+            <li><span class="dot dot-green"></span>Gitleaks + <code>credentials-audit.yml</code> + <code>codeql.yml</code> (CodeQL)</li>
+            <li><span class="dot dot-green"></span><code>check:secdef-anon</code> detecta SECURITY DEFINER exposto ao role anon</li>
+            <li><span class="dot dot-green"></span>Step-up authentication para ações sensíveis (MCP keys, rotação de secrets)</li>
+            <li><span class="dot dot-green"></span><code>check:edge-cors</code> e <code>check:no-inline-cors</code> — CORS controlado por CI</li>
+            <li><span class="dot dot-green"></span>Webhook signature verification em <code>webhook-inbound</code></li>
+            <li><span class="dot dot-green"></span><code>auth-fuzz-weekly.yml</code> — fuzzing ativo de segurança</li>
+          </ul>
+        </div>
+        <div class="ev-block">
+          <h4>Gaps</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-red"></span>CSP tem <code>'unsafe-inline'</code> em <code>script-src</code> — permite execução de scripts inline, mitigando parcialmente o CSP</li>
+            <li><span class="dot dot-red"></span>CSP tem <code>'unsafe-inline'</code> em <code>style-src</code> — risco de CSS injection</li>
+            <li><span class="dot dot-yellow"></span>Pen test ou security audit externo: não evidenciado</li>
+            <li><span class="dot dot-yellow"></span>LGPD: mencionado em SECURITY.md mas procedimentos de direito ao esquecimento não documentados</li>
+          </ul>
+        </div>
+      </div>
+      <div class="gap-block">
+        <h4>Para chegar a 10/10</h4>
+        <p>Remover <code>'unsafe-inline'</code> do CSP usando nonces gerados por Vercel Edge Middleware (maior impacto de segurança disponível). Documentar procedimento LGPD de exclusão de dados com checklist de tabelas afetadas. Contratar pen test anual ou usar Burp Suite Community para scan interno semestral.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- DIM 17 -->
+  <details class="dim-section" id="dim-17">
+    <summary class="dim-header">
+      <span class="dim-num-badge">17</span>
+      <span class="dim-name">Testes</span>
+      <span class="weight-tag w-high">Alto ×2</span>
+      <span class="dim-score-large chip-blue">8.5 / 10</span>
+      <span class="dim-chevron">▶</span>
+    </summary>
+    <div class="dim-body">
+      <div class="dim-cols">
+        <div class="ev-block">
+          <h4>Positivo</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-green"></span>1.832 arquivos de teste — suíte raramente encontrada em empresas 10× maiores</li>
+            <li><span class="dot dot-green"></span>Vitest (unit + integration) + Playwright (E2E com 100+ specs)</li>
+            <li><span class="dot dot-green"></span>Fuzz tests (<code>test:fuzz</code>, <code>auth-fuzz-weekly</code>), contract tests, stress tests</li>
+            <li><span class="dot dot-green"></span>A11y tests dedicados (<code>tests/a11y/</code>), security tests (<code>tests/security/</code>)</li>
+            <li><span class="dot dot-green"></span>RLS tests via <code>rls-integration-tests</code> edge function</li>
+            <li><span class="dot dot-green"></span>Coverage reporting CI: <code>coverage:ci:collect/report</code></li>
+            <li><span class="dot dot-green"></span>Smoke suite separada — testes críticos que rodam em todo PR</li>
+            <li><span class="dot dot-green"></span>Fixtures e factories organizados (<code>tests/fixtures/</code>, <code>tests/_factories.ts</code>)</li>
+          </ul>
+        </div>
+        <div class="ev-block">
+          <h4>Gaps</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-yellow"></span>Gate de cobertura mínima: não visível — sem threshold configurado no Vitest que falhe o CI</li>
+            <li><span class="dot dot-yellow"></span>Consumer-driven contract tests para Bitrix24 e N8N: não evidenciados</li>
+            <li><span class="dot dot-yellow"></span>Tempo de CI: 1.832 arquivos de teste podem ultrapassar 5 min no suite completo</li>
+            <li><span class="dot dot-yellow"></span>Flaky tests: sem mecanismo explícito de detecção/quarentena</li>
+          </ul>
+        </div>
+      </div>
+      <div class="gap-block">
+        <h4>Para chegar a 10/10</h4>
+        <p>Configurar threshold de coverage no Vitest (<code>coverage.thresholds</code>) mínimo de 70% para <code>src/services/</code> e <code>src/logic/</code>. Adicionar consumer contract test para o webhook Bitrix24 usando Pact ou mock manual. Ativar detecção de flaky via <code>--retry 2</code> no smoke suite e log dos retried.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- DIM 18 -->
+  <details class="dim-section" id="dim-18">
+    <summary class="dim-header">
+      <span class="dim-num-badge">18</span>
+      <span class="dim-name">Tipagem / Type Safety</span>
+      <span class="weight-tag w-high">Alto ×2</span>
+      <span class="dim-score-large chip-blue">8.0 / 10</span>
+      <span class="dim-chevron">▶</span>
+    </summary>
+    <div class="dim-body">
+      <div class="dim-cols">
+        <div class="ev-block">
+          <h4>Positivo</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-green"></span><code>strict: true</code> + <code>noImplicitAny: true</code> + <code>strictNullChecks</code> (incluído em strict)</li>
+            <li><span class="dot dot-green"></span>Types gerados do Supabase via <code>types:generate:supabase</code></li>
+            <li><span class="dot dot-green"></span><code>.tsc-baseline.json</code> — zero regressão de erros TS permitida no CI</li>
+            <li><span class="dot dot-green"></span>Zod para validação runtime (63 arquivos) — types e validation coesos</li>
+            <li><span class="dot dot-green"></span>Union types e interfaces ricas em <code>src/types/</code> — 20+ arquivos de tipos bem organizados</li>
+            <li><span class="dot dot-green"></span>Campos críticos do tipo Product garantidos por CLAUDE.md e CI</li>
+          </ul>
+        </div>
+        <div class="ev-block">
+          <h4>Gaps</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-red"></span><code>noUnusedLocals: false</code> e <code>noUnusedParameters: false</code> — variáveis mortas não detectadas</li>
+            <li><span class="dot dot-yellow"></span>95 ocorrências de <code>as any</code> — casting sem type guard adequado</li>
+            <li><span class="dot dot-yellow"></span><code>skipLibCheck: true</code> — oculta erros de tipo em dependências</li>
+            <li><span class="dot dot-yellow"></span>Tipos compartilhados frontend/backend: contratos Zod existem mas sem geração automática para o front</li>
+          </ul>
+        </div>
+      </div>
+      <div class="gap-block">
+        <h4>Para chegar a 10/10</h4>
+        <p>Habilitar <code>noUnusedLocals: true</code> — começar com baseline e reduzir gradualmente. Eliminar os 95 <code>as any</code> substituindo por type predicates (<code>is</code> guards). Criar script de geração de tipos Zod ↔ TypeScript compartilhados entre <code>src/</code> e <code>supabase/functions/</code> usando <code>zod-to-ts</code>.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- DIM 19 -->
+  <details class="dim-section" id="dim-19">
+    <summary class="dim-header">
+      <span class="dim-num-badge">19</span>
+      <span class="dim-name">Validação</span>
+      <span class="weight-tag w-high">Alto ×2</span>
+      <span class="dim-score-large chip-yellow">7.5 / 10</span>
+      <span class="dim-chevron">▶</span>
+    </summary>
+    <div class="dim-body">
+      <div class="dim-cols">
+        <div class="ev-block">
+          <h4>Positivo</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-green"></span>Zod em 63 arquivos — validação runtime sólida nas camadas mais críticas</li>
+            <li><span class="dot dot-green"></span>CNPJ validation dedicada: <code>test:cnpj</code>, <code>e2e:cnpj</code> — formato BR validado</li>
+            <li><span class="dot dot-green"></span><code>secure-upload</code> edge function com validação de tipo e tamanho de arquivo</li>
+            <li><span class="dot dot-green"></span>Webhook inbound com verificação de assinatura — entrada externa validada</li>
+            <li><span class="dot dot-green"></span><code>zod-validate.ts</code> utilitário para validação padronizada</li>
+            <li><span class="dot dot-green"></span>Contratos Zod em edge functions (evidenciado pelos ADRs de contrato)</li>
+          </ul>
+        </div>
+        <div class="ev-block">
+          <h4>Gaps</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-red"></span>Schemas Zod compartilhados frontend↔backend: não há evidência de package compartilhado — duplicação de schemas</li>
+            <li><span class="dot dot-yellow"></span>Validação de rich-text/Markdown: campos de descrição de produto sem sanitização evidente</li>
+            <li><span class="dot dot-yellow"></span>Mensagens de erro: padrão de mensagens Zod pode variar — sem i18n de erros de validação</li>
+            <li><span class="dot dot-yellow"></span>Validação de transição de estado: status de cotação pode aceitar transições inválidas sem state machine</li>
+          </ul>
+        </div>
+      </div>
+      <div class="gap-block">
+        <h4>Para chegar a 10/10</h4>
+        <p>Criar <code>supabase/functions/_shared/schemas/</code> como SSOT de schemas Zod e importar em ambos os lados (já existe <code>_shared/contracts/</code> — expandir). Adicionar sanitização DOMPurify para campos de rich-text. Documentar mensagens de erro padrão por tipo de campo no dicionário de dados.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- DIM 20 -->
+  <details class="dim-section" id="dim-20">
+    <summary class="dim-header">
+      <span class="dim-num-badge">20</span>
+      <span class="dim-name">Operações (Processos)</span>
+      <span class="weight-tag w-normal">Padrão ×1</span>
+      <span class="dim-score-large chip-yellow">7.5 / 10</span>
+      <span class="dim-chevron">▶</span>
+    </summary>
+    <div class="dim-body">
+      <div class="dim-cols">
+        <div class="ev-block">
+          <h4>Positivo</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-green"></span>Git flow documentado no CONTRIBUTING.md com tipos de branch e exemplos de commit</li>
+            <li><span class="dot dot-green"></span>Conventional commits obrigatórios + PR template + CodeRabbit review automático</li>
+            <li><span class="dot dot-green"></span>Dependabot configurado para atualização automática de deps</li>
+            <li><span class="dot dot-green"></span>CHANGELOG.md mantido manualmente</li>
+            <li><span class="dot dot-green"></span>Múltiplos ADRs documentando decisões arquiteturais</li>
+            <li><span class="dot dot-green"></span>AUDIT docs históricos: evidência de revisão periódica real</li>
+          </ul>
+        </div>
+        <div class="ev-block">
+          <h4>Gaps</h4>
+          <ul class="ev-list">
+            <li><span class="dot dot-yellow"></span>SLA de code review não definido — PR pode ficar aberto sem prazo</li>
+            <li><span class="dot dot-yellow"></span>Backlog técnico: débito técnico não rastreado em um único lugar (issues GitHub vs. TODO no código)</li>
+            <li><span class="dot dot-yellow"></span>Rotina de security review: não agendada explicitamente</li>
+            <li><span class="dot dot-yellow"></span>Post-mortem: incidentes mencionados em AUDIT docs mas sem template formal</li>
+          </ul>
+        </div>
+      </div>
+      <div class="gap-block">
+        <h4>Para chegar a 10/10</h4>
+        <p>Criar label <code>tech-debt</code> no GitHub + milestone trimestral de redução. Definir SLA de review no CONTRIBUTING.md: PRs de hotfix em &lt;2h, PRs regulares em &lt;24h. Adicionar rotina mensal de review do Dependabot PRs. Criar template de post-mortem em <code>.github/ISSUE_TEMPLATE/</code>.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- ROADMAP -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="roadmap-section">
+    <hr class="divider">
+    <div class="section-label">Top 10 Ações · Plano de Execução em 3 Ondas</div>
+    <div class="roadmap-grid">
+
+      <!-- QUICK WINS -->
+      <div class="roadmap-card">
+        <div class="onda onda-qw">🔴 Quick Wins — 1 a 3 dias</div>
+
+        <div class="action-item">
+          <span class="action-rank">1</span>
+          <div class="action-content">
+            <div class="action-title">Remover 'unsafe-inline' do CSP com nonces</div>
+            <div class="action-meta">
+              <span class="tag" style="background:var(--red-bg);color:var(--red);">Segurança</span>
+              Impacto: Alto · Esforço: Baixo · <code>vercel.json</code> + Vercel Edge Middleware
+            </div>
+          </div>
+        </div>
+
+        <div class="action-item">
+          <span class="action-rank">2</span>
+          <div class="action-content">
+            <div class="action-title">Remover os 14 console.log restantes</div>
+            <div class="action-meta">
+              <span class="tag" style="background:var(--yellow-bg);color:var(--yellow);">Qualidade</span>
+              Substituir por <code>logger.debug()</code> · grep + sed em src/
+            </div>
+          </div>
+        </div>
+
+        <div class="action-item">
+          <span class="action-rank">3</span>
+          <div class="action-content">
+            <div class="action-title">Adicionar uptime monitor externo</div>
+            <div class="action-meta">
+              <span class="tag" style="background:var(--blue-bg);color:var(--blue);">Logging</span>
+              Better Stack free tier — URL de prod + health-check edge function
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SPRINT 1 -->
+      <div class="roadmap-card">
+        <div class="onda onda-s1">🟠 Sprint 1 — 1 a 2 semanas</div>
+
+        <div class="action-item">
+          <span class="action-rank">4</span>
+          <div class="action-content">
+            <div class="action-title">Enforce MFA para roles admin/editor</div>
+            <div class="action-meta">
+              <span class="tag" style="background:var(--red-bg);color:var(--red);">Autenticação</span>
+              Verificar AAL2 no middleware de rota protegida · <code>src/lib/auth/</code>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-item">
+          <span class="action-rank">5</span>
+          <div class="action-content">
+            <div class="action-title">Adicionar coverage threshold no Vitest</div>
+            <div class="action-meta">
+              <span class="tag" style="background:var(--blue-bg);color:var(--blue);">Testes</span>
+              <code>coverage.thresholds: 70%</code> para <code>src/services/</code> e <code>src/logic/</code>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-item">
+          <span class="action-rank">6</span>
+          <div class="action-content">
+            <div class="action-title">Otimistic locking em quote/cart</div>
+            <div class="action-meta">
+              <span class="tag" style="background:var(--red-bg);color:var(--red);">Data Integrity</span>
+              Coluna <code>version INTEGER</code> + validação no UPDATE · migration + service layer
+            </div>
+          </div>
+        </div>
+
+        <div class="action-item">
+          <span class="action-rank">7</span>
+          <div class="action-content">
+            <div class="action-title">Elevar Lighthouse perf gate para ≥85</div>
+            <div class="action-meta">
+              <span class="tag" style="background:var(--yellow-bg);color:var(--yellow);">Performance</span>
+              Ajustar <code>deploy-gates.yml</code> + corrigir LCP com React Query cache
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SPRINT 2 -->
+      <div class="roadmap-card">
+        <div class="onda onda-s2">🟡 Sprint 2 — 2 a 4 semanas</div>
+
+        <div class="action-item">
+          <span class="action-rank">8</span>
+          <div class="action-content">
+            <div class="action-title">Habilitar noUnusedLocals + reduzir as any</div>
+            <div class="action-meta">
+              <span class="tag" style="background:var(--yellow-bg);color:var(--yellow);">Tipagem</span>
+              tsconfig + sprint de type hardening · 95 ocorrências → 0
+            </div>
+          </div>
+        </div>
+
+        <div class="action-item">
+          <span class="action-rank">9</span>
+          <div class="action-content">
+            <div class="action-title">Criar runbook + incident response</div>
+            <div class="action-meta">
+              <span class="tag" style="background:var(--blue-bg);color:var(--blue);">Operações</span>
+              <code>docs/runbook.md</code> + template post-mortem em <code>.github/ISSUE_TEMPLATE/</code>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-item">
+          <span class="action-rank">10</span>
+          <div class="action-content">
+            <div class="action-title">Implementar distributed tracing (OTel)</div>
+            <div class="action-meta">
+              <span class="tag" style="background:var(--yellow-bg);color:var(--yellow);">Observabilidade</span>
+              OpenTelemetry nas edge functions críticas + frontend trace propagation
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /roadmap-grid -->
+  </div>
+
+  <!-- NOTA FINAL -->
+  <div style="margin-top:48px; padding:24px; background:var(--surface); border:1px solid var(--border); border-radius:8px; border-left: 3px solid var(--yellow);">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--yellow);margin-bottom:10px;">Nota Final: 7.8 / 10</div>
+    <p style="font-size:13.5px;color:var(--muted);margin:0;line-height:1.8;">
+      Sistema de <strong style="color:var(--text);">maturidade técnica alta</strong> para uma operação conduzida por um único tech lead. O CI/CD de 107 workflows e a suíte de 1.832 testes são conquistas que empresas com times de 20+ raramente alcançam. Os três gaps que bloqueiam a nota 9+ são objetivos e atingíveis: eliminar <code>'unsafe-inline'</code> do CSP (segurança), adicionar distributed tracing (observabilidade) e implementar optimistic locking nos carrinhos (integridade de dados). O sistema está no intervalo <strong style="color:var(--text);">8→9</strong> — não precisa de reescrita, precisa de hardening nos pontos certos.
+    </p>
+  </div>
+
+</div><!-- /container -->
