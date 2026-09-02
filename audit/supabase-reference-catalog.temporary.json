@@ -215,6 +215,7 @@
     "execute_role_migration_batch",
     "fn_admin_sync_external_connections",
     "fn_apply_crm_callback",
+    "fn_batch_update_cart_item_sort_order",
     "fn_check_login_allowed",
     "fn_get_color_swatches_batch",
     "fn_get_customization_price",
