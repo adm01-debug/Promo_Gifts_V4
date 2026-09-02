@@ -16,6 +16,7 @@ import { handleCorsPreflight, buildPublicCorsHeaders } from "../_shared/cors.ts"
 import { createStructuredLogger } from "../_shared/structured-logger.ts";
 import { getOrCreateRequestId } from "../_shared/request-id.ts";
 import { RateLimiter } from "../_shared/rate-limiter.ts";
+import { resolveCredential } from "../_shared/credentials.ts";
 
 const bodySchema = z.object({
   token: z.string().min(24).max(64).regex(/^[a-f0-9]+$/i, "token deve ser hexadecimal"),
@@ -32,7 +33,8 @@ function sha256Hex(input: string): Promise<string> {
 
 // FIX R3: hash de IP feito na EDGE (Deno), nunca no Postgres — banco nunca vê IP cru nem salt
 async function hashIp(ip: string): Promise<string> {
-  const salt = Deno.env.get("MAGAZINE_IP_SALT") ?? "promo-gifts-v4-fallback-salt-2026";
+  const { value: resolvedSalt } = await resolveCredential("MAGAZINE_IP_SALT");
+  const salt = resolvedSalt ?? "promo-gifts-v4-fallback-salt-2026";
   // Trunca IPv4 para /24 antes de hashear — reduz espaço de busca de brute-force (FIX M8)
   const truncated = ip.includes(".") ? ip.split(".").slice(0, 3).join(".") + ".0" : ip;
   return sha256Hex(truncated + salt);

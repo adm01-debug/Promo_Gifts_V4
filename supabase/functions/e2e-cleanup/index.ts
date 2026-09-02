@@ -17,6 +17,7 @@ import { castRpcResult } from "../_shared/supabase-client-adapter.ts";
 import { buildPublicCorsHeaders } from "../_shared/cors.ts";
 import { parseContract } from "../_shared/contracts/index.ts";
 import { E2eCleanupSchemas } from "../_shared/contracts/schemas/e2e-cleanup.ts";
+import { resolveCredential } from "../_shared/credentials.ts";
 
 type E2ERateLimitRow = {
   allowed: boolean;
@@ -45,11 +46,6 @@ function getClientIp(req: Request): string {
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
-const CLEANUP_TOKEN = Deno.env.get("E2E_CLEANUP_TOKEN") ?? "";
-const ALLOWED_EMAILS_RAW = Deno.env.get("E2E_CLEANUP_ALLOWED_EMAILS") ?? "";
-const ALLOWED_EMAILS = new Set(
-  ALLOWED_EMAILS_RAW.split(",").map((e) => e.trim().toLowerCase()).filter(Boolean)
-);
 const RATE_LIMIT_MAX = Math.max(1, Number(Deno.env.get("E2E_CLEANUP_RATE_LIMIT_MAX") ?? "30"));
 const RATE_LIMIT_WINDOW = Math.max(10, Number(Deno.env.get("E2E_CLEANUP_RATE_LIMIT_WINDOW_SECONDS") ?? "60"));
 
@@ -70,9 +66,15 @@ Deno.serve(async (req: Request) => {
   const clientIp = getClientIp(req);
   const supabase = createClient(SUPABASE_URL, SERVICE_KEY);
 
+  const { value: cleanupToken } = await resolveCredential("E2E_CLEANUP_TOKEN");
+  const { value: allowedEmailsRaw } = await resolveCredential("E2E_CLEANUP_ALLOWED_EMAILS");
+  const ALLOWED_EMAILS = new Set(
+    (allowedEmailsRaw ?? "").split(",").map((e: string) => e.trim().toLowerCase()).filter(Boolean)
+  );
+
   // 1. Auth
   const incomingToken = req.headers.get("x-e2e-cleanup-token") ?? "";
-  if (!CLEANUP_TOKEN || !timingSafeEqual(incomingToken, CLEANUP_TOKEN)) {
+  if (!cleanupToken || !timingSafeEqual(incomingToken, cleanupToken)) {
     await supabase.from("e2e_cleanup_audit").insert({
       ip: clientIp, status: "auth_failed", reason: "invalid_token",
       dry_run: true, total_ms: Date.now() - startMs,

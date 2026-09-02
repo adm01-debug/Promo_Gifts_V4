@@ -29,6 +29,7 @@ class CircuitBreaker {
   private state: State = "CLOSED";
   private failures: number[] = [];
   private openedAt = 0;
+  private probeInFlight = false;
 
   constructor(private name: string, private cfg: BreakerConfig = DEFAULT_CONFIG) {}
 
@@ -37,20 +38,28 @@ class CircuitBreaker {
     if (this.state === "OPEN") {
       if (now - this.openedAt >= this.cfg.openDurationMs) {
         this.state = "HALF_OPEN";
-        return true;
+        // fall through to HALF_OPEN gate
+      } else {
+        return false;
       }
-      return false;
+    }
+    if (this.state === "HALF_OPEN") {
+      if (this.probeInFlight) return false;
+      this.probeInFlight = true;
+      return true;
     }
     return true;
   }
 
   recordSuccess(): void {
     this.failures = [];
+    this.probeInFlight = false;
     this.state = "CLOSED";
   }
 
   recordFailure(): void {
     const now = Date.now();
+    this.probeInFlight = false;
     this.failures = this.failures.filter((t) => now - t < this.cfg.windowMs);
     this.failures.push(now);
 
