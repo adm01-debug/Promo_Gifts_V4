@@ -2,7 +2,8 @@ import { getCorsHeaders, handleCorsPreflightIfNeeded } from '../_shared/cors.ts'
 import { createClient, SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { z } from "https://esm.sh/zod@3.23.8";
 import { runBotProtection } from '../_shared/bot-protection.ts';
-import { getBreaker, circuitOpenResponse, getAllBreakerStatuses } from '../_shared/circuit-breaker.ts';
+import { getBreaker, getAllBreakerStatuses } from '../_shared/circuit-breaker.ts';
+import { circuitOpenResponse, CircuitOpenError } from '../_shared/external-fetch.ts';
 import { AsyncLocalStorage } from "node:async_hooks";
 import { getOrCreateRequestId, REQUEST_ID_HEADER } from "../_shared/request-id.ts";
 import { resolveCredentials, warmupCredentials, buildCredentialsHealth } from "../_shared/credentials.ts";
@@ -628,7 +629,7 @@ Deno.serve((req) => {
   console.log(`[crm-db-bridge] [req_id=${requestId}] request_start method=${req.method} was_cold=${wasCold}`);
 
   if (!breaker.canRequest()) {
-    return circuitOpenResponse("crm-db", corsHeaders);
+    return circuitOpenResponse(new CircuitOpenError("crm-db"), corsHeaders);
   }
 
   try {

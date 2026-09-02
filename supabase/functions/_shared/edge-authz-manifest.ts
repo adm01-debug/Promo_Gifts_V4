@@ -136,7 +136,7 @@ export const EDGE_AUTHZ_MANIFEST: Record<string, AuthzEntry> = {
   "crm-callback-reprocess": { category: "supervisor", rationale: "Reprocessamento de dead-letter — JWT admin/dev inline", enforcedBy: "custom" },
   "intelligence-substitute-applied": { category: "authenticated", rationale: "Telemetria de substituição — JWT obrigatório via helper compartilhado", enforcedBy: "custom" },
   "magazine-import-local": { category: "authenticated", rationale: "Import do próprio usuário com JWT e RLS", enforcedBy: "custom" },
-  "product-visual-search": { category: "scoped", rationale: "JWT de usuário ou bypass secreto de simulação", enforcedBy: "custom" },
+  "product-visual-search": { category: "scoped", rationale: "JWT de usuário (bypass de simulação removido em T38)", enforcedBy: "custom" },
   "quote-sync-promo-champions": { category: "authenticated", rationale: "JWT e ownership do orçamento antes do sync", enforcedBy: "custom" },
 
   // Magazine pública: token público de alta entropia + validação in-function.
