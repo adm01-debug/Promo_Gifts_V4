@@ -4,7 +4,7 @@
 > Este arquivo é referenciado pelo gate `check-allowlist-memory-crosscheck` (CI).
 > Toda entrada em allowlist DEVE ter contrapartida documentada aqui — caso contrário, o gate falha.
 
-Última atualização: 2026-08-29
+Última atualização: 2026-09-03
 
 ---
 
@@ -32,7 +32,7 @@ aceito. As famílias já classificadas são:
 
 - **RBAC helpers** (`has_role`, `is_admin`, `is_admin_strict`, `is_dev`, `is_manager_or_admin`, `is_supervisor_or_above`, `is_seller_only`, `is_org_member`, `has_org_role`, `get_user_org_ids`, `can_approve_discount`, `can_grant_mcp_full`, `can_manage_connections`, `can_manage_quotes`, `can_view_all_sales`, `can_view_audit_logs`, `can_view_connections`, `can_view_telemetry`, `is_kit_owner`, `is_kit_collaborator`) — padrão canônico Supabase para RLS sem recursão.
 - **Quota AI** (`check_ai_quota`) — SELECT FOR UPDATE em `ai_usage_quotas`, precisa de SECURITY DEFINER para evitar race.
-- **Painel admin de saúde** (`check_hardening_status`, `check_telemetry_regression`, `get_app_health_summary`, `get_platform_failure_metrics`, `get_auto_test_job_status`, `lookup_request_id`) — leitura agregada com checagem interna de role.
+- **Painel admin de saúde** (`check_hardening_status`, `check_telemetry_regression`, `get_app_health_summary`, `get_platform_failure_metrics`, `get_auto_test_job_status`, `lookup_request_id`, `fn_run_and_persist_smoke_tests`) — leitura agregada com checagem interna de role. `fn_run_and_persist_smoke_tests` usa SECURITY DEFINER deliberado (PR #1825, 2026-09-03): guard interno com `is_admin_or_above` bloqueia anon e authenticated não-admin; DEFINER necessário porque a função interna `fn_run_smoke_tests` não tem EXECUTE para `authenticated`; EXECUTE de anon revogado (20260903092000).
 - **Bootstrap de usuário** (`ensure_default_favorite_list`, `log_user_logout`, `restore_seller_cart`) — self-scope via `auth.uid()`.
 - **Agregados públicos anônimos** (`get_collections_weekly_count`, `get_favorites_weekly_count`, `get_top_collected_products`, `get_top_compared_products`, `get_top_favorited_products`, `get_industry_benchmark_stats`, `get_industry_top_products`, `get_bundle_suggestions`, `get_client_seasonality`, `get_client_top_products`, `get_user_recent_comparisons`) — não expõem PII; agregados apenas.
 - **Settings admin** (`get_connection_failure_window_minutes`, `get_connections_auto_test_interval`, `set_connection_failure_window_minutes`, `set_connections_auto_test_interval`) — checam `is_admin()` internamente.
@@ -99,6 +99,7 @@ exige atualizar este inventário no mesmo PR.
 - `public.fn_reject_product_deactivation(p_request_id uuid, p_rejection_reason text)` — Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados.
 - `public.fn_request_product_deactivation(p_product_id uuid, p_reason text, p_reason_code text, p_notes text)` — Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados.
 - `public.fn_rpc_exists(_fname text)` — Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados.
+- `public.fn_run_and_persist_smoke_tests()` — SECURITY DEFINER deliberado (2026-09-03, PR #1825): wrapper de smoke tests com guard interno de autorização (role do JWT + is_admin_or_above com coalesce; bloqueia anon e authenticated não-admin — validado em produção, not authorized). DEFINER é necessário porque a inner fn_run_smoke_tests não tem EXECUTE para authenticated; sem ele, admin passava no guard e quebrava na chamada interna. EXECUTE de anon revogado (20260903092000).
 - `public.fn_rupture_by_level(p_nivel text, p_limit integer, p_offset integer, p_preferred boolean)` — Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados.
 - `public.fn_rupture_quick_stats()` — Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados.
 - `public.fn_super_filtro_facets(p_search_term text, p_category_slug text, p_category_id uuid, p_brands text[], p_only_in_stock boolean, p_min_price numeric, p_max_price numeric, p_target_audiences text[], p_is_kit boolean, p_is_textil boolean, p_is_thermal boolean, p_has_gift_box boolean, p_material_groups text[], p_technique_groups text[], p_color_groups text[], p_date_slugs text[], p_endomarketing boolean)` — Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados.
