@@ -59,6 +59,9 @@ BEGIN
         ' FOR VALUES FROM (%L) TO (%L)',
         v_nome, v_m, (v_m + interval '1 month')::date);
       EXECUTE format('ALTER TABLE public.%I ENABLE ROW LEVEL SECURITY', v_nome);
+      -- Paridade de policies com partições existentes (fix CodeRabbit, 2026-09-03)
+      EXECUTE format('CREATE POLICY hist_all_service ON public.%I FOR ALL TO service_role USING (true) WITH CHECK (true)', v_nome);
+      EXECUTE format('CREATE POLICY hist_select_admin ON public.%I FOR SELECT TO authenticated USING (public.is_admin_or_above((SELECT auth.uid())))', v_nome);
     END IF;
   END LOOP;
 
