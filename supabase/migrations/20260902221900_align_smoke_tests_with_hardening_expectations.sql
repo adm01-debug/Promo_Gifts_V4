@@ -5,7 +5,10 @@
 -- via pg_cron como postgres (1.704 runs/30d, 0 falhas) sem precisar de
 -- EXECUTE para authenticated. Smokes atualizados para o estado endurecido.
 -- Aplicada em produção via MCP em 2026-09-02; resultado pós-fix: 38/38 PASS.
-CREATE OR REPLACE FUNCTION public.fn_run_smoke_tests()
+-- DROP antes do CREATE: num replay, a assinatura anterior tinha 5 colunas de
+-- retorno e CREATE OR REPLACE não pode reduzir RETURNS TABLE (review cubic).
+DROP FUNCTION IF EXISTS public.fn_run_smoke_tests();
+CREATE FUNCTION public.fn_run_smoke_tests()
  RETURNS TABLE(test_name text, result text)
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -259,3 +262,7 @@ BEGIN
 
 END;
 $function$;
+
+-- DROP+CREATE reabriria EXECUTE para PUBLIC (default de funções novas);
+-- o estado endurecido é sem grants públicos (validado em produção).
+REVOKE EXECUTE ON FUNCTION public.fn_run_smoke_tests() FROM PUBLIC, anon, authenticated;

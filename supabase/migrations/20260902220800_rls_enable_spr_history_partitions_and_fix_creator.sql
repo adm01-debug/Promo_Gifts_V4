@@ -1,8 +1,10 @@
 -- Advisor ERROR rls_disabled_in_public: partições criadas por fn_purge_spr_history
 -- (JOB 3) nasciam sem RLS, diferente das irmãs p2026_06..p2026_10.
 -- Aplicada em produção via MCP em 2026-09-02 (registro remoto homônimo).
-ALTER TABLE public.supplier_products_raw_history_p2026_11 ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.supplier_products_raw_history_p2026_12 ENABLE ROW LEVEL SECURITY;
+-- IF EXISTS: num replay limpo essas partições podem ainda não existir
+-- (são criadas pelo JOB 3 abaixo / cron); em produção existiam.
+ALTER TABLE IF EXISTS public.supplier_products_raw_history_p2026_11 ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS public.supplier_products_raw_history_p2026_12 ENABLE ROW LEVEL SECURITY;
 
 -- Causa raiz: JOB 3 agora habilita RLS em toda partição futura que criar.
 CREATE OR REPLACE FUNCTION public.fn_purge_spr_history(p_keep_days integer DEFAULT 90)
