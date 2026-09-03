@@ -42,6 +42,7 @@ jobs:
       - name: Probe site + edge function
         id: probe
         run: |
+          set +e
           ANON_KEY=$(grep -o 'eyJ[A-Za-z0-9_-]*\.[A-Za-z0-9_-]*\.[A-Za-z0-9_-]*' src/integrations/supabase/client.ts | head -1)
           if [ -z "$ANON_KEY" ]; then
             echo "::error::anon key não encontrada em src/integrations/supabase/client.ts — falha do monitor, não do site"
@@ -49,7 +50,6 @@ jobs:
             echo "fn=-1" >> "$GITHUB_OUTPUT"
             exit 1
           fi
-          set +e
           curl -sf --max-time 15 --retry 2 --retry-delay 3 --retry-all-errors \
             -o /dev/null "$SITE_URL"
           SITE=$?
