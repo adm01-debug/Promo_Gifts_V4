@@ -1,46 +1,76 @@
--- M9: Fixes P1 + P2 identificados pela auditoria de 5 agentes (2026-09-03)
+-- Fix 2026-09-03 (CodeRabbit Critical+Major):
 --
--- P1 (GAP-01): M7/M8 não estavam em supabase_migrations.schema_migrations
---   → INSERT retroativo (ON CONFLICT DO NOTHING)
+-- BUG 1 (Critical): fn_purge_spr_history — regex 'TO \(''\'\'([^\'\'']+)\'\''\)' quebrado com
+--   standard_conforming_strings=on. '\'' termina a string antes; JOB 1 sempre retorna
+--   ub=NULL → partições antigas nunca são dropadas.
+--   Fix: 'TO \(''([^'']+)''\)' — usa '' para escapar aspas simples (padrão SQL).
 --
--- P2 (ACL-01): authenticated tinha TRIGGER+INSERT+UPDATE+DELETE+REFERENCES
---   em public.smoke_test_runs — tabela é escrita APENAS via SECURITY DEFINER
---   fn_run_and_persist_smoke_tests (postgres context), não por authenticated.
---   → REVOKE aplicado; authenticated conserva somente SELECT (controlado por RLS)
---
--- P2 (GAP-02): fn_run_smoke_tests era SECURITY DEFINER desnecessariamente.
---   Chamada exclusivamente de fn_run_and_persist_smoke_tests (SECURITY DEFINER,
---   owner=postgres), então INVOKER herda contexto postgres → comportamento idêntico.
---   SECURITY INVOKER elimina risco residual de privilege escalation se ACL vazar.
---   → ALTER + restauração do corpo completo (38 testes) + patch to_regclass M7
---
--- Aplicada em produção via supabase_db_query em 2026-09-03.
+-- BUG 2 (Major): fn_run_smoke_tests — teste rls_coverage usa relkind='r', que exclui
+--   tabelas particionadas pai (relkind='p'). supplier_products_raw_history e
+--   supplier_products_raw passariam silenciosamente mesmo sem RLS habilitado.
+--   Fix: relkind IN ('r','p') em ambas as subconsultas do CASE.
 
--- ══ P1: schema_migrations (metadados, sem DDL real) ══════════════════════════
-INSERT INTO supabase_migrations.schema_migrations (version, name, statements)
-VALUES
-  ('20260903095500', 'smoke_persist_secdef_chain_and_auth_test_relcheck', ARRAY[
-    'CREATE OR REPLACE FUNCTION public.fn_run_and_persist_smoke_tests()',
-    'REVOKE EXECUTE ON FUNCTION public.fn_run_and_persist_smoke_tests() FROM PUBLIC, anon',
-    'GRANT EXECUTE ON FUNCTION public.fn_run_and_persist_smoke_tests() TO authenticated, service_role',
-    'DO $$ BEGIN ... patch to_regclass em fn_run_smoke_tests ... END $$'
-  ]),
-  ('20260903100000', 'fix_jwt_dual_read_guard_in_smoke_persist', ARRAY[
-    'CREATE OR REPLACE FUNCTION public.fn_run_and_persist_smoke_tests() -- JWT dual-read coalesce',
-    'REVOKE EXECUTE ON FUNCTION public.fn_run_and_persist_smoke_tests() FROM PUBLIC, anon',
-    'GRANT EXECUTE ON FUNCTION public.fn_run_and_persist_smoke_tests() TO authenticated, service_role'
-  ])
-ON CONFLICT (version) DO NOTHING;
+-- ── Correção 1: fn_purge_spr_history ─────────────────────────────────────────
 
--- ══ P2 ACL-01: smoke_test_runs — revogar overprivileges de authenticated ════
--- (idempotente se já aplicado via execute_sql na sessão anterior)
-REVOKE INSERT, UPDATE, DELETE, REFERENCES, TRIGGER ON public.smoke_test_runs FROM authenticated;
--- authenticated conserva SELECT (RLS policies controlam visibilidade de linhas)
+CREATE OR REPLACE FUNCTION public.fn_purge_spr_history(p_keep_days integer DEFAULT 90)
+ RETURNS integer
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO 'public'
+AS $function$
+DECLARE
+  v_cutoff   timestamptz := now() - make_interval(days => GREATEST(p_keep_days, 30));
+  v_deleted  integer := 0;
+  v_n        integer;
+  r          RECORD;
+  v_m        date;
+  v_nome     text;
+BEGIN
+  -- ── JOB 1: DROP partições antigas de supplier_products_raw_history ──
+  FOR r IN
+    SELECT c.oid::regclass::text AS part,
+           (regexp_match(pg_get_expr(c.relpartbound, c.oid),
+                         'TO \(''([^'']+)''\)'))[1]::timestamptz AS ub
+    FROM pg_inherits i
+    JOIN pg_class c ON c.oid = i.inhrelid
+    WHERE i.inhparent = 'public.supplier_products_raw_history'::regclass
+  LOOP
+    IF r.ub IS NOT NULL AND r.ub <= v_cutoff THEN
+      EXECUTE format('DROP TABLE %s', r.part);
+    END IF;
+  END LOOP;
 
--- ══ P2 GAP-02: fn_run_smoke_tests → SECURITY INVOKER + restauração 38 testes ═
--- Corpo intacto da M6 (20260902221900) com:
---   • teste 01 usando to_regclass (patch M7)
---   • SECURITY INVOKER (novo — era DEFINER sem necessidade)
+  -- ── JOB 2 (nova arquitetura): DROP legacy quando todos os dados expirarem ──
+  IF to_regclass('archive.supplier_products_raw_history_legacy') IS NOT NULL THEN
+    IF (SELECT max(captured_at)
+        FROM archive.supplier_products_raw_history_legacy) < v_cutoff THEN
+      EXECUTE 'DROP TABLE archive.supplier_products_raw_history_legacy';
+      v_deleted := -1;
+    END IF;
+  END IF;
+
+  -- ── JOB 3: garantir partições futuras (próximos 4 meses) ──
+  FOR i IN 0..3 LOOP
+    v_m := (date_trunc('month', now()) + (i || ' months')::interval)::date;
+    v_nome := 'supplier_products_raw_history_p' || to_char(v_m, 'YYYY_MM');
+    IF to_regclass('public.' || v_nome) IS NULL THEN
+      EXECUTE format(
+        'CREATE TABLE public.%I PARTITION OF public.supplier_products_raw_history'
+        ' FOR VALUES FROM (%L) TO (%L)',
+        v_nome, v_m, (v_m + interval '1 month')::date);
+      EXECUTE format('ALTER TABLE public.%I ENABLE ROW LEVEL SECURITY', v_nome);
+    END IF;
+  END LOOP;
+
+  RETURN v_deleted;
+END
+$function$;
+
+-- ACL: cron-only (mantida da migration 20260902220800)
+REVOKE EXECUTE ON FUNCTION public.fn_purge_spr_history(integer) FROM PUBLIC, anon, authenticated;
+
+-- ── Correção 2: fn_run_smoke_tests ───────────────────────────────────────────
+
 CREATE OR REPLACE FUNCTION public.fn_run_smoke_tests()
   RETURNS TABLE(test_name text, result text)
   LANGUAGE plpgsql
@@ -73,7 +103,7 @@ BEGIN
           AND EXISTS (SELECT 1 FROM pg_extension WHERE extname='pg_net')
          THEN '✅ PASS' ELSE '❌ FAIL' END;
 
-  -- ══ 05: RLS 100% ══
+  -- ══ 05: RLS 100% — inclui tabelas particionadas pai (relkind IN ('r','p')) ══
   RETURN QUERY SELECT 'rls_coverage'::text,
     CASE WHEN (SELECT COUNT(*) FROM (
       SELECT c.relname FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
@@ -224,22 +254,19 @@ BEGIN
                  AND variant_id IS NULL)::text || ' pending catalog)'
          ELSE '❌ FAIL: >10 unlinked ASIA Bronze rows' END;
 
-  -- ══ 31-38: ANON/GRANTS/PGRST (adicionados 2026-06-23) ════════════════════
+  -- ══ 31-38: ANON/GRANTS/PGRST ════════════════════
 
-  -- ══ 31: tabelas internas de badge BLOQUEADAS para anon ══
   RETURN QUERY SELECT 'anon_badge_tables_blocked'::text,
     CASE WHEN NOT has_table_privilege('anon','public.discount_approval_requests','SELECT')
           AND NOT has_table_privilege('anon','public.workspace_notifications','SELECT')
          THEN '✅ PASS'
          ELSE '❌ FAIL: anon can read internal badge tables (hardening regression)' END;
 
-  -- ══ 32: anon tem GRANT SELECT em v_products_public ══
   RETURN QUERY SELECT 'anon_grant_v_products_public'::text,
     CASE WHEN has_table_privilege('anon','public.v_products_public','SELECT')
          THEN '✅ PASS'
          ELSE '❌ FAIL: anon missing SELECT on v_products_public' END;
 
-  -- ══ 33: fns SECURITY DEFINER de RLS BLOQUEADAS para anon ══
   RETURN QUERY SELECT 'anon_secdef_fns_blocked'::text,
     CASE WHEN NOT has_function_privilege('anon','public.user_is_org_member(uuid)','execute')
           AND NOT has_function_privilege('anon','public.is_coord_or_above(uuid)','execute')
@@ -248,7 +275,6 @@ BEGIN
          THEN '✅ PASS'
          ELSE '❌ FAIL: anon can EXECUTE RLS security definer fns (hardening regression)' END;
 
-  -- ══ 34: anon COUNT em v_products_public retorna rows ══
   RETURN QUERY SELECT 'anon_count_v_products_public'::text,
     CASE WHEN (SELECT COUNT(*) FROM public.v_products_public WHERE is_active=true) > 5000
          THEN '✅ PASS (' ||
@@ -256,7 +282,6 @@ BEGIN
               ' active products)'
          ELSE '❌ FAIL: count too low (< 5000)' END;
 
-  -- ══ 35: tabelas que tinham RLS sem policy agora têm policy ══
   RETURN QUERY SELECT 'rls_tables_with_grants_have_policies'::text,
     CASE WHEN EXISTS (SELECT 1 FROM pg_policies WHERE tablename='spot_health_log' AND schemaname='public')
           AND EXISTS (SELECT 1 FROM pg_policies WHERE tablename='spot_typecode_map' AND schemaname='public')
@@ -265,20 +290,17 @@ BEGIN
          THEN '✅ PASS'
          ELSE '❌ FAIL: tables with grants but no RLS policies' END;
 
-  -- ══ 36: views sensíveis bloqueadas para anon ══
   RETURN QUERY SELECT 'sensitive_views_anon_blocked'::text,
     CASE WHEN NOT has_table_privilege('anon','public.bi_quotes_summary','SELECT')
           AND NOT has_table_privilege('anon','public.ai_insights_cache','SELECT')
          THEN '✅ PASS'
          ELSE '❌ FAIL: anon can read sensitive internal views (data leak risk)' END;
 
-  -- ══ 37: pg_cron pgrst-schema-reload ativo ══
   RETURN QUERY SELECT 'pgrst_auto_reload_cron_active'::text,
     CASE WHEN EXISTS (SELECT 1 FROM cron.job WHERE jobname='pgrst-schema-reload' AND active=true)
          THEN '✅ PASS'
          ELSE '❌ FAIL: pgrst-schema-reload cron missing (schema cache goes stale)' END;
 
-  -- ══ 38: fn_pgrst_reload() existe e NÃO é executável por authenticated ══
   RETURN QUERY SELECT 'fn_pgrst_reload_exists'::text,
     CASE WHEN EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace
                       WHERE n.nspname='public' AND p.proname='fn_pgrst_reload')
@@ -288,5 +310,3 @@ BEGIN
 
 END;
 $function$;
-
--- ACL de fn_run_smoke_tests permanece: {postgres, service_role} (INVOKER não muda ACL)
