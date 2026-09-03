@@ -160,6 +160,10 @@
       "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
     },
     {
+      "fn": "public.fn_run_and_persist_smoke_tests()",
+      "reason": "SECURITY DEFINER deliberado (2026-09-03, PR #1825): wrapper de smoke tests com guard interno de autorização (role do JWT + is_admin_or_above com coalesce; bloqueia anon e authenticated não-admin — validado em produção, not authorized). DEFINER é necessário porque a inner fn_run_smoke_tests não tem EXECUTE para authenticated; sem ele, admin passava no guard e quebrava na chamada interna. EXECUTE de anon revogado (20260903092000)."
+    },
+    {
       "fn": "public.fn_rupture_by_level(p_nivel text, p_limit integer, p_offset integer, p_preferred boolean)",
       "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
     },
