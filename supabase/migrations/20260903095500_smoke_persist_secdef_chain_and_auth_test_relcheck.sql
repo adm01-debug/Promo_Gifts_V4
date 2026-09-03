@@ -32,6 +32,12 @@ BEGIN
 END
 $function$;
 
+-- ACL explícita (idempotente; estado verificado em produção via pg_proc.proacl:
+-- {postgres,authenticated,service_role}). Num replay com ACL default, o grant
+-- herdado de PUBLIC deixaria qualquer role invocar o wrapper SECURITY DEFINER.
+REVOKE EXECUTE ON FUNCTION public.fn_run_and_persist_smoke_tests() FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.fn_run_and_persist_smoke_tests() TO authenticated, service_role;
+
 -- Teste 01 → verificação estrutural via to_regclass (patch tolerante:
 -- aceita tanto o padrão count>=0 quanto o OR TRUE original de um replay).
 DO $$
@@ -54,8 +60,9 @@ BEGIN
     'to_regclass(''auth.users'') IS NOT NULL');
 
   IF position('to_regclass(''auth.users'')' in v_def) = 0 THEN
-    RAISE NOTICE 'nenhum padrão do teste 01 encontrado — pulando patch';
-    RETURN;
+    -- Definição divergiu de todo padrão conhecido: falhar alto em vez de
+    -- deixar o teste 01 sem patch silenciosamente (review cubic).
+    RAISE EXCEPTION 'teste 01: nenhum padrão conhecido encontrado em fn_run_smoke_tests — investigar drift';
   END IF;
 
   EXECUTE v_def;
