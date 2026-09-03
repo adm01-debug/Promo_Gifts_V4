@@ -25,7 +25,7 @@ BEGIN
   FOR r IN
     SELECT c.oid::regclass::text AS part,
            (regexp_match(pg_get_expr(c.relpartbound, c.oid),
-                         'TO \(''([^'']+)''\)'))[1]::timestamptz AS ub
+                         'TO \(''\'([^\'\'']+)\''\)'))[1]::timestamptz AS ub
     FROM pg_inherits i
     JOIN pg_class c ON c.oid = i.inhrelid
     WHERE i.inhparent = 'public.supplier_products_raw_history'::regclass
@@ -64,3 +64,8 @@ BEGIN
   RETURN v_deleted;
 END
 $function$;
+
+-- Auditoria 2026-09-03: fn_purge_spr_history é cron-only (jobname=vacuum-spr-history-partitions)
+-- Acesso direto por anon/authenticated permitiria abusar DROP/CREATE de partições.
+REVOKE EXECUTE ON FUNCTION public.fn_purge_spr_history(integer) FROM PUBLIC, anon, authenticated;
+-- ACL resultante: {postgres=X/postgres,service_role=X/postgres}
