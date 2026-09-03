@@ -66,7 +66,7 @@ jobs:
         run: |
           gh label create uptime --color B60205 --description "Falha de disponibilidade detectada pelo Uptime Monitor" 2>/dev/null || true
           BODY="Falha em $(date -u +%FT%TZ) — site=${{ steps.probe.outputs.site }} health-check=${{ steps.probe.outputs.fn }} (0 = OK, outro valor = exit code do curl). Run: $RUN_URL"
-          ISSUE=$(gh issue list --label uptime --state open --limit 1 --json number -q '.[0].number')
+          ISSUE=$(gh issue list --label uptime --state open --limit 1 --json number -q '.[0].number // empty')
           if [ -n "$ISSUE" ]; then
             gh issue comment "$ISSUE" --body "$BODY"
           else
