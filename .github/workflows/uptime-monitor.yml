@@ -1,0 +1,68 @@
+name: Uptime Monitor
+
+# Verifica disponibilidade do site (Vercel) e da edge function health-check
+# (Supabase doufsxqlfjyuvxuezpln) a cada 15 min. Em falha, abre ou comenta
+# numa issue com label "uptime" (sem duplicar issue aberta).
+#
+# health-check não tem [functions.health-check] em supabase/config.toml,
+# então cai no default verify_jwt=true do gateway Supabase — por isso os
+# headers apikey/Authorization são obrigatórios. A chave usada é a
+# anon/publishable key, lida em runtime de src/integrations/supabase/client.ts
+# (já é pública no bundle do front-end; não é secret — e ler do client.ts
+# evita uma segunda cópia hardcoded que dispararia o Gitleaks).
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  contents: read
+
+env:
+  SITE_URL: https://www.promogifts.com.br/
+  FN_URL: https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1/health-check
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            src/integrations/supabase/client.ts
+          sparse-checkout-cone-mode: false
+
+      - name: Probe site + edge function
+        id: probe
+        run: |
+          ANON_KEY=$(grep -o 'eyJ[A-Za-z0-9_-]*\.[A-Za-z0-9_-]*\.[A-Za-z0-9_-]*' src/integrations/supabase/client.ts | head -1)
+          set +e
+          curl -sf --max-time 15 --retry 2 --retry-delay 3 --retry-all-errors \
+            -o /dev/null "$SITE_URL"
+          SITE=$?
+          curl -sf --max-time 15 --retry 2 --retry-delay 3 --retry-all-errors \
+            -H "apikey: $ANON_KEY" \
+            -H "Authorization: Bearer $ANON_KEY" \
+            -o /dev/null "$FN_URL"
+          FN=$?
+          echo "site=$SITE" >> "$GITHUB_OUTPUT"
+          echo "fn=$FN" >> "$GITHUB_OUTPUT"
+          [ "$SITE" -eq 0 ] && [ "$FN" -eq 0 ]
+
+      - name: Abrir ou comentar issue de falha
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh label create uptime --color B60205 --description "Falha de disponibilidade detectada pelo Uptime Monitor" 2>/dev/null || true
+          BODY="Falha em $(date -u +%FT%TZ) — site=${{ steps.probe.outputs.site }} health-check=${{ steps.probe.outputs.fn }} (0 = OK, outro valor = exit code do curl). Run: $RUN_URL"
+          ISSUE=$(gh issue list --label uptime --state open --limit 1 --json number -q '.[0].number')
+          if [ -n "$ISSUE" ]; then
+            gh issue comment "$ISSUE" --body "$BODY"
+          else
+            gh issue create --title "Uptime: falha de disponibilidade detectada" --label uptime --body "$BODY"
+          fi

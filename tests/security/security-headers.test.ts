@@ -130,6 +130,16 @@ describe('Security Headers: Content-Security-Policy', () => {
     expect(scriptSrc).not.toContain("'unsafe-eval'");
   });
 
+  it('does not allow unsafe-inline in script-src', () => {
+    const scriptSrc = csp.match(/script-src\s+([^;]+)/)?.[1] || '';
+    expect(scriptSrc).not.toContain("'unsafe-inline'");
+  });
+
+  it('does not allow data: in script-src (XSS vector)', () => {
+    const scriptSrc = csp.match(/script-src\s+([^;]+)/)?.[1] || '';
+    expect(scriptSrc).not.toContain('data:');
+  });
+
   it('restricts object-src to none', () => {
     expect(csp).toContain("object-src 'none'");
   });
