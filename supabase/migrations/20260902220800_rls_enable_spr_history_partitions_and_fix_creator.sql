@@ -25,7 +25,7 @@ BEGIN
   FOR r IN
     SELECT c.oid::regclass::text AS part,
            (regexp_match(pg_get_expr(c.relpartbound, c.oid),
-                         'TO \(''([^'']+)''\)'))[1]::timestamptz AS ub
+                         'TO \(''''([^'''']+)''''\)'))[1]::timestamptz AS ub
     FROM pg_inherits i
     JOIN pg_class c ON c.oid = i.inhrelid
     WHERE i.inhparent = 'public.supplier_products_raw_history'::regclass

@@ -1,14 +1,10 @@
 -- Fix 2026-09-03 (CodeRabbit Critical+Major):
 --
--- BUG 1 (Critical): fn_purge_spr_history — regex 'TO \(''\'\'([^\'\'']+)\'\''\)' quebrado com
---   standard_conforming_strings=on. '\'' termina a string antes; JOB 1 sempre retorna
---   ub=NULL → partições antigas nunca são dropadas.
---   Fix: 'TO \(''([^'']+)''\)' — usa '' para escapar aspas simples (padrão SQL).
+-- BUG 1 (Critical): fn_purge_spr_history — regex com escapes inválidos quebrado com
+--   standard_conforming_strings=on. Fix: usa '' para escapar aspas simples.
 --
 -- BUG 2 (Major): fn_run_smoke_tests — teste rls_coverage usa relkind='r', que exclui
---   tabelas particionadas pai (relkind='p'). supplier_products_raw_history e
---   supplier_products_raw passariam silenciosamente mesmo sem RLS habilitado.
---   Fix: relkind IN ('r','p') em ambas as subconsultas do CASE.
+--   tabelas particionadas pai (relkind='p'). Fix: relkind IN ('r','p').
 
 -- ── Correção 1: fn_purge_spr_history ─────────────────────────────────────────
 
@@ -30,7 +26,7 @@ BEGIN
   FOR r IN
     SELECT c.oid::regclass::text AS part,
            (regexp_match(pg_get_expr(c.relpartbound, c.oid),
-                         'TO \(''([^'']+)''\)'))[1]::timestamptz AS ub
+                         'TO \(''''([^'''']+)''''\)'))[1]::timestamptz AS ub
     FROM pg_inherits i
     JOIN pg_class c ON c.oid = i.inhrelid
     WHERE i.inhparent = 'public.supplier_products_raw_history'::regclass

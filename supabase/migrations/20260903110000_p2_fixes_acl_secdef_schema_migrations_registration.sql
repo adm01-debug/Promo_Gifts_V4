@@ -41,6 +41,7 @@ REVOKE INSERT, UPDATE, DELETE, REFERENCES, TRIGGER ON public.smoke_test_runs FRO
 -- Corpo intacto da M6 (20260902221900) com:
 --   • teste 01 usando to_regclass (patch M7)
 --   • SECURITY INVOKER (novo — era DEFINER sem necessidade)
+--   • relkind IN ('r','p') no teste rls_coverage (fix BUG-2)
 CREATE OR REPLACE FUNCTION public.fn_run_smoke_tests()
   RETURNS TABLE(test_name text, result text)
   LANGUAGE plpgsql
@@ -73,7 +74,7 @@ BEGIN
           AND EXISTS (SELECT 1 FROM pg_extension WHERE extname='pg_net')
          THEN '✅ PASS' ELSE '❌ FAIL' END;
 
-  -- ══ 05: RLS 100% ══
+  -- ══ 05: RLS 100% — inclui tabelas particionadas pai (relkind IN ('r','p')) ══
   RETURN QUERY SELECT 'rls_coverage'::text,
     CASE WHEN (SELECT COUNT(*) FROM (
       SELECT c.relname FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
@@ -224,22 +225,19 @@ BEGIN
                  AND variant_id IS NULL)::text || ' pending catalog)'
          ELSE '❌ FAIL: >10 unlinked ASIA Bronze rows' END;
 
-  -- ══ 31-38: ANON/GRANTS/PGRST (adicionados 2026-06-23) ════════════════════
+  -- ══ 31-38: ANON/GRANTS/PGRST ════════════════════
 
-  -- ══ 31: tabelas internas de badge BLOQUEADAS para anon ══
   RETURN QUERY SELECT 'anon_badge_tables_blocked'::text,
     CASE WHEN NOT has_table_privilege('anon','public.discount_approval_requests','SELECT')
           AND NOT has_table_privilege('anon','public.workspace_notifications','SELECT')
          THEN '✅ PASS'
          ELSE '❌ FAIL: anon can read internal badge tables (hardening regression)' END;
 
-  -- ══ 32: anon tem GRANT SELECT em v_products_public ══
   RETURN QUERY SELECT 'anon_grant_v_products_public'::text,
     CASE WHEN has_table_privilege('anon','public.v_products_public','SELECT')
          THEN '✅ PASS'
          ELSE '❌ FAIL: anon missing SELECT on v_products_public' END;
 
-  -- ══ 33: fns SECURITY DEFINER de RLS BLOQUEADAS para anon ══
   RETURN QUERY SELECT 'anon_secdef_fns_blocked'::text,
     CASE WHEN NOT has_function_privilege('anon','public.user_is_org_member(uuid)','execute')
           AND NOT has_function_privilege('anon','public.is_coord_or_above(uuid)','execute')
@@ -248,7 +246,6 @@ BEGIN
          THEN '✅ PASS'
          ELSE '❌ FAIL: anon can EXECUTE RLS security definer fns (hardening regression)' END;
 
-  -- ══ 34: anon COUNT em v_products_public retorna rows ══
   RETURN QUERY SELECT 'anon_count_v_products_public'::text,
     CASE WHEN (SELECT COUNT(*) FROM public.v_products_public WHERE is_active=true) > 5000
          THEN '✅ PASS (' ||
@@ -256,7 +253,6 @@ BEGIN
               ' active products)'
          ELSE '❌ FAIL: count too low (< 5000)' END;
 
-  -- ══ 35: tabelas que tinham RLS sem policy agora têm policy ══
   RETURN QUERY SELECT 'rls_tables_with_grants_have_policies'::text,
     CASE WHEN EXISTS (SELECT 1 FROM pg_policies WHERE tablename='spot_health_log' AND schemaname='public')
           AND EXISTS (SELECT 1 FROM pg_policies WHERE tablename='spot_typecode_map' AND schemaname='public')
@@ -265,20 +261,17 @@ BEGIN
          THEN '✅ PASS'
          ELSE '❌ FAIL: tables with grants but no RLS policies' END;
 
-  -- ══ 36: views sensíveis bloqueadas para anon ══
   RETURN QUERY SELECT 'sensitive_views_anon_blocked'::text,
     CASE WHEN NOT has_table_privilege('anon','public.bi_quotes_summary','SELECT')
           AND NOT has_table_privilege('anon','public.ai_insights_cache','SELECT')
          THEN '✅ PASS'
          ELSE '❌ FAIL: anon can read sensitive internal views (data leak risk)' END;
 
-  -- ══ 37: pg_cron pgrst-schema-reload ativo ══
   RETURN QUERY SELECT 'pgrst_auto_reload_cron_active'::text,
     CASE WHEN EXISTS (SELECT 1 FROM cron.job WHERE jobname='pgrst-schema-reload' AND active=true)
          THEN '✅ PASS'
          ELSE '❌ FAIL: pgrst-schema-reload cron missing (schema cache goes stale)' END;
 
-  -- ══ 38: fn_pgrst_reload() existe e NÃO é executável por authenticated ══
   RETURN QUERY SELECT 'fn_pgrst_reload_exists'::text,
     CASE WHEN EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace
                       WHERE n.nspname='public' AND p.proname='fn_pgrst_reload')
