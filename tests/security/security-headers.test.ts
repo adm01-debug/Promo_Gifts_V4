@@ -125,9 +125,30 @@ describe('Security Headers: Content-Security-Policy', () => {
     expect(csp).toContain("default-src 'self'");
   });
 
+  it('has an explicit script-src directive', () => {
+    expect(csp).toMatch(/script-src\s/);
+  });
+
   it('does not allow unsafe-eval in script-src', () => {
-    const scriptSrc = csp.match(/script-src\s+([^;]+)/)?.[1] || '';
+    const scriptSrc = csp.match(/script-src\s+([^;]+)/)![1];
     expect(scriptSrc).not.toContain("'unsafe-eval'");
+  });
+
+  it('does not allow unsafe-inline in script-src', () => {
+    const scriptSrc = csp.match(/script-src\s+([^;]+)/)![1];
+    expect(scriptSrc).not.toContain("'unsafe-inline'");
+  });
+
+  it('does not allow data: or blob: in script-src (XSS vectors)', () => {
+    const scriptSrc = csp.match(/script-src\s+([^;]+)/)![1];
+    expect(scriptSrc).not.toContain('data:');
+    expect(scriptSrc).not.toContain('blob:');
+  });
+
+  it('does not allow data: in worker-src', () => {
+    const workerSrc = csp.match(/worker-src\s+([^;]+)/)?.[1];
+    expect(workerSrc).toBeDefined();
+    expect(workerSrc).not.toContain('data:');
   });
 
   it('restricts object-src to none', () => {
@@ -154,5 +175,18 @@ describe('Security Headers: Content-Security-Policy', () => {
     const hasReport =
       csp.includes('report-uri') || csp.includes('report-to');
     expect(hasReport).toBe(true);
+  });
+});
+
+describe('Security Headers: public/_headers mirror', () => {
+  it('CSP in public/_headers is identical to vercel.json', () => {
+    const headersPath = path.resolve(__dirname, '../../public/_headers');
+    const raw = fs.readFileSync(headersPath, 'utf-8');
+    const line = raw
+      .split('\n')
+      .find((l) => l.trim().startsWith('Content-Security-Policy:'));
+    expect(line).toBeDefined();
+    const mirrorCsp = line!.trim().replace(/^Content-Security-Policy:\s*/, '');
+    expect(mirrorCsp).toBe(findHeader('Content-Security-Policy'));
   });
 });

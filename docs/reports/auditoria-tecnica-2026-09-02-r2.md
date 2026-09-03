@@ -371,6 +371,19 @@ Críticos ×3: 8.0 · Altos ×2: 8.2 · Padrão ×1: 7.9
 3. **"Sem audit_log centralizado"** — `admin_audit_log` existe e é consumido no admin.
 4. **"React 18"** no inventário — o projeto está em React 19.2.8.
 
+## Adendo — Execução dos Quick Wins (2026-09-02/03)
+
+Aplicado em produção via MCP, cada item simulado antes (transação com ROLLBACK) e validado depois:
+
+1. **RLS das partições + causa raiz** — `ALTER TABLE ... ENABLE ROW LEVEL SECURITY` em `p2026_11`/`p2026_12` e patch no JOB 3 de `fn_purge_spr_history` (toda partição futura nasce com RLS). Validado: `relrowsecurity=true` nas duas; `fn_purge_spr_history()` executa limpa (retorno 0).
+2. **Cron 32 (smoke mensal)** — `fn_run_and_persist_smoke_tests` alinhada à assinatura atual de `fn_run_smoke_tests()` (`TABLE(test_name, result)`; drift desde a simplificação da função). Validado: execução real insere em `smoke_test_runs`.
+3. **Cron 297 (VACUUM)** — comando reescrito como statement único `VACUUM ANALYZE t1,t2,t3,t4` (multi-statement roda em transação no pg_cron e VACUUM é proibido; o job nunca havia executado). Validado empiricamente com job temporário: 2 runs `succeeded`.
+4. **Smokes 31/33/38 desatualizados vs hardening** — esperavam GRANTs que o T38 (`20260514000001`) e os REVOKEs de 2026-06-23/26 removeram de propósito; verificado que zero policies de SELECT avaliáveis por anon usam as 4 fns SECURITY DEFINER e que `fn_pgrst_reload` roda via pg_cron (1.704 runs/30d, 0 falhas) sem precisar de grant. Testes atualizados para o estado endurecido. **Resultado: 38/38 PASS** — a suíte de smoke de produção voltou a ser confiável (e o teste 05 `rls_coverage` volta a vigiar exatamente o tipo de gap do item 1).
+5. **CSP `script-src`** — removido `data:` (vetor de XSS) do `vercel.json`, mantendo `blob:` (workers); asserções de regressão adicionadas em `tests/security/security-headers.test.ts`.
+6. **Uptime Monitor** — `.github/workflows/uptime-monitor.yml` (a cada 15 min: site + edge `health-check` com anon key lida do `client.ts`; falha abre/comenta issue com label `uptime`).
+
+**Veredito PR #1823 (T32 — `style-src` sem `unsafe-inline`): NÃO mergear como está.** Três injetores de `<style>` em runtime quebrariam em produção: `src/utils/proposalPdfReactGenerator.ts:115-117` (`textContent` — PDFs de proposta renderizariam imagens quebradas no html2canvas), `goober` (motor CSS do react-hot-toast) e `sonner` — ambos fazem `createElement("style")`. Caminho para o T32 real: nonce via edge middleware ou migração dos injetores para CSSOM (`sheet.insertRule`), tratado como item próprio de Sprint.
+
 ## Nota Final — 8.0/10
 
 Sistema **acima da média de mercado** para operação 1-dev, com progresso real e verificável desde a r1 (bypass de auth removido, credential SSOT, circuit breakers, ratchet de dead code, tsc zerado). Os bloqueadores do 9 são poucos e cirúrgicos: os **2 ERROR de RLS em partições** (fix de minutos, com correção de causa raiz na função de manutenção), o **PR #1823 parado em draft** segurando CSP e kill switches fora de produção, e o **hot path de ingestão a 1,3s/insert**. Nenhum exige reescrita — todos são hardening pontual sobre uma base sólida.

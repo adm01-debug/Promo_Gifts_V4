@@ -48,6 +48,8 @@ const SKIP_PATTERNS = [
   /\/__tests__\//,
   /\.test\.tsx?$/,
   /\.spec\.tsx?$/,
+  /_test\.tsx?$/,
+  /_contract_test\.tsx?$/,
   /\/tests?\//,
   /\/e2e\//,
   /\/node_modules\//,
