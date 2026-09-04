@@ -7,6 +7,12 @@
       "arguments": "p_id uuid",
       "granted_to": "anon",
       "reason": "RLS policy helper — anon role requires EXECUTE to evaluate catalog browsing row-level security policies. This grant is intentional and necessary for public product catalog access."
+    },
+    {
+      "function_name": "get_quote_token_public",
+      "arguments": "_token text",
+      "granted_to": "anon",
+      "reason": "Portal de aprovação de orçamento (SEC-009, 2026-09-04): substituto seguro de get_quote_token_by_value. Retorna somente campos não-sensíveis (sem PII: client_email, signer_document, signer_ip). EXECUTE para anon é intencional — portal acessado por link de token sem autenticação."
     }
   ]
 }
