@@ -443,6 +443,7 @@ export async function resolveCredential(
         .from("integration_credentials")
         .select("secret_value")
         .eq("secret_name", name)
+        .eq("is_active", true)
         .maybeSingle();
       if (!error && data?.secret_value) {
         const value = data.secret_value as string;
@@ -597,6 +598,7 @@ export async function resolveCredentials(
       const { data, error } = await client
         .from("integration_credentials")
         .select("secret_name, secret_value")
+        .eq("is_active", true)
         .in("secret_name", missing);
 
       if (!error && Array.isArray(data)) {
