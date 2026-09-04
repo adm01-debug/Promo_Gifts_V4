@@ -101,11 +101,10 @@ BEGIN
     'remaining_seconds', 0
   );
 EXCEPTION WHEN OTHERS THEN
-  -- SEC-007: Fail-CLOSED em erro (sem pg_temp no search_path)
+  -- SEC-007: Fail-CLOSED em erro — sem SQLERRM para não vazar detalhes internos a callers anon
   RETURN jsonb_build_object(
     'allowed', false,
     'reason', 'rate_limit_check_error',
-    'error', SQLERRM,
     'remaining_seconds', 0
   );
 END;

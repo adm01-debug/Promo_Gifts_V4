@@ -109,7 +109,7 @@ BEGIN
 
   -- Verificar que autenticado NÃO tem EXECUTE (apenas anon deve ter)
   IF has_function_privilege('authenticated', 'public.get_quote_token_public(text)', 'EXECUTE') THEN
-    RAISE WARNING '[SEC-009] authenticated tem EXECUTE em get_quote_token_public — revisar.';
+    RAISE EXCEPTION '[SEC-009] authenticated tem EXECUTE em get_quote_token_public — drift detectado! Revogar antes de aplicar.';
   ELSE
     RAISE NOTICE '✓ [SEC-009] authenticated não tem EXECUTE em get_quote_token_public (esperado).';
   END IF;
