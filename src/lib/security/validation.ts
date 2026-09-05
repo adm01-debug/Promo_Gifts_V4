@@ -11,6 +11,9 @@ export function sanitizeHtml(html: string): string {
   return DOMPurify.sanitize(html, {
     ALLOWED_TAGS: ['b', 'i', 'u', 'p', 'span', 'br', 'ul', 'ol', 'li', 'strong', 'em'],
     ALLOWED_ATTR: ['class', 'style'],
+    // DOMPurify mantém data-* por padrão mesmo com ALLOWED_ATTR; a allowlist
+    // acima é a intenção completa (auditoria r3, tests/security/html-sanitizer-xss).
+    ALLOW_DATA_ATTR: false,
   });
 }
 
