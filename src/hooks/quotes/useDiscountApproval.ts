@@ -4,7 +4,6 @@
 import { useState, useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { untypedRpc } from '@/lib/supabase-untyped';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { logRlsDenial } from '@/lib/security/rls-denial-logger';
@@ -107,9 +106,9 @@ export function useDiscountApproval() {
           // existe somente para mocks/clients legados sem o método rpc durante o
           // rollout; erro da RPC nunca cai nas escritas multi-etapa antigas.
           if (typeof supabase.rpc === 'function') {
-            const { data, error } = await untypedRpc('request_discount_approval_transactional', {
+            const { data, error } = await supabase.rpc('request_discount_approval_transactional', {
               _quote_id: quoteId,
-              _seller_notes: sellerNotes?.trim() || null,
+              _seller_notes: sellerNotes?.trim() || undefined,
             });
             if (error) {
               await logRlsDenial(error, {
@@ -349,10 +348,10 @@ export function useDiscountApproval() {
       if (!user) return false;
       try {
         if (typeof supabase.rpc === 'function') {
-          const { error } = await untypedRpc('respond_discount_approval_transactional', {
+          const { error } = await supabase.rpc('respond_discount_approval_transactional', {
             _request_id: requestId,
             _approved: approved,
-            _admin_notes: adminNotes?.trim() || null,
+            _admin_notes: adminNotes?.trim() || undefined,
           });
           if (error) {
             await logRlsDenial(error, {

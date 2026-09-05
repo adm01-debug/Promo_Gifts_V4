@@ -4,7 +4,7 @@
  * Loads ~10x faster than useProducts (no color/variant enrichment).
  */
 import { dbInvoke, shouldRetry } from '@/lib/db/postgrest';
-import { untypedRpc } from '@/lib/supabase-untyped';
+import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import { getCatalogStockStatus } from '@/lib/catalog-stock-status';
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
@@ -205,7 +205,7 @@ async function fetchBestSellerCatalogPage(offset: number, sortBy: string): Promi
   const pagesToFetch = isFirstLoad ? CATALOG_BATCH_PAGES : 1;
   const span = CATALOG_PAGE_SIZE * pagesToFetch;
 
-  const { data, error } = await untypedRpc('get_catalog_bestseller_page', {
+  const { data, error } = await supabase.rpc('get_catalog_bestseller_page', {
     p_sort: sortBy,
     p_limit: span,
     p_offset: offset,

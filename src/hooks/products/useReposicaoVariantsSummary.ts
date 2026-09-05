@@ -18,7 +18,7 @@
  */
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { untypedRpc } from '@/lib/supabase-untyped';
+import { supabase } from '@/integrations/supabase/client';
 import { createClientLogger } from '@/lib/telemetry/structuredLogger';
 
 const log = createClientLogger('reposicao.variants-summary');
@@ -88,7 +88,7 @@ export function useReposicaoVariantsSummary(productIds: readonly string[]) {
     gcTime: 5 * 60_000,
     queryFn: async () => {
       try {
-        const { data, error } = await untypedRpc('fn_get_reposicao_variants_summary', {
+        const { data, error } = await supabase.rpc('fn_get_reposicao_variants_summary', {
           p_product_ids: sortedIds,
         });
         if (error) {
@@ -102,7 +102,10 @@ export function useReposicaoVariantsSummary(productIds: readonly string[]) {
           for (const v of row.variants_summary ?? []) {
             const k = normalizeColorKey(v.nome);
             if (!k) {
-              log.warn('variant_sem_nome_de_cor', { variant_id: v.variant_id, product_id: row.product_id });
+              log.warn('variant_sem_nome_de_cor', {
+                variant_id: v.variant_id,
+                product_id: row.product_id,
+              });
               continue;
             }
             inner.set(k, {

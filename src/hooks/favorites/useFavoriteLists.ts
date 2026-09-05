@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { untypedRpc } from '@/lib/supabase-untyped';
 import type { TablesUpdate } from '@/integrations/supabase/types';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
@@ -79,7 +78,8 @@ export function useFavoriteLists() {
       const { error: ensureErr } = await supabase.rpc('ensure_default_favorite_list', {
         _user_id: user.id,
       });
-      if (ensureErr) logger.warn('[favorite-lists] ensure_default_favorite_list failed:', ensureErr);
+      if (ensureErr)
+        logger.warn('[favorite-lists] ensure_default_favorite_list failed:', ensureErr);
 
       const { data, error } = await supabase
         .from('favorite_lists')
@@ -96,7 +96,7 @@ export function useFavoriteLists() {
       const ids = (data ?? []).map((l) => l.id);
       const counts: Record<string, number> = {};
       if (ids.length) {
-        const { data: countRows } = await untypedRpc('get_favorite_list_counts', {
+        const { data: countRows } = await supabase.rpc('get_favorite_list_counts', {
           _user_id: user.id,
         });
         ((countRows as Array<{ list_id: string; item_count: number }> | null) ?? []).forEach(
@@ -365,7 +365,7 @@ export function useFavoriteListItems(listId: string | null) {
             toast.error('Item não encontrado na lixeira');
             return;
           }
-          const { data: rawRestored } = await untypedRpc('restore_favorite_from_trash', {
+          const { data: rawRestored } = await supabase.rpc('restore_favorite_from_trash', {
             _trash_id: trashed.id,
             _user_id: user.id,
           });
@@ -466,10 +466,7 @@ export function useFavoriteTrash() {
       const correlationId = restoreFavoritesLog.generateCorrelationId();
       const startedAt = (typeof performance !== 'undefined' ? performance : Date).now();
       const elapsedMs = () =>
-        Math.round(
-          (typeof performance !== 'undefined' ? performance : Date).now() -
-            startedAt,
-        );
+        Math.round((typeof performance !== 'undefined' ? performance : Date).now() - startedAt);
       restoreFavoritesLog.emit('info', 'restore_start', {
         correlation_id: correlationId,
         snapshot_id: trashId,
@@ -478,7 +475,7 @@ export function useFavoriteTrash() {
       });
       try {
         // Atomic RPC: handles missing original list by falling back to default list
-        const { data: rawData, error } = await untypedRpc('restore_favorite_from_trash', {
+        const { data: rawData, error } = await supabase.rpc('restore_favorite_from_trash', {
           _trash_id: trashId,
           _user_id: user.id,
         });
@@ -531,7 +528,6 @@ export function useFavoriteTrash() {
     },
     onError: (e: Error) => toast.error('Operação falhou', { description: sanitizeError(e) }),
   });
-
 
   const purgeItem = useMutation({
     mutationFn: async (trashId: string) => {
