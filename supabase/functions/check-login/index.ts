@@ -51,7 +51,9 @@ Deno.serve(async (req: Request) => {
     try { body = await req.json(); } catch { /* body vazio — ok */ }
 
     const email      = typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
-    const city       = typeof body.city  === 'string' ? body.city  : null;
+    // City MUST come from a trusted server-set header — never from client body.
+    // Accepting body.city would let any caller bypass city-whitelist enforcement (CWE-807).
+    const city       = req.headers.get('cf-ipcity') ?? null;
     const ipAddress  = extractIP(req);
     const userAgent  = req.headers.get('user-agent') ?? null;
 
