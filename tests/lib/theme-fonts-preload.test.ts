@@ -22,7 +22,7 @@ describe('index.html — preload de fontes', () => {
     expect(indexHtml).toContain('Inter');
   });
 
-  it('usa preload + stylesheet direto para não bloquear render', () => {
+  it('usa preload + stylesheet direto (CSP-compliant, sem onload event handler)', () => {
     expect(indexHtml).toMatch(/rel="preload"\s+as="style"/);
     // onload removido em fix(csp): 5143778 — agora usa preload + stylesheet direto (CSP-compliant)
     expect(indexHtml).toMatch(/rel="stylesheet".*googleapis\.com/);
