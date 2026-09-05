@@ -63,7 +63,7 @@ Deno.serve(async (req: Request) => {
     // Rule to inject X-Cf-Origin-Secret on every request to this function.
     const CF_ORIGIN_SECRET = Deno.env.get('CF_ORIGIN_SECRET') ?? null;
     const cfOriginSecret   = req.headers.get('x-cf-origin-secret');
-    const isTrustedOrigin  = CF_ORIGIN_SECRET !== null && cfOriginSecret === CF_ORIGIN_SECRET;
+    const isTrustedOrigin  = CF_ORIGIN_SECRET !== null && CF_ORIGIN_SECRET !== '' && cfOriginSecret !== null && cfOriginSecret !== '' && cfOriginSecret === CF_ORIGIN_SECRET;
     const city             = isTrustedOrigin ? (req.headers.get('cf-ipcity') ?? null) : null;
     const ipAddress  = extractIP(req);
     const userAgent  = req.headers.get('user-agent') ?? null;
