@@ -7,7 +7,7 @@
 --   Fix: fixar search_path em 'public'.
 
 ALTER FUNCTION public.fn_purge_spr_history(p_keep_days integer)
-  SET search_path = 'public';
+  SET search_path = public, pg_temp;
 
 -- Validação
 DO $$
@@ -20,10 +20,10 @@ BEGIN
   WHERE n.nspname = 'public' AND p.proname = 'fn_purge_spr_history'
   LIMIT 1;
 
-  IF v_config IS NULL OR NOT ('search_path=public' = ANY(v_config)) THEN
+  IF v_config IS NULL OR NOT ('search_path=public, pg_temp' = ANY(v_config)) THEN
     RAISE EXCEPTION 'SEC-011: fn_purge_spr_history ainda sem search_path fixo!';
   END IF;
 
-  RAISE NOTICE '✓ [SEC-011] fn_purge_spr_history: search_path = public confirmado.';
+  RAISE NOTICE '✓ [SEC-011] fn_purge_spr_history: search_path = public, pg_temp confirmado.';
 END;
 $$;

@@ -8,7 +8,7 @@
 --   view_events_read        (TO authenticated, SELECT — admin ou dono do magazine)
 -- ────────────────────────────────────────────────────────────────────────────
 CREATE OR REPLACE FUNCTION public.magazine_ensure_view_event_partitions(
-  _months_ahead integer DEFAULT 2
+  _months_ahead integer DEFAULT 3
 ) RETURNS integer
 LANGUAGE plpgsql
 SECURITY DEFINER
@@ -72,10 +72,12 @@ DECLARE
   _p text;
 BEGIN
   FOREACH _p IN ARRAY _parts LOOP
+    -- Saltar silenciosamente se a partição ainda não existe
+    CONTINUE WHEN to_regclass('public.' || _p) IS NULL;
     -- Adicionar view_events_read se ausente
     IF NOT EXISTS (
       SELECT 1 FROM pg_policy
-      WHERE polrelid = ('public.' || _p)::regclass
+      WHERE polrelid = to_regclass('public.' || _p)
         AND polname = 'view_events_read'
     ) THEN
       EXECUTE format(
@@ -94,7 +96,7 @@ BEGIN
     -- Renomear mpve_all_service → view_events_service_all (consistência)
     IF EXISTS (
       SELECT 1 FROM pg_policy
-      WHERE polrelid = ('public.' || _p)::regclass
+      WHERE polrelid = to_regclass('public.' || _p)
         AND polname = 'mpve_all_service'
     ) THEN
       EXECUTE format(
@@ -123,3 +125,8 @@ REVOKE DELETE, INSERT, UPDATE, TRIGGER, REFERENCES
 REVOKE DELETE, INSERT, UPDATE, TRIGGER, REFERENCES
   ON TABLE public.anon_catalog_grant_audit_log
   FROM authenticated;
+
+-- PUBLIC também herda grants — revogar explicitamente para fechar o bypass
+REVOKE INSERT, UPDATE, DELETE, TRUNCATE, TRIGGER, REFERENCES
+  ON TABLE public.anon_catalog_grant_audit_log
+  FROM PUBLIC;

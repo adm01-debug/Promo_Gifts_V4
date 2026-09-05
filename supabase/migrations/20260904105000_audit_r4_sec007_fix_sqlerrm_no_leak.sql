@@ -12,7 +12,7 @@ CREATE OR REPLACE FUNCTION public.check_login_rate_limit(
 RETURNS jsonb
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = public
+SET search_path = public, pg_temp
 AS $$
 DECLARE
   _max_failures int := 5;
@@ -101,7 +101,7 @@ BEGIN
     SELECT 1 FROM pg_proc
     WHERE proname = 'check_login_rate_limit'
       AND pronamespace = 'public'::regnamespace
-      AND pg_get_functiondef(oid) LIKE '%SQLERRM%'
+      AND pg_get_functiondef(oid) ILIKE '%sqlerrm%'
   ) THEN
     RAISE EXCEPTION 'SEC-007-fix: check_login_rate_limit ainda expõe SQLERRM!';
   END IF;

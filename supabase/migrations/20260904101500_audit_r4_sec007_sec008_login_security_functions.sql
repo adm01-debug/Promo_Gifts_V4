@@ -21,7 +21,7 @@ CREATE OR REPLACE FUNCTION public.check_login_rate_limit(
 RETURNS jsonb
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = public
+SET search_path = public, pg_temp
 AS $$
 DECLARE
   _max_failures int := 5;
