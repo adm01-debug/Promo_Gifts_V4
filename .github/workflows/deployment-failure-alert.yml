@@ -45,7 +45,11 @@ jobs:
           [ -n "$TARGET_URL" ] && BODY="${BODY}
           URL: ${TARGET_URL}"
 
-          PR=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$REF" --state open --json number -q '.[0].number // empty')
+          # O Vercel cria o GitHub Deployment com ref = SHA do commit (não o nome da
+          # branch), então "gh pr list --head" nunca encontrava o PR e toda falha
+          # caía na issue compartilhada. A API commits→pulls resolve pelo SHA.
+          PR=$(gh api "repos/$GITHUB_REPOSITORY/commits/$SHA/pulls" \
+            --jq '[.[] | select(.state == "open")][0].number // empty' 2>/dev/null || true)
           if [ -n "$PR" ]; then
             # Evita spam: 1 comentário por SHA
             if gh pr view "$PR" --repo "$GITHUB_REPOSITORY" --json comments -q '.comments[].body' | grep -q "${SHA:0:7}"; then
@@ -61,6 +65,6 @@ jobs:
           if [ -n "$ISSUE" ]; then
             gh issue comment "$ISSUE" --repo "$GITHUB_REPOSITORY" --body "$BODY"
           else
-            gh issue create --repo "$GITHUB_REPOSITORY" --title "Deploy ${STATE}: ${REF} (${ENVIRONMENT})" \
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "Deploy ${STATE}: ${ENVIRONMENT} ${SHA:0:7}" \
               --label deploy-failure --body "$BODY"
           fi
