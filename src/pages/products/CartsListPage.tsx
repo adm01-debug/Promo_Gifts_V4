@@ -69,7 +69,10 @@ import { useSellerCartContext } from '@/contexts/SellerCartContext';
 import { CartCompanyPickerDialog } from '@/components/cart/CartCompanyPickerDialog';
 import { formatCurrency, getStatusCfg, STATUS_CONFIG } from '@/components/cart/CartUtilComponents';
 import { cn } from '@/lib/utils';
-import { trackQuoteFinalizedFromCart, trackCartCheckoutStarted } from '@/lib/analytics/cartAnalytics';
+import {
+  trackQuoteFinalizedFromCart,
+  trackCartCheckoutStarted,
+} from '@/lib/analytics/cartAnalytics';
 import { maskCnpj } from '@/utils/masks';
 import { useCrmCompanies } from '@/hooks/crm/useCrmCompanies';
 import type { SellerCart, CartStatus } from '@/hooks/products';
@@ -116,6 +119,9 @@ function cartSubtotal(c: SellerCart) {
 function fold(s: string): string {
   return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 }
+
+// Constante de módulo: objeto inline aqui recriava a identidade a cada render.
+const CARTS_URL_KEYS = { status: 'all', deadline: 'all', sort: 'recent', q: '' } as const;
 
 export default function CartsListPage() {
   return (
@@ -199,7 +205,7 @@ function CartsListContent() {
     setSearchInput: setQueryInput,
     clearAll,
   } = useListUrlState({
-    keys: { status: 'all', deadline: 'all', sort: 'recent', q: '' } as const,
+    keys: CARTS_URL_KEYS,
     searchKey: 'q',
     debounceMs: 250,
   });

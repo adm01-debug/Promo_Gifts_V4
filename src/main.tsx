@@ -1,7 +1,7 @@
 import './lib/console-filter';
 import { createRoot } from 'react-dom/client';
 import { HelmetProvider } from 'react-helmet-async';
-import { registerServiceWorker } from '@/lib/sw-register';
+import { registerServiceWorker, scheduleStaleChunkReload } from '@/lib/sw-register';
 import { installGlobalErrorHandlers } from '@/lib/error-reporter';
 import { initSentry } from '@/lib/sentry';
 import { initNavigationMetrics } from '@/lib/telemetry/navigationMetrics';
@@ -33,22 +33,13 @@ if (import.meta.env.DEV) {
 // `vite:preloadError` fires before React can catch it — we reload here
 // so the user silently gets the latest version instead of a blank screen.
 //
-// Cooldown (10 s) prevents infinite-reload loops caused by genuine 404s.
-const _CHUNK_RELOAD_KEY = '__vite_chunk_reload';
+// Cap compartilhado com sw-register/index.html (contador __bare na URL, máx 2
+// reloads em 20s, storage-free). O cooldown anterior de 10s em sessionStorage
+// permitia 1 reload a cada 10s para sempre enquanto o edge servisse HTML antigo.
+// Sem preventDefault: quando o cap estoura o erro segue para lazyWithRetry /
+// GlobalCatcher, que mostram a tela de erro estável.
 window.addEventListener('vite:preloadError', () => {
-  try {
-    const last = sessionStorage.getItem(_CHUNK_RELOAD_KEY);
-    const now = Date.now();
-    if (!last || now - parseInt(last, 10) > 10_000) {
-      sessionStorage.setItem(_CHUNK_RELOAD_KEY, String(now));
-      window.location.reload();
-    }
-  } catch {
-    // sessionStorage unavailable (Safari private mode / iframe sandbox) → reload unconditionally.
-    // Without the cooldown guard, this could loop — but the boot guard in index.html
-    // (URL-based __bare/__bart counter, max 2 reloads) prevents infinite loops.
-    window.location.reload();
-  }
+  scheduleStaleChunkReload();
 });
 // ─────────────────────────────────────────────────────────────────────────────
 

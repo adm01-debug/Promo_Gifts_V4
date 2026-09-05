@@ -14,7 +14,7 @@
  *
  * Consumidores: /orcamentos (useQuotesListPage) e /carrinhos (CartsListPage).
  */
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useDebounce } from '@/hooks/common/useDebounce';
 
@@ -41,8 +41,18 @@ export function useListUrlState<K extends string>(
   // Snapshot estável das chaves — evita loops quando o consumidor passa objeto inline.
   const keyList = useMemo(() => Object.keys(keys) as K[], [keys]);
 
+  // Refs lidas pelo efeito de sync. `keys` costuma chegar inline (CartsListPage,
+  // ComparePage) e `setSearchParams` muda de identidade a cada navegação; se
+  // qualquer um deles fosse dependência do efeito, cada render dispararia
+  // replaceState → nova location → re-render → efeito → loop infinito
+  // ("Throttling navigation to prevent the browser from hanging", crbug 1038223).
+  const keysRef = useRef(keys);
+  keysRef.current = keys;
+  const searchParamsRef = useRef(searchParams);
+  searchParamsRef.current = searchParams;
+
   // Estado local do input textual (digitação fluida antes do debounce).
-  const initialSearch = searchKey ? searchParams.get(searchKey) ?? keys[searchKey] : '';
+  const initialSearch = searchKey ? (searchParams.get(searchKey) ?? keys[searchKey]) : '';
   const [searchInput, setSearchInput] = useState<string>(initialSearch);
   const debouncedSearch = useDebounce(searchInput, debounceMs);
 
@@ -69,11 +79,15 @@ export function useListUrlState<K extends string>(
     [updateParam, keys, searchKey],
   );
 
-  // Sincroniza busca debounced → URL.
+  // Sincroniza busca debounced → URL. Idempotente: só navega se a URL ainda
+  // não reflete o valor (evita replaceState redundante no mount e corta o loop).
   useEffect(() => {
     if (!searchKey) return;
-    updateParam(searchKey, debouncedSearch, keys[searchKey]);
-  }, [debouncedSearch, searchKey, keys, updateParam]);
+    const defaultValue = keysRef.current[searchKey];
+    const target = !debouncedSearch || debouncedSearch === defaultValue ? null : debouncedSearch;
+    if (searchParamsRef.current.get(searchKey) === target) return;
+    updateParam(searchKey, debouncedSearch, defaultValue);
+  }, [debouncedSearch, searchKey, updateParam]);
 
   const clearAll = useCallback(() => {
     if (searchKey) setSearchInput(keys[searchKey]);
