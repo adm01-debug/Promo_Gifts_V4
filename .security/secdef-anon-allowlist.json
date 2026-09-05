@@ -36,7 +36,7 @@
     },
     {
       "fn": "public.get_quote_token_public(_token text)",
-      "reason": "Portal de aprovação (SEC-009, 2026-09-04): substituto seguro de get_quote_token_by_value. Campos retornados: token, quote_id, client_name, signer_name, response_notes (não-PII). Campos redactados: client_email, signer_document, signer_ip, signer_user_agent, signature_hash. Grant anon intencional — portal acessado via link de token sem autenticação."
+      "reason": "Portal de aprovação (SEC-009, 2026-09-04): substituto seguro de get_quote_token_by_value (revogado em 20260904111000). Campos retornados: id, quote_id, token, status, expires_at, client_name, viewed_at, responded_at, response, response_notes, created_at, signer_name, signed_at. Campos redactados (PII): client_email, signer_document, signer_ip, signer_user_agent, signature_hash, ip_address, user_agent, attempts, used_at, is_used, approved, seller_id. Grant anon intencional — portal acessado via link de token sem autenticação."
     },
     {
       "fn": "public.submit_quote_response(_token text, _response text, _response_notes text)",

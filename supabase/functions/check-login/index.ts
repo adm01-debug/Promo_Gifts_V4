@@ -78,13 +78,13 @@ Deno.serve(async (req: Request) => {
     if (error) {
       console.error('[check-login] RPC error:', error.message);
       return new Response(
-        JSON.stringify({ allowed: true, reason: 'security_check_unavailable' }),
-        { status: 200, headers: { ...CORS, 'Content-Type': 'application/json' } }
+        JSON.stringify({ allowed: false, reason: 'security_check_unavailable' }),
+        { status: 403, headers: { ...CORS, 'Content-Type': 'application/json' } }
       );
     }
 
     const row = Array.isArray(data) ? data[0] : data;
-    const allowed = row?.allowed ?? true;
+    const allowed = row?.allowed ?? false;
 
     return new Response(
       JSON.stringify({
@@ -99,8 +99,8 @@ Deno.serve(async (req: Request) => {
   } catch (err) {
     console.error('[check-login] unhandled error:', err);
     return new Response(
-      JSON.stringify({ allowed: true, reason: 'internal_error_fail_open' }),
-      { status: 200, headers: { ...CORS, 'Content-Type': 'application/json', 'X-Request-Id': __reqId } }
+      JSON.stringify({ allowed: false, reason: 'internal_error_fail_closed' }),
+      { status: 403, headers: { ...CORS, 'Content-Type': 'application/json', 'X-Request-Id': __reqId } }
     );
   }
 });
