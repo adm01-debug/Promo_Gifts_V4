@@ -35,8 +35,8 @@
       "reason": "Ranking paginado do catálogo público. Grant canônico confirmado em pg_catalog em 2026-08-29."
     },
     {
-      "fn": "public.get_quote_token_public(_token text)",
-      "reason": "Portal de aprovação (SEC-009, 2026-09-04): substituto seguro de get_quote_token_by_value. Retorna só campos não-sensíveis — sem client_email, signer_document, signer_ip. Grant anon intencional para acesso via link de token sem autenticação."
+      "fn": "public.get_quote_token_public(text)",
+      "reason": "Portal de aprovação (SEC-009, 2026-09-04): substituto seguro de get_quote_token_by_value. Campos retornados: token, quote_id, client_name, signer_name, response_notes (não-PII). Campos redactados: client_email, signer_document, signer_ip, signer_user_agent, signature_hash. Grant anon intencional — portal acessado via link de token sem autenticação."
     },
     {
       "fn": "public.submit_quote_response(_token text, _response text, _response_notes text)",

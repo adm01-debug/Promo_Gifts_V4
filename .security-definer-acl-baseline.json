@@ -12,7 +12,7 @@
       "function_name": "get_quote_token_public",
       "arguments": "_token text",
       "granted_to": "anon",
-      "reason": "Portal de aprovação de orçamento (SEC-009, 2026-09-04): substituto seguro de get_quote_token_by_value. Retorna somente campos não-sensíveis (sem PII: client_email, signer_document, signer_ip). EXECUTE para anon é intencional — portal acessado por link de token sem autenticação."
+      "reason": "Portal de aprovação de orçamento (SEC-009, 2026-09-04): substituto seguro de get_quote_token_by_value. Campos retornados intencionalmente: token, quote_id, client_name, signer_name, response_notes. Campos redactados (PII sensível): client_email, signer_document, signer_ip, signer_user_agent, signature_hash. EXECUTE para anon necessário — portal acessado por link de token sem autenticação pelo portador."
     }
   ]
 }
