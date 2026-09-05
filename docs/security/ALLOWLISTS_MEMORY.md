@@ -4,7 +4,7 @@
 > Este arquivo é referenciado pelo gate `check-allowlist-memory-crosscheck` (CI).
 > Toda entrada em allowlist DEVE ter contrapartida documentada aqui — caso contrário, o gate falha.
 
-Última atualização: 2026-09-03
+Última atualização: 2026-09-04
 
 ---
 

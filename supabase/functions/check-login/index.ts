@@ -51,13 +51,20 @@ Deno.serve(async (req: Request) => {
     try { body = await req.json(); } catch { /* body vazio — ok */ }
 
     const email      = typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
-    // City MUST come from a trusted server-set header — never from client body.
-    // cf-ipcity is trustworthy ONLY when proxied through Cloudflare.
-    // Guard: if cf-ray is absent the request bypassed Cloudflare, meaning any
-    // cf-ipcity header is caller-controlled — treat city as null (unknown).
-    // fn_check_login_allowed fails-closed on null city when city_whitelist_enabled=true.
-    const cfRay      = req.headers.get('cf-ray');
-    const city       = cfRay ? (req.headers.get('cf-ipcity') ?? null) : null;
+    // City MUST come from a trusted Cloudflare-proxied header — never from client body.
+    // cf-ray alone is NOT sufficient: any caller can forge arbitrary headers on direct
+    // Supabase URL calls, including cf-ray and cf-ipcity.
+    // Guard: verify a pre-shared secret that Cloudflare Transform Rules inject as
+    // X-Cf-Origin-Secret. Only when this secret matches CF_ORIGIN_SECRET (Supabase
+    // Edge Function secret) do we trust cf-ipcity as Cloudflare-authoritative.
+    // Without a matching secret, city = null — fn_check_login_allowed fails-closed
+    // when city_whitelist_enabled=true, blocking the login from an unknown city.
+    // Ops: set CF_ORIGIN_SECRET in Supabase secrets and configure Cloudflare Transform
+    // Rule to inject X-Cf-Origin-Secret on every request to this function.
+    const CF_ORIGIN_SECRET = Deno.env.get('CF_ORIGIN_SECRET') ?? null;
+    const cfOriginSecret   = req.headers.get('x-cf-origin-secret');
+    const isTrustedOrigin  = CF_ORIGIN_SECRET !== null && cfOriginSecret === CF_ORIGIN_SECRET;
+    const city             = isTrustedOrigin ? (req.headers.get('cf-ipcity') ?? null) : null;
     const ipAddress  = extractIP(req);
     const userAgent  = req.headers.get('user-agent') ?? null;
 
