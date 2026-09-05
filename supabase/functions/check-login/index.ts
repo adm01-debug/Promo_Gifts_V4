@@ -52,8 +52,12 @@ Deno.serve(async (req: Request) => {
 
     const email      = typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
     // City MUST come from a trusted server-set header — never from client body.
-    // Accepting body.city would let any caller bypass city-whitelist enforcement (CWE-807).
-    const city       = req.headers.get('cf-ipcity') ?? null;
+    // cf-ipcity is trustworthy ONLY when proxied through Cloudflare.
+    // Guard: if cf-ray is absent the request bypassed Cloudflare, meaning any
+    // cf-ipcity header is caller-controlled — treat city as null (unknown).
+    // fn_check_login_allowed fails-closed on null city when city_whitelist_enabled=true.
+    const cfRay      = req.headers.get('cf-ray');
+    const city       = cfRay ? (req.headers.get('cf-ipcity') ?? null) : null;
     const ipAddress  = extractIP(req);
     const userAgent  = req.headers.get('user-agent') ?? null;
 
