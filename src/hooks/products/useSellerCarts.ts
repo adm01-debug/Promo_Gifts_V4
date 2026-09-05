@@ -7,6 +7,7 @@ import { useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { untypedRpc } from '@/lib/supabase-untyped';
+import { CartVersionConflictError } from '@/lib/carts/cart-version-conflict';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { sanitizeError } from '@/lib/security/sanitize-error';
@@ -15,6 +16,8 @@ import { isBadJwtError, maybeRecoverFromError } from '@/lib/auth/session-recover
 import { SELLER_CART_TOASTS } from './sellerCartToasts';
 
 const cartDeleteLog = createClientLogger('cart.delete');
+
+export { CartVersionConflictError } from '@/lib/carts/cart-version-conflict';
 
 /** Sentinel: DELETE respondeu 2xx mas nenhuma linha foi removida (RLS silencioso ou id já removido). */
 export class CartDeleteZeroRowsError extends Error {
@@ -64,6 +67,13 @@ export interface SellerCart {
   shipping_deadline: string | null;
   created_at: string;
   updated_at: string;
+  /**
+   * Coluna `seller_carts.version`, incrementada pelo trigger
+   * `trg_seller_carts_version` a cada UPDATE real. Optimistic lock das mutações
+   * de campos do carrinho (notas, status, prazo). Opcional: fixtures e caches
+   * anteriores à coluna não a têm — nesse caso a mutação não condiciona.
+   */
+  version?: number;
   items: SellerCartItem[];
   /**
    * Correlation ID transitório (não persistido) atribuído em `deleteCart` e
@@ -171,6 +181,18 @@ interface ErrorWithPostgrestShape {
 }
 
 const QUERY_KEY = 'seller-carts';
+
+/**
+ * Subconjunto estrutural do builder devolvido por
+ * `supabase.from('seller_carts').update(...)` usado pelo guard de versão.
+ */
+type SellerCartUpdateBuilder = PromiseLike<{ error: Error | null }> & {
+  eq: (column: 'id' | 'version', value: number | string) => SellerCartUpdateBuilder;
+  select: (columns: 'id') => PromiseLike<{ data: { id: string }[] | null; error: Error | null }>;
+};
+
+const describeCartError = (err: unknown): string =>
+  err instanceof CartVersionConflictError ? err.message : sanitizeError(err);
 
 // ============================================
 // INVARIANTE DE QUANTIDADE (espelha o CHECK do banco: 1 <= quantity <= 999999)
@@ -431,6 +453,25 @@ export function useSellerCarts() {
     enabled: !!userId,
     staleTime: 30 * 1000,
   });
+
+  // Optimistic locking: quando o cache conhece `version`, o UPDATE só se aplica
+  // se o banco ainda estiver nessa versão (0 linhas = outra aba/dispositivo
+  // salvou antes → CartVersionConflictError + refetch). Sem versão no cache,
+  // comportamento anterior (UPDATE incondicional por id).
+  const applyCartUpdate = async (update: SellerCartUpdateBuilder, cartId: string) => {
+    const expected = (cartsQuery.data ?? []).find((c) => c.id === cartId)?.version;
+    if (typeof expected !== 'number') {
+      const { error } = await update.eq('id', cartId);
+      if (error) throw error;
+      return;
+    }
+    const { data, error } = await update.eq('id', cartId).eq('version', expected).select('id');
+    if (error) throw error;
+    if (!data?.length) {
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEY, userId] });
+      throw new CartVersionConflictError();
+    }
+  };
 
   // Create cart
   const createCart = useMutation({
@@ -741,17 +782,15 @@ export function useSellerCarts() {
   // Update cart notes
   const updateCartNotes = useMutation({
     mutationFn: async ({ cartId, notes }: { cartId: string; notes: string }) => {
-      const { error } = await supabase
-        .from('seller_carts')
-        .update({ notes: notes || null })
-        .eq('id', cartId);
-      if (error) throw error;
+      await applyCartUpdate(supabase.from('seller_carts').update({ notes: notes || null }), cartId);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY, userId] });
     },
     onError: (err: Error) => {
-      toast.error('Não foi possível salvar as observações', { description: sanitizeError(err) });
+      toast.error('Não foi possível salvar as observações', {
+        description: describeCartError(err),
+      });
     },
   });
 
@@ -773,14 +812,13 @@ export function useSellerCarts() {
         (err as Error & { code?: string }).code = 'EMPTY_CART';
         throw err;
       }
-      const { error } = await supabase.from('seller_carts').update({ status }).eq('id', cartId);
-      if (error) throw error;
+      await applyCartUpdate(supabase.from('seller_carts').update({ status }), cartId);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY, userId] });
     },
     onError: (err: Error) => {
-      toast.error('Não foi possível atualizar o status', { description: sanitizeError(err) });
+      toast.error('Não foi possível atualizar o status', { description: describeCartError(err) });
     },
   });
 
@@ -799,17 +837,18 @@ export function useSellerCarts() {
       if (!parsed.success) {
         throw new Error(parsed.error.errors[0]?.message ?? 'Data inválida.');
       }
-      const { error } = await supabase
-        .from('seller_carts')
-        .update({ shipping_deadline: parsed.data })
-        .eq('id', cartId);
-      if (error) throw error;
+      await applyCartUpdate(
+        supabase.from('seller_carts').update({ shipping_deadline: parsed.data }),
+        cartId,
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY, userId] });
     },
     onError: (err: Error) => {
-      toast.error('Não foi possível salvar o prazo p/ envio', { description: sanitizeError(err) });
+      toast.error('Não foi possível salvar o prazo p/ envio', {
+        description: describeCartError(err),
+      });
     },
   });
 

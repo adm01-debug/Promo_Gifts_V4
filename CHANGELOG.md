@@ -20,6 +20,7 @@ Relatórios em [`docs/reports/`](./docs/reports/README.md). Nota ponderada 7.8 �
 - **#1827** CSP: hashes sha256 para os 2 inline scripts e remoção do handler `onload`.
 - **#1828** r4: SEC-001, GAP-FUNC, BUG-1; guard da `fn_run_and_persist_smoke_tests` por role.
 - **#1830** relatório r3 (8.1/10) + execução: `secret_scanning_push_protection` ligado, `delete_branch_on_merge`, optimistic locking em `seller_carts`, guard de rate limit para INSERT anônimo (6 tabelas de telemetria), REVOKE anon em `analytics.mv_product_compositions`, cron `pgrst-schema-reload` de 15 min → hora, Lighthouse medindo `/` além de `/auth`, alerta de deploy falho, uptime cobrindo `check-login`, `types.ts` regenerado, `STATUS.md` aposentado, `docs/incident-response.md`, `docs/runbooks/` fundido em `docs/RUNBOOKS/`.
+- `useSellerCarts`: mutações de notas/status/prazo condicionadas a `seller_carts.version` (optimistic locking; 0 linhas → `CartVersionConflictError` + refetch), com teste de contrato `useSellerCarts.versionGuard.test.tsx`.
 - Em aberto: **#1829** (SEC-006..010 — migrations já aplicadas no banco, código da edge `check-login` fail-closed pendente de merge + `CF_ORIGIN_SECRET`); #1823 fechado em favor de #1831 (T32 real via nonce/CSSOM).
 
 ### 🔍 Auditoria Exaustiva — Módulo BUSCA GLOBAL (2026-05-27)
