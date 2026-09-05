@@ -1,6 +1,17 @@
 // public/sw.js
 // Service Worker para Gifts Store PWA
-// Versão: 3.9.0
+// Versão: 3.10.0
+//
+// CHANGELOG v3.10.0 (2026-09-05 — fix/favoritespage-chunk-load):
+//   BUG-SW-22 FIX [CRÍTICO]: após handleStaleChunk() o reload buscava
+//     /index.html com cache:'no-cache' — o edge do Vercel (x-vercel-cache: HIT)
+//     ainda podia devolver o HTML do deploy anterior por alguns segundos,
+//     referenciando chunks que já davam 404 → 503 "Stale Chunk" → reload →
+//     mesmo HTML → loop até o cap do boot guard (__bare=2), e tela quebrada.
+//     Fix: quando a navegação carrega __bare (retry do boot guard/sw-register)
+//     ou um chunk stale foi detectado nos últimos 120s, o SW busca
+//     /index.html?__swbust=<ts> com cache:'no-store'. A query string faz parte
+//     da cache key do edge → MISS → HTML fresco do deploy corrente.
 //
 // CHANGELOG v3.9.0 (2026-06-28 — fix/sw-503-stale-chunk-detection):
 //   BUG-SW-14 FIX [CRÍTICO]: looksStale() não detectava res.status === 503.
@@ -86,7 +97,7 @@
 //   Supabase API (.supabase.co)        → Network Only (dados dinâmicos)
 //   Resto                              → Stale-While-Revalidate + fallback     ← v3.3.0
 
-const CACHE_VERSION = 'v16'; // v3.9.0 — BUG-SW-14/15 looksStale captura 503+5xx; BUG-SW-21 handleStaleChunk .catch()
+const CACHE_VERSION = 'v17'; // v3.10.0 — BUG-SW-22 index.html com cache-bust em navegação de retry/pós-stale
 const CACHE_NAME = `app-cache-${CACHE_VERSION}`;
 const IMAGE_CACHE_NAME = `images-cache-${CACHE_VERSION}`;
 const FONT_CACHE_NAME = `fonts-cache-${CACHE_VERSION}`;
@@ -252,7 +263,24 @@ function isImageExpired(response) {
   return Date.now() - new Date(date).getTime() > IMAGE_CACHE_TTL;
 }
 
+// BUG-SW-22: instante da última detecção de chunk obsoleto. Enquanto recente,
+// navegações buscam index.html furando o cache do edge (ver indexRequestFor).
+let lastStaleAt = 0;
+const STALE_BUST_WINDOW_MS = 120000;
+
+// Decide como buscar o index.html numa navegação:
+//   - normal → '/index.html' com cache:'no-cache' (revalida no HTTP cache);
+//   - retry (__bare na URL) ou pós-stale → '/index.html?__swbust=<ts>' com
+//     cache:'no-store', que é MISS garantido no edge do Vercel.
+function indexRequestFor(navUrl) {
+  const retrying = navUrl.searchParams.has('__bare');
+  const recentlyStale = lastStaleAt > 0 && Date.now() - lastStaleAt < STALE_BUST_WINDOW_MS;
+  if (!retrying && !recentlyStale) return ['/index.html', { cache: 'no-cache' }];
+  return ['/index.html?__swbust=' + Date.now(), { cache: 'no-store' }];
+}
+
 function handleStaleChunk(chunkUrl) {
+  lastStaleAt = Date.now();
   caches.open(CACHE_NAME).then((c) => {
     c.delete('/index.html');
     c.delete('/');
@@ -411,8 +439,9 @@ self.addEventListener('fetch', (event) => {
 
   // ── B) Navigation (SPA) → Network First + cache fallback ──────────────────
   if (request.mode === 'navigate') {
+    const [indexUrl, indexInit] = indexRequestFor(url);
     event.respondWith(
-      fetch('/index.html', { cache: 'no-cache' })
+      fetch(indexUrl, indexInit)
         .then((res) => {
           if (res && res.ok) {
             const indexClone = res.clone();

@@ -3,8 +3,52 @@
 import { logger } from '@/lib/logger';
 import { swConfirmedStaleUrls } from '@/lib/chunk-recovery';
 
-// Guard: prevents concurrent reload loops if multiple SW_STALE_CHUNK messages arrive.
-let _staleChunkReloadScheduled = false;
+// ── Reload de recuperação com cap storage-free ────────────────────────────────
+// Mesmo contrato do boot guard inline em index.html: contador de tentativas na
+// URL (__bare) + epoch da 1ª tentativa (__bart). Sobrevive a reloads sem
+// sessionStorage e fecha o loop que existia aqui: o guard em memória
+// (_staleChunkReloadScheduled) zerava a cada reload, então com o edge do
+// Vercel ainda servindo HTML antigo o SW disparava reload → 503 → reload …
+// sem fim. O SW lê __bare na navegação e busca /index.html com cache-bust.
+const RELOAD_PARAM = '__bare';
+const RELOAD_TS_PARAM = '__bart';
+const RELOAD_MAX = 2;
+const RELOAD_WINDOW_MS = 20_000;
+const RELOAD_DELAY_MS = 300;
+let _reloadScheduled = false;
+
+/**
+ * Agenda um reload de recuperação de chunk. Retorna false quando o cap
+ * (2 reloads em 20s) foi atingido — o caller deve deixar o erro subir para
+ * o ErrorBoundary/GlobalCatcher em vez de insistir.
+ */
+export function scheduleStaleChunkReload(): boolean {
+  if (_reloadScheduled) return true;
+  let url: URL;
+  try {
+    url = new URL(window.location.href);
+  } catch {
+    _reloadScheduled = true;
+    window.setTimeout(() => window.location.reload(), RELOAD_DELAY_MS);
+    return true;
+  }
+  const now = Date.now();
+  let n = parseInt(url.searchParams.get(RELOAD_PARAM) ?? '', 10);
+  let firstAt = parseInt(url.searchParams.get(RELOAD_TS_PARAM) ?? '', 10);
+  if (!Number.isFinite(n) || n < 0) n = 0;
+  if (!Number.isFinite(firstAt) || firstAt < 0) firstAt = 0;
+  if (n === 0 || !firstAt || now - firstAt > RELOAD_WINDOW_MS) {
+    n = 0;
+    firstAt = now;
+  }
+  if (n >= RELOAD_MAX) return false;
+  url.searchParams.set(RELOAD_PARAM, String(n + 1));
+  url.searchParams.set(RELOAD_TS_PARAM, String(firstAt));
+  _reloadScheduled = true;
+  // 300ms: deixa o React registrar o erro (Sentry) antes de sair da página.
+  window.setTimeout(() => window.location.replace(url.toString()), RELOAD_DELAY_MS);
+  return true;
+}
 
 /**
  * Registra Service Worker para PWA
@@ -62,18 +106,11 @@ export async function registerServiceWorker(): Promise<void> {
             '🔄 [SW] Chunk desatualizado detectado — recarregando para obter chunks atualizados:',
             event.data.url,
           );
-          // Throttle: apenas 1 reload por 10s para evitar loops.
-          if (!_staleChunkReloadScheduled) {
-            _staleChunkReloadScheduled = true;
-            // Aguarda 300ms para deixar o React registrar o erro (se houver)
-            // antes do reload. Isso facilita a depuração em logs de Sentry.
-            setTimeout(() => {
-              window.location.reload();
-            }, 300);
-            // Reset do guard após 10s (caso o reload falhe por alguma razão)
-            setTimeout(() => {
-              _staleChunkReloadScheduled = false;
-            }, 10_000);
+          if (!scheduleStaleChunkReload()) {
+            logger.error(
+              '[SW] cap de reloads de recuperação atingido — HTML do edge continua obsoleto',
+              { url: staleUrl },
+            );
           }
         }
       });
@@ -122,8 +159,9 @@ export function isPWA(): boolean {
 
   // iOS Safari: navigator.standalone é boolean quando instalado como PWA.
   // Cast necessário: propriedade não-standard ausente do tipo Navigator TS.
-  const iosStandalone =
-    Boolean((window.navigator as unknown as Record<string, unknown>).standalone);
+  const iosStandalone = Boolean(
+    (window.navigator as unknown as Record<string, unknown>).standalone,
+  );
 
   return standaloneQuery || iosStandalone;
 }
