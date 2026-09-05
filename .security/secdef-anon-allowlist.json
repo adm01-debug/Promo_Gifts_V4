@@ -37,6 +37,10 @@
     {
       "fn": "public.submit_quote_response(_token text, _response text, _response_notes text)",
       "reason": "Resposta pública de orçamento protegida por token opaco e validação interna. Grant canônico confirmado em pg_catalog em 2026-08-29."
+    },
+    {
+      "fn": "public.fn_check_login_allowed(p_email text, p_ip_address text, p_city text, p_user_agent text)",
+      "reason": "REVOGAÇÃO PENDENTE — migration 20260904150000 (PR #1829) executa REVOKE de anon/authenticated/PUBLIC. Grant ainda existe no DB de produção pois a migration ainda não foi aplicada. Remover esta entrada após o deploy pós-merge da migration. (SEC-008v4, 2026-09-04)"
     }
   ]
 }
