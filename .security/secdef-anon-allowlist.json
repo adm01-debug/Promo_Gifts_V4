@@ -7,10 +7,6 @@
       "reason": "Fluxo pré-autenticação: aplica rate limit antes da sessão existir. Grant canônico confirmado em pg_catalog em 2026-08-29."
     },
     {
-      "fn": "public.fn_check_login_allowed(p_email text, p_ip_address text, p_city text, p_user_agent text)",
-      "reason": "Fluxo pré-autenticação: valida bloqueios de login antes da sessão existir. Grant canônico confirmado em pg_catalog em 2026-08-29."
-    },
-    {
       "fn": "public.fn_global_search(p_term text, p_limit integer, p_types text[])",
       "reason": "Busca do catálogo público; retorna somente projeções expostas ao visitante. Grant canônico confirmado em pg_catalog em 2026-08-29."
     },
