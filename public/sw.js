@@ -1,6 +1,20 @@
 // public/sw.js
 // Service Worker para Gifts Store PWA
-// Versão: 3.10.0
+// Versão: 3.11.0
+//
+// CHANGELOG v3.11.0 (2026-09-05 — fix/favoritespage-chunk-load):
+//   BUG-SW-23 FIX [BAIXO]: DevTools acusava "A preload for '...' is found,
+//     but is not used because it is a cross-world service worker resource
+//     mismatch" para /assets/rolldown-runtime-*.js e /assets/runtime-vendor-*.js.
+//     Esses 2 chunks (runtime do Rolldown + preload-helper) são sempre
+//     modulepreloaded no index.html; ao interceptá-los, o SC C (cache-first)
+//     devolve uma Response criada no realm do worker, diferente da que
+//     satisfez o preload no realm do documento — daí o aviso. Como
+//     /assets/*.js já tem Cache-Control: immutable, max-age=31536000 via
+//     vercel.json, o cache HTTP nativo do browser já cobre esses 2 arquivos;
+//     a interceptação do SW aqui era redundante. Fix: bypass total (sem
+//     event.respondWith) para esses 2 nomes — os demais chunks (lazy de
+//     rota, alvo real do recovery de stale-chunk) continuam sob o SW.
 //
 // CHANGELOG v3.10.0 (2026-09-05 — fix/favoritespage-chunk-load):
 //   BUG-SW-22 FIX [CRÍTICO]: após handleStaleChunk() o reload buscava
@@ -97,7 +111,7 @@
 //   Supabase API (.supabase.co)        → Network Only (dados dinâmicos)
 //   Resto                              → Stale-While-Revalidate + fallback     ← v3.3.0
 
-const CACHE_VERSION = 'v17'; // v3.10.0 — BUG-SW-22 index.html com cache-bust em navegação de retry/pós-stale
+const CACHE_VERSION = 'v18'; // v3.11.0 — BUG-SW-23 bypass de runtime bootstrap chunks (cross-world preload)
 const CACHE_NAME = `app-cache-${CACHE_VERSION}`;
 const IMAGE_CACHE_NAME = `images-cache-${CACHE_VERSION}`;
 const FONT_CACHE_NAME = `fonts-cache-${CACHE_VERSION}`;
@@ -165,6 +179,17 @@ function responseLooksLikeHtml(res) {
 
 function isHashedAsset(pathname) {
   return pathname.startsWith('/assets/') && HASHED_ASSET_EXT_RE.test(pathname);
+}
+
+// BUG-SW-23 FIX: chunks de runtime/interop sempre modulepreloaded no
+// index.html. Interceptá-los no SW causa "cross-world service worker
+// resource mismatch" no DevTools (Response do worker != a que satisfez o
+// preload no documento). /assets/*.js já é immutable via vercel.json, então
+// o cache HTTP nativo do browser cobre estes 2 arquivos sem o SW.
+const RUNTIME_BOOTSTRAP_RE = /^\/assets\/(?:rolldown-runtime|runtime-vendor)-[^/]+\.[cm]?js$/;
+
+function isRuntimeBootstrapAsset(pathname) {
+  return RUNTIME_BOOTSTRAP_RE.test(pathname);
 }
 
 // Resposta para chunk obsoleto/ausente: status 503 + Content-Type correto para
@@ -418,6 +443,10 @@ self.addEventListener('fetch', (event) => {
 
   if (request.method !== 'GET') return;
   if (shouldSkipCache(request)) return;
+
+  // BUG-SW-23 FIX: bypass total (sem respondWith) para os 2 chunks de
+  // bootstrap — ver isRuntimeBootstrapAsset acima.
+  if (isRuntimeBootstrapAsset(url.pathname)) return;
 
   // ── A) Google Fonts → Stale-While-Revalidate ──────────────────────────────
   if (isGoogleFont(url)) {
