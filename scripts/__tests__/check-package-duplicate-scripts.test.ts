@@ -76,12 +76,12 @@ describe('scripts/check-package-duplicate-scripts.mjs', () => {
     expect(result.duplicates).toEqual([]);
   });
 
-  it('confere que o pacote real ainda expõe 234 scripts distintos via JSON parse', () => {
+  it('confere que o pacote real ainda expõe 235 scripts distintos via JSON parse', () => {
     const pkg = JSON.parse(readFileSync(REPO_PACKAGE_JSON, 'utf8')) as {
       scripts: Record<string, string>;
     };
 
-    expect(Object.keys(pkg.scripts)).toHaveLength(234);
+    expect(Object.keys(pkg.scripts)).toHaveLength(235);
   });
 
   it('mantém o CLI funcional no sandbox com package.json válido', () => {

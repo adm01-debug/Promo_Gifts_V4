@@ -47,6 +47,8 @@ try {
 // SECURITY DEFINER finding is suppressed.
 const intentionalFindings = new Set([
   'fn_product_active_for_rls|p_id uuid|anon has EXECUTE (not in public-intent whitelist)|anon',
+  // SEC-009 (2026-09-04): substituto seguro de get_quote_token_by_value — expõe só campos não-PII
+  'get_quote_token_public|_token text|anon has EXECUTE (not in public-intent whitelist)|anon',
 ]);
 
 const findingKey = (row) => [

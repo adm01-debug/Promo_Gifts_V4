@@ -1,0 +1,39 @@
+{
+  "$comment": "Contrato de colunas das 8 views SECURITY DEFINER expostas ao anon (catálogo público). Snapshot pg_catalog de 2026-09-05 (auditoria r3). Toda mudança nestas views exige atualizar este arquivo no mesmo PR; `node scripts/check-public-views-columns.mjs --live <json>` compara com o banco.",
+  "query": "select c.relname, array_agg(a.attname order by a.attnum) as columns from pg_class c join pg_namespace n on n.oid=c.relnamespace join pg_attribute a on a.attrelid=c.oid and a.attnum>0 and not a.attisdropped where n.nspname='public' and c.relkind='v' and c.relname = any($1) group by 1 order by 1",
+  "views": {
+    "v_kit_component_media_public": {
+      "columns": ["kit_component_id", "kit_product_id", "component_product_id", "component_code", "component_name", "primary_image_url", "images", "display_order"],
+      "forbidden": []
+    },
+    "v_product_compositions_public": {
+      "columns": ["product_id", "product_name", "total_materials", "total_percentage", "materials_detail"],
+      "forbidden": []
+    },
+    "v_product_properties_public": {
+      "columns": ["id", "product_id", "property_code", "property_value", "source"],
+      "forbidden": []
+    },
+    "v_product_tags_public": {
+      "columns": ["id", "product_id", "tag_id"],
+      "forbidden": []
+    },
+    "v_products_public": {
+      "columns": ["id", "name", "description", "sku", "category_id", "supplier_id", "cost_price", "sale_price", "stock_quantity", "active", "created_at", "updated_at", "suggested_price", "dimensions", "images", "primary_image_url", "videos", "allows_personalization", "colors", "materials", "tags", "meta_title", "meta_description", "meta_keywords", "is_featured", "is_new", "is_on_sale", "view_count", "favorite_count", "order_count", "organization_id", "product_type", "is_active", "created_by", "updated_by", "sku_promo", "short_description", "main_category_id", "brand", "is_deleted", "deleted_at", "is_kit", "is_bestseller", "min_quantity", "box_length_mm", "box_width_mm", "box_height_mm", "box_weight_kg", "has_colors", "has_sizes", "ean", "gtin", "ncm_code", "origin_country", "warranty_months", "manufacturer_sku", "last_stock_update_at", "supplier_reference", "is_textil", "has_capacity", "combined_sizes", "gender", "is_stockout", "is_online_exclusive", "catalog_page", "weight_g", "length_cm", "width_cm", "height_cm", "dimensions_display", "box_length_cm", "box_width_cm", "box_height_cm", "box_volume_cm3", "box_quantity", "box_inner_quantity", "packing_type", "repacking_type", "capacities", "last_sync_at", "last_sync_supplier_id", "sync_status", "diameter_cm", "shape_type", "internal_height_cm", "internal_width_cm", "internal_length_cm", "internal_diameter_cm", "packaging_material", "packaging_color", "has_inner_cradle", "cradle_material", "packaging_finish", "is_imported", "lead_time_days", "requires_minimum_order", "supply_mode", "is_thermal", "capacity_ml", "slug", "ai_summary", "key_benefits", "use_cases", "target_audience", "schema_json", "canonical_url", "robots_meta", "seo_score", "seo_last_audit_at", "seo_issues", "og_title", "og_description", "og_image_url", "description_packaging_info", "has_optional_packaging", "optional_packaging_ref", "packing_classification", "ipi_rate", "tax_reference_state", "engraving_type", "supplier_updated_at", "has_gift_box", "min_order_quantity", "ai_title", "ai_description", "ai_version", "ai_generated_at", "ai_model", "box_image", "repacking_classification", "has_commercial_packaging", "packaging_context", "bitrix_product_id", "novelty_detected_at", "novelty_expires_at", "ncm_id", "bitrix_images_synced_at", "is_featured_expires_at", "is_bestseller_expires_at", "is_on_sale_expires_at", "is_new_expires_at", "supplier_product_url", "freight_class", "cubic_weight", "auto_category", "auto_material", "classification_confidence", "price_updated_at", "external_id", "price_freshness_threshold_days", "set_image_url", "is_seasonal", "pvc_free", "supplier_type", "supplier_subtype", "supplier_type_code", "supplier_subtype_code", "price_verified_at", "circumference_cm", "search_vector", "primary_image_fallback_url", "leaf_category_id", "leaf_category_name", "leaf_category_level", "leaf_category_slug", "leaf_category_id_safe", "color_swatches", "dimensions_source", "default_carrier", "shipping_weight_kg", "shipping_width_cm", "shipping_height_cm", "shipping_length_cm", "requires_special_shipping", "shipping_notes", "icms_rate", "pis_rate", "cofins_rate", "cfop", "csosn", "cest", "tax_regime"],
+      "masked_null": ["cost_price", "organization_id", "created_by", "updated_by"],
+      "forbidden": []
+    },
+    "v_suppliers_public": {
+      "columns": ["id", "name", "code", "trading_name", "logo_url", "website", "active", "is_product_supplier", "is_engraving_supplier", "state_uf", "low_stock_threshold"],
+      "forbidden": ["api_credentials", "api_base_url", "default_markup_percent", "cnpj", "email", "phone", "api_key", "api_token", "password"]
+    },
+    "v_tabela_preco_gravacao_oficial_public": {
+      "columns": ["id", "codigo_tabela", "codigo", "codigo_curto", "nome", "nome_grupo", "descricao", "grupo_tecnica", "cobra_por_cor", "max_cores", "desconto_segunda_cor", "desconto_terceira_cor", "desconto_quarta_cor_mais", "preco_minimo_unitario", "preco_maximo_unitario", "cobra_por_area", "area_maxima_cm2", "area_maxima_texto", "cobra_por_pontos", "max_pontos", "usa_faixa_dimensional", "opcoes_modificadores", "tom_options", "cobra_aplicacao", "cobra_queima_forno", "cobra_termo_transferencia", "custo_setup_por_cor", "custo_manuseio_por_peca", "quantidade_corte", "tipo_setup", "validade_inicio", "validade_fim", "ordem_exibicao", "tecnica_variante_id", "ativo", "created_at", "updated_at"],
+      "forbidden": ["custo_setup", "markup_percent", "custo_aplicacao", "custo_termo_transferencia", "custo_queima_forno", "faturamento_minimo"]
+    },
+    "v_variant_sale_prices_public": {
+      "columns": ["variant_id", "product_id", "sku", "color_name", "min_qty_1", "sale_price_1", "min_qty_2", "sale_price_2", "min_qty_3", "sale_price_3", "min_qty_4", "sale_price_4", "min_qty_5", "sale_price_5"],
+      "forbidden": ["cost_price", "markup", "markup_percent", "supplier_cost", "unit_cost"]
+    }
+  }
+}

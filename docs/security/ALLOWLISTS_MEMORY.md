@@ -4,7 +4,7 @@
 > Este arquivo é referenciado pelo gate `check-allowlist-memory-crosscheck` (CI).
 > Toda entrada em allowlist DEVE ter contrapartida documentada aqui — caso contrário, o gate falha.
 
-Última atualização: 2026-09-03
+Última atualização: 2026-09-04
 
 ---
 
@@ -145,5 +145,5 @@ exige atualizar este inventário no mesmo PR.
 - `public.fn_super_filtro_price_range(p_brands text[], p_category_slug text, p_target_audiences text[], p_is_textil boolean, p_is_thermal boolean, p_only_in_stock boolean)` — Faixa de preços do superfiltro público do catálogo. Grant canônico confirmado em pg_catalog em 2026-08-29.
 - `public.fn_super_filtro(p_search_term text, p_category_slug text, p_category_id uuid, p_brands text[], p_only_in_stock boolean, p_min_price numeric, p_max_price numeric, p_target_audiences text[], p_is_kit boolean, p_is_textil boolean, p_is_thermal boolean, p_has_gift_box boolean, p_material_groups text[], p_technique_groups text[], p_color_groups text[], p_date_slugs text[], p_endomarketing boolean, p_limit integer, p_offset integer, p_sort text)` — Consulta paginada do superfiltro público do catálogo. Grant canônico confirmado em pg_catalog em 2026-08-29.
 - `public.get_catalog_bestseller_page(p_sort text, p_limit integer, p_offset integer)` — Ranking paginado do catálogo público. Grant canônico confirmado em pg_catalog em 2026-08-29.
-- `public.get_quote_token_by_value(_token text)` — Visualização pública de orçamento protegida por token opaco. Grant canônico confirmado em pg_catalog em 2026-08-29.
+- `public.get_quote_token_public(_token text)` — Portal de aprovação de orçamento (SEC-009, 2026-09-04): substituto seguro de get_quote_token_by_value (revogado em 20260904111000). Campos retornados: id, quote_id, token, status, expires_at, client_name, viewed_at, responded_at, response, response_notes, created_at, signer_name, signed_at. Campos redactados (PII): client_email, signer_document, signer_ip, signer_user_agent, signature_hash, ip_address, user_agent, attempts, used_at, is_used, approved, seller_id. Grant anon intencional — portal acessado via link de token sem autenticação.
 - `public.submit_quote_response(_token text, _response text, _response_notes text)` — Resposta pública de orçamento protegida por token opaco e validação interna. Grant canônico confirmado em pg_catalog em 2026-08-29.

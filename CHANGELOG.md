@@ -7,6 +7,21 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [Unreleased]
 
+### 🔬 Auditorias técnicas r1→r3 e hardening (2026-09-01 → 2026-09-05)
+
+Relatórios em [`docs/reports/`](./docs/reports/README.md). Nota ponderada 7.8 → 8.0 → 8.1.
+
+- **#1819** ratchet `noUnusedLocals` (`ts-unused-ratchet.yml`), `as any` removido de `auth.ts`.
+- **#1820** T38: bypass `X-Simulation-Bypass` removido de `visual-search`/`product-visual-search`; T22 select explícito em `admin_audit_log`.
+- **#1822** F-12: client service-role só após `authenticateRequest()`; T17 circuit breakers em edges de HTTP externo.
+- **#1824** relatório r2 (20 dimensões, 8.0/10).
+- **#1825** RLS nas partições `spr_history` + causa raiz em `fn_purge_spr_history`; crons 32/297 reescritos; CSP sem `data:` em `script-src`; Uptime Monitor a cada 15 min; smokes 31/33/38 alinhados ao hardening.
+- **#1826** bump de deps (grupo npm_and_yarn).
+- **#1827** CSP: hashes sha256 para os 2 inline scripts e remoção do handler `onload`.
+- **#1828** r4: SEC-001, GAP-FUNC, BUG-1; guard da `fn_run_and_persist_smoke_tests` por role.
+- **#1830** relatório r3 (8.1/10) + execução: `secret_scanning_push_protection` ligado, `delete_branch_on_merge`, optimistic locking em `seller_carts`, guard de rate limit para INSERT anônimo (6 tabelas de telemetria), REVOKE anon em `analytics.mv_product_compositions`, cron `pgrst-schema-reload` de 15 min → hora, Lighthouse medindo `/` além de `/auth`, alerta de deploy falho, uptime cobrindo `check-login`, `types.ts` regenerado, `STATUS.md` aposentado, `docs/incident-response.md`, `docs/runbooks/` fundido em `docs/RUNBOOKS/`.
+- Em aberto: **#1829** (SEC-006..010 — migrations já aplicadas no banco, código da edge `check-login` fail-closed pendente de merge + `CF_ORIGIN_SECRET`); #1823 fechado em favor de #1831 (T32 real via nonce/CSSOM).
+
 ### 🔍 Auditoria Exaustiva — Módulo BUSCA GLOBAL (2026-05-27)
 
 **Branch**: `claude/global-search-audit-AsGQa` · **Auditoria**: [`audit/BUSCA_GLOBAL_BUG_AUDIT_2026-05-26.md`](./audit/BUSCA_GLOBAL_BUG_AUDIT_2026-05-26.md)
