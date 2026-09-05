@@ -51,7 +51,20 @@ Deno.serve(async (req: Request) => {
     try { body = await req.json(); } catch { /* body vazio — ok */ }
 
     const email      = typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
-    const city       = typeof body.city  === 'string' ? body.city  : null;
+    // City MUST come from a trusted Cloudflare-proxied header — never from client body.
+    // cf-ray alone is NOT sufficient: any caller can forge arbitrary headers on direct
+    // Supabase URL calls, including cf-ray and cf-ipcity.
+    // Guard: verify a pre-shared secret that Cloudflare Transform Rules inject as
+    // X-Cf-Origin-Secret. Only when this secret matches CF_ORIGIN_SECRET (Supabase
+    // Edge Function secret) do we trust cf-ipcity as Cloudflare-authoritative.
+    // Without a matching secret, city = null — fn_check_login_allowed fails-closed
+    // when city_whitelist_enabled=true, blocking the login from an unknown city.
+    // Ops: set CF_ORIGIN_SECRET in Supabase secrets and configure Cloudflare Transform
+    // Rule to inject X-Cf-Origin-Secret on every request to this function.
+    const CF_ORIGIN_SECRET = Deno.env.get('CF_ORIGIN_SECRET') ?? null;
+    const cfOriginSecret   = req.headers.get('x-cf-origin-secret');
+    const isTrustedOrigin  = CF_ORIGIN_SECRET !== null && CF_ORIGIN_SECRET !== '' && cfOriginSecret !== null && cfOriginSecret !== '' && cfOriginSecret === CF_ORIGIN_SECRET;
+    const city             = isTrustedOrigin ? (req.headers.get('cf-ipcity') ?? null) : null;
     const ipAddress  = extractIP(req);
     const userAgent  = req.headers.get('user-agent') ?? null;
 
@@ -78,13 +91,13 @@ Deno.serve(async (req: Request) => {
     if (error) {
       console.error('[check-login] RPC error:', error.message);
       return new Response(
-        JSON.stringify({ allowed: true, reason: 'security_check_unavailable' }),
-        { status: 200, headers: { ...CORS, 'Content-Type': 'application/json' } }
+        JSON.stringify({ allowed: false, reason: 'security_check_unavailable' }),
+        { status: 403, headers: { ...CORS, 'Content-Type': 'application/json' } }
       );
     }
 
     const row = Array.isArray(data) ? data[0] : data;
-    const allowed = row?.allowed ?? true;
+    const allowed = row?.allowed ?? false;
 
     return new Response(
       JSON.stringify({
@@ -99,8 +112,8 @@ Deno.serve(async (req: Request) => {
   } catch (err) {
     console.error('[check-login] unhandled error:', err);
     return new Response(
-      JSON.stringify({ allowed: true, reason: 'internal_error_fail_open' }),
-      { status: 200, headers: { ...CORS, 'Content-Type': 'application/json', 'X-Request-Id': __reqId } }
+      JSON.stringify({ allowed: false, reason: 'internal_error_fail_closed' }),
+      { status: 403, headers: { ...CORS, 'Content-Type': 'application/json', 'X-Request-Id': __reqId } }
     );
   }
 });
