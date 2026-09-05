@@ -71,10 +71,9 @@ describe('useListUrlState — contrato de /carrinhos (deadline/sort/q)', () => {
 
   it('após clearAll, remontar (simula reload) mantém URL limpa', () => {
     const { wrapper, getSearch } = makeWrapper('/carrinhos');
-    const { result } = renderHook(
-      () => useListUrlState({ keys: CARTS_KEYS, searchKey: 'q' }),
-      { wrapper },
-    );
+    const { result } = renderHook(() => useListUrlState({ keys: CARTS_KEYS, searchKey: 'q' }), {
+      wrapper,
+    });
     expect(getSearch()).toBe('');
     expect(result.current.values.deadline).toBe('all');
     expect(result.current.values.sort).toBe('recent');
@@ -84,13 +83,10 @@ describe('useListUrlState — contrato de /carrinhos (deadline/sort/q)', () => {
   it('preserva params NÃO gerenciados quando clearAll é chamado', async () => {
     // Só limpa as chaves declaradas em `keys`. Params externos (paginação,
     // rastreio, etc.) devem permanecer intactos.
-    const { wrapper, getSearch } = makeWrapper(
-      '/carrinhos?deadline=overdue&page=2&utm=email',
-    );
-    const { result } = renderHook(
-      () => useListUrlState({ keys: CARTS_KEYS, searchKey: 'q' }),
-      { wrapper },
-    );
+    const { wrapper, getSearch } = makeWrapper('/carrinhos?deadline=overdue&page=2&utm=email');
+    const { result } = renderHook(() => useListUrlState({ keys: CARTS_KEYS, searchKey: 'q' }), {
+      wrapper,
+    });
 
     act(() => result.current.clearAll());
     await waitFor(() => {
@@ -151,5 +147,68 @@ describe('useListUrlState — debounce da busca (`q`, 250ms)', () => {
       },
       { timeout: 1500 },
     );
+  });
+});
+
+describe('useListUrlState — keys inline (regressão do loop de replaceState)', () => {
+  // Cenário real: CartsListPage e ComparePage passam `keys` como objeto literal
+  // (nova identidade a cada render). Antes do fix, o efeito de sync dependia de
+  // `keys` → replaceState em todo render → nova location → re-render → loop
+  // infinito ("Throttling navigation to prevent the browser from hanging").
+  it('não entra em loop de navegação quando keys é um objeto novo a cada render', async () => {
+    let locationChanges = 0;
+    const Probe = () => {
+      useLocation();
+      locationChanges += 1;
+      return null;
+    };
+    const wrapper = ({ children }: { children: ReactNode }) => (
+      <MemoryRouter initialEntries={['/carrinhos?__bare=2&__bart=1']}>
+        <Probe />
+        {children}
+      </MemoryRouter>
+    );
+
+    const { result } = renderHook(
+      () =>
+        useListUrlState({
+          keys: { status: 'all', deadline: 'all', sort: 'recent', q: '' },
+          searchKey: 'q',
+          debounceMs: 250,
+        }),
+      { wrapper },
+    );
+
+    await new Promise<void>((r) => {
+      setTimeout(r, 400);
+    });
+
+    expect(result.current.values.q).toBe('');
+    // Mount + no máximo uma escrita defensiva; um loop produziria dezenas.
+    expect(locationChanges).toBeLessThanOrEqual(3);
+  });
+
+  it('não navega no mount quando a URL já reflete o estado (evita replaceState redundante)', async () => {
+    let locationChanges = 0;
+    const Probe = () => {
+      useLocation();
+      locationChanges += 1;
+      return null;
+    };
+    const wrapper = ({ children }: { children: ReactNode }) => (
+      <MemoryRouter initialEntries={['/carrinhos?q=abc&status=draft']}>
+        <Probe />
+        {children}
+      </MemoryRouter>
+    );
+
+    renderHook(() => useListUrlState({ keys: CARTS_KEYS, searchKey: 'q', debounceMs: 250 }), {
+      wrapper,
+    });
+
+    await new Promise<void>((r) => {
+      setTimeout(r, 400);
+    });
+    expect(locationChanges).toBe(1);
   });
 });

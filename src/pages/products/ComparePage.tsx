@@ -53,6 +53,9 @@ const COMPARE_STATUS_COLORS: Record<string, string> = {
   'out-of-stock': 'text-destructive',
 } as const;
 
+// Constante de módulo: objeto inline aqui recriava a identidade a cada render.
+const COMPARE_URL_KEYS = { differencesOnly: '0', duelMode: '1', showRadar: '1' } as const;
+
 export default function ComparePage() {
   useComparisonSync();
   const navigate = useNavigate();
@@ -60,7 +63,7 @@ export default function ComparePage() {
   // Defaults: differencesOnly=0 (off), duelMode=1 (on), showRadar=1 (on).
   // useListUrlState só grava não-defaults → URL fica limpa no estado padrão.
   const { values, setValue } = useListUrlState({
-    keys: { differencesOnly: '0', duelMode: '1', showRadar: '1' },
+    keys: COMPARE_URL_KEYS,
   });
   const differencesOnly = values.differencesOnly === '1';
   const duelMode = values.duelMode === '1';
