@@ -18,7 +18,7 @@ CREATE OR REPLACE FUNCTION public.magazine_ensure_view_event_partitions(
 ) RETURNS integer
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = public, extensions
+SET search_path = public, extensions, pg_temp
 AS $$
 DECLARE
   _created integer := 0;
