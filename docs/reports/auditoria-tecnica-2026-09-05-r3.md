@@ -366,3 +366,81 @@ Críticos ×3: 8.1 · Altos ×2: 8.2 · Padrão ×1: 8.0
 ## Nota Final — 8.1/10
 
 Progresso real e verificável em produção desde a r2: RLS 100%, CSP endurecida ao vivo, uptime externo rodando, CODEOWNERS enforçado, dívida de índices −23%. O que segura o 9 mudou de natureza: já não são gaps estruturais, são **itens de fechamento** — um PR de segurança (#1829) cujas migrations já estão no banco mas cujo código e segredo Cloudflare não estão em produção, uma edge function deployada fora do repo, push protection desligada num repo público, dois crons corrigidos que ainda precisam provar-se no agendamento real, e o hot path de ingestão a 1,3 s/insert que ninguém tocou em três rounds. Nenhum exige reescrita; os 8 primeiros itens do Top 10 cabem em uma sessão.
+
+---
+
+## Adendo — Simulação e execução das melhorias (2026-09-05, mesma sessão)
+
+Cada item foi simulado antes de aplicar (leitura do código/estado real, transação de teste ou
+consulta de dependências). A simulação derrubou 5 itens do plano original como não-acionáveis ou
+já resolvidos (ver Erratas da própria r3, abaixo) e revelou 1 causa raiz nova (INSERT de ingestão).
+
+### Aplicado e verificado
+
+| # | Ação | Como foi validado |
+|---|---|---|
+| 1 | `secret_scanning_push_protection` **enabled** e `delete_branch_on_merge` **true** no repo | `GET /repos` após PATCH: `push_protection.status=enabled`, `delete_branch_on_merge=true` |
+| 2 | Milestone **Dívida técnica — Q4 2026** (#1) + label `tech-debt` (já existia) | API |
+| 3 | Dependabot #48/#49 (`image-size`) dismissados como `not_used` com justificativa | `npm ls image-size` → só via `pptxgenjs@4.0.1` (build browser, `src/lib/bi/pptxGenerator.ts`); parser vulnerável é caminho Node; sem patch upstream |
+| 4 | PR #1823 fechado com comentário; issue **#1831** criada (T32 real: nonce/CSSOM) no milestone | GitHub |
+| 5 | **Cron 281 `pgrst-schema-reload`**: `*/15` → `7 * * * *` (hora) | `cron.job`; era a origem das 20k introspecções de ~600 ms no `pg_stat_statements` |
+| 6 | **Cron 32 validado no caminho real**: `SELECT fn_run_and_persist_smoke_tests()` como postgres | Bateria persistida em `smoke_test_runs` às 03:35 UTC: **38/38 PASS** |
+| 7 | **`seller_carts.version` + `trg_seller_carts_version`** (optimistic locking, espelho do padrão de `quotes`) | Migration aplicada com DO de verificação; `types.ts` regenerado inclui a coluna |
+| 8 | **Guard de rate limit para INSERT anônimo** em 6 tabelas (`analytics_events`, `catalog_analytics`, `frontend_telemetry`=300/min, `product_views`, `search_analytics`, `password_reset_requests`=10/min) via `fn_anon_insert_rate_guard` + tabela de contadores + cron de purga | Teste como `anon` em transação: 3º INSERT com limite 2 → `anon_insert_rate_limit_exceeded`; como `authenticated` → 3/3 aceitos |
+| 9 | `REVOKE SELECT ON analytics.mv_product_compositions FROM anon` (única matview legível por anon; sem RLS; catálogo usa a view SECURITY DEFINER) | DO de verificação; advisor `pg_graphql_anon_table_exposed` 59 → 58 |
+| 10 | `types.ts` regenerado (REGRA #4: 7/7 `export type`, tabelas críticas presentes, 4 objetos novos: `anon_insert_rate`, `get_quote_token_public`, partições `_2026_12`) | `tsc --noEmit` 0 erros após a troca |
+| 11 | Lighthouse passa a medir `/` além de `/auth` (`assertMatrix`: `/auth` mantém erro em 0.75; `/` **warn** em 0.85 até acumular histórico) | Medido localmente com o build de produção: `/` = 0.78, `/auth` = 0.74 — margem fina demais para virar erro sem quebrar o Gate 4 |
+| 12 | Uptime Monitor cobre `check-login` (preflight OPTIONS, sem auth) | Handler usa `handleCorsPreflight(req, {public:true})`; não testado ao vivo a partir deste sandbox (curl externo bloqueado) — primeira execução do cron confirma |
+| 13 | Workflow **Deployment Failure Alert** (`deployment_status` failure/error → comenta no PR ou abre issue `deploy-failure`) | YAML parseado; cobre o caso dos 19 previews ERROR do #1829 |
+| 14 | `STATUS.md` aposentado (tabela de fontes vivas); `docs/runbooks/` fundido em `docs/RUNBOOKS/`; `CHANGELOG` com #1819–#1831; `docs/reports/README.md`; `docs/incident-response.md` (SEV1–3, degradação graciosa) | Arquivos no PR |
+| 15 | Contrato de colunas das 8 views SECURITY DEFINER públicas: `.security/public-views-columns.json` + `scripts/check-public-views-columns.mjs` (modo `--live`) + `tests/security/public-views-columns.test.ts` | Testes passam; modo live simulado com coluna proibida → falha correta |
+| 16 | Grafo: `graphify update . --force` na VPS | "No code-graph topology changes detected" — o rótulo `4126d7a` é cosmético, o grafo não estava funcionalmente stale (errata) |
+
+### Diagnóstico novo — INSERT `supplier_products_raw` (1,3 s × 4,78M)
+
+`EXPLAIN (ANALYZE, BUFFERS)` do mesmo upsert em transação com ROLLBACK: **31 ms** (23 ms em
+`trg_spr_before_write` = sha256 do `raw_data` + cache de `supplier_settings`). Ou seja, o custo
+intrínseco é 2% da média medida. O `pg_stat_statements` mostra por chamada: **18.466 buffer hits,
+283 KB de WAL, 0 ms de I/O** — e `pg_stat_user_tables`: **476M UPDATEs para 19.6k linhas**
+(cada linha reescrita ~24k vezes; 86% non-HOT → 12 índices reescritos a cada envio).
+Conclusão: a ingestão reenvia o catálogo inteiro linha a linha, e cada reenvio é um UPDATE completo
+mesmo quando nada mudou. O tempo médio vem de contenção/serialização e churn de índice, não do trigger.
+
+**Correção proposta (não aplicada — hot path de produção, exige APROVADO):** no ramo UPDATE de
+`fn_spr_before_write`, `RETURN NULL` quando `NEW.content_hash = OLD.content_hash` e nenhuma coluna
+de controle mudou (`status`, `product_id`, `process_errors`). Efeito esperado: ~95% dos upserts viram
+no-op (sem WAL, sem índice, sem `spr_history`). Risco a validar: consumidores de `updated_at` como
+"visto pela última vez" (o RE-LAND GUARD já trata o caso de re-envio idêntico como `processed`).
+
+### Erratas da própria r3 (descobertas na simulação)
+
+1. **"158 unused indexes para dropar"** — os 149 candidatos (excluindo PK/UNIQUE) são **todos índices de suporte a FK** criados para zerar o advisor `unindexed_foreign_keys`. Dropá-los regride a métrica "0 FKs sem índice". Os dois advisors estão em tensão; a decisão correta é manter (69 MB). Item removido do roadmap.
+2. **"8 views SECURITY DEFINER sem comentário de intenção"** — todas as 8 têm `COMMENT ON VIEW` explicando o masking e proibindo `security_invoker` (`fix_version 20260717`). O gap real era a ausência de contrato de colunas — agora coberto pelo item 15.
+3. **"2 lockfiles / 8 workflows com bun"** — `bun.lock` é commitado pelo Lovable (`gpt-engineer-app[bot]`); removê-lo geraria churn a cada edição do bot. `lint:lockfile` vigia só `package-lock.json`. Mantido; os 8 workflows funcionam (verdes).
+4. **"14 console.log em src"** — 12 são intencionais (`audit-debug.ts` para DevTools, `console-filter.ts`, `structuredLogger.ts`) e os 2 restantes são guardados por `import.meta.env.DEV`/`isDebugEnabled()` com `eslint-disable` explícito. Sem ação.
+5. **"MFA não enforçado para admin"** — `AdminRoute.tsx` já exige AAL2: sem fator → abre enrollment obrigatório; com fator em AAL1 → challenge. O dado "1 fator entre 13 usuários" reflete que só admins ativos precisam. Gap residual: `mfaChallengeDismissal` permite adiar o challenge (não o enrollment).
+6. **"pg_graphql expõe 59/454 objetos"** — `REVOKE USAGE ON SCHEMA graphql_public` falha (`must be owner`, schema do `supabase_admin`); a exposição GraphQL é espelho dos grants PostgREST do catálogo público, com RLS. O único caso real era a matview (item 9).
+7. **"Sentry: propagar trace para `*.supabase.co`"** — não aplicado de propósito: `sentry-trace`/`baggage` disparariam preflight CORS nas edges e no PostgREST; sem allowlist desses headers as chamadas falhariam.
+8. **"Grafo stale 27 dias"** — ver item 16: sem mudança topológica.
+
+### Não executado nesta sessão — decisões do PO
+
+| Item | Por que parou | O que preciso |
+|---|---|---|
+| **Mergear #1829** | Outra sessão está ativa no PR (push às 03:28 UTC, 2 checks vermelhos: `card-parity-matrix`, `Export schema snapshot`); depende de `CF_ORIGIN_SECRET` no Supabase + Transform Rule na Cloudflare — o MCP `CLOUDFLARE - MCP - WORK` não conectou nesta sessão | `APROVADO` para eu assumir o PR quando a outra sessão encerrar + acesso Cloudflare (zona) |
+| **`mcp-query`** (edge fora do repo, `verify_jwt=false`, executa SQL arbitrário com `SUPABASE_DB_URL` e proxy admin auth/storage, gate = 1 header `x-mcp-secret`, CORS `*`) | Código é cópia do gateway do PROMO FINANCE V2; **0 invocações em 24 h**; deletar é destrutivo e pode quebrar um MCP Worker seu | `APROVADO deletar` ou `APROVADO versionar` (entra no repo com `_shared/cors.ts` e contract test) |
+| **`fn_spr_before_write` short-circuit** (diagnóstico acima) | Hot path de produção, 4,78M chamadas | `APROVADO` + janela para validar 1 h de ingestão depois |
+| **REVOKE anon/authenticated em `check_login_rate_limit` / `fn_check_login_allowed`** | Já está no #1829 (migration `20260904150000`); aplicar em paralelo criaria conflito com a outra sessão | Resolve-se com o merge do #1829 |
+| **Tabelas `_backup_*` de junho** (`_backup_stock_daily_summary_20260618` 4,4 MB, `backup_produto_ramo_atividade_20260625` 2 MB) | Drop é destrutivo | `APROVADO` para dropar |
+| **`art-files` → URLs assinadas** | Quebra URLs públicas já gravadas no banco/Bitrix | Inventário de referências antes (posso fazer) |
+| **Rotação de segredo** (0 em 90 d) | Rotacionar anon/service_role derruba o front até redeploy; precisa janela | Escolher segredo e janela |
+| **Export das 90 stacks Portainer para git** | Compose files contêm segredos inline; repo precisa nascer privado com redaction | `APROVADO` + nome do repo |
+| **Teste de restore trimestral** | pgbackrest → container efêmero na VPS: ~20 min de exec | `APROVADO` + janela |
+| **God files / RPC transacional de cotação / adoção do `version` no front** | Refatoração de `useQuoteBuilderState` (1.345 linhas) sem E2E completo aqui | Sprint dedicado |
+
+### Efeito esperado na próxima re-medição
+
+Autorização 8.0 → 8.5 (matview + guard + contrato de views), Data Integrity 8.0 → 8.5 (version em
+`seller_carts`), Segurança 8.0 → 8.5 (push protection, Dependabot triado), CI/CD 8.5 → 9.0 (alerta
+de deploy + Lighthouse `/`), Documentação 7.5 → 8.5, Operações 8.0 → 8.5. Nota projetada **~8.4**;
+os itens que separam de 9 estão na tabela de decisões acima.

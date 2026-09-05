@@ -1,0 +1,66 @@
+name: Deployment Failure Alert
+
+# Vercel reporta cada deploy (preview e produção) como GitHub Deployment. Quando o
+# estado final é failure/error (ex.: "Resource provisioning failed", BUILD_FAILED),
+# ninguém era avisado — em 2026-09-04/05 o PR #1829 acumulou 19 previews em ERROR
+# sem alerta. Este workflow comenta no PR da branch (se houver) ou abre/comenta uma
+# issue com label "deploy-failure" para deploys sem PR (ex.: main).
+
+on:
+  deployment_status:
+
+permissions:
+  issues: write
+  pull-requests: write
+  contents: read
+
+concurrency:
+  group: deployment-failure-${{ github.event.deployment.ref }}
+  cancel-in-progress: false
+
+jobs:
+  alert:
+    if: >-
+      github.event.deployment_status.state == 'failure' ||
+      github.event.deployment_status.state == 'error'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      REF: ${{ github.event.deployment.ref }}
+      SHA: ${{ github.event.deployment.sha }}
+      ENVIRONMENT: ${{ github.event.deployment.environment }}
+      STATE: ${{ github.event.deployment_status.state }}
+      DESCRIPTION: ${{ github.event.deployment_status.description }}
+      TARGET_URL: ${{ github.event.deployment_status.target_url }}
+      LOG_URL: ${{ github.event.deployment_status.log_url }}
+    steps:
+      - name: Comentar no PR ou abrir issue
+        run: |
+          BODY="Deploy **${STATE}** em \`${ENVIRONMENT}\` para \`${REF}\` (\`${SHA:0:7}\`) em $(date -u +%FT%TZ)."
+          BODY="${BODY}
+          Descrição: ${DESCRIPTION:-sem descrição}"
+          [ -n "$LOG_URL" ] && BODY="${BODY}
+          Log: ${LOG_URL}"
+          [ -n "$TARGET_URL" ] && BODY="${BODY}
+          URL: ${TARGET_URL}"
+
+          PR=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$REF" --state open --json number -q '.[0].number // empty')
+          if [ -n "$PR" ]; then
+            # Evita spam: 1 comentário por SHA
+            if gh pr view "$PR" --repo "$GITHUB_REPOSITORY" --json comments -q '.comments[].body' | grep -q "${SHA:0:7}"; then
+              echo "Já comentado para ${SHA:0:7}"; exit 0
+            fi
+            gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body "$BODY"
+            exit 0
+          fi
+
+          gh label create deploy-failure --repo "$GITHUB_REPOSITORY" --color B60205 \
+            --description "Deploy Vercel com estado failure/error" 2>/dev/null || true
+          ISSUE=$(gh issue list --repo "$GITHUB_REPOSITORY" --label deploy-failure --state open --limit 1 --json number -q '.[0].number // empty')
+          if [ -n "$ISSUE" ]; then
+            gh issue comment "$ISSUE" --repo "$GITHUB_REPOSITORY" --body "$BODY"
+          else
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "Deploy ${STATE}: ${REF} (${ENVIRONMENT})" \
+              --label deploy-failure --body "$BODY"
+          fi
