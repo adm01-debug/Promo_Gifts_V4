@@ -56,6 +56,66 @@ export const swConfirmedStaleUrls = new Set<string>();
  */
 const CONTENT_HASH_CHUNK_RE = /[-_][A-Za-z0-9_-]{6,}\.(?:js|css|mjs)(?:\?|$)/;
 
+/**
+ * Orçamento COMPARTILHADO de hard-reloads de recuperação, contado via query
+ * params na própria URL (`__bare`/`__bart`) — sobrevive a reload sem depender
+ * de storage. 3 mecanismos independentes podem, cada um, decidir recarregar a
+ * página após uma falha de asset/chunk:
+ *   1. Boot guard inline em index.html (falha ANTES do bundle carregar —
+ *      precisa rodar antes de qualquer módulo, por isso mantém uma cópia
+ *      inline dos mesmos params/constantes em vez de importar daqui).
+ *   2. sw-register.ts (SW_STALE_CHUNK — falha detectada pelo Service Worker).
+ *   3. attemptChunkRecovery() abaixo (falha capturada em runtime pelo React,
+ *      ex.: erro em import() dinâmico / lazy()).
+ *
+ * ACHADO DA AUDITORIA (2026-09): index.html e sw-register.ts já liam/escreviam
+ * os MESMOS params (__bare/__bart) na URL — coordenados entre si só por
+ * coincidência de nomes idênticos, mas sem uma implementação única. Já
+ * attemptChunkRecovery() usava um contador TOTALMENTE independente em
+ * sessionStorage (MAX_HARD_RELOADS/WINDOW_MS próprios), invisível aos outros
+ * 2 — permitindo, na pior hipótese, mais reloads agregados do que o "no
+ * máximo 2 em 20s" documentado em cada mecanismo isoladamente. Fix: a
+ * implementação do orçamento compartilhado vive AQUI (camada base, sem
+ * dependências) e é consumida por sw-register.ts e por attemptChunkRecovery()
+ * — um único teto observável entre os 3 mecanismos que podem importar módulos.
+ */
+export const SHARED_RELOAD_PARAM = '__bare';
+export const SHARED_RELOAD_TS_PARAM = '__bart';
+export const SHARED_RELOAD_MAX = 2;
+export const SHARED_RELOAD_WINDOW_MS = 20_000;
+
+interface SharedReloadBudget {
+  count: number;
+  firstAt: number;
+}
+
+/** Lê o orçamento compartilhado a partir de `url`, aplicando o auto-reset por janela. */
+export function readSharedReloadBudget(url: URL): SharedReloadBudget {
+  const now = Date.now();
+  let n = parseInt(url.searchParams.get(SHARED_RELOAD_PARAM) ?? '', 10);
+  let firstAt = parseInt(url.searchParams.get(SHARED_RELOAD_TS_PARAM) ?? '', 10);
+  if (!Number.isFinite(n) || n < 0) n = 0;
+  if (!Number.isFinite(firstAt) || firstAt < 0) firstAt = 0;
+  if (n === 0 || !firstAt || now - firstAt > SHARED_RELOAD_WINDOW_MS) {
+    n = 0;
+    firstAt = now;
+  }
+  return { count: n, firstAt };
+}
+
+/**
+ * Incrementa o orçamento compartilhado, gravando os novos params em `url`
+ * (mutação in-place, mesmo padrão de URLSearchParams usado no resto do
+ * arquivo). Retorna `false` sem mutar `url` se o teto já foi atingido.
+ */
+export function bumpSharedReloadBudget(url: URL): boolean {
+  const { count, firstAt } = readSharedReloadBudget(url);
+  if (count >= SHARED_RELOAD_MAX) return false;
+  url.searchParams.set(SHARED_RELOAD_PARAM, String(count + 1));
+  url.searchParams.set(SHARED_RELOAD_TS_PARAM, String(firstAt));
+  return true;
+}
+
 interface RecoveryState {
   attempts: number;
   firstAt: number;
@@ -103,7 +163,9 @@ export function isChunkLoadError(error: unknown): boolean {
 
   // Response de fetch direto (raro neste path mas suportado)
   if (typeof Response !== 'undefined' && error instanceof Response) {
-    return error.status === 404 || error.status === 502 || error.status === 503 || error.status === 504; // 404: chunk removed in new deploy
+    return (
+      error.status === 404 || error.status === 502 || error.status === 503 || error.status === 504
+    ); // 404: chunk removed in new deploy
   }
 
   const message = error instanceof Error ? error.message : typeof error === 'string' ? error : '';
@@ -241,6 +303,12 @@ async function hardReload(): Promise<void> {
   try {
     const u = new URL(window.location.href);
     u.searchParams.set('_cb', String(Date.now()));
+    // Também incrementa o orçamento compartilhado (__bare/__bart) — visível e
+    // auditável por index.html/sw-register.ts no próximo load. Best-effort:
+    // se já esgotado (outro mecanismo consumiu o teto entre o gate acima e
+    // aqui), o reload ainda ocorre — a decisão de tentar já foi tomada pelo
+    // caller; só não voltamos a estender o orçamento além do teto.
+    bumpSharedReloadBudget(u);
     window.location.replace(u.toString());
   } catch {
     window.location.reload();
@@ -282,6 +350,27 @@ export function attemptChunkRecovery(error: unknown): Promise<boolean> {
       });
       NProgress.done();
       return false;
+    }
+
+    // Além do próprio contador (sessionStorage), respeita o orçamento
+    // COMPARTILHADO com index.html/sw-register.ts (__bare/__bart na URL) —
+    // ver comentário em bumpSharedReloadBudget acima. Fecha o gap da
+    // auditoria: sem isso, os 3 mecanismos podiam somar mais reloads do que
+    // o teto de cada um isoladamente sugeria.
+    if (typeof window !== 'undefined') {
+      try {
+        const sharedUrl = new URL(window.location.href);
+        if (readSharedReloadBudget(sharedUrl).count >= SHARED_RELOAD_MAX) {
+          logger.error(
+            '[chunk-recovery] orçamento compartilhado de reload (__bare) já esgotado por outro mecanismo — exibindo tela de erro',
+            { attempts },
+          );
+          NProgress.done();
+          return false;
+        }
+      } catch {
+        // URL indisponível — segue só com o gate do próprio contador acima.
+      }
     }
 
     const url = extractChunkUrl(error);
@@ -326,10 +415,41 @@ export function attemptChunkRecovery(error: unknown): Promise<boolean> {
   return inFlight;
 }
 
+/** Params técnicos de recovery: __bare/__bart (boot guard/sw-register), _cb (chunk-recovery). */
+const RECOVERY_URL_PARAMS = ['__bare', '__bart', '_cb'];
+
+/**
+ * Remove os params técnicos de recovery da barra de endereço após o boot ser
+ * confirmado bem-sucedido. Sem isso, eles ficam pendurados na URL para
+ * sempre — poluindo bookmarks/links compartilhados e fazendo o Service
+ * Worker tratar toda navegação futura àquela URL como "retry" (cache-bust
+ * permanente e desnecessário do edge Vercel, ver indexRequestFor em
+ * public/sw.js). `history.replaceState` não navega nem recarrega — só
+ * limpa a barra de endereço.
+ */
+export function cleanRecoveryUrlParams(): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const url = new URL(window.location.href);
+    let changed = false;
+    for (const p of RECOVERY_URL_PARAMS) {
+      if (url.searchParams.has(p)) {
+        url.searchParams.delete(p);
+        changed = true;
+      }
+    }
+    if (changed) {
+      window.history.replaceState(window.history.state, '', url.toString());
+    }
+  } catch {
+    // URL/history indisponível — não é crítico, a próxima navegação resolve.
+  }
+}
+
 /**
  * Hook de bootstrap — chamado uma vez no startup da app. Limpa o marcador
  * caso o app tenha bootado com sucesso (significa que o reload anterior
- * resolveu o problema).
+ * resolveu o problema) e limpa os params técnicos de recovery da URL.
  */
 export function markBootSuccessful(): void {
   if (typeof window === 'undefined') return;
@@ -341,5 +461,6 @@ export function markBootSuccessful(): void {
       });
     }
     clearChunkRecoveryState();
+    cleanRecoveryUrlParams();
   }, 5_000);
 }

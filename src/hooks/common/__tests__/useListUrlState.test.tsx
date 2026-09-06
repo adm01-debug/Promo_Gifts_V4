@@ -12,7 +12,7 @@
  */
 import { describe, it, expect } from 'vitest';
 import { renderHook, act, waitFor } from '@testing-library/react';
-import { MemoryRouter, useLocation } from 'react-router-dom';
+import { MemoryRouter, useLocation, useNavigate } from 'react-router-dom';
 import React, { type ReactNode } from 'react';
 
 import { useListUrlState } from '@/hooks/common/useListUrlState';
@@ -232,5 +232,80 @@ describe('useListUrlState — keys inline (regressão do loop de replaceState)',
       setTimeout(r, 400);
     });
     expect(locationChanges).toBe(1);
+  });
+});
+
+describe('useListUrlState — botão voltar do navegador durante debounce pendente (regressão)', () => {
+  // Cenário real (achado da auditoria 2026-09, "D3"): usuário digita, digita
+  // de novo (reinicia o debounce de 250ms), e clica voltar no navegador
+  // ANTES do debounce da 2ª digitação disparar. Sem resync por navegação
+  // POP, o debounce obsoleto sobrescrevia a navegação do usuário quando
+  // finalmente rodava.
+  it('não sobrescreve a navegação POP (voltar) com um valor de busca obsoleto ainda em debounce', async () => {
+    let navigateBack: (() => void) | null = null;
+    const NavigateCapture = () => {
+      const navigate = useNavigate();
+      navigateBack = () => navigate(-1);
+      return null;
+    };
+    const wrapper = ({ children }: { children: ReactNode }) => (
+      <MemoryRouter initialEntries={['/carrinhos?q=old', '/carrinhos?q=new']}>
+        <NavigateCapture />
+        {children}
+      </MemoryRouter>
+    );
+
+    const { result } = renderHook(
+      () => useListUrlState({ keys: CARTS_KEYS, searchKey: 'q', debounceMs: 250 }),
+      { wrapper },
+    );
+
+    // Estado inicial: URL em '/carrinhos?q=new', input reflete 'new'.
+    expect(result.current.searchInput).toBe('new');
+
+    // Usuário digita mais um caractere — reinicia o debounce de 250ms.
+    act(() => result.current.setSearchInput('new2'));
+
+    // ANTES do debounce disparar (só passaram ~50ms), clica voltar.
+    await new Promise<void>((r) => {
+      setTimeout(r, 50);
+    });
+    act(() => navigateBack?.());
+
+    // O resync por POP deve ter restaurado o input para o valor da URL
+    // pós-voltar ('old') quase imediatamente.
+    await waitFor(() => expect(result.current.searchInput).toBe('old'));
+
+    // Espera passar o suficiente para o debounce (agora reiniciado para
+    // 'old' pelo resync) assentar — e para o debounce OBSOLETO de 'new2'
+    // (que deveria ter sido cancelado) não ressuscitar.
+    await new Promise<void>((r) => {
+      setTimeout(r, 400);
+    });
+
+    expect(result.current.values.q).toBe('old');
+    expect(result.current.searchInput).toBe('old');
+  });
+
+  it('não interfere em navegação PUSH/REPLACE normal (só reage a POP)', async () => {
+    const wrapper = ({ children }: { children: ReactNode }) => (
+      <MemoryRouter initialEntries={['/carrinhos']}>{children}</MemoryRouter>
+    );
+
+    const { result } = renderHook(
+      () => useListUrlState({ keys: CARTS_KEYS, searchKey: 'q', debounceMs: 250 }),
+      { wrapper },
+    );
+
+    act(() => result.current.setSearchInput('acme'));
+    await waitFor(() => expect(result.current.values.q).toBe('acme'), { timeout: 1500 });
+
+    // A própria escrita do hook é REPLACE — não deve disparar o resync nem
+    // reverter o valor recém-digitado.
+    await new Promise<void>((r) => {
+      setTimeout(r, 400);
+    });
+    expect(result.current.values.q).toBe('acme');
+    expect(result.current.searchInput).toBe('acme');
   });
 });

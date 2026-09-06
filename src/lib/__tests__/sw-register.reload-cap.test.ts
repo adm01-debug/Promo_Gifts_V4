@@ -9,11 +9,18 @@
  *  - chamadas repetidas no mesmo page-load → coalescem num único replace
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import type * as ChunkRecoveryModule from '@/lib/chunk-recovery';
 
 vi.mock('@/lib/logger', () => ({
   logger: { log: vi.fn(), warn: vi.fn(), error: vi.fn(), info: vi.fn() },
 }));
-vi.mock('@/lib/chunk-recovery', () => ({ swConfirmedStaleUrls: new Set<string>() }));
+// bumpSharedReloadBudget precisa ser a implementação REAL (a lógica de
+// __bare/__bart agora vive em chunk-recovery.ts, não mais duplicada aqui em
+// sw-register.ts) — só swConfirmedStaleUrls é substituído por um Set fresco.
+vi.mock('@/lib/chunk-recovery', async () => {
+  const actual = await vi.importActual<typeof ChunkRecoveryModule>('@/lib/chunk-recovery');
+  return { ...actual, swConfirmedStaleUrls: new Set<string>() };
+});
 
 const ORIGINAL_LOCATION = window.location;
 
