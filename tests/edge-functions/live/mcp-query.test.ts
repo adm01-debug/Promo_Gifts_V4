@@ -1,0 +1,10 @@
+/**
+ * Integração LIVE — mcp-query
+ * Tombstone (410 Gone) — decommissioned in PR #1837.
+ * Gerado por scripts/gen-edge-live-tests.mjs. Enriqueça o descritor em
+ * tests/edge-functions/live/descriptors.ts (não edite este shim).
+ */
+import { runLiveSuite } from "./_live-suite";
+import { descriptorFor } from "./descriptors";
+
+runLiveSuite(descriptorFor("mcp-query"));
