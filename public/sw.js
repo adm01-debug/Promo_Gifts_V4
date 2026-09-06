@@ -1,6 +1,23 @@
 // public/sw.js
 // Service Worker para Gifts Store PWA
-// Versão: 3.11.0
+// Versão: 3.12.0
+//
+// CHANGELOG v3.12.0 (2026-09-05 — fix/favoritespage-chunk-load):
+//   BUG-SW-24 FIX [ALTO]: `lastStaleAt` vivia numa variável `let` em module
+//     scope do worker. Um Service Worker idle pode ser terminado pelo
+//     browser a qualquer momento entre dois eventos `fetch` — não há
+//     garantia de que a mesma instância sobreviva até a próxima navegação.
+//     O caminho principal (reload automático via SW_STALE_CHUNK) já estava
+//     protegido por redundância (__bare na própria URL, lido antes de
+//     `lastStaleAt`), mas uma navegação MANUAL (F5, link, voltar do
+//     histórico) dentro da janela de 120s pós-stale-chunk, sem __bare na
+//     URL, dependia de `lastStaleAt` sobreviver num worker que pode ter
+//     sido reciclado — nesse caso caía de volta para cache:'no-cache',
+//     exatamente o modo que o BUG-SW-22 documentou como insuficiente
+//     contra HIT do edge Vercel. Fix: `lastStaleAt` persistido no Cache
+//     Storage (CACHE_NAME, chave sintética STALE_META_KEY) em vez de
+//     memória — sobrevive a reinícios do worker; limpo automaticamente no
+//     próximo bump de CACHE_VERSION (mesmo ciclo de vida do resto do cache).
 //
 // CHANGELOG v3.11.0 (2026-09-05 — fix/favoritespage-chunk-load):
 //   BUG-SW-23 FIX [BAIXO]: DevTools acusava "A preload for '...' is found,
@@ -111,7 +128,7 @@
 //   Supabase API (.supabase.co)        → Network Only (dados dinâmicos)
 //   Resto                              → Stale-While-Revalidate + fallback     ← v3.3.0
 
-const CACHE_VERSION = 'v18'; // v3.11.0 — BUG-SW-23 bypass de runtime bootstrap chunks (cross-world preload)
+const CACHE_VERSION = 'v19'; // v3.12.0 — BUG-SW-24 lastStaleAt persistido em Cache Storage (não mais em memória)
 const CACHE_NAME = `app-cache-${CACHE_VERSION}`;
 const IMAGE_CACHE_NAME = `images-cache-${CACHE_VERSION}`;
 const FONT_CACHE_NAME = `fonts-cache-${CACHE_VERSION}`;
@@ -288,24 +305,48 @@ function isImageExpired(response) {
   return Date.now() - new Date(date).getTime() > IMAGE_CACHE_TTL;
 }
 
-// BUG-SW-22: instante da última detecção de chunk obsoleto. Enquanto recente,
-// navegações buscam index.html furando o cache do edge (ver indexRequestFor).
-let lastStaleAt = 0;
+// BUG-SW-22/24: instante da última detecção de chunk obsoleto. Enquanto
+// recente, navegações buscam index.html furando o cache do edge (ver
+// indexRequestFor). Persistido no Cache Storage (não em memória do worker)
+// — ver CHANGELOG v3.12.0 acima.
 const STALE_BUST_WINDOW_MS = 120000;
+const STALE_META_KEY = '/__sw-meta/last-stale-at';
+
+async function getLastStaleAt() {
+  try {
+    const cache = await caches.open(CACHE_NAME);
+    const res = await cache.match(STALE_META_KEY);
+    if (!res) return 0;
+    const n = parseInt(await res.text(), 10);
+    return Number.isFinite(n) ? n : 0;
+  } catch (_e) {
+    return 0; // Cache API indisponível (quota/private-browsing) — trata como "nunca stale".
+  }
+}
+
+function setLastStaleAt(ts) {
+  caches
+    .open(CACHE_NAME)
+    .then((c) => c.put(STALE_META_KEY, new Response(String(ts))))
+    .catch(() => {});
+}
 
 // Decide como buscar o index.html numa navegação:
 //   - normal → '/index.html' com cache:'no-cache' (revalida no HTTP cache);
 //   - retry (__bare na URL) ou pós-stale → '/index.html?__swbust=<ts>' com
 //     cache:'no-store', que é MISS garantido no edge do Vercel.
-function indexRequestFor(navUrl) {
+async function indexRequestFor(navUrl) {
   const retrying = navUrl.searchParams.has('__bare');
+  // Retry via __bare já força o cache-bust por si só — evita a leitura
+  // assíncrona de lastStaleAt quando ela não muda o resultado.
+  const lastStaleAt = retrying ? 0 : await getLastStaleAt();
   const recentlyStale = lastStaleAt > 0 && Date.now() - lastStaleAt < STALE_BUST_WINDOW_MS;
   if (!retrying && !recentlyStale) return ['/index.html', { cache: 'no-cache' }];
   return ['/index.html?__swbust=' + Date.now(), { cache: 'no-store' }];
 }
 
 function handleStaleChunk(chunkUrl) {
-  lastStaleAt = Date.now();
+  setLastStaleAt(Date.now());
   caches.open(CACHE_NAME).then((c) => {
     c.delete('/index.html');
     c.delete('/');
@@ -468,26 +509,27 @@ self.addEventListener('fetch', (event) => {
 
   // ── B) Navigation (SPA) → Network First + cache fallback ──────────────────
   if (request.mode === 'navigate') {
-    const [indexUrl, indexInit] = indexRequestFor(url);
     event.respondWith(
-      fetch(indexUrl, indexInit)
-        .then((res) => {
-          if (res && res.ok) {
-            const indexClone = res.clone();
-            const rootClone = res.clone();
-            caches.open(CACHE_NAME).then((c) => {
-              c.put('/index.html', indexClone);
-              c.put('/', rootClone);
-            });
-            return res;
-          }
-          return caches.match('/index.html').then((cached) => cached || res);
-        })
-        .catch(() =>
-          caches
-            .match('/index.html')
-            .then((cached) => cached || offlineFallback()),
-        ),
+      indexRequestFor(url).then(([indexUrl, indexInit]) =>
+        fetch(indexUrl, indexInit)
+          .then((res) => {
+            if (res && res.ok) {
+              const indexClone = res.clone();
+              const rootClone = res.clone();
+              caches.open(CACHE_NAME).then((c) => {
+                c.put('/index.html', indexClone);
+                c.put('/', rootClone);
+              });
+              return res;
+            }
+            return caches.match('/index.html').then((cached) => cached || res);
+          })
+          .catch(() =>
+            caches
+              .match('/index.html')
+              .then((cached) => cached || offlineFallback()),
+          ),
+      ),
     );
     return;
   }

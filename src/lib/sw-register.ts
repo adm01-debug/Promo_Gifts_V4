@@ -46,7 +46,21 @@ export function scheduleStaleChunkReload(): boolean {
   url.searchParams.set(RELOAD_TS_PARAM, String(firstAt));
   _reloadScheduled = true;
   // 300ms: deixa o React registrar o erro (Sentry) antes de sair da página.
-  window.setTimeout(() => window.location.replace(url.toString()), RELOAD_DELAY_MS);
+  window.setTimeout(() => {
+    window.location.replace(url.toString());
+    // Guard contra deadlock: se a navegação for cancelada pelo usuário no
+    // diálogo nativo de beforeunload (ex.: useUnsavedChangesGuard num
+    // formulário longo), o JS continua rodando nesta mesma página e
+    // `_reloadScheduled` ficaria travado em `true` para sempre — nenhuma
+    // nova tentativa de recuperação seria agendada pelo resto deste
+    // carregamento de página, mesmo que o chunk continue quebrado. Se a
+    // navegação de fato ocorrer, este timeout nunca chega a disparar (o
+    // documento é substituído antes); se for cancelada, ele libera uma
+    // nova tentativa.
+    window.setTimeout(() => {
+      _reloadScheduled = false;
+    }, RELOAD_DELAY_MS * 2);
+  }, RELOAD_DELAY_MS);
   return true;
 }
 
