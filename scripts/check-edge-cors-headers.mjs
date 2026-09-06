@@ -55,6 +55,8 @@ const SERVER_ONLY_ALLOWLIST = new Set([
   "asia-ingestion",
   "hash-product-images",
   "generate-blurhashes",
+  // Tombstones — decommissioned functions that return 410 Gone (PR #1837).
+  "mcp-query",
 ]);
 
 function listFunctionDirs() {
