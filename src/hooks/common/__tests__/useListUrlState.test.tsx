@@ -155,7 +155,15 @@ describe('useListUrlState — keys inline (regressão do loop de replaceState)',
   // (nova identidade a cada render). Antes do fix, o efeito de sync dependia de
   // `keys` → replaceState em todo render → nova location → re-render → loop
   // infinito ("Throttling navigation to prevent the browser from hanging").
-  it('não entra em loop de navegação quando keys é um objeto novo a cada render', async () => {
+  it('não entra em loop de navegação quando keys é um objeto novo a cada render (com escrita real na URL)', async () => {
+    // Regressão anterior deste teste NÃO forçava nenhuma escrita real na URL
+    // (a URL de teste não tinha nenhuma chave gerenciada, então o guard de
+    // idempotência batia no primeiro render e `updateParam` nunca era
+    // chamado — o teste passaria mesmo com o fix revertido). Este teste
+    // força o ciclo completo do bug original: setSearchParams → nova
+    // location → re-render → `keys` inline ganha NOVA identidade → efeito
+    // de sync roda de novo com deps inalteradas → confirma que NÃO reabre
+    // o loop.
     let locationChanges = 0;
     const Probe = () => {
       useLocation();
@@ -172,6 +180,8 @@ describe('useListUrlState — keys inline (regressão do loop de replaceState)',
     const { result } = renderHook(
       () =>
         useListUrlState({
+          // Objeto literal inline — nova identidade em TODO render, inclusive
+          // no re-render disparado pela escrita real abaixo.
           keys: { status: 'all', deadline: 'all', sort: 'recent', q: '' },
           searchKey: 'q',
           debounceMs: 250,
@@ -179,13 +189,25 @@ describe('useListUrlState — keys inline (regressão do loop de replaceState)',
       { wrapper },
     );
 
+    const changesAfterMount = locationChanges;
+
+    // Gatilho real do bug original: digita um valor de busca que diverge do
+    // default. Após o debounce, o efeito de sync chama `setSearchParams`,
+    // a location muda, o hook re-renderiza e `keys` (inline) ganha nova
+    // identidade — exatamente a condição que causava o loop pré-fix.
+    act(() => result.current.setSearchInput('acme'));
+
+    await waitFor(() => expect(result.current.values.q).toBe('acme'), { timeout: 1500 });
+
+    // Tempo para qualquer disparo adicional do efeito assentar.
     await new Promise<void>((r) => {
       setTimeout(r, 400);
     });
 
-    expect(result.current.values.q).toBe('');
-    // Mount + no máximo uma escrita defensiva; um loop produziria dezenas.
-    expect(locationChanges).toBeLessThanOrEqual(3);
+    expect(result.current.values.q).toBe('acme');
+    // A escrita real (1) + no máximo 1-2 re-renders de assentamento; um loop
+    // produziria dezenas/centenas de mudanças de location.
+    expect(locationChanges - changesAfterMount).toBeLessThanOrEqual(3);
   });
 
   it('não navega no mount quando a URL já reflete o estado (evita replaceState redundante)', async () => {
