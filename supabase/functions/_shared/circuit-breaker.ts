@@ -125,19 +125,3 @@ export function getBreaker(name: string, cfg?: Partial<BreakerConfig>): CircuitB
   return registry.get(name)!;
 }
 
-/**
- * @deprecated Use `circuitOpenResponse(err, corsHeaders)` from `../_shared/external-fetch.ts`.
- * This version emits a hardcoded 60-second Retry-After regardless of the service.
- * The external-fetch version reads per-service values from SERVICE_RETRY_AFTER.
- */
-export function circuitOpenResponse(name: string, corsHeaders: Record<string, string>): Response {
-  return new Response(
-    JSON.stringify({
-      error: "service_unavailable",
-      reason: "circuit_open",
-      service: name,
-      retry_after_seconds: 60,
-    }),
-    { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json", "Retry-After": "60" } },
-  );
-}

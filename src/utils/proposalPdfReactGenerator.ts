@@ -108,13 +108,14 @@ export async function generateProposalPDFv2(
     // baixo e desfigurando o layout do PDF (mesmo que o preview no browser
     // apareça corretamente, pois o browser compensa o offset internamente).
     //
-    // Solução: injetar temporariamente `img { display: inline-block !important }`
-    // apenas durante a captura do canvas, removendo a regra no bloco `finally`
-    // para não afetar o restante da UI. Confirmado funcionando em 2026-02.
+    // Solução CSP-safe: aplicar display:inline-block via DOM style API diretamente
+    // em cada <img> dentro do wrapper — evita injetar <style> no document.head,
+    // que seria bloqueado por CSP style-src sem 'unsafe-inline'. Restaura os
+    // valores originais no bloco finally. Confirmado funcionando em 2026-02.
     // ─────────────────────────────────────────────────────────────────────────
-    const imgFixStyle = document.createElement('style');
-    imgFixStyle.textContent = 'img { display: inline-block !important; }';
-    document.head.appendChild(imgFixStyle);
+    const wrapperImgs = Array.from(wrapper.querySelectorAll('img')) as HTMLImageElement[];
+    const imgOriginalDisplays = wrapperImgs.map((img) => img.style.display);
+    wrapperImgs.forEach((img) => { img.style.display = 'inline-block'; });
 
     try {
       for (let i = 0; i < pages.length; i++) {
@@ -139,8 +140,8 @@ export async function generateProposalPDFv2(
         pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, Math.min(imgHeight, pdfHeight));
       }
     } finally {
-      // Always remove the temporary style, even if html2canvas throws
-      document.head.removeChild(imgFixStyle);
+      // Restore original display values — CSP-safe, no <style> injection needed
+      wrapperImgs.forEach((img, idx) => { img.style.display = imgOriginalDisplays[idx]; });
     }
 
     return pdf.output('blob');

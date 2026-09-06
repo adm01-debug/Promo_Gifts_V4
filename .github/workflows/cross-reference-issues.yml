@@ -31,7 +31,7 @@ jobs:
     steps:
       - name: Cross-reference on PR events
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@v8
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         with:
           script: |
             const pr = context.payload.pull_request;
@@ -135,7 +135,7 @@ jobs:
 
       - name: Cross-reference on Issue events
         if: github.event_name == 'issues' && github.event.action == 'opened'
-        uses: actions/github-script@v8
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         with:
           script: |
             const issue = context.payload.issue;

@@ -6,7 +6,9 @@
  * `circuitOpenResponse` agora aceita `retryAfterSeconds` opcional (default: 60).
  * Cada função pode passar o valor correto para o serviço que está chamando.
  */
-import { getBreaker } from "./circuit-breaker.ts";
+import { getBreaker, getAllBreakerStatuses } from "./circuit-breaker.ts";
+
+export { getAllBreakerStatuses };
 
 export class CircuitOpenError extends Error {
   constructor(public service: string, public retryAfterSeconds = 60) {
