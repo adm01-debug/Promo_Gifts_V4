@@ -45,7 +45,6 @@ function getClientIp(req: Request): string {
 }
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
-const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 const RATE_LIMIT_MAX = Math.max(1, Number(Deno.env.get("E2E_CLEANUP_RATE_LIMIT_MAX") ?? "30"));
 const RATE_LIMIT_WINDOW = Math.max(10, Number(Deno.env.get("E2E_CLEANUP_RATE_LIMIT_WINDOW_SECONDS") ?? "60"));
 
@@ -64,6 +63,7 @@ Deno.serve(async (req: Request) => {
 
   const startMs = Date.now();
   const clientIp = getClientIp(req);
+  const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
   const supabase = createClient(SUPABASE_URL, SERVICE_KEY);
 
   const { value: cleanupToken } = await resolveCredential("E2E_CLEANUP_TOKEN");

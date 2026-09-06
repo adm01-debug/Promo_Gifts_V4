@@ -18,11 +18,10 @@ import { getOrCreateRequestId } from '../_shared/request-id.ts';
 import { resolveCredential } from '../_shared/credentials.ts';
 import { z } from '../_shared/zod-validate.ts';
 
-const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
-const SUPABASE_SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-
 function createServiceRoleClient() {
-  return createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+  const url = Deno.env.get('SUPABASE_URL')!;
+  const key = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+  return createClient(url, key);
 }
 
 type ProductVisualSearchClient = ReturnType<typeof createServiceRoleClient>;

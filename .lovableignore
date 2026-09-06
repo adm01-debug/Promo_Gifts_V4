@@ -80,3 +80,10 @@ src/pages/magazine/hooks/useMagazineGoldImport.ts
 src/pages/magazine/useMagazinePublish.ts
 src/pages/magazine/useMagazineEditor.ts
 src/pages/magazine/PublicMagazineView.tsx
+
+# ============================================================
+# Serviços de negócio com validações críticas de schema
+# Lovable reintroduziu colunas inválidas (personalization_type, etc.)
+# Protegido para evitar regressão de produção.
+# ============================================================
+src/services/quoteService.ts
