@@ -108,4 +108,30 @@ describe('scheduleStaleChunkReload', () => {
     vi.advanceTimersByTime(300);
     expect(replace).toHaveBeenCalledTimes(1);
   });
+
+  it('navegação cancelada (beforeunload): libera nova tentativa em vez de travar para sempre', async () => {
+    // Simula o cenário em que window.location.replace() é chamado mas o
+    // usuário cancela no diálogo nativo de beforeunload — a navegação não
+    // ocorre de fato (window.location.href não muda, como no mock abaixo) e
+    // o JS continua rodando na mesma página. Sem o guard, `_reloadScheduled`
+    // ficaria travado em `true` para sempre e uma 2ª chamada retornaria
+    // `true` sem nunca agendar um novo `replace`.
+    const { replace } = stubLocation('https://x.test/orcamentos?status=draft');
+    const { scheduleStaleChunkReload } = await loadFresh();
+
+    expect(scheduleStaleChunkReload()).toBe(true);
+    vi.advanceTimersByTime(300);
+    expect(replace).toHaveBeenCalledTimes(1);
+
+    // Janela de reset (RELOAD_DELAY_MS * 2 após o replace) ainda não passou.
+    expect(scheduleStaleChunkReload()).toBe(true);
+    vi.advanceTimersByTime(1);
+    expect(replace).toHaveBeenCalledTimes(1); // ainda coalescido, nenhum novo replace
+
+    // Passa a janela de reset — a navegação "cancelada" libera nova tentativa.
+    vi.advanceTimersByTime(600);
+    expect(scheduleStaleChunkReload()).toBe(true);
+    vi.advanceTimersByTime(300);
+    expect(replace).toHaveBeenCalledTimes(2);
+  });
 });
