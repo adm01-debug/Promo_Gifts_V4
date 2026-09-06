@@ -1,6 +1,48 @@
 // public/sw.js
 // Service Worker para Gifts Store PWA
-// Versão: 3.9.0
+// Versão: 3.12.0
+//
+// CHANGELOG v3.12.0 (2026-09-05 — fix/favoritespage-chunk-load):
+//   BUG-SW-24 FIX [ALTO]: `lastStaleAt` vivia numa variável `let` em module
+//     scope do worker. Um Service Worker idle pode ser terminado pelo
+//     browser a qualquer momento entre dois eventos `fetch` — não há
+//     garantia de que a mesma instância sobreviva até a próxima navegação.
+//     O caminho principal (reload automático via SW_STALE_CHUNK) já estava
+//     protegido por redundância (__bare na própria URL, lido antes de
+//     `lastStaleAt`), mas uma navegação MANUAL (F5, link, voltar do
+//     histórico) dentro da janela de 120s pós-stale-chunk, sem __bare na
+//     URL, dependia de `lastStaleAt` sobreviver num worker que pode ter
+//     sido reciclado — nesse caso caía de volta para cache:'no-cache',
+//     exatamente o modo que o BUG-SW-22 documentou como insuficiente
+//     contra HIT do edge Vercel. Fix: `lastStaleAt` persistido no Cache
+//     Storage (CACHE_NAME, chave sintética STALE_META_KEY) em vez de
+//     memória — sobrevive a reinícios do worker; limpo automaticamente no
+//     próximo bump de CACHE_VERSION (mesmo ciclo de vida do resto do cache).
+//
+// CHANGELOG v3.11.0 (2026-09-05 — fix/favoritespage-chunk-load):
+//   BUG-SW-23 FIX [BAIXO]: DevTools acusava "A preload for '...' is found,
+//     but is not used because it is a cross-world service worker resource
+//     mismatch" para /assets/rolldown-runtime-*.js e /assets/runtime-vendor-*.js.
+//     Esses 2 chunks (runtime do Rolldown + preload-helper) são sempre
+//     modulepreloaded no index.html; ao interceptá-los, o SC C (cache-first)
+//     devolve uma Response criada no realm do worker, diferente da que
+//     satisfez o preload no realm do documento — daí o aviso. Como
+//     /assets/*.js já tem Cache-Control: immutable, max-age=31536000 via
+//     vercel.json, o cache HTTP nativo do browser já cobre esses 2 arquivos;
+//     a interceptação do SW aqui era redundante. Fix: bypass total (sem
+//     event.respondWith) para esses 2 nomes — os demais chunks (lazy de
+//     rota, alvo real do recovery de stale-chunk) continuam sob o SW.
+//
+// CHANGELOG v3.10.0 (2026-09-05 — fix/favoritespage-chunk-load):
+//   BUG-SW-22 FIX [CRÍTICO]: após handleStaleChunk() o reload buscava
+//     /index.html com cache:'no-cache' — o edge do Vercel (x-vercel-cache: HIT)
+//     ainda podia devolver o HTML do deploy anterior por alguns segundos,
+//     referenciando chunks que já davam 404 → 503 "Stale Chunk" → reload →
+//     mesmo HTML → loop até o cap do boot guard (__bare=2), e tela quebrada.
+//     Fix: quando a navegação carrega __bare (retry do boot guard/sw-register)
+//     ou um chunk stale foi detectado nos últimos 120s, o SW busca
+//     /index.html?__swbust=<ts> com cache:'no-store'. A query string faz parte
+//     da cache key do edge → MISS → HTML fresco do deploy corrente.
 //
 // CHANGELOG v3.9.0 (2026-06-28 — fix/sw-503-stale-chunk-detection):
 //   BUG-SW-14 FIX [CRÍTICO]: looksStale() não detectava res.status === 503.
@@ -86,7 +128,7 @@
 //   Supabase API (.supabase.co)        → Network Only (dados dinâmicos)
 //   Resto                              → Stale-While-Revalidate + fallback     ← v3.3.0
 
-const CACHE_VERSION = 'v16'; // v3.9.0 — BUG-SW-14/15 looksStale captura 503+5xx; BUG-SW-21 handleStaleChunk .catch()
+const CACHE_VERSION = 'v19'; // v3.12.0 — BUG-SW-24 lastStaleAt persistido em Cache Storage (não mais em memória)
 const CACHE_NAME = `app-cache-${CACHE_VERSION}`;
 const IMAGE_CACHE_NAME = `images-cache-${CACHE_VERSION}`;
 const FONT_CACHE_NAME = `fonts-cache-${CACHE_VERSION}`;
@@ -154,6 +196,17 @@ function responseLooksLikeHtml(res) {
 
 function isHashedAsset(pathname) {
   return pathname.startsWith('/assets/') && HASHED_ASSET_EXT_RE.test(pathname);
+}
+
+// BUG-SW-23 FIX: chunks de runtime/interop sempre modulepreloaded no
+// index.html. Interceptá-los no SW causa "cross-world service worker
+// resource mismatch" no DevTools (Response do worker != a que satisfez o
+// preload no documento). /assets/*.js já é immutable via vercel.json, então
+// o cache HTTP nativo do browser cobre estes 2 arquivos sem o SW.
+const RUNTIME_BOOTSTRAP_RE = /^\/assets\/(?:rolldown-runtime|runtime-vendor)-[^/]+\.[cm]?js$/;
+
+function isRuntimeBootstrapAsset(pathname) {
+  return RUNTIME_BOOTSTRAP_RE.test(pathname);
 }
 
 // Resposta para chunk obsoleto/ausente: status 503 + Content-Type correto para
@@ -252,7 +305,48 @@ function isImageExpired(response) {
   return Date.now() - new Date(date).getTime() > IMAGE_CACHE_TTL;
 }
 
+// BUG-SW-22/24: instante da última detecção de chunk obsoleto. Enquanto
+// recente, navegações buscam index.html furando o cache do edge (ver
+// indexRequestFor). Persistido no Cache Storage (não em memória do worker)
+// — ver CHANGELOG v3.12.0 acima.
+const STALE_BUST_WINDOW_MS = 120000;
+const STALE_META_KEY = '/__sw-meta/last-stale-at';
+
+async function getLastStaleAt() {
+  try {
+    const cache = await caches.open(CACHE_NAME);
+    const res = await cache.match(STALE_META_KEY);
+    if (!res) return 0;
+    const n = parseInt(await res.text(), 10);
+    return Number.isFinite(n) ? n : 0;
+  } catch (_e) {
+    return 0; // Cache API indisponível (quota/private-browsing) — trata como "nunca stale".
+  }
+}
+
+function setLastStaleAt(ts) {
+  caches
+    .open(CACHE_NAME)
+    .then((c) => c.put(STALE_META_KEY, new Response(String(ts))))
+    .catch(() => {});
+}
+
+// Decide como buscar o index.html numa navegação:
+//   - normal → '/index.html' com cache:'no-cache' (revalida no HTTP cache);
+//   - retry (__bare na URL) ou pós-stale → '/index.html?__swbust=<ts>' com
+//     cache:'no-store', que é MISS garantido no edge do Vercel.
+async function indexRequestFor(navUrl) {
+  const retrying = navUrl.searchParams.has('__bare');
+  // Retry via __bare já força o cache-bust por si só — evita a leitura
+  // assíncrona de lastStaleAt quando ela não muda o resultado.
+  const lastStaleAt = retrying ? 0 : await getLastStaleAt();
+  const recentlyStale = lastStaleAt > 0 && Date.now() - lastStaleAt < STALE_BUST_WINDOW_MS;
+  if (!retrying && !recentlyStale) return ['/index.html', { cache: 'no-cache' }];
+  return ['/index.html?__swbust=' + Date.now(), { cache: 'no-store' }];
+}
+
 function handleStaleChunk(chunkUrl) {
+  setLastStaleAt(Date.now());
   caches.open(CACHE_NAME).then((c) => {
     c.delete('/index.html');
     c.delete('/');
@@ -391,6 +485,10 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET') return;
   if (shouldSkipCache(request)) return;
 
+  // BUG-SW-23 FIX: bypass total (sem respondWith) para os 2 chunks de
+  // bootstrap — ver isRuntimeBootstrapAsset acima.
+  if (isRuntimeBootstrapAsset(url.pathname)) return;
+
   // ── A) Google Fonts → Stale-While-Revalidate ──────────────────────────────
   if (isGoogleFont(url)) {
     event.respondWith(
@@ -412,24 +510,26 @@ self.addEventListener('fetch', (event) => {
   // ── B) Navigation (SPA) → Network First + cache fallback ──────────────────
   if (request.mode === 'navigate') {
     event.respondWith(
-      fetch('/index.html', { cache: 'no-cache' })
-        .then((res) => {
-          if (res && res.ok) {
-            const indexClone = res.clone();
-            const rootClone = res.clone();
-            caches.open(CACHE_NAME).then((c) => {
-              c.put('/index.html', indexClone);
-              c.put('/', rootClone);
-            });
-            return res;
-          }
-          return caches.match('/index.html').then((cached) => cached || res);
-        })
-        .catch(() =>
-          caches
-            .match('/index.html')
-            .then((cached) => cached || offlineFallback()),
-        ),
+      indexRequestFor(url).then(([indexUrl, indexInit]) =>
+        fetch(indexUrl, indexInit)
+          .then((res) => {
+            if (res && res.ok) {
+              const indexClone = res.clone();
+              const rootClone = res.clone();
+              caches.open(CACHE_NAME).then((c) => {
+                c.put('/index.html', indexClone);
+                c.put('/', rootClone);
+              });
+              return res;
+            }
+            return caches.match('/index.html').then((cached) => cached || res);
+          })
+          .catch(() =>
+            caches
+              .match('/index.html')
+              .then((cached) => cached || offlineFallback()),
+          ),
+      ),
     );
     return;
   }

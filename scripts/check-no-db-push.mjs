@@ -64,6 +64,31 @@ const ALLOWLIST = [
   // 'supabase/migrations/' aqui — uma migration nova com `supabase db push`
   // em comentário deve forçar o autor a justificar e pedir entrada explícita.
   'supabase/migrations/20260522155000_align_wave_3_5_2_lovable_uuid_casts.sql',
+  // Cita comando como anti-padrão histórico ou em comentário explicativo:
+  'supabase/migrations/20260622111500_supplier_reliability_pipeline_v1.sql',
+  'supabase/migrations/20260605150000_register_repo_versions_in_db.sql',
+  'supabase/migrations/20260604141700_bootstrap_fresh_replay_prereqs.sql',
+  'supabase/migrations/20260614220000_stock_notification_rpcs.sql',
+  'supabase/migrations/20260623120000_harden_get_favorite_list_counts_revoke_anon.sql',
+  'supabase/migrations/20260605110225_bug4_supplier_settings_and_cleanup.sql',
+  'supabase/migrations/20260615120000_stock_notifications_date_filter.sql',
+
+  // ─── Artefatos de snapshot e metadados de migrations ──
+  'supabase/MIGRATIONS_SYNC_LOG.md',        // log de sincronização, cita anti-padrão
+  'supabase/migrations-snapshot/ALL_IN_ONE.sql', // snapshot histórico consolidado
+
+  // ─── Scripts de promoção e QA (contêm o padrão em prosa/comentário) ──
+  'scripts/promote-draft-migration.mjs',    // cita `supabase db push` como proibido
+  'qa/migrations-draft/2026-07-06_crm_callback_events.sql',
+  'qa/migrations-draft/README.md',
+
+  // ─── Grafos gerados automaticamente (auto-generated, não executável) ──
+  'graphify-out/GRAPH_REPORT.md',
+
+  // ─── Docs de auditoria (2026-08-26 — citam o comando como anti-padrão) ──
+  'docs/AUDITORIA_EXAUSTIVA_E_PLANO_100_ETAPAS_2026-08-26.md',
+  'docs/motor-v2-test-report.md',
+  'docs/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.md',
 ];
 
 function isAllowed(path) {
@@ -105,7 +130,7 @@ try {
 
 const files = raw
   .split('\n')
-  .map((s) => s.trim().replace(/^\.\//, ''))
+  .map((s) => s.trim().replace(/^\.\//,  ''))
   .filter(Boolean);
 
 const offenders = files.filter((f) => !isAllowed(f));

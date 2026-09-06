@@ -156,6 +156,15 @@ export const DESCRIPTORS: Record<string, Descriptor> = {
     invalidInputs: [],
   },
 
+  // ---------------- Tombstones (410 Gone — decommissioned) ----------------
+  "mcp-query": {
+    skipCors: true,
+    // Tombstone — decommissioned in PR #1837. Returns 410 for all input.
+    // No CORS (never browser-callable); no validation logic in handler.
+    happyPath: { method: "GET", expectStatus: [410] },
+    invalidInputs: [],
+  },
+
   // ---------------- Funções de teste internas (utilitários de QA) ----------------
   // Usam SERVICE_ROLE_KEY internamente; não expõem ação pública.
   // Sem happy-path: executar geraria efeitos colaterais no DB (carts/itens).

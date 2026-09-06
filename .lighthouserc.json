@@ -1,7 +1,7 @@
 {
   "ci": {
     "collect": {
-      "url": ["http://127.0.0.1:4173/auth"],
+      "url": ["http://127.0.0.1:4173/auth", "http://127.0.0.1:4173/"],
       "startServerCommand": "npm run preview -- --host 127.0.0.1 --port 4173",
       "startServerReadyPattern": "Local|ready in|ready on",
       "startServerReadyTimeout": 30000,
@@ -18,18 +18,38 @@
       }
     },
     "assert": {
-      "assertions": {
-        "categories:performance": ["error", { "minScore": 0.75 }],
-        "categories:accessibility": ["error", { "minScore": 0.90 }],
-        "categories:best-practices": ["warn", { "minScore": 0.85 }],
-        "categories:seo": ["error", { "minScore": 0.95 }],
-        "categories:pwa": ["warn", { "minScore": 0.80 }],
-        "uses-http2": "off",
-        "is-on-https": "off",
-        "redirects-http": "off",
-        "uses-long-cache-ttl": "off",
-        "color-contrast": ["warn", { "minScore": 0.9 }]
-      }
+      "assertMatrix": [
+        {
+          "matchingUrlPattern": "/auth$",
+          "assertions": {
+            "categories:performance": ["error", { "minScore": 0.75 }],
+            "categories:accessibility": ["error", { "minScore": 0.90 }],
+            "categories:best-practices": ["warn", { "minScore": 0.85 }],
+            "categories:seo": ["error", { "minScore": 0.95 }],
+            "categories:pwa": ["warn", { "minScore": 0.80 }],
+            "uses-http2": "off",
+            "is-on-https": "off",
+            "redirects-http": "off",
+            "uses-long-cache-ttl": "off",
+            "color-contrast": ["warn", { "minScore": 0.9 }]
+          }
+        },
+        {
+          "matchingUrlPattern": "4173/$",
+          "assertions": {
+            "categories:performance": ["warn", { "minScore": 0.85 }],
+            "categories:accessibility": ["error", { "minScore": 0.90 }],
+            "categories:best-practices": ["warn", { "minScore": 0.85 }],
+            "categories:seo": ["error", { "minScore": 0.95 }],
+            "categories:pwa": ["warn", { "minScore": 0.80 }],
+            "uses-http2": "off",
+            "is-on-https": "off",
+            "redirects-http": "off",
+            "uses-long-cache-ttl": "off",
+            "color-contrast": ["warn", { "minScore": 0.9 }]
+          }
+        }
+      ]
     },
     "upload": {
       "target": "temporary-public-storage"

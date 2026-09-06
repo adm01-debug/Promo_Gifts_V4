@@ -146,12 +146,13 @@ describe('useIntelligenceBadgeSettings — fuzz na sanitização', () => {
       fetchValue = c.value;
       const { useIntelligenceBadgeSettingsValue } = await freshHook();
       const { result } = renderHook(() => useIntelligenceBadgeSettingsValue());
-      // aguarda o fetch único disparado pelo useEffect
+      // aguarda o fetch único disparado pelo useEffect — todas as asserções dentro
+      // de waitFor para evitar race condition quando expectMin===15 (coincide com default)
       await waitFor(() => {
         expect(result.current.bestSeller.minAvgDailyDepletion7d).toBe(c.expectMin);
+        expect(result.current.hotItem.enabled).toBe(c.expectHot);
+        expect(result.current.bestSeller.enabled).toBe(c.expectBest);
       });
-      expect(result.current.hotItem.enabled).toBe(c.expectHot);
-      expect(result.current.bestSeller.enabled).toBe(c.expectBest);
     });
   }
 

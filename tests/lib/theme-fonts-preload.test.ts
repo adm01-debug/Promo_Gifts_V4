@@ -22,9 +22,12 @@ describe('index.html — preload de fontes', () => {
     expect(indexHtml).toContain('Inter');
   });
 
-  it('usa preload + media swap para não bloquear render', () => {
+  it('usa preload + stylesheet direto (CSP-compliant, sem onload event handler)', () => {
     expect(indexHtml).toMatch(/rel="preload"\s+as="style"/);
-    expect(indexHtml).toMatch(/media="print"\s+onload="this\.media='all'"/);
+    // onload removido em fix(csp): 5143778 — agora usa preload + stylesheet direto (CSP-compliant)
+    // Valida a stylesheet fora do <noscript> — split garante que o match seja no <head>, não no fallback
+    const [beforeNoscript] = indexHtml.split('<noscript>');
+    expect(beforeNoscript).toMatch(/rel="stylesheet".*googleapis\.com/);
   });
 
   it('inclui fallback <noscript> com a stylesheet', () => {

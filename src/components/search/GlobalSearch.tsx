@@ -16,7 +16,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
-import { untypedRpc } from '@/lib/supabase-untyped';
+import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 
 interface SearchResult {
@@ -117,8 +117,6 @@ export function GlobalSearch({
   }, [isOpen]);
 
   // Real search via fn_global_search RPC — produtos + orçamentos.
-  // untypedRpc bypasses the Supabase type narrowing for functions not yet in
-  // generated types. Migrate to supabase.rpc() once types.ts is regenerated.
   const performSearch = useCallback(async (searchQuery: string, filter?: string) => {
     if (!searchQuery.trim()) {
       setResults([]);
@@ -133,7 +131,7 @@ export function GlobalSearch({
       const types =
         filter && SEARCH_SUPPORTED_TYPES.includes(filter) ? [filter] : SEARCH_SUPPORTED_TYPES;
 
-      const { data: rawData, error } = await untypedRpc('fn_global_search', {
+      const { data: rawData, error } = await supabase.rpc('fn_global_search', {
         p_term: searchQuery.trim(),
         p_limit: 12,
         p_types: types,

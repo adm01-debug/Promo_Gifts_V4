@@ -7,10 +7,6 @@
       "reason": "Fluxo pré-autenticação: aplica rate limit antes da sessão existir. Grant canônico confirmado em pg_catalog em 2026-08-29."
     },
     {
-      "fn": "public.fn_check_login_allowed(p_email text, p_ip_address text, p_city text, p_user_agent text)",
-      "reason": "Fluxo pré-autenticação: valida bloqueios de login antes da sessão existir. Grant canônico confirmado em pg_catalog em 2026-08-29."
-    },
-    {
       "fn": "public.fn_global_search(p_term text, p_limit integer, p_types text[])",
       "reason": "Busca do catálogo público; retorna somente projeções expostas ao visitante. Grant canônico confirmado em pg_catalog em 2026-08-29."
     },
@@ -35,12 +31,16 @@
       "reason": "Ranking paginado do catálogo público. Grant canônico confirmado em pg_catalog em 2026-08-29."
     },
     {
-      "fn": "public.get_quote_token_by_value(_token text)",
-      "reason": "Visualização pública de orçamento protegida por token opaco. Grant canônico confirmado em pg_catalog em 2026-08-29."
+      "fn": "public.get_quote_token_public(_token text)",
+      "reason": "Portal de aprovação (SEC-009, 2026-09-04): substituto seguro de get_quote_token_by_value (revogado em 20260904111000). Campos retornados: id, quote_id, token, status, expires_at, client_name, viewed_at, responded_at, response, response_notes, created_at, signer_name, signed_at. Campos redactados (PII): client_email, signer_document, signer_ip, signer_user_agent, signature_hash, ip_address, user_agent, attempts, used_at, is_used, approved, seller_id. Grant anon intencional — portal acessado via link de token sem autenticação."
     },
     {
       "fn": "public.submit_quote_response(_token text, _response text, _response_notes text)",
       "reason": "Resposta pública de orçamento protegida por token opaco e validação interna. Grant canônico confirmado em pg_catalog em 2026-08-29."
+    },
+    {
+      "fn": "public.fn_check_login_allowed(p_email text, p_ip_address text, p_city text, p_user_agent text)",
+      "reason": "REVOGAÇÃO PENDENTE — migration 20260904150000 (PR #1829) executa REVOKE de anon/authenticated/PUBLIC. Grant ainda existe no DB de produção pois a migration ainda não foi aplicada. Remover esta entrada após o deploy pós-merge da migration. (SEC-008v4, 2026-09-04)"
     }
   ]
 }

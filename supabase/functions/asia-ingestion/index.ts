@@ -6,8 +6,6 @@ import { resolveCredential } from '../_shared/credentials.ts';
 
 const SUPABASE_URL  = Deno.env.get('SUPABASE_URL')!;
 const SERVICE_KEY   = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-// SEC-001: UUID resolvido via vault (integration_credentials) → env → seed legado.
-const SUPPLIER_ID_SEED = 'd2734e23-d633-4819-bb15-e51aa44e2118';
 const ASIA_BASE     = Deno.env.get('ASIA_BASE_URL') ?? 'https://asia.ajung.site';
 const POR_PAGINA    = 50;
 const MAX_PAGES     = 30;
@@ -101,8 +99,11 @@ Deno.serve(async (req: Request) => {
 
   const t0 = Date.now();
   try {
-    const { value: supplierIdFromVault } = await resolveCredential('ASIA_SUPPLIER_ID', supabase);
-    const supplierId = supplierIdFromVault ?? SUPPLIER_ID_SEED;
+    const { value: supplierId } = await resolveCredential('ASIA_SUPPLIER_ID', supabase);
+    if (!supplierId) {
+      log.error('missing_credential', { key: 'ASIA_SUPPLIER_ID' });
+      return new Response(JSON.stringify({ ok: false, error: 'missing_credential' }), { status: 500, headers: cors });
+    }
     const f1 = await syncCatalogo(supplierId);
     return new Response(JSON.stringify({ ok: true, elapsed_ms: Date.now() - t0, ...f1 }), { headers: { ...cors, 'X-Request-Id': __reqId } });
   } catch (err: any) {
