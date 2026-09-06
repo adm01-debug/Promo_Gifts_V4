@@ -51,6 +51,84 @@ function isValidSentryDsn(dsn: string | undefined): dsn is string {
   return SENTRY_DSN_REGEX.test(dsn);
 }
 
+/**
+ * Params técnicos de recovery de chunk/reload que NUNCA devem vazar para o
+ * Sentry: __bare/__bart (boot guard de index.html e sw-register.ts) e _cb
+ * (chunk-recovery.ts). O SDK do Sentry popula `event.request.url` e
+ * breadcrumbs de navegação automaticamente a partir de `window.location`,
+ * então qualquer erro capturado durante a janela de um reload de
+ * recuperação carregaria esses params técnicos nos relatórios — ruído sem
+ * valor de diagnóstico (não identificam usuário nem contêm dado sensível,
+ * mas poluem agrupamento de eventos por URL e dashboards de rota).
+ */
+const RECOVERY_URL_PARAMS = ['__bare', '__bart', '_cb'];
+
+function scrubRecoveryParamsFromUrl(url: string): string {
+  // request.url do Sentry é sempre absoluta; data.to/from de breadcrumbs de
+  // navegação (React Router) costumam ser paths relativos — `new URL()`
+  // sem base lança para esses. Detecta e usa origin como base só quando
+  // necessário, preservando o formato (absoluto vs. relativo) na saída.
+  const isAbsolute = /^[a-z][a-z0-9+.-]*:\/\//i.test(url);
+  try {
+    const base = isAbsolute
+      ? undefined
+      : typeof window !== 'undefined'
+        ? window.location.origin
+        : 'https://scrub.invalid';
+    const u = base ? new URL(url, base) : new URL(url);
+    let changed = false;
+    for (const p of RECOVERY_URL_PARAMS) {
+      if (u.searchParams.has(p)) {
+        u.searchParams.delete(p);
+        changed = true;
+      }
+    }
+    if (!changed) return url;
+    return isAbsolute ? u.toString() : u.pathname + u.search + u.hash;
+  } catch {
+    return url;
+  }
+}
+
+function scrubRecoveryParamsFromQueryString(qs: string): string {
+  const filtered = qs
+    .split('&')
+    .filter((pair) => !RECOVERY_URL_PARAMS.includes(pair.split('=')[0]));
+  return filtered.join('&');
+}
+
+/**
+ * `beforeSend` do Sentry — remove headers sensíveis e params técnicos de
+ * recovery antes do evento sair do browser. Exportado (não inline) para
+ * ser testável isoladamente sem precisar mockar o SDK inteiro.
+ */
+export function scrubBeforeSend(event: SentryNS.ErrorEvent): SentryNS.ErrorEvent {
+  if (event.request?.headers) {
+    delete (event.request.headers as Record<string, unknown>).authorization;
+    delete (event.request.headers as Record<string, unknown>).cookie;
+  }
+  if (event.request) {
+    if (typeof event.request.url === 'string') {
+      event.request.url = scrubRecoveryParamsFromUrl(event.request.url);
+    }
+    if (typeof event.request.query_string === 'string') {
+      event.request.query_string = scrubRecoveryParamsFromQueryString(event.request.query_string);
+    }
+  }
+  if (Array.isArray(event.breadcrumbs)) {
+    for (const bc of event.breadcrumbs) {
+      const data = bc?.data as Record<string, unknown> | undefined;
+      if (!data) continue;
+      for (const key of ['to', 'from', 'url']) {
+        if (typeof data[key] === 'string') {
+          data[key] = scrubRecoveryParamsFromUrl(data[key] as string);
+        }
+      }
+    }
+  }
+  return event;
+}
+
 function shouldLoadSentry(): boolean {
   const dsn = import.meta.env.VITE_SENTRY_DSN as string | undefined;
   if (!dsn) return false;
@@ -115,13 +193,7 @@ async function loadSentry(): Promise<SentryModule | null> {
           /extension:\/\//,
           /moz-extension:\/\//,
         ],
-        beforeSend(event) {
-          if (event.request?.headers) {
-            delete (event.request.headers as Record<string, unknown>).authorization;
-            delete (event.request.headers as Record<string, unknown>).cookie;
-          }
-          return event;
-        },
+        beforeSend: scrubBeforeSend,
       });
       initialized = true;
 

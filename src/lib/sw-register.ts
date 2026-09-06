@@ -1,7 +1,7 @@
 // src/lib/sw-register.ts
 
 import { logger } from '@/lib/logger';
-import { swConfirmedStaleUrls } from '@/lib/chunk-recovery';
+import { swConfirmedStaleUrls, bumpSharedReloadBudget } from '@/lib/chunk-recovery';
 
 // ── Reload de recuperação com cap storage-free ────────────────────────────────
 // Mesmo contrato do boot guard inline em index.html: contador de tentativas na
@@ -10,17 +10,21 @@ import { swConfirmedStaleUrls } from '@/lib/chunk-recovery';
 // (_staleChunkReloadScheduled) zerava a cada reload, então com o edge do
 // Vercel ainda servindo HTML antigo o SW disparava reload → 503 → reload …
 // sem fim. O SW lê __bare na navegação e busca /index.html com cache-bust.
-const RELOAD_PARAM = '__bare';
-const RELOAD_TS_PARAM = '__bart';
-const RELOAD_MAX = 2;
-const RELOAD_WINDOW_MS = 20_000;
+//
+// A contagem em si (leitura/incremento de __bare/__bart) vive em
+// chunk-recovery.ts (bumpSharedReloadBudget) — é o MESMO orçamento que
+// attemptChunkRecovery() também respeita, unificando o teto agregado dos 2
+// mecanismos que podem importar módulos (achado da auditoria 2026-09; ver
+// comentário em chunk-recovery.ts). index.html mantém sua própria cópia
+// inline dos mesmos params/constantes por precisar rodar antes do bundle.
 const RELOAD_DELAY_MS = 300;
 let _reloadScheduled = false;
 
 /**
- * Agenda um reload de recuperação de chunk. Retorna false quando o cap
- * (2 reloads em 20s) foi atingido — o caller deve deixar o erro subir para
- * o ErrorBoundary/GlobalCatcher em vez de insistir.
+ * Agenda um reload de recuperação de chunk. Retorna false quando o orçamento
+ * compartilhado (2 reloads em 20s, ver chunk-recovery.ts) foi atingido — o
+ * caller deve deixar o erro subir para o ErrorBoundary/GlobalCatcher em vez
+ * de insistir.
  */
 export function scheduleStaleChunkReload(): boolean {
   if (_reloadScheduled) return true;
@@ -32,18 +36,7 @@ export function scheduleStaleChunkReload(): boolean {
     window.setTimeout(() => window.location.reload(), RELOAD_DELAY_MS);
     return true;
   }
-  const now = Date.now();
-  let n = parseInt(url.searchParams.get(RELOAD_PARAM) ?? '', 10);
-  let firstAt = parseInt(url.searchParams.get(RELOAD_TS_PARAM) ?? '', 10);
-  if (!Number.isFinite(n) || n < 0) n = 0;
-  if (!Number.isFinite(firstAt) || firstAt < 0) firstAt = 0;
-  if (n === 0 || !firstAt || now - firstAt > RELOAD_WINDOW_MS) {
-    n = 0;
-    firstAt = now;
-  }
-  if (n >= RELOAD_MAX) return false;
-  url.searchParams.set(RELOAD_PARAM, String(n + 1));
-  url.searchParams.set(RELOAD_TS_PARAM, String(firstAt));
+  if (!bumpSharedReloadBudget(url)) return false;
   _reloadScheduled = true;
   // 300ms: deixa o React registrar o erro (Sentry) antes de sair da página.
   window.setTimeout(() => {
