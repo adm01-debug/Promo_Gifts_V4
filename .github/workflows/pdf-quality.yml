@@ -116,7 +116,7 @@ jobs:
       # ─── Comentário no PR quando falhar ──────────────────────────────
       - name: Comment contrast report on PR when tests fail
         if: always() && github.event_name == 'pull_request' && steps.pdf-tests.outputs.exit_code != '0'
-        uses: actions/github-script@v7
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         env:
           ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
           ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
