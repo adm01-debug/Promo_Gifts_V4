@@ -4,7 +4,12 @@ import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 
-// Animated counter hook
+// Animated counter hook — divergência intencional em relação a useCountUp (@/hooks/ui):
+// · useState(target): inicia do valor atual (sem animação de entrada no mount)
+// · easeOutCubic (**3): curva mais agressiva — responsivo para tabelas de estoque
+// · duration=600ms: mais rápido que o padrão 800ms das stats-strips
+// · Sem ISSUE-28 fix explícito: prevRef rastreia o FROM diretamente
+// Não migrar para o hook compartilhado — comportamento diferente por design.
 function useCountUp(target: number, duration = 600) {
   const [value, setValue] = useState(target);
   const prevRef = useRef(target);
@@ -220,4 +225,3 @@ export function StatCard({
     </TooltipProvider>
   );
 }
-
