@@ -97,7 +97,7 @@ test.describe("@smoke Magazine Editor — header responsivo + regressão visual"
         test.skip(!opened, "sem revistas cadastradas na conta de teste");
 
         const aside = page.getByTestId("magazine-preview-aside");
-        const drawerTrigger = page.getByRole("button", { name: /^Preview$/ });
+        const drawerTrigger = page.getByRole("button", { name: /^(Preview|Ver preview)$/ });
 
         if (vp.name === "xl") {
           await expect(aside).toBeVisible();
@@ -120,7 +120,7 @@ test.describe("@smoke Magazine Editor — header responsivo + regressão visual"
 
         // xl: aside sempre montado; sm/md: precisamos abrir o drawer.
         if (vp.name !== "xl") {
-          const drawerTrigger = page.getByRole("button", { name: /^Preview$/ });
+          const drawerTrigger = page.getByRole("button", { name: /^(Preview|Ver preview)$/ });
           await drawerTrigger.click();
           await expect(page.getByRole("dialog")).toBeVisible();
         }

@@ -187,8 +187,10 @@ export default function MagazineEditorPage() {
         const blocking = magazine ? validateStep(step, magazine).blocks : [];
         if (blocking.length > 0) {
           toast.warning(blocking[0]);
+          return;
         }
       }
+      setPreviewSheetOpen(false);
       setStep(target);
     },
     [currentIdx, magazine, step],
