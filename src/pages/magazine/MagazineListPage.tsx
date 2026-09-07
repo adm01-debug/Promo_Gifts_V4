@@ -344,21 +344,21 @@ export default function MagazineListPage() {
               variant="outline"
               size="sm"
               asChild
-              className={cn(PG_BTN_OUTLINE_PRIMARY, 'h-11 rounded-md px-4 text-[14px]')}
+              className={cn(PG_BTN_OUTLINE_PRIMARY, 'h-9 rounded-md px-3 text-xs')}
               data-testid="magazine-templates-gallery-btn"
             >
               <Link to="/magazine/templates" className="link-unstyled">
-                <LayoutTemplate className="mr-2 h-4 w-4" aria-hidden />
+                <LayoutTemplate className="mr-1.5 h-3.5 w-3.5" aria-hidden />
                 Explorar templates
               </Link>
             </Button>
             <Button
               size="sm"
               onClick={handleCreate}
-              className={cn(PG_BTN, 'h-11 rounded-md px-5 text-[14px]')}
+              className={cn(PG_BTN, 'h-9 rounded-md px-3 text-xs')}
               data-testid="magazine-create-btn"
             >
-              <Plus className="mr-2 h-4 w-4" aria-hidden />
+              <Plus className="mr-1.5 h-3.5 w-3.5" aria-hidden />
               Nova revista
             </Button>
           </div>
