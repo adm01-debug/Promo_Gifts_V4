@@ -46,6 +46,16 @@ export const TEMPLATE_REGISTRY: Record<MagazineTemplateId, TemplateEntry> = {
     productsPerPage: 1,
     fonts: { heading: 'Cormorant Garamond', body: 'Work Sans' },
     defaultColors: { primary: '#0f172a', secondary: '#dc2626', text: '#111111' },
+    visualStyle: 'Minimalista',
+    audience: 'Corporativo / Premium',
+    features: [
+      'Hero com tipografia serifada',
+      'Foco em um produto por página',
+      'Layout clean e sofisticado',
+      'Espaço para descrição curta',
+      'Ideal para impressos e PDF',
+    ],
+    useCases: ['Lançamentos', 'Catálogos institucionais', 'Campanhas de marca', 'Produtos premium'],
     Component: VogueTemplate,
   },
   'editorial-magazine': {
@@ -56,6 +66,15 @@ export const TEMPLATE_REGISTRY: Record<MagazineTemplateId, TemplateEntry> = {
     productsPerPage: 2,
     fonts: { heading: 'Instrument Serif', body: 'Inter' },
     defaultColors: { primary: '#1e293b', secondary: '#eab308', text: '#0f172a' },
+    visualStyle: 'Editorial clássico',
+    audience: 'Corporativo / Varejo',
+    features: [
+      'Duas colunas com imagem 60/40',
+      'Sidebar de detalhes por produto',
+      'Dois produtos por página',
+      'Boa legibilidade em PDF',
+    ],
+    useCases: ['Coleções sazonais', 'Apresentações comerciais', 'Catálogos de linha'],
     Component: MagazineTemplate,
   },
   'editorial-hero-grid': {
@@ -66,6 +85,15 @@ export const TEMPLATE_REGISTRY: Record<MagazineTemplateId, TemplateEntry> = {
     productsPerPage: 5,
     fonts: { heading: 'DM Serif Display', body: 'Fira Sans' },
     defaultColors: { primary: '#111827', secondary: '#f97316', text: '#111827' },
+    visualStyle: 'Modular',
+    audience: 'Varejo / Eventos',
+    features: [
+      'Hero + 4 produtos coadjuvantes',
+      'Grade modular equilibrada',
+      'Cinco produtos por página',
+      'Destaque natural para o item principal',
+    ],
+    useCases: ['Kits e combos', 'Campanhas de eventos', 'Promoções'],
     Component: HeroGridTemplate,
   },
   'editorial-mono': {
@@ -76,6 +104,15 @@ export const TEMPLATE_REGISTRY: Record<MagazineTemplateId, TemplateEntry> = {
     productsPerPage: 1,
     fonts: { heading: 'Archivo Black', body: 'Hind' },
     defaultColors: { primary: '#000000', secondary: '#000000', text: '#000000' },
+    visualStyle: 'Preto e branco',
+    audience: 'Premium / Design',
+    features: [
+      'Foco absoluto na fotografia',
+      'Tipografia display pesada',
+      'Um produto por página',
+      'Alto contraste para impressão',
+    ],
+    useCases: ['Produtos premium', 'Portfólio', 'Lançamentos exclusivos'],
     Component: MonoTemplate,
   },
   'editorial-manifesto': {
@@ -86,6 +123,15 @@ export const TEMPLATE_REGISTRY: Record<MagazineTemplateId, TemplateEntry> = {
     productsPerPage: 2,
     fonts: { heading: 'Playfair Display', body: 'Inter' },
     defaultColors: { primary: '#2e4a3a', secondary: '#e86f2e', text: '#1a1a1a' },
+    visualStyle: 'Narrativo',
+    audience: 'Marca / Sustentabilidade',
+    features: [
+      'Página em 3 fatias (30/40/30)',
+      'Mensagem de marca em destaque',
+      'Dois produtos por página',
+      'Apelo emocional',
+    ],
+    useCases: ['Campanhas de marca', 'Linhas sustentáveis', 'Institucional'],
     Component: EditorialManifestoTemplate,
   },
   'catalog-grid-2x3': {
@@ -96,6 +142,15 @@ export const TEMPLATE_REGISTRY: Record<MagazineTemplateId, TemplateEntry> = {
     productsPerPage: 6,
     fonts: { heading: 'Playfair Display', body: 'Inter' },
     defaultColors: { primary: '#1a1a1a', secondary: '#e86f2e', text: '#1a1a1a' },
+    visualStyle: 'Grade limpa',
+    audience: 'Compras / Pedidos',
+    features: [
+      'Seis produtos por página',
+      'Preço e código em destaque',
+      'Leitura rápida em grade',
+      'Densidade média',
+    ],
+    useCases: ['Catálogo geral', 'Listas de preço', 'Reposição'],
     Component: Grid2x3Template,
   },
   'catalog-grid-3x3': {
@@ -106,6 +161,15 @@ export const TEMPLATE_REGISTRY: Record<MagazineTemplateId, TemplateEntry> = {
     productsPerPage: 9,
     fonts: { heading: 'Playfair Display', body: 'Inter' },
     defaultColors: { primary: '#1a1a1a', secondary: '#e86f2e', text: '#1a1a1a' },
+    visualStyle: 'Alta densidade',
+    audience: 'Compras / Atacado',
+    features: [
+      'Nove produtos por página',
+      'Máxima densidade',
+      'Códigos legíveis',
+      'Menos páginas no PDF',
+    ],
+    useCases: ['Catálogo completo', 'Tabelas de preço', 'Distribuidores'],
     Component: Grid3x3Template,
   },
   'catalog-list': {
@@ -116,6 +180,15 @@ export const TEMPLATE_REGISTRY: Record<MagazineTemplateId, TemplateEntry> = {
     productsPerPage: 5,
     fonts: { heading: 'Playfair Display', body: 'Inter' },
     defaultColors: { primary: '#1a1a1a', secondary: '#e86f2e', text: '#1a1a1a' },
+    visualStyle: 'Lista técnica',
+    audience: 'Compras / Técnico',
+    features: [
+      'Thumb + specs completas',
+      'Cinco produtos por página',
+      'Dimensões e materiais',
+      'Preço por linha',
+    ],
+    useCases: ['Fichas técnicas', 'Licitações', 'Cotações'],
     Component: ListTemplate,
   },
   'catalog-giftset': {
@@ -126,6 +199,15 @@ export const TEMPLATE_REGISTRY: Record<MagazineTemplateId, TemplateEntry> = {
     productsPerPage: 8,
     fonts: { heading: 'Playfair Display', body: 'Inter' },
     defaultColors: { primary: '#1a1a1a', secondary: '#2f6c6c', text: '#1a1a1a' },
+    visualStyle: 'Showcase',
+    audience: 'Kits / Presentes',
+    features: [
+      'Composição hero do kit',
+      'Tabela "Product includes"',
+      'Variações de cor',
+      'Até oito itens por página',
+    ],
+    useCases: ['Kits corporativos', 'Presentes de fim de ano', 'Onboarding'],
     Component: GiftSetShowcaseTemplate,
   },
   'corporate-hero': {
@@ -136,6 +218,15 @@ export const TEMPLATE_REGISTRY: Record<MagazineTemplateId, TemplateEntry> = {
     productsPerPage: 4,
     fonts: { heading: 'Sora', body: 'Manrope' },
     defaultColors: { primary: '#0c2340', secondary: '#c9a84c', text: '#0c2340' },
+    visualStyle: 'Corporativo',
+    audience: 'B2B / Clientes-chave',
+    features: [
+      'Logo do cliente em destaque',
+      'Produtos em grade 2×2',
+      'Quatro produtos por página',
+      'Paleta sóbria',
+    ],
+    useCases: ['Propostas B2B', 'Contas-chave', 'Programas de brindes'],
     Component: CorporateHeroTemplate,
   },
   'corporate-split': {
@@ -146,6 +237,15 @@ export const TEMPLATE_REGISTRY: Record<MagazineTemplateId, TemplateEntry> = {
     productsPerPage: 2,
     fonts: { heading: 'Space Grotesk', body: 'DM Sans' },
     defaultColors: { primary: '#1e3a5f', secondary: '#e11d48', text: '#0f172a' },
+    visualStyle: 'Split screen',
+    audience: 'B2B / Apresentações',
+    features: [
+      'Cabeçalho fixo com marca',
+      'Dois produtos por página',
+      'Blocos lado a lado',
+      'Consistência página a página',
+    ],
+    useCases: ['Apresentações comerciais', 'Propostas', 'Material de vendas'],
     Component: CorporateSplitTemplate,
   },
   'corporate-executive': {
@@ -156,6 +256,15 @@ export const TEMPLATE_REGISTRY: Record<MagazineTemplateId, TemplateEntry> = {
     productsPerPage: 3,
     fonts: { heading: 'Instrument Serif', body: 'Work Sans' },
     defaultColors: { primary: '#0d0d0d', secondary: '#c9a84c', text: '#111111' },
+    visualStyle: 'Executivo',
+    audience: 'Diretoria / Premium',
+    features: [
+      'Serifa + sans combinadas',
+      'Três produtos por página',
+      'Paleta escura sofisticada',
+      'Alto padrão de acabamento',
+    ],
+    useCases: ['Apresentações executivas', 'Brindes VIP', 'Eventos corporativos'],
     Component: CorporateExecutiveTemplate,
   },
 };
@@ -191,7 +300,10 @@ export function listTemplates(): TemplateEntry[] {
   return Object.values(TEMPLATE_REGISTRY);
 }
 
-export function templatesByFamily(): Record<'catalog' | 'corporate' | 'editorial', TemplateEntry[]> {
+export function templatesByFamily(): Record<
+  'catalog' | 'corporate' | 'editorial',
+  TemplateEntry[]
+> {
   const out = { editorial: [], catalog: [], corporate: [] } as Record<
     'catalog' | 'corporate' | 'editorial',
     TemplateEntry[]

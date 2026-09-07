@@ -10,7 +10,18 @@
 import type { Product, ProductColor } from '@/types/product-catalog';
 
 export type MagazineTemplateId =
-  'catalog-giftset' | 'catalog-grid-2x3' | 'catalog-grid-3x3' | 'catalog-list' | 'corporate-executive' | 'corporate-hero' | 'corporate-split' | 'editorial-hero-grid' | 'editorial-magazine' | 'editorial-manifesto' | 'editorial-mono' | 'editorial-vogue';
+  | 'catalog-giftset'
+  | 'catalog-grid-2x3'
+  | 'catalog-grid-3x3'
+  | 'catalog-list'
+  | 'corporate-executive'
+  | 'corporate-hero'
+  | 'corporate-split'
+  | 'editorial-hero-grid'
+  | 'editorial-magazine'
+  | 'editorial-manifesto'
+  | 'editorial-mono'
+  | 'editorial-vogue';
 
 /**
  * Categoria semântica da revista — usada pelo SidebarChrome e PageNumberBadge
@@ -18,7 +29,20 @@ export type MagazineTemplateId =
  * no TOC do catálogo Abreez 2026.
  */
 export type MagazineCategory =
-  'awards' | 'bags' | 'clocks' | 'customized' | 'drinkwares' | 'general' | 'giftsets' | 'id' | 'packaging' | 'pins' | 'signs' | 'stationery' | 'technology' | 'wearables';
+  | 'awards'
+  | 'bags'
+  | 'clocks'
+  | 'customized'
+  | 'drinkwares'
+  | 'general'
+  | 'giftsets'
+  | 'id'
+  | 'packaging'
+  | 'pins'
+  | 'signs'
+  | 'stationery'
+  | 'technology'
+  | 'wearables';
 
 export type MagazineTemplateFamily = 'catalog' | 'corporate' | 'editorial';
 
@@ -32,6 +56,14 @@ export interface MagazineTemplateMeta {
   fonts: { heading: string; body: string };
   /** Paleta padrão (sobreescrita pelas cores do cliente quando presentes). */
   defaultColors: { primary: string; secondary: string; text: string };
+  /** Estilo visual em uma frase — exibido no inspector da galeria. */
+  visualStyle?: string;
+  /** Público-alvo sugerido — exibido no inspector da galeria. */
+  audience?: string;
+  /** Principais características do layout (3–5 itens). */
+  features?: string[];
+  /** Casos de uso ideais (chips). */
+  useCases?: string[];
 }
 
 /** Toggles de conteúdo — quais campos do produto entram na página. */

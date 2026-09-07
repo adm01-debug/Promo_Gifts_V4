@@ -1,13 +1,16 @@
 /**
- * Step 3 — Conteúdo: toggles agrupados semanticamente em fieldsets:
+ * Step 3 — Conteúdo (Blue Premium §28): toggles agrupados semanticamente em
+ * fieldsets compactos, 2 colunas em desktop:
  *  - Campos por produto
  *  - Estrutura da revista
  */
 
-import { Card, CardContent } from '@/components/ui/card';
+import { ListChecks, LayoutList } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { cn } from '@/lib/utils';
 import type { Magazine, MagazineContentSettings } from '@/types/magazine';
+import { PG_ICON_BOX_SM, PG_PANEL, PG_PANEL_TITLE, PG_SUBTITLE } from '../../pg';
 
 interface Props {
   magazine: Magazine;
@@ -16,17 +19,36 @@ interface Props {
 
 /** Somente keys booleanas — introText/closingText são texto e têm UI própria. */
 type BooleanContentKey =
-  'groupByCategory' | 'showCode' | 'showColors' | 'showDescription' | 'showDimensions' | 'showMaterials' | 'showPersonalization' | 'showPrice';
+  | 'groupByCategory'
+  | 'showCode'
+  | 'showColors'
+  | 'showDescription'
+  | 'showDimensions'
+  | 'showMaterials'
+  | 'showPersonalization'
+  | 'showPrice';
 type Toggle = { key: BooleanContentKey; label: string; hint: string };
 
 const FIELD_TOGGLES: Toggle[] = [
   { key: 'showPrice', label: 'Mostrar preço', hint: 'Preço final ao lado do produto.' },
   { key: 'showCode', label: 'Mostrar código (SKU)', hint: 'Útil para pedidos posteriores.' },
-  { key: 'showPersonalization', label: 'Mostrar personalização', hint: 'Badge quando o produto aceita gravação.' },
+  {
+    key: 'showPersonalization',
+    label: 'Mostrar personalização',
+    hint: 'Badge quando o produto aceita gravação.',
+  },
   { key: 'showDescription', label: 'Mostrar descrição', hint: 'Descrição curta do produto.' },
-  { key: 'showDimensions', label: 'Mostrar dimensões', hint: 'Altura, largura, peso quando disponível.' },
+  {
+    key: 'showDimensions',
+    label: 'Mostrar dimensões',
+    hint: 'Altura, largura, peso quando disponível.',
+  },
   { key: 'showMaterials', label: 'Mostrar materiais', hint: 'Tags de materiais do produto.' },
-  { key: 'showColors', label: 'Mostrar cor selecionada', hint: 'Nome da cor da variação escolhida.' },
+  {
+    key: 'showColors',
+    label: 'Mostrar cor selecionada',
+    hint: 'Nome da cor da variação escolhida.',
+  },
 ];
 
 const STRUCTURE_TOGGLES: Toggle[] = [
@@ -46,68 +68,87 @@ function ToggleRow({
   checked: boolean;
   onCheck: (v: boolean) => void;
 }) {
+  const id = `magazine-toggle-${toggle.key}`;
   return (
-    <div className="flex items-start justify-between gap-4 rounded-lg border p-4">
-      <div>
-        <Label className="text-sm font-semibold">{toggle.label}</Label>
-        <p className="mt-1 text-xs text-muted-foreground">{toggle.hint}</p>
+    <div
+      className={cn(
+        'flex items-center justify-between gap-4 rounded-md border px-3.5 py-3 transition-colors duration-150',
+        checked ? 'border-primary/30 bg-primary/5' : 'border-border bg-card-elevated',
+      )}
+    >
+      <div className="min-w-0">
+        <Label htmlFor={id} className="text-[13px] font-semibold text-foreground">
+          {toggle.label}
+        </Label>
+        <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground">{toggle.hint}</p>
       </div>
       <Switch
+        id={id}
         checked={checked}
         onCheckedChange={onCheck}
         aria-label={toggle.label}
-        data-testid={`magazine-toggle-${toggle.key}`}
+        data-testid={id}
+        className="shrink-0"
       />
     </div>
   );
 }
 
 export function ContentStep({ magazine, onChange }: Props) {
+  const content = magazine.content;
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardContent className="p-6">
-          <fieldset className="space-y-4">
-            <legend className="text-sm font-semibold">Campos exibidos por produto</legend>
-            <p className="text-xs text-muted-foreground">
-              Estas configurações valem para todos os produtos. Overrides individuais estão na etapa
-              de layout.
-            </p>
-            <div className="grid gap-4 sm:grid-cols-2">
-              {FIELD_TOGGLES.map((t) => (
-                <ToggleRow
-                  key={t.key}
-                  toggle={t}
-                  checked={magazine.content[t.key]}
-                  onCheck={(v) =>
-                    onChange({ [t.key]: v } as Partial<MagazineContentSettings>)
-                  }
-                />
-              ))}
+    <div className="space-y-4">
+      <section className={cn(PG_PANEL, 'p-5')}>
+        <fieldset className="space-y-4">
+          <legend className="flex items-start gap-3">
+            <span className={PG_ICON_BOX_SM}>
+              <ListChecks className="h-4 w-4" aria-hidden />
+            </span>
+            <div>
+              <span className={cn(PG_PANEL_TITLE, 'block')}>Campos exibidos por produto</span>
+              <span className={cn(PG_SUBTITLE, 'mt-0.5 block')}>
+                Valem para todos os produtos. Overrides individuais estão na etapa de layout.
+              </span>
             </div>
-          </fieldset>
-        </CardContent>
-      </Card>
+          </legend>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {FIELD_TOGGLES.map((t) => (
+              <ToggleRow
+                key={t.key}
+                toggle={t}
+                checked={content[t.key]}
+                onCheck={(v) => onChange({ [t.key]: v } as Partial<MagazineContentSettings>)}
+              />
+            ))}
+          </div>
+        </fieldset>
+      </section>
 
-      <Card>
-        <CardContent className="p-6">
-          <fieldset className="space-y-4">
-            <legend className="text-sm font-semibold">Estrutura da revista</legend>
-            <div className="grid gap-4 sm:grid-cols-2">
-              {STRUCTURE_TOGGLES.map((t) => (
-                <ToggleRow
-                  key={t.key}
-                  toggle={t}
-                  checked={magazine.content[t.key]}
-                  onCheck={(v) =>
-                    onChange({ [t.key]: v } as Partial<MagazineContentSettings>)
-                  }
-                />
-              ))}
+      <section className={cn(PG_PANEL, 'p-5')}>
+        <fieldset className="space-y-4">
+          <legend className="flex items-start gap-3">
+            <span className={PG_ICON_BOX_SM}>
+              <LayoutList className="h-4 w-4" aria-hidden />
+            </span>
+            <div>
+              <span className={cn(PG_PANEL_TITLE, 'block')}>Estrutura da revista</span>
+              <span className={cn(PG_SUBTITLE, 'mt-0.5 block')}>
+                Como as páginas são organizadas.
+              </span>
             </div>
-          </fieldset>
-        </CardContent>
-      </Card>
+          </legend>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {STRUCTURE_TOGGLES.map((t) => (
+              <ToggleRow
+                key={t.key}
+                toggle={t}
+                checked={content[t.key]}
+                onCheck={(v) => onChange({ [t.key]: v } as Partial<MagazineContentSettings>)}
+              />
+            ))}
+          </div>
+        </fieldset>
+      </section>
     </div>
   );
 }

@@ -1,26 +1,22 @@
 /**
- * Step 4 — Design: galeria dos 12 templates (sem miniaturas) + seletor de
- * categoria (14 tokens Abreez-inspired) que colore o SidebarChrome/PageNumberBadge.
+ * Step 4 — Design (Blue Premium §29): template atual, categoria semântica
+ * (14 tokens Abreez-inspired que colorem SidebarChrome/PageNumberBadge),
+ * galeria compacta dos 12 templates por família (sem miniaturas) e CTA para
+ * a galeria completa com preview real.
  *
  * A miniatura FIEL (`TemplateThumbnail`) foi removida deste step a pedido do PO:
- * o preview real vive só na `PreviewSidebar` à direita e as miniaturas geravam
- * duplicidade + ruído visual. Cards agora exibem apenas metadados (nome,
- * família, produtos/página, fontes).
+ * o preview real vive no stage ao lado e as miniaturas geravam duplicidade.
+ * Cards exibem apenas metadados (nome, família, produtos/página, fontes).
  */
 
 import { Check, Layers, LayoutTemplate } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import type {
-  Magazine,
-  MagazineCategory,
-  MagazineTemplateId,
-} from '@/types/magazine';
+import type { Magazine, MagazineCategory, MagazineTemplateId } from '@/types/magazine';
 import { templatesByFamily } from '../templates/TemplateRegistry';
 import { MAGAZINE_CATEGORY_META } from '../templates/chrome';
+import { PG_BTN_OUTLINE, PG_OVERLINE, PG_PANEL } from '../../pg';
 
 interface Props {
   magazine: Magazine;
@@ -57,40 +53,55 @@ const CATEGORY_LIST: MagazineCategory[] = [
   'customized',
 ];
 
+const CHIP =
+  'inline-flex h-5 items-center rounded-sm border border-border bg-background px-1.5 text-[10px] text-muted-foreground';
+
 export function DesignStep({ magazine, onChange, onCategoryChange }: Props) {
   const grouped = templatesByFamily();
-  const currentCategory = magazine.branding.category ?? 'technology';
+  const currentCategory = magazine.branding?.category ?? 'technology';
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4">
       {/* CTA para galeria de templates com preview real */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-dashed border-primary/40 bg-primary/5 p-4">
+      <div
+        className={cn(
+          PG_PANEL,
+          'flex flex-wrap items-center justify-between gap-3 border-primary/30 bg-primary/5 p-4',
+        )}
+      >
         <div className="flex items-start gap-3">
           <LayoutTemplate className="mt-0.5 h-5 w-5 text-primary" aria-hidden />
           <div>
-            <p className="text-sm font-medium">Explore os 12 templates com preview real</p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-[13px] font-semibold text-foreground">
+              Explore os 12 templates com preview real
+            </p>
+            <p className="text-[12px] text-muted-foreground">
               Veja cada layout ilustrado com produtos de exemplo antes de escolher.
             </p>
           </div>
         </div>
-        <Button variant="outline" size="sm" asChild>
-          <Link to={`/magazine/templates?returnTo=/magazine/${magazine.id}`}>
+        <Button
+          variant="outline"
+          size="sm"
+          asChild
+          className={cn(PG_BTN_OUTLINE, 'h-9 min-h-0 rounded-md text-[12px]')}
+        >
+          <Link
+            to={`/magazine/templates?returnTo=/magazine/${magazine.id}`}
+            className="link-unstyled"
+          >
             Ver galeria completa
           </Link>
         </Button>
       </div>
 
       {/* Seletor de categoria semântica — obrigatório (Abreez SSOT) */}
-      <section aria-labelledby="magazine-category-picker">
-        <div className="mb-3 flex items-baseline justify-between">
-          <h3
-            id="magazine-category-picker"
-            className="text-sm font-semibold uppercase tracking-widest text-muted-foreground"
-          >
+      <section aria-labelledby="magazine-category-picker" className={cn(PG_PANEL, 'p-4')}>
+        <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+          <h3 id="magazine-category-picker" className={PG_OVERLINE}>
             Categoria da revista
           </h3>
-          <span className="text-xs text-muted-foreground">
+          <span className="text-[11px] text-muted-foreground">
             Define a cor da sidebar vertical, do número de página e dos rótulos.
           </span>
         </div>
@@ -110,16 +121,18 @@ export function DesignStep({ magazine, onChange, onCategoryChange }: Props) {
                 aria-checked={selected}
                 onClick={() => onCategoryChange(cat)}
                 className={cn(
-                  'group flex flex-col items-center gap-1.5 rounded-md border p-2 text-xs transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-                  selected ? 'border-primary bg-primary/5 ring-1 ring-primary/40' : 'hover:border-primary/40',
+                  'group flex flex-col items-center gap-1.5 rounded-md border p-2 text-[11px] font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+                  selected
+                    ? 'border-primary/50 bg-primary/10 text-foreground ring-1 ring-primary/20'
+                    : 'border-border bg-card-elevated text-muted-foreground hover:border-border-strong hover:text-foreground',
                 )}
               >
                 <span
                   aria-hidden
-                  className="h-8 w-full rounded-sm ring-1 ring-black/5"
+                  className="h-7 w-full rounded-sm ring-1 ring-border-strong"
                   style={{ background: meta.hex }}
                 />
-                <span className="font-medium leading-tight text-center">{meta.label}</span>
+                <span className="text-center leading-tight">{meta.label}</span>
               </button>
             );
           })}
@@ -127,25 +140,22 @@ export function DesignStep({ magazine, onChange, onCategoryChange }: Props) {
       </section>
 
       {(Object.keys(grouped) as Array<keyof typeof grouped>).map((family) => (
-        <section key={family} aria-labelledby={`family-${family}`}>
-          <div className="mb-3 flex items-baseline justify-between">
-            <h3
-              id={`family-${family}`}
-              className="text-sm font-semibold uppercase tracking-widest text-muted-foreground"
-            >
+        <section key={family} aria-labelledby={`family-${family}`} className={cn(PG_PANEL, 'p-4')}>
+          <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+            <h3 id={`family-${family}`} className={PG_OVERLINE}>
               {FAMILY_LABELS[family]}
             </h3>
-            <span className="text-xs text-muted-foreground">{FAMILY_HINT[family]}</span>
+            <span className="text-[11px] text-muted-foreground">{FAMILY_HINT[family]}</span>
           </div>
           <div
             role="radiogroup"
             aria-labelledby={`family-${family}`}
-            className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+            className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
           >
             {grouped[family].map((t) => {
               const selected = magazine.templateId === t.id;
               return (
-                <Card
+                <div
                   key={t.id}
                   role="radio"
                   aria-checked={selected}
@@ -158,38 +168,40 @@ export function DesignStep({ magazine, onChange, onCategoryChange }: Props) {
                     }
                   }}
                   className={cn(
-                    'cursor-pointer transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-                    selected ? 'border-primary ring-2 ring-primary/40' : 'hover:border-primary/60',
+                    'cursor-pointer rounded-md border p-3 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+                    selected
+                      ? 'border-primary/50 bg-primary/10 ring-1 ring-primary/20'
+                      : 'border-border bg-card-elevated hover:border-border-strong',
                   )}
                   data-testid={`magazine-template-${t.id}`}
                 >
-                  <CardContent className="space-y-2 p-4">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <Layers
-                          className={cn(
-                            'h-4 w-4 shrink-0',
-                            selected ? 'text-primary' : 'text-muted-foreground',
-                          )}
-                          aria-hidden
-                        />
-                        <span className="truncate text-sm font-semibold">{t.name}</span>
-                      </div>
-                      {selected && (
-                        <Check className="h-4 w-4 shrink-0 text-primary" aria-label="Selecionado" />
-                      )}
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex min-w-0 items-center gap-2">
+                      <Layers
+                        className={cn(
+                          'h-4 w-4 shrink-0',
+                          selected ? 'text-primary' : 'text-muted-foreground',
+                        )}
+                        aria-hidden
+                      />
+                      <span className="truncate text-[13px] font-semibold text-foreground">
+                        {t.name}
+                      </span>
                     </div>
-                    <p className="line-clamp-2 text-xs text-muted-foreground">{t.description}</p>
-                    <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                      <Badge variant="outline" className="text-[10px]">
-                        {t.productsPerPage} / pág
-                      </Badge>
-                      <Badge variant="outline" className="text-[10px]">
-                        {t.fonts.heading}
-                      </Badge>
-                    </div>
-                  </CardContent>
-                </Card>
+                    {selected && (
+                      <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                        <Check className="h-3 w-3" aria-label="Selecionado" />
+                      </span>
+                    )}
+                  </div>
+                  <p className="mt-1.5 line-clamp-2 text-[11px] leading-snug text-muted-foreground">
+                    {t.description}
+                  </p>
+                  <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                    <span className={CHIP}>{t.productsPerPage} / pág</span>
+                    <span className={CHIP}>{t.fonts.heading}</span>
+                  </div>
+                </div>
               );
             })}
           </div>

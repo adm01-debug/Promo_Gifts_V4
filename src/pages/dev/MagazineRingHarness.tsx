@@ -52,7 +52,7 @@ export default function MagazineRingHarness() {
       data-harness-highlight={String(highlightedIdx)}
       data-harness-focus={String(focusIdx)}
     >
-      {/* Container com o MESMO layout do PreviewSidebar (grid-cols-2 sm:grid-cols-3) */}
+      {/* Container com o MESMO layout do PagesRail (lista vertical) */}
       <div
         className="mx-auto max-w-[420px] rounded border bg-card p-3"
         data-testid="magazine-ring-thumbs"
@@ -60,7 +60,7 @@ export default function MagazineRingHarness() {
         <div className="mb-1 text-[10px] uppercase tracking-widest text-muted-foreground">
           Navegar entre páginas
         </div>
-        <div className="grid grid-cols-2 gap-2 pr-2 sm:grid-cols-3">
+        <div className="flex flex-col gap-2 pr-2">
           {Array.from({ length: count }, (_, idx) => {
             const isActive = idx === activeIdx;
             const isHighlighted = idx === highlightedIdx;
@@ -74,21 +74,23 @@ export default function MagazineRingHarness() {
                 data-testid={`thumb-${idx}`}
                 data-active={isActive ? 'true' : 'false'}
                 data-highlighted={isHighlighted ? 'true' : 'false'}
-                // === MESMO cn() do PreviewSidebar.tsx (mantido em sincronia manual) ===
+                // === MESMO cn() do PagesRail.tsx (mantido em sincronia manual) ===
                 className={cn(
-                  'group relative overflow-hidden rounded border bg-background text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-                  isActive && 'ring-2 ring-primary',
+                  'group flex w-full items-center gap-3 rounded-md border bg-card-elevated p-2 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+                  isActive && 'border-primary/50 bg-primary/10 ring-2 ring-primary',
                   !isActive && isHighlighted && 'ring-2 ring-amber-500',
-                  !isActive && !isHighlighted && 'hover:border-primary/60',
+                  !isActive && !isHighlighted && 'border-border hover:border-border-strong',
                 )}
                 aria-label={`Ir para página ${idx + 1}`}
                 aria-current={isActive ? 'true' : undefined}
               >
                 {/* Placeholder estático para eliminar variação de pixels */}
-                <div className="aspect-[3/4] w-full overflow-hidden bg-neutral-100" />
-                <div className="flex items-center justify-between px-1.5 py-1 text-[10px]">
-                  <span className="font-mono">{String(idx + 1).padStart(2, '0')}</span>
-                  <span className="truncate text-muted-foreground">Página</span>
+                <div className="aspect-[3/4] w-[72px] shrink-0 overflow-hidden rounded-sm bg-neutral-100" />
+                <div className="min-w-0 flex-1">
+                  <div className="text-[13px] font-semibold tabular-nums text-foreground">
+                    {idx + 1}
+                  </div>
+                  <div className="truncate text-xs text-muted-foreground">Página</div>
                 </div>
               </button>
             );
