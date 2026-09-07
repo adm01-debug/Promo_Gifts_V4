@@ -35,11 +35,11 @@ export const PG_ICON_BOX_SM =
 
 /** Input/select (§18): 40px, radius 10, fundo profundo, foco azul discreto. */
 export const PG_INPUT =
-  'h-10 rounded-md border-border bg-background px-3 text-[13px] font-medium shadow-none placeholder:text-muted-foreground hover:border-border-strong focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/15';
+  'h-10 rounded-md border border-border bg-background px-3 text-[13px] font-medium shadow-none placeholder:text-muted-foreground hover:border-border-strong focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/15';
 
 /** Select trigger com o mesmo DNA do input. */
 export const PG_SELECT =
-  'h-10 rounded-md border-border bg-background px-3 text-[13px] font-medium shadow-none hover:translate-y-0 hover:border-border-strong hover:shadow-none focus:ring-2 focus:ring-primary/15';
+  'h-10 rounded-md border border-border bg-background px-3 text-[13px] font-medium shadow-none hover:translate-y-0 hover:border-border-strong hover:shadow-none focus:ring-2 focus:ring-primary/15';
 
 /** Botão: peso 600 e sem lift (tailwind-merge resolve os conflitos com o base). */
 export const PG_BTN = 'font-semibold hover:translate-y-0 hover:shadow-none active:scale-[0.99]';
