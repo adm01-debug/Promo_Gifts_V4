@@ -139,7 +139,7 @@ jobs:
         id: bun-install
         run: |
           T0=$(date +%s)
-          bun install --frozen-lockfile
+          bun install
           echo "duration=$(( $(date +%s) - T0 ))" >> "$GITHUB_OUTPUT"
 
       # Resolve a versão do Playwright para chavear o cache de browsers.
