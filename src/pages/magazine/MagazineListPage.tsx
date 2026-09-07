@@ -8,16 +8,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  Archive,
-  BarChart3,
   BookOpen,
-  Building2,
-  CheckCircle2,
   Clock3,
   Copy,
   ExternalLink,
   Eye,
-  FileText,
   LayoutGrid,
   LayoutTemplate,
   List,
@@ -202,7 +197,7 @@ export default function MagazineListPage() {
 
   const handleCreate = async () => {
     if (!user) return;
-    const mag = await magazineService.create(user.id);
+    const mag = await magazineService.create({ ownerId: user.id });
     navigate(`/magazine/${mag.id}`);
   };
 
@@ -210,7 +205,7 @@ export default function MagazineListPage() {
 
   const handleDuplicate = async (m: Magazine) => {
     if (!user) return;
-    const copy = await magazineService.duplicate(m, user.id);
+    const copy = await magazineService.duplicate(m.id);
     navigate(`/magazine/${copy.id}`);
   };
 
@@ -219,7 +214,7 @@ export default function MagazineListPage() {
     const backup = pendingDelete;
     setPendingDelete(null);
     setMagazines((prev) => prev.filter((m) => m.id !== backup.id));
-    toast(`“${backup.title}���&excluída`, {
+    toast(`“${backup.title}” excluída`, {
       action: {
         label: 'Desfazer',
         onClick: async () => {
@@ -281,7 +276,7 @@ export default function MagazineListPage() {
                 const active = status === f.id;
                 const count = f.id === 'all' ? counts.all : counts[f.id];
                 return (
-                  <button key={f.id} type="button" onClick={() => setStatus(f.id)} aria-pressed={active} className={pgPill(active, 'h9')}>
+                  <button key={f.id} type="button" onClick={() => setStatus(f.id)} aria-pressed={active} className={pgPill(active, 'h-9')}>
                     {f.label}<span className={pgPillCount(active)}>{count}</span>
                   </button>
                 );
@@ -335,7 +330,7 @@ export default function MagazineListPage() {
                             <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w44">
+                        <DropdownMenuContent align="end" className="w-44">
                           <DropdownMenuItem onClick={() => openCard(m)}><Pencil className="mr-2 h-3.5 w-3.5" /> Editar</DropdownMenuItem>
                           <DropdownMenuItem onClick={() => handleDuplicate(m)}><Copy className="mr-2 h-3.5 w-3.5" /> Duplicar</DropdownMenuItem>
                           {m.status === 'published' && m.publicToken && (<DropdownMenuItem asChild><a href={`/m/${m.publicToken}`} target="_blank" rel="noopener noreferrer"><ExternalLink className="mr-2 h-3.5 w-3.5" /> Ver pública</a></DropdownMenuItem>)}
