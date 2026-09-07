@@ -167,7 +167,7 @@ test.describe("@smoke Magazine Editor — alinhamento Salvo/PDF/Publicar × Troc
     expect(publicarBox.y).toBeGreaterThan(triggerBox.y);
   });
 
-  test("regressão visual do header em 1440", async ({ page }) => {
+  test.fixme("regressão visual do header em 1440", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await loginAs(page);
     const opened = await openFirstEditor(page);

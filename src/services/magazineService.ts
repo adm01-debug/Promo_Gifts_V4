@@ -62,6 +62,10 @@ function rowToMagazine(row: MagazineRow, items: MagazineItemRow[]): Magazine {
     branding: {
       ...DEFAULT_BRANDING,
       ...((row.branding as unknown as MagazineClientBranding) ?? {}),
+      colors: {
+        ...DEFAULT_BRANDING.colors,
+        ...((row.branding as unknown as MagazineClientBranding)?.colors ?? {}),
+      },
     },
     content: {
       ...DEFAULT_MAGAZINE_CONTENT,

@@ -187,8 +187,10 @@ export default function MagazineEditorPage() {
         const blocking = magazine ? validateStep(step, magazine).blocks : [];
         if (blocking.length > 0) {
           toast.warning(blocking[0]);
+          return;
         }
       }
+      setPreviewSheetOpen(false);
       setStep(target);
     },
     [currentIdx, magazine, step],
@@ -232,7 +234,7 @@ export default function MagazineEditorPage() {
 
   const safePreviewIdx = Math.min(previewIdx, Math.max(0, pages.length - 1));
   const canPrev = currentIdx > 0;
-  const canNext = currentIdx < STEPS.length - 1;
+  const canNext = currentIdx < STEPS.length - 1 && validation.blocks.length === 0;
   const layout = STEP_LAYOUT[step];
   const itemCount = (magazine.items ?? []).length;
 
