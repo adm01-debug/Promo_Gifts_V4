@@ -60,22 +60,19 @@ export function useMagazineEditor(id: string | undefined) {
     };
   }, [id]);
 
-  const persist = useCallback(
-    (next: Magazine) => {
-      // CRITICAL FIX: Update ref IMMEDIATELY before calling setMagazine.
-      // React batches setState calls; useEffect (which previously synced the ref)
-      // runs AFTER the render, meaning two persist() calls in the same tick
-      // would both read the old ref. This fix ensures each call sees fresh data.
-      magazineRef.current = next;
-      setMagazine(next);
-      if (saveTimer.current) clearTimeout(saveTimer.current);
-      setSaving(true);
-      saveTimer.current = setTimeout(() => {
-        void magazineService.update(next.id, next).finally(() => setSaving(false));
-      }, 400);
-    },
-    [],
-  );
+  const persist = useCallback((next: Magazine) => {
+    // CRITICAL FIX: Update ref IMMEDIATELY before calling setMagazine.
+    // React batches setState calls; useEffect (which previously synced the ref)
+    // runs AFTER the render, meaning two persist() calls in the same tick
+    // would both read the old ref. This fix ensures each call sees fresh data.
+    magazineRef.current = next;
+    setMagazine(next);
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    setSaving(true);
+    saveTimer.current = setTimeout(() => {
+      void magazineService.update(next.id, next).finally(() => setSaving(false));
+    }, 400);
+  }, []);
 
   // Safety net: keeps ref in sync for external state changes
   // (e.g. magazineService calls that bypass persist, HMR, test overrides)
@@ -155,57 +152,65 @@ export function useMagazineEditor(id: string | undefined) {
     [persist],
   );
 
-  const addProducts = useCallback(
-    async (products: Product[]) => {
-      const current = magazineRef.current;
-      if (!current) return;
+  const addProducts = useCallback(async (products: Product[]) => {
+    const current = magazineRef.current;
+    if (!current) return;
+    setSaving(true);
+    try {
       const updated = await magazineService.addProducts(current.id, products);
       if (updated) {
         magazineRef.current = updated;
         setMagazine(updated);
       }
-    },
-    [],
-  );
+    } finally {
+      setSaving(false);
+    }
+  }, []);
 
-  const removeItem = useCallback(
-    async (itemId: string) => {
-      const current = magazineRef.current;
-      if (!current) return;
+  const removeItem = useCallback(async (itemId: string) => {
+    const current = magazineRef.current;
+    if (!current) return;
+    setSaving(true);
+    try {
       const updated = await magazineService.removeItem(current.id, itemId);
       if (updated) {
         magazineRef.current = updated;
         setMagazine(updated);
       }
-    },
-    [],
-  );
+    } finally {
+      setSaving(false);
+    }
+  }, []);
 
-  const reorderItems = useCallback(
-    async (orderedIds: string[]) => {
-      const current = magazineRef.current;
-      if (!current) return;
+  const reorderItems = useCallback(async (orderedIds: string[]) => {
+    const current = magazineRef.current;
+    if (!current) return;
+    setSaving(true);
+    try {
       const updated = await magazineService.reorderItems(current.id, orderedIds);
       if (updated) {
         magazineRef.current = updated;
         setMagazine(updated);
       }
-    },
-    [],
-  );
+    } finally {
+      setSaving(false);
+    }
+  }, []);
 
-  const updateItem = useCallback(
-    async (itemId: string, patch: Partial<MagazineItem>) => {
-      const current = magazineRef.current;
-      if (!current) return;
+  const updateItem = useCallback(async (itemId: string, patch: Partial<MagazineItem>) => {
+    const current = magazineRef.current;
+    if (!current) return;
+    setSaving(true);
+    try {
       const updated = await magazineService.updateItem(current.id, itemId, patch);
       if (updated) {
         magazineRef.current = updated;
         setMagazine(updated);
       }
-    },
-    [],
-  );
+    } finally {
+      setSaving(false);
+    }
+  }, []);
 
   const publish = useCallback(async () => {
     const current = magazineRef.current;

@@ -109,6 +109,19 @@ export function DesignStep({ magazine, onChange, onCategoryChange }: Props) {
           role="radiogroup"
           aria-label="Categoria da revista"
           className="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-7"
+          onKeyDown={(e) => {
+            if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) return;
+            e.preventDefault();
+            const els = Array.from(e.currentTarget.querySelectorAll<HTMLElement>('[role="radio"]'));
+            const idx = els.findIndex((el) => el === document.activeElement);
+            if (idx < 0) return;
+            const next =
+              e.key === 'ArrowLeft' || e.key === 'ArrowUp'
+                ? (idx - 1 + els.length) % els.length
+                : (idx + 1) % els.length;
+            els[next]?.focus();
+            els[next]?.click();
+          }}
         >
           {CATEGORY_LIST.map((cat) => {
             const meta = MAGAZINE_CATEGORY_META[cat];
@@ -119,6 +132,7 @@ export function DesignStep({ magazine, onChange, onCategoryChange }: Props) {
                 type="button"
                 role="radio"
                 aria-checked={selected}
+                tabIndex={selected ? 0 : -1}
                 onClick={() => onCategoryChange(cat)}
                 className={cn(
                   'group flex flex-col items-center gap-1.5 rounded-md border p-2 text-[11px] font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
@@ -151,6 +165,21 @@ export function DesignStep({ magazine, onChange, onCategoryChange }: Props) {
             role="radiogroup"
             aria-labelledby={`family-${family}`}
             className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
+            onKeyDown={(e) => {
+              if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) return;
+              e.preventDefault();
+              const els = Array.from(
+                e.currentTarget.querySelectorAll<HTMLElement>('[role="radio"]'),
+              );
+              const idx = els.findIndex((el) => el === document.activeElement);
+              if (idx < 0) return;
+              const next =
+                e.key === 'ArrowLeft' || e.key === 'ArrowUp'
+                  ? (idx - 1 + els.length) % els.length
+                  : (idx + 1) % els.length;
+              els[next]?.focus();
+              els[next]?.click();
+            }}
           >
             {grouped[family].map((t) => {
               const selected = magazine.templateId === t.id;
@@ -159,7 +188,7 @@ export function DesignStep({ magazine, onChange, onCategoryChange }: Props) {
                   key={t.id}
                   role="radio"
                   aria-checked={selected}
-                  tabIndex={0}
+                  tabIndex={selected ? 0 : -1}
                   onClick={() => onChange(t.id)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
@@ -190,7 +219,7 @@ export function DesignStep({ magazine, onChange, onCategoryChange }: Props) {
                     </div>
                     {selected && (
                       <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                        <Check className="h-3 w-3" aria-label="Selecionado" />
+                        <Check className="h-3 w-3" aria-hidden />
                       </span>
                     )}
                   </div>

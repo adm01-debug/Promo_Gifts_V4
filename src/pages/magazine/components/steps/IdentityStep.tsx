@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
-import type { Magazine } from '@/types/magazine';
+import { DEFAULT_BRANDING, type Magazine } from '@/types/magazine';
 import { BrandColorPicker } from '../BrandColorPicker';
 import { MagazineClientPicker } from '../MagazineClientPicker';
 import {
@@ -160,7 +160,7 @@ export function IdentityStep({ magazine, onTitle, onSubtitle, onBranding }: Prop
       </header>
       <div className="mt-4">
         <BrandColorPicker
-          colors={magazine.branding.colors}
+          colors={magazine.branding?.colors ?? DEFAULT_BRANDING.colors}
           onChange={(colors) => onBranding({ colors })}
         />
       </div>

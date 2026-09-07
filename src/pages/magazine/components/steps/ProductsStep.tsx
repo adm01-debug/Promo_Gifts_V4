@@ -87,6 +87,8 @@ function productPrice(p: Product): number | undefined {
   return p.sale_price ?? p.price;
 }
 
+const COVER_PAGE = { index: 0, kind: 'cover' as const, items: [] as never[] };
+
 export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDesign }: Props) {
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -157,6 +159,7 @@ export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDe
     setCategory(null);
     setOnlyPersonalizable(false);
     setQuery('');
+    setHideAdded(true);
   };
 
   const clearAll = () => {
@@ -176,7 +179,7 @@ export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDe
   const overflowCategories = categoryOptions.slice(MAX_VISIBLE_CATEGORIES);
   const categoryInOverflow = category !== null && overflowCategories.some(([c]) => c === category);
 
-  const coverPage = useMemo(() => ({ index: 0, kind: 'cover' as const, items: [] }), []);
+  const coverPage = COVER_PAGE;
 
   return (
     <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(320px,380px)]">
@@ -237,7 +240,7 @@ export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDe
                   aria-label="Ocultar produtos já adicionados"
                 />
               </label>
-              {(category || onlyPersonalizable || query) && (
+              {(category || onlyPersonalizable || query || !hideAdded) && (
                 <Button
                   variant="ghost"
                   size="sm"

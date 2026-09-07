@@ -14,6 +14,7 @@
 import { useMemo } from 'react';
 import {
   DndContext,
+  KeyboardSensor,
   closestCenter,
   PointerSensor,
   useSensor,
@@ -24,6 +25,7 @@ import {
 import {
   SortableContext,
   arrayMove,
+  sortableKeyboardCoordinates,
   useSortable,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
@@ -51,7 +53,10 @@ export function LayoutStep({
   onItemHover,
   highlightedItemId,
 }: Props) {
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
   const items = useMemo(
     () => [...(magazine.items ?? [])].sort((a, b) => a.position - b.position),
     [magazine.items],

@@ -56,7 +56,15 @@ export function PagesRail({
         const isHighlighted = idx === highlightedPageIdx;
         const isActive = idx === activeIdx;
         return (
-          <li key={idx}>
+          <li
+            key={
+              p.kind === 'products'
+                ? `products-${p.items.map((i) => i.id).join(',')}`
+                : p.kind === 'section'
+                  ? `section-${p.sectionTitle ?? idx}`
+                  : `${p.kind}-${idx}`
+            }
+          >
             <button
               type="button"
               onClick={() => onSelect(idx)}
