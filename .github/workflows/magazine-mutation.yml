@@ -10,6 +10,7 @@ on:
       - 'tests/magazine/**'
       - 'tests/utils/tailwindRings.ts'
       - 'src/pages/magazine/components/PreviewSidebar.tsx'
+      - 'src/pages/magazine/components/PagesRail.tsx'
       - 'src/pages/magazine/components/steps/LayoutStep.tsx'
       - 'scripts/mutation-test-magazine.mjs'
       - '.github/workflows/magazine-mutation.yml'
