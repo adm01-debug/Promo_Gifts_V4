@@ -1,4 +1,5 @@
 import { Card, CardContent } from '@/components/ui/card';
+import { useCountUp } from '@/hooks/ui';
 import {
   RefreshCw,
   CalendarPlus,
@@ -9,34 +10,8 @@ import {
 } from 'lucide-react';
 import { useReplenishmentStats, type ReplenishmentStatsDisplay } from '@/hooks/products';
 import { cn } from '@/lib/utils';
-import { useState, useEffect, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
-
-// ─── Count Up Animation ─────────────────────────────────────────
-
-function useCountUp(end: number, duration = 800): number {
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    if (end === 0) {
-      setCount(0);
-      return;
-    }
-    let startTime: number | null = null;
-    let rafId: number;
-
-    const animate = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const progress = Math.min((timestamp - startTime) / duration, 1);
-      const easeOutQuart = 1 - (1 - progress) ** 4;
-      setCount(Math.floor(end * easeOutQuart));
-      if (progress < 1) rafId = requestAnimationFrame(animate);
-    };
-
-    rafId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(rafId);
-  }, [end, duration]);
-  return count;
-}
 
 // ─── Stat Card ───────────────────────────────────────────────────
 
