@@ -5,14 +5,14 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Building2, Check, Search, X } from 'lucide-react';
+import { Building2, Check, ChevronDown, Search, X } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { selectCrm } from '@/lib/crm-db';
 import { getCompanyDisplayName, type CrmCompany } from '@/types/crm';
+import { PG_HELP, PG_INPUT } from '../pg';
 
 interface Props {
   clientName: string | null;
@@ -79,36 +79,53 @@ export function MagazineClientPicker({ clientName, clientLogoUrl, onChange }: Pr
 
   return (
     <div className="space-y-2">
-      <div className="flex items-center gap-2">
+      <div
+        className={cn(
+          'flex h-11 items-center gap-2 rounded-md border border-border bg-background pl-3 pr-1.5 transition-colors duration-150 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/15 hover:border-border-strong',
+        )}
+      >
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
-            <Button
+            <button
               type="button"
-              variant="outline"
-              className="h-11 flex-1 justify-start gap-3 px-3"
+              className="flex h-full min-w-0 flex-1 items-center gap-3 text-left focus-visible:outline-none"
               aria-label="Escolher cliente do CRM"
+              aria-haspopup="listbox"
+              aria-expanded={open}
               data-testid="magazine-client-picker-trigger"
             >
               {clientLogoUrl ? (
-                <img src={clientLogoUrl} alt="" className="h-6 w-6 rounded object-contain" />
+                <img src={clientLogoUrl} alt="" className="h-6 w-6 rounded-sm object-contain" />
               ) : (
-                <Building2 className="h-4 w-4 text-muted-foreground" />
+                <Building2 className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />
               )}
-              <span className={cn('flex-1 truncate text-left', !clientName && 'text-muted-foreground')}>
+              <span
+                className={cn(
+                  'flex-1 truncate text-[13px] font-medium',
+                  clientName ? 'text-foreground' : 'text-muted-foreground',
+                )}
+              >
                 {clientName || 'Selecionar cliente do CRM'}
               </span>
-            </Button>
+            </button>
           </PopoverTrigger>
-          <PopoverContent align="start" className="w-96 p-0">
-            <div className="border-b p-2">
+          <PopoverContent
+            align="start"
+            className="pg-module w-96 rounded-lg border-border bg-popover p-0 shadow-lg"
+          >
+            <div className="border-b border-border p-2">
               <div className="relative">
-                <Search className="pointer-events-none absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Search
+                  className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+                  aria-hidden
+                />
                 <Input
                   autoFocus
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Buscar cliente por nome ou CNPJ…"
-                  className="h-9 pl-8"
+                  className={cn(PG_INPUT, 'h-9 pl-8')}
+                  aria-label="Buscar cliente"
                 />
               </div>
             </div>
@@ -132,25 +149,31 @@ export function MagazineClientPicker({ clientName, clientLogoUrl, onChange }: Pr
                       aria-selected={active}
                       onClick={() => select(c)}
                       className={cn(
-                        'flex w-full items-center gap-3 rounded-md p-2 text-left transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+                        'flex w-full items-center gap-3 rounded-md p-2 text-left transition-colors duration-150 hover:bg-card-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
                         active && 'bg-primary/10',
                       )}
                     >
                       {c.logo_url ? (
-                        <img src={c.logo_url} alt="" className="h-8 w-8 rounded object-contain" />
+                        <img
+                          src={c.logo_url}
+                          alt=""
+                          className="h-8 w-8 rounded-sm object-contain"
+                        />
                       ) : (
-                        <div className="flex h-8 w-8 items-center justify-center rounded bg-muted text-muted-foreground">
-                          <Building2 className="h-4 w-4" />
+                        <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-card-elevated text-muted-foreground">
+                          <Building2 className="h-4 w-4" aria-hidden />
                         </div>
                       )}
                       <div className="flex-1 overflow-hidden">
-                        <div className="line-clamp-1 text-sm font-medium">{c.name}</div>
-                        <div className="line-clamp-1 text-xs text-muted-foreground">
+                        <div className="line-clamp-1 text-[13px] font-medium text-foreground">
+                          {c.name}
+                        </div>
+                        <div className="line-clamp-1 text-[11px] text-muted-foreground">
                           {c.cnpj ?? '—'}
                           {c.ramo ? ` · ${c.ramo}` : ''}
                         </div>
                       </div>
-                      {active && <Check className="h-4 w-4 text-primary" />}
+                      {active && <Check className="h-4 w-4 text-primary" aria-hidden />}
                     </button>
                   );
                 })}
@@ -159,13 +182,29 @@ export function MagazineClientPicker({ clientName, clientLogoUrl, onChange }: Pr
           </PopoverContent>
         </Popover>
         {clientName && (
-          <Button variant="ghost" size="icon" onClick={clear} aria-label="Remover cliente">
-            <X className="h-4 w-4" />
-          </Button>
+          <button
+            type="button"
+            onClick={clear}
+            aria-label="Remover cliente"
+            className="flex h-8 w-8 items-center justify-center rounded-sm text-muted-foreground hover:bg-card-elevated hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          >
+            <X className="h-4 w-4" aria-hidden />
+          </button>
         )}
+        <button
+          type="button"
+          onClick={() => setOpen((o) => !o)}
+          aria-label={open ? 'Fechar lista de clientes' : 'Abrir lista de clientes'}
+          className="flex h-8 w-8 items-center justify-center rounded-sm text-muted-foreground hover:bg-card-elevated hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+        >
+          <ChevronDown
+            className={cn('h-4 w-4 transition-transform', open && 'rotate-180')}
+            aria-hidden
+          />
+        </button>
       </div>
-      <p className="text-xs text-muted-foreground">
-        Lista somente empresas marcadas como clientes no CRM. Também é possível preencher manualmente
+      <p className={PG_HELP}>
+        Lista apenas empresas marcadas como clientes no CRM. Também é possível preencher manualmente
         no campo abaixo.
       </p>
     </div>

@@ -3,7 +3,9 @@
  *
  * Valida:
  *  1. No load inicial (viewport xl), o topo do `magazine-preview-aside` bate
- *     com o topo do `magazine-editor-hero-row` (diferença < 4px).
+ *     com o topo da coluna principal do workspace (`magazine-editor-main-col`,
+ *     diferença < 4px) — Blue Premium: o stage A4 é a coluna central do grid
+ *     de 3 painéis da etapa Identidade, abaixo do header/stepper.
  *  2. Ao rolar a página, o preview permanece pinned (top ≈ 8px, i.e. `top-2`)
  *     e NÃO desce com o scroll — comportamento sticky.
  *
@@ -36,21 +38,23 @@ test.describe("@smoke Magazine Editor — preview sticky/aligned", () => {
     await expect(page).toHaveURL(/\/magazine\/[^/]+$/);
 
     const hero = page.getByTestId("magazine-editor-hero-row");
+    const mainCol = page.getByTestId("magazine-editor-main-col");
     const aside = page.getByTestId("magazine-preview-aside");
 
     await expect(hero).toBeVisible();
+    await expect(mainCol).toBeVisible();
     await expect(aside).toBeVisible();
 
-    // 1. Alinhamento inicial: topo do aside ≈ topo do hero (tolerância 4px)
-    const heroTop0 = await hero.evaluate((el) => el.getBoundingClientRect().top);
+    // 1. Alinhamento inicial: topo do aside ≈ topo da coluna principal (tolerância 4px)
+    const mainTop0 = await mainCol.evaluate((el) => el.getBoundingClientRect().top);
     const asideTop0 = await aside.evaluate((el) => el.getBoundingClientRect().top);
     expect(
-      Math.abs(asideTop0 - heroTop0),
-      `preview desalinhado do hero (hero=${heroTop0}, aside=${asideTop0})`,
+      Math.abs(asideTop0 - mainTop0),
+      `preview desalinhado da coluna principal (main=${mainTop0}, aside=${asideTop0})`,
     ).toBeLessThan(4);
 
     // 2. Scroll para fora do hero e verifica sticky
-    // O elemento sticky é o Card interno do PreviewSidebar (top-2 = 8px).
+    // O elemento sticky é o painel interno do PreviewSidebar (top-2 = 8px).
     await page.evaluate(() => window.scrollTo({ top: 800, behavior: "instant" as ScrollBehavior }));
     await page.waitForFunction(() => window.scrollY >= 700);
 

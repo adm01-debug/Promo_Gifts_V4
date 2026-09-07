@@ -1,0 +1,262 @@
+/**
+ * Blue Premium — escopo de tokens do módulo Magazine.
+ *
+ * Ativado por `useBluePremiumTheme()` (atributo `data-pg-theme` no <html>)
+ * apenas enquanto uma rota do módulo está montada. Nenhum token global muda.
+ *
+ * Por que o seletor mira em `body` e não em `html`: `theme-presets.ts` grava
+ * as variáveis do preset ativo como estilo INLINE no <html>; uma regra em
+ * `html[data-pg-theme]` perderia para o inline. Declarar em `body` (descendente)
+ * vence a herança e cobre também os portais Radix (dialog/popover/select).
+ *
+ * Valores: docs/design/blue-premium/PROMO_GIFTS_V4_BLUE_PREMIUM_TOKENS.json
+ * (hex → HSL sem hsl(), no formato que tailwind.config.ts espera).
+ */
+
+html[data-pg-theme='blue-premium'] body {
+  /* Superfícies (§5) */
+  --background: 210 41% 7%; /* #0A1118 */
+  --foreground: 214 54% 97%; /* #F5F8FC */
+  --surface: 212 36% 10%; /* #111A24 */
+  --surface-hover: 210 34% 16%; /* #1B2937 */
+  --card: 212 36% 10%; /* #111A24 */
+  --card-foreground: 214 54% 97%;
+  --card-elevated: 211 34% 13%; /* #16212D */
+  --popover: 211 45% 9%; /* #0D1722 */
+  --popover-foreground: 214 54% 97%;
+
+  /* Accent (§4.1) — primary e brand-primary convergem no mesmo azul */
+  --primary: 215 98% 52%; /* #0B6EFD */
+  --primary-hover: 215 100% 58%; /* #2780FF */
+  --primary-active: 215 94% 43%; /* #075CD6 */
+  --primary-glow: 215 100% 64%;
+  --primary-foreground: 0 0% 100%;
+  --brand-primary: 215 98% 52%;
+  --brand-primary-hover: 215 100% 58%;
+  --brand-primary-active: 215 94% 43%;
+  --brand-primary-glow: 215 100% 64%;
+  --brand-primary-foreground: 0 0% 100%;
+
+  /* Funcionais */
+  --success: 158 74% 49%; /* #20D895 */
+  --success-foreground: 158 100% 6%;
+  --warning: 40 90% 60%; /* #F5B83B */
+  --warning-foreground: 40 100% 8%;
+  --destructive: 354 100% 65%; /* #FF4D5E */
+  --destructive-foreground: 0 0% 100%;
+  --info: 203 100% 64%; /* #45B8FF */
+  --info-foreground: 203 100% 8%;
+  --neon-blue: 203 100% 64%;
+  --neon-blue-foreground: 203 100% 8%;
+
+  /* Neutros */
+  --secondary: 211 34% 13%;
+  --secondary-foreground: 214 20% 78%; /* #BBC5D2 */
+  --muted: 211 34% 13%;
+  --muted-foreground: 214 12% 55%; /* #7F8B9B */
+  --accent: 210 34% 16%;
+  --accent-foreground: 214 54% 97%;
+  --text-secondary: 214 20% 78%;
+
+  /* Bordas (§6) */
+  --border: 212 38% 71% / 0.15;
+  --border-strong: 212 38% 71% / 0.28;
+  --input: 212 38% 71% / 0.18;
+  --ring: 215 98% 52%;
+  --divider: 212 38% 71% / 0.1;
+  --border-width: 1px;
+  --border-width-strong: 1px;
+
+  /* Radius (§7) */
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 14px;
+  --radius-2xl: 16px;
+  --radius: 10px;
+
+  /* Sombras (§8) */
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.18);
+  --shadow-medium: 0 8px 22px rgba(0, 0, 0, 0.22);
+  --shadow-premium: 0 12px 32px rgba(0, 0, 0, 0.32);
+  --shadow-premium-hover: 0 24px 70px rgba(0, 0, 0, 0.52);
+  --shadow-glow-focus: 0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--primary) / 0.6);
+
+  /* Overlay (§9) */
+  --overlay-color: 0 0% 0%;
+  --overlay-opacity: 0.62;
+  --overlay-blur: 5px;
+
+  /* Shell (sidebar/header seguem os tokens próprios) */
+  --sidebar-background: 212 52% 6%; /* #081019 */
+  --sidebar-foreground: 214 54% 97%;
+  --sidebar-primary: 215 98% 52%;
+  --sidebar-border: 212 38% 71% / 0.12;
+  --gradient-hero: linear-gradient(
+    135deg,
+    hsl(212 52% 6%) 0%,
+    hsl(210 41% 7%) 50%,
+    hsl(212 36% 10%) 100%
+  );
+
+  /* Motion (§38) */
+  --duration-fast: 160ms;
+  --duration-normal: 200ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* `.dark .text-muted-foreground` e `.dark span/p/label/li` (index.css) fixam a cor
+   em literal HSL laranja com especificidade (0,2,0)/(0,1,1) — acima das utilities.
+   Dentro do escopo, devolvemos as utilities de cor ao token. */
+html[data-pg-theme='blue-premium'] .text-muted-foreground {
+  color: hsl(var(--muted-foreground));
+}
+html[data-pg-theme='blue-premium'] p.text-foreground,
+html[data-pg-theme='blue-premium'] span.text-foreground,
+html[data-pg-theme='blue-premium'] label.text-foreground,
+html[data-pg-theme='blue-premium'] li.text-foreground,
+html[data-pg-theme='blue-premium'] td.text-foreground,
+html[data-pg-theme='blue-premium'] th.text-foreground {
+  color: hsl(var(--foreground));
+}
+html[data-pg-theme='blue-premium'] p.text-primary,
+html[data-pg-theme='blue-premium'] span.text-primary,
+html[data-pg-theme='blue-premium'] label.text-primary,
+html[data-pg-theme='blue-premium'] li.text-primary,
+html[data-pg-theme='blue-premium'] td.text-primary,
+html[data-pg-theme='blue-premium'] th.text-primary,
+html[data-pg-theme='blue-premium'] p.text-brand-primary,
+html[data-pg-theme='blue-premium'] span.text-brand-primary,
+html[data-pg-theme='blue-premium'] label.text-brand-primary,
+html[data-pg-theme='blue-premium'] li.text-brand-primary,
+html[data-pg-theme='blue-premium'] td.text-brand-primary,
+html[data-pg-theme='blue-premium'] th.text-brand-primary {
+  color: hsl(var(--primary));
+}
+html[data-pg-theme='blue-premium'] p.text-success,
+html[data-pg-theme='blue-premium'] span.text-success,
+html[data-pg-theme='blue-premium'] label.text-success,
+html[data-pg-theme='blue-premium'] li.text-success,
+html[data-pg-theme='blue-premium'] td.text-success,
+html[data-pg-theme='blue-premium'] th.text-success {
+  color: hsl(var(--success));
+}
+html[data-pg-theme='blue-premium'] p.text-warning,
+html[data-pg-theme='blue-premium'] span.text-warning,
+html[data-pg-theme='blue-premium'] label.text-warning,
+html[data-pg-theme='blue-premium'] li.text-warning,
+html[data-pg-theme='blue-premium'] td.text-warning,
+html[data-pg-theme='blue-premium'] th.text-warning {
+  color: hsl(var(--warning));
+}
+html[data-pg-theme='blue-premium'] p.text-destructive,
+html[data-pg-theme='blue-premium'] span.text-destructive,
+html[data-pg-theme='blue-premium'] label.text-destructive,
+html[data-pg-theme='blue-premium'] li.text-destructive,
+html[data-pg-theme='blue-premium'] td.text-destructive,
+html[data-pg-theme='blue-premium'] th.text-destructive {
+  color: hsl(var(--destructive));
+}
+html[data-pg-theme='blue-premium'] p.text-info,
+html[data-pg-theme='blue-premium'] span.text-info,
+html[data-pg-theme='blue-premium'] label.text-info,
+html[data-pg-theme='blue-premium'] li.text-info,
+html[data-pg-theme='blue-premium'] td.text-info,
+html[data-pg-theme='blue-premium'] th.text-info {
+  color: hsl(var(--info));
+}
+html[data-pg-theme='blue-premium'] p.text-primary-foreground,
+html[data-pg-theme='blue-premium'] span.text-primary-foreground,
+html[data-pg-theme='blue-premium'] label.text-primary-foreground,
+html[data-pg-theme='blue-premium'] li.text-primary-foreground,
+html[data-pg-theme='blue-premium'] td.text-primary-foreground,
+html[data-pg-theme='blue-premium'] th.text-primary-foreground {
+  color: hsl(var(--primary-foreground));
+}
+
+/* Pesos (§10): 700 / 600 / 500 — `.dark .font-bold` global usa 800. */
+html[data-pg-theme='blue-premium'] .font-bold {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+html[data-pg-theme='blue-premium'] .font-semibold {
+  font-weight: 600;
+}
+html[data-pg-theme='blue-premium'] .font-medium {
+  font-weight: 500;
+}
+
+/* Links dentro do módulo: o global `a:not([class*='link-'])` força cor primária,
+   peso 800 e underline — incompatível com botões `asChild`. A classe só precisa
+   conter "link-" para sair daquele seletor; as utilities do botão decidem cor/peso. */
+html[data-pg-theme='blue-premium'] .link-unstyled {
+  text-decoration: none;
+}
+
+/* ---------------------------------------------------------------------------
+ * Neutralizações de componentes (§8, §17, §19) — só dentro de `.pg-module`
+ * (raiz de cada página do módulo e conteúdo portalizado que a declara).
+ * ------------------------------------------------------------------------- */
+
+/* Card: sem shine animado, sem lift de 4px, sem glow azul. */
+html[data-pg-theme='blue-premium'] .pg-module .card-glow {
+  border-color: hsl(var(--border));
+  --tw-shadow: var(--shadow-soft);
+  --tw-shadow-colored: var(--shadow-soft);
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+html[data-pg-theme='blue-premium'] .pg-module .card-glow::after {
+  display: none;
+}
+html[data-pg-theme='blue-premium'] .pg-module .card-glow:hover {
+  transform: none;
+  border-color: hsl(var(--border-strong));
+  background-color: hsl(var(--card));
+  box-shadow: var(--shadow-medium);
+}
+
+/* Botões: hover sem translate/shadow-lg; pressed ≤ 1px (§17.1). */
+html[data-pg-theme='blue-premium'] .pg-module button:hover,
+html[data-pg-theme='blue-premium'] .pg-module [role='button']:hover,
+html[data-pg-theme='blue-premium'] .pg-module a:hover {
+  transform: none;
+  --tw-shadow: var(--shadow-soft);
+  --tw-shadow-colored: var(--shadow-soft);
+}
+html[data-pg-theme='blue-premium'] .pg-module button:active,
+html[data-pg-theme='blue-premium'] .pg-module [role='button']:active {
+  transform: scale(0.99);
+}
+html[data-pg-theme='blue-premium'] .pg-module button,
+html[data-pg-theme='blue-premium'] .pg-module [role='button'],
+html[data-pg-theme='blue-premium'] .pg-module a {
+  transition-duration: var(--duration-fast);
+}
+
+/* Campos: sem shadow em repouso, sem lift/shadow no hover (§18). */
+html[data-pg-theme='blue-premium'] .pg-module input,
+html[data-pg-theme='blue-premium'] .pg-module textarea,
+html[data-pg-theme='blue-premium'] .pg-module [role='combobox'],
+html[data-pg-theme='blue-premium'] .pg-module input:hover,
+html[data-pg-theme='blue-premium'] .pg-module textarea:hover,
+html[data-pg-theme='blue-premium'] .pg-module [role='combobox']:hover {
+  transform: none;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+}
+
+/* Stage do preview A4 — fundo profundo com leve vinheta (§23). */
+html[data-pg-theme='blue-premium'] .pg-stage {
+  background:
+    radial-gradient(120% 80% at 50% 0%, hsl(var(--card-elevated)) 0%, transparent 60%),
+    hsl(var(--background));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-pg-theme='blue-premium'] .pg-module * {
+    transition-duration: 0.01ms !important;
+  }
+}

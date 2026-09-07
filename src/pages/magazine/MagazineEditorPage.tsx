@@ -1,50 +1,60 @@
 /**
  * MagazineEditorPage — /magazine/:id
- * Wizard 5 etapas + preview multi-página + validação por step + a11y.
+ * Studio shell (Blue Premium §24–§31): header do editor + stepper em uma
+ * linha + workspace cuja composição muda por etapa:
+ *   identity  → CONFIGURAÇÃO | PREVIEW A4 | PÁGINAS
+ *   products  → CATÁLOGO | NA REVISTA (preview pelo drawer)
+ *   content   → TOGGLES | PREVIEW + PÁGINAS
+ *   design    → TEMPLATES | PREVIEW + PÁGINAS
+ *   layout    → LISTA ORDENÁVEL | PREVIEW A4 | PÁGINAS
+ * Wizard 5 etapas + validação por step + a11y.
  */
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import {
+  AlertTriangle,
   ArrowLeft,
   ArrowRight,
+  BookOpen,
   Check,
+  CheckCircle2,
   Download,
   Eye,
+  LayoutTemplate,
   Loader2,
-  Save,
-  Share2,
-  AlertTriangle,
+  MoreHorizontal,
+  Send,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { formatDistanceToNow } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet';
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { PageSEO } from '@/components/seo/PageSEO';
 import { cn } from '@/lib/utils';
 import { useMagazineEditor } from './useMagazineEditor';
 import { useMagazinePublish } from './useMagazinePublish';
 import { paginateMagazine } from './pagination';
 import { PreviewSidebar } from './components/PreviewSidebar';
+import { PagesRail } from './components/PagesRail';
 import { EditorHero } from './components/EditorHero';
 import { IdentityStep } from './components/steps/IdentityStep';
 import { ProductsStep } from './components/steps/ProductsStep';
 import { ContentStep } from './components/steps/ContentStep';
 import { DesignStep } from './components/steps/DesignStep';
 import { LayoutStep } from './components/steps/LayoutStep';
-import {
-  canPublish,
-  validateStep,
-  type StepId,
-  type StepValidation,
-} from './utils/stepValidation';
+import { canPublish, validateStep, type StepId, type StepValidation } from './utils/stepValidation';
 import { TEMPLATE_REGISTRY } from './components/templates/TemplateRegistry';
 import type { MagazineTemplateId } from '@/types/magazine';
+import { useBluePremiumTheme } from './hooks/useBluePremiumTheme';
+import { PG_BTN, PG_BTN_OUTLINE, PG_ICON_BTN, PG_PAGE, PG_PANEL } from './pg';
 import './magazine.css';
 
 const STEPS: Array<{ id: StepId; label: string }> = [
@@ -54,6 +64,16 @@ const STEPS: Array<{ id: StepId; label: string }> = [
   { id: 'design', label: 'Design' },
   { id: 'layout', label: 'Layout & Gerar' },
 ];
+
+/** Composição do workspace por etapa (§24: não forçar a mesma grade). */
+type WorkspaceLayout = 'one' | 'three' | 'two';
+const STEP_LAYOUT: Record<StepId, WorkspaceLayout> = {
+  identity: 'three',
+  products: 'one',
+  content: 'two',
+  design: 'two',
+  layout: 'three',
+};
 
 /**
  * Validação neutra enquanto a revista ainda não hidratou.
@@ -74,6 +94,7 @@ export default function MagazineEditorPage() {
   //
   // Guard-rail: `react-hooks/rules-of-hooks` é 'error' no ESLint.
   // ─────────────────────────────────────────────────────────────────
+  useBluePremiumTheme();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [step, setStep] = useState<StepId>('identity');
@@ -107,7 +128,6 @@ export default function MagazineEditorPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [magazine?.id]);
 
-
   // Atalhos globais leves — Cmd/Ctrl+S salva imediato (autosave já roda)
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -125,24 +145,14 @@ export default function MagazineEditorPage() {
   const pages = useMemo(
     () => paginateMagazine(magazine),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      magazine?.items,
-      magazine?.templateId,
-      magazine?.title,
-      magazine?.content?.groupByCategory,
-    ],
+    [magazine?.items, magazine?.templateId, magazine?.title, magazine?.content?.groupByCategory],
   );
 
   // Deps espelham os campos realmente lidos por validateStep
   const validation = useMemo(
     () => (magazine ? validateStep(step, magazine) : EMPTY_VALIDATION),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      step,
-      magazine?.title,
-      magazine?.items?.length,
-      magazine?.branding?.clientLogoUrl,
-    ],
+    [step, magazine?.title, magazine?.items?.length, magazine?.branding?.clientLogoUrl],
   );
 
   // Onda 1 — hover em produto no LayoutStep → salta preview p/ página que o contém.
@@ -183,6 +193,8 @@ export default function MagazineEditorPage() {
     [currentIdx, magazine, step],
   );
 
+  const goToDesign = useCallback(() => goToStep('design'), [goToStep]);
+
   // ── NENHUM HOOK ABAIXO DESTE PONTO ────────────────────────────────
   // Todo useState/useEffect/useMemo/useCallback/custom hook DEVE ficar
   // ACIMA desta linha. Abaixo: apenas early returns, cálculos puros e JSX.
@@ -190,21 +202,29 @@ export default function MagazineEditorPage() {
 
   if (!editor.loaded) {
     return (
-      <div className="flex h-[60vh] items-center justify-center text-muted-foreground" role="status">
-        <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Carregando revista…
+      <div
+        className={cn(
+          PG_PAGE,
+          'flex h-[60vh] items-center justify-center text-[13px] text-muted-foreground',
+        )}
+        role="status"
+      >
+        <Loader2 className="mr-2 h-5 w-5 animate-spin" aria-hidden /> Carregando revista…
       </div>
     );
   }
   if (!magazine) {
     return (
-      <div className="mx-auto max-w-md p-10 text-center">
-        <h1 className="mb-2 text-xl font-semibold">Revista não encontrada</h1>
-        <p className="mb-6 text-sm text-muted-foreground">
-          Ela pode ter sido excluída ou não pertence a este usuário.
-        </p>
-        <Button onClick={() => navigate('/magazine')}>
-          <ArrowLeft className="mr-2 h-4 w-4" /> Voltar
-        </Button>
+      <div className={cn(PG_PAGE, 'flex justify-center')}>
+        <div className={cn(PG_PANEL, 'mt-10 max-w-md p-8 text-center')}>
+          <h1 className="mb-2 text-[18px] font-semibold text-foreground">Revista não encontrada</h1>
+          <p className="mb-6 text-[13px] text-muted-foreground">
+            Ela pode ter sido excluída ou não pertence a este usuário.
+          </p>
+          <Button onClick={() => navigate('/magazine')} className={cn(PG_BTN, 'rounded-md')}>
+            <ArrowLeft className="mr-2 h-4 w-4" aria-hidden /> Voltar
+          </Button>
+        </div>
       </div>
     );
   }
@@ -212,8 +232,27 @@ export default function MagazineEditorPage() {
   const safePreviewIdx = Math.min(previewIdx, Math.max(0, pages.length - 1));
   const canPrev = currentIdx > 0;
   const canNext = currentIdx < STEPS.length - 1;
+  const layout = STEP_LAYOUT[step];
+  const itemCount = (magazine.items ?? []).length;
 
   const openPrint = () => window.open(`/magazine/${magazine.id}/print`, '_blank');
+
+  const savedAgo = magazine.updatedAt
+    ? formatDistanceToNow(new Date(magazine.updatedAt), {
+        addSuffix: true,
+        locale: ptBR,
+        includeSeconds: true,
+      })
+    : null;
+
+  const previewProps = {
+    magazine,
+    pages,
+    activeIdx: safePreviewIdx,
+    onSelect: setPreviewIdx,
+    onOpenAll: openPrint,
+    highlightedItemId,
+  };
 
   return (
     <>
@@ -223,54 +262,60 @@ export default function MagazineEditorPage() {
         path={`/magazine/${magazine.id}`}
       />
 
-      <div className="mx-auto w-full max-w-[1920px] animate-fade-in px-4 pb-4 pt-2 sm:px-6 lg:px-8">
-       <div className="xl:grid xl:grid-cols-[minmax(0,1fr)_420px] xl:items-start xl:gap-6">
-        <div className="min-w-0" data-testid="magazine-editor-main-col">
-        {/* Hero premium — miniatura real da capa + template ativo + swap inline */}
-        <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-start" data-testid="magazine-editor-hero-row">
+      <div className={cn(PG_PAGE, 'pb-6 pt-3')}>
+        {/* Studio header (§24) */}
+        <div
+          className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between"
+          data-testid="magazine-editor-hero-row"
+        >
           <div className="min-w-0 flex-1">
             <EditorHero magazine={magazine} onChangeTemplate={editor.setTemplate} />
           </div>
-          <div className="flex flex-wrap items-center gap-2 lg:justify-end lg:pt-7">
+          <div className="flex flex-wrap items-center gap-2.5 lg:pb-0.5">
             <span
               role="status"
               aria-live="polite"
-              className="flex items-center text-xs text-muted-foreground"
+              className="mr-1 flex items-center gap-2 text-[12px] text-muted-foreground"
             >
               {editor.saving ? (
                 <>
-                  <Loader2 className="mr-1 h-3 w-3 animate-spin" /> Salvando…
+                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+                  <span className="text-foreground">Salvando…</span>
                 </>
               ) : (
                 <>
-                  <Save className="mr-1 h-3 w-3" /> Salvo
+                  <CheckCircle2 className="h-5 w-5 text-success" aria-hidden />
+                  <span className="flex flex-col leading-tight">
+                    <span className="text-[12px] font-medium text-foreground">
+                      Salvo automaticamente
+                    </span>
+                    {savedAgo && (
+                      <span className="text-[11px] text-muted-foreground">{savedAgo}</span>
+                    )}
+                  </span>
                 </>
               )}
             </span>
-            {/* Onda 1 — Preview drawer para telas < xl (aside some) */}
+            {/* Preview em drawer — única via < xl; complemento ≥ xl (etapas sem stage) */}
             <Sheet open={previewSheetOpen} onOpenChange={setPreviewSheetOpen}>
               <SheetTrigger asChild>
-                <Button variant="outline" size="sm" className="xl:hidden">
-                  <Eye className="mr-2 h-4 w-4" /> Preview
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className={cn(PG_BTN_OUTLINE, 'h-11 min-h-0 rounded-md px-4 text-[14px]')}
+                >
+                  <Eye className="mr-2 h-4 w-4" aria-hidden /> Preview
                 </Button>
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="flex h-full w-[min(560px,100vw)] max-w-full flex-col gap-0 p-4 sm:max-w-none"
+                className="pg-module flex h-full w-[min(600px,100vw)] max-w-full flex-col gap-0 border-border bg-background p-4 sm:max-w-none"
               >
                 <SheetHeader className="mb-3 shrink-0">
-                  <SheetTitle className="text-sm">Preview da revista</SheetTitle>
+                  <SheetTitle className="text-[14px] font-semibold">Preview da revista</SheetTitle>
                 </SheetHeader>
                 <div className="min-h-0 flex-1 overflow-y-auto">
-                  <PreviewSidebar
-                    magazine={magazine}
-                    pages={pages}
-                    activeIdx={safePreviewIdx}
-                    onSelect={setPreviewIdx}
-                    onOpenAll={openPrint}
-                    highlightedItemId={highlightedItemId}
-                    variant="drawer"
-                  />
+                  <PreviewSidebar {...previewProps} variant="drawer" />
                 </div>
               </SheetContent>
             </Sheet>
@@ -278,62 +323,101 @@ export default function MagazineEditorPage() {
               variant="outline"
               size="sm"
               onClick={openPrint}
-              disabled={(magazine.items ?? []).length === 0}
+              disabled={itemCount === 0}
+              className={cn(PG_BTN_OUTLINE, 'h-11 min-h-0 rounded-md px-4 text-[14px]')}
             >
-              <Download className="mr-2 h-4 w-4" /> PDF
+              <Download className="mr-2 h-4 w-4" aria-hidden /> PDF
             </Button>
-            <Button size="sm" onClick={publish} disabled={!publishable || publishing} aria-busy={publishing}>
+            <Button
+              size="sm"
+              onClick={publish}
+              disabled={!publishable || publishing}
+              aria-busy={publishing}
+              className={cn(PG_BTN, 'h-11 min-h-0 rounded-md px-5 text-[14px]')}
+            >
               {publishing ? (
-                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Publicando…</>
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden /> Publicando…
+                </>
               ) : (
-                <><Share2 className="mr-2 h-4 w-4" /> Publicar</>
+                <>
+                  <Send className="mr-2 h-4 w-4" aria-hidden /> Publicar
+                </>
               )}
             </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className={cn(PG_ICON_BTN, 'h-11 w-11')}
+                  aria-label="Mais ações"
+                >
+                  <MoreHorizontal className="h-4 w-4" aria-hidden />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                className="pg-module w-60 rounded-lg border-border bg-popover p-1.5"
+              >
+                <DropdownMenuItem
+                  onSelect={() => navigate(`/magazine/templates?returnTo=/magazine/${magazine.id}`)}
+                  className="h-9 rounded-md text-[13px]"
+                >
+                  <LayoutTemplate className="mr-2 h-4 w-4" aria-hidden /> Galeria de templates
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onSelect={() => navigate('/magazine')}
+                  className="h-9 rounded-md text-[13px]"
+                >
+                  <BookOpen className="mr-2 h-4 w-4" aria-hidden /> Voltar para revistas
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 
-        {/* Stepper com barra de progresso */}
-        <nav
-          aria-label="Etapas do editor"
-          className="mb-6 overflow-hidden rounded-lg border bg-card"
-        >
-          <div
-            className="h-1 bg-primary transition-all"
-            style={{ width: `${((currentIdx + 1) / STEPS.length) * 100}%` }}
-            aria-hidden
-          />
-          <ol className="flex items-center gap-1 overflow-x-auto p-2">
+        {/* Stepper (§25) */}
+        <nav aria-label="Etapas do editor" className={cn(PG_PANEL, 'mb-4 px-2 py-2')}>
+          <ol className="m-0 flex list-none items-center gap-1 overflow-x-auto p-0">
             {STEPS.map((s, idx) => {
               const active = s.id === step;
               const done = idx < currentIdx;
               return (
-                <li key={s.id}>
+                <li key={s.id} className="flex items-center">
                   <button
                     type="button"
                     onClick={() => goToStep(s.id)}
                     aria-current={active ? 'step' : undefined}
                     aria-label={`Etapa ${idx + 1} de ${STEPS.length}: ${s.label}${done ? ' (concluída)' : active ? ' (atual)' : ''}`}
                     className={cn(
-                      'flex items-center gap-2 whitespace-nowrap rounded-md px-3 py-2 text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+                      'flex h-10 items-center gap-2.5 whitespace-nowrap rounded-md px-3.5 text-[13px] font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
                       active
                         ? 'bg-primary text-primary-foreground'
                         : done
-                          ? 'text-foreground hover:bg-muted'
-                          : 'text-muted-foreground hover:bg-muted',
+                          ? 'text-foreground hover:bg-card-elevated'
+                          : 'text-muted-foreground hover:bg-card-elevated hover:text-foreground',
                     )}
                     data-testid={`magazine-step-${s.id}`}
                   >
                     <span
                       className={cn(
-                        'flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold',
-                        active ? 'bg-primary-foreground text-primary' : 'border',
+                        'flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-semibold tabular-nums',
+                        active
+                          ? 'bg-primary-foreground text-primary'
+                          : done
+                            ? 'bg-success/15 text-success'
+                            : 'border border-border-strong text-muted-foreground',
                       )}
                       aria-hidden
                     >
-                      {done ? <Check className="h-3 w-3" /> : idx + 1}
+                      {done ? <Check className="h-3.5 w-3.5" /> : idx + 1}
                     </span>
                     {s.label}
                   </button>
+                  {idx < STEPS.length - 1 && (
+                    <span aria-hidden className="mx-1 hidden h-px w-6 bg-border-strong sm:block" />
+                  )}
                 </li>
               );
             })}
@@ -349,100 +433,139 @@ export default function MagazineEditorPage() {
         {(validation.blocks.length > 0 || validation.warnings.length > 0) && (
           <div
             className={cn(
-              'mb-4 flex items-start gap-3 rounded-md border px-3 py-2 text-sm',
+              'mb-4 flex items-start gap-3 rounded-md border px-3.5 py-2.5 text-[13px]',
               validation.blocks.length > 0
-                ? 'border-amber-500/40 bg-amber-500/10 text-amber-800 dark:text-amber-200'
-                : 'border-muted bg-muted/40 text-muted-foreground',
+                ? 'border-warning/40 bg-warning/10 text-foreground'
+                : 'border-border bg-card-elevated text-muted-foreground',
             )}
             role="status"
           >
-            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
-            <ul className="space-y-0.5">
+            <AlertTriangle
+              className={cn(
+                'mt-0.5 h-4 w-4 shrink-0',
+                validation.blocks.length > 0 ? 'text-warning' : 'text-muted-foreground',
+              )}
+              aria-hidden
+            />
+            <ul className="m-0 list-none space-y-0.5 p-0">
               {validation.blocks.map((b) => (
                 <li key={b}>{b}</li>
               ))}
               {validation.warnings.map((w) => (
-                <li key={w} className="opacity-80">{w}</li>
+                <li key={w} className="opacity-80">
+                  {w}
+                </li>
               ))}
             </ul>
           </div>
         )}
 
-        <div>
-          {step === 'identity' && (
-            <IdentityStep
-              magazine={magazine}
-              onTitle={editor.setTitle}
-              onSubtitle={editor.setSubtitle}
-              onBranding={editor.setBranding}
-            />
+        {/* Workspace (§24/§26/§27/§30) */}
+        <div
+          className={cn(
+            'grid grid-cols-1 gap-4',
+            layout === 'three' &&
+              'xl:grid-cols-[minmax(340px,0.85fr)_minmax(0,1.35fr)_minmax(260px,0.62fr)] xl:items-start',
+            layout === 'two' && 'xl:grid-cols-[minmax(0,1fr)_minmax(340px,420px)] xl:items-start',
           )}
-          {step === 'products' && (
-            <ProductsStep
-              magazine={magazine}
-              onAdd={editor.addProducts}
-              onRemove={editor.removeItem}
-              onUpdateItem={editor.updateItem}
-            />
-          )}
-          {step === 'content' && <ContentStep magazine={magazine} onChange={editor.setContent} />}
-          {step === 'design' && (
-            <DesignStep
-              magazine={magazine}
-              onChange={editor.setTemplate}
-              onCategoryChange={(category) => editor.setBranding({ category })}
-            />
-          )}
-          {step === 'layout' && (
-            <LayoutStep
-              magazine={magazine}
-              onReorder={editor.reorderItems}
-              onRemove={editor.removeItem}
-              onItemHover={setHighlightedItemId}
-              highlightedItemId={highlightedItemId}
-            />
-          )}
-
-          <div className="mt-6 flex items-center justify-between">
-            <Button
-              variant="outline"
-              disabled={!canPrev}
-              onClick={() => goToStep(STEPS[Math.max(0, currentIdx - 1)].id)}
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" /> Voltar
-            </Button>
-            {canNext ? (
-              <Button
-                onClick={() =>
-                  goToStep(STEPS[Math.min(STEPS.length - 1, currentIdx + 1)].id)
-                }
-              >
-                Avançar <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            ) : (
-              <Button onClick={publish} disabled={!publishable || publishing} aria-busy={publishing}>
-                {publishing ? (
-                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Publicando…</>
-                ) : (
-                  <><Share2 className="mr-2 h-4 w-4" /> Publicar revista</>
-                )}
-              </Button>
+          data-testid="magazine-editor-workspace"
+        >
+          <div className="min-w-0" data-testid="magazine-editor-main-col">
+            {step === 'identity' && (
+              <IdentityStep
+                magazine={magazine}
+                onTitle={editor.setTitle}
+                onSubtitle={editor.setSubtitle}
+                onBranding={editor.setBranding}
+              />
+            )}
+            {step === 'products' && (
+              <ProductsStep
+                magazine={magazine}
+                onAdd={editor.addProducts}
+                onRemove={editor.removeItem}
+                onUpdateItem={editor.updateItem}
+                onGoToDesign={goToDesign}
+              />
+            )}
+            {step === 'content' && <ContentStep magazine={magazine} onChange={editor.setContent} />}
+            {step === 'design' && (
+              <DesignStep
+                magazine={magazine}
+                onChange={editor.setTemplate}
+                onCategoryChange={(category) => editor.setBranding({ category })}
+              />
+            )}
+            {step === 'layout' && (
+              <LayoutStep
+                magazine={magazine}
+                onReorder={editor.reorderItems}
+                onRemove={editor.removeItem}
+                onItemHover={setHighlightedItemId}
+                highlightedItemId={highlightedItemId}
+              />
             )}
           </div>
-        </div>
+
+          {layout !== 'one' && (
+            <aside className="hidden min-w-0 xl:block" data-testid="magazine-preview-aside">
+              <PreviewSidebar
+                {...previewProps}
+                variant={layout === 'three' ? 'stage' : 'sidebar'}
+              />
+            </aside>
+          )}
+
+          {layout === 'three' && (
+            <aside className="hidden min-w-0 xl:block" data-testid="magazine-pages-rail">
+              <PagesRail
+                magazine={magazine}
+                pages={pages}
+                activeIdx={safePreviewIdx}
+                onSelect={setPreviewIdx}
+                highlightedItemId={highlightedItemId}
+                className="sticky top-2 max-h-[calc(100vh-24px)]"
+              />
+            </aside>
+          )}
         </div>
 
-        <aside className="hidden xl:block xl:self-start" data-testid="magazine-preview-aside">
-          <PreviewSidebar
-            magazine={magazine}
-            pages={pages}
-            activeIdx={safePreviewIdx}
-            onSelect={setPreviewIdx}
-            onOpenAll={openPrint}
-            highlightedItemId={highlightedItemId}
-          />
-        </aside>
-       </div>
+        {/* Navegação entre etapas */}
+        <div className={cn(PG_PANEL, 'mt-4 flex items-center justify-between px-4 py-3')}>
+          <Button
+            variant="outline"
+            disabled={!canPrev}
+            onClick={() => goToStep(STEPS[Math.max(0, currentIdx - 1)].id)}
+            className={cn(PG_BTN_OUTLINE, 'h-11 min-h-0 rounded-md px-4 text-[14px]')}
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" aria-hidden /> Voltar
+          </Button>
+          {canNext ? (
+            <Button
+              onClick={() => goToStep(STEPS[Math.min(STEPS.length - 1, currentIdx + 1)].id)}
+              className={cn(PG_BTN, 'h-11 min-h-0 rounded-md px-5 text-[14px]')}
+            >
+              Continuar <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
+            </Button>
+          ) : (
+            <Button
+              onClick={publish}
+              disabled={!publishable || publishing}
+              aria-busy={publishing}
+              className={cn(PG_BTN, 'h-11 min-h-0 rounded-md px-5 text-[14px]')}
+            >
+              {publishing ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden /> Publicando…
+                </>
+              ) : (
+                <>
+                  <Send className="mr-2 h-4 w-4" aria-hidden /> Publicar revista
+                </>
+              )}
+            </Button>
+          )}
+        </div>
       </div>
     </>
   );

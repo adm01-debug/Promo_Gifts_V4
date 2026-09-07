@@ -49,10 +49,11 @@ export function MagazinePageRenderer({ magazine, page, fitContainer, totalPages 
   }, [fitContainer]);
 
   const style = useMemo<CSSProperties>(() => {
-    const b = magazine.branding.colors;
+    // Linhas legadas do BD podem chegar com branding/items nulos — null-safe.
     const fallback = template.defaultColors;
-    const categoryHex = magazine.branding.category
-      ? MAGAZINE_CATEGORY_META[magazine.branding.category].hex
+    const b = magazine.branding?.colors ?? fallback;
+    const categoryHex = magazine.branding?.category
+      ? MAGAZINE_CATEGORY_META[magazine.branding?.category].hex
       : MAGAZINE_CATEGORY_META.technology.hex;
     return {
       '--mag-primary': b.primary || fallback.primary,
@@ -62,7 +63,7 @@ export function MagazinePageRenderer({ magazine, page, fitContainer, totalPages 
       '--mag-heading': `'${template.fonts.heading}', 'Playfair Display', serif`,
       '--mag-body': `'${template.fonts.body}', 'Inter', 'Outfit', system-ui, sans-serif`,
     } as CSSProperties;
-  }, [magazine.branding.colors, magazine.branding.category, template]);
+  }, [magazine.branding?.colors, magazine.branding?.category, template]);
 
   const content =
     page.kind === 'cover' ? (
@@ -96,10 +97,10 @@ export function MagazinePageRenderer({ magazine, page, fitContainer, totalPages 
  * subtítulo serif all-caps top-right + palavra script cursivo na base.
  */
 function CoverPage({ magazine }: { magazine: Magazine }) {
-  const hero = magazine.items[0];
+  const hero = (magazine.items ?? [])[0];
   const heroImage = hero?.productSnapshot.image_url;
-  const categoryHex = magazine.branding.category
-    ? MAGAZINE_CATEGORY_META[magazine.branding.category].hex
+  const categoryHex = magazine.branding?.category
+    ? MAGAZINE_CATEGORY_META[magazine.branding?.category].hex
     : MAGAZINE_CATEGORY_META.technology.hex;
   const ink = pickReadableInk(categoryHex);
   const isDarkInk = ink === '#1a1a1a';
@@ -134,10 +135,10 @@ function CoverPage({ magazine }: { magazine: Magazine }) {
       {/* Top-left: logo do cliente em caixa branca */}
       <div className="relative flex items-start justify-between p-16">
         <div className="rounded-md bg-white p-4 shadow-sm">
-          {magazine.branding.clientLogoUrl ? (
+          {magazine.branding?.clientLogoUrl ? (
             <img
-              src={magazine.branding.clientLogoUrl}
-              alt={magazine.branding.clientName ?? 'Cliente'}
+              src={magazine.branding?.clientLogoUrl}
+              alt={magazine.branding?.clientName ?? 'Cliente'}
               className="h-24 w-56 object-contain"
             />
           ) : (
@@ -145,7 +146,7 @@ function CoverPage({ magazine }: { magazine: Magazine }) {
               className="flex h-24 w-56 items-center justify-center text-3xl font-black uppercase tracking-widest"
               style={{ color: 'var(--mag-category-color)', fontFamily: 'var(--mag-heading)' }}
             >
-              {magazine.branding.clientName?.slice(0, 12) ?? 'PROMO'}
+              {magazine.branding?.clientName?.slice(0, 12) ?? 'PROMO'}
             </div>
           )}
         </div>
@@ -153,7 +154,7 @@ function CoverPage({ magazine }: { magazine: Magazine }) {
         {/* Top-right: subtítulo serif all-caps + ícone categórico */}
         <div className="flex flex-col items-end gap-4">
           <CategoryIcon
-            category={magazine.branding.category ?? null}
+            category={magazine.branding?.category ?? null}
             size={72}
             aria-hidden
             style={{ opacity: 0.9 }}
@@ -162,7 +163,8 @@ function CoverPage({ magazine }: { magazine: Magazine }) {
             className="text-right text-4xl font-bold uppercase leading-tight tracking-[0.2em]"
             style={{ fontFamily: 'var(--mag-heading)' }}
           >
-            {new Date().getFullYear()}<br />
+            {new Date().getFullYear()}
+            <br />
             COLEÇÃO
           </div>
         </div>
@@ -177,7 +179,10 @@ function CoverPage({ magazine }: { magazine: Magazine }) {
           {magazine.title}
         </h1>
         {magazine.subtitle && (
-          <p className="mt-8 max-w-[1400px] text-4xl opacity-90" style={{ fontFamily: 'var(--mag-body)' }}>
+          <p
+            className="mt-8 max-w-[1400px] text-4xl opacity-90"
+            style={{ fontFamily: 'var(--mag-body)' }}
+          >
             {magazine.subtitle}
           </p>
         )}
@@ -185,13 +190,13 @@ function CoverPage({ magazine }: { magazine: Magazine }) {
 
       {/* Script cursivo na base */}
       <div className="relative flex items-end justify-between p-16">
-        <div className="text-2xl uppercase tracking-widest opacity-80" style={{ fontFamily: 'var(--mag-body)' }}>
+        <div
+          className="text-2xl uppercase tracking-widest opacity-80"
+          style={{ fontFamily: 'var(--mag-body)' }}
+        >
           Promo Gifts · {new Date().getFullYear()}
         </div>
-        <div
-          className="mag-script leading-none"
-          style={{ fontSize: 180, opacity: 0.95 }}
-        >
+        <div className="mag-script leading-none" style={{ fontSize: 180, opacity: 0.95 }}>
           catálogo
         </div>
       </div>
@@ -209,21 +214,15 @@ function BackCoverPage({ magazine }: { magazine: Magazine }) {
       className="mag-page relative flex flex-col items-center justify-center gap-10 overflow-hidden p-24 text-center text-white"
       style={{ background: 'var(--mag-category-color, var(--mag-brand-green, #2e4a3a))' }}
     >
-      <div
-        aria-hidden
-        className="mag-dotmap-bg absolute inset-0 opacity-40"
-      />
+      <div aria-hidden className="mag-dotmap-bg absolute inset-0 opacity-40" />
       <div className="relative">
         <div className="text-4xl uppercase tracking-[0.5em] opacity-90">Obrigado</div>
-        <h2
-          className="mt-6 text-8xl font-bold"
-          style={{ fontFamily: 'var(--mag-heading)' }}
-        >
+        <h2 className="mt-6 text-8xl font-bold" style={{ fontFamily: 'var(--mag-heading)' }}>
           Fale com a Promo Gifts
         </h2>
-        {magazine.branding.clientName && (
+        {magazine.branding?.clientName && (
           <div className="mt-6 text-3xl opacity-90">
-            Preparado exclusivamente para <strong>{magazine.branding.clientName}</strong>
+            Preparado exclusivamente para <strong>{magazine.branding?.clientName}</strong>
           </div>
         )}
         <div className="mt-16 flex items-center justify-center gap-8 text-2xl uppercase tracking-widest opacity-80">
@@ -242,10 +241,7 @@ function BackCoverPage({ magazine }: { magazine: Magazine }) {
  */
 function SectionPage({ title }: { title: string }) {
   return (
-    <div
-      className="mag-page grid grid-cols-3 overflow-hidden"
-      style={{ background: 'white' }}
-    >
+    <div className="mag-page grid grid-cols-3 overflow-hidden" style={{ background: 'white' }}>
       {/* Coluna 1 — placeholder 4 imagens (produção real injeta fotos) */}
       <div className="grid grid-rows-4 gap-2 p-4">
         {Array.from({ length: 4 }).map((_, i) => (
@@ -265,7 +261,9 @@ function SectionPage({ title }: { title: string }) {
           className="flex h-4/5 w-full flex-col items-center justify-between p-8 text-center"
           style={{ border: '1px solid var(--mag-category-color)' }}
         >
-          <div className="text-8xl opacity-70" style={{ color: 'var(--mag-category-color)' }}>◊</div>
+          <div className="text-8xl opacity-70" style={{ color: 'var(--mag-category-color)' }}>
+            ◊
+          </div>
           <div>
             <h2
               className="text-4xl font-bold leading-tight"

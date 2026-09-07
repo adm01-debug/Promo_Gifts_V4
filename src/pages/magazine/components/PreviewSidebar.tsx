@@ -1,21 +1,27 @@
 /**
- * PreviewSidebar — sticky com:
- *  - Thumbs verticais de TODAS as páginas
- *  - Preview grande da página selecionada
- *  - Zoom (Fit / 100% / 150% / 200%) com scroll interno
+ * PreviewSidebar — stage do preview A4 (Blue Premium §23/§26) com:
+ *  - Preview grande da página selecionada em stage profundo
+ *  - Navegação anterior/próxima + contador "n / total"
+ *  - Zoom (Fit / 150% / 200% / 300%) com scroll interno e atalhos + − 0
+ *  - Tela cheia (Fullscreen API, quando disponível)
+ *  - Trilho de páginas (`PagesRail`) nas variantes sidebar/drawer
  *  - Highlight da página que contém o item em hover no LayoutStep
- *  - Contador de páginas/produtos
- *  - Botão "Ver todas em nova aba"
+ *  - Contador de páginas/produtos e botão "Ver todas" (nova aba)
+ *
+ * Variantes:
+ *  - 'sidebar' (default): painel sticky com stage + trilho de páginas.
+ *  - 'drawer': fluido, sem borda — usado dentro do Sheet.
+ *  - 'stage': só o stage (o trilho é renderizado à parte pelo editor).
  */
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Eye, ZoomIn, ZoomOut, Maximize2, ImageOff } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { ChevronLeft, ChevronRight, Eye, ImageOff, Maximize2, ZoomIn, ZoomOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import type { Magazine, MagazinePage } from '@/types/magazine';
 import { MagazinePageRenderer } from './MagazinePageRenderer';
+import { PagesRail, pageLabel } from './PagesRail';
+import { PG_OVERLINE, PG_PANEL } from '../pg';
 
 interface Props {
   magazine: Magazine;
@@ -25,20 +31,16 @@ interface Props {
   onOpenAll: () => void;
   /** Onda 1 — item destacado no LayoutStep para realçar a página correspondente. */
   highlightedItemId?: string | null;
-  /** 'sidebar' (default, sticky) ou 'drawer' (fluido, sem sticky). */
-  variant?: 'drawer' | 'sidebar';
+  /** 'sidebar' (default, sticky + trilho), 'drawer' (fluido) ou 'stage' (só o stage). */
+  variant?: 'drawer' | 'sidebar' | 'stage';
 }
 
 /** Níveis de zoom: 1 = fit-to-width (comportamento padrão do renderer). */
 const ZOOM_LEVELS = [1, 1.5, 2, 3] as const;
 type ZoomLevel = (typeof ZOOM_LEVELS)[number];
 
-function pageLabel(p: MagazinePage): string {
-  if (p.kind === 'cover') return 'Capa';
-  if (p.kind === 'back-cover') return 'Contracapa';
-  if (p.kind === 'section') return `Seção: ${p.sectionTitle ?? '—'}`;
-  return `${p.items.length} produto${p.items.length === 1 ? '' : 's'}`;
-}
+const CTRL_BTN =
+  'h-8 w-8 min-h-0 min-w-0 rounded-md text-muted-foreground hover:bg-card-elevated hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary';
 
 export function PreviewSidebar({
   magazine,
@@ -50,12 +52,9 @@ export function PreviewSidebar({
   variant = 'sidebar',
 }: Props) {
   const [zoom, setZoom] = useState<ZoomLevel>(1);
+  const stageRef = useRef<HTMLDivElement>(null);
   const active = pages[activeIdx] ?? pages[0];
-
-  const highlightedPageIdx = useMemo(() => {
-    if (!highlightedItemId) return -1;
-    return pages.findIndex((p) => p.items.some((it) => it.id === highlightedItemId));
-  }, [highlightedItemId, pages]);
+  const hasActive = activeIdx >= 0 && activeIdx < pages.length;
 
   const canZoomIn = zoom < ZOOM_LEVELS[ZOOM_LEVELS.length - 1];
   const canZoomOut = zoom > ZOOM_LEVELS[0];
@@ -68,6 +67,22 @@ export function PreviewSidebar({
   }, []);
 
   const resetZoom = useCallback(() => setZoom(1), []);
+
+  const canFullscreen = useMemo(
+    () =>
+      typeof document !== 'undefined' &&
+      typeof document.documentElement.requestFullscreen === 'function',
+    [],
+  );
+  const toggleFullscreen = useCallback(() => {
+    const el = stageRef.current;
+    if (!el || !canFullscreen) return;
+    if (document.fullscreenElement) {
+      void document.exitFullscreen();
+    } else {
+      void el.requestFullscreen();
+    }
+  }, [canFullscreen]);
 
   /**
    * Atalhos globais de zoom (`+`/`=`, `-`, `0`).
@@ -105,23 +120,121 @@ export function PreviewSidebar({
     return () => window.removeEventListener('keydown', onKey);
   }, [stepZoom, resetZoom]);
 
+  const canPrev = hasActive && activeIdx > 0;
+  const canNext = hasActive && activeIdx < pages.length - 1;
 
   return (
-    <Card className={cn(variant === 'sidebar' && 'sticky top-2', variant === 'drawer' && 'border-0 shadow-none')}>
-      <CardContent className={cn('space-y-3 p-3', variant === 'drawer' && 'p-0')}>
-        <div className="flex items-center justify-between gap-2">
-          <span className="min-w-0 truncate text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+    <div
+      className={cn(
+        variant !== 'drawer' && cn(PG_PANEL, 'sticky top-2 p-3'),
+        variant === 'drawer' && 'pg-module',
+      )}
+      data-variant={variant}
+    >
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center justify-between gap-2 px-1">
+          <span className={cn(PG_OVERLINE, 'min-w-0 truncate')}>
             Preview {active ? `— ${pageLabel(active)}` : ''}
           </span>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onOpenAll}
+            aria-label="Abrir todas as páginas em nova aba"
+            className="h-8 min-h-0 gap-1.5 rounded-md px-2 text-xs font-medium text-muted-foreground hover:bg-card-elevated hover:text-foreground"
+          >
+            <Eye className="h-3.5 w-3.5" aria-hidden /> Ver todas
+          </Button>
+        </div>
+
+        {active ? (
+          <div
+            ref={stageRef}
+            className={cn(
+              'pg-stage overflow-auto rounded-lg border border-border p-3 sm:p-4',
+              variant === 'stage'
+                ? 'max-h-[calc(100vh-260px)] min-h-[320px]'
+                : 'max-h-[55vh] sm:max-h-[60vh]',
+            )}
+          >
+            {/*
+              O renderer usa fit-to-width no wrapper. Ao aumentar a largura do
+              wrapper para `zoom * 100%`, o ResizeObserver interno recalcula e
+              escala o conteúdo — sem duplicar transforms.
+            */}
+            <div
+              style={{ width: `${zoom * 100}%` }}
+              className="mx-auto shadow-[0_12px_32px_rgba(0,0,0,0.32)]"
+            >
+              <MagazinePageRenderer
+                magazine={magazine}
+                page={active}
+                totalPages={pages.length}
+                fitContainer
+              />
+            </div>
+          </div>
+        ) : (
+          <div
+            data-testid="preview-empty-state"
+            role="status"
+            aria-live="polite"
+            className="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border-strong bg-background px-4 py-10 text-center"
+          >
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-card-elevated">
+              <ImageOff className="h-5 w-5 text-muted-foreground" aria-hidden />
+            </div>
+            <p className="text-sm font-medium text-foreground">Sem capa para exibir</p>
+            <p className="max-w-[220px] text-xs text-muted-foreground">
+              Adicione produtos ou escolha um template para gerar o preview da revista.
+            </p>
+          </div>
+        )}
+
+        {/* Barra de controles: navegação de página + zoom + tela cheia */}
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <div
             role="group"
-            aria-label="Controles de zoom do preview"
-            className="flex items-center gap-0.5"
+            aria-label="Navegação de páginas do preview"
+            className="flex items-center gap-0.5 rounded-md border border-border bg-card-elevated p-0.5"
           >
             <Button
               variant="ghost"
               size="icon"
-              className="h-7 w-7"
+              className={CTRL_BTN}
+              onClick={() => onSelect(activeIdx - 1)}
+              disabled={!canPrev}
+              aria-label="Página anterior"
+            >
+              <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+            </Button>
+            <span
+              className="min-w-[64px] px-1 text-center text-xs font-medium tabular-nums text-foreground"
+              aria-live="polite"
+            >
+              {hasActive ? activeIdx + 1 : '–'} / {pages.length}
+            </span>
+            <Button
+              variant="ghost"
+              size="icon"
+              className={CTRL_BTN}
+              onClick={() => onSelect(activeIdx + 1)}
+              disabled={!canNext}
+              aria-label="Próxima página"
+            >
+              <ChevronRight className="h-4 w-4" aria-hidden="true" />
+            </Button>
+          </div>
+
+          <div
+            role="group"
+            aria-label="Controles de zoom do preview"
+            className="flex items-center gap-0.5 rounded-md border border-border bg-card-elevated p-0.5"
+          >
+            <Button
+              variant="ghost"
+              size="icon"
+              className={CTRL_BTN}
               onClick={() => stepZoom(-1)}
               disabled={!canZoomOut}
               aria-label="Diminuir zoom"
@@ -160,13 +273,15 @@ export function PreviewSidebar({
                   resetZoom();
                 }
               }}
-              className="min-w-[46px] cursor-pointer select-none rounded px-1 py-0.5 text-center text-[10px] font-mono tabular-nums text-muted-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              className="min-w-[46px] cursor-pointer select-none rounded-sm px-1 py-0.5 text-center font-mono text-[11px] tabular-nums text-foreground hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
               aria-label="Zoom do preview"
               aria-keyshortcuts="0"
               aria-valuemin={Math.round(ZOOM_LEVELS[0] * 100)}
               aria-valuemax={Math.round(ZOOM_LEVELS[ZOOM_LEVELS.length - 1] * 100)}
               aria-valuenow={Math.round(zoom * 100)}
-              aria-valuetext={zoom === 1 ? 'Ajustar à largura' : `${Math.round(zoom * 100)} por cento`}
+              aria-valuetext={
+                zoom === 1 ? 'Ajustar à largura' : `${Math.round(zoom * 100)} por cento`
+              }
               title="Ajustar à largura (0)"
             >
               {zoom === 1 ? 'Fit' : `${Math.round(zoom * 100)}%`}
@@ -174,7 +289,7 @@ export function PreviewSidebar({
             <Button
               variant="ghost"
               size="icon"
-              className="h-7 w-7"
+              className={CTRL_BTN}
               onClick={() => stepZoom(1)}
               disabled={!canZoomIn}
               aria-label="Aumentar zoom"
@@ -184,113 +299,36 @@ export function PreviewSidebar({
             >
               <ZoomIn className="h-3.5 w-3.5" aria-hidden="true" />
             </Button>
-
-
             <Button
               variant="ghost"
-              size="sm"
-              onClick={onOpenAll}
-              aria-label="Abrir todas as páginas em nova aba"
-              className="ml-1"
+              size="icon"
+              className={CTRL_BTN}
+              onClick={toggleFullscreen}
+              disabled={!canFullscreen || !active}
+              aria-label="Tela cheia"
+              title="Tela cheia"
             >
-              <Eye className="mr-1 h-3.5 w-3.5" /> Ver todas
+              <Maximize2 className="h-3.5 w-3.5" aria-hidden="true" />
             </Button>
           </div>
         </div>
 
-        {active ? (
-          <div
-            className={cn(
-              'overflow-auto rounded-lg border bg-neutral-100',
-              'max-h-[55vh] sm:max-h-[65vh] xl:max-h-[70vh]',
-            )}
-          >
-            {/*
-              O renderer usa fit-to-width no wrapper. Ao aumentar a largura do
-              wrapper para `zoom * 100%`, o ResizeObserver interno recalcula e
-              escala o conteúdo — sem duplicar transforms.
-            */}
-            <div style={{ width: `${zoom * 100}%` }}>
-              <MagazinePageRenderer
-                magazine={magazine}
-                page={active}
-                totalPages={pages.length}
-                fitContainer
-              />
-            </div>
-          </div>
-        ) : (
-          <div
-            data-testid="preview-empty-state"
-            role="status"
-            aria-live="polite"
-            className="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border/70 bg-muted/40 px-4 py-10 text-center"
-          >
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted">
-              <ImageOff className="h-5 w-5 text-muted-foreground" aria-hidden />
-            </div>
-            <p className="text-sm font-medium text-foreground">
-              Sem capa para exibir
-            </p>
-            <p className="max-w-[220px] text-xs text-muted-foreground">
-              Adicione produtos ou escolha um template para gerar o preview da revista.
-            </p>
-          </div>
+        {variant !== 'stage' && pages.length > 1 && (
+          <PagesRail
+            magazine={magazine}
+            pages={pages}
+            activeIdx={activeIdx}
+            onSelect={onSelect}
+            highlightedItemId={highlightedItemId}
+            framed={false}
+            className="max-h-[280px] overflow-y-auto pr-1"
+          />
         )}
 
-        {pages.length > 1 && (
-          <div>
-            <div className="mb-1 flex items-center justify-between text-[10px] uppercase tracking-widest text-muted-foreground">
-              <span>Navegar entre páginas</span>
-              {zoom !== 1 && (
-                <button
-                  type="button"
-                  onClick={resetZoom}
-                  className="inline-flex items-center gap-1 rounded px-1 py-0.5 hover:bg-muted"
-                >
-                  <Maximize2 className="h-3 w-3" /> Fit
-                </button>
-              )}
-            </div>
-            <ScrollArea className="h-[210px]">
-              <div className="grid grid-cols-2 gap-2 pr-2 sm:grid-cols-3">
-                {pages.map((p, idx) => {
-                  const isHighlighted = idx === highlightedPageIdx;
-                  const isActive = idx === activeIdx;
-                  return (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => onSelect(idx)}
-                      className={cn(
-                        'group relative overflow-hidden rounded border bg-background text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-                        isActive && 'ring-2 ring-primary',
-                        !isActive && isHighlighted && 'ring-2 ring-amber-500',
-                        !isActive && !isHighlighted && 'hover:border-primary/60',
-                      )}
-                      aria-label={`Ir para página ${idx + 1}: ${pageLabel(p)}`}
-                      aria-current={isActive ? 'true' : undefined}
-                    >
-                      <div className="aspect-[3/4] w-full overflow-hidden bg-neutral-50">
-                        <MagazinePageRenderer magazine={magazine} page={p} totalPages={pages.length} fitContainer />
-                      </div>
-
-                      <div className="flex items-center justify-between px-1.5 py-1 text-[10px]">
-                        <span className="font-mono">{String(idx + 1).padStart(2, '0')}</span>
-                        <span className="truncate text-muted-foreground">{pageLabel(p)}</span>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </ScrollArea>
-          </div>
-        )}
-
-        <div className="border-t pt-2 text-xs text-muted-foreground">
-          {pages.length} página(s) · {magazine.items.length} produto(s)
+        <div className="border-t border-border pt-2 text-xs text-muted-foreground">
+          {pages.length} página(s) · {(magazine.items ?? []).length} produto(s)
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

@@ -1,9 +1,10 @@
 /**
- * Step 5 — Layout & Gerar: DnD para ordenar produtos + ações finais.
- * Usa @dnd-kit (já presente no projeto).
+ * Step 5 — Layout & Gerar (Blue Premium §30): DnD para ordenar produtos.
+ * Usa @dnd-kit (já presente no projeto). O preview e o trilho de páginas são
+ * compostos pelo editor ao lado (LISTA | PREVIEW | PÁGINAS).
  *
  * Onda 3 — acessibilidade WCAG 2.1 AA:
- *  - Estrutura semântica <ul>/<li> na ordenação e no sumário
+ *  - Estrutura semântica <ul>/<li> na ordenação
  *  - aria-labelledby + aria-describedby ligando lista à instrução de DnD
  *  - aria-label dinâmico com nome do produto nos botões arrastar/remover
  *  - aria-current="true" no item destacado (sincroniza com Preview)
@@ -11,7 +12,14 @@
  */
 
 import { useMemo } from 'react';
-import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from '@dnd-kit/core';
 
 import {
   SortableContext,
@@ -20,13 +28,12 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { GripVertical, Trash2 } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { GripVertical, ListOrdered, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { Magazine, MagazineItem } from '@/types/magazine';
-import { paginateMagazine } from '../../pagination';
 import { formatPrice, itemPrice } from '../templates/shared';
+import { PG_ICON_BOX_SM, PG_PANEL, PG_PANEL_TITLE, PG_SUBTITLE } from '../../pg';
 
 interface Props {
   magazine: Magazine;
@@ -37,10 +44,18 @@ interface Props {
   highlightedItemId?: string | null;
 }
 
-export function LayoutStep({ magazine, onReorder, onRemove, onItemHover, highlightedItemId }: Props) {
+export function LayoutStep({
+  magazine,
+  onReorder,
+  onRemove,
+  onItemHover,
+  highlightedItemId,
+}: Props) {
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
-  const items = useMemo(() => [...magazine.items].sort((a, b) => a.position - b.position), [magazine.items]);
-  const pages = useMemo(() => paginateMagazine(magazine), [magazine]);
+  const items = useMemo(
+    () => [...(magazine.items ?? [])].sort((a, b) => a.position - b.position),
+    [magazine.items],
+  );
 
   const handleDragEnd = (e: DragEndEvent) => {
     const { active, over } = e;
@@ -52,66 +67,48 @@ export function LayoutStep({ magazine, onReorder, onRemove, onItemHover, highlig
   };
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[1fr_360px]">
-      <Card>
-        <CardContent className="space-y-3 p-4">
-          <div className="text-sm font-semibold" id="layout-step-title">
+    <section className={cn(PG_PANEL, 'p-4')} aria-labelledby="layout-step-title">
+      <header className="mb-4 flex items-start gap-3">
+        <div className={PG_ICON_BOX_SM}>
+          <ListOrdered className="h-4 w-4" aria-hidden />
+        </div>
+        <div>
+          <h2 className={PG_PANEL_TITLE} id="layout-step-title">
             Ordenar produtos ({items.length})
-          </div>
-          <p className="text-xs text-muted-foreground" id="layout-step-help">
-            Arraste para reordenar. A paginação é recalculada automaticamente com base no template escolhido.
+          </h2>
+          <p className={cn(PG_SUBTITLE, 'mt-0.5')} id="layout-step-help">
+            Arraste para reordenar. A paginação é recalculada automaticamente com base no template
+            escolhido.
           </p>
-          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-            <SortableContext items={items.map((i) => i.id)} strategy={verticalListSortingStrategy}>
-              <ul
-                aria-labelledby="layout-step-title"
-                aria-describedby="layout-step-help"
-                className="space-y-2 list-none p-0 m-0"
-              >
-                {items.map((it, idx) => (
-                  <SortableRow
-                    key={it.id}
-                    item={it}
-                    index={idx}
-                    total={items.length}
-                    onRemove={onRemove}
-                    onHover={onItemHover}
-                    highlighted={highlightedItemId === it.id}
-                  />
-                ))}
-              </ul>
-            </SortableContext>
-          </DndContext>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardContent className="space-y-2 p-4">
-          <div className="text-sm font-semibold" id="layout-summary-title">
-            Sumário
-          </div>
-          <ul aria-labelledby="layout-summary-title" className="space-y-1 text-xs list-none p-0 m-0">
-            {pages.map((p) => (
-              <li key={p.index} className="flex items-center justify-between rounded border px-2 py-1">
-                <span className="font-mono" aria-hidden>
-                  {String(p.index + 1).padStart(2, '0')}
-                </span>
-                <span className="flex-1 truncate px-2 text-muted-foreground">
-                  <span className="sr-only">Página {p.index + 1}: </span>
-                  {p.kind === 'cover'
-                    ? 'Capa'
-                    : p.kind === 'back-cover'
-                      ? 'Contracapa'
-                      : p.kind === 'section'
-                        ? `Seção: ${p.sectionTitle}`
-                        : `${p.items.length} produto(s)`}
-                </span>
-              </li>
+        </div>
+      </header>
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={items.map((i) => i.id)} strategy={verticalListSortingStrategy}>
+          <ul
+            aria-labelledby="layout-step-title"
+            aria-describedby="layout-step-help"
+            className="m-0 list-none space-y-2 p-0"
+          >
+            {items.map((it, idx) => (
+              <SortableRow
+                key={it.id}
+                item={it}
+                index={idx}
+                total={items.length}
+                onRemove={onRemove}
+                onHover={onItemHover}
+                highlighted={highlightedItemId === it.id}
+              />
             ))}
           </ul>
-        </CardContent>
-      </Card>
-    </div>
+        </SortableContext>
+      </DndContext>
+      {items.length === 0 && (
+        <p className="rounded-md border border-dashed border-border-strong px-4 py-8 text-center text-[12px] text-muted-foreground">
+          Adicione produtos na etapa anterior para ordenar as páginas.
+        </p>
+      )}
+    </section>
   );
 }
 
@@ -152,33 +149,37 @@ function SortableRow({
       aria-current={highlighted ? 'true' : undefined}
       aria-label={`Produto ${index + 1} de ${total}: ${productName}`}
       className={cn(
-        'flex items-center gap-3 rounded-lg border bg-background p-2 transition',
-        highlighted && 'border-primary ring-2 ring-primary/40',
+        'flex items-center gap-3 rounded-md border bg-card-elevated p-2 transition-colors duration-150',
+        highlighted
+          ? 'border-primary ring-2 ring-primary/40'
+          : 'border-border hover:border-border-strong',
       )}
     >
       <button
         type="button"
         {...attributes}
         {...listeners}
-        className="cursor-grab text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+        className="flex h-8 w-8 cursor-grab items-center justify-center rounded-sm text-muted-foreground hover:bg-background hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         aria-label={`Arrastar para reordenar ${productName}`}
       >
         <GripVertical className="h-4 w-4" aria-hidden />
       </button>
-      <span className="w-8 text-center font-mono text-xs text-muted-foreground" aria-hidden>
+      <span className="w-7 text-center font-mono text-[11px] text-muted-foreground" aria-hidden>
         {String(index + 1).padStart(2, '0')}
       </span>
-      <img
-        src={item.productSnapshot.image_url}
-        alt={productName}
-        className="h-10 w-10 rounded object-cover"
-      />
-      <div className="flex-1 overflow-hidden">
-        <div className="line-clamp-1 text-sm font-medium">{productName}</div>
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <span>Cód. {item.productSnapshot.sku}</span>
+      <div className="h-11 w-11 shrink-0 overflow-hidden rounded-sm bg-neutral-100">
+        <img
+          src={item.productSnapshot.image_url}
+          alt={productName}
+          className="h-full w-full object-contain p-1"
+        />
+      </div>
+      <div className="min-w-0 flex-1">
+        <div className="line-clamp-1 text-[13px] font-semibold text-foreground">{productName}</div>
+        <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+          <span>SKU {item.productSnapshot.sku}</span>
           <span aria-hidden>·</span>
-          <span>{formatPrice(itemPrice(item))}</span>
+          <span className="font-medium text-primary">{formatPrice(itemPrice(item))}</span>
         </div>
       </div>
       <Button
@@ -186,6 +187,7 @@ function SortableRow({
         size="icon"
         onClick={() => onRemove(item.id)}
         aria-label={`Remover ${productName} da revista`}
+        className="h-8 min-h-0 w-8 min-w-0 rounded-md text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
       >
         <Trash2 className="h-4 w-4" aria-hidden />
       </Button>

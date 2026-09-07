@@ -7,7 +7,6 @@
 import { useState } from 'react';
 import { Check, ShieldAlert, ShieldCheck, Sparkles } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
@@ -19,6 +18,7 @@ import {
   wcagLevel,
   WCAG_LABEL,
 } from '../utils/contrast';
+import { PG_INPUT, PG_LABEL, PG_OVERLINE } from '../pg';
 
 type ColorKey = 'primary' | 'secondary' | 'text';
 
@@ -29,10 +29,30 @@ const LABEL: Record<ColorKey, string> = {
 };
 
 const SWATCHES = [
-  '#0f172a', '#0c2340', '#0d0d0d', '#111827', '#1e293b', '#374151',
-  '#dc2626', '#e11d48', '#f97316', '#f59e0b', '#eab308', '#c9a84c',
-  '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6', '#22c55e', '#10b981',
-  '#ffffff', '#f5f5f4', '#a3a3a3', '#525252', '#262626', '#000000',
+  '#0f172a',
+  '#0c2340',
+  '#0d0d0d',
+  '#111827',
+  '#1e293b',
+  '#374151',
+  '#dc2626',
+  '#e11d48',
+  '#f97316',
+  '#f59e0b',
+  '#eab308',
+  '#c9a84c',
+  '#0ea5e9',
+  '#3b82f6',
+  '#6366f1',
+  '#8b5cf6',
+  '#22c55e',
+  '#10b981',
+  '#ffffff',
+  '#f5f5f4',
+  '#a3a3a3',
+  '#525252',
+  '#262626',
+  '#000000',
 ];
 
 interface Props {
@@ -56,62 +76,85 @@ export function BrandColorPicker({ colors, onChange }: Props) {
     <div className="space-y-4">
       <div className="grid grid-cols-3 gap-3">
         {(Object.keys(LABEL) as ColorKey[]).map((k) => (
-          <SwatchField key={k} label={LABEL[k]} value={colors[k]} onChange={(v) => setColor(k, v)} />
+          <SwatchField
+            key={k}
+            label={LABEL[k]}
+            value={colors[k]}
+            onChange={(v) => setColor(k, v)}
+          />
         ))}
       </div>
 
       <div>
-        <Label className="mb-2 block text-xs uppercase tracking-widest text-muted-foreground">
-          Paletas sugeridas
-        </Label>
-        <div className="flex flex-wrap gap-2">
-          {BRAND_PRESETS.map((p) => (
-            <button
-              key={p.name}
-              type="button"
-              onClick={() => applyPreset(p)}
-              className="group flex items-center gap-2 rounded-full border bg-background px-2 py-1 text-xs transition hover:border-primary/60"
-              aria-label={`Aplicar paleta ${p.name}`}
-            >
-              <span className="flex gap-0.5">
-                {[p.primary, p.secondary, p.text].map((c, i) => (
-                  <span
-                    key={i}
-                    className="h-4 w-4 rounded-full border border-border/60"
-                    style={{ background: c }}
-                    aria-hidden
-                  />
-                ))}
-              </span>
-              <span className="pr-1">{p.name}</span>
-            </button>
-          ))}
+        <Label className={cn(PG_LABEL, 'mb-2 block')}>Paletas sugeridas</Label>
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+          {BRAND_PRESETS.map((p) => {
+            const active =
+              p.primary.toLowerCase() === colors.primary.toLowerCase() &&
+              p.secondary.toLowerCase() === colors.secondary.toLowerCase() &&
+              p.text.toLowerCase() === colors.text.toLowerCase();
+            return (
+              <button
+                key={p.name}
+                type="button"
+                onClick={() => applyPreset(p)}
+                aria-pressed={active}
+                className={cn(
+                  'flex h-9 items-center gap-2 rounded-md border px-2 text-[12px] font-medium text-foreground transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+                  active
+                    ? 'border-primary/50 bg-primary/10'
+                    : 'border-border bg-card-elevated hover:border-border-strong',
+                )}
+                aria-label={`Aplicar paleta ${p.name}`}
+              >
+                <span className="flex gap-0.5">
+                  {[p.primary, p.secondary, p.text].map((c, i) => (
+                    <span
+                      key={i}
+                      className="h-4 w-4 rounded-full ring-1 ring-border-strong"
+                      style={{ background: c }}
+                      aria-hidden
+                    />
+                  ))}
+                </span>
+                <span className="truncate">{p.name}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
       {/* Preview WCAG */}
       <div
-        className="rounded-lg border p-6"
+        className="rounded-md border border-border p-4"
         style={{ background: colors.primary, color: colors.text }}
       >
         <div className="flex items-start justify-between gap-4">
           <div>
             <div
-              className="text-xs uppercase tracking-widest opacity-80"
+              className="text-[10px] uppercase tracking-widest opacity-80"
               style={{ color: colors.secondary }}
             >
               Preview da paleta
             </div>
-            <div className="mt-1 font-display text-2xl font-bold">
+            <div className="mt-1 font-display text-[18px] font-bold leading-tight">
               Sua revista brilha assim
             </div>
-            <div className="mt-1 text-sm opacity-80">
-              Texto de corpo com a cor definida.
-            </div>
+            <div className="mt-1 text-[12px] opacity-80">Texto de corpo com a cor definida.</div>
           </div>
           <div className="space-y-1 text-right text-[10px]">
-            <ContrastBadge level={bodyOnPrimary} label="Texto sobre primária" fg={colors.text} bg={colors.primary} />
-            <ContrastBadge level={accentOnPrimary} label="Destaque sobre primária" fg={colors.secondary} bg={colors.primary} />
+            <ContrastBadge
+              level={bodyOnPrimary}
+              label="Texto sobre primária"
+              fg={colors.text}
+              bg={colors.primary}
+            />
+            <ContrastBadge
+              level={accentOnPrimary}
+              label="Destaque sobre primária"
+              fg={colors.secondary}
+              bg={colors.primary}
+            />
           </div>
         </div>
       </div>
@@ -131,28 +174,30 @@ function SwatchField({
   const [hex, setHex] = useState(value);
   const valid = isValidHex(hex);
   return (
-    <div className="space-y-2">
-      <Label className="text-xs uppercase tracking-wider text-muted-foreground">{label}</Label>
+    <div className="space-y-1.5">
+      <Label className="text-[12px] font-medium text-muted-foreground">{label}</Label>
       <Popover>
         <PopoverTrigger asChild>
-          <Button
+          <button
             type="button"
-            variant="outline"
-            className="h-10 w-full justify-start gap-2 px-2"
+            className="flex h-11 w-full items-center gap-2.5 rounded-md border border-border bg-background px-2.5 text-left transition-colors duration-150 hover:border-border-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
             aria-label={`Escolher cor ${label}`}
           >
             <span
-              className="h-6 w-6 rounded-md border"
+              className="h-6 w-6 shrink-0 rounded-full ring-1 ring-border-strong"
               style={{ background: value }}
               aria-hidden
             />
-            <span className="font-mono text-xs">{value}</span>
-          </Button>
+            <span className="truncate font-mono text-[12px] text-foreground">{value}</span>
+          </button>
         </PopoverTrigger>
-        <PopoverContent align="start" className="w-64 space-y-3">
+        <PopoverContent
+          align="start"
+          className="pg-module w-64 space-y-3 rounded-lg border-border bg-popover p-3 shadow-lg"
+        >
           <div className="flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-primary" />
-            <span className="text-sm font-semibold">{label}</span>
+            <Sparkles className="h-4 w-4 text-primary" aria-hidden />
+            <span className="text-[13px] font-semibold text-foreground">{label}</span>
           </div>
           <div className="grid grid-cols-8 gap-1.5">
             {SWATCHES.map((c) => (
@@ -164,10 +209,10 @@ function SwatchField({
                   onChange(c);
                 }}
                 className={cn(
-                  'h-6 w-6 rounded-md border transition',
+                  'h-6 w-6 rounded-md border transition-shadow duration-150',
                   value.toLowerCase() === c.toLowerCase()
-                    ? 'ring-2 ring-primary ring-offset-1'
-                    : 'border-border hover:scale-110',
+                    ? 'ring-2 ring-primary ring-offset-1 ring-offset-popover'
+                    : 'border-border-strong hover:ring-2 hover:ring-border-strong',
                 )}
                 style={{ background: c }}
                 aria-label={c}
@@ -175,9 +220,7 @@ function SwatchField({
             ))}
           </div>
           <div className="space-y-1">
-            <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">
-              Hex customizado
-            </Label>
+            <Label className={PG_OVERLINE}>Hex customizado</Label>
             <div className="flex items-center gap-2">
               <Input
                 value={hex}
@@ -192,9 +235,14 @@ function SwatchField({
                     (e.target as HTMLInputElement).blur();
                   }
                 }}
-                className={cn('h-8 font-mono text-xs', !valid && hex && 'border-destructive')}
+                className={cn(
+                  PG_INPUT,
+                  'h-8 font-mono text-xs',
+                  !valid && hex && 'border-destructive',
+                )}
                 placeholder="#0f172a"
                 aria-invalid={!valid}
+                aria-label={`Hex da cor ${label}`}
               />
               {valid ? (
                 <Check className="h-4 w-4 text-primary" aria-label="Hex válido" />
