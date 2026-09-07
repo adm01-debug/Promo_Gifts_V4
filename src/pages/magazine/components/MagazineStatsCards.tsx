@@ -11,6 +11,7 @@
  */
 
 import { Card, CardContent } from '@/components/ui/card';
+import { useCountUp } from '@/hooks/ui';
 import {
   BookOpen,
   FileText,
@@ -20,32 +21,7 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useState, useEffect, useRef } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
-
-// ── Count-up (mesma impl. do NoveltyStatsCards — ISSUE-28) ────────────────────
-function useCountUp(end: number, duration = 800) {
-  const [count, setCount] = useState(0);
-  const countRef = useRef(0);
-  countRef.current = count;
-
-  useEffect(() => {
-    const startValue = countRef.current;
-    if (startValue === end) return;
-    let startTime: number | null = null;
-    let rafId: number;
-    const animate = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const progress = Math.min((timestamp - startTime) / duration, 1);
-      const easeOutQuart = 1 - (1 - progress) ** 4;
-      setCount(Math.round(startValue + (end - startValue) * easeOutQuart));
-      if (progress < 1) rafId = requestAnimationFrame(animate);
-    };
-    rafId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(rafId);
-  }, [end, duration]);
-  return count;
-}
 
 // ── Variantes de cor ────────────────────────────────────────────────────────
 type Variant = 'default' | 'info' | 'orange' | 'success' | 'warning';
