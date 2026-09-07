@@ -121,7 +121,7 @@
       ]
     },
     {
-      "source": "/(.*\\.(js|mjs|css|woff2|woff|ttf|otf|eot|png|jpg|jpeg|gif|webp|avif|svg|ico))",
+      "source": "/assets/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
