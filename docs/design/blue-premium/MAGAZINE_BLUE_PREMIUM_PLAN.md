@@ -135,8 +135,8 @@
 93. [x] `tsc -p tsconfig.app.json --noEmit` limpo.
 94. [x] `eslint src/pages/magazine … --max-warnings=0` limpo; arquivos reescritos formatados com Prettier.
 95. [x] Suíte do módulo (`tests/magazine`, `src/pages/magazine`, `src/services/__tests__`) verde.
-96. [ ] Suíte completa `vitest run --exclude tests/hooks` — resultado registrado no PR (ver descrição).
-97. [ ] `npm run build` (guard SSOT + vite build + chunk cycles + harnesses) — resultado registrado no PR.
+96. [x] Suíte completa `vitest run --exclude tests/hooks`: 23.629 testes, 995 arquivos verdes. Duas falhas: Zero Glow Policy no `blue-premium.css` (token `--shadow-glow-focus` removido — corrigido) e `tests/security/security-headers.test.ts` (CSP `public/_headers` ≠ `vercel.json`, falha idêntica na `main` — fora do escopo, reportada no PR).
+97. [x] `npm run build` (guard SSOT + vite build + chunk cycles + harnesses) OK; `check-bundle-size` OK. Mutation M1–M6: catálogo M4–M6 repontado para `PagesRail.tsx` (thumbs migraram) — 6/6 killed.
 98. [ ] Design QA visual ORIGINAL × APROVADO × IMPLEMENTAÇÃO em 1920/1600/1440/1366/1024/mobile — **pendente**: exige app rodando com Supabase autenticado; próximo passo via preview da Vercel + screenshots (Cloudflare Browser MCP).
 99. [ ] Regenerar baselines dos e2e `@smoke` visuais (`magazine-header-align`, `magazine-header-responsive`, `magazine-ring-visual`) — workflow `e2e-update-magazine-ring-snapshots.yml` / `--update-snapshots`.
 100. [x] **CHECKPOINT 10** — confirmação explícita: nenhuma camada proibida tocada (sem migration, schema, RLS, edge function, auth, API, integração, deploy, `client.ts`, workflows CI, tokens globais).
