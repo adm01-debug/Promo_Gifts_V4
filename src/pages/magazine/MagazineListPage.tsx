@@ -206,6 +206,7 @@ export default function MagazineListPage() {
   const handleDuplicate = async (m: Magazine) => {
     if (!user) return;
     const copy = await magazineService.duplicate(m.id);
+    if (!copy) return;
     navigate(`/magazine/${copy.id}`);
   };
 
