@@ -142,6 +142,8 @@ export default function MagazineListPage() {
   const [view, setView] = useState<ViewMode>('grid');
   const [pendingDelete, setPendingDelete] = useState<Magazine | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isCreating, setIsCreating] = useState(false);
+  const [isDuplicating, setIsDuplicating] = useState<string | null>(null);
 
   // FIX C12: dispara a migração 1x por usuário, em background — não bloqueia
   // a renderização da lista (que continua lendo do localStorage normalmente
@@ -196,18 +198,35 @@ export default function MagazineListPage() {
   const empty = magazines.length === 0;
 
   const handleCreate = async () => {
-    if (!user) return;
-    const mag = await magazineService.create({ ownerId: user.id });
-    navigate(`/magazine/${mag.id}`);
+    if (!user || isCreating) return;
+    setIsCreating(true);
+    try {
+      const mag = await magazineService.create({ ownerId: user.id });
+      navigate(`/magazine/${mag.id}`);
+    } catch (err) {
+      toast.error('Não foi possível criar a revista. Tente novamente.');
+    } finally {
+      setIsCreating(false);
+    }
   };
 
   const openCard = (m: Magazine) => navigate(`/magazine/${m.id}`);
 
   const handleDuplicate = async (m: Magazine) => {
-    if (!user) return;
-    const copy = await magazineService.duplicate(m.id);
-    if (!copy) return;
-    navigate(`/magazine/${copy.id}`);
+    if (!user || isDuplicating) return;
+    setIsDuplicating(m.id);
+    try {
+      const copy = await magazineService.duplicate(m.id);
+      if (!copy) {
+        toast.error('Revista não encontrada para duplicar.');
+        return;
+      }
+      navigate(`/magazine/${copy.id}`);
+    } catch (err) {
+      toast.error('Não foi possível duplicar a revista. Tente novamente.');
+    } finally {
+      setIsDuplicating(null);
+    }
   };
 
   const handleDeleteConfirm = async () => {
@@ -224,7 +243,13 @@ export default function MagazineListPage() {
         },
       },
     });
-    await magazineService.delete(backup.id);
+    try {
+      await magazineService.delete(backup.id);
+    } catch {
+      // Reversão optimista: reinsere o card se o delete falhou
+      setMagazines((prev) => [backup, ...prev]);
+      toast.error('Erro ao excluir. A revista foi restaurada.');
+    }
   };
 
   const ViewToggle = (
@@ -256,8 +281,8 @@ export default function MagazineListPage() {
             <Button variant="outline" size="sm" asChild className={cn(PG_BTN_OUTLINE_PRIMARY, 'h-9 rounded-md px-3 text-xs')} data-testid="magazine-templates-gallery-btn">
               <Link to="/magazine/templates" className="link-unstyled"><LayoutTemplate className="mr-1.5 h-3.5 w-3.5" aria-hidden />Explorar templates</Link>
             </Button>
-            <Button size="sm" onClick={handleCreate} className={cn(PG_BTN, 'h-9 rounded-md px-3 text-xs')} data-testid="magazine-create-btn">
-              <Plus className="mr-1.5 h-3.5 w-3.5" aria-hidden />Nova revista
+            <Button size="sm" onClick={handleCreate} disabled={isCreating} className={cn(PG_BTN, 'h-9 rounded-md px-3 text-xs')} data-testid="magazine-create-btn">
+              <Plus className="mr-1.5 h-3.5 w-3.5" aria-hidden />{isCreating ? 'Criando…' : 'Nova revista'}
             </Button>
           </div>
         </header>
@@ -305,7 +330,7 @@ export default function MagazineListPage() {
               <div className={PG_ICON_BOX}><BookOpen className="h-6 w-6" aria-hidden /></div>
               <h2 className="text-[17px] font-semibold text-foreground">Nenhuma revista ainda</h2>
               <p className="max-w-md text-[13px] text-muted-foreground">Monte sua primeira revista escolhendo produtos do catálogo, ajustando os campos exibidos e selecionando um dos templates de design.</p>
-              <Button onClick={handleCreate} size="sm" className={cn(PG_BTN, 'mt-1 h-10 rounded-md')}><Plus className="mr-1.5 h-3.5 w-3.5" aria-hidden /> Criar primeira revista</Button>
+              <Button onClick={handleCreate} disabled={isCreating} size="sm" className={cn(PG_BTN, 'mt-1 h-10 rounded-md')}><Plus className="mr-1.5 h-3.5 w-3.5" aria-hidden /> {isCreating ? 'Criando…' : 'Criar primeira revista'}</Button>
             </div>
           </div>
         ) : filtered.length === 0 ? (
