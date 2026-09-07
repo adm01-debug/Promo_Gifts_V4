@@ -60,7 +60,6 @@ import {
 import { PageSEO } from '@/components/seo/PageSEO';
 import { cn } from '@/lib/utils';
 import { Clickable } from '@/components/shared/Clickable';
-import { getTemplate } from './components/templates/TemplateRegistry';
 import { MagazineCardThumbnail } from './components/MagazineCardThumbnail';
 // FIX C12 (auditoria BD, 2026-07-12): migração one-shot do localStorage
 // para o BD Gold via edge magazine-import-local. Ver hook para detalhes
@@ -84,8 +83,8 @@ import {
   pgToggleIcon,
 } from './pg';
 
-type StatusFilter = 'all' | 'draft' | 'published' | 'archived';
-type SortField = 'updated' | 'name' | 'views';
+type StatusFilter = 'all' | 'archived' | 'draft' | 'published';
+type SortField = 'name' | 'updated' | 'views';
 type SortDir = 'asc' | 'desc';
 type ViewMode = 'grid' | 'list';
 
@@ -203,7 +202,7 @@ export default function MagazineListPage() {
     try {
       const mag = await magazineService.create({ ownerId: user.id });
       navigate(`/magazine/${mag.id}`);
-    } catch (err) {
+    } catch {
       toast.error('Não foi possível criar a revista. Tente novamente.');
     } finally {
       setIsCreating(false);
@@ -222,7 +221,7 @@ export default function MagazineListPage() {
         return;
       }
       navigate(`/magazine/${copy.id}`);
-    } catch (err) {
+    } catch {
       toast.error('Não foi possível duplicar a revista. Tente novamente.');
     } finally {
       setIsDuplicating(null);
@@ -254,10 +253,24 @@ export default function MagazineListPage() {
 
   const ViewToggle = (
     <>
-      <Button variant="ghost" size="icon" aria-label="Vista em grade" aria-pressed={view === 'grid'} onClick={() => setView('grid')} className={pgToggleIcon(view === 'grid')}>
+      <Button
+        variant="ghost"
+        size="icon"
+        aria-label="Vista em grade"
+        aria-pressed={view === 'grid'}
+        onClick={() => setView('grid')}
+        className={pgToggleIcon(view === 'grid')}
+      >
         <LayoutGrid className="h-4 w-4" aria-hidden />
       </Button>
-      <Button variant="ghost" size="icon" aria-label="Vista em lista" aria-pressed={view === 'list'} onClick={() => setView('list')} className={pgToggleIcon(view === 'list')}>
+      <Button
+        variant="ghost"
+        size="icon"
+        aria-label="Vista em lista"
+        aria-pressed={view === 'list'}
+        onClick={() => setView('list')}
+        className={pgToggleIcon(view === 'list')}
+      >
         <List className="h-4 w-4" aria-hidden />
       </Button>
     </>
@@ -265,7 +278,11 @@ export default function MagazineListPage() {
 
   return (
     <>
-      <PageSEO title="Magazine — Revistas de Produtos" description="Monte revistas e catálogos personalizados com o nosso catálogo em minutos." path="/magazine" />
+      <PageSEO
+        title="Magazine — Revistas de Produtos"
+        description="Monte revistas e catálogos personalizados com o nosso catálogo em minutos."
+        path="/magazine"
+      />
       <div className={PG_PAGE}>
         <header className="mb-5 flex flex-wrap items-center justify-between gap-4">
           <div className="flex min-w-0 items-center gap-4">
@@ -273,16 +290,39 @@ export default function MagazineListPage() {
               <BookOpen className="h-7 w-7" aria-hidden />
             </div>
             <div className="min-w-0">
-              <h1 data-testid="page-title-magazine" className="font-display text-[30px] font-bold leading-[1.12] tracking-tight text-foreground">Magazine</h1>
-              <p className="mt-1 text-[13px] text-muted-foreground">Crie catálogos personalizados para clientes e compartilhe por link ou PDF.</p>
+              <h1
+                data-testid="page-title-magazine"
+                className="font-display text-[30px] font-bold leading-[1.12] tracking-tight text-foreground"
+              >
+                Magazine
+              </h1>
+              <p className="mt-1 text-[13px] text-muted-foreground">
+                Crie catálogos personalizados para clientes e compartilhe por link ou PDF.
+              </p>
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2.5">
-            <Button variant="outline" size="sm" asChild className={cn(PG_BTN_OUTLINE_PRIMARY, 'h-9 rounded-md px-3 text-xs')} data-testid="magazine-templates-gallery-btn">
-              <Link to="/magazine/templates" className="link-unstyled"><LayoutTemplate className="mr-1.5 h-3.5 w-3.5" aria-hidden />Explorar templates</Link>
+            <Button
+              variant="outline"
+              size="sm"
+              asChild
+              className={cn(PG_BTN_OUTLINE_PRIMARY, 'h-9 rounded-md px-3 text-xs')}
+              data-testid="magazine-templates-gallery-btn"
+            >
+              <Link to="/magazine/templates" className="link-unstyled">
+                <LayoutTemplate className="mr-1.5 h-3.5 w-3.5" aria-hidden />
+                Explorar templates
+              </Link>
             </Button>
-            <Button size="sm" onClick={handleCreate} disabled={isCreating} className={cn(PG_BTN, 'h-9 rounded-md px-3 text-xs')} data-testid="magazine-create-btn">
-              <Plus className="mr-1.5 h-3.5 w-3.5" aria-hidden />{isCreating ? 'Criando…' : 'Nova revista'}
+            <Button
+              size="sm"
+              onClick={handleCreate}
+              disabled={isCreating}
+              className={cn(PG_BTN, 'h-9 rounded-md px-3 text-xs')}
+              data-testid="magazine-create-btn"
+            >
+              <Plus className="mr-1.5 h-3.5 w-3.5" aria-hidden />
+              {isCreating ? 'Criando…' : 'Nova revista'}
             </Button>
           </div>
         </header>
@@ -294,81 +334,196 @@ export default function MagazineListPage() {
         {!empty && (
           <div className="mb-4 flex flex-wrap items-center gap-2.5">
             <div className="relative min-w-[240px] flex-1">
-              <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
-              <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Buscar por título, cliente ou descrição…" className={cn(PG_INPUT, 'h-11 pl-10')} aria-label="Buscar revistas" />
+              <Search
+                className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+                aria-hidden
+              />
+              <Input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Buscar por título, cliente ou descrição…"
+                className={cn(PG_INPUT, 'h-11 pl-10')}
+                aria-label="Buscar revistas"
+              />
             </div>
-            <div role="group" aria-label="Filtrar por status" className="flex flex-wrap items-center gap-2">
+            <div
+              role="group"
+              aria-label="Filtrar por status"
+              className="flex flex-wrap items-center gap-2"
+            >
               {STATUS_FILTERS.map((f) => {
                 const active = status === f.id;
                 const count = f.id === 'all' ? counts.all : counts[f.id];
                 return (
-                  <button key={f.id} type="button" onClick={() => setStatus(f.id)} aria-pressed={active} className={pgPill(active, 'h-9')}>
-                    {f.label}<span className={pgPillCount(active)}>{count}</span>
+                  <button
+                    key={f.id}
+                    type="button"
+                    onClick={() => setStatus(f.id)}
+                    aria-pressed={active}
+                    className={pgPill(active, 'h-9')}
+                  >
+                    {f.label}
+                    <span className={pgPillCount(active)}>{count}</span>
                   </button>
                 );
               })}
             </div>
             <Select value={sortField} onValueChange={(v) => setSortField(v as SortField)}>
-              <SelectTrigger className={cn(PG_SELECT, 'h-11 w-[176px]')} aria-label="Ordenar revistas"><SelectValue /></SelectTrigger>
+              <SelectTrigger
+                className={cn(PG_SELECT, 'h-11 w-[176px]')}
+                aria-label="Ordenar revistas"
+              >
+                <SelectValue />
+              </SelectTrigger>
               <SelectContent className="pg-module rounded-lg border-border">
                 <SelectItem value="updated">Mais recentes</SelectItem>
                 <SelectItem value="name">Nome</SelectItem>
                 <SelectItem value="views">Visualizações</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="ghost" size="icon" aria-label="Inverter ordem" onClick={() => setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))} className={pgToggleIcon(false)}>
-              {sortDir === 'asc' ? <SortAsc className="h-4 w-4" aria-hidden /> : <SortDesc className="h-4 w-4" aria-hidden />}
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Inverter ordem"
+              onClick={() => setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))}
+              className={pgToggleIcon(false)}
+            >
+              {sortDir === 'asc' ? (
+                <SortAsc className="h-4 w-4" aria-hidden />
+              ) : (
+                <SortDesc className="h-4 w-4" aria-hidden />
+              )}
             </Button>
             <div className="ml-auto flex items-center gap-1">{ViewToggle}</div>
-            <span className="sr-only" aria-live="polite">{filtered.length} revista{filtered.length === 1 ? '' : 's'}</span>
+            <span className="sr-only" aria-live="polite">
+              {filtered.length} revista{filtered.length === 1 ? '' : 's'}
+            </span>
           </div>
         )}
 
         {empty ? (
           <div className={cn(PG_PANEL, 'border-dashed')}>
             <div className="flex flex-col items-center justify-center gap-3 px-6 py-14 text-center">
-              <div className={PG_ICON_BOX}><BookOpen className="h-6 w-6" aria-hidden /></div>
+              <div className={PG_ICON_BOX}>
+                <BookOpen className="h-6 w-6" aria-hidden />
+              </div>
               <h2 className="text-[17px] font-semibold text-foreground">Nenhuma revista ainda</h2>
-              <p className="max-w-md text-[13px] text-muted-foreground">Monte sua primeira revista escolhendo produtos do catálogo, ajustando os campos exibidos e selecionando um dos templates de design.</p>
-              <Button onClick={handleCreate} disabled={isCreating} size="sm" className={cn(PG_BTN, 'mt-1 h-10 rounded-md')}><Plus className="mr-1.5 h-3.5 w-3.5" aria-hidden /> {isCreating ? 'Criando…' : 'Criar primeira revista'}</Button>
+              <p className="max-w-md text-[13px] text-muted-foreground">
+                Monte sua primeira revista escolhendo produtos do catálogo, ajustando os campos
+                exibidos e selecionando um dos templates de design.
+              </p>
+              <Button
+                onClick={handleCreate}
+                disabled={isCreating}
+                size="sm"
+                className={cn(PG_BTN, 'mt-1 h-10 rounded-md')}
+              >
+                <Plus className="mr-1.5 h-3.5 w-3.5" aria-hidden />{' '}
+                {isCreating ? 'Criando…' : 'Criar primeira revista'}
+              </Button>
             </div>
           </div>
         ) : filtered.length === 0 ? (
-          <div className={cn(PG_PANEL, 'border-dashed px-6 py-12 text-center text-[13px] text-muted-foreground')}>Nenhuma revista corresponde à busca.</div>
+          <div
+            className={cn(
+              PG_PANEL,
+              'border-dashed px-6 py-12 text-center text-[13px] text-muted-foreground',
+            )}
+          >
+            Nenhuma revista corresponde à busca.
+          </div>
         ) : view === 'grid' ? (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filtered.map((m) => {
-              const template = getTemplate(m.templateId);
               return (
-                <article key={m.id} className={cn(PG_CARD, PG_CARD_HOVER, 'group flex flex-col overflow-hidden')} data-testid={`magazine-card-${m.id}`}>
-                  <Clickable role="link" aria-label={`Abrir revista ${m.title}`} onClick={() => openCard(m)} className="relative block focus-visible:ring-inset">
-                    <MagazineCardThumbnail magazine={m} template={template} />
+                <article
+                  key={m.id}
+                  className={cn(PG_CARD, PG_CARD_HOVER, 'group flex flex-col overflow-hidden')}
+                  data-testid={`magazine-card-${m.id}`}
+                >
+                  <Clickable
+                    role="link"
+                    aria-label={`Abrir revista ${m.title}`}
+                    onClick={() => openCard(m)}
+                    className="relative block focus-visible:ring-inset"
+                  >
+                    <MagazineCardThumbnail magazine={m} />
                   </Clickable>
                   <div className="flex flex-1 flex-col gap-0 px-3.5 pb-3 pt-2.5">
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-[14px] font-semibold leading-snug text-foreground" title={m.title}>{m.title}</p>
-                        {m.branding?.clientName && <p className="truncate text-[12px] text-muted-foreground">{m.branding.clientName}</p>}
+                        <p
+                          className="truncate text-[14px] font-semibold leading-snug text-foreground"
+                          title={m.title}
+                        >
+                          {m.title}
+                        </p>
+                        {m.branding?.clientName && (
+                          <p className="truncate text-[12px] text-muted-foreground">
+                            {m.branding.clientName}
+                          </p>
+                        )}
                       </div>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 focus:opacity-100" aria-label="Opções da revista" data-testid={`magazine-menu-${m.id}`}>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 shrink-0 text-muted-foreground opacity-0 transition-opacity focus:opacity-100 group-hover:opacity-100"
+                            aria-label="Opções da revista"
+                            data-testid={`magazine-menu-${m.id}`}
+                          >
                             <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-44">
-                          <DropdownMenuItem onClick={() => openCard(m)}><Pencil className="mr-2 h-3.5 w-3.5" /> Editar</DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleDuplicate(m)}><Copy className="mr-2 h-3.5 w-3.5" /> Duplicar</DropdownMenuItem>
-                          {m.status === 'published' && m.publicToken && (<DropdownMenuItem asChild><a href={`/m/${m.publicToken}`} target="_blank" rel="noopener noreferrer"><ExternalLink className="mr-2 h-3.5 w-3.5" /> Ver pública</a></DropdownMenuItem>)}
+                          <DropdownMenuItem onClick={() => openCard(m)}>
+                            <Pencil className="mr-2 h-3.5 w-3.5" /> Editar
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleDuplicate(m)}>
+                            <Copy className="mr-2 h-3.5 w-3.5" /> Duplicar
+                          </DropdownMenuItem>
+                          {m.status === 'published' && m.publicToken && (
+                            <DropdownMenuItem asChild>
+                              <a
+                                href={`/m/${m.publicToken}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <ExternalLink className="mr-2 h-3.5 w-3.5" /> Ver pública
+                              </a>
+                            </DropdownMenuItem>
+                          )}
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => setPendingDelete(m)} data-testid={`magazine-delete-${m.id}`}><Trash2 className="mr-2 h-3.5 w-3.5" /> Excluir</DropdownMenuItem>
+                          <DropdownMenuItem
+                            className="text-destructive focus:text-destructive"
+                            onClick={() => setPendingDelete(m)}
+                            data-testid={`magazine-delete-${m.id}`}
+                          >
+                            <Trash2 className="mr-2 h-3.5 w-3.5" /> Excluir
+                          </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </div>
                     <div className="mt-2 flex items-center gap-3">
-                      <span className={pgStatusBadge(m.status)}>{m.status === 'published' ? 'Publicada' : m.status === 'draft' ? 'Rascunho' : 'Arquivada'}</span>
-                      <span className="flex items-center gap-1 text-[11px] text-muted-foreground"><Eye className="h-3 w-3" />{(m.viewCount ?? 0).toLocaleString('pt-BR')}</span>
-                      <span className="ml-auto flex items-center gap-1 text-[11px] text-muted-foreground"><Clock3 className="h-3 w-3" />{formatDistanceToNow(new Date(m.updatedAt), { addSuffix: true, locale: ptBR })}</span>
+                      <span className={pgStatusBadge(m.status)}>
+                        {m.status === 'published'
+                          ? 'Publicada'
+                          : m.status === 'draft'
+                            ? 'Rascunho'
+                            : 'Arquivada'}
+                      </span>
+                      <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
+                        <Eye className="h-3 w-3" />
+                        {(m.viewCount ?? 0).toLocaleString('pt-BR')}
+                      </span>
+                      <span className="ml-auto flex items-center gap-1 text-[11px] text-muted-foreground">
+                        <Clock3 className="h-3 w-3" />
+                        {formatDistanceToNow(new Date(m.updatedAt), {
+                          addSuffix: true,
+                          locale: ptBR,
+                        })}
+                      </span>
                     </div>
                   </div>
                 </article>
@@ -378,34 +533,95 @@ export default function MagazineListPage() {
         ) : (
           <div className={cn(PG_PANEL, 'overflow-hidden')}>
             <div className="grid grid-cols-[1fr_auto_auto_auto_auto] items-center gap-4 border-b border-border px-4 py-2.5">
-              <SortButton field="name" current={sortField} dir={sortDir} onClick={setSortField}>Título</SortButton>
-              <span className="w-20 text-right text-[12px] font-medium text-muted-foreground">Status</span>
-              <SortButton field="views" current={sortField} dir={sortDir} onClick={setSortField}>Views</SortButton>
-              <SortButton field="updated" current={sortField} dir={sortDir} onClick={setSortField}>Atualizado</SortButton>
+              <SortButton field="name" current={sortField} dir={sortDir} onClick={setSortField}>
+                Título
+              </SortButton>
+              <span className="w-20 text-right text-[12px] font-medium text-muted-foreground">
+                Status
+              </span>
+              <SortButton field="views" current={sortField} dir={sortDir} onClick={setSortField}>
+                Views
+              </SortButton>
+              <SortButton field="updated" current={sortField} dir={sortDir} onClick={setSortField}>
+                Atualizado
+              </SortButton>
               <span className="w-8" />
             </div>
             {filtered.map((m) => (
-              <div key={m.id} className="group grid grid-cols-[1fr_auto_auto_auto_auto] items-center gap-4 border-b border-border px-4 py-3 last:border-0 hover:bg-card-elevated" data-testid={`magazine-card-${m.id}`}>
-                <button type="button" onClick={() => openCard(m)} className="flex min-w-0 items-center gap-3 text-left" aria-label={`Abrir ${m.title}`}>
-                  <div className={cn(PG_ICON_BOX, 'hidden h-9 w-9 shrink-0 text-muted-foreground sm:flex')}><Package className="h-4 w-4" aria-hidden /></div>
+              <div
+                key={m.id}
+                className="group grid grid-cols-[1fr_auto_auto_auto_auto] items-center gap-4 border-b border-border px-4 py-3 last:border-0 hover:bg-card-elevated"
+                data-testid={`magazine-card-${m.id}`}
+              >
+                <button
+                  type="button"
+                  onClick={() => openCard(m)}
+                  className="flex min-w-0 items-center gap-3 text-left"
+                  aria-label={`Abrir ${m.title}`}
+                >
+                  <div
+                    className={cn(
+                      PG_ICON_BOX,
+                      'hidden h-9 w-9 shrink-0 text-muted-foreground sm:flex',
+                    )}
+                  >
+                    <Package className="h-4 w-4" aria-hidden />
+                  </div>
                   <div className="min-w-0">
                     <p className="truncate text-[14px] font-semibold text-foreground">{m.title}</p>
-                    {m.branding?.clientName && <p className="truncate text-[12px] text-muted-foreground">{m.branding.clientName}</p>}
+                    {m.branding?.clientName && (
+                      <p className="truncate text-[12px] text-muted-foreground">
+                        {m.branding.clientName}
+                      </p>
+                    )}
                   </div>
                 </button>
-                <span className={cn(pgStatusBadge(m.status), 'w-20 justify-center')}>{m.status === 'published' ? 'Publicada' : m.status === 'draft' ? 'Rascunho' : 'Arquivada'}</span>
-                <span className="flex w-16 items-center justify-end gap-1 text-[12px] tabular-nums text-muted-foreground"><Eye className="h-3 w-3" />{(m.viewCount ?? 0).toLocaleString('pt-BR')}</span>
-                <span className="w-28 text-right text-[12px] text-muted-foreground">{formatDistanceToNow(new Date(m.updatedAt), { addSuffix: true, locale: ptBR })}</span>
+                <span className={cn(pgStatusBadge(m.status), 'w-20 justify-center')}>
+                  {m.status === 'published'
+                    ? 'Publicada'
+                    : m.status === 'draft'
+                      ? 'Rascunho'
+                      : 'Arquivada'}
+                </span>
+                <span className="flex w-16 items-center justify-end gap-1 text-[12px] tabular-nums text-muted-foreground">
+                  <Eye className="h-3 w-3" />
+                  {(m.viewCount ?? 0).toLocaleString('pt-BR')}
+                </span>
+                <span className="w-28 text-right text-[12px] text-muted-foreground">
+                  {formatDistanceToNow(new Date(m.updatedAt), { addSuffix: true, locale: ptBR })}
+                </span>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 focus:opacity-100" aria-label="Opções da revista"><MoreHorizontal className="h-4 w-4" /></Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-7 w-7 text-muted-foreground opacity-0 transition-opacity focus:opacity-100 group-hover:opacity-100"
+                      aria-label="Opções da revista"
+                    >
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-44">
-                    <DropdownMenuItem onClick={() => openCard(m)}><Pencil className="mr-2 h-3.5 w-3.5" /> Editar</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleDuplicate(m)}><Copy className="mr-2 h-3.5 w-3.5" /> Duplicar</DropdownMenuItem>
-                    {m.status === 'published' && m.publicToken && (<DropdownMenuItem asChild><a href={`/m/${m.publicToken}`} target="_blank" rel="noopener noreferrer"><ExternalLink className="mr-2 h-3.5 w-3.5" /> Ver pública</a></DropdownMenuItem>)}
+                    <DropdownMenuItem onClick={() => openCard(m)}>
+                      <Pencil className="mr-2 h-3.5 w-3.5" /> Editar
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleDuplicate(m)}>
+                      <Copy className="mr-2 h-3.5 w-3.5" /> Duplicar
+                    </DropdownMenuItem>
+                    {m.status === 'published' && m.publicToken && (
+                      <DropdownMenuItem asChild>
+                        <a href={`/m/${m.publicToken}`} target="_blank" rel="noopener noreferrer">
+                          <ExternalLink className="mr-2 h-3.5 w-3.5" /> Ver pública
+                        </a>
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => setPendingDelete(m)}><Trash2 className="mr-2 h-3.5 w-3.5" /> Excluir</DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="text-destructive focus:text-destructive"
+                      onClick={() => setPendingDelete(m)}
+                    >
+                      <Trash2 className="mr-2 h-3.5 w-3.5" /> Excluir
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
@@ -414,18 +630,32 @@ export default function MagazineListPage() {
         )}
       </div>
 
-      <AlertDialog open={pendingDelete !== null} onOpenChange={(open) => !open && setPendingDelete(null)}>
+      <AlertDialog
+        open={pendingDelete !== null}
+        onOpenChange={(open) => !open && setPendingDelete(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Excluir revista?</AlertDialogTitle>
             <AlertDialogDescription>
-              A revista <strong>{pendingDelete?.title}</strong> será excluída. Você pode desfazer essa ação por alguns segundos após confirmar.
-              {pendingDelete?.status === 'published' && <span className="mt-1 block text-warning">Esta revista está publicada e ficará inacessível imediatamente.</span>}
+              A revista <strong>{pendingDelete?.title}</strong> será excluída. Você pode desfazer
+              essa ação por alguns segundos após confirmar.
+              {pendingDelete?.status === 'published' && (
+                <span className="mt-1 block text-warning">
+                  Esta revista está publicada e ficará inacessível imediatamente.
+                </span>
+              )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90" data-testid="magazine-delete-confirm">Excluir</AlertDialogAction>
+            <AlertDialogAction
+              onClick={handleDeleteConfirm}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              data-testid="magazine-delete-confirm"
+            >
+              Excluir
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
