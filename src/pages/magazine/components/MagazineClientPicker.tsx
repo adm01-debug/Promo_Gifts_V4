@@ -88,7 +88,7 @@ export function MagazineClientPicker({ clientName, clientLogoUrl, onChange }: Pr
           <PopoverTrigger asChild>
             <button
               type="button"
-              className="flex h-full min-w-0 flex-1 items-center gap-3 text-left focus-visible:outline-none"
+              className="flex h-full min-w-0 flex-1 items-center gap-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               aria-label="Escolher cliente do CRM"
               aria-haspopup="listbox"
               aria-expanded={open}
