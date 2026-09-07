@@ -24,6 +24,7 @@ import {
   LayoutTemplate,
   Loader2,
   MoreHorizontal,
+  Save,
   Send,
 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -272,6 +273,7 @@ export default function MagazineEditorPage() {
             <EditorHero magazine={magazine} onChangeTemplate={editor.setTemplate} />
           </div>
           <div className="flex flex-wrap items-center gap-2.5 lg:pb-0.5">
+            {/* Status de salvamento — sempre visível */}
             <span
               role="status"
               aria-live="polite"
@@ -296,84 +298,158 @@ export default function MagazineEditorPage() {
                 </>
               )}
             </span>
-            {/* Preview em drawer — única via < xl; complemento ≥ xl (etapas sem stage) */}
-            <Sheet open={previewSheetOpen} onOpenChange={setPreviewSheetOpen}>
-              <SheetTrigger asChild>
+
+            {/*
+             * Botões do header mudam por etapa (§24):
+             *   identity / layout  → Preview | PDF | Publicar | ⋯
+             *   products / content / design → PDF | Ver preview | Salvar rascunho | Continuar →
+             */}
+            {step === 'products' || step === 'content' || step === 'design' ? (
+              <>
+                {/* PDF */}
                 <Button
                   variant="outline"
                   size="sm"
+                  onClick={openPrint}
+                  disabled={itemCount === 0}
                   className={cn(PG_BTN_OUTLINE, 'h-11 min-h-0 rounded-md px-4 text-[14px]')}
                 >
-                  <Eye className="mr-2 h-4 w-4" aria-hidden /> Preview
+                  <Download className="mr-2 h-4 w-4" aria-hidden /> PDF
                 </Button>
-              </SheetTrigger>
-              <SheetContent
-                side="right"
-                className="pg-module flex h-full w-[min(600px,100vw)] max-w-full flex-col gap-0 border-border bg-background p-4 sm:max-w-none"
-              >
-                <SheetHeader className="mb-3 shrink-0">
-                  <SheetTitle className="text-[14px] font-semibold">Preview da revista</SheetTitle>
-                </SheetHeader>
-                <div className="min-h-0 flex-1 overflow-y-auto">
-                  <PreviewSidebar {...previewProps} variant="drawer" />
-                </div>
-              </SheetContent>
-            </Sheet>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={openPrint}
-              disabled={itemCount === 0}
-              className={cn(PG_BTN_OUTLINE, 'h-11 min-h-0 rounded-md px-4 text-[14px]')}
-            >
-              <Download className="mr-2 h-4 w-4" aria-hidden /> PDF
-            </Button>
-            <Button
-              size="sm"
-              onClick={publish}
-              disabled={!publishable || publishing}
-              aria-busy={publishing}
-              className={cn(PG_BTN, 'h-11 min-h-0 rounded-md px-5 text-[14px]')}
-            >
-              {publishing ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden /> Publicando…
-                </>
-              ) : (
-                <>
-                  <Send className="mr-2 h-4 w-4" aria-hidden /> Publicar
-                </>
-              )}
-            </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+
+                {/* Ver preview (drawer) */}
+                <Sheet open={previewSheetOpen} onOpenChange={setPreviewSheetOpen}>
+                  <SheetTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className={cn(PG_BTN_OUTLINE, 'h-11 min-h-0 rounded-md px-4 text-[14px]')}
+                    >
+                      <Eye className="mr-2 h-4 w-4" aria-hidden /> Ver preview
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent
+                    side="right"
+                    className="pg-module flex h-full w-[min(600px,100vw)] max-w-full flex-col gap-0 border-border bg-background p-4 sm:max-w-none"
+                  >
+                    <SheetHeader className="mb-3 shrink-0">
+                      <SheetTitle className="text-[14px] font-semibold">
+                        Preview da revista
+                      </SheetTitle>
+                    </SheetHeader>
+                    <div className="min-h-0 flex-1 overflow-y-auto">
+                      <PreviewSidebar {...previewProps} variant="drawer" />
+                    </div>
+                  </SheetContent>
+                </Sheet>
+
+                {/* Salvar rascunho — autosave já roda, botão é confirmação visual */}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => toast('Rascunho salvo.')}
+                  className="h-11 min-h-0 rounded-md px-4 text-[14px] text-muted-foreground hover:text-foreground"
+                >
+                  <Save className="mr-2 h-4 w-4" aria-hidden /> Salvar rascunho
+                </Button>
+
+                {/* Continuar → */}
+                {canNext && (
+                  <Button
+                    size="sm"
+                    onClick={() => goToStep(STEPS[Math.min(STEPS.length - 1, currentIdx + 1)].id)}
+                    className={cn(PG_BTN, 'h-11 min-h-0 rounded-md px-5 text-[14px]')}
+                  >
+                    Continuar <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
+                  </Button>
+                )}
+              </>
+            ) : (
+              <>
+                {/* Preview em drawer — identity / layout */}
+                <Sheet open={previewSheetOpen} onOpenChange={setPreviewSheetOpen}>
+                  <SheetTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className={cn(PG_BTN_OUTLINE, 'h-11 min-h-0 rounded-md px-4 text-[14px]')}
+                    >
+                      <Eye className="mr-2 h-4 w-4" aria-hidden /> Preview
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent
+                    side="right"
+                    className="pg-module flex h-full w-[min(600px,100vw)] max-w-full flex-col gap-0 border-border bg-background p-4 sm:max-w-none"
+                  >
+                    <SheetHeader className="mb-3 shrink-0">
+                      <SheetTitle className="text-[14px] font-semibold">
+                        Preview da revista
+                      </SheetTitle>
+                    </SheetHeader>
+                    <div className="min-h-0 flex-1 overflow-y-auto">
+                      <PreviewSidebar {...previewProps} variant="drawer" />
+                    </div>
+                  </SheetContent>
+                </Sheet>
                 <Button
                   variant="outline"
-                  size="icon"
-                  className={cn(PG_ICON_BTN, 'h-11 w-11')}
-                  aria-label="Mais ações"
+                  size="sm"
+                  onClick={openPrint}
+                  disabled={itemCount === 0}
+                  className={cn(PG_BTN_OUTLINE, 'h-11 min-h-0 rounded-md px-4 text-[14px]')}
                 >
-                  <MoreHorizontal className="h-4 w-4" aria-hidden />
+                  <Download className="mr-2 h-4 w-4" aria-hidden /> PDF
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="end"
-                className="pg-module w-60 rounded-lg border-border bg-popover p-1.5"
-              >
-                <DropdownMenuItem
-                  onSelect={() => navigate(`/magazine/templates?returnTo=/magazine/${magazine.id}`)}
-                  className="h-9 rounded-md text-[13px]"
+                <Button
+                  size="sm"
+                  onClick={publish}
+                  disabled={!publishable || publishing}
+                  aria-busy={publishing}
+                  className={cn(PG_BTN, 'h-11 min-h-0 rounded-md px-5 text-[14px]')}
                 >
-                  <LayoutTemplate className="mr-2 h-4 w-4" aria-hidden /> Galeria de templates
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onSelect={() => navigate('/magazine')}
-                  className="h-9 rounded-md text-[13px]"
-                >
-                  <BookOpen className="mr-2 h-4 w-4" aria-hidden /> Voltar para revistas
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                  {publishing ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden /> Publicando…
+                    </>
+                  ) : (
+                    <>
+                      <Send className="mr-2 h-4 w-4" aria-hidden /> Publicar
+                    </>
+                  )}
+                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className={cn(PG_ICON_BTN, 'h-11 w-11')}
+                      aria-label="Mais ações"
+                    >
+                      <MoreHorizontal className="h-4 w-4" aria-hidden />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align="end"
+                    className="pg-module w-60 rounded-lg border-border bg-popover p-1.5"
+                  >
+                    <DropdownMenuItem
+                      onSelect={() =>
+                        navigate(`/magazine/templates?returnTo=/magazine/${magazine.id}`)
+                      }
+                      className="h-9 rounded-md text-[13px]"
+                    >
+                      <LayoutTemplate className="mr-2 h-4 w-4" aria-hidden /> Galeria de templates
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onSelect={() => navigate('/magazine')}
+                      className="h-9 rounded-md text-[13px]"
+                    >
+                      <BookOpen className="mr-2 h-4 w-4" aria-hidden /> Voltar para revistas
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            )}
           </div>
         </div>
 
