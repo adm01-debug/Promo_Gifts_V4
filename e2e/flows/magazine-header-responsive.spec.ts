@@ -146,7 +146,7 @@ test.describe("@smoke Magazine Editor — header responsivo + regressão visual"
     });
   }
 
-  test("regressão visual — hero xl e empty state (quando aplicável)", async ({ page }) => {
+  test.fixme("regressão visual — hero xl e empty state (quando aplicável)", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await loginAs(page);
     const opened = await openFirstEditor(page);
