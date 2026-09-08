@@ -42,7 +42,11 @@ async function openFirstEditor(page: Page): Promise<boolean> {
   // "Trocar template" Link — clicking it would land on /magazine/templates,
   // not an editor, causing the expect(toHaveURL) below to time out.
   const firstCard = page.locator('[data-testid^="magazine-card-"]').first();
-  if ((await firstCard.count()) === 0) return false;
+  try {
+    await firstCard.waitFor({ state: 'attached', timeout: 10_000 });
+  } catch {
+    return false;
+  }
   await firstCard.click();
   await expect(page).toHaveURL(/\/magazine\/[^/]+$/);
   await page.addStyleTag({ content: FREEZE_CSS });
