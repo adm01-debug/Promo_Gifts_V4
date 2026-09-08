@@ -35,6 +35,8 @@ export function useMagazineEditor(id: string | undefined) {
   const [saving, setSaving] = useState(false);
   const [brandingErrors, setBrandingErrors] = useState<string[]>([]);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Counts in-flight async mutations; setSaving(false) only when counter reaches 0.
+  const pendingOps = useRef(0);
 
   // CRITICAL FIX: Declare ref BEFORE persist so persist can update it immediately.
   // Using useRef<Magazine | null>(null) — initial value set in useEffect below.
@@ -155,6 +157,7 @@ export function useMagazineEditor(id: string | undefined) {
   const addProducts = useCallback(async (products: Product[]) => {
     const current = magazineRef.current;
     if (!current) return;
+    pendingOps.current += 1;
     setSaving(true);
     try {
       const updated = await magazineService.addProducts(current.id, products);
@@ -163,13 +166,15 @@ export function useMagazineEditor(id: string | undefined) {
         setMagazine(updated);
       }
     } finally {
-      setSaving(false);
+      pendingOps.current -= 1;
+      if (pendingOps.current === 0) setSaving(false);
     }
   }, []);
 
   const removeItem = useCallback(async (itemId: string) => {
     const current = magazineRef.current;
     if (!current) return;
+    pendingOps.current += 1;
     setSaving(true);
     try {
       const updated = await magazineService.removeItem(current.id, itemId);
@@ -178,13 +183,15 @@ export function useMagazineEditor(id: string | undefined) {
         setMagazine(updated);
       }
     } finally {
-      setSaving(false);
+      pendingOps.current -= 1;
+      if (pendingOps.current === 0) setSaving(false);
     }
   }, []);
 
   const reorderItems = useCallback(async (orderedIds: string[]) => {
     const current = magazineRef.current;
     if (!current) return;
+    pendingOps.current += 1;
     setSaving(true);
     try {
       const updated = await magazineService.reorderItems(current.id, orderedIds);
@@ -193,13 +200,15 @@ export function useMagazineEditor(id: string | undefined) {
         setMagazine(updated);
       }
     } finally {
-      setSaving(false);
+      pendingOps.current -= 1;
+      if (pendingOps.current === 0) setSaving(false);
     }
   }, []);
 
   const updateItem = useCallback(async (itemId: string, patch: Partial<MagazineItem>) => {
     const current = magazineRef.current;
     if (!current) return;
+    pendingOps.current += 1;
     setSaving(true);
     try {
       const updated = await magazineService.updateItem(current.id, itemId, patch);
@@ -208,7 +217,8 @@ export function useMagazineEditor(id: string | undefined) {
         setMagazine(updated);
       }
     } finally {
-      setSaving(false);
+      pendingOps.current -= 1;
+      if (pendingOps.current === 0) setSaving(false);
     }
   }, []);
 
