@@ -37,9 +37,13 @@ const CENTER_TOLERANCE_PX = 8;
 
 async function openFirstEditor(page: Page): Promise<boolean> {
   await gotoAndSettle(page, "/magazine");
-  const firstEditorLink = page.locator('a[href^="/magazine/"]').first();
-  if ((await firstEditorLink.count()) === 0) return false;
-  await firstEditorLink.click();
+  // Cards are <article data-testid="magazine-card-{id}"> opened via navigate(),
+  // NOT anchor tags. The only a[href^="/magazine/"] on this page is the
+  // "Trocar template" Link — clicking it would land on /magazine/templates,
+  // not an editor, causing the expect(toHaveURL) below to time out.
+  const firstCard = page.locator('[data-testid^="magazine-card-"]').first();
+  if ((await firstCard.count()) === 0) return false;
+  await firstCard.click();
   await expect(page).toHaveURL(/\/magazine\/[^/]+$/);
   await page.addStyleTag({ content: FREEZE_CSS });
   await expect(page.getByTestId("page-title-magazine-editor")).toBeVisible({

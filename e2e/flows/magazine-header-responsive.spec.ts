@@ -38,10 +38,14 @@ const FREEZE_CSS = `
 
 async function openFirstEditor(page: Page): Promise<boolean> {
   await gotoAndSettle(page, "/magazine");
-  const firstEditorLink = page.locator('a[href^="/magazine/"]').first();
-  const hasMagazine = await firstEditorLink.count();
+  // Cards are <article data-testid="magazine-card-{id}"> opened via navigate(),
+  // NOT anchor tags. The only a[href^="/magazine/"] on this page is the
+  // "Trocar template" Link — clicking it would land on /magazine/templates,
+  // not an editor, causing the expect(toHaveURL) below to time out.
+  const firstCard = page.locator('[data-testid^="magazine-card-"]').first();
+  const hasMagazine = await firstCard.count();
   if (hasMagazine === 0) return false;
-  await firstEditorLink.click();
+  await firstCard.click();
   await expect(page).toHaveURL(/\/magazine\/[^/]+$/);
   await page.addStyleTag({ content: FREEZE_CSS });
   await expect(page.getByTestId("editor-hero")).toBeVisible({ timeout: 15_000 });

@@ -69,10 +69,24 @@ export function useMagazineEditor(id: string | undefined) {
     // would both read the old ref. This fix ensures each call sees fresh data.
     magazineRef.current = next;
     setMagazine(next);
-    if (saveTimer.current) clearTimeout(saveTimer.current);
+    // Integrate debounced autosave into pendingOps so that a concurrent
+    // addProducts/removeItem/reorderItems call cannot clear the saving flag
+    // while the autosave timer is still in-flight.
+    if (saveTimer.current) {
+      clearTimeout(saveTimer.current);
+      saveTimer.current = null;
+      // The previous pending timer is cancelled — reverse its increment.
+      pendingOps.current -= 1;
+      if (pendingOps.current < 0) pendingOps.current = 0;
+    }
     setSaving(true);
+    pendingOps.current += 1;
     saveTimer.current = setTimeout(() => {
-      void magazineService.update(next.id, next).finally(() => setSaving(false));
+      saveTimer.current = null;
+      void magazineService.update(next.id, next).finally(() => {
+        pendingOps.current -= 1;
+        if (pendingOps.current === 0) setSaving(false);
+      });
     }, 400);
   }, []);
 
