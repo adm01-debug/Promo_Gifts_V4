@@ -101,6 +101,11 @@ jobs:
             echo "❌ storageState.json não encontrado — login E2E falhou."
             exit 1
           fi
+          COOKIE_COUNT=$(node -e "try{const s=JSON.parse(require('fs').readFileSync('e2e/.auth/storageState.json','utf-8'));console.log((s.cookies||[]).length)}catch(e){console.log(0)}")
+          if [ "$COOKIE_COUNT" = "0" ]; then
+            echo "❌ storageState.json sem session cookies — login E2E falhou com credenciais fornecidas."
+            exit 1
+          fi
           npx playwright test \
             e2e/flows/magazine-header-align.spec.ts \
             e2e/flows/magazine-header-responsive.spec.ts \
