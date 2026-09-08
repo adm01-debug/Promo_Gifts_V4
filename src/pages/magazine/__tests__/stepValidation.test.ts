@@ -109,7 +109,9 @@ describe('validateStep identity', () => {
   it('valid https logo URL → no warning', () => {
     const { warnings } = validateStep(
       'identity',
-      mkMag({ branding: { ...DEFAULT_BRANDING, clientLogoUrl: 'https://cdn.example.com/logo.png' } }),
+      mkMag({
+        branding: { ...DEFAULT_BRANDING, clientLogoUrl: 'https://cdn.example.com/logo.png' },
+      }),
     );
     expect(warnings).toHaveLength(0);
   });
@@ -143,6 +145,28 @@ describe('validateStep products', () => {
     );
     expect(blocks).toHaveLength(0);
     expect(warnings).toHaveLength(0);
+  });
+});
+
+// ============================================================================
+// validateStep: content
+// ============================================================================
+
+describe('validateStep content', () => {
+  it('nunca bloqueia — sem bloqueadores neste step', () => {
+    const { blocks } = validateStep('content', mkMag());
+    expect(blocks).toHaveLength(0);
+  });
+
+  it('nunca emite warnings — step sem validação de aviso', () => {
+    const { warnings } = validateStep('content', mkMag());
+    expect(warnings).toHaveLength(0);
+  });
+
+  it('null content → sem crash, sem blocks', () => {
+    // @ts-expect-error testing null content
+    const { blocks } = validateStep('content', mkMag({ content: null }));
+    expect(blocks).toHaveLength(0);
   });
 });
 

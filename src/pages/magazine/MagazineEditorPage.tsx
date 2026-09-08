@@ -516,7 +516,7 @@ export default function MagazineEditorPage() {
                 ? 'border-warning/40 bg-warning/10 text-foreground'
                 : 'border-border bg-card-elevated text-muted-foreground',
             )}
-            role="status"
+            role={validation.blocks.length > 0 ? 'alert' : 'status'}
           >
             <AlertTriangle
               className={cn(

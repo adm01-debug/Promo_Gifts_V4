@@ -56,7 +56,7 @@ export function PagesRail({
         const isHighlighted = idx === highlightedPageIdx;
         const isActive = idx === activeIdx;
         return (
-          <li key={idx}>
+          <li key={p.index}>
             <button
               type="button"
               onClick={() => onSelect(idx)}

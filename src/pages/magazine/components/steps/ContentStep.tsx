@@ -9,7 +9,11 @@ import { ListChecks, LayoutList } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
-import type { Magazine, MagazineContentSettings } from '@/types/magazine';
+import {
+  DEFAULT_MAGAZINE_CONTENT,
+  type Magazine,
+  type MagazineContentSettings,
+} from '@/types/magazine';
 import { PG_ICON_BOX_SM, PG_PANEL, PG_PANEL_TITLE, PG_SUBTITLE } from '../../pg';
 
 interface Props {
@@ -95,7 +99,7 @@ function ToggleRow({
 }
 
 export function ContentStep({ magazine, onChange }: Props) {
-  const content = magazine.content;
+  const content = magazine.content ?? DEFAULT_MAGAZINE_CONTENT;
   return (
     <div className="space-y-4">
       <section className={cn(PG_PANEL, 'p-5')}>

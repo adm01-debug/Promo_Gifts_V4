@@ -59,6 +59,9 @@ const CHIP =
 export function DesignStep({ magazine, onChange, onCategoryChange }: Props) {
   const grouped = templatesByFamily();
   const currentCategory = magazine.branding?.category ?? 'technology';
+  const allTemplates = (Object.values(grouped) as (typeof grouped)[keyof typeof grouped][]).flat();
+  const hasSelection = allTemplates.some((t) => t.id === magazine.templateId);
+  const firstTemplateId = allTemplates[0]?.id;
 
   return (
     <div className="space-y-4">
@@ -109,6 +112,19 @@ export function DesignStep({ magazine, onChange, onCategoryChange }: Props) {
           role="radiogroup"
           aria-label="Categoria da revista"
           className="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-7"
+          onKeyDown={(e) => {
+            if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) return;
+            e.preventDefault();
+            const els = Array.from(e.currentTarget.querySelectorAll<HTMLElement>('[role="radio"]'));
+            const idx = els.findIndex((el) => el === document.activeElement);
+            if (idx < 0) return;
+            const next =
+              e.key === 'ArrowLeft' || e.key === 'ArrowUp'
+                ? (idx - 1 + els.length) % els.length
+                : (idx + 1) % els.length;
+            els[next]?.focus();
+            els[next]?.click();
+          }}
         >
           {CATEGORY_LIST.map((cat) => {
             const meta = MAGAZINE_CATEGORY_META[cat];
@@ -119,6 +135,7 @@ export function DesignStep({ magazine, onChange, onCategoryChange }: Props) {
                 type="button"
                 role="radio"
                 aria-checked={selected}
+                tabIndex={selected ? 0 : -1}
                 onClick={() => onCategoryChange(cat)}
                 className={cn(
                   'group flex flex-col items-center gap-1.5 rounded-md border p-2 text-[11px] font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
@@ -139,74 +156,96 @@ export function DesignStep({ magazine, onChange, onCategoryChange }: Props) {
         </div>
       </section>
 
-      {(Object.keys(grouped) as Array<keyof typeof grouped>).map((family) => (
-        <section key={family} aria-labelledby={`family-${family}`} className={cn(PG_PANEL, 'p-4')}>
-          <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
-            <h3 id={`family-${family}`} className={PG_OVERLINE}>
-              {FAMILY_LABELS[family]}
-            </h3>
-            <span className="text-[11px] text-muted-foreground">{FAMILY_HINT[family]}</span>
-          </div>
-          <div
-            role="radiogroup"
+      {/* Single radiogroup spanning ALL template families so arrow-key navigation
+          works across families (per WCAG 3.2.1 / CodeRabbit Major). */}
+      <div
+        role="radiogroup"
+        aria-label="Template da revista"
+        className="space-y-4"
+        onKeyDown={(e) => {
+          if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) return;
+          e.preventDefault();
+          const els = Array.from(e.currentTarget.querySelectorAll<HTMLElement>('[role="radio"]'));
+          const idx = els.findIndex((el) => el === document.activeElement);
+          if (idx < 0) return;
+          const next =
+            e.key === 'ArrowLeft' || e.key === 'ArrowUp'
+              ? (idx - 1 + els.length) % els.length
+              : (idx + 1) % els.length;
+          els[next]?.focus();
+          els[next]?.click();
+        }}
+      >
+        {(Object.keys(grouped) as Array<keyof typeof grouped>).map((family) => (
+          <section
+            key={family}
             aria-labelledby={`family-${family}`}
-            className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
+            className={cn(PG_PANEL, 'p-4')}
           >
-            {grouped[family].map((t) => {
-              const selected = magazine.templateId === t.id;
-              return (
-                <div
-                  key={t.id}
-                  role="radio"
-                  aria-checked={selected}
-                  tabIndex={0}
-                  onClick={() => onChange(t.id)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      onChange(t.id);
-                    }
-                  }}
-                  className={cn(
-                    'cursor-pointer rounded-md border p-3 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-                    selected
-                      ? 'border-primary/50 bg-primary/10 ring-1 ring-primary/20'
-                      : 'border-border bg-card-elevated hover:border-border-strong',
-                  )}
-                  data-testid={`magazine-template-${t.id}`}
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex min-w-0 items-center gap-2">
-                      <Layers
-                        className={cn(
-                          'h-4 w-4 shrink-0',
-                          selected ? 'text-primary' : 'text-muted-foreground',
-                        )}
-                        aria-hidden
-                      />
-                      <span className="truncate text-[13px] font-semibold text-foreground">
-                        {t.name}
-                      </span>
-                    </div>
-                    {selected && (
-                      <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                        <Check className="h-3 w-3" aria-label="Selecionado" />
-                      </span>
+            <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+              <h3 id={`family-${family}`} className={PG_OVERLINE}>
+                {FAMILY_LABELS[family]}
+              </h3>
+              <span className="text-[11px] text-muted-foreground">{FAMILY_HINT[family]}</span>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+              {grouped[family].map((t) => {
+                const selected = magazine.templateId === t.id;
+                const tabIdx = selected ? 0 : !hasSelection && t.id === firstTemplateId ? 0 : -1;
+                return (
+                  <div
+                    key={t.id}
+                    role="radio"
+                    aria-checked={selected}
+                    tabIndex={tabIdx}
+                    onClick={() => onChange(t.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        onChange(t.id);
+                      }
+                    }}
+                    className={cn(
+                      'cursor-pointer rounded-md border p-3 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+                      selected
+                        ? 'border-primary/50 bg-primary/10 ring-1 ring-primary/20'
+                        : 'border-border bg-card-elevated hover:border-border-strong',
                     )}
+                    data-testid={`magazine-template-${t.id}`}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex min-w-0 items-center gap-2">
+                        <Layers
+                          className={cn(
+                            'h-4 w-4 shrink-0',
+                            selected ? 'text-primary' : 'text-muted-foreground',
+                          )}
+                          aria-hidden
+                        />
+                        <span className="truncate text-[13px] font-semibold text-foreground">
+                          {t.name}
+                        </span>
+                      </div>
+                      {selected && (
+                        <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                          <Check className="h-3 w-3" aria-hidden />
+                        </span>
+                      )}
+                    </div>
+                    <p className="mt-1.5 line-clamp-2 text-[11px] leading-snug text-muted-foreground">
+                      {t.description}
+                    </p>
+                    <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                      <span className={CHIP}>{t.productsPerPage} / pág</span>
+                      <span className={CHIP}>{t.fonts.heading}</span>
+                    </div>
                   </div>
-                  <p className="mt-1.5 line-clamp-2 text-[11px] leading-snug text-muted-foreground">
-                    {t.description}
-                  </p>
-                  <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                    <span className={CHIP}>{t.productsPerPage} / pág</span>
-                    <span className={CHIP}>{t.fonts.heading}</span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-      ))}
+                );
+              })}
+            </div>
+          </section>
+        ))}
+      </div>
     </div>
   );
 }
