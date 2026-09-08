@@ -132,14 +132,14 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.bun/install/cache
-          key: bun-store-${{ runner.os }}-${{ hashFiles('bun.lockb') }}
+          key: bun-store-${{ runner.os }}-${{ hashFiles('bun.lock') }}
           restore-keys: bun-store-${{ runner.os }}-
 
       - name: Install dependencies
         id: bun-install
         run: |
           T0=$(date +%s)
-          bun install
+          bun install --frozen-lockfile
           echo "duration=$(( $(date +%s) - T0 ))" >> "$GITHUB_OUTPUT"
 
       # Resolve a versão do Playwright para chavear o cache de browsers.

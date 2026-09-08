@@ -29,13 +29,13 @@ test.describe("@smoke Magazine Editor — preview sticky/aligned", () => {
   test("preview alinha com hero e permanece sticky ao scrollar (xl+)", async ({ page }) => {
     await gotoAndSettle(page, "/magazine");
 
-    // Encontra o primeiro link para um editor de revista. Se não houver, skip.
-    const firstEditorLink = page.locator('a[href^="/magazine/"]').first();
-    const hasMagazine = await firstEditorLink.count();
+    // Encontra o primeiro card de revista. Se não houver, skip.
+    const firstCard = page.locator('[data-testid^="magazine-card-"]').first();
+    const hasMagazine = await firstCard.count();
     test.skip(hasMagazine === 0, "sem revistas cadastradas na conta de teste");
 
-    await firstEditorLink.click();
-    await expect(page).toHaveURL(/\/magazine\/[^/]+$/);
+    await firstCard.click();
+    await expect(page).toHaveURL(/\/magazine\/(?!templates)[^/]+$/);
 
     const hero = page.getByTestId("magazine-editor-hero-row");
     const mainCol = page.getByTestId("magazine-editor-main-col");
