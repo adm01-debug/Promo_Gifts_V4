@@ -81,7 +81,7 @@ describe('scripts/check-package-duplicate-scripts.mjs', () => {
       scripts: Record<string, string>;
     };
 
-    expect(Object.keys(pkg.scripts)).toHaveLength(236);
+    expect(Object.keys(pkg.scripts)).toHaveLength(237);
   });
 
   it('mantém o CLI funcional no sandbox com package.json válido', () => {

@@ -239,21 +239,35 @@ export function useMagazineEditor(id: string | undefined) {
   const publish = useCallback(async () => {
     const current = magazineRef.current;
     if (!current) return null;
-    const updated = await magazineService.publish(current.id);
-    if (updated) {
-      magazineRef.current = updated;
-      setMagazine(updated);
+    pendingOps.current += 1;
+    setSaving(true);
+    try {
+      const updated = await magazineService.publish(current.id);
+      if (updated) {
+        magazineRef.current = updated;
+        setMagazine(updated);
+      }
+      return updated;
+    } finally {
+      pendingOps.current -= 1;
+      if (pendingOps.current === 0) setSaving(false);
     }
-    return updated;
   }, []);
 
   const unpublish = useCallback(async () => {
     const current = magazineRef.current;
     if (!current) return;
-    const updated = await magazineService.unpublish(current.id);
-    if (updated) {
-      magazineRef.current = updated;
-      setMagazine(updated);
+    pendingOps.current += 1;
+    setSaving(true);
+    try {
+      const updated = await magazineService.unpublish(current.id);
+      if (updated) {
+        magazineRef.current = updated;
+        setMagazine(updated);
+      }
+    } finally {
+      pendingOps.current -= 1;
+      if (pendingOps.current === 0) setSaving(false);
     }
   }, []);
 
