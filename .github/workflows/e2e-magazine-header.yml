@@ -110,8 +110,7 @@ jobs:
             e2e/flows/magazine-header-align.spec.ts \
             e2e/flows/magazine-header-responsive.spec.ts \
             --project=chromium-authed \
-            --reporter=github,list,html,json \
-            --pass-with-no-tests
+            --reporter=github,list,html,json
         env:
           E2E_BASE_URL: http://localhost:8080
           PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results-magazine-header.json
