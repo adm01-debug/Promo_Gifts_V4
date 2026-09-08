@@ -11,7 +11,7 @@ export interface Product {
   sale_price?: number;
   stock: number | null;
   stock_status: string | null;
-  category_id: number | null;
+  category_id: string | null;
   category_name: string | null;
   subcategory: string | null;
   supplier_id: string | null;
