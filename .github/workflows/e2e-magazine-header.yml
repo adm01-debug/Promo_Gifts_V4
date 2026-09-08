@@ -101,9 +101,9 @@ jobs:
             echo "❌ storageState.json não encontrado — login E2E falhou."
             exit 1
           fi
-          COOKIE_COUNT=$(node -e "try{const s=JSON.parse(require('fs').readFileSync('e2e/.auth/storageState.json','utf-8'));console.log((s.cookies||[]).length)}catch(e){console.log(0)}")
-          if [ "$COOKIE_COUNT" = "0" ]; then
-            echo "❌ storageState.json sem session cookies — login E2E falhou com credenciais fornecidas."
+          AUTH_OK=$(node -e "try{const s=JSON.parse(require('fs').readFileSync('e2e/.auth/storageState.json','utf-8'));const ok=(s.origins||[]).some(o=>(o.localStorage||[]).some(e=>e.name&&e.name.startsWith('sb-')&&e.name.endsWith('-auth-token')&&e.value&&e.value.length>10));console.log(ok?'1':'0')}catch(e){console.log('0')}")
+          if [ "$AUTH_OK" = "0" ]; then
+            echo "❌ storageState.json sem token de sessão Supabase (sb-*-auth-token) — login E2E falhou com credenciais fornecidas."
             exit 1
           fi
           npx playwright test \
