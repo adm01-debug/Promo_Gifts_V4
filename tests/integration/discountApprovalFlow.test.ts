@@ -20,6 +20,8 @@
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
+import React from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // ─────────────────────────────────────────────────────────────
 // Hoisted mock state — accessible inside vi.mock factories
@@ -165,6 +167,20 @@ function setUser(role: "seller" | "admin" | "none") {
   );
 }
 
+function renderDiscountApprovalHook() {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
+      mutations: { retry: false },
+    },
+  });
+
+  const wrapper = ({ children }: { children: React.ReactNode }) =>
+    React.createElement(QueryClientProvider, { client: queryClient }, children);
+
+  return renderHook(() => useDiscountApproval(), { wrapper });
+}
+
 beforeEach(() => {
   ops.length = 0;
   H.clearOverrides();
@@ -178,7 +194,7 @@ beforeEach(() => {
 describe("E2E: Vendedor solicita aprovação de desconto", () => {
   it("cria request, atualiza quote, loga histórico e notifica admins", async () => {
     setUser("seller");
-    const { result } = renderHook(() => useDiscountApproval());
+    const { result } = renderDiscountApprovalHook();
 
     let success = false;
     await act(async () => {
@@ -227,7 +243,7 @@ describe("E2E: Vendedor solicita aprovação de desconto", () => {
 
   it("retorna false se não houver usuário autenticado", async () => {
     setUser("none");
-    const { result } = renderHook(() => useDiscountApproval());
+    const { result } = renderDiscountApprovalHook();
     let success = true;
     await act(async () => {
       success = await result.current.requestApproval(QUOTE_ID, 15, 10);
@@ -238,7 +254,7 @@ describe("E2E: Vendedor solicita aprovação de desconto", () => {
   it("não envia notificação se nenhum admin existir", async () => {
     setUser("seller");
     H.setOverride("user_roles", { list: [] });
-    const { result } = renderHook(() => useDiscountApproval());
+    const { result } = renderDiscountApprovalHook();
     await act(async () => {
       await result.current.requestApproval(QUOTE_ID, 15, 10);
     });
@@ -253,7 +269,7 @@ describe("E2E: Vendedor solicita aprovação de desconto", () => {
 describe("E2E: Admin aprova solicitação", () => {
   it("atualiza request, muda quote para 'pending', loga histórico e notifica vendedor", async () => {
     setUser("admin");
-    const { result } = renderHook(() => useDiscountApproval());
+    const { result } = renderDiscountApprovalHook();
 
     let success = false;
     await act(async () => {
@@ -311,7 +327,7 @@ describe("E2E: Admin rejeita solicitação", () => {
       },
     });
 
-    const { result } = renderHook(() => useDiscountApproval());
+    const { result } = renderDiscountApprovalHook();
 
     let success = false;
     await act(async () => {

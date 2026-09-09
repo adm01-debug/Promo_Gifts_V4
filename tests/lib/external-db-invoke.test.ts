@@ -1,9 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { __resetBreakers } from '@/lib/auth/safeAuthCall';
 
 vi.mock('@/integrations/supabase/client', () => {
   const mockInvoke = vi.fn();
   return {
     supabase: {
+      from: vi.fn(() => ({
+        select: vi.fn().mockReturnThis(),
+        eq: vi.fn().mockReturnThis(),
+        maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
+      })),
       functions: {
         invoke: mockInvoke,
       },
@@ -41,6 +47,7 @@ describe('extractFunctionErrorMessage', () => {
 
 describe('invokeWithRetry', () => {
   beforeEach(() => {
+    __resetBreakers();
     vi.clearAllMocks();
   });
 
@@ -121,6 +128,7 @@ describe('invokeWithRetry', () => {
 
 describe('invokeWithRetry — classifier edge cases (HTTP word-boundary regex)', () => {
   beforeEach(() => {
+    __resetBreakers();
     (mockInvoke as any).mockReset();
   });
 
@@ -223,6 +231,7 @@ describe('invokeWithRetry — classifier edge cases (HTTP word-boundary regex)',
 
 describe('invokeWithRetry — latência/timeout e retry controlado', () => {
   beforeEach(() => {
+    __resetBreakers();
     vi.clearAllMocks();
   });
 
@@ -249,6 +258,8 @@ describe('invokeWithRetry — latência/timeout e retry controlado', () => {
   });
 
   it('retry não duplica efeito colateral do payload (mesmo objeto de body em todas as tentativas)', async () => {
+    vi.useFakeTimers();
+    const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0);
     const sideEffects: string[] = [];
     const payload = {
       table: 'products',
@@ -263,7 +274,9 @@ describe('invokeWithRetry — latência/timeout e retry controlado', () => {
       .mockResolvedValueOnce({ data: null, error: transientErr })
       .mockResolvedValueOnce({ data: { ok: true }, error: null });
 
-    const result = await invokeWithRetry(payload, 2);
+    const promise = invokeWithRetry(payload, 2);
+    await vi.runAllTimersAsync();
+    const result = await promise;
 
     expect(result.error).toBeNull();
     expect(mockInvoke).toHaveBeenCalledTimes(2);
@@ -272,5 +285,8 @@ describe('invokeWithRetry — latência/timeout e retry controlado', () => {
     expect(firstCall[1].body).toBe(payload);
     expect(secondCall[1].body).toBe(payload);
     expect(sideEffects).toEqual([]);
+
+    randomSpy.mockRestore();
+    vi.useRealTimers();
   });
 });

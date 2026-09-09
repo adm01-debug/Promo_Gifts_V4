@@ -139,6 +139,7 @@ export function DatePickerField(props: DatePickerFieldProps) {
           id={id}
           disabled={disabled}
           data-testid={props['data-testid']}
+          aria-invalid={props['aria-invalid'] || undefined}
           aria-describedby={props['aria-describedby']}
           aria-label={props['aria-label']}
           data-empty={!selectedDate || undefined}

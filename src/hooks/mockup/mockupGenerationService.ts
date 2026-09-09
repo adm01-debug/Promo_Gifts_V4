@@ -32,7 +32,7 @@ import { toast } from 'sonner';
 import type { PersonalizationArea } from '@/components/mockup/MultiAreaManager';
 
 import { logger } from '@/lib/logger';
-import { invokeEdge } from '@/lib/edge/safeInvokeCall';
+import { invokeEdgeSafe } from '@/lib/edge/safeInvokeCall';
 export interface Technique {
   id: string;
   name: string;
@@ -317,6 +317,16 @@ function assertNotSvg(areas: PersonalizationArea[]): void {
  * reachable via `error.context` (a Response). Falls back to the raw message.
  */
 async function extractEdgeErrorMessage(error: unknown): Promise<string> {
+  const original = (error as { original?: unknown } | null)?.original;
+  if (original) {
+    return extractEdgeErrorMessage(original);
+  }
+  const normalizedBody = (error as { body?: unknown } | null)?.body;
+  if (normalizedBody && typeof normalizedBody === 'object') {
+    const body = normalizedBody as { error?: string; errorCode?: string; message?: string };
+    if (body?.message) return body.message;
+    if (body?.error) return body.error;
+  }
   const ctx = (error as { context?: Response } | null)?.context;
   if (ctx && typeof ctx.json === 'function') {
     try {
@@ -325,6 +335,15 @@ async function extractEdgeErrorMessage(error: unknown): Promise<string> {
       if (body?.error) return body.error;
     } catch {
       /* body was not JSON — fall through to the generic message */
+    }
+  }
+  if (error && typeof error === 'object') {
+    const maybeMessage = error as { message?: unknown; error?: unknown };
+    if (typeof maybeMessage.message === 'string' && maybeMessage.message.length > 0) {
+      return maybeMessage.message;
+    }
+    if (typeof maybeMessage.error === 'string' && maybeMessage.error.length > 0) {
+      return maybeMessage.error;
     }
   }
   return error instanceof Error ? error.message : 'Falha ao gerar mockup.';
@@ -365,8 +384,9 @@ async function invokeMockupOnce(
   params: GenerateMockupParams,
   area: PersonalizationArea,
 ): Promise<string> {
-  const generateCall = invokeEdge<{ mockupUrl?: string }>('generate-mockup', {
+  const generateCall = invokeEdgeSafe<{ mockupUrl?: string }>('generate-mockup', {
     body: buildMockupPayload(params, area),
+    maxRetries: 1,
   });
 
   let timer: ReturnType<typeof setTimeout> | undefined;
@@ -378,8 +398,9 @@ async function invokeMockupOnce(
   });
 
   try {
-    const { data, error } = await Promise.race([generateCall, timeout]);
-    if (error) throw new Error(await extractEdgeErrorMessage(error));
+    const result = await Promise.race([generateCall, timeout]);
+    if (result.kind === 'err') throw new Error(await extractEdgeErrorMessage(result.raw));
+    const { data } = result;
     if (!data?.mockupUrl) throw new Error('Nenhuma imagem retornada pela API de mockup.');
     return data.mockupUrl as string;
   } finally {

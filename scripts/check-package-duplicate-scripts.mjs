@@ -4,7 +4,7 @@ import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const PACKAGE_JSON = resolve(ROOT, "package.json");
+const PACKAGE_JSON = resolve(ROOT, process.argv[2] ?? "package.json");
 
 const src = readFileSync(PACKAGE_JSON, "utf8");
 
@@ -42,6 +42,52 @@ function readPropertyName(text, i) {
   return { key: raw, next: i };
 }
 
+function skipLiteral(text, i) {
+  while (i < text.length && /[^,\]\}\s]/.test(text[i])) i++;
+  return i;
+}
+
+function skipArray(text, i) {
+  i++;
+  while (i < text.length) {
+    i = skipWhitespace(text, i);
+    if (text[i] === "]") return i + 1;
+    i = skipValue(text, i);
+    i = skipWhitespace(text, i);
+    if (text[i] === ",") i++;
+  }
+  throw new Error("Array não terminada");
+}
+
+function skipObject(text, i) {
+  i++;
+  while (i < text.length) {
+    i = skipWhitespace(text, i);
+    if (text[i] === "}") return i + 1;
+
+    const prop = readPropertyName(text, i);
+    if (!prop) throw new Error("Chave JSON inválida");
+
+    i = skipWhitespace(text, prop.next);
+    if (text[i] !== ":") throw new Error("Objeto JSON inválido");
+
+    i = skipWhitespace(text, i + 1);
+    i = skipValue(text, i);
+    i = skipWhitespace(text, i);
+
+    if (text[i] === ",") i++;
+  }
+  throw new Error("Objeto não terminado");
+}
+
+function skipValue(text, i) {
+  const ch = text[i];
+  if (ch === '"') return skipString(text, i);
+  if (ch === "{") return skipObject(text, i);
+  if (ch === "[") return skipArray(text, i);
+  return skipLiteral(text, i);
+}
+
 function findDuplicateKeysInObject(text, objStartIndex) {
   const seen = new Map();
   const duplicates = [];
@@ -69,7 +115,8 @@ function findDuplicateKeysInObject(text, objStartIndex) {
         }
       }
 
-      i = skipString(text, prop.next - 1);
+      i = skipWhitespace(text, i + 1);
+      i = skipValue(text, i);
       continue;
     }
 

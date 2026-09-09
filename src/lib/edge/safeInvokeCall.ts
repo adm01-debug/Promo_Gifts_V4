@@ -48,6 +48,8 @@ interface NormalizedError {
   message: string;
   status: number;
   name?: string;
+  body?: unknown;
+  original?: unknown;
 }
 
 /**
@@ -99,7 +101,13 @@ export function normalizeInvokeError(err: unknown): NormalizedError {
     outName = 'TypeError';
   }
 
-  return { message: bodyMsg || baseMsg || 'edge error', status, name: outName };
+  return {
+    message: bodyMsg || baseMsg || 'edge error',
+    status,
+    name: outName,
+    body: ctx?.body,
+    original: err,
+  };
 }
 
 /** Logger SSOT do wrapper. Único ponto de emissão da superfície invoke. */

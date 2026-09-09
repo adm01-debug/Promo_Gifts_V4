@@ -24,9 +24,11 @@ import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync, mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, relative } from 'node:path';
-import minimatchPkg from 'minimatch';
+import * as minimatchPkg from 'minimatch';
 // minimatch v3 (CJS) exporta a função como default; v9 (ESM) expõe named { minimatch }.
-const minimatch = typeof minimatchPkg === 'function' ? minimatchPkg : minimatchPkg.minimatch;
+const minimatch = typeof minimatchPkg === 'function'
+  ? minimatchPkg
+  : minimatchPkg.minimatch ?? minimatchPkg.default;
 
 const ROOT = process.cwd();
 const BASELINE_PATH = join(ROOT, '.eslint-baseline.json');
@@ -348,5 +350,4 @@ console.error('  · Ver JSON estruturado (CI):       node scripts/check-eslint-b
 console.error('  · Consolidar baseline após fix:    npm run lint:baseline:update');
 console.error("  · Expandir escopo incremental:     node scripts/eslint-baseline-scope-add.mjs 'src/<area>/**'");
 process.exit(1);
-
 

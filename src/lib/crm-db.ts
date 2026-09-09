@@ -19,7 +19,7 @@ import { logger } from '@/lib/logger';
 import { maskSensitiveText } from '@/lib/sensitive-masking';
 import { recordBridgeCall, estimatePayloadBytes } from '@/lib/telemetry/bridgeCallMetrics';
 import { newRequestId, REQUEST_ID_HEADER } from '@/lib/telemetry/requestId';
-import { invokeEdge } from '@/lib/edge/safeInvokeCall';
+import { invokeEdgeSafe } from '@/lib/edge/safeInvokeCall';
 
 export interface CrmQuery {
   table: string;
@@ -313,7 +313,7 @@ export async function invokeCrmBatch(queries: CrmBatchQuery[]): Promise<CrmBatch
     const body = { operation: 'batch', queries };
     const reqBytes = estimatePayloadBytes(body);
     const requestId = newRequestId();
-    const { data, error } = await invokeEdge<{
+    const edgeResult = await invokeEdgeSafe<{
       success?: boolean;
       error?: string;
       results?: unknown;
@@ -322,6 +322,8 @@ export async function invokeCrmBatch(queries: CrmBatchQuery[]): Promise<CrmBatch
       body,
       headers: { [REQUEST_ID_HEADER]: requestId },
     });
+    const data = edgeResult.kind === 'ok' ? edgeResult.data : null;
+    const rawError = edgeResult.kind === 'err' ? edgeResult.raw : null;
 
     const serverRequestId =
       data && typeof data === 'object' && 'request_id' in data
@@ -334,21 +336,25 @@ export async function invokeCrmBatch(queries: CrmBatchQuery[]): Promise<CrmBatch
       target: queries.map((q) => q.table).join(','),
       durationMs: performance.now() - startedAt,
       reqBytes,
-      respBytes: error ? 0 : estimatePayloadBytes(data),
-      ok: !error && !!data?.success,
-      errorMessage: error?.message ?? (data?.success ? undefined : data?.error),
+      respBytes: rawError ? 0 : estimatePayloadBytes(data),
+      ok: !rawError && !!data?.success,
+      errorMessage: rawError
+        ? await extractCrmErrorMessage(rawError)
+        : data?.success
+          ? undefined
+          : data?.error,
       requestId,
       serverRequestId: serverRequestId || undefined,
     });
 
-    if (error) {
-      const msg = error.message ?? '';
+    if (rawError) {
+      const msg = await extractCrmErrorMessage(rawError);
       if (isRateLimitError(msg)) activateRateLimitCooldown();
       logger.error('[CRM-DB] Batch error', {
         requestId,
-        ...safeCrmErrorFields(error),
+        ...safeCrmErrorFields(rawError),
       });
-      throw new Error(`CRM batch error: ${error.message}`);
+      throw new Error(`CRM batch error: ${msg}`);
     }
 
     if (!data?.success) {
@@ -444,6 +450,15 @@ async function extractCrmErrorMessage(error: unknown): Promise<string> {
     }
     return error.message;
   }
+  if (error && typeof error === 'object') {
+    const maybeMessage = error as { message?: unknown; error?: unknown };
+    if (typeof maybeMessage.message === 'string' && maybeMessage.message.length > 0) {
+      return maybeMessage.message;
+    }
+    if (typeof maybeMessage.error === 'string' && maybeMessage.error.length > 0) {
+      return maybeMessage.error;
+    }
+  }
   return 'Erro ao acessar CRM';
 }
 
@@ -509,21 +524,26 @@ export async function invokeCrmDb<T>(query: CrmQuery): Promise<CrmResponse<T>> {
     };
 
     for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
-      const { data, error } = await invokeEdge<Record<string, unknown> & { error?: string }>(
+      const edgeResult = await invokeEdgeSafe<Record<string, unknown> & { error?: string }>(
         'crm-db-bridge',
         {
           body: query,
           headers: { [REQUEST_ID_HEADER]: requestId },
+          maxRetries: 1,
         },
       );
+      const data = edgeResult.kind === 'ok' ? edgeResult.data : null;
+      const rawError = edgeResult.kind === 'err' ? edgeResult.raw : null;
 
-      if (!error && !data?.error) {
+      if (!rawError && !data?.error) {
         record(true, data);
         consecutiveRateLimitHits = 0;
         return data as unknown as CrmResponse<T>;
       }
 
-      const msg = error ? await extractCrmErrorMessage(error) : data?.error || 'Unknown CRM error';
+      const msg = rawError
+        ? await extractCrmErrorMessage(rawError)
+        : data?.error || 'Unknown CRM error';
 
       // statement_timeout: degrada graciosamente (evita blank screen). O usuário
       // recebe lista vazia + flag `stale` — a UI pode mostrar toast/refinar filtros.
@@ -567,7 +587,7 @@ export async function invokeCrmDb<T>(query: CrmQuery): Promise<CrmResponse<T>> {
 
       record(false, null, msg);
 
-      if (error) {
+      if (rawError) {
         logger.error('[CRM-DB] Edge function error', {
           requestId,
           message: safeCrmLogMessage(msg),

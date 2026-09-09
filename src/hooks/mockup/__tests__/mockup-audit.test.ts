@@ -180,9 +180,9 @@ describe('Analise estatica — mockupGenerationService.ts', () => {
     it('funcao assertNotSvg definida', () => {
       expect(src).toContain('function assertNotSvg');
     });
-    it('assertNotSvg chamada antes de supabase.functions.invoke', () => {
+    it('assertNotSvg chamada antes do invoke centralizado da edge', () => {
       const assertPos = src.indexOf('assertNotSvg');
-      const invokePos = src.indexOf('supabase.functions.invoke');
+      const invokePos = src.indexOf("invokeEdgeSafe<{ mockupUrl?: string }>('generate-mockup'");
       expect(assertPos).toBeGreaterThan(-1);
       expect(invokePos).toBeGreaterThan(-1);
       expect(assertPos).toBeLessThan(invokePos);

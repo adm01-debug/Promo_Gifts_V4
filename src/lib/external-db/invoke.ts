@@ -23,7 +23,7 @@ import {
   KillSwitchActiveError,
 } from './kill-switch-client';
 import { recordKillSwitchHit } from './kill-switch-telemetry';
-import { invokeEdge } from '@/lib/edge/safeInvokeCall';
+import { invokeEdgeSafe } from '@/lib/edge/safeInvokeCall';
 
 const KILL_SWITCH_NAME = 'edge_external_db_bridge';
 
@@ -119,6 +119,10 @@ function isKillSwitch410(error: unknown): boolean {
 }
 
 export async function extractFunctionErrorMessage(error: unknown): Promise<string> {
+  const original = (error as { original?: unknown } | null)?.original;
+  if (original) {
+    return extractFunctionErrorMessage(original);
+  }
   if (error instanceof Error) {
     const maybeContext = error as Error & { context?: Response };
     if (maybeContext.context instanceof Response) {
@@ -153,8 +157,40 @@ export async function extractFunctionErrorMessage(error: unknown): Promise<strin
     }
     return error.message;
   }
+  if (error && typeof error === 'object') {
+    const maybeMessage = error as { message?: unknown; error?: unknown };
+    if (typeof maybeMessage.message === 'string' && maybeMessage.message.length > 0) {
+      return maybeMessage.message;
+    }
+    if (typeof maybeMessage.error === 'string' && maybeMessage.error.length > 0) {
+      return maybeMessage.error;
+    }
+  }
 
   return 'Erro ao acessar banco externo';
+}
+
+function toExternalDbError(error: unknown): Error {
+  const original = (error as { original?: unknown } | null)?.original;
+  if (original instanceof Error) {
+    return original;
+  }
+  if (error instanceof Error) {
+    return error;
+  }
+  const message =
+    typeof (error as { message?: unknown } | null)?.message === 'string'
+      ? String((error as { message?: unknown }).message)
+      : 'Erro ao acessar banco externo';
+  const wrapped = new Error(message);
+  const details = error as { status?: unknown; body?: unknown; name?: unknown } | null;
+  if (details?.name) wrapped.name = String(details.name);
+  Object.assign(wrapped, {
+    status: details?.status,
+    body: details?.body,
+    original: details?.original,
+  });
+  return wrapped;
 }
 
 export async function invokeWithRetry(
@@ -232,10 +268,13 @@ export async function invokeWithRetry(
   }
 
   for (let attempt = 0; attempt <= retries; attempt++) {
-    const { data, error } = await invokeEdge('external-db-bridge', {
+    const edgeResult = await invokeEdgeSafe('external-db-bridge', {
       body,
       headers: { [REQUEST_ID_HEADER]: requestId },
+      maxRetries: 1,
     });
+    const data = edgeResult.kind === 'ok' ? edgeResult.data : null;
+    const error = edgeResult.kind === 'err' ? toExternalDbError(edgeResult.raw) : null;
 
     if (!error) {
       if (sawColdStart) emitBridgeStatus({ type: 'recovered' });

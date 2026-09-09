@@ -3,13 +3,17 @@
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-const { mockInvoke } = vi.hoisted(() => {
+const { mockInvoke, mockGetSession } = vi.hoisted(() => {
   const mockInvoke = vi.fn();
-  return { mockInvoke };
+  const mockGetSession = vi.fn();
+  return { mockInvoke, mockGetSession };
 });
 
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
+    auth: {
+      getSession: mockGetSession,
+    },
     functions: {
       invoke: mockInvoke,
     },
@@ -26,7 +30,11 @@ import {
 } from '@/lib/crm-db';
 
 beforeEach(() => {
-  vi.clearAllMocks();
+  mockInvoke.mockReset();
+  mockGetSession.mockReset();
+  mockGetSession.mockResolvedValue({
+    data: { session: { access_token: 'test-token' } },
+  });
 });
 
 describe('invokeCrmDb', () => {
@@ -37,7 +45,10 @@ describe('invokeCrmDb', () => {
   });
 
   it('throws on edge function error (non-retryable)', async () => {
-    mockInvoke.mockResolvedValue({ data: null, error: new Error('Not Found') });
+    mockInvoke.mockResolvedValue({
+      data: null,
+      error: { message: 'Not Found', name: 'FunctionsHttpError', context: { status: 404 } },
+    });
     await expect(invokeCrmDb({ table: 'companies', operation: 'select' })).rejects.toThrow('CRM DB error');
   });
 
@@ -48,7 +59,10 @@ describe('invokeCrmDb', () => {
 
   it('retries on retryable errors (502)', async () => {
     mockInvoke
-      .mockResolvedValueOnce({ data: null, error: new Error('502 Bad Gateway') })
+      .mockResolvedValueOnce({
+        data: null,
+        error: { message: '502 Bad Gateway', name: 'FunctionsHttpError', context: { status: 502 } },
+      })
       .mockResolvedValueOnce({ data: { data: [{ id: '1' }] }, error: null });
     const result = await invokeCrmDb({ table: 'companies', operation: 'select' });
     expect(result.data).toEqual([{ id: '1' }]);
@@ -78,7 +92,10 @@ describe('selectCrmById', () => {
   });
 
   it('returns null on 404', async () => {
-    mockInvoke.mockResolvedValue({ data: null, error: new Error('404 not found') });
+    mockInvoke.mockResolvedValue({
+      data: null,
+      error: { message: '404 not found', name: 'FunctionsHttpError', context: { status: 404 } },
+    });
     const result = await selectCrmById('companies', 'nonexistent');
     expect(result).toBeNull();
   });
