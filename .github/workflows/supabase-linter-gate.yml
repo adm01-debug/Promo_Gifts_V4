@@ -9,6 +9,11 @@ on:
     # Roda diariamente às 06:00 UTC para detectar drift fora de PR
     - cron: "0 6 * * *"
   workflow_dispatch:
+    inputs:
+      confirm_magazine_rpcs:
+        description: 'Digite APPLY_MAGAZINE_RPCS_CANONICAL para aplicar as 5 RPCs forward-only'
+        required: false
+        type: string
 
 jobs:
   linter:
@@ -26,3 +31,129 @@ jobs:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF || 'doufsxqlfjyuvxuezpln' }}
         run: node scripts/check-supabase-linter.mjs
+
+  deploy-magazine-rpcs:
+    if: >-
+      github.event_name == 'workflow_dispatch' &&
+      inputs.confirm_magazine_rpcs == 'APPLY_MAGAZINE_RPCS_CANONICAL'
+    name: Apply Magazine RPCs — canonical only
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.22.1'
+
+      - name: Guard — projeto e credencial canônicos
+        run: |
+          test "$SUPABASE_PROJECT_REF" = "doufsxqlfjyuvxuezpln"
+          test -n "$SUPABASE_ACCESS_TOKEN"
+
+      - name: Aplicar cinco migrations em uma única transação
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync } from 'node:fs';
+
+          const token = process.env.SUPABASE_ACCESS_TOKEN;
+          const projectRef = process.env.SUPABASE_PROJECT_REF;
+          const expectedRef = 'doufsxqlfjyuvxuezpln';
+
+          if (!token || projectRef !== expectedRef) {
+            throw new Error('canonical_project_guard_failed');
+          }
+
+          const migrations = [
+            ['20260909181000', 'magazine_add_items_atomic', 'supabase/migrations/20260909181000_magazine_add_items_atomic.sql'],
+            ['20260909181100', 'magazine_remove_items_atomic', 'supabase/migrations/20260909181100_magazine_remove_items_atomic.sql'],
+            ['20260909181200', 'magazine_reorder_items_atomic', 'supabase/migrations/20260909181200_magazine_reorder_items_atomic.sql'],
+            ['20260909181300', 'magazine_duplicate_atomic', 'supabase/migrations/20260909181300_magazine_duplicate_atomic.sql'],
+            ['20260909181400', 'magazine_update_metadata_atomic', 'supabase/migrations/20260909181400_magazine_update_metadata_atomic.sql'],
+          ];
+
+          const apiBase = `https://api.supabase.com/v1/projects/${projectRef}/database`;
+          const headers = {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          };
+
+          async function execute(query, readOnly) {
+            const endpoint = readOnly ? `${apiBase}/query/read-only` : `${apiBase}/query`;
+            const response = await fetch(endpoint, {
+              method: 'POST',
+              headers,
+              body: JSON.stringify(readOnly ? { query } : { query, read_only: false }),
+            });
+            const body = await response.text();
+            if (!response.ok) {
+              throw new Error(`management_api_${response.status}:${body.slice(0, 600)}`);
+            }
+            return body ? JSON.parse(body) : [];
+          }
+
+          const versions = migrations.map(([version]) => `'${version}'`).join(',');
+          const functionNames = migrations.map(([, name]) => `'${name}'`).join(',');
+          const preflight = await execute(`
+            SELECT
+              (SELECT count(*)::int FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+                WHERE n.nspname = 'public' AND p.proname IN (${functionNames})) AS function_count,
+              (SELECT count(*)::int FROM supabase_migrations.schema_migrations
+                WHERE version IN (${versions})) AS migration_count
+          `, true);
+
+          const functionCount = Number(preflight?.[0]?.function_count ?? -1);
+          const migrationCount = Number(preflight?.[0]?.migration_count ?? -1);
+          console.log(`Preflight: functions=${functionCount}, migrations=${migrationCount}`);
+
+          if (functionCount !== migrationCount) {
+            throw new Error('inconsistent_partial_state_functions_vs_migrations');
+          }
+          if (functionCount === migrations.length) {
+            console.log('Todas as RPCs e migrations já existem; nenhuma mutação necessária.');
+            process.exit(0);
+          }
+          if (functionCount !== 0) {
+            throw new Error('unexpected_partial_state');
+          }
+
+          const statements = ['BEGIN;'];
+          for (const [version, name, path] of migrations) {
+            const sql = readFileSync(path, 'utf8');
+            if (sql.includes('$migration_body$')) {
+              throw new Error(`reserved_dollar_quote_in_${path}`);
+            }
+            statements.push(sql);
+            statements.push(`
+              INSERT INTO supabase_migrations.schema_migrations (version, name, statements)
+              VALUES ('${version}', '${name}', ARRAY[$migration_body$${sql}$migration_body$]::text[])
+              ON CONFLICT (version) DO NOTHING;
+            `);
+          }
+          statements.push('COMMIT;');
+          await execute(statements.join('\n'), false);
+
+          const postflight = await execute(`
+            SELECT
+              (SELECT count(*)::int FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+                WHERE n.nspname = 'public' AND p.proname IN (${functionNames})) AS function_count,
+              (SELECT count(*)::int FROM supabase_migrations.schema_migrations
+                WHERE version IN (${versions})) AS migration_count,
+              (SELECT count(*)::int
+                 FROM information_schema.routine_privileges
+                WHERE specific_schema = 'public'
+                  AND routine_name IN (${functionNames})
+                  AND grantee = 'anon') AS anon_execute_grants
+          `, true);
+
+          const result = postflight?.[0] ?? {};
+          console.log(`Postflight: functions=${result.function_count}, migrations=${result.migration_count}, anon_grants=${result.anon_execute_grants}`);
+          if (Number(result.function_count) !== 5 || Number(result.migration_count) !== 5 || Number(result.anon_execute_grants) !== 0) {
+            throw new Error('postflight_contract_failed');
+          }
+          NODE
