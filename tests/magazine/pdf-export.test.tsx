@@ -239,4 +239,12 @@ describe('MagazinePrintPage — export renderiza todas as páginas e ignora esta
     expect(screen.queryAllByTestId(/^page-renderer-/).length).toBe(0);
     expect(screen.queryByTestId('magazine-print-btn')).toBeNull();
   });
+
+  it('erro de leitura não mantém loading nem oferece impressão incompleta', async () => {
+    getMock.mockRejectedValueOnce(new Error('offline'));
+    renderPrint('indisponivel');
+    await screen.findByText('Falha ao carregar');
+    expect(screen.queryByTestId('magazine-print-btn')).toBeNull();
+    expect(screen.queryAllByTestId(/^page-renderer-/)).toHaveLength(0);
+  });
 });

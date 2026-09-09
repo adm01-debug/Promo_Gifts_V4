@@ -24,6 +24,7 @@ import { PG_BTN_OUTLINE, PG_ICON_BOX, PG_OVERLINE } from '../pg';
 interface Props {
   magazine: Magazine;
   onChangeTemplate: (id: MagazineTemplateId) => void;
+  onLeave?: () => void;
 }
 
 const FAMILY_LABEL: Record<'catalog' | 'corporate' | 'editorial', string> = {
@@ -32,7 +33,7 @@ const FAMILY_LABEL: Record<'catalog' | 'corporate' | 'editorial', string> = {
   corporate: 'Corporativo',
 };
 
-export function EditorHero({ magazine, onChangeTemplate }: Props) {
+export function EditorHero({ magazine, onChangeTemplate, onLeave }: Props) {
   const [open, setOpen] = useState(false);
   const active = getTemplate(magazine.templateId);
   const all = listTemplates();
@@ -44,7 +45,16 @@ export function EditorHero({ magazine, onChangeTemplate }: Props) {
         aria-label="Trilha"
         className="mb-1.5 flex items-center gap-1.5 text-[11px] text-muted-foreground"
       >
-        <Link to="/magazine" className="link-unstyled hover:text-foreground">
+        <Link
+          to="/magazine"
+          className="link-unstyled hover:text-foreground"
+          onClick={(event) => {
+            if (onLeave && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) {
+              event.preventDefault();
+              onLeave();
+            }
+          }}
+        >
           Magazines
         </Link>
         <span aria-hidden>/</span>

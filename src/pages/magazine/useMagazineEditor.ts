@@ -1,21 +1,5 @@
-/**
- * useMagazineEditor — carrega/edita/salva uma revista. v1 usa localStorage
- * via magazineService com autosave debounced.
- *
- * CRITICAL FIX: magazineRef stale-read race condition
- * ────────────────────────────────────────────────
- * Before: magazineRef.current was updated ONLY in a useEffect (deferred).
- * This meant two rapid mutations (e.g. setTitle → setBranding in same tick)
- * would both read the OLD ref, causing the second mutation to LOSE the
- * first's changes (title would disappear after branding update).
- *
- * After: persist() updates magazineRef.current IMMEDIATELY before setState,
- * so the next mutation always reads the latest snapshot, even in the same tick.
- * The useEffect remains as a safety net for external state changes (e.g. from
- * magazineService calls that bypass persist()).
- */
-
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+/** Magazine editor: serial writes, metadata-only autosave and explicit failures. */
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { magazineService } from '@/services/magazineService';
 import { useAuth } from '@/contexts/AuthContext';
 import type {
@@ -27,120 +11,100 @@ import type {
 } from '@/types/magazine';
 import type { Product } from '@/types/product-catalog';
 import { validateBranding } from '@/lib/security/magazine-guard';
+import { EditorPersistence, type EditorPatch } from './editorPersistence';
 
 export function useMagazineEditor(id: string | undefined) {
   const { user } = useAuth();
   const [magazine, setMagazine] = useState<Magazine | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [dirty, setDirty] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [brandingErrors, setBrandingErrors] = useState<string[]>([]);
-  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  // Counts in-flight async mutations; setSaving(false) only when counter reaches 0.
-  const pendingOps = useRef(0);
-
-  // CRITICAL FIX: Declare ref BEFORE persist so persist can update it immediately.
-  // Using useRef<Magazine | null>(null) — initial value set in useEffect below.
-  const magazineRef = useRef<Magazine | null>(null);
+  const session = useRef<EditorPersistence | null>(null);
 
   useEffect(() => {
+    let active = true;
+    session.current = null;
+    setMagazine(null);
+    setLoaded(false);
+    setSaving(false);
+    setDirty(false);
+    setSaveError(null);
+    setLoadError(null);
+    setBrandingErrors([]);
     if (!id) {
       setLoaded(true);
       return;
     }
-    let cancelled = false;
-    (async () => {
-      // FIX(lint): renamed from `loaded` to `fetched` to avoid shadowing the
-      // `loaded` state variable declared in the outer scope (no-shadow).
-      const fetched = await magazineService.get(id);
-      if (cancelled) return;
-      magazineRef.current = fetched;
-      setMagazine(fetched);
-      setLoaded(true);
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [id]);
-
-  const persist = useCallback((next: Magazine) => {
-    // CRITICAL FIX: Update ref IMMEDIATELY before calling setMagazine.
-    // React batches setState calls; useEffect (which previously synced the ref)
-    // runs AFTER the render, meaning two persist() calls in the same tick
-    // would both read the old ref. This fix ensures each call sees fresh data.
-    magazineRef.current = next;
-    setMagazine(next);
-    // Integrate debounced autosave into pendingOps so that a concurrent
-    // addProducts/removeItem/reorderItems call cannot clear the saving flag
-    // while the autosave timer is still in-flight.
-    if (saveTimer.current) {
-      clearTimeout(saveTimer.current);
-      saveTimer.current = null;
-      // The previous pending timer is cancelled — reverse its increment.
-      pendingOps.current -= 1;
-      if (pendingOps.current < 0) pendingOps.current = 0;
-    }
-    setSaving(true);
-    pendingOps.current += 1;
-    saveTimer.current = setTimeout(() => {
-      saveTimer.current = null;
-      void magazineService.update(next.id, next).finally(() => {
-        pendingOps.current -= 1;
-        if (pendingOps.current === 0) setSaving(false);
+    void magazineService
+      .get(id)
+      .then((fetched) => {
+        if (!active) return;
+        if (fetched) {
+          const current = new EditorPersistence(
+            fetched,
+            (key, patch) => magazineService.update(key, patch),
+            () => {
+              if (!active || session.current !== current) return;
+              setMagazine(current.magazine);
+              setSaving(current.saving);
+              setDirty(current.dirty);
+              setSaveError(current.error);
+            },
+          );
+          session.current = current;
+        }
+        setMagazine(fetched);
+      })
+      .catch(() => {
+        if (active)
+          setLoadError(
+            'Não foi possível carregar a revista. Verifique a conexão e tente novamente.',
+          );
+      })
+      .finally(() => {
+        if (active) setLoaded(true);
       });
-    }, 400);
-  }, []);
-
-  // Safety net: keeps ref in sync for external state changes
-  // (e.g. magazineService calls that bypass persist, HMR, test overrides)
-  useEffect(() => {
-    magazineRef.current = magazine;
-  }, [magazine]);
-
-  // Unmount cleanup: cancel pending debounced save to prevent setState on
-  // unmounted component (React warning) and spurious network requests.
-  useEffect(() => {
     return () => {
-      if (saveTimer.current) {
-        clearTimeout(saveTimer.current);
-        saveTimer.current = null;
-      }
+      active = false;
+      const previous = session.current;
+      previous?.cancelTimer();
+      // Best effort on SPA unmount; browser termination cannot await this.
+      // Explicit actions use flushSave and failures remain blocking there.
+      if (previous?.dirty) void previous.flush().catch(() => undefined);
     };
+  }, [id, user?.id]);
+
+  useEffect(() => {
+    const warn = (event: BeforeUnloadEvent) => {
+      if (!session.current?.dirty && !session.current?.error) return;
+      event.preventDefault();
+      event.returnValue = '';
+    };
+    window.addEventListener('beforeunload', warn);
+    return () => window.removeEventListener('beforeunload', warn);
   }, []);
 
-  const setTitle = useCallback(
-    (title: string) => {
-      const current = magazineRef.current;
-      if (!current) return;
-      persist({ ...current, title });
-    },
-    [persist],
-  );
-
-  const setSubtitle = useCallback(
-    (subtitle: string) => {
-      const current = magazineRef.current;
-      if (!current) return;
-      persist({ ...current, subtitle });
-    },
-    [persist],
-  );
-
+  // CRITICAL FIX: EditorPersistence.edit updates its snapshot immediately,
+  // before React batches setState. Never replace this with effect-only ref sync.
+  const persist = useCallback((patch: EditorPatch) => session.current?.edit(patch), []);
+  const flushSave = useCallback(async () => {
+    const current = session.current;
+    if (!current) throw new Error('A revista ainda não foi carregada.');
+    await current.flush();
+  }, []);
+  const setTitle = useCallback((title: string) => persist({ title }), [persist]);
+  const setSubtitle = useCallback((subtitle: string) => persist({ subtitle }), [persist]);
   const setTemplate = useCallback(
-    (templateId: MagazineTemplateId) => {
-      const current = magazineRef.current;
-      if (!current) return;
-      persist({ ...current, templateId });
-    },
+    (templateId: MagazineTemplateId) => persist({ templateId }),
     [persist],
   );
-
   const setBranding = useCallback(
     (patch: Partial<MagazineClientBranding>) => {
-      const current = magazineRef.current;
+      const current = session.current?.magazine;
       if (!current) return;
-      // Deep-merge colors so a partial patch ({ colors: { primary } }) or
-      // DB-deserialized branding with missing keys does not silently drop
-      // secondary/text (shallow spread would overwrite the whole colors object).
       const merged = {
         ...current.branding,
         ...patch,
@@ -154,137 +118,60 @@ export function useMagazineEditor(id: string | undefined) {
         return;
       }
       setBrandingErrors([]);
-      persist({ ...current, branding: { ...merged, ...sanitized } });
+      persist({ branding: { ...merged, ...sanitized } });
     },
     [persist],
   );
-
   const setContent = useCallback(
     (patch: Partial<MagazineContentSettings>) => {
-      const current = magazineRef.current;
-      if (!current) return;
-      persist({ ...current, content: { ...current.content, ...patch } });
+      const current = session.current?.magazine;
+      if (current) persist({ content: { ...current.content, ...patch } });
     },
     [persist],
   );
-
-  const addProducts = useCallback(async (products: Product[]) => {
-    const current = magazineRef.current;
-    if (!current) return;
-    pendingOps.current += 1;
-    setSaving(true);
-    try {
-      const updated = await magazineService.addProducts(current.id, products);
-      if (updated) {
-        magazineRef.current = updated;
-        setMagazine(updated);
-      }
-    } finally {
-      pendingOps.current -= 1;
-      if (pendingOps.current === 0) setSaving(false);
-    }
+  const mutate = useCallback(async (action: (key: string) => Promise<Magazine | null>) => {
+    const current = session.current;
+    if (!current) throw new Error('A revista ainda não foi carregada.');
+    return current.mutate(action);
   }, []);
-
-  const removeItem = useCallback(async (itemId: string) => {
-    const current = magazineRef.current;
-    if (!current) return;
-    pendingOps.current += 1;
-    setSaving(true);
-    try {
-      const updated = await magazineService.removeItem(current.id, itemId);
-      if (updated) {
-        magazineRef.current = updated;
-        setMagazine(updated);
-      }
-    } finally {
-      pendingOps.current -= 1;
-      if (pendingOps.current === 0) setSaving(false);
-    }
-  }, []);
-
-  const reorderItems = useCallback(async (orderedIds: string[]) => {
-    const current = magazineRef.current;
-    if (!current) return;
-    pendingOps.current += 1;
-    setSaving(true);
-    try {
-      const updated = await magazineService.reorderItems(current.id, orderedIds);
-      if (updated) {
-        magazineRef.current = updated;
-        setMagazine(updated);
-      }
-    } finally {
-      pendingOps.current -= 1;
-      if (pendingOps.current === 0) setSaving(false);
-    }
-  }, []);
-
-  const updateItem = useCallback(async (itemId: string, patch: Partial<MagazineItem>) => {
-    const current = magazineRef.current;
-    if (!current) return;
-    pendingOps.current += 1;
-    setSaving(true);
-    try {
-      const updated = await magazineService.updateItem(current.id, itemId, patch);
-      if (updated) {
-        magazineRef.current = updated;
-        setMagazine(updated);
-      }
-    } finally {
-      pendingOps.current -= 1;
-      if (pendingOps.current === 0) setSaving(false);
-    }
-  }, []);
-
-  const publish = useCallback(async () => {
-    const current = magazineRef.current;
-    if (!current) return null;
-    pendingOps.current += 1;
-    setSaving(true);
-    try {
-      const updated = await magazineService.publish(current.id);
-      if (updated) {
-        magazineRef.current = updated;
-        setMagazine(updated);
-      }
-      return updated;
-    } finally {
-      pendingOps.current -= 1;
-      if (pendingOps.current === 0) setSaving(false);
-    }
-  }, []);
-
-  const unpublish = useCallback(async () => {
-    const current = magazineRef.current;
-    if (!current) return;
-    pendingOps.current += 1;
-    setSaving(true);
-    try {
-      const updated = await magazineService.unpublish(current.id);
-      if (updated) {
-        magazineRef.current = updated;
-        setMagazine(updated);
-      }
-    } finally {
-      pendingOps.current -= 1;
-      if (pendingOps.current === 0) setSaving(false);
-    }
-  }, []);
-
-  const isOwner = useMemo(
-    () => (magazine && user ? magazine.ownerId === user.id : false),
-    // Intentional: sub-field deps are more granular than full objects.
-    // `isOwner` only changes when ownerId or user.id changes, not on any
-    // magazine/user mutation. Using full objects would cause false re-computes.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [magazine?.id, magazine?.ownerId, user?.id],
+  const addProducts = useCallback(
+    async (products: Product[]) => {
+      await mutate((key) => magazineService.addProducts(key, products));
+    },
+    [mutate],
   );
+  const removeItem = useCallback(
+    async (itemId: string) => {
+      await mutate((key) => magazineService.removeItem(key, itemId));
+    },
+    [mutate],
+  );
+  const reorderItems = useCallback(
+    async (orderedIds: string[]) => {
+      await mutate((key) => magazineService.reorderItems(key, orderedIds));
+    },
+    [mutate],
+  );
+  const updateItem = useCallback(
+    async (itemId: string, patch: Partial<MagazineItem>) => {
+      await mutate((key) => magazineService.updateItem(key, itemId, patch));
+    },
+    [mutate],
+  );
+  const publish = useCallback(() => mutate((key) => magazineService.publish(key)), [mutate]);
+  const unpublish = useCallback(async () => {
+    await mutate((key) => magazineService.unpublish(key));
+  }, [mutate]);
 
   return {
     magazine,
     loaded,
     saving,
-    isOwner,
+    dirty,
+    saveError,
+    loadError,
+    flushSave,
+    isOwner: Boolean(magazine && magazine.ownerId === user?.id),
     setTitle,
     setSubtitle,
     setTemplate,

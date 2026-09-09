@@ -35,7 +35,7 @@ interface Props {
   variant?: 'drawer' | 'sidebar' | 'stage';
 }
 
-/** Níveis de zoom: 1 = fit-to-width (comportamento padrão do renderer). */
+/** Níveis de zoom: 1 = página inteira ajustada à área disponível. */
 const ZOOM_LEVELS = [1, 1.5, 2, 3] as const;
 type ZoomLevel = (typeof ZOOM_LEVELS)[number];
 
@@ -53,8 +53,34 @@ export function PreviewSidebar({
 }: Props) {
   const [zoom, setZoom] = useState<ZoomLevel>(1);
   const stageRef = useRef<HTMLDivElement>(null);
+  const [fitWidth, setFitWidth] = useState<number | null>(null);
   const active = pages[activeIdx] ?? pages[0];
+  const stageHasPage = Boolean(active);
   const hasActive = activeIdx >= 0 && activeIdx < pages.length;
+
+  useEffect(() => {
+    const element = stageRef.current;
+    if (!element || typeof ResizeObserver === 'undefined') return;
+    const measure = () => {
+      const css = getComputedStyle(element);
+      const horizontal = parseFloat(css.paddingLeft || '0') + parseFloat(css.paddingRight || '0');
+      const vertical = parseFloat(css.paddingTop || '0') + parseFloat(css.paddingBottom || '0');
+      const width = element.clientWidth - horizontal;
+      const height = parseFloat(css.maxHeight) - vertical - 2;
+      if (width <= 0) return;
+      setFitWidth(
+        Math.min(width, Number.isFinite(height) && height > 0 ? (height * 1920) / 2716 : width),
+      );
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    window.addEventListener('resize', measure);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', measure);
+    };
+  }, [stageHasPage, variant]);
 
   const canZoomIn = zoom < ZOOM_LEVELS[ZOOM_LEVELS.length - 1];
   const canZoomOut = zoom > ZOOM_LEVELS[0];
@@ -158,12 +184,11 @@ export function PreviewSidebar({
             )}
           >
             {/*
-              O renderer usa fit-to-width no wrapper. Ao aumentar a largura do
-              wrapper para `zoom * 100%`, o ResizeObserver interno recalcula e
-              escala o conteúdo — sem duplicar transforms.
+              A largura-base respeita largura E altura do stage. O renderer
+              aplica uma única transformação; zoom amplia a partir do Fit.
             */}
             <div
-              style={{ width: `${zoom * 100}%` }}
+              style={{ width: fitWidth === null ? `${zoom * 100}%` : fitWidth * zoom }}
               className="mx-auto shadow-[0_12px_32px_rgba(0,0,0,0.32)]"
             >
               <MagazinePageRenderer
@@ -280,9 +305,9 @@ export function PreviewSidebar({
               aria-valuemax={Math.round(ZOOM_LEVELS[ZOOM_LEVELS.length - 1] * 100)}
               aria-valuenow={Math.round(zoom * 100)}
               aria-valuetext={
-                zoom === 1 ? 'Ajustar à largura' : `${Math.round(zoom * 100)} por cento`
+                zoom === 1 ? 'Ajustar página inteira' : `${Math.round(zoom * 100)} por cento`
               }
-              title="Ajustar à largura (0)"
+              title="Ajustar página inteira (0)"
             >
               {zoom === 1 ? 'Fit' : `${Math.round(zoom * 100)}%`}
             </div>

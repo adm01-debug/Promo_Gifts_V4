@@ -20,9 +20,13 @@ export default function MagazinePrintPage() {
   const token = params.get('token');
   const [magazine, setMagazine] = useState<Magazine | null>(null);
   const [loaded, setLoaded] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
+    setLoaded(false);
+    setMagazine(null);
+    setLoadError(null);
     (async () => {
       let m: Magazine | null = null;
       if (id) m = await magazineService.get(id);
@@ -30,7 +34,13 @@ export default function MagazinePrintPage() {
       if (cancelled) return;
       setMagazine(m);
       setLoaded(true);
-    })();
+    })().catch(() => {
+      if (cancelled) return;
+      setLoadError(
+        'Não foi possível carregar a revista para impressão. Recarregue para tentar novamente.',
+      );
+      setLoaded(true);
+    });
     return () => {
       cancelled = true;
     };
@@ -49,8 +59,12 @@ export default function MagazinePrintPage() {
     return (
       <div className="flex h-screen items-center justify-center text-center">
         <div>
-          <div className="mb-2 text-xl font-semibold">Revista não encontrada</div>
-          <div className="text-sm text-muted-foreground">Verifique o link e tente novamente.</div>
+          <div className="mb-2 text-xl font-semibold">
+            {loadError ? 'Falha ao carregar' : 'Revista não encontrada'}
+          </div>
+          <div className="text-sm text-muted-foreground">
+            {loadError ?? 'Verifique o link e tente novamente.'}
+          </div>
         </div>
       </div>
     );
@@ -73,7 +87,12 @@ export default function MagazinePrintPage() {
             key={p.index}
             className="mx-auto w-full overflow-hidden rounded-lg bg-white shadow-lg print:rounded-none print:shadow-none"
           >
-            <MagazinePageRenderer magazine={magazine} page={p} totalPages={pages.length} fitContainer />
+            <MagazinePageRenderer
+              magazine={magazine}
+              page={p}
+              totalPages={pages.length}
+              fitContainer
+            />
           </div>
         ))}
       </div>

@@ -16,6 +16,7 @@ import { renderHook, act } from '@testing-library/react';
 import { type Magazine, DEFAULT_BRANDING, DEFAULT_MAGAZINE_CONTENT } from '@/types/magazine';
 
 import { useMagazineEditor } from '../useMagazineEditor';
+import { magazineService } from '@/services/magazineService';
 
 // ============================================================================
 // Mocks
@@ -75,8 +76,8 @@ vi.mock('@/services/magazineService', () => ({
     // eslint-disable-next-line @typescript-eslint/require-await -- assinatura assíncrona intencional (mock/interface Promise)
     get: vi.fn(async (id: string) => (id === 'mag_test' ? { ...storedMagazine } : null)),
     // eslint-disable-next-line @typescript-eslint/require-await -- assinatura assíncrona intencional (mock/interface Promise)
-    update: vi.fn(async (id: string, data: Magazine) => {
-      if (id === 'mag_test') storedMagazine = { ...data };
+    update: vi.fn(async (id: string, data: Partial<Magazine>) => {
+      if (id === 'mag_test' && storedMagazine) storedMagazine = { ...storedMagazine, ...data };
       return storedMagazine;
     }),
     // eslint-disable-next-line @typescript-eslint/require-await -- assinatura assíncrona intencional (mock/interface Promise)
@@ -84,7 +85,10 @@ vi.mock('@/services/magazineService', () => ({
       if (id !== 'mag_test' || !storedMagazine) return null;
       const updated = {
         ...storedMagazine,
-        items: [...storedMagazine.items, ...products.map((_p, i) => ({ ...DUMMY_ITEM, id: `item_${Date.now()}_${i}` }))],
+        items: [
+          ...storedMagazine.items,
+          ...products.map((_p, i) => ({ ...DUMMY_ITEM, id: `item_${Date.now()}_${i}` })),
+        ],
       } as Magazine;
       storedMagazine = updated;
       return updated;
@@ -92,7 +96,10 @@ vi.mock('@/services/magazineService', () => ({
     // eslint-disable-next-line @typescript-eslint/require-await -- assinatura assíncrona intencional (mock/interface Promise)
     removeItem: vi.fn(async (id: string, itemId: string) => {
       if (id !== 'mag_test' || !storedMagazine) return null;
-      const updated = { ...storedMagazine, items: storedMagazine.items.filter((i) => i.id !== itemId) };
+      const updated = {
+        ...storedMagazine,
+        items: storedMagazine.items.filter((i) => i.id !== itemId),
+      };
       storedMagazine = updated;
       return updated;
     }),
@@ -110,7 +117,9 @@ vi.mock('@/services/magazineService', () => ({
       if (id !== 'mag_test' || !storedMagazine) return null;
       const updated = {
         ...storedMagazine,
-        items: storedMagazine.items.map((item) => item.id === itemId ? { ...item, ...patch } : item),
+        items: storedMagazine.items.map((item) =>
+          item.id === itemId ? { ...item, ...patch } : item,
+        ),
       };
       storedMagazine = updated;
       return updated;
@@ -166,6 +175,34 @@ async function renderLoadedEditor() {
 }
 
 describe('useMagazineEditor — stale ref race condition', () => {
+  it('autosave envia apenas campos editados, nunca items ou status', async () => {
+    const { result } = await renderLoadedEditor();
+    act(() => result.current.setTitle('Título seguro'));
+    await act(() => vi.advanceTimersByTimeAsync(400));
+    expect(magazineService.update).toHaveBeenCalledWith('mag_test', { title: 'Título seguro' });
+  });
+
+  it('retorno null não confirma salvamento e preserva edição para retry', async () => {
+    const { result } = await renderLoadedEditor();
+    vi.mocked(magazineService.update).mockResolvedValueOnce(null);
+    act(() => result.current.setTitle('Ainda pendente'));
+    await act(() => vi.advanceTimersByTimeAsync(400));
+    expect(result.current.magazine?.title).toBe('Ainda pendente');
+    expect(result.current.saveError).toBeTruthy();
+    expect(result.current.dirty).toBe(true);
+    await act(() => result.current.flushSave());
+    expect(result.current.saveError).toBeNull();
+    expect(result.current.dirty).toBe(false);
+  });
+
+  it('publicar aguarda o título pendente antes do debounce', async () => {
+    const { result } = await renderLoadedEditor();
+    act(() => result.current.setTitle('Título publicado'));
+    await act(() => result.current.publish());
+    expect(storedMagazine?.title).toBe('Título publicado');
+    expect(magazineService.update).toHaveBeenCalledBefore(vi.mocked(magazineService.publish));
+  });
+
   it('[A] setTitle → setBranding in same tick: BOTH mutations applied', async () => {
     const { result } = await renderLoadedEditor();
 
@@ -173,7 +210,9 @@ describe('useMagazineEditor — stale ref race condition', () => {
     await act(async () => {
       // Two mutations in the same synchronous tick
       result.current.setTitle('New Title');
-      result.current.setBranding({ colors: { primary: '#FF0000', secondary: '#e86f2e', text: '#1a1a1a' } });
+      result.current.setBranding({
+        colors: { primary: '#FF0000', secondary: '#e86f2e', text: '#1a1a1a' },
+      });
     });
 
     // CRITICAL: Both must be applied
@@ -268,7 +307,6 @@ describe('useMagazineEditor — stale ref race condition', () => {
   });
 
   it('[E] autosave debounce: magazineService.update called after 400ms', async () => {
-    const { magazineService } = await import('@/services/magazineService');
     const { result } = await renderLoadedEditor();
 
     // eslint-disable-next-line @typescript-eslint/require-await -- assinatura assíncrona intencional (mock/interface Promise)
@@ -285,9 +323,12 @@ describe('useMagazineEditor — stale ref race condition', () => {
       vi.advanceTimersByTime(450);
     });
 
-    expect(magazineService.update).toHaveBeenCalledWith('mag_test', expect.objectContaining({
-      title: 'Debounced Save',
-    }));
+    expect(magazineService.update).toHaveBeenCalledWith(
+      'mag_test',
+      expect.objectContaining({
+        title: 'Debounced Save',
+      }),
+    );
   });
 
   it('[F] setTitle with empty string clears title', async () => {
@@ -310,7 +351,9 @@ describe('useMagazineEditor — stale ref race condition', () => {
 
     // colors.primary must still be there
     expect(result.current.magazine?.branding.colors.primary).toBe(originalPrimary);
-    expect(result.current.magazine?.branding.clientLogoUrl).toBe('https://cdn.example.com/logo.png');
+    expect(result.current.magazine?.branding.clientLogoUrl).toBe(
+      'https://cdn.example.com/logo.png',
+    );
   });
 
   it('[H] setBranding with partial colors patch preserves non-patched color keys', async () => {
@@ -334,7 +377,7 @@ describe('useMagazineEditor — stale ref race condition', () => {
 
     expect(result.current.magazine?.branding.colors.primary).toBe('#AA0000');
     expect(result.current.magazine?.branding.colors.secondary).toBe('#CCCCCC'); // must NOT be #000000
-    expect(result.current.magazine?.branding.colors.text).toBe('#333333');    // must NOT be #000000
+    expect(result.current.magazine?.branding.colors.text).toBe('#333333'); // must NOT be #000000
   });
 
   it('[I] setBranding with partial colors patch preserves text color only', async () => {
@@ -353,9 +396,9 @@ describe('useMagazineEditor — stale ref race condition', () => {
       result.current.setBranding({ colors: { secondary: '#FF6600' } });
     });
 
-    expect(result.current.magazine?.branding.colors.primary).toBe('#AA0000');    // preserved
+    expect(result.current.magazine?.branding.colors.primary).toBe('#AA0000'); // preserved
     expect(result.current.magazine?.branding.colors.secondary).toBe('#FF6600'); // patched
-    expect(result.current.magazine?.branding.colors.text).toBe('#444444');       // preserved
+    expect(result.current.magazine?.branding.colors.text).toBe('#444444'); // preserved
   });
 
   it('[J] setBranding with all colors + clientLogoUrl: all applied atomically', async () => {
@@ -407,7 +450,9 @@ describe('useMagazineEditor — stale ref race condition', () => {
 describe('useMagazineEditor — loading states', () => {
   it('loaded=false initially', async () => {
     const { result } = await renderLoadedEditor();
-    act(() => { vi.runAllTimers(); });
+    act(() => {
+      vi.runAllTimers();
+    });
     expect(result.current.loaded).toBe(true);
   });
 

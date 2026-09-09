@@ -143,7 +143,7 @@ async function fetchMagazineRow(id: string): Promise<MagazineRow | null> {
     .maybeSingle();
   if (error) {
     logger.warn('[magazineService] fetchMagazineRow error:', error.message);
-    return null;
+    throw new Error('Não foi possível carregar a revista.');
   }
   return data ?? null;
 }
@@ -156,7 +156,7 @@ async function fetchItems(magazineId: string): Promise<MagazineItemRow[]> {
     .order('position', { ascending: true });
   if (error) {
     logger.warn('[magazineService] fetchItems error:', error.message);
-    return [];
+    throw new Error('Não foi possível carregar os produtos da revista.');
   }
   return data ?? [];
 }
@@ -262,16 +262,17 @@ export const magazineService = {
       .order('updated_at', { ascending: false });
     if (error) {
       logger.warn('[magazineService.list] error:', error.message);
-      return [];
+      throw new Error('Não foi possível carregar as revistas.');
     }
     const rows: MagazineRow[] = data ?? [];
     if (rows.length === 0) return [];
     // Busca items de todas as revistas em uma query só
     const ids = rows.map((r) => r.id);
-    const { data: itemsData } = await magazineDb
+    const { data: itemsData, error: itemsError } = await magazineDb
       .from('magazine_items')
       .select('*')
       .in('magazine_id', ids);
+    if (itemsError) throw new Error('Não foi possível carregar os produtos das revistas.');
     const items = itemsData ?? [];
     const byMag = new Map<string, MagazineItemRow[]>();
     for (const it of items) {
@@ -340,34 +341,23 @@ export const magazineService = {
     if ('publishedAt' in patch) updateRow.published_at = patch.publishedAt;
 
     if (Object.keys(updateRow).length > 0) {
-      const { error } = await magazineDb.from('magazines').update(updateRow).eq('id', id);
-      if (error) {
-        logger.warn('[magazineService.update] header error:', error.message);
+      const { data, error } = await magazineDb
+        .from('magazines')
+        .update(updateRow)
+        .eq('id', id)
+        .select('id')
+        .maybeSingle();
+      if (error || !data) {
+        logger.warn(
+          '[magazineService.update] header error:',
+          error?.message ?? 'Nenhuma linha atualizada',
+        );
         return null;
       }
     }
 
-    // Se o patch inclui items, sincroniza (delete + insert).
-    if (patch.items) {
-      await magazineDb.from('magazine_items').delete().eq('magazine_id', id);
-      if (patch.items.length > 0) {
-        const rows = patch.items.map((it, idx) => ({
-          magazine_id: id,
-          product_id: it.productId,
-          product_snapshot:
-            it.productSnapshot as unknown as MagazineDatabase['public']['Tables']['magazine_items']['Insert']['product_snapshot'],
-          variant_color_name: it.variantColorName,
-          position: idx,
-          page_number: it.pageNumber,
-          overrides: (it.overrides ??
-            {}) as unknown as MagazineDatabase['public']['Tables']['magazine_items']['Insert']['overrides'],
-        }));
-        const { error: insErr } = await magazineDb.from('magazine_items').insert(rows);
-        if (insErr) {
-          logger.warn('[magazineService.update] items insert error:', insErr.message);
-        }
-      }
-    }
+    // GUARD: update is metadata-only. Legacy full snapshots may include items,
+    // but must NEVER delete/reinsert them. Use the dedicated item operations.
 
     return hydrate(id);
   },
@@ -409,7 +399,11 @@ export const magazineService = {
     const current = await this.get(id);
     if (!current) return null;
     const existingIds = new Set(current.items.map((i) => i.productId));
-    const additions = products.filter((p) => !existingIds.has(p.id));
+    const additions = products.filter((p) => {
+      if (existingIds.has(p.id)) return false;
+      existingIds.add(p.id);
+      return true;
+    });
     if (additions.length === 0) return current;
     const basePos = current.items.length;
     const rows = additions.map((p, offset) => ({
@@ -427,7 +421,7 @@ export const magazineService = {
     const { error } = await magazineDb.from('magazine_items').insert(rows);
     if (error) {
       logger.warn('[magazineService.addProducts] error:', error.message);
-      return current;
+      return null;
     }
     // Bumpa updated_at do header
     await magazineDb
@@ -445,7 +439,7 @@ export const magazineService = {
       .eq('magazine_id', id);
     if (error) {
       logger.warn('[magazineService.removeItem] error:', error.message);
-      return this.get(id);
+      return null;
     }
     await magazineDb
       .from('magazines')

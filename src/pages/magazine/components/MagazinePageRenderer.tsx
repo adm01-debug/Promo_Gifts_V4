@@ -9,6 +9,7 @@ import { getTemplate } from './templates/TemplateRegistry';
 import { MAGAZINE_CATEGORY_META } from './templates/chrome';
 import { CategoryIcon } from '../utils/categoryIcons';
 import { contrastRatio } from '../utils/contrast';
+import '../magazine.css';
 
 interface Props {
   magazine: Magazine;
@@ -86,7 +87,16 @@ export function MagazinePageRenderer({ magazine, page, fitContainer, totalPages 
 
   return (
     <div ref={wrapperRef} className="mag-preview-wrapper mag-scope" style={style}>
-      <div style={{ transform: `scale(${scale})`, width: 1920, height: 2716 }}>{content}</div>
+      <div
+        style={{
+          transform: `scale(${scale})`,
+          transformOrigin: 'top left',
+          width: 1920,
+          height: 2716,
+        }}
+      >
+        {content}
+      </div>
     </div>
   );
 }

@@ -5,10 +5,11 @@
  * Duplicar / excluir com Undo vivem no menu contextual de cada card.
  */
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   BookOpen,
+  Building2,
   Clock3,
   Copy,
   ExternalLink,
@@ -67,6 +68,7 @@ import { MagazineCardThumbnail } from './components/MagazineCardThumbnail';
 import { useMagazineGoldImport } from './hooks/useMagazineGoldImport';
 import { useBluePremiumTheme } from './hooks/useBluePremiumTheme';
 import { MagazineStatsCards } from './components/MagazineStatsCards';
+import { getTemplate } from './components/templates/TemplateRegistry';
 import {
   PG_BTN,
   PG_BTN_OUTLINE_PRIMARY,
@@ -141,6 +143,8 @@ export default function MagazineListPage() {
   const [view, setView] = useState<ViewMode>('grid');
   const [pendingDelete, setPendingDelete] = useState<Magazine | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const loadSequence = useRef(0);
   const [isCreating, setIsCreating] = useState(false);
   const [isDuplicating, setIsDuplicating] = useState<string | null>(null);
 
@@ -150,15 +154,30 @@ export default function MagazineListPage() {
   useMagazineGoldImport(user?.id);
 
   const refresh = async () => {
-    if (!user) return;
+    const sequence = ++loadSequence.current;
+    if (!user) {
+      setMagazines([]);
+      setIsLoading(false);
+      return;
+    }
     setIsLoading(true);
-    const list = await magazineService.list(user.id);
-    setMagazines(list);
-    setIsLoading(false);
+    setLoadError(null);
+    try {
+      const list = await magazineService.list(user.id);
+      if (sequence === loadSequence.current) setMagazines(list);
+    } catch {
+      if (sequence === loadSequence.current) setLoadError('Não foi possível carregar as revistas.');
+    } finally {
+      if (sequence === loadSequence.current) setIsLoading(false);
+    }
   };
 
   useEffect(() => {
+    setMagazines([]);
     void refresh();
+    return () => {
+      loadSequence.current += 1;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
@@ -178,6 +197,7 @@ export default function MagazineListPage() {
       if (!q) return true;
       return (
         m.title.toLowerCase().includes(q) ||
+        (m.subtitle ?? '').toLowerCase().includes(q) ||
         (m.branding?.clientName ?? '').toLowerCase().includes(q)
       );
     });
@@ -401,7 +421,23 @@ export default function MagazineListPage() {
           </div>
         )}
 
-        {empty ? (
+        {loadError ? (
+          <div role="alert" className={cn(PG_PANEL, 'p-6')}>
+            <p>{loadError}</p>
+            <Button
+              onClick={() => {
+                void refresh();
+              }}
+              variant="outline"
+            >
+              Tentar novamente
+            </Button>
+          </div>
+        ) : isLoading ? (
+          <div role="status" className={cn(PG_PANEL, 'p-6')}>
+            Carregando revistas…
+          </div>
+        ) : empty ? (
           <div className={cn(PG_PANEL, 'border-dashed')}>
             <div className="flex flex-col items-center justify-center gap-3 px-6 py-14 text-center">
               <div className={PG_ICON_BOX}>
@@ -448,6 +484,13 @@ export default function MagazineListPage() {
                     className="relative block focus-visible:ring-inset"
                   >
                     <MagazineCardThumbnail magazine={m} />
+                    <span className={cn(pgStatusBadge(m.status), 'absolute right-2 top-2')}>
+                      {m.status === 'published'
+                        ? 'Publicada'
+                        : m.status === 'draft'
+                          ? 'Rascunho'
+                          : 'Arquivada'}
+                    </span>
                   </Clickable>
                   <div className="flex flex-1 flex-col gap-0 px-3.5 pb-3 pt-2.5">
                     <div className="flex items-start justify-between gap-2">
@@ -459,17 +502,37 @@ export default function MagazineListPage() {
                           {m.title}
                         </p>
                         {m.branding?.clientName && (
-                          <p className="truncate text-[12px] text-muted-foreground">
-                            {m.branding.clientName}
+                          <p className="flex items-center gap-1.5 text-[12px] text-muted-foreground">
+                            <Building2 className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                            <span className="truncate">{m.branding.clientName}</span>
                           </p>
                         )}
                       </div>
+                    </div>
+                    <p className="mt-2 flex items-center gap-1.5 text-[12px] text-muted-foreground">
+                      <Package className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                      {m.items?.length ?? 0} produtos · {getTemplate(m.templateId).name}
+                    </p>
+                    <div className="mt-2 flex items-center gap-3">
+                      <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
+                        <Eye className="h-3 w-3" />
+                        {(m.viewCount ?? 0).toLocaleString('pt-BR')}
+                      </span>
+                      <span className="ml-auto flex items-center gap-1 text-[11px] text-muted-foreground">
+                        <Clock3 className="h-3 w-3" />
+                        {formatDistanceToNow(new Date(m.updatedAt), {
+                          addSuffix: true,
+                          locale: ptBR,
+                        })}
+                      </span>
+                    </div>
+                    <div className="mt-3 flex items-center gap-2">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-7 w-7 shrink-0 text-muted-foreground opacity-0 transition-opacity focus:opacity-100 group-hover:opacity-100"
+                            className="h-9 w-9 shrink-0 text-muted-foreground"
                             aria-label="Opções da revista"
                             data-testid={`magazine-menu-${m.id}`}
                           >
@@ -486,7 +549,7 @@ export default function MagazineListPage() {
                           {m.status === 'published' && m.publicToken && (
                             <DropdownMenuItem asChild>
                               <a
-                                href={`/m/${m.publicToken}`}
+                                href={`/revista-publica/${m.publicToken}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                               >
@@ -504,26 +567,25 @@ export default function MagazineListPage() {
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
-                    </div>
-                    <div className="mt-2 flex items-center gap-3">
-                      <span className={pgStatusBadge(m.status)}>
-                        {m.status === 'published'
-                          ? 'Publicada'
-                          : m.status === 'draft'
-                            ? 'Rascunho'
-                            : 'Arquivada'}
-                      </span>
-                      <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
-                        <Eye className="h-3 w-3" />
-                        {(m.viewCount ?? 0).toLocaleString('pt-BR')}
-                      </span>
-                      <span className="ml-auto flex items-center gap-1 text-[11px] text-muted-foreground">
-                        <Clock3 className="h-3 w-3" />
-                        {formatDistanceToNow(new Date(m.updatedAt), {
-                          addSuffix: true,
-                          locale: ptBR,
-                        })}
-                      </span>
+                      {m.status === 'published' && m.publicToken ? (
+                        <Button asChild variant="secondary" className="h-9 min-w-0 flex-1">
+                          <a
+                            href={`/revista-publica/${m.publicToken}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Abrir revista <ExternalLink className="ml-2 h-3.5 w-3.5" aria-hidden />
+                          </a>
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="secondary"
+                          className="h-9 min-w-0 flex-1"
+                          onClick={() => openCard(m)}
+                        >
+                          {m.status === 'draft' ? 'Continuar edição' : 'Editar revista'}
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </article>
@@ -610,7 +672,11 @@ export default function MagazineListPage() {
                     </DropdownMenuItem>
                     {m.status === 'published' && m.publicToken && (
                       <DropdownMenuItem asChild>
-                        <a href={`/m/${m.publicToken}`} target="_blank" rel="noopener noreferrer">
+                        <a
+                          href={`/revista-publica/${m.publicToken}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
                           <ExternalLink className="mr-2 h-3.5 w-3.5" /> Ver pública
                         </a>
                       </DropdownMenuItem>

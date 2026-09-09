@@ -304,6 +304,7 @@ function TemplatePreviewDialogImpl({
                   >
                     <span
                       className="text-[20px] font-semibold leading-none text-foreground"
+                      style={{ fontFamily: `'${f.font}', serif` }}
                       aria-hidden
                     >
                       Aa

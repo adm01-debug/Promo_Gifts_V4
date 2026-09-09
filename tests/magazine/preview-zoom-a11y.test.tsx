@@ -124,7 +124,7 @@ describe('PreviewSidebar — a11y dos controles de zoom', () => {
     expect(spin.getAttribute('aria-valuemin')).toBe('100');
     expect(spin.getAttribute('aria-valuemax')).toBe('300');
     expect(spin.getAttribute('aria-valuenow')).toBe('100');
-    expect(spin.getAttribute('aria-valuetext')).toBe('Ajustar à largura');
+    expect(spin.getAttribute('aria-valuetext')).toBe('Ajustar página inteira');
   });
 
   it('aria-valuenow/text acompanham as mudanças de zoom (+ → +, − e reset)', async () => {
@@ -151,7 +151,7 @@ describe('PreviewSidebar — a11y dos controles de zoom', () => {
     // Atalho de teclado "0" também sincroniza o spinbutton.
     fireEvent.keyDown(window, { key: '0' });
     expect(spin.getAttribute('aria-valuenow')).toBe('100');
-    expect(spin.getAttribute('aria-valuetext')).toBe('Ajustar à largura');
+    expect(spin.getAttribute('aria-valuetext')).toBe('Ajustar página inteira');
   });
 
   it('aria-controls dos botões +/− aponta para o id do spinbutton', () => {

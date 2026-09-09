@@ -101,6 +101,7 @@ export function IdentityStep({ magazine, onTitle, onSubtitle, onBranding }: Prop
         <fieldset className="space-y-2">
           <legend className={PG_LABEL}>Cliente (CRM)</legend>
           <MagazineClientPicker
+            clientCrmId={magazine.branding.clientCrmId}
             clientName={magazine.branding?.clientName ?? null}
             clientLogoUrl={magazine.branding?.clientLogoUrl ?? null}
             onChange={onBranding}

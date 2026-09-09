@@ -16,6 +16,7 @@ import type { TemplateEntry } from '../components/templates/TemplateRegistry';
 import { buildMockMagazine, buildMockPage } from './mockMagazine';
 import { PAGE_H, PAGE_W, THUMB_SCALE } from './constants';
 import { TemplatePreviewBoundary } from './TemplatePreviewBoundary';
+import { MagazinePageRenderer } from '../components/MagazinePageRenderer';
 import { PG_BTN, PG_BTN_OUTLINE, PG_CARD, PG_CARD_HOVER } from '../pg';
 
 interface Props {
@@ -97,7 +98,6 @@ function TemplateCardImpl({
 
   const magazine = useMemo(() => buildMockMagazine(entry.id), [entry.id]);
   const page = useMemo(() => buildMockPage(entry.id), [entry.id]);
-  const Template = entry.Component;
 
   const handlePrefetch = () => {
     if (!visible) setVisible(true);
@@ -128,7 +128,7 @@ function TemplateCardImpl({
               transform: `scale(${scale})`,
             }}
           >
-            <Template magazine={magazine} page={page} totalPages={1} />
+            <MagazinePageRenderer magazine={magazine} page={page} totalPages={1} />
           </div>
         </TemplatePreviewBoundary>
       ) : (

@@ -104,9 +104,31 @@ export default function MagazineEditorPage() {
   const [previewSheetOpen, setPreviewSheetOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const editor = useMagazineEditor(id);
+  const { flushSave } = editor;
 
   // `magazine` é null enquanto carrega e quando o id não existe.
   const magazine = editor.magazine;
+
+  const saveNow = useCallback(async () => {
+    try {
+      await flushSave();
+      toast.success('Rascunho salvo.');
+    } catch {
+      toast.error('Não foi possível salvar. Suas alterações continuam no editor.');
+    }
+  }, [flushSave]);
+
+  const leaveEditor = useCallback(
+    async (path: string) => {
+      try {
+        await flushSave();
+        navigate(path);
+      } catch {
+        toast.error('Salve as alterações antes de sair. Tente novamente.');
+      }
+    },
+    [flushSave, navigate],
+  );
 
   // Aplica template vindo da galeria (`?applyTemplate=<id>`) uma vez após hidratar.
   useEffect(() => {
@@ -135,12 +157,12 @@ export default function MagazineEditorPage() {
       const cmd = e.metaKey || e.ctrlKey;
       if (cmd && e.key === 's') {
         e.preventDefault();
-        toast('Alterações salvas automaticamente.');
+        void saveNow();
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, []);
+  }, [saveNow]);
 
   // Deps enxutas: a referência de `items` já cobre mudança de contagem
   const pages = useMemo(
@@ -220,9 +242,11 @@ export default function MagazineEditorPage() {
     return (
       <div className={cn(PG_PAGE, 'flex justify-center')}>
         <div className={cn(PG_PANEL, 'mt-10 max-w-md p-8 text-center')}>
-          <h1 className="mb-2 text-[18px] font-semibold text-foreground">Revista não encontrada</h1>
+          <h1 className="mb-2 text-[18px] font-semibold text-foreground">
+            {editor.loadError ? 'Falha ao carregar revista' : 'Revista não encontrada'}
+          </h1>
           <p className="mb-6 text-[13px] text-muted-foreground">
-            Ela pode ter sido excluída ou não pertence a este usuário.
+            {editor.loadError ?? 'Ela pode ter sido excluída ou não pertence a este usuário.'}
           </p>
           <Button onClick={() => navigate('/magazine')} className={cn(PG_BTN, 'rounded-md')}>
             <ArrowLeft className="mr-2 h-4 w-4" aria-hidden /> Voltar
@@ -238,7 +262,19 @@ export default function MagazineEditorPage() {
   const layout = STEP_LAYOUT[step];
   const itemCount = (magazine.items ?? []).length;
 
-  const openPrint = () => window.open(`/magazine/${magazine.id}/print`, '_blank');
+  const openPrint = async () => {
+    // Open synchronously to retain the user gesture; navigate only after saving.
+    const tab = window.open('about:blank', '_blank');
+    if (tab) tab.opener = null;
+    try {
+      await editor.flushSave();
+      if (tab) tab.location.replace(`/magazine/${magazine.id}/print`);
+      else toast.error('Permita pop-ups para abrir a versão de impressão.');
+    } catch {
+      tab?.close();
+      toast.error('A impressão foi interrompida porque a gravação não foi confirmada.');
+    }
+  };
 
   const savedAgo = magazine.updatedAt
     ? formatDistanceToNow(new Date(magazine.updatedAt), {
@@ -272,7 +308,13 @@ export default function MagazineEditorPage() {
           data-testid="magazine-editor-hero-row"
         >
           <div className="min-w-0 flex-1">
-            <EditorHero magazine={magazine} onChangeTemplate={editor.setTemplate} />
+            <EditorHero
+              magazine={magazine}
+              onChangeTemplate={editor.setTemplate}
+              onLeave={() => {
+                void leaveEditor('/magazine');
+              }}
+            />
           </div>
           <div className="flex flex-wrap items-center gap-2.5 lg:pb-0.5">
             {/* Status de salvamento — sempre visível */}
@@ -281,7 +323,18 @@ export default function MagazineEditorPage() {
               aria-live="polite"
               className="mr-1 flex items-center gap-2 text-[12px] text-muted-foreground"
             >
-              {editor.saving ? (
+              {editor.saveError ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    void saveNow();
+                  }}
+                  className="text-destructive"
+                  title={editor.saveError}
+                >
+                  Falha ao salvar — tentar novamente
+                </button>
+              ) : editor.saving || editor.dirty ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
                   <span className="text-foreground">Salvando…</span>
@@ -345,11 +398,13 @@ export default function MagazineEditorPage() {
                   </SheetContent>
                 </Sheet>
 
-                {/* Salvar rascunho — autosave já roda, botão é confirmação visual */}
+                {/* Salvar rascunho aguarda a revisão efetivamente persistida. */}
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => toast('Rascunho salvo.')}
+                  onClick={() => {
+                    void saveNow();
+                  }}
                   className="h-11 min-h-0 rounded-md px-4 text-[14px] text-muted-foreground hover:text-foreground"
                 >
                   <Save className="mr-2 h-4 w-4" aria-hidden /> Salvar rascunho
@@ -435,15 +490,17 @@ export default function MagazineEditorPage() {
                     className="pg-module w-60 rounded-lg border-border bg-popover p-1.5"
                   >
                     <DropdownMenuItem
-                      onSelect={() =>
-                        navigate(`/magazine/templates?returnTo=/magazine/${magazine.id}`)
-                      }
+                      onSelect={() => {
+                        void leaveEditor(`/magazine/templates?returnTo=/magazine/${magazine.id}`);
+                      }}
                       className="h-9 rounded-md text-[13px]"
                     >
                       <LayoutTemplate className="mr-2 h-4 w-4" aria-hidden /> Galeria de templates
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onSelect={() => navigate('/magazine')}
+                      onSelect={() => {
+                        void leaveEditor('/magazine');
+                      }}
                       className="h-9 rounded-md text-[13px]"
                     >
                       <BookOpen className="mr-2 h-4 w-4" aria-hidden /> Voltar para revistas
@@ -577,8 +634,20 @@ export default function MagazineEditorPage() {
             {step === 'layout' && (
               <LayoutStep
                 magazine={magazine}
-                onReorder={editor.reorderItems}
-                onRemove={editor.removeItem}
+                onReorder={(ids) => {
+                  void editor
+                    .reorderItems(ids)
+                    .catch(() =>
+                      toast.error(
+                        'Não foi possível confirmar a ordem. Recarregue antes de tentar novamente.',
+                      ),
+                    );
+                }}
+                onRemove={(itemId) => {
+                  void editor
+                    .removeItem(itemId)
+                    .catch(() => toast.error('Não foi possível remover o produto.'));
+                }}
                 onItemHover={setHighlightedItemId}
                 highlightedItemId={highlightedItemId}
               />

@@ -23,6 +23,7 @@ const store: Store = {
 };
 
 let uidCounter = 0;
+let rejectItemInsert = false;
 function uid(prefix = 'r') {
   return `${prefix}_${++uidCounter}`;
 }
@@ -84,6 +85,9 @@ function collect(s: QueryState): Record<string, unknown>[] {
 function makeBuilder(s: QueryState) {
   const finish = async (single: 'single' | 'maybeSingle' | 'many') => {
     if (s.op === 'insert') {
+      if (s.table === 'magazine_items' && rejectItemInsert) {
+        return { data: null, error: { message: 'Synthetic insert denied' } };
+      }
       const payload = Array.isArray(s.payload) ? s.payload : [s.payload];
       const inserted: Record<string, unknown>[] = [];
       for (const p of payload as Record<string, unknown>[]) {
@@ -209,11 +213,40 @@ beforeEach(() => {
   store.magazines.clear();
   store.magazine_items.clear();
   uidCounter = 0;
+  rejectItemInsert = false;
 });
 
 // ============================================================================
 
 describe('magazineService — lifecycle happy path', () => {
+  it('snapshot legado ao editar título não apaga itens quando INSERT está indisponível', async () => {
+    const mag = await magazineService.create({ ownerId: 'u1' });
+    const snapshot = (await magazineService.addProducts(mag.id, [mkProduct('safe')]))!;
+    const before = [...store.magazine_items.values()].map((item) => ({ ...item }));
+    rejectItemInsert = true;
+    await magazineService.update(mag.id, { ...snapshot, title: 'Sem perda' });
+    expect([...store.magazine_items.values()]).toEqual(before);
+    expect((await magazineService.get(mag.id))?.title).toBe('Sem perda');
+  });
+
+  it('snapshot legado de metadados preserva IDs e ordem dos itens', async () => {
+    const mag = await magazineService.create({ ownerId: 'u1' });
+    const snapshot = (await magazineService.addProducts(mag.id, [mkProduct('a'), mkProduct('b')]))!;
+    const result = await magazineService.update(mag.id, { ...snapshot, title: 'Editado' });
+    expect(result?.items).toEqual(snapshot.items);
+  });
+
+  it('falha de inclusão retorna null, nunca o snapshot antigo como sucesso', async () => {
+    const mag = await magazineService.create({ ownerId: 'u1' });
+    rejectItemInsert = true;
+    expect(await magazineService.addProducts(mag.id, [mkProduct('a')])).toBeNull();
+    expect(store.magazine_items.size).toBe(0);
+  });
+
+  it('update sem linha acessível não confirma sucesso', async () => {
+    expect(await magazineService.update('inexistente', { title: 'x' })).toBeNull();
+  });
+
   it('create → get → update title → addProducts → publish → unpublish', async () => {
     const m = await magazineService.create({ ownerId: 'u1', title: 'Nova' });
     expect(m.id).toBeTruthy();

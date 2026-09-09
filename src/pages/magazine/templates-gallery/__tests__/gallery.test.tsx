@@ -9,9 +9,12 @@
  * para <div data-testid="stub-template" />.
  */
 
-import { render, screen, within, fireEvent } from '@testing-library/react';
+import { render, screen, within, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+const createMagazine = vi.hoisted(() => vi.fn());
+vi.mock('@/contexts/AuthContext', () => ({ useAuth: () => ({ user: { id: 'owner-test' } }) }));
+vi.mock('@/services/magazineService', () => ({ magazineService: { create: createMagazine } }));
 
 // Mock TODOS os templates para não pagar o custo de renderizar 1920×2716 real
 vi.mock('../../components/templates/TemplateRegistry', () => {
@@ -48,7 +51,8 @@ vi.mock('../../components/templates/TemplateRegistry', () => {
   return {
     TEMPLATE_REGISTRY: REGISTRY,
     listTemplates: () => Object.values(REGISTRY),
-    getTemplate: (id: string) => REGISTRY[id as keyof typeof REGISTRY] ?? REGISTRY['editorial-vogue'],
+    getTemplate: (id: string) =>
+      REGISTRY[id as keyof typeof REGISTRY] ?? REGISTRY['editorial-vogue'],
   };
 });
 
@@ -74,16 +78,25 @@ vi.mock('sonner', () => ({
 class IOStub {
   observe(el: Element) {
     // Chama callback com isIntersecting=true no próximo tick
-    queueMicrotask(() => this.cb([{ isIntersecting: true, target: el } as IntersectionObserverEntry], this as unknown as IntersectionObserver));
+    queueMicrotask(() =>
+      this.cb(
+        [{ isIntersecting: true, target: el } as IntersectionObserverEntry],
+        this as unknown as IntersectionObserver,
+      ),
+    );
   }
   disconnect() {}
   unobserve() {}
-  takeRecords() { return []; }
+  takeRecords() {
+    return [];
+  }
   cb: IntersectionObserverCallback;
   root = null;
   rootMargin = '';
   thresholds = [];
-  constructor(cb: IntersectionObserverCallback) { this.cb = cb; }
+  constructor(cb: IntersectionObserverCallback) {
+    this.cb = cb;
+  }
 }
 // @ts-expect-error jsdom
 globalThis.IntersectionObserver = IOStub;
@@ -103,6 +116,7 @@ function renderAt(url: string) {
 
 describe('MagazineTemplatesGalleryPage', () => {
   beforeEach(() => {
+    createMagazine.mockReset().mockResolvedValue({ id: 'created-magazine' });
     window.localStorage.clear();
     toastMock.message.mockClear();
     toastMock.success.mockClear();
@@ -133,11 +147,24 @@ describe('MagazineTemplatesGalleryPage', () => {
     expect(screen.getAllByTestId(/^template-card-/)).toHaveLength(3);
   });
 
-  it('botão "Usar" sem returnTo mostra toast e navega para /magazine', () => {
+  it('botão "Usar" sem returnTo cria revista com o template escolhido', async () => {
     renderAt('/magazine/templates');
     const btn = screen.getByTestId('template-use-editorial-vogue');
     fireEvent.click(btn);
-    expect(toastMock.message).toHaveBeenCalled();
+    await waitFor(() => expect(screen.getByTestId('landed')).toBeInTheDocument());
+    expect(createMagazine).toHaveBeenCalledWith({
+      ownerId: 'owner-test',
+      templateId: 'editorial-vogue',
+    });
+  });
+
+  it('falha ao criar mantém a galeria e permite tentar novamente', async () => {
+    createMagazine.mockRejectedValueOnce(new Error('offline'));
+    renderAt('/magazine/templates');
+    fireEvent.click(screen.getByTestId('template-use-editorial-vogue'));
+    await waitFor(() => expect(toastMock.error).toHaveBeenCalled());
+    expect(screen.queryByTestId('landed')).not.toBeInTheDocument();
+    expect(screen.getByTestId('template-use-editorial-vogue')).toBeInTheDocument();
   });
 
   it('rejeita returnTo malicioso (open-redirect) e usa fluxo default', () => {
@@ -184,7 +211,9 @@ describe('MagazineTemplatesGalleryPage', () => {
     expect(allTab.getAttribute('aria-selected')).toBe('true');
     fireEvent.click(screen.getByTestId('template-family-catalog'));
     expect(allTab.getAttribute('aria-selected')).toBe('false');
-    expect(screen.getByTestId('template-family-catalog').getAttribute('aria-selected')).toBe('true');
+    expect(screen.getByTestId('template-family-catalog').getAttribute('aria-selected')).toBe(
+      'true',
+    );
   });
 
   it('h1 tem data-testid canônico', () => {
