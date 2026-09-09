@@ -49,6 +49,7 @@ readonly migrations=(
   20260909190400_magazine_page_order_numeric_version.sql
   20260909200000_magazine_hardening_v2.sql
   20260909220000_magazine_duplicate_request_indexes.sql
+  20260909221000_magazine_view_events_rls_initplan.sql
 )
 for migration in "${migrations[@]}"; do
   "${psql_base[@]}" -f "/workspace/supabase/migrations/${migration}" >/dev/null
@@ -60,6 +61,7 @@ done
 # Reapplication is the idempotence gate for each forward-only rollout phase.
 "${psql_base[@]}" -f /workspace/supabase/migrations/20260909200000_magazine_hardening_v2.sql >/dev/null
 "${psql_base[@]}" -f /workspace/supabase/migrations/20260909220000_magazine_duplicate_request_indexes.sql >/dev/null
+"${psql_base[@]}" -f /workspace/supabase/migrations/20260909221000_magazine_view_events_rls_initplan.sql >/dev/null
 if [[ "$("${psql_base[@]}" -Atq -c "
   SELECT count(*) FROM pg_indexes
   WHERE schemaname='public'
