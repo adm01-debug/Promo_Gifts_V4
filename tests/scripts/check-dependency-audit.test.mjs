@@ -10,12 +10,35 @@ const reviewedReport = {
       severity: 'high',
       isDirect: false,
       effects: ['pptxgenjs'],
+      range: '*',
+      fixAvailable: { name: 'pptxgenjs', version: '1.1.5', isSemVerMajor: true },
       via: [
-        { url: 'https://github.com/advisories/GHSA-w3rx-r6r6-pgpr' },
-        { url: 'https://github.com/advisories/GHSA-5p2g-fcmc-qvqq' },
+        {
+          source: 1138808,
+          name: 'image-size',
+          dependency: 'image-size',
+          severity: 'high',
+          range: '<=2.0.2',
+          url: 'https://github.com/advisories/GHSA-w3rx-r6r6-pgpr',
+        },
+        {
+          source: 1138809,
+          name: 'image-size',
+          dependency: 'image-size',
+          severity: 'high',
+          range: '<=2.0.2',
+          url: 'https://github.com/advisories/GHSA-5p2g-fcmc-qvqq',
+        },
       ],
     },
-    pptxgenjs: { severity: 'high', isDirect: true, effects: [], via: ['image-size'] },
+    pptxgenjs: {
+      severity: 'high',
+      isDirect: true,
+      effects: [],
+      via: ['image-size'],
+      range: '1.1.5-1 || >=1.1.6',
+      fixAvailable: { name: 'pptxgenjs', version: '1.1.5', isSemVerMajor: true },
+    },
   },
 };
 
@@ -74,6 +97,26 @@ describe('dependency audit policy', () => {
     expect(result.violations).toEqual(
       expect.arrayContaining([expect.stringContaining(packageName)]),
     );
+  });
+
+  it('rejects a changed advisory range even when URL and severity remain equal', () => {
+    const report = structuredClone(reviewedReport);
+    report.vulnerabilities['image-size'].via[0].range = '<=3.0.0';
+    const result = evaluateAuditReport(report, new Date('2026-09-09T12:00:00Z'));
+    expect(result.passed).toBe(false);
+    expect(result.violations).toContain('image-size: unexpected high advisory');
+  });
+
+  it('rejects a newly compatible fix instead of silently keeping the exception', () => {
+    const report = structuredClone(reviewedReport);
+    report.vulnerabilities.pptxgenjs.fixAvailable = {
+      name: 'pptxgenjs',
+      version: '4.0.2',
+      isSemVerMajor: false,
+    };
+    const result = evaluateAuditReport(report, new Date('2026-09-09T12:00:00Z'));
+    expect(result.passed).toBe(false);
+    expect(result.violations).toContain('pptxgenjs: unexpected high advisory');
   });
 
   it('fails closed when the temporary acceptance expires', () => {

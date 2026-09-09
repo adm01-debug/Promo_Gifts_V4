@@ -60,6 +60,16 @@ describe('PPTX vulnerable image parser exposure gate', () => {
     );
   });
 
+  it('rejects optional and indirect addImage member references', async () => {
+    const root = fixture({
+      adapter:
+        "import PptxGenJS from 'pptxgenjs';\nconst slide = new PptxGenJS().addSlide();\nconst embed = slide.addImage;\nembed?.({ data: 'x' });\n",
+    });
+    await expect(auditPptxImageParserExposure(root)).resolves.toEqual(
+      expect.arrayContaining([expect.stringContaining('image embedding is blocked')]),
+    );
+  });
+
   it('rejects direct image-size imports and new unreviewed PPTX adapters', async () => {
     const root = fixture({
       extraFiles: {

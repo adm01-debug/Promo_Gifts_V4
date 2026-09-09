@@ -5,28 +5,50 @@ import { pathToFileURL } from 'node:url';
 
 export const RISK_REVIEW_DEADLINE = '2026-10-09T23:59:59-03:00';
 
-const ALLOWED_IMAGE_SIZE_ADVISORIES = new Set([
-  'https://github.com/advisories/GHSA-5p2g-fcmc-qvqq',
-  'https://github.com/advisories/GHSA-w3rx-r6r6-pgpr',
+const ALLOWED_IMAGE_SIZE_ADVISORIES = new Map([
+  ['https://github.com/advisories/GHSA-5p2g-fcmc-qvqq', 1138809],
+  ['https://github.com/advisories/GHSA-w3rx-r6r6-pgpr', 1138808],
 ]);
 
-function advisoryUrls(vulnerability) {
-  return (vulnerability.via ?? [])
-    .filter((item) => item && typeof item === 'object')
-    .map((item) => item.url)
-    .filter((url) => typeof url === 'string');
+function hasExpectedFixAvailable(vulnerability) {
+  const fix = vulnerability.fixAvailable;
+  return (
+    fix &&
+    typeof fix === 'object' &&
+    fix.name === 'pptxgenjs' &&
+    fix.version === '1.1.5' &&
+    fix.isSemVerMajor === true
+  );
+}
+
+function hasExpectedImageSizeAdvisories(vulnerability) {
+  const via = vulnerability.via;
+  return (
+    Array.isArray(via) &&
+    via.length === ALLOWED_IMAGE_SIZE_ADVISORIES.size &&
+    via.every(
+      (advisory) =>
+        advisory &&
+        typeof advisory === 'object' &&
+        ALLOWED_IMAGE_SIZE_ADVISORIES.get(advisory.url) === advisory.source &&
+        advisory.name === 'image-size' &&
+        advisory.dependency === 'image-size' &&
+        advisory.severity === 'high' &&
+        advisory.range === '<=2.0.2',
+    )
+  );
 }
 
 function isAllowedImageSize(vulnerability) {
-  const urls = new Set(advisoryUrls(vulnerability));
   return (
     vulnerability.severity === 'high' &&
     vulnerability.isDirect === false &&
     Array.isArray(vulnerability.effects) &&
     vulnerability.effects.length === 1 &&
     vulnerability.effects[0] === 'pptxgenjs' &&
-    urls.size === ALLOWED_IMAGE_SIZE_ADVISORIES.size &&
-    [...ALLOWED_IMAGE_SIZE_ADVISORIES].every((url) => urls.has(url))
+    vulnerability.range === '*' &&
+    hasExpectedFixAvailable(vulnerability) &&
+    hasExpectedImageSizeAdvisories(vulnerability)
   );
 }
 
@@ -36,7 +58,11 @@ function isAllowedPptxPropagation(vulnerability) {
     vulnerability.severity === 'high' &&
     vulnerability.isDirect === true &&
     via.length === 1 &&
-    via[0] === 'image-size'
+    via[0] === 'image-size' &&
+    Array.isArray(vulnerability.effects) &&
+    vulnerability.effects.length === 0 &&
+    vulnerability.range === '1.1.5-1 || >=1.1.6' &&
+    hasExpectedFixAvailable(vulnerability)
   );
 }
 

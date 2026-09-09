@@ -72,7 +72,7 @@ export async function auditPptxImageParserExposure(root = process.cwd()) {
   if (!/['"`]pptxgenjs['"`]/.test(adapterSource)) {
     violations.push(`${ALLOWED_PPTX_IMPORT}: expected pptxgenjs import is missing`);
   }
-  if (/(?:\.addImage|\[['"]addImage['"]\])\s*\(/.test(adapterSource)) {
+  if (/\baddImage\b/.test(adapterSource)) {
     violations.push(
       `${ALLOWED_PPTX_IMPORT}: image embedding is blocked while image-size is unpatched`,
     );
