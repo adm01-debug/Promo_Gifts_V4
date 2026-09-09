@@ -5,7 +5,8 @@
 // front (1x) na primeira vez que o usuário abre /magazine após o deploy
 // desta migração — sem isso, os vendedores perderiam o trabalho já feito.
 //
-// verify_jwt = true (usuário autenticado; grava como o próprio dono)
+// verify_jwt = false no gateway por compatibilidade HS256; autenticação obrigatória
+// validada abaixo com auth.getUser() antes de qualquer mutação.
 //
 // Mapeamento de IDs: os IDs legados (`mag_<uuid>`, `item_<uuid>`) e tokens
 // (`crypto.randomUUID()` com hífens) NÃO são reaproveitados — o BD gera
