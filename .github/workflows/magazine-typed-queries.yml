@@ -47,12 +47,13 @@ concurrency:
   group: magazine-typed-queries-${{ github.ref }}
   cancel-in-progress: true
 
-# Contagens esperadas do padrão tipado (SSOT do gate).
-# Em 2026-09-09, a consolidação das mutações do Magazine removeu duas
-# consultas redundantes por tabela; untypedFrom continua proibido.
+# Contagens esperadas do padrão tipado/transacional (SSOT do gate).
+# Em 2026-09-09, as mutações migraram para RPCs v2 com CAS. Restaram apenas
+# leituras diretas tipadas; untypedFrom continua proibido.
 env:
-  EXPECTED_FROM_MAGAZINES: '13'
-  EXPECTED_FROM_MAGAZINE_ITEMS: '7'
+  EXPECTED_FROM_MAGAZINES: '2'
+  EXPECTED_FROM_MAGAZINE_ITEMS: '2'
+  EXPECTED_MUTATION_RPCS_V2: '13'
   EXPECTED_UNTYPEDFROM_AFTER: '0'
 
 jobs:
@@ -145,12 +146,14 @@ jobs:
           UF_COUNT=$(grep -c "untypedFrom" src/services/magazineService.ts || true)
           FROM_MAG=$(grep -cE "\.from\((\"|')magazines(\"|')" src/services/magazineService.ts || true)
           FROM_MI=$(grep -cE "\.from\((\"|')magazine_items(\"|')" src/services/magazineService.ts || true)
+          RPC_V2=$(grep -cE "\.rpc\((\"|')magazine_[a-z_]+_v2(\"|')" src/services/magazineService.ts || true)
 
           echo "ts_magazines=$TS_MAG"           >> "$GITHUB_OUTPUT"
           echo "ts_magazine_items=$TS_MI"       >> "$GITHUB_OUTPUT"
           echo "untyped_from=$UF_COUNT"         >> "$GITHUB_OUTPUT"
           echo "from_magazines=$FROM_MAG"       >> "$GITHUB_OUTPUT"
           echo "from_magazine_items=$FROM_MI"   >> "$GITHUB_OUTPUT"
+          echo "mutation_rpcs_v2=$RPC_V2"       >> "$GITHUB_OUTPUT"
 
           fail=0
           if [[ "$TS_MAG" -lt 1 ]]; then
@@ -168,12 +171,15 @@ jobs:
           if [[ "$FROM_MI" -ne "$EXPECTED_FROM_MAGAZINE_ITEMS" ]]; then
             echo "::error::.from('magazine_items') = $FROM_MI (esperado $EXPECTED_FROM_MAGAZINE_ITEMS) — padrão do relatório divergiu"; fail=1
           fi
+          if [[ "$RPC_V2" -ne "$EXPECTED_MUTATION_RPCS_V2" ]]; then
+            echo "::error::RPCs Magazine v2 = $RPC_V2 (esperado $EXPECTED_MUTATION_RPCS_V2) — contrato transacional divergiu"; fail=1
+          fi
 
           if [[ "$fail" -ne 0 ]]; then
             echo "::error::Gate de contagens FALHOU — revise docs/plans/magazine-typed-queries-migration.md e ajuste EXPECTED_* no workflow se a mudança for legítima."
             exit 1
           fi
-          echo "::notice::Gate de contagens OK (magazines=$FROM_MAG, magazine_items=$FROM_MI, untypedFrom=$UF_COUNT)"
+          echo "::notice::Gate de contagens OK (magazines=$FROM_MAG, magazine_items=$FROM_MI, RPCs v2=$RPC_V2, untypedFrom=$UF_COUNT)"
 
       - name: Typecheck (aplicação)
         if: steps.gate.outputs.ready == 'true'
@@ -214,6 +220,7 @@ jobs:
           UF_COUNT=$(grep -c "untypedFrom" src/services/magazineService.ts || true)
           FROM_MAG=$(grep -cE "\.from\((\"|')magazines(\"|')" src/services/magazineService.ts || true)
           FROM_MI=$(grep -cE "\.from\((\"|')magazine_items(\"|')" src/services/magazineService.ts || true)
+          RPC_V2=$(grep -cE "\.rpc\((\"|')magazine_[a-z_]+_v2(\"|')" src/services/magazineService.ts || true)
 
           ARTIFACT_URL="https://github.com/$REPO/actions/runs/$RUN_ID#artifacts"
 
@@ -238,6 +245,7 @@ jobs:
             echo "| \`untypedFrom\` em magazineService.ts | $UF_COUNT | $EXPECTED_UNTYPEDFROM_AFTER |"
             echo "| \`.from('magazines')\` tipado | $FROM_MAG | $EXPECTED_FROM_MAGAZINES |"
             echo "| \`.from('magazine_items')\` tipado | $FROM_MI | $EXPECTED_FROM_MAGAZINE_ITEMS |"
+            echo "| RPCs transacionais \`magazine_*_v2\` | $RPC_V2 | $EXPECTED_MUTATION_RPCS_V2 |"
             echo ""
             echo "## Etapas"
             echo ""
@@ -272,6 +280,7 @@ jobs:
             "expected": {
               "from_magazines": $EXPECTED_FROM_MAGAZINES,
               "from_magazine_items": $EXPECTED_FROM_MAGAZINE_ITEMS,
+              "mutation_rpcs_v2": $EXPECTED_MUTATION_RPCS_V2,
               "untyped_from_after": $EXPECTED_UNTYPEDFROM_AFTER
             },
             "counts": {
@@ -279,7 +288,8 @@ jobs:
               "types_magazine_items": $TS_MI,
               "untyped_from_remaining": $UF_COUNT,
               "from_magazines": $FROM_MAG,
-              "from_magazine_items": $FROM_MI
+              "from_magazine_items": $FROM_MI,
+              "mutation_rpcs_v2": $RPC_V2
             },
             "generated_at": "$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
           }

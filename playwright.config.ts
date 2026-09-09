@@ -2,7 +2,8 @@ import { defineConfig, devices } from '@playwright/test';
 import path from 'path';
 
 const externalBaseUrl = process.env.E2E_BASE_URL?.trim();
-const reuseExistingServer = process.env.E2E_REUSE_EXISTING_SERVER === '1';
+const isLocalBaseUrl = !externalBaseUrl || /^https?:\/\/(?:localhost|127\.0\.0\.1)(?::|\/|$)/i.test(externalBaseUrl);
+const reuseExistingServer = process.env.CI === 'true' || process.env.E2E_REUSE_EXISTING_SERVER === '1';
 
 /**
  * Playwright Configuration
@@ -136,15 +137,16 @@ export default defineConfig({
     },
   ],
 
-  // Um E2E_BASE_URL explícito significa que o caller gerencia o servidor.
-  // Sem ele, iniciamos localmente e nunca reutilizamos uma porta ocupada por
-  // padrão; o opt-in evita executar a suíte contra um processo antigo/errado.
-  webServer: externalBaseUrl
-    ? undefined
-    : {
+  // E2E_BASE_URL também é usado por workflows que esperam que o Playwright
+  // inicie o Vite em localhost. No CI efêmero, reutilizar o Vite que alguns
+  // workflows sobem explicitamente; localmente, reutilização exige opt-in para
+  // não executar contra outro serviço que esteja ocupando a porta.
+  webServer: isLocalBaseUrl
+    ? {
         command: 'npm run dev',
-        url: 'http://localhost:8080',
+        url: externalBaseUrl || 'http://localhost:8080',
         reuseExistingServer,
         timeout: 120 * 1000,
-      },
+      }
+    : undefined,
 });
