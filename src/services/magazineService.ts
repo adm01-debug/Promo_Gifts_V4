@@ -16,6 +16,7 @@ import {
   type MagazineClientBranding,
   type MagazineContentSettings,
   type MagazineItem,
+  type MagazinePageOrder,
   type MagazineProductSnapshot,
   type MagazineTemplateId,
   DEFAULT_BRANDING,
@@ -72,7 +73,7 @@ function rowToMagazine(row: MagazineRow, items: MagazineItemRow[]): Magazine {
       ...((row.content_settings as unknown as MagazineContentSettings) ?? {}),
     },
     items: [...items].sort((a, b) => a.position - b.position).map(rowToItem),
-    pageOrder: row.page_order as number[] | null,
+    pageOrder: row.page_order as unknown as MagazinePageOrder,
     status: row.status as 'archived' | 'draft' | 'published',
     publicToken: row.public_token,
     viewCount: row.view_count ?? 0,
@@ -156,7 +157,7 @@ interface PublicViewPayload {
   templateId: MagazineTemplateId;
   branding: MagazineClientBranding;
   content: MagazineContentSettings;
-  pageOrder: number[] | null;
+  pageOrder: MagazinePageOrder;
   status: Magazine['status'];
   items: Array<{
     id: string;

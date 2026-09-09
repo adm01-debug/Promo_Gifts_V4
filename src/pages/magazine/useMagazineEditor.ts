@@ -7,6 +7,7 @@ import type {
   MagazineClientBranding,
   MagazineContentSettings,
   MagazineItem,
+  MagazinePageOrder,
   MagazineTemplateId,
 } from '@/types/magazine';
 import type { Product } from '@/types/product-catalog';
@@ -129,6 +130,10 @@ export function useMagazineEditor(id: string | undefined) {
     },
     [persist],
   );
+  const setPageOrder = useCallback(
+    (pageOrder: MagazinePageOrder) => persist({ pageOrder }),
+    [persist],
+  );
   const mutate = useCallback(async (action: (key: string) => Promise<Magazine | null>) => {
     const current = session.current;
     if (!current) throw new Error('A revista ainda não foi carregada.');
@@ -178,6 +183,7 @@ export function useMagazineEditor(id: string | undefined) {
     setBranding,
     brandingErrors,
     setContent,
+    setPageOrder,
     addProducts,
     removeItem,
     reorderItems,

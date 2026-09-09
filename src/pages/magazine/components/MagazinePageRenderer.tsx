@@ -69,10 +69,14 @@ export function MagazinePageRenderer({ magazine, page, fitContainer, totalPages 
   const content =
     page.kind === 'cover' ? (
       <CoverPage magazine={magazine} />
+    ) : page.kind === 'institutional' ? (
+      <InstitutionalPage magazine={magazine} title={page.title} body={page.body} />
+    ) : page.kind === 'contact' ? (
+      <ContactPage magazine={magazine} title={page.title} body={page.body} />
     ) : page.kind === 'back-cover' ? (
       <BackCoverPage magazine={magazine} />
     ) : page.kind === 'section' ? (
-      <SectionPage title={page.sectionTitle ?? ''} />
+      <SectionPage magazine={magazine} title={page.sectionTitle ?? ''} />
     ) : (
       <Component magazine={magazine} page={page} totalPages={totalPages} />
     );
@@ -96,6 +100,110 @@ export function MagazinePageRenderer({ magazine, page, fitContainer, totalPages 
         }}
       >
         {content}
+      </div>
+    </div>
+  );
+}
+
+/** Página editorial institucional usando a mesma paleta e os assets da revista. */
+function InstitutionalPage({
+  magazine,
+  title,
+  body,
+}: {
+  magazine: Magazine;
+  title?: string;
+  body?: string;
+}) {
+  const images = (magazine.items ?? [])
+    .map((item) => item.productSnapshot.image_url)
+    .filter(Boolean)
+    .slice(0, 3);
+  return (
+    <div className="mag-page grid grid-cols-[1.1fr_0.9fr] overflow-hidden bg-white">
+      <div className="flex flex-col justify-between p-20">
+        <div>
+          <div
+            className="text-xl font-semibold uppercase tracking-[0.35em]"
+            style={{ color: 'var(--mag-category-color)', fontFamily: 'var(--mag-body)' }}
+          >
+            {magazine.branding?.clientName || 'Promo Gifts'}
+          </div>
+          <h2
+            className="mt-12 text-8xl font-bold leading-[1.02]"
+            style={{ color: 'var(--mag-primary)', fontFamily: 'var(--mag-heading)' }}
+          >
+            {title || 'Sobre nós'}
+          </h2>
+          <p
+            className="mt-12 whitespace-pre-line text-3xl leading-relaxed"
+            style={{ color: 'var(--mag-text)', fontFamily: 'var(--mag-body)' }}
+          >
+            {body || magazine.content?.introText || magazine.subtitle}
+          </p>
+        </div>
+        <div className="flex items-center gap-5 text-lg uppercase tracking-[0.3em] text-neutral-500">
+          <span className="h-px w-20" style={{ background: 'var(--mag-category-color)' }} />
+          Apresentação institucional
+        </div>
+      </div>
+      <div
+        className="grid grid-rows-3 gap-3 p-5"
+        style={{ background: 'color-mix(in srgb, var(--mag-category-color) 12%, white)' }}
+      >
+        {(images.length > 0 ? images : [null, null, null]).map((src, index) => (
+          <div
+            key={`${src ?? 'placeholder'}-${index}`}
+            className="relative overflow-hidden"
+            style={{ background: 'color-mix(in srgb, var(--mag-category-color) 22%, white)' }}
+          >
+            {src && <img src={src} alt="" className="h-full w-full object-cover" />}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** Encerramento editorial com texto configurável, mantendo o visual da contracapa. */
+function ContactPage({
+  magazine,
+  title,
+  body,
+}: {
+  magazine: Magazine;
+  title?: string;
+  body?: string;
+}) {
+  return (
+    <div
+      className="mag-page relative flex flex-col items-center justify-center overflow-hidden p-24 text-center text-white"
+      style={{ background: 'var(--mag-category-color, var(--mag-brand-green, #2e4a3a))' }}
+    >
+      <div aria-hidden className="mag-dotmap-bg absolute inset-0 opacity-40" />
+      <div className="relative max-w-[1350px]">
+        <div className="text-3xl uppercase tracking-[0.5em] opacity-80">Contato</div>
+        <h2 className="mt-8 text-8xl font-bold" style={{ fontFamily: 'var(--mag-heading)' }}>
+          {title || 'Vamos conversar?'}
+        </h2>
+        {(body || magazine.content?.closingText) && (
+          <p
+            className="mx-auto mt-10 max-w-[1100px] whitespace-pre-line text-3xl leading-relaxed opacity-90"
+            style={{ fontFamily: 'var(--mag-body)' }}
+          >
+            {body || magazine.content?.closingText}
+          </p>
+        )}
+        {magazine.branding?.clientName && (
+          <div className="mt-12 text-2xl opacity-80">
+            Revista preparada para <strong>{magazine.branding.clientName}</strong>
+          </div>
+        )}
+        <div className="mt-16 flex items-center justify-center gap-8 text-2xl uppercase tracking-widest opacity-80">
+          <span>promogifts.com.br</span>
+          <span aria-hidden>·</span>
+          <span>{new Date().getFullYear()}</span>
+        </div>
       </div>
     </div>
   );
@@ -249,7 +357,11 @@ function BackCoverPage({ magazine }: { magazine: Magazine }) {
  * SectionPage — recipe da p.6 do Abreez: 3 colunas (4 imagens à esquerda,
  * moldura branca central, torre tipográfica vertical à direita).
  */
-function SectionPage({ title }: { title: string }) {
+function SectionPage({ magazine, title }: { magazine: Magazine; title: string }) {
+  const images = (magazine.items ?? [])
+    .map((item) => item.productSnapshot.image_url)
+    .filter(Boolean)
+    .slice(0, 4);
   return (
     <div className="mag-page grid grid-cols-3 overflow-hidden" style={{ background: 'white' }}>
       {/* Coluna 1 — placeholder 4 imagens (produção real injeta fotos) */}
@@ -257,11 +369,13 @@ function SectionPage({ title }: { title: string }) {
         {Array.from({ length: 4 }).map((_, i) => (
           <div
             key={i}
-            className="w-full"
+            className="w-full overflow-hidden"
             style={{
               background: `color-mix(in srgb, var(--mag-category-color) ${20 + i * 15}%, black)`,
             }}
-          />
+          >
+            {images[i] && <img src={images[i]} alt="" className="h-full w-full object-cover" />}
+          </div>
         ))}
       </div>
 

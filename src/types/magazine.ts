@@ -134,6 +134,36 @@ export interface MagazineProductSnapshot {
   dimensions?: Product['dimensions'];
 }
 
+/** Tipos persistentes de página no formato estruturado v2. */
+export type MagazineStructuredPageKind =
+  | 'back-cover'
+  | 'contact'
+  | 'cover'
+  | 'institutional'
+  | 'products'
+  | 'section';
+
+/**
+ * Definição persistida em `magazines.page_order`.
+ * IDs de itens são referências; snapshots continuam em `magazine_items`.
+ */
+export interface MagazinePageDefinition {
+  id: string;
+  kind: MagazineStructuredPageKind;
+  title?: string;
+  body?: string;
+  itemIds?: string[];
+}
+
+/** Envelope versionado para distinguir o modelo novo dos arrays legados. */
+export interface MagazinePageOrderV2 {
+  version: 2;
+  pages: MagazinePageDefinition[];
+}
+
+/** Arrays numéricos antigos continuam aceitos e usam paginação automática. */
+export type MagazinePageOrder = MagazinePageOrderV2 | number[] | null;
+
 export interface Magazine {
   id: string;
   ownerId: string;
@@ -144,8 +174,8 @@ export interface Magazine {
   branding: MagazineClientBranding;
   content: MagazineContentSettings;
   items: MagazineItem[];
-  /** Ordem de páginas customizada — null = derivado de `items` + template. */
-  pageOrder: number[] | null;
+  /** Ordem de páginas customizada; null/array legado = layout automático. */
+  pageOrder: MagazinePageOrder;
   /**
    * FIX C7 (auditoria BD): 'archived' adicionado ao contrato de tipos.
    * O BD arquiva rascunhos com mais de 365 dias sem edição automaticamente
@@ -166,9 +196,14 @@ export interface Magazine {
 /** Página derivada pela paginação — usada pelo renderer de template. */
 export interface MagazinePage {
   index: number;
-  kind: 'back-cover' | 'cover' | 'products' | 'section';
+  kind: MagazineStructuredPageKind;
+  /** ID persistente no layout estruturado; ausente no modo automático legado. */
+  pageId?: string;
   /** Título de seção (quando kind = 'section'). */
   sectionTitle?: string;
+  /** Conteúdo editorial para páginas institucionais e de contato. */
+  title?: string;
+  body?: string;
   items: MagazineItem[];
 }
 

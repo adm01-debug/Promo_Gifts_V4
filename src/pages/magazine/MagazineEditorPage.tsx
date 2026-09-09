@@ -42,7 +42,7 @@ import { PageSEO } from '@/components/seo/PageSEO';
 import { cn } from '@/lib/utils';
 import { useMagazineEditor } from './useMagazineEditor';
 import { useMagazinePublish } from './useMagazinePublish';
-import { paginateMagazine } from './pagination';
+import { paginateMagazine, reorderStructuredPageItems } from './pagination';
 import { PreviewSidebar } from './components/PreviewSidebar';
 import { PagesRail } from './components/PagesRail';
 import { EditorHero } from './components/EditorHero';
@@ -164,11 +164,19 @@ export default function MagazineEditorPage() {
     return () => window.removeEventListener('keydown', onKey);
   }, [saveNow]);
 
-  // Deps enxutas: a referência de `items` já cobre mudança de contagem
+  // Inclui todos os campos que alteram a estrutura/conteúdo editorial das páginas.
   const pages = useMemo(
     () => paginateMagazine(magazine),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [magazine?.items, magazine?.templateId, magazine?.title, magazine?.content?.groupByCategory],
+    [
+      magazine?.items,
+      magazine?.templateId,
+      magazine?.title,
+      magazine?.pageOrder,
+      magazine?.content?.groupByCategory,
+      magazine?.content?.introText,
+      magazine?.content?.closingText,
+    ],
   );
 
   // Deps espelham os campos realmente lidos por validateStep
@@ -634,7 +642,10 @@ export default function MagazineEditorPage() {
             {step === 'layout' && (
               <LayoutStep
                 magazine={magazine}
+                onPageOrderChange={editor.setPageOrder}
                 onReorder={(ids) => {
+                  const nextPageOrder = reorderStructuredPageItems(magazine, ids);
+                  if (nextPageOrder) editor.setPageOrder(nextPageOrder);
                   void editor
                     .reorderItems(ids)
                     .catch(() =>

@@ -8,6 +8,11 @@ const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1672, height: 941 }, serviceWorkers: 'block' });
 const errors = [];
 page.on('pageerror', error => errors.push(error.message));
+page.on('console', message => {
+  if (message.type() === 'error' && !message.text().includes('Failed to load resource: net::ERR_FAILED')) {
+    errors.push(`console.error: ${message.text()}`);
+  }
+});
 await page.route('**/*', route => ['127.0.0.1', 'localhost'].includes(new URL(route.request().url()).hostname) ? route.continue() : route.abort());
 const results = [];
 try {
@@ -46,7 +51,26 @@ try {
   await page.keyboard.press('Control+s');
   await page.waitForFunction(() => window.__stored().title === 'Atalho confirmado');
   results.push('Ctrl+S grava antes do debounce');
+
+  await page.getByTestId('magazine-step-layout').click();
+  await page.getByRole('button', { name: 'Estruturar páginas' }).click();
+  await page.getByLabel('Título da página 2').fill('Nossa história');
+  await page.getByLabel('Texto da página 2').fill('Conteúdo institucional renderizado.');
+  await page.keyboard.press('Control+s');
+  await page.waitForFunction(() => window.__stored().pageOrder?.version === 2);
+  await page.getByRole('button', { name: /Ir para página 2: Nossa história/ }).click();
+  await page.getByTestId('magazine-preview-aside').getByText('Conteúdo institucional renderizado.').waitFor();
+  const structured = await page.evaluate(() => ({
+    version: window.__stored().pageOrder.version,
+    kinds: window.__stored().pageOrder.pages.map(page => page.kind),
+  }));
+  assert.equal(structured.version, 2);
+  assert.equal(structured.kinds[0], 'cover');
+  assert.equal(structured.kinds.at(-1), 'contact');
+  results.push('Páginas estruturadas persistem e renderizam institucional/contato');
+
   await page.evaluate(() => { window.__service.update = async () => null; });
+  await page.getByTestId('magazine-step-identity').click();
   await page.getByTestId('magazine-title-input').fill('Não persistido');
   await page.getByText('Falha ao salvar — tentar novamente').waitFor();
   assert.equal(await page.getByText('Salvo automaticamente', { exact: true }).count(), 0);

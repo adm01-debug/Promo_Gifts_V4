@@ -2,7 +2,7 @@
 
 Data: 09/09/2026. Projeto: Promo Gifts V4. Responsável pelo planejamento: Codex.
 
-**Execução iniciada após solicitação explícita do PO em 09/09/2026. A primeira rodada de correções está na branch `codex/magazine-integrity-20260909`, em worktree isolada. Este documento não autoriza DDL ou publicação por si mesmo.**
+**Execução iniciada após solicitação explícita do PO em 09/09/2026. As rodadas estão isoladas nas branches `codex/magazine-integrity-20260909` e `codex/magazine-wave2-live-20260909`. Este documento não autoriza DDL ou publicação por si mesmo.**
 
 Acompanhamento: [execução e pendências das 50 etapas](MAGAZINE_EXECUCAO_2026-09-09.md). A implementação é parcial; não há certificação 10/10, merge ou deployment nesta rodada.
 
@@ -39,15 +39,22 @@ Resultados anteriores, não reexecutados pela criação deste plano:
 
 O [plano visual anterior](../design/blue-premium/MAGAZINE_BLUE_PREMIUM_PLAN.md) permanece histórico. Seus checklists não são herdados automaticamente: algumas ações assinaladas como concluídas não foram confirmadas na auditoria atual. A instrução atual de preservar cores prevalece sobre qualquer orientação visual anterior incompatível.
 
+### Decisões do PO registradas nesta rodada
+
+- Modelo editorial estruturado: capa, institucional, seção, produtos e contato.
+- Assets existentes autorizados como aproximação; não representam fidelidade fotográfica exata às referências.
+- Preparação de migrations/RPCs forward-only para operações atômicas autorizada; aplicação no Supabase canônico não autorizada nesta etapa.
+- Cores atuais do sistema permanecem imutáveis.
+
 ### Referências funcionais
 
-| Referência | Tela | Contrato principal |
-|---|---|---|
-| R1 | Biblioteca | Cinco KPIs; busca; status; ordenação; grade/lista; capas; metadados e ações por revista |
-| R2 | Galeria | Famílias e densidades; cards com identidade própria; favoritos; preview e criação pelo template |
-| R3 | Preview Vogue | Modal amplo; informações; tipografia; página A4; navegação; zoom e tela cheia |
-| R4 | Editor / Identidade | Cinco etapas; formulário + página + trilho; CRM; marca; salvamento real e gestão editorial |
-| R5 | Editor / Produtos | Catálogo navegável; busca e filtros; seleção; variantes; favoritos; resumo lateral consistente |
+| Referência | Tela                | Contrato principal                                                                              |
+| ---------- | ------------------- | ----------------------------------------------------------------------------------------------- |
+| R1         | Biblioteca          | Cinco KPIs; busca; status; ordenação; grade/lista; capas; metadados e ações por revista         |
+| R2         | Galeria             | Famílias e densidades; cards com identidade própria; favoritos; preview e criação pelo template |
+| R3         | Preview Vogue       | Modal amplo; informações; tipografia; página A4; navegação; zoom e tela cheia                   |
+| R4         | Editor / Identidade | Cinco etapas; formulário + página + trilho; CRM; marca; salvamento real e gestão editorial      |
+| R5         | Editor / Produtos   | Catálogo navegável; busca e filtros; seleção; variantes; favoritos; resumo lateral consistente  |
 
 ### Convenções do checklist
 
@@ -329,26 +336,26 @@ Prioridade: **P1** = integridade ou fluxo essencial quebrado; **P2** = completud
 
 ## 3. Rastreabilidade dos achados
 
-| Achado da auditoria | Problema | Etapas principais |
-|---|---|---|
-| F01 | Snapshot de autosave apaga/reinsere itens; risco de perda | 003, 006, 011–012, 015 |
-| F02 | IDs regenerados e retorno não reconciliado | 007–008, 015 |
-| F03 | Falso salvo; rascunho/atalho sem gravação | 007, 009, 013, 015 |
-| F04 | Edição perdida antes do debounce/na saída | 008–010, 014–015, 020 |
-| F05 | Preview escalado fora do contêiner | 016, 019–020, 048 |
-| F06 | CSS dependente de navegação; fontes/escopo incompletos | 017–018, 022–024, 047 |
-| F07 | Usar template não cria revista | 025, 046–047 |
-| F08 | Rota pública inconsistente | 014, 030, 047 |
-| F09 | Seleção descartada entre filtros | 036–037, 040 |
-| F10 | Busca CRM devolve todos para texto sem dígitos | 031 |
-| F11 | Cliente selecionado sem `clientCrmId` | 032–033 |
-| F12 | Campo hex mantém valor antigo | 034 |
-| F13 | Catálogo limitado; totais e estimativa incorretos | 026, 036, 040, 044–045 |
-| F14 | Descrição prometida, mas não pesquisada | 004, 028 |
-| F15 | Cards sem ações/metadados/composição da referência | 026–027, 048 |
-| F16 | Páginas editoriais sem operações e integração | 035, 041–045 |
-| F17 | Templates/metadata/arte divergentes | 004, 018, 021–024, 048 |
-| F18 | Favoritos, variantes e estados de produtos incompletos | 004, 012, 037–040 |
+| Achado da auditoria | Problema                                                  | Etapas principais      |
+| ------------------- | --------------------------------------------------------- | ---------------------- |
+| F01                 | Snapshot de autosave apaga/reinsere itens; risco de perda | 003, 006, 011–012, 015 |
+| F02                 | IDs regenerados e retorno não reconciliado                | 007–008, 015           |
+| F03                 | Falso salvo; rascunho/atalho sem gravação                 | 007, 009, 013, 015     |
+| F04                 | Edição perdida antes do debounce/na saída                 | 008–010, 014–015, 020  |
+| F05                 | Preview escalado fora do contêiner                        | 016, 019–020, 048      |
+| F06                 | CSS dependente de navegação; fontes/escopo incompletos    | 017–018, 022–024, 047  |
+| F07                 | Usar template não cria revista                            | 025, 046–047           |
+| F08                 | Rota pública inconsistente                                | 014, 030, 047          |
+| F09                 | Seleção descartada entre filtros                          | 036–037, 040           |
+| F10                 | Busca CRM devolve todos para texto sem dígitos            | 031                    |
+| F11                 | Cliente selecionado sem `clientCrmId`                     | 032–033                |
+| F12                 | Campo hex mantém valor antigo                             | 034                    |
+| F13                 | Catálogo limitado; totais e estimativa incorretos         | 026, 036, 040, 044–045 |
+| F14                 | Descrição prometida, mas não pesquisada                   | 004, 028               |
+| F15                 | Cards sem ações/metadados/composição da referência        | 026–027, 048           |
+| F16                 | Páginas editoriais sem operações e integração             | 035, 041–045           |
+| F17                 | Templates/metadata/arte divergentes                       | 004, 018, 021–024, 048 |
+| F18                 | Favoritos, variantes e estados de produtos incompletos    | 004, 012, 037–040      |
 
 As etapas 001–005 e 046–050 tratam também das lacunas de evidência, coordenação e liberação; não representam apenas mudanças cosméticas.
 

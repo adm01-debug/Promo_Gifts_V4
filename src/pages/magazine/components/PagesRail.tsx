@@ -21,6 +21,8 @@ import { PG_PANEL, PG_PANEL_TITLE } from '../pg';
 export function pageLabel(p: MagazinePage): string {
   if (p.kind === 'cover') return 'Capa';
   if (p.kind === 'back-cover') return 'Contracapa';
+  if (p.kind === 'contact') return p.title || 'Contato';
+  if (p.kind === 'institutional') return p.title || 'Institucional';
   if (p.kind === 'section') return `Seção: ${p.sectionTitle ?? '—'}`;
   return `${p.items.length} produto${p.items.length === 1 ? '' : 's'}`;
 }
@@ -56,7 +58,7 @@ export function PagesRail({
         const isHighlighted = idx === highlightedPageIdx;
         const isActive = idx === activeIdx;
         return (
-          <li key={p.index}>
+          <li key={p.pageId ?? p.index}>
             <button
               type="button"
               onClick={() => onSelect(idx)}

@@ -27,6 +27,7 @@ window.__service={
   update:async(id,patch)=>{window.__calls.push({method:'update',title:patch.title});if(window.__failSave)throw Error('Synthetic save failure');Object.assign(stored,structuredClone(patch));return structuredClone(stored)},
   addProducts:async(id,products)=>{window.__calls.push({method:'addProducts',ids:products.map(p=>p.id)});await new Promise(r=>setTimeout(r,window.__delay));for(const p of products)if(!stored.items.some(i=>i.productId===p.id))stored.items.push({id:`new-${p.id}`,productId:p.id,productSnapshot:p,position:stored.items.length+1,variantColorName:null,overrides:{},pageNumber:null});return structuredClone(stored)},
   removeItem:async(id,itemId)=>{stored.items=stored.items.filter(i=>i.id!==itemId);return structuredClone(stored)},
+  reorderItems:async(id,orderedIds)=>{const byId=new Map(stored.items.map(item=>[item.id,item]));stored.items=orderedIds.map((itemId,index)=>({...byId.get(itemId),position:index}));return structuredClone(stored)},
   updateItem:async(id,itemId,patch)=>{Object.assign(stored.items.find(i=>i.id===itemId),patch);return structuredClone(stored)},
   publish:async()=>{stored.status='published';stored.publicToken='audit-only';return structuredClone(stored)},
 };

@@ -33,14 +33,16 @@ import { CSS } from '@dnd-kit/utilities';
 import { GripVertical, ListOrdered, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import type { Magazine, MagazineItem } from '@/types/magazine';
+import type { Magazine, MagazineItem, MagazinePageOrder } from '@/types/magazine';
 import { formatPrice, itemPrice } from '../templates/shared';
 import { PG_ICON_BOX_SM, PG_PANEL, PG_PANEL_TITLE, PG_SUBTITLE } from '../../pg';
+import { StructuredPagesEditor } from '../StructuredPagesEditor';
 
 interface Props {
   magazine: Magazine;
   onReorder: (orderedIds: string[]) => void;
   onRemove: (itemId: string) => void;
+  onPageOrderChange: (pageOrder: MagazinePageOrder) => void;
   /** Onda 1 — coordena highlight LayoutStep ↔ Preview. */
   onItemHover?: (itemId: string | null) => void;
   highlightedItemId?: string | null;
@@ -50,6 +52,7 @@ export function LayoutStep({
   magazine,
   onReorder,
   onRemove,
+  onPageOrderChange,
   onItemHover,
   highlightedItemId,
 }: Props) {
@@ -72,48 +75,51 @@ export function LayoutStep({
   };
 
   return (
-    <section className={cn(PG_PANEL, 'p-4')} aria-labelledby="layout-step-title">
-      <header className="mb-4 flex items-start gap-3">
-        <div className={PG_ICON_BOX_SM}>
-          <ListOrdered className="h-4 w-4" aria-hidden />
-        </div>
-        <div>
-          <h2 className={PG_PANEL_TITLE} id="layout-step-title">
-            Ordenar produtos ({items.length})
-          </h2>
-          <p className={cn(PG_SUBTITLE, 'mt-0.5')} id="layout-step-help">
-            Arraste para reordenar. A paginação é recalculada automaticamente com base no template
-            escolhido.
+    <>
+      <StructuredPagesEditor magazine={magazine} onChange={onPageOrderChange} />
+      <section className={cn(PG_PANEL, 'p-4')} aria-labelledby="layout-step-title">
+        <header className="mb-4 flex items-start gap-3">
+          <div className={PG_ICON_BOX_SM}>
+            <ListOrdered className="h-4 w-4" aria-hidden />
+          </div>
+          <div>
+            <h2 className={PG_PANEL_TITLE} id="layout-step-title">
+              Ordenar produtos ({items.length})
+            </h2>
+            <p className={cn(PG_SUBTITLE, 'mt-0.5')} id="layout-step-help">
+              Arraste para reordenar. A paginação é recalculada automaticamente com base no template
+              escolhido.
+            </p>
+          </div>
+        </header>
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext items={items.map((i) => i.id)} strategy={verticalListSortingStrategy}>
+            <ul
+              aria-labelledby="layout-step-title"
+              aria-describedby="layout-step-help"
+              className="m-0 list-none space-y-2 p-0"
+            >
+              {items.map((it, idx) => (
+                <SortableRow
+                  key={it.id}
+                  item={it}
+                  index={idx}
+                  total={items.length}
+                  onRemove={onRemove}
+                  onHover={onItemHover}
+                  highlighted={highlightedItemId === it.id}
+                />
+              ))}
+            </ul>
+          </SortableContext>
+        </DndContext>
+        {items.length === 0 && (
+          <p className="rounded-md border border-dashed border-border-strong px-4 py-8 text-center text-[12px] text-muted-foreground">
+            Adicione produtos na etapa anterior para ordenar as páginas.
           </p>
-        </div>
-      </header>
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <SortableContext items={items.map((i) => i.id)} strategy={verticalListSortingStrategy}>
-          <ul
-            aria-labelledby="layout-step-title"
-            aria-describedby="layout-step-help"
-            className="m-0 list-none space-y-2 p-0"
-          >
-            {items.map((it, idx) => (
-              <SortableRow
-                key={it.id}
-                item={it}
-                index={idx}
-                total={items.length}
-                onRemove={onRemove}
-                onHover={onItemHover}
-                highlighted={highlightedItemId === it.id}
-              />
-            ))}
-          </ul>
-        </SortableContext>
-      </DndContext>
-      {items.length === 0 && (
-        <p className="rounded-md border border-dashed border-border-strong px-4 py-8 text-center text-[12px] text-muted-foreground">
-          Adicione produtos na etapa anterior para ordenar as páginas.
-        </p>
-      )}
-    </section>
+        )}
+      </section>
+    </>
   );
 }
 
