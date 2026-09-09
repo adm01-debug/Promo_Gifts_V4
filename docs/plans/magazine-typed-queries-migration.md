@@ -94,9 +94,9 @@ E corpo referenciando este doc + o PR de regeneração dos types.
 ### Ratchet vigente após a consolidação de persistência (2026-09-09)
 
 O serviço permanece integralmente tipado (`untypedFrom = 0`). A consolidação
-das operações de persistência removeu consultas redundantes e reduziu as
-ocorrências estáticas esperadas para **14** chamadas a `magazines` e **8** a
-`magazine_items`. Esses números são verificados pelo workflow
+das operações de persistência removeu consultas redundantes; a publicação e a
+duplicação atômicas reduziram as ocorrências estáticas esperadas para **13**
+chamadas a `magazines` e **7** a `magazine_items`. Esses números são verificados pelo workflow
 `magazine-typed-queries.yml`; qualquer nova variação continua reprovando o
 gate e exige justificativa semântica.
 

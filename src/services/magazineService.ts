@@ -139,6 +139,29 @@ async function fetchItems(magazineId: string): Promise<MagazineItemRow[]> {
   return data ?? [];
 }
 
+const MAGAZINE_ITEMS_PAGE_SIZE = 1_000;
+
+/** Pagina com ordem única para não truncar cards no limite do PostgREST. */
+async function fetchItemsForMagazines(magazineIds: string[]): Promise<MagazineItemRow[]> {
+  const items: MagazineItemRow[] = [];
+  for (let offset = 0; ; offset += MAGAZINE_ITEMS_PAGE_SIZE) {
+    const { data, error } = await magazineDb
+      .from('magazine_items')
+      .select('*')
+      .in('magazine_id', magazineIds)
+      .order('id', { ascending: true })
+      .range(offset, offset + MAGAZINE_ITEMS_PAGE_SIZE - 1);
+    if (error) {
+      logger.warn('[magazineService] fetchItemsForMagazines error:', error.message);
+      throw new Error('Não foi possível carregar os produtos das revistas.');
+    }
+    const page = data ?? [];
+    items.push(...page);
+    if (page.length < MAGAZINE_ITEMS_PAGE_SIZE) break;
+  }
+  return items;
+}
+
 async function hydrate(id: string): Promise<Magazine | null> {
   const row = await fetchMagazineRow(id);
   if (!row) return null;
@@ -244,14 +267,9 @@ export const magazineService = {
     }
     const rows: MagazineRow[] = data ?? [];
     if (rows.length === 0) return [];
-    // Busca items de todas as revistas em uma query só
+    // Busca todos os itens em páginas estáveis para não depender do db-max-rows.
     const ids = rows.map((r) => r.id);
-    const { data: itemsData, error: itemsError } = await magazineDb
-      .from('magazine_items')
-      .select('*')
-      .in('magazine_id', ids);
-    if (itemsError) throw new Error('Não foi possível carregar os produtos das revistas.');
-    const items = itemsData ?? [];
+    const items = await fetchItemsForMagazines(ids);
     const byMag = new Map<string, MagazineItemRow[]>();
     for (const it of items) {
       const arr = byMag.get(it.magazine_id) ?? [];
@@ -484,39 +502,22 @@ export const magazineService = {
   },
 
   async duplicate(id: string): Promise<Magazine | null> {
-    const current = await this.get(id);
-    if (!current) return null;
-    const clone = await this.create({
-      ownerId: current.ownerId,
-      organizationId: current.organizationId,
-      title: `${current.title} (cópia)`,
-      templateId: current.templateId,
+    const { data, error } = await magazineDb.rpc('magazine_duplicate_atomic', {
+      p_source_magazine_id: id,
     });
-    // Header extras (branding/content) + items.
-    // Validate branding before copying so that old corrupt payloads (pre-audit)
-    // are sanitized rather than silently propagated to the duplicate.
-    const { sanitized: safeBranding } = validateBranding(current.branding);
-    await this.update(clone.id, {
-      branding: { ...current.branding, ...safeBranding },
-      content: current.content,
-      subtitle: current.subtitle,
-    });
-    if (current.items.length > 0) {
-      const rows = current.items.map((it, idx) => ({
-        magazine_id: clone.id,
-        product_id: it.productId,
-        product_snapshot:
-          it.productSnapshot as unknown as MagazineDatabase['public']['Tables']['magazine_items']['Insert']['product_snapshot'],
-        variant_color_name: it.variantColorName,
-        position: idx,
-        page_number: it.pageNumber,
-        overrides: (it.overrides ??
-          {}) as unknown as MagazineDatabase['public']['Tables']['magazine_items']['Insert']['overrides'],
-      }));
-      const { error } = await magazineDb.from('magazine_items').insert(rows);
-      if (error) logger.warn('[magazineService.duplicate] items error:', error.message);
+    if (error) {
+      logger.warn('[magazineService.duplicate] error:', error.message);
+      return null;
     }
-    return hydrate(clone.id);
+    const cloneId =
+      data && typeof data === 'object' && !Array.isArray(data) && 'magazine_id' in data
+        ? data.magazine_id
+        : null;
+    if (typeof cloneId !== 'string') {
+      logger.warn('[magazineService.duplicate] resposta sem magazine_id');
+      return null;
+    }
+    return hydrate(cloneId);
   },
 
   async delete(id: string): Promise<void> {

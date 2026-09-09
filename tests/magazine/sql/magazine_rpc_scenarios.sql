@@ -79,6 +79,34 @@ BEGIN
    WHERE id = '10000000-0000-0000-0000-000000000001';
   PERFORM public.magazine_update_metadata_atomic(
     '10000000-0000-0000-0000-000000000001', current_revision,
+    '{"page_order":{"version":"2","pages":[{"id":"cover","kind":"cover"},{"id":"contact","kind":"contact"}]}}'::JSONB
+  );
+  RAISE EXCEPTION 'string page-order version was accepted';
+EXCEPTION WHEN invalid_parameter_value THEN NULL;
+END;
+$$;
+
+DO $$
+DECLARE current_revision TIMESTAMPTZ;
+BEGIN
+  SELECT updated_at INTO current_revision FROM public.magazines
+   WHERE id = '10000000-0000-0000-0000-000000000001';
+  PERFORM public.magazine_update_metadata_atomic(
+    '10000000-0000-0000-0000-000000000001', current_revision,
+    '{"page_order":{"pages":[{"id":"cover","kind":"cover"},{"id":"contact","kind":"contact"}]}}'::JSONB
+  );
+  RAISE EXCEPTION 'missing page-order version was accepted';
+EXCEPTION WHEN invalid_parameter_value THEN NULL;
+END;
+$$;
+
+DO $$
+DECLARE current_revision TIMESTAMPTZ;
+BEGIN
+  SELECT updated_at INTO current_revision FROM public.magazines
+   WHERE id = '10000000-0000-0000-0000-000000000001';
+  PERFORM public.magazine_update_metadata_atomic(
+    '10000000-0000-0000-0000-000000000001', current_revision,
     '{"page_order":{"version":2,"pages":[{"id":"cover","kind":"cover"},{"id":"orphan"},{"id":"contact","kind":"contact"}]}}'::JSONB
   );
   RAISE EXCEPTION 'page without kind was accepted';

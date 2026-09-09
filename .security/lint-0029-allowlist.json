@@ -160,6 +160,10 @@
       "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
     },
     {
+      "fn": "public.fn_run_and_persist_smoke_tests()",
+      "reason": "SECURITY DEFINER deliberado e revalidado via pg_catalog em 2026-09-09: search_path=public, owner postgres e EXECUTE exclusivamente para postgres/service_role; anon e authenticated não possuem execução. Mantido para persistência interna dos smoke tests."
+    },
+    {
       "fn": "public.fn_rupture_by_level(p_nivel text, p_limit integer, p_offset integer, p_preferred boolean)",
       "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
     },

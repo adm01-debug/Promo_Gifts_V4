@@ -2,7 +2,7 @@
 
 Data: 09/09/2026. Estado: **aplicado no Supabase canônico e validado independentemente**.
 
-Este pacote atende à autorização posterior do PO para aplicar as operações atômicas de Magazine. Ele não cria tabelas, não altera colunas e não apaga dados. As cinco funções foram aplicadas em uma transação no projeto canônico `doufsxqlfjyuvxuezpln` pelo run [34393079315](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/34393079315). A revisão do PR encontrou dois defeitos nas primeiras definições; eles foram corrigidos exclusivamente por duas migrations compensatórias no run [34395700558](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/34395700558), sem reescrever o histórico aplicado.
+Este pacote atende à autorização posterior do PO para aplicar as operações atômicas de Magazine. Ele não cria tabelas, não altera colunas e não apaga dados. As cinco funções iniciais foram aplicadas em uma transação no projeto canônico `doufsxqlfjyuvxuezpln` pelo run [34393079315](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/34393079315). As revisões encontraram três definições que exigiam correção e a necessidade de publicação atômica; tudo foi entregue exclusivamente por quatro migrations posteriores nos runs [34395700558](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/34395700558) e [34397795301](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/34397795301), sem reescrever o histórico aplicado.
 
 ## Inventário
 
@@ -15,6 +15,8 @@ Este pacote atende à autorização posterior do PO para aplicar as operações 
 | `20260909181400_magazine_update_metadata_atomic.sql` | `magazine_update_metadata_atomic` | Patch allowlisted e compare-and-swap por `updated_at`; não aceita status/token. |
 | `20260909190000_magazine_duplicate_remap_page_order.sql` | `magazine_duplicate_atomic` | Remapeia IDs antigos para os itens clonados dentro do `page_order` v2. |
 | `20260909190100_magazine_page_order_validation_null_safe.sql` | `magazine_update_metadata_atomic` | Rejeita campos obrigatórios ausentes/nulos e IDs repetidos no envelope v2. |
+| `20260909190200_magazine_add_items_null_safe.sql` | `magazine_add_items_atomic` | Rejeita payload SQL nulo antes de avaliar comprimento ou avançar a revisão. |
+| `20260909190300_magazine_publish_atomic.sql` | `magazine_publish_atomic` | Valida owner, requisitos, status e token do trigger dentro da mesma transação. |
 
 ## Invariantes comuns
 
@@ -42,10 +44,12 @@ Este pacote atende à autorização posterior do PO para aplicar as operações 
 6. Revisão pós-aplicação: `magazine_items_position_unique` foi confirmada por `pg_catalog` como `DEFERRABLE INITIALLY DEFERRED`; a troca direta de posições é válida no canônico e no schema de teste.
 7. Correções compensatórias: preflight com duas funções-base e zero versões corretivas; postflight com duas funções, duas versões e zero grants para `anon`.
 8. Validação independente final: as versões `20260909190000` e `20260909190100` têm um statement cada; as definições live contêm o remapeamento `v_id_map` e a validação `IS DISTINCT FROM`, mantendo `SECURITY DEFINER`, `search_path` fixo e ACL mínima.
+9. Correções finais: o run `34397795301` partiu de `base_add=1`, `publish=0`, zero versões e terminou com duas funções, duas versões e zero grants para `anon`.
+10. O MCP oficial confirmou PostgreSQL 17.6, nove versões registradas, seis RPCs, guarda `p_items IS NULL`, publicação com `FOR UPDATE`, owner `postgres`, `SECURITY DEFINER` e grants somente para `authenticated`/`service_role`.
 
 ## Próxima etapa de rollout
 
-O cliente RPC-first permanece deliberadamente desligado. Sua ativação deve ser uma mudança separada, com fallback durante a janela de observação, tratamento explícito de `40001`/conflito, teste autenticado e telemetria. O caminho legado só poderá ser removido depois dessa homologação.
+O caller de `magazine_publish_atomic` está ativo. Os callers RPC-first de itens, duplicação e metadata permanecem deliberadamente desligados; sua ativação deve ser uma mudança separada, com fallback durante a janela de observação, tratamento explícito de `40001`/conflito, teste autenticado e telemetria. O caminho legado só poderá ser removido depois dessa homologação.
 
 ## Reversão
 
@@ -59,4 +63,4 @@ npm run typecheck
 node scripts/validate-supabase-config.mjs
 ```
 
-Além do teste estático, as sete versões das cinco funções foram compiladas em sequência contra o schema mínimo em `tests/magazine/sql/magazine_rpc_schema.sql`, e `magazine_rpc_scenarios.sql` terminou com `MAGAZINE_RPC_SCENARIOS_OK`. O cenário comprova troca de posições, rejeição de página sem `kind` e remapeamento do item clonado no `page_order`. O banco e o container foram descartados após o teste. A aplicação canônica foi autorizada e validada estruturalmente; mutações com dados reais de produção não foram executadas.
+Além do teste estático, as nove versões das seis funções foram compiladas em sequência contra PostgreSQL 17.6 e o schema mínimo em `tests/magazine/sql/magazine_rpc_schema.sql`; `magazine_rpc_scenarios.sql` terminou com `MAGAZINE_RPC_SCENARIOS_OK`. O cenário comprova troca de posições, payload nulo sem avanço de revisão, rejeição de página sem `kind`, remapeamento do item clonado e publicação atômica. O banco e o container foram descartados após o teste. A aplicação canônica foi autorizada e validada estruturalmente; mutações com dados reais de produção não foram executadas.

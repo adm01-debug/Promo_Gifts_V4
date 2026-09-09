@@ -468,7 +468,7 @@ export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDe
                     <button
                       type="button"
                       onClick={() => handleQuickAdd(p)}
-                      disabled={isIn}
+                      disabled={isIn || isAdding}
                       aria-label={`Adicionar ${p.name} à revista`}
                       className="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-background text-foreground transition-colors duration-150 hover:border-primary hover:bg-primary/10 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
                     >

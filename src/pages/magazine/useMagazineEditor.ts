@@ -13,6 +13,7 @@ import type {
 import type { Product } from '@/types/product-catalog';
 import { validateBranding } from '@/lib/security/magazine-guard';
 import { EditorPersistence, type EditorPatch } from './editorPersistence';
+import { isMagazinePageOrderV2 } from './pagination';
 
 export function useMagazineEditor(id: string | undefined) {
   const { user } = useAuth();
@@ -126,7 +127,26 @@ export function useMagazineEditor(id: string | undefined) {
   const setContent = useCallback(
     (patch: Partial<MagazineContentSettings>) => {
       const current = session.current?.magazine;
-      if (current) persist({ content: { ...current.content, ...patch } });
+      if (!current) return;
+      const editorPatch: EditorPatch = { content: { ...current.content, ...patch } };
+      if (
+        isMagazinePageOrderV2(current.pageOrder) &&
+        ('introText' in patch || 'closingText' in patch)
+      ) {
+        editorPatch.pageOrder = {
+          version: 2,
+          pages: current.pageOrder.pages.map((page) => {
+            if (page.kind === 'institutional' && 'introText' in patch) {
+              return { ...page, body: patch.introText ?? '' };
+            }
+            if ((page.kind === 'contact' || page.kind === 'back-cover') && 'closingText' in patch) {
+              return { ...page, body: patch.closingText ?? '' };
+            }
+            return page;
+          }),
+        };
+      }
+      persist(editorPatch);
     },
     [persist],
   );

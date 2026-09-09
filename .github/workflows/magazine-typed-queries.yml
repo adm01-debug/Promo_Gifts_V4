@@ -51,8 +51,8 @@ concurrency:
 # Em 2026-09-09, a consolidação das mutações do Magazine removeu duas
 # consultas redundantes por tabela; untypedFrom continua proibido.
 env:
-  EXPECTED_FROM_MAGAZINES: '14'
-  EXPECTED_FROM_MAGAZINE_ITEMS: '8'
+  EXPECTED_FROM_MAGAZINES: '13'
+  EXPECTED_FROM_MAGAZINE_ITEMS: '7'
   EXPECTED_UNTYPEDFROM_AFTER: '0'
 
 jobs:

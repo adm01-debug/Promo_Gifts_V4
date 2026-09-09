@@ -182,6 +182,36 @@ describe('useMagazineEditor — stale ref race condition', () => {
     expect(magazineService.update).toHaveBeenCalledWith('mag_test', { title: 'Título seguro' });
   });
 
+  it('sincroniza texto editorial com a página estruturada no mesmo patch', async () => {
+    storedMagazine = {
+      ...MOCK_MAGAZINE,
+      pageOrder: {
+        version: 2,
+        pages: [
+          { id: 'cover', kind: 'cover' },
+          { id: 'institutional', kind: 'institutional', body: 'Anterior' },
+          { id: 'contact', kind: 'contact' },
+        ],
+      },
+    };
+    const { result } = await renderLoadedEditor();
+    act(() => result.current.setContent({ introText: 'Introdução atualizada' }));
+    await act(() => vi.advanceTimersByTimeAsync(400));
+
+    expect(result.current.magazine?.content.introText).toBe('Introdução atualizada');
+    const pageOrder = result.current.magazine?.pageOrder;
+    expect(pageOrder && !Array.isArray(pageOrder) ? pageOrder.pages : []).toContainEqual(
+      expect.objectContaining({ kind: 'institutional', body: 'Introdução atualizada' }),
+    );
+    expect(magazineService.update).toHaveBeenCalledWith(
+      'mag_test',
+      expect.objectContaining({
+        content: expect.objectContaining({ introText: 'Introdução atualizada' }),
+        pageOrder: expect.objectContaining({ version: 2 }),
+      }),
+    );
+  });
+
   it('retorno null não confirma salvamento e preserva edição para retry', async () => {
     const { result } = await renderLoadedEditor();
     vi.mocked(magazineService.update).mockResolvedValueOnce(null);

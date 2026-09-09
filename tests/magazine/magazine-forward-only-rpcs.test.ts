@@ -15,6 +15,10 @@ const migrations = [
   ],
   ['magazine_add_items_atomic', '20260909190200_magazine_add_items_null_safe.sql'],
   ['magazine_publish_atomic', '20260909190300_magazine_publish_atomic.sql'],
+  [
+    'magazine_update_metadata_atomic',
+    '20260909190400_magazine_page_order_numeric_version.sql',
+  ],
 ] as const;
 
 function sql(filename: string): string {
@@ -92,6 +96,12 @@ describe('Magazine forward-only atomic RPC drafts', () => {
     expect(source).toContain("value->>'kind' = ANY");
     expect(source).toContain("jsonb_typeof(value->'id') IS DISTINCT FROM 'string'");
     expect(source).toContain('COUNT(DISTINCT item_id.value)');
+  });
+
+  it('latest metadata correction requires the numeric v2 discriminator', () => {
+    const source = sql('20260909190400_magazine_page_order_numeric_version.sql');
+    expect(source).toContain("jsonb_typeof(p_patch->'page_order'->'version') = 'number'");
+    expect(source).toContain("(p_patch->'page_order'->>'version')::NUMERIC = 2");
   });
 
   it('add correction rejects SQL NULL before evaluating array length', () => {
