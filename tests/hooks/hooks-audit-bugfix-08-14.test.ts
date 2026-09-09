@@ -12,6 +12,8 @@
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act, waitFor } from '@testing-library/react';
+import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import '../components/render-helpers';
 import { useDebounce, useThrottle } from '@/hooks/common/useDebounce';
 import { useAutoSaveQuote, migratePayload } from '@/hooks/quotes/useAutoSaveQuote';
@@ -27,6 +29,10 @@ import {
 } from './_helpers/mock-supabase-builder';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+
+function readSource(relativePath: string): Promise<string> {
+  return readFile(fileURLToPath(new URL(relativePath, import.meta.url)), 'utf8');
+}
 
 vi.mock('@/lib/logger', () => ({
   logger: { debug: vi.fn(), warn: vi.fn(), log: vi.fn(), error: vi.fn() },
@@ -111,16 +117,12 @@ describe('BUG-08 -- polling nao recriado apos fetch', () => {
   });
 
   it('notificationsLengthRef como dep estavel (sem notifications.length no codigo)', async () => {
-    const src = await fetch(
-      new URL('../../src/hooks/ui/useWorkspaceNotifications.tsx', import.meta.url)
-    ).then(r => r.text()).catch(() => null);
-    if (src) {
-      expect(src).toContain('notificationsLengthRef');
-      const codeLines = src.split('\n').filter(l =>
-        !l.trim().startsWith('*') && !l.trim().startsWith('//')
-      );
-      expect(codeLines.join('\n')).not.toContain('[user, notifications.length]');
-    }
+    const src = await readSource('../../src/hooks/ui/useWorkspaceNotifications.tsx');
+    expect(src).toContain('notificationsLengthRef');
+    const codeLines = src.split('\n').filter(l =>
+      !l.trim().startsWith('*') && !l.trim().startsWith('//')
+    );
+    expect(codeLines.join('\n')).not.toContain('[user, notifications.length]');
   });
 });
 
@@ -172,14 +174,10 @@ describe('BUG-09 -- useThrottle leading-edge real', () => {
   });
 
   it('inThrottleRef/lastValueRef/limitRef presentes no codigo fonte', async () => {
-    const src = await fetch(
-      new URL('../../src/hooks/common/useDebounce.ts', import.meta.url)
-    ).then(r => r.text()).catch(() => null);
-    if (src) {
-      expect(src).toContain('inThrottleRef');
-      expect(src).toContain('lastValueRef');
-      expect(src).toContain('limitRef');
-    }
+    const src = await readSource('../../src/hooks/common/useDebounce.ts');
+    expect(src).toContain('inThrottleRef');
+    expect(src).toContain('lastValueRef');
+    expect(src).toContain('limitRef');
   });
 });
 
@@ -215,14 +213,10 @@ describe('BUG-10 -- use2FA nao expoe totp_secret', () => {
   });
 
   it('codigo fonte: sem .select(totp_secret), com verify-2fa-token action disable', async () => {
-    const src = await fetch(
-      new URL('../../src/hooks/auth/use2FA.ts', import.meta.url)
-    ).then(r => r.text()).catch(() => null);
-    if (src) {
-      expect(src).not.toContain(".select('totp_secret')");
-      expect(src).toContain('verify-2fa-token');
-      expect(src).toContain("action: 'disable'");
-    }
+    const src = await readSource('../../src/hooks/auth/use2FA.ts');
+    expect(src).not.toContain(".select('totp_secret')");
+    expect(src).toContain('verify-2fa-token');
+    expect(src).toContain("action: 'disable'");
   });
 });
 
@@ -231,17 +225,13 @@ describe('BUG-10 -- use2FA nao expoe totp_secret', () => {
 // ────────────────────────────────────────────────────────────────────────────
 describe('BUG-11 -- useKitAutoSave refs e cleanup dedicado', () => {
   it('kitStateRef/kitQuantityRef/onKitIdCreatedRef + deps estaveis + cleanup', async () => {
-    const src = await fetch(
-      new URL('../../src/hooks/kit-builder/useKitAutoSave.ts', import.meta.url)
-    ).then(r => r.text()).catch(() => null);
-    if (src) {
-      expect(src).toContain('kitStateRef');
-      expect(src).toContain('kitQuantityRef');
-      expect(src).toContain('onKitIdCreatedRef');
-      expect(src).toContain('[user?.id, currentKitId]');
-      expect(src).toContain('Cleanup dedicado ao unmount');
-      expect(src).not.toContain('onKitIdCreated]');
-    }
+    const src = await readSource('../../src/hooks/kit-builder/useKitAutoSave.ts');
+    expect(src).toContain('kitStateRef');
+    expect(src).toContain('kitQuantityRef');
+    expect(src).toContain('onKitIdCreatedRef');
+    expect(src).toContain('[user?.id, currentKitId]');
+    expect(src).toContain('Cleanup dedicado ao unmount');
+    expect(src).not.toContain('onKitIdCreated]');
   });
 });
 
@@ -267,13 +257,9 @@ describe('BUG-12 -- useTechniquePricing PostgREST nativo', () => {
   });
 
   it('flag cancelled para cleanup em unmount', async () => {
-    const src = await fetch(
-      new URL('../../src/hooks/simulation/useTechniquePricing.ts', import.meta.url)
-    ).then(r => r.text()).catch(() => null);
-    if (src) {
-      expect(src).toContain('let cancelled = false');
-      expect(src).toContain('cancelled = true');
-    }
+    const src = await readSource('../../src/hooks/simulation/useTechniquePricing.ts');
+    expect(src).toContain('let cancelled = false');
+    expect(src).toContain('cancelled = true');
   });
 });
 
@@ -326,15 +312,11 @@ describe('BUG-13 -- useAutoSaveQuote clearAutoSave e migracao', () => {
 // ────────────────────────────────────────────────────────────────────────────
 describe('BUG-14 -- usePrintAreas PostgREST para todas as funcoes', () => {
   it('nenhuma funcao usa external-db-bridge no codigo (apenas em comentarios)', async () => {
-    const src = await fetch(
-      new URL('../../src/hooks/simulation/usePrintAreas.ts', import.meta.url)
-    ).then(r => r.text()).catch(() => null);
-    if (src) {
-      const codeLines = src.split('\n').filter(l =>
-        !l.trim().startsWith('*') && !l.trim().startsWith('//')
-      );
-      expect(codeLines.join('\n')).not.toContain('external-db-bridge');
-    }
+    const src = await readSource('../../src/hooks/simulation/usePrintAreas.ts');
+    const codeLines = src.split('\n').filter(l =>
+      !l.trim().startsWith('*') && !l.trim().startsWith('//')
+    );
+    expect(codeLines.join('\n')).not.toContain('external-db-bridge');
   });
 
   it('usePrintAreas: from(print_area_techniques)', async () => {
