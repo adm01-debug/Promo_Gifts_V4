@@ -1,22 +1,19 @@
 /**
  * Fuzz massivo — magazineService.publish()
  *
- * Objetivo: expor gaps e falhas ANTES de aplicar a trigger `fn_magazine_public_token`
- * no BD Gold. Cobre 400+ cenários combinatórios do fluxo publish/republish,
- * simulando corridas, RLS silenciosa, trigger ausente/parcial, timeout de rede,
- * colisão de token, backfill defensivo, unpublish→republish e idempotência.
+ * Objetivo: validar o fluxo publish/republish COM a trigger canônica
+ * `tg_magazines_on_publish`. Cobre cenários combinatórios de corridas, RLS
+ * silenciosa, trigger ausente/parcial e republish. Se a trigger estiver ausente,
+ * o contrato atual bloqueia o retorno ao usuário (fail-closed).
  *
  * Contrato invariante que TODO cenário deve preservar:
- *   INV-1: publish() nunca retorna Magazine com publicToken vazio quando o
- *          BD aceitou pelo menos um UPDATE (status OU token).
+ *   INV-1: publish() nunca retorna Magazine com publicToken vazio.
  *   INV-2: uma vez que o BD tem public_token != NULL, publish() subsequente
  *          NUNCA sobrescreve — republicação reutiliza o mesmo link.
  *   INV-3: quando o UPDATE de status falha, publish() resolve com null (não
  *          lança) e não persiste token órfão no BD.
- *   INV-4: token gerado é sempre 32 hex chars (contrato do link público).
- *   INV-5: falha do UPDATE de token NÃO derruba o publish — o método ainda
- *          resolve com Magazine hidratada (BD volta com token via re-fetch
- *          ou continua NULL, mas nunca lança).
+ *   INV-4: token emitido pelo banco é sempre 32 hex chars.
+ *   INV-5: trigger ausente resulta em `null`, nunca num link fabricado no client.
  *
  * Cada cenário roda em isolamento (state reset no beforeEach) e o resultado
  * é agregado em um relatório final impresso no console via afterAll.
@@ -108,11 +105,7 @@ const builder = vi.hoisted(() => {
           return { eq: () => Promise.resolve({ error: { message: 'RLS denied' } }) };
         }
         // Trigger BEFORE simulada
-        if (
-          patch.status === 'published' &&
-          state.scenario?.triggerFillsToken &&
-          state.row
-        ) {
+        if (patch.status === 'published' && state.scenario?.triggerFillsToken && state.row) {
           if (!state.row.public_token || state.scenario.triggerOverwritesExistingToken) {
             state.row.public_token = 'cafe'.repeat(8); // 32 hex
           }
@@ -123,10 +116,14 @@ const builder = vi.hoisted(() => {
       if (isTokenUpdate && state.row) {
         state.tokenUpdateAttempts++;
         if (state.scenario?.tokenUpdateFails) {
-          return { eq: () => ({ is: () => Promise.resolve({ error: { message: 'update failed' } }) }) };
+          return {
+            eq: () => ({ is: () => Promise.resolve({ error: { message: 'update failed' } }) }),
+          };
         }
         // Respeita a guarda `.is('public_token', null)` — só grava se atualmente NULL
-        const guardsNull = filters.some((f) => f.op === 'is' && f.column === 'public_token' && f.value === null);
+        const guardsNull = filters.some(
+          (f) => f.op === 'is' && f.column === 'public_token' && f.value === null,
+        );
         if (!guardsNull || state.row.public_token === null) {
           state.row.public_token = patch.public_token ?? state.row.public_token;
         }
@@ -137,7 +134,9 @@ const builder = vi.hoisted(() => {
           const chained = {
             is: () => Promise.resolve({ error: null }),
           };
-          const p: Promise<{ error: null }> & typeof chained = Promise.resolve({ error: null }) as unknown as Promise<{ error: null }> & typeof chained;
+          const p: Promise<{ error: null }> & typeof chained = Promise.resolve({
+            error: null,
+          }) as unknown as Promise<{ error: null }> & typeof chained;
           Object.assign(p, chained);
           return p;
         },
@@ -313,19 +312,22 @@ describe('magazineService.publish — fuzz massivo (400+ cenários)', () => {
     const anyThrow = outcomes.some((o) => o && typeof o === 'object' && '_err' in o);
 
     const finalToken = state.row?.public_token ?? null;
-    const anyOk = outcomes.some((o) => o && !('_err' in (o as object)) && (o as { publicToken?: string })?.publicToken);
+    const anyOk = outcomes.some(
+      (o) => o && !('_err' in (o as object)) && (o as { publicToken?: string })?.publicToken,
+    );
 
     const inv: Record<string, boolean> = {
       // INV-3: nunca lança
       neverThrows: !anyThrow,
       // INV-4: token final é 32 hex ou null (nunca formato inválido)
       tokenFormatValid: finalToken === null || /^[a-f0-9]{32}$/i.test(finalToken),
-      // INV-1: se o BD aceitou pelo menos um UPDATE de status, existe token no final
-      //        (exceto quando fetch retornou null — cenário RLS invisível)
-      tokenPresentWhenPublished:
+      // INV-1/5: trigger ausente é rejeitada pelo cliente; um resultado
+      // publicado nunca pode sair sem token confirmado pelo banco.
+      failsClosedWithoutToken:
+        !!finalToken ||
         scenario.statusUpdateFails ||
         scenario.fetchAfterUpdateReturnsNull ||
-        !!finalToken,
+        outcomes.every((outcome) => outcome === null),
       // INV-2: token pré-existente não pode ter sido sobrescrito (a menos que trigger buggada)
       preservesExistingToken:
         scenario.initialToken === null ||
@@ -333,7 +335,7 @@ describe('magazineService.publish — fuzz massivo (400+ cenários)', () => {
         finalToken === scenario.initialToken,
       // INV-5: quando o BD tem token válido, pelo menos uma execução deve retornar Magazine com esse token
       hydratesWhenAvailable:
-        !finalToken || scenario.fetchAfterUpdateReturnsNull || anyOk,
+        !finalToken || scenario.statusUpdateFails || scenario.fetchAfterUpdateReturnsNull || anyOk,
     };
 
     results.push({
@@ -347,7 +349,12 @@ describe('magazineService.publish — fuzz massivo (400+ cenários)', () => {
 
     // Cada invariante é asserção — falhas aparecem no relatório
     expect(inv.neverThrows, `${scenario.id}: publish() lançou`).toBe(true);
-    expect(inv.tokenFormatValid, `${scenario.id}: token com formato inválido (${finalToken})`).toBe(true);
+    expect(inv.tokenFormatValid, `${scenario.id}: token com formato inválido (${finalToken})`).toBe(
+      true,
+    );
+    expect(inv.failsClosedWithoutToken, `${scenario.id}: publish aceitou link sem token`).toBe(
+      true,
+    );
     expect(
       inv.preservesExistingToken,
       `${scenario.id}: token existente foi sobrescrito (antes=${scenario.initialToken}, depois=${finalToken})`,

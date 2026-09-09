@@ -117,7 +117,20 @@ function makeBuilder(s: QueryState) {
     if (s.op === 'update') {
       const patch = s.payload as Record<string, unknown>;
       const rows = collect(s);
-      for (const r of rows) Object.assign(r, patch, { updated_at: nowIso() });
+      for (const r of rows) {
+        // Espelha o contrato do trigger canônico tg_magazines_on_publish:
+        // publicar gera token no banco, nunca no browser. Este mock de
+        // integração deve falhar caso o serviço volte a depender de fallback.
+        if (
+          s.table === 'magazines' &&
+          patch.status === 'published' &&
+          !r.public_token
+        ) {
+          r.public_token = 'ab'.repeat(16);
+          r.published_at = nowIso();
+        }
+        Object.assign(r, patch, { updated_at: nowIso() });
+      }
       const data = single === 'many' ? rows : rows[0] ?? null;
       return { data, error: null };
     }

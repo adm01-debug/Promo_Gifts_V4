@@ -1,9 +1,8 @@
 /**
  * magazineService.publish — contrato pós-trigger `fn_magazine_public_token`.
  *
- * Este teste valida o comportamento ESPERADO após a aplicação da migração
- * `qa/migrations-draft/2026-07-15_magazine_public_token_trigger.sql` no BD
- * Gold (`doufsxqlfjyuvxuezpln`).
+ * Este teste valida o comportamento do trigger canônico
+ * `tg_magazines_on_publish` no BD Gold (`doufsxqlfjyuvxuezpln`).
  *
  * Contrato coberto:
  *  1) UPDATE status='published' → linha volta do BD com public_token não-nulo
@@ -19,9 +18,6 @@
  * trigger produziria. O SQL da trigger é validado no próprio Gold via
  * bloco DO $verify$ da migração + consulta read-only por psql.
  *
- * Enquanto o fallback client-side estiver presente em magazineService.publish
- * (hotfix 2026-07-15 anterior), este teste é SKIPPED via `describe.skip` na
- * primeira linha. Passo 3 do plano remove o skip junto com o fallback.
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
@@ -95,11 +91,7 @@ const builder = vi.hoisted(() => {
     q.delete = () => q;
     q.update = (patch: Partial<MagRow>) => {
       // Simula a trigger BEFORE UPDATE OF status.
-      if (
-        patch.status === 'published' &&
-        state.triggerActive &&
-        !state.row.public_token
-      ) {
+      if (patch.status === 'published' && state.triggerActive && !state.row.public_token) {
         state.row.public_token = 'ab'.repeat(16); // 32 hex chars
       }
       Object.assign(state.row, patch);
@@ -134,9 +126,7 @@ beforeEach(() => {
 // import DEPOIS dos mocks
 import { magazineService } from '@/services/magazineService';
 
-// Skipped até o passo 3 do plano (remoção do fallback client-side).
-// Para ativar: trocar `describe.skip` por `describe`.
-describe.skip('publish() — contrato pós-trigger fn_magazine_public_token', () => {
+describe('publish() — contrato pós-trigger tg_magazines_on_publish', () => {
   it('recebe public_token vindo do BD (trigger BEFORE UPDATE)', async () => {
     const result = await magazineService.publish('mag_pub_1');
     expect(result).not.toBeNull();
@@ -152,11 +142,9 @@ describe.skip('publish() — contrato pós-trigger fn_magazine_public_token', ()
     ).toBe(false);
   });
 
-  it('regressão: se a trigger sumir, o teste falha alto', async () => {
+  it('regressão: se a trigger sumir, bloqueia a publicação sem link público', async () => {
     state.triggerActive = false;
     const result = await magazineService.publish('mag_pub_1');
-    // Sem fallback + sem trigger → publicToken fica null. O teste falha
-    // aqui de propósito para detectar rollback acidental da trigger.
-    expect(result?.publicToken).toBeTruthy();
+    expect(result).toBeNull();
   });
 });

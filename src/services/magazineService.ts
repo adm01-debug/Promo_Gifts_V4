@@ -107,29 +107,6 @@ export function productToSnapshot(product: Product): MagazineProductSnapshot {
   };
 }
 
-/**
- * Gera um token público URL-safe (32 chars hex) para revistas quando o
- * trigger do BD não está disponível. Usa crypto.getRandomValues quando
- * possível, com fallback determinístico para ambientes sem Web Crypto.
- */
-function generatePublicToken(): string {
-  try {
-    const g = (globalThis as { crypto?: Crypto }).crypto;
-    if (g?.getRandomValues) {
-      const bytes = new Uint8Array(16);
-      g.getRandomValues(bytes);
-      return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
-    }
-    if (g && typeof (g as Crypto).randomUUID === 'function') {
-      return (g as Crypto).randomUUID().replace(/-/g, '');
-    }
-  } catch {
-    /* fallback abaixo */
-  }
-  // Fallback (não-cripto): suficiente para desbloquear o fluxo de publicação.
-  return `${Date.now().toString(16)}${Math.random().toString(16).slice(2, 18)}`.padEnd(32, '0');
-}
-
 // ---------------------------------------------------------------------------
 // Low-level fetchers
 // ---------------------------------------------------------------------------
@@ -618,70 +595,24 @@ export const magazineService = {
   },
 
   async publish(id: string): Promise<Magazine | null> {
-    // Idealmente o trigger fn_magazine_public_token gera o token quando o
-    // status vira 'published'. Como esse trigger é um draft que ainda não
-    // foi aplicado no BD Gold, geramos o token client-side quando ele
-    // continua NULL — garantindo que o fluxo de publicação sempre produza
-    // um link compartilhável E que o token fique persistido no BD para que
-    // republicações futuras reutilizem o mesmo link (idempotência).
-    //
-    // Invariantes (validados por src/services/__tests__/magazinePublish.fuzz.test.ts):
-    //   INV-1: nunca retorna Magazine com publicToken vazio se o BD aceitou
-    //          ao menos um UPDATE de status.
-    //   INV-2: token pré-existente NUNCA é sobrescrito (guarda `is null`).
-    //   INV-3: falha do UPDATE de status → resolve com null, sem token órfão.
-    //   INV-4: token final sempre 32 hex chars.
-    //   INV-5: falha do UPDATE de token não derruba o publish.
-    const currentRow = await fetchMagazineRow(id);
-    const existingToken = currentRow?.public_token ?? null;
-
-    // 1) Update de status/published_at — sempre. Se falhar, aborta ANTES de
-    //    tentar gravar qualquer token (INV-3: sem token órfão no BD).
+    // O trigger canônico `tg_magazines_on_publish` é a única autoridade para
+    // emitir/revogar public_token. O cliente não gera token: isso evita
+    // fallback fraco, corrida entre abas e divergência de política do banco.
+    // Falhar sem token é propositalmente fail-closed: não há publicação sem
+    // um link público que tenha sido confirmado pelo banco.
     const { error } = await magazineDb
       .from('magazines')
-      .update({
-        status: 'published',
-        published_at: new Date().toISOString(),
-      })
+      .update({ status: 'published' })
       .eq('id', id);
     if (error) {
       logger.warn('[magazineService.publish] error:', error.message);
       return null;
     }
 
-    // 2) Se já havia token, pula o UPDATE de token (economia + INV-2).
-    //    A trigger, quando ativa, já preencheu no passo 1; o re-fetch abaixo
-    //    confirma. Se não havia, tenta gravar o token gerado com guarda
-    //    `.is('public_token', null)` — só escreve se o BD ainda estiver NULL.
-    if (!existingToken) {
-      const generatedToken = generatePublicToken();
-      const { error: tokenErr } = await magazineDb
-        .from('magazines')
-        .update({ public_token: generatedToken })
-        .eq('id', id)
-        .is('public_token', null);
-      if (tokenErr) {
-        logger.warn('[magazineService.publish] token persist error:', tokenErr.message);
-      }
-    }
-
-    let hydrated = await hydrate(id);
-    // Defesa em profundidade: se ainda vier NULL (ex.: RLS silenciosa que
-    // ocultou o UPDATE anterior), tenta persistir um NOVO token com guarda
-    // `is null`. Idempotente e seguro contra concorrência: um segundo
-    // publish() concorrente vai bater na guarda e ser rejeitado.
-    if (hydrated && !hydrated.publicToken) {
-      const fallbackToken = generatePublicToken();
-      const { error: tokenErr } = await magazineDb
-        .from('magazines')
-        .update({ public_token: fallbackToken })
-        .eq('id', id)
-        .is('public_token', null);
-      if (tokenErr) {
-        logger.warn('[magazineService.publish] token backfill error:', tokenErr.message);
-      } else {
-        hydrated = await hydrate(id);
-      }
+    const hydrated = await hydrate(id);
+    if (!hydrated?.publicToken) {
+      logger.error('[magazineService.publish] published row has no public token', { id });
+      return null;
     }
     return hydrated;
   },

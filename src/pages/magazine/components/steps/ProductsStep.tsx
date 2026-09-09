@@ -76,7 +76,7 @@ interface Props {
   onGoToDesign?: () => void;
 }
 
-type SortMode = 'name' | 'price-asc' | 'price-desc' | 'relevance';
+type SortMode = 'name' | 'price-asc' | 'price-desc';
 
 const FAMILY_LABEL: Record<'catalog' | 'corporate' | 'editorial', string> = {
   editorial: 'Editorial',
@@ -100,10 +100,14 @@ export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDe
   const [category, setCategory] = useState<string | null>(null);
   const [onlyPersonalizable, setOnlyPersonalizable] = useState(false);
   const [hideAdded, setHideAdded] = useState(true);
-  const [sort, setSort] = useState<SortMode>('relevance');
+  const [sort, setSort] = useState<SortMode>('name');
   const [confirmClear, setConfirmClear] = useState(false);
 
-  const { data: products = [], isLoading } = useProducts({ search: query, limit: 80 });
+  const { data: products = [], isLoading } = useProducts({
+    search: query,
+    limit: 80,
+    sortBy: sort,
+  });
 
   const items = useMemo(() => magazine.items ?? [], [magazine.items]);
 
@@ -126,7 +130,6 @@ export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDe
       if (onlyPersonalizable && !p.hasPersonalization) return false;
       return true;
     });
-    if (sort === 'relevance') return out;
     return [...out].sort((a, b) => {
       if (sort === 'name') return a.name.localeCompare(b.name, 'pt-BR');
       const pa = productPrice(a) ?? 0;
@@ -311,10 +314,9 @@ export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDe
               </span>
             </SelectTrigger>
             <SelectContent className="pg-module rounded-lg border-border">
-              <SelectItem value="relevance">Mais relevantes</SelectItem>
+              <SelectItem value="name">Nome A–Z</SelectItem>
               <SelectItem value="price-asc">Menor preço</SelectItem>
               <SelectItem value="price-desc">Maior preço</SelectItem>
-              <SelectItem value="name">Nome A–Z</SelectItem>
             </SelectContent>
           </Select>
         </div>

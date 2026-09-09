@@ -1,12 +1,13 @@
-# Magazine — execução parcial do plano de 50 etapas
+# Magazine — execução incremental do plano de 50 etapas
 
-Data: 09/09/2026. Branch: `codex/magazine-integrity-20260909`.
-Base: `55e598d3e30b49adc218e43c67dfbe64136deae8`.
-Worktree: `/tmp/promo-magazine-implementation-20260909-IlRhfk`.
+Data: 09/09/2026. Rodadas: `codex/magazine-integrity-20260909` e
+`codex/magazine-wave2-live-20260909`.
+Base da segunda rodada: `e44377ee64b5dd5fd4a83b769496a535375a79b0`.
+Worktree da segunda rodada: `/tmp/promo-magazine-wave2-20260909`.
 
 ## Veredito
 
-**Primeira rodada implementada e testada; o plano de 50 etapas NÃO está concluído.** Seis etapas têm seu núcleo de código implementado/testado; o checklist de homologação integral continua aberto. Não há base para declarar 10/10, fidelidade às cinco imagens ou produção atualizada.
+**Duas rodadas locais implementadas e testadas; o plano de 50 etapas NÃO está concluído.** A segunda rodada removeu o fallback inseguro de token público, ativou o contrato do trigger canônico, expôs os textos editoriais já previstos no modelo e tornou a ordenação do catálogo verdadeira. O checklist de homologação integral continua aberto. Não há base para declarar 10/10, fidelidade às cinco imagens ou produção atualizada.
 
 A instrução explícita do PO autorizou executar o código do plano. Não foi interpretada como autorização genérica para objetos de banco ainda não especificados. O Supabase canônico não sofreu alterações.
 
@@ -14,13 +15,13 @@ A instrução explícita do PO autorizou executar o código do plano. Não foi i
 
 - Instalação isolada pelo lockfile: `npm ci --ignore-scripts --no-audit --no-fund`. Scripts de instalação não foram executados; gates de código foram chamados separadamente. Manifesto/lockfile não alterados.
 - Antes da correção: três contratos novos do hook falharam — snapshot completo, retorno nulo e publicação antes do debounce. Os 16 contratos anteriores dessa suite passaram.
-- Após correção: **764 testes aprovados, 3 ignorados anteriores, 0 falhas**, em 41 arquivos coletados, sem retries. A lista dos skips continua aberta; não representa certificado de triggers.
-- TypeScript `npm run qa:typecheck`: passou. ESLint dos arquivos alterados e novos: verificação local sem erros após correções; não equivale a todos os gates do GitHub.
+- Após a segunda rodada: **768 testes aprovados, 0 falhas**, em 41 arquivos coletados, sem retries. Inclui 193 combinações de publicação, o contrato antes ignorado do trigger e lifecycle in-memory que espelha o trigger.
+- TypeScript `npm run typecheck`: passou no baseline local. O processo de lint usa o mesmo baseline TypeScript; isso não equivale a todos os gates do GitHub.
 - Browser: 13 cenários de auditoria e 10 de controles concluídos sem erros de harness na rodada corrigida; contêm tanto confirmações quanto lacunas conhecidas, não 23 PASS de funcionalidades.
 - **6 contratos assertivos no Chromium correspondente ao Playwright instalado passaram**, sem erros de página: galeria fria A4, criação com template, CTA público/menu, Fit completo, Ctrl+S e ausência de falso salvo.
 - Larguras 390, 820, 1433 e 1672 px: nenhum overflow horizontal nas telas Identidade/Produtos do harness.
 - Gate SSOT `node scripts/validate-supabase-config.mjs`: passou. Diff vazio em estilos/tokens globais, paleta do Magazine, `client.ts`, tipo Product, manifesto e lockfile.
-- Consulta de saúde do MCP `supabase_producao`: **Management API 403 — conta sem privilégios**. Nenhuma consulta de schema live foi certificada; não usar outro banco como substituto.
+- Auditoria live somente leitura pelo MCP oficial do projeto canônico: confirmadas as tabelas, constraints, índices, RLS e o trigger `tg_magazines_on_publish`; ele gera/revoga `public_token` no banco. Nenhum DDL, DML ou deploy foi executado. A leitura do código da Edge Function live segue bloqueada por escopo insuficiente, portanto a paridade do deploy dessa função não foi certificada.
 
 Ambiente de browser: componentes reais, shell mínimo, CRM/autenticação/catálogo/persistência simulados, requisições externas bloqueadas e service workers desabilitados. O client canônico pode emitir aviso de configuração ausente ao carregar módulos; a rede externa permanece bloqueada e os métodos de persistência são substituídos. Isso não é integração real com Supabase. Não foram usados secrets nem dados de clientes reais.
 
@@ -33,6 +34,7 @@ Ambiente de browser: componentes reais, shell mínimo, CRM/autenticação/catál
 5. Criação na galeria mantém template; cards da grade ganharam ações/metadados; links públicos usam a rota existente; busca inclui subtítulo.
 6. CRM grava identidade e não pesquisa CNPJ com string vazia; hex acompanha presets; seleção de produtos sobrevive a filtros e erros; estimativa conta páginas reais; imagem escolhida no resumo acompanha a variante.
 7. Erros de leitura não viram listas vazias silenciosamente; impressão trata falha de carga. Reordenação/limpeza continuam sem transação multirregistro no servidor.
+8. Publicação não gera mais token no navegador — só confirma o token emitido pelo trigger canônico e falha fechada se ele não vier. Textos de abertura/fechamento agora são editáveis e respeitam 800 caracteres. A lista de produtos deixa de alegar uma relevância inexistente e envia a ordenação escolhida ao serviço.
 
 ## Acompanhamento individual
 
@@ -44,7 +46,7 @@ Ambiente de browser: componentes reais, shell mínimo, CRM/autenticação/catál
 | 002 | Validado local | npm ci isolado: Vitest 4.1.11; Chromium 1217 instalado. Sem mudança de lockfile. |
 | 003 | Parcial | Contratos de perda/IDs preservados no teste de integração e novas falhas de autosave reproduzidas antes da correção. |
 | 004 | Bloqueado PO | Decisão sobre páginas estruturadas versus editor livre e ativos fotográficos ainda pendente; demais ambiguidades permanecem no plano. |
-| 005 | Bloqueado acesso | MCP supabase_producao health retornou Management API 403; nenhum pg_catalog live certificado. |
+| 005 | Validado somente leitura | MCP oficial confirmou `magazines`, `magazine_items`, templates, constraints/índices/RLS e `tg_magazines_on_publish`. Paridade da Edge Function live permanece bloqueada por escopo insuficiente. |
 | 006 | Implementado/testado | Patches só de campos editados; serviço update não apaga/reinsere itens de snapshots legados. |
 | 007 | Implementado/testado | IDs preservados no autosave; retorno e updatedAt reconciliados; testes reais do serviço com DB em memória. |
 | 008 | Parcial | Fila por sessão e proteção contra resposta antiga. Não há CAS/lock entre abas ou usuários. |
@@ -53,7 +55,7 @@ Ambiente de browser: componentes reais, shell mínimo, CRM/autenticação/catál
 | 011 | Pendente | Atomicidade de operações multirregistro requer definição/validação de RPC; nenhuma migration preparada ou aplicada nesta rodada. |
 | 012 | Parcial | Mutações serializadas; limpar aguarda e para no erro. Exclusão/reordenação em lote ainda não é transação no servidor. |
 | 013 | Parcial | Erros de listagem/itens não viram vazio; editor/print tratam rejeição; respostas antigas da lista descartadas. Permissões live não certificadas. |
-| 014 | Parcial | Publicar aguarda campos pendentes; falta ciclo público real autorizado e validação de revogação. |
+| 014 | Parcial | Publicação confirma token do trigger canônico e falha fechada sem ele; o contrato do trigger foi ativado e o lifecycle in-memory o espelha. Falta ciclo público real autorizado, validação de revogação e paridade da Edge Function live. |
 | 015 | Parcial | Contratos locais e concorrência da sessão passaram; gate de integridade de todas as operações/banco real não encerrado. |
 | 016 | Implementado/testado | Origem da transformação corrigida; bounding boxes reais do navegador alinhadas. |
 | 017 | Implementado/testado | Renderer carrega CSS; galeria usa renderer/escopo compartilhado; acesso frio com 1920×2716 confirmado. |
@@ -75,7 +77,7 @@ Ambiente de browser: componentes reais, shell mínimo, CRM/autenticação/catál
 | 033 | Pendente | Contadores e limites soft existentes foram preservados; política de textos legados e novos contratos não homologada. |
 | 034 | Implementado/testado | Hex sincroniza com mudanças externas/presets; blur não restaura cor antiga. Cores globais intactas. |
 | 035 | Parcial | Header passa a mostrar erro real e usar ações aguardáveis; shell completo/stepper ainda não homologado. |
-| 036 | Pendente | Catálogo continua com lote 80, categorias locais e ordenação relevância ainda sem ranking real. |
+| 036 | Parcial | Catálogo continua com lote 80 e categorias locais; a UI não alega mais “Mais relevantes” sem ranking e encaminha nome/preço ao serviço. Paginação e contagens globais continuam pendentes. |
 | 037 | Parcial | Map de seleção independe do filtro; erro preserva seleção e adição é aguardada/deduplicada. Modalidade de seleção e paginação completa pendentes. |
 | 038 | Pendente | Favoritos de produtos não implementados; nenhuma tabela de favoritos criada. |
 | 039 | Parcial | Resumo usa imagem da variante via helper existente; preço/sale_price preservados. Interação completa de swatches/variantes pendente. |
@@ -84,8 +86,8 @@ Ambiente de browser: componentes reais, shell mínimo, CRM/autenticação/catál
 | 042 | Bloqueado dependência | Depende de 041 e inventário 005; nenhum DDL ou grant preparado/aplicado. |
 | 043 | Pendente | Nova página, duplicação e menus editoriais não implementados. |
 | 044 | Pendente | Reordenação de páginas e compatibilidade pageOrder ainda não implementadas. |
-| 045 | Pendente | Conteúdo editorial/páginas institucionais ainda não integrado aos três destinos. |
-| 046 | Parcial | 764 testes passaram; 3 skips anteriores persistem. Novos contratos duráveis e 6 verificações browser; suite visual com IDs antigos ainda requer revisão. |
+| 045 | Parcial | Campos de introdução/fechamento existentes no contrato agora têm UI, limite e testes. Ainda não há páginas institucionais estruturadas nem renderização desses textos no preview/PDF/público. |
+| 046 | Parcial | 768 testes passaram, incluindo o contrato de trigger antes ignorado e 193 cenários combinatórios de publicação. As verificações browser anteriores permanecem locais; suite visual com IDs antigos ainda requer revisão. |
 | 047 | Bloqueado ambiente | Harness isolado não substitui E2E autenticado com backend real de teste. |
 | 048 | Parcial | Quatro larguras sem overflow; cores/guardas sem diff. Sem comparação pixel a pixel com shell completo nem aceite PO. |
 | 049 | Bloqueado acesso/autorização | 403 do MCP; nenhuma migration/deploy no canônico; autorização individual dos objetos continua necessária. |
