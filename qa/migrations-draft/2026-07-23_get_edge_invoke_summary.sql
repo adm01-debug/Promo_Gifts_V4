@@ -1,4 +1,5 @@
 -- Onda 20.3 — RPC read-only agregando métricas de invoke edge.
+-- Alvo: doufsxqlfjyuvxuezpln (canônico Gold/Medallion).
 -- ============================================================================
 -- CONTEXTO: A tabela `webhook_delivery_metrics` já existe em Gold (memory:
 -- Structured Logging & Correlation). Esta função lê essa tabela para expor um
