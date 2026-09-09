@@ -8,12 +8,14 @@ const reviewedReport = {
   vulnerabilities: {
     'image-size': {
       severity: 'high',
+      isDirect: false,
+      effects: ['pptxgenjs'],
       via: [
         { url: 'https://github.com/advisories/GHSA-w3rx-r6r6-pgpr' },
         { url: 'https://github.com/advisories/GHSA-5p2g-fcmc-qvqq' },
       ],
     },
-    pptxgenjs: { severity: 'high', via: ['image-size'] },
+    pptxgenjs: { severity: 'high', isDirect: true, effects: [], via: ['image-size'] },
   },
 };
 
@@ -57,6 +59,20 @@ describe('dependency audit policy', () => {
     expect(result.passed).toBe(false);
     expect(result.violations).toContain(
       'temporary acceptance must contain exactly image-size and pptxgenjs',
+    );
+  });
+
+  it.each([
+    ['image-size marked as direct', 'image-size', 'isDirect', true],
+    ['image-size with a different effect chain', 'image-size', 'effects', []],
+    ['pptxgenjs marked as transitive', 'pptxgenjs', 'isDirect', false],
+  ])('rejects changed dependency topology: %s', (_label, packageName, field, value) => {
+    const report = structuredClone(reviewedReport);
+    report.vulnerabilities[packageName][field] = value;
+    const result = evaluateAuditReport(report, new Date('2026-09-09T12:00:00Z'));
+    expect(result.passed).toBe(false);
+    expect(result.violations).toEqual(
+      expect.arrayContaining([expect.stringContaining(packageName)]),
     );
   });
 

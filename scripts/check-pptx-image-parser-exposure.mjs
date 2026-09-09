@@ -48,12 +48,12 @@ export async function auditPptxImageParserExposure(root = process.cwd()) {
   for (const file of sourceFiles) {
     const relativePath = path.relative(resolvedRoot, file).split(path.sep).join('/');
     const source = await readFile(file, 'utf8');
-    const referencesImageSize = /['"]image-size(?:\/[^'"]*)?['"]/.test(source);
+    const referencesImageSize = /['"`]image-size(?:\/[^'"`]*)?['"`]/.test(source);
     if (referencesImageSize) {
       violations.push(`${relativePath}: direct image-size import is forbidden`);
     }
 
-    const referencesPptx = /['"]pptxgenjs['"]/.test(source);
+    const referencesPptx = /['"`]pptxgenjs['"`]/.test(source);
     if (referencesPptx && relativePath !== ALLOWED_PPTX_IMPORT) {
       violations.push(
         `${relativePath}: pptxgenjs import is outside the reviewed browser-only adapter`,
@@ -69,7 +69,7 @@ export async function auditPptxImageParserExposure(root = process.cwd()) {
     return [...violations, `reviewed PPTX adapter is missing or unreadable: ${error.message}`];
   }
 
-  if (!/['"]pptxgenjs['"]/.test(adapterSource)) {
+  if (!/['"`]pptxgenjs['"`]/.test(adapterSource)) {
     violations.push(`${ALLOWED_PPTX_IMPORT}: expected pptxgenjs import is missing`);
   }
   if (/(?:\.addImage|\[['"]addImage['"]\])\s*\(/.test(adapterSource)) {

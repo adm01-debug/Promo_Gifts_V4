@@ -21,6 +21,10 @@ function isAllowedImageSize(vulnerability) {
   const urls = new Set(advisoryUrls(vulnerability));
   return (
     vulnerability.severity === 'high' &&
+    vulnerability.isDirect === false &&
+    Array.isArray(vulnerability.effects) &&
+    vulnerability.effects.length === 1 &&
+    vulnerability.effects[0] === 'pptxgenjs' &&
     urls.size === ALLOWED_IMAGE_SIZE_ADVISORIES.size &&
     [...ALLOWED_IMAGE_SIZE_ADVISORIES].every((url) => urls.has(url))
   );
@@ -28,7 +32,12 @@ function isAllowedImageSize(vulnerability) {
 
 function isAllowedPptxPropagation(vulnerability) {
   const via = vulnerability.via ?? [];
-  return vulnerability.severity === 'high' && via.length === 1 && via[0] === 'image-size';
+  return (
+    vulnerability.severity === 'high' &&
+    vulnerability.isDirect === true &&
+    via.length === 1 &&
+    via[0] === 'image-size'
+  );
 }
 
 export function evaluateAuditReport(report, now = new Date()) {

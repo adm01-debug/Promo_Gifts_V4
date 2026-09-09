@@ -63,8 +63,8 @@ describe('PPTX vulnerable image parser exposure gate', () => {
   it('rejects direct image-size imports and new unreviewed PPTX adapters', async () => {
     const root = fixture({
       extraFiles: {
-        'src/server/imageProbe.ts': "import 'image-size/lib/types/jxl';\n",
-        'src/lib/otherPptx.ts': "await import('pptxgenjs');\n",
+        'src/server/imageProbe.ts': 'await import(`image-size/lib/types/jxl`);\n',
+        'src/lib/otherPptx.ts': 'await import(`pptxgenjs`);\n',
       },
     });
     const violations = await auditPptxImageParserExposure(root);
