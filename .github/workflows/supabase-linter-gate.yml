@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       confirm_magazine_rpcs:
-        description: 'Digite APPLY_MAGAZINE_FINAL_CORRECTIONS_CANONICAL para aplicar as 2 correções finais forward-only'
+        description: 'Digite APPLY_MAGAZINE_V2_VERSION_CANONICAL para aplicar a correção final do discriminador v2'
         required: false
         type: string
 
@@ -35,8 +35,8 @@ jobs:
   deploy-magazine-rpcs:
     if: >-
       github.event_name == 'workflow_dispatch' &&
-      inputs.confirm_magazine_rpcs == 'APPLY_MAGAZINE_FINAL_CORRECTIONS_CANONICAL'
-    name: Apply final Magazine RPC corrections — canonical only
+      inputs.confirm_magazine_rpcs == 'APPLY_MAGAZINE_V2_VERSION_CANONICAL'
+    name: Apply Magazine v2 version correction — canonical only
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -47,7 +47,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: a3e59259217248df4c7a4707afdbc481181bbde3
+          ref: 55dae04127701cad63b1a2c4876ada0a0930df03
 
       - uses: actions/setup-node@v4
         with:
@@ -58,7 +58,7 @@ jobs:
           test "$SUPABASE_PROJECT_REF" = "doufsxqlfjyuvxuezpln"
           test -n "$SUPABASE_ACCESS_TOKEN"
 
-      - name: Aplicar duas correções finais em uma única transação
+      - name: Aplicar correção final do discriminador v2
         run: |
           node --input-type=module <<'NODE'
           import { readFileSync } from 'node:fs';
@@ -72,8 +72,7 @@ jobs:
           }
 
           const migrations = [
-            ['20260909190200', 'magazine_add_items_null_safe', 'magazine_add_items_atomic', 'supabase/migrations/20260909190200_magazine_add_items_null_safe.sql'],
-            ['20260909190300', 'magazine_publish_atomic', 'magazine_publish_atomic', 'supabase/migrations/20260909190300_magazine_publish_atomic.sql'],
+            ['20260909190400', 'magazine_page_order_numeric_version', 'magazine_update_metadata_atomic', 'supabase/migrations/20260909190400_magazine_page_order_numeric_version.sql'],
           ];
 
           const apiBase = `https://api.supabase.com/v1/projects/${projectRef}/database`;
@@ -101,31 +100,24 @@ jobs:
           const preflight = await execute(`
             SELECT
               (SELECT count(*)::int FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
-                WHERE n.nspname = 'public' AND p.proname = 'magazine_add_items_atomic') AS base_add_count,
-              (SELECT count(*)::int FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
-                WHERE n.nspname = 'public' AND p.proname = 'magazine_publish_atomic') AS publish_count,
+                WHERE n.nspname = 'public' AND p.proname IN (${functionNames})) AS function_count,
               (SELECT count(*)::int FROM supabase_migrations.schema_migrations
                 WHERE version IN (${versions})) AS migration_count
           `, true);
 
-          const baseAddCount = Number(preflight?.[0]?.base_add_count ?? -1);
-          const publishCount = Number(preflight?.[0]?.publish_count ?? -1);
+          const functionCount = Number(preflight?.[0]?.function_count ?? -1);
           const migrationCount = Number(preflight?.[0]?.migration_count ?? -1);
-          console.log(`Preflight: base_add=${baseAddCount}, publish=${publishCount}, migrations=${migrationCount}`);
+          console.log(`Preflight: functions=${functionCount}, migrations=${migrationCount}`);
 
-          if (baseAddCount !== 1) {
+          if (functionCount !== 1) {
             throw new Error('expected_base_functions_are_missing');
           }
           if (migrationCount === migrations.length) {
-            if (publishCount !== 1) throw new Error('applied_migration_function_missing');
             console.log('Todas as correções já existem; nenhuma mutação necessária.');
             process.exit(0);
           }
           if (migrationCount !== 0) {
             throw new Error('unexpected_partial_state');
-          }
-          if (publishCount !== 0) {
-            throw new Error('unexpected_untracked_publish_function');
           }
 
           const statements = ['BEGIN;'];
@@ -159,7 +151,7 @@ jobs:
 
           const result = postflight?.[0] ?? {};
           console.log(`Postflight: functions=${result.function_count}, migrations=${result.migration_count}, anon_grants=${result.anon_execute_grants}`);
-          if (Number(result.function_count) !== 2 || Number(result.migration_count) !== 2 || Number(result.anon_execute_grants) !== 0) {
+          if (Number(result.function_count) !== 1 || Number(result.migration_count) !== 1 || Number(result.anon_execute_grants) !== 0) {
             throw new Error('postflight_contract_failed');
           }
           NODE
