@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       confirm_magazine_rpcs:
-        description: 'Digite APPLY_MAGAZINE_RPC_CORRECTIONS_CANONICAL para aplicar as 2 correções forward-only'
+        description: 'Digite APPLY_MAGAZINE_FINAL_CORRECTIONS_CANONICAL para aplicar as 2 correções finais forward-only'
         required: false
         type: string
 
@@ -35,8 +35,8 @@ jobs:
   deploy-magazine-rpcs:
     if: >-
       github.event_name == 'workflow_dispatch' &&
-      inputs.confirm_magazine_rpcs == 'APPLY_MAGAZINE_RPC_CORRECTIONS_CANONICAL'
-    name: Apply Magazine RPC corrections — canonical only
+      inputs.confirm_magazine_rpcs == 'APPLY_MAGAZINE_FINAL_CORRECTIONS_CANONICAL'
+    name: Apply final Magazine RPC corrections — canonical only
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -47,7 +47,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 095d4cdb97fccadaeb53a31bccd448bdff356bb6
+          ref: a3e59259217248df4c7a4707afdbc481181bbde3
 
       - uses: actions/setup-node@v4
         with:
@@ -58,7 +58,7 @@ jobs:
           test "$SUPABASE_PROJECT_REF" = "doufsxqlfjyuvxuezpln"
           test -n "$SUPABASE_ACCESS_TOKEN"
 
-      - name: Aplicar duas correções em uma única transação
+      - name: Aplicar duas correções finais em uma única transação
         run: |
           node --input-type=module <<'NODE'
           import { readFileSync } from 'node:fs';
@@ -72,8 +72,8 @@ jobs:
           }
 
           const migrations = [
-            ['20260909190000', 'magazine_duplicate_remap_page_order', 'magazine_duplicate_atomic', 'supabase/migrations/20260909190000_magazine_duplicate_remap_page_order.sql'],
-            ['20260909190100', 'magazine_page_order_validation_null_safe', 'magazine_update_metadata_atomic', 'supabase/migrations/20260909190100_magazine_page_order_validation_null_safe.sql'],
+            ['20260909190200', 'magazine_add_items_null_safe', 'magazine_add_items_atomic', 'supabase/migrations/20260909190200_magazine_add_items_null_safe.sql'],
+            ['20260909190300', 'magazine_publish_atomic', 'magazine_publish_atomic', 'supabase/migrations/20260909190300_magazine_publish_atomic.sql'],
           ];
 
           const apiBase = `https://api.supabase.com/v1/projects/${projectRef}/database`;
@@ -101,24 +101,31 @@ jobs:
           const preflight = await execute(`
             SELECT
               (SELECT count(*)::int FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
-                WHERE n.nspname = 'public' AND p.proname IN (${functionNames})) AS function_count,
+                WHERE n.nspname = 'public' AND p.proname = 'magazine_add_items_atomic') AS base_add_count,
+              (SELECT count(*)::int FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+                WHERE n.nspname = 'public' AND p.proname = 'magazine_publish_atomic') AS publish_count,
               (SELECT count(*)::int FROM supabase_migrations.schema_migrations
                 WHERE version IN (${versions})) AS migration_count
           `, true);
 
-          const functionCount = Number(preflight?.[0]?.function_count ?? -1);
+          const baseAddCount = Number(preflight?.[0]?.base_add_count ?? -1);
+          const publishCount = Number(preflight?.[0]?.publish_count ?? -1);
           const migrationCount = Number(preflight?.[0]?.migration_count ?? -1);
-          console.log(`Preflight: functions=${functionCount}, migrations=${migrationCount}`);
+          console.log(`Preflight: base_add=${baseAddCount}, publish=${publishCount}, migrations=${migrationCount}`);
 
-          if (functionCount !== 2) {
+          if (baseAddCount !== 1) {
             throw new Error('expected_base_functions_are_missing');
           }
           if (migrationCount === migrations.length) {
+            if (publishCount !== 1) throw new Error('applied_migration_function_missing');
             console.log('Todas as correções já existem; nenhuma mutação necessária.');
             process.exit(0);
           }
           if (migrationCount !== 0) {
             throw new Error('unexpected_partial_state');
+          }
+          if (publishCount !== 0) {
+            throw new Error('unexpected_untracked_publish_function');
           }
 
           const statements = ['BEGIN;'];
