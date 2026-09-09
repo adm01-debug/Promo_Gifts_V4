@@ -144,7 +144,6 @@ export function createStructuredPageOrder(magazine: Magazine): MagazinePageOrder
       pages.push(
         createMagazinePageDefinition('contact', {
           title: 'Vamos conversar?',
-          body: magazine.content?.closingText ?? '',
         }),
       );
       continue;
@@ -237,37 +236,53 @@ function paginateStructured(
     );
   }
 
-  const pages = definitions.map<MagazinePage>((definition, index) => {
-    const items =
-      definition.kind === 'products'
-        ? (definition.itemIds ?? [])
-            .map((itemId) => itemById.get(itemId))
-            .filter((item): item is MagazineItem => Boolean(item))
-            .filter((item) => !assigned.has(item.id))
-        : [];
-    for (const item of items) assigned.add(item.id);
+  const pages: MagazinePage[] = [];
+  for (const definition of definitions) {
+    if (definition.kind === 'products') {
+      const referencedItems = (definition.itemIds ?? [])
+        .map((itemId) => itemById.get(itemId))
+        .filter((item): item is MagazineItem => Boolean(item))
+        .filter((item) => !assigned.has(item.id));
+      for (const item of referencedItems) assigned.add(item.id);
 
-    return {
-      index,
+      // A page order survives template changes. Reflow it at render time so a
+      // 3x3 page switched to Vogue never hides items beyond Vogue's capacity.
+      // Empty definitions are omitted after item removal instead of rendering
+      // blank pages in preview, public view and PDF.
+      for (let offset = 0; offset < referencedItems.length; offset += perPage) {
+        pages.push({
+          index: pages.length,
+          pageId: offset === 0 ? definition.id : `${definition.id}-part-${offset / perPage + 1}`,
+          kind: 'products',
+          items: referencedItems.slice(offset, offset + perPage),
+        });
+      }
+      continue;
+    }
+
+    const isEditorial = definition.kind === 'institutional' || definition.kind === 'contact';
+    const configuredClosing = magazine.content?.closingText;
+    pages.push({
+      index: pages.length,
       pageId: definition.id,
       kind: definition.kind,
-      items,
+      items: [],
       ...(definition.kind === 'section' ? { sectionTitle: definition.title || 'Nova seção' } : {}),
-      ...(definition.kind === 'institutional' || definition.kind === 'contact'
+      ...(isEditorial
         ? {
             title:
               definition.title ||
               (definition.kind === 'institutional' ? 'Sobre nós' : 'Vamos conversar?'),
             body:
-              definition.body ||
-              (definition.kind === 'institutional'
-                ? magazine.content?.introText
-                : magazine.content?.closingText) ||
-              '',
+              definition.kind === 'contact'
+                ? configuredClosing !== undefined
+                  ? configuredClosing
+                  : (definition.body ?? '')
+                : definition.body || magazine.content?.introText || '',
           }
         : {}),
-    };
-  });
+    });
+  }
 
   const unassigned = sortedItems.filter((item) => !assigned.has(item.id));
   const generated: MagazinePage[] = [];

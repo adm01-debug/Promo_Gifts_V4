@@ -50,6 +50,20 @@ BEGIN
    WHERE id = '10000000-0000-0000-0000-000000000001';
   PERFORM public.magazine_update_metadata_atomic(
     '10000000-0000-0000-0000-000000000001', current_revision,
+    '{"page_order":{"version":2,"pages":[{"id":"cover","kind":"cover"},{"id":"orphan"},{"id":"contact","kind":"contact"}]}}'::JSONB
+  );
+  RAISE EXCEPTION 'page without kind was accepted';
+EXCEPTION WHEN invalid_parameter_value THEN NULL;
+END;
+$$;
+
+DO $$
+DECLARE current_revision TIMESTAMPTZ;
+BEGIN
+  SELECT updated_at INTO current_revision FROM public.magazines
+   WHERE id = '10000000-0000-0000-0000-000000000001';
+  PERFORM public.magazine_update_metadata_atomic(
+    '10000000-0000-0000-0000-000000000001', current_revision,
     jsonb_build_object('subtitle', repeat('x', 301))
   );
   RAISE EXCEPTION 'subtitle above canonical limit was accepted';
@@ -136,15 +150,38 @@ END;
 $$;
 
 DO $$
-DECLARE result JSONB; duplicate_id UUID;
+DECLARE result JSONB; duplicate_id UUID; source_item_id UUID; duplicate_item_id UUID; current_revision TIMESTAMPTZ;
 BEGIN
+  SELECT id INTO source_item_id FROM public.magazine_items
+   WHERE magazine_id = '10000000-0000-0000-0000-000000000001' ORDER BY position LIMIT 1;
+  SELECT updated_at INTO current_revision FROM public.magazines
+   WHERE id = '10000000-0000-0000-0000-000000000001';
+  result := public.magazine_update_metadata_atomic(
+    '10000000-0000-0000-0000-000000000001', current_revision,
+    jsonb_build_object(
+      'page_order',
+      jsonb_build_object(
+        'version', 2,
+        'pages', jsonb_build_array(
+          jsonb_build_object('id', 'cover', 'kind', 'cover'),
+          jsonb_build_object('id', 'products', 'kind', 'products', 'itemIds', jsonb_build_array(source_item_id::TEXT)),
+          jsonb_build_object('id', 'contact', 'kind', 'contact')
+        )
+      )
+    )
+  );
+  IF result->>'conflict' <> 'false' THEN RAISE EXCEPTION 'source page order setup failed: %', result; END IF;
   result := public.magazine_duplicate_atomic(
     '10000000-0000-0000-0000-000000000001', 'Cópia segura'
   );
   duplicate_id := (result->>'magazine_id')::UUID;
+  SELECT id INTO duplicate_item_id FROM public.magazine_items
+   WHERE magazine_id = duplicate_id ORDER BY position LIMIT 1;
   IF (SELECT status FROM public.magazines WHERE id = duplicate_id) <> 'draft'
      OR (SELECT public_token FROM public.magazines WHERE id = duplicate_id) IS NOT NULL
      OR (SELECT COUNT(*) FROM public.magazine_items WHERE magazine_id = duplicate_id) <> 1
+     OR (SELECT page_order->'pages'->1->'itemIds'->>0 FROM public.magazines WHERE id = duplicate_id) <> duplicate_item_id::TEXT
+     OR duplicate_item_id = source_item_id
   THEN RAISE EXCEPTION 'duplicate assertion failed: %', result; END IF;
 END;
 $$;

@@ -113,4 +113,60 @@ describe('EditorPersistence — falhas e concorrência da sessão', () => {
     expect(editor.magazine.items).toEqual([]);
     expect(editor.dirty).toBe(false);
   });
+
+  it('mantém uma mutação de item rejeitada e a repete pelo salvar novamente', async () => {
+    const { editor } = setup();
+    const action = vi
+      .fn<() => Promise<Magazine | null>>()
+      .mockRejectedValueOnce(new Error('rede indisponível'))
+      .mockResolvedValueOnce({ ...editor.magazine, items: [] });
+
+    await expect(editor.mutate(action)).rejects.toThrow('rede indisponível');
+    expect(editor.error).toBe('rede indisponível');
+    expect(editor.dirty).toBe(true);
+
+    await editor.flush();
+    expect(action).toHaveBeenCalledTimes(2);
+    expect(editor.error).toBeNull();
+    expect(editor.dirty).toBe(false);
+  });
+
+  it('bloqueia uma nova mutação até a operação rejeitada ser resolvida', async () => {
+    const { editor } = setup();
+    const failed = vi
+      .fn<() => Promise<Magazine | null>>()
+      .mockRejectedValueOnce(new Error('offline'))
+      .mockResolvedValueOnce(editor.magazine);
+    const next = vi.fn(() => Promise.resolve(editor.magazine));
+
+    await expect(editor.mutate(failed)).rejects.toThrow('offline');
+    await expect(editor.mutate(next)).rejects.toThrow('operação não salva');
+    expect(next).not.toHaveBeenCalled();
+    await editor.flush();
+    await expect(editor.mutate(next)).resolves.toMatchObject({ id: editor.magazine.id });
+  });
+
+  it('não repete uma mutação confirmada quando apenas o drain final falha', async () => {
+    const { editor, write } = setup();
+    let resolveMutation!: (value: Magazine) => void;
+    const action = vi.fn(
+      () =>
+        new Promise<Magazine>((resolve) => {
+          resolveMutation = resolve;
+        }),
+    );
+    write.mockRejectedValueOnce(new Error('metadata offline'));
+
+    const mutation = editor.mutate(action);
+    await Promise.resolve();
+    await Promise.resolve();
+    editor.edit({ subtitle: 'edição durante a mutação' });
+    resolveMutation({ ...editor.magazine, items: [] });
+    await expect(mutation).rejects.toThrow('metadata offline');
+
+    await editor.flush();
+    expect(action).toHaveBeenCalledTimes(1);
+    expect(write).toHaveBeenCalledTimes(2);
+    expect(editor.magazine.subtitle).toBe('edição durante a mutação');
+  });
 });

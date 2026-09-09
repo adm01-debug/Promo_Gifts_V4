@@ -110,6 +110,6 @@ describe('ContentStep', () => {
     expect(onChange).toHaveBeenLastCalledWith({ introText: 'Boas-vindas à coleção.' });
 
     fireEvent.change(screen.getByTestId('magazine-closing-text'), { target: { value: '' } });
-    expect(onChange).toHaveBeenLastCalledWith({ closingText: undefined });
+    expect(onChange).toHaveBeenLastCalledWith({ closingText: '' });
   });
 });

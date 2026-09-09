@@ -8,6 +8,11 @@ const migrations = [
   ['magazine_reorder_items_atomic', '20260909181200_magazine_reorder_items_atomic.sql'],
   ['magazine_duplicate_atomic', '20260909181300_magazine_duplicate_atomic.sql'],
   ['magazine_update_metadata_atomic', '20260909181400_magazine_update_metadata_atomic.sql'],
+  ['magazine_duplicate_atomic', '20260909190000_magazine_duplicate_remap_page_order.sql'],
+  [
+    'magazine_update_metadata_atomic',
+    '20260909190100_magazine_page_order_validation_null_safe.sql',
+  ],
 ] as const;
 
 function sql(filename: string): string {
@@ -69,5 +74,21 @@ describe('Magazine forward-only atomic RPC drafts', () => {
     expect(source).toContain("'conflict', FALSE");
     expect(source).not.toContain("'status'");
     expect(source).not.toContain("'public_token'");
+  });
+
+  it('duplicate correction builds an old-to-new item map before persisting page_order', () => {
+    const source = sql('20260909190000_magazine_duplicate_remap_page_order.sql');
+    expect(source).toContain('v_id_map');
+    expect(source).toContain("jsonb_set(v_source.page_order, '{pages}'");
+    expect(source).toContain("v_id_map ? (item.value #>> '{}')");
+    expect(source).toContain('SET page_order = v_mapped_page_order');
+  });
+
+  it('metadata correction makes required page fields null-safe', () => {
+    const source = sql('20260909190100_magazine_page_order_validation_null_safe.sql');
+    expect(source).toContain("jsonb_typeof(value->'kind') IS DISTINCT FROM 'string'");
+    expect(source).toContain("value->>'kind' = ANY");
+    expect(source).toContain("jsonb_typeof(value->'id') IS DISTINCT FROM 'string'");
+    expect(source).toContain('COUNT(DISTINCT item_id.value)');
   });
 });

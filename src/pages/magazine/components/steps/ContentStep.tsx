@@ -196,7 +196,7 @@ export function ContentStep({ magazine, onChange }: Props) {
               id="magazine-closing-text"
               value={content.closingText ?? ''}
               maxLength={800}
-              onChange={(event) => onChange({ closingText: event.target.value || undefined })}
+              onChange={(event) => onChange({ closingText: event.target.value })}
               placeholder="Finalize com uma chamada para contato ou próximos passos…"
               className="min-h-28 resize-y"
               data-testid="magazine-closing-text"

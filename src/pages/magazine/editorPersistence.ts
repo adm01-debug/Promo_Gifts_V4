@@ -9,6 +9,7 @@ export class EditorPersistence {
   magazine: Magazine;
   error: string | null = null;
   private pending: EditorPatch = {};
+  private failedMutation: (() => Promise<Magazine>) | null = null;
   private queued = 0;
   private tail: Promise<unknown> = Promise.resolve();
   private timer: ReturnType<typeof setTimeout> | null = null;
@@ -26,7 +27,7 @@ export class EditorPersistence {
   }
 
   get dirty() {
-    return Object.keys(this.pending).length > 0 || this.queued > 0;
+    return Object.keys(this.pending).length > 0 || this.failedMutation !== null || this.queued > 0;
   }
   get saving() {
     return this.queued > 0 || this.timer !== null;
@@ -73,12 +74,13 @@ export class EditorPersistence {
     }
   }
 
-  private enqueue<T>(action: () => Promise<T>): Promise<T> {
+  private enqueue<T>(action: () => Promise<T>, replay?: () => Promise<Magazine>): Promise<T> {
     this.queued += 1;
     this.changed();
     const task = this.tail
       .then(action)
       .catch((error: unknown) => {
+        if (replay) this.failedMutation = replay;
         this.error = error instanceof Error ? error.message : 'Não foi possível salvar a revista.';
         throw error;
       })
@@ -92,16 +94,39 @@ export class EditorPersistence {
 
   flush(): Promise<void> {
     this.cancelTimer();
-    return this.enqueue(() => this.drain());
+    const replay = this.failedMutation;
+    this.failedMutation = null;
+    return this.enqueue(async () => {
+      if (replay) await replay();
+      await this.drain();
+      this.error = null;
+      this.changed();
+    }, replay ?? undefined);
   }
 
   mutate(action: (id: string) => Promise<Magazine | null>): Promise<Magazine> {
     this.cancelTimer();
-    return this.enqueue(async () => {
+    if (this.failedMutation) {
+      const error = new Error(
+        'Existe uma operação não salva. Tente salvar novamente antes de continuar.',
+      );
+      this.error = error.message;
+      this.changed();
+      return Promise.reject(error);
+    }
+    let mutationConfirmed = false;
+    const operation = async () => {
       await this.drain();
-      this.reconcile(await action(this.magazine.id));
+      // If a metadata edit created while the mutation was in flight fails in
+      // the final drain, retry only that drain. A confirmed item operation
+      // must not be replayed and accidentally duplicate its side effect.
+      if (!mutationConfirmed) {
+        this.reconcile(await action(this.magazine.id));
+        mutationConfirmed = true;
+      }
       await this.drain();
       return this.magazine;
-    });
+    };
+    return this.enqueue(operation, operation);
   }
 }
