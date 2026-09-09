@@ -47,11 +47,12 @@ concurrency:
   group: magazine-typed-queries-${{ github.ref }}
   cancel-in-progress: true
 
-# Contagens esperadas do padrão de substituição (SSOT do gate).
-# Alterar aqui se o magazineService.ts mudar de forma legítima.
+# Contagens esperadas do padrão tipado (SSOT do gate).
+# Em 2026-09-09, a consolidação das mutações do Magazine removeu duas
+# consultas redundantes por tabela; untypedFrom continua proibido.
 env:
-  EXPECTED_FROM_MAGAZINES: '16'
-  EXPECTED_FROM_MAGAZINE_ITEMS: '10'
+  EXPECTED_FROM_MAGAZINES: '14'
+  EXPECTED_FROM_MAGAZINE_ITEMS: '8'
   EXPECTED_UNTYPEDFROM_AFTER: '0'
 
 jobs:
