@@ -70,7 +70,7 @@ Legenda das matrizes: **Implementado** = estrutura/ação encontrada, com o nív
 | Abertura pública pelo menu | **Defeito de rota** | Link usa `/m/:token`; rota declarada e publicação usam `/revista-publica/:token` |
 | Estados vazio/carregando/erro distinguíveis | **Parcial** | Loading dos KPIs existe, mas lista vazia inicial já mostra “Nenhuma revista”; erro da consulta vira `[]` no serviço |
 
-Fontes: [biblioteca](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/pages/magazine/MagazineListPage.tsx:174), [cards](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/pages/magazine/MagazineListPage.tsx:437), [rota pública do menu](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/pages/magazine/MagazineListPage.tsx:489), [rota registrada](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/routes/public-routes.tsx:56), [serviço de listagem](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/services/magazineService.ts:256).
+Fontes: [biblioteca](../../src/pages/magazine/MagazineListPage.tsx#L174), [cards](../../src/pages/magazine/MagazineListPage.tsx#L437), [rota pública do menu](../../src/pages/magazine/MagazineListPage.tsx#L489), [rota registrada](../../src/routes/public-routes.tsx#L56), [serviço de listagem](../../src/services/magazineService.ts#L256).
 
 ## R2 — Galeria de templates
 
@@ -105,7 +105,7 @@ Fontes: [biblioteca](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/pages/mag
 
 A etiqueta de fonte não garante que a fonte esteja carregada. `magazine.css` importa localmente Playfair Display, DM Serif Display, Great Vibes e Inter; várias fontes declaradas no registry não têm import correspondente nesse módulo. Na amostra `Aa` do modal, o `fontFamily` nem é aplicado: ambos os exemplos usaram a fonte global do shell no navegador.
 
-Fontes: [ações e ordenação](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/pages/magazine/templates-gallery/MagazineTemplatesGalleryPage.tsx:84), [registry](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/pages/magazine/components/templates/TemplateRegistry.ts:39), [mock da galeria](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/pages/magazine/templates-gallery/mockMagazine.ts:19), [fontes locais](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/pages/magazine/magazine.css:11).
+Fontes: [ações e ordenação](../../src/pages/magazine/templates-gallery/MagazineTemplatesGalleryPage.tsx#L84), [registry](../../src/pages/magazine/components/templates/TemplateRegistry.ts#L39), [mock da galeria](../../src/pages/magazine/templates-gallery/mockMagazine.ts#L19), [fontes locais](../../src/pages/magazine/magazine.css#L11).
 
 ## R3 — Preview do template
 
@@ -131,7 +131,7 @@ Fontes: [ações e ordenação](/home/joaquim_ataides/projetos/Promo_Gifts_V4/sr
 
 Dois problemas distintos: (1) galeria/preview não possuem import próprio de `magazine.css`, dependendo de uma rota anterior; (2) `TemplateCard` chama o componente do template diretamente, sem o wrapper `.mag-scope` e variáveis fornecidos por `MagazinePageRenderer`. Carregar o CSS sozinho não resolve ambos.
 
-Fontes: [modal](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/pages/magazine/templates-gallery/TemplatePreviewDialog.tsx:154), [tipografia](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/pages/magazine/templates-gallery/TemplatePreviewDialog.tsx:298), [render do card](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/pages/magazine/templates-gallery/TemplateCard.tsx:121), [Vogue](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/pages/magazine/components/templates/editorial/VogueTemplate.tsx:16).
+Fontes: [modal](../../src/pages/magazine/templates-gallery/TemplatePreviewDialog.tsx#L154), [tipografia](../../src/pages/magazine/templates-gallery/TemplatePreviewDialog.tsx#L298), [render do card](../../src/pages/magazine/templates-gallery/TemplateCard.tsx#L121), [Vogue](../../src/pages/magazine/components/templates/editorial/VogueTemplate.tsx#L16).
 
 ## R4 — Editor / Identidade
 
@@ -161,7 +161,7 @@ Fontes: [modal](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/pages/magazine
 
 `pageOrder` e `pageNumber` existem no modelo/persistência, mas não são consumidos para ordenar páginas livres na paginação atual. `introText` e `closingText` existem no tipo e nos mocks, porém não há campos correspondentes no `ContentStep` nem páginas editoriais que completem o fluxo mostrado. Não remover esses campos: primeiro definir o modelo editorial e reconciliar o que outros agentes planejaram.
 
-Fontes: [layout do editor](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/pages/magazine/MagazineEditorPage.tsx:71), [formulário](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/pages/magazine/components/steps/IdentityStep.tsx:36), [CRM](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/pages/magazine/components/MagazineClientPicker.tsx:61), [hex](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/pages/magazine/components/BrandColorPicker.tsx:174), [PagesRail](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/pages/magazine/components/PagesRail.tsx:29), [paginação](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/pages/magazine/pagination.ts:25), [Conteúdo](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/pages/magazine/components/steps/ContentStep.tsx:101).
+Fontes: [layout do editor](../../src/pages/magazine/MagazineEditorPage.tsx#L71), [formulário](../../src/pages/magazine/components/steps/IdentityStep.tsx#L36), [CRM](../../src/pages/magazine/components/MagazineClientPicker.tsx#L61), [hex](../../src/pages/magazine/components/BrandColorPicker.tsx#L174), [PagesRail](../../src/pages/magazine/components/PagesRail.tsx#L29), [paginação](../../src/pages/magazine/pagination.ts#L25), [Conteúdo](../../src/pages/magazine/components/steps/ContentStep.tsx#L101).
 
 ## R5 — Editor / Produtos
 
@@ -188,7 +188,7 @@ Fontes: [layout do editor](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/pag
 | Limpar tudo | **Parcial** | Confirmação existe, mas dispara remoções individuais sem await agregado nem resultado global de falhas |
 | Tudo certo! | **Parcial como confirmação** | Depende de `items.length > 0`, não do sucesso da operação mais recente |
 
-Fontes: [catálogo limitado e seleção](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/pages/magazine/components/steps/ProductsStep.tsx:97), [seleção entre filtros](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/pages/magazine/components/steps/ProductsStep.tsx:142), [grid](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/pages/magazine/components/steps/ProductsStep.tsx:355), [sidebar](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/pages/magazine/components/steps/ProductsStep.tsx:576), [consulta limitada](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/lib/external-db/products.ts:85).
+Fontes: [catálogo limitado e seleção](../../src/pages/magazine/components/steps/ProductsStep.tsx#L97), [seleção entre filtros](../../src/pages/magazine/components/steps/ProductsStep.tsx#L142), [grid](../../src/pages/magazine/components/steps/ProductsStep.tsx#L355), [sidebar](../../src/pages/magazine/components/steps/ProductsStep.tsx#L576), [consulta limitada](../../src/lib/external-db/products.ts#L85).
 
 ## Falhas reproduzidas e prioridade de correção
 
@@ -204,7 +204,7 @@ Fontes: [catálogo limitado e seleção](/home/joaquim_ataides/projetos/Promo_Gi
 
 Correção recomendada: distinguir patches de metadados e mutações de itens; IDs estáveis; estado dirty/saving/saved/error; flush aguardável antes de navegar/publicar/imprimir; tratamento de `null` e rejeições; proteção de concorrência. Se a solução exigir RPC/DDL, preparar proposta por objeto e obter autorização antes de aplicar ao canônico.
 
-Fontes: [persist/debounce](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/pages/magazine/useMagazineEditor.ts:65), [cancelamento](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/pages/magazine/useMagazineEditor.ts:101), [DELETE/INSERT](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/services/magazineService.ts:326), [salvar apenas toast](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/pages/magazine/MagazineEditorPage.tsx:346).
+Fontes: [persist/debounce](../../src/pages/magazine/useMagazineEditor.ts#L65), [cancelamento](../../src/pages/magazine/useMagazineEditor.ts#L101), [DELETE/INSERT](../../src/services/magazineService.ts#L326), [salvar apenas toast](../../src/pages/magazine/MagazineEditorPage.tsx#L346).
 
 ### P1 — Preview inutilizável e fluxo de entrada incompleto
 
@@ -251,7 +251,7 @@ Fontes: [persist/debounce](/home/joaquim_ataides/projetos/Promo_Gifts_V4/src/pag
 - Não foi executada comparação pixel a pixel com os cinco anexos. Seria necessário fixar viewport, shell, dados, assets e fontes, excluindo deliberadamente a diferença de cores solicitada pelo usuário.
 - Os dois novos contratos que falharam precisam entrar na futura correção; não devem ser ajustados para aceitar perda de dados ou IDs instáveis.
 
-Fontes: [galeria E2E](/home/joaquim_ataides/projetos/Promo_Gifts_V4/e2e/magazine/magazine-templates-gallery.spec.ts:59), [IDs visuais](/home/joaquim_ataides/projetos/Promo_Gifts_V4/e2e/magazine/magazine-templates-gallery-visual.spec.ts:24), [fixme](/home/joaquim_ataides/projetos/Promo_Gifts_V4/e2e/flows/magazine-header-responsive.spec.ts:153), [smoke](/home/joaquim_ataides/projetos/Promo_Gifts_V4/e2e/flows/magazine-smoke.spec.ts:58).
+Fontes: [galeria E2E](../../e2e/magazine/magazine-templates-gallery.spec.ts#L59), [IDs visuais](../../e2e/magazine/magazine-templates-gallery-visual.spec.ts#L24), [fixme](../../e2e/flows/magazine-header-responsive.spec.ts#L153), [smoke](../../e2e/flows/magazine-smoke.spec.ts#L58).
 
 ## Diferenças que precisam de decisão, não de alteração automática
 
@@ -280,13 +280,14 @@ Critério final: toda ação visível deve executar e persistir sua finalidade, 
 
 ## Evidências e reprodução
 
-Diretório isolado: `/tmp/promo-magazine-audit-20260909-poDRwT`.
+O diretório temporário original não é uma referência portável. Os contratos reproduzíveis e seus resultados consolidados estão versionados:
 
-- [Resultados das suítes existentes](/tmp/promo-magazine-audit-20260909-poDRwT/existing-tests.json)
-- [13 cenários funcionais e achados](/tmp/promo-magazine-audit-20260909-poDRwT/scenario-results.json)
-- [10 verificações de controles/dimensões](/tmp/promo-magazine-audit-20260909-poDRwT/controls-results.json)
-- [Contratos de integridade que falharam](/tmp/promo-magazine-audit-20260909-poDRwT/service-contract.test.ts)
-- Capturas locais: [biblioteca](/tmp/promo-magazine-audit-20260909-poDRwT/01-list.png), [galeria](/tmp/promo-magazine-audit-20260909-poDRwT/02-gallery.png), [modal](/tmp/promo-magazine-audit-20260909-poDRwT/03-preview.png), [Identidade](/tmp/promo-magazine-audit-20260909-poDRwT/04-identity.png), [Produtos](/tmp/promo-magazine-audit-20260909-poDRwT/05-products.png).
+- [Resultados dos contratos do navegador](../evidence/magazine-20260909/browser-contracts.json)
+- [Resultados dos controles/dimensões](../evidence/magazine-20260909/browser-controls.json)
+- [Verificador reproduzível](../../tests/magazine/browser/verify.mjs)
+- [Contratos de persistência](../../src/pages/magazine/__tests__/editorPersistence.test.ts)
+
+As cinco capturas históricas permaneceram locais e não são apresentadas como evidência disponível ao time. Novas capturas devem ser geradas pelo harness documentado antes da homologação visual.
 
 Essas capturas usam fixtures. Em Produtos, todos os nove produtos da fixture já estão adicionados, por isso o catálogo fica vazio com o filtro padrão; isso documenta a divergência do estado de seleção, não ausência de produtos reais.
 

@@ -2,7 +2,7 @@
 
 Data: 09/09/2026. Estado: **aplicado no Supabase canônico e validado independentemente**.
 
-Este pacote atende à autorização posterior do PO para aplicar as operações atômicas de Magazine. Ele não cria tabelas, não altera colunas e não apaga dados. As cinco funções foram aplicadas em uma transação no projeto canônico `doufsxqlfjyuvxuezpln` pelo run [34393079315](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/34393079315).
+Este pacote atende à autorização posterior do PO para aplicar as operações atômicas de Magazine. Ele não cria tabelas, não altera colunas e não apaga dados. As cinco funções foram aplicadas em uma transação no projeto canônico `doufsxqlfjyuvxuezpln` pelo run [34393079315](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/34393079315). A revisão do PR encontrou dois defeitos nas primeiras definições; eles foram corrigidos exclusivamente por duas migrations compensatórias no run [34395700558](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/34395700558), sem reescrever o histórico aplicado.
 
 ## Inventário
 
@@ -13,6 +13,8 @@ Este pacote atende à autorização posterior do PO para aplicar as operações 
 | `20260909181200_magazine_reorder_items_atomic.sql`   | `magazine_reorder_items_atomic`   | Exige permutação completa dos itens e grava posições numa transação.            |
 | `20260909181300_magazine_duplicate_atomic.sql`       | `magazine_duplicate_atomic`       | Copia cabeçalho e itens; a cópia nasce como rascunho sem token público.         |
 | `20260909181400_magazine_update_metadata_atomic.sql` | `magazine_update_metadata_atomic` | Patch allowlisted e compare-and-swap por `updated_at`; não aceita status/token. |
+| `20260909190000_magazine_duplicate_remap_page_order.sql` | `magazine_duplicate_atomic` | Remapeia IDs antigos para os itens clonados dentro do `page_order` v2. |
+| `20260909190100_magazine_page_order_validation_null_safe.sql` | `magazine_update_metadata_atomic` | Rejeita campos obrigatórios ausentes/nulos e IDs repetidos no envelope v2. |
 
 ## Invariantes comuns
 
@@ -37,6 +39,9 @@ Este pacote atende à autorização posterior do PO para aplicar as operações 
 3. Postflight do executor: cinco funções, cinco versões e zero grants de execução para `anon`.
 4. Validação independente pelo MCP oficial somente leitura: PostgreSQL 17.6, owner `postgres`, `SECURITY DEFINER`, `search_path=public, pg_temp`, retorno `jsonb`, assinaturas corretas e execução apenas para `authenticated` e `service_role`.
 5. O linter canônico executado no mesmo run passou.
+6. Revisão pós-aplicação: `magazine_items_position_unique` foi confirmada por `pg_catalog` como `DEFERRABLE INITIALLY DEFERRED`; a troca direta de posições é válida no canônico e no schema de teste.
+7. Correções compensatórias: preflight com duas funções-base e zero versões corretivas; postflight com duas funções, duas versões e zero grants para `anon`.
+8. Validação independente final: as versões `20260909190000` e `20260909190100` têm um statement cada; as definições live contêm o remapeamento `v_id_map` e a validação `IS DISTINCT FROM`, mantendo `SECURITY DEFINER`, `search_path` fixo e ACL mínima.
 
 ## Próxima etapa de rollout
 
@@ -54,4 +59,4 @@ npm run typecheck
 node scripts/validate-supabase-config.mjs
 ```
 
-Além do teste estático, as cinco funções foram compiladas contra o schema mínimo em `tests/magazine/sql/magazine_rpc_schema.sql`, e `magazine_rpc_scenarios.sql` terminou com `MAGAZINE_RPC_SCENARIOS_OK`. O banco e o container foram descartados após o teste. A aplicação canônica foi autorizada e validada estruturalmente; mutações com dados reais de produção não foram executadas.
+Além do teste estático, as sete versões das cinco funções foram compiladas em sequência contra o schema mínimo em `tests/magazine/sql/magazine_rpc_schema.sql`, e `magazine_rpc_scenarios.sql` terminou com `MAGAZINE_RPC_SCENARIOS_OK`. O cenário comprova troca de posições, rejeição de página sem `kind` e remapeamento do item clonado no `page_order`. O banco e o container foram descartados após o teste. A aplicação canônica foi autorizada e validada estruturalmente; mutações com dados reais de produção não foram executadas.

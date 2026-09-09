@@ -9,6 +9,7 @@ import { getTemplate } from './templates/TemplateRegistry';
 import { MAGAZINE_CATEGORY_META } from './templates/chrome';
 import { CategoryIcon } from '../utils/categoryIcons';
 import { contrastRatio } from '../utils/contrast';
+import { resolveItemImage } from './templates/shared';
 import '../magazine.css';
 
 interface Props {
@@ -116,8 +117,8 @@ function InstitutionalPage({
   body?: string;
 }) {
   const images = (magazine.items ?? [])
-    .map((item) => item.productSnapshot.image_url)
-    .filter(Boolean)
+    .map((item) => (item.productSnapshot ? resolveItemImage(item) : null))
+    .filter((image): image is string => Boolean(image))
     .slice(0, 3);
   return (
     <div className="mag-page grid grid-cols-[1.1fr_0.9fr] overflow-hidden bg-white">
@@ -359,8 +360,8 @@ function BackCoverPage({ magazine }: { magazine: Magazine }) {
  */
 function SectionPage({ magazine, title }: { magazine: Magazine; title: string }) {
   const images = (magazine.items ?? [])
-    .map((item) => item.productSnapshot.image_url)
-    .filter(Boolean)
+    .map((item) => (item.productSnapshot ? resolveItemImage(item) : null))
+    .filter((image): image is string => Boolean(image))
     .slice(0, 4);
   return (
     <div className="mag-page grid grid-cols-3 overflow-hidden" style={{ background: 'white' }}>

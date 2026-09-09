@@ -69,13 +69,17 @@ try {
   assert.equal(structured.kinds.at(-1), 'contact');
   results.push('Páginas estruturadas persistem e renderizam institucional/contato');
 
-  await page.evaluate(() => { window.__service.update = async () => null; });
+  await page.evaluate(() => { window.__failSave = true; });
   await page.getByTestId('magazine-step-identity').click();
   await page.getByTestId('magazine-title-input').fill('Não persistido');
   await page.getByText('Falha ao salvar — tentar novamente').waitFor();
   assert.equal(await page.getByText('Salvo automaticamente', { exact: true }).count(), 0);
   assert.equal(await page.evaluate(() => window.__stored().title), 'Atalho confirmado');
-  results.push('Falha mantém edição pendente sem falso salvo');
+  await page.evaluate(() => { window.__failSave = false; });
+  await page.getByText('Falha ao salvar — tentar novamente').click();
+  await page.waitForFunction(() => window.__stored().title === 'Não persistido');
+  await page.getByText('Salvo automaticamente', { exact: true }).waitFor();
+  results.push('Falha mantém edição pendente e retry persiste sem falso salvo');
   assert.deepEqual(errors, []);
   fs.writeFileSync(join(artifacts, 'verified-results.json'), JSON.stringify({ results, errors }, null, 2));
   console.log(JSON.stringify({ passed: results.length, artifacts, results, errors }, null, 2));

@@ -152,9 +152,7 @@ export function useMagazineEditor(id: string | undefined) {
     [mutate],
   );
   const reorderItems = useCallback(
-    async (orderedIds: string[]) => {
-      await mutate((key) => magazineService.reorderItems(key, orderedIds));
-    },
+    (orderedIds: string[]) => mutate((key) => magazineService.reorderItems(key, orderedIds)),
     [mutate],
   );
   const updateItem = useCallback(

@@ -1,4 +1,5 @@
 import { ArrowDown, ArrowUp, Copy, FilePlus2, LayoutList, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -56,7 +57,14 @@ export function StructuredPagesEditor({ magazine, onChange }: Props) {
           <Button
             type="button"
             variant="outline"
-            onClick={() => onChange(createStructuredPageOrder(magazine))}
+            onClick={() => {
+              const next = createStructuredPageOrder(magazine);
+              if (!isMagazinePageOrderV2(next)) {
+                toast.error('A revista excede o limite de 200 páginas estruturadas.');
+                return;
+              }
+              onChange(next);
+            }}
             className={cn(PG_BTN_OUTLINE, 'rounded-md')}
           >
             <FilePlus2 className="mr-2 h-4 w-4" aria-hidden /> Estruturar páginas
@@ -66,7 +74,14 @@ export function StructuredPagesEditor({ magazine, onChange }: Props) {
     );
   }
 
-  const commit = (pages: MagazinePageDefinition[]) => onChange({ version: 2, pages });
+  const commit = (pages: MagazinePageDefinition[]) => {
+    const next = { version: 2 as const, pages };
+    if (!isMagazinePageOrderV2(next)) {
+      toast.error('A alteração produziria uma estrutura de páginas inválida ou acima do limite.');
+      return;
+    }
+    onChange(next);
+  };
   const updatePage = (id: string, patch: Partial<MagazinePageDefinition>) =>
     commit(order.pages.map((page) => (page.id === id ? { ...page, ...patch } : page)));
   const movePage = (index: number, delta: -1 | 1) => {

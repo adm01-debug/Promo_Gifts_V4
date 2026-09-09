@@ -62193,6 +62193,10 @@ export type Database = {
         Args: { p_source_magazine_id: string; p_title?: string }
         Returns: Json
       }
+      magazine_publish_atomic: {
+        Args: { p_magazine_id: string }
+        Returns: Json
+      }
       magazine_ensure_view_event_partitions: {
         Args: { _months_ahead?: number }
         Returns: number

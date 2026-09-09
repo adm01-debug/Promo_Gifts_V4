@@ -87,4 +87,24 @@ describe('StructuredPagesEditor', () => {
     expect(onChange.mock.calls[0][0].pages[1].body).toBe('Texto revisado');
     expect(input.branding).toEqual(DEFAULT_BRANDING);
   });
+
+  it('não persiste uma duplicação que ultrapassaria 200 páginas', () => {
+    const onChange = vi.fn();
+    const pageOrder = {
+      version: 2 as const,
+      pages: [
+        createMagazinePageDefinition('cover'),
+        ...Array.from({ length: 198 }, (_, index) =>
+          createMagazinePageDefinition('institutional', {
+            id: `institutional-${index}`,
+            title: `Página ${index}`,
+          }),
+        ),
+        createMagazinePageDefinition('contact'),
+      ],
+    };
+    render(<StructuredPagesEditor magazine={magazine({ pageOrder })} onChange={onChange} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Duplicar página 2' }));
+    expect(onChange).not.toHaveBeenCalled();
+  });
 });

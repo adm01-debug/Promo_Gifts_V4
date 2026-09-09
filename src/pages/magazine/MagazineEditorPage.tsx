@@ -644,10 +644,12 @@ export default function MagazineEditorPage() {
                 magazine={magazine}
                 onPageOrderChange={editor.setPageOrder}
                 onReorder={(ids) => {
-                  const nextPageOrder = reorderStructuredPageItems(magazine, ids);
-                  if (nextPageOrder) editor.setPageOrder(nextPageOrder);
                   void editor
                     .reorderItems(ids)
+                    .then((updatedMagazine) => {
+                      const nextPageOrder = reorderStructuredPageItems(updatedMagazine, ids);
+                      if (nextPageOrder) editor.setPageOrder(nextPageOrder);
+                    })
                     .catch(() =>
                       toast.error(
                         'Não foi possível confirmar a ordem. Recarregue antes de tentar novamente.',

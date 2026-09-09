@@ -56,6 +56,23 @@ CREATE TABLE public.magazine_items (
   UNIQUE (magazine_id, product_id)
 );
 
+CREATE FUNCTION public.tg_magazines_on_publish() RETURNS TRIGGER
+LANGUAGE plpgsql
+SET search_path TO 'public', 'pg_temp'
+AS $$
+BEGIN
+  IF NEW.status = 'published' AND OLD.status IS DISTINCT FROM 'published' THEN
+    NEW.published_at := COALESCE(NEW.published_at, now());
+    NEW.public_token := COALESCE(NEW.public_token, replace(gen_random_uuid()::TEXT, '-', ''));
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER trg_magazines_on_publish
+BEFORE UPDATE ON public.magazines
+FOR EACH ROW EXECUTE FUNCTION public.tg_magazines_on_publish();
+
 INSERT INTO auth.users (id) VALUES
   ('00000000-0000-0000-0000-000000000001'),
   ('00000000-0000-0000-0000-000000000002'),

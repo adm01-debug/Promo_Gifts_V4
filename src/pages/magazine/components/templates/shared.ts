@@ -9,22 +9,17 @@ import type { MagazineContentSettings, MagazineItem } from '@/types/magazine';
  * Placeholder SVG inline (data URI) usado quando produto não tem imagem.
  * Evita broken-img icon e mantém layout estável.
  */
-export const PLACEHOLDER_IMAGE =
-  `data:image/svg+xml;charset=utf-8,${ 
-  encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><rect width="400" height="400" fill="#f3f4f6"/><g fill="#9ca3af" font-family="system-ui, sans-serif" text-anchor="middle"><text x="200" y="195" font-size="18">Sem imagem</text><text x="200" y="220" font-size="14">disponível</text></g></svg>`,
-  )}`;
+export const PLACEHOLDER_IMAGE = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><rect width="400" height="400" fill="#f3f4f6"/><g fill="#9ca3af" font-family="system-ui, sans-serif" text-anchor="middle"><text x="200" y="195" font-size="18">Sem imagem</text><text x="200" y="220" font-size="14">disponível</text></g></svg>`,
+)}`;
 
 export function resolveItemImage(item: MagazineItem): string {
+  const snapshot = item.productSnapshot;
+  if (!snapshot) return PLACEHOLDER_IMAGE;
   const color = item.variantColorName
-    ? item.productSnapshot.colors.find((c) => c.name === item.variantColorName)
+    ? snapshot.colors?.find((c) => c.name === item.variantColorName)
     : undefined;
-  return (
-    color?.image ||
-    item.productSnapshot.image_url ||
-    item.productSnapshot.images?.[0] ||
-    PLACEHOLDER_IMAGE
-  );
+  return color?.image || snapshot.image_url || snapshot.images?.[0] || PLACEHOLDER_IMAGE;
 }
 
 export function effectiveContent(

@@ -147,7 +147,31 @@ const builder = vi.hoisted(() => {
 });
 
 vi.mock('@/integrations/supabase/client', () => ({
-  supabase: { from: (t: string) => builder(t) },
+  supabase: {
+    from: (t: string) => builder(t),
+    rpc: (name: string) => {
+      if (name !== 'magazine_publish_atomic') return { data: null, error: null };
+      state.statusUpdateAttempts++;
+      if (!state.row || state.scenario?.statusUpdateFails) {
+        return { data: null, error: { message: 'publish denied' } };
+      }
+      const previousStatus = state.row.status;
+      const previousToken = state.row.public_token;
+      if (state.row.status !== 'published') {
+        state.row.status = 'published';
+        if (state.scenario?.triggerFillsToken && !state.row.public_token) {
+          state.row.public_token = 'cafe'.repeat(8);
+        }
+      }
+      if (!state.row.public_token) {
+        // Espelha RAISE dentro da RPC: a transação inteira é revertida.
+        state.row.status = previousStatus;
+        state.row.public_token = previousToken;
+        return { data: null, error: { message: 'magazine_publish_token_missing' } };
+      }
+      return { data: { public_token: state.row.public_token }, error: null };
+    },
+  },
 }));
 
 // Espia crypto para contar quantas vezes o fallback é usado

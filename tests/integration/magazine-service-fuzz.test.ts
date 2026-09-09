@@ -195,7 +195,33 @@ function makeBuilder(s: QueryState) {
 }
 
 vi.mock('@/integrations/supabase/client', () => ({
-  supabase: { from: (table: string) => makeBuilder(newState(table as keyof Store)) },
+  supabase: {
+    from: (table: string) => makeBuilder(newState(table as keyof Store)),
+    rpc: (name: string, args: Record<string, unknown>) => {
+      if (name !== 'magazine_publish_atomic') {
+        return { data: null, error: { message: `Unsupported RPC: ${name}` } };
+      }
+
+      const magazineId = args.p_magazine_id as string;
+      const row = store.magazines.get(magazineId);
+      const hasItems = [...store.magazine_items.values()].some(
+        (item) => item.magazine_id === magazineId,
+      );
+      if (!row || typeof row.title !== 'string' || row.title.trim() === '' || !hasItems) {
+        return { data: null, error: { message: 'magazine_publish_requirements_not_met' } };
+      }
+
+      // Simula a transação canônica: status e token tornam-se visíveis juntos.
+      row.status = 'published';
+      row.public_token ??= 'ab'.repeat(16);
+      row.published_at ??= nowIso();
+      row.updated_at = nowIso();
+      return {
+        data: { magazine_id: magazineId, public_token: row.public_token },
+        error: null,
+      };
+    },
+  },
 }));
 
 // Import DEPOIS dos mocks

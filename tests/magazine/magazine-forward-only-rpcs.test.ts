@@ -13,6 +13,8 @@ const migrations = [
     'magazine_update_metadata_atomic',
     '20260909190100_magazine_page_order_validation_null_safe.sql',
   ],
+  ['magazine_add_items_atomic', '20260909190200_magazine_add_items_null_safe.sql'],
+  ['magazine_publish_atomic', '20260909190300_magazine_publish_atomic.sql'],
 ] as const;
 
 function sql(filename: string): string {
@@ -90,5 +92,20 @@ describe('Magazine forward-only atomic RPC drafts', () => {
     expect(source).toContain("value->>'kind' = ANY");
     expect(source).toContain("jsonb_typeof(value->'id') IS DISTINCT FROM 'string'");
     expect(source).toContain('COUNT(DISTINCT item_id.value)');
+  });
+
+  it('add correction rejects SQL NULL before evaluating array length', () => {
+    const source = sql('20260909190200_magazine_add_items_null_safe.sql');
+    expect(source).toContain("p_items IS NULL OR jsonb_typeof(p_items) IS DISTINCT FROM 'array'");
+    expect(source).toMatch(/END IF;\s+IF jsonb_array_length\(p_items\)/);
+  });
+
+  it('publish validates requirements and token inside the server transaction', () => {
+    const source = sql('20260909190300_magazine_publish_atomic.sql');
+    expect(source).toContain('FOR UPDATE');
+    expect(source).toContain("SET status = 'published'");
+    expect(source).toContain('magazine_publish_requirements_not_met');
+    expect(source).toContain('magazine_publish_token_missing');
+    expect(source).not.toContain("SET status = 'draft'");
   });
 });

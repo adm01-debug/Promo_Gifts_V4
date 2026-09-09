@@ -104,7 +104,19 @@ const builder = vi.hoisted(() => {
 });
 
 vi.mock('@/integrations/supabase/client', () => ({
-  supabase: { from: (t: string) => builder(t) },
+  supabase: {
+    from: (t: string) => builder(t),
+    rpc: (name: string) => {
+      if (name !== 'magazine_publish_atomic') return { data: null, error: null };
+      if (!state.triggerActive) {
+        // A função levanta exceção e toda a mudança de status é revertida.
+        return { data: null, error: { message: 'magazine_publish_token_missing' } };
+      }
+      if (!state.row.public_token) state.row.public_token = 'ab'.repeat(16);
+      state.row.status = 'published';
+      return { data: { public_token: state.row.public_token }, error: null };
+    },
+  },
 }));
 
 // Espia crypto.getRandomValues para provar que o fallback NÃO é usado.
@@ -146,5 +158,6 @@ describe('publish() — contrato pós-trigger tg_magazines_on_publish', () => {
     state.triggerActive = false;
     const result = await magazineService.publish('mag_pub_1');
     expect(result).toBeNull();
+    expect(state.row.status).toBe('draft');
   });
 });

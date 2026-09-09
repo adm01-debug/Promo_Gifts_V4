@@ -601,10 +601,7 @@ export const magazineService = {
     // fallback fraco, corrida entre abas e divergência de política do banco.
     // Falhar sem token é propositalmente fail-closed: não há publicação sem
     // um link público que tenha sido confirmado pelo banco.
-    const { error } = await magazineDb
-      .from('magazines')
-      .update({ status: 'published' })
-      .eq('id', id);
+    const { error } = await magazineDb.rpc('magazine_publish_atomic', { p_magazine_id: id });
     if (error) {
       logger.warn('[magazineService.publish] error:', error.message);
       return null;

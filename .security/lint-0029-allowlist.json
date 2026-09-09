@@ -256,6 +256,10 @@
       "reason": "RPC transacional de Magazine (2026-09-09): SECURITY DEFINER deliberado com auth.uid obrigatório, autorização owner/admin, cópia sempre atribuída ao ator como draft e search_path fixo; anon/PUBLIC revogados."
     },
     {
+      "fn": "public.magazine_publish_atomic(p_magazine_id uuid)",
+      "reason": "RPC transacional de Magazine (2026-09-09): SECURITY DEFINER deliberado com auth.uid obrigatório, autorização owner/admin, lock, validação de título/itens e confirmação do token emitido pelo trigger na mesma transação; anon/PUBLIC revogados."
+    },
+    {
       "fn": "public.magazine_remove_items_atomic(p_magazine_id uuid, p_expected_updated_at timestamp with time zone, p_item_ids uuid[])",
       "reason": "RPC transacional de Magazine (2026-09-09): SECURITY DEFINER deliberado com auth.uid obrigatório, autorização owner/admin, revista draft, CAS de updated_at, escopo por magazine_id e search_path fixo; anon/PUBLIC revogados."
     },

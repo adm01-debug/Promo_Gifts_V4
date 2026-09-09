@@ -157,6 +157,7 @@ export default function MagazineListPage() {
     const sequence = ++loadSequence.current;
     if (!user) {
       setMagazines([]);
+      setLoadError(null);
       setIsLoading(false);
       return;
     }
@@ -257,8 +258,13 @@ export default function MagazineListPage() {
       action: {
         label: 'Desfazer',
         onClick: async () => {
-          await magazineService.restore(backup);
-          void refresh();
+          try {
+            await magazineService.restore(backup);
+          } catch {
+            toast.error('Não foi possível restaurar a revista. Tente novamente.');
+          } finally {
+            void refresh();
+          }
         },
       },
     });

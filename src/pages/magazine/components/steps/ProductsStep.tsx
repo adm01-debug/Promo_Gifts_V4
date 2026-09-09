@@ -106,7 +106,10 @@ export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDe
   const { data: products = [], isLoading } = useProducts({
     search: query,
     limit: 80,
-    sortBy: sort,
+    // O backend só ordena por sale_price (nullable), enquanto o card exibe
+    // sale_price ?? price. Não envie uma ordem semanticamente diferente para
+    // a consulta limitada; a ordenação efetiva é feita abaixo no lote obtido.
+    sortBy: sort === 'price-asc' || sort === 'price-desc' ? 'name' : sort,
   });
 
   const items = useMemo(() => magazine.items ?? [], [magazine.items]);

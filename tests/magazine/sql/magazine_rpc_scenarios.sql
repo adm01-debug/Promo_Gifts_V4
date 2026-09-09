@@ -3,6 +3,35 @@
 SELECT set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-000000000001', FALSE);
 
 DO $$
+DECLARE previous_revision TIMESTAMPTZ;
+BEGIN
+  SELECT updated_at INTO previous_revision FROM public.magazines
+   WHERE id = '10000000-0000-0000-0000-000000000001';
+  PERFORM public.magazine_add_items_atomic(
+    '10000000-0000-0000-0000-000000000001', previous_revision, NULL
+  );
+  RAISE EXCEPTION 'NULL item payload was accepted';
+EXCEPTION WHEN invalid_parameter_value THEN
+  IF (SELECT updated_at FROM public.magazines WHERE id = '10000000-0000-0000-0000-000000000001')
+     IS DISTINCT FROM previous_revision THEN
+    RAISE EXCEPTION 'NULL item payload changed the revision';
+  END IF;
+END;
+$$;
+
+DO $$
+BEGIN
+  PERFORM public.magazine_update_metadata_atomic(
+    '10000000-0000-0000-0000-000000000001',
+    (SELECT updated_at FROM public.magazines WHERE id = '10000000-0000-0000-0000-000000000001'),
+    NULL
+  );
+  RAISE EXCEPTION 'NULL metadata patch was accepted';
+EXCEPTION WHEN invalid_parameter_value THEN NULL;
+END;
+$$;
+
+DO $$
 DECLARE result JSONB;
 BEGIN
   result := public.magazine_add_items_atomic(
@@ -207,8 +236,15 @@ END;
 $$;
 
 SELECT set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-000000000001', FALSE);
-UPDATE public.magazines SET status = 'published', updated_at = clock_timestamp()
- WHERE id = '10000000-0000-0000-0000-000000000001';
+DO $$
+DECLARE result JSONB;
+BEGIN
+  result := public.magazine_publish_atomic('10000000-0000-0000-0000-000000000001');
+  IF result->>'public_token' IS NULL
+     OR (SELECT status FROM public.magazines WHERE id = '10000000-0000-0000-0000-000000000001') <> 'published'
+  THEN RAISE EXCEPTION 'atomic publish failed: %', result; END IF;
+END;
+$$;
 DO $$
 BEGIN
   PERFORM public.magazine_add_items_atomic(
@@ -228,6 +264,7 @@ BEGIN
      OR has_function_privilege('anon', 'public.magazine_reorder_items_atomic(uuid,timestamptz,uuid[])', 'EXECUTE')
      OR has_function_privilege('anon', 'public.magazine_duplicate_atomic(uuid,text)', 'EXECUTE')
      OR has_function_privilege('anon', 'public.magazine_update_metadata_atomic(uuid,timestamptz,jsonb)', 'EXECUTE')
+     OR has_function_privilege('anon', 'public.magazine_publish_atomic(uuid)', 'EXECUTE')
   THEN RAISE EXCEPTION 'anon retained EXECUTE'; END IF;
 END;
 $$;
