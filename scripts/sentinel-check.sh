@@ -48,6 +48,13 @@ if echo "$SUBJECT" | grep -qE '^Merge (pull request|PR) #[0-9]+([[:space:]:]|$)'
   exit 0
 fi
 
+# Formato oficial usado pelo merge queue/automação deste repositório.
+# Mantido estrito: lowercase, PR numérico, dois-pontos e descrição obrigatória.
+if echo "$SUBJECT" | grep -qE '^merge\(pr-[0-9]+\):[[:space:]]+[^[:space:]]'; then
+  echo "merge-commit-lowercase"
+  exit 0
+fi
+
 # ----------------------------------------------------------------------------
 # Regra 3: Bot oficial GitHub
 # ----------------------------------------------------------------------------

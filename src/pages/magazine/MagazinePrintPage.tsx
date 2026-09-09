@@ -50,8 +50,13 @@ export default function MagazinePrintPage() {
 
   if (!loaded) {
     return (
-      <div className="flex h-screen items-center justify-center">
-        <Loader2 className="h-6 w-6 animate-spin" />
+      <div
+        className="flex h-screen items-center justify-center gap-2 text-sm text-muted-foreground"
+        role="status"
+        aria-live="polite"
+      >
+        <Loader2 className="h-6 w-6 animate-spin" aria-hidden />
+        Preparando revista para impressão…
       </div>
     );
   }
@@ -85,7 +90,7 @@ export default function MagazinePrintPage() {
         {pages.map((p) => (
           <div
             key={p.index}
-            className="mx-auto w-full overflow-hidden rounded-lg bg-white shadow-lg print:rounded-none print:shadow-none"
+            className="mag-print-sheet mx-auto w-full overflow-hidden rounded-lg bg-white shadow-lg print:rounded-none print:shadow-none"
           >
             <MagazinePageRenderer
               magazine={magazine}

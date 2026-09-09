@@ -35,6 +35,7 @@ export type MagazineRowShape = {
   content_settings: Json;
   created_at: string;
   deleted_at: string | null;
+  edit_version: number;
   id: string;
   organization_id: string | null;
   owner_id: string;
@@ -72,6 +73,7 @@ type MagazineInsertShape = Optional<
   | 'content_settings'
   | 'created_at'
   | 'deleted_at'
+  | 'edit_version'
   | 'id'
   | 'organization_id'
   | 'page_order'

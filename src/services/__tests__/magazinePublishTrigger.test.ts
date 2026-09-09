@@ -43,6 +43,7 @@ interface MagRow {
   created_at: string;
   updated_at: string;
   deleted_at: string | null;
+  edit_version: number;
 }
 
 const state = vi.hoisted(() => {
@@ -62,6 +63,7 @@ const state = vi.hoisted(() => {
     created_at: '2026-07-15T00:00:00Z',
     updated_at: '2026-07-15T00:00:00Z',
     deleted_at: null,
+    edit_version: 0,
   };
   return {
     row,
@@ -107,14 +109,18 @@ vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
     from: (t: string) => builder(t),
     rpc: (name: string) => {
-      if (name !== 'magazine_publish_atomic') return { data: null, error: null };
+      if (name !== 'magazine_publish_v2') return { data: null, error: null };
       if (!state.triggerActive) {
         // A função levanta exceção e toda a mudança de status é revertida.
         return { data: null, error: { message: 'magazine_publish_token_missing' } };
       }
       if (!state.row.public_token) state.row.public_token = 'ab'.repeat(16);
       state.row.status = 'published';
-      return { data: { public_token: state.row.public_token }, error: null };
+      state.row.edit_version++;
+      return {
+        data: { public_token: state.row.public_token, edit_version: state.row.edit_version },
+        error: null,
+      };
     },
   },
 }));
@@ -124,6 +130,7 @@ beforeEach(() => {
   state.row.status = 'draft';
   state.row.public_token = null;
   state.row.published_at = null;
+  state.row.edit_version = 0;
   state.triggerActive = true;
   state.randomBytesCalled = false;
   const original = globalThis.crypto?.getRandomValues?.bind(globalThis.crypto);
@@ -140,14 +147,14 @@ import { magazineService } from '@/services/magazineService';
 
 describe('publish() — contrato pós-trigger tg_magazines_on_publish', () => {
   it('recebe public_token vindo do BD (trigger BEFORE UPDATE)', async () => {
-    const result = await magazineService.publish('mag_pub_1');
+    const result = await magazineService.publish('mag_pub_1', 0);
     expect(result).not.toBeNull();
     expect(result!.publicToken).toMatch(/^[a-f0-9]{32}$/i);
     expect(result!.status).toBe('published');
   });
 
   it('NÃO usa fallback client-side (crypto.getRandomValues não é chamado)', async () => {
-    await magazineService.publish('mag_pub_1');
+    await magazineService.publish('mag_pub_1', 0);
     expect(
       state.randomBytesCalled,
       'crypto.getRandomValues foi chamado — o fallback client-side ainda está ativo. Remova-o.',
@@ -156,8 +163,9 @@ describe('publish() — contrato pós-trigger tg_magazines_on_publish', () => {
 
   it('regressão: se a trigger sumir, bloqueia a publicação sem link público', async () => {
     state.triggerActive = false;
-    const result = await magazineService.publish('mag_pub_1');
-    expect(result).toBeNull();
+    await expect(magazineService.publish('mag_pub_1', 0)).rejects.toThrow(
+      'magazine_publish_token_missing',
+    );
     expect(state.row.status).toBe('draft');
   });
 });

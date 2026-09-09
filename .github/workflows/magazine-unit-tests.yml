@@ -5,6 +5,16 @@ on:
     branches: [main]
     paths:
       - 'src/pages/magazine/**'
+      - 'src/pages/magazine/hooks/**'
+      - 'src/services/magazineService.ts'
+      - 'src/services/__tests__/magazine*.test.ts'
+      - 'tests/integration/magazine-service-fuzz.test.ts'
+      - 'tests/magazine/**'
+      - 'tests/utils/tailwindRings*'
+      - 'supabase/migrations/*magazine*.sql'
+      - 'supabase/functions/magazine-import-local/**'
+      - 'scripts/test*magazine*'
+      - 'package.json'
       - 'src/hooks/auth/**'
       - 'src/contexts/AuthContext.tsx'
       - 'src/lib/supabase/**'
@@ -13,6 +23,16 @@ on:
   pull_request:
     paths:
       - 'src/pages/magazine/**'
+      - 'src/pages/magazine/hooks/**'
+      - 'src/services/magazineService.ts'
+      - 'src/services/__tests__/magazine*.test.ts'
+      - 'tests/integration/magazine-service-fuzz.test.ts'
+      - 'tests/magazine/**'
+      - 'tests/utils/tailwindRings*'
+      - 'supabase/migrations/*magazine*.sql'
+      - 'supabase/functions/magazine-import-local/**'
+      - 'scripts/test*magazine*'
+      - 'package.json'
       - 'src/hooks/auth/**'
       - 'src/contexts/AuthContext.tsx'
       - 'src/lib/supabase/**'
@@ -24,6 +44,18 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  edge-import-contract:
+    name: Deno Magazine import contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Test transactional local import logic
+        run: deno test --allow-net supabase/functions/magazine-import-local/logic.test.ts
+
   unit-tests:
     name: Vitest Unit Tests (Magazine)
     runs-on: ubuntu-latest
@@ -62,21 +94,22 @@ jobs:
 
 
 
-      - name: Run Vitest (magazine module)
+      - name: Run complete Magazine suite with coverage floors
         run: |
-          npx vitest run \
-            --reporter=verbose \
-            --coverage \
-            --coverage.thresholds.lines=0 \
-            --coverage.thresholds.functions=0 \
-            --coverage.thresholds.branches=0 \
-            --coverage.thresholds.statements=0 \
-            src/pages/magazine/__tests__/ \
-            src/pages/magazine/components/__tests__/ \
-            src/pages/magazine/components/steps/__tests__/
+          set -o pipefail
+          npm run test:magazine:coverage 2>&1 | tee /tmp/magazine-vitest.log
         env:
           CI: true
           NODE_ENV: test
+
+      - name: Detect React act warnings (advisory)
+        if: always()
+        run: |
+          COUNT=$(grep -c "not wrapped in act" /tmp/magazine-vitest.log 2>/dev/null || true)
+          echo "React act warnings: $COUNT" >> "$GITHUB_STEP_SUMMARY"
+          if [ "$COUNT" -gt 0 ]; then
+            echo "::warning title=Magazine React act warnings::$COUNT warning(s) detected; advisory until fixtures are repaired"
+          fi
 
       - name: Upload coverage
         if: always()
@@ -85,6 +118,15 @@ jobs:
           name: magazine-coverage
           path: coverage/
           retention-days: 7
+
+  postgres-contracts:
+    name: PostgreSQL 17 RPC Contracts (Magazine)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run forward-only RPC, idempotence and concurrency scenarios
+        run: npm run test:magazine:sql
 
   # SECURITY DEFINER ACL gate — o script já é defensivo (skip sem creds),
   # então roda em qualquer PR mas só falha em drift real quando o
@@ -112,18 +154,22 @@ jobs:
   # Summary check required by branch protection
   magazine-tests-ok:
     name: Magazine Tests OK
-    needs: [unit-tests, security-definer-acl]
+    needs: [edge-import-contract, unit-tests, postgres-contracts, security-definer-acl]
     runs-on: ubuntu-latest
     if: always()
     steps:
       - name: Check result
         run: |
           if [ '${{ needs.unit-tests.result }}' = 'success' ] \
-              && [ '${{ needs.security-definer-acl.result }}' = 'success' ]; then
-            echo '✅ All magazine unit tests + gates passed'
+              && [ '${{ needs.edge-import-contract.result }}' = 'success' ] \
+              && [ '${{ needs.security-definer-acl.result }}' = 'success' ] \
+              && [ '${{ needs.postgres-contracts.result }}' = 'success' ]; then
+            echo '✅ All Magazine tests + PostgreSQL contracts + gates passed'
           else
             echo '❌ Magazine gates failed:'
             echo "  unit-tests=${{ needs.unit-tests.result }}"
+            echo "  edge-import-contract=${{ needs.edge-import-contract.result }}"
             echo "  security-definer-acl=${{ needs.security-definer-acl.result }}"
+            echo "  postgres-contracts=${{ needs.postgres-contracts.result }}"
             exit 1
           fi

@@ -50,6 +50,34 @@ permissions:
   contents: read
 
 jobs:
+  acl-migration-pg17:
+    name: ACL migration contract — PostgreSQL 17
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      PGPASSWORD: postgres
+      PGURL: postgresql://postgres@localhost:5432/postgres
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create exact and near-match fixtures
+        run: psql "$PGURL" -X -f tests/security/sql/audit_security_definer_acl_fixture.sql
+      - name: Apply forward-only ACL audit migration
+        run: psql "$PGURL" -X -v ON_ERROR_STOP=1 -f supabase/migrations/20260909210000_audit_security_definer_acl_allow_public_endpoints.sql
+      - name: Assert exact signatures remain narrow
+        run: psql "$PGURL" -X -f tests/security/sql/audit_security_definer_acl_assertions.sql
+
   acl-check:
     name: "ACL check — ${{ matrix.env_name }}"
     runs-on: ubuntu-latest

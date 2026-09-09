@@ -2,13 +2,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { magazineService } from '@/services/magazineService';
 import { useAuth } from '@/contexts/AuthContext';
-import type {
-  Magazine,
-  MagazineClientBranding,
-  MagazineContentSettings,
-  MagazineItem,
-  MagazinePageOrder,
-  MagazineTemplateId,
+import {
+  isValidMagazinePageOrder,
+  type Magazine,
+  type MagazineClientBranding,
+  type MagazineContentSettings,
+  type MagazineItem,
+  type MagazinePageOrder,
+  type MagazineTemplateId,
 } from '@/types/magazine';
 import type { Product } from '@/types/product-catalog';
 import { validateBranding } from '@/lib/security/magazine-guard';
@@ -47,7 +48,8 @@ export function useMagazineEditor(id: string | undefined) {
         if (fetched) {
           const current = new EditorPersistence(
             fetched,
-            (key, patch) => magazineService.update(key, patch),
+            (key, patch, expectedEditVersion) =>
+              magazineService.update(key, patch, expectedEditVersion),
             () => {
               if (!active || session.current !== current) return;
               setMagazine(current.magazine);
@@ -91,7 +93,20 @@ export function useMagazineEditor(id: string | undefined) {
 
   // CRITICAL FIX: EditorPersistence.edit updates its snapshot immediately,
   // before React batches setState. Never replace this with effect-only ref sync.
-  const persist = useCallback((patch: EditorPatch) => session.current?.edit(patch), []);
+  const persist = useCallback(
+    (patch: EditorPatch) => {
+      const current = session.current;
+      if (!current) return;
+      if (current.magazine.ownerId !== user?.id || current.magazine.status !== 'draft') {
+        const message = 'Somente o proprietário pode editar uma revista em rascunho.';
+        current.error = message;
+        setSaveError(message);
+        return;
+      }
+      current.edit(patch);
+    },
+    [user?.id],
+  );
   const flushSave = useCallback(async () => {
     const current = session.current;
     if (!current) throw new Error('A revista ainda não foi carregada.');
@@ -133,13 +148,23 @@ export function useMagazineEditor(id: string | undefined) {
         isMagazinePageOrderV2(current.pageOrder) &&
         ('introText' in patch || 'closingText' in patch)
       ) {
+        const previousIntro = current.content.introText ?? '';
+        const previousClosing = current.content.closingText ?? '';
         editorPatch.pageOrder = {
           version: 2,
           pages: current.pageOrder.pages.map((page) => {
-            if (page.kind === 'institutional' && 'introText' in patch) {
+            if (
+              page.kind === 'institutional' &&
+              'introText' in patch &&
+              (!page.body || page.body === previousIntro)
+            ) {
               return { ...page, body: patch.introText ?? '' };
             }
-            if ((page.kind === 'contact' || page.kind === 'back-cover') && 'closingText' in patch) {
+            if (
+              (page.kind === 'contact' || page.kind === 'back-cover') &&
+              'closingText' in patch &&
+              (!page.body || page.body === previousClosing)
+            ) {
               return { ...page, body: patch.closingText ?? '' };
             }
             return page;
@@ -151,40 +176,76 @@ export function useMagazineEditor(id: string | undefined) {
     [persist],
   );
   const setPageOrder = useCallback(
-    (pageOrder: MagazinePageOrder) => persist({ pageOrder }),
+    (pageOrder: MagazinePageOrder) => {
+      if (!isValidMagazinePageOrder(pageOrder)) {
+        setSaveError('Ordem de páginas inválida.');
+        return;
+      }
+      persist({ pageOrder });
+    },
     [persist],
   );
-  const mutate = useCallback(async (action: (key: string) => Promise<Magazine | null>) => {
-    const current = session.current;
-    if (!current) throw new Error('A revista ainda não foi carregada.');
-    return current.mutate(action);
-  }, []);
+  const mutate = useCallback(
+    async (
+      action: (key: string, expectedEditVersion: number) => Promise<Magazine | null>,
+      allowedStatuses: Magazine['status'][],
+    ) => {
+      const current = session.current;
+      if (!current) throw new Error('A revista ainda não foi carregada.');
+      if (current.magazine.ownerId !== user?.id) {
+        throw new Error('Somente o proprietário pode alterar esta revista.');
+      }
+      if (!allowedStatuses.includes(current.magazine.status)) {
+        throw new Error('O estado atual da revista não permite esta operação.');
+      }
+      return current.mutate(action);
+    },
+    [user?.id],
+  );
   const addProducts = useCallback(
     async (products: Product[]) => {
-      await mutate((key) => magazineService.addProducts(key, products));
+      await mutate(
+        (key, expected) => magazineService.addProducts(key, products, expected),
+        ['draft'],
+      );
     },
     [mutate],
   );
   const removeItem = useCallback(
     async (itemId: string) => {
-      await mutate((key) => magazineService.removeItem(key, itemId));
+      await mutate((key, expected) => magazineService.removeItem(key, itemId, expected), ['draft']);
     },
     [mutate],
   );
   const reorderItems = useCallback(
-    (orderedIds: string[]) => mutate((key) => magazineService.reorderItems(key, orderedIds)),
+    (orderedIds: string[]) =>
+      mutate((key, expected) => magazineService.reorderItems(key, orderedIds, expected), ['draft']),
     [mutate],
   );
   const updateItem = useCallback(
     async (itemId: string, patch: Partial<MagazineItem>) => {
-      await mutate((key) => magazineService.updateItem(key, itemId, patch));
+      await mutate(
+        (key, expected) => magazineService.updateItem(key, itemId, patch, expected),
+        ['draft'],
+      );
     },
     [mutate],
   );
-  const publish = useCallback(() => mutate((key) => magazineService.publish(key)), [mutate]);
+  const publish = useCallback(
+    () => mutate((key, expected) => magazineService.publish(key, expected), ['draft', 'published']),
+    [mutate],
+  );
   const unpublish = useCallback(async () => {
-    await mutate((key) => magazineService.unpublish(key));
+    await mutate((key, expected) => magazineService.unpublish(key, expected), ['published']);
   }, [mutate]);
+  const archive = useCallback(
+    () => mutate((key, expected) => magazineService.archive(key, expected), ['draft', 'published']),
+    [mutate],
+  );
+  const reactivate = useCallback(
+    () => mutate((key, expected) => magazineService.reactivate(key, expected), ['archived']),
+    [mutate],
+  );
 
   return {
     magazine,
@@ -195,6 +256,7 @@ export function useMagazineEditor(id: string | undefined) {
     loadError,
     flushSave,
     isOwner: Boolean(magazine && magazine.ownerId === user?.id),
+    canEdit: Boolean(magazine && magazine.ownerId === user?.id && magazine.status === 'draft'),
     setTitle,
     setSubtitle,
     setTemplate,
@@ -208,5 +270,7 @@ export function useMagazineEditor(id: string | undefined) {
     updateItem,
     publish,
     unpublish,
+    archive,
+    reactivate,
   };
 }

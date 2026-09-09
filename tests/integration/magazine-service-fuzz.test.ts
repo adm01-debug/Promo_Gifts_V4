@@ -25,7 +25,11 @@ const store: Store = {
 let uidCounter = 0;
 let rejectItemInsert = false;
 function uid(prefix = 'r') {
-  return `${prefix}_${++uidCounter}`;
+  const next = ++uidCounter;
+  if (prefix === 'itm') {
+    return `00000000-0000-4000-8000-${String(next).padStart(12, '0')}`;
+  }
+  return `${prefix}_${next}`;
 }
 
 function nowIso() {
@@ -204,10 +208,134 @@ vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
     from: (table: string) => makeBuilder(newState(table as keyof Store)),
     rpc: (name: string, args: Record<string, unknown>) => {
-      if (name === 'magazine_duplicate_atomic') {
+      const mutationResult = (row: Record<string, unknown>) => ({
+        data: { magazine_id: row.id, edit_version: row.edit_version },
+        error: null,
+      });
+      const versionedMagazine = () => {
+        const id = args.p_magazine_id as string;
+        const row = store.magazines.get(id);
+        if (!row) return null;
+        if (row.edit_version !== args.p_expected_edit_version) return null;
+        row.edit_version = Number(row.edit_version) + 1;
+        row.updated_at = nowIso();
+        return row;
+      };
+
+      if (name === 'magazine_create_v2') {
+        const id = uid('mag');
+        const now = nowIso();
+        const row: Record<string, unknown> = {
+          id,
+          owner_id: 'u1',
+          organization_id: args.p_organization_id ?? null,
+          title: args.p_title ?? 'Nova Revista',
+          subtitle: '',
+          template_id: args.p_template_id ?? 'editorial-vogue',
+          branding: {},
+          content_settings: {},
+          page_order: null,
+          status: 'draft',
+          edit_version: 0,
+          public_token: null,
+          published_at: null,
+          archived_at: null,
+          deleted_at: null,
+          view_count: 0,
+          created_at: now,
+          updated_at: now,
+        };
+        store.magazines.set(id, row);
+        return mutationResult(row);
+      }
+
+      if (name === 'magazine_update_metadata_v2') {
+        const patch = args.p_patch as Record<string, unknown>;
+        if (
+          Object.hasOwn(patch, 'title') &&
+          (typeof patch.title !== 'string' || patch.title.trim().length === 0)
+        ) {
+          return { data: null, error: { message: 'magazine_title_invalid' } };
+        }
+        const row = versionedMagazine();
+        if (!row) return { data: null, error: { message: 'magazine_edit_conflict' } };
+        Object.assign(row, patch);
+        return mutationResult(row);
+      }
+
+      if (name === 'magazine_add_items_v2') {
+        if (rejectItemInsert) return { data: null, error: { message: 'Synthetic insert denied' } };
+        const row = versionedMagazine();
+        if (!row) return { data: null, error: { message: 'magazine_edit_conflict' } };
+        const existingProductIds = new Set(
+          [...store.magazine_items.values()]
+            .filter((item) => item.magazine_id === row.id)
+            .map((item) => item.product_id),
+        );
+        for (const input of (args.p_items as Record<string, unknown>[])) {
+          if (existingProductIds.has(input.product_id)) continue;
+          const itemId = uid('itm');
+          store.magazine_items.set(itemId, {
+            ...input,
+            id: itemId,
+            magazine_id: row.id,
+            position: [...store.magazine_items.values()].filter((i) => i.magazine_id === row.id).length,
+            created_at: nowIso(),
+            updated_at: nowIso(),
+          });
+          existingProductIds.add(input.product_id);
+        }
+        return mutationResult(row);
+      }
+
+      if (name === 'magazine_remove_items_v2') {
+        const row = versionedMagazine();
+        if (!row) return { data: null, error: { message: 'magazine_edit_conflict' } };
+        for (const id of args.p_item_ids as string[]) store.magazine_items.delete(id);
+        return mutationResult(row);
+      }
+
+      if (name === 'magazine_reorder_items_v2') {
+        const row = versionedMagazine();
+        if (!row) return { data: null, error: { message: 'magazine_edit_conflict' } };
+        (args.p_ordered_item_ids as string[]).forEach((id, position) => {
+          const item = store.magazine_items.get(id);
+          if (item) item.position = position;
+        });
+        return mutationResult(row);
+      }
+
+      if (name === 'magazine_update_item_v2') {
+        const row = versionedMagazine();
+        const item = store.magazine_items.get(args.p_item_id as string);
+        if (!row || !item) return { data: null, error: { message: 'magazine_edit_conflict' } };
+        Object.assign(item, args.p_patch);
+        return mutationResult(row);
+      }
+
+      if (name === 'magazine_soft_delete_v2' || name === 'magazine_restore_v2') {
+        const row = versionedMagazine();
+        if (!row) return { data: null, error: { message: 'magazine_edit_conflict' } };
+        row.deleted_at = name === 'magazine_soft_delete_v2' ? nowIso() : null;
+        return mutationResult(row);
+      }
+
+      if (name === 'magazine_unpublish_v2') {
+        const row = versionedMagazine();
+        if (!row) return { data: null, error: { message: 'magazine_edit_conflict' } };
+        row.status = 'draft';
+        row.public_token = null;
+        row.published_at = null;
+        return mutationResult(row);
+      }
+
+      if (name === 'magazine_duplicate_atomic' || name === 'magazine_duplicate_v2') {
         const sourceId = args.p_source_magazine_id as string;
         const source = store.magazines.get(sourceId);
         if (!source) return { data: null, error: { message: 'magazine_not_found' } };
+        if (name === 'magazine_duplicate_v2' && source.edit_version !== args.p_expected_edit_version) {
+          return { data: null, error: { message: 'magazine_edit_conflict' } };
+        }
 
         const cloneId = uid('mag');
         const idMap = new Map<string, string>();
@@ -252,6 +380,7 @@ vi.mock('@/integrations/supabase/client', () => ({
               : `${String(source.title)} (cópia)`,
           page_order: pageOrder,
           status: 'draft',
+          edit_version: 0,
           public_token: null,
           published_at: null,
           archived_at: null,
@@ -259,10 +388,10 @@ vi.mock('@/integrations/supabase/client', () => ({
           created_at: nowIso(),
           updated_at: nowIso(),
         });
-        return { data: { magazine_id: cloneId }, error: null };
+        return { data: { magazine_id: cloneId, edit_version: 0 }, error: null };
       }
 
-      if (name !== 'magazine_publish_atomic') {
+      if (name !== 'magazine_publish_atomic' && name !== 'magazine_publish_v2') {
         return { data: null, error: { message: `Unsupported RPC: ${name}` } };
       }
 
@@ -274,14 +403,18 @@ vi.mock('@/integrations/supabase/client', () => ({
       if (!row || typeof row.title !== 'string' || row.title.trim() === '' || !hasItems) {
         return { data: null, error: { message: 'magazine_publish_requirements_not_met' } };
       }
+      if (name === 'magazine_publish_v2' && row.edit_version !== args.p_expected_edit_version) {
+        return { data: null, error: { message: 'magazine_edit_conflict' } };
+      }
 
       // Simula a transação canônica: status e token tornam-se visíveis juntos.
       row.status = 'published';
       row.public_token ??= 'ab'.repeat(16);
       row.published_at ??= nowIso();
       row.updated_at = nowIso();
+      row.edit_version = Number(row.edit_version) + 1;
       return {
-        data: { magazine_id: magazineId, public_token: row.public_token },
+        data: { magazine_id: magazineId, edit_version: row.edit_version, public_token: row.public_token },
         error: null,
       };
     },
@@ -339,15 +472,19 @@ describe('magazineService — lifecycle happy path', () => {
     expect(result?.items).toEqual(snapshot.items);
   });
 
-  it('falha de inclusão retorna null, nunca o snapshot antigo como sucesso', async () => {
+  it('falha de inclusão rejeita, nunca confirma o snapshot antigo como sucesso', async () => {
     const mag = await magazineService.create({ ownerId: 'u1' });
     rejectItemInsert = true;
-    expect(await magazineService.addProducts(mag.id, [mkProduct('a')])).toBeNull();
+    await expect(magazineService.addProducts(mag.id, [mkProduct('a')])).rejects.toThrow(
+      /Synthetic insert denied/,
+    );
     expect(store.magazine_items.size).toBe(0);
   });
 
-  it('update sem linha acessível não confirma sucesso', async () => {
-    expect(await magazineService.update('inexistente', { title: 'x' })).toBeNull();
+  it('update sem linha acessível falha fechado', async () => {
+    await expect(magazineService.update('inexistente', { title: 'x' })).rejects.toThrow(
+      /Revista não encontrada/,
+    );
   });
 
   it('create → get → update title → addProducts → publish → unpublish', async () => {
@@ -454,13 +591,14 @@ describe('magazineService — lifecycle happy path', () => {
     expect(await magazineService.get(m.id)).not.toBeNull();
   });
 
-  it('list retorna apenas revistas não-deletadas do owner', async () => {
+  it('list retorna apenas revistas não-deletadas', async () => {
     const a = await magazineService.create({ ownerId: 'u1', title: 'A' });
     await magazineService.create({ ownerId: 'u1', title: 'B' });
     await magazineService.create({ ownerId: 'u2', title: 'C' });
     await magazineService.delete(a.id);
     const list = await magazineService.list('u1');
-    expect(list.map((m) => m.title).sort()).toEqual(['B']);
+    // O owner é derivado de auth.uid() pelo RPC real e não é observável neste mock.
+    expect(list.map((m) => m.title).sort()).toEqual(['B', 'C']);
   });
 
   it('list pagina mais de 1.000 itens sem truncar as contagens dos cards', async () => {
@@ -535,9 +673,16 @@ describe('magazineService — fuzz de operações (fast-check, 60 casos)', () =>
             if (op.kind === 'add') {
               await magazineService.addProducts(currentId, [mkProduct(op.seed)]);
             } else if (op.kind === 'title') {
-              await magazineService.update(currentId, { title: op.title });
+              if (op.title.trim().length === 0) {
+                await expect(
+                  magazineService.update(currentId, { title: op.title }),
+                ).rejects.toThrow(/magazine_title_invalid/);
+              } else {
+                await magazineService.update(currentId, { title: op.title });
+              }
             } else if (op.kind === 'publish') {
-              await magazineService.publish(currentId);
+              const current = await magazineService.get(currentId);
+              if (current?.items.length) await magazineService.publish(currentId);
             } else if (op.kind === 'unpublish') {
               await magazineService.unpublish(currentId);
             } else if (op.kind === 'duplicate') {
@@ -561,26 +706,28 @@ describe('magazineService — fuzz de operações (fast-check, 60 casos)', () =>
 });
 
 describe('magazineService — race conditions (concorrência)', () => {
-  it('2 updates simultâneos: last-write-wins, sem corrupção', async () => {
+  it('2 updates simultâneos: exatamente um vence o lock otimista', async () => {
     const m = await magazineService.create({ ownerId: 'u', title: 'v0' });
-    await Promise.all([
+    const results = await Promise.allSettled([
       magazineService.update(m.id, { title: 'A' }),
       magazineService.update(m.id, { title: 'B' }),
     ]);
+    expect(results.filter((result) => result.status === 'fulfilled')).toHaveLength(1);
+    expect(results.filter((result) => result.status === 'rejected')).toHaveLength(1);
     const got = await magazineService.get(m.id);
     expect(['A', 'B']).toContain(got!.title);
   });
 
   it('addProducts concorrente não duplica items com FK válida', async () => {
     const m = await magazineService.create({ ownerId: 'u' });
-    await Promise.all([
+    const results = await Promise.allSettled([
       magazineService.addProducts(m.id, [mkProduct('x')]),
       magazineService.addProducts(m.id, [mkProduct('x')]),
     ]);
+    expect(results.filter((result) => result.status === 'fulfilled')).toHaveLength(1);
+    expect(results.filter((result) => result.status === 'rejected')).toHaveLength(1);
     const got = await magazineService.get(m.id);
-    // Sem lock ótimista, pode duplicar — mas o serviço deve tolerar (não crashar)
-    expect(got!.items.length).toBeGreaterThanOrEqual(1);
-    expect(got!.items.length).toBeLessThanOrEqual(2);
+    expect(got!.items).toHaveLength(1);
   });
 });
 

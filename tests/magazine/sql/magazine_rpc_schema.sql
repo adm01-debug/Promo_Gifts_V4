@@ -4,6 +4,8 @@ CREATE ROLE anon NOLOGIN;
 CREATE ROLE authenticated NOLOGIN;
 CREATE ROLE service_role NOLOGIN;
 CREATE SCHEMA auth;
+CREATE SCHEMA extensions;
+CREATE EXTENSION pgcrypto WITH SCHEMA extensions;
 
 CREATE TYPE public.app_role AS ENUM (
   'dev', 'supervisor', 'admin', 'manager', 'agente', 'coordenador', 'vendedor'
@@ -11,6 +13,14 @@ CREATE TYPE public.app_role AS ENUM (
 
 CREATE TABLE auth.users (id UUID PRIMARY KEY);
 CREATE TABLE public.user_roles (user_id UUID NOT NULL, role public.app_role NOT NULL);
+CREATE TABLE public.organizations (id UUID PRIMARY KEY);
+CREATE TABLE public.organization_members (
+  organization_id UUID NOT NULL REFERENCES public.organizations(id),
+  user_id UUID NOT NULL REFERENCES auth.users(id),
+  PRIMARY KEY (organization_id, user_id)
+);
+CREATE TABLE public.magazine_templates_catalog (template_id TEXT PRIMARY KEY);
+INSERT INTO public.magazine_templates_catalog(template_id) VALUES ('editorial-vogue');
 
 CREATE FUNCTION auth.uid() RETURNS UUID
 LANGUAGE sql STABLE
@@ -52,9 +62,15 @@ CREATE TABLE public.magazine_items (
   overrides JSONB NOT NULL DEFAULT '{}'::JSONB,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  UNIQUE (magazine_id, position) DEFERRABLE INITIALLY DEFERRED,
+  CONSTRAINT magazine_items_position_unique
+    UNIQUE (magazine_id, position) DEFERRABLE INITIALLY DEFERRED,
   UNIQUE (magazine_id, product_id)
 );
+
+-- Espelha os privilégios legados ainda presentes no canônico antes da fase v2.
+-- A migration de expansão deve preservá-los até o novo cliente estar READY.
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.magazines, public.magazine_items
+  TO authenticated, service_role;
 
 CREATE FUNCTION public.tg_magazines_on_publish() RETURNS TRIGGER
 LANGUAGE plpgsql
@@ -72,6 +88,24 @@ $$;
 CREATE TRIGGER trg_magazines_on_publish
 BEFORE UPDATE ON public.magazines
 FOR EACH ROW EXECUTE FUNCTION public.tg_magazines_on_publish();
+
+CREATE FUNCTION public.update_updated_at_column() RETURNS TRIGGER
+LANGUAGE plpgsql
+SET search_path TO 'public'
+AS $$
+BEGIN
+  NEW.updated_at := now();
+  RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER trg_magazines_updated_at
+BEFORE UPDATE ON public.magazines
+FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+CREATE TRIGGER trg_magazine_items_updated_at
+BEFORE UPDATE ON public.magazine_items
+FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
 INSERT INTO auth.users (id) VALUES
   ('00000000-0000-0000-0000-000000000001'),

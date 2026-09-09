@@ -5,8 +5,14 @@ import type { Magazine } from '@/types/magazine';
 
 function setup() {
   let stored = buildMockMagazine('editorial-vogue');
-  const write = vi.fn((_id: string, patch: EditorPatch) => {
-    stored = { ...stored, ...patch, updatedAt: '2026-09-09T17:00:00Z' };
+  const write = vi.fn((_id: string, patch: EditorPatch, expectedEditVersion: number) => {
+    if (expectedEditVersion !== stored.editVersion) return Promise.reject(new Error('conflict'));
+    stored = {
+      ...stored,
+      ...patch,
+      updatedAt: '2026-09-09T17:00:00Z',
+      editVersion: stored.editVersion + 1,
+    };
     return Promise.resolve(stored);
   });
   const editor = new EditorPersistence(stored, write, vi.fn());
@@ -22,10 +28,11 @@ describe('EditorPersistence — falhas e concorrência da sessão', () => {
     editor.edit({ title: 'A' });
     editor.edit({ subtitle: 'B' });
     await vi.advanceTimersByTimeAsync(400);
-    expect(write).toHaveBeenCalledExactlyOnceWith(editor.magazine.id, {
-      title: 'A',
-      subtitle: 'B',
-    });
+    expect(write).toHaveBeenCalledExactlyOnceWith(
+      editor.magazine.id,
+      { title: 'A', subtitle: 'B' },
+      0,
+    );
     expect(editor.dirty).toBe(false);
   });
 
@@ -158,7 +165,7 @@ describe('EditorPersistence — falhas e concorrência da sessão', () => {
     write.mockRejectedValueOnce(new Error('metadata offline'));
 
     const mutation = editor.mutate(action);
-    await Promise.resolve();
+    await vi.advanceTimersByTimeAsync(0);
     await Promise.resolve();
     editor.edit({ subtitle: 'edição durante a mutação' });
     resolveMutation({ ...editor.magazine, items: [] });
@@ -168,5 +175,69 @@ describe('EditorPersistence — falhas e concorrência da sessão', () => {
     expect(action).toHaveBeenCalledTimes(1);
     expect(write).toHaveBeenCalledTimes(2);
     expect(editor.magazine.subtitle).toBe('edição durante a mutação');
+  });
+
+  it('flush enfileirado captura e repete uma mutação que falha antes de ele iniciar', async () => {
+    const { editor } = setup();
+    let rejectFirst!: (error: Error) => void;
+    let markStarted!: () => void;
+    const started = new Promise<void>((resolve) => {
+      markStarted = resolve;
+    });
+    const action = vi
+      .fn<() => Promise<Magazine | null>>()
+      .mockImplementationOnce(
+        () =>
+          new Promise((_resolve, reject) => {
+            rejectFirst = reject;
+            markStarted();
+          }),
+      )
+      .mockImplementationOnce(() =>
+        Promise.resolve({ ...editor.magazine, editVersion: editor.magazine.editVersion + 1 }),
+      );
+
+    const mutation = editor.mutate(action);
+    await started;
+    const flushAlreadyQueued = editor.flush();
+    rejectFirst(new Error('resposta perdida'));
+
+    await expect(mutation).rejects.toThrow('resposta perdida');
+    await expect(flushAlreadyQueued).resolves.toBeUndefined();
+    expect(action).toHaveBeenCalledTimes(2);
+    expect(editor.error).toBeNull();
+    expect(editor.dirty).toBe(false);
+  });
+
+  it('não executa nem substitui a falha anterior por mutação já enfileirada', async () => {
+    const { editor } = setup();
+    let rejectFirst!: (error: Error) => void;
+    let markStarted!: () => void;
+    const started = new Promise<void>((resolve) => {
+      markStarted = resolve;
+    });
+    const first = vi
+      .fn<() => Promise<Magazine | null>>()
+      .mockImplementationOnce(
+        () =>
+          new Promise((_resolve, reject) => {
+            rejectFirst = reject;
+            markStarted();
+          }),
+      )
+      .mockResolvedValueOnce({ ...editor.magazine, editVersion: 1 });
+    const second = vi.fn(() => Promise.resolve({ ...editor.magazine, editVersion: 1 }));
+
+    const firstAttempt = editor.mutate(first);
+    await started;
+    const alreadyQueued = editor.mutate(second);
+    rejectFirst(new Error('primeira operação falhou'));
+
+    await expect(firstAttempt).rejects.toThrow('primeira operação falhou');
+    await expect(alreadyQueued).rejects.toThrow('operação não salva');
+    expect(second).not.toHaveBeenCalled();
+    await editor.flush();
+    expect(first).toHaveBeenCalledTimes(2);
+    expect(editor.error).toBeNull();
   });
 });

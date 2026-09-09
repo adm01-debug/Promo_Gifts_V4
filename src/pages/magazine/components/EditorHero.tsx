@@ -25,6 +25,7 @@ interface Props {
   magazine: Magazine;
   onChangeTemplate: (id: MagazineTemplateId) => void;
   onLeave?: () => void;
+  readOnly?: boolean;
 }
 
 const FAMILY_LABEL: Record<'catalog' | 'corporate' | 'editorial', string> = {
@@ -33,7 +34,7 @@ const FAMILY_LABEL: Record<'catalog' | 'corporate' | 'editorial', string> = {
   corporate: 'Corporativo',
 };
 
-export function EditorHero({ magazine, onChangeTemplate, onLeave }: Props) {
+export function EditorHero({ magazine, onChangeTemplate, onLeave, readOnly = false }: Props) {
   const [open, setOpen] = useState(false);
   const active = getTemplate(magazine.templateId);
   const all = listTemplates();
@@ -111,6 +112,7 @@ export function EditorHero({ magazine, onChangeTemplate, onLeave }: Props) {
               aria-haspopup="dialog"
               aria-expanded={open}
               aria-controls="magazine-template-swap-popover"
+              disabled={readOnly}
             >
               Trocar template
               <ChevronDown
@@ -146,6 +148,7 @@ export function EditorHero({ magazine, onChangeTemplate, onLeave }: Props) {
                     key={t.id}
                     type="button"
                     role="radio"
+                    disabled={readOnly}
                     aria-checked={selected}
                     aria-label={`${t.name}, ${FAMILY_LABEL[t.family]}, ${t.productsPerPage} por página${selected ? ' (selecionado)' : ''}`}
                     onClick={() => {

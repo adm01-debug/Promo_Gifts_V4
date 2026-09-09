@@ -24,6 +24,7 @@ import {
   LayoutTemplate,
   Loader2,
   MoreHorizontal,
+  RotateCcw,
   Save,
   Send,
 } from 'lucide-react';
@@ -42,7 +43,7 @@ import { PageSEO } from '@/components/seo/PageSEO';
 import { cn } from '@/lib/utils';
 import { useMagazineEditor } from './useMagazineEditor';
 import { useMagazinePublish } from './useMagazinePublish';
-import { paginateMagazine, reorderStructuredPageItems } from './pagination';
+import { isMagazinePageOrderV2, paginateMagazine, reorderStructuredPageItems } from './pagination';
 import { PreviewSidebar } from './components/PreviewSidebar';
 import { PagesRail } from './components/PagesRail';
 import { EditorHero } from './components/EditorHero';
@@ -102,21 +103,24 @@ export default function MagazineEditorPage() {
   const [previewIdx, setPreviewIdx] = useState(0);
   const [highlightedItemId, setHighlightedItemId] = useState<string | null>(null);
   const [previewSheetOpen, setPreviewSheetOpen] = useState(false);
+  const [statusChanging, setStatusChanging] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const editor = useMagazineEditor(id);
   const { flushSave } = editor;
 
   // `magazine` é null enquanto carrega e quando o id não existe.
   const magazine = editor.magazine;
+  const canEdit = editor.canEdit;
 
   const saveNow = useCallback(async () => {
+    if (!canEdit) return;
     try {
       await flushSave();
       toast.success('Rascunho salvo.');
     } catch {
       toast.error('Não foi possível salvar. Suas alterações continuam no editor.');
     }
-  }, [flushSave]);
+  }, [canEdit, flushSave]);
 
   const leaveEditor = useCallback(
     async (path: string) => {
@@ -136,7 +140,9 @@ export default function MagazineEditorPage() {
     if (!applyId || !magazine) return;
     // FIX(lint): prefer-object-has-own — Object.hasOwn é mais direto e
     // seguro que Object.prototype.hasOwnProperty.call (prefer-object-has-own).
-    if (Object.hasOwn(TEMPLATE_REGISTRY, applyId)) {
+    if (!canEdit) {
+      toast.error('Reative o rascunho antes de trocar o template.');
+    } else if (Object.hasOwn(TEMPLATE_REGISTRY, applyId)) {
       const typedId = applyId as MagazineTemplateId;
       if (magazine.templateId !== typedId) {
         editor.setTemplate(typedId);
@@ -199,7 +205,7 @@ export default function MagazineEditorPage() {
   // `useMagazinePublish` tem useState+useCallback internos — se ficar
   // após early return, a contagem de hooks muda entre renders → crash.
   // ──────────────────────────────────────────────────────────────────
-  const publishable = magazine ? canPublish(magazine) : false;
+  const publishable = magazine && canEdit ? canPublish(magazine) : false;
 
   const { publishing, publish } = useMagazinePublish({
     publishable,
@@ -227,6 +233,24 @@ export default function MagazineEditorPage() {
   );
 
   const goToDesign = useCallback(() => goToStep('design'), [goToStep]);
+
+  const enableEditing = useCallback(async () => {
+    if (!magazine || magazine.status === 'draft' || !editor.isOwner || statusChanging) return;
+    setStatusChanging(true);
+    try {
+      if (magazine.status === 'published') {
+        await editor.unpublish();
+        toast.success('Revista despublicada e liberada para edição.');
+      } else {
+        await editor.reactivate();
+        toast.success('Revista reativada como rascunho.');
+      }
+    } catch {
+      toast.error('Não foi possível liberar a revista para edição. Tente novamente.');
+    } finally {
+      setStatusChanging(false);
+    }
+  }, [editor, magazine, statusChanging]);
 
   // ── NENHUM HOOK ABAIXO DESTE PONTO ────────────────────────────────
   // Todo useState/useEffect/useMemo/useCallback/custom hook DEVE ficar
@@ -267,6 +291,7 @@ export default function MagazineEditorPage() {
   const safePreviewIdx = Math.min(previewIdx, Math.max(0, pages.length - 1));
   const canPrev = currentIdx > 0;
   const canNext = currentIdx < STEPS.length - 1 && validation.blocks.length === 0;
+  const isReadOnly = !canEdit;
   const layout = STEP_LAYOUT[step];
   const itemCount = (magazine.items ?? []).length;
 
@@ -319,6 +344,7 @@ export default function MagazineEditorPage() {
             <EditorHero
               magazine={magazine}
               onChangeTemplate={editor.setTemplate}
+              readOnly={isReadOnly}
               onLeave={() => {
                 void leaveEditor('/magazine');
               }}
@@ -331,7 +357,12 @@ export default function MagazineEditorPage() {
               aria-live="polite"
               className="mr-1 flex items-center gap-2 text-[12px] text-muted-foreground"
             >
-              {editor.saveError ? (
+              {isReadOnly ? (
+                <>
+                  <Eye className="h-4 w-4" aria-hidden />
+                  <span className="font-medium text-foreground">Somente leitura</span>
+                </>
+              ) : editor.saveError ? (
                 <button
                   type="button"
                   onClick={() => {
@@ -361,6 +392,28 @@ export default function MagazineEditorPage() {
                 </>
               )}
             </span>
+
+            {isReadOnly && editor.isOwner && magazine.status !== 'draft' && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  void enableEditing();
+                }}
+                disabled={statusChanging}
+                aria-busy={statusChanging}
+                className={cn(PG_BTN_OUTLINE, 'h-11 min-h-0 rounded-md px-4 text-[14px]')}
+                data-testid="magazine-enable-editing"
+              >
+                {statusChanging ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden />
+                ) : (
+                  <RotateCcw className="mr-2 h-4 w-4" aria-hidden />
+                )}
+                {magazine.status === 'published' ? 'Despublicar e editar' : 'Reativar rascunho'}
+              </Button>
+            )}
 
             {/*
              * Botões do header mudam por etapa (§24):
@@ -410,6 +463,7 @@ export default function MagazineEditorPage() {
                 <Button
                   variant="ghost"
                   size="sm"
+                  disabled={isReadOnly}
                   onClick={() => {
                     void saveNow();
                   }}
@@ -498,6 +552,7 @@ export default function MagazineEditorPage() {
                     className="pg-module w-60 rounded-lg border-border bg-popover p-1.5"
                   >
                     <DropdownMenuItem
+                      disabled={isReadOnly}
                       onSelect={() => {
                         void leaveEditor(`/magazine/templates?returnTo=/magazine/${magazine.id}`);
                       }}
@@ -567,6 +622,25 @@ export default function MagazineEditorPage() {
           </ol>
         </nav>
 
+        {isReadOnly && (
+          <div
+            className="mb-4 flex items-start gap-3 rounded-md border border-border bg-card-elevated px-4 py-3 text-[13px] text-foreground"
+            role="status"
+            data-testid="magazine-readonly-banner"
+          >
+            <Eye className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />
+            <p>
+              {editor.isOwner
+                ? magazine.status === 'published'
+                  ? 'Esta revista está publicada. Despublique-a antes de alterar conteúdo, produtos ou layout.'
+                  : magazine.status === 'archived'
+                    ? 'Esta revista está arquivada. Reative o rascunho antes de editar.'
+                    : 'Esta revista está em modo somente leitura.'
+                : 'Você pode visualizar esta revista, mas somente o proprietário pode editá-la.'}
+            </p>
+          </div>
+        )}
+
         {/* aria-live para anunciar mudança de etapa a leitores de tela */}
         <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
           Etapa {currentIdx + 1} de {STEPS.length}: {STEPS[currentIdx].label}
@@ -613,7 +687,12 @@ export default function MagazineEditorPage() {
           )}
           data-testid="magazine-editor-workspace"
         >
-          <div className="min-w-0" data-testid="magazine-editor-main-col">
+          <fieldset
+            disabled={isReadOnly}
+            aria-label="Controles de edição da revista"
+            className={cn('min-w-0', isReadOnly && 'pointer-events-none select-none opacity-70')}
+            data-testid="magazine-editor-main-col"
+          >
             {step === 'identity' && (
               <IdentityStep
                 magazine={magazine}
@@ -648,7 +727,13 @@ export default function MagazineEditorPage() {
                     .reorderItems(ids)
                     .then((updatedMagazine) => {
                       const nextPageOrder = reorderStructuredPageItems(updatedMagazine, ids);
-                      if (nextPageOrder) editor.setPageOrder(nextPageOrder);
+                      if (nextPageOrder) {
+                        editor.setPageOrder(nextPageOrder);
+                      } else if (isMagazinePageOrderV2(updatedMagazine.pageOrder)) {
+                        toast.error(
+                          'A ordem excede o limite de 200 páginas estruturadas. Ajuste o layout antes de continuar.',
+                        );
+                      }
                     })
                     .catch(() =>
                       toast.error(
@@ -665,7 +750,7 @@ export default function MagazineEditorPage() {
                 highlightedItemId={highlightedItemId}
               />
             )}
-          </div>
+          </fieldset>
 
           {layout !== 'one' && (
             <aside className="hidden min-w-0 xl:block" data-testid="magazine-preview-aside">

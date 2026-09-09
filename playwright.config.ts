@@ -1,6 +1,9 @@
 import { defineConfig, devices } from '@playwright/test';
 import path from 'path';
 
+const externalBaseUrl = process.env.E2E_BASE_URL?.trim();
+const reuseExistingServer = process.env.E2E_REUSE_EXISTING_SERVER === '1';
+
 /**
  * Playwright Configuration
  * Suporta múltiplos fluxos: público, autenticado e mobile.
@@ -26,13 +29,9 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 5 : 1,
   workers: 1,
-  reporter: [
-    ['html', { open: 'never' }],
-    ['list'],
-    ['github']
-  ],
+  reporter: [['html', { open: 'never' }], ['list'], ['github']],
   use: {
-    baseURL: process.env.E2E_BASE_URL || 'http://localhost:8080',
+    baseURL: externalBaseUrl || 'http://localhost:8080',
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
@@ -49,7 +48,7 @@ export default defineConfig({
     // 2. Projetos Públicos (sem storageState)
     {
       name: 'chromium-public',
-      use: { 
+      use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1280, height: 720 },
       },
@@ -137,11 +136,15 @@ export default defineConfig({
     },
   ],
 
-  /* Run your local dev server before starting the tests */
-  webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:8080',
-    reuseExistingServer: true,
-    timeout: 120 * 1000,
-  },
+  // Um E2E_BASE_URL explícito significa que o caller gerencia o servidor.
+  // Sem ele, iniciamos localmente e nunca reutilizamos uma porta ocupada por
+  // padrão; o opt-in evita executar a suíte contra um processo antigo/errado.
+  webServer: externalBaseUrl
+    ? undefined
+    : {
+        command: 'npm run dev',
+        url: 'http://localhost:8080',
+        reuseExistingServer,
+        timeout: 120 * 1000,
+      },
 });

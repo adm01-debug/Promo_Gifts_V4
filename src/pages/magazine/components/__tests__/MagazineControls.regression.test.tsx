@@ -1,18 +1,32 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ProductsStep } from '../steps/ProductsStep';
 import { MagazineClientPicker } from '../MagazineClientPicker';
 import { BrandColorPicker } from '../BrandColorPicker';
 import { buildMockMagazine } from '../../templates-gallery/mockMagazine';
 import type { Product } from '@/types/product-catalog';
 
-const fixtures = vi.hoisted(() => ({ products: [] as Product[] }));
+const fixtures = vi.hoisted(() => ({
+  products: [] as Product[],
+  isError: false,
+  refetch: vi.fn(),
+  lastFilters: undefined as Record<string, unknown> | undefined,
+  lastOptions: undefined as Record<string, unknown> | undefined,
+}));
 vi.mock('@/hooks/products/useProducts', () => ({
-  useProducts: ({ search }: { search: string }) => ({
-    data: fixtures.products.filter((p) => p.name.toLowerCase().includes(search.toLowerCase())),
-    isLoading: false,
-  }),
+  useProducts: (filters: { search: string }, options: Record<string, unknown>) => {
+    fixtures.lastFilters = filters;
+    fixtures.lastOptions = options;
+    return {
+      data: fixtures.products.filter((p) =>
+        p.name.toLowerCase().includes(filters.search.toLowerCase()),
+      ),
+      isLoading: false,
+      isError: fixtures.isError,
+      refetch: fixtures.refetch,
+    };
+  },
 }));
 vi.mock('@/lib/crm-db', () => ({
   selectCrm: () =>
@@ -36,6 +50,22 @@ function productEditor(onAdd = vi.fn().mockResolvedValue(undefined)) {
 }
 
 describe('Magazine — controles reais, dados isolados', () => {
+  afterEach(() => {
+    fixtures.isError = false;
+  });
+
+  it('carrega o conjunto paginado integral e oferece retry inline em erro', () => {
+    fixtures.isError = true;
+    fixtures.refetch.mockClear();
+    productEditor();
+
+    expect(fixtures.lastFilters).not.toHaveProperty('limit');
+    expect(fixtures.lastOptions).toMatchObject({ throwOnError: false });
+    fireEvent.click(screen.getByRole('button', { name: 'Tentar novamente' }));
+    expect(fixtures.refetch).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole('alert')).toHaveTextContent('Não foi possível carregar o catálogo');
+  });
+
   it('adiciona todos os selecionados mesmo após mudar a busca', async () => {
     const { onAdd } = productEditor();
     fireEvent.click(screen.getByRole('button', { name: 'Selecionar Garrafa Térmica Eco' }));

@@ -164,6 +164,81 @@ export interface MagazinePageOrderV2 {
 /** Arrays numéricos antigos continuam aceitos e usam paginação automática. */
 export type MagazinePageOrder = MagazinePageOrderV2 | number[] | null;
 
+/**
+ * Valida o formato persistente antes de atravessar a fronteira RPC.
+ * A validação referencial dos itemIds permanece no banco, dentro do mesmo
+ * lock/CAS da gravação; aqui rejeitamos estruturas impossíveis e payloads
+ * legados que não sejam listas numéricas finitas.
+ */
+export function isValidMagazinePageOrder(value: unknown): value is MagazinePageOrder {
+  if (value === null) return true;
+  if (Array.isArray(value)) {
+    return (
+      value.length <= 200 &&
+      value.every((entry) => Number.isSafeInteger(entry) && entry >= 0) &&
+      new Set(value).size === value.length
+    );
+  }
+  if (!value || typeof value !== 'object') return false;
+
+  const candidate = value as Partial<MagazinePageOrderV2>;
+  if (candidate.version !== 2 || !Array.isArray(candidate.pages)) return false;
+  if (candidate.pages.length < 2 || candidate.pages.length > 200) return false;
+
+  const allowedKinds = new Set<MagazineStructuredPageKind>([
+    'back-cover',
+    'contact',
+    'cover',
+    'institutional',
+    'products',
+    'section',
+  ]);
+  const pageIds = new Set<string>();
+  const globallyAssignedItems = new Set<string>();
+  let covers = 0;
+  let closings = 0;
+  let assignedItems = 0;
+
+  for (const page of candidate.pages) {
+    if (!page || typeof page !== 'object') return false;
+    if (Object.keys(page).some((key) => !['id', 'kind', 'title', 'body', 'itemIds'].includes(key)))
+      return false;
+    if (typeof page.id !== 'string' || page.id.trim().length < 1 || page.id.length > 120)
+      return false;
+    if (pageIds.has(page.id) || !allowedKinds.has(page.kind)) return false;
+    pageIds.add(page.id);
+    if (page.kind === 'cover') covers += 1;
+    if (page.kind === 'contact' || page.kind === 'back-cover') closings += 1;
+    if (page.title !== undefined && (typeof page.title !== 'string' || page.title.length > 120))
+      return false;
+    if (page.body !== undefined && (typeof page.body !== 'string' || page.body.length > 800))
+      return false;
+    if (page.itemIds !== undefined) {
+      if (page.kind !== 'products' || !Array.isArray(page.itemIds) || page.itemIds.length > 500)
+        return false;
+      for (const itemId of page.itemIds) {
+        if (
+          typeof itemId !== 'string' ||
+          !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(itemId) ||
+          globallyAssignedItems.has(itemId)
+        )
+          return false;
+        globallyAssignedItems.add(itemId);
+        assignedItems += 1;
+        if (assignedItems > 500) return false;
+      }
+    }
+  }
+
+  const lastKind = candidate.pages.at(-1)?.kind;
+  return (
+    candidate.pages[0]?.kind === 'cover' &&
+    (lastKind === 'contact' || lastKind === 'back-cover') &&
+    covers === 1 &&
+    closings === 1
+  );
+}
+
 export interface Magazine {
   id: string;
   ownerId: string;
@@ -191,6 +266,8 @@ export interface Magazine {
   archivedAt: string | null;
   createdAt: string;
   updatedAt: string;
+  /** Monotonic database CAS token. Never derive it from timestamps. */
+  editVersion: number;
 }
 
 /** Página derivada pela paginação — usada pelo renderer de template. */

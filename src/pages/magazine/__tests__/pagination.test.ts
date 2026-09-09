@@ -407,6 +407,30 @@ describe('paginateMagazine — structured pages v2', () => {
     expect(reordered?.pages.at(-1)?.kind).toBe('contact');
   });
 
+  it('compacts DnD overflow without persisting more than 200 page definitions', () => {
+    const items = Array.from({ length: 201 }, (_, index) => mkItem(String(index), index));
+    const pageOrder = {
+      version: 2 as const,
+      pages: [
+        createMagazinePageDefinition('cover'),
+        ...Array.from({ length: 198 }, (_, index) =>
+          createMagazinePageDefinition('products', { itemIds: [String(index)] }),
+        ),
+        createMagazinePageDefinition('contact'),
+      ],
+    };
+    const magazine = mkMagazine('editorial-vogue', items, false, { pageOrder });
+
+    const reordered = reorderStructuredPageItems(magazine, items.map((item) => item.id).reverse());
+
+    expect(reordered).not.toBeNull();
+    expect(isMagazinePageOrderV2(reordered)).toBe(true);
+    expect(reordered?.pages.length).toBeLessThanOrEqual(200);
+    expect(
+      reordered?.pages.filter((page) => page.kind === 'products').flatMap((page) => page.itemIds),
+    ).toEqual(items.map((item) => item.id).reverse());
+  });
+
   it('reflows an oversized structured page after switching from 3x3 to Vogue', () => {
     const items = Array.from({ length: 9 }, (_, index) => mkItem(String(index), index));
     const pageOrder = {

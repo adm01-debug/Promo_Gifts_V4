@@ -24,6 +24,7 @@ interface Props {
   onPreview: (id: TemplateEntry['id']) => void;
   onUse: (id: TemplateEntry['id']) => void;
   useLabel: string;
+  isBusy?: boolean;
   isFavorite?: boolean;
   onToggleFavorite?: (id: TemplateEntry['id']) => void;
   /** 'grid' (default) ou 'row' (modo lista). */
@@ -62,6 +63,7 @@ function TemplateCardImpl({
   onPreview,
   onUse,
   useLabel,
+  isBusy = false,
   isFavorite = false,
   onToggleFavorite,
   variant = 'grid',
@@ -228,6 +230,8 @@ function TemplateCardImpl({
         size="sm"
         className={cn(PG_BTN, 'h-10 min-h-0 flex-1 rounded-md text-[13px]')}
         onClick={() => onUse(entry.id)}
+        disabled={isBusy}
+        aria-busy={isBusy}
         data-testid={`template-use-${entry.id}`}
       >
         {useLabel}

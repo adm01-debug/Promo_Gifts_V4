@@ -2,22 +2,33 @@
  * api/sitemap.ts — Sitemap XML Dinâmico
  *
  * Vercel Serverless Function que gera sitemap.xml completo
- * a partir de vw_sitemap_all (produtos + categorias) no Supabase.
+ * a partir do RPC público restrito get_sitemap_public no Supabase.
  *
  * URL pública: https://www.promogifts.com.br/sitemap.xml
  * Cache: 12h (stale-while-revalidate: 24h) — Google reindexação diária
  *
- * Pré-requisito: vercel.json deve mapear /sitemap.xml → /api/sitemap
+ * Pré-requisito: vercel.json deve mapear /sitemap.xml → /api/sitemap e não
+ * pode existir public/sitemap.xml, pois um arquivo estático vence a rewrite.
  * fix_version: seo_sitemap_dynamic_v1_20260627
  */
-import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { randomUUID } from 'node:crypto';
 
-const SUPABASE_URL = 'https://doufsxqlfjyuvxuezpln.supabase.co';
-const SUPABASE_ANON_KEY =
-  process.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRvdWZzeHFsZmp5dXZ4dWV6cGxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjczODY2NDMsImV4cCI6MjA4Mjk2MjY0M30.nm3WMOBSx5SUnIBmvF_Mj0Y-4hV6UohrBF0sUpuQvPc';
+const CANONICAL_PROJECT_ID = 'doufsxqlfjyuvxuezpln';
+const CANONICAL_SUPABASE_URL = `https://${CANONICAL_PROJECT_ID}.supabase.co`;
 const BASE_URL = 'https://www.promogifts.com.br';
 const PAGE_SIZE = 1000;
+
+interface ApiRequest {
+  method?: string;
+  headers: Record<string, string | string[] | undefined>;
+}
+
+interface ApiResponse {
+  setHeader(name: string, value: string): void;
+  status(code: number): ApiResponse;
+  send(payload: string): void;
+  end(): void;
+}
 
 interface SitemapRow {
   url_type: string;
@@ -30,6 +41,24 @@ interface SitemapRow {
   image_url: string | null;
 }
 
+class SitemapUpstreamError extends Error {
+  constructor(readonly httpStatus: number) {
+    super(`Supabase REST returned HTTP ${httpStatus}`);
+    this.name = 'SitemapUpstreamError';
+  }
+}
+
+function requestIdFrom(req: ApiRequest): string {
+  const raw = req.headers['x-request-id'];
+  const candidate = Array.isArray(raw) ? raw[0] : raw;
+
+  if (candidate && /^[A-Za-z0-9._:-]{1,128}$/.test(candidate)) {
+    return candidate;
+  }
+
+  return randomUUID();
+}
+
 function escapeXml(str: string): string {
   return str
     .replace(/&/g, '&amp;')
@@ -39,33 +68,79 @@ function escapeXml(str: string): string {
     .replace(/'/g, '&apos;');
 }
 
-async function fetchPage(offset: number): Promise<SitemapRow[]> {
-  const url =
-    `${SUPABASE_URL}/rest/v1/vw_sitemap_all` +
-    `?select=url_type,url_path,identifier,title,lastmod,priority,changefreq,image_url` +
-    `&order=priority.desc,lastmod.desc` +
-    `&offset=${offset}&limit=${PAGE_SIZE}`;
+async function fetchPage(
+  offset: number,
+  publishableKey: string,
+  requestId: string,
+): Promise<SitemapRow[]> {
+  const url = `${CANONICAL_SUPABASE_URL}/rest/v1/rpc/get_sitemap_public`;
 
   const res = await fetch(url, {
+    method: 'POST',
     headers: {
-      apikey: SUPABASE_ANON_KEY,
-      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+      apikey: publishableKey,
+      Authorization: `Bearer ${publishableKey}`,
       'Content-Type': 'application/json',
+      'x-request-id': requestId,
     },
+    body: JSON.stringify({ p_limit: PAGE_SIZE, p_offset: offset }),
   });
 
-  if (!res.ok) throw new Error(`Supabase REST error: ${res.status}`);
+  if (!res.ok) throw new SitemapUpstreamError(res.status);
   return (await res.json()) as SitemapRow[];
 }
 
-export default async function handler(_req: VercelRequest, res: VercelResponse) {
+function sendXml(req: ApiRequest, res: ApiResponse, status: number, body: string): void {
+  if (req.method === 'HEAD') {
+    res.status(status).end();
+    return;
+  }
+
+  res.status(status).send(body);
+}
+
+export default async function handler(req: ApiRequest, res: ApiResponse): Promise<void> {
+  const requestId = requestIdFrom(req);
+  res.setHeader('Content-Type', 'application/xml; charset=UTF-8');
+  res.setHeader('X-Request-Id', requestId);
+
+  if (req.method !== 'GET' && req.method !== 'HEAD') {
+    res.setHeader('Allow', 'GET, HEAD');
+    res.setHeader('Cache-Control', 'no-store, max-age=0');
+    sendXml(
+      req,
+      res,
+      405,
+      '<?xml version="1.0"?><error code="method_not_allowed">Method not allowed</error>',
+    );
+    return;
+  }
+
+  const configuredUrl = (process.env.VITE_SUPABASE_URL || '').replace(/\/$/, '');
+  const configuredProjectId = process.env.VITE_SUPABASE_PROJECT_ID || '';
+  const publishableKey = (process.env.VITE_SUPABASE_PUBLISHABLE_KEY || '').trim();
+  const configIsCanonical =
+    configuredUrl === CANONICAL_SUPABASE_URL && configuredProjectId === CANONICAL_PROJECT_ID;
+
+  if (!configIsCanonical || !publishableKey) {
+    res.setHeader('Cache-Control', 'no-store, max-age=0');
+    res.setHeader('Retry-After', '60');
+    sendXml(
+      req,
+      res,
+      503,
+      '<?xml version="1.0"?><error code="not_ready">Sitemap unavailable</error>',
+    );
+    return;
+  }
+
   try {
     // Paginar até 15.000 URLs (suficiente para 7k produtos + 413 categorias)
     const allRows: SitemapRow[] = [];
     let offset = 0;
 
     while (offset < 15_000) {
-      const page = await fetchPage(offset);
+      const page = await fetchPage(offset, publishableKey, requestId);
       if (!page || page.length === 0) break;
       allRows.push(...page);
       if (page.length < PAGE_SIZE) break;
@@ -93,14 +168,13 @@ export default async function handler(_req: VercelRequest, res: VercelResponse) 
       .map((row) => {
         const loc = `${BASE_URL}${row.url_path}`;
         const lastmod = row.lastmod ? new Date(row.lastmod).toISOString().split('T')[0] : '';
-        const imageTag =
-          row.image_url
-            ? `
+        const imageTag = row.image_url
+          ? `
     <image:image>
       <image:loc>${escapeXml(row.image_url)}</image:loc>
       <image:title>${escapeXml(row.title || '')}</image:title>
     </image:image>`
-            : '';
+          : '';
 
         return `  <url>
     <loc>${escapeXml(loc)}</loc>
@@ -118,16 +192,23 @@ export default async function handler(_req: VercelRequest, res: VercelResponse) 
 ${urlset}
 </urlset>`;
 
-    res.setHeader('Content-Type', 'application/xml; charset=UTF-8');
     // Cache 12h, stale-while-revalidate 24h — Google não precisa de tempo real
-    res.setHeader(
-      'Cache-Control',
-      'public, max-age=43200, stale-while-revalidate=86400'
-    );
+    res.setHeader('Cache-Control', 'public, max-age=43200, stale-while-revalidate=86400');
     res.setHeader('X-Sitemap-Count', String(rows.length));
-    res.status(200).send(xml);
+    sendXml(req, res, 200, xml);
   } catch (err) {
-    console.error('[sitemap] Error:', err);
-    res.status(500).send('<?xml version="1.0"?><error>Sitemap unavailable</error>');
+    console.error('[sitemap] upstream unavailable', {
+      requestId,
+      httpStatus: err instanceof SitemapUpstreamError ? err.httpStatus : undefined,
+      errorKind: err instanceof SitemapUpstreamError ? 'http_error' : 'unreachable',
+    });
+    res.setHeader('Cache-Control', 'no-store, max-age=0');
+    res.setHeader('Retry-After', '60');
+    sendXml(
+      req,
+      res,
+      503,
+      '<?xml version="1.0"?><error code="degraded">Sitemap unavailable</error>',
+    );
   }
 }

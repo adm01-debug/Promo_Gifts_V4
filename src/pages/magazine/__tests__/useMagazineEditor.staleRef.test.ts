@@ -43,6 +43,7 @@ const MOCK_MAGAZINE: Magazine = {
   archivedAt: null,
   createdAt: '2026-07-12T00:00:00Z',
   updatedAt: '2026-07-12T00:00:00Z',
+  editVersion: 0,
 };
 
 const DUMMY_ITEM = {
@@ -76,12 +77,18 @@ vi.mock('@/services/magazineService', () => ({
     // eslint-disable-next-line @typescript-eslint/require-await -- assinatura assíncrona intencional (mock/interface Promise)
     get: vi.fn(async (id: string) => (id === 'mag_test' ? { ...storedMagazine } : null)),
     // eslint-disable-next-line @typescript-eslint/require-await -- assinatura assíncrona intencional (mock/interface Promise)
-    update: vi.fn(async (id: string, data: Partial<Magazine>) => {
-      if (id === 'mag_test' && storedMagazine) storedMagazine = { ...storedMagazine, ...data };
+    update: vi.fn(async (id: string, data: Partial<Magazine>, expected?: number) => {
+      if (id === 'mag_test' && storedMagazine && expected === storedMagazine.editVersion) {
+        storedMagazine = {
+          ...storedMagazine,
+          ...data,
+          editVersion: storedMagazine.editVersion + 1,
+        };
+      }
       return storedMagazine;
     }),
     // eslint-disable-next-line @typescript-eslint/require-await -- assinatura assíncrona intencional (mock/interface Promise)
-    addProducts: vi.fn(async (id: string, products: unknown[]) => {
+    addProducts: vi.fn(async (id: string, products: unknown[], _expected?: number) => {
       if (id !== 'mag_test' || !storedMagazine) return null;
       const updated = {
         ...storedMagazine,
@@ -89,52 +96,69 @@ vi.mock('@/services/magazineService', () => ({
           ...storedMagazine.items,
           ...products.map((_p, i) => ({ ...DUMMY_ITEM, id: `item_${Date.now()}_${i}` })),
         ],
+        editVersion: storedMagazine.editVersion + 1,
       } as Magazine;
       storedMagazine = updated;
       return updated;
     }),
     // eslint-disable-next-line @typescript-eslint/require-await -- assinatura assíncrona intencional (mock/interface Promise)
-    removeItem: vi.fn(async (id: string, itemId: string) => {
+    removeItem: vi.fn(async (id: string, itemId: string, _expected?: number) => {
       if (id !== 'mag_test' || !storedMagazine) return null;
       const updated = {
         ...storedMagazine,
         items: storedMagazine.items.filter((i) => i.id !== itemId),
+        editVersion: storedMagazine.editVersion + 1,
       };
       storedMagazine = updated;
       return updated;
     }),
-    // eslint-disable-next-line @typescript-eslint/require-await -- assinatura assíncrona intencional (mock/interface Promise)
-    reorderItems: vi.fn(async (id: string, orderedIds: string[]) => {
-      if (id !== 'mag_test' || !storedMagazine) return null;
+    reorderItems: vi.fn((id: string, orderedIds: string[], _expected?: number) => {
+      if (id !== 'mag_test' || !storedMagazine) return Promise.resolve(null);
       const itemMap = new Map(storedMagazine.items.map((item) => [item.id, item]));
       const reordered = orderedIds.map((oid, i) => ({ ...itemMap.get(oid)!, position: i }));
-      const updated = { ...storedMagazine, items: reordered };
+      const updated = {
+        ...storedMagazine,
+        items: reordered,
+        editVersion: storedMagazine.editVersion + 1,
+      };
       storedMagazine = updated;
-      return updated;
+      return Promise.resolve(updated);
     }),
+    updateItem: vi.fn(
+      (id: string, itemId: string, patch: Partial<typeof DUMMY_ITEM>, _expected?: number) => {
+        if (id !== 'mag_test' || !storedMagazine) return Promise.resolve(null);
+        const updated = {
+          ...storedMagazine,
+          items: storedMagazine.items.map((item) =>
+            item.id === itemId ? { ...item, ...patch } : item,
+          ),
+          editVersion: storedMagazine.editVersion + 1,
+        };
+        storedMagazine = updated;
+        return Promise.resolve(updated);
+      },
+    ),
     // eslint-disable-next-line @typescript-eslint/require-await -- assinatura assíncrona intencional (mock/interface Promise)
-    updateItem: vi.fn(async (id: string, itemId: string, patch: Partial<typeof DUMMY_ITEM>) => {
+    publish: vi.fn(async (id: string, _expected?: number) => {
       if (id !== 'mag_test' || !storedMagazine) return null;
       const updated = {
         ...storedMagazine,
-        items: storedMagazine.items.map((item) =>
-          item.id === itemId ? { ...item, ...patch } : item,
-        ),
+        status: 'published' as const,
+        publicToken: 'tok_abc',
+        editVersion: storedMagazine.editVersion + 1,
       };
       storedMagazine = updated;
       return updated;
     }),
     // eslint-disable-next-line @typescript-eslint/require-await -- assinatura assíncrona intencional (mock/interface Promise)
-    publish: vi.fn(async (id: string) => {
+    unpublish: vi.fn(async (id: string, _expected?: number) => {
       if (id !== 'mag_test' || !storedMagazine) return null;
-      const updated = { ...storedMagazine, status: 'published' as const, publicToken: 'tok_abc' };
-      storedMagazine = updated;
-      return updated;
-    }),
-    // eslint-disable-next-line @typescript-eslint/require-await -- assinatura assíncrona intencional (mock/interface Promise)
-    unpublish: vi.fn(async (id: string) => {
-      if (id !== 'mag_test' || !storedMagazine) return null;
-      const updated = { ...storedMagazine, status: 'draft' as const, publicToken: null };
+      const updated = {
+        ...storedMagazine,
+        status: 'draft' as const,
+        publicToken: null,
+        editVersion: storedMagazine.editVersion + 1,
+      };
       storedMagazine = updated;
       return updated;
     }),
@@ -179,12 +203,13 @@ describe('useMagazineEditor — stale ref race condition', () => {
     const { result } = await renderLoadedEditor();
     act(() => result.current.setTitle('Título seguro'));
     await act(() => vi.advanceTimersByTimeAsync(400));
-    expect(magazineService.update).toHaveBeenCalledWith('mag_test', { title: 'Título seguro' });
+    expect(magazineService.update).toHaveBeenCalledWith('mag_test', { title: 'Título seguro' }, 0);
   });
 
   it('sincroniza texto editorial com a página estruturada no mesmo patch', async () => {
     storedMagazine = {
       ...MOCK_MAGAZINE,
+      content: { ...DEFAULT_MAGAZINE_CONTENT, introText: 'Anterior' },
       pageOrder: {
         version: 2,
         pages: [
@@ -209,7 +234,58 @@ describe('useMagazineEditor — stale ref race condition', () => {
         content: expect.objectContaining({ introText: 'Introdução atualizada' }),
         pageOrder: expect.objectContaining({ version: 2 }),
       }),
+      0,
     );
+  });
+
+  it('preserva corpos editoriais customizados ao atualizar textos globais', async () => {
+    storedMagazine = {
+      ...MOCK_MAGAZINE,
+      content: {
+        ...DEFAULT_MAGAZINE_CONTENT,
+        introText: 'Introdução anterior',
+        closingText: 'Fechamento anterior',
+      },
+      pageOrder: {
+        version: 2,
+        pages: [
+          { id: 'cover', kind: 'cover' },
+          { id: 'intro-global', kind: 'institutional', body: 'Introdução anterior' },
+          { id: 'intro-custom', kind: 'institutional', body: 'História exclusiva desta página' },
+          { id: 'contact-global', kind: 'contact', body: 'Fechamento anterior' },
+        ],
+      },
+    };
+    const { result } = await renderLoadedEditor();
+
+    act(() =>
+      result.current.setContent({ introText: 'Nova introdução', closingText: 'Novo fechamento' }),
+    );
+    await act(() => vi.advanceTimersByTimeAsync(400));
+
+    const order = result.current.magazine?.pageOrder;
+    const pages = order && !Array.isArray(order) ? order.pages : [];
+    expect(pages.find((page) => page.id === 'intro-global')?.body).toBe('Nova introdução');
+    expect(pages.find((page) => page.id === 'intro-custom')?.body).toBe(
+      'História exclusiva desta página',
+    );
+    expect(pages.find((page) => page.id === 'contact-global')?.body).toBe('Novo fechamento');
+  });
+
+  it('rejeita page_order estruturalmente inválido antes de enfileirar persistência', async () => {
+    const { result } = await renderLoadedEditor();
+    act(() =>
+      result.current.setPageOrder({
+        version: 2,
+        pages: [
+          { id: 'duplicada', kind: 'cover' },
+          { id: 'duplicada', kind: 'contact' },
+        ],
+      }),
+    );
+    await act(() => vi.advanceTimersByTimeAsync(400));
+    expect(result.current.saveError).toBe('Ordem de páginas inválida.');
+    expect(magazineService.update).not.toHaveBeenCalled();
   });
 
   it('retorno null não confirma salvamento e preserva edição para retry', async () => {
@@ -358,6 +434,7 @@ describe('useMagazineEditor — stale ref race condition', () => {
       expect.objectContaining({
         title: 'Debounced Save',
       }),
+      0,
     );
   });
 

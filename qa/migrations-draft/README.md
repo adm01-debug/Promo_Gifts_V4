@@ -39,7 +39,7 @@ Ele NÃO substitui `supabase/migrations/` — é uma antessala revisável.
 ## Rascunhos vigentes
 
 <!-- BEGIN:DRAFT-INDEX (gerado por scripts/list-migration-drafts.mjs) -->
-_Atualizado em 2026-07-16T18:28:04.277Z · 8 rascunho(s)._
+_Atualizado em 2026-09-09T22:06:02.811Z · 10 rascunho(s)._
 
 | Arquivo | Objetivo | Alvo | Risco | Validação |
 | --- | --- | --- | --- | --- |
@@ -49,8 +49,10 @@ _Atualizado em 2026-07-16T18:28:04.277Z · 8 rascunho(s)._
 | `2026-06-20_revoke_secdef_from_authenticated.sql` | SECURITY DEFINER ACL — Revogação de authenticated/anon/public | canônico | zero | — |
 | `2026-06-27_quotes_status_allow_cancelled.sql` | liberar `cancelled` no CHECK `valid_quote_status` de `public | canônico | — | — |
 | `2026-07-06_crm_callback_events.sql` | tabela de auditoria/idempotência para callbacks do CRM (Promo Champions V2) recebidos pela edge function `receive-crm-callback` | canônico | — | — |
-| `2026-07-13_secdef_revoke_webhook_locks.sql` | Draft (NÃO executar sem aprovação do PO — CLAUDE.md #Comportamento obrigatório) | ? | — | — |
-| `2026-07-13_secdef_revoke_webhook_locks_ROLLBACK.sql` | cria Antes | ? | — | — |
+| `2026-07-13_secdef_revoke_webhook_locks.sql` | Draft (NÃO executar sem aprovação do PO — CLAUDE.md #Comportamento obrigatório) | canônico | — | — |
+| `2026-07-13_secdef_revoke_webhook_locks_ROLLBACK.sql` | cria Antes | canônico | — | — |
+| `2026-07-23_get_edge_invoke_summary.sql` | Onda 20.3 — RPC read-only agregando métricas de invoke edge. | ? | — | — |
+| `2026-09-09_magazine_rpc_only_contract.sql` | contrair o rollout Magazine v2 para mutações exclusivamente via RPC | canônico | alto se aplicado antes do cliente v2 est | — |
 <!-- END:DRAFT-INDEX -->
 
 ## Regras

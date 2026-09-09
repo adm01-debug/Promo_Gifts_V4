@@ -16,4 +16,5 @@ _(nenhuma)_
 
 | Arquivo/objeto | Agente | Branch/PR | Início (UTC) | Liberação (UTC) | Motivo |
 |---|---|---|---|---|---|
+| `src/pages/magazine/**`, `src/services/magazineService.ts`, testes Magazine, RPCs/triggers/policies `magazine_*`, health/sitemap/CSP e workflows relacionados | Codex | `codex/magazine-hardening-20260909` | 2026-09-09T21:27:01Z | 2026-09-09T22:15:04Z | implementação e validação local concluídas; rollout registrado no plano |
 | `docs/{MAPA_ROTA_DADOS_TESTE,EXECUCAO_PLANO_50_ETAPAS,OWNERSHIP_DOMINIOS,READINESS_LIFECYCLE_FEATURES}_2026-08-29.md` | cline | `claude/audit-fixes-20260830` / PR #1808 | 2026-08-30T20:30:00Z | 2026-08-31T10:41:35Z | consolidada na reconciliação Codex; reserva liberada |

@@ -148,8 +148,8 @@ jobs:
               -H "x-request-id: $REQ_ID" \
               -w "%{http_code}" "$BASE/api/ready" || echo "000")
             STATUS=$(jq -r '.status // empty' /tmp/ready.json 2>/dev/null)
-            if [ "$CODE" = "200" ] && { [ "$STATUS" = "ready" ] || [ "$STATUS" = "degraded" ]; }; then
-              echo "✅ Ready ($STATUS)"
+            if [ "$CODE" = "200" ] && [ "$STATUS" = "ready" ]; then
+              echo "✅ Ready"
               jq -r '.checks | to_entries[] | "  - \(.key): \(.value.status)\(if .value.latency_ms then " (\(.value.latency_ms)ms)" else "" end)"' /tmp/ready.json 2>/dev/null || true
               {
                 echo "## ✅ Smoke check"
@@ -159,7 +159,6 @@ jobs:
                 echo "- correlationId: \`$REQ_ID\`"
               } >> "$GITHUB_STEP_SUMMARY"
               READY_OK=1
-              [ "$STATUS" = "degraded" ] && echo "⚠️  Dependências em estado *degraded* — aceitando, mas vale investigar." >> "$GITHUB_STEP_SUMMARY"
               break
             fi
             echo "Attempt $i: HTTP $CODE status=$STATUS"

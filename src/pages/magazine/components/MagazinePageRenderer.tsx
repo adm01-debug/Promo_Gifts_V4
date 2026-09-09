@@ -28,6 +28,14 @@ function pickReadableInk(bgHex: string): '#1a1a1a' | '#ffffff' {
   return dark > white ? '#1a1a1a' : '#ffffff';
 }
 
+function resolveCategoryHex(category: string | null | undefined): string {
+  return (
+    (category
+      ? MAGAZINE_CATEGORY_META[category as keyof typeof MAGAZINE_CATEGORY_META]?.hex
+      : null) ?? MAGAZINE_CATEGORY_META.technology.hex
+  );
+}
+
 /* Fontes carregadas via @fontsource em magazine.css — sem CDN externa. */
 
 export function MagazinePageRenderer({ magazine, page, fitContainer, totalPages }: Props) {
@@ -54,9 +62,7 @@ export function MagazinePageRenderer({ magazine, page, fitContainer, totalPages 
     // Linhas legadas do BD podem chegar com branding/items nulos — null-safe.
     const fallback = template.defaultColors;
     const b = magazine.branding?.colors ?? fallback;
-    const categoryHex = magazine.branding?.category
-      ? MAGAZINE_CATEGORY_META[magazine.branding?.category].hex
-      : MAGAZINE_CATEGORY_META.technology.hex;
+    const categoryHex = resolveCategoryHex(magazine.branding?.category);
     return {
       '--mag-primary': b.primary || fallback.primary,
       '--mag-secondary': b.secondary || fallback.secondary,
@@ -93,6 +99,7 @@ export function MagazinePageRenderer({ magazine, page, fitContainer, totalPages 
   return (
     <div ref={wrapperRef} className="mag-preview-wrapper mag-scope" style={style}>
       <div
+        className="mag-preview-canvas"
         style={{
           transform: `scale(${scale})`,
           transformOrigin: 'top left',
@@ -176,10 +183,14 @@ function ContactPage({
   title?: string;
   body?: string;
 }) {
+  const ink = pickReadableInk(resolveCategoryHex(magazine.branding?.category));
   return (
     <div
-      className="mag-page relative flex flex-col items-center justify-center overflow-hidden p-24 text-center text-white"
-      style={{ background: 'var(--mag-category-color, var(--mag-brand-green, #2e4a3a))' }}
+      className="mag-page relative flex flex-col items-center justify-center overflow-hidden p-24 text-center"
+      style={{
+        background: 'var(--mag-category-color, var(--mag-brand-green, #2e4a3a))',
+        color: ink,
+      }}
     >
       <div aria-hidden className="mag-dotmap-bg absolute inset-0 opacity-40" />
       <div className="relative max-w-[1350px]">
@@ -218,9 +229,7 @@ function ContactPage({
 function CoverPage({ magazine }: { magazine: Magazine }) {
   const hero = (magazine.items ?? [])[0];
   const heroImage = hero?.productSnapshot.image_url;
-  const categoryHex = magazine.branding?.category
-    ? MAGAZINE_CATEGORY_META[magazine.branding?.category].hex
-    : MAGAZINE_CATEGORY_META.technology.hex;
+  const categoryHex = resolveCategoryHex(magazine.branding?.category);
   const ink = pickReadableInk(categoryHex);
   const isDarkInk = ink === '#1a1a1a';
   return (
@@ -328,10 +337,14 @@ function CoverPage({ magazine }: { magazine: Magazine }) {
  * dotmap pattern + título "OBRIGADO" + info do cliente + contato.
  */
 function BackCoverPage({ magazine }: { magazine: Magazine }) {
+  const ink = pickReadableInk(resolveCategoryHex(magazine.branding?.category));
   return (
     <div
-      className="mag-page relative flex flex-col items-center justify-center gap-10 overflow-hidden p-24 text-center text-white"
-      style={{ background: 'var(--mag-category-color, var(--mag-brand-green, #2e4a3a))' }}
+      className="mag-page relative flex flex-col items-center justify-center gap-10 overflow-hidden p-24 text-center"
+      style={{
+        background: 'var(--mag-category-color, var(--mag-brand-green, #2e4a3a))',
+        color: ink,
+      }}
     >
       <div aria-hidden className="mag-dotmap-bg absolute inset-0 opacity-40" />
       <div className="relative">

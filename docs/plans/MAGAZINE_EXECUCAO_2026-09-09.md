@@ -1,15 +1,43 @@
 # Magazine — execução incremental do plano de 50 etapas
 
-Data: 09/09/2026. Rodadas: `codex/magazine-integrity-20260909` e
-`codex/magazine-wave2-live-20260909`.
-Base da segunda rodada: `e44377ee64b5dd5fd4a83b769496a535375a79b0`.
-Worktree da segunda rodada: `/tmp/promo-magazine-wave2-20260909`.
+Data: 09/09/2026. Rodadas: `codex/magazine-integrity-20260909`,
+`codex/magazine-wave2-live-20260909` e `codex/magazine-hardening-20260909`.
+Base da rodada de hardening: `80cf74ecc8daff4b7da54d6306dc4a9d19bf3abe`
+(`origin/main`, merge do PR #1852).
 
 ## Veredito
 
-**Cinco rodadas de código implementadas e testadas; o plano de 50 etapas NÃO está concluído.** A terceira rodada implementa o modelo editorial estruturado decidido pelo PO; a quarta e a quinta corrigem os achados das revisões finais. Seis RPCs transacionais e suas dez versões forward-only foram autorizadas, aplicadas e validadas no banco canônico. O checklist de homologação integral continua aberto. Não há base para declarar 10/10 ou fidelidade pixel a pixel às cinco imagens; o código ainda depende do merge e do deployment da Vercel.
+**A implementação local da rodada de hardening foi concluída e validada, mas a
+publicação desta rodada ainda não está concluída.** As cinco rodadas anteriores e
+o PR #1852 já estão na `main`; a sexta rodada fecha os callers RPC-first, CAS entre
+usuários, importação local atômica, estados imutáveis, sitemap/ready fail-closed,
+CSP e gates. Os objetos `20260909200000`, `20260909201000` e `20260909210000`
+ainda não estavam no Supabase canônico na última leitura oficial. Por isso, o novo
+cliente não deve entrar em produção antes dessas migrations expansivas.
+
+O checklist de homologação integral continua aberto. Não há base para declarar
+10/10 ou fidelidade pixel a pixel às cinco imagens: os assets foram autorizados
+como aproximação e o ciclo autenticado na produção depende do rollout abaixo.
 
 A instrução explícita do PO autorizou páginas estruturadas (`capa`, `institucional`, `seção`, `produtos`, `contato`), reutilização dos assets atuais e, em seguida, a aplicação das RPCs atômicas. O Supabase canônico recebeu somente seis funções e dez registros de migration forward-only, sem alteração ou remoção de tabela/coluna.
+
+## Rodada de hardening — estado verificável antes da publicação
+
+| Camada | Estado | Evidência |
+|---|---|---|
+| Código | Validado local | 44 arquivos e 785 testes Magazine aprovados; cobertura crítica aprovada; TypeScript, build, SSOT, `actionlint`, sintaxe shell e `git diff --check` verdes. |
+| Browser | Validado local | 11 cenários Chromium aprovados, incluindo 390 px, estados publicado/arquivado somente leitura, A4, retry e páginas estruturadas; nenhum `console.error` inesperado. |
+| PostgreSQL 17 | Validado descartável | Migration expansiva, importação transacional, rollback, replay, remapeamento e contrato restritivo compilaram e passaram em banco efêmero. |
+| Edge Function | Validado local | `deno lint`, `deno check` e 3 testes da importação local aprovados; uma RPC por revista, sem confirmação falsa em resposta parcial. |
+| GitHub | Pendente desta rodada | A branch/PR de hardening deve ser publicada e passar pelos gates antes de merge. |
+| Supabase canônico | Pendente desta rodada | `magazines.edit_version`, `magazine_import_local_v2`, `magazine_create_v2` e `get_sitemap_public` não existiam na leitura live anterior ao rollout. |
+| Produção Vercel | Baseline saudável, hardening pendente | O baseline `80cf74e` respondia 200 em `/api/health`, `/api/ready`, `/magazine` e `/sitemap.xml`; isso não valida o código desta rodada. |
+
+A migration restritiva foi deliberadamente separada em
+`qa/migrations-draft/2026-09-09_magazine_rpc_only_contract.sql`. Ela só pode ser
+promovida/aplicada depois de o novo frontend estar `READY` na Vercel e o smoke
+autenticado comprovar os novos callers. Essa separação evita revogar o caminho
+legado enquanto o cliente anterior ainda atende produção.
 
 ## Evidências executadas
 
@@ -105,11 +133,13 @@ Ambiente de browser: componentes reais, shell mínimo, CRM/autenticação/catál
 
 ## Próxima sequência segura
 
-1. Concluir os gates do PR #1852, integrar na `main` e validar o deployment Vercel; não contornar o gate final obrigatório.
-2. Ativar os quatro callers RPC-first restantes em mudança separada, com fallback, conflitos visíveis, telemetria e teste autenticado; não remover o caminho legado na mesma mudança.
-3. Resolver paginação/contagens do catálogo e CRM, favoritos, variantes e paridade grade/lista, preservando o que esta rodada entregou.
-4. Homologar as páginas estruturadas no shell completo e decidir se os assets aproximados são suficientes ou se haverá fornecimento de fotografias finais.
-5. Reconciliar fontes/registry, testes visuais com IDs obsoletos e capturar as cinco telas no shell completo; não aceitar baselines automaticamente.
+1. Publicar a branch de hardening e abrir PR contra a `main`; executar todos os gates, sem bypass.
+2. Aplicar no Supabase canônico, nesta ordem, as migrations expansivas `20260909200000`, `20260909201000` e `20260909210000`; validar por `pg_catalog`, privilégios e chamada real do sitemap.
+3. Publicar `magazine-import-local` e validar uma importação autenticada, replay idempotente e conflito de versão.
+4. Somente depois do banco expansivo verde, integrar o PR e aguardar deployment Vercel `READY`.
+5. Validar `/api/health`, `/api/ready`, `/sitemap.xml`, `/magazine`, ciclo draft/publicado/arquivado e duas sessões concorrentes.
+6. Promover e aplicar a migration restritiva RPC-only; repetir smoke e auditoria de ACL/RLS.
+7. Manter como backlog explícito — não como falso concluído — favoritos, paginação server-side do CRM, assets fotográficos finais e comparação pixel a pixel no shell completo.
 
 ## Reprodução e artefatos
 

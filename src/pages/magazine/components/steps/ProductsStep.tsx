@@ -103,14 +103,21 @@ export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDe
   const [sort, setSort] = useState<SortMode>('name');
   const [confirmClear, setConfirmClear] = useState(false);
 
-  const { data: products = [], isLoading } = useProducts({
-    search: query,
-    limit: 80,
-    // O backend só ordena por sale_price (nullable), enquanto o card exibe
-    // sale_price ?? price. Não envie uma ordem semanticamente diferente para
-    // a consulta limitada; a ordenação efetiva é feita abaixo no lote obtido.
-    sortBy: sort === 'price-asc' || sort === 'price-desc' ? 'name' : sort,
-  });
+  const {
+    data: products = [],
+    isLoading,
+    isError,
+    refetch,
+  } = useProducts(
+    {
+      search: query,
+      // Sem `limit`, o bridge pagina o catálogo com hard cap e time budget.
+      // Isso permite ordenar por `sale_price ?? price` sobre o conjunto
+      // integral, em vez de prometer uma ordem global para apenas 80 itens.
+      sortBy: sort === 'price-asc' || sort === 'price-desc' ? 'name' : sort,
+    },
+    { throwOnError: false },
+  );
 
   const items = useMemo(() => magazine.items ?? [], [magazine.items]);
 
@@ -389,101 +396,124 @@ export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDe
         {/* Grid de produtos */}
         <div className="max-h-[calc(100vh-420px)] min-h-[420px] overflow-y-auto px-5 py-4">
           <div className="grid grid-cols-2 gap-3 md:grid-cols-3 2xl:grid-cols-4">
-            {filtered.map((p) => {
-              const isIn = alreadyAdded.has(p.id);
-              const isSel = selected.has(p.id);
-              const image = p.primary_image_url || p.image_url;
-              const swatches = (p.colors ?? []).slice(0, 3);
-              const extraSwatches = Math.max(0, (p.colors ?? []).length - swatches.length);
-              return (
-                <div
-                  key={p.id}
-                  className={cn(
-                    'group relative flex flex-col overflow-hidden rounded-lg border bg-card-elevated transition-[border-color,box-shadow] duration-150',
-                    isSel
-                      ? 'border-primary ring-2 ring-primary/40'
-                      : isIn
-                        ? 'border-border opacity-40'
-                        : 'border-border hover:border-border-strong',
-                  )}
-                >
-                  <button
-                    type="button"
-                    onClick={() => !isIn && toggle(p)}
-                    disabled={isIn}
-                    aria-pressed={isSel}
-                    aria-label={`${isSel ? 'Desmarcar' : 'Selecionar'} ${p.name}`}
-                    className="flex flex-col text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary disabled:cursor-not-allowed"
+            {!isError &&
+              filtered.map((p) => {
+                const isIn = alreadyAdded.has(p.id);
+                const isSel = selected.has(p.id);
+                const image = p.primary_image_url || p.image_url;
+                const swatches = (p.colors ?? []).slice(0, 3);
+                const extraSwatches = Math.max(0, (p.colors ?? []).length - swatches.length);
+                return (
+                  <div
+                    key={p.id}
+                    className={cn(
+                      'group relative flex flex-col overflow-hidden rounded-lg border bg-card-elevated transition-[border-color,box-shadow] duration-150',
+                      isSel
+                        ? 'border-primary ring-2 ring-primary/40'
+                        : isIn
+                          ? 'border-border opacity-40'
+                          : 'border-border hover:border-border-strong',
+                    )}
                   >
-                    <div className="relative aspect-square w-full overflow-hidden bg-neutral-100">
-                      {image ? (
-                        <img
-                          src={image}
-                          alt={p.name}
-                          className="h-full w-full object-contain p-4"
-                          loading="lazy"
-                        />
-                      ) : null}
-                      <span
-                        className={cn(
-                          'absolute right-2.5 top-2.5 flex h-7 w-7 items-center justify-center rounded-full border-2 transition-colors duration-150',
-                          isSel
-                            ? 'border-primary bg-primary text-primary-foreground'
-                            : 'border-border-strong bg-background/85 text-transparent',
-                        )}
-                        aria-hidden
-                      >
-                        <Check className="h-4 w-4" />
-                      </span>
-                      {p.hasPersonalization && (
-                        <span className="absolute bottom-2 left-2 inline-flex h-5 items-center gap-1 rounded-sm bg-background/85 px-1.5 text-[10px] font-medium text-foreground">
-                          <Sparkles className="h-2.5 w-2.5" aria-hidden /> Personalizável
-                        </span>
-                      )}
-                    </div>
-                    <div className="px-3 pt-2.5">
-                      <div className="line-clamp-1 text-[14px] font-semibold text-foreground">
-                        {p.name}
-                      </div>
-                      <div className="text-[12px] text-muted-foreground">SKU {p.sku}</div>
-                    </div>
-                  </button>
-                  <div className="flex items-center justify-between gap-2 px-3 pb-3 pt-2">
-                    <span className="text-[14px] font-semibold text-primary">
-                      {formatPrice(productPrice(p))}
-                    </span>
-                    <span className="flex items-center gap-1" aria-hidden>
-                      {swatches.map((c) => (
-                        <span
-                          key={c.name}
-                          className="h-3.5 w-3.5 rounded-full ring-1 ring-border-strong"
-                          style={{ background: c.hex }}
-                          title={c.name}
-                        />
-                      ))}
-                      {extraSwatches > 0 && (
-                        <span className="text-[10px] text-muted-foreground">+{extraSwatches}</span>
-                      )}
-                    </span>
                     <button
                       type="button"
-                      onClick={() => handleQuickAdd(p)}
-                      disabled={isIn || isAdding}
-                      aria-label={`Adicionar ${p.name} à revista`}
-                      className="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-background text-foreground transition-colors duration-150 hover:border-primary hover:bg-primary/10 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
+                      onClick={() => !isIn && toggle(p)}
+                      disabled={isIn}
+                      aria-pressed={isSel}
+                      aria-label={`${isSel ? 'Desmarcar' : 'Selecionar'} ${p.name}`}
+                      className="flex flex-col text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary disabled:cursor-not-allowed"
                     >
-                      <Plus className="h-4 w-4" aria-hidden />
+                      <div className="relative aspect-square w-full overflow-hidden bg-neutral-100">
+                        {image ? (
+                          <img
+                            src={image}
+                            alt={p.name}
+                            className="h-full w-full object-contain p-4"
+                            loading="lazy"
+                          />
+                        ) : null}
+                        <span
+                          className={cn(
+                            'absolute right-2.5 top-2.5 flex h-7 w-7 items-center justify-center rounded-full border-2 transition-colors duration-150',
+                            isSel
+                              ? 'border-primary bg-primary text-primary-foreground'
+                              : 'border-border-strong bg-background/85 text-transparent',
+                          )}
+                          aria-hidden
+                        >
+                          <Check className="h-4 w-4" />
+                        </span>
+                        {p.hasPersonalization && (
+                          <span className="absolute bottom-2 left-2 inline-flex h-5 items-center gap-1 rounded-sm bg-background/85 px-1.5 text-[10px] font-medium text-foreground">
+                            <Sparkles className="h-2.5 w-2.5" aria-hidden /> Personalizável
+                          </span>
+                        )}
+                      </div>
+                      <div className="px-3 pt-2.5">
+                        <div className="line-clamp-1 text-[14px] font-semibold text-foreground">
+                          {p.name}
+                        </div>
+                        <div className="text-[12px] text-muted-foreground">SKU {p.sku}</div>
+                      </div>
                     </button>
+                    <div className="flex items-center justify-between gap-2 px-3 pb-3 pt-2">
+                      <span className="text-[14px] font-semibold text-primary">
+                        {formatPrice(productPrice(p))}
+                      </span>
+                      <span className="flex items-center gap-1" aria-hidden>
+                        {swatches.map((c) => (
+                          <span
+                            key={c.name}
+                            className="h-3.5 w-3.5 rounded-full ring-1 ring-border-strong"
+                            style={{ background: c.hex }}
+                            title={c.name}
+                          />
+                        ))}
+                        {extraSwatches > 0 && (
+                          <span className="text-[10px] text-muted-foreground">
+                            +{extraSwatches}
+                          </span>
+                        )}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleQuickAdd(p)}
+                        disabled={isIn || isAdding}
+                        aria-label={`Adicionar ${p.name} à revista`}
+                        className="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-background text-foreground transition-colors duration-150 hover:border-primary hover:bg-primary/10 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        <Plus className="h-4 w-4" aria-hidden />
+                      </button>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-            {!isLoading && filtered.length === 0 && (
+                );
+              })}
+            {isError && (
+              <div
+                role="alert"
+                className="col-span-full rounded-md border border-destructive/30 bg-destructive/5 p-8 text-center text-[13px] text-foreground"
+              >
+                <p>Não foi possível carregar o catálogo de produtos.</p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="mt-3"
+                  onClick={() => {
+                    void refetch();
+                  }}
+                >
+                  Tentar novamente
+                </Button>
+              </div>
+            )}
+            {!isError && !isLoading && filtered.length === 0 && (
               <div className="col-span-full rounded-md border border-dashed border-border-strong p-8 text-center text-[13px] text-muted-foreground">
                 Nenhum produto corresponde aos filtros.
               </div>
             )}
-            {isLoading &&
+            {!isError &&
+              isLoading &&
               filtered.length === 0 &&
               Array.from({ length: 8 }, (_, i) => (
                 <div
@@ -503,9 +533,11 @@ export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDe
 
         <footer className="flex items-center justify-between gap-3 border-t border-border px-5 py-3">
           <span className="text-[12px] text-muted-foreground" aria-live="polite">
-            {isLoading
-              ? 'Carregando…'
-              : `${filtered.length} produto${filtered.length === 1 ? '' : 's'} · ${selected.size} selecionado${selected.size === 1 ? '' : 's'}`}
+            {isError
+              ? 'Catálogo indisponível'
+              : isLoading
+                ? 'Carregando…'
+                : `${filtered.length} produto${filtered.length === 1 ? '' : 's'} · ${selected.size} selecionado${selected.size === 1 ? '' : 's'}`}
           </span>
           <Button
             size="sm"
