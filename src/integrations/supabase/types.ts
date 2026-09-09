@@ -62162,6 +62162,14 @@ export type Database = {
       }
       lookup_request_id: { Args: { _request_id: string }; Returns: Json }
       m_to_cm: { Args: { p_m: number }; Returns: number }
+      magazine_add_items_atomic: {
+        Args: {
+          p_expected_updated_at: string
+          p_items: Json
+          p_magazine_id: string
+        }
+        Returns: Json
+      }
       magazine_auto_archive_stale_drafts: {
         Args: { _ttl_days?: number }
         Returns: number
@@ -62181,11 +62189,39 @@ export type Database = {
         Args: { _ttl_days?: number }
         Returns: number
       }
+      magazine_duplicate_atomic: {
+        Args: { p_source_magazine_id: string; p_title?: string }
+        Returns: Json
+      }
       magazine_ensure_view_event_partitions: {
         Args: { _months_ahead?: number }
         Returns: number
       }
+      magazine_remove_items_atomic: {
+        Args: {
+          p_expected_updated_at: string
+          p_item_ids: string[]
+          p_magazine_id: string
+        }
+        Returns: Json
+      }
+      magazine_reorder_items_atomic: {
+        Args: {
+          p_expected_updated_at: string
+          p_magazine_id: string
+          p_ordered_item_ids: string[]
+        }
+        Returns: Json
+      }
       magazine_rollup_view_counts: { Args: never; Returns: number }
+      magazine_update_metadata_atomic: {
+        Args: {
+          p_expected_updated_at: string
+          p_magazine_id: string
+          p_patch: Json
+        }
+        Returns: Json
+      }
       magic_up_calculate_score: {
         Args: { _generation_id: string }
         Returns: number

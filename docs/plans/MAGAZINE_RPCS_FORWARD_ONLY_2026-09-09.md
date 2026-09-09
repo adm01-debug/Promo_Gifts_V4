@@ -1,8 +1,8 @@
-# Magazine — pacote RPC forward-only preparado
+# Magazine — pacote RPC forward-only aplicado e validado
 
-Data: 09/09/2026. Estado: **preparado e testado em PostgreSQL 17 descartável; não aplicado**.
+Data: 09/09/2026. Estado: **aplicado no Supabase canônico e validado independentemente**.
 
-Este pacote atende à autorização do PO para preparar operações atômicas de Magazine. Ele não cria tabelas, não altera colunas, não apaga dados e não foi executado no projeto canônico `doufsxqlfjyuvxuezpln`.
+Este pacote atende à autorização posterior do PO para aplicar as operações atômicas de Magazine. Ele não cria tabelas, não altera colunas e não apaga dados. As cinco funções foram aplicadas em uma transação no projeto canônico `doufsxqlfjyuvxuezpln` pelo run [34393079315](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/34393079315).
 
 ## Inventário
 
@@ -30,15 +30,17 @@ Este pacote atende à autorização do PO para preparar operações atômicas de
 3. A segunda operação adquire o lock depois, encontra `T1 != T0` e falha com conflito (`40001`) ou retorna `conflict=true` no patch de metadados.
 4. O cliente deve recarregar, apresentar o conflito e nunca sobrescrever silenciosamente a edição vencedora.
 
-## Sequência de rollout futuro
+## Execução canônica
 
-1. Repetir o dry-run PostgreSQL 17 já aprovado quando o pacote mudar.
-2. Testar owner, admin, terceiro autenticado, `anon`, revista publicada/arquivada, IDs inválidos, lotes-limite e concorrência real em duas conexões.
-3. Conferir assinaturas e ACLs via `pg_catalog`.
-4. Obter autorização explícita do PO para aplicação no canônico.
-5. Aplicar as cinco migrations na ordem dos timestamps.
-6. Validar funções e grants; só então habilitar o cliente RPC-first.
-7. Manter o caminho legado disponível durante a janela de observação e removê-lo em mudança separada.
+1. Preflight canônico: zero das cinco funções e zero das cinco versões no histórico.
+2. Aplicação: as cinco migrations e seus registros foram executados em uma única transação pela Management API, fixada no projeto canônico.
+3. Postflight do executor: cinco funções, cinco versões e zero grants de execução para `anon`.
+4. Validação independente pelo MCP oficial somente leitura: PostgreSQL 17.6, owner `postgres`, `SECURITY DEFINER`, `search_path=public, pg_temp`, retorno `jsonb`, assinaturas corretas e execução apenas para `authenticated` e `service_role`.
+5. O linter canônico executado no mesmo run passou.
+
+## Próxima etapa de rollout
+
+O cliente RPC-first permanece deliberadamente desligado. Sua ativação deve ser uma mudança separada, com fallback durante a janela de observação, tratamento explícito de `40001`/conflito, teste autenticado e telemetria. O caminho legado só poderá ser removido depois dessa homologação.
 
 ## Reversão
 
@@ -52,4 +54,4 @@ npm run typecheck
 node scripts/validate-supabase-config.mjs
 ```
 
-Além do teste estático, as cinco funções foram compiladas contra o schema mínimo em `tests/magazine/sql/magazine_rpc_schema.sql`, e `magazine_rpc_scenarios.sql` terminou com `MAGAZINE_RPC_SCENARIOS_OK`. O banco e o container foram descartados após o teste. Isso ainda não substitui homologação no schema completo nem autoriza produção.
+Além do teste estático, as cinco funções foram compiladas contra o schema mínimo em `tests/magazine/sql/magazine_rpc_schema.sql`, e `magazine_rpc_scenarios.sql` terminou com `MAGAZINE_RPC_SCENARIOS_OK`. O banco e o container foram descartados após o teste. A aplicação canônica foi autorizada e validada estruturalmente; mutações com dados reais de produção não foram executadas.
