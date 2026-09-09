@@ -17,7 +17,12 @@ import { PG_HELP, PG_INPUT } from '../pg';
 interface Props {
   clientName: string | null;
   clientLogoUrl: string | null;
-  onChange: (patch: { clientName?: string | null; clientLogoUrl?: string | null }) => void;
+  clientCrmId?: string | null;
+  onChange: (patch: {
+    clientCrmId?: string | null;
+    clientName?: string | null;
+    clientLogoUrl?: string | null;
+  }) => void;
 }
 
 interface Row {
@@ -28,7 +33,7 @@ interface Row {
   ramo: string | null;
 }
 
-export function MagazineClientPicker({ clientName, clientLogoUrl, onChange }: Props) {
+export function MagazineClientPicker({ clientName, clientLogoUrl, clientCrmId, onChange }: Props) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [debounced, setDebounced] = useState('');
@@ -61,21 +66,22 @@ export function MagazineClientPicker({ clientName, clientLogoUrl, onChange }: Pr
   const filtered = useMemo(() => {
     if (!debounced) return companies.slice(0, 40);
     const q = debounced.toLowerCase();
+    const digits = q.replace(/\D/g, '');
     return companies
       .filter(
         (c) =>
           c.name.toLowerCase().includes(q) ||
-          (c.cnpj ?? '').replace(/\D/g, '').includes(q.replace(/\D/g, '')),
+          (digits.length > 0 && (c.cnpj ?? '').replace(/\D/g, '').includes(digits)),
       )
       .slice(0, 40);
   }, [companies, debounced]);
 
   const select = (row: Row) => {
-    onChange({ clientName: row.name, clientLogoUrl: row.logo_url });
+    onChange({ clientCrmId: row.id, clientName: row.name, clientLogoUrl: row.logo_url });
     setOpen(false);
   };
 
-  const clear = () => onChange({ clientName: null, clientLogoUrl: null });
+  const clear = () => onChange({ clientCrmId: null, clientName: null, clientLogoUrl: null });
 
   return (
     <div className="space-y-2">
@@ -140,7 +146,7 @@ export function MagazineClientPicker({ clientName, clientLogoUrl, onChange }: Pr
                   </div>
                 )}
                 {filtered.map((c) => {
-                  const active = c.name === clientName;
+                  const active = c.id === clientCrmId;
                   return (
                     <button
                       key={c.id}

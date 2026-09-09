@@ -4,7 +4,7 @@
 > Este arquivo é referenciado pelo gate `check-allowlist-memory-crosscheck` (CI).
 > Toda entrada em allowlist DEVE ter contrapartida documentada aqui — caso contrário, o gate falha.
 
-Última atualização: 2026-09-04
+Última atualização: 2026-09-09
 
 ---
 
@@ -35,6 +35,7 @@ aceito. As famílias já classificadas são:
 - **Painel admin de saúde** (`check_hardening_status`, `check_telemetry_regression`, `get_app_health_summary`, `get_platform_failure_metrics`, `get_auto_test_job_status`, `lookup_request_id`) — leitura agregada com checagem interna de role.
 - **Execução e persistência de smoke tests** (`fn_run_and_persist_smoke_tests`) — executa bateria de smoke tests e persiste cada resultado em `smoke_test_runs`; **não é read-only**. SECURITY DEFINER deliberado (PR #1825, 2026-09-03): guard interno com `is_admin_or_above` bloqueia anon e authenticated não-admin; DEFINER necessário porque `fn_run_smoke_tests` não tem EXECUTE para `authenticated`; EXECUTE de anon revogado (20260903092000).
 - **Bootstrap de usuário** (`ensure_default_favorite_list`, `log_user_logout`, `restore_seller_cart`) — self-scope via `auth.uid()`.
+- **Edição atômica de Magazine** (`magazine_add_items_atomic`, `magazine_remove_items_atomic`, `magazine_reorder_items_atomic`, `magazine_duplicate_atomic`, `magazine_update_metadata_atomic`, `magazine_publish_atomic`) — exigem `auth.uid()`, validam owner/admin internamente, mantêm `search_path` fixo e não concedem `EXECUTE` a `anon`/`PUBLIC`; os fluxos mutáveis usam lock e/ou CAS conforme a operação.
 - **Agregados públicos anônimos** (`get_collections_weekly_count`, `get_favorites_weekly_count`, `get_top_collected_products`, `get_top_compared_products`, `get_top_favorited_products`, `get_industry_benchmark_stats`, `get_industry_top_products`, `get_bundle_suggestions`, `get_client_seasonality`, `get_client_top_products`, `get_user_recent_comparisons`) — não expõem PII; agregados apenas.
 - **Settings admin** (`get_connection_failure_window_minutes`, `get_connections_auto_test_interval`, `set_connection_failure_window_minutes`, `set_connections_auto_test_interval`) — checam `is_admin()` internamente.
 - **Batch admin** (`execute_role_migration_batch`, `repair_ownership_orphans`) — checam `is_admin_strict()` internamente, com auditoria.
@@ -123,6 +124,12 @@ exige atualizar este inventário no mesmo PR.
 - `public.is_dnd_active(p_user_id uuid)` — Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados.
 - `public.is_org_member(_user_id uuid, _org_id uuid)` — RBAC helper (organizações)
 - `public.is_org_owner_or_admin(org_id uuid)` — Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados.
+- `public.magazine_add_items_atomic(p_magazine_id uuid, p_expected_updated_at timestamp with time zone, p_items jsonb)` — RPC transacional de Magazine confirmada no canônico em 2026-09-09: exige ator autenticado, owner/admin, revista em rascunho, lock, CAS e payload válido; `anon`/`PUBLIC` revogados.
+- `public.magazine_duplicate_atomic(p_source_magazine_id uuid, p_title text)` — RPC transacional de Magazine confirmada no canônico em 2026-09-09: exige ator autenticado e owner/admin; a cópia pertence ao ator, nasce como rascunho e remapeia referências internas; `anon`/`PUBLIC` revogados.
+- `public.magazine_publish_atomic(p_magazine_id uuid)` — RPC transacional de Magazine confirmada no canônico em 2026-09-09: exige ator autenticado e owner/admin, usa lock e valida conteúdo e token público na mesma transação; `anon`/`PUBLIC` revogados.
+- `public.magazine_remove_items_atomic(p_magazine_id uuid, p_expected_updated_at timestamp with time zone, p_item_ids uuid[])` — RPC transacional de Magazine confirmada no canônico em 2026-09-09: exige ator autenticado, owner/admin, rascunho, lock, CAS e escopo integral por revista; `anon`/`PUBLIC` revogados.
+- `public.magazine_reorder_items_atomic(p_magazine_id uuid, p_expected_updated_at timestamp with time zone, p_ordered_item_ids uuid[])` — RPC transacional de Magazine confirmada no canônico em 2026-09-09: exige ator autenticado, owner/admin, rascunho, lock, CAS e permutação completa sem duplicatas; `anon`/`PUBLIC` revogados.
+- `public.magazine_update_metadata_atomic(p_magazine_id uuid, p_expected_updated_at timestamp with time zone, p_patch jsonb)` — RPC transacional de Magazine confirmada no canônico em 2026-09-09: exige ator autenticado, owner/admin, rascunho, lock, CAS e patch allowlisted/null-safe; `anon`/`PUBLIC` revogados.
 - `public.mcp_kv_get(p_secret text, p_key text)` — Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados.
 - `public.org_has_any_members(_org_id uuid)` — Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados.
 - `public.registrar_entrada_estoque(p_variant_sku character varying, p_quantity integer, p_unit_cost numeric, p_supplier_name character varying, p_document_number character varying, p_notes text, p_user_id uuid)` — Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados.

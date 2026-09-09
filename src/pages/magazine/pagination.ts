@@ -10,8 +10,295 @@
  * - Template fallback when templateId not found
  */
 
-import type { Magazine, MagazineItem, MagazinePage } from '@/types/magazine';
+import type {
+  Magazine,
+  MagazineItem,
+  MagazinePage,
+  MagazinePageDefinition,
+  MagazinePageOrderV2,
+  MagazineStructuredPageKind,
+} from '@/types/magazine';
 import { getTemplate } from './components/templates/TemplateRegistry';
+
+const STRUCTURED_PAGE_KINDS = new Set<MagazineStructuredPageKind>([
+  'back-cover',
+  'contact',
+  'cover',
+  'institutional',
+  'products',
+  'section',
+]);
+
+let pageIdSequence = 0;
+
+function newPageId(kind: MagazineStructuredPageKind): string {
+  const randomId = globalThis.crypto?.randomUUID?.();
+  if (randomId) return `${kind}-${randomId}`;
+  pageIdSequence += 1;
+  return `${kind}-${Date.now().toString(36)}-${pageIdSequence.toString(36)}`;
+}
+
+export function createMagazinePageDefinition(
+  kind: MagazineStructuredPageKind,
+  seed: Partial<MagazinePageDefinition> = {},
+): MagazinePageDefinition {
+  return {
+    id: seed.id?.slice(0, 120) || newPageId(kind),
+    kind,
+    ...(seed.title ? { title: seed.title.slice(0, 120) } : {}),
+    ...(seed.body ? { body: seed.body.slice(0, 800) } : {}),
+    ...(Array.isArray(seed.itemIds)
+      ? { itemIds: [...new Set(seed.itemIds.filter((id) => typeof id === 'string'))].slice(0, 500) }
+      : {}),
+  };
+}
+
+export function isMagazinePageOrderV2(value: unknown): value is MagazinePageOrderV2 {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const candidate = value as Partial<MagazinePageOrderV2>;
+  if (candidate.version !== 2 || !Array.isArray(candidate.pages) || candidate.pages.length > 200)
+    return false;
+  const validPages = candidate.pages.every(
+    (page) =>
+      page !== null &&
+      typeof page === 'object' &&
+      typeof page.id === 'string' &&
+      page.id.length > 0 &&
+      page.id.length <= 120 &&
+      STRUCTURED_PAGE_KINDS.has(page.kind) &&
+      (page.title === undefined || (typeof page.title === 'string' && page.title.length <= 120)) &&
+      (page.body === undefined || (typeof page.body === 'string' && page.body.length <= 800)) &&
+      (page.itemIds === undefined ||
+        (Array.isArray(page.itemIds) &&
+          page.itemIds.length <= 500 &&
+          page.itemIds.every((id) => typeof id === 'string') &&
+          new Set(page.itemIds).size === page.itemIds.length)),
+  );
+  if (!validPages || candidate.pages.length < 2) return false;
+  const ids = candidate.pages.map((page) => page.id);
+  const closing = candidate.pages.at(-1)?.kind;
+  return (
+    new Set(ids).size === ids.length &&
+    candidate.pages[0]?.kind === 'cover' &&
+    (closing === 'contact' || closing === 'back-cover') &&
+    candidate.pages.filter((page) => page.kind === 'cover').length === 1 &&
+    candidate.pages.filter((page) => page.kind === 'contact' || page.kind === 'back-cover')
+      .length === 1
+  );
+}
+
+function paginateAutomatic(magazine: Magazine, perPage: number): MagazinePage[] {
+  const rawItems = Array.isArray(magazine.items) ? magazine.items : [];
+  const items = [...rawItems].sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+  const pages: MagazinePage[] = [{ index: 0, kind: 'cover', items: [] }];
+
+  if (magazine.content?.groupByCategory) {
+    const grouped = new Map<string, MagazineItem[]>();
+    for (const item of items) {
+      const key = item.productSnapshot?.category_name ?? 'Outros';
+      const group = grouped.get(key) ?? [];
+      group.push(item);
+      grouped.set(key, group);
+    }
+    for (const [category, list] of grouped) {
+      pages.push({ index: pages.length, kind: 'section', sectionTitle: category, items: [] });
+      for (let index = 0; index < list.length; index += perPage) {
+        pages.push({
+          index: pages.length,
+          kind: 'products',
+          items: list.slice(index, index + perPage),
+        });
+      }
+    }
+  } else {
+    for (let index = 0; index < items.length; index += perPage) {
+      pages.push({
+        index: pages.length,
+        kind: 'products',
+        items: items.slice(index, index + perPage),
+      });
+    }
+  }
+
+  pages.push({ index: pages.length, kind: 'back-cover', items: [] });
+  return pages;
+}
+
+export function createStructuredPageOrder(magazine: Magazine): MagazinePageOrderV2 {
+  const template = getTemplate(magazine.templateId);
+  const automaticPages = paginateAutomatic(magazine, Math.max(1, template?.productsPerPage ?? 2));
+  const pages: MagazinePageDefinition[] = [];
+
+  for (const page of automaticPages) {
+    if (page.kind === 'cover') {
+      pages.push(createMagazinePageDefinition('cover', { title: magazine.title }));
+      pages.push(
+        createMagazinePageDefinition('institutional', {
+          title: 'Sobre nós',
+          body: magazine.content?.introText ?? '',
+        }),
+      );
+      continue;
+    }
+    if (page.kind === 'back-cover') {
+      pages.push(
+        createMagazinePageDefinition('contact', {
+          title: 'Vamos conversar?',
+        }),
+      );
+      continue;
+    }
+    pages.push(
+      createMagazinePageDefinition(page.kind, {
+        title: page.sectionTitle,
+        itemIds: page.items.map((item) => item.id),
+      }),
+    );
+  }
+
+  return { version: 2, pages };
+}
+
+/**
+ * Redistribui a ordem global de produtos pelas páginas estruturadas existentes.
+ * Assim, o DnD continua efetivo depois da conversão para v2 e páginas extras são
+ * criadas quando o template não comporta todos os itens.
+ */
+export function reorderStructuredPageItems(
+  magazine: Magazine,
+  orderedItemIds: string[],
+): MagazinePageOrderV2 | null {
+  if (!isMagazinePageOrderV2(magazine.pageOrder)) return null;
+  const knownIds = new Set((magazine.items ?? []).map((item) => item.id));
+  const seen = new Set<string>();
+  const normalized = orderedItemIds.filter((id) => {
+    if (!knownIds.has(id) || seen.has(id)) return false;
+    seen.add(id);
+    return true;
+  });
+  for (const item of [...(magazine.items ?? [])].sort((a, b) => a.position - b.position)) {
+    if (!seen.has(item.id)) normalized.push(item.id);
+  }
+
+  const perPage = Math.max(1, getTemplate(magazine.templateId)?.productsPerPage ?? 2);
+  let cursor = 0;
+  let foundProductPage = false;
+  const pages = magazine.pageOrder.pages.map((page) => {
+    if (page.kind !== 'products') return page;
+    foundProductPage = true;
+    const itemIds = normalized.slice(cursor, cursor + perPage);
+    cursor += itemIds.length;
+    return createMagazinePageDefinition('products', { ...page, itemIds });
+  });
+
+  const additional: MagazinePageDefinition[] = [];
+  while (cursor < normalized.length) {
+    additional.push(
+      createMagazinePageDefinition('products', {
+        itemIds: normalized.slice(cursor, cursor + perPage),
+      }),
+    );
+    cursor += perPage;
+  }
+  if (!foundProductPage && normalized.length > 0 && additional.length === 0) {
+    additional.push(createMagazinePageDefinition('products', { itemIds: normalized }));
+  }
+  if (additional.length > 0) {
+    const closingIndex = pages.findIndex(
+      (page) => page.kind === 'contact' || page.kind === 'back-cover',
+    );
+    pages.splice(closingIndex < 0 ? pages.length : closingIndex, 0, ...additional);
+  }
+  return { version: 2, pages };
+}
+
+function paginateStructured(
+  magazine: Magazine,
+  order: MagazinePageOrderV2,
+  perPage: number,
+): MagazinePage[] {
+  const sortedItems = [...(Array.isArray(magazine.items) ? magazine.items : [])].sort(
+    (a, b) => (a.position ?? 0) - (b.position ?? 0),
+  );
+  const itemById = new Map(sortedItems.map((item) => [item.id, item]));
+  const assigned = new Set<string>();
+  const definitions = [...order.pages];
+
+  if (!definitions.some((page) => page.kind === 'cover')) {
+    definitions.unshift(createMagazinePageDefinition('cover', { title: magazine.title }));
+  }
+  if (!definitions.some((page) => page.kind === 'contact' || page.kind === 'back-cover')) {
+    definitions.push(
+      createMagazinePageDefinition('contact', {
+        title: 'Vamos conversar?',
+        body: magazine.content?.closingText ?? '',
+      }),
+    );
+  }
+
+  const pages: MagazinePage[] = [];
+  for (const definition of definitions) {
+    if (definition.kind === 'products') {
+      const referencedItems = (definition.itemIds ?? [])
+        .map((itemId) => itemById.get(itemId))
+        .filter((item): item is MagazineItem => Boolean(item))
+        .filter((item) => !assigned.has(item.id));
+      for (const item of referencedItems) assigned.add(item.id);
+
+      // A page order survives template changes. Reflow it at render time so a
+      // 3x3 page switched to Vogue never hides items beyond Vogue's capacity.
+      // Empty definitions are omitted after item removal instead of rendering
+      // blank pages in preview, public view and PDF.
+      for (let offset = 0; offset < referencedItems.length; offset += perPage) {
+        pages.push({
+          index: pages.length,
+          pageId: offset === 0 ? definition.id : `${definition.id}-part-${offset / perPage + 1}`,
+          kind: 'products',
+          items: referencedItems.slice(offset, offset + perPage),
+        });
+      }
+      continue;
+    }
+
+    const isEditorial = definition.kind === 'institutional' || definition.kind === 'contact';
+    const configuredClosing = magazine.content?.closingText;
+    pages.push({
+      index: pages.length,
+      pageId: definition.id,
+      kind: definition.kind,
+      items: [],
+      ...(definition.kind === 'section' ? { sectionTitle: definition.title || 'Nova seção' } : {}),
+      ...(isEditorial
+        ? {
+            title:
+              definition.title ||
+              (definition.kind === 'institutional' ? 'Sobre nós' : 'Vamos conversar?'),
+            body:
+              definition.kind === 'contact'
+                ? configuredClosing !== undefined
+                  ? configuredClosing
+                  : (definition.body ?? '')
+                : definition.body || magazine.content?.introText || '',
+          }
+        : {}),
+    });
+  }
+
+  const unassigned = sortedItems.filter((item) => !assigned.has(item.id));
+  const generated: MagazinePage[] = [];
+  for (let index = 0; index < unassigned.length; index += perPage) {
+    generated.push({
+      index: 0,
+      kind: 'products',
+      items: unassigned.slice(index, index + perPage),
+    });
+  }
+  const closingIndex = pages.findIndex(
+    (page) => page.kind === 'contact' || page.kind === 'back-cover',
+  );
+  pages.splice(closingIndex < 0 ? pages.length : closingIndex, 0, ...generated);
+  return pages.map((page, index) => ({ ...page, index }));
+}
 
 /**
  * paginateMagazine — deterministic, pure function.
@@ -33,49 +320,10 @@ export function paginateMagazine(magazine: Magazine | null | undefined): Magazin
   const template = getTemplate(magazine.templateId);
   const perPage = Math.max(1, template?.productsPerPage ?? 2);
 
-  // GAP #6 FIX: defensive array check + immutable sort (spread first)
-  const rawItems = Array.isArray(magazine.items) ? magazine.items : [];
-  const items = [...rawItems].sort(
-    (a, b) => (a.position ?? 0) - (b.position ?? 0) // FIX: null position → 0
-  );
-
-  const pages: MagazinePage[] = [
-    { index: 0, kind: 'cover', items: [] },
-  ];
-
-  // GAP #3 FIX: optional chaining on content — magazine.content may be undefined
-  // during hydration or if created with a legacy schema.
-  if (magazine.content?.groupByCategory) {
-    const grouped = new Map<string, MagazineItem[]>();
-    for (const it of items) {
-      // FIX: optional chaining on productSnapshot — defensive for partial saves
-      const key = it.productSnapshot?.category_name ?? 'Outros';
-      const arr = grouped.get(key) ?? [];
-      arr.push(it);
-      grouped.set(key, arr);
-    }
-    for (const [category, list] of grouped) {
-      pages.push({ index: pages.length, kind: 'section', sectionTitle: category, items: [] });
-      for (let i = 0; i < list.length; i += perPage) {
-        pages.push({
-          index: pages.length,
-          kind: 'products',
-          items: list.slice(i, i + perPage),
-        });
-      }
-    }
-  } else {
-    for (let i = 0; i < items.length; i += perPage) {
-      pages.push({
-        index: pages.length,
-        kind: 'products',
-        items: items.slice(i, i + perPage),
-      });
-    }
+  if (isMagazinePageOrderV2(magazine.pageOrder)) {
+    return paginateStructured(magazine, magazine.pageOrder, perPage);
   }
-
-  pages.push({ index: pages.length, kind: 'back-cover', items: [] });
-  return pages;
+  return paginateAutomatic(magazine, perPage);
 }
 
 /**

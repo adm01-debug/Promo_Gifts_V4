@@ -161,7 +161,7 @@
     },
     {
       "fn": "public.fn_run_and_persist_smoke_tests()",
-      "reason": "SECURITY DEFINER deliberado (2026-09-03, PR #1825): wrapper de smoke tests com guard interno de autorização (role do JWT + is_admin_or_above com coalesce; bloqueia anon e authenticated não-admin — validado em produção, not authorized). DEFINER é necessário porque a inner fn_run_smoke_tests não tem EXECUTE para authenticated; sem ele, admin passava no guard e quebrava na chamada interna. EXECUTE de anon revogado (20260903092000)."
+      "reason": "SECURITY DEFINER deliberado e revalidado via pg_catalog em 2026-09-09: search_path=public, owner postgres e EXECUTE exclusivamente para postgres/service_role; anon e authenticated não possuem execução. Mantido para persistência interna dos smoke tests."
     },
     {
       "fn": "public.fn_rupture_by_level(p_nivel text, p_limit integer, p_offset integer, p_preferred boolean)",
@@ -250,6 +250,30 @@
     {
       "fn": "public.is_org_owner_or_admin(org_id uuid)",
       "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.magazine_add_items_atomic(p_magazine_id uuid, p_expected_updated_at timestamp with time zone, p_items jsonb)",
+      "reason": "RPC transacional de Magazine (2026-09-09): SECURITY DEFINER deliberado com auth.uid obrigatório, autorização owner/admin, revista draft, CAS de updated_at, validação do payload e search_path fixo; anon/PUBLIC revogados."
+    },
+    {
+      "fn": "public.magazine_duplicate_atomic(p_source_magazine_id uuid, p_title text)",
+      "reason": "RPC transacional de Magazine (2026-09-09): SECURITY DEFINER deliberado com auth.uid obrigatório, autorização owner/admin, cópia sempre atribuída ao ator como draft e search_path fixo; anon/PUBLIC revogados."
+    },
+    {
+      "fn": "public.magazine_publish_atomic(p_magazine_id uuid)",
+      "reason": "RPC transacional de Magazine (2026-09-09): SECURITY DEFINER deliberado com auth.uid obrigatório, autorização owner/admin, lock, validação de título/itens e confirmação do token emitido pelo trigger na mesma transação; anon/PUBLIC revogados."
+    },
+    {
+      "fn": "public.magazine_remove_items_atomic(p_magazine_id uuid, p_expected_updated_at timestamp with time zone, p_item_ids uuid[])",
+      "reason": "RPC transacional de Magazine (2026-09-09): SECURITY DEFINER deliberado com auth.uid obrigatório, autorização owner/admin, revista draft, CAS de updated_at, escopo por magazine_id e search_path fixo; anon/PUBLIC revogados."
+    },
+    {
+      "fn": "public.magazine_reorder_items_atomic(p_magazine_id uuid, p_expected_updated_at timestamp with time zone, p_ordered_item_ids uuid[])",
+      "reason": "RPC transacional de Magazine (2026-09-09): SECURITY DEFINER deliberado com auth.uid obrigatório, autorização owner/admin, revista draft, CAS, conjunto completo sem duplicatas e search_path fixo; anon/PUBLIC revogados."
+    },
+    {
+      "fn": "public.magazine_update_metadata_atomic(p_magazine_id uuid, p_expected_updated_at timestamp with time zone, p_patch jsonb)",
+      "reason": "RPC transacional de Magazine (2026-09-09): SECURITY DEFINER deliberado com auth.uid obrigatório, autorização owner/admin, revista draft, CAS, whitelist/validação null-safe do patch e search_path fixo; anon/PUBLIC revogados."
     },
     {
       "fn": "public.mcp_kv_get(p_secret text, p_key text)",

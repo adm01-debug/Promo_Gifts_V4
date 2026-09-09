@@ -23,6 +23,7 @@ const store: Store = {
 };
 
 let uidCounter = 0;
+let rejectItemInsert = false;
 function uid(prefix = 'r') {
   return `${prefix}_${++uidCounter}`;
 }
@@ -40,6 +41,7 @@ interface QueryState {
   payload: unknown;
   selectAfter: boolean;
   orderBy: { col: string; ascending: boolean } | null;
+  range: [number, number] | null;
 }
 
 function newState(table: keyof Store): QueryState {
@@ -52,6 +54,7 @@ function newState(table: keyof Store): QueryState {
     payload: null,
     selectAfter: false,
     orderBy: null,
+    range: null,
   };
 }
 
@@ -78,12 +81,15 @@ function collect(s: QueryState): Record<string, unknown>[] {
       return ascending ? cmp : -cmp;
     });
   }
-  return rows;
+  return s.range ? rows.slice(s.range[0], s.range[1] + 1) : rows;
 }
 
 function makeBuilder(s: QueryState) {
   const finish = async (single: 'single' | 'maybeSingle' | 'many') => {
     if (s.op === 'insert') {
+      if (s.table === 'magazine_items' && rejectItemInsert) {
+        return { data: null, error: { message: 'Synthetic insert denied' } };
+      }
       const payload = Array.isArray(s.payload) ? s.payload : [s.payload];
       const inserted: Record<string, unknown>[] = [];
       for (const p of payload as Record<string, unknown>[]) {
@@ -113,7 +119,20 @@ function makeBuilder(s: QueryState) {
     if (s.op === 'update') {
       const patch = s.payload as Record<string, unknown>;
       const rows = collect(s);
-      for (const r of rows) Object.assign(r, patch, { updated_at: nowIso() });
+      for (const r of rows) {
+        // Espelha o contrato do trigger canônico tg_magazines_on_publish:
+        // publicar gera token no banco, nunca no browser. Este mock de
+        // integração deve falhar caso o serviço volte a depender de fallback.
+        if (
+          s.table === 'magazines' &&
+          patch.status === 'published' &&
+          !r.public_token
+        ) {
+          r.public_token = 'ab'.repeat(16);
+          r.published_at = nowIso();
+        }
+        Object.assign(r, patch, { updated_at: nowIso() });
+      }
       const data = single === 'many' ? rows : rows[0] ?? null;
       return { data, error: null };
     }
@@ -168,6 +187,10 @@ function makeBuilder(s: QueryState) {
       s.orderBy = { col, ascending: opts?.ascending ?? true };
       return builder;
     },
+    range(from: number, to: number) {
+      s.range = [from, to];
+      return builder;
+    },
     single: () => finish('single'),
     maybeSingle: () => finish('maybeSingle'),
     then(onFulfilled: (v: unknown) => unknown, onRejected?: (e: unknown) => unknown) {
@@ -178,11 +201,95 @@ function makeBuilder(s: QueryState) {
 }
 
 vi.mock('@/integrations/supabase/client', () => ({
-  supabase: { from: (table: string) => makeBuilder(newState(table as keyof Store)) },
+  supabase: {
+    from: (table: string) => makeBuilder(newState(table as keyof Store)),
+    rpc: (name: string, args: Record<string, unknown>) => {
+      if (name === 'magazine_duplicate_atomic') {
+        const sourceId = args.p_source_magazine_id as string;
+        const source = store.magazines.get(sourceId);
+        if (!source) return { data: null, error: { message: 'magazine_not_found' } };
+
+        const cloneId = uid('mag');
+        const idMap = new Map<string, string>();
+        const sourceItems = [...store.magazine_items.values()]
+          .filter((item) => item.magazine_id === sourceId)
+          .sort((a, b) => Number(a.position) - Number(b.position));
+        for (const item of sourceItems) {
+          const itemId = uid('itm');
+          idMap.set(item.id as string, itemId);
+          store.magazine_items.set(itemId, {
+            ...structuredClone(item),
+            id: itemId,
+            magazine_id: cloneId,
+            created_at: nowIso(),
+            updated_at: nowIso(),
+          });
+        }
+
+        const pageOrder = structuredClone(source.page_order);
+        if (pageOrder && typeof pageOrder === 'object' && !Array.isArray(pageOrder)) {
+          const pages = (pageOrder as { pages?: unknown }).pages;
+          if (Array.isArray(pages)) {
+            for (const page of pages) {
+              if (!page || typeof page !== 'object' || !('itemIds' in page)) continue;
+              const itemIds = (page as { itemIds?: unknown }).itemIds;
+              if (Array.isArray(itemIds)) {
+                (page as { itemIds: unknown[] }).itemIds = itemIds.map(
+                  (itemId) => idMap.get(String(itemId)) ?? itemId,
+                );
+              }
+            }
+          }
+        }
+
+        store.magazines.set(cloneId, {
+          ...structuredClone(source),
+          id: cloneId,
+          owner_id: source.owner_id,
+          title:
+            typeof args.p_title === 'string' && args.p_title.trim()
+              ? args.p_title.trim()
+              : `${String(source.title)} (cópia)`,
+          page_order: pageOrder,
+          status: 'draft',
+          public_token: null,
+          published_at: null,
+          archived_at: null,
+          deleted_at: null,
+          created_at: nowIso(),
+          updated_at: nowIso(),
+        });
+        return { data: { magazine_id: cloneId }, error: null };
+      }
+
+      if (name !== 'magazine_publish_atomic') {
+        return { data: null, error: { message: `Unsupported RPC: ${name}` } };
+      }
+
+      const magazineId = args.p_magazine_id as string;
+      const row = store.magazines.get(magazineId);
+      const hasItems = [...store.magazine_items.values()].some(
+        (item) => item.magazine_id === magazineId,
+      );
+      if (!row || typeof row.title !== 'string' || row.title.trim() === '' || !hasItems) {
+        return { data: null, error: { message: 'magazine_publish_requirements_not_met' } };
+      }
+
+      // Simula a transação canônica: status e token tornam-se visíveis juntos.
+      row.status = 'published';
+      row.public_token ??= 'ab'.repeat(16);
+      row.published_at ??= nowIso();
+      row.updated_at = nowIso();
+      return {
+        data: { magazine_id: magazineId, public_token: row.public_token },
+        error: null,
+      };
+    },
+  },
 }));
 
 // Import DEPOIS dos mocks
-import { magazineService } from '@/services/magazineService';
+import { magazineService, productToSnapshot } from '@/services/magazineService';
 import type { Product } from '@/types/product-catalog';
 
 function mkProduct(seed: string, colorName?: string | null): Product {
@@ -209,11 +316,40 @@ beforeEach(() => {
   store.magazines.clear();
   store.magazine_items.clear();
   uidCounter = 0;
+  rejectItemInsert = false;
 });
 
 // ============================================================================
 
 describe('magazineService — lifecycle happy path', () => {
+  it('snapshot legado ao editar título não apaga itens quando INSERT está indisponível', async () => {
+    const mag = await magazineService.create({ ownerId: 'u1' });
+    const snapshot = (await magazineService.addProducts(mag.id, [mkProduct('safe')]))!;
+    const before = [...store.magazine_items.values()].map((item) => ({ ...item }));
+    rejectItemInsert = true;
+    await magazineService.update(mag.id, { ...snapshot, title: 'Sem perda' });
+    expect([...store.magazine_items.values()]).toEqual(before);
+    expect((await magazineService.get(mag.id))?.title).toBe('Sem perda');
+  });
+
+  it('snapshot legado de metadados preserva IDs e ordem dos itens', async () => {
+    const mag = await magazineService.create({ ownerId: 'u1' });
+    const snapshot = (await magazineService.addProducts(mag.id, [mkProduct('a'), mkProduct('b')]))!;
+    const result = await magazineService.update(mag.id, { ...snapshot, title: 'Editado' });
+    expect(result?.items).toEqual(snapshot.items);
+  });
+
+  it('falha de inclusão retorna null, nunca o snapshot antigo como sucesso', async () => {
+    const mag = await magazineService.create({ ownerId: 'u1' });
+    rejectItemInsert = true;
+    expect(await magazineService.addProducts(mag.id, [mkProduct('a')])).toBeNull();
+    expect(store.magazine_items.size).toBe(0);
+  });
+
+  it('update sem linha acessível não confirma sucesso', async () => {
+    expect(await magazineService.update('inexistente', { title: 'x' })).toBeNull();
+  });
+
   it('create → get → update title → addProducts → publish → unpublish', async () => {
     const m = await magazineService.create({ ownerId: 'u1', title: 'Nova' });
     expect(m.id).toBeTruthy();
@@ -285,6 +421,30 @@ describe('magazineService — lifecycle happy path', () => {
     expect(clone!.items).toHaveLength(2);
   });
 
+  it('duplicate preserva páginas estruturadas e remapeia IDs dos itens', async () => {
+    const m = await magazineService.create({ ownerId: 'u', title: 'Estruturada' });
+    const withItems = (await magazineService.addProducts(m.id, [mkProduct('a')]))!;
+    await magazineService.update(m.id, {
+      pageOrder: {
+        version: 2,
+        pages: [
+          { id: 'cover', kind: 'cover' },
+          { id: 'products', kind: 'products', itemIds: [withItems.items[0].id] },
+          { id: 'contact', kind: 'contact' },
+        ],
+      },
+    });
+
+    const clone = (await magazineService.duplicate(m.id))!;
+    expect(clone.pageOrder).toMatchObject({ version: 2 });
+    const clonedProductPage =
+      clone.pageOrder && !Array.isArray(clone.pageOrder) && 'pages' in clone.pageOrder
+        ? clone.pageOrder.pages.find((page) => page.kind === 'products')
+        : undefined;
+    expect(clonedProductPage?.itemIds).toEqual([clone.items[0].id]);
+    expect(clonedProductPage?.itemIds).not.toContain(withItems.items[0].id);
+  });
+
   it('delete soft (deleted_at) + get retorna null + restore volta', async () => {
     const m = await magazineService.create({ ownerId: 'u' });
     await magazineService.delete(m.id);
@@ -301,6 +461,29 @@ describe('magazineService — lifecycle happy path', () => {
     await magazineService.delete(a.id);
     const list = await magazineService.list('u1');
     expect(list.map((m) => m.title).sort()).toEqual(['B']);
+  });
+
+  it('list pagina mais de 1.000 itens sem truncar as contagens dos cards', async () => {
+    const magazine = await magazineService.create({ ownerId: 'u1', title: 'Grande' });
+    for (let index = 0; index < 1_005; index++) {
+      const id = `bulk_${String(index).padStart(4, '0')}`;
+      store.magazine_items.set(id, {
+        id,
+        magazine_id: magazine.id,
+        product_id: `product_${index}`,
+        product_snapshot: productToSnapshot(mkProduct(String(index))),
+        variant_color_name: null,
+        position: index,
+        page_number: null,
+        overrides: {},
+        created_at: nowIso(),
+        updated_at: nowIso(),
+      });
+    }
+
+    const list = await magazineService.list('u1');
+    expect(list).toHaveLength(1);
+    expect(list[0].items).toHaveLength(1_005);
   });
 });
 

@@ -94,4 +94,22 @@ describe('ContentStep', () => {
     const label = screen.getByText('Mostrar preço').closest('label');
     expect(label).toHaveAttribute('for', 'magazine-toggle-showPrice');
   });
+
+  it('persiste o texto editorial com limite e normaliza vazio para undefined', () => {
+    const onChange = vi.fn();
+    render(
+      <ContentStep
+        magazine={mkMag({ content: { ...DEFAULT_MAGAZINE_CONTENT, closingText: 'Até breve.' } })}
+        onChange={onChange}
+      />,
+    );
+
+    fireEvent.change(screen.getByTestId('magazine-intro-text'), {
+      target: { value: 'Boas-vindas à coleção.' },
+    });
+    expect(onChange).toHaveBeenLastCalledWith({ introText: 'Boas-vindas à coleção.' });
+
+    fireEvent.change(screen.getByTestId('magazine-closing-text'), { target: { value: '' } });
+    expect(onChange).toHaveBeenLastCalledWith({ closingText: '' });
+  });
 });

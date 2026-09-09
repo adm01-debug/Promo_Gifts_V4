@@ -10,10 +10,12 @@
  * de volta com `?applyTemplate=<id>` — o editor aplica o template automaticamente.
  */
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, LayoutGrid, LayoutTemplate, List } from 'lucide-react';
 import { toast } from 'sonner';
+import { useAuth } from '@/contexts/AuthContext';
+import { magazineService } from '@/services/magazineService';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -69,6 +71,9 @@ function isValidTemplateId(id: string): id is TemplateEntry['id'] {
 
 export default function MagazineTemplatesGalleryPage() {
   useBluePremiumTheme();
+  const { user } = useAuth();
+  const creating = useRef(false);
+  const [isCreating, setIsCreating] = useState(false);
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const parsedReturn = useMemo(() => parseReturnTo(params.get('returnTo')), [params]);
@@ -105,10 +110,14 @@ export default function MagazineTemplatesGalleryPage() {
     [previewId],
   );
 
-  const useLabel = isFromEditor ? 'Usar este template' : 'Usar template';
+  const useLabel = isCreating
+    ? 'Criando revista…'
+    : isFromEditor
+      ? 'Usar este template'
+      : 'Usar template';
 
   const handleUse = useCallback(
-    (id: TemplateEntry['id']) => {
+    async (id: TemplateEntry['id']) => {
       if (!isValidTemplateId(id)) {
         toast.error('Template inválido. Escolha outro da galeria.');
         return;
@@ -117,13 +126,24 @@ export default function MagazineTemplatesGalleryPage() {
         navigate(`${parsedReturn.path}?applyTemplate=${encodeURIComponent(id)}`);
         return;
       }
-      toast.message('Vamos criar sua revista', {
-        description:
-          'Abra o Magazine e crie uma nova revista — este template estará disponível na etapa "Design".',
-      });
-      navigate('/magazine');
+      if (creating.current) return;
+      if (!user) {
+        toast.error('Entre na sua conta para criar uma revista.');
+        return;
+      }
+      creating.current = true;
+      setIsCreating(true);
+      try {
+        const magazine = await magazineService.create({ ownerId: user.id, templateId: id });
+        navigate(`/magazine/${magazine.id}`);
+      } catch {
+        toast.error('Não foi possível criar a revista. Tente novamente.');
+      } finally {
+        creating.current = false;
+        setIsCreating(false);
+      }
     },
-    [navigate, parsedReturn],
+    [navigate, parsedReturn, user],
   );
 
   const handlePreview = useCallback((id: TemplateEntry['id']) => setPreviewId(id), []);

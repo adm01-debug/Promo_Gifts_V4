@@ -16,6 +16,7 @@ import {
   type MagazineClientBranding,
   type MagazineContentSettings,
   type MagazineItem,
+  type MagazinePageOrder,
   type MagazineProductSnapshot,
   type MagazineTemplateId,
   DEFAULT_BRANDING,
@@ -72,7 +73,7 @@ function rowToMagazine(row: MagazineRow, items: MagazineItemRow[]): Magazine {
       ...((row.content_settings as unknown as MagazineContentSettings) ?? {}),
     },
     items: [...items].sort((a, b) => a.position - b.position).map(rowToItem),
-    pageOrder: row.page_order as number[] | null,
+    pageOrder: row.page_order as unknown as MagazinePageOrder,
     status: row.status as 'archived' | 'draft' | 'published',
     publicToken: row.public_token,
     viewCount: row.view_count ?? 0,
@@ -107,29 +108,6 @@ export function productToSnapshot(product: Product): MagazineProductSnapshot {
   };
 }
 
-/**
- * Gera um token público URL-safe (32 chars hex) para revistas quando o
- * trigger do BD não está disponível. Usa crypto.getRandomValues quando
- * possível, com fallback determinístico para ambientes sem Web Crypto.
- */
-function generatePublicToken(): string {
-  try {
-    const g = (globalThis as { crypto?: Crypto }).crypto;
-    if (g?.getRandomValues) {
-      const bytes = new Uint8Array(16);
-      g.getRandomValues(bytes);
-      return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
-    }
-    if (g && typeof (g as Crypto).randomUUID === 'function') {
-      return (g as Crypto).randomUUID().replace(/-/g, '');
-    }
-  } catch {
-    /* fallback abaixo */
-  }
-  // Fallback (não-cripto): suficiente para desbloquear o fluxo de publicação.
-  return `${Date.now().toString(16)}${Math.random().toString(16).slice(2, 18)}`.padEnd(32, '0');
-}
-
 // ---------------------------------------------------------------------------
 // Low-level fetchers
 // ---------------------------------------------------------------------------
@@ -143,7 +121,7 @@ async function fetchMagazineRow(id: string): Promise<MagazineRow | null> {
     .maybeSingle();
   if (error) {
     logger.warn('[magazineService] fetchMagazineRow error:', error.message);
-    return null;
+    throw new Error('Não foi possível carregar a revista.');
   }
   return data ?? null;
 }
@@ -156,9 +134,32 @@ async function fetchItems(magazineId: string): Promise<MagazineItemRow[]> {
     .order('position', { ascending: true });
   if (error) {
     logger.warn('[magazineService] fetchItems error:', error.message);
-    return [];
+    throw new Error('Não foi possível carregar os produtos da revista.');
   }
   return data ?? [];
+}
+
+const MAGAZINE_ITEMS_PAGE_SIZE = 1_000;
+
+/** Pagina com ordem única para não truncar cards no limite do PostgREST. */
+async function fetchItemsForMagazines(magazineIds: string[]): Promise<MagazineItemRow[]> {
+  const items: MagazineItemRow[] = [];
+  for (let offset = 0; ; offset += MAGAZINE_ITEMS_PAGE_SIZE) {
+    const { data, error } = await magazineDb
+      .from('magazine_items')
+      .select('*')
+      .in('magazine_id', magazineIds)
+      .order('id', { ascending: true })
+      .range(offset, offset + MAGAZINE_ITEMS_PAGE_SIZE - 1);
+    if (error) {
+      logger.warn('[magazineService] fetchItemsForMagazines error:', error.message);
+      throw new Error('Não foi possível carregar os produtos das revistas.');
+    }
+    const page = data ?? [];
+    items.push(...page);
+    if (page.length < MAGAZINE_ITEMS_PAGE_SIZE) break;
+  }
+  return items;
 }
 
 async function hydrate(id: string): Promise<Magazine | null> {
@@ -179,7 +180,7 @@ interface PublicViewPayload {
   templateId: MagazineTemplateId;
   branding: MagazineClientBranding;
   content: MagazineContentSettings;
-  pageOrder: number[] | null;
+  pageOrder: MagazinePageOrder;
   status: Magazine['status'];
   items: Array<{
     id: string;
@@ -262,17 +263,13 @@ export const magazineService = {
       .order('updated_at', { ascending: false });
     if (error) {
       logger.warn('[magazineService.list] error:', error.message);
-      return [];
+      throw new Error('Não foi possível carregar as revistas.');
     }
     const rows: MagazineRow[] = data ?? [];
     if (rows.length === 0) return [];
-    // Busca items de todas as revistas em uma query só
+    // Busca todos os itens em páginas estáveis para não depender do db-max-rows.
     const ids = rows.map((r) => r.id);
-    const { data: itemsData } = await magazineDb
-      .from('magazine_items')
-      .select('*')
-      .in('magazine_id', ids);
-    const items = itemsData ?? [];
+    const items = await fetchItemsForMagazines(ids);
     const byMag = new Map<string, MagazineItemRow[]>();
     for (const it of items) {
       const arr = byMag.get(it.magazine_id) ?? [];
@@ -340,34 +337,23 @@ export const magazineService = {
     if ('publishedAt' in patch) updateRow.published_at = patch.publishedAt;
 
     if (Object.keys(updateRow).length > 0) {
-      const { error } = await magazineDb.from('magazines').update(updateRow).eq('id', id);
-      if (error) {
-        logger.warn('[magazineService.update] header error:', error.message);
+      const { data, error } = await magazineDb
+        .from('magazines')
+        .update(updateRow)
+        .eq('id', id)
+        .select('id')
+        .maybeSingle();
+      if (error || !data) {
+        logger.warn(
+          '[magazineService.update] header error:',
+          error?.message ?? 'Nenhuma linha atualizada',
+        );
         return null;
       }
     }
 
-    // Se o patch inclui items, sincroniza (delete + insert).
-    if (patch.items) {
-      await magazineDb.from('magazine_items').delete().eq('magazine_id', id);
-      if (patch.items.length > 0) {
-        const rows = patch.items.map((it, idx) => ({
-          magazine_id: id,
-          product_id: it.productId,
-          product_snapshot:
-            it.productSnapshot as unknown as MagazineDatabase['public']['Tables']['magazine_items']['Insert']['product_snapshot'],
-          variant_color_name: it.variantColorName,
-          position: idx,
-          page_number: it.pageNumber,
-          overrides: (it.overrides ??
-            {}) as unknown as MagazineDatabase['public']['Tables']['magazine_items']['Insert']['overrides'],
-        }));
-        const { error: insErr } = await magazineDb.from('magazine_items').insert(rows);
-        if (insErr) {
-          logger.warn('[magazineService.update] items insert error:', insErr.message);
-        }
-      }
-    }
+    // GUARD: update is metadata-only. Legacy full snapshots may include items,
+    // but must NEVER delete/reinsert them. Use the dedicated item operations.
 
     return hydrate(id);
   },
@@ -409,7 +395,11 @@ export const magazineService = {
     const current = await this.get(id);
     if (!current) return null;
     const existingIds = new Set(current.items.map((i) => i.productId));
-    const additions = products.filter((p) => !existingIds.has(p.id));
+    const additions = products.filter((p) => {
+      if (existingIds.has(p.id)) return false;
+      existingIds.add(p.id);
+      return true;
+    });
     if (additions.length === 0) return current;
     const basePos = current.items.length;
     const rows = additions.map((p, offset) => ({
@@ -427,7 +417,7 @@ export const magazineService = {
     const { error } = await magazineDb.from('magazine_items').insert(rows);
     if (error) {
       logger.warn('[magazineService.addProducts] error:', error.message);
-      return current;
+      return null;
     }
     // Bumpa updated_at do header
     await magazineDb
@@ -445,7 +435,7 @@ export const magazineService = {
       .eq('magazine_id', id);
     if (error) {
       logger.warn('[magazineService.removeItem] error:', error.message);
-      return this.get(id);
+      return null;
     }
     await magazineDb
       .from('magazines')
@@ -512,39 +502,22 @@ export const magazineService = {
   },
 
   async duplicate(id: string): Promise<Magazine | null> {
-    const current = await this.get(id);
-    if (!current) return null;
-    const clone = await this.create({
-      ownerId: current.ownerId,
-      organizationId: current.organizationId,
-      title: `${current.title} (cópia)`,
-      templateId: current.templateId,
+    const { data, error } = await magazineDb.rpc('magazine_duplicate_atomic', {
+      p_source_magazine_id: id,
     });
-    // Header extras (branding/content) + items.
-    // Validate branding before copying so that old corrupt payloads (pre-audit)
-    // are sanitized rather than silently propagated to the duplicate.
-    const { sanitized: safeBranding } = validateBranding(current.branding);
-    await this.update(clone.id, {
-      branding: { ...current.branding, ...safeBranding },
-      content: current.content,
-      subtitle: current.subtitle,
-    });
-    if (current.items.length > 0) {
-      const rows = current.items.map((it, idx) => ({
-        magazine_id: clone.id,
-        product_id: it.productId,
-        product_snapshot:
-          it.productSnapshot as unknown as MagazineDatabase['public']['Tables']['magazine_items']['Insert']['product_snapshot'],
-        variant_color_name: it.variantColorName,
-        position: idx,
-        page_number: it.pageNumber,
-        overrides: (it.overrides ??
-          {}) as unknown as MagazineDatabase['public']['Tables']['magazine_items']['Insert']['overrides'],
-      }));
-      const { error } = await magazineDb.from('magazine_items').insert(rows);
-      if (error) logger.warn('[magazineService.duplicate] items error:', error.message);
+    if (error) {
+      logger.warn('[magazineService.duplicate] error:', error.message);
+      return null;
     }
-    return hydrate(clone.id);
+    const cloneId =
+      data && typeof data === 'object' && !Array.isArray(data) && 'magazine_id' in data
+        ? data.magazine_id
+        : null;
+    if (typeof cloneId !== 'string') {
+      logger.warn('[magazineService.duplicate] resposta sem magazine_id');
+      return null;
+    }
+    return hydrate(cloneId);
   },
 
   async delete(id: string): Promise<void> {
@@ -624,70 +597,21 @@ export const magazineService = {
   },
 
   async publish(id: string): Promise<Magazine | null> {
-    // Idealmente o trigger fn_magazine_public_token gera o token quando o
-    // status vira 'published'. Como esse trigger é um draft que ainda não
-    // foi aplicado no BD Gold, geramos o token client-side quando ele
-    // continua NULL — garantindo que o fluxo de publicação sempre produza
-    // um link compartilhável E que o token fique persistido no BD para que
-    // republicações futuras reutilizem o mesmo link (idempotência).
-    //
-    // Invariantes (validados por src/services/__tests__/magazinePublish.fuzz.test.ts):
-    //   INV-1: nunca retorna Magazine com publicToken vazio se o BD aceitou
-    //          ao menos um UPDATE de status.
-    //   INV-2: token pré-existente NUNCA é sobrescrito (guarda `is null`).
-    //   INV-3: falha do UPDATE de status → resolve com null, sem token órfão.
-    //   INV-4: token final sempre 32 hex chars.
-    //   INV-5: falha do UPDATE de token não derruba o publish.
-    const currentRow = await fetchMagazineRow(id);
-    const existingToken = currentRow?.public_token ?? null;
-
-    // 1) Update de status/published_at — sempre. Se falhar, aborta ANTES de
-    //    tentar gravar qualquer token (INV-3: sem token órfão no BD).
-    const { error } = await magazineDb
-      .from('magazines')
-      .update({
-        status: 'published',
-        published_at: new Date().toISOString(),
-      })
-      .eq('id', id);
+    // O trigger canônico `tg_magazines_on_publish` é a única autoridade para
+    // emitir/revogar public_token. O cliente não gera token: isso evita
+    // fallback fraco, corrida entre abas e divergência de política do banco.
+    // Falhar sem token é propositalmente fail-closed: não há publicação sem
+    // um link público que tenha sido confirmado pelo banco.
+    const { error } = await magazineDb.rpc('magazine_publish_atomic', { p_magazine_id: id });
     if (error) {
       logger.warn('[magazineService.publish] error:', error.message);
       return null;
     }
 
-    // 2) Se já havia token, pula o UPDATE de token (economia + INV-2).
-    //    A trigger, quando ativa, já preencheu no passo 1; o re-fetch abaixo
-    //    confirma. Se não havia, tenta gravar o token gerado com guarda
-    //    `.is('public_token', null)` — só escreve se o BD ainda estiver NULL.
-    if (!existingToken) {
-      const generatedToken = generatePublicToken();
-      const { error: tokenErr } = await magazineDb
-        .from('magazines')
-        .update({ public_token: generatedToken })
-        .eq('id', id)
-        .is('public_token', null);
-      if (tokenErr) {
-        logger.warn('[magazineService.publish] token persist error:', tokenErr.message);
-      }
-    }
-
-    let hydrated = await hydrate(id);
-    // Defesa em profundidade: se ainda vier NULL (ex.: RLS silenciosa que
-    // ocultou o UPDATE anterior), tenta persistir um NOVO token com guarda
-    // `is null`. Idempotente e seguro contra concorrência: um segundo
-    // publish() concorrente vai bater na guarda e ser rejeitado.
-    if (hydrated && !hydrated.publicToken) {
-      const fallbackToken = generatePublicToken();
-      const { error: tokenErr } = await magazineDb
-        .from('magazines')
-        .update({ public_token: fallbackToken })
-        .eq('id', id)
-        .is('public_token', null);
-      if (tokenErr) {
-        logger.warn('[magazineService.publish] token backfill error:', tokenErr.message);
-      } else {
-        hydrated = await hydrate(id);
-      }
+    const hydrated = await hydrate(id);
+    if (!hydrated?.publicToken) {
+      logger.error('[magazineService.publish] published row has no public token', { id });
+      return null;
     }
     return hydrated;
   },

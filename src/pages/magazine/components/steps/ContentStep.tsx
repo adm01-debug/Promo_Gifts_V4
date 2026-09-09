@@ -8,6 +8,7 @@
 import { ListChecks, LayoutList } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import {
   DEFAULT_MAGAZINE_CONTENT,
@@ -152,6 +153,59 @@ export function ContentStep({ magazine, onChange }: Props) {
             ))}
           </div>
         </fieldset>
+      </section>
+
+      <section className={cn(PG_PANEL, 'p-5')} aria-labelledby="magazine-editorial-content-title">
+        <div className="flex items-start gap-3">
+          <span className={PG_ICON_BOX_SM}>
+            <LayoutList className="h-4 w-4" aria-hidden />
+          </span>
+          <div>
+            <h3 id="magazine-editorial-content-title" className={PG_PANEL_TITLE}>
+              Textos editoriais
+            </h3>
+            <p className={cn(PG_SUBTITLE, 'mt-0.5')}>
+              Inclua uma abertura e um fechamento opcionais. O conteúdo permanece no rascunho mesmo
+              quando ainda não houver uma página editorial dedicada.
+            </p>
+          </div>
+        </div>
+        <div className="mt-4 grid gap-4 lg:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="magazine-intro-text" className="text-[13px] font-semibold">
+              Texto de introdução
+            </Label>
+            <Textarea
+              id="magazine-intro-text"
+              value={content.introText ?? ''}
+              maxLength={800}
+              onChange={(event) => onChange({ introText: event.target.value || undefined })}
+              placeholder="Apresente a seleção e o contexto desta revista…"
+              className="min-h-28 resize-y"
+              data-testid="magazine-intro-text"
+            />
+            <p className="text-right text-[11px] text-muted-foreground">
+              {(content.introText ?? '').length}/800
+            </p>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="magazine-closing-text" className="text-[13px] font-semibold">
+              Texto de fechamento
+            </Label>
+            <Textarea
+              id="magazine-closing-text"
+              value={content.closingText ?? ''}
+              maxLength={800}
+              onChange={(event) => onChange({ closingText: event.target.value })}
+              placeholder="Finalize com uma chamada para contato ou próximos passos…"
+              className="min-h-28 resize-y"
+              data-testid="magazine-closing-text"
+            />
+            <p className="text-right text-[11px] text-muted-foreground">
+              {(content.closingText ?? '').length}/800
+            </p>
+          </div>
+        </div>
       </section>
     </div>
   );

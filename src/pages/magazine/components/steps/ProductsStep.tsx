@@ -5,7 +5,10 @@
  * O preview A4 não é coluna permanente nesta etapa — abre pelo drawer.
  */
 
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
+import { toast } from 'sonner';
+import { paginateMagazine } from '../../pagination';
+import { productToSnapshot } from '@/services/magazineService';
 import {
   Box,
   Check,
@@ -50,7 +53,7 @@ import { cn } from '@/lib/utils';
 import type { Product } from '@/types/product-catalog';
 import type { Magazine, MagazineItem } from '@/types/magazine';
 import { getTemplate } from '../templates/TemplateRegistry';
-import { formatPrice } from '../templates/shared';
+import { formatPrice, resolveItemImage } from '../templates/shared';
 import { VariantColorSelect } from '../VariantColorSelect';
 import { MagazinePageRenderer } from '../MagazinePageRenderer';
 import {
@@ -66,14 +69,14 @@ import {
 
 interface Props {
   magazine: Magazine;
-  onAdd: (products: Product[]) => void;
-  onRemove: (itemId: string) => void;
-  onUpdateItem: (itemId: string, patch: Partial<MagazineItem>) => void;
+  onAdd: (products: Product[]) => Promise<void> | void;
+  onRemove: (itemId: string) => Promise<void> | void;
+  onUpdateItem: (itemId: string, patch: Partial<MagazineItem>) => Promise<void> | void;
   /** Leva à etapa Design (botão "Trocar template" do trilho). */
   onGoToDesign?: () => void;
 }
 
-type SortMode = 'name' | 'price-asc' | 'price-desc' | 'relevance';
+type SortMode = 'name' | 'price-asc' | 'price-desc';
 
 const FAMILY_LABEL: Record<'catalog' | 'corporate' | 'editorial', string> = {
   editorial: 'Editorial',
@@ -91,14 +94,23 @@ const COVER_PAGE = { index: 0, kind: 'cover' as const, items: [] as never[] };
 
 export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDesign }: Props) {
   const [query, setQuery] = useState('');
-  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [selected, setSelected] = useState<Map<string, Product>>(new Map());
+  const adding = useRef(false);
+  const [isAdding, setIsAdding] = useState(false);
   const [category, setCategory] = useState<string | null>(null);
   const [onlyPersonalizable, setOnlyPersonalizable] = useState(false);
   const [hideAdded, setHideAdded] = useState(true);
-  const [sort, setSort] = useState<SortMode>('relevance');
+  const [sort, setSort] = useState<SortMode>('name');
   const [confirmClear, setConfirmClear] = useState(false);
 
-  const { data: products = [], isLoading } = useProducts({ search: query, limit: 80 });
+  const { data: products = [], isLoading } = useProducts({
+    search: query,
+    limit: 80,
+    // O backend só ordena por sale_price (nullable), enquanto o card exibe
+    // sale_price ?? price. Não envie uma ordem semanticamente diferente para
+    // a consulta limitada; a ordenação efetiva é feita abaixo no lote obtido.
+    sortBy: sort === 'price-asc' || sort === 'price-desc' ? 'name' : sort,
+  });
 
   const items = useMemo(() => magazine.items ?? [], [magazine.items]);
 
@@ -121,7 +133,6 @@ export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDe
       if (onlyPersonalizable && !p.hasPersonalization) return false;
       return true;
     });
-    if (sort === 'relevance') return out;
     return [...out].sort((a, b) => {
       if (sort === 'name') return a.name.localeCompare(b.name, 'pt-BR');
       const pa = productPrice(a) ?? 0;
@@ -130,30 +141,38 @@ export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDe
     });
   }, [products, hideAdded, alreadyAdded, category, onlyPersonalizable, sort]);
 
-  const toggle = (id: string) => {
+  const toggle = (product: Product) => {
+    const id = product.id;
     setSelected((prev) => {
-      const next = new Set(prev);
+      const next = new Map(prev);
       if (next.has(id)) next.delete(id);
-      else next.add(id);
+      else next.set(id, product);
       return next;
     });
   };
 
-  const handleAdd = () => {
-    const toAdd = filtered.filter((p) => selected.has(p.id));
-    onAdd(toAdd);
-    setSelected(new Set());
+  const addSelection = async (toAdd: Product[]) => {
+    if (adding.current || toAdd.length === 0) return;
+    adding.current = true;
+    setIsAdding(true);
+    try {
+      await onAdd(toAdd);
+      setSelected((prev) => {
+        const next = new Map(prev);
+        for (const product of toAdd) next.delete(product.id);
+        return next;
+      });
+      toast.success('Produtos adicionados à revista.');
+    } catch {
+      toast.error('Não foi possível adicionar. Sua seleção foi preservada.');
+    } finally {
+      adding.current = false;
+      setIsAdding(false);
+    }
   };
-
-  const handleQuickAdd = (p: Product) => {
-    onAdd([p]);
-    setSelected((prev) => {
-      if (!prev.has(p.id)) return prev;
-      const next = new Set(prev);
-      next.delete(p.id);
-      return next;
-    });
-  };
+  const handleAdd = () =>
+    addSelection([...selected.values()].filter((p) => !alreadyAdded.has(p.id)));
+  const handleQuickAdd = (p: Product) => addSelection([p]);
 
   const clearFilters = () => {
     setCategory(null);
@@ -162,17 +181,33 @@ export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDe
     setHideAdded(true);
   };
 
-  const clearAll = () => {
-    for (const it of items) onRemove(it.id);
-    setConfirmClear(false);
+  const clearAll = async () => {
+    try {
+      for (const it of items) await onRemove(it.id);
+      setConfirmClear(false);
+    } catch {
+      toast.error(
+        'A limpeza foi interrompida. Confira os produtos restantes antes de tentar novamente.',
+      );
+    }
   };
 
   const template = getTemplate(magazine.templateId);
   const perPage = template.productsPerPage;
   const totalItems = items.length;
-  const estimatedPages = Math.max(0, Math.ceil(totalItems / perPage));
-  const previewItems = totalItems + selected.size;
-  const previewPages = Math.max(0, Math.ceil(previewItems / perPage));
+  const estimatedPages = paginateMagazine(magazine).length;
+  const pendingItems: MagazineItem[] = [...selected.values()]
+    .filter((p) => !alreadyAdded.has(p.id))
+    .map((p, index) => ({
+      id: `pending-${p.id}`,
+      productId: p.id,
+      productSnapshot: productToSnapshot(p),
+      variantColorName: null,
+      position: totalItems + index,
+      pageNumber: null,
+      overrides: {},
+    }));
+  const previewPages = paginateMagazine({ ...magazine, items: [...items, ...pendingItems] }).length;
   const activeFilterCount = (onlyPersonalizable ? 1 : 0) + (hideAdded ? 0 : 1);
 
   const visibleCategories = categoryOptions.slice(0, MAX_VISIBLE_CATEGORIES);
@@ -282,10 +317,9 @@ export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDe
               </span>
             </SelectTrigger>
             <SelectContent className="pg-module rounded-lg border-border">
-              <SelectItem value="relevance">Mais relevantes</SelectItem>
+              <SelectItem value="name">Nome A–Z</SelectItem>
               <SelectItem value="price-asc">Menor preço</SelectItem>
               <SelectItem value="price-desc">Maior preço</SelectItem>
-              <SelectItem value="name">Nome A–Z</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -375,7 +409,7 @@ export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDe
                 >
                   <button
                     type="button"
-                    onClick={() => !isIn && toggle(p.id)}
+                    onClick={() => !isIn && toggle(p)}
                     disabled={isIn}
                     aria-pressed={isSel}
                     aria-label={`${isSel ? 'Desmarcar' : 'Selecionar'} ${p.name}`}
@@ -434,7 +468,7 @@ export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDe
                     <button
                       type="button"
                       onClick={() => handleQuickAdd(p)}
-                      disabled={isIn}
+                      disabled={isIn || isAdding}
                       aria-label={`Adicionar ${p.name} à revista`}
                       className="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-background text-foreground transition-colors duration-150 hover:border-primary hover:bg-primary/10 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
                     >
@@ -476,7 +510,7 @@ export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDe
           <Button
             size="sm"
             onClick={handleAdd}
-            disabled={selected.size === 0}
+            disabled={selected.size === 0 || isAdding}
             className={cn(PG_BTN, 'h-10 min-h-0 rounded-md px-4 text-[13px]')}
             data-testid="magazine-product-add-btn"
           >
@@ -581,7 +615,7 @@ export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDe
             >
               <div className="h-12 w-12 shrink-0 overflow-hidden rounded-sm bg-neutral-100">
                 <img
-                  src={item.productSnapshot.image_url}
+                  src={resolveItemImage(item)}
                   alt={item.productSnapshot.name}
                   className="h-full w-full object-contain p-1"
                 />
@@ -595,13 +629,21 @@ export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDe
                 </div>
                 <VariantColorSelect
                   item={item}
-                  onChange={(colorName) => onUpdateItem(item.id, { variantColorName: colorName })}
+                  onChange={(colorName) => {
+                    void Promise.resolve(
+                      onUpdateItem(item.id, { variantColorName: colorName }),
+                    ).catch(() => toast.error('Não foi possível alterar a variante.'));
+                  }}
                 />
               </div>
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => onRemove(item.id)}
+                onClick={() => {
+                  void Promise.resolve(onRemove(item.id)).catch(() =>
+                    toast.error('Não foi possível remover o produto.'),
+                  );
+                }}
                 aria-label={`Remover ${item.productSnapshot.name}`}
                 className="h-8 min-h-0 w-8 min-w-0 shrink-0 rounded-md text-muted-foreground hover:bg-background hover:text-foreground"
               >
@@ -625,9 +667,9 @@ export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDe
               <Check className="h-4 w-4" aria-hidden />
             </span>
             <div>
-              <div className="text-[13px] font-semibold text-success">Tudo certo!</div>
+              <div className="text-[13px] font-semibold text-success">Produtos na revista</div>
               <div className="text-[11px] text-muted-foreground">
-                Seus produtos foram adicionados à revista.
+                Confira os itens desta edição na lista acima.
               </div>
             </div>
           </div>

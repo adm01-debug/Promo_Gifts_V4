@@ -6,9 +6,23 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { type Magazine, type MagazineItem, type MagazineTemplateId, DEFAULT_BRANDING, DEFAULT_MAGAZINE_CONTENT } from '@/types/magazine';
+import {
+  type Magazine,
+  type MagazineItem,
+  type MagazineTemplateId,
+  DEFAULT_BRANDING,
+  DEFAULT_MAGAZINE_CONTENT,
+} from '@/types/magazine';
 
-import { paginateMagazine, getTotalProductCount, getPageCount } from '../pagination';
+import {
+  createMagazinePageDefinition,
+  createStructuredPageOrder,
+  getPageCount,
+  getTotalProductCount,
+  isMagazinePageOrderV2,
+  paginateMagazine,
+  reorderStructuredPageItems,
+} from '../pagination';
 
 // ============================================================================
 // Test helpers
@@ -263,5 +277,187 @@ describe('getPageCount', () => {
   it('retorna 3 para revista com 1 item', () => {
     const mag = mkMagazine('editorial-vogue', [mkItem('a', 0)]);
     expect(getPageCount(mag)).toBe(3);
+  });
+});
+
+// ============================================================================
+// STRUCTURED PAGES V2 — backward compatibility and editorial behavior
+// ============================================================================
+
+describe('paginateMagazine — structured pages v2', () => {
+  it('converts automatic layout to cover, institutional, products and contact', () => {
+    const mag = mkMagazine('editorial-vogue', [mkItem('a', 0), mkItem('b', 1)], false, {
+      content: {
+        ...DEFAULT_MAGAZINE_CONTENT,
+        introText: 'Nossa história',
+        closingText: 'Fale conosco',
+      },
+    });
+    const pageOrder = createStructuredPageOrder(mag);
+    expect(pageOrder.pages.map((page) => page.kind)).toEqual([
+      'cover',
+      'institutional',
+      'products',
+      'products',
+      'contact',
+    ]);
+    expect(pageOrder.pages[1]).toMatchObject({ title: 'Sobre nós', body: 'Nossa história' });
+    expect(pageOrder.pages.at(-1)).toMatchObject({ title: 'Vamos conversar?' });
+    expect(pageOrder.pages.at(-1)).not.toHaveProperty('body');
+    expect(
+      paginateMagazine({ ...mag, pageOrder }).find((page) => page.kind === 'contact')?.body,
+    ).toBe('Fale conosco');
+    expect(isMagazinePageOrderV2(pageOrder)).toBe(true);
+  });
+
+  it('preserves explicit page order, title/body and product assignments', () => {
+    const items = [mkItem('a', 0), mkItem('b', 1), mkItem('c', 2)];
+    const pageOrder = {
+      version: 2 as const,
+      pages: [
+        createMagazinePageDefinition('cover'),
+        createMagazinePageDefinition('section', { title: 'Tecnologia' }),
+        createMagazinePageDefinition('products', { itemIds: ['c', 'a'] }),
+        createMagazinePageDefinition('institutional', {
+          title: 'Quem somos',
+          body: 'Conteúdo editorial',
+        }),
+        createMagazinePageDefinition('contact', { title: 'Contato', body: 'Até breve' }),
+      ],
+    };
+    const pages = paginateMagazine(mkMagazine('catalog-grid-2x3', items, false, { pageOrder }));
+    expect(pages.map((page) => page.kind)).toEqual([
+      'cover',
+      'section',
+      'products',
+      'institutional',
+      'products',
+      'contact',
+    ]);
+    expect(pages[2].items.map((item) => item.id)).toEqual(['c', 'a']);
+    expect(pages[3]).toMatchObject({ title: 'Quem somos', body: 'Conteúdo editorial' });
+    expect(pages[4].items.map((item) => item.id)).toEqual(['b']);
+  });
+
+  it('inserts newly-added unassigned products immediately before contact', () => {
+    const items = [mkItem('a', 0), mkItem('new', 1)];
+    const pageOrder = {
+      version: 2 as const,
+      pages: [
+        createMagazinePageDefinition('cover'),
+        createMagazinePageDefinition('products', { itemIds: ['a'] }),
+        createMagazinePageDefinition('contact'),
+      ],
+    };
+    const pages = paginateMagazine(mkMagazine('editorial-vogue', items, false, { pageOrder }));
+    expect(pages.at(-2)?.items.map((item) => item.id)).toEqual(['new']);
+    expect(pages.at(-1)?.kind).toBe('contact');
+  });
+
+  it('deduplicates an item referenced by more than one structured page', () => {
+    const pageOrder = {
+      version: 2 as const,
+      pages: [
+        createMagazinePageDefinition('cover'),
+        createMagazinePageDefinition('products', { itemIds: ['a'] }),
+        createMagazinePageDefinition('products', { itemIds: ['a'] }),
+        createMagazinePageDefinition('contact'),
+      ],
+    };
+    const pages = paginateMagazine(
+      mkMagazine('editorial-vogue', [mkItem('a', 0)], false, { pageOrder }),
+    );
+    expect(pages.flatMap((page) => page.items).map((item) => item.id)).toEqual(['a']);
+  });
+
+  it('rejects malformed v2 envelopes and keeps legacy arrays on automatic pagination', () => {
+    const invalid = {
+      version: 2,
+      pages: [
+        { id: 'same', kind: 'cover' },
+        { id: 'same', kind: 'contact' },
+      ],
+    };
+    expect(isMagazinePageOrderV2(invalid)).toBe(false);
+    const pages = paginateMagazine(
+      mkMagazine('editorial-vogue', [mkItem('a', 0)], false, {
+        pageOrder: [4, 2, 1],
+      }),
+    );
+    expect(pages.map((page) => page.kind)).toEqual(['cover', 'products', 'back-cover']);
+  });
+
+  it('redistributes DnD order across structured product pages', () => {
+    const items = [mkItem('a', 0), mkItem('b', 1), mkItem('c', 2)];
+    const pageOrder = {
+      version: 2 as const,
+      pages: [
+        createMagazinePageDefinition('cover'),
+        createMagazinePageDefinition('products', { itemIds: ['a'] }),
+        createMagazinePageDefinition('products', { itemIds: ['b'] }),
+        createMagazinePageDefinition('contact'),
+      ],
+    };
+    const mag = mkMagazine('editorial-vogue', items, false, { pageOrder });
+    const reordered = reorderStructuredPageItems(mag, ['c', 'a', 'b']);
+    expect(reordered?.pages.filter((page) => page.kind === 'products')).toHaveLength(3);
+    expect(
+      reordered?.pages.filter((page) => page.kind === 'products').flatMap((page) => page.itemIds),
+    ).toEqual(['c', 'a', 'b']);
+    expect(reordered?.pages.at(-1)?.kind).toBe('contact');
+  });
+
+  it('reflows an oversized structured page after switching from 3x3 to Vogue', () => {
+    const items = Array.from({ length: 9 }, (_, index) => mkItem(String(index), index));
+    const pageOrder = {
+      version: 2 as const,
+      pages: [
+        createMagazinePageDefinition('cover'),
+        createMagazinePageDefinition('products', { itemIds: items.map((item) => item.id) }),
+        createMagazinePageDefinition('contact'),
+      ],
+    };
+    const pages = paginateMagazine(
+      mkMagazine('editorial-vogue', items, false, { pageOrder }),
+    ).filter((page) => page.kind === 'products');
+    expect(pages).toHaveLength(9);
+    expect(pages.every((page) => page.items.length === 1)).toBe(true);
+    expect(pages.flatMap((page) => page.items.map((item) => item.id))).toEqual(
+      items.map((item) => item.id),
+    );
+  });
+
+  it('omits a structured product page after its final referenced item is removed', () => {
+    const pageOrder = {
+      version: 2 as const,
+      pages: [
+        createMagazinePageDefinition('cover'),
+        createMagazinePageDefinition('products', { itemIds: ['removed'] }),
+        createMagazinePageDefinition('contact'),
+      ],
+    };
+    const pages = paginateMagazine(mkMagazine('editorial-vogue', [], false, { pageOrder }));
+    expect(pages.map((page) => page.kind)).toEqual(['cover', 'contact']);
+  });
+
+  it('uses the current closing text instead of a stale body copied during conversion', () => {
+    const pageOrder = {
+      version: 2 as const,
+      pages: [
+        createMagazinePageDefinition('cover'),
+        createMagazinePageDefinition('contact', { body: 'Texto antigo' }),
+      ],
+    };
+    const magazine = mkMagazine('editorial-vogue', [], false, {
+      pageOrder,
+      content: { ...DEFAULT_MAGAZINE_CONTENT, closingText: 'Texto editado' },
+    });
+    expect(paginateMagazine(magazine).at(-1)?.body).toBe('Texto editado');
+    expect(
+      paginateMagazine({
+        ...magazine,
+        content: { ...magazine.content, closingText: '' },
+      }).at(-1)?.body,
+    ).toBe('');
   });
 });

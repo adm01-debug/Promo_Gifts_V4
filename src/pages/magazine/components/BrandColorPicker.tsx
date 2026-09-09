@@ -4,7 +4,7 @@
  * do Step 1 (Identidade) por peças shadcn coerentes com o design system.
  */
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Check, ShieldAlert, ShieldCheck, Sparkles } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Input } from '@/components/ui/input';
@@ -172,6 +172,7 @@ function SwatchField({
   onChange: (v: string) => void;
 }) {
   const [hex, setHex] = useState(value);
+  useEffect(() => setHex(value), [value]);
   const valid = isValidHex(hex);
   return (
     <div className="space-y-1.5">
