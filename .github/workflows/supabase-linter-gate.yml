@@ -9,11 +9,6 @@ on:
     # Roda diariamente às 06:00 UTC para detectar drift fora de PR
     - cron: "0 6 * * *"
   workflow_dispatch:
-    inputs:
-      confirm_magazine_rls_initplan:
-        description: 'Digite APPLY_MAGAZINE_RLS_INITPLAN_CANONICAL'
-        required: false
-        type: string
 
 jobs:
   linter:
@@ -31,80 +26,3 @@ jobs:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF || 'doufsxqlfjyuvxuezpln' }}
         run: node scripts/check-supabase-linter.mjs
-
-  apply-magazine-rls-initplan:
-    if: >-
-      github.event_name == 'workflow_dispatch' &&
-      inputs.confirm_magazine_rls_initplan == 'APPLY_MAGAZINE_RLS_INITPLAN_CANONICAL'
-    name: Apply Magazine RLS initplan — canonical only
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    permissions:
-      contents: read
-    env:
-      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-      SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22.22.1'
-      - name: Guard canônico, preflight, apply e postflight
-        run: |
-          node --input-type=module <<'NODE'
-          import { readFileSync } from 'node:fs';
-
-          const token = process.env.SUPABASE_ACCESS_TOKEN;
-          const projectRef = process.env.SUPABASE_PROJECT_REF;
-          const version = '20260909221000';
-          const name = 'magazine_view_events_rls_initplan';
-          const path = 'supabase/migrations/20260909221000_magazine_view_events_rls_initplan.sql';
-          if (!token || projectRef !== 'doufsxqlfjyuvxuezpln') throw new Error('canonical_project_guard_failed');
-
-          const apiBase = `https://api.supabase.com/v1/projects/${projectRef}/database`;
-          const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
-          async function execute(query, readOnly) {
-            const endpoint = readOnly ? `${apiBase}/query/read-only` : `${apiBase}/query`;
-            const response = await fetch(endpoint, {
-              method: 'POST', headers,
-              body: JSON.stringify(readOnly ? { query } : { query, read_only: false }),
-            });
-            const body = await response.text();
-            if (!response.ok) throw new Error(`management_api_${response.status}:${body.slice(0, 500)}`);
-            return body ? JSON.parse(body) : [];
-          }
-
-          const inspectSql = `
-            SELECT
-              EXISTS (SELECT 1 FROM supabase_migrations.schema_migrations WHERE version='${version}') AS migration_exists,
-              EXISTS (
-                SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace
-                WHERE n.nspname='public' AND p.proname='magazine_ensure_view_event_partitions'
-                  AND 'search_path=public, extensions, pg_temp'=ANY(p.proconfig)
-                  AND NOT has_function_privilege('anon', p.oid, 'EXECUTE')
-                  AND NOT has_function_privilege('authenticated', p.oid, 'EXECUTE')
-                  AND has_function_privilege('service_role', p.oid, 'EXECUTE')
-              ) AS function_hardened,
-              (SELECT count(*)::int FROM pg_policies
-                WHERE schemaname='public' AND tablename LIKE 'magazine_public_view_events_20%'
-                  AND policyname='view_events_read') AS partition_policy_count,
-              (SELECT count(*)::int FROM pg_policies
-                WHERE schemaname='public' AND tablename LIKE 'magazine_public_view_events_20%'
-                  AND policyname='view_events_read'
-                  AND (position('has_role(auth.uid()' in qual)>0
-                    OR position('owner_id = auth.uid()' in qual)>0)) AS unoptimized_policy_count
-          `;
-          const pre = (await execute(inspectSql, true))[0];
-          console.log(`Preflight: migration=${pre.migration_exists}, function=${pre.function_hardened}, policies=${pre.partition_policy_count}, unoptimized=${pre.unoptimized_policy_count}`);
-          if (pre.migration_exists && pre.function_hardened && Number(pre.unoptimized_policy_count) === 0) process.exit(0);
-          if (pre.migration_exists) throw new Error('unexpected_partial_state');
-
-          const sql = readFileSync(path, 'utf8');
-          if (sql.includes('$migration_body$')) throw new Error('reserved_dollar_quote');
-          await execute(`BEGIN;\n${sql}\nINSERT INTO supabase_migrations.schema_migrations(version,name,statements)
-            VALUES ('${version}','${name}',ARRAY[$migration_body$${sql}$migration_body$]::text[])
-            ON CONFLICT (version) DO NOTHING;\nCOMMIT;`, false);
-          const post = (await execute(inspectSql, true))[0];
-          console.log(`Postflight: migration=${post.migration_exists}, function=${post.function_hardened}, policies=${post.partition_policy_count}, unoptimized=${post.unoptimized_policy_count}`);
-          if (!post.migration_exists || !post.function_hardened || Number(post.partition_policy_count) < 1 || Number(post.unoptimized_policy_count) !== 0) throw new Error('postflight_failed');
-          NODE

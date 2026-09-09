@@ -9,6 +9,9 @@
  * (docs/plans/magazine-typed-queries-migration.md). Campos Json do BD
  * (branding, content_settings, product_snapshot, overrides, page_order) são
  * mapeados via cast explícito nas funções de mapeamento.
+ *
+ * Hardening 2026-09-09: leituras diretas permanecem tipadas; todas as treze
+ * mutações usam RPCs v2 com lock, CAS por edit_version e autorização no banco.
  */
 
 import {

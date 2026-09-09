@@ -15,13 +15,21 @@ CSP e gates. Os objetos `20260909200000`, `20260909201000` e `20260909210000`
 foram aplicados depois do preflight vazio, em transação única, pelo run
 [34412078447](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/34412078447).
 O postflight do run e uma leitura independente pelo MCP oficial confirmaram o
-estado final no projeto canônico.
+estado final no projeto canônico. A auditoria posterior dos advisors encontrou
+duas FKs sem índice e duas policies de partição com `auth.uid()` reavaliado por
+linha; `20260909220000` e `20260909221000` corrigiram esses pontos pelos runs
+[34413883474](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/34413883474)
+e [34414192408](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/34414192408).
 
 O checklist de homologação integral continua aberto. Não há base para declarar
 10/10 ou fidelidade pixel a pixel às cinco imagens: os assets foram autorizados
 como aproximação e o ciclo autenticado na produção depende do rollout abaixo.
 
-A instrução explícita do PO autorizou páginas estruturadas (`capa`, `institucional`, `seção`, `produtos`, `contato`), reutilização dos assets atuais e, em seguida, a aplicação das RPCs atômicas. O Supabase canônico recebeu somente seis funções e dez registros de migration forward-only, sem alteração ou remoção de tabela/coluna.
+A instrução explícita do PO autorizou páginas estruturadas (`capa`,
+`institucional`, `seção`, `produtos`, `contato`), reutilização dos assets atuais
+e a aplicação das RPCs atômicas. A rodada final registrou cinco migrations
+forward-only, 15 funções esperadas, dois índices e a otimização semântica das
+policies de partição, sem remover tabela, coluna ou dado.
 
 ## Rodada de hardening — estado verificável antes da publicação
 
@@ -30,9 +38,9 @@ A instrução explícita do PO autorizou páginas estruturadas (`capa`, `institu
 | Código | Validado local | 44 arquivos e 785 testes Magazine aprovados; cobertura crítica aprovada; TypeScript, build, SSOT, `actionlint`, sintaxe shell e `git diff --check` verdes. |
 | Browser | Validado local | 11 cenários Chromium aprovados, incluindo 390 px, estados publicado/arquivado somente leitura, A4, retry e páginas estruturadas; nenhum `console.error` inesperado. |
 | PostgreSQL 17 | Validado descartável | Migration expansiva, importação transacional, rollback, replay, remapeamento e contrato restritivo compilaram e passaram em banco efêmero. |
-| Edge Function | Publicada; smoke autenticado pendente | `deno lint`, `deno check` e 3 testes locais aprovados; `magazine-import-local` publicada pelo run [34412155877](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/34412155877); chamada sem token retorna 401 no projeto canônico. |
-| GitHub | Branch publicada; PR/merge pendentes | Commit funcional `09d13c4c8` publicado em `codex/magazine-hardening-20260909`; o PR deve passar pelos gates antes do merge. |
-| Supabase canônico | Expansão aplicada e validada | 3/3 migrations, `magazines.edit_version`, `magazine_create_v2`, `magazine_import_local_v2` e `get_sitemap_public` confirmados em PostgreSQL 17.6. `anon` executa somente o endpoint público de sitemap. |
+| Edge Function | Publicada; smoke autenticado pendente | `deno lint`, `deno check` e 3 testes locais aprovados; `magazine-import-local` republicada do SHA reconciliado pelo run [34413201838](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/34413201838); chamada sem token retorna 401 no projeto canônico. |
+| GitHub | Branch e PR publicados; merge pendente | PR [#1853](https://github.com/adm01-debug/Promo_Gifts_V4/pull/1853) aberto em `codex/magazine-hardening-20260909`; merge somente depois dos gates bloqueantes. |
+| Supabase canônico | Expansão aplicada e validada | 5/5 migrations desta rodada, 15/15 funções, `magazines.edit_version`, dois índices de FK e policies otimizadas confirmados em PostgreSQL 17.6. `anon` executa somente o endpoint público de sitemap. |
 | Produção Vercel | Baseline saudável, hardening pendente | O baseline `80cf74e` respondia 200 em `/api/health`, `/api/ready`, `/magazine` e `/sitemap.xml`; isso não valida o código desta rodada. |
 
 A migration restritiva foi deliberadamente separada em
@@ -59,6 +67,12 @@ legado enquanto o cliente anterior ainda atende produção.
 - O run corretivo [34395700558](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/34395700558) aplicou as versões `20260909190000` e `20260909190100` em transação única. O MCP oficial confirmou remapeamento de IDs na duplicação, validação null-safe, duas versões registradas, `anon=false` e grants somente para `authenticated`/`service_role`. A constraint de posição live é diferível e inicialmente adiada; o alerta de colisão na troca era falso positivo comprovado.
 - O run final [34397795301](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/34397795301) aplicou `20260909190200` e `20260909190300` em transação única. O preflight encontrou `add=1`, `publish=0` e zero versões; o postflight confirmou duas funções, duas versões e zero grants para `anon`. O MCP oficial confirmou as nove versões, seis RPCs, guarda explícita para payload SQL nulo e publicação com lock/validação do token na mesma transação. Os tipos oficiais gerados contêm a mesma assinatura versionada no cliente.
 - O run [34399151305](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/34399151305) aplicou `20260909190400`: preflight `functions=1/migrations=0`, postflight `1/1/anon=0`. O MCP oficial confirmou dez versões, discriminador v2 obrigatoriamente numérico e predicado null-safe na definição live.
+- Os advisors posteriores ao DDL não reportam mais FKs sem índice nem
+  `auth_rls_initplan` nas partições Magazine. O aviso informativo
+  `rls_enabled_no_policy` de `magazine_duplicate_requests` é intencional: a
+  tabela é exclusivamente interna às funções `SECURITY DEFINER`, tem todos os
+  privilégios diretos revogados para `PUBLIC`, `anon` e `authenticated`, e a
+  ausência de policies mantém o acesso direto negado por padrão.
 
 Ambiente de browser: componentes reais, shell mínimo, CRM/autenticação/catálogo/persistência simulados, requisições externas bloqueadas e service workers desabilitados. O client canônico pode emitir aviso de configuração ausente ao carregar módulos; a rede externa permanece bloqueada e os métodos de persistência são substituídos. Isso não é integração real com Supabase. Não foram usados secrets nem dados de clientes reais.
 
