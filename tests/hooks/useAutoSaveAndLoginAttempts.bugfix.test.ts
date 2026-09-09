@@ -11,8 +11,14 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import React from 'react';
 import { useAutoSaveQuote, migratePayload } from '../../src/hooks/quotes/useAutoSaveQuote';
+
+function readSource(relativePath: string): Promise<string> {
+  return readFile(fileURLToPath(new URL(relativePath, import.meta.url)), 'utf8');
+}
 
 // ─── BUG-06: Verificação de staleTime via inspeção de código ──────────────
 
@@ -27,18 +33,9 @@ describe('useLoginAttempts – BUG-06: staleTime deve ser 30_000', () => {
 
   it('código fonte de useLoginAttempts contém staleTime: 30_000', async () => {
     // Lê o conteúdo do módulo como string para confirmar a configuração
-    const src = await fetch(
-      new URL('../../src/hooks/auth/useLoginAttempts.ts', import.meta.url),
-    ).then((r) => r.text()).catch(() => null);
-
-    if (src !== null) {
-      // Se conseguiu ler o arquivo, verifica o conteúdo
-      expect(src).toContain('staleTime');
-      expect(src).toContain('30_000');
-    } else {
-      // Se não conseguiu (ambiente de CI sem acesso direto), pula graciosamente
-      console.warn('BUG-06: arquivo não acessível via fetch — pulando verificação de conteúdo');
-    }
+    const src = await readSource('../../src/hooks/auth/useLoginAttempts.ts');
+    expect(src).toContain('staleTime');
+    expect(src).toContain('30_000');
   });
 });
 
