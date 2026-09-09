@@ -4,6 +4,7 @@
  * per OWASP best practices.
  */
 import { describe, it, expect, beforeAll } from 'vitest';
+import { createHash } from 'node:crypto';
 import fs from 'fs';
 import path from 'path';
 
@@ -139,6 +140,35 @@ describe('Security Headers: Content-Security-Policy', () => {
     expect(styleSrc).not.toContain("'unsafe-inline'");
   });
 
+  it('allows React inline style attributes without allowing inline style blocks', () => {
+    const styleSrc = csp.match(/style-src\s+([^;]+)/)?.[1] || '';
+    const styleSrcAttr = csp.match(/style-src-attr\s+([^;]+)/)?.[1] || '';
+
+    expect(styleSrc).not.toContain("'unsafe-inline'");
+    expect(styleSrcAttr.trim()).toBe("'unsafe-inline'");
+  });
+
+  it('allows only the deterministic Sonner style element hashes', () => {
+    const styleSrc = csp.match(/style-src\s+([^;]+)/)?.[1] || '';
+    const sonnerBundle = fs.readFileSync(
+      path.resolve(__dirname, '../../node_modules/sonner/dist/index.mjs'),
+      'utf8',
+    );
+    const cssStart = sonnerBundle.indexOf('`:where(html[dir="ltr"])') + 1;
+    const cssEnd = sonnerBundle.indexOf('`);', cssStart);
+
+    expect(cssStart).toBeGreaterThan(0);
+    expect(cssEnd).toBeGreaterThan(cssStart);
+
+    const sonnerCss = sonnerBundle.slice(cssStart, cssEnd);
+    const emptyStyleHash = createHash('sha256').update('').digest('base64');
+    const sonnerStyleHash = createHash('sha256').update(sonnerCss).digest('base64');
+
+    expect(styleSrc).not.toContain("'unsafe-inline'");
+    expect(styleSrc).toContain(`'sha256-${emptyStyleHash}'`);
+    expect(styleSrc).toContain(`'sha256-${sonnerStyleHash}'`);
+  });
+
   it('does not allow unsafe-inline in script-src', () => {
     const scriptSrc = csp.match(/script-src\s+([^;]+)/)![1];
     expect(scriptSrc).not.toContain("'unsafe-inline'");
@@ -177,9 +207,20 @@ describe('Security Headers: Content-Security-Policy', () => {
   });
 
   it('has report-uri or report-to configured', () => {
-    const hasReport =
-      csp.includes('report-uri') || csp.includes('report-to');
+    const hasReport = csp.includes('report-uri') || csp.includes('report-to');
     expect(hasReport).toBe(true);
+  });
+
+  it('contains a syntactically valid hash for the critical boot recovery script', () => {
+    const html = fs.readFileSync(path.resolve(__dirname, '../../index.html'), 'utf8');
+    const bootScript = html.match(/<script>([\s\S]*?var PARAM = '__bare'[\s\S]*?)<\/script>/)?.[1];
+
+    expect(bootScript).toBeDefined();
+    const hash = createHash('sha256').update(bootScript!).digest('base64');
+    const configuredHashes = [...csp.matchAll(/'sha256-([^']+)'/g)].map((match) => match[1]);
+
+    expect(configuredHashes.every((value) => value.length === 44)).toBe(true);
+    expect(configuredHashes).toContain(hash);
   });
 });
 
@@ -187,9 +228,7 @@ describe('Security Headers: public/_headers mirror', () => {
   it('CSP in public/_headers is identical to vercel.json', () => {
     const headersPath = path.resolve(__dirname, '../../public/_headers');
     const raw = fs.readFileSync(headersPath, 'utf-8');
-    const line = raw
-      .split('\n')
-      .find((l) => l.trim().startsWith('Content-Security-Policy:'));
+    const line = raw.split('\n').find((l) => l.trim().startsWith('Content-Security-Policy:'));
     expect(line).toBeDefined();
     const mirrorCsp = line!.trim().replace(/^Content-Security-Policy:\s*/, '');
     expect(mirrorCsp).toBe(findHeader('Content-Security-Policy'));

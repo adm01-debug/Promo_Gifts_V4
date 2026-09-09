@@ -53,6 +53,7 @@ interface Props {
   onOpenChange: (open: boolean) => void;
   onUse: (id: TemplateEntry['id']) => void;
   useLabel: string;
+  isBusy?: boolean;
   isFavorite?: boolean;
   onToggleFavorite?: (id: TemplateEntry['id']) => void;
 }
@@ -97,6 +98,7 @@ function TemplatePreviewDialogImpl({
   onOpenChange,
   onUse,
   useLabel,
+  isBusy = false,
   isFavorite = false,
   onToggleFavorite,
 }: Props) {
@@ -208,6 +210,8 @@ function TemplatePreviewDialogImpl({
             <Button
               size="sm"
               onClick={() => onUse(entry.id)}
+              disabled={isBusy}
+              aria-busy={isBusy}
               className={cn(PG_BTN, 'h-11 rounded-md px-5 text-[14px]')}
               data-testid="template-preview-use"
             >
@@ -502,6 +506,7 @@ export const TemplatePreviewDialog = memo(
   (a, b) =>
     a.entry?.id === b.entry?.id &&
     a.useLabel === b.useLabel &&
+    a.isBusy === b.isBusy &&
     a.isFavorite === b.isFavorite &&
     a.onToggleFavorite === b.onToggleFavorite,
 );

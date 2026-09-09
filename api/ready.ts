@@ -3,6 +3,8 @@ import { randomUUID } from 'node:crypto';
 const CANONICAL_PROJECT_ID = 'doufsxqlfjyuvxuezpln';
 const CANONICAL_SUPABASE_URL = `https://${CANONICAL_PROJECT_ID}.supabase.co`;
 const PROBE_TIMEOUT_MS = 3_000;
+const AUTH_HEALTH_PATH = '/auth/v1/health';
+const POSTGREST_HEALTH_PATH = '/rest/v1/rpc/get_sitemap_public';
 
 interface ApiRequest {
   method?: string;
@@ -14,6 +16,13 @@ interface ApiResponse {
   status(code: number): ApiResponse;
   json(payload: unknown): void;
   end(): void;
+}
+
+interface ProbeResult {
+  status: 'ok' | 'error';
+  latency_ms: number;
+  http_status?: number;
+  reason?: 'timeout' | 'unreachable';
 }
 
 function requestIdFrom(req: ApiRequest): string {
@@ -41,6 +50,31 @@ function respond(
   res.status(statusCode).json(payload);
 }
 
+async function probe(url: string, init: RequestInit): Promise<ProbeResult> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), PROBE_TIMEOUT_MS);
+  const startedAt = Date.now();
+
+  try {
+    const response = await fetch(url, { ...init, signal: controller.signal });
+    const latencyMs = Date.now() - startedAt;
+
+    if (!response.ok) {
+      return { status: 'error', http_status: response.status, latency_ms: latencyMs };
+    }
+
+    return { status: 'ok', latency_ms: latencyMs };
+  } catch (error) {
+    return {
+      status: 'error',
+      reason: error instanceof Error && error.name === 'AbortError' ? 'timeout' : 'unreachable',
+      latency_ms: Date.now() - startedAt,
+    };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 export default async function handler(req: ApiRequest, res: ApiResponse): Promise<void> {
   const requestId = requestIdFrom(req);
   res.setHeader('Cache-Control', 'no-store, max-age=0');
@@ -53,8 +87,8 @@ export default async function handler(req: ApiRequest, res: ApiResponse): Promis
   }
 
   const configuredUrl = (process.env.VITE_SUPABASE_URL || '').replace(/\/$/, '');
-  const configuredProjectId = process.env.VITE_SUPABASE_PROJECT_ID || '';
-  const publishableKey = process.env.VITE_SUPABASE_PUBLISHABLE_KEY || '';
+  const configuredProjectId = (process.env.VITE_SUPABASE_PROJECT_ID || '').trim();
+  const publishableKey = (process.env.VITE_SUPABASE_PUBLISHABLE_KEY || '').trim();
   const configIsCanonical =
     configuredUrl === CANONICAL_SUPABASE_URL && configuredProjectId === CANONICAL_PROJECT_ID;
 
@@ -73,58 +107,45 @@ export default async function handler(req: ApiRequest, res: ApiResponse): Promis
     return;
   }
 
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), PROBE_TIMEOUT_MS);
-  const startedAt = Date.now();
-
-  try {
-    const response = await fetch(`${CANONICAL_SUPABASE_URL}/auth/v1/health`, {
+  const [auth, postgrest] = await Promise.all([
+    probe(`${CANONICAL_SUPABASE_URL}${AUTH_HEALTH_PATH}`, {
       headers: {
         apikey: publishableKey,
         'x-request-id': requestId,
       },
-      signal: controller.signal,
-    });
-    const latencyMs = Date.now() - startedAt;
-
-    if (!response.ok) {
-      respond(req, res, 200, {
-        status: 'degraded',
-        checks: {
-          config: { status: 'ok' },
-          supabase: { status: 'error', http_status: response.status, latency_ms: latencyMs },
-        },
-        requestId,
-        timestamp: new Date().toISOString(),
-      });
-      return;
-    }
-
-    respond(req, res, 200, {
-      status: 'ready',
-      checks: {
-        config: { status: 'ok' },
-        supabase: { status: 'ok', latency_ms: latencyMs },
+    }),
+    probe(`${CANONICAL_SUPABASE_URL}${POSTGREST_HEALTH_PATH}`, {
+      method: 'POST',
+      headers: {
+        apikey: publishableKey,
+        Authorization: `Bearer ${publishableKey}`,
+        'Content-Type': 'application/json',
+        'x-request-id': requestId,
       },
-      requestId,
-      timestamp: new Date().toISOString(),
-    });
-  } catch (error) {
-    const latencyMs = Date.now() - startedAt;
-    respond(req, res, 200, {
+      body: JSON.stringify({ p_limit: 1, p_offset: 0 }),
+    }),
+  ]);
+
+  const checks = {
+    config: { status: 'ok' },
+    auth,
+    postgrest,
+  };
+
+  if (auth.status !== 'ok' || postgrest.status !== 'ok') {
+    respond(req, res, 503, {
       status: 'degraded',
-      checks: {
-        config: { status: 'ok' },
-        supabase: {
-          status: 'error',
-          reason: error instanceof Error && error.name === 'AbortError' ? 'timeout' : 'unreachable',
-          latency_ms: latencyMs,
-        },
-      },
+      checks,
       requestId,
       timestamp: new Date().toISOString(),
     });
-  } finally {
-    clearTimeout(timeout);
+    return;
   }
+
+  respond(req, res, 200, {
+    status: 'ready',
+    checks,
+    requestId,
+    timestamp: new Date().toISOString(),
+  });
 }

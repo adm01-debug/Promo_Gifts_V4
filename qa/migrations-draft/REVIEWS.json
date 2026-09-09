@@ -25,6 +25,18 @@
       "reviewer": "PO",
       "date": "2026-07-01",
       "reason": "Requer .VALIDATION.md antes de promover (bloqueado por draft:promote)."
+    },
+    {
+      "draft": "2026-07-23_get_edge_invoke_summary.sql",
+      "reviewer": "Codex/DBA",
+      "date": "2026-09-09",
+      "reason": "Draft legado fora do escopo Magazine; promoção não autorizada pelo PO e dependente da validação da tabela e da Edge Function consumidora."
+    },
+    {
+      "draft": "2026-09-09_magazine_rpc_only_contract.sql",
+      "reviewer": "Codex/DBA",
+      "date": "2026-09-09",
+      "reason": "Contratação RPC-only deliberadamente adiada até frontend v2 READY e smoke autenticado; aplicar antes quebra clientes legados."
     }
   ]
 }

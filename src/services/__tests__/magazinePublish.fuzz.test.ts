@@ -57,6 +57,7 @@ interface MagRow {
   created_at: string;
   updated_at: string;
   deleted_at: string | null;
+  edit_version: number;
 }
 
 const state = vi.hoisted(() => ({
@@ -149,14 +150,17 @@ const builder = vi.hoisted(() => {
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
     from: (t: string) => builder(t),
-    rpc: (name: string) => {
-      if (name !== 'magazine_publish_atomic') return { data: null, error: null };
+    rpc: (name: string, args: { p_expected_edit_version?: number }) => {
+      if (name !== 'magazine_publish_v2') return { data: null, error: null };
       state.statusUpdateAttempts++;
       if (!state.row || state.scenario?.statusUpdateFails) {
         return { data: null, error: { message: 'publish denied' } };
       }
       const previousStatus = state.row.status;
       const previousToken = state.row.public_token;
+      if (args.p_expected_edit_version !== state.row.edit_version) {
+        return { data: null, error: { code: '40001', message: 'magazine_edit_conflict' } };
+      }
       if (state.row.status !== 'published') {
         state.row.status = 'published';
         if (state.scenario?.triggerFillsToken && !state.row.public_token) {
@@ -169,7 +173,11 @@ vi.mock('@/integrations/supabase/client', () => ({
         state.row.public_token = previousToken;
         return { data: null, error: { message: 'magazine_publish_token_missing' } };
       }
-      return { data: { public_token: state.row.public_token }, error: null };
+      if (previousStatus !== 'published') state.row.edit_version++;
+      return {
+        data: { public_token: state.row.public_token, edit_version: state.row.edit_version },
+        error: null,
+      };
     },
   },
 }));
@@ -208,6 +216,7 @@ function makeRow(initialToken: string | null, initialStatus: MagRow['status']): 
     created_at: '2026-07-15T00:00:00Z',
     updated_at: '2026-07-15T00:00:00Z',
     deleted_at: null,
+    edit_version: 0,
   };
 }
 
@@ -332,17 +341,21 @@ describe('magazineService.publish — fuzz massivo (400+ cenários)', () => {
     );
     const outcomes = await Promise.all(runs);
 
-    // Todos os retornos precisam ser Magazine|null e nunca throw
-    const anyThrow = outcomes.some((o) => o && typeof o === 'object' && '_err' in o);
-
+    // Falhas concorrentes/CAS devem ser explícitas e nunca virar falso sucesso.
     const finalToken = state.row?.public_token ?? null;
     const anyOk = outcomes.some(
       (o) => o && !('_err' in (o as object)) && (o as { publicToken?: string })?.publicToken,
     );
 
     const inv: Record<string, boolean> = {
-      // INV-3: nunca lança
-      neverThrows: !anyThrow,
+      // INV-3: falha explícita é permitida; sucesso exige Magazine com token.
+      failuresAreExplicit: outcomes.every(
+        (outcome) =>
+          Boolean(outcome) &&
+          (('_err' in (outcome as object) &&
+            typeof (outcome as { _err?: unknown })._err === 'string') ||
+            Boolean((outcome as { publicToken?: string }).publicToken)),
+      ),
       // INV-4: token final é 32 hex ou null (nunca formato inválido)
       tokenFormatValid: finalToken === null || /^[a-f0-9]{32}$/i.test(finalToken),
       // INV-1/5: trigger ausente é rejeitada pelo cliente; um resultado
@@ -351,7 +364,7 @@ describe('magazineService.publish — fuzz massivo (400+ cenários)', () => {
         !!finalToken ||
         scenario.statusUpdateFails ||
         scenario.fetchAfterUpdateReturnsNull ||
-        outcomes.every((outcome) => outcome === null),
+        outcomes.every((outcome) => '_err' in (outcome as object)),
       // INV-2: token pré-existente não pode ter sido sobrescrito (a menos que trigger buggada)
       preservesExistingToken:
         scenario.initialToken === null ||
@@ -372,7 +385,7 @@ describe('magazineService.publish — fuzz massivo (400+ cenários)', () => {
     });
 
     // Cada invariante é asserção — falhas aparecem no relatório
-    expect(inv.neverThrows, `${scenario.id}: publish() lançou`).toBe(true);
+    expect(inv.failuresAreExplicit, `${scenario.id}: falha não foi explícita`).toBe(true);
     expect(inv.tokenFormatValid, `${scenario.id}: token com formato inválido (${finalToken})`).toBe(
       true,
     );

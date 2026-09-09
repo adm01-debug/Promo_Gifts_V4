@@ -11517,6 +11517,54 @@ export type Database = {
           },
         ]
       }
+      magazine_duplicate_requests: {
+        Row: {
+          actor_id: string
+          created_at: string
+          idempotency_key: string
+          magazine_id: string
+          request_title: string | null
+          requested_title: string
+          source_edit_version: number
+          source_magazine_id: string
+        }
+        Insert: {
+          actor_id: string
+          created_at?: string
+          idempotency_key: string
+          magazine_id: string
+          request_title?: string | null
+          requested_title: string
+          source_edit_version: number
+          source_magazine_id: string
+        }
+        Update: {
+          actor_id?: string
+          created_at?: string
+          idempotency_key?: string
+          magazine_id?: string
+          request_title?: string | null
+          requested_title?: string
+          source_edit_version?: number
+          source_magazine_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "magazine_duplicate_requests_magazine_id_fkey"
+            columns: ["magazine_id"]
+            isOneToOne: false
+            referencedRelation: "magazines"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "magazine_duplicate_requests_source_magazine_id_fkey"
+            columns: ["source_magazine_id"]
+            isOneToOne: false
+            referencedRelation: "magazines"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       magazine_public_reactions: {
         Row: {
           created_at: string
@@ -11991,6 +12039,7 @@ export type Database = {
           content_settings: Json
           created_at: string
           deleted_at: string | null
+          edit_version: number
           id: string
           organization_id: string | null
           owner_id: string
@@ -12010,6 +12059,7 @@ export type Database = {
           content_settings?: Json
           created_at?: string
           deleted_at?: string | null
+          edit_version?: number
           id?: string
           organization_id?: string | null
           owner_id: string
@@ -12029,6 +12079,7 @@ export type Database = {
           content_settings?: Json
           created_at?: string
           deleted_at?: string | null
+          edit_version?: number
           id?: string
           organization_id?: string | null
           owner_id?: string
@@ -62170,6 +62221,18 @@ export type Database = {
         }
         Returns: Json
       }
+      magazine_add_items_v2: {
+        Args: {
+          p_expected_edit_version: number
+          p_items: Json
+          p_magazine_id: string
+        }
+        Returns: Json
+      }
+      magazine_archive_v2: {
+        Args: { p_expected_edit_version: number; p_magazine_id: string }
+        Returns: Json
+      }
       magazine_auto_archive_stale_drafts: {
         Args: { _ttl_days?: number }
         Returns: number
@@ -62189,21 +62252,54 @@ export type Database = {
         Args: { _ttl_days?: number }
         Returns: number
       }
+      magazine_create_v2: {
+        Args: {
+          p_organization_id: string | null
+          p_template_id: string
+          p_title: string
+        }
+        Returns: Json
+      }
       magazine_duplicate_atomic: {
         Args: { p_source_magazine_id: string; p_title?: string }
+        Returns: Json
+      }
+      magazine_duplicate_v2: {
+        Args: {
+          p_expected_edit_version: number
+          p_idempotency_key: string
+          p_source_magazine_id: string
+          p_title?: string
+        }
         Returns: Json
       }
       magazine_publish_atomic: {
         Args: { p_magazine_id: string }
         Returns: Json
       }
+      magazine_publish_v2: {
+        Args: { p_expected_edit_version: number; p_magazine_id: string }
+        Returns: Json
+      }
       magazine_ensure_view_event_partitions: {
         Args: { _months_ahead?: number }
         Returns: number
       }
+      magazine_import_local_v2: {
+        Args: { p_idempotency_key: string; p_payload: Json }
+        Returns: Json
+      }
       magazine_remove_items_atomic: {
         Args: {
           p_expected_updated_at: string
+          p_item_ids: string[]
+          p_magazine_id: string
+        }
+        Returns: Json
+      }
+      magazine_remove_items_v2: {
+        Args: {
+          p_expected_edit_version: number
           p_item_ids: string[]
           p_magazine_id: string
         }
@@ -62217,10 +62313,51 @@ export type Database = {
         }
         Returns: Json
       }
+      magazine_reorder_items_v2: {
+        Args: {
+          p_expected_edit_version: number
+          p_magazine_id: string
+          p_ordered_item_ids: string[]
+        }
+        Returns: Json
+      }
+      magazine_reactivate_v2: {
+        Args: { p_expected_edit_version: number; p_magazine_id: string }
+        Returns: Json
+      }
+      magazine_restore_v2: {
+        Args: { p_expected_edit_version: number; p_magazine_id: string }
+        Returns: Json
+      }
+      magazine_soft_delete_v2: {
+        Args: { p_expected_edit_version: number; p_magazine_id: string }
+        Returns: Json
+      }
       magazine_rollup_view_counts: { Args: never; Returns: number }
       magazine_update_metadata_atomic: {
         Args: {
           p_expected_updated_at: string
+          p_magazine_id: string
+          p_patch: Json
+        }
+        Returns: Json
+      }
+      magazine_unpublish_v2: {
+        Args: { p_expected_edit_version: number; p_magazine_id: string }
+        Returns: Json
+      }
+      magazine_update_item_v2: {
+        Args: {
+          p_expected_edit_version: number
+          p_item_id: string
+          p_magazine_id: string
+          p_patch: Json
+        }
+        Returns: Json
+      }
+      magazine_update_metadata_v2: {
+        Args: {
+          p_expected_edit_version: number
           p_magazine_id: string
           p_patch: Json
         }

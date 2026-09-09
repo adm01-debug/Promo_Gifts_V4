@@ -41,6 +41,7 @@ const mockMagazineRow = {
   deleted_at: null,
   created_at: '2026-07-16T00:00:00Z',
   updated_at: '2026-07-16T00:00:00Z',
+  edit_version: 0,
 };
 
 const mockItemRow = {
@@ -87,6 +88,19 @@ vi.mock('@/integrations/supabase/client', () => {
   };
 
   const supabaseMock = {
+    rpc: vi.fn(
+      (name: string, args: { p_patch?: { branding?: Partial<MagazineClientBranding> } }) => {
+        if (name !== 'magazine_update_metadata_v2') {
+          return Promise.resolve({ data: null, error: null });
+        }
+        persistedBranding = args.p_patch?.branding ?? null;
+        mockMagazineRow.edit_version++;
+        return Promise.resolve({
+          data: { edit_version: mockMagazineRow.edit_version },
+          error: null,
+        });
+      },
+    ),
     from: vi.fn((table: string) => {
       if (table === 'magazines') {
         return {
@@ -182,6 +196,7 @@ vi.mock('@/lib/telemetry/requestId', () => ({
 
 beforeEach(() => {
   persistedBranding = null;
+  mockMagazineRow.edit_version = 0;
 });
 
 describe('magazineService.updateBranding — partial color patch regression', () => {
@@ -246,11 +261,9 @@ describe('magazineService.updateBranding — partial color patch regression', ()
   it('invalid color in partial patch returns null and does not persist', async () => {
     const { magazineService } = await import('../magazineService');
 
-    const result = await magazineService.updateBranding('mag_brd_1', {
-      colors: { primary: 'not-a-hex' },
-    });
-
-    expect(result).toBeNull();
+    await expect(
+      magazineService.updateBranding('mag_brd_1', { colors: { primary: 'not-a-hex' } }),
+    ).rejects.toThrow('Identidade visual inválida');
     // No branding was persisted
     expect(persistedBranding).toBeNull();
   });
@@ -258,22 +271,21 @@ describe('magazineService.updateBranding — partial color patch regression', ()
   it('XSS in clientLogoUrl is blocked — returns null', async () => {
     const { magazineService } = await import('../magazineService');
 
-    const result = await magazineService.updateBranding('mag_brd_1', {
-      clientLogoUrl: ['javascript', ':', 'alert(1)'].join(''),
-    });
-
-    expect(result).toBeNull();
+    await expect(
+      magazineService.updateBranding('mag_brd_1', {
+        clientLogoUrl: ['javascript', ':', 'alert(1)'].join(''),
+      }),
+    ).rejects.toThrow('Identidade visual inválida');
     expect(persistedBranding).toBeNull();
   });
 
   it('http:// clientLogoUrl is blocked when validateBranding requires https', async () => {
     const { magazineService } = await import('../magazineService');
 
-    const result = await magazineService.updateBranding('mag_brd_1', {
-      clientLogoUrl: 'http://insecure.example.com/logo.png',
-    });
-
-    // validateBranding uses httpsOnly: true for clientLogoUrl
-    expect(result).toBeNull();
+    await expect(
+      magazineService.updateBranding('mag_brd_1', {
+        clientLogoUrl: 'http://insecure.example.com/logo.png',
+      }),
+    ).rejects.toThrow('Identidade visual inválida');
   });
 });

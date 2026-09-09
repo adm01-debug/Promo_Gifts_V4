@@ -600,25 +600,34 @@ export default function MagazineListPage() {
           </div>
         ) : (
           <div className={cn(PG_PANEL, 'overflow-hidden')}>
-            <div className="grid grid-cols-[1fr_auto_auto_auto_auto] items-center gap-4 border-b border-border px-4 py-2.5">
+            <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-border px-4 py-2.5 md:grid-cols-[minmax(0,1fr)_auto_auto_auto_auto] md:gap-4">
               <SortButton field="name" current={sortField} dir={sortDir} onClick={setSortField}>
                 Título
               </SortButton>
-              <span className="w-20 text-right text-[12px] font-medium text-muted-foreground">
+              <span className="hidden w-20 text-right text-[12px] font-medium text-muted-foreground md:block">
                 Status
               </span>
-              <SortButton field="views" current={sortField} dir={sortDir} onClick={setSortField}>
-                Views
-              </SortButton>
-              <SortButton field="updated" current={sortField} dir={sortDir} onClick={setSortField}>
-                Atualizado
-              </SortButton>
+              <span className="hidden md:block">
+                <SortButton field="views" current={sortField} dir={sortDir} onClick={setSortField}>
+                  Views
+                </SortButton>
+              </span>
+              <span className="hidden md:block">
+                <SortButton
+                  field="updated"
+                  current={sortField}
+                  dir={sortDir}
+                  onClick={setSortField}
+                >
+                  Atualizado
+                </SortButton>
+              </span>
               <span className="w-8" />
             </div>
             {filtered.map((m) => (
               <div
                 key={m.id}
-                className="group grid grid-cols-[1fr_auto_auto_auto_auto] items-center gap-4 border-b border-border px-4 py-3 last:border-0 hover:bg-card-elevated"
+                className="group grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-border px-4 py-3 last:border-0 hover:bg-card-elevated md:grid-cols-[minmax(0,1fr)_auto_auto_auto_auto] md:gap-4"
                 data-testid={`magazine-card-${m.id}`}
               >
                 <button
@@ -644,18 +653,23 @@ export default function MagazineListPage() {
                     )}
                   </div>
                 </button>
-                <span className={cn(pgStatusBadge(m.status), 'w-20 justify-center')}>
+                <span
+                  className={cn(
+                    pgStatusBadge(m.status),
+                    'hidden w-20 justify-center md:inline-flex',
+                  )}
+                >
                   {m.status === 'published'
                     ? 'Publicada'
                     : m.status === 'draft'
                       ? 'Rascunho'
                       : 'Arquivada'}
                 </span>
-                <span className="flex w-16 items-center justify-end gap-1 text-[12px] tabular-nums text-muted-foreground">
-                  <Eye className="h-3 w-3" />
+                <span className="hidden w-16 items-center justify-end gap-1 text-[12px] tabular-nums text-muted-foreground md:flex">
+                  <Eye className="h-3 w-3" aria-hidden />
                   {(m.viewCount ?? 0).toLocaleString('pt-BR')}
                 </span>
-                <span className="w-28 text-right text-[12px] text-muted-foreground">
+                <span className="hidden w-28 text-right text-[12px] text-muted-foreground md:block">
                   {formatDistanceToNow(new Date(m.updatedAt), { addSuffix: true, locale: ptBR })}
                 </span>
                 <DropdownMenu>
@@ -663,10 +677,10 @@ export default function MagazineListPage() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-7 w-7 text-muted-foreground opacity-0 transition-opacity focus:opacity-100 group-hover:opacity-100"
+                      className="h-9 w-9 text-muted-foreground opacity-100 transition-opacity md:h-7 md:w-7 md:opacity-0 md:focus:opacity-100 md:group-hover:opacity-100"
                       aria-label="Opções da revista"
                     >
-                      <MoreHorizontal className="h-4 w-4" />
+                      <MoreHorizontal className="h-4 w-4" aria-hidden />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-44">

@@ -9,7 +9,7 @@
  * para <div data-testid="stub-template" />.
  */
 
-import { render, screen, within, fireEvent, waitFor } from '@testing-library/react';
+import { act, render, screen, within, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 const createMagazine = vi.hoisted(() => vi.fn());
@@ -79,9 +79,11 @@ class IOStub {
   observe(el: Element) {
     // Chama callback com isIntersecting=true no próximo tick
     queueMicrotask(() =>
-      this.cb(
-        [{ isIntersecting: true, target: el } as IntersectionObserverEntry],
-        this as unknown as IntersectionObserver,
+      act(() =>
+        this.cb(
+          [{ isIntersecting: true, target: el } as IntersectionObserverEntry],
+          this as unknown as IntersectionObserver,
+        ),
       ),
     );
   }
@@ -214,6 +216,43 @@ describe('MagazineTemplatesGalleryPage', () => {
     expect(screen.getByTestId('template-family-catalog').getAttribute('aria-selected')).toBe(
       'true',
     );
+  });
+
+  it('tabs usam foco móvel e setas para selecionar a próxima família', () => {
+    renderAt('/magazine/templates');
+    const allTab = screen.getByTestId('template-family-all');
+    const editorialTab = screen.getByTestId('template-family-editorial');
+    allTab.focus();
+
+    fireEvent.keyDown(allTab, { key: 'ArrowRight' });
+
+    expect(editorialTab).toHaveFocus();
+    expect(editorialTab).toHaveAttribute('aria-selected', 'true');
+    expect(editorialTab).toHaveAttribute('tabindex', '0');
+    expect(allTab).toHaveAttribute('tabindex', '-1');
+    expect(editorialTab).toHaveAttribute('aria-controls', 'templates-grid');
+  });
+
+  it('desabilita todos os CTAs de uso enquanto uma criação está pendente', async () => {
+    let resolveCreate: ((value: { id: string }) => void) | undefined;
+    createMagazine.mockReturnValueOnce(
+      new Promise((resolve) => {
+        resolveCreate = resolve;
+      }),
+    );
+    renderAt('/magazine/templates');
+
+    fireEvent.click(screen.getByTestId('template-use-editorial-vogue'));
+
+    await waitFor(() => {
+      for (const button of screen.getAllByTestId(/^template-use-/)) {
+        expect(button).toBeDisabled();
+        expect(button).toHaveAttribute('aria-busy', 'true');
+      }
+    });
+    act(() => {
+      resolveCreate?.({ id: 'created-magazine' });
+    });
   });
 
   it('h1 tem data-testid canônico', () => {

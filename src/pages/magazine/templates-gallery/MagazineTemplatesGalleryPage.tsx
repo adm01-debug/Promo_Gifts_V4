@@ -203,6 +203,24 @@ export default function MagazineTemplatesGalleryPage() {
             className="flex flex-wrap items-center gap-2"
             role="tablist"
             aria-label="Filtrar templates por família"
+            onKeyDown={(event) => {
+              if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+              event.preventDefault();
+              const tabs = Array.from(
+                event.currentTarget.querySelectorAll<HTMLButtonElement>('[role="tab"]'),
+              );
+              const current = tabs.findIndex((tab) => tab === document.activeElement);
+              const next =
+                event.key === 'Home'
+                  ? 0
+                  : event.key === 'End'
+                    ? tabs.length - 1
+                    : event.key === 'ArrowLeft'
+                      ? (current - 1 + tabs.length) % tabs.length
+                      : (current + 1) % tabs.length;
+              tabs[next]?.focus();
+              tabs[next]?.click();
+            }}
           >
             {FAMILY_TABS.map((tab) => {
               const active = family === tab.id;
@@ -211,7 +229,10 @@ export default function MagazineTemplatesGalleryPage() {
                   key={tab.id}
                   role="tab"
                   type="button"
+                  id={`template-family-tab-${tab.id}`}
                   aria-selected={active}
+                  aria-controls="templates-grid"
+                  tabIndex={active ? 0 : -1}
                   onClick={() => setFamily(tab.id)}
                   className={pgPill(active, 'h-11 px-4')}
                   data-testid={`template-family-${tab.id}`}
@@ -286,6 +307,7 @@ export default function MagazineTemplatesGalleryPage() {
         {/* Grid de cards */}
         <main
           id="templates-grid"
+          aria-labelledby={`template-family-tab-${family}`}
           className={cn(
             view === 'grid'
               ? 'grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
@@ -301,6 +323,7 @@ export default function MagazineTemplatesGalleryPage() {
               onPreview={handlePreview}
               onUse={handleUse}
               useLabel={useLabel}
+              isBusy={isCreating}
               isFavorite={entry.id === favoriteId}
               onToggleFavorite={toggleFavorite}
               variant={view === 'grid' ? 'grid' : 'row'}
@@ -327,6 +350,7 @@ export default function MagazineTemplatesGalleryPage() {
           handleUse(id);
         }}
         useLabel={useLabel}
+        isBusy={isCreating}
         isFavorite={previewEntry !== null && previewEntry.id === favoriteId}
         onToggleFavorite={toggleFavorite}
       />

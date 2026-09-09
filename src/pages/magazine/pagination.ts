@@ -181,27 +181,46 @@ export function reorderStructuredPageItems(
   }
 
   const perPage = Math.max(1, getTemplate(magazine.templateId)?.productsPerPage ?? 2);
+  const existingProductPages = magazine.pageOrder.pages.filter((page) => page.kind === 'products');
+  const nonProductCount = magazine.pageOrder.pages.length - existingProductPages.length;
+  const availableProductDefinitions = Math.max(0, 200 - nonProductCount);
+
+  // `page_order` is a persisted editing structure, not a 1:1 copy of rendered
+  // pages. A single definition may safely contain several rendered chunks.
+  // Compact overflow into at most 200 definitions instead of persisting an
+  // invalid v2 payload after a template with lower productsPerPage is selected.
+  const idealProductDefinitions =
+    normalized.length === 0 ? existingProductPages.length : Math.ceil(normalized.length / perPage);
+  const productDefinitionCount = Math.min(
+    availableProductDefinitions,
+    Math.max(existingProductPages.length, idealProductDefinitions),
+  );
+  if (normalized.length > 0 && productDefinitionCount === 0) return null;
+  const storedItemsPerDefinition =
+    productDefinitionCount > 0
+      ? Math.max(perPage, Math.ceil(normalized.length / productDefinitionCount))
+      : 0;
+  if (storedItemsPerDefinition > 500) return null;
+
   let cursor = 0;
-  let foundProductPage = false;
+  let productPageIndex = 0;
   const pages = magazine.pageOrder.pages.map((page) => {
     if (page.kind !== 'products') return page;
-    foundProductPage = true;
-    const itemIds = normalized.slice(cursor, cursor + perPage);
+    const itemIds = normalized.slice(cursor, cursor + storedItemsPerDefinition);
     cursor += itemIds.length;
+    productPageIndex += 1;
     return createMagazinePageDefinition('products', { ...page, itemIds });
   });
 
   const additional: MagazinePageDefinition[] = [];
-  while (cursor < normalized.length) {
+  while (productPageIndex < productDefinitionCount) {
     additional.push(
       createMagazinePageDefinition('products', {
-        itemIds: normalized.slice(cursor, cursor + perPage),
+        itemIds: normalized.slice(cursor, cursor + storedItemsPerDefinition),
       }),
     );
-    cursor += perPage;
-  }
-  if (!foundProductPage && normalized.length > 0 && additional.length === 0) {
-    additional.push(createMagazinePageDefinition('products', { itemIds: normalized }));
+    cursor += storedItemsPerDefinition;
+    productPageIndex += 1;
   }
   if (additional.length > 0) {
     const closingIndex = pages.findIndex(
@@ -209,7 +228,8 @@ export function reorderStructuredPageItems(
     );
     pages.splice(closingIndex < 0 ? pages.length : closingIndex, 0, ...additional);
   }
-  return { version: 2, pages };
+  const next = { version: 2 as const, pages };
+  return isMagazinePageOrderV2(next) ? next : null;
 }
 
 function paginateStructured(

@@ -160,10 +160,6 @@
       "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
     },
     {
-      "fn": "public.fn_run_and_persist_smoke_tests()",
-      "reason": "SECURITY DEFINER deliberado e revalidado via pg_catalog em 2026-09-09: search_path=public, owner postgres e EXECUTE exclusivamente para postgres/service_role; anon e authenticated não possuem execução. Mantido para persistência interna dos smoke tests."
-    },
-    {
       "fn": "public.fn_rupture_by_level(p_nivel text, p_limit integer, p_offset integer, p_preferred boolean)",
       "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
     },
@@ -250,6 +246,66 @@
     {
       "fn": "public.is_org_owner_or_admin(org_id uuid)",
       "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+    },
+    {
+      "fn": "public.get_sitemap_public(p_limit integer, p_offset integer)",
+      "reason": "Endpoint público read-only do sitemap (2026-09-09): retorna somente revistas publicadas, não apagadas e com token público; paginação limitada, search_path fixo e nenhuma mutação. EXECUTE para anon é deliberado."
+    },
+    {
+      "fn": "public.magazine_add_items_v2(p_magazine_id uuid, p_expected_edit_version bigint, p_items jsonb)",
+      "reason": "RPC Magazine v2: auth.uid obrigatório, owner/admin, revista draft, lock + CAS monotônico, validação/deduplicação de itens e search_path fixo; anon/PUBLIC revogados."
+    },
+    {
+      "fn": "public.magazine_archive_v2(p_magazine_id uuid, p_expected_edit_version bigint)",
+      "reason": "RPC Magazine v2: auth.uid obrigatório, owner/admin, lock + CAS e transição de estado validada; anon/PUBLIC revogados."
+    },
+    {
+      "fn": "public.magazine_create_v2(p_organization_id uuid, p_title text, p_template_id text)",
+      "reason": "RPC Magazine v2: auth.uid obrigatório, organização validada, campos limitados e nova revista atribuída ao ator como draft; anon/PUBLIC revogados."
+    },
+    {
+      "fn": "public.magazine_duplicate_v2(p_source_magazine_id uuid, p_expected_edit_version bigint, p_idempotency_key text, p_title text)",
+      "reason": "RPC Magazine v2: auth.uid obrigatório, owner/admin, CAS, chave idempotente vinculada ao payload/ator e cópia atribuída ao ator como draft; anon/PUBLIC revogados."
+    },
+    {
+      "fn": "public.magazine_import_local_v2(p_idempotency_key text, p_payload jsonb)",
+      "reason": "Importação Magazine v2: auth.uid obrigatório, payload validado/limitado, idempotência por ator e gravação somente de revistas pertencentes ao ator; anon/PUBLIC revogados."
+    },
+    {
+      "fn": "public.magazine_publish_v2(p_magazine_id uuid, p_expected_edit_version bigint)",
+      "reason": "RPC Magazine v2: auth.uid obrigatório, owner/admin, lock + CAS, validação de conteúdo/páginas e publicação atômica; anon/PUBLIC revogados."
+    },
+    {
+      "fn": "public.magazine_reactivate_v2(p_magazine_id uuid, p_expected_edit_version bigint)",
+      "reason": "RPC Magazine v2: auth.uid obrigatório, owner/admin, lock + CAS e reativação controlada para draft; anon/PUBLIC revogados."
+    },
+    {
+      "fn": "public.magazine_remove_items_v2(p_magazine_id uuid, p_expected_edit_version bigint, p_item_ids uuid[])",
+      "reason": "RPC Magazine v2: auth.uid obrigatório, owner/admin, revista draft, lock + CAS e remoção restrita aos IDs da revista; anon/PUBLIC revogados."
+    },
+    {
+      "fn": "public.magazine_reorder_items_v2(p_magazine_id uuid, p_expected_edit_version bigint, p_ordered_item_ids uuid[])",
+      "reason": "RPC Magazine v2: auth.uid obrigatório, owner/admin, revista draft, lock + CAS e permutação completa sem IDs externos/duplicados; anon/PUBLIC revogados."
+    },
+    {
+      "fn": "public.magazine_restore_v2(p_magazine_id uuid, p_expected_edit_version bigint)",
+      "reason": "RPC Magazine v2: auth.uid obrigatório, owner/admin, lock + CAS e restauração controlada para draft; anon/PUBLIC revogados."
+    },
+    {
+      "fn": "public.magazine_soft_delete_v2(p_magazine_id uuid, p_expected_edit_version bigint)",
+      "reason": "RPC Magazine v2: auth.uid obrigatório, owner/admin, lock + CAS e exclusão lógica sem apagar dados; anon/PUBLIC revogados."
+    },
+    {
+      "fn": "public.magazine_unpublish_v2(p_magazine_id uuid, p_expected_edit_version bigint)",
+      "reason": "RPC Magazine v2: auth.uid obrigatório, owner/admin, lock + CAS e retirada atômica da publicação; anon/PUBLIC revogados."
+    },
+    {
+      "fn": "public.magazine_update_item_v2(p_magazine_id uuid, p_expected_edit_version bigint, p_item_id uuid, p_patch jsonb)",
+      "reason": "RPC Magazine v2: auth.uid obrigatório, owner/admin, revista draft, lock + CAS, whitelist de patch e item limitado à revista; anon/PUBLIC revogados."
+    },
+    {
+      "fn": "public.magazine_update_metadata_v2(p_magazine_id uuid, p_expected_edit_version bigint, p_patch jsonb)",
+      "reason": "RPC Magazine v2: auth.uid obrigatório, owner/admin, revista draft, lock + CAS e whitelist/validação null-safe de metadados; anon/PUBLIC revogados."
     },
     {
       "fn": "public.magazine_add_items_atomic(p_magazine_id uuid, p_expected_updated_at timestamp with time zone, p_items jsonb)",

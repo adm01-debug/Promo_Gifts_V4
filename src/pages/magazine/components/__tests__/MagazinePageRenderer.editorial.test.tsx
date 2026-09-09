@@ -54,4 +54,35 @@ describe('MagazinePageRenderer — páginas editoriais', () => {
       expect(container.querySelector('img[src="https://example.com/base.png"]')).toBeNull();
     },
   );
+
+  it('usa categoria segura quando o JSON legado contém chave desconhecida', () => {
+    const magazine = buildMockMagazine('editorial-vogue');
+    magazine.branding.category = 'legacy-invalid' as never;
+
+    const { container } = render(
+      <MagazinePageRenderer magazine={magazine} page={{ index: 0, kind: 'cover', items: [] }} />,
+    );
+
+    expect(
+      container
+        .querySelector<HTMLElement>('.mag-scope')
+        ?.style.getPropertyValue('--mag-category-color'),
+    ).toBe('#2e4c60');
+  });
+
+  it.each(['contact', 'back-cover'] as const)(
+    'escolhe tinta escura legível para a categoria clara em %s',
+    (kind) => {
+      const magazine = buildMockMagazine('editorial-vogue');
+      magazine.branding.category = 'bags';
+
+      const { container } = render(
+        <MagazinePageRenderer magazine={magazine} page={{ index: 2, kind, items: [] }} />,
+      );
+
+      expect(container.querySelector<HTMLElement>('.mag-page')?.style.color).toBe(
+        'rgb(26, 26, 26)',
+      );
+    },
+  );
 });

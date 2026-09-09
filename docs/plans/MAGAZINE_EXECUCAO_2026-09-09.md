@@ -1,15 +1,53 @@
 # Magazine — execução incremental do plano de 50 etapas
 
-Data: 09/09/2026. Rodadas: `codex/magazine-integrity-20260909` e
-`codex/magazine-wave2-live-20260909`.
-Base da segunda rodada: `e44377ee64b5dd5fd4a83b769496a535375a79b0`.
-Worktree da segunda rodada: `/tmp/promo-magazine-wave2-20260909`.
+Data: 09/09/2026. Rodadas: `codex/magazine-integrity-20260909`,
+`codex/magazine-wave2-live-20260909` e `codex/magazine-hardening-20260909`.
+Base da rodada de hardening: `80cf74ecc8daff4b7da54d6306dc4a9d19bf3abe`
+(`origin/main`, merge do PR #1852).
 
 ## Veredito
 
-**Cinco rodadas de código implementadas e testadas; o plano de 50 etapas NÃO está concluído.** A terceira rodada implementa o modelo editorial estruturado decidido pelo PO; a quarta e a quinta corrigem os achados das revisões finais. Seis RPCs transacionais e suas dez versões forward-only foram autorizadas, aplicadas e validadas no banco canônico. O checklist de homologação integral continua aberto. Não há base para declarar 10/10 ou fidelidade pixel a pixel às cinco imagens; o código ainda depende do merge e do deployment da Vercel.
+**A implementação local da rodada de hardening foi concluída e validada, mas a
+publicação desta rodada ainda não está concluída.** As cinco rodadas anteriores e
+o PR #1852 já estão na `main`; a sexta rodada fecha os callers RPC-first, CAS entre
+usuários, importação local atômica, estados imutáveis, sitemap/ready fail-closed,
+CSP e gates. Os objetos `20260909200000`, `20260909201000` e `20260909210000`
+foram aplicados depois do preflight vazio, em transação única, pelo run
+[34412078447](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/34412078447).
+O postflight do run e uma leitura independente pelo MCP oficial confirmaram o
+estado final no projeto canônico. A auditoria posterior dos advisors encontrou
+duas FKs sem índice e duas policies de partição com `auth.uid()` reavaliado por
+linha; `20260909220000` e `20260909221000` corrigiram esses pontos pelos runs
+[34413883474](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/34413883474)
+e [34414192408](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/34414192408).
 
-A instrução explícita do PO autorizou páginas estruturadas (`capa`, `institucional`, `seção`, `produtos`, `contato`), reutilização dos assets atuais e, em seguida, a aplicação das RPCs atômicas. O Supabase canônico recebeu somente seis funções e dez registros de migration forward-only, sem alteração ou remoção de tabela/coluna.
+O checklist de homologação integral continua aberto. Não há base para declarar
+10/10 ou fidelidade pixel a pixel às cinco imagens: os assets foram autorizados
+como aproximação e o ciclo autenticado na produção depende do rollout abaixo.
+
+A instrução explícita do PO autorizou páginas estruturadas (`capa`,
+`institucional`, `seção`, `produtos`, `contato`), reutilização dos assets atuais
+e a aplicação das RPCs atômicas. A rodada final registrou cinco migrations
+forward-only, 15 funções esperadas, dois índices e a otimização semântica das
+policies de partição, sem remover tabela, coluna ou dado.
+
+## Rodada de hardening — estado verificável antes da publicação
+
+| Camada | Estado | Evidência |
+|---|---|---|
+| Código | Validado local | 44 arquivos e 785 testes Magazine aprovados; cobertura crítica aprovada; TypeScript, build, SSOT, `actionlint`, sintaxe shell e `git diff --check` verdes. |
+| Browser | Validado local | 11 cenários Chromium aprovados, incluindo 390 px, estados publicado/arquivado somente leitura, A4, retry e páginas estruturadas; nenhum `console.error` inesperado. |
+| PostgreSQL 17 | Validado descartável | Migration expansiva, importação transacional, rollback, replay, remapeamento e contrato restritivo compilaram e passaram em banco efêmero. |
+| Edge Function | Publicada; smoke autenticado pendente | `deno lint`, `deno check` e 3 testes locais aprovados; `magazine-import-local` republicada do SHA reconciliado pelo run [34413201838](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/34413201838); chamada sem token retorna 401 no projeto canônico. |
+| GitHub | Branch e PR publicados; merge pendente | PR [#1853](https://github.com/adm01-debug/Promo_Gifts_V4/pull/1853) aberto em `codex/magazine-hardening-20260909`; merge somente depois dos gates bloqueantes. |
+| Supabase canônico | Expansão aplicada e validada | 5/5 migrations desta rodada, 15/15 funções, `magazines.edit_version`, dois índices de FK e policies otimizadas confirmados em PostgreSQL 17.6. `anon` executa somente o endpoint público de sitemap. |
+| Produção Vercel | Baseline saudável, hardening pendente | O baseline `80cf74e` respondia 200 em `/api/health`, `/api/ready`, `/magazine` e `/sitemap.xml`; isso não valida o código desta rodada. |
+
+A migration restritiva foi deliberadamente separada em
+`qa/migrations-draft/2026-09-09_magazine_rpc_only_contract.sql`. Ela só pode ser
+promovida/aplicada depois de o novo frontend estar `READY` na Vercel e o smoke
+autenticado comprovar os novos callers. Essa separação evita revogar o caminho
+legado enquanto o cliente anterior ainda atende produção.
 
 ## Evidências executadas
 
@@ -29,6 +67,12 @@ A instrução explícita do PO autorizou páginas estruturadas (`capa`, `institu
 - O run corretivo [34395700558](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/34395700558) aplicou as versões `20260909190000` e `20260909190100` em transação única. O MCP oficial confirmou remapeamento de IDs na duplicação, validação null-safe, duas versões registradas, `anon=false` e grants somente para `authenticated`/`service_role`. A constraint de posição live é diferível e inicialmente adiada; o alerta de colisão na troca era falso positivo comprovado.
 - O run final [34397795301](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/34397795301) aplicou `20260909190200` e `20260909190300` em transação única. O preflight encontrou `add=1`, `publish=0` e zero versões; o postflight confirmou duas funções, duas versões e zero grants para `anon`. O MCP oficial confirmou as nove versões, seis RPCs, guarda explícita para payload SQL nulo e publicação com lock/validação do token na mesma transação. Os tipos oficiais gerados contêm a mesma assinatura versionada no cliente.
 - O run [34399151305](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/34399151305) aplicou `20260909190400`: preflight `functions=1/migrations=0`, postflight `1/1/anon=0`. O MCP oficial confirmou dez versões, discriminador v2 obrigatoriamente numérico e predicado null-safe na definição live.
+- Os advisors posteriores ao DDL não reportam mais FKs sem índice nem
+  `auth_rls_initplan` nas partições Magazine. O aviso informativo
+  `rls_enabled_no_policy` de `magazine_duplicate_requests` é intencional: a
+  tabela é exclusivamente interna às funções `SECURITY DEFINER`, tem todos os
+  privilégios diretos revogados para `PUBLIC`, `anon` e `authenticated`, e a
+  ausência de policies mantém o acesso direto negado por padrão.
 
 Ambiente de browser: componentes reais, shell mínimo, CRM/autenticação/catálogo/persistência simulados, requisições externas bloqueadas e service workers desabilitados. O client canônico pode emitir aviso de configuração ausente ao carregar módulos; a rede externa permanece bloqueada e os métodos de persistência são substituídos. Isso não é integração real com Supabase. Não foram usados secrets nem dados de clientes reais.
 
@@ -105,11 +149,11 @@ Ambiente de browser: componentes reais, shell mínimo, CRM/autenticação/catál
 
 ## Próxima sequência segura
 
-1. Concluir os gates do PR #1852, integrar na `main` e validar o deployment Vercel; não contornar o gate final obrigatório.
-2. Ativar os quatro callers RPC-first restantes em mudança separada, com fallback, conflitos visíveis, telemetria e teste autenticado; não remover o caminho legado na mesma mudança.
-3. Resolver paginação/contagens do catálogo e CRM, favoritos, variantes e paridade grade/lista, preservando o que esta rodada entregou.
-4. Homologar as páginas estruturadas no shell completo e decidir se os assets aproximados são suficientes ou se haverá fornecimento de fotografias finais.
-5. Reconciliar fontes/registry, testes visuais com IDs obsoletos e capturar as cinco telas no shell completo; não aceitar baselines automaticamente.
+1. Abrir o PR da branch já publicada contra a `main`; executar todos os gates, sem bypass.
+2. Integrar o PR somente com os gates verdes e aguardar deployment Vercel `READY`.
+3. Validar `/api/health`, `/api/ready`, `/sitemap.xml`, `/magazine`, ciclo draft/publicado/arquivado, importação/replay autenticados e duas sessões concorrentes.
+4. Promover e aplicar a migration restritiva RPC-only; repetir smoke e auditoria de ACL/RLS.
+5. Manter como backlog explícito — não como falso concluído — favoritos, paginação server-side do CRM, assets fotográficos finais e comparação pixel a pixel no shell completo.
 
 ## Reprodução e artefatos
 

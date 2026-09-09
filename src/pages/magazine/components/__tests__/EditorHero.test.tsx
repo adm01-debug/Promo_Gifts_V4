@@ -59,13 +59,21 @@ function renderHero() {
 }
 
 describe('EditorHero — sem mini preview', () => {
+  it('desabilita a troca de template em modo somente leitura', () => {
+    render(
+      <MemoryRouter>
+        <EditorHero magazine={magazine} onChangeTemplate={() => {}} readOnly />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByTestId('magazine-template-swap-trigger')).toBeDisabled();
+  });
+
   it('renderiza título e breadcrumb sem TemplateThumbnail no hero', () => {
     renderHero();
 
     expect(screen.getByTestId('editor-hero')).toBeInTheDocument();
-    expect(
-      screen.getByRole('heading', { level: 1, name: /Nova Revista/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: /Nova Revista/i })).toBeInTheDocument();
     expect(screen.getByText('Magazines')).toBeInTheDocument();
     // A miniatura antiga usava um SVG `role="img"` fiel. Sem ela, nada de img.
     expect(screen.queryAllByRole('img')).toHaveLength(0);
@@ -75,9 +83,7 @@ describe('EditorHero — sem mini preview', () => {
     const user = userEvent.setup();
     renderHero();
 
-    await user.click(
-      screen.getByRole('button', { name: /Trocar template da revista/i }),
-    );
+    await user.click(screen.getByRole('button', { name: /Trocar template da revista/i }));
 
     // Grid de radios renderizado
     expect(
@@ -98,9 +104,7 @@ describe('EditorHero — sem mini preview', () => {
       </MemoryRouter>,
     );
 
-    await user.click(
-      screen.getByRole('button', { name: /Trocar template da revista/i }),
-    );
+    await user.click(screen.getByRole('button', { name: /Trocar template da revista/i }));
 
     const _group = await screen.findByRole('radiogroup', {
       name: /Escolher template/i,
@@ -111,9 +115,7 @@ describe('EditorHero — sem mini preview', () => {
 
     // Escolhe um radio diferente do template ativo (editorial-vogue)
     const radios = screen.getAllByRole('radio');
-    const target = radios.find(
-      (r) => r.getAttribute('aria-checked') === 'false',
-    );
+    const target = radios.find((r) => r.getAttribute('aria-checked') === 'false');
     expect(target).toBeDefined();
     expect(_group).toContainElement(target!);
 
@@ -158,15 +160,13 @@ describe('EditorHero — sem mini preview', () => {
     });
 
     // Heading acessível visível dentro do popover
-    expect(
-      document.getElementById('magazine-template-swap-heading'),
-    ).toHaveTextContent(/Trocar template/i);
+    expect(document.getElementById('magazine-template-swap-heading')).toHaveTextContent(
+      /Trocar template/i,
+    );
 
     // Escolhe primeiro radio não-selecionado via foco + Enter
     const radios = screen.getAllByRole('radio');
-    const target = radios.find(
-      (r) => r.getAttribute('aria-checked') === 'false',
-    );
+    const target = radios.find((r) => r.getAttribute('aria-checked') === 'false');
     expect(target).toBeDefined();
     target!.focus();
     expect(target).toHaveFocus();

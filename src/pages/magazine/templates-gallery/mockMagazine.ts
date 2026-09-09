@@ -214,6 +214,7 @@ export function buildMockMagazine(templateId: MagazineTemplateId): Magazine {
     items: ITEMS,
     pageOrder: null,
     status: 'draft',
+    editVersion: 0,
     publicToken: null,
     viewCount: 0,
     publishedAt: null,

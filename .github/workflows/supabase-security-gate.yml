@@ -39,9 +39,10 @@ jobs:
         run: npm ci
 
       - name: Setup Supabase CLI
-        uses: supabase/setup-cli@v1
+        uses: supabase/setup-cli@v2
         with:
-          version: latest
+          # Pin evita falso vermelho por rate limit ao resolver "latest".
+          version: 2.101.0
 
       # ─────────────────────────────────────────────
       # CHECK 1: lint das migrations (idempotência, style)

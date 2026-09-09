@@ -34,7 +34,8 @@ jobs:
     if: |
       !contains(github.event.head_commit.message, '[autoheal]') &&
       !startsWith(github.event.head_commit.message, 'Merge pull request #') &&
-      !startsWith(github.event.head_commit.message, 'Merge PR #')
+      !startsWith(github.event.head_commit.message, 'Merge PR #') &&
+      !startsWith(github.event.head_commit.message, 'merge(pr-')
 
     steps:
       - name: Checkout

@@ -1,12 +1,10 @@
 /**
- * Testes de useMagazineGoldImport — foco no fallback silencioso para
- * respostas 401/403 da edge `magazine-import-local`.
+ * Testes de useMagazineGoldImport — importação integral, em lotes e retomável.
  *
  * Contrato validado:
- *  1. 401 → NÃO lança, encerra silenciosamente, marca migrated (não reentra).
- *  2. 403 → mesmo comportamento.
- *  3. 500 (não-auth) → NÃO marca migrated (tenta de novo em outra sessão).
- *  4. Após 401, rehidratar o hook não dispara nova chamada (idempotência).
+ *  1. Nenhum erro HTTP ou parcial marca migrated.
+ *  2. 201+ revistas são enviadas em múltiplos lotes, sem truncamento.
+ *  3. Retry após resposta ambígua reenviará os mesmos localIds idempotentes.
  *  5. Logs incluem `status`, `request_id` (header X-Request-Id) e `error_code`
  *     do body — cobre a correlação para diagnóstico rápido.
  *  6. Sem localStorage legado → não bate na edge, marca migrated direto.
@@ -22,6 +20,8 @@ type FetchReply =
 
 const fetchCalls: Array<{ url: string; init?: RequestInit }> = [];
 let importReply: FetchReply = { kind: 'ok', body: { results: [] } };
+let importReplyFactory:
+  ((requestBody: { magazines?: Array<{ localId?: string }> }) => FetchReply) | null = null;
 
 function makeResponse(reply: FetchReply): Promise<Response> {
   if (reply.kind === 'ok') {
@@ -45,7 +45,12 @@ function makeResponse(reply: FetchReply): Promise<Response> {
 const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
   const url = typeof input === 'string' ? input : input.toString();
   fetchCalls.push({ url, init });
-  if (url.includes('magazine-import-local')) return makeResponse(importReply);
+  if (url.includes('magazine-import-local')) {
+    const requestBody = JSON.parse(String(init?.body ?? '{}')) as {
+      magazines?: Array<{ localId?: string }>;
+    };
+    return makeResponse(importReplyFactory?.(requestBody) ?? importReply);
+  }
   return new Response('{}', { status: 200 });
 });
 globalThis.fetch = fetchMock as unknown as typeof fetch;
@@ -115,6 +120,7 @@ function makeLegacyMagazine(overrides: Partial<Record<string, unknown>> = {}) {
     branding: {},
     content: {},
     status: 'draft',
+    pageOrder: null,
     items: [],
     ...overrides,
   };
@@ -127,14 +133,15 @@ function resetAll() {
   capturedLogs.length = 0;
   fetchMock.mockClear();
   importReply = { kind: 'ok', body: { results: [] } };
+  importReplyFactory = null;
   sessionToken = 'valid-access-token';
 }
 
 beforeEach(() => resetAll());
 afterEach(() => vi.clearAllTimers());
 
-describe('useMagazineGoldImport — fallback 401/403', () => {
-  it('401 → encerra silenciosamente, marca migrated, não relança', async () => {
+describe('useMagazineGoldImport — conclusão integral e batches', () => {
+  it('401 → encerra silenciosamente sem marcar migrated', async () => {
     localStorage.setItem(LEGACY_KEY, JSON.stringify([makeLegacyMagazine()]));
     importReply = {
       kind: 'status',
@@ -148,8 +155,7 @@ describe('useMagazineGoldImport — fallback 401/403', () => {
     await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
     await waitFor(() => expect(result.current.importing).toBe(false));
 
-    // Não lançou, importing = false, migrated marcado
-    expect(localStorage.getItem(MIGRATED_KEY)).toBe('1');
+    expect(localStorage.getItem(MIGRATED_KEY)).toBeNull();
     expect(toastCalls.filter((t) => t.level === 'error')).toHaveLength(0);
 
     // Log de diagnóstico com status + request_id + error_code
@@ -160,12 +166,9 @@ describe('useMagazineGoldImport — fallback 401/403', () => {
       request_id: 'req-401-xyz',
       error_code: 'unauthorized',
     });
-
-    // Log de skip por auth
-    expect(capturedLogs.some((l) => l.event === 'magazine_import_local_skipped_auth')).toBe(true);
   });
 
-  it('403 → mesmo comportamento (marca migrated)', async () => {
+  it('403 → não marca migrated', async () => {
     localStorage.setItem(LEGACY_KEY, JSON.stringify([makeLegacyMagazine()]));
     importReply = {
       kind: 'status',
@@ -176,7 +179,8 @@ describe('useMagazineGoldImport — fallback 401/403', () => {
     renderHook(() => useMagazineGoldImport(USER_ID));
 
     await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
-    await waitFor(() => expect(localStorage.getItem(MIGRATED_KEY)).toBe('1'));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+    expect(localStorage.getItem(MIGRATED_KEY)).toBeNull();
 
     const failedLog = capturedLogs.find((l) => l.event === 'magazine_import_local_failed');
     expect(failedLog?.fields).toMatchObject({ status: 403, request_id: 'req-403-abc' });
@@ -190,25 +194,178 @@ describe('useMagazineGoldImport — fallback 401/403', () => {
 
     await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
     // Aguarda o hook estabilizar sem marcar migrated
-    await new Promise<void>((r) => { setTimeout(r, 20); });
+    await new Promise<void>((r) => {
+      setTimeout(r, 20);
+    });
     expect(localStorage.getItem(MIGRATED_KEY)).toBeNull();
   });
 
-  it('após 401, novo mount NÃO chama a edge de novo (loop guard)', async () => {
+  it('após resposta ambígua, novo mount repete o mesmo localId e conclui', async () => {
     localStorage.setItem(LEGACY_KEY, JSON.stringify([makeLegacyMagazine()]));
-    importReply = { kind: 'status', status: 401, body: { error: 'unauthorized' } };
+    importReply = { kind: 'status', status: 503, body: { error: 'upstream_timeout' } };
 
     const first = renderHook(() => useMagazineGoldImport(USER_ID));
-    await waitFor(() => expect(localStorage.getItem(MIGRATED_KEY)).toBe('1'));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+    expect(localStorage.getItem(MIGRATED_KEY)).toBeNull();
     first.unmount();
 
-    fetchMock.mockClear();
-    fetchCalls.length = 0;
+    importReplyFactory = (body) => {
+      const results = (body.magazines ?? []).map(({ localId }) => ({
+        localId,
+        newId: `server-${localId}`,
+        publicToken: null,
+        idempotent: true,
+      }));
+      return {
+        kind: 'ok',
+        body: { results, complete: true, successCount: results.length, failureCount: 0 },
+      };
+    };
 
     renderHook(() => useMagazineGoldImport(USER_ID));
-    // Como migrated=1, o hook deve retornar cedo sem tocar em fetch
-    await new Promise<void>((r) => { setTimeout(r, 20); });
-    expect(fetchMock).not.toHaveBeenCalled();
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(localStorage.getItem(MIGRATED_KEY)).toBe('1'));
+    const ids = fetchCalls.map(
+      (call) =>
+        (JSON.parse(String(call.init?.body)) as { magazines: Array<{ localId: string }> })
+          .magazines[0]?.localId,
+    );
+    expect(ids).toEqual(['mag_legacy_1', 'mag_legacy_1']);
+  });
+
+  it('não marca migrated quando uma resposta 200 contém falha parcial', async () => {
+    localStorage.setItem(
+      LEGACY_KEY,
+      JSON.stringify([
+        makeLegacyMagazine({ id: 'mag-ok' }),
+        makeLegacyMagazine({ id: 'mag-fail' }),
+      ]),
+    );
+    importReply = {
+      kind: 'ok',
+      body: {
+        results: [
+          { localId: 'mag-ok', newId: 'server-ok', publicToken: null },
+          { localId: 'mag-fail', newId: null, publicToken: null, error: 'invalid_payload' },
+        ],
+        complete: false,
+        successCount: 1,
+        failureCount: 1,
+      },
+    };
+
+    const { result } = renderHook(() => useMagazineGoldImport(USER_ID));
+    await waitFor(() => expect(result.current.lastResult).toHaveLength(2));
+    expect(localStorage.getItem(MIGRATED_KEY)).toBeNull();
+  });
+
+  it('envia 201 revistas em lotes de 200+1 e só então marca migrated', async () => {
+    const magazines = Array.from({ length: 201 }, (_, index) =>
+      makeLegacyMagazine({ id: `mag-${index}` }),
+    );
+    localStorage.setItem(LEGACY_KEY, JSON.stringify(magazines));
+    importReplyFactory = (body) => {
+      const results = (body.magazines ?? []).map(({ localId }) => ({
+        localId,
+        newId: `server-${localId}`,
+        publicToken: null,
+      }));
+      return {
+        kind: 'ok',
+        body: { results, complete: true, successCount: results.length, failureCount: 0 },
+      };
+    };
+
+    const { result } = renderHook(() => useMagazineGoldImport(USER_ID));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(result.current.lastResult).toHaveLength(201));
+    expect(localStorage.getItem(MIGRATED_KEY)).toBe('1');
+    const sizes = fetchCalls.map(
+      (call) => (JSON.parse(String(call.init?.body)) as { magazines: unknown[] }).magazines.length,
+    );
+    expect(sizes).toEqual([200, 1]);
+  });
+
+  it('preserva pageOrder e IDs locais dos itens para remapeamento transacional', async () => {
+    const itemId = 'item_local_1';
+    const pageOrder = {
+      version: 2,
+      pages: [
+        { id: 'cover', kind: 'cover' },
+        { id: 'products', kind: 'products', itemIds: [itemId] },
+        { id: 'contact', kind: 'contact' },
+      ],
+    };
+    localStorage.setItem(
+      LEGACY_KEY,
+      JSON.stringify([
+        makeLegacyMagazine({
+          pageOrder,
+          items: [
+            {
+              id: itemId,
+              productId: '10000000-0000-0000-0000-000000000001',
+              productSnapshot: {},
+              position: 0,
+              pageNumber: null,
+              overrides: {},
+            },
+          ],
+        }),
+      ]),
+    );
+    importReplyFactory = (body) => {
+      const results = (body.magazines ?? []).map(({ localId }) => ({
+        localId,
+        newId: 'server-id',
+        publicToken: null,
+      }));
+      return {
+        kind: 'ok',
+        body: { results, complete: true, successCount: 1, failureCount: 0 },
+      };
+    };
+
+    renderHook(() => useMagazineGoldImport(USER_ID));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+    const sent = (
+      JSON.parse(String(fetchCalls[0]?.init?.body)) as {
+        magazines: Array<{
+          pageOrder: unknown;
+          items: Array<{ localItemId: string }>;
+        }>;
+      }
+    ).magazines[0];
+    expect(sent.pageOrder).toEqual(pageOrder);
+    expect(sent.items[0].localItemId).toBe(itemId);
+  });
+
+  it('não trunca revista com mais de 500 itens nem marca migrated após rejeição', async () => {
+    const items = Array.from({ length: 501 }, (_, index) => ({
+      id: `item-${index}`,
+      productId: `10000000-0000-0000-0000-${String(index).padStart(12, '0')}`,
+      productSnapshot: {},
+      position: index,
+      pageNumber: null,
+      overrides: {},
+    }));
+    localStorage.setItem(
+      LEGACY_KEY,
+      JSON.stringify([makeLegacyMagazine({ id: 'mag-too-large', items })]),
+    );
+    importReply = {
+      kind: 'status',
+      status: 400,
+      body: { error: 'invalid_request', details: { magazines: ['Too many items'] } },
+    };
+
+    renderHook(() => useMagazineGoldImport(USER_ID));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+    const sent = JSON.parse(String(fetchCalls[0]?.init?.body)) as {
+      magazines: Array<{ items: unknown[] }>;
+    };
+    expect(sent.magazines[0]?.items).toHaveLength(501);
+    expect(localStorage.getItem(MIGRATED_KEY)).toBeNull();
   });
 
   it('sem localStorage legado → marca migrated direto, não chama edge', async () => {
@@ -222,9 +379,12 @@ describe('useMagazineGoldImport — fallback 401/403', () => {
     localStorage.setItem(LEGACY_KEY, JSON.stringify([makeLegacyMagazine()]));
     sessionToken = null;
 
-    renderHook(() => useMagazineGoldImport(USER_ID));
+    const { result } = renderHook(() => useMagazineGoldImport(USER_ID));
 
-    await new Promise<void>((r) => { setTimeout(r, 20); });
+    await waitFor(() =>
+      expect(capturedLogs.some((log) => log.event === 'magazine_import_local_skipped')).toBe(true),
+    );
+    await waitFor(() => expect(result.current.importing).toBe(false));
     expect(fetchMock).not.toHaveBeenCalled();
     expect(localStorage.getItem(MIGRATED_KEY)).toBeNull();
   });
