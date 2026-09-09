@@ -47,7 +47,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 095d4cdb9
+          ref: 095d4cdb97fccadaeb53a31bccd448bdff356bb6
 
       - uses: actions/setup-node@v4
         with:
