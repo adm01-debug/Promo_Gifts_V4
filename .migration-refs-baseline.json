@@ -114,10 +114,6 @@
       "ref": "qa/migrations-draft/2026-07-12_magazines.sql"
     },
     {
-      "file": "src/services/__tests__/magazineAddProductsUnique.test.ts",
-      "ref": "qa/migrations-draft/2026-07-12_magazine_items_unique_product.sql"
-    },
-    {
       "file": "tests/scripts/check-migration-filename-contract.test.mjs",
       "ref": "supabase/migrations/20260826010203_add_catalog_contract.sql"
     },

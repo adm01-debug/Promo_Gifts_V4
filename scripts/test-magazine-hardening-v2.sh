@@ -48,6 +48,7 @@ readonly migrations=(
   20260909190300_magazine_publish_atomic.sql
   20260909190400_magazine_page_order_numeric_version.sql
   20260909200000_magazine_hardening_v2.sql
+  20260909220000_magazine_duplicate_request_indexes.sql
 )
 for migration in "${migrations[@]}"; do
   "${psql_base[@]}" -f "/workspace/supabase/migrations/${migration}" >/dev/null
@@ -58,6 +59,18 @@ done
 
 # Reapplication is the idempotence gate for each forward-only rollout phase.
 "${psql_base[@]}" -f /workspace/supabase/migrations/20260909200000_magazine_hardening_v2.sql >/dev/null
+"${psql_base[@]}" -f /workspace/supabase/migrations/20260909220000_magazine_duplicate_request_indexes.sql >/dev/null
+if [[ "$("${psql_base[@]}" -Atq -c "
+  SELECT count(*) FROM pg_indexes
+  WHERE schemaname='public'
+    AND tablename='magazine_duplicate_requests'
+    AND indexname IN (
+      'idx_magazine_duplicate_requests_source_magazine_id',
+      'idx_magazine_duplicate_requests_magazine_id'
+    );")" != "2" ]]; then
+  echo "Magazine duplicate-request FK indexes are incomplete" >&2
+  exit 1
+fi
 "${psql_base[@]}" -f /workspace/qa/migrations-draft/2026-09-09_magazine_rpc_only_contract.sql >/dev/null
 "${psql_base[@]}" -f /workspace/qa/migrations-draft/2026-09-09_magazine_rpc_only_contract.sql >/dev/null
 "${psql_base[@]}" -f /workspace/tests/magazine/sql/magazine_rpc_scenarios.sql >/dev/null
