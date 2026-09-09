@@ -43,7 +43,7 @@ O [plano visual anterior](../design/blue-premium/MAGAZINE_BLUE_PREMIUM_PLAN.md) 
 
 - Modelo editorial estruturado: capa, institucional, seção, produtos e contato.
 - Assets existentes autorizados como aproximação; não representam fidelidade fotográfica exata às referências.
-- Na criação deste plano, apenas a preparação de migrations/RPCs forward-only estava autorizada. Em 09/09/2026 o PO ampliou explicitamente a autorização; cinco RPCs iniciais foram aplicadas pelo run `34393079315`, duas correções pelo run `34395700558` e a correção null-safe mais a nova publicação atômica pelo run `34397795301`. As nove versões/seis funções foram validadas por `pg_catalog`, sem alteração de tabela/coluna e sem grant para `anon`.
+- Na criação deste plano, apenas a preparação de migrations/RPCs forward-only estava autorizada. Em 09/09/2026 o PO ampliou explicitamente a autorização; cinco RPCs iniciais foram aplicadas pelo run `34393079315`, duas correções pelo run `34395700558`, a correção null-safe/publicação atômica pelo run `34397795301` e o discriminador v2 pelo run `34399151305`. As dez versões/seis funções foram validadas por `pg_catalog`, sem alteração de tabela/coluna e sem grant para `anon`.
 - Cores atuais do sistema permanecem imutáveis.
 
 ### Referências funcionais
