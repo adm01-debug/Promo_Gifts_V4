@@ -40,6 +40,10 @@ que podiam produzir preço, estoque, personalização ou persistência incorreto
   tema ou inserção automática de produtos.
 - [x] Testes locais focados: 31 asserções em 8 arquivos aprovadas; typecheck e
   build de produção aprovados com os guards SSOT.
+- [x] Publicação da interface: o commit `d449783b87a3536549de9bb3b3a9135232f3617a`
+  está em `origin/main` e a Vercel responde o mesmo SHA em `/api/health`.
+- [x] Prontidão produtiva: `/api/ready` respondeu `ready`, com configuração,
+  autenticação e PostgREST saudáveis em 10/09/2026.
 
 Foi preparada a migration forward-only
 `20260910150000_kit_maker_optimistic_persistence.sql`, que acrescenta revisão
@@ -57,12 +61,34 @@ controle de segurança, não por ausência de código ou autorização genérica
 | Etapas formalmente concluídas sob este novo aceite           | 0 / 200                                                        |
 | Subetapas formalmente concluídas sob este novo aceite        | 0 / 2.000                                                      |
 | Referências visuais analisadas para planejamento             | 7 / 7                                                          |
-| Alterações de implementação feitas por esta entrega          | Nenhuma                                                        |
-| Validação visual em navegador da versão produtiva            | Não realizada nesta atividade                                  |
-| Testes funcionais e transacionais executados nesta atividade | Não executados; programados nas etapas                         |
+| Correções de implementação desta execução                   | Publicadas em `d449783`; ver atualização acima                |
+| Validação de rota pública da versão produtiva                | `/montar-kit` respondeu HTTP 200; fluxo autenticado pendente   |
+| Testes funcionais e transacionais executados nesta atividade | Locais e gates CI em execução; não substituem E2E autenticado  |
 | Validação estrutural do documento                            | Contagem, sequência e unicidade verificadas ao gerar o arquivo |
 
 Não usar esses contadores para declarar o módulo “0% implementado”. Eles medem o aceite deste plano, e não o volume histórico de código existente.
+
+### Recibo de publicação e limites — 10/09/2026
+
+- Código: `main` local e `origin/main` apontam para
+  `d449783b87a3536549de9bb3b3a9135232f3617a`.
+- Produção: `https://www.promogifts.com.br/api/health` retornou HTTP 200 e
+  `version: d449783`; `https://www.promogifts.com.br/api/ready` retornou HTTP
+  200 e `status: ready`.
+- Rota: `https://www.promogifts.com.br/montar-kit` retornou HTTP 200. Isso
+  comprova entrega do bundle e roteamento, não substitui uma jornada autenticada
+  que crie dados reais.
+- Banco: a migration de persistência otimista segue apenas versionada no Git.
+  O ledger remoto possui migrations que não existem localmente; por isso não
+  foi executado `supabase db push` nem qualquer DDL no projeto canônico.
+- CI: os gates de código já concluídos permaneceram verdes nesta publicação;
+  os jobs demorados continuam sob acompanhamento. O status externo
+  `Supabase Preview` falhou sem log GitHub disponível e deve ser tratado como
+  prévia indisponível, não como permissão para alterar o banco de produção.
+- Rastreabilidade: o Sentinel registrou falha para o commit funcional por ele
+  ter chegado diretamente à `main`, fora do padrão de merge aceito. O histórico
+  não será reescrito; o registro desta execução segue a allowlist documental e
+  a proteção não será enfraquecida.
 
 ## Fundamentação: o que foi efetivamente consultado
 
