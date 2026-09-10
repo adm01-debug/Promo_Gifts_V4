@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Clickable } from '@/components/shared/Clickable';
 import { BoxCardSkeleton } from './KitCardSkeleton';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Slider } from '@/components/ui/slider';
@@ -501,22 +502,17 @@ export function BoxSelector({
                     : 'Não compatível';
 
               return (
-                <Card
+                <Clickable
+                  as={Card}
                   key={box.id}
+                  aria-label={`Selecionar caixa ${box.name}`}
+                  showFocusRing={false}
                   className={cn(
                     'group cursor-pointer rounded-xl border-border/50 transition-all duration-200 will-change-transform',
                     'hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg',
                     'focus-within:ring-2 focus-within:ring-primary/60',
                   )}
                   onClick={() => onSelect(box)}
-                  onKeyDown={(event) => {
-                    if (event.key === 'Enter' || event.key === ' ') {
-                      event.preventDefault();
-                      onSelect(box);
-                    }
-                  }}
-                  role="button"
-                  tabIndex={0}
                 >
                   <CardContent className="p-4">
                     <div className="flex gap-3">
@@ -586,7 +582,7 @@ export function BoxSelector({
                       </div>
                     </div>
                   </CardContent>
-                </Card>
+                </Clickable>
               );
             })}
           </div>
