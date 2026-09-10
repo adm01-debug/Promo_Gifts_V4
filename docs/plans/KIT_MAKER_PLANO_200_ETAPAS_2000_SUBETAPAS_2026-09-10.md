@@ -83,8 +83,9 @@ Não usar esses contadores para declarar o módulo “0% implementado”. Eles m
   foi executado `supabase db push` nem qualquer DDL no projeto canônico.
 - CI: os gates de código já concluídos permaneceram verdes nesta publicação;
   os jobs demorados continuam sob acompanhamento. O status externo
-  `Supabase Preview` falhou sem log GitHub disponível e deve ser tratado como
-  prévia indisponível, não como permissão para alterar o banco de produção.
+  `Supabase Preview` falhou com `Remote migration versions not found in local
+  migrations directory`; deve ser tratado como prévia indisponível e uma
+  reconciliação de ledger, não como permissão para alterar o banco de produção.
 - Rastreabilidade: o Sentinel registrou falha para o commit funcional por ele
   ter chegado diretamente à `main`, fora do padrão de merge aceito. O histórico
   não será reescrito; o registro desta execução segue a allowlist documental e
