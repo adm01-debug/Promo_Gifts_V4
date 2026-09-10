@@ -28,6 +28,7 @@ export function useKitAutoSave(
   kitQuantity: number,
   currentKitId: string | undefined,
   onKitIdCreated?: (id: string) => void,
+  enabled = true,
 ): AutoSaveResult {
   const { user } = useAuth();
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
@@ -36,6 +37,7 @@ export function useKitAutoSave(
   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const snapshotRef = useRef<string>('');
   const isFirstRender = useRef(true);
+  const wasEnabledRef = useRef(enabled);
 
   /**
    * BUG-11 FIX: usar refs para dependencias instaveis.
@@ -54,11 +56,13 @@ export function useKitAutoSave(
   const kitQuantityRef = useRef<number>(kitQuantity);
   const onKitIdCreatedRef = useRef<((id: string) => void) | undefined>(onKitIdCreated);
   const autoSavedKitIdRef = useRef<string | null>(currentKitId || null);
+  const enabledRef = useRef(enabled);
 
   // Manter refs sincronizadas a cada render -- sem useEffect para evitar batching delay
   kitStateRef.current = kitState;
   kitQuantityRef.current = kitQuantity;
   onKitIdCreatedRef.current = onKitIdCreated;
+  enabledRef.current = enabled;
 
   // saveToDb usa apenas deps estaveis -- nao recria a cada mudanca de kitState/onKitIdCreated
   const saveToDb = useCallback(async () => {
@@ -66,7 +70,7 @@ export function useKitAutoSave(
     const currentKitQuantity = kitQuantityRef.current;
     const currentOnKitIdCreated = onKitIdCreatedRef.current;
 
-    if (!user?.id) return;
+    if (!user?.id || !enabledRef.current) return;
 
     // Don't auto-save empty kits
     if (!currentKitState.box && currentKitState.items.length === 0) return;
@@ -74,7 +78,7 @@ export function useKitAutoSave(
     const payload = {
       user_id: user.id,
       name: currentKitState.name || 'Kit sem nome',
-      status: 'draft' as const,
+      status: currentKitState.isValid ? ('complete' as const) : ('draft' as const),
       kit_type: currentKitState.kitType || 'montado',
       box_data: currentKitState.box
         ? (structuredClone(currentKitState.box) as unknown as Json)
@@ -93,6 +97,7 @@ export function useKitAutoSave(
     setIsSaving(true);
     try {
       const kitId = autoSavedKitIdRef.current || currentKitId;
+      let didPersist = false;
       if (kitId) {
         // BUG-AUTOSAVE-UPDATE-SILENT-FAIL FIX: bare await swallowed RLS and constraint
         // errors — if update fails the user keeps seeing "saved" state while data is lost.
@@ -101,7 +106,11 @@ export function useKitAutoSave(
           .update(payload)
           .eq('id', kitId)
           .eq('user_id', user.id);
-        if (updateErr) logger.warn('[auto-save] Update failed:', updateErr);
+        if (updateErr) {
+          logger.warn('[auto-save] Update failed:', updateErr);
+        } else {
+          didPersist = true;
+        }
       } else {
         // BUG-AUTOSAVE-INSERT-SILENT-FAIL FIX: bare data destructure missed { error }.
         // If insert fails (e.g. RLS denial), data=null but no error is logged and the
@@ -117,9 +126,10 @@ export function useKitAutoSave(
           autoSavedKitIdRef.current = data.id;
           setAutoSavedKitId(data.id);
           currentOnKitIdCreated?.(data.id);
+          didPersist = true;
         }
       }
-      setLastSavedAt(new Date());
+      if (didPersist) setLastSavedAt(new Date());
     } catch (err) {
       logger.warn('[auto-save] Failed:', err);
     } finally {
@@ -129,19 +139,7 @@ export function useKitAutoSave(
 
   // Snapshot effect: agenda o timer quando o estado muda de forma relevante
   useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      snapshotRef.current = JSON.stringify({
-        box: kitState.box?.id,
-        items: kitState.items.map((i) => `${i.id}:${i.quantity}`),
-        personalization: kitState.personalization,
-        name: kitState.name,
-        qty: kitQuantity,
-      });
-      return;
-    }
-
-    const newSnapshot = JSON.stringify({
+    const nextSnapshot = JSON.stringify({
       box: kitState.box?.id,
       items: kitState.items.map((i) => `${i.id}:${i.quantity}`),
       personalization: kitState.personalization,
@@ -149,8 +147,22 @@ export function useKitAutoSave(
       qty: kitQuantity,
     });
 
-    if (newSnapshot === snapshotRef.current) return;
-    snapshotRef.current = newSnapshot;
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      snapshotRef.current = nextSnapshot;
+      return;
+    }
+
+    // Hydrating a saved kit is not a user edit. Capture it as the new
+    // baseline so an old/default snapshot cannot overwrite the remote draft.
+    if (!enabled || !wasEnabledRef.current) {
+      wasEnabledRef.current = enabled;
+      snapshotRef.current = nextSnapshot;
+      return;
+    }
+
+    if (nextSnapshot === snapshotRef.current) return;
+    snapshotRef.current = nextSnapshot;
 
     // Cancela timer anterior (debounce) e reagenda
     if (timerRef.current) clearTimeout(timerRef.current);
@@ -165,6 +177,7 @@ export function useKitAutoSave(
     kitState.name,
     kitQuantity,
     saveToDb,
+    enabled,
   ]);
 
   // Cleanup dedicado ao unmount -- cancela qualquer timer pendente

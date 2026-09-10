@@ -41,18 +41,16 @@ function resolveProductMaterial(product: ExternalProductForKit): string | undefi
 }
 
 export function transformToKitBox(product: ExternalProductForKit): KitBox | null {
-  let dimensions: { width: number; height: number; depth: number } | null = null;
-
-  const wMm = mmToCm(product.width_mm);
-  const hMm = mmToCm(product.height_mm);
-  const lMm = mmToCm(product.length_mm);
-  if (wMm && hMm && lMm) {
-    dimensions = { width: wMm, height: hMm, depth: lMm };
-  }
-
-  if (!dimensions) {
-    dimensions = extractProductDimensions(product);
-  }
+  // Compatibility requires internal dimensions. External dimensions are useful
+  // catalog metadata, but treating them as usable space produces false fits.
+  const dimensions =
+    product.internal_width_cm && product.internal_height_cm && product.internal_length_cm
+      ? {
+          width: product.internal_width_cm,
+          height: product.internal_height_cm,
+          depth: product.internal_length_cm,
+        }
+      : null;
 
   if (!dimensions) return null;
 
@@ -60,14 +58,6 @@ export function transformToKitBox(product: ExternalProductForKit): KitBox | null
   if (dimensions.width <= 0 || dimensions.height <= 0 || dimensions.depth <= 0) return null;
 
   const volume = calculateVolume(dimensions.width, dimensions.height, dimensions.depth);
-
-  // Estimate max weight based on material
-  let maxWeight: number | undefined;
-  const mat = resolveProductMaterial(product)?.toLowerCase() ?? '';
-  if (mat.includes('micro') || mat.includes('papelão')) maxWeight = 2000;
-  else if (mat.includes('kraft') || mat.includes('cartão')) maxWeight = 3000;
-  else if (mat.includes('madeira') || mat.includes('mdf')) maxWeight = 10000;
-  else if (mat.includes('metal') || mat.includes('lata')) maxWeight = 15000;
 
   return {
     id: product.id,
@@ -79,9 +69,10 @@ export function transformToKitBox(product: ExternalProductForKit): KitBox | null
     internalHeight: dimensions.height,
     internalDepth: dimensions.depth,
     internalVolume: volume,
+    dimensionsKnown: true,
+    boxType: product.packing_classification || product.packing_type || undefined,
     material: resolveProductMaterial(product),
     weight: product.weight_g ?? undefined,
-    maxWeight,
   };
 }
 
@@ -95,9 +86,9 @@ export function transformToKitItem(product: ExternalProductForKit, category?: st
     dimensions = { width: wMm, height: hMm, depth: lMm };
   }
 
-  if (!dimensions) {
-    dimensions = extractProductDimensions(product) || estimateDefaultDimensions(category);
-  }
+  if (!dimensions) dimensions = extractProductDimensions(product);
+  const dimensionsKnown = dimensions !== null;
+  if (!dimensions) dimensions = estimateDefaultDimensions(category);
 
   const volume = calculateVolume(dimensions.width, dimensions.height, dimensions.depth);
 
@@ -111,6 +102,7 @@ export function transformToKitItem(product: ExternalProductForKit, category?: st
     height: dimensions.height,
     depth: dimensions.depth,
     volume,
+    dimensionsKnown,
     weight: product.weight_g ?? undefined,
     material: resolveProductMaterial(product),
     category,

@@ -3,11 +3,12 @@
  * Seletor de itens para compor o kit (refatorado)
  */
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Search, AlertTriangle, X, Package } from 'lucide-react';
 import { SelectedItemsBadges } from './SelectedItemsBadges';
 import { ItemCard } from './ItemCard';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { ItemCardSkeleton } from './KitCardSkeleton';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Switch } from '@/components/ui/switch';
@@ -38,6 +39,8 @@ interface ItemSelectorProps {
   onUpdateVariant: (itemId: string, data: VariantSelectionData) => void;
   onReorder?: (fromIndex: number, toIndex: number) => void;
   boxSelected: boolean;
+  errorMessage?: string | null;
+  onRetry?: () => void;
 }
 
 export function ItemSelector({
@@ -52,9 +55,15 @@ export function ItemSelector({
   onUpdateVariant,
   onReorder,
   boxSelected,
+  errorMessage,
+  onRetry,
 }: ItemSelectorProps) {
   const [searchValue, setSearchValue] = useState('');
   const [lastError, setLastError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setSearchValue(filters.search || '');
+  }, [filters.search]);
 
   const handleSearchChange = (value: string) => {
     setSearchValue(value);
@@ -86,7 +95,8 @@ export function ItemSelector({
         <div className="flex items-center gap-3 rounded-lg border border-warning/30 bg-warning/10 p-4">
           <AlertTriangle className="h-5 w-5 flex-shrink-0 text-warning" />
           <p className="text-sm">
-            Selecione uma caixa primeiro para verificar a compatibilidade dos itens.
+            Você pode começar pelos itens. Escolha uma caixa depois para validar compatibilidade,
+            ocupação e peso.
           </p>
         </div>
       )}
@@ -159,6 +169,19 @@ export function ItemSelector({
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <ItemCardSkeleton key={i} />
             ))}
+          </div>
+        ) : errorMessage ? (
+          <div className="py-12 text-center">
+            <AlertTriangle className="mx-auto mb-3 h-12 w-12 text-destructive" />
+            <p className="font-medium">Não foi possível carregar os itens</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Tente novamente antes de montar a composição.
+            </p>
+            {onRetry && (
+              <Button variant="outline" size="sm" className="mt-3" onClick={onRetry}>
+                Tentar novamente
+              </Button>
+            )}
           </div>
         ) : items.length === 0 ? (
           <div className="py-12 text-center">

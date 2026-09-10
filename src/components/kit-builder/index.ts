@@ -12,3 +12,4 @@ export { VolumeIndicator } from './VolumeIndicator';
 export { PersonalizationConfig } from './PersonalizationConfig';
 export { KitSummary } from './KitSummary';
 export { VariantSelector } from './VariantSelector';
+export { KitMakerLanding } from './KitMakerLanding';

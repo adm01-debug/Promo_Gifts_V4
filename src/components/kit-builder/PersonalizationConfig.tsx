@@ -135,13 +135,17 @@ function ItemPersonalizationCard({
   // #3 FIX: Sync estimatedPrice with RPC result so price-calculator picks it up
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
+  const personalizationRef = useRef(personalization);
+  personalizationRef.current = personalization;
 
   useEffect(() => {
     if (priceData?.success && priceData.preco_unitario !== null) {
       const rpcPrice = priceData.preco_unitario;
-      onChangeRef.current({ ...personalization, estimatedPrice: rpcPrice });
+      if (personalizationRef.current.estimatedPrice !== rpcPrice) {
+        onChangeRef.current({ ...personalizationRef.current, estimatedPrice: rpcPrice });
+      }
     }
-  }, [priceData?.preco_unitario, priceData?.success, personalization]);
+  }, [priceData?.preco_unitario, priceData?.success]);
 
   const handleToggle = (enabled: boolean) => {
     onChange({
@@ -332,14 +336,16 @@ function ItemPersonalizationCard({
                     max={currentTech.efetiva_largura_max}
                     placeholder={`Até ${currentTech.efetiva_largura_max}cm`}
                     value={personalization.width || ''}
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      const value = Number.parseFloat(e.target.value);
                       onChange({
                         ...personalization,
-                        width: e.target.value
-                          ? Math.min(parseFloat(e.target.value), currentTech.efetiva_largura_max)
-                          : undefined,
-                      })
-                    }
+                        width:
+                          Number.isFinite(value) && value > 0
+                            ? Math.min(value, currentTech.efetiva_largura_max)
+                            : undefined,
+                      });
+                    }}
                   />
                 </div>
                 <div className="space-y-2">
@@ -355,14 +361,16 @@ function ItemPersonalizationCard({
                     max={currentTech.efetiva_altura_max}
                     placeholder={`Até ${currentTech.efetiva_altura_max}cm`}
                     value={personalization.height || ''}
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      const value = Number.parseFloat(e.target.value);
                       onChange({
                         ...personalization,
-                        height: e.target.value
-                          ? Math.min(parseFloat(e.target.value), currentTech.efetiva_altura_max)
-                          : undefined,
-                      })
-                    }
+                        height:
+                          Number.isFinite(value) && value > 0
+                            ? Math.min(value, currentTech.efetiva_altura_max)
+                            : undefined,
+                      });
+                    }}
                   />
                 </div>
               </div>
@@ -486,7 +494,7 @@ export function PersonalizationConfig({
                 imageUrl={item.imageUrl}
                 personalization={itemPersonalizations[item.id] || { enabled: false }}
                 onChange={(config) => onItemPersonalizationChange(item.id, config)}
-                kitQuantity={kitQuantity}
+                kitQuantity={item.quantity * kitQuantity}
               />
             ))}
           </div>

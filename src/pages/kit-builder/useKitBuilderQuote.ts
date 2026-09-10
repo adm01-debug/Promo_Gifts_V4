@@ -8,15 +8,66 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { logger } from '@/lib/logger';
-import { calculateTotalKitPrice, type KitState, type KitItem } from '@/lib/kit-builder';
-import type { TablesInsert } from '@/integrations/supabase/types';
+import {
+  calculateTotalKitPrice,
+  type KitItem,
+  type KitItemPersonalization,
+  type KitState,
+} from '@/lib/kit-builder';
+import type { Json } from '@/integrations/supabase/types';
+
+export interface KitQuoteClient {
+  client_cnpj?: string;
+  client_company?: string;
+  client_email?: string;
+  client_name?: string;
+  client_phone?: string;
+}
+
+function toPersonalizationPayload(
+  personalization: KitItemPersonalization,
+  quantity: number,
+): Record<string, Json> {
+  const width = personalization.width ?? null;
+  const height = personalization.height ?? null;
+  const unitCost = personalization.estimatedPrice ?? 0;
+  return {
+    technique_id: personalization.techniqueId ?? null,
+    technique_name: personalization.techniqueName ?? null,
+    location_code: personalization.position ?? null,
+    location_name: personalization.position ?? null,
+    personalized_quantity: quantity,
+    colors_count: personalization.colors ?? 1,
+    positions_count: 1,
+    area_cm2: width !== null && height !== null ? width * height : null,
+    width_cm: width,
+    height_cm: height,
+    setup_cost: 0,
+    unit_cost: unitCost,
+    total_cost: unitCost * quantity,
+    notes: personalization.position ? `Posição: ${personalization.position}` : null,
+  };
+}
+
+function itemPersonalizationCost(
+  personalization: KitItemPersonalization | undefined,
+  item: KitItem,
+  kitQuantity: number,
+): number {
+  if (!personalization?.enabled) return 0;
+  return (personalization.estimatedPrice ?? 0) * item.quantity * kitQuantity;
+}
 
 export function useKitBuilderQuote() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [isCreatingQuote, setIsCreatingQuote] = useState(false);
 
-  const handleAddToQuote = async (kitState: KitState, kitQuantity: number) => {
+  const handleAddToQuote = async (
+    kitState: KitState,
+    kitQuantity: number,
+    client: KitQuoteClient = {},
+  ) => {
     if (!user) {
       toast.error('Você precisa estar logado para criar um orçamento.');
       return;
@@ -40,7 +91,11 @@ export function useKitBuilderQuote() {
         status: 'draft',
         // Empty string lets the `set_quote_number` BEFORE INSERT trigger generate it.
         quote_number: '',
-        client_name: 'Sem cliente',
+        client_name: client.client_name?.trim() || 'Cliente a definir',
+        client_company: client.client_company?.trim() || null,
+        client_email: client.client_email?.trim() || null,
+        client_phone: client.client_phone?.trim() || null,
+        client_cnpj: client.client_cnpj?.trim() || null,
         subtotal: pricing.subtotal,
         discount_percent: 0,
         discount_amount: 0,
@@ -54,27 +109,15 @@ export function useKitBuilderQuote() {
           kit_quantity: kitQuantity,
           kit_identity_tag: kitState.identity?.tag ?? null,
         },
-      } as unknown as TablesInsert<'quotes'>;
-
-      // Create quote
-      const { data: quote, error: quoteError } = await supabase
-        // rls-allow: insert cria orçamento do usuário atual; RLS valida seller_id
-        .from('quotes')
-        .insert(quotePayload)
-        .select('id')
-        .single();
-
-      if (quoteError) throw quoteError;
-      if (!quote) throw new Error('Failed to create quote');
+      };
 
       const kitGroupId = crypto.randomUUID();
-      const quoteItems: TablesInsert<'quote_items'>[] = [];
+      const quoteItems: Array<Record<string, Json | undefined>> = [];
 
       // Add box if present
       if (boxRef) {
         const boxQty = kitQuantity;
         quoteItems.push({
-          quote_id: quote.id,
           product_name: boxRef.name,
           product_sku: boxRef.sku || null,
           product_image_url: boxRef.imageUrl || null,
@@ -88,13 +131,18 @@ export function useKitBuilderQuote() {
           color_hex: null,
           kit_group_id: kitGroupId,
           kit_name: kitLabel,
+          personalization_cost: personRef.box.enabled
+            ? (personRef.box.estimatedPrice ?? 0) * kitQuantity
+            : 0,
+          personalizations: personRef.box.enabled
+            ? [toPersonalizationPayload(personRef.box, kitQuantity)]
+            : [],
         });
       }
 
       itemsRef.forEach((item: KitItem, index: number) => {
         const itemQty = item.quantity * kitQuantity;
         quoteItems.push({
-          quote_id: quote.id,
           product_name: item.name,
           product_sku: item.sku || null,
           product_image_url: item.imageUrl || null,
@@ -108,72 +156,29 @@ export function useKitBuilderQuote() {
           color_hex: item.selectedColor?.hex || null,
           kit_group_id: kitGroupId,
           kit_name: kitLabel,
+          personalization_cost: itemPersonalizationCost(
+            personRef.items[item.id],
+            item,
+            kitQuantity,
+          ),
+          personalizations: personRef.items[item.id]?.enabled
+            ? [toPersonalizationPayload(personRef.items[item.id], item.quantity * kitQuantity)]
+            : [],
         });
       });
 
-      if (quoteItems.length > 0) {
-        const { data: insertedItems, error: itemsError } = await supabase
-          .from('quote_items')
-          .insert(quoteItems)
-          .select('id, product_id');
-        if (itemsError) throw itemsError;
+      if (quoteItems.length === 0) throw new Error('Kit sem itens para orçar');
 
-        // Personalizations
-        if (insertedItems) {
-          const personalizations: TablesInsert<'quote_item_personalizations'>[] = [];
+      // The canonical RPC inserts quote, items and personalizations in one
+      // transaction. The previous three client-side inserts could leave an
+      // orphan quote when the last insert failed.
+      const { data: quote, error: quoteError } = await supabase.rpc('create_quote_transactional', {
+        _quote: quotePayload as unknown as Json,
+        _items: quoteItems as unknown as Json,
+      });
 
-          if (personRef.box.enabled && boxRef) {
-            const boxId = boxRef.id;
-            const boxQuoteItem = insertedItems.find((i) => i.product_id === boxId);
-            if (boxQuoteItem) {
-              const bp = personRef.box;
-              personalizations.push({
-                quote_item_id: boxQuoteItem.id,
-                technique_name: bp.techniqueName || null,
-                colors_count: bp.colors || undefined,
-                width_cm: bp.width || null,
-                height_cm: bp.height || null,
-                unit_cost: bp.estimatedPrice || undefined,
-                total_cost: bp.estimatedPrice ? bp.estimatedPrice * kitQuantity : undefined,
-                setup_cost: undefined,
-                personalized_quantity: kitQuantity,
-                notes: bp.position ? `Posição: ${bp.position}` : null,
-              });
-            }
-          }
-
-          itemsRef.forEach((item: KitItem) => {
-            const itemP = personRef.items[item.id];
-            if (itemP?.enabled) {
-              const itemQuoteItem = insertedItems.find((i) => i.product_id === item.id);
-              if (itemQuoteItem) {
-                const totalQty = item.quantity * kitQuantity;
-                personalizations.push({
-                  quote_item_id: itemQuoteItem.id,
-                  technique_name: itemP.techniqueName || null,
-                  colors_count: itemP.colors || undefined,
-                  width_cm: itemP.width || null,
-                  height_cm: itemP.height || null,
-                  unit_cost: itemP.estimatedPrice || undefined,
-                  total_cost: itemP.estimatedPrice ? itemP.estimatedPrice * totalQty : undefined,
-                  setup_cost: undefined,
-                  personalized_quantity: totalQty,
-                  notes: itemP.position ? `Posição: ${itemP.position}` : null,
-                });
-              }
-            }
-          });
-
-          if (personalizations.length > 0) {
-            const { error: personError } = await supabase
-              .from('quote_item_personalizations')
-              .insert(personalizations);
-            if (personError) {
-              logger.warn('[Kit Quote] Failed to insert personalizations:', personError);
-            }
-          }
-        }
-      }
+      if (quoteError) throw quoteError;
+      if (!quote?.id) throw new Error('A criação transacional não retornou o orçamento');
 
       toast.success(`Orçamento criado com sucesso!`);
       navigate(`/orcamentos/${quote.id}`);

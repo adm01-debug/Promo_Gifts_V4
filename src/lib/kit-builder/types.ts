@@ -22,6 +22,8 @@ export interface KitBox {
   internalDepth: number;
   // Volume calculado
   internalVolume: number;
+  /** False only when the UI is showing a non-authoritative estimate. */
+  dimensionsKnown?: boolean;
   // Categoria/tipo de caixa
   boxType?: string;
   // Cor da caixa
@@ -46,6 +48,8 @@ export interface KitItem {
   depth: number;
   // Volume calculado
   volume: number;
+  /** False only when the UI is showing a non-authoritative estimate. */
+  dimensionsKnown?: boolean;
   // Peso em gramas
   weight?: number;
   // Categoria do item
@@ -132,6 +136,7 @@ export interface KitState {
 
 export interface CompatibilityResult {
   fits: boolean;
+  confidence?: 'unknown' | 'verified';
   reason?: string;
   volumeAfterAdd?: number;
   percentAfterAdd?: number;
@@ -143,10 +148,18 @@ export interface CompatibilityResult {
 
 export type KitBuilderStep = 'box' | 'items' | 'personalization' | 'summary';
 
+/**
+ * The same editor supports two intentional journeys.  This belongs to the
+ * client state for now because existing custom_kits snapshots do not have a
+ * dedicated journey column; it must never be inferred from the current step.
+ */
+export type KitBuilderFlow = 'box-first' | 'items-first';
+
 export interface KitBuilderWizardState {
   currentStep: KitBuilderStep;
   completedSteps: KitBuilderStep[];
   canProceed: boolean;
+  flow: KitBuilderFlow;
 }
 
 // ============================================
@@ -156,10 +169,17 @@ export interface KitBuilderWizardState {
 export interface BoxFilters {
   search?: string;
   minWidth?: number;
+  maxWidth?: number;
   minHeight?: number;
+  maxHeight?: number;
   minDepth?: number;
+  maxDepth?: number;
+  minPrice?: number;
+  maxPrice?: number;
   boxType?: string;
   material?: string;
+  finish?: string;
+  closure?: string;
 }
 
 export interface ItemFilters {

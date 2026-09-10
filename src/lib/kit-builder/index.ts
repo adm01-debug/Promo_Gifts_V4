@@ -28,6 +28,10 @@ export {
   estimateDefaultDimensions,
 } from './volume-calculator';
 
+// Packaging recommendation (conservative catalogue ranking)
+export { evaluateBoxForItems, rankBoxesForItems } from './box-recommendations';
+export type { BoxRecommendation, BoxRecommendationStatus } from './box-recommendations';
+
 // Price Calculator
 export {
   calculateBoxPrice,

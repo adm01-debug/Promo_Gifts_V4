@@ -22,6 +22,7 @@ export interface CustomKitRow {
   user_id: string;
   name: string;
   status: string;
+  kit_type: string | null;
   box_data: Record<string, unknown> | null;
   items_data: Record<string, unknown>[];
   personalization_data: Record<string, unknown>;
