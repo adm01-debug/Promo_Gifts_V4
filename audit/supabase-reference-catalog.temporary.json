@@ -340,6 +340,14 @@
   "exceptions": [
     {
       "kind": "rpc",
+      "name": "create_quote_transactional",
+      "file": "src/pages/kit-builder/useKitBuilderQuote.ts",
+      "occurrences": 1,
+      "stage": 147,
+      "reason": "Adoção transacional do Kit Maker: types e migration forward-only registram a RPC, mas ela está ausente do catálogo pg_catalog temporário. Remover após consulta read-only ao canônico confirmar assinatura e grants e renovar o catálogo."
+    },
+    {
+      "kind": "rpc",
       "name": "fn_ema_pipeline_health",
       "file": "src/hooks/stock/useEmaPipelineHealth.ts",
       "occurrences": 1,
