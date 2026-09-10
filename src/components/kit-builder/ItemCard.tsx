@@ -27,6 +27,7 @@ interface ItemCardProps {
 export function ItemCard({ item, isSelected, boxSelected, onAdd, onRemove }: ItemCardProps) {
   const fits = item.compatibility?.fits !== false;
   const cantFit = boxSelected && !fits;
+  const compatibilityUnknown = boxSelected && item.compatibility?.confidence === 'unknown';
 
   return (
     <Card
@@ -78,13 +79,22 @@ export function ItemCard({ item, isSelected, boxSelected, onAdd, onRemove }: Ite
             <Tooltip>
               <TooltipTrigger asChild>
                 <Badge
-                  variant={fits ? 'secondary' : 'destructive'}
+                  variant={fits && !compatibilityUnknown ? 'secondary' : 'destructive'}
                   className={cn(
                     'text-xs',
-                    fits && 'bg-primary/10 text-primary hover:bg-primary/20 dark:text-primary',
+                    fits &&
+                      !compatibilityUnknown &&
+                      'bg-primary/10 text-primary hover:bg-primary/20 dark:text-primary',
+                    compatibilityUnknown &&
+                      'border-warning/30 bg-warning/10 text-warning hover:bg-warning/15',
                   )}
                 >
-                  {fits ? (
+                  {compatibilityUnknown ? (
+                    <>
+                      <Package className="mr-1 h-3 w-3" />
+                      PENDENTE
+                    </>
+                  ) : fits ? (
                     <>
                       <Check className="mr-1 h-3 w-3" />
                       CABE
@@ -97,7 +107,7 @@ export function ItemCard({ item, isSelected, boxSelected, onAdd, onRemove }: Ite
                   )}
                 </Badge>
               </TooltipTrigger>
-              {!fits && item.compatibility?.reason && (
+              {item.compatibility?.reason && (compatibilityUnknown || !fits) && (
                 <TooltipContent>
                   <p className="max-w-[200px]">{item.compatibility.reason}</p>
                 </TooltipContent>

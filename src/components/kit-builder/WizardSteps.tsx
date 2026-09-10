@@ -5,13 +5,14 @@
 
 import { Check, Package, Gift, Palette, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import type { KitBuilderStep, KitState } from '@/lib/kit-builder';
+import type { KitBuilderFlow, KitBuilderStep, KitState } from '@/lib/kit-builder';
 
 interface WizardStepsProps {
   currentStep: KitBuilderStep;
   completedSteps: KitBuilderStep[];
   onStepClick?: (step: KitBuilderStep) => void;
   kitState?: KitState;
+  flow?: KitBuilderFlow;
 }
 
 const STEPS: {
@@ -44,8 +45,10 @@ export function WizardSteps({
   completedSteps,
   onStepClick,
   kitState,
+  flow = 'box-first',
 }: WizardStepsProps) {
-  const currentIndex = STEPS.findIndex((s) => s.id === currentStep);
+  const orderedSteps = flow === 'items-first' ? [STEPS[1], STEPS[0], STEPS[2], STEPS[3]] : STEPS;
+  const currentIndex = orderedSteps.findIndex((s) => s.id === currentStep);
   const progressPercent =
     ((currentIndex + (completedSteps.includes(currentStep) ? 1 : 0.5)) / STEPS.length) * 100;
 
@@ -76,7 +79,7 @@ export function WizardSteps({
       </div>
 
       <div className="flex items-center justify-between gap-2">
-        {STEPS.map((step, index) => {
+        {orderedSteps.map((step, index) => {
           const isActive = step.id === currentStep;
           const isCompleted = completedSteps.includes(step.id);
           const isClickable = isCompleted || isActive;
@@ -139,7 +142,7 @@ export function WizardSteps({
               </button>
 
               {/* Connector */}
-              {index < STEPS.length - 1 && (
+              {index < orderedSteps.length - 1 && (
                 <div className="hidden h-px w-4 flex-shrink-0 bg-border/60 sm:block" aria-hidden />
               )}
             </div>

@@ -27,11 +27,13 @@ export interface SupabaseMock {
   client: {
     from: (table: string) => Record<string, unknown>;
     auth: { getUser: () => Promise<{ data: { user: { id: string } | null } }> };
+    rpc: (fn: string, args?: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>;
   };
   calls: {
     insert: MutationCall[];
     update: UpdateCall[];
     delete: UpdateCall[];
+    rpc: Array<{ fn: string; args?: Record<string, unknown> }>;
   };
 }
 
@@ -42,10 +44,11 @@ interface MockOptions {
   insertReturn?: (table: string, payload: unknown) => unknown;
   /** Erro a injetar em uma operação específica. */
   errorOn?: { op: "insert" | "update" | "delete"; table: string; message: string };
+  rpcReturn?: (fn: string, args?: Record<string, unknown>) => unknown;
 }
 
 export function createSupabaseMock(opts: MockOptions = {}): SupabaseMock {
-  const calls: SupabaseMock["calls"] = { insert: [], update: [], delete: [] };
+  const calls: SupabaseMock["calls"] = { insert: [], update: [], delete: [], rpc: [] };
 
   function builder(table: string) {
     const filters: Array<{ column: string; value: unknown }> = [];
@@ -148,6 +151,13 @@ export function createSupabaseMock(opts: MockOptions = {}): SupabaseMock {
       auth: {
         getUser: vi.fn(async () => ({ data: { user: { id: "test-user" } } })),
       },
+      rpc: vi.fn(async (fn: string, args?: Record<string, unknown>) => {
+        calls.rpc.push({ fn, args });
+        return {
+          data: opts.rpcReturn ? opts.rpcReturn(fn, args) : { id: `mock-${fn}-id` },
+          error: null,
+        };
+      }),
     },
   };
 }

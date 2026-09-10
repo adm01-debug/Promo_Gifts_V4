@@ -41,8 +41,18 @@ import { cn } from '@/lib/utils';
 
 /** Lookup estático dos ícones do PRESET_ICONS — evita namespace import. */
 const ICON_MAP: Record<string, LucideIcon | undefined> = {
-  Package, Gift, Heart, Star, Crown, Sparkles,
-  Briefcase, Coffee, Laptop, Leaf, Trophy, Users,
+  Package,
+  Gift,
+  Heart,
+  Star,
+  Crown,
+  Sparkles,
+  Briefcase,
+  Coffee,
+  Laptop,
+  Leaf,
+  Trophy,
+  Users,
 };
 
 interface KitBuilderHeaderProps {
@@ -62,7 +72,11 @@ interface KitBuilderHeaderProps {
   onUndo: () => void;
   onRedo: () => void;
   onReset: () => void;
-  onAIApply: (s: { kit_type: 'montado' | 'original' | 'simples'; box_keywords: string[] }) => void;
+  onAIApply: (s: {
+    kit_type: 'montado' | 'original' | 'simples';
+    box_keywords: string[];
+    item_keywords: string[];
+  }) => void;
   /** Full kit state — used by admin "Save as system template" snapshot. */
   kitState?: KitState;
   /** When set, header indicates we are editing a system template (admin mode). */

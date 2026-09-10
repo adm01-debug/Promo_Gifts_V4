@@ -3,12 +3,13 @@
  * Seletor de caixa/embalagem para o kit com filtros avançados
  */
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Search, Package, Check, Ruler, Box, SlidersHorizontal, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Clickable } from '@/components/shared/Clickable';
 import { BoxCardSkeleton } from './KitCardSkeleton';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Slider } from '@/components/ui/slider';
@@ -26,31 +27,46 @@ import {
   formatVolume,
   formatDimensions,
   formatCurrency,
+  rankBoxesForItems,
   type KitBox,
+  type KitItem,
   type BoxFilters,
 } from '@/lib/kit-builder';
 
 interface BoxSelectorProps {
   boxes: KitBox[];
   selectedBox: KitBox | null;
+  kitItems?: KitItem[];
   isLoading: boolean;
   filters: BoxFilters;
   onFiltersChange: (filters: BoxFilters) => void;
   onSelect: (box: KitBox) => void;
   onClear: () => void;
+  errorMessage?: string | null;
+  onRetry?: () => void;
 }
 
 export function BoxSelector({
   boxes,
   selectedBox,
+  kitItems = [],
   isLoading,
   filters,
   onFiltersChange,
   onSelect,
   onClear,
+  errorMessage,
+  onRetry,
 }: BoxSelectorProps) {
   const [searchValue, setSearchValue] = useState('');
   const [filtersOpen, setFiltersOpen] = useState(false);
+
+  // Filters can be applied by the AI assist or restored from a saved journey.
+  // Keep the visible field aligned with that external state instead of showing
+  // an empty search while a hidden query is active.
+  useEffect(() => {
+    setSearchValue(filters.search || '');
+  }, [filters.search]);
 
   const handleSearchChange = (value: string) => {
     setSearchValue(value);
@@ -66,6 +82,14 @@ export function BoxSelector({
     return Array.from(set).sort();
   }, [boxes]);
 
+  const boxTypes = useMemo(
+    () =>
+      Array.from(new Set(boxes.map((box) => box.boxType).filter(Boolean))).sort((a, b) =>
+        a!.localeCompare(b!),
+      ) as string[],
+    [boxes],
+  );
+
   // Dimension ranges for sliders
   const maxDims = useMemo(() => {
     let w = 0,
@@ -79,27 +103,52 @@ export function BoxSelector({
     return { width: Math.ceil(w) || 50, height: Math.ceil(h) || 50, depth: Math.ceil(d) || 50 };
   }, [boxes]);
 
+  const maxPrice = useMemo(
+    () => Math.max(10, ...boxes.map((box) => Math.ceil(box.price))),
+    [boxes],
+  );
+
+  const recommendations = useMemo(() => rankBoxesForItems(boxes, kitItems), [boxes, kitItems]);
+
   const hasActiveFilters = !!(
     filters.minWidth ||
+    filters.maxWidth ||
     filters.minHeight ||
+    filters.maxHeight ||
     filters.minDepth ||
-    filters.material
+    filters.maxDepth ||
+    filters.minPrice ||
+    filters.maxPrice ||
+    filters.material ||
+    filters.boxType
   );
 
   const activeFilterCount = [
     filters.minWidth,
+    filters.maxWidth,
     filters.minHeight,
+    filters.maxHeight,
     filters.minDepth,
+    filters.maxDepth,
+    filters.minPrice,
+    filters.maxPrice,
     filters.material,
+    filters.boxType,
   ].filter(Boolean).length;
 
   const clearAdvancedFilters = () => {
     onFiltersChange({
       ...filters,
       minWidth: undefined,
+      maxWidth: undefined,
       minHeight: undefined,
+      maxHeight: undefined,
       minDepth: undefined,
+      maxDepth: undefined,
+      minPrice: undefined,
+      maxPrice: undefined,
       material: undefined,
+      boxType: undefined,
     });
   };
 
@@ -214,7 +263,9 @@ export function BoxSelector({
                 )}
               </div>
 
-              {/* Dimension sliders */}
+              {/* Dimension ranges. The minimum is sufficient for most kit
+                  calculations; the upper bound keeps large packaging out of
+                  a constrained commercial search. */}
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 <div className="space-y-2">
                   <Label className="text-xs text-muted-foreground">
@@ -229,6 +280,21 @@ export function BoxSelector({
                     onValueChange={([v]) =>
                       onFiltersChange({ ...filters, minWidth: v || undefined })
                     }
+                  />
+                  <Input
+                    aria-label="Largura máxima em centímetros"
+                    type="number"
+                    min={0}
+                    max={maxDims.width}
+                    value={filters.maxWidth ?? ''}
+                    onChange={(event) => {
+                      const value = Number(event.target.value);
+                      onFiltersChange({
+                        ...filters,
+                        maxWidth: Number.isFinite(value) && value > 0 ? value : undefined,
+                      });
+                    }}
+                    placeholder="Máx."
                   />
                 </div>
                 <div className="space-y-2">
@@ -247,6 +313,21 @@ export function BoxSelector({
                       onFiltersChange({ ...filters, minHeight: v || undefined })
                     }
                   />
+                  <Input
+                    aria-label="Altura máxima em centímetros"
+                    type="number"
+                    min={0}
+                    max={maxDims.height}
+                    value={filters.maxHeight ?? ''}
+                    onChange={(event) => {
+                      const value = Number(event.target.value);
+                      onFiltersChange({
+                        ...filters,
+                        maxHeight: Number.isFinite(value) && value > 0 ? value : undefined,
+                      });
+                    }}
+                    placeholder="Máx."
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label className="text-xs text-muted-foreground">
@@ -262,7 +343,87 @@ export function BoxSelector({
                       onFiltersChange({ ...filters, minDepth: v || undefined })
                     }
                   />
+                  <Input
+                    aria-label="Profundidade máxima em centímetros"
+                    type="number"
+                    min={0}
+                    max={maxDims.depth}
+                    value={filters.maxDepth ?? ''}
+                    onChange={(event) => {
+                      const value = Number(event.target.value);
+                      onFiltersChange({
+                        ...filters,
+                        maxDepth: Number.isFinite(value) && value > 0 ? value : undefined,
+                      });
+                    }}
+                    placeholder="Máx."
+                  />
                 </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label className="text-xs text-muted-foreground">Faixa de preço (R$)</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Input
+                      aria-label="Preço mínimo"
+                      type="number"
+                      min={0}
+                      max={maxPrice}
+                      value={filters.minPrice ?? ''}
+                      onChange={(event) => {
+                        const value = Number(event.target.value);
+                        onFiltersChange({
+                          ...filters,
+                          minPrice: Number.isFinite(value) && value > 0 ? value : undefined,
+                        });
+                      }}
+                      placeholder="Mín."
+                    />
+                    <Input
+                      aria-label="Preço máximo"
+                      type="number"
+                      min={0}
+                      max={maxPrice}
+                      value={filters.maxPrice ?? ''}
+                      onChange={(event) => {
+                        const value = Number(event.target.value);
+                        onFiltersChange({
+                          ...filters,
+                          maxPrice: Number.isFinite(value) && value > 0 ? value : undefined,
+                        });
+                      }}
+                      placeholder="Máx."
+                    />
+                  </div>
+                </div>
+
+                {boxTypes.length > 0 && (
+                  <div className="space-y-2">
+                    <Label className="text-xs text-muted-foreground">Tipo de embalagem</Label>
+                    <Select
+                      value={filters.boxType || '_all'}
+                      onValueChange={(value) =>
+                        onFiltersChange({
+                          ...filters,
+                          boxType: value === '_all' ? undefined : value,
+                        })
+                      }
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Todos os tipos" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="_all">Todos os tipos</SelectItem>
+                        {boxTypes.map((type) => (
+                          <SelectItem key={type} value={type}>
+                            {type}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
               </div>
 
               {/* Material filter */}
@@ -302,7 +463,20 @@ export function BoxSelector({
               <BoxCardSkeleton key={i} />
             ))}
           </div>
-        ) : boxes.length === 0 ? (
+        ) : errorMessage ? (
+          <div className="py-12 text-center">
+            <Package className="mx-auto mb-3 h-12 w-12 text-destructive" />
+            <p className="font-medium">Não foi possível carregar as caixas</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Tente novamente antes de selecionar uma embalagem.
+            </p>
+            {onRetry && (
+              <Button variant="outline" size="sm" className="mt-3" onClick={onRetry}>
+                Tentar novamente
+              </Button>
+            )}
+          </div>
+        ) : recommendations.length === 0 ? (
           <div className="py-12 text-center">
             <Package className="mx-auto mb-3 h-12 w-12 text-muted-foreground" />
             <p className="text-muted-foreground">Nenhuma caixa encontrada</p>
@@ -315,60 +489,102 @@ export function BoxSelector({
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            {boxes.map((box) => (
-              <Card
-                key={box.id}
-                className={cn(
-                  'group cursor-pointer rounded-xl border-border/50 transition-all duration-200 will-change-transform',
-                  'hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg',
-                  'focus-within:ring-2 focus-within:ring-primary/60',
-                )}
-                onClick={() => onSelect(box)}
-              >
-                <CardContent className="p-4">
-                  <div className="flex gap-3">
-                    <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-secondary">
-                      {box.imageUrl ? (
-                        <img
-                          src={box.imageUrl}
-                          alt={box.name}
-                          className="h-full w-full object-cover transition-transform group-hover:scale-105"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div className="flex h-full w-full items-center justify-center">
-                          <Package className="h-8 w-8 text-muted-foreground" />
-                        </div>
-                      )}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h4 className="truncate font-medium transition-colors group-hover:text-primary">
-                        {box.name}
-                      </h4>
-                      <p className="mb-2 font-mono text-xs text-muted-foreground">{box.sku}</p>
-                      <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
-                        <span>
-                          {formatDimensions(
-                            box.internalWidth,
-                            box.internalHeight,
-                            box.internalDepth,
-                          )}
-                        </span>
-                        <span>•</span>
-                        <span>{formatVolume(box.internalVolume)}</span>
-                        {box.material && (
-                          <>
-                            <span>•</span>
-                            <span>{box.material}</span>
-                          </>
+            {recommendations.map((recommendation, index) => {
+              const box = recommendation.box;
+              const shouldExplain = kitItems.length > 0;
+              const statusLabel =
+                recommendation.status === 'compatible'
+                  ? index === 0
+                    ? 'Melhor ajuste estimado'
+                    : 'Compatível por dados'
+                  : recommendation.status === 'inconclusive'
+                    ? 'Validação pendente'
+                    : 'Não compatível';
+
+              return (
+                <Clickable
+                  as={Card}
+                  key={box.id}
+                  aria-label={`Selecionar caixa ${box.name}`}
+                  showFocusRing={false}
+                  className={cn(
+                    'group cursor-pointer rounded-xl border-border/50 transition-all duration-200 will-change-transform',
+                    'hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg',
+                    'focus-within:ring-2 focus-within:ring-primary/60',
+                  )}
+                  onClick={() => onSelect(box)}
+                >
+                  <CardContent className="p-4">
+                    <div className="flex gap-3">
+                      <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-secondary">
+                        {box.imageUrl ? (
+                          <img
+                            src={box.imageUrl}
+                            alt={box.name}
+                            className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                            loading="lazy"
+                          />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center">
+                            <Package className="h-8 w-8 text-muted-foreground" />
+                          </div>
                         )}
                       </div>
-                      <p className="mt-1 font-semibold text-primary">{formatCurrency(box.price)}</p>
+                      <div className="min-w-0 flex-1">
+                        <h4 className="truncate font-medium transition-colors group-hover:text-primary">
+                          {box.name}
+                        </h4>
+                        <p className="mb-2 font-mono text-xs text-muted-foreground">{box.sku}</p>
+                        <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+                          <span>
+                            {formatDimensions(
+                              box.internalWidth,
+                              box.internalHeight,
+                              box.internalDepth,
+                            )}
+                          </span>
+                          <span>•</span>
+                          <span>{formatVolume(box.internalVolume)}</span>
+                          {box.material && (
+                            <>
+                              <span>•</span>
+                              <span>{box.material}</span>
+                            </>
+                          )}
+                        </div>
+                        <p className="mt-1 font-semibold text-primary">
+                          {formatCurrency(box.price)}
+                        </p>
+                        {shouldExplain && (
+                          <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                            <Badge
+                              variant={
+                                recommendation.status === 'incompatible'
+                                  ? 'destructive'
+                                  : 'secondary'
+                              }
+                              className={cn(
+                                'text-[10px]',
+                                recommendation.status === 'compatible' &&
+                                  'bg-success/10 text-success',
+                                recommendation.status === 'inconclusive' &&
+                                  'bg-warning/10 text-warning',
+                              )}
+                              title={recommendation.compatibility.reason}
+                            >
+                              {statusLabel}
+                            </Badge>
+                            <span className="text-[10px] text-muted-foreground">
+                              Ocupação estimada: {Math.round(recommendation.usagePercent)}%
+                            </span>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                  </CardContent>
+                </Clickable>
+              );
+            })}
           </div>
         )}
       </ScrollArea>

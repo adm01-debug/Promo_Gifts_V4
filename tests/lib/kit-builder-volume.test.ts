@@ -95,6 +95,17 @@ describe("kit-builder volume-calculator", () => {
       expect(result.fits).toBe(false);
       expect(result.reason).toContain("Volume");
     });
+
+    it("does not claim a verified fit when source dimensions are estimated", () => {
+      const result = checkItemFits(
+        { ...smallItem, dimensionsKnown: false },
+        mockBox,
+        [],
+      );
+      expect(result.fits).toBe(true);
+      expect(result.confidence).toBe("unknown");
+      expect(result.reason).toContain("pendente");
+    });
   });
 
   describe("isNearCapacity / isAtCapacity", () => {

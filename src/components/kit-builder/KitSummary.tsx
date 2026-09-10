@@ -17,6 +17,7 @@ import { KitPricingCard } from './kit-summary/KitPricingCard';
 import { KitActionsBar } from './kit-summary/KitActionsBar';
 import { KitConflictAlerts } from './KitConflictAlerts';
 import { KitPresentablePreview } from './KitPresentablePreview';
+import { ClientPicker, type ClientData } from '@/components/quotes/ClientPicker';
 
 interface KitSummaryProps {
   kitState: KitState;
@@ -28,6 +29,8 @@ interface KitSummaryProps {
   onExportPDF?: () => void;
   isAddingToQuote?: boolean;
   currentKitId?: string;
+  quoteClient?: Partial<ClientData>;
+  onQuoteClientChange?: (next: Partial<ClientData>) => void;
 }
 
 export function KitSummary({
@@ -40,6 +43,8 @@ export function KitSummary({
   onExportPDF,
   isAddingToQuote,
   currentKitId,
+  quoteClient = {},
+  onQuoteClientChange,
 }: KitSummaryProps) {
   const { box, items, personalization } = kitState;
   const pricing = calculateTotalKitPrice(box, items, personalization, kitQuantity);
@@ -57,6 +62,7 @@ export function KitSummary({
         onKitNameChange={onKitNameChange}
         onKitQuantityChange={onKitQuantityChange}
       />
+      {onQuoteClientChange && <ClientPicker value={quoteClient} onChange={onQuoteClientChange} />}
       <KitStatsCards
         kitState={kitState}
         totalItems={totalItems}

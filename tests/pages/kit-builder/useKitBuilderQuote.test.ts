@@ -1,9 +1,9 @@
 /**
  * Testes — useKitBuilderQuote
  *
- * Garante que o hook envia `seller_id = user.id` no INSERT em `quotes`
- * quando o usuário cria um orçamento a partir do Kit Builder. Também
- * verifica que sem usuário autenticado nenhuma mutação é disparada.
+ * Garante que o hook envia `seller_id = user.id` à RPC atômica de orçamento
+ * quando o usuário cria um orçamento a partir do Kit Builder. Também verifica
+ * que sem usuário autenticado nenhuma mutação é disparada.
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, renderHook } from "@testing-library/react";
@@ -78,23 +78,30 @@ describe("useKitBuilderQuote — payloads", () => {
     return mod.useKitBuilderQuote;
   }
 
-  it("inclui seller_id = user.id no INSERT em quotes", async () => {
+  it("inclui seller_id = user.id na RPC transacional", async () => {
     const useHook = await loadHook({ user: { id: USER_ID } });
     const { result } = renderHook(() => useHook());
 
     await act(async () => {
-      await result.current.handleAddToQuote(KIT_STATE, 3);
+      await result.current.handleAddToQuote(KIT_STATE, 3, {
+        client_company: 'Empresa Teste',
+        client_email: 'contato@empresa.teste',
+        client_name: 'Contato Teste',
+      });
     });
 
-    const quoteIns = mock.calls.insert.find((c) => c.table === "quotes");
-    expect(quoteIns).toBeDefined();
-    expect(quoteIns!.payload).toMatchObject({
+    const rpc = mock.calls.rpc.find((call) => call.fn === "create_quote_transactional");
+    expect(rpc).toBeDefined();
+    expect(rpc!.args?._quote).toMatchObject({
       seller_id: USER_ID,
       status: "draft",
       subtotal: 250,
       total: 250,
+      client_company: 'Empresa Teste',
+      client_email: 'contato@empresa.teste',
+      client_name: 'Contato Teste',
     });
-    expect((quoteIns!.payload as { seller_id: string }).seller_id).toBe(USER_ID);
+    expect((rpc!.args?._quote as { seller_id: string }).seller_id).toBe(USER_ID);
   });
 
   it("não dispara mutações quando usuário não está autenticado", async () => {
@@ -108,9 +115,10 @@ describe("useKitBuilderQuote — payloads", () => {
     expect(mock.calls.insert).toHaveLength(0);
     expect(mock.calls.update).toHaveLength(0);
     expect(mock.calls.delete).toHaveLength(0);
+    expect(mock.calls.rpc).toHaveLength(0);
   });
 
-  it("quote_items são inseridos ligados ao quote criado (sem seller_id direto)", async () => {
+  it("envia itens e personalizações para a mesma RPC transacional", async () => {
     const useHook = await loadHook({ user: { id: USER_ID } });
     const { result } = renderHook(() => useHook());
 
@@ -118,14 +126,16 @@ describe("useKitBuilderQuote — payloads", () => {
       await result.current.handleAddToQuote(KIT_STATE, 2);
     });
 
-    const itemsIns = mock.calls.insert.find((c) => c.table === "quote_items");
-    expect(itemsIns).toBeDefined();
-    const arr = itemsIns!.payload as Array<Record<string, unknown>>;
-    // todos os items apontam ao quote criado
+    const rpc = mock.calls.rpc.find((call) => call.fn === "create_quote_transactional");
+    expect(rpc).toBeDefined();
+    const arr = rpc!.args!._items as Array<Record<string, unknown>>;
+    expect(arr).toHaveLength(2); // caixa + item
     for (const it of arr) {
-      expect(it.quote_id).toBe("new-quote-id");
-      // seller_id é herdado por FK no banco — não deve estar no item
+      // A RPC injeta quote_id dentro da transação; o cliente não pode criar
+      // linhas de um orçamento parcialmente persistido.
+      expect(it).not.toHaveProperty("quote_id");
       expect(it).not.toHaveProperty("seller_id");
+      expect(it).toHaveProperty("personalizations");
     }
   });
 });

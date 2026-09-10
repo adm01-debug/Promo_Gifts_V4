@@ -15,6 +15,7 @@ import {
   type KitPersonalization,
   type KitItemPersonalization,
   type KitBuilderStep,
+  type KitBuilderFlow,
   type KitBuilderWizardState,
   type CompatibilityResult,
   calculateTotalItemsVolume,
@@ -30,7 +31,11 @@ import type { KitSnapshot } from '@/hooks/kit-builder/useKitUndoRedo';
 // HOOK PRINCIPAL
 // ============================================
 
-export function useKitBuilder() {
+interface UseKitBuilderOptions {
+  initialFlow?: KitBuilderFlow;
+}
+
+export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOptions = {}) {
   // Estado do kit
   const [kitName, setKitName] = useState('');
   const [kitType, setKitType] = useState<KitType>('montado');
@@ -49,8 +54,13 @@ export function useKitBuilder() {
     isFavorite: false,
   });
 
-  // Estado do wizard
-  const [currentStep, setCurrentStep] = useState<KitBuilderStep>('box');
+  // Estado do wizard. The journey must be explicit: inferring it from the
+  // current step makes a saved draft ambiguous and broke the items-first UI.
+  const [flow, setFlow] = useState<KitBuilderFlow>(initialFlow);
+  const [currentStep, setCurrentStep] = useState<KitBuilderStep>(
+    initialFlow === 'items-first' ? 'items' : 'box',
+  );
+  const [personalizationReviewed, setPersonalizationReviewed] = useState(false);
 
   // Queries isoladas em hook separado
   const {
@@ -58,6 +68,10 @@ export function useKitBuilder() {
     availableItems,
     isLoadingBoxes,
     isLoadingItems,
+    boxError,
+    itemError,
+    refetchBoxes,
+    refetchItems,
     boxFilters,
     itemFilters,
     setBoxFilters,
@@ -95,6 +109,27 @@ export function useKitBuilder() {
     if (volumeUsagePercent > 100)
       validationErrors.push('Volume dos itens excede a capacidade da caixa');
 
+    if (selectedBox) {
+      if (selectedBox.dimensionsKnown === false) {
+        validationErrors.push('A caixa selecionada não possui dimensões internas confirmadas');
+      }
+      const itemWithUnknownDimensions = selectedItems.find(
+        (item) => item.dimensionsKnown === false,
+      );
+      if (itemWithUnknownDimensions) {
+        validationErrors.push(
+          `${itemWithUnknownDimensions.name} não possui dimensões confirmadas para validação`,
+        );
+      }
+      const incompatibleItem = selectedItems.find((item) => {
+        const otherItems = selectedItems.filter((candidate) => candidate !== item);
+        return !checkItemFits(item, selectedBox, otherItems, item.quantity).fits;
+      });
+      if (incompatibleItem) {
+        validationErrors.push(`${incompatibleItem.name} não é compatível com a caixa selecionada`);
+      }
+    }
+
     // Weight validation
     if (selectedBox?.maxWeight && itemsWeight > selectedBox.maxWeight) {
       validationErrors.push(
@@ -128,9 +163,7 @@ export function useKitBuilder() {
     if (selectedBox) completedSteps.push('box');
     if (selectedItems.length > 0) completedSteps.push('items');
 
-    const hasPersonalizationConfig =
-      Object.keys(personalization.items).length > 0 || personalization.box.enabled;
-    if (hasPersonalizationConfig || currentStep === 'summary') {
+    if (personalizationReviewed) {
       completedSteps.push('personalization');
     }
 
@@ -140,7 +173,11 @@ export function useKitBuilder() {
         canProceed = selectedBox !== null;
         break;
       case 'items':
-        canProceed = selectedItems.length > 0 && kitState.volumeUsagePercent <= 100;
+        canProceed =
+          selectedItems.length > 0 &&
+          (!selectedBox ||
+            (kitState.volumeUsagePercent <= 100 &&
+              !kitState.validationErrors.some((error) => error.includes('não é compatível'))));
         break;
       case 'personalization':
         canProceed = true;
@@ -154,8 +191,9 @@ export function useKitBuilder() {
       currentStep,
       completedSteps,
       canProceed,
+      flow,
     };
-  }, [currentStep, selectedBox, selectedItems, personalization, kitState]);
+  }, [currentStep, selectedBox, selectedItems, personalizationReviewed, kitState, flow]);
 
   // ============================================
   // AÇÕES
@@ -167,14 +205,27 @@ export function useKitBuilder() {
 
   const clearBox = useCallback(() => {
     setSelectedBox(null);
-    setSelectedItems([]);
-    setPersonalization({ box: { enabled: false }, items: {} });
+    // Items-first is a supported journey. Changing the packaging must not
+    // silently discard the composition or item-level personalization.
+    setPersonalization((current) => ({ ...current, box: { enabled: false } }));
   }, []);
 
   const addItem = useCallback(
     (item: KitItem): CompatibilityResult => {
       if (!selectedBox) {
-        return { fits: false, reason: 'Selecione uma caixa primeiro' };
+        setSelectedItems((previous) => {
+          const existingIndex = previous.findIndex((candidate) => candidate.id === item.id);
+          if (existingIndex < 0) return [...previous, { ...item, quantity: 1 }];
+          return previous.map((candidate, index) =>
+            index === existingIndex
+              ? { ...candidate, quantity: candidate.quantity + 1 }
+              : candidate,
+          );
+        });
+        return {
+          fits: true,
+          reason: 'Item adicionado. A compatibilidade será validada após a escolha da caixa.',
+        };
       }
 
       const existingIndex = selectedItems.findIndex((i) => i.id === item.id);
@@ -316,20 +367,31 @@ export function useKitBuilder() {
   }, []);
 
   const nextStep = useCallback(() => {
-    const steps: KitBuilderStep[] = ['box', 'items', 'personalization', 'summary'];
+    const steps: KitBuilderStep[] =
+      flow === 'items-first'
+        ? ['items', 'box', 'personalization', 'summary']
+        : ['box', 'items', 'personalization', 'summary'];
     const currentIndex = steps.indexOf(currentStep);
-    if (currentIndex < steps.length - 1) {
+    const canAdvance =
+      (currentStep === 'box' && selectedBox !== null) ||
+      (currentStep === 'items' && selectedItems.length > 0 && (!selectedBox || kitState.isValid)) ||
+      currentStep === 'personalization';
+    if (canAdvance && currentIndex < steps.length - 1) {
+      if (currentStep === 'personalization') setPersonalizationReviewed(true);
       setCurrentStep(steps[currentIndex + 1]);
     }
-  }, [currentStep]);
+  }, [currentStep, flow, selectedBox, selectedItems.length, kitState.isValid]);
 
   const prevStep = useCallback(() => {
-    const steps: KitBuilderStep[] = ['box', 'items', 'personalization', 'summary'];
+    const steps: KitBuilderStep[] =
+      flow === 'items-first'
+        ? ['items', 'box', 'personalization', 'summary']
+        : ['box', 'items', 'personalization', 'summary'];
     const currentIndex = steps.indexOf(currentStep);
     if (currentIndex > 0) {
       setCurrentStep(steps[currentIndex - 1]);
     }
-  }, [currentStep]);
+  }, [currentStep, flow]);
 
   const reorderItems = useCallback((fromIndex: number, toIndex: number) => {
     setSelectedItems((prev) => {
@@ -348,7 +410,21 @@ export function useKitBuilder() {
     setPersonalization({ box: { enabled: false }, items: {} });
     setKitQuantity(1);
     setIdentity({ color: '#3B82F6', icon: 'Package', tag: '', description: '', isFavorite: false });
-    setCurrentStep('box');
+    setPersonalizationReviewed(false);
+    setCurrentStep(flow === 'items-first' ? 'items' : 'box');
+  }, [flow]);
+
+  const startNewFlow = useCallback((nextFlow: KitBuilderFlow) => {
+    setKitName('');
+    setKitType('montado');
+    setSelectedBox(null);
+    setSelectedItems([]);
+    setPersonalization({ box: { enabled: false }, items: {} });
+    setKitQuantity(1);
+    setIdentity({ color: '#3B82F6', icon: 'Package', tag: '', description: '', isFavorite: false });
+    setPersonalizationReviewed(false);
+    setFlow(nextFlow);
+    setCurrentStep(nextFlow === 'items-first' ? 'items' : 'box');
   }, []);
 
   /** Load a saved kit (from custom_kits JSONB snapshots) into the wizard */
@@ -377,6 +453,7 @@ export function useKitBuilder() {
           isFavorite: data.identity.isFavorite ?? false,
         });
       }
+      setPersonalizationReviewed(true);
       setCurrentStep('summary');
     },
     [],
@@ -444,6 +521,10 @@ export function useKitBuilder() {
     availableItems: filteredItems,
     isLoadingBoxes,
     isLoadingItems,
+    boxError,
+    itemError,
+    refetchBoxes,
+    refetchItems,
     boxFilters,
     setBoxFilters,
     itemFilters,
@@ -463,11 +544,14 @@ export function useKitBuilder() {
     setBoxPersonalization,
     setKitQuantity,
     setIdentity,
+    setFlow,
     goToStep,
     nextStep,
     prevStep,
     resetKit,
+    startNewFlow,
     loadKit,
     restoreKitSnapshot,
+    flow,
   };
 }

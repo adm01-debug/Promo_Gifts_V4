@@ -62,6 +62,13 @@ export function checkItemFits(
   existingItems: KitItem[],
   quantity = 1,
 ): CompatibilityResult {
+  if (box.dimensionsKnown === false || item.dimensionsKnown === false) {
+    return {
+      fits: true,
+      confidence: 'unknown',
+      reason: 'Compatibilidade pendente: faltam dimensões internas confirmadas.',
+    };
+  }
   const currentVolume = calculateTotalItemsVolume(existingItems);
   const itemVolume = item.volume * quantity;
   const totalVolumeAfter = currentVolume + itemVolume;
@@ -80,6 +87,7 @@ export function checkItemFits(
   if (!fitsAnyOrientation) {
     return {
       fits: false,
+      confidence: 'verified',
       reason: `Dimens\u00f5es do item (${item.width}\u00d7${item.height}\u00d7${item.depth}cm) n\u00e3o cabem na caixa (${box.internalWidth}\u00d7${box.internalHeight}\u00d7${box.internalDepth}cm) em nenhuma orienta\u00e7\u00e3o`,
     };
   }
@@ -88,6 +96,7 @@ export function checkItemFits(
   if (totalVolumeAfter > usableVolume) {
     return {
       fits: false,
+      confidence: 'verified',
       reason: `Volume total excederá a capacidade da caixa (${Math.round(percentAfterAdd)}% > 100%)`,
       volumeAfterAdd: totalVolumeAfter,
       percentAfterAdd,
@@ -96,6 +105,7 @@ export function checkItemFits(
 
   return {
     fits: true,
+    confidence: 'verified',
     volumeAfterAdd: totalVolumeAfter,
     percentAfterAdd,
   };

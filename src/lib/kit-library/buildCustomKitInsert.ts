@@ -20,6 +20,7 @@ export function buildCustomKitInsert(
     user_id: overrides.user_id,
     name: overrides.name ?? source.name,
     status: overrides.status ?? source.status,
+    kit_type: overrides.kit_type ?? source.kit_type,
     box_data: overrides.box_data ?? source.box_data,
     items_data: overrides.items_data ?? source.items_data,
     personalization_data: overrides.personalization_data ?? source.personalization_data,
