@@ -34,8 +34,8 @@ function toPersonalizationPayload(
   return {
     technique_id: personalization.techniqueId ?? null,
     technique_name: personalization.techniqueName ?? null,
-    location_code: personalization.position ?? null,
-    location_name: personalization.position ?? null,
+    location_code: personalization.positionCode ?? null,
+    location_name: personalization.positionName ?? personalization.position ?? null,
     personalized_quantity: quantity,
     colors_count: personalization.colors ?? 1,
     positions_count: 1,

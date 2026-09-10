@@ -17,6 +17,8 @@ import { KitPricingCard } from './kit-summary/KitPricingCard';
 import { KitActionsBar } from './kit-summary/KitActionsBar';
 import { KitConflictAlerts } from './KitConflictAlerts';
 import { KitPresentablePreview } from './KitPresentablePreview';
+import { KitPersonalizationPreview } from './KitPersonalizationPreview';
+import { KitStockForecastCard } from './KitStockForecastCard';
 import { ClientPicker, type ClientData } from '@/components/quotes/ClientPicker';
 
 interface KitSummaryProps {
@@ -76,6 +78,7 @@ export function KitSummary({
         kitName={kitName}
         currentKitId={currentKitId}
       />
+      <KitPersonalizationPreview kitState={kitState} />
       <KitConflictAlerts kitState={kitState} />
       <DiscontinuedItemsAlert items={items} />
       <KitCompositionCard
@@ -128,6 +131,8 @@ export function KitSummary({
         </Card>
       )}
 
+      <KitStockForecastCard items={items} kitQuantity={kitQuantity} />
+
       <FreightEstimator totalWeightGrams={kitState.totalWeight} kitQuantity={kitQuantity} />
 
       {!kitState.isValid && (
@@ -149,6 +154,7 @@ export function KitSummary({
       <KitActionsBar
         isValid={kitState.isValid}
         isAddingToQuote={isAddingToQuote}
+        hasStockIssues={stockAlerts.length > 0}
         kitName={kitName}
         kitTag={kitState.identity?.tag}
         kitQuantity={kitQuantity}

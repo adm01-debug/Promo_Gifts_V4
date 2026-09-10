@@ -118,7 +118,11 @@ function ItemPersonalizationCard({
   );
 
   // Find current technique for reactive price
-  const currentTech = techniques.find((t) => t.technique_id === personalization.techniqueId);
+  const currentTech = techniques.find(
+    (t) =>
+      t.technique_id === personalization.techniqueId &&
+      (!personalization.positionCode || t.location_code === personalization.positionCode),
+  );
 
   // Reactive price from real RPC
   const { price: priceData, loading: priceLoading } = useCustomizationPriceReactive(
@@ -156,14 +160,18 @@ function ItemPersonalizationCard({
     setIsOpen(enabled);
   };
 
-  const handleTechniqueChange = (techniqueId: string) => {
-    const tech = techniques.find((t) => t.technique_id === techniqueId);
+  const handleTechniqueChange = (selectionId: string) => {
+    const tech = techniques.find(
+      (candidate) => `${candidate.technique_id}:${candidate.location_code}` === selectionId,
+    );
     if (tech) {
       onChange({
         ...personalization,
         techniqueId: tech.technique_id,
         techniqueName: tech.tecnica_nome,
         techniqueCode: tech.codigo_tabela,
+        positionCode: tech.location_code,
+        positionName: tech.location_name,
         position: tech.location_name,
         colors: Math.min(personalization.colors || 1, tech.max_cores),
         width: personalization.width || (tech.usa_dimensao ? tech.efetiva_largura_max : undefined),
@@ -275,7 +283,12 @@ function ItemPersonalizationCard({
                   </p>
                 ) : (
                   <Select
-                    value={personalization.techniqueId || ''}
+                    value={
+                      personalization.techniqueId &&
+                      (personalization.positionCode || personalization.position)
+                        ? `${personalization.techniqueId}:${personalization.positionCode || personalization.position}`
+                        : ''
+                    }
                     onValueChange={handleTechniqueChange}
                   >
                     <SelectTrigger>
@@ -283,7 +296,10 @@ function ItemPersonalizationCard({
                     </SelectTrigger>
                     <SelectContent>
                       {techniques.map((tech) => (
-                        <SelectItem key={tech.technique_id} value={tech.technique_id}>
+                        <SelectItem
+                          key={`${tech.technique_id}:${tech.location_code}`}
+                          value={`${tech.technique_id}:${tech.location_code}`}
+                        >
                           <span className="flex items-center gap-2">
                             <Badge variant="outline" className="px-1 py-0 text-[10px]">
                               {tech.grupo_tecnica}

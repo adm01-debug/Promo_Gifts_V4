@@ -220,7 +220,7 @@ export function useKitBuilderQueries() {
     queryFn: async () => {
       try {
         const products = await fetchAllActiveProducts(
-          'id, name, sku, sale_price, primary_image_url, images, dimensions, category_id, weight_g, materials, width_cm, height_cm, length_cm, colors, packing_classification, packing_type, is_box',
+          'id, name, sku, base_price, sale_price, primary_image_url, images, dimensions, category_id, category_name, weight_g, materials, width_cm, height_cm, length_cm, colors, packing_classification, packing_type, is_box, allows_personalization, is_replaceable, allowed_variant_ids',
           debouncedItemSearch,
         );
         const items = products

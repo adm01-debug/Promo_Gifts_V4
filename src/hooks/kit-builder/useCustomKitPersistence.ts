@@ -10,8 +10,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { sanitizeError } from '@/lib/security/sanitize-error';
 import type { KitState } from '@/lib/kit-builder';
-import type { Json } from '@/integrations/supabase/types';
 import { logger } from '@/lib/logger';
+import { buildKitPersistencePayload } from '@/lib/kit-builder/persistence';
 
 // ============================================
 // TYPES
@@ -84,28 +84,7 @@ export function useCustomKitPersistence() {
     }) => {
       if (!user?.id) throw new Error('Usuário não autenticado');
 
-      const identity = kitState.identity;
-      const payload = {
-        user_id: user.id,
-        name: kitState.name || 'Kit sem nome',
-        status: kitState.isValid ? 'complete' : 'draft',
-        kit_type: kitState.kitType || 'montado',
-        box_data: kitState.box ? (structuredClone(kitState.box) as unknown as Json) : null,
-        items_data: structuredClone(kitState.items) as unknown as Json,
-        personalization_data: structuredClone(kitState.personalization) as unknown as Json,
-        kit_quantity: kitQuantity,
-        box_price: kitState.boxPrice,
-        items_price: kitState.itemsPrice,
-        personalization_price: kitState.personalizationPrice,
-        total_price: kitState.totalPrice,
-        volume_usage_percent: kitState.volumeUsagePercent,
-        color: identity?.color ?? '#3B82F6',
-        icon: identity?.icon ?? 'Package',
-        tag: identity?.tag ?? null,
-        description: identity?.description ?? null,
-        is_favorite: identity?.isFavorite ?? false,
-        updated_at: new Date().toISOString(),
-      };
+      const payload = buildKitPersistencePayload(user.id, kitState, kitQuantity);
 
       if (kitId) {
         const { data, error } = await supabase

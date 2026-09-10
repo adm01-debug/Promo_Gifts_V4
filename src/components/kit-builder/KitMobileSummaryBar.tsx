@@ -24,7 +24,10 @@ interface KitMobileSummaryBarProps {
 
 export function KitMobileSummaryBar({ kitState, kitQuantity, children }: KitMobileSummaryBarProps) {
   const [open, setOpen] = useState(false);
-  const grandTotal = kitState.totalPrice * kitQuantity;
+  // `KitState.totalPrice` already includes `kitQuantity` (see
+  // calculateTotalKitPrice). Multiplying it here made the mobile summary show
+  // a total inflated by the lot quantity.
+  const grandTotal = kitState.totalPrice;
   const volume = Math.round(kitState.volumeUsagePercent);
 
   return (
@@ -62,7 +65,13 @@ export function KitMobileSummaryBar({ kitState, kitQuantity, children }: KitMobi
                   {volume}%
                 </Badge>
               )}
-              <Button variant="ghost" size="icon" aria-label="Expandir resumo do kit" className="h-8 w-8" tabIndex={-1}>
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Expandir resumo do kit"
+                className="h-8 w-8"
+                tabIndex={-1}
+              >
                 <ChevronUp className="h-4 w-4" />
               </Button>
             </div>

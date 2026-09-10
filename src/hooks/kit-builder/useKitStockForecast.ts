@@ -25,7 +25,7 @@ export function useKitStockForecast(items: KitItem[], kitQuantity: number) {
   return useQuery({
     queryKey: [
       'kit-stock-forecast',
-      items.map((i) => `${i.id}:${i.quantity}`).join('|'),
+      items.map((i) => `${i.id}:${i.selectedVariantId ?? 'all'}:${i.quantity}`).join('|'),
       kitQuantity,
     ],
     queryFn: async (): Promise<KitStockForecast> => {
@@ -38,6 +38,7 @@ export function useKitStockForecast(items: KitItem[], kitQuantity: number) {
 
       // Busca fontes de fornecimento
       const result = await dbInvoke<{
+        id: string;
         product_id: string;
         stock_quantity: number | null;
         next_entry_date: string | null;
@@ -47,23 +48,26 @@ export function useKitStockForecast(items: KitItem[], kitQuantity: number) {
         // nao em variant_supplier_sources (gerava 42703 engolido pelo .catch -> forecast de kit sempre vazio).
         table: 'product_variants',
         operation: 'select',
-        select: 'product_id, stock_quantity, next_entry_date, next_entry_quantity',
+        select: 'id, product_id, stock_quantity, next_entry_date, next_entry_quantity',
         filters: { product_id: productIds, is_active: true },
         limit: 500,
       }).catch(() => ({ records: [] }));
 
-      const stockByProduct = new Map<
+      const stockByKey = new Map<
         string,
         { current: number; nextDate: string | null; nextQty: number }
       >();
       for (const r of result.records) {
-        const cur = stockByProduct.get(r.product_id) || { current: 0, nextDate: null, nextQty: 0 };
-        cur.current += r.stock_quantity || 0;
-        if (r.next_entry_date && (!cur.nextDate || r.next_entry_date < cur.nextDate)) {
-          cur.nextDate = r.next_entry_date;
-          cur.nextQty = r.next_entry_quantity || 0;
+        const keys = [`product:${r.product_id}`, `variant:${r.id}`];
+        for (const key of keys) {
+          const current = stockByKey.get(key) || { current: 0, nextDate: null, nextQty: 0 };
+          current.current += r.stock_quantity || 0;
+          if (r.next_entry_date && (!current.nextDate || r.next_entry_date < current.nextDate)) {
+            current.nextDate = r.next_entry_date;
+            current.nextQty = r.next_entry_quantity || 0;
+          }
+          stockByKey.set(key, current);
         }
-        stockByProduct.set(r.product_id, cur);
       }
 
       const itemsAtRisk: KitStockForecast['itemsAtRisk'] = [];
@@ -71,7 +75,13 @@ export function useKitStockForecast(items: KitItem[], kitQuantity: number) {
 
       for (const it of items) {
         const required = it.quantity * kitQuantity;
-        const stock = stockByProduct.get(it.id) || { current: 0, nextDate: null, nextQty: 0 };
+        const stock = stockByKey.get(
+          it.selectedVariantId ? `variant:${it.selectedVariantId}` : `product:${it.id}`,
+        ) || {
+          current: 0,
+          nextDate: null,
+          nextQty: 0,
+        };
         const deficit = required - stock.current;
         if (deficit > 0) {
           itemsAtRisk.push({

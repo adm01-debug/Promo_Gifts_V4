@@ -3,9 +3,12 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { KitAIPromptDialog } from '@/components/kit-builder/KitAIPromptDialog';
+import { KitOccasionSelector, type Occasion } from '@/components/kit-builder/KitOccasionSelector';
 
 interface KitMakerLandingProps {
   onStart: (flow: 'box-first' | 'items-first') => void;
+  occasion: Occasion | null;
+  onOccasionChange: (occasion: Occasion | null) => void;
   onApplyAISuggestion: (suggestion: {
     kit_type: 'montado' | 'original' | 'simples';
     box_keywords: string[];
@@ -23,7 +26,12 @@ const BENEFITS = [
   ['Orçamento rastreável', 'Revise valores e crie o orçamento em uma operação transacional.'],
 ] as const;
 
-export function KitMakerLanding({ onStart, onApplyAISuggestion }: KitMakerLandingProps) {
+export function KitMakerLanding({
+  onStart,
+  occasion,
+  onOccasionChange,
+  onApplyAISuggestion,
+}: KitMakerLandingProps) {
   return (
     <main className="mx-auto w-full max-w-[1600px] space-y-7 px-3 py-6 sm:px-5 lg:px-8">
       <section className="flex flex-col justify-between gap-5 lg:flex-row lg:items-center">
@@ -116,6 +124,8 @@ export function KitMakerLanding({ onStart, onApplyAISuggestion }: KitMakerLandin
           </CardContent>
         </Card>
       </section>
+
+      <KitOccasionSelector value={occasion} onChange={onOccasionChange} />
 
       <section id="como-funciona" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {BENEFITS.map(([title, description]) => (

@@ -14,6 +14,8 @@ import {
 import { KitBuilderHeader } from '@/components/kit-builder/KitBuilderHeader';
 import { KitHeroPricingCard } from '@/components/kit-builder/KitHeroPricingCard';
 import { KitShortcutsDialog } from '@/components/kit-builder/KitShortcutsDialog';
+import { KitMobileSummaryBar } from '@/components/kit-builder/KitMobileSummaryBar';
+import { KitOnboardingTour } from '@/components/kit-builder/KitOnboardingTour';
 import { useKitWizardShortcuts } from '@/hooks/kit-builder/useKitWizardShortcuts';
 
 const KitIsometricPreview = lazy(() =>
@@ -91,13 +93,18 @@ export default function KitBuilderPage() {
       {!state.isLanding && <KitShortcutsDialog />}
 
       {state.isLanding ? (
-        <KitMakerLanding
-          onStart={actions.startFlow}
-          onApplyAISuggestion={(suggestion) => {
-            actions.startFlow('items-first');
-            actions.applyAISuggestion(suggestion);
-          }}
-        />
+        <>
+          <KitOnboardingTour />
+          <KitMakerLanding
+            onStart={actions.startFlow}
+            occasion={state.occasion}
+            onOccasionChange={actions.selectOccasion}
+            onApplyAISuggestion={(suggestion) => {
+              actions.startFlow('items-first');
+              actions.applyAISuggestion(suggestion);
+            }}
+          />
+        </>
       ) : (
         <>
           <KitBuilderHeader
@@ -242,6 +249,18 @@ export default function KitBuilderPage() {
               </div>
             </div>
           </div>
+          <KitMobileSummaryBar kitState={state.kitState} kitQuantity={state.kitQuantity}>
+            <KitHeroPricingCard
+              unitPrice={meta.pricing.unitPrice}
+              total={meta.pricing.total}
+              kitQuantity={state.kitQuantity}
+              isValid={state.kitState.isValid}
+              hasContent={!!state.kitState.box || state.kitState.items.length > 0}
+            />
+            <Button className="w-full" onClick={() => actions.goToStep('summary')}>
+              Abrir revisão do kit
+            </Button>
+          </KitMobileSummaryBar>
         </>
       )}
     </div>

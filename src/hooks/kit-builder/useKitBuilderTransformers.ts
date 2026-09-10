@@ -77,6 +77,7 @@ export function transformToKitBox(product: ExternalProductForKit): KitBox | null
 }
 
 export function transformToKitItem(product: ExternalProductForKit, category?: string): KitItem {
+  const resolvedCategory = category ?? product.category_name ?? product.category_id ?? undefined;
   let dimensions: { width: number; height: number; depth: number } | null = null;
 
   const wMm = mmToCm(product.width_mm);
@@ -88,7 +89,7 @@ export function transformToKitItem(product: ExternalProductForKit, category?: st
 
   if (!dimensions) dimensions = extractProductDimensions(product);
   const dimensionsKnown = dimensions !== null;
-  if (!dimensions) dimensions = estimateDefaultDimensions(category);
+  if (!dimensions) dimensions = estimateDefaultDimensions(resolvedCategory);
 
   const volume = calculateVolume(dimensions.width, dimensions.height, dimensions.depth);
 
@@ -105,11 +106,14 @@ export function transformToKitItem(product: ExternalProductForKit, category?: st
     dimensionsKnown,
     weight: product.weight_g ?? undefined,
     material: resolveProductMaterial(product),
-    category,
+    category: resolvedCategory,
     quantity: 1,
     isOptional: false,
-    isReplaceable: product.is_replaceable ?? false,
-    allowsPersonalization: product.allows_personalization ?? true,
-    allowedVariantIds: product.allowed_variant_ids ?? undefined,
+    isReplaceable: product.is_replaceable === true,
+    // Missing catalog metadata must not be interpreted as permission to print.
+    allowsPersonalization: product.allows_personalization === true,
+    allowedVariantIds: Array.isArray(product.allowed_variant_ids)
+      ? product.allowed_variant_ids.filter((id): id is string => typeof id === 'string')
+      : undefined,
   };
 }

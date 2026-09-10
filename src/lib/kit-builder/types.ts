@@ -61,6 +61,8 @@ export interface KitItem {
     name: string;
     hex?: string;
   };
+  /** Canonical variant selected for stock, SKU and quote validation. */
+  selectedVariantId?: string;
   // Tamanho selecionado
   selectedSize?: string;
   // Quantidade no kit
@@ -86,6 +88,11 @@ export interface KitItemPersonalization {
   colors?: number;
   width?: number;
   height?: number;
+  /** Stable code returned by the customization catalog for the application area. */
+  positionCode?: string;
+  /** Human-readable application area. Kept separately from `position` for legacy snapshots. */
+  positionName?: string;
+  /** @deprecated Legacy display-only area name; use positionCode/positionName for new writes. */
   position?: string;
   estimatedPrice?: number;
 }
@@ -228,6 +235,7 @@ export interface ExternalProductForKit {
       }
     | null;
   category_id?: string | null;
+  category_name?: string | null;
   colors?: ExternalColorEntry[] | null;
   materials?: (ExternalMaterialEntry | string)[] | null;
   // Tipo do produto (product, packaging, etc.)

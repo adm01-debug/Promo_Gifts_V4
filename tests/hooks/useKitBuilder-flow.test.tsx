@@ -80,4 +80,22 @@ describe('useKitBuilder — fluxos de montagem', () => {
     act(() => result.current.goToStep('summary'));
     expect(result.current.wizardState.completedSteps).not.toContain('personalization');
   });
+
+  it('não permite revisar uma personalização habilitada sem técnica e área', async () => {
+    const { useKitBuilder } = await import('@/hooks/kit-builder/useKitBuilder');
+    const { result } = renderHook(() => useKitBuilder());
+
+    act(() => {
+      result.current.selectBox(box);
+      result.current.addItem(item);
+      result.current.goToStep('personalization');
+      result.current.setItemPersonalization(item.id, { enabled: true });
+    });
+
+    expect(result.current.kitState.isValid).toBe(false);
+    expect(result.current.wizardState.canProceed).toBe(false);
+    expect(result.current.kitState.validationErrors).toContain(
+      'Conclua técnica e área de aplicação da personalização antes de revisar',
+    );
+  });
 });

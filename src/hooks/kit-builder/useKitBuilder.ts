@@ -137,6 +137,20 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
       );
     }
 
+    const incompletePersonalization = [
+      personalization.box,
+      ...Object.values(personalization.items),
+    ].find(
+      (config) =>
+        config.enabled &&
+        (!config.techniqueId || !(config.positionCode || config.position || config.positionName)),
+    );
+    if (incompletePersonalization) {
+      validationErrors.push(
+        'Conclua técnica e área de aplicação da personalização antes de revisar',
+      );
+    }
+
     return {
       name: kitName,
       kitType,
@@ -180,7 +194,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
               !kitState.validationErrors.some((error) => error.includes('não é compatível'))));
         break;
       case 'personalization':
-        canProceed = true;
+        canProceed = kitState.isValid;
         break;
       case 'summary':
         canProceed = kitState.isValid;
@@ -302,6 +316,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
     (
       itemId: string,
       variantData: {
+        id: string;
         color: { name: string; hex?: string };
         size?: string;
         sku?: string;
@@ -314,6 +329,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
           if (item.id !== itemId) return item;
           return {
             ...item,
+            selectedVariantId: variantData.id,
             selectedColor: variantData.color,
             selectedSize: variantData.size || undefined,
             ...(variantData.sku && { sku: variantData.sku }),

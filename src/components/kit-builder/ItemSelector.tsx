@@ -7,6 +7,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { Search, AlertTriangle, X, Package } from 'lucide-react';
 import { SelectedItemsBadges } from './SelectedItemsBadges';
 import { ItemCard } from './ItemCard';
+import { KitSmartSuggestions } from './KitSmartSuggestions';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ItemCardSkeleton } from './KitCardSkeleton';
@@ -161,6 +162,14 @@ export function ItemSelector({
         onUpdateQuantity={onUpdateQuantity}
         onUpdateVariant={onUpdateVariant}
         onReorder={onReorder}
+      />
+
+      <KitSmartSuggestions
+        selectedItems={selectedItems}
+        onAddItem={(suggestion) => {
+          const catalogItem = items.find((item) => item.id === suggestion.id);
+          if (catalogItem) handleAddItem(catalogItem);
+        }}
       />
 
       <ScrollArea className="h-[50vh] pr-4">

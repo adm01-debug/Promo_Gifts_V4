@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import {
   transformToKitItem,
   useCustomKitPersistence,
+  useCustomKitsRealtime,
   useDuplicateKitDetector,
   useKitAutoSave,
   useKitBuilder,
@@ -23,6 +24,7 @@ import {
   type KitType,
 } from '@/lib/kit-builder';
 import { logger } from '@/lib/logger';
+import { OCCASIONS, type Occasion } from '@/components/kit-builder/KitOccasionSelector';
 
 interface KitBuilderAISuggestion {
   kit_type: KitType;
@@ -79,7 +81,7 @@ export function useKitBuilderPageState() {
     searchParams.get('flow') === 'items' || productIdParam ? 'items-first' : 'box-first';
 
   const [currentKitId, setCurrentKitId] = useState<string | undefined>(kitIdParam || undefined);
-  const [occasion, setOccasion] = useState<string | null>(null);
+  const [occasion, setOccasion] = useState<Occasion | null>(null);
   const [quoteClient, setQuoteClient] = useState<KitQuoteClient>({});
   const [isLanding, setIsLanding] = useState(!kitIdParam && !productIdParam);
   const [isHydrating, setIsHydrating] = useState(Boolean(kitIdParam));
@@ -124,6 +126,10 @@ export function useKitBuilderPageState() {
   } = useKitBuilder({ initialFlow });
 
   const { isSaving, saveKit, savedKits, isLoadingKits } = useCustomKitPersistence();
+  // Keep the library and an open editor coherent when the same authenticated
+  // user edits a kit from another tab/device. The hook degrades to normal
+  // query refetching if Realtime is unavailable.
+  useCustomKitsRealtime();
   useTemplateSnapshot();
   const { handleAddToQuote, isCreatingQuote } = useKitBuilderQuote();
   const {
@@ -302,9 +308,27 @@ export function useKitBuilderPageState() {
     [startNewFlow],
   );
 
+  // An occasion is intentionally advisory: it narrows the catalog and selects
+  // a kit type, but it never inserts products or boxes without confirmation.
+  const selectOccasion = useCallback(
+    (nextOccasion: Occasion | null) => {
+      setOccasion(nextOccasion);
+      if (!nextOccasion) return;
+
+      const metadata = OCCASIONS.find((item) => item.id === nextOccasion);
+      if (!metadata) return;
+
+      setKitType(metadata.suggestedKitType);
+      setItemFilters({ ...itemFilters, search: metadata.itemKeywords[0] });
+      setBoxFilters({ ...boxFilters, search: metadata.boxKeywords[0] });
+    },
+    [boxFilters, itemFilters, setBoxFilters, setItemFilters, setKitType],
+  );
+
   const resetKitAndQuoteClient = useCallback(() => {
     resetKit();
     setQuoteClient({});
+    setOccasion(null);
   }, [resetKit]);
 
   return {
@@ -350,6 +374,7 @@ export function useKitBuilderPageState() {
       nextStep,
       prevStep,
       resetKit: resetKitAndQuoteClient,
+      selectOccasion,
       undo,
       redo,
       canUndo,

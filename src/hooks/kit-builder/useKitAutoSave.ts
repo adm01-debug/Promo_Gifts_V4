@@ -12,8 +12,8 @@ import { useEffect, useRef, useCallback, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import type { KitState } from '@/lib/kit-builder';
-import type { Json } from '@/integrations/supabase/types';
 import { logger } from '@/lib/logger';
+import { buildKitPersistencePayload } from '@/lib/kit-builder/persistence';
 
 const AUTO_SAVE_DELAY_MS = 5000;
 
@@ -75,24 +75,7 @@ export function useKitAutoSave(
     // Don't auto-save empty kits
     if (!currentKitState.box && currentKitState.items.length === 0) return;
 
-    const payload = {
-      user_id: user.id,
-      name: currentKitState.name || 'Kit sem nome',
-      status: currentKitState.isValid ? ('complete' as const) : ('draft' as const),
-      kit_type: currentKitState.kitType || 'montado',
-      box_data: currentKitState.box
-        ? (structuredClone(currentKitState.box) as unknown as Json)
-        : null,
-      items_data: structuredClone(currentKitState.items) as unknown as Json,
-      personalization_data: structuredClone(currentKitState.personalization) as unknown as Json,
-      kit_quantity: currentKitQuantity,
-      box_price: currentKitState.boxPrice,
-      items_price: currentKitState.itemsPrice,
-      personalization_price: currentKitState.personalizationPrice,
-      total_price: currentKitState.totalPrice,
-      volume_usage_percent: currentKitState.volumeUsagePercent,
-      updated_at: new Date().toISOString(),
-    };
+    const payload = buildKitPersistencePayload(user.id, currentKitState, currentKitQuantity);
 
     setIsSaving(true);
     try {
@@ -141,9 +124,19 @@ export function useKitAutoSave(
   useEffect(() => {
     const nextSnapshot = JSON.stringify({
       box: kitState.box?.id,
-      items: kitState.items.map((i) => `${i.id}:${i.quantity}`),
+      items: kitState.items.map((item) => ({
+        id: item.id,
+        quantity: item.quantity,
+        selectedVariantId: item.selectedVariantId ?? null,
+        selectedColor: item.selectedColor ?? null,
+        selectedSize: item.selectedSize ?? null,
+        sku: item.sku,
+        price: item.price,
+      })),
       personalization: kitState.personalization,
       name: kitState.name,
+      kitType: kitState.kitType,
+      identity: kitState.identity ?? null,
       qty: kitQuantity,
     });
 
@@ -175,6 +168,8 @@ export function useKitAutoSave(
     kitState.items,
     kitState.personalization,
     kitState.name,
+    kitState.kitType,
+    kitState.identity,
     kitQuantity,
     saveToDb,
     enabled,

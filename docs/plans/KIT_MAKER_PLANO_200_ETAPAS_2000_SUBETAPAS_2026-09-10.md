@@ -16,6 +16,40 @@ O pedido atual é de **criação do plano**, não de execução. Nenhuma impleme
 
 As tarefas combinam **reaproveitamento, correção, integração, implementação e validação**. Um item pendente não significa que inexista código correspondente: antes de implementá-lo, verificar trabalho de outros agentes e reutilizar o que satisfizer o contrato.
 
+## Atualização de execução — 10/09/2026
+
+Esta seção registra a execução posterior ao planejamento sem reescrever o
+baseline histórico abaixo. A onda local atual corrigiu contratos do Kit Maker
+que podiam produzir preço, estoque, personalização ou persistência incorretos:
+
+- [x] Preço de lote: removida multiplicação duplicada no preview apresentável,
+  na barra mobile e no card comercial.
+- [x] Catálogo: `base_price`, categoria e metadados de personalização/variante
+  são carregados e transformados sem assumir preço zero ou personalização
+  permitida.
+- [x] Variante: o identificador selecionado percorre o estado e estoque; a
+  previsão não soma variantes irmãs quando uma variante específica foi escolhida.
+- [x] Personalização: técnica e área agora são identificadas pelo par estável
+  técnica + código da área, e não apenas pela técnica.
+- [x] Revisão: estoque insuficiente bloqueia a criação de orçamento; o resumo
+  exibe preview de personalização e previsão de reposição.
+- [x] Persistência: salvar e autosave compartilham payload; kits válidos usam
+  o estado canônico `ready`, não o valor incompatível `complete`.
+- [x] Jornada: ocasião, tour, sugestões contextualizadas, resumo mobile e
+  invalidação Realtime foram conectados aos caminhos ativos, sem mudança de
+  tema ou inserção automática de produtos.
+- [x] Testes locais focados: 31 asserções em 8 arquivos aprovadas; typecheck e
+  build de produção aprovados com os guards SSOT.
+
+Foi preparada a migration forward-only
+`20260910150000_kit_maker_optimistic_persistence.sql`, que acrescenta revisão
+otimista, chave idempotente por solicitação e RPC `SECURITY INVOKER`. **Ela não
+foi aplicada no Supabase canônico.** A consulta de `supabase migration list
+--linked` detectou divergência entre o ledger remoto e o conjunto local de
+migrations; aplicar `db push` antes de reconciliar esse ledger poderia aplicar
+objetos fora de ordem. A aplicação canônica permanece bloqueada por esse
+controle de segurança, não por ausência de código ou autorização genérica.
+
 ### Progresso inicial do plano
 
 | Medida                                                       | Situação nesta emissão                                         |

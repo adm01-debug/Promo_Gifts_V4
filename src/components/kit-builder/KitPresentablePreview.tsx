@@ -38,7 +38,9 @@ export function KitPresentablePreview({
   kitName,
 }: KitPresentablePreviewProps) {
   const narrative = useMemo(() => buildNarrative(kitState, kitName), [kitState, kitName]);
-  const grandTotal = kitState.totalPrice * kitQuantity;
+  // `totalPrice` already represents the complete lot. Multiplying by
+  // `kitQuantity` again made client-facing previews overstate the total.
+  const grandTotal = kitState.totalPrice;
   const validityDate = useMemo(() => {
     const d = new Date();
     d.setDate(d.getDate() + 7);

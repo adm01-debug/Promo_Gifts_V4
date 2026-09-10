@@ -32,6 +32,9 @@ export {
 export { evaluateBoxForItems, rankBoxesForItems } from './box-recommendations';
 export type { BoxRecommendation, BoxRecommendationStatus } from './box-recommendations';
 
+// Persistence snapshot contract
+export { buildKitPersistencePayload, getPersistedKitStatus } from './persistence';
+
 // Price Calculator
 export {
   calculateBoxPrice,

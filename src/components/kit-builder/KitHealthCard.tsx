@@ -51,7 +51,9 @@ export function KitHealthCard({ kitState, kitQuantity, className }: KitHealthCar
   });
 
   const totalPrice = kitState.totalPrice;
-  const totalRevenue = totalPrice * kitQuantity;
+  // `totalPrice` is the lot total, not the unit value. Do not multiply it by
+  // `kitQuantity` again when presenting commercial figures.
+  const totalRevenue = totalPrice;
 
   // Margem aproximada — usa flag conservadora baseada na composição
   // Sem custo direto exposto: margem é estimada como razão personalização/preço (proxy)
@@ -111,7 +113,7 @@ export function KitHealthCard({ kitState, kitQuantity, className }: KitHealthCar
             <div className="font-semibold text-foreground">{grossMargin.toFixed(0)}%</div>
           </div>
           <div className="rounded-md bg-muted/40 p-2">
-            <div className="text-muted-foreground">Receita ({kitQuantity}×)</div>
+            <div className="text-muted-foreground">Total do lote ({kitQuantity}×)</div>
             <div className="font-semibold text-foreground">{formatCurrency(totalRevenue)}</div>
           </div>
         </div>

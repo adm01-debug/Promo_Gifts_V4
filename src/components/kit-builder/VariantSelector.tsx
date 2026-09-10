@@ -24,6 +24,7 @@ interface VariantOption {
 }
 
 export interface VariantSelectionData {
+  id: string;
   color: { name: string; hex?: string };
   size?: string;
   sku?: string;
@@ -68,8 +69,7 @@ export function VariantSelector({
       const result = await dbInvoke<VariantOption>({
         table: 'product_variants',
         operation: 'select',
-        select:
-          'id, color_name, color_hex, color_code, sku, selected_thumbnail, size_code',
+        select: 'id, color_name, color_hex, color_code, sku, selected_thumbnail, size_code',
         filters: { id: allowedVariantIds, is_active: true },
         limit: 50,
       });
@@ -130,6 +130,7 @@ export function VariantSelector({
 
   const handleSelect = (variant: VariantOption) => {
     onSelectVariant(itemId, {
+      id: variant.id,
       color: {
         name: variant.color_name || 'Padrão',
         hex: variant.color_hex || undefined,

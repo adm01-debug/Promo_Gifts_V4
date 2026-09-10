@@ -5,6 +5,7 @@ import { formatCurrency } from '@/lib/kit-builder';
 interface KitActionsBarProps {
   isValid: boolean;
   isAddingToQuote?: boolean;
+  hasStockIssues?: boolean;
   kitName: string;
   kitTag?: string | null;
   kitQuantity: number;
@@ -18,6 +19,7 @@ interface KitActionsBarProps {
 export function KitActionsBar({
   isValid,
   isAddingToQuote,
+  hasStockIssues = false,
   kitName,
   kitTag,
   kitQuantity,
@@ -33,13 +35,17 @@ export function KitActionsBar({
         <Download className="mr-2 h-4 w-4" />
         Exportar PDF
       </Button>
-      <Button disabled={!isValid || isAddingToQuote} onClick={onAddToQuote}>
+      <Button disabled={!isValid || hasStockIssues || isAddingToQuote} onClick={onAddToQuote}>
         {isAddingToQuote ? (
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         ) : (
           <ShoppingCart className="mr-2 h-4 w-4" />
         )}
-        {isAddingToQuote ? 'Criando...' : 'Criar Orçamento'}
+        {isAddingToQuote
+          ? 'Criando...'
+          : hasStockIssues
+            ? 'Estoque insuficiente'
+            : 'Criar Orçamento'}
       </Button>
       <Button
         variant="outline"
