@@ -3,8 +3,9 @@
 Este registro acompanha a implementação iniciada a partir do plano de 200 etapas em
 `docs/plans/KIT_MAKER_PLANO_200_ETAPAS_2000_SUBETAPAS_2026-09-10.md`.
 
-Status: **em execução**. Este documento não transforma etapas pendentes em concluídas,
-nem autoriza alteração no Supabase canônico, merge, deploy ou troca da paleta atual.
+Status: **publicado para revisão** no PR [#1854](https://github.com/adm01-debug/Promo_Gifts_V4/pull/1854),
+commit `587997d4`. Este documento não transforma etapas pendentes em concluídas,
+nem registra merge, deploy, alteração no Supabase canônico ou troca da paleta atual.
 
 ## Escopo realizado nesta onda
 
@@ -64,12 +65,16 @@ no gate de CI, sem ser declarado aprovado neste registro.
 4. Frente/verso, upload seguro de arte, zoom, prévia de mockup e recuperação de
    geração assíncrona não foram reimplementados nesta onda.
 5. A RPC `create_quote_transactional` foi verificada por tipos, migration local e
-   teste de payload. A leitura live do Supabase via MCP retornou 403; não há
-   evidência nova de execução no banco canônico.
+   teste de payload. A leitura live do Supabase está bloqueada: a CLI não tem
+   `SUPABASE_ACCESS_TOKEN` e o MCP configurado pede scopes legados rejeitados pelo
+   servidor. Não há evidência nova de execução no banco canônico.
 6. Não foram aplicadas migrations, RLS, grants, funções, triggers, dados ou secrets
    no projeto `doufsxqlfjyuvxuezpln`.
-7. Não houve commit, push, merge ou deploy. A worktree permanece com alterações de
-   outros agentes que devem ser reconciliadas antes de qualquer publicação.
+7. O commit `587997d4` foi enviado à branch
+   `codex/kit-maker-integration-20260910` e abriu o PR #1854 contra `main`.
+   O merge permanece bloqueado pelos gates em execução. As alterações locais de
+   outros agentes foram preservadas separadamente antes do rebase e não integram
+   esta entrega.
 
 ## Arquivos principais desta onda
 
