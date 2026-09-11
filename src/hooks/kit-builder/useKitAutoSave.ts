@@ -9,11 +9,13 @@
  */
 
 import { useEffect, useRef, useCallback, useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import type { KitState } from '@/lib/kit-builder';
 import { logger } from '@/lib/logger';
-import { buildKitPersistencePayload } from '@/lib/kit-builder/persistence';
+import {
+  buildKitPersistencePayload,
+  persistCustomKitAtomically,
+} from '@/lib/kit-builder/persistence';
 
 const AUTO_SAVE_DELAY_MS = 5000;
 
@@ -27,7 +29,8 @@ export function useKitAutoSave(
   kitState: KitState,
   kitQuantity: number,
   currentKitId: string | undefined,
-  onKitIdCreated?: (id: string) => void,
+  currentRevision: number | null,
+  onKitIdCreated?: (id: string, revision: number) => void,
   enabled = true,
 ): AutoSaveResult {
   const { user } = useAuth();
@@ -54,8 +57,11 @@ export function useKitAutoSave(
    */
   const kitStateRef = useRef<KitState>(kitState);
   const kitQuantityRef = useRef<number>(kitQuantity);
-  const onKitIdCreatedRef = useRef<((id: string) => void) | undefined>(onKitIdCreated);
+  const onKitIdCreatedRef = useRef<((id: string, revision: number) => void) | undefined>(
+    onKitIdCreated,
+  );
   const autoSavedKitIdRef = useRef<string | null>(currentKitId || null);
+  const revisionRef = useRef<number | null>(currentRevision);
   const enabledRef = useRef(enabled);
 
   // Manter refs sincronizadas a cada render -- sem useEffect para evitar batching delay
@@ -80,39 +86,16 @@ export function useKitAutoSave(
     setIsSaving(true);
     try {
       const kitId = autoSavedKitIdRef.current || currentKitId;
-      let didPersist = false;
-      if (kitId) {
-        // BUG-AUTOSAVE-UPDATE-SILENT-FAIL FIX: bare await swallowed RLS and constraint
-        // errors — if update fails the user keeps seeing "saved" state while data is lost.
-        const { error: updateErr } = await supabase
-          .from('custom_kits')
-          .update(payload)
-          .eq('id', kitId)
-          .eq('user_id', user.id);
-        if (updateErr) {
-          logger.warn('[auto-save] Update failed:', updateErr);
-        } else {
-          didPersist = true;
-        }
-      } else {
-        // BUG-AUTOSAVE-INSERT-SILENT-FAIL FIX: bare data destructure missed { error }.
-        // If insert fails (e.g. RLS denial), data=null but no error is logged and the
-        // kit ID is never assigned, causing all subsequent saves to re-attempt insert.
-        const { data, error: insertErr } = await supabase
-          .from('custom_kits')
-          .insert(payload)
-          .select('id')
-          .single();
-        if (insertErr) {
-          logger.warn('[auto-save] Insert failed:', insertErr);
-        } else if (data) {
-          autoSavedKitIdRef.current = data.id;
-          setAutoSavedKitId(data.id);
-          currentOnKitIdCreated?.(data.id);
-          didPersist = true;
-        }
-      }
-      if (didPersist) setLastSavedAt(new Date());
+      const data = await persistCustomKitAtomically({
+        kitId: kitId ?? undefined,
+        expectedRevision: kitId ? revisionRef.current : null,
+        payload,
+      });
+      autoSavedKitIdRef.current = data.id;
+      revisionRef.current = data.revision;
+      setAutoSavedKitId(data.id);
+      currentOnKitIdCreated?.(data.id, data.revision);
+      setLastSavedAt(new Date());
     } catch (err) {
       logger.warn('[auto-save] Failed:', err);
     } finally {
@@ -189,6 +172,10 @@ export function useKitAutoSave(
       autoSavedKitIdRef.current = currentKitId;
     }
   }, [currentKitId]);
+
+  useEffect(() => {
+    revisionRef.current = currentRevision;
+  }, [currentRevision]);
 
   return { lastSavedAt, isSaving, autoSavedKitId };
 }

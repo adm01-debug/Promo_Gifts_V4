@@ -11,7 +11,10 @@ import { toast } from 'sonner';
 import { sanitizeError } from '@/lib/security/sanitize-error';
 import type { KitState } from '@/lib/kit-builder';
 import { logger } from '@/lib/logger';
-import { buildKitPersistencePayload } from '@/lib/kit-builder/persistence';
+import {
+  buildKitPersistencePayload,
+  persistCustomKitAtomically,
+} from '@/lib/kit-builder/persistence';
 
 // ============================================
 // TYPES
@@ -39,6 +42,7 @@ export interface CustomKitRow {
   is_favorite: boolean;
   is_pinned: boolean;
   last_used_at: string | null;
+  revision: number;
   created_at: string;
   updated_at: string;
 }
@@ -77,29 +81,20 @@ export function useCustomKitPersistence() {
       kitId,
       kitState,
       kitQuantity,
+      expectedRevision,
+      requestId,
     }: {
       kitId?: string;
       kitState: KitState;
       kitQuantity: number;
+      expectedRevision?: number | null;
+      requestId: string;
     }) => {
       if (!user?.id) throw new Error('Usuário não autenticado');
 
       const payload = buildKitPersistencePayload(user.id, kitState, kitQuantity);
 
-      if (kitId) {
-        const { data, error } = await supabase
-          .from('custom_kits')
-          .update(payload)
-          .eq('id', kitId)
-          .eq('user_id', user.id)
-          .select()
-          .single();
-        if (error || !data) throw error ?? new Error('Kit not found');
-        return data;
-      }
-      const { data, error } = await supabase.from('custom_kits').insert(payload).select().single();
-      if (error || !data) throw error ?? new Error('Failed to create kit');
-      return data;
+      return persistCustomKitAtomically({ kitId, expectedRevision, payload, requestId });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY });
@@ -131,8 +126,14 @@ export function useCustomKitPersistence() {
   });
 
   const saveKit = useCallback(
-    (kitState: KitState, kitQuantity: number, kitId?: string) =>
-      saveMutation.mutateAsync({ kitId, kitState, kitQuantity }),
+    (kitState: KitState, kitQuantity: number, kitId?: string, expectedRevision?: number | null) =>
+      saveMutation.mutateAsync({
+        kitId,
+        kitState,
+        kitQuantity,
+        expectedRevision,
+        requestId: globalThis.crypto.randomUUID(),
+      }),
     [saveMutation],
   );
 

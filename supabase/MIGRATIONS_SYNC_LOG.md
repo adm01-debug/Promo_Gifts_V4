@@ -1,5 +1,25 @@
 # Migration Sync Log
 
+## 2026-09-11 — Kit Maker: aplicação atômica e fechamento do topo do ledger
+
+- O MCP oficial confirmou o projeto `doufsxqlfjyuvxuezpln`.
+- A comparação por versão encontrou 2.408 registros remotos únicos e nenhuma
+  versão numérica remota sem representação local.
+- O CLI apontou somente `20260910150000` depois da última migration remota, mas
+  recusou a aplicação por causa de três IDs históricos fora do formato. Nenhum
+  `migration repair` foi executado.
+- O mesmo SQL foi aplicado uma única vez pela API oficial de migrations e ficou
+  registrado como `20260911130357_kit_maker_optimistic_persistence`.
+- O arquivo local recebeu o timestamp do ledger remoto. A conferência final do
+  CLI retornou zero versões remotas ausentes; as 543 versões locais históricas
+  anteriores continuam deliberadamente não aplicadas.
+- Validação pós-DDL: coluna `custom_kits.revision`, constraint não negativa,
+  tabela `kit_save_requests`, RLS, duas policies e RPC `SECURITY INVOKER`
+  presentes; `anon` sem `EXECUTE`, `authenticated` com `EXECUTE`.
+- Simulações transacionais com rollback confirmaram idempotência da request e
+  conflito otimista com SQLSTATE `40001`; os três kits preexistentes terminaram
+  com revisão zero e nenhuma request de teste persistiu.
+
 ## 2026-09-11 — Reconciliação do ledger canônico (fase 1: snapshots remotos)
 
 ### Escopo e fonte
@@ -34,9 +54,11 @@ o banco guarda diversos nomes históricos distintos para uma mesma versão.
    com arquivos locais válidos. Qualquer `migration repair --status reverted`
    nesses IDs altera o histórico do canônico e exige pré-condição, confirmação
    de que os objetos físicos permanecem presentes e recibo pós-operação.
-3. A migration `20260910150000_kit_maker_optimistic_persistence.sql` continua
-   apenas preparada no repositório. A aplicação no banco permanece bloqueada
-   até haver canal administrativo de escrita e validação via `pg_catalog`.
+3. A migration do Kit Maker foi posteriormente aplicada pelo MCP oficial do
+   Supabase e registrada pelo ledger canônico como
+   `20260911130357_kit_maker_optimistic_persistence.sql`. O arquivo local foi
+   renomeado para refletir exatamente a versão remota; o identificador preparado
+   `20260910150000` não chegou a ser registrado nem executado pelo CLI.
 
 Esta fase recupera rastreabilidade do repositório; ela não transforma o
 histórico em um replay limpo e não é autorização para promover as migrations

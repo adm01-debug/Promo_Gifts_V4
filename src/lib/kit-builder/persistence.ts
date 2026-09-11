@@ -1,5 +1,8 @@
-import type { Json } from '@/integrations/supabase/types';
+import { supabase } from '@/integrations/supabase/client';
+import type { Database, Json } from '@/integrations/supabase/types';
 import type { KitState } from './types';
+
+export type PersistedCustomKit = Database['public']['Tables']['custom_kits']['Row'];
 
 /**
  * The status trigger on `custom_kits` accepts the lifecycle vocabulary
@@ -42,4 +45,43 @@ export function buildKitPersistencePayload(
     is_favorite: identity?.isFavorite ?? false,
     updated_at: new Date().toISOString(),
   };
+}
+
+/**
+ * Persists one logical save through the canonical optimistic-locking RPC.
+ * The request id is created once by the caller-facing operation, so a transport
+ * retry can reuse it without creating a second kit.
+ */
+export async function persistCustomKitAtomically({
+  kitId,
+  expectedRevision,
+  payload,
+  requestId = globalThis.crypto.randomUUID(),
+}: {
+  kitId?: string;
+  expectedRevision?: number | null;
+  payload: ReturnType<typeof buildKitPersistencePayload>;
+  requestId?: string;
+}): Promise<PersistedCustomKit> {
+  if (kitId && (!Number.isInteger(expectedRevision) || Number(expectedRevision) < 0)) {
+    throw new Error('A revisão atual do kit é obrigatória para salvar alterações.');
+  }
+
+  const { data, error } = await supabase.rpc('save_custom_kit_atomic', {
+    p_request_id: requestId,
+    p_kit_id: (kitId ?? null) as unknown as string,
+    p_expected_revision: (kitId ? expectedRevision : null) as unknown as number,
+    p_payload: payload as unknown as Json,
+  });
+
+  if (error) throw error;
+  if (!data || typeof data !== 'object' || Array.isArray(data)) {
+    throw new Error('O banco não retornou o kit salvo.');
+  }
+
+  const row = data as unknown as PersistedCustomKit;
+  if (typeof row.id !== 'string' || !Number.isInteger(row.revision)) {
+    throw new Error('O banco retornou uma revisão de kit inválida.');
+  }
+  return row;
 }
