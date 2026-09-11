@@ -2,12 +2,12 @@
   "schema_version": 1,
   "status": "temporary-stage-054",
   "project_ref": "doufsxqlfjyuvxuezpln",
-  "captured_at": "2026-09-09",
+  "captured_at": "2026-09-11",
   "source": {
     "method": "read-only pg_catalog",
     "relations": "pg_class + pg_namespace (schema public; relkind r/p/v/m/f)",
     "rpcs": "pg_proc + pg_namespace (schema public; prokind f)",
-    "supplemental_rpc_capture": "2026-09-09: seis RPCs magazine_*_atomic e quatorze RPCs magazine_*_v2 confirmadas via pg_catalog no projeto canônico após as migrations 20260909181000–20260909200000.",
+    "supplemental_rpc_capture": "2026-09-09: seis RPCs magazine_*_atomic e quatorze RPCs magazine_*_v2 confirmadas via pg_catalog no projeto canônico após as migrations 20260909181000–20260909200000. 2026-09-11: save_custom_kit_atomic confirmada via pg_catalog após a migration 20260911130357.",
     "scope": "Somente nomes de objetos; nenhum dado de aplicação foi consultado."
   },
   "limitations": [
@@ -307,6 +307,7 @@
     "respond_discount_approval_transactional",
     "restore_favorite_from_trash",
     "restore_seller_cart",
+    "save_custom_kit_atomic",
     "search_products_semantic",
     "search_records_rerank",
     "send_digest_notification",
