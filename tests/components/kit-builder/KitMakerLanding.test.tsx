@@ -114,4 +114,17 @@ describe('KitMakerLanding', () => {
     expect(await screen.findByText('Os destaques ainda não foram definidos no catálogo.')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /abrir biblioteca/i })).toHaveAttribute('href', '/meus-kits');
   });
+
+  it('keeps both journeys available and offers a retry when featured catalog data cannot be read', async () => {
+    vi.mocked(dbInvoke).mockRejectedValueOnce(new Error('permission denied'));
+    const onStart = vi.fn();
+    renderLanding({ onStart });
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'Não foi possível carregar os destaques do catálogo.',
+    );
+    expect(screen.getByRole('button', { name: /tentar novamente/i })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /começar pelos itens/i }));
+    expect(onStart).toHaveBeenCalledWith('items-first');
+  });
 });

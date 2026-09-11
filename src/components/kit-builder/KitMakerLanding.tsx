@@ -113,9 +113,17 @@ export function KitMakerLanding({
   onOccasionChange,
   onApplyAISuggestion,
 }: KitMakerLandingProps) {
-  const { data: featuredProducts = [], isLoading: isLoadingFeatured } = useFeaturedProducts();
+  const {
+    data: featuredProducts = [],
+    isLoading: isLoadingFeatured,
+    isError: hasFeaturedError,
+    refetch: refetchFeatured,
+  } = useFeaturedProducts();
   const itemsHeroProduct = featuredProducts[0];
   const boxHeroProduct = featuredProducts[1] ?? featuredProducts[0];
+  const handleRetryFeatured = () => {
+    refetchFeatured().catch(() => undefined);
+  };
 
   return (
     <main className="mx-auto w-full max-w-[1600px] space-y-7 px-3 py-6 sm:px-5 lg:px-8">
@@ -276,6 +284,21 @@ export function KitMakerLanding({
               <Skeleton key={index} className="h-48 rounded-xl" />
             ))}
           </div>
+        ) : hasFeaturedError ? (
+          <Card role="alert" className="border-destructive/30 bg-destructive/5">
+            <CardContent className="flex flex-col items-start gap-2 p-5 text-sm">
+              <span className="font-medium">
+                Não foi possível carregar os destaques do catálogo.
+              </span>
+              <span className="text-muted-foreground">
+                Verifique seu acesso e tente novamente. Você ainda pode iniciar a montagem pelos
+                dois fluxos acima.
+              </span>
+              <Button variant="outline" size="sm" onClick={handleRetryFeatured}>
+                Tentar novamente
+              </Button>
+            </CardContent>
+          </Card>
         ) : featuredProducts.length > 0 ? (
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {featuredProducts.slice(0, 4).map((product) => {
