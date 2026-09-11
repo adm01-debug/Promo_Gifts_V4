@@ -81,6 +81,7 @@ export function useKitBuilderPageState() {
     searchParams.get('flow') === 'items' || productIdParam ? 'items-first' : 'box-first';
 
   const [currentKitId, setCurrentKitId] = useState<string | undefined>(kitIdParam || undefined);
+  const [currentRevision, setCurrentRevision] = useState<number | null>(null);
   const [occasion, setOccasion] = useState<Occasion | null>(null);
   const [quoteClient, setQuoteClient] = useState<KitQuoteClient>({});
   const [isLanding, setIsLanding] = useState(!kitIdParam && !productIdParam);
@@ -140,7 +141,11 @@ export function useKitBuilderPageState() {
     kitState,
     kitQuantity,
     currentKitId,
-    (id) => setCurrentKitId(id),
+    currentRevision,
+    (id, revision) => {
+      setCurrentKitId(id);
+      setCurrentRevision(revision);
+    },
     !isHydrating,
   );
   const {
@@ -220,6 +225,7 @@ export function useKitBuilderPageState() {
 
     loadKit(snapshot);
     setCurrentKitId(row.id);
+    setCurrentRevision(row.revision);
     setIsHydrating(false);
   }, [isLoadingKits, kitIdParam, loadKit, savedKits]);
 
@@ -271,18 +277,16 @@ export function useKitBuilderPageState() {
       return;
     }
     try {
-      const saved = await saveKit(
-        kitState,
-        kitQuantity,
-        currentKitId || autoSavedKitId || undefined,
-      );
+      const kitId = currentKitId || autoSavedKitId || undefined;
+      const saved = await saveKit(kitState, kitQuantity, kitId, kitId ? currentRevision : null);
       setCurrentKitId(saved.id);
+      setCurrentRevision(saved.revision);
     } catch (error) {
       // useCustomKitPersistence already displays a sanitized message. Keep the
       // error observable without producing a second, potentially unsafe toast.
       logger.warn('[kit-builder] Manual save failed:', error);
     }
-  }, [autoSavedKitId, currentKitId, kitQuantity, kitState, saveKit]);
+  }, [autoSavedKitId, currentKitId, currentRevision, kitQuantity, kitState, saveKit]);
 
   const applyAISuggestion = useCallback(
     (suggestion: KitBuilderAISuggestion) => {

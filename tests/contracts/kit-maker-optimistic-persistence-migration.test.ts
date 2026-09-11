@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 
 const migrationPath = resolve(
   process.cwd(),
-  'supabase/migrations/20260910150000_kit_maker_optimistic_persistence.sql',
+  'supabase/migrations/20260911130357_kit_maker_optimistic_persistence.sql',
 );
 
 describe('Kit Maker optimistic persistence migration contract', () => {

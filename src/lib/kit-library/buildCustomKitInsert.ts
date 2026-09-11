@@ -6,7 +6,7 @@ import type { CustomKitRow } from '@/hooks/kit-builder';
 
 export type CustomKitInsertPayload = Omit<
   CustomKitRow,
-  'created_at' | 'id' | 'is_pinned' | 'last_used_at' | 'updated_at'
+  'created_at' | 'id' | 'is_pinned' | 'last_used_at' | 'revision' | 'updated_at'
 > & {
   last_used_at?: string | null;
   is_pinned?: boolean;
