@@ -24,6 +24,8 @@ export interface KitCardData {
   isPinned?: boolean;
   badge?: string;
   usageBadge?: string;
+  /** Optional canonical image from a template or the saved kit snapshot. */
+  coverImageUrl?: string | null;
 }
 
 interface Props {
@@ -58,7 +60,32 @@ export function KitCard({
         data.isPinned && 'ring-2 ring-primary/50',
       )}
     >
-      <div className="h-1.5 w-full" style={{ background: data.color }} aria-hidden />
+      {data.coverImageUrl ? (
+        <div className="relative aspect-[16/7] overflow-hidden bg-muted/60">
+          <div
+            className="absolute inset-0 flex items-center justify-center"
+            style={{ color: data.color }}
+            aria-hidden
+          >
+            <Icon className="h-10 w-10 opacity-50" />
+          </div>
+          <img
+            src={data.coverImageUrl}
+            alt={`Capa do kit ${data.name}`}
+            className="relative z-10 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            loading="lazy"
+            onError={(event) => {
+              // Preserve the intentional icon fallback when an externally
+              // stored image disappears instead of presenting a broken-image
+              // glyph as a product/kit representation.
+              event.currentTarget.style.display = 'none';
+            }}
+          />
+          <div className="pointer-events-none absolute inset-0 z-20 bg-gradient-to-t from-background/30 to-transparent" />
+        </div>
+      ) : (
+        <div className="h-1.5 w-full" style={{ background: data.color }} aria-hidden />
+      )}
 
       <CardContent className="space-y-3 p-4">
         <div className="flex items-start gap-3">

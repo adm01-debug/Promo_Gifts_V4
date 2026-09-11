@@ -37,6 +37,28 @@ function getItemsCount(items: unknown): number {
   }, 0);
 }
 
+function snapshotImageUrl(value: unknown): string | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  const row = value as Record<string, unknown>;
+  for (const key of ['imageUrl', 'primary_image_url', 'image_url']) {
+    const candidate = row[key];
+    if (typeof candidate === 'string' && candidate.trim()) return candidate;
+  }
+  if (Array.isArray(row.images)) {
+    const image = row.images.find(
+      (candidate): candidate is string => typeof candidate === 'string' && candidate.trim(),
+    );
+    if (image) return image;
+  }
+  return null;
+}
+
+function customKitCoverImage(kit: CustomKitRow): string | null {
+  return (
+    snapshotImageUrl(kit.box_data) || kit.items_data.map(snapshotImageUrl).find(Boolean) || null
+  );
+}
+
 function applySort<
   T extends {
     name: string;
@@ -239,6 +261,7 @@ export default function KitLibraryPage() {
       itemsCount: getItemsCount(k.items_data),
       isFavorite: k.is_favorite,
       isPinned: k.is_pinned,
+      coverImageUrl: customKitCoverImage(k),
     };
   };
 
@@ -253,6 +276,7 @@ export default function KitLibraryPage() {
     itemsCount: getItemsCount(t.items_data),
     badge: t.usage_count >= 5 ? 'Popular' : t.category,
     usageBadge: isAdmin ? `${t.usage_count} uso${t.usage_count === 1 ? '' : 's'}` : undefined,
+    coverImageUrl: t.cover_image_url,
   });
 
   const handleClone = async (template: KitTemplateRow) => {
@@ -493,7 +517,9 @@ export default function KitLibraryPage() {
         description="Esta ação não pode ser desfeita."
         confirmLabel="Excluir"
         cancelLabel="Cancelar"
-        onConfirm={() => { if (deleteId) deleteMutation.mutate(deleteId); }}
+        onConfirm={() => {
+          if (deleteId) deleteMutation.mutate(deleteId);
+        }}
         testId="kit-library-delete-dialog"
       />
     </div>
