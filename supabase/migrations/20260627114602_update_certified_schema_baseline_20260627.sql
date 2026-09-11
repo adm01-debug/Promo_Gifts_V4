@@ -1,0 +1,12 @@
+-- ============================================================
+-- MELHORIA 6: Atualizar o certified schema baseline
+-- Baseline anterior: certified_baseline_20260626_v3
+-- Drift detectado: n_added=74, n_removed=0 (adições legítimas)
+--   Tabelas novas: content_articles, product_ai_content, product_fiscal,
+--                  product_seo, product_supply
+--   Coluna nova: products.padronizacao_id
+-- Novo baseline captura o estado pós todas as migrations desta sessão.
+-- A partir de agora, fn_check_schema_signature_drift detecta apenas
+-- regressões reais (remoções não intencionais pelo bot Lovable).
+-- ============================================================
+SELECT fn_capture_schema_baseline('certified_baseline_20260627_v1');;

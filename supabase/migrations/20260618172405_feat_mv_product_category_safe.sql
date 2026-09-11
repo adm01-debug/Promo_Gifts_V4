@@ -1,0 +1,152 @@
+
+-- MELHORIA 4 (2026-06-18): Tabela de categorias ancestors + leaf_category_id_safe
+-- Abordagem: closure table de ancestors pré-computada → O(1) na view
+
+-- 4A: Closure table de ancestors (descendant_id → todos os ancestors)
+CREATE TABLE IF NOT EXISTS public.category_ancestors (
+  descendant_id UUID NOT NULL REFERENCES categories(id),
+  ancestor_id   UUID NOT NULL REFERENCES categories(id),
+  depth         SMALLINT NOT NULL DEFAULT 1,
+  PRIMARY KEY (descendant_id, ancestor_id)
+);
+
+-- Limpar e repopular
+TRUNCATE public.category_ancestors;
+
+INSERT INTO public.category_ancestors (descendant_id, ancestor_id, depth)
+WITH RECURSIVE closure(descendant_id, ancestor_id, depth) AS (
+  -- nível 1: parent direto
+  SELECT c.id, c.parent_id, 1::smallint
+  FROM categories c
+  WHERE c.parent_id IS NOT NULL
+  UNION ALL
+  -- subir na hierarquia
+  SELECT cl.descendant_id, c.parent_id, (cl.depth + 1)::smallint
+  FROM closure cl
+  JOIN categories c ON c.id = cl.ancestor_id
+  WHERE c.parent_id IS NOT NULL
+    AND cl.depth < 10
+)
+SELECT descendant_id, ancestor_id, depth FROM closure;
+
+-- Índices eficientes
+CREATE INDEX IF NOT EXISTS cat_ancestors_desc_idx
+  ON public.category_ancestors (descendant_id, ancestor_id);
+
+CREATE INDEX IF NOT EXISTS cat_ancestors_anc_idx
+  ON public.category_ancestors (ancestor_id);
+
+GRANT SELECT ON public.category_ancestors TO anon, authenticated;
+
+-- 4B: Adicionar leaf_category_id_safe em mv_product_leaf_category
+-- Recriar com JOIN na tabela products + closure
+
+DROP MATERIALIZED VIEW IF EXISTS public.mv_product_leaf_category CASCADE;
+
+CREATE MATERIALIZED VIEW public.mv_product_leaf_category AS
+SELECT DISTINCT ON (pca.product_id)
+  pca.product_id,
+  c.id            AS leaf_category_id,
+  c.name          AS leaf_category_name,
+  c.level         AS leaf_category_level,
+  c.parent_id     AS leaf_category_parent_id,
+  c.slug          AS leaf_category_slug,
+  -- leaf_category_id_safe: usa leaf APENAS quando é descendente de main_category_id
+  -- Caso contrário retorna NULL (fallback ao main_category_id fica no código)
+  CASE
+    WHEN c.id = p.main_category_id THEN c.id
+    WHEN EXISTS (
+      SELECT 1 FROM public.category_ancestors ca
+      WHERE ca.descendant_id = c.id AND ca.ancestor_id = p.main_category_id
+    ) THEN c.id
+    ELSE NULL
+  END AS leaf_category_id_safe
+FROM public.product_category_assignments pca
+JOIN public.categories c ON c.id = pca.category_id
+LEFT JOIN public.products p ON p.id = pca.product_id
+ORDER BY
+  pca.product_id,
+  pca.is_primary     DESC NULLS LAST,
+  c.level            DESC NULLS LAST,
+  pca.display_order  ASC  NULLS LAST,
+  c.name             ASC;
+
+-- Índices
+CREATE UNIQUE INDEX mv_product_leaf_category_pk
+  ON public.mv_product_leaf_category (product_id)
+  INCLUDE (leaf_category_id, leaf_category_name, leaf_category_level,
+           leaf_category_slug, leaf_category_id_safe);
+
+CREATE INDEX mv_product_leaf_category_cat_idx
+  ON public.mv_product_leaf_category (leaf_category_id);
+
+CREATE INDEX mv_product_leaf_category_safe_idx
+  ON public.mv_product_leaf_category (leaf_category_id_safe)
+  WHERE leaf_category_id_safe IS NOT NULL;
+
+GRANT SELECT ON public.mv_product_leaf_category TO anon, authenticated;
+
+-- 4C: Recriar v_products_public expondo leaf_category_id_safe
+CREATE OR REPLACE VIEW public.v_products_public AS
+SELECT
+  p.id, p.name, p.description, p.sku, p.category_id, p.supplier_id,
+  NULL::numeric AS cost_price, p.sale_price, p.stock_quantity, p.active,
+  p.created_at, p.updated_at, NULL::numeric AS suggested_price,
+  p.dimensions, p.images, p.primary_image_url, p.videos,
+  p.allows_personalization, p.colors, p.materials, p.tags,
+  p.meta_title, p.meta_description, p.meta_keywords,
+  p.is_featured, p.is_new, p.is_on_sale, p.view_count, p.favorite_count,
+  p.order_count, NULL::uuid AS organization_id, p.product_type, p.is_active,
+  NULL::uuid AS created_by, NULL::uuid AS updated_by,
+  p.sku_promo, p.short_description, p.main_category_id, p.brand,
+  p.is_deleted, p.deleted_at, p.is_kit, p.is_bestseller, p.min_quantity,
+  p.box_length_mm, p.box_width_mm, p.box_height_mm, p.box_weight_kg,
+  p.has_colors, p.has_sizes, p.ean, p.gtin, p.ncm_code, p.origin_country,
+  p.warranty_months, p.manufacturer_sku, p.last_stock_update_at,
+  NULL::character varying AS supplier_reference,
+  p.is_textil, p.has_capacity, p.combined_sizes, p.gender,
+  p.is_stockout, p.is_online_exclusive, p.catalog_page, p.weight_g,
+  p.length_cm, p.width_cm, p.height_cm, p.dimensions_display,
+  p.box_length_cm, p.box_width_cm, p.box_height_cm, p.box_volume_cm3,
+  p.box_quantity, p.box_inner_quantity, p.packing_type, p.repacking_type,
+  p.capacities, NULL::timestamp with time zone AS last_sync_at,
+  NULL::uuid AS last_sync_supplier_id, NULL::character varying AS sync_status,
+  p.diameter_cm, p.shape_type, p.internal_height_cm, p.internal_width_cm,
+  p.internal_length_cm, p.internal_diameter_cm, p.packaging_material,
+  p.packaging_color, p.has_inner_cradle, p.cradle_material, p.packaging_finish,
+  p.is_imported, p.lead_time_days, p.requires_minimum_order, p.supply_mode,
+  p.is_thermal, p.capacity_ml, p.slug, p.ai_summary, p.key_benefits,
+  p.use_cases, p.target_audience, p.schema_json, p.canonical_url,
+  p.robots_meta, p.seo_score, p.seo_last_audit_at, p.seo_issues,
+  p.og_title, p.og_description, p.og_image_url, p.description_packaging_info,
+  p.has_optional_packaging, p.optional_packaging_ref, p.packing_classification,
+  NULL::numeric AS ipi_rate, NULL::character varying AS tax_reference_state,
+  p.engraving_type, p.supplier_updated_at, p.has_gift_box, p.min_order_quantity,
+  p.ai_title, p.ai_description, p.ai_version, p.ai_generated_at, p.ai_model,
+  p.box_image, p.repacking_classification, p.has_commercial_packaging,
+  p.packaging_context, NULL::integer AS bitrix_product_id,
+  p.novelty_detected_at, p.novelty_expires_at, NULL::uuid AS ncm_id,
+  NULL::timestamp with time zone AS bitrix_images_synced_at,
+  p.is_featured_expires_at, p.is_bestseller_expires_at,
+  p.is_on_sale_expires_at, p.is_new_expires_at,
+  NULL::text AS supplier_product_url, p.freight_class, p.cubic_weight,
+  p.auto_category, p.auto_material, p.classification_confidence,
+  p.price_updated_at, NULL::text AS external_id, p.price_freshness_threshold_days,
+  p.set_image_url, p.is_seasonal, p.pvc_free, p.supplier_type,
+  p.supplier_subtype, p.supplier_type_code, p.supplier_subtype_code,
+  p.price_verified_at, p.circumference_cm, p.search_vector,
+  p.primary_image_fallback_url,
+  -- Categoria folha (via MV)
+  COALESCE(lc.leaf_category_id, p.main_category_id, p.category_id) AS leaf_category_id,
+  lc.leaf_category_name,
+  lc.leaf_category_level,
+  lc.leaf_category_slug,
+  -- NOVO M4: leaf SEGURO (apenas quando descendente de main_category_id)
+  COALESCE(lc.leaf_category_id_safe, p.main_category_id, p.category_id)
+    AS leaf_category_id_safe
+FROM public.products p
+LEFT JOIN public.mv_product_leaf_category lc ON lc.product_id = p.id
+WHERE p.is_deleted IS NOT TRUE AND p.is_active = true;
+
+NOTIFY pgrst, 'reload schema';
+;

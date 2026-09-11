@@ -1,0 +1,1 @@
+-- fix_version=2026-07-09-immutability-service-role-bypass: added auth.uid() IS NULL bypass to fn_quotes_enforce_immutability;

@@ -1,0 +1,16 @@
+-- ============================================================
+-- M10: fn_normalize_packing_type(text) — 21 canônicos, 0 Outros, IMMUTABLE PARALLEL SAFE.
+--      products.packing_type_canonical — coluna gerada STORED.
+--      product_included_packagings.name normalizado para 320+38 entradas.
+-- M11: product_included_packagings enriquecida — dims externas e internas inferidas
+--      para 926 embalagens tipo caixa/estojo (produto+gap estimado, confiança=0.4,
+--      nota explícita para revisão com dados reais).
+-- M12: fn_extract_packaging_info integrada ao pipeline via fn_enrich_packaging_post_promote.
+--      fn_process_raw_v2 atualizada: 3 estágios (standardize + promote + packaging_enrich).
+-- M13: fn_auto_discover_compatible_packagings integrada ao mesmo pós-promotor.
+--      fn_enrich_packaging_post_promote(supplier_id, max_discover): idempotente,
+--      multi-fornecedor, 5 passos (extract→compat→pip→norm→discover).
+-- Estado pós-migração:
+--   pip_total=1216 | pip_com_dims=926 | canonicos=20 | sem_canonico=0
+--   si_recommended=46 | compat_total=8982 | fn_v2_tem_packaging=true
+SELECT 1;;

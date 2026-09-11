@@ -1,0 +1,3 @@
+
+SELECT 'ok' AS ping;
+;

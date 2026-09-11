@@ -1,0 +1,1 @@
+INSERT INTO public._cf_images_audit (cf_id, uploaded, filename, meta, ingested_at) SELECT c.image_id, c.uploaded_at, c.filename, c.meta || jsonb_build_object('audit_backfilled_at', now()), now() FROM cf_recon.cf_image c WHERE NOT EXISTS (SELECT 1 FROM public._cf_images_audit a WHERE a.cf_id = c.image_id) ON CONFLICT (cf_id) DO NOTHING;;
