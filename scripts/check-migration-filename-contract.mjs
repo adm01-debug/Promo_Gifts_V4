@@ -402,16 +402,19 @@ export function parseCliOptions(argv = process.argv.slice(2)) {
     throw new Error(`Opção desconhecida: ${argument}.`);
   }
 
+  const defaultBaselinePath = resolve(root, BASELINE_RELATIVE_PATH);
+  const baselinePath = baselineArgument
+    ? resolve(root, baselineArgument)
+    : defaultBaselinePath;
+
   return {
     help: false,
     json,
     migrationsDir: resolve(root, MIGRATIONS_RELATIVE_DIR),
-    baselinePath: baselineArgument
-      ? resolve(root, baselineArgument)
-      : resolve(root, BASELINE_RELATIVE_PATH),
-    reconciledBaselinePath: baselineArgument
-      ? null
-      : resolve(root, RECONCILED_BASELINE_RELATIVE_PATH),
+    baselinePath,
+    reconciledBaselinePath: baselinePath === defaultBaselinePath
+      ? resolve(root, RECONCILED_BASELINE_RELATIVE_PATH)
+      : null,
   };
 }
 

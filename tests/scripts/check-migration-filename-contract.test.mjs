@@ -7,6 +7,7 @@ import {
   auditMigrationFilenameContract,
   extractValidTimestampPrefix,
   isValidUtcTimestamp,
+  parseCliOptions,
   parseCanonicalMigrationFilename,
 } from "../../scripts/check-migration-filename-contract.mjs";
 
@@ -76,6 +77,20 @@ function auditFixture(options) {
 }
 
 describe("check-migration-filename-contract", () => {
+  it("mantém a baseline reconciliada ao selecionar explicitamente o manifesto padrão", () => {
+    const root = "/tmp/repo-copy";
+    const options = parseCliOptions([
+      "--root",
+      root,
+      "--baseline",
+      "docs/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+    ]);
+
+    expect(options.reconciledBaselinePath).toBe(
+      join(root, "docs/MANIFESTO_MIGRATIONS_RECONCILIADAS_2026-09-11.json"),
+    );
+  });
+
   it("mantém o legado explicitamente baselined, inclusive nomes e colisões históricas", () => {
     const result = auditFixture({
       baselineNames: [
