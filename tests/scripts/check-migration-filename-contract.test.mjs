@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
+import { createHash } from "node:crypto";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
@@ -19,6 +20,7 @@ afterEach(() => {
 
 function createFixture({
   baselineNames = ["001_legacy_baseline.sql"],
+  reconciledNames = [],
   newNames = [],
   omitBaselineNames = [],
 } = {}) {
@@ -31,9 +33,10 @@ function createFixture({
   mkdirSync(docsDir, { recursive: true });
 
   const omitted = new Set(omitBaselineNames);
-  for (const filename of [...baselineNames, ...newNames]) {
+  const fixtureContents = "-- fixture\n";
+  for (const filename of [...baselineNames, ...reconciledNames, ...newNames]) {
     if (!omitted.has(filename)) {
-      writeFileSync(join(migrationsDir, filename), "-- fixture\n", "utf8");
+      writeFileSync(join(migrationsDir, filename), fixtureContents, "utf8");
     }
   }
 
@@ -47,7 +50,25 @@ function createFixture({
     "utf8",
   );
 
-  return { migrationsDir, baselinePath };
+  const reconciledBaselinePath = reconciledNames.length > 0
+    ? join(docsDir, "reconciled-manifest.json")
+    : null;
+  if (reconciledBaselinePath) {
+    const sha256 = createHash("sha256").update(fixtureContents).digest("hex");
+    writeFileSync(
+      reconciledBaselinePath,
+      JSON.stringify({
+        schema_version: 1,
+        entries: reconciledNames.map((filename) => ({
+          path: `supabase/migrations/${filename}`,
+          sha256,
+        })),
+      }),
+      "utf8",
+    );
+  }
+
+  return { migrationsDir, baselinePath, reconciledBaselinePath };
 }
 
 function auditFixture(options) {
@@ -67,6 +88,32 @@ describe("check-migration-filename-contract", () => {
     expect(result.ok).toBe(true);
     expect(result.newFiles).toEqual([]);
     expect(result.legacyCollisionVersions).toEqual(["20260801010101"]);
+  });
+
+  it("aceita snapshot remoto não canônico somente quando path e hash estão reconciliados", () => {
+    const result = auditFixture({
+      reconciledNames: ["2026082601020300001_Remote_legacy.sql"],
+    });
+
+    expect(result.ok).toBe(true);
+    expect(result.newFiles).toEqual([]);
+    expect(result.baseline.reconciledFileCount).toBe(1);
+  });
+
+  it("bloqueia alteração de conteúdo em snapshot remoto reconciliado", () => {
+    const filename = "2026082601020300001_Remote_legacy.sql";
+    const fixture = createFixture({ reconciledNames: [filename] });
+    writeFileSync(join(fixture.migrationsDir, filename), "-- conteúdo alterado\n", "utf8");
+
+    const result = auditMigrationFilenameContract(fixture);
+
+    expect(result.ok).toBe(false);
+    expect(result.errors).toContainEqual(
+      expect.objectContaining({
+        code: "reconciled_file_hash_mismatch",
+        path: `supabase/migrations/${filename}`,
+      }),
+    );
   });
 
   it("aceita migration nova com timestamp UTC válido e versão ainda única", () => {

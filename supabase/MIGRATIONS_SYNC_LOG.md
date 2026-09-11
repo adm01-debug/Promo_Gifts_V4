@@ -41,6 +41,12 @@ o banco guarda diversos nomes históricos distintos para uma mesma versão.
   relata **zero** versões remotas numéricas ausentes.
 - Não foi usado `supabase db push`, `migration repair`, `db pull` nem
   `db reset`.
+- Dois snapshots recuperados têm nomes não canônicos no próprio ledger remoto:
+  `20260618101311_estoque_reconcile_add_vss_F_coherence_20260618.sql` e
+  `2026062311292414001_add_full_path_readable_propagation_triggers.sql`.
+  Eles não foram renomeados. O manifesto suplementar
+  `docs/MANIFESTO_MIGRATIONS_RECONCILIADAS_2026-09-11.json` fixa os paths e
+  hashes aceitos pelo gate, sem liberar novos nomes fora do padrão.
 
 ### Itens deliberadamente não alterados nesta fase
 

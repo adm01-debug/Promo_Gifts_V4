@@ -11,6 +11,7 @@
  * Este script é local e somente leitura. Ele não chama Supabase, não executa
  * SQL e não determina se uma migration pode ser aplicada.
  */
+import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -19,6 +20,8 @@ export const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 export const MIGRATIONS_RELATIVE_DIR = "supabase/migrations";
 export const BASELINE_RELATIVE_PATH =
   "docs/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json";
+export const RECONCILED_BASELINE_RELATIVE_PATH =
+  "docs/MANIFESTO_MIGRATIONS_RECONCILIADAS_2026-09-11.json";
 export const MIGRATION_PATH_PREFIX = `${MIGRATIONS_RELATIVE_DIR}/`;
 export const CANONICAL_FILENAME_RE = /^(\d{14})_([a-z0-9][a-z0-9_-]*)\.sql$/;
 export const CANONICAL_FILENAME_EXAMPLE = "YYYYMMDDHHMMSS_slug.sql";
@@ -149,6 +152,41 @@ export function readLegacyBaseline(baselinePath) {
   };
 }
 
+export function readReconciledBaseline(reconciledBaselinePath) {
+  if (!reconciledBaselinePath) return { entries: new Map() };
+
+  let document;
+  try {
+    document = JSON.parse(readFileSync(reconciledBaselinePath, "utf8"));
+  } catch (error) {
+    throw new Error(
+      `Não foi possível ler a baseline reconciliada em ${normalizedPath(reconciledBaselinePath)}: ${error.message}`,
+    );
+  }
+
+  if (document?.schema_version !== 1 || !Array.isArray(document.entries)) {
+    throw new Error("Baseline reconciliada inválida: schema_version 1 e entries são obrigatórios.");
+  }
+
+  const entries = new Map();
+  for (const entry of document.entries) {
+    const path = entry?.path;
+    const sha256 = entry?.sha256;
+    if (!isSafeBaselineMigrationPath(path)) {
+      throw new Error(`Baseline reconciliada inválida: path inseguro ou fora do diretório: ${String(path)}.`);
+    }
+    if (!/^[a-f0-9]{64}$/.test(sha256 ?? "")) {
+      throw new Error(`Baseline reconciliada inválida: sha256 ausente ou inválido para ${path}.`);
+    }
+    if (entries.has(path)) {
+      throw new Error(`Baseline reconciliada inválida: path duplicado: ${path}.`);
+    }
+    entries.set(path, { ...entry, path, sha256 });
+  }
+
+  return { entries };
+}
+
 export function readMigrationFiles(migrationsDir) {
   if (!existsSync(migrationsDir)) {
     throw new Error(`Diretório de migrations não encontrado: ${normalizedPath(migrationsDir)}.`);
@@ -173,12 +211,17 @@ export function readMigrationFiles(migrationsDir) {
 export function auditMigrationFilenameContract({
   migrationsDir = resolve(ROOT, MIGRATIONS_RELATIVE_DIR),
   baselinePath = resolve(ROOT, BASELINE_RELATIVE_PATH),
+  reconciledBaselinePath = baselinePath === resolve(ROOT, BASELINE_RELATIVE_PATH)
+    ? resolve(ROOT, RECONCILED_BASELINE_RELATIVE_PATH)
+    : null,
 } = {}) {
   let baseline;
+  let reconciledBaseline;
   let files;
 
   try {
     baseline = readLegacyBaseline(baselinePath);
+    reconciledBaseline = readReconciledBaseline(reconciledBaselinePath);
     files = readMigrationFiles(migrationsDir);
   } catch (error) {
     return {
@@ -195,11 +238,15 @@ export function auditMigrationFilenameContract({
     };
   }
 
+  const historicalPaths = new Set([
+    ...baseline.paths,
+    ...reconciledBaseline.entries.keys(),
+  ]);
   const currentPaths = new Set(files.map((file) => file.path));
-  const baselineMissing = [...baseline.paths]
+  const baselineMissing = [...historicalPaths]
     .filter((path) => !currentPaths.has(path))
     .sort((left, right) => left.localeCompare(right, "en"));
-  const newFiles = files.filter((file) => !baseline.paths.has(file.path));
+  const newFiles = files.filter((file) => !historicalPaths.has(file.path));
   const errors = [];
 
   for (const path of baselineMissing) {
@@ -210,10 +257,27 @@ export function auditMigrationFilenameContract({
     });
   }
 
+  for (const [path, entry] of reconciledBaseline.entries) {
+    if (!currentPaths.has(path)) continue;
+    const filename = path.slice(MIGRATION_PATH_PREFIX.length);
+    const actualSha256 = createHash("sha256")
+      .update(readFileSync(resolve(migrationsDir, filename)))
+      .digest("hex");
+    if (actualSha256 !== entry.sha256) {
+      errors.push({
+        code: "reconciled_file_hash_mismatch",
+        path,
+        expectedSha256: entry.sha256,
+        actualSha256,
+        message: "Snapshot histórico reconciliado divergiu do conteúdo explicitamente catalogado.",
+      });
+    }
+  }
+
   const versionedFiles = [];
   for (const file of files) {
     const parsed = parseCanonicalMigrationFilename(file.filename);
-    const isNew = !baseline.paths.has(file.path);
+    const isNew = !historicalPaths.has(file.path);
 
     if (!parsed) {
       if (isNew) {
@@ -274,6 +338,7 @@ export function auditMigrationFilenameContract({
     newFiles: newFiles.map((file) => file.path),
     baseline: {
       fileCount: baseline.paths.size,
+      reconciledFileCount: reconciledBaseline.entries.size,
       sourceCommit: baseline.sourceCommit,
       sourceMigrationsTree: baseline.sourceMigrationsTree,
     },
@@ -285,7 +350,7 @@ export function formatMigrationFilenameContractReport(result) {
   if (result.ok) {
     return [
       "✅ Contrato de nomes/versões de migrations novas aprovado.",
-      `   baseline: ${result.baseline.fileCount} arquivos; novas: ${result.newFiles.length}; colisões legadas preservadas: ${result.legacyCollisionVersions.length}.`,
+      `   baseline: ${result.baseline.fileCount} arquivos + ${result.baseline.reconciledFileCount} reconciliados; novas: ${result.newFiles.length}; colisões legadas preservadas: ${result.legacyCollisionVersions.length}.`,
     ].join("\n");
   }
 
@@ -300,6 +365,8 @@ export function formatMigrationFilenameContractReport(result) {
       lines.push(`- histórico ausente: ${error.path}`);
     } else if (error.code === "invalid_new_filename") {
       lines.push(`- nome inválido (${error.violation}): ${error.path}`);
+    } else if (error.code === "reconciled_file_hash_mismatch") {
+      lines.push(`- snapshot reconciliado alterado: ${error.path}`);
     } else if (error.code === "new_version_collision") {
       lines.push(`- versão ${error.version} colide: ${error.paths.join(", ")}`);
     }
@@ -342,6 +409,9 @@ export function parseCliOptions(argv = process.argv.slice(2)) {
     baselinePath: baselineArgument
       ? resolve(root, baselineArgument)
       : resolve(root, BASELINE_RELATIVE_PATH),
+    reconciledBaselinePath: baselineArgument
+      ? null
+      : resolve(root, RECONCILED_BASELINE_RELATIVE_PATH),
   };
 }
 

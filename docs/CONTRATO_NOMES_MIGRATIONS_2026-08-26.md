@@ -19,6 +19,15 @@ como baseline explícita. Um arquivo é considerado **novo** somente quando est�
 em `supabase/migrations/*.sql` e não aparece nessa lista. A baseline não é uma
 lista de exceções genérica: ela é a fotografia fechada do legado em 2026-08-26.
 
+A reconciliação remota de 2026-09-11 recuperou 1.255 snapshots que não estavam
+no repositório. Dois nomes já existiam assim no ledger canônico e não atendem ao
+formato novo. Eles ficam registrados no manifesto suplementar fechado
+[`MANIFESTO_MIGRATIONS_RECONCILIADAS_2026-09-11.json`](./MANIFESTO_MIGRATIONS_RECONCILIADAS_2026-09-11.json),
+com `path`, versão/nome remotos e SHA-256 do arquivo. O guard aceita somente
+esses dois conteúdos exatos: ausência, rename ou alteração de bytes volta a
+bloquear o CI. Isso preserva o histórico remoto sem ampliar a exceção para
+novas migrations.
+
 ## Regra aplicada a arquivos novos
 
 Todo arquivo novo precisa obedecer a:
