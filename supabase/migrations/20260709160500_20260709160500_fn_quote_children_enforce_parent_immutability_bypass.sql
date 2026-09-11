@@ -1,0 +1,1 @@
+-- fix_version=2026-07-09-quote-children-immutability-bypass: auth.uid() IS NULL bypass;

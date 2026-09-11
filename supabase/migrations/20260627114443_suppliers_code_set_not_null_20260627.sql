@@ -1,0 +1,12 @@
+-- ============================================================
+-- MELHORIA 5: suppliers.code SET NOT NULL
+-- Fecha a cadeia de dependência de integridade:
+--   suppliers.code → insert_or_update_product (gera sku = code || '-' || supplier_reference)
+--   → products.sku NOT NULL (migration products_sku_set_not_null_20260627)
+--   → products.sku_promo NOT NULL (via trigger trg_sync_sku_promo)
+-- Sem este NOT NULL, um fornecedor sem code geraria sku=NULL silenciosamente,
+-- que seria rejeitado pela NOT NULL de products.sku — mas com mensagem confusa.
+-- Pré-condição: 0 nulos (5/5 fornecedores têm code), validado em dry-run.
+-- fix_version: v20260627_suppliers_code_not_null
+-- ============================================================
+ALTER TABLE suppliers ALTER COLUMN code SET NOT NULL;;

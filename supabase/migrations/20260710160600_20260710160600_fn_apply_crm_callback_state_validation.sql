@@ -1,0 +1,1 @@
+-- fix_version=2026-07-10-fn-apply-state-validation: added status transition validation to fn_apply_crm_callback;

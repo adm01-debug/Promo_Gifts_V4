@@ -1,5 +1,47 @@
 # Migration Sync Log
 
+## 2026-09-11 — Reconciliação do ledger canônico (fase 1: snapshots remotos)
+
+### Escopo e fonte
+
+O projeto canônico `doufsxqlfjyuvxuezpln` foi consultado por
+`supabase migration fetch --linked` em uma cópia temporária isolada. A fonte
+dos arquivos desta fase é exclusivamente o histórico remoto retornado pelo
+Supabase; nenhum arquivo existente foi sobrescrito e nenhum DDL foi aplicado.
+
+Foram acrescentados **1.255 snapshots SQL remotos**, todos com versão numérica
+única, conteúdo não vazio e hash conferido depois da cópia (4.230.220 bytes no
+total). A comparação por versão, não por nome de arquivo, é indispensável:
+o banco guarda diversos nomes históricos distintos para uma mesma versão.
+
+### Resultado verificável
+
+- Antes: 1.255 versões do remoto não tinham arquivo local correspondente.
+- Depois, na worktree de reconciliação: `supabase migration list --linked`
+  relata **zero** versões remotas numéricas ausentes.
+- Não foi usado `supabase db push`, `migration repair`, `db pull` nem
+  `db reset`.
+
+### Itens deliberadamente não alterados nesta fase
+
+1. Existem **544 versões locais sem registro remoto**. Elas não foram aplicadas,
+   removidas, renomeadas nem marcadas como aplicadas; precisam de classificação
+   individual antes de qualquer promoção.
+2. O ledger remoto tem três IDs inválidos para o formato `timestamp_nome.sql`:
+   `20260623_bugalert1`,
+   `20260623_create_process_notifications_queue_rpcs` e
+   `20260623_fix_google_provider_secret_name`. Eles não podem ser corrigidos
+   com arquivos locais válidos. Qualquer `migration repair --status reverted`
+   nesses IDs altera o histórico do canônico e exige pré-condição, confirmação
+   de que os objetos físicos permanecem presentes e recibo pós-operação.
+3. A migration `20260910150000_kit_maker_optimistic_persistence.sql` continua
+   apenas preparada no repositório. A aplicação no banco permanece bloqueada
+   até haver canal administrativo de escrita e validação via `pg_catalog`.
+
+Esta fase recupera rastreabilidade do repositório; ela não transforma o
+histórico em um replay limpo e não é autorização para promover as migrations
+locais pendentes.
+
 ## 2026-05-24 â€” Fix definitivo sort-order 20250103
 
 ### Estado final

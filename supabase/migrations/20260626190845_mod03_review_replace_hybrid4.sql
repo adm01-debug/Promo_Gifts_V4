@@ -1,0 +1,37 @@
+-- 4 cross-grupo onde o NOME confirma o jsonb e não o normalizado (ex.: Caderno cartão rotulado "Aço Inox", Esteira ptfe rotulada "Plástico Genérico").
+-- REPLACE name-confirmado: captura tipo do jsonb ANTES, desativa pm errado, insere o correto (100% corpo). Reversível.
+DO $$
+BEGIN
+  PERFORM set_config('app.bulk_import_mode','true', true);
+  CREATE TEMP TABLE _fix ON COMMIT DROP AS
+  WITH d AS (
+    SELECT p.id,
+      extensions.unaccent(lower(p.name)) AS lname,
+      extensions.unaccent(lower(COALESCE(p.name,'')||' '||COALESCE(p.description,'')||' '||COALESCE(p.short_description,''))) AS ltext,
+      p.materials,
+      (SELECT array_agg(e ORDER BY e) FROM jsonb_array_elements_text(p.materials) j(e)) AS jn,
+      (SELECT array_agg(mt.name::text ORDER BY mt.name::text) FROM product_materials pm JOIN material_types mt ON mt.id=pm.material_id WHERE pm.product_id=p.id AND pm.is_active) AS nn
+    FROM products p WHERE p.is_active
+  ),
+  div AS (SELECT * FROM d WHERE jn IS DISTINCT FROM nn),
+  corr AS (
+    SELECT t.id,
+      (SELECT bool_or(CASE WHEN length(tok)>=5 THEN t.lname LIKE '%'||left(tok,5)||'%' WHEN length(tok)>=2 THEN t.lname ~ ('\m'||tok||'\M') ELSE false END)
+         FROM jsonb_array_elements_text(t.materials) j(e), LATERAL (SELECT regexp_replace(extensions.unaccent(lower(w)),'[^a-z0-9]','','g') AS tok FROM unnest(string_to_array(e,' ')) w) z) AS jcorr_name,
+      (SELECT bool_or(CASE WHEN length(tok)>=5 THEN t.ltext LIKE '%'||left(tok,5)||'%' WHEN length(tok)>=2 THEN t.ltext ~ ('\m'||tok||'\M') ELSE false END)
+         FROM product_materials pm JOIN material_types mt ON mt.id=pm.material_id, LATERAL (SELECT regexp_replace(extensions.unaccent(lower(w)),'[^a-z0-9]','','g') AS tok FROM unnest(string_to_array(mt.name,' ')) w) z
+         WHERE pm.product_id=t.id AND pm.is_active AND tok NOT ILIKE 'gen%rico') AS ncorr_text
+    FROM div t
+  ),
+  tgt AS (SELECT id FROM corr WHERE jcorr_name AND NOT ncorr_text)
+  SELECT t.id AS product_id, s.tid AS material_id,
+    (SELECT pm.organization_id FROM product_materials pm WHERE pm.product_id=t.id LIMIT 1) AS org
+  FROM tgt t JOIN products p ON p.id=t.id
+  CROSS JOIN LATERAL (SELECT DISTINCT public.fn_find_material_type_id(e) AS tid FROM jsonb_array_elements_text(p.materials) j(e)) s
+  WHERE s.tid IS NOT NULL;
+
+  UPDATE product_materials SET is_active=false, updated_at=now() WHERE product_id IN (SELECT DISTINCT product_id FROM _fix) AND is_active;
+  INSERT INTO product_materials (organization_id, product_id, material_id, part, percentage, is_active, sort_order)
+  SELECT org, product_id, material_id, 'corpo', 100, true, 1 FROM _fix
+  ON CONFLICT (product_id, material_id) DO UPDATE SET is_active=true, percentage=100, part='corpo', updated_at=now();
+END $$;;

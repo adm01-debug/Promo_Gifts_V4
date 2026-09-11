@@ -1,0 +1,11 @@
+-- ============================================================
+-- MELHORIA 3: sku_promo NOT NULL
+-- Estado anterior: coluna nullable + CHECK (sku_promo IS NULL OR sku_promo=sku),
+-- ou seja, NULL era permitido. Integridade real só via trigger.
+-- Agora: NOT NULL formal. Seguro porque:
+--   (a) 0 nulos em 7.608 linhas;
+--   (b) trg_sync_sku_promo (BEFORE INSERT OR UPDATE) força sku_promo:=sku sempre;
+--   (c) dry-run provou que UPDATE forçando NULL é neutralizado pelo trigger.
+-- Efeito colateral desejado: impede também sku NULL na prática (sku_promo=sku).
+-- ============================================================
+ALTER TABLE public.products ALTER COLUMN sku_promo SET NOT NULL;;

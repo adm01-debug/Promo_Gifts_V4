@@ -1,0 +1,23 @@
+-- ============================================================
+-- REGISTRO DE MIGRAÇÃO (statements já aplicados via execute_sql em 2026-06-11)
+-- Módulo: Embalagens — pipeline bronze→prata→ouro v1
+-- ============================================================
+-- M1: packaging_compatibility_config += max_gap_mm=50;
+--     fn_calculate_packaging_fit v2 (rating too_large, compatible ∈ {tight,good,loose});
+--     fn_auto_discover_compatible_packagings v2 (is_active, modo 'precise', exclui self).
+-- M2: fn_extract_packaging_info(text,text) — extração de refs opcionais (2 padrões Spot)
+--     e menção de embalagem inclusa; produtos_padronizacao += optional_packaging_refs jsonb,
+--     included_packaging_mention text. Backfill prata: 450 linhas.
+-- M3: gold backfill — products.optional_packaging_ref (45), description_packaging_info (407),
+--     write_source='pipeline'.
+-- M4: 92918 reclassificado product→packaging; product_packaging_compatibility:
+--     45 supplier_indicated (18 novos, 27 upgrades), com fit gaps e is_recommended.
+-- M5: product_included_packagings populada: 1.168 embalagens originais inferidas de
+--     packing_type commercial + menções na descrição (material/cor/berço inferidos; dims NULL).
+-- M6: 1.501 compatibilidades dimension_calculated (apenas tight/good), set-based, idempotente.
+-- M7: fn_circumference_to_diameter(numeric) + decisão unidade canônica cm (embalagem) / mm (kits).
+-- M8: CREATE TABLE included_packaging_print_areas (14 cols, CHECK shape/dims, UNIQUE area_code,
+--     FK CASCADE, RLS read-auth) e included_packaging_techniques (15 cols, FK personalization_techniques,
+--     UNIQUE technique por embalagem, RLS read-auth). Bateria adversarial 7/7.
+-- M9: system_documentation: 6 entradas do módulo embalagens (inclui correção do doc do config).
+SELECT 1;;

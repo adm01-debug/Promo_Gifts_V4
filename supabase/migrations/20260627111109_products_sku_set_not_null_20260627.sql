@@ -1,0 +1,12 @@
+-- ============================================================
+-- FIX DO GAP DETECTADO NA VALIDAÇÃO ADVERSARIAL (2026-06-27)
+-- Causa: sku era nullable mas trigger trg_sync_sku_promo faz
+-- NEW.sku_promo := NEW.sku, então sku=NULL → sku_promo=NULL
+-- violaria NOT NULL em sku_promo (adicionado em migration anterior).
+-- O erro seria em sku_promo, não em sku — mensagem confusa.
+-- Fix: tornar o contrato explícito adicionando NOT NULL em sku.
+-- Pré-condições verificadas: 0 nulos, sku_max_len=19 < 50.
+-- A única função que insere em products (insert_or_update_product)
+-- sempre gera sku = supplier_code || '-' || supplier_reference.
+-- ============================================================
+ALTER TABLE products ALTER COLUMN sku SET NOT NULL;;
