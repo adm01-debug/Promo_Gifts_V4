@@ -24,6 +24,29 @@ import { logger } from '@/lib/logger';
 
 const PRODUCT_PAGE_SIZE = 200;
 
+// Keep public-view projections as constants so contract tests can protect this
+// module from PostgREST 42703 regressions. The Gold view intentionally exposes
+// `sale_price`, not the private/legacy `base_price` field.
+export const KIT_PACKAGING_SELECT =
+  'id, name, sku, sale_price, primary_image_url, images, dimensions, weight_g, materials, internal_width_cm, internal_height_cm, internal_length_cm, packing_type, packing_classification, product_type';
+
+export const KIT_ITEM_SELECT =
+  'id, name, sku, sale_price, primary_image_url, images, dimensions, category_id, weight_g, materials, width_cm, height_cm, length_cm, colors, packing_classification, packing_type, product_type, allows_personalization';
+
+export function isCanonicalPackagingProduct(product: ExternalProductForKit): boolean {
+  return product.product_type === 'packaging';
+}
+
+export function isKitSelectableProduct(product: ExternalProductForKit): boolean {
+  const packing =
+    `${product.packing_classification || ''} ${product.packing_type || ''}`.toLowerCase();
+  return (
+    !isCanonicalPackagingProduct(product) &&
+    !packing.includes('embalagem') &&
+    !packing.includes('caixa')
+  );
+}
+
 /**
  * Reads the complete result set in deterministic pages. The former fixed
  * `limit: 200` silently hid eligible products/boxes once the catalog grew;
@@ -32,13 +55,14 @@ const PRODUCT_PAGE_SIZE = 200;
 export async function fetchAllActiveProducts(
   select: string,
   search: string,
+  fixedFilters: Record<string, unknown> = {},
 ): Promise<ExternalProductForKit[]> {
   const records: ExternalProductForKit[] = [];
   let offset = 0;
   let total: number | null = null;
 
   while (true) {
-    const filters: Record<string, unknown> = { active: true };
+    const filters: Record<string, unknown> = { active: true, ...fixedFilters };
     if (search) filters._search = search;
     const result = await dbInvoke<ExternalProductForKit>({
       table: 'products',
@@ -157,7 +181,10 @@ export function useKitBuilderQueries() {
     setItemExtraFilters(rest);
   }, []);
 
-  // Query: boxes — products that have packing_type containing "Caixa" or similar packaging terms
+  // Query: boxes come from the canonical Gold packaging rows.  A previous
+  // heuristic searched arbitrary products with "caixa" in packing_type; those
+  // rows describe their shipping package and almost never have usable internal
+  // dimensions, so the transformer correctly discarded every candidate.
   const {
     data: availableBoxes = [],
     isLoading: isLoadingBoxes,
@@ -181,15 +208,11 @@ export function useKitBuilderQueries() {
     ],
     queryFn: async () => {
       try {
-        const products = await fetchAllActiveProducts(
-          'id, name, sku, sale_price, primary_image_url, images, dimensions, category_id, weight_g, materials, width_cm, height_cm, length_cm, internal_width_cm, internal_height_cm, internal_length_cm, packing_type, packing_classification',
-          debouncedBoxSearch,
-        );
+        const products = await fetchAllActiveProducts(KIT_PACKAGING_SELECT, debouncedBoxSearch, {
+          product_type: 'packaging',
+        });
         const boxes = products
-          .filter((p) => {
-            const pt = (p.packing_type || '').toLowerCase();
-            return pt.includes('caixa') || pt.includes('embalagem') || pt.includes('box');
-          })
+          .filter(isCanonicalPackagingProduct)
           .map((p) => transformToKitBox(p))
           .filter((box): box is KitBox => box !== null);
 
@@ -219,17 +242,8 @@ export function useKitBuilderQueries() {
     ],
     queryFn: async () => {
       try {
-        const products = await fetchAllActiveProducts(
-          'id, name, sku, base_price, sale_price, primary_image_url, images, dimensions, category_id, category_name, weight_g, materials, width_cm, height_cm, length_cm, colors, packing_classification, packing_type, is_box, allows_personalization, is_replaceable, allowed_variant_ids',
-          debouncedItemSearch,
-        );
-        const items = products
-          .filter((p) => {
-            const packing =
-              `${p.packing_classification || ''} ${p.packing_type || ''}`.toLowerCase();
-            return !p.is_box && !packing.includes('embalagem') && !packing.includes('caixa');
-          })
-          .map((p) => transformToKitItem(p));
+        const products = await fetchAllActiveProducts(KIT_ITEM_SELECT, debouncedItemSearch);
+        const items = products.filter(isKitSelectableProduct).map((p) => transformToKitItem(p));
         return filterItems(items, '');
       } catch (err) {
         logger.warn('[KitBuilder] External DB unavailable for items', err);

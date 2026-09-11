@@ -219,7 +219,11 @@ export interface ExternalProductForKit {
   id: string;
   name: string;
   sku: string;
-  base_price: number | null;
+  /**
+   * Legacy fallback retained only for isolated fixtures and historical rows.
+   * The public Gold product view exposes `sale_price`, not `base_price`.
+   */
+  base_price?: number | null;
   sale_price?: number | null;
   image_url: string | null;
   primary_image_url: string | null;
