@@ -16,6 +16,7 @@ canônico quando aplicável.
 | --- | --- | --- | --- | --- |
 | Reconstrução da landing com os dois percursos, cards visuais, benefícios, destaques de catálogo e CTA de IA | 011–015, 031–037 | `IMPLEMENTADA_AGUARDA_VALIDACAO` | `KitMakerLanding.tsx`; teste de componente com 3 cenários | Ainda requer comparação por viewport com os anexos e dados canônicos autenticados. |
 | Correção do contrato Gold: itens usam `sale_price`; embalagens são filtradas por `product_type=packaging` e não por heurística de texto | 021–025, 051–060 | `IMPLEMENTADA_AGUARDA_VALIDACAO` | `useKitBuilderQueries.ts`; teste de contrato/paginação | Não substitui a auditoria completa de schema/compatibilidade nem autoriza DDL. |
+| Bloqueio comercial de itens e embalagens sem preço verificável, sem converter ausência em `R$ 0,00` | 026, 046, 084 | `IMPLEMENTADA_AGUARDA_VALIDACAO` | transformadores, consulta, deeplink e teste unitário do cenário S01 | Ainda requer execução autenticada com catálogo canônico e validação da política comercial para produtos sem preço. |
 | Substituição da cobertura E2E falsa de `external-db-bridge` por `v_products_public`, com fixture de tour e autenticação mock declarada | 006–010, 091–095 | `IMPLEMENTADA_AGUARDA_VALIDACAO` | cinco cenários Chromium autenticados em modo mock | Não equivale a execução com usuário e dados produtivos reais. |
 
 Resultado do lote: lint específico passou; 29 testes unitários/focados passaram;

@@ -243,7 +243,10 @@ export function useKitBuilderQueries() {
     queryFn: async () => {
       try {
         const products = await fetchAllActiveProducts(KIT_ITEM_SELECT, debouncedItemSearch);
-        const items = products.filter(isKitSelectableProduct).map((p) => transformToKitItem(p));
+        const items = products
+          .filter(isKitSelectableProduct)
+          .map((p) => transformToKitItem(p))
+          .filter((item): item is KitItem => item !== null);
         return filterItems(items, '');
       } catch (err) {
         logger.warn('[KitBuilder] External DB unavailable for items', err);

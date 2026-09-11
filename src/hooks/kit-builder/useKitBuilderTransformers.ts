@@ -20,8 +20,9 @@ function resolveProductImageUrl(product: ExternalProductForKit): string | null {
   return product.primary_image_url || product.image_url || (product.images?.[0] ?? null);
 }
 
-function resolveProductPrice(product: ExternalProductForKit): number {
-  return product.sale_price ?? product.base_price ?? 0;
+function resolveProductPrice(product: ExternalProductForKit): number | null {
+  const price = product.sale_price ?? product.base_price;
+  return typeof price === 'number' && Number.isFinite(price) && price >= 0 ? price : null;
 }
 
 function resolveProductMaterial(product: ExternalProductForKit): string | undefined {
@@ -57,6 +58,11 @@ export function transformToKitBox(product: ExternalProductForKit): KitBox | null
   // Guard against zero dimensions
   if (dimensions.width <= 0 || dimensions.height <= 0 || dimensions.depth <= 0) return null;
 
+  const price = resolveProductPrice(product);
+  // A missing commercial price is not the same as a free packaging. Do not
+  // surface it as R$ 0,00 and let it reach a quote silently.
+  if (price === null) return null;
+
   const volume = calculateVolume(dimensions.width, dimensions.height, dimensions.depth);
 
   return {
@@ -64,7 +70,7 @@ export function transformToKitBox(product: ExternalProductForKit): KitBox | null
     name: product.name,
     sku: product.sku,
     imageUrl: resolveProductImageUrl(product),
-    price: resolveProductPrice(product),
+    price,
     internalWidth: dimensions.width,
     internalHeight: dimensions.height,
     internalDepth: dimensions.depth,
@@ -76,8 +82,15 @@ export function transformToKitBox(product: ExternalProductForKit): KitBox | null
   };
 }
 
-export function transformToKitItem(product: ExternalProductForKit, category?: string): KitItem {
+export function transformToKitItem(
+  product: ExternalProductForKit,
+  category?: string,
+): KitItem | null {
   const resolvedCategory = category ?? product.category_name ?? product.category_id ?? undefined;
+  const price = resolveProductPrice(product);
+  // Same invariant as packaging: catalog metadata without a sale price may be
+  // useful elsewhere, but cannot be a priced line in a kit/quote.
+  if (price === null) return null;
   let dimensions: { width: number; height: number; depth: number } | null = null;
 
   const wMm = mmToCm(product.width_mm);
@@ -98,7 +111,7 @@ export function transformToKitItem(product: ExternalProductForKit, category?: st
     name: product.name,
     sku: product.sku,
     imageUrl: resolveProductImageUrl(product),
-    price: resolveProductPrice(product),
+    price,
     width: dimensions.width,
     height: dimensions.height,
     depth: dimensions.depth,

@@ -241,7 +241,12 @@ export function useKitBuilderPageState() {
             limit: 1,
           });
           if (result.records?.length > 0) {
-            addItem(transformToKitItem(result.records[0]));
+            const kitItem = transformToKitItem(result.records[0]);
+            if (!kitItem) {
+              toast.error('Este produto não possui preço comercial disponível para o kit.');
+              return;
+            }
+            addItem(kitItem);
             setKitName(result.records[0].name || '');
           }
         } catch (err) {

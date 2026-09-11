@@ -24,6 +24,8 @@ const product = (overrides: Partial<ExternalProductForKit> = {}): ExternalProduc
 describe('transformToKitItem', () => {
   it('preserva categoria, preço-base e metadados explícitos do catálogo', () => {
     const item = transformToKitItem(product());
+    expect(item).not.toBeNull();
+    if (!item) throw new Error('Expected a priced catalog product');
 
     expect(item.price).toBe(42.5);
     expect(item.category).toBe('Bebidas');
@@ -34,7 +36,13 @@ describe('transformToKitItem', () => {
 
   it('não presume permissão de personalização quando o catálogo não a declarou', () => {
     const item = transformToKitItem(product({ allows_personalization: undefined }));
+    expect(item).not.toBeNull();
+    if (!item) throw new Error('Expected a priced catalog product');
 
     expect(item.allowsPersonalization).toBe(false);
+  });
+
+  it('does not convert an absent sale price into a free kit item', () => {
+    expect(transformToKitItem(product({ sale_price: undefined, base_price: undefined }))).toBeNull();
   });
 });
