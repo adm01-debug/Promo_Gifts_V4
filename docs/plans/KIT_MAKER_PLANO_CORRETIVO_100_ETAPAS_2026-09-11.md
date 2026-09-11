@@ -19,10 +19,10 @@ canônico quando aplicável.
 | Bloqueio comercial de itens e embalagens sem preço verificável, sem converter ausência em `R$ 0,00` | 026, 046, 084 | `IMPLEMENTADA_AGUARDA_VALIDACAO` | transformadores, consulta, deeplink e teste unitário do cenário S01 | Ainda requer execução autenticada com catálogo canônico e validação da política comercial para produtos sem preço. |
 | Cartões de caixa com ocupação, motivo de compatibilidade e ação explícita; incompatíveis não podem ser selecionados | 054–060 | `IMPLEMENTADA_AGUARDA_VALIDACAO` | `BoxSelector.tsx`; testes de seleção compatível e bloqueio incompatível | Ainda requer comparação visual nos viewports de referência e teste com medidas/embalagens canônicas. |
 | Briefing de IA estruturado com objetivo, público, orçamento, estilo, quantidade e aplicação explícita de filtros | 071–077 | `IMPLEMENTADA_AGUARDA_VALIDACAO` | `KitAIPromptDialog.tsx`; dois testes de componente para estado vazio e aplicação | A Edge Function ainda retorna palavras-chave, não IDs de produto/caixa; seleção comercial automática continua bloqueada por contrato. |
-| Substituição da cobertura E2E falsa de `external-db-bridge` por `v_products_public`, com fixture de tour e autenticação mock declarada | 006–010, 091–095 | `IMPLEMENTADA_AGUARDA_VALIDACAO` | cinco cenários Chromium autenticados em modo mock | Não equivale a execução com usuário e dados produtivos reais. |
+| Substituição da cobertura E2E falsa de `external-db-bridge` por `v_products_public`, com fixture de tour e autenticação mock declarada | 006–010, 091–095 | `IMPLEMENTADA_AGUARDA_VALIDACAO` | sete cenários Chromium autenticados em modo mock; controles de IA testados pelo rótulo acessível | Não equivale a execução com usuário e dados produtivos reais. |
 
-Resultado do lote: lint específico passou; 29 testes unitários/focados passaram;
-build de desenvolvimento passou; cinco cenários E2E Chromium com mock passaram.
+Resultado do lote: lint específico passou; 36 testes unitários/focados passaram;
+build de desenvolvimento passou; sete cenários E2E Chromium próprios do Kit Maker, com mock, passaram.
 O typecheck completo permanece fora deste recibo enquanto a incompatibilidade
 pré-existente entre TypeScript e `@vitejs/plugin-react` impedir sua execução.
 Não houve migration, DDL, alteração no banco canônico, merge ou deploy neste

@@ -122,8 +122,8 @@ test.describe("/montar-kit — fluxos críticos", () => {
     await gotoAndSettle(page, "/montar-kit");
     await waitRouteReady(page);
     await page.getByRole("button", { name: /montar com ia/i }).click();
-    await page.getByPlaceholder(/kit para 50 colaboradores/i).fill(SAMPLE_AI_PROMPT);
-    await page.getByRole("button", { name: /gerar sugestão/i }).click();
+    await page.getByLabel(/o que você deseja/i).fill(SAMPLE_AI_PROMPT);
+    await page.getByRole("button", { name: /gerar sugestões/i }).click();
     // Radix hides the landing from the accessibility tree while the modal is
     // open; assert the still-interactive dialog instead of a background h1.
     await expect(page.getByRole("heading", { name: /montar kit com ia/i })).toBeVisible();
