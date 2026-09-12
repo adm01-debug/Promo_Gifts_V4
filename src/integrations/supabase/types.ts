@@ -11322,6 +11322,38 @@ export type Database = {
         }
         Relationships: []
       }
+      kit_quote_requests: {
+        Row: {
+          created_at: string
+          payload_hash: string
+          quote_id: string
+          request_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          payload_hash: string
+          quote_id: string
+          request_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          payload_hash?: string
+          quote_id?: string
+          request_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kit_quote_requests_quote_id_fkey"
+            columns: ["quote_id"]
+            isOneToOne: false
+            referencedRelation: "quotes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       kit_save_requests: {
         Row: {
           created_at: string
@@ -58504,6 +58536,77 @@ export type Database = {
       convert_string_to_unit: {
         Args: { p_input: string; p_target_unit: string }
         Returns: number
+      }
+      create_kit_quote_transactional: {
+        Args: { _items: Json; _quote: Json; _request_id: string }
+        Returns: {
+          approval_token: string | null
+          approved_at: string | null
+          approved_by_client_name: string | null
+          assigned_to: string | null
+          bitrix_deal_id: string | null
+          bitrix_quote_id: string | null
+          client_cnpj: string | null
+          client_company: string | null
+          client_email: string | null
+          client_feedback: string | null
+          client_id: string | null
+          client_name: string
+          client_phone: string | null
+          client_response: string | null
+          client_response_at: string | null
+          client_response_notes: string | null
+          contact_id: string | null
+          conversion_notes: string | null
+          converted_at: string | null
+          converted_to_order_id: string | null
+          created_at: string | null
+          created_by: string | null
+          delivery_time: string | null
+          discount_amount: number | null
+          discount_approval_status: string | null
+          discount_approved_at: string | null
+          discount_percent: number | null
+          estimated_delivery_days: number | null
+          id: string
+          internal_notes: string | null
+          is_latest_version: boolean
+          last_sent_at: string | null
+          negotiation_markup_percent: number | null
+          notes: string | null
+          organization_id: string
+          parent_quote_id: string | null
+          payment_method: string | null
+          payment_terms: string | null
+          priority: string | null
+          quote_number: string
+          real_discount_percent: number | null
+          real_subtotal: number | null
+          seller_id: string
+          sent_at: string | null
+          shipping_cost: number | null
+          shipping_method: string | null
+          shipping_type: string | null
+          stage: string | null
+          status: string | null
+          subtotal: number | null
+          synced_at: string | null
+          synced_to_bitrix: boolean
+          tags: Json | null
+          tax_amount: number | null
+          total: number | null
+          updated_at: string | null
+          valid_until: string | null
+          version: number
+          view_count: number | null
+          viewed_at: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "quotes"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       create_material_with_equivalence: {
         Args: {

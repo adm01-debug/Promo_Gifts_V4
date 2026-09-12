@@ -209,15 +209,12 @@ export function useKitBuilderQuote() {
       // This RPC wraps the existing transactional writer and records the
       // request id. It makes a timeout/retry return the original quote rather
       // than creating a second commercial document.
-      const { data, error: quoteError } = await supabase.rpc(
-        'create_kit_quote_transactional' as never,
-        {
-          _request_id: requestId,
-          _quote: quotePayload as unknown as Json,
-          _items: quoteItems as unknown as Json,
-        } as never,
-      );
-      const quote = data as { id?: string } | null;
+      const { data, error: quoteError } = await supabase.rpc('create_kit_quote_transactional', {
+        _request_id: requestId,
+        _quote: quotePayload as unknown as Json,
+        _items: quoteItems as unknown as Json,
+      });
+      const quote = data;
 
       if (quoteError) throw quoteError;
       if (!quote?.id) throw new Error('A criação transacional não retornou o orçamento');
