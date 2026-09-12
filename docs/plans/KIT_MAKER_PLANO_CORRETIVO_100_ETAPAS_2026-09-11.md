@@ -12,22 +12,50 @@ aceitas até que as quatro verificações da respectiva etapa estejam completas,
 incluindo comparação visual contra as referências e validação em ambiente
 canônico quando aplicável.
 
-| Trabalho entregue no lote inicial | Etapas relacionadas | Estado | Evidência local | Limite explícito |
-| --- | --- | --- | --- | --- |
-| Reconstrução da landing com os dois percursos, cards visuais, benefícios, destaques de catálogo e CTA de IA | 011–015, 031–037 | `IMPLEMENTADA_AGUARDA_VALIDACAO` | `KitMakerLanding.tsx`; teste de componente com 3 cenários | Ainda requer comparação por viewport com os anexos e dados canônicos autenticados. |
-| Estado recuperável da landing quando a projeção de destaques responde com falha de acesso/serviço | 020, 029, 091 | `IMPLEMENTADA_AGUARDA_VALIDACAO` | alerta com retry; teste unitário; E2E REST 401 | A classificação final entre sessão expirada e RLS exige execução com uma credencial real de menor privilégio. |
-| Correção do contrato Gold: itens usam `sale_price`; embalagens são filtradas por `product_type=packaging` e não por heurística de texto | 021–025, 051–060 | `IMPLEMENTADA_AGUARDA_VALIDACAO` | `useKitBuilderQueries.ts`; teste de contrato/paginação | Não substitui a auditoria completa de schema/compatibilidade nem autoriza DDL. |
-| Bloqueio comercial de itens e embalagens sem preço verificável, sem converter ausência em `R$ 0,00` | 026, 046, 084 | `IMPLEMENTADA_AGUARDA_VALIDACAO` | transformadores, consulta, deeplink e teste unitário do cenário S01 | Ainda requer execução autenticada com catálogo canônico e validação da política comercial para produtos sem preço. |
-| Cartões de caixa com ocupação, motivo de compatibilidade e ação explícita; incompatíveis não podem ser selecionados | 054–060 | `IMPLEMENTADA_AGUARDA_VALIDACAO` | `BoxSelector.tsx`; testes de seleção compatível e bloqueio incompatível | Ainda requer comparação visual nos viewports de referência e teste com medidas/embalagens canônicas. |
-| Briefing de IA estruturado com objetivo, público, orçamento, estilo, quantidade e aplicação explícita de filtros | 071–077 | `IMPLEMENTADA_AGUARDA_VALIDACAO` | `KitAIPromptDialog.tsx`; dois testes de componente para estado vazio e aplicação | A Edge Function ainda retorna palavras-chave, não IDs de produto/caixa; seleção comercial automática continua bloqueada por contrato. |
-| Substituição da cobertura E2E falsa de `external-db-bridge` por `v_products_public`, com fixture de tour e autenticação mock declarada | 006–010, 091–095 | `IMPLEMENTADA_AGUARDA_VALIDACAO` | sete cenários Chromium autenticados em modo mock; controles de IA testados pelo rótulo acessível | Não equivale a execução com usuário e dados produtivos reais. |
+| Trabalho entregue no lote inicial                                                                                                                            | Etapas relacionadas                | Estado                           | Evidência local                                                                                                       | Limite explícito                                                                                                                                     |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Reconstrução da landing com os dois percursos, cards visuais, benefícios, destaques de catálogo e CTA de IA                                                  | 011–015, 031–037                   | `IMPLEMENTADA_AGUARDA_VALIDACAO` | `KitMakerLanding.tsx`; teste de componente com 3 cenários                                                             | Ainda requer comparação por viewport com os anexos e dados canônicos autenticados.                                                                   |
+| Estado recuperável da landing quando a projeção de destaques responde com falha de acesso/serviço                                                            | 020, 029, 091                      | `IMPLEMENTADA_AGUARDA_VALIDACAO` | alerta com retry; teste unitário; E2E REST 401                                                                        | A classificação final entre sessão expirada e RLS exige execução com uma credencial real de menor privilégio.                                        |
+| Correção do contrato Gold: itens usam `sale_price`; embalagens são filtradas por `product_type=packaging` e não por heurística de texto                      | 021–025, 051–060                   | `IMPLEMENTADA_AGUARDA_VALIDACAO` | `useKitBuilderQueries.ts`; teste de contrato/paginação                                                                | Não substitui a auditoria completa de schema/compatibilidade nem autoriza DDL.                                                                       |
+| Bloqueio comercial de itens e embalagens sem preço verificável, sem converter ausência em `R$ 0,00`                                                          | 026, 046, 084                      | `IMPLEMENTADA_AGUARDA_VALIDACAO` | transformadores, consulta, deeplink e teste unitário do cenário S01                                                   | Ainda requer execução autenticada com catálogo canônico e validação da política comercial para produtos sem preço.                                   |
+| Cartões de caixa com ocupação, motivo de compatibilidade e ação explícita; incompatíveis não podem ser selecionados                                          | 054–060                            | `IMPLEMENTADA_AGUARDA_VALIDACAO` | `BoxSelector.tsx`; testes de seleção compatível e bloqueio incompatível                                               | Ainda requer comparação visual nos viewports de referência e teste com medidas/embalagens canônicas.                                                 |
+| Briefing de IA estruturado com objetivo, público, orçamento, estilo, quantidade e aplicação explícita de filtros                                             | 071–077                            | `IMPLEMENTADA_AGUARDA_VALIDACAO` | `KitAIPromptDialog.tsx`; dois testes de componente para estado vazio e aplicação                                      | A Edge Function ainda retorna palavras-chave, não IDs de produto/caixa; seleção comercial automática continua bloqueada por contrato.                |
+| Substituição da cobertura E2E falsa de `external-db-bridge` por `v_products_public`, com fixture de tour e autenticação mock declarada                       | 006–010, 091–095                   | `IMPLEMENTADA_AGUARDA_VALIDACAO` | sete cenários Chromium autenticados em modo mock; controles de IA testados pelo rótulo acessível                      | Não equivale a execução com usuário e dados produtivos reais.                                                                                        |
+| Bootstrap E2E em modo mock deixa de sobrescrever a sessão sintética durante o projeto `setup`                                                            | 006–010, 091–095                   | `IMPLEMENTADA_AGUARDA_VALIDACAO` | `auth.setup.ts`; execução completa do arquivo `kit-builder.spec.ts` com o projeto `setup` incluído                 | O JWT sintético continua inválido para o Supabase real por desenho; cada spec deve interceptar suas dependências REST/Auth ou usar credencial de teste real. |
+| Identidade estável por linha de item, preservando variantes distintas do mesmo produto em seleção, personalização, preço, cotação e previews                 | 016–017, 041–050, 061–070, 081–086 | `IMPLEMENTADA_AGUARDA_VALIDACAO` | `getKitItemLineId`; regressões de hook para duas variantes e quantidade inválida                                      | Snapshots legados são normalizados na abertura; a validação com rascunhos canônicos ainda depende do ambiente correto.                               |
+| Preço de personalização e estoque passam a falhar de forma segura: preço ausente não vira zero e consulta de estoque em erro/carregamento bloqueia orçamento | 046, 061–070, 081–086              | `IMPLEMENTADA_AGUARDA_VALIDACAO` | validação do estado, `resolveKitStockStatus`, feedback na revisão e testes de regressão                               | A confirmação de políticas/estoque real continua bloqueada até acesso `pg_catalog` ao projeto canônico.                                              |
+| Orçamento do Kit Maker recebe desenho de idempotência com chave de operação e RPC forward-only                                                               | 018–020, 086–090                   | `IMPLEMENTADA_AGUARDA_VALIDACAO` | migration `20260911172000` aplicada e registrada; pós-flight via `pg_catalog`; cliente usa `create_kit_quote_transactional` | O teste de repetição com usuário real continua pendente em ambiente isolado, pois chamar o escritor em produção pode acionar histórico/notificações comerciais. |
+| Autosave serializa gravações pendentes e o salvamento manual toma posse do debounce para evitar corrida de revisão                                           | 017–020                            | `IMPLEMENTADA_AGUARDA_VALIDACAO` | `useKitAutoSave.ts`, `useKitBuilderPageState.ts`; build de produção passou                                            | Ainda requer cenário real de duas abas e erro de rede para aceite.                                                                                   |
+| Barra-resumo móvel passa a usar um único gatilho interativo, sem botão aninhado que causava markup inválido/hidratação                                      | 012, 041–050, 094                  | `IMPLEMENTADA_AGUARDA_VALIDACAO` | `KitMobileSummaryBar.test.tsx`; renderização da página sem o alerta de botão dentro de botão                         | Ainda requer teclado, leitor de tela e viewport físico para aceite de acessibilidade.                                                                 |
+| Landing usa fontes separadas para itens e embalagens e compõe os heroes com assets reais do catálogo e fallback explícito                                    | 011–015, 031–037, 051–055          | `IMPLEMENTADA_AGUARDA_VALIDACAO` | `KitMakerLanding.tsx`; testes de landing atualizados                                                                  | Não substitui a paridade fotográfica dos anexos quando os assets originais não estão disponíveis.                                                    |
+| Resposta da IA é validada por contrato no servidor e no cliente, com proteção contra resposta tardia/duplicada                                               | 071–080                            | `IMPLEMENTADA_AGUARDA_VALIDACAO` | schema de resposta, edge function implantada em 12/09/2026, três testes de diálogo e resposta `401` sem token      | A IA continua deliberadamente sugestiva: não grava itens ou preços sem confirmação humana; o happy path depende de JWT com papel `agente` e segredo de IA. |
+| Personalização passa a manter arte por linha, enviada somente via `secure-upload`, e mostra uma prévia indicativa com área/técnica                           | 061–070                            | `IMPLEMENTADA_AGUARDA_VALIDACAO` | `artworkUrl` no payload do rascunho e `PersonalizationConfig.tsx`                                                     | A prévia não substitui mockup técnico nem aprovação de produção; requer teste autenticado do bucket/políticas e comparação visual em três viewports. |
 
-Resultado do lote: lint específico passou; 36 testes unitários/focados passaram;
-build de desenvolvimento passou; sete cenários E2E Chromium próprios do Kit Maker, com mock, passaram.
-O typecheck completo permanece fora deste recibo enquanto a incompatibilidade
-pré-existente entre TypeScript e `@vitejs/plugin-react` impedir sua execução.
-Não houve migration, DDL, alteração no banco canônico, merge ou deploy neste
-lote.
+Resultado dos lotes locais: lint específico passou; testes de regressão de Kit
+Maker e contratos SQL passaram; `tsc --noEmit` e o build de produção passaram,
+incluindo os guards do projeto canônico, ciclos de chunks e harnesses de
+produção. A execução E2E completa registrou **16/16** testes aprovados: um
+bootstrap `setup` e quinze cenários Chromium do Kit Maker em modo mock. Uma
+consulta REST somente-leitura com a chave publishable local recebeu `200`,
+confirmando que a chave do ambiente é aceita pelo projeto canônico. Isso não
+transforma o JWT sintético do E2E em sessão real: chamadas não interceptadas
+podem responder `PGRST301`, devendo ser bloqueadas/mocadas explicitamente ou
+executadas com usuário de teste real. Os testes mock não contam como validação
+do banco. Em 12/09/2026, a migration forward-only isolada
+`20260911172000_kit_maker_quote_idempotency.sql` foi aplicada diretamente
+após preflight e registrada no ledger remoto. O pós-flight confirmou a tabela,
+as cinco colunas, RLS, as duas policies de proprietário e o `GRANT EXECUTE`
+para `authenticated`. Não houve `db push`, execução das divergências antigas,
+alteração de dados comerciais, merge ou deploy nestes lotes.
+
+Em 11/09/2026, a consulta somente-leitura ao ledger remoto confirmou que a
+novo objeto idempotente ainda não existia; ele foi aplicado isoladamente em
+12/09/2026 e seu ledger foi registrado na mesma rodada. Ela também revelou
+**544** migrations locais sem registro remoto e nenhuma migration exclusiva
+do remoto. Esse histórico divergente impede qualquer `db push` em massa: ele
+precisa de reconciliação semântica por objeto antes de aplicar até mesmo uma
+migration nova isolada. Nenhum dos 544 itens foi inferido como perda ou alvo
+de aplicação nesta rodada.
 
 ## Resultado contratado
 
@@ -41,18 +69,18 @@ Este documento substitui o plano anterior como sequência proposta de execução
 
 Base local observada ao elaborar este documento: `cda54f39e92cf50234bf16f15fb53ef0e6e7322e`. As constatações abaixo são da auditoria anterior desta conversa e devem ser revalidadas na etapa 001; não são uma nova certificação do estado remoto.
 
-| Constatação | Consequência para a execução |
-| --- | --- |
-| A landing ativa era textual e não renderizava imagens. | Reconstruir sua composição, não apenas reenviar o bundle. |
-| Títulos locais herdavam o tamanho global de `h2`. | Definir tipografia local e testar isolamento de estilos. |
-| A consulta de itens solicitava `base_price` inexistente em `v_products_public`. | Validar a consulta real e o preço comercial antes da interface. |
-| Caixas eram inferidas de produtos; 1.610 candidatos não tinham as três dimensões internas. | Usar o domínio de embalagens e distinguir dados ausentes. |
-| Existiam `packagings`, `supplier_packagings`, `product_packagings` e `vw_packagings_catalog`. | Inspecionar contratos e reutilizar o modelo canônico. |
-| A view de embalagens expunha custo, não necessariamente preço de venda, e faltavam imagens. | Definir contrato comercial e conteúdo visual sem fabricar margem. |
-| Havia zero `kit_templates` e três `custom_kits` na consulta. | Planejar curadoria e estados vazios; contagens são temporais. |
-| IA retornava palavras-chave; personalização não tinha a prévia do modelo. | Implementar contratos completos e integração das telas. |
+| Constatação                                                                                     | Consequência para a execução                                             |
+| ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| A landing ativa era textual e não renderizava imagens.                                          | Reconstruir sua composição, não apenas reenviar o bundle.                |
+| Títulos locais herdavam o tamanho global de `h2`.                                               | Definir tipografia local e testar isolamento de estilos.                 |
+| A consulta de itens solicitava `base_price` inexistente em `v_products_public`.                 | Validar a consulta real e o preço comercial antes da interface.          |
+| Caixas eram inferidas de produtos; 1.610 candidatos não tinham as três dimensões internas.      | Usar o domínio de embalagens e distinguir dados ausentes.                |
+| Existiam `packagings`, `supplier_packagings`, `product_packagings` e `vw_packagings_catalog`.   | Inspecionar contratos e reutilizar o modelo canônico.                    |
+| A view de embalagens expunha custo, não necessariamente preço de venda, e faltavam imagens.     | Definir contrato comercial e conteúdo visual sem fabricar margem.        |
+| Havia zero `kit_templates` e três `custom_kits` na consulta.                                    | Planejar curadoria e estados vazios; contagens são temporais.            |
+| IA retornava palavras-chave; personalização não tinha a prévia do modelo.                       | Implementar contratos completos e integração das telas.                  |
 | Persistência otimista e orçamento transacional receberam melhorias posteriores ao plano antigo. | Confirmar o ledger atual; não reaplicar migrations históricas cegamente. |
-| Testes permissivos passavam com controles ausentes e mocks incompatíveis. | Fazer os testes falharem quando um requisito não for entregue. |
+| Testes permissivos passavam com controles ausentes e mocks incompatíveis.                       | Fazer os testes falharem quando um requisito não for entregue.           |
 
 Fontes locais para revalidação:
 
@@ -64,16 +92,16 @@ Fontes locais para revalidação:
 
 ## Referências e decisões de composição
 
-| Código | Superfície de aceite | Cobertura principal |
-| --- | --- | --- |
-| R01 | Landing com dois grandes cards fotográficos, benefícios, destaques e IA | 031–037 |
-| R02 | Biblioteca com métricas, filtros, fotos e ações | 038–040 |
-| R03 | Workspace de produtos, seleção vazia e composição preenchida | 041–050 |
-| R04 | Caixas recomendadas, comparação e composição lateral | 056–060 |
-| R05 | Escolha da caixa com filtros e preview | 051–055 |
-| R06 | Personalização em três colunas, frente/verso e resumo | 061–070 |
-| R07 | Modal amplo de IA com formulário e sugestões navegáveis | 071–080 |
-| R08 | Revisão em dois painéis, preços, estoque, frete e orçamento | 081–090 |
+| Código | Superfície de aceite                                                    | Cobertura principal |
+| ------ | ----------------------------------------------------------------------- | ------------------- |
+| R01    | Landing com dois grandes cards fotográficos, benefícios, destaques e IA | 031–037             |
+| R02    | Biblioteca com métricas, filtros, fotos e ações                         | 038–040             |
+| R03    | Workspace de produtos, seleção vazia e composição preenchida            | 041–050             |
+| R04    | Caixas recomendadas, comparação e composição lateral                    | 056–060             |
+| R05    | Escolha da caixa com filtros e preview                                  | 051–055             |
+| R06    | Personalização em três colunas, frente/verso e resumo                   | 061–070             |
+| R07    | Modal amplo de IA com formulário e sugestões navegáveis                 | 071–080             |
+| R08    | Revisão em dois painéis, preços, estoque, frete e orçamento             | 081–090             |
 
 Os anexos repetidos de IA representam uma única superfície. As versões de produtos serão tratadas como estados do workspace; a landing promocional permanece a entrada. Fotos dos modelos orientam direção visual; dados e textos comerciais não serão usados como registros verdadeiros. O menu e o cabeçalho globais existentes permanecem como contexto do módulo: diferenças do shell serão registradas separadamente, sem redesenhar todo o sistema.
 
@@ -95,21 +123,22 @@ Invariantes: projeto canônico `doufsxqlfjyuvxuezpln`; preservar guardas SSOT, t
 
 As dependências de cada etapa são obrigatórias, mas números não impedem trabalho independente. A landing pode avançar depois de 010/015 enquanto o catálogo é corrigido; seu aceite integrado aguarda as fontes reais necessárias. Evitar acumular toda a UI para o final. Primeiro validar a composição de uma tela em preview; depois expandir esse padrão.
 
-| Marco | Condição para seguir |
-| --- | --- |
-| M1 — base verificável | 001–010 aceitas; referências, rastreabilidade e cenários registrados |
+| Marco                         | Condição para seguir                                                       |
+| ----------------------------- | -------------------------------------------------------------------------- |
+| M1 — base verificável         | 001–010 aceitas; referências, rastreabilidade e cenários registrados       |
 | M2 — contratos e persistência | 011–030 aceitas; produtos/embalagens com consulta real e gravação validada |
-| M3 — primeira entrega visual | 031–040 aceitas; landing e biblioteca comparadas aos modelos |
-| M4 — montagem completa | 041–060 aceitas; os dois percursos funcionam com dados reais |
-| M5 — personalização e IA | 061–080 aceitas; prévias e sugestões aplicáveis ao kit |
-| M6 — venda integrada | 081–090 aceitas; revisão e orçamento transacional coerentes |
-| M7 — produção comprovada | 091–100 aceitas; gates, deployment e aceite final com recibos |
+| M3 — primeira entrega visual  | 031–040 aceitas; landing e biblioteca comparadas aos modelos               |
+| M4 — montagem completa        | 041–060 aceitas; os dois percursos funcionam com dados reais               |
+| M5 — personalização e IA      | 061–080 aceitas; prévias e sugestões aplicáveis ao kit                     |
+| M6 — venda integrada          | 081–090 aceitas; revisão e orçamento transacional coerentes                |
+| M7 — produção comprovada      | 091–100 aceitas; gates, deployment e aceite final com recibos              |
 
 Se um marco falhar, corrigir a causa e executar novamente os cenários afetados. Pode-se continuar trabalho independente, mas não declarar o marco aprovado nem publicar sua funcionalidade como completa. Não ampliar escopo para corrigir módulos inteiros sem relação com a jornada.
 
 ## Grupo A — baseline, contrato visual e prevenção de retrabalho
 
 ### KM100-001 — Confirmar o estado real de código e produção
+
 Dependências: nenhuma.
 
 - [ ] Registrar branch, SHA, alterações locais, PRs abertos e responsáveis por mudanças do Kit Maker.
@@ -118,6 +147,7 @@ Dependências: nenhuma.
 - [ ] Aceite: inventário datado distingue defeito atual, correção já entregue e ponto ainda não verificável.
 
 ### KM100-002 — Preservar autoria e delimitar áreas de edição
+
 Dependências: 001.
 
 - [ ] Ler reservas e protocolo vigentes; identificar trabalho de Cline, Claude, Hermes e usuário no escopo.
@@ -126,6 +156,7 @@ Dependências: 001.
 - [ ] Aceite: mapa de edição evita sobreposição e registra os invariantes que nenhum merge poderá remover.
 
 ### KM100-003 — Catalogar e medir os modelos visuais
+
 Dependências: 001.
 
 - [ ] Identificar R01–R08 e localizar os binários disponíveis, com origem, dimensões e hash quando acessíveis.
@@ -134,6 +165,7 @@ Dependências: 001.
 - [ ] Aceite: especificação por tela permite comparação objetiva; assets ausentes são explicitamente pendentes.
 
 ### KM100-004 — Reconciliar requisitos antigos e novos
+
 Dependências: 003.
 
 - [ ] Mapear as 200 etapas e 2.000 subetapas antigas para estas 100 etapas, agrupando requisitos equivalentes.
@@ -142,6 +174,7 @@ Dependências: 003.
 - [ ] Aceite: nenhum requisito antigo fica órfão; adiamentos e mudanças de escopo ficam identificados para decisão do PO.
 
 ### KM100-005 — Definir o registro único de evidências
+
 Dependências: 001, 004.
 
 - [ ] Criar registro com os campos de conclusão definidos acima e separar estado local, remoto e produtivo.
@@ -150,6 +183,7 @@ Dependências: 001, 004.
 - [ ] Aceite: um item sem teste ou captura obrigatória não pode aparecer como concluído no relatório.
 
 ### KM100-006 — Preparar ambiente representativo de validação
+
 Dependências: 001, 002.
 
 - [ ] Identificar preview/staging e autenticação de teste, com usuários e dados isolados para fluxos de escrita.
@@ -158,6 +192,7 @@ Dependências: 001, 002.
 - [ ] Aceite: executar uma captura e uma consulta reais de demonstração; falta de acesso fica bloqueada, nunca simulada como sucesso.
 
 ### KM100-007 — Definir cenários de falha antes da implementação
+
 Dependências: 004, 006.
 
 - [ ] Especificar resultados esperados para preço/medidas ausentes, estoque insuficiente, variante removida e embalagem indisponível.
@@ -166,6 +201,7 @@ Dependências: 004, 006.
 - [ ] Aceite: catálogo de cenários tem entrada, resultado esperado e etapa responsável, sem depender de comportamento atual defeituoso.
 
 ### KM100-008 — Projetar as jornadas e transições
+
 Dependências: 003, 007.
 
 - [ ] Definir itens → caixa → personalização → revisão e caixa → itens → personalização → revisão.
@@ -174,6 +210,7 @@ Dependências: 003, 007.
 - [ ] Aceite: walkthrough dos dois percursos demonstra ausência de telas sem saída e conclusão indevida.
 
 ### KM100-009 — Definir arquitetura e reaproveitamento
+
 Dependências: 002, 008.
 
 - [ ] Mapear estado, queries, domínio, persistência, cálculos e componentes conectados à rota ativa.
@@ -182,6 +219,7 @@ Dependências: 002, 008.
 - [ ] Aceite: mapa relaciona cada painel ao componente e cada ação ao serviço real; nenhum callback vazio permanece no desenho.
 
 ### KM100-010 — Fixar critérios de aprovação visual e funcional
+
 Dependências: 003, 005, 007, 009.
 
 - [ ] Preparar checklist visual por R01–R08 com elementos obrigatórios e diferenças intencionais explicitadas.
@@ -192,6 +230,7 @@ Dependências: 003, 005, 007, 009.
 ## Grupo B — linguagem visual, estado e persistência
 
 ### KM100-011 — Preservar o tema e controlar estilos locais
+
 Dependências: 009, 010.
 
 - [ ] Inventariar tokens atuais de cor, contraste, foco, borda e elevação consumidos pelo módulo.
@@ -200,6 +239,7 @@ Dependências: 009, 010.
 - [ ] Aceite: comparações antes/depois preservam a paleta e comprovam títulos locais com tamanho correto.
 
 ### KM100-012 — Definir grade, dimensões e responsividade
+
 Dependências: 003, 011.
 
 - [ ] Implementar os containers e grades de landing, catálogo, três colunas e revisão conforme as proporções medidas.
@@ -208,6 +248,7 @@ Dependências: 003, 011.
 - [ ] Aceite: protótipos no app funcionam nos quatro viewports de aceite sem cortes ou sobreposições.
 
 ### KM100-013 — Padronizar tipografia, textos e ícones
+
 Dependências: 011, 012.
 
 - [ ] Aplicar hierarquia de títulos, textos auxiliares, preços, badges e legendas consistente com os modelos.
@@ -216,6 +257,7 @@ Dependências: 011, 012.
 - [ ] Aceite: catálogo de textos e comparação visual não mostram títulos enormes, botões truncados ou ícones sem significado.
 
 ### KM100-014 — Preparar assets com procedência e recorte
+
 Dependências: 003, 010.
 
 - [ ] Relacionar heroes, capas de kits, imagens de caixas, itens e prévias de IA a arquivos existentes ou aquisição pendente.
@@ -224,6 +266,7 @@ Dependências: 003, 010.
 - [ ] Aceite: manifesto de assets cobre todas as superfícies e não usa foto de outro produto como representação real.
 
 ### KM100-015 — Implementar estados e efeitos compartilhados
+
 Dependências: 012, 013, 014.
 
 - [ ] Criar skeleton, vazio, erro recuperável, seleção, hover, foco, disabled e feedback de salvamento consistentes.
@@ -232,6 +275,7 @@ Dependências: 012, 013, 014.
 - [ ] Aceite: amostra de componentes demonstra todos os estados por mouse, teclado e toque.
 
 ### KM100-016 — Consolidar estado e validação do wizard
+
 Dependências: 008, 009.
 
 - [ ] Reconciliar reducer, hooks e tipos existentes para percurso, composição, embalagem e personalização.
@@ -240,6 +284,7 @@ Dependências: 008, 009.
 - [ ] Aceite: testes de transição cobrem os dois percursos, retorno e substituição sem perda de estado independente.
 
 ### KM100-017 — Hidratar rascunhos e recuperar navegação
+
 Dependências: 016.
 
 - [ ] Restaurar cliente, identidade, percurso, produtos/variantes, caixa, personalizações e revisão persistida.
@@ -248,6 +293,7 @@ Dependências: 016.
 - [ ] Aceite: reabrir um rascunho reproduz sua composição sem gravar estado vazio por cima.
 
 ### KM100-018 — Confirmar o contrato transacional existente
+
 Dependências: 001, 006, 016.
 
 - [ ] Reconciliar ledger e definição live da RPC de persistência já trabalhada; verificar schema por `pg_catalog`.
@@ -256,6 +302,7 @@ Dependências: 001, 006, 016.
 - [ ] Aceite: salvar/repetir uma operação em ambiente de teste não duplica kit nem produz gravação parcial.
 
 ### KM100-019 — Tratar autosave, conflito e recuperação
+
 Dependências: 017, 018.
 
 - [ ] Unificar salvar manual/autosave, serializar requisições e associar respostas à revisão enviada.
@@ -264,6 +311,7 @@ Dependências: 017, 018.
 - [ ] Aceite: conflito não sobrescreve silenciosamente o vencedor e o usuário consegue recuperar seu trabalho.
 
 ### KM100-020 — Validar propriedade, compartilhamento e isolamento
+
 Dependências: 018, 019.
 
 - [ ] Conferir o modelo existente de dono/colaborador e limitar UI, leitura e gravação ao mesmo contrato.
@@ -274,6 +322,7 @@ Dependências: 018, 019.
 ## Grupo C — contratos reais de catálogo, embalagens e preços
 
 ### KM100-021 — Inventariar o schema necessário ao Kit Maker
+
 Dependências: 001, 006.
 
 - [ ] Inspecionar via `pg_catalog` colunas, chaves, views, funções, grants, RLS e triggers dos objetos usados pelo módulo.
@@ -282,6 +331,7 @@ Dependências: 001, 006.
 - [ ] Aceite: contrato versionado aponta origem verificável de cada campo consumido pelas telas.
 
 ### KM100-022 — Corrigir a consulta real de produtos
+
 Dependências: 021.
 
 - [ ] Ajustar projeção e mapeamento de `v_products_public`, incluindo a divergência de `base_price`.
@@ -290,6 +340,7 @@ Dependências: 021.
 - [ ] Aceite: consulta live retorna dados válidos; teste detecta remoção/renomeação de qualquer coluna obrigatória.
 
 ### KM100-023 — Ligar as caixas ao domínio de embalagens
+
 Dependências: 021.
 
 - [ ] Integrar `packagings` e relações existentes em vez da heurística de `packing_type` de produtos.
@@ -298,6 +349,7 @@ Dependências: 021.
 - [ ] Aceite: caixa selecionada sobrevive ao save/load e chega à revisão com a mesma identidade canônica.
 
 ### KM100-024 — Definir projeção comercial de embalagens
+
 Dependências: 021, 023.
 
 - [ ] Separar custo, preço de venda, impostos e disponibilidade; avaliar view/RPC existente antes de propor novo objeto.
@@ -306,6 +358,7 @@ Dependências: 021, 023.
 - [ ] Aceite: consulta do usuário não expõe custo indevido e distingue preço ausente de embalagem gratuita.
 
 ### KM100-025 — Consolidar unidades, moeda e quantidades
+
 Dependências: 022, 024.
 
 - [ ] Normalizar comprimento, volume e peso com origem explícita; evitar conversões implícitas entre mm e cm.
@@ -314,6 +367,7 @@ Dependências: 022, 024.
 - [ ] Aceite: casos de múltiplas unidades e lote produzem valores e dimensões independentes da formatação visual.
 
 ### KM100-026 — Implementar preço comercial verificável
+
 Dependências: 025.
 
 - [ ] Reconciliar preço de venda de produto/variante, caixa, personalização e faixas de tiragem no motor existente.
@@ -322,6 +376,7 @@ Dependências: 025.
 - [ ] Aceite: cards, carrinho, biblioteca estimada e revisão usam contrato único e soma rastreável.
 
 ### KM100-027 — Consultar estoque por variante e lote
+
 Dependências: 022, 023, 025.
 
 - [ ] Mapear variante selecionada e estoque de embalagem/produto sem somar variantes incompatíveis.
@@ -330,6 +385,7 @@ Dependências: 022, 023, 025.
 - [ ] Aceite: lote acima do disponível e dados desconhecidos não recebem o selo de estoque suficiente.
 
 ### KM100-028 — Implementar busca, paginação e ordenação confiáveis
+
 Dependências: 022, 024.
 
 - [ ] Aplicar filtros na fonte adequada com paginação estável e sem carregar todo o catálogo a cada tecla.
@@ -338,6 +394,7 @@ Dependências: 022, 024.
 - [ ] Aceite: item conhecido após a posição 200 é localizável sem duplicação ou desaparecimento entre páginas.
 
 ### KM100-029 — Conectar imagens e conteúdo canônico
+
 Dependências: 014, 022, 024.
 
 - [ ] Ligar URLs válidas aos produtos e embalagens, mantendo indicação de imagem ilustrativa quando aplicável.
@@ -346,6 +403,7 @@ Dependências: 014, 022, 024.
 - [ ] Aceite: fixtures cobrem todas as fotos do layout e registros reais têm cobertura ou lacuna identificada.
 
 ### KM100-030 — Fechar os contratos de dados e a prontidão da base
+
 Dependências: 020, 026, 027, 028, 029.
 
 - [ ] Executar testes reais de produtos, variantes, caixas, preços, permissões e persistência com rastreabilidade por ambiente.
@@ -356,6 +414,7 @@ Dependências: 020, 026, 027, 028, 029.
 ## Grupo D — landing e biblioteca com fidelidade visual
 
 ### KM100-031 — Reconstruir cabeçalho da landing
+
 Dependências: 010, 015.
 
 - [ ] Implementar ícone, título, subtítulo, breadcrumbs e agrupamento de ações conforme R01.
@@ -364,6 +423,7 @@ Dependências: 010, 015.
 - [ ] Aceite: captura comparativa comprova hierarquia e cada ação navega ou abre conteúdo real.
 
 ### KM100-032 — Construir hero de começar pelos itens
+
 Dependências: 031, 014, 016.
 
 - [ ] Montar card com imagem, selo recomendado, indicação de público, checklist e CTA de R01.
@@ -372,6 +432,7 @@ Dependências: 031, 014, 016.
 - [ ] Aceite: comparação visual e teste de clique comprovam composição e estado inicial corretos.
 
 ### KM100-033 — Construir hero de começar pela caixa
+
 Dependências: 032.
 
 - [ ] Implementar segundo card fotográfico, selo, orientações e CTA com a hierarquia do modelo.
@@ -380,6 +441,7 @@ Dependências: 032.
 - [ ] Aceite: o CTA abre escolha da caixa e a comparação não revela card substituído por bloco textual vazio.
 
 ### KM100-034 — Reconstruir benefícios e ajuda contextual
+
 Dependências: 033.
 
 - [ ] Implementar quatro benefícios compactos com ícones distintos, títulos e textos do contrato visual.
@@ -388,6 +450,7 @@ Dependências: 033.
 - [ ] Aceite: benefícios não herdam títulos gigantes e ajuda explica ações disponíveis, sem prometer função ausente.
 
 ### KM100-035 — Conectar kits em destaque
+
 Dependências: 029, 034.
 
 - [ ] Selecionar fonte de templates/destaques com capa, nome, categoria e quantidade de componentes.
@@ -396,6 +459,7 @@ Dependências: 029, 034.
 - [ ] Aceite: template real pode ser aberto; seção preenchida é comparada ao modelo e vazio não é aprovado como equivalência visual.
 
 ### KM100-036 — Construir CTA de IA e navegação da entrada
+
 Dependências: 034, 035.
 
 - [ ] Implementar faixa de IA com composição, texto e ação de R01.
@@ -404,6 +468,7 @@ Dependências: 034, 035.
 - [ ] Aceite: a faixa está visualmente pronta; este aceite cobre abertura, não declara geração de kits concluída.
 
 ### KM100-037 — Validar a primeira tela completa
+
 Dependências: 030, 031, 032, 033, 034, 035, 036.
 
 - [ ] Capturar landing carregada, vazia, erro de destaques e mobile conforme 010.
@@ -412,6 +477,7 @@ Dependências: 030, 031, 032, 033, 034, 035, 036.
 - [ ] Aceite: landing aprovada visualmente e navegação testada; sem aprovação não replicar um padrão visual defeituoso nas próximas telas.
 
 ### KM100-038 — Reconstruir estrutura da biblioteca
+
 Dependências: 015, 020, 029.
 
 - [ ] Implementar título, criar kit, métricas, busca, status, favoritos, ordenação e grade/lista de R02.
@@ -420,6 +486,7 @@ Dependências: 015, 020, 029.
 - [ ] Aceite: filtros/contadores coerentes e layout comparado nos quatro viewports, inclusive estado vazio.
 
 ### KM100-039 — Implementar cards e ações de biblioteca
+
 Dependências: 018, 038.
 
 - [ ] Ligar capa, cliente, status, origem, data, componentes e valor estimado ao contrato do cartão.
@@ -428,6 +495,7 @@ Dependências: 018, 038.
 - [ ] Aceite: ações sobrevivem ao reload; exclusão testada só sobre fixture própria e erro preserva o card original.
 
 ### KM100-040 — Validar biblioteca e fechar a primeira entrega visual
+
 Dependências: 037, 039.
 
 - [ ] Percorrer criar → salvar → listar → editar → duplicar → favoritar → remover fixture.
@@ -438,6 +506,7 @@ Dependências: 037, 039.
 ## Grupo E — catálogo e composição de itens
 
 ### KM100-041 — Construir workspace de itens
+
 Dependências: 012, 016, 030.
 
 - [ ] Implementar cabeçalho, wizard, catálogo e composição lateral de R03.
@@ -446,6 +515,7 @@ Dependências: 012, 016, 030.
 - [ ] Aceite: estrutura completa no app mantém estado único e colunas corretas em desktop/mobile.
 
 ### KM100-042 — Construir cards comerciais de produtos
+
 Dependências: 026, 027, 029, 041.
 
 - [ ] Mostrar imagem, nome, SKU, medidas, material, variante, preço e estoque com origem real.
@@ -454,6 +524,7 @@ Dependências: 026, 027, 029, 041.
 - [ ] Aceite: card fiel a R03 e testes cobrem estoque/preço desconhecido, título longo e imagem quebrada.
 
 ### KM100-043 — Integrar filtros, categorias e contagens
+
 Dependências: 028, 042.
 
 - [ ] Implementar busca, categorias, material, faixa de preço, personalização e existência de medidas.
@@ -462,6 +533,7 @@ Dependências: 028, 042.
 - [ ] Aceite: combinar três filtros retorna resultados corretos e limpar restaura o universo esperado.
 
 ### KM100-044 — Selecionar variantes e quantidades por componente
+
 Dependências: 027, 042.
 
 - [ ] Oferecer seleção explícita de variantes comercializáveis e indicar atributos que alteram preço/estoque/medidas.
@@ -470,6 +542,7 @@ Dependências: 027, 042.
 - [ ] Aceite: acrescentar duas variantes preserva identidade, preço e estoque individual no estado e no rascunho.
 
 ### KM100-045 — Construir composição lateral do kit
+
 Dependências: 026, 044.
 
 - [ ] Implementar miniaturas, quantidade por componente, remover, limpar tudo e resumo visual de R03.
@@ -478,6 +551,7 @@ Dependências: 026, 044.
 - [ ] Aceite: alterações recalculam os valores corretos; cancelar limpeza preserva todas as escolhas.
 
 ### KM100-046 — Aplicar validação durante a seleção
+
 Dependências: 025, 027, 045.
 
 - [ ] Exibir medidas/estoque insuficientes e validar imediatamente quando já houver caixa selecionada.
@@ -486,6 +560,7 @@ Dependências: 025, 027, 045.
 - [ ] Aceite: casos S01–S03/S06 da matriz abaixo produzem os resultados esperados sem selo falso.
 
 ### KM100-047 — Salvar e retomar uma seleção real
+
 Dependências: 019, 045.
 
 - [ ] Conectar salvar manual e autosave aos controles visíveis com estado de processamento.
@@ -494,6 +569,7 @@ Dependências: 019, 045.
 - [ ] Aceite: reload conserva a última revisão confirmada e informa alterações ainda não salvas.
 
 ### KM100-048 — Integrar o avanço para caixas
+
 Dependências: 016, 046, 047.
 
 - [ ] Implementar Encontrar caixas compatíveis, com resumo da composição e validação mínima exigida.
@@ -502,6 +578,7 @@ Dependências: 016, 046, 047.
 - [ ] Aceite: composição e lote chegam intactos à etapa de caixas, inclusive depois de voltar e editar.
 
 ### KM100-049 — Fechar acessibilidade e desempenho do catálogo
+
 Dependências: 043, 048.
 
 - [ ] Garantir foco visível, anúncios de inclusão/remoção, botões nomeados e navegação completa sem mouse.
@@ -510,6 +587,7 @@ Dependências: 043, 048.
 - [ ] Aceite: perfil e navegação documentados não mostram regressão impeditiva nem requisições ilimitadas.
 
 ### KM100-050 — Aceitar a tela de itens
+
 Dependências: 041, 042, 043, 044, 045, 046, 047, 048, 049.
 
 - [ ] Executar jornada com produto real, variante, múltiplas unidades e lote, incluindo recarga do rascunho.
@@ -520,6 +598,7 @@ Dependências: 041, 042, 043, 044, 045, 046, 047, 048, 049.
 ## Grupo F — catálogo de caixas e recomendação
 
 ### KM100-051 — Construir tela de escolha de caixa
+
 Dependências: 024, 029, 030, 015.
 
 - [ ] Implementar filtros à esquerda, cards centrais e preview à direita conforme R05.
@@ -528,6 +607,7 @@ Dependências: 024, 029, 030, 015.
 - [ ] Aceite: uma embalagem real com dimensões é exibida, selecionável e corretamente identificada.
 
 ### KM100-052 — Implementar filtros específicos de embalagem
+
 Dependências: 028, 051.
 
 - [ ] Integrar material, dimensões internas, faixa de preço, acabamento e fechamento.
@@ -536,6 +616,7 @@ Dependências: 028, 051.
 - [ ] Aceite: filtros combinados encontram a embalagem esperada e não apresentam contagens estáticas dos modelos.
 
 ### KM100-053 — Construir preview e seleção da caixa
+
 Dependências: 051, 052.
 
 - [ ] Implementar foto ampliada, características, favorito e Usar esta caixa com os dados de R05.
@@ -544,6 +625,7 @@ Dependências: 051, 052.
 - [ ] Aceite: navegar por cards não troca silenciosamente a caixa já salva; selecionar persiste a embalagem correta.
 
 ### KM100-054 — Reconciliar a validação de encaixe
+
 Dependências: 025, 027, 046, 053.
 
 - [ ] Avaliar dimensões internas úteis, orientação permitida, folga, peso, quantidade e restrições de embalagem.
@@ -552,6 +634,7 @@ Dependências: 025, 027, 046, 053.
 - [ ] Aceite: volume baixo com dimensão longa, peso excedido e medidas ausentes não são aprovados indevidamente.
 
 ### KM100-055 — Calcular ocupação e espaço livre coerentes
+
 Dependências: 054.
 
 - [ ] Definir denominador de volume interno/útil e somar quantidades por kit sem multiplicar pelo lote.
@@ -560,6 +643,7 @@ Dependências: 054.
 - [ ] Aceite: ocupação e espaço livre são coerentes com o volume útil, sem copiar números ilustrativos inconsistentes.
 
 ### KM100-056 — Construir ranking de caixas recomendadas
+
 Dependências: 048, 054, 055.
 
 - [ ] Classificar candidatas por viabilidade, qualidade dos dados, folga, disponibilidade e preço válido.
@@ -568,6 +652,7 @@ Dependências: 048, 054, 055.
 - [ ] Aceite: casos conhecidos ordenam corretamente e desempates não produzem oscilação arbitrária.
 
 ### KM100-057 — Reconstruir página de recomendações
+
 Dependências: 015, 056.
 
 - [ ] Implementar grid/lista, tabs, ordenação, cards com ocupação e ações de R04.
@@ -576,6 +661,7 @@ Dependências: 015, 056.
 - [ ] Aceite: captura preenchida compara corretamente com R04 e todas as caixas exibem dados efetivos.
 
 ### KM100-058 — Integrar comparação de caixas
+
 Dependências: 053, 056, 057.
 
 - [ ] Reutilizar/adaptar `KitComparisonDialog` para comparar candidatas sem criar estado paralelo desconectado.
@@ -584,6 +670,7 @@ Dependências: 053, 056, 057.
 - [ ] Aceite: comparar não altera o kit até confirmar e diferenças desconhecidas não são preenchidas com zeros.
 
 ### KM100-059 — Tratar ausência de caixa e troca posterior
+
 Dependências: 054, 058.
 
 - [ ] Exibir motivos, editar itens, ajustar quantidades e contato comercial funcional quando nenhuma caixa atender.
@@ -592,6 +679,7 @@ Dependências: 054, 058.
 - [ ] Aceite: nenhuma alternativa inventa caixa ou sinaliza kit válido após incompatibilidade confirmada.
 
 ### KM100-060 — Aceitar os dois percursos de montagem
+
 Dependências: 050, 051, 052, 053, 054, 055, 056, 057, 058, 059.
 
 - [ ] Executar items-first e box-first até personalização com casos compatível, incompatível e inconclusivo.
@@ -602,6 +690,7 @@ Dependências: 050, 051, 052, 053, 054, 055, 056, 057, 058, 059.
 ## Grupo G — personalização visual e produção de arte
 
 ### KM100-061 — Definir contrato de personalização por item
+
 Dependências: 021, 025, 060.
 
 - [ ] Mapear técnicas, áreas, materiais, dimensões, cores e quantidades permitidas por produto/variante/caixa.
@@ -610,6 +699,7 @@ Dependências: 021, 025, 060.
 - [ ] Aceite: contrato impede técnica ou área inexistente e não conclui item apenas por abrir a tela.
 
 ### KM100-062 — Construir personalização em três colunas
+
 Dependências: 015, 061.
 
 - [ ] Implementar lista de itens, configuração central e preview/resumo lateral conforme R06.
@@ -618,6 +708,7 @@ Dependências: 015, 061.
 - [ ] Aceite: estrutura visual corresponde ao modelo e todos os itens do kit permanecem acessíveis.
 
 ### KM100-063 — Implementar seleção de técnica e área
+
 Dependências: 062.
 
 - [ ] Conectar cards de Laser, Silk, Tampografia e UV apenas quando suportados pelo item.
@@ -626,6 +717,7 @@ Dependências: 062.
 - [ ] Aceite: alterar técnica invalida configuração incompatível sem manter preço ou preview da opção anterior.
 
 ### KM100-064 — Validar cores, dimensões e custo
+
 Dependências: 026, 063.
 
 - [ ] Implementar paleta da arte sem alterar o tema do sistema, quantidade de cores e dimensões em cm.
@@ -634,6 +726,7 @@ Dependências: 026, 063.
 - [ ] Aceite: limites e tiragens alteram preço corretamente e entradas inválidas não geram personalização.
 
 ### KM100-065 — Integrar upload e biblioteca de artes
+
 Dependências: 020, 061.
 
 - [ ] Reutilizar infraestrutura de arquivos existente com formatos, tamanho e propriedade definidos.
@@ -642,6 +735,7 @@ Dependências: 020, 061.
 - [ ] Aceite: arte autorizada pode ser retomada e arquivo inválido é recusado sem quebrar a configuração do item.
 
 ### KM100-066 — Implementar prévia frente/verso e zoom
+
 Dependências: 029, 064, 065.
 
 - [ ] Renderizar produto, arte e área selecionada com escala/posição coerentes em cada lado disponível.
@@ -650,6 +744,7 @@ Dependências: 029, 064, 065.
 - [ ] Aceite: trocar lado/área altera a prévia correta e não reutiliza acidentalmente a arte de outro componente.
 
 ### KM100-067 — Conectar geração de personalização
+
 Dependências: 066.
 
 - [ ] Identificar serviço de mockup existente e integrar contrato com versão da arte e configuração enviada.
@@ -658,6 +753,7 @@ Dependências: 066.
 - [ ] Aceite: geração real ou serviço determinístico aprovado produz artefato associado ao item; indisponibilidade permanece explícita.
 
 ### KM100-068 — Persistir personalizações e artes de cada item
+
 Dependências: 018, 019, 067.
 
 - [ ] Salvar técnica, área, lado, cores, dimensões, arte, preço e versão no contrato transacional do kit.
@@ -666,6 +762,7 @@ Dependências: 018, 019, 067.
 - [ ] Aceite: save/load reproduz configuração e preview; duas abas não substituem a arte uma da outra silenciosamente.
 
 ### KM100-069 — Construir resumo e bloqueios de personalização
+
 Dependências: 064, 068.
 
 - [ ] Mostrar status, técnica, área e dimensões de todos os itens no painel lateral de R06.
@@ -674,6 +771,7 @@ Dependências: 064, 068.
 - [ ] Aceite: revisar kit incompleto informa exatamente o que falta; não há conclusão automática por navegação.
 
 ### KM100-070 — Aceitar personalização completa
+
 Dependências: 061, 062, 063, 064, 065, 066, 067, 068, 069.
 
 - [ ] Percorrer múltiplos itens, técnicas, lados, arte salva, geração, reload e alteração posterior.
@@ -684,6 +782,7 @@ Dependências: 061, 062, 063, 064, 065, 066, 067, 068, 069.
 ## Grupo H — assistente de IA com sugestões reais
 
 ### KM100-071 — Redesenhar contrato de sugestão de kit
+
 Dependências: 021, 025, 054, 061.
 
 - [ ] Definir saída estruturada com IDs de produtos/variantes/embalagem, quantidades, justificativa e escopo de preço.
@@ -692,6 +791,7 @@ Dependências: 021, 025, 054, 061.
 - [ ] Aceite: contrato representa composição aplicável ao editor, não apenas palavras-chave de filtro.
 
 ### KM100-072 — Construir formulário amplo de IA
+
 Dependências: 015, 071.
 
 - [ ] Implementar objetivo com limite de caracteres, público, faixa por kit, estilo e quantidade de kits conforme R07.
@@ -700,6 +800,7 @@ Dependências: 015, 071.
 - [ ] Aceite: formulário fiel ao modelo produz solicitação estruturada e orçamento inequívoco.
 
 ### KM100-073 — Buscar candidatos reais para a IA
+
 Dependências: 022, 024, 027, 028, 071.
 
 - [ ] Selecionar candidatos do catálogo atual por atributos e restrições do pedido, evitando enviar dados desnecessários.
@@ -708,6 +809,7 @@ Dependências: 022, 024, 027, 028, 071.
 - [ ] Aceite: candidato inexistente ou indisponível não entra silenciosamente em uma sugestão aplicável.
 
 ### KM100-074 — Gerar e validar composições alternativas
+
 Dependências: 026, 054, 072, 073.
 
 - [ ] Produzir alternativas distintas com componentes, quantidades e caixa selecionável.
@@ -716,6 +818,7 @@ Dependências: 026, 054, 072, 073.
 - [ ] Aceite: sugestão só é aplicável após validação; nenhum resultado é aprovado por narrativa convincente.
 
 ### KM100-075 — Construir painel de sugestões navegáveis
+
 Dependências: 029, 074.
 
 - [ ] Implementar Sugestão N de M, título, justificativa, badges, imagem, componentes e preço conforme R07.
@@ -724,6 +827,7 @@ Dependências: 029, 074.
 - [ ] Aceite: painel tem conteúdo comercial consistente e composição comparável ao modelo, não apenas texto e badges.
 
 ### KM100-076 — Aplicar sugestão ao editor atomicamente
+
 Dependências: 016, 018, 074, 075.
 
 - [ ] Converter resposta validada para o mesmo estado e payload dos percursos manuais.
@@ -732,6 +836,7 @@ Dependências: 016, 018, 074, 075.
 - [ ] Aceite: Usar esta sugestão cria uma composição editável completa com IDs, quantidades e caixa corretos.
 
 ### KM100-077 — Tratar disponibilidade e falhas do provedor
+
 Dependências: 074, 076.
 
 - [ ] Implementar timeout, cancelamento, retry controlado e idempotência da aplicação.
@@ -740,6 +845,7 @@ Dependências: 074, 076.
 - [ ] Aceite: duplo clique ou retry não duplica kit e erro nunca exibe composição fictícia como resultado real.
 
 ### KM100-078 — Controlar custo e observabilidade da IA
+
 Dependências: 073, 077.
 
 - [ ] Medir latência, volume de solicitações, respostas inválidas e taxa de aplicação sem registrar dados sensíveis do prompt.
@@ -748,6 +854,7 @@ Dependências: 073, 077.
 - [ ] Aceite: é possível diagnosticar uma falha e limitar consumo sem expor segredos ou conteúdo privado.
 
 ### KM100-079 — Integrar IA a todas as entradas
+
 Dependências: 036, 041, 076.
 
 - [ ] Compartilhar o assistente entre landing e editor com o contexto apropriado do kit.
@@ -756,6 +863,7 @@ Dependências: 036, 041, 076.
 - [ ] Aceite: as entradas geram o mesmo resultado de domínio e não mantêm implementações divergentes.
 
 ### KM100-080 — Aceitar IA e personalização integradas
+
 Dependências: 070, 071, 072, 073, 074, 075, 076, 077, 078, 079.
 
 - [ ] Testar sugestões reais dentro/acima do orçamento, catálogo insuficiente, IDs inválidos e produto alterado antes da aplicação.
@@ -766,6 +874,7 @@ Dependências: 070, 071, 072, 073, 074, 075, 076, 077, 078, 079.
 ## Grupo I — revisão, preço final e orçamento
 
 ### KM100-081 — Construir revisão em dois painéis
+
 Dependências: 015, 055, 069.
 
 - [ ] Implementar identificação/composição/validação à esquerda e caixa/preços/estoque/frete à direita conforme R08.
@@ -774,6 +883,7 @@ Dependências: 015, 055, 069.
 - [ ] Aceite: estrutura comparada ao modelo com kit preenchido, textos longos e diferentes tamanhos de composição.
 
 ### KM100-082 — Persistir identidade e vínculo com cliente
+
 Dependências: 017, 020, 081.
 
 - [ ] Integrar nome do kit, cliente CRM, objetivo/etiqueta e observações no rascunho e no payload final.
@@ -782,6 +892,7 @@ Dependências: 017, 020, 081.
 - [ ] Aceite: cliente e observações sobrevivem ao reload e chegam ao orçamento correspondente.
 
 ### KM100-083 — Implementar composição revisável e totais
+
 Dependências: 026, 068, 081.
 
 - [ ] Mostrar produtos/variantes, unidades por kit, preço, aplicações e caixa com agrupamento compreensível.
@@ -790,6 +901,7 @@ Dependências: 026, 068, 081.
 - [ ] Aceite: soma reproduzível por linha coincide com os painéis e o payload do orçamento.
 
 ### KM100-084 — Confirmar preço e validade comercial
+
 Dependências: 026, 082, 083.
 
 - [ ] Reconsultar preços e faixas de tiragem antes de finalizar; exibir alteração desde a estimativa salva.
@@ -798,6 +910,7 @@ Dependências: 026, 082, 083.
 - [ ] Aceite: mudança comercial exige revisão dos valores e o preço final nunca depende apenas do estado do navegador.
 
 ### KM100-085 — Confirmar estoque, prazo e frete
+
 Dependências: 027, 082, 083.
 
 - [ ] Revalidar demanda do lote, embalagem e variantes perto da criação do orçamento.
@@ -806,6 +919,7 @@ Dependências: 027, 082, 083.
 - [ ] Aceite: indisponibilidade, ausência de CEP ou dados de frete não aparecem como custo zero ou entrega garantida.
 
 ### KM100-086 — Auditar o contrato transacional de orçamento
+
 Dependências: 021, 084, 085.
 
 - [ ] Inspecionar `create_quote_transactional` e consumidores para produtos, embalagem, personalizações e identificação do kit.
@@ -814,6 +928,7 @@ Dependências: 021, 084, 085.
 - [ ] Aceite: contrato cobre todas as linhas e define resposta de sucesso/erro sem depender de inserts separados no cliente.
 
 ### KM100-087 — Integrar criação idempotente do orçamento
+
 Dependências: 018, 082, 086.
 
 - [ ] Criar uma única solicitação identificada a partir da revisão validada e bloquear submissão duplicada visualmente.
@@ -822,6 +937,7 @@ Dependências: 018, 082, 086.
 - [ ] Aceite: duplo clique e resposta perdida resultam em um orçamento com todas as linhas esperadas.
 
 ### KM100-088 — Garantir atomicidade e falhas tardias
+
 Dependências: 087.
 
 - [ ] Injetar falha de teste após validação, durante gravação de itens e durante personalizações em ambiente isolado.
@@ -830,6 +946,7 @@ Dependências: 087.
 - [ ] Aceite: nenhum cenário deixa orçamento parcial ou informa sucesso quando a transação não concluiu.
 
 ### KM100-089 — Finalizar rascunho, visualização e saída
+
 Dependências: 039, 083, 087.
 
 - [ ] Implementar salvar rascunho e abertura posterior da revisão, com status semântico coerente na biblioteca.
@@ -838,6 +955,7 @@ Dependências: 039, 083, 087.
 - [ ] Aceite: não há botão sem consumidor e os documentos gerados correspondem à revisão validada.
 
 ### KM100-090 — Aceitar revisão e orçamento ponta a ponta
+
 Dependências: 080, 081, 082, 083, 084, 085, 086, 087, 088, 089.
 
 - [ ] Executar os dois percursos e o percurso IA até orçamento com cliente, caixa, variante e personalização.
@@ -848,6 +966,7 @@ Dependências: 080, 081, 082, 083, 084, 085, 086, 087, 088, 089.
 ## Grupo J — testes de aceitação, integração e produção
 
 ### KM100-091 — Tornar os testes existentes exigentes
+
 Dependências: 010, 050, 060, 070, 080, 090.
 
 - [ ] Substituir mocks obsoletos e condicionais que passam quando botão, total ou seção obrigatória não existe.
@@ -856,6 +975,7 @@ Dependências: 010, 050, 060, 070, 080, 090.
 - [ ] Aceite: regressões conhecidas da auditoria provocam falha reproduzível na suíte correspondente.
 
 ### KM100-092 — Consolidar baselines visuais aprovadas
+
 Dependências: 037, 040, 050, 060, 070, 080, 090.
 
 - [ ] Armazenar capturas aprovadas por tela/estado/viewport, com fontes carregadas e fixtures determinísticas identificadas.
@@ -864,6 +984,7 @@ Dependências: 037, 040, 050, 060, 070, 080, 090.
 - [ ] Aceite: ausência de hero, coluna, card ou tamanho tipográfico incorreto é detectada antes do merge.
 
 ### KM100-093 — Fechar testes reais de integração e concorrência
+
 Dependências: 030, 088, 091.
 
 - [ ] Rodar contratos de consulta, gravação, permissões e concorrência em ambiente com schema equivalente ao canônico.
@@ -872,6 +993,7 @@ Dependências: 030, 088, 091.
 - [ ] Aceite: resultados especificam o que foi live, staging e simulado, sem apresentar uma categoria como prova de outra.
 
 ### KM100-094 — Fechar acessibilidade e compatibilidade
+
 Dependências: 090, 092.
 
 - [ ] Percorrer todos os fluxos por teclado, foco de modal, leitor de tela e redução de movimento.
@@ -880,6 +1002,7 @@ Dependências: 090, 092.
 - [ ] Aceite: nenhum controle obrigatório fica inacessível e os percursos permanecem completos sem mouse.
 
 ### KM100-095 — Medir desempenho e observabilidade
+
 Dependências: 049, 078, 090.
 
 - [ ] Medir bundle do módulo, imagens, consultas, latência e interações com perfil/dispositivo/rede documentados.
@@ -888,6 +1011,7 @@ Dependências: 049, 078, 090.
 - [ ] Aceite: relatório demonstra atendimento aos limites definidos e permite diagnosticar falha sem reprodução manual integral.
 
 ### KM100-096 — Reconciliar documentação e cobertura final
+
 Dependências: 004, 005, 091, 092, 093, 094, 095.
 
 - [ ] Atualizar matriz requisito → tela → ação → serviço → teste → evidência, incluindo requisitos antigos sem duplicação.
@@ -896,6 +1020,7 @@ Dependências: 004, 005, 091, 092, 093, 094, 095.
 - [ ] Aceite: documentação e produto concordam; exclusão de requisito exige decisão registrada, não omissão do contador.
 
 ### KM100-097 — Preparar integração com revisão semântica
+
 Dependências: 002, 096.
 
 - [ ] Atualizar a comparação com main e reconciliar mudanças concorrentes por comportamento, preservando SSOT e campos críticos.
@@ -904,6 +1029,7 @@ Dependências: 002, 096.
 - [ ] Aceite: resultado concreto está revisável e conflitos resolvidos não reintroduzem lacunas previamente encerradas.
 
 ### KM100-098 — Cumprir gates e validar preview final
+
 Dependências: 097.
 
 - [ ] Executar build de produção, typecheck, lint do escopo, SSOT e suítes exigidas pelos workflows atuais.
@@ -912,6 +1038,7 @@ Dependências: 097.
 - [ ] Aceite: CI e preview aprovados no mesmo conjunto de mudanças; indisponibilidade externa fica registrada como bloqueio.
 
 ### KM100-099 — Publicar e verificar a versão efetiva
+
 Dependências: 098.
 
 - [ ] Executar merge/deploy dentro das autorizações vigentes e aplicar somente mudanças de banco revisadas e explicitamente autorizadas.
@@ -920,6 +1047,7 @@ Dependências: 098.
 - [ ] Aceite: recibo relaciona código, banco e deployment reais; ausência de migration necessária impede declarar publicação completa.
 
 ### KM100-100 — Encerrar com aceite visual e operacional
+
 Dependências: 099.
 
 - [ ] Repetir em produção os percursos autorizados, incluindo biblioteca, itens/caixa, personalização, IA e revisão, sem gerar transações comerciais indevidas.
@@ -931,38 +1059,38 @@ Dependências: 099.
 
 Os cenários abaixo são especificações, não resultados de testes já realizados neste plano. Cada etapa relevante deve executá-los novamente quando sua implementação mudar.
 
-| ID | Cenário | Resultado exigido | Etapas |
-| --- | --- | --- | --- |
-| S01 | Produto sem preço de venda | Preço indisponível; não assumir zero nem liberar total falso | 022, 026, 046, 084 |
-| S02 | Produto ou caixa sem medidas | Compatibilidade inconclusiva; explicar dado necessário | 025, 046, 054 |
-| S03 | Volume cabe, dimensão longa não | Não classificar como compatível | 054, 055 |
-| S04 | Peso excede o limite | Bloquear compatibilidade com motivo específico | 054 |
-| S05 | 100 kits com dois itens iguais por kit | Demanda de 200 unidades; sem multiplicação duplicada de preço | 025–027, 083 |
-| S06 | Aumentar quantidade após escolher caixa | Recalcular conjunto, ocupação e pendências | 046, 054–059 |
-| S07 | Variante indisponível, irmã disponível | Não somar estoque da irmã | 027, 044, 085 |
-| S08 | Query solicita coluna removida | Teste de contrato falha; UI mostra erro recuperável | 022, 030, 091 |
-| S09 | Produto localizado após a posição 200 | Busca/paginação encontram o registro | 028, 043 |
-| S10 | Catálogo vazio ou sem permissão | Estados diferentes; nenhum fallback de dados inventados | 020, 028, 051 |
-| S11 | Nenhum template cadastrado | Vazio útil; aceite do visual preenchido continua pendente | 035, 038–040 |
-| S12 | Imagem falha ou carrega lentamente | Área preservada e fallback identificado | 014, 029, 042 |
-| S13 | Rascunho abre durante autosave | Hidratação não sobrescreve dados | 017, 019 |
-| S14 | Duas abas salvam a mesma revisão | Conflito detectado e edição recuperável | 019, 068 |
-| S15 | Resposta de save chega fora de ordem | Não marcar uma revisão nova como salva por resposta antiga | 019, 047 |
-| S16 | Usuário altera ID de kit/arte | Banco nega acesso indevido | 020, 065 |
-| S17 | Trocar técnica ou lado da aplicação | Área, arte e preço coerentes; invalidar somente dependências | 063–068 |
-| S18 | Geração de arte termina após nova edição | Descartar resultado obsoleto | 067 |
-| S19 | IA retorna produto inexistente ou custo inventado | Rejeitar resultado e não aplicar ao kit | 071, 074 |
-| S20 | IA excede orçamento ou não encontra caixa | Explicação explícita; não afirmar sugestão compatível | 074, 075 |
-| S21 | Duplo clique em aplicar IA | Uma aplicação, preservando estado anterior quando necessário | 076, 077 |
-| S22 | Preço/estoque muda durante revisão | Revalidar e comunicar antes da criação | 084, 085, 088 |
-| S23 | Falha após começar a criar orçamento | Rollback completo; nenhum orçamento parcial | 086–088 |
-| S24 | Timeout depois de orçamento criado | Retry recupera o mesmo documento | 087, 088 |
-| S25 | Frete indisponível ou sem endereço | Não apresentar entrega grátis nem prazo garantido | 085 |
-| S26 | Controle obrigatório removido da tela | Teste falha, sem `if (isVisible)` contornando o requisito | 091 |
-| S27 | Título cresce por CSS global | Regressão visual detectada | 011, 034, 092 |
-| S28 | 390 px, zoom 200%, teclado e modal | Ações acessíveis, sem perda de foco ou corte impeditivo | 012, 094 |
-| S29 | Commit mais novo de outro agente | Reconciliar comportamento e repetir verificações afetadas | 002, 097, 098 |
-| S30 | Deploy com SHA diferente do aprovado | Não declarar release validada; investigar origem | 099, 100 |
+| ID  | Cenário                                           | Resultado exigido                                             | Etapas             |
+| --- | ------------------------------------------------- | ------------------------------------------------------------- | ------------------ |
+| S01 | Produto sem preço de venda                        | Preço indisponível; não assumir zero nem liberar total falso  | 022, 026, 046, 084 |
+| S02 | Produto ou caixa sem medidas                      | Compatibilidade inconclusiva; explicar dado necessário        | 025, 046, 054      |
+| S03 | Volume cabe, dimensão longa não                   | Não classificar como compatível                               | 054, 055           |
+| S04 | Peso excede o limite                              | Bloquear compatibilidade com motivo específico                | 054                |
+| S05 | 100 kits com dois itens iguais por kit            | Demanda de 200 unidades; sem multiplicação duplicada de preço | 025–027, 083       |
+| S06 | Aumentar quantidade após escolher caixa           | Recalcular conjunto, ocupação e pendências                    | 046, 054–059       |
+| S07 | Variante indisponível, irmã disponível            | Não somar estoque da irmã                                     | 027, 044, 085      |
+| S08 | Query solicita coluna removida                    | Teste de contrato falha; UI mostra erro recuperável           | 022, 030, 091      |
+| S09 | Produto localizado após a posição 200             | Busca/paginação encontram o registro                          | 028, 043           |
+| S10 | Catálogo vazio ou sem permissão                   | Estados diferentes; nenhum fallback de dados inventados       | 020, 028, 051      |
+| S11 | Nenhum template cadastrado                        | Vazio útil; aceite do visual preenchido continua pendente     | 035, 038–040       |
+| S12 | Imagem falha ou carrega lentamente                | Área preservada e fallback identificado                       | 014, 029, 042      |
+| S13 | Rascunho abre durante autosave                    | Hidratação não sobrescreve dados                              | 017, 019           |
+| S14 | Duas abas salvam a mesma revisão                  | Conflito detectado e edição recuperável                       | 019, 068           |
+| S15 | Resposta de save chega fora de ordem              | Não marcar uma revisão nova como salva por resposta antiga    | 019, 047           |
+| S16 | Usuário altera ID de kit/arte                     | Banco nega acesso indevido                                    | 020, 065           |
+| S17 | Trocar técnica ou lado da aplicação               | Área, arte e preço coerentes; invalidar somente dependências  | 063–068            |
+| S18 | Geração de arte termina após nova edição          | Descartar resultado obsoleto                                  | 067                |
+| S19 | IA retorna produto inexistente ou custo inventado | Rejeitar resultado e não aplicar ao kit                       | 071, 074           |
+| S20 | IA excede orçamento ou não encontra caixa         | Explicação explícita; não afirmar sugestão compatível         | 074, 075           |
+| S21 | Duplo clique em aplicar IA                        | Uma aplicação, preservando estado anterior quando necessário  | 076, 077           |
+| S22 | Preço/estoque muda durante revisão                | Revalidar e comunicar antes da criação                        | 084, 085, 088      |
+| S23 | Falha após começar a criar orçamento              | Rollback completo; nenhum orçamento parcial                   | 086–088            |
+| S24 | Timeout depois de orçamento criado                | Retry recupera o mesmo documento                              | 087, 088           |
+| S25 | Frete indisponível ou sem endereço                | Não apresentar entrega grátis nem prazo garantido             | 085                |
+| S26 | Controle obrigatório removido da tela             | Teste falha, sem `if (isVisible)` contornando o requisito     | 091                |
+| S27 | Título cresce por CSS global                      | Regressão visual detectada                                    | 011, 034, 092      |
+| S28 | 390 px, zoom 200%, teclado e modal                | Ações acessíveis, sem perda de foco ou corte impeditivo       | 012, 094           |
+| S29 | Commit mais novo de outro agente                  | Reconciliar comportamento e repetir verificações afetadas     | 002, 097, 098      |
+| S30 | Deploy com SHA diferente do aprovado              | Não declarar release validada; investigar origem              | 099, 100           |
 
 ## Evidência mínima por entrega
 

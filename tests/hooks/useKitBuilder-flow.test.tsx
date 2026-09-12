@@ -98,4 +98,66 @@ describe('useKitBuilder — fluxos de montagem', () => {
       'Conclua técnica e área de aplicação da personalização antes de revisar',
     );
   });
+
+  it('exige preço confirmado para uma personalização habilitada', async () => {
+    const { useKitBuilder } = await import('@/hooks/kit-builder/useKitBuilder');
+    const { result } = renderHook(() => useKitBuilder());
+
+    act(() => {
+      result.current.selectBox(box);
+      result.current.addItem(item);
+      result.current.setItemPersonalization('item-1:base', {
+        enabled: true,
+        techniqueId: 'laser',
+        positionCode: 'front',
+        estimatedPrice: undefined,
+      });
+    });
+
+    expect(result.current.kitState.isValid).toBe(false);
+    expect(result.current.kitState.validationErrors).toContain(
+      'Aguarde o preço da personalização antes de revisar ou criar o orçamento',
+    );
+  });
+
+  it('mantém linhas independentes para variantes diferentes do mesmo produto', async () => {
+    const { useKitBuilder } = await import('@/hooks/kit-builder/useKitBuilder');
+    const { result } = renderHook(() => useKitBuilder({ initialFlow: 'items-first' }));
+
+    act(() => result.current.addItem(item));
+    act(() => {
+      result.current.updateItemVariant('item-1:base', {
+        id: 'variant-black',
+        color: { name: 'Preto' },
+      });
+    });
+    act(() => result.current.addItem(item));
+    act(() => {
+      result.current.updateItemVariant('item-1:base', {
+        id: 'variant-blue',
+        color: { name: 'Azul' },
+      });
+    });
+
+    expect(result.current.kitState.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ lineId: 'item-1:variant-black', selectedVariantId: 'variant-black' }),
+        expect.objectContaining({ lineId: 'item-1:variant-blue', selectedVariantId: 'variant-blue' }),
+      ]),
+    );
+  });
+
+  it('rejeita quantidades não inteiras ou não positivas sem alterar a linha', async () => {
+    const { useKitBuilder } = await import('@/hooks/kit-builder/useKitBuilder');
+    const { result } = renderHook(() => useKitBuilder({ initialFlow: 'items-first' }));
+
+    act(() => result.current.addItem(item));
+    act(() => result.current.updateItemQuantity('item-1:base', 0));
+    act(() => result.current.updateItemQuantity('item-1:base', Number.NaN));
+    act(() => result.current.updateItemQuantity('item-1:base', 1.5));
+
+    expect(result.current.kitState.items).toEqual([
+      expect.objectContaining({ lineId: 'item-1:base', quantity: 1 }),
+    ]);
+  });
 });

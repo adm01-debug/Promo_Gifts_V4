@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
 import type { ComponentProps } from 'react';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { dbInvoke } from '@/lib/db/postgrest';
 import { KitMakerLanding } from '@/components/kit-builder/KitMakerLanding';
 
@@ -68,8 +68,18 @@ function renderLanding(overrides: Partial<ComponentProps<typeof KitMakerLanding>
 }
 
 describe('KitMakerLanding', () => {
+  beforeEach(() => {
+    vi.mocked(dbInvoke).mockReset();
+  });
+
   it('renders the two intentional journeys, visual benefits, and real featured catalog media', async () => {
-    vi.mocked(dbInvoke).mockResolvedValueOnce({ records: FEATURED_PRODUCTS, count: 3 });
+    vi.mocked(dbInvoke).mockImplementation(async (args) => ({
+      records:
+        args.filters && 'product_type' in args.filters
+          ? FEATURED_PRODUCTS.filter((product) => product.product_type === 'packaging')
+          : FEATURED_PRODUCTS,
+      count: 3,
+    }));
     renderLanding();
 
     expect(screen.getByRole('heading', { name: 'Kit Maker', level: 1 })).toBeInTheDocument();
@@ -96,7 +106,7 @@ describe('KitMakerLanding', () => {
   });
 
   it('starts each flow explicitly instead of relying on a decorative card', async () => {
-    vi.mocked(dbInvoke).mockResolvedValueOnce({ records: [], count: 0 });
+    vi.mocked(dbInvoke).mockResolvedValue({ records: [], count: 0 });
     const onStart = vi.fn();
     renderLanding({ onStart });
 
@@ -108,7 +118,7 @@ describe('KitMakerLanding', () => {
   });
 
   it('has a truthful empty-state when the catalog has no highlighted product', async () => {
-    vi.mocked(dbInvoke).mockResolvedValueOnce({ records: [], count: 0 });
+    vi.mocked(dbInvoke).mockResolvedValue({ records: [], count: 0 });
     renderLanding();
 
     expect(await screen.findByText('Os destaques ainda não foram definidos no catálogo.')).toBeInTheDocument();
@@ -116,7 +126,7 @@ describe('KitMakerLanding', () => {
   });
 
   it('keeps both journeys available and offers a retry when featured catalog data cannot be read', async () => {
-    vi.mocked(dbInvoke).mockRejectedValueOnce(new Error('permission denied'));
+    vi.mocked(dbInvoke).mockRejectedValue(new Error('permission denied'));
     const onStart = vi.fn();
     renderLanding({ onStart });
 

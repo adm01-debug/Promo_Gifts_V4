@@ -11,7 +11,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { formatCurrency, type KitState } from '@/lib/kit-builder';
 import { cn } from '@/lib/utils';
@@ -65,15 +64,12 @@ export function KitMobileSummaryBar({ kitState, kitQuantity, children }: KitMobi
                   {volume}%
                 </Badge>
               )}
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label="Expandir resumo do kit"
-                className="h-8 w-8"
-                tabIndex={-1}
+              <span
+                aria-hidden="true"
+                className="flex h-8 w-8 items-center justify-center rounded-md"
               >
                 <ChevronUp className="h-4 w-4" />
-              </Button>
+              </span>
             </div>
           </button>
         </DrawerTrigger>

@@ -19,12 +19,20 @@ import {
 interface ItemCardProps {
   item: KitItem & { compatibility: CompatibilityResult | null };
   isSelected: boolean;
+  selectedItem?: KitItem;
   boxSelected: boolean;
   onAdd: (item: KitItem) => void;
-  onRemove: (itemId: string) => void;
+  onRemove: (item: KitItem) => void;
 }
 
-export function ItemCard({ item, isSelected, boxSelected, onAdd, onRemove }: ItemCardProps) {
+export function ItemCard({
+  item,
+  isSelected,
+  selectedItem,
+  boxSelected,
+  onAdd,
+  onRemove,
+}: ItemCardProps) {
   const fits = item.compatibility?.fits !== false;
   const cantFit = boxSelected && !fits;
   const compatibilityUnknown = boxSelected && item.compatibility?.confidence === 'unknown';
@@ -120,7 +128,7 @@ export function ItemCard({ item, isSelected, boxSelected, onAdd, onRemove }: Ite
               variant="outline"
               size="sm"
               className="ml-auto focus-visible:ring-2 focus-visible:ring-primary/60"
-              onClick={() => onRemove(item.id)}
+              onClick={() => selectedItem && onRemove(selectedItem)}
             >
               <Check className="mr-1 h-3 w-3 text-success" />
               <span className="group-hover:hidden">Adicionado</span>

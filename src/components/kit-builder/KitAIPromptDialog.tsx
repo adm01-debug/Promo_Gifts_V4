@@ -3,7 +3,8 @@
  * A resposta é aplicada como filtros/keywords; ela não contém IDs canônicos
  * de produto e não deve criar linhas de orçamento automaticamente.
  */
-import { useState, type ReactNode } from 'react';
+import { useRef, useState, type ReactNode } from 'react';
+import { z } from 'zod';
 import {
   Dialog,
   DialogContent,
@@ -34,6 +35,19 @@ interface Suggestion {
   target_price_brl: { min: number; max: number };
   narrative: string;
 }
+
+const suggestionSchema = z
+  .object({
+    kit_type: z.enum(['montado', 'original', 'simples']),
+    box_keywords: z.array(z.string().trim().min(1).max(80)).min(1).max(4),
+    item_keywords: z.array(z.string().trim().min(1).max(80)).min(3).max(6),
+    target_price_brl: z.object({
+      min: z.number().finite().nonnegative(),
+      max: z.number().finite().nonnegative(),
+    }),
+    narrative: z.string().trim().min(1).max(500),
+  })
+  .strict();
 
 interface KitAIPromptDialogProps {
   onApply: (suggestion: Suggestion) => void;
@@ -77,6 +91,8 @@ export function KitAIPromptDialog({ onApply }: KitAIPromptDialogProps) {
   const [quantity, setQuantity] = useState('');
   const [loading, setLoading] = useState(false);
   const [suggestion, setSuggestion] = useState<Suggestion | null>(null);
+  const generationInFlightRef = useRef(false);
+  const latestGenerationRef = useRef(0);
 
   const clearForm = () => {
     setPrompt('');
@@ -92,6 +108,10 @@ export function KitAIPromptDialog({ onApply }: KitAIPromptDialogProps) {
       toast.error('Descreva melhor o kit desejado');
       return;
     }
+    if (generationInFlightRef.current) return;
+    generationInFlightRef.current = true;
+    const generation = latestGenerationRef.current + 1;
+    latestGenerationRef.current = generation;
     setLoading(true);
     setSuggestion(null);
     try {
@@ -104,12 +124,15 @@ export function KitAIPromptDialog({ onApply }: KitAIPromptDialogProps) {
         },
       );
       if (error) throw new Error(error.message);
-      if (data?.error || !data?.suggestion) throw new Error(data?.error || 'Sugestão indisponível');
-      setSuggestion(data.suggestion);
+      const parsed = suggestionSchema.safeParse(data?.suggestion);
+      if (!parsed.success) throw new Error('Sugestão indisponível');
+      // Ignore a stale response if a newer generation has already started.
+      if (latestGenerationRef.current === generation) setSuggestion(parsed.data);
     } catch {
       toast.error('Erro ao gerar sugestão');
     } finally {
-      setLoading(false);
+      generationInFlightRef.current = false;
+      if (latestGenerationRef.current === generation) setLoading(false);
     }
   };
 

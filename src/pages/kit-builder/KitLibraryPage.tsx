@@ -46,7 +46,8 @@ function snapshotImageUrl(value: unknown): string | null {
   }
   if (Array.isArray(row.images)) {
     const image = row.images.find(
-      (candidate): candidate is string => typeof candidate === 'string' && candidate.trim(),
+      (candidate): candidate is string =>
+        typeof candidate === 'string' && candidate.trim().length > 0,
     );
     if (image) return image;
   }

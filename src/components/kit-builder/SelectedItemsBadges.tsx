@@ -23,7 +23,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { VariantSelector, type VariantSelectionData } from './VariantSelector';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import type { KitItem } from '@/lib/kit-builder';
+import { getKitItemLineId, type KitItem } from '@/lib/kit-builder';
 
 interface SelectedItemsBadgesProps {
   items: KitItem[];
@@ -45,7 +45,7 @@ function SortableItemBadge({
   onUpdateVariant: (id: string, data: VariantSelectionData) => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-    id: item.id,
+    id: getKitItemLineId(item),
   });
 
   const style = {
@@ -72,7 +72,7 @@ function SortableItemBadge({
       <span className="max-w-[150px] truncate">{item.name}</span>
       {item.isReplaceable && item.allowedVariantIds && item.allowedVariantIds.length > 0 && (
         <VariantSelector
-          itemId={item.id}
+          itemId={getKitItemLineId(item)}
           itemName={item.name}
           allowedVariantIds={item.allowedVariantIds}
           selectedColor={item.selectedColor}
@@ -85,7 +85,11 @@ function SortableItemBadge({
           variant="ghost"
           size="icon"
           className="h-5 w-5"
-          onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
+          onClick={() =>
+            item.quantity <= 1
+              ? onRemoveItem(getKitItemLineId(item))
+              : onUpdateQuantity(getKitItemLineId(item), item.quantity - 1)
+          }
           aria-label="Diminuir quantidade"
         >
           -
@@ -94,7 +98,7 @@ function SortableItemBadge({
           variant="ghost"
           size="icon"
           className="h-5 w-5"
-          onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
+          onClick={() => onUpdateQuantity(getKitItemLineId(item), item.quantity + 1)}
           aria-label="Aumentar quantidade"
         >
           +
@@ -104,7 +108,7 @@ function SortableItemBadge({
           size="icon"
           aria-label="Fechar"
           className="h-5 w-5 text-destructive hover:text-destructive"
-          onClick={() => onRemoveItem(item.id)}
+          onClick={() => onRemoveItem(getKitItemLineId(item))}
         >
           <X className="h-3 w-3" />
         </Button>
@@ -130,8 +134,8 @@ export function SelectedItemsBadges({
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (!over || active.id === over.id || !onReorder) return;
-    const oldIndex = items.findIndex((i) => i.id === active.id);
-    const newIndex = items.findIndex((i) => i.id === over.id);
+    const oldIndex = items.findIndex((item) => getKitItemLineId(item) === active.id);
+    const newIndex = items.findIndex((item) => getKitItemLineId(item) === over.id);
     if (oldIndex !== -1 && newIndex !== -1) {
       onReorder(oldIndex, newIndex);
     }
@@ -144,11 +148,14 @@ export function SelectedItemsBadges({
         {onReorder && <span className="text-xs">— arraste para reordenar</span>}
       </h4>
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <SortableContext items={items.map((i) => i.id)} strategy={horizontalListSortingStrategy}>
+        <SortableContext
+          items={items.map((item) => getKitItemLineId(item))}
+          strategy={horizontalListSortingStrategy}
+        >
           <div className="flex flex-wrap gap-2">
             {items.map((item) => (
               <SortableItemBadge
-                key={item.id}
+                key={getKitItemLineId(item)}
                 item={item}
                 onRemoveItem={onRemoveItem}
                 onUpdateQuantity={onUpdateQuantity}

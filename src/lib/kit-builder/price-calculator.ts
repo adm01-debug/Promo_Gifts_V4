@@ -3,7 +3,7 @@
  * Cálculos de preço para kits
  */
 
-import type { KitItem, KitBox, KitPersonalization } from './types';
+import { getKitItemLineId, type KitItem, type KitBox, type KitPersonalization } from './types';
 
 // ============================================
 // CÁLCULOS DE PREÇO
@@ -43,7 +43,8 @@ export function calculatePersonalizationPrice(
 
   // Personalização dos itens
   items.forEach((item) => {
-    const itemPersonalization = personalization.items[item.id];
+    const itemPersonalization =
+      personalization.items[getKitItemLineId(item)] ?? personalization.items[item.id];
     if (itemPersonalization?.enabled && itemPersonalization.estimatedPrice) {
       total += itemPersonalization.estimatedPrice * item.quantity * quantity;
     }
@@ -177,7 +178,8 @@ export function generatePriceBreakdown(
     });
 
     // Personalização do item
-    const itemPersonalization = personalization.items[item.id];
+    const itemPersonalization =
+      personalization.items[getKitItemLineId(item)] ?? personalization.items[item.id];
     if (itemPersonalization?.enabled && itemPersonalization.estimatedPrice) {
       breakdown.push({
         label: `↳ Gravação: ${itemPersonalization.techniqueName || 'Personalização'}`,

@@ -9,7 +9,7 @@ vi.mock('sonner', () => ({ toast: { error: vi.fn(), success: vi.fn() } }));
 const suggestion = {
   kit_type: 'montado' as const,
   box_keywords: ['rígida'],
-  item_keywords: ['garrafa', 'caderno'],
+  item_keywords: ['garrafa', 'caderno', 'caneta'],
   target_price_brl: { min: 100, max: 150 },
   narrative: 'Uma composição corporativa equilibrada.',
 };
@@ -45,5 +45,28 @@ describe('KitAIPromptDialog', () => {
 
     expect(screen.getByText('Sua sugestão aparecerá aqui')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /gerar sugestões/i })).toBeDisabled();
+  });
+
+  it('does not apply a malformed AI response', async () => {
+    vi.mocked(invokeEdge).mockResolvedValueOnce({
+      data: {
+        suggestion: {
+          ...suggestion,
+          target_price_brl: { min: 250, max: 100 },
+        },
+      },
+      error: null,
+    });
+    render(<KitAIPromptDialog onApply={vi.fn()} />);
+
+    fireEvent.click(screen.getByRole('button', { name: /montar com ia/i }));
+    fireEvent.change(screen.getByLabelText(/o que você deseja/i), {
+      target: { value: 'Kit de boas-vindas sustentável para novos colaboradores.' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /gerar sugestões/i }));
+
+    await waitFor(() => {
+      expect(screen.queryByText(suggestion.narrative)).not.toBeInTheDocument();
+    });
   });
 });

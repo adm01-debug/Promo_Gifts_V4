@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -66,6 +67,97 @@ function featuredImage(product: FeaturedProduct | undefined): string | null {
   return product?.primary_image_url || product?.images?.[0] || null;
 }
 
+function useLandingCatalog() {
+  return useQuery({
+    queryKey: ['kit-maker', 'landing-catalog'],
+    queryFn: async () => {
+      const [itemsResult, boxesResult] = await Promise.all([
+        dbInvoke<FeaturedProduct>({
+          table: 'products',
+          operation: 'select',
+          filters: { active: true, is_featured: true },
+          select: 'id, name, sku, sale_price, primary_image_url, images, product_type',
+          limit: 8,
+          orderBy: { column: 'name', ascending: true },
+        }),
+        dbInvoke<FeaturedProduct>({
+          table: 'products',
+          operation: 'select',
+          filters: { active: true, product_type: 'packaging' },
+          select: 'id, name, sku, sale_price, primary_image_url, images, product_type',
+          limit: 4,
+          orderBy: { column: 'name', ascending: true },
+        }),
+      ]);
+
+      return {
+        items: itemsResult.records.filter((product) => product.product_type !== 'packaging'),
+        boxes: boxesResult.records,
+      };
+    },
+    staleTime: 5 * 60 * 1000,
+    retry: 1,
+  });
+}
+
+function HeroProductImage({ products, alt }: { products: FeaturedProduct[]; alt: string }) {
+  const [failedImages, setFailedImages] = useState<Set<string>>(() => new Set());
+  const visibleProducts = products
+    .filter((product) => {
+      const image = featuredImage(product);
+      return image && !failedImages.has(image);
+    })
+    .slice(0, 3);
+
+  if (visibleProducts.length === 0) {
+    return (
+      <div className="absolute inset-y-0 right-0 hidden w-[48%] items-center justify-center bg-gradient-to-l from-primary/15 to-transparent md:flex">
+        <Boxes className="h-32 w-32 text-primary/45" aria-hidden />
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="absolute inset-y-0 right-0 hidden w-[52%] overflow-hidden md:block"
+      aria-label={alt}
+    >
+      <div className="absolute inset-0 z-20 bg-gradient-to-r from-card via-card/55 to-transparent" />
+      <div className="absolute inset-y-6 right-5 z-10 flex w-[78%] items-end justify-end gap-2">
+        {visibleProducts.map((product, index) => {
+          const image = featuredImage(product)!;
+          return (
+            <div
+              key={product.id}
+              className="relative overflow-hidden rounded-xl border border-border/50 bg-muted/40 shadow-2xl"
+              style={{
+                height: `${72 + index * 12}%`,
+                width: `${index === 1 ? 42 : 31}%`,
+                zIndex: index + 1,
+                transform: `translateY(${index === 1 ? '-4%' : `${index * 4}%`})`,
+              }}
+            >
+              <img
+                src={image}
+                alt={index === 0 ? alt : product.name}
+                className="h-full w-full object-cover"
+                loading="eager"
+                onError={() =>
+                  setFailedImages((current) => {
+                    const next = new Set(current);
+                    next.add(image);
+                    return next;
+                  })
+                }
+              />
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function useFeaturedProducts() {
   return useQuery({
     queryKey: ['kit-maker', 'landing-featured-products'],
@@ -85,28 +177,6 @@ function useFeaturedProducts() {
   });
 }
 
-function HeroProductImage({ product, alt }: { product?: FeaturedProduct; alt: string }) {
-  const image = featuredImage(product);
-  if (!image) {
-    return (
-      <div className="absolute inset-y-0 right-0 hidden w-[48%] items-center justify-center bg-gradient-to-l from-primary/15 to-transparent md:flex">
-        <Boxes className="h-32 w-32 text-primary/45" aria-hidden />
-      </div>
-    );
-  }
-  return (
-    <div className="absolute inset-y-0 right-0 hidden w-[52%] overflow-hidden md:block">
-      <div className="absolute inset-0 z-10 bg-gradient-to-r from-card via-card/60 to-transparent" />
-      <img
-        src={image}
-        alt={alt}
-        className="h-full w-full object-cover object-center"
-        loading="eager"
-      />
-    </div>
-  );
-}
-
 export function KitMakerLanding({
   onStart,
   occasion,
@@ -114,15 +184,22 @@ export function KitMakerLanding({
   onApplyAISuggestion,
 }: KitMakerLandingProps) {
   const {
+    data: landingCatalog,
+    isLoading: isLoadingLandingCatalog,
+    isError: hasLandingCatalogError,
+    refetch: refetchLandingCatalog,
+  } = useLandingCatalog();
+  const {
     data: featuredProducts = [],
     isLoading: isLoadingFeatured,
     isError: hasFeaturedError,
     refetch: refetchFeatured,
   } = useFeaturedProducts();
-  const itemsHeroProduct = featuredProducts[0];
-  const boxHeroProduct = featuredProducts[1] ?? featuredProducts[0];
+  const itemsHeroProducts = landingCatalog?.items.slice(0, 3) ?? [];
+  const boxHeroProducts = landingCatalog?.boxes.slice(0, 3) ?? [];
   const handleRetryFeatured = () => {
     refetchFeatured().catch(() => undefined);
+    refetchLandingCatalog().catch(() => undefined);
   };
 
   return (
@@ -159,7 +236,7 @@ export function KitMakerLanding({
       <section className="grid gap-5 lg:grid-cols-2">
         <Card className="relative min-h-[348px] overflow-hidden border-primary/60 bg-gradient-to-br from-primary/15 via-card to-card shadow-[0_18px_50px_-30px_hsl(var(--primary)/0.7)]">
           <HeroProductImage
-            product={itemsHeroProduct}
+            products={itemsHeroProducts}
             alt="Produtos em destaque para montar um kit"
           />
           <CardContent className="relative z-20 flex h-full max-w-none flex-col items-start p-6 sm:p-8 md:max-w-[62%]">
@@ -203,7 +280,7 @@ export function KitMakerLanding({
         </Card>
 
         <Card className="relative min-h-[348px] overflow-hidden border-border/70 bg-gradient-to-br from-card via-card to-muted/30 shadow-sm">
-          <HeroProductImage product={boxHeroProduct} alt="Embalagem para montar um kit" />
+          <HeroProductImage products={boxHeroProducts} alt="Embalagens para montar um kit" />
           <CardContent className="relative z-20 flex h-full max-w-none flex-col items-start p-6 sm:p-8 md:max-w-[62%]">
             <div className="flex w-full items-center justify-between gap-2">
               <span className="inline-flex rounded-full bg-secondary px-3 py-1 text-[11px] font-bold tracking-wide text-secondary-foreground">
@@ -245,6 +322,14 @@ export function KitMakerLanding({
           </CardContent>
         </Card>
       </section>
+
+      {(isLoadingLandingCatalog || hasLandingCatalogError) && (
+        <p className="sr-only" role="status">
+          {isLoadingLandingCatalog
+            ? 'Carregando imagens de produtos e embalagens.'
+            : 'Não foi possível carregar algumas imagens do catálogo.'}
+        </p>
+      )}
 
       <section id="como-funciona" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {BENEFITS.map(({ title, description, Icon }) => (

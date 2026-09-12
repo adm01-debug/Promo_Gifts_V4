@@ -6,7 +6,7 @@
 import { dbInvoke } from '@/lib/db/postgrest';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
-import type { KitItem, KitBox } from '@/lib/kit-builder/types';
+import { getKitItemLineId, type KitItem, type KitBox } from '@/lib/kit-builder/types';
 
 export interface StockAlert {
   itemId: string;
@@ -16,6 +16,8 @@ export interface StockAlert {
   available: number;
   deficit: number;
   isBox?: boolean;
+  /** Stable UI key when the same product appears with distinct variants. */
+  lineId?: string;
 }
 
 export interface VariantStock {
@@ -23,6 +25,28 @@ export interface VariantStock {
   product_id: string;
   stock_quantity: number | null;
   color_name: string | null;
+}
+
+export type KitStockStatus = 'available' | 'checking' | 'idle' | 'unavailable' | 'unknown';
+
+/** Pure status resolver kept separate so failure paths stay testable. */
+export function resolveKitStockStatus({
+  hasItemsToValidate,
+  isLoading,
+  isError,
+  hasData,
+  alertsCount,
+}: {
+  hasItemsToValidate: boolean;
+  isLoading: boolean;
+  isError: boolean;
+  hasData: boolean;
+  alertsCount: number;
+}): KitStockStatus {
+  if (!hasItemsToValidate) return 'idle';
+  if (isLoading) return 'checking';
+  if (isError || !hasData) return 'unknown';
+  return alertsCount > 0 ? 'unavailable' : 'available';
 }
 
 export function evaluateKitStock(
@@ -73,6 +97,7 @@ export function evaluateKitStock(
         itemId: item.id,
         itemName: item.name,
         sku: item.sku,
+        lineId: getKitItemLineId(item),
         required,
         available,
         deficit: required - available,
@@ -86,7 +111,12 @@ export function evaluateKitStock(
 export function useKitStockValidation(items: KitItem[], box: KitBox | null, kitQuantity: number) {
   const productIds = [...(box ? [box.id] : []), ...items.map((i) => i.id)];
 
-  const { data: stockData, isLoading } = useQuery({
+  const {
+    data: stockData,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ['kit-stock-validation', productIds.join(',')],
     queryFn: async () => {
       if (productIds.length === 0) return [];
@@ -116,11 +146,26 @@ export function useKitStockValidation(items: KitItem[], box: KitBox | null, kitQ
     [stockData, box, items, kitQuantity],
   );
 
+  // A missing response must never be read as "zero alerts". Until we have a
+  // successful query, the user cannot make a safe stock-backed quote.
+  const hasItemsToValidate = productIds.length > 0;
+  const stockStatus = resolveKitStockStatus({
+    hasItemsToValidate,
+    isLoading,
+    isError,
+    hasData: Boolean(stockData),
+    alertsCount: alerts.length,
+  });
+
   return {
     alerts,
     isLoading,
     stockByProduct,
     stockByVariant,
-    hasStockIssues: alerts.length > 0,
+    hasStockIssues: alerts.length > 0 || stockStatus === 'checking' || stockStatus === 'unknown',
+    stockStatus,
+    stockError: error,
+    isStockKnown:
+      stockStatus === 'available' || stockStatus === 'unavailable' || stockStatus === 'idle',
   };
 }

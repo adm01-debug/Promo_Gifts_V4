@@ -137,6 +137,7 @@ export function useKitBuilderPageState() {
     lastSavedAt,
     isSaving: isAutoSaving,
     autoSavedKitId,
+    cancelPendingSave,
   } = useKitAutoSave(
     kitState,
     kitQuantity,
@@ -281,6 +282,15 @@ export function useKitBuilderPageState() {
       toast.error('Adicione uma caixa ou item antes de salvar o kit.');
       return;
     }
+    if (isAutoSaving) {
+      toast.info(
+        'O salvamento automático está em andamento. Aguarde a confirmação antes de salvar novamente.',
+      );
+      return;
+    }
+    // Prevent the debounce timer from racing the explicit save and submitting
+    // a stale revision immediately after the manual operation.
+    cancelPendingSave();
     try {
       const kitId = currentKitId || autoSavedKitId || undefined;
       const saved = await saveKit(kitState, kitQuantity, kitId, kitId ? currentRevision : null);
@@ -291,7 +301,16 @@ export function useKitBuilderPageState() {
       // error observable without producing a second, potentially unsafe toast.
       logger.warn('[kit-builder] Manual save failed:', error);
     }
-  }, [autoSavedKitId, currentKitId, currentRevision, kitQuantity, kitState, saveKit]);
+  }, [
+    autoSavedKitId,
+    cancelPendingSave,
+    currentKitId,
+    currentRevision,
+    isAutoSaving,
+    kitQuantity,
+    kitState,
+    saveKit,
+  ]);
 
   const applyAISuggestion = useCallback(
     (suggestion: KitBuilderAISuggestion) => {

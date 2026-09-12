@@ -18,6 +18,8 @@ import {
   type KitBuilderFlow,
   type KitBuilderWizardState,
   type CompatibilityResult,
+  getKitItemLineId,
+  normalizeKitItemLine,
   calculateTotalItemsVolume,
   calculateVolumeUsagePercent,
   calculateUsableVolume,
@@ -45,7 +47,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
     box: { enabled: false },
     items: {},
   });
-  const [kitQuantity, setKitQuantity] = useState(1);
+  const [kitQuantity, setKitQuantityState] = useState(1);
   const [identity, setIdentity] = useState<KitIdentity>({
     color: '#3B82F6',
     icon: 'Package',
@@ -151,6 +153,20 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
       );
     }
 
+    const personalizationWithoutPrice = [
+      personalization.box,
+      ...Object.values(personalization.items),
+    ].find(
+      (config) =>
+        config.enabled &&
+        (!Number.isFinite(config.estimatedPrice) || (config.estimatedPrice ?? -1) < 0),
+    );
+    if (personalizationWithoutPrice) {
+      validationErrors.push(
+        'Aguarde o preço da personalização antes de revisar ou criar o orçamento',
+      );
+    }
+
     return {
       name: kitName,
       kitType,
@@ -224,12 +240,25 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
     setPersonalization((current) => ({ ...current, box: { enabled: false } }));
   }, []);
 
+  const setKitQuantity = useCallback((quantity: number) => {
+    if (!Number.isSafeInteger(quantity) || quantity < 1) {
+      toast.warning('Quantidade inválida', {
+        description: 'A quantidade de kits deve ser um número inteiro maior que zero.',
+      });
+      return;
+    }
+    setKitQuantityState(quantity);
+  }, []);
+
   const addItem = useCallback(
     (item: KitItem): CompatibilityResult => {
       if (!selectedBox) {
         setSelectedItems((previous) => {
-          const existingIndex = previous.findIndex((candidate) => candidate.id === item.id);
-          if (existingIndex < 0) return [...previous, { ...item, quantity: 1 }];
+          const nextItem = normalizeKitItemLine({ ...item, quantity: 1 });
+          const existingIndex = previous.findIndex(
+            (candidate) => getKitItemLineId(candidate) === getKitItemLineId(nextItem),
+          );
+          if (existingIndex < 0) return [...previous, nextItem];
           return previous.map((candidate, index) =>
             index === existingIndex
               ? { ...candidate, quantity: candidate.quantity + 1 }
@@ -242,13 +271,16 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
         };
       }
 
-      const existingIndex = selectedItems.findIndex((i) => i.id === item.id);
+      const normalizedItem = normalizeKitItemLine({ ...item, quantity: 1 });
+      const existingIndex = selectedItems.findIndex(
+        (candidate) => getKitItemLineId(candidate) === getKitItemLineId(normalizedItem),
+      );
       if (existingIndex >= 0) {
         const updatedItems = [...selectedItems];
         const newQuantity = updatedItems[existingIndex].quantity + 1;
 
         const result = checkItemFits(
-          { ...item, quantity: 1 },
+          normalizedItem,
           selectedBox,
           selectedItems.filter((_, i) => i !== existingIndex),
           newQuantity,
@@ -265,10 +297,10 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
         return result;
       }
 
-      const result = checkItemFits(item, selectedBox, selectedItems, 1);
+      const result = checkItemFits(normalizedItem, selectedBox, selectedItems, 1);
 
       if (result.fits) {
-        setSelectedItems((prev) => [...prev, { ...item, quantity: 1 }]);
+        setSelectedItems((prev) => [...prev, normalizedItem]);
       }
 
       return result;
@@ -277,24 +309,29 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
   );
 
   const removeItem = useCallback((itemId: string) => {
-    setSelectedItems((prev) => prev.filter((i) => i.id !== itemId));
+    const matchesLine = (item: KitItem) => getKitItemLineId(item) === itemId;
+    setSelectedItems((prev) => prev.filter((item) => !matchesLine(item)));
     setPersonalization((prev) => {
-      const { [itemId]: _, ...rest } = prev.items;
+      const { [itemId]: _removedLine, ...rest } = prev.items;
       return { ...prev, items: rest };
     });
   }, []);
 
   const updateItemQuantity = useCallback(
     (itemId: string, quantity: number) => {
-      if (quantity <= 0) {
-        removeItem(itemId);
+      if (!Number.isSafeInteger(quantity) || quantity < 1) {
+        toast.warning('Quantidade inválida', {
+          description: 'Use um número inteiro maior que zero ou remova o item.',
+        });
         return;
       }
 
       if (selectedBox) {
-        const item = selectedItems.find((i) => i.id === itemId);
+        const item = selectedItems.find((candidate) => getKitItemLineId(candidate) === itemId);
         if (item && quantity > item.quantity) {
-          const otherItems = selectedItems.filter((i) => i.id !== itemId);
+          const otherItems = selectedItems.filter(
+            (candidate) => getKitItemLineId(candidate) !== itemId,
+          );
           const result = checkItemFits(item, selectedBox, otherItems, quantity);
           if (!result.fits) {
             toast.warning('Volume excedido', {
@@ -306,10 +343,10 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
       }
 
       setSelectedItems((prev) =>
-        prev.map((item) => (item.id === itemId ? { ...item, quantity } : item)),
+        prev.map((item) => (getKitItemLineId(item) === itemId ? { ...item, quantity } : item)),
       );
     },
-    [removeItem, selectedBox, selectedItems],
+    [selectedBox, selectedItems],
   );
 
   const updateItemVariant = useCallback(
@@ -324,11 +361,22 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
         price?: number;
       },
     ) => {
+      const currentItem = selectedItems.find((candidate) => getKitItemLineId(candidate) === itemId);
+      if (!currentItem) return;
+      const previousLineId = getKitItemLineId(currentItem);
+      const nextLineId = `${currentItem.id}:${variantData.id}`;
+      const hasExistingTarget = selectedItems.some(
+        (candidate) =>
+          getKitItemLineId(candidate) === nextLineId &&
+          getKitItemLineId(candidate) !== previousLineId,
+      );
+
       setSelectedItems((prev) =>
-        prev.map((item) => {
-          if (item.id !== itemId) return item;
-          return {
+        prev.flatMap((item) => {
+          if (getKitItemLineId(item) !== itemId) return [item];
+          const updated = {
             ...item,
+            lineId: nextLineId,
             selectedVariantId: variantData.id,
             selectedColor: variantData.color,
             selectedSize: variantData.size || undefined,
@@ -336,40 +384,74 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
             ...(variantData.imageUrl !== undefined && { imageUrl: variantData.imageUrl }),
             ...(variantData.price !== undefined && { price: variantData.price }),
           };
+          if (!hasExistingTarget) return [updated];
+
+          // Selecting a variant already present in this kit must combine the
+          // quantity, never create an ambiguous duplicate composition line.
+          return [];
         }),
       );
+
+      setSelectedItems((prev) =>
+        prev.map((item) =>
+          hasExistingTarget &&
+          getKitItemLineId(item) === nextLineId &&
+          previousLineId !== nextLineId
+            ? { ...item, quantity: item.quantity + currentItem.quantity }
+            : item,
+        ),
+      );
+      setPersonalization((prev) => {
+        const config = prev.items[previousLineId] ?? prev.items[currentItem.id];
+        if (!config || previousLineId === nextLineId || prev.items[nextLineId]) return prev;
+        const {
+          [previousLineId]: _legacyLine,
+          [currentItem.id]: _legacyProduct,
+          ...items
+        } = prev.items;
+        return { ...prev, items: { ...items, [nextLineId]: config } };
+      });
     },
-    [],
+    [selectedItems],
   );
 
   const updateItemColor = useCallback((itemId: string, color: { name: string; hex?: string }) => {
     setSelectedItems((prev) =>
-      prev.map((item) => (item.id === itemId ? { ...item, selectedColor: color } : item)),
+      prev.map((item) =>
+        getKitItemLineId(item) === itemId ? { ...item, selectedColor: color } : item,
+      ),
     );
   }, []);
 
-  const toggleOptionalItem = useCallback((itemId: string, item?: KitItem) => {
+  const toggleOptionalItem = useCallback((itemId: string, optionalItem?: KitItem) => {
     setSelectedItems((prev) => {
-      const exists = prev.find((i) => i.id === itemId);
+      const exists = prev.find((item) => getKitItemLineId(item) === itemId);
       if (exists) {
-        return prev.filter((i) => i.id !== itemId);
+        return prev.filter((candidate) => getKitItemLineId(candidate) !== itemId);
       }
-      if (item) {
-        return [...prev, { ...item, quantity: 1 }];
+      if (optionalItem) {
+        return [...prev, normalizeKitItemLine({ ...optionalItem, quantity: 1 })];
       }
       return prev;
     });
   }, []);
 
-  const setItemPersonalization = useCallback((itemId: string, config: KitItemPersonalization) => {
-    setPersonalization((prev) => ({
-      ...prev,
-      items: {
-        ...prev.items,
-        [itemId]: config,
-      },
-    }));
-  }, []);
+  const setItemPersonalization = useCallback(
+    (itemId: string, config: KitItemPersonalization) => {
+      const selectedItem =
+        selectedItems.find((item) => getKitItemLineId(item) === itemId) ??
+        selectedItems.find((item) => item.id === itemId);
+      const canonicalLineId = selectedItem ? getKitItemLineId(selectedItem) : itemId;
+      setPersonalization((prev) => ({
+        ...prev,
+        items: {
+          ...prev.items,
+          [canonicalLineId]: config,
+        },
+      }));
+    },
+    [selectedItems],
+  );
 
   const setBoxPersonalization = useCallback((config: KitItemPersonalization) => {
     setPersonalization((prev) => ({
@@ -424,7 +506,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
     setSelectedBox(null);
     setSelectedItems([]);
     setPersonalization({ box: { enabled: false }, items: {} });
-    setKitQuantity(1);
+    setKitQuantityState(1);
     setIdentity({ color: '#3B82F6', icon: 'Package', tag: '', description: '', isFavorite: false });
     setPersonalizationReviewed(false);
     setCurrentStep(flow === 'items-first' ? 'items' : 'box');
@@ -436,7 +518,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
     setSelectedBox(null);
     setSelectedItems([]);
     setPersonalization({ box: { enabled: false }, items: {} });
-    setKitQuantity(1);
+    setKitQuantityState(1);
     setIdentity({ color: '#3B82F6', icon: 'Package', tag: '', description: '', isFavorite: false });
     setPersonalizationReviewed(false);
     setFlow(nextFlow);
@@ -457,9 +539,25 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
       setKitName(data.name);
       setKitType(data.kitType);
       setSelectedBox(data.box);
-      setSelectedItems(data.items);
-      setPersonalization(data.personalization || { box: { enabled: false }, items: {} });
-      setKitQuantity(data.kitQuantity || 1);
+      const normalizedItems = data.items.map(normalizeKitItemLine);
+      const normalizedPersonalizations = {
+        ...(data.personalization || { box: { enabled: false }, items: {} }),
+      };
+      normalizedPersonalizations.items = { ...normalizedPersonalizations.items };
+      normalizedItems.forEach((item) => {
+        const lineId = getKitItemLineId(item);
+        if (
+          !normalizedPersonalizations.items[lineId] &&
+          normalizedPersonalizations.items[item.id]
+        ) {
+          normalizedPersonalizations.items[lineId] = normalizedPersonalizations.items[item.id];
+        }
+      });
+      setSelectedItems(normalizedItems);
+      setPersonalization(normalizedPersonalizations);
+      setKitQuantityState(
+        Number.isSafeInteger(data.kitQuantity) && data.kitQuantity > 0 ? data.kitQuantity : 1,
+      );
       if (data.identity) {
         setIdentity({
           color: data.identity.color || '#3B82F6',
@@ -483,9 +581,11 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
     setKitName(snap.name);
     setKitType(snap.kitType);
     setSelectedBox(snap.box);
-    setSelectedItems(snap.items);
+    setSelectedItems(snap.items.map(normalizeKitItemLine));
     setPersonalization(snap.personalization ?? { box: { enabled: false }, items: {} });
-    setKitQuantity(snap.kitQuantity || 1);
+    setKitQuantityState(
+      Number.isSafeInteger(snap.kitQuantity) && snap.kitQuantity > 0 ? snap.kitQuantity : 1,
+    );
     if (snap.identity) setIdentity(snap.identity);
   }, []);
 

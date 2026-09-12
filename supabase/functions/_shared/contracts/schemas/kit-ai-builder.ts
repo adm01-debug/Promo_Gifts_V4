@@ -20,6 +20,22 @@ export const KitAiBuilderV2 = z
   })
   .strict();
 
+/** Runtime contract for the model tool-call. Never trust model JSON directly. */
+export const KitAiBuilderSuggestion = z
+  .object({
+    kit_type: z.enum(["montado", "original", "simples"]),
+    box_keywords: z.array(z.string().trim().min(1).max(80)).min(1).max(4),
+    item_keywords: z.array(z.string().trim().min(1).max(80)).min(3).max(6),
+    target_price_brl: z
+      .object({ min: z.number().finite().nonnegative(), max: z.number().finite().nonnegative() })
+      .strict()
+      .refine((value) => value.max >= value.min, {
+        message: "target_price_brl.max must be greater than or equal to min",
+      }),
+    narrative: z.string().trim().min(1).max(500),
+  })
+  .strict();
+
 export const KitAiBuilderSchemas = {
   name: "kit-ai-builder",
   versions: { "1": KitAiBuilderV1, "2": KitAiBuilderV2 },

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { evaluateKitStock } from '@/hooks/kit-builder/useKitStockValidation';
+import { evaluateKitStock, resolveKitStockStatus } from '@/hooks/kit-builder/useKitStockValidation';
 import type { KitItem } from '@/lib/kit-builder';
 
 const selectedItem: KitItem = {
@@ -46,5 +46,28 @@ describe('evaluateKitStock', () => {
     );
 
     expect(result.alerts).toHaveLength(0);
+  });
+});
+
+describe('resolveKitStockStatus', () => {
+  it('nunca trata carregamento ou falha como estoque disponível', () => {
+    expect(
+      resolveKitStockStatus({
+        hasItemsToValidate: true,
+        isLoading: true,
+        isError: false,
+        hasData: false,
+        alertsCount: 0,
+      }),
+    ).toBe('checking');
+    expect(
+      resolveKitStockStatus({
+        hasItemsToValidate: true,
+        isLoading: false,
+        isError: true,
+        hasData: false,
+        alertsCount: 0,
+      }),
+    ).toBe('unknown');
   });
 });

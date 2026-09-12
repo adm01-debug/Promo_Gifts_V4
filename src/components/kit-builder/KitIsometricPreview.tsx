@@ -7,7 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Package } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import type { KitState } from '@/lib/kit-builder/types';
+import { getKitItemLineId, type KitState } from '@/lib/kit-builder/types';
 
 interface KitIsometricPreviewProps {
   kitState: KitState;
@@ -111,7 +111,7 @@ export function KitIsometricPreview({ kitState, className }: KitIsometricPreview
       box.internalHeight,
       box.internalDepth,
       items.map((i) => ({
-        id: i.id,
+        id: getKitItemLineId(i),
         name: i.name,
         w: Math.max(i.width, 1),
         h: Math.max(i.height, 1),

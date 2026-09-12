@@ -7,7 +7,7 @@ import { Package, Box } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import type { KitState } from '@/lib/kit-builder';
+import { getKitItemLineId, type KitState } from '@/lib/kit-builder';
 
 interface KitVisualPreviewProps {
   kitState: KitState;
@@ -59,7 +59,7 @@ export function KitVisualPreview({ kitState }: KitVisualPreviewProps) {
               {items.map((item) => {
                 const relativeSize = Math.max(40, Math.min(80, (item.volume / maxItemVolume) * 80));
                 return (
-                  <div key={item.id} className="flex flex-col items-center gap-1">
+                  <div key={getKitItemLineId(item)} className="flex flex-col items-center gap-1">
                     <div
                       className="flex items-center justify-center overflow-hidden rounded-lg border bg-card shadow-sm"
                       style={{ width: relativeSize, height: relativeSize }}

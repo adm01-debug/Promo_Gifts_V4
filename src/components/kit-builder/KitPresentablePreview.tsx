@@ -8,7 +8,7 @@ import { Sparkles, Calendar, Package } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { formatCurrency, type KitState } from '@/lib/kit-builder';
+import { formatCurrency, getKitItemLineId, type KitState } from '@/lib/kit-builder';
 
 interface KitPresentablePreviewProps {
   kitState: KitState;
@@ -102,7 +102,7 @@ export function KitPresentablePreview({
               </div>
             )}
             {kitState.items.map((item) => (
-              <div key={item.id} className="space-y-2 rounded-lg border bg-card p-2">
+              <div key={getKitItemLineId(item)} className="space-y-2 rounded-lg border bg-card p-2">
                 <div className="flex aspect-square items-center justify-center overflow-hidden rounded-md bg-muted/40">
                   {item.imageUrl ? (
                     <img

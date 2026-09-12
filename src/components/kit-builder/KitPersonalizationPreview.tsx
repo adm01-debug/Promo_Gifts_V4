@@ -8,10 +8,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Sparkles, Package } from 'lucide-react';
+import { Sparkles, Package, Image as ImageIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { KitState } from '@/lib/kit-builder/types';
-import { formatCurrency } from '@/lib/kit-builder';
+import { formatCurrency, getKitItemLineId } from '@/lib/kit-builder';
 
 interface KitPersonalizationPreviewProps {
   kitState: KitState;
@@ -82,7 +82,9 @@ export function KitPersonalizationPreview({ kitState, className }: KitPersonaliz
             )}
 
             {itemPersEntries.map(([itemId, p]) => {
-              const item = kitState.items.find((i) => i.id === itemId);
+              const item = kitState.items.find(
+                (candidate) => getKitItemLineId(candidate) === itemId || candidate.id === itemId,
+              );
               if (!item) return null;
               return (
                 <div
@@ -93,6 +95,18 @@ export function KitPersonalizationPreview({ kitState, className }: KitPersonaliz
                   )}
                 >
                   <div className="flex min-w-0 items-center gap-2 text-sm">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded border bg-muted/40">
+                      {item.imageUrl ? (
+                        <img
+                          src={item.imageUrl}
+                          alt=""
+                          className="h-full w-full object-cover"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <ImageIcon className="h-3.5 w-3.5 text-muted-foreground" />
+                      )}
+                    </span>
                     <span className="truncate font-medium">{item.name}</span>
                     {p?.techniqueName && (
                       <Badge variant="outline" className="shrink-0 text-[10px]">

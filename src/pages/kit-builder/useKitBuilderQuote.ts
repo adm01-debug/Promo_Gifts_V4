@@ -2,7 +2,7 @@
  * useKitBuilderQuote — Lógica de criação de orçamento a partir do kit
  */
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -10,11 +10,13 @@ import { toast } from 'sonner';
 import { logger } from '@/lib/logger';
 import {
   calculateTotalKitPrice,
+  getKitItemLineId,
   type KitItem,
   type KitItemPersonalization,
   type KitState,
 } from '@/lib/kit-builder';
 import type { Json } from '@/integrations/supabase/types';
+import { newRequestId } from '@/lib/telemetry/requestId';
 
 export interface KitQuoteClient {
   client_cnpj?: string;
@@ -30,7 +32,10 @@ function toPersonalizationPayload(
 ): Record<string, Json> {
   const width = personalization.width ?? null;
   const height = personalization.height ?? null;
-  const unitCost = personalization.estimatedPrice ?? 0;
+  const unitCost = personalization.estimatedPrice;
+  if (typeof unitCost !== 'number' || !Number.isFinite(unitCost) || unitCost < 0) {
+    throw new Error('Preço de personalização indisponível para criação do orçamento');
+  }
   return {
     technique_id: personalization.techniqueId ?? null,
     technique_name: personalization.techniqueName ?? null,
@@ -45,6 +50,7 @@ function toPersonalizationPayload(
     setup_cost: 0,
     unit_cost: unitCost,
     total_cost: unitCost * quantity,
+    artwork_url: personalization.artworkUrl ?? null,
     notes: personalization.position ? `Posição: ${personalization.position}` : null,
   };
 }
@@ -55,13 +61,24 @@ function itemPersonalizationCost(
   kitQuantity: number,
 ): number {
   if (!personalization?.enabled) return 0;
-  return (personalization.estimatedPrice ?? 0) * item.quantity * kitQuantity;
+  if (
+    typeof personalization.estimatedPrice !== 'number' ||
+    !Number.isFinite(personalization.estimatedPrice) ||
+    personalization.estimatedPrice < 0
+  ) {
+    throw new Error('Preço de personalização indisponível para criação do orçamento');
+  }
+  return personalization.estimatedPrice * item.quantity * kitQuantity;
 }
 
 export function useKitBuilderQuote() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [isCreatingQuote, setIsCreatingQuote] = useState(false);
+  // State changes are asynchronous. This ref closes the interval between a
+  // double click and React rendering `isCreatingQuote=true`.
+  const createInFlightRef = useRef(false);
+  const retryableRequestRef = useRef<{ id: string; fingerprint: string } | null>(null);
 
   const handleAddToQuote = async (
     kitState: KitState,
@@ -74,7 +91,12 @@ export function useKitBuilderQuote() {
     }
 
     if (!kitState.isValid) return;
+    if (createInFlightRef.current) {
+      toast.info('A criação do orçamento já está em andamento.');
+      return;
+    }
 
+    createInFlightRef.current = true;
     setIsCreatingQuote(true);
     try {
       const kitLabel = kitState.name || 'Kit sem nome';
@@ -157,35 +179,57 @@ export function useKitBuilderQuote() {
           kit_group_id: kitGroupId,
           kit_name: kitLabel,
           personalization_cost: itemPersonalizationCost(
-            personRef.items[item.id],
+            personRef.items[getKitItemLineId(item)] ?? personRef.items[item.id],
             item,
             kitQuantity,
           ),
-          personalizations: personRef.items[item.id]?.enabled
-            ? [toPersonalizationPayload(personRef.items[item.id], item.quantity * kitQuantity)]
+          personalizations: (personRef.items[getKitItemLineId(item)] ?? personRef.items[item.id])
+            ?.enabled
+            ? [
+                toPersonalizationPayload(
+                  personRef.items[getKitItemLineId(item)] ?? personRef.items[item.id],
+                  item.quantity * kitQuantity,
+                ),
+              ]
             : [],
         });
       });
 
       if (quoteItems.length === 0) throw new Error('Kit sem itens para orçar');
 
-      // The canonical RPC inserts quote, items and personalizations in one
-      // transaction. The previous three client-side inserts could leave an
-      // orphan quote when the last insert failed.
-      const { data: quote, error: quoteError } = await supabase.rpc('create_quote_transactional', {
-        _quote: quotePayload as unknown as Json,
-        _items: quoteItems as unknown as Json,
-      });
+      // Retain the same idempotency key only for an exact retry after a
+      // transport error. Editing the kit creates a new semantic operation.
+      const fingerprint = JSON.stringify({ quote: quotePayload, items: quoteItems });
+      const requestId =
+        retryableRequestRef.current?.fingerprint === fingerprint
+          ? retryableRequestRef.current.id
+          : newRequestId();
+      retryableRequestRef.current = { id: requestId, fingerprint };
+
+      // This RPC wraps the existing transactional writer and records the
+      // request id. It makes a timeout/retry return the original quote rather
+      // than creating a second commercial document.
+      const { data, error: quoteError } = await supabase.rpc(
+        'create_kit_quote_transactional' as never,
+        {
+          _request_id: requestId,
+          _quote: quotePayload as unknown as Json,
+          _items: quoteItems as unknown as Json,
+        } as never,
+      );
+      const quote = data as { id?: string } | null;
 
       if (quoteError) throw quoteError;
       if (!quote?.id) throw new Error('A criação transacional não retornou o orçamento');
 
+      retryableRequestRef.current = null;
       toast.success(`Orçamento criado com sucesso!`);
       navigate(`/orcamentos/${quote.id}`);
     } catch (err) {
       logger.error('[Kit Quote] Error creating quote:', err);
       toast.error('Erro ao criar orçamento. Tente novamente.');
     } finally {
+      createInFlightRef.current = false;
       setIsCreatingQuote(false);
     }
   };

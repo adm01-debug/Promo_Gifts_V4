@@ -1,7 +1,10 @@
 import { getCorsHeaders } from '../_shared/cors.ts';
 import { authenticateRequest, requireRole, authErrorResponse } from '../_shared/auth.ts';
 import { parseContract } from '../_shared/contracts/index.ts';
-import { KitAiBuilderSchemas } from '../_shared/contracts/schemas/kit-ai-builder.ts';
+import {
+  KitAiBuilderSchemas,
+  KitAiBuilderSuggestion,
+} from '../_shared/contracts/schemas/kit-ai-builder.ts';
 import { safeErrorFields } from '../_shared/log-safety.ts';
 import { requireAiApiKey } from '../_shared/ai-credentials.ts';
 import { fetchWithBreaker, CircuitOpenError, circuitOpenResponse } from '../_shared/external-fetch.ts';
@@ -142,16 +145,34 @@ Use português do Brasil. Seja conciso e prático.`;
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
-    const suggestion = JSON.parse(argsStr);
+    let rawSuggestion: unknown;
+    try {
+      rawSuggestion = JSON.parse(argsStr);
+    } catch {
+      return new Response(JSON.stringify({ error: 'Resposta da IA em formato inválido' }), {
+        status: 502,
+        headers: { ...corsHeaders, ...responseHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    const parsedSuggestion = KitAiBuilderSuggestion.safeParse(rawSuggestion);
+    if (!parsedSuggestion.success) {
+      console.warn('kit-ai-builder invalid model output', {
+        issues: parsedSuggestion.error.issues.map((issue) => issue.path.join('.')),
+      });
+      return new Response(JSON.stringify({ error: 'Resposta da IA não pôde ser validada' }), {
+        status: 502,
+        headers: { ...corsHeaders, ...responseHeaders, 'Content-Type': 'application/json' },
+      });
+    }
 
-    return new Response(JSON.stringify({ suggestion }), {
+    return new Response(JSON.stringify({ suggestion: parsedSuggestion.data }), {
       status: 200,
       headers: { ...corsHeaders, ...responseHeaders, 'Content-Type': 'application/json' },
     });
   } catch (e) {
     console.error('kit-ai-builder error:', safeErrorFields(e));
     return new Response(
-      JSON.stringify({ error: e instanceof Error ? e.message : 'Erro desconhecido' }),
+      JSON.stringify({ error: 'Não foi possível gerar a sugestão agora. Tente novamente.' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
     );
   }
