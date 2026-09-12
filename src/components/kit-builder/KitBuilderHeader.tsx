@@ -24,6 +24,7 @@ import {
   Leaf,
   Trophy,
   Users,
+  AlertTriangle,
   type LucideIcon,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -62,6 +63,8 @@ interface KitBuilderHeaderProps {
   isSaving: boolean;
   isAutoSaving: boolean;
   lastSavedAt: Date | null;
+  autoSaveError?: string | null;
+  onRetryAutoSave?: () => void;
   hasContent: boolean;
   isExistingKit: boolean;
   canUndo: boolean;
@@ -91,6 +94,8 @@ export function KitBuilderHeader({
   isSaving,
   isAutoSaving,
   lastSavedAt,
+  autoSaveError,
+  onRetryAutoSave,
   hasContent,
   isExistingKit,
   canUndo,
@@ -175,6 +180,18 @@ export function KitBuilderHeader({
                 <Badge variant="outline" className="h-5 gap-1 text-[10px]">
                   <Loader2 className="h-2.5 w-2.5 animate-spin" /> Salvando…
                 </Badge>
+              )}
+              {autoSaveError && !isAutoSaving && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="h-5 gap-1 border-warning/40 px-1.5 text-[10px] text-warning hover:text-warning"
+                  onClick={onRetryAutoSave}
+                  title={autoSaveError}
+                >
+                  <AlertTriangle className="h-2.5 w-2.5" /> Rascunho não salvo — tentar novamente
+                </Button>
               )}
               {isValid && hasContent && !isAutoSaving && (
                 <Badge className="h-5 gap-1 border-success/30 bg-success/15 text-[10px] text-success hover:bg-success/20">

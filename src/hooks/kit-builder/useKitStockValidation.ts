@@ -27,6 +27,38 @@ export interface VariantStock {
   color_name: string | null;
 }
 
+const STOCK_PAGE_SIZE = 500;
+
+/** Fetch every active variant for this composition; never treat page one as stock truth. */
+export async function fetchKitStockVariants(productIds: string[]): Promise<VariantStock[]> {
+  const uniqueProductIds = [...new Set(productIds)];
+  if (uniqueProductIds.length === 0) return [];
+
+  const rows: VariantStock[] = [];
+  let offset = 0;
+  let expectedCount: number | null = null;
+
+  do {
+    const page = await dbInvoke<VariantStock>({
+      table: 'product_variants',
+      operation: 'select',
+      select: 'id, product_id, stock_quantity, color_name',
+      filters: { product_id: uniqueProductIds, is_active: true },
+      orderBy: { column: 'product_id', ascending: true },
+      secondaryOrderBy: { column: 'id', ascending: true },
+      limit: STOCK_PAGE_SIZE,
+      offset,
+      countMode: 'exact',
+    });
+    rows.push(...page.records);
+    expectedCount = page.count;
+    offset += page.records.length;
+    if (page.records.length === 0) break;
+  } while (expectedCount === null ? offset % STOCK_PAGE_SIZE === 0 : offset < expectedCount);
+
+  return rows;
+}
+
 export type KitStockStatus = 'available' | 'checking' | 'idle' | 'unavailable' | 'unknown';
 
 /** Pure status resolver kept separate so failure paths stay testable. */
@@ -61,9 +93,12 @@ export function evaluateKitStock(
   if (!stockData)
     return { stockByProduct: map, stockByVariant: variants, alerts: [] as StockAlert[] };
 
+  // A pagination race or an upstream duplicate must not inflate usable stock.
+  const uniqueVariants = new Map(stockData.map((variant) => [variant.id, variant]));
+
   // Keep the aggregate for products without a selected variant, while a selected
   // variant must be validated against its own stock rather than sibling colors/sizes.
-  for (const v of stockData) {
+  for (const v of uniqueVariants.values()) {
     const current = map.get(v.product_id) || 0;
     map.set(v.product_id, current + (v.stock_quantity ?? 0));
     variants.set(v.id, v.stock_quantity ?? 0);
@@ -87,17 +122,37 @@ export function evaluateKitStock(
     }
   }
 
+  const requiredByStockKey = new Map<
+    string,
+    { item: KitItem; required: number; lineIds: string[]; available: number }
+  >();
   for (const item of items) {
-    const available = item.selectedVariantId
-      ? (variants.get(item.selectedVariantId) ?? 0)
+    const selectedVariantId = item.selectedVariantId;
+    const key = selectedVariantId ? `variant:${selectedVariantId}` : `product:${item.id}`;
+    const available = selectedVariantId
+      ? (variants.get(selectedVariantId) ?? 0)
       : (map.get(item.id) ?? 0);
-    const required = item.quantity * kitQuantity;
+    const current = requiredByStockKey.get(key);
+    if (current) {
+      current.required += item.quantity * kitQuantity;
+      current.lineIds.push(getKitItemLineId(item));
+    } else {
+      requiredByStockKey.set(key, {
+        item,
+        required: item.quantity * kitQuantity,
+        lineIds: [getKitItemLineId(item)],
+        available,
+      });
+    }
+  }
+
+  for (const { item, required, available, lineIds } of requiredByStockKey.values()) {
     if (available < required) {
       result.push({
         itemId: item.id,
         itemName: item.name,
         sku: item.sku,
-        lineId: getKitItemLineId(item),
+        lineId: lineIds[0],
         required,
         available,
         deficit: required - available,
@@ -109,7 +164,7 @@ export function evaluateKitStock(
 }
 
 export function useKitStockValidation(items: KitItem[], box: KitBox | null, kitQuantity: number) {
-  const productIds = [...(box ? [box.id] : []), ...items.map((i) => i.id)];
+  const productIds = [...new Set([...(box ? [box.id] : []), ...items.map((i) => i.id)])];
 
   const {
     data: stockData,
@@ -121,15 +176,7 @@ export function useKitStockValidation(items: KitItem[], box: KitBox | null, kitQ
     queryFn: async () => {
       if (productIds.length === 0) return [];
 
-      const result = await dbInvoke<VariantStock>({
-        table: 'product_variants',
-        operation: 'select',
-        select: 'id, product_id, stock_quantity, color_name',
-        filters: { product_id: productIds, is_active: true },
-        limit: 500,
-      });
-
-      return result.records;
+      return fetchKitStockVariants(productIds);
     },
     enabled: productIds.length > 0,
     staleTime: 60_000,

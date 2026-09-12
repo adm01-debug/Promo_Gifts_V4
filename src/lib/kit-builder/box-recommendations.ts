@@ -38,6 +38,7 @@ export function evaluateBoxForItems(box: KitBox, items: KitItem[]): BoxRecommend
   }
 
   const positioned: KitItem[] = [];
+  let hasUnverifiedCompatibility = box.dimensionsKnown === false;
   let hasUnknownMeasurements = box.dimensionsKnown === false;
 
   for (const item of items) {
@@ -54,6 +55,7 @@ export function evaluateBoxForItems(box: KitBox, items: KitItem[]): BoxRecommend
         availableVolume: Math.max(0, calculateUsableVolume(box) - calculateTotalItemsVolume(items)),
       };
     }
+    hasUnverifiedCompatibility ||= compatibility.confidence !== 'verified';
     hasUnknownMeasurements ||= compatibility.confidence === 'unknown';
     positioned.push(item);
   }
@@ -63,12 +65,13 @@ export function evaluateBoxForItems(box: KitBox, items: KitItem[]): BoxRecommend
   const usagePercent = calculateVolumeUsagePercent(totalVolume, box.internalVolume);
   return {
     box,
-    status: hasUnknownMeasurements ? 'inconclusive' : 'compatible',
-    compatibility: hasUnknownMeasurements
+    status: hasUnverifiedCompatibility ? 'inconclusive' : 'compatible',
+    compatibility: hasUnverifiedCompatibility
       ? {
-          confidence: 'unknown',
+          confidence: hasUnknownMeasurements ? 'unknown' : 'estimated',
           fits: true,
-          reason: 'Há itens sem medidas confirmadas; confira a embalagem antes de aprovar.',
+          reason:
+            'Há medidas ou um arranjo físico ainda não certificados; confira a embalagem antes de aprovar.',
           percentAfterAdd: usagePercent,
           volumeAfterAdd: totalVolume,
         }

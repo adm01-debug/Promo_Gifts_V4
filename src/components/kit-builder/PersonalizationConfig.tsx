@@ -53,7 +53,7 @@ interface PersonalizationConfigProps {
 }
 
 /** Flattened technique with location info */
-interface FlatTechnique {
+export interface FlatTechnique {
   technique_id: string;
   tecnica_nome: string;
   grupo_tecnica: string;
@@ -64,6 +64,41 @@ interface FlatTechnique {
   usa_dimensao: boolean;
   efetiva_largura_max: number;
   efetiva_altura_max: number;
+}
+
+function clampConfiguredDimension(value: number | undefined, maximum: number): number | undefined {
+  if (!Number.isFinite(value) || (value ?? 0) <= 0) return undefined;
+  return Math.min(value!, maximum);
+}
+
+/**
+ * A quotation price is only valid for the exact technique, color count and
+ * artwork dimensions it was calculated from. Centralising the reset avoids a
+ * stale price being carried from a previous configuration into the quote.
+ */
+export function reconcilePersonalizationForTechnique(
+  personalization: KitItemPersonalization,
+  technique: FlatTechnique,
+): KitItemPersonalization {
+  return {
+    ...personalization,
+    techniqueId: technique.technique_id,
+    techniqueName: technique.tecnica_nome,
+    techniqueCode: technique.codigo_tabela,
+    positionCode: technique.location_code,
+    positionName: technique.location_name,
+    position: technique.location_name,
+    colors: Math.min(personalization.colors || 1, technique.max_cores),
+    width: technique.usa_dimensao
+      ? clampConfiguredDimension(personalization.width, technique.efetiva_largura_max) ??
+        technique.efetiva_largura_max
+      : undefined,
+    height: technique.usa_dimensao
+      ? clampConfiguredDimension(personalization.height, technique.efetiva_altura_max) ??
+        technique.efetiva_altura_max
+      : undefined,
+    estimatedPrice: undefined,
+  };
 }
 
 function flattenTechniques(locations: GravacaoLocation[]): FlatTechnique[] {
@@ -167,24 +202,12 @@ function ItemPersonalizationCard({
       (candidate) => `${candidate.technique_id}:${candidate.location_code}` === selectionId,
     );
     if (tech) {
-      onChange({
-        ...personalization,
-        techniqueId: tech.technique_id,
-        techniqueName: tech.tecnica_nome,
-        techniqueCode: tech.codigo_tabela,
-        positionCode: tech.location_code,
-        positionName: tech.location_name,
-        position: tech.location_name,
-        colors: Math.min(personalization.colors || 1, tech.max_cores),
-        width: personalization.width || (tech.usa_dimensao ? tech.efetiva_largura_max : undefined),
-        height: personalization.height || (tech.usa_dimensao ? tech.efetiva_altura_max : undefined),
-        estimatedPrice: undefined,
-      });
+      onChange(reconcilePersonalizationForTechnique(personalization, tech));
     }
   };
 
   const handleColorsChange = (colors: number) => {
-    onChange({ ...personalization, colors });
+    onChange({ ...personalization, colors, estimatedPrice: undefined });
   };
 
   const maxColors = currentTech?.max_cores || 6;
@@ -366,6 +389,7 @@ function ItemPersonalizationCard({
                               Number.isFinite(value) && value > 0
                                 ? Math.min(value, currentTech.efetiva_largura_max)
                                 : undefined,
+                            estimatedPrice: undefined,
                           });
                         }}
                       />
@@ -391,6 +415,7 @@ function ItemPersonalizationCard({
                               Number.isFinite(value) && value > 0
                                 ? Math.min(value, currentTech.efetiva_altura_max)
                                 : undefined,
+                            estimatedPrice: undefined,
                           });
                         }}
                       />

@@ -67,6 +67,7 @@ describe('useKitBuilderQuote — payloads', () => {
   });
 
   afterEach(() => {
+    window.sessionStorage.clear();
     vi.doUnmock('@/integrations/supabase/client');
     vi.doUnmock('@/contexts/AuthContext');
     vi.clearAllMocks();
@@ -181,5 +182,55 @@ describe('useKitBuilderQuote — payloads', () => {
         artwork_url: 'https://example.test/personalization-images/kit-maker/artwork/logo.png',
       }),
     ]);
+    expect(item.artwork_urls).toEqual([
+      'https://example.test/personalization-images/kit-maker/artwork/logo.png',
+    ]);
+  });
+
+  it('reutiliza a mesma operação e agrupamento após timeout sem editar o kit', async () => {
+    const useHook = await loadHook({ user: { id: USER_ID } });
+    const rpc = vi.mocked(mock.client.rpc);
+    rpc
+      .mockResolvedValueOnce({ data: null, error: { message: 'Resposta perdida após commit' } })
+      .mockResolvedValueOnce({ data: { id: 'quote-retomado', quote_number: 'ORC-002' }, error: null });
+
+    const { result } = renderHook(() => useHook());
+    await act(async () => {
+      await result.current.handleAddToQuote(KIT_STATE, 2);
+    });
+    await act(async () => {
+      await result.current.handleAddToQuote(KIT_STATE, 2);
+    });
+
+    const calls = rpc.mock.calls
+      .filter(([fn]) => fn === 'create_kit_quote_transactional')
+      .map(([fn, args]) => ({ fn, args }));
+    expect(calls).toHaveLength(2);
+    expect(calls[1].args?._request_id).toBe(calls[0].args?._request_id);
+    expect(calls[1].args?._items).toEqual(calls[0].args?._items);
+  });
+
+  it('preserva tamanho e identidade de variante no payload de linha', async () => {
+    const useHook = await loadHook({ user: { id: USER_ID } });
+    const state = {
+      ...KIT_STATE,
+      items: [
+        {
+          ...KIT_STATE.items[0],
+          selectedVariantId: 'variant-black-g',
+          selectedSize: 'G',
+        },
+      ],
+    } as KitState;
+    const { result } = renderHook(() => useHook());
+
+    await act(async () => {
+      await result.current.handleAddToQuote(state, 1);
+    });
+
+    const rpc = mock.calls.rpc.find((call) => call.fn === 'create_kit_quote_transactional');
+    const item = (rpc!.args!._items as Array<Record<string, unknown>>)[1];
+    expect(item.size_code).toBe('G');
+    expect(item.product_variant_id).toBe('variant-black-g');
   });
 });

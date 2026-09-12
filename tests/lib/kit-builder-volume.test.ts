@@ -14,6 +14,8 @@ import {
   formatDimensions,
   getVolumeStatusColor,
   getVolumeStatusLabel,
+  parseDimensionsString,
+  extractProductDimensions,
 } from "@/lib/kit-builder/volume-calculator";
 import type { KitBox, KitItem } from "@/lib/kit-builder/types";
 
@@ -105,6 +107,52 @@ describe("kit-builder volume-calculator", () => {
       expect(result.fits).toBe(true);
       expect(result.confidence).toBe("unknown");
       expect(result.reason).toContain("pendente");
+    });
+
+    it("does not present volume alone as proof for two cubes that cannot share the box", () => {
+      const tightBox: KitBox = {
+        ...mockBox,
+        internalWidth: 10,
+        internalHeight: 10,
+        internalDepth: 10,
+        internalVolume: 1000,
+      };
+      const cube: KitItem = {
+        ...smallItem,
+        width: 7,
+        height: 7,
+        depth: 7,
+        volume: 343,
+      };
+
+      const result = checkItemFits(cube, tightBox, [cube], 1);
+
+      expect(result).toMatchObject({ fits: true, confidence: "estimated" });
+      expect(result.reason).toContain("arranjo físico");
+    });
+  });
+
+  describe("dimension parsing", () => {
+    it("parses Brazilian decimal separators", () => {
+      expect(parseDimensionsString("10,5 x 20 x 5 cm")).toEqual({
+        width: 10.5,
+        height: 20,
+        depth: 5,
+      });
+    });
+
+    it("converts explicit millimetres into centimetres", () => {
+      expect(parseDimensionsString("105 x 200 x 50 mm")).toEqual({
+        width: 10.5,
+        height: 20,
+        depth: 5,
+      });
+    });
+
+    it("does not invent a third dimension from incomplete catalog JSON", () => {
+      expect(
+        extractProductDimensions({ dimensions: { width_cm: 10, height_cm: 20 } }),
+      ).toBeNull();
     });
   });
 

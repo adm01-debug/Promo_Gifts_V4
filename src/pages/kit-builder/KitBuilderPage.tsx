@@ -114,6 +114,10 @@ export default function KitBuilderPage() {
             isSaving={meta.isSaving}
             isAutoSaving={meta.isAutoSaving}
             lastSavedAt={meta.lastSavedAt}
+            autoSaveError={meta.autoSaveError}
+            onRetryAutoSave={() => {
+              void actions.retryAutoSave();
+            }}
             hasContent={!!state.kitState.box || state.kitState.items.length > 0}
             isExistingKit={!!(state.currentKitId || state.autoSavedKitId)}
             canUndo={actions.canUndo}

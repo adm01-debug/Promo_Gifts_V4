@@ -176,7 +176,12 @@ export interface KitState {
 
 export interface CompatibilityResult {
   fits: boolean;
-  confidence?: 'unknown' | 'verified';
+  /**
+   * `verified` is reserved for a single item or a composition for which this
+   * client could construct a non-overlapping placement.  A volume-only check
+   * is useful for ranking, but it must never be presented as a packing proof.
+   */
+  confidence?: 'estimated' | 'unknown' | 'verified';
   reason?: string;
   volumeAfterAdd?: number;
   percentAfterAdd?: number;

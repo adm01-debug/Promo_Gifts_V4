@@ -47,6 +47,19 @@ describe('evaluateKitStock', () => {
 
     expect(result.alerts).toHaveLength(0);
   });
+
+  it('agrega a demanda de linhas repetidas antes de aprovar o estoque da variante', () => {
+    const result = evaluateKitStock(
+      [{ id: 'variant-black', product_id: 'product-1', stock_quantity: 5, color_name: 'Preto' }],
+      [{ ...selectedItem, quantity: 3 }, { ...selectedItem, quantity: 3, lineId: 'second-line' }],
+      null,
+      1,
+    );
+
+    expect(result.alerts).toEqual([
+      expect.objectContaining({ itemId: 'product-1', required: 6, available: 5, deficit: 1 }),
+    ]);
+  });
 });
 
 describe('resolveKitStockStatus', () => {

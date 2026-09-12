@@ -74,4 +74,19 @@ describe('Kit Maker public catalog contracts', () => {
     expect(isCanonicalPackagingProduct(packaging)).toBe(true);
     expect(isKitSelectableProduct(packaging)).toBe(false);
   });
+
+  it('does not discard a valid product merely because its shipping metadata mentions caixa', async () => {
+    const { isKitSelectableProduct } = await import('@/hooks/kit-builder/useKitBuilderQueries');
+    const product = {
+      id: 'p-shipping-box',
+      name: 'Garrafa com embalagem',
+      sku: 'GAR-BOX',
+      sale_price: 49.9,
+      primary_image_url: null,
+      packing_type: 'caixa de transporte',
+      product_type: 'product',
+    } satisfies ExternalProductForKit;
+
+    expect(isKitSelectableProduct(product)).toBe(true);
+  });
 });

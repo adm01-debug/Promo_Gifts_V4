@@ -26,6 +26,66 @@ export interface KitQuoteClient {
   client_phone?: string;
 }
 
+interface RetryableQuoteOperation {
+  id: string;
+  fingerprint: string;
+  kitGroupId: string;
+}
+
+const QUOTE_RETRY_STORAGE_PREFIX = 'kit-maker:quote-retry:';
+
+/**
+ * Session-scoped retry receipts survive a refresh after the server commits but
+ * before the browser receives the response.  The key contains only a compact
+ * deterministic hash, never the quote payload or client details.
+ *
+ * The database still owns correctness: if a (very unlikely) hash collision
+ * selected the wrong request id, create_kit_quote_transactional rejects the
+ * different payload hash instead of producing a second quote.
+ */
+function fingerprintKey(fingerprint: string): string {
+  let hash = 0x811c9dc5;
+  for (let index = 0; index < fingerprint.length; index += 1) {
+    hash ^= fingerprint.charCodeAt(index);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return `${QUOTE_RETRY_STORAGE_PREFIX}${(hash >>> 0).toString(16)}`;
+}
+
+function readRetryReceipt(fingerprint: string): RetryableQuoteOperation | null {
+  try {
+    const raw = globalThis.sessionStorage?.getItem(fingerprintKey(fingerprint));
+    if (!raw) return null;
+    const value = JSON.parse(raw) as Partial<RetryableQuoteOperation>;
+    if (
+      value.fingerprint === fingerprint &&
+      typeof value.id === 'string' &&
+      typeof value.kitGroupId === 'string'
+    ) {
+      return { id: value.id, fingerprint, kitGroupId: value.kitGroupId };
+    }
+  } catch {
+    // Storage can be disabled by the browser. In-memory retry remains safe.
+  }
+  return null;
+}
+
+function writeRetryReceipt(operation: RetryableQuoteOperation): void {
+  try {
+    globalThis.sessionStorage?.setItem(fingerprintKey(operation.fingerprint), JSON.stringify(operation));
+  } catch {
+    // An unavailable storage must not prevent a commercially valid submission.
+  }
+}
+
+function clearRetryReceipt(fingerprint: string): void {
+  try {
+    globalThis.sessionStorage?.removeItem(fingerprintKey(fingerprint));
+  } catch {
+    // Best-effort cleanup only; the server checks the full payload hash.
+  }
+}
+
 function toPersonalizationPayload(
   personalization: KitItemPersonalization,
   quantity: number,
@@ -78,7 +138,7 @@ export function useKitBuilderQuote() {
   // State changes are asynchronous. This ref closes the interval between a
   // double click and React rendering `isCreatingQuote=true`.
   const createInFlightRef = useRef(false);
-  const retryableRequestRef = useRef<{ id: string; fingerprint: string } | null>(null);
+  const retryableRequestRef = useRef<RetryableQuoteOperation | null>(null);
 
   const handleAddToQuote = async (
     kitState: KitState,
@@ -133,7 +193,9 @@ export function useKitBuilderQuote() {
         },
       };
 
-      const kitGroupId = crypto.randomUUID();
+      // Build the semantic payload before allocating an operation id. A random
+      // kit_group_id used to be included in this fingerprint, so a retry after
+      // a lost response was incorrectly treated as a new quote.
       const quoteItems: Array<Record<string, Json | undefined>> = [];
 
       // Add box if present
@@ -151,7 +213,6 @@ export function useKitBuilderQuote() {
           notes: 'Caixa/embalagem do kit',
           color_name: null,
           color_hex: null,
-          kit_group_id: kitGroupId,
           kit_name: kitLabel,
           personalization_cost: personRef.box.enabled
             ? (personRef.box.estimatedPrice ?? 0) * kitQuantity
@@ -176,8 +237,15 @@ export function useKitBuilderQuote() {
           notes: item.isOptional ? 'Item opcional' : null,
           color_name: item.selectedColor?.name || null,
           color_hex: item.selectedColor?.hex || null,
-          kit_group_id: kitGroupId,
           kit_name: kitLabel,
+          size_code: item.selectedSize || null,
+          product_variant_id: item.selectedVariantId || null,
+          artwork_urls: (() => {
+            const artworkUrl = (
+              personRef.items[getKitItemLineId(item)] ?? personRef.items[item.id]
+            )?.artworkUrl;
+            return artworkUrl ? [artworkUrl] : [];
+          })(),
           personalization_cost: itemPersonalizationCost(
             personRef.items[getKitItemLineId(item)] ?? personRef.items[item.id],
             item,
@@ -200,19 +268,29 @@ export function useKitBuilderQuote() {
       // Retain the same idempotency key only for an exact retry after a
       // transport error. Editing the kit creates a new semantic operation.
       const fingerprint = JSON.stringify({ quote: quotePayload, items: quoteItems });
-      const requestId =
+      const operation =
         retryableRequestRef.current?.fingerprint === fingerprint
-          ? retryableRequestRef.current.id
-          : newRequestId();
-      retryableRequestRef.current = { id: requestId, fingerprint };
+          ? retryableRequestRef.current
+          : readRetryReceipt(fingerprint) ?? {
+              id: newRequestId(),
+              fingerprint,
+              kitGroupId: newRequestId(),
+            };
+      retryableRequestRef.current = operation;
+      writeRetryReceipt(operation);
+
+      const requestItems = quoteItems.map((item) => ({
+        ...item,
+        kit_group_id: operation.kitGroupId,
+      }));
 
       // This RPC wraps the existing transactional writer and records the
       // request id. It makes a timeout/retry return the original quote rather
       // than creating a second commercial document.
       const { data, error: quoteError } = await supabase.rpc('create_kit_quote_transactional', {
-        _request_id: requestId,
+        _request_id: operation.id,
         _quote: quotePayload as unknown as Json,
-        _items: quoteItems as unknown as Json,
+        _items: requestItems as unknown as Json,
       });
       const quote = data;
 
@@ -220,6 +298,7 @@ export function useKitBuilderQuote() {
       if (!quote?.id) throw new Error('A criação transacional não retornou o orçamento');
 
       retryableRequestRef.current = null;
+      clearRetryReceipt(fingerprint);
       toast.success(`Orçamento criado com sucesso!`);
       navigate(`/orcamentos/${quote.id}`);
     } catch (err) {

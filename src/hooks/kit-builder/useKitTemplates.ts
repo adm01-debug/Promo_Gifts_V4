@@ -35,7 +35,12 @@ export function useKitTemplates() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
-  const { data: templates = [], isLoading } = useQuery({
+  const {
+    data: templates = [],
+    isLoading,
+    error: templatesError,
+    refetch: refetchTemplates,
+  } = useQuery({
     queryKey: QUERY_KEY,
     queryFn: async () => {
       const { data, error } = await supabase
@@ -103,6 +108,8 @@ export function useKitTemplates() {
   return {
     templates,
     isLoading,
+    templatesError: templatesError instanceof Error ? templatesError.message : null,
+    refetchTemplates,
     cloneTemplate: cloneMutation.mutateAsync,
     isCloning: cloneMutation.isPending,
   };

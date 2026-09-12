@@ -35,7 +35,7 @@ export function ItemCard({
 }: ItemCardProps) {
   const fits = item.compatibility?.fits !== false;
   const cantFit = boxSelected && !fits;
-  const compatibilityUnknown = boxSelected && item.compatibility?.confidence === 'unknown';
+  const compatibilityPending = boxSelected && item.compatibility?.confidence !== 'verified';
 
   return (
     <Card
@@ -87,17 +87,17 @@ export function ItemCard({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Badge
-                  variant={fits && !compatibilityUnknown ? 'secondary' : 'destructive'}
+                  variant={fits && !compatibilityPending ? 'secondary' : 'destructive'}
                   className={cn(
                     'text-xs',
                     fits &&
-                      !compatibilityUnknown &&
+                      !compatibilityPending &&
                       'bg-primary/10 text-primary hover:bg-primary/20 dark:text-primary',
-                    compatibilityUnknown &&
+                    compatibilityPending &&
                       'border-warning/30 bg-warning/10 text-warning hover:bg-warning/15',
                   )}
                 >
-                  {compatibilityUnknown ? (
+                  {compatibilityPending ? (
                     <>
                       <Package className="mr-1 h-3 w-3" />
                       PENDENTE
@@ -115,7 +115,7 @@ export function ItemCard({
                   )}
                 </Badge>
               </TooltipTrigger>
-              {item.compatibility?.reason && (compatibilityUnknown || !fits) && (
+              {item.compatibility?.reason && (compatibilityPending || !fits) && (
                 <TooltipContent>
                   <p className="max-w-[200px]">{item.compatibility.reason}</p>
                 </TooltipContent>

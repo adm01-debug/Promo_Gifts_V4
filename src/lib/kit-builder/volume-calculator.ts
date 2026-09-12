@@ -15,6 +15,112 @@ const PACKING_EFFICIENCY = 0.75; // 75% de eficiência
 // Limite de alerta de volume
 const VOLUME_WARNING_THRESHOLD = 0.85; // 85%
 
+type Dimensions = { width: number; height: number; depth: number };
+
+interface FreeSpace extends Dimensions {
+  x: number;
+  y: number;
+  z: number;
+}
+
+function canFitInSpace(item: Dimensions, space: Dimensions): boolean {
+  const itemSides = [item.width, item.height, item.depth].sort((a, b) => a - b);
+  const spaceSides = [space.width, space.height, space.depth].sort((a, b) => a - b);
+  return itemSides.every((side, index) => side <= spaceSides[index]);
+}
+
+function orientedDimensions(item: Dimensions, space: Dimensions): Dimensions | null {
+  const values = [item.width, item.height, item.depth];
+  const seen = new Set<string>();
+  for (const [width, height, depth] of [
+    [values[0], values[1], values[2]],
+    [values[0], values[2], values[1]],
+    [values[1], values[0], values[2]],
+    [values[1], values[2], values[0]],
+    [values[2], values[0], values[1]],
+    [values[2], values[1], values[0]],
+  ]) {
+    const key = `${width}:${height}:${depth}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    if (width <= space.width && height <= space.height && depth <= space.depth) {
+      return { width, height, depth };
+    }
+  }
+  return null;
+}
+
+/**
+ * A conservative guillotine packer. It only certifies a composition when it
+ * actually finds a placement; failure deliberately means "estimated", not
+ * "does not fit", because this lightweight client solver is not exhaustive.
+ */
+function canConstructPlacement(items: KitItem[], box: KitBox): boolean {
+  const units = items
+    .flatMap((item) =>
+      Array.from({ length: item.quantity }, () => ({
+        width: item.width,
+        height: item.height,
+        depth: item.depth,
+        volume: item.volume,
+      })),
+    )
+    .sort((left, right) => right.volume - left.volume);
+  const spaces: FreeSpace[] = [
+    {
+      x: 0,
+      y: 0,
+      z: 0,
+      width: box.internalWidth,
+      height: box.internalHeight,
+      depth: box.internalDepth,
+    },
+  ];
+
+  for (const unit of units) {
+    const spaceIndex = spaces.findIndex((space) => canFitInSpace(unit, space));
+    if (spaceIndex === -1) return false;
+
+    const space = spaces.splice(spaceIndex, 1)[0];
+    const placed = orientedDimensions(unit, space);
+    if (!placed) return false;
+
+    const candidates: FreeSpace[] = [
+      {
+        x: space.x + placed.width,
+        y: space.y,
+        z: space.z,
+        width: space.width - placed.width,
+        height: space.height,
+        depth: space.depth,
+      },
+      {
+        x: space.x,
+        y: space.y + placed.height,
+        z: space.z,
+        width: placed.width,
+        height: space.height - placed.height,
+        depth: space.depth,
+      },
+      {
+        x: space.x,
+        y: space.y,
+        z: space.z + placed.depth,
+        width: placed.width,
+        height: placed.height,
+        depth: space.depth - placed.depth,
+      },
+    ];
+    spaces.push(
+      ...candidates.filter(
+        (candidate) => candidate.width > 0 && candidate.height > 0 && candidate.depth > 0,
+      ),
+    );
+  }
+
+  return true;
+}
+
 // ============================================
 // CÁLCULOS BÁSICOS
 // ============================================
@@ -103,6 +209,22 @@ export function checkItemFits(
     };
   }
 
+  // A volume check alone cannot prove that several cuboids can occupy the
+  // same box (e.g. two 7 cm cubes in a 10 cm cube). Certify only an actual
+  // constructive layout; otherwise retain a transparent pending state.
+  const composedItems = [...existingItems, { ...item, quantity }];
+  const hasMultipleUnits = composedItems.reduce((sum, candidate) => sum + candidate.quantity, 0) > 1;
+  if (hasMultipleUnits && !canConstructPlacement(composedItems, box)) {
+    return {
+      fits: true,
+      confidence: 'estimated',
+      reason:
+        'O volume é compatível, mas o arranjo físico completo precisa de conferência antes da aprovação.',
+      volumeAfterAdd: totalVolumeAfter,
+      percentAfterAdd,
+    };
+  }
+
   return {
     fits: true,
     confidence: 'verified',
@@ -184,17 +306,23 @@ export function parseDimensionsString(
     .toLowerCase()
     .replace(/\s+/g, '')
     .replace(/\u00d7/g, 'x')
-    .replace(/×/g, 'x')
-    .replace(/cm/g, '');
+    .replace(/×/g, 'x');
+
+  const unit = /mm\b/.test(normalized) ? 'mm' : 'cm';
+  const values = normalized.replace(/(?:cm|mm)\b/g, '');
 
   // Tenta match com padrão NxNxN
-  const match = /(\d+(?:\.\d+)?)[x\u00d7](\d+(?:\.\d+)?)[x\u00d7](\d+(?:\.\d+)?)/.exec(normalized);
+  const match = /(\d+(?:[.,]\d+)?)[x\u00d7](\d+(?:[.,]\d+)?)[x\u00d7](\d+(?:[.,]\d+)?)/.exec(values);
 
   if (match) {
+    const convert = (value: string) => {
+      const parsed = Number.parseFloat(value.replace(',', '.'));
+      return unit === 'mm' ? parsed / 10 : parsed;
+    };
     return {
-      width: parseFloat(match[1]),
-      height: parseFloat(match[2]),
-      depth: parseFloat(match[3]),
+      width: convert(match[1]),
+      height: convert(match[2]),
+      depth: convert(match[3]),
     };
   }
 
@@ -260,13 +388,8 @@ export function extractProductDimensions(product: {
         depth: dims.length_cm,
       };
     }
-    if (dims.width_cm && dims.height_cm) {
-      return {
-        width: dims.width_cm,
-        height: dims.height_cm,
-        depth: dims.length_cm || Math.min(dims.width_cm, dims.height_cm) * 0.5,
-      };
-    }
+    // Two dimensions are not enough to certify packing. The transformer will
+    // display an estimate separately instead of inventing a third dimension.
   }
 
   // Por fim tenta parsear string de dimensões

@@ -144,8 +144,21 @@ export function KitAIPromptDialog({ onApply }: KitAIPromptDialogProps) {
     toast.success('Sugestão aplicada como filtros — revise produtos e valores antes de continuar.');
   };
 
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!nextOpen) {
+      // A response that arrives after closing the dialog belongs to a dead
+      // interaction. Invalidate it before a user can reopen and generate a
+      // new briefing, otherwise the old suggestion may overwrite the new one.
+      latestGenerationRef.current += 1;
+      generationInFlightRef.current = false;
+      setLoading(false);
+      setSuggestion(null);
+    }
+    setOpen(nextOpen);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm" className="gap-1.5">
           <Wand2 className="h-3.5 w-3.5 text-primary" />

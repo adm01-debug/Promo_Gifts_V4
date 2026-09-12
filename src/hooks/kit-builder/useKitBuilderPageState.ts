@@ -137,6 +137,8 @@ export function useKitBuilderPageState() {
     lastSavedAt,
     isSaving: isAutoSaving,
     autoSavedKitId,
+    autoSaveError,
+    retryLastSave,
     cancelPendingSave,
   } = useKitAutoSave(
     kitState,
@@ -408,6 +410,7 @@ export function useKitBuilderPageState() {
       canUndo,
       canRedo,
       handleSaveKit,
+      retryAutoSave: retryLastSave,
       handleAddToQuote,
       applyAISuggestion,
       startFlow,
@@ -417,6 +420,7 @@ export function useKitBuilderPageState() {
       isAutoSaving,
       isCreatingQuote,
       lastSavedAt,
+      autoSaveError,
       pricing,
     },
   };

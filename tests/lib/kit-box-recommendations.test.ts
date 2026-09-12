@@ -59,4 +59,16 @@ describe('box recommendations', () => {
       compatibility: { fits: true, confidence: 'unknown' },
     });
   });
+
+  it('não ranqueia como compatível uma composição que só passou no volume', () => {
+    const result = evaluateBoxForItems(box('apertada', [10, 10, 10]), [
+      item('cubo-a', [7, 7, 7]),
+      item('cubo-b', [7, 7, 7]),
+    ]);
+
+    expect(result).toMatchObject({
+      status: 'inconclusive',
+      compatibility: { fits: true, confidence: 'estimated' },
+    });
+  });
 });
