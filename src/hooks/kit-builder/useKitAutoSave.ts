@@ -23,6 +23,8 @@ interface AutoSaveResult {
   lastSavedAt: Date | null;
   isSaving: boolean;
   autoSavedKitId: string | null;
+  /** Cancels a debounced save before the explicit save action takes ownership. */
+  cancelPendingSave: () => void;
 }
 
 export function useKitAutoSave(
@@ -41,6 +43,9 @@ export function useKitAutoSave(
   const snapshotRef = useRef<string>('');
   const isFirstRender = useRef(true);
   const wasEnabledRef = useRef(enabled);
+  const saveInFlightRef = useRef(false);
+  const saveQueuedRef = useRef(false);
+  const saveToDbRef = useRef<(() => Promise<void>) | null>(null);
 
   /**
    * BUG-11 FIX: usar refs para dependencias instaveis.
@@ -78,11 +83,20 @@ export function useKitAutoSave(
 
     if (!user?.id || !enabledRef.current) return;
 
+    // A slow network must not allow overlapping autosaves with the same
+    // revision. Keep at most one trailing save, which always reads the newest
+    // state from refs below.
+    if (saveInFlightRef.current) {
+      saveQueuedRef.current = true;
+      return;
+    }
+
     // Don't auto-save empty kits
     if (!currentKitState.box && currentKitState.items.length === 0) return;
 
     const payload = buildKitPersistencePayload(user.id, currentKitState, currentKitQuantity);
 
+    saveInFlightRef.current = true;
     setIsSaving(true);
     try {
       const kitId = autoSavedKitIdRef.current || currentKitId;
@@ -99,9 +113,26 @@ export function useKitAutoSave(
     } catch (err) {
       logger.warn('[auto-save] Failed:', err);
     } finally {
+      saveInFlightRef.current = false;
       setIsSaving(false);
+      if (saveQueuedRef.current) {
+        saveQueuedRef.current = false;
+        queueMicrotask(() => {
+          void saveToDbRef.current?.();
+        });
+      }
     }
   }, [user?.id, currentKitId]); // FIX: removidos kitState, kitQuantity, onKitIdCreated
+
+  saveToDbRef.current = saveToDb;
+
+  const cancelPendingSave = useCallback(() => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = undefined;
+    }
+    saveQueuedRef.current = false;
+  }, []);
 
   // Snapshot effect: agenda o timer quando o estado muda de forma relevante
   useEffect(() => {
@@ -177,5 +208,5 @@ export function useKitAutoSave(
     revisionRef.current = currentRevision;
   }, [currentRevision]);
 
-  return { lastSavedAt, isSaving, autoSavedKitId };
+  return { lastSavedAt, isSaving, autoSavedKitId, cancelPendingSave };
 }

@@ -9,7 +9,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Clickable } from '@/components/shared/Clickable';
 import { BoxCardSkeleton } from './KitCardSkeleton';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Slider } from '@/components/ui/slider';
@@ -501,18 +500,17 @@ export function BoxSelector({
                     ? 'Validação pendente'
                     : 'Não compatível';
 
+              const isSelectable = recommendation.status !== 'incompatible';
+
               return (
-                <Clickable
-                  as={Card}
+                <Card
                   key={box.id}
-                  aria-label={`Selecionar caixa ${box.name}`}
-                  showFocusRing={false}
                   className={cn(
-                    'group cursor-pointer rounded-xl border-border/50 transition-all duration-200 will-change-transform',
-                    'hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg',
-                    'focus-within:ring-2 focus-within:ring-primary/60',
+                    'group rounded-xl border-border/50 transition-all duration-200 will-change-transform',
+                    isSelectable &&
+                      'focus-within:ring-2 focus-within:ring-primary/60 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg',
+                    !isSelectable && 'opacity-75',
                   )}
-                  onClick={() => onSelect(box)}
                 >
                   <CardContent className="p-4">
                     <div className="flex gap-3">
@@ -556,33 +554,65 @@ export function BoxSelector({
                           {formatCurrency(box.price)}
                         </p>
                         {shouldExplain && (
-                          <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                            <Badge
-                              variant={
-                                recommendation.status === 'incompatible'
-                                  ? 'destructive'
-                                  : 'secondary'
-                              }
-                              className={cn(
-                                'text-[10px]',
-                                recommendation.status === 'compatible' &&
-                                  'bg-success/10 text-success',
-                                recommendation.status === 'inconclusive' &&
-                                  'bg-warning/10 text-warning',
-                              )}
-                              title={recommendation.compatibility.reason}
+                          <div className="mt-3 space-y-2">
+                            <div
+                              className="h-1.5 overflow-hidden rounded-full bg-muted"
+                              aria-label={`Ocupação estimada: ${Math.round(recommendation.usagePercent)}%`}
                             >
-                              {statusLabel}
-                            </Badge>
-                            <span className="text-[10px] text-muted-foreground">
-                              Ocupação estimada: {Math.round(recommendation.usagePercent)}%
-                            </span>
+                              <div
+                                className={cn(
+                                  'h-full rounded-full transition-[width]',
+                                  recommendation.status === 'compatible' && 'bg-success',
+                                  recommendation.status === 'inconclusive' && 'bg-warning',
+                                  recommendation.status === 'incompatible' && 'bg-destructive',
+                                )}
+                                style={{
+                                  width: `${Math.min(100, Math.max(0, recommendation.usagePercent))}%`,
+                                }}
+                              />
+                            </div>
+                            <div className="flex flex-wrap items-center gap-1.5">
+                              <Badge
+                                variant={
+                                  recommendation.status === 'incompatible'
+                                    ? 'destructive'
+                                    : 'secondary'
+                                }
+                                className={cn(
+                                  'text-[10px]',
+                                  recommendation.status === 'compatible' &&
+                                    'bg-success/10 text-success',
+                                  recommendation.status === 'inconclusive' &&
+                                    'bg-warning/10 text-warning',
+                                )}
+                                title={recommendation.compatibility.reason}
+                              >
+                                {statusLabel}
+                              </Badge>
+                              <span className="text-[10px] text-muted-foreground">
+                                Ocupação estimada: {Math.round(recommendation.usagePercent)}%
+                              </span>
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                              {recommendation.compatibility.reason ||
+                                'Dimensões e ocupação verificadas.'}
+                            </p>
                           </div>
                         )}
                       </div>
                     </div>
+                    <Button
+                      type="button"
+                      className="mt-4 w-full"
+                      variant={recommendation.status === 'inconclusive' ? 'outline' : 'default'}
+                      disabled={!isSelectable}
+                      aria-label={`Selecionar caixa ${box.name}`}
+                      onClick={() => onSelect(box)}
+                    >
+                      {isSelectable ? 'Selecionar caixa' : 'Incompatível com a composição'}
+                    </Button>
                   </CardContent>
-                </Clickable>
+                </Card>
               );
             })}
           </div>

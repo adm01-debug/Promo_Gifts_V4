@@ -29,9 +29,11 @@ import {
 } from '@/components/ui/select';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Badge } from '@/components/ui/badge';
+import { ImageUploadButton } from '@/components/admin/ImageUploadButton';
 import { cn } from '@/lib/utils';
 import {
   formatCurrency,
+  getKitItemLineId,
   type KitBox,
   type KitItem,
   type KitItemPersonalization,
@@ -240,12 +242,14 @@ function ItemPersonalizationCard({
                       <AlertTriangle className="h-3 w-3" />
                       Sem técnica
                     </span>
-                  ) : currentUnitPrice ? (
-                    <span className="text-primary">+{formatCurrency(currentUnitPrice)}/un</span>
+                  ) : Number.isFinite(currentUnitPrice) && (currentUnitPrice ?? -1) >= 0 ? (
+                    <span className="text-primary">
+                      +{formatCurrency(currentUnitPrice ?? 0)}/un
+                    </span>
                   ) : (
                     <span className="flex items-center gap-1 text-warning">
                       <AlertTriangle className="h-3 w-3" />
-                      R$ 0,00
+                      Preço indisponível
                     </span>
                   )}
                 </span>
@@ -267,156 +271,213 @@ function ItemPersonalizationCard({
         </CardHeader>
 
         <CollapsibleContent>
-          <CardContent className="space-y-4 pt-0">
-            {/* Técnica */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Técnica de Gravação</Label>
-                {loadingTechniques ? (
-                  <div className="flex h-10 items-center gap-2 rounded-md border bg-secondary/50 px-3">
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    <span className="text-sm text-muted-foreground">Carregando...</span>
+          <CardContent className="pt-0">
+            <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_13rem]">
+              <div className="space-y-4">
+                {/* Técnica */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Técnica de Gravação</Label>
+                    {loadingTechniques ? (
+                      <div className="flex h-10 items-center gap-2 rounded-md border bg-secondary/50 px-3">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <span className="text-sm text-muted-foreground">Carregando...</span>
+                      </div>
+                    ) : techniques.length === 0 ? (
+                      <p className="py-2 text-sm text-muted-foreground">
+                        Nenhuma técnica disponível para este produto
+                      </p>
+                    ) : (
+                      <Select
+                        value={
+                          personalization.techniqueId &&
+                          (personalization.positionCode || personalization.position)
+                            ? `${personalization.techniqueId}:${personalization.positionCode || personalization.position}`
+                            : ''
+                        }
+                        onValueChange={handleTechniqueChange}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione a técnica..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {techniques.map((tech) => (
+                            <SelectItem
+                              key={`${tech.technique_id}:${tech.location_code}`}
+                              value={`${tech.technique_id}:${tech.location_code}`}
+                            >
+                              <span className="flex items-center gap-2">
+                                <Badge variant="outline" className="px-1 py-0 text-[10px]">
+                                  {tech.grupo_tecnica}
+                                </Badge>
+                                {tech.tecnica_nome}
+                                <span className="text-xs text-muted-foreground">
+                                  ({tech.location_name})
+                                </span>
+                              </span>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
                   </div>
-                ) : techniques.length === 0 ? (
-                  <p className="py-2 text-sm text-muted-foreground">
-                    Nenhuma técnica disponível para este produto
-                  </p>
-                ) : (
-                  <Select
-                    value={
-                      personalization.techniqueId &&
-                      (personalization.positionCode || personalization.position)
-                        ? `${personalization.techniqueId}:${personalization.positionCode || personalization.position}`
-                        : ''
-                    }
-                    onValueChange={handleTechniqueChange}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione a técnica..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {techniques.map((tech) => (
-                        <SelectItem
-                          key={`${tech.technique_id}:${tech.location_code}`}
-                          value={`${tech.technique_id}:${tech.location_code}`}
-                        >
-                          <span className="flex items-center gap-2">
-                            <Badge variant="outline" className="px-1 py-0 text-[10px]">
-                              {tech.grupo_tecnica}
-                            </Badge>
-                            {tech.tecnica_nome}
-                            <span className="text-xs text-muted-foreground">
-                              ({tech.location_name})
-                            </span>
-                          </span>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+
+                  <div className="space-y-2">
+                    <Label>Número de Cores</Label>
+                    <Select
+                      value={String(personalization.colors || 1)}
+                      onValueChange={(v) => handleColorsChange(parseInt(v, 10))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {colorOptions.map((n) => (
+                          <SelectItem key={n} value={String(n)}>
+                            {n} {n === 1 ? 'cor' : 'cores'}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                {/* Dimensões — somente se técnica usa dimensão */}
+                {currentTech?.usa_dimensao && (
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>
+                        Largura (cm){' '}
+                        <span className="text-xs text-muted-foreground">
+                          máx {currentTech.efetiva_largura_max}
+                        </span>
+                      </Label>
+                      <Input
+                        type="number"
+                        step="0.1"
+                        max={currentTech.efetiva_largura_max}
+                        placeholder={`Até ${currentTech.efetiva_largura_max}cm`}
+                        value={personalization.width || ''}
+                        onChange={(e) => {
+                          const value = Number.parseFloat(e.target.value);
+                          onChange({
+                            ...personalization,
+                            width:
+                              Number.isFinite(value) && value > 0
+                                ? Math.min(value, currentTech.efetiva_largura_max)
+                                : undefined,
+                          });
+                        }}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>
+                        Altura (cm){' '}
+                        <span className="text-xs text-muted-foreground">
+                          máx {currentTech.efetiva_altura_max}
+                        </span>
+                      </Label>
+                      <Input
+                        type="number"
+                        step="0.1"
+                        max={currentTech.efetiva_altura_max}
+                        placeholder={`Até ${currentTech.efetiva_altura_max}cm`}
+                        value={personalization.height || ''}
+                        onChange={(e) => {
+                          const value = Number.parseFloat(e.target.value);
+                          onChange({
+                            ...personalization,
+                            height:
+                              Number.isFinite(value) && value > 0
+                                ? Math.min(value, currentTech.efetiva_altura_max)
+                                : undefined,
+                          });
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Preço detalhado */}
+                {priceData?.success && (
+                  <div className="space-y-1 rounded-lg bg-secondary/50 p-3 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Preço unitário</span>
+                      <span>{formatCurrency(priceData.preco_unitario ?? 0)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Gravação ({kitQuantity}un)</span>
+                      <span>{formatCurrency(priceData.valor_gravacao ?? 0)}</span>
+                    </div>
+                    {(priceData.setup_total ?? 0) > 0 && (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Setup</span>
+                        <span>{formatCurrency(priceData.setup_total ?? 0)}</span>
+                      </div>
+                    )}
+                    <div className="mt-1 flex justify-between border-t pt-1 font-semibold">
+                      <span>Total gravação</span>
+                      <span className="text-primary">
+                        {formatCurrency(priceData.total_cobrado ?? 0)}
+                      </span>
+                    </div>
+                  </div>
                 )}
               </div>
 
-              <div className="space-y-2">
-                <Label>Número de Cores</Label>
-                <Select
-                  value={String(personalization.colors || 1)}
-                  onValueChange={(v) => handleColorsChange(parseInt(v, 10))}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {colorOptions.map((n) => (
-                      <SelectItem key={n} value={String(n)}>
-                        {n} {n === 1 ? 'cor' : 'cores'}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              <aside className="space-y-3 rounded-lg border bg-muted/20 p-3">
+                <div className="flex items-center justify-between gap-2">
+                  <div>
+                    <p className="text-sm font-medium">Prévia da aplicação</p>
+                    <p className="text-xs text-muted-foreground">Arte por item</p>
+                  </div>
+                  <ImageUploadButton
+                    currentImageUrl={personalization.artworkUrl ?? null}
+                    onUpload={(artworkUrl) => onChange({ ...personalization, artworkUrl })}
+                    onRemove={() => onChange({ ...personalization, artworkUrl: undefined })}
+                    folder="kit-maker/artwork"
+                  />
+                </div>
+
+                <div className="relative aspect-[4/5] overflow-hidden rounded-md border bg-background">
+                  {imageUrl ? (
+                    <img
+                      src={imageUrl}
+                      alt={`Prévia de ${displayName}`}
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center">
+                      <Palette className="h-8 w-8 text-muted-foreground" />
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/55 via-transparent to-transparent" />
+                  {personalization.artworkUrl ? (
+                    <div className="absolute inset-x-[22%] top-[35%] flex aspect-square items-center justify-center overflow-hidden rounded border border-primary/40 bg-background/15 p-2 shadow-lg backdrop-blur-[1px]">
+                      <img
+                        src={personalization.artworkUrl}
+                        alt="Arte enviada para personalização"
+                        className="h-full w-full object-contain"
+                        loading="lazy"
+                      />
+                    </div>
+                  ) : (
+                    <div className="absolute inset-x-[12%] top-[39%] rounded border border-dashed border-primary/50 bg-background/55 px-2 py-3 text-center text-xs font-medium text-muted-foreground backdrop-blur-sm">
+                      Envie sua arte
+                    </div>
+                  )}
+                  {personalization.positionName && (
+                    <span className="absolute bottom-2 left-2 rounded bg-background/85 px-2 py-1 text-[10px] font-medium">
+                      {personalization.positionName}
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs leading-relaxed text-muted-foreground">
+                  Prévia indicativa. A área e a técnica serão validadas antes da produção.
+                </p>
+              </aside>
             </div>
-
-            {/* Dimensões — somente se técnica usa dimensão */}
-            {currentTech?.usa_dimensao && (
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>
-                    Largura (cm){' '}
-                    <span className="text-xs text-muted-foreground">
-                      máx {currentTech.efetiva_largura_max}
-                    </span>
-                  </Label>
-                  <Input
-                    type="number"
-                    step="0.1"
-                    max={currentTech.efetiva_largura_max}
-                    placeholder={`Até ${currentTech.efetiva_largura_max}cm`}
-                    value={personalization.width || ''}
-                    onChange={(e) => {
-                      const value = Number.parseFloat(e.target.value);
-                      onChange({
-                        ...personalization,
-                        width:
-                          Number.isFinite(value) && value > 0
-                            ? Math.min(value, currentTech.efetiva_largura_max)
-                            : undefined,
-                      });
-                    }}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>
-                    Altura (cm){' '}
-                    <span className="text-xs text-muted-foreground">
-                      máx {currentTech.efetiva_altura_max}
-                    </span>
-                  </Label>
-                  <Input
-                    type="number"
-                    step="0.1"
-                    max={currentTech.efetiva_altura_max}
-                    placeholder={`Até ${currentTech.efetiva_altura_max}cm`}
-                    value={personalization.height || ''}
-                    onChange={(e) => {
-                      const value = Number.parseFloat(e.target.value);
-                      onChange({
-                        ...personalization,
-                        height:
-                          Number.isFinite(value) && value > 0
-                            ? Math.min(value, currentTech.efetiva_altura_max)
-                            : undefined,
-                      });
-                    }}
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* Preço detalhado */}
-            {priceData?.success && (
-              <div className="space-y-1 rounded-lg bg-secondary/50 p-3 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Preço unitário</span>
-                  <span>{formatCurrency(priceData.preco_unitario ?? 0)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Gravação ({kitQuantity}un)</span>
-                  <span>{formatCurrency(priceData.valor_gravacao ?? 0)}</span>
-                </div>
-                {(priceData.setup_total ?? 0) > 0 && (
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Setup</span>
-                    <span>{formatCurrency(priceData.setup_total ?? 0)}</span>
-                  </div>
-                )}
-                <div className="mt-1 flex justify-between border-t pt-1 font-semibold">
-                  <span>Total gravação</span>
-                  <span className="text-primary">
-                    {formatCurrency(priceData.total_cobrado ?? 0)}
-                  </span>
-                </div>
-              </div>
-            )}
           </CardContent>
         </CollapsibleContent>
       </Collapsible>
@@ -504,12 +565,15 @@ export function PersonalizationConfig({
           <div className="space-y-3">
             {items.map((item) => (
               <ItemPersonalizationCard
-                key={item.id}
+                key={getKitItemLineId(item)}
                 productId={item.id}
                 displayName={item.name}
                 imageUrl={item.imageUrl}
-                personalization={itemPersonalizations[item.id] || { enabled: false }}
-                onChange={(config) => onItemPersonalizationChange(item.id, config)}
+                personalization={
+                  itemPersonalizations[getKitItemLineId(item)] ??
+                  itemPersonalizations[item.id] ?? { enabled: false }
+                }
+                onChange={(config) => onItemPersonalizationChange(getKitItemLineId(item), config)}
                 kitQuantity={item.quantity * kitQuantity}
               />
             ))}

@@ -21,7 +21,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import type { KitItem, ItemFilters, CompatibilityResult } from '@/lib/kit-builder';
+import {
+  getKitItemLineId,
+  type KitItem,
+  type ItemFilters,
+  type CompatibilityResult,
+} from '@/lib/kit-builder';
 import type { VariantSelectionData } from './VariantSelector';
 
 interface ItemWithCompatibility extends KitItem {
@@ -88,7 +93,10 @@ export function ItemSelector({
     return Array.from(cats).sort();
   }, [items]);
 
-  const selectedItemIds = new Set(selectedItems.map((i) => i.id));
+  const selectedItemsByProductId = new Map<string, KitItem>();
+  selectedItems.forEach((item) => {
+    if (!selectedItemsByProductId.has(item.id)) selectedItemsByProductId.set(item.id, item);
+  });
 
   return (
     <div className="space-y-4">
@@ -203,10 +211,11 @@ export function ItemSelector({
               <ItemCard
                 key={item.id}
                 item={item}
-                isSelected={selectedItemIds.has(item.id)}
+                isSelected={selectedItemsByProductId.has(item.id)}
+                selectedItem={selectedItemsByProductId.get(item.id)}
                 boxSelected={boxSelected}
                 onAdd={handleAddItem}
-                onRemove={onRemoveItem}
+                onRemove={(selected) => onRemoveItem(getKitItemLineId(selected))}
               />
             ))}
           </div>

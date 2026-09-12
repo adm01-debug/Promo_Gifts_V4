@@ -38,6 +38,15 @@ export interface KitBox {
 
 export interface KitItem {
   id: string;
+  /**
+   * Stable identifier for one line in a kit. A product can legitimately occur
+   * more than once when different variants are selected, therefore `id` alone
+   * is not a safe key for UI actions, personalization or persistence.
+   *
+   * Older JSON snapshots do not contain this field; `getKitItemLineId` keeps
+   * them readable and the builder normalizes them on hydration.
+   */
+  lineId?: string;
   name: string;
   sku: string;
   imageUrl: string | null;
@@ -94,12 +103,36 @@ export interface KitItemPersonalization {
   positionName?: string;
   /** @deprecated Legacy display-only area name; use positionCode/positionName for new writes. */
   position?: string;
+  /**
+   * Optional artwork uploaded by the user for this exact kit line. The image is
+   * a source asset for the commercial review; visual previews remain indicative
+   * until the production team approves the application area.
+   */
+  artworkUrl?: string;
   estimatedPrice?: number;
 }
 
 export interface KitPersonalization {
   box: KitItemPersonalization;
-  items: Record<string, KitItemPersonalization>; // keyed by item id
+  /** Keyed by KitItem.lineId (legacy snapshots may still use the product id). */
+  items: Record<string, KitItemPersonalization>;
+}
+
+/**
+ * Derives the canonical key for an item line without requiring a migration of
+ * already persisted drafts.  A product and each selected variant are separate
+ * composition lines; the base product is explicitly represented as `base`.
+ */
+export function getKitItemLineId(
+  item: Pick<KitItem, 'id' | 'lineId' | 'selectedVariantId'>,
+): string {
+  return item.lineId || `${item.id}:${item.selectedVariantId || 'base'}`;
+}
+
+/** Returns a persisted-ready item with a deterministic line key. */
+export function normalizeKitItemLine(item: KitItem): KitItem {
+  const lineId = getKitItemLineId(item);
+  return item.lineId === lineId ? item : { ...item, lineId };
 }
 
 // ============================================
@@ -219,7 +252,11 @@ export interface ExternalProductForKit {
   id: string;
   name: string;
   sku: string;
-  base_price: number | null;
+  /**
+   * Legacy fallback retained only for isolated fixtures and historical rows.
+   * The public Gold product view exposes `sale_price`, not `base_price`.
+   */
+  base_price?: number | null;
   sale_price?: number | null;
   image_url: string | null;
   primary_image_url: string | null;

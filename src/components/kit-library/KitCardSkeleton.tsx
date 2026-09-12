@@ -7,7 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 export function KitCardSkeleton() {
   return (
     <Card className="overflow-hidden">
-      <Skeleton className="h-1.5 w-full rounded-none" />
+      <Skeleton className="h-28 w-full rounded-none" />
       <CardContent className="space-y-3 p-4">
         <div className="flex items-start gap-3">
           <Skeleton className="h-12 w-12 rounded-xl" />

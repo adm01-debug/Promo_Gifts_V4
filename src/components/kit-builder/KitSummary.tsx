@@ -54,7 +54,12 @@ export function KitSummary({
   const personalizedCount =
     (personalization.box.enabled ? 1 : 0) +
     Object.values(personalization.items).filter((p) => p.enabled).length;
-  const { alerts: stockAlerts, stockByProduct } = useKitStockValidation(items, box, kitQuantity);
+  const {
+    alerts: stockAlerts,
+    stockByProduct,
+    hasStockIssues,
+    stockStatus,
+  } = useKitStockValidation(items, box, kitQuantity);
 
   return (
     <div className="space-y-6">
@@ -97,6 +102,35 @@ export function KitSummary({
         kitQuantity={kitQuantity}
       />
 
+      {stockStatus === 'checking' && (
+        <Card className="border-warning bg-warning/5">
+          <CardContent className="pt-6">
+            <h4 className="mb-1 flex items-center gap-2 font-medium text-warning">
+              <AlertTriangle className="h-4 w-4" />
+              Verificando estoque
+            </h4>
+            <p className="text-sm text-muted-foreground">
+              Aguarde a confirmação de disponibilidade antes de criar o orçamento.
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
+      {stockStatus === 'unknown' && (
+        <Card className="border-destructive bg-destructive/5">
+          <CardContent className="pt-6">
+            <h4 className="mb-1 flex items-center gap-2 font-medium text-destructive">
+              <AlertTriangle className="h-4 w-4" />
+              Não foi possível validar o estoque
+            </h4>
+            <p className="text-sm text-muted-foreground">
+              Tente novamente quando a consulta de estoque estiver disponível. O orçamento permanece
+              bloqueado para evitar uma promessa comercial sem confirmação.
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
       {stockAlerts.length > 0 && (
         <Card className="border-warning bg-warning/5">
           <CardContent className="pt-6">
@@ -107,7 +141,7 @@ export function KitSummary({
             <ul className="space-y-2">
               {stockAlerts.map((alert) => (
                 <li
-                  key={alert.itemId}
+                  key={alert.lineId ?? alert.itemId}
                   className="flex items-center justify-between rounded-lg bg-background/50 p-2 text-sm"
                 >
                   <div>
@@ -154,7 +188,7 @@ export function KitSummary({
       <KitActionsBar
         isValid={kitState.isValid}
         isAddingToQuote={isAddingToQuote}
-        hasStockIssues={stockAlerts.length > 0}
+        hasStockIssues={hasStockIssues}
         kitName={kitName}
         kitTag={kitState.identity?.tag}
         kitQuantity={kitQuantity}

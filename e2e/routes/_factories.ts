@@ -202,14 +202,21 @@ export function buildAuthedRouteSuite(spec: AuthedRouteSpec) {
       }
     });
 
-    test(label("auth fail: 401 redireciona para /login ou mostra mensagem", meta, ["critical", "edge"]), async ({ page }) => {
+    test(label("401: trata autenticação ou acesso ao dado sem estado silencioso", meta, ["critical", "edge"]), async ({ page }) => {
       await page.route(route, r =>
         r.fulfill({ status: 401, contentType: "application/json", body: JSON.stringify({ message: "JWT expired", code: "PGRST301" }) }),
       );
       await gotoAndSettle(page, spec.path);
       await waitRouteReady(page);
       const redirected = /\/login/.test(page.url());
-      const msg = await page.getByText(/sessão|login|autentica/i).first().isVisible().catch(() => false);
+      // A 401 from an Edge Function can invalidate the session. A 401 from a
+      // REST projection can also be a column/RLS denial while the session is
+      // still valid; that must surface an actionable catalog error, not force
+      // a misleading logout assertion.
+      const expectedCopy = spec.primary.kind === "fn"
+        ? /sessão|login|autentica/i
+        : /acesso|não foi possível|tente novamente|erro/i;
+      const msg = await page.getByText(expectedCopy).first().isVisible().catch(() => false);
       expect(redirected || msg).toBeTruthy();
     });
 

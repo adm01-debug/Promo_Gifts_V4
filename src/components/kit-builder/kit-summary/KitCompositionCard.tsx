@@ -4,7 +4,13 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Package, Gift, Palette, Image } from 'lucide-react';
-import { formatCurrency, formatDimensions, formatVolume, type KitState } from '@/lib/kit-builder';
+import {
+  formatCurrency,
+  formatDimensions,
+  formatVolume,
+  getKitItemLineId,
+  type KitState,
+} from '@/lib/kit-builder';
 
 interface KitCompositionCardProps {
   kitState: KitState;
@@ -64,10 +70,11 @@ export function KitCompositionCard({
         )}
         <div className="space-y-2">
           {items.map((item) => {
-            const itemP = personalization.items[item.id];
+            const itemP =
+              personalization.items[getKitItemLineId(item)] ?? personalization.items[item.id];
             return (
               <div
-                key={item.id}
+                key={getKitItemLineId(item)}
                 className="flex items-center gap-3 rounded-lg p-2 hover:bg-secondary/30"
               >
                 <div className="h-10 w-10 overflow-hidden rounded-md bg-secondary">

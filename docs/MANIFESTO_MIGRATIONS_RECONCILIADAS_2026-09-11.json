@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "status": "remote-ledger-noncanonical-snapshots",
+  "project_ref": "doufsxqlfjyuvxuezpln",
+  "captured_at": "2026-09-11",
+  "source_commit": "06461a457",
+  "purpose": "Exceções fechadas e imutáveis para nomes não canônicos recuperados do ledger remoto pelo PR #1855. O hash impede que a exceção autorize conteúdo diferente.",
+  "entries": [
+    {
+      "path": "supabase/migrations/20260618101311_estoque_reconcile_add_vss_F_coherence_20260618.sql",
+      "remote_version": "20260618101311",
+      "remote_name": "estoque_reconcile_add_vss_F_coherence_20260618",
+      "sha256": "07db060e5a08196ddc8629d4c5ea0d60a2dfe9c75a81807ad290bc84cb3d2048"
+    },
+    {
+      "path": "supabase/migrations/2026062311292414001_add_full_path_readable_propagation_triggers.sql",
+      "remote_version": "2026062311292414001",
+      "remote_name": "add_full_path_readable_propagation_triggers",
+      "sha256": "c03d47ba1092d52f69f53f24c0fd4a4bda564df820c78a5bf3d36c8f349cab1d"
+    }
+  ]
+}
