@@ -51,13 +51,86 @@ describe('evaluateKitStock', () => {
   it('agrega a demanda de linhas repetidas antes de aprovar o estoque da variante', () => {
     const result = evaluateKitStock(
       [{ id: 'variant-black', product_id: 'product-1', stock_quantity: 5, color_name: 'Preto' }],
-      [{ ...selectedItem, quantity: 3 }, { ...selectedItem, quantity: 3, lineId: 'second-line' }],
+      [
+        { ...selectedItem, quantity: 3 },
+        { ...selectedItem, quantity: 3, lineId: 'second-line' },
+      ],
       null,
       1,
     );
 
     expect(result.alerts).toEqual([
       expect.objectContaining({ itemId: 'product-1', required: 6, available: 5, deficit: 1 }),
+    ]);
+  });
+
+  it('concilia demanda genérica e demanda de variante no mesmo estoque físico', () => {
+    const result = evaluateKitStock(
+      [{ id: 'variant-black', product_id: 'product-1', stock_quantity: 10, color_name: 'Preto' }],
+      [
+        { ...selectedItem, quantity: 6, selectedVariantId: undefined },
+        { ...selectedItem, quantity: 6, lineId: 'variant-line' },
+      ],
+      null,
+      1,
+    );
+
+    expect(result.alerts).toEqual([
+      expect.objectContaining({ itemId: 'product-1', required: 12, available: 10, deficit: 2 }),
+    ]);
+  });
+
+  it('preserva estoque nulo como desconhecido', () => {
+    const result = evaluateKitStock(
+      [{ id: 'variant-black', product_id: 'product-1', stock_quantity: null, color_name: 'Preto' }],
+      [selectedItem],
+      null,
+      1,
+    );
+
+    expect(result.alerts).toHaveLength(0);
+    expect(result.hasUnknownStock).toBe(true);
+    expect(
+      resolveKitStockStatus({
+        hasItemsToValidate: true,
+        isLoading: false,
+        isError: false,
+        hasData: true,
+        alertsCount: 0,
+        hasUnknownStock: result.hasUnknownStock,
+      }),
+    ).toBe('unknown');
+  });
+
+  it('ignora estoque desconhecido de variante irmã quando a variante consumida é conhecida', () => {
+    const result = evaluateKitStock(
+      [
+        { id: 'variant-black', product_id: 'product-1', stock_quantity: 10, color_name: 'Preto' },
+        { id: 'variant-blue', product_id: 'product-1', stock_quantity: null, color_name: 'Azul' },
+      ],
+      [selectedItem],
+      null,
+      1,
+    );
+
+    expect(result.hasUnknownStock).toBe(false);
+    expect(result.alerts).toHaveLength(0);
+  });
+
+  it('atribui chaves distintas aos alertas de variante e agregado do produto', () => {
+    const result = evaluateKitStock(
+      [{ id: 'variant-black', product_id: 'product-1', stock_quantity: 5, color_name: 'Preto' }],
+      [
+        { ...selectedItem, quantity: 6, lineId: 'variant-line' },
+        { ...selectedItem, quantity: 1, lineId: 'generic-line', selectedVariantId: undefined },
+      ],
+      null,
+      1,
+    );
+
+    expect(result.alerts.map((alert) => alert.stockKey)).toEqual([
+      'variant:variant-black',
+      'product:product-1',
     ]);
   });
 });

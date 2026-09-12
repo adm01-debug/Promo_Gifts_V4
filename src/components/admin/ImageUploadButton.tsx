@@ -14,6 +14,8 @@ interface ImageUploadButtonProps {
   onRemove: () => void;
   folder?: string;
   className?: string;
+  /** Delete the backing storage object. Shared/reused artwork must only detach. */
+  deleteOnRemove?: boolean;
 }
 
 export function ImageUploadButton({
@@ -22,6 +24,7 @@ export function ImageUploadButton({
   onRemove,
   folder = 'locations',
   className,
+  deleteOnRemove = true,
 }: ImageUploadButtonProps) {
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -113,9 +116,11 @@ export function ImageUploadButton({
     if (!currentImageUrl) return;
 
     try {
-      // Extract path from URL
+      // Extract path from URL only when this control owns the object. Reused
+      // artwork can be referenced by multiple kit targets and must be detached
+      // without deleting the shared storage file.
       const urlParts = currentImageUrl.split('/personalization-images/');
-      if (urlParts.length > 1) {
+      if (deleteOnRemove && urlParts.length > 1) {
         const filePath = urlParts[1];
         // BUG-IMAGEUPLOAD-REMOVE-SILENT-FAIL FIX: storage.remove returns { data, error }
         // — bare await discarded the error, calling onRemove even on failure.

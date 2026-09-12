@@ -1,11 +1,13 @@
 import { Button } from '@/components/ui/button';
 import { Loader2, Download, ShoppingCart, MessageCircle } from 'lucide-react';
 import { formatCurrency } from '@/lib/kit-builder';
+import type { KitStockStatus } from '@/hooks/kit-builder/useKitStockValidation';
 
 interface KitActionsBarProps {
   isValid: boolean;
   isAddingToQuote?: boolean;
   hasStockIssues?: boolean;
+  stockStatus?: KitStockStatus;
   kitName: string;
   kitTag?: string | null;
   kitQuantity: number;
@@ -20,6 +22,7 @@ export function KitActionsBar({
   isValid,
   isAddingToQuote,
   hasStockIssues = false,
+  stockStatus = 'idle',
   kitName,
   kitTag,
   kitQuantity,
@@ -43,9 +46,13 @@ export function KitActionsBar({
         )}
         {isAddingToQuote
           ? 'Criando...'
-          : hasStockIssues
-            ? 'Estoque insuficiente'
-            : 'Criar Orçamento'}
+          : stockStatus === 'checking'
+            ? 'Verificando estoque'
+            : stockStatus === 'unknown'
+              ? 'Estoque não confirmado'
+              : hasStockIssues
+                ? 'Estoque insuficiente'
+                : 'Criar Orçamento'}
       </Button>
       <Button
         variant="outline"

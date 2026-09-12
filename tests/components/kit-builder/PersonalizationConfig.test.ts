@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   reconcilePersonalizationForTechnique,
+  buildKitMockupRequest,
   type FlatTechnique,
 } from '@/components/kit-builder/PersonalizationConfig';
 
@@ -49,5 +50,32 @@ describe('PersonalizationConfig price inputs', () => {
     expect(result.width).toBeUndefined();
     expect(result.height).toBeUndefined();
     expect(result.estimatedPrice).toBeUndefined();
+  });
+
+  it('só constrói uma geração real quando produto, técnica e arte estão completos', () => {
+    expect(buildKitMockupRequest('Caneca', null, { enabled: true })).toBeNull();
+    expect(
+      buildKitMockupRequest('Caneca', 'https://cdn.test/caneca.jpg', {
+        enabled: true,
+        techniqueId: 'laser',
+        techniqueName: 'Laser',
+        techniqueCode: 'LASER',
+        positionName: 'Frente',
+        width: 4,
+        height: 2,
+        artworkUrl: 'https://cdn.test/logo.png',
+      }),
+    ).toMatchObject({
+      productName: 'Caneca',
+      technique: { id: 'laser', name: 'Laser', code: 'LASER' },
+      areas: [
+        {
+          name: 'Frente',
+          logoWidth: 4,
+          logoHeight: 2,
+          logoPreview: 'https://cdn.test/logo.png',
+        },
+      ],
+    });
   });
 });

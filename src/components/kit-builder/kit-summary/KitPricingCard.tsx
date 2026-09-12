@@ -40,12 +40,24 @@ export function KitPricingCard({
                   item.isPersonalization && 'pl-4 text-primary',
                 )}
               >
-                <div className="flex items-center gap-2">
-                  <span className={cn(item.isPersonalization && 'text-sm')}>{item.label}</span>
-                  {item.quantity && item.quantity > 1 && (
-                    <span className="text-xs text-muted-foreground">
-                      ({item.quantity}x {formatCurrency(item.unitPrice)})
-                    </span>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className={cn(item.isPersonalization && 'text-sm')}>{item.label}</span>
+                    {item.quantity && item.quantity > 1 && (
+                      <span className="text-xs text-muted-foreground">
+                        ({item.quantity}x {formatCurrency(item.unitPrice)}
+                        {item.isPersonalization &&
+                        Math.abs(item.totalPrice - item.quantity * item.unitPrice) > 0.005
+                          ? ' preço-base'
+                          : ''}
+                        )
+                      </span>
+                    )}
+                  </div>
+                  {item.isPersonalization && (item.setupFloor ?? 0) > 0 && (
+                    <p className="text-xs text-muted-foreground">
+                      Piso/setup considerado: {formatCurrency(item.setupFloor ?? 0)} (não aditivo)
+                    </p>
                   )}
                 </div>
                 <span className={cn('font-medium', item.isPersonalization && 'text-sm')}>

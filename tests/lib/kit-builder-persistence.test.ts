@@ -36,4 +36,26 @@ describe('Kit Maker persistence snapshot', () => {
     expect(payload.kit_quantity).toBe(10);
     expect(payload.total_price).toBe(2_000);
   });
+
+  it('persists the draft client in the versioned snapshot metadata', () => {
+    const payload = buildKitPersistencePayload('user-1', validKit, 10, {
+      quoteClient: {
+        client_id: 'client-1',
+        client_name: 'Ana Compradora',
+        client_company: 'Empresa Exemplo',
+      },
+    });
+
+    expect(payload.personalization_data).toEqual(
+      expect.objectContaining({
+        __draft: {
+          version: 1,
+          quoteClient: expect.objectContaining({
+            client_id: 'client-1',
+            client_name: 'Ana Compradora',
+          }),
+        },
+      }),
+    );
+  });
 });
