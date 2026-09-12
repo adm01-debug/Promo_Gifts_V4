@@ -30,11 +30,16 @@ canônico quando aplicável.
 | Landing usa fontes separadas para itens e embalagens e compõe os heroes com assets reais do catálogo e fallback explícito                                    | 011–015, 031–037, 051–055          | `IMPLEMENTADA_AGUARDA_VALIDACAO` | `KitMakerLanding.tsx`; testes de landing atualizados                                                                  | Não substitui a paridade fotográfica dos anexos quando os assets originais não estão disponíveis.                                                    |
 | Resposta da IA é validada por contrato no servidor e no cliente, com proteção contra resposta tardia/duplicada                                               | 071–080                            | `IMPLEMENTADA_AGUARDA_VALIDACAO` | schema de resposta, edge function implantada em 12/09/2026, três testes de diálogo e resposta `401` sem token      | A IA continua deliberadamente sugestiva: não grava itens ou preços sem confirmação humana; o happy path depende de JWT com papel `agente` e segredo de IA. |
 | Personalização passa a manter arte por linha, enviada somente via `secure-upload`, e mostra uma prévia indicativa com área/técnica                           | 061–070                            | `IMPLEMENTADA_AGUARDA_VALIDACAO` | `artworkUrl` no payload do rascunho e `PersonalizationConfig.tsx`                                                     | A prévia não substitui mockup técnico nem aprovação de produção; requer teste autenticado do bucket/políticas e comparação visual em três viewports. |
+| Integridade pós-auditoria: retry de orçamento preserva a operação, a cotação registra variante/arte/tags, fixação de kit é atômica e validações deixam de afirmar encaixe só por volume | 017–020, 046, 054–070, 081–090 | `IMPLEMENTADA_AGUARDA_VALIDACAO` | 43 testes focados; build; migrations `20260912150000` e `20260912151000` aplicadas, registradas e consultadas por `pg_catalog` | A criação de orçamento ainda precisa de exercício autenticado com usuário de teste; preço comercial e disponibilidade precisam de contrato servidor antes de serem certificados como reserva de estoque. |
 
 Resultado dos lotes locais: lint específico passou; testes de regressão de Kit
-Maker e contratos SQL passaram; `tsc --noEmit` e o build de produção passaram,
-incluindo os guards do projeto canônico, ciclos de chunks e harnesses de
-produção. A execução E2E completa registrou **16/16** testes aprovados: um
+Maker e contratos SQL passaram; o build de produção passou, incluindo os
+guards do projeto canônico, ciclos de chunks e harnesses de produção. Nesta
+worktree, `tsc --noEmit` está bloqueado antes do código da aplicação pela
+combinação de TypeScript `5.4.5` com a declaração instalada de
+`@vitejs/plugin-react` (erro `TS1003` em `dist/index.d.ts`); isso não foi
+introduzido pelo lote Kit Maker e não foi mascarado. A execução E2E completa
+registrou **16/16** testes aprovados: um
 bootstrap `setup` e quinze cenários Chromium do Kit Maker em modo mock. Uma
 consulta REST somente-leitura com a chave publishable local recebeu `200`,
 confirmando que a chave do ambiente é aceita pelo projeto canônico. Isso não
@@ -59,6 +64,15 @@ do remoto. Esse histórico divergente impede qualquer `db push` em massa: ele
 precisa de reconciliação semântica por objeto antes de aplicar até mesmo uma
 migration nova isolada. Nenhum dos 544 itens foi inferido como perda ou alvo
 de aplicação nesta rodada.
+
+Em 12/09/2026, as migrations adicionais
+`20260912150000_kit_maker_quote_lineage_forward_only.sql` e
+`20260912151000_kit_maker_atomic_pin_forward_only.sql` foram simuladas com
+`ROLLBACK`, aplicadas uma a uma e marcadas como `applied` no ledger. O
+pós-flight verificou a coluna/FK/índice de variante, persistência de arte e
+tags no wrapper idempotente, `GRANT EXECUTE` para `authenticated` e o índice
+parcial/RPC `SECURITY INVOKER` que preserva no máximo um kit fixado por usuário.
+Não houve `db push` nem alteração de dados comerciais existentes.
 
 ## Resultado contratado
 

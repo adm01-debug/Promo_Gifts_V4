@@ -23,6 +23,10 @@ interface AutoSaveResult {
   lastSavedAt: Date | null;
   isSaving: boolean;
   autoSavedKitId: string | null;
+  /** A visible, sanitized state — failed automatic saves must not be log-only. */
+  autoSaveError: string | null;
+  /** Replays the most recent snapshot with the same optimistic revision rules. */
+  retryLastSave: () => Promise<void>;
   /** Cancels a debounced save before the explicit save action takes ownership. */
   cancelPendingSave: () => void;
 }
@@ -39,6 +43,7 @@ export function useKitAutoSave(
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [autoSavedKitId, setAutoSavedKitId] = useState<string | null>(currentKitId || null);
+  const [autoSaveError, setAutoSaveError] = useState<string | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const snapshotRef = useRef<string>('');
   const isFirstRender = useRef(true);
@@ -110,8 +115,10 @@ export function useKitAutoSave(
       setAutoSavedKitId(data.id);
       currentOnKitIdCreated?.(data.id, data.revision);
       setLastSavedAt(new Date());
+      setAutoSaveError(null);
     } catch (err) {
       logger.warn('[auto-save] Failed:', err);
+      setAutoSaveError('O rascunho ainda não foi salvo. Tente novamente antes de sair.');
     } finally {
       saveInFlightRef.current = false;
       setIsSaving(false);
@@ -132,6 +139,11 @@ export function useKitAutoSave(
       timerRef.current = undefined;
     }
     saveQueuedRef.current = false;
+  }, []);
+
+  const retryLastSave = useCallback(async () => {
+    setAutoSaveError(null);
+    await saveToDbRef.current?.();
   }, []);
 
   // Snapshot effect: agenda o timer quando o estado muda de forma relevante
@@ -208,5 +220,12 @@ export function useKitAutoSave(
     revisionRef.current = currentRevision;
   }, [currentRevision]);
 
-  return { lastSavedAt, isSaving, autoSavedKitId, cancelPendingSave };
+  return {
+    lastSavedAt,
+    isSaving,
+    autoSavedKitId,
+    autoSaveError,
+    retryLastSave,
+    cancelPendingSave,
+  };
 }

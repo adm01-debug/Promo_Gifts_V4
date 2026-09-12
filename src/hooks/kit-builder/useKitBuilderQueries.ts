@@ -31,20 +31,17 @@ export const KIT_PACKAGING_SELECT =
   'id, name, sku, sale_price, primary_image_url, images, dimensions, weight_g, materials, internal_width_cm, internal_height_cm, internal_length_cm, packing_type, packing_classification, product_type';
 
 export const KIT_ITEM_SELECT =
-  'id, name, sku, sale_price, primary_image_url, images, dimensions, category_id, weight_g, materials, width_cm, height_cm, length_cm, colors, packing_classification, packing_type, product_type, allows_personalization';
+  'id, name, sku, sale_price, primary_image_url, images, dimensions, category_id, category_name, weight_g, materials, width_cm, height_cm, length_cm, colors, packing_classification, packing_type, product_type, allows_personalization';
 
 export function isCanonicalPackagingProduct(product: ExternalProductForKit): boolean {
   return product.product_type === 'packaging';
 }
 
 export function isKitSelectableProduct(product: ExternalProductForKit): boolean {
-  const packing =
-    `${product.packing_classification || ''} ${product.packing_type || ''}`.toLowerCase();
-  return (
-    !isCanonicalPackagingProduct(product) &&
-    !packing.includes('embalagem') &&
-    !packing.includes('caixa')
-  );
+  // `packing_type` describes a product's shipping/package metadata in the
+  // catalog. It is not an authoritative product role: excluding every row
+  // whose text contains "caixa" or "embalagem" hides valid kit components.
+  return !isCanonicalPackagingProduct(product);
 }
 
 /**

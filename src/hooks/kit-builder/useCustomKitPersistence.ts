@@ -166,24 +166,18 @@ export function useCustomKitPersistence() {
     async (kitId: string, value: boolean) => {
       if (!user?.id) return;
       try {
-        if (value) {
-          // BUG-KITPERSISTENCE-UNPIN-SILENT-FAIL FIX: bare await swallowed RLS errors —
-          // if unpin-others fails, we must not proceed to pin the target (would create
-          // multiple pinned kits violating the "only 1 pinned" invariant).
-          const { error: unpinErr } = await supabase
-            .from('custom_kits')
-            .update({ is_pinned: false })
-            .eq('user_id', user.id)
-            .eq('is_pinned', true);
-          if (unpinErr) throw unpinErr;
-        }
-        // BUG-KITPERSISTENCE-PIN-SILENT-FAIL FIX: bare await swallowed RLS errors.
-        const { error: pinErr } = await supabase
-          .from('custom_kits')
-          .update({ is_pinned: value })
-          .eq('id', kitId)
-          .eq('user_id', user.id);
-        if (pinErr) throw pinErr;
+        // A pair of browser updates cannot preserve this invariant when two
+        // tabs act at once. The RPC owns the transaction, lock and unique
+        // partial index; the browser only asks for the desired final state.
+        const { error: pinErr } = await (
+          supabase as unknown as {
+            rpc: (
+              name: 'set_custom_kit_pinned',
+              args: { _kit_id: string; _is_pinned: boolean },
+            ) => Promise<{ error: { message?: string } | null }>;
+          }
+        ).rpc('set_custom_kit_pinned', { _kit_id: kitId, _is_pinned: value });
+        if (pinErr) throw new Error(pinErr.message || 'Não foi possível alterar o destaque');
         queryClient.invalidateQueries({ queryKey: QUERY_KEY });
         toast.success(value ? 'Kit fixado em destaque' : 'Kit desafixado');
       } catch (err) {

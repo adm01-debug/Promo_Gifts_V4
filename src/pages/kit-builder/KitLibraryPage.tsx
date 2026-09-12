@@ -6,7 +6,7 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Search, Library, Sparkles, Star, Pin } from 'lucide-react';
+import { Plus, Search, Library, Sparkles, Star, Pin, AlertTriangle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -105,7 +105,12 @@ export default function KitLibraryPage() {
   const [previewTemplate, setPreviewTemplate] = useState<KitTemplateRow | null>(null);
 
   // Mine
-  const { data: myKits = [], isLoading: loadingMine } = useQuery({
+  const {
+    data: myKits = [],
+    isLoading: loadingMine,
+    error: mineQueryError,
+    refetch: refetchMine,
+  } = useQuery({
     queryKey: ['custom-kits', user?.id],
     queryFn: async () => {
       if (!user?.id) return [];
@@ -120,7 +125,15 @@ export default function KitLibraryPage() {
   });
 
   // Suggested
-  const { templates, isLoading: loadingTemplates, cloneTemplate, isCloning } = useKitTemplates();
+  const {
+    templates,
+    isLoading: loadingTemplates,
+    templatesError,
+    refetchTemplates,
+    cloneTemplate,
+    isCloning,
+  } = useKitTemplates();
+  const mineError = mineQueryError instanceof Error ? mineQueryError.message : null;
 
   // Mutations
   const deleteMutation = useMutation({
@@ -369,7 +382,9 @@ export default function KitLibraryPage() {
 
         {/* MINE */}
         <TabsContent value="mine" className="space-y-4">
-          {loadingMine ? (
+          {mineError ? (
+            <LoadErrorState message="Não foi possível carregar seus kits." onRetry={refetchMine} />
+          ) : loadingMine ? (
             <KitCardSkeletonGrid count={8} />
           ) : !pinnedKit && filteredMine.length === 0 ? (
             <EmptyState
@@ -446,7 +461,12 @@ export default function KitLibraryPage() {
 
         {/* SUGGESTED */}
         <TabsContent value="suggested">
-          {loadingTemplates ? (
+          {templatesError ? (
+            <LoadErrorState
+              message="Não foi possível carregar os templates do sistema."
+              onRetry={refetchTemplates}
+            />
+          ) : loadingTemplates ? (
             <KitCardSkeletonGrid count={8} />
           ) : filteredTpls.length === 0 ? (
             <EmptyState
@@ -471,7 +491,9 @@ export default function KitLibraryPage() {
 
         {/* FAVORITES */}
         <TabsContent value="favorites">
-          {filteredFavs.length === 0 ? (
+          {mineError ? (
+            <LoadErrorState message="Não foi possível carregar seus favoritos." onRetry={refetchMine} />
+          ) : filteredFavs.length === 0 ? (
             <EmptyState
               icon={<Star className="h-10 w-10" />}
               title="Sem favoritos ainda"
@@ -524,6 +546,23 @@ export default function KitLibraryPage() {
         testId="kit-library-delete-dialog"
       />
     </div>
+  );
+}
+
+function LoadErrorState({ message, onRetry }: { message: string; onRetry: () => void }) {
+  return (
+    <Card role="alert" className="border-destructive/30 bg-destructive/5">
+      <CardContent className="flex flex-col items-start gap-2 p-5 text-sm">
+        <AlertTriangle className="h-5 w-5 text-destructive" />
+        <p className="font-medium">{message}</p>
+        <p className="text-muted-foreground">
+          Nenhum resultado vazio será exibido enquanto o carregamento não puder ser confirmado.
+        </p>
+        <Button variant="outline" size="sm" onClick={onRetry}>
+          Tentar novamente
+        </Button>
+      </CardContent>
+    </Card>
   );
 }
 
