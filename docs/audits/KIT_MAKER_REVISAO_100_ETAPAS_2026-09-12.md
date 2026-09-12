@@ -237,6 +237,7 @@ Resumo da matriz: **66 etapas implementadas e validadas localmente, 19 implement
 | Orçamento de bundle                   | **PASS — 10,65 MB de 13,06 MB; maior chunk 814,8 KB de 970,2 KB**                                                       |
 | REST de tabelas canônicas             | **PASS — `custom_kits`, `kit_templates`, `product_variants`, `generated_mockups` responderam 200**                      |
 | RPCs no OpenAPI canônico              | **PASS — save, quote e pin confirmadas**                                                                                |
+| Catálogo de referências Supabase      | **PASS — `kit_quote_requests` isolada por exceção source-scoped até a recaptura administrativa de `pg_catalog`**       |
 | Templates ativos                      | **0 — fallback real de catálogo ativado, sem seed fictício**                                                            |
 | Embalagens                            | **14 registros; `packaging_finish` sem valores preenchidos**                                                            |
 | Variantes ativas com estoque          | **19.686 registros**                                                                                                    |
