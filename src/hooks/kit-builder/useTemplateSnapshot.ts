@@ -16,6 +16,21 @@ export interface SnapshotInput {
   overrideName?: string;
 }
 
+/**
+ * Removes the private draft envelope before a snapshot becomes a shared
+ * system template. CRM identifiers and contact details belong to the seller's
+ * draft and must never cross that publication boundary.
+ */
+export function buildTemplatePersonalizationSnapshot(
+  personalization: KitState['personalization'],
+): KitState['personalization'] {
+  const snapshot = structuredClone(personalization) as KitState['personalization'] & {
+    __draft?: unknown;
+  };
+  delete snapshot.__draft;
+  return snapshot;
+}
+
 export function useTemplateSnapshot() {
   const queryClient = useQueryClient();
 
@@ -31,7 +46,7 @@ export function useTemplateSnapshot() {
         tag: identity?.tag ?? null,
         box_data: kitState.box ? structuredClone(kitState.box) : null,
         items_data: structuredClone(kitState.items),
-        personalization_data: structuredClone(kitState.personalization),
+        personalization_data: buildTemplatePersonalizationSnapshot(kitState.personalization),
         total_price: kitState.totalPrice,
         volume_usage_percent: kitState.volumeUsagePercent,
         is_active: true,

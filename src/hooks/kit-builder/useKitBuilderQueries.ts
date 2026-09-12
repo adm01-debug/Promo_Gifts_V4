@@ -5,7 +5,7 @@
  */
 
 import { dbInvoke } from '@/lib/db/postgrest';
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   type KitBox,
@@ -184,38 +184,21 @@ export function useKitBuilderQueries() {
   // rows describe their shipping package and almost never have usable internal
   // dimensions, so the transformer correctly discarded every candidate.
   const {
-    data: availableBoxes = [],
+    data: completeBoxCatalog = [],
     isLoading: isLoadingBoxes,
     error: boxQueryError,
     refetch: refetchBoxes,
   } = useQuery({
-    queryKey: [
-      'kit-builder',
-      'boxes',
-      debouncedBoxSearch,
-      boxDimFilters.minWidth ?? '',
-      boxDimFilters.minHeight ?? '',
-      boxDimFilters.minDepth ?? '',
-      boxDimFilters.maxWidth ?? '',
-      boxDimFilters.maxHeight ?? '',
-      boxDimFilters.maxDepth ?? '',
-      boxDimFilters.minPrice ?? '',
-      boxDimFilters.maxPrice ?? '',
-      boxDimFilters.material ?? '',
-      boxDimFilters.boxType ?? '',
-      boxDimFilters.finish ?? '',
-    ],
+    queryKey: ['kit-builder', 'boxes', 'complete-catalog'],
     queryFn: async () => {
       try {
-        const products = await fetchAllActiveProducts(KIT_PACKAGING_SELECT, debouncedBoxSearch, {
+        const products = await fetchAllActiveProducts(KIT_PACKAGING_SELECT, '', {
           product_type: 'packaging',
         });
-        const boxes = products
+        return products
           .filter(isCanonicalPackagingProduct)
           .map((p) => transformToKitBox(p))
           .filter((box): box is KitBox => box !== null);
-
-        return filterBoxes(boxes, null, boxDimFilters);
       } catch (err) {
         logger.warn('[KitBuilder] External DB unavailable for boxes', err);
         throw err;
@@ -227,26 +210,19 @@ export function useKitBuilderQueries() {
 
   // Query: items
   const {
-    data: availableItems = [],
+    data: completeItemCatalog = [],
     isLoading: isLoadingItems,
     error: itemQueryError,
     refetch: refetchItems,
   } = useQuery({
-    queryKey: [
-      'kit-builder',
-      'items',
-      debouncedItemSearch,
-      itemExtraFilters.category ?? '',
-      itemExtraFilters.maxVolume ?? '',
-    ],
+    queryKey: ['kit-builder', 'items', 'complete-catalog'],
     queryFn: async () => {
       try {
-        const products = await fetchAllActiveProducts(KIT_ITEM_SELECT, debouncedItemSearch);
-        const items = products
+        const products = await fetchAllActiveProducts(KIT_ITEM_SELECT, '');
+        return products
           .filter(isKitSelectableProduct)
           .map((p) => transformToKitItem(p))
           .filter((item): item is KitItem => item !== null);
-        return filterItems(items, '');
       } catch (err) {
         logger.warn('[KitBuilder] External DB unavailable for items', err);
         throw err;
@@ -256,9 +232,23 @@ export function useKitBuilderQueries() {
     retry: 1,
   });
 
+  // Selector filters are projections over the complete cached catalogs. The
+  // AI resolver receives the unfiltered arrays below, so a previous human
+  // search can never constrain a new briefing or yield a false empty result.
+  const availableBoxes = useMemo(
+    () => filterBoxes(completeBoxCatalog, debouncedBoxSearch, boxDimFilters),
+    [boxDimFilters, completeBoxCatalog, debouncedBoxSearch],
+  );
+  const availableItems = useMemo(
+    () => filterItems(completeItemCatalog, debouncedItemSearch),
+    [completeItemCatalog, debouncedItemSearch],
+  );
+
   return {
     availableBoxes,
     availableItems,
+    completeBoxCatalog,
+    completeItemCatalog,
     isLoadingBoxes,
     isLoadingItems,
     boxError: boxQueryError instanceof Error ? boxQueryError.message : null,

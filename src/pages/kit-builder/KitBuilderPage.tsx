@@ -103,10 +103,10 @@ export default function KitBuilderPage() {
             occasion={state.occasion}
             onOccasionChange={actions.selectOccasion}
             aiCatalogItems={state.allAvailableItems}
-            aiCatalogBoxes={state.availableBoxes}
-            onApplyAISuggestion={(suggestion, composition) => {
+            aiCatalogBoxes={state.allAvailableBoxes}
+            onApplyAISuggestion={(suggestion, composition, requestedQuantity) => {
               actions.startFlow('items-first');
-              actions.applyAISuggestion(suggestion, composition);
+              actions.applyAISuggestion(suggestion, composition, requestedQuantity);
             }}
           />
         </>
@@ -136,7 +136,7 @@ export default function KitBuilderPage() {
             kitState={state.kitState}
             onAIApply={actions.applyAISuggestion}
             aiCatalogItems={state.allAvailableItems}
-            aiCatalogBoxes={state.availableBoxes}
+            aiCatalogBoxes={state.allAvailableBoxes}
           />
 
           <div className="border-b bg-card/40 backdrop-blur-sm">

@@ -242,6 +242,11 @@ export function useKitBuilderQuote() {
           color_name: null,
           color_hex: null,
           kit_name: kitLabel,
+          artwork_urls: personRef.box.enabled
+            ? [personRef.box.artworkUrl, personRef.box.generatedMockupUrl].filter(
+                (url): url is string => Boolean(url),
+              )
+            : [],
           personalization_cost: personRef.box.enabled
             ? personRef.box.pricedQuantity === kitQuantity &&
               Number.isFinite(personRef.box.totalPrice)
@@ -273,6 +278,7 @@ export function useKitBuilderQuote() {
           product_variant_id: item.selectedVariantId || null,
           artwork_urls: (() => {
             const configured = personRef.items[getKitItemLineId(item)] ?? personRef.items[item.id];
+            if (!configured?.enabled) return [];
             return [configured?.artworkUrl, configured?.generatedMockupUrl].filter(
               (url): url is string => Boolean(url),
             );
@@ -304,11 +310,24 @@ export function useKitBuilderQuote() {
           ? retryableRequestRef.current
           : readRetryReceipt(fingerprint);
 
-      // A lost response may hide a quote that already committed. Replaying the
-      // exact receipt first lets the database return that quote even when stock
-      // changed afterwards. Stock validation applies only to genuinely new
-      // commercial operations.
-      if (!recoverableOperation) {
+      // A browser receipt proves only that a request was sent. It does not
+      // prove that PostgreSQL committed it. Skip a fresh stock check only when
+      // the authenticated, RLS-protected server ledger confirms the request.
+      let serverConfirmedCommit = false;
+      if (recoverableOperation) {
+        try {
+          const { data: receipt, error: receiptError } = await supabase
+            .from('kit_quote_requests')
+            .select('quote_id')
+            .eq('request_id', recoverableOperation.id)
+            .maybeSingle();
+          serverConfirmedCommit = !receiptError && Boolean(receipt?.quote_id);
+        } catch {
+          serverConfirmedCommit = false;
+        }
+      }
+
+      if (!serverConfirmedCommit) {
         const liveStock = await validateKitStockForQuote(kitState.items, kitState.box, kitQuantity);
         if (liveStock.status === 'unknown') {
           throw new KitQuoteValidationError(

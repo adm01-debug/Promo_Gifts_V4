@@ -4,7 +4,7 @@ Data da revisão: 12/09/2026. Rota: `/montar-kit`. Projeto canônico: `doufsxqlf
 
 ## 1. Veredito executivo
 
-A rodada corretiva eliminou as três falhas reproduzidas na auditoria anterior e implementou as principais lacunas funcionais de IA, personalização, comparação de caixas, persistência, biblioteca, estoque e revisão. Uma segunda revisão adversarial encontrou doze defeitos adicionais; todos receberam correção e regressão dedicada. A suíte agregada do módulo terminou com **33 arquivos e 218 testes aprovados** (mais dois arquivos e dez testes que na primeira medição), sem testes diagnósticos vermelhos. TypeScript, lint dos arquivos alterados, build de produção e orçamento de bundle também passaram.
+A rodada corretiva eliminou as três falhas reproduzidas na auditoria anterior e implementou as principais lacunas funcionais de IA, personalização, comparação de caixas, persistência, biblioteca, estoque e revisão. Três revisões adversariais posteriores encontraram defeitos adicionais; todos os achados confirmados receberam correção e regressão dedicada. A suíte agregada do módulo terminou com **35 arquivos e 235 testes aprovados**, sem testes diagnósticos vermelhos. TypeScript, lint, build de produção e orçamento de bundle também foram repetidos e permaneceram verdes antes do push final.
 
 O resultado ainda não deve ser chamado de `100/100 aceito` por quatro razões externas ao código implementado:
 
@@ -61,6 +61,42 @@ O teste diagnóstico `tests/audit/kit-maker-plan-review.test.tsx`, originalmente
 
 O controle de remoção de arte usado pelo Kit Maker também passou a apenas desvincular a URL: uma arte reutilizada por outra linha, rascunho ou orçamento não é apagada do Storage.
 
+### 3.2 Terceira revisão adversarial do PR
+
+| Achado | Risco reproduzido                                                              | Correção e prova                                                                                         |
+| ------ | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
+| R13    | template compartilhado podia herdar CRM/contato privado do rascunho            | serializador remove `__draft`; regressão preserva personalização e prova ausência dos dados privados     |
+| R14    | quantidade escolhida no briefing da IA não era aplicada ao kit                 | contrato carrega a quantidade confirmada até o estado; regressões de diálogo e hook                      |
+| R15    | busca/filtros humanos restringiam indevidamente o catálogo entregue à IA        | catálogo completo passou a ser cache-base; seletores recebem apenas projeções locais filtradas           |
+| R16    | mockup gerado para a caixa não seguia para a linha do orçamento                 | `artwork_urls` da caixa inclui arte e mockup somente quando a personalização está habilitada              |
+| R17    | IDs antigos mantinham comparação ativa após a caixa desaparecer dos resultados | IDs são podados e o botão usa apenas recomendações ainda existentes                                     |
+| R18    | previsão podia afirmar estoque suficiente durante estado desconhecido          | previsão só aparece após status conclusivo (`available`/`unavailable`)                                   |
+| R19    | modo verso espelhava também logo/texto da arte                                  | apenas a fotografia-base é espelhada; arte e mockup permanecem legíveis                                  |
+| R20    | edição manual da empresa preservava um `client_id` de outra empresa             | alteração manual desvincula o ID CRM; demais campos continuam preservando o vínculo                      |
+| R21    | alertas de variante e produto podiam colidir na chave React                     | cada pool de estoque recebe `stockKey` semântico e distinto                                              |
+| R22    | preço reativo podia permanecer em loading após parâmetros inválidos             | troca de parâmetros cancela timer/resposta e limpa loading/erro                                          |
+| R23    | total mínimo/setup era exibido sem explicar a diferença para preço unitário     | breakdown identifica o piso considerado como não aditivo                                                |
+| R24    | mock de estoque dependia de closure top-level sujeita a hoisting                | fixture usa `vi.hoisted`, conforme contrato do Vitest                                                    |
+| R25    | URLs antigas poderiam seguir à cotação mesmo com personalização desabilitada    | arte/mockup só são anexados quando a configuração está habilitada                                        |
+| R26    | relatório tratava REST/OpenAPI como evidência de schema                         | evidência foi rebaixada a smoke de endpoint; `pg_catalog` permanece explicitamente não confirmado        |
+
+### 3.3 Quarta revisão adversarial do PR
+
+| Achado | Risco reproduzido                                                               | Correção e prova                                                                                                  |
+| ------ | ------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| R27    | falha de refetch escondia templates válidos já presentes no cache               | alerta só substitui a seção quando não há template utilizável; regressão cobre cache + falha                       |
+| R28    | refs mutados durante render podiam vazar estado de um render concorrente         | sincronização passou para efeitos pós-commit nos fluxos de preço, mockup e autosave                               |
+| R29    | personalizações ocultas disparavam uma RPC de preço por alvo simultaneamente     | fila visual processa no máximo dois alvos pendentes por vez e avança conforme cada preço é confirmado             |
+| R30    | remoção de `kit`/`product` da URL não restaurava a landing                       | modo da rota agora é sincronizado nos dois sentidos                                                              |
+| R31    | IA podia ignorar um sétimo candidato compatível                                 | busca percorre os pontos de partida até obter três alternativas ou esgotar o catálogo; regressão dedicada         |
+| R32    | recibo local de retry de orçamento era confundido com commit confirmado         | somente uma linha RLS no ledger `kit_quote_requests` permite pular a nova validação de estoque                    |
+| R33    | save manual bem-sucedido podia deixar um autosave congelado e obsoleto           | confirmação explícita supera a operação pendente, atualiza revisão e elimina o recibo antigo                      |
+| R34    | clone navegava antes de o registro novo entrar no cache de hidratação            | linha retornada é semeada sincronamente nas duas chaves de `custom-kits` antes da invalidação e navegação          |
+| R35    | troca CRM A→B podia manter o nome preenchido automaticamente para A              | origem automática do nome é rastreada; troca atualiza autofill e preserva contato digitado manualmente            |
+| R36    | cobrança mínima/setup ainda parecia contradizer `quantidade × preço unitário`    | multiplicação divergente é rotulada como preço-base e o piso/setup permanece discriminado                         |
+| R37    | redução do número de cores mantinha uma paleta maior e subprecificada            | paleta é truncada junto com a contagem faturável e o preço/mockup anterior é invalidado                           |
+| R38    | kit arquivado aparecia com badge de publicado                                    | ciclo arquivado ganhou badge e filtro próprios                                                                    |
+
 ## 4. Reavaliação das lacunas G01–G13
 
 | ID                            | Estado                               | Resultado atual                                                     | Limite remanescente                                                                          |
@@ -76,8 +112,8 @@ O controle de remoção de arte usado pelo Kit Maker também passou a apenas des
 | G09 cliente não persistia     | **RESOLVIDA**                        | `client_id` e dados manuais no snapshot versionado                  | round-trip real autorizado                                                                   |
 | G10 origem do orçamento       | **RESOLVIDA NO PAYLOAD**             | ID do kit e arte/mockup seguem na cotação                           | inspeção do registro real criado                                                             |
 | G11 estoque/frete             | **ESTOQUE RESOLVIDO; FRETE PARCIAL** | leitura fresca fail-closed antes da RPC                             | frete continua estimativa, sem transportadora/CEP real                                       |
-| G12 types/base                | **PARCIAL EXTERNO**                  | objetos/RPCs confirmados via REST/OpenAPI                           | `set_custom_kit_pinned` ainda ausente do type gerado; CLI sem acesso administrativo canônico |
-| G13 cobertura                 | **AMPLIADA**                         | 218 testes focados, typecheck, lint, build e bundle verdes          | baselines visuais e E2E autenticado ainda pendentes                                          |
+| G12 types/base                | **NÃO CONFIRMADA NO CATÁLOGO PG**    | endpoints PostgREST responderam ao smoke test                       | tipo do objeto, políticas, grants, triggers e definições exigem inspeção de `pg_catalog`      |
+| G13 cobertura                 | **AMPLIADA**                         | 235 testes focados, typecheck, lint, build e bundle verdes          | baselines visuais e E2E autenticado ainda pendentes                                          |
 
 ## 5. Matriz atual das 100 etapas
 
@@ -105,7 +141,7 @@ Legenda: `I` = implementada e validada localmente; `P` = implementação present
 |   018 |   I    | Contratos transacionais existentes preservados e consumidos.                                          |
 |   019 |   I    | Autosave serializado, idempotente e recuperável no cliente.                                           |
 |   020 |   V    | RLS real com usuários A/B requer sessões autorizadas.                                                 |
-|   021 |   P    | REST/OpenAPI verificados; `pg_catalog` administrativo pendente.                                       |
+|   021 |   V    | REST/OpenAPI validam exposição, não schema; `pg_catalog` administrativo permanece pendente.           |
 |   022 |   I    | Produtos e variantes reais consultados e normalizados.                                                |
 |   023 |   I    | Embalagens usam o domínio canônico `product_type=packaging`.                                          |
 |   024 |   P    | Projeção comercial usada; acabamento não tem dados preenchidos.                                       |
@@ -186,19 +222,19 @@ Legenda: `I` = implementada e validada localmente; `P` = implementação present
 |   099 |   V    | Esta rodada ainda não foi mergeada/publicada.                                                         |
 |   100 |   V    | Encerramento depende dos aceites visual e operacional acima.                                          |
 
-Resumo da matriz: **66 etapas implementadas e validadas localmente, 20 implementadas com dependência externa/parcial e 14 aguardando validação/aceite externo**. O total de implementação é alto; o total de aceite PO continua separado por desenho.
+Resumo da matriz: **66 etapas implementadas e validadas localmente, 19 implementadas com dependência externa/parcial e 15 aguardando validação/aceite externo**. O total de implementação é alto; o total de aceite PO continua separado por desenho.
 
 ## 6. Validações executadas
 
 | Verificação                           | Resultado                                                                                                               |
 | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| Regressão agregada do Kit Maker       | **PASS — 33 arquivos, 218 testes; 2 arquivos/16 testes ignorados conforme configuração**                                |
-| Suíte global do repositório           | **PASS — 1.143 arquivos e 24.740 testes; 128 arquivos/1.138 testes ignorados conforme configuração**                    |
+| Regressão agregada do Kit Maker       | **PASS — 35 arquivos, 235 testes**                                                                                       |
+| Suíte global do repositório           | **PASS — 1.145 arquivos e 24.758 testes; 128 arquivos/1.138 testes ignorados conforme configuração**                    |
 | Falhas F01–F03                        | **PASS — regressões corrigidas**                                                                                        |
 | TypeScript                            | **PASS — `tsc --noEmit`** após compatibilizar TypeScript com Vite                                                       |
 | ESLint dos arquivos alterados         | **PASS**                                                                                                                |
 | Build de produção e guards do projeto | **PASS**                                                                                                                |
-| Orçamento de bundle                   | **PASS — 10,62 MB de 13,06 MB; maior chunk 814,8 KB de 970,2 KB**                                                       |
+| Orçamento de bundle                   | **PASS — 10,65 MB de 13,06 MB; maior chunk 814,8 KB de 970,2 KB**                                                       |
 | REST de tabelas canônicas             | **PASS — `custom_kits`, `kit_templates`, `product_variants`, `generated_mockups` responderam 200**                      |
 | RPCs no OpenAPI canônico              | **PASS — save, quote e pin confirmadas**                                                                                |
 | Templates ativos                      | **0 — fallback real de catálogo ativado, sem seed fictício**                                                            |
@@ -212,12 +248,16 @@ Resumo da matriz: **66 etapas implementadas e validadas localmente, 20 implement
 - Estoque nulo, consulta falha e consulta em andamento: estados distintos e fail-closed.
 - Estoque alterado entre revisão e clique final: nova consulta obrigatória antes da RPC.
 - Resposta perdida no primeiro autosave: mesmo request e mesmo snapshot no retry.
+- Save manual após autosave falho: a revisão nova supera o recibo congelado e o próximo autosave parte dela.
+- Retry de orçamento: apenas confirmação no ledger do servidor permite dispensar a segunda leitura de estoque.
 - Duas respostas de preço fora de ordem: somente quantidade/versão atual é aceita.
 - Setup não zero e cobrança mínima: total e payload mantêm os componentes comerciais.
 - IA sem template ativo: composição determinística usa produtos/caixas reais carregados.
 - IA acima do orçamento ou sem encaixe verificável: alternativa inválida não é aplicada.
+- Seis candidatos incompatíveis antes de um sétimo válido: a busca continua e encontra a composição real.
 - Geração de mockup: loading, falha e sucesso não confundem arte-fonte com resultado gerado.
 - Cliente CRM versus preenchimento manual: ID canônico e snapshot descritivo permanecem separados.
+- Troca de empresa CRM preserva contato manual, mas substitui corretamente um nome que era apenas autofill.
 
 ## 8. Pendências objetivas para o encerramento 100/100
 

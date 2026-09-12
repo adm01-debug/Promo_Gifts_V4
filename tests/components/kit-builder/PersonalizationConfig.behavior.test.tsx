@@ -179,4 +179,15 @@ describe('PersonalizationConfig async behavior', () => {
     render(<Harness />);
     expect(screen.getByTestId('artwork-control')).toHaveAttribute('data-delete-on-remove', 'false');
   });
+
+  it('espelha somente o produto no verso e mantém a arte legível', () => {
+    render(<Harness />);
+    fireEvent.click(screen.getByRole('button', { name: 'Verso' }));
+
+    const product = screen.getByAltText('Verso de Garrafa');
+    const artwork = screen.getByAltText('Arte enviada para personalização');
+    expect(product).toHaveStyle({ transform: 'scaleX(-1)' });
+    expect(artwork).not.toHaveStyle({ transform: 'scaleX(-1)' });
+    expect(product.parentElement).toHaveStyle({ transform: 'scale(1)' });
+  });
 });

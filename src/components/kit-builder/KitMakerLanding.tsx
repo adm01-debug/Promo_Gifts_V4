@@ -34,7 +34,11 @@ interface KitMakerLandingProps {
   onOccasionChange: (occasion: Occasion | null) => void;
   aiCatalogItems: KitItem[];
   aiCatalogBoxes: KitBox[];
-  onApplyAISuggestion: (suggestion: KitAISuggestionBrief, composition: KitAIComposition) => void;
+  onApplyAISuggestion: (
+    suggestion: KitAISuggestionBrief,
+    composition: KitAIComposition,
+    requestedQuantity?: number,
+  ) => void;
 }
 
 interface FeaturedProduct {
@@ -197,7 +201,7 @@ export function KitMakerLanding({
     isCloning,
   } = useKitTemplates();
   const hasFeaturedError =
-    Boolean(templatesError) || (featuredKits.length === 0 && hasLandingCatalogError);
+    featuredKits.length === 0 && (Boolean(templatesError) || hasLandingCatalogError);
   const isFeaturedCatalogLoading =
     isLoadingFeatured || (featuredKits.length === 0 && isLoadingLandingCatalog);
   const catalogCompositions = useMemo(

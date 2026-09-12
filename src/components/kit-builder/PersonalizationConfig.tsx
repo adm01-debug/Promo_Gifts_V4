@@ -251,9 +251,12 @@ function ItemPersonalizationCard({
 
   // #3 FIX: Sync estimatedPrice with RPC result so price-calculator picks it up
   const onChangeRef = useRef(onChange);
-  onChangeRef.current = onChange;
   const personalizationRef = useRef(personalization);
-  personalizationRef.current = personalization;
+
+  useEffect(() => {
+    onChangeRef.current = onChange;
+    personalizationRef.current = personalization;
+  }, [onChange, personalization]);
 
   useEffect(() => {
     if (
@@ -313,6 +316,7 @@ function ItemPersonalizationCard({
     onChange({
       ...personalization,
       colors,
+      artworkColors: personalization.artworkColors?.slice(0, colors),
       estimatedPrice: undefined,
       pricedQuantity: undefined,
       setupCost: undefined,
@@ -665,9 +669,12 @@ function PersonalizationPriceSynchronizer({
     currentTech?.usa_dimensao || false,
   );
   const personalizationRef = useRef(personalization);
-  personalizationRef.current = personalization;
   const onChangeRef = useRef(onChange);
-  onChangeRef.current = onChange;
+
+  useEffect(() => {
+    personalizationRef.current = personalization;
+    onChangeRef.current = onChange;
+  }, [onChange, personalization]);
 
   useEffect(() => {
     if (!price?.success || !Number.isFinite(price.preco_unitario)) return;
@@ -715,7 +722,10 @@ function PersonalizationPreview({
   const [isGenerating, setIsGenerating] = useState(false);
   const generationRef = useRef(0);
   const personalizationRef = useRef(personalization);
-  personalizationRef.current = personalization;
+
+  useEffect(() => {
+    personalizationRef.current = personalization;
+  }, [personalization]);
 
   const handleGenerateMockup = async () => {
     const request = buildKitMockupRequest(displayName, imageUrl, personalization);
@@ -758,7 +768,7 @@ function PersonalizationPreview({
     >
       <div
         className="h-full w-full transition-transform duration-200 motion-reduce:transition-none"
-        style={{ transform: `scale(${zoom})${side === 'back' ? ' scaleX(-1)' : ''}` }}
+        style={{ transform: `scale(${zoom})` }}
       >
         {personalization.generatedMockupUrl ? (
           <img
@@ -771,6 +781,7 @@ function PersonalizationPreview({
             src={imageUrl}
             alt={`${side === 'front' ? 'Frente' : 'Verso'} de ${displayName}`}
             className="h-full w-full object-cover"
+            style={{ transform: side === 'back' ? 'scaleX(-1)' : undefined }}
           />
         ) : (
           <div className="flex h-full items-center justify-center">
@@ -989,6 +1000,17 @@ export function PersonalizationConfig({
         .filter((url): url is string => Boolean(url)),
     ),
   );
+  const backgroundPriceTargets = targets
+    .filter((target) => {
+      if (target.key === activeTarget?.key || !target.personalization.enabled) return false;
+      if (!target.personalization.techniqueId) return false;
+      return (
+        target.personalization.pricedQuantity !== target.quantity ||
+        !Number.isFinite(target.personalization.estimatedPrice) ||
+        !Number.isFinite(target.personalization.totalPrice)
+      );
+    })
+    .slice(0, 2);
 
   useEffect(() => {
     if (firstTargetKey && !hasActiveTarget) {
@@ -1040,17 +1062,15 @@ export function PersonalizationConfig({
 
       {activeTarget && (
         <>
-          {targets
-            .filter((target) => target.key !== activeTarget.key && target.personalization.enabled)
-            .map((target) => (
-              <PersonalizationPriceSynchronizer
-                key={`price-sync:${target.key}`}
-                productId={target.productId}
-                personalization={target.personalization}
-                onChange={target.onChange}
-                quantity={target.quantity}
-              />
-            ))}
+          {backgroundPriceTargets.map((target) => (
+            <PersonalizationPriceSynchronizer
+              key={`price-sync:${target.key}`}
+              productId={target.productId}
+              personalization={target.personalization}
+              onChange={target.onChange}
+              quantity={target.quantity}
+            />
+          ))}
           <div className="grid gap-4 xl:grid-cols-[18rem_minmax(0,1fr)_20rem]">
             <Card>
               <CardHeader className="pb-3">

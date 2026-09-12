@@ -112,7 +112,7 @@ export function useKitBuilderPageState() {
   // this hook. Derive the mode from the URL so a cloned template immediately
   // opens in the editor instead of remaining behind the landing screen.
   useEffect(() => {
-    if (!isKitMakerLandingRoute(kitIdParam, productIdParam)) setIsLanding(false);
+    setIsLanding(isKitMakerLandingRoute(kitIdParam, productIdParam));
   }, [kitIdParam, productIdParam]);
 
   const {
@@ -121,6 +121,7 @@ export function useKitBuilderPageState() {
     kitQuantity,
     availableBoxes,
     availableItems,
+    allAvailableBoxes,
     allAvailableItems,
     isLoadingBoxes,
     isLoadingItems,
@@ -169,6 +170,7 @@ export function useKitBuilderPageState() {
     autoSaveError,
     retryLastSave,
     cancelPendingSave,
+    acknowledgeManualSave,
   } = useKitAutoSave(
     kitState,
     kitQuantity,
@@ -329,6 +331,7 @@ export function useKitBuilderPageState() {
       const saved = await saveKit(kitState, kitQuantity, kitId, kitId ? currentRevision : null, {
         quoteClient,
       });
+      acknowledgeManualSave(saved.id, saved.revision);
       setCurrentKitId(saved.id);
       setCurrentRevision(saved.revision);
     } catch (error) {
@@ -338,6 +341,7 @@ export function useKitBuilderPageState() {
     }
   }, [
     autoSavedKitId,
+    acknowledgeManualSave,
     cancelPendingSave,
     currentKitId,
     currentRevision,
@@ -349,8 +353,12 @@ export function useKitBuilderPageState() {
   ]);
 
   const applyAISuggestion = useCallback(
-    (_suggestion: KitAISuggestionBrief, composition: KitAIComposition) => {
-      applyAIComposition(composition);
+    (
+      _suggestion: KitAISuggestionBrief,
+      composition: KitAIComposition,
+      requestedQuantity?: number,
+    ) => {
+      applyAIComposition(composition, requestedQuantity);
       toast.success('Composição da IA aplicada', {
         description: 'Confira variantes, estoque, personalização e valores antes de continuar.',
       });
@@ -398,6 +406,7 @@ export function useKitBuilderPageState() {
       currentKitId,
       autoSavedKitId,
       availableBoxes,
+      allAvailableBoxes,
       availableItems,
       allAvailableItems,
       isLoadingBoxes,

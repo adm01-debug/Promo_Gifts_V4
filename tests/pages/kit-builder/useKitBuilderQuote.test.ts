@@ -10,7 +10,9 @@ import { act, renderHook } from '@testing-library/react';
 import { createSupabaseMock } from '../../helpers/supabase-mock';
 import type { KitState } from '@/hooks/useKitBuilder';
 
-const validateKitStockForQuote = vi.fn().mockResolvedValue({ status: 'available', alerts: [] });
+const { validateKitStockForQuote } = vi.hoisted(() => ({
+  validateKitStockForQuote: vi.fn().mockResolvedValue({ status: 'available', alerts: [] }),
+}));
 
 vi.mock('@/hooks/kit-builder/useKitStockValidation', () => ({ validateKitStockForQuote }));
 
@@ -79,8 +81,12 @@ describe('useKitBuilderQuote — payloads', () => {
     vi.clearAllMocks();
   });
 
-  async function loadHook(opts: { user: { id: string } | null }) {
+  async function loadHook(opts: {
+    user: { id: string } | null;
+    selects?: Record<string, unknown[] | unknown>;
+  }) {
     mock = createSupabaseMock({
+      selects: opts.selects,
       insertReturn: (table, payload) => {
         if (table === 'quotes') return { id: 'new-quote-id', quote_number: 'ORC-001' };
         if (table === 'quote_items') {
@@ -243,6 +249,38 @@ describe('useKitBuilderQuote — payloads', () => {
     ]);
   });
 
+  it('preserva arte e mockup gerado da personalização da caixa', async () => {
+    const useHook = await loadHook({ user: { id: USER_ID } });
+    const { result } = renderHook(() => useHook());
+    const state = {
+      ...KIT_STATE,
+      personalization: {
+        box: {
+          enabled: true,
+          techniqueId: 'laser',
+          positionCode: 'front',
+          estimatedPrice: 2,
+          pricedQuantity: 2,
+          totalPrice: 10,
+          artworkUrl: 'https://cdn.test/box-art.png',
+          generatedMockupUrl: 'https://cdn.test/box-mockup.png',
+        },
+        items: {},
+      },
+    } as KitState;
+
+    await act(async () => {
+      await result.current.handleAddToQuote(state, 2);
+    });
+
+    const rpc = mock.calls.rpc.find((call) => call.fn === 'create_kit_quote_transactional');
+    const boxLine = (rpc!.args!._items as Array<Record<string, unknown>>)[0];
+    expect(boxLine.artwork_urls).toEqual([
+      'https://cdn.test/box-art.png',
+      'https://cdn.test/box-mockup.png',
+    ]);
+  });
+
   it('preserva setup e cobrança mínima retornados pelo cálculo de personalização', async () => {
     const useHook = await loadHook({ user: { id: USER_ID } });
     const { result } = renderHook(() => useHook());
@@ -257,7 +295,7 @@ describe('useKitBuilderQuote — payloads', () => {
             techniqueName: 'Laser',
             positionCode: 'front',
             estimatedPrice: 2.5,
-            pricedQuantity: 2,
+            pricedQuantity: 10,
             setupCost: 25,
             totalPrice: 25,
           },
@@ -277,7 +315,7 @@ describe('useKitBuilderQuote — payloads', () => {
     ]);
   });
 
-  it('reutiliza a mesma operação e agrupamento após timeout sem editar o kit', async () => {
+  it('reutiliza a mesma operação, mas revalida estoque sem confirmação do ledger', async () => {
     const useHook = await loadHook({ user: { id: USER_ID } });
     const rpc = vi.mocked(mock.client.rpc);
     rpc
@@ -301,7 +339,32 @@ describe('useKitBuilderQuote — payloads', () => {
     expect(calls).toHaveLength(2);
     expect(calls[1].args?._request_id).toBe(calls[0].args?._request_id);
     expect(calls[1].args?._items).toEqual(calls[0].args?._items);
+    expect(validateKitStockForQuote).toHaveBeenCalledTimes(2);
+  });
+
+  it('pula a revalidação apenas quando o ledger confirma o commit perdido', async () => {
+    const useHook = await loadHook({
+      user: { id: USER_ID },
+      selects: { kit_quote_requests: { quote_id: 'quote-retomado' } },
+    });
+    const rpc = vi.mocked(mock.client.rpc);
+    rpc
+      .mockResolvedValueOnce({ data: null, error: { message: 'Resposta perdida após commit' } })
+      .mockResolvedValueOnce({
+        data: { id: 'quote-retomado', quote_number: 'ORC-002' },
+        error: null,
+      });
+
+    const { result } = renderHook(() => useHook());
+    await act(async () => {
+      await result.current.handleAddToQuote(KIT_STATE, 2);
+    });
+    await act(async () => {
+      await result.current.handleAddToQuote(KIT_STATE, 2);
+    });
+
     expect(validateKitStockForQuote).toHaveBeenCalledTimes(1);
+    expect(rpc.mock.calls.filter(([fn]) => fn === 'create_kit_quote_transactional')).toHaveLength(2);
   });
 
   it('preserva tamanho e identidade de variante no payload de linha', async () => {

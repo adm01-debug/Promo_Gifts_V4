@@ -95,18 +95,24 @@ export function useCustomizationPriceReactive(
   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = undefined;
+    }
     if (!techniqueId || quantidade <= 0) {
       setPriceState(null);
+      setLoading(false);
+      setError(null);
       return;
     }
 
     // If dimensions are required but not provided, don't calculate
     if (usaDimensao && (!larguraCm || larguraCm <= 0 || !alturaCm || alturaCm <= 0)) {
       setPriceState(null);
+      setLoading(false);
+      setError(null);
       return;
     }
-
-    if (timerRef.current) clearTimeout(timerRef.current);
 
     // Supersede guard: when inputs change while the debounced RPC is in flight,
     // the cleanup flips `cancelled` so an out-of-order response cannot overwrite
@@ -154,7 +160,10 @@ export function useCustomizationPriceReactive(
 
     return () => {
       cancelled = true;
-      if (timerRef.current) clearTimeout(timerRef.current);
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = undefined;
+      }
     };
   }, [techniqueId, quantidade, numCores, larguraCm, alturaCm, usaDimensao, requestKey]);
 

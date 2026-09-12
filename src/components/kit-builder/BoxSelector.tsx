@@ -140,6 +140,14 @@ export function BoxSelector({
       Boolean(recommendation),
     );
 
+  useEffect(() => {
+    const validIds = new Set(recommendations.map((recommendation) => recommendation.box.id));
+    setComparisonIds((current) => {
+      const next = current.filter((id) => validIds.has(id));
+      return next.length === current.length ? current : next;
+    });
+  }, [recommendations]);
+
   const toggleComparison = (boxId: string) => {
     setComparisonIds((current) => {
       if (current.includes(boxId)) return current.filter((id) => id !== boxId);
@@ -523,16 +531,17 @@ export function BoxSelector({
         </CollapsibleContent>
       </Collapsible>
 
-      {comparisonIds.length > 0 && (
+      {comparedRecommendations.length > 0 && (
         <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-primary/30 bg-primary/5 p-3">
           <p className="text-sm">
-            <strong>{comparisonIds.length}</strong> caixa(s) selecionada(s) para comparação
+            <strong>{comparedRecommendations.length}</strong> caixa(s) selecionada(s) para
+            comparação
           </p>
           <Button
             type="button"
             size="sm"
             className="gap-2"
-            disabled={comparisonIds.length < 2}
+            disabled={comparedRecommendations.length < 2}
             onClick={() => setComparisonOpen(true)}
           >
             <GitCompareArrows className="h-4 w-4" /> Comparar caixas

@@ -63,7 +63,11 @@ const suggestionSchema = z
 interface KitAIPromptDialogProps {
   catalogItems?: KitItem[];
   catalogBoxes?: KitBox[];
-  onApply: (suggestion: Suggestion, composition: KitAIComposition) => void;
+  onApply: (
+    suggestion: Suggestion,
+    composition: KitAIComposition,
+    requestedQuantity?: number,
+  ) => void;
 }
 
 const AUDIENCES = ['Colaboradores', 'Clientes', 'Evento', 'Clientes VIP'];
@@ -166,7 +170,14 @@ export function KitAIPromptDialog({
 
   const handleApply = () => {
     if (!suggestion || !activeAlternative) return;
-    onApply(suggestion, activeAlternative);
+    const requestedQuantity = Number.parseInt(quantity, 10);
+    onApply(
+      suggestion,
+      activeAlternative,
+      Number.isSafeInteger(requestedQuantity) && requestedQuantity > 0
+        ? requestedQuantity
+        : undefined,
+    );
     setOpen(false);
     clearForm();
     toast.success('Composição aplicada — revise variantes, estoque e valores antes de continuar.');

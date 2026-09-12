@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { User } from 'lucide-react';
 import { FavoritesClientPicker } from '@/components/favorites/FavoritesClientPicker';
+import { useRef } from 'react';
 
 export interface ClientData {
   client_id?: string;
@@ -24,8 +25,13 @@ interface ClientPickerProps {
 }
 
 export function ClientPicker({ value, onChange }: ClientPickerProps) {
-  const set = (k: keyof ClientData) => (e: React.ChangeEvent<HTMLInputElement>) =>
+  const autoFilledClientNameRef = useRef<string | null>(
+    value.client_id && value.client_name === value.client_company ? value.client_name : null,
+  );
+  const set = (k: keyof ClientData) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (k === 'client_name') autoFilledClientNameRef.current = null;
     onChange({ ...value, [k]: e.target.value });
+  };
 
   return (
     <Card>
@@ -39,18 +45,22 @@ export function ClientPicker({ value, onChange }: ClientPickerProps) {
           <FavoritesClientPicker
             selectedClientId={value.client_id}
             selectedClientName={value.client_company}
-            onSelect={(client) =>
-              onChange(
-                client
-                  ? {
-                      ...value,
-                      client_id: client.id,
-                      client_company: client.name,
-                      client_name: value.client_name || client.name,
-                    }
-                  : { ...value, client_id: undefined },
-              )
-            }
+            onSelect={(client) => {
+              if (!client) {
+                onChange({ ...value, client_id: undefined });
+                return;
+              }
+              const shouldRefreshName =
+                !value.client_name || autoFilledClientNameRef.current === value.client_name;
+              const clientName = shouldRefreshName ? client.name : value.client_name;
+              autoFilledClientNameRef.current = shouldRefreshName ? clientName || null : null;
+              onChange({
+                ...value,
+                client_id: client.id,
+                client_company: client.name,
+                client_name: clientName,
+              });
+            }}
           />
           <p className="mt-1 text-xs text-muted-foreground">
             Busque uma empresa do CRM ou preencha os dados abaixo manualmente.
@@ -69,7 +79,17 @@ export function ClientPicker({ value, onChange }: ClientPickerProps) {
           <Input
             id="quote-client-company"
             value={value.client_company ?? ''}
-            onChange={set('client_company')}
+            onChange={(event) => {
+              const company = event.target.value;
+              const nameWasAutofilled = autoFilledClientNameRef.current === value.client_name;
+              autoFilledClientNameRef.current = nameWasAutofilled ? company : null;
+              onChange({
+                ...value,
+                client_company: company,
+                client_name: nameWasAutofilled ? company : value.client_name,
+                client_id: undefined,
+              });
+            }}
           />
         </div>
         <div className="space-y-1">

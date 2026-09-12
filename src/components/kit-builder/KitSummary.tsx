@@ -8,7 +8,7 @@ import { KitMarginSimulator } from './KitMarginSimulator';
 import { KitVisualPreview } from './KitVisualPreview';
 import { DiscontinuedItemsAlert } from './DiscontinuedItemsAlert';
 import { FreightEstimator } from './FreightEstimator';
-import { useKitStockValidation } from '@/hooks/kit-builder';
+import { useKitStockValidation, type KitStockStatus } from '@/hooks/kit-builder';
 import { calculateTotalKitPrice, type KitState } from '@/lib/kit-builder';
 import { KitIdentificationCard } from './kit-summary/KitIdentificationCard';
 import { KitStatsCards } from './kit-summary/KitStatsCards';
@@ -33,6 +33,10 @@ interface KitSummaryProps {
   currentKitId?: string;
   quoteClient?: Partial<ClientData>;
   onQuoteClientChange?: (next: Partial<ClientData>) => void;
+}
+
+export function shouldRenderKitStockForecast(status: KitStockStatus): boolean {
+  return status === 'available' || status === 'unavailable';
 }
 
 export function KitSummary({
@@ -118,7 +122,7 @@ export function KitSummary({
                 <ul className="space-y-2">
                   {stockAlerts.map((alert) => (
                     <li
-                      key={alert.lineId ?? alert.itemId}
+                      key={alert.stockKey ?? `${alert.lineId ?? alert.itemId}:${alert.sku}`}
                       className="flex items-center justify-between rounded-lg bg-background/50 p-2 text-sm"
                     >
                       <div>
@@ -138,7 +142,9 @@ export function KitSummary({
             </Card>
           )}
 
-          <KitStockForecastCard items={items} kitQuantity={kitQuantity} />
+          {shouldRenderKitStockForecast(stockStatus) && (
+            <KitStockForecastCard items={items} kitQuantity={kitQuantity} />
+          )}
           {!kitState.isValid && (
             <Card className="border-destructive bg-destructive/5">
               <CardContent className="pt-6">

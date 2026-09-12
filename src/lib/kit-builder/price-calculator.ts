@@ -151,6 +151,8 @@ export interface PriceBreakdownItem {
   unitPrice: number;
   totalPrice: number;
   isPersonalization?: boolean;
+  /** Commercial floor considered by the RPC; it is not an additive charge. */
+  setupFloor?: number;
 }
 
 /**
@@ -182,6 +184,7 @@ export function generatePriceBreakdown(
         unitPrice: personalization.box.estimatedPrice ?? 0,
         totalPrice: boxPersonalizationTotal,
         isPersonalization: true,
+        setupFloor: personalization.box.setupCost,
       });
     }
   }
@@ -209,6 +212,7 @@ export function generatePriceBreakdown(
         unitPrice: itemPersonalization.estimatedPrice ?? 0,
         totalPrice: itemPersonalizationTotal,
         isPersonalization: true,
+        setupFloor: itemPersonalization.setupCost,
       });
     }
   });

@@ -84,7 +84,11 @@ interface KitBuilderHeaderProps {
   onReset: () => void;
   aiCatalogItems: KitItem[];
   aiCatalogBoxes: KitBox[];
-  onAIApply: (suggestion: KitAISuggestionBrief, composition: KitAIComposition) => void;
+  onAIApply: (
+    suggestion: KitAISuggestionBrief,
+    composition: KitAIComposition,
+    requestedQuantity?: number,
+  ) => void;
   /** Full kit state — used by admin "Save as system template" snapshot. */
   kitState?: KitState;
   /** When set, header indicates we are editing a system template (admin mode). */

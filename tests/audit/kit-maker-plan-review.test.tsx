@@ -128,4 +128,27 @@ describe('Kit Maker: approved-plan gaps reproduced without remote writes', () =>
     expect(mocks.rpc.mock.calls[2][1].p_payload.name).toBe('Edited after failure');
     unmount();
   });
+
+  it('S24/manual: a successful explicit save supersedes a failed autosave receipt', async () => {
+    mocks.rpc
+      .mockResolvedValueOnce({ data: null, error: new Error('Response lost') })
+      .mockResolvedValueOnce({ data: { id: 'saved-kit', revision: 3 }, error: null });
+    const state = {
+      name: 'Manual wins',
+      kitType: 'montado',
+      box: null,
+      items: [item],
+      personalization: { box: { enabled: false }, items: {} },
+    } as unknown as KitState;
+    const { result, unmount } = renderHook(() => useKitAutoSave(state, 1, 'saved-kit', 1));
+
+    await act(async () => result.current.retryLastSave());
+    const failedRequest = mocks.rpc.mock.calls[0][1].p_request_id;
+    act(() => result.current.acknowledgeManualSave('saved-kit', 2));
+    await act(async () => result.current.retryLastSave());
+
+    expect(mocks.rpc.mock.calls[1][1].p_request_id).not.toBe(failedRequest);
+    expect(mocks.rpc.mock.calls[1][1].p_expected_revision).toBe(2);
+    unmount();
+  });
 });

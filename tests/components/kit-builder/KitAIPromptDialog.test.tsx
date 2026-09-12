@@ -74,7 +74,32 @@ describe('KitAIPromptDialog', () => {
     expect(onApply).toHaveBeenCalledWith(
       suggestion,
       expect.objectContaining({ box: expect.objectContaining({ id: 'box-1' }) }),
+      undefined,
     );
+  });
+
+  it('aplica a quantidade escolhida no briefing junto com a composição', async () => {
+    vi.mocked(invokeEdge).mockResolvedValueOnce({ data: { suggestion }, error: null });
+    const onApply = vi.fn();
+    render(
+      <KitAIPromptDialog
+        catalogItems={catalogItems}
+        catalogBoxes={catalogBoxes}
+        onApply={onApply}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /montar com ia/i }));
+    fireEvent.change(screen.getByLabelText(/o que você deseja/i), {
+      target: { value: 'Kit corporativo sustentável para cinquenta colaboradores.' },
+    });
+    fireEvent.click(screen.getByLabelText('Quantidade de kits'));
+    fireEvent.click(await screen.findByRole('option', { name: '50 kits' }));
+    fireEvent.click(screen.getByRole('button', { name: /gerar sugestões/i }));
+    await screen.findByText(suggestion.narrative);
+    fireEvent.click(screen.getByRole('button', { name: /usar esta composição/i }));
+
+    expect(onApply).toHaveBeenCalledWith(suggestion, expect.any(Object), 50);
   });
 
   it('keeps an empty result state truthful before a suggestion is generated', () => {

@@ -6,6 +6,8 @@ vi.mock('@/hooks/kit-builder/useKitBuilderQueries', () => ({
   useKitBuilderQueries: () => ({
     availableBoxes: [],
     availableItems: [],
+    completeBoxCatalog: [],
+    completeItemCatalog: [],
     isLoadingBoxes: false,
     isLoadingItems: false,
     boxError: null,
@@ -159,5 +161,29 @@ describe('useKitBuilder — fluxos de montagem', () => {
     expect(result.current.kitState.items).toEqual([
       expect.objectContaining({ lineId: 'item-1:base', quantity: 1 }),
     ]);
+  });
+
+  it('aplica a quantidade solicitada junto com a composição da IA', async () => {
+    const { useKitBuilder } = await import('@/hooks/kit-builder/useKitBuilder');
+    const { result } = renderHook(() => useKitBuilder());
+
+    act(() => {
+      result.current.applyAIComposition(
+        {
+          id: 'ai-1',
+          name: 'Kit IA',
+          narrative: 'Composição confirmada',
+          kitType: 'montado',
+          box,
+          items: [item],
+          unitPrice: 15,
+          fitStatus: 'compatible',
+        },
+        50,
+      );
+    });
+
+    expect(result.current.kitQuantity).toBe(50);
+    expect(result.current.kitState.items).toHaveLength(1);
   });
 });

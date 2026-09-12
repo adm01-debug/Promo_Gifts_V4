@@ -105,4 +105,22 @@ describe('resolveKitAICompositions', () => {
       ),
     ).toEqual([]);
   });
+
+  it('continues searching when the first six ranked candidates do not fit any box', () => {
+    const tooLarge = Array.from({ length: 6 }, (_, index) => ({
+      ...item(`large-${index}`, `Garrafa corporativa ${index}`, 10),
+      width: 100,
+      height: 100,
+      depth: 100,
+      volume: 1_000_000,
+    }));
+    const validSeventh = item('valid-7', 'Garrafa corporativa compacta', 70);
+
+    const alternatives = resolveKitAICompositions(brief, [...tooLarge, validSeventh], [box]);
+
+    expect(alternatives[0]?.items).toEqual([
+      expect.objectContaining({ id: 'valid-7' }),
+    ]);
+    expect(alternatives[0]?.unitPrice).toBe(90);
+  });
 });

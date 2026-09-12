@@ -18,6 +18,8 @@ export interface StockAlert {
   isBox?: boolean;
   /** Stable UI key when the same product appears with distinct variants. */
   lineId?: string;
+  /** Identifies the independently validated inventory pool. */
+  stockKey?: string;
 }
 
 export interface VariantStock {
@@ -140,6 +142,7 @@ export function evaluateKitStock(
         available,
         deficit: required - available,
         isBox: true,
+        stockKey: `box:${box.id}`,
       });
     }
   }
@@ -197,6 +200,7 @@ export function evaluateKitStock(
         itemName: item.name,
         sku: item.sku,
         lineId: lineIds[0],
+        stockKey: `variant:${selectedVariantId}`,
         required,
         available,
         deficit: required - available,
@@ -216,6 +220,7 @@ export function evaluateKitStock(
         itemName: item.name,
         sku: item.sku,
         lineId: lineIds[0],
+        stockKey: `product:${item.id}`,
         required,
         available,
         deficit: required - available,

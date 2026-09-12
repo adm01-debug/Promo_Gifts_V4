@@ -30,6 +30,8 @@ interface AutoSaveResult {
   retryLastSave: () => Promise<void>;
   /** Cancels a debounced save before the explicit save action takes ownership. */
   cancelPendingSave: () => void;
+  /** Supersedes any failed automatic operation after a successful explicit save. */
+  acknowledgeManualSave: (kitId: string, revision: number) => void;
 }
 
 export function useKitAutoSave(
@@ -85,12 +87,15 @@ export function useKitAutoSave(
   const enabledRef = useRef(enabled);
   const contextRef = useRef(context);
 
-  // Manter refs sincronizadas a cada render -- sem useEffect para evitar batching delay
-  kitStateRef.current = kitState;
-  kitQuantityRef.current = kitQuantity;
-  onKitIdCreatedRef.current = onKitIdCreated;
-  enabledRef.current = enabled;
-  contextRef.current = context;
+  // Update mutable callback inputs only after React commits the render. Writing
+  // refs during render can leak an abandoned concurrent render into a timer.
+  useEffect(() => {
+    kitStateRef.current = kitState;
+    kitQuantityRef.current = kitQuantity;
+    onKitIdCreatedRef.current = onKitIdCreated;
+    enabledRef.current = enabled;
+    contextRef.current = context;
+  }, [onKitIdCreated, context, enabled, kitQuantity, kitState]);
 
   // saveToDb usa apenas deps estaveis -- nao recria a cada mudanca de kitState/onKitIdCreated
   const saveToDb = useCallback(async () => {
@@ -171,9 +176,11 @@ export function useKitAutoSave(
         });
       }
     }
-  }, [user?.id, currentKitId]); // FIX: removidos kitState, kitQuantity, onKitIdCreated
+  }, [user?.id, currentKitId]); // FIX: dependências mutáveis são lidas pelos refs acima
 
-  saveToDbRef.current = saveToDb;
+  useEffect(() => {
+    saveToDbRef.current = saveToDb;
+  }, [saveToDb]);
 
   const cancelPendingSave = useCallback(() => {
     if (timerRef.current) {
@@ -186,6 +193,20 @@ export function useKitAutoSave(
   const retryLastSave = useCallback(async () => {
     setAutoSaveError(null);
     await saveToDbRef.current?.();
+  }, []);
+
+  const acknowledgeManualSave = useCallback((kitId: string, revision: number) => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = undefined;
+    }
+    pendingOperationRef.current = null;
+    saveQueuedRef.current = false;
+    autoSavedKitIdRef.current = kitId;
+    revisionRef.current = revision;
+    setAutoSavedKitId(kitId);
+    setLastSavedAt(new Date());
+    setAutoSaveError(null);
   }, []);
 
   // Snapshot effect: agenda o timer quando o estado muda de forma relevante
@@ -276,5 +297,6 @@ export function useKitAutoSave(
     autoSaveError,
     retryLastSave,
     cancelPendingSave,
+    acknowledgeManualSave,
   };
 }

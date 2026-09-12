@@ -116,6 +116,23 @@ describe('evaluateKitStock', () => {
     expect(result.hasUnknownStock).toBe(false);
     expect(result.alerts).toHaveLength(0);
   });
+
+  it('atribui chaves distintas aos alertas de variante e agregado do produto', () => {
+    const result = evaluateKitStock(
+      [{ id: 'variant-black', product_id: 'product-1', stock_quantity: 5, color_name: 'Preto' }],
+      [
+        { ...selectedItem, quantity: 6, lineId: 'variant-line' },
+        { ...selectedItem, quantity: 1, lineId: 'generic-line', selectedVariantId: undefined },
+      ],
+      null,
+      1,
+    );
+
+    expect(result.alerts.map((alert) => alert.stockKey)).toEqual([
+      'variant:variant-black',
+      'product:product-1',
+    ]);
+  });
 });
 
 describe('resolveKitStockStatus', () => {

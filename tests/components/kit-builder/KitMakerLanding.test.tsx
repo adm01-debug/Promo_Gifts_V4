@@ -225,6 +225,7 @@ describe('KitMakerLanding', () => {
   });
 
   it('keeps both journeys available and offers a retry when featured catalog data cannot be read', async () => {
+    templateState.templates = [];
     vi.mocked(dbInvoke).mockRejectedValue(new Error('permission denied'));
     templateState.templatesError = 'permission denied';
     const onStart = vi.fn();
@@ -236,6 +237,15 @@ describe('KitMakerLanding', () => {
     expect(screen.getByRole('button', { name: /tentar novamente/i })).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /começar pelos itens/i }));
     expect(onStart).toHaveBeenCalledWith('items-first');
+  });
+
+  it('keeps cached templates visible when a background refresh fails', async () => {
+    vi.mocked(dbInvoke).mockRejectedValue(new Error('permission denied'));
+    templateState.templatesError = 'permission denied';
+    renderLanding();
+
+    expect(await screen.findByAltText('Kit Kit Executivo')).toBeInTheDocument();
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 
   it('surfaces the catalog failure even when the template query itself is empty and successful', async () => {

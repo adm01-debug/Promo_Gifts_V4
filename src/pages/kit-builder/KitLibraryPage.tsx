@@ -42,7 +42,7 @@ import { buildCustomKitInsert } from '@/lib/kit-library/buildCustomKitInsert';
 import { sanitizeError } from '@/lib/security/sanitize-error';
 import { cn } from '@/lib/utils';
 
-type KitStatusFilter = 'all' | 'draft' | 'published';
+type KitStatusFilter = 'all' | 'archived' | 'draft' | 'published';
 type LibraryView = 'grid' | 'list';
 
 function getItemsCount(items: unknown): number {
@@ -237,6 +237,7 @@ export default function KitLibraryPage() {
     if (statusFilter === 'draft' && k.status !== 'draft') return false;
     if (statusFilter === 'published' && !['published', 'ready', 'shared'].includes(k.status))
       return false;
+    if (statusFilter === 'archived' && k.status !== 'archived') return false;
     return true;
   };
   const matchTpl = (t: KitTemplateRow) => {
@@ -297,7 +298,8 @@ export default function KitLibraryPage() {
       isFavorite: k.is_favorite,
       isPinned: k.is_pinned,
       coverImageUrl: customKitCoverImage(k),
-      badge: k.status === 'draft' ? 'Rascunho' : 'Publicado',
+      badge:
+        k.status === 'draft' ? 'Rascunho' : k.status === 'archived' ? 'Arquivado' : 'Publicado',
     };
   };
 
@@ -405,6 +407,7 @@ export default function KitLibraryPage() {
                 ['all', 'Todos'],
                 ['draft', 'Rascunhos'],
                 ['published', 'Publicados'],
+                ['archived', 'Arquivados'],
               ] as const
             ).map(([value, label]) => (
               <Button

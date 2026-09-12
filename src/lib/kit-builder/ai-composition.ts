@@ -75,9 +75,13 @@ export function resolveKitAICompositions(
   const alternatives: KitAIComposition[] = [];
   const signatures = new Set<string>();
 
+  // Search every ranked starting point until enough valid alternatives are
+  // found. Compatibility can invalidate several high-scoring products, so
+  // limiting this loop to three rotations made a valid seventh candidate
+  // unreachable even though it existed in the canonical catalog.
   for (
     let seed = 0;
-    seed < Math.min(MAX_ALTERNATIVES, Math.max(1, rankedItems.length));
+    seed < rankedItems.length && alternatives.length < MAX_ALTERNATIVES;
     seed += 1
   ) {
     const rotated = [...rankedItems.slice(seed), ...rankedItems.slice(0, seed)];

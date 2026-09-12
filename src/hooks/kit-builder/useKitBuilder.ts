@@ -69,6 +69,8 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
   const {
     availableBoxes,
     availableItems,
+    completeBoxCatalog,
+    completeItemCatalog,
     isLoadingBoxes,
     isLoadingItems,
     boxError,
@@ -598,16 +600,22 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
     if (snap.identity) setIdentity(snap.identity);
   }, []);
 
-  const applyAIComposition = useCallback((composition: KitAIComposition) => {
-    setKitName(composition.name);
-    setKitType(composition.kitType);
-    setSelectedBox(composition.box);
-    setSelectedItems(composition.items.map(normalizeKitItemLine));
-    setPersonalization({ box: { enabled: false }, items: {} });
-    setPersonalizationReviewed(false);
-    setFlow('items-first');
-    setCurrentStep('items');
-  }, []);
+  const applyAIComposition = useCallback(
+    (composition: KitAIComposition, requestedQuantity?: number) => {
+      setKitName(composition.name);
+      setKitType(composition.kitType);
+      setSelectedBox(composition.box);
+      setSelectedItems(composition.items.map(normalizeKitItemLine));
+      setPersonalization({ box: { enabled: false }, items: {} });
+      if (requestedQuantity && Number.isSafeInteger(requestedQuantity) && requestedQuantity > 0) {
+        setKitQuantityState(requestedQuantity);
+      }
+      setPersonalizationReviewed(false);
+      setFlow('items-first');
+      setCurrentStep('items');
+    },
+    [],
+  );
 
   // ============================================
   // FILTROS COM COMPATIBILIDADE
@@ -674,7 +682,8 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
     kitQuantity,
     availableBoxes,
     availableItems: filteredItems,
-    allAvailableItems: availableItems,
+    allAvailableBoxes: completeBoxCatalog,
+    allAvailableItems: completeItemCatalog,
     isLoadingBoxes,
     isLoadingItems,
     boxError,
