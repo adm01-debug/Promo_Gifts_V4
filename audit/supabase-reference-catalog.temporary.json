@@ -2,12 +2,12 @@
   "schema_version": 1,
   "status": "temporary-stage-054",
   "project_ref": "doufsxqlfjyuvxuezpln",
-  "captured_at": "2026-09-11",
+  "captured_at": "2026-09-12",
   "source": {
     "method": "read-only pg_catalog",
     "relations": "pg_class + pg_namespace (schema public; relkind r/p/v/m/f)",
     "rpcs": "pg_proc + pg_namespace (schema public; prokind f)",
-    "supplemental_rpc_capture": "2026-09-09: seis RPCs magazine_*_atomic e quatorze RPCs magazine_*_v2 confirmadas via pg_catalog no projeto canônico após as migrations 20260909181000–20260909200000. 2026-09-11: save_custom_kit_atomic confirmada via pg_catalog após a migration 20260911130357.",
+    "supplemental_rpc_capture": "2026-09-09: seis RPCs magazine_*_atomic e quatorze RPCs magazine_*_v2 confirmadas via pg_catalog no projeto canônico após as migrations 20260909181000–20260909200000. 2026-09-11: save_custom_kit_atomic confirmada via pg_catalog após a migration 20260911130357. 2026-09-12: create_quote_transactional e create_kit_quote_transactional confirmadas via pg_catalog; ambas retornam quotes, são security invoker e têm EXECUTE para authenticated após a migration 20260911172000.",
     "scope": "Somente nomes de objetos; nenhum dado de aplicação foi consultado."
   },
   "limitations": [
@@ -211,6 +211,8 @@
     "cleanup_old_notifications",
     "confirm_notifications_dispatched",
     "consume_step_up_token",
+    "create_kit_quote_transactional",
+    "create_quote_transactional",
     "e2e_cleanup_check_rate_limit",
     "ensure_default_favorite_list",
     "execute_role_migration_batch",
@@ -339,14 +341,6 @@
     }
   },
   "exceptions": [
-    {
-      "kind": "rpc",
-      "name": "create_quote_transactional",
-      "file": "src/pages/kit-builder/useKitBuilderQuote.ts",
-      "occurrences": 1,
-      "stage": 147,
-      "reason": "Adoção transacional do Kit Maker: types e migration forward-only registram a RPC, mas ela está ausente do catálogo pg_catalog temporário. Remover após consulta read-only ao canônico confirmar assinatura e grants e renovar o catálogo."
-    },
     {
       "kind": "rpc",
       "name": "fn_ema_pipeline_health",
