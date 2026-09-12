@@ -223,11 +223,23 @@ export function evaluateKitStock(
     }
   }
 
+  // Unknown stock is relevant to the inventory unit the composition actually
+  // consumes. A null sibling variant must not block a line whose explicitly
+  // selected variant has known stock; generic lines and boxes still depend on
+  // the whole product aggregate and therefore remain fail-closed.
+  const hasRelevantUnknownStock =
+    Boolean(box && unknownProductIds.has(box.id)) ||
+    items.some((item) =>
+      item.selectedVariantId
+        ? unknownVariantIds.has(item.selectedVariantId) || !variants.has(item.selectedVariantId)
+        : unknownProductIds.has(item.id),
+    );
+
   return {
     stockByProduct: map,
     stockByVariant: variants,
     alerts: result,
-    hasUnknownStock: unknownProductIds.size > 0 || unknownVariantIds.size > 0,
+    hasUnknownStock: hasRelevantUnknownStock,
     unknownProductIds,
     unknownVariantIds,
   };

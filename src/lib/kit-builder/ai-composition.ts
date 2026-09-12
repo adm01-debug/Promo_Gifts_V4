@@ -49,9 +49,13 @@ export function resolveKitAICompositions(
   catalogItems: KitItem[],
   catalogBoxes: KitBox[],
 ): KitAIComposition[] {
+  const minBudget = Number.isFinite(brief.target_price_brl.min)
+    ? Math.max(0, brief.target_price_brl.min)
+    : 0;
   const maxBudget = Number.isFinite(brief.target_price_brl.max)
     ? Math.max(0, brief.target_price_brl.max)
     : Number.POSITIVE_INFINITY;
+  if (minBudget > maxBudget) return [];
   const rankedItems = catalogItems
     .filter(
       (item) =>
@@ -90,19 +94,48 @@ export function resolveKitAICompositions(
     }
     if (selected.length === 0) continue;
 
-    const compatibleBoxes = rankBoxesForItems(catalogBoxes, selected)
-      .filter((candidate) => candidate.status !== 'incompatible')
-      .sort((left, right) => {
-        const keywordDifference =
-          boxScore(right.box, brief.box_keywords) - boxScore(left.box, brief.box_keywords);
-        if (keywordDifference !== 0) return keywordDifference;
-        return left.box.price - right.box.price;
+    // Explore every subset of the (at most four) relevant items. This small,
+    // bounded backtracking step reserves the package budget without an
+    // unbounded catalog search and can remove a cheap low-impact item instead
+    // of accidentally dropping the product that makes the briefing useful.
+    let packageCandidate: ReturnType<typeof rankBoxesForItems>[number] | null = null;
+    let finalItems: KitItem[] = [];
+    let unitPrice = 0;
+    let bestScore = Number.NEGATIVE_INFINITY;
+    const subsetCount = 1 << selected.length;
+    for (let mask = 1; mask < subsetCount; mask += 1) {
+      const subset = selected.filter((_, index) => (mask & (1 << index)) !== 0);
+      const subsetTotal = subset.reduce((total, item) => total + item.price, 0);
+      const compatibleBoxes = rankBoxesForItems(catalogBoxes, subset)
+        .filter((candidate) => candidate.status !== 'incompatible')
+        .sort((left, right) => {
+          const keywordDifference =
+            boxScore(right.box, brief.box_keywords) - boxScore(left.box, brief.box_keywords);
+          if (keywordDifference !== 0) return keywordDifference;
+          return left.box.price - right.box.price;
+        });
+      const subsetPackage = compatibleBoxes.find((candidate) => {
+        const total = subsetTotal + candidate.box.price;
+        return total >= minBudget && total <= maxBudget;
       });
-    const packageCandidate =
-      compatibleBoxes.find((candidate) => itemTotal + candidate.box.price <= maxBudget) ?? null;
+      if (!subsetPackage) continue;
+
+      const subsetUnitPrice = subsetTotal + subsetPackage.box.price;
+      const relevance = subset.reduce(
+        (score, item) => score + candidateScore(item, brief.item_keywords),
+        0,
+      );
+      const score = relevance * 1_000 + subset.length * 100 + subsetUnitPrice;
+      if (score > bestScore) {
+        bestScore = score;
+        packageCandidate = subsetPackage;
+        finalItems = subset;
+        unitPrice = subsetUnitPrice;
+      }
+    }
     if (!packageCandidate) continue;
 
-    const signature = `${packageCandidate.box.id}:${selected
+    const signature = `${packageCandidate.box.id}:${finalItems
       .map((item) => item.id)
       .sort()
       .join(',')}`;
@@ -114,8 +147,8 @@ export function resolveKitAICompositions(
       narrative: brief.narrative,
       kitType: brief.kit_type,
       box: packageCandidate.box,
-      items: selected,
-      unitPrice: itemTotal + packageCandidate.box.price,
+      items: finalItems,
+      unitPrice,
       fitStatus: packageCandidate.status === 'compatible' ? 'compatible' : 'inconclusive',
     });
   }

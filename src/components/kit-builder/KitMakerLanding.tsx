@@ -196,7 +196,10 @@ export function KitMakerLanding({
     cloneTemplate,
     isCloning,
   } = useKitTemplates();
-  const hasFeaturedError = Boolean(templatesError);
+  const hasFeaturedError =
+    Boolean(templatesError) || (featuredKits.length === 0 && hasLandingCatalogError);
+  const isFeaturedCatalogLoading =
+    isLoadingFeatured || (featuredKits.length === 0 && isLoadingLandingCatalog);
   const catalogCompositions = useMemo(
     () => resolveKitAICompositions(CATALOG_HIGHLIGHT_BRIEF, aiCatalogItems, aiCatalogBoxes),
     [aiCatalogBoxes, aiCatalogItems],
@@ -375,7 +378,7 @@ export function KitMakerLanding({
             </Link>
           </Button>
         </div>
-        {isLoadingFeatured ? (
+        {isFeaturedCatalogLoading ? (
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {Array.from({ length: 4 }, (_, index) => (
               <Skeleton key={index} className="h-48 rounded-xl" />

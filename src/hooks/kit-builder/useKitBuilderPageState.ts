@@ -84,6 +84,13 @@ function toSavedKitSnapshot(row: {
   };
 }
 
+export function isKitMakerLandingRoute(
+  kitIdParam: string | null,
+  productIdParam: string | null,
+): boolean {
+  return !kitIdParam && !productIdParam;
+}
+
 export function useKitBuilderPageState() {
   const [searchParams] = useSearchParams();
   const kitIdParam = searchParams.get('kit');
@@ -97,9 +104,16 @@ export function useKitBuilderPageState() {
   const [currentRevision, setCurrentRevision] = useState<number | null>(null);
   const [occasion, setOccasion] = useState<Occasion | null>(null);
   const [quoteClient, setQuoteClient] = useState<KitQuoteClient>({});
-  const [isLanding, setIsLanding] = useState(!kitIdParam && !productIdParam);
+  const [isLanding, setIsLanding] = useState(isKitMakerLandingRoute(kitIdParam, productIdParam));
   const [isHydrating, setIsHydrating] = useState(Boolean(kitIdParam));
   const hydratedKitIdRef = useRef<string | null>(null);
+
+  // Navigating from the mounted landing page to ?kit=<id> does not remount
+  // this hook. Derive the mode from the URL so a cloned template immediately
+  // opens in the editor instead of remaining behind the landing screen.
+  useEffect(() => {
+    if (!isKitMakerLandingRoute(kitIdParam, productIdParam)) setIsLanding(false);
+  }, [kitIdParam, productIdParam]);
 
   const {
     kitState,

@@ -237,4 +237,16 @@ describe('KitMakerLanding', () => {
     fireEvent.click(screen.getByRole('button', { name: /começar pelos itens/i }));
     expect(onStart).toHaveBeenCalledWith('items-first');
   });
+
+  it('surfaces the catalog failure even when the template query itself is empty and successful', async () => {
+    templateState.templates = [];
+    templateState.templatesError = null;
+    vi.mocked(dbInvoke).mockRejectedValue(new Error('catalog unavailable'));
+    renderLanding();
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'Não foi possível carregar os destaques do catálogo.',
+    );
+    expect(screen.getByRole('button', { name: /tentar novamente/i })).toBeInTheDocument();
+  });
 });

@@ -153,6 +153,28 @@ export function buildKitMockupRequest(
   };
 }
 
+function kitMockupInputFingerprint(
+  displayName: string,
+  imageUrl: string | null,
+  personalization: KitItemPersonalization,
+): string {
+  return JSON.stringify({
+    artworkColors: personalization.artworkColors ?? [],
+    artworkUrl: personalization.artworkUrl ?? null,
+    displayName,
+    enabled: personalization.enabled,
+    height: personalization.height ?? null,
+    imageUrl,
+    position: personalization.position ?? null,
+    positionCode: personalization.positionCode ?? null,
+    positionName: personalization.positionName ?? null,
+    techniqueCode: personalization.techniqueCode ?? null,
+    techniqueId: personalization.techniqueId ?? null,
+    techniqueName: personalization.techniqueName ?? null,
+    width: personalization.width ?? null,
+  });
+}
+
 function flattenTechniques(locations: GravacaoLocation[]): FlatTechnique[] {
   const result: FlatTechnique[] = [];
   for (const loc of locations) {
@@ -613,6 +635,65 @@ function ItemPersonalizationCard({
   );
 }
 
+function PersonalizationPriceSynchronizer({
+  productId,
+  personalization,
+  onChange,
+  quantity,
+}: {
+  productId: string;
+  personalization: KitItemPersonalization;
+  onChange: (config: KitItemPersonalization) => void;
+  quantity: number;
+}) {
+  const { data: options } = useProductCustomizationOptions(productId);
+  const techniques = useMemo(
+    () => (options?.locations ? flattenTechniques(options.locations) : []),
+    [options],
+  );
+  const currentTech = techniques.find(
+    (technique) =>
+      technique.technique_id === personalization.techniqueId &&
+      (!personalization.positionCode || technique.location_code === personalization.positionCode),
+  );
+  const { price } = useCustomizationPriceReactive(
+    personalization.enabled ? personalization.techniqueId || null : null,
+    quantity,
+    personalization.colors || 1,
+    personalization.width || null,
+    personalization.height || null,
+    currentTech?.usa_dimensao || false,
+  );
+  const personalizationRef = useRef(personalization);
+  personalizationRef.current = personalization;
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
+
+  useEffect(() => {
+    if (!price?.success || !Number.isFinite(price.preco_unitario)) return;
+    const current = personalizationRef.current;
+    const unitPrice = price.preco_unitario ?? 0;
+    const setupCost = price.setup_total ?? 0;
+    const totalPrice = price.total_cobrado ?? unitPrice * quantity;
+    if (
+      current.estimatedPrice !== unitPrice ||
+      current.setupCost !== setupCost ||
+      current.totalPrice !== totalPrice ||
+      current.pricedQuantity !== quantity
+    ) {
+      onChangeRef.current({
+        ...current,
+        estimatedPrice: unitPrice,
+        pricedQuantity: quantity,
+        setupCost,
+        totalPrice,
+      });
+    }
+  }, [price?.preco_unitario, price?.setup_total, price?.success, price?.total_cobrado, quantity]);
+
+  return null;
+}
+
 interface PersonalizationPreviewProps {
   displayName: string;
   imageUrl: string | null;
@@ -632,6 +713,9 @@ function PersonalizationPreview({
   const [zoom, setZoom] = useState(1);
   const [fullscreen, setFullscreen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const generationRef = useRef(0);
+  const personalizationRef = useRef(personalization);
+  personalizationRef.current = personalization;
 
   const handleGenerateMockup = async () => {
     const request = buildKitMockupRequest(displayName, imageUrl, personalization);
@@ -640,17 +724,28 @@ function PersonalizationPreview({
       return;
     }
 
+    const inputFingerprint = kitMockupInputFingerprint(displayName, imageUrl, personalization);
+    const generation = generationRef.current + 1;
+    generationRef.current = generation;
     setIsGenerating(true);
     try {
       const result = await generateMockupApi(request);
       const generatedMockupUrl = result.singleUrl || result.batchResults[0]?.url;
       if (!generatedMockupUrl) throw new Error('O serviço não retornou uma imagem.');
-      onChange({ ...personalization, generatedMockupUrl });
+      if (
+        generationRef.current !== generation ||
+        kitMockupInputFingerprint(displayName, imageUrl, personalizationRef.current) !==
+          inputFingerprint
+      ) {
+        toast.info('A configuração mudou; gere uma nova prévia com os dados atuais.');
+        return;
+      }
+      onChange({ ...personalizationRef.current, generatedMockupUrl });
       toast.success('Prévia de personalização gerada.');
     } catch (error) {
       toast.error('Não foi possível gerar a prévia', { description: sanitizeError(error) });
     } finally {
-      setIsGenerating(false);
+      if (generationRef.current === generation) setIsGenerating(false);
     }
   };
 
@@ -725,6 +820,7 @@ function PersonalizationPreview({
             })
           }
           folder="kit-maker/artwork"
+          deleteOnRemove={false}
         />
       </div>
 
@@ -943,82 +1039,103 @@ export function PersonalizationConfig({
       )}
 
       {activeTarget && (
-        <div className="grid gap-4 xl:grid-cols-[18rem_minmax(0,1fr)_20rem]">
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base">Itens do seu kit</CardTitle>
-              <p className="text-xs text-muted-foreground">Selecione um item para personalizar.</p>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              {targets.map((target) => {
-                const configured =
-                  target.personalization.enabled &&
-                  Boolean(target.personalization.techniqueId) &&
-                  Number.isFinite(target.personalization.estimatedPrice);
-                return (
-                  <button
-                    key={target.key}
-                    type="button"
-                    onClick={() => setActiveTargetKey(target.key)}
-                    className={cn(
-                      'flex w-full items-center gap-3 rounded-lg border p-2 text-left transition-colors',
-                      activeTarget.key === target.key
-                        ? 'border-primary bg-primary/10'
-                        : 'hover:bg-muted/60',
-                    )}
-                  >
-                    <div className="h-12 w-12 shrink-0 overflow-hidden rounded bg-secondary">
-                      {target.imageUrl ? (
-                        <img src={target.imageUrl} alt="" className="h-full w-full object-cover" />
-                      ) : (
-                        <Package className="m-3 h-6 w-6 text-muted-foreground" />
+        <>
+          {targets
+            .filter((target) => target.key !== activeTarget.key && target.personalization.enabled)
+            .map((target) => (
+              <PersonalizationPriceSynchronizer
+                key={`price-sync:${target.key}`}
+                productId={target.productId}
+                personalization={target.personalization}
+                onChange={target.onChange}
+                quantity={target.quantity}
+              />
+            ))}
+          <div className="grid gap-4 xl:grid-cols-[18rem_minmax(0,1fr)_20rem]">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Itens do seu kit</CardTitle>
+                <p className="text-xs text-muted-foreground">
+                  Selecione um item para personalizar.
+                </p>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {targets.map((target) => {
+                  const configured =
+                    target.personalization.enabled &&
+                    Boolean(target.personalization.techniqueId) &&
+                    Number.isFinite(target.personalization.estimatedPrice) &&
+                    Number.isFinite(target.personalization.totalPrice) &&
+                    target.personalization.pricedQuantity === target.quantity;
+                  return (
+                    <button
+                      key={target.key}
+                      type="button"
+                      onClick={() => setActiveTargetKey(target.key)}
+                      className={cn(
+                        'flex w-full items-center gap-3 rounded-lg border p-2 text-left transition-colors',
+                        activeTarget.key === target.key
+                          ? 'border-primary bg-primary/10'
+                          : 'hover:bg-muted/60',
                       )}
-                    </div>
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm font-medium">
-                        {target.displayName}
-                      </span>
-                      <span
-                        className={cn(
-                          'text-xs',
-                          configured ? 'text-success' : 'text-muted-foreground',
+                    >
+                      <div className="h-12 w-12 shrink-0 overflow-hidden rounded bg-secondary">
+                        {target.imageUrl ? (
+                          <img
+                            src={target.imageUrl}
+                            alt=""
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <Package className="m-3 h-6 w-6 text-muted-foreground" />
                         )}
-                      >
-                        {configured
-                          ? 'Personalização concluída'
-                          : target.personalization.enabled
-                            ? 'Configuração pendente'
-                            : 'Sem personalização'}
+                      </div>
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-sm font-medium">
+                          {target.displayName}
+                        </span>
+                        <span
+                          className={cn(
+                            'text-xs',
+                            configured ? 'text-success' : 'text-muted-foreground',
+                          )}
+                        >
+                          {configured
+                            ? 'Personalização concluída'
+                            : target.personalization.enabled
+                              ? 'Configuração pendente'
+                              : 'Sem personalização'}
+                        </span>
                       </span>
-                    </span>
-                  </button>
-                );
-              })}
-            </CardContent>
-          </Card>
+                    </button>
+                  );
+                })}
+              </CardContent>
+            </Card>
 
-          <div className="min-w-0">
-            <ItemPersonalizationCard
-              key={activeTarget.key}
-              productId={activeTarget.productId}
+            <div className="min-w-0">
+              <ItemPersonalizationCard
+                key={activeTarget.key}
+                productId={activeTarget.productId}
+                displayName={activeTarget.displayName}
+                imageUrl={activeTarget.imageUrl}
+                personalization={activeTarget.personalization}
+                onChange={activeTarget.onChange}
+                isBox={activeTarget.isBox}
+                kitQuantity={activeTarget.quantity}
+                showInlinePreview={false}
+              />
+            </div>
+
+            <PersonalizationPreview
               displayName={activeTarget.displayName}
               imageUrl={activeTarget.imageUrl}
               personalization={activeTarget.personalization}
               onChange={activeTarget.onChange}
-              isBox={activeTarget.isBox}
-              kitQuantity={activeTarget.quantity}
-              showInlinePreview={false}
+              savedArtworkUrls={savedArtworkUrls}
             />
           </div>
-
-          <PersonalizationPreview
-            displayName={activeTarget.displayName}
-            imageUrl={activeTarget.imageUrl}
-            personalization={activeTarget.personalization}
-            onChange={activeTarget.onChange}
-            savedArtworkUrls={savedArtworkUrls}
-          />
-        </div>
+        </>
       )}
 
       {items.length === 0 && !box && (

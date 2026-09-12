@@ -101,6 +101,21 @@ describe('evaluateKitStock', () => {
       }),
     ).toBe('unknown');
   });
+
+  it('ignora estoque desconhecido de variante irmã quando a variante consumida é conhecida', () => {
+    const result = evaluateKitStock(
+      [
+        { id: 'variant-black', product_id: 'product-1', stock_quantity: 10, color_name: 'Preto' },
+        { id: 'variant-blue', product_id: 'product-1', stock_quantity: null, color_name: 'Azul' },
+      ],
+      [selectedItem],
+      null,
+      1,
+    );
+
+    expect(result.hasUnknownStock).toBe(false);
+    expect(result.alerts).toHaveLength(0);
+  });
 });
 
 describe('resolveKitStockStatus', () => {

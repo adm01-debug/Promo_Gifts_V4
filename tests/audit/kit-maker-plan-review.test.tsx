@@ -86,4 +86,46 @@ describe('Kit Maker: approved-plan gaps reproduced without remote writes', () =>
     unmount();
     expect(secondRequest).toBe(firstRequest);
   });
+
+  it('S24/draft: after recovering an old operation, persists edits made while it was pending', async () => {
+    mocks.rpc
+      .mockResolvedValueOnce({ data: null, error: new Error('Response lost after commit') })
+      .mockResolvedValueOnce({ data: { id: 'saved-kit', revision: 1 }, error: null })
+      .mockResolvedValueOnce({ data: { id: 'saved-kit', revision: 2 }, error: null });
+    const initialState = {
+      name: 'Before retry',
+      kitType: 'montado',
+      box: null,
+      items: [item],
+      personalization: { box: { enabled: false }, items: {} },
+      isValid: false,
+      validationErrors: [],
+      totalPrice: 60,
+      itemsPrice: 60,
+      boxPrice: 0,
+      personalizationPrice: 0,
+      volumeUsagePercent: 0,
+    } as unknown as KitState;
+    const { result, rerender, unmount } = renderHook(
+      ({ state }) => useKitAutoSave(state, 1, undefined, null),
+      { initialProps: { state: initialState } },
+    );
+    await act(async () => {
+      await result.current.retryLastSave();
+    });
+    rerender({ state: { ...initialState, name: 'Edited after failure' } });
+    await act(async () => {
+      await result.current.retryLastSave();
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(mocks.rpc).toHaveBeenCalledTimes(3);
+    expect(mocks.rpc.mock.calls[1][1].p_request_id).toBe(mocks.rpc.mock.calls[0][1].p_request_id);
+    expect(mocks.rpc.mock.calls[2][1].p_request_id).not.toBe(
+      mocks.rpc.mock.calls[0][1].p_request_id,
+    );
+    expect(mocks.rpc.mock.calls[2][1].p_payload.name).toBe('Edited after failure');
+    unmount();
+  });
 });

@@ -20,7 +20,7 @@ const catalogItems: KitItem[] = ['Garrafa', 'Caderno', 'Caneta'].map((name, inde
   name,
   sku: `SKU-${index}`,
   imageUrl: null,
-  price: 20,
+  price: 30,
   width: 2,
   height: 2,
   depth: 2,

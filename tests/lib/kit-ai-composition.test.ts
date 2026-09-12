@@ -68,4 +68,41 @@ describe('resolveKitAICompositions', () => {
       ),
     ).toEqual([]);
   });
+
+  it('backtracks items to reserve the package budget', () => {
+    const alternatives = resolveKitAICompositions(
+      { ...brief, target_price_brl: { min: 80, max: 90 } },
+      [
+        item('p1', 'Garrafa térmica', 45),
+        item('p2', 'Caderno executivo', 25),
+        item('p3', 'Caneta', 10),
+      ],
+      [box],
+    );
+
+    expect(alternatives[0]).toMatchObject({ unitPrice: 90 });
+    expect(alternatives[0].items.map((candidate) => candidate.id)).toEqual(
+      expect.arrayContaining(['p1', 'p2']),
+    );
+  });
+
+  it('never presents a composition below the requested minimum', () => {
+    expect(
+      resolveKitAICompositions(
+        { ...brief, target_price_brl: { min: 250, max: 500 } },
+        [item('p1', 'Garrafa', 45), item('p2', 'Caderno', 25)],
+        [box],
+      ),
+    ).toEqual([]);
+  });
+
+  it('rejects an inverted budget range instead of silently changing its meaning', () => {
+    expect(
+      resolveKitAICompositions(
+        { ...brief, target_price_brl: { min: 200, max: 100 } },
+        [item('p1', 'Garrafa', 45)],
+        [box],
+      ),
+    ).toEqual([]);
+  });
 });

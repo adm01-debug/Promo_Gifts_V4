@@ -52,12 +52,14 @@ export function useKitAutoSave(
   const wasEnabledRef = useRef(enabled);
   const saveInFlightRef = useRef(false);
   const saveQueuedRef = useRef(false);
+  const editVersionRef = useRef(0);
   const saveToDbRef = useRef<(() => Promise<void>) | null>(null);
   const pendingOperationRef = useRef<{
     requestId: string;
     kitId?: string;
     expectedRevision: number | null;
     payload: ReturnType<typeof buildKitPersistencePayload>;
+    editVersion: number;
   } | null>(null);
 
   /**
@@ -120,6 +122,7 @@ export function useKitAutoSave(
         currentKitQuantity,
         contextRef.current,
       ),
+      editVersion: editVersionRef.current,
     };
     // A transport failure may happen after the transaction commits. Keep both
     // the idempotency key and the exact payload frozen until the response is
@@ -140,8 +143,21 @@ export function useKitAutoSave(
       revisionRef.current = data.revision;
       setAutoSavedKitId(data.id);
       currentOnKitIdCreated?.(data.id, data.revision);
-      setLastSavedAt(new Date());
-      setAutoSaveError(null);
+      // A retry must recover the frozen operation first. If the user edited
+      // while that failed operation was pending, immediately persist a second
+      // snapshot at the newly returned revision instead of reporting a false
+      // "saved" state for the older payload.
+      const hasNewerEdits = editVersionRef.current > operation.editVersion;
+      if (hasNewerEdits) {
+        if (timerRef.current) {
+          clearTimeout(timerRef.current);
+          timerRef.current = undefined;
+        }
+        saveQueuedRef.current = true;
+      } else {
+        setLastSavedAt(new Date());
+        setAutoSaveError(null);
+      }
     } catch (err) {
       logger.warn('[auto-save] Failed:', err);
       setAutoSaveError('O rascunho ainda não foi salvo. Tente novamente antes de sair.');
@@ -209,10 +225,14 @@ export function useKitAutoSave(
 
     if (nextSnapshot === snapshotRef.current) return;
     snapshotRef.current = nextSnapshot;
+    editVersionRef.current += 1;
 
     // Cancela timer anterior (debounce) e reagenda
     if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(saveToDb, AUTO_SAVE_DELAY_MS);
+    timerRef.current = setTimeout(() => {
+      timerRef.current = undefined;
+      void saveToDb();
+    }, AUTO_SAVE_DELAY_MS);
 
     // NOTA: sem cleanup aqui -- o timer deve sobreviver a re-renders intermedios.
     // O cleanup de unmount e tratado pelo effect dedicado abaixo.

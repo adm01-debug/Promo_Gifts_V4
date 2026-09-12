@@ -103,6 +103,12 @@ function toPersonalizationPayload(
   if (typeof unitCost !== 'number' || !Number.isFinite(unitCost) || unitCost < 0) {
     throw new Error('Preço de personalização indisponível para criação do orçamento');
   }
+  const productionNotes = [
+    personalization.position ? `Posição: ${personalization.position}` : null,
+    personalization.artworkColors?.length
+      ? `Paleta da arte: ${personalization.artworkColors.join(', ')}`
+      : null,
+  ].filter((note): note is string => Boolean(note));
   return {
     technique_id: personalization.techniqueId ?? null,
     technique_name: personalization.techniqueName ?? null,
@@ -124,7 +130,10 @@ function toPersonalizationPayload(
         : unitCost * quantity,
     artwork_url: personalization.artworkUrl ?? null,
     artwork_colors: personalization.artworkColors ?? [],
-    notes: personalization.position ? `Posição: ${personalization.position}` : null,
+    // The canonical personalization writer persists `notes`, but has no
+    // dedicated palette column. Keep the exact chosen colors in its supported
+    // production field instead of silently discarding them.
+    notes: productionNotes.length > 0 ? productionNotes.join(' · ') : null,
   };
 }
 
@@ -176,18 +185,6 @@ export function useKitBuilderQuote() {
     createInFlightRef.current = true;
     setIsCreatingQuote(true);
     try {
-      const liveStock = await validateKitStockForQuote(kitState.items, kitState.box, kitQuantity);
-      if (liveStock.status === 'unknown') {
-        throw new KitQuoteValidationError(
-          'Não foi possível confirmar o estoque agora. Nenhum orçamento foi criado.',
-        );
-      }
-      if (liveStock.status === 'unavailable') {
-        throw new KitQuoteValidationError(
-          `Estoque insuficiente em ${liveStock.alerts.length} item(ns). Revise o kit antes de continuar.`,
-        );
-      }
-
       const kitLabel = kitState.name || 'Kit sem nome';
       const kitMetadataNote = kitState.identity?.tag
         ? `[${kitState.identity.tag}] ${kitLabel}`
@@ -202,6 +199,7 @@ export function useKitBuilderQuote() {
         status: 'draft',
         // Empty string lets the `set_quote_number` BEFORE INSERT trigger generate it.
         quote_number: '',
+        client_id: client.client_id || null,
         client_name: client.client_name?.trim() || 'Cliente a definir',
         client_company: client.client_company?.trim() || null,
         client_email: client.client_email?.trim() || null,
@@ -301,14 +299,34 @@ export function useKitBuilderQuote() {
       // Retain the same idempotency key only for an exact retry after a
       // transport error. Editing the kit creates a new semantic operation.
       const fingerprint = JSON.stringify({ quote: quotePayload, items: quoteItems });
-      const operation =
+      const recoverableOperation =
         retryableRequestRef.current?.fingerprint === fingerprint
           ? retryableRequestRef.current
-          : (readRetryReceipt(fingerprint) ?? {
-              id: newRequestId(),
-              fingerprint,
-              kitGroupId: newRequestId(),
-            });
+          : readRetryReceipt(fingerprint);
+
+      // A lost response may hide a quote that already committed. Replaying the
+      // exact receipt first lets the database return that quote even when stock
+      // changed afterwards. Stock validation applies only to genuinely new
+      // commercial operations.
+      if (!recoverableOperation) {
+        const liveStock = await validateKitStockForQuote(kitState.items, kitState.box, kitQuantity);
+        if (liveStock.status === 'unknown') {
+          throw new KitQuoteValidationError(
+            'Não foi possível confirmar o estoque agora. Nenhum orçamento foi criado.',
+          );
+        }
+        if (liveStock.status === 'unavailable') {
+          throw new KitQuoteValidationError(
+            `Estoque insuficiente em ${liveStock.alerts.length} item(ns). Revise o kit antes de continuar.`,
+          );
+        }
+      }
+
+      const operation = recoverableOperation ?? {
+        id: newRequestId(),
+        fingerprint,
+        kitGroupId: newRequestId(),
+      };
       retryableRequestRef.current = operation;
       writeRetryReceipt(operation);
 

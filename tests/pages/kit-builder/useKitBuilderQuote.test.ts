@@ -102,6 +102,7 @@ describe('useKitBuilderQuote — payloads', () => {
 
     await act(async () => {
       await result.current.handleAddToQuote(KIT_STATE, 3, {
+        client_id: 'client-uuid-1',
         client_company: 'Empresa Teste',
         client_email: 'contato@empresa.teste',
         client_name: 'Contato Teste',
@@ -119,6 +120,7 @@ describe('useKitBuilderQuote — payloads', () => {
       client_company: 'Empresa Teste',
       client_email: 'contato@empresa.teste',
       client_name: 'Contato Teste',
+      client_id: 'client-uuid-1',
     });
     expect((rpc!.args?._quote as { seller_id: string }).seller_id).toBe(USER_ID);
     expect(validateKitStockForQuote).toHaveBeenCalledWith(KIT_STATE.items, KIT_STATE.box, 3);
@@ -217,6 +219,7 @@ describe('useKitBuilderQuote — payloads', () => {
             estimatedPrice: 2.5,
             artworkUrl: 'https://example.test/personalization-images/kit-maker/artwork/logo.png',
             generatedMockupUrl: 'https://example.test/generated-mockups/kit-maker/mockup.png',
+            artworkColors: ['#112233', '#abcdef'],
           },
         },
       },
@@ -231,6 +234,7 @@ describe('useKitBuilderQuote — payloads', () => {
     expect(item.personalizations).toEqual([
       expect.objectContaining({
         artwork_url: 'https://example.test/personalization-images/kit-maker/artwork/logo.png',
+        notes: 'Paleta da arte: #112233, #abcdef',
       }),
     ]);
     expect(item.artwork_urls).toEqual([
@@ -297,6 +301,7 @@ describe('useKitBuilderQuote — payloads', () => {
     expect(calls).toHaveLength(2);
     expect(calls[1].args?._request_id).toBe(calls[0].args?._request_id);
     expect(calls[1].args?._items).toEqual(calls[0].args?._items);
+    expect(validateKitStockForQuote).toHaveBeenCalledTimes(1);
   });
 
   it('preserva tamanho e identidade de variante no payload de linha', async () => {

@@ -4,7 +4,7 @@ Data da revisão: 12/09/2026. Rota: `/montar-kit`. Projeto canônico: `doufsxqlf
 
 ## 1. Veredito executivo
 
-A rodada corretiva eliminou as três falhas reproduzidas na auditoria anterior e implementou as principais lacunas funcionais de IA, personalização, comparação de caixas, persistência, biblioteca, estoque e revisão. A suíte agregada do módulo terminou com **31 arquivos e 208 testes aprovados**, sem testes diagnósticos vermelhos. TypeScript, lint dos arquivos alterados, build de produção e orçamento de bundle também passaram.
+A rodada corretiva eliminou as três falhas reproduzidas na auditoria anterior e implementou as principais lacunas funcionais de IA, personalização, comparação de caixas, persistência, biblioteca, estoque e revisão. Uma segunda revisão adversarial encontrou doze defeitos adicionais; todos receberam correção e regressão dedicada. A suíte agregada do módulo terminou com **33 arquivos e 218 testes aprovados** (mais dois arquivos e dez testes que na primeira medição), sem testes diagnósticos vermelhos. TypeScript, lint dos arquivos alterados, build de produção e orçamento de bundle também passaram.
 
 O resultado ainda não deve ser chamado de `100/100 aceito` por quatro razões externas ao código implementado:
 
@@ -13,7 +13,7 @@ O resultado ainda não deve ser chamado de `100/100 aceito` por quatro razões e
 3. o token administrativo disponível na CLI não enxerga o projeto canônico, impedindo uma nova inspeção de `pg_catalog` e a regeneração segura de `types.ts`;
 4. o catálogo canônico atualmente tem zero templates ativos de kit e nenhum valor preenchido em `packaging_finish`; o código oferece fallback real de catálogo, mas os dados editoriais continuam pendentes.
 
-Portanto, o estado correto é: **implementação corretiva concluída localmente; validação automatizada local aprovada; integração REST canônica validada em leitura; aceite visual, integrações autenticadas e publicação desta rodada ainda pendentes**.
+O branch foi publicado no PR #1860 e também teve build manual de preview aprovado. Portanto, o estado correto é: **implementação corretiva publicada para revisão; validação automatizada local e preview aprovados; integração REST canônica validada em leitura; aceite visual, integrações autenticadas, merge e publicação de produção ainda pendentes**.
 
 ## 2. Escopo efetivamente alterado
 
@@ -42,6 +42,25 @@ Nenhuma migration, DDL, alteração de dado comercial ou deploy de Edge Function
 
 O teste diagnóstico `tests/audit/kit-maker-plan-review.test.tsx`, originalmente vermelho, agora faz parte da regressão verde.
 
+### 3.1 Segunda revisão adversarial do PR
+
+| Achado | Risco reproduzido                                                            | Correção e prova                                                                                                                 |
+| ------ | ---------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| R01    | retry de autosave podia salvar o snapshot antigo e perder a edição nova      | versão local de edição agenda imediatamente o snapshot novo após recuperar a operação congelada; teste de três chamadas/revisões |
+| R02    | `client_id` selecionado no CRM não seguia para o orçamento                   | campo incluído em `_quote`; teste de payload                                                                                     |
+| R03    | IA consumia todo o limite com itens e não reservava a caixa                  | busca limitada por subconjuntos encontra combinação válida dentro do orçamento; regressão 45+25+caixa 20 em limite 90            |
+| R04    | variante irmã com estoque nulo bloqueava uma variante escolhida e conhecida  | desconhecido agora é avaliado na unidade de estoque efetivamente consumida; teste de variantes irmãs                             |
+| R05    | limite mínimo do briefing de IA era ignorado                                 | composições abaixo do mínimo e faixas invertidas são rejeitadas; regressões dedicadas                                            |
+| R06    | retry de orçamento revalidava estoque antes de recuperar um commit existente | recibo idempotente exato é repetido antes da validação aplicável a nova operação; teste confirma uma única leitura de estoque    |
+| R07    | só a personalização visível era reprecificada após mudar quantidade          | sincronizadores reativos cobrem todos os alvos habilitados; teste confirma quantidades 50 e 100 simultaneamente                  |
+| R08    | resposta tardia de mockup podia sobrescrever técnica/arte alteradas          | fingerprint e geração monotônica descartam resposta obsoleta; teste assíncrono troca a arte durante a geração                    |
+| R09    | paleta da arte era enviada em chave que o writer canônico ignora             | paleta passa também pelo campo `notes` suportado da personalização, sem DDL; teste do payload de produção                        |
+| R10    | filtros de material/preço/ordenação sumiam com uma única categoria           | somente o seletor de categoria depende da cardinalidade; teste de acessibilidade garante os controles                            |
+| R11    | clone de template alterava a URL, mas mantinha a landing montada             | modo landing acompanha `kit`/`product` na URL; contrato de rota testado                                                          |
+| R12    | falha do catálogo era escondida quando `kit_templates` estava vazio          | erro combinado oferece retry e não simula catálogo vazio; teste de componente                                                    |
+
+O controle de remoção de arte usado pelo Kit Maker também passou a apenas desvincular a URL: uma arte reutilizada por outra linha, rascunho ou orçamento não é apagada do Storage.
+
 ## 4. Reavaliação das lacunas G01–G13
 
 | ID                            | Estado                               | Resultado atual                                                     | Limite remanescente                                                                          |
@@ -58,7 +77,7 @@ O teste diagnóstico `tests/audit/kit-maker-plan-review.test.tsx`, originalmente
 | G10 origem do orçamento       | **RESOLVIDA NO PAYLOAD**             | ID do kit e arte/mockup seguem na cotação                           | inspeção do registro real criado                                                             |
 | G11 estoque/frete             | **ESTOQUE RESOLVIDO; FRETE PARCIAL** | leitura fresca fail-closed antes da RPC                             | frete continua estimativa, sem transportadora/CEP real                                       |
 | G12 types/base                | **PARCIAL EXTERNO**                  | objetos/RPCs confirmados via REST/OpenAPI                           | `set_custom_kit_pinned` ainda ausente do type gerado; CLI sem acesso administrativo canônico |
-| G13 cobertura                 | **AMPLIADA**                         | 208 testes focados, typecheck, lint, build e bundle verdes          | baselines visuais e E2E autenticado ainda pendentes                                          |
+| G13 cobertura                 | **AMPLIADA**                         | 218 testes focados, typecheck, lint, build e bundle verdes          | baselines visuais e E2E autenticado ainda pendentes                                          |
 
 ## 5. Matriz atual das 100 etapas
 
@@ -66,7 +85,7 @@ Legenda: `I` = implementada e validada localmente; `P` = implementação present
 
 | Etapa | Estado | Síntese da revisão pós-correção                                                                       |
 | ----: | :----: | ----------------------------------------------------------------------------------------------------- |
-|   001 |   P    | Código e REST canônico conferidos; publicação desta rodada ainda não existe.                          |
+|   001 |   P    | Código no PR #1860, preview manual e REST canônico conferidos; merge de produção ainda pendente.      |
 |   002 |   I    | Trabalho isolado em branch/worktree e alterações de outros agentes preservadas.                       |
 |   003 |   V    | Referências catalogadas; medição pixel a pixel autenticada ainda pendente.                            |
 |   004 |   P    | Requisitos corretivos rastreados; plano histórico de 2.000 subitens não foi reaberto artificialmente. |
@@ -162,8 +181,8 @@ Legenda: `I` = implementada e validada localmente; `P` = implementação present
 |   094 |   P    | Sem violações introduzidas detectadas; matriz assistiva/manual pendente.                              |
 |   095 |   P    | Build e bundle aprovados; métricas de navegação autenticada pendentes.                                |
 |   096 |   I    | Documentação reconciliada com o estado pós-implementação.                                             |
-|   097 |   P    | Branch isolada pronta; revisão semântica/PR ainda pendentes.                                          |
-|   098 |   P    | Gates locais passam; preview remoto ainda não existe.                                                 |
+|   097 |   P    | Branch isolada publicada no PR #1860; revisão/merge ainda pendentes.                                  |
+|   098 |   P    | Gates centrais e preview manual passam; integração GitHub→Vercel falhou sem logs de build.            |
 |   099 |   V    | Esta rodada ainda não foi mergeada/publicada.                                                         |
 |   100 |   V    | Encerramento depende dos aceites visual e operacional acima.                                          |
 
@@ -173,8 +192,8 @@ Resumo da matriz: **66 etapas implementadas e validadas localmente, 20 implement
 
 | Verificação                           | Resultado                                                                                                               |
 | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| Regressão agregada do Kit Maker       | **PASS — 31 arquivos, 208 testes**                                                                                      |
-| Suíte global do repositório           | **PASS — 1.140 arquivos e 24.729 testes; 128 arquivos/1.138 testes ignorados conforme configuração**                    |
+| Regressão agregada do Kit Maker       | **PASS — 33 arquivos, 218 testes; 2 arquivos/16 testes ignorados conforme configuração**                                |
+| Suíte global do repositório           | **PASS — 1.143 arquivos e 24.740 testes; 128 arquivos/1.138 testes ignorados conforme configuração**                    |
 | Falhas F01–F03                        | **PASS — regressões corrigidas**                                                                                        |
 | TypeScript                            | **PASS — `tsc --noEmit`** após compatibilizar TypeScript com Vite                                                       |
 | ESLint dos arquivos alterados         | **PASS**                                                                                                                |
@@ -209,7 +228,8 @@ Resumo da matriz: **66 etapas implementadas e validadas localmente, 20 implement
 5. Restaurar acesso administrativo ao projeto canônico, comparar `pg_catalog` e regenerar `types.ts` com a salvaguarda de exports.
 6. Decidir se o produto aceita frete estimado ou fornecer integração de CEP/transportadora.
 7. Popular/curar templates de kit e atributos de acabamento caso façam parte do catálogo comercial.
-8. Abrir PR, aguardar gates, revisar semanticamente, mergear e validar `/montar-kit` na versão efetivamente publicada.
+8. Resolver os dois bloqueios externos do PR #1860, mergear e validar `/montar-kit` na versão efetivamente publicada.
+9. Investigar, com autorização própria de schema, o finding live `public.zapp_catalog_stats()`; não mascará-lo em allowlist sem auditar definição e grants.
 
 ## 9. Comandos de reprodução
 

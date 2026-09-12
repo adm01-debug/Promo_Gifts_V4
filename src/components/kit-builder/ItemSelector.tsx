@@ -151,16 +151,17 @@ export function ItemSelector({
             )}
           </div>
 
-          {/* Category filter */}
-          {categories.length > 1 && (
-            <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2">
+            {/* Only the category control depends on category cardinality. The
+                remaining filters must stay visible while they are active. */}
+            {categories.length > 1 && (
               <Select
                 value={filters.category || 'all'}
                 onValueChange={(v) =>
                   onFiltersChange({ ...filters, category: v === 'all' ? undefined : v })
                 }
               >
-                <SelectTrigger className="w-[200px]">
+                <SelectTrigger className="w-[200px]" aria-label="Categoria">
                   <SelectValue placeholder="Categoria" />
                 </SelectTrigger>
                 <SelectContent>
@@ -172,13 +173,15 @@ export function ItemSelector({
                   ))}
                 </SelectContent>
               </Select>
+            )}
+            {materials.length > 0 && (
               <Select
                 value={filters.material || 'all'}
                 onValueChange={(v) =>
                   onFiltersChange({ ...filters, material: v === 'all' ? undefined : v })
                 }
               >
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-[180px]" aria-label="Material">
                   <SelectValue placeholder="Material" />
                 </SelectTrigger>
                 <SelectContent>
@@ -190,53 +193,53 @@ export function ItemSelector({
                   ))}
                 </SelectContent>
               </Select>
-              <Select
-                value={filters.sort || 'name'}
-                onValueChange={(value) =>
-                  onFiltersChange({ ...filters, sort: value as NonNullable<typeof filters.sort> })
+            )}
+            <Select
+              value={filters.sort || 'name'}
+              onValueChange={(value) =>
+                onFiltersChange({ ...filters, sort: value as NonNullable<typeof filters.sort> })
+              }
+            >
+              <SelectTrigger className="w-[180px]" aria-label="Ordenar">
+                <SelectValue placeholder="Ordenar" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="name">Nome</SelectItem>
+                <SelectItem value="price-asc">Menor preço</SelectItem>
+                <SelectItem value="price-desc">Maior preço</SelectItem>
+              </SelectContent>
+            </Select>
+            <div className="flex items-center gap-2">
+              <Input
+                aria-label="Preço mínimo"
+                type="number"
+                min="0"
+                placeholder="Preço mín."
+                className="w-28"
+                value={filters.minPrice ?? ''}
+                onChange={(event) =>
+                  onFiltersChange({
+                    ...filters,
+                    minPrice: event.target.value ? Number(event.target.value) : undefined,
+                  })
                 }
-              >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Ordenar" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="name">Nome</SelectItem>
-                  <SelectItem value="price-asc">Menor preço</SelectItem>
-                  <SelectItem value="price-desc">Maior preço</SelectItem>
-                </SelectContent>
-              </Select>
-              <div className="flex items-center gap-2">
-                <Input
-                  aria-label="Preço mínimo"
-                  type="number"
-                  min="0"
-                  placeholder="Preço mín."
-                  className="w-28"
-                  value={filters.minPrice ?? ''}
-                  onChange={(event) =>
-                    onFiltersChange({
-                      ...filters,
-                      minPrice: event.target.value ? Number(event.target.value) : undefined,
-                    })
-                  }
-                />
-                <Input
-                  aria-label="Preço máximo"
-                  type="number"
-                  min="0"
-                  placeholder="Preço máx."
-                  className="w-28"
-                  value={filters.maxPrice ?? ''}
-                  onChange={(event) =>
-                    onFiltersChange({
-                      ...filters,
-                      maxPrice: event.target.value ? Number(event.target.value) : undefined,
-                    })
-                  }
-                />
-              </div>
+              />
+              <Input
+                aria-label="Preço máximo"
+                type="number"
+                min="0"
+                placeholder="Preço máx."
+                className="w-28"
+                value={filters.maxPrice ?? ''}
+                onChange={(event) =>
+                  onFiltersChange({
+                    ...filters,
+                    maxPrice: event.target.value ? Number(event.target.value) : undefined,
+                  })
+                }
+              />
             </div>
-          )}
+          </div>
 
           <KitSmartSuggestions
             selectedItems={selectedItems}
