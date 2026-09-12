@@ -117,7 +117,9 @@ function toPersonalizationPayload(
     setup_cost: personalization.setupCost ?? 0,
     unit_cost: unitCost,
     total_cost:
-      personalization.pricedQuantity === quantity && Number.isFinite(personalization.totalPrice)
+      personalization.pricedQuantity === quantity &&
+      typeof personalization.totalPrice === 'number' &&
+      Number.isFinite(personalization.totalPrice)
         ? personalization.totalPrice
         : unitCost * quantity,
     artwork_url: personalization.artworkUrl ?? null,

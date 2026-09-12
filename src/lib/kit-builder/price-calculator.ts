@@ -179,7 +179,7 @@ export function generatePriceBreakdown(
       breakdown.push({
         label: `↳ Gravação: ${personalization.box.techniqueName || 'Personalização'}`,
         quantity: kitQuantity,
-        unitPrice: personalization.box.estimatedPrice,
+        unitPrice: personalization.box.estimatedPrice ?? 0,
         totalPrice: boxPersonalizationTotal,
         isPersonalization: true,
       });
@@ -206,7 +206,7 @@ export function generatePriceBreakdown(
       breakdown.push({
         label: `↳ Gravação: ${itemPersonalization.techniqueName || 'Personalização'}`,
         quantity: totalQty,
-        unitPrice: itemPersonalization.estimatedPrice,
+        unitPrice: itemPersonalization.estimatedPrice ?? 0,
         totalPrice: itemPersonalizationTotal,
         isPersonalization: true,
       });
