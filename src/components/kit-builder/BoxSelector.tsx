@@ -4,7 +4,17 @@
  */
 
 import { useState, useMemo, useEffect } from 'react';
-import { Search, Package, Check, Ruler, Box, SlidersHorizontal, X } from 'lucide-react';
+import {
+  Search,
+  Package,
+  Check,
+  Ruler,
+  Box,
+  SlidersHorizontal,
+  X,
+  GitCompareArrows,
+  Eye,
+} from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -31,6 +41,7 @@ import {
   type KitItem,
   type BoxFilters,
 } from '@/lib/kit-builder';
+import { BoxComparisonDialog } from './BoxComparisonDialog';
 
 interface BoxSelectorProps {
   boxes: KitBox[];
@@ -59,6 +70,9 @@ export function BoxSelector({
 }: BoxSelectorProps) {
   const [searchValue, setSearchValue] = useState('');
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [focusedBoxId, setFocusedBoxId] = useState<string | null>(null);
+  const [comparisonIds, setComparisonIds] = useState<string[]>([]);
+  const [comparisonOpen, setComparisonOpen] = useState(false);
 
   // Filters can be applied by the AI assist or restored from a saved journey.
   // Keep the visible field aligned with that external state instead of showing
@@ -89,6 +103,14 @@ export function BoxSelector({
     [boxes],
   );
 
+  const finishes = useMemo(
+    () =>
+      Array.from(new Set(boxes.map((box) => box.finish).filter(Boolean))).sort((a, b) =>
+        a!.localeCompare(b!),
+      ) as string[],
+    [boxes],
+  );
+
   // Dimension ranges for sliders
   const maxDims = useMemo(() => {
     let w = 0,
@@ -108,6 +130,23 @@ export function BoxSelector({
   );
 
   const recommendations = useMemo(() => rankBoxesForItems(boxes, kitItems), [boxes, kitItems]);
+  const focusedRecommendation =
+    recommendations.find((recommendation) => recommendation.box.id === focusedBoxId) ??
+    recommendations[0] ??
+    null;
+  const comparedRecommendations = comparisonIds
+    .map((id) => recommendations.find((recommendation) => recommendation.box.id === id))
+    .filter((recommendation): recommendation is (typeof recommendations)[number] =>
+      Boolean(recommendation),
+    );
+
+  const toggleComparison = (boxId: string) => {
+    setComparisonIds((current) => {
+      if (current.includes(boxId)) return current.filter((id) => id !== boxId);
+      if (current.length >= 3) return [...current.slice(1), boxId];
+      return [...current, boxId];
+    });
+  };
 
   const hasActiveFilters = !!(
     filters.minWidth ||
@@ -119,7 +158,8 @@ export function BoxSelector({
     filters.minPrice ||
     filters.maxPrice ||
     filters.material ||
-    filters.boxType
+    filters.boxType ||
+    filters.finish
   );
 
   const activeFilterCount = [
@@ -133,6 +173,7 @@ export function BoxSelector({
     filters.maxPrice,
     filters.material,
     filters.boxType,
+    filters.finish,
   ].filter(Boolean).length;
 
   const clearAdvancedFilters = () => {
@@ -148,6 +189,7 @@ export function BoxSelector({
       maxPrice: undefined,
       material: undefined,
       boxType: undefined,
+      finish: undefined,
     });
   };
 
@@ -360,7 +402,7 @@ export function BoxSelector({
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 <div className="space-y-2">
                   <Label className="text-xs text-muted-foreground">Faixa de preço (R$)</Label>
                   <div className="grid grid-cols-2 gap-2">
@@ -423,6 +465,33 @@ export function BoxSelector({
                     </Select>
                   </div>
                 )}
+
+                {finishes.length > 0 && (
+                  <div className="space-y-2">
+                    <Label className="text-xs text-muted-foreground">Acabamento</Label>
+                    <Select
+                      value={filters.finish || '_all'}
+                      onValueChange={(value) =>
+                        onFiltersChange({
+                          ...filters,
+                          finish: value === '_all' ? undefined : value,
+                        })
+                      }
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Todos os acabamentos" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="_all">Todos os acabamentos</SelectItem>
+                        {finishes.map((finish) => (
+                          <SelectItem key={finish} value={finish}>
+                            {finish}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
               </div>
 
               {/* Material filter */}
@@ -454,170 +523,261 @@ export function BoxSelector({
         </CollapsibleContent>
       </Collapsible>
 
-      {/* Box list */}
-      <ScrollArea className="h-[50vh] pr-4">
-        {isLoading ? (
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            {[1, 2, 3, 4].map((i) => (
-              <BoxCardSkeleton key={i} />
-            ))}
-          </div>
-        ) : errorMessage ? (
-          <div className="py-12 text-center">
-            <Package className="mx-auto mb-3 h-12 w-12 text-destructive" />
-            <p className="font-medium">Não foi possível carregar as caixas</p>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Tente novamente antes de selecionar uma embalagem.
-            </p>
-            {onRetry && (
-              <Button variant="outline" size="sm" className="mt-3" onClick={onRetry}>
-                Tentar novamente
-              </Button>
-            )}
-          </div>
-        ) : recommendations.length === 0 ? (
-          <div className="py-12 text-center">
-            <Package className="mx-auto mb-3 h-12 w-12 text-muted-foreground" />
-            <p className="text-muted-foreground">Nenhuma caixa encontrada</p>
-            <p className="text-sm text-muted-foreground">Tente ajustar os filtros</p>
-            {hasActiveFilters && (
-              <Button variant="link" size="sm" className="mt-2" onClick={clearAdvancedFilters}>
-                Limpar filtros
-              </Button>
-            )}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            {recommendations.map((recommendation, index) => {
-              const box = recommendation.box;
-              const shouldExplain = kitItems.length > 0;
-              const statusLabel =
-                recommendation.status === 'compatible'
-                  ? index === 0
-                    ? 'Melhor ajuste estimado'
-                    : 'Compatível por dados'
-                  : recommendation.status === 'inconclusive'
-                    ? 'Validação pendente'
-                    : 'Não compatível';
+      {comparisonIds.length > 0 && (
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-primary/30 bg-primary/5 p-3">
+          <p className="text-sm">
+            <strong>{comparisonIds.length}</strong> caixa(s) selecionada(s) para comparação
+          </p>
+          <Button
+            type="button"
+            size="sm"
+            className="gap-2"
+            disabled={comparisonIds.length < 2}
+            onClick={() => setComparisonOpen(true)}
+          >
+            <GitCompareArrows className="h-4 w-4" /> Comparar caixas
+          </Button>
+        </div>
+      )}
 
-              const isSelectable = recommendation.status !== 'incompatible';
+      {/* Box list + focused preview */}
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_18rem]">
+        <ScrollArea className="h-[50vh] pr-4">
+          {isLoading ? (
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              {[1, 2, 3, 4].map((i) => (
+                <BoxCardSkeleton key={i} />
+              ))}
+            </div>
+          ) : errorMessage ? (
+            <div className="py-12 text-center">
+              <Package className="mx-auto mb-3 h-12 w-12 text-destructive" />
+              <p className="font-medium">Não foi possível carregar as caixas</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Tente novamente antes de selecionar uma embalagem.
+              </p>
+              {onRetry && (
+                <Button variant="outline" size="sm" className="mt-3" onClick={onRetry}>
+                  Tentar novamente
+                </Button>
+              )}
+            </div>
+          ) : recommendations.length === 0 ? (
+            <div className="py-12 text-center">
+              <Package className="mx-auto mb-3 h-12 w-12 text-muted-foreground" />
+              <p className="text-muted-foreground">Nenhuma caixa encontrada</p>
+              <p className="text-sm text-muted-foreground">Tente ajustar os filtros</p>
+              {hasActiveFilters && (
+                <Button variant="link" size="sm" className="mt-2" onClick={clearAdvancedFilters}>
+                  Limpar filtros
+                </Button>
+              )}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              {recommendations.map((recommendation, index) => {
+                const box = recommendation.box;
+                const shouldExplain = kitItems.length > 0;
+                const statusLabel =
+                  recommendation.status === 'compatible'
+                    ? index === 0
+                      ? 'Melhor ajuste estimado'
+                      : 'Compatível por dados'
+                    : recommendation.status === 'inconclusive'
+                      ? 'Validação pendente'
+                      : 'Não compatível';
 
-              return (
-                <Card
-                  key={box.id}
-                  className={cn(
-                    'group rounded-xl border-border/50 transition-all duration-200 will-change-transform',
-                    isSelectable &&
-                      'focus-within:ring-2 focus-within:ring-primary/60 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg',
-                    !isSelectable && 'opacity-75',
-                  )}
-                >
-                  <CardContent className="p-4">
-                    <div className="flex gap-3">
-                      <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-secondary">
-                        {box.imageUrl ? (
-                          <img
-                            src={box.imageUrl}
-                            alt={box.name}
-                            className="h-full w-full object-cover transition-transform group-hover:scale-105"
-                            loading="lazy"
-                          />
-                        ) : (
-                          <div className="flex h-full w-full items-center justify-center">
-                            <Package className="h-8 w-8 text-muted-foreground" />
-                          </div>
-                        )}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <h4 className="truncate font-medium transition-colors group-hover:text-primary">
-                          {box.name}
-                        </h4>
-                        <p className="mb-2 font-mono text-xs text-muted-foreground">{box.sku}</p>
-                        <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
-                          <span>
-                            {formatDimensions(
-                              box.internalWidth,
-                              box.internalHeight,
-                              box.internalDepth,
-                            )}
-                          </span>
-                          <span>•</span>
-                          <span>{formatVolume(box.internalVolume)}</span>
-                          {box.material && (
-                            <>
-                              <span>•</span>
-                              <span>{box.material}</span>
-                            </>
+                const isSelectable = recommendation.status !== 'incompatible';
+
+                return (
+                  <Card
+                    key={box.id}
+                    onMouseEnter={() => setFocusedBoxId(box.id)}
+                    className={cn(
+                      'group rounded-xl border-border/50 transition-all duration-200 will-change-transform',
+                      isSelectable &&
+                        'focus-within:ring-2 focus-within:ring-primary/60 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg',
+                      !isSelectable && 'opacity-75',
+                    )}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex gap-3">
+                        <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-secondary">
+                          {box.imageUrl ? (
+                            <img
+                              src={box.imageUrl}
+                              alt={box.name}
+                              className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                              loading="lazy"
+                            />
+                          ) : (
+                            <div className="flex h-full w-full items-center justify-center">
+                              <Package className="h-8 w-8 text-muted-foreground" />
+                            </div>
                           )}
                         </div>
-                        <p className="mt-1 font-semibold text-primary">
-                          {formatCurrency(box.price)}
-                        </p>
-                        {shouldExplain && (
-                          <div className="mt-3 space-y-2">
-                            <div
-                              className="h-1.5 overflow-hidden rounded-full bg-muted"
-                              aria-label={`Ocupação estimada: ${Math.round(recommendation.usagePercent)}%`}
-                            >
-                              <div
-                                className={cn(
-                                  'h-full rounded-full transition-[width]',
-                                  recommendation.status === 'compatible' && 'bg-success',
-                                  recommendation.status === 'inconclusive' && 'bg-warning',
-                                  recommendation.status === 'incompatible' && 'bg-destructive',
-                                )}
-                                style={{
-                                  width: `${Math.min(100, Math.max(0, recommendation.usagePercent))}%`,
-                                }}
-                              />
-                            </div>
-                            <div className="flex flex-wrap items-center gap-1.5">
-                              <Badge
-                                variant={
-                                  recommendation.status === 'incompatible'
-                                    ? 'destructive'
-                                    : 'secondary'
-                                }
-                                className={cn(
-                                  'text-[10px]',
-                                  recommendation.status === 'compatible' &&
-                                    'bg-success/10 text-success',
-                                  recommendation.status === 'inconclusive' &&
-                                    'bg-warning/10 text-warning',
-                                )}
-                                title={recommendation.compatibility.reason}
-                              >
-                                {statusLabel}
-                              </Badge>
-                              <span className="text-[10px] text-muted-foreground">
-                                Ocupação estimada: {Math.round(recommendation.usagePercent)}%
-                              </span>
-                            </div>
-                            <p className="text-xs text-muted-foreground">
-                              {recommendation.compatibility.reason ||
-                                'Dimensões e ocupação verificadas.'}
-                            </p>
+                        <div className="min-w-0 flex-1">
+                          <h4 className="truncate font-medium transition-colors group-hover:text-primary">
+                            {box.name}
+                          </h4>
+                          <p className="mb-2 font-mono text-xs text-muted-foreground">{box.sku}</p>
+                          <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+                            <span>
+                              {formatDimensions(
+                                box.internalWidth,
+                                box.internalHeight,
+                                box.internalDepth,
+                              )}
+                            </span>
+                            <span>•</span>
+                            <span>{formatVolume(box.internalVolume)}</span>
+                            {box.material && (
+                              <>
+                                <span>•</span>
+                                <span>{box.material}</span>
+                              </>
+                            )}
                           </div>
-                        )}
+                          <p className="mt-1 font-semibold text-primary">
+                            {formatCurrency(box.price)}
+                          </p>
+                          {shouldExplain && (
+                            <div className="mt-3 space-y-2">
+                              <div
+                                className="h-1.5 overflow-hidden rounded-full bg-muted"
+                                aria-label={`Ocupação estimada: ${Math.round(recommendation.usagePercent)}%`}
+                              >
+                                <div
+                                  className={cn(
+                                    'h-full rounded-full transition-[width]',
+                                    recommendation.status === 'compatible' && 'bg-success',
+                                    recommendation.status === 'inconclusive' && 'bg-warning',
+                                    recommendation.status === 'incompatible' && 'bg-destructive',
+                                  )}
+                                  style={{
+                                    width: `${Math.min(100, Math.max(0, recommendation.usagePercent))}%`,
+                                  }}
+                                />
+                              </div>
+                              <div className="flex flex-wrap items-center gap-1.5">
+                                <Badge
+                                  variant={
+                                    recommendation.status === 'incompatible'
+                                      ? 'destructive'
+                                      : 'secondary'
+                                  }
+                                  className={cn(
+                                    'text-[10px]',
+                                    recommendation.status === 'compatible' &&
+                                      'bg-success/10 text-success',
+                                    recommendation.status === 'inconclusive' &&
+                                      'bg-warning/10 text-warning',
+                                  )}
+                                  title={recommendation.compatibility.reason}
+                                >
+                                  {statusLabel}
+                                </Badge>
+                                <span className="text-[10px] text-muted-foreground">
+                                  Ocupação estimada: {Math.round(recommendation.usagePercent)}%
+                                </span>
+                              </div>
+                              <p className="text-xs text-muted-foreground">
+                                {recommendation.compatibility.reason ||
+                                  'Dimensões e ocupação verificadas.'}
+                              </p>
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                    <Button
-                      type="button"
-                      className="mt-4 w-full"
-                      variant={recommendation.status === 'inconclusive' ? 'outline' : 'default'}
-                      disabled={!isSelectable}
-                      aria-label={`Selecionar caixa ${box.name}`}
-                      onClick={() => onSelect(box)}
-                    >
-                      {isSelectable ? 'Selecionar caixa' : 'Incompatível com a composição'}
-                    </Button>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
+                      <div className="mt-4 grid grid-cols-[auto_minmax(0,1fr)] gap-2">
+                        <Button
+                          type="button"
+                          variant={comparisonIds.includes(box.id) ? 'secondary' : 'outline'}
+                          size="icon"
+                          aria-label={`${comparisonIds.includes(box.id) ? 'Remover' : 'Adicionar'} ${box.name} da comparação`}
+                          onClick={() => toggleComparison(box.id)}
+                        >
+                          <GitCompareArrows className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          type="button"
+                          variant={recommendation.status === 'inconclusive' ? 'outline' : 'default'}
+                          disabled={!isSelectable}
+                          aria-label={`Selecionar caixa ${box.name}`}
+                          onFocus={() => setFocusedBoxId(box.id)}
+                          onClick={() => onSelect(box)}
+                        >
+                          {isSelectable ? 'Selecionar caixa' : 'Incompatível com a composição'}
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
+        </ScrollArea>
+        {focusedRecommendation && (
+          <aside
+            className="hidden h-fit overflow-hidden rounded-xl border bg-card xl:block"
+            aria-label="Prévia da caixa"
+          >
+            <div className="aspect-[4/3] bg-muted">
+              {focusedRecommendation.box.imageUrl ? (
+                <img
+                  src={focusedRecommendation.box.imageUrl}
+                  alt={focusedRecommendation.box.name}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center">
+                  <Eye className="h-10 w-10 text-muted-foreground" />
+                </div>
+              )}
+            </div>
+            <div className="space-y-3 p-4">
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wide text-primary">
+                  Prévia da caixa
+                </p>
+                <h3 className="mt-1 font-semibold">{focusedRecommendation.box.name}</h3>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {formatDimensions(
+                  focusedRecommendation.box.internalWidth,
+                  focusedRecommendation.box.internalHeight,
+                  focusedRecommendation.box.internalDepth,
+                )}
+              </p>
+              <p className="font-semibold text-primary">
+                {formatCurrency(focusedRecommendation.box.price)} / un
+              </p>
+              <div className="h-2 overflow-hidden rounded-full bg-muted">
+                <div
+                  className="h-full rounded-full bg-primary"
+                  style={{ width: `${Math.min(100, focusedRecommendation.usagePercent)}%` }}
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Ocupação estimada: {Math.round(focusedRecommendation.usagePercent)}%
+              </p>
+              <Button
+                className="w-full"
+                disabled={focusedRecommendation.status === 'incompatible'}
+                onClick={() => onSelect(focusedRecommendation.box)}
+              >
+                Usar esta caixa
+              </Button>
+            </div>
+          </aside>
         )}
-      </ScrollArea>
+      </div>
+      <BoxComparisonDialog
+        open={comparisonOpen}
+        onOpenChange={setComparisonOpen}
+        recommendations={comparedRecommendations}
+        onSelect={onSelect}
+      />
     </div>
   );
 }

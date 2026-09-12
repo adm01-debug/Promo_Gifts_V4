@@ -5,6 +5,27 @@
 
 import { getKitItemLineId, type KitItem, type KitBox, type KitPersonalization } from './types';
 
+function personalizationTotal(
+  personalization: KitPersonalization['box'],
+  quantity: number,
+): number {
+  if (!personalization.enabled || quantity <= 0) return 0;
+  if (
+    personalization.pricedQuantity === quantity &&
+    Number.isFinite(personalization.totalPrice) &&
+    (personalization.totalPrice ?? -1) >= 0
+  ) {
+    return personalization.totalPrice ?? 0;
+  }
+  if (
+    Number.isFinite(personalization.estimatedPrice) &&
+    (personalization.estimatedPrice ?? -1) >= 0
+  ) {
+    return (personalization.estimatedPrice ?? 0) * quantity;
+  }
+  return 0;
+}
+
 // ============================================
 // CÁLCULOS DE PREÇO
 // ============================================
@@ -37,17 +58,14 @@ export function calculatePersonalizationPrice(
   let total = 0;
 
   // Personalização da caixa
-  if (personalization.box.enabled && personalization.box.estimatedPrice) {
-    total += personalization.box.estimatedPrice * quantity;
-  }
+  total += personalizationTotal(personalization.box, quantity);
 
   // Personalização dos itens
   items.forEach((item) => {
     const itemPersonalization =
       personalization.items[getKitItemLineId(item)] ?? personalization.items[item.id];
-    if (itemPersonalization?.enabled && itemPersonalization.estimatedPrice) {
-      total += itemPersonalization.estimatedPrice * item.quantity * quantity;
-    }
+    if (itemPersonalization)
+      total += personalizationTotal(itemPersonalization, item.quantity * quantity);
   });
 
   return total;
@@ -156,12 +174,13 @@ export function generatePriceBreakdown(
     });
 
     // Personalização da caixa
-    if (personalization.box.enabled && personalization.box.estimatedPrice) {
+    const boxPersonalizationTotal = personalizationTotal(personalization.box, kitQuantity);
+    if (boxPersonalizationTotal > 0) {
       breakdown.push({
         label: `↳ Gravação: ${personalization.box.techniqueName || 'Personalização'}`,
         quantity: kitQuantity,
         unitPrice: personalization.box.estimatedPrice,
-        totalPrice: personalization.box.estimatedPrice * kitQuantity,
+        totalPrice: boxPersonalizationTotal,
         isPersonalization: true,
       });
     }
@@ -180,12 +199,15 @@ export function generatePriceBreakdown(
     // Personalização do item
     const itemPersonalization =
       personalization.items[getKitItemLineId(item)] ?? personalization.items[item.id];
-    if (itemPersonalization?.enabled && itemPersonalization.estimatedPrice) {
+    const itemPersonalizationTotal = itemPersonalization
+      ? personalizationTotal(itemPersonalization, totalQty)
+      : 0;
+    if (itemPersonalization && itemPersonalizationTotal > 0) {
       breakdown.push({
         label: `↳ Gravação: ${itemPersonalization.techniqueName || 'Personalização'}`,
         quantity: totalQty,
         unitPrice: itemPersonalization.estimatedPrice,
-        totalPrice: itemPersonalization.estimatedPrice * totalQty,
+        totalPrice: itemPersonalizationTotal,
         isPersonalization: true,
       });
     }

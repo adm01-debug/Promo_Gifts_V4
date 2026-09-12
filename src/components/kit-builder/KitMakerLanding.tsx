@@ -9,25 +9,32 @@ import {
   Palette,
   Wand2,
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { KitAIPromptDialog } from '@/components/kit-builder/KitAIPromptDialog';
 import { KitOccasionSelector, type Occasion } from '@/components/kit-builder/KitOccasionSelector';
 import { dbInvoke } from '@/lib/db/postgrest';
+import {
+  formatCurrency,
+  resolveKitAICompositions,
+  type KitAIComposition,
+  type KitAISuggestionBrief,
+  type KitBox,
+  type KitItem,
+} from '@/lib/kit-builder';
+import { useKitTemplates } from '@/hooks/kit-builder';
 
 interface KitMakerLandingProps {
   onStart: (flow: 'box-first' | 'items-first') => void;
   occasion: Occasion | null;
   onOccasionChange: (occasion: Occasion | null) => void;
-  onApplyAISuggestion: (suggestion: {
-    kit_type: 'montado' | 'original' | 'simples';
-    box_keywords: string[];
-    item_keywords: string[];
-  }) => void;
+  aiCatalogItems: KitItem[];
+  aiCatalogBoxes: KitBox[];
+  onApplyAISuggestion: (suggestion: KitAISuggestionBrief, composition: KitAIComposition) => void;
 }
 
 interface FeaturedProduct {
@@ -62,6 +69,14 @@ const BENEFITS = [
     Icon: ClipboardList,
   },
 ] as const;
+
+const CATALOG_HIGHLIGHT_BRIEF: KitAISuggestionBrief = {
+  kit_type: 'montado',
+  box_keywords: ['caixa', 'kraft', 'presente'],
+  item_keywords: ['corporativo', 'escritório', 'tecnologia', 'bem-estar'],
+  target_price_brl: { min: 0, max: 500 },
+  narrative: 'Composição sugerida a partir dos produtos e embalagens disponíveis agora.',
+};
 
 function featuredImage(product: FeaturedProduct | undefined): string | null {
   return product?.primary_image_url || product?.images?.[0] || null;
@@ -158,31 +173,15 @@ function HeroProductImage({ products, alt }: { products: FeaturedProduct[]; alt:
   );
 }
 
-function useFeaturedProducts() {
-  return useQuery({
-    queryKey: ['kit-maker', 'landing-featured-products'],
-    queryFn: async () => {
-      const result = await dbInvoke<FeaturedProduct>({
-        table: 'products',
-        operation: 'select',
-        filters: { active: true, is_featured: true },
-        select: 'id, name, sku, sale_price, primary_image_url, images, product_type',
-        limit: 8,
-        orderBy: { column: 'name', ascending: true },
-      });
-      return result.records.filter((product) => product.product_type !== 'packaging');
-    },
-    staleTime: 5 * 60 * 1000,
-    retry: 1,
-  });
-}
-
 export function KitMakerLanding({
   onStart,
   occasion,
   onOccasionChange,
   onApplyAISuggestion,
+  aiCatalogItems,
+  aiCatalogBoxes,
 }: KitMakerLandingProps) {
+  const navigate = useNavigate();
   const {
     data: landingCatalog,
     isLoading: isLoadingLandingCatalog,
@@ -190,16 +189,29 @@ export function KitMakerLanding({
     refetch: refetchLandingCatalog,
   } = useLandingCatalog();
   const {
-    data: featuredProducts = [],
+    templates: featuredKits,
     isLoading: isLoadingFeatured,
-    isError: hasFeaturedError,
-    refetch: refetchFeatured,
-  } = useFeaturedProducts();
+    templatesError,
+    refetchTemplates,
+    cloneTemplate,
+    isCloning,
+  } = useKitTemplates();
+  const hasFeaturedError = Boolean(templatesError);
+  const catalogCompositions = useMemo(
+    () => resolveKitAICompositions(CATALOG_HIGHLIGHT_BRIEF, aiCatalogItems, aiCatalogBoxes),
+    [aiCatalogBoxes, aiCatalogItems],
+  );
   const itemsHeroProducts = landingCatalog?.items.slice(0, 3) ?? [];
   const boxHeroProducts = landingCatalog?.boxes.slice(0, 3) ?? [];
   const handleRetryFeatured = () => {
-    refetchFeatured().catch(() => undefined);
+    refetchTemplates().catch(() => undefined);
     refetchLandingCatalog().catch(() => undefined);
+  };
+  const handleUseTemplate = async (template: (typeof featuredKits)[number]) => {
+    const created = await cloneTemplate(template);
+    if (created && typeof created === 'object' && 'id' in created) {
+      navigate(`/montar-kit?kit=${(created as { id: string }).id}`);
+    }
   };
 
   return (
@@ -384,17 +396,18 @@ export function KitMakerLanding({
               </Button>
             </CardContent>
           </Card>
-        ) : featuredProducts.length > 0 ? (
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {featuredProducts.slice(0, 4).map((product) => {
-              const image = featuredImage(product);
+        ) : featuredKits.length > 0 ? (
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+            {featuredKits.slice(0, 5).map((kit) => {
+              const image = kit.cover_image_url;
+              const itemsCount = Array.isArray(kit.items_data) ? kit.items_data.length : 0;
               return (
-                <Card key={product.id} className="group overflow-hidden border-border/60 bg-card">
+                <Card key={kit.id} className="group overflow-hidden border-border/60 bg-card">
                   <div className="aspect-[16/9] overflow-hidden bg-muted/50">
                     {image ? (
                       <img
                         src={image}
-                        alt={product.name}
+                        alt={`Kit ${kit.name}`}
                         className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                         loading="lazy"
                       />
@@ -404,11 +417,72 @@ export function KitMakerLanding({
                       </div>
                     )}
                   </div>
-                  <CardContent className="p-4">
-                    <p className="line-clamp-1 font-semibold">{product.name}</p>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      Produto em destaque do catálogo
-                    </p>
+                  <CardContent className="space-y-3 p-4">
+                    <div>
+                      <p className="line-clamp-1 font-semibold">{kit.name}</p>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {kit.category} · {itemsCount} {itemsCount === 1 ? 'item' : 'itens'}
+                      </p>
+                      <p className="mt-1 text-sm font-semibold text-primary">
+                        {formatCurrency(Number(kit.total_price))}
+                      </p>
+                    </div>
+                    <Button
+                      type="button"
+                      size="sm"
+                      className="w-full"
+                      disabled={isCloning}
+                      onClick={() => handleUseTemplate(kit).catch(() => undefined)}
+                    >
+                      Usar template <ArrowRight className="ml-1 h-4 w-4" />
+                    </Button>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        ) : catalogCompositions.length > 0 ? (
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {catalogCompositions.map((composition) => {
+              const image = composition.items.find((item) => item.imageUrl)?.imageUrl;
+              return (
+                <Card
+                  key={composition.id}
+                  className="group overflow-hidden border-border/60 bg-card"
+                >
+                  <div className="aspect-[16/9] overflow-hidden bg-muted/50">
+                    {image ? (
+                      <img
+                        src={image}
+                        alt={composition.name}
+                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center">
+                        <Boxes className="h-10 w-10 text-muted-foreground" />
+                      </div>
+                    )}
+                  </div>
+                  <CardContent className="space-y-3 p-4">
+                    <div>
+                      <p className="line-clamp-1 font-semibold">{composition.name}</p>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        Catálogo atual · {composition.items.length}{' '}
+                        {composition.items.length === 1 ? 'item' : 'itens'} + caixa
+                      </p>
+                      <p className="mt-1 text-sm font-semibold text-primary">
+                        {formatCurrency(composition.unitPrice)} / kit
+                      </p>
+                    </div>
+                    <Button
+                      type="button"
+                      size="sm"
+                      className="w-full"
+                      onClick={() => onApplyAISuggestion(CATALOG_HIGHLIGHT_BRIEF, composition)}
+                    >
+                      Montar este kit <ArrowRight className="ml-1 h-4 w-4" />
+                    </Button>
                   </CardContent>
                 </Card>
               );
@@ -443,7 +517,11 @@ export function KitMakerLanding({
               </p>
             </div>
           </div>
-          <KitAIPromptDialog onApply={onApplyAISuggestion} />
+          <KitAIPromptDialog
+            catalogItems={aiCatalogItems}
+            catalogBoxes={aiCatalogBoxes}
+            onApply={onApplyAISuggestion}
+          />
         </CardContent>
       </Card>
     </main>

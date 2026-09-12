@@ -28,7 +28,7 @@ const PRODUCT_PAGE_SIZE = 200;
 // module from PostgREST 42703 regressions. The Gold view intentionally exposes
 // `sale_price`, not the private/legacy `base_price` field.
 export const KIT_PACKAGING_SELECT =
-  'id, name, sku, sale_price, primary_image_url, images, dimensions, weight_g, materials, internal_width_cm, internal_height_cm, internal_length_cm, packing_type, packing_classification, product_type';
+  'id, name, sku, sale_price, primary_image_url, images, dimensions, weight_g, materials, internal_width_cm, internal_height_cm, internal_length_cm, packing_type, packing_classification, packaging_finish, product_type';
 
 export const KIT_ITEM_SELECT =
   'id, name, sku, sale_price, primary_image_url, images, dimensions, category_id, category_name, weight_g, materials, width_cm, height_cm, length_cm, colors, packing_classification, packing_type, product_type, allows_personalization';
@@ -128,6 +128,7 @@ function filterBoxes(
     filtered = filtered.filter((b) => b.material?.toLocaleLowerCase('pt-BR') === material);
   }
   if (dimFilters?.boxType) filtered = filtered.filter((b) => b.boxType === dimFilters.boxType);
+  if (dimFilters?.finish) filtered = filtered.filter((b) => b.finish === dimFilters.finish);
   return filtered;
 }
 
@@ -202,6 +203,7 @@ export function useKitBuilderQueries() {
       boxDimFilters.maxPrice ?? '',
       boxDimFilters.material ?? '',
       boxDimFilters.boxType ?? '',
+      boxDimFilters.finish ?? '',
     ],
     queryFn: async () => {
       try {

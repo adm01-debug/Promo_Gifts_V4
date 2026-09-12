@@ -6,7 +6,18 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Search, Library, Sparkles, Star, Pin, AlertTriangle } from 'lucide-react';
+import {
+  AlertTriangle,
+  FileText,
+  LayoutGrid,
+  Library,
+  List,
+  Pin,
+  Plus,
+  Search,
+  Sparkles,
+  Star,
+} from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -28,6 +39,11 @@ import {
   type KitTemplateRow,
 } from '@/hooks/kit-builder';
 import { buildCustomKitInsert } from '@/lib/kit-library/buildCustomKitInsert';
+import { sanitizeError } from '@/lib/security/sanitize-error';
+import { cn } from '@/lib/utils';
+
+type KitStatusFilter = 'all' | 'draft' | 'published';
+type LibraryView = 'grid' | 'list';
 
 function getItemsCount(items: unknown): number {
   if (!Array.isArray(items)) return 0;
@@ -102,6 +118,8 @@ export default function KitLibraryPage() {
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [sort, setSort] = useState<SortOption>('recent');
+  const [statusFilter, setStatusFilter] = useState<KitStatusFilter>('all');
+  const [view, setView] = useState<LibraryView>('grid');
   const [previewTemplate, setPreviewTemplate] = useState<KitTemplateRow | null>(null);
 
   // Mine
@@ -133,7 +151,7 @@ export default function KitLibraryPage() {
     cloneTemplate,
     isCloning,
   } = useKitTemplates();
-  const mineError = mineQueryError instanceof Error ? mineQueryError.message : null;
+  const mineError = mineQueryError ? sanitizeError(mineQueryError) : null;
 
   // Mutations
   const deleteMutation = useMutation({
@@ -216,6 +234,9 @@ export default function KitLibraryPage() {
       return false;
     if (selectedTag && k.tag !== selectedTag) return false;
     if (selectedColor && k.color !== selectedColor) return false;
+    if (statusFilter === 'draft' && k.status !== 'draft') return false;
+    if (statusFilter === 'published' && !['published', 'ready', 'shared'].includes(k.status))
+      return false;
     return true;
   };
   const matchTpl = (t: KitTemplateRow) => {
@@ -236,7 +257,7 @@ export default function KitLibraryPage() {
   const pinnedKit = useMemo(
     () => myKits.find((k) => k.is_pinned && matchKit(k)) || null,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [myKits, q, selectedTag, selectedColor],
+    [myKits, q, selectedTag, selectedColor, statusFilter],
   );
 
   const filteredMine = useMemo(
@@ -246,7 +267,7 @@ export default function KitLibraryPage() {
         sort,
       ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [myKits, q, selectedTag, selectedColor, sort],
+    [myKits, q, selectedTag, selectedColor, statusFilter, sort],
   );
   const filteredFavs = useMemo(
     () =>
@@ -255,7 +276,7 @@ export default function KitLibraryPage() {
         sort,
       ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [myKits, q, selectedTag, selectedColor, sort],
+    [myKits, q, selectedTag, selectedColor, statusFilter, sort],
   );
   const filteredTpls = useMemo(
     () => applySort(templates.filter(matchTpl), sort),
@@ -276,6 +297,7 @@ export default function KitLibraryPage() {
       isFavorite: k.is_favorite,
       isPinned: k.is_pinned,
       coverImageUrl: customKitCoverImage(k),
+      badge: k.status === 'draft' ? 'Rascunho' : 'Publicado',
     };
   };
 
@@ -329,6 +351,27 @@ export default function KitLibraryPage() {
         </Button>
       </div>
 
+      <div className="grid gap-3 sm:grid-cols-3">
+        <LibraryStat
+          icon={<Library className="h-5 w-5" />}
+          label="Total de kits"
+          value={myKits.length}
+          detail="Seus projetos no Kit Maker"
+        />
+        <LibraryStat
+          icon={<FileText className="h-5 w-5" />}
+          label="Rascunhos"
+          value={myKits.filter((kit) => kit.status === 'draft').length}
+          detail="Em edição"
+        />
+        <LibraryStat
+          icon={<Star className="h-5 w-5" />}
+          label="Favoritos"
+          value={myKits.filter((kit) => kit.is_favorite).length}
+          detail="Acesso rápido"
+        />
+      </div>
+
       {/* Search */}
       <div className="relative max-w-md">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -353,6 +396,50 @@ export default function KitLibraryPage() {
         showUsageSort={tab === 'suggested'}
         showLastUsedSort={tab === 'mine' || tab === 'favorites'}
       />
+
+      {(tab === 'mine' || tab === 'favorites') && (
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap gap-2" aria-label="Filtrar kits por status">
+            {(
+              [
+                ['all', 'Todos'],
+                ['draft', 'Rascunhos'],
+                ['published', 'Publicados'],
+              ] as const
+            ).map(([value, label]) => (
+              <Button
+                key={value}
+                type="button"
+                size="sm"
+                variant={statusFilter === value ? 'default' : 'outline'}
+                onClick={() => setStatusFilter(value)}
+              >
+                {label}
+              </Button>
+            ))}
+          </div>
+          <div className="flex rounded-md border p-1" aria-label="Modo de visualização">
+            <Button
+              type="button"
+              size="icon"
+              variant={view === 'grid' ? 'default' : 'ghost'}
+              onClick={() => setView('grid')}
+              aria-label="Visualização em grade"
+            >
+              <LayoutGrid className="h-4 w-4" />
+            </Button>
+            <Button
+              type="button"
+              size="icon"
+              variant={view === 'list' ? 'default' : 'ghost'}
+              onClick={() => setView('list')}
+              aria-label="Visualização em lista"
+            >
+              <List className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      )}
 
       {tab === 'suggested' && (
         <KitCategoryChips
@@ -420,7 +507,7 @@ export default function KitLibraryPage() {
                       Kit em destaque
                     </span>
                   </div>
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     <KitCard
                       key={pinnedKit.id}
                       variant="mine"
@@ -438,7 +525,12 @@ export default function KitLibraryPage() {
               )}
 
               {filteredMine.length > 0 && (
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                <div
+                  className={cn(
+                    'grid grid-cols-1 gap-4',
+                    view === 'grid' && 'sm:grid-cols-2 lg:grid-cols-3',
+                  )}
+                >
                   {filteredMine.map((k) => (
                     <KitCard
                       key={k.id}
@@ -475,7 +567,7 @@ export default function KitLibraryPage() {
               description="Tente outra busca ou aguarde novos templates do sistema."
             />
           ) : (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {filteredTpls.map((t) => (
                 <KitCard
                   key={t.id}
@@ -492,7 +584,10 @@ export default function KitLibraryPage() {
         {/* FAVORITES */}
         <TabsContent value="favorites">
           {mineError ? (
-            <LoadErrorState message="Não foi possível carregar seus favoritos." onRetry={refetchMine} />
+            <LoadErrorState
+              message="Não foi possível carregar seus favoritos."
+              onRetry={refetchMine}
+            />
           ) : filteredFavs.length === 0 ? (
             <EmptyState
               icon={<Star className="h-10 w-10" />}
@@ -500,7 +595,12 @@ export default function KitLibraryPage() {
               description="Marque seus kits favoritos com a estrela para acessá-los rapidamente."
             />
           ) : (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div
+              className={cn(
+                'grid grid-cols-1 gap-4',
+                view === 'grid' && 'sm:grid-cols-2 lg:grid-cols-3',
+              )}
+            >
               {filteredFavs.map((k) => (
                 <KitCard
                   key={k.id}
@@ -546,6 +646,31 @@ export default function KitLibraryPage() {
         testId="kit-library-delete-dialog"
       />
     </div>
+  );
+}
+
+function LibraryStat({
+  icon,
+  label,
+  value,
+  detail,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: number;
+  detail: string;
+}) {
+  return (
+    <Card>
+      <CardContent className="flex items-center gap-3 p-4">
+        <div className="rounded-xl bg-primary/10 p-3 text-primary">{icon}</div>
+        <div>
+          <p className="text-xs text-muted-foreground">{label}</p>
+          <p className="text-2xl font-bold">{value}</p>
+          <p className="text-xs text-muted-foreground">{detail}</p>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 

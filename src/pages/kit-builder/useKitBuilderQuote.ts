@@ -17,11 +17,13 @@ import {
 } from '@/lib/kit-builder';
 import type { Json } from '@/integrations/supabase/types';
 import { newRequestId } from '@/lib/telemetry/requestId';
+import { validateKitStockForQuote } from '@/hooks/kit-builder/useKitStockValidation';
 
 export interface KitQuoteClient {
   client_cnpj?: string;
   client_company?: string;
   client_email?: string;
+  client_id?: string;
   client_name?: string;
   client_phone?: string;
 }
@@ -31,6 +33,8 @@ interface RetryableQuoteOperation {
   fingerprint: string;
   kitGroupId: string;
 }
+
+class KitQuoteValidationError extends Error {}
 
 const QUOTE_RETRY_STORAGE_PREFIX = 'kit-maker:quote-retry:';
 
@@ -72,7 +76,10 @@ function readRetryReceipt(fingerprint: string): RetryableQuoteOperation | null {
 
 function writeRetryReceipt(operation: RetryableQuoteOperation): void {
   try {
-    globalThis.sessionStorage?.setItem(fingerprintKey(operation.fingerprint), JSON.stringify(operation));
+    globalThis.sessionStorage?.setItem(
+      fingerprintKey(operation.fingerprint),
+      JSON.stringify(operation),
+    );
   } catch {
     // An unavailable storage must not prevent a commercially valid submission.
   }
@@ -107,10 +114,14 @@ function toPersonalizationPayload(
     area_cm2: width !== null && height !== null ? width * height : null,
     width_cm: width,
     height_cm: height,
-    setup_cost: 0,
+    setup_cost: personalization.setupCost ?? 0,
     unit_cost: unitCost,
-    total_cost: unitCost * quantity,
+    total_cost:
+      personalization.pricedQuantity === quantity && Number.isFinite(personalization.totalPrice)
+        ? personalization.totalPrice
+        : unitCost * quantity,
     artwork_url: personalization.artworkUrl ?? null,
+    artwork_colors: personalization.artworkColors ?? [],
     notes: personalization.position ? `Posição: ${personalization.position}` : null,
   };
 }
@@ -128,7 +139,10 @@ function itemPersonalizationCost(
   ) {
     throw new Error('Preço de personalização indisponível para criação do orçamento');
   }
-  return personalization.estimatedPrice * item.quantity * kitQuantity;
+  const quantity = item.quantity * kitQuantity;
+  return personalization.pricedQuantity === quantity && Number.isFinite(personalization.totalPrice)
+    ? (personalization.totalPrice ?? 0)
+    : personalization.estimatedPrice * quantity;
 }
 
 export function useKitBuilderQuote() {
@@ -144,6 +158,7 @@ export function useKitBuilderQuote() {
     kitState: KitState,
     kitQuantity: number,
     client: KitQuoteClient = {},
+    sourceKitId?: string,
   ) => {
     if (!user) {
       toast.error('Você precisa estar logado para criar um orçamento.');
@@ -159,6 +174,18 @@ export function useKitBuilderQuote() {
     createInFlightRef.current = true;
     setIsCreatingQuote(true);
     try {
+      const liveStock = await validateKitStockForQuote(kitState.items, kitState.box, kitQuantity);
+      if (liveStock.status === 'unknown') {
+        throw new KitQuoteValidationError(
+          'Não foi possível confirmar o estoque agora. Nenhum orçamento foi criado.',
+        );
+      }
+      if (liveStock.status === 'unavailable') {
+        throw new KitQuoteValidationError(
+          `Estoque insuficiente em ${liveStock.alerts.length} item(ns). Revise o kit antes de continuar.`,
+        );
+      }
+
       const kitLabel = kitState.name || 'Kit sem nome';
       const kitMetadataNote = kitState.identity?.tag
         ? `[${kitState.identity.tag}] ${kitLabel}`
@@ -190,6 +217,7 @@ export function useKitBuilderQuote() {
           kit_name: kitLabel,
           kit_quantity: kitQuantity,
           kit_identity_tag: kitState.identity?.tag ?? null,
+          source_custom_kit_id: sourceKitId ?? null,
         },
       };
 
@@ -215,7 +243,10 @@ export function useKitBuilderQuote() {
           color_hex: null,
           kit_name: kitLabel,
           personalization_cost: personRef.box.enabled
-            ? (personRef.box.estimatedPrice ?? 0) * kitQuantity
+            ? personRef.box.pricedQuantity === kitQuantity &&
+              Number.isFinite(personRef.box.totalPrice)
+              ? (personRef.box.totalPrice ?? 0)
+              : (personRef.box.estimatedPrice ?? 0) * kitQuantity
             : 0,
           personalizations: personRef.box.enabled
             ? [toPersonalizationPayload(personRef.box, kitQuantity)]
@@ -241,10 +272,10 @@ export function useKitBuilderQuote() {
           size_code: item.selectedSize || null,
           product_variant_id: item.selectedVariantId || null,
           artwork_urls: (() => {
-            const artworkUrl = (
-              personRef.items[getKitItemLineId(item)] ?? personRef.items[item.id]
-            )?.artworkUrl;
-            return artworkUrl ? [artworkUrl] : [];
+            const configured = personRef.items[getKitItemLineId(item)] ?? personRef.items[item.id];
+            return [configured?.artworkUrl, configured?.generatedMockupUrl].filter(
+              (url): url is string => Boolean(url),
+            );
           })(),
           personalization_cost: itemPersonalizationCost(
             personRef.items[getKitItemLineId(item)] ?? personRef.items[item.id],
@@ -271,11 +302,11 @@ export function useKitBuilderQuote() {
       const operation =
         retryableRequestRef.current?.fingerprint === fingerprint
           ? retryableRequestRef.current
-          : readRetryReceipt(fingerprint) ?? {
+          : (readRetryReceipt(fingerprint) ?? {
               id: newRequestId(),
               fingerprint,
               kitGroupId: newRequestId(),
-            };
+            });
       retryableRequestRef.current = operation;
       writeRetryReceipt(operation);
 
@@ -303,7 +334,11 @@ export function useKitBuilderQuote() {
       navigate(`/orcamentos/${quote.id}`);
     } catch (err) {
       logger.error('[Kit Quote] Error creating quote:', err);
-      toast.error('Erro ao criar orçamento. Tente novamente.');
+      toast.error(
+        err instanceof KitQuoteValidationError
+          ? err.message
+          : 'Erro ao criar orçamento. Tente novamente.',
+      );
     } finally {
       createInFlightRef.current = false;
       setIsCreatingQuote(false);

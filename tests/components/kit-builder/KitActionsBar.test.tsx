@@ -20,4 +20,34 @@ describe('KitActionsBar', () => {
 
     expect(screen.getByRole('button', { name: 'Estoque insuficiente' })).toBeDisabled();
   });
+
+  it('diferencia estoque ainda verificando de estoque inconclusivo', () => {
+    const { rerender } = renderWithProviders(
+      <KitActionsBar
+        isValid
+        hasStockIssues
+        stockStatus="checking"
+        kitName="Kit teste"
+        kitQuantity={10}
+        unitPrice={20}
+        total={200}
+        items={[]}
+      />,
+    );
+    expect(screen.getByRole('button', { name: 'Verificando estoque' })).toBeDisabled();
+
+    rerender(
+      <KitActionsBar
+        isValid
+        hasStockIssues
+        stockStatus="unknown"
+        kitName="Kit teste"
+        kitQuantity={10}
+        unitPrice={20}
+        total={200}
+        items={[]}
+      />,
+    );
+    expect(screen.getByRole('button', { name: 'Estoque não confirmado' })).toBeDisabled();
+  });
 });

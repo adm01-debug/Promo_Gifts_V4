@@ -4,6 +4,19 @@ import type { KitState } from './types';
 
 export type PersistedCustomKit = Database['public']['Tables']['custom_kits']['Row'];
 
+export interface KitDraftClient {
+  client_cnpj?: string;
+  client_company?: string;
+  client_email?: string;
+  client_id?: string;
+  client_name?: string;
+  client_phone?: string;
+}
+
+export interface KitDraftContext {
+  quoteClient?: KitDraftClient;
+}
+
 /**
  * The status trigger on `custom_kits` accepts the lifecycle vocabulary
  * draft/ready/shared/archived. Keeping the mapping here prevents manual save
@@ -21,8 +34,16 @@ export function buildKitPersistencePayload(
   userId: string,
   kitState: KitState,
   kitQuantity: number,
+  context: KitDraftContext = {},
 ) {
   const identity = kitState.identity;
+  const personalizationData = {
+    ...structuredClone(kitState.personalization),
+    __draft: {
+      version: 1,
+      quoteClient: structuredClone(context.quoteClient ?? {}),
+    },
+  };
 
   return {
     user_id: userId,
@@ -31,7 +52,7 @@ export function buildKitPersistencePayload(
     kit_type: kitState.kitType || 'montado',
     box_data: kitState.box ? (structuredClone(kitState.box) as unknown as Json) : null,
     items_data: structuredClone(kitState.items) as unknown as Json,
-    personalization_data: structuredClone(kitState.personalization) as unknown as Json,
+    personalization_data: personalizationData as unknown as Json,
     kit_quantity: kitQuantity,
     box_price: kitState.boxPrice,
     items_price: kitState.itemsPrice,

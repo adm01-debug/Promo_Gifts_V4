@@ -41,9 +41,8 @@ describe('fetchAllActiveProducts', () => {
 
 describe('Kit Maker public catalog contracts', () => {
   it('uses only public Gold columns for products and packaging', async () => {
-    const { KIT_ITEM_SELECT, KIT_PACKAGING_SELECT } = await import(
-      '@/hooks/kit-builder/useKitBuilderQueries'
-    );
+    const { KIT_ITEM_SELECT, KIT_PACKAGING_SELECT } =
+      await import('@/hooks/kit-builder/useKitBuilderQueries');
 
     for (const projection of [KIT_ITEM_SELECT, KIT_PACKAGING_SELECT]) {
       expect(projection).toContain('sale_price');
@@ -52,12 +51,12 @@ describe('Kit Maker public catalog contracts', () => {
       expect(projection).not.toContain('is_replaceable');
       expect(projection).not.toContain('allowed_variant_ids');
     }
+    expect(KIT_PACKAGING_SELECT).toContain('packaging_finish');
   });
 
   it('separates canonical packaging rows from selectable kit products', async () => {
-    const { isCanonicalPackagingProduct, isKitSelectableProduct } = await import(
-      '@/hooks/kit-builder/useKitBuilderQueries'
-    );
+    const { isCanonicalPackagingProduct, isKitSelectableProduct } =
+      await import('@/hooks/kit-builder/useKitBuilderQueries');
     const product = {
       id: 'p-1',
       name: 'Garrafa',

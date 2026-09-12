@@ -78,20 +78,31 @@ export function useCustomizationPriceReactive(
   alturaCm?: number | null,
   usaDimensao = false,
 ) {
-  const [price, setPrice] = useState<CustomizationPriceResponseV6 | null>(null);
+  const requestKey = JSON.stringify({
+    alturaCm,
+    larguraCm,
+    numCores,
+    quantidade,
+    techniqueId,
+    usaDimensao,
+  });
+  const [priceState, setPriceState] = useState<{
+    key: string;
+    value: CustomizationPriceResponseV6;
+  } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     if (!techniqueId || quantidade <= 0) {
-      setPrice(null);
+      setPriceState(null);
       return;
     }
 
     // If dimensions are required but not provided, don't calculate
     if (usaDimensao && (!larguraCm || larguraCm <= 0 || !alturaCm || alturaCm <= 0)) {
-      setPrice(null);
+      setPriceState(null);
       return;
     }
 
@@ -101,6 +112,7 @@ export function useCustomizationPriceReactive(
     // the cleanup flips `cancelled` so an out-of-order response cannot overwrite
     // the price computed for the newer inputs.
     let cancelled = false;
+    setPriceState(null);
 
     timerRef.current = setTimeout(async () => {
       setLoading(true);
@@ -126,15 +138,15 @@ export function useCustomizationPriceReactive(
         if (cancelled) return;
         if (result?.success) {
           validateRpcPayload(PRICE_CONTRACT, result as unknown as Record<string, unknown>);
-          setPrice(result);
+          setPriceState({ key: requestKey, value: result });
         } else {
           setError(result?.error || 'Erro no cálculo');
-          setPrice(null);
+          setPriceState(null);
         }
       } catch (err) {
         if (cancelled) return;
         setError(err instanceof Error ? err.message : 'Erro ao calcular preço');
-        setPrice(null);
+        setPriceState(null);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -144,7 +156,7 @@ export function useCustomizationPriceReactive(
       cancelled = true;
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [techniqueId, quantidade, numCores, larguraCm, alturaCm, usaDimensao]);
+  }, [techniqueId, quantidade, numCores, larguraCm, alturaCm, usaDimensao, requestKey]);
 
-  return { price, loading, error };
+  return { price: priceState?.key === requestKey ? priceState.value : null, loading, error };
 }

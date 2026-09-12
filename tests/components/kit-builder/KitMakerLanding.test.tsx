@@ -5,8 +5,25 @@ import type { ComponentProps } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { dbInvoke } from '@/lib/db/postgrest';
 import { KitMakerLanding } from '@/components/kit-builder/KitMakerLanding';
+import type { KitBox, KitItem } from '@/lib/kit-builder';
 
 vi.mock('@/lib/db/postgrest', () => ({ dbInvoke: vi.fn() }));
+
+const templateState = vi.hoisted(() => ({
+  templates: [] as Array<Record<string, unknown>>,
+  templatesError: null as string | null,
+}));
+
+vi.mock('@/hooks/kit-builder', () => ({
+  useKitTemplates: () => ({
+    templates: templateState.templates,
+    isLoading: false,
+    templatesError: templateState.templatesError,
+    refetchTemplates: vi.fn().mockResolvedValue(undefined),
+    cloneTemplate: vi.fn().mockResolvedValue(null),
+    isCloning: false,
+  }),
+}));
 
 vi.mock('@/components/kit-builder/KitAIPromptDialog', () => ({
   KitAIPromptDialog: () => <button type="button">Montar com IA</button>,
@@ -46,6 +63,28 @@ const FEATURED_PRODUCTS = [
   },
 ];
 
+const FEATURED_KITS = [
+  {
+    id: 'kit-1',
+    name: 'Kit Executivo',
+    description: 'Composição curada',
+    category: 'Corporativo',
+    color: '#2563eb',
+    icon: 'Package',
+    tag: 'Executivo',
+    cover_image_url: 'https://cdn.example.test/kit.jpg',
+    box_data: null,
+    items_data: [{ id: 'product-1' }, { id: 'product-2' }],
+    personalization_data: {},
+    total_price: 149.9,
+    volume_usage_percent: 70,
+    usage_count: 4,
+    is_active: true,
+    created_at: '2026-09-01T00:00:00Z',
+    updated_at: '2026-09-01T00:00:00Z',
+  },
+];
+
 function renderLanding(overrides: Partial<ComponentProps<typeof KitMakerLanding>> = {}) {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   const props: ComponentProps<typeof KitMakerLanding> = {
@@ -53,6 +92,8 @@ function renderLanding(overrides: Partial<ComponentProps<typeof KitMakerLanding>
     onOccasionChange: vi.fn(),
     onApplyAISuggestion: vi.fn(),
     onStart: vi.fn(),
+    aiCatalogBoxes: [],
+    aiCatalogItems: [],
     ...overrides,
   };
 
@@ -70,6 +111,8 @@ function renderLanding(overrides: Partial<ComponentProps<typeof KitMakerLanding>
 describe('KitMakerLanding', () => {
   beforeEach(() => {
     vi.mocked(dbInvoke).mockReset();
+    templateState.templates = FEATURED_KITS;
+    templateState.templatesError = null;
   });
 
   it('renders the two intentional journeys, visual benefits, and real featured catalog media', async () => {
@@ -83,19 +126,24 @@ describe('KitMakerLanding', () => {
     renderLanding();
 
     expect(screen.getByRole('heading', { name: 'Kit Maker', level: 1 })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Começar pelos itens', level: 2 })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Começar pela caixa', level: 2 })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: 'Começar pelos itens', level: 2 }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: 'Começar pela caixa', level: 2 }),
+    ).toBeInTheDocument();
     expect(screen.getByText('Validação inteligente')).toBeInTheDocument();
     expect(screen.getByText('Caixas recomendadas')).toBeInTheDocument();
     expect(screen.getByText('Personalização completa')).toBeInTheDocument();
     expect(screen.getByText('Orçamento em tempo real')).toBeInTheDocument();
 
-    await waitFor(() => expect(screen.getByAltText('Garrafa Térmica Eco')).toBeInTheDocument());
-    expect(screen.getByAltText('Produtos em destaque para montar um kit')).toHaveAttribute(
+    await waitFor(() => expect(screen.getByAltText('Kit Kit Executivo')).toBeInTheDocument());
+    expect(await screen.findByAltText('Produtos em destaque para montar um kit')).toHaveAttribute(
       'src',
       'https://cdn.example.test/garrafa.jpg',
     );
     expect(screen.queryByText('Caixa que não deve aparecer como produto')).not.toBeInTheDocument();
+    expect(screen.getByText('Corporativo · 2 itens')).toBeInTheDocument();
     expect(dbInvoke).toHaveBeenCalledWith(
       expect.objectContaining({
         table: 'products',
@@ -118,15 +166,67 @@ describe('KitMakerLanding', () => {
   });
 
   it('has a truthful empty-state when the catalog has no highlighted product', async () => {
+    templateState.templates = [];
     vi.mocked(dbInvoke).mockResolvedValue({ records: [], count: 0 });
     renderLanding();
 
-    expect(await screen.findByText('Os destaques ainda não foram definidos no catálogo.')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /abrir biblioteca/i })).toHaveAttribute('href', '/meus-kits');
+    expect(
+      await screen.findByText('Os destaques ainda não foram definidos no catálogo.'),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /abrir biblioteca/i })).toHaveAttribute(
+      'href',
+      '/meus-kits',
+    );
+  });
+
+  it('derives usable catalog compositions when the canonical template table is empty', async () => {
+    templateState.templates = [];
+    vi.mocked(dbInvoke).mockResolvedValue({ records: [], count: 0 });
+    const onApplyAISuggestion = vi.fn();
+    const catalogItem = {
+      id: 'item-1',
+      name: 'Caderno corporativo',
+      sku: 'CAD-1',
+      imageUrl: 'https://cdn.example.test/caderno.jpg',
+      price: 30,
+      width: 10,
+      height: 2,
+      depth: 10,
+      volume: 200,
+      dimensionsKnown: true,
+      quantity: 1,
+    } satisfies KitItem;
+    const catalogBox = {
+      id: 'box-1',
+      name: 'Caixa presente',
+      sku: 'CX-1',
+      imageUrl: 'https://cdn.example.test/box.jpg',
+      price: 15,
+      internalWidth: 20,
+      internalHeight: 10,
+      internalDepth: 20,
+      internalVolume: 4_000,
+      dimensionsKnown: true,
+    } satisfies KitBox;
+    renderLanding({
+      aiCatalogItems: [catalogItem],
+      aiCatalogBoxes: [catalogBox],
+      onApplyAISuggestion,
+    });
+
+    fireEvent.click(await screen.findByRole('button', { name: /montar este kit/i }));
+    expect(onApplyAISuggestion).toHaveBeenCalledWith(
+      expect.objectContaining({ kit_type: 'montado' }),
+      expect.objectContaining({
+        box: catalogBox,
+        items: [expect.objectContaining({ id: 'item-1' })],
+      }),
+    );
   });
 
   it('keeps both journeys available and offers a retry when featured catalog data cannot be read', async () => {
     vi.mocked(dbInvoke).mockRejectedValue(new Error('permission denied'));
+    templateState.templatesError = 'permission denied';
     const onStart = vi.fn();
     renderLanding({ onStart });
 

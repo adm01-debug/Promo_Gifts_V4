@@ -15,6 +15,7 @@ import { logger } from '@/lib/logger';
 import {
   buildKitPersistencePayload,
   persistCustomKitAtomically,
+  type KitDraftContext,
 } from '@/lib/kit-builder/persistence';
 
 const AUTO_SAVE_DELAY_MS = 5000;
@@ -38,6 +39,7 @@ export function useKitAutoSave(
   currentRevision: number | null,
   onKitIdCreated?: (id: string, revision: number) => void,
   enabled = true,
+  context: KitDraftContext = {},
 ): AutoSaveResult {
   const { user } = useAuth();
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
@@ -51,6 +53,12 @@ export function useKitAutoSave(
   const saveInFlightRef = useRef(false);
   const saveQueuedRef = useRef(false);
   const saveToDbRef = useRef<(() => Promise<void>) | null>(null);
+  const pendingOperationRef = useRef<{
+    requestId: string;
+    kitId?: string;
+    expectedRevision: number | null;
+    payload: ReturnType<typeof buildKitPersistencePayload>;
+  } | null>(null);
 
   /**
    * BUG-11 FIX: usar refs para dependencias instaveis.
@@ -73,12 +81,14 @@ export function useKitAutoSave(
   const autoSavedKitIdRef = useRef<string | null>(currentKitId || null);
   const revisionRef = useRef<number | null>(currentRevision);
   const enabledRef = useRef(enabled);
+  const contextRef = useRef(context);
 
   // Manter refs sincronizadas a cada render -- sem useEffect para evitar batching delay
   kitStateRef.current = kitState;
   kitQuantityRef.current = kitQuantity;
   onKitIdCreatedRef.current = onKitIdCreated;
   enabledRef.current = enabled;
+  contextRef.current = context;
 
   // saveToDb usa apenas deps estaveis -- nao recria a cada mudanca de kitState/onKitIdCreated
   const saveToDb = useCallback(async () => {
@@ -99,17 +109,33 @@ export function useKitAutoSave(
     // Don't auto-save empty kits
     if (!currentKitState.box && currentKitState.items.length === 0) return;
 
-    const payload = buildKitPersistencePayload(user.id, currentKitState, currentKitQuantity);
+    const kitId = autoSavedKitIdRef.current || currentKitId;
+    const operation = pendingOperationRef.current ?? {
+      requestId: globalThis.crypto.randomUUID(),
+      kitId: kitId ?? undefined,
+      expectedRevision: kitId ? revisionRef.current : null,
+      payload: buildKitPersistencePayload(
+        user.id,
+        currentKitState,
+        currentKitQuantity,
+        contextRef.current,
+      ),
+    };
+    // A transport failure may happen after the transaction commits. Keep both
+    // the idempotency key and the exact payload frozen until the response is
+    // recovered; changing updated_at would also change the server payload hash.
+    pendingOperationRef.current = operation;
 
     saveInFlightRef.current = true;
     setIsSaving(true);
     try {
-      const kitId = autoSavedKitIdRef.current || currentKitId;
       const data = await persistCustomKitAtomically({
-        kitId: kitId ?? undefined,
-        expectedRevision: kitId ? revisionRef.current : null,
-        payload,
+        kitId: operation.kitId,
+        expectedRevision: operation.expectedRevision,
+        payload: operation.payload,
+        requestId: operation.requestId,
       });
+      pendingOperationRef.current = null;
       autoSavedKitIdRef.current = data.id;
       revisionRef.current = data.revision;
       setAutoSavedKitId(data.id);
@@ -164,6 +190,7 @@ export function useKitAutoSave(
       kitType: kitState.kitType,
       identity: kitState.identity ?? null,
       qty: kitQuantity,
+      context,
     });
 
     if (isFirstRender.current) {
@@ -197,6 +224,7 @@ export function useKitAutoSave(
     kitState.kitType,
     kitState.identity,
     kitQuantity,
+    context,
     saveToDb,
     enabled,
   ]);
@@ -213,6 +241,7 @@ export function useKitAutoSave(
     if (currentKitId) {
       setAutoSavedKitId(currentKitId);
       autoSavedKitIdRef.current = currentKitId;
+      pendingOperationRef.current = null;
     }
   }, [currentKitId]);
 

@@ -18,6 +18,7 @@ import {
   type KitBuilderFlow,
   type KitBuilderWizardState,
   type CompatibilityResult,
+  type KitAIComposition,
   getKitItemLineId,
   normalizeKitItemLine,
   calculateTotalItemsVolume,
@@ -153,13 +154,21 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
       );
     }
 
-    const personalizationWithoutPrice = [
-      personalization.box,
-      ...Object.values(personalization.items),
-    ].find(
-      (config) =>
-        config.enabled &&
-        (!Number.isFinite(config.estimatedPrice) || (config.estimatedPrice ?? -1) < 0),
+    const personalizationPricingTargets = [
+      { config: personalization.box, quantity: kitQuantity },
+      ...selectedItems.map((item) => ({
+        config: personalization.items[getKitItemLineId(item)] ?? personalization.items[item.id],
+        quantity: item.quantity * kitQuantity,
+      })),
+    ];
+    const personalizationWithoutPrice = personalizationPricingTargets.find(
+      ({ config, quantity }) =>
+        config?.enabled &&
+        (!Number.isFinite(config.estimatedPrice) ||
+          (config.estimatedPrice ?? -1) < 0 ||
+          config.pricedQuantity !== quantity ||
+          !Number.isFinite(config.totalPrice) ||
+          (config.totalPrice ?? -1) < 0),
     );
     if (personalizationWithoutPrice) {
       validationErrors.push(
@@ -589,6 +598,17 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
     if (snap.identity) setIdentity(snap.identity);
   }, []);
 
+  const applyAIComposition = useCallback((composition: KitAIComposition) => {
+    setKitName(composition.name);
+    setKitType(composition.kitType);
+    setSelectedBox(composition.box);
+    setSelectedItems(composition.items.map(normalizeKitItemLine));
+    setPersonalization({ box: { enabled: false }, items: {} });
+    setPersonalizationReviewed(false);
+    setFlow('items-first');
+    setCurrentStep('items');
+  }, []);
+
   // ============================================
   // FILTROS COM COMPATIBILIDADE
   // ============================================
@@ -622,6 +642,25 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
       items = items.filter((item) => item.category?.toLowerCase().includes(categoryFilter));
     }
 
+    if (itemFilters.material) {
+      const materialFilter = itemFilters.material.toLocaleLowerCase('pt-BR');
+      items = items.filter((item) =>
+        item.material?.toLocaleLowerCase('pt-BR').includes(materialFilter),
+      );
+    }
+
+    if (Number.isFinite(itemFilters.minPrice)) {
+      items = items.filter((item) => item.price >= (itemFilters.minPrice ?? 0));
+    }
+    if (Number.isFinite(itemFilters.maxPrice)) {
+      items = items.filter((item) => item.price <= (itemFilters.maxPrice ?? Infinity));
+    }
+
+    if (itemFilters.sort === 'price-asc') items = [...items].sort((a, b) => a.price - b.price);
+    if (itemFilters.sort === 'price-desc') items = [...items].sort((a, b) => b.price - a.price);
+    if (itemFilters.sort === 'name')
+      items = [...items].sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
+
     return items;
   }, [itemsWithCompatibility, itemFilters]);
 
@@ -635,6 +674,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
     kitQuantity,
     availableBoxes,
     availableItems: filteredItems,
+    allAvailableItems: availableItems,
     isLoadingBoxes,
     isLoadingItems,
     boxError,
@@ -668,6 +708,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
     startNewFlow,
     loadKit,
     restoreKitSnapshot,
+    applyAIComposition,
     flow,
   };
 }

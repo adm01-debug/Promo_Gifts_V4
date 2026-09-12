@@ -28,6 +28,9 @@ export default function KitBuilderPage() {
   const { state, actions, meta } = useKitBuilderPageState();
   const { handleSaveKit, redo, undo } = actions;
   const isSummary = state.wizardState.currentStep === 'summary';
+  const usesFullWorkspace = ['items', 'personalization', 'summary'].includes(
+    state.wizardState.currentStep,
+  );
   const handleExportPDF = () => {
     // Printing is the browser-supported PDF path. It is intentionally explicit
     // rather than a no-op "Exportar PDF" action while a server renderer is not
@@ -99,9 +102,11 @@ export default function KitBuilderPage() {
             onStart={actions.startFlow}
             occasion={state.occasion}
             onOccasionChange={actions.selectOccasion}
-            onApplyAISuggestion={(suggestion) => {
+            aiCatalogItems={state.allAvailableItems}
+            aiCatalogBoxes={state.availableBoxes}
+            onApplyAISuggestion={(suggestion, composition) => {
               actions.startFlow('items-first');
-              actions.applyAISuggestion(suggestion);
+              actions.applyAISuggestion(suggestion, composition);
             }}
           />
         </>
@@ -130,6 +135,8 @@ export default function KitBuilderPage() {
             onReset={actions.resetKit}
             kitState={state.kitState}
             onAIApply={actions.applyAISuggestion}
+            aiCatalogItems={state.allAvailableItems}
+            aiCatalogBoxes={state.availableBoxes}
           />
 
           <div className="border-b bg-card/40 backdrop-blur-sm">
@@ -146,7 +153,7 @@ export default function KitBuilderPage() {
 
           <div className="mx-auto w-full max-w-[1920px] animate-fade-in px-3 py-3 sm:px-4 sm:py-4 lg:px-6 xl:px-8">
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-              <div className="lg:col-span-2">
+              <div className={usesFullWorkspace ? 'lg:col-span-3' : 'lg:col-span-2'}>
                 <Card className="overflow-hidden rounded-2xl border-border/60 shadow-sm">
                   <CardContent className="p-6">
                     {state.wizardState.currentStep === 'box' && (
@@ -212,6 +219,7 @@ export default function KitBuilderPage() {
                             state.kitState,
                             state.kitQuantity,
                             state.quoteClient,
+                            state.currentKitId,
                           );
                         }}
                         isAddingToQuote={meta.isCreatingQuote}
@@ -237,20 +245,22 @@ export default function KitBuilderPage() {
                 </Card>
               </div>
 
-              <div className="space-y-6 lg:col-span-1">
-                <KitHeroPricingCard
-                  unitPrice={meta.pricing.unitPrice}
-                  total={meta.pricing.total}
-                  kitQuantity={state.kitQuantity}
-                  isValid={state.kitState.isValid}
-                  hasContent={!!state.kitState.box || state.kitState.items.length > 0}
-                />
-                <Suspense
-                  fallback={<div className="aspect-square animate-pulse rounded-2xl bg-muted" />}
-                >
-                  <KitIsometricPreview kitState={state.kitState} />
-                </Suspense>
-              </div>
+              {!usesFullWorkspace && (
+                <div className="space-y-6 lg:col-span-1">
+                  <KitHeroPricingCard
+                    unitPrice={meta.pricing.unitPrice}
+                    total={meta.pricing.total}
+                    kitQuantity={state.kitQuantity}
+                    isValid={state.kitState.isValid}
+                    hasContent={!!state.kitState.box || state.kitState.items.length > 0}
+                  />
+                  <Suspense
+                    fallback={<div className="aspect-square animate-pulse rounded-2xl bg-muted" />}
+                  >
+                    <KitIsometricPreview kitState={state.kitState} />
+                  </Suspense>
+                </div>
+              )}
             </div>
           </div>
           <KitMobileSummaryBar kitState={state.kitState} kitQuantity={state.kitQuantity}>

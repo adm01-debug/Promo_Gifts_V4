@@ -10,6 +10,10 @@ import { act, renderHook } from '@testing-library/react';
 import { createSupabaseMock } from '../../helpers/supabase-mock';
 import type { KitState } from '@/hooks/useKitBuilder';
 
+const validateKitStockForQuote = vi.fn().mockResolvedValue({ status: 'available', alerts: [] });
+
+vi.mock('@/hooks/kit-builder/useKitStockValidation', () => ({ validateKitStockForQuote }));
+
 vi.mock('@/lib/logger', () => ({ logger: { error: vi.fn(), warn: vi.fn(), info: vi.fn() } }));
 vi.mock('sonner', () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
 vi.mock('react-router-dom', () => ({ useNavigate: () => vi.fn() }));
@@ -64,6 +68,8 @@ describe('useKitBuilderQuote — payloads', () => {
 
   beforeEach(() => {
     vi.resetModules();
+    validateKitStockForQuote.mockReset();
+    validateKitStockForQuote.mockResolvedValue({ status: 'available', alerts: [] });
   });
 
   afterEach(() => {
@@ -115,6 +121,34 @@ describe('useKitBuilderQuote — payloads', () => {
       client_name: 'Contato Teste',
     });
     expect((rpc!.args?._quote as { seller_id: string }).seller_id).toBe(USER_ID);
+    expect(validateKitStockForQuote).toHaveBeenCalledWith(KIT_STATE.items, KIT_STATE.box, 3);
+  });
+
+  it('faz fail-closed quando a leitura final de estoque é inconclusiva', async () => {
+    validateKitStockForQuote.mockResolvedValueOnce({ status: 'unknown', alerts: [] });
+    const useHook = await loadHook({ user: { id: USER_ID } });
+    const { result } = renderHook(() => useHook());
+
+    await act(async () => {
+      await result.current.handleAddToQuote(KIT_STATE, 2);
+    });
+
+    expect(mock.calls.rpc).toHaveLength(0);
+  });
+
+  it('não cria orçamento quando o estoque mudou depois da renderização', async () => {
+    validateKitStockForQuote.mockResolvedValueOnce({
+      status: 'unavailable',
+      alerts: [{ itemId: 'item-1' }],
+    });
+    const useHook = await loadHook({ user: { id: USER_ID } });
+    const { result } = renderHook(() => useHook());
+
+    await act(async () => {
+      await result.current.handleAddToQuote(KIT_STATE, 2);
+    });
+
+    expect(mock.calls.rpc).toHaveLength(0);
   });
 
   it('não dispara mutações quando usuário não está autenticado', async () => {
@@ -152,6 +186,22 @@ describe('useKitBuilderQuote — payloads', () => {
     }
   });
 
+  it('registra a identidade do rascunho de origem no orçamento', async () => {
+    const useHook = await loadHook({ user: { id: USER_ID } });
+    const { result } = renderHook(() => useHook());
+
+    await act(async () => {
+      await result.current.handleAddToQuote(KIT_STATE, 2, {}, 'kit-source-1');
+    });
+
+    const rpc = mock.calls.rpc.find((call) => call.fn === 'create_kit_quote_transactional');
+    expect(rpc?.args?._quote).toEqual(
+      expect.objectContaining({
+        tags: expect.objectContaining({ source_custom_kit_id: 'kit-source-1' }),
+      }),
+    );
+  });
+
   it('preserva a arte aprovada para a linha do item no payload transacional', async () => {
     const useHook = await loadHook({ user: { id: USER_ID } });
     const { result } = renderHook(() => useHook());
@@ -166,6 +216,7 @@ describe('useKitBuilderQuote — payloads', () => {
             techniqueName: 'Laser',
             estimatedPrice: 2.5,
             artworkUrl: 'https://example.test/personalization-images/kit-maker/artwork/logo.png',
+            generatedMockupUrl: 'https://example.test/generated-mockups/kit-maker/mockup.png',
           },
         },
       },
@@ -184,6 +235,41 @@ describe('useKitBuilderQuote — payloads', () => {
     ]);
     expect(item.artwork_urls).toEqual([
       'https://example.test/personalization-images/kit-maker/artwork/logo.png',
+      'https://example.test/generated-mockups/kit-maker/mockup.png',
+    ]);
+  });
+
+  it('preserva setup e cobrança mínima retornados pelo cálculo de personalização', async () => {
+    const useHook = await loadHook({ user: { id: USER_ID } });
+    const { result } = renderHook(() => useHook());
+    const pricedKit = {
+      ...KIT_STATE,
+      personalization: {
+        box: { enabled: false },
+        items: {
+          'item-1:base': {
+            enabled: true,
+            techniqueId: 'laser',
+            techniqueName: 'Laser',
+            positionCode: 'front',
+            estimatedPrice: 2.5,
+            pricedQuantity: 2,
+            setupCost: 25,
+            totalPrice: 25,
+          },
+        },
+      },
+    } as KitState;
+
+    await act(async () => {
+      await result.current.handleAddToQuote(pricedKit, 2);
+    });
+
+    const rpc = mock.calls.rpc.find((call) => call.fn === 'create_kit_quote_transactional');
+    const item = (rpc!.args!._items as Array<Record<string, unknown>>)[1];
+    expect(item.personalization_cost).toBe(25);
+    expect(item.personalizations).toEqual([
+      expect.objectContaining({ setup_cost: 25, total_cost: 25, unit_cost: 2.5 }),
     ]);
   });
 
@@ -192,7 +278,10 @@ describe('useKitBuilderQuote — payloads', () => {
     const rpc = vi.mocked(mock.client.rpc);
     rpc
       .mockResolvedValueOnce({ data: null, error: { message: 'Resposta perdida após commit' } })
-      .mockResolvedValueOnce({ data: { id: 'quote-retomado', quote_number: 'ORC-002' }, error: null });
+      .mockResolvedValueOnce({
+        data: { id: 'quote-retomado', quote_number: 'ORC-002' },
+        error: null,
+      });
 
     const { result } = renderHook(() => useHook());
     await act(async () => {

@@ -1,9 +1,9 @@
 /**
  * KitAIPromptDialog — briefing estruturado para a edge function kit-ai-builder.
- * A resposta é aplicada como filtros/keywords; ela não contém IDs canônicos
- * de produto e não deve criar linhas de orçamento automaticamente.
+ * A IA devolve intenção semântica; itens, caixas, preços e compatibilidade são
+ * resolvidos pelo catálogo carregado e aplicados só após confirmação humana.
  */
-import { useRef, useState, type ReactNode } from 'react';
+import { useMemo, useRef, useState, type ReactNode } from 'react';
 import { z } from 'zod';
 import {
   Dialog,
@@ -24,17 +24,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Sparkles, Loader2, Wand2, RotateCcw, Users, PackageCheck } from 'lucide-react';
+import {
+  Sparkles,
+  Loader2,
+  Wand2,
+  RotateCcw,
+  Users,
+  PackageCheck,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react';
 import { toast } from 'sonner';
 import { invokeEdge } from '@/lib/edge/safeInvokeCall';
+import {
+  formatCurrency,
+  resolveKitAICompositions,
+  type KitAIComposition,
+  type KitAISuggestionBrief,
+  type KitBox,
+  type KitItem,
+} from '@/lib/kit-builder';
 
-interface Suggestion {
-  kit_type: 'montado' | 'original' | 'simples';
-  box_keywords: string[];
-  item_keywords: string[];
-  target_price_brl: { min: number; max: number };
-  narrative: string;
-}
+type Suggestion = KitAISuggestionBrief;
 
 const suggestionSchema = z
   .object({
@@ -50,7 +61,9 @@ const suggestionSchema = z
   .strict();
 
 interface KitAIPromptDialogProps {
-  onApply: (suggestion: Suggestion) => void;
+  catalogItems?: KitItem[];
+  catalogBoxes?: KitBox[];
+  onApply: (suggestion: Suggestion, composition: KitAIComposition) => void;
 }
 
 const AUDIENCES = ['Colaboradores', 'Clientes', 'Evento', 'Clientes VIP'];
@@ -82,7 +95,11 @@ function buildStructuredPrompt({
     .join('\n');
 }
 
-export function KitAIPromptDialog({ onApply }: KitAIPromptDialogProps) {
+export function KitAIPromptDialog({
+  catalogItems = [],
+  catalogBoxes = [],
+  onApply,
+}: KitAIPromptDialogProps) {
   const [open, setOpen] = useState(false);
   const [prompt, setPrompt] = useState('');
   const [audience, setAudience] = useState('');
@@ -91,8 +108,14 @@ export function KitAIPromptDialog({ onApply }: KitAIPromptDialogProps) {
   const [quantity, setQuantity] = useState('');
   const [loading, setLoading] = useState(false);
   const [suggestion, setSuggestion] = useState<Suggestion | null>(null);
+  const [alternativeIndex, setAlternativeIndex] = useState(0);
   const generationInFlightRef = useRef(false);
   const latestGenerationRef = useRef(0);
+  const alternatives = useMemo(
+    () => (suggestion ? resolveKitAICompositions(suggestion, catalogItems, catalogBoxes) : []),
+    [catalogBoxes, catalogItems, suggestion],
+  );
+  const activeAlternative = alternatives[alternativeIndex] ?? alternatives[0] ?? null;
 
   const clearForm = () => {
     setPrompt('');
@@ -101,6 +124,7 @@ export function KitAIPromptDialog({ onApply }: KitAIPromptDialogProps) {
     setStyle('');
     setQuantity('');
     setSuggestion(null);
+    setAlternativeIndex(0);
   };
 
   const handleGenerate = async () => {
@@ -124,7 +148,11 @@ export function KitAIPromptDialog({ onApply }: KitAIPromptDialogProps) {
         },
       );
       if (error) throw new Error(error.message);
-      const parsed = suggestionSchema.safeParse(data?.suggestion);
+      const parsed = suggestionSchema
+        .refine((value) => value.target_price_brl.max >= value.target_price_brl.min, {
+          path: ['target_price_brl', 'max'],
+        })
+        .safeParse(data?.suggestion);
       if (!parsed.success) throw new Error('Sugestão indisponível');
       // Ignore a stale response if a newer generation has already started.
       if (latestGenerationRef.current === generation) setSuggestion(parsed.data);
@@ -137,11 +165,11 @@ export function KitAIPromptDialog({ onApply }: KitAIPromptDialogProps) {
   };
 
   const handleApply = () => {
-    if (!suggestion) return;
-    onApply(suggestion);
+    if (!suggestion || !activeAlternative) return;
+    onApply(suggestion, activeAlternative);
     setOpen(false);
     clearForm();
-    toast.success('Sugestão aplicada como filtros — revise produtos e valores antes de continuar.');
+    toast.success('Composição aplicada — revise variantes, estoque e valores antes de continuar.');
   };
 
   const handleOpenChange = (nextOpen: boolean) => {
@@ -153,6 +181,7 @@ export function KitAIPromptDialog({ onApply }: KitAIPromptDialogProps) {
       generationInFlightRef.current = false;
       setLoading(false);
       setSuggestion(null);
+      setAlternativeIndex(0);
     }
     setOpen(nextOpen);
   };
@@ -172,8 +201,8 @@ export function KitAIPromptDialog({ onApply }: KitAIPromptDialogProps) {
             Montar kit com IA
           </DialogTitle>
           <DialogDescription>
-            A sugestão organiza filtros de catálogo. Produtos, caixa e preço continuam sujeitos à
-            sua confirmação.
+            A IA interpreta o briefing; produtos, caixa e preços vêm do catálogo atual e só entram
+            no editor após sua confirmação.
           </DialogDescription>
         </DialogHeader>
 
@@ -230,8 +259,8 @@ export function KitAIPromptDialog({ onApply }: KitAIPromptDialogProps) {
 
             <div className="rounded-xl border bg-muted/30 p-4 text-sm text-muted-foreground">
               <p className="font-medium text-foreground">Dica da IA</p>
-              Quanto mais contexto sobre ocasião, materiais e público, mais úteis serão os filtros
-              sugeridos.
+              Quanto mais contexto sobre ocasião, materiais e público, melhores serão as composições
+              sugeridas.
             </div>
 
             <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-between">
@@ -266,37 +295,112 @@ export function KitAIPromptDialog({ onApply }: KitAIPromptDialogProps) {
           >
             {suggestion ? (
               <div className="animate-fade-in space-y-4">
-                <Badge variant="outline" className="border-primary text-primary">
-                  Sugestão gerada
-                </Badge>
-                <div>
-                  <h3 className="text-lg font-semibold">Kit sugerido</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">{suggestion.narrative}</p>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary">Tipo: {suggestion.kit_type}</Badge>
+                <div className="flex items-center justify-between gap-3">
                   <Badge variant="outline" className="border-primary text-primary">
-                    R$ {suggestion.target_price_brl.min}–{suggestion.target_price_brl.max}/kit
+                    {alternatives.length
+                      ? `Sugestão ${Math.min(alternativeIndex + 1, alternatives.length)} de ${alternatives.length}`
+                      : 'Sem composição compatível'}
                   </Badge>
+                  {alternatives.length > 1 && (
+                    <div className="flex gap-1">
+                      <Button
+                        type="button"
+                        size="icon"
+                        variant="outline"
+                        aria-label="Sugestão anterior"
+                        onClick={() =>
+                          setAlternativeIndex(
+                            (current) => (current - 1 + alternatives.length) % alternatives.length,
+                          )
+                        }
+                      >
+                        <ChevronLeft className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        type="button"
+                        size="icon"
+                        variant="outline"
+                        aria-label="Próxima sugestão"
+                        onClick={() =>
+                          setAlternativeIndex((current) => (current + 1) % alternatives.length)
+                        }
+                      >
+                        <ChevronRight className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  )}
                 </div>
-                <SuggestionKeywords label="Caixa sugerida" keywords={suggestion.box_keywords} />
-                <SuggestionKeywords label="Itens sugeridos" keywords={suggestion.item_keywords} />
-                <div className="border-t pt-4">
-                  <p className="mb-3 text-xs text-muted-foreground">
-                    A aplicação não adiciona itens automaticamente nem confirma disponibilidade,
-                    preço ou compatibilidade.
-                  </p>
-                  <Button onClick={handleApply} className="w-full">
-                    Aplicar filtros da sugestão
-                  </Button>
-                </div>
+                {activeAlternative ? (
+                  <>
+                    <div>
+                      <h3 className="text-lg font-semibold">{activeAlternative.name}</h3>
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        {activeAlternative.narrative}
+                      </p>
+                    </div>
+                    <div className="overflow-hidden rounded-lg border bg-muted/20">
+                      {activeAlternative.box.imageUrl && (
+                        <img
+                          src={activeAlternative.box.imageUrl}
+                          alt={activeAlternative.box.name}
+                          className="h-32 w-full object-cover"
+                        />
+                      )}
+                      <div className="space-y-3 p-3">
+                        <p className="text-sm font-medium">Caixa: {activeAlternative.box.name}</p>
+                        <ul className="space-y-2" aria-label="Itens da composição sugerida">
+                          {activeAlternative.items.map((item) => (
+                            <li key={item.lineId} className="flex items-center gap-2 text-sm">
+                              {item.imageUrl ? (
+                                <img
+                                  src={item.imageUrl}
+                                  alt=""
+                                  className="h-8 w-8 rounded bg-background object-contain"
+                                />
+                              ) : (
+                                <span className="h-8 w-8 rounded bg-muted" />
+                              )}
+                              <span className="min-w-0 flex-1 truncate">{item.name}</span>
+                              <span>{formatCurrency(item.price)}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <Badge variant="secondary">Tipo: {activeAlternative.kitType}</Badge>
+                      <Badge variant="outline">
+                        {activeAlternative.fitStatus === 'compatible'
+                          ? 'Encaixe verificado'
+                          : 'Encaixe requer conferência'}
+                      </Badge>
+                      <Badge variant="outline" className="border-primary text-primary">
+                        {formatCurrency(activeAlternative.unitPrice)}/kit
+                      </Badge>
+                    </div>
+                    <div className="border-t pt-4">
+                      <p className="mb-3 text-xs text-muted-foreground">
+                        Estoque e preço comercial serão novamente validados antes do orçamento.
+                      </p>
+                      <Button onClick={handleApply} className="w-full">
+                        Usar esta composição
+                      </Button>
+                    </div>
+                  </>
+                ) : (
+                  <div className="rounded-lg border border-warning/40 bg-warning/10 p-4 text-sm">
+                    <p className="mb-2 font-medium">{suggestion.narrative}</p>
+                    Nenhuma combinação do catálogo atual cabe na faixa de preço e nas dimensões
+                    informadas. Ajuste o briefing ou monte manualmente.
+                  </div>
+                )}
               </div>
             ) : (
               <div className="flex min-h-[300px] flex-col items-center justify-center text-center text-muted-foreground">
                 <Sparkles className="mb-3 h-10 w-10 text-primary/70" />
                 <p className="font-medium text-foreground">Sua sugestão aparecerá aqui</p>
                 <p className="mt-1 max-w-xs text-sm">
-                  Descreva o kit e gere uma composição inicial para filtrar o catálogo.
+                  Descreva o kit e gere até três composições com itens reais do catálogo.
                 </p>
               </div>
             )}
@@ -341,26 +445,6 @@ function StructuredSelect({
           ))}
         </SelectContent>
       </Select>
-    </div>
-  );
-}
-
-function SuggestionKeywords({ label, keywords }: { label: string; keywords?: string[] }) {
-  const safeKeywords = Array.isArray(keywords) ? keywords.filter(Boolean) : [];
-  return (
-    <div>
-      <p className="mb-2 text-sm font-medium">{label}</p>
-      {safeKeywords.length ? (
-        <div className="flex flex-wrap gap-1.5">
-          {safeKeywords.map((keyword) => (
-            <Badge key={keyword} variant="secondary">
-              {keyword}
-            </Badge>
-          ))}
-        </div>
-      ) : (
-        <p className="text-sm text-muted-foreground">Nenhuma palavra-chave retornada.</p>
-      )}
     </div>
   );
 }
