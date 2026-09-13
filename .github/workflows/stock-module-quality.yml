@@ -14,6 +14,7 @@ on:
       - 'src/types/stock.ts'
       - 'tests/**stock**'
       - 'tests/StockFilterToolbar*.tsx'
+      - 'tests/supplierReliability.*.test.ts'
       - 'e2e/routes/app/stock-*.spec.ts'
       - 'e2e/admin/stock-*.spec.ts'
       - 'scripts/stock-benchmark.mjs'
@@ -67,6 +68,14 @@ jobs:
             tests/hooks/stockFetcher-410.test.ts \
             tests/lib/rupture-risk.test.ts \
             tests/lib/rupture-risk.simulation.test.ts \
+            tests/supplierReliability.extract.test.ts \
+            tests/supplierReliability.matching.test.ts \
+            tests/supplierReliability.score.test.ts \
+            tests/supplierReliability.fuzz.test.ts \
+            tests/supplierReliability.aggregate.test.ts \
+            tests/components/inventory/ReliabilityBadge.test.tsx \
+            tests/components/inventory/RuptureLevelBadge.test.tsx \
+            tests/components/inventory/ReliabilityKpiBar.test.tsx \
             src/components/inventory/__tests__ \
             src/lib/inventory/__tests__
 

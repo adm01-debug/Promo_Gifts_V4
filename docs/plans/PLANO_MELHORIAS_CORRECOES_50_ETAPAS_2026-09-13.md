@@ -390,7 +390,8 @@ exceção explícita em vez de silenciosamente).
 ### E32 · `[REQUER-PO]` Baseline/squash das migrations históricas
 **Problema:** 2.983 arquivos tornam qualquer `supabase db reset` impraticável e o onboarding lento.
 **Ação (proposta, não execução):** apresentar ao PO a opção de gerar um baseline consolidado
-(snapshot do schema atual como migration inicial) e arquivar as anteriores em `supabase/migrations/_archive/`.
+(snapshot do schema atual como migration inicial) e arquivar as anteriores em um diretório
+`_archive/` dentro de `supabase/migrations`.
 Requer janela, backup verificado e plano de rollback. **Nada disso roda sem aprovação escrita.**
 **Aceite:** decisão do PO registrada — executar ou arquivar a proposta.
 **Esforço:** GG · **Risco:** alto · **Dep.:** E30, E31
