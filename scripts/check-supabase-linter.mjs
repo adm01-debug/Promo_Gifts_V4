@@ -36,8 +36,15 @@ async function fetchLints() {
   });
   if (!res.ok) {
     if (res.status === 404) {
-      console.warn(`⚠️  /database/lint endpoint retornou 404 — endpoint indisponível para este projeto/plano. Pulando lint.`);
-      process.exit(0);
+      console.error(
+        `❌ /database/lint endpoint retornou 404 — indisponível para este projeto/plano.\n` +
+          `   Isto NÃO é "sem findings": é ausência de verificação. Investigar antes de reabilitar:\n` +
+          `   1) confirmar plano/permissão do SUPABASE_ACCESS_TOKEN para ${REF};\n` +
+          `   2) se o endpoint foi descontinuado, substituir esta checagem por auditoria via pg_catalog\n` +
+          `      (CLAUDE.md REGRA #8, corolário — nunca via PostgREST/OpenAPI).\n` +
+          `   Falhando o gate (exit 2) em vez de reportar sucesso — ver docs/plans/PLANO_MELHORIAS_CORRECOES_50_ETAPAS_2026-09-13.md, etapa E09.`,
+      );
+      process.exit(2);
     }
     console.error(`❌ Management API ${res.status} ${res.statusText}`);
     console.error(await res.text());
@@ -64,12 +71,29 @@ function tupleKey(k) {
 }
 
 function loadBaseline() {
+  let text;
   try {
-    const raw = JSON.parse(readFileSync(BASELINE_PATH, "utf8"));
-    return new Set((raw.accepted || []).map((e) => `${e.lint}::${e.name}`));
-  } catch {
-    return new Set();
+    text = readFileSync(BASELINE_PATH, "utf8");
+  } catch (err) {
+    if (err.code === "ENOENT") {
+      console.warn(`⚠️  ${BASELINE_PATH} não existe — partindo de baseline vazio (primeira execução).`);
+      return new Set();
+    }
+    console.error(`❌ Não foi possível ler ${BASELINE_PATH}: ${err.message}`);
+    process.exit(2);
   }
+  let raw;
+  try {
+    raw = JSON.parse(text);
+  } catch (err) {
+    // Fail-closed: um baseline corrompido/ilegível NÃO deve degradar para "sem exceções
+    // aceitas" silenciosamente — isso mascarou 50 findings aceitos por ~2 meses (o arquivo
+    // ficou em base64 desde o PR #1675, 2026-07-13, sem que este gate acusasse o problema).
+    console.error(`❌ ${BASELINE_PATH} não é JSON válido: ${err.message}`);
+    console.error("   Corrija o arquivo (ou regenere com UPDATE_BASELINE=1) antes de confiar neste gate.");
+    process.exit(2);
+  }
+  return new Set((raw.accepted || []).map((e) => `${e.lint}::${e.name}`));
 }
 
 function writeBaseline(keys) {
