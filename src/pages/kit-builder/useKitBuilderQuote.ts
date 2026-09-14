@@ -17,11 +17,13 @@ import {
 } from '@/lib/kit-builder';
 import type { Json } from '@/integrations/supabase/types';
 import { newRequestId } from '@/lib/telemetry/requestId';
+import { validateKitStockForQuote } from '@/hooks/kit-builder/useKitStockValidation';
 
 export interface KitQuoteClient {
   client_cnpj?: string;
   client_company?: string;
   client_email?: string;
+  client_id?: string;
   client_name?: string;
   client_phone?: string;
 }
@@ -31,6 +33,8 @@ interface RetryableQuoteOperation {
   fingerprint: string;
   kitGroupId: string;
 }
+
+class KitQuoteValidationError extends Error {}
 
 const QUOTE_RETRY_STORAGE_PREFIX = 'kit-maker:quote-retry:';
 
@@ -72,7 +76,10 @@ function readRetryReceipt(fingerprint: string): RetryableQuoteOperation | null {
 
 function writeRetryReceipt(operation: RetryableQuoteOperation): void {
   try {
-    globalThis.sessionStorage?.setItem(fingerprintKey(operation.fingerprint), JSON.stringify(operation));
+    globalThis.sessionStorage?.setItem(
+      fingerprintKey(operation.fingerprint),
+      JSON.stringify(operation),
+    );
   } catch {
     // An unavailable storage must not prevent a commercially valid submission.
   }
@@ -96,6 +103,12 @@ function toPersonalizationPayload(
   if (typeof unitCost !== 'number' || !Number.isFinite(unitCost) || unitCost < 0) {
     throw new Error('Preço de personalização indisponível para criação do orçamento');
   }
+  const productionNotes = [
+    personalization.position ? `Posição: ${personalization.position}` : null,
+    personalization.artworkColors?.length
+      ? `Paleta da arte: ${personalization.artworkColors.join(', ')}`
+      : null,
+  ].filter((note): note is string => Boolean(note));
   return {
     technique_id: personalization.techniqueId ?? null,
     technique_name: personalization.techniqueName ?? null,
@@ -107,11 +120,20 @@ function toPersonalizationPayload(
     area_cm2: width !== null && height !== null ? width * height : null,
     width_cm: width,
     height_cm: height,
-    setup_cost: 0,
+    setup_cost: personalization.setupCost ?? 0,
     unit_cost: unitCost,
-    total_cost: unitCost * quantity,
+    total_cost:
+      personalization.pricedQuantity === quantity &&
+      typeof personalization.totalPrice === 'number' &&
+      Number.isFinite(personalization.totalPrice)
+        ? personalization.totalPrice
+        : unitCost * quantity,
     artwork_url: personalization.artworkUrl ?? null,
-    notes: personalization.position ? `Posição: ${personalization.position}` : null,
+    artwork_colors: personalization.artworkColors ?? [],
+    // The canonical personalization writer persists `notes`, but has no
+    // dedicated palette column. Keep the exact chosen colors in its supported
+    // production field instead of silently discarding them.
+    notes: productionNotes.length > 0 ? productionNotes.join(' · ') : null,
   };
 }
 
@@ -128,7 +150,10 @@ function itemPersonalizationCost(
   ) {
     throw new Error('Preço de personalização indisponível para criação do orçamento');
   }
-  return personalization.estimatedPrice * item.quantity * kitQuantity;
+  const quantity = item.quantity * kitQuantity;
+  return personalization.pricedQuantity === quantity && Number.isFinite(personalization.totalPrice)
+    ? (personalization.totalPrice ?? 0)
+    : personalization.estimatedPrice * quantity;
 }
 
 export function useKitBuilderQuote() {
@@ -144,6 +169,7 @@ export function useKitBuilderQuote() {
     kitState: KitState,
     kitQuantity: number,
     client: KitQuoteClient = {},
+    sourceKitId?: string,
   ) => {
     if (!user) {
       toast.error('Você precisa estar logado para criar um orçamento.');
@@ -173,6 +199,7 @@ export function useKitBuilderQuote() {
         status: 'draft',
         // Empty string lets the `set_quote_number` BEFORE INSERT trigger generate it.
         quote_number: '',
+        client_id: client.client_id || null,
         client_name: client.client_name?.trim() || 'Cliente a definir',
         client_company: client.client_company?.trim() || null,
         client_email: client.client_email?.trim() || null,
@@ -190,6 +217,7 @@ export function useKitBuilderQuote() {
           kit_name: kitLabel,
           kit_quantity: kitQuantity,
           kit_identity_tag: kitState.identity?.tag ?? null,
+          source_custom_kit_id: sourceKitId ?? null,
         },
       };
 
@@ -214,8 +242,16 @@ export function useKitBuilderQuote() {
           color_name: null,
           color_hex: null,
           kit_name: kitLabel,
+          artwork_urls: personRef.box.enabled
+            ? [personRef.box.artworkUrl, personRef.box.generatedMockupUrl].filter(
+                (url): url is string => Boolean(url),
+              )
+            : [],
           personalization_cost: personRef.box.enabled
-            ? (personRef.box.estimatedPrice ?? 0) * kitQuantity
+            ? personRef.box.pricedQuantity === kitQuantity &&
+              Number.isFinite(personRef.box.totalPrice)
+              ? (personRef.box.totalPrice ?? 0)
+              : (personRef.box.estimatedPrice ?? 0) * kitQuantity
             : 0,
           personalizations: personRef.box.enabled
             ? [toPersonalizationPayload(personRef.box, kitQuantity)]
@@ -241,10 +277,11 @@ export function useKitBuilderQuote() {
           size_code: item.selectedSize || null,
           product_variant_id: item.selectedVariantId || null,
           artwork_urls: (() => {
-            const artworkUrl = (
-              personRef.items[getKitItemLineId(item)] ?? personRef.items[item.id]
-            )?.artworkUrl;
-            return artworkUrl ? [artworkUrl] : [];
+            const configured = personRef.items[getKitItemLineId(item)] ?? personRef.items[item.id];
+            if (!configured?.enabled) return [];
+            return [configured?.artworkUrl, configured?.generatedMockupUrl].filter(
+              (url): url is string => Boolean(url),
+            );
           })(),
           personalization_cost: itemPersonalizationCost(
             personRef.items[getKitItemLineId(item)] ?? personRef.items[item.id],
@@ -268,14 +305,47 @@ export function useKitBuilderQuote() {
       // Retain the same idempotency key only for an exact retry after a
       // transport error. Editing the kit creates a new semantic operation.
       const fingerprint = JSON.stringify({ quote: quotePayload, items: quoteItems });
-      const operation =
+      const recoverableOperation =
         retryableRequestRef.current?.fingerprint === fingerprint
           ? retryableRequestRef.current
-          : readRetryReceipt(fingerprint) ?? {
-              id: newRequestId(),
-              fingerprint,
-              kitGroupId: newRequestId(),
-            };
+          : readRetryReceipt(fingerprint);
+
+      // A browser receipt proves only that a request was sent. It does not
+      // prove that PostgreSQL committed it. Skip a fresh stock check only when
+      // the authenticated, RLS-protected server ledger confirms the request.
+      let serverConfirmedCommit = false;
+      if (recoverableOperation) {
+        try {
+          const { data: receipt, error: receiptError } = await supabase
+            .from('kit_quote_requests')
+            .select('quote_id')
+            .eq('request_id', recoverableOperation.id)
+            .maybeSingle();
+          serverConfirmedCommit = !receiptError && Boolean(receipt?.quote_id);
+        } catch {
+          serverConfirmedCommit = false;
+        }
+      }
+
+      if (!serverConfirmedCommit) {
+        const liveStock = await validateKitStockForQuote(kitState.items, kitState.box, kitQuantity);
+        if (liveStock.status === 'unknown') {
+          throw new KitQuoteValidationError(
+            'Não foi possível confirmar o estoque agora. Nenhum orçamento foi criado.',
+          );
+        }
+        if (liveStock.status === 'unavailable') {
+          throw new KitQuoteValidationError(
+            `Estoque insuficiente em ${liveStock.alerts.length} item(ns). Revise o kit antes de continuar.`,
+          );
+        }
+      }
+
+      const operation = recoverableOperation ?? {
+        id: newRequestId(),
+        fingerprint,
+        kitGroupId: newRequestId(),
+      };
       retryableRequestRef.current = operation;
       writeRetryReceipt(operation);
 
@@ -303,7 +373,11 @@ export function useKitBuilderQuote() {
       navigate(`/orcamentos/${quote.id}`);
     } catch (err) {
       logger.error('[Kit Quote] Error creating quote:', err);
-      toast.error('Erro ao criar orçamento. Tente novamente.');
+      toast.error(
+        err instanceof KitQuoteValidationError
+          ? err.message
+          : 'Erro ao criar orçamento. Tente novamente.',
+      );
     } finally {
       createInFlightRef.current = false;
       setIsCreatingQuote(false);

@@ -8,7 +8,7 @@ import { KitMarginSimulator } from './KitMarginSimulator';
 import { KitVisualPreview } from './KitVisualPreview';
 import { DiscontinuedItemsAlert } from './DiscontinuedItemsAlert';
 import { FreightEstimator } from './FreightEstimator';
-import { useKitStockValidation } from '@/hooks/kit-builder';
+import { useKitStockValidation, type KitStockStatus } from '@/hooks/kit-builder';
 import { calculateTotalKitPrice, type KitState } from '@/lib/kit-builder';
 import { KitIdentificationCard } from './kit-summary/KitIdentificationCard';
 import { KitStatsCards } from './kit-summary/KitStatsCards';
@@ -33,6 +33,10 @@ interface KitSummaryProps {
   currentKitId?: string;
   quoteClient?: Partial<ClientData>;
   onQuoteClientChange?: (next: Partial<ClientData>) => void;
+}
+
+export function shouldRenderKitStockForecast(status: KitStockStatus): boolean {
+  return status === 'available' || status === 'unavailable';
 }
 
 export function KitSummary({
@@ -63,132 +67,134 @@ export function KitSummary({
 
   return (
     <div className="space-y-6">
-      <KitIdentificationCard
-        kitName={kitName}
-        kitQuantity={kitQuantity}
-        onKitNameChange={onKitNameChange}
-        onKitQuantityChange={onKitQuantityChange}
-      />
-      {onQuoteClientChange && <ClientPicker value={quoteClient} onChange={onQuoteClientChange} />}
-      <KitStatsCards
-        kitState={kitState}
-        totalItems={totalItems}
-        itemsCount={items.length}
-        personalizedCount={personalizedCount}
-      />
-      <KitVisualPreview kitState={kitState} />
-      <KitPresentablePreview
-        kitState={kitState}
-        kitQuantity={kitQuantity}
-        kitName={kitName}
-        currentKitId={currentKitId}
-      />
-      <KitPersonalizationPreview kitState={kitState} />
-      <KitConflictAlerts kitState={kitState} />
-      <DiscontinuedItemsAlert items={items} />
-      <KitCompositionCard
-        kitState={kitState}
-        kitQuantity={kitQuantity}
-        stockByProduct={stockByProduct}
-      />
-      <KitPricingCard
-        kitState={kitState}
-        kitQuantity={kitQuantity}
-        onKitQuantityChange={onKitQuantityChange}
-      />
-      <KitMarginSimulator
-        unitPrice={pricing.unitPrice}
-        totalPrice={pricing.total}
-        kitQuantity={kitQuantity}
-      />
+      <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1.65fr)_minmax(22rem,1fr)]">
+        <section className="space-y-5" aria-label="Identificação e composição do kit">
+          <KitIdentificationCard
+            kitName={kitName}
+            kitQuantity={kitQuantity}
+            onKitNameChange={onKitNameChange}
+            onKitQuantityChange={onKitQuantityChange}
+          />
+          {onQuoteClientChange && (
+            <ClientPicker value={quoteClient} onChange={onQuoteClientChange} />
+          )}
+          <KitCompositionCard
+            kitState={kitState}
+            kitQuantity={kitQuantity}
+            stockByProduct={stockByProduct}
+          />
+          <KitConflictAlerts kitState={kitState} />
+          <DiscontinuedItemsAlert items={items} />
 
-      {stockStatus === 'checking' && (
-        <Card className="border-warning bg-warning/5">
-          <CardContent className="pt-6">
-            <h4 className="mb-1 flex items-center gap-2 font-medium text-warning">
-              <AlertTriangle className="h-4 w-4" />
-              Verificando estoque
-            </h4>
-            <p className="text-sm text-muted-foreground">
-              Aguarde a confirmação de disponibilidade antes de criar o orçamento.
-            </p>
-          </CardContent>
-        </Card>
-      )}
+          {stockStatus === 'checking' && (
+            <Card className="border-warning bg-warning/5">
+              <CardContent className="pt-6">
+                <h4 className="mb-1 flex items-center gap-2 font-medium text-warning">
+                  <AlertTriangle className="h-4 w-4" /> Verificando estoque
+                </h4>
+                <p className="text-sm text-muted-foreground">
+                  Aguarde a confirmação de disponibilidade antes de criar o orçamento.
+                </p>
+              </CardContent>
+            </Card>
+          )}
 
-      {stockStatus === 'unknown' && (
-        <Card className="border-destructive bg-destructive/5">
-          <CardContent className="pt-6">
-            <h4 className="mb-1 flex items-center gap-2 font-medium text-destructive">
-              <AlertTriangle className="h-4 w-4" />
-              Não foi possível validar o estoque
-            </h4>
-            <p className="text-sm text-muted-foreground">
-              Tente novamente quando a consulta de estoque estiver disponível. O orçamento permanece
-              bloqueado para evitar uma promessa comercial sem confirmação.
-            </p>
-          </CardContent>
-        </Card>
-      )}
+          {stockStatus === 'unknown' && (
+            <Card className="border-destructive bg-destructive/5">
+              <CardContent className="pt-6">
+                <h4 className="mb-1 flex items-center gap-2 font-medium text-destructive">
+                  <AlertTriangle className="h-4 w-4" /> Não foi possível validar o estoque
+                </h4>
+                <p className="text-sm text-muted-foreground">
+                  Tente novamente quando a consulta estiver disponível. O orçamento permanece
+                  bloqueado para evitar uma promessa comercial sem confirmação.
+                </p>
+              </CardContent>
+            </Card>
+          )}
 
-      {stockAlerts.length > 0 && (
-        <Card className="border-warning bg-warning/5">
-          <CardContent className="pt-6">
-            <h4 className="mb-3 flex items-center gap-2 font-medium text-warning">
-              <AlertTriangle className="h-4 w-4" />
-              Alerta de Estoque ({stockAlerts.length} {stockAlerts.length === 1 ? 'item' : 'itens'})
-            </h4>
-            <ul className="space-y-2">
-              {stockAlerts.map((alert) => (
-                <li
-                  key={alert.lineId ?? alert.itemId}
-                  className="flex items-center justify-between rounded-lg bg-background/50 p-2 text-sm"
-                >
-                  <div>
-                    <p className="font-medium">
-                      {alert.isBox ? '📦 ' : ''}
-                      {alert.itemName}
-                    </p>
-                    <p className="font-mono text-xs text-muted-foreground">{alert.sku}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm">
-                      <span className="font-bold text-destructive">{alert.available}</span>
-                      <span className="text-muted-foreground"> / {alert.required} necessários</span>
-                    </p>
-                    <p className="text-xs text-destructive">Faltam {alert.deficit} un.</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
-      )}
+          {stockAlerts.length > 0 && (
+            <Card className="border-warning bg-warning/5">
+              <CardContent className="pt-6">
+                <h4 className="mb-3 flex items-center gap-2 font-medium text-warning">
+                  <AlertTriangle className="h-4 w-4" /> Alerta de estoque ({stockAlerts.length})
+                </h4>
+                <ul className="space-y-2">
+                  {stockAlerts.map((alert) => (
+                    <li
+                      key={alert.stockKey ?? `${alert.lineId ?? alert.itemId}:${alert.sku}`}
+                      className="flex items-center justify-between rounded-lg bg-background/50 p-2 text-sm"
+                    >
+                      <div>
+                        <p className="font-medium">
+                          {alert.isBox ? '📦 ' : ''}
+                          {alert.itemName}
+                        </p>
+                        <p className="font-mono text-xs text-muted-foreground">{alert.sku}</p>
+                      </div>
+                      <p className="text-right text-xs text-destructive">
+                        {alert.available} / {alert.required} · faltam {alert.deficit}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          )}
 
-      <KitStockForecastCard items={items} kitQuantity={kitQuantity} />
+          {shouldRenderKitStockForecast(stockStatus) && (
+            <KitStockForecastCard items={items} kitQuantity={kitQuantity} />
+          )}
+          {!kitState.isValid && (
+            <Card className="border-destructive bg-destructive/5">
+              <CardContent className="pt-6">
+                <h4 className="mb-2 font-medium text-destructive">Pendências</h4>
+                <ul className="space-y-1">
+                  {kitState.validationErrors.map((error) => (
+                    <li key={error} className="flex items-center gap-2 text-sm text-destructive">
+                      <span className="h-1 w-1 rounded-full bg-destructive" /> {error}
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          )}
+        </section>
 
-      <FreightEstimator totalWeightGrams={kitState.totalWeight} kitQuantity={kitQuantity} />
-
-      {!kitState.isValid && (
-        <Card className="border-destructive bg-destructive/5">
-          <CardContent className="pt-6">
-            <h4 className="mb-2 font-medium text-destructive">Pendências</h4>
-            <ul className="space-y-1">
-              {kitState.validationErrors.map((error, i) => (
-                <li key={i} className="flex items-center gap-2 text-sm text-destructive">
-                  <span className="h-1 w-1 rounded-full bg-destructive" />
-                  {error}
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
-      )}
+        <aside className="space-y-5 xl:sticky xl:top-24" aria-label="Prévia e preços do kit">
+          <KitStatsCards
+            kitState={kitState}
+            totalItems={totalItems}
+            itemsCount={items.length}
+            personalizedCount={personalizedCount}
+          />
+          <KitVisualPreview kitState={kitState} />
+          <KitPresentablePreview
+            kitState={kitState}
+            kitQuantity={kitQuantity}
+            kitName={kitName}
+            currentKitId={currentKitId}
+          />
+          <KitPersonalizationPreview kitState={kitState} />
+          <KitPricingCard
+            kitState={kitState}
+            kitQuantity={kitQuantity}
+            onKitQuantityChange={onKitQuantityChange}
+          />
+          <KitMarginSimulator
+            unitPrice={pricing.unitPrice}
+            totalPrice={pricing.total}
+            kitQuantity={kitQuantity}
+          />
+          <FreightEstimator totalWeightGrams={kitState.totalWeight} kitQuantity={kitQuantity} />
+        </aside>
+      </div>
 
       <KitActionsBar
         isValid={kitState.isValid}
         isAddingToQuote={isAddingToQuote}
         hasStockIssues={hasStockIssues}
+        stockStatus={stockStatus}
         kitName={kitName}
         kitTag={kitState.identity?.tag}
         kitQuantity={kitQuantity}

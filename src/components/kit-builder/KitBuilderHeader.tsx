@@ -37,7 +37,14 @@ import { KitAIPromptDialog } from '@/components/kit-builder/KitAIPromptDialog';
 import { KitIdentityPicker } from '@/components/kit-builder/KitIdentityPicker';
 import { useRBAC } from '@/hooks/auth';
 import { useTemplateSnapshot } from '@/hooks/kit-builder';
-import type { KitIdentity, KitState } from '@/lib/kit-builder';
+import type {
+  KitAIComposition,
+  KitAISuggestionBrief,
+  KitBox,
+  KitIdentity,
+  KitItem,
+  KitState,
+} from '@/lib/kit-builder';
 import { cn } from '@/lib/utils';
 
 /** Lookup estático dos ícones do PRESET_ICONS — evita namespace import. */
@@ -75,11 +82,13 @@ interface KitBuilderHeaderProps {
   onUndo: () => void;
   onRedo: () => void;
   onReset: () => void;
-  onAIApply: (s: {
-    kit_type: 'montado' | 'original' | 'simples';
-    box_keywords: string[];
-    item_keywords: string[];
-  }) => void;
+  aiCatalogItems: KitItem[];
+  aiCatalogBoxes: KitBox[];
+  onAIApply: (
+    suggestion: KitAISuggestionBrief,
+    composition: KitAIComposition,
+    requestedQuantity?: number,
+  ) => void;
   /** Full kit state — used by admin "Save as system template" snapshot. */
   kitState?: KitState;
   /** When set, header indicates we are editing a system template (admin mode). */
@@ -107,6 +116,8 @@ export function KitBuilderHeader({
   onRedo,
   onReset,
   onAIApply,
+  aiCatalogItems,
+  aiCatalogBoxes,
   kitState,
   templateId,
   currentKitId: _currentKitId,
@@ -306,7 +317,11 @@ export function KitBuilderHeader({
             </Button>
 
             <div className="hidden lg:block">
-              <KitAIPromptDialog onApply={onAIApply} />
+              <KitAIPromptDialog
+                catalogItems={aiCatalogItems}
+                catalogBoxes={aiCatalogBoxes}
+                onApply={onAIApply}
+              />
             </div>
           </div>
         </div>

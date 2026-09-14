@@ -78,6 +78,7 @@ export function transformToKitBox(product: ExternalProductForKit): KitBox | null
     dimensionsKnown: true,
     boxType: product.packing_classification || product.packing_type || undefined,
     material: resolveProductMaterial(product),
+    finish: product.packaging_finish || undefined,
     weight: product.weight_g ?? undefined,
   };
 }

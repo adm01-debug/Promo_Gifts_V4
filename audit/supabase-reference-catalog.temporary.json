@@ -421,6 +421,14 @@
       "occurrences": 1,
       "stage": 38,
       "reason": "Handler legado será reconciliado ao contrato aprovado de webhook-inbound na etapa 038."
+    },
+    {
+      "kind": "relation",
+      "name": "kit_quote_requests",
+      "file": "src/pages/kit-builder/useKitBuilderQuote.ts",
+      "occurrences": 1,
+      "stage": 21,
+      "reason": "A migration forward-only 20260911172000 e os types versionados contêm o ledger, mas o catálogo pg_catalog de 2026-08-26 antecede sua criação; remover esta exceção source-scoped após recaptura administrativa do projeto canônico."
     }
   ],
   "dynamic_baseline": [

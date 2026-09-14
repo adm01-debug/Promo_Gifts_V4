@@ -21,19 +21,31 @@ import {
   type KitItem,
   type KitIdentity,
   type KitPersonalization,
+  type KitAISuggestionBrief,
+  type KitAIComposition,
   type KitType,
 } from '@/lib/kit-builder';
 import { logger } from '@/lib/logger';
 import { OCCASIONS, type Occasion } from '@/components/kit-builder/KitOccasionSelector';
 
-interface KitBuilderAISuggestion {
-  kit_type: KitType;
-  box_keywords: string[];
-  item_keywords: string[];
-}
-
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function readDraftClient(personalizationData: Record<string, unknown>): KitQuoteClient {
+  const draft = isRecord(personalizationData.__draft) ? personalizationData.__draft : null;
+  const client = draft && isRecord(draft.quoteClient) ? draft.quoteClient : null;
+  if (!client) return {};
+
+  const text = (key: string) => (typeof client[key] === 'string' ? client[key] : undefined);
+  return {
+    client_cnpj: text('client_cnpj'),
+    client_company: text('client_company'),
+    client_email: text('client_email'),
+    client_id: text('client_id'),
+    client_name: text('client_name'),
+    client_phone: text('client_phone'),
+  };
 }
 
 function toSavedKitSnapshot(row: {
@@ -60,6 +72,7 @@ function toSavedKitSnapshot(row: {
     personalization: isRecord(row.personalization_data)
       ? (row.personalization_data as unknown as KitPersonalization)
       : { box: { enabled: false }, items: {} },
+    quoteClient: readDraftClient(row.personalization_data),
     kitQuantity: Number.isFinite(row.kit_quantity) && row.kit_quantity > 0 ? row.kit_quantity : 1,
     identity: {
       color: row.color || '#3B82F6',
@@ -69,6 +82,13 @@ function toSavedKitSnapshot(row: {
       isFavorite: row.is_favorite ?? false,
     } satisfies KitIdentity,
   };
+}
+
+export function isKitMakerLandingRoute(
+  kitIdParam: string | null,
+  productIdParam: string | null,
+): boolean {
+  return !kitIdParam && !productIdParam;
 }
 
 export function useKitBuilderPageState() {
@@ -84,9 +104,16 @@ export function useKitBuilderPageState() {
   const [currentRevision, setCurrentRevision] = useState<number | null>(null);
   const [occasion, setOccasion] = useState<Occasion | null>(null);
   const [quoteClient, setQuoteClient] = useState<KitQuoteClient>({});
-  const [isLanding, setIsLanding] = useState(!kitIdParam && !productIdParam);
+  const [isLanding, setIsLanding] = useState(isKitMakerLandingRoute(kitIdParam, productIdParam));
   const [isHydrating, setIsHydrating] = useState(Boolean(kitIdParam));
   const hydratedKitIdRef = useRef<string | null>(null);
+
+  // Navigating from the mounted landing page to ?kit=<id> does not remount
+  // this hook. Derive the mode from the URL so a cloned template immediately
+  // opens in the editor instead of remaining behind the landing screen.
+  useEffect(() => {
+    setIsLanding(isKitMakerLandingRoute(kitIdParam, productIdParam));
+  }, [kitIdParam, productIdParam]);
 
   const {
     kitState,
@@ -94,6 +121,8 @@ export function useKitBuilderPageState() {
     kitQuantity,
     availableBoxes,
     availableItems,
+    allAvailableBoxes,
+    allAvailableItems,
     isLoadingBoxes,
     isLoadingItems,
     boxError,
@@ -121,6 +150,7 @@ export function useKitBuilderPageState() {
     prevStep,
     resetKit,
     restoreKitSnapshot,
+    applyAIComposition,
     setKitType,
     loadKit,
     startNewFlow,
@@ -140,6 +170,7 @@ export function useKitBuilderPageState() {
     autoSaveError,
     retryLastSave,
     cancelPendingSave,
+    acknowledgeManualSave,
   } = useKitAutoSave(
     kitState,
     kitQuantity,
@@ -150,6 +181,7 @@ export function useKitBuilderPageState() {
       setCurrentRevision(revision);
     },
     !isHydrating,
+    { quoteClient },
   );
   const {
     pushSnapshot,
@@ -227,6 +259,7 @@ export function useKitBuilderPageState() {
     }
 
     loadKit(snapshot);
+    setQuoteClient(snapshot.quoteClient);
     setCurrentKitId(row.id);
     setCurrentRevision(row.revision);
     setIsHydrating(false);
@@ -295,7 +328,10 @@ export function useKitBuilderPageState() {
     cancelPendingSave();
     try {
       const kitId = currentKitId || autoSavedKitId || undefined;
-      const saved = await saveKit(kitState, kitQuantity, kitId, kitId ? currentRevision : null);
+      const saved = await saveKit(kitState, kitQuantity, kitId, kitId ? currentRevision : null, {
+        quoteClient,
+      });
+      acknowledgeManualSave(saved.id, saved.revision);
       setCurrentKitId(saved.id);
       setCurrentRevision(saved.revision);
     } catch (error) {
@@ -305,28 +341,29 @@ export function useKitBuilderPageState() {
     }
   }, [
     autoSavedKitId,
+    acknowledgeManualSave,
     cancelPendingSave,
     currentKitId,
     currentRevision,
     isAutoSaving,
     kitQuantity,
     kitState,
+    quoteClient,
     saveKit,
   ]);
 
   const applyAISuggestion = useCallback(
-    (suggestion: KitBuilderAISuggestion) => {
-      setKitType(suggestion.kit_type);
-      const boxSearch = suggestion.box_keywords.find(Boolean);
-      const itemSearch = suggestion.item_keywords.find(Boolean);
-      if (boxSearch) setBoxFilters({ ...boxFilters, search: boxSearch });
-      if (itemSearch) setItemFilters({ ...itemFilters, search: itemSearch });
-      goToStep('items');
-      toast.info('Sugestão aplicada como filtros de catálogo', {
-        description: 'Confira preço, estoque e compatibilidade antes de adicionar os itens.',
+    (
+      _suggestion: KitAISuggestionBrief,
+      composition: KitAIComposition,
+      requestedQuantity?: number,
+    ) => {
+      applyAIComposition(composition, requestedQuantity);
+      toast.success('Composição da IA aplicada', {
+        description: 'Confira variantes, estoque, personalização e valores antes de continuar.',
       });
     },
-    [boxFilters, goToStep, itemFilters, setBoxFilters, setItemFilters, setKitType],
+    [applyAIComposition],
   );
 
   const startFlow = useCallback(
@@ -369,7 +406,9 @@ export function useKitBuilderPageState() {
       currentKitId,
       autoSavedKitId,
       availableBoxes,
+      allAvailableBoxes,
       availableItems,
+      allAvailableItems,
       isLoadingBoxes,
       isLoadingItems,
       boxError,

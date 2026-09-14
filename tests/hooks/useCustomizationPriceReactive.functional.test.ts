@@ -84,4 +84,33 @@ describe("useCustomizationPriceReactive", () => {
     expect(params.p_largura_cm).toBe(5);
     expect(params.p_altura_cm).toBe(8);
   });
+
+  it("limpa loading quando uma requisição em curso é invalidada", async () => {
+    let resolveRpc: ((value: typeof PRICE_PAYLOAD_PT_V6) => void) | undefined;
+    mockedRpc.mockReturnValueOnce(
+      new Promise((resolve) => {
+        resolveRpc = resolve;
+      }),
+    );
+    const { result, rerender } = renderHookWithProviders<
+      ReturnType<typeof useCustomizationPriceReactive>,
+      { techniqueId: string | null }
+    >(({ techniqueId }) => useCustomizationPriceReactive(techniqueId, 100), {
+      initialProps: { techniqueId: "tech-1" },
+    });
+
+    await act(async () => {
+      vi.advanceTimersByTime(600);
+    });
+    expect(result.current.loading).toBe(true);
+
+    rerender({ techniqueId: null });
+    expect(result.current.loading).toBe(false);
+
+    await act(async () => {
+      resolveRpc?.(PRICE_PAYLOAD_PT_V6);
+      await Promise.resolve();
+    });
+    expect(result.current.loading).toBe(false);
+  });
 });
