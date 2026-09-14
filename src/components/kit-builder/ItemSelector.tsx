@@ -92,6 +92,11 @@ export function ItemSelector({
     });
     return Array.from(cats).sort();
   }, [items]);
+  const materials = useMemo(
+    () =>
+      Array.from(new Set(items.map((item) => item.material).filter(Boolean) as string[])).sort(),
+    [items],
+  );
 
   const selectedItemsByProductId = new Map<string, KitItem>();
   selectedItems.forEach((item) => {
@@ -117,110 +122,217 @@ export function ItemSelector({
         </div>
       )}
 
-      <div className="flex flex-col gap-4 sm:flex-row">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder="Buscar item..."
-            value={searchValue}
-            onChange={(e) => handleSearchChange(e.target.value)}
-            className="pl-10"
-          />
-        </div>
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_20rem]">
+        <section className="min-w-0 space-y-4" aria-label="Catálogo de produtos">
+          <div className="flex flex-col gap-4 sm:flex-row">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder="Buscar item..."
+                value={searchValue}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                className="pl-10"
+              />
+            </div>
 
-        {boxSelected && (
-          <div className="flex items-center gap-2">
-            <Switch
-              id="only-fitting"
-              checked={filters.onlyFitting || false}
-              onCheckedChange={(checked) => onFiltersChange({ ...filters, onlyFitting: checked })}
-            />
-            <Label htmlFor="only-fitting" className="cursor-pointer text-sm">
-              Apenas itens que cabem
-            </Label>
-          </div>
-        )}
-      </div>
-
-      {/* Category filter */}
-      {categories.length > 1 && (
-        <Select
-          value={filters.category || 'all'}
-          onValueChange={(v) =>
-            onFiltersChange({ ...filters, category: v === 'all' ? undefined : v })
-          }
-        >
-          <SelectTrigger className="w-[200px]">
-            <SelectValue placeholder="Categoria" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Todas as categorias</SelectItem>
-            {categories.map((cat) => (
-              <SelectItem key={cat} value={cat}>
-                {cat}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      )}
-
-      <SelectedItemsBadges
-        items={selectedItems}
-        onRemoveItem={onRemoveItem}
-        onUpdateQuantity={onUpdateQuantity}
-        onUpdateVariant={onUpdateVariant}
-        onReorder={onReorder}
-      />
-
-      <KitSmartSuggestions
-        selectedItems={selectedItems}
-        onAddItem={(suggestion) => {
-          const catalogItem = items.find((item) => item.id === suggestion.id);
-          if (catalogItem) handleAddItem(catalogItem);
-        }}
-      />
-
-      <ScrollArea className="h-[50vh] pr-4">
-        {isLoading ? (
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <ItemCardSkeleton key={i} />
-            ))}
-          </div>
-        ) : errorMessage ? (
-          <div className="py-12 text-center">
-            <AlertTriangle className="mx-auto mb-3 h-12 w-12 text-destructive" />
-            <p className="font-medium">Não foi possível carregar os itens</p>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Tente novamente antes de montar a composição.
-            </p>
-            {onRetry && (
-              <Button variant="outline" size="sm" className="mt-3" onClick={onRetry}>
-                Tentar novamente
-              </Button>
+            {boxSelected && (
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="only-fitting"
+                  checked={filters.onlyFitting || false}
+                  onCheckedChange={(checked) =>
+                    onFiltersChange({ ...filters, onlyFitting: checked })
+                  }
+                />
+                <Label htmlFor="only-fitting" className="cursor-pointer text-sm">
+                  Apenas itens que cabem
+                </Label>
+              </div>
             )}
           </div>
-        ) : items.length === 0 ? (
-          <div className="py-12 text-center">
-            <Package className="mx-auto mb-3 h-12 w-12 text-muted-foreground" />
-            <p className="text-muted-foreground">Nenhum item encontrado</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
-            {items.map((item) => (
-              <ItemCard
-                key={item.id}
-                item={item}
-                isSelected={selectedItemsByProductId.has(item.id)}
-                selectedItem={selectedItemsByProductId.get(item.id)}
-                boxSelected={boxSelected}
-                onAdd={handleAddItem}
-                onRemove={(selected) => onRemoveItem(getKitItemLineId(selected))}
+
+          <div className="flex flex-wrap gap-2">
+            {/* Only the category control depends on category cardinality. The
+                remaining filters must stay visible while they are active. */}
+            {categories.length > 1 && (
+              <Select
+                value={filters.category || 'all'}
+                onValueChange={(v) =>
+                  onFiltersChange({ ...filters, category: v === 'all' ? undefined : v })
+                }
+              >
+                <SelectTrigger className="w-[200px]" aria-label="Categoria">
+                  <SelectValue placeholder="Categoria" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todas as categorias</SelectItem>
+                  {categories.map((cat) => (
+                    <SelectItem key={cat} value={cat}>
+                      {cat}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+            {materials.length > 0 && (
+              <Select
+                value={filters.material || 'all'}
+                onValueChange={(v) =>
+                  onFiltersChange({ ...filters, material: v === 'all' ? undefined : v })
+                }
+              >
+                <SelectTrigger className="w-[180px]" aria-label="Material">
+                  <SelectValue placeholder="Material" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos os materiais</SelectItem>
+                  {materials.map((material) => (
+                    <SelectItem key={material} value={material}>
+                      {material}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+            <Select
+              value={filters.sort || 'name'}
+              onValueChange={(value) =>
+                onFiltersChange({ ...filters, sort: value as NonNullable<typeof filters.sort> })
+              }
+            >
+              <SelectTrigger className="w-[180px]" aria-label="Ordenar">
+                <SelectValue placeholder="Ordenar" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="name">Nome</SelectItem>
+                <SelectItem value="price-asc">Menor preço</SelectItem>
+                <SelectItem value="price-desc">Maior preço</SelectItem>
+              </SelectContent>
+            </Select>
+            <div className="flex items-center gap-2">
+              <Input
+                aria-label="Preço mínimo"
+                type="number"
+                min="0"
+                placeholder="Preço mín."
+                className="w-28"
+                value={filters.minPrice ?? ''}
+                onChange={(event) =>
+                  onFiltersChange({
+                    ...filters,
+                    minPrice: event.target.value ? Number(event.target.value) : undefined,
+                  })
+                }
               />
-            ))}
+              <Input
+                aria-label="Preço máximo"
+                type="number"
+                min="0"
+                placeholder="Preço máx."
+                className="w-28"
+                value={filters.maxPrice ?? ''}
+                onChange={(event) =>
+                  onFiltersChange({
+                    ...filters,
+                    maxPrice: event.target.value ? Number(event.target.value) : undefined,
+                  })
+                }
+              />
+            </div>
           </div>
-        )}
-      </ScrollArea>
+
+          <KitSmartSuggestions
+            selectedItems={selectedItems}
+            onAddItem={(suggestion) => {
+              const catalogItem = items.find((item) => item.id === suggestion.id);
+              if (catalogItem) handleAddItem(catalogItem);
+            }}
+          />
+
+          <ScrollArea className="h-[50vh] pr-4">
+            {isLoading ? (
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+                {[1, 2, 3, 4, 5, 6].map((i) => (
+                  <ItemCardSkeleton key={i} />
+                ))}
+              </div>
+            ) : errorMessage ? (
+              <div className="py-12 text-center">
+                <AlertTriangle className="mx-auto mb-3 h-12 w-12 text-destructive" />
+                <p className="font-medium">Não foi possível carregar os itens</p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Tente novamente antes de montar a composição.
+                </p>
+                {onRetry && (
+                  <Button variant="outline" size="sm" className="mt-3" onClick={onRetry}>
+                    Tentar novamente
+                  </Button>
+                )}
+              </div>
+            ) : items.length === 0 ? (
+              <div className="py-12 text-center">
+                <Package className="mx-auto mb-3 h-12 w-12 text-muted-foreground" />
+                <p className="text-muted-foreground">Nenhum item encontrado</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+                {items.map((item) => (
+                  <ItemCard
+                    key={item.id}
+                    item={item}
+                    isSelected={selectedItemsByProductId.has(item.id)}
+                    selectedItem={selectedItemsByProductId.get(item.id)}
+                    boxSelected={boxSelected}
+                    onAdd={handleAddItem}
+                    onRemove={(selected) => onRemoveItem(getKitItemLineId(selected))}
+                  />
+                ))}
+              </div>
+            )}
+          </ScrollArea>
+        </section>
+
+        <aside
+          className="h-fit space-y-4 rounded-xl border bg-card p-4 xl:sticky xl:top-24"
+          aria-label="Composição atual do kit"
+        >
+          <div>
+            <h3 className="font-display text-lg font-semibold">Seu kit</h3>
+            <p className="text-xs text-muted-foreground">
+              {selectedItems.length}{' '}
+              {selectedItems.length === 1 ? 'produto selecionado' : 'produtos selecionados'}
+            </p>
+          </div>
+          {selectedItems.length > 0 ? (
+            <SelectedItemsBadges
+              items={selectedItems}
+              onRemoveItem={onRemoveItem}
+              onUpdateQuantity={onUpdateQuantity}
+              onUpdateVariant={onUpdateVariant}
+              onReorder={onReorder}
+            />
+          ) : (
+            <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
+              <Package className="mx-auto mb-2 h-8 w-8" />
+              Adicione produtos para começar a composição.
+            </div>
+          )}
+          <div className="border-t pt-3 text-sm">
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Itens por kit</span>
+              <strong>{selectedItems.reduce((sum, item) => sum + item.quantity, 0)}</strong>
+            </div>
+            <div className="mt-1 flex justify-between">
+              <span className="text-muted-foreground">Subtotal</span>
+              <strong>
+                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+                  selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
+                )}
+              </strong>
+            </div>
+          </div>
+        </aside>
+      </div>
     </div>
   );
 }

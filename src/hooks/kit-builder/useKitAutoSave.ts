@@ -15,6 +15,7 @@ import { logger } from '@/lib/logger';
 import {
   buildKitPersistencePayload,
   persistCustomKitAtomically,
+  type KitDraftContext,
 } from '@/lib/kit-builder/persistence';
 
 const AUTO_SAVE_DELAY_MS = 5000;
@@ -29,6 +30,8 @@ interface AutoSaveResult {
   retryLastSave: () => Promise<void>;
   /** Cancels a debounced save before the explicit save action takes ownership. */
   cancelPendingSave: () => void;
+  /** Supersedes any failed automatic operation after a successful explicit save. */
+  acknowledgeManualSave: (kitId: string, revision: number) => void;
 }
 
 export function useKitAutoSave(
@@ -38,6 +41,7 @@ export function useKitAutoSave(
   currentRevision: number | null,
   onKitIdCreated?: (id: string, revision: number) => void,
   enabled = true,
+  context: KitDraftContext = {},
 ): AutoSaveResult {
   const { user } = useAuth();
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
@@ -50,7 +54,15 @@ export function useKitAutoSave(
   const wasEnabledRef = useRef(enabled);
   const saveInFlightRef = useRef(false);
   const saveQueuedRef = useRef(false);
+  const editVersionRef = useRef(0);
   const saveToDbRef = useRef<(() => Promise<void>) | null>(null);
+  const pendingOperationRef = useRef<{
+    requestId: string;
+    kitId?: string;
+    expectedRevision: number | null;
+    payload: ReturnType<typeof buildKitPersistencePayload>;
+    editVersion: number;
+  } | null>(null);
 
   /**
    * BUG-11 FIX: usar refs para dependencias instaveis.
@@ -73,12 +85,17 @@ export function useKitAutoSave(
   const autoSavedKitIdRef = useRef<string | null>(currentKitId || null);
   const revisionRef = useRef<number | null>(currentRevision);
   const enabledRef = useRef(enabled);
+  const contextRef = useRef(context);
 
-  // Manter refs sincronizadas a cada render -- sem useEffect para evitar batching delay
-  kitStateRef.current = kitState;
-  kitQuantityRef.current = kitQuantity;
-  onKitIdCreatedRef.current = onKitIdCreated;
-  enabledRef.current = enabled;
+  // Update mutable callback inputs only after React commits the render. Writing
+  // refs during render can leak an abandoned concurrent render into a timer.
+  useEffect(() => {
+    kitStateRef.current = kitState;
+    kitQuantityRef.current = kitQuantity;
+    onKitIdCreatedRef.current = onKitIdCreated;
+    enabledRef.current = enabled;
+    contextRef.current = context;
+  }, [onKitIdCreated, context, enabled, kitQuantity, kitState]);
 
   // saveToDb usa apenas deps estaveis -- nao recria a cada mudanca de kitState/onKitIdCreated
   const saveToDb = useCallback(async () => {
@@ -99,23 +116,53 @@ export function useKitAutoSave(
     // Don't auto-save empty kits
     if (!currentKitState.box && currentKitState.items.length === 0) return;
 
-    const payload = buildKitPersistencePayload(user.id, currentKitState, currentKitQuantity);
+    const kitId = autoSavedKitIdRef.current || currentKitId;
+    const operation = pendingOperationRef.current ?? {
+      requestId: globalThis.crypto.randomUUID(),
+      kitId: kitId ?? undefined,
+      expectedRevision: kitId ? revisionRef.current : null,
+      payload: buildKitPersistencePayload(
+        user.id,
+        currentKitState,
+        currentKitQuantity,
+        contextRef.current,
+      ),
+      editVersion: editVersionRef.current,
+    };
+    // A transport failure may happen after the transaction commits. Keep both
+    // the idempotency key and the exact payload frozen until the response is
+    // recovered; changing updated_at would also change the server payload hash.
+    pendingOperationRef.current = operation;
 
     saveInFlightRef.current = true;
     setIsSaving(true);
     try {
-      const kitId = autoSavedKitIdRef.current || currentKitId;
       const data = await persistCustomKitAtomically({
-        kitId: kitId ?? undefined,
-        expectedRevision: kitId ? revisionRef.current : null,
-        payload,
+        kitId: operation.kitId,
+        expectedRevision: operation.expectedRevision,
+        payload: operation.payload,
+        requestId: operation.requestId,
       });
+      pendingOperationRef.current = null;
       autoSavedKitIdRef.current = data.id;
       revisionRef.current = data.revision;
       setAutoSavedKitId(data.id);
       currentOnKitIdCreated?.(data.id, data.revision);
-      setLastSavedAt(new Date());
-      setAutoSaveError(null);
+      // A retry must recover the frozen operation first. If the user edited
+      // while that failed operation was pending, immediately persist a second
+      // snapshot at the newly returned revision instead of reporting a false
+      // "saved" state for the older payload.
+      const hasNewerEdits = editVersionRef.current > operation.editVersion;
+      if (hasNewerEdits) {
+        if (timerRef.current) {
+          clearTimeout(timerRef.current);
+          timerRef.current = undefined;
+        }
+        saveQueuedRef.current = true;
+      } else {
+        setLastSavedAt(new Date());
+        setAutoSaveError(null);
+      }
     } catch (err) {
       logger.warn('[auto-save] Failed:', err);
       setAutoSaveError('O rascunho ainda não foi salvo. Tente novamente antes de sair.');
@@ -129,9 +176,11 @@ export function useKitAutoSave(
         });
       }
     }
-  }, [user?.id, currentKitId]); // FIX: removidos kitState, kitQuantity, onKitIdCreated
+  }, [user?.id, currentKitId]); // FIX: dependências mutáveis são lidas pelos refs acima
 
-  saveToDbRef.current = saveToDb;
+  useEffect(() => {
+    saveToDbRef.current = saveToDb;
+  }, [saveToDb]);
 
   const cancelPendingSave = useCallback(() => {
     if (timerRef.current) {
@@ -144,6 +193,20 @@ export function useKitAutoSave(
   const retryLastSave = useCallback(async () => {
     setAutoSaveError(null);
     await saveToDbRef.current?.();
+  }, []);
+
+  const acknowledgeManualSave = useCallback((kitId: string, revision: number) => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = undefined;
+    }
+    pendingOperationRef.current = null;
+    saveQueuedRef.current = false;
+    autoSavedKitIdRef.current = kitId;
+    revisionRef.current = revision;
+    setAutoSavedKitId(kitId);
+    setLastSavedAt(new Date());
+    setAutoSaveError(null);
   }, []);
 
   // Snapshot effect: agenda o timer quando o estado muda de forma relevante
@@ -164,6 +227,7 @@ export function useKitAutoSave(
       kitType: kitState.kitType,
       identity: kitState.identity ?? null,
       qty: kitQuantity,
+      context,
     });
 
     if (isFirstRender.current) {
@@ -182,10 +246,14 @@ export function useKitAutoSave(
 
     if (nextSnapshot === snapshotRef.current) return;
     snapshotRef.current = nextSnapshot;
+    editVersionRef.current += 1;
 
     // Cancela timer anterior (debounce) e reagenda
     if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(saveToDb, AUTO_SAVE_DELAY_MS);
+    timerRef.current = setTimeout(() => {
+      timerRef.current = undefined;
+      void saveToDb();
+    }, AUTO_SAVE_DELAY_MS);
 
     // NOTA: sem cleanup aqui -- o timer deve sobreviver a re-renders intermedios.
     // O cleanup de unmount e tratado pelo effect dedicado abaixo.
@@ -197,6 +265,7 @@ export function useKitAutoSave(
     kitState.kitType,
     kitState.identity,
     kitQuantity,
+    context,
     saveToDb,
     enabled,
   ]);
@@ -213,6 +282,7 @@ export function useKitAutoSave(
     if (currentKitId) {
       setAutoSavedKitId(currentKitId);
       autoSavedKitIdRef.current = currentKitId;
+      pendingOperationRef.current = null;
     }
   }, [currentKitId]);
 
@@ -227,5 +297,6 @@ export function useKitAutoSave(
     autoSaveError,
     retryLastSave,
     cancelPendingSave,
+    acknowledgeManualSave,
   };
 }

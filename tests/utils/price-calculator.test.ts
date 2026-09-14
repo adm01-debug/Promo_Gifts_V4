@@ -65,13 +65,29 @@ describe('calculatePersonalizationPrice', () => {
     // item1 qty=2, price=2 each → 4
     expect(calculatePersonalizationPrice(pers, mockItems, 1)).toBe(4);
   });
+
+  it('uses the authoritative minimum/setup total for the exact priced quantity', () => {
+    const pers: KitPersonalization = {
+      box: {
+        enabled: true,
+        estimatedPrice: 2,
+        pricedQuantity: 10,
+        setupCost: 50,
+        totalPrice: 50,
+      },
+      items: {},
+    };
+
+    expect(calculatePersonalizationPrice(pers, mockItems, 10)).toBe(50);
+    expect(calculatePersonalizationPrice(pers, mockItems, 11)).toBe(22);
+  });
 });
 
 describe('calculateTotalKitPrice', () => {
   it('computes full breakdown', () => {
     const result = calculateTotalKitPrice(mockBox, mockItems, emptyPersonalization, 2);
-    expect(result.boxPrice).toBe(20);      // 10*2
-    expect(result.itemsPrice).toBe(60);    // 30*2
+    expect(result.boxPrice).toBe(20); // 10*2
+    expect(result.itemsPrice).toBe(60); // 30*2
     expect(result.personalizationPrice).toBe(0);
     expect(result.subtotal).toBe(80);
     expect(result.total).toBe(80);

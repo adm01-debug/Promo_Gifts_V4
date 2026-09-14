@@ -14,6 +14,7 @@ import { logger } from '@/lib/logger';
 import {
   buildKitPersistencePayload,
   persistCustomKitAtomically,
+  type KitDraftContext,
 } from '@/lib/kit-builder/persistence';
 
 // ============================================
@@ -83,16 +84,18 @@ export function useCustomKitPersistence() {
       kitQuantity,
       expectedRevision,
       requestId,
+      context,
     }: {
       kitId?: string;
       kitState: KitState;
       kitQuantity: number;
       expectedRevision?: number | null;
       requestId: string;
+      context?: KitDraftContext;
     }) => {
       if (!user?.id) throw new Error('Usuário não autenticado');
 
-      const payload = buildKitPersistencePayload(user.id, kitState, kitQuantity);
+      const payload = buildKitPersistencePayload(user.id, kitState, kitQuantity, context);
 
       return persistCustomKitAtomically({ kitId, expectedRevision, payload, requestId });
     },
@@ -126,13 +129,20 @@ export function useCustomKitPersistence() {
   });
 
   const saveKit = useCallback(
-    (kitState: KitState, kitQuantity: number, kitId?: string, expectedRevision?: number | null) =>
+    (
+      kitState: KitState,
+      kitQuantity: number,
+      kitId?: string,
+      expectedRevision?: number | null,
+      context?: KitDraftContext,
+    ) =>
       saveMutation.mutateAsync({
         kitId,
         kitState,
         kitQuantity,
         expectedRevision,
         requestId: globalThis.crypto.randomUUID(),
+        context,
       }),
     [saveMutation],
   );

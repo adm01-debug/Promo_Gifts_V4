@@ -14,6 +14,11 @@ import {
   Settings,
   Loader2,
   AlertTriangle,
+  ZoomIn,
+  ZoomOut,
+  Maximize2,
+  Images,
+  Sparkles,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
@@ -31,6 +36,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { Badge } from '@/components/ui/badge';
 import { ImageUploadButton } from '@/components/admin/ImageUploadButton';
 import { cn } from '@/lib/utils';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import {
   formatCurrency,
   getKitItemLineId,
@@ -41,6 +47,12 @@ import {
 import { useProductCustomizationOptions } from '@/hooks/products';
 import { useCustomizationPriceReactive } from '@/hooks/simulation';
 import type { GravacaoLocation } from '@/types/customization';
+import {
+  generateMockupApi,
+  type GenerateMockupParams,
+} from '@/hooks/mockup/mockupGenerationService';
+import { toast } from 'sonner';
+import { sanitizeError } from '@/lib/security/sanitize-error';
 
 interface PersonalizationConfigProps {
   box: KitBox | null;
@@ -90,15 +102,77 @@ export function reconcilePersonalizationForTechnique(
     position: technique.location_name,
     colors: Math.min(personalization.colors || 1, technique.max_cores),
     width: technique.usa_dimensao
-      ? clampConfiguredDimension(personalization.width, technique.efetiva_largura_max) ??
-        technique.efetiva_largura_max
+      ? (clampConfiguredDimension(personalization.width, technique.efetiva_largura_max) ??
+        technique.efetiva_largura_max)
       : undefined,
     height: technique.usa_dimensao
-      ? clampConfiguredDimension(personalization.height, technique.efetiva_altura_max) ??
-        technique.efetiva_altura_max
+      ? (clampConfiguredDimension(personalization.height, technique.efetiva_altura_max) ??
+        technique.efetiva_altura_max)
       : undefined,
     estimatedPrice: undefined,
+    pricedQuantity: undefined,
+    setupCost: undefined,
+    totalPrice: undefined,
+    generatedMockupUrl: undefined,
   };
+}
+
+export function buildKitMockupRequest(
+  displayName: string,
+  imageUrl: string | null,
+  personalization: KitItemPersonalization,
+): GenerateMockupParams | null {
+  if (
+    !imageUrl ||
+    !personalization.enabled ||
+    !personalization.techniqueName ||
+    !personalization.artworkUrl
+  ) {
+    return null;
+  }
+
+  return {
+    productImage: imageUrl,
+    productName: displayName,
+    technique: {
+      id: personalization.techniqueId || personalization.techniqueName,
+      name: personalization.techniqueName,
+      code: personalization.techniqueCode || null,
+    },
+    areas: [
+      {
+        id: globalThis.crypto.randomUUID(),
+        name: personalization.positionName || personalization.position || 'Frente',
+        positionX: 50,
+        positionY: 50,
+        logoWidth: personalization.width || 5,
+        logoHeight: personalization.height || 5,
+        logoPreview: personalization.artworkUrl,
+      },
+    ],
+  };
+}
+
+function kitMockupInputFingerprint(
+  displayName: string,
+  imageUrl: string | null,
+  personalization: KitItemPersonalization,
+): string {
+  return JSON.stringify({
+    artworkColors: personalization.artworkColors ?? [],
+    artworkUrl: personalization.artworkUrl ?? null,
+    displayName,
+    enabled: personalization.enabled,
+    height: personalization.height ?? null,
+    imageUrl,
+    position: personalization.position ?? null,
+    positionCode: personalization.positionCode ?? null,
+    positionName: personalization.positionName ?? null,
+    techniqueCode: personalization.techniqueCode ?? null,
+    techniqueId: personalization.techniqueId ?? null,
+    techniqueName: personalization.techniqueName ?? null,
+    width: personalization.width ?? null,
+  });
 }
 
 function flattenTechniques(locations: GravacaoLocation[]): FlatTechnique[] {
@@ -134,6 +208,7 @@ interface ItemPersonalizationCardProps {
   onChange: (config: KitItemPersonalization) => void;
   isBox?: boolean;
   kitQuantity: number;
+  showInlinePreview?: boolean;
 }
 
 function ItemPersonalizationCard({
@@ -144,6 +219,7 @@ function ItemPersonalizationCard({
   onChange,
   isBox = false,
   kitQuantity,
+  showInlinePreview = true,
 }: ItemPersonalizationCardProps) {
   const [isOpen, setIsOpen] = useState(personalization.enabled);
 
@@ -175,24 +251,54 @@ function ItemPersonalizationCard({
 
   // #3 FIX: Sync estimatedPrice with RPC result so price-calculator picks it up
   const onChangeRef = useRef(onChange);
-  onChangeRef.current = onChange;
   const personalizationRef = useRef(personalization);
-  personalizationRef.current = personalization;
 
   useEffect(() => {
-    if (priceData?.success && priceData.preco_unitario !== null) {
+    onChangeRef.current = onChange;
+    personalizationRef.current = personalization;
+  }, [onChange, personalization]);
+
+  useEffect(() => {
+    if (
+      priceData?.success &&
+      typeof priceData.preco_unitario === 'number' &&
+      Number.isFinite(priceData.preco_unitario)
+    ) {
       const rpcPrice = priceData.preco_unitario;
-      if (personalizationRef.current.estimatedPrice !== rpcPrice) {
-        onChangeRef.current({ ...personalizationRef.current, estimatedPrice: rpcPrice });
+      const rpcSetup = priceData.setup_total ?? 0;
+      const rpcTotal = priceData.total_cobrado ?? rpcPrice * kitQuantity;
+      const current = personalizationRef.current;
+      if (
+        current.estimatedPrice !== rpcPrice ||
+        current.setupCost !== rpcSetup ||
+        current.totalPrice !== rpcTotal ||
+        current.pricedQuantity !== kitQuantity
+      ) {
+        onChangeRef.current({
+          ...current,
+          estimatedPrice: rpcPrice,
+          pricedQuantity: kitQuantity,
+          setupCost: rpcSetup,
+          totalPrice: rpcTotal,
+        });
       }
     }
-  }, [priceData?.preco_unitario, priceData?.success]);
+  }, [
+    kitQuantity,
+    priceData?.preco_unitario,
+    priceData?.setup_total,
+    priceData?.success,
+    priceData?.total_cobrado,
+  ]);
 
   const handleToggle = (enabled: boolean) => {
     onChange({
       ...personalization,
       enabled,
       estimatedPrice: enabled ? personalization.estimatedPrice : undefined,
+      pricedQuantity: enabled ? personalization.pricedQuantity : undefined,
+      setupCost: enabled ? personalization.setupCost : undefined,
+      totalPrice: enabled ? personalization.totalPrice : undefined,
     });
     setIsOpen(enabled);
   };
@@ -207,7 +313,33 @@ function ItemPersonalizationCard({
   };
 
   const handleColorsChange = (colors: number) => {
-    onChange({ ...personalization, colors, estimatedPrice: undefined });
+    onChange({
+      ...personalization,
+      colors,
+      artworkColors: personalization.artworkColors?.slice(0, colors),
+      estimatedPrice: undefined,
+      pricedQuantity: undefined,
+      setupCost: undefined,
+      totalPrice: undefined,
+      generatedMockupUrl: undefined,
+    });
+  };
+
+  const toggleArtworkColor = (color: string) => {
+    const current = personalization.artworkColors ?? [];
+    const next = current.includes(color)
+      ? current.filter((candidate) => candidate !== color)
+      : [...current, color].slice(-maxColors);
+    onChange({
+      ...personalization,
+      artworkColors: next,
+      colors: Math.max(1, next.length),
+      estimatedPrice: undefined,
+      pricedQuantity: undefined,
+      setupCost: undefined,
+      totalPrice: undefined,
+      generatedMockupUrl: undefined,
+    });
   };
 
   const maxColors = currentTech?.max_cores || 6;
@@ -295,7 +427,12 @@ function ItemPersonalizationCard({
 
         <CollapsibleContent>
           <CardContent className="pt-0">
-            <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_13rem]">
+            <div
+              className={cn(
+                'grid gap-4',
+                showInlinePreview && 'xl:grid-cols-[minmax(0,1fr)_13rem]',
+              )}
+            >
               <div className="space-y-4">
                 {/* Técnica */}
                 <div className="grid grid-cols-2 gap-4">
@@ -365,6 +502,34 @@ function ItemPersonalizationCard({
                   </div>
                 </div>
 
+                <div className="space-y-2">
+                  <Label>Cores da arte</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {['#ffffff', '#111827', '#2563eb', '#dc2626', '#16a34a', '#f59e0b'].map(
+                      (color) => {
+                        const selected = personalization.artworkColors?.includes(color);
+                        return (
+                          <button
+                            key={color}
+                            type="button"
+                            aria-label={`Cor ${color}`}
+                            aria-pressed={selected}
+                            onClick={() => toggleArtworkColor(color)}
+                            className={cn(
+                              'h-8 w-8 rounded-full border-2 shadow-sm',
+                              selected ? 'border-primary ring-2 ring-primary/30' : 'border-border',
+                            )}
+                            style={{ backgroundColor: color }}
+                          />
+                        );
+                      },
+                    )}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    A quantidade selecionada alimenta o cálculo; a produção valida as cores finais.
+                  </p>
+                </div>
+
                 {/* Dimensões — somente se técnica usa dimensão */}
                 {currentTech?.usa_dimensao && (
                   <div className="grid grid-cols-2 gap-4">
@@ -390,6 +555,10 @@ function ItemPersonalizationCard({
                                 ? Math.min(value, currentTech.efetiva_largura_max)
                                 : undefined,
                             estimatedPrice: undefined,
+                            pricedQuantity: undefined,
+                            setupCost: undefined,
+                            totalPrice: undefined,
+                            generatedMockupUrl: undefined,
                           });
                         }}
                       />
@@ -416,6 +585,10 @@ function ItemPersonalizationCard({
                                 ? Math.min(value, currentTech.efetiva_altura_max)
                                 : undefined,
                             estimatedPrice: undefined,
+                            pricedQuantity: undefined,
+                            setupCost: undefined,
+                            totalPrice: undefined,
+                            generatedMockupUrl: undefined,
                           });
                         }}
                       />
@@ -450,63 +623,326 @@ function ItemPersonalizationCard({
                 )}
               </div>
 
-              <aside className="space-y-3 rounded-lg border bg-muted/20 p-3">
-                <div className="flex items-center justify-between gap-2">
-                  <div>
-                    <p className="text-sm font-medium">Prévia da aplicação</p>
-                    <p className="text-xs text-muted-foreground">Arte por item</p>
-                  </div>
-                  <ImageUploadButton
-                    currentImageUrl={personalization.artworkUrl ?? null}
-                    onUpload={(artworkUrl) => onChange({ ...personalization, artworkUrl })}
-                    onRemove={() => onChange({ ...personalization, artworkUrl: undefined })}
-                    folder="kit-maker/artwork"
-                  />
-                </div>
-
-                <div className="relative aspect-[4/5] overflow-hidden rounded-md border bg-background">
-                  {imageUrl ? (
-                    <img
-                      src={imageUrl}
-                      alt={`Prévia de ${displayName}`}
-                      className="h-full w-full object-cover"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center">
-                      <Palette className="h-8 w-8 text-muted-foreground" />
-                    </div>
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/55 via-transparent to-transparent" />
-                  {personalization.artworkUrl ? (
-                    <div className="absolute inset-x-[22%] top-[35%] flex aspect-square items-center justify-center overflow-hidden rounded border border-primary/40 bg-background/15 p-2 shadow-lg backdrop-blur-[1px]">
-                      <img
-                        src={personalization.artworkUrl}
-                        alt="Arte enviada para personalização"
-                        className="h-full w-full object-contain"
-                        loading="lazy"
-                      />
-                    </div>
-                  ) : (
-                    <div className="absolute inset-x-[12%] top-[39%] rounded border border-dashed border-primary/50 bg-background/55 px-2 py-3 text-center text-xs font-medium text-muted-foreground backdrop-blur-sm">
-                      Envie sua arte
-                    </div>
-                  )}
-                  {personalization.positionName && (
-                    <span className="absolute bottom-2 left-2 rounded bg-background/85 px-2 py-1 text-[10px] font-medium">
-                      {personalization.positionName}
-                    </span>
-                  )}
-                </div>
-                <p className="text-xs leading-relaxed text-muted-foreground">
-                  Prévia indicativa. A área e a técnica serão validadas antes da produção.
-                </p>
-              </aside>
+              {showInlinePreview && (
+                <PersonalizationPreview
+                  displayName={displayName}
+                  imageUrl={imageUrl}
+                  personalization={personalization}
+                  onChange={onChange}
+                />
+              )}
             </div>
           </CardContent>
         </CollapsibleContent>
       </Collapsible>
     </Card>
+  );
+}
+
+function PersonalizationPriceSynchronizer({
+  productId,
+  personalization,
+  onChange,
+  quantity,
+}: {
+  productId: string;
+  personalization: KitItemPersonalization;
+  onChange: (config: KitItemPersonalization) => void;
+  quantity: number;
+}) {
+  const { data: options } = useProductCustomizationOptions(productId);
+  const techniques = useMemo(
+    () => (options?.locations ? flattenTechniques(options.locations) : []),
+    [options],
+  );
+  const currentTech = techniques.find(
+    (technique) =>
+      technique.technique_id === personalization.techniqueId &&
+      (!personalization.positionCode || technique.location_code === personalization.positionCode),
+  );
+  const { price } = useCustomizationPriceReactive(
+    personalization.enabled ? personalization.techniqueId || null : null,
+    quantity,
+    personalization.colors || 1,
+    personalization.width || null,
+    personalization.height || null,
+    currentTech?.usa_dimensao || false,
+  );
+  const personalizationRef = useRef(personalization);
+  const onChangeRef = useRef(onChange);
+
+  useEffect(() => {
+    personalizationRef.current = personalization;
+    onChangeRef.current = onChange;
+  }, [onChange, personalization]);
+
+  useEffect(() => {
+    if (!price?.success || !Number.isFinite(price.preco_unitario)) return;
+    const current = personalizationRef.current;
+    const unitPrice = price.preco_unitario ?? 0;
+    const setupCost = price.setup_total ?? 0;
+    const totalPrice = price.total_cobrado ?? unitPrice * quantity;
+    if (
+      current.estimatedPrice !== unitPrice ||
+      current.setupCost !== setupCost ||
+      current.totalPrice !== totalPrice ||
+      current.pricedQuantity !== quantity
+    ) {
+      onChangeRef.current({
+        ...current,
+        estimatedPrice: unitPrice,
+        pricedQuantity: quantity,
+        setupCost,
+        totalPrice,
+      });
+    }
+  }, [price?.preco_unitario, price?.setup_total, price?.success, price?.total_cobrado, quantity]);
+
+  return null;
+}
+
+interface PersonalizationPreviewProps {
+  displayName: string;
+  imageUrl: string | null;
+  personalization: KitItemPersonalization;
+  onChange: (config: KitItemPersonalization) => void;
+  savedArtworkUrls?: string[];
+}
+
+function PersonalizationPreview({
+  displayName,
+  imageUrl,
+  personalization,
+  onChange,
+  savedArtworkUrls = [],
+}: PersonalizationPreviewProps) {
+  const [side, setSide] = useState<'back' | 'front'>('front');
+  const [zoom, setZoom] = useState(1);
+  const [fullscreen, setFullscreen] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const generationRef = useRef(0);
+  const personalizationRef = useRef(personalization);
+
+  useEffect(() => {
+    personalizationRef.current = personalization;
+  }, [personalization]);
+
+  const handleGenerateMockup = async () => {
+    const request = buildKitMockupRequest(displayName, imageUrl, personalization);
+    if (!request) {
+      toast.error('Selecione a técnica e envie uma arte antes de gerar a prévia.');
+      return;
+    }
+
+    const inputFingerprint = kitMockupInputFingerprint(displayName, imageUrl, personalization);
+    const generation = generationRef.current + 1;
+    generationRef.current = generation;
+    setIsGenerating(true);
+    try {
+      const result = await generateMockupApi(request);
+      const generatedMockupUrl = result.singleUrl || result.batchResults[0]?.url;
+      if (!generatedMockupUrl) throw new Error('O serviço não retornou uma imagem.');
+      if (
+        generationRef.current !== generation ||
+        kitMockupInputFingerprint(displayName, imageUrl, personalizationRef.current) !==
+          inputFingerprint
+      ) {
+        toast.info('A configuração mudou; gere uma nova prévia com os dados atuais.');
+        return;
+      }
+      onChange({ ...personalizationRef.current, generatedMockupUrl });
+      toast.success('Prévia de personalização gerada.');
+    } catch (error) {
+      toast.error('Não foi possível gerar a prévia', { description: sanitizeError(error) });
+    } finally {
+      if (generationRef.current === generation) setIsGenerating(false);
+    }
+  };
+
+  const renderCanvas = (expanded = false) => (
+    <div
+      className={cn(
+        'relative overflow-hidden rounded-lg border bg-background',
+        expanded ? 'h-[min(78vh,48rem)] w-full' : 'aspect-[4/5]',
+      )}
+    >
+      <div
+        className="h-full w-full transition-transform duration-200 motion-reduce:transition-none"
+        style={{ transform: `scale(${zoom})` }}
+      >
+        {personalization.generatedMockupUrl ? (
+          <img
+            src={personalization.generatedMockupUrl}
+            alt={`Mockup gerado de ${displayName}`}
+            className="h-full w-full object-contain"
+          />
+        ) : imageUrl ? (
+          <img
+            src={imageUrl}
+            alt={`${side === 'front' ? 'Frente' : 'Verso'} de ${displayName}`}
+            className="h-full w-full object-cover"
+            style={{ transform: side === 'back' ? 'scaleX(-1)' : undefined }}
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center">
+            <Palette className="h-10 w-10 text-muted-foreground" />
+          </div>
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-background/55 via-transparent to-transparent" />
+        {!personalization.generatedMockupUrl && personalization.artworkUrl ? (
+          <div className="absolute inset-x-[22%] top-[35%] flex aspect-square items-center justify-center overflow-hidden rounded border border-primary/40 bg-background/15 p-2 shadow-lg backdrop-blur-[1px]">
+            <img
+              src={personalization.artworkUrl}
+              alt="Arte enviada para personalização"
+              className="h-full w-full object-contain"
+            />
+          </div>
+        ) : !personalization.generatedMockupUrl ? (
+          <div className="absolute inset-x-[12%] top-[39%] rounded border border-dashed border-primary/50 bg-background/70 px-2 py-3 text-center text-xs font-medium text-muted-foreground backdrop-blur-sm">
+            Envie ou reutilize uma arte
+          </div>
+        ) : null}
+      </div>
+      {personalization.positionName && (
+        <span className="absolute bottom-2 left-2 rounded bg-background/85 px-2 py-1 text-[10px] font-medium">
+          {personalization.positionName} · {side === 'front' ? 'Frente' : 'Verso'}
+        </span>
+      )}
+    </div>
+  );
+
+  return (
+    <aside className="space-y-3 rounded-lg border bg-muted/20 p-3">
+      <div className="flex items-center justify-between gap-2">
+        <div>
+          <p className="text-sm font-medium">Prévia do item</p>
+          <p className="text-xs text-muted-foreground">Frente, verso e zoom</p>
+        </div>
+        <ImageUploadButton
+          currentImageUrl={personalization.artworkUrl ?? null}
+          onUpload={(artworkUrl) =>
+            onChange({ ...personalization, artworkUrl, generatedMockupUrl: undefined })
+          }
+          onRemove={() =>
+            onChange({
+              ...personalization,
+              artworkUrl: undefined,
+              generatedMockupUrl: undefined,
+            })
+          }
+          folder="kit-maker/artwork"
+          deleteOnRemove={false}
+        />
+      </div>
+
+      <div className="grid grid-cols-2 rounded-md bg-secondary p-1" aria-label="Lado da prévia">
+        {(['front', 'back'] as const).map((value) => (
+          <Button
+            key={value}
+            type="button"
+            size="sm"
+            variant={side === value ? 'default' : 'ghost'}
+            onClick={() => setSide(value)}
+          >
+            {value === 'front' ? 'Frente' : 'Verso'}
+          </Button>
+        ))}
+      </div>
+
+      <div className="relative">
+        {renderCanvas()}
+        <div className="absolute right-2 top-2 flex flex-col gap-1">
+          <Button
+            type="button"
+            size="icon"
+            variant="secondary"
+            aria-label="Aumentar zoom"
+            onClick={() => setZoom((current) => Math.min(1.6, current + 0.15))}
+          >
+            <ZoomIn className="h-4 w-4" />
+          </Button>
+          <Button
+            type="button"
+            size="icon"
+            variant="secondary"
+            aria-label="Diminuir zoom"
+            onClick={() => setZoom((current) => Math.max(0.7, current - 0.15))}
+          >
+            <ZoomOut className="h-4 w-4" />
+          </Button>
+          <Button
+            type="button"
+            size="icon"
+            variant="secondary"
+            aria-label="Abrir prévia em tela cheia"
+            onClick={() => setFullscreen(true)}
+          >
+            <Maximize2 className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+
+      <Button
+        type="button"
+        className="w-full"
+        disabled={
+          isGenerating ||
+          !personalization.enabled ||
+          !personalization.techniqueName ||
+          !personalization.artworkUrl ||
+          !imageUrl
+        }
+        onClick={handleGenerateMockup}
+      >
+        {isGenerating ? (
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        ) : (
+          <Sparkles className="mr-2 h-4 w-4" />
+        )}
+        {isGenerating
+          ? 'Gerando prévia...'
+          : personalization.generatedMockupUrl
+            ? 'Gerar nova prévia'
+            : 'Gerar personalização'}
+      </Button>
+
+      {savedArtworkUrls.length > 0 && (
+        <div className="space-y-2">
+          <p className="flex items-center gap-1 text-xs font-medium">
+            <Images className="h-3.5 w-3.5" /> Artes usadas neste kit
+          </p>
+          <div className="flex gap-2 overflow-x-auto pb-1">
+            {savedArtworkUrls.map((url) => (
+              <button
+                key={url}
+                type="button"
+                onClick={() =>
+                  onChange({ ...personalization, artworkUrl: url, generatedMockupUrl: undefined })
+                }
+                className={cn(
+                  'h-12 w-12 shrink-0 overflow-hidden rounded border bg-background p-1',
+                  personalization.artworkUrl === url && 'border-primary ring-2 ring-primary/30',
+                )}
+                aria-label="Reutilizar arte salva"
+              >
+                <img src={url} alt="Arte salva" className="h-full w-full object-contain" />
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <p className="text-xs leading-relaxed text-muted-foreground">
+        Prévia indicativa. A arte, a área e a técnica serão validadas antes da produção.
+      </p>
+
+      <Dialog open={fullscreen} onOpenChange={setFullscreen}>
+        <DialogContent className="max-w-5xl">
+          <DialogTitle>Prévia de {displayName}</DialogTitle>
+          {renderCanvas(true)}
+        </DialogContent>
+      </Dialog>
+    </aside>
   );
 }
 
@@ -523,6 +959,65 @@ export function PersonalizationConfig({
   onBoxPersonalizationChange,
   onItemPersonalizationChange,
 }: PersonalizationConfigProps) {
+  const targets = [
+    ...(box
+      ? [
+          {
+            key: 'box',
+            productId: box.id,
+            displayName: box.name,
+            imageUrl: box.imageUrl,
+            personalization: boxPersonalization,
+            onChange: onBoxPersonalizationChange,
+            isBox: true,
+            quantity: kitQuantity,
+          },
+        ]
+      : []),
+    ...items.map((item) => {
+      const lineId = getKitItemLineId(item);
+      return {
+        key: lineId,
+        productId: item.id,
+        displayName: item.name,
+        imageUrl: item.imageUrl,
+        personalization: itemPersonalizations[lineId] ??
+          itemPersonalizations[item.id] ?? { enabled: false },
+        onChange: (config: KitItemPersonalization) => onItemPersonalizationChange(lineId, config),
+        isBox: false,
+        quantity: item.quantity * kitQuantity,
+      };
+    }),
+  ];
+  const [activeTargetKey, setActiveTargetKey] = useState(targets[0]?.key ?? '');
+  const activeTarget = targets.find((target) => target.key === activeTargetKey) ?? targets[0];
+  const firstTargetKey = targets[0]?.key;
+  const hasActiveTarget = targets.some((target) => target.key === activeTargetKey);
+  const savedArtworkUrls = Array.from(
+    new Set(
+      targets
+        .map((target) => target.personalization.artworkUrl)
+        .filter((url): url is string => Boolean(url)),
+    ),
+  );
+  const backgroundPriceTargets = targets
+    .filter((target) => {
+      if (target.key === activeTarget?.key || !target.personalization.enabled) return false;
+      if (!target.personalization.techniqueId) return false;
+      return (
+        target.personalization.pricedQuantity !== target.quantity ||
+        !Number.isFinite(target.personalization.estimatedPrice) ||
+        !Number.isFinite(target.personalization.totalPrice)
+      );
+    })
+    .slice(0, 2);
+
+  useEffect(() => {
+    if (firstTargetKey && !hasActiveTarget) {
+      setActiveTargetKey(firstTargetKey);
+    }
+  }, [activeTargetKey, firstTargetKey, hasActiveTarget]);
+
   const totalPersonalizations =
     (boxPersonalization.enabled ? 1 : 0) +
     Object.values(itemPersonalizations).filter((p) => p.enabled).length;
@@ -565,45 +1060,102 @@ export function PersonalizationConfig({
         </div>
       )}
 
-      {/* Caixa */}
-      {box && (
-        <div className="space-y-2">
-          <h4 className="text-sm font-medium text-muted-foreground">Embalagem</h4>
-          <ItemPersonalizationCard
-            productId={box.id}
-            displayName={box.name}
-            imageUrl={box.imageUrl}
-            personalization={boxPersonalization}
-            onChange={onBoxPersonalizationChange}
-            isBox
-            kitQuantity={kitQuantity}
-          />
-        </div>
-      )}
+      {activeTarget && (
+        <>
+          {backgroundPriceTargets.map((target) => (
+            <PersonalizationPriceSynchronizer
+              key={`price-sync:${target.key}`}
+              productId={target.productId}
+              personalization={target.personalization}
+              onChange={target.onChange}
+              quantity={target.quantity}
+            />
+          ))}
+          <div className="grid gap-4 xl:grid-cols-[18rem_minmax(0,1fr)_20rem]">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Itens do seu kit</CardTitle>
+                <p className="text-xs text-muted-foreground">
+                  Selecione um item para personalizar.
+                </p>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {targets.map((target) => {
+                  const configured =
+                    target.personalization.enabled &&
+                    Boolean(target.personalization.techniqueId) &&
+                    Number.isFinite(target.personalization.estimatedPrice) &&
+                    Number.isFinite(target.personalization.totalPrice) &&
+                    target.personalization.pricedQuantity === target.quantity;
+                  return (
+                    <button
+                      key={target.key}
+                      type="button"
+                      onClick={() => setActiveTargetKey(target.key)}
+                      className={cn(
+                        'flex w-full items-center gap-3 rounded-lg border p-2 text-left transition-colors',
+                        activeTarget.key === target.key
+                          ? 'border-primary bg-primary/10'
+                          : 'hover:bg-muted/60',
+                      )}
+                    >
+                      <div className="h-12 w-12 shrink-0 overflow-hidden rounded bg-secondary">
+                        {target.imageUrl ? (
+                          <img
+                            src={target.imageUrl}
+                            alt=""
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <Package className="m-3 h-6 w-6 text-muted-foreground" />
+                        )}
+                      </div>
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-sm font-medium">
+                          {target.displayName}
+                        </span>
+                        <span
+                          className={cn(
+                            'text-xs',
+                            configured ? 'text-success' : 'text-muted-foreground',
+                          )}
+                        >
+                          {configured
+                            ? 'Personalização concluída'
+                            : target.personalization.enabled
+                              ? 'Configuração pendente'
+                              : 'Sem personalização'}
+                        </span>
+                      </span>
+                    </button>
+                  );
+                })}
+              </CardContent>
+            </Card>
 
-      {/* Itens */}
-      {items.length > 0 && (
-        <div className="space-y-2">
-          <h4 className="text-sm font-medium text-muted-foreground">
-            Itens do Kit ({items.length})
-          </h4>
-          <div className="space-y-3">
-            {items.map((item) => (
+            <div className="min-w-0">
               <ItemPersonalizationCard
-                key={getKitItemLineId(item)}
-                productId={item.id}
-                displayName={item.name}
-                imageUrl={item.imageUrl}
-                personalization={
-                  itemPersonalizations[getKitItemLineId(item)] ??
-                  itemPersonalizations[item.id] ?? { enabled: false }
-                }
-                onChange={(config) => onItemPersonalizationChange(getKitItemLineId(item), config)}
-                kitQuantity={item.quantity * kitQuantity}
+                key={activeTarget.key}
+                productId={activeTarget.productId}
+                displayName={activeTarget.displayName}
+                imageUrl={activeTarget.imageUrl}
+                personalization={activeTarget.personalization}
+                onChange={activeTarget.onChange}
+                isBox={activeTarget.isBox}
+                kitQuantity={activeTarget.quantity}
+                showInlinePreview={false}
               />
-            ))}
+            </div>
+
+            <PersonalizationPreview
+              displayName={activeTarget.displayName}
+              imageUrl={activeTarget.imageUrl}
+              personalization={activeTarget.personalization}
+              onChange={activeTarget.onChange}
+              savedArtworkUrls={savedArtworkUrls}
+            />
           </div>
-        </div>
+        </>
       )}
 
       {items.length === 0 && !box && (

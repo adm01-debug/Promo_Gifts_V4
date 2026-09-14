@@ -68,4 +68,26 @@ describe('BoxSelector', () => {
     fireEvent.click(action);
     expect(onSelect).not.toHaveBeenCalled();
   });
+
+  it('desabilita a comparação quando um filtro remove uma das caixas selecionadas', () => {
+    const first = box();
+    const second = box({ id: 'box-2', name: 'Caixa Kraft', sku: 'CX-002' });
+    const props = {
+      selectedBox: null,
+      kitItems: [] as KitItem[],
+      isLoading: false,
+      filters,
+      onFiltersChange: vi.fn(),
+      onSelect: vi.fn(),
+      onClear: vi.fn(),
+    };
+    const { rerender } = render(<BoxSelector {...props} boxes={[first, second]} />);
+
+    fireEvent.click(screen.getByRole('button', { name: /adicionar caixa premium da comparação/i }));
+    fireEvent.click(screen.getByRole('button', { name: /adicionar caixa kraft da comparação/i }));
+    expect(screen.getByRole('button', { name: 'Comparar caixas' })).toBeEnabled();
+
+    rerender(<BoxSelector {...props} boxes={[first]} />);
+    expect(screen.getByRole('button', { name: 'Comparar caixas' })).toBeDisabled();
+  });
 });

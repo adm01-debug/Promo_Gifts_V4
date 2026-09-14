@@ -158,5 +158,24 @@ describe("kit-builder price-calculator", () => {
       const breakdown = generatePriceBreakdown(null, mockItems, emptyPersonalization, 1);
       expect(breakdown.length).toBe(2); // just items
     });
+
+    it("expõe o piso de setup sem tratá-lo como cobrança aditiva", () => {
+      const personalization: KitPersonalization = {
+        box: {
+          enabled: true,
+          techniqueName: "Laser",
+          estimatedPrice: 2,
+          pricedQuantity: 10,
+          setupCost: 50,
+          totalPrice: 50,
+        },
+        items: {},
+      };
+      const row = generatePriceBreakdown(mockBox, [], personalization, 10).find(
+        (entry) => entry.isPersonalization,
+      );
+
+      expect(row).toMatchObject({ totalPrice: 50, setupFloor: 50 });
+    });
   });
 });

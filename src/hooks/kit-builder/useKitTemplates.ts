@@ -8,6 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { sanitizeError } from '@/lib/security/sanitize-error';
 import type { Json } from '@/integrations/supabase/types';
+import type { CustomKitRow } from './useCustomKitPersistence';
 
 export interface KitTemplateRow {
   id: string;
@@ -98,7 +99,16 @@ export function useKitTemplates() {
 
       return data;
     },
-    onSuccess: () => {
+    onSuccess: (created) => {
+      const seed = (current: CustomKitRow[] | undefined) => {
+        const withoutDuplicate = (current ?? []).filter((kit) => kit.id !== created.id);
+        return [created as unknown as CustomKitRow, ...withoutDuplicate];
+      };
+      // Navigation happens immediately after mutateAsync resolves. Seed both
+      // consumers synchronously so hydration cannot observe an empty cache and
+      // permanently mark the new kit as already hydrated.
+      queryClient.setQueryData<CustomKitRow[]>(['custom-kits'], seed);
+      queryClient.setQueryData<CustomKitRow[]>(['custom-kits', user?.id], seed);
       queryClient.invalidateQueries({ queryKey: ['custom-kits'] });
       toast.success('Template clonado para os seus kits!');
     },

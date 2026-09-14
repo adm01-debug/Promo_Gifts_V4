@@ -31,6 +31,7 @@ export {
 // Packaging recommendation (conservative catalogue ranking)
 export { evaluateBoxForItems, rankBoxesForItems } from './box-recommendations';
 export type { BoxRecommendation, BoxRecommendationStatus } from './box-recommendations';
+export { resolveKitAICompositions } from './ai-composition';
 
 // Persistence snapshot contract
 export { buildKitPersistencePayload, getPersistedKitStatus } from './persistence';
