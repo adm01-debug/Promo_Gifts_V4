@@ -130,6 +130,40 @@ describe('StockCategoryTreeSelect', () => {
     expect(screen.queryByText('Cadernos')).not.toBeInTheDocument();
   });
 
+  it('filtra por correspondência em neto (3 níveis), expandindo raiz e nó intermediário sem match próprio', async () => {
+    const user = userEvent.setup();
+    const deepTree: CategoryNode[] = [
+      node({
+        id: 'cat-papelaria',
+        name: 'Papelaria',
+        children: [
+          node({
+            id: 'cat-escrita',
+            name: 'Escrita', // não contém o termo buscado — força a recursão
+            level: 2,
+            parent_id: 'cat-papelaria',
+            children: [
+              node({
+                id: 'cat-canetas-gel',
+                name: 'Canetas em Gel',
+                level: 3,
+                parent_id: 'cat-escrita',
+              }),
+            ],
+          }),
+        ],
+      }),
+    ];
+    setTree(deepTree);
+    render(<StockCategoryTreeSelect value={undefined} onChange={vi.fn()} />);
+    await user.type(screen.getByPlaceholderText('Buscar categoria...'), 'Gel');
+    // o neto que casa aparece — só é alcançável se a recursão descer 2 níveis
+    // (raiz "Papelaria" e nó intermediário "Escrita" não contêm "Gel" no próprio nome).
+    expect(await screen.findByText('Canetas em Gel')).toBeInTheDocument();
+    expect(screen.getByText('Papelaria')).toBeInTheDocument();
+    expect(screen.getByText('Escrita')).toBeInTheDocument();
+  });
+
   it('limpa a busca com o botão X dentro do input', async () => {
     const user = userEvent.setup();
     setTree(sampleTree);
