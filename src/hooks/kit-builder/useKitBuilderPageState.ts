@@ -37,7 +37,10 @@ function readDraftClient(personalizationData: Record<string, unknown>): KitQuote
   const client = draft && isRecord(draft.quoteClient) ? draft.quoteClient : null;
   if (!client) return {};
 
-  const text = (key: string) => (typeof client[key] === 'string' ? client[key] : undefined);
+  const text = (key: string): string | undefined => {
+    const value = client[key];
+    return typeof value === 'string' ? value : undefined;
+  };
   return {
     client_cnpj: text('client_cnpj'),
     client_company: text('client_company'),

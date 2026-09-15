@@ -39,11 +39,21 @@ function supplier(overrides: Partial<SupplierReliability> & { supplierId: string
 describe("ReliabilityKpiBar", () => {
   it("com lista vazia, renderiza todos os contadores zerados", () => {
     render(<ReliabilityKpiBar suppliers={[]} />);
-    const bar = screen.getByTestId("reliability-kpi-bar");
-    // 4 cards (high/medium/low/unknown), todos com valor 0
-    expect(bar.textContent).toContain("0");
-    expect(screen.getByText("Confiança Alta")).toBeInTheDocument();
-    expect(screen.getByText("Sem Histórico")).toBeInTheDocument();
+
+    // 4 cards (high/medium/low/unknown) — cada um verificado individualmente,
+    // não só "existe um 0 em algum lugar do bar" (isso passaria mesmo com 1 de 4
+    // bandas zerada e as outras vazando contagem incorreta).
+    const highCard = screen.getByText("Confiança Alta").closest("div.min-w-0");
+    expect(highCard?.textContent).toContain("0");
+
+    const mediumCard = screen.getByText("Confiança Média").closest("div.min-w-0");
+    expect(mediumCard?.textContent).toContain("0");
+
+    const lowCard = screen.getByText("Confiança Baixa").closest("div.min-w-0");
+    expect(lowCard?.textContent).toContain("0");
+
+    const unknownCard = screen.getByText("Sem Histórico").closest("div.min-w-0");
+    expect(unknownCard?.textContent).toContain("0");
   });
 
   it("conta fornecedores por banda e soma matches/órfãos/vencidas de todos", () => {
