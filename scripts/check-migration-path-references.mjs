@@ -17,7 +17,8 @@
  * Regras:
  *   • Varre .md, .mdx, .txt, .yml, .yaml, .json, .ts, .tsx, .js, .mjs, .cjs, .sh
  *   • Ignora node_modules, dist, build, .git, coverage, playwright-report,
- *     test-results, .lovable, medallion (docs de arquitetura, links soltos).
+ *     test-results, .lovable, medallion (docs de arquitetura, links soltos)
+ *     e graphify-out/cache (índice derivado que preserva paths históricos).
  *   • Extrai path via regex; considera OK se o arquivo/dir existe no repo,
  *     ou se a referência é um glob (contém `*`), ou é o próprio path base
  *     (`supabase/migrations/`).
@@ -40,6 +41,10 @@ const IGNORE_DIRS = new Set([
   'medallion', // docs internos de arquitetura, links soltos aceitos
   '.workspace', '.agents', '.claude',
 ]);
+// O cache do Graphify é uma projeção do corpus, não uma fonte canônica de
+// referências. Ele pode reter paths históricos de migrations já reconciliadas
+// e não deve fazer o gate falhar por texto derivado.
+const IGNORE_RELATIVE_DIRS = new Set(['graphify-out/cache']);
 // Arquivos que só falam de paths (README/snapshot meta), varremos normal —
 // mas ignoramos o próprio SELF para não recursivar em exemplos.
 const SELF = 'scripts/check-migration-path-references.mjs';
@@ -72,7 +77,8 @@ function walk(dir) {
     let st;
     try { st = statSync(full); } catch { continue; }
     if (st.isDirectory()) {
-      if (IGNORE_DIRS.has(entry)) continue;
+      const rel = relative(ROOT, full);
+      if (IGNORE_DIRS.has(entry) || IGNORE_RELATIVE_DIRS.has(rel)) continue;
       walk(full);
     } else if (st.isFile()) {
       const rel = relative(ROOT, full);
@@ -172,4 +178,3 @@ if (stale.length) {
 console.log(
   `✅ Nenhuma NOVA referência quebrada. (${baselineSet.size} entrada(s) legadas na baseline.)`,
 );
-

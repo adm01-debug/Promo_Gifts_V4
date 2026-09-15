@@ -24,8 +24,8 @@ name: db-schema-drift-check
 #                             https://supabase.com/dashboard/account/tokens
 #   - SUPABASE_DB_PASSWORD  : senha do banco do projeto (Database settings)
 #
-# SAFE-BY-DEFAULT: faltando algum secret, o job apenas emite WARNING e passa
-# (verde) — nunca bloqueia o CI ate os secrets serem configurados.
+# FAIL-CLOSED: faltando algum secret obrigatório, o job falha explicitamente.
+# Um check verde só é válido após link e consulta live ao banco canônico.
 #
 # Variavel sobrescrivivel (nao-secret):
 #   SUPABASE_PROJECT_REF (default: doufsxqlfjyuvxuezpln)
@@ -33,7 +33,7 @@ name: db-schema-drift-check
 
 on:
   schedule:
-    - cron: '30 9 * * *'   # 06:30 BRT
+    - cron: '30 9 * * *' # 06:30 BRT
   pull_request:
     paths:
       - 'supabase/migrations/**'
@@ -61,16 +61,21 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Guard - secrets presentes?
+      - name: Gate - secrets obrigatórios presentes?
         id: guard
         run: |
           set -euo pipefail
           if [ -z "${SUPABASE_ACCESS_TOKEN:-}" ] || [ -z "${SUPABASE_DB_PASSWORD:-}" ]; then
-            echo "::warning::SUPABASE_ACCESS_TOKEN e/ou SUPABASE_DB_PASSWORD ausentes - drift check PULADO (safe-by-default). Configure os secrets para ativar o gate."
-            echo "enabled=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "enabled=true" >> "$GITHUB_OUTPUT"
+            {
+              echo "## Drift check bloqueado"
+              echo
+              echo "SUPABASE_ACCESS_TOKEN e/ou SUPABASE_DB_PASSWORD ausentes."
+              echo "O resultado não pode ser considerado válido sem consulta live ao projeto canônico."
+            } >> "$GITHUB_STEP_SUMMARY"
+            echo "::error::SUPABASE_ACCESS_TOKEN e/ou SUPABASE_DB_PASSWORD ausentes; não é permitido pular a validação live."
+            exit 1
           fi
+          echo "enabled=true" >> "$GITHUB_OUTPUT"
 
       - name: Install Supabase CLI
         if: steps.guard.outputs.enabled == 'true'
