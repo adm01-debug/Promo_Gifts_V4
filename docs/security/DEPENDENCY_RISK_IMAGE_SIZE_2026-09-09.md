@@ -11,7 +11,10 @@ Revisão obrigatória: 2026-10-09 ou quando `image-size` publicar uma versão co
 `pptxgenjs@4.0.1` depende de `image-size@^1.2.1`. O GitHub Advisory Database registra
 loops infinitos nos parsers ICNS, JXL e HEIF de todas as versões publicadas de
 `image-size` até `2.0.2`. Não existe release corrigida nesta data. O reparo automático do
-npm propõe `pptxgenjs@1.1.5`, um downgrade incompatível que não deve ser aplicado.
+npm já propôs `pptxgenjs@1.1.5` e, em 15/set/2026, `pptxgenjs@2.2.0`; ambos são downgrades
+incompatíveis com a API 4.x usada pelo projeto e não devem ser aplicados automaticamente.
+O gate registra estritamente as duas respostas históricas do advisory para manter a exceção
+temporária específica e falhar se a topologia, o alcance ou o advisory mudar.
 
 Avisos oficiais: [ICNS — GHSA-w3rx-r6r6-pgpr](https://github.com/advisories/GHSA-w3rx-r6r6-pgpr)
 e [JXL/HEIF — GHSA-5p2g-fcmc-qvqq](https://github.com/advisories/GHSA-5p2g-fcmc-qvqq).

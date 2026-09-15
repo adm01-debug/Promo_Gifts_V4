@@ -10,13 +10,20 @@ const ALLOWED_IMAGE_SIZE_ADVISORIES = new Map([
   ['https://github.com/advisories/GHSA-w3rx-r6r6-pgpr', 1138808],
 ]);
 
+// The npm advisory service has proposed more than one incompatible downgrade
+// for the same unpatched transitive dependency. These are not upgrades to
+// apply automatically: both would replace the supported pptxgenjs 4.x API.
+const REVIEWED_INCOMPATIBLE_PPTXGENJS_FIXES = new Set(['1.1.5', '2.2.0']);
+const REVIEWED_PPTXGENJS_VULNERABLE_RANGES = new Set(['1.1.5-1 || >=1.1.6', '>=2.3.0']);
+const REVIEWED_IMAGE_SIZE_VULNERABLE_RANGES = new Set(['*', '<=2.0.2']);
+
 function hasExpectedFixAvailable(vulnerability) {
   const fix = vulnerability.fixAvailable;
   return (
     fix &&
     typeof fix === 'object' &&
     fix.name === 'pptxgenjs' &&
-    fix.version === '1.1.5' &&
+    REVIEWED_INCOMPATIBLE_PPTXGENJS_FIXES.has(fix.version) &&
     fix.isSemVerMajor === true
   );
 }
@@ -46,7 +53,7 @@ function isAllowedImageSize(vulnerability) {
     Array.isArray(vulnerability.effects) &&
     vulnerability.effects.length === 1 &&
     vulnerability.effects[0] === 'pptxgenjs' &&
-    vulnerability.range === '*' &&
+    REVIEWED_IMAGE_SIZE_VULNERABLE_RANGES.has(vulnerability.range) &&
     hasExpectedFixAvailable(vulnerability) &&
     hasExpectedImageSizeAdvisories(vulnerability)
   );
@@ -61,7 +68,7 @@ function isAllowedPptxPropagation(vulnerability) {
     via[0] === 'image-size' &&
     Array.isArray(vulnerability.effects) &&
     vulnerability.effects.length === 0 &&
-    vulnerability.range === '1.1.5-1 || >=1.1.6' &&
+    REVIEWED_PPTXGENJS_VULNERABLE_RANGES.has(vulnerability.range) &&
     hasExpectedFixAvailable(vulnerability)
   );
 }

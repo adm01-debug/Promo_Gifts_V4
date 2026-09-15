@@ -10,8 +10,8 @@ const reviewedReport = {
       severity: 'high',
       isDirect: false,
       effects: ['pptxgenjs'],
-      range: '*',
-      fixAvailable: { name: 'pptxgenjs', version: '1.1.5', isSemVerMajor: true },
+      range: '<=2.0.2',
+      fixAvailable: { name: 'pptxgenjs', version: '2.2.0', isSemVerMajor: true },
       via: [
         {
           source: 1138808,
@@ -36,8 +36,8 @@ const reviewedReport = {
       isDirect: true,
       effects: [],
       via: ['image-size'],
-      range: '1.1.5-1 || >=1.1.6',
-      fixAvailable: { name: 'pptxgenjs', version: '1.1.5', isSemVerMajor: true },
+      range: '>=2.3.0',
+      fixAvailable: { name: 'pptxgenjs', version: '2.2.0', isSemVerMajor: true },
     },
   },
 };
@@ -117,6 +117,15 @@ describe('dependency audit policy', () => {
     const result = evaluateAuditReport(report, new Date('2026-09-09T12:00:00Z'));
     expect(result.passed).toBe(false);
     expect(result.violations).toContain('pptxgenjs: unexpected high advisory');
+  });
+
+  it('accepts the prior reviewed incompatible downgrade reported by npm', () => {
+    const report = structuredClone(reviewedReport);
+    report.vulnerabilities['image-size'].fixAvailable.version = '1.1.5';
+    report.vulnerabilities.pptxgenjs.fixAvailable.version = '1.1.5';
+    report.vulnerabilities['image-size'].range = '*';
+    report.vulnerabilities.pptxgenjs.range = '1.1.5-1 || >=1.1.6';
+    expect(evaluateAuditReport(report, new Date('2026-09-09T12:00:00Z')).passed).toBe(true);
   });
 
   it('fails closed when the temporary acceptance expires', () => {
