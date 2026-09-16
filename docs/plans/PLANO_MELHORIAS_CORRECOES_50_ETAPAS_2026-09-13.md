@@ -2,6 +2,11 @@
 **Repo:** `adm01-debug/Promo_Gifts_V4` · **Data:** 2026-09-13 · **Base:** `origin/main @ 892921430`
 **Autor:** análise técnica exaustiva (evidência coletada em execução, não inferida)
 
+> **📋 Ver estado consolidado em `docs/plans/MATRIZ_PLANOS_2026-09.md`** (atualizado em 2026-09-16).
+> Este plano coexiste com `PLANO_RECONCILIACAO_LOCAL_GITHUB_SUPABASE_50_ETAPAS_2026-09-15.md` e
+> `PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md`; a matriz evita que alguém reexecute uma
+> etapa que outro plano já resolveu (ex.: E31 aqui = E10 do plano 09-16).
+
 ---
 
 ## 0. Sumário executivo

@@ -7,6 +7,10 @@
 **Quantidade:** exatamente 50 etapas  
 **Objetivo:** provar e manter paridade bidirecional entre o conteúdo local, o GitHub e o banco canônico, sem perder trabalho multiagente nem aplicar mudanças de schema sem autorização explícita do PO.
 
+> **📋 Ver estado consolidado em `docs/plans/MATRIZ_PLANOS_2026-09.md`** (atualizado em 2026-09-16).
+> Este plano coexiste com `PLANO_MELHORIAS_CORRECOES_50_ETAPAS_2026-09-13.md` e
+> `PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md`; E26/E27 aqui = E02 do plano 09-16.
+
 ---
 
 ## 1. Estado inicial comprovado
