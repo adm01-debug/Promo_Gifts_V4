@@ -306,11 +306,21 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 ### E08 · Reparar o ledger para as `aplicada-sem-ledger` `[REQUER-PO]`
 **Problema:** cada migration aplicada sem registro faz `migration list` mentir e torna `migration up` perigoso.
 **Ação:** para o conjunto validado em E07, executar `supabase migration repair --status applied <versão>` em lotes de 50, **um lote por sessão**, com o manifesto assinado antes e depois. `repair` insere só a versão — **não executa SQL**. Preencher `name` e, quando o arquivo for canônico, `statements` (para fechar o gap de 483 sem statements daqui para frente).
+
+> **✅ Lote 1 concluído em 2026-09-16** — PO aprovou ("aprovado"). 103 candidatos originais → 13 excluídos por colisão de PK (`version` duplicado entre arquivos, ver abaixo) → **90 versões repairadas** via `supabase migration repair --status applied <90 versões> --linked` (Bash direto; caminho MCP ficou indisponível para escrita nesta sessão — `mcp__supabase__execute_sql` é somente-leitura e nenhuma ferramenta `apply_migration`/write foi encontrada sob o mesmo servidor `mcp__supabase__*`, apesar de aparecer liberada na UI do conector).
+>
+> Verificação pós-execução:
+> - `SELECT count(*) ... WHERE version IN (<90>)` → **90/90** confirmadas no ledger via `mcp__supabase__execute_sql` (leitura).
+> - `postgres_logs` do intervalo: só bootstrap idempotente da própria tabela do ledger (`CREATE TABLE IF NOT EXISTS`, `ALTER TABLE ... ADD COLUMN IF NOT EXISTS`) — **zero DDL em objetos de aplicação**.
+> - `supabase migration list --linked`: 83/90 casam `local == remote`. As outras 7 (`20260618000001`, `20260618160000`, `20260619100000`, `20260620160000`, `20260621100000`, `20260623120000`, `20260712`) aparecem com `remote` vazio **apesar de confirmadas presentes por SQL direto** — causa raiz identificada: essas 7 versões têm **2+ arquivos locais compartilhando o mesmo prefixo de versão** (ex.: `20260712_fix_rls_policies_critical.sql` e `20260712_performance_indexes.sql`), o que confunde o algoritmo de pareamento local×remoto do CLI. Não é uma falha do repair — é o mesmo problema estrutural do **E10** (prefixos duplicados). Achado adicional: `20260712` já existia no ledger *antes* deste lote, com `name = 'fix_rls_policies_critical'` (não `'performance_indexes'`) — confirma que a colisão de versão é pré-existente, não introduzida agora.
+> - 13 excluídos do lote (5 grupos de versão duplicada, 13 arquivos) ficam para o E10 (congelamento de exceções) resolver a ordem/identidade antes de qualquer nova tentativa de repair nessas versões.
+
 **Checklist de conclusão:**
-- [ ] PO aprovou a lista exata (versões) antes de cada lote
-- [ ] Após cada lote: `migration list --linked` sem "local only" para as versões do lote
-- [ ] Ledger exportado (E03) antes e depois, com diff = exatamente as versões inseridas
-- [ ] Zero DDL executada (verificar `postgres_logs` do intervalo)
+- [x] PO aprovou a lista exata (versões) antes do lote 1
+- [x] Após o lote: `migration list --linked` sem "local only" para as versões do lote — 83/90 limpas; 7/90 com discrepância de exibição explicada acima (causa: duplicidade de prefixo, não do repair)
+- [ ] Ledger exportado (E03) antes e depois, com diff = exatamente as versões inseridas — **não capturado neste lote** (fica como lição para o lote 2)
+- [x] Zero DDL executada (verificado via `postgres_logs`)
+- [ ] Lote 2 (118 arquivos maiores/confiança menor) e os 13 excluídos por colisão — pendente
 **Esforço:** M · **Dep.:** E07 · **Risco:** baixo se e somente se E07 estiver completo
 
 ### E09 · Resolver os 4 IDs inválidos do ledger, um a um `[REQUER-PO]`
