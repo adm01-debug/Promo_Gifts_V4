@@ -234,7 +234,7 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 ## FASE 1 — Integridade do ledger de migrations (E06–E15)
 > Objetivo: o ledger passa a dizer a verdade, ou pelo menos a dizer explicitamente o que não sabe.
 
-### E06 · Reconciliar e regerar a matriz completa arquivo ↔ ledger `[DB-RO]`
+### E06 · Reconciliar e regerar a matriz completa arquivo ↔ ledger `[DB-RO]` ✅ Concluída em 2026-09-16
 **Problema (medido):** 2.985 arquivos × 2.413 linhas, comparados hoje só por prefixo de versão (achado: 5 "só no ledger", 484 "só local"). **Já existe** um pipeline para isso — não construir do zero: `scripts/build-migration-ledger-manifest.mjs` + `docs/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json` (output já gerado uma vez) + `docs/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json` (input local, usado também por `scripts/check-no-db-push.mjs` — é código vivo, não histórico morto) + `docs/MANIFESTO_MIGRATIONS_RECONCILIADAS_2026-09-11.json` (exceções fechadas do PR #1855).
 **Ação:**
 1. **Antes de tudo:** reconciliar a divergência encontrada no pre-mortem (ver caixa abaixo) — sem isso, não dá para confiar em nenhum dos dois números.
@@ -243,13 +243,17 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 4. Rodar `build-migration-ledger-manifest.mjs` com os dois inputs novos → `docs/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json`.
 5. Adicionar ao manifesto o enum de estado mais fino que a etapa E07 precisa (`aplicada-sem-ledger` etc.), sem quebrar o formato que `check-no-db-push.mjs` já consome.
 **Checklist de conclusão:**
-- [ ] Divergência 5 vs. 1.247 explicada por escrito (ver caixa)
-- [ ] Manifesto regerado e versionado, reproduzível
-- [ ] `check-no-db-push.mjs` continua passando com o manifesto novo
-- [ ] Teste unitário do parser de versão (14 dígitos, 3 dígitos, 20 dígitos, sem prefixo)
+- [x] Divergência 5 vs. 1.247 explicada por escrito (ver caixa) — **era diferença de época, não bug.**
+- [x] Manifesto regerado e versionado, reproduzível — `docs/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json` + `docs/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json` (commit `8a7c60267`)
+- [ ] `check-no-db-push.mjs` continua passando — **NÃO passa, mas por motivo pré-existente e sem relação com este trabalho** (ver caixa de resultado)
+- [ ] Teste unitário do parser de versão — não escrito nesta rodada; `scripts/build-local-migrations-manifest.mjs` tem a lógica mas sem teste dedicado ainda
 **Esforço:** M · **Dep.:** —
 
-> **⚠️ Pre-mortem (2026-09-16) — achado que bloqueia esta etapa até ser explicado:** o manifesto de 2026-08-28 (rodado pela mesma ferramenta que eu ia "estender") registra **1.247** versões do ledger sem arquivo local (`ledger_without_local_version`) e **531** arquivos locais sem ledger — ordens de grandeza diferentes das **5** e **484** que encontrei hoje comparando por prefixo de versão via `comm`. Hipótese mais provável: o `build-migration-ledger-manifest.mjs` só popula `declared_version` para arquivos que batem o contrato estrito `^\d{14}_`, então os 34+ arquivos "fora do contrato" (e variações de nome) ficam de fora do índice local e inflam artificialmente a contagem de "só no ledger". Não assumi isso como verdade — é hipótese a confirmar lendo `MANIFESTO_MIGRATIONS_FORWARD_ONLY` antes de regerar qualquer coisa. Também explica parte do gap: só entre 08-28 e hoje, `local_files` foi de 1.673 para 2.985 (quase dobrou) — muita coisa mudou em 3 semanas, os dois retratos não são diretamente comparáveis sem essa reconciliação.
+> **✅ Resultado (2026-09-16):** a hipótese do pre-mortem (parsing estrito excluindo arquivos) estava **errada** — só 33 dos 2.988 arquivos ficam sem versão parseável, não o suficiente para explicar um gap de 700+. A explicação real: o manifesto de 08-28 tinha **1.673** arquivos locais; hoje são **2.988** — quase dobrou em 3 semanas (muita retroatividade de migration tipo `zapp_catalog_stats` aconteceu nesse intervalo). Os dois retratos nunca foram comparáveis diretamente.
+>
+> Reconciliação de hoje, com hash calculado dentro do banco (`extensions.digest`, sem puxar DDL bruto para o contexto): **`ledger_without_local_version: 3`** (as mesmas 3 migrations renomeadas pós-aplicação já documentadas — nenhum gap novo) · **`local_versioned_files_without_ledger_version: 543`** (bate com os 544 que a CLI já confirmava em E02) · **`ledger_with_exact_local_bytes: 132`** de 2.413 (a maioria não é comparável por hash porque 428 linhas do ledger têm `statements NULL`).
+>
+> **Achado colateral (não corrigido, fora do escopo desta etapa):** `node scripts/check-no-db-push.mjs` falha hoje (`exit 1`) — mas por conteúdo pré-existente e sem relação (arquivos de cache do `graphify-out/` e `docs/plans/KIT_MAKER_PLANO_200_ETAPAS_2000_SUBETAPAS_2026-09-10.md`, datado de 2026-09-10, contêm a string "supabase db push" em texto/cache e disparam o grep do gate). Confirmado que não vem de nada tocado nesta sessão. É um falso-positivo de gate que merece etapa própria (candidato a incluir numa próxima rodada da matriz).
 
 ### E07 · Classificar as 484 migrations sem ledger por verificação de objeto `[DB-RO]`
 **Problema (medido):** 484 arquivos locais sem linha no ledger. Amostra 5/5 aplicada. Hipótese forte: maioria é `aplicada-sem-ledger`. Hipótese ≠ prova.
