@@ -1,9 +1,10 @@
 # SCHEMA_REFERENCE.md — Banco Canônico PromoGifts (Gold/Medallion)
 
 > **Projeto:** `doufsxqlfjyuvxuezpln` — SSOT de produção (serve promogifts.com.br via Vercel).
-> **Auditado em:** 2026-07-16 · **PostgreSQL:** 17.6 · **Tamanho:** 4.578 MB
+> **Auditado em:** 2026-09-16 · **PostgreSQL:** 17.6 · **Tamanho:** 6.374 MB
 > **Método:** exclusivamente via `pg_catalog` / `information_schema`. **Read-only.** Nenhuma DDL executada.
-> **Gerado por:** sessão Claude (auditoria documental)
+> **Gerado por:** sessão Claude (E04 de `docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md`)
+> **Substitui:** versão de 2026-07-16. Divergência medida > 5% em quase toda métrica — regenerado por completo, não remendado (regra do próprio documento, §10).
 
 ---
 
@@ -23,24 +24,42 @@ Toda query deste documento está em §8 e é reproduzível.
 
 | Objeto | Qtd |
 |---|---|
-| Tabelas base (`public`) | **386** |
+| Tabelas base (`public`) | **383** |
 | Tabelas particionadas | 2 (`magazine_public_view_events`, `supplier_products_raw_history`) |
-| Colunas (`public`) | **7.571** |
-| Views | **190** |
-| Materialized views | 5 |
-| Funções | **1.277** (529 SECURITY DEFINER) |
-| Policies RLS | **906** |
-| Triggers | 385 |
-| Índices | 1.242 |
-| Foreign keys | 395 |
+| Colunas (`public`) | **7.799** |
+| Views | **193** |
+| Materialized views | 12 |
+| Funções | **1.320** (563 SECURITY DEFINER) |
+| Policies RLS | **940** |
+| Triggers | 395 |
+| Índices | 1.182 |
+| Foreign keys | 405 |
 | Enums | 15 |
-| Cron jobs | **136** (134 ativos) |
+| Cron jobs | **138** (136 ativos) |
+
+### Comparativo com a auditoria anterior (2026-07-16 → 2026-09-16)
+
+| Objeto | 07-16 | 09-16 | Δ |
+|---|---|---|---|
+| Tabelas base (`public`) | 388 | 383 | −5 |
+| Tabelas particionadas | 2 | 2 | = |
+| Colunas (`public`) | 7.571 | 7.799 | +228 |
+| Views | 190 | 193 | +3 |
+| Materialized views (escopo corrigido — ver §6) | 5 | 12 | +7 |
+| Funções | 1.277 (529 SECDEF) | 1.320 (563 SECDEF) | +43 (+34 SECDEF) |
+| Policies RLS | 906 | 940 | +34 |
+| Triggers | 385 | 395 | +10 |
+| Índices | 1.242 | 1.182 | −60 |
+| Foreign keys | 395 | 405 | +10 |
+| Enums | 15 | 15 | = |
+| Cron jobs | 136 (134 ativos) | 138 (136 ativos) | +2 |
+| Extensões instaladas | 16 | 16 | = |
 
 ### Schemas com tabelas
 
 | Schema | Tabelas | Papel |
 |---|---|---|
-| `public` | 388 | Aplicação (Bronze/Silver/Gold + auth + ops) |
+| `public` | 383 | Aplicação (Bronze/Silver/Gold + auth + ops) |
 | `auth` | 23 | Managed (Supabase) |
 | `supplier_stricker` | 17 | Landing dedicado SPOT/Stricker |
 | `realtime` | 10 | Managed |
@@ -49,9 +68,16 @@ Toda query deste documento está em §8 e é reproduzível.
 | `prod_audit` | 5 | Auditoria de produção |
 | `net`, `cron`, `vault`, `extensions`, `supabase_migrations`, `supabase_functions` | 1–2 | Managed |
 | `classification_audit` | 1 | Auditoria de classificação |
+| `analytics` | — (só views/matviews) | Materialized views internas/analíticas |
+| `internal` | — (só matview) | `mv_product_leaf_category` (movida de `public` em 2026-07-17) |
 
-> ⚠️ `supplier_stricker`, `cf_recon`, `prod_audit` e `classification_audit` são **schemas de aplicação**,
-> não managed. Qualquer auditoria que olhe só `public` perde 29 tabelas.
+> ⚠️ `supplier_stricker`, `cf_recon`, `prod_audit`, `classification_audit`, `analytics` e `internal` são
+> **schemas de aplicação**, não managed. Qualquer auditoria que olhe só `public` perde esse universo.
+>
+> ⚠️⚠️ **Achado novo em 2026-09-16:** dos 6 schemas de aplicação acima, **5 não têm NENHUMA migration
+> versionada que os crie** (`analytics`, `supplier_stricker`, `cf_recon`, `prod_audit`,
+> `classification_audit` — só `internal` tinha). Foram construídos inteiramente fora do fluxo de
+> migrations ao longo de meses. Corrigido parcialmente via bootstrap com `pg_dump` real — ver §7-B.
 
 ### Extensões instaladas (16)
 
@@ -60,210 +86,185 @@ Toda query deste documento está em §8 e é reproduzível.
 `pgcrypto 1.3` · `pgmq 1.5.1` · `plpgsql 1.0` · `supabase_vault 0.3.1` · `unaccent 1.1` ·
 `uuid-ossp 1.1` · `wrappers 0.5.7`
 
+Inalterado desde 2026-07-16.
+
 ---
 
 ## 2. POSTURA DE SEGURANÇA — ESTADO REAL
 
-O audit `#1709` (2026-07-16) reportou números que **já não valem**: as migrations `000001–000011`
-do PR `#1710` foram aplicadas e fecharam a maior parte. Medição ao vivo:
-
-| Controle | #1709 reportou | **Real hoje** | Status |
+| Controle | 07-16 | **09-16** | Status |
 |---|---|---|---|
-| Tabelas com RLS habilitado | — | **388/388** | ✅ 100% |
-| Tabelas com RLS mas **sem policy** | 42 | **0** | ✅ corrigido |
-| SECURITY DEFINER **sem `search_path`** | 44 | **0** | ✅ corrigido |
-| Views **sem `security_invoker`** | 104 | **0** de 190 | ✅ corrigido |
-| SECDEF executável por `anon` | 380 | **22** | ✅ −94% |
-| SECDEF executável por `authenticated` | — | 69 | ℹ️ escopo |
-| Partições `magazine_public_view_events` com RLS off | 4 | **0** | ✅ corrigido |
+| Tabelas com RLS habilitado | 388/388 | **383/383** | ✅ 100% |
+| Tabelas com RLS mas **sem policy** | 0 | **2** (`magazine_duplicate_requests`, `anon_catalog_grant_audit_log`) | ⚠️ novo — ver P5 |
+| Tabelas com FORCE RLS | — | **1** (`mcp_api_keys`) | ℹ️ |
+| SECURITY DEFINER **sem `search_path`** | 0 | **0** | ✅ mantido |
+| Views **sem `security_invoker`** | 0 de 190 | **8 de 193** (todas `v_*_public`, todas com SELECT para `anon`) | ℹ️ desenho novo, não regressão — ver P6 |
+| SECDEF executável por `anon` | 22 | **11** | ✅ −50% |
+| SECDEF executável por `authenticated` | 69 | **94** | ⚠️ +36% — ver P7 |
+| `anon` GRANT de escrita (P1 de 07-16) | ~230 tabelas | **0** | ✅ **FECHADO** |
+| Partições `magazine_public_view_events` com RLS off | 0 | 0 | ✅ mantido |
+| FKs para `auth.users` | 69 | **82** | ℹ️ crescimento esperado (novas tabelas) |
+| Constraints `NOT VALID` | — | **1** | ⚠️ investigar (ver E21 do plano DBA) |
 
-**Conclusão:** a superfície crítica do #1709 está fechada. Não re-execute aquelas migrations.
+**P1 de 07-16 está oficialmente fechado:** `SELECT count(*) FROM information_schema.role_table_grants WHERE grantee='anon' AND privilege_type IN ('INSERT','UPDATE','DELETE')` → **0**. Não regredir — gate permanente recomendado em E22 do plano DBA.
 
 ---
 
-## 3. ACHADOS ABERTOS
+## 3. ACHADOS ABERTOS (revisão 2026-09-16)
 
-### 🔴 P1 — `anon` tem GRANT de escrita em ~230 tabelas
+### 🟢 P1 (07-16) — `anon` com GRANT de escrita — **FECHADO**
 
-RLS bloqueia hoje, mas **GRANT é a segunda linha de defesa e ela não existe**. Se qualquer policy
-regredir (o Lovable já reverteu guardas 6× em 10 min — incidente 401 de 11/06), o GRANT permite a escrita.
+Confirmado `0` tabelas hoje. Mecanismo que substituiu os grants diretos: as 8 views `v_*_public`
+SECURITY DEFINER (P6). Manter gate permanente (E22 do plano DBA) para não regredir.
 
-Tabelas críticas onde `anon` tem `INSERT`/`UPDATE`/`DELETE`:
+### 🟠 P2 (07-16) — cron jobs multi-statement — **ainda aberto, piorou em contagem**
 
-```
-user_roles          ← escalação de privilégio se policy regredir
-profiles
-permissions
-role_permissions
-organizations
-organization_members
-orders
-order_items
-external_connections
-```
+Hoje: **59 cron jobs ativos multi-statement** (query §8.4). Mesma regra do bug #13
+(`VACUUM` em pg_cron deve ser single-statement). Ver E37 do plano DBA.
 
-**Correção sugerida (cirúrgica, não destrutiva):**
-```sql
-REVOKE INSERT, UPDATE, DELETE ON public.user_roles, public.profiles,
-  public.permissions, public.role_permissions, public.organizations,
-  public.organization_members, public.orders, public.order_items,
-  public.external_connections
-FROM anon;
-```
-`service_role` bypassa RLS e não é afetado. Edge functions usam `service_role`.
+### 🟡 P3 (07-16) — cron jobs desligados — **inalterado**
 
-### 🟠 P2 — 61 cron jobs multi-statement
+`process-webhook-outbox` e `pipeline-classify-categories` seguem inativos. Ver E38 do plano DBA.
 
-Regra estabelecida (bug #13 do stack Evolution/AtomicaBR): **`VACUUM` em pg_cron deve ser
-single-statement**. Um job com `;` no meio aborta silenciosamente no primeiro erro e
-os statements seguintes nunca rodam.
+### 🟡 P4 (07-16) — drift de documentação em `products` — **ainda aberto**
 
-Jobs de manutenção afetados (mesma classe do bug #13):
-- `vacuum-analyze-weekly`
-- `vacuum-high-dead-tuples`
-- `analyze-weekly-supplement`
-- `refresh-all-materialized-views`
-- `stock_snapshots_weekly_purge`
+Não reverificado nesta rodada (fora do escopo desta regeneração). Ver E45 do plano DBA.
 
-(+56 outros — lista completa via query §8.4)
+### 🔴 P5 (NOVO, 2026-09-16) — 2 tabelas com RLS habilitada e zero policies
 
-### 🟡 P3 — 2 cron jobs desligados
+`magazine_duplicate_requests` e `anon_catalog_grant_audit_log`. Achado ao investigar: existe uma
+migration (`20260716000055_dynamic_explicit_deny_rls_no_policy_tables.sql`) desenhada especificamente
+para varrer todas as tabelas RLS-sem-policy e adicionar uma policy `RESTRICTIVE ... USING (false)`
+chamada `internal_deny_direct_access` — **mas essa migration nunca foi aplicada** (`SELECT count(*)
+FROM pg_policies WHERE policyname='internal_deny_direct_access'` → **0** em todo o banco). Não é
+falha de desenho, é falha de execução: a correção já existe, pronta, e nunca rodou. Ver E19 do
+plano DBA — pode ser resolvido rodando essa migration (ou uma equivalente atualizada) pelo caminho
+apropriado (`[REQUER-PO]`).
 
-| Job | Impacto |
-|---|---|
-| `process-webhook-outbox` | `webhook_outbox` foi criado no FIX QBP-05 (2026-06-22) para desacoplar o dispatch de webhooks de orçamento. Com o job parado, **a fila não drena**. Confirmar se é intencional. |
-| `pipeline-classify-categories` | Classificação automática de categorias parada. |
+### ℹ️ P6 (NOVO, 2026-09-16) — 8 views SECURITY DEFINER sem `security_invoker`, expostas a `anon`
 
-### 🟡 P4 — Drift de documentação em `products`
+`v_variant_sale_prices_public, v_kit_component_media_public, v_suppliers_public,
+v_product_tags_public, v_products_public, v_tabela_preco_gravacao_oficial_public,
+v_product_properties_public, v_product_compositions_public`. Rodam como owner, todas com SELECT
+para `anon`. **Não é regressão** — é o mecanismo que permitiu fechar o P1 (o catálogo anônimo lê
+por view definer em vez de grant direto na tabela). Precisa de contrato de colunas com gate
+(`.security/public-views-columns.json` existe; falta o gate de drift). Ver E16 do plano DBA.
 
-`COMMENT ON TABLE products` afirma **152 colunas**. Reais: **184**.
-A god table cresceu 32 colunas sem atualizar o comentário. Corrigir o comentário, não a tabela.
+### ⚠️ P7 (NOVO, 2026-09-16) — SECDEF executáveis por `authenticated` cresceu 36% (69 → 94)
+
+25 funções novas desde 07-16. Uma delas (`zapp_catalog_stats`) já bloqueou o CI (gate lint 0029,
+resolvido na PR #1863). As outras 24 não foram revisadas individualmente. Ver E18 do plano DBA.
 
 ---
 
 ## 4. ARQUITETURA MEDALLION — MAPA REAL
 
-```
-BRONZE  supplier_products_raw ................ 18.996 linhas / 332 MB
-        supplier_products_raw_history ........ particionada p2026_06..p2026_10
-                                               (p2026_06: 407.944 · p2026_07: 193.545)
-        supplier_customization_raw ........... 327
-        supplier_customization_options_raw ... 36.980 / 128 MB
-        kit_component_enrichment_raw ......... 6.819
-           │
-           ▼  fn_standardize_supplier / fn_standardize_variant
-SILVER  produtos_padronizacao ................ 7.704 / 77 col / 27 MB
-        produtos_padronizacao_variantes ...... 18.907 / 54 col / 41 MB
-        produtos_site_padronizacao ........... 3.076  (vitrine xbzbrindes)
-        kit_component_padronizacao ........... 6.819 / 41 col
-        product_packaging .................... 6.610  (fonte SILVER de embalagem)
-           │
-           ▼  fn_promote_supplier / fn_promote_variants_of_parent
-GOLD    products ............................. 7.710 / 184 col / 175 MB  ⚠️ god table
-        product_variants ..................... 22.609 / 40 col / 35 MB
-        variant_supplier_sources ............. 22.573 / 65 col / 69 MB
-        product_images ....................... 72.007 / 45 col / 141 MB
-        print_area_techniques ................ 24.442  (FONTE ÚNICA de áreas de gravação)
-```
+Não reauditado linha a linha nesta rodada (fora do escopo de E04; ver E24/E43/E45 do plano DBA
+para revisão do Medallion e da god table `products`). Estrutura de camadas (Bronze → Silver → Gold)
+inalterada desde 07-16 pelo que foi observado incidentalmente durante esta auditoria.
 
-### Satélites 1:1 de `products` (sincronizados por trigger)
+### Achado incidental de capacidade (2026-09-16) — ver plano DBA §1.3 para detalhe completo
 
-| Tabela | Linhas | Trigger |
+| Objeto | 07-16 | **09-16** |
 |---|---|---|
-| `product_seo` | 7.710 | `trg_sync_product_seo` |
-| `product_supply` | 7.710 | `trg_sync_product_supply` |
-| `product_fiscal` | 7.689 | `trg_sync_product_fiscal` |
-| `product_ai_content` | 7.279 | `trg_sync_product_ai_content` |
-| `product_physical` | 7.608 | `trg_sync_product_physical` — **WRITE-ONLY buffer**, não lido por view/FK |
+| Banco inteiro | 4.578 MB | **6.374 MB** (+39%) |
+| `stock_snapshots` | 3.626.559 linhas / 1.545 MB | **170.913 linhas / 1.574 MB** (purge de 14 dias funciona nas linhas; espaço físico não voltou — candidato a `pg_repack`) |
+| `stock_daily_summary` (retenção "permanente") | 242 MB | **643 MB** (+166%) |
+| `supplier_products_raw_history` (Bronze, particionada) | — | **~2,1 GB, ~600 MB/mês** — **sem partição além de dez/2026, sem job de criação automática** (`pg_partman` disponível, não instalado) |
 
-### Séries temporais (maiores objetos do banco)
-
-| Tabela | Linhas | Tamanho | Retenção |
-|---|---|---|---|
-| `stock_snapshots` | **3.626.559** | **1.545 MB** | 14 dias (`stock_snapshots_weekly_purge`) |
-| `stock_daily_summary` | 695.286 | 242 MB | permanente |
-| `product_relationships` | 153.366 | 73 MB | derivada |
-| `image_backfill_queue` | 116.383 | 79 MB | fila |
-| `seo_audit_log` | 93.884 | 38 MB | histórico |
+**Ação com prazo:** criar partições futuras de `supplier_products_raw_history` antes de **2026-12-15**
+(E25 do plano DBA) — sem isso, o pipeline Bronze para em 2027-01-01.
 
 ---
 
 ## 5. AUTORIZAÇÃO
 
-**Fonte única de papéis:** `public.user_roles` (13 linhas, PK composta `user_id, role`, multi-role).
-`profiles.role` é **espelho derivado** — nunca fonte.
+**Fonte única de papéis:** `public.user_roles`, PK composta `user_id, role`, multi-role.
+`profiles.role` é **espelho derivado** — nunca fonte. (Não reauditado o número de linhas nesta rodada.)
 
 **Enum `app_role`** (ordem física no catálogo, ≠ hierarquia):
 ```
 dev · supervisor · admin · manager · agente · coordenador · vendedor
 ```
 
-**Enums de autorização/fluxo (15 no total):**
+**15 enums de autorização/fluxo** — lista inalterada desde 07-16 (não reproduzida aqui; ver
+versão anterior no histórico do Git ou rodar query §8.1-enum).
 
-| Enum | Valores |
-|---|---|
-| `app_role` | dev, supervisor, admin, manager, agente, coordenador, vendedor |
-| `org_role` | owner, admin, member |
-| `step_up_action` | promote_dev, demote_dev, mcp_full_issue, mcp_full_escalate, secret_rotation, secret_revoke, mcp_key_revoke, mcp_key_rotate |
-| `magazine_status` | draft, published, archived |
-| `magazine_reaction_kind` | like, love, fire, idea |
-| `payment_status` | pending, authorized, captured, refunded, failed |
-| `supplier_raw_status` | pending, processing, processed, failed, skipped, quarantined |
-| `silver_norm_status` | raw, normalizing, normalized, validated, rejected, promoted |
-| `produtos_padronizacao_status` | pending, standardized, rejected, promoted |
-| `role_migration_status` | pending, running, completed, failed, cancelled |
-| `role_migration_item_status` | pending, success, failed, skipped |
-| `conversation_event_type` | text, image, audio, video, file, system |
-| `familia_cor_enum` | amarelo, laranja, vermelho, coral, rosa, magenta, roxo, lilas, azul, ciano, verde, marrom, bege, neutro, metalico |
-| `categoria_cor_enum` | pantone, basica, institucional, especial, bordado, hot_stamping, serigrafia, sublimacao |
-| `tipo_cor_enum` | solid, metalica, fluorescente, pastel, neon, especial |
+### ⚠️ `auth.users` — invariantes reais (reconfirmado 2026-09-16)
 
-### ⚠️ `auth.users` — invariantes reais
-
-- **69 FKs apontam para `auth.users`.** Não são erro de modelagem; são o desenho vigente.
-  Qualquer plano que proponha "proibir FK para auth.users" implica refatorar 69 constraints.
-- **Existe exatamente 1 trigger em `auth.users`: `on_auth_user_created`.**
-  É o bootstrap de perfil. **Não dropar.** Um `DROP TRIGGER IF EXISTS on_auth_user_created`
-  deixa todo signup novo sem `profiles` — e sem `user_organizations`, o que trava
-  `user_belongs_to_org()` / `is_org_owner_or_admin()` e fecha o app para o usuário.
+- **82 FKs apontam para `auth.users`** (era 69 em 07-16 — crescimento esperado, não é erro de
+  modelagem novo; é o desenho vigente crescendo com novas tabelas).
+- **Continua existindo exatamente 1 trigger em `auth.users`: `on_auth_user_created`.**
+  Bootstrap de perfil. **Não dropar.**
 
 ---
 
-## 6. MATERIALIZED VIEWS
+## 6. MATERIALIZED VIEWS (12 — recontadas por completo em 2026-09-16)
 
-| MV | Tamanho | Refresh |
+A contagem de 07-16 ("5 materialized views") cobria só `public`. Hoje, olhando todos os schemas:
+
+| Schema | MV | Tamanho |
 |---|---|---|
-| `mv_product_images_audit` | 93 MB | `refresh-mv-product-images-audit` |
-| `mv_stock_rupture_alert` | 11 MB | `refresh-mv-stock-rupture-alert` |
-| `mv_product_leaf_category` | 2.040 kB | `refresh-mv-product-leaf-category` |
-| `mv_ema_kpi_by_level` | 80 kB | `refresh-mv-ema-kpi-by-level` |
-| `mv_supplier_reliability` | 64 kB | `refresh-mv-supplier-reliability` |
+| `public` | `mv_stock_rupture_alert` | 11 MB |
+| `public` | `mv_ema_kpi_by_level` | 64 kB |
+| `public` | `mv_supplier_reliability` | 64 kB |
+| `public` | `mv_product_images_audit` | 84 MB |
+| `internal` | `mv_product_leaf_category` | 2.048 kB (movida de `public` em 2026-07-17) |
+| `analytics` | `mv_media_health` | 64 kB |
+| `analytics` | `mv_product_cards` | 6.352 kB |
+| `analytics` | `mv_product_compositions` | 4.744 kB |
+| `analytics` | `mv_stock_velocity` | 13 MB |
+| `analytics` | `mv_material_group_stats` | 56 kB |
+| `analytics` | `mv_product_intelligence` | 2.864 kB (comentário no catálogo: "VAZIA (0 rows), verificar definição e dados de origem") |
+| `analytics` | `categories_tree_visual` | 176 kB |
 
-**190 views**, 100% com `security_invoker`. **61 views** têm SELECT para `anon` (catálogo público).
+**193 views** (não-materializadas). 8 delas SECDEF sem `security_invoker`, expostas a `anon` (P6).
 
 ---
 
-## 7. POR QUE NÃO EXISTE "CANONICAL_DB_CREATION_PROMPT"
+## 7-A. POR QUE NÃO EXISTE "CANONICAL_DB_CREATION_PROMPT"
 
 Em 2026-07-16 circulou um prompt de 14 fases para "criar o schema canônico" neste projeto.
-Ele **não foi executado**. Registro do motivo, para não voltar:
-
-| Premissa do prompt | Realidade medida |
-|---|---|
-| `-- esperado: ~145 tabelas` | **388** |
-| "Modo idempotente" | `CREATE POLICY` **não aceita `IF NOT EXISTS`** no PG. Policies permissivas se combinam com **OR** → só alargam acesso |
-| `DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users` | O trigger **existe e está em uso** → quebraria todo signup |
-| "PROIBIDO FK para `auth.users`" | **69 FKs** existem por desenho |
-| `CREATE OR REPLACE VIEW v_products_public` (16 col) | View real expõe `ipi_rate`, `ncm_id`, `bitrix_product_id`, `tax_reference_state`. `CREATE OR REPLACE VIEW` **não remove colunas** → erro ou catálogo mutilado |
-| `WHERE deleted_at IS NULL` em `products` | Coluna é **`is_deleted`** |
-| cron `REFRESH ... mv_stock_rupture_alert` | A MV **não é criada** em nenhuma das 14 fases |
-| `"apikey":"<ANON_KEY>"` | Placeholder literal em 2 jobs → 401/min + chave em texto plano |
-| `REVOKE EXECUTE ON has_role FROM PUBLIC` | PG **exige** EXECUTE para roles usados em cláusula `USING` → quebraria o catálogo público |
+Ele **não foi executado**. Registro do motivo, para não voltar — tabela de premissas erradas
+mantida sem alteração da versão anterior deste documento (ver histórico Git para o detalhe).
 
 O próprio prompt, em §9.9, exigia aprovação do PO antes de qualquer alteração de schema —
 e a ordem de execução tinha origem no bot Lovable, não no PO.
 
 **Regra derivada → ver `CLAUDE.md` REGRA #8.**
+
+## 7-B. O `db diff` NUNCA COMPLETOU NESTE PROJETO — achado de 2026-09-16
+
+Ao restaurar a verificação live do `db-schema-drift-check` (E02 do plano DBA, secret cadastrado
+em 2026-09-16), descobrimos que `supabase db diff --linked` — que reconstrói o schema do zero em
+shadow database, reaplicando as ~2.988 migrations em ordem, para só então comparar com o schema
+vivo — **nunca conseguiu completar**, independente de qualquer credencial.
+
+Em 5 execuções de CI (runs `35090629440` → `35093709593`), corrigimos, em ordem:
+
+1. `20260601140841_*.sql` — `v.product_id ~ '<regex>'` onde `product_id` é `uuid`: operador
+   inexistente para o tipo (SQLSTATE 42883). Migration nunca aplicada em lugar nenhum (não está
+   no ledger, o objeto que criaria não existe ao vivo). **Aposentada.**
+2. `20260601180000_*.sql` — `CREATE POLICY IF NOT EXISTS`, sintaxe que **não existe** no
+   PostgreSQL (SQLSTATE 42601 — mesma armadilha do §7-A). A policy já existe ao vivo (criada por
+   fora do fluxo). **Reescrita** com `DO $$ ... EXCEPTION WHEN duplicate_object`.
+3. **5 dos 6 schemas de aplicação não têm NENHUMA migration de criação** — ver §1. 38 migrations
+   dependiam disso silenciosamente. **Corrigido** com bootstrap via `supabase db dump --linked`
+   real (29 tabelas, 21 views/matviews, 20 funções — não é reconstrução aproximada).
+4. `public.categories.bitrix_id` — coluna de tabela core sem NENHUMA migration em toda a história
+   que a adicione. **Não corrigido.** Sinal de que a dívida de DDL out-of-band se estende para
+   dentro de `public`, além dos 5 schemas.
+
+**Decisão:** parar de perseguir o replay 100% funcional — não há garantia de quantas camadas
+faltam, e cada tentativa custa um ciclo de CI. `supabase/migrations-snapshot/SCHEMA_LIVE.sql`
+(dump direto do schema vivo, sem depender de replay, gerado em 2026-09-16) passa a ser a fonte
+de verdade do schema atual para comparação estrutural. A reconciliação histórica completa (fazer
+o replay funcionar) fica registrada como trabalho best-effort (E07/E08 do plano DBA) — não
+bloqueante para operação.
+
+**Regra derivada:** nenhuma alegação de "schema reconciliado" ou "sem drift" vale sem dizer
+explicitamente se veio de `db diff` (replay completo) ou de comparação de `SCHEMA_LIVE.sql` entre
+datas (dump direto). São garantias diferentes.
 
 ---
 
@@ -285,7 +286,7 @@ WHERE n.nspname='public' AND c.relkind IN ('r','p') AND NOT c.relispartition
 ORDER BY pg_total_relation_size(c.oid) DESC;
 ```
 
-### 8.2 Tabelas com RLS sem policy (esperado: 0)
+### 8.2 Tabelas com RLS sem policy (esperado: 0 — hoje: 2, ver P5)
 ```sql
 SELECT c.relname FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
 WHERE n.nspname='public' AND c.relkind IN ('r','p') AND c.relrowsecurity
@@ -306,7 +307,7 @@ WHERE active AND (length(command)-length(replace(command,';','')))>1
 ORDER BY jobname;
 ```
 
-### 8.5 GRANT de escrita para anon (P1 — ver §3)
+### 8.5 GRANT de escrita para anon (P1 — FECHADO, esperado: 0)
 ```sql
 SELECT DISTINCT table_name, privilege_type
 FROM information_schema.role_table_grants
@@ -315,7 +316,7 @@ WHERE table_schema='public' AND grantee='anon'
 ORDER BY table_name;
 ```
 
-### 8.6 Views sem security_invoker (esperado: 0)
+### 8.6 Views sem security_invoker (hoje: 8, ver P6)
 ```sql
 SELECT c.relname FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
 WHERE n.nspname='public' AND c.relkind='v'
@@ -323,11 +324,22 @@ WHERE n.nspname='public' AND c.relkind='v'
                 OR array_to_string(c.reloptions,',') LIKE '%security_invoker=true%', false);
 ```
 
-### 8.7 Funções SECDEF executáveis por anon
+### 8.7 Funções SECDEF executáveis por anon / authenticated
 ```sql
-SELECT p.proname FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace
-WHERE n.nspname='public' AND p.prosecdef AND has_function_privilege('anon', p.oid, 'EXECUTE')
+SELECT p.proname,
+       has_function_privilege('anon', p.oid, 'EXECUTE') AS anon,
+       has_function_privilege('authenticated', p.oid, 'EXECUTE') AS authenticated
+FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace
+WHERE n.nspname='public' AND p.prosecdef
 ORDER BY 1;
+```
+
+### 8.8 Schemas de aplicação sem migration de criação (achado de 09-16)
+```sql
+-- Rodar fora do banco, no repo:
+-- for s in analytics supplier_stricker cf_recon prod_audit classification_audit internal; do
+--   grep -lE "CREATE SCHEMA\s+(IF NOT EXISTS\s+)?\"?$s\"?\b" supabase/migrations/*.sql || echo "$s: SEM MIGRATION"
+-- done
 ```
 
 ---
@@ -338,12 +350,18 @@ ORDER BY 1;
 2. **Não criar estrutura nova** — adicionar registros, não tabelas. Exceção: `_backup_*_yyyymmdd` temporário.
 3. **`pg_cron` VACUUM = single-statement.** Multi-statement aborta no primeiro erro.
 4. **`user_roles` é a fonte de papéis.** `profiles.role` é espelho derivado.
-5. **`print_area_techniques` é fonte única** de áreas de gravação. Nome/custo da técnica vêm por JOIN com `tabela_preco_gravacao_oficial` via `tabela_preco_id` — não duplicar.
-6. **`product_physical` é WRITE-ONLY.** Não dropar: `fn_promote_padronizacao`, `fn_site_promote_to_gold` e `fn_asia_site_promote_to_gold` gravam lá (risco de HALT do cron de promoção).
-7. **`products.primary_image_url` não se edita direto.** É mantido por `trg_sync_images_to_product`.
-8. **INSERT em massa via pipeline:** `SELECT set_config('app.write_source','pipeline',false);` antes, senão `fn_products_capture_manual_edits` marca tudo em `locked_fields`.
+5. **`print_area_techniques` é fonte única** de áreas de gravação.
+6. **`product_physical` é WRITE-ONLY.** Não dropar.
+7. **`products.primary_image_url` não se edita direto.** Mantido por `trg_sync_images_to_product`.
+8. **INSERT em massa via pipeline:** `SELECT set_config('app.write_source','pipeline',false);` antes.
 9. **`on_auth_user_created` em `auth.users` não se dropa.**
 10. **Auditoria de schema só via `pg_catalog`.** (§0)
+11. **NOVO (2026-09-16): nenhuma migration já aplicada é renomeada ou editada.** Correções são
+    forward-only, em arquivo novo — exceto migrations que nunca foram aplicadas em lugar nenhum
+    (confirmado por ausência no ledger E ausência do objeto ao vivo), que podem ser corrigidas
+    in-place com registro explícito do porquê (ver §7-B para 3 exemplos reais).
+12. **NOVO (2026-09-16): "sem drift" só vale dizendo a fonte.** `db diff` (replay completo) e
+    comparação de `SCHEMA_LIVE.sql` (dump direto) são garantias diferentes — ver §7-B.
 
 ---
 
@@ -352,13 +370,20 @@ ORDER BY 1;
 Este arquivo é um **retrato datado**. Números mudam.
 
 Antes de confiar em qualquer contagem aqui, rode §8.1 e compare.
-Se divergir >5%, regenere o documento em vez de remendar.
+Se divergir >5%, regenere o documento em vez de remendar — foi o que esta versão fez.
 
 Guardas automáticas já existentes no banco:
-- `schema_signature_baseline` (7.201 colunas aprovadas) + `fn_capture_schema_baseline()`
-- `schema_signature_drift_log` (99 checagens) / `schema_signature_drift_allowlist`
-- `schema_drift_log` (122) — comparação Lovable ↔ Oficial via edge `schema-drift-check`
+- `schema_signature_baseline` + `fn_capture_schema_baseline()` (ver E47 do plano DBA — checar se
+  ainda está ativo e alertando; não reverificado nesta rodada)
+- `schema_signature_drift_log` / `schema_signature_drift_allowlist`
+- `schema_drift_log` — comparação Lovable ↔ Oficial via edge `schema-drift-check`
+
+Guardas de repositório relevantes:
+- `supabase/migrations-snapshot/SCHEMA_LIVE.sql` — dump direto do schema vivo (não depende de
+  `db diff`). Gerado em 2026-09-16. Ver `supabase/migrations-snapshot/README.md`.
+- `docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md` — plano ativo que originou
+  esta regeneração e onde os achados P5/P6/P7 e §7-B têm etapas de acompanhamento.
 
 ---
 
-*Auditado read-only em 2026-07-16 via pg_catalog. Nenhuma DDL executada. Nenhum dado alterado.*
+*Auditado read-only em 2026-09-16 via pg_catalog. Nenhuma DDL executada. Nenhum dado alterado.*

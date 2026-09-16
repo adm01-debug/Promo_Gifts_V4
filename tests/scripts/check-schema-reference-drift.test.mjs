@@ -9,9 +9,9 @@ describe('check-schema-reference-drift', () => {
 
     expect(result.status).toBe(0);
     expect(result.stdout).toMatch(/Tabelas public \(escopo histórico\)/);
-    expect(result.stdout).toMatch(/388 ->   391/);
+    expect(result.stdout).toMatch(/385 ->   391/);
     expect(result.stdout).toMatch(/Materialized views/);
-    expect(result.stdout).toMatch(/5 ->     4/);
+    expect(result.stdout).toMatch(/12 ->     4/);
     expect(result.stdout).toMatch(/Diff documental reproduzido/);
     expect(result.stdout).toMatch(/não provam criação, perda ou intenção por objeto/);
   });
