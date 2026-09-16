@@ -4,11 +4,11 @@ import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-const [, , sanitizedRowsArg, outputArg] = process.argv;
+const [, , sanitizedRowsArg, outputArg, localManifestArg] = process.argv;
 
 if (!sanitizedRowsArg || !outputArg) {
   console.error(
-    'Uso: node scripts/build-migration-ledger-manifest.mjs <ledger-sanitizado.json> <saida.json>',
+    'Uso: node scripts/build-migration-ledger-manifest.mjs <ledger-sanitizado.json> <saida.json> [manifesto-local.json]',
   );
   process.exit(2);
 }
@@ -17,7 +17,11 @@ const sha256 = (value) => createHash('sha256').update(value, 'utf8').digest('hex
 
 const rowsPath = resolve(sanitizedRowsArg);
 const outputPath = resolve(outputArg);
-const localManifestPath = resolve('docs/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json');
+// Parametrizável desde 2026-09-16 (E06 do plano DBA) — o padrão preserva o
+// comportamento original para não quebrar chamadas existentes.
+const localManifestPath = resolve(
+  localManifestArg ?? 'docs/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json',
+);
 
 const ledgerRows = JSON.parse(readFileSync(rowsPath, 'utf8'));
 const localManifest = JSON.parse(readFileSync(localManifestPath, 'utf8'));
