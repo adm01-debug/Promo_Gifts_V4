@@ -391,10 +391,22 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 1. Job semanal (workflow, após E02) que: captura assinatura do schema, compara com a última; para cada diferença, procura migration no ledger com `created_at` no intervalo; se não achar → abre issue "DDL out-of-band" com o objeto e o trecho de `postgres_logs` (`apply sql from post body`).
 2. Política escrita em `docs/db/POLITICA_DDL.md`: DDL via MCP/dashboard só é aceitável com (a) ticket, (b) arquivo de migration no mesmo PR, (c) `repair --status applied` no mesmo dia.
 **Checklist de conclusão:**
-- [ ] Workflow roda e produz relatório mesmo com zero diferenças
-- [ ] Simulação: `COMMENT ON` fora do fluxo em objeto de teste → issue aberta
-- [ ] Política publicada e referenciada em `CLAUDE.md`
+- [x] Workflow roda e produz relatório mesmo com zero diferenças (testado em modo estático; live só na 1ª execução real)
+- [ ] Simulação: `COMMENT ON` fora do fluxo em objeto de teste → issue aberta (fora do escopo `[DB-RO]`, exige DDL real — ver doc)
+- [x] Política publicada e referenciada em `CLAUDE.md`
 **Esforço:** M · **Dep.:** E02, E06
+
+> **Concluída em 2026-09-16 (sem `[REQUER-PO]`).** `.github/workflows/ddl-out-of-band-detector.yml`
+> (semanal + `workflow_dispatch`) cruza `schema_signature_drift_log` (populada 4x/dia pelo
+> `pg_cron` job 245 já existente — divergência deliberada do texto literal: reaproveita a
+> assinatura já materializada em vez de recalculá-la no Actions) contra
+> `supabase_migrations.schema_migrations`; abre issue `ddl-out-of-band` só quando sobra objeto
+> sem correspondência. Confirmado ao vivo nesta etapa: drift log tem 348 linhas desde
+> 2026-06-26, 309 com `has_drift=true` (baseline defasada ~3 meses) — volume real, não
+> hipotético. `docs/db/POLITICA_DDL.md` e `scripts/check-ddl-out-of-band.mjs` (herdados de uma
+> sessão anterior incompleta) revisados linha a linha nesta etapa — zero escrita confirmada,
+> comportamento estático testado diretamente. Detalhes em
+> `docs/E12_DETECTOR_DDL_OUT_OF_BAND_2026-09-16.md`.
 
 ### E13 · Decidir os 10 drafts ativos e os 5 arquivados `[RO]`
 **Problema (medido):** `qa/migrations-draft` tem 10 ativos e 5 arquivados (o plano 09-15 dizia 4). `scripts/map-drafts-to-migrations.mjs` existe.

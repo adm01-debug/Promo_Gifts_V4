@@ -211,6 +211,16 @@ Auditoria de schema é feita **só via `pg_catalog`**, nunca via PostgREST/OpenA
 PostgREST não enxerga trigger, policy, cron nem GRANT, e confunde view com tabela.
 Queries canônicas em `docs/SCHEMA_REFERENCE.md` §8.
 
+### Corolário — DDL fora do fluxo de migration (MCP/dashboard)
+DDL aplicada direto via MCP (`execute_sql`/`apply_migration`) ou dashboard só é
+aceitável com as 3 condições em `docs/db/POLITICA_DDL.md`: (a) ticket, (b) migration
+versionada no mesmo PR, (c) `migration repair --status applied` no mesmo dia. Sem
+isso, o ledger (`supabase_migrations.schema_migrations`) e o schema real divergem
+silenciosamente — como em `catalog_e24_zapp_catalog_stats` (2026-09-12) e
+`audit_r3_revoke_anon_mv_product_compositions` (2026-09-05). Detector semanal
+(advisory, não gate) em `.github/workflows/ddl-out-of-band-detector.yml` — ver
+`docs/E12_DETECTOR_DDL_OUT_OF_BAND_2026-09-16.md`.
+
 ---
 
 ## ARQUIVOS PROTEGIDOS (não modificar sem razão explícita)
