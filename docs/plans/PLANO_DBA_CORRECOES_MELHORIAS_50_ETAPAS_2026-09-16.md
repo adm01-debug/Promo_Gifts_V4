@@ -530,6 +530,13 @@ Em ambos: adicionar partição `DEFAULT` como rede de segurança com alerta se r
 - [ ] Migration forward-only aplicada via E15
 **Esforço:** M · **Dep.:** E15
 
+> **Preparo concluído em 2026-09-16** (`docs/E25_PARTICOES_SUPPLIER_HISTORY_2026-09-16.md`):
+> Opção B escolhida (função + cron — `pg_partman` não instalada, e Opção B replica
+> padrão já em produção `magazine-partition-maintenance`). Migration pronta e não
+> aplicada: `supabase/migrations/20260916193000_e25_supplier_history_partition_automation.sql`.
+> Correção: coluna de particionamento é `captured_at`, não `created_at`. Aguardando
+> aprovação do PO — não bloqueado por E15 (ver §2 do plano de execução).
+
 ### E26 · Política de retenção da history Bronze `[REQUER-PO]`
 **Problema (medido):** ≈2,1 GB em 4 meses, ~600 MB/mês → ~7 GB/ano só nesta tabela. Não há retenção declarada.
 **Ação:** definir com o PO: reter N meses online; `DETACH PARTITION` + `pg_dump` da partição para storage frio + `DROP`. Job mensal. Registrar a política no `SCHEMA_REFERENCE.md` §4.
