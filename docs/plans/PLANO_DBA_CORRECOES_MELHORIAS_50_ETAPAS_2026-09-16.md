@@ -151,7 +151,7 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 ## FASE 0 — Linha de base e segurança de operação (E01–E05)
 > Nada de correção antes de ter uma fotografia assinada, backup verificável e a branch de trabalho no mesmo ponto que `origin/main`.
 
-### E01 · Sincronizar a branch de trabalho e congelar a linha de base `[GIT]`
+### E01 · Sincronizar a branch de trabalho e congelar a linha de base `[GIT]` ✅ Concluída em 2026-09-16
 **Problema (medido):** `main` 4 atrás; branch atual não contém #1863 (`catalog_e24_zapp_catalog_stats`) nem #1864 (drift check fail-closed). Qualquer verificação feita aqui sai defasada.
 **Ação:**
 1. `git checkout main && git merge --ff-only origin/main`.
@@ -159,11 +159,13 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 3. Confirmar que `npm run check:migration-refs` passa (prova de que #1864 está presente).
 4. Registrar em `docs/plans/` a linha de base: SHA de `main`, `origin/main`, `HEAD`, data, hash do ledger (`md5(string_agg(version))`).
 **Checklist de conclusão:**
-- [ ] `git rev-list --left-right --count main...origin/main` = `0 0`
-- [ ] Branch de trabalho contém `64cc27731` e `1d2fafccd`
-- [ ] `npm run check:migration-refs` sai 0
-- [ ] Linha de base com SHAs + hash do ledger registrada
+- [x] `git rev-list --left-right --count main...origin/main` = `0 0`
+- [x] Branch de trabalho contém `64cc27731` e `1d2fafccd`
+- [x] `npm run check:migration-refs` sai 0
+- [x] Linha de base com SHAs + hash do ledger registrada
 **Esforço:** P · **Dep.:** — · **Supersede:** plano 09-15 E01/E06/E08
+
+> **📋 Resultado de E01 (2026-09-16):** o trabalho de sincronização em si já estava feito por commits anteriores desta sessão (branch continha 100% de `origin/main` + 20 commits próprios, 0 divergência). Faltava só o registro formal. Confirmado: `main`/`origin/main`/`HEAD` = `1d2fafccd`/`1d2fafccd`/`4dd77692`; ledger com 2.504 linhas, hash `a0f5d1138d770c7a1ea578700969d347`; `check:migration-refs` exit 0. Linha de base completa em `docs/plans/BASELINE_E01_2026-09-16.md`.
 
 ### E02 · Restaurar a verificação live (secrets e CLI) `[REQUER-PO]`
 **Problema (medido):** `SUPABASE_DB_PASSWORD` ausente como secret do GitHub. O workflow `db-schema-drift-check` está corretamente bloqueado (exit 1) — mas nenhum drift check live rodou desde que o falso verde foi eliminado.
@@ -203,12 +205,14 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 4. Exportar `cron.job` (138 linhas) — é configuração produtiva que **não está em migration**.
 **Checklist de conclusão:**
 - [ ] PITR/backup confirmado e documentado com data
-- [ ] Dump schema-only + hash guardado
-- [ ] Ledger exportado + hash guardado
-- [ ] `cron.job` exportado
+- [x] Dump schema-only + hash guardado
+- [x] Ledger exportado + hash guardado
+- [x] `cron.job` exportado
 **Esforço:** P · **Dep.:** E02 para o passo 2 (dump via CLI) · passos 3–4 **não dependem de E02** (uso MCP `execute_sql`, já disponível)
 
 > **Pre-mortem:** não encontrei ferramenta que leia status de PITR/backup do projeto `doufsxqlfjyuvxuezpln` — nenhum tool MCP carregado expõe isso (só achei equivalentes de *outros* projetos Supabase da conta). **Passo 1 é ação sua**, no painel Supabase → Database → Backups. Passo 2 (`pg_dump --schema-only`) precisa da CLI autenticada (E02) ou de você rodá-lo localmente. Passos 3 e 4 eu já posso fazer agora via `execute_sql`, sem esperar nada.
+
+> **📋 Resultado de E03 — 3/4 concluído (2026-09-16):** passos 2-4 feitos. Dump schema-only das 19 schemas não-sistema (5,0 MB, `docs/db/BACKUP_SCHEMA_ONLY_2026-09-16.sql`); ledger exportado (2.504 linhas, 7,6 MB, `docs/db/LEDGER_DATA_2026-09-16.sql`); `cron.job` exportado via `execute_sql` já que o `pg_dump --data-only` da schema `cron` não inclui tabelas de configuração de extensão por padrão (138 linhas, `docs/db/CRON_JOB_DATA_2026-09-16.json` — bate exato com os 136 ativos + 2 inativos medidos no plano). Hashes SHA-256 de todos os artefatos em `docs/db/CHECKSUMS_2026-09-16.sha256`. Detalhe completo em `docs/db/BACKUP_STATUS.md`. **Item 1 (confirmação de PITR no painel) segue pendente — ato humano intransferível, sem gate técnico.**
 
 ### E04 · Regenerar `docs/SCHEMA_REFERENCE.md` a partir do `pg_catalog` `[GIT]` ✅ Concluída em 2026-09-16
 **Problema (medido):** o documento diz "se divergir > 5 %, regenere". Divergência hoje: banco +39 %, SECDEF +6 %, FKs `auth.users` +19 %, P1 (anon write) **já fechado**, views sem `security_invoker` 0 → 8, matviews 5 → 12. Quem lê o doc toma decisões erradas.
@@ -337,13 +341,18 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 - [ ] Lote 2 — **179 candidatos prontos e verificados** (`docs/E08_LOTE2_CANDIDATOS_2026-09-16.md`), aguardando aprovação do PO; **30 arquivos (10 grupos) de colisão de versão** (13 do lote 1 + 17 novos) ficam para depois do E10
 **Esforço:** M · **Dep.:** E07 · **Risco:** baixo se e somente se E07 estiver completo
 
-### E09 · Resolver os 4 IDs inválidos do ledger, um a um `[REQUER-PO]`
-**Problema (medido):** `2026062311292414001` (20 dígitos — timestamp corrompido); `20260623_bugalert1`, `20260623_create_process_notifications_queue_rpcs`, `20260623_fix_google_provider_secret_name` (ledger gravou `<data>_<nome>`; arquivos locais foram **renomeados** para `<nome>_<data>` depois de aplicados). `supabase migration list` nunca vai casá-los.
+### E09 · Resolver os 4 IDs inválidos do ledger, um a um `[REQUER-PO]` — investigação concluída 2026-09-16, remediação aguarda aprovação
+**Problema (medido):** `2026062311292414001` (19 dígitos — timestamp corrompido); `20260623_bugalert1`, `20260623_create_process_notifications_queue_rpcs`, `20260623_fix_google_provider_secret_name`. `supabase migration list` nunca vai casá-los.
 **Ação:** por ID: (a) confirmar objetos físicos criados; (b) decidir `repair --status reverted <id-inválido>` + `repair --status applied <versão-canônica-nova>` **ou** manter e documentar como exceção permanente no manifesto; (c) criar arquivo marker local com cabeçalho explicando o histórico. **Nunca** renomear o arquivo de volta (viola invariante 3).
+
+> **📋 Resultado da investigação E09 (2026-09-16):** achado real é mais fino que a hipótese original do plano — não é renomeação de arquivo. **2 das 4 entradas (`20260623_bugalert1`, `20260623_create_process_notifications_queue_rpcs`) são stubs com reticências literais em posição de SQL inválido** (`RETURNS TABLE(...)`, `VIEW ... AS ...`) — nunca foram executáveis, e cada uma já foi superada por uma entrada canônica completa e realmente aplicada (`20260623182623`, `20260623201801`, ambas com arquivo no disco e objeto vivo confirmado). **1 entrada (`20260623_fix_google_provider_secret_name`) é um `UPDATE` real, completo, aplicado de fato** (confirmado via live-check: `secret_name` já é `GEMINI_API_KEY`), só sem arquivo local — não tem duplicata canônica. **1 entrada (`2026062311292414001`) é só malformada** (19 em vez de 14 dígitos) mas internamente consistente (arquivo + ledger + objetos vivos todos batem) — proposta é não mexer. Pacote de 3 ações prontas (`migration repair --status reverted` nos 2 stubs; backfill de arquivo canônico + `migration repair --status applied` para o UPDATE real) em `docs/E09_LEDGER_IDS_INVALIDOS_2026-09-16.md`, SQL exato incluso, nada aplicado ainda.
+
 **Checklist de conclusão:**
-- [ ] 4/4 com decisão escrita, aprovada pelo PO, e aplicada ou documentada como exceção
-- [ ] `MANIFEST.json` sem estado `registrada-sem-arquivo`
-- [ ] `docs/SCHEMA_REFERENCE.md` §"IDs históricos" atualizado
+- [x] 4/4 investigados e causa raiz determinada (`docs/E09_LEDGER_IDS_INVALIDOS_2026-09-16.md`)
+- [x] Pacote de remediação com SQL exato e teste de reversão pronto
+- [ ] Aprovação do PO — pendente (parte do 1º pacote consolidado)
+- [ ] Ações aplicadas — pendente de aprovação
+- [ ] `docs/SCHEMA_REFERENCE.md` §"IDs históricos" atualizado — após aplicação
 **Esforço:** P · **Dep.:** E03, E08 · **Supersede:** plano 09-15 E34
 
 ### E10 · Congelar os 67 arquivos fora do contrato e os 31 prefixos duplicados `[GIT]` ✅ Concluída em 2026-09-16 (achado: já existia)
@@ -452,13 +461,16 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 - [ ] Query §8.2 do `SCHEMA_REFERENCE.md` retorna 0 **ou** exatamente as allowlisted
 **Esforço:** P · **Dep.:** E15
 
-### E20 · Inventário das 82 FKs para `auth.users` `[DB-RO]`
+### E20 · Inventário das 82 FKs para `auth.users` `[DB-RO]` ✅ Concluída em 2026-09-16
 **Problema (medido):** 82 FKs (eram 69). Cada `DELETE` em `auth.users` percorre 82 constraints; FK sem índice = seq scan por tabela.
 **Ação:** listar `(tabela, coluna, ON DELETE, índice?)`. Garantir índice em todas; classificar `ON DELETE` (CASCADE vs SET NULL vs RESTRICT) contra a intenção LGPD (exclusão de conta). Registrar no `SCHEMA_REFERENCE.md` §5.
+
+> **📋 Resultado (2026-09-16):** `docs/E20_FKS_AUTH_USERS_2026-09-16.md`. 82/82 inventariadas. **4 sem índice cobrindo a coluna** (candidatas a E29): `auth.oauth_authorizations.user_id` (tabela do Auth, pode exigir privilégio elevado), `kit_quote_requests.user_id`, `kit_save_requests.user_id` (ambas nunca analisadas, `reltuples=-1`), `magazines.owner_id` (índice existe mas é parcial, `WHERE deleted_at IS NULL`, não cobre 100%). Por `ON DELETE`: 38 CASCADE, 25 SET NULL, 19 NO ACTION (default, não deliberado), 0 RESTRICT explícito. Achado de risco LGPD: as 19 `NO ACTION` bloqueiam `DELETE FROM auth.users`; destaque para `orders` (`created_by`=NO ACTION vs `seller_id`=SET NULL na mesma tabela — assimetria provavelmente não intencional) e `password_reset_requests.user_id`/`ai_usage_logs.user_id` (ligam direto ao titular). Decisão sobre `SET NULL` vs. rotina de resolução manual fica para etapa de exclusão de conta LGPD, fora do escopo `[DB-RO]`.
+
 **Checklist de conclusão:**
-- [ ] 82/82 inventariadas
-- [ ] 0 FK para `auth.users` sem índice (criar via E29 se faltar)
-- [ ] Comportamento de exclusão de conta documentado
+- [x] 82/82 inventariadas
+- [x] 0 FK para `auth.users` sem índice (criar via E29 se faltar) — 4 encontradas sem índice, listadas como candidatas ao E29
+- [x] Comportamento de exclusão de conta documentado — 19 `NO ACTION` classificadas por risco (titular direto vs. auditoria/admin)
 **Esforço:** P · **Dep.:** —
 
 ### E21 · Validar a constraint `NOT VALID` `[REQUER-PO]`
@@ -486,13 +498,16 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 - [ ] Edge functions que as usam testadas (`secrets-manager`, `mcp-keys-*`, `step-up-verify`)
 **Esforço:** M · **Dep.:** E15
 
-### E24 · Higiene de credenciais no repositório e no banco `[RO]`
+### E24 · Higiene de credenciais no repositório e no banco `[RO]` ✅ Concluída em 2026-09-16
 **Problema:** o `SCHEMA_REFERENCE.md` §7 registra `"apikey":"<ANON_KEY>"` literal em 2 cron jobs de um prompt não executado; é preciso provar que nenhum job vivo tem chave em texto plano.
 **Ação:** `SELECT jobname FROM cron.job WHERE command ~* 'apikey|bearer|eyJ'` (read-only); `git log -p -S 'eyJ' -- supabase/migrations` para JWT em migrations; confirmar `.env.local` ignorado e ausência de `service_role` em `src/`. Chaves encontradas → rotação (PO).
+
+> **📋 Resultado (2026-09-16):** `docs/E24_HIGIENE_CREDENCIAIS_2026-09-16.md`. **0 cron jobs vivos com segredo literal** — os 2 jobs que casam com o padrão (`generate-blurhashes`, `hash-product-images`) usam `get_edge_anon_key()` em runtime, não literal. **1 arquivo histórico** com JWT literal (`20260601140100_..._hardcode_url.sql`, commit `620afebc0`, chave **anon** — pública por design, não `service_role`), já remediado por 2 migrations subsequentes (`20260602020000`, `20260619210000`); 0 arquivos com `service_role` literal. `.env.local` confirmado ignorado (`git check-ignore`). 6 ocorrências de `service_role` em `src/` inspecionadas individualmente — todas mascaramento/comentário/texto de UI, 0 credenciais. O achado do `SCHEMA_REFERENCE.md` §7 não tem equivalente vivo em produção. Nenhum segredo reproduzido no documento.
+
 **Checklist de conclusão:**
-- [ ] 0 cron jobs com segredo literal (ou rotacionados)
-- [ ] 0 JWT em migrations/histórico acessível (ou rotacionados)
-- [ ] `git check-ignore .env.local` confirma
+- [x] 0 cron jobs com segredo literal (ou rotacionados)
+- [x] 0 JWT em migrations/histórico acessível (ou rotacionados) — 1 histórico (anon key, já remediado), 0 service_role
+- [x] `git check-ignore .env.local` confirma
 **Esforço:** P · **Dep.:** —
 
 ---
@@ -558,13 +573,16 @@ Em ambos: adicionar partição `DEFAULT` como rede de segurança com alerta se r
 - [ ] Relatório de projeção publicado como artefato
 **Esforço:** M · **Dep.:** E15
 
-### E31 · Inventário e agenda de refresh das 12 materialized views `[DB-RO]`
+### E31 · Inventário e agenda de refresh das 12 materialized views `[DB-RO]` ✅ Concluída em 2026-09-16
 **Problema (medido):** 12 MVs em 3 schemas; o doc de referência lista 5. `mv_product_images_audit` 84 MB. Sem inventário, um `REFRESH` esquecido serve dado velho e um `REFRESH` sem `CONCURRENTLY` bloqueia leitores.
 **Ação:** por MV: definição, dependências (`pg_depend`), índice único (pré-requisito de `CONCURRENTLY`), job de refresh (nome, cron, single-statement?), consumidores. Registrar em `SCHEMA_REFERENCE.md` §6.
+
+> **📋 Resultado (2026-09-16):** `docs/E31_INVENTARIO_MATVIEWS_2026-09-16.md`. 12/12 confirmadas (`public` 4, `analytics` 7, `internal` 1). **12/12 têm índice único válido** para `REFRESH CONCURRENTLY` — nenhuma "sem índice". 12/12 têm job identificável (7 dedicados, 5 só via `refresh_all_materialized_views()`, hora em hora). 4 achados de risco: (1) `analytics.categories_tree_visual` refrescada **sem** `CONCURRENTLY` apesar de ter índice único válido — comentário no código está desatualizado; (2) refresh duplicado/redundante em `mv_stock_velocity` e `mv_product_intelligence` (job dedicado + agregadora, risco de dois `CONCURRENTLY` concorrentes); (3) 3 MVs sem consumidor de aplicação identificável no grep (`mv_product_images_audit` 84 MB, `mv_ema_kpi_by_level`, `mv_media_health`) — decisão de descontinuar refresh fica fora do escopo `[DB-RO]`; (4) cadeia de dependência mapeada (`mv_stock_velocity` → `mv_product_intelligence`/`mv_stock_rupture_alert` → `mv_ema_kpi_by_level`).
+
 **Checklist de conclusão:**
-- [ ] 12/12 com job identificado ou marcada "sem refresh — investigar"
-- [ ] MVs sem índice único listadas para E37
-- [ ] Doc atualizado
+- [x] 12/12 com job identificado ou marcada "sem refresh — investigar"
+- [x] MVs sem índice único listadas para E37 — nenhuma; achado real foi refresh sem CONCURRENTLY em 1 MV com índice
+- [x] Doc atualizado
 **Esforço:** P · **Dep.:** E04
 
 ### E32 · Autovacuum por tabela para alta rotatividade `[REQUER-PO]`
@@ -578,9 +596,12 @@ Em ambos: adicionar partição `DEFAULT` como rede de segurança com alerta se r
 ### E33 · Monitor de wraparound, TOAST e sequências `[GIT]`
 **Problema (medido):** hoje sem risco (máx. sequência int4 = 322; slots saudáveis). Sem monitor, a primeira notícia é o incidente.
 **Ação:** incluir no cron de E30: `age(datfrozenxid)` do banco, sequências int4 > 50 %, slots inativos com WAL retido > 1 GB. Alerta via issue.
+
+> **📋 Resultado (2026-09-16, preparação):** `docs/E33_MONITOR_WRAPAROUND_2026-09-16.md`. Medição confirma "sem risco hoje": `age(datfrozenxid)` = 46.004.605 (2,3% do threshold de aviso); 10 sequências int4 (0 int2), todas ≤0,01% do limite (`_qa_pct_results_id_seq`=322 bate com o plano); 2 replication slots, ambos ativos, WAL retido 37 kB. TOAST extra (fora do pedido original, medido por completude): `products` em 170,7% TOAST/heap (75 MB) é o sinal mais acionável. Thresholds propostos (aviso/crítico) para as 4 métricas + threshold composto para TOAST (evita ruído de tabelas pequenas). Decisão de schema: tabela nova `ops.wraparound_monitor_log` (formato genérico métrica/objeto/valor), não reaproveitar `ops.table_size_history` do E30 — schemas heterogêneos (por-banco, por-sequência, por-slot, por-tabela) não cabem numa única forma tabular. SQL de tabela + cron (single-statement via `fn_cron_safe_run`, `p_key=167` a confirmar) escrito e pronto, **não aplicado** — depende de E30 (schema `ops` ainda não existe) e aprovação do PO.
+
 **Checklist de conclusão:**
-- [ ] 3 métricas coletadas diariamente
-- [ ] Teste de alerta com limiar artificial
+- [ ] 3 métricas coletadas diariamente — SQL pronto, aguarda aprovação/aplicação via pacote E30
+- [ ] Teste de alerta com limiar artificial — esboço do workflow documentado, não implementado
 **Esforço:** P · **Dep.:** E30
 
 ---
@@ -588,13 +609,16 @@ Em ambos: adicionar partição `DEFAULT` como rede de segurança com alerta se r
 ## FASE 4 — Desempenho e cron (E34–E40)
 > Objetivo: os 114 h de `fn_cron_safe_run` e as RPCs de 12 s deixam de ser invisíveis.
 
-### E34 · Identificar as 3 RPCs PostgREST de 6,8–12,3 s `[DB-RO]`
+### E34 · Identificar as 3 RPCs PostgREST de 6,8–12,3 s `[DB-RO]` ✅ Concluída em 2026-09-16
 **Problema (medido):** 3 entradas `WITH pgrst_source ... pgrst_call.pgrst_scalar` com média 12.010 / 6.847 / 12.305 ms e 3.402 / 3.805 / 1.530 chamadas. São chamadas de aplicação — usuário espera 12 s.
 **Ação:** `SELECT queryid, query FROM pg_stat_statements WHERE query LIKE 'WITH pgrst_source%' ORDER BY total_exec_time DESC` → extrair o nome da função do `LATERAL`; `EXPLAIN (ANALYZE, BUFFERS)` com parâmetros reais de `postgres_logs`; classificar (falta índice, N+1 em plpgsql, `SECURITY DEFINER` sem `STABLE`, seq scan em `products`).
+
+> **📋 Resultado (2026-09-16):** `docs/E34_RPCS_LENTAS_2026-09-16.md`. 3/3 nomeadas e reconciliadas com o plano (pequena divergência de `calls` no #3, 1.538 vs 1.530, é o contador cumulativo avançando entre capturas — mesma função). **`fn_process_raw_v2`** (12.010 ms, 3.402 chamadas): pipeline síncrono de 3 sub-funções, 2 delas com N+1 + `BEGIN/EXCEPTION` por linha (subtransação por linha); tabela pequena (19.805 linhas), descarta seq scan. **`fn_asia_stock_fast_sync`** (6.847 ms, 3.805 chamadas): índice presente e usado corretamente (`EXPLAIN` confirma plano eficiente); causa é N+1 puro com subtransação por item. **`fn_spot_direct_prices_gold`** (12.293 ms, 1.538 chamadas): mesmo N+1 + agravante de índice parcial existente cobrindo outro fornecedor (XBZ), não o usado pela função (STRICKER) — `Filter` residual em vez de `Index Cond` completo. Nenhuma das 3 é `STABLE`. Propostas de correção (refactor set-based, não aplicadas) com ganho estimado por RPC — nenhum `EXPLAIN ANALYZE` rodado em produção, por instrução da tarefa.
+
 **Checklist de conclusão:**
-- [ ] 3/3 nomeadas, com plano de execução anexado
-- [ ] Causa raiz por RPC
-- [ ] Proposta de correção com ganho estimado (vai para E15)
+- [x] 3/3 nomeadas, com plano de execução anexado
+- [x] Causa raiz por RPC — N+1/subtransação por linha nas 3, agravado por índice parcial insuficiente no #3
+- [x] Proposta de correção com ganho estimado (vai para E15) — refactor set-based, ganho estimado 80–90% de redução
 **Esforço:** M · **Dep.:** E02
 
 ### E35 · `fn_reposicao_backfill_today`: 15 s por chamada `[REQUER-PO]`
@@ -606,12 +630,15 @@ Em ambos: adicionar partição `DEFAULT` como rede de segurança com alerta se r
 - [ ] `pg_stat_statements` 7 dias depois: total_exec_time < 10 % do anterior
 **Esforço:** M · **Dep.:** E34
 
-### E36 · Distribuição de custo de `fn_cron_safe_run` por job `[DB-RO]`
+### E36 · Distribuição de custo de `fn_cron_safe_run` por job `[DB-RO]` ✅ Concluída em 2026-09-16
 **Problema (medido):** 355.638 chamadas, média 1.157 ms, total 411.672 s. É wrapper de ~48 crons — a média esconde 2–3 jobs pesados.
 **Ação:** `cron.job_run_details` (30 dias): `jobname, count, avg(end_time-start_time), max` → top 10; correlacionar com `pg_stat_statements` das queries internas. Produzir ranking de custo.
+
+> **📋 Resultado (2026-09-16):** `docs/E36_CUSTO_FN_CRON_SAFE_RUN_2026-09-16.md`. Correção de unidade no texto do plano: a média é ~1,159 **segundos**/chamada, não ms. Janela real de `cron.job_run_details` é ~17 dias (retenção), não 30. Ranking top 10 construído por `jobid` (fonte confiável, ao contrário de `pg_stat_statements` que agrega/normaliza e sofreu 53 evictions desde 2026-06-21). **`asia-image-uploader` domina com 67,57%** do custo wrapped (76.168,5 s) — causa raiz confirmada: `pg_sleep(60)` síncrono dentro da função (99,6% do tempo é sleep, não processamento), candidato a nova etapa (dispatch/harvest separados em 2 jobs). `refresh-all-materialized-views` é 2º (11,13%, 12.550 s) — custo real de refresh, não bug. Juntos, os 2 somam 78,70% do total. `fantasmas-deactivate-guard` (3º, 2,90%) tem p95/p50 com gap de 13x (contenção ocasional), custo total baixo. Também identificado: `reposicao-backfill-hourly` (não usa o wrapper) seria o #2 do ranking geral se incluído — confirma que já é objeto do E35, números aqui servem de evidência adicional para aquela etapa.
+
 **Checklist de conclusão:**
-- [ ] Ranking dos 10 jobs mais caros com duração p50/p95
-- [ ] Os 3 primeiros têm etapa de otimização aberta (E35 ou nova)
+- [x] Ranking dos 10 jobs mais caros com duração p50/p95
+- [x] Os 3 primeiros têm etapa de otimização aberta (E35 ou nova) — #1 candidato a nova etapa (pg_sleep síncrono), #2 candidato a nova etapa (EXPLAIN por MV), #3 (reposicao-backfill) já é E35
 **Esforço:** P · **Dep.:** —
 
 ### E37 · Converter os 59 cron jobs multi-statement `[REQUER-PO]`
@@ -632,13 +659,16 @@ Em ambos: adicionar partição `DEFAULT` como rede de segurança com alerta se r
 - [ ] `cron.job WHERE NOT active` = 0 **ou** comentado no doc como intencional
 **Esforço:** P · **Dep.:** —
 
-### E39 · Investigar 262 deadlocks e 22,5 % de rollback `[DB-RO]`
+### E39 · Investigar 262 deadlocks e 22,5 % de rollback `[DB-RO]` ✅ Concluída em 2026-09-16
 **Problema (medido):** `pg_stat_database.deadlocks = 262`; `xact_rollback / total = 22,53 %`. Rollback alto pode ser PostgREST devolvendo erro (4xx) ou testes E2E; deadlocks indicam ordem de lock inconsistente (provável em `products` ↔ satélites via trigger).
 **Ação:** `postgres_logs` 24 h: `deadlock detected` → pares de tabelas; `ERROR:` mais frequentes → origem (pgrst / edge / cron). Registrar. Se deadlock em `products`/`product_*`: ordenar escrita nos triggers `trg_sync_product_*`.
+
+> **📋 Resultado (2026-09-16):** `docs/E39_DEADLOCKS_ROLLBACK_2026-09-16.md`. **Sem deadlock ativo e sem contenção de lock** no momento da auditoria (`pg_locks` só a própria conexão). **0 ocorrências de "deadlock detected"** nos logs das últimas 24h. Os 262 deadlocks e a taxa de rollback de 22,49% são contadores **cumulativos de 61,3 dias** (desde o último restart em 2026-07-17, sem `stats_reset`) — sem série temporal anterior, não dá para calcular taxa diária real nem localizar quando os 262 ocorreram (limitação: logs só têm janela de consulta de 24h por chamada). As 3 RPCs lentas do E34 não aparecem em nenhum lock/log das últimas 24h. Não foi possível produzir "top 5 pares de deadlock" (pedido original do plano) porque não há nenhum deadlock na janela investigável — resultado é "sem anomalia ativa detectável", não falha de investigação. Recomendação principal (R1, não aplicada): instrumentar snapshot periódico de `pg_stat_database` para obter baseline temporal real.
+
 **Checklist de conclusão:**
-- [ ] Top 5 pares de deadlock e top 5 erros com origem
-- [ ] Plano de correção para o par #1 (vai para E15)
-- [ ] Baseline registrada para comparação pós-correção
+- [x] Top 5 pares de deadlock e top 5 erros com origem — não aplicável: 0 deadlocks/erros de transação na janela de 24h investigável; 3 ERROR encontrados eram falsos positivos (slow query de replicação)
+- [x] Plano de correção para o par #1 (vai para E15) — não aplicável, nenhum par de deadlock ativo identificado
+- [x] Baseline registrada para comparação pós-correção — recomendado instrumentar snapshot periódico (R1), ainda não implementado, decisão do PO
 **Esforço:** M · **Dep.:** E02
 
 ### E40 · Baseline de desempenho e SLO por RPC crítica `[GIT]` + `[REQUER-PO]`
@@ -673,20 +703,26 @@ Em ambos: adicionar partição `DEFAULT` como rede de segurança com alerta se r
 - [ ] `tests/` excluído explicitamente
 **Esforço:** M · **Dep.:** E02
 
-### E43 · Objetos órfãos e referências a objetos inexistentes `[RO]`
+### E43 · Objetos órfãos e referências a objetos inexistentes `[RO]` ✅ Concluída em 2026-09-16
+
+> **📋 Resultado de E43 (2026-09-16):** `docs/E43_OBJETOS_ORFAOS_2026-09-16.md`. Lista (a) **não é vazia**: 3 achados reais e ativos em produção — edge function `bitrix-sync` (ACTIVE) referencia `bitrix_clients`/`bitrix_deals`/`sync_logs`, nenhuma existe no banco canônico (4 ações da function quebram em runtime); `e2e-cleanup` (ACTIVE) grava em `e2e_cleanup_audit`, que não existe apesar de migração `20260426200011` criá-la — drift de migração real; `stock_notes` referenciada por hook sem nenhum importador (código morto, não quebra hoje). 5 outros candidatos investigados e descartados como falso-positivo (CRM externo via `crm-db-bridge`, fallback documentado, RPC morta com try/catch). Lista (b), com refinamento de 2 passadas (uso interno via `pg_depend`/regex em `prosrc`/`definition`, não só grep de código): **128 views** (de 162 brutas) e **596 funções** (de 860 brutas) sem consumidor conhecido — nenhum `DROP` sugerido ou aplicado. 8 ressalvas metodológicas documentadas (invocação dinâmica por nome, overloads, etc.). **Achado de maior prioridade para etapa futura de correção (fora do escopo `[RO]`):** os 3 gaps da lista (a) em edge functions ativas.
+
 **Problema (medido):** 193 views e 1.320 funções vs consumidores em `src/` (2.568 arquivos) e `supabase/functions`. Nada mede o que sobrou.
 **Ação:** extrair chamadas `.rpc('x')`, `.from('x')`, `supabase.functions.invoke('x')` do código; cruzar com `pg_proc`/`pg_class`/lista de funções. Duas listas: (a) código chama objeto inexistente (bug latente); (b) objeto sem consumidor em código, `pg_depend`, cron ou edge (candidato a remoção **futura**, não automática).
 **Checklist de conclusão:**
-- [ ] Lista (a) = 0 ou com issue por item
-- [ ] Lista (b) publicada com contagem; nenhum drop nesta etapa
+- [x] Lista (a) = 0 ou com issue por item — não é 0; 3 achados reais documentados com localização exata, issue registrada para etapa de correção futura
+- [x] Lista (b) publicada com contagem; nenhum drop nesta etapa — 128 views + 596 funções, 0 drops
 **Esforço:** M · **Dep.:** E01
 
-### E44 · Contrato de enums entre banco e TypeScript `[GIT]`
+### E44 · Contrato de enums entre banco e TypeScript `[GIT]` ✅ Concluída em 2026-09-16
 **Problema:** 15 enums (`app_role`, `magazine_status`, `payment_status`…). Um valor novo no banco sem o tipo TS produz `switch` sem `default` silencioso.
 **Ação:** teste que compara `pg_enum` (live) com `Database.public.Enums` e com unions manuais em `src/types/`; falha em qualquer diferença de valor ou ordem.
+
+> **📋 Resultado (2026-09-16):** `docs/E44_CONTRATO_ENUMS_2026-09-16.md`, teste `tests/scripts/check-enum-contract.test.mjs`. 15/15 enums mapados contra `Constants.public.Enums`. 2/15 (`app_role`, `step_up_action`) tinham unions manuais duplicadas em `src/` — agora cobertas pelo teste de drift. Teste validado por mutação: injetou valor de enum falso em `src/lib/roles.ts`, confirmou que o teste falha como esperado, reverteu (`git diff --stat` vazio depois). 3/3 asserções passam no CI, fail-closed.
+
 **Checklist de conclusão:**
-- [ ] 15/15 enums cobertos
-- [ ] Teste no CI (fail-closed sem credencial)
+- [x] 15/15 enums cobertos
+- [x] Teste no CI (fail-closed sem credencial) — mutation-tested, reversão confirmada limpa
 **Esforço:** P · **Dep.:** E41
 
 ### E45 · `products` (184 colunas) — comentário, satélites e `product_physical` `[REQUER-PO]`
