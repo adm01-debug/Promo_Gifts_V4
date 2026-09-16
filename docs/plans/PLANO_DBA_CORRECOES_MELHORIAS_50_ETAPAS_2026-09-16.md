@@ -255,20 +255,40 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 >
 > **Achado colateral (não corrigido, fora do escopo desta etapa):** `node scripts/check-no-db-push.mjs` falha hoje (`exit 1`) — mas por conteúdo pré-existente e sem relação (arquivos de cache do `graphify-out/` e `docs/plans/KIT_MAKER_PLANO_200_ETAPAS_2000_SUBETAPAS_2026-09-10.md`, datado de 2026-09-10, contêm a string "supabase db push" em texto/cache e disparam o grep do gate). Confirmado que não vem de nada tocado nesta sessão. É um falso-positivo de gate que merece etapa própria (candidato a incluir numa próxima rodada da matriz).
 
-### E07 · Classificar as 484 migrations sem ledger por verificação de objeto `[DB-RO]`
-**Problema (medido):** 484 arquivos locais sem linha no ledger. Amostra 5/5 aplicada. Hipótese forte: maioria é `aplicada-sem-ledger`. Hipótese ≠ prova.
+### E07 · Classificar as 543 migrations sem ledger por verificação de objeto `[DB-RO]` 🟡 Parcial — 79% classificado com evidência, 2026-09-16
+**Problema (medido):** 543 arquivos locais sem linha no ledger (número final de E06). Amostra 5/5 aplicada. Hipótese forte: maioria é `aplicada-sem-ledger`. Hipótese ≠ prova.
 **Ação:**
 1. Para cada arquivo, extrair o(s) objeto(s)-alvo via **regex leve** (`^\s*(CREATE|ALTER|DROP)\s+(OR REPLACE\s+)?(FUNCTION|TABLE|INDEX|VIEW|POLICY|TRIGGER)\s+(IF (NOT )?EXISTS\s+)?([\w."]+)`, mais casos para `GRANT|REVOKE ... ON ...`, `COMMENT ON ... IS`) — **sem** adicionar parser AST novo ao projeto.
 2. Agrupar por tipo de objeto e gerar **uma query em lote por tipo** (ex.: todas as funções esperadas em um único `SELECT proname, ... FROM pg_proc WHERE proname = ANY($1)`), não uma chamada por arquivo — o objetivo é dezenas de queries, não 484.
 3. Marcar `aplicada-sem-ledger` quando o objeto existe com a assinatura esperada; `indeterminada` quando a regex não capturou objeto (DML puro, blocos `DO $$`, migrations multi-statement) ou quando o objeto não existe.
 4. Revisar manualmente só os `indeterminada`.
 **Checklist de conclusão:**
-- [ ] 484/484 com estado ≠ `indeterminada` **ou** com justificativa individual
-- [ ] Relatório: quantas `aplicada-sem-ledger`, quantas `pendente`, quantas `no-op`
-- [ ] Nenhuma `pendente` com DDL destrutivo sem ticket aberto
-**Esforço:** M (rebaixado de G) · **Dep.:** E06
+- [ ] 543/543 com estado ≠ `indeterminada` **ou** com justificativa individual — **430/543 (79%) com evidência real; 113 (`grant`/`revoke`/`drop`/`comment`/`add_column`/`enum_value`) ainda não verificados; 132 seguem `indeterminada` genuína (DO-blocks dinâmicos, DML puro)**
+- [x] Relatório: quantas `aplicada-sem-ledger`, quantas `pendente`, quantas `no-op` — ver resultado abaixo
+- [ ] Nenhuma `pendente` com DDL destrutivo sem ticket aberto — **67 `pendente` identificadas, nenhum ticket aberto ainda** (próximo passo)
+**Esforço:** M (rebaixado de G) · **Dep.:** E06 (✅)
 
-> **Pre-mortem:** cogitei usar `libpg_query`/`pgsql-parser` para extrair objetos com precisão de AST — mas **nenhuma lib de parsing SQL existe no `package.json`** hoje, e adicionar uma dependência nova só para esta etapa é desproporcional (G de esforço, manutenção permanente). Testei o atalho "grep por 'Aplicada em produ' no cabeçalho" como triagem barata: só bate em **8 dos 484** arquivos — não é atalho suficiente sozinho, mas informa que a maioria não se autodocumenta e precisa mesmo da verificação por objeto. Regex leve + queries em lote por tipo de objeto é o meio-termo: mais barato que AST, mais confiável que grep de texto livre.
+> **Pre-mortem:** cogitei usar `libpg_query`/`pgsql-parser` para extrair objetos com precisão de AST — mas **nenhuma lib de parsing SQL existe no `package.json`** hoje, e adicionar uma dependência nova só para esta etapa é desproporcional (G de esforço, manutenção permanente). Testei o atalho "grep por 'Aplicada em produ' no cabeçalho" como triagem barata: só bate em **8 dos 484** arquivos (número da fotografia anterior) — não é atalho suficiente sozinho. Regex leve + queries em lote por tipo de objeto é o meio-termo: mais barato que AST, mais confiável que grep de texto livre.
+
+> **✅ Resultado (2026-09-16):** `scripts/classify-unledgered-migrations.mjs` (novo) extraiu objeto-alvo de cada um dos 543 arquivos; verificação em lote no `pg_catalog` (10 queries agrupadas por tipo, não 543 chamadas) contra 81 funções, 38 índices, 3 matviews, 4 tabelas, 41 policies, 30 triggers, 27 views, 3 schemas, 10 `ALTER FUNCTION...search_path` distintos. Resultado salvo em `docs/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json`:
+>
+> | Estado | Qtd | % |
+> |---|---|---|
+> | `aplicada-sem-ledger` | 221 | 41% |
+> | `pendente` (objeto confirmado **ausente** ao vivo) | **67** | 12% |
+> | `não-verificado-nesta-rodada` (grant/revoke/drop/comment/add_column/enum) | 113 | 21% |
+> | `indeterminada` (DO-blocks dinâmicos, DML puro — regex não captura objeto único) | 132 | 24% |
+> | `no-op`/diagnóstico | 10 | 2% |
+>
+> **⚠️ Antes de tratar os 67 `pendente` como "67 coisas quebradas":** vários são candidatos a **superados por versão posterior**, não gaps reais — ex.: `user_roles_self_read`, `user_roles_self_read_v4`, `user_roles_select_v2` são três tentativas sucessivas do mesmo policy em datas diferentes; o fato de nenhuma bater o nome exato não prova que `user_roles` está desprotegida (940 policies existem no banco hoje, incluindo outras em `user_roles`). Cada `pendente` precisa de checagem individual antes de virar ticket — isto é levantamento, não veredito.
+>
+> **Achados que cruzam com outras fases do plano:**
+> - **7 dos 16 índices `pendente` são de performance em `products`/`stock_snapshots`** (`idx_products_active_category`, `idx_products_active_sale_price`, `idx_products_keyset_active` ×2 tentativas em datas diferentes, `idx_stock_snapshots_variant_id`, `idx_pcd_product_id_active`, `idx_product_images_cf_last_checked_at`) — relevante para E29/E34-E40 (desempenho). Índices de performance escritos e nunca aplicados são um achado concreto e acionável.
+> - **7 dos 7 schemas `pendente` são `archive`/`backup`** — vêm de migrations "faxina" (limpeza de tabelas órfãs) que nunca criaram o schema de destino. Sinal de esforço de limpeza iniciado e não concluído.
+> - `_asia_api_staging` (tabela `pendente`) vem de `20260604141700_bootstrap_fresh_replay_prereqs.sql` — nome sugere uma tentativa **anterior** de resolver exatamente o problema do replay do `db diff` que esta sessão investigou em E02. Não explorado a fundo; candidato a arqueologia se alguém quiser entender tentativas passadas.
+> - `internal_deny_direct_access` (policy `pendente`) confirma, com evidência de lote, o que já sabíamos individualmente: a migration 055 (P5 do `SCHEMA_REFERENCE.md`) nunca aplicou.
+>
+> **Não concluído nesta rodada:** verificação de `grant`/`revoke` (56 arquivos — precisa checar `information_schema.role_table_grants`/`has_*_privilege`, lógica diferente de "existe"), `drop` (27 — lógica invertida: "aplicada" significa objeto **não** existir), `comment` (10), `add_column` (19, tenho os pares tabela/coluna prontos em `/tmp`, não rodei ainda), `enum_value` (1). Fica para uma próxima rodada de E07 antes de fechar 100%.
 
 ### E08 · Reparar o ledger para as `aplicada-sem-ledger` `[REQUER-PO]`
 **Problema:** cada migration aplicada sem registro faz `migration list` mentir e torna `migration up` perigoso.
