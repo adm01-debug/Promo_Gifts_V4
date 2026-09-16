@@ -290,6 +290,19 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 >
 > **Não concluído nesta rodada:** verificação de `grant`/`revoke` (56 arquivos — precisa checar `information_schema.role_table_grants`/`has_*_privilege`, lógica diferente de "existe"), `drop` (27 — lógica invertida: "aplicada" significa objeto **não** existir), `comment` (10), `add_column` (19, tenho os pares tabela/coluna prontos em `/tmp`, não rodei ainda), `enum_value` (1). Fica para uma próxima rodada de E07 antes de fechar 100%.
 
+> **✅ Revisão manual dos 67 `pendente` (2026-09-16) — `docs/REVISAO_67_PENDENTES_2026-09-16.md`:** para cada objeto ausente, comparei o estado *atual* da tabela-alvo (não só "o nome não existe") e, para funções, se há chamador vivo no código.
+>
+> | Categoria | Qtd | Conclusão |
+> |---|---|---|
+> | **P3 — Superado por trabalho posterior** | ~19 | `user_roles` (4), `admin_audit_log` (2), `color_groups`, `category_ancestors`, `tabela_preco_gravacao_oficial`, `kit_component_enrichment_raw`, `discount_approval_requests` (2), `password_reset_requests` (policy), `user_notification_preferences`, `kcpa_admin_delete` — todas com cobertura equivalente ou mais forte hoje, sob nome diferente. **Sem ação.** |
+> | **P4 — Tabela-alvo não existe mais** | 4 | `bitrix_clients`, `silver_products`, `ai_description_queue` não existem; `kit_component_media` — o próprio código já documenta que esse nome "nunca existiu" (renomeado para `component_media`). **Achado moot, não gap.** |
+> | **P5 — Função sem chamador vivo ou já documentada como ausente-intencional** | 10 | 7 sem nenhuma referência no código (trabalho especulativo abandonado); `check_auth_config_status` tem chamador mas o próprio código comenta "ausência intencional, re-verificado 2026-06-11"; `check_webhook_dedup`/`fn_convert_cart_to_quote` só aparecem em comentário, não em chamada real. **Nenhum bug de produção confirmado.** |
+> | **P6 — Utilitário de baixo risco** | ~6 | Triggers de `updated_at`/posição/relink em tabelas que já têm cobertura extensa por outros triggers (ex.: `product_images` tem 21). **Baixo risco, não investigado a fundo.** |
+> | **P2 — Débito técnico real, baixa urgência** | 7 schemas + já contabilizado nos 7 índices acima | Limpeza "faxina" de tabelas órfãs nunca completou: `archive`/`backup` não existem, e **3 tabelas `%_orphan_%` ainda estão em `public`** hoje. |
+> | **🔴 P1 — Requer decisão do PO, não resolvido** | **3** | `trg_prevent_non_admin_quote_item_price_change` (`quote_items` — trigger de **segurança de preço**, sem equivalente óbvio nos 6 triggers atuais da tabela); `trg_enforce_seller_cart_ready_requires_items` (`seller_carts` — integridade de carrinho); `handle_password_reset_request` (função **não existe em lugar nenhum**, hipótese de handler órfão pós-migração pro Auth nativo, não confirmada). |
+>
+> Nenhuma migration foi aplicada, revertida ou alterada nesta revisão — é levantamento para decisão do PO (REGRA #8), especialmente os 3 itens P1.
+
 ### E08 · Reparar o ledger para as `aplicada-sem-ledger` `[REQUER-PO]`
 **Problema:** cada migration aplicada sem registro faz `migration list` mentir e torna `migration up` perigoso.
 **Ação:** para o conjunto validado em E07, executar `supabase migration repair --status applied <versão>` em lotes de 50, **um lote por sessão**, com o manifesto assinado antes e depois. `repair` insere só a versão — **não executa SQL**. Preencher `name` e, quando o arquivo for canônico, `statements` (para fechar o gap de 483 sem statements daqui para frente).
