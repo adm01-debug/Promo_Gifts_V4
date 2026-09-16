@@ -210,15 +210,15 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 
 > **Pre-mortem:** não encontrei ferramenta que leia status de PITR/backup do projeto `doufsxqlfjyuvxuezpln` — nenhum tool MCP carregado expõe isso (só achei equivalentes de *outros* projetos Supabase da conta). **Passo 1 é ação sua**, no painel Supabase → Database → Backups. Passo 2 (`pg_dump --schema-only`) precisa da CLI autenticada (E02) ou de você rodá-lo localmente. Passos 3 e 4 eu já posso fazer agora via `execute_sql`, sem esperar nada.
 
-### E04 · Regenerar `docs/SCHEMA_REFERENCE.md` a partir do `pg_catalog` `[GIT]`
+### E04 · Regenerar `docs/SCHEMA_REFERENCE.md` a partir do `pg_catalog` `[GIT]` ✅ Concluída em 2026-09-16
 **Problema (medido):** o documento diz "se divergir > 5 %, regenere". Divergência hoje: banco +39 %, SECDEF +6 %, FKs `auth.users` +19 %, P1 (anon write) **já fechado**, views sem `security_invoker` 0 → 8, matviews 5 → 12. Quem lê o doc toma decisões erradas.
-**Ação:** rodar todas as queries de §8 do documento + as desta fotografia (§1); regravar as seções 1–6 com números de 2026-09-16; mover P1 para "fechado"; adicionar §1.3 (capacidade) e §1.4 (desempenho) como seções permanentes. Confirmar que `scripts/check-schema-reference-drift.mjs` compara contra os novos números.
+**Ação realizada:** documento reescrito por completo (commit `910ce4291`). Seções 1–6 com números de hoje; P1 movido para "fechado" com evidência; achados novos documentados como P5 (2 tabelas RLS sem policy — a correção já existe pronta e nunca rodou, migration 055), P6 (8 views SECDEF sem `security_invoker`, desenho intencional) e P7 (SECDEF/`authenticated` +36%); §6 recontado (12 matviews em 3 schemas, não só as 5 de `public`); §7-B novo documentando a descoberta completa do `db diff` nunca ter completado (ver E02) e as 3 correções aplicadas; 2 invariantes novas (11: não editar migration já aplicada, exceto as nunca aplicadas em lugar nenhum; 12: "sem drift" precisa dizer a fonte).
 **Checklist de conclusão:**
-- [ ] Todas as contagens do doc batem com `pg_catalog` no mesmo dia
-- [ ] P1 marcado como fechado com evidência (`anon_write_tables = 0`)
-- [ ] 8 views SECDEF e 12 matviews documentadas
-- [ ] `check-schema-reference-drift` passa contra o doc novo
-**Esforço:** M · **Dep.:** E01
+- [x] Todas as contagens do doc batem com `pg_catalog` no mesmo dia
+- [x] P1 marcado como fechado com evidência (`anon_write_tables = 0`)
+- [x] 8 views SECDEF e 12 matviews documentadas
+- [x] `check-schema-reference-drift` passa contra o doc novo — teste unitário associado (`tests/scripts/check-schema-reference-drift.test.mjs`) também precisou de atualização, feita junto.
+**Esforço:** M · **Dep.:** E01 (✅)
 
 ### E05 · Consolidar os três planos em uma matriz única `[GIT]`
 **Problema:** três planos de 50 etapas com sobreposição (ex.: drift check aparece em 09-13 Fase 1, 09-15 E28 e aqui E02/E46). Sem matriz, agentes executam a mesma coisa duas vezes ou pulam achando que outro fez.
