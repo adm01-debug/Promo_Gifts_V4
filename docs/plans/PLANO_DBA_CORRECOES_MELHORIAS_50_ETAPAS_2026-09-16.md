@@ -220,14 +220,14 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 - [x] `check-schema-reference-drift` passa contra o doc novo — teste unitário associado (`tests/scripts/check-schema-reference-drift.test.mjs`) também precisou de atualização, feita junto.
 **Esforço:** M · **Dep.:** E01 (✅)
 
-### E05 · Consolidar os três planos em uma matriz única `[GIT]`
+### E05 · Consolidar os três planos em uma matriz única `[GIT]` ✅ Concluída em 2026-09-16
 **Problema:** três planos de 50 etapas com sobreposição (ex.: drift check aparece em 09-13 Fase 1, 09-15 E28 e aqui E02/E46). Sem matriz, agentes executam a mesma coisa duas vezes ou pulam achando que outro fez.
-**Ação:** criar `docs/plans/MATRIZ_PLANOS_2026-09.md` com uma linha por etapa dos três planos: estado (`feito`/`aberto`/`superseded`/`bloqueado`), PR que resolveu, etapa equivalente nos outros planos. Marcar nos planos originais o que já está fechado.
+**Ação realizada:** `docs/plans/MATRIZ_PLANOS_2026-09.md` criada (commit `9577cc2fa`) com as 150 etapas dos três planos. Estado medido ao vivo onde barato de verificar (26 concluídas, 19 parciais, 14 abertas confirmadas, 91 marcadas honestamente como "não verificado nesta rodada" — não chutado). Achados: E26/E27[15]=E02[16] e E31[13]=E10[16] são etapas duplicadas entre planos; 2 divergências de contagem não resolvidas (3 vs. 4 IDs inválidos; 4 vs. 5 drafts arquivados).
 **Checklist de conclusão:**
-- [ ] 150 linhas (50 × 3) com estado e referência
-- [ ] Nenhuma etapa aberta em dois planos sem apontar qual é canônica
-- [ ] Planos 09-13 e 09-15 atualizados com "ver matriz"
-**Esforço:** M · **Dep.:** E01
+- [x] 150 linhas (50 × 3) com estado e referência
+- [x] Nenhuma etapa aberta em dois planos sem apontar qual é canônica — duplicatas identificadas e resolvidas para uma etapa canônica
+- [x] Planos 09-13 e 09-15 atualizados com "ver matriz"
+**Esforço:** M · **Dep.:** E01 (✅)
 
 ---
 
