@@ -446,6 +446,16 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 - [ ] `check-secdef-anon-drift` passa
 **Esforço:** M · **Dep.:** E15
 
+> **Preparo concluído em 2026-09-16** (`docs/E17_SECDEF_ANON_2026-09-16.md`):
+> 11/11 com decisão escrita, allowlist reescrita sem `reason` genérico. Achado:
+> `fn_super_filtro` tinha EXECUTE residual a `PUBLIC` (as irmãs `_facets`/
+> `_price_range` já não tinham) — migration pronta e não aplicada
+> (`supabase/migrations/20260916200000_e17_revoke_public_fn_super_filtro.sql`).
+> Achado secundário: `fn_check_login_allowed` já tem migration pronta de PR
+> anterior (`20260904150000`, SEC-008v4) nunca aplicada — sinalizado, não
+> duplicado. Follow-up não bloqueante: `fn_global_search` sem `LEAST()` no
+> `p_limit`. Aguardando aprovação do PO — não bloqueado por E15.
+
 ### E18 · Revisar as 94 SECDEF executáveis por `authenticated` (+25 desde julho) `[REQUER-PO]`
 **Problema (medido):** cresceu de 69 para 94. O gate lint 0029 bloqueou o CI por uma delas (`zapp_catalog_stats`, resolvida em #1863). Cada uma é um vetor de escalação se a lógica interna confiar em `auth.uid()` sem checar papel.
 **Ação:** classificar por padrão de acesso (lê `auth.uid()`? chama `has_role`? escreve em tabela sem RLS?). Amostra dirigida: as 25 novas primeiro. Allowlist `lint-0029-allowlist.json` com `reason` específico por função.
@@ -462,6 +472,16 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 - [ ] 2/2 com decisão, comentário no catálogo e allowlist
 - [ ] Query §8.2 do `SCHEMA_REFERENCE.md` retorna 0 **ou** exatamente as allowlisted
 **Esforço:** P · **Dep.:** E15
+
+> **Preparo concluído em 2026-09-16** (`docs/E19_RLS_SEM_POLICY_2026-09-16.md`):
+> ambas confirmadas deny-all intencional com evidência de código (não
+> suposição) — `magazine_duplicate_requests` via `magazine_duplicate_v2(...)`
+> SECDEF; `anon_catalog_grant_audit_log` via `fn_anon_catalog_grant_audit_run()`
+> SECDEF + cron ativo `anon-catalog-grant-audit-6h` (jobid 303). Migration
+> pronta (`COMMENT ON TABLE`, não muda acesso):
+> `supabase/migrations/20260916201000_e19_comment_rls_deny_intentional.sql`.
+> Nova allowlist `.security/rls-no-policy-allowlist.json` (ainda sem gate de CI
+> lendo-a). Aguardando aprovação do PO.
 
 ### E20 · Inventário das 82 FKs para `auth.users` `[DB-RO]` ✅ Concluída em 2026-09-16
 **Problema (medido):** 82 FKs (eram 69). Cada `DELETE` em `auth.users` percorre 82 constraints; FK sem índice = seq scan por tabela.
@@ -483,6 +503,18 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 - [ ] `convalidated = true` ou plano de limpeza aprovado
 **Esforço:** P · **Dep.:** E15
 
+> **Investigação concluída em 2026-09-16, recomendação diverge do plano**
+> (`docs/E21_CONSTRAINT_NOT_VALID_2026-09-16.md`): a única constraint
+> `NOT VALID` está em `realtime.messages` — schema interno da extensão
+> Supabase Realtime, não `public`. 0 violações hoje, mas a tabela é owned por
+> `supabase_realtime_admin`; `postgres` (role das nossas migrations) não é
+> membro nem superusuário — `VALIDATE CONSTRAINT` pelo nosso pipeline falharia
+> por permissão, e mesmo que não falhasse seria antipadrão alterar schema
+> interno gerenciado pela extensão via `supabase/migrations/` da aplicação.
+> **Nenhuma migration preparada** — recomendação é levar ao PO/DBA como item
+> separado (canal Supabase, não nosso pipeline), ou aceitar "deixar como está"
+> dado 0 violações.
+
 ### E22 · Gate permanente "anon sem escrita" `[GIT]`
 **Problema (medido):** P1 está fechado (0 tabelas). Sem gate, o Lovable ou uma migration antiga reaplicada reabrem em minutos (incidente 2026-06-11).
 **Ação:** adicionar a query §8.5 ao `supabase-security-gate.yml` (live, após E02): falha se `anon` tiver `INSERT/UPDATE/DELETE` em qualquer tabela `public` fora de allowlist vazia.
@@ -499,6 +531,19 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 - [ ] FORCE aplicado via E15 com teste transacional antes/depois
 - [ ] Edge functions que as usam testadas (`secrets-manager`, `mcp-keys-*`, `step-up-verify`)
 **Esforço:** M · **Dep.:** E15
+
+> **Preparo concluído em 2026-09-16** (`docs/E23_FORCE_RLS_SEGREDO_2026-09-16.md`):
+> achado central reenquadra o risco — `postgres` e `service_role` têm
+> `rolbypassrls=true`, então `FORCE ROW LEVEL SECURITY` é um no-op funcional
+> para os únicos consumidores reais hoje (11 funções SECDEF + edge functions
+> via service_role, todas confirmadas via grep). FORCE é defesa em
+> profundidade/postura, não mudança de comportamento. Migration pronta e não
+> aplicada aplica FORCE + `REVOKE ALL FROM anon` (no-op confirmado — anon já
+> não tinha grant) em 5 das 6 tabelas do plano (`mcp_api_keys` já tinha FORCE,
+> não tocada):
+> `supabase/migrations/20260916202000_e23_force_rls_secret_tables.sql`.
+> `authenticated` não é tocado (tem policies reais sustentando acesso
+> legítimo). Aguardando aprovação do PO.
 
 ### E24 · Higiene de credenciais no repositório e no banco `[RO]` ✅ Concluída em 2026-09-16
 **Problema:** o `SCHEMA_REFERENCE.md` §7 registra `"apikey":"<ANON_KEY>"` literal em 2 cron jobs de um prompt não executado; é preciso provar que nenhum job vivo tem chave em texto plano.

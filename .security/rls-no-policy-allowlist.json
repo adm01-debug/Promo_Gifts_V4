@@ -1,0 +1,18 @@
+{
+  "description": "Allowlist de tabelas public com RLS habilitada (relrowsecurity=true) e ZERO policies (pg_policies) — o padrão deny-all: só service_role e funções SECURITY DEFINER (owner postgres, rolbypassrls=true) conseguem ler/escrever. O advisor de lint do Supabase (rls_enabled_no_policy) reporta essas tabelas sem distinguir 'deny-all intencional' de 'RLS ligada e esquecida sem policy' — cada entrada aqui documenta a decisão explícita com evidência de código (não suposição), para que uma tabela nova nesse estado não seja adicionada aqui sem revisão. Criado na etapa E17-E24 (E19), 2026-09-16. Nenhum script de CI lê este arquivo ainda (diferente de secdef-anon-allowlist.json + check-secdef-anon-drift.mjs) — é um artefato de documentação/allowlist para uma futura gate análoga (check-rls-no-policy-drift.mjs), fora do escopo desta etapa.",
+  "documented_in": "docs/E19_RLS_SEM_POLICY_2026-09-16.md",
+  "tables": [
+    {
+      "table": "public.magazine_duplicate_requests",
+      "reason": "Deny-all intencional. Ledger de idempotência (actor_id+idempotency_key) escrito por SELECT/INSERT diretos dentro do corpo de public.magazine_duplicate_v2(...) (SECURITY DEFINER, owner postgres, bypassrls). Nunca exposta em SELECT direto ao cliente — só o jsonb transformado retorna pela API. anon não tem EXECUTE em magazine_duplicate_v2; authenticated tem, mas a função exige auth.uid() (RAISE EXCEPTION 'magazine_auth_required' caso contrário). Zero consumidores em src/ ou supabase/functions/ (grep confirmado, 2026-09-16).",
+      "secdef_fn": "public.magazine_duplicate_v2",
+      "cron_job": null
+    },
+    {
+      "table": "public.anon_catalog_grant_audit_log",
+      "reason": "Deny-all intencional. Log de auditoria escrito por public.fn_anon_catalog_grant_audit_run() (SECURITY DEFINER, owner postgres, bypassrls), chamada pelo cron ativo 'anon-catalog-grant-audit-6h' (jobid 303, '0 */6 * * *'). Grava o resultado de fn_verify_anon_catalog_grants() — é o próprio mecanismo que monitora ao longo do tempo o achado P1/E22 (anon sem GRANT de escrita no catálogo). Sem consumidor em src/ ou supabase/functions/ (grep confirmado, 2026-09-16) — só trilha para investigação de incidente via service_role/painel Supabase.",
+      "secdef_fn": "public.fn_anon_catalog_grant_audit_run",
+      "cron_job": "anon-catalog-grant-audit-6h (jobid 303, 0 */6 * * *)"
+    }
+  ]
+}
