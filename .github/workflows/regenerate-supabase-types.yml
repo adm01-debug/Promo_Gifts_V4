@@ -9,9 +9,16 @@
 #
 # O workflow:
 #   1. Regenera types.ts via supabase gen types
-#   2. Remove continue-on-error de lint-untyped-from.yml (promove a required)
-#   3. Roda o lint local pra validar
-#   4. Commita em branch nova e abre PR
+#   2. Gate estrutural (PLANO_DBA E41): compara o inventário de Tables/Views/
+#      Functions/Enums do types.ts novo contra o types.ts antigo (HEAD, antes
+#      da regeneracao) via scripts/check-types-inventory-drift.mjs. Falha o
+#      job se algo sumiu sem entrada em docs/TYPES_INVENTORY_REMOVAL_ALLOWLIST.json
+#      — substitui o proxy antigo (contagem de linhas / "export type"), que
+#      nao detecta remocao de tabela de dentro do union Database.public.Tables
+#      (ver REGRA #4 do CLAUDE.md e o incidente magazine_*, 2026-07-16).
+#   3. Remove continue-on-error de lint-untyped-from.yml (promove a required)
+#   4. Roda o lint local pra validar
+#   5. Commita em branch nova e abre PR
 #
 # Pode ser usado a qualquer momento pra sincronizar types.ts com o schema do banco.
 
@@ -47,6 +54,14 @@ jobs:
         with:
           version: 2.101.0
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install dependencies (para o gate estrutural de types.ts)
+        run: npm ci --prefer-offline
+
       - name: Check SUPABASE_ACCESS_TOKEN secret
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
@@ -66,9 +81,21 @@ jobs:
           supabase gen types typescript --project-id doufsxqlfjyuvxuezpln > types.ts.new
           mv types.ts.new src/integrations/supabase/types.ts
           new=$(wc -l < src/integrations/supabase/types.ts | tr -d ' ')
-          echo "types.ts: $old -> $new linhas"
+          echo "types.ts: $old -> $new linhas (diagnostico informal; o gate real eh o passo seguinte)"
           echo "OLD_LINES=$old" >> $GITHUB_ENV
           echo "NEW_LINES=$new" >> $GITHUB_ENV
+
+      # PLANO_DBA E41: gate estrutural. `--base HEAD` porque neste ponto o
+      # working tree ja foi sobrescrito pelo types.ts novo mas nenhum commit
+      # foi feito ainda nesta run — HEAD ainda aponta pro types.ts antigo
+      # (o que estava em `main` antes desta regeneracao). Falha o job (sem
+      # continue-on-error - REGRA #5 do CLAUDE.md) se uma Table/View/
+      # Function/Enum sumiu sem entrada em
+      # docs/TYPES_INVENTORY_REMOVAL_ALLOWLIST.json. Nao usa --live aqui:
+      # o types.ts recem-gerado JA VEIO do banco vivo (supabase gen types),
+      # entao comparar contra pg_catalog de novo seria redundante.
+      - name: Gate estrutural de types.ts (PLANO_DBA E41)
+        run: node scripts/check-types-inventory-drift.mjs --base HEAD
 
       - name: Promote lint to required
         if: inputs.promote_lint
@@ -116,7 +143,8 @@ jobs:
 
           ## Validacao
 
-          Lint rodou local no runner e passou.
+          - Gate estrutural (PLANO_DBA E41, `scripts/check-types-inventory-drift.mjs`) passou: nenhuma Table/View/Function/Enum sumiu sem justificativa em `docs/TYPES_INVENTORY_REMOVAL_ALLOWLIST.json`.
+          - Lint rodou local no runner e passou.
 
           Auto-aplicado via Claude MCP.
           BODYEOF
