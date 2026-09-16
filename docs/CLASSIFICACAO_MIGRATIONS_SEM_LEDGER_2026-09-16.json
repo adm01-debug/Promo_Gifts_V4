@@ -33,7 +33,8 @@
     "kind": "add_column",
     "object": "public.product_component_locations",
     "aux": "area_image_url",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "coluna area_image_url existe hoje em public.product_component_locations (information_schema.columns)"
   },
   {
     "path": "supabase/migrations/20260526103000_quote_update_transactional_rpc.sql",
@@ -150,7 +151,8 @@
     "kind": "add_column",
     "object": "public.visual_search_feedback",
     "aux": "product_id",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "coluna product_id existe hoje em public.visual_search_feedback (information_schema.columns)"
   },
   {
     "path": "supabase/migrations/20260526201213_6f3a12ba-7311-4329-8b7a-816cf3be15c5.sql",
@@ -159,7 +161,8 @@
     "kind": "add_column",
     "object": "public.visual_search_feedback",
     "aux": "product_id",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "coluna product_id existe hoje em public.visual_search_feedback (information_schema.columns)"
   },
   {
     "path": "supabase/migrations/20260526201551_8040d7c1-9323-41b7-a6c8-313e6514f223.sql",
@@ -168,7 +171,8 @@
     "kind": "add_column",
     "object": "public.visual_search_feedback",
     "aux": "product_id",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "coluna product_id existe hoje em public.visual_search_feedback (information_schema.columns)"
   },
   {
     "path": "supabase/migrations/20260526210100_ensure_app_role_enum_values.sql",
@@ -177,7 +181,8 @@
     "kind": "enum_value",
     "object": "public.app_role",
     "aux": "agente",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "valor 'agente' presente em pg_enum para o tipo public.app_role"
   },
   {
     "path": "supabase/migrations/20260526210206_ed7ffa93-eca4-4a75-8e86-cd5d50c565c4.sql",
@@ -275,7 +280,8 @@
     "kind": "grant",
     "object": "public.system_settings",
     "aux": "authenticated",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "authenticated possui SELECT/UPDATE/DELETE/INSERT em public.system_settings hoje"
   },
   {
     "path": "supabase/migrations/20260527193640_e19dbe0d-694e-495e-a071-412c76e1e295.sql",
@@ -284,7 +290,8 @@
     "kind": "drop",
     "object": "POLICY",
     "aux": "Admins",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "5/5 objetos ausentes hoje — DROP confirmado 100% efetivo"
   },
   {
     "path": "supabase/migrations/20260527193804_47a1cec9-2c6a-4a6b-9e66-1dab63e4f2f0.sql",
@@ -293,7 +300,8 @@
     "kind": "drop",
     "object": "POLICY",
     "aux": "Default",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "indeterminada-efeito-dinamico",
+    "e07_detail": "DROP dinâmico via EXECUTE format() em loop sobre pg_catalog — sem alvo fixo, não verificável por objeto único"
   },
   {
     "path": "supabase/migrations/20260527193835_c9cce192-7e99-4b28-9c5f-b2d1c6ab7836.sql",
@@ -302,7 +310,8 @@
     "kind": "revoke",
     "object": "",
     "aux": "public",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "pendente",
+    "e07_detail": "default ACL atual de funcoes no schema public (owner postgres) ainda concede EXECUTE a PUBLIC -- revoke nao reflete no estado atual"
   },
   {
     "path": "supabase/migrations/20260527195603_34cb71b1-85c2-4778-bb08-7f834ce57eef.sql",
@@ -311,7 +320,8 @@
     "kind": "grant",
     "object": "public.system_settings",
     "aux": "authenticated",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "mesmo alvo do grant anterior (system_settings/authenticated); authenticated possui os privilegios hoje"
   },
   {
     "path": "supabase/migrations/20260527200232_47baee01-4cb4-4d62-9e1f-9d5fba55e90a.sql",
@@ -320,7 +330,8 @@
     "kind": "grant",
     "object": "public.products",
     "aux": "anon",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "indeterminada-superseded-por-versao-posterior",
+    "e07_detail": "parte da cadeia grant/revoke em products/anon (2026-05-27/28); estado final decidido por 20260528102502_verify_no_anon_products_access.sql"
   },
   {
     "path": "supabase/migrations/20260527200532_b42d05f3-3552-49cb-a47c-debaf4647a3b.sql",
@@ -329,7 +340,8 @@
     "kind": "revoke",
     "object": "public.products",
     "aux": "anon",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "indeterminada-superseded-por-versao-posterior",
+    "e07_detail": "parte da cadeia grant/revoke em products/anon (2026-05-27/28); estado final decidido por 20260528102502_verify_no_anon_products_access.sql"
   },
   {
     "path": "supabase/migrations/20260527212244_33fef308-fb92-4ab4-a52c-19f9b7eeeeaa.sql",
@@ -347,7 +359,8 @@
     "kind": "grant",
     "object": "public.products",
     "aux": "anon",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "indeterminada-superseded-por-versao-posterior",
+    "e07_detail": "parte da cadeia grant/revoke em products/anon (2026-05-27/28); estado final decidido por 20260528102502_verify_no_anon_products_access.sql"
   },
   {
     "path": "supabase/migrations/20260527214425_c40ed3bd-a3b0-4f86-90d1-94061c7830c8.sql",
@@ -356,7 +369,8 @@
     "kind": "revoke",
     "object": "public.products",
     "aux": "anon",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "indeterminada-superseded-por-versao-posterior",
+    "e07_detail": "parte da cadeia grant/revoke em products/anon (2026-05-27/28); estado final decidido por 20260528102502_verify_no_anon_products_access.sql"
   },
   {
     "path": "supabase/migrations/20260527214510_cb6d5864-7079-44af-943e-31d680737b76.sql",
@@ -365,7 +379,8 @@
     "kind": "grant",
     "object": "public.products",
     "aux": "anon",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "indeterminada-superseded-por-versao-posterior",
+    "e07_detail": "parte da cadeia grant/revoke em products/anon (2026-05-27/28); estado final decidido por 20260528102502_verify_no_anon_products_access.sql"
   },
   {
     "path": "supabase/migrations/20260527214617_501475fc-83b9-4b08-b9e4-9ade2f1d2436.sql",
@@ -374,7 +389,8 @@
     "kind": "revoke",
     "object": "public.products",
     "aux": "anon",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "indeterminada-superseded-por-versao-posterior",
+    "e07_detail": "parte da cadeia grant/revoke em products/anon (2026-05-27/28); estado final decidido por 20260528102502_verify_no_anon_products_access.sql"
   },
   {
     "path": "supabase/migrations/20260528102501_restore_authenticated_rpc_grants.sql",
@@ -391,7 +407,8 @@
     "kind": "revoke",
     "object": "public.products",
     "aux": "anon",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "anon nao possui SELECT/INSERT/UPDATE/DELETE em public.products hoje (so MAINTAIN) -- estado final da cadeia de 2026-05-27/28 confirmado"
   },
   {
     "path": "supabase/migrations/20260529140906_636458e6-a7d6-40ec-82a5-f6fdbc4f3f38.sql",
@@ -409,7 +426,8 @@
     "kind": "add_column",
     "object": "public.navigation_analytics",
     "aux": "destination_path",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "pendente",
+    "e07_detail": "coluna destination_path NAO existe hoje em public.navigation_analytics (information_schema.columns) -- migration nunca aplicada"
   },
   {
     "path": "supabase/migrations/20260529144230_15cc32ad-a540-42fd-a75d-9fdec122840f.sql",
@@ -434,7 +452,8 @@
     "kind": "drop",
     "object": "INDEX",
     "aux": "public.idx_integration_creds_provider",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "5/5 objetos ausentes hoje — DROP confirmado 100% efetivo"
   },
   {
     "path": "supabase/migrations/20260529150100_perf_add_missing_fk_indexes.sql",
@@ -469,7 +488,8 @@
     "kind": "grant",
     "object": "public.admin_audit_log_y2026m02",
     "aux": "service_role",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "service_role possui ACL completa (default) em public.admin_audit_log_y2026m02"
   },
   {
     "path": "supabase/migrations/20260530001500_rest_native_views_and_rls.sql",
@@ -487,7 +507,8 @@
     "kind": "revoke",
     "object": "public.v_products_public",
     "aux": "anon",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "anon possui apenas SELECT/MAINTAIN em public.v_products_public -- sem INSERT/UPDATE/DELETE"
   },
   {
     "path": "supabase/migrations/20260530150000_durable_unschedule_external_db_bridge_keepalive_cron.sql",
@@ -582,7 +603,8 @@
     "kind": "grant",
     "object": "public.frontend_telemetry",
     "aux": "service_role",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "service_role possui ACL completa em public.frontend_telemetry"
   },
   {
     "path": "supabase/migrations/20260531211352_a218fee1-6260-4c3a-863b-02df1f09838c.sql",
@@ -664,7 +686,8 @@
     "kind": "grant",
     "object": "public.workspace_notifications",
     "aux": "service_role",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "service_role possui ACL completa em public.workspace_notifications"
   },
   {
     "path": "supabase/migrations/20260601165141_0a6aab63-005e-4b91-b155-fe4e797ab581.sql",
@@ -699,7 +722,8 @@
     "kind": "drop",
     "object": "INDEX",
     "aux": "CONCURRENTLY",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "pendente",
+    "e07_detail": "1/20 objetos AINDA EXISTEM: INDEX public.idx_products_name_trgm"
   },
   {
     "path": "supabase/migrations/20260602040000_fix_product_triggers_cascade_guard.sql",
@@ -761,7 +785,8 @@
     "kind": "drop",
     "object": "INDEX",
     "aux": "CONCURRENTLY",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "pendente",
+    "e07_detail": "6/8 objetos AINDA EXISTEM: INDEX public.idx_unique_product_filename; INDEX public.variant_stocks_organization_id_variant_id_supplier_id_key; INDEX public.idx_supplier_import_batches_supplier_id; INDEX public.idx_product_images_organization_id; INDEX public.idx_frontend_telemetry_user_id; INDEX public.idx_product_commemorative_dates_commemorative_date_id"
   },
   {
     "path": "supabase/migrations/20260604000001_fix_security_definer_search_path.sql",
@@ -824,7 +849,8 @@
     "kind": "grant",
     "object": "public.kit_component_print_areas",
     "aux": "authenticated",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "authenticated possui SELECT/INSERT/UPDATE/DELETE em public.kit_component_print_areas"
   },
   {
     "path": "supabase/migrations/20260604000008_notification_queue_lease.sql",
@@ -869,7 +895,8 @@
     "kind": "add_column",
     "object": "public.products",
     "aux": "price_freshness_threshold_days",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "coluna price_freshness_threshold_days existe hoje em public.products (information_schema.columns)"
   },
   {
     "path": "supabase/migrations/20260604233001_spr_drop_redundant_index.sql",
@@ -878,7 +905,8 @@
     "kind": "drop",
     "object": "INDEX",
     "aux": "public.idx_spr_supplier",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "1/1 objetos ausentes hoje — DROP confirmado 100% efetivo"
   },
   {
     "path": "supabase/migrations/20260604233002_spr_drop_bkp_table.sql",
@@ -887,7 +915,8 @@
     "kind": "drop",
     "object": "TABLE",
     "aux": "public.supplier_products_raw_bkp_20260604",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "1/1 objetos ausentes hoje — DROP confirmado 100% efetivo"
   },
   {
     "path": "supabase/migrations/20260604233003_spr_harden_grants_rls.sql",
@@ -896,7 +925,8 @@
     "kind": "revoke",
     "object": "public.supplier_products_raw",
     "aux": "anon",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "anon nao aparece no ACL de public.supplier_products_raw -- zero privilegios"
   },
   {
     "path": "supabase/migrations/20260604233004_spr_maintenance_and_history_retention.sql",
@@ -993,7 +1023,8 @@
     "kind": "comment",
     "object": "public.fn_spot_to_silver(uuid)",
     "aux": null,
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "comment atual em produtos_padronizacao e produtos_padronizacao_variantes (obj_description) confere exatamente com o texto da migration."
   },
   {
     "path": "supabase/migrations/20260605160400_silver_unify_05_promote_marks_raw_processed.sql",
@@ -1063,7 +1094,8 @@
     "kind": "grant",
     "object": "public.mcp_sessions",
     "aux": "service_role",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "service_role possui ACL completa em public.mcp_sessions"
   },
   {
     "path": "supabase/migrations/20260605170100_fix_fn_promote_padronizacao_clear_process_errors.sql",
@@ -1090,7 +1122,8 @@
     "kind": "comment",
     "object": "public.fn_trigger_auto_sync_dimensions()",
     "aux": null,
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "comment atual em fn_trigger_auto_sync_dimensions() (obj_description) confere exatamente com o texto da migration."
   },
   {
     "path": "supabase/migrations/20260606110100_fase8_02_document_xbz_stock_fastpath.sql",
@@ -1099,7 +1132,8 @@
     "kind": "comment",
     "object": "public.fn_import_stock_xbz(text)",
     "aux": null,
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "comment atual em fn_import_stock_xbz(text) (obj_description) confere exatamente com o texto da migration."
   },
   {
     "path": "supabase/migrations/20260606110200_fase8_03_pipeline_category_classification_cron.sql",
@@ -1134,7 +1168,8 @@
     "kind": "add_column",
     "object": "public.generated_mockups",
     "aux": "position_x",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "coluna position_x existe hoje em public.generated_mockups (information_schema.columns)"
   },
   {
     "path": "supabase/migrations/20260610120000_silver_depara_01_apply_transform_color_resolver.sql",
@@ -1240,7 +1275,8 @@
     "kind": "grant",
     "object": "public.seller_carts",
     "aux": "service_role",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "service_role possui ACL completa em public.seller_carts"
   },
   {
     "path": "supabase/migrations/20260611115932_5893a1fe-6ebc-41be-9d5d-88043b17a383.sql",
@@ -1438,7 +1474,8 @@
     "kind": "grant",
     "object": "public.v_ai_function_routing_effective",
     "aux": "authenticated",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "pendente",
+    "e07_detail": "authenticated NAO possui nenhum privilegio hoje em public.v_ai_function_routing_effective (so postgres/service_role aparecem no ACL)"
   },
   {
     "path": "supabase/migrations/20260611184000_add_circumference_cm_to_products.sql",
@@ -1447,7 +1484,8 @@
     "kind": "add_column",
     "object": "public.products",
     "aux": "circumference_cm",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "coluna circumference_cm existe hoje em public.products (information_schema.columns)"
   },
   {
     "path": "supabase/migrations/20260611214608_00606d63-8d15-45d0-9c70-dc49cf607d51.sql",
@@ -1465,7 +1503,8 @@
     "kind": "grant",
     "object": "public.ai_insights_cache",
     "aux": "authenticated",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "pendente",
+    "e07_detail": "authenticated possui apenas MAINTAIN em public.ai_insights_cache -- sem SELECT/INSERT/UPDATE/DELETE"
   },
   {
     "path": "supabase/migrations/20260613180000_reconcile_ai_enrichment_queue_drift.sql",
@@ -1510,7 +1549,8 @@
     "kind": "drop",
     "object": "FUNCTION",
     "aux": "public.fn_convert_cart_to_quote",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "1/1 objetos ausentes hoje — DROP confirmado 100% efetivo"
   },
   {
     "path": "supabase/migrations/20260614220000_stock_notification_rpcs.sql",
@@ -1546,7 +1586,8 @@
     "kind": "comment",
     "object": "public.admin_settings",
     "aux": null,
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "comment atual na tabela admin_settings e nas 6 colunas (id, key, value, updated_by, created_at, updated_at) confere com o texto da migration (obj_description/col_description)."
   },
   {
     "path": "supabase/migrations/20260615200002_sec_admin_settings_revoke_delete_authenticated.sql",
@@ -1555,7 +1596,8 @@
     "kind": "revoke",
     "object": "public.admin_settings",
     "aux": "authenticated",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "authenticated nao possui DELETE em public.admin_settings hoje"
   },
   {
     "path": "supabase/migrations/20260615200003_fk_admin_settings_updated_by_auth_users.sql",
@@ -1658,7 +1700,8 @@
     "kind": "comment",
     "object": "public.product_images",
     "aux": null,
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "comment atual na tabela product_images, nas 15 colunas, na view v_product_images_quality_gap e em fn_resync_product_media(uuid[])/fn_normalize_image_format() confere com o texto da migration. Excecao: o comment em fn_sync_image_type_code() foi sobrescrito pela migration posterior 20260615235001_product_images_fix_sync_image_type_comment.sql (comment atual reflete a versao corrigida, nao a original desta migration) — ver e07_detail dessa migration."
   },
   {
     "path": "supabase/migrations/20260615232601_product_images_format_normalize_robust.sql",
@@ -1701,7 +1744,8 @@
     "kind": "grant",
     "object": "public.v_product_images_quality_gap",
     "aux": "service_role",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "service_role possui ACL completa em public.v_product_images_quality_gap"
   },
   {
     "path": "supabase/migrations/20260615235001_product_images_fix_sync_image_type_comment.sql",
@@ -1710,7 +1754,8 @@
     "kind": "comment",
     "object": "public.fn_sync_image_type_code()",
     "aux": null,
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "comment atual em fn_sync_image_type_code() (obj_description) confere exatamente com o texto desta migration (versao terminal, corrige 20260615230506)."
   },
   {
     "path": "supabase/migrations/20260615235501_product_images_sync_image_type_bidirectional.sql",
@@ -1728,7 +1773,8 @@
     "kind": "add_column",
     "object": "public.products",
     "aux": "primary_image_fallback_url",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "coluna primary_image_fallback_url existe hoje em public.products (information_schema.columns)"
   },
   {
     "path": "supabase/migrations/20260615_001_drop_ai_provider_quotas_zombie.sql",
@@ -1737,7 +1783,8 @@
     "kind": "drop",
     "object": "TABLE",
     "aux": "public.ai_provider_quotas",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "1/1 objetos ausentes hoje — DROP confirmado 100% efetivo"
   },
   {
     "path": "supabase/migrations/20260615_002_fix_ai_quota_and_cache_bugs.sql",
@@ -1790,7 +1837,8 @@
     "kind": "add_column",
     "object": "public.product_images",
     "aux": "r2_bucket",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "coluna r2_bucket existe hoje em public.product_images (information_schema.columns)"
   },
   {
     "path": "supabase/migrations/20260616171504_product_images_governance_provenance.sql",
@@ -1799,7 +1847,8 @@
     "kind": "add_column",
     "object": "public.product_images",
     "aux": "import_batch_id",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "pendente",
+    "e07_detail": "coluna import_batch_id NAO existe hoje em public.product_images (information_schema.columns) -- migration nunca aplicada"
   },
   {
     "path": "supabase/migrations/20260616171505_product_images_ux_perf_media.sql",
@@ -1808,7 +1857,8 @@
     "kind": "add_column",
     "object": "public.product_images",
     "aux": "blurhash",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "coluna blurhash existe hoje em public.product_images (information_schema.columns)"
   },
   {
     "path": "supabase/migrations/20260616171506_product_images_backfill_canonical_shared.sql",
@@ -1851,7 +1901,8 @@
     "kind": "revoke",
     "object": "public.cf_recon_inflight",
     "aux": "anon",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "anon nao aparece no ACL de public.cf_recon_inflight"
   },
   {
     "path": "supabase/migrations/20260616180001_product_images_m1_og_canonical_one_per_product.sql",
@@ -2044,7 +2095,8 @@
     "kind": "revoke",
     "object": "public.vw_stock_quantity_outliers",
     "aux": "anon",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "anon possui apenas MAINTAIN em public.vw_stock_quantity_outliers -- sem SELECT"
   },
   {
     "path": "supabase/migrations/20260618000000_cart_items_quantity_positive_check.sql",
@@ -2078,7 +2130,8 @@
     "kind": "grant",
     "object": "cf_recon.cf_image",
     "aux": "service_role",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "service_role possui ACL completa em cf_recon.cf_image"
   },
   {
     "path": "supabase/migrations/20260618000003_fix_shared_without_canonical.sql",
@@ -2162,7 +2215,8 @@
     "kind": "grant",
     "object": "public.login_attempts",
     "aux": "service_role",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "service_role possui ACL completa em public.login_attempts"
   },
   {
     "path": "supabase/migrations/20260618140000_fix_validate_discount_valid_until_null.sql",
@@ -2232,7 +2286,8 @@
     "kind": "revoke",
     "object": "public._backup_stock_daily_summary_20260618",
     "aux": "anon",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "anon nao aparece no ACL de public._backup_stock_daily_summary_20260618"
   },
   {
     "path": "supabase/migrations/20260618160300_add_event_trigger_revoke_view_write_grants.sql",
@@ -2480,7 +2535,8 @@
     "kind": "add_column",
     "object": "cf_recon.action_log",
     "aux": "product_id",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "coluna product_id existe hoje em cf_recon.action_log (information_schema.columns)"
   },
   {
     "path": "supabase/migrations/20260619140200_cf_recon_close_stale_no_image_remediation.sql",
@@ -2557,7 +2613,8 @@
     "kind": "drop",
     "object": "POLICY",
     "aux": "Service",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "pendente",
+    "e07_detail": "2/5 objetos AINDA EXISTEM: POLICY \"Service role inserts connection_test_history\" ON public.connection_test_history; POLICY \"Service role inserts token failures\" ON public.public_token_failures"
   },
   {
     "path": "supabase/migrations/20260619153422_773d4538-2a35-47d5-b5a1-49067d2898b6.sql",
@@ -2566,7 +2623,8 @@
     "kind": "drop",
     "object": "POLICY",
     "aux": "Anyone",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "4/4 objetos ausentes hoje — DROP confirmado 100% efetivo"
   },
   {
     "path": "supabase/migrations/20260619153713_43bc0e91-1b64-4eb8-be13-b20b6e9f34fc.sql",
@@ -2575,7 +2633,8 @@
     "kind": "grant",
     "object": "public.product_popularity_30d",
     "aux": "service_role",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "indeterminada-objeto-inexistente",
+    "e07_detail": "public.product_popularity_30d nao existe mais no catalogo atual (renomeada/removida) -- impossivel verificar grant sobre objeto ausente"
   },
   {
     "path": "supabase/migrations/20260619153837_3fb47241-3aa0-4189-a83b-0dec0b1e0d12.sql",
@@ -2753,7 +2812,8 @@
     "kind": "revoke",
     "object": "",
     "aux": "anon",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "schemas archive/backup nao existem mais -- efeito vacuamente satisfeito"
   },
   {
     "path": "supabase/migrations/20260620160000_comparador_hardening.sql",
@@ -2874,7 +2934,8 @@
     "kind": "grant",
     "object": "public.vw_product_availability",
     "aux": "authenticated",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "authenticated possui SELECT em public.vw_product_availability"
   },
   {
     "path": "supabase/migrations/20260620190001_populate_quotes_sent_at.sql",
@@ -2918,7 +2979,8 @@
     "kind": "drop",
     "object": "FUNCTION",
     "aux": "public.fn_super_filtro_product_ids",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "pendente",
+    "e07_detail": "1/1 objetos AINDA EXISTEM: FUNCTION public.fn_super_filtro_product_ids"
   },
   {
     "path": "supabase/migrations/20260620200002_fix_super_filtro_pcd_index.sql",
@@ -3133,7 +3195,8 @@
     "kind": "grant",
     "object": "public.notifications",
     "aux": "authenticated",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "authenticated possui SELECT/INSERT/UPDATE/DELETE em public.notifications (nome do arquivo ja indica APLICADO)"
   },
   {
     "path": "supabase/migrations/20260621233000_harden_grants_login_attempts_APLICADO.sql",
@@ -3142,7 +3205,8 @@
     "kind": "grant",
     "object": "public.login_attempts",
     "aux": "authenticated",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "authenticated possui SELECT/INSERT/UPDATE/DELETE em public.login_attempts (nome do arquivo ja indica APLICADO)"
   },
   {
     "path": "supabase/migrations/20260621235500_faxina_restore_18_frontend_referenced_tables_APLICADO.sql",
@@ -3261,7 +3325,8 @@
     "kind": "drop",
     "object": "POLICY",
     "aux": "Authenticated",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "1/1 objetos ausentes hoje — DROP confirmado 100% efetivo"
   },
   {
     "path": "supabase/migrations/20260622195000_revoke_anon_write_grants_workspace_notifications.sql",
@@ -3270,7 +3335,8 @@
     "kind": "revoke",
     "object": "public.workspace_notifications",
     "aux": "anon",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "anon nao aparece no ACL de public.workspace_notifications"
   },
   {
     "path": "supabase/migrations/20260622200700_skip_somarcas_stalled_bronze_rows.sql",
@@ -3305,7 +3371,8 @@
     "kind": "add_column",
     "object": "public.categories",
     "aux": "active",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "coluna active existe hoje em public.categories (information_schema.columns)"
   },
   {
     "path": "supabase/migrations/20260622_color_swatches.sql",
@@ -3321,7 +3388,8 @@
     "kind": "comment",
     "object": "public.categories.is_active",
     "aux": null,
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "comment atual em categories.is_active (col_description) confere exatamente com o texto da migration."
   },
   {
     "path": "supabase/migrations/20260622_fix_categories_active_column_alias.sql",
@@ -3330,7 +3398,8 @@
     "kind": "add_column",
     "object": "public.categories",
     "aux": "active",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "coluna active existe hoje em public.categories (information_schema.columns)"
   },
   {
     "path": "supabase/migrations/20260622_fix_fn_system_health_summary_security_invoker.sql",
@@ -3392,7 +3461,8 @@
     "kind": "comment",
     "object": "public.products.name",
     "aux": null,
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "indeterminada-superseded-por-versao-posterior",
+    "e07_detail": "comment atual em products.name (col_description) NAO confere com o texto desta migration (versao curta, so-ASCII); confere sim com o texto de 20260623102118_products_name_m1_add_column_comment_20260623.sql (versao expandida, com acentos e detalhes de trg_limpar_nome_produto/fn_display_product_name/33% locked) — essa e a versao terminal vigente hoje."
   },
   {
     "path": "supabase/migrations/20260623000002_products_name_m2_fix_medallion_coverage.sql",
@@ -3532,7 +3602,8 @@
     "kind": "grant",
     "object": "public.frontend_telemetry",
     "aux": "authenticated",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "authenticated possui SELECT/INSERT em public.frontend_telemetry"
   },
   {
     "path": "supabase/migrations/20260623171900_fix_anon_grants_security_hardening.sql",
@@ -3541,7 +3612,8 @@
     "kind": "revoke",
     "object": "public.frontend_telemetry",
     "aux": "anon",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "anon possui apenas INSERT/MAINTAIN em public.frontend_telemetry -- sem SELECT/UPDATE/DELETE"
   },
   {
     "path": "supabase/migrations/20260623171901_fix_discount_approval_requests_security_and_indexes.sql",
@@ -3559,7 +3631,8 @@
     "kind": "drop",
     "object": "TRIGGER",
     "aux": "enforce_seller_cart_limit",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "pendente",
+    "e07_detail": "2/4 objetos AINDA EXISTEM: FUNCTION public.enforce_seller_cart_limit; TRIGGER enforce_seller_cart_limit ON public.seller_carts"
   },
   {
     "path": "supabase/migrations/20260623172900_fix_anon_grants_rls_functions_pgrst_reload.sql",
@@ -3568,7 +3641,8 @@
     "kind": "grant",
     "object": "public.discount_approval_requests",
     "aux": "anon",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "pendente",
+    "e07_detail": "anon nao possui nenhum privilegio hoje em public.discount_approval_requests"
   },
   {
     "path": "supabase/migrations/20260623180000_fix_fn_capture_connection_snapshot_search_path.sql",
@@ -3604,7 +3678,8 @@
     "kind": "revoke",
     "object": "public.bi_quotes_summary",
     "aux": "anon",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "anon possui apenas MAINTAIN em public.bi_quotes_summary -- sem SELECT"
   },
   {
     "path": "supabase/migrations/20260623183200_pgrst_auto_reload_cron.sql",
@@ -3693,7 +3768,8 @@
     "kind": "add_column",
     "object": "public.tabela_preco_gravacao_oficial",
     "aux": "ordem_exibicao",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "coluna ordem_exibicao existe hoje em public.tabela_preco_gravacao_oficial (information_schema.columns)"
   },
   {
     "path": "supabase/migrations/20260626130000_backfill_ordem_exibicao_curated_order_tpgo.sql",
@@ -3702,7 +3778,8 @@
     "kind": "comment",
     "object": "public.tabela_preco_gravacao_oficial.ordem_exibicao",
     "aux": null,
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "comment atual em tabela_preco_gravacao_oficial.ordem_exibicao (col_description) confere exatamente com o texto da migration."
   },
   {
     "path": "supabase/migrations/20260627200000_drop_quote_comments_orphan_table.sql",
@@ -3711,7 +3788,8 @@
     "kind": "drop",
     "object": "TABLE",
     "aux": "public.quote_comments",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "1/1 objetos ausentes hoje — DROP confirmado 100% efetivo"
   },
   {
     "path": "supabase/migrations/20260627200100_harden_quotes_synced_to_bitrix_not_null.sql",
@@ -3763,7 +3841,8 @@
     "kind": "grant",
     "object": "public.crm_callback_events",
     "aux": "authenticated",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "authenticated possui SELECT/INSERT/UPDATE/DELETE em public.crm_callback_events"
   },
   {
     "path": "supabase/migrations/20260707102816_326aa855-c8c5-4697-970a-9288e6f4d360.sql",
@@ -3806,7 +3885,8 @@
     "kind": "drop",
     "object": "POLICY",
     "aux": "Public",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "pendente",
+    "e07_detail": "1/1 objetos AINDA EXISTEM: POLICY \"Public can view reactions for public collections\" ON public.collection_item_reactions"
   },
   {
     "path": "supabase/migrations/20260709101218_7cd44961-194b-4e75-88dc-7ad2062faf11.sql",
@@ -3815,7 +3895,8 @@
     "kind": "add_column",
     "object": "public.seller_carts",
     "aux": "shipping_deadline",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "coluna shipping_deadline existe hoje em public.seller_carts (information_schema.columns)"
   },
   {
     "path": "supabase/migrations/20260710203410_a9a3ddf5-a44e-4b3c-baa4-356225bfbe85.sql",
@@ -3894,7 +3975,8 @@
     "kind": "drop",
     "object": "INDEX",
     "aux": "public.idx_user_roles_user_id_covering",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "1/1 objetos ausentes hoje — DROP confirmado 100% efetivo"
   },
   {
     "path": "supabase/migrations/20260714140000_add_shipping_deadline_to_seller_carts.sql",
@@ -3903,7 +3985,8 @@
     "kind": "add_column",
     "object": "public.seller_carts",
     "aux": "shipping_deadline",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "coluna shipping_deadline existe hoje em public.seller_carts (information_schema.columns)"
   },
   {
     "path": "supabase/migrations/20260714140001_create_restore_seller_cart_rpc.sql",
@@ -3921,7 +4004,8 @@
     "kind": "drop",
     "object": "INDEX",
     "aux": "public.seller_cart_items_uniq_item",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "1/1 objetos ausentes hoje — DROP confirmado 100% efetivo"
   },
   {
     "path": "supabase/migrations/20260715164347_b0eabb91-413b-40e9-83c6-9c1c5cce2ded.sql",
@@ -3930,7 +4014,8 @@
     "kind": "drop",
     "object": "POLICY",
     "aux": "Authenticated",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "pendente",
+    "e07_detail": "4/7 objetos AINDA EXISTEM: POLICY \"Authenticated direct read component-media\" ON storage.objects; POLICY \"Authenticated direct read personalization-images\" ON storage.objects; POLICY \"Authenticated direct read product-videos\" ON storage.objects; POLICY \"Authenticated direct read supplier-logos\" ON storage.objects"
   },
   {
     "path": "supabase/migrations/20260716000001_p0_magazine_partition_rls_hardening.sql",
@@ -3966,7 +4051,8 @@
     "kind": "revoke",
     "object": "",
     "aux": "anon",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "schemas archive/backup nao existem mais -- efeito vacuamente satisfeito"
   },
   {
     "path": "supabase/migrations/20260716000005_sec_revoke_secdef_functions.sql",
@@ -3991,7 +4077,8 @@
     "kind": "drop",
     "object": "POLICY",
     "aux": "Anyone",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "pendente",
+    "e07_detail": "3/4 objetos AINDA EXISTEM: POLICY \"Users can update their own mockup assets\" ON storage.objects; POLICY \"Users can delete their own mockup assets\" ON storage.objects; POLICY \"Users can upload to their own mockup folder\" ON storage.objects"
   },
   {
     "path": "supabase/migrations/20260716000008_drop_archive_backup_schemas.sql",
@@ -4000,7 +4087,8 @@
     "kind": "drop",
     "object": "TABLE",
     "aux": "archive._asia_api_staging",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "schemas archive/backup confirmados ausentes hoje (ver REVISAO_67_PENDENTES) — todas as 87 tabelas do DROP SCHEMA CASCADE ausentes por definição"
   },
   {
     "path": "supabase/migrations/20260716000009_sec_function_search_path.sql",
@@ -4018,7 +4106,8 @@
     "kind": "drop",
     "object": "POLICY",
     "aux": "kcer_pipeline_insert",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "2/2 objetos ausentes hoje — DROP confirmado 100% efetivo"
   },
   {
     "path": "supabase/migrations/20260716000011_sec_rls_enabled_no_policy.sql",
@@ -4054,7 +4143,8 @@
     "kind": "drop",
     "object": "INDEX",
     "aux": "public.idx_stock_snapshots_branch_id",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "pendente",
+    "e07_detail": "14/95 objetos AINDA EXISTEM: INDEX public.idx_frontend_telemetry_user_id; INDEX public.idx_quote_history_user_id; INDEX public.idx_catalog_analytics_user_id; INDEX public.idx_product_fiscal_ncm_id; INDEX public.idx_product_videos_video_type_id; INDEX public.idx_favorite_items_product_id; INDEX public.idx_product_novelties_created_by; INDEX public.idx_file_scan_logs_user_id; INDEX public.idx_material_equivalences_promo_group_id; INDEX public.idx_product_faqs_product_id; INDEX public.idx_product_faqs_category_id; INDEX public.idx_category_colors_color_group_id; INDEX public.idx_order_items_order_id; INDEX public.idx_profiles_organization_id"
   },
   {
     "path": "supabase/migrations/20260716000015_db_public_backup_tables_primary_keys.sql",
@@ -4063,7 +4153,8 @@
     "kind": "add_column",
     "object": "public.schema_signature_drift_allowlist",
     "aux": "id",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "coluna id existe hoje em public.schema_signature_drift_allowlist (information_schema.columns)"
   },
   {
     "path": "supabase/migrations/20260716000016_db_unindexed_fk_indexes.sql",
@@ -4140,7 +4231,8 @@
     "kind": "grant",
     "object": "public.mv_stock_rupture_alert",
     "aux": "authenticated",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "authenticated possui SELECT em public.mv_stock_rupture_alert; anon nao aparece no ACL (revogado)"
   },
   {
     "path": "supabase/migrations/20260716000025_revoke_anon_backup_tables_analytics_schema.sql",
@@ -4149,7 +4241,8 @@
     "kind": "revoke",
     "object": "",
     "aux": "anon",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "pendente",
+    "e07_detail": "anon AINDA possui USAGE no schema analytics (has_schema_privilege=true)"
   },
   {
     "path": "supabase/migrations/20260716000026_revoke_supplier_stricker_schema.sql",
@@ -4158,7 +4251,8 @@
     "kind": "revoke",
     "object": "",
     "aux": "anon",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "anon e authenticated nao possuem USAGE no schema supplier_stricker"
   },
   {
     "path": "supabase/migrations/20260716000027_revoke_anon_internal_tables_views.sql",
@@ -4167,7 +4261,8 @@
     "kind": "revoke",
     "object": "public.catalog_analytics",
     "aux": "anon",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "anon nao possui SELECT em public.catalog_analytics (mantem apenas INSERT/UPDATE/DELETE/MAINTAIN de escrita de eventos)"
   },
   {
     "path": "supabase/migrations/20260716000028_revoke_anon_select_user_and_internal_tables.sql",
@@ -4176,7 +4271,8 @@
     "kind": "grant",
     "object": "public.kill_switch_hits",
     "aux": "anon",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "anon possui INSERT/UPDATE/DELETE mas nao SELECT em public.kill_switch_hits -- consistente com grant de escrita + revoke de leitura"
   },
   {
     "path": "supabase/migrations/20260716000029_revoke_auth_internal_mvs_and_secdef_pipeline_fns.sql",
@@ -4244,7 +4340,8 @@
     "kind": "drop",
     "object": "INDEX",
     "aux": "public.idx_stock_snapshots_supplier_branch_id",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "pendente",
+    "e07_detail": "43/232 objetos AINDA EXISTEM: INDEX public.idx_stock_snapshots_supplier_branch_id; INDEX public.idx_stock_daily_summary_supplier_branch_id; INDEX public.idx_frontend_telemetry_user_id; INDEX public.idx_variant_supplier_sources_supplier_branch_id; INDEX public.idx_product_kit_components_padronizacao_id; INDEX public.idx_produtos_site_padronizacao_raw_id; INDEX public.idx_product_fiscal_ncm_id; INDEX public.idx_produtos_padronizacao_sub_brand_id; INDEX public.idx_catalog_analytics_user_id; INDEX public.idx_product_novelties_created_by; INDEX public.idx_audit_log_user_id; INDEX public.idx_color_variations_color_group_id; INDEX public.idx_color_variations_nuance_id; INDEX public.idx_discount_approval_audit_actor_id; INDEX public.idx_generated_mockups_job_id; INDEX public.idx_inbound_webhook_endpoints_created_by; INDEX public.idx_ip_access_control_created_by; INDEX public.idx_magazines_template_id; INDEX public.idx_markup_configurations_product_id; INDEX public.idx_material_equivalences_promo_group_id; INDEX public.idx_order_items_order_id; INDEX public.idx_orders_created_by; INDEX public.idx_product_faqs_category_id; INDEX public.idx_product_faqs_product_id; INDEX public.idx_product_notebook_specs_paper_format_id; INDEX public.idx_product_videos_video_type_id; INDEX public.idx_profiles_organization_id; INDEX public.idx_quote_history_user_id; INDEX public.idx_quotes_assigned_to; INDEX public.idx_quotes_created_by; INDEX public.idx_role_permissions_permission_code; INDEX public.idx_seller_carts_seller_id; INDEX public.idx_file_scan_logs_user_id; INDEX public.idx_generated_mockups_technique_id; INDEX public.idx_geo_allowed_countries_created_by; INDEX public.idx_kit_comments_kit_id; INDEX public.idx_kit_share_tokens_kit_id; INDEX public.idx_kit_templates_created_by; INDEX public.idx_magazine_templates_template_id; INDEX public.idx_price_history_changed_by; INDEX public.idx_search_queries_clicked_product_id; INDEX public.idx_user_ip_allowlist_created_by; INDEX public.idx_webhook_deliveries_webhook_id"
   },
   {
     "path": "supabase/migrations/20260716000037_restore_fk_indexes_after_036.sql",
@@ -4271,7 +4368,8 @@
     "kind": "revoke",
     "object": "",
     "aux": "anon",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "funcao mcp_kv_get sem grant EXECUTE para PUBLIC/anon hoje"
   },
   {
     "path": "supabase/migrations/20260716000040_fix_matview_api_and_anon_security_definer.sql",
@@ -4280,7 +4378,8 @@
     "kind": "revoke",
     "object": "public.mv_product_leaf_category",
     "aux": "anon",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "anon nao aparece no ACL de public.mv_product_leaf_category"
   },
   {
     "path": "supabase/migrations/20260716000041_fix_fn_super_filtro_cost_price_exposure_and_category_breadcrumb.sql",
@@ -4348,7 +4447,8 @@
     "kind": "revoke",
     "object": "",
     "aux": "anon",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "funcao fn_log_search_analytics sem grant EXECUTE para PUBLIC/anon hoje"
   },
   {
     "path": "supabase/migrations/20260716000045_dynamic_fix_auth_rls_initplan_remaining.sql",
@@ -4365,7 +4465,8 @@
     "kind": "revoke",
     "object": "",
     "aux": "anon",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "as 4 funcoes-alvo sem grant EXECUTE para PUBLIC/anon hoje"
   },
   {
     "path": "supabase/migrations/20260716000046_dynamic_enable_rls_remaining_tables.sql",
@@ -4382,7 +4483,8 @@
     "kind": "revoke",
     "object": "",
     "aux": "anon",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "pendente",
+    "e07_detail": "5/6 funcoes sem EXECUTE para PUBLIC/anon, mas fn_super_filtro_product_ids AINDA possui EXECUTE concedido a PUBLIC (logo acessivel por anon apesar do revoke especifico)"
   },
   {
     "path": "supabase/migrations/20260716000047_revoke_anon_fn_global_search.sql",
@@ -4391,7 +4493,8 @@
     "kind": "revoke",
     "object": "",
     "aux": "anon",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "funcao fn_global_search sem grant EXECUTE para PUBLIC/anon hoje"
   },
   {
     "path": "supabase/migrations/20260716000048_dynamic_pin_remaining_function_search_paths.sql",
@@ -4424,7 +4527,8 @@
     "kind": "drop",
     "object": "POLICY",
     "aux": "IF",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "indeterminada-efeito-dinamico",
+    "e07_detail": "DROP dinâmico via EXECUTE format() em loop sobre pg_catalog — sem alvo fixo, não verificável por objeto único"
   },
   {
     "path": "supabase/migrations/20260716000052_dynamic_index_unindexed_foreign_keys.sql",
@@ -4442,7 +4546,8 @@
     "kind": "drop",
     "object": "INDEX",
     "aux": "public.",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "indeterminada-efeito-dinamico",
+    "e07_detail": "DROP dinâmico via EXECUTE format() em loop sobre pg_catalog — sem alvo fixo, não verificável por objeto único"
   },
   {
     "path": "supabase/migrations/20260716000054_dynamic_add_missing_primary_keys.sql",
@@ -4541,7 +4646,8 @@
     "kind": "drop",
     "object": "INDEX",
     "aux": "public.",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "indeterminada-efeito-dinamico",
+    "e07_detail": "DROP dinâmico via EXECUTE format() em loop sobre pg_catalog — sem alvo fixo, não verificável por objeto único"
   },
   {
     "path": "supabase/migrations/20260717000066_create_fk_indexes.sql",
@@ -4577,7 +4683,8 @@
     "kind": "revoke",
     "object": "",
     "aux": "PUBLIC",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "default ACL de tabelas no schema public (owner postgres) nao concede nada a PUBLIC; anon default carece de SELECT (xtm)"
   },
   {
     "path": "supabase/migrations/20260717000070_move_mv_product_leaf_category_to_internal.sql",
@@ -4595,7 +4702,8 @@
     "kind": "revoke",
     "object": "",
     "aux": "PUBLIC",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "mesmo padrao de default ACL confirmado (PUBLIC sem privilegios em tabelas novas do schema public)"
   },
   {
     "path": "supabase/migrations/20260717000072_fix_cron_and_fn_after_mv_move_to_internal.sql",
@@ -4613,7 +4721,8 @@
     "kind": "revoke",
     "object": "",
     "aux": "authenticated",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "pendente",
+    "e07_detail": "nao existe nenhuma linha de pg_default_acl para o schema analytics -- ALTER DEFAULT PRIVILEGES nunca foi refletido no estado atual"
   },
   {
     "path": "supabase/migrations/20260717235500_fix_stock_rupture_kpi_matview_grants.sql",
@@ -4622,7 +4731,8 @@
     "kind": "grant",
     "object": "public.mv_stock_rupture_alert",
     "aux": "authenticated",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "authenticated possui SELECT em public.mv_stock_rupture_alert"
   },
   {
     "path": "supabase/migrations/20260718140000_close_anon_write_default_privilege.sql",
@@ -4631,7 +4741,8 @@
     "kind": "revoke",
     "object": "",
     "aux": "anon",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "default ACL de tabelas (owner postgres, schema public): anon=xtm sem INSERT/UPDATE/DELETE; default ACL de sequences: anon=rw sem USAGE"
   },
   {
     "path": "supabase/migrations/20260826000000_roboflow_credentials.sql",
@@ -4727,7 +4838,8 @@
     "kind": "revoke",
     "object": "analytics.mv_product_compositions",
     "aux": "anon",
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "aplicada",
+    "e07_detail": "anon nao aparece no ACL de analytics.mv_product_compositions (so authenticated com SELECT)"
   },
   {
     "path": "supabase/migrations/20260915113458_zapp_catalog_stats_revoke_authenticated.sql",
@@ -4736,6 +4848,7 @@
     "kind": "comment",
     "object": "public.zapp_catalog_stats()",
     "aux": null,
-    "estado_e07": "nao-verificado-nesta-rodada"
+    "estado_e07": "pendente",
+    "e07_detail": "comment atual em zapp_catalog_stats() (obj_description) e NULL — nao o texto de proveniencia que esta migration define. Alem disso o proacl atual ainda mostra authenticated=X/postgres (has_function_privilege('authenticated', ..., 'EXECUTE') = true), ou seja o REVOKE EXECUTE ... FROM authenticated desta migration nao foi aplicado. Gap de seguranca real e ainda ativo: authenticated possui EXECUTE indevido em zapp_catalog_stats()."
   }
 ]

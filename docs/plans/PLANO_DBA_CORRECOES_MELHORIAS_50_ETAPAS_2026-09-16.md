@@ -255,7 +255,7 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 >
 > **Achado colateral (não corrigido, fora do escopo desta etapa):** `node scripts/check-no-db-push.mjs` falha hoje (`exit 1`) — mas por conteúdo pré-existente e sem relação (arquivos de cache do `graphify-out/` e `docs/plans/KIT_MAKER_PLANO_200_ETAPAS_2000_SUBETAPAS_2026-09-10.md`, datado de 2026-09-10, contêm a string "supabase db push" em texto/cache e disparam o grep do gate). Confirmado que não vem de nada tocado nesta sessão. É um falso-positivo de gate que merece etapa própria (candidato a incluir numa próxima rodada da matriz).
 
-### E07 · Classificar as 543 migrations sem ledger por verificação de objeto `[DB-RO]` 🟡 Parcial — 79% classificado com evidência, 2026-09-16
+### E07 · Classificar as 543 migrations sem ledger por verificação de objeto `[DB-RO]` ✅ Concluída — 543/543 classificadas, 2026-09-16
 **Problema (medido):** 543 arquivos locais sem linha no ledger (número final de E06). Amostra 5/5 aplicada. Hipótese forte: maioria é `aplicada-sem-ledger`. Hipótese ≠ prova.
 **Ação:**
 1. Para cada arquivo, extrair o(s) objeto(s)-alvo via **regex leve** (`^\s*(CREATE|ALTER|DROP)\s+(OR REPLACE\s+)?(FUNCTION|TABLE|INDEX|VIEW|POLICY|TRIGGER)\s+(IF (NOT )?EXISTS\s+)?([\w."]+)`, mais casos para `GRANT|REVOKE ... ON ...`, `COMMENT ON ... IS`) — **sem** adicionar parser AST novo ao projeto.
@@ -263,9 +263,9 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 3. Marcar `aplicada-sem-ledger` quando o objeto existe com a assinatura esperada; `indeterminada` quando a regex não capturou objeto (DML puro, blocos `DO $$`, migrations multi-statement) ou quando o objeto não existe.
 4. Revisar manualmente só os `indeterminada`.
 **Checklist de conclusão:**
-- [ ] 543/543 com estado ≠ `indeterminada` **ou** com justificativa individual — **430/543 (79%) com evidência real; 113 (`grant`/`revoke`/`drop`/`comment`/`add_column`/`enum_value`) ainda não verificados; 132 seguem `indeterminada` genuína (DO-blocks dinâmicos, DML puro)**
+- [x] 543/543 com estado ≠ `indeterminada` **ou** com justificativa individual — **543/543 (100%) com evidência real ou justificativa; os 132 `indeterminada` que restam são genuínos** (DO-blocks dinâmicos, DML puro — regex não captura objeto único; não é falta de verificação, é ausência de objeto único a verificar)
 - [x] Relatório: quantas `aplicada-sem-ledger`, quantas `pendente`, quantas `no-op` — ver resultado abaixo
-- [ ] Nenhuma `pendente` com DDL destrutivo sem ticket aberto — **67 `pendente` identificadas, nenhum ticket aberto ainda** (próximo passo)
+- [ ] Nenhuma `pendente` com DDL destrutivo sem ticket aberto — **87 `pendente` identificadas no total (67 revisadas individualmente em `docs/REVISAO_67_PENDENTES_2026-09-16.md` + 20 novas da rodada `grant`/`revoke`/`drop`/`comment`/`add_column`), nenhum ticket aberto ainda** (próximo passo)
 **Esforço:** M (rebaixado de G) · **Dep.:** E06 (✅)
 
 > **Pre-mortem:** cogitei usar `libpg_query`/`pgsql-parser` para extrair objetos com precisão de AST — mas **nenhuma lib de parsing SQL existe no `package.json`** hoje, e adicionar uma dependência nova só para esta etapa é desproporcional (G de esforço, manutenção permanente). Testei o atalho "grep por 'Aplicada em produ' no cabeçalho" como triagem barata: só bate em **8 dos 484** arquivos (número da fotografia anterior) — não é atalho suficiente sozinho. Regex leve + queries em lote por tipo de objeto é o meio-termo: mais barato que AST, mais confiável que grep de texto livre.
@@ -302,6 +302,18 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 > | **🔴 P1 — Requer decisão do PO, não resolvido** | **3** | `trg_prevent_non_admin_quote_item_price_change` (`quote_items` — trigger de **segurança de preço**, sem equivalente óbvio nos 6 triggers atuais da tabela); `trg_enforce_seller_cart_ready_requires_items` (`seller_carts` — integridade de carrinho); `handle_password_reset_request` (função **não existe em lugar nenhum**, hipótese de handler órfão pós-migração pro Auth nativo, não confirmada). |
 >
 > Nenhuma migration foi aplicada, revertida ou alterada nesta revisão — é levantamento para decisão do PO (REGRA #8), especialmente os 3 itens P1.
+
+> **✅ Fechamento final — verificação de `grant`/`revoke`/`drop`/`comment`/`add_column`/`enum_value` (2026-09-16):** os 113 arquivos deixados de fora da rodada anterior foram verificados um a um contra `pg_catalog` (via `mcp__supabase__execute_sql`, somente leitura — REGRA #8), fechando os 543/543. Metodologia por categoria:
+> - **`grant`/`revoke` (56):** `aclexplode(pg_class.relacl)`/`proacl` via `LATERAL` join (não em `WHERE` — `aclexplode` em `WHERE` gera `ERROR 0A000`), não `information_schema.role_table_grants` (esta última só mostra grants visíveis ao role conectado — deu falso-negativo "nenhum grant" numa consulta em lote na rodada anterior). Onde a mesma `(tabela/função, role)` teve vários `GRANT`/`REVOKE` sucessivos (toggle chain), só a versão **terminal** (cronologicamente última) foi verificada contra o estado atual; as anteriores foram marcadas `indeterminada-superseded-por-versao-posterior` apontando para o arquivo terminal — o estado de cada uma individualmente não é reconstruível a partir do snapshot atual. Resultado: 19 `aplicada` + 23 `aplicada`(revoke) = 42, 3+4 `pendente`, 3+3 `superseded`, 1 `indeterminada-objeto-inexistente` (`product_popularity_30d` não existe mais).
+> - **`drop` (27):** lógica invertida — "aplicada" = objeto **não** existe hoje. 13 `aplicada`, 10 `pendente` (objeto ainda existe), 4 `indeterminada-efeito-dinamico`.
+> - **`add_column` (19) + `enum_value` (1):** `IF NOT EXISTS` é idempotente, sem ambiguidade de chain — coluna existe hoje ⇒ `aplicada`. 17/19 `aplicada`, 2 `pendente` (`navigation_analytics.destination_path`, `product_images.import_batch_id` não existem). `app_role.'agente'` confirmado em `pg_enum` ⇒ `aplicada`.
+> - **`comment` (10):** texto de cada `COMMENT ON ... IS` extraído do arquivo-fonte e comparado contra `obj_description()`/`col_description()` ao vivo. 8/10 `aplicada` (texto bate exatamente), 1 `indeterminada-superseded-por-versao-posterior` (`products.name` — versão curta/ASCII de `20260623000001` foi sobrescrita pela versão longa/acentuada de `20260623102118`, que é a vigente hoje), 1 `pendente`.
+>
+> **🔴 Dois achados de segurança real (não são nuance de classificação E07 — são gaps ativos hoje, `[REQUER-PO]` para correção):**
+> 1. **`fn_super_filtro_product_ids` ainda concede `EXECUTE` a `PUBLIC`.** A migration `20260716000046_revoke_anon_all_remaining_catalog_functions.sql` revogou `EXECUTE` de `anon` explicitamente em 6 funções, mas nesta função específica o grant remanescente é a `PUBLIC`, não a `anon` — e `PUBLIC` inclui `anon`. Revoke específico não anula grant amplo. `anon` continua com execução efetiva.
+> 2. **`zapp_catalog_stats()` ainda concede `EXECUTE` a `authenticated`.** A migration `20260915113458_zapp_catalog_stats_revoke_authenticated.sql` (a mais recente do lote, 2026-09-15) foi escrita exatamente para fechar esse gap (o próprio cabeçalho do arquivo documenta a causa raiz: `ALTER DEFAULT PRIVILEGES` do projeto concede `EXECUTE` a `authenticated` em toda função nova de `public`) — mas `proacl` ao vivo mostra `authenticated=X/postgres` ainda presente e o `COMMENT` de proveniência que a migration define está `NULL`, ou seja, **a migration nunca rodou**. Gap idêntico ao que ela tentou fechar continua ativo em produção.
+>
+> Nenhuma alteração de schema foi feita para tratar os dois achados acima — ambos exigem aprovação do PO antes de qualquer `REVOKE`/reexecução (REGRA #1/#8).
 
 ### E08 · Reparar o ledger para as `aplicada-sem-ledger` `[REQUER-PO]`
 **Problema:** cada migration aplicada sem registro faz `migration list` mentir e torna `migration up` perigoso.
