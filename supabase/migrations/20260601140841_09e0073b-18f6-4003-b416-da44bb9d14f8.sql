@@ -1,39 +1,31 @@
--- Materialized view for popular products (last 30 days)
-CREATE MATERIALIZED VIEW IF NOT EXISTS public.product_popularity_30d AS
-SELECT 
-    v.product_id as id, 
-    v.product_name as name, 
-    v.product_sku as sku,
-    p.images[1] as image_url,
-    p.category_name,
-    COUNT(*)::int as view_count
-FROM public.product_views v
-LEFT JOIN public.products p ON (
-    CASE 
-        WHEN v.product_id ~ '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' 
-        THEN v.product_id::uuid 
-        ELSE NULL 
-    END
-) = p.id
-WHERE v.created_at > now() - interval '30 days'
-GROUP BY v.product_id, v.product_name, v.product_sku, p.images[1], p.category_name
-ORDER BY view_count DESC;
-
-CREATE UNIQUE INDEX IF NOT EXISTS idx_product_popularity_id ON public.product_popularity_30d (id);
-
-GRANT SELECT ON public.product_popularity_30d TO authenticated;
-GRANT SELECT ON public.product_popularity_30d TO anon;
-GRANT ALL ON public.product_popularity_30d TO service_role;
-
-CREATE OR REPLACE FUNCTION public.refresh_product_popularity()
-RETURNS void
-LANGUAGE plpgsql
-SECURITY DEFINER
-AS $$
-BEGIN
-  REFRESH MATERIALIZED VIEW CONCURRENTLY public.product_popularity_30d;
-END;
-$$;
-
-GRANT EXECUTE ON FUNCTION public.refresh_product_popularity() TO authenticated;
-GRANT EXECUTE ON FUNCTION public.refresh_product_popularity() TO service_role;
+-- APOSENTADA (2026-09-16) — nunca aplicada, decisão A do PO. Ver
+-- docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md E15-drift-diagnostico.
+--
+-- Esta migration tentava criar public.product_popularity_30d (materialized view de
+-- produtos populares nos últimos 30 dias) mas é fisicamente inexecutável: o statement
+-- original comparava `v.product_id ~ '<regex-uuid>'`, e product_views.product_id é do
+-- tipo uuid — o operador `~` (match de regex) não existe para uuid sem cast para text
+-- (SQLSTATE 42883: "operator does not exist: uuid ~ unknown").
+--
+-- Confirmado ao vivo em 2026-09-16, via pg_catalog, que NADA deste arquivo jamais
+-- foi aplicado ao projeto canônico (doufsxqlfjyuvxuezpln):
+--   - public.product_popularity_30d:        não existe em nenhum schema
+--   - public.refresh_product_popularity():  não existe
+--   - idx_product_popularity_id:            não existe
+--   - a versão '20260601140841' não consta em supabase_migrations.schema_migrations
+--
+-- Efeito prático: `supabase db diff --linked` reconstrói o schema do zero (shadow
+-- database) reaplicando as migrations em ordem, e travava sempre neste arquivo desde
+-- 2026-06-01 — ou seja, a verificação live de drift nunca havia completado neste
+-- projeto por esta causa, independente de qualquer credencial.
+--
+-- src/components/search/useGlobalSearch.ts já trata a ausência da view e retorna
+-- vazio (comentário no código: "product_popularity_30d view was removed; return
+-- empty until a replacement is created.") — não há regressão de produto em aposentar
+-- esta migration; a feature de "produtos populares" na busca global já está inativa.
+--
+-- Decisão (PO, 2026-09-16): aposentar sem substituto agora. Se a feature for
+-- retomada, criar uma MIGRATION NOVA com o cast correto (`v.product_id::text ~ ...`,
+-- ou mais simples: remover o CASE, já que product_id é sempre uuid hoje) — nunca
+-- reviver editando este arquivo. A versão '20260601140841' fica reservada e não deve
+-- ser reutilizada.
