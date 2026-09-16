@@ -332,14 +332,24 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 - [ ] `docs/SCHEMA_REFERENCE.md` §"IDs históricos" atualizado
 **Esforço:** P · **Dep.:** E03, E08 · **Supersede:** plano 09-15 E34
 
-### E10 · Congelar os 67 arquivos fora do contrato e os 31 prefixos duplicados `[GIT]`
-**Problema (medido):** 67 arquivos não seguem `^\d{14}_slug\.sql` (34 sem prefixo numérico); 31 timestamps compartilhados por 2+ arquivos (ex.: `20260610120000_restore_generated_mockups_geometry_columns.sql` e `20260610120000_silver_depara_01_apply_transform_color_resolver.sql`). O CLI ordena por versão — dois arquivos com a mesma versão têm ordem de aplicação **indefinida**.
-**Ação:** `scripts/check-migration-filename-contract.mjs` existe; verificar se tem baseline. Criar `supabase/migrations-ledger/filename-exceptions.json` listando os 67 + 62 com `reason` e `frozen_sha256`; o gate falha se (a) surgir arquivo novo fora do contrato, (b) um arquivo da exceção mudar de hash, (c) surgir novo timestamp duplicado. **Não renomear nenhum** (invariante 3).
+### E10 · Congelar os 67 arquivos fora do contrato e os 31 prefixos duplicados `[GIT]` ✅ Concluída em 2026-09-16 (achado: já existia)
+
+**Problema (medido):** 67 arquivos não seguem `^\d{14}_slug\.sql`; 31 timestamps compartilhados por 2+ arquivos. O CLI ordena por versão — dois arquivos com a mesma versão têm ordem de aplicação **indefinida**. Descoberta durante a verificação do E08 lote 1: 7 das 90 versões repairadas aparecem com `remote` vazio em `migration list --linked` por colisão de prefixo (ex.: `20260712_fix_rls_policies_critical.sql` vs `20260712_performance_indexes.sql`).
+
+**Ação realizada — não criei nada novo, verifiquei o que já existia:** `scripts/check-migration-filename-contract.mjs` (454 linhas) já implementa exatamente o invariante pedido, e de forma mais forte do que a proposta original (baseline com sha256 por arquivo, não uma lista plana de exceções):
+- `docs/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json` — baseline congelada: **1.673 arquivos**, cada um com `sha256`, `canonical_14_digit_version`, `version_collision`, `effect_signals` etc. **66 não-canônicos**, **96 arquivos em grupos de colisão** (bate com os "67"/"31" do problema medido, pequena diferença de contagem por critério de corte).
+- `docs/MANIFESTO_MIGRATIONS_RECONCILIADAS_2026-09-11.json` — 2 exceções pontuais adicionais (path + sha256).
+- Regra: qualquer arquivo **novo** (fora da baseline) precisa nome canônico E versão não-colidente; arquivos **da baseline** são tolerados como estão, protegidos por hash (se o conteúdo de um arquivo histórico mudar, o gate falha).
+- Já plugado no CI: `grep -rl check-migration-filename-contract .github/workflows/` → `quality-gate.yml`.
+- `tests/scripts/check-migration-filename-contract.test.mjs` — **15/15 passando**, cobrindo exatamente os cenários do checklist: nome novo fora do padrão (5 variações via `it.each`), versão nova reutilizando timestamp de legado, colisão entre duas migrations novas, alteração de conteúdo de arquivo baselined.
+- Rodei o gate no estado atual: `node scripts/check-migration-filename-contract.mjs` → `✅ ... baseline: 1673 arquivos + 2 reconciliados; novas: 1313; colisões legadas preservadas: 31.` Exit 0.
+
+**Conclusão:** o invariante que a etapa pedia já está em produção desde antes desta sessão. Não há gap — só falta de documentação no plano, agora corrigida. **Nenhum arquivo foi renomeado** (invariante 3 preservada).
 **Checklist de conclusão:**
-- [ ] Exceções listadas com hash e motivo
-- [ ] Gate falha em teste com arquivo novo `foo_20261001.sql` e com timestamp repetido
-- [ ] Gate passa no estado atual
-**Esforço:** P · **Dep.:** E06 · **Supersede:** plano 09-15 E17
+- [x] Exceções listadas com hash — via baseline JSON (sha256 por arquivo), estrutura mais rica que "motivo" em texto livre
+- [x] Gate falha em teste com arquivo novo fora do padrão e com timestamp repetido — 15 testes automatizados cobrem os dois casos
+- [x] Gate passa no estado atual — confirmado, exit 0
+**Esforço:** P (0 — trabalho já existia) · **Dep.:** E06 · **Supersede:** plano 09-15 E17
 
 ### E11 · Tornar `statements` obrigatório para toda entrada nova do ledger `[GIT]`
 **Problema (medido):** 483 linhas do ledger sem `statements` — 20 % do histórico **não pode** ser comparado por hash com o arquivo local (E33 do plano 09-15 é impossível para esse subconjunto).
