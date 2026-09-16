@@ -173,11 +173,20 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 3. Disparar `db-schema-drift-check` manualmente; ler o log: `supabase link` e `db diff` executados de fato.
 4. Local: `supabase login` com token novo; `supabase migration list --linked` retorna sem `401`.
 **Checklist de conclusão:**
-- [ ] Secret cadastrado no ambiente correto; nenhum valor em log
-- [ ] Run manual do workflow com etapas live executadas (não `skipped`)
-- [ ] `supabase migration list --linked` funciona localmente
-- [ ] Resultado do primeiro drift live arquivado como artefato (mesmo que mostre drift)
-**Esforço:** P · **Dep.:** — · **Supersede:** plano 09-15 E26/E27
+- [x] Secret cadastrado no ambiente correto; nenhum valor em log — feito pelo PO em 2026-09-16.
+- [x] Run manual do workflow com etapas live executadas (não `skipped`) — confirmado, `Gate secrets` e `Link canonical project` passam.
+- [x] `supabase migration list --linked` funciona localmente — sem 401, projeto `linked: true`.
+- [x] Resultado do primeiro drift live arquivado como artefato — **ver caixa abaixo: o resultado foi "não calculável", não "sem drift".**
+**Esforço:** P · **Dep.:** — · **Supersede:** plano 09-15 E26/E27 — ✅ **CONCLUÍDO em 2026-09-16**
+
+> **📋 Resultado de E02 — 5 rodadas de CI, decisão de estratégia (2026-09-16):**
+> Com o secret cadastrado, `db-schema-drift-check` passou a rodar de verdade — e revelou que `supabase db diff --linked` (que reconstrói o schema do zero em shadow database, reaplicando as ~2.988 migrations) **nunca conseguiu completar neste projeto**, independente de qualquer credencial. Em 5 execuções (runs `35090629440` → `35093709593`) encontrei e corrigi, em ordem:
+> 1. `20260601140841_*.sql` — `v.product_id ~ '<regex>'` onde `product_id` é `uuid`: operador impossível (SQLSTATE 42883). Nunca aplicada em lugar nenhum. **Aposentada** (commit `354b0b322`).
+> 2. `20260601180000_*.sql` — `CREATE POLICY IF NOT EXISTS`, sintaxe que não existe no PostgreSQL (SQLSTATE 42601) — mesma armadilha do `SCHEMA_REFERENCE.md` §7. A policy já existe ao vivo (criada por fora). **Reescrita** com `DO`/`EXCEPTION WHEN duplicate_object` (commit `f710cd23b`).
+> 3. **5 dos 6 schemas de aplicação não-gerenciados não têm NENHUMA migration de criação** (`analytics`, `supplier_stricker`, `cf_recon`, `prod_audit`, `classification_audit` — só `internal` tinha). 38 migrations dependiam silenciosamente disso. **Corrigido** com `supabase db dump --linked --schema <5 schemas>` real (29 tabelas, 21 views/matviews, 20 funções) como migration de bootstrap (commits `0f806de64`, `0c2afc92e`).
+> 4. `public.categories.bitrix_id` — coluna de tabela core sem NENHUMA migration em toda a história que a crie. **Não corrigido** — sinal de que a dívida de DDL out-of-band se estende para dentro de `public`, não só nos 5 schemas.
+>
+> **Decisão:** parar de perseguir o replay 100% funcional (não há garantia de quantas camadas faltam) e trocar de estratégia — ver E04/E06/E14/E46 atualizados. `supabase/migrations-snapshot/SCHEMA_LIVE.sql` (dump direto, 397 tabelas/199 views/1.320 funções, 4,87 MB, gerado em 2026-09-16 — commit `b6fab6ee2`) passa a ser a fonte de verdade do schema atual; `SCHEMA_DRIFT.sql` documenta a limitação em vez de ficar ausente. A reconciliação histórica completa vira trabalho best-effort de E07/E08, não bloqueante.
 
 > **⛔ Pre-mortem (2026-09-16) — correção de escopo:** o passo 1 (cadastrar `SUPABASE_DB_PASSWORD`) é **ato humano intransferível**: nenhuma ferramenta minha lê/grava esse secret, e não devo pedir para você colá-lo no chat (ficaria em log). Isso bloqueia especificamente o caminho **CLI/GitHub Actions** (`supabase link`, `migration list --linked`, `db-schema-drift-check` live).
 >
@@ -313,14 +322,14 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 - [ ] Nenhum draft "pendente" sem etapa deste plano que o consuma
 **Esforço:** P · **Dep.:** E07
 
-### E14 · Recriar o snapshot consolidado e seu metadado `[GIT]`
-**Problema (medido):** o metadado do snapshot consolidado (`snapshot_meta.json`, dentro do diretório `migrations-snapshot`) está vazio ou ausente; o gate `check:migration-refs` (já corrigido) ainda espera `all_in_one.sql` e esse metadado.
-**Ação:** rodar `scripts/export-schema-snapshot.mjs` em worktree descartável; gerar `snapshot_meta.json` com data, SHA do repo, hash do ledger, hash do dump; comparar com o artefato versionado; documentar que o snapshot é **derivado**, nunca fonte.
+### E14 · Recriar o snapshot consolidado e seu metadado `[GIT]` ✅ Concluída em 2026-09-16 (ver E02)
+**Problema (medido):** o metadado do snapshot consolidado (`snapshot_meta.json`, dentro do diretório `migrations-snapshot`) estava vazio ou ausente; nunca havia sido gerado com sucesso porque dependia da mesma verificação live bloqueada em E02.
+**Ação realizada:** gerado `SCHEMA_LIVE.sql` via `supabase db dump --linked --schema public` (397 tabelas, 199 views, 1.320 funções, 4,87 MB), `SCHEMA_DRIFT.sql` documentando por que o `db diff` não completa hoje (ver E02), `SNAPSHOT_META.json` com contagens reais e a lista de blockers corrigidos/abertos, `README.md` com seção "Limitação conhecida", `ALL_IN_ONE.sql` regenerado (2.988 migrations). Commit `b6fab6ee2`.
 **Checklist de conclusão:**
-- [ ] `snapshot_meta.json` válido e versionado
-- [ ] Segunda geração produz hash idêntico (reproduzível)
-- [ ] `README` do snapshot declara "não substitui ledger nem `pg_catalog`"
-**Esforço:** P · **Dep.:** E03
+- [x] `SNAPSHOT_META.json` válido e versionado
+- [ ] Segunda geração produz hash idêntico (reproduzível) — não testado ainda; `SCHEMA_LIVE.sql` muda a cada geração pela natureza do dump (ordem pode variar), avaliar se vale normalizar antes de cobrar reprodutibilidade byte-a-byte.
+- [x] `README` do snapshot declara "não substitui ledger nem `pg_catalog`" (já dizia; reforçado com a limitação do drift)
+**Esforço:** P · **Dep.:** E03 — **status real: não precisou de E03, rodou direto com CLI já linkado.**
 
 ### E15 · Workflow de aplicação controlada de migration única `[GIT]` (execução `[REQUER-PO]`)
 **Problema:** `db push` é proibido (correto) e **não existe** caminho versionado para aplicar uma migration nova. Resultado: as pessoas usam MCP/dashboard, que é a origem do problema de E12.
@@ -625,12 +634,16 @@ Em ambos: adicionar partição `DEFAULT` como rede de segurança com alerta se r
 > Objetivo: o que foi corrigido não regride em silêncio; o que ficou aberto tem dono e data.
 
 ### E46 · Drift check live semanal + comparação ledger ↔ arquivos no CI `[GIT]`
-**Problema:** o drift check (fail-closed desde #1864) só roda quando alguém dispara. O manifesto (E06) só existe local.
-**Ação:** `schedule: cron('0 6 * * 1')` no `db-schema-drift-check.yml`; job adicional roda `npm run ledger:manifest` contra o ledger live e falha se surgir `aplicada-sem-ledger` ou `registrada-sem-arquivo` novo; resultado vai para `MIGRATIONS_SYNC_LOG.md` por PR automático.
+**Problema:** o drift check (fail-closed desde #1864) só roda quando alguém dispara. O manifesto (E06) só existe local. **Atualizado pelo achado de E02:** `db diff` não completa hoje (replay trava em DDL out-of-band histórica), então o "drift check semanal" não pode depender só dele.
+**Ação:**
+1. `schedule: cron('0 6 * * 1')` em `schema-snapshot-export.yml` (não em `db-schema-drift-check.yml` — esse continua fail-closed e manual/on-push, sinalizando "não calculável" honestamente via E02).
+2. O job semanal gera `SCHEMA_LIVE.sql` de hoje e diffa contra o `SCHEMA_LIVE.sql` commitado da semana anterior — isso funciona **mesmo com `db diff` quebrado**, porque não depende de replay. Abre PR/issue quando há diferença.
+3. Job adicional roda `npm run ledger:manifest` (E06) contra o ledger live e falha se surgir `aplicada-sem-ledger` ou `registrada-sem-arquivo` novo; resultado vai para `MIGRATIONS_SYNC_LOG.md`.
+4. Quando (e se) E07/E08 fecharem a dívida histórica o suficiente para `db diff` completar, promover de volta para o mecanismo original como verificação adicional (não substituta).
 **Checklist de conclusão:**
-- [ ] 2 execuções semanais consecutivas verdes (ou com issue aberta)
+- [ ] 2 execuções semanais consecutivas com diff de `SCHEMA_LIVE.sql` publicado (verde ou com issue aberta)
 - [ ] Manifesto no CI com diff contra o versionado
-**Esforço:** P · **Dep.:** E02, E06, E12
+**Esforço:** P · **Dep.:** E02 (✅), E06, E12
 
 ### E47 · Detector contínuo de assinatura de schema `[REQUER-PO]`
 **Problema (medido):** `schema_signature_baseline` (7.201 colunas), `schema_signature_drift_log`, `schema_drift_log` existem mas não há prova de que alertam.
