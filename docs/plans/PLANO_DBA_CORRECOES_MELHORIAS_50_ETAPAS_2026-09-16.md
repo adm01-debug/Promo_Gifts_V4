@@ -912,6 +912,17 @@ Em ambos: adicionar partição `DEFAULT` como rede de segurança com alerta se r
 - [ ] `cron.job WHERE NOT active` = 0 **ou** comentado no doc como intencional
 **Esforço:** P · **Dep.:** —
 
+> **Preparo concluído em 2026-09-17** (`docs/E38_CRON_JOBS_DESLIGADOS_2026-09-17.md`):
+> `webhook_outbox` com 0 linhas e sem nenhum produtor/consumidor real no
+> código — padrão substituído por dispatch direto via
+> `supabase/functions/webhook-dispatcher`. `pipeline-classify-categories`
+> chama `fn_pipeline_classify_pending_products`, que **não existe mais no
+> schema** (`to_regprocedure` retorna NULL) — não tem como voltar a rodar
+> sem reescrever a função. Decisão para os 2: `cron.unschedule`. Migration
+> pronta (não aplicada):
+> `supabase/migrations/20260917070000_e38_unschedule_dead_cron_jobs.sql`.
+> Aguardando aprovação do PO.
+
 ### E39 · Investigar 262 deadlocks e 22,5 % de rollback `[DB-RO]` ✅ Concluída em 2026-09-16
 **Problema (medido):** `pg_stat_database.deadlocks = 262`; `xact_rollback / total = 22,53 %`. Rollback alto pode ser PostgREST devolvendo erro (4xx) ou testes E2E; deadlocks indicam ordem de lock inconsistente (provável em `products` ↔ satélites via trigger).
 **Ação:** `postgres_logs` 24 h: `deadlock detected` → pares de tabelas; `ERROR:` mais frequentes → origem (pgrst / edge / cron). Registrar. Se deadlock em `products`/`product_*`: ordenar escrita nos triggers `trg_sync_product_*`.
