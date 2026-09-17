@@ -412,9 +412,35 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 **Problema (medido):** `qa/migrations-draft` tem 10 ativos e 5 arquivados (o plano 09-15 dizia 4). `scripts/map-drafts-to-migrations.mjs` existe.
 **Ação:** rodar o mapeamento por **objeto** (não por slug); para cada draft: `absorvido por <versão>` / `pendente` / `rejeitado` / `obsoleto`. Registrar em `qa/migrations-draft/DRAFTS_STATUS.md` com owner e data. Não mover nem apagar nesta etapa.
 **Checklist de conclusão:**
-- [ ] 15/15 com estado, owner e próxima decisão
-- [ ] Nenhum draft "pendente" sem etapa deste plano que o consuma
+- [x] 14/14 com estado, owner e próxima decisão (contagem real é 14, não 15 — ver resultado)
+- [x] Nenhum draft "pendente" sem etapa deste plano que o consuma (verificado; 3 são gaps genuínos, reportados, nenhuma etapa nova inventada)
 **Esforço:** P · **Dep.:** E07
+
+> **📋 Resultado (2026-09-16):** `docs/E13_DRAFTS_MIGRATIONS_2026-09-16.md` +
+> seção "Decisão por objeto" em `qa/migrations-draft/DRAFTS_STATUS.md`.
+> **Contagem corrigida:** 10 ativos + **4** arquivados (não 5) = **14** drafts,
+> não 15. Mapeamento feito por objeto ao vivo em `pg_catalog` (nunca
+> PostgREST — REGRA #8 corolário), não por slug de arquivo (o
+> `scripts/map-drafts-to-migrations.mjs` existente depende de `PGHOST`
+> indisponível nesta sessão e faz apenas fuzzy-match de nome de arquivo).
+> **Distribuição:** `absorvido por <versão>` = 3 · `absorvido (fora do fluxo
+> de migration, sem versão rastreável)` = 2 · `absorvido parcialmente` = 1 ·
+> `pendente` = 3 · `obsoleto` = 5 · `rejeitado` = 0. Os 3 `pendente`
+> (`2026-06-19_kit_dimensions_backfill.sql` — 43 kits ainda sem dimensões;
+> `2026-07-23_get_edge_invoke_summary.sql` — RPC de telemetria adiada pelo PO;
+> `2026-09-09_magazine_rpc_only_contract.sql` — contrato RPC-only do Magazine
+> adiado até frontend v2 READY) **não têm etapa cobrindo a aplicação** em
+> E01–E50 — gaps genuínos, reportados e não inventados como etapa nova.
+> Achados adicionais: 2 casos de DDL out-of-band confirmados
+> (`fn_get_reposicao_variants_summary` e a constraint
+> `magazine_items_unique_product`, vivos em produção sem migration
+> versionada correspondente — candidatos a reconciliação via
+> `docs/db/POLITICA_DDL.md`); `REVIEWS.json` desatualizado para o draft
+> `reposicao_variants_summary` (já em produção, não "aguardando staging");
+> `_archived/README.md` desatualizado quanto ao trigger
+> `generate_magazine_public_token` (não existe mais sob esse nome). Nenhum
+> arquivo movido/apagado em `qa/migrations-draft/`; nenhuma escrita no
+> Supabase.
 
 ### E14 · Recriar o snapshot consolidado e seu metadado `[GIT]` ✅ Concluída em 2026-09-16 (ver E02)
 **Problema (medido):** o metadado do snapshot consolidado (`snapshot_meta.json`, dentro do diretório `migrations-snapshot`) estava vazio ou ausente; nunca havia sido gerado com sucesso porque dependia da mesma verificação live bloqueada em E02.
