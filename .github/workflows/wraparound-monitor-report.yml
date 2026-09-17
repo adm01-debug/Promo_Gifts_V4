@@ -1,0 +1,152 @@
+name: wraparound-monitor-report
+
+# =============================================================================
+# Etapa E33 do PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md.
+# Ver docs/E33_MONITOR_WRAPAROUND_2026-09-16.md para a investigação completa.
+#
+# O que faz: roda scripts/wraparound-monitor-check.mjs, que lê a série diária
+# de ops.wraparound_monitor_log (gravada pelo cron
+# wraparound-toast-sequence-monitor — ver a migration da etapa E33) e compara
+# a captura mais recente de cada objeto (banco atual, sequências,
+# replication slots, tabelas com TOAST) contra os thresholds de aviso/
+# crítico declarados no script. Sinaliza (issue rotulada `db-warning` ou
+# `db-critical`, ou comentário se já existir uma aberta) qualquer objeto
+# acima do limiar.
+#
+# O que NÃO faz: não aplica DDL, não grava em ops.wraparound_monitor_log — é
+# advisory/best-effort, não um gate (mesmo padrão de
+# ddl-out-of-band-detector.yml/capacity-growth-report.yml/pgss-slo-report.yml,
+# etapas E12/E30/E40). Depende da migration de E33 (tabela
+# ops.wraparound_monitor_log + cron) já ter sido aplicada — enquanto não
+# for, o check degrada para inconclusive (sem issue) e só loga aviso.
+#
+# Secrets (Settings -> Secrets and variables -> Actions):
+#   - SUPABASE_ACCESS_TOKEN : PAT da Management API (mesmo secret dos outros
+#                             workflows de checagem deste repo)
+# Variável sobrescrevível (não-secret):
+#   SUPABASE_PROJECT_REF (default: doufsxqlfjyuvxuezpln)
+# =============================================================================
+
+on:
+  schedule:
+    - cron: '15 6 * * *' # diário, 06:15 UTC — 15 min depois do cron do banco (06:00 UTC)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: wraparound-monitor-report
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: Compara ops.wraparound_monitor_log contra THRESHOLDS
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF || 'doufsxqlfjyuvxuezpln' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+
+      - name: Roda checagem de wraparound/TOAST/sequências
+        id: check
+        continue-on-error: true
+        run: node scripts/wraparound-monitor-check.mjs --out=/tmp/wraparound.json
+
+      - name: Upload report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wraparound-monitor-report-${{ github.run_id }}
+          path: /tmp/wraparound.json
+          retention-days: 90
+          if-no-files-found: ignore
+
+      - name: Abre ou atualiza issue (objeto em aviso ou crítico)
+        # exit 1 (FAILED) e exit 2 (INCONCLUSIVE) chegam aqui como 'failure' via
+        # continue-on-error. Só abrimos issue quando o relatório existe e lista
+        # >=1 objeto em aviso/crítico — caso contrário (inconclusivo: sem
+        # credenciais obrigatórias, Management API fora do ar,
+        # ops.wraparound_monitor_log ainda não existe porque E33 não foi
+        # aplicado) só logamos warning, sem issue.
+        if: steps.check.outcome == 'failure'
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
+        with:
+          script: |
+            const fs = require('fs');
+            let report = null;
+            try {
+              report = JSON.parse(fs.readFileSync('/tmp/wraparound.json', 'utf-8'));
+            } catch (e) {
+              core.warning(`Checagem inconclusiva ou sem relatório (${e.message}) — provavelmente ops.wraparound_monitor_log ainda não existe (E33 aguardando aprovação do PO). Não é um achado de risco, apenas logando.`);
+              return;
+            }
+            const warnings = report?.warnings || [];
+            const criticals = report?.criticals || [];
+            if (warnings.length === 0 && criticals.length === 0) {
+              core.warning('Relatório existe mas warnings/criticals estão vazios — nada a fazer.');
+              return;
+            }
+            const label = criticals.length > 0 ? 'db-critical' : 'db-warning';
+            const today = new Date().toISOString().slice(0, 10);
+            const title = `[${label}] ${criticals.length + warnings.length} objeto(s) de wraparound/TOAST/sequência sinalizado(s) — ${today}`;
+
+            const fmt = (e) => `- \`${e.metric}\` em \`${e.object_name}\` — value_numeric=${e.value_numeric ?? 'n/a'} value_pct=${e.value_pct ?? 'n/a'} (captura ${e.captured_at})`;
+            const lines = [
+              ...(criticals.length ? ['### Crítico', ...criticals.map(fmt)] : []),
+              ...(warnings.length ? ['### Aviso', ...warnings.map(fmt)] : []),
+            ];
+
+            const body = [
+              '## Objeto(s) de risco de wraparound/TOAST/sequência acima do threshold',
+              '',
+              ...lines,
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              '',
+              '### Como agir',
+              'Não é uma ordem de execução automática — só um alerta de threshold estourado (PLANO_DBA E33, ver docs/E33_MONITOR_WRAPAROUND_2026-09-16.md para os thresholds e a justificativa de cada um).',
+              'Investigar a causa antes de propor qualquer ação (ex.: `VACUUM FREEZE` manual para xid_age, `ALTER SEQUENCE`/migração de tipo para sequência, `pg_drop_replication_slot` para slot morto, `VACUUM FULL`/revisão de coluna para TOAST) — qualquer DDL resultante segue a REGRA #8 (aprovação explícita do PO por objeto).',
+            ].join('\n');
+
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: label,
+            });
+            const dup = existing.data.find((i) => i.title.startsWith(`[${label}]`));
+            if (dup) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: dup.number,
+                body: `Atualização do dia ${today}:\n\n${body}`,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels: [label, 'priority/low'],
+              });
+            }
+
+      - name: Não quebra o build
+        if: steps.check.outcome == 'failure'
+        run: |
+          echo "::warning::Checagem de wraparound/TOAST/sequências encontrou objeto(s) acima do limiar ou ficou inconclusiva — ver issue/artefato desta run. Job não quebra build (advisory, não gate)."

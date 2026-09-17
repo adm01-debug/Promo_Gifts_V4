@@ -25,6 +25,12 @@
       "reason": "Deny-all intencional desde a criação (nasce assim, mesmo padrão de ops.table_size_history/E30). Telemetria operacional interna (snapshot semanal de extensions.pg_stat_statements filtrado a chamadas roteadas por PostgREST), gravada pelo cron pgss-history-weekly via public.fn_cron_safe_run(169, ...) (SECURITY DEFINER, owner postgres, bypassrls). Consumida só por scripts/pgss-slo-check.mjs (Management API/service_role em CI, nunca PostgREST). Sem consumidor em src/ ou supabase/functions/. Nem o schema ops nem a tabela têm GRANT a anon/authenticated.",
       "secdef_fn": "public.fn_cron_safe_run",
       "cron_job": "pgss-history-weekly (p_key=169, 41 3 * * 1)"
+    },
+    {
+      "table": "ops.wraparound_monitor_log",
+      "reason": "Deny-all intencional desde a criação (nasce assim, mesmo padrão de ops.table_size_history/E30 e ops.pgss_history/E40). Telemetria operacional interna (snapshot diário de age(datfrozenxid), mxid_age, uso de sequências int4/int2, WAL retido por replication slot e proporção TOAST/heap), gravada pelo cron wraparound-toast-sequence-monitor via public.fn_cron_safe_run(167, ...) (SECURITY DEFINER, owner postgres, bypassrls). Consumida só por scripts/wraparound-monitor-check.mjs (Management API/service_role em CI, nunca PostgREST). Sem consumidor em src/ ou supabase/functions/. Nem o schema ops nem a tabela têm GRANT a anon/authenticated.",
+      "secdef_fn": "public.fn_cron_safe_run",
+      "cron_job": "wraparound-toast-sequence-monitor (p_key=167, 0 6 * * *)"
     }
   ]
 }

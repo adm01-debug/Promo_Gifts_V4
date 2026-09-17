@@ -788,16 +788,16 @@ Em ambos: adicionar partição `DEFAULT` como rede de segurança com alerta se r
 - [ ] `n_dead_tup` médio 14 dias caiu ≥ 50 % nas 5 tabelas
 **Esforço:** P · **Dep.:** E15, E27
 
-### E33 · Monitor de wraparound, TOAST e sequências `[GIT]`
+### E33 · Monitor de wraparound, TOAST e sequências `[GIT]` ✅ Preparado em 2026-09-17 (aplicação aguarda PO)
 **Problema (medido):** hoje sem risco (máx. sequência int4 = 322; slots saudáveis). Sem monitor, a primeira notícia é o incidente.
 **Ação:** incluir no cron de E30: `age(datfrozenxid)` do banco, sequências int4 > 50 %, slots inativos com WAL retido > 1 GB. Alerta via issue.
 
-> **📋 Resultado (2026-09-16, preparação):** `docs/E33_MONITOR_WRAPAROUND_2026-09-16.md`. Medição confirma "sem risco hoje": `age(datfrozenxid)` = 46.004.605 (2,3% do threshold de aviso); 10 sequências int4 (0 int2), todas ≤0,01% do limite (`_qa_pct_results_id_seq`=322 bate com o plano); 2 replication slots, ambos ativos, WAL retido 37 kB. TOAST extra (fora do pedido original, medido por completude): `products` em 170,7% TOAST/heap (75 MB) é o sinal mais acionável. Thresholds propostos (aviso/crítico) para as 4 métricas + threshold composto para TOAST (evita ruído de tabelas pequenas). Decisão de schema: tabela nova `ops.wraparound_monitor_log` (formato genérico métrica/objeto/valor), não reaproveitar `ops.table_size_history` do E30 — schemas heterogêneos (por-banco, por-sequência, por-slot, por-tabela) não cabem numa única forma tabular. SQL de tabela + cron (single-statement via `fn_cron_safe_run`, `p_key=167` a confirmar) escrito e pronto, **não aplicado** — depende de E30 (schema `ops` ainda não existe) e aprovação do PO.
+> **📋 Resultado (2026-09-16, medição; 2026-09-17, artefatos):** `docs/E33_MONITOR_WRAPAROUND_2026-09-16.md`. Medição confirma "sem risco hoje": `age(datfrozenxid)` = 46.004.605 (2,3% do threshold de aviso); 10 sequências int4 (0 int2), todas ≤0,01% do limite (`_qa_pct_results_id_seq`=322 bate com o plano); 2 replication slots, ambos ativos, WAL retido 37 kB. TOAST extra (fora do pedido original, medido por completude): `products` em 170,7% TOAST/heap (75 MB) é o sinal mais acionável. Thresholds propostos (aviso/crítico) para as 4 métricas + threshold composto para TOAST (evita ruído de tabelas pequenas). Decisão de schema: tabela nova `ops.wraparound_monitor_log` (formato genérico métrica/objeto/valor), não reaproveitar `ops.table_size_history` do E30 — schemas heterogêneos (por-banco, por-sequência, por-slot, por-tabela) não cabem numa única forma tabular. Migration (`supabase/migrations/20260917160000_e33_ops_wraparound_monitor.sql`, `p_key=167` reconfirmado sem colisão), script de checagem (`scripts/wraparound-monitor-check.mjs`, 13 testes) e workflow diário (`wraparound-monitor-report.yml`, issues `db-warning`/`db-critical`) construídos e commitados — SQL do cron validado empiricamente contra Postgres 17 descartável (Docker), **não aplicado** — depende de E30 (schema `ops` ainda não existe) e aprovação do PO.
 
 **Checklist de conclusão:**
-- [ ] 3 métricas coletadas diariamente — SQL pronto, aguarda aprovação/aplicação via pacote E30
-- [ ] Teste de alerta com limiar artificial — esboço do workflow documentado, não implementado
-**Esforço:** P · **Dep.:** E30
+- [ ] 3 métricas coletadas diariamente — migration+script+workflow prontos, aguardam aprovação/aplicação (depende de E30)
+- [ ] Teste de alerta com limiar artificial — workflow implementado; teste com dado real pendente da aplicação
+**Esforço:** P · **Dep.:** E30 (preparado, aguarda PO)
 
 ---
 

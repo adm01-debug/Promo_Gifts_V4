@@ -338,3 +338,53 @@ pacote de aprovação, condicionado à criação da tabela/cron em §4.
 | Workflow de alerta | Não criado — esboço em §5 |
 | Alteração no banco nesta tarefa | **Nenhuma** |
 | Aprovação necessária | PO, explícita, antes de aplicar qualquer `CREATE`/`cron.schedule` (REGRA #8 do `CLAUDE.md`) |
+
+---
+
+## 7. Atualização (2026-09-17) — artefatos preparados
+
+O SQL de §4 desta preparação nunca havia sido escrito como arquivo real —
+só existia em prosa neste documento. Nesta revisão os artefatos foram
+construídos e commitados (ainda **não aplicados**, mesmo status da tabela
+acima), mirrorando o padrão já usado por E30/E40:
+
+- **Migration:** `supabase/migrations/20260917160000_e33_ops_wraparound_monitor.sql`
+  — cria `ops.wraparound_monitor_log` (schema idêntico ao de §4.1, RLS
+  deny-all, índice `(metric, captured_at DESC)`), cron diário
+  `wraparound-toast-sequence-monitor` (`0 6 * * *`, `p_key=167` — reconfirmado
+  ao vivo em 2026-09-17: `167` continua livre, `168`/`169` foram reservados
+  por E30/E40 na mesma sessão sem colidir). Precondição exige o schema `ops`
+  já existir (E30 como dependência dura). O corpo do cron usa dollar-quoting
+  aninhado (`$cron$...$cron$` fora, `$sql$...$sql$` dentro) em vez da
+  concatenação de literais com aspas duplicadas usada em E40 — tags
+  diferentes aninham sem conflito e evitam escapar cada aspa simples do SQL
+  interno. Texto completo (incluindo a parametrização do `LIMIT 10` dentro
+  do `UNION ALL`, apontada como pendência em §4.2) **validado empiricamente**
+  contra um Postgres 17 descartável (Docker): o `INSERT ... SELECT ...
+  UNION ALL` populou corretamente `xid_age`, `mxid_age` e
+  `sequence_pct_used` a partir do catálogo real, e o teste isolado de
+  aninhamento de dollar-quoting confirmou que o texto interno (aspas
+  simples, aspas duplas, barra invertida) chega intacto ao `p_sql`.
+- **Script de checagem:** `scripts/wraparound-monitor-check.mjs` — núcleo
+  puro `evaluateWraparoundAlerts()` (compara a captura mais recente de cada
+  objeto contra os thresholds de §2, incluindo a regra composta de TOAST e a
+  regra "só alerta slot inativo") + casca de I/O read-only (Management API,
+  nunca PostgREST — REGRA #8). Sem captura → `insufficientData`, não falha.
+  13 testes unitários + 2 testes de degradação de CLI em
+  `tests/scripts/wraparound-monitor-check.test.mjs`.
+- **Workflow:** `.github/workflows/wraparound-monitor-report.yml` — diário
+  (06:15 UTC, 15 min depois do cron do banco), advisory (não gate): abre ou
+  atualiza issue rotulada `db-warning` ou `db-critical` (crítico tem
+  prioridade se ambos dispararem no mesmo dia, conforme esboçado em §5)
+  quando há objeto(s) acima do threshold; sem credenciais ou antes da
+  migration ser aplicada, degrada para inconclusive/static-pass sem abrir
+  issue. O "teste de alerta com limiar artificial" do checklist do plano
+  (§5, item 4) permanece pendente — depende da tabela existir com dados
+  reais para rodar a query de alerta manualmente.
+- **Allowlist:** entrada nova em `.security/rls-no-policy-allowlist.json`
+  para `ops.wraparound_monitor_log`.
+
+**O que continua não feito:** a migration não foi aplicada (depende de E30
+já aplicado + aprovação explícita do PO); sem aplicação, não há captura
+real ainda — o item 1 do checklist de conclusão do plano só progride após
+aprovação + a primeira execução do cron às 06:00 UTC.
