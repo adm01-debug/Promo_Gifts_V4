@@ -866,14 +866,17 @@ Em ambos: adicionar partição `DEFAULT` como rede de segurança com alerta se r
 - [x] Baseline registrada para comparação pós-correção — recomendado instrumentar snapshot periódico (R1), ainda não implementado, decisão do PO
 **Esforço:** M · **Dep.:** E02
 
-### E40 · Baseline de desempenho e SLO por RPC crítica `[GIT]` + `[REQUER-PO]`
+### E40 · Baseline de desempenho e SLO por RPC crítica `[GIT]` + `[REQUER-PO]` ✅ Preparado em 2026-09-17 (aplicação aguarda PO)
 **Problema:** `pg_stat_statements` acumula desde a criação da instância — média de 6 meses não reflete hoje.
 **Ação:** snapshot semanal de `pg_stat_statements` para `ops.pgss_history` (cron, single-statement); `pg_stat_statements_reset()` uma vez, aprovado, após o snapshot; SLO documentado para 10 RPCs críticas (Kit Maker, orçamento, catálogo público, busca): p95 < 500 ms. Workflow semanal compara e abre issue.
+
+> **📋 Resultado (2026-09-17, preparação):** `docs/E40_BASELINE_DESEMPENHO_SLO_2026-09-17.md`. Migration pronta (`supabase/migrations/20260917150000_e40_ops_pgss_history.sql`, `p_key=169`, sem colisão com E30 (`168`), E33 (`167`) nem E25 (`200`) — precondição explícita falha se o schema `ops` ainda não existir, dependência dura de E30). RLS deny-all (padrão E19, entrada em `.security/rls-no-policy-allowlist.json`). Script de checagem (`scripts/pgss-slo-check.mjs`, p95 aproximado por `mean + 1.645*stddev`, 9 testes) + workflow semanal advisory (`.github/workflows/pgss-slo-report.yml`, padrão E12/E30) construídos e commitados. **Achado relevante:** as RPCs nomeadas a priori pelo plano (Kit Maker/orçamento/busca) têm **zero tráfego medido** via PostgREST na janela de ~3 meses disponível — `SLO_TARGETS_MS` reconciliado com 7 RPCs empiricamente mais custosas (inclui `fn_spot_direct_stock_gold`, achado novo: mean 19,3s/526 chamadas, mais lenta que as 3 já documentadas em E34) + 3 representantes dos domínios nomeados pelo plano. **Não aplicado** — cria tabela/cron novos, exige aprovação do PO por objeto, e depende de E30 já estar aplicado antes. `pg_stat_statements_reset()` (item 2 do checklist) é decisão separada, proposta só após a 1ª captura semanal.
+
 **Checklist de conclusão:**
-- [ ] Tabela + cron criados
-- [ ] Reset executado uma vez com snapshot prévio guardado
-- [ ] 10 RPCs com SLO e medição semanal publicada
-**Esforço:** M · **Dep.:** E30, E34
+- [ ] Tabela + cron criados — migration pronta, depende de E30 aplicado + aprovação do PO
+- [ ] Reset executado uma vez com snapshot prévio guardado — decisão separada, após 1ª captura
+- [ ] 10 RPCs com SLO e medição semanal publicada — 10 alvos já declarados em `SLO_TARGETS_MS`, script pronto, roda semanalmente após aplicação
+**Esforço:** M · **Dep.:** E30 (preparado, aguarda PO), E34 (concluída)
 
 ---
 

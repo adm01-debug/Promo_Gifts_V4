@@ -19,6 +19,12 @@
       "reason": "Deny-all intencional desde a criação (não é uma tabela pré-existente sendo documentada retroativamente — nasce assim). Telemetria operacional interna (série histórica de tamanho por tabela), gravada pelo cron table-size-history-daily via public.fn_cron_safe_run(168, ...) (SECURITY DEFINER, owner postgres, bypassrls). Consumida só por scripts/capacity-growth-projection.mjs (Management API/service_role em CI, nunca PostgREST). Sem consumidor em src/ ou supabase/functions/. Nem o schema ops nem a tabela têm GRANT a anon/authenticated.",
       "secdef_fn": "public.fn_cron_safe_run",
       "cron_job": "table-size-history-daily (p_key=168, 17 3 * * *)"
+    },
+    {
+      "table": "ops.pgss_history",
+      "reason": "Deny-all intencional desde a criação (nasce assim, mesmo padrão de ops.table_size_history/E30). Telemetria operacional interna (snapshot semanal de extensions.pg_stat_statements filtrado a chamadas roteadas por PostgREST), gravada pelo cron pgss-history-weekly via public.fn_cron_safe_run(169, ...) (SECURITY DEFINER, owner postgres, bypassrls). Consumida só por scripts/pgss-slo-check.mjs (Management API/service_role em CI, nunca PostgREST). Sem consumidor em src/ ou supabase/functions/. Nem o schema ops nem a tabela têm GRANT a anon/authenticated.",
+      "secdef_fn": "public.fn_cron_safe_run",
+      "cron_job": "pgss-history-weekly (p_key=169, 41 3 * * 1)"
     }
   ]
 }
