@@ -1092,6 +1092,30 @@ Em ambos: adicionar partição `DEFAULT` como rede de segurança com alerta se r
 - [ ] Notificação chega a canal definido pelo PO
 **Esforço:** M · **Dep.:** E12, E15
 
+> **Preparo concluído em 2026-09-17.** Premissa do plano parcialmente
+> corrigida: não existe edge function — o mecanismo real é `pg_cron`
+> jobid 245 (`schema-drift-check`), já ativo, já rodando **4x/dia** (melhor
+> que "diário"). Dois achados confirmados: (1) `schema_signature_baseline`
+> tem uma única fotografia estática de 2026-06-27, nunca atualizada — 82
+> dias de evolução legítima de schema fazem `has_drift=true` em 89% das
+> rodadas (311/350), e as 5 rodadas mais recentes (24h) têm
+> `n_added=325`/`n_removed=22` idênticos bit-a-bit, confirmando comparação
+> contra referência parada, não rodada-a-rodada; mitigado em parte pelo
+> detector do E12, que recalcula contra o ledger de migrations em vez de
+> usar `has_drift` cru. (2) Nenhum código lê `notification_sent` para
+> disparar qualquer canal — checklist "Notificação chega a canal definido
+> pelo PO" confirmado não cumprido, decisão de canal fica para o PO. Achado
+> extra: o `command` do job embrulha 2 statements numa só chamada de
+> `fn_cron_safe_run`, que captura exceção e nunca relança — combinado com a
+> semântica de savepoint implícito de blocos `EXCEPTION` do PL/pgSQL, uma
+> falha na 2ª statement (bridge) desfaria também a gravação da 1ª (o check
+> real) sem que `cron.job_run_details` jamais mostrasse falha. Migration
+> preparada separa em 2 chamadas de `fn_cron_safe_run` (1 statement cada,
+> mesma chave de advisory lock, reentrante) — resolve o item
+> "single-statement" e isola a falha da bridge do check real, sem tocar em
+> nenhuma função. Ver `docs/E47_SCHEMA_DRIFT_DETECTOR_2026-09-17.md`.
+> Aguardando aprovação do PO para aplicar via E15.
+
 ### E48 · `MIGRATIONS_SYNC_LOG.md` como recibo, não como narrativa `[GIT]` ✅ Concluída em 2026-09-16 (core sem `[REQUER-PO]`; entradas E08/E09 no log herdam `[REQUER-PO]`)
 **Problema:** o log existe (`supabase/MIGRATIONS_SYNC_LOG.md`) mas frases como "sincronizado" sem hash são interpretadas como certificação.
 **Ação:** contrato: uma linha por aplicação (`versão | sha256 arquivo | md5 statements | executor | método (E15/repair/MCP-ticket) | data UTC | pós-check`). Cabeçalho com "último recibo" e "ledger hash". Gate: PR que toca `supabase/migrations/` sem linha nova no log falha.
