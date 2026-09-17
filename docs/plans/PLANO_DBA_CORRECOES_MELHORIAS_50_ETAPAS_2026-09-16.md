@@ -1040,7 +1040,7 @@ Em ambos: adicionar partição `DEFAULT` como rede de segurança com alerta se r
 - [ ] Existe **um** caminho autorizado para aplicar migration (E15) e ele exige aprovação do PO.
 - [ ] DDL fora do fluxo é detectada em ≤ 7 dias.
 - [ ] Toda SECDEF executável por `anon`/`authenticated` tem `reason` específico em allowlist.
-- [ ] As 8 views `*_public` têm contrato de colunas com gate.
+- [x] As 8 views `*_public` têm contrato de colunas com gate (E16, 2026-09-16 — 265/265 colunas batendo, `check-public-views-drift.mjs`).
 - [ ] `supplier_products_raw_history` tem partições até ≥ 3 meses à frente e política de retenção.
 - [ ] `stock_snapshots` ≤ 30 % do tamanho de 2026-09-16.
 - [ ] 0 cron jobs multi-statement; 0 jobs desligados sem decisão.
