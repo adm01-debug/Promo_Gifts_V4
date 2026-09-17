@@ -4,7 +4,7 @@ import { readFileSync, writeFileSync, mkdtempSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 
-const SCRIPT = 'scripts/check-public-views-columns.mjs';
+const SCRIPT = 'scripts/check-public-views-drift.mjs';
 const CONTRACT = JSON.parse(readFileSync('.security/public-views-columns.json', 'utf8')) as {
   views: Record<string, { columns: string[]; forbidden?: string[]; masked_null?: string[] }>;
 };

@@ -380,10 +380,33 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 **Problema (medido):** 483 linhas do ledger sem `statements` — 20 % do histórico **não pode** ser comparado por hash com o arquivo local (E33 do plano 09-15 é impossível para esse subconjunto).
 **Ação:** aceitar o passado como não-verificável e registrar isso em `supabase/MIGRATIONS_SYNC_LOG.md`. Para o futuro: o gate de CI verifica, após cada aplicação registrada, que a linha nova tem `statements` não vazio e que `md5(array_to_string(statements))` bate com o arquivo. Migrations aplicadas via `repair` (E08) recebem `statements` a partir do arquivo quando o arquivo for canônico.
 **Checklist de conclusão:**
-- [ ] `MIGRATIONS_SYNC_LOG.md` declara as 483 como "não verificáveis por hash — verificadas por objeto (E07)"
-- [ ] Gate `ledger:verify-statements` implementado e no CI
-- [ ] Toda entrada criada a partir desta etapa tem `statements` e hash
+- [x] `MIGRATIONS_SYNC_LOG.md` declara as 483 como "não verificáveis por hash — verificadas por objeto (E07)"
+- [x] Gate `ledger:verify-statements` implementado (script + allowlist + 32 testes, todos passando) — **não plugado em nenhum workflow de CI ainda** (achado desta sessão, ver doc §6)
+- [x] Toda entrada criada a partir do cutoff tem `statements` — confirmado ao vivo (598/598); invariante observacional até o item acima fechar
 **Esforço:** P · **Dep.:** E06
+
+> **Concluída em 2026-09-16 (sem `[REQUER-PO]`), com uma pendência explícita.**
+> Trabalho herdado de uma sessão anterior que morreu por erro de
+> infraestrutura (`docs/E11_LEDGER_STATEMENTS_ALLOWLIST.json`,
+> `scripts/check-ledger-statements-gate.mjs`, `tests/scripts/check-ledger-statements-gate.test.mjs`)
+> auditado linha a linha nesta sessão — números e lógica corretos,
+> reconfirmados ao vivo via `mcp__supabase__execute_sql` (somente leitura):
+> 483/2.504 linhas sem `statements` (428 `NULL` + 55 `'{}'`), cutoff
+> `version = "20260623111612"`, 598/598 linhas canônicas depois do cutoff já
+> com `statements`, e 5 versões não-canônicas `001`-`005` com `statements`
+> NULL (achado adicional, fora do escopo de remediação, decisão do PO). Gate
+> roda `static-pass` sem credenciais (exit 0); 32/32 testes passando;
+> eslint limpo. Única correção feita nesta sessão: a prosa da distribuição
+> mensal em `MIGRATIONS_SYNC_LOG.md` citava 6 números para 5 meses sem
+> rótulo (23 de 2025-01 atribuído à faixa 2026-01–05, e 2024-12 ausente da
+> lista) — soma batia, só a atribuição mês-a-mês estava errada; corrigido.
+> **Pendência real encontrada:** o gate não está plugado em nenhum
+> `.github/workflows/*.yml` (confirmado por grep) — existe e passa nos
+> testes, mas só roda sob demanda (`npm run ledger:verify-statements`), ao
+> contrário do irmão `check-migration-filename-contract.mjs` (E10), que já
+> é um step em `quality-gate.yml`. Não adicionei esse step nesta sessão:
+> workflows CI não estavam no escopo de arquivos autorizados desta
+> auditoria. Detalhes completos em `docs/E11_LEDGER_STATEMENTS_2026-09-16.md`.
 
 ### E12 · Detector de DDL fora do fluxo (out-of-band) `[GIT]` + `[DB-RO]`
 **Problema (medido):** pelo menos 2 casos confirmados de DDL aplicada por MCP/dashboard e registrada depois (`catalog_e24_zapp_catalog_stats` 2026-09-12; `audit_r3_revoke_anon_mv_product_compositions` 2026-09-05). Existe `schema_signature_baseline` (7.201 colunas) e `schema_signature_drift_log`, mas ninguém compara com o ledger.
@@ -469,10 +492,39 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 **Problema (medido):** 8 views sem `security_invoker`, todas com SELECT para `anon`, rodando como owner. É o mecanismo que substituiu os grants diretos (P1). `.security/public-views-columns.json` existe, mas não há evidência de teste que falhe se uma coluna sensível entrar.
 **Ação:** para cada view: listar colunas, `pg_get_viewdef`, tabelas subjacentes; comparar com `public-views-columns.json`; garantir que nenhuma expõe `cost`, `supplier_price`, `ncm`, `bitrix_*`, PII. Gate `check-public-views-drift` (falha se coluna nova aparecer sem allowlist). Documentar em `SCHEMA_REFERENCE.md` como desenho intencional.
 **Checklist de conclusão:**
-- [ ] 8/8 com definição, colunas e justificativa registradas
-- [ ] Gate falha em teste com coluna extra e passa hoje
-- [ ] Nenhuma coluna de custo/fornecedor/PII exposta (lista explícita verificada)
+- [x] 8/8 com definição, colunas e justificativa registradas
+- [x] Gate falha em teste com coluna extra e passa hoje
+- [x] Nenhuma coluna de custo/fornecedor/PII exposta (lista explícita verificada) — **mas** 3 colunas (`ncm_code`, `ncm_id`, `bitrix_product_id` em `v_products_public`) expõem dado sem máscara e sem decisão prévia registrada; não são custo/PII, mas ficam como achado `REQUER-PO` no contrato, não corrigidas nesta etapa (ver blockquote)
 **Esforço:** M · **Dep.:** E04
+
+> **📋 Resultado (2026-09-16):** `docs/E16_VIEWS_PUBLIC_SECDEF_2026-09-16.md`. Boa parte já
+> existia na working tree de uma sessão anterior (contrato `.security/public-views-columns.json`
+> atualizado, `scripts/check-public-views-drift.mjs` já escrito e renomeado de
+> `check-public-views-columns.mjs`, `package.json` com `check:public-views-drift`,
+> `tests/security/public-views-columns.test.ts` já apontando para o script novo) — esta sessão
+> fez auditoria de correção, não reimplementação. Reconfirmado ao vivo: consulta ampla por
+> `v_%_public` encontra **14** views com esse padrão de nome, das quais só **8** rodam como owner
+> (`security_invoker=false`) — as outras 6 já são `security_invoker=true` e ficam fora do escopo.
+> Colunas das 8 comparadas programaticamente (não por inspeção visual): **265/265 batem
+> exatamente** contra o contrato, 0 divergência. Corroboração independente: o linter de segurança
+> nativo do Supabase (`security_definer_view`, nível `ERROR`) reporta `count: 8` com os mesmos 8
+> nomes. Varredura por padrão sensível (`cost`/`custo`/`supplier_price`/`ncm`/`bitrix_*`/PII) nas
+> 265 colunas: **0 PII, 0 custo monetário real sem máscara** (`cost_price`/`suggested_price`
+> mascaradas `NULL` no `viewdef`; `custo_setup_por_cor`/`custo_manuseio_por_peca` são `boolean`,
+> não valor). **Achado (não corrigido, `REQUER-PO`):** `v_products_public.ncm_code`, `.ncm_id` e
+> `.bitrix_product_id` trafegam sem máscara — não é custo nem PII, mas é superfície fiscal/de
+> integração interna exposta sem decisão registrada; documentado no contrato
+> (`sensitive_acknowledged`, status `REQUER-PO`) em vez de silenciosamente aceito. Gate testado
+> contra dados reais ao vivo (passa, `exit 0`, reporta os 5 achados já reconhecidos) e contra
+> drift simulado (`cnpj` adicionada a `v_suppliers_public` numa fixture local — falha, `exit 1`,
+> aponta a coluna e o padrão sensível batido). Teste que faltava (item 6 do pedido: padrão de
+> `tests/scripts/check-types-inventory-drift.test.mjs`, testando as funções puras por import
+> direto) criado em `tests/scripts/check-public-views-drift.test.mjs` — 13 testes novos,
+> complementando os 7 já existentes em `tests/security/public-views-columns.test.ts` (estilo
+> subprocess). **20/20 testes passam** (`npx vitest run`), `npx eslint` sem saída nos arquivos
+> novos/alterados. `docs/SCHEMA_REFERENCE.md` §2/§3 (P6) e §8.6 atualizados — P6 dizia "falta o
+> gate de drift"; agora aponta para o gate fechado e para este documento. Nenhuma escrita no
+> Supabase em nenhum momento (`execute_sql` só com `SELECT`/`pg_get_viewdef`/`pg_depend`).
 
 ### E17 · Revisar as 11 SECDEF executáveis por `anon` `[REQUER-PO]`
 **Problema (medido):** 11 funções (lista em §1.2). `.security/secdef-anon-allowlist.json` e `check-secdef-anon-drift.mjs` existem.
@@ -843,9 +895,42 @@ Em ambos: adicionar partição `DEFAULT` como rede de segurança com alerta se r
 3. Job adicional roda `npm run ledger:manifest` (E06) contra o ledger live e falha se surgir `aplicada-sem-ledger` ou `registrada-sem-arquivo` novo; resultado vai para `MIGRATIONS_SYNC_LOG.md`.
 4. Quando (e se) E07/E08 fecharem a dívida histórica o suficiente para `db diff` completar, promover de volta para o mecanismo original como verificação adicional (não substituta).
 **Checklist de conclusão:**
-- [ ] 2 execuções semanais consecutivas com diff de `SCHEMA_LIVE.sql` publicado (verde ou com issue aberta)
-- [ ] Manifesto no CI com diff contra o versionado
+- [ ] 2 execuções semanais consecutivas com diff de `SCHEMA_LIVE.sql` publicado (verde ou com issue aberta) — só comprovável após o merge; ver blockquote abaixo
+- [x] Manifesto no CI com diff contra o versionado (candidatos vs. baseline E06, não a classificação final E07 — ver blockquote)
 **Esforço:** P · **Dep.:** E02 (✅), E06, E12
+
+> **Implementada em 2026-09-16 (sem `[REQUER-PO]`), pendente de comprovação pós-merge.**
+> `schedule: '0 6 * * 1'` (segunda 06:00 UTC / 03:00 BRT, literal do texto acima) adicionado
+> a `.github/workflows/schema-snapshot-export.yml` — **não** a `db-schema-drift-check.yml`,
+> que continua fail-closed/manual como está (mesma razão da E02: não duplicar dependência
+> do `db diff` que trava). Novo job `weekly-live-drift`, standalone (não depende do job
+> `export` existente, para nunca herdar o risco de timeout do `computeDrift()`/`db diff`
+> desse job). **Correção (revisão de 2026-09-16):** uma versão anterior deste blockquote
+> citava uma execução `10m1s cancelled` do job `export` em `gh run list` como "evidência
+> adicional" de que `db diff` trava por timeout — checagem do log bruto (`gh run view
+> <id> --log`) mostrou que a causa real foi `The operation was canceled.`
+> (`concurrency.cancel-in-progress`, o job ficou ~6 min enfileirado e rodou só ~3m45s antes
+> de ser cancelado por um push concorrente), não o timeout de 10 min. Essa "evidência
+> adicional" não se sustentou e foi removida — a base para "db diff trava" continua sendo
+> só a E02, que é suficiente. Detalhe em `docs/E46_DRIFT_SEMANAL_LEDGER_CI_2026-09-16.md`.
+> Duas partes, nenhuma chama `db diff`:
+> (1) `supabase db dump` sobrescreve o `SCHEMA_LIVE.sql` já versionado (commit `b6fab6ee2`,
+> E14) e usa `git diff` como mecanismo de comparação — diff textual, sem replay, revisável
+> no próprio PR aberto quando muda (padrão de `regenerate-supabase-types.yml`); (2) script
+> novo `scripts/check-ledger-manifest-drift.mjs` (`npm run ledger:manifest` do texto acima
+> não existe em `package.json` — substituído por essa checagem, mais barata: versão/nome via
+> Management API read-only, comparada contra `supabase/migrations/**` e contra o baseline
+> `docs/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json` da E06 como allowlist do já
+> conhecido; só sinaliza versão **nova**, sempre como "candidato" — a classificação final
+> `aplicada-sem-ledger` é da E07, por objeto, cara demais pra rodar toda semana) → abre/
+> atualiza issue `ledger-manifest-drift` (padrão da E12). YAML validado
+> (`python3 -c "import yaml; yaml.safe_load(...)"`); script testado localmente sem
+> credenciais (`static-pass`/`inconclusive` conforme esperado) e a lógica de allowlist
+> validada contra dados reais do baseline. **Não afirmo 2 execuções verdes — isso não
+> aconteceu**; primeira janela real do cron é segunda 2026-09-21 (se mergeado antes).
+> Detalhes completos, incluindo nota sobre 543 vs. 486 no baseline E06 (arquivos vs.
+> versões distintas — 35 prefixos duplicados), em
+> `docs/E46_DRIFT_SEMANAL_LEDGER_CI_2026-09-16.md`.
 
 ### E47 · Detector contínuo de assinatura de schema `[REQUER-PO]`
 **Problema (medido):** `schema_signature_baseline` (7.201 colunas), `schema_signature_drift_log`, `schema_drift_log` existem mas não há prova de que alertam.
@@ -860,10 +945,48 @@ Em ambos: adicionar partição `DEFAULT` como rede de segurança com alerta se r
 **Problema:** o log existe (`supabase/MIGRATIONS_SYNC_LOG.md`) mas frases como "sincronizado" sem hash são interpretadas como certificação.
 **Ação:** contrato: uma linha por aplicação (`versão | sha256 arquivo | md5 statements | executor | método (E15/repair/MCP-ticket) | data UTC | pós-check`). Cabeçalho com "último recibo" e "ledger hash". Gate: PR que toca `supabase/migrations/` sem linha nova no log falha.
 **Checklist de conclusão:**
-- [ ] Formato tabular implementado; histórico antigo movido para seção "legado — não verificado"
-- [ ] Gate ativo e testado
-- [ ] Entradas de E08/E09 registradas neste formato
+- [x] Formato tabular implementado; histórico antigo movido para seção "legado — não verificado"
+- [x] Gate ativo e testado
+- [x] Entradas de E08/E09 registradas neste formato
 **Esforço:** P · **Dep.:** E08, E11
+
+> **Concluída em 2026-09-16 (sem `[REQUER-PO]` no core; entradas de E08 Lote
+> 2/E09 dentro do log ficam `[REQUER-PO]`, herdado — nada foi aplicado por
+> esta etapa).** `supabase/MIGRATIONS_SYNC_LOG.md` reescrito de 511 para 1307
+> linhas: **nada apagado** — as 511 linhas originais (incluindo as seções de
+> E11 e E46, escritas por sessões irmãs) preservadas byte-a-byte (`diff`
+> vazio) em `## Legado — não verificado`. Nova tabela "Recibos" com **598
+> linhas**, backfill ao vivo (`mcp__supabase__execute_sql`, somente leitura)
+> contra `supabase_migrations.schema_migrations`, `version` canônica >
+> cutoff da E11 (`20260623111612`, 598/598 reconfirmado nesta sessão) — SHA-256
+> real de cada arquivo local + MD5 de `statements` calculado no próprio
+> Postgres (nunca transcrito à mão). Fórmula de "ledger hash" definida
+> explicitamente (não estava no plano):
+> `sha256(join("\n", versão|sha256_arquivo|md5_statements))` sobre as 598
+> linhas — valor
+> `8086444739de2607c127a1fedf231f96505c27482d5a18fc5cdbead6a4c85193`. Fonte
+> estruturada: `docs/E48_LEDGER_RECEIPTS_2026-09-16.json` (598 rows,
+> validado). Achado novo (fora do escopo de remediação): `20260916155725`
+> ("último recibo") está no ledger sem arquivo local — candidato a
+> out-of-band, mesma classe da E12, reportado no log. E08 (Lote 1 aplicado,
+> Lote 2 proposto) e as 4 entradas E09 registradas em
+> `## Recibos agregados`/`## Recibos individuais`, nenhuma ação
+> `[REQUER-PO]` executada (confirmado: `docs/PACOTE_APROVACAO_1_2026-09-16.md`
+> ainda diz "nenhuma ação executada"). **Gate**:
+> `scripts/check-migrations-sync-log-gate.mjs` (git-diff local, sem
+> credencial Supabase, graceful-degradation via `check-result-contract.mjs`),
+> 20/20 testes passando, eslint limpo, demonstrado com dados reais desta
+> branch (`--base main` aponta corretamente 6 migrations novas sem recibo,
+> esperado — arquivos de outras etapas ainda não aplicados/ledgerados).
+> Plugado em `.github/workflows/migrations-sync-log-gate.yml`, workflow
+> dedicado com `paths: ["supabase/migrations/**"]` (mesma decisão de design
+> de E46/E12 — não um step incondicional em `quality-gate.yml`).
+> **Pendência documentada, não resolvida nesta sessão:** o gate da E11
+> (`ledger:verify-statements`) continua sem wiring em nenhum workflow —
+> avaliado empacotar junto, decidido que não por terem fontes de dados e
+> modos de falha diferentes (git-diff local vs. Management API com
+> credencial). Detalhes completos, metodologia e evidência de teste em
+> `docs/E48_MIGRATIONS_SYNC_LOG_RECIBO_2026-09-16.md`.
 
 ### E49 · Higiene do repositório com prova de não-perda `[GIT]`
 **Problema (medido):** 59 commits dangling (`WIP on …`, 09-11 → 09-15), 2 worktrees `prunable`, branches `[gone]`, graphify em `89292143` vs `HEAD 7fbbcabe5`, allowlist `pptxgenjs` expira 2026-10-09.

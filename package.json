@@ -164,6 +164,8 @@
     "check:headers-mirror": "node scripts/check-headers-mirror.mjs",
     "check:secdef-anon": "node scripts/check-secdef-anon-drift.mjs",
     "check:ddl-out-of-band": "node scripts/check-ddl-out-of-band.mjs",
+    "check:ledger-manifest-drift": "node scripts/check-ledger-manifest-drift.mjs",
+    "ledger:verify-statements": "node scripts/check-ledger-statements-gate.mjs",
     "check:allowlist-memory": "node scripts/check-allowlist-memory-crosscheck.mjs",
     "check:clickable": "node scripts/check-clickable-drift.mjs",
     "check:no-followup-frontend": "node scripts/check-no-followup-frontend.mjs",
@@ -247,7 +249,8 @@
     "lint:config": "node scripts/check-eslint-config-parses.mjs",
     "lint:lockfile": "node scripts/check-lockfile-sync.mjs",
     "simulate:bi-degradation": "node scripts/simulate-bi-partial-degradation.mjs",
-    "check:public-views-columns": "node scripts/check-public-views-columns.mjs"
+    "check:public-views-drift": "node scripts/check-public-views-drift.mjs",
+    "check:migrations-sync-log-gate": "node scripts/check-migrations-sync-log-gate.mjs"
   },
   "lint-staged": {
     "src/**/*.{ts,tsx}": [

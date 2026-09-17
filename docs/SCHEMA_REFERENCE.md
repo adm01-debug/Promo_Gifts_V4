@@ -141,14 +141,27 @@ falha de desenho, é falha de execução: a correção já existe, pronta, e nun
 plano DBA — pode ser resolvido rodando essa migration (ou uma equivalente atualizada) pelo caminho
 apropriado (`[REQUER-PO]`).
 
-### ℹ️ P6 (NOVO, 2026-09-16) — 8 views SECURITY DEFINER sem `security_invoker`, expostas a `anon`
+### ℹ️ P6 (NOVO, 2026-09-16, gate fechado no mesmo dia) — 8 views SECURITY DEFINER sem `security_invoker`, expostas a `anon`
 
 `v_variant_sale_prices_public, v_kit_component_media_public, v_suppliers_public,
 v_product_tags_public, v_products_public, v_tabela_preco_gravacao_oficial_public,
-v_product_properties_public, v_product_compositions_public`. Rodam como owner, todas com SELECT
-para `anon`. **Não é regressão** — é o mecanismo que permitiu fechar o P1 (o catálogo anônimo lê
-por view definer em vez de grant direto na tabela). Precisa de contrato de colunas com gate
-(`.security/public-views-columns.json` existe; falta o gate de drift). Ver E16 do plano DBA.
+v_product_properties_public, v_product_compositions_public`. Rodam como owner (`security_invoker=false`
+confirmado ao vivo nas 8), todas com SELECT para `anon`. **Não é regressão** — é o desenho intencional
+que permitiu fechar o P1 (o catálogo anônimo lê por view definer em vez de grant direto na tabela).
+Reconfirmado ao vivo com `v_%\_public` amplo: existem **14** views com esse padrão de nome, mas só
+estas 8 rodam como owner — as outras 6 (`v_color_nuances_public`, `v_kit_component_print_areas_public`,
+`v_personalization_techniques_public`, `v_print_area_techniques_public`, `v_site_products_public`,
+`v_tags_public`) já são `security_invoker=true` e ficam fora do escopo desta nota.
+
+Contrato de colunas (`.security/public-views-columns.json`) e gate de drift
+(`scripts/check-public-views-drift.mjs`, `npm run check:public-views-drift`) fechados na E16 —
+265/265 colunas batem contra o banco, 0 drift. Achado da varredura por padrão sensível
+(`cost`/`custo`/`supplier_price`/`ncm`/`bitrix_*`/PII): 3 colunas de `v_products_public`
+(`ncm_code`, `ncm_id`, `bitrix_product_id`) trafegam sem máscara e sem GRANT problemático —
+não é vazamento de custo/PII, mas é superfície de integração/fiscal exposta a `anon` sem decisão
+registrada; status `REQUER-PO`, não corrigido nesta etapa (regra do plano: achado aqui é `[RO]`,
+correção é etapa `[REQUER-PO]` separada). Detalhe completo em
+`docs/E16_VIEWS_PUBLIC_SECDEF_2026-09-16.md`.
 
 ### ⚠️ P7 (NOVO, 2026-09-16) — SECDEF executáveis por `authenticated` cresceu 36% (69 → 94)
 
@@ -323,6 +336,8 @@ WHERE n.nspname='public' AND c.relkind='v'
   AND NOT COALESCE(array_to_string(c.reloptions,',') LIKE '%security_invoker=%on%'
                 OR array_to_string(c.reloptions,',') LIKE '%security_invoker=true%', false);
 ```
+Gate de colunas para essas 8 (E16): `npm run check:public-views-drift` — compara ao vivo contra
+`.security/public-views-columns.json` e falha em coluna nova/sensível não reconhecida.
 
 ### 8.7 Funções SECDEF executáveis por anon / authenticated
 ```sql

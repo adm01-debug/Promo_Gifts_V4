@@ -1,0 +1,62 @@
+name: migrations-sync-log-gate
+
+# =============================================================================
+# Etapa E48 do PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md.
+# Ver supabase/MIGRATIONS_SYNC_LOG.md, seção "Gate de CI (E48)", e
+# docs/E48_MIGRATIONS_SYNC_LOG_RECIBO_2026-09-16.md para a investigação e
+# evidência de que o gate/teste passam.
+#
+# O que faz: roda scripts/check-migrations-sync-log-gate.mjs, que compara
+# `git diff --name-only <base>...HEAD -- supabase/migrations` (arquivos .sql
+# novos/modificados na PR) contra as versões já registradas em alguma tabela
+# de supabase/MIGRATIONS_SYNC_LOG.md (busca por `versão` entre crases). Falha
+# se algum arquivo de migration do diff não tiver recibo.
+#
+# 100% local/git — não depende de nenhuma credencial Supabase, nem de
+# `npm ci` (o script só usa módulos nativos do Node). `static-pass` não se
+# aplica aqui (não é um check "graceful degradation por falta de rede") — ou
+# passa, ou falha, ou fica inconclusive (exit 2) só se o git diff em si não
+# puder ser calculado (ex.: clone raso sem a base disponível).
+#
+# `paths` filter: dispara só quando o PR de fato toca
+# supabase/migrations/** — advisory-safe para qualquer outro PR (mesma
+# decisão de design de schema-snapshot-export.yml/E46 e
+# ddl-out-of-band-detector.yml/E12: workflow dedicado por domínio, não mais
+# um step incondicional em quality-gate.yml, que roda em 100% dos PRs sem
+# filtro de paths).
+# =============================================================================
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: migrations-sync-log-gate-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gate:
+    name: Recibo de migration em MIGRATIONS_SYNC_LOG.md
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # fetch-depth: 0 garante que a base da PR (origin/<base>) esteja
+          # disponível para `git diff origin/<base>...HEAD` independente do
+          # tamanho da branch — mesmo motivo de detect-base64-content.yml.
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Gate — recibo de migration no log (bloqueante)
+        run: node scripts/check-migrations-sync-log-gate.mjs
