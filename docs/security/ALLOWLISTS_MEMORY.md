@@ -42,6 +42,7 @@ aceito. As famílias já classificadas são:
 - **Batch admin** (`execute_role_migration_batch`, `repair_ownership_orphans`) — checam `is_admin_strict()` internamente, com auditoria.
 - **Telemetria/logs self** (`log_rls_denial`, `record_dev_route_telemetry`) — insert em tabelas de log com self-scope.
 - **Rerank de busca** (`search_records_rerank`) — read-only.
+- **`zapp_catalog_stats`** — EXECUTE concedido a `authenticated` sem necessidade (achado E07, migration de correção `20260915113458` nunca aplicada — divergência ledger/schema documentada em E12/`docs/db/POLITICA_DDL.md`). REVOKE preparado no Pacote de Aprovação #1 (`docs/PACOTE_APROVACAO_1_2026-09-16.md`), aguardando aprovação do PO — não é risco aceito permanente, é remediação pendente.
 
 ### Allowlist 0011 — Funções sem `SET search_path`
 
