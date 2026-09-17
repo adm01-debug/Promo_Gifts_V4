@@ -1015,6 +1015,24 @@ Em ambos: adicionar partição `DEFAULT` como rede de segurança com alerta se r
 - [ ] Proposta de decomposição com estimativa, sem DDL
 **Esforço:** G · **Dep.:** E15, E43
 
+> **Preparo concluído em 2026-09-17** (`docs/E45_PRODUCTS_GOD_TABLE_2026-09-17.md`):
+> comentário confirmado desatualizado (152 vs. 184 colunas reais, `obj_description`
+> ao vivo) — migration de `COMMENT ON TABLE` pronta:
+> `supabase/migrations/20260917110000_e45_fix_products_comment.sql`. Os 5
+> satélites 1:1 por trigger mapeados coluna a coluna (~67/184 já espelhadas,
+> 36%) — arquitetura intencional e já documentada, não acidental.
+> `product_physical` já está comentado como buffer write-only desde
+> `[ARQ 2026-06-26]` — item 3 já cumprido antes desta etapa. Inventário
+> coluna→consumidor (item 2) concluído via grep das 184 colunas em `src/`,
+> `supabase/functions/`, views/funções/triggers de `public` ao vivo: 6
+> colunas sem nenhuma referência encontrada (`catalog_schema`, `is_closeout`,
+> `sub_brand`, `weight_gr`, `xbz_stock_reliability_id`,
+> `xbz_stock_reliability_text`) — registradas como achado, sem ação. Proposta
+> de decomposição (item 4, sem DDL): não abrir satélite novo; única lacuna
+> com ROI é completar `product_physical` para ~20 colunas físicas residuais
+> ainda não satelitadas (etapa futura própria). Aguardando aprovação do PO
+> para aplicar o item 1 (comentário) via E15.
+
 ---
 
 ## FASE 6 — Observabilidade e governança contínua (E46–E50)
