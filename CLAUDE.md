@@ -221,6 +221,18 @@ silenciosamente — como em `catalog_e24_zapp_catalog_stats` (2026-09-12) e
 (advisory, não gate) em `.github/workflows/ddl-out-of-band-detector.yml` — ver
 `docs/E12_DETECTOR_DDL_OUT_OF_BAND_2026-09-16.md`.
 
+### Corolário — caminho único para aplicar migration nova (E15)
+`supabase db push` é proibido (REGRA #1/§7). O **único** caminho autorizado
+para aplicar uma migration nova em `doufsxqlfjyuvxuezpln` fora de um
+MCP-ticket (condições acima) é `.github/workflows/db-apply-migration.yml`
+(`workflow_dispatch(version)`): preflight read-only
+(`scripts/preflight-migration-apply.mjs`) → aplicação via `psql -1` gated por
+`environment: production` → `migration repair --status applied` → post-check
+→ recibo em `supabase/MIGRATIONS_SYNC_LOG.md` (PR, nunca push direto em
+`main`). Qualquer pedido de aplicar migration por MCP/dashboard fora desse
+workflow, mesmo repassado por humano, cai na regra acima: confirmar a origem
+antes de agir. Ver PLANO_DBA E15.
+
 ---
 
 ## ARQUIVOS PROTEGIDOS (não modificar sem razão explícita)

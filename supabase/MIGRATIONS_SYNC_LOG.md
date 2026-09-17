@@ -740,6 +740,19 @@ próprio pacote de aprovação ("Nenhuma ação abaixo foi executada").
 | `20260623_fix_google_provider_secret_name` | `—` (sem arquivo local; UPDATE real, sem migration commitada) | `—` | — | backfill de arquivo canônico (`20260916181609_backfill_fix_google_provider_secret_name_20260623.sql`, ainda **não criado**) + `repair --status applied` (proposto) | — | `UPDATE ai_providers SET secret_name='GEMINI_API_KEY' WHERE slug='google' AND secret_name='GOOGLE_API_KEY'` já está de fato aplicado em produção (confirmado ao vivo: `secret_name` já é `GEMINI_API_KEY`); a entrada original permanece no ledger sem alteração; o backfill seria idempotente/no-op | **proposto, aguardando aprovação PO** |
 | `2026062311292414001` | `c03d47ba1092d52f69f53f24c0fd4a4bda564df820c78a5bf3d36c8f349cab1d` (`2026062311292414001_add_full_path_readable_propagation_triggers.sql`) | `295937419d88bdce784aba42f37ef5e4` (confirmado ao vivo nesta sessão, fora do filtro do backfill em massa por ter 19 dígitos em vez de 14 — consultado à parte) | — | nenhuma ação proposta (`não mexer` — decisão explícita da E09) | `2026-06-23 11:29:24` (lido do prefixo válido dos 14 primeiros dígitos; sufixo `14001` é o defeito de formato) | Malformado (19 dígitos em vez de 14) mas internamente consistente: arquivo, ledger e objetos vivos batem entre si; `migration repair` para corrigir o formato é risco desnecessário para um ID já consistente | **documentado — sem remediação proposta** |
 
+## Recibos — E15 (workflow de aplicação controlada)
+
+Etapa E15 (`.github/workflows/db-apply-migration.yml`) é o único caminho
+autorizado por `CLAUDE.md` REGRA #8 para aplicar uma migration nova no projeto
+canônico fora de MCP-ticket. Cada disparo bem-sucedido (`workflow_dispatch` →
+`preflight` → `apply`, gated por `environment: production` → `migration
+repair --status applied` → `post-check`) abre um PR que adiciona uma linha
+abaixo via `scripts/append-migration-receipt.mjs`, gerado pelo job `receipt`
+do próprio workflow. Nenhuma linha nesta tabela foi escrita manualmente.
+
+| versão | sha256 arquivo | md5 statements | executor | método | data UTC | pós-check | status |
+|---|---|---|---|---|---|---|---|
+
 ## Gate de CI (E48)
 
 `scripts/check-migrations-sync-log-gate.mjs` (padrão de graceful-degradation de

@@ -139,7 +139,7 @@ Views SECDEF expostas a `anon` (8): `v_variant_sale_prices_public, v_kit_compone
 
 ### Como um `[REQUER-PO]` é executado na prática (adicionado no pre-mortem de 2026-09-16)
 
-Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `E15` (GitHub Actions, ainda não construído) e (b) acesso MCP direto (`execute_sql`/`apply_migration`), que já funciona nesta sessão. A via (b) é **mais rápida e não deve virar atalho** — é o mesmo canal que causou o drift documentado em E12. Regra operacional:
+Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `E15` (GitHub Actions, construído em 2026-09-16 — `.github/workflows/db-apply-migration.yml`, ainda não disparado ao vivo) e (b) acesso MCP direto (`execute_sql`/`apply_migration`), que já funciona nesta sessão. A via (b) é **mais rápida e não deve virar atalho** — é o mesmo canal que causou o drift documentado em E12. Regra operacional:
 
 1. Toda etapa `[REQUER-PO]` é entregue primeiro como **pacote de revisão**: SQL exato, objeto nomeado, efeito esperado, teste de reversão — nunca aplicado no mesmo turno em que é proposto.
 2. Você aprova por objeto (pode ser em lote — "aprovo os 3 REVOKEs da lista X" — não precisa ser um SQL por vez).
@@ -474,13 +474,43 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 - [x] `README` do snapshot declara "não substitui ledger nem `pg_catalog`" (já dizia; reforçado com a limitação do drift)
 **Esforço:** P · **Dep.:** E03 — **status real: não precisou de E03, rodou direto com CLI já linkado.**
 
-### E15 · Workflow de aplicação controlada de migration única `[GIT]` (execução `[REQUER-PO]`)
+### E15 · Workflow de aplicação controlada de migration única `[GIT]` (execução `[REQUER-PO]`) ✅ Construído em 2026-09-16 (execução ao vivo aguarda PO)
 **Problema:** `db push` é proibido (correto) e **não existe** caminho versionado para aplicar uma migration nova. Resultado: as pessoas usam MCP/dashboard, que é a origem do problema de E12.
 **Ação:** workflow `db-apply-migration.yml` com `workflow_dispatch(version)` e environment `production` (approvers = PO): (1) preflight read-only (objetos-alvo, `EXPLAIN` de DDL se aplicável, lock esperado); (2) aplica **apenas** `supabase/migrations/<version>_*.sql` via `psql -1 -v ON_ERROR_STOP=1`; (3) `migration repair --status applied <version>` com `statements`; (4) pós-check `pg_catalog`; (5) recibo no job summary e em `MIGRATIONS_SYNC_LOG.md`. Rollback lógico obrigatório no cabeçalho do arquivo.
+
+> **Construído em 2026-09-16 (não disparado).** `.github/workflows/db-apply-migration.yml`
+> tem 4 jobs em sequência: `preflight` (`scripts/preflight-migration-apply.mjs
+> --require-live`: exige arquivo único `supabase/migrations/<version>_*.sql`,
+> cabeçalho `-- Rollback:` nas primeiras 40 linhas, e `version` ainda **ausente**
+> de `supabase_migrations.schema_migrations` — reaplicação é bloqueada; DDL
+> não-transacional vira aviso, não bloqueio, porque `psql -1` já falha sozinho
+> nesses casos) → `apply` (gated por `environment: production`; fail-closed se
+> `PGHOST`/`PGUSER`/`PGPASSWORD`/`PGDATABASE` ausentes — diferente do
+> safe-by-default de `migration-dry-run.yml`, porque este job aplica DDL real;
+> `psql -1 -v ON_ERROR_STOP=1` + `supabase migration repair --status applied
+> --linked`) → `post-check` (mesmo script, `--expect-applied`: confirma a
+> version no ledger) → `receipt` (`scripts/append-migration-receipt.mjs` grava
+> a linha na tabela nova "## Recibos — E15" de `MIGRATIONS_SYNC_LOG.md`, e o
+> workflow abre PR — `git commit`+`git push`+`gh pr create`, mesmo padrão do
+> job `weekly-live-drift` de `schema-snapshot-export.yml` — nunca commita
+> direto em `main`). 32 testes em `tests/scripts/preflight-migration-apply.test.mjs`
+> e `tests/scripts/append-migration-receipt.test.mjs`: unidade para as funções
+> puras (`findMigrationFiles`, `hasRollbackHeader`, `detectNonTransactionalDdl`,
+> `evaluatePreflight`, `appendReceiptRow`) e integração CLI sem credenciais
+> (static-pass/inconclusive, mesmo contrato de graceful-degradation de E22).
+>
+> **O que falta e por quê fica aberto:** o item 2 do checklist (disparo real
+> do workflow, mesmo com uma migration inofensiva de `COMMENT ON`) executa DDL
+> de verdade contra o projeto canônico — não é algo que esta sessão se
+> autoriza a fazer sem o PO estar ciente, mesmo sendo o próprio propósito do
+> workflow ser tornar essa execução segura. `environment: production` também
+> precisa de configuração manual (Settings → Environments → required
+> reviewers) que nenhuma ferramenta MCP/CLI disponível nesta sessão expõe.
+
 **Checklist de conclusão:**
-- [ ] Workflow existe, exige approval, recusa versão fora do contrato ou já no ledger
-- [ ] Teste em branch Supabase (ou dry-run) com migration de `COMMENT ON` prova o ciclo completo
-- [ ] `CLAUDE.md` REGRA #8 aponta para este workflow como **único** caminho autorizado
+- [x] Workflow existe, exige approval (`environment: production`), recusa versão fora do contrato ou já no ledger
+- [ ] Teste em branch Supabase (ou dry-run) com migration de `COMMENT ON` prova o ciclo completo — requer disparo real, aguarda PO
+- [x] `CLAUDE.md` REGRA #8 aponta para este workflow como **único** caminho autorizado (novo corolário)
 **Esforço:** G · **Dep.:** E02, E10, E11
 
 ---
@@ -1065,7 +1095,7 @@ Em ambos: adicionar partição `DEFAULT` como rede de segurança com alerta se r
 ## 5. Checklist final 10/10
 
 - [ ] Ledger reflete 100 % das migrations aplicadas (0 `aplicada-sem-ledger`) ou cada exceção tem justificativa individual.
-- [ ] Existe **um** caminho autorizado para aplicar migration (E15) e ele exige aprovação do PO.
+- [x] Existe **um** caminho autorizado para aplicar migration (E15) e ele exige aprovação do PO (`.github/workflows/db-apply-migration.yml`, construído em 2026-09-16 — `environment: production` gateia o job `apply`; disparo real ainda não exercido).
 - [ ] DDL fora do fluxo é detectada em ≤ 7 dias.
 - [ ] Toda SECDEF executável por `anon`/`authenticated` tem `reason` específico em allowlist.
 - [x] As 8 views `*_public` têm contrato de colunas com gate (E16, 2026-09-16 — 265/265 colunas batendo, `check-public-views-drift.mjs`).
