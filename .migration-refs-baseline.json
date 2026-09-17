@@ -130,6 +130,22 @@
       "ref": "supabase/migrations/20260826010203_second_change.sql"
     },
     {
+      "file": "tests/scripts/check-migrations-sync-log-gate.test.mjs",
+      "ref": "supabase/migrations/20260916155725_catalog_stats_price_range_top_colors_materials.sql"
+    },
+    {
+      "file": "tests/scripts/check-migrations-sync-log-gate.test.mjs",
+      "ref": "supabase/migrations/20260916155725_catalog_stats.sql"
+    },
+    {
+      "file": "tests/scripts/check-migrations-sync-log-gate.test.mjs",
+      "ref": "supabase/migrations/20260917120000_add_foo.sql"
+    },
+    {
+      "file": "tests/scripts/check-migrations-sync-log-gate.test.mjs",
+      "ref": "supabase/migrations/README.md"
+    },
+    {
       "file": "tests/scripts/check-no-db-push.test.mjs",
       "ref": "supabase/migrations/README.md"
     },
