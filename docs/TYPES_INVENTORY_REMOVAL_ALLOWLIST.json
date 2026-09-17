@@ -1,0 +1,21 @@
+{
+  "_comment": [
+    "PLANO_DBA E41 — allowlist de remoções justificadas de src/integrations/supabase/types.ts.",
+    "Consumida por scripts/check-types-inventory-drift.mjs (diff local, checagem (a)).",
+    "",
+    "Uma entrada aqui é a 'marcação' exigida pela REGRA #3 do CLAUDE.md para",
+    "classificar a remoção de uma Table/View/Function/Enum entre o commit-base",
+    "e o commit atual como intencional. Sem entrada correspondente, o gate",
+    "falha (fail-closed) — é assim que o incidente magazine_* (2026-07-16,",
+    "commit 7716ae9, ver REGRA #4) teria sido pego antes do merge.",
+    "",
+    "Adicione a entrada NA MESMA revisão/PR que remove o objeto de types.ts.",
+    "Cada entrada precisa de: schema, category (Tables|Views|Functions|Enums|",
+    "CompositeTypes), name, reason, approvedBy (pessoa, não bot — REGRA #8),",
+    "date (YYYY-MM-DD). Depois que o commit-base avança e a remoção já não",
+    "aparece mais no diff, a entrada pode ser removida (não é obrigatório",
+    "mantê-la para sempre — ela só precisa existir enquanto a remoção estiver",
+    "dentro da janela comparada pelo --base usado)."
+  ],
+  "entries": []
+}

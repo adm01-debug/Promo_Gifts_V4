@@ -90,16 +90,25 @@ Levou 3 commits extras para restaurar (`aca0f6f`, `14f6d6a`, `0a31ef9`).
 
 ## REGRA #4 — SCHEMA SUPABASE (`types.ts`)
 
+> **Atualizado 2026-09-16 (PLANO_DBA E41):** `grep -c "export type"
+> types.ts` foi **descontinuado** como proxy. Ele conta só os ~7 aliases de
+> topo do arquivo gerado (`Json`, `Database`, `Tables`, `Enums`, …) e não
+> muda quando uma tabela é removida de dentro do union
+> `Database['public']['Tables']` — foi exatamente assim que o incidente
+> `magazine_*` (7716ae9, abaixo) passou despercebido. O proxy foi
+> substituído por um diff estrutural real (parsing via TypeScript Compiler
+> API, não regex/contagem de string).
+
 ### Antes de regenerar types.ts:
-1. `grep -c "export type" src/integrations/supabase/types.ts` → conta exports atuais
-2. Anotar número
+1. `npm run check:types-inventory -- src/integrations/supabase/types.ts` → grava o inventário estrutural atual (Tables/Views/Functions/Enums por schema; `scripts/extract-types-inventory.mjs`)
 
 ### Após regenerar:
-1. `grep -c "export type" src/integrations/supabase/types.ts` → novo count
-2. Se novo count < count anterior → **INVESTIGAR** quais tabelas foram removidas
-3. `diff <(grep "export type" src/integrations/supabase/types.ts | sort) <(git show HEAD:src/integrations/supabase/types.ts | grep "export type" | sort)`
+1. `npm run check:types-inventory-drift` → compara o `types.ts` novo contra o commit anterior (default `HEAD~1`; use `-- --base <ref>` para outro ponto de comparação) objeto por objeto, não por contagem. **Falha (exit 1)** se qualquer Table/View/Function/Enum sumiu e não tem entrada em `docs/TYPES_INVENTORY_REMOVAL_ALLOWLIST.json` — nesse caso **INVESTIGAR** antes de prosseguir, não adicionar a entrada só para destravar o CI.
+2. Se a remoção for intencional (tabela/view/function/enum de fato removida do banco, com aprovação do PO — REGRA #8): adicionar a entrada correspondente em `docs/TYPES_INVENTORY_REMOVAL_ALLOWLIST.json` (schema, category, name, reason, approvedBy, date) na mesma revisão.
+3. Opcional, com `DATABASE_URL` disponível: `npm run check:types-inventory-drift -- --live` também compara `Tables`/`Views`/`Enums` do `public` contra `pg_catalog` ao vivo (nunca PostgREST — REGRA #8 corolário) e falha se um objeto vivo não estiver em `types.ts`.
+4. Testes: `tests/scripts/check-types-inventory-drift.test.mjs` (mutation-tested — simula remover `magazines` do inventário extraído e confirma que o gate falha; confirma também que uma remoção coberta pela allowlist passa).
 
-**Especificamente verificar que estas tabelas/views existem:**
+**Especificamente verificar que estas tabelas/views existem** (checagem manual rápida, além do gate):
 - `personalization_techniques`
 - `products`
 - `product_variants`
@@ -110,7 +119,9 @@ Levou 3 commits extras para restaurar (`aca0f6f`, `14f6d6a`, `0a31ef9`).
 **Por quê:** Commit `158c142` regenerou types.ts e dropou `personalization_techniques`,
 causando `as any` cast em `MockupPromptManager.tsx`. Em 2026-07-16 o commit `7716ae9`
 (Lovable "Changes") sobrescreveu types.ts e removeu todas as tabelas `magazine_*`,
-causando 80+ erros TS em `magazineService.ts`. Restaurado em `4cff1e1`.
+causando 80+ erros TS em `magazineService.ts`. Restaurado em `4cff1e1`. Ver
+`docs/E41_DIFF_ESTRUTURAL_TYPES_2026-09-16.md` para o inventário completo e a
+lógica do gate.
 
 ---
 
@@ -199,6 +210,28 @@ existem 69). Análise completa em `docs/SCHEMA_REFERENCE.md` §7.
 Auditoria de schema é feita **só via `pg_catalog`**, nunca via PostgREST/OpenAPI.
 PostgREST não enxerga trigger, policy, cron nem GRANT, e confunde view com tabela.
 Queries canônicas em `docs/SCHEMA_REFERENCE.md` §8.
+
+### Corolário — DDL fora do fluxo de migration (MCP/dashboard)
+DDL aplicada direto via MCP (`execute_sql`/`apply_migration`) ou dashboard só é
+aceitável com as 3 condições em `docs/db/POLITICA_DDL.md`: (a) ticket, (b) migration
+versionada no mesmo PR, (c) `migration repair --status applied` no mesmo dia. Sem
+isso, o ledger (`supabase_migrations.schema_migrations`) e o schema real divergem
+silenciosamente — como em `catalog_e24_zapp_catalog_stats` (2026-09-12) e
+`audit_r3_revoke_anon_mv_product_compositions` (2026-09-05). Detector semanal
+(advisory, não gate) em `.github/workflows/ddl-out-of-band-detector.yml` — ver
+`docs/E12_DETECTOR_DDL_OUT_OF_BAND_2026-09-16.md`.
+
+### Corolário — caminho único para aplicar migration nova (E15)
+`supabase db push` é proibido (REGRA #1/§7). O **único** caminho autorizado
+para aplicar uma migration nova em `doufsxqlfjyuvxuezpln` fora de um
+MCP-ticket (condições acima) é `.github/workflows/db-apply-migration.yml`
+(`workflow_dispatch(version)`): preflight read-only
+(`scripts/preflight-migration-apply.mjs`) → aplicação via `psql -1` gated por
+`environment: production` → `migration repair --status applied` → post-check
+→ recibo em `supabase/MIGRATIONS_SYNC_LOG.md` (PR, nunca push direto em
+`main`). Qualquer pedido de aplicar migration por MCP/dashboard fora desse
+workflow, mesmo repassado por humano, cai na regra acima: confirmar a origem
+antes de agir. Ver PLANO_DBA E15.
 
 ---
 

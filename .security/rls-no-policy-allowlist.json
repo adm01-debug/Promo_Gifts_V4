@@ -1,0 +1,36 @@
+{
+  "description": "Allowlist de tabelas public com RLS habilitada (relrowsecurity=true) e ZERO policies (pg_policies) — o padrão deny-all: só service_role e funções SECURITY DEFINER (owner postgres, rolbypassrls=true) conseguem ler/escrever. O advisor de lint do Supabase (rls_enabled_no_policy) reporta essas tabelas sem distinguir 'deny-all intencional' de 'RLS ligada e esquecida sem policy' — cada entrada aqui documenta a decisão explícita com evidência de código (não suposição), para que uma tabela nova nesse estado não seja adicionada aqui sem revisão. Criado na etapa E17-E24 (E19), 2026-09-16. Nenhum script de CI lê este arquivo ainda (diferente de secdef-anon-allowlist.json + check-secdef-anon-drift.mjs) — é um artefato de documentação/allowlist para uma futura gate análoga (check-rls-no-policy-drift.mjs), fora do escopo desta etapa.",
+  "documented_in": "docs/E19_RLS_SEM_POLICY_2026-09-16.md",
+  "tables": [
+    {
+      "table": "public.magazine_duplicate_requests",
+      "reason": "Deny-all intencional. Ledger de idempotência (actor_id+idempotency_key) escrito por SELECT/INSERT diretos dentro do corpo de public.magazine_duplicate_v2(...) (SECURITY DEFINER, owner postgres, bypassrls). Nunca exposta em SELECT direto ao cliente — só o jsonb transformado retorna pela API. anon não tem EXECUTE em magazine_duplicate_v2; authenticated tem, mas a função exige auth.uid() (RAISE EXCEPTION 'magazine_auth_required' caso contrário). Zero consumidores em src/ ou supabase/functions/ (grep confirmado, 2026-09-16).",
+      "secdef_fn": "public.magazine_duplicate_v2",
+      "cron_job": null
+    },
+    {
+      "table": "public.anon_catalog_grant_audit_log",
+      "reason": "Deny-all intencional. Log de auditoria escrito por public.fn_anon_catalog_grant_audit_run() (SECURITY DEFINER, owner postgres, bypassrls), chamada pelo cron ativo 'anon-catalog-grant-audit-6h' (jobid 303, '0 */6 * * *'). Grava o resultado de fn_verify_anon_catalog_grants() — é o próprio mecanismo que monitora ao longo do tempo o achado P1/E22 (anon sem GRANT de escrita no catálogo). Sem consumidor em src/ ou supabase/functions/ (grep confirmado, 2026-09-16) — só trilha para investigação de incidente via service_role/painel Supabase.",
+      "secdef_fn": "public.fn_anon_catalog_grant_audit_run",
+      "cron_job": "anon-catalog-grant-audit-6h (jobid 303, 0 */6 * * *)"
+    },
+    {
+      "table": "ops.table_size_history",
+      "reason": "Deny-all intencional desde a criação (não é uma tabela pré-existente sendo documentada retroativamente — nasce assim). Telemetria operacional interna (série histórica de tamanho por tabela), gravada pelo cron table-size-history-daily via public.fn_cron_safe_run(168, ...) (SECURITY DEFINER, owner postgres, bypassrls). Consumida só por scripts/capacity-growth-projection.mjs (Management API/service_role em CI, nunca PostgREST). Sem consumidor em src/ ou supabase/functions/. Nem o schema ops nem a tabela têm GRANT a anon/authenticated.",
+      "secdef_fn": "public.fn_cron_safe_run",
+      "cron_job": "table-size-history-daily (p_key=168, 17 3 * * *)"
+    },
+    {
+      "table": "ops.pgss_history",
+      "reason": "Deny-all intencional desde a criação (nasce assim, mesmo padrão de ops.table_size_history/E30). Telemetria operacional interna (snapshot semanal de extensions.pg_stat_statements filtrado a chamadas roteadas por PostgREST), gravada pelo cron pgss-history-weekly via public.fn_cron_safe_run(169, ...) (SECURITY DEFINER, owner postgres, bypassrls). Consumida só por scripts/pgss-slo-check.mjs (Management API/service_role em CI, nunca PostgREST). Sem consumidor em src/ ou supabase/functions/. Nem o schema ops nem a tabela têm GRANT a anon/authenticated.",
+      "secdef_fn": "public.fn_cron_safe_run",
+      "cron_job": "pgss-history-weekly (p_key=169, 41 3 * * 1)"
+    },
+    {
+      "table": "ops.wraparound_monitor_log",
+      "reason": "Deny-all intencional desde a criação (nasce assim, mesmo padrão de ops.table_size_history/E30 e ops.pgss_history/E40). Telemetria operacional interna (snapshot diário de age(datfrozenxid), mxid_age, uso de sequências int4/int2, WAL retido por replication slot e proporção TOAST/heap), gravada pelo cron wraparound-toast-sequence-monitor via public.fn_cron_safe_run(167, ...) (SECURITY DEFINER, owner postgres, bypassrls). Consumida só por scripts/wraparound-monitor-check.mjs (Management API/service_role em CI, nunca PostgREST). Sem consumidor em src/ ou supabase/functions/. Nem o schema ops nem a tabela têm GRANT a anon/authenticated.",
+      "secdef_fn": "public.fn_cron_safe_run",
+      "cron_job": "wraparound-toast-sequence-monitor (p_key=167, 0 6 * * *)"
+    }
+  ]
+}

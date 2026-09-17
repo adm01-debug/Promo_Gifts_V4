@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Etapa E11 (docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md, linhas 379-386). Isenta da exigência de `statements` não vazio as linhas HISTÓRICAS de supabase_migrations.schema_migrations — o passado não pode ser corrigido retroativamente (ninguém tem o SQL original de volta para reconstruir a coluna). Usado por scripts/check-ledger-statements-gate.mjs. Detalhes e evidência ao vivo em docs/E11_LEDGER_STATEMENTS_2026-09-16.md.",
+  "measuredAt": "2026-09-16",
+  "measuredBy": "Claude (sessão E11, via mcp__supabase__execute_sql, somente leitura)",
+  "cutoffVersion": "20260623111612",
+  "cutoffRule": "Qualquer linha com `version` em formato canônico de 14 dígitos (^[0-9]{14}$) e valor <= cutoffVersion é isenta (histórico, verificada por objeto na E07/E09, não por hash). Qualquer `version` canônico MAIOR que cutoffVersion entra no escopo do gate e PRECISA ter `statements` não vazio. cutoffVersion é o maior `version` observado ao vivo em 2026-09-16 com `statements` NULL ou '{}' — por definição, nenhuma linha canônica posterior está faltando `statements` (confirmado: 598/598 linhas com version > cutoffVersion já têm statements preenchido).",
+  "nonCanonicalExemptVersions": ["001", "002", "003", "004", "005"],
+  "nonCanonicalNote": "Essas 5 linhas não seguem o formato de 14 dígitos, têm `name` NULL e `statements` NULL — parecem markers de bootstrap muito antigos (anteriores à convenção de nomes atual), não comparáveis pelo corte numérico de versão porque não ordenam como timestamp. Não fazem parte dos '4 IDs inválidos' já investigados pela E09 (docs/E09_LEDGER_IDS_INVALIDOS_2026-09-16.md) — são um achado adicional desta etapa (E11), fora do escopo de remediação aqui (achado, não ação; ver docs/E11_LEDGER_STATEMENTS_2026-09-16.md). As outras 5 versões não-canônicas conhecidas pela E09 (20260623_bugalert1, 20260623_create_process_notifications_queue_rpcs, 20260623_fix_google_provider_secret_name, 2026062311292414001, 20260712) NÃO precisam de isenção: todas já têm `statements` preenchido, confirmado ao vivo.",
+  "liveCountAtMeasurement": {
+    "totalRows": 2504,
+    "missingStatements": 483,
+    "missingStatementsNullArray": 428,
+    "missingStatementsEmptyArray": 55,
+    "nonCanonicalVersionsTotal": 10,
+    "nonCanonicalVersionsMissingStatements": 5,
+    "rowsWithVersionAfterCutoff": 598,
+    "rowsWithVersionAfterCutoffMissingStatements": 0
+  }
+}

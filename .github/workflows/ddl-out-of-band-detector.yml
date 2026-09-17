@@ -1,0 +1,159 @@
+name: ddl-out-of-band-detector
+
+# =============================================================================
+# Etapa E12 do PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md.
+# Ver docs/db/POLITICA_DDL.md para a política completa (as 3 condições que
+# tornam DDL fora de supabase/migrations/ aceitável) e
+# docs/E12_DETECTOR_DDL_OUT_OF_BAND_2026-09-16.md para a investigação.
+#
+# O que faz: roda scripts/check-ddl-out-of-band.mjs, que le a ultima linha
+# de public.schema_signature_drift_log (populada 4x/dia por
+# fn_check_schema_signature_drift() via pg_cron job 245) e cruza cada
+# tabela/coluna added/removed contra supabase_migrations.schema_migrations
+# (correspondencia textual, com fallback para o nome da tabela-pai quando o
+# objeto e uma particao). O que sobra sem correspondencia vira issue
+# rotulada `ddl-out-of-band` (ou comentario, se ja existir uma aberta).
+#
+# O que NAO faz: nao aplica DDL, nao roda `migration repair`, nao escreve em
+# schema_signature_baseline. 100% leitura via Management API (REGRA #8
+# corolario: nunca via PostgREST/OpenAPI). E' advisory/best-effort, nao um
+# gate — heuristica por nome textual, nao prova formal de ausencia (ver
+# docs/db/POLITICA_DDL.md, secao "O que o detector nao faz").
+#
+# Secrets (Settings -> Secrets and variables -> Actions):
+#   - SUPABASE_ACCESS_TOKEN : PAT da Management API (mesmo secret de
+#                             db-schema-drift-check.yml / check-secdef-anon-drift)
+# Variavel sobrescrivivel (nao-secret):
+#   SUPABASE_PROJECT_REF (default: doufsxqlfjyuvxuezpln)
+#
+# Sem SUPABASE_ACCESS_TOKEN/SUPABASE_PROJECT_REF configurados: o script
+# degrada para static-pass (exit 0, sem abrir issue) — mesmo contrato de
+# scripts/check-result-contract.mjs usado pelos outros checks read-only
+# deste repo (ex. scripts/check-secdef-anon-drift.mjs).
+# =============================================================================
+
+on:
+  schedule:
+    - cron: '0 8 * * 1' # semanal, segunda 08:00 UTC (05:00 BRT)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: ddl-out-of-band-detector
+  cancel-in-progress: false
+
+jobs:
+  detect:
+    name: Cruza schema_signature_drift_log x ledger de migrations
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF || 'doufsxqlfjyuvxuezpln' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+
+      - name: Run detector
+        id: check
+        continue-on-error: true
+        run: node scripts/check-ddl-out-of-band.mjs --out=/tmp/ddl-out-of-band.json
+
+      - name: Upload report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ddl-out-of-band-report-${{ github.run_id }}
+          path: /tmp/ddl-out-of-band.json
+          retention-days: 90
+          if-no-files-found: ignore
+
+      - name: Open or update issue (objetos out-of-band)
+        # exit 1 (FAILED) e exit 2 (INCONCLUSIVE) chegam aqui como 'failure' via
+        # continue-on-error. So' abrimos issue quando o relatorio existe e lista
+        # >=1 objeto — caso contrario (inconclusivo: sem credenciais obrigatorias,
+        # Management API fora do ar, drift_log vazio) so' logamos warning, sem issue.
+        if: steps.check.outcome == 'failure'
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
+        with:
+          script: |
+            const fs = require('fs');
+            let report = null;
+            try {
+              report = JSON.parse(fs.readFileSync('/tmp/ddl-out-of-band.json', 'utf-8'));
+            } catch (e) {
+              core.warning(`Detector inconclusivo ou sem relatorio (${e.message}) — nao e' um achado de out-of-band, apenas logando.`);
+              return;
+            }
+            const outOfBand = report?.outOfBand || [];
+            if (outOfBand.length === 0) {
+              core.warning('Relatorio existe mas outOfBand esta vazio — nada a fazer.');
+              return;
+            }
+            const today = new Date().toISOString().slice(0, 10);
+            const title = `[ddl-out-of-band] ${outOfBand.length} objeto(s) sem migration correspondente — ${today}`;
+
+            const lines = outOfBand.map((o) => {
+              const parent = o.partitionParent ? ` (particao de \`${o.partitionParent}\`)` : '';
+              const cols = o.columns ? ` — colunas: ${Array.isArray(o.columns) ? o.columns.join(', ') : JSON.stringify(o.columns)}` : '';
+              return `- \`${o.object}\`${parent} — ${o.kind}${cols}`;
+            });
+
+            const body = [
+              '## Objetos sem correspondencia em `supabase_migrations.schema_migrations`',
+              '',
+              `Drift log id \`${report?.driftLogId ?? '?'}\` (ran_at ${report?.ranAt ?? '?'}), baseline \`${report?.baselineLabel ?? '?'}\`.`,
+              '',
+              ...lines,
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              '',
+              '### Como regularizar (docs/db/POLITICA_DDL.md)',
+              'Para cada objeto acima, confirmar as 3 condicoes ou regularizar retroativamente:',
+              '1. Ticket explicando por que a DDL nao esperou o fluxo normal.',
+              '2. Migration versionada em `supabase/migrations/` reproduzindo o efeito (fonte da verdade daqui em diante).',
+              '3. `supabase migration repair --status applied <version> --linked` registrando a versao no ledger.',
+              '',
+              '_Heuristica por nome textual — pode ser falso-positivo se o nome do objeto e generico o bastante para aparecer por acidente em outra migration nao relacionada. Confirmar manualmente antes de agir._',
+            ].join('\n');
+
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'ddl-out-of-band',
+            });
+            const dup = existing.data.find((i) => i.title.startsWith('[ddl-out-of-band]'));
+            if (dup) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: dup.number,
+                body: `Atualizacao do dia ${today}:\n\n${body}`,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels: ['ddl-out-of-band', 'priority/medium'],
+              });
+            }
+
+      - name: Fail job if detector failed for a reason other than findings
+        if: steps.check.outcome == 'failure'
+        run: |
+          echo "::warning::Detector encontrou objeto(s) out-of-band ou ficou inconclusivo — ver issue/artefato desta run. Job nao quebra build (advisory, nao gate)."

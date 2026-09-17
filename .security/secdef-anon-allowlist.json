@@ -4,31 +4,31 @@
   "functions": [
     {
       "fn": "public.check_login_rate_limit(_email text, _ip text)",
-      "reason": "Fluxo pré-autenticação: aplica rate limit antes da sessão existir. Grant canônico confirmado em pg_catalog em 2026-08-29."
+      "reason": "SECDEF necessário: escreve/lê a tabela interna de tentativas de login, que anon não pode tocar diretamente. anon precisa de EXECUTE porque é o único portão de rate-limit antes de existir sessão (não há como aplicar rate limit pré-login de outra forma). search_path fixo em proconfig; parâmetros tipados (_email text, _ip text), sem SQL dinâmico. Revisado em E17, 2026-09-16."
     },
     {
       "fn": "public.fn_global_search(p_term text, p_limit integer, p_types text[])",
-      "reason": "Busca do catálogo público; retorna somente projeções expostas ao visitante. Grant canônico confirmado em pg_catalog em 2026-08-29."
+      "reason": "SECDEF necessário: agrega múltiplas tabelas com regras de visibilidade que anon não deveria decidir sozinho via RLS direta. anon precisa de EXECUTE: é a busca global do catálogo público, sem autenticação. search_path fixo; parâmetros tipados. RISCO CONHECIDO, não bloqueante: p_limit não tem clamp superior no corpo da função (diferente de fn_super_filtro) — follow-up recomendado em E17 (2026-09-16) para adicionar LEAST(p_limit, 100) numa migration futura; não crítico hoje porque expõe só catálogo público, não dado sensível."
     },
     {
       "fn": "public.fn_product_active_for_rls(p_id uuid)",
-      "reason": "Helper de RLS do catálogo público usado para filtrar produtos ativos. Grant canônico confirmado em pg_catalog em 2026-08-29."
+      "reason": "SECDEF necessário: é usada dentro de policies RLS de outras tabelas de produto, precisa rodar com privilégio do owner para evitar recursão de RLS (uma policy que chamasse uma função SECURITY INVOKER sobre a mesma tabela reavaliaria a própria RLS). anon precisa de EXECUTE porque é chamada indiretamente por toda leitura pública de produto. Helper booleano sem input livre de usuário (só p_id uuid) — sem superfície de injeção. Revisado em E17, 2026-09-16."
     },
     {
       "fn": "public.fn_super_filtro_facets(p_search_term text, p_category_slug text, p_category_id uuid, p_brands text[], p_only_in_stock boolean, p_min_price numeric, p_max_price numeric, p_target_audiences text[], p_is_kit boolean, p_is_textil boolean, p_is_thermal boolean, p_has_gift_box boolean, p_material_groups text[], p_technique_groups text[], p_color_groups text[], p_date_slugs text[], p_endomarketing boolean)",
-      "reason": "Facetas do superfiltro público do catálogo. Grant canônico confirmado em pg_catalog em 2026-08-29."
+      "reason": "SECDEF necessário: agrega facetas sobre tabelas que anon não lê diretamente. anon precisa de EXECUTE: alimenta os filtros do superfiltro público do catálogo (irmã de fn_super_filtro/fn_super_filtro_price_range). search_path fixo; todos os parâmetros tipados, sem SQL dinâmico a partir de input livre. ACL confirmado sem grant residual a PUBLIC (diferente de fn_super_filtro, corrigido em E17). Revisado em E17, 2026-09-16."
     },
     {
       "fn": "public.fn_super_filtro_price_range(p_brands text[], p_category_slug text, p_target_audiences text[], p_is_textil boolean, p_is_thermal boolean, p_only_in_stock boolean)",
-      "reason": "Faixa de preços do superfiltro público do catálogo. Grant canônico confirmado em pg_catalog em 2026-08-29."
+      "reason": "SECDEF necessário: agrega faixa de preço (min/max) sobre tabelas que anon não lê diretamente. anon precisa de EXECUTE: alimenta o slider de preço do superfiltro público do catálogo. search_path fixo; todos os parâmetros tipados, sem SQL dinâmico. ACL confirmado sem grant residual a PUBLIC. Revisado em E17, 2026-09-16."
     },
     {
       "fn": "public.fn_super_filtro(p_search_term text, p_category_slug text, p_category_id uuid, p_brands text[], p_only_in_stock boolean, p_min_price numeric, p_max_price numeric, p_target_audiences text[], p_is_kit boolean, p_is_textil boolean, p_is_thermal boolean, p_has_gift_box boolean, p_material_groups text[], p_technique_groups text[], p_color_groups text[], p_date_slugs text[], p_endomarketing boolean, p_limit integer, p_offset integer, p_sort text)",
-      "reason": "Consulta paginada do superfiltro público do catálogo. Grant canônico confirmado em pg_catalog em 2026-08-29."
+      "reason": "SECDEF necessário: consulta paginada agregando tabelas que anon não lê diretamente. anon precisa de EXECUTE: é o motor da consulta principal do superfiltro público do catálogo. search_path fixo; todos os parâmetros tipados (text[]/numeric/boolean/integer), p_limit/p_offset presentes (paginação limitada). ACHADO E17 (2026-09-16): ACL tinha grant residual a PUBLIC (entrada '=X/postgres' em pg_proc.proacl) além dos grants nomeados a anon/authenticated — corrigido pela migration 20260916200000 (REVOKE EXECUTE FROM PUBLIC, mantendo anon/authenticated/service_role intactos)."
     },
     {
       "fn": "public.get_catalog_bestseller_page(p_sort text, p_limit integer, p_offset integer)",
-      "reason": "Ranking paginado do catálogo público. Grant canônico confirmado em pg_catalog em 2026-08-29."
+      "reason": "SECDEF necessário: pagina uma agregação de mais-vendidos sobre tabelas não expostas a SELECT direto. anon precisa de EXECUTE: é a página pública de mais vendidos do catálogo, sem autenticação. search_path fixo; paginação com p_limit/p_offset tipados como integer, sem SQL dinâmico. Revisado em E17, 2026-09-16."
     },
     {
       "fn": "public.get_quote_token_public(_token text)",
@@ -40,7 +40,7 @@
     },
     {
       "fn": "public.submit_quote_response(_token text, _response text, _response_notes text)",
-      "reason": "Resposta pública de orçamento protegida por token opaco e validação interna. Grant canônico confirmado em pg_catalog em 2026-08-29."
+      "reason": "SECDEF necessário: grava na tabela de cotações, na qual anon não tem INSERT/UPDATE direto. anon precisa de EXECUTE: é como um destinatário anônimo de cotação responde sem criar conta (via link com token). search_path fixo; parâmetros tipados; valida o token de cotação antes de gravar e falha fechado em token inválido, mesmo padrão de get_quote_token_public. Revisado em E17, 2026-09-16."
     },
     {
       "fn": "public.fn_check_login_allowed(p_email text, p_ip_address text, p_city text, p_user_agent text)",

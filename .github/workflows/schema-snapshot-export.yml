@@ -15,6 +15,20 @@ name: schema-snapshot-export
 #     `db-schema-drift-check.yml`; aqui o objetivo é apenas expor snapshot.
 #
 # Retenção: 14 dias (mesmo padrão do drift-check).
+#
+# Job `weekly-live-drift` (Etapa E46 do PLANO_DBA_CORRECOES_MELHORIAS):
+# roda só no cron semanal (ou workflow_dispatch manual) e faz DUAS checagens
+# advisory, nenhuma delas via `supabase db diff`/replay — ver PLANO_DBA E02
+# (replay de ~2988 migrations trava nesta base; `db-schema-drift-check.yml`
+# já é fail-closed com esse mecanismo e não é tocado aqui):
+#   1. `supabase db dump` (pg_dump puro) → SCHEMA_LIVE.sql, comparado
+#      textualmente contra a versão já commitada (git diff) — se mudou, abre
+#      PR pra revisão humana (mesmo padrão de regenerate-supabase-types.yml).
+#   2. scripts/check-ledger-manifest-drift.mjs — versões novas no ledger vivo
+#      vs. supabase/migrations/**, além do que já está no baseline
+#      reconciliado da E06 (docs/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json)
+#      — se achar, abre/atualiza issue (mesmo padrão de ddl-out-of-band-detector.yml).
+# Detalhe da decisão de arquitetura: docs/E46_DRIFT_SEMANAL_LEDGER_CI_2026-09-16.md
 # =============================================================================
 
 on:
@@ -22,13 +36,20 @@ on:
     branches: [main]
   push:
     branches: [main]
+  schedule:
+    - cron: '0 6 * * 1' # semanal, segunda 06:00 UTC (03:00 BRT)
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: schema-snapshot-${{ github.ref }}
+  # Inclui github.event_name no group: sem isso, um push pra main durante a
+  # janela do cron semanal (mesmo group "schema-snapshot-refs/heads/main")
+  # cancelaria o job weekly-live-drift no meio (cancel-in-progress: true),
+  # podendo deixar branch/PR pela metade. Eventos de schedule/dispatch e
+  # push/pull_request agora ficam em groups separados.
+  group: schema-snapshot-${{ github.ref }}-${{ github.event_name }}
   cancel-in-progress: true
 
 jobs:
@@ -97,3 +118,221 @@ jobs:
           else
             echo "::warning::ALL_IN_ONE.sql commitado difere do gerado. Rode 'npm run schema:snapshot' e commite se quiser manter o snapshot versionado atualizado."
           fi
+
+  weekly-live-drift:
+    name: Drift semanal (SCHEMA_LIVE.sql + ledger x manifesto E06)
+    # Só no cron semanal ou disparo manual — nunca em PR/push (essas duas
+    # checagens são as advisory do PLANO_DBA E46, não o export de todo PR).
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF || 'doufsxqlfjyuvxuezpln' }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+
+      - name: Install Supabase CLI
+        uses: supabase/setup-cli@v2
+        with:
+          version: 2.101.0
+
+      # ---------------------------------------------------------------
+      # Parte 1 — SCHEMA_LIVE.sql desta semana x git history.
+      # Usa só `supabase db dump` (pg_dump puro, sem replay). NUNCA
+      # `supabase db diff` aqui — ver cabeçalho do workflow / PLANO_DBA E02.
+      # O "diff" desta checagem é textual: sobrescreve o SCHEMA_LIVE.sql já
+      # versionado no repo com a captura de hoje e usa `git diff` pra ver o
+      # que mudou — exatamente o workaround que supabase/migrations-snapshot/README.md
+      # já recomenda para quando SCHEMA_DRIFT.sql não é calculável.
+      # ---------------------------------------------------------------
+      - name: Link projeto Supabase
+        id: link
+        run: |
+          set -euo pipefail
+          if [ -z "${SUPABASE_ACCESS_TOKEN:-}" ] || [ -z "${SUPABASE_DB_PASSWORD:-}" ]; then
+            echo "::warning::SUPABASE_ACCESS_TOKEN/SUPABASE_DB_PASSWORD ausentes — pulando dump live desta semana (Parte 1)."
+            echo "linked=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          supabase link --project-ref "$SUPABASE_PROJECT_REF" -p "$SUPABASE_DB_PASSWORD"
+          echo "linked=true" >> "$GITHUB_OUTPUT"
+
+      - name: Dump SCHEMA_LIVE.sql (supabase db dump — sem replay)
+        if: steps.link.outputs.linked == 'true'
+        run: |
+          set -euo pipefail
+          OUT=supabase/migrations-snapshot/SCHEMA_LIVE.sql
+          {
+            echo '-- =============================================================='
+            echo '-- SCHEMA_LIVE.sql — dump do schema `public` do projeto canônico'
+            echo "-- Projeto: $SUPABASE_PROJECT_REF"
+            echo "-- Gerado em: $(date -u +%FT%TZ)"
+            echo '-- Fonte: supabase db dump --linked --schema public'
+            echo '-- =============================================================='
+            echo ''
+            supabase db dump --linked --schema public
+          } > "$OUT"
+          echo "SCHEMA_LIVE.sql: $(wc -l < "$OUT") linhas"
+
+      - name: Compara SCHEMA_LIVE.sql contra a versão commitada (git diff textual)
+        id: livediff
+        if: steps.link.outputs.linked == 'true'
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- supabase/migrations-snapshot/SCHEMA_LIVE.sql; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "SCHEMA_LIVE.sql sem mudança desde a última captura commitada."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "SCHEMA_LIVE.sql mudou desde a última captura commitada:"
+            git diff --stat -- supabase/migrations-snapshot/SCHEMA_LIVE.sql
+          fi
+
+      - name: Abre PR com SCHEMA_LIVE.sql atualizado
+        if: steps.link.outputs.linked == 'true' && steps.livediff.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+          BRANCH="chore/schema-live-weekly-snapshot-$(date -u +%Y%m%d)"
+          EXISTING=$(gh pr list --head "$BRANCH" --state open --json number --jq 'length')
+          if [ "$EXISTING" != "0" ]; then
+            echo "PR para $BRANCH já existe — não duplica."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add supabase/migrations-snapshot/SCHEMA_LIVE.sql
+          git commit -m "chore(schema-snapshot): atualiza SCHEMA_LIVE.sql (captura semanal)" \
+                     -m "Auto-aplicado via workflow schema-snapshot-export.yml (job weekly-live-drift, PLANO_DBA E46)."
+          git push -u origin "$BRANCH"
+          mkdir -p /tmp/pr
+          cat > /tmp/pr/schema-live-body.md << 'BODYEOF'
+          Captura semanal de `supabase/migrations-snapshot/SCHEMA_LIVE.sql` (job `weekly-live-drift`, Etapa E46 do PLANO_DBA).
+
+          Gerado via `supabase db dump --linked --schema public` (dump puro — NÃO usa `db diff`/replay, que trava nesta base; ver PLANO_DBA E02 e `docs/E46_DRIFT_SEMANAL_LEDGER_CI_2026-09-16.md`).
+
+          O diff deste PR **é** o drift textual entre a captura anterior commitada e o schema vivo desta semana — revisar linha a linha antes de mergear. Nenhuma DDL foi aplicada por este workflow.
+
+          Auto-aplicado via Claude MCP / GitHub Actions.
+          BODYEOF
+          gh pr create \
+            --base main \
+            --head "$BRANCH" \
+            --title "chore: atualiza SCHEMA_LIVE.sql (captura semanal $(date -u +%Y-%m-%d))" \
+            --body-file /tmp/pr/schema-live-body.md
+
+      # ---------------------------------------------------------------
+      # Parte 2 — ledger vivo (supabase_migrations.schema_migrations) x
+      # baseline reconciliado da E06. Só sinaliza versões NOVAS além do
+      # que já foi investigado — ver cabeçalho de
+      # scripts/check-ledger-manifest-drift.mjs.
+      # ---------------------------------------------------------------
+      - name: Checa drift ledger x manifesto E06
+        id: ledgercheck
+        continue-on-error: true
+        run: node scripts/check-ledger-manifest-drift.mjs --out=/tmp/ledger-manifest-drift.json
+
+      - name: Upload relatório de drift do ledger
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ledger-manifest-drift-${{ github.run_id }}
+          path: /tmp/ledger-manifest-drift.json
+          retention-days: 90
+          if-no-files-found: ignore
+
+      - name: Abre ou atualiza issue (drift novo no ledger)
+        if: steps.ledgercheck.outcome == 'failure'
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
+        with:
+          script: |
+            const fs = require('fs');
+            let report = null;
+            try {
+              report = JSON.parse(fs.readFileSync('/tmp/ledger-manifest-drift.json', 'utf-8'));
+            } catch (e) {
+              core.warning(`Checagem inconclusiva ou sem relatorio (${e.message}) — nao e' um achado de drift, apenas logando.`);
+              return;
+            }
+            const aplicada = report?.newAplicadaSemLedgerCandidates || [];
+            const registrada = report?.newRegistradaSemArquivoCandidates || [];
+            if (aplicada.length === 0 && registrada.length === 0) {
+              core.warning('Relatorio existe mas nao lista candidatos novos — nada a fazer.');
+              return;
+            }
+            const today = new Date().toISOString().slice(0, 10);
+            const title = `[ledger-manifest-drift] ${aplicada.length + registrada.length} versao(oes) nova(s) fora do baseline E06 — ${today}`;
+
+            const lines = [];
+            if (aplicada.length) {
+              lines.push('### Candidatas a `aplicada-sem-ledger` (arquivo local sem linha no ledger vivo)');
+              lines.push(...aplicada.map((v) => `- \`${v}\``));
+            }
+            if (registrada.length) {
+              lines.push('### Candidatas a `registrada-sem-arquivo` (versao no ledger vivo sem arquivo local)');
+              lines.push(...registrada.map((v) => `- \`${v}\``));
+            }
+
+            const body = [
+              '## Drift novo entre o ledger vivo e o baseline reconciliado (E06)',
+              '',
+              `Baseline: \`${report?.baselinePath ?? '?'}\` (capturado em ${report?.baselineCapturedAt ?? '?'}).`,
+              `Ledger vivo: ${report?.liveLedgerVersionCount ?? '?'} versoes. Arquivos locais: ${report?.localFileVersionCount ?? '?'} versoes.`,
+              '',
+              ...lines,
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              '',
+              '### O que isso significa',
+              'Isto e apenas um **candidato** — nao e a classificacao final `aplicada-sem-ledger`/`indeterminada`/`pendente` da metodologia E07 (que verifica por objeto no `pg_catalog`, cara demais para rodar toda semana). Antes de agir, revisar cada versao manualmente seguindo docs/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json e docs/db/POLITICA_DDL.md.',
+              '',
+              '_Gerado por scripts/check-ledger-manifest-drift.mjs (Etapa E46). Nao aplica DDL, nao roda migration repair._',
+            ].join('\n');
+
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'ledger-manifest-drift',
+            });
+            const dup = existing.data.find((i) => i.title.startsWith('[ledger-manifest-drift]'));
+            if (dup) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: dup.number,
+                body: `Atualizacao do dia ${today}:\n\n${body}`,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels: ['ledger-manifest-drift', 'priority/medium'],
+              });
+            }
+
+      - name: Aviso se a checagem do ledger achou drift ou ficou inconclusiva
+        if: steps.ledgercheck.outcome == 'failure'
+        run: |
+          echo "::warning::Checagem do ledger encontrou candidato(s) a drift novo ou ficou inconclusiva — ver issue/artefato desta run. Job nao quebra build (advisory, nao gate)."

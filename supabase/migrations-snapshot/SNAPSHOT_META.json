@@ -1,7 +1,24 @@
 {
-  "generated_at": "2026-07-01T10:51:50.818Z",
+  "generated_at": "2026-09-16T12:14:24.465Z",
   "project_ref": "doufsxqlfjyuvxuezpln",
-  "migrations_count": 1564,
-  "live_schema": null,
-  "drift": null
+  "migrations_count": 2988,
+  "live_schema": {
+    "bytes": 4870285,
+    "tables": 397,
+    "views": 199,
+    "functions": 1320,
+    "note": "Gerado manualmente via `supabase db dump --linked --schema public` (CLI já linkado); o script export-schema-snapshot.mjs exige as env vars SUPABASE_ACCESS_TOKEN/SUPABASE_DB_PASSWORD para religar, que não estavam setadas nesta sessão local. Em CI, com os secrets do GitHub, o script gera isto sozinho."
+  },
+  "drift": {
+    "computed": false,
+    "reason": "supabase db diff --linked trava no replay completo por schema drift out-of-band pré-existente (ver SCHEMA_DRIFT.sql). Não é falha de credencial nem regressão desta sessão.",
+    "known_blockers_fixed": [
+      "20260601140841_09e0073b-18f6-4003-b416-da44bb9d14f8.sql (uuid ~ unknown, sintaxe impossível)",
+      "20260601180000_fix_collections_rls_add_select_policy_for_authenticated.sql (CREATE POLICY IF NOT EXISTS, sintaxe inválida)",
+      "5 schemas de aplicação sem migration de criação (analytics, supplier_stricker, cf_recon, prod_audit, classification_audit)"
+    ],
+    "known_blockers_open": [
+      "public.categories.bitrix_id sem migration em nenhum ponto da história — sinal de dívida de DDL out-of-band além dos 5 schemas"
+    ]
+  }
 }

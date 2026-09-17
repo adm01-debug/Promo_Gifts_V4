@@ -1,0 +1,170 @@
+name: DB — Aplicação controlada de migration única (E15)
+
+# PLANO_DBA E15 — único caminho autorizado (CLAUDE.md REGRA #8) para aplicar
+# uma migration NOVA no projeto canônico `doufsxqlfjyuvxuezpln` fora de um
+# MCP-ticket (docs/db/POLITICA_DDL.md). `supabase db push` continua proibido.
+#
+# Fluxo: workflow_dispatch(version) → preflight (read-only) → apply (gated
+# por `environment: production` — configurar required reviewers nas
+# Settings → Environments do repositório; este workflow NÃO pode configurar
+# isso sozinho) → `migration repair --status applied` → post-check
+# (read-only) → receipt (abre PR com a linha nova em MIGRATIONS_SYNC_LOG.md,
+# nunca commita direto em main).
+#
+# Cada job read-only usa scripts/preflight-migration-apply.mjs (Management
+# API, nunca PostgREST — REGRA #8 corolário). O job `apply` é o único que
+# toca o banco de verdade, via psql com as credenciais PG* já usadas por
+# .github/workflows/migration-dry-run.yml (mesma convenção de secrets,
+# mesmo padrão safe-by-default se ausentes).
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Versão da migration (prefixo numérico de supabase/migrations/<version>_*.sql)'
+        required: true
+        type: string
+
+concurrency:
+  group: db-apply-migration
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    name: 1. Preflight (read-only)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.22.1'
+
+      - name: Checa arquivo único, rollback documentado, ainda não no ledger
+        run: node scripts/preflight-migration-apply.mjs --version="${{ inputs.version }}" --require-live
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: ${{ secrets.VITE_SUPABASE_PROJECT_ID }}
+
+  apply:
+    name: 2. Apply (requer aprovação do environment production)
+    needs: preflight
+    runs-on: ubuntu-latest
+    environment: production
+    outputs:
+      sha256: ${{ steps.hash.outputs.sha256 }}
+      applied_at: ${{ steps.hash.outputs.applied_at }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Guard — PG* secrets presentes?
+        run: |
+          set -euo pipefail
+          if [ -z "${{ secrets.PGHOST }}" ] || [ -z "${{ secrets.PGUSER }}" ] || \
+             [ -z "${{ secrets.PGPASSWORD }}" ] || [ -z "${{ secrets.PGDATABASE }}" ]; then
+            echo "::error::PG* secrets ausentes. Este é o job que aplica DDL real — diferente de migration-dry-run.yml, aqui a ausência de credencial FALHA o job (fail-closed), não pula silenciosamente."
+            exit 1
+          fi
+
+      - name: Instala postgresql-client
+        run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends postgresql-client
+
+      - name: Localiza o arquivo da migration
+        id: locate
+        run: |
+          set -euo pipefail
+          mapfile -t FILES < <(ls supabase/migrations/"${{ inputs.version }}"_*.sql 2>/dev/null || true)
+          if [ "${#FILES[@]}" -ne 1 ]; then
+            echo "::error::esperava exatamente 1 arquivo supabase/migrations/${{ inputs.version }}_*.sql, encontrei ${#FILES[@]} (o job 'preflight' deveria ter barrado isso antes)."
+            exit 1
+          fi
+          echo "file=${FILES[0]}" >> "$GITHUB_OUTPUT"
+
+      - name: Calcula sha256 do arquivo
+        id: hash
+        run: |
+          echo "sha256=$(sha256sum "${{ steps.locate.outputs.file }}" | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+          echo "applied_at=$(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_OUTPUT"
+
+      - name: Aplica a migration (psql -1, transação única)
+        env:
+          PGHOST: ${{ secrets.PGHOST }}
+          PGUSER: ${{ secrets.PGUSER }}
+          PGPASSWORD: ${{ secrets.PGPASSWORD }}
+          PGDATABASE: ${{ secrets.PGDATABASE }}
+          PGPORT: ${{ secrets.PGPORT || '5432' }}
+        run: psql -1 -v ON_ERROR_STOP=1 -f "${{ steps.locate.outputs.file }}"
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v2
+        with:
+          version: 2.101.0
+
+      - name: migration repair --status applied
+        run: |
+          set -euo pipefail
+          supabase link --project-ref "${{ secrets.VITE_SUPABASE_PROJECT_ID }}"
+          supabase migration repair --status applied "${{ inputs.version }}" --linked
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
+  post-check:
+    name: 3. Pós-check (read-only)
+    needs: apply
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.22.1'
+
+      - name: Confirma version no ledger após a aplicação
+        run: node scripts/preflight-migration-apply.mjs --version="${{ inputs.version }}" --require-live --expect-applied
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: ${{ secrets.VITE_SUPABASE_PROJECT_ID }}
+
+  receipt:
+    name: 4. Recibo (abre PR em MIGRATIONS_SYNC_LOG.md)
+    needs: [apply, post-check]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.22.1'
+
+      - name: Monta o recibo em MIGRATIONS_SYNC_LOG.md
+        run: |
+          node scripts/append-migration-receipt.mjs \
+            --version="${{ inputs.version }}" \
+            --sha256="${{ needs.apply.outputs.sha256 }}" \
+            --executor="GitHub Actions (db-apply-migration.yml, disparado por ${{ github.actor }})" \
+            --metodo="E15" \
+            --data-utc="${{ needs.apply.outputs.applied_at }}" \
+            --pos-check="job post-check da run ${{ github.run_id }} confirmou a version no ledger" \
+            --status="aplicada"
+
+      - name: Abre PR com o recibo
+        run: |
+          set -euo pipefail
+          BRANCH="e15-receipt-${{ inputs.version }}-${{ github.run_id }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add supabase/MIGRATIONS_SYNC_LOG.md
+          git commit -m "docs(migrations-log): recibo E15 — aplicação de ${{ inputs.version }}" \
+                     -m "Auto-gerado por .github/workflows/db-apply-migration.yml (run ${{ github.run_id }}), disparado por ${{ github.actor }}. PLANO_DBA E15."
+          git push -u origin "$BRANCH"
+          gh pr create \
+            --base main \
+            --head "$BRANCH" \
+            --title "docs: recibo de aplicação — ${{ inputs.version }} (E15)" \
+            --body "Recibo automático da aplicação de \`${{ inputs.version }}\` via \`db-apply-migration.yml\` (run ${{ github.run_id }}, disparado por @${{ github.actor }}). A migration já foi aplicada e confirmada no ledger pelos jobs \`apply\`/\`post-check\` desta mesma run — este PR só registra o recibo textual (PLANO_DBA E15/E48)."

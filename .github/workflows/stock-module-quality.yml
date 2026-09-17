@@ -15,6 +15,7 @@ on:
       - 'tests/**stock**'
       - 'tests/StockFilterToolbar*.tsx'
       - 'tests/supplierReliability.*.test.ts'
+      - 'tests/components/inventory/**'
       - 'e2e/routes/app/stock-*.spec.ts'
       - 'e2e/admin/stock-*.spec.ts'
       - 'scripts/stock-benchmark.mjs'

@@ -1,0 +1,5 @@
+{
+  "description": "PLANO_DBA E22 — allowlist de GRANTs de INSERT/UPDATE/DELETE para `anon` em tabelas `public`. Deliberadamente vazia: o P1 de 2026-07-16 fechou em 0 tabelas (docs/SCHEMA_REFERENCE.md §8.5) e não há exceção legítima conhecida. Qualquer entrada aqui reabre parte do P1 e deve ter justificativa auditável.",
+  "documented_in": "docs/SCHEMA_REFERENCE.md#8.5",
+  "grants": []
+}

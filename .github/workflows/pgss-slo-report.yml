@@ -1,0 +1,148 @@
+name: pgss-slo-report
+
+# =============================================================================
+# Etapa E40 do PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md.
+# Ver docs/E40_BASELINE_DESEMPENHO_SLO_2026-09-17.md para a investigação
+# completa.
+#
+# O que faz: roda scripts/pgss-slo-check.mjs, que lê a série histórica de
+# ops.pgss_history (gravada semanalmente pelo cron pgss-history-weekly — ver
+# a migration da etapa E40) e compara a captura mais recente de cada RPC
+# monitorada contra o SLO declarado (SLO_TARGETS_MS, p95 aproximado por
+# mean + 1.645*stddev). Sinaliza (issue rotulada `perf-slo`, ou comentário
+# se já existir uma aberta) qualquer RPC acima do SLO.
+#
+# O que NÃO faz: não aplica DDL, não chama pg_stat_statements_reset() — é
+# advisory/best-effort, não um gate (mesmo padrão de
+# ddl-out-of-band-detector.yml/capacity-growth-report.yml, etapas E12/E30).
+# Depende da migration de E40 (tabela ops.pgss_history + cron) já ter sido
+# aplicada — enquanto não for, o check degrada para inconclusive (sem
+# issue) e só loga aviso.
+#
+# Secrets (Settings -> Secrets and variables -> Actions):
+#   - SUPABASE_ACCESS_TOKEN : PAT da Management API (mesmo secret de
+#                             ddl-out-of-band-detector.yml)
+# Variável sobrescrevível (não-secret):
+#   SUPABASE_PROJECT_REF (default: doufsxqlfjyuvxuezpln)
+# =============================================================================
+
+on:
+  schedule:
+    - cron: '15 10 * * 1' # semanal, segunda 10:15 UTC — depois do capacity-growth-report (09:00 UTC)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: pgss-slo-report
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: Compara ops.pgss_history contra SLO_TARGETS_MS
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF || 'doufsxqlfjyuvxuezpln' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+
+      - name: Roda checagem de SLO
+        id: check
+        continue-on-error: true
+        run: node scripts/pgss-slo-check.mjs --out=/tmp/pgss-slo.json
+
+      - name: Upload report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pgss-slo-report-${{ github.run_id }}
+          path: /tmp/pgss-slo.json
+          retention-days: 90
+          if-no-files-found: ignore
+
+      - name: Abre ou atualiza issue (RPC acima do SLO)
+        # exit 1 (FAILED) e exit 2 (INCONCLUSIVE) chegam aqui como 'failure' via
+        # continue-on-error. Só abrimos issue quando o relatório existe e lista
+        # >=1 RPC acima do SLO — caso contrário (inconclusivo: sem credenciais
+        # obrigatórias, Management API fora do ar, ops.pgss_history ainda não
+        # existe porque E40 não foi aplicado) só logamos warning, sem issue.
+        if: steps.check.outcome == 'failure'
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
+        with:
+          script: |
+            const fs = require('fs');
+            let report = null;
+            try {
+              report = JSON.parse(fs.readFileSync('/tmp/pgss-slo.json', 'utf-8'));
+            } catch (e) {
+              core.warning(`Checagem inconclusiva ou sem relatório (${e.message}) — provavelmente ops.pgss_history ainda não existe (E40 aguardando aprovação do PO). Não é um achado de desempenho, apenas logando.`);
+              return;
+            }
+            const breaches = report?.breaches || [];
+            if (breaches.length === 0) {
+              core.warning('Relatório existe mas breaches está vazio — nada a fazer.');
+              return;
+            }
+            const today = new Date().toISOString().slice(0, 10);
+            const title = `[perf-slo] ${breaches.length} RPC(s) acima do SLO — ${today}`;
+
+            const lines = breaches.map((b) => {
+              return `- \`${b.fnName}\` — p95 estimado ${b.p95EstimateMs}ms > SLO ${b.sloMs}ms (mean ${b.meanMs}ms, ${b.calls} chamadas, captura ${b.capturedAt})`;
+            });
+
+            const body = [
+              `## RPC(s) acima do SLO declarado (p95 aproximado por mean + ${report.p95ZScore}*stddev)`,
+              '',
+              ...lines,
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              '',
+              '### Como agir',
+              'Não é uma ordem de otimização automática — só um alerta de SLO estourado (PLANO_DBA E40, ver também E34/E35 para achados de causa raiz de RPCs lentas já investigadas).',
+              'Investigar a causa (N+1, falta de índice, volume de dados) antes de propor qualquer mudança de função ou índice — qualquer DDL resultante segue a REGRA #8 (aprovação explícita do PO por objeto).',
+              '',
+              '_p95 é uma aproximação estatística (pg_stat_statements não expõe percentil nativo) — sensível a distribuições não-normais. Confirmar a tendência com mais de uma captura antes de agir._',
+            ].join('\n');
+
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'perf-slo',
+            });
+            const dup = existing.data.find((i) => i.title.startsWith('[perf-slo]'));
+            if (dup) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: dup.number,
+                body: `Atualização do dia ${today}:\n\n${body}`,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels: ['perf-slo', 'priority/low'],
+              });
+            }
+
+      - name: Não quebra o build
+        if: steps.check.outcome == 'failure'
+        run: |
+          echo "::warning::Checagem de SLO encontrou RPC(s) acima do limiar ou ficou inconclusiva — ver issue/artefato desta run. Job não quebra build (advisory, não gate)."
