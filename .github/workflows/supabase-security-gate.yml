@@ -96,3 +96,17 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+
+      # ─────────────────────────────────────────────
+      # CHECK 5 (PLANO_DBA E22): gate permanente do P1 de 2026-07-16 (FECHADO,
+      # 0 tabelas) — falha se `anon` tiver GRANT de INSERT/UPDATE/DELETE em
+      # qualquer tabela `public` fora de .security/anon-write-grants-allowlist.json
+      # (vazia por padrão). --require-live: sem credencial o gate falha-fechado
+      # (inconclusive), mesmo padrão dos CHECKs 3/4 acima — nunca aprovação
+      # implícita por ausência de evidência.
+      # ─────────────────────────────────────────────
+      - name: 🔓 Verify anon has no write GRANTs (E22)
+        run: node scripts/check-anon-write-grants.mjs --require-live
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: ${{ secrets.VITE_SUPABASE_PROJECT_ID }}

@@ -605,12 +605,30 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 > separado (canal Supabase, não nosso pipeline), ou aceitar "deixar como está"
 > dado 0 violações.
 
-### E22 · Gate permanente "anon sem escrita" `[GIT]`
+### E22 · Gate permanente "anon sem escrita" `[GIT]` ✅ Concluída em 2026-09-16
 **Problema (medido):** P1 está fechado (0 tabelas). Sem gate, o Lovable ou uma migration antiga reaplicada reabrem em minutos (incidente 2026-06-11).
 **Ação:** adicionar a query §8.5 ao `supabase-security-gate.yml` (live, após E02): falha se `anon` tiver `INSERT/UPDATE/DELETE` em qualquer tabela `public` fora de allowlist vazia.
+
+> **Concluída em 2026-09-16 (sem `[REQUER-PO]`).** `scripts/check-anon-write-grants.mjs`
+> roda a query canônica de `docs/SCHEMA_REFERENCE.md` §8.5
+> (`information_schema.role_table_grants`, via Management API read-only —
+> nunca PostgREST, REGRA #8 corolário) e falha (exit 1) se `anon` tiver
+> `INSERT`/`UPDATE`/`DELETE` em qualquer tabela `public` fora de
+> `.security/anon-write-grants-allowlist.json` (`grants: []`, deliberadamente
+> vazia). Adicionado como CHECK 5 de `.github/workflows/supabase-security-gate.yml`
+> com `--require-live`: sem `SUPABASE_ACCESS_TOKEN`/`SUPABASE_PROJECT_REF` o
+> gate fica `inconclusive` (exit 2), nunca aprovação implícita — mesmo padrão
+> dos CHECKs 3/4 já existentes nesse workflow. 13 testes em
+> `tests/scripts/check-anon-write-grants.test.mjs`: unidade para
+> `loadAllowlist`/`computeViolations`, integração CLI para degradação
+> `static-pass`/`inconclusive` sem credencial, e injeção via `--from-file`
+> simulando um GRANT novo fora da allowlist (equivalente ao "grant temporário
+> em tabela de teste" do checklist original, sem precisar de um GRANT real em
+> produção/staging para provar o gate).
+
 **Checklist de conclusão:**
-- [ ] Gate no CI, fail-closed sem credencial
-- [ ] Teste: grant temporário em tabela de teste → gate falha
+- [x] Gate no CI, fail-closed sem credencial (`--require-live` → `inconclusive`/exit 2)
+- [x] Teste: grant simulado (`--from-file`) fora da allowlist → gate falha (exit 1)
 **Esforço:** P · **Dep.:** E02
 
 ### E23 · FORCE RLS e revogação em tabelas de segredo `[REQUER-PO]`
