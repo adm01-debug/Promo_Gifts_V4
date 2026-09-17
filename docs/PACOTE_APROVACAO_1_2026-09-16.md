@@ -78,6 +78,65 @@ supabase migration repair --status applied 20260916181609 --linked
 
 ---
 
+## Ação 4 — Novo achado ao vivo: 2ª DDL out-of-band na mesma função (hoje, 2026-09-16)
+
+**Tipo:** apenas arquivo-espelho no repo (zero efeito em produção — a DDL já está aplicada e já está no ledger). Descoberto durante a verificação independente da E48 desta sessão, não pela própria E48.
+
+**O que aconteceu:** `public.zapp_catalog_stats()` — a mesma função da Ação 1 — recebeu uma
+2ª DDL fora do fluxo de migration, **hoje**, sem relação com o achado de segurança
+acima. Confirmado ao vivo (`supabase_migrations.schema_migrations`):
+
+| Version | Name | No repo? | Aplicada (ledger)? |
+|---|---|---|---|
+| `20260912205759` | `catalog_e24_zapp_catalog_stats` | Sim (`supabase/migrations/`) | Sim |
+| `20260915113458` | `zapp_catalog_stats_revoke_authenticated` | Sim (`supabase/migrations/`) | **Não** (Ação 1 — nunca aplicada) |
+| `20260916155725` | `catalog_stats_price_range_top_colors_materials` | **Não, até esta etapa** | Sim (15:57:25 UTC hoje) |
+
+`20260916155725` é um `CREATE OR REPLACE FUNCTION public.zapp_catalog_stats()`
+que acrescenta 4 chaves ao jsonb retornado (`price_min`, `price_max`,
+`top_colors`, `top_materials`) — filtros de preço/cor/material para a
+listagem de produtos. Os comentários inline atribuem o trabalho a "E36"/"E22"
+— **numeração de feature alheia a este plano de 50 etapas** (a E36 deste
+documento é sobre custo de `fn_cron_safe_run`; não confundir). Conteúdo é
+engenharia de produto legítima e coerente (mesmo padrão de normalização
+`upper(coalesce(elem->>'nome', elem #>> '{}'))` já visto no achado da E22
+sobre `colors`/`materials`), não vandalismo — só aplicada pelo canal errado
+(MCP/dashboard direto, sem migration versionada), mesmo padrão dos 2 casos
+históricos que motivaram a E12.
+
+**Cruzamento com a Ação 1 (REVOKE pendente):** confirmado ao vivo
+`has_function_privilege('authenticated', 'public.zapp_catalog_stats()',
+'EXECUTE') = true` **depois** desta 2ª DDL — ou seja, **nada mudou** na
+postura de segurança. `CREATE OR REPLACE FUNCTION` preserva owner/ACL quando
+a assinatura não muda (sem `GRANT`/`REVOKE` no statement aplicado hoje,
+confirmado lendo o texto completo do `statements[]` do ledger) — o `EXECUTE`
+de `authenticated` que está ativo agora é o mesmo, nunca revogado, desde a
+criação original (`20260912205759`); a Ação 1 já previa isso e continua
+válida e necessária exatamente como descrita, sem nenhuma escalada de risco
+por causa deste achado.
+
+**Regularização proposta:** `supabase/migrations/20260916210000_backfill_catalog_stats_price_range_top_colors_materials_20260916155725.sql`
+já escrito nesta etapa — espelho textual exato do `statements[]` do ledger
+para essa version, **sem** `migration repair` (a linha já existe no ledger,
+diferente do caso E09 3b/3c) e **sem** nenhum `GRANT`/`REVOKE` (não interfere
+com a Ação 1). Efeito de aplicar: idempotente — reproduz o que já roda em
+produção. Ainda assim tratado como `[REQUER-PO]` pelo mesmo motivo do E09 3b
+(qualquer arquivo novo em `supabase/migrations/` se torna DDL real na
+próxima vez que rodar contra um ambiente que ainda não tem essa version —
+ex. ambiente novo/staging), não por incerteza sobre o efeito no projeto
+canônico (que já está nesse estado).
+
+**Nota de acompanhamento:** `supabase/MIGRATIONS_SYNC_LOG.md` (E48) ainda
+lista essa version como `SEM_ARQUIVO_LOCAL` — é o estado correto até este
+arquivo ser aprovado e mergeado; a próxima regeneração do relatório (E48)
+deve parar de sinalizá-la depois do merge, sem necessidade de edição manual
+do log.
+
+**Teste de reversão:** `git rm` do arquivo (zero efeito em produção — a
+função já está nesse estado independentemente do arquivo existir no repo).
+
+---
+
 ## Resumo para aprovação
 
 | # | Ação | Tipo | Risco | Reversível |
@@ -87,5 +146,6 @@ supabase migration repair --status applied 20260916181609 --linked
 | 3a | `migration repair --status reverted` 2 stubs | Ledger only | Nenhum | Sim (não recomendado) |
 | 3b | Novo arquivo de backfill (google secret_name) | DDL real, idempotente/no-op | Nenhum — WHERE não casa nada hoje | Sim, `git rm` |
 | 3c | `migration repair --status applied` do backfill | Ledger only | Nenhum | Sim |
+| 4 | Arquivo-espelho para 2ª DDL out-of-band de hoje (`zapp_catalog_stats`, price/cor/material) | Arquivo no repo, sem `migration repair`, sem GRANT/REVOKE | Nenhum no canônico (já aplicada); idempotente noutros ambientes | Sim, `git rm` |
 
-Responda "aprovado" para o pacote inteiro, ou liste os itens (1, 2, 3a, 3b, 3c) que aprova agora.
+Responda "aprovado" para o pacote inteiro, ou liste os itens (1, 2, 3a, 3b, 3c, 4) que aprova agora.
