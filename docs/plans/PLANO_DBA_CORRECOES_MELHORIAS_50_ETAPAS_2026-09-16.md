@@ -829,14 +829,24 @@ Em ambos: adicionar partição `DEFAULT` como rede de segurança com alerta se r
 ## FASE 5 — Contratos código ↔ banco (E41–E45)
 > Objetivo: paridade deixa de ser verificada por `grep` e passa a ser verificada por estrutura.
 
-### E41 · Substituir o proxy da REGRA #4 por diff estrutural `[GIT]`
+### E41 · Substituir o proxy da REGRA #4 por diff estrutural `[GIT]` ✅ Concluída em 2026-09-16
 **Problema (medido):** `grep -c "export type" types.ts` = **7** (aliases de topo). Uma tabela removida de `Database.public.Tables` **não altera** esse número. O incidente `magazine_*` (2026-07-16) passaria pelo check. Hoje a paridade está perfeita (0 tabelas ausentes) — o gate é que não prova isso.
 **Ação:** `scripts/extract-types-inventory.mjs` → JSON com nomes de `Tables`, `Views`, `Functions`, `Enums` por schema. Gate: (a) diff contra o commit anterior — remoção exige justificativa no PR; (b) diff contra `pg_catalog` (live, após E02) — falha se tabela viva não está em `types.ts`. Atualizar `CLAUDE.md` REGRA #4 com o novo comando.
 **Checklist de conclusão:**
-- [ ] Inventário: 383 tabelas + 14 partições, 193 views, enums, funções expostas
-- [ ] Gate falha ao remover `magazines` do `types.ts` em teste
-- [ ] `CLAUDE.md` REGRA #4 atualizada; `regenerate-supabase-types.yml` usa o gate
+- [x] Inventário: 397 tabelas (381 base + 2 partitioned parents + 14 partições, bate com "~383 + 14" do plano) + 197 views (193 + 4 materialized), enums e funções expostas — `scripts/extract-types-inventory.mjs`, via TypeScript Compiler API, cruzado ao vivo com `pg_catalog`
+- [x] Gate falha ao remover `magazines` do `types.ts` em teste (17 testes de mutação, `tests/scripts/check-types-inventory-drift.test.mjs`)
+- [x] `CLAUDE.md` REGRA #4 atualizada; `regenerate-supabase-types.yml` roda `check:types-inventory-drift` logo após a regeneração
 **Esforço:** M · **Dep.:** E02
+
+> **Concluída em 2026-09-16 (sem `[REQUER-PO]`).** `scripts/extract-types-inventory.mjs`
+> parseia `types.ts` via TypeScript Compiler API (não regex); `scripts/check-types-inventory-drift.mjs`
+> compara esse inventário objeto-a-objeto entre dois commits e falha (exit 1, sem
+> `continue-on-error`) se algo sumiu sem entrada em `docs/TYPES_INVENTORY_REMOVAL_ALLOWLIST.json`;
+> `--live` compara adicionalmente Tables/Views/Enums contra `pg_catalog` ao vivo (`Functions`
+> deliberadamente fora do diff `--live` — PostgREST expõe só um subconjunto curado de `pg_proc`,
+> 1008 de 1320, e comparar 1:1 geraria ruído, não sinal). Wired em `regenerate-supabase-types.yml`.
+> Detalhes completos, incluindo a tabela de contagens cruzadas com `pg_catalog`, em
+> `docs/E41_DIFF_ESTRUTURAL_TYPES_2026-09-16.md`.
 
 ### E42 · Edge Functions: verificar hash do bundle, não só o nome `[GIT]` ✅ Concluída em 2026-09-16
 **Problema (medido):** 108 × 109 — paridade por nome. A API expõe `ezbr_sha256` por função; `edge-functions-drift-check.yml` existe. Nome igual com código diferente é drift invisível.
@@ -1045,7 +1055,7 @@ Em ambos: adicionar partição `DEFAULT` como rede de segurança com alerta se r
 - [ ] `stock_snapshots` ≤ 30 % do tamanho de 2026-09-16.
 - [ ] 0 cron jobs multi-statement; 0 jobs desligados sem decisão.
 - [ ] As 3 RPCs de 12 s estão abaixo do SLO.
-- [ ] `types.ts`, enums e Edge Functions verificados por estrutura/hash, não por `grep`.
+- [x] `types.ts`, enums e Edge Functions verificados por estrutura/hash, não por `grep` (E41 — diff estrutural via TS Compiler API; E44 — 15/15 enums contra `pg_enum`; E42 — hash real do bundle das Edge Functions).
 
 ---
 
