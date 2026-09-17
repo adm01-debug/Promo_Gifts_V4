@@ -376,7 +376,7 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 - [x] Gate passa no estado atual — confirmado, exit 0
 **Esforço:** P (0 — trabalho já existia) · **Dep.:** E06 · **Supersede:** plano 09-15 E17
 
-### E11 · Tornar `statements` obrigatório para toda entrada nova do ledger `[GIT]`
+### E11 · Tornar `statements` obrigatório para toda entrada nova do ledger `[GIT]` ✅ Concluída em 2026-09-16 (sem `[REQUER-PO]`), com uma pendência explícita (gate não plugado em nenhum workflow de CI ainda)
 **Problema (medido):** 483 linhas do ledger sem `statements` — 20 % do histórico **não pode** ser comparado por hash com o arquivo local (E33 do plano 09-15 é impossível para esse subconjunto).
 **Ação:** aceitar o passado como não-verificável e registrar isso em `supabase/MIGRATIONS_SYNC_LOG.md`. Para o futuro: o gate de CI verifica, após cada aplicação registrada, que a linha nova tem `statements` não vazio e que `md5(array_to_string(statements))` bate com o arquivo. Migrations aplicadas via `repair` (E08) recebem `statements` a partir do arquivo quando o arquivo for canônico.
 **Checklist de conclusão:**
@@ -408,7 +408,7 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 > workflows CI não estavam no escopo de arquivos autorizados desta
 > auditoria. Detalhes completos em `docs/E11_LEDGER_STATEMENTS_2026-09-16.md`.
 
-### E12 · Detector de DDL fora do fluxo (out-of-band) `[GIT]` + `[DB-RO]`
+### E12 · Detector de DDL fora do fluxo (out-of-band) `[GIT]` + `[DB-RO]` ✅ Concluída em 2026-09-16 (sem `[REQUER-PO]`)
 **Problema (medido):** pelo menos 2 casos confirmados de DDL aplicada por MCP/dashboard e registrada depois (`catalog_e24_zapp_catalog_stats` 2026-09-12; `audit_r3_revoke_anon_mv_product_compositions` 2026-09-05). Existe `schema_signature_baseline` (7.201 colunas) e `schema_signature_drift_log`, mas ninguém compara com o ledger.
 **Ação:**
 1. Job semanal (workflow, após E02) que: captura assinatura do schema, compara com a última; para cada diferença, procura migration no ledger com `created_at` no intervalo; se não achar → abre issue "DDL out-of-band" com o objeto e o trecho de `postgres_logs` (`apply sql from post body`).
@@ -431,7 +431,7 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 > comportamento estático testado diretamente. Detalhes em
 > `docs/E12_DETECTOR_DDL_OUT_OF_BAND_2026-09-16.md`.
 
-### E13 · Decidir os 10 drafts ativos e os 5 arquivados `[RO]`
+### E13 · Decidir os 10 drafts ativos e os 5 arquivados `[RO]` ✅ Concluída em 2026-09-16 (14 drafts decididos por objeto; 3 gaps genuínos reportados, não corrigidos)
 **Problema (medido):** `qa/migrations-draft` tem 10 ativos e 5 arquivados (o plano 09-15 dizia 4). `scripts/map-drafts-to-migrations.mjs` existe.
 **Ação:** rodar o mapeamento por **objeto** (não por slug); para cada draft: `absorvido por <versão>` / `pendente` / `rejeitado` / `obsoleto`. Registrar em `qa/migrations-draft/DRAFTS_STATUS.md` com owner e data. Não mover nem apagar nesta etapa.
 **Checklist de conclusão:**
@@ -488,7 +488,7 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 ## FASE 2 — Postura de segurança (E16–E24)
 > Objetivo: todo acesso `anon`/`authenticated` é intencional, justificado por escrito e vigiado por gate.
 
-### E16 · Formalizar as 8 views `v_*_public` SECURITY DEFINER como superfície anônima `[GIT]`
+### E16 · Formalizar as 8 views `v_*_public` SECURITY DEFINER como superfície anônima `[GIT]` ✅ Concluída em 2026-09-16 (265/265 colunas conferidas; achado `REQUER-PO` não corrigido nesta etapa)
 **Problema (medido):** 8 views sem `security_invoker`, todas com SELECT para `anon`, rodando como owner. É o mecanismo que substituiu os grants diretos (P1). `.security/public-views-columns.json` existe, mas não há evidência de teste que falhe se uma coluna sensível entrar.
 **Ação:** para cada view: listar colunas, `pg_get_viewdef`, tabelas subjacentes; comparar com `public-views-columns.json`; garantir que nenhuma expõe `cost`, `supplier_price`, `ncm`, `bitrix_*`, PII. Gate `check-public-views-drift` (falha se coluna nova aparecer sem allowlist). Documentar em `SCHEMA_REFERENCE.md` como desenho intencional.
 **Checklist de conclusão:**
@@ -887,7 +887,7 @@ Em ambos: adicionar partição `DEFAULT` como rede de segurança com alerta se r
 ## FASE 6 — Observabilidade e governança contínua (E46–E50)
 > Objetivo: o que foi corrigido não regride em silêncio; o que ficou aberto tem dono e data.
 
-### E46 · Drift check live semanal + comparação ledger ↔ arquivos no CI `[GIT]`
+### E46 · Drift check live semanal + comparação ledger ↔ arquivos no CI `[GIT]` ✅ Concluída em 2026-09-16 (implementação; comprovação de 2 execuções semanais pendente pós-merge)
 **Problema:** o drift check (fail-closed desde #1864) só roda quando alguém dispara. O manifesto (E06) só existe local. **Atualizado pelo achado de E02:** `db diff` não completa hoje (replay trava em DDL out-of-band histórica), então o "drift check semanal" não pode depender só dele.
 **Ação:**
 1. `schedule: cron('0 6 * * 1')` em `schema-snapshot-export.yml` (não em `db-schema-drift-check.yml` — esse continua fail-closed e manual/on-push, sinalizando "não calculável" honestamente via E02).
@@ -941,7 +941,7 @@ Em ambos: adicionar partição `DEFAULT` como rede de segurança com alerta se r
 - [ ] Notificação chega a canal definido pelo PO
 **Esforço:** M · **Dep.:** E12, E15
 
-### E48 · `MIGRATIONS_SYNC_LOG.md` como recibo, não como narrativa `[GIT]`
+### E48 · `MIGRATIONS_SYNC_LOG.md` como recibo, não como narrativa `[GIT]` ✅ Concluída em 2026-09-16 (core sem `[REQUER-PO]`; entradas E08/E09 no log herdam `[REQUER-PO]`)
 **Problema:** o log existe (`supabase/MIGRATIONS_SYNC_LOG.md`) mas frases como "sincronizado" sem hash são interpretadas como certificação.
 **Ação:** contrato: uma linha por aplicação (`versão | sha256 arquivo | md5 statements | executor | método (E15/repair/MCP-ticket) | data UTC | pós-check`). Cabeçalho com "último recibo" e "ledger hash". Gate: PR que toca `supabase/migrations/` sem linha nova no log falha.
 **Checklist de conclusão:**
@@ -988,7 +988,7 @@ Em ambos: adicionar partição `DEFAULT` como rede de segurança com alerta se r
 > credencial). Detalhes completos, metodologia e evidência de teste em
 > `docs/E48_MIGRATIONS_SYNC_LOG_RECIBO_2026-09-16.md`.
 
-### E49 · Higiene do repositório com prova de não-perda `[GIT]`
+### E49 · Higiene do repositório com prova de não-perda `[GIT]` — investigação concluída 2026-09-16 (docs/E49_HIGIENE_REPOSITORIO_2026-09-16.md), limpeza (branch -d/-D, worktree prune, graphify, decisão pptxgenjs) pendente
 **Problema (medido):** 59 commits dangling (`WIP on …`, 09-11 → 09-15), 2 worktrees `prunable`, branches `[gone]`, graphify em `89292143` vs `HEAD 7fbbcabe5`, allowlist `pptxgenjs` expira 2026-10-09.
 **Ação:** (1) para cada dangling: `git diff <dangling> <merge-final-da-branch> --stat`; se vazio ou só timestamps → descartável; (2) `git worktree prune` só após (1); (3) `git branch -d` (nunca `-D`) nas `[gone]`; (4) `graphify update . --force` e confirmar auto-sync N8N; (5) decidir renovação ou remoção da allowlist `pptxgenjs` antes de 10/10.
 **Checklist de conclusão:**
