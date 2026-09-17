@@ -129,6 +129,23 @@ jobs:
 
       - name: Download functions from canonical and diff content
         id: hash_diff
+        # -----------------------------------------------------------------
+        # Etapa E42 (2026-09-16): antes, este passo só comparava o hash de
+        # `index.ts`. >=21 funções têm arquivos co-localizados além de
+        # index.ts (ex. crm-db-bridge tem 8, simulation-orchestrator e
+        # connections-auto-test têm 4) — código diferente nesses arquivos
+        # era drift invisível. A maioria desses arquivos extras são
+        # `*.test.ts` (Deno tests), que NÃO fazem parte do bundle deployado
+        # — confirmado ao vivo via Management API (`GET .../functions/{slug}`
+        # em crm-db-bridge: retorna só index.ts + os módulos de
+        # `_shared/` que ele importa, nunca os 7 `*.test.ts` locais).
+        # Por isso a comparação abaixo NÃO hasheia "tudo que existe no
+        # diretório do repo" (incluiria testes nunca deployados → falso
+        # positivo). Em vez disso, usa a lista de arquivos que o PRÓPRIO
+        # download retornou como fonte da verdade de "o que é o bundle" —
+        # isso também cobre `supabase/functions/_shared/*.ts`, que o
+        # download traz como irmão de `$slug/` e que a versão antiga deste
+        # gate nunca comparava.
         run: |
           set -euo pipefail
           mkdir -p /tmp/canonical_download
@@ -137,7 +154,7 @@ jobs:
           missing_in_dl=0
           aligned_count=0
           {
-            echo "slug,status,repo_sha256,canonical_sha256,notes"
+            echo "slug,status,repo_sha256,canonical_sha256,files_compared,notes"
           } > /tmp/drift_report.csv
 
           for slug in $(comm -12 /tmp/repo_slugs.txt /tmp/canonical_slugs.txt); do
@@ -150,32 +167,64 @@ jobs:
                   --workdir "$target_dir" > /tmp/dl.log 2>&1; then
               echo "::warning::Falha ao baixar $slug: $(tail -n 1 /tmp/dl.log)"
               missing_in_dl=$((missing_in_dl+1))
-              echo "$slug,download_failed,,," >> /tmp/drift_report.csv
+              echo "$slug,download_failed,,,," >> /tmp/drift_report.csv
               continue
             fi
 
-            repo_file="supabase/functions/$slug/index.ts"
-            canon_file="$target_dir/supabase/functions/$slug/index.ts"
-            if [ ! -f "$canon_file" ]; then
-              canon_file="$(find "$target_dir" -name index.ts -print -quit || true)"
+            canon_dir="$target_dir/supabase/functions/$slug"
+            if [ ! -d "$canon_dir" ]; then
+              canon_index="$(find "$target_dir" -name index.ts -print -quit || true)"
+              if [ -n "$canon_index" ]; then
+                canon_dir="$(dirname "$canon_index")"
+              fi
             fi
 
-            if [ ! -f "$canon_file" ]; then
-              echo "::warning::index.ts não encontrado após download para $slug"
+            if [ ! -d "$canon_dir" ] || [ -z "$(find "$canon_dir" -type f -print -quit)" ]; then
+              echo "::warning::diretório da função não encontrado após download para $slug"
               missing_in_dl=$((missing_in_dl+1))
-              echo "$slug,no_index_after_download,,," >> /tmp/drift_report.csv
+              echo "$slug,no_index_after_download,,,," >> /tmp/drift_report.csv
               continue
             fi
 
-            repo_sha=$(sha256sum "$repo_file" | awk '{print $1}')
-            canon_sha=$(sha256sum "$canon_file" | awk '{print $1}')
+            # Manifesto = lista "sha256  caminho_relativo" de TODOS os arquivos
+            # que o download trouxe (raiz = $target_dir, caminhos tipo
+            # supabase/functions/<slug>/index.ts e
+            # supabase/functions/_shared/<helper>.ts), em ordem estável.
+            canon_manifest=$(cd "$target_dir" && find supabase/functions -type f -print0 | sort -z | xargs -0 sha256sum)
+            files_compared=$(echo "$canon_manifest" | wc -l)
+            canon_sha=$(printf '%s' "$canon_manifest" | sha256sum | awk '{print $1}')
+
+            # Mesmo manifesto, mas hasheando o arquivo correspondente do repo
+            # (mesmo caminho relativo). Arquivo ausente no repo => "MISSING"
+            # em vez do hash, para não mascarar um caminho deployado que não
+            # existe mais localmente.
+            # Capturado via $(...) (não concatenação manual) de propósito: o
+            # mesmo tipo de captura que gerou canon_manifest acima, para que
+            # os dois lados percam (ou não) a quebra de linha final do MESMO
+            # jeito antes do sha256 final — misturar os dois estilos faz o
+            # hash de repo_manifest e canon_manifest divergirem mesmo com
+            # conteúdo logicamente idêntico (bug real encontrado e corrigido
+            # em teste manual desta etapa, 2026-09-16).
+            repo_manifest=$(
+              while IFS= read -r line; do
+                [ -z "$line" ] && continue
+                relpath=$(printf '%s' "$line" | awk '{print $2}')
+                if [ -f "$relpath" ]; then
+                  h=$(sha256sum "$relpath" | awk '{print $1}')
+                else
+                  h="MISSING"
+                fi
+                printf '%s  %s\n' "$h" "$relpath"
+              done <<< "$canon_manifest"
+            )
+            repo_sha=$(printf '%s' "$repo_manifest" | sha256sum | awk '{print $1}')
 
             if [ "$repo_sha" = "$canon_sha" ]; then
               aligned_count=$((aligned_count+1))
-              echo "$slug,aligned,$repo_sha,$canon_sha," >> /tmp/drift_report.csv
+              echo "$slug,aligned,$repo_sha,$canon_sha,$files_compared," >> /tmp/drift_report.csv
             else
               drift_count=$((drift_count+1))
-              echo "$slug,DRIFT,$repo_sha,$canon_sha," >> /tmp/drift_report.csv
+              echo "$slug,DRIFT,$repo_sha,$canon_sha,$files_compared," >> /tmp/drift_report.csv
             fi
           done
 
@@ -205,6 +254,33 @@ jobs:
         with:
           name: drift-report
           path: /tmp/drift_report.csv
+
+      # -----------------------------------------------------------------
+      # Etapa E42 (2026-09-16): checagem independente de verify_jwt — a
+      # comparação de hash acima nunca olhou pra isso. Roda em modo
+      # --require-live porque este job já exige SUPABASE_ACCESS_TOKEN (ver
+      # cabeçalho do arquivo); sem live evidence aqui vira `inconclusive`
+      # (exit 2), não passa em silêncio. `continue-on-error` só para deixar
+      # os passos de relatório abaixo rodarem antes do job falhar de fato —
+      # a falha real acontece no passo "Fail if verify_jwt..." no final.
+      - name: Verify_jwt per function — allowlist gate (E42)
+        id: verify_jwt_gate
+        continue-on-error: true
+        run: |
+          set +e
+          node scripts/check-edge-verify-jwt-allowlist.mjs --require-live --out=/tmp/verify_jwt_report.json
+          code=$?
+          set -e
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Upload verify_jwt report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verify-jwt-report
+          path: /tmp/verify_jwt_report.json
+          if-no-files-found: ignore
 
       - name: Comment on PR (drift)
         if: github.event_name == 'pull_request' && (steps.hash_diff.outputs.drift_count != '0' || steps.hash_diff.outputs.missing_in_dl != '0' || steps.slug_diff.outputs.has_orphans == 'true' || steps.slug_diff.outputs.has_missing == 'true')
@@ -283,6 +359,16 @@ jobs:
       # Validado em 25/05/2026 (run 26413875585): 82/82 aligned, 0 drift.
       # Histórico: começou em modo observação no PR #342, promovido a
       # enforce após primeira execução limpa.
+      #
+      # Etapa E42 (2026-09-16): o passo hash_diff acima passou a comparar o
+      # manifesto do bundle inteiro (index.ts + _shared/* importado), não só
+      # index.ts — ver comentário no passo. Validado localmente com dados ao
+      # vivo via MCP (108/108 funções, 0 drift na comparação por nome/slug;
+      # a comparação por conteúdo do bundle completo roda pela primeira vez
+      # na próxima execução real deste workflow — sem token de deploy neste
+      # ambiente de edição não é possível re-executar
+      # `supabase functions download` aqui para revalidar o "82/82" acima
+      # com a métrica nova).
       # ---------------------------------------------------------------
       - name: Fail if drift detected
         if: steps.hash_diff.outputs.drift_count != '0' || steps.hash_diff.outputs.missing_in_dl != '0' || steps.slug_diff.outputs.has_orphans == 'true' || steps.slug_diff.outputs.has_missing == 'true'
@@ -292,4 +378,20 @@ jobs:
           echo "::error::  1. Drift de conteúdo: rodar 'supabase functions download <slug>' e commit no repo"
           echo "::error::  2. Órfã no canônico: deletar via dashboard ou commit em supabase/functions/<slug>/"
           echo "::error::  3. Sem deploy: aguardar workflow Deploy Edge Functions ou disparar manual"
+          exit 1
+
+      # ---------------------------------------------------------------
+      # Etapa E42 (2026-09-16): gate independente para verify_jwt — falha se
+      # alguma função ao vivo com verify_jwt=false não estiver documentada em
+      # .security/edge-functions-verify-jwt-false-allowlist.json (ou se uma
+      # entrada da allowlist não tiver `reason`). Ver passo "Verify_jwt per
+      # function — allowlist gate (E42)" acima para os detalhes.
+      # ---------------------------------------------------------------
+      - name: Fail if verify_jwt allowlist gate failed
+        if: steps.verify_jwt_gate.outputs.exit_code != '0'
+        run: |
+          echo "::error::Gate de verify_jwt/allowlist falhou (scripts/check-edge-verify-jwt-allowlist.mjs, exit=${{ steps.verify_jwt_gate.outputs.exit_code }})."
+          echo "::error::Veja o log do passo 'Verify_jwt per function — allowlist gate (E42)' acima para a lista de funções sem allowlist."
+          echo "::error::Correção: documentar em .security/edge-functions-verify-jwt-false-allowlist.json com um reason real,"
+          echo "::error::ou reverter verify_jwt=false indevido em supabase/config.toml."
           exit 1

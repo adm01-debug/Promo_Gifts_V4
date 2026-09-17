@@ -1,0 +1,188 @@
+{
+  "description": "Allowlist de edge functions com verify_jwt=false no gateway (chamáveis sem JWT válido do Supabase Auth). O gateway do Supabase rejeita com 401 ANTES do código da função rodar quando verify_jwt=true — então toda rota realmente pública, todo webhook/callback de sistema externo e todo cron via pg_cron (sem sessão de usuário) precisa dessa flag em supabase/config.toml. O risco é o oposto do SECURITY DEFINER: aqui a preocupação não é escalar privilégio, é que uma função que DEVERIA exigir autenticação seja deployada com verify_jwt=false por engano e fique acessível anonimamente sem que ninguém perceba. Cada entrada documenta o mecanismo de autenticação real (quando não é apenas 'público por design') com evidência em código: supabase/functions/_shared/edge-authz-manifest.ts (SSOT já existente, consumido por scripts/check-edge-authorization.mjs e tests/security/edge-authz-bypass.test.ts) e/ou comentário original em supabase/config.toml. Criado na Etapa E42 (docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md), 2026-09-16. Consumido por scripts/check-edge-verify-jwt-allowlist.mjs.",
+  "documented_in": "docs/E42_HASH_EDGE_FUNCTIONS_2026-09-16.md",
+  "manifest_ref": "supabase/functions/_shared/edge-authz-manifest.ts",
+  "snapshot_date": "2026-09-16",
+  "functions": [
+    {
+      "slug": "ai-recommendations",
+      "category": "authenticated",
+      "reason": "JWT validado in-function via helper compartilhado de autorização (shared-authorize), não pelo gateway. Ver edge-authz-manifest.ts."
+    },
+    {
+      "slug": "asia-ingestion",
+      "category": "service",
+      "reason": "Sync paginado do catálogo ASIA — cron/service via x-cron-secret (ASIA_INGESTION_CRON_SECRET) comparado em tempo constante. pg_cron não tem sessão JWT do Supabase Auth."
+    },
+    {
+      "slug": "backfill-image-dimensions",
+      "category": "service",
+      "reason": "Backfill de dimensões de product_images — cron via x-cron-secret (BACKFILL_DIM_CRON_SECRET). pg_cron não tem sessão JWT."
+    },
+    {
+      "slug": "check-login",
+      "category": "public",
+      "reason": "Pre-login security check (IP/city/lockout) chamado ANTES de supabase.auth.signIn() — o visitante ainda não tem JWT nesse ponto do fluxo."
+    },
+    {
+      "slug": "cleanup-notifications",
+      "category": "authenticated",
+      "reason": "Limpeza de notificações via cron — autorizado por authorizeCron (_shared/dispatcher-auth.ts) + x-cron-secret, não pelo gateway."
+    },
+    {
+      "slug": "cleanup-novelties",
+      "category": "authenticated",
+      "reason": "Limpeza de novidades via cron — mesmo mecanismo de authorizeCron + x-cron-secret."
+    },
+    {
+      "slug": "collections-watcher",
+      "category": "authenticated",
+      "reason": "Watcher de coleções do usuário, disparado por cron — autenticado via x-cron-secret, não JWT do Supabase Auth (pg_cron sem sessão)."
+    },
+    {
+      "slug": "comparison-price-watcher",
+      "category": "authenticated",
+      "reason": "Watcher de preços para comparação, disparado por cron — x-cron-secret."
+    },
+    {
+      "slug": "connections-auto-test",
+      "category": "authenticated",
+      "reason": "Teste automático de conexões do usuário, disparado por cron — x-cron-secret."
+    },
+    {
+      "slug": "connections-health-check",
+      "category": "authenticated",
+      "reason": "Health check das conexões, disparado por cron — x-cron-secret."
+    },
+    {
+      "slug": "crm-callback-alerts",
+      "category": "service",
+      "reason": "Cron de alertas de callback (1x/min) — autenticado via Bearer service_role comparado em tempo constante, não JWT de usuário."
+    },
+    {
+      "slug": "crm-callback-reprocess",
+      "category": "supervisor",
+      "reason": "Reprocessamento de dead-letter de crm_callback_events — autorização admin/dev (has_role) verificada inline, não pelo gateway."
+    },
+    {
+      "slug": "crm-db-bridge",
+      "category": "scoped",
+      "reason": "RBAC custom interno (JWT + verificação de role própria) validado in-function, não pelo verify_jwt padrão do gateway."
+    },
+    {
+      "slug": "e2e-cleanup",
+      "category": "dev",
+      "reason": "Cleanup de ambiente E2E — autenticado via JWT + service-role + segredo compartilhado (e2e-shared-secret), verificado in-function."
+    },
+    {
+      "slug": "external-db-inspect",
+      "category": "dev",
+      "reason": "Ferramenta dev-only — checagem is_dev() inline, não pelo gateway."
+    },
+    {
+      "slug": "favorites-watcher",
+      "category": "authenticated",
+      "reason": "Watcher de favoritos do usuário, disparado por cron — x-cron-secret."
+    },
+    {
+      "slug": "get-visitor-info",
+      "category": "public",
+      "reason": "Chamada antes do login para detectar IP/geo do visitante anônimo — usuário não tem sessão JWT ativa (comentário original em supabase/config.toml)."
+    },
+    {
+      "slug": "image-proxy",
+      "category": "public",
+      "reason": "Proxy de imagens anti-hotlink para CDNs externos — endpoint público por design, sem dado sensível."
+    },
+    {
+      "slug": "log-login-attempt",
+      "category": "public",
+      "reason": "Telemetria de tentativa de login (anti-bruteforce) — chamada antes/durante o login, sem JWT ainda disponível."
+    },
+    {
+      "slug": "magazine-import-local",
+      "category": "authenticated",
+      "reason": "Import de localStorage para o Gold: valida usuário in-function via userClient.auth.getUser() e grava como o próprio dono via RLS. Gateway em false para evitar UNAUTHORIZED_ASYMMETRIC_JWT enquanto o projeto usa chaves HS256 (comentário original em supabase/config.toml)."
+    },
+    {
+      "slug": "magazine-public-react",
+      "category": "public",
+      "reason": "Reação anônima (like/love/fire/idea) por public_token de alta entropia — leitor não tem login."
+    },
+    {
+      "slug": "magazine-public-view",
+      "category": "public",
+      "reason": "Leitura pública de revista publicada por public_token — sem login. GAP histórico (2026-07-12): as 5 rotas do módulo Magazine ficaram sem entrada em config.toml, caíram no default verify_jwt=true e quebraram 100% do fluxo público de leitura anônima antes de serem corrigidas."
+    },
+    {
+      "slug": "magazine-reader-state-read",
+      "category": "public",
+      "reason": "Leitura do estado do leitor (bookmarks/last-page) pseudonimizado por token+fingerprint — sem login."
+    },
+    {
+      "slug": "magazine-reader-state-write",
+      "category": "public",
+      "reason": "Escrita do estado do leitor pseudonimizado por token+fingerprint — sem login."
+    },
+    {
+      "slug": "mcp-server",
+      "category": "scoped",
+      "reason": "Autenticação custom via token MCP com escopos read/write/admin, validada in-function — não é o JWT do Supabase Auth."
+    },
+    {
+      "slug": "ownership-audit",
+      "category": "authenticated",
+      "reason": "Auditoria de propriedade — JWT + service-role verificados in-function; também disparada via cron."
+    },
+    {
+      "slug": "process-queue",
+      "category": "authenticated",
+      "reason": "Fila de jobs do usuário, processada via cron/worker — x-cron-secret, não JWT do Supabase Auth."
+    },
+    {
+      "slug": "process-scheduled-reports",
+      "category": "authenticated",
+      "reason": "Processamento dos relatórios agendados, disparado por cron — x-cron-secret."
+    },
+    {
+      "slug": "quote-followup-reminders",
+      "category": "authenticated",
+      "reason": "Lembretes de follow-up de cotações, disparado por cron — x-cron-secret."
+    },
+    {
+      "slug": "receive-crm-callback",
+      "category": "scoped",
+      "reason": "Callback do CRM externo (Promo Champions) — autenticado via x-api-key custom comparado em tempo constante; o CRM não possui JWT do Supabase."
+    },
+    {
+      "slug": "send-digest",
+      "category": "authenticated",
+      "reason": "Digest do próprio usuário, disparado por cron — x-cron-secret."
+    },
+    {
+      "slug": "send-notification",
+      "category": "authenticated",
+      "reason": "Notificação do próprio usuário, disparado por cron — x-cron-secret."
+    },
+    {
+      "slug": "send-scheduled-reports",
+      "category": "authenticated",
+      "reason": "Relatórios agendados do usuário, disparado por cron — x-cron-secret."
+    },
+    {
+      "slug": "sync-external-db",
+      "category": "service",
+      "reason": "Sync server-to-server com DB externo — autenticado via service_role_key, não JWT de usuário final."
+    },
+    {
+      "slug": "webhook-dispatcher",
+      "category": "authenticated",
+      "reason": "Dispatcher de webhooks — autenticação verificada in-function (shared-authorize), não pelo gateway."
+    },
+    {
+      "slug": "webhook-inbound",
+      "category": "public",
+      "reason": "Webhook inbound de sistema externo — validado por assinatura HMAC inline; o remetente não possui JWT do Supabase."
+    }
+  ]
+}

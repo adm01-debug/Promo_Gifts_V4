@@ -786,13 +786,16 @@ Em ambos: adicionar partição `DEFAULT` como rede de segurança com alerta se r
 - [ ] `CLAUDE.md` REGRA #4 atualizada; `regenerate-supabase-types.yml` usa o gate
 **Esforço:** M · **Dep.:** E02
 
-### E42 · Edge Functions: verificar hash do bundle, não só o nome `[GIT]`
+### E42 · Edge Functions: verificar hash do bundle, não só o nome `[GIT]` ✅ Concluída em 2026-09-16
 **Problema (medido):** 108 × 109 — paridade por nome. A API expõe `ezbr_sha256` por função; `edge-functions-drift-check.yml` existe. Nome igual com código diferente é drift invisível.
 **Ação:** o workflow calcula o bundle local (`supabase functions build` ou hash canônico dos fontes) e compara com `ezbr_sha256`; lista `verify_jwt` por função e falha se uma função pública (`verify_jwt = false`) não está em allowlist com motivo (hoje: 30+ com `false`).
+
+> **📋 Resultado (2026-09-16):** `docs/E42_HASH_EDGE_FUNCTIONS_2026-09-16.md`, script `scripts/check-edge-verify-jwt-allowlist.mjs`, teste `tests/scripts/check-edge-verify-jwt-allowlist.test.mjs`. Reconfirmado ao vivo: 108 funções, 36 com `verify_jwt=false` (zero drift vs. `config.toml` e vs. a allowlist nova). `ezbr_sha256` **não é reproduzível localmente** — algoritmo não documentado pela Supabase; testados 5 candidatos contra dados reais de `crm-db-bridge`, nenhum bateu — tratado como campo de observabilidade, não como critério de pass/fail. Achado que mudou o design: o bundle deployado **exclui `*.test.ts`** (confirmado via `get_edge_function` em `crm-db-bridge`: 9 arquivos reais, nenhum dos 7 testes co-localizados) — hashear o diretório local inteiro teria causado DRIFT falso-positivo em ~15 functions com testes co-localizados. Corrigido: o step `hash_diff` do workflow agora usa o **manifesto do próprio download canônico** como lista de arquivos de referência (inclui `_shared/*.ts` importado, que a comparação antiga só-`index.ts` não cobria; exclui testes por construção). Lógica validada via 3 cenários manuais em bash + `actionlint` (0 issues) + parse YAML; **primeira execução real em CI ainda pendente** (sandbox sem `SUPABASE_ACCESS_TOKEN`). Allowlist nova `.security/edge-functions-verify-jwt-false-allowlist.json`: 36 entradas, toda `reason` fundamentada em código (`edge-authz-manifest.ts`/`config.toml`), nenhum placeholder. Gate falha se função pública nova não documentada (testado com função sintética). 13/13 testes novos + 160/160 em `tests/scripts/` (sem regressão), `eslint` 0 issues.
+
 **Checklist de conclusão:**
-- [ ] 108/108 com hash comparado
-- [ ] Allowlist de `verify_jwt = false` com motivo por função
-- [ ] `tests/` excluído explicitamente
+- [x] 108/108 com hash comparado — lógica do `hash_diff` estendida para manifesto completo (index.ts + `_shared/*.ts` importado), validada localmente; execução real em CI pendente (sem credencial neste sandbox)
+- [x] Allowlist de `verify_jwt = false` com motivo por função — 36/36, zero drift vs. `config.toml` e vs. Management API ao vivo
+- [x] `tests/` excluído explicitamente — `EXCLUDE = new Set(['_shared', 'tests'])`, testado
 **Esforço:** M · **Dep.:** E02
 
 ### E43 · Objetos órfãos e referências a objetos inexistentes `[RO]` ✅ Concluída em 2026-09-16
