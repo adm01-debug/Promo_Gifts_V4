@@ -756,14 +756,17 @@ Em ambos: adicionar partição `DEFAULT` como rede de segurança com alerta se r
 - [ ] Zero índices inválidos após `CONCURRENTLY`
 **Esforço:** P · **Dep.:** E15
 
-### E30 · Plano de capacidade e alerta de crescimento `[GIT]` + `[REQUER-PO]`
+### E30 · Plano de capacidade e alerta de crescimento `[GIT]` + `[REQUER-PO]` ✅ Preparado em 2026-09-16 (aplicação aguarda PO)
 **Problema (medido):** +39 % em 2 meses. Sem série histórica de tamanho por tabela, a projeção é chute.
 **Ação:** tabela `ops.table_size_history (captured_at, schema, table, total_bytes, live_tup)` + cron diário (single-statement, via `fn_cron_safe_run`); workflow semanal que projeta 90 dias e abre issue se algum objeto > 20 % do banco ou crescimento > 30 %/mês.
+
+> **📋 Resultado (2026-09-16, preparação):** `docs/E30_PLANO_CAPACIDADE_2026-09-16.md`. Migration pronta (`supabase/migrations/20260916211500_e30_ops_table_size_history.sql`, `p_key=168`, sem colisão com E25 (`200`) nem E33 (`167`), ambas também ainda não aplicadas), RLS deny-all (padrão E19, entrada em `.security/rls-no-policy-allowlist.json`). Script de projeção (`scripts/capacity-growth-projection.mjs`, 9 testes) + workflow semanal advisory (`.github/workflows/capacity-growth-report.yml`, padrão E12) construídos e commitados. **Não aplicado** — cria schema/tabela/cron novos, exige aprovação do PO por objeto (independente de E15 estar pronto — ver roadmap §2). Desbloqueia E33 (mesmo schema `ops`).
+
 **Checklist de conclusão:**
-- [ ] Tabela + cron criados via E15
-- [ ] 7 dias de série coletados
-- [ ] Relatório de projeção publicado como artefato
-**Esforço:** M · **Dep.:** E15
+- [ ] Tabela + cron criados — migration pronta, aguarda aprovação do PO
+- [ ] 7 dias de série coletados — só após aplicação
+- [ ] Relatório de projeção publicado como artefato — workflow pronto, roda semanalmente após aplicação
+**Esforço:** M · **Dep.:** E15 (não-bloqueante — ver roadmap §2)
 
 ### E31 · Inventário e agenda de refresh das 12 materialized views `[DB-RO]` ✅ Concluída em 2026-09-16
 **Problema (medido):** 12 MVs em 3 schemas; o doc de referência lista 5. `mv_product_images_audit` 84 MB. Sem inventário, um `REFRESH` esquecido serve dado velho e um `REFRESH` sem `CONCURRENTLY` bloqueia leitores.

@@ -1,0 +1,151 @@
+name: capacity-growth-report
+
+# =============================================================================
+# Etapa E30 do PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md.
+# Ver docs/E30_PLANO_CAPACIDADE_2026-09-16.md para a investigação completa.
+#
+# O que faz: roda scripts/capacity-growth-projection.mjs, que lê a série
+# histórica de ops.table_size_history (gravada diariamente pelo cron
+# table-size-history-daily — ver a migration da etapa E30) e projeta o
+# tamanho de cada tabela `public` 90 dias à frente por regressão linear
+# simples entre o primeiro e o último ponto da série. Sinaliza (issue
+# rotulada `capacity-growth`, ou comentário se já existir uma aberta)
+# qualquer tabela cuja projeção passe de 20% do banco ou 30%/mês de
+# crescimento.
+#
+# O que NÃO faz: não aplica DDL, não faz DROP/TRUNCATE, não decide
+# retenção — é advisory/best-effort, não um gate (mesmo padrão de
+# ddl-out-of-band-detector.yml, etapa E12). Depende da migration de E30
+# (tabela ops.table_size_history + cron) já ter sido aplicada — enquanto
+# não for, o check degrada para inconclusive (sem issue) e só loga aviso.
+#
+# Secrets (Settings -> Secrets and variables -> Actions):
+#   - SUPABASE_ACCESS_TOKEN : PAT da Management API (mesmo secret de
+#                             ddl-out-of-band-detector.yml)
+# Variável sobrescrevível (não-secret):
+#   SUPABASE_PROJECT_REF (default: doufsxqlfjyuvxuezpln)
+# =============================================================================
+
+on:
+  schedule:
+    - cron: '0 9 * * 1' # semanal, segunda 09:00 UTC (06:00 BRT) — 1h depois do ddl-out-of-band-detector
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: capacity-growth-report
+  cancel-in-progress: false
+
+jobs:
+  project:
+    name: Projeta crescimento a partir de ops.table_size_history
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF || 'doufsxqlfjyuvxuezpln' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+
+      - name: Roda projeção
+        id: check
+        continue-on-error: true
+        run: node scripts/capacity-growth-projection.mjs --out=/tmp/capacity-growth.json
+
+      - name: Upload report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: capacity-growth-report-${{ github.run_id }}
+          path: /tmp/capacity-growth.json
+          retention-days: 90
+          if-no-files-found: ignore
+
+      - name: Abre ou atualiza issue (tabelas acima do limiar)
+        # exit 1 (FAILED) e exit 2 (INCONCLUSIVE) chegam aqui como 'failure' via
+        # continue-on-error. Só abrimos issue quando o relatório existe e lista
+        # >=1 tabela sinalizada — caso contrário (inconclusivo: sem credenciais
+        # obrigatórias, Management API fora do ar, ops.table_size_history ainda
+        # não existe porque E30 não foi aplicado) só logamos warning, sem issue.
+        if: steps.check.outcome == 'failure'
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
+        with:
+          script: |
+            const fs = require('fs');
+            let report = null;
+            try {
+              report = JSON.parse(fs.readFileSync('/tmp/capacity-growth.json', 'utf-8'));
+            } catch (e) {
+              core.warning(`Projeção inconclusiva ou sem relatório (${e.message}) — provavelmente ops.table_size_history ainda não existe (E30 aguardando aprovação do PO). Não é um achado de capacidade, apenas logando.`);
+              return;
+            }
+            const flags = report?.flags || [];
+            if (flags.length === 0) {
+              core.warning('Relatório existe mas flags está vazio — nada a fazer.');
+              return;
+            }
+            const today = new Date().toISOString().slice(0, 10);
+            const title = `[capacity-growth] ${flags.length} tabela(s) projetada(s) acima do limiar — ${today}`;
+
+            const lines = flags.map((f) => {
+              const growth = f.growthPctPerMonth == null ? 'n/d' : `${f.growthPctPerMonth}%/mês`;
+              return `- \`${f.table}\` — atual ${f.currentBytes} bytes, projeção ${report.horizonDays}d: ${f.projectedBytes} bytes (${f.projectedSharePct}% do banco), crescimento: ${growth}`;
+            });
+
+            const body = [
+              `## Projeção de crescimento (${report.horizonDays} dias, série de ${report.seriesDaysAvailable} dias)`,
+              '',
+              `Limiares: >${report.objectSharePct}% do banco projetado OU >${report.monthlyGrowthPct}%/mês.`,
+              '',
+              ...lines,
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              '',
+              '### Como agir',
+              'Não é uma ordem de DROP/retenção automática — só um alerta antecipado (PLANO_DBA E30/E26-E29).',
+              'Investigar a causa do crescimento (backfill pontual vs. tendência real) antes de propor qualquer ação de retenção, particionamento ou índice — qualquer DDL resultante segue a REGRA #8 (aprovação explícita do PO por objeto).',
+              '',
+              '_Projeção por regressão linear simples entre o primeiro e o último ponto da série — sensível a outliers isolados (ex. backfill único). Confirmar a tendência com mais de um ponto antes de agir._',
+            ].join('\n');
+
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'capacity-growth',
+            });
+            const dup = existing.data.find((i) => i.title.startsWith('[capacity-growth]'));
+            if (dup) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: dup.number,
+                body: `Atualização do dia ${today}:\n\n${body}`,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels: ['capacity-growth', 'priority/low'],
+              });
+            }
+
+      - name: Não quebra o build
+        if: steps.check.outcome == 'failure'
+        run: |
+          echo "::warning::Projeção encontrou tabela(s) acima do limiar ou ficou inconclusiva — ver issue/artefato desta run. Job não quebra build (advisory, não gate)."

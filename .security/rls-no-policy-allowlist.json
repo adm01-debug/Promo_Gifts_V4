@@ -13,6 +13,12 @@
       "reason": "Deny-all intencional. Log de auditoria escrito por public.fn_anon_catalog_grant_audit_run() (SECURITY DEFINER, owner postgres, bypassrls), chamada pelo cron ativo 'anon-catalog-grant-audit-6h' (jobid 303, '0 */6 * * *'). Grava o resultado de fn_verify_anon_catalog_grants() — é o próprio mecanismo que monitora ao longo do tempo o achado P1/E22 (anon sem GRANT de escrita no catálogo). Sem consumidor em src/ ou supabase/functions/ (grep confirmado, 2026-09-16) — só trilha para investigação de incidente via service_role/painel Supabase.",
       "secdef_fn": "public.fn_anon_catalog_grant_audit_run",
       "cron_job": "anon-catalog-grant-audit-6h (jobid 303, 0 */6 * * *)"
+    },
+    {
+      "table": "ops.table_size_history",
+      "reason": "Deny-all intencional desde a criação (não é uma tabela pré-existente sendo documentada retroativamente — nasce assim). Telemetria operacional interna (série histórica de tamanho por tabela), gravada pelo cron table-size-history-daily via public.fn_cron_safe_run(168, ...) (SECURITY DEFINER, owner postgres, bypassrls). Consumida só por scripts/capacity-growth-projection.mjs (Management API/service_role em CI, nunca PostgREST). Sem consumidor em src/ ou supabase/functions/. Nem o schema ops nem a tabela têm GRANT a anon/authenticated.",
+      "secdef_fn": "public.fn_cron_safe_run",
+      "cron_job": "table-size-history-daily (p_key=168, 17 3 * * *)"
     }
   ]
 }
