@@ -314,11 +314,47 @@ WHERE n.nspname='public' AND p.prosecdef
 ```
 
 ### 8.4 Cron jobs multi-statement
+
+> **Corrigido em 2026-09-17 (E37).** A query original (arquivada abaixo)
+> conta todos os `;` do texto do `command`, inclusive o `;` que termina a
+> ÚNICA statement interna de um job embrulhado em `fn_cron_safe_run(key,
+> 'SELECT ...;', timeout, label)` **mais** o `;` que termina a própria
+> chamada externa — todo job wrapped de 1 statement já bate 2 `;` e é
+> **falso positivo**. Rodada real em 2026-09-17: a query antiga achou 57
+> jobs, mas só **6 tinham statements internos genuinamente múltiplos**
+> (os outros 51 eram wrapped-single-statement). Ver
+> `docs/E37_CRON_MULTISTATEMENT_2026-09-17.md`.
+
+```sql
+-- Query corrigida: para jobs "wrapped" em fn_cron_safe_run, conta quantas
+-- chamadas de fn_cron_safe_run existem no command (após E37, cada uma
+-- carrega 1 statement — múltiplas chamadas no mesmo job são intencionais e
+-- já isoladas, não um risco). Para jobs "bare" (sem fn_cron_safe_run),
+-- usa a contagem de ';' como antes (aí sim é um proxy razoável).
+SELECT jobname, schedule,
+  command LIKE '%fn_cron_safe_run(%' AS is_wrapped,
+  CASE WHEN command LIKE '%fn_cron_safe_run(%'
+    THEN (length(command)-length(replace(command,'fn_cron_safe_run(','')))/length('fn_cron_safe_run(')
+    ELSE (length(command)-length(replace(command,';','')))
+  END AS statement_count_estimate
+FROM cron.job
+WHERE active
+  AND (
+    (command LIKE '%fn_cron_safe_run(%' AND (length(command)-length(replace(command,'fn_cron_safe_run(','')))/length('fn_cron_safe_run(') > 1)
+    OR (command NOT LIKE '%fn_cron_safe_run(%' AND (length(command)-length(replace(command,';','')))>1)
+  )
+ORDER BY jobname;
+```
+
+<details><summary>Query original (falso-positivo, arquivada para histórico)</summary>
+
 ```sql
 SELECT jobname, schedule, command FROM cron.job
 WHERE active AND (length(command)-length(replace(command,';','')))>1
 ORDER BY jobname;
 ```
+
+</details>
 
 ### 8.5 GRANT de escrita para anon (P1 — FECHADO, esperado: 0)
 ```sql

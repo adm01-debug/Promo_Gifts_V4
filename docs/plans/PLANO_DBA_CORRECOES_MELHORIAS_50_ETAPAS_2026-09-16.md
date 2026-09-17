@@ -880,6 +880,29 @@ Em ambos: adicionar partição `DEFAULT` como rede de segurança com alerta se r
 - [ ] `cron.job` exportado (E03) antes e depois, diff revisado
 **Esforço:** G · **Dep.:** E03, E15, E36
 
+> **Preparo concluído em 2026-09-17** (`docs/E37_CRON_MULTISTATEMENT_2026-09-17.md`):
+> a query §8.4 original tinha falso-positivo sistemático — contava `;` no
+> texto inteiro do `command`, o que sempre bate 2 para qualquer job já
+> "wrapped" em `fn_cron_safe_run(key, 'SELECT unica_chamada();', ...)` de 1
+> statement só. Classificação manual das 57 linhas retornadas: só **6 jobs**
+> têm statements internos genuinamente múltiplos, não 59. 245
+> (schema-drift-check) já foi corrigido pelo E47. Restam 5: `ai-queue-stuck-cleanup`
+> (233, 4 UPDATEs), `fantasmas-deactivate-guard` (208, 3 UPDATEs),
+> `analyze-weekly-supplement` (195, 10 ANALYZE), `vacuum-analyze-weekly`
+> (53, 22 ANALYZE), `refresh-category-ancestors` (244, TRUNCATE+INSERT).
+> `cron_watchdog_log` (citada na ação do plano) não é um log genérico de
+> outcome — é escrita só por `fn_cron_watchdog()`, que mata queries
+> travadas e não está sequer agendada; correção não usa essa tabela, reusa
+> o padrão `fn_cron_safe_run` já validado no E47. 4 dos 5 jobs foram
+> divididos em chamadas independentes (statements sem dependência entre
+> si). O 5º (244, TRUNCATE+INSERT) foi mantido **junto** de propósito —
+> statements acopladas, dividir pioraria a atomicidade; embrulhadas na
+> mesma chamada ganham atomicidade via savepoint implícito do bloco
+> `EXCEPTION`. `docs/SCHEMA_REFERENCE.md` §8.4 corrigida (query antiga
+> arquivada, nova distingue jobs wrapped de bare). Migration:
+> `supabase/migrations/20260917100000_e37_split_genuine_multistatement_cron.sql`.
+> Aguardando aprovação do PO para aplicar via E15.
+
 ### E38 · Decidir os 2 cron jobs desligados `[REQUER-PO]`
 **Problema (medido):** `process-webhook-outbox` (a fila `webhook_outbox` não drena desde 2026-06-22?) e `pipeline-classify-categories` inativos. P3 do doc de julho continua aberto.
 **Ação:** `SELECT count(*), min(created_at) FROM webhook_outbox WHERE processed_at IS NULL`; verificar se `webhook-dispatcher` (edge) substituiu o cron; decidir religar / remover job + documentar / migrar. Idem para classificação.
