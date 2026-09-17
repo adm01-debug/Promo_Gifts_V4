@@ -585,6 +585,23 @@ Existem hoje duas vias técnicas de escrita no banco canônico: (a) o workflow `
 - [ ] `check-lint-0029-drift --require-live` passa
 **Esforço:** G · **Dep.:** E15, E17
 
+> **Preparo concluído em 2026-09-17** (`docs/E18_SECDEF_AUTHENTICATED_2026-09-17.md`):
+> 94/94 classificadas corpo-a-corpo, `.security/lint-0029-allowlist.json`
+> reescrito com `reason` específico por função (inclusive `zapp_catalog_stats`,
+> que faltava). 5 achados com REVOKE preparado (não aplicado): 1 crítico —
+> `mcp_kv_get` (segredo no corpo legível por quem tem o EXECUTE, bypassa RLS
+> deny-all de `mcp_kv`; `docs/E18_MCP_KV_GET_ACHADO_CRITICO_2026-09-17.md`,
+> `supabase/migrations/20260917060000_e18_revoke_authenticated_mcp_kv_get.sql`)
+> — e 4 gaps de autorização — `confirm_notifications_dispatched` (IDOR),
+> `registrar_entrada_estoque`/`registrar_saida_estoque` (sem checagem de
+> identidade, log de auditoria forjável), `fn_notify_user` (autenticado mas
+> sem checagem de relação chamador↔alvo, spam/phishing;
+> `docs/E18_ACHADOS_SECUNDARIOS_AUTHENTICATED_2026-09-17.md`,
+> `supabase/migrations/20260917061500_e18_revoke_authenticated_authz_gaps.sql`).
+> Nenhum consumidor real conhecido depende do grant a `authenticated` em
+> nenhuma das 5 (verificado via grep em `src/`/`supabase/functions/` e ACL de
+> `service_role`). Aguardando aprovação do PO para aplicar via E15.
+
 ### E19 · Decidir as 2 tabelas com RLS sem policy `[REQUER-PO]`
 **Problema (medido):** `magazine_duplicate_requests` e `anon_catalog_grant_audit_log` têm RLS ligada e **zero policies** → só `service_role` acessa. Pode ser intencional (log escrito por SECDEF) ou esquecimento (feature morta).
 **Ação:** verificar consumidores (`src/`, `supabase/functions`, `pg_depend`, `postgres_logs` 30 dias). Se intencional: `COMMENT ON TABLE ... 'RLS deny-all intencional: acesso só por service_role/SECDEF <fn>'` + entrada em allowlist. Se não: policy mínima ou drop (com backup).

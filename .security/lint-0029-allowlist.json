@@ -5,7 +5,7 @@
   "functions": [
     {
       "fn": "public.can_access_quote(_quote_id uuid)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): auth.uid() obrigatório — EXISTS exige user_is_org_member(organization_id) E (is_coord_or_above(auth.uid()) OU seller_id/created_by/assigned_to = auth.uid()). Sem relação com a cotação, retorna false."
     },
     {
       "fn": "public.check_hardening_status()",
@@ -13,187 +13,187 @@
     },
     {
       "fn": "public.check_login_rate_limit(_email text, _ip text)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): helper de rate-limit de login, roda antes da autenticação (email/IP como parâmetro), só retorna contadores/lockout — sem auth.uid() por design, mesma classe de fn_check_login_allowed (já revisado no E17). EXECUTE também concedido a anon pela mesma razão."
     },
     {
       "fn": "public.confirm_notifications_dispatched(p_ids uuid[])",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "ACHADO E18 (2026-09-17): UPDATE workspace_notifications SET is_read=true WHERE id=ANY(p_ids), sem nenhuma checagem de auth.uid()/ownership — IDOR, qualquer authenticated marca notificação de outro usuário como lida. Único consumidor real (process-queue) já roda como service_role. REVOKE de authenticated preparado e pendente de aprovação — ver docs/E18_ACHADOS_SECUNDARIOS_AUTHENTICATED_2026-09-17.md e supabase/migrations/20260917061500_e18_revoke_authenticated_authz_gaps.sql."
     },
     {
       "fn": "public.fn_anon_catalog_grant_audit_run()",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): job de auditoria interna (cron) — chama fn_verify_anon_catalog_grants() e grava o resultado em anon_catalog_grant_audit_log; não recebe input do chamador nem retorna dado sensível. Sem auth.uid() por ser rotina de sistema; pior caso de chamada por authenticated é spam de linhas no log de auditoria, não exposição/corrupção de dado de negócio."
     },
     {
       "fn": "public.fn_approve_product_deactivation(p_request_id uuid, p_notes text)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): gate 'IF v_uid IS NOT NULL AND NOT is_admin_or_above(v_uid) THEN nega' — bloqueia não-admin com sessão válida. Nota para hardening futuro (baixa prioridade): se auth.uid() retornasse NULL a checagem seria pulada; não deveria ocorrer para authenticated com JWT válido (sub sempre populado), mas o padrão seria mais estrito exigindo v_uid IS NOT NULL primeiro."
     },
     {
       "fn": "public.fn_batch_update_cart_item_sort_order(p_updates jsonb)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): RAISE EXCEPTION se auth.uid() IS NULL; UPDATE restrito via EXISTS (seller_carts.seller_id = auth.uid()) — só atualiza itens do próprio carrinho do chamador."
     },
     {
       "fn": "public.fn_check_login_allowed(p_email text, p_ip_address text, p_city text, p_user_agent text)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): helper pré-login (mesmo padrão de check_login_rate_limit), roda antes da autenticação, sem auth.uid() por design; já revisado no E17."
     },
     {
       "fn": "public.fn_get_all_leaf_categories()",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): leitura pública de categorias-folha do catálogo (mv_product_leaf_category), sem parâmetro do chamador, sem PII — mesma classe de fn_super_filtro_opcoes."
     },
     {
       "fn": "public.fn_get_color_swatches_batch(p_product_ids uuid[])",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): leitura de swatches de cor por produto (catálogo público, filtra só is_active/is_deleted), sem PII."
     },
     {
       "fn": "public.fn_get_conversion_funnel(p_user_id uuid, p_days integer)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): gate real — 'IF p_user_id IS NOT NULL AND p_user_id != auth.uid() AND NOT is_manager_or_admin() THEN nega'. Só o próprio usuário ou manager/admin veem o funil de outro."
     },
     {
       "fn": "public.fn_get_customization_price(p_area_id uuid, p_quantidade integer, p_num_cores integer, p_largura_cm numeric, p_altura_cm numeric, p_num_pontos integer)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): cálculo de preço de personalização a partir de tabelas de preço públicas do catálogo, sem PII, sem escrita."
     },
     {
       "fn": "public.fn_get_discontinued_products(p_supplier_code text, p_search text, p_status text, p_limit integer, p_offset integer)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): leitura de dashboard operacional (produtos descontinuados por fornecedor), sem PII de usuário — dado de catálogo/fornecedor."
     },
     {
       "fn": "public.fn_get_discontinued_stats()",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): agregado de dashboard operacional (contagem por fornecedor), sem PII."
     },
     {
       "fn": "public.fn_get_low_stock_alerts(p_limit integer, p_since date)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): leitura de dashboard operacional (estoque baixo por produto/fornecedor), sem PII."
     },
     {
       "fn": "public.fn_get_navigation_patterns(p_user_id uuid, p_days integer)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): consulta a outro p_user_id é bloqueada por is_manager_or_admin() quando p_user_id != auth.uid(); mesmo padrão de fn_get_conversion_funnel/fn_get_repressed_demand."
     },
     {
       "fn": "public.fn_get_novelty_alerts(p_limit integer, p_since date)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): leitura de dashboard operacional (novidades de estoque por produto), sem PII."
     },
     {
       "fn": "public.fn_get_product_ai_context(p_product_id uuid)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): leitura de dados descritivos de produto (catálogo público) para geração de contexto de IA, sem PII."
     },
     {
       "fn": "public.fn_get_product_customization_options(p_product_id uuid)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): leitura de opções de personalização do catálogo público, sem PII."
     },
     {
       "fn": "public.fn_get_product_intelligence_all()",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): agregado de inteligência por produto (não por usuário), sem PII — dashboard operacional."
     },
     {
       "fn": "public.fn_get_recent_restocks(p_limit integer, p_since date)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): leitura de dashboard operacional (reposições recentes por produto), sem PII."
     },
     {
       "fn": "public.fn_get_replenishment_stats()",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): agregado de dashboard operacional (métricas de reposição), sem PII."
     },
     {
       "fn": "public.fn_get_reposicao_listing(p_supplier_id uuid, p_category_id uuid, p_sort_by text, p_limit integer, p_offset integer, p_days integer)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): leitura de dashboard operacional (listagem de reposição por fornecedor/categoria), sem PII."
     },
     {
       "fn": "public.fn_get_reposicao_metrics()",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): agregado de dashboard operacional (métricas de reposição), sem PII."
     },
     {
       "fn": "public.fn_get_reposicao_variants_summary(p_product_ids uuid[])",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): leitura de sumário de variantes por produto (catálogo/estoque), sem PII."
     },
     {
       "fn": "public.fn_get_repressed_demand(p_user_id uuid, p_days integer, p_limit integer)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): consulta a outro p_user_id é bloqueada por is_manager_or_admin() quando p_user_id != auth.uid(); a query de fato é agregado global de análise de busca, p_user_id só participa do gate de autorização."
     },
     {
       "fn": "public.fn_get_stock_notification_counts(p_since date)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): agregado de dashboard operacional (contagem de alertas de estoque), sem PII."
     },
     {
       "fn": "public.fn_get_stockout_alerts(p_limit integer, p_since date)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): leitura de dashboard operacional (produtos em ruptura), sem PII."
     },
     {
       "fn": "public.fn_global_search(p_term text, p_limit integer, p_types text[])",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): busca pública no catálogo (produtos/coleções/etc.), EXECUTE também concedido a anon; auth.uid() usado internamente sem gate de acesso (mesma classe de fn_super_filtro, já revisado no E17)."
     },
     {
       "fn": "public.fn_list_deactivation_requests(p_status text, p_limit integer)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): lista solicitações pendentes de desativação de produto sem checagem de admin no corpo (diferente de fn_approve/fn_reject_product_deactivation, que exigem is_admin_or_above). Dado exposto é operacional (produto/fornecedor/motivo), não PII de cliente. Registrado como gap de hardening de baixa prioridade para revisão futura, não elevado a REQUER-PO nesta rodada."
     },
     {
       "fn": "public.fn_log_search_analytics(p_search_term text, p_results_count integer, p_search_context text, p_debounce_seconds integer)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): grava em search_analytics (global, sem PII) e em user_search_history só quando auth.uid() IS NOT NULL, sempre com user_id=auth.uid() — sem gap de ownership. Usa advisory lock para evitar corrida TOCTOU."
     },
     {
       "fn": "public.fn_notify_user(_target_user_id uuid, _title text, _message text, _type text, _category text, _action_url text, _metadata jsonb)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "ACHADO E18 (2026-09-17): exige auth.uid() mas não valida relação chamador↔_target_user_id — qualquer authenticated insere notificação arbitrária (título/mensagem/action_url) na caixa de qualquer outro usuário (vetor de spam/phishing). Nenhum call-site real encontrado. REVOKE de authenticated preparado e pendente de aprovação — ver docs/E18_ACHADOS_SECUNDARIOS_AUTHENTICATED_2026-09-17.md e supabase/migrations/20260917061500_e18_revoke_authenticated_authz_gaps.sql."
     },
     {
       "fn": "public.fn_product_active_for_rls(p_id uuid)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): helper de RLS (checa só is_active/is_deleted de um produto), sem PII, EXECUTE também concedido a anon por ser usado em policy de catálogo público."
     },
     {
       "fn": "public.fn_products_quality_dashboard()",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): agregado de dashboard de qualidade de catálogo (contagens por fornecedor), sem PII."
     },
     {
       "fn": "public.fn_qa_check_image_coverage()",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): leitura de dashboard de QA (cobertura de imagens via view vw_qa_products_missing_images), sem PII."
     },
     {
       "fn": "public.fn_qa_scan_imageless_products()",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): escreve (auto-resolve + insere alertas via ON CONFLICT DO NOTHING, idempotente) sem checagem de auth.uid(). Risco de negócio baixo — housekeeping de QA sem input do chamador nem exposição de PII; candidato a hardening futuro de baixa prioridade, não elevado a REQUER-PO nesta rodada."
     },
     {
       "fn": "public.fn_reject_product_deactivation(p_request_id uuid, p_rejection_reason text)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): mesmo gate condicional de fn_approve_product_deactivation ('IF v_uid IS NOT NULL AND NOT is_admin_or_above'); mesma nota de hardening futuro de baixa prioridade."
     },
     {
       "fn": "public.fn_request_product_deactivation(p_product_id uuid, p_reason text, p_reason_code text, p_notes text)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): fluxo por design — qualquer authenticated pode abrir uma solicitação (requested_by=auth.uid(), status='pending'); a ativação real do efeito (desativar o produto) exige aprovação de admin via fn_approve_product_deactivation. Sem gap: a criação de uma solicitação pendente não é, por si, uma ação privilegiada."
     },
     {
       "fn": "public.fn_rpc_exists(_fname text)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): utilitário que checa existência de função em pg_proc/pg_namespace (usado por outras RPCs); exposição é só nomes de função já públicos via types.ts, sem PII."
     },
     {
       "fn": "public.fn_rupture_by_level(p_nivel text, p_limit integer, p_offset integer, p_preferred boolean)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): leitura de dashboard operacional (ruptura de estoque por nível), sem PII."
     },
     {
       "fn": "public.fn_rupture_quick_stats()",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): agregado de dashboard operacional (mv_ema_kpi_by_level), sem PII."
     },
     {
       "fn": "public.fn_super_filtro_facets(p_search_term text, p_category_slug text, p_category_id uuid, p_brands text[], p_only_in_stock boolean, p_min_price numeric, p_max_price numeric, p_target_audiences text[], p_is_kit boolean, p_is_textil boolean, p_is_thermal boolean, p_has_gift_box boolean, p_material_groups text[], p_technique_groups text[], p_color_groups text[], p_date_slugs text[], p_endomarketing boolean)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): facetas de busca do catálogo público, EXECUTE também concedido a anon, sem PII; mesma classe revisada no E17."
     },
     {
       "fn": "public.fn_super_filtro_opcoes()",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): opções agregadas de filtro do catálogo público (sem anon aqui, diferente das irmãs fn_super_filtro*), sem PII."
     },
     {
       "fn": "public.fn_super_filtro_price_range(p_brands text[], p_category_slug text, p_target_audiences text[], p_is_textil boolean, p_is_thermal boolean, p_only_in_stock boolean)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): faixa de preço do catálogo público, EXECUTE também concedido a anon, sem PII; mesma classe revisada no E17."
     },
     {
       "fn": "public.fn_super_filtro_product_ids(_datas text[], _tags text[], _ramos text[], _segmentos text[], _publico text[], _endomarketing text[])",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "Achado E07 (já rastreado): EXECUTE concedido a PUBLIC além de authenticated — REVOKE de PUBLIC preparado no Pacote de Aprovação #1, aguardando aprovação do PO. O grant a authenticated em si é catálogo público sem PII."
     },
     {
       "fn": "public.fn_super_filtro(p_search_term text, p_category_slug text, p_category_id uuid, p_brands text[], p_only_in_stock boolean, p_min_price numeric, p_max_price numeric, p_target_audiences text[], p_is_kit boolean, p_is_textil boolean, p_is_thermal boolean, p_has_gift_box boolean, p_material_groups text[], p_technique_groups text[], p_color_groups text[], p_date_slugs text[], p_endomarketing boolean, p_limit integer, p_offset integer, p_sort text)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): busca principal do catálogo público, EXECUTE também concedido a anon, sem PII; já revisado no E17 (REVOKE de PUBLIC feito em 20260916200000_e17_revoke_public_fn_super_filtro.sql para o irmão fn_super_filtro_product_ids)."
     },
     {
       "fn": "public.fn_verify_anon_catalog_grants()",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): auditoria interna (compara grants esperados de anon contra pg_catalog), sem input do chamador, sem PII — usada por fn_anon_catalog_grant_audit_run."
     },
     {
       "fn": "public.get_catalog_bestseller_page(p_sort text, p_limit integer, p_offset integer)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): página pública de mais vendidos do catálogo, EXECUTE também concedido a anon, sem PII; mesma classe revisada no E17."
     },
     {
       "fn": "public.get_collections_weekly_count(_weeks integer)",
@@ -201,27 +201,27 @@
     },
     {
       "fn": "public.get_favorite_list_counts(_user_id uuid)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): acesso a _user_id != auth.uid() exige is_admin_or_above; senão só retorna a contagem do próprio chamador."
     },
     {
       "fn": "public.get_inventory_health()",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): agregado de dashboard operacional (saúde de estoque), sem PII."
     },
     {
       "fn": "public.get_profile_and_roles(_user_id uuid)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): RAISE EXCEPTION se _user_id IS NULL; RAISE EXCEPTION 'forbidden' ao consultar outro usuário sem papel dev — consulta ao próprio perfil sempre permitida."
     },
     {
       "fn": "public.get_promo_sales_90d_by_product()",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): agregado de vendas por produto (order_items/orders), granularidade de produto — sem PII de cliente."
     },
     {
       "fn": "public.get_promo_sales_ranking()",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): ranking agregado de vendas por produto (quote_items/quotes), sem PII de cliente."
     },
     {
       "fn": "public.get_supplier_reliability_history(_supplier_id uuid, _limit integer)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): histórico de confiabilidade por fornecedor (supplier_replenishment_events), dado operacional sem PII de cliente."
     },
     {
       "fn": "public.get_top_collected_products(_days integer, _limit integer)",
@@ -229,15 +229,15 @@
     },
     {
       "fn": "public.is_admin_or_above(_user_id uuid)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): RAISE EXCEPTION ao consultar papel de outro usuário sem ser o próprio dev — não vaza papel de terceiros para authenticated comum."
     },
     {
       "fn": "public.is_coord_or_above(_user_id uuid)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): mesmo padrão de is_admin_or_above — RAISE EXCEPTION ao consultar papel de outro usuário sem ser dev."
     },
     {
       "fn": "public.is_dnd_active(p_user_id uuid)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): este overload (com p_user_id) NÃO checa auth.uid() — qualquer authenticated lê o status de 'não perturbe' (boolean) de qualquer outro usuário. Dado de sensibilidade muito baixa (preferência de notificação, não PII/segredo); registrado como gap de hardening de baixa prioridade, não elevado a REQUER-PO nesta rodada. O overload sem argumento (is_dnd_active()) é escopado internamente a auth.uid() e não tem esse problema."
     },
     {
       "fn": "public.is_org_member(_user_id uuid, _org_id uuid)",
@@ -245,7 +245,7 @@
     },
     {
       "fn": "public.is_org_owner_or_admin(org_id uuid)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): checagem de membership escopada a auth.uid() internamente."
     },
     {
       "fn": "public.get_sitemap_public(p_limit integer, p_offset integer)",
@@ -333,31 +333,31 @@
     },
     {
       "fn": "public.mcp_kv_get(p_secret text, p_key text)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "ACHADO CRÍTICO E18 (2026-09-17): única guarda é comparação de string contra literal fixo embutido em prosrc, legível por qualquer role com USAGE em pg_catalog (padrão para authenticated) — reduz a autorização a praticamente nada; bypassa RLS deny-all de public.mcp_kv via SECURITY DEFINER. Funções irmãs (mcp_kv_set, mcp_kv_try_lock) não têm esse grant. REVOKE de authenticated preparado e pendente de aprovação — ver docs/E18_MCP_KV_GET_ACHADO_CRITICO_2026-09-17.md e supabase/migrations/20260917060000_e18_revoke_authenticated_mcp_kv_get.sql."
     },
     {
       "fn": "public.org_has_any_members(_org_id uuid)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): retorna só um boolean de existência (organização tem algum membro?), sem auth.uid() necessário e sem PII exposta."
     },
     {
       "fn": "public.registrar_entrada_estoque(p_variant_sku character varying, p_quantity integer, p_unit_cost numeric, p_supplier_name character varying, p_document_number character varying, p_notes text, p_user_id uuid)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "ACHADO E18 (2026-09-17): sem checagem de auth.uid()/role; p_user_id é informado livremente pelo chamador e gravado como created_by em archive.stock_movements — permite alterar estoque de qualquer variante e forjar autoria no log. Nenhum call-site real encontrado. REVOKE de authenticated preparado e pendente de aprovação — ver docs/E18_ACHADOS_SECUNDARIOS_AUTHENTICATED_2026-09-17.md e supabase/migrations/20260917061500_e18_revoke_authenticated_authz_gaps.sql."
     },
     {
       "fn": "public.registrar_saida_estoque(p_variant_sku character varying, p_quantity integer, p_movement_type character varying, p_document_number character varying, p_notes text, p_user_id uuid, p_allow_negative boolean)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "ACHADO E18 (2026-09-17): mesmo gap de registrar_entrada_estoque — validação de p_movement_type e estoque insuficiente existe, mas nenhuma checagem de identidade do chamador; p_user_id forjável no log de auditoria. Nenhum call-site real encontrado. REVOKE de authenticated preparado e pendente de aprovação — ver docs/E18_ACHADOS_SECUNDARIOS_AUTHENTICATED_2026-09-17.md e supabase/migrations/20260917061500_e18_revoke_authenticated_authz_gaps.sql."
     },
     {
       "fn": "public.request_discount_approval_transactional(_quote_id uuid, _seller_notes text)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): RAISE EXCEPTION se auth.uid() IS NULL — autenticação obrigatória antes de qualquer efeito."
     },
     {
       "fn": "public.respond_discount_approval_transactional(_request_id uuid, _approved boolean, _admin_notes text)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): RAISE EXCEPTION se auth.uid() IS NULL OR NOT is_supervisor_or_above(auth.uid()) — só supervisor+ responde solicitação de desconto."
     },
     {
       "fn": "public.restore_collection_item_from_trash(_item_id uuid)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): SELECT ... WHERE id=_item_id AND user_id=auth.uid() — só restaura item da própria lixeira do chamador."
     },
     {
       "fn": "public.restore_seller_cart(_snapshot jsonb)",
@@ -365,15 +365,19 @@
     },
     {
       "fn": "public.start_step_up_challenge(_action text, _target_ref text)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): RAISE EXCEPTION se auth.uid() IS NULL; challenge sempre criado com user_id=auth.uid()."
     },
     {
       "fn": "public.user_is_org_member(org_id uuid)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): EXISTS escopado a user_id=auth.uid() — usado internamente por can_access_quote."
     },
     {
       "fn": "public.verify_step_up_password(_challenge_id uuid, _password_attempt text)",
-      "reason": "Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados."
+      "reason": "E18 (2026-09-17): UPDATE restrito a id=_challenge_id AND user_id=auth.uid() AND consumed=false AND expires_at>now() — só o dono do challenge, ainda válido, pode confirmá-lo."
+    },
+    {
+      "fn": "public.zapp_catalog_stats()",
+      "reason": "Achado E07 (já rastreado): EXECUTE concedido a authenticated sem necessidade (migration de correção nunca chegou a rodar — divergência ledger/schema documentada em E12/POLITICA_DDL). REVOKE preparado no Pacote de Aprovação #1, aguardando aprovação do PO."
     }
   ]
 }
