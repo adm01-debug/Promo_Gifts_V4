@@ -842,6 +842,24 @@ Em ambos: adicionar partição `DEFAULT` como rede de segurança com alerta se r
 - [ ] `pg_stat_statements` 7 dias depois: total_exec_time < 10 % do anterior
 **Esforço:** M · **Dep.:** E34
 
+> **Preparo concluído em 2026-09-17** (`docs/E35_REPOSICAO_BACKFILL_LENTO_2026-09-17.md`):
+> 2 causas raiz identificadas com `EXPLAIN (ANALYZE, BUFFERS)` real (não
+> especulação). **Causa #1 (dominante):** predicado não-sargável
+> `(captured_at AT TIME ZONE 'America/Sao_Paulo')::date = p_date` na CTE
+> principal de `fn_aggregate_stock_daily` força varredura do índice inteiro
+> (274.462 linhas) a cada chamada horária — medido 7.513 ms com o predicado
+> atual vs. **16 ms** (~470x) com um range sargável equivalente
+> (equivalência provada por `count(*)`: 4.041 = 4.041 para 2026-09-15).
+> **Causa #2:** anti-join de baseline (19.698 fontes ativas) roda inteiro a
+> cada chamada, ~2,65 s mesmo quando não há nada a inserir — não corrigido
+> em lógica (função tem histórico de bugs sutis, comentário `FIX GAP-3`),
+> mitigado só por redução de frequência. Correção proposta: (1) reescreve o
+> predicado (zero mudança de lógica de agregação); (2) `cron.alter_job` de
+> `5 * * * *` para `5 */4 * * *` (24→6 chamadas/dia). Estimativa: ~427 s/dia
+> → ~60 s/dia de custo total de cron (~86% de redução). Migration pronta:
+> `supabase/migrations/20260917080000_e35_fix_reposicao_backfill_perf.sql`.
+> Aguardando aprovação do PO para aplicar via E15.
+
 ### E36 · Distribuição de custo de `fn_cron_safe_run` por job `[DB-RO]` ✅ Concluída em 2026-09-16
 **Problema (medido):** 355.638 chamadas, média 1.157 ms, total 411.672 s. É wrapper de ~48 crons — a média esconde 2–3 jobs pesados.
 **Ação:** `cron.job_run_details` (30 dias): `jobname, count, avg(end_time-start_time), max` → top 10; correlacionar com `pg_stat_statements` das queries internas. Produzir ranking de custo.
