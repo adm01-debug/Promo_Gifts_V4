@@ -1,7 +1,7 @@
 -- ==============================================================
 -- SCHEMA_LIVE.sql — dump do schema `public` do projeto canônico
 -- Projeto: doufsxqlfjyuvxuezpln
--- Gerado em: 2026-09-16T (via supabase db dump --linked --schema public)
+-- Gerado em: 2026-09-21T06:27:46Z
 -- Fonte: supabase db dump --linked --schema public
 -- ==============================================================
 
@@ -70517,6 +70517,35 @@ CREATE OR REPLACE FUNCTION "public"."zapp_catalog_stats"() RETURNS "jsonb"
           and created_at >= date_trunc('month', now()) - interval '6 months'
         group by 1
       ) months
+    ),
+    -- E36: faixa de preco real para o slider (min/max ja ignora NULL por
+    -- padrao do agregado SQL; 4 produtos ativos sem sale_price hoje).
+    'price_min', (select min(sale_price) from products where is_active and is_deleted is not true),
+    'price_max', (select max(sale_price) from products where is_active and is_deleted is not true),
+    -- E36: top 20 cores/materiais por frequencia. colors/materials sao
+    -- jsonb com 2 formatos reais (confirmado por SQL antes de escrever,
+    -- mesmo achado da E22): elemento string OU objeto {"nome": "..."} -
+    -- coalesce(elem->>'nome', elem #>> '{}') cobre os dois. upper()
+    -- normaliza porque o filtro de listagem (color/material da action
+    -- list_products) ja compara em upper() - sem isso "Colorido" e
+    -- "COLORIDO" apareceriam como 2 chips diferentes pro usuario.
+    'top_colors', (
+      select coalesce(jsonb_agg(jsonb_build_object('label', label, 'count', freq) order by freq desc), '[]'::jsonb)
+      from (
+        select upper(coalesce(elem->>'nome', elem #>> '{}')) as label, count(*) as freq
+        from products p, jsonb_array_elements(p.colors) elem
+        where p.is_active and p.is_deleted is not true
+        group by 1 order by 2 desc limit 20
+      ) tc
+    ),
+    'top_materials', (
+      select coalesce(jsonb_agg(jsonb_build_object('label', label, 'count', freq) order by freq desc), '[]'::jsonb)
+      from (
+        select upper(coalesce(elem->>'nome', elem #>> '{}')) as label, count(*) as freq
+        from products p, jsonb_array_elements(p.materials) elem
+        where p.is_active and p.is_deleted is not true
+        group by 1 order by 2 desc limit 20
+      ) tm
     )
   );
 $$;
