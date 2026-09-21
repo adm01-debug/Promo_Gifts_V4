@@ -51,20 +51,23 @@
 > Nada do resto deste plano tem efeito real em produção enquanto esta fase não fechar — é ela que faz o
 > trabalho já feito existir fora do disco local.
 
-### E1 · Push da branch e abertura do PR `[GIT]`
+### E1 · Push da branch e abertura do PR `[GIT]` — ✅ concluído (2026-09-20, retroativo)
 **Problema (medido):** `claude/audit-gaps-20260915` está 29 commits à frente do seu remoto; nenhum PR aberto.
 **Ação:** `git push origin claude/audit-gaps-20260915`; `gh pr create` com corpo listando as 3 frentes
 fechadas nesta sessão (E18/E35/E37/E38/E45/E47 preparadas, auditoria tripla, este plano).
 **Checklist de conclusão:**
-- [ ] `origin/claude/audit-gaps-20260915` = `HEAD` local
-- [ ] PR aberto, linkando `docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md` e este arquivo
+- [x] `origin/claude/audit-gaps-20260915` = `HEAD` local — satisfeito pelo push real desta branch
+- [x] PR aberto, linkando os dois planos — **PR #1865**, mergeado em 2026-09-17T11:14:16Z
 **Esforço:** P · **Dep.:** —
 
-### E2 · CI verde no PR `[GIT]`
+### E2 · CI verde no PR `[GIT]` — ✅ concluído (2026-09-20, retroativo)
 **Problema:** desconhecido até o PR existir — 40+ workflows, alguns com histórico de falha em PRs de migration draft (`db-schema-drift-check` vermelho no `main` desde 15/09 por causa já documentada no E02 do plano DBA).
 **Ação:** abrir o PR (E1), observar os checks obrigatórios, corrigir o que quebrar por causa real (não silenciar). Se `db-schema-drift-check` falhar pela mesma causa raiz do `main`, documentar no PR que é conhecida (não é regressão desta branch) em vez de tentar mascarar.
 **Checklist de conclusão:**
-- [ ] Todos os checks obrigatórios do ruleset verdes, ou vermelho justificado por link para causa raiz conhecida
+- [x] Todos os checks obrigatórios verdes, ou vermelho justificado — **PR #1866** (mergeado) corrigiu 3 gates
+  vermelhos pós-merge do #1865 e documentou os 4 restantes como pré-existentes/aceitos (não-regressão).
+  Causa raiz real dos 4 (não só "aceita") foi finalmente encontrada e corrigida na Onda 0 desta execução —
+  ver `docs/ONDA0_TRIAGEM_EMERGENCIA_2026-09-20.md`.
 **Esforço:** M · **Dep.:** E1
 
 ### E3 · Auditar sincronismo plano↔commit para todas as etapas "concluídas"/"preparadas" `[GIT]`
@@ -75,10 +78,10 @@ fechadas nesta sessão (E18/E35/E37/E38/E45/E47 preparadas, auditoria tripla, es
 - [ ] 0 divergências abertas, ou cada uma corrigida (como fiz para E45) no mesmo padrão
 **Esforço:** M · **Dep.:** E1
 
-### E4 · Merge do PR após revisão humana `[GIT]`
+### E4 · Merge do PR após revisão humana `[GIT]` — ✅ concluído (2026-09-20, retroativo)
 **Ação:** aguardar aprovação humana explícita (não é etapa que um agente decide sozinho — é mudança visível a outros). Squash ou merge conforme convenção do repo (conferir PRs recentes).
 **Checklist de conclusão:**
-- [ ] PR mergeado em `main`, ou decisão registrada de manter como branch de trabalho por mais tempo
+- [x] PR mergeado em `main` — #1865 (2026-09-17T11:14:16Z) + cauda em #1866
 **Esforço:** P · **Dep.:** E2
 
 ### E5 · Consolidar Pacote de Aprovação #2 `[REQUER-PO]`
@@ -174,13 +177,17 @@ fechadas nesta sessão (E18/E35/E37/E38/E45/E47 preparadas, auditoria tripla, es
 
 ## FASE 2 — Segurança fora do escopo DB (E17–E22)
 
-### E17 · Confirmar e, se necessário, executar a rotação pedida em #1807 `[SEGURANÇA]` `[REQUER-PO]` — **P0**
+### E17 · Confirmar e, se necessário, executar a rotação pedida em #1807 `[SEGURANÇA]` `[REQUER-PO]` — **P0** — revalidado 2026-09-20
 **Problema (relatado, não revalidado nesta sessão):** issue P0 desde 2026-08-30 pede rotação de `ACCESS_KEY`/`service_role` do projeto canônico por vazamento no histórico público do `migrate-helper`.
 **Ação:** confirmar com o PO se a rotação já ocorreu fora deste fluxo (muitas vezes esse tipo de ação é feita direto no painel Supabase, sem deixar rastro em commit). Se não: rotacionar `service_role` key no painel, atualizar **todos** os consumidores (Edge Functions com a env var, CI secrets do GitHub Actions, os ~80 conectores MCP desta própria sessão que usam a mesma credencial — ver E21), confirmar que o app continua funcional pós-rotação antes de revogar a chave antiga.
 **Checklist de conclusão:**
-- [ ] Rotação confirmada ou executada, com data
-- [ ] Todos os consumidores atualizados e validados
-- [ ] #1807 fechada com evidência
+- [x] Rotação confirmada, com data — issue #1807 fechada em 2026-09-20T10:39:57Z: "Confirmado pelo PO
+  em 2026-09-20: a credencial já foi rotacionada."
+- [ ] Todos os consumidores atualizados e validados — secrets `PGDATABASE`/`PGHOST`/`PGPASSWORD`/`PGUSER`
+  do GitHub Actions foram atualizados na mesma janela (10:50-10:57Z); efeito colateral encontrado e
+  corrigido na Onda 0 (ver `docs/ONDA0_TRIAGEM_EMERGENCIA_2026-09-20.md` item 2). Mapeamento dos ~80
+  conectores MCP (E21) ainda pendente.
+- [x] #1807 fechada com evidência
 **Esforço:** G · **Dep.:** E14 (achados de gitleaks podem apontar outros segredos no mesmo lote)
 
 ### E18 · Remediar os achados reais de #1341 `[SEGURANÇA]` `[REQUER-PO]`
@@ -296,11 +303,14 @@ fechadas nesta sessão (E18/E35/E37/E38/E45/E47 preparadas, auditoria tripla, es
 **Ação:** completar os lotes de `migration repair --status applied` além do Lote 2 já aprovado no Pacote #1.
 **Esforço:** M · **Dep.:** E31
 
-### E33 · Fechar o gap do E09 — criar o arquivo-espelho pendente `[REQUER-PO]`
+### E33 · Fechar o gap do E09 — criar o arquivo-espelho pendente `[REQUER-PO]` — ✅ concluído (PR #1866, 2026-09-17)
 **Problema (medido nesta sessão):** o próprio E09 (2026-09-16) já identificou que `20260623_fix_google_provider_secret_name` é uma entrada real do ledger sem arquivo local, e propôs criar `supabase/migrations/20260916181609_backfill_fix_google_provider_secret_name_20260623.sql` como espelho — esse arquivo **nunca foi criado** (confirmado na auditoria de hoje, e é uma das 8 referências quebradas que `check:migration-refs` já reporta).
 **Ação:** criar o arquivo exatamente como o E09 especificou.
 **Checklist de conclusão:**
-- [ ] Arquivo criado, `check:migration-refs` sem essa referência quebrada
+- [x] Arquivo criado, `check:migration-refs` sem essa referência quebrada — criado em PR #1866
+  (`supabase/migrations/20260916181609_backfill_fix_google_provider_secret_name_20260623.sql`,
+  já em `main`). Ainda **não aplicado** ao ledger (isso é o repair do Pacote #1 Ação 3c, pendente
+  na Onda 2 da execução de 2026-09-20).
 **Esforço:** P · **Dep.:** —
 
 ### E34 · Validar a constraint `NOT VALID` (origem: E21) `[REQUER-PO]`
@@ -355,16 +365,17 @@ fechadas nesta sessão (E18/E35/E37/E38/E45/E47 preparadas, auditoria tripla, es
 - [ ] Workflow agendado, 1ª execução automática confirmada
 **Esforço:** M · **Dep.:** E42
 
-### E44 · Registrar em `CLAUDE.md` a regra "sessão de governança termina com `git push`" `[DOCS]`
+### E44 · Registrar em `CLAUDE.md` a regra "sessão de governança termina com `git push`" `[DOCS]` — ✅ concluído (PR #1866, 2026-09-17)
 **Problema (medido nesta sessão):** a causa raiz do achado #1 (workflows de segurança invisíveis no GitHub) foi processual — múltiplas sessões prepararam trabalho crítico e nunca enviaram. `CLAUDE.md` hoje não instrui isso.
 **Ação:** adicionar regra explícita (nova REGRA #9, ou nota na REGRA #6) — sessão automática que cria commit relevante para segurança/governança deve `git push` ao final, não deixar só local, mesmo que não haja PR.
 **Checklist de conclusão:**
-- [ ] `CLAUDE.md` atualizado
+- [x] `CLAUDE.md` atualizado — REGRA #9 presente (cabeçalho do arquivo já cita "adicionada REGRA #9"),
+  aplicada nesta própria execução (branch empurrada onda a onda).
 **Esforço:** P · **Dep.:** —
 
-### E45 · Pós-mortem do achado #1 `[PROCESSO]`
+### E45 · Pós-mortem do achado #1 `[PROCESSO]` — ✅ concluído (PR #1866, 2026-09-17)
 **Ação:** documento curto (`docs/POSMORTEM_COMMITS_LOCAIS_2026-09-17.md`) — o quê aconteceu, por quanto tempo, por que não foi notado antes, o que muda (E44) para não repetir. Sem culpar sessão/pessoa específica — é gap de processo, registrado no CLAUDE.md como "REGRA #7/#8 sabem lidar com o Lovable empurrando; não havia regra simétrica para 'Claude não empurrou'".
-**Esforço:** P · **Dep.:** E44
+**Esforço:** P · **Dep.:** E44 — `docs/POSMORTEM_COMMITS_LOCAIS_2026-09-17.md` existe em `main`.
 
 ---
 
