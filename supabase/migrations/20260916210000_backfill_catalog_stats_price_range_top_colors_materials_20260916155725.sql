@@ -26,6 +26,12 @@
 -- ação separada e independente — ver Ação 1 em
 -- docs/PACOTE_APROVACAO_1_2026-09-16.md. Este arquivo NÃO revoga nem concede
 -- privilégio nenhum.
+--
+-- Rollback: não há comando simples de 1 linha — a versão anterior da função
+-- (sem price_min/price_max/top_colors/top_materials) precisa ser recuperada
+-- via pg_get_functiondef a partir de supabase_migrations.schema_migrations
+-- para uma version anterior a 20260916155725, antes de reaplicar. git rm
+-- deste arquivo por si só não desfaz nada em produção (é só espelho).
 
 CREATE OR REPLACE FUNCTION public.zapp_catalog_stats()
  RETURNS jsonb

@@ -23,6 +23,11 @@
 --
 -- [REQUER-PO] — não aplicado nesta revisão. Caminho de aplicação: E15
 -- (.github/workflows/db-apply-migration.yml), nunca supabase db push.
+--
+-- Rollback: cron.schedule('process-webhook-outbox', ...) volta a funcionar;
+-- cron.schedule('pipeline-classify-categories', ...) NÃO é funcional como
+-- está (função dependente não existe mais) — comandos completos na seção
+-- "Reversão" ao final deste arquivo.
 
 DO $precondition$
 BEGIN

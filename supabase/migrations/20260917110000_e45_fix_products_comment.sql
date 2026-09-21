@@ -11,6 +11,10 @@
 --
 -- [REQUER-PO] — não aplicado nesta revisão. Caminho de aplicação: E15
 -- (.github/workflows/db-apply-migration.yml), nunca supabase db push.
+--
+-- Rollback: COMMENT ON TABLE public.products de volta ao texto de 2026-06-23
+-- ("152 colunas...") — texto completo na seção "Reversão" ao final deste
+-- arquivo. Metadado apenas, sem risco.
 
 DO $precondition$
 DECLARE

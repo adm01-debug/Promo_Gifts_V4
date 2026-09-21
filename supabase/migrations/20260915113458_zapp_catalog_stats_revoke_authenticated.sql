@@ -1,6 +1,8 @@
 -- ============================================================================
 -- Forward-only: remove EXECUTE acidental de public.zapp_catalog_stats()
 -- do role `authenticated`.
+--
+-- Rollback: GRANT EXECUTE ON FUNCTION public.zapp_catalog_stats() TO authenticated;
 -- ============================================================================
 -- CAUSA RAIZ
 -- A migration 20260912205759 (catalog_e24_zapp_catalog_stats) declarou em

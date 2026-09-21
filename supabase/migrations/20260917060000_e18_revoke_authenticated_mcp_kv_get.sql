@@ -36,6 +36,8 @@
 --
 -- [REQUER-PO] — não aplicado nesta revisão. Caminho de aplicação: E15
 -- (.github/workflows/db-apply-migration.yml), nunca supabase db push.
+--
+-- Rollback: GRANT EXECUTE ON FUNCTION public.mcp_kv_get(text, text) TO authenticated;
 
 DO $precondition$
 BEGIN

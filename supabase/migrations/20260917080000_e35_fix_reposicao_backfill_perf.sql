@@ -28,6 +28,11 @@
 --
 -- [REQUER-PO] — não aplicado nesta revisão. Caminho de aplicação: E15
 -- (.github/workflows/db-apply-migration.yml), nunca supabase db push.
+--
+-- Rollback: cron.alter_job(117, schedule := '5 * * * *') + CREATE OR REPLACE
+-- FUNCTION public.fn_aggregate_stock_daily com o WHERE original (versão
+-- v5_sp_tz_minmax_fix) — comando completo na seção "Reversão" ao final deste
+-- arquivo.
 
 DO $precondition$
 BEGIN
