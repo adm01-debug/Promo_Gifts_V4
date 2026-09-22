@@ -748,10 +748,22 @@ canônico fora de MCP-ticket. Cada disparo bem-sucedido (`workflow_dispatch` →
 `preflight` → `apply`, gated por `environment: production` → `migration
 repair --status applied` → `post-check`) abre um PR que adiciona uma linha
 abaixo via `scripts/append-migration-receipt.mjs`, gerado pelo job `receipt`
-do próprio workflow. Nenhuma linha nesta tabela foi escrita manualmente.
+do próprio workflow. Se a publicação automática falhar depois da aplicação,
+o recibo pode ser recuperado em PR documental autorizada pelo PO, com evidências
+da execução e consulta read-only ao catálogo/ledger, sem reaplicar SQL.
 
 | versão | sha256 arquivo | md5 statements | executor | método | data UTC | pós-check | status |
 |---|---|---|---|---|---|---|---|
+| `20260922170000` | `266f0963a9e7b1d30e8594d7c6218747b6a79baf16aa272249e864f55a64b29b` | `badcb6626e975ee80bab7d562a6c12cc` | GitHub Actions, disparado por `adm01-debug` | E15 | 2026-09-22 18:34:03 UTC (fim do passo psql) | [Run 35760867980, tentativa 1](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/35760867980/attempts/1): apply, repair e post-check aprovados; recoleta read-only em 22/09 19:27 UTC confirmou ledger, corpo e ACL | aplicada; recibo recuperado documentalmente pelo Codex, a pedido do PO |
+
+### Evidências do recibo `20260922170000`
+
+- Projeto canônico: `doufsxqlfjyuvxuezpln`; arquivo `supabase/migrations/20260922170000_signup_identity_safe_default.sql`, no SHA executado `e30dfa6487eb1b1131b698cb9d1c6b2a7c261ea4`.
+- Job `apply` da tentativa 1: psql transacional concluído às **18:34:03 UTC**, `migration repair --status applied` concluído às **18:34:14 UTC**. Job `post-check` concluído com sucesso às **18:35:20 UTC**. A data da tabela é o fim do passo psql, não um timestamp de commit extraído do PostgreSQL.
+- Consulta pela Management API **read-only**: linha `version=20260922170000`, `name=signup_identity_safe_default`, três statements; `md5(array_to_string(statements, chr(10)))` calculado pelo PostgreSQL e registrado acima. Nenhum reparo de ledger foi repetido nesta recuperação.
+- `pg_catalog`: MD5 de `replace(prosrc, chr(13), '')` de `public.handle_new_user()` = `459d43ef1414883128e7127812a39dc3`, igual ao corpo aprovado; proprietário `postgres`, `SECURITY DEFINER`, `search_path=public`, ACL `{postgres=X/postgres,service_role=X/postgres}`. Os 13 profiles existentes mantêm `user_id=id`, sem divergências na recoleta.
+- O job `receipt` falhou **somente no push**: GitHub recusou a criação da branch pelo GitHub App sem permissão `workflows`. O status global vermelho dessa tentativa não significa falha de DDL. Este recibo é uma recuperação documental posterior, não sucesso retroativo do job.
+- Limites: não certifica cadastro pela UI/GoTrue, promoção administrativa E2E nem conclusão do plano inteiro. Não reaplicar a migration para corrigir documentação. Nenhuma permissão, credencial, workflow, dado de negócio ou SQL foi alterado nesta recuperação.
 
 ## Gate de CI (E48)
 
