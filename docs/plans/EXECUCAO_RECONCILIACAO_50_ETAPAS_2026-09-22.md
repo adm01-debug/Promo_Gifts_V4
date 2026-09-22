@@ -2,12 +2,37 @@
 
 **Alvo único:** Supabase `doufsxqlfjyuvxuezpln`; GitHub `adm01-debug/Promo_Gifts_V4`; produção `www.promogifts.com.br`.
 
-**Estado mais recente — 22/09, 20:23 UTC:** a migration aprovada `20260922170000` foi aplicada pelo E15; seu recibo foi publicado e mergeado pelo PR #1875. Nesta continuação foram feitas somente leituras no banco e alterações locais em ferramentas de validação, testes e documentação. As seções anteriores por horário abaixo são histórico, não o estado atual.
+**Estado mais recente — 22/09, 20:42 UTC:** a migration aprovada `20260922170000` foi aplicada pelo E15; seu recibo está na main pelo PR #1875, e o gate de tipos pelo PR #1876. A continuação abaixo corrige contratos de orçamento em branch própria. Foram feitas somente leituras no banco; as RPCs gerais ainda não preservam a identidade de variante. **10/50 etapas concluídas**; testes locais não encerram os bloqueios de persistência e produção. As seções anteriores por horário abaixo são histórico, não o estado atual.
 **Veredito:** **NÃO ALINHADO**. Este relatório não transforma a ausência de erro HTTP, o build local ou uma migration versionada em prova de aplicação no banco.
 
 **Decisão e execução:** proposta `20260922170000` aprovada pelo PO, PRs #1872/#1873 mergeadas, reviewer configurado com aprovação específica. Run E15 `35760867980`, tentativa 1: SQL concluído às 18:34:03 UTC, repair às 18:34:14 UTC e post-check às 18:35:20 UTC. Somente a publicação automática do recibo falhou; recuperação documental autorizada no PR #1875, mergeado às 20:16:54 UTC. [Recibo e limitações](../../supabase/MIGRATIONS_SYNC_LOG.md). Não repetir DDL por causa de falha documental.
 
-## Continuação: prova de aplicação e gate de tipos (20:23 UTC)
+## Continuação: variantes e associação de personalizações (20:42 UTC)
+
+- Base `origin/main` `4469f27a80050dcb0725c10a4ddfab283b5dbe58`, PR #1876 mergeado às 20:30:16 UTC. Branch `codex/quote-variant-contract-20260922`, reserva registrada; nenhuma worktree de outro agente alterada. Os checks da PR anterior ainda tinham execuções em andamento às 20:41, sem conclusão de falha observada nessa consulta.
+- **Antes da correção:** oito falhas nos contratos locais reproduziram perda de identidade/projeção e hidratação ambígua de SKU. Três testes adicionais de create/update/inserção direta reproduziram personalização do item descartado sendo vinculada ao item seguinte quando a quantidade menor que um era filtrada somente no payload.
+- **Código corrigido:** identidade de variante no domínio, seleção, deduplicação, duplicação e payload; projeção explícita de tamanho, kit, preço, versão e margem; hidratação por ID ou combinação legada não ambígua; filtragem única antes de totais, payload e associação das personalizações. Não houve alteração de cores, telas, schema, workflows ou secrets.
+- **Prova canônica somente leitura:** as 15 colunas adicionadas às projeções existem em `pg_attribute`. A FK de `quote_items.product_variant_id` aponta para `product_variants(id) ON DELETE SET NULL`. Entretanto, `pg_get_functiondef` das duas RPCs gerais mostra INSERT sem `product_variant_id`/`artwork_urls`; update exclui/recria linhas e lê a versão sem lock de linha. A concorrência real ainda precisa de simulação PostgreSQL com duas sessões; não foi certificada por mocks.
+- **Bloqueio delimitado:** [decisão por função e critérios de aceite](../db/DECISAO_QUOTE_VARIANT_ROUNDTRIP_2026-09-22.md). Nenhuma proposta foi aplicada/preparada em migrations nesta rodada. A correção de frontend não resolve sozinha o round-trip do banco, nem é contornada por uma segunda escrita não atômica.
+- **Regressão:** 281 testes PASS em 28 arquivos, incluindo todos os testes de hooks de orçamento, serviço, SKU, payload, reordenação/autosave, Kit Maker → orçamento, confirmação de preço, frete e persistência. ESLint direcionado, `npm run qa:typecheck`, `git diff --check` e `npm run build` passaram. O build concluiu com Gate 0/SSOT, zero ciclos estáticos entre chunks e ausência de harnesses de teste no bundle; persistem avisos de imports dinâmicos ineficazes. HTTP 200 não será usado como evidência de E2E autenticado.
+- **Estado do plano:** 37/39/40 avançam, mas continuam parciais. Nem uma PR nem tipos gerados corretos são recibo de aplicação no Supabase. Revisão humana, execução remota dos gates e rollout deste pacote permanecem etapas separadas.
+
+Reprodução dos contratos locais (RPCs mockadas; nenhuma escrita de produção):
+
+```bash
+npx vitest run src/hooks/quotes/__tests__ \
+  src/services/__tests__/quoteService.test.ts \
+  src/services/__tests__/quoteServiceVariantSkuHydration.test.ts \
+  src/services/__tests__/quoteServicePayloadContract.test.ts \
+  src/services/__tests__/quoteReorderAutosaveRace.test.ts \
+  src/services/__tests__/quoteItemsReorder.test.ts \
+  tests/pages/kit-builder/useKitBuilderQuote.test.ts \
+  tests/hooks/quoteHelpers.priceConfirmed.test.ts \
+  tests/hooks/quotes/quoteHelpers.freight.test.ts \
+  src/tests/quotePersistence.test.ts
+```
+
+## Histórico: prova de aplicação e gate de tipos (20:23 UTC)
 
 - Base desta rodada: `origin/main` `d76f1e382`, PR #1875 mergeado. Branch isolada `codex/types-drift-fail-closed-20260922`; nenhuma worktree histórica foi descartada. Reserva registrada antes das alterações.
 - Leitura Management API **read-only**, alvo `doufsxqlfjyuvxuezpln`, às `2026-09-22T20:23:16.731349Z`: ledger com **2.505 linhas**; versão `20260922170000`, nome `signup_identity_safe_default`, três statements, MD5 `badcb6626e975ee80bab7d562a6c12cc`. `pg_proc`/`pg_namespace` confirmam MD5 normalizado do corpo `459d43ef1414883128e7127812a39dc3`, SECURITY DEFINER, proprietário `postgres`, `search_path=public`, ACL `{postgres=X/postgres,service_role=X/postgres}`. Isso confirma aplicação/catalogação, não cadastro real pela UI.
@@ -87,7 +112,7 @@ Além desses alvos, **20 IDs** local-only estavam fora da classificação de 16/
 
 **Concluídas com evidência nesta rodada:** 01, 03, 07, 09, 12, 35, 36, 38, 45, 47.
 
-**Parciais/inconclusivas:** 02, 04–06, 08, 10–11, 13–23, 26–34, 37, 39–44, 46, 48–49. O snapshot foi regenerado, mas a etapa 30 fica aberta até o fechamento semântico da 29; os testes de orçamento da 37 ainda exigem contrato específico de variante.
+**Parciais/inconclusivas:** 02, 04–06, 08, 10–11, 13–23, 26–34, 37, 39–44, 46, 48–49. O snapshot foi regenerado, mas a etapa 30 fica aberta até o fechamento semântico da 29; a etapa 37 já tem testes específicos de variante, porém as duas RPCs gerais ainda impedem o round-trip canônico (continuação de 20:42 UTC).
 
 **Dependem de autorização granular de produção:** 24–25.
 **Veredito emitido, mas aceite final não satisfeito:** 50, porque há diferenças reais e etapas abertas.

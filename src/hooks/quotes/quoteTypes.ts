@@ -26,6 +26,8 @@ export interface QuoteItem {
   id?: string;
   quote_id?: string;
   product_id: string;
+  /** Identidade canônica da variante; cor/SKU não substituem essa referência. */
+  product_variant_id?: string | null;
   product_name: string;
   product_sku?: string;
   product_image_url?: string;

@@ -39,6 +39,7 @@ export function useQuoteItems(initialItems: QuoteItem[] = []) {
       const colorName = variant?.color_name || undefined;
       const colorHex = variant?.color_hex || undefined;
       const sizeCode = variant?.size_code || undefined;
+      const variantId = variant?.id || null;
       const imageUrl =
         variant?.selected_thumbnail ||
         (variant?.images?.length ? variant.images[0] : undefined) ||
@@ -49,7 +50,10 @@ export function useQuoteItems(initialItems: QuoteItem[] = []) {
       setItems((prev) => {
         const existingIndex = prev.findIndex(
           (i) =>
-            i.product_id === product.id && i.color_name === colorName && i.size_code === sizeCode,
+            i.product_id === product.id &&
+            (i.product_variant_id || variantId
+              ? i.product_variant_id === variantId
+              : i.color_name === colorName && i.size_code === sizeCode),
         );
         if (existingIndex >= 0) {
           const newItems = prev.map((item, idx) =>
@@ -70,6 +74,7 @@ export function useQuoteItems(initialItems: QuoteItem[] = []) {
           ...prev,
           {
             product_id: product.id,
+            product_variant_id: variantId,
             product_name: product.name,
             // Persistir o SKU composto da variante (ex.: "94297-7.1") quando
             // houver variante selecionada. Cai no SKU base se não houver.

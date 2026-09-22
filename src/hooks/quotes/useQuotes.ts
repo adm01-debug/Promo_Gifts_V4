@@ -267,6 +267,7 @@ export function useQuotes() {
       const items: QuoteItem[] =
         original.items?.map((item) => ({
           product_id: item.product_id,
+          product_variant_id: item.product_variant_id,
           product_name: item.product_name,
           product_sku: item.product_sku,
           product_image_url: item.product_image_url,

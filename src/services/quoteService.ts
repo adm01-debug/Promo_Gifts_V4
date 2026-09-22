@@ -11,6 +11,7 @@ import {
   buildInsertPayload,
   buildUpdatePayload,
   buildItemsInsertPayload,
+  filterPersistableQuoteItems,
   buildPersonalizationsInsertPayload,
   round2,
 } from '@/hooks/quotes/quoteHelpers';
@@ -49,7 +50,9 @@ export const quoteService = {
     let query = supabase
       // rls-allow: escopo aplicado condicionalmente abaixo (self → seller_id; admin scope=all sem filtro); RLS reforça
       .from('quotes')
-      .select('id,quote_number,client_id,contact_id,client_name,client_email,client_phone,client_company,seller_id,status,payment_method,subtotal,discount_percent,discount_amount,total,valid_until,payment_terms,delivery_time,shipping_type,shipping_cost,notes,internal_notes,bitrix_deal_id,bitrix_quote_id,synced_to_bitrix,synced_at,client_response,client_response_at,client_response_notes,created_at,updated_at,sent_at')
+      .select(
+        'id,quote_number,client_id,contact_id,client_name,client_email,client_phone,client_company,seller_id,status,payment_method,subtotal,discount_percent,discount_amount,total,valid_until,payment_terms,delivery_time,shipping_type,shipping_cost,notes,internal_notes,bitrix_deal_id,bitrix_quote_id,synced_to_bitrix,synced_at,client_response,client_response_at,client_response_notes,created_at,updated_at,sent_at',
+      )
       .order('created_at', { ascending: false })
       .limit(500);
 
@@ -70,12 +73,16 @@ export const quoteService = {
       supabase
         // rls-allow: lookup por id; RLS (can_access_quote) valida ownership
         .from('quotes')
-        .select('id,quote_number,client_id,contact_id,client_name,client_email,client_phone,client_company,seller_id,status,payment_method,subtotal,discount_percent,discount_amount,total,valid_until,payment_terms,delivery_time,shipping_type,shipping_cost,notes,internal_notes,bitrix_deal_id,bitrix_quote_id,synced_to_bitrix,synced_at,client_response,client_response_at,client_response_notes,created_at,updated_at,sent_at')
+        .select(
+          'id,quote_number,client_id,contact_id,client_name,client_email,client_phone,client_company,seller_id,status,payment_method,subtotal,discount_percent,discount_amount,total,valid_until,payment_terms,delivery_time,shipping_type,shipping_cost,notes,internal_notes,bitrix_deal_id,bitrix_quote_id,synced_to_bitrix,synced_at,client_response,client_response_at,client_response_notes,created_at,updated_at,sent_at,version,negotiation_markup_percent,real_subtotal,real_discount_percent,discount_approval_status,discount_approved_at',
+        )
         .eq('id', quoteId)
         .single(),
       supabase
         .from('quote_items')
-        .select('id,quote_id,product_id,product_name,product_sku,product_image_url,quantity,unit_price,subtotal,color_name,color_hex,personalization_config,personalization_cost,notes,sort_order,created_at,updated_at')
+        .select(
+          'id,quote_id,product_id,product_variant_id,product_name,product_sku,product_image_url,quantity,unit_price,subtotal,color_name,color_hex,size_code,gender,kit_group_id,kit_name,bitrix_product_id,price_confirmed_at,price_updated_at,price_freshness_threshold_days,personalization_config,personalization_cost,notes,sort_order,created_at,updated_at',
+        )
         .eq('quote_id', quoteId)
         .order('sort_order', { ascending: true }),
     ]);
@@ -89,7 +96,9 @@ export const quoteService = {
     if (itemIds.length > 0) {
       const { data: persData, error: pErr } = await supabase
         .from('quote_item_personalizations')
-        .select('id,quote_item_id,technique_id,technique_name,colors_count,positions_count,area_cm2,width_cm,height_cm,location_code,location_name,notes,personalized_quantity,unit_cost,setup_cost,total_cost,created_at,updated_at')
+        .select(
+          'id,quote_item_id,technique_id,technique_name,colors_count,positions_count,area_cm2,width_cm,height_cm,location_code,location_name,notes,personalized_quantity,unit_cost,setup_cost,total_cost,created_at,updated_at',
+        )
         .in('quote_item_id', itemIds);
       if (pErr) throw pErr;
       allPersonalizations = persData || [];
@@ -143,7 +152,10 @@ export const quoteService = {
     // consistentes mostrando ex. "94297-7.1" em vez de "94297".
     try {
       const candidates = items.filter(
-        (it) => it.product_id && it.color_name && !it.product_sku?.includes('-'),
+        (it) =>
+          it.product_id &&
+          (it.product_variant_id || it.color_name) &&
+          !it.product_sku?.includes('-'),
       );
       if (candidates.length > 0) {
         const variantProductIds = Array.from(
@@ -151,27 +163,29 @@ export const quoteService = {
         );
         const { data: variants } = await supabase
           .from('product_variants')
-          .select('product_id, sku, color_name')
+          .select('id, product_id, sku, color_name, size_code')
           .in('product_id', variantProductIds)
           .eq('is_active', true);
         if (variants && variants.length > 0) {
           const norm = (s: string) => s.trim().toLowerCase();
-          const variantMap = new Map<string, string>();
-          for (const v of variants as Array<{
-            product_id: string;
-            sku: string;
-            color_name: string | null;
-          }>) {
-            if (!v.color_name || !v.sku) continue;
-            variantMap.set(`${v.product_id}|${norm(v.color_name)}`, v.sku);
-          }
           for (const it of candidates) {
-            if (!it.product_id || !it.color_name) continue;
-            const sku = variantMap.get(`${it.product_id}|${norm(it.color_name)}`);
+            // Never choose an arbitrary size from a color-only map. Explicit
+            // identity wins; legacy inference is allowed only when unambiguous.
+            const matches = variants.filter((v) => {
+              if (v.product_id !== it.product_id || !v.sku) return false;
+              if (it.product_variant_id) return v.id === it.product_variant_id;
+              return (
+                Boolean(
+                  it.color_name && v.color_name && norm(v.color_name) === norm(it.color_name),
+                ) &&
+                (!it.size_code || norm(v.size_code ?? '') === norm(it.size_code))
+              );
+            });
+            const sku = matches.length === 1 ? matches[0].sku : undefined;
             if (sku) {
               it.product_sku = sku;
             } else {
-              // Fallback: variante não encontrada — mantém o SKU base sem expor
+              // Fallback: variante não encontrada ou ambígua — mantém o SKU base sem expor
               // o nome da cor no badge composto. Registra aviso para investigação
               // (variante removida/renomeada, color_name divergente, etc.).
               logger.warn('[quoteService.fetchQuote] variant sku not found — keeping base SKU', {
@@ -197,15 +211,16 @@ export const quoteService = {
     orgId: string | null,
     approvalSellerNotes?: string,
   ): Promise<Quote> {
-    const totals = calculateQuoteTotals(quote, items);
+    const validItems = filterPersistableQuoteItems(items);
+    const totals = calculateQuoteTotals(quote, validItems);
     const insertPayload = buildInsertPayload(quote, userId, orgId, totals);
-    const itemsPayload = buildItemsInsertPayload(items, '').map((item, index) => ({
+    const itemsPayload = buildItemsInsertPayload(validItems, '').map((item, index) => ({
       ...item,
       product_name: item.product_name?.trim().slice(0, 255),
       unit_price: round2(item.unit_price),
       notes: item.notes?.trim().slice(0, 1000),
       personalizations: buildPersonalizationsInsertPayload(
-        items[index]?.personalizations ?? [],
+        validItems[index]?.personalizations ?? [],
         '',
       ),
     }));
@@ -254,7 +269,7 @@ export const quoteService = {
       // logging nunca pode quebrar a criação
     }
 
-    return { ...(created as Quote), items } as Quote;
+    return { ...(created as Quote), items: validItems } as Quote;
   },
 
   /**
@@ -277,16 +292,17 @@ export const quoteService = {
     expectedVersion?: number | null,
     approvalSellerNotes?: string,
   ): Promise<Quote> {
-    const totals = calculateQuoteTotals(quote, items);
+    const validItems = filterPersistableQuoteItems(items);
+    const totals = calculateQuoteTotals(quote, validItems);
     const updatePayload = buildUpdatePayload(quote, totals);
-    const itemsPayload = buildItemsInsertPayload(items, quoteId).map((item, index) => ({
+    const itemsPayload = buildItemsInsertPayload(validItems, quoteId).map((item, index) => ({
       ...item,
       product_name: item.product_name?.trim().slice(0, 255),
       unit_price: round2(item.unit_price),
       notes: item.notes?.trim().slice(0, 1000),
       personalizations: buildPersonalizationsInsertPayload(
-        items[index]?.personalizations ?? [],
-        items[index]?.id ?? '',
+        validItems[index]?.personalizations ?? [],
+        validItems[index]?.id ?? '',
       ),
     }));
 
@@ -320,13 +336,14 @@ export const quoteService = {
       );
     }
 
-    return { ...(updated as Quote), items } as Quote;
+    return { ...(updated as Quote), items: validItems } as Quote;
   },
 
   async insertItemsWithPersonalizations(items: QuoteItem[], quoteId: string) {
-    if (items.length === 0) return;
+    const validItems = filterPersistableQuoteItems(items);
+    if (validItems.length === 0) return;
 
-    const itemsPayload = buildItemsInsertPayload(items, quoteId).map((item) => ({
+    const itemsPayload = buildItemsInsertPayload(validItems, quoteId).map((item) => ({
       ...item,
       product_name: item.product_name?.trim().slice(0, 255),
       unit_price: round2(item.unit_price),
@@ -340,8 +357,8 @@ export const quoteService = {
 
     if (itemsErr) throw itemsErr;
 
-    for (let i = 0; i < items.length; i++) {
-      const item = items[i];
+    for (let i = 0; i < validItems.length; i++) {
+      const item = validItems[i];
       const insertedItem = insertedItems?.[i];
       if (item.personalizations?.length && insertedItem) {
         const persPayload = buildPersonalizationsInsertPayload(

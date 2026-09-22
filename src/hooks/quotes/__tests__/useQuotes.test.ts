@@ -19,6 +19,7 @@ import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuotes } from '../useQuotes';
+import { quoteService } from '@/services/quoteService';
 
 // ── Mocks ─────────────────────────────────────────────────────────────────────
 const mockChannel = {
@@ -79,6 +80,48 @@ beforeEach(() => {
   vi.clearAllMocks();
   // Restore default user after tests that override with null (clearAllMocks keeps mockReturnValue overrides)
   vi.mocked(useAuth).mockReturnValue({ user: mockUser });
+});
+
+it('duplicação preserva variante, tamanho e kit, sem copiar confirmação de preço', async () => {
+  vi.mocked(quoteService.fetchQuote).mockResolvedValueOnce({
+    id: 'original',
+    status: 'draft',
+    subtotal: 10,
+    discount_percent: 0,
+    discount_amount: 0,
+    total: 10,
+    items: [
+      {
+        product_id: 'p',
+        product_variant_id: 'v',
+        product_name: 'Produto',
+        color_name: 'Preto',
+        size_code: 'G',
+        quantity: 1,
+        unit_price: 10,
+        kit_group_id: 'kit',
+        kit_name: 'Kit',
+        price_confirmed_at: '2026-09-22T00:00:00Z',
+        personalizations: [],
+      },
+    ],
+  });
+  const { result } = renderHook(() => useQuotes(), { wrapper: makeWrapper() });
+  await act(async () => {
+    await result.current.duplicateQuote('original');
+  });
+  expect(quoteService.createQuote).toHaveBeenCalledWith(
+    expect.anything(),
+    expect.arrayContaining([
+      expect.objectContaining({ product_variant_id: 'v', size_code: 'G', kit_group_id: 'kit' }),
+    ]),
+    expect.anything(),
+    expect.anything(),
+    undefined,
+  );
+  expect(
+    vi.mocked(quoteService.createQuote).mock.calls.at(-1)?.[1][0].price_confirmed_at,
+  ).toBeUndefined();
 });
 
 // ── Estado inicial ────────────────────────────────────────────────────────────
@@ -191,7 +234,6 @@ describe('BUG-NEW-02/03 — Realtime subscription', () => {
 // ── createQuote ───────────────────────────────────────────────────────────────
 describe('createQuote', () => {
   it('chama quoteService.createQuote com dados corretos', async () => {
-    const { quoteService } = await import('@/services/quoteService');
     const { result } = renderHook(() => useQuotes(), { wrapper: makeWrapper() });
     await waitFor(() => expect(result.current.isLoading).toBe(false));
 
@@ -209,7 +251,6 @@ describe('createQuote', () => {
   });
 
   it('encaminha justificativa para o save transacional de aprovação', async () => {
-    const { quoteService } = await import('@/services/quoteService');
     const { result } = renderHook(() => useQuotes(), { wrapper: makeWrapper() });
     await waitFor(() => expect(result.current.isLoading).toBe(false));
 

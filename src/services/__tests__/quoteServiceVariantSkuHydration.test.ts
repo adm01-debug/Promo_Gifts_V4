@@ -12,6 +12,7 @@ vi.mock('@/lib/logger', () => ({
 }));
 
 type Row = Record<string, unknown>;
+const selectedColumns = new Map<string, string>();
 
 /**
  * Builder de mock para a chain `supabase.from(table)` por tabela.
@@ -36,7 +37,10 @@ function installFromMock(tables: Record<string, { data: Row | Row[] | null; erro
       },
     };
     const chain: Record<string, unknown> = {
-      select: () => chain,
+      select: (columns: string) => {
+        selectedColumns.set(table, columns);
+        return chain;
+      },
       eq: () => chain,
       in: () => chain,
       order: () => Promise.resolve({ data: result.data, error: result.error ?? null }),
@@ -51,6 +55,98 @@ function installFromMock(tables: Record<string, { data: Row | Row[] | null; erro
 describe('quoteService.fetchQuote — hidratação de SKU composto (variante)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    selectedColumns.clear();
+  });
+
+  it('carrega explicitamente identidade, tamanho, kit e versão de concorrência', async () => {
+    installFromMock({ quotes: { data: { id: 'q', status: 'draft' } }, quote_items: { data: [] } });
+    await quoteService.fetchQuote('q');
+    expect(selectedColumns.get('quote_items')?.split(',')).toEqual(
+      expect.arrayContaining([
+        'product_variant_id',
+        'size_code',
+        'gender',
+        'kit_group_id',
+        'kit_name',
+        'bitrix_product_id',
+        'price_confirmed_at',
+        'price_updated_at',
+        'price_freshness_threshold_days',
+      ]),
+    );
+    expect(selectedColumns.get('quotes')?.split(',')).toEqual(
+      expect.arrayContaining(['version', 'negotiation_markup_percent']),
+    );
+  });
+
+  it.each([
+    ['P', 'SKU-P'],
+    ['G', 'SKU-G'],
+  ])('hidrata a cor PRETO sem trocar tamanho %s', async (size, sku) => {
+    installFromMock({
+      quotes: { data: { id: 'q', status: 'draft' } },
+      quote_items: {
+        data: [
+          { id: 'i', product_id: 'p', product_sku: 'BASE', color_name: 'PRETO', size_code: size },
+        ],
+      },
+      product_variants: {
+        data: [
+          { id: 'v-p', product_id: 'p', color_name: 'PRETO', size_code: 'P', sku: 'SKU-P' },
+          { id: 'v-g', product_id: 'p', color_name: 'PRETO', size_code: 'G', sku: 'SKU-G' },
+        ],
+      },
+    });
+    expect((await quoteService.fetchQuote('q'))?.items?.[0].product_sku).toBe(sku);
+  });
+
+  it('não adivinha tamanho quando duas variantes têm a mesma cor', async () => {
+    installFromMock({
+      quotes: { data: { id: 'q', status: 'draft' } },
+      quote_items: {
+        data: [{ id: 'i', product_id: 'p', product_sku: 'BASE', color_name: 'PRETO' }],
+      },
+      product_variants: {
+        data: [
+          { id: 'v-p', product_id: 'p', color_name: 'PRETO', size_code: 'P', sku: 'SKU-P' },
+          { id: 'v-g', product_id: 'p', color_name: 'PRETO', size_code: 'G', sku: 'SKU-G' },
+        ],
+      },
+    });
+    expect((await quoteService.fetchQuote('q'))?.items?.[0].product_sku).toBe('BASE');
+  });
+
+  it('identidade explícita prevalece sobre cor antiga e nunca usa variante de outro produto', async () => {
+    installFromMock({
+      quotes: { data: { id: 'q', status: 'draft' } },
+      quote_items: {
+        data: [
+          {
+            id: 'i1',
+            product_id: 'p',
+            product_variant_id: 'v-g',
+            product_sku: 'BASE',
+            color_name: 'Cor antiga',
+          },
+          {
+            id: 'i2',
+            product_id: 'p',
+            product_variant_id: 'v-other',
+            product_sku: 'BASE',
+            color_name: 'PRETO',
+          },
+        ],
+      },
+      product_variants: {
+        data: [
+          { id: 'v-g', product_id: 'p', color_name: 'PRETO', size_code: 'G', sku: 'SKU-G' },
+          { id: 'v-other', product_id: 'other', color_name: 'PRETO', sku: 'WRONG' },
+        ],
+      },
+    });
+    const quote = await quoteService.fetchQuote('q');
+    expect(quote?.items?.[0].product_sku).toBe('SKU-G');
+    expect(quote?.items?.[1].product_sku).toBe('BASE');
   });
 
   it('substitui product_sku base por SKU composto da variante (94297 → 94297-7.1)', async () => {
@@ -127,7 +223,6 @@ describe('quoteService.fetchQuote — hidratação de SKU composto (variante)', 
 
     const quote = await quoteService.fetchQuote('q-3');
     expect(quote?.items?.[0].product_sku).toBe('PV00570-COL');
-
   });
 
   it('quando variante não é encontrada, mantém SKU base e registra warn (fallback)', async () => {
@@ -167,9 +262,7 @@ describe('quoteService.fetchQuote — hidratação de SKU composto (variante)', 
     installFromMock({
       quotes: { data: { id: 'q-5' } },
       quote_items: {
-        data: [
-          { id: 'i-5', product_id: 'prod-a', product_name: 'A', product_sku: 'SKU-A' },
-        ],
+        data: [{ id: 'i-5', product_id: 'prod-a', product_name: 'A', product_sku: 'SKU-A' }],
       },
       quote_item_personalizations: { data: [] },
       products: { data: [] },
