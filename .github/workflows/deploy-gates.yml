@@ -90,6 +90,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Validate discount approval, grants and trigger races on PG17
         run: scripts/test-approved-plan-database.sh
+      - name: Validate guarded quote RPC proposals on pinned isolated PG17
+        run: npm run test:quote-rpc:postgres
 
   e2e-smoke:
     name: Gate 3 - E2E Smoke

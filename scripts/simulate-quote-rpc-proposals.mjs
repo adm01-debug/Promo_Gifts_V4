@@ -14,8 +14,10 @@ if (process.argv.length > 2)
 const root = fileURLToPath(new URL('../', import.meta.url));
 const read = (path) => readFileSync(`${root}${path}`, 'utf8');
 const captured = JSON.parse(read('tests/fixtures/quote-rpc-live-20260922.json'));
+const manifest = JSON.parse(read('tests/fixtures/quote-rpc-proposal-manifest.json'));
 const paths = [
   'docs/db/proposals/20260922210000_create_quote_lineage.sql',
+  'docs/db/proposals/20260922210500_increment_quote_version_explicit_bump.sql',
   'docs/db/proposals/20260922211000_update_quote_lineage_lock.sql',
 ];
 const proposals = paths.map(read);
@@ -27,11 +29,13 @@ const org = '20000000-0000-4000-8000-000000000001';
 const product = '30000000-0000-4000-8000-000000000001';
 const variant = '40000000-0000-4000-8000-000000000001';
 const otherVariant = '40000000-0000-4000-8000-000000000002';
+const inactiveVariant = '40000000-0000-4000-8000-000000000003';
 const kit = '50000000-0000-4000-8000-000000000001';
 const item = {
   product_id: product,
   product_variant_id: variant,
   product_name: 'Fixture',
+  product_description: 'Snapshot comercial',
   product_sku: 'FIX-P',
   color_name: 'Preto',
   size_code: 'P',
@@ -41,7 +45,13 @@ const item = {
   unit_price: 10,
   subtotal: 25,
   personalization_cost: 5,
+  personalization_config: { source: 'fixture' },
+  has_personalization: true,
+  mockup_urls: ['https://example.invalid/mockup.png'],
   artwork_urls: ['https://example.invalid/art.svg'],
+  selected_packaging_id: '30000000-0000-4000-8000-000000000002',
+  selected_packaging_name: 'Caixa fixture',
+  selected_packaging_unit_cost: 3.5,
   personalizations: [{ technique_name: 'Laser', total_cost: 5 }],
 };
 const json = (value) => `'${JSON.stringify(value).replaceAll("'", "''")}'::jsonb`;
@@ -102,10 +112,8 @@ function create(items = [item], patch = {}) {
 }
 const update = (q, items, patch = {}, version = q.version) =>
   `SELECT to_jsonb(public.update_quote_transactional('${q.id}',${json(patch)},${json(items)},${version === null ? 'NULL' : version}));`;
-const bodyHash = (index) =>
-  sql(
-    `SELECT md5(prosrc) FROM pg_proc WHERE oid='public.${index ? 'update_quote_transactional(uuid,jsonb,jsonb,integer)' : 'create_quote_transactional(jsonb,jsonb)'}'::regprocedure;`,
-  );
+const bodyHash = (signature) =>
+  sql(`SELECT md5(prosrc) FROM pg_proc WHERE oid='public.${signature}'::regprocedure;`);
 
 async function until(fn, label) {
   const end = Date.now() + 10000;
@@ -191,7 +199,7 @@ try {
     'POSTGRES_HOST_AUTH_METHOD=trust',
     '-e',
     `POSTGRES_DB=${database}`,
-    'postgres:17',
+    manifest.postgres_image,
   ]);
   created = true;
   await until(
@@ -208,10 +216,19 @@ try {
     GRANT EXECUTE ON FUNCTION create_quote_transactional(jsonb,jsonb) TO postgres,anon,authenticated,service_role;
     GRANT EXECUTE ON FUNCTION update_quote_transactional(uuid,jsonb,jsonb,integer) TO postgres,anon,authenticated,service_role;`,
   );
-  captured.rows.forEach((r, i) => assert.equal(bodyHash(i), r.body_md5));
+  captured.rows.forEach((r) => {
+    const signature =
+      r.proname === 'create_quote_transactional'
+        ? 'create_quote_transactional(jsonb,jsonb)'
+        : 'update_quote_transactional(uuid,jsonb,jsonb,integer)';
+    assert.equal(bodyHash(signature), r.body_md5);
+  });
   sql(`INSERT INTO user_organizations VALUES ('${actor}','${org}',now()),('${outsider}','20000000-0000-4000-8000-000000000002',now());
     INSERT INTO products(id) VALUES ('${product}'),('30000000-0000-4000-8000-000000000002');
-    INSERT INTO product_variants(id,product_id) VALUES ('${variant}','${product}'),('${otherVariant}','30000000-0000-4000-8000-000000000002');`);
+    INSERT INTO product_variants(id,product_id,is_active) VALUES
+      ('${variant}','${product}',true),
+      ('${otherVariant}','30000000-0000-4000-8000-000000000002',true),
+      ('${inactiveVariant}','${product}',false);`);
   console.log(
     JSON.stringify({
       target: 'isolated-container-only',
@@ -232,14 +249,28 @@ try {
   pass('BEFORE: item-only edit does not advance version with live trigger');
   await concurrency(false);
 
-  // Both proposals must abort if a precondition changes, without replacing the function.
-  for (let i = 0; i < 2; i++) {
-    const signature = i
-      ? 'update_quote_transactional(uuid,jsonb,jsonb,integer)'
-      : 'create_quote_transactional(jsonb,jsonb)';
+  rejects(
+    `BEGIN;${proposals[1]}DO $$ BEGIN RAISE EXCEPTION 'synthetic postcondition failure'; END $$;COMMIT;`,
+    'synthetic postcondition failure',
+  );
+  assert.equal(bodyHash('increment_quote_version()'), '8dc69376bb204fa774c7b193a7bbce4f');
+  pass('version helper rolls back on late deployment failure');
+  sql(`BEGIN;${proposals[1]}COMMIT;`);
+  rejects(`BEGIN;${proposals[1]}COMMIT;`, 'definition or metadata drift');
+  pass('version helper applies once and rejects repeat');
+
+  // RPC proposals must abort if catalog metadata drifts, without replacing functions.
+  for (const { proposalIndex, capturedIndex, signature } of [
+    { proposalIndex: 0, capturedIndex: 0, signature: 'create_quote_transactional(jsonb,jsonb)' },
+    {
+      proposalIndex: 2,
+      capturedIndex: 1,
+      signature: 'update_quote_transactional(uuid,jsonb,jsonb,integer)',
+    },
+  ]) {
     sql(`REVOKE EXECUTE ON FUNCTION ${signature} FROM anon;`);
-    rejects(`BEGIN;${proposals[i]}COMMIT;`, 'definition or privileges drift');
-    assert.equal(bodyHash(i), captured.rows[i].body_md5);
+    rejects(`BEGIN;${proposals[proposalIndex]}COMMIT;`, 'definition or privileges drift');
+    assert.equal(bodyHash(signature), captured.rows[capturedIndex].body_md5);
     sql(`GRANT EXECUTE ON FUNCTION ${signature} TO anon;`);
     // Restore original ACL order in catalog by resetting the ACL to the captured grants.
     sql(
@@ -247,32 +278,35 @@ try {
     );
     pass(`${signature}: privilege drift rejected without function change`);
     sql('ALTER TABLE quote_items DROP CONSTRAINT quote_items_product_variant_id_fkey;');
-    rejects(`BEGIN;${proposals[i]}COMMIT;`, 'Variant foreign key drift');
-    assert.equal(bodyHash(i), captured.rows[i].body_md5);
+    rejects(`BEGIN;${proposals[proposalIndex]}COMMIT;`, 'Variant foreign key drift');
+    assert.equal(bodyHash(signature), captured.rows[capturedIndex].body_md5);
     sql(
       'ALTER TABLE quote_items ADD CONSTRAINT quote_items_product_variant_id_fkey FOREIGN KEY(product_variant_id) REFERENCES product_variants(id) ON DELETE SET NULL;',
     );
     pass(`${signature}: missing FK blocks proposal before replacement`);
-    if (i === 1) {
-      sql('ALTER TABLE quotes DISABLE TRIGGER trg_quotes_version;');
-      rejects(`BEGIN;${proposals[i]}COMMIT;`, 'Version trigger missing or disabled');
-      sql('ALTER TABLE quotes ENABLE TRIGGER trg_quotes_version;');
-      pass('update proposal rejects disabled version trigger');
-      sql('CREATE TABLE fixture_extra_dependent(id uuid REFERENCES quote_items(id));');
-      rejects(`BEGIN;${proposals[i]}COMMIT;`, 'New quote item dependents');
-      sql('DROP TABLE fixture_extra_dependent;');
-      pass('update proposal rejects new incoming FK before destructive replacement');
-    }
     rejects(
-      `BEGIN;${proposals[i]}DO $$ BEGIN RAISE EXCEPTION 'synthetic postcondition failure'; END $$;COMMIT;`,
+      `BEGIN;${proposals[proposalIndex]}DO $$ BEGIN RAISE EXCEPTION 'synthetic postcondition failure'; END $$;COMMIT;`,
       'synthetic postcondition failure',
     );
-    assert.equal(bodyHash(i), captured.rows[i].body_md5);
+    assert.equal(bodyHash(signature), captured.rows[capturedIndex].body_md5);
     pass(`${signature}: late deployment failure rolls back CREATE OR REPLACE`);
-    sql(`BEGIN;${proposals[i]}COMMIT;`);
-    rejects(`BEGIN;${proposals[i]}COMMIT;`, 'definition or privileges drift');
-    pass(`${signature}: applies locally once and rejects repeat`);
+    if (proposalIndex === 0) {
+      sql(`BEGIN;${proposals[proposalIndex]}COMMIT;`);
+      rejects(`BEGIN;${proposals[proposalIndex]}COMMIT;`, 'definition or privileges drift');
+      pass(`${signature}: applies locally once and rejects repeat`);
+    }
   }
+
+  sql(`BEGIN;${proposals[2]}COMMIT;`);
+  rejects(`BEGIN;${proposals[2]}COMMIT;`, 'definition or privileges drift');
+  pass('update RPC applies after version dependency and rejects repeat');
+
+  assert.equal(
+    sql(
+      `${session()} SELECT count(*) FROM product_variants v JOIN products p ON p.id=v.product_id WHERE v.id='${variant}' AND v.product_id='${product}' AND v.is_active AND p.is_active AND NOT coalesce(p.is_deleted,false) AND p.deleted_at IS NULL;`,
+    ),
+    '1',
+  );
 
   const q = create();
   const current = state(q.id);
@@ -280,6 +314,12 @@ try {
   assert.deepEqual(current.items[0].artwork_urls, item.artwork_urls);
   assert.equal(current.items[0].kit_group_id, kit);
   assert.equal(current.items[0].size_code, 'P');
+  assert.equal(current.items[0].product_description, item.product_description);
+  assert.deepEqual(current.items[0].personalization_config, item.personalization_config);
+  assert.deepEqual(current.items[0].mockup_urls, item.mockup_urls);
+  assert.equal(current.items[0].selected_packaging_id, item.selected_packaging_id);
+  assert.equal(current.items[0].selected_packaging_name, item.selected_packaging_name);
+  assert.equal(Number(current.items[0].selected_packaging_unit_cost), 3.5);
   assert.equal(current.quote.total, 25);
   assert.equal(current.personalizations[0].technique_name, 'Laser');
   assert.equal(current.history.length, 1);
@@ -313,6 +353,7 @@ try {
   for (const [label, changed, marker] of [
     ['wrong product variant', { ...item, product_variant_id: otherVariant }, '23503'],
     ['nonexistent variant', { ...item, product_variant_id: randomUUID() }, '23503'],
+    ['inactive variant', { ...item, product_variant_id: inactiveVariant }, '23503'],
     ['malformed UUID', { ...item, product_variant_id: 'invalid' }, '22P02'],
     ['artwork null', { ...item, artwork_urls: null }, '22023'],
     ['artwork object', { ...item, artwork_urls: {} }, '22023'],
@@ -335,34 +376,53 @@ try {
     pass(`${label}: entire create rolls back including preceding valid item`);
   }
 
-  // Omitted fields preserve existing lineage through unique legacy match.
+  // Omitted fields preserve every commercial snapshot through unique legacy match.
+  const omittedOptional = {
+    product_id: item.product_id,
+    product_name: item.product_name,
+    product_sku: item.product_sku,
+    color_name: item.color_name,
+    size_code: item.size_code,
+    kit_group_id: item.kit_group_id,
+    quantity: 3,
+    unit_price: item.unit_price,
+  };
   const updated = JSON.parse(
-    sql(`${session()} ${update(q, [{ ...withoutLineage, quantity: 3 }], { notes: 'edited' })}`),
+    sql(`${session()} ${update(q, [omittedOptional], { notes: 'edited' })}`),
   );
   let after = state(q.id);
   assert.equal(after.items[0].product_variant_id, variant);
   assert.deepEqual(after.items[0].artwork_urls, item.artwork_urls);
+  assert.equal(after.items[0].id, current.items[0].id);
+  assert.equal(after.items[0].product_description, item.product_description);
+  assert.deepEqual(after.items[0].personalization_config, item.personalization_config);
+  assert.deepEqual(after.items[0].mockup_urls, item.mockup_urls);
+  assert.equal(after.items[0].selected_packaging_id, item.selected_packaging_id);
+  assert.equal(after.personalizations[0].technique_name, 'Laser');
   assert.equal(updated.version, after.quote.version);
   assert.equal(updated.total, after.quote.total);
   assert.equal(after.quote.total, 35);
   pass('update preserves omitted lineage, returns final trigger totals/version');
 
-  const snapshot = state(q.id);
-  rejects(
-    `${session()} ${update(updated, [{ ...item, quantity: 4 }])}`,
-    'Item-only update cannot advance version',
+  const stableId = after.items[0].id;
+  const itemOnly = JSON.parse(
+    sql(`${session()} ${update(updated, [{ ...item, id: stableId, quantity: 4 }])}`),
   );
-  assert.deepEqual(state(q.id), snapshot);
-  pass('BLOCKED CONTRACT: item-only edit rejected atomically rather than silently overwriting');
+  after = state(q.id);
+  assert.equal(after.items[0].id, stableId);
+  assert.equal(itemOnly.version, updated.version + 1);
+  assert.equal(after.quote.version, itemOnly.version);
+  pass('item-only update preserves identity and advances version exactly once');
+  const snapshot = state(q.id);
 
   for (const [label, items, patch, version, uid, marker] of [
     ['stale version', [item], { notes: 'x' }, 1, actor, '40001'],
-    ['other organization', [item], { notes: 'x' }, updated.version, outsider, 'P0002'],
+    ['other organization', [item], { notes: 'x' }, itemOnly.version, outsider, 'P0002'],
     [
       'wrong product variant',
       [{ ...item, product_variant_id: otherVariant }],
       { notes: 'x' },
-      updated.version,
+      itemOnly.version,
       actor,
       '23503',
     ],
@@ -370,34 +430,26 @@ try {
       'foreign row id',
       [{ ...item, id: randomUUID() }],
       { notes: 'x' },
-      updated.version,
+      itemOnly.version,
       actor,
       '22023',
     ],
-    ['implicit protected removal', [], { notes: 'x' }, updated.version, actor, '22023'],
-    [
-      'clearing without row id',
-      [{ ...item, product_variant_id: null }],
-      { notes: 'x' },
-      updated.version,
-      actor,
-      '22023',
-    ],
+    ['implicit removal', [], { notes: 'x' }, itemOnly.version, actor, '22023'],
     [
       'invalid personalizations',
       [{ ...item, personalizations: [{ total_cost: -3 }] }],
       { notes: 'x' },
-      updated.version,
+      itemOnly.version,
       actor,
       '23514',
     ],
   ]) {
-    rejects(`${session(uid)} ${update(updated, items, patch, version)}`, marker);
+    rejects(`${session(uid)} ${update(itemOnly, items, patch, version)}`, marker);
     assert.deepEqual(state(q.id), snapshot);
     pass(`${label}: update leaves quote/items/artwork/audit unchanged`);
   }
   rejects(
-    `${session()} SET fixture.fail_history='on'; ${update(updated, [item], { notes: 'late history failure' })}`,
+    `${session()} SET fixture.fail_history='on'; ${update(itemOnly, [{ ...item, id: stableId }], { notes: 'late history failure' })}`,
     'fixture late failure',
   );
   assert.deepEqual(state(q.id), snapshot);
@@ -406,7 +458,7 @@ try {
   const oldId = after.items[0].id;
   const clear = JSON.parse(
     sql(
-      `${session()} ${update(updated, [{ ...item, id: oldId, product_variant_id: null, artwork_urls: [] }], { notes: 'clear explicit' })}`,
+      `${session()} ${update(itemOnly, [{ ...item, id: oldId, product_variant_id: null, artwork_urls: [] }], { notes: 'clear explicit' })}`,
     ),
   );
   after = state(q.id);
@@ -450,14 +502,38 @@ try {
   );
   assert.equal(state(identified.id).items.length, 2);
   pass('same-product duplicate rows work when each old row id is explicit');
+  const removed = JSON.parse(
+    sql(
+      `${session()} ${update(identified, [{ ...item, id: ids[0] }], {
+        notes: 'one removed explicitly',
+        _removed_item_ids: [ids[1]],
+      })}`,
+    ),
+  );
+  const removedState = state(dup.id);
+  assert.equal(removedState.items.length, 1);
+  assert.equal(removedState.items[0].id, ids[0]);
+  assert.equal(removed.version, identified.version + 1);
+  pass('explicit removal deletes only the declared item and preserves retained identity');
+  const historical = create([item]);
+  const historicalId = state(historical.id).items[0].id;
+  sql(`UPDATE product_variants SET is_active=false WHERE id='${variant}';`);
+  const historicalUpdated = JSON.parse(
+    sql(
+      `${session()} ${update(historical, [{ ...item, id: historicalId, quantity: 3 }], { notes: 'historical inactive preserved' })}`,
+    ),
+  );
+  assert.equal(state(historical.id).items[0].product_variant_id, variant);
+  assert.equal(historicalUpdated.version, historical.version + 1);
+  pass('unchanged historical variant remains editable after catalog deactivation');
+  sql(`UPDATE product_variants SET is_active=true WHERE id='${variant}';`);
   const unversioned = create([{ ...item, product_variant_id: null, artwork_urls: [] }]);
-  sql(
+  rejects(
     `${session()} ${update(unversioned, [{ ...item, product_variant_id: null, artwork_urls: [], quantity: 4 }], {}, null)}`,
+    '_expected_version is required',
   );
   assert.equal(state(unversioned.id).quote.version, unversioned.version);
-  pass(
-    'LIMIT: legacy expected_version=NULL still allows item-only edit without optimistic protection',
-  );
+  pass('authenticated expected_version=NULL is rejected without writes');
   await concurrency(true);
   const roleMetadata = JSON.parse(
     sql(
@@ -474,11 +550,8 @@ try {
   console.log(
     JSON.stringify({
       checks: count,
-      result: 'SIMULATION_PASS_RELEASE_BLOCKED',
-      blockers: [
-        'item-only version trigger needs separately authorized change',
-        'explicit protected-line removal contract needs consumer decision',
-      ],
+      result: 'SIMULATION_PASS_LOCAL_ONLY',
+      blockers: ['canonical application requires separate nominal approval'],
       limits: [
         'reduced fixture, not full canonical clone',
         'synthetic membership helpers; no Auth/Edge/UI E2E',

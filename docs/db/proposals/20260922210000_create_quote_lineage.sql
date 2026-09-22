@@ -51,10 +51,15 @@ DECLARE
   _new_item_id  uuid;
   _actor_id     uuid;
   _variant_id   uuid;
+  _product_id   uuid;
+  _selection_valid boolean;
   _uid          uuid := auth.uid();
   _org_id       uuid := nullif(_quote->>'organization_id', '')::uuid;
   _seller_id    uuid := nullif(_quote->>'seller_id', '')::uuid;
 BEGIN
+  IF jsonb_typeof(coalesce(_quote, '{}'::jsonb)) <> 'object' THEN
+    RAISE EXCEPTION '_quote must be a JSON object' USING ERRCODE = '22023';
+  END IF;
   IF jsonb_typeof(coalesce(_items, '[]'::jsonb)) <> 'array' THEN
     RAISE EXCEPTION '_items must be a JSON array' USING ERRCODE = '22023';
   END IF;
@@ -127,36 +132,77 @@ BEGIN
       RAISE EXCEPTION 'Each quote item must be a JSON object' USING ERRCODE = '22023';
     END IF;
 
-    -- GUARD: identidade explícita; nunca inferir variante por SKU/cor.
+    _product_id := nullif(_item->>'product_id', '')::uuid;
+    _selection_valid := false;
+    -- GUARD: identidade explícita; nunca inferir variante por SKU/cor. Linhas
+    -- novas só aceitam produto/variante ativos. A FK mantém a identidade;
+    -- endurecimento contra reassociação de product_id requer FK composta separada.
     _variant_id := nullif(_item->>'product_variant_id', '')::uuid;
-    IF _variant_id IS NOT NULL AND NOT EXISTS (
-      SELECT 1 FROM public.product_variants v
-      WHERE v.id = _variant_id
-        AND v.product_id = nullif(_item->>'product_id', '')::uuid
-    ) THEN
-      RAISE EXCEPTION 'Selected variant does not belong to the quoted product'
-        USING ERRCODE = '23503';
+    IF _variant_id IS NOT NULL THEN
+      SELECT true INTO _selection_valid FROM public.product_variants v
+      JOIN public.products p ON p.id=v.product_id
+      WHERE v.id=_variant_id AND v.product_id=_product_id AND v.is_active
+        AND p.is_active AND NOT coalesce(p.is_deleted,false) AND p.deleted_at IS NULL
+      ;
+      IF NOT coalesce(_selection_valid,false) THEN
+        RAISE EXCEPTION 'Selected variant is inactive or does not belong to an active quoted product'
+          USING ERRCODE = '23503';
+      END IF;
+    ELSIF _product_id IS NOT NULL THEN
+      SELECT true INTO _selection_valid FROM public.products p
+      WHERE p.id=_product_id AND p.is_active
+        AND NOT coalesce(p.is_deleted,false) AND p.deleted_at IS NULL
+      ;
+      IF NOT coalesce(_selection_valid,false) THEN
+        RAISE EXCEPTION 'Selected product is inactive or deleted' USING ERRCODE='23503';
+      END IF;
     END IF;
-    IF _item ? 'artwork_urls' AND jsonb_typeof(_item->'artwork_urls') IS DISTINCT FROM 'array' THEN
-      RAISE EXCEPTION 'artwork_urls must be a JSON array (use [] to clear)'
-        USING ERRCODE = '22023';
+    IF _item ? 'artwork_urls' THEN
+      IF jsonb_typeof(_item->'artwork_urls') <> 'array' OR jsonb_array_length(_item->'artwork_urls') > 20
+         OR EXISTS (SELECT 1 FROM jsonb_array_elements(_item->'artwork_urls') e
+           WHERE jsonb_typeof(e)<>'string' OR length(trim(both '"' from e::text))>2048 OR trim(both '"' from e::text) ~ '[[:space:]]') THEN
+        RAISE EXCEPTION 'artwork_urls must contain at most 20 safe strings' USING ERRCODE='22023';
+      END IF;
+    END IF;
+    IF _item ? 'mockup_urls' THEN
+      IF jsonb_typeof(_item->'mockup_urls') <> 'array' OR jsonb_array_length(_item->'mockup_urls') > 20
+         OR EXISTS (SELECT 1 FROM jsonb_array_elements(_item->'mockup_urls') e
+           WHERE jsonb_typeof(e)<>'string' OR length(trim(both '"' from e::text))>2048 OR trim(both '"' from e::text) ~ '[[:space:]]') THEN
+        RAISE EXCEPTION 'mockup_urls must contain at most 20 safe strings' USING ERRCODE='22023';
+      END IF;
+    END IF;
+    IF _item ? 'personalizations' THEN
+      IF jsonb_typeof(_item->'personalizations') <> 'array' THEN
+        RAISE EXCEPTION 'personalizations must be a JSON array' USING ERRCODE='22023';
+      END IF;
+      IF EXISTS (SELECT 1 FROM jsonb_array_elements(_item->'personalizations') p WHERE jsonb_typeof(p)<>'object') THEN
+        RAISE EXCEPTION 'Each personalization must be a JSON object' USING ERRCODE='22023';
+      END IF;
     END IF;
 
     INSERT INTO public.quote_items (
-      quote_id, product_id, product_name, product_sku, product_image_url,
-      quantity, unit_price, subtotal,
+      quote_id, product_id, product_name, product_description, product_sku, product_image_url,
+      has_personalization, personalization_config, personalization_cost,
+      mockup_urls, artwork_urls, quantity, unit_price, subtotal,
       discount_percentage, discount_amount,
       color_name, color_hex, size_code, gender,
       sort_order, notes, kit_group_id, kit_name,
       price_confirmed_at, price_updated_at, price_freshness_threshold_days,
-      bitrix_product_id, personalization_cost, product_variant_id, artwork_urls
+      bitrix_product_id, selected_packaging_id, selected_packaging_name,
+      selected_packaging_unit_cost, product_variant_id
     )
     VALUES (
       _new_quote_id,
-      nullif(_item->>'product_id', '')::uuid,
+      _product_id,
       _item->>'product_name',
+      _item->>'product_description',
       _item->>'product_sku',
       _item->>'product_image_url',
+      coalesce((_item->>'has_personalization')::boolean,false),
+      _item->'personalization_config',
+      coalesce((_item->>'personalization_cost')::numeric,0),
+      coalesce(_item->'mockup_urls','[]'::jsonb),
+      coalesce(_item->'artwork_urls','[]'::jsonb),
       coalesce((_item->>'quantity')::integer, 0),
       coalesce((_item->>'unit_price')::numeric, 0),
       coalesce((_item->>'subtotal')::numeric, 0),
@@ -174,9 +220,10 @@ BEGIN
       nullif(_item->>'price_updated_at', '')::timestamptz,
       coalesce(nullif(_item->>'price_freshness_threshold_days', '')::integer, 60),
       nullif(_item->>'bitrix_product_id', ''),
-      coalesce((_item->>'personalization_cost')::numeric, 0),
-      _variant_id,
-      coalesce(_item->'artwork_urls', '[]'::jsonb)
+      nullif(_item->>'selected_packaging_id','')::uuid,
+      _item->>'selected_packaging_name',
+      nullif(_item->>'selected_packaging_unit_cost','')::numeric,
+      _variant_id
     )
     RETURNING id INTO _new_item_id;
 

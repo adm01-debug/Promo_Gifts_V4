@@ -1332,12 +1332,32 @@ export function useQuoteBuilderState() {
         effectiveStatus === 'pending_approval' ? pendingSellerNotesRef.current : undefined;
       setConflictInfo(null);
       const previousBaseline = baselineUpdatedAtRef.current;
-      baselineUpdatedAtRef.current = null;
+      const previousVersion = quoteVersionRef.current;
       try {
+        if (!quoteId) throw new Error('Orçamento ausente para sobrescrita');
+        // Uma sobrescrita explícita ainda usa CAS. Primeiro adota o snapshot remoto
+        // mais recente; qualquer nova corrida entre esta leitura e a RPC será
+        // rejeitada pelo _expected_version no banco.
+        const { data: remote, error: refreshError } = await supabase
+          .from('quotes')
+          .select('updated_at,version')
+          .eq('id', quoteId)
+          .single();
+        if (refreshError || !remote) {
+          throw refreshError ?? new Error('Orçamento não encontrado para sobrescrita');
+        }
+        baselineUpdatedAtRef.current = remote.updated_at;
+        quoteVersionRef.current = remote.version;
         const savedUpdatedAt = await handleSaveQuote(effectiveStatus, sellerNotes);
-        baselineUpdatedAtRef.current = savedUpdatedAt ?? new Date().toISOString();
+        if (!savedUpdatedAt) {
+          baselineUpdatedAtRef.current = previousBaseline;
+          quoteVersionRef.current = previousVersion;
+          return;
+        }
+        baselineUpdatedAtRef.current = savedUpdatedAt;
       } catch (err) {
         baselineUpdatedAtRef.current = previousBaseline;
+        quoteVersionRef.current = previousVersion;
         throw err;
       }
     },

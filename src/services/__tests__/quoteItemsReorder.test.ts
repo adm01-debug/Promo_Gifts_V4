@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { persistItemsOrder } from '@/services/quoteItemsReorder';
+import { supabase } from '@/integrations/supabase/client';
 
 const updateCalls: Array<{ id: string; sort_order: number }> = [];
 
@@ -11,7 +12,7 @@ vi.mock('@/integrations/supabase/client', () => {
           eq: (_col1: string, val1: string) => ({
             eq: (_col2: string, _val2: string) => {
               updateCalls.push({ id: val1, sort_order: patch.sort_order });
-              return Promise.resolve({ error: null });
+              return { select: () => Promise.resolve({ data: [{ id: val1 }], error: null }) };
             },
           }),
         }),
@@ -59,5 +60,18 @@ describe('persistItemsOrder', () => {
   it('returns 0 for empty input', async () => {
     const n = await persistItemsOrder('q1', []);
     expect(n).toBe(0);
+  });
+
+  it('fails closed when PostgREST reports success but no row was updated', async () => {
+    vi.mocked(supabase.from).mockReturnValueOnce({
+      update: () => ({
+        eq: () => ({
+          eq: () => ({ select: () => Promise.resolve({ data: [], error: null }) }),
+        }),
+      }),
+    } as never);
+    await expect(persistItemsOrder('q1', [{ id: 'missing', sort_order: 0 }])).rejects.toThrow(
+      /confirmar a reordenação/,
+    );
   });
 });
