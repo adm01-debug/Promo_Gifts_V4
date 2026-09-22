@@ -8,7 +8,7 @@
 // `types.ts` fixture — o commit-base tem `magazines` em `Tables`, o commit
 // atual não tem. Isso NUNCA toca o `src/integrations/supabase/types.ts`
 // real do repo; é um fixture isolado em `mkdtempSync`.
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { execFileSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -16,12 +16,13 @@ import { join, resolve } from 'node:path';
 import {
   auditRemovals,
   diffInventories,
+  diffContracts,
   diffLiveVsTypes,
   loadRemovalAllowlist,
   readFileAtGitRef,
   runCheck,
 } from '../../scripts/check-types-inventory-drift.mjs';
-import { countsOf, extractTypesInventory } from '../../scripts/extract-types-inventory.mjs';
+import { countsOf, extractTypesInventory, extractTypesContracts } from '../../scripts/extract-types-inventory.mjs';
 
 // ─── extractTypesInventory (parser) ────────────────────────────────────────
 
@@ -88,6 +89,9 @@ export type Database = {
 `;
 
 describe('extractTypesInventory (TypeScript Compiler API)', () => {
+  it.each(['export type Database = {}', 'export type Database = { public: { Tables: { broken:', 'export type Database = { public: UnknownSchema }', 'export type Database = { public: { Tables: UnknownTables } }'])('rejeita entrada vazia, truncada ou desconhecida: %s', (source) => {
+    expect(() => extractTypesInventory(source)).toThrow();
+  });
   it('extrai Tables/Views/Functions/Enums por schema e ignora __InternalSupabase', () => {
     const inventory = extractTypesInventory(FIXTURE_SOURCE, 'fixture.ts');
 
@@ -120,6 +124,33 @@ describe('extractTypesInventory (TypeScript Compiler API)', () => {
     const realSource = readFileSync(resolve('src/integrations/supabase/types.ts'), 'utf8');
     const inventory = extractTypesInventory(realSource, 'src/integrations/supabase/types.ts');
     expect(inventory.public.Tables).toContain('magazines');
+  });
+});
+
+describe('contratos detalhados', () => {
+  it('ignora comentários, ordem de propriedades, whitespace e ordem de union', () => {
+    const changed = FIXTURE_SOURCE.replace('id: string; title: string', 'title: string; /* anotação */ id: string')
+      .replace('"draft" | "published" | "archived"', '"published" | "archived" | "draft"');
+    expect(diffContracts(extractTypesContracts(FIXTURE_SOURCE), extractTypesContracts(changed)))
+      .toEqual({ removed: [], added: [], changed: [] });
+  });
+
+  it.each([
+    ['nulabilidade', 'title: string', 'title: string | null', ['Row', 'title']],
+    ['argumento RPC', 'q: string', 'q?: string', ['Args', 'q']],
+    ['retorno RPC', 'Returns: unknown', 'Returns: string', ['Returns']],
+    ['FK', 'Relationships: []', 'Relationships: [{ foreignKeyName: "fk"; columns: ["id"]; referencedRelation: "products"; referencedColumns: ["id"] }]', ['Relationships']],
+  ])('detecta mudança de %s sem mudar nome de objeto', (_name, from, to, member) => {
+    const diff = diffContracts(extractTypesContracts(FIXTURE_SOURCE), extractTypesContracts(FIXTURE_SOURCE.replace(from, to)));
+    expect(diff.changed).toHaveLength(1);
+    expect(diff.changed[0].member).toEqual(member);
+  });
+
+  it('uma exceção da tabela inteira não autoriza remover silenciosamente uma coluna', () => {
+    const removal = { schema: 'public', category: 'Tables', name: 'magazines', member: ['Row', 'title'] };
+    const wholeTable = { schema: 'public', category: 'Tables', name: 'magazines' };
+    expect(auditRemovals([removal], [wholeTable]).unjustified).toEqual([removal]);
+    expect(auditRemovals([removal], [{ ...removal, reason: 'aprovada' }]).justified).toHaveLength(1);
   });
 });
 
@@ -385,7 +416,7 @@ ${entries}
     expect(report.localDiff.justified).toHaveLength(1);
   });
 
-  it('não falha (skip) quando o commit-base não existe — não é evidência de remoção', async () => {
+  it('falha fechado quando o commit-base não existe — comparação não realizada não é sucesso', async () => {
     const root = initFixtureRepo();
     commitFixtureTypes(root, ['magazines'], 'único commit');
 
@@ -397,8 +428,92 @@ ${entries}
     });
 
     expect(report.localDiff.skipped).toBe(true);
-    // report.ok depende só do liveDiff (pulado por falta de DATABASE_URL) —
-    // sem base para comparar, o diff local não pode reprovar nada.
+    expect(report.localDiff.toolingError).toBe(true);
+    expect(report.ok).toBe(false);
+  });
+
+  it('não consulta banco implicitamente, mesmo com credenciais disponíveis', async () => {
+    const root = initFixtureRepo();
+    commitFixtureTypes(root, ['magazines'], 'base');
+    const queryLive = vi.fn().mockResolvedValue({ ok: true, rows: [] });
+    await runCheck({ path: join(root, 'types.ts'), base: 'HEAD', root, queryLive });
+    expect(queryLive).not.toHaveBeenCalled();
+    await runCheck({ path: join(root, 'types.ts'), base: 'HEAD', root, live: true, queryLive });
+    expect(queryLive).toHaveBeenCalledTimes(1);
+  });
+
+  it('report.ok é falso se a leitura live explicitamente solicitada não estiver disponível', async () => {
+    const root = initFixtureRepo();
+    commitFixtureTypes(root, ['magazines'], 'base');
+    const queryLive = vi.fn().mockResolvedValue({ ok: false, reason: 'credencial ausente' });
+    const report = await runCheck({ path: join(root, 'types.ts'), base: 'HEAD', root, live: true, queryLive });
+    expect(report.ok).toBe(false);
+    expect(report.liveDiff.toolingError).toBe(true);
+  });
+
+  it('detecta coluna perdida sem mudar o nome nem a quantidade de tabelas', async () => {
+    const root = initFixtureRepo();
+    commitFixtureTypes(root, ['magazines'], 'base');
+    writeFileSync(join(root, 'types.ts'), buildFixtureTypesSource(['magazines']).replace('Row: { id: string }', 'Row: { replacement: string }'));
+    const report = await runCheck({ path: join(root, 'types.ts'), base: 'HEAD', root });
+    expect(report.ok).toBe(false);
+    expect(report.localDiff.unjustified).toContainEqual({ schema: 'public', category: 'Tables', name: 'magazines', member: ['Row', 'id'] });
+  });
+
+  it.each([
+    ['coluna nova', 'Row: { id: string }', 'Row: { id: string; product_variant_id: string | null }'],
+    ['tipo da coluna', 'Row: { id: string }', 'Row: { id: number }'],
+    ['RPC nova', 'Functions: {', 'Functions: { set_custom_kit_pinned: { Args: { pinned: boolean }; Returns: boolean };'],
+  ])('--generated falha com %s e identifica o contrato', async (_name, from, to) => {
+    const root = initFixtureRepo();
+    commitFixtureTypes(root, ['magazines'], 'base');
+    const generatedPath = join(root, 'generated.ts');
+    // Mapped type Functions vazio precisa ser substituído integralmente no caso RPC.
+    const base = buildFixtureTypesSource(['magazines']);
+    const candidate = _name === 'RPC nova'
+      ? base.replace(/Functions: \{\s*\[_ in never\]: never\s*\}/, 'Functions: { set_custom_kit_pinned: { Args: { pinned: boolean }; Returns: boolean } }')
+      : base.replace(from, to);
+    writeFileSync(generatedPath, candidate);
+    const report = await runCheck({ path: join(root, 'types.ts'), base: 'HEAD', root, generatedPath });
+    expect(report.ok).toBe(false);
+    expect(report.generatedDiff.contracts.added.length + report.generatedDiff.contracts.changed.length).toBeGreaterThan(0);
+  });
+
+  it('--generated passa somente quando ambos os contratos coincidem', async () => {
+    const root = initFixtureRepo();
+    commitFixtureTypes(root, ['magazines'], 'base');
+    const generatedPath = join(root, 'generated.ts');
+    writeFileSync(generatedPath, buildFixtureTypesSource(['magazines']));
+    const report = await runCheck({ path: join(root, 'types.ts'), base: 'HEAD', root, generatedPath });
     expect(report.ok).toBe(true);
+    expect(report.generatedDiff.contracts).toEqual({ added: [], removed: [], changed: [] });
+  });
+
+  it('CLI devolve exit 2 e JSON ok:false quando a base é inválida', () => {
+    const script = resolve('scripts/check-types-inventory-drift.mjs');
+    try {
+      execFileSync(process.execPath, [script, '--base', 'refs/does-not-exist', '--json'], { encoding: 'utf8', stdio: 'pipe' });
+      throw new Error('CLI indevidamente aprovada');
+    } catch (error) {
+      expect(error.status).toBe(2);
+      expect(JSON.parse(error.stdout).ok).toBe(false);
+    }
+  });
+
+  it('CLI devolve exit 1 e diagnóstico de coluna quando a geração diverge', () => {
+    const root = initFixtureRepo();
+    commitFixtureTypes(root, ['magazines'], 'base');
+    const generatedPath = join(root, 'generated.ts');
+    writeFileSync(generatedPath, buildFixtureTypesSource(['magazines']).replace('Row: { id: string }', 'Row: { id: string; missing_column: number }'));
+    const script = resolve('scripts/check-types-inventory-drift.mjs');
+    try {
+      execFileSync(process.execPath, [script, '--base', 'HEAD', '--generated', generatedPath, '--json'], { encoding: 'utf8', stdio: 'pipe', maxBuffer: 32 * 1024 * 1024 });
+      throw new Error('CLI indevidamente aprovada');
+    } catch (error) {
+      expect(error.status).toBe(1);
+      const report = JSON.parse(error.stdout);
+      expect(report.ok).toBe(false);
+      expect(report.generatedDiff.contracts.added.some((entry) => entry.member.join('.') === 'Row.missing_column')).toBe(true);
+    }
   });
 });

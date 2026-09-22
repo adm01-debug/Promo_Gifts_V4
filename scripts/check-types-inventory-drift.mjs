@@ -26,13 +26,13 @@
  *       reformular ou squashar fora do histórico); um arquivo JSON versionado,
  *       editado na MESMA revisão que remove o objeto, é.
  *
- *       Se o commit-base não existir (clone raso com `fetch-depth: 1`,
- *       repositório com um único commit, `--base` apontando para um ref
- *       inválido) a checagem (a) é pulada com um aviso — não é tratada
- *       como falha, porque a ausência de histórico não é evidência de
- *       remoção. Em CI, prefira `--base <sha-da-base-do-PR>` com
- *       `fetch-depth: 0` (ou pelo menos profundidade suficiente) para não
- *       cair nesse caso.
+ *       Ausência de base é erro de ferramental (exit 2, ok:false), nunca
+ *       sucesso. Em CI use --base <sha-da-base-do-PR> e fetch-depth: 0.
+ *       Também detecta membros removidos de objetos que permaneceram.
+ *       Exceções de membros exigem `member: ["Row", "nome_da_coluna"]`;
+ *       uma exceção para a tabela inteira não autoriza perdas de colunas.
+ *       Adições e alterações de assinatura são informadas no diff local;
+ *       não são proibidas, pois evolução do contrato pode ser intencional.
  *
  *   (b) Diff ao vivo (opt-in via `--live`): compara `Tables`/`Views`/`Enums`
  *       do `public` no `types.ts` atual contra `pg_catalog` via conexão
@@ -45,11 +45,15 @@
  *       expor (schema exposto, permissões, tipos mapáveis) — a maioria das
  *       ~1320 funções de `pg_proc` nunca aparece em `types.ts` por design,
  *       então comparar 1:1 produziria ruído constante, não sinal.
- *       `--live` sem `DATABASE_URL` ou sem a devDependency opcional `pg`
- *       é pulado com aviso (mesma postura tolerante de
- *       `gen-internal-schema.mjs`) — a menos que `--live` tenha sido pedido
- *       explicitamente E `DATABASE_URL` esteja definida mas o import de
- *       `pg` falhe; nesse caso é erro de ferramental (exit 2), não de dado.
+ *       Sem --live, nenhuma conexão é feita, mesmo havendo DATABASE_URL.
+ *       Com --live, qualquer indisponibilidade é exit 2 e ok:false.
+ *
+ *   (c) --generated <arquivo>: compara tipos gerados temporariamente com o
+ *       arquivo controlado em ambas as direções. Objetos, colunas, Args,
+ *       Returns, enums e relacionamentos divergentes falham (exit 1), sem
+ *       aplicar allowlist histórica. O chamador deve registrar proveniência
+ *       (projeto, CLI, schemas, horário e hash); um arquivo arbitrário não
+ *       constitui evidência viva. Este script não executa o gerador nem DDL.
  *
  * Uso:
  *   node scripts/check-types-inventory-drift.mjs
@@ -57,6 +61,7 @@
  *   node scripts/check-types-inventory-drift.mjs --path src/integrations/supabase/types.ts
  *   node scripts/check-types-inventory-drift.mjs --live
  *   node scripts/check-types-inventory-drift.mjs --json
+ *   node scripts/check-types-inventory-drift.mjs --base HEAD --generated /tmp/types-live.ts --json
  *
  * Exit codes: 0 = sem drift não justificado; 1 = drift não justificado
  * encontrado; 2 = erro de ferramental (parsing, git, conexão pedida
@@ -74,6 +79,7 @@ import {
   ROOT,
   extractTypesInventory,
   extractTypesInventoryFromFile,
+  extractTypesContracts,
 } from './extract-types-inventory.mjs';
 
 export const DEFAULT_BASE_REF = 'HEAD~1';
@@ -150,7 +156,10 @@ function normalizeAllowlistEntry(entry, index) {
       `Entrada #${index} da allowlist tem category "${category}" inválida. Use uma de: ${CATEGORY_KEYS.join(', ')}.`,
     );
   }
-  return { schema, category, name, reason, approvedBy, date };
+  if (entry.member !== undefined && (!Array.isArray(entry.member) || !entry.member.every((part) => typeof part === 'string'))) {
+    throw new Error(`Entrada #${index}: member deve ser um array de nomes de propriedades.`);
+  }
+  return { schema, category, name, reason, approvedBy, date, ...(entry.member === undefined ? {} : { member: entry.member }) };
 }
 
 /**
@@ -168,8 +177,22 @@ export function loadRemovalAllowlist(path = DEFAULT_ALLOWLIST_PATH) {
   return entries.map(normalizeAllowlistEntry);
 }
 
-function allowlistKey({ schema, category, name }) {
-  return `${schema} ${category} ${name}`;
+function allowlistKey({ schema, category, name, member }) {
+  return JSON.stringify([schema, category, name, member ?? null]);
+}
+
+/** Diff bidirecional de campos/assinaturas, independente da quantidade de objetos. */
+export function diffContracts(base, current) {
+  const before = new Map(base.map((entry) => [allowlistKey(entry), entry]));
+  const after = new Map(current.map((entry) => [allowlistKey(entry), entry]));
+  const removed = [], added = [], changed = [];
+  for (const [key, entry] of before) {
+    const next = after.get(key);
+    if (!next) removed.push(entry);
+    else if (entry.signature !== next.signature) changed.push({ ...next, previousSignature: entry.signature });
+  }
+  for (const [key, entry] of after) if (!before.has(key)) added.push(entry);
+  return { removed, added, changed };
 }
 
 /** Separa remoções cobertas pela allowlist das que exigem falha do gate. */
@@ -272,6 +295,7 @@ function parseCliArgs(argv) {
   let allowlistPath = DEFAULT_ALLOWLIST_PATH;
   let live = false;
   let json = false;
+  let generatedPath;
 
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
@@ -285,16 +309,20 @@ function parseCliArgs(argv) {
       base = argv[++i];
     } else if (arg === '--allowlist') {
       allowlistPath = resolve(argv[++i] ?? '');
+    } else if (arg === '--generated') {
+      const value = argv[++i];
+      if (!value || value.startsWith('--')) throw new Error('--generated exige um arquivo TypeScript.');
+      generatedPath = resolve(value);
     } else {
       throw new Error(`Argumento desconhecido: ${arg}`);
     }
   }
   if (!base) throw new Error('--base exige um ref git.');
-  return { path, base, allowlistPath, live, json };
+  return { path, base, allowlistPath, live, json, generatedPath };
 }
 
-function formatObject({ schema, category, name }) {
-  return `${schema}.${category}.${name}`;
+function formatObject({ schema, category, name, member }) {
+  return `${schema}.${category}.${name}${member ? ` ${JSON.stringify(member)}` : ''}`;
 }
 
 export async function runCheck({
@@ -303,25 +331,35 @@ export async function runCheck({
   allowlistPath = DEFAULT_ALLOWLIST_PATH,
   live = false,
   root = ROOT,
+  generatedPath,
+  queryLive = queryLiveInventory,
 } = {}) {
   const report = { ok: true, localDiff: null, liveDiff: null };
 
   // (a) diff local contra o commit-base.
   const currentInventory = extractTypesInventoryFromFile(path);
+  const currentContracts = extractTypesContracts(readFileSync(path, 'utf8'), path);
   const baseFile = readFileAtGitRef(base, path, { root });
   if (!baseFile.ok) {
-    report.localDiff = { skipped: true, reason: baseFile.reason, base };
+    report.localDiff = { skipped: true, reason: baseFile.reason, base, toolingError: true };
+    report.ok = false;
   } else {
     const baseInventory = extractTypesInventory(baseFile.text, `${base}:${path}`);
     const { removed, added } = diffInventories(baseInventory, currentInventory);
+    const contracts = diffContracts(extractTypesContracts(baseFile.text, `${base}:${path}`), currentContracts);
+    // Uma tabela removida é auditada como objeto inteiro. Quando ela permanece,
+    // a remoção de coluna exige uma entrada específica, não uma exceção ampla.
+    const objectKeys = new Set(removed.map(allowlistKey));
+    const memberRemovals = contracts.removed.filter((entry) => !objectKeys.has(allowlistKey({ ...entry, member: undefined })))
+      .map(({ signature: _signature, ...entry }) => entry);
     const allowlistEntries = loadRemovalAllowlist(allowlistPath);
-    const { justified, unjustified } = auditRemovals(removed, allowlistEntries);
-    report.localDiff = { skipped: false, base, added, justified, unjustified };
+    const { justified, unjustified } = auditRemovals([...removed, ...memberRemovals], allowlistEntries);
+    report.localDiff = { skipped: false, base, added, justified, unjustified, contracts };
     if (unjustified.length > 0) report.ok = false;
   }
 
   // (b) diff ao vivo contra pg_catalog (opt-in).
-  const live_ = await queryLiveInventory();
+  const live_ = live ? await queryLive() : { ok: false, reason: 'Não solicitado (use --live).' };
   if (live_.ok) {
     const missing = diffLiveVsTypes(live_.rows, currentInventory);
     report.liveDiff = { skipped: false, missing };
@@ -330,10 +368,19 @@ export async function runCheck({
     // Pedido explicitamente e indisponível: isso é falha de ferramental, não
     // de dado — o chamador deve tratar como exit 2, não exit 1.
     report.liveDiff = { skipped: true, reason: live_.reason, toolingError: true };
+    report.ok = false;
   } else {
     report.liveDiff = { skipped: true, reason: live_.reason, toolingError: false };
   }
 
+  if (generatedPath) {
+    const generatedSource = readFileSync(generatedPath, 'utf8');
+    const objects = diffInventories(currentInventory, extractTypesInventory(generatedSource, generatedPath));
+    const contracts = diffContracts(currentContracts, extractTypesContracts(generatedSource, generatedPath));
+    report.generatedDiff = { source: generatedPath, objects, contracts };
+    // Uma exceção de remoção histórica não comprova paridade com geração viva.
+    if ([...objects.removed, ...objects.added, ...contracts.removed, ...contracts.added, ...contracts.changed].length > 0) report.ok = false;
+  }
   return report;
 }
 
@@ -341,7 +388,7 @@ function formatReport(report) {
   const lines = [];
 
   if (report.localDiff.skipped) {
-    lines.push(`⚠️  diff local pulado (base "${report.localDiff.base}"): ${report.localDiff.reason}`);
+    lines.push(`❌ diff local indisponível (base "${report.localDiff.base}"): ${report.localDiff.reason}`);
   } else {
     const { base, added, justified, unjustified } = report.localDiff;
     lines.push(`diff local: atual vs. "${base}"`);
@@ -352,6 +399,19 @@ function formatReport(report) {
     }
     for (const entry of unjustified) {
       lines.push(`    ✗ ${formatObject(entry)} — SEM entrada em docs/TYPES_INVENTORY_REMOVAL_ALLOWLIST.json`);
+    }
+    for (const entry of added) lines.push(`    + ${formatObject(entry)}`);
+    for (const entry of report.localDiff.contracts.added) lines.push(`    + membro ${formatObject(entry)}`);
+    for (const entry of report.localDiff.contracts.changed) lines.push(`    ~ assinatura ${formatObject(entry)} — revisar contrato`);
+  }
+
+  if (report.generatedDiff) {
+    lines.push(`Geração temporária: ${report.generatedDiff.source} (base = arquivo controlado; atual = gerado)`);
+    for (const [scope, diff] of Object.entries(report.generatedDiff).filter(([key]) => key !== 'source')) {
+      for (const [kind, entries] of Object.entries(diff)) {
+        lines.push(`  ${scope}.${kind}: ${entries.length}`);
+        for (const entry of entries) lines.push(`    ${formatObject(entry)}`);
+      }
     }
   }
 
@@ -369,8 +429,8 @@ function formatReport(report) {
 }
 
 async function main() {
-  const { path, base, allowlistPath, live, json } = parseCliArgs(process.argv.slice(2));
-  const report = await runCheck({ path, base, allowlistPath, live });
+  const { path, base, allowlistPath, live, json, generatedPath } = parseCliArgs(process.argv.slice(2));
+  const report = await runCheck({ path, base, allowlistPath, live, generatedPath });
 
   if (json) {
     console.log(JSON.stringify(report, null, 2));
@@ -378,13 +438,13 @@ async function main() {
     console.log(formatReport(report));
   }
 
-  if (report.liveDiff.skipped && report.liveDiff.toolingError) {
+  if (report.localDiff.toolingError || report.liveDiff.toolingError) {
     process.exitCode = 2;
     return;
   }
   if (!report.ok) {
     console.error(
-      '\n❌ check-types-inventory-drift: remoção não justificada e/ou objeto vivo ausente de types.ts. ' +
+      '\n❌ check-types-inventory-drift: remoção não justificada, objeto vivo ausente ou divergência da geração temporária. ' +
         'Se a remoção é intencional, adicione uma entrada em docs/TYPES_INVENTORY_REMOVAL_ALLOWLIST.json ' +
         'na mesma revisão. Se é um objeto vivo ausente, regenere types.ts.',
     );

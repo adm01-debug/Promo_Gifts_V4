@@ -20,7 +20,9 @@ Este documento substitui as **premissas operacionais**, não apaga o histórico,
 
 **Definição de conclusão:** cada caixa só é marcada após registrar comando/consulta, alvo, horário UTC, SHA/versão, resultado e revisor em um relatório de execução. “Arquivo existe”, “CI verde” ou “CLI não reportou erro” isoladamente não bastam.
 
-**Execução de 22/09:** dez etapas verificadas; as demais seguem parciais ou bloqueadas. Ver [relatório de execução](EXECUCAO_RECONCILIACAO_50_ETAPAS_2026-09-22.md). O estado global é **NÃO ALINHADO**: a migration de `handle_new_user()` existe no Git, mas a correção não aparece no corpo vivo da função.
+**Estado atualizado, 22/09 às 20:23 UTC:** dez etapas integralmente verificadas; as demais seguem parciais ou bloqueadas. O estado global permanece **NÃO ALINHADO**, mas **a correção de `handle_new_user()` está aplicada e comprovada**. A migration `20260922170000` tem recibo na `main` pelo PR #1875 (`d76f1e382`); nova leitura de ledger/`pg_catalog` confirmou seus hashes e permissões. Os tipos gerados do projeto canônico coincidem byte a byte com os versionados nesta coleta. Ver [relatório de execução](EXECUCAO_RECONCILIACAO_50_ETAPAS_2026-09-22.md) para limites e avanço parcial da etapa 41.
+
+As atualizações abaixo de 15:44/17:13 UTC são **históricas**, não instruções para repetir a aplicação. Não reaplicar a migration nem reparar outras versões em lote.
 
 **Atualização após simulação (15:44 UTC):** a versão `20260920120000` corrige a FK, mas permite privilégios vindos de metadata no fixture. Não aplicá-la isoladamente. Proposta substituta preparada em `docs/db/proposals/20260922170000_signup_identity_safe_default.sql`, fora do diretório de migrations e ainda não aplicada. O cadastro público está desabilitado no Auth; não há comprovação de exploração. Testes de rollback, mudança concorrente e defaults passaram para a proposta; detalhes e limites no relatório.
 
@@ -81,6 +83,8 @@ Este documento substitui as **premissas operacionais**, não apaga o histórico,
 - [ ] **39. Testar contratos de ponta a ponta** `[GIT, P1]` — cobrir preço/variante de orçamento, pin de kit, catálogo Zapp, concorrência e falhas de permissão com dados controlados. **Aceite:** testes reproduzem bug anterior e passam após ajuste; sem escrita em produção.
 - [ ] **40. Rodar regressão proporcional ao diff** `[GIT, P1]` — typecheck, lint, unit/contract tests, Gate 0 e smoke de Kit Maker/Magazine/Auth. **Aceite:** falhas novas triadas por causa; snapshots não atualizados para esconder mudança de contrato.
 - [ ] **41. Criar gate de drift de types** `[GIT, P2]` — comparar geração temporária com versão controlada e emitir diff claro em CI, com exceções documentadas para objetos não expostos. **Aceite:** uma coluna/RPC nova causa alerta acionável, não false green.
+
+**Avanço parcial da 41 (22/09, continuação após PR #1875):** gate local reforçado para perdas de membros, base ausente e leitura live indisponível; modo `--generated <arquivo>` compara objetos e contratos bidirecionalmente. Simulações incluem colunas/RPCs novas, nulabilidade, argumentos/retornos, FK, parser inválido e CLI. A integração desse modo a uma geração periódica obrigatória e a verificação de required checks continuam pendentes; não marcar a etapa completa apenas por existir script ou por um teste manual passar. Nenhum workflow foi alterado nesta rodada.
 
 ## F. Edge Functions, deploy e comportamento online (42–46)
 
