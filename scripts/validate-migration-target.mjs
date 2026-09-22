@@ -24,10 +24,55 @@ export function validateMigrationTarget(env, { versionOnly = false } = {}) {
   return problems;
 }
 
+/** Read-only discovery: a valid pooler hostname may belong to another cluster. */
+export async function validateLiveMigrationPooler(env, fetchImpl = fetch) {
+  const problems = validateMigrationTarget(env);
+  if (problems.length) return problems;
+  if (env.PGHOST === `db.${CANONICAL_PROJECT}.supabase.co`) {
+    return (env.PGPORT || '5432') === '5432' ? [] : ['Conexão direta exige porta 5432'];
+  }
+  if (!env.SUPABASE_ACCESS_TOKEN) return ['SUPABASE_ACCESS_TOKEN ausente para conferir pooler'];
+  try {
+    const response = await fetchImpl(
+      `https://api.supabase.com/v1/projects/${CANONICAL_PROJECT}/config/database/pooler`,
+      {
+        method: 'GET',
+        redirect: 'error',
+        headers: { Authorization: `Bearer ${env.SUPABASE_ACCESS_TOKEN}` },
+        signal: AbortSignal.timeout(15_000),
+      },
+    );
+    if (!response.ok) return [`Consulta do pooler indisponível (HTTP ${response.status})`];
+    const rows = await response.json();
+    if (!Array.isArray(rows) || !rows.length) return ['Resposta do pooler inválida ou vazia'];
+    // Supavisor exposes session mode on 5432 and transaction mode on 6543.
+    // The API can advertise only transaction mode; DDL uses its session endpoint.
+    const matches = rows.some(
+      (row) =>
+        row &&
+        row.database_type === 'PRIMARY' &&
+        row.db_host === env.PGHOST &&
+        row.db_user === env.PGUSER &&
+        row.db_name === env.PGDATABASE &&
+        ((row.pool_mode === 'transaction' && row.db_port === 6543) ||
+          (row.pool_mode === 'session' && row.db_port === 5432)),
+    );
+    if (!matches) return ['PGHOST/PGUSER/PGDATABASE não correspondem ao pooler canônico atual'];
+    if ((env.PGPORT || '5432') !== '5432')
+      return ['Migration exige pooler em modo session (porta 5432)'];
+    return [];
+  } catch {
+    // Never emit response bodies, credentials, connection strings or thrown URLs.
+    return ['Não foi possível validar o pooler canônico (rede, timeout ou JSON inválido)'];
+  }
+}
+
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  const problems = validateMigrationTarget(process.env, {
-    versionOnly: process.argv.includes('--version-only'),
-  });
+  const problems = process.argv.includes('--require-live-pooler')
+    ? await validateLiveMigrationPooler(process.env)
+    : validateMigrationTarget(process.env, {
+        versionOnly: process.argv.includes('--version-only'),
+      });
   if (problems.length) {
     console.error(problems.join('; '));
     process.exitCode = 1;
