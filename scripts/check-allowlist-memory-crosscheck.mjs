@@ -6,8 +6,10 @@
  *  - Cada allowlist em .security/*-allowlist.json DEVE conter `documented_in` apontando
  *    para um arquivo existente no repo.
  *  - Cada entrada DEVE ter `reason` não vazio e sem "TODO".
- *  - Cada `fn` DEVE ser mencionado (por nome curto sem args) no doc de referência
- *    OU o doc deve declarar explicitamente "Snapshot atual: 0 entradas" para essa allowlist.
+ *  - Cada entrada DEVE declarar a sua identidade no formato da respectiva
+ *    allowlist: `fn` para funções SQL ou `slug` para Edge Functions. Essa
+ *    identidade DEVE ser mencionada no documento de referência, OU o doc deve
+ *    declarar explicitamente "Snapshot atual: 0 entradas" para essa allowlist.
  *
  * Uso: node scripts/check-allowlist-memory-crosscheck.mjs
  */
@@ -65,27 +67,35 @@ for (const path of ALLOWLISTS) {
 
   let localErrors = 0;
   for (const entry of fns) {
-    const fnSig = entry.fn || "";
+    // As allowlists de pg_catalog identificam rotinas com `fn`, enquanto o
+    // inventário de Edge Functions (verify_jwt=false) usa `slug`. Não podemos
+    // obrigar uma Edge Function a fingir ser uma função SQL: além de tornar o
+    // metadado ambíguo, isso fazia o gate reprovar todas as entradas válidas.
+    const identity = entry.fn || entry.slug || "";
+    const identityField = entry.fn ? "fn" : "slug";
     const reason = (entry.reason || "").trim();
-    if (!fnSig) {
-      err(`${rel}: entrada sem 'fn'`);
+    if (!identity) {
+      err(`${rel}: entrada sem 'fn' ou 'slug'`);
       localErrors++;
       continue;
     }
     if (!reason) {
-      err(`${rel}: '${fnSig}' sem 'reason'`);
+      err(`${rel}: '${identity}' sem 'reason'`);
       localErrors++;
       continue;
     }
     if (/^TODO\b/i.test(reason)) {
-      err(`${rel}: '${fnSig}' com reason TODO — documentar antes de merge`);
+      err(`${rel}: '${identity}' com reason TODO — documentar antes de merge`);
       localErrors++;
       continue;
     }
-    // Nome curto: public.foo(...) -> foo
-    const shortName = fnSig.replace(/^public\./, "").split("(")[0];
+    // Nome curto SQL: public.foo(...) -> foo. Slugs de Edge Function já são
+    // a identidade canônica e devem aparecer literalmente no documento E42.
+    const shortName = identityField === "fn"
+      ? identity.replace(/^public\./, "").split("(")[0]
+      : identity;
     if (!docContent.includes(shortName)) {
-      err(`${rel}: '${fnSig}' não referenciado em docs/security/ALLOWLISTS_MEMORY.md`);
+      err(`${rel}: '${identity}' não referenciado no documento declarado`);
       localErrors++;
     }
   }
