@@ -12,6 +12,7 @@
 
 | Arquivo/objeto | Agente | Branch/PR | Início (UTC) | TTL | Status |
 |---|---|---|---|---|---|
+| `src/hooks/quotes/{quoteTypes,quoteHelpers,useQuoteItems,useQuotes}.ts`, `src/services/quoteService.ts`, testes de contratos de variantes, plano/relatório e `docs/db/DECISAO_QUOTE_VARIANT_ROUNDTRIP_2026-09-22.md` | Codex | `codex/quote-variant-contract-20260922` | 2026-09-22T20:33:44Z | 48 h | correção de leitura/payload de orçamento e simulações; sem execução ou alteração de RPC no banco |
 | `scripts/{extract-types-inventory,check-types-inventory-drift}.mjs`, `tests/scripts/check-types-inventory-drift.test.mjs`, plano e relatório de reconciliação de 22/09 | Codex | `codex/types-drift-fail-closed-20260922` | 2026-09-22T20:20:54Z | 48 h | simulações de falso verde e gate de contratos; sem escrita no banco, regeneração versionada de types ou mudança de workflows |
 | `scripts/validate-migration-target.mjs`, `tests/scripts/validate-migration-target.test.mjs`, `.github/workflows/db-apply-migration.yml`, pacote signup e plano/relatório de reconciliação de 22/09 | Codex | `codex/e15-pooler-validation-20260922` | 2026-09-22T17:29:00Z | 48 h | correção de conexão e validação do E15; sem reserva/autorização de outros objetos de BD |
 | `supabase/MIGRATIONS_SYNC_LOG.md` (somente recibo `20260922170000`) | Codex | `codex/signup-migration-receipt-20260922` | 2026-09-22T19:27:37Z | 48 h | recuperação documental autorizada pelo PO; sem SQL, permissões ou alterações de workflow |

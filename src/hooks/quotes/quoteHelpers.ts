@@ -192,13 +192,18 @@ export function buildUpdatePayload(
   };
 }
 
+/** Mesmo conjunto de linhas para totais, payload e associação das artes. */
+export function filterPersistableQuoteItems(items: QuoteItem[]): QuoteItem[] {
+  return items.filter((item) => (item.quantity ?? 0) >= 1);
+}
+
 export function buildItemsInsertPayload(
   items: QuoteItem[],
   quoteId: string,
 ): TablesInsert<'quote_items'>[] {
   // FIX-E06: silently drop items with quantity < 1 before persisting; they indicate
   // a UI state that was never cleared and would create zero-value rows in the DB.
-  const validItems = items.filter((item) => (item.quantity ?? 0) >= 1);
+  const validItems = filterPersistableQuoteItems(items);
 
   // Cor é obrigatória ao salvar/enviar orçamento. Bloqueia no front-end antes do
   // request, evitando POST inválido e mensagem genérica do backend.
@@ -213,6 +218,7 @@ export function buildItemsInsertPayload(
   return validItems.map((item, index) => ({
     quote_id: quoteId,
     product_id: item.product_id,
+    product_variant_id: item.product_variant_id || null,
     product_name: item.product_name,
     product_sku: item.product_sku,
     product_image_url: item.product_image_url,
