@@ -5,6 +5,8 @@
 **Método:** simulações locais e consultas somente leitura no banco; nenhuma DDL, reparo de ledger, exclusão, deploy de Edge ou alteração de settings foi executada.
 **Veredito:** **NÃO ALINHADO**. Este relatório não transforma a ausência de erro HTTP, o build local ou uma migration versionada em prova de aplicação no banco.
 
+**Atualização de publicação, 15:47 UTC:** o PO `adm01-debug` mergeou a PR #1870 às 15:30:58 UTC, gerando `bb59efcd7e1a989066f06c87aba542213a258538`. `/api/health` já retorna esse SHA e `/api/ready` retorna `ready`. A continuação desta sessão foi portada por cherry-pick de seu único commit novo para `codex/signup-safe-reconciliation-20260922`, criada sobre essa `main`, sem reaplicar o conteúdo do squash. As referências a PR não mergeada/SHA anterior abaixo descrevem a coleta anterior e não o estado mais recente. O banco permanece sem a correção de cadastro.
+
 ## Manifesto de linha de base
 
 | Fonte | Identificador verificado | Evidência |
@@ -117,7 +119,7 @@ node scripts/simulate-signup-migration.mjs --hardened-proposal
 # esperado: exit 0, proposta passa o fixture reduzido
 ```
 
-O pacote ainda exige aprovação da **versão substituta**, revisão do encadeamento completo de triggers, preservação da definição anterior e teste administrativo controlado na janela de aplicação. Não houve reparo de ledger nem DDL canônica.
+O pacote ainda exige aprovação da **versão substituta**, revisão do encadeamento completo de triggers, preservação da definição anterior e teste administrativo controlado na janela de aplicação. Não houve reparo de ledger nem DDL canônica. A nova branch preserva também a referência antiga `codex/reconcile-local-github-supabase-20260922`; nenhuma branch/worktree de outro agente foi descartada.
 
 ### Endurecimento do executor E15
 
