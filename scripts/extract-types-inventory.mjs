@@ -77,7 +77,10 @@ function propertyName(member) {
  * `MappedTypeNode`, não `TypeLiteralNode` — nesse caso devolve `[]`.
  */
 function extractPropertyNames(typeNode) {
-  if (!typeNode || !ts.isTypeLiteralNode(typeNode)) return [];
+  if (typeNode && ts.isMappedTypeNode(typeNode) && typeNode.typeParameter.constraint?.kind === ts.SyntaxKind.NeverKeyword) return [];
+  if (!typeNode || !ts.isTypeLiteralNode(typeNode)) {
+    throw new Error('Categoria Database em formato não suportado; não interpretar como lista vazia.');
+  }
   const names = [];
   for (const member of typeNode.members) {
     if (!ts.isPropertySignature(member)) continue;
@@ -104,6 +107,9 @@ export function extractTypesInventory(sourceText, fileName = 'types.ts') {
     true,
     ts.ScriptKind.TS,
   );
+  if (sourceFile.parseDiagnostics.length > 0) {
+    throw new Error(`TypeScript inválido em ${fileName}: ${ts.flattenDiagnosticMessageText(sourceFile.parseDiagnostics[0].messageText, ' ')}`);
+  }
 
   let databaseType = null;
   sourceFile.forEachChild((node) => {
@@ -127,7 +133,9 @@ export function extractTypesInventory(sourceText, fileName = 'types.ts') {
     if (!schemaName || NON_SCHEMA_KEYS.has(schemaName)) continue;
 
     const schemaType = schemaMember.type;
-    if (!schemaType || !ts.isTypeLiteralNode(schemaType)) continue;
+    if (!schemaType || !ts.isTypeLiteralNode(schemaType)) {
+      throw new Error(`Schema ${schemaName} em formato não suportado em ${fileName}.`);
+    }
 
     const schemaInventory = {};
     for (const categoryMember of schemaType.members) {
@@ -145,7 +153,70 @@ export function extractTypesInventory(sourceText, fileName = 'types.ts') {
     inventory[schemaName] = schemaInventory;
   }
 
+  if (Object.keys(inventory).length === 0) {
+    throw new Error(`Nenhum schema reconhecido em ${fileName}; inventário vazio não é prova de paridade.`);
+  }
   return inventory;
+}
+
+/**
+ * Contratos abaixo do nome do objeto. Caminhos são arrays (nomes SQL podem
+ * conter pontos). Type literals e unions são ordenados; comentários e
+ * whitespace não participam. Tuplas preservam ordem: ela pode ser semântica.
+ * Não substitui o checker TypeScript: comparação estrutural, não equivalência
+ * de aliases arbitrários. Usa o formato produzido pelo gerador Supabase.
+ */
+export function extractTypesContracts(sourceText, fileName = 'types.ts') {
+  extractTypesInventory(sourceText, fileName); // Mesmo fail-closed do inventário.
+  const source = ts.createSourceFile(fileName, sourceText, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
+  const printer = ts.createPrinter({ removeComments: true });
+  const print = (node) => printer.printNode(ts.EmitHint.Unspecified, node, source);
+  function canonical(node) {
+    if (!node) throw new Error(`Tipo sem declaração em ${fileName}.`);
+    if (ts.isParenthesizedTypeNode(node)) return canonical(node.type);
+    if (ts.isTypeLiteralNode(node)) {
+      return ['object', node.members.map((member) => {
+        if (!ts.isPropertySignature(member)) return ['other', print(member)];
+        return [propertyName(member), Boolean(member.questionToken), canonical(member.type)];
+      }).sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b), 'en'))];
+    }
+    if (ts.isUnionTypeNode(node) || ts.isIntersectionTypeNode(node)) {
+      return [ts.isUnionTypeNode(node) ? 'union' : 'intersection', node.types.map(canonical)
+        .sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b), 'en'))];
+    }
+    if (ts.isArrayTypeNode(node)) return ['array', canonical(node.elementType)];
+    if (ts.isTupleTypeNode(node)) return ['tuple', node.elements.map(canonical)];
+    return print(node);
+  }
+  const entries = [];
+  const database = source.statements.find((node) => ts.isTypeAliasDeclaration(node) && node.name.text === 'Database').type;
+  for (const schema of database.members) {
+    const schemaName = propertyName(schema);
+    if (!schemaName || NON_SCHEMA_KEYS.has(schemaName) || !ts.isTypeLiteralNode(schema.type)) continue;
+    for (const category of schema.type.members) {
+      const categoryName = propertyName(category);
+      if (!CATEGORY_KEYS.includes(categoryName) || !ts.isTypeLiteralNode(category.type)) continue;
+      for (const object of category.type.members) {
+        if (!ts.isPropertySignature(object)) continue;
+        const name = propertyName(object);
+        const visit = (node, member, optional = false) => {
+          if (ts.isTypeLiteralNode(node) && node.members.length > 0) {
+            for (const child of node.members) {
+              if (!ts.isPropertySignature(child) || propertyName(child) === null) {
+                throw new Error(`Membro não suportado em ${fileName}: ${schemaName}.${name}.`);
+              }
+              visit(child.type, [...member, propertyName(child)], Boolean(child.questionToken));
+            }
+          } else {
+            entries.push({ schema: schemaName, category: categoryName, name, member,
+              signature: JSON.stringify([optional, canonical(node)]) });
+          }
+        };
+        visit(object.type, []);
+      }
+    }
+  }
+  return entries;
 }
 
 /** Reduz o inventário completo (nomes) a apenas contagens por schema/categoria. */
