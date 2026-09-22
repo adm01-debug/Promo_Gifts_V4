@@ -2,12 +2,20 @@
 
 **Alvo único:** Supabase `doufsxqlfjyuvxuezpln`; GitHub `adm01-debug/Promo_Gifts_V4`; produção `www.promogifts.com.br`.
 
-**Estado mais recente — 22/09, 20:42 UTC:** a migration aprovada `20260922170000` foi aplicada pelo E15; seu recibo está na main pelo PR #1875, e o gate de tipos pelo PR #1876. A continuação abaixo corrige contratos de orçamento em branch própria. Foram feitas somente leituras no banco; as RPCs gerais ainda não preservam a identidade de variante. **10/50 etapas concluídas**; testes locais não encerram os bloqueios de persistência e produção. As seções anteriores por horário abaixo são histórico, não o estado atual.
+**Estado mais recente — 22/09, 21:00 UTC:** recibo signup e gate de tipos na main pelos PRs #1875/#1876; contratos de orçamento mergeados pelo PR #1878 (`796a52f07`). Preparação/simulação das duas RPCs foi autorizada e concluída em branch própria, sem aplicação. **41 verificações PostgreSQL e seis testes do pacote passaram**, mas a candidata de edição está bloqueada para release por versão só-de-itens e remoção explícita. **10/50 etapas concluídas**; o banco continua sem essas correções de RPC. As seções anteriores por horário abaixo são histórico, não o estado atual.
 **Veredito:** **NÃO ALINHADO**. Este relatório não transforma a ausência de erro HTTP, o build local ou uma migration versionada em prova de aplicação no banco.
 
 **Decisão e execução:** proposta `20260922170000` aprovada pelo PO, PRs #1872/#1873 mergeadas, reviewer configurado com aprovação específica. Run E15 `35760867980`, tentativa 1: SQL concluído às 18:34:03 UTC, repair às 18:34:14 UTC e post-check às 18:35:20 UTC. Somente a publicação automática do recibo falhou; recuperação documental autorizada no PR #1875, mergeado às 20:16:54 UTC. [Recibo e limitações](../../supabase/MIGRATIONS_SYNC_LOG.md). Não repetir DDL por causa de falha documental.
 
-## Continuação: variantes e associação de personalizações (20:42 UTC)
+## Continuação: propostas de RPC, sem aplicação (21:00 UTC)
+
+- PO autorizou preparar/simular `create_quote_transactional(jsonb,jsonb)` e `update_quote_transactional(uuid,jsonb,jsonb,integer)`, não aplicar. Branch `codex/quote-rpc-proposals-20260922`, baseada na main `796a52f07`.
+- Duas propostas fora de `supabase/migrations`, com guards de definição/permissões/schema e aplicação testada exclusivamente em PostgreSQL isolado. Não alteram terceiro objeto, grants ou schema.
+- **41 verificações no PostgreSQL 17.11 e seis testes estáticos/CLI PASS**. Concorrência reproduzida antes do ajuste com duas conexões reais; após lock, o writer atrasado recebe `40001`. Confirmação de rollback integral de falhas de linha, personalização e auditoria.
+- **Não liberar a candidata de update:** trigger `increment_quote_version()` não avança versão de edição só de itens. A proposta rejeita atomicamente esse cenário se recebe versão esperada; chamada legada sem versão não adquire proteção otimista. ID/remoção explícita de linha também depende de contrato no consumidor.
+- [Relatório completo, hashes, limites e decisões necessárias](../db/RELATORIO_SIMULACAO_QUOTE_RPCS_2026-09-22.md). Nenhuma escrita, repair, deploy ou recibo no Supabase. Etapas 37/39 continuam parciais; 24/25 ainda exigem decisões por objeto.
+
+## Histórico: variantes e associação de personalizações (20:42 UTC)
 
 - Base `origin/main` `4469f27a80050dcb0725c10a4ddfab283b5dbe58`, PR #1876 mergeado às 20:30:16 UTC. Branch `codex/quote-variant-contract-20260922`, reserva registrada; nenhuma worktree de outro agente alterada. Os checks da PR anterior ainda tinham execuções em andamento às 20:41, sem conclusão de falha observada nessa consulta.
 - **Antes da correção:** oito falhas nos contratos locais reproduziram perda de identidade/projeção e hidratação ambígua de SKU. Três testes adicionais de create/update/inserção direta reproduziram personalização do item descartado sendo vinculada ao item seguinte quando a quantidade menor que um era filtrada somente no payload.
