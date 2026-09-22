@@ -1,5 +1,7 @@
 # Orçamento: identidade de variante e persistência — decisão pendente
 
+**Atualização 22/09, 21:00 UTC:** PO autorizou preparar e simular somente as duas RPCs. Propostas prontas para revisão, **não para aplicação**: 41 verificações PostgreSQL e seis testes do pacote passaram. O ensaio confirmou que a segurança de versão em edição só de itens exige decisão sobre um terceiro objeto. Ver [relatório, hashes e bloqueios](RELATORIO_SIMULACAO_QUOTE_RPCS_2026-09-22.md). Nenhuma escrita no canônico.
+
 ## Escopo e evidência
 
 Auditoria de 22/09/2026, base Git `4469f27a8` (PR #1876), projeto canônico `doufsxqlfjyuvxuezpln`. Consultas somente leitura pela Management API, usando `pg_catalog.pg_proc`, `pg_namespace`, `pg_attribute`, `pg_attrdef` e `pg_constraint`. Nenhum SQL de alteração, repair de ledger ou cadastro real foi executado nesta rodada.
@@ -15,7 +17,7 @@ Leitura de metadados às `2026-09-22T20:36:05.236816Z`, MD5 de `pg_proc.prosrc` 
 
 Ambas são SECURITY INVOKER e têm `search_path=public`. ACL observada de create: `{postgres=X/postgres,anon=X/postgres,authenticated=X/postgres,service_role=X/postgres}`. ACL de update: `{=X/postgres,postgres=X/postgres,anon=X/postgres,authenticated=X/postgres,service_role=X/postgres}`. Isso não demonstra acesso indevido: autorização efetiva depende também de RLS e das verificações internas. Não alterar esses grants por dedução nesta correção.
 
-O wrapper Kit Maker em `supabase/migrations/20260912150000_kit_maker_quote_lineage_forward_only.sql` já valida variante/produto e complementa as linhas com identidade/artes. O código vivo das RPCs gerais demonstra que a edição por outro fluxo não oferece a mesma preservação. O risco de concorrência é inferido da sequência leitura/UPDATE sem lock; **ainda não foi reproduzido com duas sessões PostgreSQL**.
+O wrapper Kit Maker em `supabase/migrations/20260912150000_kit_maker_quote_lineage_forward_only.sql` já valida variante/produto e complementa as linhas com identidade/artes. O código vivo das RPCs gerais demonstra que a edição por outro fluxo não oferece a mesma preservação. A sobrescrita concorrente foi posteriormente **reproduzida com duas sessões PostgreSQL isoladas**, usando as definições capturadas; não foi executada em produção.
 
 ## Correções de código desta rodada
 
@@ -29,9 +31,9 @@ O wrapper Kit Maker em `supabase/migrations/20260912150000_kit_maker_quote_linea
 
 Os testes do serviço usam RPCs mockadas. Eles comprovam payload/consumo, **não** gravação no Supabase. O caminho auxiliar `insertItemsWithPersonalizations` continua sequencial; a correção do índice não o torna transacional. A recuperação de artwork e a segurança de concorrência permanecem pendências explícitas, não resolvidas pelo novo campo TypeScript.
 
-## Próxima onda proposta — exige decisão granular
+## Onda autorizada para preparação/simulação — aplicação continua proibida
 
-Solicitar autorização para preparar e validar alterações forward-only **apenas** nas duas assinaturas acima. Aplicação canônica deve ter aprovação explícita do SQL final e dos respectivos hashes; esta documentação não autoriza sua própria execução.
+A autorização de preparação/simulação foi recebida em 22/09 **apenas** para as duas assinaturas acima. Aplicação canônica continua dependendo de aprovação explícita do SQL final e dos respectivos hashes; esta documentação não autoriza sua própria execução. Os bloqueios encontrados e a decisão sobre o terceiro objeto estão no relatório vinculado acima.
 
 1. Recolher definições, ACLs, dependências e triggers na janela; comparar com esta evidência, sem aceitar drift silencioso.
 2. Criar uma proposta por função, fora do caminho de aplicação automática; não editar migrations históricas.
