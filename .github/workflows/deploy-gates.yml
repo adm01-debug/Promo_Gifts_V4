@@ -92,6 +92,11 @@ jobs:
         run: scripts/test-approved-plan-database.sh
       - name: Validate guarded quote RPC proposals on pinned isolated PG17
         run: npm run test:quote-rpc:postgres
+      - name: Block frontend promotion until canonical quote RPC contract is live
+        run: npm run check:quote-rpc:canonical -- --require-live
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
 
   e2e-smoke:
     name: Gate 3 - E2E Smoke

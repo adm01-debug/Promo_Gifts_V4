@@ -48,6 +48,16 @@ describe('quote RPC proposal boundaries (static, not PostgreSQL simulation)', ()
     for (const [path, expected] of Object.entries(manifest.files)) {
       expect(createHash('sha256').update(read(path)).digest('hex'), path).toBe(expected);
     }
+    for (const [index, signature] of [
+      [0, 'create_quote_transactional(jsonb,jsonb)'],
+      [1, 'increment_quote_version()'],
+      [2, 'update_quote_transactional(uuid,jsonb,jsonb,integer)'],
+    ]) {
+      const body = read(`docs/db/proposals/${names[index]}`).split('$function$')[1];
+      expect(createHash('md5').update(body).digest('hex'), signature).toBe(
+        manifest.expected_prosrc_md5[signature],
+      );
+    }
   });
   it('simulator rejects a deployment/remote argument before starting Docker', () => {
     const result = spawnSync(

@@ -3,6 +3,11 @@
   "captured_at": "2026-09-22T20:34:01.965Z",
   "postgres_image": "postgres@sha256:67f41722b7a8cbdb868a44a4995c846eddfdc2973bccb291ce937dce88ad5675",
   "postgres_version_tested": "17.11 (Debian 17.11-1.pgdg13+2)",
+  "expected_prosrc_md5": {
+    "create_quote_transactional(jsonb,jsonb)": "54d09802f6eaf0504a09e30cd2ce30c7",
+    "increment_quote_version()": "f1ebe660a6db383225a8d885642759b1",
+    "update_quote_transactional(uuid,jsonb,jsonb,integer)": "40613079070aceb2054b4c7124cffe12"
+  },
   "files": {
     "docs/db/proposals/20260922210000_create_quote_lineage.sql": "94ec0a32148ddccd2a71f8a67783a8f64f7c3d2d5968a28aa82855c975a90d55",
     "docs/db/proposals/20260922210500_increment_quote_version_explicit_bump.sql": "502caec43349a3bd5e88e3dbb989f96f4401f9d2b9440e7790124dd4534142be",

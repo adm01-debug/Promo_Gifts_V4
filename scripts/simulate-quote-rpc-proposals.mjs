@@ -300,6 +300,9 @@ try {
   sql(`BEGIN;${proposals[2]}COMMIT;`);
   rejects(`BEGIN;${proposals[2]}COMMIT;`, 'definition or privileges drift');
   pass('update RPC applies after version dependency and rejects repeat');
+  for (const [signature, expected] of Object.entries(manifest.expected_prosrc_md5)) {
+    assert.equal(bodyHash(signature), expected, `${signature}: hardened body hash`);
+  }
 
   assert.equal(
     sql(

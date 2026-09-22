@@ -4,7 +4,7 @@
 
 ## Veredito
 
-**`SIMULATION_PASS_LOCAL_ONLY`**: o pacote de código, SQL proposto e testes está completo para revisão. Foram aprovadas **43 verificações PostgreSQL 17.11**, **93 testes TypeScript/React/estáticos focados**, **285 testes de regressão de orçamento/Kit Maker** e o typecheck integral. As propostas continuam deliberadamente fora de `supabase/migrations`; não houve `db push`, DDL, repair, deploy de função ou escrita no projeto `doufsxqlfjyuvxuezpln`.
+**`SIMULATION_PASS_LOCAL_ONLY`**: o pacote de código, SQL proposto e testes está completo para revisão, mas **não está pronto para merge antes do banco**. Foram aprovadas **43 verificações PostgreSQL 17.11**, **97 testes TypeScript/React/estáticos focados**, **298 testes de regressão de orçamento/Kit Maker** e o typecheck integral. As propostas continuam deliberadamente fora de `supabase/migrations`; não houve `db push`, DDL, repair, deploy de função ou escrita no projeto `doufsxqlfjyuvxuezpln`.
 
 Isso comprova o comportamento no fixture isolado e os contratos do consumidor. Não é recibo de aplicação, E2E autenticado no canônico nem autorização implícita de produção.
 
@@ -15,9 +15,11 @@ Isso comprova o comportamento no fixture isolado e os contratos do consumidor. N
 - Catálogo adjacente somente leitura: `tests/fixtures/quote-rpc-catalog-20260922.json`, SHA-256 `3203b5683a08ea764317d12cbe65a2665c0d6243a072bba23be48cbc2117d3b3`.
 - Corpos vivos capturados antes da proposta: create MD5 `d3f154669f068acb2d5087a4ae059e14`; update MD5 `2f716e5ee22dd3de4043feb5bedc6387`; `increment_quote_version` MD5 `8dc69376bb204fa774c7b193a7bbce4f`.
 - Revalidação Management API read-only em `2026-09-22T22:16:37Z`: as três assinaturas existem, mas não contêm os marcadores `_removed_item_ids`/`explicit_client_version_bump_v1`; portanto este pacote continua ausente do canônico.
+- Revalidação `pg_catalog` em `2026-09-22T22:54:32Z`: os MD5 de `prosrc` continuam exatamente no baseline pré-proposta (`d3f154...`, `8dc693...`, `2f716e...`). O update vivo ainda faz delete/reinsert geral, não usa `FOR UPDATE` e as duas RPCs não persistem variante, descrição, artes, mockups ou embalagem.
 - Fixture reduzido: `tests/sql/quote-rpc-fixture.sql`, SHA-256 `2811e4eadf78a8629dc304b68d5806f65a554d56a05c8e5cc53d02ffeb1eed15`.
 - Imagem imutável: `postgres@sha256:67f41722b7a8cbdb868a44a4995c846eddfdc2973bccb291ce937dce88ad5675`, PostgreSQL 17.11, rede desabilitada, sem portas e dados em tmpfs.
 - Manifesto verificável: `tests/fixtures/quote-rpc-proposal-manifest.json`; os testes recusam divergência de qualquer hash ou imagem.
+- MD5 esperados após aplicação, confirmados no PostgreSQL isolado e exigidos pelo gate live: create `54d09802f6eaf0504a09e30cd2ce30c7`; trigger `f1ebe660a6db383225a8d885642759b1`; update `40613079070aceb2054b4c7124cffe12`.
 
 ## Propostas forward-only — não aplicadas
 
@@ -60,12 +62,15 @@ A proposta intermediária mantém a lógica existente e acrescenta um único cas
 - Drag-and-drop e agrupamentos não escrevem mais `quote_items` diretamente. A ordem entra no próximo save transacional único.
 - O helper granular legado permanece marcado como deprecated e falha se PostgREST não confirmar exatamente uma linha; ele não é mais usado pelo editor.
 - O simulador PostgreSQL está no `package.json` e no job `database-integrity` de `deploy-gates.yml`.
+- `check-quote-rpc-canonical-readiness.mjs` consulta somente `pg_catalog` e falha fechado se o frontend endurecido estiver prestes a ser promovido antes das três funções. O gate valida SSOT, assinaturas, `SECURITY INVOKER`, owner, `search_path`, EXECUTE necessário e marcadores semânticos. Falta de credencial em modo live é `inconclusive`/exit 2, nunca sucesso.
 
 ## Evidências reproduzíveis
 
 ```bash
 npm run test:quote-rpc:postgres
+npm run check:quote-rpc:canonical -- --require-live
 npx vitest run \
+  tests/scripts/check-quote-rpc-canonical-readiness.test.mjs \
   tests/scripts/quote-rpc-proposals.test.mjs \
   src/services/__tests__/quoteServicePayloadContract.test.ts \
   src/services/__tests__/quoteItemsReorder.test.ts \
@@ -109,4 +114,4 @@ npx vitest run src/hooks/quotes/__tests__ \
 
 ## Critério de promoção
 
-Para sair de `LOCAL_ONLY`, ainda são obrigatórios: revisão humana do SQL e dos limites; autorização nominal dos **três objetos**; recoleta read-only imediatamente antes da janela; aplicação transacional pelo executor controlado; validação via `pg_catalog`; testes de criação/edição/concorrência em ambiente autorizado; recibo do ledger; regeneração segura de tipos; rollout da interface e monitoramento. Nenhuma dessas ações deve ser inferida deste relatório.
+Para sair de `LOCAL_ONLY`, ainda são obrigatórios: revisão humana do SQL e dos limites; autorização nominal dos **três objetos**; recoleta read-only imediatamente antes da janela; aplicação transacional pelo executor controlado; validação via `pg_catalog`; testes de criação/edição/concorrência em ambiente autorizado; recibo do ledger; regeneração segura de tipos; rollout da interface e monitoramento. O novo gate canônico deve ficar verde **antes** do merge da interface. Nenhuma dessas ações deve ser inferida deste relatório.
