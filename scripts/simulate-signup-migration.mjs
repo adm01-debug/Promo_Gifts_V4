@@ -12,10 +12,10 @@ import { querySupabaseReadOnly } from './supabase-read-only-query.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const hardened = process.argv.includes('--hardened-proposal');
-const version = hardened ? '20260922170000-proposal' : '20260920120000';
+const version = hardened ? '20260922170000' : '20260920120000';
 const migration = readFileSync(
   hardened
-    ? `${root}docs/db/proposals/20260922170000_signup_identity_safe_default.sql`
+    ? `${root}supabase/migrations/20260922170000_signup_identity_safe_default.sql`
     : `${root}supabase/migrations/${version}_fix_handle_new_user_missing_profiles_user_id.sql`,
   'utf8',
 );
