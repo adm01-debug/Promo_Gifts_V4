@@ -8,11 +8,14 @@ name: db-schema-drift-check
 #
 # Como funciona:
 #   1. supabase link --project-ref <ref>  (Management API token + senha do DB)
-#   2. supabase db diff --linked --schema public
+#   2. supabase migration list --linked
+#      -> falha antes do replay se repo e ledger canônico não estiverem iguais.
+#         Não aplica as migrations locais pendentes.
+#   3. supabase db diff --linked --schema public
 #      -> DDL necessario p/ alinhar o shadow (migrations) ao remoto.
 #         Migrations descrevendo 100% do schema => diff VAZIO.
 #         Qualquer DDL restante = objeto em prod sem migration = DRIFT.
-#   3. Falha o job se sobrar DDL (apos remover comentarios e linhas em branco).
+#   4. Falha o job se sobrar DDL (apos remover comentarios e linhas em branco).
 #
 # Roda:
 #   - cron diario (06:30 BRT = 09:30 UTC) — offset do edge-functions-drift-check
@@ -89,6 +92,29 @@ jobs:
           set -euo pipefail
           supabase link --project-ref "$SUPABASE_PROJECT_REF" -p "$SUPABASE_DB_PASSWORD"
 
+      - name: Ledger parity (repo x canonical)
+        if: steps.guard.outputs.enabled == 'true'
+        run: |
+          set -euo pipefail
+          # CLI 2.101 pode devolver tabela textual mesmo com --output-format.
+          # O parser local aceita a tabela e o JSON de versões mais novas.
+          supabase migration list --linked --output-format json > /tmp/migration-ledger.json
+          if ! node scripts/check-supabase-migration-ledger.mjs \
+            /tmp/migration-ledger.json --summary /tmp/migration-ledger-summary.json; then
+            {
+              echo "## Ledger de migrations divergente"
+              echo
+              echo "Há migrations locais não aplicadas, versões exclusivas do remoto ou pares incompatíveis."
+              echo "O \`db diff\` não será executado porque o shadow replay seria enganoso."
+              echo "Não execute \`db push\` em lote: reconcilie cada versão por efeito e autorização."
+              echo
+              echo '```json'
+              cat /tmp/migration-ledger-summary.json
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
       - name: Schema drift check (migrations x remote)
         if: steps.guard.outputs.enabled == 'true'
         run: |
@@ -124,7 +150,10 @@ jobs:
         if: ${{ always() && steps.guard.outputs.enabled == 'true' }}
         uses: actions/upload-artifact@v4
         with:
-          name: schema-drift-sql
-          path: /tmp/schema_drift.sql
+          name: schema-reconciliation-evidence
+          path: |
+            /tmp/schema_drift.sql
+            /tmp/migration-ledger.json
+            /tmp/migration-ledger-summary.json
           if-no-files-found: ignore
           retention-days: 14
