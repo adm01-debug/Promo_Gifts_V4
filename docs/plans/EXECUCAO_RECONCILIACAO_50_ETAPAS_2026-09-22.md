@@ -63,10 +63,70 @@ Além desses alvos, **20 IDs** local-only estavam fora da classificação de 16/
 **Dependem de autorização granular de produção:** 24–25.
 **Veredito emitido, mas aceite final não satisfeito:** 50, porque há diferenças reais e etapas abertas.
 
-**Próxima ordem segura:** revisar e aprovar/rejeitar individualmente os objetos P0 acima; executar pelo workflow controlado E15 com preflight e rollback documentado; validar ledger, grants/RLS e signup; depois resolver as divergências P1 e repetir comparação bidirecional. Não há base técnica para marcar 50/50 ou “10/10” hoje.
+**Próxima ordem segura:** não aplicar isoladamente a versão `20260920120000`: a simulação adicional abaixo encontrou concessão de privilégios por metadata. Revisar a proposta substituta e aprovar/rejeitar individualmente os demais objetos P0; executar pelo workflow controlado E15 com preflight e rollback documentado; validar ledger, grants/RLS e signup; depois resolver as divergências P1 e repetir comparação bidirecional. Não há base técnica para marcar 50/50 ou “10/10” hoje.
 
 ### Resultado da PR #1870
 
 A branch foi publicada em [PR #1870](https://github.com/adm01-debug/Promo_Gifts_V4/pull/1870), sem merge. O gate de base64 sinalizou apenas dois literais SQL já existentes dentro de `ALL_IN_ONE.sql`, artefato gerado por concatenação; a correção limita a exceção **somente** a esse arquivo e mantém o scan dos SQLs de origem. Já os gates **“Recibo de migration”** (12 arquivos herdados da branch local sem recibo de aplicação) e **“Migrations x Canonical schema”** (474/2 no ledger) falharam por divergências reais. Essas falhas permanecem bloqueantes; criar recibos fictícios, mudar o comparador para sucesso ou usar bypass não é remediação.
 
 O preview Vercel desta PR também ficou `ERROR`: a API do deployment `dpl_DopAcFkS4pNeosaBgPDo1ERPmnBt` informa `BUILD_FAILED` / `Resource provisioning failed`, sem eventos de build recuperáveis. O `npm run build` local passou; logo, esta falha **não demonstra** regressão do código, mas o preview não está validado. Não houve tentativa repetida de deploy com risco de quota/custo. A produção permanece no SHA anterior `12c11e5dd`.
+
+## Continuação: simulação de cadastro e remediação do CI (22/09, 15:44 UTC)
+
+### Falha real do teste de qualidade
+
+No SHA `29e3aab9e`, a PR apresentou 89 checks aprovados, quatro falhas, dois neutros e cinco skips. O job `quality-gate` da run `35744750514` executou **24.080 testes aprovados, 1 falha e 1.138 skips**. A única falha foi a expectativa fixa de 241 scripts em `package.json`, cujo catálogo já tem 247. Não é falha de runtime: o contrato de unicidade não exige cardinalidade fixa.
+
+O teste foi substituído por mutações do catálogo real: introduzir uma duplicata de uma chave do início, meio e fim deve falhar, independentemente do crescimento legítimo do catálogo. O teste que exige zero duplicatas no arquivo real permanece. Não houve alteração de snapshot, bypass ou redução de um gate.
+
+### Simulação PostgreSQL 17, sem escrita no Supabase
+
+Foi criado `scripts/simulate-signup-migration.mjs`. Cada execução usa um container com nome UUID exclusivo, **rede desabilitada, sem porta publicada, sem volume de dados do host e com dados em tmpfs**. Só esse container é removido ao final. O modo `--live-readonly` lê as duas definições necessárias pela Management API read-only e as executa exclusivamente no fixture local.
+
+Esta é uma simulação reduzida dos triggers `handle_new_user` e `fn_grant_default_role_on_profile` com a FK `user_roles.user_id → profiles.user_id`; **não** é clone completo, teste GoTrue, RLS integral ou teste E2E da Edge administrativa. Esses limites continuam abertos na etapa 39.
+
+Resultados:
+
+- Função viva original: cadastro falha pela FK; nenhuma linha parcial permanece.
+- Migration original `20260920120000`: cadastro normal passa, defaults/metadados são preservados e rollback não deixa profile/role parcial.
+- **Falha de segurança reproduzida:** após essa migration, metadata `role=admin` gera papel `admin`; `role=manager` gera `coordenador`. O simulador retorna **exit 1**, não sucesso, nesse cenário.
+- Configuração Auth consultada em 22/09: `disable_signup=true`, `external_email_enabled=true`, `external_google_enabled=false`. Portanto o achado acima é **risco latente do caminho de cadastro**, não prova de exploração pública ou incidente. Não foram criadas contas reais nem alterados providers.
+- A versão antiga é protegida contra reaplicação por pré-condição, **não** idempotente/reentrante como sugere seu comentário. A segunda execução falhou conforme esperado.
+
+Definições vivas inspecionadas (SHA-256 de `pg_get_functiondef`):
+
+- `handle_new_user`: `7c57f33155307becbdcb8b20a7f9f80e51479e3e96c69be56b75965ebdfa884a`.
+- `fn_grant_default_role_on_profile`: `13ffc31def3de66b4ba650670dce4bf351f73524bc9c536c4c5d325afc5cffc1`.
+
+### Proposta substituta preparada — NÃO aplicada
+
+SQL exato: [20260922170000_signup_identity_safe_default.sql](../db/proposals/20260922170000_signup_identity_safe_default.sql). SHA-256: `eb34eec2213709efdca288933d7214deb5b2c4d343c5fcb68740377586dcdb78`.
+
+O arquivo fica **fora de `supabase/migrations`**, para não entrar em aplicação automática ou aparentar recibo de aplicação. Substitui a proposta anterior; não aplicar as duas. Altera somente `public.handle_new_user()`: define `profiles.user_id=NEW.id` e usa papel inicial `sales` (convertido a `vendedor` pelo trigger existente), sem confiar em `raw_user_meta_data.role`. Não muda contas existentes, grants, triggers, policies ou schema das tabelas.
+
+O consumidor `supabase/functions/manage-users/index.ts` cria o usuário com apenas `full_name` nos metadados e atribui o papel separadamente depois da autorização administrativa. Essa compatibilidade foi inspecionada no código; seu E2E não foi executado.
+
+Com `--hardened-proposal`, passaram: cadastro normal, metadata nula/inválida, fallback de nome, preservação de department/preferences, identidade duplicada, rollback, rejeição de `admin`/`manager` não confiáveis, rejeição de reaplicação, detecção de mudança concorrente no corpo da função, trigger desabilitado e rollback do próprio `CREATE OR REPLACE` quando a pós-condição falha. Uma atribuição privilegiada explícita no fixture continua possível; isso **não** certifica a autorização da Edge.
+
+Reprodução offline:
+
+```bash
+node scripts/simulate-signup-migration.mjs
+# esperado: exit 1, demonstra risco da migration original
+node scripts/simulate-signup-migration.mjs --hardened-proposal
+# esperado: exit 0, proposta passa o fixture reduzido
+```
+
+O pacote ainda exige aprovação da **versão substituta**, revisão do encadeamento completo de triggers, preservação da definição anterior e teste administrativo controlado na janela de aplicação. Não houve reparo de ledger nem DDL canônica.
+
+### Endurecimento do executor E15
+
+- Input `version` passa por variável de ambiente e validação antes do uso; não é interpolado diretamente no shell.
+- Preflight e repair usam o project ref canônico fixo, não um secret que pode apontar a outro projeto.
+- Antes de `psql`, um guard exige PG* completos, database `postgres`, porta conhecida e host canônico direto, ou pooler Supabase com project ref no usuário. Diagnósticos não imprimem valores de secrets.
+- `psql` exige TLS; o job de aplicação recebe apenas `contents:read` no GitHub.
+- O requisito anterior de reviewer permanece. Nova leitura do environment `Production` retornou `protection_rules: []`; settings não foram modificados e workflow não foi disparado.
+
+As etapas 22/23/40/48 avançaram, mas continuam parciais: esta rodada não transforma 474 versões sem ledger em aplicadas, não cria recibos fictícios e não certifica 50/50.
+
+**Validação local da continuação:** 44 testes passaram em três arquivos (unicidade de scripts, preflight e validação do executor/target); `lint:baseline` passou com zero erros e zero warnings; Gate 0/SSOT e `git diff --check` passaram. O simulador da proposta passou tanto com o snapshot quanto com as duas definições recolhidas ao vivo por leitura. Nenhuma destas aprovações locais substitui a nova execução remota de CI ou validação do deployment.

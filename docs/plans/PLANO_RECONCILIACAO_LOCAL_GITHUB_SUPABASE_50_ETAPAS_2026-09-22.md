@@ -22,6 +22,8 @@ Este documento substitui as **premissas operacionais**, não apaga o histórico,
 
 **Execução de 22/09:** dez etapas verificadas; as demais seguem parciais ou bloqueadas. Ver [relatório de execução](EXECUCAO_RECONCILIACAO_50_ETAPAS_2026-09-22.md). O estado global é **NÃO ALINHADO**: a migration de `handle_new_user()` existe no Git, mas a correção não aparece no corpo vivo da função.
 
+**Atualização após simulação (15:44 UTC):** a versão `20260920120000` corrige a FK, mas permite privilégios vindos de metadata no fixture. Não aplicá-la isoladamente. Proposta substituta preparada em `docs/db/proposals/20260922170000_signup_identity_safe_default.sql`, fora do diretório de migrations e ainda não aplicada. O cadastro público está desabilitado no Auth; não há comprovação de exploração. Testes de rollback, mudança concorrente e defaults passaram para a proposta; detalhes e limites no relatório.
+
 ## A. Controle de mudança e simulação de falhas (01–06)
 
 - [x] **01. Congelar a linha de base** `[RO, P0]` — registrar SHA de `HEAD`, `origin/main`, refs de PRs relevantes, estado das worktrees, `git status`, versão da CLI e horário UTC. **Aceite:** manifesto reproduzível antes de qualquer edição.
