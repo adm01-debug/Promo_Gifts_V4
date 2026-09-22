@@ -1,147 +1,134 @@
 #!/usr/bin/env node
 /**
- * Gate de CI: roda o Supabase Linter via Management API e falha se houver
- * findings NÃO presentes em .security/supabase-linter-baseline.json.
+ * Gate de CI: usa os Security Advisors da Management API e os gates de
+ * pg_catalog. O endpoint antigo /database/lint passou a responder 404.
+ * Falha fechado se os Advisors estiverem indisponíveis, se aparecer um ERROR
+ * não revisado ou se qualquer gate específico do catálogo falhar.
+ * Os WARN/INFO dos Advisors são reportados, mas requerem triagem separada;
+ * este gate NÃO equivale a zero findings no Supabase.
  *
  * Env obrigatórias:
  *   SUPABASE_ACCESS_TOKEN  (PAT — Settings → Access Tokens)
  *   SUPABASE_PROJECT_REF   (ex.: doufsxqlfjyuvxuezpln)
  *
- * Opcional:
- *   UPDATE_BASELINE=1  → regrava o baseline com os findings atuais (use manualmente).
+ * UPDATE_BASELINE=1 é recusado: a baseline histórica do endpoint legado não
+ * corresponde ao payload atual. Exceções novas exigem revisão por objeto.
  *
  * Saída:
  *   exit 0 — sem regressões
- *   exit 1 — há findings novos OU baseline contém entradas que não existem mais
+ *   exit 1 — ERROR não revisado ou gate específico do catálogo falhou
  *   exit 2 — erro de config/rede
  */
-import { readFileSync, writeFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const BASELINE_PATH = resolve(".security/supabase-linter-baseline.json");
 const TOKEN = process.env.SUPABASE_ACCESS_TOKEN;
 const REF = process.env.SUPABASE_PROJECT_REF;
 const UPDATE = process.env.UPDATE_BASELINE === "1";
+const CANONICAL_REF = "doufsxqlfjyuvxuezpln";
 
-if (!TOKEN || !REF) {
-  console.error("❌ SUPABASE_ACCESS_TOKEN e SUPABASE_PROJECT_REF são obrigatórios.");
-  process.exit(2);
+const CATALOG_CHECKS = [
+  "check-lint-0011-drift.mjs",
+  "check-lint-0029-drift.mjs",
+  "check-secdef-anon-drift.mjs",
+  "check-anon-write-grants.mjs",
+  "check-public-views-drift.mjs",
+];
+
+// pg_catalog confirmou security_invoker=false e comentários de intenção para
+// estas projeções públicas em 2026-09-22. Alterar para security_invoker=true
+// sem redesenhar as grants/RLS das tabelas-base quebraria as projeções ou
+// poderia expor dados sensíveis. Uma view nova deve bloquear o gate.
+const REVIEWED_SECURITY_DEFINER_VIEWS = new Set([
+  "public.v_kit_component_media_public",
+  "public.v_product_compositions_public",
+  "public.v_product_properties_public",
+  "public.v_product_tags_public",
+  "public.v_products_public",
+  "public.v_suppliers_public",
+  "public.v_tabela_preco_gravacao_oficial_public",
+  "public.v_variant_sale_prices_public",
+]);
+
+export function runCatalogChecks({ spawn = spawnSync, logger = console } = {}) {
+  for (const script of CATALOG_CHECKS) {
+    const result = spawn(process.execPath, [resolve("scripts", script), "--require-live"], {
+      env: process.env,
+      stdio: "inherit",
+      timeout: 30_000,
+    });
+    if (result.error || result.status !== 0) {
+      logger.error(`❌ Auditoria pg_catalog falhou em ${script}.`);
+      return result.status === 1 ? 1 : 2;
+    }
+  }
+  logger.log(`✅ Auditoria pg_catalog: ${CATALOG_CHECKS.length} verificações live concluídas.`);
+  return 0;
 }
 
-const API = `https://api.supabase.com/v1/projects/${REF}/database/lint`;
+export async function runLinter({
+  token = TOKEN,
+  ref = REF,
+  fetcher = fetch,
+  catalogRunner = runCatalogChecks,
+  logger = console,
+} = {}) {
+  if (!token || !ref) {
+    logger.error("❌ SUPABASE_ACCESS_TOKEN e SUPABASE_PROJECT_REF são obrigatórios.");
+    return 2;
+  }
+  if (ref !== CANONICAL_REF) {
+    logger.error(`❌ Projeto errado: este gate só audita ${CANONICAL_REF}.`);
+    return 2;
+  }
 
-async function fetchLints() {
-  const res = await fetch(API, {
-    headers: { Authorization: `Bearer ${TOKEN}`, Accept: "application/json" },
+  let response;
+  try {
+    response = await fetcher(`https://api.supabase.com/v1/projects/${encodeURIComponent(ref)}/advisors/security`, {
+      headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+      signal: AbortSignal.timeout(15_000),
+    });
+  } catch (error) {
+    logger.error(`❌ Linter indisponível (${error.name || "erro de rede"}).`);
+    return 2;
+  }
+
+  if (!response.ok) {
+    logger.error(`❌ Security Advisors indisponíveis: Management API ${response.status} ${response.statusText}`);
+    return 2;
+  }
+
+  let findings;
+  try {
+    findings = await response.json();
+  } catch {
+    logger.error("❌ Management API retornou JSON inválido.");
+    return 2;
+  }
+  if (!findings || !Array.isArray(findings.lints)) {
+    logger.error("❌ Management API não retornou o objeto { lints: [...] } esperado.");
+    return 2;
+  }
+  if (UPDATE) {
+    logger.error("❌ UPDATE_BASELINE=1 não é compatível com os Advisors atuais; revise as exceções por objeto.");
+    return 2;
+  }
+  const errors = findings.lints.filter((finding) => finding?.level === "ERROR");
+  const unreviewed = errors.filter((finding) => {
+    const object = `${finding.metadata?.schema || ""}.${finding.metadata?.name || ""}`;
+    return finding.name !== "security_definer_view" || !REVIEWED_SECURITY_DEFINER_VIEWS.has(object);
   });
-  if (!res.ok) {
-    if (res.status === 404) {
-      console.error(
-        `❌ /database/lint endpoint retornou 404 — indisponível para este projeto/plano.\n` +
-          `   Isto NÃO é "sem findings": é ausência de verificação. Investigar antes de reabilitar:\n` +
-          `   1) confirmar plano/permissão do SUPABASE_ACCESS_TOKEN para ${REF};\n` +
-          `   2) se o endpoint foi descontinuado, substituir esta checagem por auditoria via pg_catalog\n` +
-          `      (CLAUDE.md REGRA #8, corolário — nunca via PostgREST/OpenAPI).\n` +
-          `   Falhando o gate (exit 2) em vez de reportar sucesso — ver docs/plans/PLANO_MELHORIAS_CORRECOES_50_ETAPAS_2026-09-13.md, etapa E09.`,
-      );
-      process.exit(2);
-    }
-    console.error(`❌ Management API ${res.status} ${res.statusText}`);
-    console.error(await res.text());
-    process.exit(2);
+  const warnings = findings.lints.filter((finding) => finding?.level === "WARN").length;
+  logger.log(`📊 Security Advisors: ${findings.lints.length} findings (${errors.length} ERROR, ${warnings} WARN); ${unreviewed.length} ERROR não revisados.`);
+  if (warnings) logger.warn("⚠️ WARN/INFO não são cobertos integralmente por este gate; consulte o advisor e os gates específicos.");
+  for (const finding of unreviewed) {
+    logger.error(`❌ ${finding.name}: ${finding.metadata?.schema || "?"}.${finding.metadata?.name || "?"}`);
   }
-  return res.json();
+  if (unreviewed.length) return 1;
+  return catalogRunner();
 }
 
-/**
- * Normaliza um finding para uma chave estável `{lint, name}`.
- * O linter retorna `name` (slug do lint) + `metadata` com detalhes (schema, table, function, etc.).
- * Para 0029, o identificador relevante é metadata.name (nome da função).
- * Para outros lints, tentamos cair em metadata.name → metadata.table → metadata.relation → "*".
- */
-function keyOf(finding) {
-  const lint = finding.name || finding.lint || "unknown";
-  const md = finding.metadata || {};
-  const name = md.name || md.function || md.table || md.relation || md.entity || "*";
-  return { lint, name, level: finding.level || "WARN" };
+if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
+  process.exitCode = await runLinter();
 }
-
-function tupleKey(k) {
-  return `${k.lint}::${k.name}`;
-}
-
-function loadBaseline() {
-  let text;
-  try {
-    text = readFileSync(BASELINE_PATH, "utf8");
-  } catch (err) {
-    if (err.code === "ENOENT") {
-      console.warn(`⚠️  ${BASELINE_PATH} não existe — partindo de baseline vazio (primeira execução).`);
-      return new Set();
-    }
-    console.error(`❌ Não foi possível ler ${BASELINE_PATH}: ${err.message}`);
-    process.exit(2);
-  }
-  let raw;
-  try {
-    raw = JSON.parse(text);
-  } catch (err) {
-    // Fail-closed: um baseline corrompido/ilegível NÃO deve degradar para "sem exceções
-    // aceitas" silenciosamente — isso mascarou 50 findings aceitos por ~2 meses (o arquivo
-    // ficou em base64 desde o PR #1675, 2026-07-13, sem que este gate acusasse o problema).
-    console.error(`❌ ${BASELINE_PATH} não é JSON válido: ${err.message}`);
-    console.error("   Corrija o arquivo (ou regenere com UPDATE_BASELINE=1) antes de confiar neste gate.");
-    process.exit(2);
-  }
-  return new Set((raw.accepted || []).map((e) => `${e.lint}::${e.name}`));
-}
-
-function writeBaseline(keys) {
-  const accepted = [...keys]
-    .map((k) => {
-      const [lint, name] = k.split("::");
-      return { lint, name };
-    })
-    .sort((a, b) =>
-      a.lint === b.lint ? a.name.localeCompare(b.name) : a.lint.localeCompare(b.lint),
-    );
-  const payload = {
-    _doc:
-      "Whitelist de findings ACEITOS do supabase--linter. Use UPDATE_BASELINE=1 para regenerar.",
-    generated_at: new Date().toISOString().slice(0, 10),
-    accepted,
-  };
-  writeFileSync(BASELINE_PATH, JSON.stringify(payload, null, 2) + "\n");
-}
-
-const findings = await fetchLints();
-const current = new Set(findings.map((f) => tupleKey(keyOf(f))));
-
-if (UPDATE) {
-  writeBaseline(current);
-  console.log(`✅ Baseline atualizado: ${current.size} findings em ${BASELINE_PATH}`);
-  process.exit(0);
-}
-
-const baseline = loadBaseline();
-const novos = [...current].filter((k) => !baseline.has(k));
-const obsoletos = [...baseline].filter((k) => !current.has(k));
-
-console.log(
-  `📊 Linter: ${findings.length} findings | baseline: ${baseline.size} | novos: ${novos.length} | obsoletos: ${obsoletos.length}`,
-);
-
-if (novos.length) {
-  console.error("\n❌ FINDINGS NOVOS (bloqueando merge):");
-  for (const k of novos.sort()) console.error(`  + ${k}`);
-  console.error(
-    "\nSe forem aceitáveis, adicione-os em .security/supabase-linter-baseline.json com justificativa no commit.",
-  );
-}
-
-if (obsoletos.length) {
-  console.warn("\n⚠️  Baseline contém entradas que não aparecem mais (limpe via UPDATE_BASELINE=1):");
-  for (const k of obsoletos.sort()) console.warn(`  - ${k}`);
-}
-
-process.exit(novos.length > 0 ? 1 : 0);

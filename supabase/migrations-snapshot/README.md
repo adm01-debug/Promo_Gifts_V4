@@ -12,16 +12,27 @@ Snapshots consolidados **read-only** para auditoria do schema.
 | `SCHEMA_DRIFT.sql` | `supabase db diff --linked --schema public` | DDL restante entre as migrations e o schema vivo (ideal: vazio). |
 | `SNAPSHOT_META.json` | script | Metadados: timestamp, project ref, contagens. |
 
-## Limitação conhecida (desde 2026-09-16)
+## Limitação conhecida (atualizada em 2026-09-22)
 
 `SCHEMA_DRIFT.sql` **não é calculável hoje**. `supabase db diff` reconstrói o
-schema do zero em shadow database reaplicando todas as migrations — e esse
-replay trava porque parte real do schema vivo foi criada fora do fluxo de
-migrations ao longo de meses (dashboard/MCP). Já foram corrigidos 3 gaps
-desse tipo (uma migration com sintaxe impossível, uma com sintaxe inválida
-de `CREATE POLICY`, e 5 schemas de aplicação inteiros sem migration de
-criação) e um quarto foi encontrado (`categories.bitrix_id`) sem sinal de
-que seja o último. Detalhe completo no cabeçalho de `SCHEMA_DRIFT.sql`.
+schema em um shadow database; para interpretar o resultado, os arquivos locais
+precisam corresponder ao ledger remoto. A captura de 22/09 encontrou 2.499
+versões coincidentes, 474 somente locais e duas aparentemente somente remotas.
+Isso não quer dizer que todas as 474 estão pendentes. O exportador registra
+`computed: false` e a contagem em `SNAPSHOT_META.json`, sem executar o replay.
+
+O histórico de cinco execuções CI em 16/09 (runs `35090629440` a
+`35093709593`) mostrou que o replay já falhava **antes** da comparação: SQL
+`uuid ~ unknown` em `20260601140841_*` (aposentado), `CREATE POLICY IF NOT
+EXISTS` inválido em `20260601180000_*` (corrigido), ausência dos schemas
+`analytics`, `supplier_stricker`, `cf_recon`, `prod_audit` e
+`classification_audit` (bootstrap adicionado) e, por fim, ausência de
+`public.categories.bitrix_id` — DDL feito fora de migration. Um espelho
+forward-only para esta coluna existe no repositório, mas ainda precisa ser
+reconciliado individualmente com o catálogo e o ledger. Ver E07/E08 no
+[plano DBA de 16/09](../../docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md)
+e o histórico Git de `SCHEMA_DRIFT.sql` para a investigação original. Nenhuma
+dessas correções históricas, isoladamente, prova que o replay hoje funcionaria.
 
 **Enquanto isso não for resolvido, use `SCHEMA_LIVE.sql` como fonte de
 verdade do schema atual** — ele não depende do replay, é um dump direto do
@@ -31,12 +42,12 @@ banco vivo. Para comparar "o que mudou desde a última vez", diffe dois
 ## Como regenerar
 
 ```bash
-# Apenas ALL_IN_ONE.sql (não requer credenciais):
+# Sem link ou credenciais: gera ALL_IN_ONE.sql e registra a limitação no metadata:
 npm run schema:snapshot
 
-# Também SCHEMA_LIVE.sql + SCHEMA_DRIFT.sql (requer CLI supabase + secrets):
+# Com projeto canônico já linkado localmente: exporta também SCHEMA_LIVE.sql.
+# Com credenciais de CI, o script cria o link antes da exportação:
 SUPABASE_ACCESS_TOKEN=... SUPABASE_DB_PASSWORD=... npm run schema:snapshot
 ```
 
-O script é safe-by-default: sem CLI/secrets ele apenas emite `ALL_IN_ONE.sql` e
-avisa que os arquivos live/drift foram pulados.
+O script não relata “sem drift” enquanto o ledger continuar divergente.

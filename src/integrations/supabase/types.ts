@@ -34758,6 +34758,7 @@ export type Database = {
           product_image_url: string | null
           product_name: string
           product_sku: string | null
+          product_variant_id: string | null
           quantity: number
           quote_id: string
           selected_packaging_id: string | null
@@ -34794,6 +34795,7 @@ export type Database = {
           product_image_url?: string | null
           product_name: string
           product_sku?: string | null
+          product_variant_id?: string | null
           quantity?: number
           quote_id: string
           selected_packaging_id?: string | null
@@ -34830,6 +34832,7 @@ export type Database = {
           product_image_url?: string | null
           product_name?: string
           product_sku?: string | null
+          product_variant_id?: string | null
           quantity?: number
           quote_id?: string
           selected_packaging_id?: string | null
@@ -35142,6 +35145,62 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "vw_xbz_produtos_sem_imagem"
             referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "quote_items_product_variant_id_fkey"
+            columns: ["product_variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quote_items_product_variant_id_fkey"
+            columns: ["product_variant_id"]
+            isOneToOne: false
+            referencedRelation: "v_kit_component_skus"
+            referencedColumns: ["variant_id"]
+          },
+          {
+            foreignKeyName: "quote_items_product_variant_id_fkey"
+            columns: ["product_variant_id"]
+            isOneToOne: false
+            referencedRelation: "v_variant_sale_prices_public"
+            referencedColumns: ["variant_id"]
+          },
+          {
+            foreignKeyName: "quote_items_product_variant_id_fkey"
+            columns: ["product_variant_id"]
+            isOneToOne: false
+            referencedRelation: "v_variants_with_commemorative_dates"
+            referencedColumns: ["variant_id"]
+          },
+          {
+            foreignKeyName: "quote_items_product_variant_id_fkey"
+            columns: ["product_variant_id"]
+            isOneToOne: false
+            referencedRelation: "vw_orphan_active_variants"
+            referencedColumns: ["variant_id"]
+          },
+          {
+            foreignKeyName: "quote_items_product_variant_id_fkey"
+            columns: ["product_variant_id"]
+            isOneToOne: false
+            referencedRelation: "vw_product_availability"
+            referencedColumns: ["variant_id"]
+          },
+          {
+            foreignKeyName: "quote_items_product_variant_id_fkey"
+            columns: ["product_variant_id"]
+            isOneToOne: false
+            referencedRelation: "vw_product_color_category_links"
+            referencedColumns: ["variant_id"]
+          },
+          {
+            foreignKeyName: "quote_items_product_variant_id_fkey"
+            columns: ["product_variant_id"]
+            isOneToOne: false
+            referencedRelation: "vw_variant_sale_prices"
+            referencedColumns: ["variant_id"]
           },
           {
             foreignKeyName: "quote_items_quote_id_fkey"
@@ -63924,6 +63983,42 @@ export type Database = {
         Args: { minutes: number }
         Returns: number
       }
+      set_custom_kit_pinned: {
+        Args: { _is_pinned: boolean; _kit_id: string }
+        Returns: {
+          box_data: Json | null
+          box_price: number | null
+          color: string | null
+          created_at: string | null
+          description: string | null
+          icon: string | null
+          id: string
+          is_favorite: boolean
+          is_pinned: boolean
+          items_data: Json | null
+          items_price: number | null
+          kit_quantity: number | null
+          kit_type: string | null
+          last_used_at: string | null
+          name: string | null
+          organization_id: string
+          personalization_data: Json | null
+          personalization_price: number | null
+          revision: number
+          status: string | null
+          tag: string | null
+          total_price: number | null
+          updated_at: string | null
+          user_id: string | null
+          volume_usage_percent: number | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "custom_kits"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       sincronizar_estoque_spot: {
         Args: { p_stock_data: Json; p_user_id?: string }
         Returns: Json
@@ -64262,6 +64357,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      zapp_catalog_stats: { Args: never; Returns: Json }
     }
     Enums: {
       app_role:

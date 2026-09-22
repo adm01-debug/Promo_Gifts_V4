@@ -17,8 +17,8 @@
  * IMPORTANTE:
  *   - Nada aqui aplica DDL. É read-only.
  *   - Live/Drift dependem do CLI do Supabase (`supabase`) linkado ao projeto.
- *     Sem CLI ou sem `SUPABASE_ACCESS_TOKEN`/`SUPABASE_DB_PASSWORD`, o script
- *     apenas gera `ALL_IN_ONE.sql` (safe-by-default) e avisa.
+ *     Aceita link local canônico já autenticado ou credenciais de link em CI.
+ *   - O drift só é calculado se o ledger local/remoto estiver alinhado.
  *
  * Uso local:
  *   node scripts/export-schema-snapshot.mjs
@@ -31,6 +31,10 @@
 import { execSync, spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import {
+  auditSupabaseMigrationLedger,
+  parseSupabaseMigrationLedgerOutput,
+} from './check-supabase-migration-ledger.mjs';
 
 const ROOT = process.cwd();
 const MIGRATIONS_DIR = join(ROOT, 'supabase', 'migrations');
@@ -59,7 +63,12 @@ function hasSupabaseCli() {
 
 function tryLink() {
   if (!process.env.SUPABASE_ACCESS_TOKEN || !process.env.SUPABASE_DB_PASSWORD) {
-    warn('SUPABASE_ACCESS_TOKEN e/ou SUPABASE_DB_PASSWORD ausentes — pulando etapas live/drift.');
+    const linkedRefPath = join(ROOT, 'supabase', '.temp', 'project-ref');
+    if (existsSync(linkedRefPath) && readFileSync(linkedRefPath, 'utf8').trim() === PROJECT_REF) {
+      log(`Usando link local existente para ${PROJECT_REF}.`);
+      return true;
+    }
+    warn('Credenciais de link ausentes e link local canônico não encontrado — pulando live/drift.');
     return false;
   }
   try {
@@ -131,6 +140,32 @@ function dumpLiveSchema() {
 function computeDrift() {
   log('Calculando drift (supabase db diff --linked --schema public)');
   const outPath = join(OUT_DIR, 'SCHEMA_DRIFT.sql');
+  let ledger;
+  try {
+    const output = execSync('supabase migration list --linked --output-format json', {
+      encoding: 'utf8', maxBuffer: 16 * 1024 * 1024,
+    });
+    ledger = auditSupabaseMigrationLedger(parseSupabaseMigrationLedgerOutput(output));
+  } catch (error) {
+    const reason = `Ledger remoto indisponível: ${error.message}`;
+    writeFileSync(outPath, `-- SCHEMA_DRIFT.sql — NÃO CALCULADO\n-- ${reason}\n`);
+    warn(reason);
+    return { computed: false, reason };
+  }
+  if (!ledger.ok) {
+    const { matched, local_only_count: localOnly, remote_only_count: remoteOnly } = ledger.summary;
+    const reason = `Ledger divergente: ${matched} pares, ${localOnly} somente locais, ${remoteOnly} somente remotos. Replay bloqueado.`;
+    writeFileSync(outPath, [
+      '-- SCHEMA_DRIFT.sql — NÃO CALCULADO',
+      `-- Projeto: ${PROJECT_REF}`,
+      `-- Gerado em: ${new Date().toISOString()}`,
+      `-- ${reason}`,
+      '-- Este arquivo não demonstra ausência de drift estrutural.',
+      '',
+    ].join('\n'));
+    warn(reason);
+    return { computed: false, reason, ledger: ledger.summary };
+  }
   try {
     const sql = execSync(
       `supabase db diff --linked --schema public 2>/dev/null`,
@@ -152,10 +187,10 @@ function computeDrift() {
       .filter((l) => l.trim() && !l.trim().startsWith('--'))
       .length;
     ok(`SCHEMA_DRIFT.sql gerado (${meaningful} linha(s) de DDL efetiva).`);
-    return { path: outPath, driftLines: meaningful };
+    return { computed: true, path: outPath, driftLines: meaningful };
   } catch (e) {
     err(`Falha ao calcular drift: ${e.message}`);
-    return null;
+    return { computed: false, reason: e.message };
   }
 }
 
@@ -191,8 +226,9 @@ function main() {
   if (live) meta.live_schema = { bytes: live.bytes };
 
   const drift = computeDrift();
-  if (drift) meta.drift = { ddl_lines: drift.driftLines };
+  if (drift) meta.drift = drift;
 
+  meta.generated_at = new Date().toISOString();
   writeMeta(meta);
 }
 
