@@ -13,6 +13,7 @@
 | Arquivo/objeto | Agente | Branch/PR | Início (UTC) | TTL | Status |
 |---|---|---|---|---|---|
 | `scripts/validate-migration-target.mjs`, `tests/scripts/validate-migration-target.test.mjs`, `.github/workflows/db-apply-migration.yml`, pacote signup e plano/relatório de reconciliação de 22/09 | Codex | `codex/e15-pooler-validation-20260922` | 2026-09-22T17:29:00Z | 48 h | correção de conexão e validação do E15; sem reserva/autorização de outros objetos de BD |
+| `supabase/MIGRATIONS_SYNC_LOG.md` (somente recibo `20260922170000`) | Codex | `codex/signup-migration-receipt-20260922` | 2026-09-22T19:27:37Z | 48 h | recuperação documental autorizada pelo PO; sem SQL, permissões ou alterações de workflow |
 
 ## Histórico (liberadas/expiradas)
 
