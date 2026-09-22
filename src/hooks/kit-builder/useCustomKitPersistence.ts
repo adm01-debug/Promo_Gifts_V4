@@ -179,14 +179,10 @@ export function useCustomKitPersistence() {
         // A pair of browser updates cannot preserve this invariant when two
         // tabs act at once. The RPC owns the transaction, lock and unique
         // partial index; the browser only asks for the desired final state.
-        const { error: pinErr } = await (
-          supabase as unknown as {
-            rpc: (
-              name: 'set_custom_kit_pinned',
-              args: { _kit_id: string; _is_pinned: boolean },
-            ) => Promise<{ error: { message?: string } | null }>;
-          }
-        ).rpc('set_custom_kit_pinned', { _kit_id: kitId, _is_pinned: value });
+        const { error: pinErr } = await supabase.rpc('set_custom_kit_pinned', {
+          _kit_id: kitId,
+          _is_pinned: value,
+        });
         if (pinErr) throw new Error(pinErr.message || 'Não foi possível alterar o destaque');
         queryClient.invalidateQueries({ queryKey: QUERY_KEY });
         toast.success(value ? 'Kit fixado em destaque' : 'Kit desafixado');

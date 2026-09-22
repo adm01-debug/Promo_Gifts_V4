@@ -27,6 +27,12 @@
 --
 -- Aplicado via E15 (.github/workflows/db-apply-migration.yml) — nunca
 -- supabase db push nem execute_sql direto no canônico.
+--
+-- Rollback: ALTER TABLE public.categories DROP CONSTRAINT IF EXISTS
+-- categories_bitrix_id_key; ALTER TABLE public.categories DROP COLUMN IF
+-- EXISTS bitrix_id; — NÃO recomendado no canônico: a coluna já existe em
+-- produção desde antes desta migration (é DDL out-of-band pré-existente),
+-- dropá-la quebraria a integração que a usa.
 
 DO $precondition$
 BEGIN

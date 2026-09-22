@@ -1,7 +1,7 @@
 -- ==============================================================
 -- ALL_IN_ONE.sql — snapshot concatenado de supabase/migrations/
--- Gerado em: 2026-09-16T12:14:24.400Z
--- Total de arquivos: 2988
+-- Gerado em: 2026-09-22T14:23:45.363Z
+-- Total de arquivos: 3006
 -- Ordem: alfabética (mesmo critério do Supabase CLI)
 -- Uso: APENAS auditoria/leitura. NÃO aplicar direto no banco.
 -- SSOT continua sendo os arquivos individuais em supabase/migrations/.
@@ -39535,6 +39535,85 @@ BEGIN
 END $$;
 
 -- <<< END 20260511200056_create_painel_users.sql <<<
+
+-- >>> BEGIN 20260511235900_mirror_categories_bitrix_id_out_of_band.sql >>>
+-- Onda 0 do plano de execução — achado de emergência (2026-09-20), fora do
+-- escopo original dos 2 planos de 50 etapas.
+--
+-- `db-schema-drift-check` / "Migrations x Canonical schema" falham desde
+-- 2026-09-17 (4 execuções diárias consecutivas) com
+-- `ERROR: column categories.bitrix_id does not exist (SQLSTATE 42703)`
+-- durante `supabase db diff` — não é drift real, é falha no PRÓPRIO rebuild
+-- do shadow DB usado para o diff.
+--
+-- Causa raiz: `public.categories.bitrix_id` existe no banco canônico ao
+-- vivo (confirmado: integer, nullable, `UNIQUE (bitrix_id)` via constraint
+-- `categories_bitrix_id_key`), mas NENHUMA migration em
+-- `supabase/migrations/` cria essa coluna — grep confirma 0 ocorrências de
+-- `ADD COLUMN.*bitrix_id`. É DDL out-of-band (mesma categoria dos achados
+-- de `ai_providers.secret_name` e `zapp_catalog_stats` já tratados nos
+-- Pacotes de Aprovação #1/#2), só que este quebra o `db diff` porque a
+-- migration `20260512000000_bootstrap_missing_application_schemas.sql`
+-- SELECIONA `categories.bitrix_id` assumindo que já existe — no shadow DB
+-- (rebuild do zero, sem a DDL out-of-band) a coluna nunca foi criada até
+-- ali, e o diff quebra com erro de SQL (não com "drift detectado").
+--
+-- Esta migration é datada ANTES de 20260512000000 de propósito — o rebuild
+-- do shadow DB aplica os arquivos em ordem de nome de arquivo, então
+-- precisa existir e ser aplicada antes daquela migration para o SELECT
+-- funcionar. No banco canônico (onde a coluna já existe), é 100% no-op
+-- (IF NOT EXISTS em tudo).
+--
+-- Aplicado via E15 (.github/workflows/db-apply-migration.yml) — nunca
+-- supabase db push nem execute_sql direto no canônico.
+--
+-- Rollback: ALTER TABLE public.categories DROP CONSTRAINT IF EXISTS
+-- categories_bitrix_id_key; ALTER TABLE public.categories DROP COLUMN IF
+-- EXISTS bitrix_id; — NÃO recomendado no canônico: a coluna já existe em
+-- produção desde antes desta migration (é DDL out-of-band pré-existente),
+-- dropá-la quebraria a integração que a usa.
+
+DO $precondition$
+BEGIN
+  IF to_regclass('public.categories') IS NULL THEN
+    RAISE EXCEPTION 'Precondição falhou: public.categories não existe';
+  END IF;
+END;
+$precondition$;
+
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS bitrix_id integer;
+
+DO $constraint$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'categories_bitrix_id_key'
+      AND conrelid = 'public.categories'::regclass
+  ) THEN
+    ALTER TABLE public.categories ADD CONSTRAINT categories_bitrix_id_key UNIQUE (bitrix_id);
+  END IF;
+END;
+$constraint$;
+
+DO $postcondition$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema='public' AND table_name='categories' AND column_name='bitrix_id'
+  ) THEN
+    RAISE EXCEPTION 'Pós-condição falhou: categories.bitrix_id ainda não existe';
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'categories_bitrix_id_key' AND conrelid = 'public.categories'::regclass
+  ) THEN
+    RAISE EXCEPTION 'Pós-condição falhou: constraint categories_bitrix_id_key ainda não existe';
+  END IF;
+END;
+$postcondition$;
+
+-- <<< END 20260511235900_mirror_categories_bitrix_id_out_of_band.sql <<<
 
 -- >>> BEGIN 20260512000000_bootstrap_missing_application_schemas.sql >>>
 -- Substitui a versão mínima criada horas antes nesta mesma investigação
@@ -250217,6 +250296,8 @@ grant execute on function public.zapp_catalog_stats() to service_role;
 -- ============================================================================
 -- Forward-only: remove EXECUTE acidental de public.zapp_catalog_stats()
 -- do role `authenticated`.
+--
+-- Rollback: GRANT EXECUTE ON FUNCTION public.zapp_catalog_stats() TO authenticated;
 -- ============================================================================
 -- CAUSA RAIZ
 -- A migration 20260912205759 (catalog_e24_zapp_catalog_stats) declarou em
@@ -250292,6 +250373,2250 @@ END
 $postcondition$;
 
 -- <<< END 20260915113458_zapp_catalog_stats_revoke_authenticated.sql <<<
+
+-- >>> BEGIN 20260916181609_backfill_fix_google_provider_secret_name_20260623.sql >>>
+-- Arquivo-espelho para a entrada de ledger não-canônica
+-- `20260623_fix_google_provider_secret_name`.
+-- Origem: E09 do plano DBA — docs/E09_LEDGER_IDS_INVALIDOS_2026-09-16.md, achado #4.
+-- Plano: docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md (E09)
+--
+-- A entrada `20260623_fix_google_provider_secret_name` no ledger
+-- (supabase_migrations.schema_migrations) é real e já aplicada em produção
+-- em 2026-06-23 (UPDATE efetivo em ai_providers, confirmado ao vivo:
+-- ai_providers.secret_name = 'GEMINI_API_KEY' para slug='google'), mas
+-- nunca teve um arquivo correspondente em supabase/migrations/ — só um ID
+-- não-canônico direto no ledger, sem versão de 14 dígitos.
+--
+-- Este arquivo é só um espelho textual do efeito já aplicado, para o
+-- histórico do repositório ficar completo — NÃO é uma nova aplicação.
+-- A entrada não-canônica original permanece no ledger sem alteração (não é
+-- renomeada nem removida), só passa a ter um arquivo-espelho canônico
+-- documentando o mesmo efeito.
+--
+-- Idempotente: o WHERE já não casa nenhuma linha hoje (efeito real ocorreu
+-- em 2026-06-23) — reconfirmado ao vivo antes de escrever este arquivo.
+--
+-- [REQUER-PO] apenas para o passo de ledger (registrar esta versão como
+-- applied via `migration repair`, ver docs/PACOTE_APROVACAO_1_2026-09-16.md
+-- Ação 3b/3c) — o UPDATE abaixo, se rodado, é no-op comprovado.
+--
+-- Rollback: UPDATE ai_providers SET secret_name = 'GOOGLE_API_KEY' WHERE
+-- slug = 'google' AND secret_name = 'GEMINI_API_KEY'; (não recomendado —
+-- GEMINI_API_KEY é o valor real em uso desde 2026-06-23; reverter quebraria
+-- a integração ativa, não desfaria um problema).
+
+UPDATE ai_providers SET secret_name = 'GEMINI_API_KEY', updated_at = now()
+WHERE slug = 'google' AND secret_name = 'GOOGLE_API_KEY';
+
+-- <<< END 20260916181609_backfill_fix_google_provider_secret_name_20260623.sql <<<
+
+-- >>> BEGIN 20260916193000_e25_supplier_history_partition_automation.sql >>>
+-- E25 — Automação de partições de public.supplier_products_raw_history
+-- Plano: docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md (linhas 520-531)
+-- Prazo duro citado no plano: 2026-12-15 (última partição mensal viva hoje é p2026_12).
+--
+-- Correção ao texto do plano: a coluna de particionamento é `captured_at`,
+-- não `created_at` como o texto do plano menciona. Confirmado ao vivo via
+-- pg_partitioned_table/pg_attribute em 2026-09-16.
+--
+-- Opção escolhida: B (função + pg_cron), não A (pg_partman). Motivo: pg_partman
+-- não está instalada nesta base (só pg_cron 1.6.4 confirmado em pg_extension);
+-- Opção B replica um padrão já provado em produção
+-- (public.magazine_ensure_view_event_partitions + cron 'magazine-partition-maintenance',
+-- jobid 301, ativo, roda diariamente às 04:00) sem introduzir nova extensão.
+--
+-- Diferença deliberada do padrão espelhado: as partições de
+-- supplier_products_raw_history não têm GRANT nem policy por partição (controle de
+-- acesso vive só na tabela-mãe — confirmado via information_schema.role_table_grants
+-- e pg_policy sobre supplier_products_raw_history_p2026_09, ambos vazios). A função
+-- abaixo por isso não replica os passos de RLS/GRANT por partição do espelho.
+--
+-- Rede de segurança: partição DEFAULT (supplier_products_raw_history_default), hoje
+-- inexistente. Sem ela, um INSERT com captured_at fora de qualquer partição futura
+-- falharia com erro fatal ("no partition of relation found for row") — uma
+-- interrupção dura do pipeline Bronze. Com ela, linhas fora do intervalo mantido
+-- vão parar ali (não deveriam, se o cron de manutenção estiver rodando) e viram
+-- alerta, não uma queda.
+--
+-- Alerta da partição DEFAULT: implementado como job pg_cron SEPARADO, SEM passar
+-- por public.fn_cron_safe_run. Motivo: fn_cron_safe_run captura toda exceção
+-- internamente (bloco WHEN OTHERS) e sempre retorna normalmente — uma
+-- RAISE EXCEPTION dentro dela nunca aparece como cron.job_run_details.status='failed'.
+-- Um alerta que precisa ser visível como falha de job não pode passar por esse
+-- wrapper. Confirmado lendo a definição completa da função em 2026-09-16.
+--
+-- Sem dependência do schema `ops` (E30/E33) — schema ainda não existe
+-- (information_schema.schemata confirmado vazio para 'ops' em 2026-09-16) e E25 não
+-- deve ficar bloqueada por uma etapa [REQUER-PO] ainda não aprovada.
+
+DO $precondition$
+BEGIN
+  IF to_regclass('public.supplier_products_raw_history') IS NULL THEN
+    RAISE EXCEPTION 'Precondição falhou: public.supplier_products_raw_history não existe';
+  END IF;
+
+  IF to_regclass('public.supplier_products_raw_history_default') IS NOT NULL THEN
+    RAISE EXCEPTION 'Precondição falhou: partição DEFAULT já existe — migration não é idempotente para este passo';
+  END IF;
+
+  IF EXISTS (
+    SELECT 1 FROM cron.job
+    WHERE jobname IN ('supplier-history-partition-maintenance', 'supplier-history-default-partition-alert')
+  ) THEN
+    RAISE EXCEPTION 'Precondição falhou: já existe cron job com um dos nomes-alvo desta migration';
+  END IF;
+END;
+$precondition$;
+
+-- Função de manutenção: cria partições mensais faltantes de
+-- supplier_products_raw_history, do mês atual até p_months_ahead meses no futuro.
+-- Idempotente (verifica pg_class antes de criar cada partição).
+CREATE OR REPLACE FUNCTION public.fn_ensure_history_partitions(p_months_ahead integer DEFAULT 3)
+RETURNS integer
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path TO 'public', 'pg_temp'
+AS $function$
+DECLARE
+  v_created integer := 0;
+  v_i integer;
+  v_month date;
+  v_name text;
+BEGIN
+  FOR v_i IN 0..p_months_ahead LOOP
+    v_month := (date_trunc('month', now()) + make_interval(months => v_i))::date;
+    v_name := 'supplier_products_raw_history_p' || to_char(v_month, 'YYYY_MM');
+
+    IF NOT EXISTS (
+      SELECT 1 FROM pg_class WHERE relname = v_name AND relnamespace = 'public'::regnamespace
+    ) THEN
+      EXECUTE format(
+        'CREATE TABLE public.%I PARTITION OF public.supplier_products_raw_history FOR VALUES FROM (%L) TO (%L)',
+        v_name, v_month, (v_month + interval '1 month')::date
+      );
+      v_created := v_created + 1;
+    END IF;
+  END LOOP;
+
+  RETURN v_created;
+END;
+$function$;
+
+COMMENT ON FUNCTION public.fn_ensure_history_partitions(integer) IS
+  'Cria partições mensais faltantes de supplier_products_raw_history (chave: captured_at), '
+  'do mês atual até p_months_ahead meses à frente. Idempotente. Criada em 20260916193000 '
+  'para E25 do PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md. Chamada diariamente '
+  'via cron supplier-history-partition-maintenance (job separado supplier-history-default-'
+  'partition-alert cobre o caso de falha desta manutenção).';
+
+-- Backfill imediato: cobre até bem depois do prazo de 2026-12-15 (6 meses à frente
+-- de 2026-09 = até 2027-02 inclusive), independente do que o cron diário venha a fazer.
+SELECT public.fn_ensure_history_partitions(6);
+
+-- Partição DEFAULT — rede de segurança contra falha de manutenção futura.
+CREATE TABLE public.supplier_products_raw_history_default
+  PARTITION OF public.supplier_products_raw_history DEFAULT;
+
+COMMENT ON TABLE public.supplier_products_raw_history_default IS
+  'Rede de segurança E25: recebe linhas de supplier_products_raw_history com captured_at '
+  'fora de qualquer partição mensal criada. Não deveria nunca acumular linhas se o cron '
+  'supplier-history-partition-maintenance estiver funcionando. Monitorada pelo cron '
+  'supplier-history-default-partition-alert (RAISE EXCEPTION se count > 0 — falha nativa '
+  'e visível em cron.job_run_details, sem passar por fn_cron_safe_run).';
+
+-- Job 1: manutenção diária, via wrapper padrão do projeto (timeout, log, não derruba
+-- outros jobs em caso de erro pontual).
+SELECT cron.schedule(
+  'supplier-history-partition-maintenance',
+  '0 4 * * *',
+  $cron$SELECT public.fn_cron_safe_run(200::bigint, 'SELECT public.fn_ensure_history_partitions(3);', 44000, 'supplier-history-partitions');$cron$
+);
+
+-- Job 2: alerta da partição DEFAULT, diário, SEM wrapper — precisa que uma falha real
+-- vire cron.job_run_details.status='failed' de forma nativa (ver nota acima sobre
+-- fn_cron_safe_run engolir exceções).
+SELECT cron.schedule(
+  'supplier-history-default-partition-alert',
+  '15 4 * * *',
+  $cron$DO $do$
+DECLARE
+  v_count bigint;
+BEGIN
+  SELECT count(*) INTO v_count FROM public.supplier_products_raw_history_default;
+  IF v_count > 0 THEN
+    RAISE EXCEPTION 'ALERTA E25: % linha(s) na partição DEFAULT de supplier_products_raw_history — gap de partição futura, risco ao pipeline Bronze', v_count;
+  END IF;
+END;
+$do$;$cron$
+);
+
+DO $postcondition$
+DECLARE
+  v_future_partitions integer;
+BEGIN
+  SELECT count(*) INTO v_future_partitions
+  FROM pg_class
+  WHERE relnamespace = 'public'::regnamespace
+    AND relname ~ '^supplier_products_raw_history_p2027_0[1-2]$';
+
+  IF v_future_partitions < 2 THEN
+    RAISE EXCEPTION 'Pós-condição falhou: esperava partições p2027_01 e p2027_02, achou %', v_future_partitions;
+  END IF;
+
+  IF to_regclass('public.supplier_products_raw_history_default') IS NULL THEN
+    RAISE EXCEPTION 'Pós-condição falhou: partição DEFAULT não foi criada';
+  END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'supplier-history-partition-maintenance' AND active) THEN
+    RAISE EXCEPTION 'Pós-condição falhou: cron de manutenção não foi criado ou não está ativo';
+  END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'supplier-history-default-partition-alert' AND active) THEN
+    RAISE EXCEPTION 'Pós-condição falhou: cron de alerta não foi criado ou não está ativo';
+  END IF;
+
+  IF EXISTS (SELECT 1 FROM public.supplier_products_raw_history_default) THEN
+    RAISE EXCEPTION 'Pós-condição falhou: partição DEFAULT nasceu com linhas — inesperado, investigar antes de prosseguir';
+  END IF;
+END;
+$postcondition$;
+
+-- <<< END 20260916193000_e25_supplier_history_partition_automation.sql <<<
+
+-- >>> BEGIN 20260916200000_e17_revoke_public_fn_super_filtro.sql >>>
+-- E17 — Revisar as 11 SECDEF executáveis por anon: achado acionável #1
+-- Plano: docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md (linhas 439-447)
+--
+-- Achado: das 11 funções SECURITY DEFINER executáveis por anon, 10 já têm o
+-- EXECUTE de PUBLIC revogado (só anon/authenticated/service_role/postgres
+-- aparecem no ACL). public.fn_super_filtro é a única exceção — seu ACL ao
+-- vivo (pg_proc.proacl, lido em 2026-09-16) tem uma entrada "=X/postgres"
+-- (sem nome de role antes do "="), que é a notação de GRANT ao pseudo-papel
+-- PUBLIC. Isso significa que, além de anon/authenticated (que já têm GRANT
+-- nomeado e continuam precisando dele — é o motor do superfiltro público do
+-- catálogo), QUALQUER role futura criada neste banco também teria EXECUTE
+-- nesta função por padrão, sem revisão consciente.
+--
+-- Não é uma regressão de dado exposto hoje (anon/authenticated já cobrem os
+-- únicos consumidores reais — a UI web não autenticada e a autenticada).
+-- É higiene de superfície: alinhar fn_super_filtro ao mesmo padrão que as
+-- irmãs fn_super_filtro_facets e fn_super_filtro_price_range já têm (ambas
+-- confirmadas sem grant a PUBLIC no mesmo levantamento).
+--
+-- Efeito esperado: nenhuma mudança de comportamento para anon/authenticated/
+-- service_role (mantêm GRANT nomeado explícito). Qualquer role nova criada
+-- depois desta migration NÃO herda mais EXECUTE automático nesta função.
+--
+-- Ver docs/E17_SECDEF_ANON_2026-09-16.md para as 11 decisões completas.
+
+DO $precondition$
+BEGIN
+  IF to_regprocedure(
+    'public.fn_super_filtro(text, text, uuid, text[], boolean, numeric, numeric, text[], boolean, boolean, boolean, boolean, text[], text[], text[], text[], boolean, integer, integer, text)'
+  ) IS NULL THEN
+    RAISE EXCEPTION 'Precondição falhou: public.fn_super_filtro com a assinatura esperada não existe';
+  END IF;
+
+  IF NOT has_function_privilege('anon', 'public.fn_super_filtro(text, text, uuid, text[], boolean, numeric, numeric, text[], boolean, boolean, boolean, boolean, text[], text[], text[], text[], boolean, integer, integer, text)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'Precondição falhou: anon já não tem EXECUTE em fn_super_filtro — investigar antes de prosseguir (allowlist pressupõe que o grant nomeado a anon existe e deve ser mantido)';
+  END IF;
+
+  IF NOT has_function_privilege('authenticated', 'public.fn_super_filtro(text, text, uuid, text[], boolean, numeric, numeric, text[], boolean, boolean, boolean, boolean, text[], text[], text[], text[], boolean, integer, integer, text)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'Precondição falhou: authenticated já não tem EXECUTE em fn_super_filtro — investigar antes de prosseguir';
+  END IF;
+END;
+$precondition$;
+
+REVOKE EXECUTE ON FUNCTION public.fn_super_filtro(
+  text, text, uuid, text[], boolean, numeric, numeric, text[], boolean, boolean,
+  boolean, boolean, text[], text[], text[], text[], boolean, integer, integer, text
+) FROM PUBLIC;
+
+DO $postcondition$
+DECLARE
+  v_sig text := 'public.fn_super_filtro(text, text, uuid, text[], boolean, numeric, numeric, text[], boolean, boolean, boolean, boolean, text[], text[], text[], text[], boolean, integer, integer, text)';
+BEGIN
+  IF has_function_privilege('public', v_sig, 'EXECUTE') THEN
+    RAISE EXCEPTION 'Pós-condição falhou: PUBLIC ainda tem EXECUTE em fn_super_filtro — revoke não teve efeito';
+  END IF;
+
+  IF NOT has_function_privilege('anon', v_sig, 'EXECUTE') THEN
+    RAISE EXCEPTION 'Pós-condição falhou: anon perdeu EXECUTE em fn_super_filtro — efeito colateral inesperado, o catálogo público quebraria';
+  END IF;
+
+  IF NOT has_function_privilege('authenticated', v_sig, 'EXECUTE') THEN
+    RAISE EXCEPTION 'Pós-condição falhou: authenticated perdeu EXECUTE em fn_super_filtro — efeito colateral inesperado';
+  END IF;
+
+  IF NOT has_function_privilege('service_role', v_sig, 'EXECUTE') THEN
+    RAISE EXCEPTION 'Pós-condição falhou: service_role perdeu EXECUTE em fn_super_filtro — efeito colateral inesperado';
+  END IF;
+END;
+$postcondition$;
+
+-- <<< END 20260916200000_e17_revoke_public_fn_super_filtro.sql <<<
+
+-- >>> BEGIN 20260916201000_e19_comment_rls_deny_intentional.sql >>>
+-- E19 — Decidir as 2 tabelas com RLS sem policy
+-- Plano: docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md (linhas 458-464)
+-- Achado espelhado em docs/SCHEMA_REFERENCE.md §3 P5.
+--
+-- Tabelas: public.magazine_duplicate_requests e public.anon_catalog_grant_audit_log.
+-- Ambas: relrowsecurity=true, zero policies (pg_policies), zero GRANT a anon/
+-- authenticated (information_schema.role_table_grants, confirmado ao vivo em
+-- 2026-09-16) — hoje só service_role e funções SECURITY DEFINER (que rodam como
+-- o owner 'postgres', role com rolbypassrls=true) conseguem ler/escrever.
+--
+-- Decisão: INTENCIONAL para as duas, com evidência de código, não suposição:
+--
+-- 1) public.magazine_duplicate_requests — ledger de idempotência de
+--    public.magazine_duplicate_v2(...) (SECURITY DEFINER, owner postgres).
+--    A função faz SELECT/INSERT diretamente nesta tabela dentro do seu próprio
+--    corpo (chave de idempotência actor_id+idempotency_key); a tabela nunca é
+--    exposta em SELECT direto ao cliente — só o resultado transformado (jsonb)
+--    da função volta pela API. anon não tem EXECUTE nesta função (só
+--    authenticated, com auth.uid() obrigatório — RAISE EXCEPTION
+--    'magazine_auth_required' caso contrário).
+--
+-- 2) public.anon_catalog_grant_audit_log — log de auditoria escrito por
+--    public.fn_anon_catalog_grant_audit_run() (SECURITY DEFINER, owner postgres),
+--    chamada pelo cron job ativo 'anon-catalog-grant-audit-6h' (jobid 303,
+--    '0 */6 * * *', confirmado ativo em cron.job em 2026-09-16). A função grava
+--    o resultado de fn_verify_anon_catalog_grants() — é o próprio mecanismo que
+--    monitora o achado P1/E22 (anon sem GRANT de escrita) ao longo do tempo.
+--    Não tem nenhum consumidor em src/ ou supabase/functions/ (grep confirmado)
+--    — é só trilha de auditoria interna, não deveria ser lida por ninguém além
+--    de quem investiga um incidente.
+--
+-- Ação: tornar a intenção explícita via COMMENT ON TABLE (não muda
+-- comportamento de acesso — RLS sem policy já nega tudo por padrão a
+-- não-owner/não-bypassrls). Ver docs/E19_RLS_SEM_POLICY_2026-09-16.md para o
+-- levantamento completo e a nota sobre a migration 20260716000055 (sweep
+-- dinâmico, nunca aplicada, que resolveria o lint rls_enabled_no_policy da
+-- Supabase de forma complementar — decisão separada, fora desta migration).
+
+DO $precondition$
+BEGIN
+  IF to_regclass('public.magazine_duplicate_requests') IS NULL THEN
+    RAISE EXCEPTION 'Precondição falhou: public.magazine_duplicate_requests não existe';
+  END IF;
+  IF to_regclass('public.anon_catalog_grant_audit_log') IS NULL THEN
+    RAISE EXCEPTION 'Precondição falhou: public.anon_catalog_grant_audit_log não existe';
+  END IF;
+
+  IF EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'public' AND tablename IN ('magazine_duplicate_requests', 'anon_catalog_grant_audit_log')
+  ) THEN
+    RAISE EXCEPTION 'Precondição falhou: uma das duas tabelas já tem policy — estado mudou desde o levantamento de 2026-09-16, reavaliar antes de comentar';
+  END IF;
+END;
+$precondition$;
+
+COMMENT ON TABLE public.magazine_duplicate_requests IS
+  'RLS deny-all intencional (E19, 2026-09-16): RLS ligada, zero policies — só '
+  'service_role e a função SECURITY DEFINER public.magazine_duplicate_v2(...) '
+  '(owner postgres, bypassrls) leem/escrevem. Ledger de idempotência de '
+  'duplicação de revista (actor_id+idempotency_key); nunca exposta em SELECT '
+  'direto ao cliente. Ver docs/E19_RLS_SEM_POLICY_2026-09-16.md.';
+
+COMMENT ON TABLE public.anon_catalog_grant_audit_log IS
+  'RLS deny-all intencional (E19, 2026-09-16): RLS ligada, zero policies — só '
+  'service_role e a função SECURITY DEFINER public.fn_anon_catalog_grant_audit_run() '
+  '(owner postgres, bypassrls) escrevem. Log de auditoria do próprio mecanismo '
+  'anon-sem-escrita (P1/E22), alimentado pelo cron ativo '
+  '''anon-catalog-grant-audit-6h'' (jobid 303, a cada 6h). Sem consumidor em '
+  'src/ ou supabase/functions/ — só trilha para investigação de incidente. '
+  'Ver docs/E19_RLS_SEM_POLICY_2026-09-16.md.';
+
+DO $postcondition$
+BEGIN
+  IF obj_description('public.magazine_duplicate_requests'::regclass, 'pg_class') IS NULL THEN
+    RAISE EXCEPTION 'Pós-condição falhou: comentário de magazine_duplicate_requests não foi gravado';
+  END IF;
+  IF obj_description('public.anon_catalog_grant_audit_log'::regclass, 'pg_class') IS NULL THEN
+    RAISE EXCEPTION 'Pós-condição falhou: comentário de anon_catalog_grant_audit_log não foi gravado';
+  END IF;
+
+  -- Confirma que nada de comportamento de acesso mudou (RLS continua ligada, 0 policies).
+  IF EXISTS (
+    SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
+    WHERE n.nspname = 'public' AND c.relname IN ('magazine_duplicate_requests', 'anon_catalog_grant_audit_log')
+      AND NOT c.relrowsecurity
+  ) THEN
+    RAISE EXCEPTION 'Pós-condição falhou: RLS foi desligada em uma das tabelas — não era o objetivo desta migration';
+  END IF;
+END;
+$postcondition$;
+
+-- <<< END 20260916201000_e19_comment_rls_deny_intentional.sql <<<
+
+-- >>> BEGIN 20260916202000_e23_force_rls_secret_tables.sql >>>
+-- E23 — FORCE RLS e revogação em tabelas de segredo
+-- Plano: docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md (linhas 494-501)
+--
+-- Tabelas alvo (5 das 6 do plano — mcp_api_keys já tem FORCE, confirmado ao
+-- vivo em 2026-09-16, fora desta migration): integration_credentials,
+-- external_connections, secret_rotation_log, step_up_tokens,
+-- user_token_revocations.
+--
+-- Achado central (muda a leitura de risco do plano): as 6 tabelas são
+-- owned by 'postgres'. O papel 'postgres' neste projeto tem
+-- rolbypassrls=true (confirmado em pg_roles em 2026-09-16) — NÃO é
+-- rolsuper, mas BYPASSRLS é um atributo independente de superusuário que
+-- ignora RLS incondicionalmente, com ou sem FORCE ROW LEVEL SECURITY
+-- (FORCE só muda o comportamento do owner quando o owner NÃO tem
+-- BYPASSRLS — ver documentação do Postgres sobre ALTER TABLE ... FORCE ROW
+-- LEVEL SECURITY). service_role também tem rolbypassrls=true.
+--
+-- Consequência prática: aplicar FORCE nestas 5 tabelas NÃO muda o
+-- comportamento de nenhuma função SECURITY DEFINER (todas as encontradas
+-- que tocam estas tabelas são owned by postgres — 11 funções confirmadas
+-- via pg_proc.prosrc em 2026-09-16: audit_mcp_api_keys_changes,
+-- auto_revoke_orphan_full_keys, check_mcp_abuse_threshold,
+-- cleanup_expired_step_up, cleanup_expired_step_up_tokens,
+-- fn_admin_sync_external_connections, force_logout_all_users,
+-- guard_mcp_api_keys_writes, sync_external_connections_from_credentials
+-- (2 sobrecargas), trg_auto_revoke_mcp_on_role_loss) nem de nenhuma edge
+-- function que use a service_role key (secrets-manager, mcp-keys-issue/
+-- revoke/rotate/update — todas confirmadas via grep tocando
+-- integration_credentials/external_connections/mcp_api_keys via
+-- admin.from(...) com SERVICE_ROLE_KEY). Todas essas vias já bypassam RLS
+-- pelo atributo do papel, não pela ausência de FORCE.
+--
+-- FORCE é, portanto, defesa em profundidade / postura documentada — não uma
+-- mudança funcional hoje — e alinha as 5 tabelas ao padrão já em produção em
+-- mcp_api_keys. É seguro justamente porque não muda nada para os únicos
+-- consumidores legítimos (postgres/service_role, ambos bypassrls).
+--
+-- REVOKE ALL FROM anon: confirmado que anon já não tem NENHUM grant nestas
+-- 5 tabelas hoje (information_schema.role_table_grants vazio para anon nas
+-- 5, checado em 2026-09-16) — o REVOKE é no-op sobre o estado atual, mas
+-- fecha a porta a qualquer GRANT futuro acidental (ex.: um script de
+-- hardening genérico que faça 'GRANT SELECT ON ALL TABLES IN SCHEMA
+-- public TO anon' sem exclusão explícita). 'authenticated' NÃO é tocado —
+-- tem policies reais (1 a 4 por tabela) que sustentam acesso legítimo do
+-- usuário dono do recurso (ex.: step_up_tokens via RPCs SECURITY INVOKER
+-- chamadas como o próprio usuário, como verify_step_up_otp).
+--
+-- Ver docs/E23_FORCE_RLS_SEGREDO_2026-09-16.md para o levantamento completo.
+
+DO $precondition$
+BEGIN
+  -- A premissa de segurança inteira desta migration depende disto. Se deixou
+  -- de ser verdade, PARAR — o raciocínio acima não se sustenta mais.
+  IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'postgres' AND rolbypassrls) THEN
+    RAISE EXCEPTION 'Precondição falhou: role postgres não tem mais rolbypassrls — a premissa desta migration (FORCE é no-op para os owners atuais) não é mais válida, reavaliar risco por tabela antes de prosseguir';
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'service_role' AND rolbypassrls) THEN
+    RAISE EXCEPTION 'Precondição falhou: role service_role não tem mais rolbypassrls — reavaliar antes de prosseguir';
+  END IF;
+
+  IF EXISTS (
+    SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
+    WHERE n.nspname = 'public'
+      AND c.relname IN ('integration_credentials', 'external_connections', 'secret_rotation_log', 'step_up_tokens', 'user_token_revocations')
+      AND c.relowner::regrole::text <> 'postgres'
+  ) THEN
+    RAISE EXCEPTION 'Precondição falhou: uma das 5 tabelas mudou de owner desde o levantamento de 2026-09-16 — reavaliar antes de prosseguir';
+  END IF;
+
+  IF EXISTS (
+    SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
+    WHERE n.nspname = 'public'
+      AND c.relname IN ('integration_credentials', 'external_connections', 'secret_rotation_log', 'step_up_tokens', 'user_token_revocations')
+      AND c.relforcerowsecurity
+  ) THEN
+    RAISE EXCEPTION 'Precondição falhou: uma das 5 tabelas já tem FORCE ROW LEVEL SECURITY — migration não é idempotente para este passo, investigar';
+  END IF;
+END;
+$precondition$;
+
+ALTER TABLE public.integration_credentials FORCE ROW LEVEL SECURITY;
+ALTER TABLE public.external_connections    FORCE ROW LEVEL SECURITY;
+ALTER TABLE public.secret_rotation_log     FORCE ROW LEVEL SECURITY;
+ALTER TABLE public.step_up_tokens          FORCE ROW LEVEL SECURITY;
+ALTER TABLE public.user_token_revocations  FORCE ROW LEVEL SECURITY;
+
+REVOKE ALL ON public.integration_credentials FROM anon;
+REVOKE ALL ON public.external_connections    FROM anon;
+REVOKE ALL ON public.secret_rotation_log     FROM anon;
+REVOKE ALL ON public.step_up_tokens          FROM anon;
+REVOKE ALL ON public.user_token_revocations  FROM anon;
+
+DO $postcondition$
+DECLARE
+  v_missing_force text;
+  v_anon_grants integer;
+BEGIN
+  SELECT string_agg(c.relname, ', ')
+    INTO v_missing_force
+  FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
+  WHERE n.nspname = 'public'
+    AND c.relname IN ('integration_credentials', 'external_connections', 'secret_rotation_log', 'step_up_tokens', 'user_token_revocations')
+    AND NOT c.relforcerowsecurity;
+
+  IF v_missing_force IS NOT NULL THEN
+    RAISE EXCEPTION 'Pós-condição falhou: FORCE ROW LEVEL SECURITY não aplicado em: %', v_missing_force;
+  END IF;
+
+  SELECT count(*) INTO v_anon_grants
+  FROM information_schema.role_table_grants
+  WHERE table_schema = 'public' AND grantee = 'anon'
+    AND table_name IN ('integration_credentials', 'external_connections', 'secret_rotation_log', 'step_up_tokens', 'user_token_revocations');
+
+  IF v_anon_grants > 0 THEN
+    RAISE EXCEPTION 'Pós-condição falhou: anon ainda tem % grant(s) nas tabelas de segredo após REVOKE ALL', v_anon_grants;
+  END IF;
+
+  -- mcp_api_keys não foi tocada por esta migration — confirma que continua com FORCE (estado prévio, não regressão).
+  IF NOT EXISTS (SELECT 1 FROM pg_class WHERE relname = 'mcp_api_keys' AND relnamespace = 'public'::regnamespace AND relforcerowsecurity) THEN
+    RAISE EXCEPTION 'Pós-condição falhou: mcp_api_keys perdeu FORCE ROW LEVEL SECURITY — não deveria ter sido tocada por esta migration';
+  END IF;
+END;
+$postcondition$;
+
+-- <<< END 20260916202000_e23_force_rls_secret_tables.sql <<<
+
+-- >>> BEGIN 20260916210000_backfill_catalog_stats_price_range_top_colors_materials_20260916155725.sql >>>
+-- Regularização retroativa de DDL out-of-band (docs/db/POLITICA_DDL.md).
+--
+-- Origem: aplicada diretamente via MCP/dashboard em 2026-09-16 15:57:25 UTC,
+-- já presente no ledger como version=20260916155725,
+-- name=catalog_stats_price_range_top_colors_materials — sem migration
+-- versionada correspondente até esta regularização. Descoberta durante
+-- verificação independente da etapa E48 (docs/PACOTE_APROVACAO_1_2026-09-16.md,
+-- Ação 4).
+--
+-- Este arquivo é só espelho textual do que já roda em produção (o ledger já
+-- tem a linha; `supabase migration repair` NÃO é necessário aqui, diferente
+-- do caso E09 3b/3c). Reproduz CREATE OR REPLACE FUNCTION public.zapp_catalog_stats()
+-- exatamente como capturado de supabase_migrations.schema_migrations.statements
+-- para essa version, acrescentando 4 chaves ao jsonb retornado: price_min,
+-- price_max, top_colors, top_materials (comentários "-- E36"/"-- E22" no
+-- corpo são de uma numeração de feature alheia à deste plano de 50 etapas —
+-- não confundir com a etapa E36 deste documento, que é sobre custo de
+-- fn_cron_safe_run).
+--
+-- Efeito ao aplicar num ambiente que ainda não tem esta version: idempotente
+-- (CREATE OR REPLACE), reproduz o comportamento já ao vivo no projeto
+-- canônico. CREATE OR REPLACE FUNCTION preserva owner e ACL quando a
+-- assinatura não muda — confirmado ao vivo nesta investigação que
+-- authenticated segue com EXECUTE (mesmo estado de antes desta DDL, não
+-- alterado por ela). A pendência de segurança (REVOKE de authenticated) é
+-- ação separada e independente — ver Ação 1 em
+-- docs/PACOTE_APROVACAO_1_2026-09-16.md. Este arquivo NÃO revoga nem concede
+-- privilégio nenhum.
+--
+-- Rollback: não há comando simples de 1 linha — a versão anterior da função
+-- (sem price_min/price_max/top_colors/top_materials) precisa ser recuperada
+-- via pg_get_functiondef a partir de supabase_migrations.schema_migrations
+-- para uma version anterior a 20260916155725, antes de reaplicar. git rm
+-- deste arquivo por si só não desfaz nada em produção (é só espelho).
+
+CREATE OR REPLACE FUNCTION public.zapp_catalog_stats()
+ RETURNS jsonb
+ LANGUAGE sql
+ STABLE SECURITY DEFINER
+ SET search_path TO 'public'
+AS $function$
+  select jsonb_build_object(
+    'total', (select count(*) from products where is_active and is_deleted is not true),
+    'in_stock', (select count(*) from products where is_active and is_deleted is not true and not is_stockout),
+    'featured', (select count(*) from products where is_active and is_deleted is not true and is_featured
+      and (is_featured_expires_at is null or is_featured_expires_at > now())),
+    'new_30d', (select count(*) from products where is_active and is_deleted is not true
+      and (created_at > now() - interval '30 days'
+        or (is_new and (is_new_expires_at is null or is_new_expires_at > now())))),
+    'bestseller', (select count(*) from products where is_active and is_deleted is not true and is_bestseller
+      and (is_bestseller_expires_at is null or is_bestseller_expires_at > now())),
+    'kits', (select count(*) from products where is_active and is_deleted is not true and is_kit),
+    'low_stock', (select count(*) from products where is_active and is_deleted is not true
+      and stock_quantity between 1 and 10),
+    'categories_root', (select count(*) from categories where level = 1 and is_active and deleted_at is null),
+    'suppliers_active', (select count(distinct supplier_id) from products
+      where is_active and is_deleted is not true),
+    'last_sync_at', (select max(last_sync_at) from products),
+    'last_update_at', (select max(updated_at) from products),
+    'by_month', (
+      select coalesce(jsonb_agg(jsonb_build_object('month', month, 'count', count) order by month), '[]'::jsonb)
+      from (
+        select to_char(date_trunc('month', created_at), 'YYYY-MM') as month, count(*) as count
+        from products
+        where is_active and is_deleted is not true
+          and created_at >= date_trunc('month', now()) - interval '6 months'
+        group by 1
+      ) months
+    ),
+    -- E36: faixa de preco real para o slider (min/max ja ignora NULL por
+    -- padrao do agregado SQL; 4 produtos ativos sem sale_price hoje).
+    'price_min', (select min(sale_price) from products where is_active and is_deleted is not true),
+    'price_max', (select max(sale_price) from products where is_active and is_deleted is not true),
+    -- E36: top 20 cores/materiais por frequencia. colors/materials sao
+    -- jsonb com 2 formatos reais (confirmado por SQL antes de escrever,
+    -- mesmo achado da E22): elemento string OU objeto {"nome": "..."} -
+    -- coalesce(elem->>'nome', elem #>> '{}') cobre os dois. upper()
+    -- normaliza porque o filtro de listagem (color/material da action
+    -- list_products) ja compara em upper() - sem isso "Colorido" e
+    -- "COLORIDO" apareceriam como 2 chips diferentes pro usuario.
+    'top_colors', (
+      select coalesce(jsonb_agg(jsonb_build_object('label', label, 'count', freq) order by freq desc), '[]'::jsonb)
+      from (
+        select upper(coalesce(elem->>'nome', elem #>> '{}')) as label, count(*) as freq
+        from products p, jsonb_array_elements(p.colors) elem
+        where p.is_active and p.is_deleted is not true
+        group by 1 order by 2 desc limit 20
+      ) tc
+    ),
+    'top_materials', (
+      select coalesce(jsonb_agg(jsonb_build_object('label', label, 'count', freq) order by freq desc), '[]'::jsonb)
+      from (
+        select upper(coalesce(elem->>'nome', elem #>> '{}')) as label, count(*) as freq
+        from products p, jsonb_array_elements(p.materials) elem
+        where p.is_active and p.is_deleted is not true
+        group by 1 order by 2 desc limit 20
+      ) tm
+    )
+  );
+$function$;
+
+DO $postcondition$
+BEGIN
+  IF NOT has_function_privilege('service_role', 'public.zapp_catalog_stats()', 'EXECUTE') THEN
+    RAISE EXCEPTION 'Postcondition failed: service_role perdeu EXECUTE em public.zapp_catalog_stats()';
+  END IF;
+END
+$postcondition$;
+
+-- <<< END 20260916210000_backfill_catalog_stats_price_range_top_colors_materials_20260916155725.sql <<<
+
+-- >>> BEGIN 20260916211500_e30_ops_table_size_history.sql >>>
+-- Rollback: DROP TABLE IF EXISTS ops.table_size_history; SELECT cron.unschedule('table-size-history-daily'); DROP SCHEMA IF EXISTS ops;
+--
+-- E30 — Plano de capacidade e alerta de crescimento
+-- Plano: docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md (E30)
+-- Investigação: docs/E30_PLANO_CAPACIDADE_2026-09-16.md
+--
+-- Cria o schema `ops` (ainda não existe — confirmado via
+-- information_schema.schemata em 2026-09-16, mesma checagem que a nota da
+-- migration de E25 já deixou registrada) e a tabela `ops.table_size_history`,
+-- alimentada diariamente por um cron single-statement (padrão
+-- fn_cron_safe_run já usado em ~60 jobs deste projeto). Consumida pelo
+-- workflow semanal `.github/workflows/capacity-growth-report.yml`
+-- (scripts/capacity-growth-projection.mjs), que projeta 90 dias à frente e
+-- abre issue se algum objeto público passar de 20% do banco ou 30%/mês de
+-- crescimento.
+--
+-- RLS deny-all intencional (padrão E19 — ver
+-- .security/rls-no-policy-allowlist.json): tabela habilita RLS e não recebe
+-- nenhuma policy. Só service_role/postgres (e a função SECURITY DEFINER
+-- fn_cron_safe_run, que roda como owner da função, bypassrls) conseguem
+-- gravar/ler. Nenhum GRANT para anon/authenticated — nem no schema, nem na
+-- tabela. Dado de telemetria interna de operação, não tem por que ser
+-- alcançável pela API pública.
+--
+-- p_key=168 escolhido após consultar cron.job ao vivo em 2026-09-16 (maior
+-- p_key em uso: 166, jobname 'fantasmas-deactivate-guard'; E33 reserva 167
+-- para seu próprio monitor de wraparound quando aplicado; E25 já reservou
+-- 200 numa migration própria ainda não aplicada) — sem colisão com nenhum
+-- dos dois.
+
+DO $precondition$
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.schemata WHERE schema_name = 'ops') THEN
+    RAISE EXCEPTION 'Precondição falhou: schema ops já existe — migration não é idempotente para este passo';
+  END IF;
+
+  IF EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'table-size-history-daily') THEN
+    RAISE EXCEPTION 'Precondição falhou: já existe cron job "table-size-history-daily"';
+  END IF;
+END;
+$precondition$;
+
+CREATE SCHEMA ops;
+REVOKE ALL ON SCHEMA ops FROM PUBLIC;
+COMMENT ON SCHEMA ops IS
+  'Telemetria operacional interna (série histórica de tamanho, monitores de manutenção). '
+  'Nunca exposta à API pública — criado em 20260916211500 para E30 do '
+  'PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md.';
+
+CREATE TABLE ops.table_size_history (
+  captured_at timestamptz NOT NULL DEFAULT now(),
+  schema_name text NOT NULL,
+  table_name text NOT NULL,
+  total_bytes bigint NOT NULL,
+  live_tup bigint NOT NULL,
+  PRIMARY KEY (captured_at, schema_name, table_name)
+);
+
+CREATE INDEX idx_table_size_history_table_captured
+  ON ops.table_size_history (schema_name, table_name, captured_at DESC);
+
+ALTER TABLE ops.table_size_history ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON ops.table_size_history FROM PUBLIC;
+
+COMMENT ON TABLE ops.table_size_history IS
+  'PLANO_DBA E30 — série histórica diária de pg_total_relation_size()/reltuples por '
+  'tabela do schema public, alimentada pelo cron table-size-history-daily '
+  '(fn_cron_safe_run p_key=168). RLS deny-all intencional (ver '
+  '.security/rls-no-policy-allowlist.json) — só service_role/postgres lê/escreve; '
+  'zero policies, sem GRANT a anon/authenticated. Consumida pelo workflow semanal '
+  'capacity-growth-report.yml (scripts/capacity-growth-projection.mjs).';
+
+SELECT cron.schedule(
+  'table-size-history-daily',
+  '17 3 * * *',
+  $cron$SELECT public.fn_cron_safe_run(
+    168::bigint,
+    'INSERT INTO ops.table_size_history (schema_name, table_name, total_bytes, live_tup) '
+    'SELECT n.nspname, c.relname, pg_total_relation_size(c.oid), c.reltuples::bigint '
+    'FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace '
+    'WHERE c.relkind IN (''r'',''p'') AND n.nspname = ''public'';',
+    45000,
+    'table-size-history'
+  );$cron$
+);
+
+DO $postcondition$
+BEGIN
+  IF to_regclass('ops.table_size_history') IS NULL THEN
+    RAISE EXCEPTION 'Pós-condição falhou: ops.table_size_history não foi criada';
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
+    WHERE n.nspname = 'ops' AND c.relname = 'table_size_history' AND c.relrowsecurity
+  ) THEN
+    RAISE EXCEPTION 'Pós-condição falhou: RLS não está habilitada em ops.table_size_history';
+  END IF;
+
+  IF EXISTS (SELECT 1 FROM pg_policy p JOIN pg_class c ON c.oid = p.polrelid
+             JOIN pg_namespace n ON n.oid = c.relnamespace
+             WHERE n.nspname = 'ops' AND c.relname = 'table_size_history') THEN
+    RAISE EXCEPTION 'Pós-condição falhou: esperava zero policies em ops.table_size_history (deny-all intencional)';
+  END IF;
+
+  IF has_table_privilege('anon', 'ops.table_size_history', 'SELECT') THEN
+    RAISE EXCEPTION 'Pós-condição falhou: anon não deveria ter SELECT em ops.table_size_history';
+  END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'table-size-history-daily' AND active) THEN
+    RAISE EXCEPTION 'Pós-condição falhou: cron table-size-history-daily não foi criado ou não está ativo';
+  END IF;
+END;
+$postcondition$;
+
+-- <<< END 20260916211500_e30_ops_table_size_history.sql <<<
+
+-- >>> BEGIN 20260917060000_e18_revoke_authenticated_mcp_kv_get.sql >>>
+-- E18 — Achado crítico isolado durante a revisão das 94 SECDEF executáveis
+-- por authenticated: public.mcp_kv_get(p_secret text, p_key text).
+-- Plano: docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md (E18)
+-- Ver docs/E18_MCP_KV_GET_ACHADO_CRITICO_2026-09-17.md para a investigação completa.
+--
+-- Achado: mcp_kv_get é SECURITY DEFINER, search_path=public, e seu ACL ao
+-- vivo (pg_proc.proacl, lido em 2026-09-17) é
+-- "{postgres=X/postgres,authenticated=X/postgres,service_role=X/postgres}" —
+-- ou seja, QUALQUER usuário autenticado do app tem EXECUTE nesta função.
+-- O corpo da função não usa auth.uid() nem qualquer checagem por chamador:
+-- a única guarda é comparação de string contra um token fixo embutido em
+-- pg_proc.prosrc (RAISE EXCEPTION 'forbidden' se p_secret for diferente do
+-- literal). pg_proc.prosrc é legível via pg_get_functiondef por qualquer
+-- role com USAGE em pg_catalog (padrão), então o "segredo" não é segredo
+-- para ninguém com uma sessão authenticated — que é justamente quem tem
+-- EXECUTE. Isso permite ler qualquer linha de public.mcp_kv (hoje 1 linha,
+-- chave 'higgsfield_creds' — credencial de API de terceiro), que tem RLS
+-- deny-all correto na tabela mas é contornado pelo SECURITY DEFINER.
+--
+-- Comparação com as funções irmãs: mcp_kv_set e mcp_kv_try_lock (mesmo
+-- padrão de p_secret, mesmo schema) têm ACL
+-- "{postgres=X/postgres,service_role=X/postgres}" — SEM authenticated. Isso
+-- confirma que o grant a authenticated em mcp_kv_get é a exceção, não a
+-- regra, dentro do próprio trio de funções — consistente com concessão
+-- acidental, não decisão deliberada.
+--
+-- Uso real: grep em src/ e supabase/functions/ (2026-09-17) não encontrou
+-- nenhum call-site de mcp_kv_get/mcp_kv_set/mcp_kv_try_lock — só o stub de
+-- tipo gerado em src/integrations/supabase/types.ts. Risco de quebrar
+-- consumidor legítimo ao revogar: não identificado nenhum.
+--
+-- Efeito esperado: authenticated perde EXECUTE em mcp_kv_get. service_role
+-- (usado por Edge Functions/cron server-side, se algum dia precisar ler
+-- este KV) mantém EXECUTE. Nenhuma mudança para mcp_kv_set/mcp_kv_try_lock
+-- (já não tinham grant a authenticated).
+--
+-- [REQUER-PO] — não aplicado nesta revisão. Caminho de aplicação: E15
+-- (.github/workflows/db-apply-migration.yml), nunca supabase db push.
+--
+-- Rollback: GRANT EXECUTE ON FUNCTION public.mcp_kv_get(text, text) TO authenticated;
+
+DO $precondition$
+BEGIN
+  IF to_regprocedure('public.mcp_kv_get(text, text)') IS NULL THEN
+    RAISE EXCEPTION 'Precondição falhou: public.mcp_kv_get(text, text) não existe';
+  END IF;
+
+  IF NOT has_function_privilege('authenticated', 'public.mcp_kv_get(text, text)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'Precondição falhou: authenticated já não tem EXECUTE em mcp_kv_get — achado pode já ter sido corrigido por outra via, investigar antes de prosseguir';
+  END IF;
+
+  IF NOT has_function_privilege('service_role', 'public.mcp_kv_get(text, text)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'Precondição falhou: service_role já não tem EXECUTE em mcp_kv_get — investigar antes de prosseguir (não deveria ter mudado)';
+  END IF;
+END;
+$precondition$;
+
+REVOKE EXECUTE ON FUNCTION public.mcp_kv_get(text, text) FROM authenticated;
+
+DO $postcondition$
+DECLARE
+  v_sig text := 'public.mcp_kv_get(text, text)';
+BEGIN
+  IF has_function_privilege('authenticated', v_sig, 'EXECUTE') THEN
+    RAISE EXCEPTION 'Pós-condição falhou: authenticated ainda tem EXECUTE em mcp_kv_get — revoke não teve efeito';
+  END IF;
+
+  IF NOT has_function_privilege('service_role', v_sig, 'EXECUTE') THEN
+    RAISE EXCEPTION 'Pós-condição falhou: service_role perdeu EXECUTE em mcp_kv_get — efeito colateral inesperado';
+  END IF;
+
+  IF has_function_privilege('anon', v_sig, 'EXECUTE') THEN
+    RAISE EXCEPTION 'Pós-condição falhou: anon tem EXECUTE em mcp_kv_get — nunca deveria ter tido, algo mudou fora desta migration';
+  END IF;
+END;
+$postcondition$;
+
+-- <<< END 20260917060000_e18_revoke_authenticated_mcp_kv_get.sql <<<
+
+-- >>> BEGIN 20260917061500_e18_revoke_authenticated_authz_gaps.sql >>>
+-- E18 — 4 achados secundários isolados durante a revisão das 94 SECDEF
+-- executáveis por authenticated: grants a authenticated sem necessidade,
+-- cada um com um gap de autorização real no corpo da função (não é higiene
+-- cosmética — sem o REVOKE, qualquer usuário autenticado pode hoje disparar
+-- o efeito descrito).
+-- Plano: docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md (E18)
+-- Ver docs/E18_ACHADOS_SECUNDARIOS_AUTHENTICATED_2026-09-17.md para a
+-- investigação completa dos 4 achados.
+--
+-- Rollback: GRANT EXECUTE ON FUNCTION public.confirm_notifications_dispatched(uuid[]) TO authenticated;
+--   GRANT EXECUTE ON FUNCTION public.registrar_entrada_estoque(character varying, integer, numeric, character varying, character varying, text, uuid) TO authenticated;
+--   GRANT EXECUTE ON FUNCTION public.registrar_saida_estoque(character varying, integer, character varying, character varying, text, uuid, boolean) TO authenticated;
+--   GRANT EXECUTE ON FUNCTION public.fn_notify_user(uuid, text, text, text, text, text, jsonb) TO authenticated;
+--
+-- 1) public.confirm_notifications_dispatched(p_ids uuid[])
+--    UPDATE workspace_notifications SET is_read=true WHERE id = ANY(p_ids)
+--    — sem nenhuma checagem de auth.uid()/ownership. Qualquer authenticated
+--    pode marcar como lida a notificação de QUALQUER outro usuário (IDOR).
+--    Consumidor legítimo real: supabase/functions/process-queue/index.ts,
+--    que usa SUPABASE_SERVICE_ROLE_KEY — e service_role já tem EXECUTE
+--    próprio no ACL (independente de authenticated). REVOKE de
+--    authenticated não afeta esse consumidor.
+--
+-- 2) public.registrar_entrada_estoque(...) e
+-- 3) public.registrar_saida_estoque(...)
+--    Ambas escrevem em product_variants.stock_quantity e archive.stock_movements
+--    sem nenhuma checagem de auth.uid()/role — p_user_id é um parâmetro
+--    livre informado pelo chamador e gravado como created_by, então além de
+--    poder alterar estoque de qualquer variante, o chamador pode forjar a
+--    autoria do movimento no log de auditoria. grep em src/ e
+--    supabase/functions/ (2026-09-17) não encontrou NENHUM call-site real
+--    para nenhuma das duas — só o stub de tipo gerado em types.ts. Revogar
+--    authenticated não quebra nenhum consumidor conhecido.
+--
+-- 4) public.fn_notify_user(_target_user_id uuid, _title text, _message text,
+--    _type text, _category text, _action_url text, _metadata jsonb)
+--    INSERT INTO workspace_notifications — exige auth.uid() (RAISE EXCEPTION
+--    se nulo) mas não checa NENHUMA relação entre o chamador e
+--    _target_user_id. Qualquer authenticated pode inserir uma notificação
+--    com título/mensagem/action_url arbitrários na caixa de QUALQUER outro
+--    usuário (vetor de spam/phishing dentro do app). grep em src/ e
+--    supabase/functions/ (2026-09-17) não encontrou NENHUM call-site real —
+--    só o stub de tipo gerado em types.ts.
+--
+-- [REQUER-PO] — não aplicado nesta revisão. Caminho de aplicação: E15
+-- (.github/workflows/db-apply-migration.yml), nunca supabase db push.
+
+DO $precondition$
+BEGIN
+  IF to_regprocedure('public.confirm_notifications_dispatched(uuid[])') IS NULL THEN
+    RAISE EXCEPTION 'Precondição falhou: public.confirm_notifications_dispatched(uuid[]) não existe';
+  END IF;
+  IF NOT has_function_privilege('authenticated', 'public.confirm_notifications_dispatched(uuid[])', 'EXECUTE') THEN
+    RAISE EXCEPTION 'Precondição falhou: authenticated já não tem EXECUTE em confirm_notifications_dispatched — investigar antes de prosseguir';
+  END IF;
+  IF NOT has_function_privilege('service_role', 'public.confirm_notifications_dispatched(uuid[])', 'EXECUTE') THEN
+    RAISE EXCEPTION 'Precondição falhou: service_role já não tem EXECUTE em confirm_notifications_dispatched — process-queue quebraria, abortar';
+  END IF;
+
+  IF to_regprocedure('public.registrar_entrada_estoque(character varying, integer, numeric, character varying, character varying, text, uuid)') IS NULL THEN
+    RAISE EXCEPTION 'Precondição falhou: public.registrar_entrada_estoque com a assinatura esperada não existe';
+  END IF;
+  IF NOT has_function_privilege('authenticated', 'public.registrar_entrada_estoque(character varying, integer, numeric, character varying, character varying, text, uuid)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'Precondição falhou: authenticated já não tem EXECUTE em registrar_entrada_estoque — investigar antes de prosseguir';
+  END IF;
+
+  IF to_regprocedure('public.registrar_saida_estoque(character varying, integer, character varying, character varying, text, uuid, boolean)') IS NULL THEN
+    RAISE EXCEPTION 'Precondição falhou: public.registrar_saida_estoque com a assinatura esperada não existe';
+  END IF;
+  IF NOT has_function_privilege('authenticated', 'public.registrar_saida_estoque(character varying, integer, character varying, character varying, text, uuid, boolean)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'Precondição falhou: authenticated já não tem EXECUTE em registrar_saida_estoque — investigar antes de prosseguir';
+  END IF;
+
+  IF to_regprocedure('public.fn_notify_user(uuid, text, text, text, text, text, jsonb)') IS NULL THEN
+    RAISE EXCEPTION 'Precondição falhou: public.fn_notify_user com a assinatura esperada não existe';
+  END IF;
+  IF NOT has_function_privilege('authenticated', 'public.fn_notify_user(uuid, text, text, text, text, text, jsonb)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'Precondição falhou: authenticated já não tem EXECUTE em fn_notify_user — investigar antes de prosseguir';
+  END IF;
+  IF NOT has_function_privilege('service_role', 'public.fn_notify_user(uuid, text, text, text, text, text, jsonb)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'Precondição falhou: service_role já não tem EXECUTE em fn_notify_user — investigar antes de prosseguir';
+  END IF;
+END;
+$precondition$;
+
+REVOKE EXECUTE ON FUNCTION public.confirm_notifications_dispatched(uuid[]) FROM authenticated;
+
+REVOKE EXECUTE ON FUNCTION public.registrar_entrada_estoque(
+  character varying, integer, numeric, character varying, character varying, text, uuid
+) FROM authenticated;
+
+REVOKE EXECUTE ON FUNCTION public.registrar_saida_estoque(
+  character varying, integer, character varying, character varying, text, uuid, boolean
+) FROM authenticated;
+
+REVOKE EXECUTE ON FUNCTION public.fn_notify_user(
+  uuid, text, text, text, text, text, jsonb
+) FROM authenticated;
+
+DO $postcondition$
+BEGIN
+  IF has_function_privilege('authenticated', 'public.confirm_notifications_dispatched(uuid[])', 'EXECUTE') THEN
+    RAISE EXCEPTION 'Pós-condição falhou: authenticated ainda tem EXECUTE em confirm_notifications_dispatched';
+  END IF;
+  IF NOT has_function_privilege('service_role', 'public.confirm_notifications_dispatched(uuid[])', 'EXECUTE') THEN
+    RAISE EXCEPTION 'Pós-condição falhou: service_role perdeu EXECUTE em confirm_notifications_dispatched — process-queue quebraria';
+  END IF;
+
+  IF has_function_privilege('authenticated', 'public.registrar_entrada_estoque(character varying, integer, numeric, character varying, character varying, text, uuid)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'Pós-condição falhou: authenticated ainda tem EXECUTE em registrar_entrada_estoque';
+  END IF;
+  IF NOT has_function_privilege('service_role', 'public.registrar_entrada_estoque(character varying, integer, numeric, character varying, character varying, text, uuid)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'Pós-condição falhou: service_role perdeu EXECUTE em registrar_entrada_estoque — efeito colateral inesperado';
+  END IF;
+
+  IF has_function_privilege('authenticated', 'public.registrar_saida_estoque(character varying, integer, character varying, character varying, text, uuid, boolean)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'Pós-condição falhou: authenticated ainda tem EXECUTE em registrar_saida_estoque';
+  END IF;
+  IF NOT has_function_privilege('service_role', 'public.registrar_saida_estoque(character varying, integer, character varying, character varying, text, uuid, boolean)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'Pós-condição falhou: service_role perdeu EXECUTE em registrar_saida_estoque — efeito colateral inesperado';
+  END IF;
+
+  IF has_function_privilege('authenticated', 'public.fn_notify_user(uuid, text, text, text, text, text, jsonb)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'Pós-condição falhou: authenticated ainda tem EXECUTE em fn_notify_user';
+  END IF;
+  IF NOT has_function_privilege('service_role', 'public.fn_notify_user(uuid, text, text, text, text, text, jsonb)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'Pós-condição falhou: service_role perdeu EXECUTE em fn_notify_user — efeito colateral inesperado';
+  END IF;
+END;
+$postcondition$;
+
+-- <<< END 20260917061500_e18_revoke_authenticated_authz_gaps.sql <<<
+
+-- >>> BEGIN 20260917070000_e38_unschedule_dead_cron_jobs.sql >>>
+-- E38 — Remove os 2 cron jobs desligados que não têm caminho de volta útil.
+-- Plano: docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md (E38)
+-- Ver docs/E38_CRON_JOBS_DESLIGADOS_2026-09-17.md para a investigação completa.
+--
+-- 1) pipeline-classify-categories (jobid 274): chama
+--    public.fn_pipeline_classify_pending_products(integer), que NÃO EXISTE
+--    mais no schema (to_regprocedure confirma NULL). Job não tem como
+--    voltar a funcionar sem reescrever a função — decisão: remover.
+--
+-- 2) process-webhook-outbox (jobid 202): chama
+--    public.fn_process_webhook_outbox_batch(integer), que ainda existe, mas
+--    a tabela que processa (public.webhook_outbox) está com 0 linhas e sem
+--    nenhum produtor/consumidor real no código (grep em src/ e
+--    supabase/functions/ só encontra o stub de tipo gerado). O padrão de
+--    webhook realmente em uso é supabase/functions/webhook-dispatcher
+--    (dispatch direto por evento, não fila). Decisão: remover o job (não a
+--    tabela — descontinuação completa da fila fica para decisão separada).
+--
+-- Ambos os jobs já estavam com active=false antes desta migration — remover
+-- não muda comportamento em produção hoje, só formaliza a decisão e evita
+-- que alguém reative um job morto sem saber que ele não funciona
+-- (classify-categories) ou não tem mais propósito (webhook-outbox).
+--
+-- [REQUER-PO] — não aplicado nesta revisão. Caminho de aplicação: E15
+-- (.github/workflows/db-apply-migration.yml), nunca supabase db push.
+--
+-- Rollback: cron.schedule('process-webhook-outbox', ...) volta a funcionar;
+-- cron.schedule('pipeline-classify-categories', ...) NÃO é funcional como
+-- está (função dependente não existe mais) — comandos completos na seção
+-- "Reversão" ao final deste arquivo.
+
+DO $precondition$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM cron.job WHERE jobid = 274 AND jobname = 'pipeline-classify-categories') THEN
+    RAISE EXCEPTION 'Precondição falhou: cron.job jobid=274 (pipeline-classify-categories) não existe com esse nome — investigar antes de prosseguir';
+  END IF;
+  IF EXISTS (SELECT 1 FROM cron.job WHERE jobid = 274 AND active) THEN
+    RAISE EXCEPTION 'Precondição falhou: pipeline-classify-categories está active=true — alguém reativou, investigar antes de remover';
+  END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM cron.job WHERE jobid = 202 AND jobname = 'process-webhook-outbox') THEN
+    RAISE EXCEPTION 'Precondição falhou: cron.job jobid=202 (process-webhook-outbox) não existe com esse nome — investigar antes de prosseguir';
+  END IF;
+  IF EXISTS (SELECT 1 FROM cron.job WHERE jobid = 202 AND active) THEN
+    RAISE EXCEPTION 'Precondição falhou: process-webhook-outbox está active=true — alguém reativou, investigar antes de remover';
+  END IF;
+
+  IF to_regprocedure('public.fn_pipeline_classify_pending_products(integer)') IS NOT NULL THEN
+    RAISE EXCEPTION 'Precondição falhou: fn_pipeline_classify_pending_products(integer) existe agora — premissa da decisão mudou, investigar antes de prosseguir';
+  END IF;
+
+  IF (SELECT count(*) FROM public.webhook_outbox) <> 0 THEN
+    RAISE EXCEPTION 'Precondição falhou: public.webhook_outbox não está mais vazia — investigar backlog antes de remover o job que a processa';
+  END IF;
+END;
+$precondition$;
+
+SELECT cron.unschedule('pipeline-classify-categories');
+SELECT cron.unschedule('process-webhook-outbox');
+
+DO $postcondition$
+BEGIN
+  IF EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'pipeline-classify-categories') THEN
+    RAISE EXCEPTION 'Pós-condição falhou: pipeline-classify-categories ainda existe em cron.job';
+  END IF;
+  IF EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'process-webhook-outbox') THEN
+    RAISE EXCEPTION 'Pós-condição falhou: process-webhook-outbox ainda existe em cron.job';
+  END IF;
+END;
+$postcondition$;
+
+-- Reversão:
+-- SELECT cron.schedule('process-webhook-outbox', '* * * * *',
+--   'SELECT public.fn_process_webhook_outbox_batch(10);');
+-- (fn_process_webhook_outbox_batch ainda existe, então isso volta a funcionar.)
+--
+-- SELECT cron.schedule('pipeline-classify-categories', '2,12,22,32,42,52 * * * *',
+--   $$SELECT public.fn_cron_safe_run(55::bigint, 'SELECT public.fn_pipeline_classify_pending_products(50);', 580000, 'pipeline-classify');$$);
+-- (NÃO funcional como está — fn_pipeline_classify_pending_products precisa
+-- ser recriada primeiro; registrado aqui só para preservar a definição
+-- original do job, não como reversão pronta para uso.)
+
+-- <<< END 20260917070000_e38_unschedule_dead_cron_jobs.sql <<<
+
+-- >>> BEGIN 20260917080000_e35_fix_reposicao_backfill_perf.sql >>>
+-- E35 — Corrige a causa raiz dominante da lentidão de fn_reposicao_backfill_today
+-- (17,79 s/chamada em média, 436 execuções, cron.job_run_details) e reduz a
+-- frequência do job de 1h para 4h como mitigação complementar.
+-- Plano: docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md (E35)
+-- Ver docs/E35_REPOSICAO_BACKFILL_LENTO_2026-09-17.md para a investigação completa.
+--
+-- Causa raiz #1 (esta migration corrige): a CTE principal de
+-- fn_aggregate_stock_daily (chamada por fn_reposicao_backfill_today) filtra
+-- stock_snapshots com `(captured_at AT TIME ZONE 'America/Sao_Paulo')::date =
+-- p_date` — predicado não-sargável que força Postgres a varrer o índice
+-- inteiro (274.462 linhas, todo o histórico) a cada chamada, descartando por
+-- Filter tudo que não é do dia. Medido com EXPLAIN (ANALYZE, BUFFERS) real
+-- contra 2026-09-15: 7.513 ms com o predicado atual vs. 16 ms com o range
+-- sargável abaixo — resultado idêntico (4.041 linhas nos dois casos,
+-- equivalência provada por count(*) antes desta migration ser escrita).
+-- América/Sao_Paulo não observa horário de verão desde 2019, então o range
+-- de fronteira de dia é livre de ambiguidade.
+--
+-- Nenhuma mudança de lógica de agregação (window functions, upsert,
+-- ON CONFLICT) — só a cláusula WHERE da CTE muda.
+--
+-- Causa raiz #2 (não corrigida em lógica nesta migration — ver documento):
+-- o anti-join de baseline (19.698 fontes ativas) roda inteiro a cada
+-- chamada horária, custando ~2,65 s mesmo quando não há nada a inserir.
+-- Mitigada aqui só por redução de frequência (24 chamadas/dia → 6/dia),
+-- que reduz o custo total diário sem reescrever a lógica de uma função com
+-- histórico de bugs sutis de correção (comentário "FIX GAP-3" no corpo).
+--
+-- [REQUER-PO] — não aplicado nesta revisão. Caminho de aplicação: E15
+-- (.github/workflows/db-apply-migration.yml), nunca supabase db push.
+--
+-- Rollback: cron.alter_job(117, schedule := '5 * * * *') + CREATE OR REPLACE
+-- FUNCTION public.fn_aggregate_stock_daily com o WHERE original (versão
+-- v5_sp_tz_minmax_fix) — comando completo na seção "Reversão" ao final deste
+-- arquivo.
+
+DO $precondition$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM cron.job
+    WHERE jobid = 117 AND jobname = 'reposicao-backfill-hourly'
+      AND schedule = '5 * * * *' AND active
+  ) THEN
+    RAISE EXCEPTION 'Precondição falhou: cron.job jobid=117 (reposicao-backfill-hourly) não está no estado esperado (schedule=5 * * * *, active=true) — investigar antes de prosseguir';
+  END IF;
+
+  IF to_regprocedure('public.fn_aggregate_stock_daily(date)') IS NULL THEN
+    RAISE EXCEPTION 'Precondição falhou: public.fn_aggregate_stock_daily(date) não existe — premissa da correção mudou, investigar antes de prosseguir';
+  END IF;
+
+  -- Reconfirma a equivalência de resultado entre o predicado atual e o
+  -- range sargável para um dia histórico real, imediatamente antes de trocar
+  -- a função — se algo no dado mudou desde a investigação (docs/E35_...),
+  -- aborta em vez de aplicar uma reescrita que deixaria de ser equivalente.
+  IF (
+    SELECT count(*) FROM public.stock_snapshots
+    WHERE (captured_at AT TIME ZONE 'America/Sao_Paulo')::date = '2026-09-15'::date
+  ) <> (
+    SELECT count(*) FROM public.stock_snapshots
+    WHERE captured_at >= ('2026-09-15'::date::timestamp AT TIME ZONE 'America/Sao_Paulo')
+      AND captured_at <  ('2026-09-16'::date::timestamp AT TIME ZONE 'America/Sao_Paulo')
+  ) THEN
+    RAISE EXCEPTION 'Precondição falhou: predicado atual e range sargável não são mais equivalentes para 2026-09-15 — investigar antes de prosseguir (possível mudança de fuso ou dado retroativo)';
+  END IF;
+END;
+$precondition$;
+
+CREATE OR REPLACE FUNCTION public.fn_aggregate_stock_daily(p_date date DEFAULT NULL::date)
+ RETURNS jsonb
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO 'public'
+AS $function$
+DECLARE
+  v_upserted integer;
+  v_purged   integer;
+  v_baseline integer;
+  v_today    date := (now() AT TIME ZONE 'America/Sao_Paulo')::date;  -- "hoje" BR
+BEGIN
+  p_date := COALESCE(p_date, v_today);
+
+  IF p_date > v_today THEN
+    RAISE EXCEPTION 'fn_aggregate_stock_daily: data futura bloqueada (p_date=%, hoje_BR=%)',
+                    p_date, v_today;
+  END IF;
+
+  DELETE FROM stock_daily_summary WHERE summary_date > v_today;
+  GET DIAGNOSTICS v_purged = ROW_COUNT;
+  IF v_purged > 0 THEN
+    RAISE WARNING 'fn_aggregate_stock_daily: limpadas % entradas de datas futuras', v_purged;
+  END IF;
+
+  WITH open_close AS (
+    SELECT DISTINCT ON (variant_supplier_source_id)
+      variant_supplier_source_id, supplier_id, supplier_branch_id, variant_id, product_id,
+      FIRST_VALUE(stock_total_old) OVER w AS stock_open,
+      stock_total_new AS stock_close,
+      -- FIX GAP-3: LEAST(old,new) garante min correto mesmo quando estoque cai
+      -- A fórmula anterior MIN(COALESCE(old,new)) pegava só old e falhava quando old>new com sync_count=1
+      MIN(LEAST(COALESCE(stock_total_old, stock_total_new),
+                COALESCE(stock_total_new, stock_total_old))) OVER w AS stock_min,
+      MAX(GREATEST(COALESCE(stock_total_old, stock_total_new),
+                   COALESCE(stock_total_new, stock_total_old))) OVER w AS stock_max,
+      SUM(COALESCE(stock_main_delta,0) + COALESCE(stock_other_delta,0)) OVER w AS net_change,
+      SUM(GREATEST(0, -(COALESCE(stock_main_delta,0) + COALESCE(stock_other_delta,0)))) OVER w AS units_depleted,
+      SUM(GREATEST(0,   COALESCE(stock_main_delta,0) + COALESCE(stock_other_delta,0)))  OVER w AS units_restocked,
+      BOOL_OR(COALESCE(stock_main_delta,0) + COALESCE(stock_other_delta,0) > 0) OVER w AS restock_detected,
+      SUM(CASE WHEN COALESCE(stock_main_delta,0) + COALESCE(stock_other_delta,0) > 0 THEN 1 ELSE 0 END) OVER w AS restock_count,
+      MAX(CASE WHEN COALESCE(stock_main_delta,0) + COALESCE(stock_other_delta,0) > 0
+               THEN COALESCE(stock_main_delta,0) + COALESCE(stock_other_delta,0) ELSE 0 END) OVER w AS restock_quantity,
+      BOOL_OR(COALESCE(cost_price_delta,0) <> 0) OVER w AS price_changed,
+      FIRST_VALUE(cost_price_old) OVER w AS cost_price_open,
+      cost_price_new AS cost_price_close,
+      COUNT(*) OVER w AS sync_count
+    FROM stock_snapshots
+    -- E35 (2026-09-17): predicado reescrito como range sargável — equivalente
+    -- ao antigo `(captured_at AT TIME ZONE 'America/Sao_Paulo')::date = p_date`
+    -- (América/Sao_Paulo sem DST desde 2019), mas permite Index Scan real em
+    -- vez de Filter sobre o índice inteiro. Ver docs/E35_... para a prova de
+    -- equivalência e o EXPLAIN ANALYZE antes/depois.
+    WHERE captured_at >= (p_date::timestamp AT TIME ZONE 'America/Sao_Paulo')
+      AND captured_at <  ((p_date + 1)::timestamp AT TIME ZONE 'America/Sao_Paulo')
+      AND variant_supplier_source_id IS NOT NULL
+      AND variant_supplier_source_id::text NOT LIKE '%-99999-%'
+    WINDOW w AS (PARTITION BY variant_supplier_source_id ORDER BY captured_at
+                 ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+    ORDER BY variant_supplier_source_id, captured_at DESC
+  )
+  INSERT INTO stock_daily_summary (
+    variant_supplier_source_id, supplier_id, supplier_branch_id, variant_id, product_id,
+    summary_date, stock_open, stock_close, stock_min, stock_max, net_change,
+    units_depleted, units_restocked, restock_detected, restock_quantity, restock_count,
+    restock_zero_to_positive,
+    cost_price_open, cost_price_close, price_changed, sync_count
+  )
+  SELECT
+    variant_supplier_source_id, supplier_id, supplier_branch_id, variant_id, product_id,
+    p_date, stock_open, stock_close, stock_min, stock_max, net_change,
+    units_depleted::int, units_restocked::int,
+    restock_detected, restock_quantity::int, restock_count::smallint,
+    (COALESCE(stock_open,0) = 0 AND COALESCE(stock_close,0) > 0),
+    cost_price_open, cost_price_close, price_changed, sync_count::smallint
+  FROM open_close
+  ON CONFLICT (variant_supplier_source_id, summary_date) DO UPDATE SET
+    stock_close               = EXCLUDED.stock_close,
+    stock_min                 = LEAST(stock_daily_summary.stock_min, EXCLUDED.stock_min),
+    stock_max                 = GREATEST(stock_daily_summary.stock_max, EXCLUDED.stock_max),
+    net_change                = EXCLUDED.net_change,
+    units_depleted            = EXCLUDED.units_depleted,
+    units_restocked           = EXCLUDED.units_restocked,
+    restock_detected          = EXCLUDED.restock_detected,
+    restock_quantity          = EXCLUDED.restock_quantity,
+    restock_count             = EXCLUDED.restock_count,
+    restock_zero_to_positive  = (COALESCE(stock_daily_summary.stock_open,0) = 0
+                                  AND COALESCE(EXCLUDED.stock_close,0) > 0),
+    cost_price_close          = EXCLUDED.cost_price_close,
+    price_changed             = EXCLUDED.price_changed,
+    sync_count                = EXCLUDED.sync_count;
+  GET DIAGNOSTICS v_upserted = ROW_COUNT;
+
+  WITH missing AS (
+    SELECT vss.id, vss.supplier_id, vss.supplier_branch_id, vss.variant_id,
+           pv.product_id, vss.quantity AS cur_stock, vss.cost_price
+    FROM variant_supplier_sources vss
+    JOIN product_variants pv ON pv.id = vss.variant_id AND pv.is_active = true
+    WHERE vss.is_active = true
+      AND NOT EXISTS (
+        SELECT 1 FROM stock_daily_summary sd
+        WHERE sd.variant_supplier_source_id = vss.id AND sd.summary_date = p_date
+      )
+  )
+  INSERT INTO stock_daily_summary (
+    variant_supplier_source_id, supplier_id, supplier_branch_id, variant_id, product_id,
+    summary_date, stock_open, stock_close, stock_min, stock_max, net_change,
+    units_depleted, units_restocked, restock_detected, restock_quantity, restock_count,
+    restock_zero_to_positive,
+    cost_price_open, cost_price_close, price_changed, sync_count
+  )
+  SELECT id, supplier_id, supplier_branch_id, variant_id, product_id,
+    p_date, cur_stock, cur_stock, cur_stock, cur_stock,
+    0, 0, 0, false, 0, 0,
+    false,
+    cost_price, cost_price, false, 1
+  FROM missing
+  ON CONFLICT (variant_supplier_source_id, summary_date) DO NOTHING;
+  GET DIAGNOSTICS v_baseline = ROW_COUNT;
+
+  RETURN jsonb_build_object(
+    'date', p_date, 'executed_at', NOW(),
+    'version', 'v6_sargable_range_e35',
+    'sentinel_guard', 'xbz_99999_excluded_from_deltas',
+    'snapshots_purged', v_purged,
+    'baseline_inserted', v_baseline,
+    'summaries_upserted', v_upserted
+  );
+END;
+$function$;
+
+SELECT cron.alter_job(117, schedule := '5 */4 * * *');
+
+DO $postcondition$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM cron.job WHERE jobid = 117 AND schedule = '5 */4 * * *' AND active
+  ) THEN
+    RAISE EXCEPTION 'Pós-condição falhou: cron.job jobid=117 não está com o novo schedule (5 */4 * * *)';
+  END IF;
+
+  IF (
+    SELECT count(*) FROM public.stock_snapshots
+    WHERE (captured_at AT TIME ZONE 'America/Sao_Paulo')::date = '2026-09-15'::date
+  ) <> (
+    SELECT count(*) FROM public.stock_snapshots
+    WHERE captured_at >= ('2026-09-15'::date::timestamp AT TIME ZONE 'America/Sao_Paulo')
+      AND captured_at <  ('2026-09-16'::date::timestamp AT TIME ZONE 'America/Sao_Paulo')
+  ) THEN
+    RAISE EXCEPTION 'Pós-condição falhou: predicado antigo e range sargável divergem para 2026-09-15 após a troca — a função nova pode estar processando um conjunto de linhas diferente do original';
+  END IF;
+END;
+$postcondition$;
+
+-- Reversão:
+-- SELECT cron.alter_job(117, schedule := '5 * * * *');
+--
+-- CREATE OR REPLACE FUNCTION public.fn_aggregate_stock_daily(p_date date DEFAULT NULL::date)
+-- ... (mesmo corpo desta migration, mas com o WHERE original:)
+--   WHERE (captured_at AT TIME ZONE 'America/Sao_Paulo')::date = p_date
+--     AND variant_supplier_source_id IS NOT NULL
+--     AND variant_supplier_source_id::text NOT LIKE '%-99999-%'
+-- (versão 'v5_sp_tz_minmax_fix', arquivada em docs/E35_REPOSICAO_BACKFILL_LENTO_2026-09-17.md
+-- e recuperável via `pg_get_functiondef` antes desta migration, se necessário
+-- reconstituir o texto exato.)
+
+-- <<< END 20260917080000_e35_fix_reposicao_backfill_perf.sql <<<
+
+-- >>> BEGIN 20260917090000_e47_fix_schema_drift_cron_split.sql >>>
+-- E47 — Separa o cron job schema-drift-check em 2 chamadas de
+-- fn_cron_safe_run (1 statement cada) em vez de 1 chamada com 2 statements.
+-- Plano: docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md (E47)
+-- Ver docs/E47_SCHEMA_DRIFT_DETECTOR_2026-09-17.md para a investigação completa.
+--
+-- Hoje (jobid 245) o command chama fn_cron_safe_run UMA vez com um p_sql de
+-- 2 statements (fn_check_schema_signature_drift(); depois
+-- fn_sync_local_drift_to_schema_drift_log();). Blocos EXCEPTION do PL/pgSQL
+-- funcionam como um SAVEPOINT implícito: se a 2ª statement falhar, o
+-- rollback desfaz também a gravação da 1ª (o check real), e
+-- fn_cron_safe_run nunca relança a exceção — cron.job_run_details.status
+-- continuaria mostrando 'succeeded'. Separar em 2 chamadas sequenciais e
+-- independentes de fn_cron_safe_run isola o savepoint de cada uma: se a
+-- bridge (2ª) falhar depois, a gravação do check (1ª) já está fechada e
+-- sobrevive. Reaproveita a mesma chave de advisory lock (25) para as duas —
+-- pg_try_advisory_xact_lock é reentrante para a mesma sessão/transação, e
+-- as duas chamadas rodam em sequência, nunca em paralelo, então não há
+-- risco de autobloqueio nem de colisão com outro job usando a chave 25.
+--
+-- Nenhuma função é alterada nesta migration — só o command do cron job.
+--
+-- [REQUER-PO] — não aplicado nesta revisão. Caminho de aplicação: E15
+-- (.github/workflows/db-apply-migration.yml), nunca supabase db push.
+--
+-- Rollback: cron.alter_job(245, ...) de volta ao command original (1 chamada
+-- de fn_cron_safe_run com os 2 statements dentro do mesmo p_sql) — comando
+-- completo na seção "Reversão" ao final deste arquivo.
+
+DO $precondition$
+DECLARE
+  v_command text;
+BEGIN
+  SELECT command INTO v_command FROM cron.job WHERE jobid = 245 AND jobname = 'schema-drift-check';
+
+  IF v_command IS NULL THEN
+    RAISE EXCEPTION 'Precondição falhou: cron.job jobid=245 (schema-drift-check) não existe com esse nome — investigar antes de prosseguir';
+  END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM cron.job WHERE jobid = 245 AND active AND schedule = '11 2,8,14,20 * * *') THEN
+    RAISE EXCEPTION 'Precondição falhou: schema-drift-check não está active=true com schedule=''11 2,8,14,20 * * *'' — premissa mudou, investigar antes de prosseguir';
+  END IF;
+
+  IF v_command NOT LIKE '%fn_check_schema_signature_drift()%'
+     OR v_command NOT LIKE '%fn_sync_local_drift_to_schema_drift_log()%'
+     OR (length(v_command) - length(replace(v_command, 'fn_cron_safe_run(', ''))) / length('fn_cron_safe_run(') <> 1 THEN
+    RAISE EXCEPTION 'Precondição falhou: command do jobid=245 não bate com o padrão esperado (1 chamada de fn_cron_safe_run envolvendo as 2 funções) — alguém já mudou isso, investigar antes de prosseguir';
+  END IF;
+
+  IF to_regprocedure('public.fn_cron_safe_run(bigint, text, integer, text)') IS NULL THEN
+    RAISE EXCEPTION 'Precondição falhou: fn_cron_safe_run(bigint, text, integer, text) não existe — investigar antes de prosseguir';
+  END IF;
+  IF to_regprocedure('public.fn_check_schema_signature_drift()') IS NULL THEN
+    RAISE EXCEPTION 'Precondição falhou: fn_check_schema_signature_drift() não existe — investigar antes de prosseguir';
+  END IF;
+  IF to_regprocedure('public.fn_sync_local_drift_to_schema_drift_log()') IS NULL THEN
+    RAISE EXCEPTION 'Precondição falhou: fn_sync_local_drift_to_schema_drift_log() não existe — investigar antes de prosseguir';
+  END IF;
+END;
+$precondition$;
+
+SELECT cron.alter_job(
+  245,
+  command := $cmd$
+    SELECT public.fn_cron_safe_run(25::bigint,
+      $$SELECT public.fn_check_schema_signature_drift();$$, 15000, 'schema-drift-local-4x');
+    SELECT public.fn_cron_safe_run(25::bigint,
+      $$SELECT public.fn_sync_local_drift_to_schema_drift_log();$$, 15000, 'schema-drift-bridge-4x');
+  $cmd$
+);
+
+DO $postcondition$
+DECLARE
+  v_command text;
+  v_calls int;
+BEGIN
+  SELECT command INTO v_command FROM cron.job WHERE jobid = 245;
+
+  IF NOT EXISTS (SELECT 1 FROM cron.job WHERE jobid = 245 AND active AND schedule = '11 2,8,14,20 * * *') THEN
+    RAISE EXCEPTION 'Pós-condição falhou: schema-drift-check não ficou active=true com o schedule original';
+  END IF;
+
+  v_calls := (length(v_command) - length(replace(v_command, 'fn_cron_safe_run(', ''))) / length('fn_cron_safe_run(');
+  IF v_calls <> 2 THEN
+    RAISE EXCEPTION 'Pós-condição falhou: esperava 2 chamadas de fn_cron_safe_run no novo command, achou %', v_calls;
+  END IF;
+
+  IF v_command NOT LIKE '%fn_check_schema_signature_drift();$$%'
+     OR v_command NOT LIKE '%fn_sync_local_drift_to_schema_drift_log();$$%' THEN
+    RAISE EXCEPTION 'Pós-condição falhou: novo command não contém as 2 funções esperadas, cada uma como statement isolado';
+  END IF;
+END;
+$postcondition$;
+
+-- Reversão: volta ao command original (1 chamada de fn_cron_safe_run com os
+-- 2 statements dentro do mesmo p_sql — reintroduz o risco descrito acima,
+-- só use para reverter se a separação causar algum problema inesperado):
+--
+-- SELECT cron.alter_job(245, command := $cmd$
+--     SELECT public.fn_cron_safe_run(
+--       25::bigint,
+--       $$
+--         SELECT public.fn_check_schema_signature_drift();
+--         SELECT public.fn_sync_local_drift_to_schema_drift_log();
+--       $$,
+--       30000,
+--       'schema-drift-local-4x'
+--     );
+--   $cmd$
+-- );
+
+-- <<< END 20260917090000_e47_fix_schema_drift_cron_split.sql <<<
+
+-- >>> BEGIN 20260917100000_e37_split_genuine_multistatement_cron.sql >>>
+-- E37 — Divide os statements internos dos 5 cron jobs que são
+-- genuinamente multi-statement (245/schema-drift-check já foi corrigido
+-- pela migration do E47) em chamadas isoladas de fn_cron_safe_run, para
+-- que a falha de um statement não impeça os seguintes de rodar
+-- silenciosamente (bug #13 do plano).
+-- Plano: docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md (E37)
+-- Ver docs/E37_CRON_MULTISTATEMENT_2026-09-17.md para a investigação completa,
+-- incluindo a correção da query §8.4 de docs/SCHEMA_REFERENCE.md (falso
+-- positivo: contava ';' no texto inteiro do command, que sempre bate 2 para
+-- qualquer job wrapped de 1 statement único).
+--
+-- Exceção deliberada: 244 (refresh-category-ancestors) NÃO é dividido —
+-- TRUNCATE+INSERT são uma operação lógica acoplada; embrulhá-los juntos em
+-- 1 chamada usa o savepoint implícito do bloco EXCEPTION de
+-- fn_cron_safe_run como atomicidade desejada (se o INSERT falhar, o
+-- TRUNCATE também é desfeito, evitando tabela derivada permanentemente
+-- vazia). Ver doc, seção "244".
+--
+-- Nenhuma função é criada ou alterada. Nenhum schedule muda. Chaves de
+-- advisory lock novas (300, 301, 302) não colidem com nenhuma chave em uso
+-- por outro job ativo (verificado nesta revisão).
+--
+-- [REQUER-PO] — não aplicado nesta revisão. Caminho de aplicação: E15
+-- (.github/workflows/db-apply-migration.yml), nunca supabase db push.
+--
+-- Rollback: cron.alter_job de volta aos 5 commands originais (bare/wrapped
+-- multi-statement) — comandos completos na seção "Reversão" ao final deste
+-- arquivo. Reintroduz o risco descrito acima; só usar se a divisão causar
+-- problema inesperado.
+
+DO $precondition$
+DECLARE
+  v_cmd text;
+BEGIN
+  IF to_regprocedure('public.fn_cron_safe_run(bigint, text, integer, text)') IS NULL THEN
+    RAISE EXCEPTION 'Precondição falhou: fn_cron_safe_run(bigint, text, integer, text) não existe';
+  END IF;
+
+  -- 233
+  SELECT command INTO v_cmd FROM cron.job WHERE jobid = 233 AND jobname = 'ai-queue-stuck-cleanup' AND active;
+  IF v_cmd IS NULL OR v_cmd NOT LIKE '%fn_cron_safe_run(154::bigint%'
+     OR (length(v_cmd) - length(replace(v_cmd, 'UPDATE ai_enrichment_queue', ''))) / length('UPDATE ai_enrichment_queue') <> 4 THEN
+    RAISE EXCEPTION 'Precondição falhou: jobid=233 não bate com o padrão esperado (4 UPDATEs em ai_enrichment_queue, chave 154)';
+  END IF;
+
+  -- 208
+  SELECT command INTO v_cmd FROM cron.job WHERE jobid = 208 AND jobname = 'fantasmas-deactivate-guard' AND active;
+  IF v_cmd IS NULL OR v_cmd NOT LIKE '%fn_cron_safe_run(166::bigint%'
+     OR (length(v_cmd) - length(replace(v_cmd, 'UPDATE products', ''))) / length('UPDATE products') <> 3 THEN
+    RAISE EXCEPTION 'Precondição falhou: jobid=208 não bate com o padrão esperado (3 UPDATEs em products, chave 166)';
+  END IF;
+
+  -- 195
+  SELECT command INTO v_cmd FROM cron.job WHERE jobid = 195 AND jobname = 'analyze-weekly-supplement' AND active;
+  IF v_cmd IS NULL OR v_cmd LIKE '%fn_cron_safe_run%'
+     OR (length(v_cmd) - length(replace(v_cmd, 'ANALYZE public.', ''))) / length('ANALYZE public.') <> 10 THEN
+    RAISE EXCEPTION 'Precondição falhou: jobid=195 não bate com o padrão esperado (10 ANALYZE bare)';
+  END IF;
+
+  -- 53
+  SELECT command INTO v_cmd FROM cron.job WHERE jobid = 53 AND jobname = 'vacuum-analyze-weekly' AND active;
+  IF v_cmd IS NULL OR v_cmd LIKE '%fn_cron_safe_run%'
+     OR (length(v_cmd) - length(replace(v_cmd, 'ANALYZE public.', ''))) / length('ANALYZE public.') <> 22 THEN
+    RAISE EXCEPTION 'Precondição falhou: jobid=53 não bate com o padrão esperado (22 ANALYZE bare)';
+  END IF;
+
+  -- 244
+  SELECT command INTO v_cmd FROM cron.job WHERE jobid = 244 AND jobname = 'refresh-category-ancestors' AND active;
+  IF v_cmd IS NULL OR v_cmd NOT LIKE 'TRUNCATE public.category_ancestors%'
+     OR v_cmd NOT LIKE '%WITH RECURSIVE closure%' OR v_cmd LIKE '%fn_cron_safe_run%' THEN
+    RAISE EXCEPTION 'Precondição falhou: jobid=244 não bate com o padrão esperado (TRUNCATE+INSERT WITH RECURSIVE, bare)';
+  END IF;
+
+  -- chaves novas não podem colidir com nenhum job ativo hoje
+  IF EXISTS (
+    SELECT 1 FROM cron.job
+    WHERE active AND jobid NOT IN (233, 208, 195, 53, 244)
+      AND (command LIKE '%fn_cron_safe_run(300::bigint%'
+        OR command LIKE '%fn_cron_safe_run(301::bigint%'
+        OR command LIKE '%fn_cron_safe_run(302::bigint%')
+  ) THEN
+    RAISE EXCEPTION 'Precondição falhou: chave de advisory lock 300/301/302 já em uso por outro job ativo';
+  END IF;
+END;
+$precondition$;
+
+-- 233 — ai-queue-stuck-cleanup: 4 UPDATEs independentes, mesma chave (154, reentrante/sequencial)
+SELECT cron.alter_job(233, command := $cmd$
+  SELECT public.fn_cron_safe_run(154::bigint, $sql$UPDATE ai_enrichment_queue SET status='pending', locked_by=NULL, locked_at=NULL, last_error='cron-reset:stuck>'||ROUND(EXTRACT(EPOCH FROM (now()-locked_at))/3600,1)||'h', updated_at=now() WHERE status='processing' AND locked_at < now() - interval '2 hours' AND attempts < max_attempts;$sql$, 30000, 'ai-queue-stuck-reset-timeout');
+  SELECT public.fn_cron_safe_run(154::bigint, $sql$UPDATE ai_enrichment_queue SET status='error', locked_by=NULL, locked_at=NULL, last_error=COALESCE(last_error,'')||' | exhausted-max='||attempts::text, updated_at=now() WHERE status='processing' AND locked_at < now() - interval '1 hour' AND attempts >= max_attempts;$sql$, 30000, 'ai-queue-stuck-exhausted-processing');
+  SELECT public.fn_cron_safe_run(154::bigint, $sql$UPDATE ai_enrichment_queue SET status='error', last_error=COALESCE(last_error,'')||' | pending-exhausted-max='||attempts::text, updated_at=now() WHERE status='pending' AND attempts >= max_attempts;$sql$, 30000, 'ai-queue-stuck-exhausted-pending');
+  SELECT public.fn_cron_safe_run(154::bigint, $sql$UPDATE ai_enrichment_queue SET locked_by=NULL, locked_at=NULL, updated_at=now() WHERE status NOT IN ('processing','pending') AND locked_by IS NOT NULL;$sql$, 30000, 'ai-queue-stuck-clear-orphan-lock');
+$cmd$);
+
+-- 208 — fantasmas-deactivate-guard: 3 UPDATEs independentes, mesma chave (166, reentrante/sequencial)
+SELECT cron.alter_job(208, command := $cmd$
+  SELECT public.fn_cron_safe_run(166::bigint, $sql$UPDATE products SET is_active = false, updated_at = now() WHERE is_active = true AND supplier_reference IS NULL AND sku IS NULL AND supplier_id IS NOT NULL;$sql$, 44000, 'fantasmas-guard-orphan-supplier');
+  SELECT public.fn_cron_safe_run(166::bigint, $sql$UPDATE products SET is_active = false, updated_at = now() WHERE 'active' = ANY(COALESCE(locked_fields, '{}')) AND is_active = true;$sql$, 44000, 'fantasmas-guard-locked-active');
+  SELECT public.fn_cron_safe_run(166::bigint, $sql$UPDATE products SET is_active = true, updated_at = now() WHERE sku LIKE 'XBZ-MANUAL-%' AND is_active = false AND is_deleted = false;$sql$, 44000, 'fantasmas-guard-reactivate-manual');
+$cmd$);
+
+-- 195 — analyze-weekly-supplement: 10 ANALYZE independentes, chave nova 300 (reentrante/sequencial)
+SELECT cron.alter_job(195, command := $cmd$
+  SELECT public.fn_cron_safe_run(300::bigint, $sql$ANALYZE public.stock_daily_summary;$sql$, 60000, 'analyze-weekly-supp-01');
+  SELECT public.fn_cron_safe_run(300::bigint, $sql$ANALYZE public.mv_product_images_audit;$sql$, 60000, 'analyze-weekly-supp-02');
+  SELECT public.fn_cron_safe_run(300::bigint, $sql$ANALYZE public.image_backfill_queue;$sql$, 60000, 'analyze-weekly-supp-03');
+  SELECT public.fn_cron_safe_run(300::bigint, $sql$ANALYZE public.variant_supplier_sources;$sql$, 60000, 'analyze-weekly-supp-04');
+  SELECT public.fn_cron_safe_run(300::bigint, $sql$ANALYZE public.produtos_padronizacao;$sql$, 60000, 'analyze-weekly-supp-05');
+  SELECT public.fn_cron_safe_run(300::bigint, $sql$ANALYZE public.product_properties;$sql$, 60000, 'analyze-weekly-supp-06');
+  SELECT public.fn_cron_safe_run(300::bigint, $sql$ANALYZE public.xbz_gallery_staging;$sql$, 60000, 'analyze-weekly-supp-07');
+  SELECT public.fn_cron_safe_run(300::bigint, $sql$ANALYZE public.xbz_upload_mapping;$sql$, 60000, 'analyze-weekly-supp-08');
+  SELECT public.fn_cron_safe_run(300::bigint, $sql$ANALYZE public.supplier_customization_options_raw;$sql$, 60000, 'analyze-weekly-supp-09');
+  SELECT public.fn_cron_safe_run(300::bigint, $sql$ANALYZE public.product_tags;$sql$, 60000, 'analyze-weekly-supp-10');
+$cmd$);
+
+-- 53 — vacuum-analyze-weekly: 22 ANALYZE independentes, chave nova 301 (reentrante/sequencial)
+SELECT cron.alter_job(53, command := $cmd$
+  SELECT public.fn_cron_safe_run(301::bigint, $sql$ANALYZE public.product_images;$sql$, 60000, 'vacuum-analyze-weekly-01');
+  SELECT public.fn_cron_safe_run(301::bigint, $sql$ANALYZE public.product_relationships;$sql$, 60000, 'vacuum-analyze-weekly-02');
+  SELECT public.fn_cron_safe_run(301::bigint, $sql$ANALYZE public.products;$sql$, 60000, 'vacuum-analyze-weekly-03');
+  SELECT public.fn_cron_safe_run(301::bigint, $sql$ANALYZE public.product_variants;$sql$, 60000, 'vacuum-analyze-weekly-04');
+  SELECT public.fn_cron_safe_run(301::bigint, $sql$ANALYZE public.supplier_import_batches;$sql$, 60000, 'vacuum-analyze-weekly-05');
+  SELECT public.fn_cron_safe_run(301::bigint, $sql$ANALYZE public.product_category_assignments;$sql$, 60000, 'vacuum-analyze-weekly-06');
+  SELECT public.fn_cron_safe_run(301::bigint, $sql$ANALYZE public.admin_audit_log;$sql$, 60000, 'vacuum-analyze-weekly-07');
+  SELECT public.fn_cron_safe_run(301::bigint, $sql$ANALYZE public.frontend_telemetry;$sql$, 60000, 'vacuum-analyze-weekly-08');
+  SELECT public.fn_cron_safe_run(301::bigint, $sql$ANALYZE public.supplier_products_raw;$sql$, 60000, 'vacuum-analyze-weekly-09');
+  SELECT public.fn_cron_safe_run(301::bigint, $sql$ANALYZE public.supplier_products_raw_history;$sql$, 60000, 'vacuum-analyze-weekly-10');
+  SELECT public.fn_cron_safe_run(301::bigint, $sql$ANALYZE public.search_analytics;$sql$, 60000, 'vacuum-analyze-weekly-11');
+  SELECT public.fn_cron_safe_run(301::bigint, $sql$ANALYZE public.product_views;$sql$, 60000, 'vacuum-analyze-weekly-12');
+  SELECT public.fn_cron_safe_run(301::bigint, $sql$ANALYZE public.catalog_analytics;$sql$, 60000, 'vacuum-analyze-weekly-13');
+  SELECT public.fn_cron_safe_run(301::bigint, $sql$ANALYZE public.navigation_analytics;$sql$, 60000, 'vacuum-analyze-weekly-14');
+  SELECT public.fn_cron_safe_run(301::bigint, $sql$ANALYZE public.dashboard_insights_cache;$sql$, 60000, 'vacuum-analyze-weekly-15');
+  SELECT public.fn_cron_safe_run(301::bigint, $sql$ANALYZE public.analytics_events;$sql$, 60000, 'vacuum-analyze-weekly-16');
+  SELECT public.fn_cron_safe_run(301::bigint, $sql$ANALYZE public.user_search_history;$sql$, 60000, 'vacuum-analyze-weekly-17');
+  SELECT public.fn_cron_safe_run(301::bigint, $sql$ANALYZE public.pipeline_run_log;$sql$, 60000, 'vacuum-analyze-weekly-18');
+  SELECT public.fn_cron_safe_run(301::bigint, $sql$ANALYZE public.video_validation_log;$sql$, 60000, 'vacuum-analyze-weekly-19');
+  SELECT public.fn_cron_safe_run(301::bigint, $sql$ANALYZE public.product_ai_history;$sql$, 60000, 'vacuum-analyze-weekly-20');
+  SELECT public.fn_cron_safe_run(301::bigint, $sql$ANALYZE public.audit_log_gravacao;$sql$, 60000, 'vacuum-analyze-weekly-21');
+  SELECT public.fn_cron_safe_run(301::bigint, $sql$ANALYZE public.ingestion_run_log;$sql$, 60000, 'vacuum-analyze-weekly-22');
+$cmd$);
+
+-- 244 — refresh-category-ancestors: TRUNCATE+INSERT mantidos JUNTOS (acoplados),
+-- embrulhados em 1 chamada para ganhar atomicidade via savepoint implícito
+-- do bloco EXCEPTION de fn_cron_safe_run. Texto interno copiado verbatim do
+-- command original (nenhuma statement foi alterada).
+SELECT cron.alter_job(244, command := $cmd$
+  SELECT public.fn_cron_safe_run(302::bigint, $sql$TRUNCATE public.category_ancestors; INSERT INTO public.category_ancestors (descendant_id, ancestor_id, depth) WITH RECURSIVE closure(descendant_id, ancestor_id, depth) AS (SELECT c.id, c.parent_id, 1::smallint FROM categories c WHERE c.parent_id IS NOT NULL UNION ALL SELECT cl.descendant_id, c.parent_id, (cl.depth + 1)::smallint FROM closure cl JOIN categories c ON c.id = cl.ancestor_id WHERE c.parent_id IS NOT NULL AND cl.depth < 10) SELECT descendant_id, ancestor_id, depth FROM closure;$sql$, 120000, 'refresh-category-ancestors-atomic');
+$cmd$);
+
+DO $postcondition$
+DECLARE
+  v_cmd text;
+  v_calls int;
+BEGIN
+  SELECT command INTO v_cmd FROM cron.job WHERE jobid = 233;
+  v_calls := (length(v_cmd) - length(replace(v_cmd, 'fn_cron_safe_run(154::bigint', ''))) / length('fn_cron_safe_run(154::bigint');
+  IF v_calls <> 4 THEN
+    RAISE EXCEPTION 'Pós-condição falhou: jobid=233 esperava 4 chamadas fn_cron_safe_run(154, achou %', v_calls;
+  END IF;
+
+  SELECT command INTO v_cmd FROM cron.job WHERE jobid = 208;
+  v_calls := (length(v_cmd) - length(replace(v_cmd, 'fn_cron_safe_run(166::bigint', ''))) / length('fn_cron_safe_run(166::bigint');
+  IF v_calls <> 3 THEN
+    RAISE EXCEPTION 'Pós-condição falhou: jobid=208 esperava 3 chamadas fn_cron_safe_run(166, achou %', v_calls;
+  END IF;
+
+  SELECT command INTO v_cmd FROM cron.job WHERE jobid = 195;
+  v_calls := (length(v_cmd) - length(replace(v_cmd, 'fn_cron_safe_run(300::bigint', ''))) / length('fn_cron_safe_run(300::bigint');
+  IF v_calls <> 10 THEN
+    RAISE EXCEPTION 'Pós-condição falhou: jobid=195 esperava 10 chamadas fn_cron_safe_run(300, achou %', v_calls;
+  END IF;
+
+  SELECT command INTO v_cmd FROM cron.job WHERE jobid = 53;
+  v_calls := (length(v_cmd) - length(replace(v_cmd, 'fn_cron_safe_run(301::bigint', ''))) / length('fn_cron_safe_run(301::bigint');
+  IF v_calls <> 22 THEN
+    RAISE EXCEPTION 'Pós-condição falhou: jobid=53 esperava 22 chamadas fn_cron_safe_run(301, achou %', v_calls;
+  END IF;
+
+  SELECT command INTO v_cmd FROM cron.job WHERE jobid = 244;
+  IF v_cmd NOT LIKE '%fn_cron_safe_run(302::bigint%'
+     OR v_cmd NOT LIKE '%TRUNCATE public.category_ancestors;%'
+     OR v_cmd NOT LIKE '%WITH RECURSIVE closure%' THEN
+    RAISE EXCEPTION 'Pós-condição falhou: jobid=244 não bate com o padrão esperado (1 chamada fn_cron_safe_run(302) contendo TRUNCATE+INSERT)';
+  END IF;
+
+  IF EXISTS (SELECT 1 FROM cron.job WHERE jobid IN (233, 208, 195, 53, 244) AND NOT active) THEN
+    RAISE EXCEPTION 'Pós-condição falhou: algum dos 5 jobs ficou inativo';
+  END IF;
+END;
+$postcondition$;
+
+-- Reversão: restaura os 5 commands originais (bare/wrapped multi-statement,
+-- reintroduz o risco descrito acima — só use se a divisão causar algum
+-- problema inesperado):
+--
+-- SELECT cron.alter_job(233, command := $cmd$SELECT public.fn_cron_safe_run(154::bigint, $sql$
+--     UPDATE ai_enrichment_queue SET status='pending', locked_by=NULL, locked_at=NULL,
+--         last_error='cron-reset:stuck>'||ROUND(EXTRACT(EPOCH FROM (now()-locked_at))/3600,1)||'h', updated_at=now()
+--     WHERE status='processing' AND locked_at < now() - interval '2 hours' AND attempts < max_attempts;
+--     UPDATE ai_enrichment_queue SET status='error', locked_by=NULL, locked_at=NULL,
+--         last_error=COALESCE(last_error,'')||' | exhausted-max='||attempts::text, updated_at=now()
+--     WHERE status='processing' AND locked_at < now() - interval '1 hour' AND attempts >= max_attempts;
+--     UPDATE ai_enrichment_queue SET status='error',
+--         last_error=COALESCE(last_error,'')||' | pending-exhausted-max='||attempts::text, updated_at=now()
+--     WHERE status='pending' AND attempts >= max_attempts;
+--     UPDATE ai_enrichment_queue SET locked_by=NULL, locked_at=NULL, updated_at=now()
+--     WHERE status NOT IN ('processing','pending') AND locked_by IS NOT NULL;
+--   $sql$, 30000, 'ai-queue-stuck');$cmd$);
+--
+-- SELECT cron.alter_job(208, command := $cmd$
+--   SELECT public.fn_cron_safe_run(166::bigint, $sql$
+--     UPDATE products SET is_active = false, updated_at = now()
+--     WHERE is_active = true AND supplier_reference IS NULL AND sku IS NULL AND supplier_id IS NOT NULL;
+--     UPDATE products SET is_active = false, updated_at = now()
+--     WHERE 'active' = ANY(COALESCE(locked_fields, '{}')) AND is_active = true;
+--     UPDATE products SET is_active = true, updated_at = now()
+--     WHERE sku LIKE 'XBZ-MANUAL-%' AND is_active = false AND is_deleted = false;
+--   $sql$, 44000, 'fantasmas-guard');
+--   $cmd$);
+--
+-- SELECT cron.alter_job(195, command := $cmd$
+--     ANALYZE public.stock_daily_summary;
+--     ANALYZE public.mv_product_images_audit;
+--     ANALYZE public.image_backfill_queue;
+--     ANALYZE public.variant_supplier_sources;
+--     ANALYZE public.produtos_padronizacao;
+--     ANALYZE public.product_properties;
+--     ANALYZE public.xbz_gallery_staging;
+--     ANALYZE public.xbz_upload_mapping;
+--     ANALYZE public.supplier_customization_options_raw;
+--     ANALYZE public.product_tags;
+--   $cmd$);
+--
+-- SELECT cron.alter_job(53, command := $cmd$
+--     ANALYZE public.product_images;
+--     ANALYZE public.product_relationships;
+--     ANALYZE public.products;
+--     ANALYZE public.product_variants;
+--     ANALYZE public.supplier_import_batches;
+--     ANALYZE public.product_category_assignments;
+--     ANALYZE public.admin_audit_log;
+--     ANALYZE public.frontend_telemetry;
+--     ANALYZE public.supplier_products_raw;
+--     ANALYZE public.supplier_products_raw_history;
+--     ANALYZE public.search_analytics;
+--     ANALYZE public.product_views;
+--     ANALYZE public.catalog_analytics;
+--     ANALYZE public.navigation_analytics;
+--     ANALYZE public.dashboard_insights_cache;
+--     ANALYZE public.analytics_events;
+--     ANALYZE public.user_search_history;
+--     ANALYZE public.pipeline_run_log;
+--     ANALYZE public.video_validation_log;
+--     ANALYZE public.product_ai_history;
+--     ANALYZE public.audit_log_gravacao;
+--     ANALYZE public.ingestion_run_log;
+--   $cmd$);
+--
+-- SELECT cron.alter_job(244, command := $cmd$TRUNCATE public.category_ancestors; INSERT INTO public.category_ancestors (descendant_id, ancestor_id, depth) WITH RECURSIVE closure(descendant_id, ancestor_id, depth) AS (SELECT c.id, c.parent_id, 1::smallint FROM categories c WHERE c.parent_id IS NOT NULL UNION ALL SELECT cl.descendant_id, c.parent_id, (cl.depth + 1)::smallint FROM closure cl JOIN categories c ON c.id = cl.ancestor_id WHERE c.parent_id IS NOT NULL AND cl.depth < 10) SELECT descendant_id, ancestor_id, depth FROM closure;$cmd$);
+
+-- <<< END 20260917100000_e37_split_genuine_multistatement_cron.sql <<<
+
+-- >>> BEGIN 20260917110000_e45_fix_products_comment.sql >>>
+-- E45 — Corrige o COMMENT ON TABLE de public.products, desatualizado desde
+-- 2026-06-23 (afirmava 152 colunas; contagem real hoje é 184 — drift de 32
+-- colunas não documentado, achado #1 da etapa).
+-- Plano: docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md (E45)
+-- Ver docs/E45_PRODUCTS_GOD_TABLE_2026-09-17.md para a investigação completa
+-- (achados #2-#5: satélites já documentados, product_physical já comentado
+-- como write-only, proposta de decomposição sem DDL).
+--
+-- Só metadado (pg_catalog.pg_description via COMMENT ON TABLE) — nenhuma
+-- coluna, trigger, função ou dado é alterado. Zero efeito em leitura/escrita.
+--
+-- [REQUER-PO] — não aplicado nesta revisão. Caminho de aplicação: E15
+-- (.github/workflows/db-apply-migration.yml), nunca supabase db push.
+--
+-- Rollback: COMMENT ON TABLE public.products de volta ao texto de 2026-06-23
+-- ("152 colunas...") — texto completo na seção "Reversão" ao final deste
+-- arquivo. Metadado apenas, sem risco.
+
+DO $precondition$
+DECLARE
+  v_comment text;
+  v_columns int;
+BEGIN
+  IF to_regclass('public.products') IS NULL THEN
+    RAISE EXCEPTION 'Precondição falhou: public.products não existe';
+  END IF;
+
+  SELECT obj_description('public.products'::regclass, 'pg_class') INTO v_comment;
+  IF v_comment IS NULL OR v_comment NOT LIKE '%152 colunas%' THEN
+    RAISE EXCEPTION 'Precondição falhou: comentário atual não contém "152 colunas" — alguém já corrigiu ou o texto mudou, investigar antes de prosseguir';
+  END IF;
+
+  SELECT count(*) INTO v_columns
+  FROM information_schema.columns
+  WHERE table_schema = 'public' AND table_name = 'products';
+  IF v_columns <> 184 THEN
+    RAISE EXCEPTION 'Precondição falhou: contagem real de colunas é % (esperava 184) — o achado #1 mudou desde a investigação, recontar antes de prosseguir', v_columns;
+  END IF;
+END;
+$precondition$;
+
+COMMENT ON TABLE public.products IS
+  'GOD TABLE principal do catálogo de brindes.
+ESTADO (2026-09-17, E45): 184 colunas (era 152 em 2026-06-23 — o comentário
+  não foi mantido em sincronia com o schema; drift de 32 colunas não
+  documentado entre 2026-06-23 e 2026-09-17, achado #1 de
+  docs/E45_PRODUCTS_GOD_TABLE_2026-09-17.md).
+ARQUITETURA: 9 domínios — Core, SEO, AI, Physical, Fiscal, Supply, Counters,
+  Cache, Flags. 5 domínios têm satélite 1:1 por trigger (product_seo,
+  product_ai_content, product_fiscal, product_supply, product_physical) —
+  ~67 das 184 colunas já espelhadas (36%), arquitetura intencional e
+  documentada (COMMENT ON TABLE próprio em cada satélite). Ver E45 achado #2
+  para o mapeamento completo produtos↔satélite por coluna.
+HISTÓRICO 2026-06-23 (preservado):
+  - dimensions jsonb DROPADA → escalares canônicos (sessions 2+3)
+  - dimensions_source adicionada (origin: cm/mm/estimated)
+  - sku_promo auto-sync trigger (sempre = sku)
+  - ipi_rate, ncm_id, bitrix_product_id, tax_reference_state expostos em v_products_public
+  - 12 índices mortos dropados (~5.4MB)
+  - CHECKs: robots_meta, price_freshness, name_max_250, sku_promo=sku
+BACKLOG:
+  - internal_*_cm (kit-builder, 12 refs) — DROP requer refatoração
+  - sku_promo → DROP após refatorar gold-relations.ts/types.ts
+  - Colunas AI-worker reativação pendente
+  - product_physical: completar decomposição residual (~20 colunas
+    físicas/dimensão/frete ainda não satelitadas — única lacuna com ROI
+    claro, ver E45 achado #5; NÃO abrir satélite novo, estender o existente)';
+
+DO $postcondition$
+DECLARE
+  v_comment text;
+BEGIN
+  SELECT obj_description('public.products'::regclass, 'pg_class') INTO v_comment;
+
+  IF v_comment IS NULL OR v_comment LIKE '%152 colunas%' THEN
+    RAISE EXCEPTION 'Pós-condição falhou: comentário ainda contém "152 colunas" ou está nulo — atualização não teve efeito';
+  END IF;
+
+  IF v_comment NOT LIKE '%184 colunas%' THEN
+    RAISE EXCEPTION 'Pós-condição falhou: comentário novo não contém "184 colunas"';
+  END IF;
+
+  -- Confirma que nada de estrutural mudou (comment-only, sem efeito em colunas).
+  IF (SELECT count(*) FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'products') <> 184 THEN
+    RAISE EXCEPTION 'Pós-condição falhou: contagem de colunas mudou durante a migration — não deveria, comment-only';
+  END IF;
+END;
+$postcondition$;
+
+-- Reversão:
+-- COMMENT ON TABLE public.products IS
+--   'GOD TABLE principal do catálogo de brindes.
+-- ESTADO (2026-06-23): 152 colunas após refatoração contínua (era 152 em 06/03, stável).
+-- ARQUITETURA: 9 domínios misturados — Core, SEO, AI, Physical, Fiscal, Supply, Counters, Cache, Flags.
+-- MELHORIAS APLICADAS 2026-06-23:
+--   - dimensions jsonb DROPADA → escalares canônicos (sessions 2+3)
+--   - dimensions_source adicionada (origin: cm/mm/estimated)
+--   - sku_promo auto-sync trigger (sempre = sku)
+--   - ipi_rate, ncm_id, bitrix_product_id, tax_reference_state expostos em v_products_public
+--   - 12 índices mortos dropados (~5.4MB)
+--   - CHECKs: robots_meta, price_freshness, name_max_250, sku_promo=sku
+-- BACKLOG:
+--   - internal_*_cm (kit-builder, 12 refs) — DROP requer refatoração
+--   - sku_promo → DROP após refatorar gold-relations.ts/types.ts
+--   - Colunas AI-worker reativação pendente';
+
+-- <<< END 20260917110000_e45_fix_products_comment.sql <<<
+
+-- >>> BEGIN 20260917150000_e40_ops_pgss_history.sql >>>
+-- Rollback: DROP TABLE IF EXISTS ops.pgss_history; SELECT cron.unschedule('pgss-history-weekly');
+--
+-- E40 — Baseline de desempenho e SLO por RPC crítica
+-- Plano: docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md (E40)
+-- Investigação: docs/E40_BASELINE_DESEMPENHO_SLO_2026-09-17.md
+--
+-- Cria a tabela `ops.pgss_history`, alimentada semanalmente por um cron
+-- single-statement (padrão fn_cron_safe_run já usado em ~60 jobs deste
+-- projeto) que faz snapshot de `extensions.pg_stat_statements` filtrado ao
+-- padrão `pgrst_call` (chamadas roteadas por PostgREST — exclui jobs
+-- internos/cron que chamam a função diretamente). Consumida pelo workflow
+-- semanal `.github/workflows/pgss-slo-report.yml`
+-- (scripts/pgss-slo-check.mjs), que compara a captura mais recente de cada
+-- RPC monitorada contra o SLO declarado e abre issue se alguma estourar.
+--
+-- Depende do schema `ops` já existir — criado pela migration de E30
+-- (20260916211500_e30_ops_table_size_history.sql). Se essa migration ainda
+-- não foi aplicada, a precondição abaixo falha com mensagem explícita
+-- (inverso da precondição de E30, que exigia o schema NÃO existir ainda).
+--
+-- `pg_stat_statements` não expõe percentil nativamente (só min/mean/max/
+-- stddev por statement) — p95 é aproximado no script de checagem por
+-- `mean + 1.645 * stddev`, limitação documentada no doc de investigação
+-- (mesma honestidade sobre método aproximado que E30 já registrou para sua
+-- regressão linear).
+--
+-- RLS deny-all intencional (padrão E19 — ver
+-- .security/rls-no-policy-allowlist.json): tabela habilita RLS e não recebe
+-- nenhuma policy. Só service_role/postgres (e a função SECURITY DEFINER
+-- fn_cron_safe_run, que roda como owner da função, bypassrls) conseguem
+-- gravar/ler. Nenhum GRANT para anon/authenticated — nem no schema (já
+-- revogado por E30), nem na tabela.
+--
+-- p_key=169 escolhido após consultar cron.job ao vivo em 2026-09-16/17
+-- (maior p_key em uso: 166, jobname 'fantasmas-deactivate-guard'; 167
+-- reservado por E33; 168 usado por E30 — este pacote, ambos ainda
+-- aguardando aprovação do PO; 200 reservado por E25) — sem colisão com
+-- nenhum dos três.
+--
+-- ATENÇÃO: esta migration NÃO chama pg_stat_statements_reset(). O reset
+-- (ação distinta do checklist de E40, destrutiva para os agregados
+-- históricos) permanece como decisão separada, a ser aprovada pelo PO
+-- depois que houver pelo menos uma captura em ops.pgss_history — ver
+-- docs/E40_BASELINE_DESEMPENHO_SLO_2026-09-17.md.
+
+DO $precondition$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.schemata WHERE schema_name = 'ops') THEN
+    RAISE EXCEPTION 'Precondição falhou: schema ops não existe — aplique primeiro a migration de E30 (20260916211500_e30_ops_table_size_history.sql)';
+  END IF;
+
+  IF EXISTS (
+    SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
+    WHERE n.nspname = 'ops' AND c.relname = 'pgss_history'
+  ) THEN
+    RAISE EXCEPTION 'Precondição falhou: ops.pgss_history já existe — migration não é idempotente para este passo';
+  END IF;
+
+  IF EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'pgss-history-weekly') THEN
+    RAISE EXCEPTION 'Precondição falhou: já existe cron job "pgss-history-weekly"';
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_extension e JOIN pg_namespace n ON n.oid = e.extnamespace
+    WHERE e.extname = 'pg_stat_statements' AND n.nspname = 'extensions'
+  ) THEN
+    RAISE EXCEPTION 'Precondição falhou: extensão pg_stat_statements não está instalada em extensions (confirmado ao vivo em 2026-09-17 — se isso mudou, revisar a migration antes de aplicar)';
+  END IF;
+END;
+$precondition$;
+
+CREATE TABLE ops.pgss_history (
+  captured_at timestamptz NOT NULL DEFAULT now(),
+  queryid bigint NOT NULL,
+  fn_name text,
+  calls bigint NOT NULL,
+  total_exec_time double precision NOT NULL,
+  mean_exec_time double precision NOT NULL,
+  stddev_exec_time double precision NOT NULL,
+  max_exec_time double precision NOT NULL,
+  PRIMARY KEY (captured_at, queryid)
+);
+
+CREATE INDEX idx_pgss_history_fn_captured
+  ON ops.pgss_history (fn_name, captured_at DESC);
+
+ALTER TABLE ops.pgss_history ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON ops.pgss_history FROM PUBLIC;
+
+COMMENT ON TABLE ops.pgss_history IS
+  'PLANO_DBA E40 — snapshot semanal de extensions.pg_stat_statements (filtrado a '
+  'query ILIKE ''%pgrst_call%'', só chamadas roteadas por PostgREST) por RPC, '
+  'alimentada pelo cron pgss-history-weekly (fn_cron_safe_run p_key=169). RLS '
+  'deny-all intencional (ver .security/rls-no-policy-allowlist.json) — só '
+  'service_role/postgres lê/escreve; zero policies, sem GRANT a '
+  'anon/authenticated. Consumida pelo workflow semanal pgss-slo-report.yml '
+  '(scripts/pgss-slo-check.mjs).';
+
+SELECT cron.schedule(
+  'pgss-history-weekly',
+  '41 3 * * 1',
+  $cron$SELECT public.fn_cron_safe_run(
+    169::bigint,
+    'INSERT INTO ops.pgss_history (queryid, fn_name, calls, total_exec_time, mean_exec_time, stddev_exec_time, max_exec_time) '
+    'SELECT queryid, coalesce((regexp_match(query, ''"public"\."([a-zA-Z0-9_]+)"''))[1], (regexp_match(query, ''FROM ([a-zA-Z0-9_]+)\(''))[1]) AS fn_name, '
+    'calls, total_exec_time, mean_exec_time, stddev_exec_time, max_exec_time '
+    'FROM extensions.pg_stat_statements '
+    'WHERE query ILIKE ''%pgrst_call%'';',
+    45000,
+    'pgss-history-weekly'
+  );$cron$
+);
+
+DO $postcondition$
+BEGIN
+  IF to_regclass('ops.pgss_history') IS NULL THEN
+    RAISE EXCEPTION 'Pós-condição falhou: ops.pgss_history não foi criada';
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
+    WHERE n.nspname = 'ops' AND c.relname = 'pgss_history' AND c.relrowsecurity
+  ) THEN
+    RAISE EXCEPTION 'Pós-condição falhou: RLS não está habilitada em ops.pgss_history';
+  END IF;
+
+  IF EXISTS (SELECT 1 FROM pg_policy p JOIN pg_class c ON c.oid = p.polrelid
+             JOIN pg_namespace n ON n.oid = c.relnamespace
+             WHERE n.nspname = 'ops' AND c.relname = 'pgss_history') THEN
+    RAISE EXCEPTION 'Pós-condição falhou: esperava zero policies em ops.pgss_history (deny-all intencional)';
+  END IF;
+
+  IF has_table_privilege('anon', 'ops.pgss_history', 'SELECT') THEN
+    RAISE EXCEPTION 'Pós-condição falhou: anon não deveria ter SELECT em ops.pgss_history';
+  END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'pgss-history-weekly' AND active) THEN
+    RAISE EXCEPTION 'Pós-condição falhou: cron pgss-history-weekly não foi criado ou não está ativo';
+  END IF;
+END;
+$postcondition$;
+
+-- <<< END 20260917150000_e40_ops_pgss_history.sql <<<
+
+-- >>> BEGIN 20260917160000_e33_ops_wraparound_monitor.sql >>>
+-- Rollback: DROP TABLE IF EXISTS ops.wraparound_monitor_log; SELECT cron.unschedule('wraparound-toast-sequence-monitor');
+--
+-- E33 — Monitor de wraparound, TOAST e sequências
+-- Plano: docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md (E33)
+-- Investigação: docs/E33_MONITOR_WRAPAROUND_2026-09-16.md
+--
+-- Cria a tabela `ops.wraparound_monitor_log`, alimentada diariamente por um
+-- cron single-statement (padrão `fn_cron_safe_run` já usado em ~60 jobs
+-- deste projeto) que faz snapshot de 4 famílias de métrica heterogêneas:
+--   1) idade de XID do banco atual (`age(datfrozenxid)`)
+--   2) idade de multixact do banco atual (`mxid_age(datminmxid)`)
+--   3) uso de sequências int4/int2 vs. limite do tipo (`pg_sequences`)
+--   4) WAL retido por replication slot (`pg_replication_slots`)
+--   5) proporção TOAST/heap por tabela (top 10, TOAST > 1 MB)
+-- Formato genérico (metric/object_name/value) escolhido porque nenhuma das
+-- 4 famílias compartilha grão com `ops.table_size_history` (E30) — banco,
+-- sequência, slot e tabela não cabem numa única forma tabular sem separar
+-- o cron em múltiplos statements (proibido — ver E37, um erro no meio de
+-- um bloco multi-statement aborta os statements seguintes sem registrar
+-- falha). Consumida pelo workflow diário
+-- `.github/workflows/wraparound-monitor-report.yml`
+-- (scripts/wraparound-monitor-check.mjs), que compara a captura mais
+-- recente contra os thresholds declarados e abre issue (`db-warning` ou
+-- `db-critical`) se algum objeto estourar.
+--
+-- Depende do schema `ops` já existir — criado pela migration de E30
+-- (20260916211500_e30_ops_table_size_history.sql). Se essa migration ainda
+-- não foi aplicada, a precondição abaixo falha com mensagem explícita
+-- (mesmo padrão de dependência que E40 já usa para o mesmo schema).
+--
+-- RLS deny-all intencional (padrão E19 — ver
+-- .security/rls-no-policy-allowlist.json): tabela habilita RLS e não recebe
+-- nenhuma policy. Só service_role/postgres (e a função SECURITY DEFINER
+-- fn_cron_safe_run, que roda como owner da função, bypassrls) conseguem
+-- gravar/ler. Nenhum GRANT para anon/authenticated — nem no schema (já
+-- revogado por E30), nem na tabela.
+--
+-- p_key=167 escolhido após consultar cron.job ao vivo em 2026-09-16/17
+-- (maior p_key em uso: 166, jobname 'fantasmas-deactivate-guard'; 167 era o
+-- valor "a confirmar" já reservado para esta etapa em
+-- docs/E33_MONITOR_WRAPAROUND_2026-09-16.md desde a investigação original;
+-- 168 usado por E30 e 169 por E40, ambos preparados na mesma sessão — sem
+-- colisão com nenhum dos dois; 200 reservado por E25) — reconfirmado ao
+-- vivo nesta revisão: nenhum job usa p_key=167 hoje.
+--
+-- O corpo do cron usa dollar-quoting aninhado ($cron$...$cron$ para o
+-- terceiro argumento de cron.schedule, $sql$...$sql$ para o p_sql de
+-- fn_cron_safe_run) em vez de concatenação de literais com aspas simples
+-- duplicadas (estilo usado em E40) — tags diferentes aninham sem conflito
+-- e evitam a necessidade de escapar cada aspa simples do texto do SQL
+-- interno. Texto completo validado localmente contra um Postgres 17
+-- descartável (Docker) antes de commitar, mesmo método usado para validar
+-- o SQL de E40.
+
+DO $precondition$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.schemata WHERE schema_name = 'ops') THEN
+    RAISE EXCEPTION 'Precondição falhou: schema ops não existe — aplique primeiro a migration de E30 (20260916211500_e30_ops_table_size_history.sql)';
+  END IF;
+
+  IF EXISTS (
+    SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
+    WHERE n.nspname = 'ops' AND c.relname = 'wraparound_monitor_log'
+  ) THEN
+    RAISE EXCEPTION 'Precondição falhou: ops.wraparound_monitor_log já existe — migration não é idempotente para este passo';
+  END IF;
+
+  IF EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'wraparound-toast-sequence-monitor') THEN
+    RAISE EXCEPTION 'Precondição falhou: já existe cron job "wraparound-toast-sequence-monitor"';
+  END IF;
+END;
+$precondition$;
+
+CREATE TABLE ops.wraparound_monitor_log (
+  id            bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  captured_at   timestamptz NOT NULL DEFAULT now(),
+  metric        text NOT NULL,
+  object_name   text,
+  value_numeric numeric,
+  value_pct     numeric,
+  unit          text,
+  detail        jsonb,
+  CONSTRAINT wraparound_monitor_log_metric_check
+    CHECK (metric IN ('xid_age', 'mxid_age', 'sequence_pct_used',
+                       'replication_slot_retained_bytes', 'toast_pct_of_heap'))
+);
+
+CREATE INDEX idx_wraparound_monitor_log_metric_captured
+  ON ops.wraparound_monitor_log (metric, captured_at DESC);
+
+ALTER TABLE ops.wraparound_monitor_log ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON ops.wraparound_monitor_log FROM PUBLIC;
+
+COMMENT ON TABLE ops.wraparound_monitor_log IS
+  'PLANO_DBA E33 — snapshot diário de risco de wraparound de XID/multixact, '
+  'uso de sequências int4/int2, WAL retido por replication slot e proporção '
+  'TOAST/heap (top 10), alimentada pelo cron wraparound-toast-sequence-monitor '
+  '(fn_cron_safe_run p_key=167). RLS deny-all intencional (ver '
+  '.security/rls-no-policy-allowlist.json) — só service_role/postgres lê/escreve; '
+  'zero policies, sem GRANT a anon/authenticated. Consumida pelo workflow diário '
+  'wraparound-monitor-report.yml (scripts/wraparound-monitor-check.mjs).';
+
+SELECT cron.schedule(
+  'wraparound-toast-sequence-monitor',
+  '0 6 * * *',
+  $cron$SELECT public.fn_cron_safe_run(
+    167::bigint,
+    $sql$
+    INSERT INTO ops.wraparound_monitor_log (metric, object_name, value_numeric, value_pct, unit, detail)
+    SELECT 'xid_age', current_database(), age(datfrozenxid)::numeric,
+           round(100.0 * age(datfrozenxid) / 2000000000.0, 4), 'xid',
+           jsonb_build_object('datfrozenxid', datfrozenxid)
+    FROM pg_database WHERE datname = current_database()
+    UNION ALL
+    SELECT 'mxid_age', current_database(), mxid_age(datminmxid)::numeric,
+           round(100.0 * mxid_age(datminmxid) / 2000000000.0, 4), 'mxid',
+           jsonb_build_object('datminmxid', datminmxid)
+    FROM pg_database WHERE datname = current_database()
+    UNION ALL
+    SELECT 'sequence_pct_used', s.schemaname || '.' || s.sequencename,
+           COALESCE(s.last_value, 0)::numeric,
+           round(100.0 * COALESCE(s.last_value, 0)::numeric / s.max_value::numeric, 4),
+           'pct',
+           jsonb_build_object('owner_table', c2.relname, 'owner_column', a.attname, 'seq_type', s.data_type)
+    FROM pg_sequences s
+    JOIN pg_namespace sn ON sn.nspname = s.schemaname
+    JOIN pg_class sc ON sc.relname = s.sequencename AND sc.relnamespace = sn.oid
+    LEFT JOIN pg_depend d ON d.objid = sc.oid AND d.deptype = 'a'
+    LEFT JOIN pg_class c2 ON c2.oid = d.refobjid
+    LEFT JOIN pg_attribute a ON a.attrelid = d.refobjid AND a.attnum = d.refobjsubid
+    WHERE s.data_type IN ('smallint', 'integer')
+    UNION ALL
+    SELECT 'replication_slot_retained_bytes', slot_name,
+           pg_wal_lsn_diff(pg_current_wal_lsn(), restart_lsn)::numeric, NULL, 'bytes',
+           jsonb_build_object('active', active, 'wal_status', wal_status)
+    FROM pg_replication_slots
+    UNION ALL
+    (SELECT 'toast_pct_of_heap', c.oid::regclass::text,
+           pg_relation_size(t.oid)::numeric,
+           round(100.0 * pg_relation_size(t.oid) / NULLIF(pg_relation_size(c.oid), 0), 1), 'pct',
+           jsonb_build_object('heap_bytes', pg_relation_size(c.oid), 'total_bytes', pg_total_relation_size(c.oid))
+    FROM pg_class c
+    JOIN pg_namespace n ON n.oid = c.relnamespace
+    JOIN pg_class t ON t.oid = c.reltoastrelid
+    WHERE c.relkind = 'r' AND c.reltoastrelid <> 0
+      AND n.nspname NOT IN ('pg_catalog', 'information_schema')
+      AND pg_relation_size(t.oid) > 1048576
+    ORDER BY 4 DESC NULLS LAST
+    LIMIT 10);
+    $sql$,
+    30000,
+    'wraparound-monitor'
+  );$cron$
+);
+
+DO $postcondition$
+BEGIN
+  IF to_regclass('ops.wraparound_monitor_log') IS NULL THEN
+    RAISE EXCEPTION 'Pós-condição falhou: ops.wraparound_monitor_log não foi criada';
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
+    WHERE n.nspname = 'ops' AND c.relname = 'wraparound_monitor_log' AND c.relrowsecurity
+  ) THEN
+    RAISE EXCEPTION 'Pós-condição falhou: RLS não está habilitada em ops.wraparound_monitor_log';
+  END IF;
+
+  IF EXISTS (SELECT 1 FROM pg_policy p JOIN pg_class c ON c.oid = p.polrelid
+             JOIN pg_namespace n ON n.oid = c.relnamespace
+             WHERE n.nspname = 'ops' AND c.relname = 'wraparound_monitor_log') THEN
+    RAISE EXCEPTION 'Pós-condição falhou: esperava zero policies em ops.wraparound_monitor_log (deny-all intencional)';
+  END IF;
+
+  IF has_table_privilege('anon', 'ops.wraparound_monitor_log', 'SELECT') THEN
+    RAISE EXCEPTION 'Pós-condição falhou: anon não deveria ter SELECT em ops.wraparound_monitor_log';
+  END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'wraparound-toast-sequence-monitor' AND active) THEN
+    RAISE EXCEPTION 'Pós-condição falhou: cron wraparound-toast-sequence-monitor não foi criado ou não está ativo';
+  END IF;
+END;
+$postcondition$;
+
+-- <<< END 20260917160000_e33_ops_wraparound_monitor.sql <<<
+
+-- >>> BEGIN 20260920120000_fix_handle_new_user_missing_profiles_user_id.sql >>>
+-- Onda 0 do plano de execução — achado de emergência (2026-09-20), fora do
+-- escopo original dos 2 planos de 50 etapas: gate de CI "RPC availability ·
+-- staging/production" começou a falhar com
+-- `AuthApiError: Database error creating new user` (code unexpected_failure)
+-- ao tentar criar um usuário sintético via `admin.auth.admin.createUser`.
+--
+-- Causa raiz confirmada ao vivo (postgres_logs, 2026-09-20T09:25Z):
+--   "insert or update on table "user_roles" violates foreign key constraint
+--    "user_roles_user_id_profiles_fkey""
+--
+-- Rollback: CREATE OR REPLACE FUNCTION public.handle_new_user() com o INSERT
+-- original (sem a coluna user_id) — reintroduz o bug corrigido aqui; só usar
+-- se esta correção causar um problema novo e inesperado.
+--
+-- A FK é `user_roles.user_id REFERENCES profiles(user_id)` (não
+-- `profiles(id)` — profiles tem as duas colunas, `id` é a PK própria e
+-- `user_id` é UNIQUE e é a coluna que o resto do app usa para ligar a
+-- auth.users: `src/services/authService.ts` busca perfil via
+-- `.eq('user_id', userId)`, e FKs de `seller_id`/`admin_id` em outras
+-- tabelas também apontam para `profiles.user_id` (ver
+-- src/components/admin/DiscountApprovalQueue.tsx).
+--
+-- O trigger `on_auth_user_created` → `public.handle_new_user()` (em
+-- auth.users) insere a linha em `public.profiles` mas SÓ seta
+-- (id, email, full_name, role, department, is_active, preferences,
+-- created_at, updated_at) — nunca `user_id`, que fica NULL. O trigger
+-- seguinte `trg_grant_default_role` → `fn_grant_default_role_on_profile()`
+-- (em public.profiles, AFTER INSERT) tenta inserir em `user_roles(user_id)`
+-- usando `NEW.id` — que não bate com `profiles.user_id` (NULL) da própria
+-- linha recém-criada, e a FK rejeita. Como os dois triggers rodam na mesma
+-- transação do INSERT em auth.users (GoTrue chama isso via RPC/transação
+-- única), a falha aborta a criação do usuário inteira, não só a role.
+--
+-- Confirmado ao vivo: 13/13 profiles existentes têm `user_id = id` (a
+-- migration 20260511200050_fix_handle_new_user_profiles_id.sql já tinha
+-- setado `user_id` corretamente) — a invariante é clara, uma reescrita
+-- posterior da função (20260524210000_capture_fn_handle_new_user_vendedor.sql
+-- e vizinhas, focadas em corrigir o mapeamento de role seller→vendedor)
+-- reintroduziu o corpo da função sem a coluna `user_id`. Como não há
+-- nenhum signup novo desde 2026-05-17 (antes das edições de 24/05), o bug
+-- nunca foi exercitado por um usuário real até este teste de CI hoje —
+-- mas bloquearia QUALQUER signup novo agora, incluindo via dashboard admin
+-- (auth.admin.createUser usa o mesmo caminho).
+--
+-- Efeito desta migration: restaura `user_id = NEW.id` no INSERT de
+-- `handle_new_user()`, sem tocar em nenhuma outra coluna/lógica (role,
+-- department, preferences continuam iguais). Idempotente via
+-- CREATE OR REPLACE FUNCTION.
+--
+-- Aplicado via E15 (.github/workflows/db-apply-migration.yml) — nunca
+-- supabase db push nem execute_sql direto no canônico.
+
+DO $precondition$
+BEGIN
+  IF to_regprocedure('public.handle_new_user()') IS NULL THEN
+    RAISE EXCEPTION 'Precondição falhou: public.handle_new_user() não existe';
+  END IF;
+
+  IF EXISTS (
+    SELECT 1 FROM pg_proc
+    WHERE oid = 'public.handle_new_user()'::regprocedure
+      AND prosrc ILIKE '%user_id%'
+  ) THEN
+    RAISE EXCEPTION 'Precondição falhou: handle_new_user() já referencia user_id — achado pode já ter sido corrigido por outra via, investigar antes de prosseguir';
+  END IF;
+
+  IF EXISTS (SELECT 1 FROM public.profiles WHERE user_id IS DISTINCT FROM id) THEN
+    RAISE EXCEPTION 'Precondição falhou: existe profile com user_id != id — a invariante assumida por esta migration não é universal, investigar antes de prosseguir';
+  END IF;
+END;
+$precondition$;
+
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+ RETURNS trigger
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO 'public'
+AS $function$
+DECLARE
+    v_role TEXT;
+    v_full_name TEXT;
+    v_department TEXT;
+    v_preferences JSONB;
+BEGIN
+    -- Role: lê do metadata, fallback 'sales'
+    v_role := COALESCE(
+        NULLIF(TRIM(NEW.raw_user_meta_data->>'role'), ''),
+        'sales'
+    );
+
+    -- Validação: só aceita roles válidos
+    IF v_role NOT IN ('admin', 'sales', 'manager') THEN
+        v_role := 'sales';
+    END IF;
+
+    -- Nome: metadata 'name' ou 'full_name', fallback email
+    v_full_name := COALESCE(
+        NULLIF(TRIM(NEW.raw_user_meta_data->>'name'), ''),
+        NULLIF(TRIM(NEW.raw_user_meta_data->>'full_name'), ''),
+        NEW.email
+    );
+
+    -- Departamento
+    v_department := NULLIF(TRIM(NEW.raw_user_meta_data->>'department'), '');
+
+    -- Preferences (ex: title)
+    v_preferences := '{}'::jsonb;
+    IF NEW.raw_user_meta_data->>'title' IS NOT NULL THEN
+        v_preferences := jsonb_build_object('title', NEW.raw_user_meta_data->>'title');
+    END IF;
+
+    INSERT INTO public.profiles (
+        id, user_id, email, full_name, role,
+        department, is_active, preferences,
+        created_at, updated_at
+    ) VALUES (
+        NEW.id,
+        NEW.id,
+        NEW.email,
+        v_full_name,
+        v_role,
+        v_department,
+        TRUE,
+        v_preferences,
+        NOW(),
+        NOW()
+    );
+
+    RETURN NEW;
+END;
+$function$;
+
+DO $postcondition$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_proc
+    WHERE oid = 'public.handle_new_user()'::regprocedure
+      AND prosrc ILIKE '%user_id%'
+  ) THEN
+    RAISE EXCEPTION 'Pós-condição falhou: handle_new_user() ainda não referencia user_id — CREATE OR REPLACE não teve o efeito esperado';
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_trigger t
+    JOIN pg_proc p ON p.oid = t.tgfoid
+    WHERE t.tgrelid = 'auth.users'::regclass
+      AND NOT t.tgisinternal
+      AND t.tgname = 'on_auth_user_created'
+      AND p.proname = 'handle_new_user'
+  ) THEN
+    RAISE EXCEPTION 'Pós-condição falhou: trigger on_auth_user_created não está mais ligado a handle_new_user() — efeito colateral inesperado';
+  END IF;
+END;
+$postcondition$;
+
+-- <<< END 20260920120000_fix_handle_new_user_missing_profiles_user_id.sql <<<
 
 -- >>> BEGIN bronze_stalled_cleanup_20260623.sql >>>
 -- BRONZE STALLED CLEANUP (2026-06-23): 396 rows Bronze de Só Marcas

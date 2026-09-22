@@ -7,6 +7,11 @@
 -- Ver docs/E18_ACHADOS_SECUNDARIOS_AUTHENTICATED_2026-09-17.md para a
 -- investigação completa dos 4 achados.
 --
+-- Rollback: GRANT EXECUTE ON FUNCTION public.confirm_notifications_dispatched(uuid[]) TO authenticated;
+--   GRANT EXECUTE ON FUNCTION public.registrar_entrada_estoque(character varying, integer, numeric, character varying, character varying, text, uuid) TO authenticated;
+--   GRANT EXECUTE ON FUNCTION public.registrar_saida_estoque(character varying, integer, character varying, character varying, text, uuid, boolean) TO authenticated;
+--   GRANT EXECUTE ON FUNCTION public.fn_notify_user(uuid, text, text, text, text, text, jsonb) TO authenticated;
+--
 -- 1) public.confirm_notifications_dispatched(p_ids uuid[])
 --    UPDATE workspace_notifications SET is_read=true WHERE id = ANY(p_ids)
 --    — sem nenhuma checagem de auth.uid()/ownership. Qualquer authenticated

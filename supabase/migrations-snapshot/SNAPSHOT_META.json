@@ -1,24 +1,50 @@
 {
-  "generated_at": "2026-09-16T12:14:24.465Z",
+  "generated_at": "2026-09-22T14:24:59.027Z",
   "project_ref": "doufsxqlfjyuvxuezpln",
-  "migrations_count": 2988,
+  "migrations_count": 3006,
   "live_schema": {
-    "bytes": 4870285,
-    "tables": 397,
-    "views": 199,
-    "functions": 1320,
-    "note": "Gerado manualmente via `supabase db dump --linked --schema public` (CLI já linkado); o script export-schema-snapshot.mjs exige as env vars SUPABASE_ACCESS_TOKEN/SUPABASE_DB_PASSWORD para religar, que não estavam setadas nesta sessão local. Em CI, com os secrets do GitHub, o script gera isto sozinho."
+    "bytes": 4837722
   },
   "drift": {
     "computed": false,
-    "reason": "supabase db diff --linked trava no replay completo por schema drift out-of-band pré-existente (ver SCHEMA_DRIFT.sql). Não é falha de credencial nem regressão desta sessão.",
-    "known_blockers_fixed": [
-      "20260601140841_09e0073b-18f6-4003-b416-da44bb9d14f8.sql (uuid ~ unknown, sintaxe impossível)",
-      "20260601180000_fix_collections_rls_add_select_policy_for_authenticated.sql (CREATE POLICY IF NOT EXISTS, sintaxe inválida)",
-      "5 schemas de aplicação sem migration de criação (analytics, supplier_stricker, cf_recon, prod_audit, classification_audit)"
-    ],
-    "known_blockers_open": [
-      "public.categories.bitrix_id sem migration em nenhum ponto da história — sinal de dívida de DDL out-of-band além dos 5 schemas"
-    ]
+    "reason": "Ledger divergente: 2499 pares, 474 somente locais, 2 somente remotos. Replay bloqueado.",
+    "ledger": {
+      "schema_version": 1,
+      "source": "supabase migration list --linked --output-format json",
+      "rows": 2975,
+      "matched": 2499,
+      "local_only_count": 474,
+      "remote_only_count": 2,
+      "mismatched_count": 0,
+      "malformed_row_count": 0,
+      "local_only_sample": [
+        "20260511235900",
+        "20260512000000",
+        "20260525200106",
+        "20260525232003",
+        "20260526103000",
+        "20260526120000",
+        "20260526133316",
+        "20260526134911",
+        "20260526135538",
+        "20260526140224",
+        "20260526140530",
+        "20260526140856",
+        "20260526141234",
+        "20260526200904",
+        "20260526201213",
+        "20260526201551",
+        "20260526210100",
+        "20260526210206",
+        "20260526220000",
+        "20260526220004"
+      ],
+      "remote_only_sample": [
+        "20260712",
+        "20260916155725"
+      ],
+      "mismatched_sample": [],
+      "malformed_row_sample": []
+    }
   }
 }

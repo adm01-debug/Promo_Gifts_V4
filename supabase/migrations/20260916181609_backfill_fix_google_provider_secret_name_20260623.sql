@@ -22,6 +22,11 @@
 -- [REQUER-PO] apenas para o passo de ledger (registrar esta versão como
 -- applied via `migration repair`, ver docs/PACOTE_APROVACAO_1_2026-09-16.md
 -- Ação 3b/3c) — o UPDATE abaixo, se rodado, é no-op comprovado.
+--
+-- Rollback: UPDATE ai_providers SET secret_name = 'GOOGLE_API_KEY' WHERE
+-- slug = 'google' AND secret_name = 'GEMINI_API_KEY'; (não recomendado —
+-- GEMINI_API_KEY é o valor real em uso desde 2026-06-23; reverter quebraria
+-- a integração ativa, não desfaria um problema).
 
 UPDATE ai_providers SET secret_name = 'GEMINI_API_KEY', updated_at = now()
 WHERE slug = 'google' AND secret_name = 'GOOGLE_API_KEY';

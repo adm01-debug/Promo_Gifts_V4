@@ -21,6 +21,10 @@
 --
 -- [REQUER-PO] — não aplicado nesta revisão. Caminho de aplicação: E15
 -- (.github/workflows/db-apply-migration.yml), nunca supabase db push.
+--
+-- Rollback: cron.alter_job(245, ...) de volta ao command original (1 chamada
+-- de fn_cron_safe_run com os 2 statements dentro do mesmo p_sql) — comando
+-- completo na seção "Reversão" ao final deste arquivo.
 
 DO $precondition$
 DECLARE

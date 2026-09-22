@@ -8,6 +8,10 @@
 --   "insert or update on table "user_roles" violates foreign key constraint
 --    "user_roles_user_id_profiles_fkey""
 --
+-- Rollback: CREATE OR REPLACE FUNCTION public.handle_new_user() com o INSERT
+-- original (sem a coluna user_id) — reintroduz o bug corrigido aqui; só usar
+-- se esta correção causar um problema novo e inesperado.
+--
 -- A FK é `user_roles.user_id REFERENCES profiles(user_id)` (não
 -- `profiles(id)` — profiles tem as duas colunas, `id` é a PK própria e
 -- `user_id` é UNIQUE e é a coluna que o resto do app usa para ligar a
