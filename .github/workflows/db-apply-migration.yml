@@ -29,6 +29,10 @@ concurrency:
   group: db-apply-migration
   cancel-in-progress: false
 
+env:
+  MIGRATION_VERSION: ${{ inputs.version }}
+  SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
+
 jobs:
   preflight:
     name: 1. Preflight (read-only)
@@ -38,6 +42,9 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@v4
+
+      - name: Valida input antes de qualquer uso no shell
+        run: node scripts/validate-migration-target.mjs --version-only
 
       - name: Confirma reviewer obrigatório no environment Production
         env:
@@ -59,30 +66,31 @@ jobs:
           node-version: '22.22.1'
 
       - name: Checa arquivo único, rollback documentado, ainda não no ledger
-        run: node scripts/preflight-migration-apply.mjs --version="${{ inputs.version }}" --require-live
+        run: node scripts/preflight-migration-apply.mjs --version="$MIGRATION_VERSION" --require-live
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-          SUPABASE_PROJECT_REF: ${{ secrets.VITE_SUPABASE_PROJECT_ID }}
 
   apply:
     name: 2. Apply (requer aprovação do environment production)
     needs: preflight
     runs-on: ubuntu-latest
     environment: production
+    permissions:
+      contents: read
     outputs:
       sha256: ${{ steps.hash.outputs.sha256 }}
       applied_at: ${{ steps.hash.outputs.applied_at }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Guard — PG* secrets presentes?
-        run: |
-          set -euo pipefail
-          if [ -z "${{ secrets.PGHOST }}" ] || [ -z "${{ secrets.PGUSER }}" ] || \
-             [ -z "${{ secrets.PGPASSWORD }}" ] || [ -z "${{ secrets.PGDATABASE }}" ]; then
-            echo "::error::PG* secrets ausentes. Este é o job que aplica DDL real — diferente de migration-dry-run.yml, aqui a ausência de credencial FALHA o job (fail-closed), não pula silenciosamente."
-            exit 1
-          fi
+      - name: Guard — versão e destino PostgreSQL canônico
+        env:
+          PGHOST: ${{ secrets.PGHOST }}
+          PGUSER: ${{ secrets.PGUSER }}
+          PGPASSWORD: ${{ secrets.PGPASSWORD }}
+          PGDATABASE: ${{ secrets.PGDATABASE }}
+          PGPORT: ${{ secrets.PGPORT || '5432' }}
+        run: node scripts/validate-migration-target.mjs
 
       - name: Instala postgresql-client
         run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends postgresql-client
@@ -91,9 +99,9 @@ jobs:
         id: locate
         run: |
           set -euo pipefail
-          mapfile -t FILES < <(ls supabase/migrations/"${{ inputs.version }}"_*.sql 2>/dev/null || true)
+          mapfile -t FILES < <(ls supabase/migrations/"${MIGRATION_VERSION}"_*.sql 2>/dev/null || true)
           if [ "${#FILES[@]}" -ne 1 ]; then
-            echo "::error::esperava exatamente 1 arquivo supabase/migrations/${{ inputs.version }}_*.sql, encontrei ${#FILES[@]} (o job 'preflight' deveria ter barrado isso antes)."
+            echo "::error::esperava exatamente 1 arquivo supabase/migrations/${MIGRATION_VERSION}_*.sql, encontrei ${#FILES[@]} (o job 'preflight' deveria ter barrado isso antes)."
             exit 1
           fi
           echo "file=${FILES[0]}" >> "$GITHUB_OUTPUT"
@@ -111,6 +119,7 @@ jobs:
           PGPASSWORD: ${{ secrets.PGPASSWORD }}
           PGDATABASE: ${{ secrets.PGDATABASE }}
           PGPORT: ${{ secrets.PGPORT || '5432' }}
+          PGSSLMODE: require
         run: psql -1 -v ON_ERROR_STOP=1 -f "${{ steps.locate.outputs.file }}"
 
       - name: Setup Supabase CLI
@@ -121,8 +130,8 @@ jobs:
       - name: migration repair --status applied
         run: |
           set -euo pipefail
-          supabase link --project-ref "${{ secrets.VITE_SUPABASE_PROJECT_ID }}"
-          supabase migration repair --status applied "${{ inputs.version }}" --linked
+          supabase link --project-ref "$SUPABASE_PROJECT_REF"
+          supabase migration repair --status applied "$MIGRATION_VERSION" --linked
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
 
@@ -138,10 +147,9 @@ jobs:
           node-version: '22.22.1'
 
       - name: Confirma version no ledger após a aplicação
-        run: node scripts/preflight-migration-apply.mjs --version="${{ inputs.version }}" --require-live --expect-applied
+        run: node scripts/preflight-migration-apply.mjs --version="$MIGRATION_VERSION" --require-live --expect-applied
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-          SUPABASE_PROJECT_REF: ${{ secrets.VITE_SUPABASE_PROJECT_ID }}
 
   receipt:
     name: 4. Recibo (abre PR em MIGRATIONS_SYNC_LOG.md)
@@ -162,7 +170,7 @@ jobs:
       - name: Monta o recibo em MIGRATIONS_SYNC_LOG.md
         run: |
           node scripts/append-migration-receipt.mjs \
-            --version="${{ inputs.version }}" \
+            --version="$MIGRATION_VERSION" \
             --sha256="${{ needs.apply.outputs.sha256 }}" \
             --executor="GitHub Actions (db-apply-migration.yml, disparado por ${{ github.actor }})" \
             --metodo="E15" \
@@ -173,16 +181,16 @@ jobs:
       - name: Abre PR com o recibo
         run: |
           set -euo pipefail
-          BRANCH="e15-receipt-${{ inputs.version }}-${{ github.run_id }}"
+          BRANCH="e15-receipt-${MIGRATION_VERSION}-${{ github.run_id }}"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BRANCH"
           git add supabase/MIGRATIONS_SYNC_LOG.md
-          git commit -m "docs(migrations-log): recibo E15 — aplicação de ${{ inputs.version }}" \
+          git commit -m "docs(migrations-log): recibo E15 — aplicação de ${MIGRATION_VERSION}" \
                      -m "Auto-gerado por .github/workflows/db-apply-migration.yml (run ${{ github.run_id }}), disparado por ${{ github.actor }}. PLANO_DBA E15."
           git push -u origin "$BRANCH"
           gh pr create \
             --base main \
             --head "$BRANCH" \
-            --title "docs: recibo de aplicação — ${{ inputs.version }} (E15)" \
-            --body "Recibo automático da aplicação de \`${{ inputs.version }}\` via \`db-apply-migration.yml\` (run ${{ github.run_id }}, disparado por @${{ github.actor }}). A migration já foi aplicada e confirmada no ledger pelos jobs \`apply\`/\`post-check\` desta mesma run — este PR só registra o recibo textual (PLANO_DBA E15/E48)."
+            --title "docs: recibo de aplicação — ${MIGRATION_VERSION} (E15)" \
+            --body "Recibo automático da aplicação de \`${MIGRATION_VERSION}\` via \`db-apply-migration.yml\` (run ${{ github.run_id }}, disparado por @${{ github.actor }}). A migration já foi aplicada e confirmada no ledger pelos jobs \`apply\`/\`post-check\` desta mesma run — este PR só registra o recibo textual (PLANO_DBA E15/E48)."

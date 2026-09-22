@@ -55,9 +55,7 @@ describe('scripts/check-package-duplicate-scripts.mjs', () => {
 
     expect(result.code).toBe(1);
     expect(result.hasScriptsObject).toBe(true);
-    expect(result.duplicates).toEqual([
-      { key: 'dup', firstLine: 4, duplicateLine: 6 },
-    ]);
+    expect(result.duplicates).toEqual([{ key: 'dup', firstLine: 4, duplicateLine: 6 }]);
   });
 
   it('continua analisando todas as chaves após valores string com dois-pontos e chaves', () => {
@@ -76,12 +74,22 @@ describe('scripts/check-package-duplicate-scripts.mjs', () => {
     expect(result.duplicates).toEqual([]);
   });
 
-  it('confere que o pacote real ainda expõe 241 scripts distintos via JSON parse', () => {
+  it('detecta duplicatas no início, meio e fim do catálogo real, independentemente da contagem', () => {
     const pkg = JSON.parse(readFileSync(REPO_PACKAGE_JSON, 'utf8')) as {
       scripts: Record<string, string>;
     };
 
-    expect(Object.keys(pkg.scripts)).toHaveLength(241);
+    const keys = Object.keys(pkg.scripts);
+    expect(keys.length).toBeGreaterThan(0);
+    // A quantidade cresce legitimamente. O contrato é detectar duplicatas,
+    // inclusive depois de percorrer todos os comandos com strings escapadas.
+    for (const index of [0, Math.floor(keys.length / 2), keys.length - 1]) {
+      const duplicateKey = keys[index];
+      const mutated = `{"scripts": ${JSON.stringify(pkg.scripts).slice(0, -1)}, ${JSON.stringify(duplicateKey)}: "echo duplicate"}}`;
+      const result = checkPackageDuplicateScriptsFromSource(mutated);
+      expect(result.code).toBe(1);
+      expect(result.duplicates.map(({ key }) => key)).toEqual([duplicateKey]);
+    }
   });
 
   it('mantém o CLI funcional no sandbox com package.json válido', () => {
