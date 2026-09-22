@@ -19,6 +19,8 @@ CLI local: `2.115.0`. A worktree inicial estava limpa exceto pelo plano novo ain
 
 O ruleset ativo de `main` é `Protect main` (`16764622`), com `required_status_checks` e `pull_request`; foi observada exigência de `Gate Final - Deploy Ready`, mas não foi feito ensaio de bloqueio de merge com PR de teste. As 474 versões locais **não** significam 474 DDLs pendentes.
 
+**Governança E15:** a leitura de `repos/adm01-debug/Promo_Gifts_V4/environments/production` mostrou `protection_rules: []`. Portanto o environment `Production` **não exigia reviewer**, apesar do comentário do workflow E15 afirmar que essa proteção seria configurada. Foi preparado um preflight fail-closed no workflow: se não existir regra `required_reviewers` com ao menos um reviewer, nenhum job de aplicação será iniciado. Configurar o reviewer continua sendo ação externa pendente do PO; não houve despacho do workflow.
+
 ## Simulações e testes executados
 
 1. **Merge concorrente:** `main` já continha a PR #1869; o merge local teve duas colisões add/add de migrations. O SQL executável era igual; foram preservados os comentários de rollback da branch local. Nenhum arquivo histórico foi reescrito para manipular o ledger.
@@ -66,3 +68,5 @@ Além desses alvos, **20 IDs** local-only estavam fora da classificação de 16/
 ### Resultado da PR #1870
 
 A branch foi publicada em [PR #1870](https://github.com/adm01-debug/Promo_Gifts_V4/pull/1870), sem merge. O gate de base64 sinalizou apenas dois literais SQL já existentes dentro de `ALL_IN_ONE.sql`, artefato gerado por concatenação; a correção limita a exceção **somente** a esse arquivo e mantém o scan dos SQLs de origem. Já os gates **“Recibo de migration”** (12 arquivos herdados da branch local sem recibo de aplicação) e **“Migrations x Canonical schema”** (474/2 no ledger) falharam por divergências reais. Essas falhas permanecem bloqueantes; criar recibos fictícios, mudar o comparador para sucesso ou usar bypass não é remediação.
+
+O preview Vercel desta PR também ficou `ERROR`: a API do deployment `dpl_DopAcFkS4pNeosaBgPDo1ERPmnBt` informa `BUILD_FAILED` / `Resource provisioning failed`, sem eventos de build recuperáveis. O `npm run build` local passou; logo, esta falha **não demonstra** regressão do código, mas o preview não está validado. Não houve tentativa repetida de deploy com risco de quota/custo. A produção permanece no SHA anterior `12c11e5dd`.
