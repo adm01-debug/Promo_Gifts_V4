@@ -7,6 +7,9 @@ BEGIN
   IF (SELECT count(*) FROM profiles WHERE user_id = id) <> 3 OR (SELECT count(*) FROM user_roles WHERE role='vendedor') <> 3 THEN
     RAISE EXCEPTION 'Signup did not preserve identity and safe default role';
   END IF;
+  IF (SELECT count(*) FROM seller_discount_limits WHERE max_discount_percent=0) <> 3 THEN
+    RAISE EXCEPTION 'Default seller discount limits were not initialized safely';
+  END IF;
   IF NOT EXISTS (SELECT FROM profiles WHERE email='normal@example.invalid' AND full_name='Normal'
     AND department='Sales' AND preferences='{"title":"Test"}'::jsonb AND is_active) THEN
     RAISE EXCEPTION 'Metadata preservation regression';
@@ -26,7 +29,8 @@ BEGIN;
 INSERT INTO auth.users VALUES ('10000000-0000-4000-8000-000000000005','rollback@example.invalid','{}');
 ROLLBACK;
 DO $$ BEGIN
-  IF EXISTS (SELECT FROM profiles WHERE email='rollback@example.invalid') OR (SELECT count(*) FROM user_roles) <> 3 THEN
+  IF EXISTS (SELECT FROM profiles WHERE email='rollback@example.invalid') OR (SELECT count(*) FROM user_roles) <> 3
+    OR (SELECT count(*) FROM seller_discount_limits) <> 3 THEN
     RAISE EXCEPTION 'Rollback leaked profile or grant';
   END IF;
 END $$;

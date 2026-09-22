@@ -11,3 +11,10 @@ CREATE TABLE public.user_roles (
   user_id uuid REFERENCES public.profiles(user_id), role public.app_role, granted_by uuid,
   PRIMARY KEY (user_id, role)
 );
+CREATE TABLE public.seller_discount_limits (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(), user_id uuid UNIQUE NOT NULL REFERENCES public.profiles(user_id),
+  max_discount_percent numeric(5,2) DEFAULT 5.0 NOT NULL CHECK (max_discount_percent BETWEEN 0 AND 100),
+  approval_required_above numeric(5,2) DEFAULT 10.0 CHECK (approval_required_above BETWEEN 0 AND 100),
+  notes text, set_by uuid REFERENCES public.profiles(user_id),
+  created_at timestamptz NOT NULL DEFAULT now(), updated_at timestamptz NOT NULL DEFAULT now()
+);

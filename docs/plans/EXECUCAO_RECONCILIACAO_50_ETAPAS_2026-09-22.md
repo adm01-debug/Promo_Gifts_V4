@@ -83,9 +83,9 @@ O teste foi substituído por mutações do catálogo real: introduzir uma duplic
 
 ### Simulação PostgreSQL 17, sem escrita no Supabase
 
-Foi criado `scripts/simulate-signup-migration.mjs`. Cada execução usa um container com nome UUID exclusivo, **rede desabilitada, sem porta publicada, sem volume de dados do host e com dados em tmpfs**. Só esse container é removido ao final. O modo `--live-readonly` lê as duas definições necessárias pela Management API read-only e as executa exclusivamente no fixture local.
+Foi criado `scripts/simulate-signup-migration.mjs`. Cada execução usa um container com nome UUID exclusivo, **rede desabilitada, sem porta publicada, sem volume de dados do host e com dados em tmpfs**. Só esse container é removido ao final. O modo `--live-readonly` lê oito definições pela Management API read-only e as executa exclusivamente no fixture local.
 
-Esta é uma simulação reduzida dos triggers `handle_new_user` e `fn_grant_default_role_on_profile` com a FK `user_roles.user_id → profiles.user_id`; **não** é clone completo, teste GoTrue, RLS integral ou teste E2E da Edge administrativa. Esses limites continuam abertos na etapa 39.
+Esta é uma simulação com quatro tabelas mínimas, a FK `user_roles.user_id → profiles.user_id` e os **seis triggers não internos** observados ao vivo em `auth.users`, `profiles`, `user_roles` e `seller_discount_limits`. Além de `handle_new_user` e `fn_grant_default_role_on_profile`, são carregadas as funções de sincronização de papéis, mapeamento enum/perfil, inicialização do limite de desconto e atualização de timestamps. **Não** é clone completo, teste GoTrue, RLS integral ou teste E2E da Edge administrativa. Esses limites continuam abertos na etapa 39.
 
 Resultados:
 
@@ -108,7 +108,7 @@ O arquivo fica **fora de `supabase/migrations`**, para não entrar em aplicaçã
 
 O consumidor `supabase/functions/manage-users/index.ts` cria o usuário com apenas `full_name` nos metadados e atribui o papel separadamente depois da autorização administrativa. Essa compatibilidade foi inspecionada no código; seu E2E não foi executado.
 
-Com `--hardened-proposal`, passaram: cadastro normal, metadata nula/inválida, fallback de nome, preservação de department/preferences, identidade duplicada, rollback, rejeição de `admin`/`manager` não confiáveis, rejeição de reaplicação, detecção de mudança concorrente no corpo da função, trigger desabilitado e rollback do próprio `CREATE OR REPLACE` quando a pós-condição falha. Uma atribuição privilegiada explícita no fixture continua possível; isso **não** certifica a autorização da Edge.
+Com `--hardened-proposal`, passaram: cadastro normal, metadata nula/inválida, fallback de nome, preservação de department/preferences, identidade duplicada, rollback, rejeição de `admin`/`manager` não confiáveis, rejeição de reaplicação, detecção de mudança concorrente no corpo da função, trigger desabilitado e rollback do próprio `CREATE OR REPLACE` quando a pós-condição falha. Uma atribuição privilegiada explícita no fixture continua possível e sincroniza `profiles.role`; o limite de desconto inicial permanece zero para os cinco vendedores sintéticos. Isso **não** certifica a autorização da Edge.
 
 Reprodução offline:
 
@@ -119,7 +119,7 @@ node scripts/simulate-signup-migration.mjs --hardened-proposal
 # esperado: exit 0, proposta passa o fixture reduzido
 ```
 
-O pacote ainda exige aprovação da **versão substituta**, revisão do encadeamento completo de triggers, preservação da definição anterior e teste administrativo controlado na janela de aplicação. Não houve reparo de ledger nem DDL canônica. A nova branch preserva também a referência antiga `codex/reconcile-local-github-supabase-20260922`; nenhuma branch/worktree de outro agente foi descartada.
+O pacote ainda exige aprovação da **versão substituta**, recoleta dos triggers na janela (o encadeamento observado foi simulado), preservação da definição anterior e teste administrativo controlado na aplicação. Não houve reparo de ledger nem DDL canônica. A nova branch preserva também a referência antiga `codex/reconcile-local-github-supabase-20260922`; nenhuma branch/worktree de outro agente foi descartada.
 
 ### Endurecimento do executor E15
 
@@ -131,4 +131,4 @@ O pacote ainda exige aprovação da **versão substituta**, revisão do encadeam
 
 As etapas 22/23/40/48 avançaram, mas continuam parciais: esta rodada não transforma 474 versões sem ledger em aplicadas, não cria recibos fictícios e não certifica 50/50.
 
-**Validação local da continuação:** 44 testes passaram em três arquivos (unicidade de scripts, preflight e validação do executor/target); `lint:baseline` passou com zero erros e zero warnings; Gate 0/SSOT e `git diff --check` passaram. O simulador da proposta passou tanto com o snapshot quanto com as duas definições recolhidas ao vivo por leitura. Nenhuma destas aprovações locais substitui a nova execução remota de CI ou validação do deployment.
+**Validação local da continuação:** 44 testes passaram em três arquivos (unicidade de scripts, preflight e validação do executor/target); `lint:baseline` passou com zero erros e zero warnings; Gate 0/SSOT e `git diff --check` passaram. O simulador da proposta passou tanto com o snapshot quanto com as oito definições recolhidas ao vivo por leitura. Nenhuma destas aprovações locais substitui a nova execução remota de CI ou validação do deployment.

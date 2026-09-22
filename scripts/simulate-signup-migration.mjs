@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /** Isolated diagnostic, never applies SQL to Supabase. No published port or host data volume.
- * Reads the two relevant trigger definitions from the snapshot (or --live-readonly).
+ * Reads the eight functions in the signup/profile/role/discount-limit trigger chain.
  * The reduced fixture proves this trigger/FK path, NOT every production Auth integration.
  * Exit 1 means the candidate still grants a privileged role from user metadata.
  */
@@ -19,7 +19,16 @@ const migration = readFileSync(
     : `${root}supabase/migrations/${version}_fix_handle_new_user_missing_profiles_user_id.sql`,
   'utf8',
 );
-const names = ['handle_new_user', 'fn_grant_default_role_on_profile'];
+const names = [
+  'handle_new_user',
+  'fn_grant_default_role_on_profile',
+  'fn_ensure_seller_discount_limit',
+  'fn_map_role_enum_to_profile',
+  'fn_sync_profile_role_from_user_roles',
+  'trg_user_roles_sync_profile_role',
+  'set_updated_at',
+  'fn_set_updated_at',
+];
 let definitions;
 if (process.argv.includes('--live-readonly')) {
   if (process.env.SUPABASE_PROJECT_REF !== 'doufsxqlfjyuvxuezpln')
@@ -27,8 +36,8 @@ if (process.argv.includes('--live-readonly')) {
   const result =
     await querySupabaseReadOnly(`SELECT p.proname, pg_get_functiondef(p.oid) AS definition
     FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace
-    WHERE n.nspname='public' AND p.proname IN ('handle_new_user','fn_grant_default_role_on_profile') AND p.pronargs=0`);
-  if (result.kind !== 'live' || result.rows.length !== 2)
+    WHERE n.nspname='public' AND p.proname IN ('${names.join("','")}')`);
+  if (result.kind !== 'live' || result.rows.length !== names.length)
     throw new Error('Live trigger inventory unavailable');
   definitions = names.map((name) => result.rows.find((row) => row.proname === name)?.definition);
 } else {
@@ -37,7 +46,7 @@ if (process.argv.includes('--live-readonly')) {
     'utf8',
   ).replaceAll('\r\n', '\n');
   definitions = names.map((name) => {
-    const start = snapshot.indexOf(`CREATE OR REPLACE FUNCTION "public"."${name}"()`);
+    const start = snapshot.indexOf(`CREATE OR REPLACE FUNCTION "public"."${name}"(`);
     const end = snapshot.indexOf('$$;', start);
     if (start < 0 || end < 0) throw new Error(`Snapshot function unavailable: ${name}`);
     return snapshot.slice(start, end + 3);
@@ -154,7 +163,11 @@ try {
       definitions.join(';\n') +
       `;
     CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
-    CREATE TRIGGER trg_grant_default_role AFTER INSERT ON public.profiles FOR EACH ROW EXECUTE FUNCTION public.fn_grant_default_role_on_profile();`,
+    CREATE TRIGGER trg_grant_default_role AFTER INSERT ON public.profiles FOR EACH ROW EXECUTE FUNCTION public.fn_grant_default_role_on_profile();
+    CREATE TRIGGER set_updated_at_trigger BEFORE UPDATE ON public.profiles FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+    CREATE TRIGGER trg_ensure_seller_discount_limit AFTER INSERT OR UPDATE OF role ON public.user_roles FOR EACH ROW EXECUTE FUNCTION public.fn_ensure_seller_discount_limit();
+    CREATE TRIGGER user_roles_sync_profile_role AFTER INSERT OR DELETE OR UPDATE ON public.user_roles FOR EACH ROW EXECUTE FUNCTION public.trg_user_roles_sync_profile_role();
+    CREATE TRIGGER trg_sdl_updated_at BEFORE UPDATE ON public.seller_discount_limits FOR EACH ROW EXECUTE FUNCTION public.fn_set_updated_at();`,
   );
   console.log(sql(readFileSync(`${root}tests/sql/signup-migration-before.sql`, 'utf8')).trim());
   if (hardened) {
@@ -213,8 +226,16 @@ try {
     );
     if (Number(sql(`SELECT count(*) FROM user_roles WHERE role='admin';`).trim()) !== 1)
       throw new Error('Explicit administrative promotion was blocked');
+    if (Number(sql(`SELECT count(*) FROM profiles WHERE role='admin';`).trim()) !== 1)
+      throw new Error('Role-to-profile synchronization failed');
+    if (
+      Number(
+        sql(`SELECT count(*) FROM seller_discount_limits WHERE max_discount_percent=0;`).trim(),
+      ) !== 5
+    )
+      throw new Error('Zero-discount default limits were not preserved');
     console.log(
-      'PASS: explicit privileged role assignment remains possible (database owner fixture, not Edge E2E)',
+      'PASS: explicit promotion synchronizes profile; default discount limits remain zero (not Edge E2E)',
     );
   }
 } finally {

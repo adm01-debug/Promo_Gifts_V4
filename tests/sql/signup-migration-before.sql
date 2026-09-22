@@ -5,7 +5,8 @@ BEGIN
     RAISE EXCEPTION 'Expected FK failure was not reproduced';
   EXCEPTION WHEN foreign_key_violation THEN NULL;
   END;
-  IF EXISTS (SELECT FROM auth.users) OR EXISTS (SELECT FROM profiles) OR EXISTS (SELECT FROM user_roles) THEN
+  IF EXISTS (SELECT FROM auth.users) OR EXISTS (SELECT FROM profiles) OR EXISTS (SELECT FROM user_roles)
+     OR EXISTS (SELECT FROM seller_discount_limits) THEN
     RAISE EXCEPTION 'Failed signup leaked partial rows';
   END IF;
 END $$;
