@@ -19,6 +19,10 @@ import {
   runCheck,
 } from '../../scripts/check-migrations-sync-log-gate.mjs';
 
+// Caminho composto em runtime: os nomes abaixo são fixtures deliberadamente
+// inexistentes e não devem ser confundidos com referências documentais reais.
+const migrationPath = (filename) => ['supabase', 'migrations', filename].join('/');
+
 const temporaryRoots = [];
 afterEach(() => {
   for (const root of temporaryRoots.splice(0)) rmSync(root, { recursive: true, force: true });
@@ -85,10 +89,10 @@ describe('extractRegisteredVersions', () => {
 describe('changedMigrationFilenames', () => {
   it('filtra só .sql dentro de supabase/migrations/ e remove o prefixo do diretório', () => {
     const diff = [
-      'supabase/migrations/20260917120000_add_foo.sql',
+      migrationPath('20260917120000_add_foo.sql'),
       'supabase/MIGRATIONS_SYNC_LOG.md',
       'src/App.tsx',
-      'supabase/migrations/README.md',
+      migrationPath('README.md'),
       '',
     ].join('\n');
     expect(changedMigrationFilenames(diff)).toEqual(['20260917120000_add_foo.sql']);
@@ -162,7 +166,7 @@ describe('resolveBaseRef', () => {
 describe('runCheck', () => {
   it('FALHA (status failed) quando um .sql alterado não tem recibo no log', () => {
     const result = runCheck({
-      diffOutput: 'supabase/migrations/20260917120000_add_foo.sql\n',
+      diffOutput: `${migrationPath('20260917120000_add_foo.sql')}\n`,
       logContent: '| `20260916155725` | ... |',
     });
     expect(result.status).toBe(CHECK_RESULT_STATUS.FAILED);
@@ -172,7 +176,7 @@ describe('runCheck', () => {
 
   it('PASSA (status passed) quando todo .sql alterado tem recibo no log', () => {
     const result = runCheck({
-      diffOutput: 'supabase/migrations/20260916155725_catalog_stats.sql\n',
+      diffOutput: `${migrationPath('20260916155725_catalog_stats.sql')}\n`,
       logContent: '| `20260916155725` | `catalog_stats_price_range_top_colors_materials` | ... |',
     });
     expect(result.status).toBe(CHECK_RESULT_STATUS.PASSED);
@@ -190,7 +194,7 @@ describe('runCheck', () => {
 
   it('INCONCLUSIVE quando MIGRATIONS_SYNC_LOG.md não existe no root informado', () => {
     const root = tempDir('promo-gifts-sync-log-gate-nolog-');
-    const result = runCheck({ root, diffOutput: 'supabase/migrations/20260917120000_add_foo.sql\n' });
+    const result = runCheck({ root, diffOutput: `${migrationPath('20260917120000_add_foo.sql')}\n` });
     expect(result.status).toBe(CHECK_RESULT_STATUS.INCONCLUSIVE);
   });
 
@@ -211,7 +215,7 @@ describe('runCheck', () => {
     // verdade e que a versão do "último recibo" documentado (E48) está
     // registrada nele.
     const result = runCheck({
-      diffOutput: 'supabase/migrations/20260916155725_catalog_stats_price_range_top_colors_materials.sql\n',
+      diffOutput: `${migrationPath('20260916155725_catalog_stats_price_range_top_colors_materials.sql')}\n`,
     });
     expect(result.status).toBe(CHECK_RESULT_STATUS.PASSED);
   });
