@@ -24,6 +24,8 @@ Este documento substitui as **premissas operacionais**, não apaga o histórico,
 
 **Atualização após simulação (15:44 UTC):** a versão `20260920120000` corrige a FK, mas permite privilégios vindos de metadata no fixture. Não aplicá-la isoladamente. Proposta substituta preparada em `docs/db/proposals/20260922170000_signup_identity_safe_default.sql`, fora do diretório de migrations e ainda não aplicada. O cadastro público está desabilitado no Auth; não há comprovação de exploração. Testes de rollback, mudança concorrente e defaults passaram para a proposta; detalhes e limites no relatório.
 
+**Atualização operacional posterior (22/09):** o PO aprovou `20260922170000`, promovida a `supabase/migrations` pela PR #1873, mergeada na main `e30dfa648`. Configuração do reviewer também aprovada e executada. A run E15 `35754514535` falhou na conexão, antes de executar SQL; corpo vivo e ledger continuam anteriores. Corrigido apenas `PGHOST` para o cluster retornado pela API canônica (`aws-1-sa-east-1`); run `35760867980` passou no preflight e aguarda aprovação humana. [Pacote atualizado](../db/APLICACAO_SIGNUP_20260922170000.md). Isso não conclui a etapa 25, não autoriza os outros objetos e não altera o veredito global.
+
 ## A. Controle de mudança e simulação de falhas (01–06)
 
 - [x] **01. Congelar a linha de base** `[RO, P0]` — registrar SHA de `HEAD`, `origin/main`, refs de PRs relevantes, estado das worktrees, `git status`, versão da CLI e horário UTC. **Aceite:** manifesto reproduzível antes de qualquer edição.

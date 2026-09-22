@@ -10,7 +10,9 @@
 
 ## Ativas agora
 
-_(nenhuma)_
+| Arquivo/objeto | Agente | Branch/PR | Início (UTC) | TTL | Status |
+|---|---|---|---|---|---|
+| `scripts/validate-migration-target.mjs`, `tests/scripts/validate-migration-target.test.mjs`, `.github/workflows/db-apply-migration.yml`, pacote signup e plano/relatório de reconciliação de 22/09 | Codex | `codex/e15-pooler-validation-20260922` | 2026-09-22T17:29:00Z | 48 h | correção de conexão e validação do E15; sem reserva/autorização de outros objetos de BD |
 
 ## Histórico (liberadas/expiradas)
 
