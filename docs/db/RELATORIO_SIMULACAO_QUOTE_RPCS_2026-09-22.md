@@ -1,73 +1,112 @@
-# RPCs de orçamento — propostas e simulação isolada
+# RPCs transacionais de orçamento — implementação proposta e simulação isolada
 
-**22/09/2026, 21:00 UTC — preparação/simulação autorizadas pelo PO; aplicação NÃO autorizada.**
+**Atualizado em 22/09/2026. Preparação e simulação autorizadas pelo PO; aplicação no Supabase canônico NÃO autorizada.**
 
-**Resultado: `SIMULATION_PASS_RELEASE_BLOCKED`.** Os testes passaram porque reproduzem os defeitos anteriores e verificam tanto caminhos válidos quanto rejeições esperadas. Não é certificado de prontidão produtiva. Nenhuma escrita ocorreu no Supabase; nenhum recibo de aplicação foi criado.
+## Veredito
 
-## Proveniência e escopo
+**`SIMULATION_PASS_LOCAL_ONLY`**: o pacote de código, SQL proposto e testes está completo para revisão. Foram aprovadas **43 verificações PostgreSQL 17.11**, **93 testes TypeScript/React/estáticos focados**, **285 testes de regressão de orçamento/Kit Maker** e o typecheck integral. As propostas continuam deliberadamente fora de `supabase/migrations`; não houve `db push`, DDL, repair, deploy de função ou escrita no projeto `doufsxqlfjyuvxuezpln`.
 
-- Base `main` `796a52f075c532344b02179fcd5aac2cb260d65d`, PR #1878 mergeada. Branch isolada `codex/quote-rpc-proposals-20260922`; trabalhos anteriores preservados.
-- Captura somente leitura pela Management API, projeto `doufsxqlfjyuvxuezpln`, às `2026-09-22T20:51:22.652586Z`: `pg_proc`/`pg_get_functiondef`, owner, ACL e configuração das duas funções. Corpos mantêm os MD5 da auditoria anterior: create `d3f154669f068acb2d5087a4ae059e14`; update `2f716e5ee22dd3de4043feb5bedc6387`.
-- Recoleta canônica às `2026-09-22T21:01:52.065699Z`: os dois corpos e `increment_quote_version` continuam com os mesmos MD5. Propostas não aplicadas; simulação repetida após formatação com o mesmo resultado (41 + seis).
-- Catálogo adjacente: colunas/defaults/checks, FKs entrantes/saintes, triggers e expressões de policies em `quotes`, `quote_items`, `quote_item_personalizations`, além das policies de histórico e variantes. Não foram lidos registros de clientes nem segredos do banco.
-- Fixture e evidências: `tests/fixtures/quote-rpc-{live,catalog}-20260922.json` e `tests/sql/quote-rpc-fixture.sql`.
-- Único dependente por FK de `quote_items` observado: `quote_item_personalizations`, com `ON DELETE CASCADE`. A proposta mantém a substituição das linhas da RPC atual; **não preserva seus IDs**, nem garante integrações que guardem esses IDs sem FK. Pré-condição rejeita nova FK entrante de outra tabela.
+Isso comprova o comportamento no fixture isolado e os contratos do consumidor. Não é recibo de aplicação, E2E autenticado no canônico nem autorização implícita de produção.
 
-## Arquivos propostos — NÃO são migrations aplicadas
+## Baseline e proveniência
 
-| Objeto | Proposta | SHA-256 exato |
-|---|---|---|
-| `public.create_quote_transactional(jsonb,jsonb)` | [20260922210000_create_quote_lineage.sql](proposals/20260922210000_create_quote_lineage.sql) | `2c901797ec64a2e6da6d9b6c892cb8efe51d3193303a13d89d411038cd5d9941` |
-| `public.update_quote_transactional(uuid,jsonb,jsonb,integer)` | [20260922211000_update_quote_lineage_lock.sql](proposals/20260922211000_update_quote_lineage_lock.sql) | `5836255383021dc087cd0d89ede13d75bfd24c71168ca9338e4766713d1cf112` |
+- Base Git: `main` em `796a52f075c532344b02179fcd5aac2cb260d65d`, trabalho na branch `codex/quote-rpc-proposals-20260922`.
+- Captura canônica somente leitura: `tests/fixtures/quote-rpc-live-20260922.json`, SHA-256 `1824b5ffa58395e698a86198c3a7ce4cfeac3a84d1e91e26792128a4ca0876e3`.
+- Catálogo adjacente somente leitura: `tests/fixtures/quote-rpc-catalog-20260922.json`, SHA-256 `3203b5683a08ea764317d12cbe65a2665c0d6243a072bba23be48cbc2117d3b3`.
+- Corpos vivos capturados antes da proposta: create MD5 `d3f154669f068acb2d5087a4ae059e14`; update MD5 `2f716e5ee22dd3de4043feb5bedc6387`; `increment_quote_version` MD5 `8dc69376bb204fa774c7b193a7bbce4f`.
+- Revalidação Management API read-only em `2026-09-22T22:16:37Z`: as três assinaturas existem, mas não contêm os marcadores `_removed_item_ids`/`explicit_client_version_bump_v1`; portanto este pacote continua ausente do canônico.
+- Fixture reduzido: `tests/sql/quote-rpc-fixture.sql`, SHA-256 `2811e4eadf78a8629dc304b68d5806f65a554d56a05c8e5cc53d02ffeb1eed15`.
+- Imagem imutável: `postgres@sha256:67f41722b7a8cbdb868a44a4995c846eddfdc2973bccb291ce937dce88ad5675`, PostgreSQL 17.11, rede desabilitada, sem portas e dados em tmpfs.
+- Manifesto verificável: `tests/fixtures/quote-rpc-proposal-manifest.json`; os testes recusam divergência de qualquer hash ou imagem.
 
-Cada arquivo substitui apenas sua função. Não altera tabelas, policies, triggers, grants ou defaults. Fora de `supabase/migrations`; não foi feito `db push`, repair, deploy ou registro no ledger. Guards verificam corpo/owner/ACL/search_path e colunas/FK; update verifica também trigger, corpo da função de versão e dependências entrantes. Exigem transação única; são guardadas contra reaplicação, **não reentrantes**. Qualquer mudança no SQL exige novos hashes e nova validação.
+## Propostas forward-only — não aplicadas
 
-### Criação
+| Objeto                                                        | Arquivo                                                                                                                        | SHA-256                                                            |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
+| `public.create_quote_transactional(jsonb,jsonb)`              | [20260922210000_create_quote_lineage.sql](proposals/20260922210000_create_quote_lineage.sql)                                   | `94ec0a32148ddccd2a71f8a67783a8f64f7c3d2d5968a28aa82855c975a90d55` |
+| `public.increment_quote_version()`                            | [20260922210500_increment_quote_version_explicit_bump.sql](proposals/20260922210500_increment_quote_version_explicit_bump.sql) | `502caec43349a3bd5e88e3dbb989f96f4401f9d2b9440e7790124dd4534142be` |
+| `public.update_quote_transactional(uuid,jsonb,jsonb,integer)` | [20260922211000_update_quote_lineage_lock.sql](proposals/20260922211000_update_quote_lineage_lock.sql)                         | `ae87ae018f88ab9b9c8496de9fcdafe8b2321778135de79ed46377fb429c57bc` |
 
-Grava variante e `artwork_urls`, verifica pertencimento da variante ao produto visível ao chamador e exige array para artes. Ausência de variante aceita legado; ausência de artes produz `[]`; JSON `null` de artes é rejeitado (limpeza explícita usa `[]`). Mantém organização/vendedor, SECURITY INVOKER, auditoria, personalizações e cálculos por triggers.
+Cada proposta valida o corpo vivo esperado, owner, ACL, `search_path`, dependências e invariantes antes de substituir o objeto. Reaplicação e drift concorrente são rejeitados. Falha tardia durante o deploy reverte a transação inteira.
 
-### Edição — candidata bloqueada
+### Contrato de criação
 
-Adquire `FOR UPDATE` antes de verificar `_expected_version`. Preserva linhagem omitida quando há ID de linha válido ou correspondência legada exata e única por produto/SKU/cor/tamanho/grupo. Não infere variante pelo SKU. Rejeita ID de outro orçamento, duplicação de ID, ambiguidade e remoção implícita de linha protegida. Limpeza da variante exige ID de linha; artes usam `[]`. Recolhe totais/versão finais após os triggers, em vez de devolver o snapshot anterior aos itens.
+- Preserva variante, SKU/cor/tamanho, descrição congelada, kit, custos, descontos por item, embalagem, mockups, artes e configuração/custo de personalização.
+- Valida objeto/array, UUID, quantidade, custos não negativos, URLs limitadas e elementos de personalização.
+- Novos itens exigem produto e variante ativos e associação variante → produto válida.
+- Mantém `SECURITY INVOKER`, ACL e `search_path`; RLS decide a visibilidade/escrita do chamador.
+- Erro em qualquer linha, arte, personalização ou auditoria desfaz pai e filhos.
 
-**Não liberar como está:** com versão esperada informada, edição apenas de itens é rejeitada com `40001` e rollback. A causa é o trigger existente, não um falso erro do teste. Chamadas legadas com `_expected_version=NULL` continuam sem proteção otimista; o lock serializa execução, mas não identifica uma intenção obsoleta sem versão.
+### Contrato de edição
 
-## Simulação executada
+- Bloqueia a linha pai com `FOR UPDATE` e exige `_expected_version` inteiro positivo para callers autenticados.
+- Atualiza diferencialmente: IDs existentes são preservados; não há delete/reinsert geral.
+- Remoção exige `_removed_item_ids`; desaparecimento silencioso de uma linha persistida é rejeitado.
+- Campo omitido preserva o valor anterior; `null`/`[]` explícitos limpam apenas onde o contrato permite.
+- Linhas legadas sem ID só são reconciliadas quando a correspondência é exata e única; ambiguidade falha fechada.
+- Mudança de produto/variante exige seleção ativa válida. Uma variante histórica posteriormente inativada continua editável enquanto produto/variante não mudarem.
+- Mudança apenas nos itens incrementa a versão exatamente uma vez. Dois writers reais com a mesma versão produzem um vencedor e um `SQLSTATE 40001`, sem lost update.
+- O retorno é o snapshot final posterior aos triggers; o frontend reidrata IDs por `sort_order` para preservar identidade no segundo save.
+
+### Trigger de versão
+
+A proposta intermediária mantém a lógica existente e acrescenta um único caso autorizado: aceitar o bump explícito `OLD.version + 1`. Valores arbitrários continuam ignorados. Isso permite à RPC representar alterações apenas nos filhos sem falsificar alteração de notas/tags nem desabilitar o trigger.
+
+## Correções no consumidor
+
+- `QuoteItem` e payloads agora transportam todos os campos comerciais e de linhagem usados pela RPC.
+- `updateQuote` exige versão, consulta IDs persistidos, declara remoções, envia IDs existentes e reidrata IDs novos após sucesso.
+- O fluxo “sobrescrever” adota primeiro a versão remota e ainda usa compare-and-swap; não contorna concorrência por timestamp.
+- Drag-and-drop e agrupamentos não escrevem mais `quote_items` diretamente. A ordem entra no próximo save transacional único.
+- O helper granular legado permanece marcado como deprecated e falha se PostgREST não confirmar exatamente uma linha; ele não é mais usado pelo editor.
+- O simulador PostgreSQL está no `package.json` e no job `database-integrity` de `deploy-gates.yml`.
+
+## Evidências reproduzíveis
 
 ```bash
-node scripts/simulate-quote-rpc-proposals.mjs
-npx vitest run tests/scripts/quote-rpc-proposals.test.mjs
-npx eslint scripts/simulate-quote-rpc-proposals.mjs tests/scripts/quote-rpc-proposals.test.mjs
+npm run test:quote-rpc:postgres
+npx vitest run \
+  tests/scripts/quote-rpc-proposals.test.mjs \
+  src/services/__tests__/quoteServicePayloadContract.test.ts \
+  src/services/__tests__/quoteItemsReorder.test.ts \
+  src/services/__tests__/quoteReorderAutosaveRace.test.ts \
+  src/hooks/__tests__/useQuoteBuilderState.overwrite.test.tsx \
+  tests/hooks/quotes/quoteHelpers.freight.test.ts \
+  src/hooks/quotes/__tests__/useQuoteConcurrencyGuard.test.ts
+npm run typecheck:full
+npx vitest run src/hooks/quotes/__tests__ \
+  src/services/__tests__/quoteService.test.ts \
+  src/services/__tests__/quoteServiceVariantSkuHydration.test.ts \
+  src/services/__tests__/quoteServicePayloadContract.test.ts \
+  src/services/__tests__/quoteReorderAutosaveRace.test.ts \
+  src/services/__tests__/quoteItemsReorder.test.ts \
+  tests/pages/kit-builder/useKitBuilderQuote.test.ts \
+  tests/hooks/quoteHelpers.priceConfirmed.test.ts \
+  tests/hooks/quotes/quoteHelpers.freight.test.ts \
+  src/tests/quotePersistence.test.ts
 ```
 
-Runner offline sem endpoint/credencial remota; argumentos como `--apply` são rejeitados. Container UUID próprio, `--network none`, sem portas publicadas e sem volumes de dados do host, PostgreSQL em tmpfs. Ao concluir, remove somente esse container e seus dados sintéticos. Imagem usada: `postgres@sha256:67f41722b7a8cbdb868a44a4995c846eddfdc2973bccb291ce937dce88ad5675`, PostgreSQL **17.11**; não é clone binário da versão patch de produção.
+### 43 verificações PostgreSQL aprovadas
 
-**41 verificações PostgreSQL aprovadas:**
+1. Reproduzem três defeitos da versão viva: perda de linhagem, ausência de bump item-only e lost update.
+2. Validam rollback e guards das três propostas, inclusive drift de privilégios, FK ausente e reaplicação.
+3. Validam round-trip completo e compatibilidade do create legado.
+4. Rejeitam payload não objeto/array, UUID inválido, quantidade/custo inválidos, arte/personalização malformada.
+5. Rejeitam anon, escopo cruzado, variante inexistente/inativa/de outro produto.
+6. Preservam campos omitidos, IDs e variante histórica inativada sem mudança de seleção.
+7. Rejeitam versão obsoleta, `expected_version=NULL`, ID estrangeiro/duplicado, remoção implícita e correspondência ambígua.
+8. Confirmam remoção explícita, limpeza explícita, rollback tardio e concorrência com duas sessões reais.
+9. Confirmam ACL, `SECURITY INVOKER` e `search_path` inalterados.
 
-| Verificações | Resultado comprovado no fixture |
-|---|---|
-| 1–3 | Antes: criação perde variante/artes; edição só de itens não avança versão; dois writers com a mesma versão conseguem sobrescrever |
-| 4–13 | Drift de ACL, FK ausente, trigger desabilitado e nova dependência bloqueiam a proposta; falha tardia desfaz o CREATE OR REPLACE; reaplicação rejeitada |
-| 14–17 | Criação preserva linhagem/custos/histórico; legado funciona; payload inválido, anon e vendedor de outro escopo são rejeitados |
-| 18–24 | Variante de outro produto/inexistente, UUID inválido, artes inválidas, quantidade zero e personalização negativa revertem toda a criação |
-| 25 e 35 | Edição preserva campos omitidos; retorna totais finais; limpeza explícita com ID funciona |
-| 26 e 39 | Limites demonstrados: item-only versionado bloqueia; legado sem versão continua sem garantia otimista |
-| 27–34 | Versão obsoleta, outro tenant, variante inválida, ID estranho, remoção implícita, limpeza sem ID e erro tardio deixam orçamento/filhos/auditoria intactos |
-| 36–38 | Ambiguidade/ID repetido rejeitados; duas linhas semelhantes funcionam com IDs explícitos |
-| 40 | Duas conexões reais, com espera por lock observada em `pg_stat_activity`: primeiro writer vence, segundo recebe `40001`, sem sobrescrita |
-| 41 | ACL, SECURITY INVOKER e search_path permanecem iguais |
+## Limites e riscos residuais
 
-**6 testes estáticos/CLI aprovados:** exclusão da pasta autoaplicável, uma função por proposta, integridade dos corpos capturados/guards, rejeição de modo remoto e isolamento do runner. ESLint direcionado e `git diff --check` aprovados. Esses seis testes não substituem o PostgreSQL.
+- O fixture é reduzido; não clona Auth, Edge Functions, jobs, notificações, toda a cadeia de desconto/aprovação ou dados reais.
+- A validação variante → produto é transacional e coberta, mas não há ainda FK composta `(product_variant_id, product_id)`. Alteração concorrente do `product_variants.product_id` por outro writer continua um risco de catálogo separado; a policy atual impede usar `FOR KEY SHARE` pela sessão autenticada sem ampliar autorização.
+- `updateQuoteStatus` ainda usa leitura + update diretos e possui janela TOCTOU própria. Corrigi-lo exige RPC/status contract separado e revisão de grants.
+- Writers externos que alterem filhos sem bloquear a linha pai não recebem automaticamente a garantia da nova RPC. O editor principal já deixou de fazê-lo.
+- Grants amplos preexistentes não foram alterados. Qualquer revisão de ACL/RLS precisa de aprovação por objeto.
+- Não houve teste E2E autenticado contra o Supabase canônico nem aplicação produtiva.
 
-### Limites explícitos
+## Critério de promoção
 
-O fixture usa as colunas/defaults/checks capturados, oito triggers reais (versão, cálculos, propagação e imutabilidade) e expressões de policies capturadas. `auth.uid`, associação a organização, papéis e tabelas auxiliares são fixtures reduzidos; grants de tabela são sintéticos. **Não** simula toda a cadeia de desconto/aprovação diferida, notificações, Auth, Edge, UI, wrappers de desconto/Kit Maker ou jobs. Concorrência de mutação do catálogo de variantes e writers diretos que não bloqueiem o orçamento também não foram certificadas. Não afirmar RLS global, E2E canônico, prontidão de release ou 50/50.
-
-## Decisões necessárias antes de evoluir para release
-
-1. **Autorizar preparar/simular alteração adicional de `public.increment_quote_version()`**, sem aplicar, e revisar seus consumidores. Corpo capturado MD5 `8dc69376bb204fa774c7b193a7bbce4f`. Ele ignora `version` e campos calculados ao decidir incremento; as duas RPCs sozinhas não oferecem versionamento seguro de todas as alterações de itens. Não falsificar alteração de notas/tags nem desabilitar trigger para forçar versão.
-2. **Autorizar o contrato de IDs/remoção na interface:** transportar ID da linha existente e diferenciar atualização, troca e remoção explícita de itens com artes/variante. Não autorizar remoção pelo simples desaparecimento em payload legado ambíguo. Isso requer decisão sobre o comportamento e testes de consumidor; não foi implementado nesta rodada de SQL.
-3. Completar ensaios de desconto/aprovação diferida, wrappers e autorização real em ambiente isolado representativo; revisar substituição de IDs com consumidores sem FK.
-4. Somente então fechar SQL final/hash, aprovação específica de aplicação, janela/reviewer, recibo e validação canônica. **Não aplicar estas candidatas enquanto os bloqueios estiverem abertos.**
-
-Tracking: [issue #1877](https://github.com/adm01-debug/Promo_Gifts_V4/issues/1877). Etapas 37/39 seguem parciais; plano global permanece 10/50, sem alterações de cores ou schema canônico.
+Para sair de `LOCAL_ONLY`, ainda são obrigatórios: revisão humana do SQL e dos limites; autorização nominal dos **três objetos**; recoleta read-only imediatamente antes da janela; aplicação transacional pelo executor controlado; validação via `pg_catalog`; testes de criação/edição/concorrência em ambiente autorizado; recibo do ledger; regeneração segura de tipos; rollout da interface e monitoramento. Nenhuma dessas ações deve ser inferida deste relatório.

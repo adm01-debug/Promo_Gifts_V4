@@ -37,6 +37,7 @@ const { updateQuoteSpy, createQuoteSpy, requestApprovalSpy, fetchQuoteSpy, VALID
       shipping_cost: 0,
       valid_until: '2026-12-31',
       updated_at: '2026-01-01T00:00:00.000Z',
+      version: 5,
       items: [],
     };
     return {
@@ -48,7 +49,11 @@ const { updateQuoteSpy, createQuoteSpy, requestApprovalSpy, fetchQuoteSpy, VALID
         unit_price: 100,
         personalizations: [],
       },
-      updateQuoteSpy: vi.fn(() => ({ id: 'quote-1' })),
+      updateQuoteSpy: vi.fn(() => ({
+        id: 'quote-1',
+        version: 7,
+        updated_at: '2026-02-01T00:00:01.000Z',
+      })),
       createQuoteSpy: vi.fn(() => ({ id: 'quote-1' })),
       requestApprovalSpy: vi.fn(() => undefined),
       // Referência estável: o efeito de load do hook depende de `fetchQuote`; um
@@ -82,7 +87,11 @@ vi.mock('@/integrations/supabase/client', async (importActual) => {
       from: () => ({
         select: () => ({
           eq: () => ({
-            single: () => Promise.resolve({ data: { updated_at: '2026-02-01T00:00:00.000Z' } }),
+            single: () =>
+              Promise.resolve({
+                data: { updated_at: '2026-02-01T00:00:00.000Z', version: 6 },
+                error: null,
+              }),
           }),
         }),
       }),
@@ -155,6 +164,7 @@ describe('useQuoteBuilderState — overwrite preserva status', () => {
     expect(updateQuoteSpy).toHaveBeenCalledTimes(1);
     const [, quoteArg] = updateQuoteSpy.mock.calls[0] as unknown as [string, { status: string }];
     expect(quoteArg.status).toBe('pending');
+    expect(updateQuoteSpy.mock.calls[0][3]).toBe(6);
   });
 
   it('overwrite de "pending_approval" envia a justificativa no save transacional', async () => {
@@ -181,6 +191,7 @@ describe('useQuoteBuilderState — overwrite preserva status', () => {
     expect(updateQuoteSpy).toHaveBeenCalledTimes(1);
     const [, quoteArg] = updateQuoteSpy.mock.calls[0] as unknown as [string, { status: string }];
     expect(quoteArg.status).toBe('pending_approval');
+    expect(updateQuoteSpy.mock.calls[0][3]).toBe(6);
     expect(requestApprovalSpy).not.toHaveBeenCalled();
     const saveArgs = updateQuoteSpy.mock.calls[0] as unknown as unknown[];
     expect(saveArgs[4]).toBe(justification);

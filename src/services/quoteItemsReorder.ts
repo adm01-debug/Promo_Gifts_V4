@@ -1,6 +1,9 @@
 /**
  * quoteItemsReorder — Persistência granular do sort_order dos itens de um orçamento.
  *
+ * @deprecated O editor não chama mais este writer: a ordem segue no save
+ * transacional do orçamento. Mantido temporariamente para consumidores legados.
+ *
  * Em vez de depender do autosave do quote inteiro (que recalcula totais, dispara
  * triggers de validação de desconto/alçada e abre janela de race), este helper
  * faz updates direcionados em `quote_items.sort_order`. RLS atual já valida
@@ -23,10 +26,7 @@ export interface ReorderRow {
 
 const CHUNK_SIZE = 25;
 
-export async function persistItemsOrder(
-  quoteId: string,
-  rows: ReorderRow[],
-): Promise<number> {
+export async function persistItemsOrder(quoteId: string, rows: ReorderRow[]): Promise<number> {
   if (!quoteId) throw new Error('quoteId é obrigatório');
   const valid = rows.filter((r) => r && typeof r.id === 'string' && r.id.length > 0);
   if (valid.length === 0) return 0;
@@ -40,7 +40,8 @@ export async function persistItemsOrder(
           .from('quote_items')
           .update({ sort_order: row.sort_order })
           .eq('id', row.id)
-          .eq('quote_id', quoteId),
+          .eq('quote_id', quoteId)
+          .select('id'),
       ),
     );
     for (const r of results) {
@@ -51,7 +52,10 @@ export async function persistItemsOrder(
         logger.error('[persistItemsOrder] update failed', r.error);
         throw new Error(message);
       }
-      updated += 1;
+      if (r.data?.length !== 1) {
+        throw new Error('Não foi possível confirmar a reordenação de todos os itens.');
+      }
+      updated += r.data.length;
     }
   }
   return updated;
