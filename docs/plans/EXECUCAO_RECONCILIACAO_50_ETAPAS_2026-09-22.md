@@ -62,3 +62,7 @@ Além desses alvos, **20 IDs** local-only estavam fora da classificação de 16/
 **Veredito emitido, mas aceite final não satisfeito:** 50, porque há diferenças reais e etapas abertas.
 
 **Próxima ordem segura:** revisar e aprovar/rejeitar individualmente os objetos P0 acima; executar pelo workflow controlado E15 com preflight e rollback documentado; validar ledger, grants/RLS e signup; depois resolver as divergências P1 e repetir comparação bidirecional. Não há base técnica para marcar 50/50 ou “10/10” hoje.
+
+### Resultado da PR #1870
+
+A branch foi publicada em [PR #1870](https://github.com/adm01-debug/Promo_Gifts_V4/pull/1870), sem merge. O gate de base64 sinalizou apenas dois literais SQL já existentes dentro de `ALL_IN_ONE.sql`, artefato gerado por concatenação; a correção limita a exceção **somente** a esse arquivo e mantém o scan dos SQLs de origem. Já os gates **“Recibo de migration”** (12 arquivos herdados da branch local sem recibo de aplicação) e **“Migrations x Canonical schema”** (474/2 no ledger) falharam por divergências reais. Essas falhas permanecem bloqueantes; criar recibos fictícios, mudar o comparador para sucesso ou usar bypass não é remediação.

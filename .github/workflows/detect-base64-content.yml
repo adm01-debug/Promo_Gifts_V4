@@ -61,7 +61,10 @@ jobs:
           # Extensões que devem ser texto puro. Lock files, binários e imagens
           # são ignorados (podem ter linhas longas legitimamente).
           INCLUDE_REGEX='\.(ts|tsx|js|jsx|json|sql|sh|md|yaml|yml|html|css|env|env\.example|toml|conf|rc)$'
-          EXCLUDE_REGEX='(package-lock\.json|pnpm-lock\.yaml|bun\.lock|yarn\.lock|\.min\.|\.bundle\.)'
+          # ALL_IN_ONE.sql é concatenação gerada de migrations já versionadas.
+          # Duas migrations históricas contêm literais base64 SQL legítimos;
+          # cada arquivo-fonte novo/alterado continua sujeito a este scan.
+          EXCLUDE_REGEX='(package-lock\.json|pnpm-lock\.yaml|bun\.lock|yarn\.lock|\.min\.|\.bundle\.|^supabase/migrations-snapshot/ALL_IN_ONE\.sql$)'
 
           # Limites
           MIN_LEN=200
