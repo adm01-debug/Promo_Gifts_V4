@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '../../test-utils';
 import { describe, expect, it, vi } from 'vitest';
 import { ItemSelector } from '@/components/kit-builder/ItemSelector';
 import type { KitItem } from '@/lib/kit-builder';

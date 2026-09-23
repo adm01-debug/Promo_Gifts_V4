@@ -49,6 +49,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
     items: {},
   });
   const [kitQuantity, setKitQuantityState] = useState(1);
+  const [notes, setNotes] = useState('');
   const [identity, setIdentity] = useState<KitIdentity>({
     color: '#3B82F6',
     icon: 'Package',
@@ -185,6 +186,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
       items: selectedItems,
       personalization,
       identity,
+      notes,
       totalItemsVolume,
       availableVolume,
       volumeUsagePercent,
@@ -196,7 +198,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
       isValid: validationErrors.length === 0,
       validationErrors,
     };
-  }, [kitName, kitType, selectedBox, selectedItems, personalization, kitQuantity, identity]);
+  }, [kitName, kitType, selectedBox, selectedItems, personalization, kitQuantity, identity, notes]);
 
   const wizardState = useMemo((): KitBuilderWizardState => {
     const completedSteps: KitBuilderStep[] = [];
@@ -326,6 +328,12 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
       const { [itemId]: _removedLine, ...rest } = prev.items;
       return { ...prev, items: rest };
     });
+  }, []);
+
+  /** Clears every selected item and its personalization. Box and identity are preserved. */
+  const clearItems = useCallback(() => {
+    setSelectedItems([]);
+    setPersonalization((prev) => ({ ...prev, items: {} }));
   }, []);
 
   const updateItemQuantity = useCallback(
@@ -518,6 +526,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
     setSelectedItems([]);
     setPersonalization({ box: { enabled: false }, items: {} });
     setKitQuantityState(1);
+    setNotes('');
     setIdentity({ color: '#3B82F6', icon: 'Package', tag: '', description: '', isFavorite: false });
     setPersonalizationReviewed(false);
     setCurrentStep(flow === 'items-first' ? 'items' : 'box');
@@ -530,6 +539,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
     setSelectedItems([]);
     setPersonalization({ box: { enabled: false }, items: {} });
     setKitQuantityState(1);
+    setNotes('');
     setIdentity({ color: '#3B82F6', icon: 'Package', tag: '', description: '', isFavorite: false });
     setPersonalizationReviewed(false);
     setFlow(nextFlow);
@@ -546,6 +556,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
       personalization: KitPersonalization;
       kitQuantity: number;
       identity?: KitIdentity;
+      notes?: string;
     }) => {
       setKitName(data.name);
       setKitType(data.kitType);
@@ -569,6 +580,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
       setKitQuantityState(
         Number.isSafeInteger(data.kitQuantity) && data.kitQuantity > 0 ? data.kitQuantity : 1,
       );
+      setNotes(data.notes || '');
       if (data.identity) {
         setIdentity({
           color: data.identity.color || '#3B82F6',
@@ -597,6 +609,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
     setKitQuantityState(
       Number.isSafeInteger(snap.kitQuantity) && snap.kitQuantity > 0 ? snap.kitQuantity : 1,
     );
+    setNotes(snap.notes || '');
     if (snap.identity) setIdentity(snap.identity);
   }, []);
 
@@ -607,6 +620,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
       setSelectedBox(composition.box);
       setSelectedItems(composition.items.map(normalizeKitItemLine));
       setPersonalization({ box: { enabled: false }, items: {} });
+      setNotes('');
       if (requestedQuantity && Number.isSafeInteger(requestedQuantity) && requestedQuantity > 0) {
         setKitQuantityState(requestedQuantity);
       }
@@ -700,6 +714,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
     clearBox,
     addItem,
     removeItem,
+    clearItems,
     updateItemQuantity,
     updateItemColor,
     updateItemVariant,
@@ -709,6 +724,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
     setBoxPersonalization,
     setKitQuantity,
     setIdentity,
+    setNotes,
     setFlow,
     goToStep,
     nextStep,

@@ -32,6 +32,12 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
+function readDraftNotes(personalizationData: Record<string, unknown>): string {
+  const draft = isRecord(personalizationData.__draft) ? personalizationData.__draft : null;
+  const notes = draft?.notes;
+  return typeof notes === 'string' ? notes : '';
+}
+
 function readDraftClient(personalizationData: Record<string, unknown>): KitQuoteClient {
   const draft = isRecord(personalizationData.__draft) ? personalizationData.__draft : null;
   const client = draft && isRecord(draft.quoteClient) ? draft.quoteClient : null;
@@ -76,6 +82,7 @@ function toSavedKitSnapshot(row: {
       ? (row.personalization_data as unknown as KitPersonalization)
       : { box: { enabled: false }, items: {} },
     quoteClient: readDraftClient(row.personalization_data),
+    notes: readDraftNotes(row.personalization_data),
     kitQuantity: Number.isFinite(row.kit_quantity) && row.kit_quantity > 0 ? row.kit_quantity : 1,
     identity: {
       color: row.color || '#3B82F6',
@@ -141,6 +148,7 @@ export function useKitBuilderPageState() {
     clearBox,
     addItem,
     removeItem,
+    clearItems,
     updateItemQuantity,
     updateItemVariant,
     reorderItems,
@@ -148,6 +156,7 @@ export function useKitBuilderPageState() {
     setBoxPersonalization,
     setKitQuantity,
     setIdentity,
+    setNotes,
     goToStep,
     nextStep,
     prevStep,
@@ -210,6 +219,7 @@ export function useKitBuilderPageState() {
       personalization: kitState.personalization,
       kitQuantity,
       identity: kitState.identity,
+      notes: kitState.notes,
     });
   }, [
     kitState.name,
@@ -218,6 +228,7 @@ export function useKitBuilderPageState() {
     kitState.items,
     kitState.personalization,
     kitState.identity,
+    kitState.notes,
     kitQuantity,
     pushSnapshot,
     isRestoring,
@@ -435,6 +446,7 @@ export function useKitBuilderPageState() {
       clearBox,
       addItem,
       removeItem,
+      clearItems,
       updateItemQuantity,
       updateItemVariant,
       reorderItems,
@@ -442,6 +454,7 @@ export function useKitBuilderPageState() {
       setBoxPersonalization,
       setKitQuantity,
       setIdentity,
+      setNotes,
       goToStep,
       nextStep,
       prevStep,

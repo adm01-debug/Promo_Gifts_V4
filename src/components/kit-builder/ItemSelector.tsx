@@ -4,16 +4,36 @@
  */
 
 import { useState, useMemo, useEffect } from 'react';
-import { Search, AlertTriangle, X, Package } from 'lucide-react';
+import {
+  Search,
+  AlertTriangle,
+  X,
+  Package,
+  LayoutGrid,
+  List,
+  ArrowRight,
+  Trash2,
+} from 'lucide-react';
 import { SelectedItemsBadges } from './SelectedItemsBadges';
 import { ItemCard } from './ItemCard';
 import { KitSmartSuggestions } from './KitSmartSuggestions';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ItemCardSkeleton } from './KitCardSkeleton';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import {
   Select,
   SelectContent,
@@ -23,10 +43,13 @@ import {
 } from '@/components/ui/select';
 import {
   getKitItemLineId,
+  formatCurrency,
   type KitItem,
   type ItemFilters,
   type CompatibilityResult,
+  type KitBuilderFlow,
 } from '@/lib/kit-builder';
+import { useKitStockValidation } from '@/hooks/kit-builder';
 import type { VariantSelectionData } from './VariantSelector';
 
 interface ItemWithCompatibility extends KitItem {
@@ -44,9 +67,19 @@ interface ItemSelectorProps {
   onUpdateQuantity: (itemId: string, quantity: number) => void;
   onUpdateVariant: (itemId: string, data: VariantSelectionData) => void;
   onReorder?: (fromIndex: number, toIndex: number) => void;
+  onClearAll?: () => void;
   boxSelected: boolean;
   errorMessage?: string | null;
   onRetry?: () => void;
+  /** Total catalog size before filtering — powers the "X de Y produtos" counter. */
+  totalCount?: number;
+  /** Journey badge shown in the step header. */
+  flow?: KitBuilderFlow;
+  kitQuantity?: number;
+  /** Real occupancy once a box exists; undefined/no box shows the "pending" copy. */
+  volumeUsagePercent?: number;
+  onNext?: () => void;
+  canProceed?: boolean;
 }
 
 export function ItemSelector({
@@ -60,12 +93,20 @@ export function ItemSelector({
   onUpdateQuantity,
   onUpdateVariant,
   onReorder,
+  onClearAll,
   boxSelected,
   errorMessage,
   onRetry,
+  totalCount,
+  flow,
+  kitQuantity,
+  volumeUsagePercent,
+  onNext,
+  canProceed,
 }: ItemSelectorProps) {
   const [searchValue, setSearchValue] = useState('');
   const [lastError, setLastError] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   useEffect(() => {
     setSearchValue(filters.search || '');
@@ -103,8 +144,28 @@ export function ItemSelector({
     if (!selectedItemsByProductId.has(item.id)) selectedItemsByProductId.set(item.id, item);
   });
 
+  // Stock is only ever resolved for the small, bounded set of already-selected
+  // items — batching it across the whole visible catalog would reintroduce
+  // the N+1 this hook was built to avoid.
+  const { stockByProduct, stockByVariant } = useKitStockValidation(
+    selectedItems,
+    null,
+    kitQuantity || 1,
+  );
+
+  const subtotal = selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const previewThumbs = selectedItems.slice(0, 4);
+
   return (
     <div className="space-y-4">
+      {flow && (
+        <Badge variant="outline" className="gap-1.5 text-xs font-normal text-muted-foreground">
+          {flow === 'items-first'
+            ? 'Fluxo 1 · Começar pelos itens'
+            : 'Fluxo 2 · Começar pela caixa'}
+        </Badge>
+      )}
+
       {!boxSelected && (
         <div className="flex items-center gap-3 rounded-lg border border-warning/30 bg-warning/10 p-4">
           <AlertTriangle className="h-5 w-5 flex-shrink-0 text-warning" />
@@ -149,31 +210,58 @@ export function ItemSelector({
                 </Label>
               </div>
             )}
+
+            <div className="flex items-center gap-1 rounded-lg border p-0.5">
+              <Button
+                type="button"
+                variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
+                size="icon"
+                className="h-8 w-8"
+                aria-label="Ver em grade"
+                aria-pressed={viewMode === 'grid'}
+                onClick={() => setViewMode('grid')}
+              >
+                <LayoutGrid className="h-4 w-4" />
+              </Button>
+              <Button
+                type="button"
+                variant={viewMode === 'list' ? 'secondary' : 'ghost'}
+                size="icon"
+                className="h-8 w-8"
+                aria-label="Ver em lista"
+                aria-pressed={viewMode === 'list'}
+                onClick={() => setViewMode('list')}
+              >
+                <List className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
 
-          <div className="flex flex-wrap gap-2">
-            {/* Only the category control depends on category cardinality. The
-                remaining filters must stay visible while they are active. */}
-            {categories.length > 1 && (
-              <Select
-                value={filters.category || 'all'}
-                onValueChange={(v) =>
-                  onFiltersChange({ ...filters, category: v === 'all' ? undefined : v })
-                }
+          <div
+            className="flex flex-wrap gap-2 overflow-x-auto pb-1"
+            role="group"
+            aria-label="Categorias"
+          >
+            <Badge
+              variant={!filters.category ? 'default' : 'outline'}
+              className="cursor-pointer whitespace-nowrap px-3 py-1.5 text-xs font-medium"
+              onClick={() => onFiltersChange({ ...filters, category: undefined })}
+            >
+              Todos
+            </Badge>
+            {categories.map((cat) => (
+              <Badge
+                key={cat}
+                variant={filters.category === cat ? 'default' : 'outline'}
+                className="cursor-pointer whitespace-nowrap px-3 py-1.5 text-xs font-medium"
+                onClick={() => onFiltersChange({ ...filters, category: cat })}
               >
-                <SelectTrigger className="w-[200px]" aria-label="Categoria">
-                  <SelectValue placeholder="Categoria" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todas as categorias</SelectItem>
-                  {categories.map((cat) => (
-                    <SelectItem key={cat} value={cat}>
-                      {cat}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
+                {cat}
+              </Badge>
+            ))}
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
             {materials.length > 0 && (
               <Select
                 value={filters.material || 'all'}
@@ -195,7 +283,7 @@ export function ItemSelector({
               </Select>
             )}
             <Select
-              value={filters.sort || 'name'}
+              value={filters.sort || 'relevance'}
               onValueChange={(value) =>
                 onFiltersChange({ ...filters, sort: value as NonNullable<typeof filters.sort> })
               }
@@ -204,6 +292,7 @@ export function ItemSelector({
                 <SelectValue placeholder="Ordenar" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="relevance">Mais relevantes</SelectItem>
                 <SelectItem value="name">Nome</SelectItem>
                 <SelectItem value="price-asc">Menor preço</SelectItem>
                 <SelectItem value="price-desc">Maior preço</SelectItem>
@@ -239,6 +328,9 @@ export function ItemSelector({
                 }
               />
             </div>
+            <span className="ml-auto text-xs text-muted-foreground">
+              {items.length} de {totalCount ?? items.length} produtos
+            </span>
           </div>
 
           <KitSmartSuggestions
@@ -249,7 +341,7 @@ export function ItemSelector({
             }}
           />
 
-          <ScrollArea className="h-[50vh] pr-4">
+          <div>
             {isLoading ? (
               <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
                 {[1, 2, 3, 4, 5, 6].map((i) => (
@@ -274,7 +366,7 @@ export function ItemSelector({
                 <Package className="mx-auto mb-3 h-12 w-12 text-muted-foreground" />
                 <p className="text-muted-foreground">Nenhum item encontrado</p>
               </div>
-            ) : (
+            ) : viewMode === 'grid' ? (
               <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
                 {items.map((item) => (
                   <ItemCard
@@ -288,21 +380,62 @@ export function ItemSelector({
                   />
                 ))}
               </div>
+            ) : (
+              <div className="space-y-2">
+                {items.map((item) => (
+                  <ItemCard
+                    key={item.id}
+                    item={item}
+                    view="list"
+                    isSelected={selectedItemsByProductId.has(item.id)}
+                    selectedItem={selectedItemsByProductId.get(item.id)}
+                    boxSelected={boxSelected}
+                    onAdd={handleAddItem}
+                    onRemove={(selected) => onRemoveItem(getKitItemLineId(selected))}
+                  />
+                ))}
+              </div>
             )}
-          </ScrollArea>
+          </div>
         </section>
 
         <aside
           className="h-fit space-y-4 rounded-xl border bg-card p-4 xl:sticky xl:top-24"
           aria-label="Composição atual do kit"
         >
-          <div>
-            <h3 className="font-display text-lg font-semibold">Seu kit</h3>
-            <p className="text-xs text-muted-foreground">
-              {selectedItems.length}{' '}
-              {selectedItems.length === 1 ? 'produto selecionado' : 'produtos selecionados'}
-            </p>
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <h3 className="font-display text-lg font-semibold">Seu kit</h3>
+              <p className="text-xs text-muted-foreground">
+                {selectedItems.length}{' '}
+                {selectedItems.length === 1 ? 'item selecionado' : 'itens selecionados'}
+              </p>
+            </div>
+            {previewThumbs.length > 0 && (
+              <div className="flex -space-x-2">
+                {previewThumbs.map((item) => (
+                  <div
+                    key={getKitItemLineId(item)}
+                    className="h-8 w-8 overflow-hidden rounded-full border-2 border-card bg-secondary"
+                  >
+                    {item.imageUrl ? (
+                      <img
+                        src={item.imageUrl}
+                        alt={item.name}
+                        className="h-full w-full object-cover"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center">
+                        <Package className="h-3.5 w-3.5 text-muted-foreground" />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
+
           {selectedItems.length > 0 ? (
             <SelectedItemsBadges
               items={selectedItems}
@@ -310,6 +443,9 @@ export function ItemSelector({
               onUpdateQuantity={onUpdateQuantity}
               onUpdateVariant={onUpdateVariant}
               onReorder={onReorder}
+              stockByProduct={stockByProduct}
+              stockByVariant={stockByVariant}
+              kitQuantity={kitQuantity}
             />
           ) : (
             <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
@@ -317,6 +453,7 @@ export function ItemSelector({
               Adicione produtos para começar a composição.
             </div>
           )}
+
           <div className="border-t pt-3 text-sm">
             <div className="flex justify-between">
               <span className="text-muted-foreground">Itens por kit</span>
@@ -324,12 +461,53 @@ export function ItemSelector({
             </div>
             <div className="mt-1 flex justify-between">
               <span className="text-muted-foreground">Subtotal</span>
-              <strong>
-                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
-                  selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
-                )}
-              </strong>
+              <strong>{formatCurrency(subtotal)}</strong>
             </div>
+          </div>
+
+          {!boxSelected && (
+            <p className="rounded-md bg-muted/50 p-2 text-xs text-muted-foreground">
+              A caixa ideal será recomendada após a definição da composição.
+            </p>
+          )}
+
+          <div className="rounded-md border border-dashed p-2 text-xs">
+            <span className="text-muted-foreground">
+              {boxSelected
+                ? `Estimativa de ocupação: ${Math.round(volumeUsagePercent ?? 0)}%`
+                : 'Estimativa de ocupação — calculada após a escolha da caixa.'}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {onClearAll && selectedItems.length > 0 && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="outline" size="sm" className="gap-1.5 text-destructive">
+                    <Trash2 className="h-3.5 w-3.5" /> Limpar tudo
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Remover todos os itens?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Isso remove todos os {selectedItems.length} itens selecionados e suas
+                      personalizações. A caixa escolhida é mantida.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction onClick={onClearAll}>Limpar tudo</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
+            {onNext && (
+              <Button className="ml-auto gap-1.5" size="sm" disabled={!canProceed} onClick={onNext}>
+                {flow === 'items-first' ? 'Ver caixas compatíveis' : 'Continuar'}
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Button>
+            )}
           </div>
         </aside>
       </div>

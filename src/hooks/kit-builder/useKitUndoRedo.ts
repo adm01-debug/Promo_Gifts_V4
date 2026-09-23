@@ -18,6 +18,7 @@ export interface KitSnapshot {
   personalization: KitPersonalization;
   kitQuantity: number;
   identity?: KitIdentity;
+  notes?: string;
 }
 
 const MAX_HISTORY = 30;
