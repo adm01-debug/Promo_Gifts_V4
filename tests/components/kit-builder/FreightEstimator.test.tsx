@@ -22,58 +22,58 @@ function getMethodSelect() {
 
 // ─── Casos de faixa de peso — tabela Transportadora (default) ────────────────
 
-describe("FreightEstimator — tabela transportadora (default)", () => {
-  it("peso zero → alerta de peso não informado visível", () => {
+describe('FreightEstimator — tabela transportadora (default)', () => {
+  it('peso zero → alerta de peso não informado visível', () => {
     renderFreight(0, 1);
     expect(screen.getByText(/peso dos itens não informado/i)).toBeInTheDocument();
   });
 
-  it("0g → exibe peso 0.0kg", () => {
+  it('0g → exibe peso 0.0kg', () => {
     renderFreight(0, 1);
-    expect(screen.getByText("0.0kg")).toBeInTheDocument();
+    expect(screen.getByText('0.0kg')).toBeInTheDocument();
   });
 
-  it("1000g (1kg) → faixa ≤5kg = R$ 18,00", () => {
+  it('1000g (1kg) → faixa ≤5kg = R$ 18,00', () => {
     renderFreight(1_000, 1);
     expect(screen.getAllByText(/18/).length).toBeGreaterThan(0);
   });
 
-  it("5000g (5kg) → faixa ≤5kg = R$ 18,00 (boundary inclusive)", () => {
+  it('5000g (5kg) → faixa ≤5kg = R$ 18,00 (boundary inclusive)', () => {
     renderFreight(5_000, 1);
     expect(screen.getAllByText(/18/).length).toBeGreaterThan(0);
   });
 
-  it("5001g → faixa ≤10kg = R$ 28,00", () => {
+  it('5001g → faixa ≤10kg = R$ 28,00', () => {
     renderFreight(5_001, 1);
     expect(screen.getAllByText(/28/).length).toBeGreaterThan(0);
   });
 
-  it("10000g (10kg) → faixa ≤10kg = R$ 28,00 (boundary inclusive)", () => {
+  it('10000g (10kg) → faixa ≤10kg = R$ 28,00 (boundary inclusive)', () => {
     renderFreight(10_000, 1);
     expect(screen.getAllByText(/28/).length).toBeGreaterThan(0);
   });
 
-  it("10001g → faixa ≤30kg = R$ 45,00", () => {
+  it('10001g → faixa ≤30kg = R$ 45,00', () => {
     renderFreight(10_001, 1);
     expect(screen.getAllByText(/45/).length).toBeGreaterThan(0);
   });
 
-  it("30000g (30kg) → faixa ≤30kg = R$ 45,00", () => {
+  it('30000g (30kg) → faixa ≤30kg = R$ 45,00', () => {
     renderFreight(30_000, 1);
     expect(screen.getAllByText(/45/).length).toBeGreaterThan(0);
   });
 
-  it("30001g → faixa ≤100kg = R$ 80,00", () => {
+  it('30001g → faixa ≤100kg = R$ 80,00', () => {
     renderFreight(30_001, 1);
     expect(screen.getAllByText(/80/).length).toBeGreaterThan(0);
   });
 
-  it("100000g (100kg) → faixa ≤100kg = R$ 80,00", () => {
+  it('100000g (100kg) → faixa ≤100kg = R$ 80,00', () => {
     renderFreight(100_000, 1);
     expect(screen.getAllByText(/80/).length).toBeGreaterThan(0);
   });
 
-  it("100001g → faixa >100kg = R$ 120,00 (último tier)", () => {
+  it('100001g → faixa >100kg = R$ 120,00 (último tier)', () => {
     renderFreight(100_001, 1);
     expect(screen.getAllByText(/120/).length).toBeGreaterThan(0);
   });
@@ -81,20 +81,20 @@ describe("FreightEstimator — tabela transportadora (default)", () => {
 
 // ─── kitQuantity multiplica peso total ──────────────────────────────────────
 
-describe("FreightEstimator — multiplicação por kitQuantity", () => {
-  it("2 kits × 2000g = 4kg → faixa ≤5kg = R$ 18,00", () => {
+describe('FreightEstimator — multiplicação por kitQuantity', () => {
+  it('2 kits × 2000g = 4kg → faixa ≤5kg = R$ 18,00', () => {
     renderFreight(2_000, 2);
     expect(screen.getByText(/18/)).toBeInTheDocument();
-    expect(screen.getByText("4.0kg")).toBeInTheDocument();
+    expect(screen.getByText('4.0kg')).toBeInTheDocument();
   });
 
-  it("5 kits × 1200g = 6kg → faixa ≤10kg = R$ 28,00", () => {
+  it('5 kits × 1200g = 6kg → faixa ≤10kg = R$ 28,00', () => {
     renderFreight(1_200, 5);
     expect(screen.getByText(/28/)).toBeInTheDocument();
-    expect(screen.getByText("6.0kg")).toBeInTheDocument();
+    expect(screen.getByText('6.0kg')).toBeInTheDocument();
   });
 
-  it("preço por kit = preço total / kitQuantity", () => {
+  it('preço por kit = preço total / kitQuantity', () => {
     renderFreight(6_000, 3);
     // total = 18kg → faixa ≤30kg = R$ 45,00; por kit = 45/3 = R$ 15,00
     expect(screen.getAllByText(/15/)[0]).toBeInTheDocument();
@@ -110,7 +110,7 @@ describe("FreightEstimator — multiplicação por kitQuantity", () => {
 
 // ─── Troca de modalidade ────────────────────────────────────────────────────
 
-describe("FreightEstimator — troca de modalidade", () => {
+describe('FreightEstimator — troca de modalidade', () => {
   it("renders com 'Transportadora' como default", () => {
     renderFreight(1_000, 1);
     expect(getMethodSelect()).toBeInTheDocument();
@@ -121,7 +121,7 @@ describe("FreightEstimator — troca de modalidade", () => {
     expect(screen.getByText(/estimativa de frete/i)).toBeInTheDocument();
   });
 
-  it("exibe nota de valores estimados", () => {
+  it('exibe nota de valores estimados', () => {
     renderFreight(1_000, 1);
     expect(screen.getByText(/valores estimados/i)).toBeInTheDocument();
   });
@@ -129,29 +129,53 @@ describe("FreightEstimator — troca de modalidade", () => {
 
 // ─── Casos extremos ─────────────────────────────────────────────────────────
 
-describe("FreightEstimator — valores extremos e erro", () => {
-  it("peso muito alto (999999g) → tier infinito = R$ 120,00", () => {
+describe('FreightEstimator — valores extremos e erro', () => {
+  it('peso muito alto (999999g) → tier infinito = R$ 120,00', () => {
     renderFreight(999_999, 1);
     expect(screen.getAllByText(/120/).length).toBeGreaterThan(0);
   });
 
-  it("kitQuantity=100 × 500g = 50kg → faixa ≤100kg = R$ 80,00", () => {
+  it('kitQuantity=100 × 500g = 50kg → faixa ≤100kg = R$ 80,00', () => {
     renderFreight(500, 100);
     expect(screen.getAllByText(/80/).length).toBeGreaterThan(0);
   });
 
-  it("peso negativo → trata como 0g", () => {
+  it('peso negativo → trata como 0g', () => {
     renderFreight(-500, 1);
-    expect(screen.getByText("0.0kg")).toBeInTheDocument();
+    expect(screen.getByText('0.0kg')).toBeInTheDocument();
   });
 
-  it("kitQuantity=0 → trata como 1 kit para estimativa (evita divisão por zero)", () => {
+  it('kitQuantity=0 → trata como 1 kit para estimativa (evita divisão por zero)', () => {
     renderFreight(1000, 0);
-    expect(screen.getByText("1.0kg")).toBeInTheDocument();
+    expect(screen.getByText('1.0kg')).toBeInTheDocument();
   });
-  
-  it("Infinity grams → fallback para tier máximo", () => {
+
+  it('Infinity grams → fallback para tier máximo', () => {
     renderFreight(Infinity, 1);
     expect(screen.getAllByText(/120/).length).toBeGreaterThan(0);
+  });
+});
+
+// ─── Etapa 15 — peso desconhecido não pode virar 0 silencioso ───────────────
+
+describe('FreightEstimator — itemsWithUnknownWeightCount (etapa 15)', () => {
+  it('kit com item sem peso mostra o aviso de estimativa parcial', () => {
+    render(
+      <FreightEstimator totalWeightGrams={1_000} kitQuantity={1} itemsWithUnknownWeightCount={2} />,
+    );
+    expect(screen.getByText(/estimativa parcial/i)).toBeInTheDocument();
+    expect(screen.getByText(/2 item\(ns\) sem peso cadastrado/i)).toBeInTheDocument();
+  });
+
+  it('kit com todos os pesos conhecidos não mostra nada extra', () => {
+    render(
+      <FreightEstimator totalWeightGrams={1_000} kitQuantity={1} itemsWithUnknownWeightCount={0} />,
+    );
+    expect(screen.queryByText(/estimativa parcial/i)).not.toBeInTheDocument();
+  });
+
+  it('prop omitida (compatibilidade retroativa) não mostra o aviso', () => {
+    renderFreight(1_000, 1);
+    expect(screen.queryByText(/estimativa parcial/i)).not.toBeInTheDocument();
   });
 });

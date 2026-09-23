@@ -22,6 +22,8 @@ import { formatCurrency } from '@/lib/kit-builder';
 interface FreightEstimatorProps {
   totalWeightGrams: number;
   kitQuantity: number;
+  /** Itens selecionados sem peso cadastrado — o cálculo acima já os trata como 0g. */
+  itemsWithUnknownWeightCount?: number;
 }
 
 // Tabela interna estimada por faixa de peso (SP Capital como referência)
@@ -55,7 +57,11 @@ const METHOD_LABELS: Record<string, string> = {
   transportadora: 'Transportadora',
 };
 
-export function FreightEstimator({ totalWeightGrams, kitQuantity }: FreightEstimatorProps) {
+export function FreightEstimator({
+  totalWeightGrams,
+  kitQuantity,
+  itemsWithUnknownWeightCount = 0,
+}: FreightEstimatorProps) {
   const [method, setMethod] = useState<string>('transportadora');
 
   const safeWeightGrams = Math.max(0, totalWeightGrams);
@@ -115,6 +121,11 @@ export function FreightEstimator({ totalWeightGrams, kitQuantity }: FreightEstim
           <div className="rounded-lg bg-secondary/50 p-2">
             <p className="text-[11px] text-muted-foreground">Peso Total</p>
             <p className="text-sm font-bold">{totalWeightKg.toFixed(1)}kg</p>
+            {itemsWithUnknownWeightCount > 0 && (
+              <p className="mt-0.5 text-[10px] leading-tight text-warning">
+                Estimativa parcial — {itemsWithUnknownWeightCount} item(ns) sem peso cadastrado
+              </p>
+            )}
           </div>
           <div className="rounded-lg bg-secondary/50 p-2">
             <p className="text-[11px] text-muted-foreground">{METHOD_LABELS[method]}</p>

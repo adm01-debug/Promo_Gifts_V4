@@ -74,6 +74,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
     completeItemCatalog,
     isLoadingBoxes,
     isLoadingItems,
+    isLoadingItemStock,
     boxError,
     itemError,
     refetchBoxes,
@@ -101,6 +102,11 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
       0,
     );
     const totalWeight = boxWeight + itemsWeight;
+    // `item.weight || 0` acima trata peso ausente como zero sem avisar — esta
+    // contagem não muda o cálculo, só permite sinalizar a estimativa parcial.
+    const itemsWithUnknownWeightCount = selectedItems.filter(
+      (item) => item.weight === null || item.weight === undefined,
+    ).length;
 
     const pricing = calculateTotalKitPrice(
       selectedBox,
@@ -191,6 +197,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
       availableVolume,
       volumeUsagePercent,
       totalWeight,
+      itemsWithUnknownWeightCount,
       boxPrice: pricing.boxPrice,
       itemsPrice: pricing.itemsPrice,
       personalizationPrice: pricing.personalizationPrice,
@@ -700,6 +707,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
     allAvailableItems: completeItemCatalog,
     isLoadingBoxes,
     isLoadingItems,
+    isLoadingItemStock,
     boxError,
     itemError,
     refetchBoxes,

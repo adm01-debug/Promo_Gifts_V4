@@ -75,6 +75,23 @@ describe('useKitBuilder — fluxos de montagem', () => {
     expect(result.current.kitState.items).toEqual([expect.objectContaining({ id: item.id })]);
   });
 
+  it('conta itens sem peso cadastrado sem alterar o total (que já os trata como 0g)', async () => {
+    const { useKitBuilder } = await import('@/hooks/kit-builder/useKitBuilder');
+    const { result } = renderHook(() => useKitBuilder({ initialFlow: 'items-first' }));
+
+    const itemWithWeight: KitItem = { ...item, id: 'item-weight', weight: 200 };
+    const itemWithoutWeight: KitItem = { ...item, id: 'item-no-weight', weight: undefined };
+
+    act(() => result.current.addItem(itemWithWeight));
+    expect(result.current.kitState.itemsWithUnknownWeightCount).toBe(0);
+    expect(result.current.kitState.totalWeight).toBe(200);
+
+    act(() => result.current.addItem(itemWithoutWeight));
+    expect(result.current.kitState.itemsWithUnknownWeightCount).toBe(1);
+    // O peso desconhecido continua contribuindo 0g ao total — a contagem só sinaliza, não recalcula.
+    expect(result.current.kitState.totalWeight).toBe(200);
+  });
+
   it('não marca personalização como concluída só porque o resumo foi aberto', async () => {
     const { useKitBuilder } = await import('@/hooks/kit-builder/useKitBuilder');
     const { result } = renderHook(() => useKitBuilder());
@@ -143,8 +160,14 @@ describe('useKitBuilder — fluxos de montagem', () => {
 
     expect(result.current.kitState.items).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ lineId: 'item-1:variant-black', selectedVariantId: 'variant-black' }),
-        expect.objectContaining({ lineId: 'item-1:variant-blue', selectedVariantId: 'variant-blue' }),
+        expect.objectContaining({
+          lineId: 'item-1:variant-black',
+          selectedVariantId: 'variant-black',
+        }),
+        expect.objectContaining({
+          lineId: 'item-1:variant-blue',
+          selectedVariantId: 'variant-blue',
+        }),
       ]),
     );
   });

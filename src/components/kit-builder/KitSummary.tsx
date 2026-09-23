@@ -227,7 +227,11 @@ export function KitSummary({
             totalPrice={pricing.total}
             kitQuantity={kitQuantity}
           />
-          <FreightEstimator totalWeightGrams={kitState.totalWeight} kitQuantity={kitQuantity} />
+          <FreightEstimator
+            totalWeightGrams={kitState.totalWeight}
+            kitQuantity={kitQuantity}
+            itemsWithUnknownWeightCount={kitState.itemsWithUnknownWeightCount}
+          />
         </aside>
       </div>
 
