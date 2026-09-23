@@ -29,6 +29,22 @@ vi.mock('@/hooks/products', () => ({
             },
           ],
         },
+        {
+          location_name: 'Lateral',
+          location_code: 'side',
+          options: [
+            {
+              technique_id: 'silk',
+              tecnica_nome: 'Silk-screen',
+              grupo_tecnica: 'Impressão',
+              codigo_tabela: 'SILK',
+              max_cores: 3,
+              usa_dimensao: false,
+              efetiva_largura_max: 4,
+              efetiva_altura_max: 4,
+            },
+          ],
+        },
       ],
     },
     isLoading: false,
@@ -178,6 +194,13 @@ describe('PersonalizationConfig async behavior', () => {
   it('detaches Kit Maker artwork without deleting a potentially shared storage object', () => {
     render(<Harness />);
     expect(screen.getByTestId('artwork-control')).toHaveAttribute('data-delete-on-remove', 'false');
+  });
+
+  it('mostra o seletor de área de aplicação com as áreas reais do produto', async () => {
+    render(<Harness />);
+    const areaSelects = await screen.findAllByRole('combobox', { name: /área de aplicação/i });
+    expect(areaSelects.length).toBeGreaterThan(0);
+    expect(areaSelects[0]).toHaveTextContent('Frente');
   });
 
   it('espelha somente o produto no verso e mantém a arte legível', () => {
