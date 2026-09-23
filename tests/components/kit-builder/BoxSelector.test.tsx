@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '../../test-utils';
 import { describe, expect, it, vi } from 'vitest';
 import { BoxSelector } from '@/components/kit-builder/BoxSelector';
 import type { BoxFilters, KitBox, KitItem } from '@/lib/kit-builder';
