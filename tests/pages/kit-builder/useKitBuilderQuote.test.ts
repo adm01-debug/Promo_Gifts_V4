@@ -132,6 +132,36 @@ describe('useKitBuilderQuote — payloads', () => {
     expect(validateKitStockForQuote).toHaveBeenCalledWith(KIT_STATE.items, KIT_STATE.box, 3);
   });
 
+  it('anexa a observação do kit ao final das notas do orçamento', async () => {
+    const useHook = await loadHook({ user: { id: USER_ID } });
+    const { result } = renderHook(() => useHook());
+
+    await act(async () => {
+      await result.current.handleAddToQuote(
+        { ...KIT_STATE, notes: '  Entregar até sexta-feira.  ' },
+        3,
+        {},
+      );
+    });
+
+    const rpc = mock.calls.rpc.find((call) => call.fn === 'create_kit_quote_transactional');
+    expect((rpc!.args?._quote as { notes: string }).notes).toBe(
+      'Kit: [PROMO] Kit teste — Obs.: Entregar até sexta-feira.',
+    );
+  });
+
+  it('não anexa observação quando o kit não tem notas', async () => {
+    const useHook = await loadHook({ user: { id: USER_ID } });
+    const { result } = renderHook(() => useHook());
+
+    await act(async () => {
+      await result.current.handleAddToQuote(KIT_STATE, 3, {});
+    });
+
+    const rpc = mock.calls.rpc.find((call) => call.fn === 'create_kit_quote_transactional');
+    expect((rpc!.args?._quote as { notes: string }).notes).toBe('Kit: [PROMO] Kit teste');
+  });
+
   it('faz fail-closed quando a leitura final de estoque é inconclusiva', async () => {
     validateKitStockForQuote.mockResolvedValueOnce({ status: 'unknown', alerts: [] });
     const useHook = await loadHook({ user: { id: USER_ID } });

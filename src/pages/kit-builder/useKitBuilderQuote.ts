@@ -189,6 +189,9 @@ export function useKitBuilderQuote() {
       const kitMetadataNote = kitState.identity?.tag
         ? `[${kitState.identity.tag}] ${kitLabel}`
         : kitLabel;
+      const kitObservationNote = kitState.notes?.trim()
+        ? `${kitMetadataNote} — Obs.: ${kitState.notes.trim()}`
+        : kitMetadataNote;
 
       const boxRef = kitState.box;
       const itemsRef = kitState.items;
@@ -210,7 +213,7 @@ export function useKitBuilderQuote() {
         discount_amount: 0,
         total: pricing.total,
         negotiation_markup_percent: 0,
-        notes: `Kit: ${kitMetadataNote}`,
+        notes: `Kit: ${kitObservationNote}`,
         // internal_notes removido: campo descontinuado na UI.
         tags: {
           source: 'kit-builder',

@@ -48,13 +48,23 @@ describe('Kit Maker persistence snapshot', () => {
 
     expect(payload.personalization_data).toEqual(
       expect.objectContaining({
-        __draft: {
+        __draft: expect.objectContaining({
           version: 1,
           quoteClient: expect.objectContaining({
             client_id: 'client-1',
             client_name: 'Ana Compradora',
           }),
-        },
+        }),
+      }),
+    );
+  });
+
+  it('persists the kit notes under the draft namespace so templates never inherit them', () => {
+    const payload = buildKitPersistencePayload('user-1', { ...validKit, notes: 'Entregar rápido' }, 10);
+
+    expect(payload.personalization_data).toEqual(
+      expect.objectContaining({
+        __draft: expect.objectContaining({ notes: 'Entregar rápido' }),
       }),
     );
   });

@@ -2,12 +2,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { FileText } from 'lucide-react';
+import { KitIdentityPicker } from '../KitIdentityPicker';
+import type { KitIdentity } from '@/lib/kit-builder';
 
 interface KitIdentificationCardProps {
   kitName: string;
   kitQuantity: number;
   onKitNameChange: (name: string) => void;
   onKitQuantityChange: (quantity: number) => void;
+  identity?: KitIdentity;
+  onIdentityChange?: (identity: KitIdentity) => void;
 }
 
 export function KitIdentificationCard({
@@ -15,6 +19,8 @@ export function KitIdentificationCard({
   kitQuantity,
   onKitNameChange,
   onKitQuantityChange,
+  identity,
+  onIdentityChange,
 }: KitIdentificationCardProps) {
   return (
     <Card>
@@ -46,6 +52,12 @@ export function KitIdentificationCard({
             />
           </div>
         </div>
+        {onIdentityChange && (
+          <div className="space-y-2">
+            <Label>Objetivo / Etiqueta</Label>
+            <KitIdentityPicker identity={identity} onChange={onIdentityChange} />
+          </div>
+        )}
       </CardContent>
     </Card>
   );
