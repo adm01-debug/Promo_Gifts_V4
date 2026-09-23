@@ -242,6 +242,10 @@ export interface KitAISuggestionBrief {
   item_keywords: string[];
   target_price_brl: { min: number; max: number };
   narrative: string;
+  /** Opcionais (etapa 17) — ausentes em respostas de modelo mais antigas. */
+  title?: string;
+  description?: string;
+  style_tag?: string;
 }
 
 /** A deterministic proposal built exclusively from canonical catalog rows. */
@@ -249,6 +253,8 @@ export interface KitAIComposition {
   id: string;
   name: string;
   narrative: string;
+  description?: string;
+  styleTag?: string;
   kitType: KitType;
   box: KitBox;
   items: KitItem[];

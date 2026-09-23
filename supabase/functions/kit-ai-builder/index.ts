@@ -56,10 +56,18 @@ Receba a descrição do cliente e devolva sugestões objetivas de:
 - item_keywords: 3 a 6 categorias/produtos sugeridos (ex.: "garrafa térmica", "caderno", "caneta metal").
 - target_price_brl: faixa de preço/kit estimada em reais (mínimo, máximo).
 - narrative: 1 frase vendedora explicando o conceito.
+- title: nome curto e descritivo do kit (até 80 caracteres, ex.: "Kit Onboarding Bem-Estar").
+- description: 1 frase objetiva (até 160 caracteres) resumindo público e estilo do kit.
+- style_tag: uma palavra ou expressão curta de estilo (ex.: "corporativo", "casual", "premium").
 Use português do Brasil. Seja conciso e prático.`;
 
+    const requestStartedAt = performance.now();
+    const aiTimeoutMs = 20000;
+    const aiTimeoutController = new AbortController();
+    const aiTimeoutId = setTimeout(() => aiTimeoutController.abort(), aiTimeoutMs);
     const aiRes = await fetchWithBreaker('lovable-ai', 'https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
+      signal: aiTimeoutController.signal,
       headers: {
         Authorization: `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
@@ -96,6 +104,9 @@ Use português do Brasil. Seja conciso e prático.`;
                     required: ['min', 'max'],
                   },
                   narrative: { type: 'string' },
+                  title: { type: 'string' },
+                  description: { type: 'string' },
+                  style_tag: { type: 'string' },
                 },
                 required: [
                   'kit_type',
@@ -113,7 +124,14 @@ Use português do Brasil. Seja conciso e prático.`;
       }),
     });
 
+    clearTimeout(aiTimeoutId);
+
     if (!aiRes.ok) {
+      console.info('kit-ai-builder telemetry', {
+        success: false,
+        status: aiRes.status,
+        latency_ms: Math.round(performance.now() - requestStartedAt),
+      });
       if (aiRes.status === 429) {
         return new Response(
           JSON.stringify({
@@ -165,12 +183,26 @@ Use português do Brasil. Seja conciso e prático.`;
       });
     }
 
+    console.info('kit-ai-builder telemetry', {
+      success: true,
+      latency_ms: Math.round(performance.now() - requestStartedAt),
+      tokens: aiJson?.usage ?? null,
+    });
+
     return new Response(JSON.stringify({ suggestion: parsedSuggestion.data }), {
       status: 200,
       headers: { ...corsHeaders, ...responseHeaders, 'Content-Type': 'application/json' },
     });
   } catch (e) {
     console.error('kit-ai-builder error:', safeErrorFields(e));
+    if (e instanceof DOMException && e.name === 'AbortError') {
+      return new Response(
+        JSON.stringify({
+          error: 'A IA demorou para responder. Tente novamente em instantes.',
+        }),
+        { status: 504, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      );
+    }
     return new Response(
       JSON.stringify({ error: 'Não foi possível gerar a sugestão agora. Tente novamente.' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },

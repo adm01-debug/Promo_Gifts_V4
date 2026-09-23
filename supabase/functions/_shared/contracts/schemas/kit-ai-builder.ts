@@ -33,6 +33,11 @@ export const KitAiBuilderSuggestion = z
         message: "target_price_brl.max must be greater than or equal to min",
       }),
     narrative: z.string().trim().min(1).max(500),
+    /** Opcionais (etapa 17): ausentes em respostas de modelo mais antigas ou provedores
+     *  que não os suportam — o cliente cai no fallback "Kit sugerido N" nesse caso. */
+    title: z.string().trim().min(1).max(80).optional(),
+    description: z.string().trim().min(1).max(160).optional(),
+    style_tag: z.string().trim().min(1).max(40).optional(),
   })
   .strict();
 
