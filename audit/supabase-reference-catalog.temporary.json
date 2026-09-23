@@ -450,4 +450,340 @@
       "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
     },
     {
-      "k
+      "kind": "relation",
+      "file": "src/components/collections/CollectionsTrashView.tsx",
+      "receiver": "supabase",
+      "occurrences": 3,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/components/intelligence/SavedViewsManager.tsx",
+      "receiver": "supabase",
+      "occurrences": 3,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/components/kit-builder/DiscontinuedItemsAlert.tsx",
+      "receiver": "supabase",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/components/search/useGlobalSearch.ts",
+      "receiver": "untypedFrom",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/hooks/admin/useDevAccessAudit.ts",
+      "receiver": "supabase",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/hooks/common/useOrgData.ts",
+      "receiver": "supabase",
+      "occurrences": 4,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/hooks/intelligence/useExternalDatabase.ts",
+      "receiver": "dbInvoke",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/hooks/products/novelty-core.ts",
+      "receiver": "untypedFrom",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/hooks/products/useCatalogPrefetch.ts",
+      "receiver": "dbInvoke",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/hooks/products/useNovelties.ts",
+      "receiver": "untypedFrom",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/hooks/products/useProductsByColor.ts",
+      "receiver": "dbInvoke",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/hooks/products/useProductsColorsBatch.ts",
+      "receiver": "untypedFrom",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/hooks/products/useProductsLightweight.ts",
+      "receiver": "dbInvoke",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/hooks/products/useSupplierNames.ts",
+      "receiver": "dbInvoke",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/hooks/simulation/useExternalSimulator.ts",
+      "receiver": "dbInvoke",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/hooks/stock/stockFetcher.ts",
+      "receiver": "untypedFrom",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/hooks/stock/useSavedStockViews.ts",
+      "receiver": "client",
+      "occurrences": 3,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/lib/crm-db.ts",
+      "receiver": "supabase",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/lib/db/postgrest.ts",
+      "receiver": "dbInvoke",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/lib/db/postgrest.ts",
+      "receiver": "untypedFrom",
+      "occurrences": 4,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/lib/external-db-prewarm.ts",
+      "receiver": "untypedFrom",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/lib/external-db/products-detail.ts",
+      "receiver": "dbInvoke",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/lib/external-db/products-lightweight.ts",
+      "receiver": "dbInvoke",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/lib/external-db/products.ts",
+      "receiver": "dbInvoke",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/lib/supabase/rls-validator.ts",
+      "receiver": "(supabase as unknown as SupabaseClient)",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/lib/supabase/rls-validator.ts",
+      "receiver": "supabase",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "rpc",
+      "file": "src/pages/admin/telemetry/useOptimizationQueue.ts",
+      "receiver": "supabase",
+      "occurrences": 4,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/pages/admin/telemetry/useOptimizationQueue.ts",
+      "receiver": "supabase",
+      "occurrences": 3,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/pages/bi/TrendsPage.tsx",
+      "receiver": "untypedFrom",
+      "occurrences": 2,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/pages/system/SystemStatusPage.tsx",
+      "receiver": "supabase",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "rpc",
+      "file": "src/services/quoteService.ts",
+      "receiver": "supabase",
+      "occurrences": 2,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/services/ramoAtividadeService.ts",
+      "receiver": "supabase",
+      "occurrences": 4,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "supabase/functions/_shared/security.ts",
+      "receiver": "client",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "supabase/functions/connections-hub-audit/index.ts",
+      "receiver": "auth.localServiceClient",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "rpc",
+      "file": "supabase/functions/connections-hub-audit/index.ts",
+      "receiver": "auth.localServiceClient",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "supabase/functions/connections-hub-audit/index.ts",
+      "receiver": "sysClient",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "supabase/functions/e2e-cleanup/index.ts",
+      "receiver": "supabase",
+      "occurrences": 2,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "supabase/functions/product-webhook/index.ts",
+      "receiver": "supabase",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "supabase/functions/rls-integration-tests/index.ts",
+      "receiver": "admin",
+      "occurrences": 2,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "supabase/functions/rls-integration-tests/index.ts",
+      "receiver": "client",
+      "occurrences": 4,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "supabase/functions/sync-external-db/index.ts",
+      "receiver": "sourceClient",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "supabase/functions/sync-external-db/index.ts",
+      "receiver": "targetClient",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    }
+  ]
+}
