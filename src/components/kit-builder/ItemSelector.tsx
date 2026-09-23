@@ -44,6 +44,7 @@ import {
 import {
   getKitItemLineId,
   formatCurrency,
+  sortItemsByRelevance,
   type KitItem,
   type ItemFilters,
   type CompatibilityResult,
@@ -137,6 +138,11 @@ export function ItemSelector({
     () =>
       Array.from(new Set(items.map((item) => item.material).filter(Boolean) as string[])).sort(),
     [items],
+  );
+
+  const sortedItems = useMemo(
+    () => ((filters.sort ?? 'relevance') === 'relevance' ? sortItemsByRelevance(items) : items),
+    [items, filters.sort],
   );
 
   const selectedItemsByProductId = new Map<string, KitItem>();
@@ -368,7 +374,7 @@ export function ItemSelector({
               </div>
             ) : viewMode === 'grid' ? (
               <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
-                {items.map((item) => (
+                {sortedItems.map((item) => (
                   <ItemCard
                     key={item.id}
                     item={item}
@@ -382,7 +388,7 @@ export function ItemSelector({
               </div>
             ) : (
               <div className="space-y-2">
-                {items.map((item) => (
+                {sortedItems.map((item) => (
                   <ItemCard
                     key={item.id}
                     item={item}

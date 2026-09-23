@@ -36,6 +36,10 @@ export { resolveKitAICompositions } from './ai-composition';
 // Persistence snapshot contract
 export { buildKitPersistencePayload, getPersistedKitStatus } from './persistence';
 
+// Item sorting ("Mais relevantes")
+export { sortItemsByRelevance } from './item-sort';
+export type { RelevanceSortable } from './item-sort';
+
 // Price Calculator
 export {
   calculateBoxPrice,
