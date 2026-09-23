@@ -96,7 +96,7 @@ export function KitSummary({
   return (
     <div className="space-y-6">
       <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1.65fr)_minmax(22rem,1fr)]">
-        <section className="space-y-5" aria-label="Identificação e composição do kit">
+        <section className="space-y-5 print:hidden" aria-label="Identificação e composição do kit">
           <KitIdentificationCard
             kitName={kitName}
             kitQuantity={kitQuantity}
@@ -224,6 +224,7 @@ export function KitSummary({
             kitQuantity={kitQuantity}
             kitName={kitName}
             currentKitId={currentKitId}
+            quoteClient={quoteClient}
           />
           <KitPersonalizationPreview kitState={kitState} />
           <KitPricingCard
@@ -244,22 +245,69 @@ export function KitSummary({
         </aside>
       </div>
 
-      <KitActionsBar
-        isValid={kitState.isValid}
-        isAddingToQuote={isAddingToQuote}
-        hasStockIssues={hasStockIssues}
-        stockStatus={stockStatus}
-        kitName={kitName}
-        kitTag={kitState.identity?.tag}
-        kitQuantity={kitQuantity}
-        unitPrice={pricing.unitPrice}
-        total={pricing.total}
-        items={items}
-        onAddToQuote={onAddToQuote}
-        onExportPDF={onExportPDF}
-        onSaveDraft={onSaveDraft}
-        isSavingDraft={isSavingDraft}
-      />
+      {/* `<aside>` acima é ocultado inteiro pela regra genérica de impressão
+          (header, nav, aside, .fixed { display: none }), então a impressão
+          precisa de uma cópia própria fora dele — invisível na tela
+          (`hidden`), visível só no PDF (`print:block`). */}
+      <div className="hidden print:block">
+        {/* O aviso bloqueante fica dentro da seção print:hidden — sem esta
+            cópia, o PDF do cliente mostra preço normal sem indicar que o kit
+            não pode ser orçado (estoque não confirmado ou pendência aberta). */}
+        {(stockStatus === 'checking' ||
+          stockStatus === 'unknown' ||
+          stockAlerts.length > 0 ||
+          !kitState.isValid) && (
+          <div className="mb-4 rounded-lg border border-destructive bg-destructive/5 p-4 text-destructive print:break-inside-avoid">
+            <h4 className="mb-2 flex items-center gap-2 font-semibold">
+              <AlertTriangle className="h-4 w-4" /> Atenção — orçamento não confirmado
+            </h4>
+            <ul className="space-y-1 text-sm">
+              {stockStatus === 'checking' && (
+                <li>Estoque ainda em verificação — disponibilidade não confirmada.</li>
+              )}
+              {stockStatus === 'unknown' && (
+                <li>Não foi possível validar o estoque para este kit.</li>
+              )}
+              {stockAlerts.map((alert) => (
+                <li key={alert.stockKey ?? `${alert.lineId ?? alert.itemId}:${alert.sku}`}>
+                  {alert.itemName}: disponível {alert.available} de {alert.required} (faltam{' '}
+                  {alert.deficit})
+                </li>
+              ))}
+              {kitState.validationErrors.map((error) => (
+                <li key={error}>{error}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+        <KitPresentablePreview
+          kitState={kitState}
+          kitQuantity={kitQuantity}
+          kitName={kitName}
+          currentKitId={currentKitId}
+          quoteClient={quoteClient}
+          eagerImages
+        />
+      </div>
+
+      <div className="print:hidden">
+        <KitActionsBar
+          isValid={kitState.isValid}
+          isAddingToQuote={isAddingToQuote}
+          hasStockIssues={hasStockIssues}
+          stockStatus={stockStatus}
+          kitName={kitName}
+          kitTag={kitState.identity?.tag}
+          kitQuantity={kitQuantity}
+          unitPrice={pricing.unitPrice}
+          total={pricing.total}
+          items={items}
+          onAddToQuote={onAddToQuote}
+          onExportPDF={onExportPDF}
+          onSaveDraft={onSaveDraft}
+          isSavingDraft={isSavingDraft}
+        />
+      </div>
     </div>
   );
 }
