@@ -128,7 +128,7 @@ export function KitPresentablePreview({
           </div>
         </div>
 
-        <Separator />
+        <Separator className="print:break-after-page" />
 
         {/* Pricing block */}
         <div className="grid grid-cols-3 gap-3 text-center">

@@ -87,7 +87,7 @@ export function KitSummary({
   return (
     <div className="space-y-6">
       <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1.65fr)_minmax(22rem,1fr)]">
-        <section className="space-y-5" aria-label="Identificação e composição do kit">
+        <section className="space-y-5 print:hidden" aria-label="Identificação e composição do kit">
           <KitIdentificationCard
             kitName={kitName}
             kitQuantity={kitQuantity}
@@ -231,22 +231,37 @@ export function KitSummary({
         </aside>
       </div>
 
-      <KitActionsBar
-        isValid={kitState.isValid}
-        isAddingToQuote={isAddingToQuote}
-        hasStockIssues={hasStockIssues}
-        stockStatus={stockStatus}
-        kitName={kitName}
-        kitTag={kitState.identity?.tag}
-        kitQuantity={kitQuantity}
-        unitPrice={pricing.unitPrice}
-        total={pricing.total}
-        items={items}
-        onAddToQuote={onAddToQuote}
-        onExportPDF={onExportPDF}
-        onSaveDraft={onSaveDraft}
-        isSavingDraft={isSavingDraft}
-      />
+      {/* `<aside>` acima é ocultado inteiro pela regra genérica de impressão
+          (header, nav, aside, .fixed { display: none }), então a impressão
+          precisa de uma cópia própria fora dele — invisível na tela
+          (`hidden`), visível só no PDF (`print:block`). */}
+      <div className="hidden print:block">
+        <KitPresentablePreview
+          kitState={kitState}
+          kitQuantity={kitQuantity}
+          kitName={kitName}
+          currentKitId={currentKitId}
+        />
+      </div>
+
+      <div className="print:hidden">
+        <KitActionsBar
+          isValid={kitState.isValid}
+          isAddingToQuote={isAddingToQuote}
+          hasStockIssues={hasStockIssues}
+          stockStatus={stockStatus}
+          kitName={kitName}
+          kitTag={kitState.identity?.tag}
+          kitQuantity={kitQuantity}
+          unitPrice={pricing.unitPrice}
+          total={pricing.total}
+          items={items}
+          onAddToQuote={onAddToQuote}
+          onExportPDF={onExportPDF}
+          onSaveDraft={onSaveDraft}
+          isSavingDraft={isSavingDraft}
+        />
+      </div>
     </div>
   );
 }

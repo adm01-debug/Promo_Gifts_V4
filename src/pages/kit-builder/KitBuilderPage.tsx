@@ -153,7 +153,7 @@ export default function KitBuilderPage() {
             currentStep={state.wizardState.currentStep}
           />
 
-          <div className="border-b bg-card/40 backdrop-blur-sm">
+          <div className="border-b bg-card/40 backdrop-blur-sm print:hidden">
             <div className="mx-auto w-full max-w-[1920px] px-3 py-3 sm:px-4 sm:py-4 lg:px-6 xl:px-8">
               <WizardSteps
                 currentStep={state.wizardState.currentStep}
