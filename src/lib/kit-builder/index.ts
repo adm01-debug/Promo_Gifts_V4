@@ -40,6 +40,10 @@ export { buildKitPersistencePayload, getPersistedKitStatus } from './persistence
 export { sortItemsByRelevance } from './item-sort';
 export type { RelevanceSortable } from './item-sort';
 
+// Kit Maker guide content (per-chapter dialog)
+export { KIT_MAKER_GUIDE_CHAPTERS, getKitMakerGuideChapter } from './guide-content';
+export type { KitMakerGuideChapter, KitMakerGuideChapterId } from './guide-content';
+
 // Price Calculator
 export {
   calculateBoxPrice,
