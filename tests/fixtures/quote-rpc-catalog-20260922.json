@@ -1,0 +1,1464 @@
+{
+  "kind": "live",
+  "source": "management-api",
+  "target": "project:doufsxqlfjyuvxuezpln",
+  "rows": [
+    {
+      "kind": "columns",
+      "data": [
+        {
+          "type": "uuid",
+          "attname": "id",
+          "relname": "quote_history",
+          "attnotnull": true,
+          "default_expr": "gen_random_uuid()"
+        },
+        {
+          "type": "uuid",
+          "attname": "quote_id",
+          "relname": "quote_history",
+          "attnotnull": true,
+          "default_expr": null
+        },
+        {
+          "type": "uuid",
+          "attname": "user_id",
+          "relname": "quote_history",
+          "attnotnull": true,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "action",
+          "relname": "quote_history",
+          "attnotnull": true,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "field_changed",
+          "relname": "quote_history",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "old_value",
+          "relname": "quote_history",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "new_value",
+          "relname": "quote_history",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "description",
+          "relname": "quote_history",
+          "attnotnull": true,
+          "default_expr": null
+        },
+        {
+          "type": "jsonb",
+          "attname": "metadata",
+          "relname": "quote_history",
+          "attnotnull": false,
+          "default_expr": "'{}'::jsonb"
+        },
+        {
+          "type": "timestamp with time zone",
+          "attname": "created_at",
+          "relname": "quote_history",
+          "attnotnull": true,
+          "default_expr": "now()"
+        },
+        {
+          "type": "uuid",
+          "attname": "id",
+          "relname": "quote_item_personalizations",
+          "attnotnull": true,
+          "default_expr": "gen_random_uuid()"
+        },
+        {
+          "type": "uuid",
+          "attname": "quote_item_id",
+          "relname": "quote_item_personalizations",
+          "attnotnull": true,
+          "default_expr": null
+        },
+        {
+          "type": "uuid",
+          "attname": "technique_id",
+          "relname": "quote_item_personalizations",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "technique_name",
+          "relname": "quote_item_personalizations",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "integer",
+          "attname": "colors_count",
+          "relname": "quote_item_personalizations",
+          "attnotnull": true,
+          "default_expr": "1"
+        },
+        {
+          "type": "integer",
+          "attname": "positions_count",
+          "relname": "quote_item_personalizations",
+          "attnotnull": true,
+          "default_expr": "1"
+        },
+        {
+          "type": "numeric(8,2)",
+          "attname": "area_cm2",
+          "relname": "quote_item_personalizations",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "numeric(8,2)",
+          "attname": "width_cm",
+          "relname": "quote_item_personalizations",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "numeric(8,2)",
+          "attname": "height_cm",
+          "relname": "quote_item_personalizations",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "integer",
+          "attname": "personalized_quantity",
+          "relname": "quote_item_personalizations",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "numeric(10,2)",
+          "attname": "setup_cost",
+          "relname": "quote_item_personalizations",
+          "attnotnull": true,
+          "default_expr": "0"
+        },
+        {
+          "type": "numeric(10,2)",
+          "attname": "unit_cost",
+          "relname": "quote_item_personalizations",
+          "attnotnull": true,
+          "default_expr": "0"
+        },
+        {
+          "type": "numeric(10,2)",
+          "attname": "total_cost",
+          "relname": "quote_item_personalizations",
+          "attnotnull": true,
+          "default_expr": "0"
+        },
+        {
+          "type": "text",
+          "attname": "notes",
+          "relname": "quote_item_personalizations",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "timestamp with time zone",
+          "attname": "created_at",
+          "relname": "quote_item_personalizations",
+          "attnotnull": true,
+          "default_expr": "now()"
+        },
+        {
+          "type": "timestamp with time zone",
+          "attname": "updated_at",
+          "relname": "quote_item_personalizations",
+          "attnotnull": true,
+          "default_expr": "now()"
+        },
+        {
+          "type": "text",
+          "attname": "location_code",
+          "relname": "quote_item_personalizations",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "location_name",
+          "relname": "quote_item_personalizations",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "uuid",
+          "attname": "id",
+          "relname": "quote_items",
+          "attnotnull": true,
+          "default_expr": "gen_random_uuid()"
+        },
+        {
+          "type": "uuid",
+          "attname": "quote_id",
+          "relname": "quote_items",
+          "attnotnull": true,
+          "default_expr": null
+        },
+        {
+          "type": "uuid",
+          "attname": "product_id",
+          "relname": "quote_items",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "product_sku",
+          "relname": "quote_items",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "product_name",
+          "relname": "quote_items",
+          "attnotnull": true,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "product_description",
+          "relname": "quote_items",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "product_image_url",
+          "relname": "quote_items",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "boolean",
+          "attname": "has_personalization",
+          "relname": "quote_items",
+          "attnotnull": false,
+          "default_expr": "false"
+        },
+        {
+          "type": "jsonb",
+          "attname": "personalization_config",
+          "relname": "quote_items",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "numeric(10,2)",
+          "attname": "personalization_cost",
+          "relname": "quote_items",
+          "attnotnull": false,
+          "default_expr": "0"
+        },
+        {
+          "type": "integer",
+          "attname": "quantity",
+          "relname": "quote_items",
+          "attnotnull": true,
+          "default_expr": "1"
+        },
+        {
+          "type": "numeric(10,2)",
+          "attname": "unit_price",
+          "relname": "quote_items",
+          "attnotnull": true,
+          "default_expr": null
+        },
+        {
+          "type": "numeric(5,2)",
+          "attname": "discount_percentage",
+          "relname": "quote_items",
+          "attnotnull": false,
+          "default_expr": "0"
+        },
+        {
+          "type": "numeric(10,2)",
+          "attname": "discount_amount",
+          "relname": "quote_items",
+          "attnotnull": false,
+          "default_expr": "0"
+        },
+        {
+          "type": "numeric(10,2)",
+          "attname": "subtotal",
+          "relname": "quote_items",
+          "attnotnull": true,
+          "default_expr": null
+        },
+        {
+          "type": "jsonb",
+          "attname": "mockup_urls",
+          "relname": "quote_items",
+          "attnotnull": false,
+          "default_expr": "'[]'::jsonb"
+        },
+        {
+          "type": "jsonb",
+          "attname": "artwork_urls",
+          "relname": "quote_items",
+          "attnotnull": false,
+          "default_expr": "'[]'::jsonb"
+        },
+        {
+          "type": "text",
+          "attname": "notes",
+          "relname": "quote_items",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "timestamp with time zone",
+          "attname": "created_at",
+          "relname": "quote_items",
+          "attnotnull": false,
+          "default_expr": "now()"
+        },
+        {
+          "type": "timestamp with time zone",
+          "attname": "updated_at",
+          "relname": "quote_items",
+          "attnotnull": false,
+          "default_expr": "now()"
+        },
+        {
+          "type": "text",
+          "attname": "color_name",
+          "relname": "quote_items",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "color_hex",
+          "relname": "quote_items",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "bitrix_product_id",
+          "relname": "quote_items",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "uuid",
+          "attname": "kit_group_id",
+          "relname": "quote_items",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "kit_name",
+          "relname": "quote_items",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "size_code",
+          "relname": "quote_items",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "gender",
+          "relname": "quote_items",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "integer",
+          "attname": "sort_order",
+          "relname": "quote_items",
+          "attnotnull": false,
+          "default_expr": "0"
+        },
+        {
+          "type": "timestamp with time zone",
+          "attname": "price_updated_at",
+          "relname": "quote_items",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "integer",
+          "attname": "price_freshness_threshold_days",
+          "relname": "quote_items",
+          "attnotnull": false,
+          "default_expr": "60"
+        },
+        {
+          "type": "timestamp with time zone",
+          "attname": "price_confirmed_at",
+          "relname": "quote_items",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "uuid",
+          "attname": "selected_packaging_id",
+          "relname": "quote_items",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "selected_packaging_name",
+          "relname": "quote_items",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "numeric(12,2)",
+          "attname": "selected_packaging_unit_cost",
+          "relname": "quote_items",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "uuid",
+          "attname": "product_variant_id",
+          "relname": "quote_items",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "uuid",
+          "attname": "id",
+          "relname": "quotes",
+          "attnotnull": true,
+          "default_expr": "gen_random_uuid()"
+        },
+        {
+          "type": "text",
+          "attname": "quote_number",
+          "relname": "quotes",
+          "attnotnull": true,
+          "default_expr": null
+        },
+        {
+          "type": "uuid",
+          "attname": "client_id",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "client_name",
+          "relname": "quotes",
+          "attnotnull": true,
+          "default_expr": null
+        },
+        {
+          "type": "uuid",
+          "attname": "created_by",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "uuid",
+          "attname": "assigned_to",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "status",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": "'draft'::text"
+        },
+        {
+          "type": "text",
+          "attname": "stage",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": "'elaboration'::text"
+        },
+        {
+          "type": "text",
+          "attname": "priority",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": "'normal'::text"
+        },
+        {
+          "type": "numeric(10,2)",
+          "attname": "subtotal",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": "0"
+        },
+        {
+          "type": "numeric(10,2)",
+          "attname": "discount_amount",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": "0"
+        },
+        {
+          "type": "numeric(10,2)",
+          "attname": "shipping_cost",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": "0"
+        },
+        {
+          "type": "numeric(10,2)",
+          "attname": "tax_amount",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": "0"
+        },
+        {
+          "type": "numeric(10,2)",
+          "attname": "total",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": "0"
+        },
+        {
+          "type": "date",
+          "attname": "valid_until",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "integer",
+          "attname": "estimated_delivery_days",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "notes",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "internal_notes",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "payment_terms",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "jsonb",
+          "attname": "tags",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": "'[]'::jsonb"
+        },
+        {
+          "type": "text",
+          "attname": "approval_token",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "timestamp with time zone",
+          "attname": "approved_at",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "approved_by_client_name",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "client_feedback",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "timestamp with time zone",
+          "attname": "viewed_at",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "integer",
+          "attname": "view_count",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": "0"
+        },
+        {
+          "type": "timestamp with time zone",
+          "attname": "last_sent_at",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "uuid",
+          "attname": "converted_to_order_id",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "timestamp with time zone",
+          "attname": "converted_at",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "conversion_notes",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "timestamp with time zone",
+          "attname": "created_at",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": "now()"
+        },
+        {
+          "type": "timestamp with time zone",
+          "attname": "updated_at",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": "now()"
+        },
+        {
+          "type": "uuid",
+          "attname": "organization_id",
+          "relname": "quotes",
+          "attnotnull": true,
+          "default_expr": null
+        },
+        {
+          "type": "uuid",
+          "attname": "seller_id",
+          "relname": "quotes",
+          "attnotnull": true,
+          "default_expr": null
+        },
+        {
+          "type": "numeric(5,2)",
+          "attname": "discount_percent",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": "0"
+        },
+        {
+          "type": "numeric(5,2)",
+          "attname": "negotiation_markup_percent",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": "0"
+        },
+        {
+          "type": "numeric(10,2)",
+          "attname": "real_subtotal",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": "0"
+        },
+        {
+          "type": "numeric(5,2)",
+          "attname": "real_discount_percent",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": "0"
+        },
+        {
+          "type": "integer",
+          "attname": "version",
+          "relname": "quotes",
+          "attnotnull": true,
+          "default_expr": "1"
+        },
+        {
+          "type": "text",
+          "attname": "client_email",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "client_phone",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "client_company",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "client_cnpj",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "delivery_time",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "shipping_type",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "bitrix_deal_id",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "bitrix_quote_id",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "boolean",
+          "attname": "synced_to_bitrix",
+          "relname": "quotes",
+          "attnotnull": true,
+          "default_expr": "false"
+        },
+        {
+          "type": "timestamp with time zone",
+          "attname": "synced_at",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "client_response",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "timestamp with time zone",
+          "attname": "client_response_at",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "client_response_notes",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "shipping_method",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "uuid",
+          "attname": "parent_quote_id",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "boolean",
+          "attname": "is_latest_version",
+          "relname": "quotes",
+          "attnotnull": true,
+          "default_expr": "true"
+        },
+        {
+          "type": "text",
+          "attname": "payment_method",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "timestamp with time zone",
+          "attname": "sent_at",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "uuid",
+          "attname": "contact_id",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "text",
+          "attname": "discount_approval_status",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        },
+        {
+          "type": "timestamp with time zone",
+          "attname": "discount_approved_at",
+          "relname": "quotes",
+          "attnotnull": false,
+          "default_expr": null
+        }
+      ]
+    },
+    {
+      "kind": "constraints",
+      "data": [
+        {
+          "target": "-",
+          "conname": "chk_quotes_discount_approval_status",
+          "relation": "quotes",
+          "definition": "CHECK (((discount_approval_status IS NULL) OR (discount_approval_status = ANY (ARRAY['pending'::text, 'approved'::text, 'rejected'::text, 'expired'::text]))))"
+        },
+        {
+          "target": "-",
+          "conname": "quotes_approval_token_key",
+          "relation": "quotes",
+          "definition": "UNIQUE (approval_token)"
+        },
+        {
+          "target": "profiles",
+          "conname": "quotes_assigned_to_fkey",
+          "relation": "quotes",
+          "definition": "FOREIGN KEY (assigned_to) REFERENCES profiles(user_id) ON DELETE SET NULL"
+        },
+        {
+          "target": "profiles",
+          "conname": "quotes_created_by_fkey",
+          "relation": "quotes",
+          "definition": "FOREIGN KEY (created_by) REFERENCES profiles(user_id) ON DELETE SET NULL"
+        },
+        {
+          "target": "organizations",
+          "conname": "quotes_organization_id_fkey",
+          "relation": "quotes",
+          "definition": "FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE"
+        },
+        {
+          "target": "quotes",
+          "conname": "quotes_parent_quote_id_fkey",
+          "relation": "quotes",
+          "definition": "FOREIGN KEY (parent_quote_id) REFERENCES quotes(id) ON DELETE SET NULL"
+        },
+        {
+          "target": "-",
+          "conname": "quotes_pkey",
+          "relation": "quotes",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "target": "-",
+          "conname": "quotes_quote_number_key",
+          "relation": "quotes",
+          "definition": "UNIQUE (quote_number)"
+        },
+        {
+          "target": "profiles",
+          "conname": "quotes_seller_id_fkey",
+          "relation": "quotes",
+          "definition": "FOREIGN KEY (seller_id) REFERENCES profiles(user_id)"
+        },
+        {
+          "target": "-",
+          "conname": "trg_quotes_discount_integrity_deferred",
+          "relation": "quotes",
+          "definition": "TRIGGER DEFERRABLE INITIALLY DEFERRED"
+        },
+        {
+          "target": "-",
+          "conname": "valid_discount_amount_nonnegative",
+          "relation": "quotes",
+          "definition": "CHECK (((discount_amount IS NULL) OR (discount_amount >= (0)::numeric)))"
+        },
+        {
+          "target": "-",
+          "conname": "valid_discount_percent_range",
+          "relation": "quotes",
+          "definition": "CHECK (((discount_percent IS NULL) OR ((discount_percent >= (0)::numeric) AND (discount_percent <= (100)::numeric))))"
+        },
+        {
+          "target": "-",
+          "conname": "valid_negotiation_markup_range",
+          "relation": "quotes",
+          "definition": "CHECK (((negotiation_markup_percent IS NULL) OR ((negotiation_markup_percent >= (0)::numeric) AND (negotiation_markup_percent <= (50)::numeric))))"
+        },
+        {
+          "target": "-",
+          "conname": "valid_priority",
+          "relation": "quotes",
+          "definition": "CHECK ((priority = ANY (ARRAY['low'::text, 'normal'::text, 'high'::text, 'urgent'::text])))"
+        },
+        {
+          "target": "-",
+          "conname": "valid_quote_status",
+          "relation": "quotes",
+          "definition": "CHECK ((status = ANY (ARRAY['draft'::text, 'pending'::text, 'pending_approval'::text, 'sent'::text, 'viewed'::text, 'approved'::text, 'converted'::text, 'rejected'::text, 'expired'::text, 'cancelled'::text])))"
+        },
+        {
+          "target": "-",
+          "conname": "valid_real_discount_pct_max",
+          "relation": "quotes",
+          "definition": "CHECK (((real_discount_percent IS NULL) OR (real_discount_percent <= (100)::numeric)))"
+        },
+        {
+          "target": "-",
+          "conname": "valid_shipping_cost_nonnegative",
+          "relation": "quotes",
+          "definition": "CHECK (((shipping_cost IS NULL) OR (shipping_cost >= (0)::numeric)))"
+        },
+        {
+          "target": "-",
+          "conname": "valid_shipping_type",
+          "relation": "quotes",
+          "definition": "CHECK (((shipping_type IS NULL) OR (shipping_type = ANY (ARRAY['cif'::text, 'fob'::text, 'fob_pre'::text]))))"
+        },
+        {
+          "target": "-",
+          "conname": "valid_subtotal_nonnegative",
+          "relation": "quotes",
+          "definition": "CHECK (((subtotal IS NULL) OR (subtotal >= (0)::numeric)))"
+        },
+        {
+          "target": "-",
+          "conname": "valid_total_nonnegative",
+          "relation": "quotes",
+          "definition": "CHECK (((total IS NULL) OR (total >= (0)::numeric)))"
+        },
+        {
+          "target": "-",
+          "conname": "valid_until_not_expired_for_active",
+          "relation": "quotes",
+          "definition": "CHECK (((status = ANY (ARRAY['draft'::text, 'expired'::text, 'cancelled'::text, 'rejected'::text, 'converted'::text])) OR (valid_until IS NULL) OR (valid_until >= CURRENT_DATE)))"
+        },
+        {
+          "target": "-",
+          "conname": "chk_quote_items_qty_pos",
+          "relation": "quote_items",
+          "definition": "CHECK ((quantity > 0))"
+        },
+        {
+          "target": "-",
+          "conname": "chk_quote_items_subtotal_positive",
+          "relation": "quote_items",
+          "definition": "CHECK ((subtotal >= (0)::numeric))"
+        },
+        {
+          "target": "-",
+          "conname": "chk_quote_items_unit_price_nonneg",
+          "relation": "quote_items",
+          "definition": "CHECK (((unit_price IS NULL) OR (unit_price >= (0)::numeric)))"
+        },
+        {
+          "target": "-",
+          "conname": "quote_items_pkey",
+          "relation": "quote_items",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "target": "products",
+          "conname": "quote_items_product_id_fkey",
+          "relation": "quote_items",
+          "definition": "FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE SET NULL"
+        },
+        {
+          "target": "product_variants",
+          "conname": "quote_items_product_variant_id_fkey",
+          "relation": "quote_items",
+          "definition": "FOREIGN KEY (product_variant_id) REFERENCES product_variants(id) ON DELETE SET NULL"
+        },
+        {
+          "target": "quotes",
+          "conname": "quote_items_quote_id_fkey",
+          "relation": "quote_items",
+          "definition": "FOREIGN KEY (quote_id) REFERENCES quotes(id) ON DELETE CASCADE"
+        },
+        {
+          "target": "products",
+          "conname": "quote_items_selected_packaging_id_fkey",
+          "relation": "quote_items",
+          "definition": "FOREIGN KEY (selected_packaging_id) REFERENCES products(id) ON DELETE SET NULL"
+        },
+        {
+          "target": "-",
+          "conname": "trg_quote_items_discount_integrity_deferred",
+          "relation": "quote_items",
+          "definition": "TRIGGER DEFERRABLE INITIALLY DEFERRED"
+        },
+        {
+          "target": "-",
+          "conname": "valid_product_reference",
+          "relation": "quote_items",
+          "definition": "CHECK (((product_id IS NOT NULL) OR ((product_name IS NOT NULL) AND (product_name <> ''::text))))"
+        },
+        {
+          "target": "quotes",
+          "conname": "quote_versions_quote_id_fkey",
+          "relation": "quote_versions",
+          "definition": "FOREIGN KEY (quote_id) REFERENCES quotes(id) ON DELETE CASCADE"
+        },
+        {
+          "target": "quotes",
+          "conname": "quote_history_quote_id_fkey",
+          "relation": "quote_history",
+          "definition": "FOREIGN KEY (quote_id) REFERENCES quotes(id) ON DELETE CASCADE"
+        },
+        {
+          "target": "quotes",
+          "conname": "discount_approval_requests_quote_id_fkey",
+          "relation": "discount_approval_requests",
+          "definition": "FOREIGN KEY (quote_id) REFERENCES quotes(id) ON DELETE CASCADE"
+        },
+        {
+          "target": "-",
+          "conname": "quote_item_personalizations_colors_count_check",
+          "relation": "quote_item_personalizations",
+          "definition": "CHECK ((colors_count > 0))"
+        },
+        {
+          "target": "-",
+          "conname": "quote_item_personalizations_pkey",
+          "relation": "quote_item_personalizations",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "target": "-",
+          "conname": "quote_item_personalizations_positions_count_check",
+          "relation": "quote_item_personalizations",
+          "definition": "CHECK ((positions_count > 0))"
+        },
+        {
+          "target": "quote_items",
+          "conname": "quote_item_personalizations_quote_item_id_fkey",
+          "relation": "quote_item_personalizations",
+          "definition": "FOREIGN KEY (quote_item_id) REFERENCES quote_items(id) ON DELETE CASCADE"
+        },
+        {
+          "target": "-",
+          "conname": "quote_item_personalizations_setup_cost_check",
+          "relation": "quote_item_personalizations",
+          "definition": "CHECK ((setup_cost >= (0)::numeric))"
+        },
+        {
+          "target": "-",
+          "conname": "quote_item_personalizations_total_cost_check",
+          "relation": "quote_item_personalizations",
+          "definition": "CHECK ((total_cost >= (0)::numeric))"
+        },
+        {
+          "target": "-",
+          "conname": "quote_item_personalizations_unit_cost_check",
+          "relation": "quote_item_personalizations",
+          "definition": "CHECK ((unit_cost >= (0)::numeric))"
+        },
+        {
+          "target": "-",
+          "conname": "trg_quote_personalizations_discount_integrity_deferred",
+          "relation": "quote_item_personalizations",
+          "definition": "TRIGGER DEFERRABLE INITIALLY DEFERRED"
+        },
+        {
+          "target": "quotes",
+          "conname": "webhook_dispatcher_log_quote_id_fkey",
+          "relation": "webhook_dispatcher_log",
+          "definition": "FOREIGN KEY (quote_id) REFERENCES quotes(id) ON DELETE SET NULL"
+        },
+        {
+          "target": "quotes",
+          "conname": "kit_quote_requests_quote_id_fkey",
+          "relation": "kit_quote_requests",
+          "definition": "FOREIGN KEY (quote_id) REFERENCES quotes(id) ON DELETE RESTRICT"
+        }
+      ]
+    },
+    {
+      "kind": "triggers",
+      "data": [
+        {
+          "tgname": "set_quote_number",
+          "proname": "generate_quote_number",
+          "relation": "quotes",
+          "tgenabled": "O",
+          "definition": "CREATE TRIGGER set_quote_number BEFORE INSERT ON public.quotes FOR EACH ROW WHEN (((new.quote_number IS NULL) OR (new.quote_number = ''::text))) EXECUTE FUNCTION generate_quote_number()",
+          "function_definition": "CREATE OR REPLACE FUNCTION public.generate_quote_number()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'public'\nAS $function$\nDECLARE year_short text; max_num integer; new_number text;\nBEGIN\n  -- Só calcula/gera se o número ainda não foi informado.\n  IF NEW.quote_number IS NOT NULL AND NEW.quote_number <> '' THEN\n    RETURN NEW;\n  END IF;\n\n  year_short := to_char(now(), 'YY');\n\n  -- Serializa a geração por ano (transaction-scoped: liberado no commit/rollback).\n  PERFORM pg_advisory_xact_lock(hashtext('quote_number:' || year_short)::bigint);\n\n  -- ANTI-REGRESSAO (20260626_quote_number_int4_guard): '^\\d{1,9}$' (NAO '^\\d+$')\n  -- evita overflow de int4 caso um prefixo malformado com 10+ digitos exista.\n  SELECT COALESCE(MAX(\n    CASE WHEN split_part(quote_number, '/', 1) ~ '^\\d{1,9}$'\n         THEN split_part(quote_number, '/', 1)::integer ELSE 0 END\n  ), 10000) INTO max_num\n  FROM public.quotes WHERE quote_number LIKE '%/' || year_short;\n\n  new_number := (max_num + 1)::text || '/' || year_short;\n  NEW.quote_number := new_number;\n  RETURN NEW;\nEND;\n$function$\n"
+        },
+        {
+          "tgname": "set_updated_at_trigger",
+          "proname": "set_updated_at",
+          "relation": "quotes",
+          "tgenabled": "O",
+          "definition": "CREATE TRIGGER set_updated_at_trigger BEFORE UPDATE ON public.quotes FOR EACH ROW EXECUTE FUNCTION set_updated_at()",
+          "function_definition": "CREATE OR REPLACE FUNCTION public.set_updated_at()\n RETURNS trigger\n LANGUAGE plpgsql\n SET search_path TO 'public'\nAS $function$\nbegin\n  new.updated_at = now();\n  return new;\nend$function$\n"
+        },
+        {
+          "tgname": "set_updated_at_trigger",
+          "proname": "set_updated_at",
+          "relation": "quote_items",
+          "tgenabled": "O",
+          "definition": "CREATE TRIGGER set_updated_at_trigger BEFORE UPDATE ON public.quote_items FOR EACH ROW EXECUTE FUNCTION set_updated_at()",
+          "function_definition": "CREATE OR REPLACE FUNCTION public.set_updated_at()\n RETURNS trigger\n LANGUAGE plpgsql\n SET search_path TO 'public'\nAS $function$\nbegin\n  new.updated_at = now();\n  return new;\nend$function$\n"
+        },
+        {
+          "tgname": "trg_notify_quote_status_change",
+          "proname": "notify_quote_status_change",
+          "relation": "quotes",
+          "tgenabled": "O",
+          "definition": "CREATE TRIGGER trg_notify_quote_status_change AFTER UPDATE ON public.quotes FOR EACH ROW EXECUTE FUNCTION notify_quote_status_change()",
+          "function_definition": "CREATE OR REPLACE FUNCTION public.notify_quote_status_change()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'public'\nAS $function$\nDECLARE\n  notif_title TEXT;\n  notif_message TEXT;\n  notif_type TEXT;\n  notif_category TEXT := 'quotes';\n  notif_url TEXT := '/orcamentos';\nBEGIN\n  IF OLD.status IS NOT DISTINCT FROM NEW.status THEN RETURN NEW; END IF;\n\n  CASE NEW.status\n    WHEN 'approved' THEN\n      notif_title   := '✅ Orçamento aprovado!';\n      notif_message := 'O orçamento ' || NEW.quote_number || COALESCE(' de ' || NEW.client_name, '') || ' foi aprovado!';\n      notif_type    := 'success';\n    WHEN 'rejected' THEN\n      notif_title   := '❌ Orçamento recusado';\n      notif_message := 'O orçamento ' || NEW.quote_number || COALESCE(' de ' || NEW.client_name, '') || ' foi recusado.';\n      notif_type    := 'warning';\n    WHEN 'sent' THEN\n      notif_title   := '📤 Orçamento enviado';\n      notif_message := 'O orçamento ' || NEW.quote_number || ' foi marcado como enviado.';\n      notif_type    := 'info';\n    WHEN 'expired' THEN\n      notif_title   := '⏰ Orçamento expirado';\n      notif_message := 'O orçamento ' || NEW.quote_number || COALESCE(' de ' || NEW.client_name, '') || ' expirou.';\n      notif_type    := 'warning';\n    WHEN 'pending_approval' THEN\n      notif_title   := '⏳ Orçamento aguardando aprovação';\n      notif_message := 'O orçamento ' || NEW.quote_number || ' foi submetido para aprovação de desconto.';\n      notif_type    := 'info';\n    WHEN 'converted' THEN\n      notif_title   := '🎉 Orçamento convertido em pedido!';\n      notif_message := 'O orçamento ' || NEW.quote_number || COALESCE(' de ' || NEW.client_name, '') || ' foi convertido em pedido.';\n      notif_type    := 'success';\n      notif_url     := '/pedidos';\n    WHEN 'cancelled' THEN\n      notif_title   := '🚫 Orçamento cancelado';\n      notif_message := 'O orçamento ' || NEW.quote_number || COALESCE(' de ' || NEW.client_name, '') || ' foi cancelado.';\n      notif_type    := 'warning';\n    ELSE\n      RETURN NEW;\n  END CASE;\n\n  IF NEW.seller_id IS NOT NULL THEN\n    INSERT INTO public.workspace_notifications (user_id, title, message, type, category, action_url)\n    VALUES (NEW.seller_id, notif_title, notif_message, notif_type, notif_category, notif_url);\n  END IF;\n\n  RETURN NEW;\nEND;\n$function$\n"
+        },
+        {
+          "tgname": "trg_qip_parent_immutable",
+          "proname": "fn_quote_children_enforce_parent_immutability",
+          "relation": "quote_item_personalizations",
+          "tgenabled": "O",
+          "definition": "CREATE TRIGGER trg_qip_parent_immutable BEFORE INSERT OR DELETE OR UPDATE ON public.quote_item_personalizations FOR EACH ROW EXECUTE FUNCTION fn_quote_children_enforce_parent_immutability()",
+          "function_definition": "CREATE OR REPLACE FUNCTION public.fn_quote_children_enforce_parent_immutability()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'public'\nAS $function$\nDECLARE\n  _parent_quote_id uuid;\n  _parent_status text;\n  _msg text;\nBEGIN\n  -- fix_version=2026-07-09-quote-children-immutability-bypass ANTI-REGRESSÃO\n  -- Bypass para service_role via JWT claim (PostgREST com JWT token)\n  IF current_setting('request.jwt.claim.role', true) = 'service_role' THEN\n    RETURN COALESCE(NEW, OLD);\n  END IF;\n\n  -- NOVO: Bypass para contexto sem usuário autenticado (service_role sem JWT,\n  -- edge functions com service_role_key, execute_sql, migrations, crons).\n  IF auth.uid() IS NULL THEN\n    RETURN COALESCE(NEW, OLD);\n  END IF;\n\n  IF TG_TABLE_NAME = 'quote_items' THEN\n    _parent_quote_id := COALESCE(NEW.quote_id, OLD.quote_id);\n  ELSIF TG_TABLE_NAME = 'quote_item_personalizations' THEN\n    SELECT qi.quote_id INTO _parent_quote_id\n    FROM public.quote_items qi\n    WHERE qi.id = COALESCE(NEW.quote_item_id, OLD.quote_item_id);\n  END IF;\n\n  IF _parent_quote_id IS NULL THEN\n    RETURN COALESCE(NEW, OLD);\n  END IF;\n\n  SELECT status INTO _parent_status\n  FROM public.quotes WHERE id = _parent_quote_id;\n\n  IF _parent_status IN ('approved', 'converted') THEN\n    _msg := 'Nao e possivel alterar itens de orcamento ja aprovado/convertido (status ' ||\n            _parent_status || '). Crie um novo orcamento.';\n    RAISE EXCEPTION '%', _msg USING ERRCODE = '23514';\n  END IF;\n\n  RETURN COALESCE(NEW, OLD);\nEND;\n$function$\n"
+        },
+        {
+          "tgname": "trg_qip_propagate",
+          "proname": "fn_qip_propagate_to_quote_items",
+          "relation": "quote_item_personalizations",
+          "tgenabled": "O",
+          "definition": "CREATE TRIGGER trg_qip_propagate AFTER INSERT OR DELETE OR UPDATE ON public.quote_item_personalizations FOR EACH ROW EXECUTE FUNCTION fn_qip_propagate_to_quote_items()",
+          "function_definition": "CREATE OR REPLACE FUNCTION public.fn_qip_propagate_to_quote_items()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'public'\nAS $function$\nDECLARE\n  _quote_item_id uuid;\n  _new_personalization_cost numeric(12,2);\nBEGIN\n  _quote_item_id := COALESCE(NEW.quote_item_id, OLD.quote_item_id);\n  \n  SELECT COALESCE(SUM(total_cost), 0) INTO _new_personalization_cost\n  FROM public.quote_item_personalizations\n  WHERE quote_item_id = _quote_item_id;\n  \n  UPDATE public.quote_items \n  SET personalization_cost = _new_personalization_cost,\n      has_personalization = (_new_personalization_cost > 0),\n      updated_at = now()\n  WHERE id = _quote_item_id\n    AND personalization_cost IS DISTINCT FROM _new_personalization_cost;\n  \n  RETURN COALESCE(NEW, OLD);\nEND;\n$function$\n"
+        },
+        {
+          "tgname": "trg_qip_updated_at",
+          "proname": "fn_set_updated_at",
+          "relation": "quote_item_personalizations",
+          "tgenabled": "O",
+          "definition": "CREATE TRIGGER trg_qip_updated_at BEFORE UPDATE ON public.quote_item_personalizations FOR EACH ROW EXECUTE FUNCTION fn_set_updated_at()",
+          "function_definition": "CREATE OR REPLACE FUNCTION public.fn_set_updated_at()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'public'\nAS $function$\nBEGIN\n  NEW.updated_at = clock_timestamp();  -- FIX: era now() → retornava transação start time\n  RETURN NEW;\nEND;\n$function$\n"
+        },
+        {
+          "tgname": "trg_quote_items_calc_subtotal",
+          "proname": "fn_quote_items_calc_subtotal",
+          "relation": "quote_items",
+          "tgenabled": "O",
+          "definition": "CREATE TRIGGER trg_quote_items_calc_subtotal BEFORE INSERT OR UPDATE OF quantity, unit_price, personalization_cost, discount_amount ON public.quote_items FOR EACH ROW EXECUTE FUNCTION fn_quote_items_calc_subtotal()",
+          "function_definition": "CREATE OR REPLACE FUNCTION public.fn_quote_items_calc_subtotal()\n RETURNS trigger\n LANGUAGE plpgsql\n SET search_path TO 'pg_catalog', 'public'\nAS $function$\nBEGIN\n  NEW.subtotal := COALESCE(NEW.quantity, 0) * COALESCE(NEW.unit_price, 0)\n                + COALESCE(NEW.personalization_cost, 0)\n                - COALESCE(NEW.discount_amount, 0);\n  RETURN NEW;\nEND $function$\n"
+        },
+        {
+          "tgname": "trg_quote_items_discount_integrity_deferred",
+          "proname": "fn_deferred_quote_discount_integrity",
+          "relation": "quote_items",
+          "tgenabled": "O",
+          "definition": "CREATE CONSTRAINT TRIGGER trg_quote_items_discount_integrity_deferred AFTER INSERT OR DELETE OR UPDATE ON public.quote_items DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION fn_deferred_quote_discount_integrity()",
+          "function_definition": "CREATE OR REPLACE FUNCTION public.fn_deferred_quote_discount_integrity()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'public'\nAS $function$\nDECLARE\n  _old_quote_id uuid;\n  _new_quote_id uuid;\nBEGIN\n  IF TG_TABLE_NAME = 'quotes' THEN\n    PERFORM public.assert_quote_discount_integrity(COALESCE(NEW.id, OLD.id));\n    RETURN NULL;\n  END IF;\n\n  IF TG_TABLE_NAME = 'quote_items' THEN\n    IF TG_OP <> 'INSERT' THEN _old_quote_id := OLD.quote_id; END IF;\n    IF TG_OP <> 'DELETE' THEN _new_quote_id := NEW.quote_id; END IF;\n  ELSE\n    IF TG_OP <> 'INSERT' THEN\n      SELECT qi.quote_id INTO _old_quote_id\n      FROM public.quote_items qi WHERE qi.id = OLD.quote_item_id;\n    END IF;\n    IF TG_OP <> 'DELETE' THEN\n      SELECT qi.quote_id INTO _new_quote_id\n      FROM public.quote_items qi WHERE qi.id = NEW.quote_item_id;\n    END IF;\n  END IF;\n\n  IF _old_quote_id IS NOT NULL THEN\n    PERFORM public.assert_quote_discount_integrity(_old_quote_id);\n  END IF;\n  IF _new_quote_id IS NOT NULL AND _new_quote_id IS DISTINCT FROM _old_quote_id THEN\n    PERFORM public.assert_quote_discount_integrity(_new_quote_id);\n  END IF;\n  RETURN NULL;\nEND;\n$function$\n"
+        },
+        {
+          "tgname": "trg_quote_items_parent_immutable",
+          "proname": "fn_quote_children_enforce_parent_immutability",
+          "relation": "quote_items",
+          "tgenabled": "O",
+          "definition": "CREATE TRIGGER trg_quote_items_parent_immutable BEFORE INSERT OR DELETE OR UPDATE ON public.quote_items FOR EACH ROW EXECUTE FUNCTION fn_quote_children_enforce_parent_immutability()",
+          "function_definition": "CREATE OR REPLACE FUNCTION public.fn_quote_children_enforce_parent_immutability()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'public'\nAS $function$\nDECLARE\n  _parent_quote_id uuid;\n  _parent_status text;\n  _msg text;\nBEGIN\n  -- fix_version=2026-07-09-quote-children-immutability-bypass ANTI-REGRESSÃO\n  -- Bypass para service_role via JWT claim (PostgREST com JWT token)\n  IF current_setting('request.jwt.claim.role', true) = 'service_role' THEN\n    RETURN COALESCE(NEW, OLD);\n  END IF;\n\n  -- NOVO: Bypass para contexto sem usuário autenticado (service_role sem JWT,\n  -- edge functions com service_role_key, execute_sql, migrations, crons).\n  IF auth.uid() IS NULL THEN\n    RETURN COALESCE(NEW, OLD);\n  END IF;\n\n  IF TG_TABLE_NAME = 'quote_items' THEN\n    _parent_quote_id := COALESCE(NEW.quote_id, OLD.quote_id);\n  ELSIF TG_TABLE_NAME = 'quote_item_personalizations' THEN\n    SELECT qi.quote_id INTO _parent_quote_id\n    FROM public.quote_items qi\n    WHERE qi.id = COALESCE(NEW.quote_item_id, OLD.quote_item_id);\n  END IF;\n\n  IF _parent_quote_id IS NULL THEN\n    RETURN COALESCE(NEW, OLD);\n  END IF;\n\n  SELECT status INTO _parent_status\n  FROM public.quotes WHERE id = _parent_quote_id;\n\n  IF _parent_status IN ('approved', 'converted') THEN\n    _msg := 'Nao e possivel alterar itens de orcamento ja aprovado/convertido (status ' ||\n            _parent_status || '). Crie um novo orcamento.';\n    RAISE EXCEPTION '%', _msg USING ERRCODE = '23514';\n  END IF;\n\n  RETURN COALESCE(NEW, OLD);\nEND;\n$function$\n"
+        },
+        {
+          "tgname": "trg_quote_personalizations_discount_integrity_deferred",
+          "proname": "fn_deferred_quote_discount_integrity",
+          "relation": "quote_item_personalizations",
+          "tgenabled": "O",
+          "definition": "CREATE CONSTRAINT TRIGGER trg_quote_personalizations_discount_integrity_deferred AFTER INSERT OR DELETE OR UPDATE ON public.quote_item_personalizations DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION fn_deferred_quote_discount_integrity()",
+          "function_definition": "CREATE OR REPLACE FUNCTION public.fn_deferred_quote_discount_integrity()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'public'\nAS $function$\nDECLARE\n  _old_quote_id uuid;\n  _new_quote_id uuid;\nBEGIN\n  IF TG_TABLE_NAME = 'quotes' THEN\n    PERFORM public.assert_quote_discount_integrity(COALESCE(NEW.id, OLD.id));\n    RETURN NULL;\n  END IF;\n\n  IF TG_TABLE_NAME = 'quote_items' THEN\n    IF TG_OP <> 'INSERT' THEN _old_quote_id := OLD.quote_id; END IF;\n    IF TG_OP <> 'DELETE' THEN _new_quote_id := NEW.quote_id; END IF;\n  ELSE\n    IF TG_OP <> 'INSERT' THEN\n      SELECT qi.quote_id INTO _old_quote_id\n      FROM public.quote_items qi WHERE qi.id = OLD.quote_item_id;\n    END IF;\n    IF TG_OP <> 'DELETE' THEN\n      SELECT qi.quote_id INTO _new_quote_id\n      FROM public.quote_items qi WHERE qi.id = NEW.quote_item_id;\n    END IF;\n  END IF;\n\n  IF _old_quote_id IS NOT NULL THEN\n    PERFORM public.assert_quote_discount_integrity(_old_quote_id);\n  END IF;\n  IF _new_quote_id IS NOT NULL AND _new_quote_id IS DISTINCT FROM _old_quote_id THEN\n    PERFORM public.assert_quote_discount_integrity(_new_quote_id);\n  END IF;\n  RETURN NULL;\nEND;\n$function$\n"
+        },
+        {
+          "tgname": "trg_quotes_calc_real_values",
+          "proname": "fn_quotes_calc_real_values",
+          "relation": "quotes",
+          "tgenabled": "O",
+          "definition": "CREATE TRIGGER trg_quotes_calc_real_values BEFORE INSERT OR UPDATE OF subtotal, discount_amount, negotiation_markup_percent ON public.quotes FOR EACH ROW EXECUTE FUNCTION fn_quotes_calc_real_values()",
+          "function_definition": "CREATE OR REPLACE FUNCTION public.fn_quotes_calc_real_values()\n RETURNS trigger\n LANGUAGE plpgsql\n SET search_path TO 'pg_catalog', 'public'\nAS $function$\nDECLARE\n  v_markup numeric;\n  v_effective_discount numeric;\nBEGIN\n  -- Cópia local clampada usada APENAS como divisor defensivo (não regrava a coluna).\n  -- A faixa válida é garantida pelo CHECK valid_negotiation_markup_range ([0,50]):\n  -- valores fora de faixa são rejeitados pelo constraint (fail-loud), não silenciados.\n  v_markup := LEAST(50, GREATEST(0, COALESCE(NEW.negotiation_markup_percent, 0)));\n\n  IF v_markup > 0 THEN\n    NEW.real_subtotal := ROUND(NEW.subtotal / (1 + v_markup / 100.0), 2);\n  ELSE\n    NEW.real_subtotal := NEW.subtotal;\n  END IF;\n\n  -- Desconto efetivo derivado no servidor (não confia no cliente):\n  -- se há percentual, ele tem precedência e é convertido sobre o subtotal apresentado;\n  -- caso contrário usa o valor absoluto. Fecha o gap onde discount_percent setado\n  -- com discount_amount=0 zerava o real_discount_percent e burlava a alçada.\n  IF COALESCE(NEW.discount_percent, 0) > 0 THEN\n    v_effective_discount := ROUND(NEW.subtotal * NEW.discount_percent / 100.0, 2);\n  ELSE\n    v_effective_discount := COALESCE(NEW.discount_amount, 0);\n  END IF;\n\n  IF NEW.real_subtotal > 0 THEN\n    NEW.real_discount_percent := ROUND(\n      ((NEW.real_subtotal - (NEW.subtotal - v_effective_discount)) / NEW.real_subtotal) * 100,\n      2\n    );\n  ELSE\n    NEW.real_discount_percent := 0;\n  END IF;\n\n  RETURN NEW;\nEND\n$function$\n"
+        },
+        {
+          "tgname": "trg_quotes_discount_integrity_deferred",
+          "proname": "fn_deferred_quote_discount_integrity",
+          "relation": "quotes",
+          "tgenabled": "O",
+          "definition": "CREATE CONSTRAINT TRIGGER trg_quotes_discount_integrity_deferred AFTER INSERT OR UPDATE ON public.quotes DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION fn_deferred_quote_discount_integrity()",
+          "function_definition": "CREATE OR REPLACE FUNCTION public.fn_deferred_quote_discount_integrity()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'public'\nAS $function$\nDECLARE\n  _old_quote_id uuid;\n  _new_quote_id uuid;\nBEGIN\n  IF TG_TABLE_NAME = 'quotes' THEN\n    PERFORM public.assert_quote_discount_integrity(COALESCE(NEW.id, OLD.id));\n    RETURN NULL;\n  END IF;\n\n  IF TG_TABLE_NAME = 'quote_items' THEN\n    IF TG_OP <> 'INSERT' THEN _old_quote_id := OLD.quote_id; END IF;\n    IF TG_OP <> 'DELETE' THEN _new_quote_id := NEW.quote_id; END IF;\n  ELSE\n    IF TG_OP <> 'INSERT' THEN\n      SELECT qi.quote_id INTO _old_quote_id\n      FROM public.quote_items qi WHERE qi.id = OLD.quote_item_id;\n    END IF;\n    IF TG_OP <> 'DELETE' THEN\n      SELECT qi.quote_id INTO _new_quote_id\n      FROM public.quote_items qi WHERE qi.id = NEW.quote_item_id;\n    END IF;\n  END IF;\n\n  IF _old_quote_id IS NOT NULL THEN\n    PERFORM public.assert_quote_discount_integrity(_old_quote_id);\n  END IF;\n  IF _new_quote_id IS NOT NULL AND _new_quote_id IS DISTINCT FROM _old_quote_id THEN\n    PERFORM public.assert_quote_discount_integrity(_new_quote_id);\n  END IF;\n  RETURN NULL;\nEND;\n$function$\n"
+        },
+        {
+          "tgname": "trg_quotes_immutability",
+          "proname": "fn_quotes_enforce_immutability",
+          "relation": "quotes",
+          "tgenabled": "O",
+          "definition": "CREATE TRIGGER trg_quotes_immutability BEFORE UPDATE ON public.quotes FOR EACH ROW EXECUTE FUNCTION fn_quotes_enforce_immutability()",
+          "function_definition": "CREATE OR REPLACE FUNCTION public.fn_quotes_enforce_immutability()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'public'\nAS $function$\nDECLARE\n  _msg text;\nBEGIN\n  -- fix_version=2026-07-09-immutability-service-role-bypass ANTI-REGRESSÃO\n  -- Bypass para service_role via JWT claim (PostgREST com JWT token)\n  IF current_setting('request.jwt.claim.role', true) = 'service_role' THEN\n    RETURN NEW;\n  END IF;\n\n  -- NOVO: Bypass para contexto sem usuário autenticado (service_role sem JWT,\n  -- edge functions com service_role_key, execute_sql, migrations, crons).\n  -- auth.uid() IS NULL = indicador robusto de service_role sem JWT.\n  -- O bypass request.jwt.claim.role acima falha quando NULL (NULL='service_role'→FALSE).\n  IF auth.uid() IS NULL THEN\n    RETURN NEW;\n  END IF;\n\n  IF OLD.status NOT IN ('approved', 'converted') THEN\n    RETURN NEW;\n  END IF;\n\n  IF OLD.* IS NOT DISTINCT FROM NEW.* THEN\n    RETURN NEW;\n  END IF;\n\n  IF OLD.status <> NEW.status THEN\n    IF (OLD.status = 'approved' AND NEW.status IN ('converted', 'expired'))\n       OR (OLD.status = 'converted' AND NEW.status = 'expired') THEN\n      IF (\n        OLD.client_id IS DISTINCT FROM NEW.client_id OR\n        OLD.client_name IS DISTINCT FROM NEW.client_name OR\n        OLD.subtotal IS DISTINCT FROM NEW.subtotal OR\n        OLD.discount_percent IS DISTINCT FROM NEW.discount_percent OR\n        OLD.discount_amount IS DISTINCT FROM NEW.discount_amount OR\n        OLD.total IS DISTINCT FROM NEW.total OR\n        OLD.negotiation_markup_percent IS DISTINCT FROM NEW.negotiation_markup_percent OR\n        OLD.real_subtotal IS DISTINCT FROM NEW.real_subtotal OR\n        OLD.real_discount_percent IS DISTINCT FROM NEW.real_discount_percent OR\n        OLD.shipping_cost IS DISTINCT FROM NEW.shipping_cost OR\n        OLD.tax_amount IS DISTINCT FROM NEW.tax_amount OR\n        OLD.seller_id IS DISTINCT FROM NEW.seller_id OR\n        OLD.created_by IS DISTINCT FROM NEW.created_by OR\n        OLD.assigned_to IS DISTINCT FROM NEW.assigned_to\n      ) THEN\n        _msg := 'Orcamento em status ' || OLD.status ||\n                ' e imutavel. So a transicao de status e permitida; valores e atribuicoes nao podem mudar. Crie um novo orcamento.';\n        RAISE EXCEPTION '%', _msg USING ERRCODE = '23514';\n      END IF;\n      RETURN NEW;\n    ELSE\n      _msg := 'Transicao de status nao permitida: ' || OLD.status || ' para ' || NEW.status ||\n              '. Orcamento em status ' || OLD.status || ' so pode ir para converted ou expired.';\n      RAISE EXCEPTION '%', _msg USING ERRCODE = '23514';\n    END IF;\n  END IF;\n\n  _msg := 'Orcamento em status ' || OLD.status ||\n          ' e imutavel. Crie um novo orcamento para alterar valores.';\n  RAISE EXCEPTION '%', _msg USING ERRCODE = '23514';\nEND;\n$function$\n"
+        },
+        {
+          "tgname": "trg_quotes_notify_champions",
+          "proname": "fn_notify_champions_on_quote_status",
+          "relation": "quotes",
+          "tgenabled": "O",
+          "definition": "CREATE TRIGGER trg_quotes_notify_champions AFTER UPDATE OF status ON public.quotes FOR EACH ROW EXECUTE FUNCTION fn_notify_champions_on_quote_status()",
+          "function_definition": "CREATE OR REPLACE FUNCTION public.fn_notify_champions_on_quote_status()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'public', 'extensions', 'vault', 'net'\nAS $function$\n-- fix_version=2026-07-10-notify-champions-v8-clock-timestamp ANTI-REGRESSÃO\n-- v8: event_at usa clock_timestamp() — NOW() era transaction_timestamp e gerava\n-- timestamps idênticos para múltiplas transições na mesma transação,\n-- quebrando o ordering guard do Champions.\nDECLARE\n  _secret  TEXT;\n  _url     TEXT;\n  _payload JSONB;\n  _hmac    TEXT;\n  _req_id  BIGINT;\n  _log_id  UUID;\n  _start   TIMESTAMPTZ;\n  _ck      TEXT;\nBEGIN\n  IF OLD.status IS NOT DISTINCT FROM NEW.status THEN RETURN NEW; END IF;\n\n  _start := clock_timestamp();\n  _ck := NEW.id::text || ':' || NEW.status || ':' || (extract(epoch from clock_timestamp()) * 1000)::bigint::text;\n\n  BEGIN\n    SELECT ds.decrypted_secret INTO _url\n    FROM vault.decrypted_secrets ds WHERE ds.name = 'CHAMPIONS_RECEIVE_QUOTE_SYNC_URL' LIMIT 1;\n    SELECT ds.decrypted_secret INTO _secret\n    FROM vault.decrypted_secrets ds WHERE ds.name = 'WEBHOOK_DISPATCHER_SECRET' LIMIT 1;\n  EXCEPTION WHEN OTHERS THEN\n    RAISE WARNING 'fn_notify_champions v8: vault error: %', SQLERRM;\n    RETURN NEW;\n  END;\n\n  IF _url IS NULL OR _secret IS NULL THEN\n    RAISE WARNING 'fn_notify_champions v8: URL ou secret NULL';\n    RETURN NEW;\n  END IF;\n\n  _payload := json_build_object(\n    'event',           'quote.' || NEW.status,\n    'correlation_key', _ck,\n    'payload', json_build_object(\n      'quote_id',     NEW.id,\n      'quote_number', NEW.quote_number,\n      'status',       NEW.status,\n      'old_status',   OLD.status,\n      'seller_id',    NEW.seller_id,\n      'client_id',    NEW.client_id,\n      'client_name',  NEW.client_name,\n      'total',        NEW.total,\n      'event_at',     clock_timestamp()   -- ← v8 FIX: monotônico intra-transação\n    )\n  )::jsonb;\n\n  _hmac := 'sha256=' || encode(\n    extensions.hmac(_payload::text::bytea, _secret::bytea, 'sha256'), 'hex');\n\n  BEGIN\n    INSERT INTO public.webhook_dispatcher_log (\n      trigger_event, quote_id, quote_status, seller_id,\n      target_url, correlation_key, payload_hash, delivery_status, fired_at\n    ) VALUES (\n      'quote.' || NEW.status, NEW.id, NEW.status, NEW.seller_id,\n      regexp_replace(_url, 'https://[^/]+\\.supabase\\.co', 'https://[REDACTED].supabase.co'),\n      _ck,\n      encode(extensions.hmac(_payload::text::bytea, 'log-salt'::bytea, 'sha256'), 'hex'),\n      'pending', _start\n    ) RETURNING id INTO _log_id;\n  EXCEPTION WHEN OTHERS THEN\n    RAISE WARNING 'fn_notify_champions v8: pre-log error: %', SQLERRM;\n  END;\n\n  BEGIN\n    SELECT net.http_post(\n      _url, _payload, '{}'::jsonb,\n      json_build_object(\n        'Content-Type',        'application/json',\n        'x-webhook-signature', _hmac,\n        'x-webhook-event',     'quote.' || NEW.status,\n        'x-correlation-key',   _ck\n      )::jsonb,\n      10000\n    ) INTO _req_id;\n\n    IF _log_id IS NOT NULL THEN\n      UPDATE public.webhook_dispatcher_log\n      SET response_body = 'pg_net_request_id=' || _req_id::text,\n          delivery_status = 'delivered',\n          responded_at = clock_timestamp(),\n          duration_ms = EXTRACT(EPOCH FROM (clock_timestamp() - _start)) * 1000\n      WHERE id = _log_id;\n    END IF;\n  EXCEPTION WHEN OTHERS THEN\n    RAISE WARNING 'fn_notify_champions v8: http_post error quote %: %', NEW.id, SQLERRM;\n    IF _log_id IS NOT NULL THEN\n      BEGIN\n        UPDATE public.webhook_dispatcher_log\n        SET delivery_status = 'failed', error_message = SQLERRM,\n            responded_at = clock_timestamp(),\n            duration_ms = EXTRACT(EPOCH FROM (clock_timestamp() - _start)) * 1000\n        WHERE id = _log_id;\n      EXCEPTION WHEN OTHERS THEN NULL; END;\n    END IF;\n  END;\n\n  RETURN NEW;\nEXCEPTION WHEN OTHERS THEN\n  RAISE WARNING 'fn_notify_champions v8: outer error quote %: %', NEW.id, SQLERRM;\n  RETURN NEW;\nEND;\n$function$\n"
+        },
+        {
+          "tgname": "trg_quotes_recalc_from_items",
+          "proname": "fn_quotes_recalc_subtotal_from_items",
+          "relation": "quote_items",
+          "tgenabled": "O",
+          "definition": "CREATE TRIGGER trg_quotes_recalc_from_items AFTER INSERT OR DELETE OR UPDATE ON public.quote_items FOR EACH ROW EXECUTE FUNCTION fn_quotes_recalc_subtotal_from_items()",
+          "function_definition": "CREATE OR REPLACE FUNCTION public.fn_quotes_recalc_subtotal_from_items()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'public'\nAS $function$\nDECLARE\n  _quote_id uuid;\n  _quote_status text;\n  _markup numeric;\n  _disc_amount_db numeric;\n  _disc_pct numeric;\n  _ship_type text;\n  _ship_cost numeric;\n  _real_subtotal numeric(12,2);\n  _new_subtotal numeric(12,2);\n  _ship_value numeric(12,2);\n  _disc_value numeric(12,2);\n  _new_total numeric(12,2);\nBEGIN\n  _quote_id := COALESCE(NEW.quote_id, OLD.quote_id);\n  IF _quote_id IS NULL THEN RETURN COALESCE(NEW, OLD); END IF;\n\n  SELECT\n    status,\n    LEAST(50, GREATEST(0, COALESCE(negotiation_markup_percent, 0))),\n    COALESCE(discount_amount, 0),\n    COALESCE(discount_percent, 0),\n    shipping_type,\n    COALESCE(shipping_cost, 0)\n  INTO _quote_status, _markup, _disc_amount_db, _disc_pct, _ship_type, _ship_cost\n  FROM public.quotes WHERE id = _quote_id;\n\n  -- Nao mexer em quotes aprovados/convertidos (imutaveis)\n  IF _quote_status IN ('approved', 'converted') THEN\n    RETURN COALESCE(NEW, OLD);\n  END IF;\n\n  -- REAL: soma pura dos itens (sem markup)\n  SELECT COALESCE(SUM(quantity * unit_price + COALESCE(personalization_cost, 0)), 0)\n  INTO _real_subtotal\n  FROM public.quote_items\n  WHERE quote_id = _quote_id;\n\n  -- APRESENTADO ao cliente: aplica markup\n  _new_subtotal := ROUND(_real_subtotal * (1 + _markup / 100.0), 2);\n\n  -- DESCONTO: discount_percent tem prioridade (espelha logica do frontend)\n  IF _disc_pct > 0 THEN\n    _disc_value := ROUND(_new_subtotal * (_disc_pct / 100.0), 2);\n  ELSE\n    _disc_value := _disc_amount_db;\n  END IF;\n\n  -- FRETE: somente 'fob_pre' (pré-negociado com custo) entra no total.\n  -- Alinhado ao frontend (calculateQuoteTotals): cif/fob/null não somam.\n  _ship_value := CASE WHEN _ship_type = 'fob_pre' THEN _ship_cost ELSE 0 END;\n\n  -- TOTAL final\n  _new_total := _new_subtotal - _disc_value + _ship_value;\n\n  -- UPDATE apenas se mudou (evita loop com trigger BEFORE em quotes)\n  UPDATE public.quotes\n  SET subtotal = _new_subtotal,\n      total = _new_total,\n      discount_amount = _disc_value,\n      updated_at = now()\n  WHERE id = _quote_id\n    AND (subtotal IS DISTINCT FROM _new_subtotal\n      OR total IS DISTINCT FROM _new_total\n      OR discount_amount IS DISTINCT FROM _disc_value);\n\n  RETURN COALESCE(NEW, OLD);\nEND;\n$function$\n"
+        },
+        {
+          "tgname": "trg_quotes_sync_seller",
+          "proname": "fn_quotes_sync_seller",
+          "relation": "quotes",
+          "tgenabled": "O",
+          "definition": "CREATE TRIGGER trg_quotes_sync_seller BEFORE INSERT OR UPDATE ON public.quotes FOR EACH ROW EXECUTE FUNCTION fn_quotes_sync_seller()",
+          "function_definition": "CREATE OR REPLACE FUNCTION public.fn_quotes_sync_seller()\n RETURNS trigger\n LANGUAGE plpgsql\n SET search_path TO 'pg_catalog', 'public'\nAS $function$\nBEGIN\n  -- Se um dos dois é NULL e o outro tem valor, copiar\n  IF NEW.seller_id IS NULL AND NEW.created_by IS NOT NULL THEN\n    NEW.seller_id := NEW.created_by;\n  ELSIF NEW.created_by IS NULL AND NEW.seller_id IS NOT NULL THEN\n    NEW.created_by := NEW.seller_id;\n  END IF;\n  RETURN NEW;\nEND $function$\n"
+        },
+        {
+          "tgname": "trg_quotes_validate_discount",
+          "proname": "fn_quotes_validate_discount",
+          "relation": "quotes",
+          "tgenabled": "O",
+          "definition": "CREATE TRIGGER trg_quotes_validate_discount BEFORE INSERT OR UPDATE ON public.quotes FOR EACH ROW EXECUTE FUNCTION fn_quotes_validate_discount()",
+          "function_definition": "CREATE OR REPLACE FUNCTION public.fn_quotes_validate_discount()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'public'\nAS $function$\nDECLARE\n  _max_allowed numeric;\n  _real_discount_pct numeric;\n  _has_valid_approval boolean;\n  _current_hash text;\n  _seller_id uuid;\n  _msg text;\n  _decision_request_id uuid;\nBEGIN\n  IF NEW.status = 'expired' THEN RETURN NEW; END IF;\n  IF current_setting('app.write_source', true) = 'cron_expire' THEN RETURN NEW; END IF;\n  IF current_setting('request.jwt.claim.role', true) = 'service_role' THEN RETURN NEW; END IF;\n  IF auth.uid() IS NULL THEN RETURN NEW; END IF;\n\n  BEGIN\n    _decision_request_id := NULLIF(\n      current_setting('app.discount_approval_request_id', true), ''\n    )::uuid;\n  EXCEPTION WHEN invalid_text_representation THEN\n    _decision_request_id := NULL;\n  END;\n\n  IF TG_OP = 'UPDATE'\n     AND OLD.status = 'pending_approval' AND NEW.status = 'draft'\n     AND _decision_request_id IS NOT NULL\n     AND NEW.client_id IS NOT DISTINCT FROM OLD.client_id\n     AND NEW.client_name IS NOT DISTINCT FROM OLD.client_name\n     AND NEW.subtotal IS NOT DISTINCT FROM OLD.subtotal\n     AND NEW.discount_percent IS NOT DISTINCT FROM OLD.discount_percent\n     AND NEW.discount_amount IS NOT DISTINCT FROM OLD.discount_amount\n     AND NEW.negotiation_markup_percent IS NOT DISTINCT FROM OLD.negotiation_markup_percent\n     AND NEW.total IS NOT DISTINCT FROM OLD.total\n     AND NEW.real_discount_percent IS NOT DISTINCT FROM OLD.real_discount_percent\n     AND NEW.seller_id IS NOT DISTINCT FROM OLD.seller_id\n     AND NEW.created_by IS NOT DISTINCT FROM OLD.created_by\n     AND EXISTS (\n       SELECT 1 FROM public.discount_approval_requests dar\n       WHERE dar.id = _decision_request_id AND dar.quote_id = NEW.id\n         AND dar.status = 'rejected' AND dar.admin_id = auth.uid()\n         AND dar.quote_snapshot_hash = public.compute_quote_snapshot_hash(NEW.id)\n     ) THEN\n    RETURN NEW;\n  END IF;\n\n  _seller_id := COALESCE(NEW.seller_id, NEW.created_by);\n  IF _seller_id IS NULL THEN RETURN NEW; END IF;\n  IF public.is_supervisor_or_above(_seller_id) THEN RETURN NEW; END IF;\n\n  _real_discount_pct := COALESCE(NEW.real_discount_percent, 0);\n  IF _real_discount_pct <= 0 THEN RETURN NEW; END IF;\n\n  SELECT max_discount_percent INTO _max_allowed\n  FROM public.seller_discount_limits WHERE user_id = _seller_id;\n  IF _max_allowed IS NULL THEN\n    RAISE EXCEPTION 'Vendedor sem limite de desconto cadastrado. Solicite ao admin que configure seu limite antes de salvar orcamentos.'\n      USING ERRCODE = '23514';\n  END IF;\n  IF _real_discount_pct <= _max_allowed THEN RETURN NEW; END IF;\n\n  IF TG_OP = 'INSERT' THEN\n    IF COALESCE(NEW.status, 'draft') = 'pending_approval' THEN RETURN NEW; END IF;\n    _msg := 'Desconto de ' || ROUND(_real_discount_pct, 2)::text ||\n      ' por cento acima do seu limite de ' || ROUND(_max_allowed, 2)::text ||\n      ' por cento. Para solicitar aprovacao, use o botao \"Solicitar aprovacao ao coordenador\" que cria o orcamento em status pendente.';\n    RAISE EXCEPTION '%', _msg USING ERRCODE = '23514';\n  END IF;\n\n  _current_hash := public.compute_quote_snapshot_hash(NEW.id);\n  SELECT EXISTS (\n    SELECT 1 FROM public.discount_approval_requests\n    WHERE quote_id = NEW.id AND status = 'approved'\n      AND (valid_until IS NULL OR valid_until > now())\n      AND requested_discount_percent >= _real_discount_pct\n      AND quote_snapshot_hash = _current_hash\n  ) INTO _has_valid_approval;\n  IF _has_valid_approval THEN RETURN NEW; END IF;\n\n  IF EXISTS (\n    SELECT 1 FROM public.discount_approval_requests\n    WHERE quote_id = NEW.id AND status = 'approved'\n      AND ((valid_until IS NOT NULL AND valid_until <= now())\n        OR quote_snapshot_hash <> _current_hash)\n  ) THEN\n    RAISE EXCEPTION 'Aprovacao anterior nao vale mais (orcamento foi alterado ou aprovacao expirou). Solicite nova aprovacao ao coordenador.'\n      USING ERRCODE = '23514';\n  END IF;\n\n  IF COALESCE(NEW.status, 'draft') = 'pending_approval' THEN RETURN NEW; END IF;\n  _msg := 'Desconto de ' || ROUND(_real_discount_pct, 2)::text ||\n    ' por cento acima do seu limite de ' || ROUND(_max_allowed, 2)::text ||\n    ' por cento. Solicite aprovacao ao coordenador antes de salvar.';\n  RAISE EXCEPTION '%', _msg USING ERRCODE = '23514';\nEND;\n$function$\n"
+        },
+        {
+          "tgname": "trg_quotes_version",
+          "proname": "increment_quote_version",
+          "relation": "quotes",
+          "tgenabled": "O",
+          "definition": "CREATE TRIGGER trg_quotes_version BEFORE UPDATE ON public.quotes FOR EACH ROW EXECUTE FUNCTION increment_quote_version()",
+          "function_definition": "CREATE OR REPLACE FUNCTION public.increment_quote_version()\n RETURNS trigger\n LANGUAGE plpgsql\n SET search_path TO 'pg_catalog', 'public'\nAS $function$\nDECLARE\n  _old jsonb := to_jsonb(OLD)\n                 - 'subtotal' - 'total' - 'discount_amount'\n                 - 'real_subtotal' - 'real_discount_percent'\n                 - 'updated_at' - 'version'\n                 - 'discount_approval_status' - 'discount_approved_at';\n  _new jsonb := to_jsonb(NEW)\n                 - 'subtotal' - 'total' - 'discount_amount'\n                 - 'real_subtotal' - 'real_discount_percent'\n                 - 'updated_at' - 'version'\n                 - 'discount_approval_status' - 'discount_approved_at';\nBEGIN\n  IF _old IS DISTINCT FROM _new THEN\n    NEW.version := COALESCE(OLD.version, 0) + 1;\n  ELSE\n    -- Update derivado-apenas (cascata de recálculo / espelho de aprovação): preserva a versão.\n    NEW.version := COALESCE(OLD.version, 1);\n  END IF;\n  RETURN NEW;\nEND\n$function$\n"
+        },
+        {
+          "tgname": "trg_validate_selected_packaging",
+          "proname": "fn_validate_selected_packaging",
+          "relation": "quote_items",
+          "tgenabled": "O",
+          "definition": "CREATE TRIGGER trg_validate_selected_packaging BEFORE INSERT OR UPDATE OF selected_packaging_id ON public.quote_items FOR EACH ROW EXECUTE FUNCTION fn_validate_selected_packaging()",
+          "function_definition": "CREATE OR REPLACE FUNCTION public.fn_validate_selected_packaging()\n RETURNS trigger\n LANGUAGE plpgsql\n SET search_path TO 'public'\nAS $function$\nBEGIN\n  IF NEW.selected_packaging_id IS NOT NULL THEN\n    IF NOT EXISTS (SELECT 1 FROM products WHERE id=NEW.selected_packaging_id AND product_type='packaging' AND is_active) THEN\n      RAISE EXCEPTION 'selected_packaging_id % nao referencia produto type=packaging ativo', NEW.selected_packaging_id;\n    END IF;\n  END IF;\n  RETURN NEW;\nEND$function$\n"
+        }
+      ]
+    },
+    {
+      "kind": "policies",
+      "data": [
+        {
+          "qual": "(is_active = true)",
+          "roles": "{anon}",
+          "polcmd": "r",
+          "polname": "product_variants_anon_read",
+          "relation": "product_variants",
+          "withcheck": null
+        },
+        {
+          "qual": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_variants.product_id) AND is_org_owner_or_admin(p.organization_id))))",
+          "roles": "{-}",
+          "polcmd": "d",
+          "polname": "product_variants_delete",
+          "relation": "product_variants",
+          "withcheck": null
+        },
+        {
+          "qual": null,
+          "roles": "{authenticated}",
+          "polcmd": "a",
+          "polname": "product_variants_oa_ins",
+          "relation": "product_variants",
+          "withcheck": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_variants.product_id) AND is_org_owner_or_admin(p.organization_id))))"
+        },
+        {
+          "qual": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_variants.product_id) AND is_org_owner_or_admin(p.organization_id))))",
+          "roles": "{authenticated}",
+          "polcmd": "w",
+          "polname": "product_variants_oa_upd",
+          "relation": "product_variants",
+          "withcheck": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_variants.product_id) AND is_org_owner_or_admin(p.organization_id))))"
+        },
+        {
+          "qual": "true",
+          "roles": "{authenticated}",
+          "polcmd": "r",
+          "polname": "product_variants_public_read",
+          "relation": "product_variants",
+          "withcheck": null
+        },
+        {
+          "qual": "is_org_owner_or_admin(organization_id)",
+          "roles": "{authenticated}",
+          "polcmd": "d",
+          "polname": "org_admins_delete_quotes",
+          "relation": "quotes",
+          "withcheck": null
+        },
+        {
+          "qual": null,
+          "roles": "{authenticated}",
+          "polcmd": "a",
+          "polname": "org_members_create_quotes",
+          "relation": "quotes",
+          "withcheck": "(user_is_org_member(organization_id) AND (is_coord_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR (seller_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid))))"
+        },
+        {
+          "qual": "(user_is_org_member(organization_id) AND (is_coord_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR (seller_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR (created_by = ( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR (assigned_to = ( SELECT ( SELECT auth.uid() AS uid) AS uid))))",
+          "roles": "{-}",
+          "polcmd": "r",
+          "polname": "quotes_select_scope",
+          "relation": "quotes",
+          "withcheck": null
+        },
+        {
+          "qual": "(user_is_org_member(organization_id) AND (is_coord_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR (seller_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR (created_by = ( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR (assigned_to = ( SELECT ( SELECT auth.uid() AS uid) AS uid))))",
+          "roles": "{-}",
+          "polcmd": "w",
+          "polname": "quotes_update_scope",
+          "relation": "quotes",
+          "withcheck": "(user_is_org_member(organization_id) AND (is_coord_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR (seller_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR (created_by = ( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR (assigned_to = ( SELECT ( SELECT auth.uid() AS uid) AS uid))))"
+        },
+        {
+          "qual": "can_access_quote(quote_id)",
+          "roles": "{authenticated}",
+          "polcmd": "d",
+          "polname": "quote_items_delete",
+          "relation": "quote_items",
+          "withcheck": null
+        },
+        {
+          "qual": null,
+          "roles": "{authenticated}",
+          "polcmd": "a",
+          "polname": "quote_items_insert",
+          "relation": "quote_items",
+          "withcheck": "can_access_quote(quote_id)"
+        },
+        {
+          "qual": "can_access_quote(quote_id)",
+          "roles": "{authenticated}",
+          "polcmd": "r",
+          "polname": "quote_items_select",
+          "relation": "quote_items",
+          "withcheck": null
+        },
+        {
+          "qual": "can_access_quote(quote_id)",
+          "roles": "{authenticated}",
+          "polcmd": "w",
+          "polname": "quote_items_update",
+          "relation": "quote_items",
+          "withcheck": "can_access_quote(quote_id)"
+        },
+        {
+          "qual": null,
+          "roles": "{authenticated}",
+          "polcmd": "a",
+          "polname": "Sellers and coord create quote_history",
+          "relation": "quote_history",
+          "withcheck": "((user_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid)) AND (is_coord_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR (EXISTS ( SELECT 1\n   FROM quotes q\n  WHERE ((q.id = quote_history.quote_id) AND ((q.seller_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR (q.created_by = ( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR (q.assigned_to = ( SELECT ( SELECT auth.uid() AS uid) AS uid))))))))"
+        },
+        {
+          "qual": "(is_coord_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR (EXISTS ( SELECT 1\n   FROM quotes q\n  WHERE ((q.id = quote_history.quote_id) AND ((q.seller_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR (q.created_by = ( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR (q.assigned_to = ( SELECT ( SELECT auth.uid() AS uid) AS uid)))))))",
+          "roles": "{authenticated}",
+          "polcmd": "r",
+          "polname": "Sellers and coord view quote_history",
+          "relation": "quote_history",
+          "withcheck": null
+        },
+        {
+          "qual": "(EXISTS ( SELECT 1\n   FROM (quote_items qi\n     JOIN quotes q ON ((q.id = qi.quote_id)))\n  WHERE ((qi.id = quote_item_personalizations.quote_item_id) AND ((q.seller_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR is_coord_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))))))",
+          "roles": "{authenticated}",
+          "polcmd": "d",
+          "polname": "qip_delete_own_quote",
+          "relation": "quote_item_personalizations",
+          "withcheck": null
+        },
+        {
+          "qual": null,
+          "roles": "{-}",
+          "polcmd": "a",
+          "polname": "qip_insert_own_quote",
+          "relation": "quote_item_personalizations",
+          "withcheck": "(EXISTS ( SELECT 1\n   FROM (quote_items qi\n     JOIN quotes q ON ((q.id = qi.quote_id)))\n  WHERE ((qi.id = quote_item_personalizations.quote_item_id) AND ((q.seller_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR is_coord_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))))))"
+        },
+        {
+          "qual": "(EXISTS ( SELECT 1\n   FROM (quote_items qi\n     JOIN quotes q ON ((q.id = qi.quote_id)))\n  WHERE ((qi.id = quote_item_personalizations.quote_item_id) AND ((q.seller_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR is_coord_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))))))",
+          "roles": "{authenticated}",
+          "polcmd": "r",
+          "polname": "qip_select_own_quote",
+          "relation": "quote_item_personalizations",
+          "withcheck": null
+        },
+        {
+          "qual": "(EXISTS ( SELECT 1\n   FROM (quote_items qi\n     JOIN quotes q ON ((q.id = qi.quote_id)))\n  WHERE ((qi.id = quote_item_personalizations.quote_item_id) AND ((q.seller_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR is_coord_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))))))",
+          "roles": "{authenticated}",
+          "polcmd": "w",
+          "polname": "qip_update_own_quote",
+          "relation": "quote_item_personalizations",
+          "withcheck": null
+        }
+      ]
+    }
+  ]
+}
