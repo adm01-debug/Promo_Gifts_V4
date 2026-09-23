@@ -16,7 +16,9 @@ import { KitHeroPricingCard } from '@/components/kit-builder/KitHeroPricingCard'
 import { KitShortcutsDialog } from '@/components/kit-builder/KitShortcutsDialog';
 import { KitMobileSummaryBar } from '@/components/kit-builder/KitMobileSummaryBar';
 import { KitOnboardingTour } from '@/components/kit-builder/KitOnboardingTour';
+import { KitMakerGuideDialog } from '@/components/kit-builder/KitMakerGuideDialog';
 import { useKitWizardShortcuts } from '@/hooks/kit-builder/useKitWizardShortcuts';
+import type { KitMakerGuideChapterId } from '@/lib/kit-builder';
 
 const KitIsometricPreview = lazy(() =>
   import('@/components/kit-builder/KitIsometricPreview').then((m) => ({
@@ -28,7 +30,12 @@ export default function KitBuilderPage() {
   const { state, actions, meta } = useKitBuilderPageState();
   const { handleSaveKit, redo, undo } = actions;
   const [tourOpen, setTourOpen] = useState(false);
-  const openTour = () => setTourOpen(true);
+  const [guideOpen, setGuideOpen] = useState(false);
+  const [guideChapter, setGuideChapter] = useState<KitMakerGuideChapterId>('items');
+  const openGuide = (chapter: KitMakerGuideChapterId) => {
+    setGuideChapter(chapter);
+    setGuideOpen(true);
+  };
   const isSummary = state.wizardState.currentStep === 'summary';
   const usesFullWorkspace = ['items', 'personalization', 'summary'].includes(
     state.wizardState.currentStep,
@@ -97,6 +104,11 @@ export default function KitBuilderPage() {
       />
       {!state.isLanding && <KitShortcutsDialog />}
       <KitOnboardingTour open={tourOpen} onOpenChange={setTourOpen} />
+      <KitMakerGuideDialog
+        open={guideOpen}
+        onOpenChange={setGuideOpen}
+        initialChapter={guideChapter}
+      />
 
       {state.isLanding ? (
         <KitMakerLanding
@@ -105,7 +117,7 @@ export default function KitBuilderPage() {
           onOccasionChange={actions.selectOccasion}
           aiCatalogItems={state.allAvailableItems}
           aiCatalogBoxes={state.allAvailableBoxes}
-          onOpenTutorial={openTour}
+          onOpenTutorial={() => openGuide('items')}
           onApplyAISuggestion={(suggestion, composition, requestedQuantity) => {
             actions.startFlow('items-first');
             actions.applyAISuggestion(suggestion, composition, requestedQuantity);
@@ -138,6 +150,7 @@ export default function KitBuilderPage() {
             onAIApply={actions.applyAISuggestion}
             aiCatalogItems={state.allAvailableItems}
             aiCatalogBoxes={state.allAvailableBoxes}
+            currentStep={state.wizardState.currentStep}
           />
 
           <div className="border-b bg-card/40 backdrop-blur-sm">
@@ -164,6 +177,7 @@ export default function KitBuilderPage() {
                         onSelect={actions.selectBox}
                         onClear={actions.clearBox}
                         boxes={state.availableBoxes}
+                        allBoxes={state.allAvailableBoxes}
                         isLoading={state.isLoadingBoxes}
                         errorMessage={state.boxError}
                         onRetry={() => {
@@ -174,7 +188,7 @@ export default function KitBuilderPage() {
                           state.setBoxFilters as (f: typeof state.boxFilters) => void
                         }
                         onEditItems={() => actions.goToStep('items')}
-                        onOpenGuide={openTour}
+                        onOpenGuide={() => openGuide('box')}
                       />
                     )}
                     {state.wizardState.currentStep === 'items' && (
@@ -215,7 +229,7 @@ export default function KitBuilderPage() {
                         onBoxPersonalizationChange={actions.setBoxPersonalization}
                         onItemPersonalizationChange={actions.setItemPersonalization}
                         onEditItems={() => actions.goToStep('items')}
-                        onOpenGuide={openTour}
+                        onOpenGuide={() => openGuide('personalization')}
                       />
                     )}
                     {state.wizardState.currentStep === 'summary' && (
