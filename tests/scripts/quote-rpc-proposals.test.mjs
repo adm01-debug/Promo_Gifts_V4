@@ -14,6 +14,7 @@ const names = [
 ];
 const rows = JSON.parse(read('tests/fixtures/quote-rpc-live-20260922.json')).rows;
 const manifest = JSON.parse(read('tests/fixtures/quote-rpc-proposal-manifest.json'));
+const promotionPath = 'supabase/migrations/20260923114500_quote_rpc_lineage_atomicity.sql';
 describe('quote RPC proposal boundaries (static, not PostgreSQL simulation)', () => {
   it.each(names)('%s stays outside the auto-apply migration directory', (name) => {
     expect(existsSync(`${root}supabase/migrations/${name}`)).toBe(false);
@@ -58,6 +59,22 @@ describe('quote RPC proposal boundaries (static, not PostgreSQL simulation)', ()
         manifest.expected_prosrc_md5[signature],
       );
     }
+  });
+  it('promotion manifest applies exactly the three reviewed proposals in dependency order', () => {
+    const source = read(promotionPath);
+    const executableLines = source
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line && !line.startsWith('--'));
+
+    expect(source).toContain('Projeto canônico: doufsxqlfjyuvxuezpln');
+    expect(source).toContain('Escopo fechado: somente as três funções');
+    expect(source).toContain('94ec0a32148ddccd2a71f8a67783a8f64f7c3d2d5968a28aa82855c975a90d55');
+    expect(source).toContain('502caec43349a3bd5e88e3dbb989f96f4401f9d2b9440e7790124dd4534142be');
+    expect(source).toContain('ae87ae018f88ab9b9c8496de9fcdafe8b2321778135de79ed46377fb429c57bc');
+    expect(executableLines).toEqual(
+      names.map((name) => `\\ir ../../docs/db/proposals/${name}`),
+    );
   });
   it('simulator rejects a deployment/remote argument before starting Docker', () => {
     const result = spawnSync(
