@@ -42,6 +42,12 @@ Deno.serve(async (req: Request) => {
   // Só registra chamadas que de fato saíram para o gateway (após a chave
   // resolvida); falha de auth/contrato/chave ausente não consome IA.
   const startMs = Date.now();
+  // Sem timeout próprio, um gateway travado prende a function até o isolate
+  // ser matado pela plataforma — mesma classe de bug já corrigida em
+  // callAiWithTracking (ai-usage.ts) para o path legacy. Declarado aqui (não
+  // dentro do try) para ficar acessível também no catch, que precisa
+  // distinguir AbortError (timeout) de qualquer outra exceção.
+  const aiTimeoutMs = 20_000;
   const logCall = (params: {
     status: 'success' | 'error';
     inputTokens?: number;
@@ -84,8 +90,11 @@ Receba a descrição do cliente e devolva sugestões objetivas de:
 - style_tag: 1 palavra ou expressão curta para o estilo (ex.: "Executivo", "Sustentável").
 Use português do Brasil. Seja conciso e prático.`;
 
+    const aiTimeoutController = new AbortController();
+    const aiTimeoutId = setTimeout(() => aiTimeoutController.abort(), aiTimeoutMs);
     const aiRes = await fetchWithBreaker('lovable-ai', 'https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
+      signal: aiTimeoutController.signal,
       headers: {
         Authorization: `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
@@ -144,6 +153,8 @@ Use português do Brasil. Seja conciso e prático.`;
         tool_choice: { type: 'function', function: { name: 'suggest_kit' } },
       }),
     });
+
+    clearTimeout(aiTimeoutId);
 
     if (!aiRes.ok) {
       if (aiRes.status === 429) {
@@ -214,6 +225,13 @@ Use português do Brasil. Seja conciso e prático.`;
     if (e instanceof CircuitOpenError) {
       await logCall({ status: 'error', errorMessage: `circuit_open:${e.service}` });
       return circuitOpenResponse(e, corsHeaders);
+    }
+    if (e instanceof DOMException && e.name === 'AbortError') {
+      await logCall({ status: 'error', errorMessage: `timeout_${aiTimeoutMs}ms` });
+      return new Response(
+        JSON.stringify({ error: 'A IA demorou para responder. Tente novamente em instantes.' }),
+        { status: 504, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      );
     }
     await logCall({ status: 'error', errorMessage: 'unhandled_exception' });
     return new Response(

@@ -109,7 +109,7 @@ export function mapKitAiErrorMessage(
   if (status === 402) {
     return 'Créditos de IA esgotados. Fale com o financeiro para renovar.';
   }
-  if (status === 429 || status === 503 || errorKind === 'timeout') {
+  if (status === 429 || status === 503 || status === 504 || errorKind === 'timeout') {
     return 'Muitas tentativas em pouco tempo. Tente novamente em 1 minuto.';
   }
   return 'Erro ao gerar sugestão. Tente novamente.';

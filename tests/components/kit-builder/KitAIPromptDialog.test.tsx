@@ -201,12 +201,14 @@ describe('mapKitAiErrorMessage — 3 erros de negócio (etapa 18)', () => {
     );
   });
 
-  it('timeout/rate-limit: HTTP 429, HTTP 503 sem código, ou errorKind timeout → tente novamente', () => {
+  it('timeout/rate-limit: HTTP 429, HTTP 503 sem código, HTTP 504 ou errorKind timeout → tente novamente', () => {
     const expected = 'Muitas tentativas em pouco tempo. Tente novamente em 1 minuto.';
     expect(mapKitAiErrorMessage(429, 'ratelimit')).toBe(expected);
     // Circuit breaker aberto também devolve 503, mas sem o código ai_not_configured —
     // nunca pode cair na mensagem de "fale com o TI".
     expect(mapKitAiErrorMessage(503, 'server')).toBe(expected);
+    // Timeout de 20s no gateway de IA (kit-ai-builder/index.ts) devolve 504.
+    expect(mapKitAiErrorMessage(504, 'server')).toBe(expected);
     expect(mapKitAiErrorMessage(0, 'timeout')).toBe(expected);
   });
 
