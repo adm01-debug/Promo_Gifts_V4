@@ -9,6 +9,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
+import { FavoriteToggleButton } from './FavoriteToggleButton';
 import {
   formatVolume,
   formatCurrency,
@@ -180,6 +181,7 @@ export function ItemCard({
             {formatCurrency(item.price)}
           </span>
           {boxSelected && <CompatibilityBadge item={item} />}
+          <FavoriteToggleButton productId={item.id} productName={item.name} />
           <AddButton
             isSelected={isSelected}
             cantFit={cantFit}
@@ -206,7 +208,7 @@ export function ItemCard({
           'cursor-pointer hover:-translate-y-0.5 hover:border-primary/40 hover:bg-card hover:shadow-lg',
       )}
     >
-      <div className="aspect-[4/3] w-full overflow-hidden bg-secondary">
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-secondary">
         {item.imageUrl ? (
           <img
             src={item.imageUrl}
@@ -219,6 +221,11 @@ export function ItemCard({
             <Package className="h-10 w-10 text-muted-foreground" />
           </div>
         )}
+        <FavoriteToggleButton
+          productId={item.id}
+          productName={item.name}
+          className="absolute right-1.5 top-1.5 bg-background/80 backdrop-blur-sm hover:bg-background"
+        />
       </div>
       <CardContent className="flex flex-1 flex-col p-3">
         <h4 className="truncate text-sm font-medium">{item.name}</h4>

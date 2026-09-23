@@ -38,6 +38,7 @@ import {
 } from '@/components/ui/select';
 import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible';
 import { cn } from '@/lib/utils';
+import { FavoriteToggleButton } from './FavoriteToggleButton';
 import {
   formatVolume,
   formatDimensions,
@@ -824,6 +825,7 @@ export function BoxSelector({
                         <span className="flex-shrink-0 text-sm font-semibold text-primary">
                           {formatCurrency(box.price)}
                         </span>
+                        <FavoriteToggleButton productId={box.id} productName={box.name} />
                         <Button
                           type="button"
                           size="sm"
@@ -853,7 +855,7 @@ export function BoxSelector({
                   >
                     <CardContent className="p-4">
                       <div className="flex gap-3">
-                        <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-secondary">
+                        <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-secondary">
                           {box.imageUrl ? (
                             <img
                               src={box.imageUrl}
@@ -866,6 +868,11 @@ export function BoxSelector({
                               <Package className="h-8 w-8 text-muted-foreground" />
                             </div>
                           )}
+                          <FavoriteToggleButton
+                            productId={box.id}
+                            productName={box.name}
+                            className="absolute right-0.5 top-0.5 h-6 w-6 bg-background/80 backdrop-blur-sm hover:bg-background"
+                          />
                         </div>
                         <div className="min-w-0 flex-1">
                           <h4 className="truncate font-medium transition-colors group-hover:text-primary">
