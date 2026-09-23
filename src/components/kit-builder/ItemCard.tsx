@@ -212,7 +212,9 @@ export function ItemCard({
               <p className="truncate text-xs text-muted-foreground">{attributes.join(' · ')}</p>
             )}
           </div>
-          <StockBadge stock={item.stock} />
+          <div className="shrink-0">
+            <StockBadge stock={item.stock} />
+          </div>
           <span className="shrink-0 text-sm font-semibold text-primary">
             {formatCurrency(item.price)}
           </span>

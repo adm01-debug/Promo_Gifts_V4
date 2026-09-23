@@ -239,7 +239,7 @@ export function useKitBuilderQueries() {
   // "o catálogo mudou"; um join do product_id não caberia como chave de
   // cache sem custo perceptível com milhares de produtos).
   const itemProductIds = useMemo(() => rawItemCatalog.map((item) => item.id), [rawItemCatalog]);
-  const { data: itemStockData } = useQuery({
+  const { data: itemStockData, isError: itemStockErrored } = useQuery({
     queryKey: ['kit-builder', 'items', 'stock', itemProductIds.length],
     queryFn: () => fetchKitStockVariants(itemProductIds),
     enabled: itemProductIds.length > 0,
@@ -249,7 +249,14 @@ export function useKitBuilderQueries() {
 
   // `null` (desconhecido) e `0` (sem estoque) nunca podem ser confundidos —
   // mesma semântica já validada em `evaluateKitStock`/`useKitStockValidation`.
+  // Quando as retries se esgotam, a query erra e `itemStockData` nunca chega
+  // a existir; sem tratar isso à parte, `stock` ficaria `undefined` (lido
+  // pelo StockBadge como "carregando") para sempre, mesmo sem requisição em
+  // andamento — precisa virar `null` (desconhecido) assim que a busca falhar.
   const completeItemCatalog = useMemo(() => {
+    if (itemStockErrored) {
+      return rawItemCatalog.map((item) => ({ ...item, stock: null }));
+    }
     if (!itemStockData) return rawItemCatalog;
     const { stockByProduct, unknownProductIds } = evaluateKitStock(
       itemStockData,
@@ -261,7 +268,7 @@ export function useKitBuilderQueries() {
       ...item,
       stock: unknownProductIds.has(item.id) ? null : (stockByProduct.get(item.id) ?? 0),
     }));
-  }, [rawItemCatalog, itemStockData]);
+  }, [rawItemCatalog, itemStockData, itemStockErrored]);
 
   // Selector filters are projections over the complete cached catalogs. The
   // AI resolver receives the unfiltered arrays below, so a previous human
