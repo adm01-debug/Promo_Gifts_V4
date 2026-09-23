@@ -39,6 +39,8 @@ interface KitMakerLandingProps {
     composition: KitAIComposition,
     requestedQuantity?: number,
   ) => void;
+  /** Opens the shared onboarding tour — "Ver tutoriais" no longer just jumps to the anchor. */
+  onOpenTutorial?: () => void;
 }
 
 interface FeaturedProduct {
@@ -184,6 +186,7 @@ export function KitMakerLanding({
   onApplyAISuggestion,
   aiCatalogItems,
   aiCatalogBoxes,
+  onOpenTutorial,
 }: KitMakerLandingProps) {
   const navigate = useNavigate();
   const {
@@ -240,12 +243,19 @@ export function KitMakerLanding({
               Meus kits
             </Link>
           </Button>
-          <Button variant="outline" asChild>
-            <a href="#como-funciona">
+          {onOpenTutorial ? (
+            <Button variant="outline" onClick={onOpenTutorial}>
               <BookOpen className="mr-2 h-4 w-4" />
               Ver tutoriais
-            </a>
-          </Button>
+            </Button>
+          ) : (
+            <Button variant="outline" asChild>
+              <a href="#como-funciona">
+                <BookOpen className="mr-2 h-4 w-4" />
+                Ver tutoriais
+              </a>
+            </Button>
+          )}
           <Button variant="outline" asChild>
             <a href="#como-funciona">Como funciona?</a>
           </Button>

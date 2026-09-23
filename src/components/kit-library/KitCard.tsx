@@ -1,13 +1,24 @@
 /**
  * Kit Card — Cartão visual rico para "Meus Kits" e "Sugeridos".
  */
-import { Star, Pencil, Copy, Trash2, Wand2, Tag as TagIcon, Layers, Pin } from 'lucide-react';
+import {
+  Star,
+  Copy,
+  Trash2,
+  Wand2,
+  Tag as TagIcon,
+  Layers,
+  Pin,
+  Building2,
+  ArrowRight,
+} from 'lucide-react';
 import { TruncatedTooltip } from '@/components/ui/truncated-tooltip';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { formatCurrency } from '@/lib/kit-builder';
+import { formatDateRelative } from '@/lib/date-utils';
 import { cn } from '@/lib/utils';
 import { getKitTemplateIcon } from '@/components/kit-library/kit-template-icons';
 
@@ -26,6 +37,12 @@ export interface KitCardData {
   usageBadge?: string;
   /** Optional canonical image from a template or the saved kit snapshot. */
   coverImageUrl?: string | null;
+  /** Client name from the quote draft, when one was saved with the kit. */
+  clientName?: string | null;
+  /** ISO timestamp — powers "Editado há X". */
+  updatedAt?: string | null;
+  /** Drives the primary CTA copy — a draft is continued, a ready kit is opened. */
+  isDraft?: boolean;
 }
 
 interface Props {
@@ -185,6 +202,15 @@ export function KitCard({
             <Layers className="h-3 w-3" />
             {data.itemsCount} ite{data.itemsCount === 1 ? 'm' : 'ns'}
           </span>
+          {variant === 'mine' && data.clientName && (
+            <span className="flex items-center gap-1">
+              <Building2 className="h-3 w-3" />
+              {data.clientName}
+            </span>
+          )}
+          {variant === 'mine' && data.updatedAt && (
+            <span>Editado {formatDateRelative(data.updatedAt)}</span>
+          )}
         </div>
 
         <div className="flex items-end justify-between border-t border-border/40 pt-2">
@@ -198,12 +224,12 @@ export function KitCard({
               <>
                 <Button
                   variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
+                  size="sm"
+                  className="gap-1 text-primary hover:text-primary"
                   onClick={onEdit}
-                  aria-label="Editar"
                 >
-                  <Pencil className="h-4 w-4" />
+                  {data.isDraft ? 'Continuar edição' : 'Abrir kit'}
+                  <ArrowRight className="h-3.5 w-3.5" />
                 </Button>
                 <Button
                   variant="ghost"

@@ -75,6 +75,27 @@ const BUDGETS = ['Até R$ 100', 'Até R$ 150', 'Até R$ 250', 'Acima de R$ 250']
 const STYLES = ['Moderno e sustentável', 'Executivo', 'Criativo', 'Premium'];
 const QUANTITIES = ['25 kits', '50 kits', '100 kits', '250 kits'];
 
+/** Presentation-only title built from the UI briefing — never fed back into the composition. */
+export function buildAlternativeTitle(
+  style: string,
+  audience: string,
+  index: number,
+  total: number,
+): string {
+  const parts = [style, audience].filter(Boolean);
+  const base = parts.length > 0 ? `Kit ${parts.join(' ')}` : 'Kit sugerido';
+  return total > 1 ? `${base} — Alternativa ${index + 1}` : base;
+}
+
+/** One-sentence recap of the structured briefing fields the user actually chose. */
+export function buildBriefDescription(audience: string, budget: string, style: string): string {
+  const parts: string[] = [];
+  if (audience) parts.push(`para ${audience.toLowerCase()}`);
+  if (style) parts.push(`estilo ${style.toLowerCase()}`);
+  if (budget) parts.push(budget.toLowerCase());
+  return parts.length > 0 ? `Sugestão ${parts.join(', ')}.` : '';
+}
+
 function buildStructuredPrompt({
   prompt,
   audience,
@@ -344,19 +365,44 @@ export function KitAIPromptDialog({
                 {activeAlternative ? (
                   <>
                     <div>
-                      <h3 className="text-lg font-semibold">{activeAlternative.name}</h3>
+                      <h3 className="text-lg font-semibold">
+                        {buildAlternativeTitle(
+                          style,
+                          audience,
+                          alternativeIndex,
+                          alternatives.length,
+                        )}
+                      </h3>
                       <p className="mt-1 text-sm text-muted-foreground">
-                        {activeAlternative.narrative}
+                        {buildBriefDescription(audience, budget, style) ||
+                          activeAlternative.narrative}
                       </p>
                     </div>
                     <div className="overflow-hidden rounded-lg border bg-muted/20">
-                      {activeAlternative.box.imageUrl && (
-                        <img
-                          src={activeAlternative.box.imageUrl}
-                          alt={activeAlternative.box.name}
-                          className="h-32 w-full object-cover"
-                        />
-                      )}
+                      <div className="flex gap-1.5 p-1.5">
+                        {activeAlternative.box.imageUrl && (
+                          <img
+                            src={activeAlternative.box.imageUrl}
+                            alt={activeAlternative.box.name}
+                            className="h-28 flex-1 rounded-md object-cover"
+                          />
+                        )}
+                        {activeAlternative.items.some((item) => item.imageUrl) && (
+                          <div className="grid w-24 shrink-0 grid-cols-2 gap-1">
+                            {activeAlternative.items
+                              .filter((item) => item.imageUrl)
+                              .slice(0, 4)
+                              .map((item) => (
+                                <img
+                                  key={item.lineId}
+                                  src={item.imageUrl!}
+                                  alt={item.name}
+                                  className="h-[54px] w-full rounded object-cover"
+                                />
+                              ))}
+                          </div>
+                        )}
+                      </div>
                       <div className="space-y-3 p-3">
                         <p className="text-sm font-medium">Caixa: {activeAlternative.box.name}</p>
                         <ul className="space-y-2" aria-label="Itens da composição sugerida">
@@ -379,6 +425,7 @@ export function KitAIPromptDialog({
                       </div>
                     </div>
                     <div className="flex flex-wrap gap-2">
+                      {style && <Badge variant="outline">{style}</Badge>}
                       <Badge variant="secondary">Tipo: {activeAlternative.kitType}</Badge>
                       <Badge variant="outline">
                         {activeAlternative.fitStatus === 'compatible'

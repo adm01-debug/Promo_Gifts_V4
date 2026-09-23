@@ -76,6 +76,17 @@ function customKitCoverImage(kit: CustomKitRow): string | null {
   );
 }
 
+/** Reads the quote client saved with the draft, mirroring useKitBuilderPageState's reader. */
+function extractDraftClientName(personalizationData: unknown): string | null {
+  if (!personalizationData || typeof personalizationData !== 'object') return null;
+  const draft = (personalizationData as Record<string, unknown>).__draft;
+  if (!draft || typeof draft !== 'object') return null;
+  const client = (draft as Record<string, unknown>).quoteClient;
+  if (!client || typeof client !== 'object') return null;
+  const name = (client as Record<string, unknown>).client_name;
+  return typeof name === 'string' && name.trim() ? name.trim() : null;
+}
+
 function applySort<
   T extends {
     name: string;
@@ -298,6 +309,9 @@ export default function KitLibraryPage() {
       isFavorite: k.is_favorite,
       isPinned: k.is_pinned,
       coverImageUrl: customKitCoverImage(k),
+      clientName: extractDraftClientName(k.personalization_data),
+      updatedAt: k.updated_at,
+      isDraft: k.status === 'draft',
       badge:
         k.status === 'draft' ? 'Rascunho' : k.status === 'archived' ? 'Arquivado' : 'Publicado',
     };
