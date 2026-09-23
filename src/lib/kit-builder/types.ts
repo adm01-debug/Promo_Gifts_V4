@@ -63,6 +63,14 @@ export interface KitItem {
   dimensionsKnown?: boolean;
   // Peso em gramas
   weight?: number;
+  /**
+   * Estoque agregado (soma das variantes ativas) no momento em que o
+   * catálogo foi carregado. `null` = desconhecido (produto sem variante
+   * ativa encontrada ou consulta ainda não resolvida); `0` = variantes
+   * encontradas, mas sem estoque. As duas coisas nunca podem ser
+   * confundidas — ver `useKitStockValidation.evaluateKitStock`.
+   */
+  stock?: number | null;
   // Categoria do item
   category?: string;
   // Material do item

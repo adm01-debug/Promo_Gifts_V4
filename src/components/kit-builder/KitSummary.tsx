@@ -2,6 +2,7 @@
  * Kit Summary — Refactored orchestrator
  * Sub-components extracted to ./kit-summary/
  */
+import { useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { AlertTriangle } from 'lucide-react';
@@ -74,6 +75,14 @@ export function KitSummary({
   const { box, items, personalization } = kitState;
   const pricing = calculateTotalKitPrice(box, items, personalization, kitQuantity);
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+  // `totalWeight` soma apenas os pesos conhecidos (nunca assume 0 para um
+  // item sem peso cadastrado); esta contagem existe para o FreightEstimator
+  // avisar quando o total exibido é parcial, não a composição completa.
+  const itemsWithUnknownWeight = useMemo(() => {
+    const missingItems = items.filter((item) => item.weight === undefined).length;
+    const missingBox = box && box.weight === undefined ? 1 : 0;
+    return missingItems + missingBox;
+  }, [items, box]);
   const personalizedCount =
     (personalization.box.enabled ? 1 : 0) +
     Object.values(personalization.items).filter((p) => p.enabled).length;
@@ -227,7 +236,11 @@ export function KitSummary({
             totalPrice={pricing.total}
             kitQuantity={kitQuantity}
           />
-          <FreightEstimator totalWeightGrams={kitState.totalWeight} kitQuantity={kitQuantity} />
+          <FreightEstimator
+            totalWeightGrams={kitState.totalWeight}
+            kitQuantity={kitQuantity}
+            itemsWithUnknownWeight={itemsWithUnknownWeight}
+          />
         </aside>
       </div>
 

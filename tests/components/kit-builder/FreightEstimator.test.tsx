@@ -12,8 +12,18 @@ import { FreightEstimator } from '@/components/kit-builder/FreightEstimator';
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
-function renderFreight(totalWeightGrams: number, kitQuantity = 1) {
-  return render(<FreightEstimator totalWeightGrams={totalWeightGrams} kitQuantity={kitQuantity} />);
+function renderFreight(
+  totalWeightGrams: number,
+  kitQuantity = 1,
+  itemsWithUnknownWeight = 0,
+) {
+  return render(
+    <FreightEstimator
+      totalWeightGrams={totalWeightGrams}
+      kitQuantity={kitQuantity}
+      itemsWithUnknownWeight={itemsWithUnknownWeight}
+    />,
+  );
 }
 
 function getMethodSelect() {
@@ -153,5 +163,37 @@ describe("FreightEstimator — valores extremos e erro", () => {
   it("Infinity grams → fallback para tier máximo", () => {
     renderFreight(Infinity, 1);
     expect(screen.getAllByText(/120/).length).toBeGreaterThan(0);
+  });
+});
+
+// ─── Etapa 15 — peso desconhecido nunca é lido como zero ───────────────────
+
+describe("FreightEstimator — aviso de estimativa parcial (etapa 15)", () => {
+  it("itemsWithUnknownWeight > 0 → mostra aviso de estimativa parcial com a contagem", () => {
+    renderFreight(2_000, 1, 3);
+    expect(screen.getByText(/estimativa parcial — 3 itens sem peso cadastrado/i)).toBeInTheDocument();
+  });
+
+  it("1 item sem peso → usa singular", () => {
+    renderFreight(2_000, 1, 1);
+    expect(screen.getByText(/estimativa parcial — 1 item sem peso cadastrado/i)).toBeInTheDocument();
+  });
+
+  it("peso parcial tem prioridade sobre o aviso genérico de 'peso não informado'", () => {
+    renderFreight(0, 1, 2);
+    expect(screen.getByText(/estimativa parcial/i)).toBeInTheDocument();
+    expect(screen.queryByText(/peso dos itens não informado/i)).not.toBeInTheDocument();
+  });
+
+  it("sem itens de peso desconhecido (default) preserva o aviso genérico existente", () => {
+    renderFreight(0, 1);
+    expect(screen.getByText(/peso dos itens não informado/i)).toBeInTheDocument();
+    expect(screen.queryByText(/estimativa parcial/i)).not.toBeInTheDocument();
+  });
+
+  it("peso total conhecido e sem itens de peso desconhecido → nenhum aviso de peso", () => {
+    renderFreight(2_000, 1, 0);
+    expect(screen.queryByText(/peso dos itens não informado/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/estimativa parcial/i)).not.toBeInTheDocument();
   });
 });
