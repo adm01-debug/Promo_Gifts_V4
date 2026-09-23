@@ -3,7 +3,7 @@
  * Card individual para exibir um item disponível no kit
  */
 
-import { Plus, Check, X, Package } from 'lucide-react';
+import { Plus, Check, X, Package, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -38,6 +38,41 @@ function getItemAttributes(item: KitItem): string[] {
   }
   if (item.category) attributes.push(item.category);
   return attributes.slice(0, 3);
+}
+
+/**
+ * `undefined` (catálogo carregando o agregado de estoque, etapa 13),
+ * `null` (produto não encontrado nas variantes — desconhecido) e `0`
+ * (soma de variantes ativas é zero) nunca podem virar o mesmo texto.
+ */
+export function StockBadge({ stock }: { stock: number | null | undefined }) {
+  if (stock === undefined) {
+    return (
+      <Badge variant="outline" className="gap-1 text-[10px] text-muted-foreground">
+        <Loader2 className="h-3 w-3 animate-spin" />
+        Verificando estoque
+      </Badge>
+    );
+  }
+  if (stock === null) {
+    return (
+      <Badge variant="outline" className="text-[10px] text-muted-foreground">
+        Estoque desconhecido
+      </Badge>
+    );
+  }
+  if (stock === 0) {
+    return (
+      <Badge variant="destructive" className="text-[10px]">
+        Sem estoque
+      </Badge>
+    );
+  }
+  return (
+    <Badge variant="secondary" className="bg-primary/10 text-[10px] text-primary">
+      Em estoque ({stock})
+    </Badge>
+  );
 }
 
 function CompatibilityBadge({
@@ -177,6 +212,7 @@ export function ItemCard({
               <p className="truncate text-xs text-muted-foreground">{attributes.join(' · ')}</p>
             )}
           </div>
+          <StockBadge stock={item.stock} />
           <span className="shrink-0 text-sm font-semibold text-primary">
             {formatCurrency(item.price)}
           </span>
@@ -235,6 +271,9 @@ export function ItemCard({
         <div className="mt-1 flex items-center justify-between">
           <span className="text-xs text-muted-foreground">{formatVolume(item.volume)}</span>
           <span className="text-sm font-semibold text-primary">{formatCurrency(item.price)}</span>
+        </div>
+        <div className="mt-1">
+          <StockBadge stock={item.stock} />
         </div>
 
         <div className="mt-2 flex items-center justify-between border-t pt-2">
