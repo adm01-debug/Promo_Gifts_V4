@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { useState } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -122,12 +123,13 @@ const CONFIG: KitItemPersonalization = {
 };
 
 function Harness({ quantity = 50 }: { quantity?: number }) {
+  const [queryClient] = useState(() => new QueryClient({ defaultOptions: { queries: { retry: false } } }));
   const [personalizations, setPersonalizations] = useState<Record<string, KitItemPersonalization>>({
     'line-1': CONFIG,
     'line-2': CONFIG,
   });
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <PersonalizationConfig
         box={null}
         items={ITEMS}
@@ -140,7 +142,7 @@ function Harness({ quantity = 50 }: { quantity?: number }) {
         }
       />
       <output data-testid="personalization-state">{JSON.stringify(personalizations)}</output>
-    </>
+    </QueryClientProvider>
   );
 }
 
