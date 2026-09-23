@@ -118,14 +118,26 @@ describe('Kit Maker public catalog contracts', () => {
         count: 2,
         records: [
           {
-            id: 'p-1', name: 'Garrafa', sku: 'GAR', sale_price: 30,
-            primary_image_url: null, product_type: 'product', width_cm: 5,
-            height_cm: 20, length_cm: 5,
+            id: 'p-1',
+            name: 'Garrafa',
+            sku: 'GAR',
+            sale_price: 30,
+            primary_image_url: null,
+            product_type: 'product',
+            width_cm: 5,
+            height_cm: 20,
+            length_cm: 5,
           },
           {
-            id: 'p-2', name: 'Caderno', sku: 'CAD', sale_price: 25,
-            primary_image_url: null, product_type: 'product', width_cm: 15,
-            height_cm: 20, length_cm: 2,
+            id: 'p-2',
+            name: 'Caderno',
+            sku: 'CAD',
+            sale_price: 25,
+            primary_image_url: null,
+            product_type: 'product',
+            width_cm: 15,
+            height_cm: 20,
+            length_cm: 2,
           },
         ],
       } as never;
@@ -143,6 +155,65 @@ describe('Kit Maker public catalog contracts', () => {
 
     expect(result.current.completeItemCatalog).toHaveLength(2);
     expect(vi.mocked(dbInvoke)).toHaveBeenCalledTimes(callsBeforeFilter);
+  });
+
+  it('encontra caixa buscando por SKU ou por material, sem diferenciar maiúsculas', async () => {
+    vi.mocked(dbInvoke).mockImplementation(async (request) => {
+      if ((request.filters as Record<string, unknown>).product_type === 'packaging') {
+        return {
+          count: 2,
+          records: [
+            {
+              id: 'box-1',
+              name: 'Caixa Premium',
+              sku: 'CX-PREM-01',
+              sale_price: 20,
+              primary_image_url: null,
+              product_type: 'packaging',
+              material: 'Papel Kraft',
+              internal_width_cm: 30,
+              internal_height_cm: 20,
+              internal_length_cm: 10,
+            },
+            {
+              id: 'box-2',
+              name: 'Caixa Rígida',
+              sku: 'CX-RIG-02',
+              sale_price: 35,
+              primary_image_url: null,
+              product_type: 'packaging',
+              material: 'Papelão Rígido',
+              internal_width_cm: 30,
+              internal_height_cm: 20,
+              internal_length_cm: 10,
+            },
+          ],
+        } as never;
+      }
+      return { count: 0, records: [] } as never;
+    });
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const wrapper = ({ children }: { children: ReactNode }) =>
+      createElement(QueryClientProvider, { client }, children);
+    const { useKitBuilderQueries } = await import('@/hooks/kit-builder/useKitBuilderQueries');
+    const { result } = renderHook(() => useKitBuilderQueries(), { wrapper });
+
+    await waitFor(() => expect(result.current.completeBoxCatalog).toHaveLength(2));
+
+    act(() => result.current.setBoxFilters({ search: 'cx-rig' }));
+    await waitFor(
+      () => expect(result.current.availableBoxes.map((b) => b.id)).toEqual(['box-2']),
+      { timeout: 2_000 },
+    );
+
+    act(() => result.current.setBoxFilters({ search: 'KRAFT' }));
+    await waitFor(
+      () => expect(result.current.availableBoxes.map((b) => b.id)).toEqual(['box-1']),
+      { timeout: 2_000 },
+    );
+
+    act(() => result.current.setBoxFilters({ search: '' }));
+    await waitFor(() => expect(result.current.availableBoxes).toHaveLength(2), { timeout: 2_000 });
   });
 });
 
