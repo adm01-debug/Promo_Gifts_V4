@@ -182,6 +182,8 @@ export interface KitState {
   volumeUsagePercent: number;
   // Peso total em gramas
   totalWeight: number;
+  /** Itens selecionados com `weight` nulo/indefinido — `totalWeight` os trata como 0g. */
+  itemsWithUnknownWeightCount: number;
   // Preços
   boxPrice: number;
   itemsPrice: number;

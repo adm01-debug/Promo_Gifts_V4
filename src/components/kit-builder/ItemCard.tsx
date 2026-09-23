@@ -7,6 +7,7 @@ import { Plus, Check, X, Package } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { FavoriteToggleButton } from './FavoriteToggleButton';
@@ -27,6 +28,42 @@ interface ItemCardProps {
   onRemove: (item: KitItem) => void;
   /** Grid = rich card with top image. List = compact single-line row. */
   view?: 'grid' | 'list';
+  /** Consulta agregada de estoque da página ainda em voo (etapa 13). */
+  isLoadingStock?: boolean;
+}
+
+/**
+ * 4 estados: carregando (skeleton), desconhecido (`stock` null/undefined,
+ * consulta já resolvida), sem estoque (`0`) e em estoque (`N`). Nunca mostra
+ * "0" quando o dado é apenas desconhecido.
+ */
+function StockBadge({
+  stock,
+  isLoadingStock,
+}: {
+  stock?: number | null;
+  isLoadingStock?: boolean;
+}) {
+  if (isLoadingStock) return <Skeleton className="h-[18px] w-20 rounded-full" />;
+  if (stock === null || stock === undefined) {
+    return (
+      <Badge variant="outline" className="text-[10px] font-normal text-muted-foreground">
+        Estoque desconhecido
+      </Badge>
+    );
+  }
+  if (stock === 0) {
+    return (
+      <Badge variant="destructive" className="text-[10px] font-normal">
+        Sem estoque
+      </Badge>
+    );
+  }
+  return (
+    <Badge variant="secondary" className="text-[10px] font-normal">
+      Em estoque ({stock})
+    </Badge>
+  );
 }
 
 /** Up to 3 short, catalog-derived attributes — never invented. */
@@ -140,6 +177,7 @@ export function ItemCard({
   onAdd,
   onRemove,
   view = 'grid',
+  isLoadingStock,
 }: ItemCardProps) {
   const fits = item.compatibility?.fits !== false;
   const cantFit = boxSelected && !fits;
@@ -180,6 +218,7 @@ export function ItemCard({
           <span className="shrink-0 text-sm font-semibold text-primary">
             {formatCurrency(item.price)}
           </span>
+          <StockBadge stock={item.stock} isLoadingStock={isLoadingStock} />
           {boxSelected && <CompatibilityBadge item={item} />}
           <FavoriteToggleButton productId={item.id} productName={item.name} />
           <AddButton
@@ -235,6 +274,9 @@ export function ItemCard({
         <div className="mt-1 flex items-center justify-between">
           <span className="text-xs text-muted-foreground">{formatVolume(item.volume)}</span>
           <span className="text-sm font-semibold text-primary">{formatCurrency(item.price)}</span>
+        </div>
+        <div className="mt-1">
+          <StockBadge stock={item.stock} isLoadingStock={isLoadingStock} />
         </div>
 
         <div className="mt-2 flex items-center justify-between border-t pt-2">

@@ -61,6 +61,8 @@ interface ItemSelectorProps {
   items: ItemWithCompatibility[];
   selectedItems: KitItem[];
   isLoading: boolean;
+  /** Estoque agregado ainda em voo (etapa 13) — mostra skeleton no badge, não "desconhecido". */
+  isLoadingStock?: boolean;
   filters: ItemFilters;
   onFiltersChange: (filters: ItemFilters) => void;
   onAddItem: (item: KitItem) => CompatibilityResult;
@@ -87,6 +89,7 @@ export function ItemSelector({
   items,
   selectedItems,
   isLoading,
+  isLoadingStock,
   filters,
   onFiltersChange,
   onAddItem,
@@ -383,6 +386,7 @@ export function ItemSelector({
                     boxSelected={boxSelected}
                     onAdd={handleAddItem}
                     onRemove={(selected) => onRemoveItem(getKitItemLineId(selected))}
+                    isLoadingStock={isLoadingStock}
                   />
                 ))}
               </div>
@@ -398,6 +402,7 @@ export function ItemSelector({
                     boxSelected={boxSelected}
                     onAdd={handleAddItem}
                     onRemove={(selected) => onRemoveItem(getKitItemLineId(selected))}
+                    isLoadingStock={isLoadingStock}
                   />
                 ))}
               </div>

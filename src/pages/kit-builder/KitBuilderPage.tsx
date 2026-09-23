@@ -201,6 +201,7 @@ export default function KitBuilderPage() {
                         onReorder={actions.reorderItems}
                         items={state.availableItems}
                         isLoading={state.isLoadingItems}
+                        isLoadingStock={state.isLoadingItemStock}
                         errorMessage={state.itemError}
                         onRetry={() => {
                           state.refetchItems().catch(() => undefined);
