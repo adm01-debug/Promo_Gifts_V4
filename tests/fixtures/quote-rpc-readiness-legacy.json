@@ -1,0 +1,58 @@
+{
+  "rows": [
+    {
+      "signature": "create_quote_transactional(jsonb,jsonb)",
+      "body_md5": "d3f154669f068acb2d5087a4ae059e14",
+      "security_invoker": true,
+      "owner": "postgres",
+      "proconfig": "search_path=public",
+      "authenticated_execute": true,
+      "service_role_execute": true,
+      "has_product_variant_id": false,
+      "has_product_description": false,
+      "has_artwork_urls": false,
+      "has_mockup_urls": false,
+      "has_selected_packaging_id": false,
+      "has_removed_item_ids": false,
+      "has_exact_version_guard": false,
+      "has_explicit_bump": false,
+      "has_row_lock": false
+    },
+    {
+      "signature": "increment_quote_version()",
+      "body_md5": "8dc69376bb204fa774c7b193a7bbce4f",
+      "security_invoker": true,
+      "owner": "postgres",
+      "proconfig": "search_path=pg_catalog, public",
+      "authenticated_execute": true,
+      "service_role_execute": true,
+      "has_product_variant_id": false,
+      "has_product_description": false,
+      "has_artwork_urls": false,
+      "has_mockup_urls": false,
+      "has_selected_packaging_id": false,
+      "has_removed_item_ids": false,
+      "has_exact_version_guard": false,
+      "has_explicit_bump": false,
+      "has_row_lock": false
+    },
+    {
+      "signature": "update_quote_transactional(uuid,jsonb,jsonb,integer)",
+      "body_md5": "2f716e5ee22dd3de4043feb5bedc6387",
+      "security_invoker": true,
+      "owner": "postgres",
+      "proconfig": "search_path=public",
+      "authenticated_execute": true,
+      "service_role_execute": true,
+      "has_product_variant_id": false,
+      "has_product_description": false,
+      "has_artwork_urls": false,
+      "has_mockup_urls": false,
+      "has_selected_packaging_id": false,
+      "has_removed_item_ids": false,
+      "has_exact_version_guard": false,
+      "has_explicit_bump": false,
+      "has_row_lock": false
+    }
+  ]
+}

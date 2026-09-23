@@ -5,7 +5,14 @@ CREATE ROLE authenticated NOLOGIN;
 CREATE ROLE service_role NOLOGIN BYPASSRLS;
 CREATE SCHEMA auth;
 CREATE FUNCTION auth.uid() RETURNS uuid LANGUAGE sql STABLE AS $$ SELECT nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;
-CREATE TABLE public.products (id uuid PRIMARY KEY, organization_id uuid, product_type text, is_active boolean DEFAULT true);
+CREATE TABLE public.products (
+  id uuid PRIMARY KEY,
+  organization_id uuid,
+  product_type text,
+  is_active boolean DEFAULT true,
+  is_deleted boolean DEFAULT false,
+  deleted_at timestamptz
+);
 CREATE TABLE public.product_variants (id uuid PRIMARY KEY, product_id uuid REFERENCES products(id), is_active boolean DEFAULT true);
 CREATE TABLE public.user_organizations (user_id uuid,organization_id uuid,created_at timestamptz DEFAULT now());
 CREATE FUNCTION public.user_is_org_member(org uuid) RETURNS boolean LANGUAGE sql STABLE AS $$ SELECT EXISTS(SELECT 1 FROM public.user_organizations WHERE user_id=auth.uid() AND organization_id=org) $$;

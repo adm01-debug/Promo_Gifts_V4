@@ -2,6 +2,7 @@
  * quoteTypes — Tipos de domínio para orçamentos
  */
 import type { QuoteStatus } from '@/types/quote';
+import type { Json } from '@/integrations/supabase/types';
 
 export interface QuoteItemPersonalization {
   id?: string;
@@ -29,10 +30,18 @@ export interface QuoteItem {
   /** Identidade canônica da variante; cor/SKU não substituem essa referência. */
   product_variant_id?: string | null;
   product_name: string;
+  product_description?: string | null;
   product_sku?: string;
   product_image_url?: string;
+  has_personalization?: boolean;
+  personalization_config?: Json | null;
+  personalization_cost?: number;
+  mockup_urls?: string[];
+  artwork_urls?: string[];
   quantity: number;
   unit_price: number;
+  discount_percentage?: number;
+  discount_amount?: number;
   subtotal?: number;
   color_name?: string;
   color_hex?: string;
@@ -54,6 +63,9 @@ export interface QuoteItem {
   price_freshness_threshold_days?: number | null;
   /** Timestamp em que o vendedor confirmou o preço com o fornecedor durante a montagem do orçamento. Quando preenchido, o badge de preço defasado é suprimido neste item. */
   price_confirmed_at?: string | null;
+  selected_packaging_id?: string | null;
+  selected_packaging_name?: string | null;
+  selected_packaging_unit_cost?: number | null;
   personalizations?: QuoteItemPersonalization[];
 }
 

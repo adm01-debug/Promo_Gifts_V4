@@ -26,17 +26,19 @@ vi.mock('@/integrations/supabase/client', () => {
       from: vi.fn(() => ({
         update: (patch: { sort_order: number }) => ({
           eq: (_c1: string, id: string) => ({
-            eq: (_c2: string, _quoteId: string) =>
-              // Simula latência de rede variável para forçar a race.
-              new Promise((resolve) => {
-                setTimeout(
-                  () => {
-                    db.set(id, patch.sort_order);
-                    resolve({ error: null });
-                  },
-                  Math.floor(Math.random() * 15) + 5,
-                );
-              }),
+            eq: (_c2: string, _quoteId: string) => ({
+              select: () =>
+                // Simula latência de rede variável para forçar a race.
+                new Promise((resolve) => {
+                  setTimeout(
+                    () => {
+                      db.set(id, patch.sort_order);
+                      resolve({ data: [{ id }], error: null });
+                    },
+                    Math.floor(Math.random() * 15) + 5,
+                  );
+                }),
+            }),
           }),
         }),
       })),

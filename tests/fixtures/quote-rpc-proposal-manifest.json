@@ -1,0 +1,19 @@
+{
+  "canonical_project_ref": "doufsxqlfjyuvxuezpln",
+  "captured_at": "2026-09-22T20:34:01.965Z",
+  "postgres_image": "postgres@sha256:67f41722b7a8cbdb868a44a4995c846eddfdc2973bccb291ce937dce88ad5675",
+  "postgres_version_tested": "17.11 (Debian 17.11-1.pgdg13+2)",
+  "expected_prosrc_md5": {
+    "create_quote_transactional(jsonb,jsonb)": "54d09802f6eaf0504a09e30cd2ce30c7",
+    "increment_quote_version()": "f1ebe660a6db383225a8d885642759b1",
+    "update_quote_transactional(uuid,jsonb,jsonb,integer)": "40613079070aceb2054b4c7124cffe12"
+  },
+  "files": {
+    "docs/db/proposals/20260922210000_create_quote_lineage.sql": "94ec0a32148ddccd2a71f8a67783a8f64f7c3d2d5968a28aa82855c975a90d55",
+    "docs/db/proposals/20260922210500_increment_quote_version_explicit_bump.sql": "502caec43349a3bd5e88e3dbb989f96f4401f9d2b9440e7790124dd4534142be",
+    "docs/db/proposals/20260922211000_update_quote_lineage_lock.sql": "ae87ae018f88ab9b9c8496de9fcdafe8b2321778135de79ed46377fb429c57bc",
+    "tests/sql/quote-rpc-fixture.sql": "2811e4eadf78a8629dc304b68d5806f65a554d56a05c8e5cc53d02ffeb1eed15",
+    "tests/fixtures/quote-rpc-live-20260922.json": "1824b5ffa58395e698a86198c3a7ce4cfeac3a84d1e91e26792128a4ca0876e3",
+    "tests/fixtures/quote-rpc-catalog-20260922.json": "3203b5683a08ea764317d12cbe65a2665c0d6243a072bba23be48cbc2117d3b3"
+  }
+}
