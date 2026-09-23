@@ -9,26 +9,55 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..') + sep;
 const read = (path) => readFileSync(`${root}${path}`, 'utf8');
 const names = [
   '20260922210000_create_quote_lineage.sql',
+  '20260922210500_increment_quote_version_explicit_bump.sql',
   '20260922211000_update_quote_lineage_lock.sql',
 ];
 const rows = JSON.parse(read('tests/fixtures/quote-rpc-live-20260922.json')).rows;
+const manifest = JSON.parse(read('tests/fixtures/quote-rpc-proposal-manifest.json'));
 describe('quote RPC proposal boundaries (static, not PostgreSQL simulation)', () => {
   it.each(names)('%s stays outside the auto-apply migration directory', (name) => {
     expect(existsSync(`${root}supabase/migrations/${name}`)).toBe(false);
     expect(existsSync(`${root}docs/db/proposals/${name}`)).toBe(true);
   });
-  it.each([0, 1])('proposal %i changes one function, never schema/ACL/other functions', (index) => {
+  it.each([0, 2])('proposal %i changes one RPC, never schema/ACL/other functions', (index) => {
     const sql = read(`docs/db/proposals/${names[index]}`);
     const executable = sql.replace(/--[^\n]*/g, '');
-    expect(executable.match(/CREATE OR REPLACE FUNCTION/g)).toHaveLength(1);
-    expect(executable).toContain(`FUNCTION public.${rows[index].proname}(`);
+    const row = rows[index === 0 ? 0 : 1];
+    expect(executable.match(/CREATE\s+OR\s+REPLACE\s+FUNCTION/gi)).toHaveLength(1);
+    expect(executable.toLowerCase()).toContain(`function public.${row.proname}(`);
     expect(executable).not.toMatch(
-      /\b(?:CREATE TABLE|ALTER TABLE|CREATE TRIGGER|DROP|GRANT|REVOKE|SECURITY DEFINER)\b/,
+      /\b(?:CREATE\s+TABLE|ALTER\s+TABLE|CREATE\s+TRIGGER|DROP|GRANT|REVOKE|SECURITY\s+DEFINER)\b/i,
     );
-    expect(executable).toContain(`md5(p.prosrc)='${rows[index].body_md5}'`);
-    const body = rows[index].definition.split('$function$')[1];
-    expect(createHash('md5').update(body).digest('hex')).toBe(rows[index].body_md5);
-    expect(executable).toContain(rows[index].acl);
+    expect(executable).toContain(`md5(p.prosrc)='${row.body_md5}'`);
+    const body = row.definition.split('$function$')[1];
+    expect(createHash('md5').update(body).digest('hex')).toBe(row.body_md5);
+    expect(executable).toContain(row.acl);
+  });
+  it('version helper changes one trigger function and preserves metadata', () => {
+    const executable = read(`docs/db/proposals/${names[1]}`).replace(/--[^\n]*/g, '');
+    expect(executable.match(/CREATE\s+OR\s+REPLACE\s+FUNCTION/gi)).toHaveLength(1);
+    expect(executable).toContain('public.increment_quote_version()');
+    expect(executable).toContain("md5(p.prosrc)='8dc69376bb204fa774c7b193a7bbce4f'");
+    expect(executable).not.toMatch(
+      /\b(?:CREATE\s+TABLE|ALTER\s+TABLE|CREATE\s+TRIGGER|DROP|GRANT|REVOKE|SECURITY\s+DEFINER)\b/i,
+    );
+  });
+  it('machine manifest pins every reviewed artifact and the immutable PG17 image', () => {
+    expect(manifest.canonical_project_ref).toBe('doufsxqlfjyuvxuezpln');
+    expect(manifest.postgres_image).toMatch(/^postgres@sha256:[a-f0-9]{64}$/);
+    for (const [path, expected] of Object.entries(manifest.files)) {
+      expect(createHash('sha256').update(read(path)).digest('hex'), path).toBe(expected);
+    }
+    for (const [index, signature] of [
+      [0, 'create_quote_transactional(jsonb,jsonb)'],
+      [1, 'increment_quote_version()'],
+      [2, 'update_quote_transactional(uuid,jsonb,jsonb,integer)'],
+    ]) {
+      const body = read(`docs/db/proposals/${names[index]}`).split('$function$')[1];
+      expect(createHash('md5').update(body).digest('hex'), signature).toBe(
+        manifest.expected_prosrc_md5[signature],
+      );
+    }
   });
   it('simulator rejects a deployment/remote argument before starting Docker', () => {
     const result = spawnSync(
@@ -46,6 +75,7 @@ describe('quote RPC proposal boundaries (static, not PostgreSQL simulation)', ()
       /querySupabaseReadOnly|SUPABASE_ACCESS_TOKEN|DATABASE_URL|PGHOST|fetch\(/,
     );
     expect(source).toMatch(/docker\(\['rm',\s*'-f',\s*container\]\)/);
-    expect(source).toContain('SIMULATION_PASS_RELEASE_BLOCKED');
+    expect(source).toContain('SIMULATION_PASS_LOCAL_ONLY');
+    expect(source).toContain('manifest.postgres_image');
   });
 });

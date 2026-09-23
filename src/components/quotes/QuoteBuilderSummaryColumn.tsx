@@ -96,7 +96,6 @@ import {
 import { toast } from 'sonner';
 import { showUndoToast } from '@/utils/undoToast';
 import { releaseScrollLockIfIdle } from '@/lib/dom/scroll-lock';
-import { persistItemsOrder } from '@/services/quoteItemsReorder';
 import { logger } from '@/lib/logger';
 // BUG-C FIX: import SSOT round2 instead of duplicating it locally
 import { round2 } from '@/hooks/quotes/quoteHelpers';
@@ -137,11 +136,10 @@ interface Props {
   shippingCost?: number;
   /** Reordena os itens do orçamento (drag-and-drop ou agrupamento). Recebe o novo array completo. */
   onReorder?: (items: QuoteItem[]) => void;
-  /** ID do orçamento já persistido — quando presente, ativa persistência granular
-   * do `sort_order` via UPDATE direto em quote_items (sem disparar autosave global). */
+  /** ID do orçamento persistido, usado também para a chave do estado visual recolhido. */
   quoteId?: string | null;
-  /** Liga/desliga supressão do `sort_order` no payload de autosave global enquanto
-   * o reorder granular está em voo (drag-and-drop ou "Agrupar"). RACE-PROOF. */
+  /** Compatibilidade com o editor: garante que `sort_order` participe do próximo
+   * save transacional depois de drag-and-drop ou agrupamento. */
   setSkipAutosaveSortOrder?: (v: boolean) => void;
   /** Abre o seletor de produtos para adicionar um novo item ao orçamento. */
   onAddProduct?: () => void;
@@ -267,24 +265,13 @@ export function QuoteBuilderSummaryColumn({
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
 
-  /** Persiste a nova ordem em background via UPDATE granular em quote_items.
-   * Não bloqueia a UI (otimista) e mostra toast saneado em falha.
-   * RACE-PROOF: ativa skipAutosaveSortOrder enquanto o UPDATE está em voo para
-   * impedir o autosave global de gravar um `sort_order` intermediário no
-   * LocalStorage entre o arrayMove em memória e o ACK do banco. */
-  const persistOrderInBackground = (reordered: QuoteItem[]) => {
-    if (!quoteId) return;
-    const rows = reordered.map((it, i) => ({ id: it.id ?? '', sort_order: i })).filter((r) => r.id);
-    if (rows.length === 0) return;
-    setSkipAutosaveSortOrder?.(true);
-    persistItemsOrder(quoteId, rows)
-      .catch((err) => {
-        logger.error('[QuoteBuilderSummaryColumn] persistItemsOrder failed', err);
-        toast.error('Não foi possível salvar a nova ordem. Tente novamente.');
-      })
-      .finally(() => {
-        setSkipAutosaveSortOrder?.(false);
-      });
+  /**
+   * A ordem fica no estado do editor e segue no próximo save transacional do
+   * orçamento. O antigo UPDATE granular em quote_items concorria com a RPC
+   * global, podia deadlockar e não avançava quotes.version.
+   */
+  const stageOrderForTransactionalSave = () => {
+    setSkipAutosaveSortOrder?.(false);
   };
 
   const handleDragStart = (e: DragStartEvent) => {
@@ -303,7 +290,7 @@ export function QuoteBuilderSummaryColumn({
       sort_order: i,
     }));
     onReorder(reordered);
-    persistOrderInBackground(reordered);
+    stageOrderForTransactionalSave();
   };
 
   const groupByProductId = () => {
@@ -325,7 +312,7 @@ export function QuoteBuilderSummaryColumn({
       })
       .map(({ it }, i) => ({ ...it, sort_order: i }));
     onReorder(grouped);
-    persistOrderInBackground(grouped);
+    stageOrderForTransactionalSave();
     setGroupedByProduct(true);
     toast.success('Itens agrupados por produto');
   };
@@ -362,7 +349,7 @@ export function QuoteBuilderSummaryColumn({
       })
       .map(({ it }, i) => ({ ...it, sort_order: i }));
     onReorder(grouped);
-    persistOrderInBackground(grouped);
+    stageOrderForTransactionalSave();
     setGroupedByProduct(true);
     toast.success('Itens agrupados por categoria');
   };

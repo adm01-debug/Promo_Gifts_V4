@@ -200,6 +200,7 @@ export function filterPersistableQuoteItems(items: QuoteItem[]): QuoteItem[] {
 export function buildItemsInsertPayload(
   items: QuoteItem[],
   quoteId: string,
+  options: { includeIdentity?: boolean } = {},
 ): TablesInsert<'quote_items'>[] {
   // FIX-E06: silently drop items with quantity < 1 before persisting; they indicate
   // a UI state that was never cleared and would create zero-value rows in the DB.
@@ -216,14 +217,26 @@ export function buildItemsInsertPayload(
   }
 
   return validItems.map((item, index) => ({
+    ...(options.includeIdentity && item.id ? { id: item.id } : {}),
     quote_id: quoteId,
     product_id: item.product_id,
     product_variant_id: item.product_variant_id || null,
     product_name: item.product_name,
+    product_description: item.product_description ?? null,
     product_sku: item.product_sku,
     product_image_url: item.product_image_url,
+    has_personalization: item.has_personalization ?? Boolean(item.personalizations?.length),
+    personalization_config: item.personalization_config ?? null,
+    personalization_cost: round2(
+      item.personalization_cost ??
+        (item.personalizations || []).reduce((sum, p) => sum + (p.total_cost || 0), 0),
+    ),
+    mockup_urls: item.mockup_urls ?? [],
+    artwork_urls: item.artwork_urls ?? [],
     quantity: item.quantity,
     unit_price: round2(item.unit_price),
+    discount_percentage: round2(item.discount_percentage ?? 0),
+    discount_amount: round2(item.discount_amount ?? 0),
     // BUG-B FIX: include personalization costs in item subtotal so that external
     // systems (N8N, Bitrix24, reports) receive correct per-item totals.
     subtotal: round2(
@@ -241,6 +254,12 @@ export function buildItemsInsertPayload(
     price_confirmed_at: item.price_confirmed_at ?? null,
     price_updated_at: item.price_updated_at ?? null,
     price_freshness_threshold_days: item.price_freshness_threshold_days ?? null,
+    selected_packaging_id: item.selected_packaging_id ?? null,
+    selected_packaging_name: item.selected_packaging_name ?? null,
+    selected_packaging_unit_cost:
+      item.selected_packaging_unit_cost === null || item.selected_packaging_unit_cost === undefined
+        ? null
+        : round2(item.selected_packaging_unit_cost),
     bitrix_product_id:
       item.bitrix_product_id !== null && item.bitrix_product_id !== undefined
         ? String(item.bitrix_product_id)

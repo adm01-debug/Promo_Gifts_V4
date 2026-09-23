@@ -81,7 +81,7 @@ export const quoteService = {
       supabase
         .from('quote_items')
         .select(
-          'id,quote_id,product_id,product_variant_id,product_name,product_sku,product_image_url,quantity,unit_price,subtotal,color_name,color_hex,size_code,gender,kit_group_id,kit_name,bitrix_product_id,price_confirmed_at,price_updated_at,price_freshness_threshold_days,personalization_config,personalization_cost,notes,sort_order,created_at,updated_at',
+          'id,quote_id,product_id,product_variant_id,product_name,product_description,product_sku,product_image_url,has_personalization,personalization_config,personalization_cost,mockup_urls,artwork_urls,quantity,unit_price,discount_percentage,discount_amount,subtotal,color_name,color_hex,size_code,gender,kit_group_id,kit_name,bitrix_product_id,price_confirmed_at,price_updated_at,price_freshness_threshold_days,selected_packaging_id,selected_packaging_name,selected_packaging_unit_cost,notes,sort_order,created_at,updated_at',
         )
         .eq('quote_id', quoteId)
         .order('sort_order', { ascending: true }),
@@ -282,8 +282,8 @@ export const quoteService = {
    * server-side garante atomicidade no banco mesmo em race conditions não detectados
    * pelo app (ex: dois tabs simultâneos sem shared state).
    *
-   * NOTA: expectedVersion é opcional (compatibilidade retroativa). Quando NULL,
-   * o comportamento da RPC é idêntico ao anterior (sem lock server-side).
+   * A versão é obrigatória em edição. Permitir NULL reabria last-write-wins e
+   * anulava a garantia transacional justamente nos callers mais antigos.
    */
   async updateQuote(
     quoteId: string,
@@ -292,10 +292,30 @@ export const quoteService = {
     expectedVersion?: number | null,
     approvalSellerNotes?: string,
   ): Promise<Quote> {
+    if (!Number.isInteger(expectedVersion) || (expectedVersion ?? 0) < 1) {
+      throw new Error(
+        'Versão do orçamento ausente ou inválida. Recarregue antes de salvar para evitar sobrescrever alterações de outro usuário.',
+      );
+    }
     const validItems = filterPersistableQuoteItems(items);
     const totals = calculateQuoteTotals(quote, validItems);
-    const updatePayload = buildUpdatePayload(quote, totals);
-    const itemsPayload = buildItemsInsertPayload(validItems, quoteId).map((item, index) => ({
+    const { data: persistedRows, error: persistedRowsError } = await supabase
+      .from('quote_items')
+      .select('id')
+      .eq('quote_id', quoteId);
+    if (persistedRowsError) throw persistedRowsError;
+
+    const retainedIds = new Set(validItems.flatMap((item) => (item.id ? [item.id] : [])));
+    const removedItemIds = (persistedRows ?? [])
+      .map((row) => row.id)
+      .filter((id): id is string => typeof id === 'string' && !retainedIds.has(id));
+    const updatePayload = {
+      ...buildUpdatePayload(quote, totals),
+      _removed_item_ids: removedItemIds,
+    };
+    const itemsPayload = buildItemsInsertPayload(validItems, quoteId, {
+      includeIdentity: true,
+    }).map((item, index) => ({
       ...item,
       product_name: item.product_name?.trim().slice(0, 255),
       unit_price: round2(item.unit_price),
@@ -316,7 +336,7 @@ export const quoteService = {
         _quote_patch: updatePayload,
         _items: itemsPayload,
         // QBP-08 FIX: passar versão para ativar lock server-side
-        _expected_version: expectedVersion ?? null,
+        _expected_version: expectedVersion,
         ...(requiresApproval ? { _seller_notes: approvalSellerNotes?.trim() || null } : {}),
       } as never,
     );
@@ -336,7 +356,31 @@ export const quoteService = {
       );
     }
 
-    return { ...(updated as Quote), items: validItems } as Quote;
+    // A RPC retorna a linha pai. Reidratar as identidades das linhas filhas evita
+    // que um segundo save da mesma tela trate itens recém-criados como novos —
+    // especialmente quando existem duas linhas comercialmente idênticas.
+    const { data: persistedIdentities, error: identityError } = await supabase
+      .from('quote_items')
+      .select('id, sort_order')
+      .eq('quote_id', quoteId)
+      .order('sort_order', { ascending: true });
+
+    if (identityError) {
+      logger.warn('[quoteService.updateQuote] item identity hydration failed', {
+        quoteId,
+        error: identityError,
+      });
+    }
+
+    const identityByOrder = new Map(
+      (persistedIdentities ?? []).map((row) => [row.sort_order, row.id] as const),
+    );
+    const hydratedItems = validItems.map((item, index) => ({
+      ...item,
+      id: identityByOrder.get(index) ?? item.id,
+    }));
+
+    return { ...(updated as Quote), items: hydratedItems } as Quote;
   },
 
   async insertItemsWithPersonalizations(items: QuoteItem[], quoteId: string) {
