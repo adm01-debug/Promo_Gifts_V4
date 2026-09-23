@@ -101,7 +101,7 @@ function filterBoxes(
       (b) =>
         b.name.toLowerCase().includes(q) ||
         b.sku.toLowerCase().includes(q) ||
-        (b.material?.toLowerCase().includes(q) ?? false),
+        (b.materials ?? (b.material ? [b.material] : [])).some((m) => m.toLowerCase().includes(q)),
     );
   }
   if (dimFilters?.minWidth) {

@@ -242,6 +242,21 @@ describe('Kit Maker public catalog contracts', () => {
               internal_length_cm: 8,
               materials: ['MDF'],
             },
+            {
+              // Produto com múltiplos materiais: resolveProductMaterial() só
+              // expõe o primeiro (materials[0]) para exibição/faceta, mas a
+              // busca precisa alcançar todos — não só o primeiro.
+              id: 'box-3',
+              name: 'Caixa Dupla Face',
+              sku: 'CX-DF-9',
+              sale_price: 40,
+              primary_image_url: null,
+              product_type: 'packaging',
+              internal_width_cm: 20,
+              internal_height_cm: 12,
+              internal_length_cm: 6,
+              materials: ['Papel', 'Couro'],
+            },
           ],
         } as never;
       }
@@ -253,7 +268,7 @@ describe('Kit Maker public catalog contracts', () => {
     const { useKitBuilderQueries } = await import('@/hooks/kit-builder/useKitBuilderQueries');
     const { result } = renderHook(() => useKitBuilderQueries(), { wrapper });
 
-    await waitFor(() => expect(result.current.completeBoxCatalog).toHaveLength(2));
+    await waitFor(() => expect(result.current.completeBoxCatalog).toHaveLength(3));
 
     // Por SKU (já suportado antes da etapa 16 — não deve regredir).
     act(() => result.current.setBoxFilters({ search: 'CX-001' }));
@@ -267,6 +282,13 @@ describe('Kit Maker public catalog contracts', () => {
     act(() => result.current.setBoxFilters({ search: 'mdf' }));
     await waitFor(() =>
       expect(result.current.availableBoxes.map((b) => b.id)).toEqual(['box-2']),
+    );
+
+    // Segundo material de um produto com múltiplos materiais também precisa
+    // ser encontrado, não só materials[0].
+    act(() => result.current.setBoxFilters({ search: 'couro' }));
+    await waitFor(() =>
+      expect(result.current.availableBoxes.map((b) => b.id)).toEqual(['box-3']),
     );
 
     // Termo que não bate com nome, SKU nem material.
