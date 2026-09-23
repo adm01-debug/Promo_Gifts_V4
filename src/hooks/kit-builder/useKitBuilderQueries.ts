@@ -123,10 +123,10 @@ function filterBoxes(
   }
   if (dimFilters?.minPrice) filtered = filtered.filter((b) => b.price >= dimFilters.minPrice!);
   if (dimFilters?.maxPrice) filtered = filtered.filter((b) => b.price <= dimFilters.maxPrice!);
-  if (dimFilters?.material) {
-    const material = dimFilters.material.toLocaleLowerCase('pt-BR');
-    filtered = filtered.filter((b) => b.material?.toLocaleLowerCase('pt-BR') === material);
-  }
+  // Material is intentionally NOT applied here: BoxSelector needs the
+  // material-agnostic set (respecting every other filter) to compute an
+  // honest per-material count for its multi-select checkboxes, then applies
+  // the selected materials itself before rendering/ranking.
   if (dimFilters?.boxType) filtered = filtered.filter((b) => b.boxType === dimFilters.boxType);
   if (dimFilters?.finish) filtered = filtered.filter((b) => b.finish === dimFilters.finish);
   return filtered;

@@ -27,11 +27,19 @@ import {
   AlertTriangle,
   type LucideIcon,
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
 import { BackButton } from '@/components/common/BackButton';
 import { KitAIPromptDialog } from '@/components/kit-builder/KitAIPromptDialog';
 import { KitIdentityPicker } from '@/components/kit-builder/KitIdentityPicker';
@@ -41,11 +49,20 @@ import type {
   KitAIComposition,
   KitAISuggestionBrief,
   KitBox,
+  KitBuilderStep,
   KitIdentity,
   KitItem,
   KitState,
 } from '@/lib/kit-builder';
 import { cn } from '@/lib/utils';
+
+/** Rótulos alinhados aos usados em WizardSteps.tsx para o mesmo `currentStep`. */
+const STEP_LABELS: Record<KitBuilderStep, string> = {
+  box: 'Caixa',
+  items: 'Itens',
+  personalization: 'Personalização',
+  summary: 'Resumo',
+};
 
 /** Lookup estático dos ícones do PRESET_ICONS — evita namespace import. */
 const ICON_MAP: Record<string, LucideIcon | undefined> = {
@@ -94,6 +111,8 @@ interface KitBuilderHeaderProps {
   /** When set, header indicates we are editing a system template (admin mode). */
   templateId?: string;
   currentKitId?: string;
+  /** Passo atual do wizard — alimenta o breadcrumb "Início > Kit Maker > <passo>". */
+  currentStep: KitBuilderStep;
 }
 
 export function KitBuilderHeader({
@@ -121,6 +140,7 @@ export function KitBuilderHeader({
   kitState,
   templateId,
   currentKitId: _currentKitId,
+  currentStep,
 }: KitBuilderHeaderProps) {
   const navigate = useNavigate();
   const { isAdmin } = useRBAC();
@@ -140,6 +160,25 @@ export function KitBuilderHeader({
         aria-hidden
       />
       <div className="container py-3">
+        <Breadcrumb className="mb-2">
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to="/">Início</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link to="/montar-kit">Kit Maker</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>{STEP_LABELS[currentStep]}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
         <BackButton fallbackPath="/meus-kits" className="mb-2" />
 
         {/* TIER 1 — Identity */}
