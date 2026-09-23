@@ -6,7 +6,10 @@
  */
 import { describe, it, expect } from 'vitest';
 import { parseContract } from '../../supabase/functions/_shared/contracts/parse';
-import { KitAiBuilderSchemas } from '../../supabase/functions/_shared/contracts/schemas/kit-ai-builder';
+import {
+  KitAiBuilderSchemas,
+  KitAiBuilderSuggestion,
+} from '../../supabase/functions/_shared/contracts/schemas/kit-ai-builder';
 import { BiCopilotSchemas } from '../../supabase/functions/_shared/contracts/schemas/bi-copilot';
 import { MarketIntelligenceInsightsSchemas } from '../../supabase/functions/_shared/contracts/schemas/market-intelligence-insights';
 import { OwnershipAuditSchemas } from '../../supabase/functions/_shared/contracts/schemas/ownership-audit';
@@ -66,6 +69,41 @@ describe('contract: kit-ai-builder', () => {
     const r = await parseContract(makeRequest({}), KitAiBuilderSchemas);
     expect(r.ok).toBe(false);
     if (!r.ok) await expectContractError(r.response, { status: 400, code: 'missing_body' });
+  });
+});
+
+describe('contract: kit-ai-builder — resposta do modelo (etapa 17)', () => {
+  const BASE = {
+    kit_type: 'montado' as const,
+    box_keywords: ['kraft'],
+    item_keywords: ['garrafa', 'caderno', 'caneta'],
+    target_price_brl: { min: 80, max: 150 },
+    narrative: 'Uma composição corporativa equilibrada.',
+  };
+
+  it('aceita sem title/description/style_tag (cliente antigo, fallback mantido)', () => {
+    const r = KitAiBuilderSuggestion.safeParse(BASE);
+    expect(r.success).toBe(true);
+  });
+
+  it('aceita com title/description/style_tag', () => {
+    const r = KitAiBuilderSuggestion.safeParse({
+      ...BASE,
+      title: 'Kit Onboarding Bem-Estar',
+      description: 'Kit de boas-vindas com foco em bem-estar corporativo.',
+      style_tag: 'Executivo',
+    });
+    expect(r.success).toBe(true);
+  });
+
+  it('rejeita description acima de 160 caracteres', () => {
+    const r = KitAiBuilderSuggestion.safeParse({ ...BASE, description: 'x'.repeat(161) });
+    expect(r.success).toBe(false);
+  });
+
+  it('rejeita title acima de 80 caracteres', () => {
+    const r = KitAiBuilderSuggestion.safeParse({ ...BASE, title: 'x'.repeat(81) });
+    expect(r.success).toBe(false);
   });
 });
 

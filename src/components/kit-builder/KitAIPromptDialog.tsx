@@ -57,6 +57,9 @@ const suggestionSchema = z
       max: z.number().finite().nonnegative(),
     }),
     narrative: z.string().trim().min(1).max(500),
+    title: z.string().trim().min(1).max(80).optional(),
+    description: z.string().trim().min(1).max(160).optional(),
+    style_tag: z.string().trim().min(1).max(40).optional(),
   })
   .strict();
 

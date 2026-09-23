@@ -147,7 +147,7 @@ export function resolveKitAICompositions(
     signatures.add(signature);
     alternatives.push({
       id: `catalog-${seed + 1}-${signature}`,
-      name: `Kit sugerido ${alternatives.length + 1}`,
+      name: brief.title?.trim() || `Kit sugerido ${alternatives.length + 1}`,
       narrative: brief.narrative,
       kitType: brief.kit_type,
       box: packageCandidate.box,
