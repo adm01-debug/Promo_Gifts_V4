@@ -286,6 +286,7 @@ export function KitSummary({
           kitName={kitName}
           currentKitId={currentKitId}
           quoteClient={quoteClient}
+          eagerImages
         />
       </div>
 

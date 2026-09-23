@@ -18,6 +18,12 @@ interface KitPresentablePreviewProps {
   currentKitId?: string;
   /** Frozen customer data — without it, two proposals for different clients are indistinguishable once printed. */
   quoteClient?: Partial<ClientData>;
+  /**
+   * The print-only copy of this component is `display: none` on screen, so
+   * lazily-loaded images never enter the viewport and `window.print()` can
+   * fire before they load — set true on that copy to load eagerly instead.
+   */
+  eagerImages?: boolean;
 }
 
 function buildNarrative(kitState: KitState, kitName: string): string {
@@ -40,6 +46,7 @@ export function KitPresentablePreview({
   kitQuantity,
   kitName,
   quoteClient,
+  eagerImages,
 }: KitPresentablePreviewProps) {
   const narrative = useMemo(() => buildNarrative(kitState, kitName), [kitState, kitName]);
   // `totalPrice` already represents the complete lot. Multiplying by
@@ -88,16 +95,20 @@ export function KitPresentablePreview({
             <Package className="h-4 w-4 text-muted-foreground" />
             Composição
           </h4>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+          {/* Densidade maior só na impressão: reduz quantas páginas um kit
+              com muitas linhas ocupa, mas não é uma garantia matemática de
+              1–2 páginas — um kit com dezenas de linhas ainda pode passar
+              disso; um cap real exigiria paginação, fora do escopo aqui. */}
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 print:grid-cols-6 print:gap-1.5">
             {kitState.box && (
-              <div className="space-y-2 rounded-lg border bg-card p-2">
+              <div className="space-y-2 rounded-lg border bg-card p-2 print:p-1">
                 <div className="flex aspect-square items-center justify-center overflow-hidden rounded-md bg-muted/40">
                   {kitState.box.imageUrl ? (
                     <img
                       src={kitState.box.imageUrl}
                       alt={kitState.box.name}
                       className="h-full w-full object-contain"
-                      loading="lazy"
+                      loading={eagerImages ? 'eager' : 'lazy'}
                     />
                   ) : (
                     <Package className="h-6 w-6 text-muted-foreground" />
@@ -132,7 +143,7 @@ export function KitPresentablePreview({
               return (
                 <div
                   key={lineId}
-                  className="space-y-2 rounded-lg border bg-card p-2 print:break-inside-avoid"
+                  className="space-y-2 rounded-lg border bg-card p-2 print:break-inside-avoid print:p-1"
                 >
                   <div className="flex aspect-square items-center justify-center overflow-hidden rounded-md bg-muted/40">
                     {item.imageUrl ? (
@@ -140,7 +151,7 @@ export function KitPresentablePreview({
                         src={item.imageUrl}
                         alt={item.name}
                         className="h-full w-full object-contain"
-                        loading="lazy"
+                        loading={eagerImages ? 'eager' : 'lazy'}
                       />
                     ) : (
                       <Package className="h-6 w-6 text-muted-foreground" />
