@@ -28,8 +28,10 @@ export interface KitBox {
   boxType?: string;
   // Cor da caixa
   color?: string;
-  // Material
+  // Material (primeiro valor — usado para exibição e para a faceta de filtro)
   material?: string;
+  /** Todos os materiais do catálogo, para busca textual não perder itens com múltiplos materiais. */
+  materials?: string[];
   // Acabamento comercial disponível no catálogo canônico
   finish?: string;
   // Peso em gramas
