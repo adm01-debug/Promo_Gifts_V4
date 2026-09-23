@@ -41,6 +41,25 @@ function resolveProductMaterial(product: ExternalProductForKit): string | undefi
   return undefined;
 }
 
+/** Every material name on the product, not just the first — used for search so a box with several materials is not silently unreachable by any but the first. */
+function resolveAllProductMaterials(product: ExternalProductForKit): string[] {
+  const names: string[] = [];
+  if (product.material) names.push(product.material);
+  if (Array.isArray(product.materials)) {
+    for (const entry of product.materials) {
+      if (typeof entry === 'string') {
+        names.push(entry);
+      } else if (entry && typeof entry === 'object') {
+        const candidate =
+          (entry as { name?: string; material?: string }).name ??
+          (entry as { name?: string; material?: string }).material;
+        if (typeof candidate === 'string' && candidate.trim()) names.push(candidate);
+      }
+    }
+  }
+  return Array.from(new Set(names));
+}
+
 export function transformToKitBox(product: ExternalProductForKit): KitBox | null {
   // Compatibility requires internal dimensions. External dimensions are useful
   // catalog metadata, but treating them as usable space produces false fits.
@@ -78,6 +97,7 @@ export function transformToKitBox(product: ExternalProductForKit): KitBox | null
     dimensionsKnown: true,
     boxType: product.packing_classification || product.packing_type || undefined,
     material: resolveProductMaterial(product),
+    materials: resolveAllProductMaterials(product),
     finish: product.packaging_finish || undefined,
     weight: product.weight_g ?? undefined,
   };

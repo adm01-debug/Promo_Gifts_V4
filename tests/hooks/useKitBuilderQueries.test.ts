@@ -237,4 +237,91 @@ describe('Kit Maker public catalog contracts', () => {
       expect(result.current.completeItemCatalog[0]?.stock).toBeNull();
     });
   });
+
+  it('busca de caixa encontra por nome, SKU ou material (etapa 16)', async () => {
+    vi.mocked(dbInvoke).mockImplementation(async (request) => {
+      if (request.table === 'product_variants') {
+        return { count: 0, records: [] } as never;
+      }
+      if ((request.filters as Record<string, unknown>).product_type === 'packaging') {
+        return {
+          count: 2,
+          records: [
+            {
+              id: 'box-1',
+              name: 'Caixa Premium',
+              sku: 'CX-001',
+              sale_price: 20,
+              primary_image_url: null,
+              product_type: 'packaging',
+              internal_width_cm: 30,
+              internal_height_cm: 20,
+              internal_length_cm: 10,
+              materials: ['Papelão Kraft'],
+            },
+            {
+              id: 'box-2',
+              name: 'Estojo Executivo',
+              sku: 'EST-777',
+              sale_price: 35,
+              primary_image_url: null,
+              product_type: 'packaging',
+              internal_width_cm: 25,
+              internal_height_cm: 15,
+              internal_length_cm: 8,
+              materials: ['MDF'],
+            },
+            {
+              // Produto com múltiplos materiais: resolveProductMaterial() só
+              // expõe o primeiro (materials[0]) para exibição/faceta, mas a
+              // busca precisa alcançar todos — não só o primeiro.
+              id: 'box-3',
+              name: 'Caixa Dupla Face',
+              sku: 'CX-DF-9',
+              sale_price: 40,
+              primary_image_url: null,
+              product_type: 'packaging',
+              internal_width_cm: 20,
+              internal_height_cm: 12,
+              internal_length_cm: 6,
+              materials: ['Papel', 'Couro'],
+            },
+          ],
+        } as never;
+      }
+      return { count: 0, records: [] } as never;
+    });
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const wrapper = ({ children }: { children: ReactNode }) =>
+      createElement(QueryClientProvider, { client }, children);
+    const { useKitBuilderQueries } = await import('@/hooks/kit-builder/useKitBuilderQueries');
+    const { result } = renderHook(() => useKitBuilderQueries(), { wrapper });
+
+    await waitFor(() => expect(result.current.completeBoxCatalog).toHaveLength(3));
+
+    // Por SKU (já suportado antes da etapa 16 — não deve regredir).
+    act(() => result.current.setBoxFilters({ search: 'CX-001' }));
+    await waitFor(() =>
+      expect(result.current.availableBoxes.map((b) => b.id)).toEqual(['box-1']),
+    );
+
+    // Por material (gap fechado pela etapa 16). Cada waitFor abaixo checa o
+    // resultado final diretamente (não só o length) para não passar com o
+    // estado do filtro anterior ainda não recomputado pelo debounce.
+    act(() => result.current.setBoxFilters({ search: 'mdf' }));
+    await waitFor(() =>
+      expect(result.current.availableBoxes.map((b) => b.id)).toEqual(['box-2']),
+    );
+
+    // Segundo material de um produto com múltiplos materiais também precisa
+    // ser encontrado, não só materials[0].
+    act(() => result.current.setBoxFilters({ search: 'couro' }));
+    await waitFor(() =>
+      expect(result.current.availableBoxes.map((b) => b.id)).toEqual(['box-3']),
+    );
+
+    // Termo que não bate com nome, SKU nem material.
+    act(() => result.current.setBoxFilters({ search: 'inexistente' }));
+    await waitFor(() => expect(result.current.availableBoxes).toEqual([]));
+  });
 });

@@ -98,7 +98,10 @@ function filterBoxes(
   if (search) {
     const q = search.toLowerCase();
     filtered = filtered.filter(
-      (b) => b.name.toLowerCase().includes(q) || b.sku.toLowerCase().includes(q),
+      (b) =>
+        b.name.toLowerCase().includes(q) ||
+        b.sku.toLowerCase().includes(q) ||
+        (b.materials ?? (b.material ? [b.material] : [])).some((m) => m.toLowerCase().includes(q)),
     );
   }
   if (dimFilters?.minWidth) {
