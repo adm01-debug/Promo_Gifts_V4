@@ -41,6 +41,7 @@ export function KitPresentablePreview({
   // `totalPrice` already represents the complete lot. Multiplying by
   // `kitQuantity` again made client-facing previews overstate the total.
   const grandTotal = kitState.totalPrice;
+  const perKitPrice = kitQuantity > 0 ? grandTotal / kitQuantity : grandTotal;
   const validityDate = useMemo(() => {
     const d = new Date();
     d.setDate(d.getDate() + 7);
@@ -101,37 +102,62 @@ export function KitPresentablePreview({
                 </div>
               </div>
             )}
-            {kitState.items.map((item) => (
-              <div key={getKitItemLineId(item)} className="space-y-2 rounded-lg border bg-card p-2">
-                <div className="flex aspect-square items-center justify-center overflow-hidden rounded-md bg-muted/40">
-                  {item.imageUrl ? (
-                    <img
-                      src={item.imageUrl}
-                      alt={item.name}
-                      className="h-full w-full object-contain"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <Package className="h-6 w-6 text-muted-foreground" />
-                  )}
+            {kitState.items.map((item) => {
+              const lineId = getKitItemLineId(item);
+              const itemPersonalization =
+                kitState.personalization.items[lineId] ?? kitState.personalization.items[item.id];
+              // Lines that share a product but differ by variant/technique render
+              // identical image+name otherwise — the customer can't tell which
+              // configuration the quoted total covers without these identifiers.
+              const variantLabel = [item.selectedColor?.name, item.selectedSize]
+                .filter(Boolean)
+                .join(' / ');
+              return (
+                <div
+                  key={lineId}
+                  className="space-y-2 rounded-lg border bg-card p-2 print:break-inside-avoid"
+                >
+                  <div className="flex aspect-square items-center justify-center overflow-hidden rounded-md bg-muted/40">
+                    {item.imageUrl ? (
+                      <img
+                        src={item.imageUrl}
+                        alt={item.name}
+                        className="h-full w-full object-contain"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <Package className="h-6 w-6 text-muted-foreground" />
+                    )}
+                  </div>
+                  <div>
+                    {item.quantity > 1 && (
+                      <Badge variant="outline" className="mb-1 text-[9px]">
+                        {item.quantity}x
+                      </Badge>
+                    )}
+                    <p className="line-clamp-2 text-xs font-medium leading-tight">{item.name}</p>
+                    <p className="mt-0.5 truncate text-[9px] text-muted-foreground">
+                      {[item.sku, variantLabel || null].filter(Boolean).join(' • ')}
+                    </p>
+                    {itemPersonalization?.enabled && itemPersonalization.techniqueName && (
+                      <p className="truncate text-[9px] text-primary">
+                        {itemPersonalization.techniqueName}
+                      </p>
+                    )}
+                  </div>
                 </div>
-                <div>
-                  {item.quantity > 1 && (
-                    <Badge variant="outline" className="mb-1 text-[9px]">
-                      {item.quantity}x
-                    </Badge>
-                  )}
-                  <p className="line-clamp-2 text-xs font-medium leading-tight">{item.name}</p>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
-        <Separator className="print:break-after-page" />
+        <Separator />
 
-        {/* Pricing block */}
-        <div className="grid grid-cols-3 gap-3 text-center">
+        {/* Pricing block. A forced page break here guaranteed a 3rd page once
+            a long composition alone already filled 2 pages, breaking the
+            documented 1–2 page contract — `break-inside-avoid` keeps the
+            block from splitting mid-content without forcing an extra page. */}
+        <div className="grid grid-cols-3 gap-3 text-center print:break-inside-avoid">
           <div className="rounded-lg bg-muted/30 p-3">
             <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Quantidade</p>
             <p className="font-display text-lg font-bold">
@@ -141,7 +167,7 @@ export function KitPresentablePreview({
           </div>
           <div className="rounded-lg bg-muted/30 p-3">
             <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Por kit</p>
-            <p className="font-display text-lg font-bold">{formatCurrency(kitState.totalPrice)}</p>
+            <p className="font-display text-lg font-bold">{formatCurrency(perKitPrice)}</p>
           </div>
           <div className="rounded-lg border border-primary/20 bg-primary/10 p-3">
             <p className="text-[10px] uppercase tracking-wider text-primary">Investimento</p>
