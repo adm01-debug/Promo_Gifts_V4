@@ -96,6 +96,9 @@ describe('Kit Maker public catalog contracts', () => {
 
   it('mantém catálogos completos para a IA enquanto filtra apenas os seletores', async () => {
     vi.mocked(dbInvoke).mockImplementation(async (request) => {
+      if (request.table === 'product_variants') {
+        return { count: 0, records: [] } as never;
+      }
       if ((request.filters as Record<string, unknown>).product_type === 'packaging') {
         return {
           count: 1,
@@ -145,8 +148,72 @@ describe('Kit Maker public catalog contracts', () => {
     expect(vi.mocked(dbInvoke)).toHaveBeenCalledTimes(callsBeforeFilter);
   });
 
+  it('projeta estoque agregado no catálogo de itens sem uma requisição por card (etapa 13)', async () => {
+    let productVariantsCalls = 0;
+    vi.mocked(dbInvoke).mockImplementation(async (request) => {
+      if (request.table === 'product_variants') {
+        productVariantsCalls += 1;
+        return {
+          count: 3,
+          records: [
+            // p-with-stock: duas variantes ativas, estoque conhecido (soma = 12).
+            { id: 'v1', product_id: 'p-with-stock', stock_quantity: 5, color_name: null },
+            { id: 'v2', product_id: 'p-with-stock', stock_quantity: 7, color_name: null },
+            // p-zero-stock: variante ativa encontrada, mas sem estoque — 0 é
+            // um dado conhecido, não pode virar "desconhecido".
+            { id: 'v3', product_id: 'p-zero-stock', stock_quantity: 0, color_name: null },
+          ],
+        } as never;
+      }
+      if ((request.filters as Record<string, unknown>).product_type === 'packaging') {
+        return { count: 0, records: [] } as never;
+      }
+      return {
+        count: 3,
+        records: [
+          {
+            id: 'p-with-stock', name: 'Com estoque', sku: 'ST-1', sale_price: 10,
+            primary_image_url: null, product_type: 'product', width_cm: 5, height_cm: 5, length_cm: 5,
+          },
+          {
+            id: 'p-zero-stock', name: 'Sem estoque', sku: 'ST-0', sale_price: 10,
+            primary_image_url: null, product_type: 'product', width_cm: 5, height_cm: 5, length_cm: 5,
+          },
+          {
+            // p-unknown-stock: não aparece em nenhuma variante retornada —
+            // estoque desconhecido, nunca lido como zero.
+            id: 'p-unknown-stock', name: 'Estoque desconhecido', sku: 'ST-U', sale_price: 10,
+            primary_image_url: null, product_type: 'product', width_cm: 5, height_cm: 5, length_cm: 5,
+          },
+        ],
+      } as never;
+    });
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const wrapper = ({ children }: { children: ReactNode }) =>
+      createElement(QueryClientProvider, { client }, children);
+    const { useKitBuilderQueries } = await import('@/hooks/kit-builder/useKitBuilderQueries');
+    const { result } = renderHook(() => useKitBuilderQueries(), { wrapper });
+
+    await waitFor(() => {
+      const byId = new Map(result.current.completeItemCatalog.map((i) => [i.id, i.stock]));
+      expect(byId.get('p-with-stock')).toBe(12);
+    });
+
+    const byId = new Map(result.current.completeItemCatalog.map((i) => [i.id, i.stock]));
+    // null (desconhecido) e 0 (sem estoque) nunca podem ser confundidos.
+    expect(byId.get('p-zero-stock')).toBe(0);
+    expect(byId.get('p-unknown-stock')).toBeNull();
+
+    // Uma única leitura paginada de product_variants para o catálogo
+    // inteiro — nunca uma requisição por card.
+    expect(productVariantsCalls).toBe(1);
+  });
+
   it('busca de caixa encontra por nome, SKU ou material (etapa 16)', async () => {
     vi.mocked(dbInvoke).mockImplementation(async (request) => {
+      if (request.table === 'product_variants') {
+        return { count: 0, records: [] } as never;
+      }
       if ((request.filters as Record<string, unknown>).product_type === 'packaging') {
         return {
           count: 2,

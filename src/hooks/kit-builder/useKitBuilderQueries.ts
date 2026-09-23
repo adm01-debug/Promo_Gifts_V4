@@ -20,6 +20,7 @@ import {
   transformToKitBox,
   transformToKitItem,
 } from '@/hooks/kit-builder/useKitBuilderTransformers';
+import { fetchKitStockVariants, evaluateKitStock } from '@/hooks/kit-builder/useKitStockValidation';
 import { logger } from '@/lib/logger';
 
 const PRODUCT_PAGE_SIZE = 200;
@@ -213,7 +214,7 @@ export function useKitBuilderQueries() {
 
   // Query: items
   const {
-    data: completeItemCatalog = [],
+    data: rawItemCatalog = [],
     isLoading: isLoadingItems,
     error: itemQueryError,
     refetch: refetchItems,
@@ -234,6 +235,36 @@ export function useKitBuilderQueries() {
     staleTime: 5 * 60 * 1000,
     retry: 1,
   });
+
+  // Query: estoque agregado de todo o catálogo de itens, numa única leitura
+  // paginada (mesma fonte de `useKitStockValidation`) — nunca uma consulta
+  // por card. Recarrega quando o tamanho do catálogo muda (proxy leve para
+  // "o catálogo mudou"; um join do product_id não caberia como chave de
+  // cache sem custo perceptível com milhares de produtos).
+  const itemProductIds = useMemo(() => rawItemCatalog.map((item) => item.id), [rawItemCatalog]);
+  const { data: itemStockData } = useQuery({
+    queryKey: ['kit-builder', 'items', 'stock', itemProductIds.length],
+    queryFn: () => fetchKitStockVariants(itemProductIds),
+    enabled: itemProductIds.length > 0,
+    staleTime: 60 * 1000,
+    retry: 1,
+  });
+
+  // `null` (desconhecido) e `0` (sem estoque) nunca podem ser confundidos —
+  // mesma semântica já validada em `evaluateKitStock`/`useKitStockValidation`.
+  const completeItemCatalog = useMemo(() => {
+    if (!itemStockData) return rawItemCatalog;
+    const { stockByProduct, unknownProductIds } = evaluateKitStock(
+      itemStockData,
+      rawItemCatalog,
+      null,
+      1,
+    );
+    return rawItemCatalog.map((item) => ({
+      ...item,
+      stock: unknownProductIds.has(item.id) ? null : (stockByProduct.get(item.id) ?? 0),
+    }));
+  }, [rawItemCatalog, itemStockData]);
 
   // Selector filters are projections over the complete cached catalogs. The
   // AI resolver receives the unfiltered arrays below, so a previous human
