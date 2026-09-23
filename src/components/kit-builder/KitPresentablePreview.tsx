@@ -9,12 +9,15 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { formatCurrency, getKitItemLineId, type KitState } from '@/lib/kit-builder';
+import type { ClientData } from '@/components/quotes/ClientPicker';
 
 interface KitPresentablePreviewProps {
   kitState: KitState;
   kitQuantity: number;
   kitName: string;
   currentKitId?: string;
+  /** Frozen customer data — without it, two proposals for different clients are indistinguishable once printed. */
+  quoteClient?: Partial<ClientData>;
 }
 
 function buildNarrative(kitState: KitState, kitName: string): string {
@@ -36,6 +39,7 @@ export function KitPresentablePreview({
   kitState,
   kitQuantity,
   kitName,
+  quoteClient,
 }: KitPresentablePreviewProps) {
   const narrative = useMemo(() => buildNarrative(kitState, kitName), [kitState, kitName]);
   // `totalPrice` already represents the complete lot. Multiplying by
@@ -49,6 +53,10 @@ export function KitPresentablePreview({
   }, []);
 
   if (!kitState.box && kitState.items.length === 0) return null;
+
+  const clientLabel = [quoteClient?.client_name, quoteClient?.client_company]
+    .filter(Boolean)
+    .join(' — ');
 
   return (
     <Card className="overflow-hidden border-[1.5px] border-primary/20">
@@ -67,6 +75,9 @@ export function KitPresentablePreview({
         <h3 className="font-display text-2xl font-bold leading-tight">
           {kitName?.trim() || 'Kit Personalizado'}
         </h3>
+        {clientLabel && (
+          <p className="mt-1 text-sm font-medium text-primary">Proposta para {clientLabel}</p>
+        )}
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{narrative}</p>
       </div>
 
@@ -99,6 +110,12 @@ export function KitPresentablePreview({
                   <p className="line-clamp-2 text-xs font-medium leading-tight">
                     {kitState.box.name}
                   </p>
+                  {kitState.personalization.box.enabled &&
+                    kitState.personalization.box.techniqueName && (
+                      <p className="truncate text-[9px] text-primary">
+                        {kitState.personalization.box.techniqueName}
+                      </p>
+                    )}
                 </div>
               </div>
             )}
