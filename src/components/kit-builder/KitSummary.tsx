@@ -86,7 +86,10 @@ export function KitSummary({
 
   return (
     <div className="space-y-6">
-      <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1.65fr)_minmax(22rem,1fr)]">
+      <div
+        id="kit-print-area"
+        className="grid items-start gap-6 xl:grid-cols-[minmax(0,1.65fr)_minmax(22rem,1fr)]"
+      >
         <section className="space-y-5" aria-label="Identificação e composição do kit">
           <KitIdentificationCard
             kitName={kitName}

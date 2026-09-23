@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
 import { PageSEO } from '@/components/seo/PageSEO';
+import '@/styles/print-kit.css';
 import { useKitBuilderPageState } from '@/hooks/kit-builder';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';

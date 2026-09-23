@@ -1,0 +1,27 @@
+/**
+ * Kit Maker — folha de impressão do orçamento (etapa 20 do plano de finalização).
+ * window.print() imprime a página inteira por padrão; estas regras restringem
+ * a impressão a #kit-print-area (identificação, composição e preços da Revisão),
+ * ocultando cabeçalho, navegação e botões de ação.
+ */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #kit-print-area,
+  #kit-print-area * {
+    visibility: visible;
+  }
+
+  #kit-print-area {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+  }
+
+  /* Evita que a tabela de composição seja cortada ao meio entre a página 1 e 2. */
+  #kit-print-area section {
+    break-inside: avoid;
+  }
+}
