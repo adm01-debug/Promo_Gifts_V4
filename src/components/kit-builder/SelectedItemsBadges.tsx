@@ -31,6 +31,38 @@ interface SelectedItemsBadgesProps {
   onUpdateQuantity: (itemId: string, quantity: number) => void;
   onUpdateVariant: (itemId: string, data: VariantSelectionData) => void;
   onReorder?: (fromIndex: number, toIndex: number) => void;
+  /** Batched stock lookup — only known for already-selected items, never per catalog card. */
+  stockByProduct?: Map<string, number>;
+  stockByVariant?: Map<string, number>;
+  kitQuantity?: number;
+}
+
+function StockBadge({
+  item,
+  stockByProduct,
+  stockByVariant,
+  kitQuantity = 1,
+}: {
+  item: KitItem;
+  stockByProduct?: Map<string, number>;
+  stockByVariant?: Map<string, number>;
+  kitQuantity?: number;
+}) {
+  if (!stockByProduct && !stockByVariant) return null;
+  const available = item.selectedVariantId
+    ? stockByVariant?.get(item.selectedVariantId)
+    : stockByProduct?.get(item.id);
+  if (available === undefined) return null;
+  const required = item.quantity * kitQuantity;
+  const enough = available >= required;
+  return (
+    <Badge
+      variant={enough ? 'secondary' : 'destructive'}
+      className="px-1 py-0 text-[10px] font-normal"
+    >
+      {enough ? `Em estoque (${available})` : 'Indisponível'}
+    </Badge>
+  );
 }
 
 function SortableItemBadge({
@@ -38,11 +70,17 @@ function SortableItemBadge({
   onRemoveItem,
   onUpdateQuantity,
   onUpdateVariant,
+  stockByProduct,
+  stockByVariant,
+  kitQuantity,
 }: {
   item: KitItem;
   onRemoveItem: (id: string) => void;
   onUpdateQuantity: (id: string, qty: number) => void;
   onUpdateVariant: (id: string, data: VariantSelectionData) => void;
+  stockByProduct?: Map<string, number>;
+  stockByVariant?: Map<string, number>;
+  kitQuantity?: number;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: getKitItemLineId(item),
@@ -70,6 +108,12 @@ function SortableItemBadge({
       </span>
       <span className="font-medium">{item.quantity}x</span>
       <span className="max-w-[150px] truncate">{item.name}</span>
+      <StockBadge
+        item={item}
+        stockByProduct={stockByProduct}
+        stockByVariant={stockByVariant}
+        kitQuantity={kitQuantity}
+      />
       {item.isReplaceable && item.allowedVariantIds && item.allowedVariantIds.length > 0 && (
         <VariantSelector
           itemId={getKitItemLineId(item)}
@@ -123,6 +167,9 @@ export function SelectedItemsBadges({
   onUpdateQuantity,
   onUpdateVariant,
   onReorder,
+  stockByProduct,
+  stockByVariant,
+  kitQuantity,
 }: SelectedItemsBadgesProps) {
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -160,6 +207,9 @@ export function SelectedItemsBadges({
                 onRemoveItem={onRemoveItem}
                 onUpdateQuantity={onUpdateQuantity}
                 onUpdateVariant={onUpdateVariant}
+                stockByProduct={stockByProduct}
+                stockByVariant={stockByVariant}
+                kitQuantity={kitQuantity}
               />
             ))}
           </div>

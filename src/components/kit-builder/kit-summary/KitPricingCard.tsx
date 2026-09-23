@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TrendingUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -23,12 +25,26 @@ export function KitPricingCard({
   const { box, items, personalization } = kitState;
   const pricing = calculateTotalKitPrice(box, items, personalization, kitQuantity);
   const breakdown = generatePriceBreakdown(box, items, personalization, kitQuantity);
+  const [basis, setBasis] = useState<'kit' | 'lote'>('lote');
+  const divisor = basis === 'kit' ? kitQuantity || 1 : 1;
 
   return (
     <>
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-lg">Detalhamento de Preços</CardTitle>
+          <div className="flex items-center justify-between gap-2">
+            <CardTitle className="text-lg">Detalhamento de Preços</CardTitle>
+            <Tabs value={basis} onValueChange={(v) => setBasis(v as 'kit' | 'lote')}>
+              <TabsList className="h-8">
+                <TabsTrigger value="kit" className="h-6 px-2 text-xs">
+                  Por kit
+                </TabsTrigger>
+                <TabsTrigger value="lote" className="h-6 px-2 text-xs">
+                  Total do lote
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
@@ -61,7 +77,7 @@ export function KitPricingCard({
                   )}
                 </div>
                 <span className={cn('font-medium', item.isPersonalization && 'text-sm')}>
-                  {formatCurrency(item.totalPrice)}
+                  {formatCurrency(item.totalPrice / divisor)}
                 </span>
               </div>
             ))}
@@ -72,24 +88,28 @@ export function KitPricingCard({
               <span>
                 Produtos ({kitQuantity} {kitQuantity === 1 ? 'kit' : 'kits'})
               </span>
-              <span>{formatCurrency(pricing.subtotal)}</span>
+              <span>{formatCurrency(pricing.subtotal / divisor)}</span>
             </div>
             {pricing.personalizationPrice > 0 && (
               <div className="flex justify-between text-sm text-primary">
                 <span>Personalização</span>
-                <span>{formatCurrency(pricing.personalizationPrice)}</span>
+                <span>{formatCurrency(pricing.personalizationPrice / divisor)}</span>
               </div>
             )}
           </div>
           <Separator className="my-4" />
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-lg font-bold">Total</p>
+              <p className="text-lg font-bold">
+                {basis === 'kit' ? 'Total por kit' : 'Total do lote'}
+              </p>
               <p className="text-sm text-muted-foreground">
                 {formatCurrency(pricing.unitPrice)}/kit
               </p>
             </div>
-            <p className="text-2xl font-bold text-primary">{formatCurrency(pricing.total)}</p>
+            <p className="text-2xl font-bold text-primary">
+              {formatCurrency(pricing.total / divisor)}
+            </p>
           </div>
         </CardContent>
       </Card>

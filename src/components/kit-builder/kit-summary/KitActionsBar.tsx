@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Loader2, Download, ShoppingCart, MessageCircle } from 'lucide-react';
+import { Loader2, Download, ShoppingCart, MessageCircle, Save } from 'lucide-react';
 import { formatCurrency } from '@/lib/kit-builder';
 import type { KitStockStatus } from '@/hooks/kit-builder/useKitStockValidation';
 
@@ -16,6 +16,8 @@ interface KitActionsBarProps {
   items: Array<{ quantity: number; name: string }>;
   onAddToQuote?: () => void;
   onExportPDF?: () => void;
+  onSaveDraft?: () => void;
+  isSavingDraft?: boolean;
 }
 
 export function KitActionsBar({
@@ -31,9 +33,21 @@ export function KitActionsBar({
   items,
   onAddToQuote,
   onExportPDF,
+  onSaveDraft,
+  isSavingDraft,
 }: KitActionsBarProps) {
   return (
-    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+    <div className={`grid grid-cols-1 gap-3 ${onSaveDraft ? 'sm:grid-cols-4' : 'sm:grid-cols-3'}`}>
+      {onSaveDraft && (
+        <Button variant="outline" onClick={onSaveDraft} disabled={isSavingDraft}>
+          {isSavingDraft ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Save className="mr-2 h-4 w-4" />
+          )}
+          Salvar rascunho
+        </Button>
+      )}
       <Button variant="outline" onClick={onExportPDF}>
         <Download className="mr-2 h-4 w-4" />
         Exportar PDF

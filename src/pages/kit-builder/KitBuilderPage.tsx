@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { PageSEO } from '@/components/seo/PageSEO';
 import { useKitBuilderPageState } from '@/hooks/kit-builder';
 import { Card, CardContent } from '@/components/ui/card';
@@ -27,6 +27,8 @@ const KitIsometricPreview = lazy(() =>
 export default function KitBuilderPage() {
   const { state, actions, meta } = useKitBuilderPageState();
   const { handleSaveKit, redo, undo } = actions;
+  const [tourOpen, setTourOpen] = useState(false);
+  const openTour = () => setTourOpen(true);
   const isSummary = state.wizardState.currentStep === 'summary';
   const usesFullWorkspace = ['items', 'personalization', 'summary'].includes(
     state.wizardState.currentStep,
@@ -94,22 +96,21 @@ export default function KitBuilderPage() {
         noIndex
       />
       {!state.isLanding && <KitShortcutsDialog />}
+      <KitOnboardingTour open={tourOpen} onOpenChange={setTourOpen} />
 
       {state.isLanding ? (
-        <>
-          <KitOnboardingTour />
-          <KitMakerLanding
-            onStart={actions.startFlow}
-            occasion={state.occasion}
-            onOccasionChange={actions.selectOccasion}
-            aiCatalogItems={state.allAvailableItems}
-            aiCatalogBoxes={state.allAvailableBoxes}
-            onApplyAISuggestion={(suggestion, composition, requestedQuantity) => {
-              actions.startFlow('items-first');
-              actions.applyAISuggestion(suggestion, composition, requestedQuantity);
-            }}
-          />
-        </>
+        <KitMakerLanding
+          onStart={actions.startFlow}
+          occasion={state.occasion}
+          onOccasionChange={actions.selectOccasion}
+          aiCatalogItems={state.allAvailableItems}
+          aiCatalogBoxes={state.allAvailableBoxes}
+          onOpenTutorial={openTour}
+          onApplyAISuggestion={(suggestion, composition, requestedQuantity) => {
+            actions.startFlow('items-first');
+            actions.applyAISuggestion(suggestion, composition, requestedQuantity);
+          }}
+        />
       ) : (
         <>
           <KitBuilderHeader
@@ -172,6 +173,8 @@ export default function KitBuilderPage() {
                         onFiltersChange={
                           state.setBoxFilters as (f: typeof state.boxFilters) => void
                         }
+                        onEditItems={() => actions.goToStep('items')}
+                        onOpenGuide={openTour}
                       />
                     )}
                     {state.wizardState.currentStep === 'items' && (
@@ -192,7 +195,14 @@ export default function KitBuilderPage() {
                         onFiltersChange={
                           state.setItemFilters as (f: typeof state.itemFilters) => void
                         }
+                        onClearAll={actions.clearItems}
                         boxSelected={!!state.kitState.box}
+                        totalCount={state.allAvailableItems.length}
+                        flow={state.wizardState.flow}
+                        kitQuantity={state.kitQuantity}
+                        volumeUsagePercent={state.kitState.volumeUsagePercent}
+                        onNext={actions.nextStep}
+                        canProceed={state.wizardState.canProceed}
                       />
                     )}
                     {state.wizardState.currentStep === 'personalization' && (
@@ -204,6 +214,8 @@ export default function KitBuilderPage() {
                         itemPersonalizations={state.kitState.personalization.items}
                         onBoxPersonalizationChange={actions.setBoxPersonalization}
                         onItemPersonalizationChange={actions.setItemPersonalization}
+                        onEditItems={() => actions.goToStep('items')}
+                        onOpenGuide={openTour}
                       />
                     )}
                     {state.wizardState.currentStep === 'summary' && (
@@ -226,6 +238,15 @@ export default function KitBuilderPage() {
                         currentKitId={state.currentKitId}
                         quoteClient={state.quoteClient}
                         onQuoteClientChange={state.setQuoteClient}
+                        identity={state.kitState.identity}
+                        onIdentityChange={actions.setIdentity}
+                        notes={state.kitState.notes}
+                        onNotesChange={actions.setNotes}
+                        onEditBox={() => actions.goToStep('box')}
+                        onSaveDraft={() => {
+                          void actions.handleSaveKit();
+                        }}
+                        isSavingDraft={meta.isSaving}
                       />
                     )}
 

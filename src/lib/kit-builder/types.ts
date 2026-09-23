@@ -167,6 +167,8 @@ export interface KitState {
   items: KitItem[];
   personalization: KitPersonalization;
   identity?: KitIdentity;
+  /** Free-text notes for the quote team, entered on the review step. */
+  notes?: string;
   // Volumes
   totalItemsVolume: number;
   availableVolume: number;
@@ -273,7 +275,7 @@ export interface ItemFilters {
   maxPrice?: number;
   maxVolume?: number;
   onlyFitting?: boolean;
-  sort?: 'name' | 'price-asc' | 'price-desc';
+  sort?: 'name' | 'price-asc' | 'price-desc' | 'relevance';
 }
 
 // ============================================

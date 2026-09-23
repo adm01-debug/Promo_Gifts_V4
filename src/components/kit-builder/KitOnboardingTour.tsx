@@ -28,18 +28,40 @@ const STEPS = [
   },
 ];
 
-export function KitOnboardingTour() {
-  const [open, setOpen] = useState(false);
+interface KitOnboardingTourProps {
+  /** Controlled visibility — when provided, the first-visit auto-open is skipped. */
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export function KitOnboardingTour({ open: openProp, onOpenChange }: KitOnboardingTourProps = {}) {
+  const isControlled = openProp !== undefined;
+  const [openState, setOpenState] = useState(false);
+  const open = isControlled ? openProp : openState;
   const [step, setStep] = useState(0);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    if (!localStorage.getItem(STORAGE_KEY)) setOpen(true);
-  }, []);
+    if (localStorage.getItem(STORAGE_KEY)) return;
+    // Controlled usage (manual "Guia" buttons) still gets the first-visit
+    // auto-open — it just reports through onOpenChange instead of owning state.
+    if (isControlled) onOpenChange?.(true);
+    else setOpenState(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isControlled]);
+
+  useEffect(() => {
+    if (open) setStep(0);
+  }, [open]);
+
+  const close = (value: boolean) => {
+    if (!isControlled) setOpenState(value);
+    onOpenChange?.(value);
+  };
 
   const finish = () => {
-    localStorage.setItem(STORAGE_KEY, '1');
-    setOpen(false);
+    if (!isControlled) localStorage.setItem(STORAGE_KEY, '1');
+    close(false);
   };
 
   if (!open) return null;

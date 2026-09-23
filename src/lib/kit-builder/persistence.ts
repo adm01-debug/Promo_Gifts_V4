@@ -42,6 +42,7 @@ export function buildKitPersistencePayload(
     __draft: {
       version: 1,
       quoteClient: structuredClone(context.quoteClient ?? {}),
+      notes: kitState.notes || '',
     },
   };
 

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   reconcilePersonalizationForTechnique,
+  reconcilePersonalizationForArea,
   buildKitMockupRequest,
   type FlatTechnique,
 } from '@/components/kit-builder/PersonalizationConfig';
@@ -50,6 +51,47 @@ describe('PersonalizationConfig price inputs', () => {
     expect(result.width).toBeUndefined();
     expect(result.height).toBeUndefined();
     expect(result.estimatedPrice).toBeUndefined();
+  });
+
+  it('atualiza a área de aplicação e preserva a técnica quando ela já pertence à área escolhida', () => {
+    const result = reconcilePersonalizationForArea(
+      { enabled: true, techniqueId: 'tech-laser', estimatedPrice: 9.9, positionCode: 'front' },
+      { code: 'front', name: 'Frente' },
+      'front',
+    );
+
+    expect(result).toMatchObject({
+      positionCode: 'front',
+      positionName: 'Frente',
+      position: 'Frente',
+      techniqueId: 'tech-laser',
+      estimatedPrice: 9.9,
+    });
+  });
+
+  it('limpa a técnica e o preço obsoleto ao trocar para uma área onde a técnica atual não existe', () => {
+    const result = reconcilePersonalizationForArea(
+      {
+        enabled: true,
+        techniqueId: 'tech-laser',
+        techniqueName: 'Laser',
+        estimatedPrice: 9.9,
+        totalPrice: 99,
+        positionCode: 'front',
+      },
+      { code: 'side', name: 'Lateral' },
+      'front',
+    );
+
+    expect(result).toMatchObject({
+      positionCode: 'side',
+      positionName: 'Lateral',
+      position: 'Lateral',
+      techniqueId: undefined,
+      techniqueName: undefined,
+      estimatedPrice: undefined,
+      totalPrice: undefined,
+    });
   });
 
   it('só constrói uma geração real quando produto, técnica e arte estão completos', () => {

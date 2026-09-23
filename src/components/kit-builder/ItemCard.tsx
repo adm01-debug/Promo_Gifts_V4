@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils';
 import {
   formatVolume,
   formatCurrency,
+  formatDimensions,
   type KitItem,
   type CompatibilityResult,
 } from '@/lib/kit-builder';
@@ -23,6 +24,111 @@ interface ItemCardProps {
   boxSelected: boolean;
   onAdd: (item: KitItem) => void;
   onRemove: (item: KitItem) => void;
+  /** Grid = rich card with top image. List = compact single-line row. */
+  view?: 'grid' | 'list';
+}
+
+/** Up to 3 short, catalog-derived attributes — never invented. */
+function getItemAttributes(item: KitItem): string[] {
+  const attributes: string[] = [];
+  if (item.material) attributes.push(item.material);
+  if (item.width > 0 && item.height > 0 && item.depth > 0 && item.dimensionsKnown !== false) {
+    attributes.push(formatDimensions(item.width, item.height, item.depth));
+  }
+  if (item.category) attributes.push(item.category);
+  return attributes.slice(0, 3);
+}
+
+function CompatibilityBadge({
+  item,
+}: {
+  item: KitItem & { compatibility: CompatibilityResult | null };
+}) {
+  const fits = item.compatibility?.fits !== false;
+  const compatibilityPending = item.compatibility?.confidence !== 'verified';
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Badge
+          variant={fits && !compatibilityPending ? 'secondary' : 'destructive'}
+          className={cn(
+            'text-xs',
+            fits &&
+              !compatibilityPending &&
+              'bg-primary/10 text-primary hover:bg-primary/20 dark:text-primary',
+            compatibilityPending &&
+              'border-warning/30 bg-warning/10 text-warning hover:bg-warning/15',
+          )}
+        >
+          {compatibilityPending ? (
+            <>
+              <Package className="mr-1 h-3 w-3" />
+              PENDENTE
+            </>
+          ) : fits ? (
+            <>
+              <Check className="mr-1 h-3 w-3" />
+              COMPATÍVEL
+            </>
+          ) : (
+            <>
+              <X className="mr-1 h-3 w-3" />
+              NÃO CABE
+            </>
+          )}
+        </Badge>
+      </TooltipTrigger>
+      {item.compatibility?.reason && (compatibilityPending || !fits) && (
+        <TooltipContent>
+          <p className="max-w-[200px]">{item.compatibility.reason}</p>
+        </TooltipContent>
+      )}
+    </Tooltip>
+  );
+}
+
+function AddButton({
+  isSelected,
+  cantFit,
+  selectedItem,
+  item,
+  onAdd,
+  onRemove,
+}: {
+  isSelected: boolean;
+  cantFit: boolean;
+  selectedItem?: KitItem;
+  item: KitItem;
+  onAdd: (item: KitItem) => void;
+  onRemove: (item: KitItem) => void;
+}) {
+  if (isSelected) {
+    return (
+      <Button
+        variant="outline"
+        size="sm"
+        className="ml-auto shrink-0 focus-visible:ring-2 focus-visible:ring-primary/60"
+        onClick={() => selectedItem && onRemove(selectedItem)}
+      >
+        <Check className="mr-1 h-3 w-3 text-success" />
+        <span className="group-hover:hidden">Adicionado</span>
+        <span className="hidden group-hover:inline">Remover</span>
+      </Button>
+    );
+  }
+  return (
+    <Button
+      variant="default"
+      size="sm"
+      className="ml-auto shrink-0 opacity-90 transition-opacity focus-visible:ring-2 focus-visible:ring-primary/60 group-hover:opacity-100"
+      disabled={cantFit}
+      onClick={() => onAdd(item)}
+    >
+      <Plus className="mr-1 h-3 w-3" />
+      Adicionar
+    </Button>
+  );
 }
 
 export function ItemCard({
@@ -32,28 +138,25 @@ export function ItemCard({
   boxSelected,
   onAdd,
   onRemove,
+  view = 'grid',
 }: ItemCardProps) {
   const fits = item.compatibility?.fits !== false;
   const cantFit = boxSelected && !fits;
-  const compatibilityPending = boxSelected && item.compatibility?.confidence !== 'verified';
+  const attributes = getItemAttributes(item);
 
-  return (
-    <Card
-      className={cn(
-        'group rounded-xl transition-all duration-200 will-change-transform',
-        'border-border/50 focus-within:ring-2 focus-within:ring-primary/60',
-        isSelected &&
-          'bg-primary/5 shadow-[0_4px_20px_-6px_hsl(var(--primary)/0.35)] ring-2 ring-primary',
-        cantFit && 'opacity-60',
-        !cantFit &&
-          !isSelected &&
-          'cursor-pointer hover:-translate-y-0.5 hover:border-primary/40 hover:bg-card hover:shadow-lg',
-      )}
-    >
-      <CardContent className="p-3">
-        <div className="flex gap-3">
-          {/* Imagem pequena */}
-          <div className="h-14 w-14 flex-shrink-0 overflow-hidden rounded-md bg-secondary">
+  if (view === 'list') {
+    return (
+      <Card
+        className={cn(
+          'group rounded-xl transition-all duration-200',
+          'border-border/50 focus-within:ring-2 focus-within:ring-primary/60',
+          isSelected && 'bg-primary/5 ring-2 ring-primary',
+          cantFit && 'opacity-60',
+          !cantFit && !isSelected && 'hover:border-primary/40 hover:bg-card',
+        )}
+      >
+        <CardContent className="flex items-center gap-3 p-2.5">
+          <div className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-md bg-secondary">
             {item.imageUrl ? (
               <img
                 src={item.imageUrl}
@@ -63,89 +166,80 @@ export function ItemCard({
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center">
-                <Package className="h-6 w-6 text-muted-foreground" />
+                <Package className="h-5 w-5 text-muted-foreground" />
               </div>
             )}
           </div>
-
-          {/* Info */}
           <div className="min-w-0 flex-1">
             <h4 className="truncate text-sm font-medium">{item.name}</h4>
-            <p className="font-mono text-xs text-muted-foreground">{item.sku}</p>
-            <div className="mt-1 flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">{formatVolume(item.volume)}</span>
-              <span className="text-sm font-semibold text-primary">
-                {formatCurrency(item.price)}
-              </span>
-            </div>
+            {attributes.length > 0 && (
+              <p className="truncate text-xs text-muted-foreground">{attributes.join(' · ')}</p>
+            )}
           </div>
+          <span className="shrink-0 text-sm font-semibold text-primary">
+            {formatCurrency(item.price)}
+          </span>
+          {boxSelected && <CompatibilityBadge item={item} />}
+          <AddButton
+            isSelected={isSelected}
+            cantFit={cantFit}
+            selectedItem={selectedItem}
+            item={item}
+            onAdd={onAdd}
+            onRemove={onRemove}
+          />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card
+      className={cn(
+        'group flex flex-col overflow-hidden rounded-xl transition-all duration-200 will-change-transform',
+        'border-border/50 focus-within:ring-2 focus-within:ring-primary/60',
+        isSelected &&
+          'bg-primary/5 shadow-[0_4px_20px_-6px_hsl(var(--primary)/0.35)] ring-2 ring-primary',
+        cantFit && 'opacity-60',
+        !cantFit &&
+          !isSelected &&
+          'cursor-pointer hover:-translate-y-0.5 hover:border-primary/40 hover:bg-card hover:shadow-lg',
+      )}
+    >
+      <div className="aspect-[4/3] w-full overflow-hidden bg-secondary">
+        {item.imageUrl ? (
+          <img
+            src={item.imageUrl}
+            alt={item.name}
+            className="h-full w-full object-cover"
+            loading="lazy"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center">
+            <Package className="h-10 w-10 text-muted-foreground" />
+          </div>
+        )}
+      </div>
+      <CardContent className="flex flex-1 flex-col p-3">
+        <h4 className="truncate text-sm font-medium">{item.name}</h4>
+        {attributes.length > 0 && (
+          <p className="truncate text-xs text-muted-foreground">{attributes.join(' · ')}</p>
+        )}
+        <div className="mt-1 flex items-center justify-between">
+          <span className="text-xs text-muted-foreground">{formatVolume(item.volume)}</span>
+          <span className="text-sm font-semibold text-primary">{formatCurrency(item.price)}</span>
         </div>
 
-        {/* Badge de compatibilidade e ação */}
         <div className="mt-2 flex items-center justify-between border-t pt-2">
-          {boxSelected && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Badge
-                  variant={fits && !compatibilityPending ? 'secondary' : 'destructive'}
-                  className={cn(
-                    'text-xs',
-                    fits &&
-                      !compatibilityPending &&
-                      'bg-primary/10 text-primary hover:bg-primary/20 dark:text-primary',
-                    compatibilityPending &&
-                      'border-warning/30 bg-warning/10 text-warning hover:bg-warning/15',
-                  )}
-                >
-                  {compatibilityPending ? (
-                    <>
-                      <Package className="mr-1 h-3 w-3" />
-                      PENDENTE
-                    </>
-                  ) : fits ? (
-                    <>
-                      <Check className="mr-1 h-3 w-3" />
-                      CABE
-                    </>
-                  ) : (
-                    <>
-                      <X className="mr-1 h-3 w-3" />
-                      NÃO CABE
-                    </>
-                  )}
-                </Badge>
-              </TooltipTrigger>
-              {item.compatibility?.reason && (compatibilityPending || !fits) && (
-                <TooltipContent>
-                  <p className="max-w-[200px]">{item.compatibility.reason}</p>
-                </TooltipContent>
-              )}
-            </Tooltip>
-          )}
-
-          {isSelected ? (
-            <Button
-              variant="outline"
-              size="sm"
-              className="ml-auto focus-visible:ring-2 focus-visible:ring-primary/60"
-              onClick={() => selectedItem && onRemove(selectedItem)}
-            >
-              <Check className="mr-1 h-3 w-3 text-success" />
-              <span className="group-hover:hidden">Adicionado</span>
-              <span className="hidden group-hover:inline">Remover</span>
-            </Button>
-          ) : (
-            <Button
-              variant="default"
-              size="sm"
-              className="ml-auto opacity-90 transition-opacity focus-visible:ring-2 focus-visible:ring-primary/60 group-hover:opacity-100"
-              disabled={cantFit}
-              onClick={() => onAdd(item)}
-            >
-              <Plus className="mr-1 h-3 w-3" />
-              Adicionar
-            </Button>
-          )}
+          {boxSelected && <CompatibilityBadge item={item} />}
+          <AddButton
+            isSelected={isSelected}
+            cantFit={cantFit}
+            selectedItem={selectedItem}
+            item={item}
+            onAdd={onAdd}
+            onRemove={onRemove}
+          />
         </div>
       </CardContent>
     </Card>

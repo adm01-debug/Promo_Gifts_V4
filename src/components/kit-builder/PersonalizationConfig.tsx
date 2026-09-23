@@ -19,6 +19,8 @@ import {
   Maximize2,
   Images,
   Sparkles,
+  HelpCircle,
+  ArrowLeftRight,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
@@ -62,6 +64,10 @@ interface PersonalizationConfigProps {
   itemPersonalizations: Record<string, KitItemPersonalization>;
   onBoxPersonalizationChange: (config: KitItemPersonalization) => void;
   onItemPersonalizationChange: (itemId: string, config: KitItemPersonalization) => void;
+  /** Navigates back to the items step, preserving state. */
+  onEditItems?: () => void;
+  /** Reopens the shared Kit Maker onboarding tour. */
+  onOpenGuide?: () => void;
 }
 
 /** Flattened technique with location info */
@@ -114,6 +120,44 @@ export function reconcilePersonalizationForTechnique(
     setupCost: undefined,
     totalPrice: undefined,
     generatedMockupUrl: undefined,
+  };
+}
+
+/** Real print area for a product, derived from useProductCustomizationOptions locations. */
+export interface FlatArea {
+  code: string;
+  name: string;
+}
+
+/**
+ * Switching the print area is independent of the technique grid, but a technique
+ * only applies to the area it was priced for — if the newly chosen area doesn't
+ * match the currently selected technique's area, the stale technique/price must
+ * be cleared rather than silently kept against a mismatched area.
+ */
+export function reconcilePersonalizationForArea(
+  personalization: KitItemPersonalization,
+  area: FlatArea,
+  currentTechniqueLocationCode?: string,
+): KitItemPersonalization {
+  const techniqueMatchesArea = currentTechniqueLocationCode === area.code;
+  return {
+    ...personalization,
+    positionCode: area.code,
+    positionName: area.name,
+    position: area.name,
+    ...(techniqueMatchesArea
+      ? {}
+      : {
+          techniqueId: undefined,
+          techniqueName: undefined,
+          techniqueCode: undefined,
+          estimatedPrice: undefined,
+          pricedQuantity: undefined,
+          setupCost: undefined,
+          totalPrice: undefined,
+          generatedMockupUrl: undefined,
+        }),
   };
 }
 
@@ -345,6 +389,27 @@ function ItemPersonalizationCard({
   const maxColors = currentTech?.max_cores || 6;
   const colorOptions = Array.from({ length: maxColors }, (_, i) => i + 1);
 
+  // Áreas de gravação reais do produto (mesma fonte que alimenta as técnicas).
+  const areaOptions = useMemo(
+    () =>
+      (options?.locations ?? []).map((loc) => ({
+        code: loc.location_code,
+        name: loc.location_name,
+      })),
+    [options],
+  );
+  const selectedAreaCode = personalization.positionCode || areaOptions[0]?.code;
+  const visibleTechniques =
+    areaOptions.length > 0 && selectedAreaCode
+      ? techniques.filter((tech) => tech.location_code === selectedAreaCode)
+      : techniques;
+
+  const handleAreaChange = (code: string) => {
+    const area = areaOptions.find((candidate) => candidate.code === code);
+    if (!area) return;
+    onChange(reconcilePersonalizationForArea(personalization, area, currentTech?.location_code));
+  };
+
   return (
     <Card className={cn(personalization.enabled && 'border-primary/50 bg-primary/5')}>
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -434,72 +499,99 @@ function ItemPersonalizationCard({
               )}
             >
               <div className="space-y-4">
-                {/* Técnica */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>Técnica de Gravação</Label>
-                    {loadingTechniques ? (
-                      <div className="flex h-10 items-center gap-2 rounded-md border bg-secondary/50 px-3">
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        <span className="text-sm text-muted-foreground">Carregando...</span>
-                      </div>
-                    ) : techniques.length === 0 ? (
-                      <p className="py-2 text-sm text-muted-foreground">
-                        Nenhuma técnica disponível para este produto
-                      </p>
-                    ) : (
-                      <Select
-                        value={
-                          personalization.techniqueId &&
-                          (personalization.positionCode || personalization.position)
-                            ? `${personalization.techniqueId}:${personalization.positionCode || personalization.position}`
-                            : ''
-                        }
-                        onValueChange={handleTechniqueChange}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione a técnica..." />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {techniques.map((tech) => (
-                            <SelectItem
-                              key={`${tech.technique_id}:${tech.location_code}`}
-                              value={`${tech.technique_id}:${tech.location_code}`}
-                            >
-                              <span className="flex items-center gap-2">
-                                <Badge variant="outline" className="px-1 py-0 text-[10px]">
-                                  {tech.grupo_tecnica}
-                                </Badge>
-                                {tech.tecnica_nome}
-                                <span className="text-xs text-muted-foreground">
-                                  ({tech.location_name})
-                                </span>
-                              </span>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Número de Cores</Label>
-                    <Select
-                      value={String(personalization.colors || 1)}
-                      onValueChange={(v) => handleColorsChange(parseInt(v, 10))}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
+                {/* Área de aplicação — só aparece quando o produto tem áreas reais cadastradas */}
+                {!loadingTechniques && areaOptions.length > 0 && (
+                  <div className="max-w-[16rem] space-y-2">
+                    <Label htmlFor={`area-${productId}`}>Área de aplicação</Label>
+                    <Select value={selectedAreaCode} onValueChange={handleAreaChange}>
+                      <SelectTrigger id={`area-${productId}`}>
+                        <SelectValue placeholder="Selecione a área" />
                       </SelectTrigger>
                       <SelectContent>
-                        {colorOptions.map((n) => (
-                          <SelectItem key={n} value={String(n)}>
-                            {n} {n === 1 ? 'cor' : 'cores'}
+                        {areaOptions.map((area) => (
+                          <SelectItem key={area.code} value={area.code}>
+                            {area.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
+                )}
+
+                {/* Técnica */}
+                <div className="space-y-2">
+                  <Label>Técnica de Gravação</Label>
+                  {loadingTechniques ? (
+                    <div className="flex h-10 items-center gap-2 rounded-md border bg-secondary/50 px-3">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <span className="text-sm text-muted-foreground">Carregando...</span>
+                    </div>
+                  ) : techniques.length === 0 ? (
+                    <p className="py-2 text-sm text-muted-foreground">
+                      Nenhuma técnica disponível para este produto
+                    </p>
+                  ) : (
+                    <div
+                      className="grid grid-cols-2 gap-2 sm:grid-cols-3"
+                      role="group"
+                      aria-label="Técnica de gravação"
+                    >
+                      {visibleTechniques.map((tech) => {
+                        const value = `${tech.technique_id}:${tech.location_code}`;
+                        const selected =
+                          value ===
+                          (personalization.techniqueId &&
+                          (personalization.positionCode || personalization.position)
+                            ? `${personalization.techniqueId}:${personalization.positionCode || personalization.position}`
+                            : '');
+                        return (
+                          <button
+                            key={value}
+                            type="button"
+                            aria-pressed={selected}
+                            onClick={() => handleTechniqueChange(value)}
+                            className={cn(
+                              'flex flex-col items-start gap-1 rounded-lg border p-2.5 text-left transition-colors',
+                              selected
+                                ? 'border-primary bg-primary/10 ring-1 ring-primary/40'
+                                : 'hover:bg-muted/60',
+                            )}
+                          >
+                            <span className="flex items-center gap-1.5 text-sm font-medium">
+                              <Palette className="h-3.5 w-3.5 text-primary" />
+                              {tech.tecnica_nome}
+                            </span>
+                            <span className="text-xs text-muted-foreground">
+                              {tech.location_name}
+                            </span>
+                            <span className="text-[11px] text-muted-foreground">
+                              Até {tech.max_cores} {tech.max_cores === 1 ? 'cor' : 'cores'}
+                              {tech.usa_dimensao ? ' · Usa dimensão' : ''}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+
+                <div className="max-w-[12rem] space-y-2">
+                  <Label>Número de Cores</Label>
+                  <Select
+                    value={String(personalization.colors || 1)}
+                    onValueChange={(v) => handleColorsChange(parseInt(v, 10))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {colorOptions.map((n) => (
+                        <SelectItem key={n} value={String(n)}>
+                          {n} {n === 1 ? 'cor' : 'cores'}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="space-y-2">
@@ -946,6 +1038,78 @@ function PersonalizationPreview({
   );
 }
 
+interface PersonalizationTarget {
+  key: string;
+  productId: string;
+  displayName: string;
+  imageUrl: string | null;
+  personalization: KitItemPersonalization;
+  onChange: (config: KitItemPersonalization) => void;
+  isBox: boolean;
+  quantity: number;
+}
+
+/** Read-only projection of the left-hand target list — no new domain data. */
+function PersonalizationSummaryPanel({ targets }: { targets: PersonalizationTarget[] }) {
+  return (
+    <Card>
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base">Resumo da personalização</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-2">
+        {targets.map((target) => {
+          const configured =
+            target.personalization.enabled &&
+            Boolean(target.personalization.techniqueId) &&
+            Number.isFinite(target.personalization.estimatedPrice) &&
+            Number.isFinite(target.personalization.totalPrice) &&
+            target.personalization.pricedQuantity === target.quantity;
+          const status = !target.personalization.enabled
+            ? 'Sem personalização'
+            : !target.personalization.techniqueId
+              ? 'Pendente'
+              : configured
+                ? 'Concluído'
+                : 'Em edição';
+          const dimensions =
+            target.personalization.width && target.personalization.height
+              ? `${target.personalization.width} × ${target.personalization.height} cm`
+              : null;
+          return (
+            <div
+              key={target.key}
+              className="flex items-center justify-between gap-3 rounded-lg border p-2 text-sm"
+            >
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-medium">{target.displayName}</p>
+                <p className="truncate text-xs text-muted-foreground">
+                  {target.personalization.techniqueName || 'Sem técnica'}
+                  {dimensions ? ` · ${dimensions}` : ''}
+                </p>
+              </div>
+              <Badge
+                variant={
+                  status === 'Concluído'
+                    ? 'default'
+                    : status === 'Sem personalização'
+                      ? 'outline'
+                      : 'secondary'
+                }
+                className={cn(
+                  'shrink-0 text-[10px]',
+                  status === 'Concluído' && 'bg-success/15 text-success',
+                )}
+              >
+                {status}
+              </Badge>
+            </div>
+          );
+        })}
+      </CardContent>
+    </Card>
+  );
+}
+
 // ============================================
 // Componente principal
 // ============================================
@@ -958,6 +1122,8 @@ export function PersonalizationConfig({
   itemPersonalizations,
   onBoxPersonalizationChange,
   onItemPersonalizationChange,
+  onEditItems,
+  onOpenGuide,
 }: PersonalizationConfigProps) {
   const targets = [
     ...(box
@@ -1036,13 +1202,27 @@ export function PersonalizationConfig({
           </p>
         </div>
 
-        {totalPersonalizations > 0 && (
-          <Badge variant="default" className="text-sm">
-            <Check className="mr-1 h-3 w-3" />
-            {totalPersonalizations} {totalPersonalizations === 1 ? 'item' : 'itens'}{' '}
-            personalizado(s)
-          </Badge>
-        )}
+        <div className="flex shrink-0 items-center gap-2">
+          {totalPersonalizations > 0 && (
+            <Badge variant="default" className="text-sm">
+              <Check className="mr-1 h-3 w-3" />
+              {totalPersonalizations} {totalPersonalizations === 1 ? 'item' : 'itens'}{' '}
+              personalizado(s)
+            </Badge>
+          )}
+          {onOpenGuide && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="gap-1.5 text-muted-foreground"
+              onClick={onOpenGuide}
+            >
+              <HelpCircle className="h-3.5 w-3.5" />
+              Guia de Personalização
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Alerta de quantidade mínima */}
@@ -1133,7 +1313,25 @@ export function PersonalizationConfig({
               </CardContent>
             </Card>
 
-            <div className="min-w-0">
+            <div className="min-w-0 space-y-2">
+              {onEditItems && !activeTarget.isBox && (
+                <div className="flex items-center justify-between rounded-lg border border-dashed px-3 py-2">
+                  <span className="truncate text-sm text-muted-foreground">
+                    Configurando:{' '}
+                    <strong className="text-foreground">{activeTarget.displayName}</strong>
+                  </span>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="h-auto shrink-0 gap-1.5 px-2 py-1 text-xs"
+                    onClick={onEditItems}
+                  >
+                    <ArrowLeftRight className="h-3 w-3" />
+                    Trocar item
+                  </Button>
+                </div>
+              )}
               <ItemPersonalizationCard
                 key={activeTarget.key}
                 productId={activeTarget.productId}
@@ -1155,6 +1353,7 @@ export function PersonalizationConfig({
               savedArtworkUrls={savedArtworkUrls}
             />
           </div>
+          <PersonalizationSummaryPanel targets={targets} />
         </>
       )}
 

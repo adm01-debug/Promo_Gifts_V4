@@ -4,6 +4,7 @@
  */
 
 import { useState, useMemo, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Search,
   Package,
@@ -14,6 +15,11 @@ import {
   X,
   GitCompareArrows,
   Eye,
+  LayoutGrid,
+  List,
+  HelpCircle,
+  Sparkles,
+  Pencil,
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -37,11 +43,16 @@ import {
   formatDimensions,
   formatCurrency,
   rankBoxesForItems,
+  calculateTotalItemsVolume,
+  getKitItemLineId,
   type KitBox,
   type KitItem,
   type BoxFilters,
 } from '@/lib/kit-builder';
 import { BoxComparisonDialog } from './BoxComparisonDialog';
+
+type BoxSortMode = 'occupancy' | 'price' | 'score';
+type BoxViewMode = 'grid' | 'list';
 
 interface BoxSelectorProps {
   boxes: KitBox[];
@@ -54,6 +65,10 @@ interface BoxSelectorProps {
   onClear: () => void;
   errorMessage?: string | null;
   onRetry?: () => void;
+  /** Navigates back to the items step, preserving state. */
+  onEditItems?: () => void;
+  /** Reopens the shared Kit Maker onboarding tour. */
+  onOpenGuide?: () => void;
 }
 
 export function BoxSelector({
@@ -67,12 +82,17 @@ export function BoxSelector({
   onClear,
   errorMessage,
   onRetry,
+  onEditItems,
+  onOpenGuide,
 }: BoxSelectorProps) {
+  const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState('');
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [focusedBoxId, setFocusedBoxId] = useState<string | null>(null);
   const [comparisonIds, setComparisonIds] = useState<string[]>([]);
   const [comparisonOpen, setComparisonOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<BoxViewMode>('grid');
+  const [sortMode, setSortMode] = useState<BoxSortMode>('score');
 
   // Filters can be applied by the AI assist or restored from a saved journey.
   // Keep the visible field aligned with that external state instead of showing
@@ -130,9 +150,50 @@ export function BoxSelector({
   );
 
   const recommendations = useMemo(() => rankBoxesForItems(boxes, kitItems), [boxes, kitItems]);
+
+  const sortedRecommendations = useMemo(() => {
+    if (sortMode === 'price') {
+      return [...recommendations].sort((a, b) => a.box.price - b.box.price);
+    }
+    if (sortMode === 'occupancy') {
+      return [...recommendations].sort((a, b) => b.usagePercent - a.usagePercent);
+    }
+    return recommendations;
+  }, [recommendations, sortMode]);
+
+  const boxTypeChips = useMemo(
+    () =>
+      Array.from(new Set(recommendations.map((r) => r.box.boxType).filter(Boolean))).sort((a, b) =>
+        a!.localeCompare(b!, 'pt-BR'),
+      ) as string[],
+    [recommendations],
+  );
+
+  const kitItemsVolume = useMemo(() => calculateTotalItemsVolume(kitItems), [kitItems]);
+  const kitItemsQuantity = kitItems.reduce((sum, item) => sum + item.quantity, 0);
+
+  const compatibleRecommendations = recommendations.filter((r) => r.status !== 'incompatible');
+  const bestRecommendation = compatibleRecommendations[0] ?? null;
+  const bestReasons = useMemo(() => {
+    if (!bestRecommendation) return [];
+    const reasons: string[] = [];
+    if (bestRecommendation.status === 'compatible') reasons.push('Comporta todos os itens');
+    const freeSpace = Math.max(0, 100 - bestRecommendation.usagePercent);
+    reasons.push(`Espaço livre de ${Math.round(freeSpace)}%`);
+    const isCheapest = compatibleRecommendations.every(
+      (r) => r.box.id === bestRecommendation.box.id || r.box.price >= bestRecommendation.box.price,
+    );
+    if (isCheapest && compatibleRecommendations.length > 1) {
+      reasons.push('Menor preço entre as compatíveis');
+    }
+    return reasons.slice(0, 3);
+  }, [bestRecommendation, compatibleRecommendations]);
+  const hasNoCompatibleBox =
+    kitItems.length > 0 && recommendations.length > 0 && compatibleRecommendations.length === 0;
+
   const focusedRecommendation =
-    recommendations.find((recommendation) => recommendation.box.id === focusedBoxId) ??
-    recommendations[0] ??
+    sortedRecommendations.find((recommendation) => recommendation.box.id === focusedBoxId) ??
+    sortedRecommendations[0] ??
     null;
   const comparedRecommendations = comparisonIds
     .map((id) => recommendations.find((recommendation) => recommendation.box.id === id))
@@ -261,6 +322,21 @@ export function BoxSelector({
 
   return (
     <div className="space-y-4">
+      {onOpenGuide && (
+        <div className="flex items-center justify-between gap-2">
+          <h2 className="font-display text-base font-semibold">Escolha a embalagem</h2>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-1.5 text-muted-foreground"
+            onClick={onOpenGuide}
+          >
+            <HelpCircle className="h-3.5 w-3.5" />
+            Guia do Kit Maker
+          </Button>
+        </div>
+      )}
+
       {/* Search + filter toggle */}
       <div className="flex gap-2">
         <div className="relative flex-1">
@@ -288,6 +364,85 @@ export function BoxSelector({
           )}
         </Button>
       </div>
+
+      {boxTypeChips.length > 0 && (
+        <div
+          className="flex flex-wrap gap-2 overflow-x-auto pb-1"
+          role="group"
+          aria-label="Tipos de embalagem"
+        >
+          <Badge
+            variant={!filters.boxType ? 'default' : 'outline'}
+            className="cursor-pointer whitespace-nowrap px-3 py-1.5 text-xs font-medium"
+            onClick={() => onFiltersChange({ ...filters, boxType: undefined })}
+          >
+            Todas
+          </Badge>
+          {boxTypeChips.map((type) => (
+            <Badge
+              key={type}
+              variant={filters.boxType === type ? 'default' : 'outline'}
+              className="cursor-pointer whitespace-nowrap px-3 py-1.5 text-xs font-medium"
+              onClick={() => onFiltersChange({ ...filters, boxType: type })}
+            >
+              {type}
+            </Badge>
+          ))}
+        </div>
+      )}
+
+      <div className="flex flex-wrap items-center gap-2">
+        <Select value={sortMode} onValueChange={(v) => setSortMode(v as BoxSortMode)}>
+          <SelectTrigger className="w-[180px]" aria-label="Ordenar">
+            <SelectValue placeholder="Ordenar" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="score">Mais relevantes</SelectItem>
+            <SelectItem value="price">Menor preço</SelectItem>
+            <SelectItem value="occupancy">Maior ocupação</SelectItem>
+          </SelectContent>
+        </Select>
+        <div className="ml-auto flex items-center gap-1 rounded-lg border p-0.5">
+          <Button
+            type="button"
+            variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
+            size="icon"
+            className="h-8 w-8"
+            aria-label="Ver em grade"
+            aria-pressed={viewMode === 'grid'}
+            onClick={() => setViewMode('grid')}
+          >
+            <LayoutGrid className="h-4 w-4" />
+          </Button>
+          <Button
+            type="button"
+            variant={viewMode === 'list' ? 'secondary' : 'ghost'}
+            size="icon"
+            className="h-8 w-8"
+            aria-label="Ver em lista"
+            aria-pressed={viewMode === 'list'}
+            onClick={() => setViewMode('list')}
+          >
+            <List className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+
+      {hasNoCompatibleBox && (
+        <div className="flex flex-col items-start gap-2 rounded-lg border border-warning/30 bg-warning/10 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm">
+            Nenhuma caixa atende? Ajuste as quantidades do kit ou fale com o time comercial.
+          </p>
+          <Button
+            variant="outline"
+            size="sm"
+            className="flex-shrink-0"
+            onClick={() => navigate('/orcamentos')}
+          >
+            Falar com o comercial
+          </Button>
+        </div>
+      )}
 
       {/* Advanced filters */}
       <Collapsible open={filtersOpen} onOpenChange={setFiltersOpen}>
@@ -571,7 +726,7 @@ export function BoxSelector({
                 </Button>
               )}
             </div>
-          ) : recommendations.length === 0 ? (
+          ) : sortedRecommendations.length === 0 ? (
             <div className="py-12 text-center">
               <Package className="mx-auto mb-3 h-12 w-12 text-muted-foreground" />
               <p className="text-muted-foreground">Nenhuma caixa encontrada</p>
@@ -583,8 +738,14 @@ export function BoxSelector({
               )}
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              {recommendations.map((recommendation, index) => {
+            <div
+              className={cn(
+                viewMode === 'grid'
+                  ? 'grid grid-cols-1 gap-4 md:grid-cols-2'
+                  : 'flex flex-col gap-2',
+              )}
+            >
+              {sortedRecommendations.map((recommendation, index) => {
                 const box = recommendation.box;
                 const shouldExplain = kitItems.length > 0;
                 const statusLabel =
@@ -597,6 +758,87 @@ export function BoxSelector({
                       : 'Não compatível';
 
                 const isSelectable = recommendation.status !== 'incompatible';
+                const checklist: string[] = [];
+                if (shouldExplain) {
+                  if (recommendation.status === 'compatible') {
+                    checklist.push('Compatível com todos os itens');
+                  }
+                  const freeSpace = Math.max(0, 100 - recommendation.usagePercent);
+                  checklist.push(`Espaço livre de ${Math.round(freeSpace)}%`);
+                  if (recommendation.compatibility.confidence === 'verified') {
+                    checklist.push('Material e dimensões verificados');
+                  }
+                }
+
+                if (viewMode === 'list') {
+                  return (
+                    <Card
+                      key={box.id}
+                      onMouseEnter={() => setFocusedBoxId(box.id)}
+                      className={cn(
+                        'rounded-lg border-border/50 transition-all duration-200',
+                        !isSelectable && 'opacity-75',
+                      )}
+                    >
+                      <CardContent className="flex items-center gap-3 p-2.5">
+                        <div className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-md bg-secondary">
+                          {box.imageUrl ? (
+                            <img
+                              src={box.imageUrl}
+                              alt={box.name}
+                              className="h-full w-full object-cover"
+                              loading="lazy"
+                            />
+                          ) : (
+                            <div className="flex h-full w-full items-center justify-center">
+                              <Package className="h-5 w-5 text-muted-foreground" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <h4 className="truncate text-sm font-medium">{box.name}</h4>
+                          <p className="truncate text-xs text-muted-foreground">
+                            {formatDimensions(
+                              box.internalWidth,
+                              box.internalHeight,
+                              box.internalDepth,
+                            )}
+                          </p>
+                        </div>
+                        {shouldExplain && (
+                          <Badge
+                            variant={
+                              recommendation.status === 'incompatible' ? 'destructive' : 'secondary'
+                            }
+                            className={cn(
+                              'hidden text-[10px] sm:inline-flex',
+                              recommendation.status === 'compatible' &&
+                                'bg-success/10 text-success',
+                              recommendation.status === 'inconclusive' &&
+                                'bg-warning/10 text-warning',
+                            )}
+                          >
+                            {statusLabel}
+                          </Badge>
+                        )}
+                        <span className="flex-shrink-0 text-sm font-semibold text-primary">
+                          {formatCurrency(box.price)}
+                        </span>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant={recommendation.status === 'inconclusive' ? 'outline' : 'default'}
+                          disabled={!isSelectable}
+                          aria-label={`Selecionar caixa ${box.name}`}
+                          onFocus={() => setFocusedBoxId(box.id)}
+                          onClick={() => onSelect(box)}
+                        >
+                          {isSelectable ? 'Selecionar' : 'Incompatível'}
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  );
+                }
 
                 return (
                   <Card
@@ -694,6 +936,19 @@ export function BoxSelector({
                                 {recommendation.compatibility.reason ||
                                   'Dimensões e ocupação verificadas.'}
                               </p>
+                              {checklist.length > 0 && (
+                                <ul className="space-y-0.5">
+                                  {checklist.map((line) => (
+                                    <li
+                                      key={line}
+                                      className="flex items-center gap-1.5 text-[11px] text-muted-foreground"
+                                    >
+                                      <Check className="h-3 w-3 flex-shrink-0 text-success" />
+                                      {line}
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
                             </div>
                           )}
                         </div>
@@ -726,60 +981,161 @@ export function BoxSelector({
             </div>
           )}
         </ScrollArea>
-        {focusedRecommendation && (
-          <aside
-            className="hidden h-fit overflow-hidden rounded-xl border bg-card xl:block"
-            aria-label="Prévia da caixa"
-          >
-            <div className="aspect-[4/3] bg-muted">
-              {focusedRecommendation.box.imageUrl ? (
-                <img
-                  src={focusedRecommendation.box.imageUrl}
-                  alt={focusedRecommendation.box.name}
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <div className="flex h-full items-center justify-center">
-                  <Eye className="h-10 w-10 text-muted-foreground" />
+        <aside className="space-y-4 xl:sticky xl:top-24" aria-label="Composição e recomendação">
+          {kitItems.length > 0 && (
+            <div className="space-y-3 rounded-xl border bg-card p-4">
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="font-display text-sm font-semibold">Composição atual</h3>
+                {onEditItems && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 gap-1 px-2 text-xs"
+                    onClick={onEditItems}
+                  >
+                    <Pencil className="h-3 w-3" />
+                    Editar itens
+                  </Button>
+                )}
+              </div>
+              <div className="flex -space-x-2">
+                {kitItems.slice(0, 4).map((item) => (
+                  <div
+                    key={getKitItemLineId(item)}
+                    className="h-8 w-8 overflow-hidden rounded-full border-2 border-card bg-secondary"
+                  >
+                    {item.imageUrl ? (
+                      <img
+                        src={item.imageUrl}
+                        alt={item.name}
+                        className="h-full w-full object-cover"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center">
+                        <Package className="h-3.5 w-3.5 text-muted-foreground" />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <div className="space-y-1 text-xs text-muted-foreground">
+                <div className="flex justify-between">
+                  <span>Itens no kit</span>
+                  <strong className="text-foreground">{kitItems.length}</strong>
                 </div>
+                <div className="flex justify-between">
+                  <span>Quantidade por kit</span>
+                  <strong className="text-foreground">{kitItemsQuantity}</strong>
+                </div>
+                <div className="flex justify-between">
+                  <span>Volume estimado (itens)</span>
+                  <strong className="text-foreground">{Math.round(kitItemsVolume)} cm³</strong>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {kitItems.length > 0 && bestRecommendation && (
+            <div className="space-y-2 rounded-xl border border-primary/30 bg-primary/5 p-4">
+              <div className="flex items-center gap-1.5">
+                <Sparkles className="h-4 w-4 text-primary" />
+                <h3 className="font-display text-sm font-semibold">Nossa recomendação</h3>
+              </div>
+              <p className="text-sm font-medium">{bestRecommendation.box.name}</p>
+              <ul className="space-y-0.5">
+                {bestReasons.map((reason) => (
+                  <li
+                    key={reason}
+                    className="flex items-center gap-1.5 text-xs text-muted-foreground"
+                  >
+                    <Check className="h-3 w-3 flex-shrink-0 text-success" />
+                    {reason}
+                  </li>
+                ))}
+              </ul>
+              {comparedRecommendations.length >= 2 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full gap-1.5"
+                  onClick={() => setComparisonOpen(true)}
+                >
+                  <GitCompareArrows className="h-3.5 w-3.5" />
+                  Comparar caixas
+                </Button>
               )}
             </div>
-            <div className="space-y-3 p-4">
-              <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-primary">
-                  Prévia da caixa
-                </p>
-                <h3 className="mt-1 font-semibold">{focusedRecommendation.box.name}</h3>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                {formatDimensions(
-                  focusedRecommendation.box.internalWidth,
-                  focusedRecommendation.box.internalHeight,
-                  focusedRecommendation.box.internalDepth,
+          )}
+
+          {focusedRecommendation && (
+            <div
+              className="hidden h-fit overflow-hidden rounded-xl border bg-card xl:block"
+              aria-label="Prévia da caixa"
+            >
+              <div className="aspect-[4/3] bg-muted">
+                {focusedRecommendation.box.imageUrl ? (
+                  <img
+                    src={focusedRecommendation.box.imageUrl}
+                    alt={focusedRecommendation.box.name}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full items-center justify-center">
+                    <Eye className="h-10 w-10 text-muted-foreground" />
+                  </div>
                 )}
-              </p>
-              <p className="font-semibold text-primary">
-                {formatCurrency(focusedRecommendation.box.price)} / un
-              </p>
-              <div className="h-2 overflow-hidden rounded-full bg-muted">
-                <div
-                  className="h-full rounded-full bg-primary"
-                  style={{ width: `${Math.min(100, focusedRecommendation.usagePercent)}%` }}
-                />
               </div>
-              <p className="text-xs text-muted-foreground">
-                Ocupação estimada: {Math.round(focusedRecommendation.usagePercent)}%
-              </p>
-              <Button
-                className="w-full"
-                disabled={focusedRecommendation.status === 'incompatible'}
-                onClick={() => onSelect(focusedRecommendation.box)}
-              >
-                Usar esta caixa
-              </Button>
+              <div className="space-y-3 p-4">
+                <div>
+                  <p className="text-xs font-medium uppercase tracking-wide text-primary">
+                    Prévia da caixa
+                  </p>
+                  <h3 className="mt-1 font-semibold">{focusedRecommendation.box.name}</h3>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  {formatDimensions(
+                    focusedRecommendation.box.internalWidth,
+                    focusedRecommendation.box.internalHeight,
+                    focusedRecommendation.box.internalDepth,
+                  )}
+                </p>
+                {(focusedRecommendation.box.material || focusedRecommendation.box.finish) && (
+                  <p className="text-xs text-muted-foreground">
+                    {[focusedRecommendation.box.material, focusedRecommendation.box.finish]
+                      .filter(Boolean)
+                      .join(' · ')}
+                  </p>
+                )}
+                <p className="font-semibold text-primary">
+                  {formatCurrency(focusedRecommendation.box.price)} / un
+                </p>
+                {kitItems.length === 0 && (
+                  <p className="rounded-md bg-muted/50 p-2 text-[11px] text-muted-foreground">
+                    Validação inteligente — ao selecionar a caixa, mostraremos apenas itens
+                    compatíveis com suas dimensões.
+                  </p>
+                )}
+                <div className="h-2 overflow-hidden rounded-full bg-muted">
+                  <div
+                    className="h-full rounded-full bg-primary"
+                    style={{ width: `${Math.min(100, focusedRecommendation.usagePercent)}%` }}
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Ocupação estimada: {Math.round(focusedRecommendation.usagePercent)}%
+                </p>
+                <Button
+                  className="w-full"
+                  disabled={focusedRecommendation.status === 'incompatible'}
+                  onClick={() => onSelect(focusedRecommendation.box)}
+                >
+                  Usar esta caixa
+                </Button>
+              </div>
             </div>
-          </aside>
-        )}
+          )}
+        </aside>
       </div>
       <BoxComparisonDialog
         open={comparisonOpen}

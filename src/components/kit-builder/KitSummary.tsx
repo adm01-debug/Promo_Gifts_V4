@@ -2,24 +2,28 @@
  * Kit Summary — Refactored orchestrator
  * Sub-components extracted to ./kit-summary/
  */
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Textarea } from '@/components/ui/textarea';
 import { AlertTriangle } from 'lucide-react';
 import { KitMarginSimulator } from './KitMarginSimulator';
 import { KitVisualPreview } from './KitVisualPreview';
 import { DiscontinuedItemsAlert } from './DiscontinuedItemsAlert';
 import { FreightEstimator } from './FreightEstimator';
 import { useKitStockValidation, type KitStockStatus } from '@/hooks/kit-builder';
-import { calculateTotalKitPrice, type KitState } from '@/lib/kit-builder';
+import { calculateTotalKitPrice, type KitIdentity, type KitState } from '@/lib/kit-builder';
 import { KitIdentificationCard } from './kit-summary/KitIdentificationCard';
 import { KitStatsCards } from './kit-summary/KitStatsCards';
 import { KitCompositionCard } from './kit-summary/KitCompositionCard';
 import { KitPricingCard } from './kit-summary/KitPricingCard';
 import { KitActionsBar } from './kit-summary/KitActionsBar';
+import { KitValidationChecklist } from './kit-summary/KitValidationChecklist';
 import { KitConflictAlerts } from './KitConflictAlerts';
 import { KitPresentablePreview } from './KitPresentablePreview';
 import { KitPersonalizationPreview } from './KitPersonalizationPreview';
 import { KitStockForecastCard } from './KitStockForecastCard';
 import { ClientPicker, type ClientData } from '@/components/quotes/ClientPicker';
+
+const NOTES_MAX_LENGTH = 500;
 
 interface KitSummaryProps {
   kitState: KitState;
@@ -33,6 +37,14 @@ interface KitSummaryProps {
   currentKitId?: string;
   quoteClient?: Partial<ClientData>;
   onQuoteClientChange?: (next: Partial<ClientData>) => void;
+  identity?: KitIdentity;
+  onIdentityChange?: (identity: KitIdentity) => void;
+  notes?: string;
+  onNotesChange?: (notes: string) => void;
+  /** Navigates back to the box step, preserving state. */
+  onEditBox?: () => void;
+  onSaveDraft?: () => void;
+  isSavingDraft?: boolean;
 }
 
 export function shouldRenderKitStockForecast(status: KitStockStatus): boolean {
@@ -51,6 +63,13 @@ export function KitSummary({
   currentKitId,
   quoteClient = {},
   onQuoteClientChange,
+  identity,
+  onIdentityChange,
+  notes = '',
+  onNotesChange,
+  onEditBox,
+  onSaveDraft,
+  isSavingDraft,
 }: KitSummaryProps) {
   const { box, items, personalization } = kitState;
   const pricing = calculateTotalKitPrice(box, items, personalization, kitQuantity);
@@ -74,6 +93,8 @@ export function KitSummary({
             kitQuantity={kitQuantity}
             onKitNameChange={onKitNameChange}
             onKitQuantityChange={onKitQuantityChange}
+            identity={identity}
+            onIdentityChange={onIdentityChange}
           />
           {onQuoteClientChange && (
             <ClientPicker value={quoteClient} onChange={onQuoteClientChange} />
@@ -82,7 +103,26 @@ export function KitSummary({
             kitState={kitState}
             kitQuantity={kitQuantity}
             stockByProduct={stockByProduct}
+            onEditBox={onEditBox}
           />
+          {onNotesChange && (
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Observações</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-1">
+                <Textarea
+                  value={notes}
+                  maxLength={NOTES_MAX_LENGTH}
+                  placeholder="Informações adicionais para o time de orçamento..."
+                  onChange={(e) => onNotesChange(e.target.value.slice(0, NOTES_MAX_LENGTH))}
+                />
+                <p className="text-right text-xs text-muted-foreground">
+                  {notes.length}/{NOTES_MAX_LENGTH}
+                </p>
+              </CardContent>
+            </Card>
+          )}
           <KitConflictAlerts kitState={kitState} />
           <DiscontinuedItemsAlert items={items} />
 
@@ -168,6 +208,7 @@ export function KitSummary({
             itemsCount={items.length}
             personalizedCount={personalizedCount}
           />
+          <KitValidationChecklist kitState={kitState} stockStatus={stockStatus} />
           <KitVisualPreview kitState={kitState} />
           <KitPresentablePreview
             kitState={kitState}
@@ -203,6 +244,8 @@ export function KitSummary({
         items={items}
         onAddToQuote={onAddToQuote}
         onExportPDF={onExportPDF}
+        onSaveDraft={onSaveDraft}
+        isSavingDraft={isSavingDraft}
       />
     </div>
   );

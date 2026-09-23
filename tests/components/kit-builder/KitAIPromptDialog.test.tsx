@@ -1,6 +1,10 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { KitAIPromptDialog } from '@/components/kit-builder/KitAIPromptDialog';
+import {
+  KitAIPromptDialog,
+  buildAlternativeTitle,
+  buildBriefDescription,
+} from '@/components/kit-builder/KitAIPromptDialog';
 import { invokeEdge } from '@/lib/edge/safeInvokeCall';
 import type { KitBox, KitItem } from '@/lib/kit-builder';
 
@@ -131,5 +135,51 @@ describe('KitAIPromptDialog', () => {
     await waitFor(() => {
       expect(screen.queryByText(suggestion.narrative)).not.toBeInTheDocument();
     });
+  });
+
+  it('renders a thumbnail collage of the composition items beside the box photo', async () => {
+    vi.mocked(invokeEdge).mockResolvedValueOnce({ data: { suggestion }, error: null });
+    const itemsWithImages = catalogItems.map((item, index) => ({
+      ...item,
+      imageUrl: `https://cdn.example.test/item-${index}.jpg`,
+    }));
+    render(
+      <KitAIPromptDialog
+        catalogItems={itemsWithImages}
+        catalogBoxes={catalogBoxes}
+        onApply={vi.fn()}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /montar com ia/i }));
+    fireEvent.change(screen.getByLabelText(/o que você deseja/i), {
+      target: { value: 'Kit de boas-vindas sustentável para novos colaboradores.' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /gerar sugestões/i }));
+
+    await waitFor(() => expect(screen.getByText(suggestion.narrative)).toBeInTheDocument());
+    expect(screen.getByAltText('Garrafa')).toHaveAttribute(
+      'src',
+      'https://cdn.example.test/item-0.jpg',
+    );
+  });
+});
+
+describe('KitAIPromptDialog derived presentation helpers', () => {
+  it('builds a descriptive title from style and audience, numbering repeats', () => {
+    expect(buildAlternativeTitle('Executivo', 'Clientes VIP', 0, 1)).toBe(
+      'Kit Executivo Clientes VIP',
+    );
+    expect(buildAlternativeTitle('Executivo', 'Clientes VIP', 1, 3)).toBe(
+      'Kit Executivo Clientes VIP — Alternativa 2',
+    );
+    expect(buildAlternativeTitle('', '', 0, 1)).toBe('Kit sugerido');
+  });
+
+  it('builds a one-sentence recap only from fields the user actually chose', () => {
+    expect(buildBriefDescription('Colaboradores', 'Até R$ 150', 'Executivo')).toBe(
+      'Sugestão para colaboradores, estilo executivo, até r$ 150.',
+    );
+    expect(buildBriefDescription('', '', '')).toBe('');
   });
 });
