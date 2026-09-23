@@ -4,8 +4,10 @@ import {
   KitAIPromptDialog,
   buildAlternativeTitle,
   buildBriefDescription,
+  mapKitAiErrorMessage,
 } from '@/components/kit-builder/KitAIPromptDialog';
 import { invokeEdge } from '@/lib/edge/safeInvokeCall';
+import { toast } from 'sonner';
 import type { KitBox, KitItem } from '@/lib/kit-builder';
 
 vi.mock('@/lib/edge/safeInvokeCall', () => ({ invokeEdge: vi.fn() }));
@@ -162,6 +164,54 @@ describe('KitAIPromptDialog', () => {
       'src',
       'https://cdn.example.test/item-0.jpg',
     );
+  });
+
+  it('mostra a mensagem de negócio mapeada (etapa 18) em vez do erro técnico genérico', async () => {
+    vi.mocked(invokeEdge).mockResolvedValueOnce({
+      data: null,
+      error: { message: 'HTTP 402', status: 402, name: 'unknown', request_id: 'r1' },
+      requestId: 'r1',
+    });
+    render(<KitAIPromptDialog onApply={vi.fn()} />);
+
+    fireEvent.click(screen.getByRole('button', { name: /montar com ia/i }));
+    fireEvent.change(screen.getByLabelText(/o que você deseja/i), {
+      target: { value: 'Kit de boas-vindas sustentável para novos colaboradores.' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /gerar sugestões/i }));
+
+    await waitFor(() =>
+      expect(toast.error).toHaveBeenCalledWith(
+        'Créditos de IA esgotados. Fale com o financeiro para renovar.',
+      ),
+    );
+  });
+});
+
+describe('mapKitAiErrorMessage — 3 erros de negócio (etapa 18)', () => {
+  it('quota: HTTP 402 → sem créditos', () => {
+    expect(mapKitAiErrorMessage(402, 'unknown')).toBe(
+      'Créditos de IA esgotados. Fale com o financeiro para renovar.',
+    );
+  });
+
+  it('sem chave: body.error === ai_not_configured (HTTP 503) → fale com o TI', () => {
+    expect(mapKitAiErrorMessage(503, 'server', 'ai_not_configured')).toBe(
+      'IA não configurada neste ambiente. Fale com o TI.',
+    );
+  });
+
+  it('timeout/rate-limit: HTTP 429, HTTP 503 sem código, ou errorKind timeout → tente novamente', () => {
+    const expected = 'Muitas tentativas em pouco tempo. Tente novamente em 1 minuto.';
+    expect(mapKitAiErrorMessage(429, 'ratelimit')).toBe(expected);
+    // Circuit breaker aberto também devolve 503, mas sem o código ai_not_configured —
+    // nunca pode cair na mensagem de "fale com o TI".
+    expect(mapKitAiErrorMessage(503, 'server')).toBe(expected);
+    expect(mapKitAiErrorMessage(0, 'timeout')).toBe(expected);
+  });
+
+  it('mantém o fallback genérico para erros não mapeados', () => {
+    expect(mapKitAiErrorMessage(500, 'server')).toBe('Erro ao gerar sugestão. Tente novamente.');
   });
 });
 
