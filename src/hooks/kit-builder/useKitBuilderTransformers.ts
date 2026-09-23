@@ -12,6 +12,7 @@ import {
   extractProductDimensions,
   estimateDefaultDimensions,
 } from '@/lib/kit-builder';
+import type { VariantStock } from '@/hooks/kit-builder/useKitStockValidation';
 
 // Local equivalents of the external-db helpers, typed against ExternalProductForKit.
 // (The shared helpers require the full PromobrindProduct shape, which the kit-builder
@@ -130,4 +131,23 @@ export function transformToKitItem(
       ? product.allowed_variant_ids.filter((id): id is string => typeof id === 'string')
       : undefined,
   };
+}
+
+/**
+ * Agrega o estoque de `fetchKitStockVariants` (uma chamada batched para toda a
+ * página do catálogo) e devolve os itens com `stock` preenchido. Produto sem
+ * nenhuma variante retornada fica `null` (desconhecido); com variantes mas
+ * soma zero fica `0` (sem estoque) — os dois casos não podem ser confundidos.
+ */
+export function attachStockToKitItems(items: KitItem[], variants: VariantStock[]): KitItem[] {
+  const totalsByProduct = new Map<string, number>();
+  for (const variant of variants) {
+    const current = totalsByProduct.get(variant.product_id) ?? 0;
+    totalsByProduct.set(variant.product_id, current + (variant.stock_quantity ?? 0));
+  }
+
+  return items.map((item) => ({
+    ...item,
+    stock: totalsByProduct.has(item.id) ? totalsByProduct.get(item.id)! : null,
+  }));
 }

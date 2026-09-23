@@ -19,7 +19,9 @@ import {
 import {
   transformToKitBox,
   transformToKitItem,
+  attachStockToKitItems,
 } from '@/hooks/kit-builder/useKitBuilderTransformers';
+import { fetchKitStockVariants } from '@/hooks/kit-builder/useKitStockValidation';
 import { logger } from '@/lib/logger';
 
 const PRODUCT_PAGE_SIZE = 200;
@@ -138,6 +140,63 @@ function filterItems(items: KitItem[], search: string): KitItem[] {
   return items.filter((i) => i.name.toLowerCase().includes(q) || i.sku?.toLowerCase().includes(q));
 }
 
+export interface KitComponentPrintArea {
+  code: string;
+  name: string;
+}
+
+/**
+ * v_kit_component_print_areas_public só expõe `kit_component_id` (não
+ * `kit_product_id`) — precisa do join client-side por product_kit_components
+ * para resolver as áreas de um produto-kit específico.
+ */
+async function fetchKitComponentPrintAreas(kitProductId: string): Promise<KitComponentPrintArea[]> {
+  const componentsResult = await dbInvoke<{ id: string }>({
+    table: 'product_kit_components',
+    operation: 'select',
+    filters: { kit_product_id: kitProductId },
+    select: 'id',
+  });
+  const componentIds = (componentsResult.records ?? []).map((row) => row.id);
+  if (componentIds.length === 0) return [];
+
+  const areasResult = await dbInvoke<{
+    location_code: string | null;
+    location_name: string | null;
+    location_order: number | null;
+  }>({
+    table: 'v_kit_component_print_areas_public',
+    operation: 'select',
+    filters: { kit_component_id: componentIds },
+    select: 'location_code, location_name, location_order',
+    orderBy: { column: 'location_order', ascending: true },
+  });
+
+  const seen = new Set<string>();
+  const areas: KitComponentPrintArea[] = [];
+  for (const row of areasResult.records ?? []) {
+    if (!row.location_code || !row.location_name || seen.has(row.location_code)) continue;
+    seen.add(row.location_code);
+    areas.push({ code: row.location_code, name: row.location_name });
+  }
+  return areas;
+}
+
+/**
+ * Áreas de gravação reais dos componentes de um produto-kit. Consulta
+ * pontual por produto — só habilita quando `kitProductId` é conhecido, nunca
+ * pré-carrega para o kit inteiro (evita N queries por card renderizado).
+ */
+export function useKitComponentPrintAreas(kitProductId: string | null) {
+  return useQuery({
+    queryKey: ['kit-builder', 'kit-component-print-areas', kitProductId],
+    queryFn: () => fetchKitComponentPrintAreas(kitProductId!),
+    enabled: !!kitProductId,
+    staleTime: 5 * 60 * 1000,
+    retry: 1,
+  });
+}
+
 export function useKitBuilderQueries() {
   // Debounced search state
   const [boxSearchInput, setBoxSearchInput] = useState('');
@@ -232,6 +291,31 @@ export function useKitBuilderQueries() {
     retry: 1,
   });
 
+  // Query: estoque agregado dos itens da página carregada. Uma única chamada
+  // batched (fetchKitStockVariants já pagina em blocos de 500) para todo o
+  // catálogo — nunca uma consulta por card renderizado.
+  const itemIds = useMemo(() => completeItemCatalog.map((item) => item.id), [completeItemCatalog]);
+  const {
+    data: itemStockVariants,
+    isSuccess: isItemStockSuccess,
+    isError: isItemStockError,
+    isLoading: isLoadingItemStock,
+  } = useQuery({
+    queryKey: ['kit-builder', 'items', 'stock', itemIds],
+    queryFn: () => fetchKitStockVariants(itemIds),
+    enabled: itemIds.length > 0,
+    staleTime: 60 * 1000,
+    retry: 1,
+  });
+  // `item.stock` fica `undefined` (nem null, nem número) enquanto a consulta
+  // de estoque está em voo — isso é o que diferencia "carregando" (skeleton)
+  // de "resolvido sem variantes" (null, desconhecido) na etapa 14.
+  const completeItemCatalogWithStock = useMemo(() => {
+    if (isItemStockSuccess) return attachStockToKitItems(completeItemCatalog, itemStockVariants);
+    if (isItemStockError) return attachStockToKitItems(completeItemCatalog, []);
+    return completeItemCatalog;
+  }, [completeItemCatalog, isItemStockError, isItemStockSuccess, itemStockVariants]);
+
   // Selector filters are projections over the complete cached catalogs. The
   // AI resolver receives the unfiltered arrays below, so a previous human
   // search can never constrain a new briefing or yield a false empty result.
@@ -240,17 +324,18 @@ export function useKitBuilderQueries() {
     [boxDimFilters, completeBoxCatalog, debouncedBoxSearch],
   );
   const availableItems = useMemo(
-    () => filterItems(completeItemCatalog, debouncedItemSearch),
-    [completeItemCatalog, debouncedItemSearch],
+    () => filterItems(completeItemCatalogWithStock, debouncedItemSearch),
+    [completeItemCatalogWithStock, debouncedItemSearch],
   );
 
   return {
     availableBoxes,
     availableItems,
     completeBoxCatalog,
-    completeItemCatalog,
+    completeItemCatalog: completeItemCatalogWithStock,
     isLoadingBoxes,
     isLoadingItems,
+    isLoadingItemStock,
     boxError: boxQueryError instanceof Error ? boxQueryError.message : null,
     itemError: itemQueryError instanceof Error ? itemQueryError.message : null,
     refetchBoxes,

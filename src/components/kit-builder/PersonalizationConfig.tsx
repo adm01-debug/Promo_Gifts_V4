@@ -47,6 +47,7 @@ import {
   type KitItemPersonalization,
 } from '@/lib/kit-builder';
 import { useProductCustomizationOptions } from '@/hooks/products';
+import { useKitComponentPrintAreas } from '@/hooks/kit-builder/useKitBuilderQueries';
 import { useCustomizationPriceReactive } from '@/hooks/simulation';
 import type { GravacaoLocation } from '@/types/customization';
 import {
@@ -274,6 +275,12 @@ function ItemPersonalizationCard({
     [options],
   );
 
+  // Áreas de gravação dos componentes do kit (v_kit_component_print_areas_public).
+  // Usadas como fallback quando o catálogo de técnicas não trouxe nenhuma
+  // localização própria — evita conflitar com o filtro de técnicas por área
+  // já existente abaixo. Consulta pontual por produto em configuração.
+  const { data: kitComponentPrintAreas } = useKitComponentPrintAreas(productId);
+
   // Find current technique for reactive price
   const currentTech = techniques.find(
     (t) =>
@@ -390,14 +397,17 @@ function ItemPersonalizationCard({
   const colorOptions = Array.from({ length: maxColors }, (_, i) => i + 1);
 
   // Áreas de gravação reais do produto (mesma fonte que alimenta as técnicas).
-  const areaOptions = useMemo(
-    () =>
-      (options?.locations ?? []).map((loc) => ({
+  // Sem técnica cadastrada, cai para as áreas dos componentes do kit — mantém
+  // o texto fixo "Frente" quando nenhuma das duas fontes tem dado real.
+  const areaOptions = useMemo(() => {
+    if (options?.locations?.length) {
+      return options.locations.map((loc) => ({
         code: loc.location_code,
         name: loc.location_name,
-      })),
-    [options],
-  );
+      }));
+    }
+    return kitComponentPrintAreas ?? [];
+  }, [options, kitComponentPrintAreas]);
   const selectedAreaCode = personalization.positionCode || areaOptions[0]?.code;
   const visibleTechniques =
     areaOptions.length > 0 && selectedAreaCode

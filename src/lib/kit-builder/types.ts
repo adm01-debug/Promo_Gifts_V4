@@ -89,6 +89,13 @@ export interface KitItem {
   allowedVariantIds?: string[];
   // Personalização configurada
   personalization?: KitItemPersonalization;
+  /**
+   * Soma de `stock_quantity` das variantes ativas do produto, agregada uma vez
+   * para toda a página do catálogo (nunca por card). `null` = produto sem
+   * nenhuma variante retornada (desconhecido); `0` = variantes existem mas a
+   * soma é zero (sem estoque).
+   */
+  stock?: number | null;
 }
 
 export interface KitItemPersonalization {
