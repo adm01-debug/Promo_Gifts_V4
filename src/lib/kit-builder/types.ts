@@ -262,7 +262,8 @@ export interface BoxFilters {
   minPrice?: number;
   maxPrice?: number;
   boxType?: string;
-  material?: string;
+  /** Multi-seleção — uma caixa passa se o material dela estiver em qualquer posição da lista. */
+  material?: string[];
   finish?: string;
   closure?: string;
 }

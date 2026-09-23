@@ -29,6 +29,7 @@ import { BoxCardSkeleton } from './KitCardSkeleton';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Select,
   SelectContent,
@@ -57,6 +58,13 @@ type BoxViewMode = 'grid' | 'list';
 
 interface BoxSelectorProps {
   boxes: KitBox[];
+  /**
+   * Catálogo completo (sem nenhum filtro aplicado) — usado só para listar
+   * todos os materiais possíveis no checkbox de filtro, mesmo quando um
+   * filtro ativo zera a contagem de algum deles. Sem isso o checkbox some
+   * em vez de aparecer desabilitado. Se omitido, cai para `boxes`.
+   */
+  allBoxes?: KitBox[];
   selectedBox: KitBox | null;
   kitItems?: KitItem[];
   isLoading: boolean;
@@ -74,6 +82,7 @@ interface BoxSelectorProps {
 
 export function BoxSelector({
   boxes,
+  allBoxes,
   selectedBox,
   kitItems = [],
   isLoading,
@@ -107,29 +116,60 @@ export function BoxSelector({
     onFiltersChange({ ...filters, search: value || undefined });
   };
 
-  // Extract unique materials from boxes
-  const materials = useMemo(() => {
-    const set = new Set<string>();
+  // Contagem por material calculada sobre `boxes` — o conjunto já respeita
+  // busca/dimensões/preço/tipo/acabamento, mas NUNCA o próprio filtro de
+  // material, para que o checkbox de um material não selecionado mostre
+  // quantas caixas ele realmente libera.
+  const materialCounts = useMemo(() => {
+    const counts = new Map<string, number>();
     boxes.forEach((b) => {
-      if (b.material) set.add(b.material);
+      if (!b.material) return;
+      counts.set(b.material, (counts.get(b.material) ?? 0) + 1);
     });
-    return Array.from(set).sort();
+    return counts;
   }, [boxes]);
+
+  // Lista estável de materiais — vem do catálogo completo (não do `boxes` já
+  // filtrado) para que um material sem nenhuma caixa nos filtros atuais
+  // continue aparecendo (desabilitado), em vez de sumir do checkbox.
+  const materials = useMemo(() => {
+    const source = allBoxes ?? boxes;
+    return Array.from(new Set(source.map((b) => b.material).filter(Boolean) as string[])).sort(
+      (a, b) => a.localeCompare(b, 'pt-BR'),
+    );
+  }, [allBoxes, boxes]);
+
+  const selectedMaterials = filters.material;
+
+  // Único ponto onde o filtro de material (multi-seleção) é de fato aplicado.
+  const materialFilteredBoxes = useMemo(() => {
+    if (!selectedMaterials || selectedMaterials.length === 0) return boxes;
+    const set = new Set(selectedMaterials);
+    return boxes.filter((b) => b.material && set.has(b.material));
+  }, [boxes, selectedMaterials]);
+
+  const toggleMaterialFilter = (material: string) => {
+    const current = filters.material ?? [];
+    const next = current.includes(material)
+      ? current.filter((m) => m !== material)
+      : [...current, material];
+    onFiltersChange({ ...filters, material: next.length > 0 ? next : undefined });
+  };
 
   const boxTypes = useMemo(
     () =>
-      Array.from(new Set(boxes.map((box) => box.boxType).filter(Boolean))).sort((a, b) =>
-        a!.localeCompare(b!),
+      Array.from(new Set(materialFilteredBoxes.map((box) => box.boxType).filter(Boolean))).sort(
+        (a, b) => a!.localeCompare(b!),
       ) as string[],
-    [boxes],
+    [materialFilteredBoxes],
   );
 
   const finishes = useMemo(
     () =>
-      Array.from(new Set(boxes.map((box) => box.finish).filter(Boolean))).sort((a, b) =>
-        a!.localeCompare(b!),
+      Array.from(new Set(materialFilteredBoxes.map((box) => box.finish).filter(Boolean))).sort(
+        (a, b) => a!.localeCompare(b!),
       ) as string[],
-    [boxes],
+    [materialFilteredBoxes],
   );
 
   // Dimension ranges for sliders
@@ -137,20 +177,23 @@ export function BoxSelector({
     let w = 0,
       h = 0,
       d = 0;
-    boxes.forEach((b) => {
+    materialFilteredBoxes.forEach((b) => {
       if (b.internalWidth > w) w = b.internalWidth;
       if (b.internalHeight > h) h = b.internalHeight;
       if (b.internalDepth > d) d = b.internalDepth;
     });
     return { width: Math.ceil(w) || 50, height: Math.ceil(h) || 50, depth: Math.ceil(d) || 50 };
-  }, [boxes]);
+  }, [materialFilteredBoxes]);
 
   const maxPrice = useMemo(
-    () => Math.max(10, ...boxes.map((box) => Math.ceil(box.price))),
-    [boxes],
+    () => Math.max(10, ...materialFilteredBoxes.map((box) => Math.ceil(box.price))),
+    [materialFilteredBoxes],
   );
 
-  const recommendations = useMemo(() => rankBoxesForItems(boxes, kitItems), [boxes, kitItems]);
+  const recommendations = useMemo(
+    () => rankBoxesForItems(materialFilteredBoxes, kitItems),
+    [materialFilteredBoxes, kitItems],
+  );
 
   const sortedRecommendations = useMemo(() => {
     if (sortMode === 'price') {
@@ -658,28 +701,36 @@ export function BoxSelector({
                 )}
               </div>
 
-              {/* Material filter */}
+              {/* Material filter — multi-seleção com contagem por material */}
               {materials.length > 0 && (
                 <div className="space-y-2">
                   <Label className="text-xs text-muted-foreground">Material</Label>
-                  <Select
-                    value={filters.material || '_all'}
-                    onValueChange={(v) =>
-                      onFiltersChange({ ...filters, material: v === '_all' ? undefined : v })
-                    }
-                  >
-                    <SelectTrigger className="w-full sm:w-64">
-                      <SelectValue placeholder="Todos os materiais" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="_all">Todos os materiais</SelectItem>
-                      {materials.map((m) => (
-                        <SelectItem key={m} value={m}>
-                          {m}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <div className="flex flex-wrap gap-x-4 gap-y-2">
+                    {materials.map((m) => {
+                      const count = materialCounts.get(m) ?? 0;
+                      const checked = (filters.material ?? []).includes(m);
+                      const checkboxId = `box-material-${m}`;
+                      return (
+                        <div key={m} className="flex items-center gap-2">
+                          <Checkbox
+                            id={checkboxId}
+                            checked={checked}
+                            disabled={count === 0 && !checked}
+                            onCheckedChange={() => toggleMaterialFilter(m)}
+                          />
+                          <Label
+                            htmlFor={checkboxId}
+                            className={cn(
+                              'cursor-pointer text-sm font-normal',
+                              count === 0 && !checked && 'cursor-not-allowed text-muted-foreground',
+                            )}
+                          >
+                            {m} <span className="text-xs text-muted-foreground">({count})</span>
+                          </Label>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
             </CardContent>
