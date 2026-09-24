@@ -1360,6 +1360,7 @@ export function PersonalizationConfig({
             </div>
 
             <PersonalizationPreview
+              key={activeTarget.key}
               displayName={activeTarget.displayName}
               imageUrl={activeTarget.imageUrl}
               personalization={activeTarget.personalization}

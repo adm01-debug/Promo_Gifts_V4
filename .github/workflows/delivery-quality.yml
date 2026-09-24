@@ -25,7 +25,7 @@ jobs:
       run: npm ci
 
     - name: 🧪 Unit Tests (Vitest)
-      run: npx vitest run src/pages/__tests__/QuoteBuilderDeliveryTooltip.test.tsx
+      run: TZ=America/Sao_Paulo npx vitest run src/pages/__tests__/QuoteBuilderDeliveryTooltip.test.tsx
 
     - name: 🎭 Install Playwright
       run: npx playwright install --with-deps chromium

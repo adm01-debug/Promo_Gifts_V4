@@ -34,6 +34,24 @@ export default defineConfig({
     // TARDE DEMAIS — Date.prototype.toLocaleString cacheia TZ na startup
     // do worker. CI (Ubuntu UTC) e dev (VPS BRT) geram snapshots divergentes
     // sem isso. Snapshot file mantém timestamps em America/Sao_Paulo.
+    //
+    // ARMADILHA CONFIRMADA (2026-09-24): com pool:'threads' (abaixo), este
+    // `env.TZ` sozinho NÃO basta — worker_threads não honra TZ injetado
+    // depois do boot do worker no cache de fuso do runtime Node/ICU
+    // (por processo, não é o motor V8 isolado; é tarde demais mesmo vindo
+    // daqui, não só de setup.ts). `npx vitest run` puro falha 3 testes de
+    // tests/unit/date-utils.test.ts em qualquer máquina cujo TZ do SO não
+    // seja America/Sao_Paulo (ex.: containers CI/dev com TZ=UTC). O fix
+    // real é o TZ=America/Sao_Paulo prefixado no shell ANTES do node subir.
+    // Auditoria de 2026-09-24 encontrou e corrigiu 5 scripts "test:*" do
+    // package.json e ~21 invocações diretas de `vitest run` em workflows
+    // (.github/workflows/*.yml) que rodavam sem esse prefixo — incluindo
+    // um step bloqueante em full-ci.yml. Todos os scripts "test*" do
+    // package.json e todos os workflows agora prefixam TZ corretamente;
+    // ao adicionar um novo, prefixe também. Sempre rode via `npm test`/
+    // `npm run test:quality` etc., nunca `npx vitest run` cru — isso é o
+    // que gera um falso-positivo de "CI quebrada" que na verdade é só
+    // invocação errada.
     env: { TZ: 'America/Sao_Paulo' },
     environment: 'jsdom',
     setupFiles: [

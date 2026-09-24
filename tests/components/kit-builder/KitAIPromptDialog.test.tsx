@@ -72,6 +72,11 @@ describe('KitAIPromptDialog', () => {
       'kit-ai-builder',
       expect.objectContaining({
         body: expect.objectContaining({ prompt: expect.stringContaining('boas-vindas') }),
+        // Guarda de regressão: maxRetries em safeAuthCall conta tentativas
+        // TOTAIS (não "retries extras") — 0 faz a function nunca ser chamada
+        // (achado do Codex review na PR #1898). Deve ser 1 (só a tentativa
+        // inicial, sem retry, por ser chamada billável/não-idempotente).
+        maxRetries: 1,
       }),
     );
     expect(screen.getByText(/estoque e preço comercial/i)).toBeInTheDocument();

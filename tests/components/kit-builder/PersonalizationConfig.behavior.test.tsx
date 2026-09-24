@@ -230,6 +230,62 @@ describe('PersonalizationConfig async behavior', () => {
     expect(state['line-1'].generatedMockupUrl).toBeUndefined();
   });
 
+  it('não vaza campos de personalização entre itens ao trocar o item ativo com geração em voo', async () => {
+    // Regressão: PersonalizationPreview não tinha key={activeTarget.key} (ao
+    // contrário de ItemPersonalizationCard, linha acima). Sem remount ao
+    // trocar de item, `personalizationRef` do preview é ressincronizado via
+    // useEffect para o item novo antes da geração em voo resolver — e o
+    // onChange grava {...personalizationRef.current (já do item 2), mockup}
+    // no item 1, vazando campos como `colors` silenciosamente.
+    let resolveGeneration: ((value: unknown) => void) | undefined;
+    mocks.generate.mockReturnValue(
+      new Promise((resolve) => {
+        resolveGeneration = resolve;
+      }),
+    );
+
+    function DualItemHarness() {
+      const [queryClient] = useState(
+        () => new QueryClient({ defaultOptions: { queries: { retry: false } } }),
+      );
+      const [personalizations, setPersonalizations] = useState<
+        Record<string, KitItemPersonalization>
+      >({
+        'line-1': { ...CONFIG, colors: 1 },
+        'line-2': { ...CONFIG, colors: 3 },
+      });
+      return (
+        <QueryClientProvider client={queryClient}>
+          <PersonalizationConfig
+            box={null}
+            items={ITEMS}
+            kitQuantity={50}
+            boxPersonalization={{ enabled: false }}
+            itemPersonalizations={personalizations}
+            onBoxPersonalizationChange={() => undefined}
+            onItemPersonalizationChange={(id, value) =>
+              setPersonalizations((current) => ({ ...current, [id]: value }))
+            }
+          />
+          <output data-testid="dual-item-state">{JSON.stringify(personalizations)}</output>
+        </QueryClientProvider>
+      );
+    }
+
+    render(<DualItemHarness />);
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Gerar personalização' }));
+    fireEvent.click(screen.getByRole('button', { name: /Caderno/i }));
+    await act(async () => {
+      resolveGeneration?.({ singleUrl: 'https://cdn.test/mockup-line-1.png', batchResults: [] });
+      await Promise.resolve();
+    });
+
+    const state = JSON.parse(screen.getByTestId('dual-item-state').textContent || '{}');
+    expect(state['line-1'].colors).toBe(1);
+    expect(state['line-2'].colors).toBe(3);
+  });
+
   it('detaches Kit Maker artwork without deleting a potentially shared storage object', () => {
     render(<Harness />);
     expect(screen.getByTestId('artwork-control')).toHaveAttribute('data-delete-on-remove', 'false');
