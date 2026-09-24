@@ -57,6 +57,9 @@ const suggestionSchema = z
       max: z.number().finite().nonnegative(),
     }),
     narrative: z.string().trim().min(1).max(500),
+    title: z.string().trim().min(1).max(80).optional(),
+    description: z.string().trim().min(1).max(160).optional(),
+    style_tag: z.string().trim().min(1).max(40).optional(),
   })
   .strict();
 
@@ -85,6 +88,31 @@ export function buildAlternativeTitle(
   const parts = [style, audience].filter(Boolean);
   const base = parts.length > 0 ? `Kit ${parts.join(' ')}` : 'Kit sugerido';
   return total > 1 ? `${base} — Alternativa ${index + 1}` : base;
+}
+
+/**
+ * Etapa 18: 3 erros de negócio distintos em vez do genérico "Erro ao gerar
+ * sugestão" — o vendedor precisa saber se o problema é dele (esperar/tentar
+ * de novo) ou da operação (falar com financeiro/TI).
+ * `bodyErrorCode` distingue os dois casos que a edge function devolve com o
+ * mesmo HTTP 503 (chave ausente vs. circuit breaker aberto) — sem ele os
+ * dois cairiam na mesma mensagem por engano.
+ */
+export function mapKitAiErrorMessage(
+  status: number | undefined,
+  errorKind: string | undefined,
+  bodyErrorCode?: string,
+): string {
+  if (bodyErrorCode === 'ai_not_configured') {
+    return 'IA não configurada neste ambiente. Fale com o TI.';
+  }
+  if (status === 402) {
+    return 'Créditos de IA esgotados. Fale com o financeiro para renovar.';
+  }
+  if (status === 429 || status === 503 || status === 504 || errorKind === 'timeout') {
+    return 'Muitas tentativas em pouco tempo. Tente novamente em 1 minuto.';
+  }
+  return 'Erro ao gerar sugestão. Tente novamente.';
 }
 
 /** One-sentence recap of the structured briefing fields the user actually chose. */
@@ -170,9 +198,17 @@ export function KitAIPromptDialog({
           body: {
             prompt: buildStructuredPrompt({ prompt, audience, budget, style, quantity }),
           },
+          // Sem isto, o corpo de um erro não-2xx some — e é ele que distingue
+          // "sem chave" de "circuit breaker aberto" (ambos HTTP 503).
+          preserveErrorData: true,
         },
       );
-      if (error) throw new Error(error.message);
+      if (error) {
+        if (latestGenerationRef.current === generation) {
+          toast.error(mapKitAiErrorMessage(error.status, error.name, data?.error));
+        }
+        return;
+      }
       const parsed = suggestionSchema
         .refine((value) => value.target_price_brl.max >= value.target_price_brl.min, {
           path: ['target_price_brl', 'max'],

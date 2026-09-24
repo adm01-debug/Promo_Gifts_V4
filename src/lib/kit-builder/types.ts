@@ -243,6 +243,10 @@ export interface KitAISuggestionBrief {
   item_keywords: string[];
   target_price_brl: { min: number; max: number };
   narrative: string;
+  /** Nome vendável devolvido pelo provedor (etapa 17). Sem ele, mantém o fallback "Kit sugerido N". */
+  title?: string;
+  description?: string;
+  style_tag?: string;
 }
 
 /** A deterministic proposal built exclusively from canonical catalog rows. */
