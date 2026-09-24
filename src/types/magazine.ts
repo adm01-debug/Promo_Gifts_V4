@@ -29,21 +29,24 @@ export type MagazineTemplateId =
  * para colorir consistentemente todas as páginas internas. Sistema inspirado
  * no TOC do catálogo Abreez 2026.
  */
-export type MagazineCategory =
-  | 'awards'
-  | 'bags'
-  | 'clocks'
-  | 'customized'
-  | 'drinkwares'
-  | 'general'
-  | 'giftsets'
-  | 'id'
-  | 'packaging'
-  | 'pins'
-  | 'signs'
-  | 'stationery'
-  | 'technology'
-  | 'wearables';
+export const MAGAZINE_CATEGORIES = [
+  'awards',
+  'bags',
+  'clocks',
+  'customized',
+  'drinkwares',
+  'general',
+  'giftsets',
+  'id',
+  'packaging',
+  'pins',
+  'signs',
+  'stationery',
+  'technology',
+  'wearables',
+] as const;
+
+export type MagazineCategory = (typeof MAGAZINE_CATEGORIES)[number];
 
 export type MagazineTemplateFamily = 'catalog' | 'corporate' | 'editorial';
 
@@ -126,7 +129,7 @@ export const magazineClientBrandingSchema = z
     clientLogoUrl: z.string().nullable(),
     clientCrmId: z.string().nullable(),
     colors: z.object({ primary: z.string(), secondary: z.string(), text: z.string() }),
-    category: z.string().nullable(),
+    category: z.enum(MAGAZINE_CATEGORIES).nullable(),
   })
   .partial()
   .passthrough();
@@ -196,7 +199,18 @@ export const magazineProductSnapshotSchema = z
     category_id: z.string().nullable(),
     materials: z.array(z.string()),
     hasPersonalization: z.boolean().nullable(),
-    dimensions: z.unknown(),
+    dimensions: z
+      .object({
+        height_cm: z.number().nullable(),
+        width_cm: z.number().nullable(),
+        length_cm: z.number().nullable(),
+        diameter_cm: z.number().nullable(),
+        circumference_cm: z.number().nullable(),
+        weight_g: z.number().nullable(),
+        capacity_ml: z.number().nullable(),
+      })
+      .partial()
+      .passthrough(),
   })
   .partial({ sale_price: true, dimensions: true })
   .passthrough();
