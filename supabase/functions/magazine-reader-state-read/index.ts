@@ -6,12 +6,6 @@
 // acessar a tabela diretamente (o que a auditoria fechou por segurança).
 //
 // verify_jwt = false (leitor público) — ver supabase/config.toml.
-// FIX 2026-07-12 (2a rodada de validação exaustiva): esta função ficou
-// presa em verify_jwt=true mesmo após o primeiro redeploy corrigir as
-// outras 4 do módulo — o CI aparentemente pulou/falhou silenciosamente
-// neste arquivo específico (possível colisão de paralelismo no matrix).
-// Push isolado (retry_marker=2) só deste arquivo para forçar novo attempt
-// e permitir rastrear o job especificamente.
 
 import { createClient } from "npm:@supabase/supabase-js@2.49.4";
 import { z } from "npm:zod@3.23.8";
