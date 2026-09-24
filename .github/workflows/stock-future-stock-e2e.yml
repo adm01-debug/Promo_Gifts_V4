@@ -30,7 +30,7 @@ jobs:
       - run: npm ci
       - name: Unit + fuzz com cobertura (falha em qualquer regressão)
         run: |
-          npx vitest run \
+          TZ=America/Sao_Paulo npx vitest run \
             src/hooks/__tests__/useFutureStockPreference.test.ts \
             src/hooks/__tests__/useFutureStockPreference.fuzz.test.ts \
             --reporter=verbose \
@@ -46,7 +46,7 @@ jobs:
         # Roda toda a suíte unit em modo "changed since main" + a suíte de
         # toolbar para detectar qualquer regressão colateral.
         run: |
-          npx vitest run \
+          TZ=America/Sao_Paulo npx vitest run \
             tests/StockFilterToolbar.test.tsx \
             tests/StockFilterToolbar.field-order.test.tsx \
             src/hooks/__tests__/useFutureStockPreference.test.ts \

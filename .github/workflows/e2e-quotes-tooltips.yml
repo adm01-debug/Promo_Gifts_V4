@@ -62,7 +62,7 @@ jobs:
       # antes de gastar minutos no Playwright.
       - name: Unit gate — SSOT parity + tooltips
         run: |
-          npx vitest run \
+          TZ=America/Sao_Paulo npx vitest run \
             src/components/quotes/__tests__/QuotesStatusChips.tooltips.test.ts \
             src/components/quotes/__tests__/QuotesStatusChips.ssot-parity.test.ts
 

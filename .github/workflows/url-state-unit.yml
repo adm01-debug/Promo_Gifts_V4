@@ -25,7 +25,7 @@ jobs:
       # de URL state falhe rápido e apareça como check dedicado no PR.
       - name: Run URL state unit + fuzz suites
         run: |
-          npx vitest run \
+          TZ=America/Sao_Paulo npx vitest run \
             src/hooks/common/__tests__/useListUrlState.test.tsx \
             src/hooks/common/__tests__/useListUrlState.fuzz.test.tsx \
             src/pages/quotes/__tests__/useQuotesListPage.urlState.test.tsx

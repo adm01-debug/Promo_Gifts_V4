@@ -116,7 +116,7 @@ jobs:
 
       - name: Vitest — stress + fuzz badges (blocking)
         run: |
-          npx vitest run \
+          TZ=America/Sao_Paulo npx vitest run \
             src/hooks/products/__tests__/useProductIntelligenceBadges.test.tsx \
             src/hooks/products/__tests__/useProductIntelligenceBadges.stress.test.tsx \
             src/hooks/admin/__tests__/useIntelligenceBadgeSettings.fuzz.test.ts

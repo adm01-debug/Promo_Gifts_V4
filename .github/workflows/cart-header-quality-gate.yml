@@ -80,7 +80,7 @@ jobs:
       - name: Rodar fuzz + edge cases + guarda de vazamento (timeout 6min)
         timeout-minutes: 6
         run: |
-          bunx vitest run \
+          TZ=America/Sao_Paulo bunx vitest run \
             src/pages/products/__tests__/CartShippingDeadlineLayout.test.ts \
             src/pages/products/__tests__/CartHeaderExhaustiveFuzz.test.ts \
             src/pages/products/__tests__/CartHeaderEdgeCases.test.ts \

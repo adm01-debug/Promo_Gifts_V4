@@ -213,7 +213,12 @@ export function KitAIPromptDialog({
           // 2-3x pela mesma ação do usuário sem devolver nada a mais. O
           // usuário já tem um jeito seguro de tentar de novo: clicar em
           // "gerar" outra vez.
-          maxRetries: 0,
+          //
+          // maxRetries conta tentativas TOTAIS (inclui a primeira, ver
+          // safeAuthCall.ts) — 0 faz o loop `attempt <= maxRetries` nunca
+          // executar, e a function nunca é chamada (achado do Codex review
+          // na PR #1898). 1 = só a tentativa inicial, zero retry extra.
+          maxRetries: 1,
         },
       );
       if (error) {
