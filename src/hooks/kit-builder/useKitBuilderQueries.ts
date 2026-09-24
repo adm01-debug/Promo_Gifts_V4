@@ -31,8 +31,14 @@ const PRODUCT_PAGE_SIZE = 200;
 export const KIT_PACKAGING_SELECT =
   'id, name, sku, sale_price, primary_image_url, images, dimensions, weight_g, materials, internal_width_cm, internal_height_cm, internal_length_cm, packing_type, packing_classification, packaging_finish, product_type';
 
+// `category_name` não existe em `v_products_public` — só a tabela-base
+// `products` tem essa coluna (auditoria de 2026-09-24, PostgREST 42703 em
+// produção desde a PR #1859/commit 8929214, com o catálogo de itens do Kit
+// Builder ficando vazio pra todo usuário). A view expõe `leaf_category_name`;
+// o alias `category_name:leaf_category_name` mantém a chave que
+// useKitBuilderTransformers.ts já lê, sem tocar no transformer/tipo.
 export const KIT_ITEM_SELECT =
-  'id, name, sku, sale_price, primary_image_url, images, dimensions, category_id, category_name, weight_g, materials, width_cm, height_cm, length_cm, colors, packing_classification, packing_type, product_type, allows_personalization';
+  'id, name, sku, sale_price, primary_image_url, images, dimensions, category_id, category_name:leaf_category_name, weight_g, materials, width_cm, height_cm, length_cm, colors, packing_classification, packing_type, product_type, allows_personalization';
 
 export function isCanonicalPackagingProduct(product: ExternalProductForKit): boolean {
   return product.product_type === 'packaging';

@@ -37,7 +37,7 @@ jobs:
       - name: Fuzz determinístico (500 seeds)
         run: node scripts/qa/fuzz-cart-delete-popover.mjs
       - name: Unit — contrato dos handlers
-        run: npx vitest run src/components/cart/__tests__/CartHeaderButton.delete.test.tsx
+        run: TZ=America/Sao_Paulo npx vitest run src/components/cart/__tests__/CartHeaderButton.delete.test.tsx
 
   e2e:
     name: E2E · ${{ matrix.project }}

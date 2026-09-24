@@ -47,7 +47,7 @@ jobs:
 
       - name: Vitest — módulo de estoque (com cobertura)
         run: |
-          npx vitest run \
+          TZ=America/Sao_Paulo npx vitest run \
             --coverage \
             --coverage.include='src/lib/inventory/**' \
             --coverage.include='src/components/inventory/**' \
@@ -117,7 +117,7 @@ jobs:
           THRESHOLD_PCT: '25'
           SKU_COUNT: '10000'
           ITERATIONS: '30'
-        run: npx vitest run scripts/__tests__/stock-benchmark.test.ts
+        run: TZ=America/Sao_Paulo npx vitest run scripts/__tests__/stock-benchmark.test.ts
 
 
       - name: Publicar relatório do PR
