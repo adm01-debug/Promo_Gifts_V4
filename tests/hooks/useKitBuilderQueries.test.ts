@@ -370,4 +370,66 @@ describe('useKitComponentPrintAreas', () => {
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual([]);
   });
+
+  it('não confunde duas técnicas na mesma área — dedup por location_code', async () => {
+    vi.mocked(dbInvoke).mockImplementation(async (request) => {
+      if (request.table === 'print_area_techniques') {
+        return {
+          count: 3,
+          records: [
+            { location_code: 'frente', location_name: 'Frente', technique_order: 1 },
+            { location_code: 'frente', location_name: 'Frente', technique_order: 2 },
+            { location_code: 'costas', location_name: 'Costas', technique_order: 3 },
+          ],
+        } as never;
+      }
+      throw new Error(`tabela inesperada: ${request.table}`);
+    });
+
+    const { useKitComponentPrintAreas } = await import('@/hooks/kit-builder/useKitBuilderQueries');
+    const { result } = renderHook(() => useKitComponentPrintAreas('product-3'), { wrapper });
+
+    await waitFor(() => expect(result.current.data).toHaveLength(2));
+    expect(result.current.data).toEqual([
+      { code: 'frente', name: 'Frente' },
+      { code: 'costas', name: 'Costas' },
+    ]);
+  });
+
+  it('descarta linhas sem location_code ou location_name', async () => {
+    vi.mocked(dbInvoke).mockImplementation(async (request) => {
+      if (request.table === 'print_area_techniques') {
+        return {
+          count: 3,
+          records: [
+            { location_code: null, location_name: 'Sem código', technique_order: 1 },
+            { location_code: 'lateral', location_name: null, technique_order: 2 },
+            { location_code: 'frente', location_name: 'Frente', technique_order: 3 },
+          ],
+        } as never;
+      }
+      throw new Error(`tabela inesperada: ${request.table}`);
+    });
+
+    const { useKitComponentPrintAreas } = await import('@/hooks/kit-builder/useKitBuilderQueries');
+    const { result } = renderHook(() => useKitComponentPrintAreas('product-4'), { wrapper });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.data).toEqual([{ code: 'frente', name: 'Frente' }]);
+  });
+
+  it('vira erro (nunca fica preso em carregando) quando a query esgota as retries', async () => {
+    vi.mocked(dbInvoke).mockImplementation(async (request) => {
+      if (request.table === 'print_area_techniques') {
+        throw new Error('falha simulada de rede');
+      }
+      throw new Error(`tabela inesperada: ${request.table}`);
+    });
+
+    const { useKitComponentPrintAreas } = await import('@/hooks/kit-builder/useKitBuilderQueries');
+    const { result } = renderHook(() => useKitComponentPrintAreas('product-5'), { wrapper });
+
+    await waitFor(() => expect(result.current.isError).toBe(true));
+    expect(result.current.data).toBeUndefined();
+  });
 });

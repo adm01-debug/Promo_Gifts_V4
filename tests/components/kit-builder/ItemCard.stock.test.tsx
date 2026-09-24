@@ -76,4 +76,34 @@ describe('ItemCard — repassa item.stock para o StockBadge', () => {
     );
     expect(screen.getByText('Em estoque (5)')).toBeInTheDocument();
   });
+
+  it('view grid: estoque undefined (consulta em voo) mostra "Verificando estoque"', () => {
+    render(
+      <ItemCard
+        item={{ ...BASE_ITEM, stock: undefined }}
+        isSelected={false}
+        boxSelected={false}
+        onAdd={() => {}}
+        onRemove={() => {}}
+        view="grid"
+      />,
+    );
+    expect(screen.getByText('Verificando estoque')).toBeInTheDocument();
+  });
+
+  it('view list: estoque 0 mostra "Sem estoque", nunca confundido com desconhecido ou carregando', () => {
+    render(
+      <ItemCard
+        item={{ ...BASE_ITEM, stock: 0 }}
+        isSelected={false}
+        boxSelected={false}
+        onAdd={() => {}}
+        onRemove={() => {}}
+        view="list"
+      />,
+    );
+    expect(screen.getByText('Sem estoque')).toBeInTheDocument();
+    expect(screen.queryByText('Estoque desconhecido')).not.toBeInTheDocument();
+    expect(screen.queryByText('Verificando estoque')).not.toBeInTheDocument();
+  });
 });

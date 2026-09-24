@@ -201,6 +201,12 @@ export function KitAIPromptDialog({
           // Sem isto, o corpo de um erro não-2xx some — e é ele que distingue
           // "sem chave" de "circuit breaker aberto" (ambos HTTP 503).
           preserveErrorData: true,
+          // O default de invokeEdge (10s) é menor que o timeout de 20s da
+          // própria function (aiTimeoutMs em kit-ai-builder/index.ts) — sem
+          // isto, o client aborta e conta como retry antes do server sequer
+          // ter chance de responder, gerando chamadas duplicadas e pagas ao
+          // gateway de IA para uma única ação do usuário.
+          timeoutMs: 25_000,
         },
       );
       if (error) {

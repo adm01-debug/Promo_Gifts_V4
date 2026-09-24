@@ -5,51 +5,52 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { PersonalizationConfig } from '@/components/kit-builder/PersonalizationConfig';
 import type { KitItem, KitItemPersonalization } from '@/lib/kit-builder';
 
-const mocks = vi.hoisted(() => ({
-  generate: vi.fn(),
-  price: vi.fn(),
-}));
-
-vi.mock('@/hooks/products', () => ({
-  useProductCustomizationOptions: () => ({
-    data: {
-      locations: [
+const REAL_LOCATIONS = {
+  locations: [
+    {
+      location_name: 'Frente',
+      location_code: 'front',
+      options: [
         {
-          location_name: 'Frente',
-          location_code: 'front',
-          options: [
-            {
-              technique_id: 'laser',
-              tecnica_nome: 'Laser',
-              grupo_tecnica: 'Gravação',
-              codigo_tabela: 'LASER',
-              max_cores: 2,
-              usa_dimensao: false,
-              efetiva_largura_max: 5,
-              efetiva_altura_max: 5,
-            },
-          ],
-        },
-        {
-          location_name: 'Lateral',
-          location_code: 'side',
-          options: [
-            {
-              technique_id: 'silk',
-              tecnica_nome: 'Silk-screen',
-              grupo_tecnica: 'Impressão',
-              codigo_tabela: 'SILK',
-              max_cores: 3,
-              usa_dimensao: false,
-              efetiva_largura_max: 4,
-              efetiva_altura_max: 4,
-            },
-          ],
+          technique_id: 'laser',
+          tecnica_nome: 'Laser',
+          grupo_tecnica: 'Gravação',
+          codigo_tabela: 'LASER',
+          max_cores: 2,
+          usa_dimensao: false,
+          efetiva_largura_max: 5,
+          efetiva_altura_max: 5,
         },
       ],
     },
-    isLoading: false,
-  }),
+    {
+      location_name: 'Lateral',
+      location_code: 'side',
+      options: [
+        {
+          technique_id: 'silk',
+          tecnica_nome: 'Silk-screen',
+          grupo_tecnica: 'Impressão',
+          codigo_tabela: 'SILK',
+          max_cores: 3,
+          usa_dimensao: false,
+          efetiva_largura_max: 4,
+          efetiva_altura_max: 4,
+        },
+      ],
+    },
+  ],
+};
+
+const mocks = vi.hoisted(() => ({
+  generate: vi.fn(),
+  price: vi.fn(),
+  productCustomizationOptions: vi.fn(),
+  kitComponentPrintAreas: vi.fn(),
+}));
+
+vi.mock('@/hooks/products', () => ({
+  useProductCustomizationOptions: (...args: unknown[]) => mocks.productCustomizationOptions(...args),
 }));
 
 vi.mock('@/hooks/simulation', () => ({
@@ -83,8 +84,10 @@ vi.mock('sonner', () => ({
 
 // Sem isto, o hook real dispara dbInvoke contra localhost neste harness — o
 // QueryClientProvider sozinho não basta, ele só evita o crash do useQuery.
+// Espiável (vi.fn) para provar o gate needsPrintAreaFallback — ver testes
+// "não dispara"/"dispara" abaixo.
 vi.mock('@/hooks/kit-builder/useKitBuilderQueries', () => ({
-  useKitComponentPrintAreas: () => ({ data: [], isLoading: false }),
+  useKitComponentPrintAreas: (...args: unknown[]) => mocks.kitComponentPrintAreas(...args),
 }));
 
 const ITEMS: KitItem[] = [
@@ -165,6 +168,34 @@ describe('PersonalizationConfig async behavior', () => {
         total_cobrado: quantity * 2 + 10,
       },
     }));
+    mocks.productCustomizationOptions.mockReset();
+    mocks.productCustomizationOptions.mockReturnValue({ data: REAL_LOCATIONS, isLoading: false });
+    mocks.kitComponentPrintAreas.mockReset();
+    mocks.kitComponentPrintAreas.mockReturnValue({ data: [], isLoading: false });
+  });
+
+  it('não dispara o fallback de áreas quando a fonte primária já resolveu com locations', async () => {
+    render(<Harness />);
+    await screen.findAllByRole('combobox', { name: /área de aplicação/i });
+
+    // needsPrintAreaFallback = !loadingTechniques && !options?.locations?.length —
+    // com locations presentes, o hook deve ser chamado com productId=null (query
+    // desabilitada), nunca com o productId real (o que geraria uma requisição
+    // PostgREST redundante — achado do Codex review na PR #1891).
+    expect(mocks.kitComponentPrintAreas).toHaveBeenCalledWith(null);
+    expect(mocks.kitComponentPrintAreas).not.toHaveBeenCalledWith('p1');
+  });
+
+  it('dispara o fallback com o productId real quando a fonte primária resolve vazia', async () => {
+    mocks.productCustomizationOptions.mockReturnValue({
+      data: { locations: [] },
+      isLoading: false,
+    });
+    render(<Harness />);
+
+    await waitFor(() => {
+      expect(mocks.kitComponentPrintAreas).toHaveBeenCalledWith('p1');
+    });
   });
 
   it('reprices active and hidden personalized targets for the current kit quantity', async () => {
