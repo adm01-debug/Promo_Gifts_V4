@@ -209,6 +209,35 @@ describe('Kit Maker public catalog contracts', () => {
     expect(productVariantsCalls).toBe(1);
   });
 
+  it('vira "desconhecido" (nunca fica preso em carregando) quando a query de estoque esgota as retries', async () => {
+    vi.mocked(dbInvoke).mockImplementation(async (request) => {
+      if (request.table === 'product_variants') {
+        throw new Error('falha simulada de rede');
+      }
+      if ((request.filters as Record<string, unknown>).product_type === 'packaging') {
+        return { count: 0, records: [] } as never;
+      }
+      return {
+        count: 1,
+        records: [
+          {
+            id: 'p-1', name: 'Garrafa', sku: 'GAR', sale_price: 30,
+            primary_image_url: null, product_type: 'product', width_cm: 5, height_cm: 20, length_cm: 5,
+          },
+        ],
+      } as never;
+    });
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const wrapper = ({ children }: { children: ReactNode }) =>
+      createElement(QueryClientProvider, { client }, children);
+    const { useKitBuilderQueries } = await import('@/hooks/kit-builder/useKitBuilderQueries');
+    const { result } = renderHook(() => useKitBuilderQueries(), { wrapper });
+
+    await waitFor(() => {
+      expect(result.current.completeItemCatalog[0]?.stock).toBeNull();
+    });
+  });
+
   it('busca de caixa encontra por nome, SKU ou material (etapa 16)', async () => {
     vi.mocked(dbInvoke).mockImplementation(async (request) => {
       if (request.table === 'product_variants') {
