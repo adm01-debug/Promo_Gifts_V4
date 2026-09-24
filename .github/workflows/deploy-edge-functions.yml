@@ -44,6 +44,12 @@ jobs:
       count: ${{ steps.detect.outputs.count }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          # E63 (plano de 100): fetch-depth 0 — `git diff` abaixo compara
+          # github.event.before..github.sha para achar só as funções
+          # alteradas neste push; um checkout raso (depth 1, o default) não
+          # teria o commit `before` disponível.
+          fetch-depth: 0
 
       - name: Detect edge functions
         id: detect
@@ -64,6 +70,48 @@ jobs:
             fi
             echo "functions=[\"$FN\"]" >> "$GITHUB_OUTPUT"
             echo "count=1" >> "$GITHUB_OUTPUT"
+          elif [[ "${{ github.event_name }}" == "push" ]]; then
+            # E63 (plano de 100): antes, todo push redeployava as ~108
+            # funções — destruía o sinal "atualizada há X" que expôs o
+            # deploy fora do fluxo de kit-ai-builder (auditoria de
+            # governança, 24/09). Agora só as alteradas neste push, exceto
+            # quando a mudança toca _shared/ (102 funções importam de lá).
+            cd ..
+            BEFORE="${{ github.event.before }}"
+            AFTER="${{ github.sha }}"
+            if [[ -z "$BEFORE" || "$BEFORE" =~ ^0+$ ]]; then
+              CHANGED=$(git diff --name-only "${AFTER}~1" "$AFTER" -- supabase/functions/ || true)
+            else
+              CHANGED=$(git diff --name-only "$BEFORE" "$AFTER" -- supabase/functions/ || true)
+            fi
+            cd supabase/functions
+
+            if echo "$CHANGED" | grep -q '^supabase/functions/_shared/'; then
+              echo "⚠️ Mudança em supabase/functions/_shared/ — redeployando todas as funções." >&2
+              mapfile -t FNS < <(find . -maxdepth 2 -name 'index.ts' -type f \
+                | sed 's|^\./||;s|/index\.ts$||' \
+                | grep -vE '^(_shared|tests)' \
+                | sort)
+            else
+              mapfile -t CANDIDATES < <(echo "$CHANGED" \
+                | sed -n 's|^supabase/functions/\([^/]*\)/.*|\1|p' \
+                | grep -vE '^(_shared|tests)$' \
+                | sort -u)
+              FNS=()
+              for slug in "${CANDIDATES[@]}"; do
+                # Push que só remove a função (sem index.ts sobrando) não
+                # entra na matriz — não há o que deployar.
+                [[ -f "$slug/index.ts" ]] && FNS+=("$slug")
+              done
+            fi
+            COUNT=${#FNS[@]}
+            if [[ "$COUNT" -eq 0 ]]; then
+              JSON='[]'
+            else
+              JSON=$(printf '%s\n' "${FNS[@]}" | jq -R . | jq -sc .)
+            fi
+            echo "functions=$JSON" >> "$GITHUB_OUTPUT"
+            echo "count=$COUNT" >> "$GITHUB_OUTPUT"
           else
             mapfile -t FNS < <(find . -maxdepth 2 -name 'index.ts' -type f \
               | sed 's|^\./||;s|/index\.ts$||' \
@@ -115,11 +163,27 @@ jobs:
             echo "e adicione em Settings → Secrets → Actions" >&2
             exit 1
           fi
-          
-          echo "Deploying ${{ matrix.fn }} to project $SUPABASE_PROJECT_REF..."
-          supabase functions deploy "${{ matrix.fn }}" \
+
+          # E64 (plano de 100): 3 tentativas com backoff — 108 chamadas à
+          # Management API por deploy completo sem nenhuma proteção contra
+          # falha transitória/rate-limit.
+          attempt=1
+          max_attempts=3
+          delays=(5 15 45)
+          until supabase functions deploy "${{ matrix.fn }}" \
             --project-ref "$SUPABASE_PROJECT_REF" \
-            --use-api 2>&1 | tee deploy.log
+            --use-api 2>&1 | tee deploy.log; do
+            status=${PIPESTATUS[0]}
+            if [[ "$attempt" -ge "$max_attempts" ]]; then
+              echo "❌ Deploy de ${{ matrix.fn }} falhou após $attempt tentativa(s) (exit $status)." >&2
+              exit "$status"
+            fi
+            delay="${delays[$((attempt - 1))]}"
+            echo "⚠️ Tentativa $attempt de ${{ matrix.fn }} falhou (exit $status) — retry em ${delay}s." >&2
+            sleep "$delay"
+            attempt=$((attempt + 1))
+          done
+          echo "Deployed ${{ matrix.fn }} to project $SUPABASE_PROJECT_REF (tentativa $attempt)."
 
       - name: Mark step status
         if: always()
@@ -146,3 +210,74 @@ jobs:
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "Verifique status em:" >> "$GITHUB_STEP_SUMMARY"
           echo "https://supabase.com/dashboard/project/${{ env.SUPABASE_PROJECT_REF }}/functions" >> "$GITHUB_STEP_SUMMARY"
+
+  ledger:
+    # E66 (plano de 100 etapas, 2026-09-24): migrations têm
+    # supabase/MIGRATIONS_SYNC_LOG.md (PLANO_DBA E15); edge functions não
+    # tinham ledger nenhum — foi essa lacuna que deixou kit-ai-builder e
+    # magazine-reader-state-read serem deployadas fora do git sem detecção
+    # até o drift check rodar por acaso. Roda só quando o job `deploy`
+    # terminou 'success' (matrix inteira, fail-fast: false) — uma falha
+    # parcial não gera recibo automático; investigar e redeployar antes.
+    name: Registrar recibo do deploy (E66)
+    needs: [list-functions, deploy]
+    if: needs.deploy.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF || 'doufsxqlfjyuvxuezpln' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.22.1'
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v2
+        with:
+          version: 2.101.0
+
+      - name: Grava um recibo por função deployada
+        shell: bash
+        run: |
+          set -euo pipefail
+          supabase functions list --project-ref "$SUPABASE_PROJECT_REF" --output json > /tmp/functions.json
+
+          echo '${{ needs.list-functions.outputs.functions }}' | jq -r '.[]' | while IFS= read -r slug; do
+            [ -z "$slug" ] && continue
+            version=$(jq -r --arg slug "$slug" '.[] | select(.slug==$slug) | .version // "-"' /tmp/functions.json)
+            node scripts/append-edge-deploy-receipt.mjs \
+              --slug="$slug" \
+              --version="$version" \
+              --sha="${{ github.sha }}" \
+              --run="${{ github.run_id }}" \
+              --executor="GitHub Actions (disparado por ${{ github.actor }})" \
+              --metodo="${{ github.event_name }}"
+          done
+
+      - name: Abre PR com o recibo
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md; then
+            echo "Nada novo em EDGE_FUNCTIONS_DEPLOY_LOG.md — pulando PR."
+            exit 0
+          fi
+          BRANCH="e66-edge-deploy-receipt-${{ github.run_id }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md
+          git commit -m "docs(edge-deploy-log): recibo do deploy — run ${{ github.run_id }}" \
+                     -m "Auto-gerado por .github/workflows/deploy-edge-functions.yml (run ${{ github.run_id }}), disparado por ${{ github.actor }}. Plano de 100 etapas E66."
+          git push -u origin "$BRANCH"
+          gh pr create \
+            --base main \
+            --head "$BRANCH" \
+            --title "docs: recibo de deploy de edge function(s) — run ${{ github.run_id }} (E66)" \
+            --body "Recibo automático do deploy via \`deploy-edge-functions.yml\` (run ${{ github.run_id }}, disparado por @${{ github.actor }}). As funções já foram deployadas pelo job \`deploy\` desta mesma run — este PR só registra o recibo textual (E66/E67, docs/plans/PLANO_CONSOLIDACAO_AUDITORIAS_100_ETAPAS_2026-09-24.md)."
