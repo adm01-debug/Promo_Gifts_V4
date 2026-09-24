@@ -8,7 +8,7 @@ import { ColorSwatchDot, PriceTag, SkuChip, VerticalCategoryStripe } from '../ch
  */
 export function ListTemplate({ magazine, page, totalPages: _totalPages }: TemplatePageProps) {
   return (
-    <div className="mag-page flex flex-col bg-white pl-20 pr-14 py-14">
+    <div className="mag-page flex flex-col bg-white py-14 pl-20 pr-14">
       <VerticalCategoryStripe
         index={page.index}
         label={page.items[0]?.productSnapshot.category_name ?? magazine.title}
@@ -59,14 +59,18 @@ export function ListTemplate({ magazine, page, totalPages: _totalPages }: Templa
                 )}
               </div>
               <div
-className="grid grid-cols-12 gap-4 border-x border-b p-4"
+                className="grid grid-cols-12 gap-4 border-x border-b p-4"
                 style={{ borderColor: 'rgba(0,0,0,0.15)' }}
               >
                 <div
                   className="col-span-3 overflow-hidden"
                   style={{ background: 'var(--mag-brand-cream, #f1efe7)', minHeight: 260 }}
                 >
-                  <img src={resolveItemImage(item)} alt={p.name} className="h-full w-full object-contain p-2" />
+                  <img
+                    src={resolveItemImage(item)}
+                    alt={p.name}
+                    className="h-full w-full object-contain p-2"
+                  />
                 </div>
                 <div className="col-span-6 flex flex-col justify-center">
                   {p.category_name && (
@@ -78,15 +82,18 @@ className="grid grid-cols-12 gap-4 border-x border-b p-4"
                     </div>
                   )}
                   {c.showDescription && p.shortDescription && (
-                    <p className="mt-2 line-clamp-3 text-xl leading-snug opacity-90">{p.shortDescription}</p>
+                    <p className="mt-2 line-clamp-3 text-xl leading-snug opacity-90">
+                      {p.shortDescription}
+                    </p>
                   )}
                   <div className="mt-3 flex flex-wrap items-center gap-2">
-                    {c.showColors && item.variantColorName && (
-                      <ColorSwatchDot item={item} />
-                    )}
+                    {c.showColors && item.variantColorName && <ColorSwatchDot item={item} />}
                     {c.showMaterials &&
-                      p.materials.slice(0, 3).map((m) => (
-                        <span key={m} className="rounded-full border px-3 py-0.5 text-lg opacity-80">
+                      (p.materials ?? []).slice(0, 3).map((m) => (
+                        <span
+                          key={m}
+                          className="rounded-full border px-3 py-0.5 text-lg opacity-80"
+                        >
                           {m}
                         </span>
                       ))}
@@ -96,7 +103,9 @@ className="grid grid-cols-12 gap-4 border-x border-b p-4"
                   </div>
                 </div>
                 <div className="col-span-3 flex flex-col items-end justify-center gap-2">
-                  {c.showPrice && <PriceTag value={formatPrice(itemPrice(item))} size="lg" variant="stack" />}
+                  {c.showPrice && (
+                    <PriceTag value={formatPrice(itemPrice(item))} size="lg" variant="stack" />
+                  )}
                 </div>
               </div>
             </div>

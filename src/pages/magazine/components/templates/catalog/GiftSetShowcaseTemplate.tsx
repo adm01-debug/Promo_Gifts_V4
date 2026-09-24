@@ -1,5 +1,11 @@
 import type { TemplatePageProps } from '../TemplateRegistry';
-import { effectiveContent, formatPrice, itemPrice, productImageAlt, resolveItemImage } from '../shared';
+import {
+  effectiveContent,
+  formatPrice,
+  itemPrice,
+  productImageAlt,
+  resolveItemImage,
+} from '../shared';
 import { PriceTag, SkuChip, VerticalCategoryStripe } from '../chrome';
 
 /**
@@ -16,11 +22,8 @@ export function GiftSetShowcaseTemplate({ magazine, page }: TemplatePageProps) {
   const variations = rest.slice(4, 7);
 
   return (
-    <div className="mag-page flex flex-col bg-white pl-20 pr-14 py-14">
-      <VerticalCategoryStripe
-        index={page.index}
-        label={p.category_name ?? magazine.title}
-      />
+    <div className="mag-page flex flex-col bg-white py-14 pl-20 pr-14">
+      <VerticalCategoryStripe index={page.index} label={p.category_name ?? magazine.title} />
 
       {/* Header — nome do gift set */}
       <header className="mb-8">
@@ -41,10 +44,14 @@ export function GiftSetShowcaseTemplate({ magazine, page }: TemplatePageProps) {
       {/* Grid principal — hero foto + tabela includes */}
       <div className="grid flex-1 grid-cols-12 gap-10">
         <div
-          className="col-span-7 relative overflow-hidden"
+          className="relative col-span-7 overflow-hidden"
           style={{ background: 'var(--mag-brand-cream, #f1efe7)' }}
         >
-          <img src={resolveItemImage(hero)} alt={p.name} className="h-full w-full object-contain p-6" />
+          <img
+            src={resolveItemImage(hero)}
+            alt={p.name}
+            className="h-full w-full object-contain p-6"
+          />
         </div>
 
         <div className="col-span-5 flex flex-col justify-between">
@@ -59,7 +66,11 @@ export function GiftSetShowcaseTemplate({ magazine, page }: TemplatePageProps) {
               <tbody>
                 {included.length > 0 ? (
                   included.map((it) => (
-                    <tr key={it.id} className="border-b" style={{ borderColor: 'rgba(0,0,0,0.08)' }}>
+                    <tr
+                      key={it.id}
+                      className="border-b"
+                      style={{ borderColor: 'rgba(0,0,0,0.08)' }}
+                    >
                       <td className="w-32 py-3 pr-3">
                         <SkuChip sku={it.productSnapshot.sku} size="sm" />
                       </td>
@@ -85,13 +96,16 @@ export function GiftSetShowcaseTemplate({ magazine, page }: TemplatePageProps) {
           </div>
 
           {/* Ficha do set */}
-          <div className="mt-8 rounded-lg border p-6" style={{ borderColor: 'var(--mag-category-color)' }}>
+          <div
+            className="mt-8 rounded-lg border p-6"
+            style={{ borderColor: 'var(--mag-category-color)' }}
+          >
             <div className="flex items-center gap-2">
               {c.showCode && <SkuChip sku={p.sku} size="md" />}
             </div>
             <div className="mt-3 space-y-1 text-xl opacity-80">
-              {c.showMaterials && p.materials.length > 0 && (
-                <div>Material: {p.materials.slice(0, 2).join(', ')}</div>
+              {c.showMaterials && (p.materials ?? []).length > 0 && (
+                <div>Material: {(p.materials ?? []).slice(0, 2).join(', ')}</div>
               )}
               {p.category_name && <div>Categoria: {p.category_name}</div>}
             </div>
@@ -120,7 +134,11 @@ export function GiftSetShowcaseTemplate({ magazine, page }: TemplatePageProps) {
                   className="h-20 w-20 overflow-hidden"
                   style={{ background: 'var(--mag-brand-cream, #f1efe7)' }}
                 >
-                  <img src={resolveItemImage(v)} alt={productImageAlt(v)} className="h-full w-full object-contain p-1" />
+                  <img
+                    src={resolveItemImage(v)}
+                    alt={productImageAlt(v)}
+                    className="h-full w-full object-contain p-1"
+                  />
                 </div>
                 <SkuChip sku={v.productSnapshot.sku} size="sm" />
               </div>
