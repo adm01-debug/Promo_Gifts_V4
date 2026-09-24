@@ -193,7 +193,7 @@ jobs:
         if: steps.gate.outputs.ready == 'true'
         run: |
           set -o pipefail
-          npx vitest run \
+          TZ=America/Sao_Paulo npx vitest run \
             src/services/__tests__/magazineAddProductsUnique.test.ts \
             src/services/__tests__/magazineEdgeContract.test.ts \
             src/pages/magazine/__tests__/publishAwait.regression.test.ts \

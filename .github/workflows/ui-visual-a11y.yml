@@ -28,7 +28,7 @@ jobs:
       - name: Install
         run: npm ci
       - name: Vitest — ConfirmDialog (responsive + a11y + keyboard + layout)
-        run: npx vitest run src/components/ui/__tests__/ConfirmDialog.*.test.tsx
+        run: TZ=America/Sao_Paulo npx vitest run src/components/ui/__tests__/ConfirmDialog.*.test.tsx
       - name: Cache Playwright browsers
         uses: actions/cache@v4
         id: playwright-cache
@@ -96,4 +96,4 @@ jobs:
       - name: Install
         run: npm ci
       - name: Vitest — OptimizedImage
-        run: npx vitest run src/components/ui/__tests__/OptimizedImage.test.tsx
+        run: TZ=America/Sao_Paulo npx vitest run src/components/ui/__tests__/OptimizedImage.test.tsx

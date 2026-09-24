@@ -30,7 +30,7 @@ jobs:
       - name: Run rupture-risk fuzz suite
         run: |
           mkdir -p .fuzz-artifacts
-          npx vitest run \
+          TZ=America/Sao_Paulo npx vitest run \
             src/lib/inventory/__tests__/stock-filter.rupture-risk.fuzz.test.ts \
             src/lib/inventory/__tests__/stock-filter.rupture-risk.test.ts \
             --reporter=verbose 2>&1 | tee .fuzz-artifacts/fuzz.log
