@@ -254,6 +254,8 @@ export interface KitAIComposition {
   id: string;
   name: string;
   narrative: string;
+  description?: string;
+  styleTag?: string;
   kitType: KitType;
   box: KitBox;
   items: KitItem[];

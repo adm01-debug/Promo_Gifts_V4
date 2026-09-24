@@ -142,6 +142,56 @@ function filterItems(items: KitItem[], search: string): KitItem[] {
   return items.filter((i) => i.name.toLowerCase().includes(q) || i.sku?.toLowerCase().includes(q));
 }
 
+export interface KitComponentPrintArea {
+  code: string;
+  name: string;
+}
+
+/**
+ * `product_kit_components`/`kit_component_print_areas` é escopada aos
+ * templates de kit curados: 0% de cobertura no catálogo ativo (ver
+ * docs/audits/KIT_MAKER_PRINT_AREAS_2026-09.md). A fonte com cobertura real
+ * por produto é `print_area_techniques` (mesma usada em
+ * `hooks/simulation/usePrintAreas.ts`), direto por `product_id`.
+ */
+async function fetchKitComponentPrintAreas(productId: string): Promise<KitComponentPrintArea[]> {
+  const areasResult = await dbInvoke<{
+    location_code: string | null;
+    location_name: string | null;
+    technique_order: number | null;
+  }>({
+    table: 'print_area_techniques',
+    operation: 'select',
+    filters: { product_id: productId, is_active: true },
+    select: 'location_code, location_name, technique_order',
+    orderBy: { column: 'technique_order', ascending: true },
+  });
+
+  const seen = new Set<string>();
+  const areas: KitComponentPrintArea[] = [];
+  for (const row of areasResult.records ?? []) {
+    if (!row.location_code || !row.location_name || seen.has(row.location_code)) continue;
+    seen.add(row.location_code);
+    areas.push({ code: row.location_code, name: row.location_name });
+  }
+  return areas;
+}
+
+/**
+ * Áreas de gravação reais de um produto do kit. Consulta pontual por
+ * produto — só habilita quando `productId` é conhecido, nunca pré-carrega
+ * para o kit inteiro (evita N queries por card renderizado).
+ */
+export function useKitComponentPrintAreas(productId: string | null) {
+  return useQuery({
+    queryKey: ['kit-builder', 'kit-component-print-areas', productId],
+    queryFn: () => fetchKitComponentPrintAreas(productId!),
+    enabled: !!productId,
+    staleTime: 5 * 60 * 1000,
+    retry: 1,
+  });
+}
+
 export function useKitBuilderQueries() {
   // Debounced search state
   const [boxSearchInput, setBoxSearchInput] = useState('');

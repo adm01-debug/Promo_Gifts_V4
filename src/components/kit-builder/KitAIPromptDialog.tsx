@@ -217,8 +217,11 @@ export function KitAIPromptDialog({
       if (!parsed.success) throw new Error('Sugestão indisponível');
       // Ignore a stale response if a newer generation has already started.
       if (latestGenerationRef.current === generation) setSuggestion(parsed.data);
-    } catch {
-      toast.error('Erro ao gerar sugestão');
+    } catch (err) {
+      // O servidor já devolve mensagens de negócio (sem chave/quota/timeout);
+      // o normalizador em invokeEdge preserva esse texto em err.message.
+      const message = err instanceof Error && err.message ? err.message : 'Erro ao gerar sugestão';
+      toast.error(message);
     } finally {
       generationInFlightRef.current = false;
       if (latestGenerationRef.current === generation) setLoading(false);

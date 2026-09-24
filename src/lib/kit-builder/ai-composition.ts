@@ -149,6 +149,8 @@ export function resolveKitAICompositions(
       id: `catalog-${seed + 1}-${signature}`,
       name: brief.title?.trim() || `Kit sugerido ${alternatives.length + 1}`,
       narrative: brief.narrative,
+      description: brief.description,
+      styleTag: brief.style_tag,
       kitType: brief.kit_type,
       box: packageCandidate.box,
       items: finalItems,

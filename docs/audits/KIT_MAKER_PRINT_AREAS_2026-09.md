@@ -3,6 +3,16 @@
 Data: 23/09/2026. Projeto canônico: `doufsxqlfjyuvxuezpln`. Consultas via
 `pg_catalog`/SQL direto (REGRA #8, corolário), somente leitura.
 
+**Reverificado em 24/09/2026** ao resolver conflito de merge com uma versão
+divergente deste mesmo doc (12,4% de cobertura, calculado com `product_type`
+incluindo `kit`/`packaging` no denominador — número incorreto que chegou a
+ser mergeado em `main`). Reconsulta direta confirma a metodologia abaixo
+(só `product_type = 'product'`): 6.719 produtos ativos, 3.136 com área —
+**46,7%**. Os totais absolutos divergem levemente da tabela original de
+23/09 (6.707/3.135) por serem outro snapshot do catálogo vivo um dia
+depois — o denominador e a metodologia são os mesmos, e a cobertura
+resultante é a mesma (46,7%) nos dois momentos.
+
 ## Correção de premissa em relação ao plano
 
 O plano de finalização (`KIT_MAKER_PLANO_FINALIZACAO_20_ETAPAS_2026-09-23.md`,

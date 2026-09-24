@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { useState } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -80,6 +81,12 @@ vi.mock('sonner', () => ({
   toast: { error: vi.fn(), info: vi.fn(), success: vi.fn() },
 }));
 
+// Sem isto, o hook real dispara dbInvoke contra localhost neste harness — o
+// QueryClientProvider sozinho não basta, ele só evita o crash do useQuery.
+vi.mock('@/hooks/kit-builder/useKitBuilderQueries', () => ({
+  useKitComponentPrintAreas: () => ({ data: [], isLoading: false }),
+}));
+
 const ITEMS: KitItem[] = [
   {
     id: 'p1',
@@ -122,12 +129,13 @@ const CONFIG: KitItemPersonalization = {
 };
 
 function Harness({ quantity = 50 }: { quantity?: number }) {
+  const [queryClient] = useState(() => new QueryClient({ defaultOptions: { queries: { retry: false } } }));
   const [personalizations, setPersonalizations] = useState<Record<string, KitItemPersonalization>>({
     'line-1': CONFIG,
     'line-2': CONFIG,
   });
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <PersonalizationConfig
         box={null}
         items={ITEMS}
@@ -140,7 +148,7 @@ function Harness({ quantity = 50 }: { quantity?: number }) {
         }
       />
       <output data-testid="personalization-state">{JSON.stringify(personalizations)}</output>
-    </>
+    </QueryClientProvider>
   );
 }
 

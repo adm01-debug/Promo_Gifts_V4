@@ -325,3 +325,49 @@ describe('Kit Maker public catalog contracts', () => {
     await waitFor(() => expect(result.current.availableBoxes).toEqual([]));
   });
 });
+
+describe('useKitComponentPrintAreas', () => {
+  const wrapper = ({ children }: { children: ReactNode }) => {
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    return createElement(QueryClientProvider, { client }, children);
+  };
+
+  it('retorna as áreas reais quando o produto tem print_area_techniques cadastradas', async () => {
+    vi.mocked(dbInvoke).mockImplementation(async (request) => {
+      if (request.table === 'print_area_techniques') {
+        return {
+          count: 2,
+          records: [
+            { location_code: 'frente', location_name: 'Frente', technique_order: 1 },
+            { location_code: 'costas', location_name: 'Costas', technique_order: 2 },
+          ],
+        } as never;
+      }
+      throw new Error(`tabela inesperada: ${request.table}`);
+    });
+
+    const { useKitComponentPrintAreas } = await import('@/hooks/kit-builder/useKitBuilderQueries');
+    const { result } = renderHook(() => useKitComponentPrintAreas('product-1'), { wrapper });
+
+    await waitFor(() => expect(result.current.data).toHaveLength(2));
+    expect(result.current.data).toEqual([
+      { code: 'frente', name: 'Frente' },
+      { code: 'costas', name: 'Costas' },
+    ]);
+  });
+
+  it('retorna array vazio quando o produto não tem nenhuma área cadastrada', async () => {
+    vi.mocked(dbInvoke).mockImplementation(async (request) => {
+      if (request.table === 'print_area_techniques') {
+        return { count: 0, records: [] } as never;
+      }
+      throw new Error(`tabela inesperada: ${request.table}`);
+    });
+
+    const { useKitComponentPrintAreas } = await import('@/hooks/kit-builder/useKitBuilderQueries');
+    const { result } = renderHook(() => useKitComponentPrintAreas('product-2'), { wrapper });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.data).toEqual([]);
+  });
+});
