@@ -14,6 +14,7 @@
  * mutações usam RPCs v2 com lock, CAS por edit_version e autorização no banco.
  */
 
+import type { z } from 'zod';
 import {
   type Magazine,
   type MagazineClientBranding,
@@ -25,6 +26,9 @@ import {
   DEFAULT_BRANDING,
   DEFAULT_MAGAZINE_CONTENT,
   isValidMagazinePageOrder,
+  magazineClientBrandingSchema,
+  magazineContentSettingsSchema,
+  magazineProductSnapshotSchema,
 } from '@/types/magazine';
 import { validateBranding } from '@/lib/security/magazine-guard';
 
@@ -45,7 +49,25 @@ type MagazineItemRow = MagazineDatabase['public']['Tables']['magazine_items']['R
 // Mapping helpers
 // ---------------------------------------------------------------------------
 
+/**
+ * Valida (só-observabilidade) um campo JSONB contra o schema esperado e loga
+ * quando diverge — NUNCA altera o valor retornado nem bloqueia a leitura. O
+ * cast permissivo (`as unknown as T`) continua sendo o comportamento real;
+ * isto só dá visibilidade de quando ele está mascarando dado legado/quebrado
+ * (achado da auditoria de 2026-09-24: PR #1899 corrigiu 2 crashes causados
+ * exatamente por esse tipo de divergência passando despercebida).
+ */
+function logShapeDrift(field: string, rowId: string, schema: z.ZodTypeAny, value: unknown): void {
+  const result = schema.safeParse(value);
+  if (!result.success) {
+    logger.warn(`[magazineService] shape drift em ${field} (id=${rowId}):`, result.error.issues);
+  }
+}
+
 function rowToItem(row: MagazineItemRow): MagazineItem {
+  logShapeDrift('product_snapshot', row.id, magazineProductSnapshotSchema, row.product_snapshot);
+  if (row.overrides)
+    logShapeDrift('overrides', row.id, magazineContentSettingsSchema, row.overrides);
   return {
     id: row.id,
     productId: row.product_id,
@@ -58,6 +80,11 @@ function rowToItem(row: MagazineItemRow): MagazineItem {
 }
 
 function rowToMagazine(row: MagazineRow, items: MagazineItemRow[]): Magazine {
+  if (row.branding) logShapeDrift('branding', row.id, magazineClientBrandingSchema, row.branding);
+  if (row.content_settings)
+    logShapeDrift('content_settings', row.id, magazineContentSettingsSchema, row.content_settings);
+  if (!isValidMagazinePageOrder(row.page_order))
+    logger.warn(`[magazineService] shape drift em page_order (id=${row.id})`);
   return {
     id: row.id,
     ownerId: row.owner_id,
