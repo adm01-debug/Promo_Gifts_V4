@@ -148,30 +148,23 @@ export interface KitComponentPrintArea {
 }
 
 /**
- * v_kit_component_print_areas_public só expõe `kit_component_id` (não
- * `kit_product_id`) — precisa do join client-side por product_kit_components
- * para resolver as áreas de um produto-kit específico.
+ * `product_kit_components`/`kit_component_print_areas` é escopada aos
+ * templates de kit curados: 0% de cobertura no catálogo ativo (ver
+ * docs/audits/KIT_MAKER_PRINT_AREAS_2026-09.md). A fonte com cobertura real
+ * por produto é `print_area_techniques` (mesma usada em
+ * `hooks/simulation/usePrintAreas.ts`), direto por `product_id`.
  */
-async function fetchKitComponentPrintAreas(kitProductId: string): Promise<KitComponentPrintArea[]> {
-  const componentsResult = await dbInvoke<{ id: string }>({
-    table: 'product_kit_components',
-    operation: 'select',
-    filters: { kit_product_id: kitProductId },
-    select: 'id',
-  });
-  const componentIds = (componentsResult.records ?? []).map((row) => row.id);
-  if (componentIds.length === 0) return [];
-
+async function fetchKitComponentPrintAreas(productId: string): Promise<KitComponentPrintArea[]> {
   const areasResult = await dbInvoke<{
     location_code: string | null;
     location_name: string | null;
-    location_order: number | null;
+    technique_order: number | null;
   }>({
-    table: 'v_kit_component_print_areas_public',
+    table: 'print_area_techniques',
     operation: 'select',
-    filters: { kit_component_id: componentIds },
-    select: 'location_code, location_name, location_order',
-    orderBy: { column: 'location_order', ascending: true },
+    filters: { product_id: productId, is_active: true },
+    select: 'location_code, location_name, technique_order',
+    orderBy: { column: 'technique_order', ascending: true },
   });
 
   const seen = new Set<string>();
@@ -185,15 +178,15 @@ async function fetchKitComponentPrintAreas(kitProductId: string): Promise<KitCom
 }
 
 /**
- * Áreas de gravação reais dos componentes de um produto-kit. Consulta
- * pontual por produto — só habilita quando `kitProductId` é conhecido, nunca
- * pré-carrega para o kit inteiro (evita N queries por card renderizado).
+ * Áreas de gravação reais de um produto do kit. Consulta pontual por
+ * produto — só habilita quando `productId` é conhecido, nunca pré-carrega
+ * para o kit inteiro (evita N queries por card renderizado).
  */
-export function useKitComponentPrintAreas(kitProductId: string | null) {
+export function useKitComponentPrintAreas(productId: string | null) {
   return useQuery({
-    queryKey: ['kit-builder', 'kit-component-print-areas', kitProductId],
-    queryFn: () => fetchKitComponentPrintAreas(kitProductId!),
-    enabled: !!kitProductId,
+    queryKey: ['kit-builder', 'kit-component-print-areas', productId],
+    queryFn: () => fetchKitComponentPrintAreas(productId!),
+    enabled: !!productId,
     staleTime: 5 * 60 * 1000,
     retry: 1,
   });

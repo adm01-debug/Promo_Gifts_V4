@@ -8,7 +8,10 @@ divergente deste mesmo doc (12,4% de cobertura, calculado com `product_type`
 incluindo `kit`/`packaging` no denominador — número incorreto que chegou a
 ser mergeado em `main`). Reconsulta direta confirma a metodologia abaixo
 (só `product_type = 'product'`): 6.719 produtos ativos, 3.136 com área —
-**46,7%**, consistente com os 46,7% originais desta auditoria.
+**46,7%**. Os totais absolutos divergem levemente da tabela original de
+23/09 (6.707/3.135) por serem outro snapshot do catálogo vivo um dia
+depois — o denominador e a metodologia são os mesmos, e a cobertura
+resultante é a mesma (46,7%) nos dois momentos.
 
 ## Correção de premissa em relação ao plano
 

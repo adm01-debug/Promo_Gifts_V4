@@ -332,17 +332,14 @@ describe('useKitComponentPrintAreas', () => {
     return createElement(QueryClientProvider, { client }, children);
   };
 
-  it('retorna as áreas reais quando o produto tem componentes cadastrados', async () => {
+  it('retorna as áreas reais quando o produto tem print_area_techniques cadastradas', async () => {
     vi.mocked(dbInvoke).mockImplementation(async (request) => {
-      if (request.table === 'product_kit_components') {
-        return { count: 2, records: [{ id: 'comp-1' }, { id: 'comp-2' }] } as never;
-      }
-      if (request.table === 'v_kit_component_print_areas_public') {
+      if (request.table === 'print_area_techniques') {
         return {
           count: 2,
           records: [
-            { location_code: 'frente', location_name: 'Frente', location_order: 1 },
-            { location_code: 'costas', location_name: 'Costas', location_order: 2 },
+            { location_code: 'frente', location_name: 'Frente', technique_order: 1 },
+            { location_code: 'costas', location_name: 'Costas', technique_order: 2 },
           ],
         } as never;
       }
@@ -350,7 +347,7 @@ describe('useKitComponentPrintAreas', () => {
     });
 
     const { useKitComponentPrintAreas } = await import('@/hooks/kit-builder/useKitBuilderQueries');
-    const { result } = renderHook(() => useKitComponentPrintAreas('kit-product-1'), { wrapper });
+    const { result } = renderHook(() => useKitComponentPrintAreas('product-1'), { wrapper });
 
     await waitFor(() => expect(result.current.data).toHaveLength(2));
     expect(result.current.data).toEqual([
@@ -361,18 +358,16 @@ describe('useKitComponentPrintAreas', () => {
 
   it('retorna array vazio quando o produto não tem nenhuma área cadastrada', async () => {
     vi.mocked(dbInvoke).mockImplementation(async (request) => {
-      if (request.table === 'product_kit_components') {
+      if (request.table === 'print_area_techniques') {
         return { count: 0, records: [] } as never;
       }
       throw new Error(`tabela inesperada: ${request.table}`);
     });
 
     const { useKitComponentPrintAreas } = await import('@/hooks/kit-builder/useKitBuilderQueries');
-    const { result } = renderHook(() => useKitComponentPrintAreas('kit-product-2'), { wrapper });
+    const { result } = renderHook(() => useKitComponentPrintAreas('product-2'), { wrapper });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual([]);
-    // Sem componentes, não deve nem tentar consultar a view de áreas.
-    expect(vi.mocked(dbInvoke)).toHaveBeenCalledTimes(1);
   });
 });

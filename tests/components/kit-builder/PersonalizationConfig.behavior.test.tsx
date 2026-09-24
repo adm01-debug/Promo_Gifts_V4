@@ -81,6 +81,12 @@ vi.mock('sonner', () => ({
   toast: { error: vi.fn(), info: vi.fn(), success: vi.fn() },
 }));
 
+// Sem isto, o hook real dispara dbInvoke contra localhost neste harness — o
+// QueryClientProvider sozinho não basta, ele só evita o crash do useQuery.
+vi.mock('@/hooks/kit-builder/useKitBuilderQueries', () => ({
+  useKitComponentPrintAreas: () => ({ data: [], isLoading: false }),
+}));
+
 const ITEMS: KitItem[] = [
   {
     id: 'p1',

@@ -75,7 +75,7 @@ describe('useKitBuilder — fluxos de montagem', () => {
     expect(result.current.kitState.items).toEqual([expect.objectContaining({ id: item.id })]);
   });
 
-  it('conta itens sem peso cadastrado sem alterar o total (que já os trata como 0g)', async () => {
+  it('item sem peso cadastrado não altera o total (que já o trata como 0g)', async () => {
     const { useKitBuilder } = await import('@/hooks/kit-builder/useKitBuilder');
     const { result } = renderHook(() => useKitBuilder({ initialFlow: 'items-first' }));
 
@@ -83,12 +83,12 @@ describe('useKitBuilder — fluxos de montagem', () => {
     const itemWithoutWeight: KitItem = { ...item, id: 'item-no-weight', weight: undefined };
 
     act(() => result.current.addItem(itemWithWeight));
-    expect(result.current.kitState.itemsWithUnknownWeightCount).toBe(0);
     expect(result.current.kitState.totalWeight).toBe(200);
 
     act(() => result.current.addItem(itemWithoutWeight));
-    expect(result.current.kitState.itemsWithUnknownWeightCount).toBe(1);
-    // O peso desconhecido continua contribuindo 0g ao total — a contagem só sinaliza, não recalcula.
+    // O peso desconhecido contribui 0g ao total — o aviso de "estimativa
+    // parcial" é responsabilidade do FreightEstimator (ver seu próprio
+    // teste), não de kitState.
     expect(result.current.kitState.totalWeight).toBe(200);
   });
 
