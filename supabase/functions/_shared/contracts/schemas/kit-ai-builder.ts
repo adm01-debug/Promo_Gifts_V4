@@ -41,6 +41,26 @@ export const KitAiBuilderSuggestion = z
   })
   .strict();
 
+/**
+ * Etapa 2 (plano de 100 etapas, 2026-09-24): trunca os campos opcionais de
+ * apresentação (title/description) antes do safeParse — um deles maior que
+ * o limite não pode derrubar a sugestão inteira (kit_type/box_keywords/
+ * item_keywords/narrative, que são o que o kit-builder realmente precisa)
+ * com um 502 "Resposta da IA não pôde ser validada". O tool schema já pede
+ * maxLength ao modelo; isto é a defesa quando ele ignora o pedido.
+ */
+export function truncateKitAiBuilderPresentationFields(raw: unknown): unknown {
+  if (!raw || typeof raw !== "object") return raw;
+  const draft: Record<string, unknown> = { ...(raw as Record<string, unknown>) };
+  if (typeof draft.title === "string" && draft.title.length > 80) {
+    draft.title = draft.title.slice(0, 80).trim();
+  }
+  if (typeof draft.description === "string" && draft.description.length > 160) {
+    draft.description = draft.description.slice(0, 160).trim();
+  }
+  return draft;
+}
+
 export const KitAiBuilderSchemas = {
   name: "kit-ai-builder",
   versions: { "1": KitAiBuilderV1, "2": KitAiBuilderV2 },

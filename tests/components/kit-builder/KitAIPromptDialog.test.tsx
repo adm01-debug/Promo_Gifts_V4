@@ -89,6 +89,61 @@ describe('KitAIPromptDialog', () => {
     );
   });
 
+  it('etapa 17: usa título, descrição e estilo devolvidos pela IA em vez do fallback derivado do briefing', async () => {
+    const namedSuggestion = {
+      ...suggestion,
+      title: 'Kit Boas-Vindas Sustentável',
+      description: 'Composição pensada para o primeiro dia do novo colaborador.',
+      style_tag: 'Sustentável',
+    };
+    vi.mocked(invokeEdge).mockResolvedValueOnce({
+      data: { suggestion: namedSuggestion },
+      error: null,
+    });
+    render(
+      <KitAIPromptDialog
+        catalogItems={catalogItems}
+        catalogBoxes={catalogBoxes}
+        onApply={vi.fn()}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /montar com ia/i }));
+    fireEvent.change(screen.getByLabelText(/o que você deseja/i), {
+      target: { value: 'Kit de boas-vindas sustentável para novos colaboradores.' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /gerar sugestões/i }));
+
+    await waitFor(() =>
+      expect(screen.getByText('Kit Boas-Vindas Sustentável')).toBeInTheDocument(),
+    );
+    expect(
+      screen.getByText('Composição pensada para o primeiro dia do novo colaborador.'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Sustentável')).toBeInTheDocument();
+    expect(screen.queryByText('Kit sugerido')).not.toBeInTheDocument();
+  });
+
+  it('etapa 17: mantém o fallback derivado do briefing quando a IA não devolve título/descrição/estilo', async () => {
+    vi.mocked(invokeEdge).mockResolvedValueOnce({ data: { suggestion }, error: null });
+    render(
+      <KitAIPromptDialog
+        catalogItems={catalogItems}
+        catalogBoxes={catalogBoxes}
+        onApply={vi.fn()}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /montar com ia/i }));
+    fireEvent.change(screen.getByLabelText(/o que você deseja/i), {
+      target: { value: 'Kit de boas-vindas sustentável para novos colaboradores.' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /gerar sugestões/i }));
+
+    await waitFor(() => expect(screen.getByText(suggestion.narrative)).toBeInTheDocument());
+    expect(screen.getByText('Kit sugerido')).toBeInTheDocument();
+  });
+
   it('aplica a quantidade escolhida no briefing junto com a composição', async () => {
     vi.mocked(invokeEdge).mockResolvedValueOnce({ data: { suggestion }, error: null });
     const onApply = vi.fn();

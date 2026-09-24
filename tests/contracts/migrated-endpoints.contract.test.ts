@@ -9,6 +9,7 @@ import { parseContract } from '../../supabase/functions/_shared/contracts/parse'
 import {
   KitAiBuilderSchemas,
   KitAiBuilderSuggestion,
+  truncateKitAiBuilderPresentationFields,
 } from '../../supabase/functions/_shared/contracts/schemas/kit-ai-builder';
 import { BiCopilotSchemas } from '../../supabase/functions/_shared/contracts/schemas/bi-copilot';
 import { MarketIntelligenceInsightsSchemas } from '../../supabase/functions/_shared/contracts/schemas/market-intelligence-insights';
@@ -104,6 +105,33 @@ describe('contract: kit-ai-builder — resposta do modelo (etapa 17)', () => {
   it('rejeita title acima de 80 caracteres', () => {
     const r = KitAiBuilderSuggestion.safeParse({ ...BASE, title: 'x'.repeat(81) });
     expect(r.success).toBe(false);
+  });
+
+  it('etapa 2 (plano 100): trunca description > 160 antes do safeParse — sugestão inteira não vira 502', () => {
+    const truncated = truncateKitAiBuilderPresentationFields({
+      ...BASE,
+      description: 'x'.repeat(300),
+    });
+    const r = KitAiBuilderSuggestion.safeParse(truncated);
+    expect(r.success).toBe(true);
+    if (r.success) expect(r.data.description).toHaveLength(160);
+  });
+
+  it('etapa 2 (plano 100): trunca title > 80 antes do safeParse — sugestão inteira não vira 502', () => {
+    const truncated = truncateKitAiBuilderPresentationFields({ ...BASE, title: 'y'.repeat(200) });
+    const r = KitAiBuilderSuggestion.safeParse(truncated);
+    expect(r.success).toBe(true);
+    if (r.success) expect(r.data.title).toHaveLength(80);
+  });
+
+  it('etapa 2 (plano 100): não mexe em campos dentro do limite nem em payload sem title/description', () => {
+    const r1 = KitAiBuilderSuggestion.safeParse(truncateKitAiBuilderPresentationFields(BASE));
+    expect(r1.success).toBe(true);
+    const r2 = KitAiBuilderSuggestion.safeParse(
+      truncateKitAiBuilderPresentationFields({ ...BASE, title: 'Kit curto' }),
+    );
+    expect(r2.success).toBe(true);
+    if (r2.success) expect(r2.data.title).toBe('Kit curto');
   });
 });
 

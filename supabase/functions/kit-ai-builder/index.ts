@@ -4,6 +4,7 @@ import { parseContract } from '../_shared/contracts/index.ts';
 import {
   KitAiBuilderSchemas,
   KitAiBuilderSuggestion,
+  truncateKitAiBuilderPresentationFields,
 } from '../_shared/contracts/schemas/kit-ai-builder.ts';
 import { safeErrorFields } from '../_shared/log-safety.ts';
 import { requireAiApiKey } from '../_shared/ai-credentials.ts';
@@ -131,9 +132,14 @@ Use português do Brasil. Seja conciso e prático.`;
                     required: ['min', 'max'],
                   },
                   narrative: { type: 'string' },
-                  title: { type: 'string', description: 'Nome curto e vendável do kit, até 80 caracteres.' },
+                  title: {
+                    type: 'string',
+                    maxLength: 80,
+                    description: 'Nome curto e vendável do kit, até 80 caracteres.',
+                  },
                   description: {
                     type: 'string',
+                    maxLength: 160,
                     description: 'Descrição comercial do kit, até 160 caracteres.',
                   },
                   style_tag: { type: 'string', description: 'Estilo do kit em 1 palavra/expressão curta.' },
@@ -202,7 +208,13 @@ Use português do Brasil. Seja conciso e prático.`;
         headers: { ...corsHeaders, ...responseHeaders, 'Content-Type': 'application/json' },
       });
     }
-    const parsedSuggestion = KitAiBuilderSuggestion.safeParse(rawSuggestion);
+    // Etapa 2 (plano de 100): maxLength no tool schema é só um pedido ao modelo —
+    // se ignorado, o .strict()/.max() do zod rejeitava a sugestão inteira com
+    // 502 por causa de um campo opcional de apresentação. Truncar aqui evita
+    // perder narrative/box_keywords/item_keywords válidos por isso.
+    const parsedSuggestion = KitAiBuilderSuggestion.safeParse(
+      truncateKitAiBuilderPresentationFields(rawSuggestion),
+    );
     if (!parsedSuggestion.success) {
       console.warn('kit-ai-builder invalid model output', {
         issues: parsedSuggestion.error.issues.map((issue) => issue.path.join('.')),
