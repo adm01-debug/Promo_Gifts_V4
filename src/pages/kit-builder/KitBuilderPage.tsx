@@ -1,6 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
 import { PageSEO } from '@/components/seo/PageSEO';
-import '@/styles/print-kit.css';
 import { useKitBuilderPageState } from '@/hooks/kit-builder';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -154,7 +153,7 @@ export default function KitBuilderPage() {
             currentStep={state.wizardState.currentStep}
           />
 
-          <div className="border-b bg-card/40 backdrop-blur-sm">
+          <div className="border-b bg-card/40 backdrop-blur-sm print:hidden">
             <div className="mx-auto w-full max-w-[1920px] px-3 py-3 sm:px-4 sm:py-4 lg:px-6 xl:px-8">
               <WizardSteps
                 currentStep={state.wizardState.currentStep}
@@ -202,7 +201,6 @@ export default function KitBuilderPage() {
                         onReorder={actions.reorderItems}
                         items={state.availableItems}
                         isLoading={state.isLoadingItems}
-                        isLoadingStock={state.isLoadingItemStock}
                         errorMessage={state.itemError}
                         onRetry={() => {
                           state.refetchItems().catch(() => undefined);

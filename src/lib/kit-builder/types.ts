@@ -28,8 +28,10 @@ export interface KitBox {
   boxType?: string;
   // Cor da caixa
   color?: string;
-  // Material
+  // Material (primeiro valor — usado para exibição e para a faceta de filtro)
   material?: string;
+  /** Todos os materiais do catálogo, para busca textual não perder itens com múltiplos materiais. */
+  materials?: string[];
   // Acabamento comercial disponível no catálogo canônico
   finish?: string;
   // Peso em gramas
@@ -63,6 +65,14 @@ export interface KitItem {
   dimensionsKnown?: boolean;
   // Peso em gramas
   weight?: number;
+  /**
+   * Estoque agregado (soma das variantes ativas) no momento em que o
+   * catálogo foi carregado. `null` = desconhecido (produto sem variante
+   * ativa encontrada ou consulta ainda não resolvida); `0` = variantes
+   * encontradas, mas sem estoque. As duas coisas nunca podem ser
+   * confundidas — ver `useKitStockValidation.evaluateKitStock`.
+   */
+  stock?: number | null;
   // Categoria do item
   category?: string;
   // Material do item
@@ -182,8 +192,6 @@ export interface KitState {
   volumeUsagePercent: number;
   // Peso total em gramas
   totalWeight: number;
-  /** Itens selecionados com `weight` nulo/indefinido — `totalWeight` os trata como 0g. */
-  itemsWithUnknownWeightCount: number;
   // Preços
   boxPrice: number;
   itemsPrice: number;
@@ -242,7 +250,7 @@ export interface KitAISuggestionBrief {
   item_keywords: string[];
   target_price_brl: { min: number; max: number };
   narrative: string;
-  /** Opcionais (etapa 17) — ausentes em respostas de modelo mais antigas. */
+  /** Nome vendável devolvido pelo provedor (etapa 17). Sem ele, mantém o fallback "Kit sugerido N". */
   title?: string;
   description?: string;
   style_tag?: string;

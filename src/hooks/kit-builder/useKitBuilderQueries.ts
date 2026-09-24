@@ -19,9 +19,8 @@ import {
 import {
   transformToKitBox,
   transformToKitItem,
-  attachStockToKitItems,
 } from '@/hooks/kit-builder/useKitBuilderTransformers';
-import { fetchKitStockVariants } from '@/hooks/kit-builder/useKitStockValidation';
+import { fetchKitStockVariants, evaluateKitStock } from '@/hooks/kit-builder/useKitStockValidation';
 import { logger } from '@/lib/logger';
 
 const PRODUCT_PAGE_SIZE = 200;
@@ -102,7 +101,7 @@ function filterBoxes(
       (b) =>
         b.name.toLowerCase().includes(q) ||
         b.sku.toLowerCase().includes(q) ||
-        (b.material?.toLowerCase().includes(q) ?? false),
+        (b.materials ?? (b.material ? [b.material] : [])).some((m) => m.toLowerCase().includes(q)),
     );
   }
   if (dimFilters?.minWidth) {
@@ -272,7 +271,7 @@ export function useKitBuilderQueries() {
 
   // Query: items
   const {
-    data: completeItemCatalog = [],
+    data: rawItemCatalog = [],
     isLoading: isLoadingItems,
     error: itemQueryError,
     refetch: refetchItems,
@@ -294,30 +293,42 @@ export function useKitBuilderQueries() {
     retry: 1,
   });
 
-  // Query: estoque agregado dos itens da página carregada. Uma única chamada
-  // batched (fetchKitStockVariants já pagina em blocos de 500) para todo o
-  // catálogo — nunca uma consulta por card renderizado.
-  const itemIds = useMemo(() => completeItemCatalog.map((item) => item.id), [completeItemCatalog]);
-  const {
-    data: itemStockVariants,
-    isSuccess: isItemStockSuccess,
-    isError: isItemStockError,
-    isLoading: isLoadingItemStock,
-  } = useQuery({
-    queryKey: ['kit-builder', 'items', 'stock', itemIds],
-    queryFn: () => fetchKitStockVariants(itemIds),
-    enabled: itemIds.length > 0,
+  // Query: estoque agregado de todo o catálogo de itens, numa única leitura
+  // paginada (mesma fonte de `useKitStockValidation`) — nunca uma consulta
+  // por card. Recarrega quando o tamanho do catálogo muda (proxy leve para
+  // "o catálogo mudou"; um join do product_id não caberia como chave de
+  // cache sem custo perceptível com milhares de produtos).
+  const itemProductIds = useMemo(() => rawItemCatalog.map((item) => item.id), [rawItemCatalog]);
+  const { data: itemStockData, isError: itemStockErrored } = useQuery({
+    queryKey: ['kit-builder', 'items', 'stock', itemProductIds.length],
+    queryFn: () => fetchKitStockVariants(itemProductIds),
+    enabled: itemProductIds.length > 0,
     staleTime: 60 * 1000,
     retry: 1,
   });
-  // `item.stock` fica `undefined` (nem null, nem número) enquanto a consulta
-  // de estoque está em voo — isso é o que diferencia "carregando" (skeleton)
-  // de "resolvido sem variantes" (null, desconhecido) na etapa 14.
-  const completeItemCatalogWithStock = useMemo(() => {
-    if (isItemStockSuccess) return attachStockToKitItems(completeItemCatalog, itemStockVariants);
-    if (isItemStockError) return attachStockToKitItems(completeItemCatalog, []);
-    return completeItemCatalog;
-  }, [completeItemCatalog, isItemStockError, isItemStockSuccess, itemStockVariants]);
+
+  // `null` (desconhecido) e `0` (sem estoque) nunca podem ser confundidos —
+  // mesma semântica já validada em `evaluateKitStock`/`useKitStockValidation`.
+  // Quando as retries se esgotam, a query erra e `itemStockData` nunca chega
+  // a existir; sem tratar isso à parte, `stock` ficaria `undefined` (lido
+  // pelo StockBadge como "carregando") para sempre, mesmo sem requisição em
+  // andamento — precisa virar `null` (desconhecido) assim que a busca falhar.
+  const completeItemCatalog = useMemo(() => {
+    if (itemStockErrored) {
+      return rawItemCatalog.map((item) => ({ ...item, stock: null }));
+    }
+    if (!itemStockData) return rawItemCatalog;
+    const { stockByProduct, unknownProductIds } = evaluateKitStock(
+      itemStockData,
+      rawItemCatalog,
+      null,
+      1,
+    );
+    return rawItemCatalog.map((item) => ({
+      ...item,
+      stock: unknownProductIds.has(item.id) ? null : (stockByProduct.get(item.id) ?? 0),
+    }));
+  }, [rawItemCatalog, itemStockData, itemStockErrored]);
 
   // Selector filters are projections over the complete cached catalogs. The
   // AI resolver receives the unfiltered arrays below, so a previous human
@@ -327,18 +338,17 @@ export function useKitBuilderQueries() {
     [boxDimFilters, completeBoxCatalog, debouncedBoxSearch],
   );
   const availableItems = useMemo(
-    () => filterItems(completeItemCatalogWithStock, debouncedItemSearch),
-    [completeItemCatalogWithStock, debouncedItemSearch],
+    () => filterItems(completeItemCatalog, debouncedItemSearch),
+    [completeItemCatalog, debouncedItemSearch],
   );
 
   return {
     availableBoxes,
     availableItems,
     completeBoxCatalog,
-    completeItemCatalog: completeItemCatalogWithStock,
+    completeItemCatalog,
     isLoadingBoxes,
     isLoadingItems,
-    isLoadingItemStock,
     boxError: boxQueryError instanceof Error ? boxQueryError.message : null,
     itemError: itemQueryError instanceof Error ? itemQueryError.message : null,
     refetchBoxes,

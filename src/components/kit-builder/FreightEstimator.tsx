@@ -22,8 +22,8 @@ import { formatCurrency } from '@/lib/kit-builder';
 interface FreightEstimatorProps {
   totalWeightGrams: number;
   kitQuantity: number;
-  /** Itens selecionados sem peso cadastrado — o cálculo acima já os trata como 0g. */
-  itemsWithUnknownWeightCount?: number;
+  /** Quantidade de linhas do kit (itens/caixa) sem peso cadastrado no catálogo. */
+  itemsWithUnknownWeight?: number;
 }
 
 // Tabela interna estimada por faixa de peso (SP Capital como referência)
@@ -60,7 +60,7 @@ const METHOD_LABELS: Record<string, string> = {
 export function FreightEstimator({
   totalWeightGrams,
   kitQuantity,
-  itemsWithUnknownWeightCount = 0,
+  itemsWithUnknownWeight = 0,
 }: FreightEstimatorProps) {
   const [method, setMethod] = useState<string>('transportadora');
 
@@ -73,6 +73,11 @@ export function FreightEstimator({
     table.find((r) => totalWeightKg <= r.maxKg)?.price || table[table.length - 1].price;
 
   const noWeight = safeWeightGrams === 0;
+  // Peso desconhecido nunca deve ser lido como zero: um kit com 1 item sem
+  // peso cadastrado e 2 itens com peso pode ter totalWeightGrams > 0 e ainda
+  // assim subestimar o frete real — o aviso abaixo cobre esse caso, distinto
+  // do "peso não informado" (nenhum peso conhecido).
+  const hasPartialWeight = itemsWithUnknownWeight > 0;
 
   return (
     <Card>
@@ -96,11 +101,24 @@ export function FreightEstimator({
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
-        {noWeight && (
+        {hasPartialWeight ? (
           <div className="flex items-center gap-2 rounded-lg border border-warning/20 bg-warning/10 p-2.5 text-xs text-warning">
             <AlertCircle className="h-3.5 w-3.5 flex-shrink-0" />
-            <span>Peso dos itens não informado. Estimativa pode ser imprecisa.</span>
+            <span>
+              Estimativa parcial — {itemsWithUnknownWeight}{' '}
+              {itemsWithUnknownWeight === 1
+                ? 'item sem peso cadastrado'
+                : 'itens sem peso cadastrado'}
+              .
+            </span>
           </div>
+        ) : (
+          noWeight && (
+            <div className="flex items-center gap-2 rounded-lg border border-warning/20 bg-warning/10 p-2.5 text-xs text-warning">
+              <AlertCircle className="h-3.5 w-3.5 flex-shrink-0" />
+              <span>Peso dos itens não informado. Estimativa pode ser imprecisa.</span>
+            </div>
+          )
         )}
 
         <div className="space-y-1">
@@ -121,11 +139,6 @@ export function FreightEstimator({
           <div className="rounded-lg bg-secondary/50 p-2">
             <p className="text-[11px] text-muted-foreground">Peso Total</p>
             <p className="text-sm font-bold">{totalWeightKg.toFixed(1)}kg</p>
-            {itemsWithUnknownWeightCount > 0 && (
-              <p className="mt-0.5 text-[10px] leading-tight text-warning">
-                Estimativa parcial — {itemsWithUnknownWeightCount} item(ns) sem peso cadastrado
-              </p>
-            )}
           </div>
           <div className="rounded-lg bg-secondary/50 p-2">
             <p className="text-[11px] text-muted-foreground">{METHOD_LABELS[method]}</p>

@@ -3,11 +3,10 @@
  * Card individual para exibir um item disponível no kit
  */
 
-import { Plus, Check, X, Package } from 'lucide-react';
+import { Plus, Check, X, Package, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { FavoriteToggleButton } from './FavoriteToggleButton';
@@ -28,42 +27,6 @@ interface ItemCardProps {
   onRemove: (item: KitItem) => void;
   /** Grid = rich card with top image. List = compact single-line row. */
   view?: 'grid' | 'list';
-  /** Consulta agregada de estoque da página ainda em voo (etapa 13). */
-  isLoadingStock?: boolean;
-}
-
-/**
- * 4 estados: carregando (skeleton), desconhecido (`stock` null/undefined,
- * consulta já resolvida), sem estoque (`0`) e em estoque (`N`). Nunca mostra
- * "0" quando o dado é apenas desconhecido.
- */
-function StockBadge({
-  stock,
-  isLoadingStock,
-}: {
-  stock?: number | null;
-  isLoadingStock?: boolean;
-}) {
-  if (isLoadingStock) return <Skeleton className="h-[18px] w-20 rounded-full" />;
-  if (stock === null || stock === undefined) {
-    return (
-      <Badge variant="outline" className="text-[10px] font-normal text-muted-foreground">
-        Estoque desconhecido
-      </Badge>
-    );
-  }
-  if (stock === 0) {
-    return (
-      <Badge variant="destructive" className="text-[10px] font-normal">
-        Sem estoque
-      </Badge>
-    );
-  }
-  return (
-    <Badge variant="secondary" className="text-[10px] font-normal">
-      Em estoque ({stock})
-    </Badge>
-  );
 }
 
 /** Up to 3 short, catalog-derived attributes — never invented. */
@@ -75,6 +38,41 @@ function getItemAttributes(item: KitItem): string[] {
   }
   if (item.category) attributes.push(item.category);
   return attributes.slice(0, 3);
+}
+
+/**
+ * `undefined` (catálogo carregando o agregado de estoque, etapa 13),
+ * `null` (produto não encontrado nas variantes — desconhecido) e `0`
+ * (soma de variantes ativas é zero) nunca podem virar o mesmo texto.
+ */
+export function StockBadge({ stock }: { stock: number | null | undefined }) {
+  if (stock === undefined) {
+    return (
+      <Badge variant="outline" className="gap-1 text-[10px] text-muted-foreground">
+        <Loader2 className="h-3 w-3 animate-spin" />
+        Verificando estoque
+      </Badge>
+    );
+  }
+  if (stock === null) {
+    return (
+      <Badge variant="outline" className="text-[10px] text-muted-foreground">
+        Estoque desconhecido
+      </Badge>
+    );
+  }
+  if (stock === 0) {
+    return (
+      <Badge variant="destructive" className="text-[10px]">
+        Sem estoque
+      </Badge>
+    );
+  }
+  return (
+    <Badge variant="secondary" className="bg-primary/10 text-[10px] text-primary">
+      Em estoque ({stock})
+    </Badge>
+  );
 }
 
 function CompatibilityBadge({
@@ -177,7 +175,6 @@ export function ItemCard({
   onAdd,
   onRemove,
   view = 'grid',
-  isLoadingStock,
 }: ItemCardProps) {
   const fits = item.compatibility?.fits !== false;
   const cantFit = boxSelected && !fits;
@@ -215,10 +212,12 @@ export function ItemCard({
               <p className="truncate text-xs text-muted-foreground">{attributes.join(' · ')}</p>
             )}
           </div>
+          <div className="shrink-0">
+            <StockBadge stock={item.stock} />
+          </div>
           <span className="shrink-0 text-sm font-semibold text-primary">
             {formatCurrency(item.price)}
           </span>
-          <StockBadge stock={item.stock} isLoadingStock={isLoadingStock} />
           {boxSelected && <CompatibilityBadge item={item} />}
           <FavoriteToggleButton productId={item.id} productName={item.name} />
           <AddButton
@@ -276,7 +275,7 @@ export function ItemCard({
           <span className="text-sm font-semibold text-primary">{formatCurrency(item.price)}</span>
         </div>
         <div className="mt-1">
-          <StockBadge stock={item.stock} isLoadingStock={isLoadingStock} />
+          <StockBadge stock={item.stock} />
         </div>
 
         <div className="mt-2 flex items-center justify-between border-t pt-2">

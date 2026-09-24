@@ -123,4 +123,34 @@ describe('resolveKitAICompositions', () => {
     ]);
     expect(alternatives[0]?.unitPrice).toBe(90);
   });
+
+  it('usa brief.title como nome quando o provedor devolve um (etapa 17)', () => {
+    const alternatives = resolveKitAICompositions(
+      { ...brief, title: 'Kit Onboarding Bem-Estar' },
+      [
+        item('p1', 'Garrafa térmica', 45),
+        item('p2', 'Caderno executivo', 25),
+        item('p3', 'Caneta', 10),
+      ],
+      [box],
+    );
+
+    expect(alternatives.length).toBeGreaterThan(0);
+    expect(alternatives[0].name).toBe('Kit Onboarding Bem-Estar');
+  });
+
+  it('mantém o fallback "Kit sugerido N" sem brief.title (cliente/provedor antigo)', () => {
+    const alternatives = resolveKitAICompositions(
+      brief,
+      [
+        item('p1', 'Garrafa térmica', 45),
+        item('p2', 'Caderno executivo', 25),
+        item('p3', 'Caneta', 10),
+      ],
+      [box],
+    );
+
+    expect(alternatives.length).toBeGreaterThan(0);
+    expect(alternatives[0].name).toBe('Kit sugerido 1');
+  });
 });

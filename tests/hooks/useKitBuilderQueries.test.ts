@@ -96,6 +96,9 @@ describe('Kit Maker public catalog contracts', () => {
 
   it('mantém catálogos completos para a IA enquanto filtra apenas os seletores', async () => {
     vi.mocked(dbInvoke).mockImplementation(async (request) => {
+      if (request.table === 'product_variants') {
+        return { count: 0, records: [] } as never;
+      }
       if ((request.filters as Record<string, unknown>).product_type === 'packaging') {
         return {
           count: 1,
@@ -118,26 +121,14 @@ describe('Kit Maker public catalog contracts', () => {
         count: 2,
         records: [
           {
-            id: 'p-1',
-            name: 'Garrafa',
-            sku: 'GAR',
-            sale_price: 30,
-            primary_image_url: null,
-            product_type: 'product',
-            width_cm: 5,
-            height_cm: 20,
-            length_cm: 5,
+            id: 'p-1', name: 'Garrafa', sku: 'GAR', sale_price: 30,
+            primary_image_url: null, product_type: 'product', width_cm: 5,
+            height_cm: 20, length_cm: 5,
           },
           {
-            id: 'p-2',
-            name: 'Caderno',
-            sku: 'CAD',
-            sale_price: 25,
-            primary_image_url: null,
-            product_type: 'product',
-            width_cm: 15,
-            height_cm: 20,
-            length_cm: 2,
+            id: 'p-2', name: 'Caderno', sku: 'CAD', sale_price: 25,
+            primary_image_url: null, product_type: 'product', width_cm: 15,
+            height_cm: 20, length_cm: 2,
           },
         ],
       } as never;
@@ -157,8 +148,101 @@ describe('Kit Maker public catalog contracts', () => {
     expect(vi.mocked(dbInvoke)).toHaveBeenCalledTimes(callsBeforeFilter);
   });
 
-  it('encontra caixa buscando por SKU ou por material, sem diferenciar maiúsculas', async () => {
+  it('projeta estoque agregado no catálogo de itens sem uma requisição por card (etapa 13)', async () => {
+    let productVariantsCalls = 0;
     vi.mocked(dbInvoke).mockImplementation(async (request) => {
+      if (request.table === 'product_variants') {
+        productVariantsCalls += 1;
+        return {
+          count: 3,
+          records: [
+            // p-with-stock: duas variantes ativas, estoque conhecido (soma = 12).
+            { id: 'v1', product_id: 'p-with-stock', stock_quantity: 5, color_name: null },
+            { id: 'v2', product_id: 'p-with-stock', stock_quantity: 7, color_name: null },
+            // p-zero-stock: variante ativa encontrada, mas sem estoque — 0 é
+            // um dado conhecido, não pode virar "desconhecido".
+            { id: 'v3', product_id: 'p-zero-stock', stock_quantity: 0, color_name: null },
+          ],
+        } as never;
+      }
+      if ((request.filters as Record<string, unknown>).product_type === 'packaging') {
+        return { count: 0, records: [] } as never;
+      }
+      return {
+        count: 3,
+        records: [
+          {
+            id: 'p-with-stock', name: 'Com estoque', sku: 'ST-1', sale_price: 10,
+            primary_image_url: null, product_type: 'product', width_cm: 5, height_cm: 5, length_cm: 5,
+          },
+          {
+            id: 'p-zero-stock', name: 'Sem estoque', sku: 'ST-0', sale_price: 10,
+            primary_image_url: null, product_type: 'product', width_cm: 5, height_cm: 5, length_cm: 5,
+          },
+          {
+            // p-unknown-stock: não aparece em nenhuma variante retornada —
+            // estoque desconhecido, nunca lido como zero.
+            id: 'p-unknown-stock', name: 'Estoque desconhecido', sku: 'ST-U', sale_price: 10,
+            primary_image_url: null, product_type: 'product', width_cm: 5, height_cm: 5, length_cm: 5,
+          },
+        ],
+      } as never;
+    });
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const wrapper = ({ children }: { children: ReactNode }) =>
+      createElement(QueryClientProvider, { client }, children);
+    const { useKitBuilderQueries } = await import('@/hooks/kit-builder/useKitBuilderQueries');
+    const { result } = renderHook(() => useKitBuilderQueries(), { wrapper });
+
+    await waitFor(() => {
+      const byId = new Map(result.current.completeItemCatalog.map((i) => [i.id, i.stock]));
+      expect(byId.get('p-with-stock')).toBe(12);
+    });
+
+    const byId = new Map(result.current.completeItemCatalog.map((i) => [i.id, i.stock]));
+    // null (desconhecido) e 0 (sem estoque) nunca podem ser confundidos.
+    expect(byId.get('p-zero-stock')).toBe(0);
+    expect(byId.get('p-unknown-stock')).toBeNull();
+
+    // Uma única leitura paginada de product_variants para o catálogo
+    // inteiro — nunca uma requisição por card.
+    expect(productVariantsCalls).toBe(1);
+  });
+
+  it('vira "desconhecido" (nunca fica preso em carregando) quando a query de estoque esgota as retries', async () => {
+    vi.mocked(dbInvoke).mockImplementation(async (request) => {
+      if (request.table === 'product_variants') {
+        throw new Error('falha simulada de rede');
+      }
+      if ((request.filters as Record<string, unknown>).product_type === 'packaging') {
+        return { count: 0, records: [] } as never;
+      }
+      return {
+        count: 1,
+        records: [
+          {
+            id: 'p-1', name: 'Garrafa', sku: 'GAR', sale_price: 30,
+            primary_image_url: null, product_type: 'product', width_cm: 5, height_cm: 20, length_cm: 5,
+          },
+        ],
+      } as never;
+    });
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const wrapper = ({ children }: { children: ReactNode }) =>
+      createElement(QueryClientProvider, { client }, children);
+    const { useKitBuilderQueries } = await import('@/hooks/kit-builder/useKitBuilderQueries');
+    const { result } = renderHook(() => useKitBuilderQueries(), { wrapper });
+
+    await waitFor(() => {
+      expect(result.current.completeItemCatalog[0]?.stock).toBeNull();
+    });
+  });
+
+  it('busca de caixa encontra por nome, SKU ou material (etapa 16)', async () => {
+    vi.mocked(dbInvoke).mockImplementation(async (request) => {
+      if (request.table === 'product_variants') {
+        return { count: 0, records: [] } as never;
+      }
       if ((request.filters as Record<string, unknown>).product_type === 'packaging') {
         return {
           count: 2,
@@ -166,26 +250,41 @@ describe('Kit Maker public catalog contracts', () => {
             {
               id: 'box-1',
               name: 'Caixa Premium',
-              sku: 'CX-PREM-01',
+              sku: 'CX-001',
               sale_price: 20,
               primary_image_url: null,
               product_type: 'packaging',
-              material: 'Papel Kraft',
               internal_width_cm: 30,
               internal_height_cm: 20,
               internal_length_cm: 10,
+              materials: ['Papelão Kraft'],
             },
             {
               id: 'box-2',
-              name: 'Caixa Rígida',
-              sku: 'CX-RIG-02',
+              name: 'Estojo Executivo',
+              sku: 'EST-777',
               sale_price: 35,
               primary_image_url: null,
               product_type: 'packaging',
-              material: 'Papelão Rígido',
-              internal_width_cm: 30,
-              internal_height_cm: 20,
-              internal_length_cm: 10,
+              internal_width_cm: 25,
+              internal_height_cm: 15,
+              internal_length_cm: 8,
+              materials: ['MDF'],
+            },
+            {
+              // Produto com múltiplos materiais: resolveProductMaterial() só
+              // expõe o primeiro (materials[0]) para exibição/faceta, mas a
+              // busca precisa alcançar todos — não só o primeiro.
+              id: 'box-3',
+              name: 'Caixa Dupla Face',
+              sku: 'CX-DF-9',
+              sale_price: 40,
+              primary_image_url: null,
+              product_type: 'packaging',
+              internal_width_cm: 20,
+              internal_height_cm: 12,
+              internal_length_cm: 6,
+              materials: ['Papel', 'Couro'],
             },
           ],
         } as never;
@@ -198,22 +297,32 @@ describe('Kit Maker public catalog contracts', () => {
     const { useKitBuilderQueries } = await import('@/hooks/kit-builder/useKitBuilderQueries');
     const { result } = renderHook(() => useKitBuilderQueries(), { wrapper });
 
-    await waitFor(() => expect(result.current.completeBoxCatalog).toHaveLength(2));
+    await waitFor(() => expect(result.current.completeBoxCatalog).toHaveLength(3));
 
-    act(() => result.current.setBoxFilters({ search: 'cx-rig' }));
-    await waitFor(
-      () => expect(result.current.availableBoxes.map((b) => b.id)).toEqual(['box-2']),
-      { timeout: 2_000 },
+    // Por SKU (já suportado antes da etapa 16 — não deve regredir).
+    act(() => result.current.setBoxFilters({ search: 'CX-001' }));
+    await waitFor(() =>
+      expect(result.current.availableBoxes.map((b) => b.id)).toEqual(['box-1']),
     );
 
-    act(() => result.current.setBoxFilters({ search: 'KRAFT' }));
-    await waitFor(
-      () => expect(result.current.availableBoxes.map((b) => b.id)).toEqual(['box-1']),
-      { timeout: 2_000 },
+    // Por material (gap fechado pela etapa 16). Cada waitFor abaixo checa o
+    // resultado final diretamente (não só o length) para não passar com o
+    // estado do filtro anterior ainda não recomputado pelo debounce.
+    act(() => result.current.setBoxFilters({ search: 'mdf' }));
+    await waitFor(() =>
+      expect(result.current.availableBoxes.map((b) => b.id)).toEqual(['box-2']),
     );
 
-    act(() => result.current.setBoxFilters({ search: '' }));
-    await waitFor(() => expect(result.current.availableBoxes).toHaveLength(2), { timeout: 2_000 });
+    // Segundo material de um produto com múltiplos materiais também precisa
+    // ser encontrado, não só materials[0].
+    act(() => result.current.setBoxFilters({ search: 'couro' }));
+    await waitFor(() =>
+      expect(result.current.availableBoxes.map((b) => b.id)).toEqual(['box-3']),
+    );
+
+    // Termo que não bate com nome, SKU nem material.
+    act(() => result.current.setBoxFilters({ search: 'inexistente' }));
+    await waitFor(() => expect(result.current.availableBoxes).toEqual([]));
   });
 });
 
