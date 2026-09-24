@@ -24,16 +24,26 @@ export function Folio({
   total?: number;
   tone?: 'accent' | 'dark' | 'light';
 }) {
-  const color = tone === 'light' ? 'rgba(255,255,255,0.9)' : tone === 'accent' ? 'var(--mag-secondary)' : 'var(--mag-text)';
+  const color =
+    tone === 'light'
+      ? 'rgba(255,255,255,0.9)'
+      : tone === 'accent'
+        ? 'var(--mag-secondary)'
+        : 'var(--mag-text)';
   return (
     <div
       className="flex items-center gap-3 text-xl uppercase tracking-[0.35em]"
       style={{ color, fontFamily: 'var(--mag-body)' }}
     >
-      <span className="inline-block h-[1px] w-10" style={{ background: 'currentColor', opacity: 0.6 }} />
+      <span
+        className="inline-block h-[1px] w-10"
+        style={{ background: 'currentColor', opacity: 0.6 }}
+      />
       <span>
         {String(index + 1).padStart(2, '0')}
-        {typeof total === 'number' && <span className="opacity-60"> / {String(total).padStart(2, '0')}</span>}
+        {typeof total === 'number' && (
+          <span className="opacity-60"> / {String(total).padStart(2, '0')}</span>
+        )}
       </span>
     </div>
   );
@@ -52,7 +62,7 @@ export function Eyebrow({ children, color }: { children: ReactNode; color?: stri
 
 export function ColorSwatchDot({ item }: { item: MagazineItem }) {
   if (!item.variantColorName) return null;
-  const c = item.productSnapshot.colors.find((x) => x.name === item.variantColorName);
+  const c = item.productSnapshot.colors?.find((x) => x.name === item.variantColorName);
   const hex = c?.hex ?? '#cccccc';
   return (
     <span className="inline-flex items-center gap-2 text-xl opacity-90">
@@ -91,7 +101,10 @@ export function PriceTag({
   }
   if (variant === 'stack') {
     return (
-      <div className="flex items-baseline gap-2" style={{ color: 'var(--mag-secondary)', fontFamily: 'var(--mag-heading)' }}>
+      <div
+        className="flex items-baseline gap-2"
+        style={{ color: 'var(--mag-secondary)', fontFamily: 'var(--mag-heading)' }}
+      >
         <span className="text-[0.45em] uppercase tracking-widest opacity-80">{currency}</span>
         <span className={`font-black ${sizeMap[size]}`}>{amount}</span>
       </div>
@@ -109,7 +122,12 @@ export function PriceTag({
 }
 
 export function Rule({ tone = 'dark' }: { tone?: 'accent' | 'dark' | 'light' }) {
-  const color = tone === 'light' ? 'rgba(255,255,255,0.4)' : tone === 'accent' ? 'var(--mag-secondary)' : 'rgba(0,0,0,0.15)';
+  const color =
+    tone === 'light'
+      ? 'rgba(255,255,255,0.4)'
+      : tone === 'accent'
+        ? 'var(--mag-secondary)'
+        : 'rgba(0,0,0,0.15)';
   return <span aria-hidden className="inline-block h-[1px] w-6" style={{ background: color }} />;
 }
 
@@ -254,14 +272,13 @@ export function HairlineDivider({
   orientation?: 'horizontal' | 'vertical';
   tone?: 'dark' | 'light';
 }) {
-  const color = tone === 'light' ? 'rgba(255,255,255,0.20)' : 'var(--mag-hairline, rgba(0,0,0,0.12))';
+  const color =
+    tone === 'light' ? 'rgba(255,255,255,0.20)' : 'var(--mag-hairline, rgba(0,0,0,0.12))';
   const base: CSSProperties = { background: color };
   return (
     <span
       aria-hidden
-      className={
-        orientation === 'horizontal' ? 'block h-px w-full' : 'inline-block h-full w-px'
-      }
+      className={orientation === 'horizontal' ? 'block h-px w-full' : 'inline-block h-full w-px'}
       style={base}
     />
   );

@@ -8,6 +8,14 @@
  * - validateStep() — before step transition
  * - canPublish() — before publication
  * - setBranding() — before saving branding data
+ *
+ * NÃO é a guarda contra vazamento de rascunho pra leitor público — este
+ * arquivo só valida input de EDIÇÃO (branding/título), nunca é importado
+ * por PublicMagazineView.tsx nem pelas edge functions públicas. Essa
+ * proteção é RLS + ausência de GRANT pra `anon` nas tabelas magazine_* +
+ * filtro explícito `status === 'published'` em cada uma das 4 edges
+ * públicas (magazine-public-view, magazine-public-react,
+ * magazine-reader-state-write, magazine-reader-state-read).
  */
 
 import { sanitizeUrl, sanitizeText } from './sanitize';

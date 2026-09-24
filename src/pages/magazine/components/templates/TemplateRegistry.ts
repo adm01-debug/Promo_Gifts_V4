@@ -1,5 +1,5 @@
 /**
- * TemplateRegistry — SSOT dos 10 templates de design da Magazine.
+ * TemplateRegistry — SSOT dos 12 templates de design da Magazine.
  *
  * Cada template define metadata + componente React puro que renderiza
  * uma página (1920×2716 px, proporção A4 a 300dpi).

@@ -85,4 +85,53 @@ describe('MagazinePageRenderer — páginas editoriais', () => {
       );
     },
   );
+
+  // Regressão: productSnapshot NÃO nulo, mas com colors/materials ausentes
+  // (dado legado sem esses campos — comentário em MagazinePageRenderer.tsx:62
+  // já reconhece esse cenário). ColorSwatchDot fazia `.colors.find(...)` sem
+  // optional chaining; GiftSetShowcaseTemplate/ListTemplate faziam
+  // `.materials.length`/`.slice(...)` direto — ambos estouravam TypeError.
+  it('não quebra ao renderizar item com variantColorName mas productSnapshot.colors ausente', () => {
+    const magazine = buildMockMagazine('editorial-vogue');
+    const item = {
+      ...magazine.items[0],
+      variantColorName: 'Azul',
+      productSnapshot: {
+        ...magazine.items[0].productSnapshot,
+        colors: undefined,
+      },
+    } as unknown as MagazineItem;
+    magazine.items = [item];
+
+    expect(() =>
+      render(
+        <MagazinePageRenderer
+          magazine={magazine}
+          page={{ index: 1, kind: 'products', items: [item] }}
+        />,
+      ),
+    ).not.toThrow();
+  });
+
+  it('não quebra ao renderizar item com showMaterials ativo mas productSnapshot.materials ausente', () => {
+    const magazine = buildMockMagazine('catalog-list');
+    const item = {
+      ...magazine.items[0],
+      productSnapshot: {
+        ...magazine.items[0].productSnapshot,
+        materials: undefined,
+      },
+    } as unknown as MagazineItem;
+    magazine.items = [item];
+    magazine.content.showMaterials = true;
+
+    expect(() =>
+      render(
+        <MagazinePageRenderer
+          magazine={magazine}
+          page={{ index: 1, kind: 'products', items: [item] }}
+        />,
+      ),
+    ).not.toThrow();
+  });
 });

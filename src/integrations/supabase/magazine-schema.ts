@@ -39,7 +39,7 @@ export type MagazineRowShape = {
   id: string;
   organization_id: string | null;
   owner_id: string;
-  page_order: Json;
+  page_order: Json | null;
   public_token: string | null;
   published_at: string | null;
   status: string;

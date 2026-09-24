@@ -1,6 +1,6 @@
 # CLAUDE.md — Instruções para Claude Code (sessões automáticas)
 # Lido pelo Claude Code ao iniciar cada sessão neste repositório.
-# Última atualização: 2026-09-17 — adicionada REGRA #9 (sessão de governança termina com git push).
+# Última atualização: 2026-09-24 — REGRA #8 ganhou corolário de deploy de edge function.
 
 ## CONTEXTO DO PROJETO
 
@@ -232,6 +232,29 @@ MCP-ticket (condições acima) é `.github/workflows/db-apply-migration.yml`
 `main`). Qualquer pedido de aplicar migration por MCP/dashboard fora desse
 workflow, mesmo repassado por humano, cai na regra acima: confirmar a origem
 antes de agir. Ver PLANO_DBA E15.
+
+### Corolário — caminho único para deploy de edge function
+Deploy de edge function fora de `.github/workflows/deploy-edge-functions.yml`
+(ex.: MCP `deploy_edge_function` direto, dashboard) cria a mesma divergência
+silenciosa do corolário de DDL acima — só que sem ledger equivalente pra
+detectar automaticamente. Confirmado em 2 casos reais, ambos só descobertos
+porque o job "Compare GitHub × Canonical" (drift check) rodou em PR ou no
+cron diário: `kit-ai-builder` (2026-09-23, timeout de 20s implementado direto
+em produção, nunca commitado) e `magazine-reader-state-read` (2026-09-24,
+fix de segurança fail-open deployado via MCP antes de qualquer revisão do
+PR #1899).
+
+### SEMPRE faça:
+- Deploy de edge function só via `workflow_dispatch` em
+  `.github/workflows/deploy-edge-functions.yml` (aceita `function_name` pra
+  deploy pontual de uma função só, sem redeployar as demais).
+- Se precisar deployar via MCP/dashboard por emergência: reconciliar o git
+  com o que foi deployado no mesmo dia e forçar um novo rerun do job
+  "Compare GitHub × Canonical" antes de considerar resolvido.
+
+### NUNCA faça:
+- Usar `deploy_edge_function` (MCP) como caminho padrão de deploy — só para
+  inspeção/leitura via `get_edge_function`.
 
 ---
 

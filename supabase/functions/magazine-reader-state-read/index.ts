@@ -6,12 +6,6 @@
 // acessar a tabela diretamente (o que a auditoria fechou por segurança).
 //
 // verify_jwt = false (leitor público) — ver supabase/config.toml.
-// FIX 2026-07-12 (2a rodada de validação exaustiva): esta função ficou
-// presa em verify_jwt=true mesmo após o primeiro redeploy corrigir as
-// outras 4 do módulo — o CI aparentemente pulou/falhou silenciosamente
-// neste arquivo específico (possível colisão de paralelismo no matrix).
-// Push isolado (retry_marker=2) só deste arquivo para forçar novo attempt
-// e permitir rastrear o job especificamente.
 
 import { createClient } from "npm:@supabase/supabase-js@2.49.4";
 import { z } from "npm:zod@3.23.8";
@@ -62,6 +56,21 @@ Deno.serve(async (req) => {
     const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
     // Column is magazine_token_hash (SHA-256 of public_token), NOT magazine_token.
     const tokenHash = await sha256Hex(parsed.data.token);
+
+    // Mesma checagem de -write: sem isto, um token revogado (revista
+    // despublicada zera public_token via trigger) continua lendo o estado
+    // salvo indefinidamente — fail-open onde as outras 3 edges públicas do
+    // módulo (write, public-view, public-react) são fail-closed.
+    const { data: mag, error: magErr } = await supabase
+      .from("magazines").select("id").eq("public_token", parsed.data.token).eq("status", "published").maybeSingle();
+
+    if (magErr) {
+      log.error("db_error_lookup", { error: magErr.message });
+      return log.respond(new Response(JSON.stringify({ error: "sync_disabled", request_id: requestId }), { status: 503, headers: jsonHeaders }));
+    }
+    if (!mag) {
+      return log.respond(new Response(JSON.stringify({ error: "invalid_or_expired", request_id: requestId }), { status: 401, headers: jsonHeaders }));
+    }
 
     const { data, error } = await supabase
       .from("magazine_reader_state")

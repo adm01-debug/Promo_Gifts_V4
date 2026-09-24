@@ -7,6 +7,7 @@
  * precisa reconhecer esse status sem quebrar a renderização.
  */
 
+import { z } from 'zod';
 import type { Product, ProductColor } from '@/types/product-catalog';
 
 export type MagazineTemplateId =
@@ -28,21 +29,24 @@ export type MagazineTemplateId =
  * para colorir consistentemente todas as páginas internas. Sistema inspirado
  * no TOC do catálogo Abreez 2026.
  */
-export type MagazineCategory =
-  | 'awards'
-  | 'bags'
-  | 'clocks'
-  | 'customized'
-  | 'drinkwares'
-  | 'general'
-  | 'giftsets'
-  | 'id'
-  | 'packaging'
-  | 'pins'
-  | 'signs'
-  | 'stationery'
-  | 'technology'
-  | 'wearables';
+export const MAGAZINE_CATEGORIES = [
+  'awards',
+  'bags',
+  'clocks',
+  'customized',
+  'drinkwares',
+  'general',
+  'giftsets',
+  'id',
+  'packaging',
+  'pins',
+  'signs',
+  'stationery',
+  'technology',
+  'wearables',
+] as const;
+
+export type MagazineCategory = (typeof MAGAZINE_CATEGORIES)[number];
 
 export type MagazineTemplateFamily = 'catalog' | 'corporate' | 'editorial';
 
@@ -83,6 +87,29 @@ export interface MagazineContentSettings {
   closingText?: string;
 }
 
+/**
+ * Validação só-observabilidade do JSONB `content_settings`/`overrides`
+ * (nunca bloqueia a leitura — ver magazineService.ts rowToMagazine/rowToItem).
+ * `.partial()` porque o valor persistido é um override esparso, mergeado com
+ * DEFAULT_MAGAZINE_CONTENT na leitura — a ausência de um campo é esperada,
+ * não é o sinal que queremos logar.
+ */
+export const magazineContentSettingsSchema: z.ZodType<Partial<MagazineContentSettings>> = z
+  .object({
+    showPrice: z.boolean(),
+    showCode: z.boolean(),
+    showPersonalization: z.boolean(),
+    showDescription: z.boolean(),
+    showDimensions: z.boolean(),
+    showMaterials: z.boolean(),
+    showColors: z.boolean(),
+    groupByCategory: z.boolean(),
+    introText: z.string(),
+    closingText: z.string(),
+  })
+  .partial()
+  .passthrough();
+
 export interface MagazineClientBranding {
   clientName: string | null;
   clientLogoUrl: string | null;
@@ -94,6 +121,18 @@ export interface MagazineClientBranding {
    */
   category: MagazineCategory | null;
 }
+
+/** Validação só-observabilidade do JSONB `branding` — mesmo motivo/uso do content settings acima. */
+export const magazineClientBrandingSchema = z
+  .object({
+    clientName: z.string().nullable(),
+    clientLogoUrl: z.string().nullable(),
+    clientCrmId: z.string().nullable(),
+    colors: z.object({ primary: z.string(), secondary: z.string(), text: z.string() }),
+    category: z.enum(MAGAZINE_CATEGORIES).nullable(),
+  })
+  .partial()
+  .passthrough();
 
 /** Item da revista — 1 produto por posição, com override de variação/imagem. */
 export interface MagazineItem {
@@ -133,6 +172,48 @@ export interface MagazineProductSnapshot {
   hasPersonalization: boolean | null;
   dimensions?: Product['dimensions'];
 }
+
+/**
+ * Validação só-observabilidade do JSONB `product_snapshot` (nunca bloqueia
+ * a leitura — ver magazineService.ts rowToItem). Ao contrário dos schemas de
+ * branding/content acima, este NÃO é `.partial()`: snapshot é congelado
+ * inteiro no add do item, então um campo ausente (ex.: `colors`/`materials`
+ * em dado legado — achado real da auditoria de 2026-09-24, PR #1899) é
+ * exatamente o sinal que queremos capturar no log, não algo a tolerar.
+ */
+export const magazineProductSnapshotSchema = z
+  .object({
+    id: z.string(),
+    name: z.string(),
+    sku: z.string(),
+    shortDescription: z.string(),
+    description: z.string().nullable(),
+    price: z.number(),
+    sale_price: z.number(),
+    image_url: z.string(),
+    images: z.array(z.string()),
+    colors: z.array(
+      z.object({ name: z.string(), hex: z.string(), group: z.string() }).passthrough(),
+    ),
+    category_name: z.string().nullable(),
+    category_id: z.string().nullable(),
+    materials: z.array(z.string()),
+    hasPersonalization: z.boolean().nullable(),
+    dimensions: z
+      .object({
+        height_cm: z.number().nullable(),
+        width_cm: z.number().nullable(),
+        length_cm: z.number().nullable(),
+        diameter_cm: z.number().nullable(),
+        circumference_cm: z.number().nullable(),
+        weight_g: z.number().nullable(),
+        capacity_ml: z.number().nullable(),
+      })
+      .partial()
+      .passthrough(),
+  })
+  .partial({ sale_price: true, dimensions: true })
+  .passthrough();
 
 /** Tipos persistentes de página no formato estruturado v2. */
 export type MagazineStructuredPageKind =
