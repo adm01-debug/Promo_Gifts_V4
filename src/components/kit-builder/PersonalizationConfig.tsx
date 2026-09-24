@@ -275,11 +275,15 @@ function ItemPersonalizationCard({
     [options],
   );
 
-  // Áreas de gravação dos componentes do kit (v_kit_component_print_areas_public).
-  // Usadas como fallback quando o catálogo de técnicas não trouxe nenhuma
-  // localização própria — evita conflitar com o filtro de técnicas por área
-  // já existente abaixo. Consulta pontual por produto em configuração.
-  const { data: kitComponentPrintAreas } = useKitComponentPrintAreas(productId);
+  // Fallback de áreas de gravação (print_area_techniques) — só dispara
+  // quando a consulta primária (useProductCustomizationOptions, acima) já
+  // resolveu e não trouxe nenhuma localização própria. Sem este gate, cada
+  // item do kit disparava uma segunda requisição PostgREST redundante ao
+  // abrir a etapa de personalização, mesmo quando a primária já bastava.
+  const needsPrintAreaFallback = !loadingTechniques && !options?.locations?.length;
+  const { data: kitComponentPrintAreas } = useKitComponentPrintAreas(
+    needsPrintAreaFallback ? productId : null,
+  );
 
   // Find current technique for reactive price
   const currentTech = techniques.find(
