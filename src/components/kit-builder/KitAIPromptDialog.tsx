@@ -207,6 +207,13 @@ export function KitAIPromptDialog({
           // ter chance de responder, gerando chamadas duplicadas e pagas ao
           // gateway de IA para uma única ação do usuário.
           timeoutMs: 25_000,
+          // Geração de IA não é idempotente (contrato v1 não tem
+          // idempotency_key) e é billável por chamada — o retry automático
+          // de safeAuthCall para erros de rede/timeout (default 2x) cobraria
+          // 2-3x pela mesma ação do usuário sem devolver nada a mais. O
+          // usuário já tem um jeito seguro de tentar de novo: clicar em
+          // "gerar" outra vez.
+          maxRetries: 0,
         },
       );
       if (error) {
