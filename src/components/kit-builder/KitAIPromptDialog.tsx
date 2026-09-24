@@ -423,17 +423,25 @@ export function KitAIPromptDialog({
                   <>
                     <div>
                       <h3 className="text-lg font-semibold">
-                        {buildAlternativeTitle(
-                          style,
-                          audience,
-                          alternativeIndex,
-                          alternatives.length,
-                        )}
+                        {suggestion.title?.trim()
+                          ? activeAlternative.name
+                          : buildAlternativeTitle(
+                              style,
+                              audience,
+                              alternativeIndex,
+                              alternatives.length,
+                            )}
                       </h3>
                       <p className="mt-1 text-sm text-muted-foreground">
-                        {buildBriefDescription(audience, budget, style) ||
+                        {activeAlternative.description?.trim() ||
+                          buildBriefDescription(audience, budget, style) ||
                           activeAlternative.narrative}
                       </p>
+                      {activeAlternative.styleTag && (
+                        <Badge variant="secondary" className="mt-2">
+                          {activeAlternative.styleTag}
+                        </Badge>
+                      )}
                     </div>
                     <div className="overflow-hidden rounded-lg border bg-muted/20">
                       <div className="flex gap-1.5 p-1.5">

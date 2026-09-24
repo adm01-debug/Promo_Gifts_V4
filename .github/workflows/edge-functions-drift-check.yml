@@ -8,6 +8,7 @@ name: edge-functions-drift-check
 #   - cron diário (06:00 BRT = 09:00 UTC)
 #   - todo PR que toca supabase/functions/**
 #   - manual via workflow_dispatch
+#   - logo após "Deploy Edge Functions" terminar em main (E65)
 #
 # Requer um secret: SUPABASE_ACCESS_TOKEN
 #   Personal Access Token de Management API:
@@ -26,6 +27,14 @@ on:
       - 'audit/edge-functions-canonical-only.json'
       - '.github/workflows/edge-functions-drift-check.yml'
   workflow_dispatch:
+  # E65 (plano de 100, 2026-09-24): antes só rodava em PR e no cron diário —
+  # drift introduzido entre um merge e o próximo cron (até 24h) era
+  # silencioso. Dispara logo após "Deploy Edge Functions" terminar em main,
+  # comparando o canônico contra o que acabou de ser (re)deployado.
+  workflow_run:
+    workflows: ['Deploy Edge Functions']
+    types: [completed]
+    branches: [main]
 
 permissions:
   contents: read
@@ -35,6 +44,7 @@ permissions:
 jobs:
   drift:
     name: Compare GitHub × Canonical
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     env:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
@@ -323,7 +333,7 @@ jobs:
             });
 
       - name: Open issue (scheduled drift)
-        if: github.event_name == 'schedule' && (steps.hash_diff.outputs.drift_count != '0' || steps.hash_diff.outputs.missing_in_dl != '0' || steps.slug_diff.outputs.has_orphans == 'true' || steps.slug_diff.outputs.has_missing == 'true')
+        if: (github.event_name == 'schedule' || github.event_name == 'workflow_run') && (steps.hash_diff.outputs.drift_count != '0' || steps.hash_diff.outputs.missing_in_dl != '0' || steps.slug_diff.outputs.has_orphans == 'true' || steps.slug_diff.outputs.has_missing == 'true')
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         with:
           script: |
