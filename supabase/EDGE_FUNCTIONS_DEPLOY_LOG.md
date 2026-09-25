@@ -26,6 +26,7 @@ manualmente, no mesmo dia, com o método `emergência-MCP`.
 
 | Data (UTC) | Slug | Versão | SHA (git) | Run | Executor | Método |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-09-25T06:08:52.597Z | `kit-ai-builder` | 288 | `a79944b53f436d428dab1ce9fb5984b31e79489f` | 36101511155 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
 
 ## Retro-registro (casos anteriores a este ledger, E67)
 
