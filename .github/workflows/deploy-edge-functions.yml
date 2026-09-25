@@ -76,7 +76,12 @@ jobs:
             # deploy fora do fluxo de kit-ai-builder (auditoria de
             # governança, 24/09). Agora só as alteradas neste push, exceto
             # quando a mudança toca _shared/ (102 funções importam de lá).
-            cd ..
+            # cd supabase/functions no topo do script desce DOIS níveis a
+            # partir da raiz do repo — cd .. sobe só um (para supabase/),
+            # não para a raiz. Bug real: quebrou o 1º push pós-merge deste
+            # workflow em main (run 36065556329, "cd: supabase/functions:
+            # No such file or directory" na 2ª cd abaixo).
+            cd ../..
             BEFORE="${{ github.event.before }}"
             AFTER="${{ github.sha }}"
             if [[ -z "$BEFORE" || "$BEFORE" =~ ^0+$ ]]; then
