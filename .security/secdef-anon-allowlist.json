@@ -41,10 +41,6 @@
     {
       "fn": "public.submit_quote_response(_token text, _response text, _response_notes text)",
       "reason": "SECDEF necessário: grava na tabela de cotações, na qual anon não tem INSERT/UPDATE direto. anon precisa de EXECUTE: é como um destinatário anônimo de cotação responde sem criar conta (via link com token). search_path fixo; parâmetros tipados; valida o token de cotação antes de gravar e falha fechado em token inválido, mesmo padrão de get_quote_token_public. Revisado em E17, 2026-09-16."
-    },
-    {
-      "fn": "public.fn_check_login_allowed(p_email text, p_ip_address text, p_city text, p_user_agent text)",
-      "reason": "REVOGAÇÃO PENDENTE — migration 20260904150000 (PR #1829) executa REVOKE de anon/authenticated/PUBLIC. Grant ainda existe no DB de produção pois a migration ainda não foi aplicada. Remover esta entrada após o deploy pós-merge da migration. (SEC-008v4, 2026-09-04)"
     }
   ]
 }
