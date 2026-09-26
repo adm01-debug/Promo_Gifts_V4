@@ -5,17 +5,21 @@ import { pathToFileURL } from 'node:url';
 
 export const RISK_REVIEW_DEADLINE = '2026-10-09T23:59:59-03:00';
 
+// npm updated source IDs and advisory ranges for these CVEs (2026-09-26):
+// GHSA-5p2g: source 1138809 → 1239765, range >=1.2.0 <=2.0.2
+// GHSA-w3rx: source 1138808 → 1239766, range >=0.6.3 <=2.0.2
 const ALLOWED_IMAGE_SIZE_ADVISORIES = new Map([
-  ['https://github.com/advisories/GHSA-5p2g-fcmc-qvqq', 1138809],
-  ['https://github.com/advisories/GHSA-w3rx-r6r6-pgpr', 1138808],
+  ['https://github.com/advisories/GHSA-5p2g-fcmc-qvqq', { source: 1239765, range: '>=1.2.0 <=2.0.2' }],
+  ['https://github.com/advisories/GHSA-w3rx-r6r6-pgpr', { source: 1239766, range: '>=0.6.3 <=2.0.2' }],
 ]);
 
 // The npm advisory service has proposed more than one incompatible downgrade
 // for the same unpatched transitive dependency. These are not upgrades to
 // apply automatically: both would replace the supported pptxgenjs 4.x API.
-const REVIEWED_INCOMPATIBLE_PPTXGENJS_FIXES = new Set(['1.1.5', '2.2.0']);
-const REVIEWED_PPTXGENJS_VULNERABLE_RANGES = new Set(['1.1.5-1 || >=1.1.6', '>=2.3.0']);
-const REVIEWED_IMAGE_SIZE_VULNERABLE_RANGES = new Set(['*', '<=2.0.2']);
+// 4.0.0 added 2026-09-26: npm now reports >=4.0.1-beta.0 as vulnerable (same CVEs, updated range).
+const REVIEWED_INCOMPATIBLE_PPTXGENJS_FIXES = new Set(['1.1.5', '2.2.0', '4.0.0']);
+const REVIEWED_PPTXGENJS_VULNERABLE_RANGES = new Set(['1.1.5-1 || >=1.1.6', '>=2.3.0', '>=4.0.1-beta.0']);
+const REVIEWED_IMAGE_SIZE_VULNERABLE_RANGES = new Set(['*', '<=2.0.2', '0.6.3 - 2.0.2']);
 
 function hasExpectedFixAvailable(vulnerability) {
   const fix = vulnerability.fixAvailable;
@@ -33,16 +37,19 @@ function hasExpectedImageSizeAdvisories(vulnerability) {
   return (
     Array.isArray(via) &&
     via.length === ALLOWED_IMAGE_SIZE_ADVISORIES.size &&
-    via.every(
-      (advisory) =>
-        advisory &&
+    via.every((advisory) => {
+      const expected = ALLOWED_IMAGE_SIZE_ADVISORIES.get(advisory?.url);
+      return (
+        advisory != null &&
         typeof advisory === 'object' &&
-        ALLOWED_IMAGE_SIZE_ADVISORIES.get(advisory.url) === advisory.source &&
+        expected !== undefined &&
+        expected.source === advisory.source &&
         advisory.name === 'image-size' &&
         advisory.dependency === 'image-size' &&
         advisory.severity === 'high' &&
-        advisory.range === '<=2.0.2',
-    )
+        advisory.range === expected.range
+      );
+    })
   );
 }
 
