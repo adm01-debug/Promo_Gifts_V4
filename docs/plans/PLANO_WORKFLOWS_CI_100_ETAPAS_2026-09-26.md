@@ -94,7 +94,7 @@ O plano abaixo estanca primeiro o que está quebrado hoje (E01–E10), depois to
 - Ruleset `Protect main`: 0 aprovações; `require_code_owner_review` inócuo sem aprovação; bypass admin `always`.
 - `required-checks.json` declara ruleset `release` (3 checks) que não existe; os 3 workflows (`ssot-supabase`, `stock-rupture-fuzz`, `magazine-unit-tests`) são `paths`-filtrados → deadlock no primeiro PR para `release/*` que não toque esses caminhos.
 - `deploy-gates.yml` Gates 2.5/5.5 exigem segredos → PRs do Dependabot e de forks **sempre** falham o Gate Final; não há guard `dependabot[bot]`.
-- Guardas de CLAUDE.md fora do Gate Final: REGRA #2 (`check-product-type-fields`) só em `quality-gate.yml:78-79` e `prod-health`; REGRA #4 (`check:types-inventory-drift`) só em `regenerate-supabase-types.yml`, nunca em PR; `quality-gate.yml:161-162` faz `npm install -g supabase@latest` (pacote recusa install global).
+- Guardas de CLAUDE.md fora do Gate Final: REGRA #2 (`check-product-type-fields`) só em `quality-gate.yml:78-79` e `prod-health`; REGRA #4 (`check:types-inventory-drift`) só em `regenerate-supabase-types.yml`, nunca em PR; `quality-gate.yml:161-183` instala CLI `@latest` não pinado e o passo de drift tem `continue-on-error` (o job passa sempre).
 - `required-checks-guard.yml:29` hardcoda `REQUIRED=`; `branch-protection-sentinel.yml:229-256` consulta a flag clássica `protected` (404 hoje) → avisa "NÃO protegida" em todo push; `BRANCH_PROTECTION_SETUP.md:46-48,132` recomenda checks push-only como required e cita job inexistente.
 
 ### 2.6 Banco e edge functions
@@ -483,7 +483,7 @@ Cada etapa traz **Objetivo · Onde · Como · Aceite · Prova · Depende de · E
 - Depende de: —. Esforço: M. Classe: A.
 
 ### E42 — `quality-gate.yml`: job "Supabase Types Sync" trocado pelo gate E41
-- Objetivo: `:161-162` `npm install -g supabase@latest` (pacote recusa global); `:164-183` `secrets.SUPABASE_PROJECT_ID` único no repo + `continue-on-error` + `diff -q` contrariando REGRA #4.
+- Objetivo: `:161-162` `npm install -g supabase@latest` (o pacote npm desaconselha install global; o job passa hoje — verificado no run da PR #1906 — mas usa CLI `latest` não pinado, contra o 2.101.0 do resto do repo); `:164-183` `secrets.SUPABASE_PROJECT_ID` único no repo (inexistente) + `continue-on-error` + `diff -q` contrariando REGRA #4 → o drift nunca bloqueia.
 - Onde: `.github/workflows/quality-gate.yml`.
 - Como: substituir o job por `npm run check:types-inventory-drift -- --base origin/main` (sem rede) e, em `push: main`, `--live`; remover o segredo órfão.
 - Aceite: remover uma tabela de `types.ts` em PR deixa o job vermelho (teste já existe em `tests/scripts/check-types-inventory-drift.test.mjs`).
