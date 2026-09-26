@@ -4,30 +4,31 @@ import {
   RISK_REVIEW_DEADLINE,
 } from '../../scripts/check-dependency-audit.mjs';
 
+// Updated 2026-09-26: npm refreshed advisory source IDs and ranges for GHSA-5p2g / GHSA-w3rx.
 const reviewedReport = {
   vulnerabilities: {
     'image-size': {
       severity: 'high',
       isDirect: false,
       effects: ['pptxgenjs'],
-      range: '<=2.0.2',
-      fixAvailable: { name: 'pptxgenjs', version: '2.2.0', isSemVerMajor: true },
+      range: '0.6.3 - 2.0.2',
+      fixAvailable: { name: 'pptxgenjs', version: '4.0.0', isSemVerMajor: true },
       via: [
         {
-          source: 1138808,
+          source: 1239765,
           name: 'image-size',
           dependency: 'image-size',
           severity: 'high',
-          range: '<=2.0.2',
-          url: 'https://github.com/advisories/GHSA-w3rx-r6r6-pgpr',
+          range: '>=1.2.0 <=2.0.2',
+          url: 'https://github.com/advisories/GHSA-5p2g-fcmc-qvqq',
         },
         {
-          source: 1138809,
+          source: 1239766,
           name: 'image-size',
           dependency: 'image-size',
           severity: 'high',
-          range: '<=2.0.2',
-          url: 'https://github.com/advisories/GHSA-5p2g-fcmc-qvqq',
+          range: '>=0.6.3 <=2.0.2',
+          url: 'https://github.com/advisories/GHSA-w3rx-r6r6-pgpr',
         },
       ],
     },
@@ -36,8 +37,8 @@ const reviewedReport = {
       isDirect: true,
       effects: [],
       via: ['image-size'],
-      range: '>=2.3.0',
-      fixAvailable: { name: 'pptxgenjs', version: '2.2.0', isSemVerMajor: true },
+      range: '>=4.0.1-beta.0',
+      fixAvailable: { name: 'pptxgenjs', version: '4.0.0', isSemVerMajor: true },
     },
   },
 };
