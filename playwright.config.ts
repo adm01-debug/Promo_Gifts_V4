@@ -133,6 +133,7 @@ export default defineConfig({
         viewport: { width: 1280, height: 720 },
       },
       testMatch: [/smoke\.spec\.ts/],
+      grep: /@smoke/,
       retries: 0,
     },
   ],
