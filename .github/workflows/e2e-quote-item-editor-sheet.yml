@@ -31,11 +31,15 @@ on:
       - '.github/workflows/e2e-quote-item-editor-sheet.yml'
   workflow_dispatch:
   schedule:
-    - cron: '23 4 * * 1'  # E10 — weekly Monday 04:23 UTC
+    - cron: '42 4 * * 1'  # E10 — weekly Monday 04:23 UTC
 
 permissions:
   contents: read
   issues: write
+
+concurrency:
+  group: e2e-quote-item-editor-sheet-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   editor-sheet:

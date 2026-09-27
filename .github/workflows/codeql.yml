@@ -7,12 +7,16 @@ on:
   # ao fan-out do repo (123 workflows). Varredura continua em cada push na main e
   # na segunda 09:00 UTC. Sem branch protection, não bloqueia nenhuma PR.
   schedule:
-    - cron: '0 9 * * 1'
+    - cron: '33 9 * * 1'
 
 permissions:
   contents: read
   security-events: write
   actions: read
+
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   analyze:

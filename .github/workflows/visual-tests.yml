@@ -26,6 +26,10 @@ permissions:
   pull-requests: write
 
 
+concurrency:
+  group: visual-tests-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   visual-baseline:
     # G-H3: fork guard — pull_request de forks não deve escrever no repo

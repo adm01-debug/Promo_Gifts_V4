@@ -25,6 +25,13 @@ on:
         required: false
         default: ''
 
+permissions:
+  contents: read
+
+concurrency:
+  group: stock-filter-stress-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   stress:
     name: stock-filter stress (PR=5k / nightly=25k)
@@ -39,7 +46,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '22.22.1'
+          node-version-file: '.nvmrc'
           cache: 'npm'
 
       - run: npm ci

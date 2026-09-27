@@ -59,6 +59,9 @@ concurrency:
   group: cart-header-qg-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   fuzz:
     name: CartHeader fuzz + notas internas
@@ -69,7 +72,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '22.22.1'
+          node-version-file: '.nvmrc'
           cache: npm
 
       - uses: oven-sh/setup-bun@v2

@@ -39,6 +39,10 @@ permissions:
   pull-requests: write  # necessário para o comentário sticky de recalibração
 
 
+concurrency:
+  group: e2e-pdf-dialog-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   pdf-dialog:
     name: PDF dialog + watermark pixel-diff

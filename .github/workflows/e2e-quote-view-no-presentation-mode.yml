@@ -26,11 +26,15 @@ on:
       - '.github/workflows/e2e-quote-view-no-presentation-mode.yml'
   workflow_dispatch:
   schedule:
-    - cron: '23 4 * * 1'  # E10 — weekly Monday 04:23 UTC
+    - cron: '15 4 * * 1'  # E10 — weekly Monday 04:23 UTC
 
 permissions:
   contents: read
   issues: write
+
+concurrency:
+  group: e2e-quote-view-no-presentation-mode-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   e2e:

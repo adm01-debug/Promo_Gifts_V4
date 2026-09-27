@@ -17,6 +17,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ci-freight-quality-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   freight-unit:
     name: Freight Unit Tests + Coverage

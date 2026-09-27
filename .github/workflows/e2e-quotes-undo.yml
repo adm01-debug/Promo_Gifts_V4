@@ -42,6 +42,13 @@ on:
         required: false
         default: ""
 
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-quotes-undo-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   # ==========================================================================
   # JOB 1 — Ambiente REAL com credenciais E2E do repositório.
@@ -79,7 +86,7 @@ jobs:
       - uses: actions/setup-node@v4
         if: steps.creds.outputs.has_creds == 'true'
         with:
-          node-version: '22.22.1'
+          node-version-file: '.nvmrc'
           cache: npm
 
       - name: Install deps
@@ -153,7 +160,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '22.22.1'
+          node-version-file: '.nvmrc'
           cache: npm
 
       - name: Install deps

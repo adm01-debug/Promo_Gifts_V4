@@ -6,9 +6,17 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   quality-gate:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     env:
       NODE_OPTIONS: --max-old-space-size=4096
     steps:
@@ -17,7 +25,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22.22.1'
+          node-version-file: '.nvmrc'
           cache: 'npm'
           
       - name: Install dependencies
@@ -120,6 +128,7 @@ jobs:
 
   security-audit:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - name: Audit Credentials

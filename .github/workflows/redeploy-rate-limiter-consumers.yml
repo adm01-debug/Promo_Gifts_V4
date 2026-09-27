@@ -27,10 +27,15 @@ permissions:
   contents: write
   pull-requests: write
 
+concurrency:
+  group: redeploy-rate-limiter-consumers-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   detect-consumers:
     name: Detect functions importing rate-limiter
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     outputs:
       functions: ${{ steps.detect.outputs.functions }}
       count: ${{ steps.detect.outputs.count }}
@@ -79,6 +84,7 @@ jobs:
     needs: [detect-consumers, call-deploy]
     if: needs.detect-consumers.outputs.count != '0'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     strategy:
       fail-fast: false
       max-parallel: 3

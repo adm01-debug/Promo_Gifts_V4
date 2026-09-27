@@ -40,6 +40,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: branch-protection-sentinel-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   verify-merge-pattern:
     name: Verify push to main matches accepted patterns

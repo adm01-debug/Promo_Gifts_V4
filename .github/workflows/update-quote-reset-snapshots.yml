@@ -23,6 +23,9 @@ env:
   TZ: America/Sao_Paulo
   CI: 'true'
 
+permissions:
+  contents: read
+
 jobs:
   update-snapshots:
     name: Regerar baselines (--update-snapshots)
@@ -42,7 +45,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '22.22.1'
+          node-version-file: '.nvmrc'
           cache: npm
 
       - name: Install dependencies

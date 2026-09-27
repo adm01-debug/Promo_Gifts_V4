@@ -25,9 +25,14 @@ permissions:
   issues: write
   contents: read
 
+concurrency:
+  group: cross-reference-issues-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   cross-reference:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Cross-reference on PR events
         if: github.event_name == 'pull_request'

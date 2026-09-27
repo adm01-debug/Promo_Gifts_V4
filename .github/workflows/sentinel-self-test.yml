@@ -14,10 +14,15 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: sentinel-self-test-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   fixtures:
     name: Run sentinel-check.sh against fixture matrix
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
