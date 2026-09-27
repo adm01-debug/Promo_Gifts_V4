@@ -39,6 +39,12 @@ setup('authenticate', async ({ page }) => {
   const password = process.env.E2E_USER_PASSWORD;
 
   if (!email || !password) {
+    if (process.env.CI) {
+      throw new Error(
+        '[auth.setup] CI=true mas E2E_USER_EMAIL/E2E_USER_PASSWORD ausentes e E2E_MOCK_AUTH não está ativo. ' +
+        'Configure os segredos no environment do workflow (E22) ou habilite E2E_MOCK_AUTH=1 (E24).',
+      );
+    }
     fs.writeFileSync(STORAGE, JSON.stringify({ cookies: [], origins: [] }, null, 2), 'utf-8');
     setup.info().annotations.push({
       type: 'skip-reason',
