@@ -32,34 +32,26 @@ DEF_FILE="src/lib/supabase-untyped.ts"
 # Foram adicionadas ao código ANTES de regenerar o types.ts.
 # Removê-las da allowlist requer: supabase gen types typescript --project-id <id>
 ALLOWLIST=(
+  # Tabelas que existem no banco mas tipos.ts ainda não foi regenerado para incluí-las.
+  # Entradas abaixo já existem em types.ts e foram removidas em 2026-09-27 (E80 cleanup).
   audit_log
-  categories
   collection_products
-  color_nuances
   kit_component_media
   kit_component_print_areas
   mv_stock_velocity
   personalization_simulations
-  personalization_techniques
   print_area_techniques
   product_badge_definitions
   product_category_assignments
   product_component_location_techniques
-  product_group_components
   product_group_location_techniques
-  product_group_locations
-  product_images
-  product_kit_components
   product_materials
   product_tags
   product_videos
   sales_goals
   security_settings
-  supplier_branches
   system_kill_switches
-  tabela_preco_gravacao_oficial
   tabela_preco_gravacao_oficial_faixa
-  tecnicas_gravacao
   user_2fa_settings
   user_ip_allowlist
   v_kill_switch_hits_summary
