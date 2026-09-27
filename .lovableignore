@@ -87,3 +87,11 @@ src/pages/magazine/PublicMagazineView.tsx
 # Protegido para evitar regressão de produção.
 # ============================================================
 src/services/quoteService.ts
+
+# ============================================================
+# Supabase generated types — protegido contra sobrescrita silenciosa pelo Lovable
+# Incidente 7716ae9 (2026-07-16): Lovable sobrescreveu types.ts e removeu todas
+# as tabelas magazine_* → 80+ erros TS em magazineService.ts. Gate REGRA #4.
+# Alterações devem ser feitas via regeneração controlada com drift-check.
+# ============================================================
+src/integrations/supabase/types.ts

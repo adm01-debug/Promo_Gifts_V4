@@ -36,6 +36,12 @@ jobs:
           VITE_SUPABASE_URL: https://placeholder.supabase.co
           VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
 
+      # GATE 0.5: Dependency audit — bloqueia se advisory allowlist expirar ou
+      # novos advisories não-revisados aparecerem. Previne supply-chain silencioso.
+      # continue-on-error: false → gate bloqueante (gap HIGH identificado em auditoria 2026-09-27)
+      - name: Gate 0.5 — Dependency audit (bloqueante)
+        run: node scripts/check-dependency-audit.mjs
+
       # GATE 1: TypeScript — zero regressions vs baseline
       - name: TypeScript gate (zero regressions)
         run: node scripts/check-tsc-baseline.mjs

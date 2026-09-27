@@ -10,10 +10,10 @@ Este plano **só planeja**. Nenhum arquivo além deste foi alterado.
 
 ## 0. Sumário executivo (para decisão de negócio)
 
-1. **A esteira parece verde, mas boa parte dela não testa nada.** Não existe nenhum segredo `E2E_USER_EMAIL`/`E2E_USER_PASSWORD`/`E2E_ADMIN_*` no repositório (14 segredos cadastrados, nenhum deles de E2E). O fixture de login (`e2e/fixtures/auth.setup.ts:41-48`) grava um estado vazio e **passa**; `loginAs`/`requireAuth` fazem `test.skip`. Resultado medido: ≥ 30 workflows de E2E autenticado terminam verdes em 5–9 segundos sem executar um único teste. É o achado número 1 e atravessa os 5 grupos.
+1. **A esteira parece verde, mas boa parte dela não testa nada.** Não existe nenhum segredo `E2E_USER_EMAIL`/`E2E_USER_PASSWORD`/`E2E_ADMIN_*` no repositório (14 segredos cadastrados, nenhum deles de E2E). O fixture de login (`e2e/fixtures/auth.setup.ts:41-48`) grava um estado vazio e **passa**; `loginAs`/`requireAuth` fazem `test.skip`. Resultado medido: 35 workflows sem credenciais E2E de 54 totais; desses, **11–15 executam specs que exigem autenticação** e terminam verdes com 0 testes executados (os restantes rodam specs puramente públicos/visuais e são legítimos). É o achado número 1 e atravessa os 5 grupos.
 2. **Só 1 check é obrigatório para mergear em `main`** (`Gate Final - Deploy Ready`). Tudo que os outros 116 workflows chamam de "gate" ou "bloqueia merge" é opinativo. O ruleset exige 0 aprovações e o admin tem bypass permanente.
 3. **Cinco workflows estão vermelhos ou travados agora**, todos com causa raiz identificada: (a) `Deploy Edge Functions` e `db-apply-migration` falham ao abrir o PR de recibo porque a configuração do repositório proíbe o Actions de criar PRs; (b) por consequência o `db-schema-drift-check` falha diariamente (ledger sem recibo); (c) `SECURITY DEFINER ACL — Multi-Env` e `restore_seller_cart RPC` ficam "pending" todo dia esperando aprovação humana no environment `Production` e são cancelados no dia seguinte; (d) `Kit Coverage — Integration` falha por drift de schema (`capacity_ml` não existe, `permission denied` na view); (e) `CI/CD Pipeline` ficou vermelho em 7 de 11 runs no dia 25–26/09 porque as 2 vulnerabilidades HIGH do `image-size` (via `pptxgenjs`) estão **aceitas em allowlist** dentro do próprio script de auditoria e o npm renumerou os avisos; a PR #1904 atualizou a allowlist e o gate voltou a passar — com as vulnerabilidades ainda presentes (Dependabot #56/#57 abertos).
-4. **Segurança:** chave `service_role` do projeto legado vazada em maio (alerta #1 de secret scanning, `publicly_leaked: true`, nunca rotacionada); 62 alertas CodeQL abertos (35 HIGH); 2 Dependabot HIGH; 11 pontos onde bots fazem `git push` em branches (inclusive `main`) com `[skip ci]`, driblando o Gate Final; `lovable-autoheal.yml` comita direto em `main` assinando como o dono do repo.
+4. **Segurança:** chave `service_role` do projeto legado vazada em maio (alerta #1 de secret scanning, `publicly_leaked: true`, nunca rotacionada); 62 alertas CodeQL abertos (**38 HIGH** — versão original do plano dizia 35 por erro aritmético: subcategorias somavam 36 e 2 regras foram omitidas: `js/tainted-format-string` e `js/user-controlled-bypass`); 2 Dependabot HIGH; 11 pontos onde bots fazem `git push` em branches (inclusive `main`) com `[skip ci]`, driblando o Gate Final; `lovable-autoheal.yml` comita direto em `main` assinando como o dono do repo.
 5. **Custo/ruído:** 29–30 workflows disparam por PR e 36–38 por push em `main`; ~3.100 minutos de cron em 2 dias (dois runs "pending" contam 1.440 min cada); `Uptime Monitor` sozinho é 28 % de todos os runs; `playwright install --with-deps` aparece em 49 workflows; 27 workflows rodam em todo PR sem filtro de caminho.
 6. **Dependabot de versões nunca rodou** (config de 10/09; 28 runs, todos de segurança). Ações estão em majors com aviso de depreciação Node 20 em todo job.
 
@@ -44,7 +44,7 @@ O plano abaixo estanca primeiro o que está quebrado hoje (E01–E10), depois to
 | Inputs de `workflow_dispatch` interpolados em `run:` | 16 arquivos | scan |
 | Triggers em `master`/`develop` (branches mortas) | 26 workflows | scan (`master` parado desde 21/08) |
 | Nomes de job duplicados entre arquivos | 9 (`quality-gate`, `test`, `check`, `e2e`, `update` ×3, `update-snapshots` ×4, …) | scan |
-| Alertas abertos | CodeQL 62 (HIGH 35) · Dependabot 2 HIGH · Secret scanning 1 | API |
+| Alertas abertos | CodeQL 62 (HIGH 38) · Dependabot 2 HIGH · Secret scanning 1 | API |
 | Cache do Actions | 49 caches, 3,05 GB | API |
 | Specs com `toHaveScreenshot` / pastas de baseline commitadas | 81 / 10 | grep + git |
 | Ações compostas / `workflow_call` no repo | 0 / 0 | `ls .github/actions` |
@@ -54,7 +54,7 @@ O plano abaixo estanca primeiro o que está quebrado hoje (E01–E10), depois to
 ## 2. Achados que sustentam o plano (com evidência)
 
 ### 2.1 Quebrado ou travado agora
-- **PR de recibo proibido** — `deploy-edge-functions.yml:268-288` e `db-apply-migration.yml:169-211` fazem `gh pr create` com `GITHUB_TOKEN`; log dos runs 36205266158 e 35857184284: `GitHub Actions is not permitted to create or approve pull requests`. A migration E15 de 23/09 **foi aplicada** (jobs 1–3 ok) e ficou sem recibo → `db-schema-drift-check` (run 36233279910) falha em "Ledger parity" todo dia às 09:30. Mesma causa em `regenerate-supabase-types.yml:152-169` e `schema-snapshot-export.yml:210-241`.
+- **PR de recibo proibido** — `deploy-edge-functions.yml:268-288` e `db-apply-migration.yml:169-211` fazem `gh pr create` com `GITHUB_TOKEN`; log dos runs 36205266158 e 35857184284: `GitHub Actions is not permitted to create or approve pull requests`. A migration [DBA-E15] de 23/09 **foi aplicada** (jobs 1–3 ok) e ficou sem recibo → `db-schema-drift-check` (run 36233279910) falha em "Ledger parity" todo dia às 09:30. Mesma causa em `regenerate-supabase-types.yml:152-169` e `schema-snapshot-export.yml:210-241`.
 - **Environment `Production` com reviewer obrigatório usado por cron** — `restore-seller-cart-rpc.yml:47` e `security-definer-acl-multi-env.yml:86` (`environment: ${{ matrix.env_name }}`); runs 36232733155/36231645894 com 0 jobs, `pending`; cancelados pelo `concurrency` do dia seguinte desde 23/09. `db-apply-migration.yml:49-62` exige esse reviewer. Os dois desenhos são incompatíveis.
 - **`ci.yml` vermelho 7/11 em 25–26/09** por `check:dependency-audit`: as 2 HIGH do `image-size` (CVE-2025-71329/71330, via `pptxgenjs`) estão aceitas em `scripts/check-dependency-audit.mjs:11-14` (`ALLOWED_IMAGE_SIZE_ADVISORIES`) e o npm renumerou os `source` IDs; #1904 atualizou a allowlist e o gate passou de novo (verde na PR #1906). A vulnerabilidade continua (Dependabot #56/#57 abertos); a mitigação é o gate `check-pptx-image-parser-exposure.mjs`. Não é required de qualquer forma.
 - **`kit-coverage-integration.yml`** falha diário: `column product_kit_components.capacity_ml does not exist` + `permission denied for view v_kit_component_complete` (run 36213477244).
@@ -68,7 +68,7 @@ O plano abaixo estanca primeiro o que está quebrado hoje (E01–E10), depois to
 - Guard que pula em vez de falhar: `e2e.yml:357`, `e2e-flows.yml:90-92` (usa `vars.` enquanto lê `secrets.`), `delivery-quality:34`, `e2e-magazine-header:94-99`, `e2e-quotes-undo:69-77`, `replenishment-quality:63-66` (env em nível de step → `if` sempre falso → gate estrito nunca roda).
 - Nomes errados: `ci-freight-quality.yml:116-120` define `E2E_EMAIL`/`E2E_PASSWORD`/`PLAYWRIGHT_BASE_URL` — nenhum é lido por ninguém.
 - Só 3 workflows falham alto sem segredo: `e2e-crm-callback-approved:52-65`, `e2e-customization-collapse:46-60`, `e2e-magazine-header:100-108` (único que verifica que existe token `sb-*-auth-token` real).
-- Monitores inconclusivos desde a criação: `pgss-slo-report`, `wraparound-monitor-report`, `capacity-growth-report` leem `ops.*` cujas migrations (E40/E33/E30) não têm recibo → verdes, sem dado, desde 16–17/09. `ddl-out-of-band-detector:71-88` colapsa exit 1 e exit 2 em `continue-on-error`.
+- Monitores inconclusivos desde a criação: `pgss-slo-report`, `wraparound-monitor-report`, `capacity-growth-report` leem `ops.*` cujas migrations ([DBA-E40]/[DBA-E33]/[DBA-E30]) não têm recibo → verdes, sem dado, desde 16–17/09. `ddl-out-of-band-detector:71-88` colapsa exit 1 e exit 2 em `continue-on-error`.
 
 ### 2.3 Gates que não podem falhar
 - `freight-quality-gates.yml:286-321` Gate 6 compara `$LINES < 0`; `:96-105` Gate 2 thresholds 0; `:62-64` e `:235-244` `continue-on-error` em lint estrito e E2E.
@@ -95,11 +95,11 @@ O plano abaixo estanca primeiro o que está quebrado hoje (E01–E10), depois to
 - `required-checks.json` declara ruleset `release` (3 checks) que não existe; os 3 workflows (`ssot-supabase`, `stock-rupture-fuzz`, `magazine-unit-tests`) são `paths`-filtrados → deadlock no primeiro PR para `release/*` que não toque esses caminhos.
 - `deploy-gates.yml` Gates 2.5/5.5 exigem segredos → PRs do Dependabot e de forks **sempre** falham o Gate Final; não há guard `dependabot[bot]`.
 - Guardas de CLAUDE.md fora do Gate Final: REGRA #2 (`check-product-type-fields`) só em `quality-gate.yml:78-79` e `prod-health`; REGRA #4 (`check:types-inventory-drift`) só em `regenerate-supabase-types.yml`, nunca em PR; `quality-gate.yml:161-183` instala CLI `@latest` não pinado e o passo de drift tem `continue-on-error` (o job passa sempre).
-- `required-checks-guard.yml:29` hardcoda `REQUIRED=`; `branch-protection-sentinel.yml:229-256` consulta a flag clássica `protected` (404 hoje) → avisa "NÃO protegida" em todo push; `BRANCH_PROTECTION_SETUP.md:46-48,132` recomenda checks push-only como required e cita job inexistente.
+- `required-checks-guard.yml:29` hardcoda `REQUIRED=`; `branch-protection-sentinel.yml:229-256` consulta a flag clássica `protected` (404 hoje) → avisa "NÃO protegida" em todo push; `BRANCH_PROTECTION_SETUP.md:40-41,132` recomenda checks push-only como required e cita job inexistente.
 
 ### 2.6 Banco e edge functions
 - `db-apply-migration.yml:127-136` `psql -1` (transação única) mas 38 migrations usam `CONCURRENTLY` e 55 têm `BEGIN;/COMMIT;` de topo; preflight não checa; sem `timeout-minutes`, sem `lock_timeout`; `migration repair` (`:143-151`) fora da transação.
-- `db-schema-drift-check.yml:40-43,95-116` em PR de migration é vermelho por construção (E15 aplica pós-merge); `:118-124` `db diff --linked` sabidamente não completa (docs E02).
+- `db-schema-drift-check.yml:40-43,95-116` em PR de migration é vermelho por construção ([DBA-E15] aplica pós-merge); `:118-124` `db diff --linked` sabidamente não completa (docs E02).
 - `delete-orphan-edges.yml:32-36,42-46,50-52` aceita qualquer slug, sem `environment`, com injection.
 - `redeploy-rate-limiter-consumers.yml` é um segundo caminho de deploy (viola corolário da REGRA #8) e concorre com `deploy-edge-functions.yml` no mesmo push; nenhum dos dois tem `concurrency`; `deploy-edge-functions.yml:101-104` ignora mudança em `supabase/functions/deno.json`; `:33,237` `vars.SUPABASE_PROJECT_REF` pode redirecionar deploy de produção.
 - Produção tocada a partir de PR: `schema-snapshot-export.yml:56-106` (dump completo do schema como artefato público 14 d em todo PR — repo é público), `migration-dry-run.yml:42-46` (DDL de rascunho em prod com `ACCESS EXCLUSIVE`, sem `lock_timeout`), `edge-integration-all.yml:119-153` (fuzz com `service_role` em prod), `ci-freight-quality.yml:129-146` (5.000 requisições em edge functions de prod por PR se `vars.SUPABASE_URL` existir), `freight-quality-gates.yml:27-28,191-198,356-364` (scripts caem em `VITE_SUPABASE_URL` = prod).
@@ -116,7 +116,7 @@ O plano abaixo estanca primeiro o que está quebrado hoje (E01–E10), depois to
 - `labels.yml` gerencia 8 labels; automações usam outras 10 não declaradas. `dependabot.yml` nunca produziu run de versão.
 
 ### 2.8 O que está bom e deve ser preservado
-`deploy-gates.yml` (Gate 0 via `needs`, agregador `if: always()` + `join(needs.*.result)` tratando skipped/cancelled como falha, timeouts em todos os jobs, ref hardcoded); as camadas do E15 (regex → sonda de reviewer → guard de host/pooler → probe READ ONLY → `psql -X -w -1 -v ON_ERROR_STOP=1` → repair → post-check → recibo via PR, CLI 2.101.0); Management API read-only + `pg_catalog` em todas as auditorias desde E12; E41 (`check:types-inventory-drift` sem `continue-on-error`); E42 (hash de bundle + allowlist `verify_jwt`); `drafts:target:check` rejeitando `pqp`; guards duros de `e2e-crm-callback-approved`, `e2e-customization-collapse`, `e2e-magazine-header` (`persist-credentials: false`, verificação de token real, `PLAYWRIGHT_JSON_OUTPUT_NAME`); esqueleto safe-mode (dry-run → classificar → abortar) de `e2e-update-calendar-snapshots:61-99`; passagem de `head_commit.message` por `env:` em `e2e-visual-preview-button:93-94`; desenho do smoke em `e2e.yml` (`PWTEST_FORBID_ONLY`, `--max-failures=1`, passo explícito de falha, `e2e-smoke-coverage-doc.mjs --check`); job mock-auth de `e2e-quotes-undo:144-194` (`E2E_MOCK_AUTH`); `--retries=0` + `--last-failed` (tooltips/undo/discount); cache por versão do Playwright em `pdf-quality:45-65`; dedupe de comentário em `bundle-size-report:50-109`; matriz `include` projeto→navegador em `e2e-pdf-print-cross-browser:37-46`; contêiner `postgres:17.6` hermético em `magazine-unit-tests` e `security-definer-acl-multi-env`; pisos reais de cobertura (stock-future 95/85, supplier 90/85, magazine 58/51/48/56, ci-freight 75); `sentinel-check.sh` com 33 fixtures; template de advisories (github-script SHA-pinado, dedupe por label+prefixo, 90 d); `check-result-contract.mjs` (passed/failed/inconclusive/static-pass).
+`deploy-gates.yml` (Gate 0 via `needs`, agregador `if: always()` + `join(needs.*.result)` tratando skipped/cancelled como falha, timeouts em todos os jobs, ref hardcoded); as camadas do [DBA-E15] (regex → sonda de reviewer → guard de host/pooler → probe READ ONLY → `psql -X -w -1 -v ON_ERROR_STOP=1` → repair → post-check → recibo via PR, CLI 2.101.0); Management API read-only + `pg_catalog` em todas as auditorias desde [DBA-E12]; [DBA-E41] (`check:types-inventory-drift` sem `continue-on-error`); [DBA-E42] (hash de bundle + allowlist `verify_jwt`); `drafts:target:check` rejeitando `pqp`; guards duros de `e2e-crm-callback-approved`, `e2e-customization-collapse`, `e2e-magazine-header` (`persist-credentials: false`, verificação de token real, `PLAYWRIGHT_JSON_OUTPUT_NAME`); esqueleto safe-mode (dry-run → classificar → abortar) de `e2e-update-calendar-snapshots:61-99`; passagem de `head_commit.message` por `env:` em `e2e-visual-preview-button:93-94`; desenho do smoke em `e2e.yml` (`PWTEST_FORBID_ONLY`, `--max-failures=1`, passo explícito de falha, `e2e-smoke-coverage-doc.mjs --check`); job mock-auth de `e2e-quotes-undo:144-194` (`E2E_MOCK_AUTH`); `--retries=0` + `--last-failed` (tooltips/undo/discount); cache por versão do Playwright em `pdf-quality:45-65`; dedupe de comentário em `bundle-size-report:50-109`; matriz `include` projeto→navegador em `e2e-pdf-print-cross-browser:37-46`; contêiner `postgres:17.6` hermético em `magazine-unit-tests` e `security-definer-acl-multi-env`; pisos reais de cobertura (stock-future 95/85, supplier 90/85, magazine 58/51/48/56, ci-freight 75); `sentinel-check.sh` com 33 fixtures; template de advisories (github-script SHA-pinado, dedupe por label+prefixo, 90 d); `check-result-contract.mjs` (passed/failed/inconclusive/static-pass).
 
 ---
 
@@ -142,7 +142,7 @@ Cada etapa traz **Objetivo · Onde · Como · Aceite · Prova · Depende de · E
 
 ## Fase 1 — Estancar o que está quebrado hoje (E01–E10)
 
-### E01 — Permitir que o Actions abra PRs (destrava recibos E15/E66)
+### E01 — Permitir que o Actions abra PRs (destrava recibos [DBA-E15]/E66)
 - Objetivo: `Deploy Edge Functions`, `db-apply-migration`, `regenerate-supabase-types` e `schema-snapshot-export` falham em `gh pr create` ("GitHub Actions is not permitted to create or approve pull requests").
 - Onde: Settings → Actions → General → "Allow GitHub Actions to create and approve pull requests" (`PUT /repos/.../actions/permissions/workflow`, `can_approve_pull_request_reviews: true`).
 - Como: ligar a permissão; manter `default_workflow_permissions: read`.
@@ -167,7 +167,7 @@ Cada etapa traz **Objetivo · Onde · Como · Aceite · Prova · Depende de · E
 - Depende de: —. Esforço: M. Classe: **B** (environment/segredos).
 
 ### E04 — Recibo retroativo da migration 20260923114500 e fim do "Ledger parity" vermelho
-- Objetivo: `db-schema-drift-check` falha diário (run 36233279910) porque a E15 de 23/09 aplicou e não gravou recibo (run 35857184284, job 4).
+- Objetivo: `db-schema-drift-check` falha diário (run 36233279910) porque a [DBA-E15] de 23/09 aplicou e não gravou recibo (run 35857184284, job 4).
 - Onde: `supabase/MIGRATIONS_SYNC_LOG.md`; `scripts/append-migration-receipt.mjs`.
 - Como: PR manual com a linha de recibo (run, versão, data) exatamente como o script geraria; verificar com `npm run check:migrations-sync-log` (ou o gate equivalente) local.
 - Aceite: `db-schema-drift-check` (job "Migrations x Canonical schema") verde no próximo cron.
@@ -185,7 +185,7 @@ Cada etapa traz **Objetivo · Onde · Como · Aceite · Prova · Depende de · E
 ### E06 — `kit-coverage-integration.yml`: alinhar teste com schema/grants reais
 - Objetivo: falha diária `column product_kit_components.capacity_ml does not exist` e `permission denied for view v_kit_component_complete` (run 36213477244).
 - Onde: `src/lib/external-db/kit-coverage.integration.test.ts`; diagnóstico via `pg_catalog` (REGRA #8): colunas de `product_kit_components`, `has_table_privilege` da view para o papel usado.
-- Como: primeiro ler o estado real (query read-only via Management API); se a coluna foi renomeada/removida por migration aprovada → ajustar o teste; se a view perdeu GRANT → migration nova via E15 (Classe B). Não "consertar" o teste sem saber qual lado está certo.
+- Como: primeiro ler o estado real (query read-only via Management API); se a coluna foi renomeada/removida por migration aprovada → ajustar o teste; se a view perdeu GRANT → migration nova via [DBA-E15] (Classe B). Não "consertar" o teste sem saber qual lado está certo.
 - Aceite: cron verde 2 dias seguidos.
 - Prova: query `pg_catalog` no PR + run verde.
 - Depende de: —. Esforço: M. Classe: A (teste) / **B** (se precisar DDL).
@@ -277,7 +277,7 @@ Cada etapa traz **Objetivo · Onde · Como · Aceite · Prova · Depende de · E
 ### E17 — `permissions`, `concurrency` e `timeout-minutes` em todos os arquivos
 - Objetivo: 51/59/44 lacunas medidas; `deploy-gates.yml` (o required) sem `concurrency`.
 - Onde: todos os arquivos sem os campos; `deploy-gates.yml` com `cancel-in-progress: ${{ github.event_name == 'pull_request' }}`.
-- Como: PR mecânico por grupo (core, db, e2e, quotes, cart/stock); timeouts realistas (2–5 min em jobs estáticos; ≤ 30 em E2E; ≤ 15 em E15 `apply`); `concurrency` **não cancelável** em escritas (deploy, migration, receipts).
+- Como: PR mecânico por grupo (core, db, e2e, quotes, cart/stock); timeouts realistas (2–5 min em jobs estáticos; ≤ 30 em E2E; ≤ 15 em [DBA-E15] `apply`); `concurrency` **não cancelável** em escritas (deploy, migration, receipts).
 - Aceite: script de E11 reporta 0 lacunas.
 - Prova: saída do script.
 - Depende de: E11. Esforço: M. Classe: A.
@@ -390,10 +390,10 @@ Cada etapa traz **Objetivo · Onde · Como · Aceite · Prova · Depende de · E
 - Prova: run citado.
 - Depende de: E03. Esforço: P. Classe: A.
 
-### E31 — Monitores inconclusivos viram visíveis (E30/E33/E40, DDL out-of-band)
+### E31 — Monitores inconclusivos viram visíveis ([DBA-E30]/[DBA-E33]/[DBA-E40], DDL out-of-band)
 - Objetivo: `pgss-slo-report`, `wraparound-monitor-report`, `capacity-growth-report` verdes sem dado desde 16–17/09 (migrations sem recibo); `ddl-out-of-band-detector:71-88` colapsa inconclusivo em verde.
 - Onde: os 4 workflows; `scripts/check-result-contract.mjs` já tem o tri-estado.
-- Como: `status == inconclusive` → abrir/atualizar issue `ci-inconclusive` deduplicada e marcar o job como falha em `schedule`; até as migrations E30/E33/E40 serem aplicadas via E15 (**PO**), desligar os 3 schedules com nota no header.
+- Como: `status == inconclusive` → abrir/atualizar issue `ci-inconclusive` deduplicada e marcar o job como falha em `schedule`; até as migrations [DBA-E30]/[DBA-E33]/[DBA-E40] serem aplicadas via [DBA-E15] (**PO**), desligar os 3 schedules com nota no header.
 - Aceite: nenhum cron verde com relatório `inconclusive`.
 - Prova: run citado com issue aberta.
 - Depende de: E04. Esforço: P. Classe: A (workflow) / **PO** (aplicar as 3 migrations).
@@ -662,7 +662,7 @@ Cada etapa traz **Objetivo · Onde · Como · Aceite · Prova · Depende de · E
 
 ## Fase 7 — Banco e Supabase ops (E63–E74)
 
-### E63 — Preflight de segurança transacional no E15
+### E63 — Preflight de segurança transacional no [DBA-E15]
 - Objetivo: `db-apply-migration.yml:127-136` `psql -1` + 38 migrations com `CONCURRENTLY` e 55 com `BEGIN;/COMMIT;` de topo → aplicação parcial possível; `scripts/preflight-migration-apply.mjs:75-110` não checa.
 - Onde: `scripts/preflight-migration-apply.mjs`; workflow.
 - Como: rejeitar `CONCURRENTLY`, `BEGIN|COMMIT|ROLLBACK` de topo, `DROP` sem allowlist, `ALTER TYPE … ADD VALUE`, ausência de `IF NOT EXISTS` em `CREATE`, salvo opt-out `-- transaction: none` + `-- approved-by:`; `PGOPTIONS='-c lock_timeout=30s -c statement_timeout=10min'`; `timeout-minutes: 15` no `apply`.
@@ -670,7 +670,7 @@ Cada etapa traz **Objetivo · Onde · Como · Aceite · Prova · Depende de · E
 - Prova: `tests/scripts/preflight-migration-apply.test.mjs` mutante.
 - Depende de: —. Esforço: M. Classe: A.
 
-### E64 — Ledger dentro da transação do E15 (ou compensação explícita)
+### E64 — Ledger dentro da transação do [DBA-E15] (ou compensação explícita)
 - Objetivo: `:143-151` `migration repair` fora da transação → DDL aplicada sem ledger se falhar (exatamente o que a POLITICA_DDL proíbe).
 - Onde: workflow.
 - Como: `INSERT INTO supabase_migrations.schema_migrations (version, name, statements)` dentro do mesmo `psql -1`; manter `repair` como reconciliação idempotente; passo `if: failure()` que imprime o comando de repair e abre issue `ledger-manifest-drift`.
@@ -678,11 +678,11 @@ Cada etapa traz **Objetivo · Onde · Como · Aceite · Prova · Depende de · E
 - Prova: teste no contêiner PG17 (`security-definer-acl-multi-env` já tem o padrão).
 - Depende de: E63. Esforço: M. Classe: A (workflow) — aplicação real continua **B**.
 
-### E65 — Fim do chicken-and-egg entre E15 e `migrations-sync-log-gate`/`db-schema-drift-check`
+### E65 — Fim do chicken-and-egg entre [DBA-E15] e `migrations-sync-log-gate`/`db-schema-drift-check`
 - Objetivo: PR de migration é vermelho em "Ledger parity" (`db-schema-drift-check:40-43,95-116`) e precisa de recibo antes de existir (`check-migrations-sync-log-gate.mjs:92-98`); `append-migration-receipt.mjs` duplica linhas (757-758).
 - Onde: os 2 scripts + 2 workflows.
-- Como: linha `pendente` obrigatória no PR (gate valida formato); recibo do E15 **atualiza** a linha (dedupe por versão); parity em PR exclui migrations adicionadas pelo próprio PR (diff vs base).
-- Aceite: PR de migration nova verde nos dois checks; após E15, uma única linha por versão.
+- Como: linha `pendente` obrigatória no PR (gate valida formato); recibo do [DBA-E15] **atualiza** a linha (dedupe por versão); parity em PR exclui migrations adicionadas pelo próprio PR (diff vs base).
+- Aceite: PR de migration nova verde nos dois checks; após [DBA-E15], uma única linha por versão.
 - Prova: PR de exemplo + teste do script.
 - Depende de: E04, E64. Esforço: M. Classe: A.
 
@@ -826,7 +826,7 @@ Cada etapa traz **Objetivo · Onde · Como · Aceite · Prova · Depende de · E
 - Prova: run.
 - Depende de: E71. Esforço: P. Classe: A.
 
-### E83 — Receitas E15/E66: teste de ponta a ponta do caminho autorizado
+### E83 — Receitas [DBA-E15]/E66: teste de ponta a ponta do caminho autorizado
 - Objetivo: `db-apply-migration.yml` teve 3 runs (2 cancelados, 1 falho no recibo); nunca completou verde. É o único caminho autorizado.
 - Onde: workflow; migration no-op de teste `2026xxxx_e83_noop.sql` (`SELECT 1` com header de rollback).
 - Como: após E01/E02/E63/E64: dispatch com a no-op em `production` (aprovação do PO) → 4 jobs verdes → PR de recibo mergeada.
@@ -938,8 +938,8 @@ Cada etapa traz **Objetivo · Onde · Como · Aceite · Prova · Depende de · E
 - Prova: —.
 - Depende de: —. Esforço: P. Classe: **PO**.
 
-### E96 — Triagem dos 62 alertas CodeQL (35 HIGH)
-- Objetivo: `js/file-system-race` 8, `js/regex/missing-regexp-anchor` 6, `js/insecure-temporary-file` 5, `js/incomplete-url-substring-sanitization` 4, `js/insecure-randomness` 4, `js/clear-text-storage-of-sensitive-data` 3, `js/incomplete-sanitization` 3, `js/remote-property-injection` 2, `js/clear-text-logging` 1 + 27 medium.
+### E96 — Triagem dos 62 alertas CodeQL (38 HIGH)
+- Objetivo: `js/file-system-race` 8, `js/regex/missing-regexp-anchor` 6, `js/insecure-temporary-file` 5, `js/incomplete-url-substring-sanitization` 4, `js/insecure-randomness` 4, `js/clear-text-storage-of-sensitive-data` 3, `js/incomplete-sanitization` 3, `js/remote-property-injection` 2, `js/clear-text-logging` 1, `js/tainted-format-string` 1, `js/user-controlled-bypass` 1 (**38 HIGH total**; versão original do plano listava apenas 35 por omissão dessas 2 regras) + 28 medium (inclui `js/file-access-to-http` 1 também omitido na versão original).
 - Onde: aba Security; código apontado.
 - Como: 1 PR por regra (não por alerta); scripts de CI (`scripts/**`) primeiro (temp file/race/cmd-injection); falsos positivos dispensados com justificativa; meta: 0 HIGH abertos; `codeql` passa a falhar em HIGH novo (`fail-on: high` no upload).
 - Aceite: 0 HIGH abertos; novo HIGH bloqueia PR.
@@ -952,7 +952,7 @@ Cada etapa traz **Objetivo · Onde · Como · Aceite · Prova · Depende de · E
 - Como: verificar o log do job "Dependabot Updates" (aba Insights → Dependency graph → Dependabot) — provável config não habilitada ou erro de lockfile; corrigir; `dependency-review` com `fail-on-severity: high` e allowlist de licenças.
 - Aceite: primeiro PR `chore(deps)`/`chore(ci)` do Dependabot aberto e verde (E59).
 - Prova: PR.
-- Depende de: E59. Esforço: P. Classe: **B**.
+- Depende de: —. Esforço: P. Classe: **B**.
 
 ### E98 — Inventário e rotação de PATs
 - Objetivo: `SUPABASE_ACCESS_TOKEN` (PAT longo compartilhado por ~20 workflows), `BRANCH_PROTECTION_READ_TOKEN`, `CART_TUNE_PAT`, `VERCEL_TOKEN`, `LHCI_GITHUB_APP_TOKEN` — vários inexistentes, nenhum com rotação; `PGSSLMODE: require` sem CA.
@@ -990,12 +990,12 @@ Cada etapa traz **Objetivo · Onde · Como · Aceite · Prova · Depende de · E
 6. **Semanas 9–10 (consolidação):** E85–E93; só depois de E23/E43, senão a consolidação herda gates vazios.
 7. **Contínuo:** E94–E100; E94 e E95 podem (devem) ser decididos na semana 1.
 
-Decisões que só o PO pode tomar (Classe PO): E07, E16 (branch `master`), E22, E31 (aplicar E30/E33/E40), E53, E54, E73, E74, E75, E94, E95.
+Decisões que só o PO pode tomar (Classe PO): E07, E16 (branch `master`), E22, E31 (aplicar [DBA-E30]/[DBA-E33]/[DBA-E40]), E53, E54, E73, E74, E75, E94, E95.
 Ações que exigem PO antes do merge (Classe B): E01, E02, E03, E15 (flag), E59, E70, E79, E83, E97, E98.
 
 ## 5. O que este plano **não** propõe
 - Não remove nenhuma guarda `// SSOT:`/`// GUARD:` nem altera `client.ts`, `validate-supabase-config.mjs`, `.lovableignore`, `sentinel-check.sh` (arquivos protegidos do CLAUDE.md) além do que E52 descreve no workflow do sentinel.
-- Não aplica DDL nem deploy por MCP. Toda aplicação continua em E15/E66; E83 é o teste do caminho, não um atalho.
+- Não aplica DDL nem deploy por MCP. Toda aplicação continua em [DBA-E15]/E66; E83 é o teste do caminho, não um atalho.
 - Não reduz cobertura: os pisos reais listados em 2.8 são preservados; thresholds só sobem.
 - Não converte `Gate Final` em algo maior antes de E55/E88 provarem que cada passo adicionado é determinístico e sem rede.
 
@@ -1003,3 +1003,92 @@ Ações que exigem PO antes do merge (Classe B): E01, E02, E03, E15 (flag), E59,
 1. Destravar os PRs automáticos — hoje deploy e migration terminam em erro por uma configuração do repositório · Settings → Actions (E01) + App token (E02)
 2. Separar leitura e escrita em produção — dois monitores diários ficam presos esperando aprovação e nunca rodam · environment `production-readonly` (E03)
 3. Criar o usuário de teste — sem ele, mais de 30 verificações "verdes" não testam nada · Supabase Auth + segredos (E21, E22)
+
+---
+
+## 7. Errata e gaps descobertos na validação pós-publicação (2026-09-27)
+
+> Auditoria realizada por 5 agentes especializados em paralelo após o merge via PR #1906.
+> Todas as correções referenciadas acima (E96, tabela de estado, ponto 1 e 4 do sumário) já foram aplicadas neste documento.
+
+### 7.1 Erros corrigidos nesta revisão
+
+| Erro | Versão original | Versão correta | Fonte |
+|---|---|---|---|
+| Contagem HIGH CodeQL | 35 | 38 | Agente segurança: API CodeQL retornou 38 HIGH; 2 regras omitidas |
+| Subcategoria HIGH (aritmética) | soma implícita 35 | soma real 36 (+2 novas = 38) | `js/tainted-format-string` 1 + `js/user-controlled-bypass` 1 |
+| MEDIUM omitido | — | `js/file-access-to-http` (1 alerta) | Agente segurança |
+| "≥30 workflows verdes sem testar" | ≥30 | 35 sem credenciais; **11–15 com specs authed que skipam** | Agente E2E: 54 total Playwright, 35 sem qualquer credencial |
+| `restore-seller-cart-rpc.yml:47` campo de matrix | `matrix.env_name` | `matrix.environment` (campo correto na matrix desse workflow; efeito idêntico: `environment: Production`) | Agente validação de referências (107 refs; 95,3% correto) |
+| `BRANCH_PROTECTION_SETUP.md:46-48` — onde está a recomendação de check push-only | `:46-48` | `:40-41` (linhas reais da recomendação; `:46-48` é seção "Bypass list") | Agente validação de referências |
+
+### 7.2 Bugs novos descobertos (não documentados no plano original)
+
+1. **Role `'seller'` inexistente no tipo `Role`** — `e2e/carrinhos/list-url-state-restore.spec.ts` usa `loginAs(page, 'seller')`, mas `Role = "user" | "admin" | "dev" | "editor"` (`e2e/helpers/auth.ts:35`). TypeScript deveria rejeitar em build. Em runtime cai no `else` implícito e tenta `E2E_USER_EMAIL` com mensagem de erro enganosa `Credenciais E2E_SELLER_EMAIL/PASSWORD ausentes`.
+   - Classe: bug de tipo; esforço: P; ação: adicionar `"seller"` ao union ou corrigir o spec.
+
+2. **`loginAs` não usa `return` após `test.skip`** — `e2e/helpers/auth.ts:88-90`: o código continua para `await gotoAndSettle(page, "/")` após `test.skip(true, ...)`. Funciona porque Playwright lança exceção interna no skip, mas é padrão frágil que pode quebrar em versões futuras do Playwright.
+   - Classe: fragilidade; esforço: P; ação: adicionar `return` após `test.skip`.
+
+### 7.3 Claims confirmados com precisão aumentada
+
+| Claim do plano | Status | Detalhe |
+|---|---|---|
+| `auth.setup.ts:41-48` grava storageState vazio | ✅ CONFIRMADO | Exato: `if (!email \|\| !password) { fs.writeFileSync(STORAGE, '{"cookies":[],"origins":[]}'); return; }` |
+| `e2e/helpers/auth.ts:88-90` tem `test.skip` | ✅ CONFIRMADO | `if (!email \|\| !password) { test.skip(true, ...); }` |
+| `e2e/fixtures/test-base.ts:182-186` tem duplo guard | ✅ CONFIRMADO | Guards em linhas 182–191 (não apenas 182–186) |
+| `e2e-flows.yml:92` usa `vars.` onde deveria ser `secrets.` | ✅ CONFIRMADO | Lê `vars.E2E_USER_EMAIL` para a condição `if:` mas mapeia `secrets.E2E_USER_EMAIL` para a env var |
+| `freight-quality-gates.yml:286-321` Gate 6 `$LINES < 0` | ✅ CONFIRMADO | Threshold literal é `< 0`; 0% de coverage passa |
+| `e2e-flows.yml:248` usa `--project=routes-mobile` inexistente | ✅ CONFIRMADO | Projeto não existe em `playwright.config.ts`; `--pass-with-no-tests` mascara |
+| 6 workflows documentados ainda falhando | ✅ CONFIRMADO | Zero resoluções em 27/09; mesmas causas raiz |
+
+### 7.4 Estado dos 7 workflows falhando em 27/09/2026
+
+| Workflow | Último run | Status | Causa raiz |
+|---|---|---|---|
+| `deploy-edge-functions.yml` | #272 (26/09) | ❌ failure | `gh pr create` bloqueado — Actions sem permissão de criar PRs |
+| `db-apply-migration.yml` | #3 (23/09) | ❌ failure | Mesma causa; inativo desde 23/09 |
+| `db-schema-drift-check.yml` | #498 (26/09) | ❌ failure | Ledger sem recibo da migration de 23/09 |
+| `kit-coverage-integration.yml` | #99 (26/09) | ❌ failure | `capacity_ml` não existe + `permission denied` na view |
+| `e2e-crm-callback-approved.yml` | #124 (26/09) | ❌ failure | Secret `CRM_CALLBACK_API_KEY` não configurado |
+| `restore-seller-cart-rpc.yml` | #549 (26/09) | ⏳ pending | `environment: Production` sem reviewer → cron preso em loop |
+| `security-definer-acl-multi-env.yml` | #570 (26/09) | ⏳ pending | Mesmo padrão de loop pending |
+
+### 7.5 Gaps não documentados no plano — descobertos pelo Gap Hunter (2026-09-27)
+
+> Achados de dois agentes independentes (a0936989403fac267 e aa70f294f8930b232) rodando em paralelo.
+> Nenhum destes itens tem etapa correspondente em E01–E100.
+
+#### 7.5.1 Críticos (violam REGRA #8 ou criam canal de deploy não autorizado)
+
+| ID | Arquivo:linha | Achado | Risco |
+|---|---|---|---|
+| G-H1 | `redeploy-rate-limiter-consumers.yml:72-84` | Executa `supabase functions deploy` diretamente via CLI — 3º canal de deploy de edge function não autorizado (viola corolário deploy da REGRA #8); sem `concurrency`, sem ledger, concorre silenciosamente com `deploy-edge-functions.yml` | **CRÍTICO** — deploy de produção fora do único caminho autorizado |
+| G-H2 | `lint-untyped-from.yml:33` | `continue-on-error: true` permanente com TODO stale; gate de tipo suprimido em PRs sem aviso — qualquer tipo `unknown`/`any` passa sem ruído | ALTO |
+| G-H3 | `e2e-visual-preview-button.yml` | Trigger `pull_request` com `permissions: contents: write` sem fork guard — um fork malicioso em PR pode escrever no repo | ALTO |
+
+#### 7.5.2 Médios (ruído/risco operacional)
+
+| ID | Arquivo:linha | Achado |
+|---|---|---|
+| G-M1 | `lovable-autoheal.yml:146` | Email real `adm01@promobrindes.com.br` hardcoded como autor de git — PII exposta em log público do Actions |
+| G-M2 | `deploy-vercel.yml:74` | `--token ${{ secrets.VERCEL_TOKEN }}` inline em flags de CLI — token exposto no log de run (use `VERCEL_TOKEN` como env var, não argumento) |
+| G-M3 | Crons simultâneos | 5 workflows disparando às `0 6 * * *` (06:00 UTC) — spike de concorrência; risco de throttling do PAT compartilhado |
+| G-M4 | `e2e-update-alert-dialog-snapshots.yml`, `e2e-update-confirm-dialog-snapshots.yml`, `e2e-update-magazine-ring-snapshots.yml` | Trigger `push` sem filtro `branches: [main]` — `git push` em qualquer branch que toque os paths dispara atualização de snapshot |
+| G-M5 | `bun-version: latest` + `git push origin main` | 4 workflows de snapshot usam `bun-version: latest`; um bump de bun pode quebrar testes e o push automático propaga snapshots errados para `main` |
+| G-M6 | `supabase/setup-cli@v2` | Tag mutável em 12 workflows críticos (`db-apply-migration.yml`, `deploy-edge-functions.yml`, etc.) — supply chain: uma atualização maliciosa de `@v2` atinge todos |
+| G-M7 | `uptime-monitor.yml:49` | Extrai JWT por regex frágil em `grep -o 'eyJ[^"]*'`; qualquer mudança de formato do JSON quebra silenciosamente o uptime check |
+
+#### 7.5.3 Baixos (higiene)
+
+| ID | Arquivo:linha | Achado |
+|---|---|---|
+| G-L1 | `security-definer-acl-multi-env.yml:70` | `PGPASSWORD` definida em texto plano no env do step (visível em `--debug`; prefira secret mascarado) |
+| G-L2 | 72 workflows | Fazem upload de artefatos; apenas 3 consomem — 69 uploads de artefatos sem consumidor (custo de storage; expiração padrão 90d acumula) |
+| G-L3 | `cart-header-quality-gate.yml:135` | Usa `denoland/setup-deno@v1` enquanto outros workflows usam `@v2` — versão de Deno inconsistente |
+| G-L4 | `supabase-linter-gate.yml` | `exit 2` (código desconhecido) sem caminho de skip gracioso em fork PRs — causa falha em vez de skip quando credenciais ausentes |
+
+#### 7.5.4 Sugestão de etapas adicionais
+
+Os itens G-H1 (canal de deploy não autorizado) e G-H3 (fork guard) são bloqueantes de segurança e deveriam ser priorizados antes de E50+. G-H1 viola explicitamente REGRA #8; G-H3 expõe escrita em repo a PRs de forks. Ambos cabem em uma única etapa E101 (Classe **B**, esforço M).
+

@@ -68,6 +68,7 @@ jobs:
           CRITICAL_FILES=(
             "src/integrations/supabase/client.ts"
             "scripts/validate-supabase-config.mjs"
+            "src/integrations/supabase/types.ts"
           )
           
           MISSING=()
