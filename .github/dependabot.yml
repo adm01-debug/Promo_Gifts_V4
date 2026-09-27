@@ -43,9 +43,13 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
+      time: "06:00"
+      timezone: "America/Sao_Paulo"
+    open-pull-requests-limit: 5
     labels:
       - "dependencies"
       - "ci"
       - "automated"
     commit-message:
       prefix: "chore(ci)"
+      include: "scope"

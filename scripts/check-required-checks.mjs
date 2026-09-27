@@ -122,7 +122,19 @@ for (const rs of rulesets) {
       );
       driftA++;
     } else {
-      info(`✓ [${rs.id}] ${name} ← ${workflow}`);
+      // E56: required check deve ter trigger incondicional — paths: filtra e bloqueia PRs
+      const jobsIdx = wf.indexOf('\njobs:');
+      const onSection = jobsIdx > 0 ? wf.slice(0, jobsIdx) : wf;
+      if (/^ {2,}paths(?:-ignore)?:/m.test(onSection)) {
+        console.error(
+          `::error file=${workflow}::ruleset '${rs.id}': required check "${name}" está em workflow com filtro ` +
+          `\`paths:\` no trigger \`on:\` — pode não disparar em todos os PRs e bloquear o merge indefinidamente. ` +
+          `Remova o filtro \`paths:\` do trigger ou adicione um job "pass-through" incondicional que sempre passa.`,
+        );
+        driftA++;
+      } else {
+        info(`✓ [${rs.id}] ${name} ← ${workflow}`);
+      }
     }
   }
 }

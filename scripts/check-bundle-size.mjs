@@ -17,18 +17,25 @@
  *   node scripts/check-bundle-size.mjs --update-baseline
  * (registra valores atuais e adiciona +20% de margem para crescimento orgânico).
  *
+ * Com `--check-ratchet` (E41):
+ *   Compara bundle-size-baseline.json contra a base do PR (GITHUB_BASE_SHA ou origin/main).
+ *   Falha se qualquer limite aumentou E o PR não tem label `ratchet-override`.
+ *   Lê labels da env var GITHUB_LABELS (vírgulas). Pula silenciosamente se sem git.
+ *
  * Saídas:
  *   exit 0 — dentro dos limites
- *   exit 1 — limite ultrapassado ou regressão detectada
+ *   exit 1 — limite ultrapassado, regressão detectada, ou ratchet não autorizado
  *   exit 2 — erro de execução (dist/ ausente ou baseline inválido)
  */
 import { readdirSync, statSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join, relative } from 'node:path';
+import { execSync } from 'node:child_process';
 
 const ROOT = process.cwd();
 const DIST_ASSETS = join(ROOT, 'dist', 'assets');
 const BASELINE_PATH = join(ROOT, 'bundle-size-baseline.json');
 const UPDATE_FLAG = process.argv.includes('--update-baseline');
+const CHECK_RATCHET = process.argv.includes('--check-ratchet');
 
 // ─── Limites padrão (bytes, raw não-gzip) ───────────────────────────────────
 const DEFAULT_LIMITS = {
@@ -160,14 +167,57 @@ let limits = DEFAULT_LIMITS;
 let criticalChunks = DEFAULT_CRITICAL_CHUNKS;
 let snapshot = null;
 
+let currentBaselineRaw = null;
 if (existsSync(BASELINE_PATH)) {
   try {
-    const baseline = JSON.parse(readFileSync(BASELINE_PATH, 'utf8'));
-    limits = { ...DEFAULT_LIMITS, ...(baseline.limits ?? {}) };
-    if (baseline.criticalChunks) criticalChunks = baseline.criticalChunks;
-    snapshot = baseline.snapshot ?? null;
+    currentBaselineRaw = JSON.parse(readFileSync(BASELINE_PATH, 'utf8'));
+    limits = { ...DEFAULT_LIMITS, ...(currentBaselineRaw.limits ?? {}) };
+    if (currentBaselineRaw.criticalChunks) criticalChunks = currentBaselineRaw.criticalChunks;
+    snapshot = currentBaselineRaw.snapshot ?? null;
   } catch {
     console.warn('⚠️  Não foi possível ler bundle-size-baseline.json — usando defaults.');
+  }
+}
+
+// ── E41: Ratchet guard — falha se baseline aumentou em PR sem label ratchet-override
+if (CHECK_RATCHET && currentBaselineRaw) {
+  const baseRef = process.env.GITHUB_BASE_SHA || 'origin/main';
+  try {
+    const baseJson = execSync(`git show "${baseRef}":bundle-size-baseline.json`, {
+      encoding: 'utf8',
+      stdio: ['pipe', 'pipe', 'pipe'],
+    });
+    const baseBaseline = JSON.parse(baseJson);
+    const increased = [];
+
+    const cur = currentBaselineRaw.limits ?? {};
+    const base = baseBaseline.limits ?? {};
+    if ((cur.maxChunkBytes ?? 0) > (base.maxChunkBytes ?? 0))
+      increased.push(`limits.maxChunkBytes: ${formatBytes(base.maxChunkBytes)} → ${formatBytes(cur.maxChunkBytes)}`);
+    if ((cur.maxTotalBytes ?? 0) > (base.maxTotalBytes ?? 0))
+      increased.push(`limits.maxTotalBytes: ${formatBytes(base.maxTotalBytes)} → ${formatBytes(cur.maxTotalBytes)}`);
+
+    for (const [prefix, def] of Object.entries(currentBaselineRaw.criticalChunks ?? {})) {
+      const baseDef = baseBaseline.criticalChunks?.[prefix];
+      if (baseDef && (def.maxBytes ?? 0) > (baseDef.maxBytes ?? 0)) {
+        increased.push(`criticalChunks.${prefix}.maxBytes: ${formatBytes(baseDef.maxBytes)} → ${formatBytes(def.maxBytes)}`);
+      }
+    }
+
+    if (increased.length > 0) {
+      const labels = (process.env.GITHUB_LABELS ?? '').split(',').map((l) => l.trim()).filter(Boolean);
+      if (!labels.includes('ratchet-override')) {
+        console.error('❌ bundle-size-baseline.json tem limites MAIORES que a base sem label `ratchet-override`:');
+        increased.forEach((i) => console.error(`   ${i}`));
+        console.error('');
+        console.error('Para aumentar intencionalmente, adicione a label `ratchet-override` ao PR.');
+        console.error('Para atualizar o baseline em main (ratchet para cima), use o cron semanal.');
+        process.exit(1);
+      }
+      console.log('ℹ️  Baseline aumentado — label `ratchet-override` presente; permitido.');
+    }
+  } catch (e) {
+    console.warn(`⚠️  Ratchet check: não foi possível comparar baseline com ${baseRef}: ${e.message}`);
   }
 }
 

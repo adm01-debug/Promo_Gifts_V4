@@ -53,6 +53,7 @@
     "check:dependency-audit": "node scripts/check-dependency-audit.mjs",
     "check:pptx-image-parser-exposure": "node scripts/check-pptx-image-parser-exposure.mjs",
     "check:bundle-size:update": "node scripts/check-bundle-size.mjs --update-baseline",
+    "check:bundle-size:ratchet": "node scripts/check-bundle-size.mjs --check-ratchet",
     "check:doc-refs": "node scripts/check-doc-refs.mjs docs/PERF_OPTIMIZATIONS.md",
     "check:schema-reference-drift": "node scripts/check-schema-reference-drift.mjs",
     "check:types-inventory": "node scripts/extract-types-inventory.mjs",
