@@ -29,7 +29,9 @@ on:
 
 concurrency:
   group: restore-seller-cart-rpc-${{ github.ref }}
-  cancel-in-progress: false
+  # 2026-09-27: mesmo motivo do security-definer-acl-multi-env — jobs com environment:
+  # aguardando aprovação bloqueavam runner slot por 24h. Schedule agora cancela run anterior.
+  cancel-in-progress: ${{ github.event_name == 'schedule' }}
 
 jobs:
   rpc-availability:

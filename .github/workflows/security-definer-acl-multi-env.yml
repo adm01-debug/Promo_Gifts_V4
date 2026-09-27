@@ -44,7 +44,10 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: false
+  # 2026-09-27: schedule acumulava runs aguardando aprovação de Environment (staging/production)
+  # com cancel-in-progress: false → runs pendentes ficavam 24h bloqueando 1 runner slot por dia.
+  # Agora: schedule cancela run anterior; push/dispatch mantém comportamento original.
+  cancel-in-progress: ${{ github.event_name == 'schedule' }}
 
 permissions:
   contents: read

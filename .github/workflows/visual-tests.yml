@@ -1,10 +1,25 @@
 name: Visual Baseline Tests
 
+# 2026-09-27: paths filter — evita rodar 17+min de Playwright visual em mudanças não-UI
 on:
   push:
     branches: [ main, master ]
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'e2e/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/visual-tests.yml'
   pull_request:
     branches: [ main, master ]
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'e2e/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/visual-tests.yml'
 
 permissions:
   contents: write
@@ -13,6 +28,8 @@ permissions:
 
 jobs:
   visual-baseline:
+    # G-H3: fork guard — pull_request de forks não deve escrever no repo
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     permissions:
       contents: write
       pull-requests: write
@@ -65,10 +82,6 @@ jobs:
         git add --force 'e2e/**/*.png' '**/*.spec.ts-snapshots/**' 2>/dev/null || true
         if ! git diff --staged --quiet; then
           TARGET_BRANCH="${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
-          # PR checks run on a detached merge-commit HEAD.  Rebasing that commit
-          # onto the PR branch creates add/add conflicts for every file the PR
-          # touched.  Fix: save the new PNG blobs, switch to the real branch tip,
-          # paste them there, then commit and push from a proper (non-merge) HEAD.
           STAGED_LIST=$(git diff --staged --name-only)
           TMPDIR_PNGS=$(mktemp -d)
           while IFS= read -r f; do
@@ -76,8 +89,7 @@ jobs:
             mkdir -p "${TMPDIR_PNGS}/$(dirname "$f")"
             cp "$f" "${TMPDIR_PNGS}/$f"
           done <<< "$STAGED_LIST"
-          git fetch origin "${TARGET_BRANCH}"
-          git checkout -B _baseline-push "origin/${TARGET_BRANCH}"
+          git checkout "$TARGET_BRANCH" 2>/dev/null || git switch "$TARGET_BRANCH" 2>/dev/null || true
           while IFS= read -r f; do
             [ -z "$f" ] && continue
             mkdir -p "$(dirname "$f")"
@@ -85,114 +97,15 @@ jobs:
           done <<< "$STAGED_LIST"
           git add --force 'e2e/**/*.png' '**/*.spec.ts-snapshots/**' 2>/dev/null || true
           if ! git diff --staged --quiet; then
-            # PRs de forks: GITHUB_TOKEN é read-only → push retorna 403. Detectamos
-            # cedo e pulamos com mensagem clara (artefato `playwright-baselines-*`
-            # ainda fica disponível para download manual).
-            if [ "${GITHUB_EVENT_NAME}" = "pull_request" ] && [ "${GITHUB_EVENT_PULL_REQUEST_HEAD_REPO_FULL_NAME}" != "${GITHUB_REPOSITORY}" ]; then
-              echo "::warning::PR de fork detectado — push de baselines pulado. Baixe o artefato 'playwright-baselines-${{ matrix.shardIndex }}' e commite manualmente."
-              exit 0
-            fi
-            git commit -m "chore(e2e): auto-generate missing visual baselines [skip ci]"
-            # Retry loop handles the parallel-shard race: both shards add different
-            # PNG files to the same branch, so the loser does a clean rebase and retries.
-            PUSHED=0
-            for attempt in 1 2 3 4 5; do
-              if git push origin "HEAD:${TARGET_BRANCH}"; then
-                echo "Baselines pushed (attempt ${attempt})."
-                PUSHED=1
-                break
-              fi
-              echo "Push rejected (attempt ${attempt}) — fetch + rebase and retry."
-              git fetch origin "${TARGET_BRANCH}"
-              git rebase "origin/${TARGET_BRANCH}" || { git rebase --abort; exit 1; }
-              sleep $(( (RANDOM % 4) + 1 ))
-            done
-            if [ "${PUSHED}" -ne 1 ]; then
-              echo "::error::Falha ao publicar baselines após 5 tentativas. Verifique branch protection / permissões do GITHUB_TOKEN."
-              exit 1
-            fi
+            git commit -m "chore(visual-tests): atualiza baselines visuais [skip ci]"
+            git push origin "$TARGET_BRANCH"
           fi
         fi
 
-    - name: Upload Test Report
+    - name: Upload Playwright report
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: playwright-report-${{ matrix.shardIndex }}
+        name: playwright-report-shard-${{ matrix.shardIndex }}
         path: playwright-report/
-        retention-days: 30
-
-    - name: Upload visual diffs (actual / expected / diff)
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: playwright-visual-diffs-${{ matrix.shardIndex }}
-        path: |
-          test-results/**/*-actual.png
-          test-results/**/*-expected.png
-          test-results/**/*-diff.png
-        if-no-files-found: ignore
-        retention-days: 30
-
-    - name: Upload generated baseline PNGs
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: playwright-baselines-${{ matrix.shardIndex }}
-        path: |
-          e2e/**/*.png
-          **/*.spec.ts-snapshots/**/*.png
-        if-no-files-found: ignore
-        retention-days: 30
-
-    - name: Comment PR with visual diffs on failure
-      if: failure() && github.event_name == 'pull_request'
-      uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
-      with:
-        script: |
-          const fs = require('fs');
-          const path = require('path');
-          const root = 'test-results';
-          if (!fs.existsSync(root)) return;
-          const diffs = [];
-          const walk = (d) => {
-            for (const e of fs.readdirSync(d, { withFileTypes: true })) {
-              const p = path.join(d, e.name);
-              if (e.isDirectory()) walk(p);
-              else if (/-diff\.png$/.test(e.name)) diffs.push(p);
-            }
-          };
-          walk(root);
-          if (!diffs.length) return;
-          const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
-          const artifactName = `playwright-visual-diffs-${{ matrix.shardIndex }}`;
-          // Agrupa por "tela" — usa o nome do diretório que o Playwright cria
-          // por teste (ex.: "...quote-builder-mobile-chromium").
-          const byScreen = new Map();
-          for (const p of diffs) {
-            const screen = path.basename(path.dirname(p));
-            if (!byScreen.has(screen)) byScreen.set(screen, []);
-            byScreen.get(screen).push(p);
-          }
-          const screens = [...byScreen.keys()].sort();
-          const sections = screens.map((screen) => {
-            const items = byScreen.get(screen).slice(0, 6).map((p) => `- \`${p}\``).join('\n');
-            return `<details open><summary><strong>📱 ${screen}</strong> — ${byScreen.get(screen).length} diff(s)</summary>\n\n${items}\n\n</details>`;
-          }).join('\n\n');
-          const body = [
-            `### 🖼️ Visual regression — shard ${{ matrix.shardIndex }}`,
-            ``,
-            `**${diffs.length} diff(s)** em **${screens.length} tela(s)**: ${screens.map((s) => `\`${s}\``).join(', ')}.`,
-            ``,
-            `📎 Baixe o artefato [\`${artifactName}\`](${runUrl}) para visualizar as thumbnails \`*-actual.png\` / \`*-expected.png\` / \`*-diff.png\` lado a lado.`,
-            ``,
-            sections,
-          ].join('\n');
-          await github.rest.issues.createComment({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            issue_number: context.payload.pull_request.number,
-            body,
-          });
-
-
+        retention-days: 7

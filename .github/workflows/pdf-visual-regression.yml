@@ -21,6 +21,8 @@ jobs:
   pdf-diff:
     name: Diff visual dos PDFs de proposta
     runs-on: ubuntu-latest
+    # G-H3: fork guard — pull_request de forks não deve escrever no repo
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     permissions:
       contents: write
       pull-requests: write
