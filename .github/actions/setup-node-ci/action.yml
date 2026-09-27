@@ -1,0 +1,40 @@
+name: Setup Node CI
+description: >
+  Checkout + setup-node (.nvmrc) + lockfile sync check + npm ci.
+  Centraliza as ~100 cópias de checkout+setup+install nos workflows.
+
+inputs:
+  install:
+    description: "Executar npm ci (true) ou só configurar o ambiente (false)"
+    required: false
+    default: "true"
+  ignore-scripts:
+    description: "Passar --ignore-scripts ao npm ci"
+    required: false
+    default: "false"
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: .nvmrc
+        cache: npm
+
+    - name: Check lockfile sync
+      shell: sh
+      run: node scripts/check-lockfile-sync.mjs
+
+    - name: Install dependencies
+      if: inputs.install == 'true'
+      shell: sh
+      run: |
+        if [ "${{ inputs.ignore-scripts }}" = "true" ]; then
+          npm ci --no-audit --no-fund --ignore-scripts
+        else
+          npm ci --no-audit --no-fund
+        fi

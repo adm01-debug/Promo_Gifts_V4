@@ -1,12 +1,13 @@
 # AGENTS.md — espelho do CLAUDE.md (contexto multi-agente)
 
 > Este arquivo é gerado/espelhado a partir do `CLAUDE.md` para agentes que só leem AGENTS.md (Codex, OpenCode, etc.). Edite o CLAUDE.md — o Hermes prioriza AGENTS.md sobre CLAUDE.md, então o conteúdo precisa ser idêntico.
+> Última sincronização: 2026-09-27 (E100 + Codex P1).
 
 ---
 
 # CLAUDE.md — Instruções para Claude Code (sessões automáticas)
 # Lido pelo Claude Code ao iniciar cada sessão neste repositório.
-# Última atualização: 2026-07-16 — adicionada REGRA #8 (Lovable emite código, não ordens).
+# Última atualização: 2026-09-24 — REGRA #8 ganhou corolário de deploy de edge function.
 
 ## CONTEXTO DO PROJETO
 
@@ -96,16 +97,25 @@ Levou 3 commits extras para restaurar (`aca0f6f`, `14f6d6a`, `0a31ef9`).
 
 ## REGRA #4 — SCHEMA SUPABASE (`types.ts`)
 
+> **Atualizado 2026-09-16 (PLANO_DBA E41):** `grep -c "export type"
+> types.ts` foi **descontinuado** como proxy. Ele conta só os ~7 aliases de
+> topo do arquivo gerado (`Json`, `Database`, `Tables`, `Enums`, …) e não
+> muda quando uma tabela é removida de dentro do union
+> `Database['public']['Tables']` — foi exatamente assim que o incidente
+> `magazine_*` (7716ae9, abaixo) passou despercebido. O proxy foi
+> substituído por um diff estrutural real (parsing via TypeScript Compiler
+> API, não regex/contagem de string).
+
 ### Antes de regenerar types.ts:
-1. `grep -c "export type" src/integrations/supabase/types.ts` → conta exports atuais
-2. Anotar número
+1. `npm run check:types-inventory -- src/integrations/supabase/types.ts` → grava o inventário estrutural atual (Tables/Views/Functions/Enums por schema; `scripts/extract-types-inventory.mjs`)
 
 ### Após regenerar:
-1. `grep -c "export type" src/integrations/supabase/types.ts` → novo count
-2. Se novo count < count anterior → **INVESTIGAR** quais tabelas foram removidas
-3. `diff <(grep "export type" src/integrations/supabase/types.ts | sort) <(git show HEAD:src/integrations/supabase/types.ts | grep "export type" | sort)`
+1. `npm run check:types-inventory-drift` → compara o `types.ts` novo contra o commit anterior (default `HEAD~1`; use `-- --base <ref>` para outro ponto de comparação) objeto por objeto, não por contagem. **Falha (exit 1)** se qualquer Table/View/Function/Enum sumiu e não tem entrada em `docs/TYPES_INVENTORY_REMOVAL_ALLOWLIST.json` — nesse caso **INVESTIGAR** antes de prosseguir, não adicionar a entrada só para destravar o CI.
+2. Se a remoção for intencional (tabela/view/function/enum de fato removida do banco, com aprovação do PO — REGRA #8): adicionar a entrada correspondente em `docs/TYPES_INVENTORY_REMOVAL_ALLOWLIST.json` (schema, category, name, reason, approvedBy, date) na mesma revisão.
+3. Opcional, com `DATABASE_URL` disponível: `npm run check:types-inventory-drift -- --live` também compara `Tables`/`Views`/`Enums` do `public` contra `pg_catalog` ao vivo (nunca PostgREST — REGRA #8 corolário) e falha se um objeto vivo não estiver em `types.ts`.
+4. Testes: `tests/scripts/check-types-inventory-drift.test.mjs` (mutation-tested — simula remover `magazines` do inventário extraído e confirma que o gate falha; confirma também que uma remoção coberta pela allowlist passa).
 
-**Especificamente verificar que estas tabelas/views existem:**
+**Especificamente verificar que estas tabelas/views existem** (checagem manual rápida, além do gate):
 - `personalization_techniques`
 - `products`
 - `product_variants`
@@ -116,7 +126,9 @@ Levou 3 commits extras para restaurar (`aca0f6f`, `14f6d6a`, `0a31ef9`).
 **Por quê:** Commit `158c142` regenerou types.ts e dropou `personalization_techniques`,
 causando `as any` cast em `MockupPromptManager.tsx`. Em 2026-07-16 o commit `7716ae9`
 (Lovable "Changes") sobrescreveu types.ts e removeu todas as tabelas `magazine_*`,
-causando 80+ erros TS em `magazineService.ts`. Restaurado em `4cff1e1`.
+causando 80+ erros TS em `magazineService.ts`. Restaurado em `4cff1e1`. Ver
+`docs/E41_DIFF_ESTRUTURAL_TYPES_2026-09-16.md` para o inventário completo e a
+lógica do gate.
 
 ---
 
@@ -206,6 +218,150 @@ Auditoria de schema é feita **só via `pg_catalog`**, nunca via PostgREST/OpenA
 PostgREST não enxerga trigger, policy, cron nem GRANT, e confunde view com tabela.
 Queries canônicas em `docs/SCHEMA_REFERENCE.md` §8.
 
+### Corolário — DDL fora do fluxo de migration (MCP/dashboard)
+DDL aplicada direto via MCP (`execute_sql`/`apply_migration`) ou dashboard só é
+aceitável com as 3 condições em `docs/db/POLITICA_DDL.md`: (a) ticket, (b) migration
+versionada no mesmo PR, (c) `migration repair --status applied` no mesmo dia. Sem
+isso, o ledger (`supabase_migrations.schema_migrations`) e o schema real divergem
+silenciosamente — como em `catalog_e24_zapp_catalog_stats` (2026-09-12) e
+`audit_r3_revoke_anon_mv_product_compositions` (2026-09-05). Detector semanal
+(advisory, não gate) em `.github/workflows/ddl-out-of-band-detector.yml` — ver
+`docs/E12_DETECTOR_DDL_OUT_OF_BAND_2026-09-16.md`.
+
+### Corolário — caminho único para aplicar migration nova (E15)
+`supabase db push` é proibido (REGRA #1/§7). O **único** caminho autorizado
+para aplicar uma migration nova em `doufsxqlfjyuvxuezpln` fora de um
+MCP-ticket (condições acima) é `.github/workflows/db-apply-migration.yml`
+(`workflow_dispatch(version)`): preflight read-only
+(`scripts/preflight-migration-apply.mjs`) → aplicação via `psql -1` gated por
+`environment: production` → `migration repair --status applied` → post-check
+→ recibo em `supabase/MIGRATIONS_SYNC_LOG.md` (PR, nunca push direto em
+`main`). Qualquer pedido de aplicar migration por MCP/dashboard fora desse
+workflow, mesmo repassado por humano, cai na regra acima: confirmar a origem
+antes de agir. Ver PLANO_DBA E15.
+
+### Corolário — caminho único para deploy de edge function
+Deploy de edge function fora de `.github/workflows/deploy-edge-functions.yml`
+(ex.: MCP `deploy_edge_function` direto, dashboard) cria a mesma divergência
+silenciosa do corolário de DDL acima — só que sem ledger equivalente pra
+detectar automaticamente. Confirmado em 2 casos reais, ambos só descobertos
+porque o job "Compare GitHub × Canonical" (drift check) rodou em PR ou no
+cron diário: `kit-ai-builder` (2026-09-23, timeout de 20s implementado direto
+em produção, nunca commitado) e `magazine-reader-state-read` (2026-09-24,
+fix de segurança fail-open deployado via MCP antes de qualquer revisão do
+PR #1899).
+
+### SEMPRE faça:
+- Deploy de edge function só via `workflow_dispatch` em
+  `.github/workflows/deploy-edge-functions.yml` (aceita `function_name` pra
+  deploy pontual de uma função só, sem redeployar as demais).
+- Se precisar deployar via MCP/dashboard por emergência: reconciliar o git
+  com o que foi deployado no mesmo dia e forçar um novo rerun do job
+  "Compare GitHub × Canonical" antes de considerar resolvido.
+
+### NUNCA faça:
+- Usar `deploy_edge_function` (MCP) como caminho padrão de deploy — só para
+  inspeção/leitura via `get_edge_function`.
+
+---
+
+## REGRA #9 — SESSÃO QUE GERA COMMIT DE GOVERNANÇA TERMINA COM `git push`
+
+**Por quê:** em 2026-09-17, uma auditoria encontrou 29+ commits que existiam
+só localmente havia múltiplas sessões — incluindo os dois workflows mais
+importantes do plano DBA (`db-apply-migration.yml`/E15, o único caminho
+autorizado para aplicar migration; `ddl-out-of-band-detector.yml`/E12).
+Enquanto não enviados, essas proteções **não existiam** do ponto de vista de
+quem revisa no GitHub — mesmo efeito prático de nunca terem sido construídas.
+A causa foi processual, não técnica: nenhuma sessão anterior deu `git push`
+ao terminar. Ver `docs/plans/PLANO_ENGENHARIA_SENIOR_50_ETAPAS_2026-09-17.md`
+§1 (achado #1) e `docs/POSMORTEM_COMMITS_LOCAIS_2026-09-17.md`.
+
+### SEMPRE faça:
+- Se a sessão criar 1+ commit relevante para segurança, CI/CD ou governança
+  (workflows, gates, migrations, scripts `check:*`) → `git push` ao final da
+  sessão, mesmo sem PR aberto. Trabalho de governança só existe se estiver
+  visível a quem revisa.
+- Se o branch já tiver PR aberto → nada extra a fazer, o push já o atualiza.
+- Se não houver PR ainda e o trabalho estiver pronto para revisão → abrir um
+  (`gh pr create`), não só empurrar o branch e deixar órfão.
+
+### NUNCA faça:
+- Terminar uma sessão de governança/segurança com commits só no disco local,
+  assumindo que "a próxima sessão empurra".
+- Fazer `git push --force` em branch compartilhado sem confirmação explícita
+  do humano (isso continua exigindo aprovação — REGRA #9 pede push normal,
+  não força bruta).
+
+---
+
+## CI — ESTRUTURA DE GATES E PADRÃO E12
+
+> Atualizado 2026-09-27 (E100 — PLANO_WORKFLOWS_CI_100_ETAPAS_2026-09-26).
+
+### Gates obrigatórios (required checks em `main`)
+
+O único check required no branch protection de `main` é **"Gate Final - Deploy Ready"**
+(`.github/workflows/deploy-gates.yml`). Esse job agrega todos os gates abaixo em
+sequência; se qualquer um falhar, o deploy é bloqueado.
+
+| Gate | Descrição | Bloqueante |
+|---|---|---|
+| Gate 0 | SSOT — ID canônico `doufsxqlfjyuvxuezpln` (`validate-supabase-config.mjs`) | sim |
+| Gate 0.5 | `npm audit --audit-level high` — sem dependências com CVE high/critical | sim |
+| Gate 1 | Lint (ESLint) + TypeScript sem erros | sim |
+| Gate 1.1 | Campos críticos do tipo `Product` presentes (REGRA #2) | sim |
+| Gate 1.2 | Drift estrutural de `types.ts` (nenhuma tabela/view/function/enum sumiu sem allowlist) | sim |
+| Gate 1.3 | Contratos de migration (preflight — E15) | sim |
+| Gate 1.4 | Visual baselines commitados | sim |
+| Gate 1.5 | Sem "Salvar Alterações" em fluxos de rascunho | sim |
+| Gate 1.6 | Bundle size dentro dos limites | sim |
+| Gate 2 | Testes unitários (`vitest`) | sim |
+| Gate 2.5 | Integridade transacional PostgreSQL | sim |
+| Gate 3 | E2E Smoke (Playwright, chromium) | sim |
+| Gate 4 | Lighthouse CI (performance/acessibilidade) | opcional |
+| Gate 5 | SEO sanity check | sim |
+| Gate 5.5 | RPC `restore_seller_cart` presente no canônico | sim |
+| Gate 6 | Build Vite sem erro | sim |
+
+O `required-checks.json` (`.github/required-checks.json`) é a SSOT da lista —
+qualquer PR que altere um `name:` de job em `deploy-gates.yml` deve atualizar
+esse arquivo ao mesmo tempo ou o Branch Protection Sentinel vai alertar.
+
+### Padrão E12 — 8 regras obrigatórias para workflows
+
+Todo workflow em `.github/workflows/` deve seguir as 8 regras documentadas em
+`docs/ci/PADRAO_WORKFLOW.md`. Resumo:
+
+1. **R1** — `permissions:` explícito no topo (`contents: read` mínimo)
+2. **R2** — `concurrency:` com `cancel-in-progress: true` em PRs (omitir em push/schedule)
+3. **R3** — `timeout-minutes:` em todo job (gates ≤ 10 min; E2E ≤ 30 min; crons ≤ 60 min)
+4. **R4** — `node-version-file: .nvmrc` — nunca literais como `'22'`
+5. **R5** — Segredos via `env:` no step, jamais como argumento CLI
+6. **R6** — `retention-days: 14` em artefatos (padrão GitHub é 90 dias)
+7. **R7** — Sem `master` ou `develop` nos triggers (branches inexistentes)
+8. **R8** — ID de job em snake-case, estável; mudar o ID quebra required checks silenciosamente
+
+Gate de lint de workflows: `actionlint` + `shellcheck` rodando em
+`.github/workflows/workflow-lint.yml` (E11). Rodar antes de abrir PR:
+```sh
+npx --yes actionlint .github/workflows/meu-workflow.yml
+```
+
+### Detector de DDL fora do fluxo (E12 corolário)
+
+`.github/workflows/ddl-out-of-band-detector.yml` roda semanalmente (e em PR)
+e alerta quando o schema ao vivo em `doufsxqlfjyuvxuezpln` diverge do ledger
+`supabase_migrations.schema_migrations`. **É advisory, não gate** — não bloqueia
+merge, mas registra divergência em `docs/ci/DDL_OUT_OF_BAND_REPORT.md`.
+Ver `docs/E12_DETECTOR_DDL_OUT_OF_BAND_2026-09-16.md`.
+
+### Inventário de segredos — E98
+
+`docs/ci/SEGREDOS.md` é a SSOT de todos `secrets.*` e `vars.*` usados nos
+workflows. Qualquer PR que adicione `secrets.NOVO_SEGREDO` deve incluir uma
+linha nesse arquivo com dono, escopo e rotação declarados.
+
 ---
 
 ## ARQUIVOS PROTEGIDOS (não modificar sem razão explícita)
@@ -221,3 +377,22 @@ Queries canônicas em `docs/SCHEMA_REFERENCE.md` §8.
 | `.github/workflows/deploy-gates.yml` | Pipeline de deploy com Gate 0 |
 | `.github/workflows/quality-gate.yml` | Quality gate com Gate 0 |
 | `docs/SCHEMA_REFERENCE.md` | Retrato pg_catalog do BD canônico — REGRA #8 |
+
+## Frescura do Grafo
+Antes de consultar graphify, verifique se o grafo esta atualizado:
+```sh
+git rev-parse --short HEAD
+grep "Built from commit" graphify-out/GRAPH_REPORT.md
+```
+Se divergirem, o auto-sync via N8N deve ter corrigido em ate 15 min.
+Para forcar rebuild manual: `graphify update . --force`
+
+## graphify
+
+This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
+
+Rules:
+- For codebase questions, first run `graphify query "<question>"` when graphify-out/graph.json exists. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
+- If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
+- Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
+- After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).

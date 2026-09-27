@@ -13,10 +13,12 @@ import { tmpdir } from 'node:os';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
+  detectBlockingDdl,
   detectNonTransactionalDdl,
   evaluatePreflight,
   findMigrationFiles,
   hasRollbackHeader,
+  parseOptOut,
 } from '../../scripts/preflight-migration-apply.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
@@ -165,7 +167,7 @@ describe('evaluatePreflight — modo padrão (pré-aplicação)', () => {
     expect(result.problems.some((p) => p.includes('já está em'))).toBe(true);
   });
 
-  it('reporta DDL não-transacional como aviso, sem derrubar "ok"', () => {
+  it('CONCURRENTLY sem opt-out bloqueia (E63)', () => {
     const result = evaluatePreflight({
       version: '20260101000000',
       files: ['20260101000000_x.sql'],
@@ -173,8 +175,92 @@ describe('evaluatePreflight — modo padrão (pré-aplicação)', () => {
       isInLedger: false,
       expectApplied: false,
     });
-    expect(result.ok).toBe(true);
+    expect(result.ok).toBe(false);
+    expect(result.problems.some((p) => p.toLowerCase().includes('concurrently'))).toBe(true);
+    // nonTransactionalDdl ainda está presente para backwards compat
     expect(result.nonTransactionalDdl.length).toBe(1);
+  });
+
+  it('CONCURRENTLY com opt-out completo passa (E63)', () => {
+    const optOutHeader = `${ROLLBACK_HEADER}-- transaction: none\n-- approved-by: joaquim\n`;
+    const result = evaluatePreflight({
+      version: '20260101000000',
+      files: ['20260101000000_x.sql'],
+      sqlContent: `${optOutHeader}CREATE INDEX CONCURRENTLY idx_x ON public.t(a);`,
+      isInLedger: false,
+      expectApplied: false,
+    });
+    expect(result.ok).toBe(true);
+  });
+});
+
+// ─── parseOptOut ────────────────────────────────────────────────────────────
+
+describe('parseOptOut (E63)', () => {
+  it('devolve false/null quando não há opt-out', () => {
+    const r = parseOptOut('SELECT 1;');
+    expect(r.transactionNone).toBe(false);
+    expect(r.approvedBy).toBeNull();
+  });
+
+  it('detecta transaction: none', () => {
+    expect(parseOptOut('-- transaction: none\n-- approved-by: joaquim\n').transactionNone).toBe(true);
+  });
+
+  it('detecta approved-by', () => {
+    expect(parseOptOut('-- approved-by: joaquim').approvedBy).toBe('joaquim');
+  });
+
+  it('só transaction: none sem approved-by não configura opt-out completo', () => {
+    const r = parseOptOut('-- transaction: none\n');
+    expect(r.transactionNone).toBe(true);
+    expect(r.approvedBy).toBeNull();
+  });
+
+  it('ignora opt-out fora das primeiras 40 linhas', () => {
+    const filler = Array.from({ length: 42 }, () => '-- linha').join('\n');
+    const r = parseOptOut(`${filler}\n-- transaction: none\n-- approved-by: joaquim\n`);
+    expect(r.transactionNone).toBe(false);
+  });
+});
+
+// ─── detectBlockingDdl ──────────────────────────────────────────────────────
+
+describe('detectBlockingDdl (E63)', () => {
+  it('devolve [] para SQL transacional simples', () => {
+    expect(detectBlockingDdl('CREATE VIEW public.x AS SELECT 1;')).toEqual([]);
+  });
+
+  it('bloqueia CONCURRENTLY sem opt-out', () => {
+    const r = detectBlockingDdl('CREATE INDEX CONCURRENTLY idx ON t(a);');
+    expect(r.length).toBeGreaterThan(0);
+    expect(r[0].toLowerCase()).toContain('concurrently');
+  });
+
+  it('não bloqueia CONCURRENTLY com opt-out', () => {
+    expect(
+      detectBlockingDdl('CREATE INDEX CONCURRENTLY idx ON t(a);', { hasTransactionNoneOptOut: true }),
+    ).toEqual([]);
+  });
+
+  it('bloqueia BEGIN de topo sem opt-out', () => {
+    const r = detectBlockingDdl('BEGIN;\nSELECT 1;\nCOMMIT;');
+    expect(r.some((m) => m.toLowerCase().includes('begin'))).toBe(true);
+  });
+
+  it('bloqueia ALTER TYPE … ADD VALUE sem opt-out', () => {
+    const r = detectBlockingDdl("ALTER TYPE public.status ADD VALUE 'pending';");
+    expect(r.some((m) => m.toLowerCase().includes('alter type'))).toBe(true);
+  });
+
+  it('bloqueia DROP TABLE sem IF EXISTS mesmo com opt-out', () => {
+    const r = detectBlockingDdl('DROP TABLE public.foo;', { hasTransactionNoneOptOut: true });
+    expect(r.some((m) => m.toLowerCase().includes('drop sem if exists'))).toBe(true);
+  });
+
+  it('não bloqueia DROP TABLE IF EXISTS', () => {
+    const r = detectBlockingDdl('DROP TABLE IF EXISTS public.foo;');
+    expect(r.filter((m) => m.toLowerCase().includes('drop'))).toHaveLength(0);
   });
 });
 

@@ -1,0 +1,75 @@
+name: E2E Setup
+description: >
+  Instala Playwright + browsers, gera fixtures, sobe Vite opcionalmente
+  e configura autenticação (real ou mock). Centraliza a lógica duplicada
+  em 49+ workflows de E2E.
+
+inputs:
+  browsers:
+    description: "Browsers a instalar, separados por vírgula (chromium, firefox, webkit)"
+    required: false
+    default: "chromium"
+  start-vite:
+    description: "Subir o servidor Vite em background antes dos testes"
+    required: false
+    default: "false"
+  require-auth:
+    description: "Falhar se E2E_USER_EMAIL/PASSWORD estiverem vazios e rodar --project=setup"
+    required: false
+    default: "false"
+  mock-auth:
+    description: "Usar autenticação mock (E2E_MOCK_AUTH=1 via e2e-mock-auth-setup.mjs)"
+    required: false
+    default: "false"
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node CI
+      uses: ./.github/actions/setup-node-ci
+
+    - name: Cache Playwright browsers
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/ms-playwright
+        key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+        restore-keys: playwright-${{ runner.os }}-
+
+    - name: Install Playwright browsers
+      shell: sh
+      run: |
+        BROWSERS="${{ inputs.browsers }}"
+        npx playwright install --with-deps $(echo "$BROWSERS" | tr ',' ' ')
+
+    - name: Generate E2E fixtures
+      shell: sh
+      run: npm run e2e:generate-fixtures 2>/dev/null || true
+
+    - name: Setup mock auth
+      if: inputs.mock-auth == 'true'
+      shell: sh
+      env:
+        E2E_MOCK_AUTH: "1"
+      run: node scripts/e2e-mock-auth-setup.mjs
+
+    - name: Check auth credentials
+      if: inputs.require-auth == 'true' && inputs.mock-auth != 'true'
+      shell: sh
+      run: |
+        if [ -z "$E2E_USER_EMAIL" ] || [ -z "$E2E_USER_PASSWORD" ]; then
+          echo "ERRO: E2E_USER_EMAIL ou E2E_USER_PASSWORD não configurados."
+          exit 1
+        fi
+
+    - name: Run auth setup
+      if: inputs.require-auth == 'true' && inputs.mock-auth != 'true'
+      shell: sh
+      run: npx playwright test --project=setup
+
+    - name: Start Vite dev server
+      if: inputs.start-vite == 'true'
+      shell: sh
+      run: |
+        npm run dev &
+        echo $! > /tmp/vite.pid
+        npx wait-on http://localhost:8080 --timeout 60000

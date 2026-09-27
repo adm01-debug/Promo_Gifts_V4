@@ -38,6 +38,13 @@ bundle-size-baseline.json                      @adm01-debug
 docs/TYPES_INVENTORY_REMOVAL_ALLOWLIST.json    @adm01-debug
 
 # ============================================================
+# Inventário de segredos (E98) — SSOT de secrets.* e vars.*
+# Qualquer PR que adicione novo segredo deve tocar este arquivo
+# ============================================================
+docs/ci/SEGREDOS.md                            @adm01-debug
+docs/ci/                                       @adm01-debug
+
+# ============================================================
 # Edge functions com correções de segurança aplicadas manualmente
 # ============================================================
 supabase/functions/send-transactional-email/    @adm01-debug
