@@ -78,10 +78,13 @@ for (const wf of workflows) {
 
   for (const run of runs) {
     // Duração aproximada (created_at → updated_at)
-    const dur = (new Date(run.updated_at) - new Date(run.created_at)) / 60000;
-    minutes += dur;
+    const durMs = new Date(run.updated_at) - new Date(run.created_at);
+    minutes += durMs / 60000;
     if (run.conclusion === 'failure') failures++;
     if (run.conclusion === 'skipped') skips++;
+    // Heurística "verde vazio": run com success em < 30 s provavelmente não executou nenhum teste
+    // (path filter, branch filter ou todos os steps skipped). Semana típica tem poucos desses.
+    if (run.conclusion === 'success' && durMs < 30_000) noTests++;
   }
 
   const lastRun = runs[0].created_at?.slice(0, 10) ?? null;
@@ -94,6 +97,7 @@ metrics.sort((a, b) => b.minutes - a.minutes);
 const totalRuns = metrics.reduce((s, m) => s + m.runs, 0);
 const totalMinutes = metrics.reduce((s, m) => s + m.minutes, 0);
 const totalFailures = metrics.reduce((s, m) => s + m.failures, 0);
+const totalNoTests = metrics.reduce((s, m) => s + m.noTests, 0);
 const zeroRunCount = metrics.filter(m => m.runs === 0).length;
 
 const now = new Date().toISOString().slice(0, 10);
@@ -110,14 +114,17 @@ const md = `# Métricas de CI — últimos ${DAYS} dias (${now})
 | Total de minutos | ${totalMinutes} |
 | Total de falhas | ${totalFailures} |
 | Taxa de falha | ${totalRuns > 0 ? ((totalFailures / totalRuns) * 100).toFixed(1) : 0}% |
+| Verde vazio (< 30 s) | ${totalNoTests} |
 | Workflows sem run | ${zeroRunCount} de ${metrics.length} |
 
 ## Por workflow (top 30 por minutos)
 
-| Workflow | Runs | Min | Falhas | Último run |
-| --- | --- | --- | --- | --- |
+> "Verde vazio" = run com success em < 30 s (heurística: provavelmente path/branch filter ou steps todos skipped).
+
+| Workflow | Runs | Min | Falhas | Skips | Verde vazio | Último run |
+| --- | --- | --- | --- | --- | --- | --- |
 ${metrics.slice(0, 30).map(m =>
-  `| ${m.name} | ${m.runs} | ${m.minutes} | ${m.failures} | ${m.lastRun ?? '—'} |`
+  `| ${m.name} | ${m.runs} | ${m.minutes} | ${m.failures} | ${m.skips} | ${m.noTests > 0 ? `**${m.noTests}**` : '0'} | ${m.lastRun ?? '—'} |`
 ).join('\n')}
 
 ## Workflows sem run nos últimos ${DAYS} dias
