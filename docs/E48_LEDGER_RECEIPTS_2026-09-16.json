@@ -5,7 +5,7 @@
   "source": "supabase_migrations.schema_migrations (doufsxqlfjyuvxuezpln), live via mcp__supabase__execute_sql, somente leitura",
   "scope": "version canônica (14 dígitos) > cutoff E11 (20260623111612) — únicas com `statements` garantido pelo achado da E11",
   "cutoff_version_e11": "20260623111612",
-  "row_count": 598,
+  "row_count": 600,
   "hash_definition": "ledger_hash = sha256( join(\"\\n\", [f\"{r.version}|{r.sha256_arquivo}|{r.md5_statements or '-'}\" for r in rows_sorted_by_version_asc]) )",
   "rows": [
     {
@@ -6585,6 +6585,28 @@
       "metodo": "n/d (pré-E48; ledger não registra por linha)",
       "data_utc": "2026-09-16 15:57:25 UTC",
       "pos_check": "n/d (não capturado retroativamente; ver E07 — verificação por objeto)"
+    },
+    {
+      "version": "20260922170000",
+      "name": "signup_identity_safe_default",
+      "sha256_arquivo": "266f0963a9e7b1d30e8594d7c6218747b6a79baf16aa272249e864f55a64b29b",
+      "filename": "20260922170000_signup_identity_safe_default.sql",
+      "md5_statements": "badcb6626e975ee80bab7d562a6c12cc",
+      "executor": "Claude Code (PR #1873, aprovação PO)",
+      "metodo": "E15 (db-apply-migration.yml workflow_dispatch)",
+      "data_utc": "2026-09-22 17:00:00 UTC",
+      "pos_check": "n/d (backfill 2026-09-27)"
+    },
+    {
+      "version": "20260923114500",
+      "name": "quote_rpc_lineage_atomicity",
+      "sha256_arquivo": "18663b52473fa9fd0edb031495ebe1ed8fc8c0ea0c262631a3b3bf035d8d91b7",
+      "filename": "20260923114500_quote_rpc_lineage_atomicity.sql",
+      "md5_statements": "87c7eefd2929c273fbedd75e4d61c423",
+      "executor": "Claude Code (PR #1883)",
+      "metodo": "E15 (db-apply-migration.yml workflow_dispatch)",
+      "data_utc": "2026-09-23 11:45:00 UTC",
+      "pos_check": "n/d (backfill 2026-09-27)"
     }
   ]
 }

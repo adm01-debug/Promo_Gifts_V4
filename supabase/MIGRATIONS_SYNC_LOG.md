@@ -90,24 +90,24 @@ implementação de SHA-256.
 
 | versão | nome | data UTC |
 |---|---|---|
-| `20260916155725` | `catalog_stats_price_range_top_colors_materials` | `2026-09-16 15:57:25 UTC` |
+| `20260923114500` | `quote_rpc_lineage_atomicity` | `2026-09-23 11:45:00 UTC` |
 
-**Nota:** este é o registro de maior `version` no ledger no momento do
-backfill — e é exatamente a linha sem arquivo local citada acima. Não é uma
-aplicação feita por esta etapa (E48 não escreve no banco).
+**Nota:** `20260916155725` era a última no backfill original (E48, 2026-09-16) — sem
+arquivo local, provável out-of-band. As 2 linhas acima foram adicionadas no backfill
+de 2026-09-27 (600 → ver abaixo). E48 não escreveu no banco.
 
-### Ledger hash (valor calculado nesta sessão, 2026-09-16)
+### Ledger hash (recalculado 2026-09-27 — backfill +2 linhas pós-E48)
 
 ```
-8086444739de2607c127a1fedf231f96505c27482d5a18fc5cdbead6a4c85193
+f6def33d0c79c66aab118335ed95d9e3a9b40536cca5cd397bacc54e7858ae96
 ```
 
-598 linhas, `version` de `20260623111856` a `20260916155725`.
+600 linhas, `version` de `20260623111856` a `20260923114500`.
 
-## Recibos — aplicações confirmadas por hash (598 linhas, `version` canônica > `20260623111612`)
+## Recibos — aplicações confirmadas por hash (600 linhas, `version` canônica > `20260623111612`)
 
 <details>
-<summary>Expandir tabela completa (598 linhas — hashes SHA-256/MD5 íntegros, ver <code>docs/E48_LEDGER_RECEIPTS_2026-09-16.json</code> para a fonte estruturada)</summary>
+<summary>Expandir tabela completa (600 linhas — hashes SHA-256/MD5 íntegros, ver <code>docs/E48_LEDGER_RECEIPTS_2026-09-16.json</code> para a fonte estruturada)</summary>
 
 | versão | sha256 arquivo | md5 statements | executor | método | data UTC | pós-check |
 |---|---|---|---|---|---|---|
@@ -709,6 +709,8 @@ aplicação feita por esta etapa (E48 não escreve no banco).
 | `20260912151000` | `0119bee05805389337e409126ff7465965f75dd0923b4229337937b5aab13ea6` | `39827116aa5ef103ac8b4c0dc90d78eb` | n/d | n/d (pré-E48; ledger não registra por linha) | 2026-09-12 15:10:00 UTC | n/d (não capturado retroativamente; ver E07 — verificação por objeto) |
 | `20260912205759` | `2ed94364aef678b413f1ace537eb42c694c5195b2c57bec34e50da4207631b3d` | `41b09b7f210698dab88c7d5a9b277583` | n/d | n/d (pré-E48; ledger não registra por linha) | 2026-09-12 20:57:59 UTC | n/d (não capturado retroativamente; ver E07 — verificação por objeto) |
 | `20260916155725` | `SEM_ARQUIVO_LOCAL` | `f078d1d8a52658adb5d48b148798d1f3` | n/d | n/d (pré-E48; ledger não registra por linha) | 2026-09-16 15:57:25 UTC | n/d (não capturado retroativamente; ver E07 — verificação por objeto) |
+| `20260922170000` | `266f0963a9e7b1d30e8594d7c6218747b6a79baf16aa272249e864f55a64b29b` | `badcb6626e975ee80bab7d562a6c12cc` | GitHub Actions, disparado por `adm01-debug` | E15 (run 35760867980) | 2026-09-22 18:34:03 UTC | recibo E15 abaixo; apply, repair e post-check aprovados — ver `## Recibos — E15` |
+| `20260923114500` | `18663b52473fa9fd0edb031495ebe1ed8fc8c0ea0c262631a3b3bf035d8d91b7` | `87c7eefd2929c273fbedd75e4d61c423` | GitHub Actions, disparado por `adm01-debug` | E15 (run 35857184284) | 2026-09-23 11:56:55 UTC | recibo E15 abaixo; post-check confirmou version no ledger — ver `## Recibos — E15` |
 
 
 </details>
@@ -755,7 +757,7 @@ da execução e consulta read-only ao catálogo/ledger, sem reaplicar SQL.
 | versão | sha256 arquivo | md5 statements | executor | método | data UTC | pós-check | status |
 |---|---|---|---|---|---|---|---|
 | `20260922170000` | `266f0963a9e7b1d30e8594d7c6218747b6a79baf16aa272249e864f55a64b29b` | `badcb6626e975ee80bab7d562a6c12cc` | GitHub Actions, disparado por `adm01-debug` | E15 | 2026-09-22 18:34:03 UTC (fim do passo psql) | [Run 35760867980, tentativa 1](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/35760867980/attempts/1): apply, repair e post-check aprovados; recoleta read-only em 22/09 19:27 UTC confirmou ledger, corpo e ACL | aplicada; recibo recuperado documentalmente pelo Codex, a pedido do PO |
-| `20260923114500` | `18663b52473fa9fd0edb031495ebe1ed8fc8c0ea0c262631a3b3bf035d8d91b7` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug) | E15 | 2026-09-23 11:56:55 UTC | job post-check da run 35857184284 confirmou a version no ledger | aplicada |
+| `20260923114500` | `18663b52473fa9fd0edb031495ebe1ed8fc8c0ea0c262631a3b3bf035d8d91b7` | `87c7eefd2929c273fbedd75e4d61c423` | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug) | E15 | 2026-09-23 11:56:55 UTC | job post-check da run 35857184284 confirmou a version no ledger | aplicada |
 
 ### Evidências do recibo `20260922170000`
 
