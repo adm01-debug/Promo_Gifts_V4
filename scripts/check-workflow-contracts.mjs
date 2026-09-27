@@ -77,8 +77,8 @@ export function checkC4NoDeadBranches({ file, text }) {
   const onBlock = onBlockLines.join('\n');
   const branchGroups = onBlock.match(/branches\s*:\s*(?:\[([^\]]+)\]|((?:\n\s+-[^\n]+)+))/g) || [];
   for (const bg of branchGroups) {
-    if (/\bmaster\b/.test(bg)) violations.push(`${file}: trigger references dead branch \`master\``);
-    if (/\bdevelop\b/.test(bg)) violations.push(`${file}: trigger references dead branch \`develop\``);
+    if (/\bmaster\b/.test(bg)) violations.push(`${file}: trigger references dead branch \`master\'`);
+    if (/\bdevelop\b/.test(bg)) violations.push(`${file}: trigger references dead branch \`develop\'`);
   }
   return violations;
 }
@@ -184,7 +184,7 @@ export function getPlaywrightProjects(rootDir) {
   if (!existsSync(cfgPath)) return new Set();
   const text = readFileSync(cfgPath, 'utf-8');
   const names = new Set();
-  for (const m of text.matchAll(/name:\s*['"]([^'"]+)['"]/g)) names.add(m[1]);
+  for (const m of text.matchAll(/name:\s*['"](([^'"]+))['"])/g)) names.add(m[1]);
   return names;
 }
 
