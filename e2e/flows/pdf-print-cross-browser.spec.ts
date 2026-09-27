@@ -36,7 +36,7 @@ const HARNESS = `<!doctype html>
 <h1>Print Fallback Harness</h1>
 <button id="print-btn" data-testid="print-btn">Imprimir</button>
 <button id="reset-btn" data-testid="reset-btn">Reset</button>
-<div id="help" data-testid="pdf-print-help-dialog" data-reason=""></div>
+<div id="help" data-testid="pdf-print-help-dialog" data-open="" data-reason=""></div>
 <pre id="log"></pre>
 <script>
   window.__events = [];
