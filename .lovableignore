@@ -95,3 +95,33 @@ src/services/quoteService.ts
 # Alterações devem ser feitas via regeneração controlada com drift-check.
 # ============================================================
 src/integrations/supabase/types.ts
+
+# ============================================================
+# Workflows de CI/CD críticos — canal único de deploy (REGRA #8)
+# G-H1: deploy-edge-functions.yml é o único caminho autorizado
+# para deploy de edge function (REGRA #8 corolário deploy).
+# redeploy-rate-limiter-consumers.yml foi corrigido em PR-1909
+# para usar workflow_call em vez de deploy direto.
+# Lovable pode sobrescrever e remover o trigger workflow_call,
+# criando um 3º canal de deploy silencioso sem ledger E66.
+# ============================================================
+.github/workflows/deploy-edge-functions.yml
+.github/workflows/redeploy-rate-limiter-consumers.yml
+
+# ============================================================
+# Quality Gates CI — arquivos protegidos contra sobrescrita pelo Lovable
+# CLAUDE.md lista estes workflows como "Arquivos Protegidos" por conterem
+# Gate 0 (validate-supabase-config / SSOT check doufsxqlfjyuvxuezpln).
+# Lovable pode sobrescrever e silenciosamente remover os Gates,
+# deixando o CI sem proteção para o incidente 401 (REGRA #1).
+# ============================================================
+.github/workflows/deploy-gates.yml
+.github/workflows/quality-gate.yml
+
+# ============================================================
+# Branch Protection e Revisão Obrigatória (REGRA #1 + CLAUDE.md)
+# CODEOWNERS define quem deve revisar PRs que tocam arquivos críticos.
+# Lovable pode sobrescrever e remover as regras de revisão obrigatória,
+# permitindo que PRs que alteram SSOT/client.ts passem sem @adm01-debug.
+# ============================================================
+.github/CODEOWNERS
