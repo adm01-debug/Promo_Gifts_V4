@@ -106,6 +106,21 @@ jobs:
       # --update-snapshots (e2e-dialogs-pr-check, ui-visual-a11y, etc.)
       - name: Gate 1.4 — Visual baselines commitados (bloqueante)
         run: node scripts/check-visual-baselines.mjs
+      # E55 — "Salvar Alterações" em fluxo de rascunho (bloqueante)
+      # Previne que o Lovable reintroduza o pattern draft-lock detectado nos
+      # rascunhos do fluxo de orçamentos.
+      - name: Gate 1.5 — Sem "Salvar Alterações" em fluxos de rascunho (bloqueante)
+        run: node scripts/check-no-salvar-alteracoes-draft.mjs
+        env:
+          VITE_SUPABASE_URL: https://placeholder.supabase.co
+          VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
+      # E55 — Bundle size (bloqueante)
+      # Falha se algum chunk exceder o limite definido em check-bundle-size.mjs.
+      - name: Gate 1.6 — Bundle size dentro dos limites (bloqueante)
+        run: node scripts/check-bundle-size.mjs
+        env:
+          VITE_SUPABASE_URL: https://placeholder.supabase.co
+          VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
 
   unit-tests:
     name: Gate 2 - Unit Tests
