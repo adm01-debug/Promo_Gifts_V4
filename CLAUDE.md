@@ -288,6 +288,75 @@ ao terminar. Ver `docs/plans/PLANO_ENGENHARIA_SENIOR_50_ETAPAS_2026-09-17.md`
 
 ---
 
+## CI — ESTRUTURA DE GATES E PADRÃO E12
+
+> Atualizado 2026-09-27 (E100 — PLANO_WORKFLOWS_CI_100_ETAPAS_2026-09-26).
+
+### Gates obrigatórios (required checks em `main`)
+
+O único check required no branch protection de `main` é **"Gate Final - Deploy Ready"**
+(`.github/workflows/deploy-gates.yml`). Esse job agrega todos os gates abaixo em
+sequência; se qualquer um falhar, o deploy é bloqueado.
+
+| Gate | Descrição | Bloqueante |
+|---|---|---|
+| Gate 0 | SSOT — ID canônico `doufsxqlfjyuvxuezpln` (`validate-supabase-config.mjs`) | sim |
+| Gate 0.5 | `npm audit --audit-level high` — sem dependências com CVE high/critical | sim |
+| Gate 1 | Lint (ESLint) + TypeScript sem erros | sim |
+| Gate 1.1 | Campos críticos do tipo `Product` presentes (REGRA #2) | sim |
+| Gate 1.2 | Drift estrutural de `types.ts` (nenhuma tabela/view/function/enum sumiu sem allowlist) | sim |
+| Gate 1.3 | Contratos de migration (preflight — E15) | sim |
+| Gate 1.4 | Visual baselines commitados | sim |
+| Gate 1.5 | Sem "Salvar Alterações" em fluxos de rascunho | sim |
+| Gate 1.6 | Bundle size dentro dos limites | sim |
+| Gate 2 | Testes unitários (`vitest`) | sim |
+| Gate 2.5 | Integridade transacional PostgreSQL | sim |
+| Gate 3 | E2E Smoke (Playwright, chromium) | sim |
+| Gate 4 | Lighthouse CI (performance/acessibilidade) | opcional |
+| Gate 5 | SEO sanity check | sim |
+| Gate 5.5 | RPC `restore_seller_cart` presente no canônico | sim |
+| Gate 6 | Build Vite sem erro | sim |
+
+O `required-checks.json` (`.github/required-checks.json`) é a SSOT da lista —
+qualquer PR que altere um `name:` de job em `deploy-gates.yml` deve atualizar
+esse arquivo ao mesmo tempo ou o Branch Protection Sentinel vai alertar.
+
+### Padrão E12 — 8 regras obrigatórias para workflows
+
+Todo workflow em `.github/workflows/` deve seguir as 8 regras documentadas em
+`docs/ci/PADRAO_WORKFLOW.md`. Resumo:
+
+1. **R1** — `permissions:` explícito no topo (`contents: read` mínimo)
+2. **R2** — `concurrency:` com `cancel-in-progress: true` em PRs (omitir em push/schedule)
+3. **R3** — `timeout-minutes:` em todo job (gates ≤ 10 min; E2E ≤ 30 min; crons ≤ 60 min)
+4. **R4** — `node-version-file: .nvmrc` — nunca literais como `'22'`
+5. **R5** — Segredos via `env:` no step, jamais como argumento CLI
+6. **R6** — `retention-days: 14` em artefatos (padrão GitHub é 90 dias)
+7. **R7** — Sem `master` ou `develop` nos triggers (branches inexistentes)
+8. **R8** — ID de job em snake-case, estável; mudar o ID quebra required checks silenciosamente
+
+Gate de lint de workflows: `actionlint` + `shellcheck` rodando em
+`.github/workflows/workflow-lint.yml` (E11). Rodar antes de abrir PR:
+```sh
+npx --yes actionlint .github/workflows/meu-workflow.yml
+```
+
+### Detector de DDL fora do fluxo (E12 corolário)
+
+`.github/workflows/ddl-out-of-band-detector.yml` roda semanalmente (e em PR)
+e alerta quando o schema ao vivo em `doufsxqlfjyuvxuezpln` diverge do ledger
+`supabase_migrations.schema_migrations`. **É advisory, não gate** — não bloqueia
+merge, mas registra divergência em `docs/ci/DDL_OUT_OF_BAND_REPORT.md`.
+Ver `docs/E12_DETECTOR_DDL_OUT_OF_BAND_2026-09-16.md`.
+
+### Inventário de segredos — E98
+
+`docs/ci/SEGREDOS.md` é a SSOT de todos `secrets.*` e `vars.*` usados nos
+workflows. Qualquer PR que adicione `secrets.NOVO_SEGREDO` deve incluir uma
+linha nesse arquivo com dono, escopo e rotação declarados.
+
+---
+
 ## ARQUIVOS PROTEGIDOS (não modificar sem razão explícita)
 
 | Arquivo | Por quê |
