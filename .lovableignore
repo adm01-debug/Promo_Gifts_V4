@@ -117,3 +117,11 @@ src/integrations/supabase/types.ts
 # ============================================================
 .github/workflows/deploy-gates.yml
 .github/workflows/quality-gate.yml
+
+# ============================================================
+# Branch Protection e Revisão Obrigatória (REGRA #1 + CLAUDE.md)
+# CODEOWNERS define quem deve revisar PRs que tocam arquivos críticos.
+# Lovable pode sobrescrever e remover as regras de revisão obrigatória,
+# permitindo que PRs que alteram SSOT/client.ts passem sem @adm01-debug.
+# ============================================================
+.github/CODEOWNERS
