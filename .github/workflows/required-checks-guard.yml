@@ -18,6 +18,7 @@ jobs:
   assert-required-checks:
     name: Assert Gate Final is required on main
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Check required_status_checks in active main rulesets
         env:
@@ -65,8 +66,8 @@ jobs:
             fi
 
             APPLIES=$(jq -r '
-              ((.conditions.ref_name.include // []) | any(. == "~DEFAULT_BRANCH" or . == "refs/heads/main")) and
-              (((.conditions.ref_name.exclude // []) | any(. == "~DEFAULT_BRANCH" or . == "refs/heads/main")) | not)
+              ((.conditions.ref_name.include // []) | any(. == "~DEFAULT_BRANCH" or . == "refs/heads/main" or . == "~ALL")) and
+              (((.conditions.ref_name.exclude // []) | any(. == "~DEFAULT_BRANCH" or . == "refs/heads/main" or . == "~ALL")) | not)
             ' "/tmp/ruleset-$ID.json")
             if [[ "$APPLIES" != "true" ]]; then
               continue
