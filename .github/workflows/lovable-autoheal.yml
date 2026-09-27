@@ -145,7 +145,7 @@ jobs:
         run: |
           git config user.email "adm01@promobrindes.com.br"
           git config user.name "adm01-debug"
-          git add -A
+          git add -- src/ tests/ e2e/
 
           FILES_FIXED=$(git diff --cached --name-only | tr '\n' ', ' | sed 's/,$//')
           TRIGGER_SHA="${{ github.sha }}"

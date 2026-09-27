@@ -40,11 +40,11 @@ leitura**, via `mcp__supabase__execute_sql`, contra
 `doufsxqlfjyuvxuezpln`, filtrada para `version` canônica (14 dígitos) **maior**
 que o cutoff já estabelecido pela E11 (`20260623111612`) — a fronteira exata
 onde a E11 confirmou que **toda** linha canônica tem `statements` preenchido
-(598/598 então; **598/598 reconfirmado nesta sessão**, mesmo número, nenhuma
-migration nova aplicada entre as duas sessões). Abaixo desse cutoff, ou fora do
+(598/598 no snapshot E48 original; **ledger atual = 600** — `20260922170000`
+e `20260923114500` adicionadas via E15 após o snapshot E48). Abaixo desse cutoff, ou fora do
 formato canônico, uma linha não tem `statements` capturado no momento do
 registro — não há como reconstruir isso retroativamente (ver E11) —, então
-essas ~1.906 linhas (2.504 total − 598 pós-cutoff) permanecem como narrativa em
+essas ~1.906 linhas (2.504 total − 598 pós-cutoff [snapshot E48 original]) permanecem como narrativa em
 `## Legado — não verificado`, não como linhas tabulares individuais fabricadas.
 
 - **SHA-256** de cada linha = hash real do arquivo local
@@ -58,7 +58,7 @@ essas ~1.906 linhas (2.504 total − 598 pós-cutoff) permanecem como narrativa 
   verdade, não uma lacuna de preenchimento**. As poucas linhas com contexto
   documentado (ex. Kit Maker, `20260911130357`) têm esses campos preenchidos
   com a evidência real já registrada em `## Legado`.
-- **3 exceções conhecidas** dentro das 598: `20260623120000` e `20260623130000`
+- **3 exceções conhecidas** dentro das 598 (snapshot E48): `20260623120000` e `20260623130000`
   têm **2 arquivos locais cada** com o mesmo prefixo de versão (colisão já
   documentada pela E10 — `sha256 arquivo` marca `AMBIGUO:<nome-do-arquivo>` em
   vez de escolher um dos dois arbitrariamente); `20260916155725`
@@ -81,8 +81,9 @@ ledger_hash = sha256(
 )
 ```
 
-Cobre **todas** as 598 linhas da tabela "Recibos" (não só as últimas N — o
-volume é pequeno o suficiente para cobrir o conjunto inteiro sem custo real).
+Cobre **todas as 600 linhas do ledger atual** (snapshot E48 original = 598 linhas,
+hash `8086444739de2607c127a1fedf231f96505c27482d5a18fc5cdbead6a4c85193`; as 2 linhas
+adicionadas via E15 — `20260922170000` e `20260923114500` — estão incluídas neste hash).
 Recalculável com `docs/E48_LEDGER_RECEIPTS_2026-09-16.json` + qualquer
 implementação de SHA-256.
 
@@ -90,24 +91,24 @@ implementação de SHA-256.
 
 | versão | nome | data UTC |
 |---|---|---|
-| `20260916155725` | `catalog_stats_price_range_top_colors_materials` | `2026-09-16 15:57:25 UTC` |
+| `20260923114500` | `quote_rpc_lineage_atomicity` | `2026-09-23 11:56:55 UTC` |
 
-**Nota:** este é o registro de maior `version` no ledger no momento do
-backfill — e é exatamente a linha sem arquivo local citada acima. Não é uma
-aplicação feita por esta etapa (E48 não escreve no banco).
+**Nota:** `20260916155725` era a última no backfill original (E48, 2026-09-16) — sem
+arquivo local, provável out-of-band. As 2 linhas acima foram adicionadas no backfill
+de 2026-09-27 (600 → ver abaixo). E48 não escreveu no banco.
 
-### Ledger hash (valor calculado nesta sessão, 2026-09-16)
+### Ledger hash (recalculado 2026-09-27 — backfill +2 linhas pós-E48)
 
 ```
-8086444739de2607c127a1fedf231f96505c27482d5a18fc5cdbead6a4c85193
+f6def33d0c79c66aab118335ed95d9e3a9b40536cca5cd397bacc54e7858ae96
 ```
 
-598 linhas, `version` de `20260623111856` a `20260916155725`.
+600 linhas, `version` de `20260623111856` a `20260923114500`.
 
-## Recibos — aplicações confirmadas por hash (598 linhas, `version` canônica > `20260623111612`)
+## Recibos — aplicações confirmadas por hash (600 linhas, `version` canônica > `20260623111612`)
 
 <details>
-<summary>Expandir tabela completa (598 linhas — hashes SHA-256/MD5 íntegros, ver <code>docs/E48_LEDGER_RECEIPTS_2026-09-16.json</code> para a fonte estruturada)</summary>
+<summary>Expandir tabela completa (600 linhas — hashes SHA-256/MD5 íntegros, ver <code>docs/E48_LEDGER_RECEIPTS_2026-09-16.json</code> para a fonte estruturada)</summary>
 
 | versão | sha256 arquivo | md5 statements | executor | método | data UTC | pós-check |
 |---|---|---|---|---|---|---|
@@ -709,6 +710,8 @@ aplicação feita por esta etapa (E48 não escreve no banco).
 | `20260912151000` | `0119bee05805389337e409126ff7465965f75dd0923b4229337937b5aab13ea6` | `39827116aa5ef103ac8b4c0dc90d78eb` | n/d | n/d (pré-E48; ledger não registra por linha) | 2026-09-12 15:10:00 UTC | n/d (não capturado retroativamente; ver E07 — verificação por objeto) |
 | `20260912205759` | `2ed94364aef678b413f1ace537eb42c694c5195b2c57bec34e50da4207631b3d` | `41b09b7f210698dab88c7d5a9b277583` | n/d | n/d (pré-E48; ledger não registra por linha) | 2026-09-12 20:57:59 UTC | n/d (não capturado retroativamente; ver E07 — verificação por objeto) |
 | `20260916155725` | `SEM_ARQUIVO_LOCAL` | `f078d1d8a52658adb5d48b148798d1f3` | n/d | n/d (pré-E48; ledger não registra por linha) | 2026-09-16 15:57:25 UTC | n/d (não capturado retroativamente; ver E07 — verificação por objeto) |
+| `20260922170000` | `266f0963a9e7b1d30e8594d7c6218747b6a79baf16aa272249e864f55a64b29b` | `badcb6626e975ee80bab7d562a6c12cc` | GitHub Actions, disparado por `adm01-debug` | E15 (run 35760867980) | 2026-09-22 18:34:03 UTC | recibo E15 abaixo; apply, repair e post-check aprovados — ver `## Recibos — E15` |
+| `20260923114500` | `18663b52473fa9fd0edb031495ebe1ed8fc8c0ea0c262631a3b3bf035d8d91b7` | `87c7eefd2929c273fbedd75e4d61c423` | GitHub Actions, disparado por `adm01-debug` | E15 (run 35857184284) | 2026-09-23 11:56:55 UTC | recibo E15 abaixo; post-check confirmou version no ledger — ver `## Recibos — E15` |
 
 
 </details>
@@ -755,7 +758,7 @@ da execução e consulta read-only ao catálogo/ledger, sem reaplicar SQL.
 | versão | sha256 arquivo | md5 statements | executor | método | data UTC | pós-check | status |
 |---|---|---|---|---|---|---|---|
 | `20260922170000` | `266f0963a9e7b1d30e8594d7c6218747b6a79baf16aa272249e864f55a64b29b` | `badcb6626e975ee80bab7d562a6c12cc` | GitHub Actions, disparado por `adm01-debug` | E15 | 2026-09-22 18:34:03 UTC (fim do passo psql) | [Run 35760867980, tentativa 1](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/35760867980/attempts/1): apply, repair e post-check aprovados; recoleta read-only em 22/09 19:27 UTC confirmou ledger, corpo e ACL | aplicada; recibo recuperado documentalmente pelo Codex, a pedido do PO |
-| `20260923114500` | `18663b52473fa9fd0edb031495ebe1ed8fc8c0ea0c262631a3b3bf035d8d91b7` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug) | E15 | 2026-09-23 11:56:55 UTC | job post-check da run 35857184284 confirmou a version no ledger | aplicada |
+| `20260923114500` | `18663b52473fa9fd0edb031495ebe1ed8fc8c0ea0c262631a3b3bf035d8d91b7` | `87c7eefd2929c273fbedd75e4d61c423` | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug) | E15 | 2026-09-23 11:56:55 UTC | job post-check da run 35857184284 confirmou a version no ledger | aplicada |
 
 ### Evidências do recibo `20260922170000`
 
@@ -852,7 +855,8 @@ no momento do registro.
 - **Cutoff formal adotado:** `version = "20260623111612"` — o maior `version`
   observado ao vivo entre as linhas sem `statements`. Toda linha canônica com
   `version` maior que esse corte já tem `statements` (598/598 confirmado ao
-  vivo). Ver `docs/E11_LEDGER_STATEMENTS_ALLOWLIST.json` para a definição
+  vivo na época de E11/E48; **ledger atual = 600** — 2 linhas adicionadas via
+  E15 pós-snapshot: `20260922170000` e `20260923114500`). Ver `docs/E11_LEDGER_STATEMENTS_ALLOWLIST.json` para a definição
   formal usada pelo gate de CI, e `docs/E11_LEDGER_STATEMENTS_2026-09-16.md`
   para a evidência completa.
 - **Estas 483 linhas são tratadas como verificadas por objeto, não por
