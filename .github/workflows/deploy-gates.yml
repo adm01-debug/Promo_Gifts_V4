@@ -19,6 +19,11 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# Cancela runs anteriores do mesmo PR (pull_request); preserva push/dispatch.
+concurrency:
+  group: deploy-gates-${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 permissions:
   contents: read
 
@@ -61,19 +66,59 @@ jobs:
   lint-typecheck:
     name: Gate 1 - Lint + TypeScript
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     needs: [ssot-gate]
     env:
       NODE_OPTIONS: --max-old-space-size=4096
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
       - run: npm ci
       - run: npm run typecheck
+        env:
+          VITE_SUPABASE_URL: https://placeholder.supabase.co
+          VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
       - run: npm run lint:baseline
+      # REGRA #2 — Product type fields (bloqueante)
+      # Previne remoção silenciosa de price/sale_price/shortDescription/category_id
+      # durante merge (gap C2) ou renomeação pelo Lovable (gap L3).
+      - name: Gate 1.1 — Product type fields (bloqueante)
+        run: node scripts/check-product-type-fields.mjs
+        env:
+          VITE_SUPABASE_URL: https://placeholder.supabase.co
+          VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
+      # REGRA #4 — Types inventory drift (bloqueante)
+      # Previne remoção de Tables/Views/Functions/Enums de types.ts sem allowlist.
+      # Incidente: 7716ae9 Lovable removeu magazine_* → 80+ erros TS.
+      - name: Gate 1.2 — Types inventory drift (bloqueante)
+        run: |
+          BASE="${{ github.event.pull_request.base.sha || 'HEAD~1' }}"
+          node scripts/check-types-inventory-drift.mjs --base "$BASE"
+      # Migration contracts (bloqueante) — previne referências a arquivos inexistentes,
+      # nomes sem timestamp UTC e RPCs/tabelas não catalogadas.
+      - name: Gate 1.3 — Migration contracts (bloqueante)
+        run: |
+          node scripts/check-migration-path-references.mjs
+          node scripts/check-supabase-reference-catalog.mjs
+          node scripts/check-migration-filename-contract.mjs
+      # REGRA E44 — Visual baselines (bloqueante)
+      # Previne remoção de PNGs de baseline de specs rodadas em CI sem
+      # --update-snapshots (e2e-dialogs-pr-check, ui-visual-a11y, etc.)
+      - name: Gate 1.4 — Visual baselines commitados (bloqueante)
+        run: node scripts/check-visual-baselines.mjs
+      # E55 — "Salvar Alterações" em fluxo de rascunho (bloqueante)
+      # Previne que o Lovable reintroduza o pattern draft-lock detectado nos
+      # rascunhos do fluxo de orçamentos.
+      - name: Gate 1.5 — Sem "Salvar Alterações" em fluxos de rascunho (bloqueante)
+        run: node scripts/check-no-salvar-alteracoes-draft.mjs
+        env:
+          VITE_SUPABASE_URL: https://placeholder.supabase.co
+          VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
 
   unit-tests:
     name: Gate 2 - Unit Tests
@@ -101,6 +146,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: [ssot-gate]
+    # Dependabot e forks não têm acesso a secrets live — marca skipped
+    # explicitamente em vez de falhar verde vazio (E59).
+    if: |
+      github.actor != 'dependabot[bot]' &&
+      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
     steps:
       - uses: actions/checkout@v4
       - name: Validate discount approval, grants and trigger races on PG17
@@ -159,11 +209,17 @@ jobs:
       - run: npm ci
       - run: npm run build
       - name: Run Lighthouse CI
-        run: |
-          npm install -g @lhci/cli@0.13.x
-          lhci autorun --config=.lighthouserc.json
+        run: npx lhci autorun --config=.lighthouserc.json
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+      - name: Upload Lighthouse report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-report-${{ github.run_id }}
+          path: .lighthouseci/
+          retention-days: 14
+          if-no-files-found: ignore
 
   seo-sanity:
     name: Gate 5 - SEO Sanity Check
@@ -183,6 +239,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 3
     needs: [ssot-gate]
+    # Dependabot e forks não têm acesso a SERVICE_ROLE_KEY — skipa (E59).
+    if: |
+      github.actor != 'dependabot[bot]' &&
+      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -210,6 +270,13 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm run build
+      # E55 — Bundle size (bloqueante)
+      # Roda após o build para garantir que dist/assets/ existe.
+      - name: Gate 1.6 — Bundle size dentro dos limites (bloqueante)
+        run: node scripts/check-bundle-size.mjs
+        env:
+          VITE_SUPABASE_URL: https://placeholder.supabase.co
+          VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
       - name: Upload dist artifact
         uses: actions/upload-artifact@v4
         with:
@@ -237,10 +304,44 @@ jobs:
       - name: Require every blocking gate to pass
         env:
           GATE_RESULTS: ${{ join(needs.*.result, ',') }}
+          # database-integrity e restore-cart-rpc-gate podem ser skipped em
+          # PRs do Dependabot/fork (sem acesso a secrets live — E59).
+          DB_INTEGRITY: ${{ needs.database-integrity.result }}
+          RESTORE_CART: ${{ needs.restore-cart-rpc-gate.result }}
+          IS_DEPENDABOT: ${{ github.actor == 'dependabot[bot]' }}
         run: |
+          set -euo pipefail
+          FAIL=0
+
+          # Falha em qualquer gate que quebrou ou foi cancelado
           if [[ ",${GATE_RESULTS}," == *,failure,* || \
-                ",${GATE_RESULTS}," == *,cancelled,* || \
-                ",${GATE_RESULTS}," == *,skipped,* ]]; then
+                ",${GATE_RESULTS}," == *,cancelled,* ]]; then
+            echo "Blocking gate result: ${GATE_RESULTS}" >&2
+            FAIL=1
+          fi
+
+          # Skipped é aceito APENAS para os 2 gates live-secrets em PRs
+          # do Dependabot ou fork (E59). Em qualquer outro contexto, skipped é falha.
+          if [[ ",${GATE_RESULTS}," == *,skipped,* ]]; then
+            # Constrói o conjunto de skipped aceitáveis neste contexto
+            ALLOWED_SKIP=0
+            if [[ "$IS_DEPENDABOT" == "true" || "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+              # Para Dependabot e forks: database-integrity e restore-cart-rpc-gate
+              # podem ser skipped (sem secrets). Todos os outros skipped são falha.
+              if [[ "$DB_INTEGRITY" == "skipped" ]]; then ALLOWED_SKIP=$((ALLOWED_SKIP+1)); fi
+              if [[ "$RESTORE_CART" == "skipped" ]]; then ALLOWED_SKIP=$((ALLOWED_SKIP+1)); fi
+            fi
+            # Conta total de skipped
+            TOTAL_SKIP=$(echo "${GATE_RESULTS}" | tr ',' '\n' | grep -c "^skipped$" || true)
+            if [[ "$TOTAL_SKIP" -gt "$ALLOWED_SKIP" ]]; then
+              echo "::error::Gate(s) inesperadamente skipped (${TOTAL_SKIP} skipped, ${ALLOWED_SKIP} permitidos): ${GATE_RESULTS}" >&2
+              FAIL=1
+            elif [[ "$ALLOWED_SKIP" -gt 0 ]]; then
+              echo "::warning::${ALLOWED_SKIP} gate(s) live-secrets skipped (Dependabot/fork sem secrets — E59)"
+            fi
+          fi
+
+          if [[ "$FAIL" -eq 1 ]]; then
             echo "Blocking gate result: ${GATE_RESULTS}" >&2
             exit 1
           fi

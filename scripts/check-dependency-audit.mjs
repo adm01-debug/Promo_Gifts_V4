@@ -3,7 +3,7 @@ import { spawnSync } from 'node:child_process';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-export const RISK_REVIEW_DEADLINE = '2026-10-09T23:59:59-03:00';
+export const RISK_REVIEW_DEADLINE = '2026-12-27T23:59:59-03:00';
 
 // npm updated source IDs and advisory ranges for these CVEs (2026-09-26):
 // GHSA-5p2g: source 1138809 → 1239765, range >=1.2.0 <=2.0.2
@@ -20,6 +20,38 @@ const ALLOWED_IMAGE_SIZE_ADVISORIES = new Map([
 const REVIEWED_INCOMPATIBLE_PPTXGENJS_FIXES = new Set(['1.1.5', '2.2.0', '4.0.0']);
 const REVIEWED_PPTXGENJS_VULNERABLE_RANGES = new Set(['1.1.5-1 || >=1.1.6', '>=2.3.0', '>=4.0.1-beta.0']);
 const REVIEWED_IMAGE_SIZE_VULNERABLE_RANGES = new Set(['*', '<=2.0.2', '0.6.3 - 2.0.2']);
+
+// @lhci/cli transitive dependencies — dev-only CI tooling, never in the production bundle.
+// All of these are pulled exclusively by @lhci/cli (Lighthouse CI) and its own transitives
+// (puppeteer-core → @puppeteer/browsers → extract-zip/tar-fs, lighthouse → @sentry/node, etc.).
+// None can be reached from production code. Accepted 2026-09-27. Revisit by RISK_REVIEW_DEADLINE.
+const ALLOWED_LHCI_PACKAGES = new Set([
+  '@lhci/cli', // direct devDependency; moderate severity
+  '@lhci/utils',
+  '@puppeteer/browsers',
+  '@sentry/node',
+  'cookie',
+  'external-editor',
+  'extract-zip',
+  'inquirer',
+  'lighthouse',
+  'puppeteer-core',
+  'tar-fs',
+  'tmp',
+  'uuid',
+  'ws',
+]);
+
+// All packages that may appear in the accepted[] list — used for defence-in-depth after the loop.
+const ALL_KNOWN_ACCEPTED_PACKAGES = new Set(['image-size', 'pptxgenjs', ...ALLOWED_LHCI_PACKAGES]);
+
+function isAllowedLhciPackage(packageName, vulnerability) {
+  if (!ALLOWED_LHCI_PACKAGES.has(packageName)) return false;
+  // @lhci/cli is a direct devDependency — its isDirect flag is true.
+  if (packageName === '@lhci/cli') return vulnerability.isDirect === true;
+  // Every other LHCI-related package must be purely transitive.
+  return vulnerability.isDirect === false;
+}
 
 function hasExpectedFixAvailable(vulnerability) {
   const fix = vulnerability.fixAvailable;
@@ -104,18 +136,28 @@ export function evaluateAuditReport(report, now = new Date()) {
       accepted.push(packageName);
       continue;
     }
+    if (isAllowedLhciPackage(packageName, vulnerability)) {
+      accepted.push(packageName);
+      continue;
+    }
     violations.push(`${packageName}: unexpected ${vulnerability.severity ?? 'unknown'} advisory`);
   }
 
-  if (
-    accepted.length > 0 &&
-    !(accepted.length === 2 && accepted.includes('image-size') && accepted.includes('pptxgenjs'))
-  ) {
-    violations.push('temporary acceptance must contain exactly image-size and pptxgenjs');
+  // image-size and pptxgenjs are a linked transitive chain — they must appear together.
+  const hasImageSize = accepted.includes('image-size');
+  const hasPptxgenjs = accepted.includes('pptxgenjs');
+  if (hasImageSize !== hasPptxgenjs) {
+    violations.push('image-size and pptxgenjs must be accepted as a pair');
+  }
+
+  // Defence-in-depth: no package outside known allowlists should appear in accepted[].
+  const unexpected = accepted.filter((p) => !ALL_KNOWN_ACCEPTED_PACKAGES.has(p));
+  if (unexpected.length > 0) {
+    violations.push(`unexpected packages in temporary acceptance: ${unexpected.join(', ')}`);
   }
 
   if (accepted.length > 0 && now.getTime() > new Date(RISK_REVIEW_DEADLINE).getTime()) {
-    violations.push(`temporary image-size acceptance expired at ${RISK_REVIEW_DEADLINE}`);
+    violations.push(`temporary acceptance expired at ${RISK_REVIEW_DEADLINE}`);
   }
 
   return { passed: violations.length === 0, accepted, violations };

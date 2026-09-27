@@ -24,7 +24,18 @@ scripts/                                        @adm01-debug
 # ============================================================
 .github/workflows/                              @adm01-debug
 .github/CODEOWNERS                              @adm01-debug
+.github/required-checks.json                   @adm01-debug
+.github/labels.yml                             @adm01-debug
+.github/actions/                               @adm01-debug
 .lovableignore                                  @adm01-debug
+
+# ============================================================
+# Ratchet baselines — aumentar sem aprovação é regressão silenciosa
+# (E41 — PLANO_WORKFLOWS_CI_100_ETAPAS_2026-09-26.md)
+# ============================================================
+.tsc-ratchet-baseline                          @adm01-debug
+bundle-size-baseline.json                      @adm01-debug
+docs/TYPES_INVENTORY_REMOVAL_ALLOWLIST.json    @adm01-debug
 
 # ============================================================
 # Edge functions com correções de segurança aplicadas manualmente
