@@ -1,0 +1,63 @@
+name: Workflow Lint (E11)
+
+# E11 — PLANO_WORKFLOWS_CI_100_ETAPAS_2026-09-26
+# Valida contratos estruturais (actionlint + shellcheck + check-workflow-contracts.mjs)
+# em qualquer PR que toque .github/** ou playwright.config.ts.
+# Modo REPORT até E20 (gate será habilitado lá via --gate flag).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/**'
+      - 'playwright.config.ts'
+      - 'scripts/check-workflow-contracts.mjs'
+      - 'scripts/check-workflow-contracts.allowlist.json'
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/**'
+      - 'playwright.config.ts'
+      - 'scripts/check-workflow-contracts.mjs'
+      - 'scripts/check-workflow-contracts.allowlist.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: workflow-lint-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  actionlint:
+    name: actionlint + shellcheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run actionlint
+        uses: rhysd/actionlint@v1.7.7
+        with:
+          # shellcheck is run automatically by actionlint for run: blocks
+          ignore: |
+            SC2086
+
+  workflow-contracts:
+    name: Workflow contract checks (C1–C8)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check workflow contracts (report mode)
+        # --gate not used until E20; any violations are reported but don't block CI
+        run: node scripts/check-workflow-contracts.mjs
