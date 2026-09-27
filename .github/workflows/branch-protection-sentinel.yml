@@ -3,6 +3,10 @@ name: Branch Protection Sentinel
 # ============================================================================
 # CHANGELOG (resumo — detalhes em .github/SENTINEL_CHANGELOG.md):
 #
+# v2.0.3 (2026-09-27) — fix E12/R5: secret não como arg posicional
+#   • SLACK_WEBHOOK passado via --url (named flag) em vez de arg posicional
+#   • 2>/dev/null suprime qualquer erro que pudesse conter a URL
+#
 # v2.0.2 (2026-08-31) — compatibilidade com título de merge customizado
 #   • Reconhece `Merge PR #NNN:` além do padrão `Merge pull request #NNN`
 #   • Evita auditar novamente commits internos já revisados na PR
@@ -209,7 +213,8 @@ jobs:
                     "$REPO" "${SHA:0:7}" "$RUN_URL")
           curl -sS -X POST -H 'Content-Type: application/json' \
                --data "$PAYLOAD" \
-               "$SLACK_WEBHOOK" || echo "Slack notify falhou (não bloqueante)"
+               --url "$SLACK_WEBHOOK" 2>/dev/null \
+          || echo "Slack notify falhou (não bloqueante)"
 
   # ============================================================================
   # Job paralelo: verifica se Branch Protection está ativa em main

@@ -13,6 +13,7 @@ import { execSync } from 'node:child_process';
 const TESTIDS = ['shipping-type-select', 'shipping-cost-input', 'freight-grid'];
 const ALLOWLIST = new Set([
   'src/pages/quotes/QuoteBuilderPage.tsx',
+  'src/pages/__visual/QuoteFreightBlockHarness.tsx', // harness de regressão visual E2E
 ]);
 
 function grepInProd(testid: string): string[] {
@@ -26,12 +27,12 @@ function grepInProd(testid: string): string[] {
 }
 
 describe('Bloco Frete — cross-check de consumidores em produção', () => {
-  it.each(TESTIDS)(
-    'testid "%s" só aparece em arquivos autorizados',
-    (tid) => {
-      const files = grepInProd(tid);
-      const disallowed = files.filter((f) => !ALLOWLIST.has(f));
-      expect(disallowed, `Consumidores fora da allowlist para "${tid}": ${JSON.stringify(disallowed)}`).toEqual([]);
-    },
-  );
+  it.each(TESTIDS)('testid "%s" só aparece em arquivos autorizados', (tid) => {
+    const files = grepInProd(tid);
+    const disallowed = files.filter((f) => !ALLOWLIST.has(f));
+    expect(
+      disallowed,
+      `Consumidores fora da allowlist para "${tid}": ${JSON.stringify(disallowed)}`,
+    ).toEqual([]);
+  });
 });

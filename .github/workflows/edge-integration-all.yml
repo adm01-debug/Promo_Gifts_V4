@@ -67,14 +67,14 @@ jobs:
       # Roda todos os 18+ testes de integração de edge functions (mocked).
       - name: Run all edge function integration tests
         run: |
-          npx vitest run tests/edge-functions/integration/ \\
-            --reporter=verbose \\
-            --coverage \\
-            --coverage.reporter=json-summary \\
-            --coverage.reporter=text \\
-            --coverage.thresholds.lines=0 \\
-            --coverage.thresholds.functions=0 \\
-            --coverage.thresholds.branches=0 \\
+          npx vitest run tests/edge-functions/integration/ \
+            --reporter=verbose \
+            --coverage \
+            --coverage.reporter=json-summary \
+            --coverage.reporter=text \
+            --coverage.thresholds.lines=0 \
+            --coverage.thresholds.functions=0 \
+            --coverage.thresholds.branches=0 \
             --coverage.thresholds.statements=0
 
       # Testes LIVE — skip silencioso sem segredos; rodam de fato com eles.
