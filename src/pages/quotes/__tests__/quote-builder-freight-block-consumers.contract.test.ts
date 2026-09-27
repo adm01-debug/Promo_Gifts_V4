@@ -29,12 +29,12 @@ function grepInProd(testid: string): string[] {
 }
 
 describe('Bloco Frete — cross-check de consumidores em produção', () => {
-  it.each(TESTIDS)(
-    'testid "%s" só aparece em arquivos autorizados',
-    (tid) => {
-      const files = grepInProd(tid);
-      const disallowed = files.filter((f) => !ALLOWLIST.has(f));
-      expect(disallowed, `Consumidores fora da allowlist para "${tid}": ${JSON.stringify(disallowed)}`).toEqual([]);
-    },
-  );
+  it.each(TESTIDS)('testid "%s" só aparece em arquivos autorizados', (tid) => {
+    const files = grepInProd(tid);
+    const disallowed = files.filter((f) => !ALLOWLIST.has(f));
+    expect(
+      disallowed,
+      `Consumidores fora da allowlist para "${tid}": ${JSON.stringify(disallowed)}`,
+    ).toEqual([]);
+  });
 });
