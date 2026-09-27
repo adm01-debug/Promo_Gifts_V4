@@ -184,7 +184,7 @@ export function getPlaywrightProjects(rootDir) {
   if (!existsSync(cfgPath)) return new Set();
   const text = readFileSync(cfgPath, 'utf-8');
   const names = new Set();
-  for (const m of text.matchAll(/name:\s*['"](([^'"]+))['"])/g)) names.add(m[1]);
+  for (const m of text.matchAll(/name:\s*['"](([^'"]+))['"]/g)) names.add(m[1]);
   return names;
 }
 
