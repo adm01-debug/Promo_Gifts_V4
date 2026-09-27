@@ -61,6 +61,7 @@ resultado: exit 0
 | KM50-024 | IMPLEMENTADA LOCAL (parcial) | Preferências grade/lista existem em itens e caixas; preço/nome têm desempate por nome e ID. Falta validar scroll e foco em viewport físico.                                      |
 | KM50-025 | IMPLEMENTADA LOCAL (parcial) | Limpar filtros preserva a composição. O drawer mobile da referência continua condicionado ao desenho aprovado de KM50-020.                                                       |
 | KM50-027 | IMPLEMENTADA LOCAL (parcial) | Faixas inválidas mostram alerta e não eliminam silenciosamente o catálogo. Fechamento e dados comerciais continuam bloqueados por D1/D2.                                         |
+| KM50-030 | IMPLEMENTADA LOCAL (parcial) | A comparação identifica a melhor opção pelo ranking conservador do seletor e explica o critério. Badges comerciais continuam bloqueados por D6.                                  |
 | KM50-031 | IMPLEMENTADA LOCAL (parcial) | Estado sem caixa compatível tem chamada comercial explícita. Envio de contexto comercial depende de contrato do canal.                                                           |
 
 ## Bloqueios preservados

@@ -263,6 +263,10 @@ export function BoxSelector({
     .filter((recommendation): recommendation is (typeof recommendations)[number] =>
       Boolean(recommendation),
     );
+  const comparisonWinnerId = recommendations.find(
+    (recommendation) =>
+      comparisonIds.includes(recommendation.box.id) && recommendation.status === 'compatible',
+  )?.box.id;
 
   useEffect(() => {
     const validIds = new Set(recommendations.map((recommendation) => recommendation.box.id));
@@ -1258,6 +1262,7 @@ export function BoxSelector({
         open={comparisonOpen}
         onOpenChange={setComparisonOpen}
         recommendations={comparedRecommendations}
+        recommendedBoxId={comparisonWinnerId}
         onSelect={onSelect}
       />
     </div>
