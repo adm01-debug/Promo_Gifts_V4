@@ -40,11 +40,11 @@ leitura**, via `mcp__supabase__execute_sql`, contra
 `doufsxqlfjyuvxuezpln`, filtrada para `version` canônica (14 dígitos) **maior**
 que o cutoff já estabelecido pela E11 (`20260623111612`) — a fronteira exata
 onde a E11 confirmou que **toda** linha canônica tem `statements` preenchido
-(598/598 então; **598/598 reconfirmado nesta sessão**, mesmo número, nenhuma
-migration nova aplicada entre as duas sessões). Abaixo desse cutoff, ou fora do
+(598/598 no snapshot E48 original; **ledger atual = 600** — `20260922170000`
+e `20260923114500` adicionadas via E15 após o snapshot E48). Abaixo desse cutoff, ou fora do
 formato canônico, uma linha não tem `statements` capturado no momento do
 registro — não há como reconstruir isso retroativamente (ver E11) —, então
-essas ~1.906 linhas (2.504 total − 598 pós-cutoff) permanecem como narrativa em
+essas ~1.906 linhas (2.504 total − 598 pós-cutoff [snapshot E48 original]) permanecem como narrativa em
 `## Legado — não verificado`, não como linhas tabulares individuais fabricadas.
 
 - **SHA-256** de cada linha = hash real do arquivo local
@@ -58,7 +58,7 @@ essas ~1.906 linhas (2.504 total − 598 pós-cutoff) permanecem como narrativa 
   verdade, não uma lacuna de preenchimento**. As poucas linhas com contexto
   documentado (ex. Kit Maker, `20260911130357`) têm esses campos preenchidos
   com a evidência real já registrada em `## Legado`.
-- **3 exceções conhecidas** dentro das 598: `20260623120000` e `20260623130000`
+- **3 exceções conhecidas** dentro das 598 (snapshot E48): `20260623120000` e `20260623130000`
   têm **2 arquivos locais cada** com o mesmo prefixo de versão (colisão já
   documentada pela E10 — `sha256 arquivo` marca `AMBIGUO:<nome-do-arquivo>` em
   vez de escolher um dos dois arbitrariamente); `20260916155725`
@@ -81,8 +81,9 @@ ledger_hash = sha256(
 )
 ```
 
-Cobre **todas** as 598 linhas da tabela "Recibos" (não só as últimas N — o
-volume é pequeno o suficiente para cobrir o conjunto inteiro sem custo real).
+Cobre **todas as 598 linhas do snapshot E48** (as 2 linhas adicionadas via E15
+pós-snapshot — `20260922170000` e `20260923114500` — têm evidência E15 individual
+e não integram este hash de referência; ledger atual = 600).
 Recalculável com `docs/E48_LEDGER_RECEIPTS_2026-09-16.json` + qualquer
 implementação de SHA-256.
 
@@ -854,7 +855,8 @@ no momento do registro.
 - **Cutoff formal adotado:** `version = "20260623111612"` — o maior `version`
   observado ao vivo entre as linhas sem `statements`. Toda linha canônica com
   `version` maior que esse corte já tem `statements` (598/598 confirmado ao
-  vivo). Ver `docs/E11_LEDGER_STATEMENTS_ALLOWLIST.json` para a definição
+  vivo na época de E11/E48; **ledger atual = 600** — 2 linhas adicionadas via
+  E15 pós-snapshot: `20260922170000` e `20260923114500`). Ver `docs/E11_LEDGER_STATEMENTS_ALLOWLIST.json` para a definição
   formal usada pelo gate de CI, e `docs/E11_LEDGER_STATEMENTS_2026-09-16.md`
   para a evidência completa.
 - **Estas 483 linhas são tratadas como verificadas por objeto, não por

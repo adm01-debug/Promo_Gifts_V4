@@ -6592,10 +6592,10 @@
       "sha256_arquivo": "266f0963a9e7b1d30e8594d7c6218747b6a79baf16aa272249e864f55a64b29b",
       "filename": "20260922170000_signup_identity_safe_default.sql",
       "md5_statements": "badcb6626e975ee80bab7d562a6c12cc",
-      "executor": "Claude Code (PR #1873, aprovação PO)",
-      "metodo": "E15 (db-apply-migration.yml workflow_dispatch)",
-      "data_utc": "2026-09-22 17:00:00 UTC",
-      "pos_check": "n/d (backfill 2026-09-27)"
+      "executor": "GitHub Actions (db-apply-migration.yml, disparado por adm01-debug)",
+      "metodo": "E15 (db-apply-migration.yml workflow_dispatch, run 35760867980)",
+      "data_utc": "2026-09-22 18:34:03 UTC",
+      "pos_check": "apply, repair e post-check aprovados (run 35760867980)"
     },
     {
       "version": "20260923114500",
@@ -6603,10 +6603,10 @@
       "sha256_arquivo": "18663b52473fa9fd0edb031495ebe1ed8fc8c0ea0c262631a3b3bf035d8d91b7",
       "filename": "20260923114500_quote_rpc_lineage_atomicity.sql",
       "md5_statements": "87c7eefd2929c273fbedd75e4d61c423",
-      "executor": "Claude Code (PR #1883)",
-      "metodo": "E15 (db-apply-migration.yml workflow_dispatch)",
-      "data_utc": "2026-09-23 11:45:00 UTC",
-      "pos_check": "n/d (backfill 2026-09-27)"
+      "executor": "GitHub Actions (db-apply-migration.yml, disparado por adm01-debug)",
+      "metodo": "E15 (db-apply-migration.yml workflow_dispatch, run 35857184284)",
+      "data_utc": "2026-09-23 11:56:55 UTC",
+      "pos_check": "post-check confirmou version no ledger (run 35857184284)"
     }
   ]
 }
