@@ -24,6 +24,41 @@ const _filename = fileURLToPath(import.meta.url);
 const _dirname = path.dirname(_filename);
 const STORAGE_STATE = path.resolve(_dirname, "../.auth/storageState.json");
 
+// E51 — Quarentena de flaky: carrega e2e/quarantine.json uma vez no processo.
+// Entradas com `issue` vinculada marcam o teste como test.fixme().
+// NUNCA adicionar entradas sem issue — veja e2e/scripts/detect-flaky.mjs.
+interface QuarantineEntry {
+  title: string;
+  file: string;
+  issue: string;
+  since: string;
+}
+interface QuarantineFile {
+  entries: QuarantineEntry[];
+}
+function loadQuarantine(): QuarantineEntry[] {
+  try {
+    const p = path.resolve(_dirname, "../quarantine.json");
+    const raw = fs.readFileSync(p, "utf-8");
+    return (JSON.parse(raw) as QuarantineFile).entries ?? [];
+  } catch {
+    return [];
+  }
+}
+const QUARANTINE: QuarantineEntry[] = loadQuarantine();
+
+/** Marca o teste atual como fixme se ele estiver na quarentena versionada.
+ *  Chame no início do test body ou no beforeEach do spec.
+ *  O issue link aparece na mensagem do fixme para rastreabilidade. */
+export function skipIfQuarantined(testTitle: string, specFile: string): void {
+  const match = QUARANTINE.find(
+    (e) => e.title === testTitle && specFile.endsWith(e.file),
+  );
+  if (match) {
+    test.fixme(true, `Quarantinado (flaky) — ${match.issue} — desde ${match.since}`);
+  }
+}
+
 import { attachConsoleCapture, type EvidenceCollector } from "../helpers/evidence";
 import { loadCleanupConfig, purgeAll } from "../helpers/cleanup-client";
 import { e2eScope } from "./test-user";

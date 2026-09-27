@@ -1,0 +1,5 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$comment": "Quarentena de testes flaky — estado versionado. Gerado por e2e/scripts/detect-flaky.mjs, consumido por e2e/fixtures/test-base.ts. NUNCA adicionar entradas sem issue vinculada.",
+  "entries": []
+}
