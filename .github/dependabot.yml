@@ -32,9 +32,9 @@ updates:
           - "patch"
           - "major"
     ignore:
-      # Ignorar majors em prod (revisar caso a caso)
+      # Ignorar majors em todas as dependências (revisar caso a caso)
+      # Nota: `dependency-type` não é válido em ignore — apenas em groups.
       - dependency-name: "*"
-        dependency-type: "production"
         update-types: ["version-update:semver-major"]
 
   # GitHub Actions

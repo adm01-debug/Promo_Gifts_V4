@@ -67,7 +67,8 @@ const TOP_LEVEL_TX_PATTERNS = [
 const ALTER_TYPE_ADD_VALUE = /ALTER\s+TYPE\s+\S+\s+ADD\s+VALUE\b/i;
 
 /** Padrões que bloqueiam SEMPRE (sem opt-out). */
-const DROP_WITHOUT_IF_EXISTS = /DROP\s+(?:TABLE|VIEW|FUNCTION|PROCEDURE|SCHEMA|TYPE|SEQUENCE|POLICY)\s+(?!IF\s+EXISTS\b)/i;
+// E97/Codex P2: lookahead inclui \s+ para cobrir múltiplos espaços entre keyword e IF EXISTS
+const DROP_WITHOUT_IF_EXISTS = /DROP\s+(?:TABLE|VIEW|FUNCTION|PROCEDURE|SCHEMA|TYPE|SEQUENCE|POLICY)(?!\s+IF\s+EXISTS\b)/i;
 
 const VERSION_RE = /^\d{6,19}(?:_[A-Za-z0-9]+)*$/;
 
