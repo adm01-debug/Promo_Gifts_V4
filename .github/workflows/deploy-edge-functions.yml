@@ -8,6 +8,26 @@ name: Deploy Edge Functions
 # Gere o token em https://supabase.com/dashboard/account/tokens
 
 on:
+  workflow_call:
+    inputs:
+      function_name:
+        description: 'Nome de uma função específica (vazio = todas)'
+        required: false
+        type: string
+        default: ''
+      functions_json:
+        description: 'JSON array de funções a deployar (ex.: ["fn-a","fn-b"]) — override a detecção automática'
+        required: false
+        type: string
+        default: ''
+      dry_run:
+        description: 'Apenas listar funções, sem fazer deploy'
+        required: false
+        type: boolean
+        default: false
+    secrets:
+      SUPABASE_ACCESS_TOKEN:
+        required: false
   workflow_dispatch:
     inputs:
       function_name:
@@ -58,7 +78,16 @@ jobs:
           set -euo pipefail
           cd supabase/functions
 
-          if [[ -n "${{ inputs.function_name || '' }}" ]]; then
+          if [[ -n "${{ inputs.functions_json || '' }}" ]]; then
+            JSON='${{ inputs.functions_json }}'
+            COUNT=$(echo "$JSON" | jq 'length')
+            echo "functions=$JSON" >> "$GITHUB_OUTPUT"
+            echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+            {
+              echo "## 📦 Edge Functions (via workflow_call): $COUNT"
+              echo "$JSON" | jq -r '.[]' | sed 's/^/- /'
+            } >> "$GITHUB_STEP_SUMMARY"
+          elif [[ -n "${{ inputs.function_name || '' }}" ]]; then
             FN="${{ inputs.function_name }}"
             if [[ ! -d "$FN" ]]; then
               echo "❌ Pasta $FN não existe em supabase/functions/" >&2
