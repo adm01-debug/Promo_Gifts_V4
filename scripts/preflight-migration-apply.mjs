@@ -15,11 +15,15 @@
  *   3. O arquivo tem cabeçalho de rollback lógico: uma linha `-- Rollback:`
  *      (case-insensitive) nas primeiras 40 linhas — exigência do checklist
  *      de E15 ("Rollback lógico obrigatório no cabeçalho do arquivo").
- *   4. DDL não-transacional (`CREATE INDEX CONCURRENTLY`, `VACUUM`, `ALTER
- *      SYSTEM`, ...) é reportado como aviso em `details.nonTransactionalDdl`
- *      — não bloqueia sozinho (psql -1 já falha por conta própria nesses
- *      casos porque força uma transação), mas fica registrado no job summary
- *      para o humano que aprova o `environment: production` decidir.
+ *   4. DDL não-transacional (E63) — BLOQUEIA a menos que o cabeçalho declare
+ *      opt-out explícito ("-- transaction: none" + "-- approved-by: <nome>"):
+ *        - CREATE/DROP/REINDEX … CONCURRENTLY
+ *        - BEGIN / COMMIT / ROLLBACK de topo (conflita com psql -1)
+ *        - ALTER TYPE … ADD VALUE (não-transacional no PG)
+ *      DROP sem IF EXISTS e VACUUM / ALTER SYSTEM bloqueiam sempre (sem opt-out).
+ *   5. DDL não-transacional residual fica em `details.nonTransactionalDdl` para
+ *      o job summary (mantido por compatibilidade; CONCURRENTLY agora bloqueia
+ *      quando sem opt-out — ver item 4).
  *
  * Com `--expect-applied` (modo pós-aplicação, chamado pelo job `post-check`):
  *   inverte a checagem 2 — falha se `version` NÃO estiver no ledger.
@@ -53,7 +57,80 @@ const NON_TX_DDL = [
   /ALTER\s+SYSTEM\b/i,
 ];
 
+/** Padrões que bloqueiam APENAS quando não há opt-out `-- transaction: none`. */
+const CONCURRENTLY_PATTERNS = [
+  /\bCONCURRENTLY\b/i,
+];
+const TOP_LEVEL_TX_PATTERNS = [
+  /^\s*(BEGIN|COMMIT|ROLLBACK)\s*;/m,
+];
+const ALTER_TYPE_ADD_VALUE = /ALTER\s+TYPE\s+\S+\s+ADD\s+VALUE\b/i;
+
+/** Padrões que bloqueiam SEMPRE (sem opt-out). */
+const DROP_WITHOUT_IF_EXISTS = /DROP\s+(?:TABLE|VIEW|FUNCTION|PROCEDURE|SCHEMA|TYPE|SEQUENCE|POLICY)\s+(?!IF\s+EXISTS\b)/i;
+
 const VERSION_RE = /^\d{6,19}(?:_[A-Za-z0-9]+)*$/;
+
+/**
+ * Lê as primeiras `headLines` linhas e extrai o opt-out de checagem transacional.
+ * Para passar por `CONCURRENTLY`, `BEGIN/COMMIT`, `ALTER TYPE ADD VALUE`:
+ *   -- transaction: none
+ *   -- approved-by: <nome>
+ * Ambas as linhas devem estar presentes no cabeçalho.
+ */
+export function parseOptOut(sqlContent, headLines = 40) {
+  const lines = sqlContent.split('\n').slice(0, headLines);
+  const transactionNone = lines.some((l) => /--\s*transaction\s*:\s*none\b/i.test(l));
+  const approvedByLine = lines.find((l) => /--\s*approved-by\s*:/i.test(l));
+  const approvedBy = approvedByLine
+    ? (approvedByLine.split(/approved-by\s*:/i)[1] || '').trim() || null
+    : null;
+  return { transactionNone, approvedBy };
+}
+
+/**
+ * Detecta DDL que bloqueia a aplicação (E63).
+ * Retorna um array de strings descrevendo cada problema.
+ *
+ * `hasTransactionNoneOptOut` — true quando o cabeçalho declara
+ * `-- transaction: none` + `-- approved-by:`. Quando verdadeiro, suprime
+ * os checks de CONCURRENTLY, BEGIN/COMMIT/ROLLBACK e ALTER TYPE ADD VALUE.
+ * DROP sem IF EXISTS bloqueia mesmo com opt-out.
+ */
+export function detectBlockingDdl(sqlContent, { hasTransactionNoneOptOut = false } = {}) {
+  const blocking = [];
+  // Strip single-line SQL comments so patterns in rollback headers don't trigger.
+  const executable = sqlContent.replace(/--[^\n]*/g, '');
+
+  if (!hasTransactionNoneOptOut) {
+    if (CONCURRENTLY_PATTERNS.some((re) => re.test(executable))) {
+      blocking.push(
+        'CONCURRENTLY detectado: não é transacional e conflita com psql -1. ' +
+        'Adicione "-- transaction: none" + "-- approved-by:" no cabeçalho para opt-out.',
+      );
+    }
+    if (TOP_LEVEL_TX_PATTERNS.some((re) => re.test(executable))) {
+      blocking.push(
+        'BEGIN/COMMIT/ROLLBACK de topo detectado: conflita com psql -1 (-1 = transação única). ' +
+        'Adicione "-- transaction: none" + "-- approved-by:" no cabeçalho para opt-out.',
+      );
+    }
+    if (ALTER_TYPE_ADD_VALUE.test(executable)) {
+      blocking.push(
+        'ALTER TYPE … ADD VALUE detectado: não é transacional no PG. ' +
+        'Adicione "-- transaction: none" + "-- approved-by:" no cabeçalho para opt-out.',
+      );
+    }
+  }
+
+  if (DROP_WITHOUT_IF_EXISTS.test(executable)) {
+    blocking.push(
+      'DROP sem IF EXISTS detectado: use DROP … IF EXISTS para evitar erro se o objeto não existir.',
+    );
+  }
+
+  return blocking;
+}
 
 const argv = process.argv.slice(2);
 const REQUIRE_LIVE = shouldRequireLive(argv);
@@ -111,6 +188,14 @@ export function evaluatePreflight({ version, files, sqlContent, isInLedger, expe
   }
 
   const nonTransactionalDdl = files.length === 1 && sqlContent != null ? detectNonTransactionalDdl(sqlContent) : [];
+
+  // E63 — checagem de DDL bloqueante (nova)
+  if (files.length === 1 && sqlContent != null) {
+    const optOut = parseOptOut(sqlContent);
+    const hasTransactionNoneOptOut = optOut.transactionNone && optOut.approvedBy !== null;
+    const blockingDdl = detectBlockingDdl(sqlContent, { hasTransactionNoneOptOut });
+    problems.push(...blockingDdl);
+  }
 
   return {
     ok: problems.length === 0,
