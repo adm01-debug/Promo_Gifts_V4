@@ -8,8 +8,10 @@ name: Template — Workflow Name Here
 on:
   push:
     branches: [main]
+    paths: ['.github/workflows/_template.yml']
   pull_request:
     branches: [main]
+    paths: ['.github/workflows/_template.yml']
   # workflow_dispatch: {}   # descomente se precisar de trigger manual
 
 # R1: permissions explícito — princípio do mínimo privilégio.
@@ -45,7 +47,7 @@ jobs:
       - name: Example step with secret
         env:
           API_KEY: ${{ secrets.EXAMPLE_API_KEY }}
-        run: node scripts/example.mjs
+        run: echo "TEMPLATE — substitua por seu comando real"
 
       - name: Upload artifact
         if: always()
