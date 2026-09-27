@@ -12,6 +12,13 @@ on:
     # Nightly 04:11 UTC — varredura adicional
     - cron: '11 4 * * *'
 
+permissions:
+  contents: read
+
+concurrency:
+  group: stock-rupture-fuzz-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   fuzz:
     name: Risco de Ruptura — fuzz (800 sims, 10 invariantes)
@@ -22,7 +29,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '22.22.1'
+          node-version-file: '.nvmrc'
           cache: 'npm'
 
       - run: npm ci

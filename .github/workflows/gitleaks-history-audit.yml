@@ -8,7 +8,7 @@ name: Gitleaks — Full History Audit
 
 on:
   schedule:
-    - cron: '0 6 * * *'      # diario as 06h UTC (03h BRT)
+    - cron: '44 6 * * *'      # diario as 06h UTC (03h BRT)
   workflow_dispatch:           # botao "Run workflow" no GitHub UI
   push:
     branches: [main]           # tambem audita a cada merge em main
@@ -17,6 +17,10 @@ permissions:
   contents: read
   security-events: write       # para upload de SARIF
   issues: write                # para abrir issue automatica em finding
+
+concurrency:
+  group: gitleaks-history-audit-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   gitleaks-full-history:

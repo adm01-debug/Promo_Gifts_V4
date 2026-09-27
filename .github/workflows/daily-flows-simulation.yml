@@ -2,12 +2,15 @@ name: Daily flows simulation
 
 on:
   schedule:
-    - cron: '0 6 * * *' # Diário 06:00 UTC
+    - cron: '12 6 * * *' # Diário 06:00 UTC
   workflow_dispatch:
     inputs:
       scale:
         description: 'Multiplicador de cenários (1 = ~600)'
         default: '3'
+
+permissions:
+  contents: read
 
 jobs:
   simulate:
@@ -17,7 +20,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22.22.1'
+          node-version-file: '.nvmrc'
       - name: Simulate daily flows
         run: node scripts/simulate-daily-flows.mjs --scale=${{ github.event.inputs.scale || '3' }}
       - name: Upload report

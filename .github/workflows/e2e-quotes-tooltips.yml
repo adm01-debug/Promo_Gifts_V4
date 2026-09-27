@@ -28,6 +28,13 @@ on:
       - ".github/workflows/e2e-quotes-tooltips.yml"
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-quotes-tooltips-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   quotes-tooltips-e2e:
     name: Playwright — 04m-quotes-status-tooltip*
@@ -46,7 +53,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '22.22.1'
+          node-version-file: '.nvmrc'
           cache: npm
 
       - name: Install deps

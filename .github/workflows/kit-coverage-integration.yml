@@ -16,7 +16,7 @@ name: Kit Coverage — Integration
 
 on:
   schedule:
-    - cron: '0 3 * * *'
+    - cron: '41 3 * * *'
   workflow_dispatch:
     inputs:
       kit_fixture_id:
@@ -46,7 +46,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22.22.1'
+          node-version-file: '.nvmrc'
           cache: 'npm'
       - run: npm ci
       - name: Mostra fixture resolvido

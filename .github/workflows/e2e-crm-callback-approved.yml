@@ -20,7 +20,7 @@ on:
   workflow_dispatch:
   schedule:
     # Smoke diário 06:00 UTC (03:00 America/Sao_Paulo)
-    - cron: "0 6 * * *"
+    - cron: "20 6 * * *"
 
 concurrency:
   group: e2e-crm-callback-approved-${{ github.ref }}
@@ -66,7 +66,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '22.22.1'
+          node-version-file: '.nvmrc'
           cache: "npm"
 
       - name: Install dependencies

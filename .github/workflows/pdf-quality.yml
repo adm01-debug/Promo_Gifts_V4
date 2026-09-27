@@ -21,9 +21,17 @@ on:
         default: 'all'
         type: string
 
+permissions:
+  contents: read
+
+concurrency:
+  group: pdf-quality-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   pdf-suite:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
       pull-requests: write
@@ -33,7 +41,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '22.22.1'
+          node-version-file: '.nvmrc'
           cache: 'npm'
 
       - name: Install dependencies

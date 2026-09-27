@@ -22,6 +22,9 @@ concurrency:
   group: e2e-cart-delete-popover-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   fuzz-and-unit:
     name: Fuzz + Unit (rápido)

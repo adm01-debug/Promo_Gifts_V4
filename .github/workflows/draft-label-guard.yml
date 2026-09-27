@@ -20,6 +20,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: draft-label-guard-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   draft-label-guard:
     name: Draft label guard (Salvar Alterações → Salvar Rascunho)

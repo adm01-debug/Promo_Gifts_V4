@@ -32,6 +32,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: lovable-edit-tracker-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   track-lovable-edits:
     name: Rastrear edições do Lovable

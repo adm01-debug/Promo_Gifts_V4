@@ -33,10 +33,14 @@ env:
   MIGRATION_VERSION: ${{ inputs.version }}
   SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
 
+permissions:
+  contents: read
+
 jobs:
   preflight:
     name: 1. Preflight (read-only)
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
       actions: read
@@ -63,7 +67,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '22.22.1'
+          node-version-file: '.nvmrc'
 
       - name: Checa arquivo único, rollback documentado, ainda não no ledger
         run: node scripts/preflight-migration-apply.mjs --version="$MIGRATION_VERSION" --require-live
@@ -74,6 +78,7 @@ jobs:
     name: 2. Apply (requer aprovação do environment production)
     needs: preflight
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     environment: production
     permissions:
       contents: read
@@ -175,12 +180,13 @@ jobs:
     name: 3. Pós-check (read-only)
     needs: apply
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '22.22.1'
+          node-version-file: '.nvmrc'
 
       - name: Confirma version no ledger após a aplicação
         run: node scripts/preflight-migration-apply.mjs --version="$MIGRATION_VERSION" --require-live --expect-applied
@@ -191,6 +197,7 @@ jobs:
     name: 4. Recibo (abre PR em MIGRATIONS_SYNC_LOG.md)
     needs: [apply, post-check]
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: write
       pull-requests: write
@@ -201,7 +208,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '22.22.1'
+          node-version-file: '.nvmrc'
 
       - name: Monta o recibo em MIGRATIONS_SYNC_LOG.md
         run: |

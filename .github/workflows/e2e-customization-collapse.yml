@@ -34,6 +34,9 @@ env:
   E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
   E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
 
+permissions:
+  contents: read
+
 jobs:
   collapse-e2e:
     name: LocationPanel collapse (authed)

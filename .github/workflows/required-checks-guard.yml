@@ -8,11 +8,15 @@ on:
   push:
     branches: [main]
   schedule:
-    - cron: '0 9 * * *'
+    - cron: '28 9 * * *'
   workflow_dispatch:
 
 permissions:
   contents: read
+
+concurrency:
+  group: required-checks-guard-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   assert-required-checks:
