@@ -5,6 +5,8 @@
   "source": "supabase_migrations.schema_migrations (doufsxqlfjyuvxuezpln), live via mcp__supabase__execute_sql, somente leitura",
   "scope": "version canônica (14 dígitos) > cutoff E11 (20260623111612) — únicas com `statements` garantido pelo achado da E11",
   "cutoff_version_e11": "20260623111612",
+  "updated_at": "2026-09-27",
+  "updated_by": "PR #1908 (claude/promo-brindes-audit-301lml) — backfill 2 recibos E15 pós-snapshot: 20260922170000 (run 35760867980) e 20260923114500 (run 35857184284)",
   "row_count": 600,
   "hash_definition": "ledger_hash = sha256( join(\"\\n\", [f\"{r.version}|{r.sha256_arquivo}|{r.md5_statements or '-'}\" for r in rows_sorted_by_version_asc]) )",
   "rows": [
