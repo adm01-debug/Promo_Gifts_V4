@@ -353,7 +353,7 @@
     "zustand": "^4.5.0"
   },
   "devDependencies": {
-    "@lhci/cli": "0.13.0",
+    "@lhci/cli": "0.15.1",
     "@axe-core/playwright": "^4.11.3",
     "@playwright/test": "^1.59.1",
     "@testing-library/dom": "^10.4.1",
