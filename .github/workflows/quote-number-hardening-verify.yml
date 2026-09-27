@@ -2,7 +2,7 @@ name: Quote Number Hardening — Verify (canonical DB)
 
 on:
   schedule:
-    - cron: '17 */6 * * *' # a cada 6h
+    - cron: '27 */6 * * *' # E19: a cada 6h — deslocado de :17 para :27 (≥10 min após wraparound-monitor-report às :15)
   workflow_dispatch:
   push:
     branches: [main]

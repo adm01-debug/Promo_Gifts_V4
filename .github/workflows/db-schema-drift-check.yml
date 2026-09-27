@@ -36,7 +36,7 @@ name: db-schema-drift-check
 
 on:
   schedule:
-    - cron: '30 9 * * *' # 06:30 BRT
+    - cron: '43 9 * * *' # E19: 09:43 UTC / 06:43 BRT (não :30; 32 min após edge-functions-drift-check às 09:11)
   pull_request:
     paths:
       - 'supabase/migrations/**'

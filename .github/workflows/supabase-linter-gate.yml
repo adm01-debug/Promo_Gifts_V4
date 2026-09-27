@@ -6,8 +6,8 @@ on:
   push:
     branches: [main]
   schedule:
-    # Roda diariamente às 06:00 UTC para detectar drift fora de PR
-    - cron: "0 6 * * *"
+    # E19: 06:03 UTC (não :00/:30; ≥10 min antes de wraparound-monitor-report às 06:15)
+    - cron: "3 6 * * *"
   workflow_dispatch:
 
 jobs:

@@ -33,7 +33,7 @@ on:
       - 'package.json'
       - '.github/workflows/schema-snapshot-export.yml'
   schedule:
-    - cron: '0 6 * * 1' # semanal, segunda 06:00 UTC (03:00 BRT)
+    - cron: '47 6 * * 1' # E19: semanal, segunda 06:47 UTC (não :00; 20 min após quote-number-hardening-verify às 06:27)
   workflow_dispatch:
 
 permissions:

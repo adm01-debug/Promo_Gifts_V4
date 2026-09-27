@@ -28,7 +28,7 @@ name: capacity-growth-report
 
 on:
   schedule:
-    - cron: '0 9 * * 1' # semanal, segunda 09:00 UTC (06:00 BRT) — 1h depois do ddl-out-of-band-detector
+    - cron: '21 9 * * 1' # E19: semanal, segunda 09:21 UTC (não :00; 10 min após edge-functions-drift-check às 09:11)
   workflow_dispatch:
 
 permissions:

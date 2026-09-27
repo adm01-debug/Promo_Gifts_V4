@@ -20,7 +20,7 @@ name: edge-functions-drift-check
 
 on:
   schedule:
-    - cron: '0 9 * * *'   # 06:00 BRT
+    - cron: '11 9 * * *'  # E19: 09:11 UTC / 06:11 BRT (não :00; evita colisão Mon com capacity-growth-report)
   pull_request:
     paths:
       - 'supabase/functions/**'
