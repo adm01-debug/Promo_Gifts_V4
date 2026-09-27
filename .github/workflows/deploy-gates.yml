@@ -61,19 +61,46 @@ jobs:
   lint-typecheck:
     name: Gate 1 - Lint + TypeScript
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     needs: [ssot-gate]
     env:
       NODE_OPTIONS: --max-old-space-size=4096
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
       - run: npm ci
       - run: npm run typecheck
+        env:
+          VITE_SUPABASE_URL: https://placeholder.supabase.co
+          VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
       - run: npm run lint:baseline
+      # REGRA #2 — Product type fields (bloqueante)
+      # Previne remoção silenciosa de price/sale_price/shortDescription/category_id
+      # durante merge (gap C2) ou renomeação pelo Lovable (gap L3).
+      - name: Gate 1.1 — Product type fields (bloqueante)
+        run: node scripts/check-product-type-fields.mjs
+        env:
+          VITE_SUPABASE_URL: https://placeholder.supabase.co
+          VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
+      # REGRA #4 — Types inventory drift (bloqueante)
+      # Previne remoção de Tables/Views/Functions/Enums de types.ts sem allowlist.
+      # Incidente: 7716ae9 Lovable removeu magazine_* → 80+ erros TS.
+      - name: Gate 1.2 — Types inventory drift (bloqueante)
+        run: |
+          BASE="${{ github.event.pull_request.base.sha || 'HEAD~1' }}"
+          node scripts/check-types-inventory-drift.mjs --base "$BASE"
+      # Migration contracts (bloqueante) — previne referências a arquivos inexistentes,
+      # nomes sem timestamp UTC e RPCs/tabelas não catalogadas.
+      - name: Gate 1.3 — Migration contracts (bloqueante)
+        run: |
+          node scripts/check-migration-path-references.mjs
+          node scripts/check-supabase-reference-catalog.mjs
+          node scripts/check-migration-filename-contract.mjs
 
   unit-tests:
     name: Gate 2 - Unit Tests
