@@ -15,6 +15,17 @@ on:
       - ".eslint-baseline.json"
   pull_request:
     branches: [main, master]
+    # 2026-09-27: mesmos paths do push -- evita 19min de CI em mudancas non-freight
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "e2e/**"
+      - "supabase/functions/**"
+      - "scripts/**"
+      - ".github/workflows/freight-quality-gates.yml"
+      - "package.json"
+      - ".tsc-baseline.json"
+      - ".eslint-baseline.json"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
