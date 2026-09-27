@@ -41,9 +41,9 @@ const DatePickerFieldHarness = import.meta.env.DEV
 const NegotiationMarkupCardHarness = import.meta.env.DEV
   ? lazyWithRetry(() => import('@/pages/__visual/NegotiationMarkupCardHarness'))
   : null;
-
-
-
+const QuoteFreightBlockHarness = import.meta.env.DEV
+  ? lazyWithRetry(() => import('@/pages/__visual/QuoteFreightBlockHarness'))
+  : null;
 
 // NProgress configuration
 NProgress.configure({ showSpinner: false, speed: 250, minimum: 0.2, trickleSpeed: 100 });
@@ -156,9 +156,7 @@ export function AppRoutes() {
             element={<QuoteAddProductButtonHarness />}
           />
         )}
-        {CalendarHarness && (
-          <Route path="/__visual/calendar" element={<CalendarHarness />} />
-        )}
+        {CalendarHarness && <Route path="/__visual/calendar" element={<CalendarHarness />} />}
         {DatePickerFieldHarness && (
           <Route path="/__visual/date-picker-field" element={<DatePickerFieldHarness />} />
         )}
@@ -168,9 +166,9 @@ export function AppRoutes() {
             element={<NegotiationMarkupCardHarness />}
           />
         )}
-
-
-
+        {QuoteFreightBlockHarness && (
+          <Route path="/__visual/quote-freight-block" element={<QuoteFreightBlockHarness />} />
+        )}
 
         <Route element={<ProtectedRoute />}>
           <Route element={<ProtectedAppLayout />}>
