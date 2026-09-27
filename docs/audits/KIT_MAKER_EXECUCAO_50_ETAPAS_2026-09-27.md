@@ -41,7 +41,7 @@ npx vitest run tests/components/kit-builder tests/components/kit-library \
   tests/lib/buildCustomKitInsert.test.ts tests/pages/kit-builder \
   tests/audit/kit-maker-plan-review.test.tsx tests/contracts/kit-maker \
   src/lib/external-db/kit-coverage.test.ts --maxWorkers=1 --retry=0
-resultado: 43 arquivos, 308 testes aprovados
+resultado: 44 arquivos, 309 testes aprovados
 
 npx tsc -p tsconfig.app.json --noEmit --pretty false
 resultado: exit 0
