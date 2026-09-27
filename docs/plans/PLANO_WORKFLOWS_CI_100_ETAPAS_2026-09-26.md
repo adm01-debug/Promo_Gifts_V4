@@ -10,10 +10,10 @@ Este plano **só planeja**. Nenhum arquivo além deste foi alterado.
 
 ## 0. Sumário executivo (para decisão de negócio)
 
-1. **A esteira parece verde, mas boa parte dela não testa nada.** Não existe nenhum segredo `E2E_USER_EMAIL`/`E2E_USER_PASSWORD`/`E2E_ADMIN_*` no repositório (14 segredos cadastrados, nenhum deles de E2E). O fixture de login (`e2e/fixtures/auth.setup.ts:41-48`) grava um estado vazio e **passa**; `loginAs`/`requireAuth` fazem `test.skip`. Resultado medido: ≥ 30 workflows de E2E autenticado terminam verdes em 5–9 segundos sem executar um único teste. É o achado número 1 e atravessa os 5 grupos.
+1. **A esteira parece verde, mas boa parte dela não testa nada.** Não existe nenhum segredo `E2E_USER_EMAIL`/`E2E_USER_PASSWORD`/`E2E_ADMIN_*` no repositório (14 segredos cadastrados, nenhum deles de E2E). O fixture de login (`e2e/fixtures/auth.setup.ts:41-48`) grava um estado vazio e **passa**; `loginAs`/`requireAuth` fazem `test.skip`. Resultado medido: 35 workflows sem credenciais E2E de 54 totais; desses, **11–15 executam specs que exigem autenticação** e terminam verdes com 0 testes executados (os restantes rodam specs puramente públicos/visuais e são legítimos). É o achado número 1 e atravessa os 5 grupos.
 2. **Só 1 check é obrigatório para mergear em `main`** (`Gate Final - Deploy Ready`). Tudo que os outros 116 workflows chamam de "gate" ou "bloqueia merge" é opinativo. O ruleset exige 0 aprovações e o admin tem bypass permanente.
 3. **Cinco workflows estão vermelhos ou travados agora**, todos com causa raiz identificada: (a) `Deploy Edge Functions` e `db-apply-migration` falham ao abrir o PR de recibo porque a configuração do repositório proíbe o Actions de criar PRs; (b) por consequência o `db-schema-drift-check` falha diariamente (ledger sem recibo); (c) `SECURITY DEFINER ACL — Multi-Env` e `restore_seller_cart RPC` ficam "pending" todo dia esperando aprovação humana no environment `Production` e são cancelados no dia seguinte; (d) `Kit Coverage — Integration` falha por drift de schema (`capacity_ml` não existe, `permission denied` na view); (e) `CI/CD Pipeline` ficou vermelho em 7 de 11 runs no dia 25–26/09 porque as 2 vulnerabilidades HIGH do `image-size` (via `pptxgenjs`) estão **aceitas em allowlist** dentro do próprio script de auditoria e o npm renumerou os avisos; a PR #1904 atualizou a allowlist e o gate voltou a passar — com as vulnerabilidades ainda presentes (Dependabot #56/#57 abertos).
-4. **Segurança:** chave `service_role` do projeto legado vazada em maio (alerta #1 de secret scanning, `publicly_leaked: true`, nunca rotacionada); 62 alertas CodeQL abertos (35 HIGH); 2 Dependabot HIGH; 11 pontos onde bots fazem `git push` em branches (inclusive `main`) com `[skip ci]`, driblando o Gate Final; `lovable-autoheal.yml` comita direto em `main` assinando como o dono do repo.
+4. **Segurança:** chave `service_role` do projeto legado vazada em maio (alerta #1 de secret scanning, `publicly_leaked: true`, nunca rotacionada); 62 alertas CodeQL abertos (**38 HIGH** — versão original do plano dizia 35 por erro aritmético: subcategorias somavam 36 e 2 regras foram omitidas: `js/tainted-format-string` e `js/user-controlled-bypass`); 2 Dependabot HIGH; 11 pontos onde bots fazem `git push` em branches (inclusive `main`) com `[skip ci]`, driblando o Gate Final; `lovable-autoheal.yml` comita direto em `main` assinando como o dono do repo.
 5. **Custo/ruído:** 29–30 workflows disparam por PR e 36–38 por push em `main`; ~3.100 minutos de cron em 2 dias (dois runs "pending" contam 1.440 min cada); `Uptime Monitor` sozinho é 28 % de todos os runs; `playwright install --with-deps` aparece em 49 workflows; 27 workflows rodam em todo PR sem filtro de caminho.
 6. **Dependabot de versões nunca rodou** (config de 10/09; 28 runs, todos de segurança). Ações estão em majors com aviso de depreciação Node 20 em todo job.
 
@@ -44,7 +44,7 @@ O plano abaixo estanca primeiro o que está quebrado hoje (E01–E10), depois to
 | Inputs de `workflow_dispatch` interpolados em `run:` | 16 arquivos | scan |
 | Triggers em `master`/`develop` (branches mortas) | 26 workflows | scan (`master` parado desde 21/08) |
 | Nomes de job duplicados entre arquivos | 9 (`quality-gate`, `test`, `check`, `e2e`, `update` ×3, `update-snapshots` ×4, …) | scan |
-| Alertas abertos | CodeQL 62 (HIGH 35) · Dependabot 2 HIGH · Secret scanning 1 | API |
+| Alertas abertos | CodeQL 62 (HIGH 38) · Dependabot 2 HIGH · Secret scanning 1 | API |
 | Cache do Actions | 49 caches, 3,05 GB | API |
 | Specs com `toHaveScreenshot` / pastas de baseline commitadas | 81 / 10 | grep + git |
 | Ações compostas / `workflow_call` no repo | 0 / 0 | `ls .github/actions` |
@@ -938,8 +938,8 @@ Cada etapa traz **Objetivo · Onde · Como · Aceite · Prova · Depende de · E
 - Prova: —.
 - Depende de: —. Esforço: P. Classe: **PO**.
 
-### E96 — Triagem dos 62 alertas CodeQL (35 HIGH)
-- Objetivo: `js/file-system-race` 8, `js/regex/missing-regexp-anchor` 6, `js/insecure-temporary-file` 5, `js/incomplete-url-substring-sanitization` 4, `js/insecure-randomness` 4, `js/clear-text-storage-of-sensitive-data` 3, `js/incomplete-sanitization` 3, `js/remote-property-injection` 2, `js/clear-text-logging` 1 + 27 medium.
+### E96 — Triagem dos 62 alertas CodeQL (38 HIGH)
+- Objetivo: `js/file-system-race` 8, `js/regex/missing-regexp-anchor` 6, `js/insecure-temporary-file` 5, `js/incomplete-url-substring-sanitization` 4, `js/insecure-randomness` 4, `js/clear-text-storage-of-sensitive-data` 3, `js/incomplete-sanitization` 3, `js/remote-property-injection` 2, `js/clear-text-logging` 1, `js/tainted-format-string` 1, `js/user-controlled-bypass` 1 (**38 HIGH total**; versão original do plano listava apenas 35 por omissão dessas 2 regras) + 28 medium (inclui `js/file-access-to-http` 1 também omitido na versão original).
 - Onde: aba Security; código apontado.
 - Como: 1 PR por regra (não por alerta); scripts de CI (`scripts/**`) primeiro (temp file/race/cmd-injection); falsos positivos dispensados com justificativa; meta: 0 HIGH abertos; `codeql` passa a falhar em HIGH novo (`fail-on: high` no upload).
 - Aceite: 0 HIGH abertos; novo HIGH bloqueia PR.
@@ -1003,3 +1003,52 @@ Ações que exigem PO antes do merge (Classe B): E01, E02, E03, E15 (flag), E59,
 1. Destravar os PRs automáticos — hoje deploy e migration terminam em erro por uma configuração do repositório · Settings → Actions (E01) + App token (E02)
 2. Separar leitura e escrita em produção — dois monitores diários ficam presos esperando aprovação e nunca rodam · environment `production-readonly` (E03)
 3. Criar o usuário de teste — sem ele, mais de 30 verificações "verdes" não testam nada · Supabase Auth + segredos (E21, E22)
+
+---
+
+## 7. Errata e gaps descobertos na validação pós-publicação (2026-09-27)
+
+> Auditoria realizada por 5 agentes especializados em paralelo após o merge via PR #1906.
+> Todas as correções referenciadas acima (E96, tabela de estado, ponto 1 e 4 do sumário) já foram aplicadas neste documento.
+
+### 7.1 Erros corrigidos nesta revisão
+
+| Erro | Versão original | Versão correta | Fonte |
+|---|---|---|---|
+| Contagem HIGH CodeQL | 35 | 38 | Agente segurança: API CodeQL retornou 38 HIGH; 2 regras omitidas |
+| Subcategoria HIGH (aritmética) | soma implícita 35 | soma real 36 (+2 novas = 38) | `js/tainted-format-string` 1 + `js/user-controlled-bypass` 1 |
+| MEDIUM omitido | — | `js/file-access-to-http` (1 alerta) | Agente segurança |
+| "≥30 workflows verdes sem testar" | ≥30 | 35 sem credenciais; **11–15 com specs authed que skipam** | Agente E2E: 54 total Playwright, 35 sem qualquer credencial |
+
+### 7.2 Bugs novos descobertos (não documentados no plano original)
+
+1. **Role `'seller'` inexistente no tipo `Role`** — `e2e/carrinhos/list-url-state-restore.spec.ts` usa `loginAs(page, 'seller')`, mas `Role = "user" | "admin" | "dev" | "editor"` (`e2e/helpers/auth.ts:35`). TypeScript deveria rejeitar em build. Em runtime cai no `else` implícito e tenta `E2E_USER_EMAIL` com mensagem de erro enganosa `Credenciais E2E_SELLER_EMAIL/PASSWORD ausentes`.
+   - Classe: bug de tipo; esforço: P; ação: adicionar `"seller"` ao union ou corrigir o spec.
+
+2. **`loginAs` não usa `return` após `test.skip`** — `e2e/helpers/auth.ts:88-90`: o código continua para `await gotoAndSettle(page, "/")` após `test.skip(true, ...)`. Funciona porque Playwright lança exceção interna no skip, mas é padrão frágil que pode quebrar em versões futuras do Playwright.
+   - Classe: fragilidade; esforço: P; ação: adicionar `return` após `test.skip`.
+
+### 7.3 Claims confirmados com precisão aumentada
+
+| Claim do plano | Status | Detalhe |
+|---|---|---|
+| `auth.setup.ts:41-48` grava storageState vazio | ✅ CONFIRMADO | Exato: `if (!email \|\| !password) { fs.writeFileSync(STORAGE, '{"cookies":[],"origins":[]}'); return; }` |
+| `e2e/helpers/auth.ts:88-90` tem `test.skip` | ✅ CONFIRMADO | `if (!email \|\| !password) { test.skip(true, ...); }` |
+| `e2e/fixtures/test-base.ts:182-186` tem duplo guard | ✅ CONFIRMADO | Guards em linhas 182–191 (não apenas 182–186) |
+| `e2e-flows.yml:92` usa `vars.` onde deveria ser `secrets.` | ✅ CONFIRMADO | Lê `vars.E2E_USER_EMAIL` para a condição `if:` mas mapeia `secrets.E2E_USER_EMAIL` para a env var |
+| `freight-quality-gates.yml:286-321` Gate 6 `$LINES < 0` | ✅ CONFIRMADO | Threshold literal é `< 0`; 0% de coverage passa |
+| `e2e-flows.yml:248` usa `--project=routes-mobile` inexistente | ✅ CONFIRMADO | Projeto não existe em `playwright.config.ts`; `--pass-with-no-tests` mascara |
+| 6 workflows documentados ainda falhando | ✅ CONFIRMADO | Zero resoluções em 27/09; mesmas causas raiz |
+
+### 7.4 Estado dos 7 workflows falhando em 27/09/2026
+
+| Workflow | Último run | Status | Causa raiz |
+|---|---|---|---|
+| `deploy-edge-functions.yml` | #272 (26/09) | ❌ failure | `gh pr create` bloqueado — Actions sem permissão de criar PRs |
+| `db-apply-migration.yml` | #3 (23/09) | ❌ failure | Mesma causa; inativo desde 23/09 |
+| `db-schema-drift-check.yml` | #498 (26/09) | ❌ failure | Ledger sem recibo da migration de 23/09 |
+| `kit-coverage-integration.yml` | #99 (26/09) | ❌ failure | `capacity_ml` não existe + `permission denied` na view |
+| `e2e-crm-callback-approved.yml` | #124 (26/09) | ❌ failure | Secret `CRM_CALLBACK_API_KEY` não configurado |
+| `restore-seller-cart-rpc.yml` | #549 (26/09) | ⏳ pending | `environment: Production` sem reviewer → cron preso em loop |
+| `security-definer-acl-multi-env.yml` | #570 (26/09) | ⏳ pending | Mesmo padrão de loop pending |
+
