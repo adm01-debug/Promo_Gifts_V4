@@ -28,6 +28,13 @@ on:
       - ".github/workflows/e2e-quotes-tooltips.yml"
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-quotes-tooltips-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   quotes-tooltips-e2e:
     name: Playwright — 04m-quotes-status-tooltip*

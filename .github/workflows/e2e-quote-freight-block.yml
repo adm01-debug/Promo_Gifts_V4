@@ -42,6 +42,10 @@ permissions:
   pull-requests: write
   issues: write
 
+concurrency:
+  group: e2e-quote-freight-block-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   freight-block-visual:
     runs-on: ubuntu-latest

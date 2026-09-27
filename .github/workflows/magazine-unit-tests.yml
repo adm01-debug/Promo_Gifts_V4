@@ -43,6 +43,9 @@ concurrency:
   group: magazine-unit-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   edge-import-contract:
     name: Deno Magazine import contract

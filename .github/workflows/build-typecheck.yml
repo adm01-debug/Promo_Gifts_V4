@@ -6,6 +6,13 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: build-typecheck-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-typecheck:
     name: npm run build + tsc --noEmit

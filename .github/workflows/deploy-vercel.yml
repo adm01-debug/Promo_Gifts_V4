@@ -29,6 +29,7 @@ jobs:
   check-secrets:
     name: Check deploy prerequisites
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     outputs:
       can_deploy: ${{ steps.check.outputs.can_deploy }}
     steps:
@@ -56,6 +57,7 @@ jobs:
   deploy:
     name: Build & Deploy
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: check-secrets
     if: needs.check-secrets.outputs.can_deploy == 'true'
     steps:

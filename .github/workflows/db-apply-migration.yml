@@ -33,10 +33,14 @@ env:
   MIGRATION_VERSION: ${{ inputs.version }}
   SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
 
+permissions:
+  contents: read
+
 jobs:
   preflight:
     name: 1. Preflight (read-only)
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
       actions: read
@@ -74,6 +78,7 @@ jobs:
     name: 2. Apply (requer aprovação do environment production)
     needs: preflight
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     environment: production
     permissions:
       contents: read
@@ -175,6 +180,7 @@ jobs:
     name: 3. Pós-check (read-only)
     needs: apply
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
@@ -191,6 +197,7 @@ jobs:
     name: 4. Recibo (abre PR em MIGRATIONS_SYNC_LOG.md)
     needs: [apply, post-check]
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: write
       pull-requests: write

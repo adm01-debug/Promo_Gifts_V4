@@ -26,6 +26,9 @@ concurrency:
   group: quote-summary-sticky-header-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   sticky-header-e2e:
     name: Quote Summary sticky header — Playwright (e2e + visual)

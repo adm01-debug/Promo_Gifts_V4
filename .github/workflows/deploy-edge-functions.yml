@@ -55,10 +55,15 @@ env:
 permissions:
   contents: read
 
+concurrency:
+  group: deploy-edge-functions-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   list-functions:
     name: Detect functions to deploy
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     outputs:
       functions: ${{ steps.detect.outputs.functions }}
       count: ${{ steps.detect.outputs.count }}
@@ -171,6 +176,7 @@ jobs:
     needs: list-functions
     if: ${{ !inputs.dry_run && needs.list-functions.outputs.count != '0' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     strategy:
       fail-fast: false
       max-parallel: 4
@@ -234,6 +240,7 @@ jobs:
     needs: [list-functions, deploy]
     if: always() && !inputs.dry_run
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Final summary
         shell: bash
@@ -257,6 +264,7 @@ jobs:
     needs: [list-functions, deploy]
     if: needs.deploy.result == 'success'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: write
       pull-requests: write

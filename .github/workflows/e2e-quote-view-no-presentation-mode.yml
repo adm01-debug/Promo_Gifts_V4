@@ -32,6 +32,10 @@ permissions:
   contents: read
   issues: write
 
+concurrency:
+  group: e2e-quote-view-no-presentation-mode-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   e2e:
     runs-on: ubuntu-latest

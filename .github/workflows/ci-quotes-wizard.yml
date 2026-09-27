@@ -25,6 +25,13 @@ env:
   TZ: America/Sao_Paulo
   CI: "true"
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-quotes-wizard-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   validate-quotes:
     name: Validação Novo Orçamento

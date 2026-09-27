@@ -16,6 +16,13 @@ on:
       - '.github/workflows/e2e-quote-row-menu-width.yml'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-quote-row-menu-width-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   menu-width:
     timeout-minutes: 20

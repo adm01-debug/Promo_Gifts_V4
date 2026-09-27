@@ -18,6 +18,9 @@ concurrency:
   group: ssot-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   ssot-gates:
     name: SSOT Gates (validate + guard + hosts)

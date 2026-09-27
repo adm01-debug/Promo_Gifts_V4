@@ -32,6 +32,10 @@ permissions:
   contents: read
   issues: write
 
+concurrency:
+  group: e2e-pdf-print-cross-browser-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   print-cross-browser:
     name: Print fallback (${{ matrix.project }})

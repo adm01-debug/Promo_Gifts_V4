@@ -25,6 +25,13 @@ on:
         required: false
         default: ''
 
+permissions:
+  contents: read
+
+concurrency:
+  group: stock-filter-stress-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   stress:
     name: stock-filter stress (PR=5k / nightly=25k)

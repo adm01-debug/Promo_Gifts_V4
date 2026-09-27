@@ -37,6 +37,10 @@ permissions:
   contents: read
   issues: write
 
+concurrency:
+  group: e2e-quote-item-editor-sheet-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   editor-sheet:
     runs-on: ubuntu-latest

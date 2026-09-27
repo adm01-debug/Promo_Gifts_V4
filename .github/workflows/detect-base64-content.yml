@@ -22,10 +22,15 @@ permissions:
   contents: read
   pull-requests: write
 
+concurrency:
+  group: detect-base64-content-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   scan:
     name: Scan for accidentally base64-encoded text files
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4

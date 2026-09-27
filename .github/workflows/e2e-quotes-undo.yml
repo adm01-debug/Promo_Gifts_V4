@@ -42,6 +42,13 @@ on:
         required: false
         default: ""
 
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-quotes-undo-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   # ==========================================================================
   # JOB 1 — Ambiente REAL com credenciais E2E do repositório.

@@ -32,6 +32,9 @@ env:
   STRESS_SIMS: '5000'
   FUZZ_SEED: '1337'
 
+permissions:
+  contents: read
+
 jobs:
   unit-and-coverage:
     name: unit + fuzz/stress + coverage

@@ -10,6 +10,13 @@ on:
     - cron: "0 6 * * *"
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: supabase-linter-gate-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   linter:
     runs-on: ubuntu-latest

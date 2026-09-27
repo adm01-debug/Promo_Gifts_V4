@@ -33,6 +33,9 @@ concurrency:
   # aguardando aprovação bloqueavam runner slot por 24h. Schedule agora cancela run anterior.
   cancel-in-progress: ${{ github.event_name == 'schedule' }}
 
+permissions:
+  contents: read
+
 jobs:
   rpc-availability:
     name: RPC availability · ${{ matrix.env_name }}

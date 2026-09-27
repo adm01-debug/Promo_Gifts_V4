@@ -23,6 +23,10 @@ permissions:
   contents: read
   issues: write
 
+concurrency:
+  group: e2e-quote-view-sticky-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   overflow-static-gate:
     runs-on: ubuntu-latest

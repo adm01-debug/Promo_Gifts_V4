@@ -21,6 +21,9 @@ env:
   E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
   E2E_BASE_URL: http://localhost:8080
 
+permissions:
+  contents: read
+
 jobs:
   smoke:
     name: Smoke (fail-fast)

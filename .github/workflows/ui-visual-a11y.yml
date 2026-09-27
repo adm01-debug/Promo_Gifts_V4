@@ -15,10 +15,18 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ui-visual-a11y-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   confirm-dialog:
     name: ConfirmDialog · unit + a11y + visual
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -54,6 +62,7 @@ jobs:
   alert-dialog:
     name: AlertDialog · visual + no-clip H/V
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -87,6 +96,7 @@ jobs:
   optimized-image:
     name: OptimizedImage · unit
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
