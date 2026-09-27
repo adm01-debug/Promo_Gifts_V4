@@ -95,3 +95,15 @@ src/services/quoteService.ts
 # Alterações devem ser feitas via regeneração controlada com drift-check.
 # ============================================================
 src/integrations/supabase/types.ts
+
+# ============================================================
+# Workflows de CI/CD críticos — canal único de deploy (REGRA #8)
+# G-H1: deploy-edge-functions.yml é o único caminho autorizado
+# para deploy de edge function (REGRA #8 corolário deploy).
+# redeploy-rate-limiter-consumers.yml foi corrigido em PR-1909
+# para usar workflow_call em vez de deploy direto.
+# Lovable pode sobrescrever e remover o trigger workflow_call,
+# criando um 3º canal de deploy silencioso sem ledger E66.
+# ============================================================
+.github/workflows/deploy-edge-functions.yml
+.github/workflows/redeploy-rate-limiter-consumers.yml
