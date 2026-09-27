@@ -103,10 +103,8 @@ jobs:
               
               LOVABLE_SHAS+=("${SHA:0:7}")
               LOVABLE_MESSAGES+=("$SUBJECT")
-              
-              if [ -n "$EDIT_ID" ]; then
-                EDIT_IDS+=("$EDIT_ID")
-              fi
+              # Sempre adiciona (vazio se ausente) para manter alinhamento de índice com LOVABLE_SHAS
+              EDIT_IDS+=("${EDIT_ID:-}")
             fi
           done
           
@@ -159,8 +157,11 @@ jobs:
               echo "> Com ele, você pode entender o contexto da mudança e refatorar"
               echo "> com um prompt mais específico."
               
-              # Alerta se muitos commits "Changes" sem Edit ID
-              NO_ID_COUNT=$(echo "${EDIT_IDS[@]:-}" | tr ' ' '\n' | grep -c "^$" || echo "0")
+              # Alerta se commits do Lovable sem Edit ID (contagem dos vazios no array agora alinhado)
+              NO_ID_COUNT=0
+              for _eid in "${EDIT_IDS[@]}"; do
+                [ -z "$_eid" ] && NO_ID_COUNT=$((NO_ID_COUNT + 1))
+              done
               if [ "$NO_ID_COUNT" -gt 0 ]; then
                 echo ""
                 echo "⚠️ **$NO_ID_COUNT commit(s) do Lovable sem X-Lovable-Edit-ID** — rastreabilidade parcial."

@@ -40,6 +40,7 @@ jobs:
   verify-merge-pattern:
     name: Verify push to main matches accepted patterns
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:
@@ -216,41 +217,53 @@ jobs:
   check-protection-config:
     name: Verify Branch Protection is enabled on main
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     permissions:
       contents: read
     steps:
-      - name: Query branch protection state
+      - name: Query rulesets for main (E52 — substituiu query de campo `protected` que retorna 404 com rulesets)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
 
-          # GET /repos/{owner}/{repo}/branches/main retorna campo `protected` (boolean)
-          # — não exige permissão `administration`, só `contents:read`.
-          RESPONSE=$(curl -sS -H "Authorization: Bearer $GH_TOKEN" \
+          # A flag `protected` da API branches/ retorna false com rulesets (método antigo — descontinuado).
+          # Verificamos via /rulesets: qualquer ruleset ativo com target `main` ou `~DEFAULT_BRANCH` é suficiente.
+          RULESETS=$(curl -sS -f -H "Authorization: Bearer $GH_TOKEN" \
                               -H "Accept: application/vnd.github+json" \
-                              "https://api.github.com/repos/$REPO/branches/main")
+                              "https://api.github.com/repos/$REPO/rulesets?per_page=100")
 
-          PROTECTED=$(echo "$RESPONSE" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('protected', False))")
+          HAS_ACTIVE=$(echo "$RULESETS" | python3 -c "
+import sys, json
+data = json.load(sys.stdin)
+active = [r for r in data
+          if r.get('enforcement') == 'active'
+          and any(
+            p in r.get('conditions', {}).get('ref_name', {}).get('include', [])
+            for p in ['refs/heads/main', '~DEFAULT_BRANCH', '~ALL']
+          )]
+print(len(active) > 0)
+")
 
           {
-            echo "### 🔐 Branch Protection — status de \`main\`"
+            echo "### 🔐 Branch Protection (Rulesets) — status de \`main\`"
             echo ""
           } >> "$GITHUB_STEP_SUMMARY"
 
-          if [[ "$PROTECTED" == "True" ]]; then
-            echo "✅ Branch \`main\` está protegida." >> "$GITHUB_STEP_SUMMARY"
-            echo "Branch Protection ATIVA em main"
+          if [[ "$HAS_ACTIVE" == "True" ]]; then
+            echo "✅ Branch \`main\` tem ruleset ativo." >> "$GITHUB_STEP_SUMMARY"
+            echo "Ruleset ATIVO para main"
           else
             {
-              echo "⚠️ **Branch \`main\` NÃO está protegida.**"
+              echo "❌ **Branch \`main\` não tem ruleset ativo.**"
               echo ""
               echo "O sentinel sozinho é apenas alarme reativo — sem Branch Protection,"
               echo "qualquer push direto chega em \`main\` e só depois é detectado."
               echo ""
-              echo "👉 **Configurar agora:** https://github.com/$REPO/settings/branches"
+              echo "👉 **Configurar agora:** https://github.com/$REPO/settings/rules"
               echo "📖 **Passo a passo:** [.github/BRANCH_PROTECTION_SETUP.md](${{ github.server_url }}/${{ github.repository }}/blob/main/.github/BRANCH_PROTECTION_SETUP.md)"
             } >> "$GITHUB_STEP_SUMMARY"
-            echo "::warning::Branch Protection NÃO está ativa em main. Ative em $REPO/settings/branches"
+            echo "::error::Nenhum ruleset ativo encontrado para main. Configure em $REPO/settings/rules"
+            exit 1
           fi
