@@ -11,13 +11,13 @@ name: Gate 5 — Supabase Security Audit
 
 on:
   push:
-    branches: [main, master, develop]
+    branches: [main]
     paths:
       - 'supabase/migrations/**'
       - 'src/integrations/supabase/**'
       - '.github/workflows/supabase-security-gate.yml'
   pull_request:
-    branches: [main, master, develop]
+    branches: [main]
     paths:
       - 'supabase/migrations/**'
       - 'src/integrations/supabase/**'

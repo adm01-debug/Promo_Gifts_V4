@@ -1,0 +1,59 @@
+name: Template — Workflow Name Here
+
+# E12 — PLANO_WORKFLOWS_CI_100_ETAPAS_2026-09-26
+# Modelo canônico para novos workflows. Segue o Padrão E12 (docs/ci/PADRAO_WORKFLOW.md).
+# Copie este arquivo, renomeie e adapte. Não apague os comentários até ter revisado.
+
+# R7: nunca use `master` ou `develop` — branches inexistentes no projeto.
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/_template.yml']
+  pull_request:
+    branches: [main]
+    paths: ['.github/workflows/_template.yml']
+  # workflow_dispatch: {}   # descomente se precisar de trigger manual
+
+# R1: permissions explícito — princípio do mínimo privilégio.
+permissions:
+  contents: read
+  # pull-requests: write   # adicione só se o job comentar em PRs
+
+# R2: concurrency cancelável em PRs para evitar fila de builds obsoletos.
+concurrency:
+  group: <workflow-slug>-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # R8: ID de job em snake_case estável — mudar o ID quebra required checks silenciosamente.
+  build_and_test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    # R3: timeout obrigatório — gates ≤ 10 min, E2E ≤ 30 min, crons ≤ 60 min.
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      # R4: node-version-file, nunca literal '22' ou '20'.
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      # R5: segredos via env:, jamais como argumento CLI.
+      - name: Example step with secret
+        env:
+          API_KEY: ${{ secrets.EXAMPLE_API_KEY }}
+        run: echo "TEMPLATE — substitua por seu comando real"
+
+      - name: Upload artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: output-${{ github.run_id }}
+          path: dist/
+          # R6: retention 14 dias (padrão GitHub é 90 dias — caro e desnecessário).
+          retention-days: 14
