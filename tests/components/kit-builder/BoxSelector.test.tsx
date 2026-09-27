@@ -80,6 +80,24 @@ describe('BoxSelector', () => {
     expect(screen.getByRole('button', { name: /falar com o comercial/i })).toBeInTheDocument();
   });
 
+  it('explains an invalid dimension range instead of looking like an empty result', () => {
+    render(
+      <BoxSelector
+        boxes={[box()]}
+        selectedBox={null}
+        kitItems={[]}
+        isLoading={false}
+        filters={{ minWidth: 30, maxWidth: 10 }}
+        onFiltersChange={vi.fn()}
+        onSelect={vi.fn()}
+        onClear={vi.fn()}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'SlidersHorizontal' }));
+    expect(screen.getByRole('alert')).toHaveTextContent(/mínimo não pode ser maior/i);
+  });
+
   it('shows a compatibility explanation and selects a verified compatible box through an explicit action', () => {
     const compatible = box();
     const onSelect = renderSelector([compatible], [item()]);

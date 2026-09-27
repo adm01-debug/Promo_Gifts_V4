@@ -293,6 +293,28 @@ export function BoxSelector({
     filters.boxType ||
     filters.finish
   );
+  const invalidRangeLabels = [
+    filters.minWidth !== undefined &&
+    filters.maxWidth !== undefined &&
+    filters.minWidth > filters.maxWidth
+      ? 'largura'
+      : null,
+    filters.minHeight !== undefined &&
+    filters.maxHeight !== undefined &&
+    filters.minHeight > filters.maxHeight
+      ? 'altura'
+      : null,
+    filters.minDepth !== undefined &&
+    filters.maxDepth !== undefined &&
+    filters.minDepth > filters.maxDepth
+      ? 'profundidade'
+      : null,
+    filters.minPrice !== undefined &&
+    filters.maxPrice !== undefined &&
+    filters.minPrice > filters.maxPrice
+      ? 'preço'
+      : null,
+  ].filter((label): label is string => Boolean(label));
 
   const activeFilterCount = [
     filters.minWidth,
@@ -537,6 +559,16 @@ export function BoxSelector({
                   </Button>
                 )}
               </div>
+
+              {invalidRangeLabels.length > 0 && (
+                <p
+                  role="alert"
+                  className="rounded-md border border-warning/30 bg-warning/10 p-2 text-xs text-warning"
+                >
+                  Revise {invalidRangeLabels.join(', ')}: o valor mínimo não pode ser maior que o
+                  máximo. Essas faixas não estão sendo aplicadas até a correção.
+                </p>
+              )}
 
               {/* Dimension ranges. The minimum is sufficient for most kit
                   calculations; the upper bound keeps large packaging out of

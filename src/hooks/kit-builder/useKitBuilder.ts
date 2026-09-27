@@ -683,10 +683,22 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
       items = items.filter((item) => item.price <= (itemFilters.maxPrice ?? Infinity));
     }
 
-    if (itemFilters.sort === 'price-asc') items = [...items].sort((a, b) => a.price - b.price);
-    if (itemFilters.sort === 'price-desc') items = [...items].sort((a, b) => b.price - a.price);
+    if (itemFilters.sort === 'price-asc') {
+      items = [...items].sort(
+        (a, b) =>
+          a.price - b.price || a.name.localeCompare(b.name, 'pt-BR') || a.id.localeCompare(b.id),
+      );
+    }
+    if (itemFilters.sort === 'price-desc') {
+      items = [...items].sort(
+        (a, b) =>
+          b.price - a.price || a.name.localeCompare(b.name, 'pt-BR') || a.id.localeCompare(b.id),
+      );
+    }
     if (itemFilters.sort === 'name')
-      items = [...items].sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
+      items = [...items].sort(
+        (a, b) => a.name.localeCompare(b.name, 'pt-BR') || a.id.localeCompare(b.id),
+      );
 
     return items;
   }, [itemsWithCompatibility, itemFilters]);

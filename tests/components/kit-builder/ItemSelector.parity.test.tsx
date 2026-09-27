@@ -92,6 +92,23 @@ describe('ItemSelector parity', () => {
     expect(screen.getByRole('button', { name: /escritório \(1\)/i })).toBeInTheDocument();
   });
 
+  it('clears catalogue filters without clearing the selected kit composition', () => {
+    const onFiltersChange = vi.fn();
+    render(
+      <ItemSelector
+        {...baseProps({
+          selectedItems: [ITEM_A],
+          filters: { category: 'Escritório', minPrice: 20, sort: 'price-asc' },
+          onFiltersChange,
+        })}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Limpar filtros' }));
+    expect(onFiltersChange).toHaveBeenCalledWith({ sort: 'price-asc' });
+    expect(screen.getAllByText('Caderno')).not.toHaveLength(0);
+  });
+
   it('calls onClearAll after confirming the destructive dialog', () => {
     const onClearAll = vi.fn();
     render(<ItemSelector {...baseProps({ selectedItems: [ITEM_A], onClearAll })} />);
@@ -112,5 +129,20 @@ describe('ItemSelector parity', () => {
     expect(
       screen.getByText(/estimativa de ocupação — calculada após a escolha da caixa/i),
     ).toBeInTheDocument();
+  });
+
+  it('uses the virtualized catalogue surface only for a large result set', () => {
+    const manyItems = Array.from({ length: 49 }, (_, index) => ({
+      ...ITEM_A,
+      id: `p-${index}`,
+      name: `Produto ${index}`,
+      sku: `SKU-${index}`,
+    }));
+    render(<ItemSelector {...baseProps({ items: manyItems })} />);
+
+    expect(
+      screen.getByRole('list', { name: /resultados do catálogo — 49 produtos/i }),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Produto 0')).toBeInTheDocument();
   });
 });

@@ -95,12 +95,18 @@ export async function fetchAllActiveProducts(
   }
 }
 
-function filterBoxes(
+export function filterBoxes(
   boxes: KitBox[],
   search: string | null,
   dimFilters?: Omit<BoxFilters, 'search'>,
 ): KitBox[] {
   let filtered = boxes;
+  const hasInvalidRange = (min?: number, max?: number) =>
+    min !== undefined && max !== undefined && min > max;
+  const invalidWidthRange = hasInvalidRange(dimFilters?.minWidth, dimFilters?.maxWidth);
+  const invalidHeightRange = hasInvalidRange(dimFilters?.minHeight, dimFilters?.maxHeight);
+  const invalidDepthRange = hasInvalidRange(dimFilters?.minDepth, dimFilters?.maxDepth);
+  const invalidPriceRange = hasInvalidRange(dimFilters?.minPrice, dimFilters?.maxPrice);
   if (search) {
     const q = search.toLowerCase();
     filtered = filtered.filter(
@@ -110,29 +116,33 @@ function filterBoxes(
         (b.materials ?? (b.material ? [b.material] : [])).some((m) => m.toLowerCase().includes(q)),
     );
   }
-  if (dimFilters?.minWidth) {
+  if (dimFilters?.minWidth && !invalidWidthRange) {
     const minWidth = dimFilters.minWidth;
     filtered = filtered.filter((b) => b.internalWidth >= minWidth);
   }
-  if (dimFilters?.maxWidth) {
+  if (dimFilters?.maxWidth && !invalidWidthRange) {
     filtered = filtered.filter((b) => b.internalWidth <= dimFilters.maxWidth!);
   }
-  if (dimFilters?.minHeight) {
+  if (dimFilters?.minHeight && !invalidHeightRange) {
     const minHeight = dimFilters.minHeight;
     filtered = filtered.filter((b) => b.internalHeight >= minHeight);
   }
-  if (dimFilters?.maxHeight) {
+  if (dimFilters?.maxHeight && !invalidHeightRange) {
     filtered = filtered.filter((b) => b.internalHeight <= dimFilters.maxHeight!);
   }
-  if (dimFilters?.minDepth) {
+  if (dimFilters?.minDepth && !invalidDepthRange) {
     const minDepth = dimFilters.minDepth;
     filtered = filtered.filter((b) => b.internalDepth >= minDepth);
   }
-  if (dimFilters?.maxDepth) {
+  if (dimFilters?.maxDepth && !invalidDepthRange) {
     filtered = filtered.filter((b) => b.internalDepth <= dimFilters.maxDepth!);
   }
-  if (dimFilters?.minPrice) filtered = filtered.filter((b) => b.price >= dimFilters.minPrice!);
-  if (dimFilters?.maxPrice) filtered = filtered.filter((b) => b.price <= dimFilters.maxPrice!);
+  if (dimFilters?.minPrice && !invalidPriceRange) {
+    filtered = filtered.filter((b) => b.price >= dimFilters.minPrice!);
+  }
+  if (dimFilters?.maxPrice && !invalidPriceRange) {
+    filtered = filtered.filter((b) => b.price <= dimFilters.maxPrice!);
+  }
   // Material is intentionally NOT applied here: BoxSelector needs the
   // material-agnostic set (respecting every other filter) to compute an
   // honest per-material count for its multi-select checkboxes, then applies
@@ -142,13 +152,20 @@ function filterBoxes(
   return filtered;
 }
 
-function filterItems(items: KitItem[], search: string): KitItem[] {
+export function normalizeKitSearchTerm(value: string): string {
+  return value
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toLocaleLowerCase('pt-BR');
+}
+
+export function filterItems(items: KitItem[], search: string): KitItem[] {
   if (!search) return items;
-  const q = search.toLocaleLowerCase('pt-BR');
+  const q = normalizeKitSearchTerm(search);
   return items.filter((item) =>
     [item.name, item.sku, item.category, item.material]
       .filter((value): value is string => typeof value === 'string')
-      .some((value) => value.toLocaleLowerCase('pt-BR').includes(q)),
+      .some((value) => normalizeKitSearchTerm(value).includes(q)),
   );
 }
 

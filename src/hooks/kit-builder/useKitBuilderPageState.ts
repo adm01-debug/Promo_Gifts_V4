@@ -23,6 +23,7 @@ import {
   type KitPersonalization,
   type KitAISuggestionBrief,
   type KitAIComposition,
+  type KitBuilderFlow,
   type KitType,
 } from '@/lib/kit-builder';
 import { logger } from '@/lib/logger';
@@ -57,7 +58,7 @@ function readDraftClient(personalizationData: Record<string, unknown>): KitQuote
   };
 }
 
-function readDraftFlow(personalizationData: Record<string, unknown>) {
+function readDraftFlow(personalizationData: Record<string, unknown>): KitBuilderFlow | undefined {
   const draft = isRecord(personalizationData.__draft) ? personalizationData.__draft : null;
   const flow = draft?.flow;
   return flow === 'box-first' || flow === 'items-first' ? flow : undefined;

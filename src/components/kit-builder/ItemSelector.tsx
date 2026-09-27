@@ -17,6 +17,7 @@ import {
 import { SelectedItemsBadges } from './SelectedItemsBadges';
 import { ItemCard } from './ItemCard';
 import { KitSmartSuggestions } from './KitSmartSuggestions';
+import { shouldVirtualizeKitItems, VirtualizedKitItemList } from './VirtualizedKitItemList';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ItemCardSkeleton } from './KitCardSkeleton';
@@ -169,6 +170,20 @@ export function ItemSelector({
     () => ((filters.sort ?? 'relevance') === 'relevance' ? sortItemsByRelevance(items) : items),
     [items, filters.sort],
   );
+  const useVirtualizedList = shouldVirtualizeKitItems(sortedItems.length);
+  const hasActiveFilters = Boolean(
+    filters.search ||
+    filters.category ||
+    filters.material ||
+    filters.minPrice !== undefined ||
+    filters.maxPrice !== undefined ||
+    filters.maxVolume !== undefined ||
+    filters.onlyFitting,
+  );
+
+  const clearFilters = () => {
+    onFiltersChange({ sort: filters.sort });
+  };
 
   const selectedItemsByProductId = new Map<string, KitItem>();
   selectedItems.forEach((item) => {
@@ -368,6 +383,11 @@ export function ItemSelector({
             <span className="ml-auto text-xs text-muted-foreground">
               {items.length} de {totalCount ?? items.length} produtos
             </span>
+            {hasActiveFilters && (
+              <Button type="button" variant="ghost" size="sm" onClick={clearFilters}>
+                Limpar filtros
+              </Button>
+            )}
           </div>
 
           <KitSmartSuggestions
@@ -403,6 +423,22 @@ export function ItemSelector({
                 <Package className="mx-auto mb-3 h-12 w-12 text-muted-foreground" />
                 <p className="text-muted-foreground">Nenhum item encontrado</p>
               </div>
+            ) : useVirtualizedList ? (
+              <VirtualizedKitItemList
+                items={sortedItems}
+                view={viewMode}
+                renderItem={(item) => (
+                  <ItemCard
+                    item={item}
+                    view={viewMode}
+                    isSelected={selectedItemsByProductId.has(item.id)}
+                    selectedItem={selectedItemsByProductId.get(item.id)}
+                    boxSelected={boxSelected}
+                    onAdd={handleAddItem}
+                    onRemove={(selected) => onRemoveItem(getKitItemLineId(selected))}
+                  />
+                )}
+              />
             ) : viewMode === 'grid' ? (
               <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
                 {sortedItems.map((item) => (

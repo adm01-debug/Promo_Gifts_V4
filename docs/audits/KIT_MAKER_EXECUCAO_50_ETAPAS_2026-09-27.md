@@ -33,17 +33,35 @@ npx vitest run tests/lib/kit-builder-persistence.test.ts \
 resultado: 8 arquivos, 42 testes aprovados
 ```
 
+Após a segunda onda, a suíte ampliada também foi executada no mesmo worktree:
+
+```text
+npx vitest run tests/components/kit-builder tests/components/kit-library \
+  tests/components/pages/KitBuilderPage.test.tsx tests/hooks/useKit tests/lib/kit \
+  tests/lib/buildCustomKitInsert.test.ts tests/pages/kit-builder \
+  tests/audit/kit-maker-plan-review.test.tsx tests/contracts/kit-maker \
+  src/lib/external-db/kit-coverage.test.ts --maxWorkers=1 --retry=0
+resultado: 43 arquivos, 308 testes aprovados
+
+npx tsc -p tsconfig.app.json --noEmit --pretty false
+resultado: exit 0
+```
+
 ## Situação por etapa afetada nesta onda
 
-| Etapa    | Estado                       | Evidência e limite                                                                                                                                                    |
-| -------- | ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| KM50-006 | IMPLEMENTADA LOCAL           | Fluxo é serializado em `__draft`, restaurado por `loadKit` e incluído em snapshots. Validação autenticada ainda depende de D8.                                        |
-| KM50-007 | IMPLEMENTADA LOCAL           | Briefing da IA é normalizado, persistido/restaurado e limpo no reinício. A origem manual/template/IA completa continua pendente de contrato explícito.                |
-| KM50-015 | IMPLEMENTADA LOCAL (parcial) | Busca inclui nome, SKU, categoria e material; cache de estoque não colide por cardinalidade. Virtualização continua pendente.                                         |
-| KM50-018 | IMPLEMENTADA LOCAL (parcial) | As ações “Ver tutoriais” e “Como funciona?” abrem o mesmo guia. Conteúdo final e telemetria ainda exigem decisão/validação.                                           |
-| KM50-019 | IMPLEMENTADA LOCAL (parcial) | Filtros de categoria/tipo usam botões semânticos com `aria-pressed`. Auditoria assistiva e teclado completo continuam pendentes.                                      |
-| KM50-021 | IMPLEMENTADA LOCAL (parcial) | Categorias e materiais usam fonte estável do catálogo; preferência de visualização de itens é persistida. Preferência de caixas e demais estados continuam pendentes. |
-| KM50-031 | IMPLEMENTADA LOCAL (parcial) | Estado sem caixa compatível tem chamada comercial explícita. Envio de contexto comercial depende de contrato do canal.                                                |
+| Etapa    | Estado                       | Evidência e limite                                                                                                                                                               |
+| -------- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| KM50-006 | IMPLEMENTADA LOCAL           | Fluxo é serializado em `__draft`, restaurado por `loadKit` e incluído em snapshots. Validação autenticada ainda depende de D8.                                                   |
+| KM50-007 | IMPLEMENTADA LOCAL           | Briefing da IA é normalizado, persistido/restaurado e limpo no reinício. A origem manual/template/IA completa continua pendente de contrato explícito.                           |
+| KM50-015 | IMPLEMENTADA LOCAL (parcial) | Busca inclui nome, SKU, categoria e material com normalização de acentos; cache de estoque não colide por cardinalidade. Falta validar payload/variante em ambiente autenticado. |
+| KM50-018 | IMPLEMENTADA LOCAL (parcial) | As ações “Ver tutoriais” e “Como funciona?” abrem o mesmo guia. Conteúdo final e telemetria ainda exigem decisão/validação.                                                      |
+| KM50-019 | IMPLEMENTADA LOCAL (parcial) | Filtros de categoria/tipo usam botões semânticos com `aria-pressed`. Auditoria assistiva e teclado completo continuam pendentes.                                                 |
+| KM50-021 | IMPLEMENTADA LOCAL (parcial) | Categorias e materiais usam fonte estável do catálogo; preferência de visualização de itens é persistida. Falta validar resposta atrasada e combinação com API real.             |
+| KM50-023 | IMPLEMENTADA LOCAL (parcial) | Acima de 48 itens, a lista usa janela virtualizada com fallback inicial não vazio. Falta benchmark com catálogo real de milhares de produtos.                                    |
+| KM50-024 | IMPLEMENTADA LOCAL (parcial) | Preferências grade/lista existem em itens e caixas; preço/nome têm desempate por nome e ID. Falta validar scroll e foco em viewport físico.                                      |
+| KM50-025 | IMPLEMENTADA LOCAL (parcial) | Limpar filtros preserva a composição. O drawer mobile da referência continua condicionado ao desenho aprovado de KM50-020.                                                       |
+| KM50-027 | IMPLEMENTADA LOCAL (parcial) | Faixas inválidas mostram alerta e não eliminam silenciosamente o catálogo. Fechamento e dados comerciais continuam bloqueados por D1/D2.                                         |
+| KM50-031 | IMPLEMENTADA LOCAL (parcial) | Estado sem caixa compatível tem chamada comercial explícita. Envio de contexto comercial depende de contrato do canal.                                                           |
 
 ## Bloqueios preservados
 
