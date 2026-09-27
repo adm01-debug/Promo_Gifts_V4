@@ -22,10 +22,18 @@ on:
       - 'supabase/migrations/**'
       - 'src/integrations/supabase/**'
 
+permissions:
+  contents: read
+
+concurrency:
+  group: supabase-security-gate-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   supabase-security-gate:
     name: Gate 5 — DB Security Audit
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 

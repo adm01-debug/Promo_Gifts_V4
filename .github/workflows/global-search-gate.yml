@@ -12,6 +12,13 @@ on:
       - 'src/components/search/**'
       - 'e2e/flows/global-search-comprehensive.spec.ts'
 
+permissions:
+  contents: read
+
+concurrency:
+  group: global-search-gate-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   vitest:
     name: Vitest - Component Tests

@@ -17,6 +17,9 @@ concurrency:
   group: log-login-fuzz-weekly
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   fuzz-stress:
     name: Fuzz stress (log-login-attempt)

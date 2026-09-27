@@ -16,6 +16,13 @@ on:
       - 'src/routes/AppRoutes.tsx'
       - 'e2e/optimized-image-*.spec.ts'
 
+permissions:
+  contents: read
+
+concurrency:
+  group: optimized-image-e2e-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     timeout-minutes: 15

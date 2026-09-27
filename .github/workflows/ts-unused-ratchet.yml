@@ -10,6 +10,9 @@ concurrency:
   group: ts-ratchet-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   ratchet:
     name: noUnusedLocals ratchet

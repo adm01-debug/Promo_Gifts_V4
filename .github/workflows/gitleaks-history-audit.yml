@@ -18,6 +18,10 @@ permissions:
   security-events: write       # para upload de SARIF
   issues: write                # para abrir issue automatica em finding
 
+concurrency:
+  group: gitleaks-history-audit-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   gitleaks-full-history:
     name: Scan complete git history for leaked secrets

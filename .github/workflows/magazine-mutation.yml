@@ -27,6 +27,9 @@ concurrency:
   group: magazine-mutation-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   mutation:
     name: Mutation Score (M1–M6)

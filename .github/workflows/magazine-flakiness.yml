@@ -48,6 +48,9 @@ concurrency:
   group: magazine-flakiness-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   flakiness:
     name: Magazine + Rings Flakiness (repeat × N)

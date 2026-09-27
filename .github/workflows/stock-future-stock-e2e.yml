@@ -16,6 +16,13 @@ on:
       - 'src/hooks/useFutureStockPreference.ts'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: stock-future-stock-e2e-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   unit-and-fuzz:
     name: Unit + fuzz (useFutureStockPreference)

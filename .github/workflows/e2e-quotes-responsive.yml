@@ -33,6 +33,10 @@ permissions:
   contents: read
   issues: write
 
+concurrency:
+  group: e2e-quotes-responsive-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   responsive:
     runs-on: ubuntu-latest

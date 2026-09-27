@@ -25,6 +25,9 @@ concurrency:
   group: quote-items-table-header-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   header-e2e:
     name: Quote Items Table header — ${{ matrix.browser }}

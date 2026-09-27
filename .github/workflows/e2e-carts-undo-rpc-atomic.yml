@@ -24,6 +24,9 @@ concurrency:
   group: e2e-carts-undo-rpc-atomic-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   e2e:
     name: E2E · chromium-authed
