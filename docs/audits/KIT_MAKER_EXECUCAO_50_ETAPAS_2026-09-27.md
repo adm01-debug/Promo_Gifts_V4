@@ -104,3 +104,7 @@ exit 0; guardas SSOT, ciclos de chunks e harnesses de produção aprovados
 ```
 
 **Bloqueios que permanecem:** D1–D8; corrida de `is_favorite` entre atualização direta e autosave exige contrato transacional/validação de objeto específico no banco; ambiente autenticado e visual real não foram testados. Não elevar etapas do plano a `CONCLUÍDA` com base nesta suíte local.
+
+### Gates remotos e reconciliação da base
+
+O PR #1924 estava sobre `46d36b6d6`; `origin/main` avançou pelos PRs #1922 e #1923. Esses commits foram integrados sem conflitos. O teste `validate-migration-target.test.mjs` ainda procurava um `psql -1` no início do passo, mas #1922 tornou o comando condicional para migrations `transaction:none`; o teste foi ajustado para exigir os dois caminhos e a guarda anterior ao DDL (40/40 localmente). O `bun.lock` tinha `@lhci/cli` 0.13.0, enquanto `package.json` já declara 0.15.1; foi regenerado sem mudar o manifesto, e `bun install --frozen-lockfile --ignore-scripts` passou com Bun 1.4.2, a versão observada no job falho. Esses resultados locais **não** convertem checks remotos em verde até a nova execução do PR.

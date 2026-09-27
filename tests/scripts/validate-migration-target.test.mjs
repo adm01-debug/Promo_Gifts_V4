@@ -81,9 +81,14 @@ describe('controlled migration target', () => {
     const guard = steps.findIndex(
       (step) => step.run === 'node scripts/validate-migration-target.mjs --require-live-pooler',
     );
-    const apply = steps.findIndex((step) => step.run?.startsWith('psql -X -w -1'));
+    const apply = steps.findIndex((step) =>
+      step.run?.includes('psql -X -w -1 -v ON_ERROR_STOP=1 -f') &&
+      step.run?.includes('psql -X -w -v ON_ERROR_STOP=1 -f'),
+    );
     expect(guard).toBeGreaterThan(-1);
     expect(apply).toBeGreaterThan(guard);
+    expect(steps[apply].run).toContain('steps.tx_optout.outputs.no_tx');
+    expect(steps[apply].run).toContain('if [');
     expect(steps[apply].env.PGSSLMODE).toBe('require');
     expect(steps[guard].env.SUPABASE_ACCESS_TOKEN).toBe('${{ secrets.SUPABASE_ACCESS_TOKEN }}');
     const connection = steps.findIndex((step) => step.run?.includes('BEGIN READ ONLY'));
