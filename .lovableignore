@@ -107,3 +107,13 @@ src/integrations/supabase/types.ts
 # ============================================================
 .github/workflows/deploy-edge-functions.yml
 .github/workflows/redeploy-rate-limiter-consumers.yml
+
+# ============================================================
+# Quality Gates CI — arquivos protegidos contra sobrescrita pelo Lovable
+# CLAUDE.md lista estes workflows como "Arquivos Protegidos" por conterem
+# Gate 0 (validate-supabase-config / SSOT check doufsxqlfjyuvxuezpln).
+# Lovable pode sobrescrever e silenciosamente remover os Gates,
+# deixando o CI sem proteção para o incidente 401 (REGRA #1).
+# ============================================================
+.github/workflows/deploy-gates.yml
+.github/workflows/quality-gate.yml
