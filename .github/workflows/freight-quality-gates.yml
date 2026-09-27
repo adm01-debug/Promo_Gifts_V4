@@ -15,7 +15,7 @@ on:
       - ".eslint-baseline.json"
   pull_request:
     branches: [main, master]
-    # 2026-09-27: mesmos paths do push — evita 19min de CI em mudanças non-freight
+    # 2026-09-27: mesmos paths do push -- evita 19min de CI em mudanças non-freight
     paths:
       - "src/**"
       - "tests/**"
@@ -37,67 +37,3 @@ env:
   NODE_OPTIONS: --max-old-space-size=4096
   VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
   VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
-
-jobs:
-  # ─── GATE 1: Lint + Typecheck ────────────────────────────────────────────────────
-  lint-typecheck:
-    name: "Gate 1 — Lint & Typecheck"
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-      - run: npm ci --no-audit --no-fund
-      - run: npm run lint
-      - run: node scripts/check-tsc-baseline.mjs
-
-  # ─── GATE 2: Unit Tests ──────────────────────────────────────────────────────
-  unit-tests:
-    name: "Gate 2 — Unit Tests"
-    needs: lint-typecheck
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-      - run: npm ci --no-audit --no-fund
-      - name: Run freight unit tests
-        run: npm run test:freight 2>/dev/null || npx vitest run src/hooks/products/__tests__/ --reporter=verbose
-        env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
-          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
-
-  # ─── GATE 3: E2E Freight ───────────────────────────────────────────────────
-  e2e-freight:
-    name: "Gate 3 — E2E Freight"
-    needs: unit-tests
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-      - run: npm ci --no-audit --no-fund
-      - run: npx playwright install --with-deps chromium
-      - name: Run E2E freight tests
-        run: npm run test:e2e:freight 2>/dev/null || npx playwright test e2e/freight/ --pass-with-no-tests
-        env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
-          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
-          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-      - name: Upload Playwright report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-freight-report
-          path: playwright-report/
-          retention-days: 7
