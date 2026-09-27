@@ -557,6 +557,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
       kitQuantity: number;
       identity?: KitIdentity;
       notes?: string;
+      flow?: KitBuilderFlow;
     }) => {
       setKitName(data.name);
       setKitType(data.kitType);
@@ -590,6 +591,9 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
           isFavorite: data.identity.isFavorite ?? false,
         });
       }
+      if (data.flow === 'box-first' || data.flow === 'items-first') {
+        setFlow(data.flow);
+      }
       setPersonalizationReviewed(true);
       setCurrentStep('summary');
     },
@@ -611,6 +615,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
     );
     setNotes(snap.notes || '');
     if (snap.identity) setIdentity(snap.identity);
+    if (snap.flow === 'box-first' || snap.flow === 'items-first') setFlow(snap.flow);
   }, []);
 
   const applyAIComposition = useCallback(

@@ -57,6 +57,45 @@ function readDraftClient(personalizationData: Record<string, unknown>): KitQuote
   };
 }
 
+function readDraftFlow(personalizationData: Record<string, unknown>) {
+  const draft = isRecord(personalizationData.__draft) ? personalizationData.__draft : null;
+  const flow = draft?.flow;
+  return flow === 'box-first' || flow === 'items-first' ? flow : undefined;
+}
+
+function readDraftAIBriefing(
+  personalizationData: Record<string, unknown>,
+): KitAISuggestionBrief | undefined {
+  const draft = isRecord(personalizationData.__draft) ? personalizationData.__draft : null;
+  const briefing = draft?.aiBriefing;
+  if (!isRecord(briefing)) return undefined;
+
+  const kitType = briefing.kit_type;
+  const targetPrice = briefing.target_price_brl;
+  if (
+    (kitType !== 'montado' && kitType !== 'original' && kitType !== 'simples') ||
+    !isRecord(targetPrice) ||
+    !Number.isFinite(targetPrice.min) ||
+    !Number.isFinite(targetPrice.max)
+  ) {
+    return undefined;
+  }
+
+  const strings = (value: unknown) =>
+    Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [];
+
+  return {
+    kit_type: kitType,
+    box_keywords: strings(briefing.box_keywords),
+    item_keywords: strings(briefing.item_keywords),
+    target_price_brl: { min: Number(targetPrice.min), max: Number(targetPrice.max) },
+    narrative: typeof briefing.narrative === 'string' ? briefing.narrative : '',
+    ...(typeof briefing.title === 'string' ? { title: briefing.title } : {}),
+    ...(typeof briefing.description === 'string' ? { description: briefing.description } : {}),
+    ...(typeof briefing.style_tag === 'string' ? { style_tag: briefing.style_tag } : {}),
+  };
+}
+
 function toSavedKitSnapshot(row: {
   name: string;
   kit_type?: string | null;
@@ -83,6 +122,8 @@ function toSavedKitSnapshot(row: {
       : { box: { enabled: false }, items: {} },
     quoteClient: readDraftClient(row.personalization_data),
     notes: readDraftNotes(row.personalization_data),
+    flow: readDraftFlow(row.personalization_data),
+    aiBriefing: readDraftAIBriefing(row.personalization_data),
     kitQuantity: Number.isFinite(row.kit_quantity) && row.kit_quantity > 0 ? row.kit_quantity : 1,
     identity: {
       color: row.color || '#3B82F6',
@@ -114,6 +155,7 @@ export function useKitBuilderPageState() {
   const [currentRevision, setCurrentRevision] = useState<number | null>(null);
   const [occasion, setOccasion] = useState<Occasion | null>(null);
   const [quoteClient, setQuoteClient] = useState<KitQuoteClient>({});
+  const [aiBriefing, setAIBriefing] = useState<KitAISuggestionBrief | undefined>();
   const [isLanding, setIsLanding] = useState(isKitMakerLandingRoute(kitIdParam, productIdParam));
   const [isHydrating, setIsHydrating] = useState(Boolean(kitIdParam));
   const hydratedKitIdRef = useRef<string | null>(null);
@@ -193,7 +235,7 @@ export function useKitBuilderPageState() {
       setCurrentRevision(revision);
     },
     !isHydrating,
-    { quoteClient },
+    { quoteClient, flow: wizardState.flow, aiBriefing },
   );
   const {
     pushSnapshot,
@@ -220,6 +262,8 @@ export function useKitBuilderPageState() {
       kitQuantity,
       identity: kitState.identity,
       notes: kitState.notes,
+      flow: wizardState.flow,
+      aiBriefing,
     });
   }, [
     kitState.name,
@@ -230,6 +274,8 @@ export function useKitBuilderPageState() {
     kitState.identity,
     kitState.notes,
     kitQuantity,
+    wizardState.flow,
+    aiBriefing,
     pushSnapshot,
     isRestoring,
   ]);
@@ -237,12 +283,18 @@ export function useKitBuilderPageState() {
   // undo/redo aplicam o snapshot retornado de volta no estado do kit.
   const undo = useCallback(() => {
     const snap = undoSnapshot();
-    if (snap) restoreKitSnapshot(snap);
+    if (snap) {
+      restoreKitSnapshot(snap);
+      setAIBriefing(snap.aiBriefing);
+    }
   }, [undoSnapshot, restoreKitSnapshot]);
 
   const redo = useCallback(() => {
     const snap = redoSnapshot();
-    if (snap) restoreKitSnapshot(snap);
+    if (snap) {
+      restoreKitSnapshot(snap);
+      setAIBriefing(snap.aiBriefing);
+    }
   }, [redoSnapshot, restoreKitSnapshot]);
 
   // A saved snapshot must be restored before autosave is allowed to run. This
@@ -274,6 +326,7 @@ export function useKitBuilderPageState() {
 
     loadKit(snapshot);
     setQuoteClient(snapshot.quoteClient);
+    setAIBriefing(snapshot.aiBriefing);
     setCurrentKitId(row.id);
     setCurrentRevision(row.revision);
     setIsHydrating(false);
@@ -344,6 +397,8 @@ export function useKitBuilderPageState() {
       const kitId = currentKitId || autoSavedKitId || undefined;
       const saved = await saveKit(kitState, kitQuantity, kitId, kitId ? currentRevision : null, {
         quoteClient,
+        flow: wizardState.flow,
+        aiBriefing,
       });
       acknowledgeManualSave(saved.id, saved.revision);
       setCurrentKitId(saved.id);
@@ -363,16 +418,19 @@ export function useKitBuilderPageState() {
     kitQuantity,
     kitState,
     quoteClient,
+    wizardState.flow,
+    aiBriefing,
     saveKit,
   ]);
 
   const applyAISuggestion = useCallback(
     (
-      _suggestion: KitAISuggestionBrief,
+      suggestion: KitAISuggestionBrief,
       composition: KitAIComposition,
       requestedQuantity?: number,
     ) => {
       applyAIComposition(composition, requestedQuantity);
+      setAIBriefing(suggestion);
       toast.success('Composição da IA aplicada', {
         description: 'Confira variantes, estoque, personalização e valores antes de continuar.',
       });
@@ -384,6 +442,7 @@ export function useKitBuilderPageState() {
     (flow: 'box-first' | 'items-first') => {
       startNewFlow(flow);
       setQuoteClient({});
+      setAIBriefing(undefined);
       setIsLanding(false);
     },
     [startNewFlow],
@@ -409,6 +468,7 @@ export function useKitBuilderPageState() {
   const resetKitAndQuoteClient = useCallback(() => {
     resetKit();
     setQuoteClient({});
+    setAIBriefing(undefined);
     setOccasion(null);
   }, [resetKit]);
 
@@ -439,6 +499,7 @@ export function useKitBuilderPageState() {
       setOccasion,
       quoteClient,
       setQuoteClient,
+      aiBriefing,
     },
     actions: {
       setKitName,

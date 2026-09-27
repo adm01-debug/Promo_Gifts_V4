@@ -256,9 +256,15 @@ export function KitMakerLanding({
               </a>
             </Button>
           )}
-          <Button variant="outline" asChild>
-            <a href="#como-funciona">Como funciona?</a>
-          </Button>
+          {onOpenTutorial ? (
+            <Button variant="outline" onClick={onOpenTutorial}>
+              Como funciona?
+            </Button>
+          ) : (
+            <Button variant="outline" asChild>
+              <a href="#como-funciona">Como funciona?</a>
+            </Button>
+          )}
         </div>
       </section>
 

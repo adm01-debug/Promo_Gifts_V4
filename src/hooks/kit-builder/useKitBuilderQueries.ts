@@ -144,8 +144,22 @@ function filterBoxes(
 
 function filterItems(items: KitItem[], search: string): KitItem[] {
   if (!search) return items;
-  const q = search.toLowerCase();
-  return items.filter((i) => i.name.toLowerCase().includes(q) || i.sku?.toLowerCase().includes(q));
+  const q = search.toLocaleLowerCase('pt-BR');
+  return items.filter((item) =>
+    [item.name, item.sku, item.category, item.material]
+      .filter((value): value is string => typeof value === 'string')
+      .some((value) => value.toLocaleLowerCase('pt-BR').includes(q)),
+  );
+}
+
+/**
+ * A count is not an identity. React Query must invalidate the stock aggregate
+ * when a refreshed catalog swaps IDs while retaining the same total number of
+ * rows. Joining sorted canonical IDs is exact (rather than a collision-prone
+ * hash) and only lives in the in-memory query key.
+ */
+export function buildKitCatalogStockKey(productIds: readonly string[]): string {
+  return productIds.join(',');
 }
 
 export interface KitComponentPrintArea {
@@ -294,12 +308,15 @@ export function useKitBuilderQueries() {
 
   // Query: estoque agregado de todo o catálogo de itens, numa única leitura
   // paginada (mesma fonte de `useKitStockValidation`) — nunca uma consulta
-  // por card. Recarrega quando o tamanho do catálogo muda (proxy leve para
-  // "o catálogo mudou"; um join do product_id não caberia como chave de
-  // cache sem custo perceptível com milhares de produtos).
+  // por card. A chave contém a identidade completa, não só o comprimento:
+  // catálogos diferentes com o mesmo total não podem compartilhar estoque.
   const itemProductIds = useMemo(() => rawItemCatalog.map((item) => item.id), [rawItemCatalog]);
+  const itemCatalogStockKey = useMemo(
+    () => buildKitCatalogStockKey(itemProductIds),
+    [itemProductIds],
+  );
   const { data: itemStockData, isError: itemStockErrored } = useQuery({
-    queryKey: ['kit-builder', 'items', 'stock', itemProductIds.length],
+    queryKey: ['kit-builder', 'items', 'stock', itemCatalogStockKey],
     queryFn: () => fetchKitStockVariants(itemProductIds),
     enabled: itemProductIds.length > 0,
     staleTime: 60 * 1000,

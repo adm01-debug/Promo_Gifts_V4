@@ -153,6 +153,15 @@ describe('KitMakerLanding', () => {
     );
   });
 
+  it('opens the shared guide from both tutorial actions when it is available', () => {
+    const onOpenTutorial = vi.fn();
+    renderLanding({ onOpenTutorial });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Ver tutoriais' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Como funciona?' }));
+    expect(onOpenTutorial).toHaveBeenCalledTimes(2);
+  });
+
   it('starts each flow explicitly instead of relying on a decorative card', async () => {
     vi.mocked(dbInvoke).mockResolvedValue({ records: [], count: 0 });
     const onStart = vi.fn();

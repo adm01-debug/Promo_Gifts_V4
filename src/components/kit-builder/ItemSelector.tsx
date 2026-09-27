@@ -59,6 +59,8 @@ interface ItemWithCompatibility extends KitItem {
 
 interface ItemSelectorProps {
   items: ItemWithCompatibility[];
+  /** Stable, unfiltered catalog used to keep facet options/counts visible. */
+  catalogItems?: KitItem[];
   selectedItems: KitItem[];
   isLoading: boolean;
   filters: ItemFilters;
@@ -85,6 +87,7 @@ interface ItemSelectorProps {
 
 export function ItemSelector({
   items,
+  catalogItems,
   selectedItems,
   isLoading,
   filters,
@@ -107,7 +110,22 @@ export function ItemSelector({
 }: ItemSelectorProps) {
   const [searchValue, setSearchValue] = useState('');
   const [lastError, setLastError] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>(() => {
+    if (typeof window === 'undefined') return 'grid';
+    try {
+      return window.localStorage.getItem('kit-maker-items-view') === 'list' ? 'list' : 'grid';
+    } catch {
+      return 'grid';
+    }
+  });
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem('kit-maker-items-view', viewMode);
+    } catch {
+      // Storage may be denied in privacy contexts; the current session still works.
+    }
+  }, [viewMode]);
 
   useEffect(() => {
     setSearchValue(filters.search || '');
@@ -127,17 +145,24 @@ export function ItemSelector({
   };
 
   // Extract unique categories for filter
-  const categories = useMemo(() => {
-    const cats = new Set<string>();
-    items.forEach((i) => {
-      if (i.category) cats.add(i.category);
+  const facetSource = catalogItems ?? items;
+  const categoryCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    facetSource.forEach((item) => {
+      if (item.category) counts.set(item.category, (counts.get(item.category) ?? 0) + 1);
     });
-    return Array.from(cats).sort();
-  }, [items]);
+    return counts;
+  }, [facetSource]);
+  const categories = useMemo(
+    () => Array.from(categoryCounts.keys()).sort((a, b) => a.localeCompare(b, 'pt-BR')),
+    [categoryCounts],
+  );
   const materials = useMemo(
     () =>
-      Array.from(new Set(items.map((item) => item.material).filter(Boolean) as string[])).sort(),
-    [items],
+      Array.from(
+        new Set(facetSource.map((item) => item.material).filter(Boolean) as string[]),
+      ).sort(),
+    [facetSource],
   );
 
   const sortedItems = useMemo(
@@ -248,22 +273,28 @@ export function ItemSelector({
             role="group"
             aria-label="Categorias"
           >
-            <Badge
+            <Button
+              type="button"
               variant={!filters.category ? 'default' : 'outline'}
-              className="cursor-pointer whitespace-nowrap px-3 py-1.5 text-xs font-medium"
+              size="sm"
+              className="h-auto whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium"
+              aria-pressed={!filters.category}
               onClick={() => onFiltersChange({ ...filters, category: undefined })}
             >
-              Todos
-            </Badge>
+              Todos <span className="ml-1 opacity-80">({facetSource.length})</span>
+            </Button>
             {categories.map((cat) => (
-              <Badge
+              <Button
                 key={cat}
+                type="button"
                 variant={filters.category === cat ? 'default' : 'outline'}
-                className="cursor-pointer whitespace-nowrap px-3 py-1.5 text-xs font-medium"
+                size="sm"
+                className="h-auto whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium"
+                aria-pressed={filters.category === cat}
                 onClick={() => onFiltersChange({ ...filters, category: cat })}
               >
-                {cat}
-              </Badge>
+                {cat} <span className="ml-1 opacity-80">({categoryCounts.get(cat) ?? 0})</span>
+              </Button>
             ))}
           </div>
 

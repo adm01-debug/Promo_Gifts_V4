@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '../../test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ItemSelector } from '@/components/kit-builder/ItemSelector';
 import type { KitItem } from '@/lib/kit-builder';
 
@@ -47,6 +47,8 @@ function baseProps(overrides: Partial<React.ComponentProps<typeof ItemSelector>>
 }
 
 describe('ItemSelector parity', () => {
+  beforeEach(() => localStorage.clear());
+
   it('renders category chips instead of a select', () => {
     render(<ItemSelector {...baseProps()} />);
     expect(screen.getByRole('group', { name: /categorias/i })).toBeInTheDocument();
@@ -72,11 +74,27 @@ describe('ItemSelector parity', () => {
     expect(listButton).toHaveAttribute('aria-pressed', 'true');
   });
 
+  it('keeps the selected view after the selector remounts', () => {
+    const first = render(<ItemSelector {...baseProps()} />);
+    fireEvent.click(screen.getByRole('button', { name: /ver em lista/i }));
+    first.unmount();
+
+    render(<ItemSelector {...baseProps()} />);
+    expect(screen.getByRole('button', { name: /ver em lista/i })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+  });
+
+  it('renders keyboard-operable category controls with real counts', () => {
+    render(<ItemSelector {...baseProps()} />);
+    expect(screen.getByRole('button', { name: /todos \(2\)/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /escritório \(1\)/i })).toBeInTheDocument();
+  });
+
   it('calls onClearAll after confirming the destructive dialog', () => {
     const onClearAll = vi.fn();
-    render(
-      <ItemSelector {...baseProps({ selectedItems: [ITEM_A], onClearAll })} />,
-    );
+    render(<ItemSelector {...baseProps({ selectedItems: [ITEM_A], onClearAll })} />);
     fireEvent.click(screen.getByRole('button', { name: /limpar tudo/i }));
     fireEvent.click(screen.getByRole('button', { name: 'Limpar tudo' }));
     expect(onClearAll).toHaveBeenCalled();
@@ -84,9 +102,7 @@ describe('ItemSelector parity', () => {
 
   it('disables the next-step CTA when canProceed is false', () => {
     render(
-      <ItemSelector
-        {...baseProps({ flow: 'items-first', onNext: vi.fn(), canProceed: false })}
-      />,
+      <ItemSelector {...baseProps({ flow: 'items-first', onNext: vi.fn(), canProceed: false })} />,
     );
     expect(screen.getByRole('button', { name: /ver caixas compatíveis/i })).toBeDisabled();
   });
