@@ -16,6 +16,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 concurrency:
   group: e2e-update-quote-conditions-${{ github.event.inputs.branch }}
@@ -94,8 +95,10 @@ jobs:
             --update-snapshots \
             --reporter=list
 
-      - name: Comitar baselines
+      - name: Comitar baselines e abrir PR
         if: ${{ github.event.inputs.safe_mode == 'false' || (steps.dryrun.outcome == 'failure' && steps.classify.outputs.kind == 'visual') }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -104,6 +107,14 @@ jobs:
             echo "Sem mudanças nos baselines."; exit 0
           fi
           MODE="${{ github.event.inputs.safe_mode != 'false' && 'safe' || 'force' }}"
+          TS=$(date -u +%y%m%d-%H%M)
+          BRANCH="chore/e2e-quote-conditions-baselines-${TS}"
+          git checkout -b "${BRANCH}"
           git commit -m "chore(e2e): update quote-conditions visual baselines (${MODE})"
-          git push origin HEAD:${{ github.event.inputs.branch }}
-
+          git push origin "${BRANCH}"
+          BODY="Baselines PNG gerados automaticamente pelo workflow \`e2e-update-quote-conditions-snapshots\`. Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          gh pr create \
+            --base "${{ github.event.inputs.branch }}" \
+            --head "${BRANCH}" \
+            --title "chore(e2e): update quote-conditions visual baselines (${MODE})" \
+            --body "${BODY}"
