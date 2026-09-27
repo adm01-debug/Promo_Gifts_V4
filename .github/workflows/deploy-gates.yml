@@ -101,6 +101,11 @@ jobs:
           node scripts/check-migration-path-references.mjs
           node scripts/check-supabase-reference-catalog.mjs
           node scripts/check-migration-filename-contract.mjs
+      # REGRA E44 — Visual baselines (bloqueante)
+      # Previne remoção de PNGs de baseline de specs rodadas em CI sem
+      # --update-snapshots (e2e-dialogs-pr-check, ui-visual-a11y, etc.)
+      - name: Gate 1.4 — Visual baselines commitados (bloqueante)
+        run: node scripts/check-visual-baselines.mjs
 
   unit-tests:
     name: Gate 2 - Unit Tests
