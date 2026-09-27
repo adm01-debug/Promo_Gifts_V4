@@ -1,37 +1,46 @@
 name: Setup Node CI
 description: >
-  Checkout + setup-node (.nvmrc) + lockfile sync check + npm ci.
-  Centraliza as ~100 cópias de checkout+setup+install nos workflows.
+  Composite action: checkout + setup-node (npm) + lockfile check + npm ci.
+  Cobre os 3 primeiros steps de ~90% dos workflows deste repo.
 
 inputs:
-  install:
-    description: "Executar npm ci (true) ou só configurar o ambiente (false)"
+  fetch-depth:
+    description: Profundidade do fetch (0 = historico completo)
     required: false
-    default: "true"
+    default: '1'
+  persist-credentials:
+    description: Manter credenciais do GITHUB_TOKEN para workflows que fazem push
+    required: false
+    default: 'true'
   ignore-scripts:
-    description: "Passar --ignore-scripts ao npm ci"
+    description: Passar --ignore-scripts ao npm ci
     required: false
-    default: "false"
+    default: 'false'
+  working-directory:
+    description: Diretorio onde rodar npm ci
+    required: false
+    default: '.'
 
 runs:
   using: composite
   steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
+    - uses: actions/checkout@v4
       with:
-        node-version-file: .nvmrc
-        cache: npm
+        fetch-depth: ${{ inputs.fetch-depth }}
+        persist-credentials: ${{ inputs.persist-credentials }}
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version-file: '.nvmrc'
+        cache: 'npm'
 
     - name: Check lockfile sync
       shell: sh
       run: node scripts/check-lockfile-sync.mjs
 
     - name: Install dependencies
-      if: inputs.install == 'true'
       shell: sh
+      working-directory: ${{ inputs.working-directory }}
       run: |
         if [ "${{ inputs.ignore-scripts }}" = "true" ]; then
           npm ci --no-audit --no-fund --ignore-scripts
