@@ -2,7 +2,7 @@ name: Freight Quest — Quality Gates
 
 on:
   push:
-    branches: [main, master, "claude/**", "feat/**", "fix/**"]
+    branches: [main, "claude/**", "feat/**", "fix/**"]
     paths:
       - "src/**"
       - "tests/**"
@@ -14,7 +14,7 @@ on:
       - ".tsc-baseline.json"
       - ".eslint-baseline.json"
   pull_request:
-    branches: [main, master]
+    branches: [main]
     # 2026-09-27: mesmos paths do push -- evita 19min de CI em mudancas non-freight
     paths:
       - "src/**"

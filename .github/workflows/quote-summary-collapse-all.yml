@@ -10,7 +10,7 @@ name: Quote Summary — Collapse/Expand All (fuzz + e2e)
 
 on:
   pull_request:
-    branches: [main, master]
+    branches: [main]
     paths:
       - 'src/components/quotes/QuoteBuilderSummaryColumn.tsx'
       - 'src/components/quotes/__tests__/QuoteBuilderSummaryCollapseAll.fuzz.test.ts'
@@ -18,7 +18,7 @@ on:
       - 'e2e/quotes/quote-summary-collapse-all.spec.ts'
       - '.github/workflows/quote-summary-collapse-all.yml'
   push:
-    branches: [main, master]
+    branches: [main]
     paths:
       - 'src/components/quotes/QuoteBuilderSummaryColumn.tsx'
       - 'src/components/quotes/__tests__/QuoteBuilderSummaryCollapseAll.fuzz.test.ts'

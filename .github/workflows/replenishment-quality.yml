@@ -3,7 +3,7 @@ name: CI - Replenishment Module Quality Gate
 # 2026-09-27: paths filter — 23min de CI só quando reposição/E2E/supabase muda
 on:
   push:
-    branches: [ main, master, develop ]
+    branches: [ main ]
     paths:
       - 'src/**'
       - 'supabase/**'
@@ -14,7 +14,7 @@ on:
       - '.eslint-baseline.json'
       - '.github/workflows/replenishment-quality.yml'
   pull_request:
-    branches: [ main, master, develop ]
+    branches: [ main ]
     paths:
       - 'src/**'
       - 'supabase/**'

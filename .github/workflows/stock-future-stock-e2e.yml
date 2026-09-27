@@ -10,7 +10,7 @@ on:
       - 'e2e/fixtures/selectors.ts'
       - '.github/workflows/stock-future-stock-e2e.yml'
   push:
-    branches: [main, master]
+    branches: [main]
     paths:
       - 'src/components/inventory/StockFilterToolbar.tsx'
       - 'src/hooks/useFutureStockPreference.ts'

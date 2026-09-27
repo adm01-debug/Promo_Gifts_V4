@@ -17,7 +17,7 @@ name: Cart Quality — Typecheck, Unit & E2E
 
 on:
   push:
-    branches: [main, master, develop]
+    branches: [main]
     paths:
       - 'src/components/cart/**'
       - 'src/pages/products/seller-carts/**'
@@ -32,7 +32,7 @@ on:
       - '.github/required-checks.json'
       - 'scripts/check-required-checks.mjs'
   pull_request:
-    branches: [main, master, develop]
+    branches: [main]
     paths:
       - 'src/components/cart/**'
       - 'src/pages/products/seller-carts/**'

@@ -6,13 +6,13 @@ name: E2E — CRM Callback (approved → V4 → CRM)
 
 on:
   push:
-    branches: [main, master]
+    branches: [main]
     paths:
       - "e2e/flows/28-crm-callback-approved.spec.ts"
       - "supabase/functions/receive-crm-callback/**"
       - ".github/workflows/e2e-crm-callback-approved.yml"
   pull_request:
-    branches: [main, master]
+    branches: [main]
     paths:
       - "e2e/flows/28-crm-callback-approved.spec.ts"
       - "supabase/functions/receive-crm-callback/**"

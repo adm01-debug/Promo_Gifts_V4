@@ -2,9 +2,9 @@ name: Supabase Linter Gate
 
 on:
   pull_request:
-    branches: [main, master]
+    branches: [main]
   push:
-    branches: [main, master]
+    branches: [main]
   schedule:
     # Roda diariamente às 06:00 UTC para detectar drift fora de PR
     - cron: "0 6 * * *"

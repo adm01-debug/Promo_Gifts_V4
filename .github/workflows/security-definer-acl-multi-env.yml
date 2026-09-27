@@ -34,7 +34,7 @@ on:
           - staging
           - production
   push:
-    branches: [main, master]
+    branches: [main]
     paths:
       - "scripts/check-security-definer-acl.mjs"
       - "tests/security/security-definer-acl.test.ts"

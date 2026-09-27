@@ -1,7 +1,7 @@
 name: OptimizedImage E2E CI
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
     paths:
       - 'src/components/ui/OptimizedImage.tsx'
       - 'src/pages/tools/OptimizedImageDemo.tsx'
@@ -9,7 +9,7 @@ on:
       - 'e2e/optimized-image-*.spec.ts'
       - '.github/workflows/optimized-image-e2e.yml'
   pull_request:
-    branches: [ main, master ]
+    branches: [ main ]
     paths:
       - 'src/components/ui/OptimizedImage.tsx'
       - 'src/pages/tools/OptimizedImageDemo.tsx'
