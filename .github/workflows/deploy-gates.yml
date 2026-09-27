@@ -119,13 +119,6 @@ jobs:
         env:
           VITE_SUPABASE_URL: https://placeholder.supabase.co
           VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
-      # E55 — Bundle size (bloqueante)
-      # Falha se algum chunk exceder o limite definido em check-bundle-size.mjs.
-      - name: Gate 1.6 — Bundle size dentro dos limites (bloqueante)
-        run: node scripts/check-bundle-size.mjs
-        env:
-          VITE_SUPABASE_URL: https://placeholder.supabase.co
-          VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
 
   unit-tests:
     name: Gate 2 - Unit Tests
@@ -277,6 +270,13 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm run build
+      # E55 — Bundle size (bloqueante)
+      # Roda após o build para garantir que dist/assets/ existe.
+      - name: Gate 1.6 — Bundle size dentro dos limites (bloqueante)
+        run: node scripts/check-bundle-size.mjs
+        env:
+          VITE_SUPABASE_URL: https://placeholder.supabase.co
+          VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
       - name: Upload dist artifact
         uses: actions/upload-artifact@v4
         with:
