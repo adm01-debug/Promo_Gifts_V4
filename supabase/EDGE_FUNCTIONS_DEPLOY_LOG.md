@@ -28,6 +28,16 @@ manualmente, no mesmo dia, com o método `emergência-MCP`.
 | --- | --- | --- | --- | --- | --- | --- |
 | 2026-09-25T06:08:52.597Z | `kit-ai-builder` | 288 | `a79944b53f436d428dab1ce9fb5984b31e79489f` | 36101511155 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
 | 2026-09-26T00:33:54.525Z | `check-login` | 125 | `4c0defd60ff826d70eb85f2b52e06b2ebc25f2b9` | 36205266158 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-09-27T11:58:11.279Z | `ai-recommendations` | 290 | `7297c51db685883e0cd3401e06af79f3bdde2ccb` | 36315788137 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-09-27T11:58:11.303Z | `expert-chat` | 259 | `7297c51db685883e0cd3401e06af79f3bdde2ccb` | 36315788137 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-09-27T11:58:11.328Z | `log-login-attempt` | 276 | `7297c51db685883e0cd3401e06af79f3bdde2ccb` | 36315788137 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-09-27T11:58:11.352Z | `magazine-public-react` | 40 | `7297c51db685883e0cd3401e06af79f3bdde2ccb` | 36315788137 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-09-27T11:58:11.377Z | `magazine-public-view` | 40 | `7297c51db685883e0cd3401e06af79f3bdde2ccb` | 36315788137 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-09-27T11:58:11.402Z | `magazine-reader-state-read` | 44 | `7297c51db685883e0cd3401e06af79f3bdde2ccb` | 36315788137 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-09-27T11:58:11.448Z | `magazine-reader-state-write` | 41 | `7297c51db685883e0cd3401e06af79f3bdde2ccb` | 36315788137 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-09-27T11:58:11.473Z | `receive-crm-callback` | 73 | `7297c51db685883e0cd3401e06af79f3bdde2ccb` | 36315788137 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-09-27T11:58:11.497Z | `semantic-search` | 269 | `7297c51db685883e0cd3401e06af79f3bdde2ccb` | 36315788137 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-09-27T11:58:11.558Z | `visual-search` | 272 | `7297c51db685883e0cd3401e06af79f3bdde2ccb` | 36315788137 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
 
 ## Retro-registro (casos anteriores a este ledger, E67)
 
