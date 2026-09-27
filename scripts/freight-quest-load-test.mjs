@@ -47,7 +47,7 @@ const SUPABASE_URL = (
 const SERVICE_ROLE_KEY =
   process.env.SUPABASE_TEST_BYPASS_TOKEN || process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-const DRY_RUN = !SUPABASE_URL || !SERVICE_ROLE_KEY;
+const DRY_RUN = process.env.DRY_RUN === '1' || !SUPABASE_URL || !SERVICE_ROLE_KEY;
 
 const REQUEST_TIMEOUT_MS = Number(process.env.LOAD_TIMEOUT_MS) || 8_000;
 const OUTPUT_FILE = process.env.LOAD_OUTPUT_FILE || "load-test-report.json";

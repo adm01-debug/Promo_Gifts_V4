@@ -32,7 +32,7 @@ const CONCURRENCY = Number(process.env.FUZZ_CONCURRENCY) || 6;
 const FUNCTION_CONCURRENCY = Number(process.env.FUZZ_FUNCTION_CONCURRENCY) || 3;
 const MAX_COMBINATIONS_PER_FUNCTION = Number(process.env.FUZZ_MAX_COMBINATIONS) || 120;
 const TIMEOUT_MS = 15_000;
-const DRY_RUN = !SUPABASE_URL || !SERVICE_ROLE_KEY;
+const DRY_RUN = process.env.DRY_RUN === '1' || !SUPABASE_URL || !SERVICE_ROLE_KEY;
 
 if (DRY_RUN) {
   console.log("⚠️  Credenciais ausentes — modo dry-run: gerando e validando payloads sem HTTP.");

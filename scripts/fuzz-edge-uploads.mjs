@@ -17,7 +17,7 @@ import process from "node:process";
 
 const SUPABASE_URL = (process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "").replace(/\/+$/, "");
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_TEST_BYPASS_TOKEN;
-const DRY_RUN = !SUPABASE_URL || !SERVICE_ROLE_KEY;
+const DRY_RUN = process.env.DRY_RUN === '1' || !SUPABASE_URL || !SERVICE_ROLE_KEY;
 const TIMEOUT_MS = 15_000;
 
 if (DRY_RUN) {

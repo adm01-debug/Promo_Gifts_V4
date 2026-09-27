@@ -39,9 +39,11 @@ const SERVICE_ROLE_KEY =
   process.env.SUPABASE_TEST_BYPASS_TOKEN ||
   process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
+const DRY_RUN = process.env.DRY_RUN === '1' || !SUPABASE_URL || !SERVICE_ROLE_KEY;
+
+if (DRY_RUN) {
   console.log(
-    "[stress-burst] credenciais ausentes. Pulando teste de stress burst."
+    "[stress-burst] credenciais ausentes ou DRY_RUN=1. Pulando teste de stress burst."
   );
   process.exit(0);
 }
