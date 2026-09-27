@@ -2,12 +2,12 @@ name: Global Search Quality Gate
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
     paths:
       - 'src/components/search/**'
       - 'e2e/flows/global-search-comprehensive.spec.ts'
   pull_request:
-    branches: [ main, master ]
+    branches: [ main ]
     paths:
       - 'src/components/search/**'
       - 'e2e/flows/global-search-comprehensive.spec.ts'

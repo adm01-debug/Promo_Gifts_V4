@@ -8,7 +8,7 @@ name: E2E • ColorSwatch 2 linhas (Grid)
 
 on:
   push:
-    branches: [main, master]
+    branches: [main]
     paths:
       - 'src/components/products/ProductCard.tsx'
       - 'src/components/products/ProductColorSwatches.tsx'
@@ -19,7 +19,7 @@ on:
       - 'e2e/catalog/color-swatch-wrap-visual.spec.ts'
       - '.github/workflows/e2e-color-swatch-grid.yml'
   pull_request:
-    branches: [main, master]
+    branches: [main]
     paths:
       - 'src/components/products/ProductCard.tsx'
       - 'src/components/products/ProductColorSwatches.tsx'

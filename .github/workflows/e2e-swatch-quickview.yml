@@ -6,9 +6,9 @@ name: E2E • Swatch QuickView (Lista + Tabela)
 
 on:
   push:
-    branches: [main, master]
+    branches: [main]
   pull_request:
-    branches: [main, master]
+    branches: [main]
 
 concurrency:
   group: e2e-swatch-quickview-${{ github.ref }}

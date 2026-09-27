@@ -6,7 +6,7 @@ name: Quote Items Table — Header (cross-browser e2e)
 
 on:
   pull_request:
-    branches: [main, master]
+    branches: [main]
     paths:
       - 'src/components/quotes/QuoteItemsTable.tsx'
       - 'src/components/quotes/**'
@@ -14,7 +14,7 @@ on:
       - '.github/workflows/e2e-quote-items-table-header.yml'
       - 'playwright.config.ts'
   push:
-    branches: [main, master]
+    branches: [main]
     paths:
       - 'src/components/quotes/QuoteItemsTable.tsx'
       - 'src/components/quotes/**'

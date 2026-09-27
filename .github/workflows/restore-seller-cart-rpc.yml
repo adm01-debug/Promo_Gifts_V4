@@ -21,7 +21,7 @@ on:
         options: [all, staging, production]
         default: all
   push:
-    branches: [main, master]
+    branches: [main]
     paths:
       - "supabase/migrations/**restore_seller_cart**"
       - "tests/security/restore-seller-cart-rpc.test.ts"

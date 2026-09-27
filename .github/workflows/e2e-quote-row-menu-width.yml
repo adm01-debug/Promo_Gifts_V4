@@ -2,7 +2,7 @@ name: E2E — Quote Row Menu Width
 
 on:
   push:
-    branches: [main, master]
+    branches: [main]
     paths:
       - 'src/components/quotes/QuotesConfigurableList.tsx'
       - 'src/index.css'

@@ -2,7 +2,7 @@ name: E2E — CNPJ SSOT
 
 on:
   push:
-    branches: [main, master, develop]
+    branches: [main]
     paths:
       - 'src/utils/masks.ts'
       - 'src/utils/cnpj-schema.ts'

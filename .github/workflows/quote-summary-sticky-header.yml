@@ -5,7 +5,7 @@ name: Quote Summary — Sticky Header (e2e + visual)
 
 on:
   pull_request:
-    branches: [main, master]
+    branches: [main]
     paths:
       - 'src/components/quotes/QuoteBuilderSummaryColumn.tsx'
       - 'src/components/quotes/**'
@@ -14,7 +14,7 @@ on:
       - 'e2e/quotes/quote-summary-action-buttons.spec.ts'
       - '.github/workflows/quote-summary-sticky-header.yml'
   push:
-    branches: [main, master]
+    branches: [main]
     paths:
       - 'src/components/quotes/QuoteBuilderSummaryColumn.tsx'
       - 'src/components/quotes/**'

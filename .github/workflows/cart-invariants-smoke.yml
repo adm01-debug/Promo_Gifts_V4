@@ -22,9 +22,9 @@ name: Cart Invariants Smoke (Chrome + Firefox, sharded)
 
 on:
   pull_request:
-    branches: [main, master, develop]
+    branches: [main]
   push:
-    branches: [main, master, develop]
+    branches: [main]
   workflow_dispatch:
     inputs:
       total_shards:

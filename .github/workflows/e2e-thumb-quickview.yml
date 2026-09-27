@@ -5,9 +5,9 @@ name: E2E • Thumb QuickView (paridade + a11y)
 # = falha o workflow (matrix sem fail-fast desabilitado = comportamento padrão).
 on:
   push:
-    branches: [main, master]
+    branches: [main]
   pull_request:
-    branches: [main, master]
+    branches: [main]
 
 concurrency:
   group: e2e-thumb-quickview-${{ github.ref }}
