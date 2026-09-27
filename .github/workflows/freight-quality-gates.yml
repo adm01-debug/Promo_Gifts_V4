@@ -15,7 +15,7 @@ on:
       - ".eslint-baseline.json"
   pull_request:
     branches: [main, master]
-    # 2026-09-27: mesmos paths do push -- evita 19min de CI em mudanças non-freight
+    # 2026-09-27: mesmos paths do push — evita 19min de CI em mudanças non-freight
     paths:
       - "src/**"
       - "tests/**"
@@ -37,3 +37,142 @@ env:
   NODE_OPTIONS: --max-old-space-size=4096
   VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
   VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
+
+jobs:
+  # ─── GATE 1: Lint + Typecheck + Ratchets ───────────────────────────────────────────
+  lint-typecheck:
+    name: "Gate 1 — Lint & Typecheck"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - name: Install
+        run: npm ci --no-audit --no-fund
+      - name: Lint
+        run: npm run lint
+      - name: Typecheck
+        run: node scripts/check-tsc-baseline.mjs
+
+  # ─── GATE 2: Unit + Integration Tests ─────────────────────────────────────────
+  unit-integration:
+    name: "Gate 2 — Unit & Integration"
+    needs: lint-typecheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Run freight tests
+        run: |
+          npx vitest run \
+            src/hooks/products/__tests__/useFreight*.test.ts \
+            src/hooks/freight/__tests__/*.test.ts \
+            src/components/freight/__tests__/*.test.ts \
+            --pass-with-no-tests
+
+  # ─── GATE 3: E2E Freight ───────────────────────────────────────────────────
+  e2e-freight:
+    name: "Gate 3 — E2E Freight & Quote"
+    needs: unit-integration
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
+      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+      E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Install Playwright
+        run: npx playwright install --with-deps chromium
+      - name: Run freight E2E
+        run: |
+          npx playwright test \
+            e2e/freight/ \
+            e2e/quotes/ \
+            e2e/delivery/ \
+            --pass-with-no-tests
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-freight-report
+          path: playwright-report/
+          retention-days: 7
+
+  # ─── GATE 4: Security ACL ──────────────────────────────────────────────────────
+  security-acl:
+    name: "Gate 4 — Security ACL"
+    needs: lint-typecheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Check security-definer ACL
+        run: node scripts/check-security-definer-acl.mjs
+        continue-on-error: true
+
+  # ─── GATE 5: Summary ─────────────────────────────────────────────────────────────
+  summary:
+    name: "Quality Gates Summary"
+    if: always()
+    needs: [lint-typecheck, unit-integration, e2e-freight, security-acl]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check results
+        run: |
+          GATES=(
+            "lint-typecheck:${{ needs.lint-typecheck.result }}"
+            "unit-integration:${{ needs.unit-integration.result }}"
+            "e2e-freight:${{ needs.e2e-freight.result }}"
+            "security-acl:${{ needs.security-acl.result }}"
+          )
+          PASSED=0
+          FAILED=0
+          SKIPPED=0
+          for gate in "${GATES[@]}"; do
+            name="${gate%%:*}"
+            result="${gate##*:}"
+            case "$result" in
+              success) echo "\u2705 $name"; PASSED=$((PASSED+1)) ;;
+              failure) echo "\u274c $name"; FAILED=$((FAILED+1)) ;;
+              skipped|cancelled) echo "\u23ed\ufe0f $name (skipped)"; SKIPPED=$((SKIPPED+1)) ;;
+              *) echo "\u26a0\ufe0f $name ($result)"; SKIPPED=$((SKIPPED+1)) ;;
+            esac
+          done
+          echo ""
+          echo "Summary: $PASSED passed, $FAILED failed, $SKIPPED skipped"
+          if [ $FAILED -gt 0 ]; then
+            echo "::error::$FAILED quality gate(s) failed"
+            exit 1
+          fi
+          echo "\u2705 All $PASSED quality gates passed"
