@@ -73,3 +73,34 @@ resultado: exit 0
 - E2E autenticado, IA paga, testes de dois usuários, Supabase canônico e publicação Vercel: D8 e autorização operacional específica.
 
 Nenhum DDL, DML, RPC, segredo, Edge Function, deploy ou alteração de cor foi realizado nesta onda.
+
+## Remediação pós-auditoria de 27/09 — sessão e retry
+
+Uma revisão adversarial posterior encontrou quatro falhas que não estavam cobertas pelo primeiro recibo. Esta onda corrige o código da branch, **não** atesta homologação ou produção.
+
+| Simulação | Resultado local | Limite |
+| --- | --- | --- |
+| Kit A → início → Kit B, inclusive navegação para a mesma URL | A página remonta por navegação; autosave e histórico não são reaproveitados. O primeiro snapshot do kit carregado só é capturado após a hidratação. | Ainda falta E2E autenticado com dois kits reais. |
+| Usuário A → usuário B na mesma aba | O editor remonta por identidade da conta, e `custom-kits` usa chave de cache por usuário. O clone de template não semeia cache global. | RLS real e sessão entre duas contas dependem de D8. |
+| RPC de orçamento confirma mas a resposta se perde; autosave cria ID antes do retry | A operação mantém o mesmo request ID, grupo e payload; o recibo de `sessionStorage` guarda apenas digest/IDs, sem nome, e-mail ou corpo do orçamento. Kits salvos diferentes usam recibos distintos. | Hash compacto pode colidir; o servidor deve rejeitar payload distinto. Recibos legados já gravados por versões anteriores podem persistir até o fim da sessão. |
+| Catálogo com 205 IDs e produto com 501 variantes | Consulta de variantes dividida em até 100 IDs por lote, no máximo quatro lotes simultâneos, com paginação completa e falha fechada. | Benchmark com volume/latência reais e catálogo canônico ainda depende de D8. |
+
+Evidência reproduzível nesta branch, antes de integração com `origin/main`:
+
+```text
+npm run typecheck:full -- --pretty false
+exit 0
+
+npx vitest run tests/components/kit-builder tests/components/kit-library \
+  tests/components/pages/KitBuilderPage.test.tsx tests/hooks/useKit \
+  tests/lib/kit tests/lib/buildCustomKitInsert.test.ts tests/pages/kit-builder \
+  tests/audit/kit-maker-plan-review.test.tsx tests/contracts/kit-maker \
+  src/lib/external-db/kit-coverage.test.ts \
+  tests/routes/kit-builder-route-lifetime.test.tsx --maxWorkers=1 --retry=0
+45 arquivos, 317 testes aprovados
+
+npm run build
+exit 0; guardas SSOT, ciclos de chunks e harnesses de produção aprovados
+```
+
+**Bloqueios que permanecem:** D1–D8; corrida de `is_favorite` entre atualização direta e autosave exige contrato transacional/validação de objeto específico no banco; ambiente autenticado e visual real não foram testados. Não elevar etapas do plano a `CONCLUÍDA` com base nesta suíte local.

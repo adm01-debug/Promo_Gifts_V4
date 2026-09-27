@@ -32,6 +32,7 @@ interface RetryableQuoteOperation {
   id: string;
   fingerprint: string;
   kitGroupId: string;
+  sourceKitId: string | null;
 }
 
 class KitQuoteValidationError extends Error {}
@@ -40,8 +41,8 @@ const QUOTE_RETRY_STORAGE_PREFIX = 'kit-maker:quote-retry:';
 
 /**
  * Session-scoped retry receipts survive a refresh after the server commits but
- * before the browser receives the response.  The key contains only a compact
- * deterministic hash, never the quote payload or client details.
+ * before the browser receives the response. Both key and value contain only
+ * a compact hash and operation identifiers, never client/quote details.
  *
  * The database still owns correctness: if a (very unlikely) hash collision
  * selected the wrong request id, create_kit_quote_transactional rejects the
@@ -58,15 +59,16 @@ function fingerprintKey(fingerprint: string): string {
 
 function readRetryReceipt(fingerprint: string): RetryableQuoteOperation | null {
   try {
-    const raw = globalThis.sessionStorage?.getItem(fingerprintKey(fingerprint));
+    const raw = globalThis.sessionStorage?.getItem(fingerprint);
     if (!raw) return null;
     const value = JSON.parse(raw) as Partial<RetryableQuoteOperation>;
     if (
       value.fingerprint === fingerprint &&
       typeof value.id === 'string' &&
-      typeof value.kitGroupId === 'string'
+      typeof value.kitGroupId === 'string' &&
+      (value.sourceKitId === null || typeof value.sourceKitId === 'string')
     ) {
-      return { id: value.id, fingerprint, kitGroupId: value.kitGroupId };
+      return { id: value.id, fingerprint, kitGroupId: value.kitGroupId, sourceKitId: value.sourceKitId };
     }
   } catch {
     // Storage can be disabled by the browser. In-memory retry remains safe.
@@ -77,7 +79,7 @@ function readRetryReceipt(fingerprint: string): RetryableQuoteOperation | null {
 function writeRetryReceipt(operation: RetryableQuoteOperation): void {
   try {
     globalThis.sessionStorage?.setItem(
-      fingerprintKey(operation.fingerprint),
+      operation.fingerprint,
       JSON.stringify(operation),
     );
   } catch {
@@ -87,7 +89,7 @@ function writeRetryReceipt(operation: RetryableQuoteOperation): void {
 
 function clearRetryReceipt(fingerprint: string): void {
   try {
-    globalThis.sessionStorage?.removeItem(fingerprintKey(fingerprint));
+    globalThis.sessionStorage?.removeItem(fingerprint);
   } catch {
     // Best-effort cleanup only; the server checks the full payload hash.
   }
@@ -307,11 +309,40 @@ export function useKitBuilderQuote() {
 
       // Retain the same idempotency key only for an exact retry after a
       // transport error. Editing the kit creates a new semantic operation.
-      const fingerprint = JSON.stringify({ quote: quotePayload, items: quoteItems });
-      const recoverableOperation =
-        retryableRequestRef.current?.fingerprint === fingerprint
+      // Autosave may assign an id between a timed-out call and its retry.
+      // Ignore that late metadata for identity; freeze the original value
+      // in the RPC payload so the server sees the same operation.
+      const semanticFingerprint = fingerprintKey(
+        JSON.stringify({
+          quote: {
+            ...quotePayload,
+            tags: { ...quotePayload.tags, source_custom_kit_id: null },
+          },
+          items: quoteItems,
+        }),
+      );
+      // Saved kits get independent receipt slots even when their commercial
+      // lines happen to be identical. An unsaved slot remains discoverable
+      // after autosave assigns the first source id.
+      const unsavedFingerprint = fingerprintKey(`${semanticFingerprint}:unsaved`);
+      const fingerprint = sourceKitId
+        ? fingerprintKey(`${semanticFingerprint}:kit:${sourceKitId}`)
+        : unsavedFingerprint;
+      const receiptCandidate =
+        retryableRequestRef.current?.fingerprint === fingerprint ||
+        (sourceKitId && retryableRequestRef.current?.fingerprint === unsavedFingerprint)
           ? retryableRequestRef.current
-          : readRetryReceipt(fingerprint);
+          : readRetryReceipt(fingerprint) ??
+            (sourceKitId ? readRetryReceipt(unsavedFingerprint) : null);
+      // A real source-kit change is a new operation. Only an initially absent
+      // id may later become populated by autosave without changing identity.
+      const recoverableOperation =
+        receiptCandidate &&
+        (receiptCandidate.sourceKitId === (sourceKitId ?? null) ||
+          (receiptCandidate.sourceKitId === null &&
+            receiptCandidate.fingerprint === unsavedFingerprint))
+          ? receiptCandidate
+          : null;
 
       // A browser receipt proves only that a request was sent. It does not
       // prove that PostgreSQL committed it. Skip a fresh stock check only when
@@ -348,6 +379,7 @@ export function useKitBuilderQuote() {
         id: newRequestId(),
         fingerprint,
         kitGroupId: newRequestId(),
+        sourceKitId: sourceKitId ?? null,
       };
       retryableRequestRef.current = operation;
       writeRetryReceipt(operation);
@@ -356,13 +388,17 @@ export function useKitBuilderQuote() {
         ...item,
         kit_group_id: operation.kitGroupId,
       }));
+      const requestQuote = {
+        ...quotePayload,
+        tags: { ...quotePayload.tags, source_custom_kit_id: operation.sourceKitId },
+      };
 
       // This RPC wraps the existing transactional writer and records the
       // request id. It makes a timeout/retry return the original quote rather
       // than creating a second commercial document.
       const { data, error: quoteError } = await supabase.rpc('create_kit_quote_transactional', {
         _request_id: operation.id,
-        _quote: quotePayload as unknown as Json,
+        _quote: requestQuote as unknown as Json,
         _items: requestItems as unknown as Json,
       });
       const quote = data;
@@ -371,7 +407,7 @@ export function useKitBuilderQuote() {
       if (!quote?.id) throw new Error('A criação transacional não retornou o orçamento');
 
       retryableRequestRef.current = null;
-      clearRetryReceipt(fingerprint);
+      clearRetryReceipt(operation.fingerprint);
       toast.success(`Orçamento criado com sucesso!`);
       navigate(`/orcamentos/${quote.id}`);
     } catch (err) {

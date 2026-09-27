@@ -253,7 +253,7 @@ export function useKitBuilderPageState() {
   // não gera novo snapshot). Isto liga o undo/redo, que antes era inerte
   // (pushSnapshot nunca era chamado → canUndo sempre false).
   useEffect(() => {
-    if (isRestoring.current) return;
+    if (isHydrating || isRestoring.current) return;
     pushSnapshot({
       name: kitState.name,
       kitType: kitState.kitType,
@@ -279,6 +279,7 @@ export function useKitBuilderPageState() {
     aiBriefing,
     pushSnapshot,
     isRestoring,
+    isHydrating,
   ]);
 
   // undo/redo aplicam o snapshot retornado de volta no estado do kit.

@@ -30,35 +30,52 @@ export interface VariantStock {
 }
 
 const STOCK_PAGE_SIZE = 500;
+// The catalog can contain thousands of products. PostgREST encodes `.in()`
+// in the URL, so an unbounded id list can exceed proxy/browser limits.
+const STOCK_PRODUCT_BATCH_SIZE = 100;
+const STOCK_BATCH_CONCURRENCY = 4;
 
 /** Fetch every active variant for this composition; never treat page one as stock truth. */
 export async function fetchKitStockVariants(productIds: string[]): Promise<VariantStock[]> {
   const uniqueProductIds = [...new Set(productIds)];
   if (uniqueProductIds.length === 0) return [];
+  const batches: string[][] = [];
+  for (let index = 0; index < uniqueProductIds.length; index += STOCK_PRODUCT_BATCH_SIZE) {
+    batches.push(uniqueProductIds.slice(index, index + STOCK_PRODUCT_BATCH_SIZE));
+  }
 
-  const rows: VariantStock[] = [];
-  let offset = 0;
-  let expectedCount: number | null = null;
-
-  do {
-    const page = await dbInvoke<VariantStock>({
-      table: 'product_variants',
-      operation: 'select',
-      select: 'id, product_id, stock_quantity, color_name',
-      filters: { product_id: uniqueProductIds, is_active: true },
-      orderBy: { column: 'product_id', ascending: true },
-      secondaryOrderBy: { column: 'id', ascending: true },
-      limit: STOCK_PAGE_SIZE,
-      offset,
-      countMode: 'exact',
-    });
-    rows.push(...page.records);
-    expectedCount = page.count;
-    offset += page.records.length;
-    if (page.records.length === 0) break;
-  } while (expectedCount === null ? offset % STOCK_PAGE_SIZE === 0 : offset < expectedCount);
-
-  return rows;
+  const results: VariantStock[][] = new Array(batches.length);
+  let nextBatch = 0;
+  await Promise.all(
+    Array.from({ length: Math.min(STOCK_BATCH_CONCURRENCY, batches.length) }, async () => {
+      while (nextBatch < batches.length) {
+        const batchIndex = nextBatch++;
+        const batch = batches[batchIndex];
+        const rows: VariantStock[] = [];
+        let offset = 0;
+        let expectedCount: number | null = null;
+        do {
+          const page = await dbInvoke<VariantStock>({
+            table: 'product_variants',
+            operation: 'select',
+            select: 'id, product_id, stock_quantity, color_name',
+            filters: { product_id: batch, is_active: true },
+            orderBy: { column: 'product_id', ascending: true },
+            secondaryOrderBy: { column: 'id', ascending: true },
+            limit: STOCK_PAGE_SIZE,
+            offset,
+            countMode: 'exact',
+          });
+          rows.push(...page.records);
+          expectedCount = page.count;
+          offset += page.records.length;
+          if (page.records.length === 0) break;
+        } while (expectedCount === null ? offset % STOCK_PAGE_SIZE === 0 : offset < expectedCount);
+        results[batchIndex] = rows;
+      }
+    }),
+  );
+  return results.flat();
 }
 
 export type KitStockStatus = 'available' | 'checking' | 'idle' | 'unavailable' | 'unknown';
