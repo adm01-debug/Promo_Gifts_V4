@@ -153,6 +153,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: [ssot-gate]
+    # Dependabot e forks não têm acesso a secrets live — marca skipped
+    # explicitamente em vez de falhar verde vazio (E59).
+    if: |
+      github.actor != 'dependabot[bot]' &&
+      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
     steps:
       - uses: actions/checkout@v4
       - name: Validate discount approval, grants and trigger races on PG17
@@ -241,6 +246,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 3
     needs: [ssot-gate]
+    # Dependabot e forks não têm acesso a SERVICE_ROLE_KEY — skipa (E59).
+    if: |
+      github.actor != 'dependabot[bot]' &&
+      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -295,10 +304,44 @@ jobs:
       - name: Require every blocking gate to pass
         env:
           GATE_RESULTS: ${{ join(needs.*.result, ',') }}
+          # database-integrity e restore-cart-rpc-gate podem ser skipped em
+          # PRs do Dependabot/fork (sem acesso a secrets live — E59).
+          DB_INTEGRITY: ${{ needs.database-integrity.result }}
+          RESTORE_CART: ${{ needs.restore-cart-rpc-gate.result }}
+          IS_DEPENDABOT: ${{ github.actor == 'dependabot[bot]' }}
         run: |
+          set -euo pipefail
+          FAIL=0
+
+          # Falha em qualquer gate que quebrou ou foi cancelado
           if [[ ",${GATE_RESULTS}," == *,failure,* || \
-                ",${GATE_RESULTS}," == *,cancelled,* || \
-                ",${GATE_RESULTS}," == *,skipped,* ]]; then
+                ",${GATE_RESULTS}," == *,cancelled,* ]]; then
+            echo "Blocking gate result: ${GATE_RESULTS}" >&2
+            FAIL=1
+          fi
+
+          # Skipped é aceito APENAS para os 2 gates live-secrets em PRs
+          # do Dependabot ou fork (E59). Em qualquer outro contexto, skipped é falha.
+          if [[ ",${GATE_RESULTS}," == *,skipped,* ]]; then
+            # Constrói o conjunto de skipped aceitáveis neste contexto
+            ALLOWED_SKIP=0
+            if [[ "$IS_DEPENDABOT" == "true" || "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+              # Para Dependabot e forks: database-integrity e restore-cart-rpc-gate
+              # podem ser skipped (sem secrets). Todos os outros skipped são falha.
+              if [[ "$DB_INTEGRITY" == "skipped" ]]; then ALLOWED_SKIP=$((ALLOWED_SKIP+1)); fi
+              if [[ "$RESTORE_CART" == "skipped" ]]; then ALLOWED_SKIP=$((ALLOWED_SKIP+1)); fi
+            fi
+            # Conta total de skipped
+            TOTAL_SKIP=$(echo "${GATE_RESULTS}" | tr ',' '\n' | grep -c "^skipped$" || true)
+            if [[ "$TOTAL_SKIP" -gt "$ALLOWED_SKIP" ]]; then
+              echo "::error::Gate(s) inesperadamente skipped (${TOTAL_SKIP} skipped, ${ALLOWED_SKIP} permitidos): ${GATE_RESULTS}" >&2
+              FAIL=1
+            elif [[ "$ALLOWED_SKIP" -gt 0 ]]; then
+              echo "::warning::${ALLOWED_SKIP} gate(s) live-secrets skipped (Dependabot/fork sem secrets — E59)"
+            fi
+          fi
+
+          if [[ "$FAIL" -eq 1 ]]; then
             echo "Blocking gate result: ${GATE_RESULTS}" >&2
             exit 1
           fi
