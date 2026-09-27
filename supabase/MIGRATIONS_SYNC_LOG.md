@@ -81,9 +81,9 @@ ledger_hash = sha256(
 )
 ```
 
-Cobre **todas as 598 linhas do snapshot E48** (as 2 linhas adicionadas via E15
-pós-snapshot — `20260922170000` e `20260923114500` — têm evidência E15 individual
-e não integram este hash de referência; ledger atual = 600).
+Cobre **todas as 600 linhas do ledger atual** (snapshot E48 original = 598 linhas,
+hash `8086444739de2607c127a1fedf231f96505c27482d5a18fc5cdbead6a4c85193`; as 2 linhas
+adicionadas via E15 — `20260922170000` e `20260923114500` — estão incluídas neste hash).
 Recalculável com `docs/E48_LEDGER_RECEIPTS_2026-09-16.json` + qualquer
 implementação de SHA-256.
 
@@ -91,7 +91,7 @@ implementação de SHA-256.
 
 | versão | nome | data UTC |
 |---|---|---|
-| `20260923114500` | `quote_rpc_lineage_atomicity` | `2026-09-23 11:45:00 UTC` |
+| `20260923114500` | `quote_rpc_lineage_atomicity` | `2026-09-23 11:56:55 UTC` |
 
 **Nota:** `20260916155725` era a última no backfill original (E48, 2026-09-16) — sem
 arquivo local, provável out-of-band. As 2 linhas acima foram adicionadas no backfill
