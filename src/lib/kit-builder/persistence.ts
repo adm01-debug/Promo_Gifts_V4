@@ -1,6 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
 import type { Database, Json } from '@/integrations/supabase/types';
-import type { KitState } from './types';
+import type { KitAISuggestionBrief, KitBuilderFlow, KitState } from './types';
 
 export type PersistedCustomKit = Database['public']['Tables']['custom_kits']['Row'];
 
@@ -15,6 +15,10 @@ export interface KitDraftClient {
 
 export interface KitDraftContext {
   quoteClient?: KitDraftClient;
+  /** Journey cannot be inferred safely from the current wizard step. */
+  flow?: KitBuilderFlow;
+  /** Structured IA constraints only; never chat history, secrets or credentials. */
+  aiBriefing?: KitAISuggestionBrief;
 }
 
 /**
@@ -43,6 +47,8 @@ export function buildKitPersistencePayload(
       version: 1,
       quoteClient: structuredClone(context.quoteClient ?? {}),
       notes: kitState.notes || '',
+      ...(context.flow ? { flow: context.flow } : {}),
+      ...(context.aiBriefing ? { aiBriefing: structuredClone(context.aiBriefing) } : {}),
     },
   };
 

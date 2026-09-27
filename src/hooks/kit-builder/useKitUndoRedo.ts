@@ -8,7 +8,15 @@
  */
 
 import { useState, useCallback, useRef, useEffect } from 'react';
-import type { KitBox, KitItem, KitType, KitIdentity, KitPersonalization } from '@/lib/kit-builder';
+import type {
+  KitAISuggestionBrief,
+  KitBox,
+  KitBuilderFlow,
+  KitIdentity,
+  KitItem,
+  KitPersonalization,
+  KitType,
+} from '@/lib/kit-builder';
 
 export interface KitSnapshot {
   name: string;
@@ -19,6 +27,8 @@ export interface KitSnapshot {
   kitQuantity: number;
   identity?: KitIdentity;
   notes?: string;
+  flow?: KitBuilderFlow;
+  aiBriefing?: KitAISuggestionBrief;
 }
 
 const MAX_HISTORY = 30;

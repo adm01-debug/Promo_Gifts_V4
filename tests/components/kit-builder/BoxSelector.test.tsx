@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '../../test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { BoxSelector } from '@/components/kit-builder/BoxSelector';
 import type { BoxFilters, KitBox, KitItem } from '@/lib/kit-builder';
 
@@ -48,6 +48,56 @@ function renderSelector(boxes: KitBox[], kitItems: KitItem[] = []) {
 }
 
 describe('BoxSelector', () => {
+  beforeEach(() => {
+    window.localStorage.clear();
+  });
+
+  it('restaura a preferência de lista de caixas depois de remontar', () => {
+    const props = {
+      boxes: [box()],
+      selectedBox: null,
+      kitItems: [] as KitItem[],
+      isLoading: false,
+      filters,
+      onFiltersChange: vi.fn(),
+      onSelect: vi.fn(),
+      onClear: vi.fn(),
+    };
+    const first = render(<BoxSelector {...props} />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Ver em lista' }));
+    first.unmount();
+    render(<BoxSelector {...props} />);
+
+    expect(screen.getByRole('button', { name: 'Ver em lista' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+  });
+
+  it('keeps the commercial exit visible when no catalog box is available', () => {
+    renderSelector([], [item()]);
+    expect(screen.getByRole('button', { name: /falar com o comercial/i })).toBeInTheDocument();
+  });
+
+  it('explains an invalid dimension range instead of looking like an empty result', () => {
+    render(
+      <BoxSelector
+        boxes={[box()]}
+        selectedBox={null}
+        kitItems={[]}
+        isLoading={false}
+        filters={{ minWidth: 30, maxWidth: 10 }}
+        onFiltersChange={vi.fn()}
+        onSelect={vi.fn()}
+        onClear={vi.fn()}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'SlidersHorizontal' }));
+    expect(screen.getByRole('alert')).toHaveTextContent(/mínimo não pode ser maior/i);
+  });
+
   it('shows a compatibility explanation and selects a verified compatible box through an explicit action', () => {
     const compatible = box();
     const onSelect = renderSelector([compatible], [item()]);

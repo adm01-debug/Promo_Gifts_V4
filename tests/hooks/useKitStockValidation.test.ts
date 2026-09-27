@@ -1,6 +1,63 @@
-import { describe, expect, it } from 'vitest';
-import { evaluateKitStock, resolveKitStockStatus } from '@/hooks/kit-builder/useKitStockValidation';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { dbInvoke } from '@/lib/db/postgrest';
+import {
+  evaluateKitStock,
+  fetchKitStockVariants,
+  resolveKitStockStatus,
+} from '@/hooks/kit-builder/useKitStockValidation';
 import type { KitItem } from '@/lib/kit-builder';
+
+vi.mock('@/lib/db/postgrest', () => ({ dbInvoke: vi.fn() }));
+beforeEach(() => vi.clearAllMocks());
+
+describe('fetchKitStockVariants', () => {
+  it('divide um catálogo grande em lotes limitados sem repetir produtos', async () => {
+    const ids = Array.from({ length: 205 }, (_, index) => `product-${index}`);
+    vi.mocked(dbInvoke).mockImplementation(async (request) => ({
+      records: (request.filters?.product_id as string[]).map((id) => ({
+        id: `variant-${id}`,
+        product_id: id,
+        stock_quantity: 1,
+        color_name: null,
+      })),
+      count: (request.filters?.product_id as string[]).length,
+    }));
+
+    const variants = await fetchKitStockVariants([...ids, ids[0]]);
+    expect(variants).toHaveLength(205);
+    const requests = vi.mocked(dbInvoke).mock.calls.map(([request]) => request);
+    expect(requests).toHaveLength(3);
+    expect(requests.map((request) => (request.filters?.product_id as string[]).length)).toEqual([
+      100, 100, 5,
+    ]);
+    expect(requests.every((request) => request.countMode === 'exact')).toBe(true);
+  });
+
+  it('pagina todas as variantes de um lote antes de validar estoque', async () => {
+    const records = Array.from({ length: 500 }, (_, index) => ({
+      id: `variant-${index}`,
+      product_id: 'product-1',
+      stock_quantity: 1,
+      color_name: null,
+    }));
+    vi.mocked(dbInvoke)
+      .mockResolvedValueOnce({ records, count: 501 })
+      .mockResolvedValueOnce({
+        records: [{ id: 'variant-500', product_id: 'product-1', stock_quantity: 1, color_name: null }],
+        count: 501,
+      });
+
+    expect(await fetchKitStockVariants(['product-1'])).toHaveLength(501);
+    expect(vi.mocked(dbInvoke).mock.calls.map(([request]) => request.offset)).toEqual([0, 500]);
+  });
+
+  it('falha fechado se qualquer lote de estoque falhar', async () => {
+    vi.mocked(dbInvoke).mockRejectedValue(new Error('PostgREST indisponível'));
+    await expect(
+      fetchKitStockVariants(Array.from({ length: 101 }, (_, index) => `product-${index}`)),
+    ).rejects.toThrow('PostgREST indisponível');
+  });
+});
 
 const selectedItem: KitItem = {
   id: 'product-1',

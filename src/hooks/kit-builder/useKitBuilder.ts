@@ -557,6 +557,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
       kitQuantity: number;
       identity?: KitIdentity;
       notes?: string;
+      flow?: KitBuilderFlow;
     }) => {
       setKitName(data.name);
       setKitType(data.kitType);
@@ -590,6 +591,9 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
           isFavorite: data.identity.isFavorite ?? false,
         });
       }
+      if (data.flow === 'box-first' || data.flow === 'items-first') {
+        setFlow(data.flow);
+      }
       setPersonalizationReviewed(true);
       setCurrentStep('summary');
     },
@@ -611,6 +615,7 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
     );
     setNotes(snap.notes || '');
     if (snap.identity) setIdentity(snap.identity);
+    if (snap.flow === 'box-first' || snap.flow === 'items-first') setFlow(snap.flow);
   }, []);
 
   const applyAIComposition = useCallback(
@@ -678,10 +683,22 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
       items = items.filter((item) => item.price <= (itemFilters.maxPrice ?? Infinity));
     }
 
-    if (itemFilters.sort === 'price-asc') items = [...items].sort((a, b) => a.price - b.price);
-    if (itemFilters.sort === 'price-desc') items = [...items].sort((a, b) => b.price - a.price);
+    if (itemFilters.sort === 'price-asc') {
+      items = [...items].sort(
+        (a, b) =>
+          a.price - b.price || a.name.localeCompare(b.name, 'pt-BR') || a.id.localeCompare(b.id),
+      );
+    }
+    if (itemFilters.sort === 'price-desc') {
+      items = [...items].sort(
+        (a, b) =>
+          b.price - a.price || a.name.localeCompare(b.name, 'pt-BR') || a.id.localeCompare(b.id),
+      );
+    }
     if (itemFilters.sort === 'name')
-      items = [...items].sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
+      items = [...items].sort(
+        (a, b) => a.name.localeCompare(b.name, 'pt-BR') || a.id.localeCompare(b.id),
+      );
 
     return items;
   }, [itemsWithCompatibility, itemFilters]);
