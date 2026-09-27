@@ -28,7 +28,7 @@ name: capacity-growth-report
 
 on:
   schedule:
-    - cron: '0 9 * * 1' # semanal, segunda 09:00 UTC (06:00 BRT) — 1h depois do ddl-out-of-band-detector
+    - cron: '16 9 * * 1' # semanal, segunda 09:00 UTC (06:00 BRT) — 1h depois do ddl-out-of-band-detector
   workflow_dispatch:
 
 permissions:

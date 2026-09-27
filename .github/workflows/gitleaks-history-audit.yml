@@ -8,7 +8,7 @@ name: Gitleaks — Full History Audit
 
 on:
   schedule:
-    - cron: '0 6 * * *'      # diario as 06h UTC (03h BRT)
+    - cron: '44 6 * * *'      # diario as 06h UTC (03h BRT)
   workflow_dispatch:           # botao "Run workflow" no GitHub UI
   push:
     branches: [main]           # tambem audita a cada merge em main
