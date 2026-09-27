@@ -20,7 +20,7 @@ name: edge-functions-drift-check
 
 on:
   schedule:
-    - cron: '0 9 * * *'   # 06:00 BRT
+    - cron: '6 9 * * *'   # 06:00 BRT
   pull_request:
     paths:
       - 'supabase/functions/**'

@@ -26,7 +26,7 @@ on:
       - '.github/workflows/e2e-pdf-print-cross-browser.yml'
   workflow_dispatch:
   schedule:
-    - cron: '23 4 * * 1'  # E10 — weekly Monday 04:23 UTC
+    - cron: '44 4 * * 1'  # E10 — weekly Monday 04:23 UTC
 
 permissions:
   contents: read

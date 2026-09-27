@@ -21,7 +21,7 @@ name: SECURITY DEFINER ACL — Multi-Env
 
 on:
   schedule:
-    - cron: "0 9 * * *"
+    - cron: "46 9 * * *"
   workflow_dispatch:
     inputs:
       environment:
