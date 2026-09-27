@@ -124,7 +124,20 @@ jobs:
           echo "sha256=$(sha256sum "${{ steps.locate.outputs.file }}" | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
           echo "applied_at=$(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_OUTPUT"
 
-      - name: Aplica a migration (psql -1, transação única)
+      - name: Detecta opt-out de transação no cabeçalho
+        id: tx_optout
+        run: |
+          # Espelha a lógica de parseOptOut() em scripts/preflight-migration-apply.mjs:
+          # se o cabeçalho declara "-- transaction: none", a migration não pode rodar
+          # dentro de uma transação implícita (-1). O preflight já validou que
+          # "-- approved-by:" também está presente quando transaction:none está.
+          if head -40 "${{ steps.locate.outputs.file }}" | grep -qi '^[[:space:]]*--[[:space:]]*transaction[[:space:]]*:[[:space:]]*none'; then
+            echo "no_tx=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "no_tx=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Aplica a migration (psql; omite -1 se transaction:none declarado)
         env:
           PGHOST: ${{ secrets.PGHOST }}
           PGUSER: ${{ secrets.PGUSER }}
@@ -133,7 +146,15 @@ jobs:
           PGPORT: ${{ secrets.PGPORT || '5432' }}
           PGSSLMODE: require
           PGCONNECT_TIMEOUT: '15'
-        run: psql -X -w -1 -v ON_ERROR_STOP=1 -f "${{ steps.locate.outputs.file }}"
+        run: |
+          if [ "${{ steps.tx_optout.outputs.no_tx }}" = "true" ]; then
+            # transaction: none declarado — sem -1 para permitir operações não-transacionais
+            # (CONCURRENTLY, ALTER TYPE ADD VALUE, etc.) aprovadas no preflight.
+            psql -X -w -v ON_ERROR_STOP=1 -f "${{ steps.locate.outputs.file }}"
+          else
+            # Migração transacional padrão — -1 garante rollback atômico em caso de erro.
+            psql -X -w -1 -v ON_ERROR_STOP=1 -f "${{ steps.locate.outputs.file }}"
+          fi
 
       - name: Setup Supabase CLI
         uses: supabase/setup-cli@v2

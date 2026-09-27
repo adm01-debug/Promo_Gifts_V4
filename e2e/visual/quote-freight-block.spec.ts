@@ -1,5 +1,5 @@
 /**
- * Visual regression do bloco Frete no QuoteBuilderPage.
+ * Visual regression do bloco Frete — QuoteFreightBlockHarness.
  *
  * Snapshots vivem em ./quote-freight-block.spec.ts-snapshots/
  * (Playwright cria/atualiza com --update-snapshots).
@@ -9,9 +9,15 @@
  *  - shippingType fob (repassado): grid com 1 coluna, sem Valor R$
  *  - shippingType fob_pre: grid com 2 colunas (trigger + Valor R$)
  *  - viewports: mobile (375), md (900) e xl (1280) — validam quebra responsiva
+ *
+ * Usa `/__visual/quote-freight-block` (harness público, sem auth).
+ * Não usa `/orcamentos/novo` — essa rota requer login (ProtectedRoute)
+ * e seria redirecionada para o login no projeto chromium-public.
  */
 import { test, expect } from '@playwright/test';
 import { gotoAndSettle } from '../helpers/nav';
+
+const HARNESS_ROUTE = '/__visual/quote-freight-block';
 
 const VIEWPORTS = [
   { name: 'mobile', width: 375, height: 812 },
@@ -31,7 +37,7 @@ test.describe('QuoteBuilder — bloco Frete (visual regression)', () => {
         page,
       }) => {
         await page.setViewportSize({ width: vp.width, height: vp.height });
-        await gotoAndSettle(page, '/orcamentos/novo');
+        await gotoAndSettle(page, HARNESS_ROUTE);
 
         const trigger = page.getByTestId('shipping-type-select');
         await expect(trigger).toBeVisible({ timeout: 15_000 });
@@ -62,7 +68,7 @@ test.describe('QuoteBuilder — bloco Frete (visual regression)', () => {
       page,
     }) => {
       await page.setViewportSize({ width: vp.width, height: vp.height });
-      await gotoAndSettle(page, '/orcamentos/novo');
+      await gotoAndSettle(page, HARNESS_ROUTE);
 
       const trigger = page.getByTestId('shipping-type-select');
       await expect(trigger).toBeVisible({ timeout: 15_000 });
