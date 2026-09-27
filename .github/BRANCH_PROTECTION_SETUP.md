@@ -34,12 +34,10 @@ Vá em: <https://github.com/adm01-debug/promo-gifts-v4/settings/branches>
 | ✅ **Restrict deletions** | ON | Impede `git push --delete origin main` |
 | ✅ **Block force pushes** | ON | Impede `git push --force` que reescreve histórico |
 | ✅ **Require a pull request before merging** | ON | A prevenção principal — força PR |
-| └─ Required approvals | `0` (solo) ou `1` (com revisor) | Para solo dev, deixar 0 já basta — o ato de abrir PR já é o controle |
+| └─ Required approvals | `1` | Previne merge imediato após push do Lovable (self-approve bloqueado via `require_last_push_approval`) |
 | └─ Dismiss stale approvals when new commits are pushed | ON | Boa prática |
 | ✅ **Require status checks to pass** | ON | Garante que CI roda antes do merge |
-| └─ Adicione: `Verify push to main matches accepted patterns` | | (nome do job do sentinel) |
-| └─ Adicione: `Verify Branch Protection is enabled on main` | | (job paralelo do sentinel) |
-| └─ Adicione: `Schema Drift Gate` *(se existir)* | | Drift do plano de redeploy |
+| └─ Adicione: `Gate Final - Deploy Ready` | | Único required check — agrega todos os gates de PR em `deploy-gates.yml` |
 | ⚪ Require signed commits | OFF (opcional) | Só se você assina com GPG/SSH |
 | ⚪ Require linear history | ON (opcional) | Força squash/rebase, proíbe merge commit |
 
@@ -47,14 +45,11 @@ Vá em: <https://github.com/adm01-debug/promo-gifts-v4/settings/branches>
 
 Em **Bypass list**, clique em `Add bypass` e adicione:
 
-- **adm01-debug** com modo `For pull requests` (mais conservador) ou `Always` (mais flexível)
+- **adm01-debug** com modo `For pull requests` (não `Always`)
 
-> **Recomendação:** comece com `Always` para o owner enquanto o repo é pequeno
-> e solo. Se entrarem colaboradores, mude para `For pull requests` ou remova
-> totalmente — aí o owner vira só mais um dev que abre PR.
->
-> Toda vez que o bypass é usado, o GitHub registra no log de auditoria:
-> `Settings → Audit log`. Rastreável.
+> **`Always` permite push direto em `main`** — use `For pull requests` para
+> que o bypass só se aplique ao merge, não ao push. Emergências usam o botão
+> "Bypass" explícito na UI do PR (auditável em `Settings → Audit log`).
 
 ### 6. Salve
 
@@ -129,7 +124,7 @@ aplica seu próprio conjunto de checks a uma ou mais branches:
   em runtime via `GET /repos/{repo}/branches`.
 - O mesmo check pode aparecer em vários rulesets — a validação deduplica.
 
-O job `check-required-checks-ssot` do Sentinel:
+O `required-checks-guard.yml` (gate E56):
 1. **Falha o CI** se algum `name`/`workflow` declarado no SSOT não bater com um
    job real (drift estrutural).
 2. **Avisa (não bloqueia)** quando o Branch Protection de qualquer branch
