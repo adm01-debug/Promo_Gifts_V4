@@ -1,19 +1,23 @@
 name: Setup Node CI
 description: >
-  Composite action: checkout + setup-node (com cache npm) + npm ci.
+  Composite action: checkout + setup-node (npm) + lockfile check + npm ci.
   Cobre os 3 primeiros steps de ~90% dos workflows deste repo.
 
 inputs:
   fetch-depth:
-    description: Profundidade do fetch (0 = histórico completo)
+    description: Profundidade do fetch (0 = historico completo)
     required: false
     default: '1'
-  node-cache:
-    description: Gerenciador de pacotes para cache (npm|yarn|bun)
+  persist-credentials:
+    description: Manter credenciais do GITHUB_TOKEN para workflows que fazem push
     required: false
-    default: 'npm'
+    default: 'true'
+  ignore-scripts:
+    description: Passar --ignore-scripts ao npm ci
+    required: false
+    default: 'false'
   working-directory:
-    description: Diretório onde rodar npm ci
+    description: Diretorio onde rodar npm ci
     required: false
     default: '.'
 
@@ -23,14 +27,23 @@ runs:
     - uses: actions/checkout@v4
       with:
         fetch-depth: ${{ inputs.fetch-depth }}
-        persist-credentials: false
+        persist-credentials: ${{ inputs.persist-credentials }}
 
     - uses: actions/setup-node@v4
       with:
         node-version-file: '.nvmrc'
-        cache: ${{ inputs.node-cache }}
+        cache: 'npm'
+
+    - name: Check lockfile sync
+      shell: sh
+      run: node scripts/check-lockfile-sync.mjs
 
     - name: Install dependencies
-      shell: bash
+      shell: sh
       working-directory: ${{ inputs.working-directory }}
-      run: npm ci
+      run: |
+        if [ "${{ inputs.ignore-scripts }}" = "true" ]; then
+          npm ci --no-audit --no-fund --ignore-scripts
+        else
+          npm ci --no-audit --no-fund
+        fi
