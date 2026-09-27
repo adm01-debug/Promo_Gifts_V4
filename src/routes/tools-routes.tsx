@@ -1,5 +1,6 @@
-import { Navigate, Route } from 'react-router-dom';
+import { Navigate, Route, useLocation } from 'react-router-dom';
 import { DevRoute } from '@/components/layout/DevRoute';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   AdvancedPriceSearchPage,
   BusinessIntelligencePage,
@@ -25,6 +26,15 @@ import {
   PromoFlixPlayground,
 } from './lazy-pages';
 
+function KitBuilderRoute() {
+  const location = useLocation();
+  const { user } = useAuth();
+  // Each navigation starts a distinct editor lifetime. In particular,
+  // ?kit=A -> /montar-kit -> ?kit=B must not reuse A's autosave id/history.
+  // An account switch on the same URL must not keep the previous user's draft.
+  return <KitBuilderPage key={`${user?.id ?? 'anonymous'}:${location.key}`} />;
+}
+
 /**
  * Tools routes — simulador, mockup, BI, magic-up, kit builder, dropbox,
  * advanced search and stock.
@@ -41,7 +51,7 @@ export const toolsRoutes = (
     <Route path="/simulador-precos" element={<PriceSimulatorPage />} />
     <Route path="/estoque" element={<StockDashboardPage />} />
     <Route path="/busca-preco" element={<AdvancedPriceSearchPage />} />
-    <Route path="/montar-kit" element={<KitBuilderPage />} />
+    <Route path="/montar-kit" element={<KitBuilderRoute />} />
     <Route path="/kit-builder" element={<Navigate to="/montar-kit" replace />} />
     <Route path="/meus-kits" element={<MeusKitsPage />} />
     <Route path="/mockup" element={<Navigate to="/mockup-generator" replace />} />

@@ -60,12 +60,40 @@ describe('Kit Maker persistence snapshot', () => {
   });
 
   it('persists the kit notes under the draft namespace so templates never inherit them', () => {
-    const payload = buildKitPersistencePayload('user-1', { ...validKit, notes: 'Entregar rápido' }, 10);
+    const payload = buildKitPersistencePayload(
+      'user-1',
+      { ...validKit, notes: 'Entregar rápido' },
+      10,
+    );
 
     expect(payload.personalization_data).toEqual(
       expect.objectContaining({
         __draft: expect.objectContaining({ notes: 'Entregar rápido' }),
       }),
     );
+  });
+
+  it('persists journey and structured IA briefing without changing the JSONB schema', () => {
+    const payload = buildKitPersistencePayload('user-1', validKit, 10, {
+      flow: 'items-first',
+      aiBriefing: {
+        kit_type: 'montado',
+        box_keywords: ['kraft'],
+        item_keywords: ['onboarding'],
+        target_price_brl: { min: 80, max: 150 },
+        narrative: 'Boas-vindas',
+      },
+    });
+
+    expect(payload.personalization_data).toMatchObject({
+      __draft: {
+        version: 1,
+        flow: 'items-first',
+        aiBriefing: {
+          kit_type: 'montado',
+          target_price_brl: { min: 80, max: 150 },
+        },
+      },
+    });
   });
 });

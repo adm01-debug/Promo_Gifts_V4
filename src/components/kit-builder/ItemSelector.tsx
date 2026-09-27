@@ -17,6 +17,7 @@ import {
 import { SelectedItemsBadges } from './SelectedItemsBadges';
 import { ItemCard } from './ItemCard';
 import { KitSmartSuggestions } from './KitSmartSuggestions';
+import { shouldVirtualizeKitItems, VirtualizedKitItemList } from './VirtualizedKitItemList';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ItemCardSkeleton } from './KitCardSkeleton';
@@ -59,6 +60,8 @@ interface ItemWithCompatibility extends KitItem {
 
 interface ItemSelectorProps {
   items: ItemWithCompatibility[];
+  /** Stable, unfiltered catalog used to keep facet options/counts visible. */
+  catalogItems?: KitItem[];
   selectedItems: KitItem[];
   isLoading: boolean;
   filters: ItemFilters;
@@ -85,6 +88,7 @@ interface ItemSelectorProps {
 
 export function ItemSelector({
   items,
+  catalogItems,
   selectedItems,
   isLoading,
   filters,
@@ -107,7 +111,22 @@ export function ItemSelector({
 }: ItemSelectorProps) {
   const [searchValue, setSearchValue] = useState('');
   const [lastError, setLastError] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>(() => {
+    if (typeof window === 'undefined') return 'grid';
+    try {
+      return window.localStorage.getItem('kit-maker-items-view') === 'list' ? 'list' : 'grid';
+    } catch {
+      return 'grid';
+    }
+  });
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem('kit-maker-items-view', viewMode);
+    } catch {
+      // Storage may be denied in privacy contexts; the current session still works.
+    }
+  }, [viewMode]);
 
   useEffect(() => {
     setSearchValue(filters.search || '');
@@ -127,23 +146,44 @@ export function ItemSelector({
   };
 
   // Extract unique categories for filter
-  const categories = useMemo(() => {
-    const cats = new Set<string>();
-    items.forEach((i) => {
-      if (i.category) cats.add(i.category);
+  const facetSource = catalogItems ?? items;
+  const categoryCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    facetSource.forEach((item) => {
+      if (item.category) counts.set(item.category, (counts.get(item.category) ?? 0) + 1);
     });
-    return Array.from(cats).sort();
-  }, [items]);
+    return counts;
+  }, [facetSource]);
+  const categories = useMemo(
+    () => Array.from(categoryCounts.keys()).sort((a, b) => a.localeCompare(b, 'pt-BR')),
+    [categoryCounts],
+  );
   const materials = useMemo(
     () =>
-      Array.from(new Set(items.map((item) => item.material).filter(Boolean) as string[])).sort(),
-    [items],
+      Array.from(
+        new Set(facetSource.map((item) => item.material).filter(Boolean) as string[]),
+      ).sort(),
+    [facetSource],
   );
 
   const sortedItems = useMemo(
     () => ((filters.sort ?? 'relevance') === 'relevance' ? sortItemsByRelevance(items) : items),
     [items, filters.sort],
   );
+  const useVirtualizedList = shouldVirtualizeKitItems(sortedItems.length);
+  const hasActiveFilters = Boolean(
+    filters.search ||
+    filters.category ||
+    filters.material ||
+    filters.minPrice !== undefined ||
+    filters.maxPrice !== undefined ||
+    filters.maxVolume !== undefined ||
+    filters.onlyFitting,
+  );
+
+  const clearFilters = () => {
+    onFiltersChange({ sort: filters.sort });
+  };
 
   const selectedItemsByProductId = new Map<string, KitItem>();
   selectedItems.forEach((item) => {
@@ -248,22 +288,28 @@ export function ItemSelector({
             role="group"
             aria-label="Categorias"
           >
-            <Badge
+            <Button
+              type="button"
               variant={!filters.category ? 'default' : 'outline'}
-              className="cursor-pointer whitespace-nowrap px-3 py-1.5 text-xs font-medium"
+              size="sm"
+              className="h-auto whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium"
+              aria-pressed={!filters.category}
               onClick={() => onFiltersChange({ ...filters, category: undefined })}
             >
-              Todos
-            </Badge>
+              Todos <span className="ml-1 opacity-80">({facetSource.length})</span>
+            </Button>
             {categories.map((cat) => (
-              <Badge
+              <Button
                 key={cat}
+                type="button"
                 variant={filters.category === cat ? 'default' : 'outline'}
-                className="cursor-pointer whitespace-nowrap px-3 py-1.5 text-xs font-medium"
+                size="sm"
+                className="h-auto whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium"
+                aria-pressed={filters.category === cat}
                 onClick={() => onFiltersChange({ ...filters, category: cat })}
               >
-                {cat}
-              </Badge>
+                {cat} <span className="ml-1 opacity-80">({categoryCounts.get(cat) ?? 0})</span>
+              </Button>
             ))}
           </div>
 
@@ -337,6 +383,11 @@ export function ItemSelector({
             <span className="ml-auto text-xs text-muted-foreground">
               {items.length} de {totalCount ?? items.length} produtos
             </span>
+            {hasActiveFilters && (
+              <Button type="button" variant="ghost" size="sm" onClick={clearFilters}>
+                Limpar filtros
+              </Button>
+            )}
           </div>
 
           <KitSmartSuggestions
@@ -372,6 +423,22 @@ export function ItemSelector({
                 <Package className="mx-auto mb-3 h-12 w-12 text-muted-foreground" />
                 <p className="text-muted-foreground">Nenhum item encontrado</p>
               </div>
+            ) : useVirtualizedList ? (
+              <VirtualizedKitItemList
+                items={sortedItems}
+                view={viewMode}
+                renderItem={(item) => (
+                  <ItemCard
+                    item={item}
+                    view={viewMode}
+                    isSelected={selectedItemsByProductId.has(item.id)}
+                    selectedItem={selectedItemsByProductId.get(item.id)}
+                    boxSelected={boxSelected}
+                    onAdd={handleAddItem}
+                    onRemove={(selected) => onRemoveItem(getKitItemLineId(selected))}
+                  />
+                )}
+              />
             ) : viewMode === 'grid' ? (
               <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
                 {sortedItems.map((item) => (

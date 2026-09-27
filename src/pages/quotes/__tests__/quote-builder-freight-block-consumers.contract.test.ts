@@ -1,8 +1,9 @@
 /**
  * Cross-check de gaps: garante que os data-testid do bloco Frete
  * (`shipping-type-select`, `shipping-cost-input`, `freight-grid`)
- * são exclusivos do QuoteBuilderPage. Qualquer outro consumidor
- * ficaria acoplado à estrutura interna e quebraria em silêncio.
+ * são exclusivos do QuoteBuilderPage e do harness visual DEV-only.
+ * Qualquer outro consumidor ficaria acoplado à estrutura interna e
+ * quebraria em silêncio.
  *
  * Se um dia surgir um consumidor legítimo, atualize este contrato
  * incluindo-o na allowlist e adicione o teste espelho correspondente.
@@ -13,7 +14,8 @@ import { execSync } from 'node:child_process';
 const TESTIDS = ['shipping-type-select', 'shipping-cost-input', 'freight-grid'];
 const ALLOWLIST = new Set([
   'src/pages/quotes/QuoteBuilderPage.tsx',
-  'src/pages/__visual/QuoteFreightBlockHarness.tsx', // harness de regressão visual E2E
+  // Espelhado pelo e2e/visual/quote-freight-block.spec.ts; rota só em DEV.
+  'src/pages/__visual/QuoteFreightBlockHarness.tsx',
 ]);
 
 function grepInProd(testid: string): string[] {

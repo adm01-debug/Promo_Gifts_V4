@@ -104,12 +104,10 @@ export function useKitTemplates() {
         const withoutDuplicate = (current ?? []).filter((kit) => kit.id !== created.id);
         return [created as unknown as CustomKitRow, ...withoutDuplicate];
       };
-      // Navigation happens immediately after mutateAsync resolves. Seed both
-      // consumers synchronously so hydration cannot observe an empty cache and
-      // permanently mark the new kit as already hydrated.
-      queryClient.setQueryData<CustomKitRow[]>(['custom-kits'], seed);
+      // Navigation happens immediately after mutateAsync resolves. Seed only
+      // this user's cache; a global key could expose the kit to another login.
       queryClient.setQueryData<CustomKitRow[]>(['custom-kits', user?.id], seed);
-      queryClient.invalidateQueries({ queryKey: ['custom-kits'] });
+      queryClient.invalidateQueries({ queryKey: ['custom-kits', user?.id] });
       toast.success('Template clonado para os seus kits!');
     },
     onError: (err: Error) => toast.error('Erro ao clonar', { description: sanitizeError(err) }),

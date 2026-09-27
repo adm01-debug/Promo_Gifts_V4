@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '../../test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ItemSelector } from '@/components/kit-builder/ItemSelector';
 import type { KitItem } from '@/lib/kit-builder';
 
@@ -47,6 +47,8 @@ function baseProps(overrides: Partial<React.ComponentProps<typeof ItemSelector>>
 }
 
 describe('ItemSelector parity', () => {
+  beforeEach(() => localStorage.clear());
+
   it('renders category chips instead of a select', () => {
     render(<ItemSelector {...baseProps()} />);
     expect(screen.getByRole('group', { name: /categorias/i })).toBeInTheDocument();
@@ -72,11 +74,44 @@ describe('ItemSelector parity', () => {
     expect(listButton).toHaveAttribute('aria-pressed', 'true');
   });
 
+  it('keeps the selected view after the selector remounts', () => {
+    const first = render(<ItemSelector {...baseProps()} />);
+    fireEvent.click(screen.getByRole('button', { name: /ver em lista/i }));
+    first.unmount();
+
+    render(<ItemSelector {...baseProps()} />);
+    expect(screen.getByRole('button', { name: /ver em lista/i })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+  });
+
+  it('renders keyboard-operable category controls with real counts', () => {
+    render(<ItemSelector {...baseProps()} />);
+    expect(screen.getByRole('button', { name: /todos \(2\)/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /escritório \(1\)/i })).toBeInTheDocument();
+  });
+
+  it('clears catalogue filters without clearing the selected kit composition', () => {
+    const onFiltersChange = vi.fn();
+    render(
+      <ItemSelector
+        {...baseProps({
+          selectedItems: [ITEM_A],
+          filters: { category: 'Escritório', minPrice: 20, sort: 'price-asc' },
+          onFiltersChange,
+        })}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Limpar filtros' }));
+    expect(onFiltersChange).toHaveBeenCalledWith({ sort: 'price-asc' });
+    expect(screen.getAllByText('Caderno')).not.toHaveLength(0);
+  });
+
   it('calls onClearAll after confirming the destructive dialog', () => {
     const onClearAll = vi.fn();
-    render(
-      <ItemSelector {...baseProps({ selectedItems: [ITEM_A], onClearAll })} />,
-    );
+    render(<ItemSelector {...baseProps({ selectedItems: [ITEM_A], onClearAll })} />);
     fireEvent.click(screen.getByRole('button', { name: /limpar tudo/i }));
     fireEvent.click(screen.getByRole('button', { name: 'Limpar tudo' }));
     expect(onClearAll).toHaveBeenCalled();
@@ -84,9 +119,7 @@ describe('ItemSelector parity', () => {
 
   it('disables the next-step CTA when canProceed is false', () => {
     render(
-      <ItemSelector
-        {...baseProps({ flow: 'items-first', onNext: vi.fn(), canProceed: false })}
-      />,
+      <ItemSelector {...baseProps({ flow: 'items-first', onNext: vi.fn(), canProceed: false })} />,
     );
     expect(screen.getByRole('button', { name: /ver caixas compatíveis/i })).toBeDisabled();
   });
@@ -96,5 +129,20 @@ describe('ItemSelector parity', () => {
     expect(
       screen.getByText(/estimativa de ocupação — calculada após a escolha da caixa/i),
     ).toBeInTheDocument();
+  });
+
+  it('uses the virtualized catalogue surface only for a large result set', () => {
+    const manyItems = Array.from({ length: 49 }, (_, index) => ({
+      ...ITEM_A,
+      id: `p-${index}`,
+      name: `Produto ${index}`,
+      sku: `SKU-${index}`,
+    }));
+    render(<ItemSelector {...baseProps({ items: manyItems })} />);
+
+    expect(
+      screen.getByRole('list', { name: /resultados do catálogo — 49 produtos/i }),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Produto 0')).toBeInTheDocument();
   });
 });

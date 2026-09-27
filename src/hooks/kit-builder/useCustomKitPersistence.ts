@@ -3,7 +3,7 @@
  * CRUD para a tabela custom_kits (banco local)
  */
 
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -48,8 +48,6 @@ export interface CustomKitRow {
   updated_at: string;
 }
 
-const QUERY_KEY = ['custom-kits'] as const;
-
 // ============================================
 // HOOK
 // ============================================
@@ -57,10 +55,13 @@ const QUERY_KEY = ['custom-kits'] as const;
 export function useCustomKitPersistence() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  // RLS protects the server, but a shared React Query cache must also be
+  // partitioned by account when users switch without a full page reload.
+  const queryKey = useMemo(() => ['custom-kits', user?.id] as const, [user?.id]);
 
   // Lista os kits do usuário
   const { data: savedKits = [], isLoading: isLoadingKits } = useQuery({
-    queryKey: QUERY_KEY,
+    queryKey,
     queryFn: async () => {
       if (!user?.id) return [];
       const { data, error } = await supabase
@@ -100,7 +101,7 @@ export function useCustomKitPersistence() {
       return persistCustomKitAtomically({ kitId, expectedRevision, payload, requestId });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey });
       toast.success('Kit salvo com sucesso!');
     },
     onError: (err: Error) => {
@@ -120,7 +121,7 @@ export function useCustomKitPersistence() {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey });
       toast.success('Kit removido');
     },
     onError: (err: Error) => {
@@ -166,9 +167,9 @@ export function useCustomKitPersistence() {
         logger.warn('[kit-persistence] bumpLastUsed failed (non-fatal):', bumpErr);
         return;
       }
-      queryClient.invalidateQueries({ queryKey: QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey });
     },
-    [user?.id, queryClient],
+    [user?.id, queryClient, queryKey],
   );
 
   /** Fixa/desfixa kit em destaque (apenas 1 por usuário). */
@@ -184,13 +185,13 @@ export function useCustomKitPersistence() {
           _is_pinned: value,
         });
         if (pinErr) throw new Error(pinErr.message || 'Não foi possível alterar o destaque');
-        queryClient.invalidateQueries({ queryKey: QUERY_KEY });
+        queryClient.invalidateQueries({ queryKey });
         toast.success(value ? 'Kit fixado em destaque' : 'Kit desafixado');
       } catch (err) {
         toast.error('Erro ao alterar destaque', { description: sanitizeError(err) });
       }
     },
-    [user?.id, queryClient],
+    [user?.id, queryClient, queryKey],
   );
 
   return {

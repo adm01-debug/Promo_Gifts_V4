@@ -56,6 +56,8 @@ import { BoxComparisonDialog } from './BoxComparisonDialog';
 type BoxSortMode = 'occupancy' | 'price' | 'score';
 type BoxViewMode = 'grid' | 'list';
 
+const BOX_VIEW_PREFERENCE_KEY = 'kit-maker-boxes-view';
+
 interface BoxSelectorProps {
   boxes: KitBox[];
   /**
@@ -101,8 +103,23 @@ export function BoxSelector({
   const [focusedBoxId, setFocusedBoxId] = useState<string | null>(null);
   const [comparisonIds, setComparisonIds] = useState<string[]>([]);
   const [comparisonOpen, setComparisonOpen] = useState(false);
-  const [viewMode, setViewMode] = useState<BoxViewMode>('grid');
+  const [viewMode, setViewMode] = useState<BoxViewMode>(() => {
+    if (typeof window === 'undefined') return 'grid';
+    try {
+      return window.localStorage.getItem(BOX_VIEW_PREFERENCE_KEY) === 'list' ? 'list' : 'grid';
+    } catch {
+      return 'grid';
+    }
+  });
   const [sortMode, setSortMode] = useState<BoxSortMode>('score');
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(BOX_VIEW_PREFERENCE_KEY, viewMode);
+    } catch {
+      // Storage may be denied in privacy contexts; the current session still works.
+    }
+  }, [viewMode]);
 
   // Filters can be applied by the AI assist or restored from a saved journey.
   // Keep the visible field aligned with that external state instead of showing
@@ -156,20 +173,22 @@ export function BoxSelector({
     onFiltersChange({ ...filters, material: next.length > 0 ? next : undefined });
   };
 
+  const stableBoxCatalog = allBoxes ?? boxes;
+
   const boxTypes = useMemo(
     () =>
-      Array.from(new Set(materialFilteredBoxes.map((box) => box.boxType).filter(Boolean))).sort(
-        (a, b) => a!.localeCompare(b!),
+      Array.from(new Set(stableBoxCatalog.map((box) => box.boxType).filter(Boolean))).sort((a, b) =>
+        a!.localeCompare(b!),
       ) as string[],
-    [materialFilteredBoxes],
+    [stableBoxCatalog],
   );
 
   const finishes = useMemo(
     () =>
-      Array.from(new Set(materialFilteredBoxes.map((box) => box.finish).filter(Boolean))).sort(
-        (a, b) => a!.localeCompare(b!),
+      Array.from(new Set(stableBoxCatalog.map((box) => box.finish).filter(Boolean))).sort((a, b) =>
+        a!.localeCompare(b!),
       ) as string[],
-    [materialFilteredBoxes],
+    [stableBoxCatalog],
   );
 
   // Dimension ranges for sliders
@@ -207,10 +226,10 @@ export function BoxSelector({
 
   const boxTypeChips = useMemo(
     () =>
-      Array.from(new Set(recommendations.map((r) => r.box.boxType).filter(Boolean))).sort((a, b) =>
+      Array.from(new Set(stableBoxCatalog.map((box) => box.boxType).filter(Boolean))).sort((a, b) =>
         a!.localeCompare(b!, 'pt-BR'),
       ) as string[],
-    [recommendations],
+    [stableBoxCatalog],
   );
 
   const kitItemsVolume = useMemo(() => calculateTotalItemsVolume(kitItems), [kitItems]);
@@ -233,7 +252,7 @@ export function BoxSelector({
     return reasons.slice(0, 3);
   }, [bestRecommendation, compatibleRecommendations]);
   const hasNoCompatibleBox =
-    kitItems.length > 0 && recommendations.length > 0 && compatibleRecommendations.length === 0;
+    kitItems.length > 0 && (recommendations.length === 0 || compatibleRecommendations.length === 0);
 
   const focusedRecommendation =
     sortedRecommendations.find((recommendation) => recommendation.box.id === focusedBoxId) ??
@@ -244,6 +263,10 @@ export function BoxSelector({
     .filter((recommendation): recommendation is (typeof recommendations)[number] =>
       Boolean(recommendation),
     );
+  const comparisonWinnerId = recommendations.find(
+    (recommendation) =>
+      comparisonIds.includes(recommendation.box.id) && recommendation.status === 'compatible',
+  )?.box.id;
 
   useEffect(() => {
     const validIds = new Set(recommendations.map((recommendation) => recommendation.box.id));
@@ -274,6 +297,28 @@ export function BoxSelector({
     filters.boxType ||
     filters.finish
   );
+  const invalidRangeLabels = [
+    filters.minWidth !== undefined &&
+    filters.maxWidth !== undefined &&
+    filters.minWidth > filters.maxWidth
+      ? 'largura'
+      : null,
+    filters.minHeight !== undefined &&
+    filters.maxHeight !== undefined &&
+    filters.minHeight > filters.maxHeight
+      ? 'altura'
+      : null,
+    filters.minDepth !== undefined &&
+    filters.maxDepth !== undefined &&
+    filters.minDepth > filters.maxDepth
+      ? 'profundidade'
+      : null,
+    filters.minPrice !== undefined &&
+    filters.maxPrice !== undefined &&
+    filters.minPrice > filters.maxPrice
+      ? 'preço'
+      : null,
+  ].filter((label): label is string => Boolean(label));
 
   const activeFilterCount = [
     filters.minWidth,
@@ -415,22 +460,28 @@ export function BoxSelector({
           role="group"
           aria-label="Tipos de embalagem"
         >
-          <Badge
+          <Button
+            type="button"
             variant={!filters.boxType ? 'default' : 'outline'}
-            className="cursor-pointer whitespace-nowrap px-3 py-1.5 text-xs font-medium"
+            size="sm"
+            className="h-auto whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium"
+            aria-pressed={!filters.boxType}
             onClick={() => onFiltersChange({ ...filters, boxType: undefined })}
           >
             Todas
-          </Badge>
+          </Button>
           {boxTypeChips.map((type) => (
-            <Badge
+            <Button
               key={type}
+              type="button"
               variant={filters.boxType === type ? 'default' : 'outline'}
-              className="cursor-pointer whitespace-nowrap px-3 py-1.5 text-xs font-medium"
+              size="sm"
+              className="h-auto whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium"
+              aria-pressed={filters.boxType === type}
               onClick={() => onFiltersChange({ ...filters, boxType: type })}
             >
               {type}
-            </Badge>
+            </Button>
           ))}
         </div>
       )}
@@ -475,7 +526,9 @@ export function BoxSelector({
       {hasNoCompatibleBox && (
         <div className="flex flex-col items-start gap-2 rounded-lg border border-warning/30 bg-warning/10 p-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm">
-            Nenhuma caixa atende? Ajuste as quantidades do kit ou fale com o time comercial.
+            {recommendations.length === 0
+              ? 'Nenhuma caixa está disponível com os filtros atuais. Ajuste os filtros, reveja os itens ou fale com o time comercial.'
+              : 'Nenhuma caixa atende à composição atual. Ajuste as quantidades do kit ou fale com o time comercial.'}
           </p>
           <Button
             variant="outline"
@@ -510,6 +563,16 @@ export function BoxSelector({
                   </Button>
                 )}
               </div>
+
+              {invalidRangeLabels.length > 0 && (
+                <p
+                  role="alert"
+                  className="rounded-md border border-warning/30 bg-warning/10 p-2 text-xs text-warning"
+                >
+                  Revise {invalidRangeLabels.join(', ')}: o valor mínimo não pode ser maior que o
+                  máximo. Essas faixas não estão sendo aplicadas até a correção.
+                </p>
+              )}
 
               {/* Dimension ranges. The minimum is sufficient for most kit
                   calculations; the upper bound keeps large packaging out of
@@ -1199,6 +1262,7 @@ export function BoxSelector({
         open={comparisonOpen}
         onOpenChange={setComparisonOpen}
         recommendations={comparedRecommendations}
+        recommendedBoxId={comparisonWinnerId}
         onSelect={onSelect}
       />
     </div>

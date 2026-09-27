@@ -372,6 +372,72 @@ describe('useKitBuilderQuote — payloads', () => {
     expect(validateKitStockForQuote).toHaveBeenCalledTimes(2);
   });
 
+  it('não duplica a operação quando o autosave cria o kit entre timeout e retry', async () => {
+    const useHook = await loadHook({ user: { id: USER_ID } });
+    const rpc = vi.mocked(mock.client.rpc);
+    rpc
+      .mockResolvedValueOnce({ data: null, error: { message: 'Resposta perdida após commit' } })
+      .mockResolvedValueOnce({ data: { id: 'quote-retomado' }, error: null });
+    const { result } = renderHook(() => useHook());
+
+    await act(async () => {
+      await result.current.handleAddToQuote(KIT_STATE, 2);
+    });
+    await act(async () => {
+      await result.current.handleAddToQuote(KIT_STATE, 2, {}, 'kit-criado-pelo-autosave');
+    });
+
+    const calls = rpc.mock.calls.filter(([fn]) => fn === 'create_kit_quote_transactional');
+    expect(calls).toHaveLength(2);
+    expect(calls[1][1]?._request_id).toBe(calls[0][1]?._request_id);
+    expect(calls[1][1]?._items).toEqual(calls[0][1]?._items);
+    expect(calls[1][1]?._quote).toEqual(calls[0][1]?._quote);
+  });
+
+  it('não grava nome, e-mail ou payload do orçamento no recibo de retry', async () => {
+    const useHook = await loadHook({ user: { id: USER_ID } });
+    vi.mocked(mock.client.rpc).mockResolvedValueOnce({
+      data: null,
+      error: { message: 'Resposta perdida após commit' },
+    });
+    const { result } = renderHook(() => useHook());
+    await act(async () => {
+      await result.current.handleAddToQuote(KIT_STATE, 2, {
+        client_name: 'Nome Sensivel',
+        client_email: 'segredo@empresa.test',
+      });
+    });
+
+    const receipts = Object.keys(window.sessionStorage).map((key) => [
+      key,
+      window.sessionStorage.getItem(key),
+    ]);
+    expect(receipts).toHaveLength(1);
+    expect(JSON.stringify(receipts)).not.toContain('Nome Sensivel');
+    expect(JSON.stringify(receipts)).not.toContain('segredo@empresa.test');
+    expect(JSON.stringify(receipts)).not.toContain('Kit teste');
+    expect(JSON.stringify(receipts)).not.toContain('client_email');
+  });
+
+  it('não reutiliza a operação de outro kit salvo com composição igual', async () => {
+    const useHook = await loadHook({ user: { id: USER_ID } });
+    const rpc = vi.mocked(mock.client.rpc);
+    rpc
+      .mockResolvedValueOnce({ data: null, error: { message: 'Timeout' } })
+      .mockResolvedValueOnce({ data: { id: 'quote-B' }, error: null });
+    const { result } = renderHook(() => useHook());
+    await act(async () => {
+      await result.current.handleAddToQuote(KIT_STATE, 2, {}, 'kit-A');
+    });
+    await act(async () => {
+      await result.current.handleAddToQuote(KIT_STATE, 2, {}, 'kit-B');
+    });
+    const calls = rpc.mock.calls.filter(([fn]) => fn === 'create_kit_quote_transactional');
+    expect(calls[1][1]?._request_id).not.toBe(calls[0][1]?._request_id);
+    expect((calls[1][1]?._quote as { tags: { source_custom_kit_id: string } }).tags.source_custom_kit_id)
+      .toBe('kit-B');
+  });
+
   it('pula a revalidação apenas quando o ledger confirma o commit perdido', async () => {
     const useHook = await loadHook({
       user: { id: USER_ID },

@@ -117,6 +117,34 @@ function applySort<
   return arr;
 }
 
+/** The library is "Meus kits", even for coordinators whose RLS can read more. */
+export async function fetchOwnKits(userId: string): Promise<CustomKitRow[]> {
+  if (!userId) throw new Error('Não autenticado');
+  const { data, error } = await supabase
+    .from('custom_kits')
+    .select('*')
+    .eq('user_id', userId)
+    .order('updated_at', { ascending: false });
+  if (error) throw error;
+  return (data || []) as unknown as CustomKitRow[];
+}
+
+export async function deleteOwnKit(userId: string, id: string): Promise<void> {
+  if (!userId) throw new Error('Não autenticado');
+  const { error } = await supabase.from('custom_kits').delete().eq('id', id).eq('user_id', userId);
+  if (error) throw error;
+}
+
+export async function setOwnKitFavorite(userId: string, id: string, value: boolean): Promise<void> {
+  if (!userId) throw new Error('Não autenticado');
+  const { error } = await supabase
+    .from('custom_kits')
+    .update({ is_favorite: value } as never)
+    .eq('id', id)
+    .eq('user_id', userId);
+  if (error) throw error;
+}
+
 export default function KitLibraryPage() {
   const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
@@ -141,15 +169,7 @@ export default function KitLibraryPage() {
     refetch: refetchMine,
   } = useQuery({
     queryKey: ['custom-kits', user?.id],
-    queryFn: async () => {
-      if (!user?.id) return [];
-      const { data, error } = await supabase
-        .from('custom_kits')
-        .select('*')
-        .order('updated_at', { ascending: false });
-      if (error) throw error;
-      return (data || []) as unknown as CustomKitRow[];
-    },
+    queryFn: () => fetchOwnKits(user?.id ?? ''),
     enabled: !!user?.id,
   });
 
@@ -167,11 +187,10 @@ export default function KitLibraryPage() {
   // Mutations
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from('custom_kits').delete().eq('id', id);
-      if (error) throw error;
+      await deleteOwnKit(user?.id ?? '', id);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['custom-kits'] });
+      queryClient.invalidateQueries({ queryKey: ['custom-kits', user?.id] });
       toast.success('Kit excluído');
       setDeleteId(null);
     },
@@ -180,13 +199,9 @@ export default function KitLibraryPage() {
 
   const favoriteMutation = useMutation({
     mutationFn: async ({ id, value }: { id: string; value: boolean }) => {
-      const { error } = await supabase
-        .from('custom_kits')
-        .update({ is_favorite: value } as never)
-        .eq('id', id);
-      if (error) throw error;
+      await setOwnKitFavorite(user?.id ?? '', id, value);
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['custom-kits'] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['custom-kits', user?.id] }),
     onError: () => toast.error('Erro ao atualizar favorito'),
   });
 
@@ -204,7 +219,7 @@ export default function KitLibraryPage() {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['custom-kits'] });
+      queryClient.invalidateQueries({ queryKey: ['custom-kits', user?.id] });
       toast.success('Kit duplicado');
     },
     onError: () => toast.error('Erro ao duplicar'),

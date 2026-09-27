@@ -200,6 +200,7 @@ export default function KitBuilderPage() {
                         onUpdateVariant={actions.updateItemVariant}
                         onReorder={actions.reorderItems}
                         items={state.availableItems}
+                        catalogItems={state.allAvailableItems}
                         isLoading={state.isLoadingItems}
                         errorMessage={state.itemError}
                         onRetry={() => {

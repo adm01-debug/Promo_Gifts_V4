@@ -209,4 +209,24 @@ describe('useKitBuilder — fluxos de montagem', () => {
     expect(result.current.kitQuantity).toBe(50);
     expect(result.current.kitState.items).toHaveLength(1);
   });
+
+  it('restaura o fluxo persistido sem inferi-lo do passo de revisão', async () => {
+    const { useKitBuilder } = await import('@/hooks/kit-builder/useKitBuilder');
+    const { result } = renderHook(() => useKitBuilder({ initialFlow: 'box-first' }));
+
+    act(() => {
+      result.current.loadKit({
+        name: 'Rascunho iniciado pelos itens',
+        kitType: 'montado',
+        box,
+        items: [item],
+        personalization: { box: { enabled: false }, items: {} },
+        kitQuantity: 1,
+        flow: 'items-first',
+      });
+    });
+
+    expect(result.current.wizardState.currentStep).toBe('summary');
+    expect(result.current.wizardState.flow).toBe('items-first');
+  });
 });
