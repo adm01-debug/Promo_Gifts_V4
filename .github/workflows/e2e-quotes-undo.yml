@@ -86,7 +86,7 @@ jobs:
       - uses: actions/setup-node@v4
         if: steps.creds.outputs.has_creds == 'true'
         with:
-          node-version: '22.22.1'
+          node-version-file: '.nvmrc'
           cache: npm
 
       - name: Install deps
@@ -160,7 +160,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '22.22.1'
+          node-version-file: '.nvmrc'
           cache: npm
 
       - name: Install deps

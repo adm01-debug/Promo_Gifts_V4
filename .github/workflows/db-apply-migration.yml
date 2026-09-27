@@ -67,7 +67,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '22.22.1'
+          node-version-file: '.nvmrc'
 
       - name: Checa arquivo único, rollback documentado, ainda não no ledger
         run: node scripts/preflight-migration-apply.mjs --version="$MIGRATION_VERSION" --require-live
@@ -186,7 +186,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '22.22.1'
+          node-version-file: '.nvmrc'
 
       - name: Confirma version no ledger após a aplicação
         run: node scripts/preflight-migration-apply.mjs --version="$MIGRATION_VERSION" --require-live --expect-applied
@@ -208,7 +208,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '22.22.1'
+          node-version-file: '.nvmrc'
 
       - name: Monta o recibo em MIGRATIONS_SYNC_LOG.md
         run: |
