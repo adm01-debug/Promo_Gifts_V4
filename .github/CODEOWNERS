@@ -36,6 +36,8 @@ scripts/                                        @adm01-debug
 .tsc-ratchet-baseline                          @adm01-debug
 bundle-size-baseline.json                      @adm01-debug
 docs/TYPES_INVENTORY_REMOVAL_ALLOWLIST.json    @adm01-debug
+.a11y/                                         @adm01-debug
+.security/                                     @adm01-debug
 
 # ============================================================
 # Inventário de segredos (E98) — SSOT de secrets.* e vars.*
