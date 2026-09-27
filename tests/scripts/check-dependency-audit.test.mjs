@@ -81,9 +81,7 @@ describe('dependency audit policy', () => {
     delete report.vulnerabilities.pptxgenjs;
     const result = evaluateAuditReport(report, new Date('2026-09-09T12:00:00Z'));
     expect(result.passed).toBe(false);
-    expect(result.violations).toContain(
-      'temporary acceptance must contain exactly image-size and pptxgenjs',
-    );
+    expect(result.violations).toContain('image-size and pptxgenjs must be accepted as a pair');
   });
 
   it.each([
@@ -134,8 +132,45 @@ describe('dependency audit policy', () => {
     const result = evaluateAuditReport(reviewedReport, afterDeadline);
     expect(result.passed).toBe(false);
     expect(result.violations).toContain(
-      `temporary image-size acceptance expired at ${RISK_REVIEW_DEADLINE}`,
+      `temporary acceptance expired at ${RISK_REVIEW_DEADLINE}`,
     );
+  });
+
+  it('accepts the full @lhci/cli transitive chain as dev-only', () => {
+    const lhciReport = {
+      vulnerabilities: {
+        '@lhci/cli': { severity: 'moderate', isDirect: true, via: ['tmp'], effects: [] },
+        tmp: { severity: 'high', isDirect: false, via: [], effects: ['@lhci/cli'] },
+        lighthouse: { severity: 'high', isDirect: false, via: [], effects: ['@lhci/cli'] },
+      },
+    };
+    const result = evaluateAuditReport(lhciReport, new Date('2026-09-09T12:00:00Z'));
+    expect(result.passed).toBe(true);
+    expect(result.accepted).toEqual(expect.arrayContaining(['@lhci/cli', 'tmp', 'lighthouse']));
+    expect(result.violations).toEqual([]);
+  });
+
+  it('rejects an @lhci/cli transitive that became a direct dependency', () => {
+    const report = {
+      vulnerabilities: {
+        ws: { severity: 'high', isDirect: true, via: [], effects: [] },
+      },
+    };
+    const result = evaluateAuditReport(report, new Date('2026-09-09T12:00:00Z'));
+    expect(result.passed).toBe(false);
+    expect(result.violations).toContain('ws: unexpected high advisory');
+  });
+
+  it('rejects an @lhci/cli-named package that is marked direct (topology shift)', () => {
+    // @lhci/utils must be transitive; if somehow isDirect flips, we reject.
+    const report = {
+      vulnerabilities: {
+        '@lhci/utils': { severity: 'low', isDirect: true, via: [], effects: [] },
+      },
+    };
+    const result = evaluateAuditReport(report, new Date('2026-09-09T12:00:00Z'));
+    expect(result.passed).toBe(false);
+    expect(result.violations).toContain('@lhci/utils: unexpected low advisory');
   });
 
   it('passes without an exception when the audit is clean', () => {
