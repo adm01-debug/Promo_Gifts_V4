@@ -16,6 +16,8 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    # G-H3: fork guard — pull_request de forks não deve escrever no repo
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     # T14 UPDATE 4: precisa contents:write para o auto-debug commit do
     # diagnóstico em docs/redeploy/T14-AUTO-DEBUG.md via gh api.
     permissions:
