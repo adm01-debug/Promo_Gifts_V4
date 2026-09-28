@@ -33,9 +33,7 @@ export function useMagazineEditor(id: string | undefined) {
   const [brandingErrors, setBrandingErrors] = useState<string[]>([]);
   const [recovery, setRecovery] = useState<MagazineEditorRecovery | null>(null);
   const session = useRef<EditorPersistence | null>(null);
-  const recoveryWriterId = useRef(
-    `tab-${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`,
-  );
+  const recoveryWriterId = useRef(`tab-${globalThis.crypto.randomUUID()}`);
 
   useEffect(() => {
     let active = true;
