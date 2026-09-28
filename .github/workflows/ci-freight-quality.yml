@@ -103,7 +103,6 @@ jobs:
     name: E2E Freight Flow
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -121,7 +120,6 @@ jobs:
           E2E_EMAIL: ${{ secrets.E2E_EMAIL }}
           E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
           PLAYWRIGHT_BASE_URL: ${{ vars.PLAYWRIGHT_BASE_URL || 'http://localhost:5173' }}
-        continue-on-error: true
       - name: Upload Playwright report on failure
         if: failure()
         uses: actions/upload-artifact@v4

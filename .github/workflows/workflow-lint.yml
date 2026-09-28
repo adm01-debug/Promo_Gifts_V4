@@ -40,20 +40,19 @@ jobs:
         uses: rhysd/actionlint@v1.7.7
         with:
           # shellcheck is run automatically by actionlint for run: blocks.
-          # Pre-existing style codes suppressed here; fix them in E25:
-          #   SC2006 — backtick notation (replace with $(...))
-          #   SC2016 — single-quoted expressions (may be intentional)
-          #   SC2034 — unused variable
-          #   SC2038 — find -print0 | xargs
-          #   SC2086 — unquoted variables
-          #   SC2129 — individual >> redirects (use { ... } >> file)
-          ignore: |
-            SC2006
-            SC2016
-            SC2034
-            SC2038
-            SC2086
-            SC2129
+          # Pre-existing style/info codes suppressed here; fix them in E25:
+          #   SC2006  — backtick notation (replace with $(...))
+          #   SC2016  — single-quoted expressions (may be intentional)
+          #   SC2034  — unused variable
+          #   SC2038  — find -print0 | xargs
+          #   SC2086  — unquoted variables
+          #   SC2129  — individual >> redirects (use { ... } >> file)
+          #   SC2188  — redirect without command (detect-base64-content.yml)
+          #   SC2215  — flag used as command name (codeql.yml)
+          # NOTE: use `args:` — `ignore:` is not a valid input for this action
+          # (valid inputs are only `entryPoint` and `args`). The -ignore flag
+          # takes a regex matched against the full error message.
+          args: '-ignore "SC2006|SC2016|SC2034|SC2038|SC2086|SC2129|SC2188|SC2215"'
 
   workflow-contracts:
     name: Workflow contract checks (C1–C8)

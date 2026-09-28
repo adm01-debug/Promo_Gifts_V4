@@ -24,6 +24,7 @@ concurrency:
 permissions:
   contents: write
   issues: write
+  pull-requests: write
 
 jobs:
   autoheal:
@@ -136,40 +137,49 @@ jobs:
             exit 1
           fi
 
-      - name: Commitar correções ESLint
+      - name: Commitar correções ESLint e abrir PR
         if: |
           steps.check_changes.outputs.has_fixes == 'true' &&
           steps.tsc_check.outputs.tsc_ok == 'true'
         env:
           TRIGGER_MESSAGE: ${{ github.event.head_commit.message }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config user.email "adm01@promobrindes.com.br"
-          git config user.name "adm01-debug"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+
+          TRIGGER_SHA="${{ github.sha }}"
+          TRIGGER_MSG=$(printf '%s\n' "$TRIGGER_MESSAGE" | head -1 | cut -c1-80)
+          BRANCH="autoheal/fix-${TRIGGER_SHA:0:7}"
+          git checkout -b "$BRANCH"
           git add -- src/ tests/ e2e/
 
           FILES_FIXED=$(git diff --cached --name-only | tr '\n' ', ' | sed 's/,$//')
-          TRIGGER_SHA="${{ github.sha }}"
-          TRIGGER_MSG=$(printf '%s\n' "$TRIGGER_MESSAGE" | head -1 | cut -c1-80)
 
-          git commit -m "fix(autoheal): ESLint --fix automático [autoheal] [skip ci]
+          git commit -m "fix(autoheal): ESLint --fix automático [autoheal]
 
           Disparado por: ${TRIGGER_SHA:0:7} — ${TRIGGER_MSG}
           Arquivos: ${FILES_FIXED}
           Regras: unused-imports/no-unused-imports, consistent-type-imports, prefer-const
           TSC: ✅ passou após o fix"
 
-          MAX_RETRIES=3
-          for i in $(seq 1 $MAX_RETRIES); do
-            if git push; then
-              echo "✅ Push OK (tentativa $i)."; break
-            fi
-            if [ $i -lt $MAX_RETRIES ]; then
-              echo "⚠️ Push falhou (tentativa $i) — rebase e retry..."
-              git pull --rebase origin main
-            else
-              echo "❌ Push falhou após $MAX_RETRIES tentativas."; exit 1
-            fi
-          done
+          git push origin "$BRANCH"
+
+          PR_BODY="## Autoheal ESLint
+
+          Correções automáticas aplicadas após commit do Lovable.
+
+          **Commit original:** \`${TRIGGER_SHA:0:7}\` — ${TRIGGER_MSG}
+          **Arquivos:** ${FILES_FIXED}
+          **Regras:** unused-imports/no-unused-imports, consistent-type-imports, prefer-const
+          **TSC:** ✅ passou"
+
+          gh pr create \
+            --base main \
+            --head "$BRANCH" \
+            --title "fix(autoheal): ESLint --fix em ${TRIGGER_SHA:0:7}" \
+            --body "$PR_BODY" \
+            --label "autoheal" || echo "⚠️ PR já existe — ver logs"
 
       - name: Criar issue (TSC falhou após fix)
         if: |
@@ -219,7 +229,7 @@ jobs:
           {
             echo "## 🤖 Lovable Autoheal"
             echo ""
-            echo "**Commit:** `${{ github.sha }}`"
+            echo "**Commit:** ${{ github.sha }}"
             TS="${{ steps.changed_files.outputs.has_ts_files }}"
             FIX="${{ steps.check_changes.outputs.has_fixes }}"
             TSC="${{ steps.tsc_check.outputs.tsc_ok }}"

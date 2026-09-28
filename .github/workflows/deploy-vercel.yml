@@ -24,6 +24,7 @@ concurrency:
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
 
 jobs:
   check-secrets:
@@ -73,17 +74,16 @@ jobs:
         run: npm install --global vercel@59.5.0
 
       - name: Pull Vercel environment (production)
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel pull --yes --environment=production
 
       - name: Build (production)
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel build --prod
 
       # Captura o deploy de produção atual ANTES de subir o novo, para rollback
       - name: Snapshot current production deploy
         id: prev
         run: |
           PREV=$(vercel list --environment production --status READY --limit 1 --json \
-            --token=${{ secrets.VERCEL_TOKEN }} \
             | jq -r '.deployments[0].url // empty | if length > 0 then "https://" + . else "" end')
           echo "url=${PREV:-}" >> "$GITHUB_OUTPUT"
           echo "Previous prod: ${PREV:-<none>}"
@@ -93,8 +93,7 @@ jobs:
         run: |
           URL=$(vercel deploy --prebuilt --prod --yes \
             --env "APP_COMMIT_SHA=${{ github.sha }}" \
-            --meta "githubCommitSha=${{ github.sha }}" \
-            --token=${{ secrets.VERCEL_TOKEN }})
+            --meta "githubCommitSha=${{ github.sha }}")
           echo "url=$URL" >> "$GITHUB_OUTPUT"
           echo "🚀 Production: $URL" >> "$GITHUB_STEP_SUMMARY"
 
@@ -179,7 +178,7 @@ jobs:
           PREV="${{ steps.prev.outputs.url }}"
           REQ_ID="gh-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-${GITHUB_SHA:0:7}"
           echo "↩️  Rolling back to: $PREV (correlationId=$REQ_ID)"
-          vercel rollback "$PREV" --yes --token=${{ secrets.VERCEL_TOKEN }}
+          vercel rollback "$PREV" --yes
           {
             echo "## ⚠️ Rollback executado"
             echo ""

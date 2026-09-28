@@ -90,7 +90,6 @@ jobs:
           set +e
           TZ=America/Sao_Paulo npx vitest run src/components/pdf 2>&1 | tee pdf-tests.log
           echo "exit_code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
-        continue-on-error: true
 
       # No workflow_dispatch, precisamos só gerar HTMLs — export test basta.
       - name: Render HTML samples (workflow_dispatch)

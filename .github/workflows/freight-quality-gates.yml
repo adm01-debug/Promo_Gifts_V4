@@ -75,7 +75,6 @@ jobs:
 
       - name: Lint (strict — zero warnings)
         run: npm run qa:lint
-        continue-on-error: true
 
   # ─── GATE 2: Testes unitários (freight-quest) ──────────────────────────────
   unit-tests-freight:
@@ -255,7 +254,6 @@ jobs:
         env:
           CI: true
           CI_SKIP_FREIGHT_E2E: ${{ secrets.VITE_SUPABASE_URL == '' && '1' || '0' }}
-        continue-on-error: true
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
