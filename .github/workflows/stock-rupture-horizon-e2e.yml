@@ -69,7 +69,6 @@ jobs:
             --workers=${PW_WORKERS} \
             --reporter=list,html,json 2>&1 | tee playwright-output.log
           echo "exit=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
-        continue-on-error: true
 
       - name: Upload Playwright report
         if: always()
