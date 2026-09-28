@@ -253,7 +253,7 @@ jobs:
             --reporter=github,html
         env:
           CI: true
-          CI_SKIP_FREIGHT_E2E: ${{ secrets.VITE_SUPABASE_URL == '' && '1' || '0' }}
+          CI_SKIP_FREIGHT_E2E: ${{ vars.CI_SKIP_FREIGHT_E2E || (secrets.VITE_SUPABASE_URL == '' && '1' || '0') }}
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
