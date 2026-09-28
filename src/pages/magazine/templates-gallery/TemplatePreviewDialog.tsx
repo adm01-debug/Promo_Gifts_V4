@@ -155,6 +155,15 @@ function TemplatePreviewDialogImpl({
       <DialogContent
         className="pg-module flex h-[calc(100vh-48px)] w-[min(1500px,calc(100vw-64px))] max-w-none flex-col gap-0 overflow-hidden rounded-2xl border-border bg-popover p-0 shadow-xl"
         onKeyDown={(e) => {
+          const target = e.target as HTMLElement;
+          if (
+            e.altKey ||
+            e.ctrlKey ||
+            e.metaKey ||
+            target.closest('button, input, select, textarea, [role="menu"], [role="slider"]')
+          ) {
+            return;
+          }
           if (e.key === 'ArrowLeft') goPrev();
           if (e.key === 'ArrowRight') goNext();
         }}
@@ -223,7 +232,11 @@ function TemplatePreviewDialogImpl({
 
         {/* Body: metadata | canvas */}
         <div className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[340px_minmax(0,1fr)]">
-          <aside className="min-h-0 overflow-y-auto border-b border-border p-6 lg:border-b-0 lg:border-r">
+          <aside
+            className="min-h-0 overflow-y-auto border-b border-border p-6 lg:border-b-0 lg:border-r"
+            tabIndex={0}
+            aria-label="Detalhes do template"
+          >
             <h3 className="text-[15px] font-semibold text-foreground">Sobre o template</h3>
             <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground">
               {entry.description}
@@ -327,7 +340,11 @@ function TemplatePreviewDialogImpl({
             <section className="mt-5" aria-label="Paleta de cores">
               <h4 className="text-[14px] font-semibold text-foreground">Paleta de cores</h4>
               <div className="mt-2.5 flex items-center gap-3">
-                <div className="flex items-center gap-1.5">
+                <div
+                  className="flex items-center gap-1.5"
+                  role="img"
+                  aria-label={`Paleta: primária ${entry.defaultColors.primary}, secundária ${entry.defaultColors.secondary}, texto ${entry.defaultColors.text}`}
+                >
                   {(['primary', 'secondary', 'text'] as const).map((k) => (
                     <span
                       key={k}
@@ -474,12 +491,16 @@ function TemplatePreviewDialogImpl({
 
             {/* Dots */}
             {pages.length > 1 && pages.length <= 16 && (
-              <div className="flex shrink-0 items-center justify-center gap-1.5 py-2.5" aria-hidden>
+              <div
+                className="flex shrink-0 items-center justify-center gap-1.5 py-2.5"
+                aria-label="Selecionar página da prévia"
+              >
                 {pages.map((_, i) => (
                   <button
                     key={i}
                     type="button"
-                    tabIndex={-1}
+                    aria-label={`Ir para página ${i + 1}`}
+                    aria-current={i === pageIdx ? 'page' : undefined}
                     onClick={() => setPageIdx(i)}
                     className={cn(
                       'h-2 rounded-full transition-all duration-150',

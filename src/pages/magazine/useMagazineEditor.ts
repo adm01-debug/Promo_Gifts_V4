@@ -15,6 +15,12 @@ import type { Product } from '@/types/product-catalog';
 import { validateBranding } from '@/lib/security/magazine-guard';
 import { EditorPersistence, type EditorPatch } from './editorPersistence';
 import { isMagazinePageOrderV2 } from './pagination';
+import {
+  clearMagazineEditorRecovery,
+  readMagazineEditorRecovery,
+  writeMagazineEditorRecovery,
+  type MagazineEditorRecovery,
+} from './editorRecovery';
 
 export function useMagazineEditor(id: string | undefined) {
   const { user } = useAuth();
@@ -25,10 +31,15 @@ export function useMagazineEditor(id: string | undefined) {
   const [saveError, setSaveError] = useState<string | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [brandingErrors, setBrandingErrors] = useState<string[]>([]);
+  const [recovery, setRecovery] = useState<MagazineEditorRecovery | null>(null);
   const session = useRef<EditorPersistence | null>(null);
+  const recoveryWriterId = useRef(
+    `tab-${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`,
+  );
 
   useEffect(() => {
     let active = true;
+    const writerId = recoveryWriterId.current;
     session.current = null;
     setMagazine(null);
     setLoaded(false);
@@ -37,6 +48,7 @@ export function useMagazineEditor(id: string | undefined) {
     setSaveError(null);
     setLoadError(null);
     setBrandingErrors([]);
+    setRecovery(null);
     if (!id) {
       setLoaded(true);
       return;
@@ -56,9 +68,27 @@ export function useMagazineEditor(id: string | undefined) {
               setSaving(current.saving);
               setDirty(current.dirty);
               setSaveError(current.error);
+              if (user?.id) {
+                const pending = current.pendingPatch;
+                if (Object.keys(pending).length > 0) {
+                  writeMagazineEditorRecovery(
+                    user.id,
+                    fetched.id,
+                    current.magazine.editVersion,
+                    pending,
+                    window.localStorage,
+                    writerId,
+                  );
+                } else if (!current.dirty && !current.error) {
+                  clearMagazineEditorRecovery(user.id, fetched.id, window.localStorage, writerId);
+                }
+              }
             },
           );
           session.current = current;
+          if (user?.id && fetched.ownerId === user.id && fetched.status === 'draft') {
+            setRecovery(readMagazineEditorRecovery(user.id, fetched.id));
+          }
         }
         setMagazine(fetched);
       })
@@ -77,7 +107,21 @@ export function useMagazineEditor(id: string | undefined) {
       previous?.cancelTimer();
       // Best effort on SPA unmount; browser termination cannot await this.
       // Explicit actions use flushSave and failures remain blocking there.
-      if (previous?.dirty) void previous.flush().catch(() => undefined);
+      if (previous?.dirty) {
+        void previous
+          .flush()
+          .then(() => {
+            if (user?.id) {
+              clearMagazineEditorRecovery(
+                user.id,
+                previous.magazine.id,
+                window.localStorage,
+                writerId,
+              );
+            }
+          })
+          .catch(() => undefined);
+      }
     };
   }, [id, user?.id]);
 
@@ -112,6 +156,31 @@ export function useMagazineEditor(id: string | undefined) {
     if (!current) throw new Error('A revista ainda não foi carregada.');
     await current.flush();
   }, []);
+  const restoreRecovery = useCallback(
+    (applyOverCurrentVersion = false) => {
+      const current = session.current;
+      if (!current || !recovery || !user?.id) return false;
+      if (recovery.baseEditVersion !== current.magazine.editVersion && !applyOverCurrentVersion) {
+        return false;
+      }
+      current.edit(recovery.patch);
+      setRecovery(null);
+      return true;
+    },
+    [recovery, user?.id],
+  );
+  const discardRecovery = useCallback(() => {
+    const current = session.current;
+    if (current && user?.id) {
+      clearMagazineEditorRecovery(
+        user.id,
+        current.magazine.id,
+        window.localStorage,
+        recovery?.writerId,
+      );
+    }
+    setRecovery(null);
+  }, [recovery?.writerId, user?.id]);
   const setTitle = useCallback((title: string) => persist({ title }), [persist]);
   const setSubtitle = useCallback((subtitle: string) => persist({ subtitle }), [persist]);
   const setTemplate = useCallback(
@@ -217,6 +286,15 @@ export function useMagazineEditor(id: string | undefined) {
     },
     [mutate],
   );
+  const removeItems = useCallback(
+    async (itemIds: string[]) => {
+      await mutate(
+        (key, expected) => magazineService.removeItems(key, itemIds, expected),
+        ['draft'],
+      );
+    },
+    [mutate],
+  );
   const reorderItems = useCallback(
     (orderedIds: string[]) =>
       mutate((key, expected) => magazineService.reorderItems(key, orderedIds, expected), ['draft']),
@@ -254,6 +332,13 @@ export function useMagazineEditor(id: string | undefined) {
     dirty,
     saveError,
     loadError,
+    recoveryAvailable: recovery !== null,
+    recoveryConflict: Boolean(
+      recovery && magazine && recovery.baseEditVersion !== magazine.editVersion,
+    ),
+    recoverySavedAt: recovery?.savedAt ?? null,
+    restoreRecovery,
+    discardRecovery,
     flushSave,
     isOwner: Boolean(magazine && magazine.ownerId === user?.id),
     canEdit: Boolean(magazine && magazine.ownerId === user?.id && magazine.status === 'draft'),
@@ -266,6 +351,7 @@ export function useMagazineEditor(id: string | undefined) {
     setPageOrder,
     addProducts,
     removeItem,
+    removeItems,
     reorderItems,
     updateItem,
     publish,

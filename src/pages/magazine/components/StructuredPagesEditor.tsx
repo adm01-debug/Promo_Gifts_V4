@@ -1,4 +1,5 @@
-import { ArrowDown, ArrowUp, Copy, FilePlus2, LayoutList, Trash2 } from 'lucide-react';
+import { useState } from 'react';
+import { ArrowDown, ArrowUp, Copy, FilePlus2, LayoutList, RotateCcw, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -36,6 +37,11 @@ function isClosingPage(page: MagazinePageDefinition): boolean {
 }
 
 export function StructuredPagesEditor({ magazine, onChange }: Props) {
+  const [lastDeleted, setLastDeleted] = useState<{
+    page: MagazinePageDefinition;
+    index: number;
+  } | null>(null);
+  const [announcement, setAnnouncement] = useState('');
   const order = isMagazinePageOrderV2(magazine.pageOrder) ? magazine.pageOrder : null;
 
   if (!order) {
@@ -90,6 +96,8 @@ export function StructuredPagesEditor({ magazine, onChange }: Props) {
     const next = [...order.pages];
     [next[index], next[target]] = [next[target], next[index]];
     commit(next);
+    setAnnouncement(`Página movida para a posição ${target + 1}.`);
+    window.setTimeout(() => document.getElementById(`structured-page-${next[target].id}`)?.focus());
   };
   const addPage = (kind: 'institutional' | 'section') => {
     const closingIndex = order.pages.findIndex(isClosingPage);
@@ -106,6 +114,9 @@ export function StructuredPagesEditor({ magazine, onChange }: Props) {
 
   return (
     <section className={cn(PG_PANEL, 'mb-4 p-4')} aria-labelledby="structured-pages-title">
+      <p className="sr-only" aria-live="polite" aria-atomic="true">
+        {announcement}
+      </p>
       <header className="mb-4 flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 id="structured-pages-title" className={PG_PANEL_TITLE}>
@@ -117,6 +128,25 @@ export function StructuredPagesEditor({ magazine, onChange }: Props) {
           </p>
         </div>
         <div className="flex gap-2">
+          {lastDeleted && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                if (order.pages.some((page) => page.id === lastDeleted.page.id)) {
+                  setLastDeleted(null);
+                  return;
+                }
+                const next = [...order.pages];
+                next.splice(Math.min(lastDeleted.index, next.length - 1), 0, lastDeleted.page);
+                commit(next);
+                setLastDeleted(null);
+              }}
+            >
+              <RotateCcw className="mr-2 h-4 w-4" aria-hidden /> Desfazer exclusão
+            </Button>
+          )}
           <Button type="button" variant="outline" size="sm" onClick={() => addPage('section')}>
             <FilePlus2 className="mr-2 h-4 w-4" aria-hidden /> Seção
           </Button>
@@ -139,6 +169,8 @@ export function StructuredPagesEditor({ magazine, onChange }: Props) {
           return (
             <li
               key={page.id}
+              id={`structured-page-${page.id}`}
+              tabIndex={-1}
               className="rounded-md border border-border bg-card-elevated p-3"
               data-testid={`structured-page-${page.id}`}
             >
@@ -202,9 +234,18 @@ export function StructuredPagesEditor({ magazine, onChange }: Props) {
                   variant="ghost"
                   size="icon"
                   disabled={!editable}
-                  onClick={() =>
-                    commit(order.pages.filter((candidate) => candidate.id !== page.id))
-                  }
+                  onClick={() => {
+                    const remaining = order.pages.filter((candidate) => candidate.id !== page.id);
+                    const focusTarget = remaining[Math.min(index, remaining.length - 1)];
+                    setLastDeleted({ page, index });
+                    commit(remaining);
+                    setAnnouncement(`Página ${index + 1} excluída.`);
+                    if (focusTarget) {
+                      window.setTimeout(() =>
+                        document.getElementById(`structured-page-${focusTarget.id}`)?.focus(),
+                      );
+                    }
+                  }}
                   aria-label={`Excluir página ${index + 1}`}
                   className="h-8 w-8 text-muted-foreground hover:text-destructive"
                 >

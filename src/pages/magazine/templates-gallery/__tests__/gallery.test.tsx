@@ -186,7 +186,9 @@ describe('MagazineTemplatesGalleryPage', () => {
     renderAt('/magazine/templates');
     const favBtn = screen.getByTestId('template-favorite-editorial-vogue');
     fireEvent.click(favBtn);
-    expect(window.localStorage.getItem('magazine:favorite-template')).toBe('editorial-vogue');
+    expect(window.localStorage.getItem('magazine:favorite-template:v2:owner-test')).toBe(
+      'editorial-vogue',
+    );
     // Reordena: primeiro card vira o favorito
     const first = screen.getAllByTestId(/^template-card-/)[0];
     expect(first.getAttribute('data-testid')).toBe('template-card-editorial-vogue');
@@ -195,7 +197,7 @@ describe('MagazineTemplatesGalleryPage', () => {
   });
 
   it('favorito persiste ao remontar (hidrata do localStorage)', () => {
-    window.localStorage.setItem('magazine:favorite-template', 'catalog-grid3x3');
+    window.localStorage.setItem('magazine:favorite-template:v2:owner-test', 'catalog-grid3x3');
     renderAt('/magazine/templates');
     const first = screen.getAllByTestId(/^template-card-/)[0];
     expect(first.getAttribute('data-testid')).toBe('template-card-catalog-grid3x3');
