@@ -49,9 +49,10 @@ jobs:
           #   SC2129  — individual >> redirects (use { ... } >> file)
           #   SC2188  — redirect without command (detect-base64-content.yml)
           #   SC2215  — flag used as command name (codeql.yml)
-          # NOTE: single-line alternation regex required — multiline |‑block
-          # is passed as ONE pattern and never matches single-line messages.
-          ignore: 'SC2006|SC2016|SC2034|SC2038|SC2086|SC2129|SC2188|SC2215'
+          # NOTE: use `args:` — `ignore:` is not a valid input for this action
+          # (valid inputs are only `entryPoint` and `args`). The -ignore flag
+          # takes a regex matched against the full error message.
+          args: '-ignore "SC2006|SC2016|SC2034|SC2038|SC2086|SC2129|SC2188|SC2215"'
 
   workflow-contracts:
     name: Workflow contract checks (C1–C8)
