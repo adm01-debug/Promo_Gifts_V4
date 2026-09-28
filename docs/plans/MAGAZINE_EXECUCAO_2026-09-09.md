@@ -9,10 +9,11 @@ Base da rodada de hardening: `80cf74ecc8daff4b7da54d6306dc4a9d19bf3abe`
 > `docs/audits/AUDITORIA_MAGAZINE_50_ETAPAS_2026-09-28.md`, seção
 > “Remediação executada após a auditoria”. Essa seção é a fonte mais recente
 > para clear-all atômico, recuperação local, catálogo/CRM paginados, favoritos,
-> fontes/assets, impressão e busca. A contração RPC-only foi promovida para
-> `supabase/migrations/20260928163919_magazine_rpc_only_contract.sql`, passou em
-> PostgreSQL 17 descartável, mas **não foi aplicada ao Supabase canônico**.
-> O draft de 09/09 permanece apenas como registro histórico.
+> fontes/assets, impressão e busca. A contração RPC-only foi consolidada no draft
+> `qa/migrations-draft/2026-09-09_magazine_rpc_only_contract.sql`, passou em
+> PostgreSQL 17 descartável, mas **não foi promovida nem aplicada ao Supabase
+> canônico**. Isso respeita o gate do projeto, que só aceita migration versionada
+> acompanhada do recibo de aplicação real.
 >
 > A revalidação final coordenada por cinco especialistas corrigiu ainda:
 > preflight/policies da contração RPC-only, recovery entre abas, catálogo-base
@@ -59,13 +60,12 @@ policies de partição, sem remover tabela, coluna ou dado.
 | Supabase canônico | Expansão aplicada e validada           | 5/5 migrations desta rodada, 15/15 funções, `magazines.edit_version`, dois índices de FK e policies otimizadas confirmados em PostgreSQL 17.6. `anon` executa somente o endpoint público de sitemap.                                                              |
 | Produção Vercel   | Baseline saudável, hardening pendente  | O baseline `80cf74e` respondia 200 em `/api/health`, `/api/ready`, `/magazine` e `/sitemap.xml`; isso não valida o código desta rodada.                                                                                                                           |
 
-A migration restritiva foi inicialmente separada em
-`qa/migrations-draft/2026-09-09_magazine_rpc_only_contract.sql`. Em 28/09 ela foi
-promovida, ampliada e testada como
-`supabase/migrations/20260928163919_magazine_rpc_only_contract.sql`. Ela só pode
-ser aplicada depois de autorização explícita para esse objeto e com o frontend
-correspondente pronto para rollout; até lá, o draft é histórico e a migration
-promovida permanece não aplicada.
+A contração restritiva está separada em
+`qa/migrations-draft/2026-09-09_magazine_rpc_only_contract.sql`. Em 28/09 o draft
+foi ampliado, submetido ao preflight E15 e aplicado duas vezes apenas em
+PostgreSQL 17 descartável. Ele só pode ser promovido e aplicado depois de
+autorização explícita para esse objeto e com o frontend correspondente pronto
+para rollout; até lá, continua draft final revisado e não altera o canônico.
 
 ## Evidências executadas
 

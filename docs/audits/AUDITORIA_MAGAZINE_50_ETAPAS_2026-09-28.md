@@ -273,7 +273,7 @@ inicial, sem converter validação local em homologação produtiva.
 
 | Achado | Estado após remediação                                                                    | Evidência                                                                                                                                                                                                                                      |
 | ------ | ----------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| A01    | Implementado e simulado localmente; aplicação canônica pendente de autorização específica | Migration forward-only `20260928163919_magazine_rpc_only_contract.sql`, aceita pelo preflight E15 e validada duas vezes em PostgreSQL 17 com RLS/roles reais. Remove policies mutáveis e revoga DML/RPCs legadas somente quando aplicada.      |
+| A01    | Implementado e simulado localmente; promoção/aplicação canônica pendente de autorização específica | Draft forward-only `qa/migrations-draft/2026-09-09_magazine_rpc_only_contract.sql`, aceito pelo preflight E15 e validado duas vezes em PostgreSQL 17 com RLS/roles reais. Remove policies mutáveis e revoga DML/RPCs legadas somente quando aplicado. |
 | A02    | Resolvido no cliente/serviço                                                              | “Limpar tudo” usa uma única chamada CAS `magazine_remove_items_v2`; falha não confirma remoção parcial.                                                                                                                                        |
 | A03    | Resolvido no escopo do editor                                                             | Patches pendentes usam usuário+revista+writer da aba, compare-and-delete, allowlist/TTL/tamanho e restauração explícita após conflito; uma aba não apaga a recuperação da outra.                                                               |
 | A04    | Resolvido com aproximações autorizadas                                                    | Nove mockups originais locais, sem logotipos/texto, em `public/images/magazine-demo/`; fixtures não dependem de `placeholder.svg`.                                                                                                             |
@@ -297,20 +297,20 @@ inicial, sem converter validação local em homologação produtiva.
 - Harness Chromium: **11/11 cenários** aprovados, inclusive 390 px, estados
   somente leitura, retry, páginas estruturadas e geração de PDF real com uma
   página A4 por folha.
-- PostgreSQL 17 descartável: migration RPC-only aplicada duas vezes, postflight
+- PostgreSQL 17 descartável: draft RPC-only aplicado duas vezes, postflight
   com roles/RLS, concorrência, idempotência e preflight E15 aprovados; nenhuma
   escrita no canônico foi usada pelo teste.
 - TypeScript, lint, build Vite, SSOT Supabase e verificação de chunks aprovados.
 - Advisors oficiais do Supabase foram consultados somente leitura. Os alertas
   globais encontrados já existiam fora deste patch; o objeto Magazine sem policy
   (`magazine_duplicate_requests`) é intencionalmente inacessível por tabela e
-  operado por RPC. A migration preparada não cria novo objeto exposto.
+  operado por RPC. O draft preparado não cria novo objeto exposto.
 
 ### Limites honestos para encerramento
 
 O código local desta rodada está validado. Ainda não é correto chamar
-o sistema de “10/10 em produção” antes de: (1) autorizar e aplicar a migration
-`20260928163919_magazine_rpc_only_contract.sql` no projeto canônico; (2) publicar
+o sistema de “10/10 em produção” antes de: (1) autorizar a promoção e aplicação
+do draft `qa/migrations-draft/2026-09-09_magazine_rpc_only_contract.sql` no projeto canônico; (2) publicar
 o frontend correspondente; (3) executar smoke autenticado e público; e (4)
 homologar visualmente o PDF e as referências no shell produtivo. Nenhum desses
 quatro gates foi presumido ou falsamente marcado como concluído.

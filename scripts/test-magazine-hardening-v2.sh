@@ -86,8 +86,8 @@ if [[ "$("${psql_base[@]}" -Atq -c "
   echo "Magazine duplicate-request FK indexes are incomplete" >&2
   exit 1
 fi
-"${psql_base[@]}" -f /workspace/supabase/migrations/20260928163919_magazine_rpc_only_contract.sql >/dev/null
-"${psql_base[@]}" -f /workspace/supabase/migrations/20260928163919_magazine_rpc_only_contract.sql >/dev/null
+"${psql_base[@]}" -f /workspace/qa/migrations-draft/2026-09-09_magazine_rpc_only_contract.sql >/dev/null
+"${psql_base[@]}" -f /workspace/qa/migrations-draft/2026-09-09_magazine_rpc_only_contract.sql >/dev/null
 
 # Exercise the contracted surface as the real authenticated role, not postgres.
 role_select_count=$("${psql_base[@]}" -Atq -c "

@@ -36,7 +36,7 @@
       "draft": "2026-09-09_magazine_rpc_only_contract.sql",
       "reviewer": "Codex/DBA",
       "date": "2026-09-28",
-      "reason": "Promovida, ampliada e simulada como 20260928163919_magazine_rpc_only_contract.sql; aplicação canônica permanece condicionada a autorização específica e rollout do frontend correspondente."
+      "reason": "Ampliado e simulado duas vezes em PostgreSQL 17 como draft final RPC-only; promoção e aplicação canônicas permanecem condicionadas a autorização específica, recibo E15 e rollout do frontend correspondente."
     }
   ]
 }
