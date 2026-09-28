@@ -229,7 +229,7 @@ jobs:
           {
             echo "## 🤖 Lovable Autoheal"
             echo ""
-            echo "**Commit:** `${{ github.sha }}`"
+            echo "**Commit:** ${{ github.sha }}"
             TS="${{ steps.changed_files.outputs.has_ts_files }}"
             FIX="${{ steps.check_changes.outputs.has_fixes }}"
             TSC="${{ steps.tsc_check.outputs.tsc_ok }}"
