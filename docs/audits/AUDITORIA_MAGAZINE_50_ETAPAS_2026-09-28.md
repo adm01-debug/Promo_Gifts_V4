@@ -1,4 +1,5 @@
 # Magazine — auditoria das 50 etapas
+
 Data: 28/09/2026. Escopo exclusivo: módulo Magazine.
 Plano revisado: `docs/plans/MAGAZINE_EXECUCAO_2026-09-09.md` e critérios de `docs/plans/MAGAZINE_CORRECOES_E_MELHORIAS_50_ETAPAS_2026-09-09.md`.
 
@@ -24,15 +25,15 @@ Esta rodada foi uma auditoria. Não alterei código da aplicação, cores, polic
 
 ## Testes reexecutados
 
-| Verificação | Resultado | Limite |
-|---|---|---|
-| Vitest Magazine | 45 arquivos, 831 testes aprovados, zero falhas/ignorados nessa seleção; retry=0 | Mocks/contratos não equivalem a E2E com Supabase |
-| Browser existente | 11 cenários aprovados, zero erros de página | Chromium, componentes reais, shell mínimo e backend simulado |
-| Typecheck | 0 erros, baseline 0 | Não prova comportamento |
-| PostgreSQL 17.6 descartável | MAGAZINE_HARDENING_V2_PG17_OK | Schema sintético, não clone completo da produção |
-| Simulação adicional de limpar tudo | Falha de atomicidade reproduzida: 9 → 8 itens quando a segunda remoção falha | Apenas fixture em memória |
-| Simulação adicional de DML legado/RLS | Membro da organização excluiu 1 item; versão permaneceu 2 → 2 | Predicados equivalentes ao catálogo canônico, reproduzidos em PostgreSQL descartável |
-| Fontes do preview | Cormorant Garamond/Work Sans e outras fontes declaradas não constam dos FontFace importados pelo Magazine | Fontes globais remotas foram bloqueadas pelo harness; seus erros não são incidentes de produção |
+| Verificação                           | Resultado                                                                                                 | Limite                                                                                          |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Vitest Magazine                       | 45 arquivos, 831 testes aprovados, zero falhas/ignorados nessa seleção; retry=0                           | Mocks/contratos não equivalem a E2E com Supabase                                                |
+| Browser existente                     | 11 cenários aprovados, zero erros de página                                                               | Chromium, componentes reais, shell mínimo e backend simulado                                    |
+| Typecheck                             | 0 erros, baseline 0                                                                                       | Não prova comportamento                                                                         |
+| PostgreSQL 17.6 descartável           | MAGAZINE_HARDENING_V2_PG17_OK                                                                             | Schema sintético, não clone completo da produção                                                |
+| Simulação adicional de limpar tudo    | Falha de atomicidade reproduzida: 9 → 8 itens quando a segunda remoção falha                              | Apenas fixture em memória                                                                       |
+| Simulação adicional de DML legado/RLS | Membro da organização excluiu 1 item; versão permaneceu 2 → 2                                             | Predicados equivalentes ao catálogo canônico, reproduzidos em PostgreSQL descartável            |
+| Fontes do preview                     | Cormorant Garamond/Work Sans e outras fontes declaradas não constam dos FontFace importados pelo Magazine | Fontes globais remotas foram bloqueadas pelo harness; seus erros não são incidentes de produção |
 
 Comandos principais:
 
@@ -56,8 +57,9 @@ O script PostgreSQL testa reaplicação/idempotência, compatibilidade legada, R
 ### A01 — P1: permissões legadas deixam um caminho de escrita fora do CAS das RPCs
 
 Evidência canônica:
+
 - authenticated mantém INSERT/UPDATE/DELETE em magazines e magazine_items.
-- As seis RPCs antigas *_atomic permanecem executáveis por authenticated.
+- As seis RPCs antigas \*\_atomic permanecem executáveis por authenticated.
 - A policy magazine_items_via_owner_or_org é FOR ALL. Seu USING permite proprietário OU membro da organização; WITH CHECK restringe novas linhas ao proprietário.
 - DELETE é autorizado pelo USING, não pelo WITH CHECK.
 - O trigger magazine_items_guard_v2 valida estado/estrutura e bloqueia a revista, mas não exige ownership nem incrementa edit_version da revista para DML direto.
@@ -159,19 +161,21 @@ O checklist 0/50 de homologação é uma convenção conservadora do plano, não
 ## Banco e Edge: o que ficou comprovado
 
 Consulta oficial somente leitura no projeto doufsxqlfjyuvxuezpln:
+
 - 15 versões de 09/09 previstas no conjunto de rollout presentes no ledger (incluem sitemap/ACL além do Magazine).
-- 25 corpos de funções Magazine *_v2 e *_atomic comparados com a última definição local correspondente: 25 coincidentes, normalizando CRLF e espaços nas extremidades.
+- 25 corpos de funções Magazine _\_v2 e _\_atomic comparados com a última definição local correspondente: 25 coincidentes, normalizando CRLF e espaços nas extremidades.
 - Essa comparação é do corpo; assinaturas, SECURITY DEFINER, search_path e grants foram inspecionados separadamente. Não constitui diff integral de todo o schema Supabase.
 - As 15 RPCs públicas v2 de mutação/importação existem; anon sem EXECUTE. Helpers não ficam executáveis por authenticated.
 - magazines.edit_version bigint e CHECK nonnegative presentes.
 - Triggers guard/version e items_guard ativos.
-- RLS habilitada nos objetos magazine_* inventariados; anon sem SELECT direto nesses objetos.
+- RLS habilitada nos objetos magazine\_\* inventariados; anon sem SELECT direto nesses objetos.
 - UNIQUE de produto por revista e posição presentes; posição DEFERRABLE; FKs magazines/owner/organization/template e itens→magazine presentes.
 - Índices de ambas as FKs de magazine_duplicate_requests presentes.
 - magazine_duplicate_requests sem acesso direto authenticated é intencional, não tabela abandonada.
 - Três jobs Magazine ativos: partition-maintenance, cleanup-nightly e view-rollup-hourly. Existência/ativação não certifica sucesso de toda execução histórica.
 
 Paridade de Edge Functions: todos os arquivos retornados do bundle comparados ao repositório, normalizando finais de linha/espaço final:
+
 - magazine-public-view versão 40: coincide.
 - magazine-import-local versão 42: coincide.
 - magazine-public-react versão 40: coincide.
@@ -182,58 +186,58 @@ Não fiz chamadas produtivas que criam views/reactions/importações; não publi
 
 Legenda: **V** = núcleo implementado e validado no escopo indicado, não aceite produtivo integral; **P** = parcial; **A** = requisito ausente; **B** = validação/decisão pendente. Cada linha lista o restante necessário; nenhuma equivale a aprovação automática do plano inteiro.
 
-| Etapa | Estado | Evidência atual / restante para encerramento |
-|---|---|---|
-| 001 | P | SHAs/PRs reconciliados nesta auditoria; documentos do repositório ainda precisam refletir o estado real. |
-| 002 | P | Versões registradas, mocks e PostgreSQL isolados; não repetida instalação limpa em worktree separada. |
-| 003 | P | Contratos de persistência incorporados e verdes; baseline visual completo R1–R5 não homologado. |
-| 004 | P | Cores preservadas, páginas estruturadas e aproximação de assets autorizadas; fonte/densidade/favoritos ainda carecem reconciliação. |
-| 005 | V | pg_catalog, funções, ACL/RLS, constraints, índices, triggers e jobs relevantes consultados; risco A01 registrado. |
-| 006 | V | Autosave envia EditorPatch de metadados, não reescreve itens; suite de regressão aprovada. |
-| 007 | V | IDs estáveis, reconciliação e controle de retorno confirmado no serviço/fila; testes verdes. |
-| 008 | P | Fila e CAS via v2 funcionam; DML legado pode escapar da versão e recuperação de conflito é limitada. |
-| 009 | V | dirty/saving/error e flush real/Ctrl+S/falha-retry aprovados em teste. |
-| 010 | P | Flush em ações próprias + beforeunload; falta recuperação offline e proteção geral do shell. |
-| 011 | V | RPCs transacionais aplicadas e corpos coincidentes; cenários PG locais aprovados. |
-| 012 | P | Add/reorder v2 integrados; clear-all usa sequência individual e falha parcialmente. |
-| 013 | P | Lista/editor tratam erro vs vazio; CRM ainda oculta erro, catálogo pode retornar parcial. |
-| 014 | P | Publicação/revogação versionadas, token/estado e testes SQL existem; lifecycle autenticado+anônimo real não exercitado. |
-| 015 | P | Bateria de integridade passa; novos cenários A01/A02 impedem considerar gate global encerrado. |
-| 016 | V | Escala/origem e Fit aprovados no browser existente; não é certificação visual integral. |
-| 017 | V | CSS A4 compartilhado e galeria fria aprovados no harness; sem mudar tema global. |
-| 018 | P | Amostras recebem fontFamily; várias fontes prometidas não estão carregadas. |
-| 019 | P | Navegação/zoom/Fit/tela cheia têm implementação; falta bateria completa de foco/teclado/fullscreen real. |
-| 020 | P | Renderer/print CSS/flush existem; faltam prontidão e validação de PDF completo. |
-| 021 | P | 12 templates preservados; metadados dos oito de referência ainda divergem. |
-| 022 | A | Assets aproximados aprovados não integrados à vitrine, que usa placeholder.svg. |
-| 023 | P | Componentes dos 12 templates existem e correções de crash foram mergeadas; composições de referência não homologadas. |
-| 024 | P | Modal com descrição, especificações, características, fontes/paleta; depende de fontes/metadata e aceite geométrico. |
-| 025 | P | Criação e retorno seguro testados; favoritos não são por conta e “recentes” não usa recência. |
-| 026 | P | Header/cinco KPIs/status/grade-lista existem; contagem global limitada à listagem recebida. |
-| 027 | P | Cards/CTAs/menu por status e lista mobile testados; paridade fullshell/referência pendente. |
-| 028 | P | Busca inclui subtítulo; falta paginação global, normalização de acentos e desempate estável. |
-| 029 | P | Duplicate idempotente e delete/restore v2 existem; falta fluxo real com undo concorrente e resolver caminho direto legado. |
-| 030 | P | Consumidores principais usam revista-publica; Edge coincide; lifecycle real de token não homologado. |
-| 031 | P | Busca textual não casa com CNPJ vazio; limite200/filtro40/erro/paginação ainda abertos. |
-| 032 | P | clientCrmId persistido e seleção por ID; isolamento de cache/contas e overrides completos pendentes. |
-| 033 | P | Contadores e formulário existem; 80/200 não conciliado com regra/legado 200/300. |
-| 034 | V | Sincronização do hex/presets coberta em regressão; hook de tema global é no-op. |
-| 035 | P | Cinco etapas, save real e layout responsivo implementados; shell completo, foco e paridade visual pendentes. |
-| 036 | P | Lote fixo80 removido; bridge pode retornar parcial e não há paginação visual/virtualização adequada. |
-| 037 | P | Map preserva seleção entre filtros e retry; seleção depende de snapshot, falta ciclo completo com indisponibilidade e backend real. |
-| 038 | A | Favoritos de produtos não integrados no ProductsStep. |
-| 039 | P | sale_price zero e seleção de cor posterior existem; swatches/variante identificada/preço por variante incompletos. |
-| 040 | P | Resumo usa paginateMagazine; limpar tudo não atômico e completude do catálogo pendente. |
-| 041 | V | Modelo v2 de páginas estruturadas, IDs e compatibilidade legada implementados/testados. |
-| 042 | V | page_order persistido/validado por v2, corpos SQL coincidentes, testes isolados aprovados. |
-| 043 | P | Cria/edita/duplica/exclui institucional/seção; não todos os tipos/undo nem gestão no trilho da referência. |
-| 044 | P | Paginação determinística e mover por botões; drag-and-drop editorial e homologação concorrente ponta a ponta ausentes. |
-| 045 | P | Renderer/paginador compartilhados e institucional/contato testados; público/PDF real não homologados. |
-| 046 | P | 831 testes e11 browser verdes; cobertura ainda não bloqueia A01/A02 nem fechamento de todos os gaps. |
-| 047 | B | Falta E2E autenticado completo em ambiente de teste autorizado com perfis/fixtures/backend compatível. |
-| 048 | B | Falta comparação visual R1–R5 no shell completo, aceite PO e orçamento de desempenho medido. |
-| 049 | P | Rollout expand aplicado/coincidente; contração RPC-only permanece propositalmente pendente de gates/autorização. |
-| 050 | P | Merges e produção confirmados; documentação, gaps e homologação impedem declarar plano concluído. |
+| Etapa | Estado | Evidência atual / restante para encerramento                                                                                        |
+| ----- | ------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| 001   | P      | SHAs/PRs reconciliados nesta auditoria; documentos do repositório ainda precisam refletir o estado real.                            |
+| 002   | P      | Versões registradas, mocks e PostgreSQL isolados; não repetida instalação limpa em worktree separada.                               |
+| 003   | P      | Contratos de persistência incorporados e verdes; baseline visual completo R1–R5 não homologado.                                     |
+| 004   | P      | Cores preservadas, páginas estruturadas e aproximação de assets autorizadas; fonte/densidade/favoritos ainda carecem reconciliação. |
+| 005   | V      | pg_catalog, funções, ACL/RLS, constraints, índices, triggers e jobs relevantes consultados; risco A01 registrado.                   |
+| 006   | V      | Autosave envia EditorPatch de metadados, não reescreve itens; suite de regressão aprovada.                                          |
+| 007   | V      | IDs estáveis, reconciliação e controle de retorno confirmado no serviço/fila; testes verdes.                                        |
+| 008   | P      | Fila e CAS via v2 funcionam; DML legado pode escapar da versão e recuperação de conflito é limitada.                                |
+| 009   | V      | dirty/saving/error e flush real/Ctrl+S/falha-retry aprovados em teste.                                                              |
+| 010   | P      | Flush em ações próprias + beforeunload; falta recuperação offline e proteção geral do shell.                                        |
+| 011   | V      | RPCs transacionais aplicadas e corpos coincidentes; cenários PG locais aprovados.                                                   |
+| 012   | P      | Add/reorder v2 integrados; clear-all usa sequência individual e falha parcialmente.                                                 |
+| 013   | P      | Lista/editor tratam erro vs vazio; CRM ainda oculta erro, catálogo pode retornar parcial.                                           |
+| 014   | P      | Publicação/revogação versionadas, token/estado e testes SQL existem; lifecycle autenticado+anônimo real não exercitado.             |
+| 015   | P      | Bateria de integridade passa; novos cenários A01/A02 impedem considerar gate global encerrado.                                      |
+| 016   | V      | Escala/origem e Fit aprovados no browser existente; não é certificação visual integral.                                             |
+| 017   | V      | CSS A4 compartilhado e galeria fria aprovados no harness; sem mudar tema global.                                                    |
+| 018   | P      | Amostras recebem fontFamily; várias fontes prometidas não estão carregadas.                                                         |
+| 019   | P      | Navegação/zoom/Fit/tela cheia têm implementação; falta bateria completa de foco/teclado/fullscreen real.                            |
+| 020   | P      | Renderer/print CSS/flush existem; faltam prontidão e validação de PDF completo.                                                     |
+| 021   | P      | 12 templates preservados; metadados dos oito de referência ainda divergem.                                                          |
+| 022   | A      | Assets aproximados aprovados não integrados à vitrine, que usa placeholder.svg.                                                     |
+| 023   | P      | Componentes dos 12 templates existem e correções de crash foram mergeadas; composições de referência não homologadas.               |
+| 024   | P      | Modal com descrição, especificações, características, fontes/paleta; depende de fontes/metadata e aceite geométrico.                |
+| 025   | P      | Criação e retorno seguro testados; favoritos não são por conta e “recentes” não usa recência.                                       |
+| 026   | P      | Header/cinco KPIs/status/grade-lista existem; contagem global limitada à listagem recebida.                                         |
+| 027   | P      | Cards/CTAs/menu por status e lista mobile testados; paridade fullshell/referência pendente.                                         |
+| 028   | P      | Busca inclui subtítulo; falta paginação global, normalização de acentos e desempate estável.                                        |
+| 029   | P      | Duplicate idempotente e delete/restore v2 existem; falta fluxo real com undo concorrente e resolver caminho direto legado.          |
+| 030   | P      | Consumidores principais usam revista-publica; Edge coincide; lifecycle real de token não homologado.                                |
+| 031   | P      | Busca textual não casa com CNPJ vazio; limite200/filtro40/erro/paginação ainda abertos.                                             |
+| 032   | P      | clientCrmId persistido e seleção por ID; isolamento de cache/contas e overrides completos pendentes.                                |
+| 033   | P      | Contadores e formulário existem; 80/200 não conciliado com regra/legado 200/300.                                                    |
+| 034   | V      | Sincronização do hex/presets coberta em regressão; hook de tema global é no-op.                                                     |
+| 035   | P      | Cinco etapas, save real e layout responsivo implementados; shell completo, foco e paridade visual pendentes.                        |
+| 036   | P      | Lote fixo80 removido; bridge pode retornar parcial e não há paginação visual/virtualização adequada.                                |
+| 037   | P      | Map preserva seleção entre filtros e retry; seleção depende de snapshot, falta ciclo completo com indisponibilidade e backend real. |
+| 038   | A      | Favoritos de produtos não integrados no ProductsStep.                                                                               |
+| 039   | P      | sale_price zero e seleção de cor posterior existem; swatches/variante identificada/preço por variante incompletos.                  |
+| 040   | P      | Resumo usa paginateMagazine; limpar tudo não atômico e completude do catálogo pendente.                                             |
+| 041   | V      | Modelo v2 de páginas estruturadas, IDs e compatibilidade legada implementados/testados.                                             |
+| 042   | V      | page_order persistido/validado por v2, corpos SQL coincidentes, testes isolados aprovados.                                          |
+| 043   | P      | Cria/edita/duplica/exclui institucional/seção; não todos os tipos/undo nem gestão no trilho da referência.                          |
+| 044   | P      | Paginação determinística e mover por botões; drag-and-drop editorial e homologação concorrente ponta a ponta ausentes.              |
+| 045   | P      | Renderer/paginador compartilhados e institucional/contato testados; público/PDF real não homologados.                               |
+| 046   | P      | 831 testes e11 browser verdes; cobertura ainda não bloqueia A01/A02 nem fechamento de todos os gaps.                                |
+| 047   | B      | Falta E2E autenticado completo em ambiente de teste autorizado com perfis/fixtures/backend compatível.                              |
+| 048   | B      | Falta comparação visual R1–R5 no shell completo, aceite PO e orçamento de desempenho medido.                                        |
+| 049   | P      | Rollout expand aplicado/coincidente; contração RPC-only permanece propositalmente pendente de gates/autorização.                    |
+| 050   | P      | Merges e produção confirmados; documentação, gaps e homologação impedem declarar plano concluído.                                   |
 
 ## Sequência recomendada, sem executar correções nesta auditoria
 
@@ -260,3 +264,60 @@ Legenda: **V** = núcleo implementado e validado no escopo indicado, não aceite
 - /tmp/magazine-audit-20260928-legacy.log
 
 Os containers descartáveis de teste foram removidos pelos traps dos scripts; nenhum dado produtivo foi removido. Logs e scripts temporários foram preservados. O servidor local do harness foi encerrado ao finalizar.
+
+## Remediação executada após a auditoria — 28/09/2026
+
+Esta seção substitui a situação dos achados e da matriz acima quando houver
+divergência. Ela registra o que foi efetivamente implementado depois do retrato
+inicial, sem converter validação local em homologação produtiva.
+
+| Achado | Estado após remediação                                                                    | Evidência                                                                                                                                                                                                                                      |
+| ------ | ----------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A01    | Implementado e simulado localmente; aplicação canônica pendente de autorização específica | Migration forward-only `20260928163919_magazine_rpc_only_contract.sql`, aceita pelo preflight E15 e validada duas vezes em PostgreSQL 17 com RLS/roles reais. Remove policies mutáveis e revoga DML/RPCs legadas somente quando aplicada.      |
+| A02    | Resolvido no cliente/serviço                                                              | “Limpar tudo” usa uma única chamada CAS `magazine_remove_items_v2`; falha não confirma remoção parcial.                                                                                                                                        |
+| A03    | Resolvido no escopo do editor                                                             | Patches pendentes usam usuário+revista+writer da aba, compare-and-delete, allowlist/TTL/tamanho e restauração explícita após conflito; uma aba não apaga a recuperação da outra.                                                               |
+| A04    | Resolvido com aproximações autorizadas                                                    | Nove mockups originais locais, sem logotipos/texto, em `public/images/magazine-demo/`; fixtures não dependem de `placeholder.svg`.                                                                                                             |
+| A05    | Resolvido                                                                                 | Registry só anuncia famílias carregadas; Archivo Black foi incorporada como dependência local.                                                                                                                                                 |
+| A06    | Resolvido                                                                                 | Favorito de template isolado por conta; rótulo de ordenação não promete recência fictícia.                                                                                                                                                     |
+| A07    | Resolvido no picker                                                                       | CRM usa consulta infinita paginada, retry e erro explícito; cache inclui o escopo da revista/conta.                                                                                                                                            |
+| A08    | Resolvido para correção/completude; otimização progressiva permanece mensurável           | Catálogo-base exige conjunto completo, inclui categoria/personalização, abort/timeout/cap viram erro e a UI renderiza lotes de 48. Contrato com 5.201 produtos evita o antigo bloqueio >5.000; o fetch ainda antecede a primeira renderização. |
+| A09    | Parcial                                                                                   | Favoritos de produtos são reais e isolados por conta; swatches comunicam nomes acessíveis. A escolha de SKU por swatch continua no seletor de variante após a inclusão, evitando prometer que um indicador visual troca SKU/preço no card.     |
+| A10    | Resolvido                                                                                 | Revistas e itens são paginados por chave imutável; IDs são consultados em lotes de 100; busca é insensível a acentos e o DOM mostra revistas em lotes de 48.                                                                                   |
+| A11    | Resolvido no gate local                                                                   | Impressão aguarda fontes/`decode()`, expõe falha e gera PDF real no Playwright. O gate confirmou 11 folhas = 11 páginas A4 e eliminou a página anônima/rodapé global.                                                                          |
+| A12    | Resolvido funcionalmente                                                                  | Exclusão editorial tem undo e movimentação acessível por botões. Drag-and-drop editorial não foi imposto porque os botões preservam teclado/leitor de tela e cumprem a mesma operação sem perda funcional.                                     |
+| A13    | Resolvido                                                                                 | Contadores recomendados 80/200 estão explicados; limites rígidos 200/300 coincidem com o contrato do banco.                                                                                                                                    |
+| A14    | Resolvido neste addendum                                                                  | Plano e auditoria passam a separar código validado, migration preparada e produção não homologada.                                                                                                                                             |
+
+### Gates repetidos após a remediação
+
+- Vitest Magazine: **51 arquivos e 858 testes** no comando canônico, zero
+  retry e zero falha; o gate agora inclui os contratos de catálogo-base.
+- Cobertura Magazine: 60,45% statements, 53,61% branches, 55,59% functions e
+  63,16% lines; gate crítico aprovado para seis arquivos.
+- Harness Chromium: **11/11 cenários** aprovados, inclusive 390 px, estados
+  somente leitura, retry, páginas estruturadas e geração de PDF real com uma
+  página A4 por folha.
+- PostgreSQL 17 descartável: migration RPC-only aplicada duas vezes, postflight
+  com roles/RLS, concorrência, idempotência e preflight E15 aprovados; nenhuma
+  escrita no canônico foi usada pelo teste.
+- TypeScript, lint, build Vite, SSOT Supabase e verificação de chunks aprovados.
+- Advisors oficiais do Supabase foram consultados somente leitura. Os alertas
+  globais encontrados já existiam fora deste patch; o objeto Magazine sem policy
+  (`magazine_duplicate_requests`) é intencionalmente inacessível por tabela e
+  operado por RPC. A migration preparada não cria novo objeto exposto.
+
+### Limites honestos para encerramento
+
+O código local desta rodada está validado. Ainda não é correto chamar
+o sistema de “10/10 em produção” antes de: (1) autorizar e aplicar a migration
+`20260928163919_magazine_rpc_only_contract.sql` no projeto canônico; (2) publicar
+o frontend correspondente; (3) executar smoke autenticado e público; e (4)
+homologar visualmente o PDF e as referências no shell produtivo. Nenhum desses
+quatro gates foi presumido ou falsamente marcado como concluído.
+
+Riscos residuais explicitamente não mascarados: o catálogo-base completo ainda
+é carregado antes da primeira grade (performance, não perda de dados); uma RPC
+que exceda o prazo precisa de idempotência/reconciliação antes de ganhar retry
+automático, para não transformar timeout em operação duplicada; e intenções de
+itens não confirmadas não são serializadas no recovery porque a UI não as aplica
+otimisticamente.

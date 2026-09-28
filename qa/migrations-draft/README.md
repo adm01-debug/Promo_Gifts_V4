@@ -39,20 +39,22 @@ Ele NÃO substitui `supabase/migrations/` — é uma antessala revisável.
 ## Rascunhos vigentes
 
 <!-- BEGIN:DRAFT-INDEX (gerado por scripts/list-migration-drafts.mjs) -->
+
 _Atualizado em 2026-09-09T22:29:30.401Z · 10 rascunho(s)._
 
-| Arquivo | Objetivo | Alvo | Risco | Validação |
-| --- | --- | --- | --- | --- |
-| `2026-06-18_security_definer_acl.sql` | 10 funções SECURITY DEFINER no schema public estão com EXECUTE concedido a PUBLIC/anon/authenticated | canônico | zero | — |
-| `2026-06-19_kit_dimensions_backfill.sql` | backfill de dimensões dos 301 kits incompletos Alvo: SSOT externo (doufsxqlfjyuvxuezpln) Autor: PromoGifts · 2026-06-19 ==================== | canônico | — | — |
-| `2026-06-19_reposicao_variants_summary.sql` | Cria RPC `fn_get_reposicao_variants_summary(p_product_ids | canônico | — | 📎 `.VALIDATION.md` |
-| `2026-06-20_revoke_secdef_from_authenticated.sql` | SECURITY DEFINER ACL — Revogação de authenticated/anon/public | canônico | zero | — |
-| `2026-06-27_quotes_status_allow_cancelled.sql` | liberar `cancelled` no CHECK `valid_quote_status` de `public | canônico | — | — |
-| `2026-07-06_crm_callback_events.sql` | tabela de auditoria/idempotência para callbacks do CRM (Promo Champions V2) recebidos pela edge function `receive-crm-callback` | canônico | — | — |
-| `2026-07-13_secdef_revoke_webhook_locks.sql` | Draft (NÃO executar sem aprovação do PO — CLAUDE.md #Comportamento obrigatório) | canônico | — | — |
-| `2026-07-13_secdef_revoke_webhook_locks_ROLLBACK.sql` | cria Antes | canônico | — | — |
-| `2026-07-23_get_edge_invoke_summary.sql` | Onda 20.3 — RPC read-only agregando métricas de invoke edge. | canônico | — | — |
-| `2026-09-09_magazine_rpc_only_contract.sql` | contrair o rollout Magazine v2 para mutações exclusivamente via RPC | canônico | alto se aplicado antes do cliente v2 est | — |
+| Arquivo                                               | Objetivo                                                                                                                                     | Alvo     | Risco                                             | Validação                   |
+| ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------- | --------------------------- |
+| `2026-06-18_security_definer_acl.sql`                 | 10 funções SECURITY DEFINER no schema public estão com EXECUTE concedido a PUBLIC/anon/authenticated                                         | canônico | zero                                              | —                           |
+| `2026-06-19_kit_dimensions_backfill.sql`              | backfill de dimensões dos 301 kits incompletos Alvo: SSOT externo (doufsxqlfjyuvxuezpln) Autor: PromoGifts · 2026-06-19 ==================== | canônico | —                                                 | —                           |
+| `2026-06-19_reposicao_variants_summary.sql`           | Cria RPC `fn_get_reposicao_variants_summary(p_product_ids                                                                                    | canônico | —                                                 | 📎 `.VALIDATION.md`         |
+| `2026-06-20_revoke_secdef_from_authenticated.sql`     | SECURITY DEFINER ACL — Revogação de authenticated/anon/public                                                                                | canônico | zero                                              | —                           |
+| `2026-06-27_quotes_status_allow_cancelled.sql`        | liberar `cancelled` no CHECK `valid_quote_status` de `public                                                                                 | canônico | —                                                 | —                           |
+| `2026-07-06_crm_callback_events.sql`                  | tabela de auditoria/idempotência para callbacks do CRM (Promo Champions V2) recebidos pela edge function `receive-crm-callback`              | canônico | —                                                 | —                           |
+| `2026-07-13_secdef_revoke_webhook_locks.sql`          | Draft (NÃO executar sem aprovação do PO — CLAUDE.md #Comportamento obrigatório)                                                              | canônico | —                                                 | —                           |
+| `2026-07-13_secdef_revoke_webhook_locks_ROLLBACK.sql` | cria Antes                                                                                                                                   | canônico | —                                                 | —                           |
+| `2026-07-23_get_edge_invoke_summary.sql`              | Onda 20.3 — RPC read-only agregando métricas de invoke edge.                                                                                 | canônico | —                                                 | —                           |
+| `2026-09-09_magazine_rpc_only_contract.sql`           | histórico; promoção revisada em `20260928163919_magazine_rpc_only_contract.sql`                                                              | canônico | alto se aplicado antes do cliente v2 estar pronto | 🟠 versionada, não aplicada |
+
 <!-- END:DRAFT-INDEX -->
 
 ## Regras
@@ -87,19 +89,19 @@ inicial (com fallback quando o CLI falhar).
 
 ### Flags do PR
 
-| Flag | Valor | Descrição |
-| --- | --- | --- |
-| `--pr` | — | Ativa a automação (só faz sentido junto com `--apply`). |
-| `--base=<branch>` | `main` (default) | Branch alvo do PR. |
-| `--draft-pr` | — | Abre o PR como **draft** no GitHub. |
-| `--labels=<a,b,c>` | csv | Labels **extras** — a label `db-migration` é sempre adicionada. |
-| `--reviewers=<a,b>` | csv/espaço | Handles (`user`, `org/time`, `bot[bot]`). Validado antes de rodar `gh`. |
-| `--assignees=<a,b>` | csv/espaço | Idem `--reviewers`. Não use `@` no início. |
-| `--skip-db-diff` | — | Não coleta nem anexa o `supabase db diff --linked`. |
-| `--db-diff-max-bytes=<n>` | `60000` (default) | Limite de bytes do comentário do diff (evita corte silencioso em migrações grandes). |
-| `--db-diff-cache` | — | Cacheia o resultado de `supabase db diff --linked` em `$TMPDIR/promo-gifts/supabase-db-diff-cache/` (opt-in). Útil ao promover vários drafts em sequência. |
-| `--db-diff-cache-ttl=<s>` | `900` (default) | TTL do cache em segundos. Chave inclui as migrations existentes, então aplicar uma nova invalida sozinho. |
-| `--no-db-diff-cache` | — | Ignora o cache mesmo com `--db-diff-cache` (força regeneração). |
+| Flag                      | Valor             | Descrição                                                                                                                                                  |
+| ------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--pr`                    | —                 | Ativa a automação (só faz sentido junto com `--apply`).                                                                                                    |
+| `--base=<branch>`         | `main` (default)  | Branch alvo do PR.                                                                                                                                         |
+| `--draft-pr`              | —                 | Abre o PR como **draft** no GitHub.                                                                                                                        |
+| `--labels=<a,b,c>`        | csv               | Labels **extras** — a label `db-migration` é sempre adicionada.                                                                                            |
+| `--reviewers=<a,b>`       | csv/espaço        | Handles (`user`, `org/time`, `bot[bot]`). Validado antes de rodar `gh`.                                                                                    |
+| `--assignees=<a,b>`       | csv/espaço        | Idem `--reviewers`. Não use `@` no início.                                                                                                                 |
+| `--skip-db-diff`          | —                 | Não coleta nem anexa o `supabase db diff --linked`.                                                                                                        |
+| `--db-diff-max-bytes=<n>` | `60000` (default) | Limite de bytes do comentário do diff (evita corte silencioso em migrações grandes).                                                                       |
+| `--db-diff-cache`         | —                 | Cacheia o resultado de `supabase db diff --linked` em `$TMPDIR/promo-gifts/supabase-db-diff-cache/` (opt-in). Útil ao promover vários drafts em sequência. |
+| `--db-diff-cache-ttl=<s>` | `900` (default)   | TTL do cache em segundos. Chave inclui as migrations existentes, então aplicar uma nova invalida sozinho.                                                  |
+| `--no-db-diff-cache`      | —                 | Ignora o cache mesmo com `--db-diff-cache` (força regeneração).                                                                                            |
 
 ### Exemplos
 
@@ -171,5 +173,3 @@ npm run draft:promote -- 2026-06-27_quotes_status_allow_cancelled.sql --apply --
   ls "$TMPDIR/promo-gifts/supabase-db-diff-cache/"
   rm -rf "$TMPDIR/promo-gifts/supabase-db-diff-cache/"
   ```
-
-

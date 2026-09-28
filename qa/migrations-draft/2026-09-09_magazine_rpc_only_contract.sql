@@ -4,6 +4,9 @@
 -- PRÉ-CONDIÇÃO: deploy v2 READY + smoke autenticado + aprovação explícita do PO.
 -- VALIDAÇÃO: scripts/test-magazine-hardening-v2.sh aplica este draft duas vezes.
 -- STATUS: rascunho de promoção posterior; NUNCA autoexecutado por Supabase CLI.
+-- SUPERADO: a versão promovida, ampliada e validada é
+-- supabase/migrations/20260928163919_magazine_rpc_only_contract.sql.
+-- Este arquivo permanece somente como registro histórico e não deve ser aplicado.
 
 BEGIN;
 
