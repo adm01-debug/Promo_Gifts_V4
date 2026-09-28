@@ -3,6 +3,10 @@ name: Branch Protection Sentinel
 # ============================================================================
 # CHANGELOG (resumo — detalhes em .github/SENTINEL_CHANGELOG.md):
 #
+# v2.0.4 (2026-09-28) — fix check-protection-config: add administration:read
+#   • GITHUB_TOKEN precisava de administration:read para listar /rulesets
+#   • Sem essa permissão, a API retornava [] silenciosamente (HTTP 200 + array vazio)
+#
 # v2.0.3 (2026-09-27) — fix E12/R5: secret não como arg posicional
 #   • SLACK_WEBHOOK passado via --url (named flag) em vez de arg posicional
 #   • 2>/dev/null suprime qualquer erro que pudesse conter a URL
@@ -229,6 +233,7 @@ jobs:
     timeout-minutes: 5
     permissions:
       contents: read
+      administration: read
     steps:
       - name: Query rulesets for main (E52 — substituiu query de campo `protected` que retorna 404 com rulesets)
         env:
