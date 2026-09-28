@@ -759,7 +759,7 @@ da execução e consulta read-only ao catálogo/ledger, sem reaplicar SQL.
 |---|---|---|---|---|---|---|---|
 | `20260922170000` | `266f0963a9e7b1d30e8594d7c6218747b6a79baf16aa272249e864f55a64b29b` | `badcb6626e975ee80bab7d562a6c12cc` | GitHub Actions, disparado por `adm01-debug` | E15 | 2026-09-22 18:34:03 UTC (fim do passo psql) | [Run 35760867980, tentativa 1](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/35760867980/attempts/1): apply, repair e post-check aprovados; recoleta read-only em 22/09 19:27 UTC confirmou ledger, corpo e ACL | aplicada; recibo recuperado documentalmente pelo Codex, a pedido do PO |
 | `20260923114500` | `18663b52473fa9fd0edb031495ebe1ed8fc8c0ea0c262631a3b3bf035d8d91b7` | `87c7eefd2929c273fbedd75e4d61c423` | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug) | E15 | 2026-09-23 11:56:55 UTC | job post-check da run 35857184284 confirmou a version no ledger | aplicada |
-| `20260928212000` | `ee74211666629f075e4af7322da77c234ef99e2510ca57f853135b5c0be9292c` | — | — (aguardando `workflow_dispatch` E15 pelo PO) | E15 | — | pendente: preflight local OK; back-link `products.padronizacao_id` (522 linhas) + `fn_promote_padronizacao` passa a gravar o back-link | **pendente — não aplicada** |
+| `20260928212000` | `0ea5dfd928fca67e7553ca2d0ea9414b18efa90a3586588ba5f9870c2c283720` | — | — (aguardando `workflow_dispatch` E15 pelo PO) | E15 | — | pendente: preflight local OK; back-link `products.padronizacao_id` (522 linhas) + `fn_promote_padronizacao` passa a gravar o back-link | **pendente — não aplicada** |
 
 ### Evidências do recibo `20260922170000`
 

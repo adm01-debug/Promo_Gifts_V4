@@ -18,9 +18,9 @@
 --   2. fn_promote_padronizacao passa a gravar padronizacao_id no INSERT
 --      (produto novo) e no UPDATE (produto existente). Corpo idêntico ao vivo
 --      (pg_get_functiondef em 2026-09-28) + as duas linhas novas; única
---      diferença cosmética: `COALESCE(TRIM(v_cat_l1),'') <> ''` no lugar de
---      `v_cat_l1 IS NOT NULL AND TRIM(v_cat_l1) <> ''` (mesma semântica; evita
---      falso positivo do SonarCloud na regra de comparação com NULL). SECURITY
+--      diferença cosmética: `NULLIF(TRIM(v_cat_l1),'') IS NOT NULL` no lugar de
+--      `v_cat_l1 IS NOT NULL AND TRIM(v_cat_l1) <> ''` (mesma semântica; o
+--      analisador PL/SQL do SonarCloud trata '' como NULL e acusa `<> ''`). SECURITY
 --      DEFINER + search_path preservados; CREATE OR REPLACE mantém owner/ACL.
 --   3. Pós-check fail-closed: se sobrar produto sem back-link cuja Silver
 --      'promoted' aponta para ele, RAISE → rollback de tudo.
@@ -110,7 +110,7 @@ BEGIN
         SELECT split_part(COALESCE(spr.raw_data ->> v_cat_src, ''), '|', 1)
         INTO v_cat_l1
         FROM public.supplier_products_raw spr WHERE spr.id = s.raw_id;
-        IF COALESCE(TRIM(v_cat_l1), '') <> '' THEN
+        IF NULLIF(TRIM(v_cat_l1), '') IS NOT NULL THEN
           SELECT scm.category_id INTO v_cat_id
           FROM public.supplier_categories sc
           JOIN public.supplier_category_mappings scm ON scm.supplier_category_id = sc.id
