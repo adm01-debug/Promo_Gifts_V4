@@ -5,12 +5,7 @@
  */
 import { getCatalogStockStatus, type CatalogStockStatus } from '@/lib/catalog-stock-status';
 import type { Product, ProductVariation } from '@/types/product-catalog';
-import {
-  type PromobrindProduct,
-  getProductImageUrl,
-  getProductPrice,
-  getProductStock,
-} from '@/lib/external-db';
+import { type PromobrindProduct, getProductImageUrl, getProductStock } from '@/lib/external-db';
 import { normalizeColors } from '@/utils/product-colors';
 
 function getStockStatus(stock: number, minQuantity?: number | null): CatalogStockStatus {
@@ -146,7 +141,9 @@ export function mapPromobrindToProduct(p: PromobrindProduct): Product {
     shortDescription: p.short_description ?? '',
     category_id: p.category_id || p.main_category_id || null,
     category_name: p.category_name || null,
-    price: getProductPrice(p),
+    // `price` preserva o preço original; consumidores calculam o efetivo com
+    // `sale_price ?? price` (contrato de Product/AGENTS.md).
+    price: p.base_price ?? p.sale_price ?? 0,
     sale_price: typeof p.sale_price === 'number' ? p.sale_price : undefined,
     image_url: images[0],
     primary_image_url: p.primary_image_url || null,
@@ -272,9 +269,9 @@ export function mapPromobrindToProduct(p: PromobrindProduct): Product {
     aiVersion: typeof p.ai_version === 'number' ? p.ai_version : null,
     aiGeneratedAt: p.ai_generated_at ?? null,
     // V2 — passthrough do JSONB populado por fn_rebuild_color_swatches (trigger no BD externo).
-    color_swatches: (Array.isArray(p.color_swatches)
+    color_swatches: Array.isArray(p.color_swatches)
       ? (p.color_swatches as Product['color_swatches'])
-      : null),
+      : null,
     has_colors: typeof p.has_colors === 'boolean' ? p.has_colors : null,
   };
 }

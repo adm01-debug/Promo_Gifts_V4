@@ -12,6 +12,7 @@ import type { Magazine } from '@/types/magazine';
 import { Button } from '@/components/ui/button';
 import { paginateMagazine } from './pagination';
 import { MagazinePageRenderer } from './components/MagazinePageRenderer';
+import { waitForMagazinePrintReadiness } from './printReadiness';
 import './magazine.css';
 
 export default function MagazinePrintPage() {
@@ -21,6 +22,8 @@ export default function MagazinePrintPage() {
   const [magazine, setMagazine] = useState<Magazine | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [preparingPrint, setPreparingPrint] = useState(false);
+  const [printError, setPrintError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -47,6 +50,22 @@ export default function MagazinePrintPage() {
   }, [id, token]);
 
   const pages = useMemo(() => (magazine ? paginateMagazine(magazine) : []), [magazine]);
+
+  const print = async () => {
+    if (preparingPrint) return;
+    setPreparingPrint(true);
+    setPrintError(null);
+    try {
+      await waitForMagazinePrintReadiness();
+      window.print();
+    } catch (error) {
+      setPrintError(
+        error instanceof Error ? error.message : 'Não foi possível preparar a impressão.',
+      );
+    } finally {
+      setPreparingPrint(false);
+    }
+  };
 
   if (!loaded) {
     return (
@@ -76,17 +95,36 @@ export default function MagazinePrintPage() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-200 py-8">
+    <div className="mag-print-root min-h-screen bg-neutral-200 py-8">
       <div className="mag-hide-in-print fixed right-6 top-6 z-50 flex flex-col gap-2">
-        <Button size="lg" onClick={() => window.print()} data-testid="magazine-print-btn">
-          <Printer className="mr-2 h-5 w-5" /> Salvar como PDF
+        <Button
+          size="lg"
+          onClick={print}
+          disabled={preparingPrint}
+          aria-busy={preparingPrint}
+          data-testid="magazine-print-btn"
+        >
+          {preparingPrint ? (
+            <Loader2 className="mr-2 h-5 w-5 animate-spin" aria-hidden />
+          ) : (
+            <Printer className="mr-2 h-5 w-5" aria-hidden />
+          )}
+          {preparingPrint ? 'Preparando…' : 'Salvar como PDF'}
         </Button>
+        {printError && (
+          <span
+            role="alert"
+            className="max-w-64 rounded bg-destructive px-2 py-1 text-xs text-destructive-foreground"
+          >
+            {printError} Tente novamente.
+          </span>
+        )}
         <span className="rounded bg-black/70 px-2 py-1 text-center text-xs text-white">
           Use o diálogo de impressão do navegador
         </span>
       </div>
 
-      <div className="mx-auto flex max-w-[1000px] flex-col gap-6 print:max-w-none print:gap-0">
+      <div className="mag-print-pages mx-auto flex max-w-[1000px] flex-col gap-6 print:max-w-none print:gap-0">
         {pages.map((p) => (
           <div
             key={p.index}

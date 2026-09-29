@@ -200,7 +200,11 @@ function TemplateCardImpl({
         >
           {entry.fonts.heading}
         </span>
-        <span className="ml-auto flex items-center gap-1" aria-label="Paleta padrão">
+        <span
+          className="ml-auto flex items-center gap-1"
+          role="img"
+          aria-label={`Paleta padrão: primária ${entry.defaultColors.primary}, secundária ${entry.defaultColors.secondary}, texto ${entry.defaultColors.text}`}
+        >
           {(['primary', 'secondary', 'text'] as const).map((k) => (
             <span
               key={k}

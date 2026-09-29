@@ -5,7 +5,7 @@
  * Sistema de tokens inspirado no Catálogo Abreez 2026:
  *  - 14 cores categóricas para SidebarChrome/PageNumberBadge
  *  - 5 cores de marca "Editorial" (capa/contracapa/callout)
- *  - Fontes premium (@fontsource): Playfair Display + Great Vibes + Inter + DM Serif Display
+ *  - Fontes premium (@fontsource): Playfair Display + Great Vibes + Inter + DM Serif Display + Archivo Black
  */
 
 /* Fontes premium — importadas locais via @fontsource */
@@ -13,6 +13,7 @@
 @import '@fontsource/playfair-display/700.css';
 @import '@fontsource/playfair-display/900.css';
 @import '@fontsource/dm-serif-display/400.css';
+@import '@fontsource/archivo-black/400.css';
 @import '@fontsource/great-vibes/400.css';
 @import '@fontsource/inter/400.css';
 @import '@fontsource/inter/500.css';
@@ -111,13 +112,28 @@
 @media print {
   html,
   body {
+    page: magazine;
     margin: 0;
     padding: 0;
     background: white;
   }
-  @page {
-    size: A4;
-    margin: 0;
+  .mag-print-root {
+    page: magazine;
+    min-height: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+  }
+  .mag-print-root header,
+  .mag-print-root nav,
+  .mag-print-root aside,
+  .mag-print-root [role='navigation'] {
+    display: revert !important;
+  }
+  .mag-print-pages {
+    page: magazine;
+    display: block !important;
+    width: 210mm !important;
+    max-width: none !important;
   }
   .mag-print-only {
     display: block !important;
@@ -126,8 +142,8 @@
     display: none !important;
   }
   .mag-scope .mag-page {
-    width: 100vw;
-    height: 100vh;
+    width: 210mm;
+    height: 297mm;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
     transform: none !important;
@@ -135,13 +151,16 @@
     border-radius: 0 !important;
   }
   .mag-preview-wrapper > .mag-preview-canvas {
-    width: 100vw !important;
-    height: 100vh !important;
+    width: 210mm !important;
+    height: 297mm !important;
     transform: none !important;
   }
   .mag-print-sheet {
-    width: 100vw !important;
-    height: 100vh !important;
+    page: magazine;
+    display: block !important;
+    width: 210mm !important;
+    height: 297mm !important;
+    margin: 0 !important;
     overflow: hidden !important;
     page-break-after: always;
     break-after: page;
