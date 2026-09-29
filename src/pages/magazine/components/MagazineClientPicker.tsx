@@ -4,7 +4,7 @@
  */
 
 import { useEffect, useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { Building2, Check, ChevronDown, Search, X } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Input } from '@/components/ui/input';
@@ -18,6 +18,7 @@ interface Props {
   clientName: string | null;
   clientLogoUrl: string | null;
   clientCrmId?: string | null;
+  cacheScope?: string;
   onChange: (patch: {
     clientCrmId?: string | null;
     clientName?: string | null;
@@ -33,7 +34,15 @@ interface Row {
   ramo: string | null;
 }
 
-export function MagazineClientPicker({ clientName, clientLogoUrl, clientCrmId, onChange }: Props) {
+const PAGE_SIZE = 50;
+
+export function MagazineClientPicker({
+  clientName,
+  clientLogoUrl,
+  clientCrmId,
+  cacheScope = 'anonymous',
+  onChange,
+}: Props) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [debounced, setDebounced] = useState('');
@@ -43,25 +52,32 @@ export function MagazineClientPicker({ clientName, clientLogoUrl, clientCrmId, o
     return () => clearTimeout(t);
   }, [query]);
 
-  const { data: companies = [], isLoading } = useQuery({
-    queryKey: ['magazine-crm-companies'],
-    queryFn: async () => {
-      const rows = await selectCrm<CrmCompany>('companies', {
-        select: 'id, razao_social, nome_fantasia, logo_url, ramo_atividade, cnpj',
-        filters: { deleted_at: null, is_customer: true },
-        orderBy: { column: 'razao_social', ascending: true },
-        limit: 200,
-      });
-      return rows.map<Row>((c) => ({
-        id: c.id,
-        name: getCompanyDisplayName(c),
-        logo_url: c.logo_url ?? null,
-        cnpj: c.cnpj ?? null,
-        ramo: c.ramo_atividade ?? null,
-      }));
-    },
-    staleTime: 15 * 60 * 1000,
-  });
+  const { data, isLoading, isError, refetch, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
+      queryKey: ['magazine-crm-companies', cacheScope],
+      initialPageParam: 0,
+      queryFn: async ({ pageParam }) => {
+        const rows = await selectCrm<CrmCompany>('companies', {
+          select: 'id, razao_social, nome_fantasia, logo_url, ramo_atividade, cnpj',
+          filters: { deleted_at: null, is_customer: true },
+          orderBy: { column: 'razao_social', ascending: true },
+          limit: PAGE_SIZE,
+          offset: pageParam,
+        });
+        return rows.map<Row>((c) => ({
+          id: c.id,
+          name: getCompanyDisplayName(c),
+          logo_url: c.logo_url ?? null,
+          cnpj: c.cnpj ?? null,
+          ramo: c.ramo_atividade ?? null,
+        }));
+      },
+      getNextPageParam: (lastPage, pages) =>
+        lastPage.length === PAGE_SIZE ? pages.length * PAGE_SIZE : undefined,
+      staleTime: 15 * 60 * 1000,
+    });
+
+  const companies = useMemo(() => data?.pages.flat() ?? [], [data]);
 
   const filtered = useMemo(() => {
     if (!debounced) return companies.slice(0, 40);
@@ -75,6 +91,16 @@ export function MagazineClientPicker({ clientName, clientLogoUrl, clientCrmId, o
       )
       .slice(0, 40);
   }, [companies, debounced]);
+
+  // Ao buscar, percorre as páginas seguintes até achar correspondências ou
+  // esgotar o CRM. Assim um cliente fora da primeira página não vira falso
+  // “nenhum resultado”. A paginação manual continua disponível sem busca.
+  useEffect(() => {
+    if (!open || !debounced || filtered.length > 0 || !hasNextPage || isFetchingNextPage) {
+      return;
+    }
+    void fetchNextPage();
+  }, [debounced, fetchNextPage, filtered.length, hasNextPage, isFetchingNextPage, open]);
 
   const select = (row: Row) => {
     onChange({ clientCrmId: row.id, clientName: row.name, clientLogoUrl: row.logo_url });
@@ -96,7 +122,7 @@ export function MagazineClientPicker({ clientName, clientLogoUrl, clientCrmId, o
               type="button"
               className="flex h-full min-w-0 flex-1 items-center gap-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               aria-label="Escolher cliente do CRM"
-              aria-haspopup="listbox"
+              aria-haspopup="dialog"
               aria-expanded={open}
               data-testid="magazine-client-picker-trigger"
             >
@@ -136,23 +162,48 @@ export function MagazineClientPicker({ clientName, clientLogoUrl, clientCrmId, o
               </div>
             </div>
             <ScrollArea className="h-72">
-              <div role="listbox" aria-label="Empresas do CRM" className="p-1">
+              <div role="group" aria-label="Empresas do CRM" className="p-1">
                 {isLoading && (
                   <div className="p-4 text-center text-xs text-muted-foreground">Carregando…</div>
                 )}
-                {!isLoading && filtered.length === 0 && (
-                  <div className="p-4 text-center text-xs text-muted-foreground">
-                    Nenhum cliente encontrado.
+                {isError && (
+                  <div role="alert" className="space-y-2 p-4 text-center text-xs text-destructive">
+                    <p>Não foi possível carregar os clientes do CRM.</p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        refetch().catch(() => undefined);
+                      }}
+                      className="font-medium text-primary underline-offset-2 hover:underline"
+                    >
+                      Tentar novamente
+                    </button>
                   </div>
                 )}
+                {!isLoading &&
+                  !isError &&
+                  filtered.length === 0 &&
+                  (hasNextPage || isFetchingNextPage) && (
+                    <div className="p-4 text-center text-xs text-muted-foreground">
+                      Procurando em todo o CRM…
+                    </div>
+                  )}
+                {!isLoading &&
+                  !isError &&
+                  filtered.length === 0 &&
+                  !hasNextPage &&
+                  !isFetchingNextPage && (
+                    <div className="p-4 text-center text-xs text-muted-foreground">
+                      Nenhum cliente encontrado.
+                    </div>
+                  )}
                 {filtered.map((c) => {
                   const active = c.id === clientCrmId;
                   return (
                     <button
                       key={c.id}
                       type="button"
-                      role="option"
-                      aria-selected={active}
+                      aria-pressed={active}
                       onClick={() => select(c)}
                       className={cn(
                         'flex w-full items-center gap-3 rounded-md p-2 text-left transition-colors duration-150 hover:bg-card-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
@@ -183,6 +234,18 @@ export function MagazineClientPicker({ clientName, clientLogoUrl, clientCrmId, o
                     </button>
                   );
                 })}
+                {!isError && hasNextPage && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      fetchNextPage().catch(() => undefined);
+                    }}
+                    disabled={isFetchingNextPage}
+                    className="mt-1 w-full rounded-md px-3 py-2 text-xs font-medium text-primary hover:bg-card-elevated disabled:opacity-60"
+                  >
+                    {isFetchingNextPage ? 'Carregando…' : 'Carregar mais clientes'}
+                  </button>
+                )}
               </div>
             </ScrollArea>
           </PopoverContent>

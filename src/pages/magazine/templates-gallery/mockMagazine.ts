@@ -19,7 +19,9 @@ import { listTemplates } from '../components/templates/TemplateRegistry';
 
 const PLACEHOLDER = '/placeholder.svg';
 
-function snapshot(partial: Partial<MagazineProductSnapshot> & { id: string; name: string; sku: string }): MagazineProductSnapshot {
+function snapshot(
+  partial: Partial<MagazineProductSnapshot> & { id: string; name: string; sku: string },
+): MagazineProductSnapshot {
   return {
     id: partial.id,
     name: partial.name,
@@ -29,7 +31,7 @@ function snapshot(partial: Partial<MagazineProductSnapshot> & { id: string; name
     price: partial.price ?? 0,
     sale_price: partial.sale_price,
     image_url: partial.image_url ?? PLACEHOLDER,
-    images: partial.images ?? [PLACEHOLDER],
+    images: partial.images ?? [partial.image_url ?? PLACEHOLDER],
     colors: partial.colors ?? [],
     category_name: partial.category_name ?? null,
     category_id: partial.category_id ?? null,
@@ -48,7 +50,7 @@ const PRODUCTS: MagazineProductSnapshot[] = [
     price: 89.9,
     sale_price: 74.9,
     category_name: 'Drinkwares',
-    image_url: PLACEHOLDER,
+    image_url: '/images/magazine-demo/thermal-bottle.webp',
     materials: ['Aço inox 304', 'Silicone'],
     colors: [
       { name: 'Verde Musgo', hex: '#2e4a3a', group: 'Verde' },
@@ -60,9 +62,11 @@ const PRODUCTS: MagazineProductSnapshot[] = [
     id: 'mock-2',
     name: 'Mochila Executiva Slim',
     sku: 'BR-1002',
-    shortDescription: 'Mochila em poliéster reciclado com compartimento acolchoado para notebook 15".',
+    shortDescription:
+      'Mochila em poliéster reciclado com compartimento acolchoado para notebook 15".',
     price: 189.0,
     category_name: 'Bags',
+    image_url: '/images/magazine-demo/backpack.webp',
     materials: ['Poliéster RPET', 'Nylon'],
     colors: [
       { name: 'Preto', hex: '#101010', group: 'Preto' },
@@ -77,6 +81,7 @@ const PRODUCTS: MagazineProductSnapshot[] = [
     shortDescription: 'Caneta esferográfica de metal com clip magnético e refil azul.',
     price: 24.5,
     category_name: 'Stationery',
+    image_url: '/images/magazine-demo/metal-pen.webp',
     materials: ['Alumínio'],
     colors: [
       { name: 'Champagne', hex: '#c9a84c', group: 'Dourado' },
@@ -91,6 +96,7 @@ const PRODUCTS: MagazineProductSnapshot[] = [
     shortDescription: 'Caderno com 160 páginas pautadas, capa em couro sintético e elástico.',
     price: 59.9,
     category_name: 'Stationery',
+    image_url: '/images/magazine-demo/executive-notebook.webp',
     materials: ['Couro sintético', 'Papel 90g'],
     colors: [
       { name: 'Vinho', hex: '#5c1a2b', group: 'Vermelho' },
@@ -106,6 +112,7 @@ const PRODUCTS: MagazineProductSnapshot[] = [
     price: 449.0,
     sale_price: 379.0,
     category_name: 'Technology',
+    image_url: '/images/magazine-demo/headphones.webp',
     materials: ['ABS', 'Espuma memory'],
     colors: [
       { name: 'Preto Fosco', hex: '#0d0d0d', group: 'Preto' },
@@ -120,6 +127,7 @@ const PRODUCTS: MagazineProductSnapshot[] = [
     shortDescription: 'Camiseta gola polo em piquet 100% algodão penteado, botões em madrepérola.',
     price: 79.0,
     category_name: 'Wearables',
+    image_url: '/images/magazine-demo/polo-shirt.webp',
     materials: ['Algodão penteado'],
     colors: [
       { name: 'Branco', hex: '#ffffff', group: 'Branco' },
@@ -134,6 +142,7 @@ const PRODUCTS: MagazineProductSnapshot[] = [
     shortDescription: 'Garrafa de vidro borossilicato com luva de silicone antiderrapante.',
     price: 42.9,
     category_name: 'Drinkwares',
+    image_url: '/images/magazine-demo/glass-bottle.webp',
     materials: ['Vidro borossilicato', 'Silicone'],
     colors: [
       { name: 'Cristal', hex: '#e8ecef', group: 'Transparente' },
@@ -148,6 +157,7 @@ const PRODUCTS: MagazineProductSnapshot[] = [
     shortDescription: 'Carregador portátil com entrada USB-C PD 20W e display digital.',
     price: 149.0,
     category_name: 'Technology',
+    image_url: '/images/magazine-demo/power-bank.webp',
     materials: ['Alumínio', 'Bateria Li-Po'],
     colors: [
       { name: 'Preto', hex: '#111111', group: 'Preto' },
@@ -163,10 +173,9 @@ const PRODUCTS: MagazineProductSnapshot[] = [
     price: 219.0,
     sale_price: 189.0,
     category_name: 'Gift Sets',
+    image_url: '/images/magazine-demo/gift-set.webp',
     materials: ['Couro sintético', 'Alumínio', 'Vidro'],
-    colors: [
-      { name: 'Preto & Dourado', hex: '#c9a84c', group: 'Dourado' },
-    ],
+    colors: [{ name: 'Preto & Dourado', hex: '#c9a84c', group: 'Dourado' }],
     dimensions: { height_cm: 28, width_cm: 22, length_cm: 8, weight_g: 1200 },
   }),
 ];

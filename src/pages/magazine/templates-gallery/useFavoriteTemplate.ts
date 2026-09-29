@@ -8,12 +8,16 @@
 
 import { useCallback, useEffect, useState } from 'react';
 
-const STORAGE_KEY = 'magazine:favorite-template';
+const STORAGE_PREFIX = 'magazine:favorite-template:v2';
 
-function readStorage(): string | null {
+function storageKey(userId: string | null | undefined): string {
+  return `${STORAGE_PREFIX}:${encodeURIComponent(userId || 'anonymous')}`;
+}
+
+function readStorage(key: string): string | null {
   if (typeof window === 'undefined') return null;
   try {
-    const v = window.localStorage.getItem(STORAGE_KEY);
+    const v = window.localStorage.getItem(key);
     if (typeof v !== 'string' || v.length === 0 || v.length > 100) return null;
     return v;
   } catch {
@@ -21,42 +25,50 @@ function readStorage(): string | null {
   }
 }
 
-function writeStorage(value: string | null): void {
+function writeStorage(key: string, value: string | null): void {
   if (typeof window === 'undefined') return;
   try {
-    if (value === null) window.localStorage.removeItem(STORAGE_KEY);
-    else window.localStorage.setItem(STORAGE_KEY, value);
+    if (value === null) window.localStorage.removeItem(key);
+    else window.localStorage.setItem(key, value);
   } catch {
     // storage indisponível (Safari privado, cota estourada) → ignora silenciosamente
   }
 }
 
-export function useFavoriteTemplate() {
-  const [favoriteId, setFavoriteId] = useState<string | null>(() => readStorage());
+export function useFavoriteTemplate(userId?: string | null) {
+  const key = storageKey(userId);
+  const [favoriteId, setFavoriteId] = useState<string | null>(() => readStorage(key));
+
+  useEffect(() => {
+    setFavoriteId(readStorage(key));
+  }, [key]);
 
   // Sincroniza entre abas/janelas
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const onStorage = (e: StorageEvent) => {
-      if (e.key !== STORAGE_KEY) return;
-      setFavoriteId(readStorage());
+      if (e.key !== key) return;
+      setFavoriteId(readStorage(key));
     };
     window.addEventListener('storage', onStorage);
     return () => window.removeEventListener('storage', onStorage);
-  }, []);
+  }, [key]);
 
-  const toggleFavorite = useCallback((id: string) => {
-    setFavoriteId((current) => {
-      const next = current === id ? null : id;
-      writeStorage(next);
-      return next;
-    });
-  }, []);
+  const toggleFavorite = useCallback(
+    (id: string) => {
+      setFavoriteId((current) => {
+        const next = current === id ? null : id;
+        writeStorage(key, next);
+        return next;
+      });
+    },
+    [key],
+  );
 
   const clearFavorite = useCallback(() => {
-    writeStorage(null);
+    writeStorage(key, null);
     setFavoriteId(null);
-  }, []);
+  }, [key]);
 
   return { favoriteId, toggleFavorite, clearFavorite };
 }

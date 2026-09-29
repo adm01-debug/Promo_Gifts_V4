@@ -222,42 +222,42 @@ export function getProductStock(product: PromobrindProduct): number {
 // schema do BD externo ainda não foi aplicado; consumidores usam default 60d.
 export const PRODUCT_SELECT_FIELDS_WITH_SALE =
   'id, name, sku, sale_price, cost_price, images, primary_image_url, primary_image_fallback_url, set_image_url, ' +
-  'category_id, main_category_id, supplier_id, supplier_reference, description, ' +
+  'category_id, main_category_id, category_name, supplier_id, supplier_reference, description, ' +
   'short_description, meta_description, brand, is_active, active, stock_quantity, colors, ' +
   'materials, dimensions, min_quantity, created_at, updated_at, price_updated_at, ' +
   'price_freshness_threshold_days, ' +
-  'is_featured, is_bestseller, is_new, is_on_sale, is_kit, gender, ' +
+  'is_featured, is_bestseller, is_new, is_on_sale, is_kit, gender, allows_personalization, ' +
   'height_cm, width_cm, length_cm, diameter_cm, circumference_cm, weight_g, capacity_ml, ' +
   'packing_type, packing_classification, has_commercial_packaging, repacking_type, packaging_context, ' +
   'box_image, box_width_mm, box_height_mm, box_length_mm, box_weight_kg, box_quantity, box_volume_cm3, ai_title, ai_description, ai_summary, ai_version, ai_generated_at, color_swatches, has_colors';
 
 export const PRODUCT_SELECT_FIELDS_WITH_SALE_NO_THRESHOLD =
   'id, name, sku, sale_price, cost_price, images, primary_image_url, primary_image_fallback_url, set_image_url, ' +
-  'category_id, main_category_id, supplier_id, supplier_reference, description, ' +
+  'category_id, main_category_id, category_name, supplier_id, supplier_reference, description, ' +
   'short_description, meta_description, brand, is_active, active, stock_quantity, colors, ' +
   'materials, dimensions, min_quantity, created_at, updated_at, price_updated_at, ' +
-  'is_featured, is_bestseller, is_new, is_on_sale, is_kit, gender, ' +
+  'is_featured, is_bestseller, is_new, is_on_sale, is_kit, gender, allows_personalization, ' +
   'height_cm, width_cm, length_cm, diameter_cm, circumference_cm, weight_g, capacity_ml, ' +
   'packing_type, packing_classification, has_commercial_packaging, repacking_type, packaging_context, ' +
   'box_image, box_width_mm, box_height_mm, box_length_mm, box_weight_kg, box_quantity, box_volume_cm3, ai_title, ai_description, ai_summary, ai_version, ai_generated_at, color_swatches, has_colors';
 
 export const PRODUCT_SELECT_FIELDS_LEGACY =
   'id, name, sku, cost_price, images, primary_image_url, primary_image_fallback_url, set_image_url, ' +
-  'category_id, main_category_id, supplier_id, supplier_reference, description, ' +
+  'category_id, main_category_id, category_name, supplier_id, supplier_reference, description, ' +
   'short_description, meta_description, brand, is_active, active, stock_quantity, colors, ' +
   'materials, dimensions, min_quantity, created_at, updated_at, price_updated_at, ' +
   'price_freshness_threshold_days, ' +
-  'is_featured, is_bestseller, is_new, is_on_sale, is_kit, ' +
+  'is_featured, is_bestseller, is_new, is_on_sale, is_kit, allows_personalization, ' +
   'height_cm, width_cm, length_cm, diameter_cm, circumference_cm, weight_g, capacity_ml, ' +
   'packing_type, packing_classification, has_commercial_packaging, repacking_type, packaging_context, ' +
   'box_image, box_width_mm, box_height_mm, box_length_mm, box_weight_kg, box_quantity, box_volume_cm3, ai_title, ai_description, ai_summary, ai_version, ai_generated_at, color_swatches, has_colors';
 
 export const PRODUCT_SELECT_FIELDS_LEGACY_NO_THRESHOLD =
   'id, name, sku, cost_price, images, primary_image_url, primary_image_fallback_url, set_image_url, ' +
-  'category_id, main_category_id, supplier_id, supplier_reference, description, ' +
+  'category_id, main_category_id, category_name, supplier_id, supplier_reference, description, ' +
   'short_description, meta_description, brand, is_active, active, stock_quantity, colors, ' +
   'materials, dimensions, min_quantity, created_at, updated_at, price_updated_at, ' +
-  'is_featured, is_bestseller, is_new, is_on_sale, is_kit, ' +
+  'is_featured, is_bestseller, is_new, is_on_sale, is_kit, allows_personalization, ' +
   'height_cm, width_cm, length_cm, diameter_cm, circumference_cm, weight_g, capacity_ml, ' +
   'packing_type, packing_classification, has_commercial_packaging, repacking_type, packaging_context, ' +
   'box_image, box_width_mm, box_height_mm, box_length_mm, box_weight_kg, box_quantity, box_volume_cm3, ai_title, ai_description, ai_summary, ai_version, ai_generated_at, color_swatches, has_colors';

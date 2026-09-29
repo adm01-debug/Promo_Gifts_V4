@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils';
 import { DEFAULT_BRANDING, type Magazine } from '@/types/magazine';
 import { BrandColorPicker } from '../BrandColorPicker';
 import { MagazineClientPicker } from '../MagazineClientPicker';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   PG_HELP,
   PG_ICON_BOX_SM,
@@ -30,9 +31,11 @@ interface Props {
   onBranding: (patch: Partial<Magazine['branding']>) => void;
 }
 
-/** Limites editoriais (soft): contadores sinalizam, não bloqueiam a digitação. */
+/** Limites editoriais recomendados e limites persistidos pelo banco. */
 const TITLE_MAX = 80;
 const SUBTITLE_MAX = 200;
+const TITLE_HARD_MAX = 200;
+const SUBTITLE_HARD_MAX = 300;
 
 function Counter({ value, max }: { value: number; max: number }) {
   const over = value > max;
@@ -47,6 +50,7 @@ function Counter({ value, max }: { value: number; max: number }) {
 }
 
 export function IdentityStep({ magazine, onTitle, onSubtitle, onBranding }: Props) {
+  const { user } = useAuth();
   const title = magazine.title ?? '';
   const subtitle = magazine.subtitle ?? '';
   return (
@@ -72,12 +76,15 @@ export function IdentityStep({ magazine, onTitle, onSubtitle, onBranding }: Prop
             id="mag-title"
             value={title}
             onChange={(e) => onTitle(e.target.value)}
+            maxLength={TITLE_HARD_MAX}
+            aria-describedby="mag-title-limit"
             placeholder="Coleção Corporativa 2026"
             className={cn(PG_INPUT, 'h-11')}
             data-testid="magazine-title-input"
           />
-          <div className="flex justify-end">
+          <div id="mag-title-limit" className="flex justify-end">
             <Counter value={title.length} max={TITLE_MAX} />
+            <span className="sr-only">Limite máximo de {TITLE_HARD_MAX} caracteres.</span>
           </div>
         </div>
 
@@ -89,18 +96,22 @@ export function IdentityStep({ magazine, onTitle, onSubtitle, onBranding }: Prop
             id="mag-subtitle"
             value={subtitle}
             onChange={(e) => onSubtitle(e.target.value)}
+            maxLength={SUBTITLE_HARD_MAX}
+            aria-describedby="mag-subtitle-limit"
             rows={2}
             placeholder="Uma seleção especial preparada para você"
             className={cn(PG_INPUT, 'h-auto min-h-[72px] py-2.5 leading-relaxed')}
           />
-          <div className="flex justify-end">
+          <div id="mag-subtitle-limit" className="flex justify-end">
             <Counter value={subtitle.length} max={SUBTITLE_MAX} />
+            <span className="sr-only">Limite máximo de {SUBTITLE_HARD_MAX} caracteres.</span>
           </div>
         </div>
 
         <fieldset className="space-y-2">
           <legend className={PG_LABEL}>Cliente (CRM)</legend>
           <MagazineClientPicker
+            cacheScope={user?.id ?? 'anonymous'}
             clientCrmId={magazine.branding?.clientCrmId ?? null}
             clientName={magazine.branding?.clientName ?? null}
             clientLogoUrl={magazine.branding?.clientLogoUrl ?? null}

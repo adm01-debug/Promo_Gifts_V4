@@ -13,11 +13,17 @@ const fixtures = vi.hoisted(() => ({
   refetch: vi.fn(),
   lastFilters: undefined as Record<string, unknown> | undefined,
   lastOptions: undefined as Record<string, unknown> | undefined,
+  lastFetchOptions: undefined as Record<string, unknown> | undefined,
 }));
 vi.mock('@/hooks/products/useProducts', () => ({
-  useProducts: (filters: { search: string }, options: Record<string, unknown>) => {
+  useProducts: (
+    filters: { search: string },
+    options: Record<string, unknown>,
+    fetchOptions: Record<string, unknown>,
+  ) => {
     fixtures.lastFilters = filters;
     fixtures.lastOptions = options;
+    fixtures.lastFetchOptions = fetchOptions;
     return {
       data: fixtures.products.filter((p) =>
         p.name.toLowerCase().includes(filters.search.toLowerCase()),
@@ -36,13 +42,17 @@ vi.mock('@/lib/crm-db', () => ({
     ]),
 }));
 
-function productEditor(onAdd = vi.fn().mockResolvedValue(undefined)) {
+function productEditor(
+  onAdd = vi.fn().mockResolvedValue(undefined),
+  options: { withItems?: boolean; onRemoveMany?: ReturnType<typeof vi.fn> } = {},
+) {
   const magazine = buildMockMagazine('editorial-vogue');
   fixtures.products = magazine.items.map((item) => item.productSnapshot as unknown as Product);
   const props = {
-    magazine: { ...magazine, items: [] },
+    magazine: { ...magazine, items: options.withItems ? magazine.items : [] },
     onAdd,
     onRemove: vi.fn(),
+    onRemoveMany: options.onRemoveMany ?? vi.fn().mockResolvedValue(undefined),
     onUpdateItem: vi.fn(),
   };
   render(<ProductsStep {...props} />);
@@ -61,6 +71,7 @@ describe('Magazine — controles reais, dados isolados', () => {
 
     expect(fixtures.lastFilters).not.toHaveProperty('limit');
     expect(fixtures.lastOptions).toMatchObject({ throwOnError: false });
+    expect(fixtures.lastFetchOptions).toEqual({ enrichment: 'base', requireComplete: true });
     fireEvent.click(screen.getByRole('button', { name: 'Tentar novamente' }));
     expect(fixtures.refetch).toHaveBeenCalledTimes(1);
     expect(screen.getByRole('alert')).toHaveTextContent('Não foi possível carregar o catálogo');
@@ -91,6 +102,29 @@ describe('Magazine — controles reais, dados isolados', () => {
     expect(button).toHaveTextContent('Adicionar (1)');
   });
 
+  it('limpa todos os produtos em uma única mutação atômica', async () => {
+    const onRemoveMany = vi.fn().mockResolvedValue(undefined);
+    productEditor(undefined, { withItems: true, onRemoveMany });
+    fireEvent.click(screen.getByRole('button', { name: 'Limpar tudo' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Limpar tudo' }));
+    await waitFor(() => expect(onRemoveMany).toHaveBeenCalledTimes(1));
+    expect(onRemoveMany.mock.calls[0][0]).toHaveLength(9);
+  });
+
+  it('mantém o diálogo aberto e permite retry quando a limpeza atômica falha', async () => {
+    const onRemoveMany = vi
+      .fn()
+      .mockRejectedValueOnce(new Error('offline'))
+      .mockResolvedValueOnce(undefined);
+    productEditor(undefined, { withItems: true, onRemoveMany });
+    fireEvent.click(screen.getByRole('button', { name: 'Limpar tudo' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Limpar tudo' }));
+    await waitFor(() => expect(onRemoveMany).toHaveBeenCalledTimes(1));
+    expect(screen.getByRole('alertdialog')).toBeVisible();
+    fireEvent.click(screen.getByRole('button', { name: 'Limpar tudo' }));
+    await waitFor(() => expect(onRemoveMany).toHaveBeenCalledTimes(2));
+  });
+
   it('busca textual inexistente não casa com CNPJ vazio; seleção inclui ID', async () => {
     const onChange = vi.fn();
     const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
@@ -103,10 +137,10 @@ describe('Magazine — controles reais, dados isolados', () => {
     const input = screen.getByRole('textbox', { name: 'Buscar cliente' });
     fireEvent.change(input, { target: { value: 'ZZZInexistente' } });
     await waitFor(() => expect(screen.getByText('Nenhum cliente encontrado.')).toBeVisible());
-    expect(screen.queryAllByRole('option')).toHaveLength(0);
+    expect(screen.queryByRole('button', { name: /Beta/ })).not.toBeInTheDocument();
     fireEvent.change(input, { target: { value: 'Beta' } });
-    await waitFor(() => expect(screen.getByRole('option', { name: /Beta/ })).toBeVisible());
-    fireEvent.click(screen.getByRole('option', { name: /Beta/ }));
+    await waitFor(() => expect(screen.getByRole('button', { name: /Beta/ })).toBeVisible());
+    fireEvent.click(screen.getByRole('button', { name: /Beta/ }));
     expect(onChange).toHaveBeenCalledWith({
       clientCrmId: 'b',
       clientName: 'Beta',
