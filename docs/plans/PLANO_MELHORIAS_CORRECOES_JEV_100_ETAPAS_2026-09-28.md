@@ -1,529 +1,198 @@
-# Plano de Melhorias e Correções do Catálogo com Jev (TypeSafe System One) — 100 Etapas
+# Plano de Melhorias e Correções do Catálogo com Jev (TypeSafe System One) — v2
 
-> **Autor:** Hermes (executor) · plano solicitado por Joaquim (PO)
-> **Data:** 2026-09-28 · **Status:** PLANO — **não executar até aprovação do PO**
+> **Autor:** Claude (revisão DBA) sobre o plano v1 de Hermes/DeepSeek (PR #1950) · solicitado por Joaquim (PO)
+> **Data:** 2026-09-28 · **Status:** PLANO — **não executar Blocos 1 e 2 até aprovação do PO**
 > **Repo:** `adm01-debug/Promo_Gifts_V4` · **Banco canônico (SSOT):** Supabase `doufsxqlfjyuvxuezpln` (PG17)
-> **Modelo:** Jev (`jev-latest` / `jev-preview`) via `POST https://api.typesafe.ai/v1/systemone`
+> **Modelo:** Jev `jev-latest` (= `jev-1.13.0`) via `POST https://api.typesafe.ai/v1/systemone`
+> **Substitui:** o plano v1 de 100 etapas (mesmo caminho de arquivo). Revisão completa em
+> https://github.com/adm01-debug/Promo_Gifts_V4/pull/1950#pullrequestreview-5344693479
 
 ---
 
-## Resumo executivo
+## 0. O que mudou da v1 para a v2 (e por quê)
 
-Este plano usa o **Jev** (TypeSafe System One — modelo de *decisão* tipada, não de geração de texto) como **juiz/auditor de qualidade** sobre o catálogo de brindes do Promo_Gifts_V4, que já é padronizado por um pipeline **Medallion determinístico** (Bronze → Silver → Gold). O Jev **não substitui** o pipeline existente: ele audita, valida, classifica e flagga os casos que o de-para determinístico não resolve ou classificou errado — com **probabilidade calibrada** e **fila de revisão humana** para baixa confiança.
+A v1 tinha o princípio certo — **Jev decide, o pipeline determinístico continua dono da
+escrita** — mas foi escrita sem consultar `pg_catalog` nem a doc da TypeSafe. A v2 foi
+validada linha a linha contra o banco vivo e contra `docs.typesafe.ai`. Correções que mudam
+o desenho:
 
-**Gaps medidos (baseline 2026-09-28):**
+| # | v1 dizia | Medido / documentado | Efeito na v2 |
+|---|---|---|---|
+| 1 | Bronze = 24.727 | `count(*)` = **20.168** (16.510 `processed` + 3.658 `skipped`); 24.727 era `n_live_tup` | Baseline corrigido |
+| 2 | 528 sem `padronizacao_id` → "Bronze pending / promoção interrompida" | Bronze `pending` = 0. **522 dos 528 têm Silver `promoted` com `product_id = products.id`.** `fn_promote_padronizacao` nunca gravou o back-link | Vira o item 1 do Bloco 0: `UPDATE` + patch na função. **Zero Jev** |
+| 3 | Tabelas `colors`, `capacities`, `materials` | Não existem. Existem `color_variations` (87), `color_groups` (18), `color_synonym_map` (13), `material_groups` (10), `material_types` (94), `product_materials` (13.508); `capacities` é coluna de `products` | Nomes corrigidos no Bloco 1 |
+| 4 | `ai_usage_quotas` como teto de tokens | Tabela é `(role app_role, monthly_limit, is_unlimited)` — cota por papel de usuário | Teto do Jev vai em `admin_settings` (`key`/`value jsonb`) |
+| 5 | `medallion_coverage_snapshots` recebe os 2 novos indicadores | Colunas fixas (`ncm_pct`, `materials_pct`, … `display_name_pct`) por `fornecedor/camada` | Snapshot próprio (`jev_baseline_snapshots`) ou 2 colunas novas via migration |
+| 6 | `score` extrai "9L → 9000" e estima dimensão (etapas 53/87) | `score` é **ordinal, 2–10 níveis**. Doc: *"Jev is not a calculator"*, *"keep arithmetic in code"* | Removidas. Extração numérica é `fn_apply_transform`/regex; Jev só valida plausibilidade (`noul`) |
+| 7 | `choice` sobre 261 NCM (etapa 88) | Limite **255 opções** | Hierárquico (capítulo → código) ou pré-filtro por categoria |
+| 8 | `noul` com `confidence < 0.50` | `noul` devolve só **P(sim)**; sem campo `confidence` | Confiança derivada em código: `abs(p − 0.5) × 2` |
+| 9 | `noul` "categoria correta?" + `choice` flat top-level | **4.888 produtos (60%) estão em categoria não-folha** de árvore com 6 níveis (28 L1 · 113 L2 · 167 L3 · 119 L4 · 45 L5 · 6 L6) | Classificação **hierárquica** nível a nível (cookbook *Hierarchical classification*), rubrica "correta = mais específica aplicável" |
+| 10 | Dedup "N pares" | 263 grupos, **máx. 391 membros, p95 ≈ 117 → 369.627 pares**; 141.958 arestas `similar` já existem em `product_relationships`; **64 FKs** apontam para `products.id` | Blocking + comparação só com `is_reference_product`; merge = migração de referências, não `is_deleted` |
+| 11 | Etapas 14–15 (órfãos/ciclos) | 0 órfãos, 0 auto-referência, 0 divergência `path`×`parent_id`, 0 inconsistência de `level` | Removidas; vira `CHECK` de saída |
+| 12 | Etapas 16/39/83 (de-para de categoria) | Só **7 `supplier_categories` sem mapping** (434 × 427), todas STRICKER, **inertes**: STRICKER não tem `supplier_field_mappings.target_field='categories'` e 0 Bronze referencia esses códigos | Removidas |
+| 13 | Etapa 89 (`sku_promo` duplicado) | Já existe `CHECK chk_products_sku_promo_equals_sku` + `trg_sync_sku_promo` | Removida |
+| 14 | Rate limit 1.000 req/min; custo U$ 1–2 | Doc: **1.200 req/min, 250k tokens/s**; **U$ 0,042 / 1M tokens de entrada** → ≈ U$ 0,12 para 8,1k produtos | Corrigido |
+| 15 | Gerador "DeepSeek V3" | `ai_function_routing` → `deepseek-v4-flash` (5.019 produtos) + legado `deepseek-chat` (2.237) | Corrigido |
+| 16 | `system_kill_switches(name)` | Colunas são `switch_name` / `enabled` | Corrigido |
+| 17 | (ausente) | **42 triggers em `products`**; `trg_aa_capture_manual_edits` põe o campo em `locked_fields` se `app.write_source <> 'pipeline'`; `fn_promote_padronizacao` só respeita `locked_fields` | Decisão explícita de escrita (§4) — sem ela, a próxima promoção da Silver desfaz a correção do Jev |
+
+**Baseline corrigido (2026-09-28, `count(*)` real):**
 
 | Métrica | Valor |
 |---|---|
-| Produtos Gold (`products`) | 8.138 |
-| Categorias (`categories`, árvore até 6 níveis) | 478 |
-| Variantes (`product_variants`) | 20.216 |
-| Bronze (`supplier_products_raw`) | 24.727 |
-| Silver (`produtos_padronizacao`) | 8.132 |
-| **Sem `padronizacao_id`** (Gold não linkado à Silver) | **528 (6,5%)** |
-| **Sem `ai_title`** | **882 (10,8%)** |
-| Sem `category_id` / sem `brand` | 0 / 0 |
-| Grupos de similaridade (`product_similarity_groups` / `_members`) | 266 / 6.986 |
-| Fila de enriquecimento IA (`ai_enrichment_queue`) | 7.671 |
-
-**Prova de conceito já executada (não é mais necessário — registrada aqui):** o Jev, em português, flaggou corretamente erros reais de categorização no Gold — ex.: *"Power bank 4.000mAh com lanterna"* em `Lanternas` → 13% de confiança (errado); *"Kit porta-copos bambu 6 peças"* em `Copos` → 28% (errado); *"Fones de ouvido true wireless…"* em `Fone de Ouvido` → 94% (certo).
-
-**Custo estimado:** a API cobra por token de entrada (saída grátis). Auditar 8,1k produtos com ~350 tokens/cada ≈ 2,85M tokens ≈ **U$ 1–2** (ordem de grandeza; confirmar no painel da TypeSafe).
-
----
-
-## Princípios e restrições (imutáveis)
-
-1. **SSOT `doufsxqlfjyuvxuezpln` é intocável sem aprovação explícita do PO** (REGRA #1 e #8 do `CLAUDE.md`). Toda mudança de schema passa por migration versionada e gate humano.
-2. **Jev decide, não gera.** Para *reescrever* título/descrição usa-se o LLM gerativo existente (DeepSeek V3 em `ai_enrichment_queue`); o Jev entra como **juiz** que aprova/rejeita o texto gerado.
-3. **Nada é aplicado em produção sem revisão humana** quando a confiança do Jev estiver abaixo do limiar por etapa.
-4. **Idempotência e append-only** onde houver dado histórico; nunca sobrescrever Bronze.
-5. **Toda mudança de banco = migration versionada** em `supabase/migrations/` (ou `medallion/migrations/` para a camada Medallion), SQL idempotente.
-6. **Nunca** escrever segredo em código/commit. A chave fica em variável de ambiente (`JEV_API_KEY` / `TYPESAFE_API_KEY`), nunca no repo.
+| Gold `products` (ativos) | 8.138 (7.704) |
+| `categories` (níveis 1–6) | 478 (65 inativas/deletadas) |
+| `product_variants` | 20.216 |
+| Bronze `supplier_products_raw` | **20.168** (pending = 0) |
+| Silver `produtos_padronizacao` | 8.132 |
+| Sem `padronizacao_id` | 528 (522 corrigíveis por join; 6 pré-Medallion) |
+| Sem `ai_title` | 882 |
+| Sem `main_category_id` | 489 |
+| `capacity_ml` nulo | 6.325 (78%) |
+| `packing_type_canonical` nulo | 4.948 (61%) |
+| `dimensions_source` nulo | 3.183 |
+| `target_audience` vazio | 1.782 |
+| Grupos de nome exato duplicado (ativos, case-insensitive) | 976 |
+| `product_similarity_groups` / `_members` | 266 / 6.986 |
+| `ai_enrichment_queue` | 7.671 (7.221 `done`, 450 `pending`) |
 
 ---
 
-## Arquitetura da solução (onde o Jev encaixa)
+## 1. Princípios (imutáveis)
 
-```
-                     ┌─────────────────────────────────────────────┐
- Bronze (raw) ──► Silver (produtos_padronizacao) ──► Gold (products) │
-  supplier_products_raw   fn_standardize_supplier      fn_promote_*  │
-                     └─────────────────────────────────────────────┘
-                                     ▲            ▲
-                                     │            │
-   JEV (juiz de decisão) ──► (1) audita categorização / atributos / dedup
-                              (2) valida conteúdo IA (ai_title/ai_description)
-                              (3) classifica os casos que o de-para não resolve
-                                     │
-                                     ▼
-              resultado persistido em tabelas de AUDITORIA (novas)
-              + fila de revisão humana para confiança < limiar
-```
-
-O Jev é integrado como um **passo de decisão assíncrono** (worker/edge function), não como chamada síncrona no request do frontend.
+1. **SSOT `doufsxqlfjyuvxuezpln`**: toda mudança de schema/DML = migration versionada, aplicada **só** por `.github/workflows/db-apply-migration.yml` (E15), com aprovação do PO (REGRA #1/#8).
+2. **Jev decide, não gera.** Texto novo continua vindo do LLM gerativo roteado por `ai_function_routing`; o Jev aprova/rejeita.
+3. **Determinístico antes de probabilístico.** Tudo que é `UPDATE ... FROM` ou regex sai do escopo do Jev (Bloco 0).
+4. **Nenhuma escrita em `products` pelo Jev sem gate humano** e sem decisão explícita sobre `locked_fields` (§4).
+5. **Piloto rotulado antes de qualquer lote**: 200 rótulos humanos, matriz de confusão, limiar justificado. Doc da TypeSafe: *"English is the primary training language… other languages handled but not equally well"* — em português o limiar tem que ser medido, não assumido.
+6. Segredo `JEV_API_KEY` só em cofre (Supabase secret / env do worker). Nunca no repo.
+7. Append-only em `jev_decision_log`; Bronze nunca é alterado.
 
 ---
 
-## FASE 0 — Governança, Segurança e Fundações (etapas 1–10)
+## 2. Bloco 0 — Determinístico, sem Jev (fecha 3 dos 4 gaps do resumo executivo)
 
-### Etapa 1 — Registrar a chave TypeSafe no cofre de segredos
-- **Ação:** criar segredo `JEV_API_KEY` (chave `apikey_…` da TypeSafe) no cofre/ambiente do worker (Supabase Secret ou `.env` do host), **nunca** em código.
-- **Verificação:** `grep -R "apikey_" supabase/ src/ scripts/` retorna vazio; a chave só existe no cofre.
+| # | Ação | Como | Verificação | Status |
+|---|---|---|---|---|
+| 0.1 | Back-link `products.padronizacao_id` nos 522 + `fn_promote_padronizacao` passa a gravar o vínculo no INSERT e no UPDATE | Migration `20260928212000_fix_products_padronizacao_backlink` (PR aberta) | `select count(*) from products p join produtos_padronizacao pp on pp.product_id=p.id and pp.status='promoted' where p.padronizacao_id is null` = 0 | PR aberta, aguarda PO + E15 |
+| 0.2 | Backfill `main_category_id` nos 489 | `main_category_id = category_id` (100% dos 7.649 preenchidos hoje seguem essa regra; `fn_sync_main_category_from_pca` mantém) | `select count(*) from products where main_category_id is null and category_id is not null` = 0 | PR aberta, aguarda PO + E15 |
+| 0.3 | `capacity_ml` a partir de `capacities` / `name` | `fn_apply_transform` + regex `(\d+[,.]?\d*)\s*(ml|l|litros?)` → ml; **Jev não entra** | % nulo cai de 78% para o residual real | a planejar |
+| 0.4 | `packing_type_canonical` a partir de `packing_type` (14 `packaging_types`) | `fn_trigger_classify_packing` já existe — rodar em lote com `bulk_import_mode` | % nulo cai de 61% | a planejar |
+| 0.5 | Corrigir quirks de unidade por fornecedor (SPOT caixa em metros ×100; Só Marcas mm ÷ 10) | de-para em `supplier_field_mappings`, não SQL ad hoc | `dimensions_source` nulo cai de 3.183 | a planejar |
+| 0.6 | Dedup exato: 976 grupos de nome idêntico entre ativos | relatório por fornecedor; mesmo `supplier_id` nunca é duplicata (`dup_supplier_ref` = 0) | lista para o PO decidir | a planejar |
 
-### Etapa 2 — Definir o limite de custo e alerta
-- **Ação:** registrar no `ai_usage_quotas` / painel um teto mensal (ex.: 5M tokens/mês) com alerta em 80%.
-- **Verificação:** `select * from ai_usage_quotas` mostra o teto; um disparo acima de 80% gera evento em `ai_usage_logs`.
-
-### Etapa 3 — Criar tabela de auditoria de decisões Jev (`jev_decision_log`)
-- **Ação:** migration idempotente criando `public.jev_decision_log` (append-only): `id uuid pk`, `entity_table text`, `entity_id uuid`, `question_key text`, `question_type text`, `state jsonb`, `answer jsonb`, `confidence numeric`, `model text`, `input_tokens int`, `created_at timestamptz`, `run_id uuid`.
-- **Verificação:** `\d jev_decision_log` mostra as colunas; `select count(*)` = 0.
-
-### Etapa 4 — Criar índice e constraint da tabela de auditoria
-- **Ação:** `create index if not exists idx_jev_log_entity on jev_decision_log(entity_table, entity_id);` + `check (confidence between 0 and 1)`.
-- **Verificação:** `\d jev_decision_log` lista índice e check.
-
-### Etapa 5 — Criar tabela de fila de revisão humana (`jev_review_queue`)
-- **Ação:** migration `public.jev_review_queue`: `id`, `entity_table`, `entity_id`, `reason text`, `current_value jsonb`, `suggested_value jsonb`, `confidence numeric`, `status text default 'pending'` (`pending|approved|rejected`), `reviewed_by uuid`, `reviewed_at timestamptz`.
-- **Verificação:** tabela existe; `status` é enum/text com default `pending`.
-
-### Etapa 6 — Definir limiares globais de confiança por classe de decisão
-- **Ação:** registrar em tabela de config (ou `admin_settings`) os limiares: `auto_apply ≥ 0.95`, `review 0.50–0.95`, `discard < 0.50`.
-- **Verificação:** `select * from admin_settings where key like 'jev.threshold.%'`.
-
-### Etapa 7 — Feature flag para desligar o Jev a quente
-- **Ação:** kill-switch em `system_kill_switches` (nome `jev_audit`), consumido pelo worker antes de cada lote.
-- **Verificação:** com o switch `on`, o worker não chama a API (log em `kill_switch_hits`).
-
-### Etapa 8 — Baseline de métricas do catálogo (antes de qualquer mudança)
-- **Ação:** snapshot `select` dos contadores de cobertura (produtos, categorias nulas, `padronizacao_id` nulo, `ai_title` nulo) e gravar em `medallion_coverage_snapshots`.
-- **Verificação:** uma linha nova no snapshot com os números da tabela acima.
-
-### Etapa 9 — Criar `run_id` (trace de execução) por batelada
-- **Ação:** coluna `run_id` em `jev_decision_log` preenchida a cada lote; guardar `run_id` no snapshot de cobertura.
-- **Verificação:** duas execuções geram `run_id` distintos.
-
-### Etapa 10 — Documentar o contrato da API no repo
-- **Ação:** `docs/` (ou `medallion/`) com o payload de referência `state/model/questions` e o shape de resposta (`answers.*.noul/choice/score/confidence/probabilities`).
-- **Verificação:** documento versionado e linkado no README do Medallion.
+Custo: zero token. Risco: baixo (todas idempotentes, com `WHERE` seletivo, `write_source='pipeline'`).
 
 ---
 
-## FASE 1 — Inventário e Profiling do Catálogo (etapas 11–20)
+## 3. Bloco 1 — Jev como auditor **read-only**
 
-### Etapa 11 — Inventário de cobertura por camada
-- **Ação:** query `select (select count(*) from supplier_products_raw), (select count(*) from produtos_padronizacao), (select count(*) from products);`
-- **Verificação:** números batem com o baseline (24.727 / 8.132 / 8.138).
+Saída deste bloco é **fila de revisão**, nunca escrita em `products`.
 
-### Etapa 12 — Contagem de `products` sem link Silver (`padronizacao_id` nulo)
-- **Ação:** `select count(*) from products where padronizacao_id is null;` (esperado 528).
-- **Verificação:** gravar em snapshot; é o alvo da Fase 7.
+### 3.1 Fundações (migration única, via E15)
 
-### Etapa 13 — Contagem de `products` sem `ai_title`
-- **Ação:** `select count(*) from products where ai_title is null or ai_title = '';` (esperado 882).
-- **Verificação:** gravar; alvo da Fase 6.
+- `public.jev_decision_log` (append-only): `id uuid pk`, `run_id uuid`, `entity_table text`, `entity_id uuid`, `question_key text`, `question_type text check in ('noul','choice','score')`, `rubric_version text`, `state jsonb`, `answer jsonb`, `p_yes numeric` (noul), `confidence numeric check (0..1)`, `model text`, `input_tokens int`, `created_at timestamptz default now()`.
+  Índice `(entity_table, entity_id)`, `unique (run_id, entity_table, entity_id, question_key)` para idempotência.
+  **RLS habilitada + policy** desde a criação (achado P5 do `SCHEMA_REFERENCE.md`: tabelas com RLS sem policy). Worker usa `service_role`; `authenticated` só leitura para `is_admin_or_above`.
+- `public.jev_review_queue`: `id`, `entity_table`, `entity_id`, `reason text`, `current_value jsonb`, `suggested_value jsonb`, `confidence numeric`, `status text default 'pending' check in ('pending','approved','rejected')`, `reviewed_by uuid`, `reviewed_at timestamptz`, `applied_at timestamptz`, `rolled_back_at timestamptz`. Mesma RLS.
+- Config em `admin_settings`: `jev.threshold.<question_key>` (`auto_apply`, `review`, `discard`), `jev.monthly_token_cap`, `jev.model`.
+- Kill-switch: linha `switch_name='jev_audit'` em `system_kill_switches` (colunas `switch_name`/`enabled`), lida antes de cada lote; hit em `kill_switch_hits`.
+- Snapshot de baseline: tabela `jev_baseline_snapshots(run_id, captured_at, metric text, value bigint)` — não reaproveitar `medallion_coverage_snapshots` (colunas fixas).
 
-### Etapa 14 — Distribuição de profundidade da árvore de categorias
-- **Ação:** `select level, count(*) from categories group by level order by level;` + verificar `path` (materialized) coerente com `parent_id`.
-- **Verificação:** níveis 1–6; sem órfãos (`parent_id` apontando para id inexistente).
+### 3.2 Cliente
 
-### Etapa 15 — Categorias órfãs ou ciclos na árvore
-- **Ação:** checar `parent_id` referenciando si mesmo ou ciclo (recursivo) e `path` divergente de `parent_id`.
-- **Verificação:** zero ciclos; órfãos listados para correção manual.
+- Edge function / worker `jev-audit` (Deno) com `fetch` + timeout + backoff em `429`/`529` (doc: retry exponencial). Rate limit oficial: 1.200 req/min, 250k tokens/s.
+- `state` como **objeto JSON** com campos nomeados (doc recomenda), só com os campos que a decisão precisa (doc: *"accuracy falls as the state grows with content unrelated"*). Limite: 32k tokens de `state`.
+- Helpers tipados: `noul(instructions)`, `choice(instructions, criteria: Record<string,string|null>)` (≤ 255), `score(instructions, levels: string[])` (2–10).
+- Confiança derivada em código: `noul` → `abs(p−0.5)×2`; `choice`/`score` → campo `confidence` da resposta.
+- Persistir `state` e `answer` completos + `usage.input_tokens`. Cache por `(sha256(state), question_key, rubric_version)` para `confidence ≥ 0.98` por 30 dias.
+- Teste de contrato com mock (3 tipos) no CI (`vitest`).
 
-### Etapa 16 — Cobertura de `supplier_category_mappings`
-- **Ação:** `select count(*) from supplier_category_mappings;` e cruzar com `supplier_categories` para achar categorias de fornecedor **sem** de-para.
-- **Verificação:** lista de fornecedor-categoria sem mapeamento (alvo de remapeamento na Fase 3).
+### 3.3 Piloto obrigatório (gate)
 
-### Etapa 17 — Profiling de `name` (Gold): caixa, acentos, ruído
-- **Ação:** amostrar 200 `name` distintos e medir: duplicados exatos, nomes com ALL-CAPS, com `c/`, unidades inconsistentes (`ml`/`ML`/`litros`).
-- **Verificação:** relatório de anomalias nominais.
+1. Amostra estratificada de **200 produtos ativos** (por nível de categoria e fornecedor).
+2. Rótulo humano: "categoria atual correta? / categoria correta = ?".
+3. Rodar Jev **hierárquico**: `choice` L1 (28 opções) → `choice` filhos do L1 escolhido → … até folha, guardando `probabilities` por nível (beam de 2).
+4. Matriz de confusão por limiar; escolher `auto_apply`/`review`/`discard` com números. Se precisão em `auto_apply` < 97%, **não existe Bloco 2 para categoria** — só fila de revisão.
 
-### Etapa 18 — Profiling de atributos-chave (capacidade, dimensão, material)
-- **Ação:** distribuição de `capacity_ml`, `dimensions_source`, `packing_type_canonical`, `surface_finish` — achar vazios/inconsistentes.
-- **Verificação:** tabela de colunas com % de preenchimento.
+### 3.4 Auditorias (só após 3.3)
 
-### Etapa 19 — Baseline de duplicatas por similaridade
-- **Ação:** `select count(*) from product_similarity_groups;` + `select count(*) from product_similarity_group_members;` (266 / 6.986).
-- **Verificação:** registrar; alvo da Fase 5.
+| Auditoria | Primitiva | Vocabulário fechado | Saída |
+|---|---|---|---|
+| Categoria (8,1k) | `choice` hierárquico | `categories` ativas por nível | divergência atual × sugerida, com `probabilities` |
+| Kits (`is_kit` / "kit|conjunto" no nome) | `choice` L1 | 28 L1 | categoria primária sugerida |
+| Material | `choice` | `material_groups` (10) → `material_types` (94) | grupo/tipo sugerido para `product_materials` |
+| Cor | `choice` | `color_groups` (18) → `color_variations` (87) | entrada sugerida em `color_synonym_map(supplier_color_name, canonical_color_id, confidence, source='jev')` |
+| Embalagem | `choice` | `packaging_types` (14) | `packing_type_canonical` sugerido |
+| Público | `choice` (multi = várias perguntas `noul`) | `target_audiences` (38) | `target_audience[]` sugerido |
+| Dimensão/capacidade plausível | `noul` | — | outlier para revisão (Jev **não** propõe número) |
+| NCM | `choice` hierárquico (capítulo → código) ou pré-filtro por categoria | `ncm_codes` (261, > 255) | NCM sugerido |
+| Qualidade `ai_title` (7.256) | `score` 4 níveis (Ruim/Regular/Bom/Ótimo) | rubrica versionada | distribuição; `< Bom` → regenerar |
+| `ai_description` cobre material/capacidade/dimensão/uso | `noul` ×4 | — | lacunas |
+| Título × categoria × atributos consistentes | `noul` | — | contradições |
+| `short_description` resume `description` | `noul` | — | divergências |
+| Dedup (Fase 5 da v1) | `choice` same/different/review | `matching_policy` versionada | só pares **(membro, `is_reference_product`)** dentro do grupo, bloqueados por `supplier_id` diferente + mesma `material_family`/`capacity_band` |
 
-### Etapa 20 — Inventário dos registros de classificação automática existentes
-- **Ação:** `select * from classify_functions_registry;` (25 funções) + `select * from ai_function_routing;` (18 rotas).
-- **Verificação:** mapear onde o Jev pode entrar como nova função de classificação.
-
----
-
-## FASE 2 — Camada de Integração Jev (etapas 21–30)
-
-### Etapa 21 — Cliente HTTP mínimo com retry e timeout
-- **Ação:** criar utilitário (edge function ou script) `jevClient(state, questions, model='jev-latest')` com `timeout` e `Retry-After` em 429.
-- **Verificação:** chamada de teste retorna `answers` (200) e 429 aciona backoff.
-
-### Etapa 22 — Modelos disponíveis e seleção
-- **Ação:** `GET https://api.typesafe.ai/v1/models` e fixar `jev-latest` (default) / `jev-preview` (canário).
-- **Verificação:** lista retornada contém `jev-latest`/`jev-preview`; registro do modelo usado em `jev_decision_log.model`.
-
-### Etapa 23 — Normalizar o shape de pergunta (noul/choice/score)
-- **Ação:** helpers `yesNo(inst)`, `choice(inst, criteria)`, `score(inst, levels)` gerando o `questions` tipado correto.
-- **Verificação:** cada helper produz JSON aceito (200) e resposta com o campo correspondente.
-
-### Etapa 24 — Idempotência por `(entity_table, entity_id, question_key, run_id)`
-- **Ação:** `unique` (ou upsert) em `jev_decision_log` para não reprocessar/cobrar duas vezes o mesmo item no mesmo `run_id`.
-- **Verificação:** re-executar o mesmo lote não duplica linhas nem chama a API de novo.
-
-### Etapa 25 — Loteamento e limite de concorrência
-- **Ação:** processar em lotes de N (ex.: 50) com concorrência controlada e `process_pending_batches`-like para não estourar o rate limit (1.000 req/min).
-- **Verificação:** lote de 1.000 itens conclui sem 429 persistente.
-
-### Etapa 26 — Persistir `state` e `answer` completos (auditoria)
-- **Ação:** gravar `state` (texto enviado) e `answer` (JSON completo) em `jev_decision_log` — nunca só o veredito.
-- **Verificação:** uma linha tem `state` e `answer` não nulos.
-
-### Etapa 27 — Contabilizar tokens e custo por lote
-- **Ação:** somar `usage.input_tokens` do retorno e gravar; projetar custo com o preço por token configurado.
-- **Verificação:** `select sum(input_tokens) from jev_decision_log where run_id = X` bate com o painel da TypeSafe.
-
-### Etapa 28 — Cache de decisões estáveis (opcional)
-- **Ação:** para itens com `state` idêntico já julgado com `confidence ≥ 0.98`, reusar a decisão por N dias.
-- **Verificação:** hit de cache não gera chamada de API.
-
-### Etapa 29 — Versionamento de prompts/rubricas
-- **Ação:** cada rubrica (instruções + critérios) versionada (ex.: coluna `rubric_version`), para reprodutibilidade.
-- **Verificação:** mudança de rubrica altera `rubric_version` e é rastreável.
-
-### Etapa 30 — Teste de contrato da integração (mock)
-- **Ação:** teste que mocka o endpoint e valida que o worker grava `jev_decision_log` + fila de revisão corretamente para os 3 tipos de pergunta.
-- **Verificação:** teste verde no CI do repo.
+Cada auditoria: `run_id` próprio, relatório `.md` em `docs/plans/` com números antes/depois, e **nenhuma escrita em `products`**.
 
 ---
 
-## FASE 3 — Auditoria de Categorização (etapas 31–45)
+## 4. Bloco 2 — Aplicação com gate humano (só após precisão medida em 3.3)
 
-### Etapa 31 — Selecionar o universo a auditar (Gold)
-- **Ação:** `select id, name, category_id, category_name from products where is_active and is_deleted is not true;`
-- **Verificação:** contagem do universo registrada.
+### 4.1 Decisão de escrita (obrigatória — a v1 não tinha)
 
-### Etapa 32 — Amostra piloto de 200 produtos com rótulo humano
-- **Ação:** amostrar 200 e pedir ao PO/equipe o rótulo "categoria correta/incorreta" — base para calibrar limiar.
-- **Verificação:** 200 rótulos salvos (ex.: tabela de baseline rotulada).
+`products` tem 42 triggers. Um `UPDATE` de `category_id` dispara `trg_aa_capture_manual_edits`, `trg_sync_category_assignment`, `trg_sync_product_category_name`, `trg_set_min_quantity`, `trg_products_search_vector`, `trg_products_seo_autofill`, `trg_product_automation`.
 
-### Etapa 33 — Medir precisão/recall do Jev na amostra piloto
-- **Ação:** rodar Jev (`noul`: "produto corretamente classificado em <cat>?") nos 200 e comparar com rótulo humano; medir precisão por limiar.
-- **Verificação:** matriz de confusão + curva de limiar documentadas.
+| Se o worker gravar com… | Consequência | Uso |
+|---|---|---|
+| `app.write_source='pipeline'` + `bulk_import_mode='true'` | Campo **não** entra em `locked_fields`; a próxima `fn_promote_padronizacao` **sobrescreve** a correção | Nunca para correção aprovada |
+| `app.write_source='jev'` (qualquer valor ≠ `'pipeline'`) | Campo entra em `locked_fields`; pipeline passa a respeitar; automações pesadas rodam (aceitável em lote pequeno) | **Padrão para item aprovado na fila** |
 
-### Etapa 34 — Escolher o limiar de auto-aplicação da categorização
-- **Ação:** com a curva do passo 33, fixar limiar (ex.: `≥ 0.95` auto-aprova, `≤ 0.40` reprova/flagga).
-- **Verificação:** limiar gravado em config + justificado com números.
+Regra: o worker aplica **só** itens `approved` em `jev_review_queue`, com `write_source='jev'`, e grava `applied_at`. `current_value` fica na fila para rollback (`UPDATE` inverso + remover o campo de `locked_fields` + `rolled_back_at`).
 
-### Etapa 35 — Rodar auditoria completa de categoria (batch)
-- **Ação:** para os 8.1k produtos, chamar Jev `noul` "categoria correta?" + `choice` "qual categoria top-level?".
-- **Verificação:** `select count(*) from jev_decision_log where question_key='category_correct'` = N produtos.
+### 4.2 Ordem de go-live (cada fase com aprovação do PO)
 
-### Etapa 36 — Gerar lista de suspeitos de categoria (baixa confiança)
-- **Ação:** `select ... where confidence < 0.50` → alimentar `jev_review_queue` com `reason='low_confidence_category'`.
-- **Verificação:** fila populada com os casos tipo "power bank → Lanternas".
-
-### Etapa 37 — Revisar a árvore de categorias (top-level) para o `choice`
-- **Ação:** extrair as categorias de nível 1 (`level=1`) como critérios do `choice`, garantindo vocabulário fechado.
-- **Verificação:** o `choice` usa só categorias canônicas de nível 1.
-
-### Etapa 38 — Cruzar categoria Jev vs categoria atual para divergência
-- **Ação:** comparar `category_name` atual com o `choice` top-level do Jev; onde divergir e confiança alta → flag.
-- **Verificação:** relatório de divergências ordenado por confiança.
-
-### Etapa 39 — Remapear `supplier_category_mappings` faltantes
-- **Ação:** para as categorias de fornecedor sem de-para (Etapa 16), usar Jev `choice` para propor a categoria canônica e gravar no de-para.
-- **Verificação:** cobertura de `supplier_category_mappings` aumentada (de-para, não dado bruto).
-
-### Etapa 40 — Normalizar nomes de categoria (grafia/plural/acento)
-- **Ação:** listar categorias com grafia divergente (ex.: "Canetas | Plástico" vs "Canetas|Plastico") e propor canonical via Jev + revisão.
-- **Verificação:** árvore com grafia consistente.
-
-### Etapa 41 — Revisar `main_category_id` vs `category_id`
-- **Ação:** auditar produtos onde `main_category_id` diverge do ancestral top-level de `category_id`.
-- **Verificação:** inconsistências listadas.
-
-### Etapa 42 — Validar produtos "kit/conjunto" (categoria composta)
-- **Ação:** `choice` Jev para produtos `is_kit`/nome com "conjunto/kit" — categoria primária correta (ex.: "Conjunto caneta e chaveiro").
-- **Verificação:** kits com categoria primária revisada.
-
-### Etapa 43 — Auditar categorias de baixa densidade
-- **Ação:** categorias com poucos produtos e produtos "órfãos" de taxonomia (nome não casa com a categoria).
-- **Verificação:** lista para fusão/desativação de categorias.
-
-### Etapa 44 — Consolidar resultado e gerar migration de correção (se aplicável)
-- **Ação:** para as correções aprovadas, gerar migration `update products set category_id = … where …` idempotente, com gate humano.
-- **Verificação:** migration no repo, `dry_run` antes de aplicar.
-
-### Etapa 45 — Publicar relatório de auditoria de categorização
-- **Ação:** `.md` em `docs/plans/` (ou `docs/`) com % de produtos corretos, suspeitos e corrigidos.
-- **Verificação:** relatório versionado com números reais.
+1. Cor e embalagem (vocabulário pequeno, baixo risco; de-para em `color_synonym_map`, não em `products`).
+2. Material (`product_materials`).
+3. Categoria (só `auto_apply` ≥ limiar medido; resto na fila).
+4. Título/descrição: `score < Bom` → `ai_enrichment_queue` com `enrichment_type='jev_regenerate'` e `priority` alta (não colidir com `ai-enqueue-daily`, que re-enfileira 5.000/dia); título novo só promove após `noul` "melhor e correto?".
+5. Dedup: **inventário das 64 FKs** para `products.id` + procedimento de merge (migrar referências, `product_relationships`, variantes) testado em dry-run; `is_active=false` exige token em `product_deactivation_tokens` (bloqueado por `trg_aa_block_product_deactivation` e revertido pelo cron `fantasmas-deactivate-guard`).
 
 ---
 
-## FASE 4 — Padronização de Atributos (etapas 46–60)
+## 5. Observabilidade, custo e rollback
 
-### Etapa 46 — Auditoria de `brand` e `sub_brand`
-- **Ação:** listar `brand`/`sub_brand` distintos e achar grafias divergentes da mesma marca.
-- **Verificação:** tabela de marcas × grafias.
-
-### Etapa 47 — Normalizar marca via `choice` (vocabulário de `supplier_sub_brands`)
-- **Ação:** Jev `choice` para propor `sub_brand` canônico a partir de `supplier_sub_brands` (4 marcas conhecidas).
-- **Verificação:** marcas divergentes mapeadas ao canônico.
-
-### Etapa 48 — Auditoria de materiais (`auto_material`, `materials`, `product_materials`)
-- **Ação:** distribuição de materiais e grupos (`material_groups`, `material_types`); achar material inconsistente com o nome.
-- **Verificação:** relatório de materiais × produto.
-
-### Etapa 49 — Normalizar material com `choice` sobre `material_groups`
-- **Ação:** Jev classifica o material do produto (ex.: "fibra de palha de trigo") no grupo canônico (Plásticos/Metais/Tecidos…).
-- **Verificação:** `product_materials` populado com grupo correto.
-
-### Etapa 50 — Auditoria de cores (`colors`, `color_groups`, `color_variations`)
-- **Ação:** cruzar `colors` (jsonb) com `color_variations` canônico; achar cores não mapeadas.
-- **Verificação:** lista de cores sem vínculo canônico.
-
-### Etapa 51 — Normalizar cor via `choice` + `color_synonym_map`
-- **Ação:** Jev mapeia cor textual → `color_variations` canônico; alimentar `color_synonym_map` (de-para).
-- **Verificação:** cobertura de sinônimos de cor ampliada.
-
-### Etapa 52 — Auditoria de unidade/capacidade (`capacity_ml`, `capacities`, `capacity_ml`)
-- **Ação:** achar valores inconsistentes (ex.: "0,5L" vs "500ml", unidades em texto).
-- **Verificação:** relatório de capacidade não-normalizada.
-
-### Etapa 53 — Normalizar capacidade/volume via `score`/`choice`
-- **Ação:** Jev extrai/valida o valor numérico em `ml` (ex.: "9L" → 9000) como `score` contínuo ou `choice` por faixa.
-- **Verificação:** `capacity_ml` preenchido corretamente nos suspeitos.
-
-### Etapa 54 — Auditoria de dimensões físicas (fonte `dimensions_source`)
-- **Ação:** ver `dimensions_source` (cm/mm/estimated) e achar unidades erradas (ex.: caixa em metros no SPOT).
-- **Verificação:** relatório de dimensões suspeitas (muito grandes/pequenas).
-
-### Etapa 55 — Validar dimensões plausíveis via `score` (sanity check)
-- **Ação:** Jev `score` "a dimensão é plausível para este tipo de produto?" para flaggar outliers (ex.: caneta com 2m).
-- **Verificação:** outliers listados para revisão.
-
-### Etapa 56 — Auditoria de embalagem (`packing_type`, `packing_type_canonical`, `repacking_type`)
-- **Ação:** distribuição de tipos de embalagem e divergência entre os campos.
-- **Verificação:** relatório de embalagem inconsistente.
-
-### Etapa 57 — Normalizar `packing_type_canonical` via `choice`
-- **Ação:** Jev classifica a embalagem no vocabulário de `packaging_types` (14 tipos).
-- **Verificação:** `packing_type_canonical` preenchido/consistente.
-
-### Etapa 58 — Auditoria de `gender` e `target_audience`
-- **Ação:** listar `gender`/`target_audience` e achar produtos com público errado/inconsistente.
-- **Verificação:** relatório de público-alvo.
-
-### Etapa 59 — Validar `target_audience` via `choice`
-- **Ação:** Jev classifica o público (ex.: corporativo, infantil, feminino) com `choice` sobre `target_audiences` (38).
-- **Verificação:** público-alvo corrigido/flagado.
-
-### Etapa 60 — Consolidar atributos e gerar migration de backfill
-- **Ação:** migration idempotente para aplicar os atributos aprovados (`brand`, `material`, `color`, `capacity`, `packing`, `gender`), com `dry_run` e gate humano.
-- **Verificação:** migration no repo; backfill com `where` seletivo (nunca update global sem filtro).
+- View `v_jev_runs` agregando `jev_decision_log` por `run_id`/`question_key`/faixa de confiança.
+- Job diário soma `input_tokens` do mês × U$ 0,042/M e alerta ao cruzar `jev.monthly_token_cap`.
+- Métrica "% na fila de revisão" por `question_key`; > 30% → recalibrar rubrica antes de continuar.
+- `jev_decision_log` sem `UPDATE`/`DELETE` para `authenticated` (só `service_role` insere).
+- Reprocessamento com nova `rubric_version` = novo `run_id`; `unique` impede duplicar.
+- Runbook em `docs/`: rodar, limiares, desligar (`jev_audit`), rollback de item.
 
 ---
 
-## FASE 5 — Deduplicação / Entity Matching (etapas 61–70)
-
-### Etapa 61 — Extrair pares candidatos dos grupos de similaridade
-- **Ação:** `select * from product_similarity_group_members` → pares (a, b) dentro de cada grupo.
-- **Verificação:** N pares candidatos listados.
-
-### Etapa 62 — Definir política de identidade (mesmo produto vs variante)
-- **Ação:** redigir `matching_policy`: mesmo modelo+fabricante+capacidade = mesmo; capacidade diferente = variante distinta; lista de IDs/embalagens conflitantes.
-- **Verificação:** política documentada e versionada.
-
-### Etapa 63 — Jev `choice` same/different/review para cada par
-- **Ação:** enviar `state` = {record_a, record_b, matching_policy} e `choice` com `{same, different, review}`.
-- **Verificação:** veredito com `probabilities` por par.
-
-### Etapa 64 — Checks de campo (nome compatível? ID conflita?)
-- **Ação:** perguntas `noul` auxiliares: "nomes compatíveis após diferenças de grafia?" e "identificadores conflitam?".
-- **Verificação:** sinais de campo por par, para explicar o veredito.
-
-### Etapa 65 — Guardar veredito e flaggar `review` para humano
-- **Ação:** persistir em `jev_decision_log` + `jev_review_queue` para pares `review` ou `same` com confiança baixa.
-- **Verificação:** pares ambíguos na fila.
-
-### Etapa 66 — Medir taxa de falso-merge (precisão) antes de automatizar
-- **Ação:** comparar veredito Jev com rótulo humano em amostra; medir precisão de `same` (evitar juntar produtos distintos).
-- **Verificação:** métrica de falso-merge documentada.
-
-### Etapa 67 — Aplicar dedup aprovado (merge) com constraint um-para-um
-- **Ação:** para `same` aprovado, manter um produto canônico e apontar os demais (nunca apagar histórico; usar `is_deleted`/`related_references`).
-- **Verificação:** merge registrado em `product_relationships`/audit, sem perda de `product_variants`.
-
-### Etapa 68 — Transitivade (A≈B, B≈C ⇒ A≈C?)
-- **Ação:** para clusters, validar com Jev + checar identificadores antes de assumir transitividade (regra explícita: não assumir).
-- **Verificação:** clusters com identificadores consistentes.
-
-### Etapa 69 — Reconciliação cross-supplier (mesmo produto de fornecedores distintos)
-- **Ação:** pares entre fornecedores (ex.: SPOT vs XBZ) com `matching_policy` que aceita SKUs diferentes mas mesmo modelo.
-- **Verificação:** duplicatas cross-supplier listadas.
-
-### Etapa 70 — Relatório de dedup e impactos
-- **Ação:** documentar nº de merges, nº de revisões, impacto em `product_variants`/preços.
-- **Verificação:** relatório com números antes/depois.
-
----
-
-## FASE 6 — Validação de Conteúdo IA (etapas 71–80)
-
-### Etapa 71 — Inventário de conteúdo IA existente
-- **Ação:** `select count(*) from products where ai_title is not null;` + distribuição de `ai_model`/`ai_version`.
-- **Verificação:** baseline (7.256 com título, 882 sem).
-
-### Etapa 72 — Definir rubrica de qualidade do título
-- **Ação:** rubrica Jev para `ai_title`: contém categoria+marca+atributo-chave? sem ruído? ≤ 250 chars (check `name_max_250`)?
-- **Verificação:** rubrica versionada (`rubric_version`).
-
-### Etapa 73 — Jev como juiz do `ai_title` existente (`score`)
-- **Ação:** para os 7.256 títulos, `score` 0–10 com a rubrica (clareza, completude, SEO).
-- **Verificação:** distribuição de scores salva.
-
-### Etapa 74 — Flaggar títulos ruins para regeneração
-- **Ação:** título com `score < limiar` → `ai_enrichment_queue` (regenerar via DeepSeek) + `jev_review_queue`.
-- **Verificação:** fila de enriquecimento incrementada com os ruins.
-
-### Etapa 75 — Validar título regenerado com Jev (gate de qualidade)
-- **Ação:** antes de promover `ai_title` novo ao Gold, Jev `noul` "título melhor que o anterior e correto?".
-- **Verificação:** só promove título aprovado; rejeitado volta à fila.
-
-### Etapa 76 — Validar `ai_description` (cobertura de atributos)
-- **Ação:** Jev `score`/`choice` se a descrição menciona material, capacidade, dimensão, uso.
-- **Verificação:** relatório de descrições incompletas.
-
-### Etapa 77 — Auditar consistência título × categoria × atributos
-- **Ação:** Jev `noul` "o título é consistente com a categoria e os atributos?" para pegar contradição.
-- **Verificação:** contradições listadas.
-
-### Etapa 78 — Preencher os 882 `ai_title` faltantes (gerar + julgar)
-- **Ação:** para os 882, gerar título (DeepSeek) e validar com Jev antes de gravar.
-- **Verificação:** `ai_title` nulo → 0 ao fim do lote.
-
-### Etapa 79 — Auditoria de `short_description` vs `description`
-- **Ação:** Jev verifica se `short_description` é um resumo fiel de `description`.
-- **Verificação:** resumos divergentes listados.
-
-### Etapa 80 — Relatório de qualidade de conteúdo
-- **Ação:** documentar score médio antes/depois, nº de títulos regenerados.
-- **Verificação:** relatório com números reais.
-
----
-
-## FASE 7 — Fechamento de Gaps e Correções (etapas 81–90)
-
-### Etapa 81 — Investigar os 528 produtos sem `padronizacao_id`
-- **Ação:** `select id, name, supplier_id, supplier_reference from products where padronizacao_id is null;` e agrupar por fornecedor/status.
-- **Verificação:** causa raiz identificada (ex.: Bronze ainda `pending`, ou promoção interrompida).
-
-### Etapa 82 — Reprocessar Bronze `pending` → Silver → Gold
-- **Ação:** rodar `fn_standardize_supplier`/`fn_promote_supplier` (ou `process_pending_batches`) para os pendentes.
-- **Verificação:** `padronizacao_id` nulo reduz; acompanhar `pipeline_run_log`.
-
-### Etapa 83 — Classificar Bronze sem de-para de categoria (via Jev)
-- **Ação:** Bronze cujo `supplier_category` não tem `supplier_category_mappings` → Jev `choice` propõe categoria → alimentar de-para.
-- **Verificação:** Bronze sem categoria mapeada reduz.
-
-### Etapa 84 — Validar a promoção Silver→Gold dos 528
-- **Ação:** conferir que a promoção não gerou produto duplicado (cruzar com dedup da Fase 5).
-- **Verificação:** 528 (ou menos, após dedup) com `padronizacao_id` preenchido.
-
-### Etapa 85 — Normalização de cores pendente (legado da Fase 4)
-- **Ação:** aplicar o de-para de cor gerado (`color_synonym_map`) e conferir `color_variations` canônico.
-- **Verificação:** cores divergentes mapeadas.
-
-### Etapa 86 — Corrigir unidades de dimensão por fornecedor (quirks)
-- **Ação:** aplicar as correções conhecidas (SPOT caixa em metros ×100; Só Marcas caixa MM÷10; texto "24,5x7cm" → parse) e validar com Jev.
-- **Verificação:** dimensões plausíveis após correção (sanity check da Etapa 55).
-
-### Etapa 87 — Backfill de atributos físicos faltantes
-- **Ação:** para produtos com `dimensions_source='estimated'` ou vazio, Jev `score` propõe/valida a estimativa.
-- **Verificação:** `dimensions_source` com origem registrada.
-
-### Etapa 88 — Reconciliar `ncm_id`/`ncm_code` fiscais
-- **Ação:** auditar NCM (8 dígitos, XBZ) e validar com `ncm_codes` (261 códigos) + Jev `choice` quando ambíguo.
-- **Verificação:** NCM válido e consistente.
-
-### Etapa 89 — Limpar campos legados apontados no comment da tabela (com cautela)
-- **Ação:** avaliar o backlog documentado (`internal_*_cm`, `sku_promo` duplicado) — **apenas** leitura/análise; mudança real exige PO (REGRA #8).
-- **Verificação:** análise entregue; nenhum `drop` sem aprovação.
-
-### Etapa 90 — Relatório de fechamento de gaps
-- **Ação:** documentar antes/depois de cada gap (padronização, categoria, cor, dimensão, NCM).
-- **Verificação:** relatório com números de fechamento.
-
----
-
-## FASE 8 — Observabilidade, Custo e Rollback (etapas 91–100)
-
-### Etapa 91 — Dashboard de decisões Jev (por run)
-- **Ação:** view/query agregando `jev_decision_log` por `run_id`/`question_key`/faixa de confiança.
-- **Verificação:** view criada e consultável.
-
-### Etapa 92 — Alerta de custo (tokens/mês)
-- **Ação:** job que soma `input_tokens` do mês e alerta ao cruzar o teto (Etapa 2).
-- **Verificação:** alerta dispara em teste de limite.
-
-### Etapa 93 — Monitor de taxa de revisão humana
-- **Ação:** métrica "% de itens caindo na fila de revisão" — se >X%, recalibrar limiar.
-- **Verificação:** métrica visível e limiar reajustável.
-
-### Etapa 94 — Trilha de auditoria imutável das decisões
-- **Ação:** garantir `jev_decision_log` append-only (sem update/delete por aplicação) + `admin_audit_log` para ações de risco.
-- **Verificação:** triggers/políticas impedem mutação indevida.
-
-### Etapa 95 — Rollback de uma decisão aplicada
-- **Ação:** manter `current_value`/`suggested_value` em `jev_review_queue` para reverter uma aplicação (voltar ao valor anterior).
-- **Verificação:** rollback de um item restaura o estado anterior sem afetar os demais.
-
-### Etapa 96 — Teste de regressão do pipeline com Jev ligado
-- **Ação:** garantir que ligar/desligar o Jev não quebra `fn_standardize_supplier`/`fn_promote_supplier` (mutation test do kill-switch).
-- **Verificação:** testes verdes com e sem Jev.
-
-### Etapa 97 — Backfill retroativo (reprocessamento) seguro
-- **Ação:** procedimento para reprocessar um lote com nova rubrica sem duplicar (via `run_id` + idempotência).
-- **Verificação:** reprocessamento não duplica `jev_decision_log`.
-
-### Etapa 98 — Documentação operacional (runbook)
-- **Ação:** runbook em `docs/` com: como rodar, limiares, rollback, como recalibrar, como desligar.
-- **Verificação:** runbook versionado e linkado.
-
-### Etapa 99 — Revisão final de conformidade (SSOT, segredos, gates)
-- **Ação:** `grep` por segredo, `validate-supabase-config`, verificação de que nenhuma mudança tocou `client.ts`/SSOT indevidamente.
-- **Verificação:** gates verdes; nenhum segredo no diff.
-
-### Etapa 100 — Aprovação do PO e go-live faseado
-- **Ação:** apresentar relatório consolidado (números antes/depois, custo, lista de revisões) ao PO; go-live por fase (categorização → atributos → dedup → conteúdo), cada fase com gate humano.
-- **Verificação:** aprovação registrada; `admin_audit_log` com a decisão de go-live.
-
----
-
-## Riscos e mitigação
+## 6. Riscos
 
 | Risco | Mitigação |
 |---|---|
-| Português menos calibrado que inglês no Jev | Amostra piloto rotulada (Etapas 32–34) antes de qualquer aplicação; limiar conservador |
-| Falso-merge juntando produtos distintos | Política de identidade explícita + checks de campo + revisão humana (Fase 5) |
-| Jev "decide errado" com alta confiança | Nunca auto-aplicar em campo crítico sem gate humano (REGRA #8); trilha imutável |
-| Estouro de custo | Teto + alerta (Etapas 2/92); cache de decisões estáveis |
-| Rate limit / indisponibilidade | Retry/backoff (Etapa 21); kill-switch (Etapa 7) |
-| Regressão no pipeline determinístico | Testes com/sem Jev (Etapa 96); Jev é passo aditivo, não substituto |
+| Português menos calibrado | Piloto 3.3 é gate; sem 97% em `auto_apply`, não há Bloco 2 para categoria |
+| Correção do Jev desfeita pelo pipeline | §4.1: `write_source='jev'` + `locked_fields` |
+| Falso-merge no dedup | Blocking + só pares com referência + inventário de FKs + dry-run |
+| Estouro de custo | Cap em `admin_settings` + alerta; custo base ≈ U$ 0,12 por passada completa |
+| Rate limit / 529 | Backoff; kill-switch `jev_audit` |
+| Regressão no pipeline | Bloco 0 e 1 não tocam `fn_standardize_supplier`/`fn_promote_supplier`; Bloco 2 escreve só via fila |
 
-## Critérios de aceitação (resumo)
+## 7. Critérios de aceitação
 
-1. `jev_decision_log` e `jev_review_queue` criadas e versionadas via migration.
-2. Amostra piloto rotulada com matriz de confusão e limiar justificado.
-3. Categorização/atributos/dedup/conteúdo auditados com números antes/depois.
-4. 528 produtos sem `padronizacao_id` e 882 sem `ai_title` tratados (ou justificados).
-5. Nenhum segredo no repo; SSOT `doufsxqlfjyuvxuezpln` preservado; gates verdes.
-6. Toda aplicação de schema/dados passou por migration + gate humano (PO).
+1. Bloco 0 aplicado via E15 com pós-check verde: `padronizacao_id` nulo = 6 (pré-Medallion), `main_category_id` nulo = 0.
+2. `jev_decision_log` / `jev_review_queue` criadas por migration, com RLS e policy.
+3. Piloto de 200 rótulos com matriz de confusão e limiar registrado em `admin_settings`.
+4. Cada auditoria com relatório antes/depois e zero escrita em `products` no Bloco 1.
+5. Nenhum segredo no repo; SSOT preservado; gates verdes.
 
 ---
 
-## Apêndice A — Payload de referência (TypeSafe System One)
+## Apêndice A — Payload de referência (conforme `docs.typesafe.ai/api`)
 
 ```http
 POST https://api.typesafe.ai/v1/systemone
@@ -533,29 +202,29 @@ Content-Type: application/json
 
 ```json
 {
-  "state": "Produto: Caneca térmica 350ml. Categoria atual: Copos",
   "model": "jev-latest",
+  "state": {
+    "produto": "Caneca térmica 350ml inox com tampa",
+    "categoria_atual": "Bar | Cozinha > Copos",
+    "atributos": { "capacidade_ml": 350, "material": "inox" }
+  },
   "questions": {
-    "categoria_correta": {
-      "type": "noul",
-      "instructions": "O produto está corretamente classificado na categoria indicada?"
-    },
-    "categoria_ideal": {
+    "categoria_l1": {
       "type": "choice",
-      "instructions": "Qual é a categoria top-level correta?",
-      "criteria": { "Canecas": null, "Copos": null, "Garrafas": null, "Outros": null }
+      "instructions": "Qual categoria de nível 1 descreve melhor o produto?",
+      "criteria": { "Bar | Cozinha": null, "Tecnologia | Eletrônicos": null, "Papelaria | Escritório": null }
     },
-    "qualidade_nome": {
+    "titulo_qualidade": {
       "type": "score",
-      "instructions": "Qualidade do título (clareza, completude, atributo-chave)",
+      "instructions": "Qualidade do título: contém tipo do produto, atributo-chave e sem ruído?",
       "criteria": ["Ruim", "Regular", "Bom", "Ótimo"]
+    },
+    "capacidade_plausivel": {
+      "type": "noul",
+      "instructions": "A capacidade informada é plausível para este tipo de produto?"
     }
   }
 }
 ```
 
-Resposta (shape): `answers.<key>.{noul | choice+confidence+probabilities | score+legend+probabilities}` e `usage.input_tokens` (saída grátis).
-
----
-
-> **Estado:** documento de planejamento. **Nada foi executado** além da PoC de categorização descrita no Resumo. A execução das 100 etapas aguarda aprovação do PO (Joaquim), fase a fase, conforme REGRA #8 do `CLAUDE.md`.
+Resposta: `answers.<key>` → `noul` (0–1) · `choice + probabilities + confidence` · `score + legend + probabilities + confidence`; `usage.input_tokens` (saída grátis). Limites: `choice` ≤ 255 opções; `score` 2–10 níveis; `state` ≤ 32k tokens.
