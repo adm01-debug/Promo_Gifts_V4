@@ -39,16 +39,21 @@ export function isAbortError(err: unknown): boolean {
 export function useProducts(
   filters?: ProductFilters,
   options?: Omit<UseQueryOptions<Product[]>, 'queryFn' | 'queryKey'>,
+  fetchOptions?: { requireComplete?: boolean; enrichment?: 'base' | 'full' },
 ) {
   // Extrair callbacks do consumer ANTES do merge — permite wrapping correto (GAP-G03)
   const consumerThrowOnError = options?.throwOnError;
   const consumerRetry = options?.retry;
 
   return useQuery<Product[]>({
-    queryKey: ['promobrind-products', filters],
+    queryKey: ['promobrind-products', filters, fetchOptions],
     queryFn: async ({ signal }) => {
       try {
-        return await productService.fetchProducts(filters, { signal });
+        return await productService.fetchProducts(filters, {
+          signal,
+          requireComplete: fetchOptions?.requireComplete,
+          enrichment: fetchOptions?.enrichment,
+        });
       } catch (error) {
         if (isAbortError(error)) throw error; // silencioso — DnD unmount esperado
         logger.error('[useProducts] Error fetching products:', error);
@@ -74,7 +79,8 @@ export function useProducts(
     retryDelay: (attemptIndex: number) => Math.min(1000 * 2 ** attemptIndex, 30000),
     throwOnError: (error: unknown): boolean => {
       if (isAbortError(error)) return false;
-      if (typeof consumerThrowOnError === 'function') return consumerThrowOnError(error as Error, {} as never);
+      if (typeof consumerThrowOnError === 'function')
+        return consumerThrowOnError(error as Error, {} as never);
       if (typeof consumerThrowOnError === 'boolean') return consumerThrowOnError;
       return true;
     },

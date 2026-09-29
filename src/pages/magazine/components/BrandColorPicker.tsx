@@ -71,6 +71,14 @@ export function BrandColorPicker({ colors, onChange }: Props) {
 
   const bodyOnPrimary = wcagLevel(colors.text, colors.primary);
   const accentOnPrimary = wcagLevel(colors.secondary, colors.primary);
+  const accessibleFallback = (candidate: string) => {
+    if (contrastRatio(candidate, colors.primary) >= 4.5) return candidate;
+    return contrastRatio('#ffffff', colors.primary) >= contrastRatio('#000000', colors.primary)
+      ? '#ffffff'
+      : '#000000';
+  };
+  const previewText = accessibleFallback(colors.text);
+  const previewAccent = accessibleFallback(colors.secondary);
 
   return (
     <div className="space-y-4">
@@ -127,13 +135,14 @@ export function BrandColorPicker({ colors, onChange }: Props) {
       {/* Preview WCAG */}
       <div
         className="rounded-md border border-border p-4"
-        style={{ background: colors.primary, color: colors.text }}
+        style={{ background: colors.primary, color: previewText }}
+        aria-label={`Prévia acessível da paleta. Texto configurado ${colors.text}; destaque ${colors.secondary}; fundo ${colors.primary}. Cores com contraste insuficiente são substituídas somente nesta prévia.`}
       >
         <div className="flex items-start justify-between gap-4">
           <div>
             <div
               className="text-[10px] uppercase tracking-widest opacity-80"
-              style={{ color: colors.secondary }}
+              style={{ color: previewAccent }}
             >
               Preview da paleta
             </div>

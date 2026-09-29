@@ -84,7 +84,7 @@ export default function MagazineTemplatesGalleryPage() {
   const [sort, setSort] = useState<SortMode>('recent');
   const [view, setView] = useState<ViewMode>('grid');
   const [previewId, setPreviewId] = useState<TemplateEntry['id'] | null>(null);
-  const { favoriteId, toggleFavorite } = useFavoriteTemplate();
+  const { favoriteId, toggleFavorite } = useFavoriteTemplate(user?.id);
 
   const templates = useMemo(() => {
     const all = listTemplates();
@@ -273,7 +273,7 @@ export default function MagazineTemplatesGalleryPage() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="pg-module rounded-lg border-border">
-                <SelectItem value="recent">Mais recentes</SelectItem>
+                <SelectItem value="recent">Ordem recomendada</SelectItem>
                 <SelectItem value="name">Nome A–Z</SelectItem>
                 <SelectItem value="density-asc">Menos produtos/página</SelectItem>
                 <SelectItem value="density-desc">Mais produtos/página</SelectItem>

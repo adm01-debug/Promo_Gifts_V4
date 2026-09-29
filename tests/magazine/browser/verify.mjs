@@ -182,8 +182,13 @@ try {
   });
   assert.equal(printed.transform, 'none');
   assert.ok(printed.width >= printed.sheetWidth - 1, JSON.stringify(printed));
+  const sheetCount = await page.locator('.mag-print-sheet').count();
+  const pdf = await page.pdf({ format: 'A4', printBackground: true, preferCSSPageSize: true });
+  const pdfPageCount = pdf.toString('latin1').match(/\/Type\s*\/Page\b/g)?.length ?? 0;
+  assert.equal(pdfPageCount, sheetCount, `PDF ${pdfPageCount} páginas para ${sheetCount} folhas`);
+  fs.writeFileSync(join(artifacts, 'magazine-print.pdf'), pdf);
   await page.emulateMedia({ media: 'screen' });
-  results.push('Mídia print remove transform e ocupa a folha A4');
+  results.push('PDF real tem uma página A4 por folha, sem página anônima extra');
   assert.deepEqual(errors, []);
   fs.writeFileSync(
     join(artifacts, 'verified-results.json'),

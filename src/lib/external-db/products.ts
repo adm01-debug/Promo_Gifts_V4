@@ -52,6 +52,8 @@ export async function fetchPromobrindProducts(options?: {
   orderBy?: { column: string; ascending?: boolean };
   filters?: Record<string, unknown>;
   signal?: AbortSignal;
+  requireComplete?: boolean;
+  enrichment?: 'base' | 'full';
 }): Promise<PromobrindProduct[]>;
 export async function fetchPromobrindProducts(options?: {
   search?: string;
@@ -61,6 +63,8 @@ export async function fetchPromobrindProducts(options?: {
   filters?: Record<string, unknown>;
   returnCount?: true;
   signal?: AbortSignal;
+  requireComplete?: boolean;
+  enrichment?: 'base' | 'full';
 }): Promise<{ products: PromobrindProduct[]; count: number | null }>;
 export async function fetchPromobrindProducts(options?: {
   search?: string;
@@ -70,6 +74,8 @@ export async function fetchPromobrindProducts(options?: {
   filters?: Record<string, unknown>;
   returnCount?: boolean;
   signal?: AbortSignal;
+  requireComplete?: boolean;
+  enrichment?: 'base' | 'full';
 }): Promise<PromobrindProduct[] | { products: PromobrindProduct[]; count: number | null }> {
   const filters: Record<string, unknown> = {
     ...(options?.filters?.active === undefined && options?.filters?.is_active === undefined
@@ -83,6 +89,8 @@ export async function fetchPromobrindProducts(options?: {
   }
 
   const orderBy = options?.orderBy ?? { column: 'name', ascending: true };
+  const secondaryOrderBy =
+    orderBy.column === 'id' ? undefined : { column: 'id', ascending: true as const };
   let products: PromobrindProduct[] = [];
   let totalCount: number | null = null;
   const shouldRequestCount = options?.returnCount === true;
@@ -98,6 +106,7 @@ export async function fetchPromobrindProducts(options?: {
         filters,
         select: PRODUCT_SELECT_FIELDS_WITH_SALE,
         orderBy,
+        secondaryOrderBy,
         limit: options.limit,
         offset: fetchOffset,
         countMode: shouldRequestCount ? 'planned' : 'none',
@@ -112,6 +121,7 @@ export async function fetchPromobrindProducts(options?: {
           filters,
           select: PRODUCT_SELECT_FIELDS_WITH_SALE_NO_THRESHOLD,
           orderBy,
+          secondaryOrderBy,
           limit: options.limit,
           offset: fetchOffset,
           countMode: shouldRequestCount ? 'planned' : 'none',
@@ -125,6 +135,7 @@ export async function fetchPromobrindProducts(options?: {
           filters,
           select: PRODUCT_SELECT_FIELDS_LEGACY_NO_THRESHOLD,
           orderBy,
+          secondaryOrderBy,
           limit: options.limit,
           offset: fetchOffset,
           countMode: shouldRequestCount ? 'planned' : 'none',
@@ -145,8 +156,13 @@ export async function fetchPromobrindProducts(options?: {
     const PAGINATION_TIMEOUT_MS = 30_000;
 
     while (offset < HARD_MAX) {
-      if (options?.signal?.aborted) break;
+      if (options?.signal?.aborted) throw new DOMException('Request aborted', 'AbortError');
       if (Date.now() - PAGINATION_START > PAGINATION_TIMEOUT_MS) {
+        if (options?.requireComplete) {
+          throw new Error(
+            `Catálogo incompleto: tempo limite atingido após ${products.length} produtos.`,
+          );
+        }
         logger.warn(
           `[external-db] Pagination time budget exceeded (${PAGINATION_TIMEOUT_MS}ms). Got ${products.length} products at offset=${offset}.`,
         );
@@ -163,9 +179,11 @@ export async function fetchPromobrindProducts(options?: {
           filters,
           select: PRODUCT_SELECT_FIELDS_WITH_SALE,
           orderBy,
+          secondaryOrderBy,
           limit: pageSize,
           offset,
           countMode,
+          signal: options?.signal,
         });
         consecutiveErrors = 0;
       } catch (err: unknown) {
@@ -177,6 +195,11 @@ export async function fetchPromobrindProducts(options?: {
         ) {
           consecutiveErrors++;
           if (consecutiveErrors >= MAX_CONSECUTIVE_ERRORS) {
+            if (options?.requireComplete) {
+              throw new Error(
+                `Catálogo incompleto: ${MAX_CONSECUTIVE_ERRORS} timeouts consecutivos no offset ${offset}.`,
+              );
+            }
             logger.warn(
               `[external-db] Stopping pagination at offset=${offset} after ${MAX_CONSECUTIVE_ERRORS} consecutive timeouts. Got ${products.length} products so far.`,
             );
@@ -199,9 +222,11 @@ export async function fetchPromobrindProducts(options?: {
             filters,
             select: PRODUCT_SELECT_FIELDS_WITH_SALE_NO_THRESHOLD,
             orderBy,
+            secondaryOrderBy,
             limit: pageSize,
             offset,
             countMode,
+            signal: options?.signal,
           });
           consecutiveErrors = 0;
         } catch (fallbackErr: unknown) {
@@ -209,6 +234,9 @@ export async function fetchPromobrindProducts(options?: {
           if (fbMsg.includes('statement timeout') || fbMsg.includes('canceling statement')) {
             consecutiveErrors++;
             if (consecutiveErrors >= MAX_CONSECUTIVE_ERRORS) {
+              if (options?.requireComplete) {
+                throw new Error(`Catálogo incompleto: timeout no offset ${offset}.`);
+              }
               logger.warn(
                 `[external-db] Stopping pagination (fallback) at offset=${offset}. Got ${products.length} products.`,
               );
@@ -227,9 +255,11 @@ export async function fetchPromobrindProducts(options?: {
               filters,
               select: PRODUCT_SELECT_FIELDS_LEGACY_NO_THRESHOLD,
               orderBy,
+              secondaryOrderBy,
               limit: pageSize,
               offset,
               countMode,
+              signal: options?.signal,
             });
             consecutiveErrors = 0;
           } else {
@@ -238,12 +268,18 @@ export async function fetchPromobrindProducts(options?: {
         }
       }
 
-      if (!page) break;
+      if (!page) {
+        if (options?.requireComplete) throw new Error('Catálogo incompleto: página sem resposta.');
+        break;
+      }
       if (typeof page.count === 'number') loopCount = page.count;
       products.push(...page.records);
       offset += page.records.length;
       if (page.records.length < pageSize) break;
       if (loopCount !== null && products.length >= loopCount) break;
+    }
+    if (offset >= HARD_MAX && options?.requireComplete) {
+      throw new Error(`Catálogo incompleto: limite de segurança de ${HARD_MAX} itens atingido.`);
     }
     totalCount = loopCount;
   }
@@ -262,7 +298,20 @@ export async function fetchPromobrindProducts(options?: {
 // ENRICHMENT LOGIC
 // ============================================
 
-async function enrichProducts(products: PromobrindProduct[], options?: { limit?: number }) {
+async function enrichProducts(
+  products: PromobrindProduct[],
+  options?: {
+    limit?: number;
+    signal?: AbortSignal;
+    requireComplete?: boolean;
+    enrichment?: 'base' | 'full';
+  },
+) {
+  if (options?.signal?.aborted) throw new DOMException('Request aborted', 'AbortError');
+  // Catalog browsers already receive images, colors and dimensions from the
+  // product row. They can request a complete base catalog without issuing
+  // hundreds of variant/image joins for records that are not yet visible.
+  if (options?.enrichment === 'base') return;
   const productIds = products.map((p) => p.id);
   const uniqueSupplierIds = [
     ...new Set(products.map((p) => p.supplier_id).filter(Boolean)),
@@ -271,6 +320,11 @@ async function enrichProducts(products: PromobrindProduct[], options?: { limit?:
   const shouldRunHeavyEnrichment = products.length <= 5000 || typeof options?.limit === 'number';
 
   if (!shouldRunHeavyEnrichment) {
+    if (options?.requireComplete) {
+      throw new Error(
+        `Catálogo incompleto: enriquecimento integral excede o limite seguro de 5000 produtos (${products.length}).`,
+      );
+    }
     logger.info(
       `[external-db] Skipping heavy enrichment for ${products.length} products to prevent timeouts`,
     );
@@ -350,8 +404,16 @@ async function enrichProducts(products: PromobrindProduct[], options?: { limit?:
 
   let batchResults: InvokeResult<unknown>[] = [];
   try {
-    batchResults = await Promise.all(batchQueries.map((q) => dbInvoke(q)));
+    batchResults = await Promise.all(
+      batchQueries.map((query) => dbInvoke({ ...query, signal: options?.signal })),
+    );
   } catch (err) {
+    if (options?.signal?.aborted) throw new DOMException('Request aborted', 'AbortError');
+    if (options?.requireComplete) {
+      throw new Error('Catálogo incompleto: falha ao enriquecer imagens, cores ou variantes.', {
+        cause: err,
+      });
+    }
     logger.warn('[external-db] Batch enrichment failed, products will have basic data:', err);
     return;
   }

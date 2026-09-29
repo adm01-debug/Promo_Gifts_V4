@@ -5,7 +5,7 @@
  * O preview A4 não é coluna permanente nesta etapa — abre pelo drawer.
  */
 
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { paginateMagazine } from '../../pagination';
 import { productToSnapshot } from '@/services/magazineService';
@@ -15,6 +15,7 @@ import {
   ChevronDown,
   FileText,
   Filter,
+  Heart,
   Plus,
   Search,
   Sparkles,
@@ -55,6 +56,8 @@ import type { Magazine, MagazineItem } from '@/types/magazine';
 import { getTemplate } from '../templates/TemplateRegistry';
 import { formatPrice, resolveItemImage } from '../templates/shared';
 import { VariantColorSelect } from '../VariantColorSelect';
+import { useMagazineProductFavorites } from '../../useMagazineProductFavorites';
+import { useAuth } from '@/contexts/AuthContext';
 import { MagazinePageRenderer } from '../MagazinePageRenderer';
 import {
   PG_BTN,
@@ -71,6 +74,7 @@ interface Props {
   magazine: Magazine;
   onAdd: (products: Product[]) => Promise<void> | void;
   onRemove: (itemId: string) => Promise<void> | void;
+  onRemoveMany: (itemIds: string[]) => Promise<void> | void;
   onUpdateItem: (itemId: string, patch: Partial<MagazineItem>) => Promise<void> | void;
   /** Leva à etapa Design (botão "Trocar template" do trilho). */
   onGoToDesign?: () => void;
@@ -85,6 +89,7 @@ const FAMILY_LABEL: Record<'catalog' | 'corporate' | 'editorial', string> = {
 };
 
 const MAX_VISIBLE_CATEGORIES = 7;
+const PRODUCT_RENDER_PAGE_SIZE = 48;
 
 function productPrice(p: Product): number | undefined {
   return p.sale_price ?? p.price;
@@ -92,7 +97,15 @@ function productPrice(p: Product): number | undefined {
 
 const COVER_PAGE = { index: 0, kind: 'cover' as const, items: [] as never[] };
 
-export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDesign }: Props) {
+export function ProductsStep({
+  magazine,
+  onAdd,
+  onRemove,
+  onRemoveMany,
+  onUpdateItem,
+  onGoToDesign,
+}: Props) {
+  const { user } = useAuth();
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<Map<string, Product>>(new Map());
   const adding = useRef(false);
@@ -102,6 +115,9 @@ export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDe
   const [hideAdded, setHideAdded] = useState(true);
   const [sort, setSort] = useState<SortMode>('name');
   const [confirmClear, setConfirmClear] = useState(false);
+  const [isClearing, setIsClearing] = useState(false);
+  const [visibleProductCount, setVisibleProductCount] = useState(PRODUCT_RENDER_PAGE_SIZE);
+  const { favorites, toggleFavorite } = useMagazineProductFavorites(user?.id ?? 'anonymous');
 
   const {
     data: products = [],
@@ -117,6 +133,7 @@ export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDe
       sortBy: sort === 'price-asc' || sort === 'price-desc' ? 'name' : sort,
     },
     { throwOnError: false },
+    { requireComplete: true, enrichment: 'base' },
   );
 
   const items = useMemo(() => magazine.items ?? [], [magazine.items]);
@@ -147,6 +164,12 @@ export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDe
       return sort === 'price-asc' ? pa - pb : pb - pa;
     });
   }, [products, hideAdded, alreadyAdded, category, onlyPersonalizable, sort]);
+
+  useEffect(() => {
+    setVisibleProductCount(PRODUCT_RENDER_PAGE_SIZE);
+  }, [query, category, onlyPersonalizable, hideAdded, sort]);
+
+  const visibleProducts = filtered.slice(0, visibleProductCount);
 
   const toggle = (product: Product) => {
     const id = product.id;
@@ -189,13 +212,16 @@ export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDe
   };
 
   const clearAll = async () => {
+    if (isClearing || items.length === 0) return;
+    setIsClearing(true);
     try {
-      for (const it of items) await onRemove(it.id);
+      await onRemoveMany(items.map((item) => item.id));
       setConfirmClear(false);
+      toast.success('Todos os produtos foram removidos da revista.');
     } catch {
-      toast.error(
-        'A limpeza foi interrompida. Confira os produtos restantes antes de tentar novamente.',
-      );
+      toast.error('Não foi possível limpar a revista. Nenhum produto foi removido.');
+    } finally {
+      setIsClearing(false);
     }
   };
 
@@ -397,7 +423,7 @@ export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDe
         <div className="max-h-[calc(100vh-420px)] min-h-[420px] overflow-y-auto px-5 py-4">
           <div className="grid grid-cols-2 gap-3 md:grid-cols-3 2xl:grid-cols-4">
             {!isError &&
-              filtered.map((p) => {
+              visibleProducts.map((p) => {
                 const isIn = alreadyAdded.has(p.id);
                 const isSel = selected.has(p.id);
                 const image = p.primary_image_url || p.image_url;
@@ -415,6 +441,23 @@ export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDe
                           : 'border-border hover:border-border-strong',
                     )}
                   >
+                    <button
+                      type="button"
+                      onClick={() => toggleFavorite(p.id)}
+                      aria-label={`${favorites.has(p.id) ? 'Remover' : 'Adicionar'} ${p.name} ${
+                        favorites.has(p.id) ? 'dos' : 'aos'
+                      } favoritos`}
+                      aria-pressed={favorites.has(p.id)}
+                      className="absolute left-2.5 top-2.5 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background/90 text-muted-foreground hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    >
+                      <Heart
+                        className={cn(
+                          'h-4 w-4',
+                          favorites.has(p.id) && 'fill-primary text-primary',
+                        )}
+                        aria-hidden
+                      />
+                    </button>
                     <button
                       type="button"
                       onClick={() => !isIn && toggle(p)}
@@ -460,17 +503,28 @@ export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDe
                       <span className="text-[14px] font-semibold text-primary">
                         {formatPrice(productPrice(p))}
                       </span>
-                      <span className="flex items-center gap-1" aria-hidden>
+                      <span
+                        className="flex items-center gap-1"
+                        role="img"
+                        aria-label={
+                          swatches.length > 0
+                            ? `Cores disponíveis: ${swatches.map((c) => c.name).join(', ')}${
+                                extraSwatches > 0 ? ` e mais ${extraSwatches}` : ''
+                              }`
+                            : 'Sem cores cadastradas'
+                        }
+                      >
                         {swatches.map((c) => (
                           <span
                             key={c.name}
                             className="h-3.5 w-3.5 rounded-full ring-1 ring-border-strong"
                             style={{ background: c.hex }}
                             title={c.name}
+                            aria-hidden
                           />
                         ))}
                         {extraSwatches > 0 && (
-                          <span className="text-[10px] text-muted-foreground">
+                          <span className="text-[10px] text-muted-foreground" aria-hidden>
                             +{extraSwatches}
                           </span>
                         )}
@@ -529,6 +583,20 @@ export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDe
                 </div>
               ))}
           </div>
+          {!isError && !isLoading && visibleProducts.length < filtered.length && (
+            <div className="flex justify-center pt-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() =>
+                  setVisibleProductCount((current) => current + PRODUCT_RENDER_PAGE_SIZE)
+                }
+                aria-label={`Mostrar mais produtos. ${filtered.length - visibleProducts.length} restantes`}
+              >
+                Mostrar mais ({filtered.length - visibleProducts.length})
+              </Button>
+            </div>
+          )}
         </div>
 
         <footer className="flex items-center justify-between gap-3 border-t border-border px-5 py-3">
@@ -537,7 +605,7 @@ export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDe
               ? 'Catálogo indisponível'
               : isLoading
                 ? 'Carregando…'
-                : `${filtered.length} produto${filtered.length === 1 ? '' : 's'} · ${selected.size} selecionado${selected.size === 1 ? '' : 's'}`}
+                : `${visibleProducts.length} de ${filtered.length} produto${filtered.length === 1 ? '' : 's'} · ${selected.size} selecionado${selected.size === 1 ? '' : 's'}`}
           </span>
           <Button
             size="sm"
@@ -720,13 +788,17 @@ export function ProductsStep({ magazine, onAdd, onRemove, onUpdateItem, onGoToDe
           <AlertDialogFooter>
             <AlertDialogCancel className={cn(PG_BTN, 'rounded-md')}>Cancelar</AlertDialogCancel>
             <AlertDialogAction
-              onClick={clearAll}
+              onClick={(event) => {
+                event.preventDefault();
+                void clearAll();
+              }}
+              disabled={isClearing}
               className={cn(
                 PG_BTN,
                 'rounded-md bg-destructive text-destructive-foreground hover:bg-destructive/90',
               )}
             >
-              Limpar tudo
+              {isClearing ? 'Limpando…' : 'Limpar tudo'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

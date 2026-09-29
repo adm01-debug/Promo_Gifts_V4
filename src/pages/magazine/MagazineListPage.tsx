@@ -89,6 +89,7 @@ type StatusFilter = 'all' | 'archived' | 'draft' | 'published';
 type SortField = 'name' | 'updated' | 'views';
 type SortDir = 'asc' | 'desc';
 type ViewMode = 'grid' | 'list';
+const MAGAZINES_RENDER_BATCH = 48;
 
 const STATUS_FILTERS: { id: StatusFilter; label: string }[] = [
   { id: 'all', label: 'Todas' },
@@ -147,6 +148,7 @@ export default function MagazineListPage() {
   const loadSequence = useRef(0);
   const [isCreating, setIsCreating] = useState(false);
   const [isDuplicating, setIsDuplicating] = useState<string | null>(null);
+  const [visibleCount, setVisibleCount] = useState(MAGAZINES_RENDER_BATCH);
 
   // FIX C12: dispara a migração 1x por usuário, em background — não bloqueia
   // a renderização da lista (que continua lendo do localStorage normalmente
@@ -192,14 +194,19 @@ export default function MagazineListPage() {
   }, [magazines]);
 
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    const normalizeSearch = (value: string) =>
+      value
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLocaleLowerCase('pt-BR');
+    const q = normalizeSearch(query.trim());
     const out = magazines.filter((m) => {
       if (status !== 'all' && m.status !== status) return false;
       if (!q) return true;
       return (
-        m.title.toLowerCase().includes(q) ||
-        (m.subtitle ?? '').toLowerCase().includes(q) ||
-        (m.branding?.clientName ?? '').toLowerCase().includes(q)
+        normalizeSearch(m.title).includes(q) ||
+        normalizeSearch(m.subtitle ?? '').includes(q) ||
+        normalizeSearch(m.branding?.clientName ?? '').includes(q)
       );
     });
     const dir = sortDir === 'asc' ? 1 : -1;
@@ -214,6 +221,11 @@ export default function MagazineListPage() {
       }
     });
   }, [magazines, query, status, sortField, sortDir]);
+  const visibleMagazines = useMemo(() => filtered.slice(0, visibleCount), [filtered, visibleCount]);
+
+  useEffect(() => {
+    setVisibleCount(MAGAZINES_RENDER_BATCH);
+  }, [query, sortDir, sortField, status, view]);
 
   const empty = magazines.length === 0;
 
@@ -476,7 +488,7 @@ export default function MagazineListPage() {
           </div>
         ) : view === 'grid' ? (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {filtered.map((m) => {
+            {visibleMagazines.map((m) => {
               return (
                 <article
                   key={m.id}
@@ -624,7 +636,7 @@ export default function MagazineListPage() {
               </span>
               <span className="w-8" />
             </div>
-            {filtered.map((m) => (
+            {visibleMagazines.map((m) => (
               <div
                 key={m.id}
                 className="group grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-border px-4 py-3 last:border-0 hover:bg-card-elevated md:grid-cols-[minmax(0,1fr)_auto_auto_auto_auto] md:gap-4"
@@ -712,6 +724,17 @@ export default function MagazineListPage() {
                 </DropdownMenu>
               </div>
             ))}
+          </div>
+        )}
+        {!isLoading && !loadError && visibleCount < filtered.length && (
+          <div className="flex justify-center pt-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setVisibleCount((current) => current + MAGAZINES_RENDER_BATCH)}
+            >
+              Mostrar mais revistas ({filtered.length - visibleCount})
+            </Button>
           </div>
         )}
       </div>
