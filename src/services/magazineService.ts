@@ -253,24 +253,53 @@ async function fetchItems(magazineId: string): Promise<MagazineItemRow[]> {
 }
 
 const MAGAZINE_ITEMS_PAGE_SIZE = 1_000;
+const MAGAZINES_PAGE_SIZE = 1_000;
+const MAGAZINE_IDS_BATCH_SIZE = 100;
+
+/** Pagina revistas com desempate estável para não depender do db-max-rows. */
+async function fetchMagazineRows(ownerId: string): Promise<MagazineRow[]> {
+  const rows: MagazineRow[] = [];
+  for (let offset = 0; ; offset += MAGAZINES_PAGE_SIZE) {
+    const { data, error } = await magazineDb
+      .from('magazines')
+      .select('*')
+      .eq('owner_id', ownerId)
+      .is('deleted_at', null)
+      // `updated_at` changes while paging and can shift rows across offsets.
+      // Page only by the immutable unique key; the UI applies its own sort.
+      .order('id', { ascending: true })
+      .range(offset, offset + MAGAZINES_PAGE_SIZE - 1);
+    if (error) {
+      logger.warn('[magazineService.list] error:', error.message);
+      throw new Error('Não foi possível carregar as revistas.');
+    }
+    const page = data ?? [];
+    rows.push(...page);
+    if (page.length < MAGAZINES_PAGE_SIZE) break;
+  }
+  return rows;
+}
 
 /** Pagina com ordem única para não truncar cards no limite do PostgREST. */
 async function fetchItemsForMagazines(magazineIds: string[]): Promise<MagazineItemRow[]> {
   const items: MagazineItemRow[] = [];
-  for (let offset = 0; ; offset += MAGAZINE_ITEMS_PAGE_SIZE) {
-    const { data, error } = await magazineDb
-      .from('magazine_items')
-      .select('*')
-      .in('magazine_id', magazineIds)
-      .order('id', { ascending: true })
-      .range(offset, offset + MAGAZINE_ITEMS_PAGE_SIZE - 1);
-    if (error) {
-      logger.warn('[magazineService] fetchItemsForMagazines error:', error.message);
-      throw new Error('Não foi possível carregar os produtos das revistas.');
+  for (let batchStart = 0; batchStart < magazineIds.length; batchStart += MAGAZINE_IDS_BATCH_SIZE) {
+    const magazineIdBatch = magazineIds.slice(batchStart, batchStart + MAGAZINE_IDS_BATCH_SIZE);
+    for (let offset = 0; ; offset += MAGAZINE_ITEMS_PAGE_SIZE) {
+      const { data, error } = await magazineDb
+        .from('magazine_items')
+        .select('*')
+        .in('magazine_id', magazineIdBatch)
+        .order('id', { ascending: true })
+        .range(offset, offset + MAGAZINE_ITEMS_PAGE_SIZE - 1);
+      if (error) {
+        logger.warn('[magazineService] fetchItemsForMagazines error:', error.message);
+        throw new Error('Não foi possível carregar os produtos das revistas.');
+      }
+      const page = data ?? [];
+      items.push(...page);
+      if (page.length < MAGAZINE_ITEMS_PAGE_SIZE) break;
     }
-    const page = data ?? [];
-    items.push(...page);
-    if (page.length < MAGAZINE_ITEMS_PAGE_SIZE) break;
   }
   return items;
 }
@@ -369,17 +398,7 @@ function publicPayloadToMagazine(token: string, p: PublicViewPayload): Magazine 
 
 export const magazineService = {
   async list(ownerId: string): Promise<Magazine[]> {
-    const { data, error } = await magazineDb
-      .from('magazines')
-      .select('*')
-      .eq('owner_id', ownerId)
-      .is('deleted_at', null)
-      .order('updated_at', { ascending: false });
-    if (error) {
-      logger.warn('[magazineService.list] error:', error.message);
-      throw new Error('Não foi possível carregar as revistas.');
-    }
-    const rows: MagazineRow[] = data ?? [];
+    const rows = await fetchMagazineRows(ownerId);
     if (rows.length === 0) return [];
     // Busca todos os itens em páginas estáveis para não depender do db-max-rows.
     const ids = rows.map((r) => r.id);
@@ -539,14 +558,28 @@ export const magazineService = {
   },
 
   async removeItem(id: string, itemId: string, expectedEditVersion?: number): Promise<Magazine> {
+    return this.removeItems(id, [itemId], expectedEditVersion);
+  },
+
+  async removeItems(
+    id: string,
+    itemIds: string[],
+    expectedEditVersion?: number,
+  ): Promise<Magazine> {
+    const uniqueItemIds = [...new Set(itemIds)];
+    if (uniqueItemIds.length === 0) {
+      const current = await hydrate(id);
+      if (!current) throw new MagazineMutationError('remover produtos', 'Revista não encontrada.');
+      return current;
+    }
     const version = await resolveExpectedVersion(id, expectedEditVersion);
     const { data, error } = await magazineDb.rpc('magazine_remove_items_v2', {
       p_magazine_id: id,
       p_expected_edit_version: version,
-      p_item_ids: [itemId],
+      p_item_ids: uniqueItemIds,
     });
-    if (error) throw mutationError('remover o produto', error);
-    return hydrateMutation(id, 'remover o produto', asMutationResponse('remover o produto', data));
+    if (error) throw mutationError('remover produtos', error);
+    return hydrateMutation(id, 'remover produtos', asMutationResponse('remover produtos', data));
   },
 
   async reorderItems(

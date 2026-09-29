@@ -2294,6 +2294,22 @@ html[data-scroll-locked] body {
     }
   }
 
+  /* Magazine owns the whole A4 canvas. Keep this named page rule beside and
+     after the global rule so Chromium does not inherit the generic margins or
+     footer margin-boxes on /magazine/:id/print. */
+  @page magazine {
+    margin: 0;
+    size: A4;
+
+    @bottom-center {
+      content: none;
+    }
+
+    @bottom-right {
+      content: none;
+    }
+  }
+
   /* ── Table print improvements ── */
   table {
     border-collapse: collapse !important;
@@ -2627,8 +2643,8 @@ body[data-offline='true'] button[type='submit']::after {
 /* Hide Lovable badge (PRO plan) */
 #lovable-badge,
 #lovable-badge-v2,
-[id^="lovable-badge"],
-a[href*="lovable.dev"][target="_blank"] {
+[id^='lovable-badge'],
+a[href*='lovable.dev'][target='_blank'] {
   display: none !important;
 }
 
@@ -2642,13 +2658,12 @@ a[href*="lovable.dev"][target="_blank"] {
  * depois no bundle em algum cenário de cache HMR.
  * Largura efetiva: 6.8rem (~15% menor que o baseline 8rem do shadcn; minimo a prova de corte incl. fallback system-ui em bold/FOUT). NAO reduzir para 6.4rem: corta "Visualizar" no fallback.
  * ────────────────────────────────────────────────────────────────────────── */
-[data-testid^="quote-row-menu-"][role="menu"],
-[role="menu"][data-testid^="quote-row-menu-"] {
+[data-testid^='quote-row-menu-'][role='menu'],
+[role='menu'][data-testid^='quote-row-menu-'] {
   width: 6.8rem !important;
   min-width: 0 !important;
   max-width: calc(100vw - 1rem) !important;
 }
-[data-testid^="quote-row-menu-"] [role="menuitem"] {
+[data-testid^='quote-row-menu-'] [role='menuitem'] {
   white-space: nowrap;
 }
-

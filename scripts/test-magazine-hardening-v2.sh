@@ -7,6 +7,19 @@ readonly database="magazine_hardening_test"
 readonly actor="00000000-0000-0000-0000-000000000001"
 race_dir=$(mktemp -d /tmp/promo-magazine-hardening-race-XXXXXX)
 
+legacy_callers=$(rg -n \
+  'magazine_(add_items|remove_items|reorder_items|duplicate|update_metadata|publish)_atomic' \
+  src supabase/functions \
+  --glob '*.{ts,tsx,js,jsx}' \
+  --glob '!src/integrations/supabase/types.ts' \
+  --glob '!**/__tests__/**' \
+  --glob '!**/*.test.*' || true)
+if [[ -n "${legacy_callers}" ]]; then
+  echo "Executable Magazine code still calls a legacy RPC:" >&2
+  echo "${legacy_callers}" >&2
+  exit 1
+fi
+
 cleanup() {
   docker rm -f "${container_name}" >/dev/null 2>&1 || true
   find "${race_dir}" -type f -delete 2>/dev/null || true
@@ -75,6 +88,40 @@ if [[ "$("${psql_base[@]}" -Atq -c "
 fi
 "${psql_base[@]}" -f /workspace/qa/migrations-draft/2026-09-09_magazine_rpc_only_contract.sql >/dev/null
 "${psql_base[@]}" -f /workspace/qa/migrations-draft/2026-09-09_magazine_rpc_only_contract.sql >/dev/null
+
+# Exercise the contracted surface as the real authenticated role, not postgres.
+role_select_count=$("${psql_base[@]}" -Atq -c "
+  SET ROLE authenticated;
+  SELECT set_config('request.jwt.claim.sub','${actor}',false);
+  SELECT count(*) FROM public.magazines
+  WHERE id='10000000-0000-0000-0000-000000000001';" | tail -1)
+if [[ "${role_select_count}" != "1" ]]; then
+  echo "Authenticated owner cannot SELECT its Magazine under RLS" >&2
+  exit 1
+fi
+
+role_rpc_result=$("${psql_base[@]}" -Atq -c "
+  SET ROLE authenticated;
+  SELECT set_config('request.jwt.claim.sub','${actor}',false);
+  SELECT public.magazine_create_v2(NULL,'Role/RLS smoke','editorial-vogue');" | tail -1)
+if [[ "${role_rpc_result}" != *'"magazine_id"'* ]]; then
+  echo "Authenticated role cannot execute the v2 RPC surface" >&2
+  exit 1
+fi
+
+set +e
+"${psql_base[@]}" -Atq -c "
+  SET ROLE authenticated;
+  SELECT set_config('request.jwt.claim.sub','${actor}',false);
+  UPDATE public.magazines SET title='direct-write-must-fail'
+  WHERE id='10000000-0000-0000-0000-000000000001';" >/dev/null 2>&1
+direct_dml_rc=$?
+set -e
+if [[ "${direct_dml_rc}" -eq 0 ]]; then
+  echo "Authenticated direct DML unexpectedly succeeded after RPC-only contraction" >&2
+  exit 1
+fi
+
 "${psql_base[@]}" -f /workspace/tests/magazine/sql/magazine_rpc_scenarios.sql >/dev/null
 # The canonical constraint is deferred. Tighten it here to prove that v2's
 # two-phase reorder is also safe with immediate uniqueness (swap/cycle).

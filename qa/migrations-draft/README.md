@@ -39,7 +39,7 @@ Ele NÃO substitui `supabase/migrations/` — é uma antessala revisável.
 ## Rascunhos vigentes
 
 <!-- BEGIN:DRAFT-INDEX (gerado por scripts/list-migration-drafts.mjs) -->
-_Atualizado em 2026-09-09T22:29:30.401Z · 10 rascunho(s)._
+_Atualizado em 2026-09-28T18:15:41.554Z · 10 rascunho(s)._
 
 | Arquivo | Objetivo | Alvo | Risco | Validação |
 | --- | --- | --- | --- | --- |
@@ -87,19 +87,19 @@ inicial (com fallback quando o CLI falhar).
 
 ### Flags do PR
 
-| Flag | Valor | Descrição |
-| --- | --- | --- |
-| `--pr` | — | Ativa a automação (só faz sentido junto com `--apply`). |
-| `--base=<branch>` | `main` (default) | Branch alvo do PR. |
-| `--draft-pr` | — | Abre o PR como **draft** no GitHub. |
-| `--labels=<a,b,c>` | csv | Labels **extras** — a label `db-migration` é sempre adicionada. |
-| `--reviewers=<a,b>` | csv/espaço | Handles (`user`, `org/time`, `bot[bot]`). Validado antes de rodar `gh`. |
-| `--assignees=<a,b>` | csv/espaço | Idem `--reviewers`. Não use `@` no início. |
-| `--skip-db-diff` | — | Não coleta nem anexa o `supabase db diff --linked`. |
-| `--db-diff-max-bytes=<n>` | `60000` (default) | Limite de bytes do comentário do diff (evita corte silencioso em migrações grandes). |
-| `--db-diff-cache` | — | Cacheia o resultado de `supabase db diff --linked` em `$TMPDIR/promo-gifts/supabase-db-diff-cache/` (opt-in). Útil ao promover vários drafts em sequência. |
-| `--db-diff-cache-ttl=<s>` | `900` (default) | TTL do cache em segundos. Chave inclui as migrations existentes, então aplicar uma nova invalida sozinho. |
-| `--no-db-diff-cache` | — | Ignora o cache mesmo com `--db-diff-cache` (força regeneração). |
+| Flag                      | Valor             | Descrição                                                                                                                                                  |
+| ------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--pr`                    | —                 | Ativa a automação (só faz sentido junto com `--apply`).                                                                                                    |
+| `--base=<branch>`         | `main` (default)  | Branch alvo do PR.                                                                                                                                         |
+| `--draft-pr`              | —                 | Abre o PR como **draft** no GitHub.                                                                                                                        |
+| `--labels=<a,b,c>`        | csv               | Labels **extras** — a label `db-migration` é sempre adicionada.                                                                                            |
+| `--reviewers=<a,b>`       | csv/espaço        | Handles (`user`, `org/time`, `bot[bot]`). Validado antes de rodar `gh`.                                                                                    |
+| `--assignees=<a,b>`       | csv/espaço        | Idem `--reviewers`. Não use `@` no início.                                                                                                                 |
+| `--skip-db-diff`          | —                 | Não coleta nem anexa o `supabase db diff --linked`.                                                                                                        |
+| `--db-diff-max-bytes=<n>` | `60000` (default) | Limite de bytes do comentário do diff (evita corte silencioso em migrações grandes).                                                                       |
+| `--db-diff-cache`         | —                 | Cacheia o resultado de `supabase db diff --linked` em `$TMPDIR/promo-gifts/supabase-db-diff-cache/` (opt-in). Útil ao promover vários drafts em sequência. |
+| `--db-diff-cache-ttl=<s>` | `900` (default)   | TTL do cache em segundos. Chave inclui as migrations existentes, então aplicar uma nova invalida sozinho.                                                  |
+| `--no-db-diff-cache`      | —                 | Ignora o cache mesmo com `--db-diff-cache` (força regeneração).                                                                                            |
 
 ### Exemplos
 
@@ -171,5 +171,3 @@ npm run draft:promote -- 2026-06-27_quotes_status_allow_cancelled.sql --apply --
   ls "$TMPDIR/promo-gifts/supabase-db-diff-cache/"
   rm -rf "$TMPDIR/promo-gifts/supabase-db-diff-cache/"
   ```
-
-
