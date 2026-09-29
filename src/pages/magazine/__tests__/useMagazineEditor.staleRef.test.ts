@@ -17,6 +17,7 @@ import { type Magazine, DEFAULT_BRANDING, DEFAULT_MAGAZINE_CONTENT } from '@/typ
 
 import { useMagazineEditor } from '../useMagazineEditor';
 import { magazineService } from '@/services/magazineService';
+import { readMagazineEditorRecovery, writeMagazineEditorRecovery } from '../editorRecovery';
 
 // ============================================================================
 // Mocks
@@ -112,6 +113,16 @@ vi.mock('@/services/magazineService', () => ({
       storedMagazine = updated;
       return updated;
     }),
+    removeItems: vi.fn((id: string, itemIds: string[], _expected?: number) => {
+      if (id !== 'mag_test' || !storedMagazine) return Promise.resolve(null);
+      const updated = {
+        ...storedMagazine,
+        items: storedMagazine.items.filter((i) => !itemIds.includes(i.id)),
+        editVersion: storedMagazine.editVersion + 1,
+      };
+      storedMagazine = updated;
+      return Promise.resolve(updated);
+    }),
     reorderItems: vi.fn((id: string, orderedIds: string[], _expected?: number) => {
       if (id !== 'mag_test' || !storedMagazine) return Promise.resolve(null);
       const itemMap = new Map(storedMagazine.items.map((item) => [item.id, item]));
@@ -175,6 +186,7 @@ vi.mock('@/contexts/AuthContext', () => ({
 
 beforeEach(() => {
   storedMagazine = { ...MOCK_MAGAZINE };
+  localStorage.clear();
   vi.useFakeTimers();
 });
 
@@ -199,6 +211,59 @@ async function renderLoadedEditor() {
 }
 
 describe('useMagazineEditor — stale ref race condition', () => {
+  it('restaura rascunho local quando a versão-base ainda coincide', async () => {
+    writeMagazineEditorRecovery('user_1', 'mag_test', 0, {
+      title: 'Título recuperado',
+      subtitle: 'Subtítulo recuperado',
+    });
+    const { result } = await renderLoadedEditor();
+
+    expect(result.current.recoveryAvailable).toBe(true);
+    expect(result.current.recoveryConflict).toBe(false);
+    act(() => {
+      expect(result.current.restoreRecovery()).toBe(true);
+    });
+
+    expect(result.current.magazine?.title).toBe('Título recuperado');
+    expect(result.current.magazine?.subtitle).toBe('Subtítulo recuperado');
+    expect(result.current.recoveryAvailable).toBe(false);
+    // A cópia local só some depois da confirmação do servidor. Se a aba cair
+    // durante o debounce, o rascunho ainda pode ser recuperado.
+    expect(readMagazineEditorRecovery('user_1', 'mag_test')).not.toBeNull();
+
+    await act(() => vi.advanceTimersByTimeAsync(400));
+    expect(storedMagazine?.title).toBe('Título recuperado');
+    expect(readMagazineEditorRecovery('user_1', 'mag_test')).toBeNull();
+  });
+
+  it('permite reaplicar conscientemente recovery conflitante sobre a versão atual', async () => {
+    writeMagazineEditorRecovery('user_1', 'mag_test', 7, { title: 'Título local revisado' });
+    const { result } = await renderLoadedEditor();
+
+    act(() => {
+      expect(result.current.restoreRecovery(true)).toBe(true);
+    });
+    expect(result.current.magazine?.title).toBe('Título local revisado');
+    await act(() => vi.advanceTimersByTimeAsync(400));
+    expect(storedMagazine?.title).toBe('Título local revisado');
+  });
+
+  it('não restaura sobre versão remota mais nova e permite descartar', async () => {
+    writeMagazineEditorRecovery('user_1', 'mag_test', 7, { title: 'Versão antiga local' });
+    const { result } = await renderLoadedEditor();
+
+    expect(result.current.recoveryAvailable).toBe(true);
+    expect(result.current.recoveryConflict).toBe(true);
+    act(() => {
+      expect(result.current.restoreRecovery()).toBe(false);
+    });
+    expect(result.current.magazine?.title).toBe('Original Title');
+
+    act(() => result.current.discardRecovery());
+    expect(result.current.recoveryAvailable).toBe(false);
+    expect(readMagazineEditorRecovery('user_1', 'mag_test')).toBeNull();
+  });
+
   it('autosave envia apenas campos editados, nunca items ou status', async () => {
     const { result } = await renderLoadedEditor();
     act(() => result.current.setTitle('Título seguro'));

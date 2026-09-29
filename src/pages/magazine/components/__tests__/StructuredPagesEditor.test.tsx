@@ -107,4 +107,33 @@ describe('StructuredPagesEditor', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Duplicar página 2' }));
     expect(onChange).not.toHaveBeenCalled();
   });
+
+  it('permite desfazer a exclusão de uma página editorial', () => {
+    const onChange = vi.fn();
+    const institutional = createMagazinePageDefinition('institutional', {
+      title: 'História da marca',
+    });
+    const pageOrder = {
+      version: 2 as const,
+      pages: [
+        createMagazinePageDefinition('cover'),
+        institutional,
+        createMagazinePageDefinition('contact'),
+      ],
+    };
+    const view = render(
+      <StructuredPagesEditor magazine={magazine({ pageOrder })} onChange={onChange} />,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Excluir página 2' }));
+    const deletedOrder = onChange.mock.calls[0][0];
+    expect(deletedOrder.pages).not.toContainEqual(institutional);
+    view.rerender(
+      <StructuredPagesEditor
+        magazine={magazine({ pageOrder: deletedOrder })}
+        onChange={onChange}
+      />,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Desfazer exclusão' }));
+    expect(onChange.mock.calls[1][0].pages).toEqual(pageOrder.pages);
+  });
 });

@@ -1,6 +1,6 @@
 # Rastreamento draft → migration → DB
 
-_Atualizado em 2026-09-17T11:28:33.616Z · 10 rascunho(s) · **sem acesso ao DB** (PGHOST ausente)._
+_Atualizado em 2026-09-28T18:15:41.668Z · 10 rascunho(s) · **sem acesso ao DB** (PGHOST ausente)._
 
 Gerado por `scripts/map-drafts-to-migrations.mjs`. Não editar à mão.
 

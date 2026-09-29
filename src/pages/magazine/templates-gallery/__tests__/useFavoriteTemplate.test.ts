@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useFavoriteTemplate } from '../useFavoriteTemplate';
 
-const KEY = 'magazine:favorite-template';
+const KEY = 'magazine:favorite-template:v2:user-1';
 
 describe('useFavoriteTemplate', () => {
   beforeEach(() => {
@@ -10,18 +10,18 @@ describe('useFavoriteTemplate', () => {
   });
 
   it('inicia como null quando storage está vazio', () => {
-    const { result } = renderHook(() => useFavoriteTemplate());
+    const { result } = renderHook(() => useFavoriteTemplate('user-1'));
     expect(result.current.favoriteId).toBeNull();
   });
 
   it('lê valor pré-existente do localStorage', () => {
     window.localStorage.setItem(KEY, 'editorial-vogue');
-    const { result } = renderHook(() => useFavoriteTemplate());
+    const { result } = renderHook(() => useFavoriteTemplate('user-1'));
     expect(result.current.favoriteId).toBe('editorial-vogue');
   });
 
   it('toggleFavorite marca id e persiste', () => {
-    const { result } = renderHook(() => useFavoriteTemplate());
+    const { result } = renderHook(() => useFavoriteTemplate('user-1'));
     act(() => result.current.toggleFavorite('editorial-vogue'));
     expect(result.current.favoriteId).toBe('editorial-vogue');
     expect(window.localStorage.getItem(KEY)).toBe('editorial-vogue');
@@ -29,7 +29,7 @@ describe('useFavoriteTemplate', () => {
 
   it('toggleFavorite no mesmo id remove favorito', () => {
     window.localStorage.setItem(KEY, 'catalog-grid3x3');
-    const { result } = renderHook(() => useFavoriteTemplate());
+    const { result } = renderHook(() => useFavoriteTemplate('user-1'));
     act(() => result.current.toggleFavorite('catalog-grid3x3'));
     expect(result.current.favoriteId).toBeNull();
     expect(window.localStorage.getItem(KEY)).toBeNull();
@@ -37,14 +37,14 @@ describe('useFavoriteTemplate', () => {
 
   it('toggleFavorite em id diferente substitui', () => {
     window.localStorage.setItem(KEY, 'a');
-    const { result } = renderHook(() => useFavoriteTemplate());
+    const { result } = renderHook(() => useFavoriteTemplate('user-1'));
     act(() => result.current.toggleFavorite('editorial-vogue'));
     expect(result.current.favoriteId).toBe('editorial-vogue');
   });
 
   it('clearFavorite limpa storage e estado', () => {
     window.localStorage.setItem(KEY, 'editorial-vogue');
-    const { result } = renderHook(() => useFavoriteTemplate());
+    const { result } = renderHook(() => useFavoriteTemplate('user-1'));
     act(() => result.current.clearFavorite());
     expect(result.current.favoriteId).toBeNull();
     expect(window.localStorage.getItem(KEY)).toBeNull();
@@ -52,13 +52,21 @@ describe('useFavoriteTemplate', () => {
 
   it('rejeita valor gigante no storage', () => {
     window.localStorage.setItem(KEY, 'a'.repeat(200));
-    const { result } = renderHook(() => useFavoriteTemplate());
+    const { result } = renderHook(() => useFavoriteTemplate('user-1'));
     expect(result.current.favoriteId).toBeNull();
   });
 
   it('rejeita valor vazio no storage', () => {
     window.localStorage.setItem(KEY, '');
-    const { result } = renderHook(() => useFavoriteTemplate());
+    const { result } = renderHook(() => useFavoriteTemplate('user-1'));
     expect(result.current.favoriteId).toBeNull();
+  });
+
+  it('isola favoritos entre usuários no mesmo navegador', () => {
+    window.localStorage.setItem(KEY, 'editorial-vogue');
+    const first = renderHook(() => useFavoriteTemplate('user-1'));
+    const second = renderHook(() => useFavoriteTemplate('user-2'));
+    expect(first.result.current.favoriteId).toBe('editorial-vogue');
+    expect(second.result.current.favoriteId).toBeNull();
   });
 });

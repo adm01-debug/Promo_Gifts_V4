@@ -40,6 +40,9 @@ export class EditorPersistence {
   get saving() {
     return this.queued > 0 || this.timer !== null;
   }
+  get pendingPatch(): EditorPatch {
+    return { ...this.pending };
+  }
 
   edit(patch: EditorPatch) {
     // CRITICAL FIX: update the snapshot synchronously BEFORE React setState.

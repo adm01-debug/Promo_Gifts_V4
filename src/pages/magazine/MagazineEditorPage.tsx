@@ -335,6 +335,49 @@ export default function MagazineEditorPage() {
       />
 
       <div className={cn(PG_PAGE, 'pb-6 pt-3')}>
+        {editor.recoveryAvailable && (
+          <div
+            role="alert"
+            className="mb-4 flex flex-col gap-3 rounded-lg border border-warning/50 bg-warning/10 px-4 py-3 text-[13px] sm:flex-row sm:items-center sm:justify-between"
+            data-testid="magazine-recovery-banner"
+          >
+            <div className="flex items-start gap-2">
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-warning" aria-hidden />
+              <div>
+                <p className="font-medium text-foreground">
+                  {editor.recoveryConflict
+                    ? 'Há uma recuperação local, mas a revista mudou no servidor.'
+                    : 'Encontramos alterações locais que ainda não foram confirmadas.'}
+                </p>
+                <p className="text-muted-foreground">
+                  {editor.recoveryConflict
+                    ? 'Compare o conteúdo atual antes de reaplicar. A ação abaixo usa a versão mais recente como base.'
+                    : 'Você pode restaurá-las ou descartá-las com segurança.'}
+                </p>
+              </div>
+            </div>
+            <div className="flex shrink-0 gap-2">
+              <Button type="button" variant="ghost" size="sm" onClick={editor.discardRecovery}>
+                Descartar
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                onClick={() => {
+                  if (editor.restoreRecovery(editor.recoveryConflict)) {
+                    toast.success(
+                      editor.recoveryConflict
+                        ? 'Alterações locais reaplicadas sobre a versão atual.'
+                        : 'Alterações locais restauradas.',
+                    );
+                  }
+                }}
+              >
+                {editor.recoveryConflict ? 'Reaplicar nesta versão' : 'Restaurar'}
+              </Button>
+            </div>
+          </div>
+        )}
         {/* Studio header (§24) */}
         <div
           className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between"
@@ -706,6 +749,7 @@ export default function MagazineEditorPage() {
                 magazine={magazine}
                 onAdd={editor.addProducts}
                 onRemove={editor.removeItem}
+                onRemoveMany={editor.removeItems}
                 onUpdateItem={editor.updateItem}
                 onGoToDesign={goToDesign}
               />

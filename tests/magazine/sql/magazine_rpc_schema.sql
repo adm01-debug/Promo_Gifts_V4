@@ -67,6 +67,28 @@ CREATE TABLE public.magazine_items (
   UNIQUE (magazine_id, product_id)
 );
 
+ALTER TABLE public.magazines ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.magazine_items ENABLE ROW LEVEL SECURITY;
+
+-- Espelha as policies mutáveis existentes antes da contração. O contrato
+-- RPC-only deve removê-las, mantendo apenas leitura autenticada.
+CREATE POLICY magazines_select ON public.magazines
+FOR SELECT TO authenticated USING (owner_id = (SELECT auth.uid()));
+CREATE POLICY magazines_insert ON public.magazines
+FOR INSERT TO authenticated WITH CHECK (owner_id = (SELECT auth.uid()));
+CREATE POLICY magazines_update ON public.magazines
+FOR UPDATE TO authenticated USING (owner_id = (SELECT auth.uid()));
+CREATE POLICY magazines_delete ON public.magazines
+FOR DELETE TO authenticated USING (owner_id = (SELECT auth.uid()));
+CREATE POLICY magazine_items_via_owner_or_org ON public.magazine_items
+FOR ALL TO authenticated USING (
+  EXISTS (
+    SELECT 1 FROM public.magazines m
+    WHERE m.id = magazine_items.magazine_id
+      AND m.owner_id = (SELECT auth.uid())
+  )
+);
+
 -- Espelha os privilégios legados ainda presentes no canônico antes da fase v2.
 -- A migration de expansão deve preservá-los até o novo cliente estar READY.
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.magazines, public.magazine_items

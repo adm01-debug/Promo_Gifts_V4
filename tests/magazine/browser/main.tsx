@@ -80,6 +80,10 @@ window.__service = {
     stored.items = stored.items.filter((i) => i.id !== itemId);
     return structuredClone(stored);
   },
+  removeItems: async (id, itemIds) => {
+    stored.items = stored.items.filter((i) => !itemIds.includes(i.id));
+    return structuredClone(stored);
+  },
   reorderItems: async (id, orderedIds) => {
     const byId = new Map(stored.items.map((item) => [item.id, item]));
     stored.items = orderedIds.map((itemId, index) => ({ ...byId.get(itemId), position: index }));
@@ -115,7 +119,7 @@ window.__reset = (empty = false) => {
 window.__forceStatus = (status) => {
   stored.status = status;
 };
-window.__registry = listTemplates().map(({ Component, ...entry }) => entry);
+window.__registry = listTemplates().map(({ Component: _Component, ...entry }) => entry);
 function Controls() {
   window.__navigate = useNavigate();
   return null;
