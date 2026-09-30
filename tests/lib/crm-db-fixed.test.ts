@@ -114,6 +114,33 @@ describe('invokeCrmDb', () => {
   });
 });
 
+describe('CRM ordering contract', () => {
+  it('preserva uma chave secundária estável para paginação OFFSET', async () => {
+    mockInvoke.mockResolvedValueOnce({ data: { data: [] }, error: null });
+
+    await selectCrm('companies', {
+      orderBy: [
+        { column: 'razao_social', ascending: true },
+        { column: 'id', ascending: true },
+      ],
+      limit: 50,
+      offset: 50,
+    });
+
+    expect(mockInvoke).toHaveBeenCalledWith(
+      'crm-db-bridge',
+      expect.objectContaining({
+        body: expect.objectContaining({
+          orderBy: [
+            { column: 'razao_social', ascending: true },
+            { column: 'id', ascending: true },
+          ],
+        }),
+      }),
+    );
+  });
+});
+
 describe('selectCrm', () => {
   it('returns array of records', async () => {
     mockInvoke.mockResolvedValueOnce({ data: { data: [{ id: '1' }, { id: '2' }] }, error: null });

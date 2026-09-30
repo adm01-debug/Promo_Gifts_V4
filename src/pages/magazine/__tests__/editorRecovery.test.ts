@@ -23,12 +23,14 @@ describe('editorRecovery', () => {
 
   it('rejeita payload com campo não permitido', () => {
     const storage = {
-      getItem: vi.fn(() =>
-        JSON.stringify({
-          savedAt: new Date().toISOString(),
-          baseEditVersion: 1,
-          patch: { ownerId: 'intruso' },
-        }),
+      getItem: vi.fn((storageKey: string) =>
+        storageKey.includes(':v1:')
+          ? JSON.stringify({
+              savedAt: new Date().toISOString(),
+              baseEditVersion: 1,
+              patch: { ownerId: 'intruso' },
+            })
+          : null,
       ),
       removeItem: vi.fn(),
     } as unknown as Storage;
@@ -48,6 +50,68 @@ describe('editorRecovery', () => {
     expect(readMagazineEditorRecovery('u1', 'm1')?.patch.title).toBe('Aba B');
     clearMagazineEditorRecovery('u1', 'm1', localStorage, 'tab-b');
     expect(readMagazineEditorRecovery('u1', 'm1')).toBeNull();
+  });
+
+  it('preserva e combina alterações independentes de duas abas offline', () => {
+    writeMagazineEditorRecovery('u1', 'm1', 4, { title: 'Título da aba A' }, localStorage, 'tab-a');
+    writeMagazineEditorRecovery(
+      'u1',
+      'm1',
+      4,
+      { subtitle: 'Subtítulo da aba B' },
+      localStorage,
+      'tab-b',
+    );
+
+    expect(localStorage.getItem('magazine:editor-recovery:v2:u1:m1:tab-a')).not.toBeNull();
+    expect(localStorage.getItem('magazine:editor-recovery:v2:u1:m1:tab-b')).not.toBeNull();
+    expect(readMagazineEditorRecovery('u1', 'm1')).toMatchObject({
+      baseEditVersion: 4,
+      patch: { title: 'Título da aba A', subtitle: 'Subtítulo da aba B' },
+      writerIds: expect.arrayContaining(['tab-a', 'tab-b']),
+    });
+
+    clearMagazineEditorRecovery('u1', 'm1', localStorage, 'tab-a');
+    expect(readMagazineEditorRecovery('u1', 'm1')).toMatchObject({
+      patch: { subtitle: 'Subtítulo da aba B' },
+      writerIds: ['tab-b'],
+    });
+  });
+
+  it('descarta recibo com timestamp futuro para não burlar o TTL', () => {
+    localStorage.setItem(
+      'magazine:editor-recovery:v2:u1:m1',
+      JSON.stringify({
+        records: [
+          {
+            savedAt: new Date(Date.now() + 10 * 60 * 1_000).toISOString(),
+            baseEditVersion: 1,
+            patch: { title: 'não deve restaurar' },
+            writerId: 'tab-future',
+          },
+        ],
+      }),
+    );
+
+    expect(readMagazineEditorRecovery('u1', 'm1')).toBeNull();
+    expect(localStorage.getItem('magazine:editor-recovery:v2:u1:m1')).toBeNull();
+  });
+
+  it('continua lendo o recibo v1 antes de a próxima escrita migrá-lo', () => {
+    localStorage.setItem(
+      'magazine:editor-recovery:v1:u1:m1',
+      JSON.stringify({
+        savedAt: new Date().toISOString(),
+        baseEditVersion: 2,
+        patch: { title: 'rascunho anterior' },
+        writerId: 'tab-anterior',
+      }),
+    );
+
+    expect(readMagazineEditorRecovery('u1', 'm1')).toMatchObject({
+      patch: { title: 'rascunho anterior' },
+      writerIds: ['tab-anterior'],
+    });
   });
 
   it('não lança quando storage bloqueia leitura e remoção', () => {

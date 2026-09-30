@@ -19,6 +19,8 @@ export class EditorPersistence {
     expectedEditVersion: number,
   ) => Promise<Magazine | null>;
   private readonly changed: () => void;
+  private readonly readLatest?: (id: string) => Promise<Magazine | null>;
+  private nonReplayableFailure = false;
 
   constructor(
     initial: Magazine,
@@ -28,10 +30,12 @@ export class EditorPersistence {
       expectedEditVersion: number,
     ) => Promise<Magazine | null>,
     changed: () => void,
+    readLatest?: (id: string) => Promise<Magazine | null>,
   ) {
     this.magazine = initial;
     this.write = write;
     this.changed = changed;
+    this.readLatest = readLatest;
   }
 
   get dirty() {
@@ -72,6 +76,26 @@ export class EditorPersistence {
     this.changed();
   }
 
+  private async latestAfter(expectedEditVersion: number): Promise<Magazine | null> {
+    if (!this.readLatest) return null;
+    try {
+      const latest = await this.readLatest(this.magazine.id);
+      return latest?.id === this.magazine.id && latest.editVersion > expectedEditVersion
+        ? latest
+        : null;
+    } catch {
+      // The original error is more useful than a second failed read.
+      return null;
+    }
+  }
+
+  private patchWasApplied(latest: Magazine, patch: EditorPatch): boolean {
+    return Object.entries(patch).every(([key, value]) => {
+      const remote = latest[key as keyof EditorPatch];
+      return JSON.stringify(remote) === JSON.stringify(value);
+    });
+  }
+
   private async drain() {
     while (Object.keys(this.pending).length > 0) {
       const patch = this.pending;
@@ -80,6 +104,13 @@ export class EditorPersistence {
         const expectedEditVersion = this.magazine.editVersion;
         this.reconcile(await this.write(this.magazine.id, patch, expectedEditVersion));
       } catch (error) {
+        const latest = await this.latestAfter(this.magazine.editVersion);
+        if (latest && this.patchWasApplied(latest, patch)) {
+          // The write committed but its response was lost. Reconciliation is
+          // safer than retrying a CAS mutation against a newer revision.
+          this.reconcile(latest);
+          continue;
+        }
         this.pending = { ...patch, ...this.pending };
         throw error;
       }
@@ -95,7 +126,8 @@ export class EditorPersistence {
     const task = this.tail
       .then(action)
       .catch((error: unknown) => {
-        const replay = replayProvider?.() ?? null;
+        const replay = this.nonReplayableFailure ? null : (replayProvider?.() ?? null);
+        this.nonReplayableFailure = false;
         // Preserve the oldest failed side effect. A later operation that was
         // already queued must never replace (and thereby lose) its replay.
         if (replay && !this.failedMutation) this.failedMutation = replay;
@@ -152,8 +184,22 @@ export class EditorPersistence {
       // the final drain, retry only that drain. A confirmed item operation
       // must not be replayed and accidentally duplicate its side effect.
       if (!mutationConfirmed) {
-        this.reconcile(await action(this.magazine.id, this.magazine.editVersion));
-        mutationConfirmed = true;
+        const expectedEditVersion = this.magazine.editVersion;
+        try {
+          this.reconcile(await action(this.magazine.id, expectedEditVersion));
+          mutationConfirmed = true;
+        } catch (error) {
+          const latest = await this.latestAfter(expectedEditVersion);
+          if (latest) {
+            this.magazine = latest;
+            this.nonReplayableFailure = true;
+            this.changed();
+            throw new Error(
+              'A conexão foi interrompida após a operação. A versão mais recente foi carregada; revise antes de tentar novamente.',
+            );
+          }
+          throw error;
+        }
       }
       await this.drain();
       return this.magazine;

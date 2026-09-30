@@ -288,7 +288,7 @@ interface CrmQuery {
   id?: string;
   filters?: Record<string, unknown>;
   select?: string;
-  orderBy?: string | { column: string; ascending?: boolean };
+  orderBy?: CrmOrderBy | CrmOrderBy[];
   limit?: number;
   offset?: number;
   search?: { column: string; term: string };
@@ -298,11 +298,13 @@ interface CrmQuery {
   queries?: BatchQuery[];
 }
 
+type CrmOrderBy = string | { column: string; ascending?: boolean };
+
 interface BatchQuery {
   table: string;
   select?: string;
   filters?: Record<string, unknown>;
-  orderBy?: string | { column: string; ascending?: boolean };
+  orderBy?: CrmOrderBy | CrmOrderBy[];
   limit?: number;
   offset?: number;
   search?: { column: string; term: string };
@@ -370,9 +372,12 @@ function applyFilters(query: any, filters: Record<string, unknown>): any {
   return query;
 }
 
-function applyOrdering(query: any, orderBy: string | { column: string; ascending?: boolean }): any {
-  if (typeof orderBy === "string") return query.order(orderBy);
-  return query.order(orderBy.column, { ascending: orderBy.ascending ?? true });
+function applyOrdering(query: any, orderBy: CrmOrderBy | CrmOrderBy[]): any {
+  const clauses = Array.isArray(orderBy) ? orderBy : [orderBy];
+  return clauses.reduce((current, clause) => {
+    if (typeof clause === "string") return current.order(clause);
+    return current.order(clause.column, { ascending: clause.ascending ?? true });
+  }, query);
 }
 
 function isOptionalQuoteTable(table: string): boolean {
@@ -710,6 +715,10 @@ Deno.serve((req) => {
     }
 
     const COLUMN_RE = /^[a-z_][a-z0-9_.]*$/i;
+    const CrmOrderBySchema = z.union([
+      z.string().regex(/^[a-z_][a-z0-9_.]*(\s+(asc|desc))?$/i),
+      z.object({ column: z.string().regex(COLUMN_RE), ascending: z.boolean().optional() }),
+    ]);
     const CrmRequestSchema = z.object({
       operation: z.enum(["select", "search", "insert", "update", "delete", "batch"]),
       table: z.string().trim().min(1).max(100).regex(/^[a-z_][a-z0-9_]*$/i).optional(),
@@ -719,10 +728,7 @@ Deno.serve((req) => {
         { message: "Filter keys must be valid column identifiers" },
       ).optional(),
       select: z.string().max(2000).optional(),
-      orderBy: z.union([
-        z.string().regex(/^[a-z_][a-z0-9_.]*(\s+(asc|desc))?$/i),
-        z.object({ column: z.string().regex(COLUMN_RE), ascending: z.boolean().optional() }),
-      ]).optional(),
+      orderBy: z.union([CrmOrderBySchema, z.array(CrmOrderBySchema).min(1).max(3)]).optional(),
       limit: z.number().int().min(1).max(1000).optional(),
       offset: z.number().int().min(0).optional(),
       search: z.object({ column: z.string().regex(COLUMN_RE), term: z.string().max(500) }).optional(),
