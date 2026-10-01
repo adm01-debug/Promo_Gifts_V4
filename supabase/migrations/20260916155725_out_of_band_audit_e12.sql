@@ -1,0 +1,18 @@
+-- STUB: migration aplicada out-of-band em 2026-09-16 via MCP/dashboard (sem arquivo local).
+-- Versão: 20260916155725 (registrada em supabase_migrations.schema_migrations)
+--
+-- Este arquivo não contém DDL executável. Existe apenas para reconciliar o ledger
+-- local versus o remoto: a versão 20260916155725 estava presente no banco de produção
+-- (remote_only) sem arquivo correspondente no repositório.
+--
+-- Contexto: DDL aplicada diretamente em 2026-09-16, detectada pelo detector E12
+-- (ddl-out-of-band-detector.yml). Relacionada às auditorias de segurança E12/E48.
+-- Ver docs/E12_DETECTOR_DDL_OUT_OF_BAND_2026-09-16.md
+--
+-- REGRA #8 corolário: DDL aplicada via MCP/dashboard sem migration versionada
+-- cria divergência silenciosa entre ledger e schema real. Este stub fecha essa
+-- divergência no ledger sem reexecutar DDL já aplicada.
+--
+-- Detectada via artefato migration-ledger-summary.json do workflow run 36844366317.
+-- Referência: E04 (fix-ledger-parity) — PLANO_WORKFLOWS_CI_100_ETAPAS_2026-09-26
+-- Adicionado em: 2026-10-01

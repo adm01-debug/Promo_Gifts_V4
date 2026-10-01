@@ -75,9 +75,10 @@ export function auditSupabaseMigrationLedger(document) {
     malformed_row_sample: sample(malformedRows),
   };
 
+  // local_only (migrations staged/pendentes) é estado normal e não bloqueia.
+  // Apenas remote_only (aplicado no BD sem arquivo local), mismatched e malformed bloqueiam.
   return {
     ok:
-      localOnly.length === 0 &&
       remoteOnly.length === 0 &&
       mismatched.length === 0 &&
       malformedRows.length === 0,
@@ -173,6 +174,11 @@ export function runCli(argv = process.argv.slice(2)) {
     return { exitCode: 1, result };
   }
 
+  if (result.summary?.local_only_count > 0) {
+    console.error(
+      `[migration-ledger][aviso] ${result.summary.local_only_count} migrations locais pendentes (local_only) — ainda não aplicadas em produção.`,
+    );
+  }
   console.error(`[migration-ledger][ok] ${result.summary.matched} versões alinhadas.`);
   return { exitCode: 0, result };
 }

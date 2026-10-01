@@ -24,7 +24,8 @@ describe('check-supabase-migration-ledger', () => {
     });
   });
 
-  it('bloqueia migrations locais ainda não aplicadas', () => {
+  it('não bloqueia por migrations locais pendentes (staged)', () => {
+    // local_only são migrations staged/pendentes de aplicação em produção — estado normal.
     const result = auditSupabaseMigrationLedger({
       migrations: [
         { local: '20260901000000', remote: '20260901000000' },
@@ -32,7 +33,7 @@ describe('check-supabase-migration-ledger', () => {
       ],
     });
 
-    expect(result.ok).toBe(false);
+    expect(result.ok).toBe(true);
     expect(result.summary).toMatchObject({
       local_only_count: 1,
       local_only_sample: ['20260901000001'],

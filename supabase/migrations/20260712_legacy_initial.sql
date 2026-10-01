@@ -1,0 +1,10 @@
+-- STUB: migration legacy aplicada antes da formalização do ledger de migrations.
+-- Versão: 20260712 (formato curto — registrada em supabase_migrations.schema_migrations)
+--
+-- Este arquivo não contém DDL executável. Existe apenas para reconciliar o ledger
+-- local versus o remoto: a versão 20260712 estava presente no banco de produção
+-- (remote_only) sem arquivo correspondente no repositório.
+--
+-- Detectada via artefato migration-ledger-summary.json do workflow run 36844366317.
+-- Referência: E04 (fix-ledger-parity) — PLANO_WORKFLOWS_CI_100_ETAPAS_2026-09-26
+-- Adicionado em: 2026-10-01
