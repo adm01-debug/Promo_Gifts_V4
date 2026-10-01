@@ -52,43 +52,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - uses: ./.github/actions/e2e-setup
         with:
-          node-version-file: '.nvmrc'
-          cache: "npm"
-
-      - name: Install deps
-        run: npm ci --no-audit --no-fund
-
-      - name: Cache Playwright browsers
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-          restore-keys: playwright-${{ runner.os }}-
-
-      - name: Install Playwright (browsers)
-        run: npx playwright install --with-deps
-
-      # Pré-gera fixtures de E2E (permissões-matrix → JSON) antes de qualquer
-      # step do Playwright. Separa essa etapa do webServer para que o comando
-      # `vite` inicie imediatamente, sem overhead de geração no timeout de boot.
-      - name: Pre-generate E2E fixtures
-        run: npm run e2e:generate-fixtures
-
-      # ─── Dev server único para todos os Playwright steps ────────────────
-      # Inicia Vite UMA VEZ como background service antes de qualquer step
-      # Playwright. Cada step usa E2E_BASE_URL e NÃO gerencia webServer —
-      # elimina a race condition onde o server morre entre steps (causa de
-      # ERR_CONNECTION_REFUSED em 7 s no step de regression).
-      - name: Start dev server (background)
-        run: npm run dev &
-        env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
-          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
-
-      - name: Wait for dev server to be ready
-        run: timeout 120 bash -c 'until curl -sf http://localhost:8080 > /dev/null 2>&1; do sleep 1; done'
+          browsers: 'chromium'
+          start-vite: 'true'
 
       # Auditoria: garantes que docs/E2E_SMOKE_COVERAGE.md está em dia com
       # _catalog.ts + SMOKE_COVERAGE. Falha se alguém alterou a suíte sem
