@@ -84,7 +84,7 @@ export default function MagazineTemplatesGalleryPage() {
   const [sort, setSort] = useState<SortMode>('recent');
   const [view, setView] = useState<ViewMode>('grid');
   const [previewId, setPreviewId] = useState<TemplateEntry['id'] | null>(null);
-  const { favoriteId, toggleFavorite } = useFavoriteTemplate(user?.id);
+  const { favoriteIds, toggleFavorite } = useFavoriteTemplate(user?.id);
 
   const templates = useMemo(() => {
     const all = listTemplates();
@@ -98,12 +98,14 @@ export default function MagazineTemplatesGalleryPage() {
         return b.productsPerPage - a.productsPerPage;
       });
     }
-    if (!favoriteId) return filtered;
-    // favorito primeiro (se estiver no filtro atual), demais preservam ordem
-    const fav = filtered.find((t) => t.id === favoriteId);
-    if (!fav) return filtered;
-    return [fav, ...filtered.filter((t) => t.id !== favoriteId)];
-  }, [family, density, sort, favoriteId]);
+    if (favoriteIds.length === 0) return filtered;
+    // Favoritos primeiro, preservando a ordenação escolhida dentro de cada grupo.
+    const favorites = new Set(favoriteIds);
+    return [
+      ...filtered.filter((template) => favorites.has(template.id)),
+      ...filtered.filter((template) => !favorites.has(template.id)),
+    ];
+  }, [family, density, sort, favoriteIds]);
 
   const previewEntry = useMemo(
     () => (previewId ? (listTemplates().find((t) => t.id === previewId) ?? null) : null),
@@ -324,7 +326,7 @@ export default function MagazineTemplatesGalleryPage() {
               onUse={handleUse}
               useLabel={useLabel}
               isBusy={isCreating}
-              isFavorite={entry.id === favoriteId}
+              isFavorite={favoriteIds.includes(entry.id)}
               onToggleFavorite={toggleFavorite}
               variant={view === 'grid' ? 'grid' : 'row'}
             />
@@ -351,7 +353,7 @@ export default function MagazineTemplatesGalleryPage() {
         }}
         useLabel={useLabel}
         isBusy={isCreating}
-        isFavorite={previewEntry !== null && previewEntry.id === favoriteId}
+        isFavorite={previewEntry !== null && favoriteIds.includes(previewEntry.id)}
         onToggleFavorite={toggleFavorite}
       />
     </>
