@@ -111,7 +111,7 @@ jobs:
         if: steps.auth.outputs.authed == 'true'
         run: |
           UPDATE_FLAG=""
-          if [ "${{ inputs.update_snapshots }}" = "true" ]; then
+          if [ "$UPDATE_SNAPSHOTS" = "true" ]; then
             UPDATE_FLAG="--update-snapshots"
           fi
           npx playwright test \
@@ -119,11 +119,11 @@ jobs:
             e2e/customization/collapse-reflow.spec.ts \
             --project=chromium-authed \
             --reporter=github,list,html,json \
-            --pass-with-no-tests \
             $UPDATE_FLAG
         env:
           E2E_BASE_URL: http://localhost:8080
           PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results-collapse.json
+          UPDATE_SNAPSHOTS: ${{ inputs.update_snapshots }}
 
       - name: Commit updated baselines
         if: inputs.update_snapshots == true && steps.auth.outputs.authed == 'true'

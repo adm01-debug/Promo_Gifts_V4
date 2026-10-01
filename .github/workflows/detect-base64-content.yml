@@ -118,4 +118,4 @@ jobs:
             fi
           } >> "$GITHUB_STEP_SUMMARY"
 
-          exit $FOUND
+          exit $(( FOUND > 0 ))
