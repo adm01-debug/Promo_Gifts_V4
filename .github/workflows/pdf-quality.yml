@@ -93,7 +93,6 @@ jobs:
           PROPOSAL_FIXTURE_ID: >-
             ${{ github.event_name == 'workflow_dispatch' && inputs.fixture_id != 'all' && inputs.fixture_id || '' }}
         run: node scripts/qa/generate-proposal-pdf.mjs
-        continue-on-error: ${{ github.event_name != 'workflow_dispatch' }}
 
       - name: Upload PDF + HTML + contrast report as artifacts
         if: always()
