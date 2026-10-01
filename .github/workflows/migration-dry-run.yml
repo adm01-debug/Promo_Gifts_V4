@@ -71,13 +71,17 @@ jobs:
       - name: Detectar drafts alvo
         if: steps.guard.outputs.enabled == 'true'
         id: drafts
+        env:
+          DRAFT_PATH: ${{ github.event.inputs.draft_path }}
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
         run: |
           set -euo pipefail
-          if [ -n "${{ github.event.inputs.draft_path }}" ]; then
-            echo "${{ github.event.inputs.draft_path }}" > /tmp/drafts.txt
-          elif [ "${{ github.event_name }}" = "pull_request" ]; then
-            git fetch origin "${{ github.base_ref }}" --depth=1
-            git diff --name-only "origin/${{ github.base_ref }}...HEAD" \
+          if [ -n "$DRAFT_PATH" ]; then
+            echo "$DRAFT_PATH" > /tmp/drafts.txt
+          elif [ "$EVENT_NAME" = "pull_request" ]; then
+            git fetch origin "$BASE_REF" --depth=1
+            git diff --name-only "origin/$BASE_REF...HEAD" \
               | grep -E '^qa/migrations-draft/.*\.sql$' > /tmp/drafts.txt || true
           else
             ls qa/migrations-draft/*.sql > /tmp/drafts.txt
