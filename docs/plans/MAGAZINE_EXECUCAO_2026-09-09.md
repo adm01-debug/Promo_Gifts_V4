@@ -5,6 +5,23 @@ Data: 09/09/2026. Rodadas: `codex/magazine-integrity-20260909`,
 Base da rodada de hardening: `80cf74ecc8daff4b7da54d6306dc4a9d19bf3abe`
 (`origin/main`, merge do PR #1852).
 
+> **Verificação de 01/10/2026 (prevalece sobre o retrato histórico abaixo):**
+> os PRs [#1949](https://github.com/adm01-debug/Promo_Gifts_V4/pull/1949)
+> e [#1955](https://github.com/adm01-debug/Promo_Gifts_V4/pull/1955) estão
+> mergeados. O deployment Vercel de produção respondeu em `/api/health` com
+> o SHA `de1c5f949145b77d60ed2460a743cd070c925472`; `/api/ready` respondeu
+> `ready` e `/magazine` respondeu HTTP 200. A Edge Function `crm-db-bridge`
+> foi publicada pelo workflow de deploy (run `36858924000`) e consultada
+> como ACTIVE, versão 298. Isso comprova publicação, **não** um ciclo
+> autenticado completo ou equivalência pixel a pixel. A correção do alerta
+> Sonar de `crm-db-bridge` e os favoritos múltiplos de template estão em
+> revisão separada, ainda não publicada. A suíte Magazine desta revisão
+> passou com 863 testes em 50 arquivos, além de TypeScript, lint, Deno check
+> e build. A contração RPC-only do draft continua **não aplicada**; grants
+> diretos de escrita em `magazines`/`magazine_items` permanecem um risco
+> comprovado no banco canônico. Não promover o draft sem autorização
+> específica, smoke autenticado prévio e o workflow oficial de migration.
+
 > **Atualização de 28/09/2026:** a remediação posterior está detalhada em
 > `docs/audits/AUDITORIA_MAGAZINE_50_ETAPAS_2026-09-28.md`, seção
 > “Remediação executada após a auditoria”. Essa seção é a fonte mais recente
