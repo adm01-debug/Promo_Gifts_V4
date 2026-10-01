@@ -23,18 +23,23 @@ const REVIEWED_IMAGE_SIZE_VULNERABLE_RANGES = new Set(['*', '<=2.0.2', '0.6.3 - 
 
 // @lhci/cli transitive dependencies — dev-only CI tooling, never in the production bundle.
 // All of these are pulled exclusively by @lhci/cli (Lighthouse CI) and its own transitives
-// (puppeteer-core → @puppeteer/browsers → extract-zip/tar-fs, lighthouse → @sentry/node, etc.).
+// (puppeteer-core → @puppeteer/browsers → extract-zip/tar-fs, lighthouse → @sentry/node,
+// proxy-agent → pac-proxy-agent → get-uri → basic-ftp, etc.).
 // None can be reached from production code. Accepted 2026-09-27. Revisit by RISK_REVIEW_DEADLINE.
 const ALLOWED_LHCI_PACKAGES = new Set([
   '@lhci/cli', // direct devDependency; moderate severity
   '@lhci/utils',
   '@puppeteer/browsers',
   '@sentry/node',
+  'basic-ftp',       // transitive: proxy-agent → get-uri → basic-ftp
   'cookie',
   'external-editor',
   'extract-zip',
+  'get-uri',         // transitive: proxy-agent → get-uri
   'inquirer',
   'lighthouse',
+  'pac-proxy-agent', // transitive: @lhci/cli → proxy-agent → pac-proxy-agent
+  'proxy-agent',     // transitive: @lhci/cli → proxy-agent
   'puppeteer-core',
   'tar-fs',
   'tmp',
