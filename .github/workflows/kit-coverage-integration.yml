@@ -24,6 +24,10 @@ on:
         required: false
         type: string
 
+concurrency:
+  group: kit-coverage-integration
+  cancel-in-progress: false
+
 permissions:
   contents: read
 
@@ -43,8 +47,8 @@ jobs:
             || secrets.KIT_FIXTURE_ID
             || '' }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -58,4 +62,3 @@ jobs:
           fi
       - name: Run kit-coverage integration test
         run: npm run test:kit-coverage:integration
-

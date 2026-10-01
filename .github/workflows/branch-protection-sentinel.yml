@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           # fetch-depth: 0 → histórico completo, para auditar todos os commits do push
           fetch-depth: 0
@@ -233,7 +233,6 @@ jobs:
     timeout-minutes: 5
     permissions:
       contents: read
-      administration: read
     steps:
       - name: Query rulesets for main (E52 — substituiu query de campo `protected` que retorna 404 com rulesets)
         env:

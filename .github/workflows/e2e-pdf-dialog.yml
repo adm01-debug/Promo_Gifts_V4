@@ -54,8 +54,8 @@ jobs:
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
       E2E_BASE_URL: http://localhost:8080
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -78,7 +78,7 @@ jobs:
       # pixel-diff direto do PR sem precisar rodar localmente.
       - name: Upload Playwright HTML report + trace
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: playwright-report-pdf-dialog-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
@@ -92,7 +92,7 @@ jobs:
       # (não só workflow_dispatch) para facilitar review de PR.
       - name: Upload pixel-diff PNGs (actual/expected/diff)
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: pdf-dialog-pixel-diff-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
@@ -106,7 +106,7 @@ jobs:
       # claro que o download desse artifact é o commit candidato.
       - name: Upload updated baselines (dispatch only)
         if: ${{ github.event.inputs.update_snapshots == 'true' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: pdf-dialog-baselines-${{ github.run_id }}
           path: |
@@ -133,7 +133,7 @@ jobs:
 
       - name: Upload artifact de recalibração (report + json + diffs)
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: watermark-threshold-recalibration-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
@@ -204,5 +204,3 @@ jobs:
             }
             console.log('✅ Drift dentro do limite (±' + (p.divergenceAlert*100) + '%).');
           "
-
-

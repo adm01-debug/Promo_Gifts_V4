@@ -2,8 +2,12 @@ name: Auth surface fuzz (weekly)
 
 on:
   schedule:
-    - cron: '0 5 * * 1' # Segunda 05:00 UTC
+    - cron: '12 5 * * 1' # Segunda 05:12 UTC
   workflow_dispatch:
+
+concurrency:
+  group: auth-fuzz-weekly
+  cancel-in-progress: false
 
 permissions:
   contents: read
@@ -15,8 +19,8 @@ jobs:
     env:
       FUZZ_STRESS: '10000'
     steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
           bun-version: latest
       - run: bun install --frozen-lockfile

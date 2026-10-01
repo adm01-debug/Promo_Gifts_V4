@@ -1,19 +1,20 @@
 name: Setup Node CI
 description: >
-  Composite action: checkout + setup-node (npm) + lockfile check + npm ci.
-  Cobre os 3 primeiros steps de ~90% dos workflows deste repo.
+  Composite action: setup-node (npm) + lockfile check + npm ci.
+  Requer checkout prévio — cada job deve executar actions/checkout@v4 antes
+  de invocar esta ação (GitHub Actions não consegue carregar uma action local
+  sem o repositório já ter sido clonado).
+  Cobre os steps de setup de ~90% dos workflows deste repo.
 
 inputs:
-  fetch-depth:
-    description: Profundidade do fetch (0 = historico completo)
-    required: false
-    default: '1'
-  persist-credentials:
-    description: Manter credenciais do GITHUB_TOKEN para workflows que fazem push
-    required: false
-    default: 'true'
   ignore-scripts:
     description: Passar --ignore-scripts ao npm ci
+    required: false
+    default: 'false'
+  skip-install:
+    description: >
+      Pular lockfile check e npm ci (apenas setup-node).
+      Usar em gates que só precisam de Node.js puro (sem node_modules).
     required: false
     default: 'false'
   working-directory:
@@ -24,21 +25,18 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: ${{ inputs.fetch-depth }}
-        persist-credentials: ${{ inputs.persist-credentials }}
-
-    - uses: actions/setup-node@v4
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
       with:
         node-version-file: '.nvmrc'
         cache: 'npm'
 
     - name: Check lockfile sync
+      if: ${{ inputs.skip-install != 'true' }}
       shell: sh
       run: node scripts/check-lockfile-sync.mjs
 
     - name: Install dependencies
+      if: ${{ inputs.skip-install != 'true' }}
       shell: sh
       working-directory: ${{ inputs.working-directory }}
       run: |

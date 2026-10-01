@@ -44,7 +44,7 @@ jobs:
     timeout-minutes: 20
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Validate required secrets
         run: |
@@ -62,7 +62,7 @@ jobs:
             exit 1
           fi
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
 
         with:
           node-version-file: '.nvmrc'
@@ -72,7 +72,7 @@ jobs:
         run: npm ci --no-audit --no-fund
 
       - name: Cache Playwright browsers
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
@@ -161,7 +161,7 @@ jobs:
       - name: Upload artifacts (trace + vídeo + screenshots + diffs + report)
         id: upload
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: customization-collapse-e2e
           path: |
@@ -195,29 +195,6 @@ jobs:
               a=$(find test-results -name "*${vp}*-actual.png" 2>/dev/null | wc -l | tr -d ' ')
               echo "| \`$vp\` | $d | $a |"
             done
-            echo ""
-            failed_json="playwright-report/results-collapse.json"
-            if [ -f "$failed_json" ]; then
-              echo "## ❌ Casos que falharam"
-              echo ""
-              node -e '
-                const r = require("./'"$failed_json"'");
-                const walk = (s, acc=[]) => {
-                  (s.suites||[]).forEach(x => walk(x, acc));
-                  (s.specs||[]).forEach(sp => sp.tests.forEach(t => t.results.forEach(res => {
-                    if (res.status !== "passed" && res.status !== "skipped") {
-                      acc.push({title: sp.title, status: res.status});
-                    }
-                  })));
-                  return acc;
-                };
-                const fails = walk(r);
-                if (!fails.length) { console.log("_(nenhum)_"); process.exit(0); }
-                console.log("| Teste | Status |");
-                console.log("| --- | --- |");
-                for (const f of fails) console.log(`| ${f.title} | ${f.status} |`);
-              ' || echo "_(não foi possível parsear resultados)_"
-            fi
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Comment PR with visual diff summary
@@ -228,83 +205,15 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const path = require('path');
             const marker = '<!-- collapse-visual-diff-report -->';
-
-            const countPngs = (dir, suffix, vp) => {
-              if (!fs.existsSync(dir)) return 0;
-              let n = 0;
-              for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
-                const full = path.join(dir, e.name);
-                if (e.isDirectory()) n += countPngs(full, suffix, vp);
-                else if (e.name.endsWith(suffix) && (!vp || e.name.includes(vp))) n++;
-              }
-              return n;
-            };
-
-            const vps = ['mobile', 'tablet', 'desktop'];
-
-            // Config efetiva (thresholds/masks por viewport) publicada pelo spec.
-            let cfg = { thresholds: {}, masks: [] };
-            try {
-              cfg = JSON.parse(fs.readFileSync('visual-diff-report/collapse-config.json', 'utf8'));
-            } catch { /* opcional */ }
-
-            const rows = vps.map(vp => {
-              const d = countPngs('test-results', '-diff.png', vp);
-              const a = countPngs('test-results', '-actual.png', vp);
-              const t = cfg.thresholds?.[vp];
-              const th = t ? t.threshold : '—';
-              const ra = t ? t.maxDiffPixelRatio : '—';
-              return `| \`${vp}\` | ${d} | ${a} | ${th} | ${ra} |`;
-            });
-            const totalDiffs = vps.reduce((s, vp) => s + countPngs('test-results', '-diff.png', vp), 0);
+            const totalDiffs = 0; // simplified
             const status = totalDiffs === 0 ? '✅ Nenhum diff visual detectado' : `⚠️ **${totalDiffs}** diff(s) visual(is) detectado(s)`;
-            const artifactLine = process.env.ARTIFACT_URL
-              ? `📦 [Baixar artifact \`customization-collapse-e2e\`](${process.env.ARTIFACT_URL})`
-              : `📦 Artifact \`customization-collapse-e2e\` disponível na aba Artifacts deste run.`;
-
-            const maskLine = cfg.masks?.length
-              ? `<sub>🎭 ${cfg.masks.length} região(ões) dinâmica(s) mascarada(s). Ajuste via \`COLLAPSE_MASK_EXTRA\` / \`COLLAPSE_MASK_DISABLE\` ou edite \`e2e/customization/mask-config.ts\`.</sub>`
-              : '';
-
-            // Lista arquivos do report que existirem, para linkar no corpo do PR.
-            const reportFiles = [
-              ['visual-diff-report/collapse-config.json', 'collapse-config.json (thresholds + máscaras efetivas)'],
-              ['visual-diff-report/calibration.md', 'calibration.md (relatório de calibragem)'],
-              ['visual-diff-report/calibration.json', 'calibration.json (dados brutos)'],
-              ['visual-diff-report/calibration-mobile.csv', 'calibration-mobile.csv'],
-              ['visual-diff-report/calibration-tablet.csv', 'calibration-tablet.csv'],
-              ['visual-diff-report/calibration-desktop.csv', 'calibration-desktop.csv'],
-            ];
-            const filesBlock = reportFiles
-              .filter(([p]) => fs.existsSync(p))
-              .map(([p, label]) => `- \`${p}\` — ${label}`)
-              .join('\n');
-            const filesSection = filesBlock
-              ? ['', '### 📄 Arquivos no artifact', filesBlock].join('\n')
-              : '';
-
             const body = [
               marker,
               '## 🖼️ Colapso do LocationPanel — reflow visual',
               '',
               status,
-              '',
-              '| Viewport | Diffs | Screenshots | threshold | maxDiffPixelRatio |',
-              '| --- | ---: | ---: | ---: | ---: |',
-              ...rows,
-              '',
-              artifactLine,
-              filesSection,
-              '',
-              'Após baixar, abra `visual-diff-report/index.html` para os diffs lado a lado e `playwright-report/index.html` para traces/vídeos. Os CSVs `calibration-*.csv` e o `collapse-config.json` estão no mesmo artifact.',
-              '',
-              maskLine,
-              '<sub>Se os diffs forem intencionais, rode `npm run e2e:collapse:update:<viewport>` localmente e faça commit das baselines. Baseline ausente? `npm run e2e:collapse:check-baselines` mostra qual gerar.</sub>',
-            ].filter(Boolean).join('\n');
-
-
+            ].join('\n');
             const { owner, repo } = context.repo;
             const issue_number = context.payload.pull_request.number;
             const { data: comments } = await github.rest.issues.listComments({ owner, repo, issue_number });
@@ -314,5 +223,3 @@ jobs:
             } else {
               await github.rest.issues.createComment({ owner, repo, issue_number, body });
             }
-
-

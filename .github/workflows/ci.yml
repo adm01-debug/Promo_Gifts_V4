@@ -20,16 +20,9 @@ jobs:
     env:
       NODE_OPTIONS: --max-old-space-size=4096
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-          
-      - name: Install dependencies
-        run: npm ci
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
 
       - name: Dependency vulnerability policy
         run: npm run check:dependency-audit
@@ -110,7 +103,6 @@ jobs:
 
 
 
-
       - name: Run Unit & Integration Tests
         run: npm run test:quality
 
@@ -130,6 +122,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Audit Credentials
         run: npm run audit:credentials

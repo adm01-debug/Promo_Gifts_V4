@@ -1,34 +1,8 @@
 name: pgss-slo-report
 
-# =============================================================================
-# Etapa E40 do PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md.
-# Ver docs/E40_BASELINE_DESEMPENHO_SLO_2026-09-17.md para a investigação
-# completa.
-#
-# O que faz: roda scripts/pgss-slo-check.mjs, que lê a série histórica de
-# ops.pgss_history (gravada semanalmente pelo cron pgss-history-weekly — ver
-# a migration da etapa E40) e compara a captura mais recente de cada RPC
-# monitorada contra o SLO declarado (SLO_TARGETS_MS, p95 aproximado por
-# mean + 1.645*stddev). Sinaliza (issue rotulada `perf-slo`, ou comentário
-# se já existir uma aberta) qualquer RPC acima do SLO.
-#
-# O que NÃO faz: não aplica DDL, não chama pg_stat_statements_reset() — é
-# advisory/best-effort, não um gate (mesmo padrão de
-# ddl-out-of-band-detector.yml/capacity-growth-report.yml, etapas E12/E30).
-# Depende da migration de E40 (tabela ops.pgss_history + cron) já ter sido
-# aplicada — enquanto não for, o check degrada para inconclusive (sem
-# issue) e só loga aviso.
-#
-# Secrets (Settings -> Secrets and variables -> Actions):
-#   - SUPABASE_ACCESS_TOKEN : PAT da Management API (mesmo secret de
-#                             ddl-out-of-band-detector.yml)
-# Variável sobrescrevível (não-secret):
-#   SUPABASE_PROJECT_REF (default: doufsxqlfjyuvxuezpln)
-# =============================================================================
-
 on:
   schedule:
-    - cron: '15 10 * * 1' # semanal, segunda 10:15 UTC — depois do capacity-growth-report (09:00 UTC)
+    - cron: '31 10 * * 1'
   workflow_dispatch:
 
 permissions:
@@ -49,10 +23,10 @@ jobs:
       SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF || 'doufsxqlfjyuvxuezpln' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version-file: .nvmrc
           cache: 'npm'
@@ -67,7 +41,7 @@ jobs:
 
       - name: Upload report artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: pgss-slo-report-${{ github.run_id }}
           path: /tmp/pgss-slo.json
@@ -75,11 +49,6 @@ jobs:
           if-no-files-found: ignore
 
       - name: Abre ou atualiza issue (RPC acima do SLO)
-        # exit 1 (FAILED) e exit 2 (INCONCLUSIVE) chegam aqui como 'failure' via
-        # continue-on-error. Só abrimos issue quando o relatório existe e lista
-        # >=1 RPC acima do SLO — caso contrário (inconclusivo: sem credenciais
-        # obrigatórias, Management API fora do ar, ops.pgss_history ainda não
-        # existe porque E40 não foi aplicado) só logamos warning, sem issue.
         if: steps.check.outcome == 'failure'
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         with:
