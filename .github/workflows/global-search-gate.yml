@@ -79,7 +79,7 @@ jobs:
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
           CI: true
-      - name: Detect Flaky & Quarantine
+      - name: Detect Flaky Tests (advisory)
         if: always()
         run: node e2e/scripts/detect-flaky.mjs
       - name: Upload Playwright Traces
@@ -88,13 +88,6 @@ jobs:
         with:
           name: playwright-traces
           path: e2e-artifacts/
-          retention-days: 14
-      - name: Upload Quarantine List
-        if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: quarantine-list
-          path: quarantine-list.json
           retention-days: 14
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
