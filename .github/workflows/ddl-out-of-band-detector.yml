@@ -34,7 +34,7 @@ name: ddl-out-of-band-detector
 
 on:
   schedule:
-    - cron: '0 8 * * 1' # semanal, segunda 08:00 UTC (05:00 BRT)
+    - cron: '8 8 * * 1' # semanal, segunda 08:08 UTC (05:08 BRT)
   workflow_dispatch:
 
 permissions:
