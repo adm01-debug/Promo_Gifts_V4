@@ -56,10 +56,10 @@ jobs:
       SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF || 'doufsxqlfjyuvxuezpln' }}
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Install Supabase CLI
-        uses: supabase/setup-cli@v2
+        uses: supabase/setup-cli@afb1b15109756ea5cf9d8985a359d9095235ca2b # v2
         with:
           version: 2.101.0
 
@@ -144,23 +144,6 @@ jobs:
 
       - name: Download functions from canonical and diff content
         id: hash_diff
-        # -----------------------------------------------------------------
-        # Etapa E42 (2026-09-16): antes, este passo só comparava o hash de
-        # `index.ts`. >=21 funções têm arquivos co-localizados além de
-        # index.ts (ex. crm-db-bridge tem 8, simulation-orchestrator e
-        # connections-auto-test têm 4) — código diferente nesses arquivos
-        # era drift invisível. A maioria desses arquivos extras são
-        # `*.test.ts` (Deno tests), que NÃO fazem parte do bundle deployado
-        # — confirmado ao vivo via Management API (`GET .../functions/{slug}`
-        # em crm-db-bridge: retorna só index.ts + os módulos de
-        # `_shared/` que ele importa, nunca os 7 `*.test.ts` locais).
-        # Por isso a comparação abaixo NÃO hasheia "tudo que existe no
-        # diretório do repo" (incluiria testes nunca deployados → falso
-        # positivo). Em vez disso, usa a lista de arquivos que o PRÓPRIO
-        # download retornou como fonte da verdade de "o que é o bundle" —
-        # isso também cobre `supabase/functions/_shared/*.ts`, que o
-        # download traz como irmão de `$slug/` e que a versão antiga deste
-        # gate nunca comparava.
         run: |
           set -euo pipefail
           mkdir -p /tmp/canonical_download
@@ -201,25 +184,10 @@ jobs:
               continue
             fi
 
-            # Manifesto = lista "sha256  caminho_relativo" de TODOS os arquivos
-            # que o download trouxe (raiz = $target_dir, caminhos tipo
-            # supabase/functions/<slug>/index.ts e
-            # supabase/functions/_shared/<helper>.ts), em ordem estável.
             canon_manifest=$(cd "$target_dir" && find supabase/functions -type f -print0 | sort -z | xargs -0 sha256sum)
             files_compared=$(echo "$canon_manifest" | wc -l)
             canon_sha=$(printf '%s' "$canon_manifest" | sha256sum | awk '{print $1}')
 
-            # Mesmo manifesto, mas hasheando o arquivo correspondente do repo
-            # (mesmo caminho relativo). Arquivo ausente no repo => "MISSING"
-            # em vez do hash, para não mascarar um caminho deployado que não
-            # existe mais localmente.
-            # Capturado via $(...) (não concatenação manual) de propósito: o
-            # mesmo tipo de captura que gerou canon_manifest acima, para que
-            # os dois lados percam (ou não) a quebra de linha final do MESMO
-            # jeito antes do sha256 final — misturar os dois estilos faz o
-            # hash de repo_manifest e canon_manifest divergirem mesmo com
-            # conteúdo logicamente idêntico (bug real encontrado e corrigido
-            # em teste manual desta etapa, 2026-09-16).
             repo_manifest=$(
               while IFS= read -r line; do
                 [ -z "$line" ] && continue
@@ -265,19 +233,11 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload drift report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: drift-report
           path: /tmp/drift_report.csv
 
-      # -----------------------------------------------------------------
-      # Etapa E42 (2026-09-16): checagem independente de verify_jwt — a
-      # comparação de hash acima nunca olhou pra isso. Roda em modo
-      # --require-live porque este job já exige SUPABASE_ACCESS_TOKEN (ver
-      # cabeçalho do arquivo); sem live evidence aqui vira `inconclusive`
-      # (exit 2), não passa em silêncio. `continue-on-error` só para deixar
-      # os passos de relatório abaixo rodarem antes do job falhar de fato —
-      # a falha real acontece no passo "Fail if verify_jwt..." no final.
       - name: Verify_jwt per function — allowlist gate (E42)
         id: verify_jwt_gate
         continue-on-error: true
@@ -291,7 +251,7 @@ jobs:
 
       - name: Upload verify_jwt report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: verify-jwt-report
           path: /tmp/verify_jwt_report.json
@@ -311,31 +271,18 @@ jobs:
             let body = '## 🛡️ Drift check — GitHub × Supabase\n\n';
             if (drifted.length > 0) {
               body += `**🟧 ${drifted.length} function(s) com conteúdo divergente:**\n\n`;
-              for (const line of drifted) {
-                body += `- \`${line.split(',')[0]}\`\n`;
-              }
+              for (const line of drifted) { body += `- \`${line.split(',')[0]}\`\n`; }
               body += '\n';
             }
             if (downloadFailed.length > 0) {
               body += `**⚠️ ${downloadFailed.length} função(ões) sem comparação por falha de download:**\n\n`;
-              for (const line of downloadFailed) {
-                body += `- \`${line.split(',')[0]}\`\n`;
-              }
+              for (const line of downloadFailed) { body += `- \`${line.split(',')[0]}\`\n`; }
               body += '\n';
             }
-            if (missing) {
-              body += `**🟨 Sem deploy no canônico:**\n${missing.split('\n').map(s=>`- \`${s}\``).join('\n')}\n\n`;
-            }
-            if (orphans) {
-              body += `**🟥 Órfãs no canônico:**\n${orphans.split('\n').map(s=>`- \`${s}\``).join('\n')}\n\n`;
-            }
+            if (missing) { body += `**🟨 Sem deploy no canônico:**\n${missing.split('\n').map(s=>`- \`${s}\``).join('\n')}\n\n`; }
+            if (orphans) { body += `**🟥 Órfãs no canônico:**\n${orphans.split('\n').map(s=>`- \`${s}\``).join('\n')}\n\n`; }
             body += '\n_Antes de mergear: aplicar PR conciliador trazendo o source canônico para o repo, ou redeployar o branch do PR._';
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body
-            });
+            github.rest.issues.createComment({ issue_number: context.issue.number, owner: context.repo.owner, repo: context.repo.repo, body });
 
       - name: Open issue (scheduled drift)
         if: (github.event_name == 'schedule' || github.event_name == 'workflow_run') && (steps.hash_diff.outputs.drift_count != '0' || steps.hash_diff.outputs.missing_in_dl != '0' || steps.slug_diff.outputs.has_orphans == 'true' || steps.slug_diff.outputs.has_missing == 'true')
@@ -348,43 +295,12 @@ jobs:
             const downloadFailed = csv.split('\n').filter(l => l.includes(',download_failed,'));
             const today = new Date().toISOString().slice(0,10);
             const title = `[drift-check] ${drifted.length} divergência(s), ${downloadFailed.length} download(s) inconclusivo(s) em ${today}`;
-            const existing = await github.rest.issues.listForRepo({
-              owner: context.repo.owner, repo: context.repo.repo,
-              state: 'open', labels: 'drift-check'
-            });
+            const existing = await github.rest.issues.listForRepo({ owner: context.repo.owner, repo: context.repo.repo, state: 'open', labels: 'drift-check' });
             const dup = existing.data.find(i => i.title.startsWith('[drift-check]'));
-            const body = `Detectadas ${drifted.length} divergências no cron diário.\n\n` +
-                         drifted.map(l => `- \`${l.split(',')[0]}\``).join('\n') +
-                         (downloadFailed.length ? `\n\nDownloads inconclusivos: ${downloadFailed.map(l => `\`${l.split(',')[0]}\``).join(', ')}` : '') +
-                         '\n\nVer artefato `drift-report` desta execução para os hashes.';
-            if (dup) {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner, repo: context.repo.repo,
-                issue_number: dup.number, body: `Atualização do dia ${today}:\n\n${body}`
-              });
-            } else {
-              await github.rest.issues.create({
-                owner: context.repo.owner, repo: context.repo.repo,
-                title, body, labels: ['drift-check','priority/high']
-              });
-            }
+            const body = `Detectadas ${drifted.length} divergências no cron diário.\n\n` + drifted.map(l => `- \`${l.split(',')[0]}\``).join('\n') + (downloadFailed.length ? `\n\nDownloads inconclusivos: ${downloadFailed.map(l => `\`${l.split(',')[0]}\``).join(', ')}` : '') + '\n\nVer artefato `drift-report` desta execução para os hashes.';
+            if (dup) { await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: dup.number, body: `Atualização do dia ${today}:\n\n${body}` }); }
+            else { await github.rest.issues.create({ owner: context.repo.owner, repo: context.repo.repo, title, body, labels: ['drift-check','priority/high'] }); }
 
-      # ---------------------------------------------------------------
-      # MODO ENFORCE — quebra build/PR se houver qualquer drift.
-      # Validado em 25/05/2026 (run 26413875585): 82/82 aligned, 0 drift.
-      # Histórico: começou em modo observação no PR #342, promovido a
-      # enforce após primeira execução limpa.
-      #
-      # Etapa E42 (2026-09-16): o passo hash_diff acima passou a comparar o
-      # manifesto do bundle inteiro (index.ts + _shared/* importado), não só
-      # index.ts — ver comentário no passo. Validado localmente com dados ao
-      # vivo via MCP (108/108 funções, 0 drift na comparação por nome/slug;
-      # a comparação por conteúdo do bundle completo roda pela primeira vez
-      # na próxima execução real deste workflow — sem token de deploy neste
-      # ambiente de edição não é possível re-executar
-      # `supabase functions download` aqui para revalidar o "82/82" acima
-      # com a métrica nova).
-      # ---------------------------------------------------------------
       - name: Fail if drift detected
         if: steps.hash_diff.outputs.drift_count != '0' || steps.hash_diff.outputs.missing_in_dl != '0' || steps.slug_diff.outputs.has_orphans == 'true' || steps.slug_diff.outputs.has_missing == 'true'
         run: |
@@ -395,13 +311,6 @@ jobs:
           echo "::error::  3. Sem deploy: aguardar workflow Deploy Edge Functions ou disparar manual"
           exit 1
 
-      # ---------------------------------------------------------------
-      # Etapa E42 (2026-09-16): gate independente para verify_jwt — falha se
-      # alguma função ao vivo com verify_jwt=false não estiver documentada em
-      # .security/edge-functions-verify-jwt-false-allowlist.json (ou se uma
-      # entrada da allowlist não tiver `reason`). Ver passo "Verify_jwt per
-      # function — allowlist gate (E42)" acima para os detalhes.
-      # ---------------------------------------------------------------
       - name: Fail if verify_jwt allowlist gate failed
         if: steps.verify_jwt_gate.outputs.exit_code != '0'
         run: |
