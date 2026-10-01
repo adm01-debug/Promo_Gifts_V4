@@ -11,6 +11,12 @@ inputs:
     description: Passar --ignore-scripts ao npm ci
     required: false
     default: 'false'
+  skip-install:
+    description: >
+      Pular lockfile check e npm ci (apenas setup-node).
+      Usar em gates que só precisam de Node.js puro (sem node_modules).
+    required: false
+    default: 'false'
   working-directory:
     description: Diretorio onde rodar npm ci
     required: false
@@ -25,10 +31,12 @@ runs:
         cache: 'npm'
 
     - name: Check lockfile sync
+      if: ${{ inputs.skip-install != 'true' }}
       shell: sh
       run: node scripts/check-lockfile-sync.mjs
 
     - name: Install dependencies
+      if: ${{ inputs.skip-install != 'true' }}
       shell: sh
       working-directory: ${{ inputs.working-directory }}
       run: |

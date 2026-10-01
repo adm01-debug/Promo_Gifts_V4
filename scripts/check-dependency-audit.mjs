@@ -30,11 +30,11 @@ const ALLOWED_LHCI_PACKAGES = new Set([
   '@lhci/utils',
   '@puppeteer/browsers',
   '@sentry/node',
-  'basic-ftp',       // transitive: proxy-agent → get-uri → basic-ftp
+  'basic-ftp',       // transitive: proxy-agent → pac-proxy-agent → get-uri → basic-ftp
   'cookie',
   'external-editor',
   'extract-zip',
-  'get-uri',         // transitive: proxy-agent → get-uri
+  'get-uri',         // transitive: proxy-agent → pac-proxy-agent → get-uri
   'inquirer',
   'lighthouse',
   'pac-proxy-agent', // transitive: @lhci/cli → proxy-agent → pac-proxy-agent
