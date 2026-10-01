@@ -56,11 +56,14 @@ jobs:
 
       - name: Detectar arquivos TypeScript alterados
         id: changed_files
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          TARGET_SHA: ${{ inputs.target_sha }}
         run: |
           set -euo pipefail
 
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.target_sha }}" ]; then
-            TARGET="${{ inputs.target_sha }}"
+          if [ "$EVENT_NAME" = "workflow_dispatch" ] && [ -n "$TARGET_SHA" ]; then
+            TARGET="$TARGET_SHA"
             DIFF_BASE="${TARGET}~1"
           else
             TARGET="HEAD"

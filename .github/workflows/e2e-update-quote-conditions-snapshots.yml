@@ -99,6 +99,8 @@ jobs:
         if: ${{ github.event.inputs.safe_mode == 'false' || (steps.dryrun.outcome == 'failure' && steps.classify.outputs.kind == 'visual') }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SAFE_MODE_RAW: ${{ github.event.inputs.safe_mode }}
+          TARGET_BRANCH: ${{ github.event.inputs.branch }}
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -106,7 +108,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "Sem mudanças nos baselines."; exit 0
           fi
-          MODE="${{ github.event.inputs.safe_mode != 'false' && 'safe' || 'force' }}"
+          if [ "$SAFE_MODE_RAW" != 'false' ]; then MODE='safe'; else MODE='force'; fi
           TS=$(date -u +%y%m%d-%H%M)
           BRANCH="chore/e2e-quote-conditions-baselines-${TS}"
           git checkout -b "${BRANCH}"
@@ -114,7 +116,7 @@ jobs:
           git push origin "${BRANCH}"
           BODY="Baselines PNG gerados automaticamente pelo workflow \`e2e-update-quote-conditions-snapshots\`. Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           gh pr create \
-            --base "${{ github.event.inputs.branch }}" \
+            --base "$TARGET_BRANCH" \
             --head "${BRANCH}" \
             --title "chore(e2e): update quote-conditions visual baselines (${MODE})" \
             --body "${BODY}"
