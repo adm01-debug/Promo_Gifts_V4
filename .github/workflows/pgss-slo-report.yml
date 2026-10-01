@@ -28,7 +28,7 @@ name: pgss-slo-report
 
 on:
   schedule:
-    - cron: '15 10 * * 1' # semanal, segunda 10:15 UTC — depois do capacity-growth-report (09:00 UTC)
+    - cron: '31 10 * * 1' # semanal, segunda 10:31 UTC — E19 jitter (hash mod 50+5; :15 era duplicado)
   workflow_dispatch:
 
 permissions:

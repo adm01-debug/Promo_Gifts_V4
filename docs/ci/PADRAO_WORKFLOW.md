@@ -170,4 +170,26 @@ npx --yes actionlint .github/workflows/meu-workflow.yml
 
 ---
 
+## E19 — Tabela de Crons e Jitter (`SUPABASE_ACCESS_TOKEN`)
+
+> Gerada por `node scripts/list-cron-schedules.mjs`. Regenerar após mudar qualquer `schedule:`.
+> Regras: minuto ≠ :00 ou :30; nenhum minuto com > 1 cron SAT.
+
+### Workflows com `SUPABASE_ACCESS_TOKEN`
+
+| Workflow | Cron | Minuto | Status |
+|---|---|---|---|
+| `capacity-growth-report` | `16 9 * * 1` | :16 | ✅ |
+| `db-schema-drift-check` | `22 9 * * *` | :22 | ✅ |
+| `ddl-out-of-band-detector` | `8 8 * * 1` | :08 | ✅ |
+| `edge-functions-drift-check` | `6 9 * * *` | :06 | ✅ |
+| `pgss-slo-report` | `31 10 * * 1` | :31 | ✅ |
+| `quote-number-hardening-verify` | `17 */6 * * *` | :17 | ✅ |
+| `schema-snapshot-export` | `34 6 * * 1` | :34 | ✅ |
+| `wraparound-monitor-report` | `15 6 * * *` | :15 | ✅ |
+
+Todos os 8 minutos SAT são únicos. Nenhum em `:00` ou `:30`.
+
+---
+
 *Este documento é a referência viva — atualizar ao implementar E11–E20.*
