@@ -39,6 +39,11 @@ setup('authenticate', async ({ page }) => {
   const password = process.env.E2E_USER_PASSWORD;
 
   if (!email || !password) {
+    if (process.env.CI) {
+      throw new Error(
+        '[auth.setup] E2E_USER_EMAIL/E2E_USER_PASSWORD ausentes em CI — configure os secrets antes de rodar specs autenticados.',
+      );
+    }
     fs.writeFileSync(STORAGE, JSON.stringify({ cookies: [], origins: [] }, null, 2), 'utf-8');
     setup.info().annotations.push({
       type: 'skip-reason',

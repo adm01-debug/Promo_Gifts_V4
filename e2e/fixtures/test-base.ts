@@ -202,7 +202,10 @@ function authStorageHasCookies(): boolean {
  *  gerado por `scripts/e2e-mock-auth-setup.mjs` — que grava um cookie
  *  sentinela `e2e-mock-auth`. Nesse modo, os specs precisam chamar
  *  `installMockAuth(page)` (em `e2e/helpers/mock-auth.ts`) para interceptar
- *  as chamadas a `/auth/v1/**`. */
+ *  as chamadas a `/auth/v1/**`.
+ *
+ *  Em CI (CI=true) sem credenciais: lança erro em vez de skip silencioso,
+ *  tornando configuração faltante visível como falha de CI. */
 export function requireAuth(reason = "E2E_USER_EMAIL/PASSWORD não configurados") {
   const mockMode = process.env.E2E_MOCK_AUTH === "1" || process.env.E2E_MOCK_AUTH === "true";
   if (mockMode) {
@@ -216,6 +219,11 @@ export function requireAuth(reason = "E2E_USER_EMAIL/PASSWORD não configurados"
   }
   const hasCredentials = !!(process.env.E2E_USER_EMAIL && process.env.E2E_USER_PASSWORD);
   if (!hasCredentials) {
+    if (process.env.CI) {
+      throw new Error(
+        `[requireAuth] ${reason} — em CI isso é erro de configuração, não skip silencioso.`,
+      );
+    }
     test.skip(true, reason);
     return;
   }

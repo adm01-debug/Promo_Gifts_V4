@@ -73,7 +73,7 @@ export async function loginViaUI(page: Page, creds: LoginCreds): Promise<boolean
 /**
  * Faz login com a credencial do papel solicitado, reaproveitando o
  * `storageState` quando já existe sessão. Marca o teste como `skip` se as
- * variáveis de ambiente não estiverem configuradas.
+ * variáveis de ambiente não estiverem configuradas (ou lança em CI).
  */
 export async function loginAs(page: Page, role: Role = "user"): Promise<void> {
   const email = role === "dev" ? process.env.E2E_DEV_EMAIL : 
@@ -86,6 +86,11 @@ export async function loginAs(page: Page, role: Role = "user"): Promise<void> {
                    process.env.E2E_USER_PASSWORD;
 
   if (!email || !password) {
+    if (process.env.CI) {
+      throw new Error(
+        `[loginAs] Credenciais E2E_${role.toUpperCase()}_EMAIL/PASSWORD ausentes em CI — configure os secrets.`,
+      );
+    }
     test.skip(true, `Credenciais E2E_${role.toUpperCase()}_EMAIL/PASSWORD ausentes`);
   }
 
