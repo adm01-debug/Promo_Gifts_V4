@@ -45,6 +45,19 @@ type SupplierRow = { id: string; name: string; code: string };
 type ColorVariationRow = { id: string; name: string; slug: string; group_id: string };
 type ColorGroupRow = { id: string; name: string; slug: string };
 
+function fallbackPriceOrder(
+  orderBy: { column: string; ascending?: boolean },
+  error: unknown,
+): { column: string; ascending?: boolean } {
+  const message =
+    error instanceof Error ? error.message.toLowerCase() : String(error).toLowerCase();
+  // A pre-sale_price catalog still exposes base_price. Keep all other sort
+  // keys intact so a missing optional projection field never changes ranking.
+  return orderBy.column === 'sale_price' && message.includes('sale_price')
+    ? { ...orderBy, column: 'base_price' }
+    : orderBy;
+}
+
 export async function fetchPromobrindProducts(options?: {
   search?: string;
   limit?: number;
@@ -134,7 +147,7 @@ export async function fetchPromobrindProducts(options?: {
           operation: 'select',
           filters,
           select: PRODUCT_SELECT_FIELDS_LEGACY_NO_THRESHOLD,
-          orderBy,
+          orderBy: fallbackPriceOrder(orderBy, fallbackErr),
           secondaryOrderBy,
           limit: options.limit,
           offset: fetchOffset,
@@ -221,7 +234,7 @@ export async function fetchPromobrindProducts(options?: {
             operation: 'select',
             filters,
             select: PRODUCT_SELECT_FIELDS_WITH_SALE_NO_THRESHOLD,
-            orderBy,
+            orderBy: fallbackPriceOrder(orderBy, err),
             secondaryOrderBy,
             limit: pageSize,
             offset,
@@ -254,7 +267,7 @@ export async function fetchPromobrindProducts(options?: {
               operation: 'select',
               filters,
               select: PRODUCT_SELECT_FIELDS_LEGACY_NO_THRESHOLD,
-              orderBy,
+              orderBy: fallbackPriceOrder(orderBy, fallbackErr),
               secondaryOrderBy,
               limit: pageSize,
               offset,

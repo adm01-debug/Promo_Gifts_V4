@@ -34,6 +34,10 @@ export function useMagazineEditor(id: string | undefined) {
   const [recovery, setRecovery] = useState<MagazineEditorRecovery | null>(null);
   const session = useRef<EditorPersistence | null>(null);
   const recoveryWriterId = useRef(`tab-${globalThis.crypto.randomUUID()}`);
+  // A restored recovery can represent independent work from multiple offline
+  // tabs. Acknowledge precisely those records only after the merged patch has
+  // been persisted successfully.
+  const restoredRecoveryWriterIds = useRef<string[] | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -47,6 +51,7 @@ export function useMagazineEditor(id: string | undefined) {
     setLoadError(null);
     setBrandingErrors([]);
     setRecovery(null);
+    restoredRecoveryWriterIds.current = null;
     if (!id) {
       setLoaded(true);
       return;
@@ -78,10 +83,18 @@ export function useMagazineEditor(id: string | undefined) {
                     writerId,
                   );
                 } else if (!current.dirty && !current.error) {
-                  clearMagazineEditorRecovery(user.id, fetched.id, window.localStorage, writerId);
+                  const recoveredWriters = restoredRecoveryWriterIds.current;
+                  clearMagazineEditorRecovery(
+                    user.id,
+                    fetched.id,
+                    window.localStorage,
+                    recoveredWriters ? [...recoveredWriters, writerId] : writerId,
+                  );
+                  restoredRecoveryWriterIds.current = null;
                 }
               }
             },
+            (key) => magazineService.get(key),
           );
           session.current = current;
           if (user?.id && fetched.ownerId === user.id && fetched.status === 'draft') {
@@ -161,6 +174,7 @@ export function useMagazineEditor(id: string | undefined) {
       if (recovery.baseEditVersion !== current.magazine.editVersion && !applyOverCurrentVersion) {
         return false;
       }
+      restoredRecoveryWriterIds.current = recovery.writerIds ?? [recovery.writerId ?? 'legacy'];
       current.edit(recovery.patch);
       setRecovery(null);
       return true;
@@ -174,11 +188,11 @@ export function useMagazineEditor(id: string | undefined) {
         user.id,
         current.magazine.id,
         window.localStorage,
-        recovery?.writerId,
+        recovery?.writerIds ?? recovery?.writerId,
       );
     }
     setRecovery(null);
-  }, [recovery?.writerId, user?.id]);
+  }, [recovery?.writerId, recovery?.writerIds, user?.id]);
   const setTitle = useCallback((title: string) => persist({ title }), [persist]);
   const setSubtitle = useCallback((subtitle: string) => persist({ subtitle }), [persist]);
   const setTemplate = useCallback(

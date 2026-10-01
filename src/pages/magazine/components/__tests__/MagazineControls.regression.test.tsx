@@ -14,6 +14,7 @@ const fixtures = vi.hoisted(() => ({
   lastFilters: undefined as Record<string, unknown> | undefined,
   lastOptions: undefined as Record<string, unknown> | undefined,
   lastFetchOptions: undefined as Record<string, unknown> | undefined,
+  lastCrmOptions: undefined as Record<string, unknown> | undefined,
 }));
 vi.mock('@/hooks/products/useProducts', () => ({
   useProducts: (
@@ -35,11 +36,13 @@ vi.mock('@/hooks/products/useProducts', () => ({
   },
 }));
 vi.mock('@/lib/crm-db', () => ({
-  selectCrm: () =>
-    Promise.resolve([
+  selectCrm: (_table: string, options: Record<string, unknown>) => {
+    fixtures.lastCrmOptions = options;
+    return Promise.resolve([
       { id: 'a', razao_social: 'Alfa', cnpj: '12345678000100' },
       { id: 'b', razao_social: 'Beta', cnpj: '98765432000100' },
-    ]),
+    ]);
+  },
 }));
 
 function productEditor(
@@ -134,6 +137,12 @@ describe('Magazine — controles reais, dados isolados', () => {
       </QueryClientProvider>,
     );
     fireEvent.click(screen.getByTestId('magazine-client-picker-trigger'));
+    await waitFor(() =>
+      expect(fixtures.lastCrmOptions?.orderBy).toEqual([
+        { column: 'razao_social', ascending: true },
+        { column: 'id', ascending: true },
+      ]),
+    );
     const input = screen.getByRole('textbox', { name: 'Buscar cliente' });
     fireEvent.change(input, { target: { value: 'ZZZInexistente' } });
     await waitFor(() => expect(screen.getByText('Nenhum cliente encontrado.')).toBeVisible());

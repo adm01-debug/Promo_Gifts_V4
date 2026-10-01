@@ -33,6 +33,29 @@ describe('fetchPromobrindProducts — contrato de completude', () => {
     });
   });
 
+  it('usa base_price no fallback legado de uma ordenação por preço', async () => {
+    mockedDbInvoke
+      .mockRejectedValueOnce(new Error('column sale_price does not exist'))
+      .mockRejectedValueOnce(new Error('column sale_price does not exist'))
+      .mockResolvedValueOnce({
+        records: [{ id: 'p-legacy', name: 'Legado', sku: 'LEG', base_price: 42 }],
+        count: null,
+      });
+
+    await expect(
+      fetchPromobrindProducts({
+        limit: 1,
+        orderBy: { column: 'sale_price', ascending: true },
+        enrichment: 'base',
+      }),
+    ).resolves.toHaveLength(1);
+
+    expect(mockedDbInvoke.mock.calls[2]?.[0]).toMatchObject({
+      select: expect.stringContaining('base_price'),
+      orderBy: { column: 'base_price', ascending: true },
+    });
+  });
+
   it('entrega catálogo-base completo acima de 5.000 itens sem enriquecimento pesado', async () => {
     const total = 5_201;
     mockedDbInvoke.mockImplementation((query) => {

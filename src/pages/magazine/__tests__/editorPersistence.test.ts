@@ -15,7 +15,7 @@ function setup() {
     };
     return Promise.resolve(stored);
   });
-  const editor = new EditorPersistence(stored, write, vi.fn());
+  const editor = new EditorPersistence(stored, write, vi.fn(), () => Promise.resolve(stored));
   return { editor, write, read: () => stored };
 }
 
@@ -84,6 +84,23 @@ describe('EditorPersistence — falhas e concorrência da sessão', () => {
     expect(editor.error).toBeNull();
   });
 
+  it('reconcilia um autosave confirmado quando a resposta é perdida', async () => {
+    const { editor, write, read } = setup();
+    write.mockImplementationOnce((_id, patch) => {
+      const remote = read();
+      // Simula commit no servidor seguido de quebra de conexão antes da resposta.
+      Object.assign(remote, { ...patch, editVersion: remote.editVersion + 1 });
+      return Promise.reject(new Error('network response lost'));
+    });
+
+    editor.edit({ title: 'confirmado no servidor' });
+    await expect(editor.flush()).resolves.toBeUndefined();
+    expect(editor.magazine.title).toBe('confirmado no servidor');
+    expect(editor.magazine.editVersion).toBe(1);
+    expect(editor.error).toBeNull();
+    expect(editor.dirty).toBe(false);
+  });
+
   it('falha de metadados impede publicar', async () => {
     const { editor, write } = setup();
     write.mockResolvedValueOnce(null as unknown as Magazine);
@@ -136,6 +153,24 @@ describe('EditorPersistence — falhas e concorrência da sessão', () => {
     expect(action).toHaveBeenCalledTimes(2);
     expect(editor.error).toBeNull();
     expect(editor.dirty).toBe(false);
+  });
+
+  it('recarrega o estado remoto sem repetir uma mutação de resposta indeterminada', async () => {
+    let remote = buildMockMagazine('editorial-vogue');
+    const action = vi.fn(() => {
+      remote = { ...remote, items: [], editVersion: remote.editVersion + 1 };
+      return Promise.reject(new Error('network response lost'));
+    });
+    const editor = new EditorPersistence(remote, vi.fn(), vi.fn(), () => Promise.resolve(remote));
+
+    await expect(editor.mutate(action)).rejects.toThrow('versão mais recente foi carregada');
+    expect(editor.magazine.items).toEqual([]);
+    expect(editor.magazine.editVersion).toBe(1);
+
+    // A operação não é repetida por `flush`: sem idempotency key, repetir uma
+    // ação cujo retorno se perdeu poderia duplicar itens no servidor.
+    await editor.flush();
+    expect(action).toHaveBeenCalledTimes(1);
   });
 
   it('bloqueia uma nova mutação até a operação rejeitada ser resolvida', async () => {

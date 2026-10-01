@@ -21,13 +21,16 @@ import { recordBridgeCall, estimatePayloadBytes } from '@/lib/telemetry/bridgeCa
 import { newRequestId, REQUEST_ID_HEADER } from '@/lib/telemetry/requestId';
 import { invokeEdge, type InvokeCompatError } from '@/lib/edge/safeInvokeCall';
 
+export type CrmOrderBy = string | { column: string; ascending?: boolean };
+
 export interface CrmQuery {
   table: string;
   operation: 'delete' | 'insert' | 'search' | 'select' | 'update';
   id?: string;
   filters?: Record<string, unknown>;
   select?: string;
-  orderBy?: string | { column: string; ascending?: boolean };
+  /** A stable secondary key prevents duplicate/omitted rows with OFFSET pagination. */
+  orderBy?: CrmOrderBy | CrmOrderBy[];
   limit?: number;
   offset?: number;
   search?: { column: string; term: string };
@@ -295,7 +298,7 @@ export interface CrmBatchQuery {
   table: string;
   select?: string;
   filters?: Record<string, unknown>;
-  orderBy?: string | { column: string; ascending?: boolean };
+  orderBy?: CrmOrderBy | CrmOrderBy[];
   limit?: number;
   offset?: number;
   search?: { column: string; term: string };
@@ -646,7 +649,7 @@ export async function selectCrm<T>(
   options?: {
     filters?: Record<string, unknown>;
     select?: string;
-    orderBy?: string | { column: string; ascending?: boolean };
+    orderBy?: CrmOrderBy | CrmOrderBy[];
     limit?: number;
     offset?: number;
     relations?: string;
@@ -691,7 +694,7 @@ export async function searchCrm<T>(
   term: string,
   options?: {
     select?: string;
-    orderBy?: string | { column: string; ascending?: boolean };
+    orderBy?: CrmOrderBy | CrmOrderBy[];
     limit?: number;
   },
 ): Promise<T[]> {

@@ -60,7 +60,13 @@ export function MagazineClientPicker({
         const rows = await selectCrm<CrmCompany>('companies', {
           select: 'id, razao_social, nome_fantasia, logo_url, ramo_atividade, cnpj',
           filters: { deleted_at: null, is_customer: true },
-          orderBy: { column: 'razao_social', ascending: true },
+          // OFFSET pagination must have a total order. Companies with the
+          // same corporate name otherwise move between pages and can be
+          // duplicated or skipped while the picker is open.
+          orderBy: [
+            { column: 'razao_social', ascending: true },
+            { column: 'id', ascending: true },
+          ],
           limit: PAGE_SIZE,
           offset: pageParam,
         });
