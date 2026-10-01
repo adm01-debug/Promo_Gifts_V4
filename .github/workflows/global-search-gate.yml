@@ -23,6 +23,7 @@ jobs:
   vitest:
     name: Vitest - Component Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -32,11 +33,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
       # Coverage is scoped to the search components actually exercised by this gate.
-      # Thresholds are overridden per-run (same pattern as test:ci-core:coverage in
-      # package.json) because the global 60% threshold in vitest.config.ts applies to
-      # the whole src/ tree and can never be met by a search-only run.
+      # The global 60% threshold in vitest.config.ts applies to the whole src/ tree
+      # and cannot be met by a search-only run; per-run thresholds override it.
       - name: Run Global Search component tests with coverage
-        run: TZ=America/Sao_Paulo npx vitest run src/components/search/__tests__ --coverage --coverage.include='src/components/search/**' --coverage.thresholds.lines=0 --coverage.thresholds.functions=0 --coverage.thresholds.branches=0 --coverage.thresholds.statements=0 --reporter=default --reporter=json --outputFile=vitest-report.json
+        run: TZ=America/Sao_Paulo npx vitest run src/components/search/__tests__ --coverage --coverage.include='src/components/search/**' --coverage.thresholds.lines=50 --coverage.thresholds.functions=50 --coverage.thresholds.branches=40 --coverage.thresholds.statements=50 --reporter=default --reporter=json --outputFile=vitest-report.json
       - name: Detect Vitest Flaky
         if: always()
         run: node src/test/detect-flaky-vitest.mjs
@@ -55,7 +55,7 @@ jobs:
         with:
           name: search-coverage
           path: coverage/
-          retention-days: 7
+          retention-days: 14
 
   playwright:
     name: Playwright - Cross-browser E2E
@@ -88,17 +88,17 @@ jobs:
         with:
           name: playwright-traces
           path: e2e-artifacts/
-          retention-days: 7
+          retention-days: 14
       - name: Upload Quarantine List
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: quarantine-list
           path: quarantine-list.json
-          retention-days: 7
+          retention-days: 14
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: search-e2e-report
           path: playwright-report/
-          retention-days: 7
+          retention-days: 14

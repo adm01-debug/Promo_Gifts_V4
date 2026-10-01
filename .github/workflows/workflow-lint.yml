@@ -2,7 +2,7 @@ name: Workflow Lint (E11)
 
 # E11 — PLANO_WORKFLOWS_CI_100_ETAPAS_2026-09-26
 # Valida contratos estruturais (actionlint + shellcheck + check-workflow-contracts.mjs)
-# em qualquer PR que toque .github/** ou playwright.config.ts.
+# em qualquer PR que toque .github/** ou scripts de contratos.
 # Modo REPORT até E20 (gate será habilitado lá via --gate flag).
 
 on:
@@ -11,6 +11,7 @@ on:
     paths:
       - '.github/**'
       - 'playwright.config.ts'
+      - 'package.json'
       - 'scripts/check-workflow-contracts.mjs'
       - 'scripts/check-workflow-contracts.allowlist.json'
   pull_request:
@@ -18,6 +19,7 @@ on:
     paths:
       - '.github/**'
       - 'playwright.config.ts'
+      - 'package.json'
       - 'scripts/check-workflow-contracts.mjs'
       - 'scripts/check-workflow-contracts.allowlist.json'
 
@@ -36,26 +38,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install actionlint
+        run: |
+          curl -sSL https://github.com/rhysd/actionlint/releases/download/v1.7.7/actionlint_1.7.7_linux_amd64.tar.gz -o /tmp/actionlint.tar.gz
+          tar xzf /tmp/actionlint.tar.gz -C /tmp actionlint
+          chmod +x /tmp/actionlint
+
       - name: Run actionlint
-        uses: rhysd/actionlint@v1.7.7
-        with:
-          # shellcheck is run automatically by actionlint for run: blocks.
-          # Pre-existing style/info codes suppressed here; fix them in E25:
-          #   SC2006  — backtick notation (replace with $(...))
-          #   SC2016  — single-quoted expressions (may be intentional)
-          #   SC2034  — unused variable
-          #   SC2038  — find -print0 | xargs
-          #   SC2086  — unquoted variables
-          #   SC2129  — individual >> redirects (use { ... } >> file)
-          #   SC2188  — redirect without command (detect-base64-content.yml)
-          #   SC2215  — flag used as command name (codeql.yml)
-          # NOTE: use `args:` — `ignore:` is not a valid input for this action
-          # (valid inputs are only `entryPoint` and `args`). The -ignore flag
-          # takes a regex matched against the full error message.
-          args: '-ignore "SC2006|SC2016|SC2034|SC2038|SC2086|SC2129|SC2188|SC2215"'
+        # shellcheck is run automatically by actionlint for run: blocks.
+        # Pre-existing style/info codes suppressed; fix them in E25.
+        run: |
+          /tmp/actionlint \
+            -ignore 'SC2006' \
+            -ignore 'SC2016' \
+            -ignore 'SC2034' \
+            -ignore 'SC2038' \
+            -ignore 'SC2086' \
+            -ignore 'SC2129' \
+            -ignore 'SC2188' \
+            -ignore 'SC2215'
 
   workflow-contracts:
-    name: Workflow contract checks (C1–C8)
+    name: Workflow contract checks (C1–8)
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
