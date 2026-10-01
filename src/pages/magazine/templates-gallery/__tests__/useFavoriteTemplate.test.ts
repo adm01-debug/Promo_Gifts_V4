@@ -32,6 +32,15 @@ describe('useFavoriteTemplate', () => {
     ]);
   });
 
+  it('duas ações no mesmo lote não perdem o primeiro favorito', () => {
+    const { result } = renderHook(() => useFavoriteTemplate('user-1'));
+    act(() => {
+      result.current.toggleFavorite('editorial-vogue');
+      result.current.toggleFavorite('catalog-grid3x3');
+    });
+    expect(result.current.favoriteIds).toEqual(['editorial-vogue', 'catalog-grid3x3']);
+  });
+
   it('toggleFavorite no mesmo id remove só aquele favorito', () => {
     window.localStorage.setItem(KEY, '["catalog-grid3x3","editorial-vogue"]');
     const { result } = renderHook(() => useFavoriteTemplate('user-1'));

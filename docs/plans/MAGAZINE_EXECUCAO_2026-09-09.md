@@ -16,7 +16,7 @@ Base da rodada de hardening: `80cf74ecc8daff4b7da54d6306dc4a9d19bf3abe`
 > autenticado completo ou equivalência pixel a pixel. A correção do alerta
 > Sonar de `crm-db-bridge` e os favoritos múltiplos de template estão em
 > revisão separada, ainda não publicada. A suíte Magazine desta revisão
-> passou com 861 testes em 50 arquivos, além de TypeScript, lint, Deno check
+> passou com 863 testes em 50 arquivos, além de TypeScript, lint, Deno check
 > e build. A contração RPC-only do draft continua **não aplicada**; grants
 > diretos de escrita em `magazines`/`magazine_items` permanecem um risco
 > comprovado no banco canônico. Não promover o draft sem autorização

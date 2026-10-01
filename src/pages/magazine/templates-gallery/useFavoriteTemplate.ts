@@ -1,6 +1,6 @@
 /** Favoritos de templates por conta, com leitura do formato legado de favorito único. */
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 const STORAGE_PREFIX = 'magazine:favorite-template:v3';
 const LEGACY_PREFIX = 'magazine:favorite-template:v2';
@@ -32,13 +32,14 @@ function readStorage(key: string, legacyKey: string): string[] {
   }
 }
 
-function writeStorage(key: string, values: string[]): void {
-  if (typeof window === 'undefined') return;
+function writeStorage(key: string, values: string[]): boolean {
+  if (typeof window === 'undefined') return false;
   try {
     // Persistir [] impede que um favorito legado reapareça após "limpar".
     window.localStorage.setItem(key, JSON.stringify(values));
+    return true;
   } catch {
-    // A UI continua utilizável se o storage estiver indisponível.
+    return false;
   }
 }
 
@@ -47,16 +48,21 @@ export function useFavoriteTemplate(userId?: string | null) {
   const legacyKey = storageKey(LEGACY_PREFIX, userId);
   const [stored, setStored] = useState(() => ({ key, ids: readStorage(key, legacyKey) }));
   const favoriteIds = stored.key === key ? stored.ids : readStorage(key, legacyKey);
+  const latest = useRef({ key, ids: favoriteIds });
 
   useEffect(() => {
-    setStored({ key, ids: readStorage(key, legacyKey) });
+    const next = { key, ids: readStorage(key, legacyKey) };
+    latest.current = next;
+    setStored(next);
   }, [key, legacyKey]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const onStorage = (event: StorageEvent) => {
       if (event.key !== key && event.key !== legacyKey) return;
-      setStored({ key, ids: readStorage(key, legacyKey) });
+      const next = { key, ids: readStorage(key, legacyKey) };
+      latest.current = next;
+      setStored(next);
     };
     window.addEventListener('storage', onStorage);
     return () => window.removeEventListener('storage', onStorage);
@@ -64,24 +70,24 @@ export function useFavoriteTemplate(userId?: string | null) {
 
   const toggleFavorite = useCallback(
     (id: string) => {
-      if (!isValidId(id)) return;
-      setStored((current) => {
-        const ids = current.key === key ? current.ids : readStorage(key, legacyKey);
-        const next = ids.includes(id)
-          ? ids.filter((favorite) => favorite !== id)
-          : ids.length < MAX_FAVORITES
-            ? [...ids, id]
-            : ids;
-        writeStorage(key, next);
-        return { key, ids: next };
-      });
+      if (!isValidId(id)) return false;
+      const current = latest.current;
+      const ids = current.key === key ? current.ids : readStorage(key, legacyKey);
+      if (!ids.includes(id) && ids.length >= MAX_FAVORITES) return false;
+      const next = ids.includes(id) ? ids.filter((favorite) => favorite !== id) : [...ids, id];
+      if (!writeStorage(key, next)) return false;
+      latest.current = { key, ids: next };
+      setStored(latest.current);
+      return true;
     },
     [key, legacyKey],
   );
 
   const clearFavorite = useCallback(() => {
-    writeStorage(key, []);
-    setStored({ key, ids: [] });
+    if (!writeStorage(key, [])) return false;
+    latest.current = { key, ids: [] };
+    setStored(latest.current);
+    return true;
   }, [key]);
 
   return { favoriteIds, toggleFavorite, clearFavorite };

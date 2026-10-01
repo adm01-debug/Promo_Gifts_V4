@@ -225,6 +225,25 @@ describe('MagazineTemplatesGalleryPage', () => {
     );
   });
 
+  it('falha visivelmente sem marcar o coração quando o storage rejeita a gravação', () => {
+    renderAt('/magazine/templates');
+    const blocked = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('quota');
+    });
+    try {
+      fireEvent.click(screen.getByTestId('template-favorite-editorial-vogue'));
+      expect(screen.getByTestId('template-favorite-editorial-vogue')).toHaveAttribute(
+        'aria-pressed',
+        'false',
+      );
+      expect(toastMock.error).toHaveBeenCalledWith(
+        'Não foi possível salvar o favorito neste navegador.',
+      );
+    } finally {
+      blocked.mockRestore();
+    }
+  });
+
   it('aria-live está no grid para anunciar mudanças de filtro', () => {
     renderAt('/magazine/templates');
     const main = screen.getByRole('main');

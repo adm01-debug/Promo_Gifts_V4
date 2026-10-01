@@ -85,6 +85,12 @@ export default function MagazineTemplatesGalleryPage() {
   const [view, setView] = useState<ViewMode>('grid');
   const [previewId, setPreviewId] = useState<TemplateEntry['id'] | null>(null);
   const { favoriteIds, toggleFavorite } = useFavoriteTemplate(user?.id);
+  const handleToggleFavorite = useCallback(
+    (id: TemplateEntry['id']) => {
+      if (!toggleFavorite(id)) toast.error('Não foi possível salvar o favorito neste navegador.');
+    },
+    [toggleFavorite],
+  );
 
   const templates = useMemo(() => {
     const all = listTemplates();
@@ -327,7 +333,7 @@ export default function MagazineTemplatesGalleryPage() {
               useLabel={useLabel}
               isBusy={isCreating}
               isFavorite={favoriteIds.includes(entry.id)}
-              onToggleFavorite={toggleFavorite}
+              onToggleFavorite={handleToggleFavorite}
               variant={view === 'grid' ? 'grid' : 'row'}
             />
           ))}
@@ -354,7 +360,7 @@ export default function MagazineTemplatesGalleryPage() {
         useLabel={useLabel}
         isBusy={isCreating}
         isFavorite={previewEntry !== null && favoriteIds.includes(previewEntry.id)}
-        onToggleFavorite={toggleFavorite}
+        onToggleFavorite={handleToggleFavorite}
       />
     </>
   );
