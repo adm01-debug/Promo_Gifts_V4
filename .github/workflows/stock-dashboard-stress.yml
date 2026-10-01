@@ -21,6 +21,10 @@ on:
   schedule:
     - cron: '9 3 * * *'
 
+concurrency:
+  group: stock-dashboard-stress
+  cancel-in-progress: false
+
 permissions:
   contents: read
 
