@@ -183,5 +183,5 @@ jobs:
       - name: Cleanup
         if: always()
         run: |
-          [ -f /tmp/functions.pid ] && kill "$(cat /tmp/functions.pid)" || true
+          if [ -f /tmp/functions.pid ]; then kill "$(cat /tmp/functions.pid)"; fi
           supabase stop || true

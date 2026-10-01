@@ -47,7 +47,7 @@ jobs:
             echo "### Vitest Coverage Summary" >> $GITHUB_STEP_SUMMARY
             echo "| Category | Percentage |" >> $GITHUB_STEP_SUMMARY
             echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
-            cat coverage/coverage-summary.json | jq -r '.total | to_entries | .[] | "| \(.key) | \(.value.pct)% |"' >> $GITHUB_STEP_SUMMARY
+            jq -r '.total | to_entries | .[] | "| \(.key) | \(.value.pct)% |"' coverage/coverage-summary.json >> $GITHUB_STEP_SUMMARY
           fi
       - name: Upload Search coverage
         if: always()
