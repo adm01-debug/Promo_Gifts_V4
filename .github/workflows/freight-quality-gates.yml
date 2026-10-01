@@ -322,8 +322,20 @@ jobs:
         run: npm run audit:credentials
       - name: CORS headers check
         run: npm run check:edge-cors
+      # E40 (2026-10-01): --require-live em push:main e PRs do mesmo repo.
+      # PR de fork não tem secrets → aceita inconclusive sem bloquear.
       - name: Security definer ACL check
-        run: npm run check:security-definer-acl
+        run: |
+          LIVE_FLAG=""
+          IS_FORK_PR="false"
+          if [ "${{ github.event_name }}" = "pull_request" ] && \
+             [ "${{ github.event.pull_request.head.repo.full_name }}" != "${{ github.repository }}" ]; then
+            IS_FORK_PR="true"
+          fi
+          if [ "$IS_FORK_PR" = "false" ]; then
+            LIVE_FLAG="--require-live"
+          fi
+          npm run check:security-definer-acl -- $LIVE_FLAG
 
   regression-suite:
     name: "Gate 9 — Regression Suite"
