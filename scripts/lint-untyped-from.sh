@@ -28,43 +28,11 @@ SRC_DIR="$REPO_ROOT/src"
 DEF_FILE="src/lib/supabase-untyped.ts"
 
 # ─── Allowlist de tabelas pré-existentes (types.ts desatualizado) ─────────────
-# Estas tabelas existem no banco mas não aparecem no types.ts gerado.
-# Foram adicionadas ao código ANTES de regenerar o types.ts.
+# Apenas tabelas que existem no banco mas NÃO estão em types.ts gerado.
+# Verificado em 2026-10-01: 32 das 33 entradas anteriores já estão em types.ts.
 # Removê-las da allowlist requer: supabase gen types typescript --project-id <id>
 ALLOWLIST=(
-  audit_log
-  categories
-  collection_products
-  color_nuances
   kit_component_media
-  kit_component_print_areas
-  mv_stock_velocity
-  personalization_simulations
-  personalization_techniques
-  print_area_techniques
-  product_badge_definitions
-  product_category_assignments
-  product_component_location_techniques
-  product_group_components
-  product_group_location_techniques
-  product_group_locations
-  product_images
-  product_kit_components
-  product_materials
-  product_tags
-  product_videos
-  sales_goals
-  security_settings
-  supplier_branches
-  system_kill_switches
-  tabela_preco_gravacao_oficial
-  tabela_preco_gravacao_oficial_faixa
-  tecnicas_gravacao
-  user_2fa_settings
-  user_ip_allowlist
-  v_kill_switch_hits_summary
-  v_smoke_tests_latest_run
-  v_smoke_tests_trend
 )
 
 if [[ ! -f "$TYPES_FILE" ]]; then

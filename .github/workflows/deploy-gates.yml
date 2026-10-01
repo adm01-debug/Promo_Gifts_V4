@@ -114,6 +114,15 @@ jobs:
         env:
           VITE_SUPABASE_URL: https://placeholder.supabase.co
           VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
+      # E41 — TSC ratchet file guard (PR-only, bloqueante)
+      # Previne que um PR aumente .tsc-ratchet-baseline sem label ratchet-override.
+      # Não roda TSC — apenas compara o ARQUIVO de baseline contra o base do PR.
+      - name: Gate 1.7 — TSC ratchet file guard (bloqueante em PR)
+        if: github.event_name == 'pull_request'
+        run: sh scripts/tsc-unused-ratchet.sh --check-ratchet
+        env:
+          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GITHUB_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
 
   unit-tests:
     name: Gate 2 - Unit Tests
@@ -255,11 +264,14 @@ jobs:
       - run: npm run build
       # E55 — Bundle size (bloqueante)
       # Roda após o build para garantir que dist/assets/ existe.
+      # E41 — Bundle ratchet: em PR também verifica se o ARQUIVO de baseline aumentou.
       - name: Gate 1.6 — Bundle size dentro dos limites (bloqueante)
-        run: node scripts/check-bundle-size.mjs
+        run: node scripts/check-bundle-size.mjs --check-ratchet
         env:
           VITE_SUPABASE_URL: https://placeholder.supabase.co
           VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
+          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GITHUB_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
       - name: Upload dist artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:

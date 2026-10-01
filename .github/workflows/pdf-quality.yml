@@ -61,8 +61,10 @@ jobs:
           key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}
 
       - name: Install Playwright Chromium (com deps do SO se cache miss)
+        env:
+          PW_CACHE_HIT: ${{ steps.pw-cache.outputs.cache-hit }}
         run: |
-          if [ "${{ steps.pw-cache.outputs.cache-hit }}" = "true" ]; then
+          if [ "$PW_CACHE_HIT" = "true" ]; then
             npx playwright install-deps chromium
           else
             npx playwright install --with-deps chromium
@@ -93,7 +95,6 @@ jobs:
           PROPOSAL_FIXTURE_ID: >-
             ${{ github.event_name == 'workflow_dispatch' && inputs.fixture_id != 'all' && inputs.fixture_id || '' }}
         run: node scripts/qa/generate-proposal-pdf.mjs
-        continue-on-error: ${{ github.event_name != 'workflow_dispatch' }}
 
       - name: Upload PDF + HTML + contrast report as artifacts
         if: always()
@@ -200,5 +201,7 @@ jobs:
       - name: Fail job if PDF suites failed
         if: github.event_name != 'workflow_dispatch' && steps.pdf-tests.outputs.exit_code != '0'
         run: |
-          echo "PDF test suite failed (exit ${{ steps.pdf-tests.outputs.exit_code }})"
+          echo "PDF test suite failed (exit $PDF_EXIT_CODE)"
           exit 1
+        env:
+          PDF_EXIT_CODE: ${{ steps.pdf-tests.outputs.exit_code }}
