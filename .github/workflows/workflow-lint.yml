@@ -73,6 +73,5 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Check workflow contracts (report mode)
-        # --gate not used until E20; any violations are reported but don't block CI
-        run: node scripts/check-workflow-contracts.mjs
+      - name: Check workflow contracts (gate mode — E20)
+        run: node scripts/check-workflow-contracts.mjs --gate
