@@ -36,13 +36,10 @@ jobs:
         browser: [chromium, firefox, webkit]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version-file: '.nvmrc', cache: npm }
-      - run: npm ci
-      - name: Install Playwright + deps (${{ matrix.browser }})
-        # Projects *-authed dependem do setup Chromium, mesmo quando a suíte
-        # alvo roda em Firefox/WebKit.
-        run: npx playwright install --with-deps chromium ${{ matrix.browser }}
+      - uses: ./.github/actions/e2e-setup
+        with:
+          browsers: 'chromium,${{ matrix.browser }}'
+          start-vite: 'false'
       - name: Run swatch→QuickView suite (V1 + V2 + focus/QV)
         run: |
           npx playwright test \

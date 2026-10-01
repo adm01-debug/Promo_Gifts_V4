@@ -36,34 +36,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - uses: ./.github/actions/e2e-setup
         with:
-          node-version-file: '.nvmrc'
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci --no-audit --no-fund
-
-      - name: Cache Playwright browsers
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-
-      - name: Install Playwright (chromium)
-        run: npx playwright install --with-deps chromium
-
-      - name: Pre-generate E2E fixtures
-        run: npm run e2e:generate-fixtures
-
-      - name: Start dev server
-        run: npm run dev &
-        env:
-          VITE_SUPABASE_URL: ${{ env.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ env.VITE_SUPABASE_PUBLISHABLE_KEY }}
-
-      - name: Wait for server
-        run: timeout 120 bash -c 'until curl -sf http://localhost:8080 > /dev/null 2>&1; do sleep 1; done'
+          browsers: 'chromium'
+          start-vite: 'true'
 
       - name: Run Error Boundaries E2E
         run: |
@@ -96,34 +72,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - uses: ./.github/actions/e2e-setup
         with:
-          node-version-file: '.nvmrc'
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci --no-audit --no-fund
-
-      - name: Cache Playwright browsers
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-
-      - name: Install Playwright (chromium)
-        run: npx playwright install --with-deps chromium
-
-      - name: Pre-generate E2E fixtures
-        run: npm run e2e:generate-fixtures
-
-      - name: Start dev server
-        run: npm run dev &
-        env:
-          VITE_SUPABASE_URL: ${{ env.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ env.VITE_SUPABASE_PUBLISHABLE_KEY }}
-
-      - name: Wait for server
-        run: timeout 120 bash -c 'until curl -sf http://localhost:8080 > /dev/null 2>&1; do sleep 1; done'
+          browsers: 'chromium'
+          start-vite: 'true'
 
       - name: Setup auth state
         run: |
@@ -211,34 +163,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - uses: ./.github/actions/e2e-setup
         with:
-          node-version-file: '.nvmrc'
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci --no-audit --no-fund
-
-      - name: Cache Playwright browsers
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-
-      - name: Install Playwright (chromium)
-        run: npx playwright install --with-deps chromium
-
-      - name: Pre-generate E2E fixtures
-        run: npm run e2e:generate-fixtures
-
-      - name: Start dev server
-        run: npm run dev &
-        env:
-          VITE_SUPABASE_URL: ${{ env.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ env.VITE_SUPABASE_PUBLISHABLE_KEY }}
-
-      - name: Wait for server
-        run: timeout 120 bash -c 'until curl -sf http://localhost:8080 > /dev/null 2>&1; do sleep 1; done'
+          browsers: 'chromium'
+          start-vite: 'true'
 
       - name: Run Mobile E2E specs
         run: |
