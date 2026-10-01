@@ -50,10 +50,12 @@ jobs:
     steps:
       - name: Validate confirmation gate
         if: ${{ inputs.dryRun == false }}
+        env:
+          CONFIRM_INPUT: ${{ inputs.confirm }}
         run: |
-          if [[ "${{ inputs.confirm }}" != "DELETE" ]]; then
+          if [[ "$CONFIRM_INPUT" != "DELETE" ]]; then
             echo "::error::Para deletar de verdade, digite exatamente DELETE no campo 'confirm'."
-            echo "::error::Recebido: '${{ inputs.confirm }}'"
+            echo "::error::Recebido: '$CONFIRM_INPUT'"
             exit 1
           fi
           echo "✅ Confirmação aceita. Procedendo com a remoção real."
