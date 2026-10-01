@@ -1,8 +1,10 @@
 name: pgss-slo-report
 
 on:
-  schedule:
-    - cron: '31 10 * * 1'
+  # schedule:
+  #   - cron: '31 10 * * 1'
+  # E31: schedule desabilitado — aguardando migration [DBA-E40] (ops.pgss_history).
+  # Reativar após aplicação via .github/workflows/db-apply-migration.yml.
   workflow_dispatch:
 
 permissions:
@@ -45,7 +47,7 @@ jobs:
         with:
           name: pgss-slo-report-${{ github.run_id }}
           path: /tmp/pgss-slo.json
-          retention-days: 90
+          retention-days: 14
           if-no-files-found: ignore
 
       - name: Abre ou atualiza issue (RPC acima do SLO)
