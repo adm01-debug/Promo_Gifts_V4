@@ -38,10 +38,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
       - name: Validate SSOT — client.ts deve apontar para doufsxqlfjyuvxuezpln
         run: node scripts/validate-supabase-config.mjs
         env:
@@ -54,12 +52,8 @@ jobs:
     timeout-minutes: 5
     needs: [ssot-gate]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-      - run: npm ci
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
       - name: Auditar dependências (advisory ≥ high bloqueia deploy)
         run: node scripts/check-dependency-audit.mjs
 
@@ -71,14 +65,10 @@ jobs:
     env:
       NODE_OPTIONS: --max-old-space-size=4096
     steps:
-      - uses: actions/checkout@v4
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
         with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-      - run: npm ci
+          fetch-depth: '0'
       - run: npm run typecheck
         env:
           VITE_SUPABASE_URL: https://placeholder.supabase.co
@@ -126,12 +116,8 @@ jobs:
     timeout-minutes: 45
     needs: [ssot-gate]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-      - run: npm ci
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
       # Gate rapido de regressao. Suites amplas seguem no CI principal:
       # `test:quality`, `Hook tests` e `Test Coverage`.
       - run: npm run test:deploy-gate
@@ -169,12 +155,8 @@ jobs:
     timeout-minutes: 15
     needs: [ssot-gate]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-      - run: npm ci
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
       - name: Run Playwright smoke tests
@@ -201,12 +183,8 @@ jobs:
       VITE_SUPABASE_URL: https://placeholder.supabase.co
       VITE_SUPABASE_PUBLISHABLE_KEY: lighthouse-placeholder-key
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-      - run: npm ci
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
       - run: npm run build
       - name: Run Lighthouse CI
         run: npx lhci autorun --config=.lighthouserc.json
@@ -227,10 +205,8 @@ jobs:
     timeout-minutes: 5
     needs: [ssot-gate]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
       - name: Run SEO sanity check
         run: node scripts/seo-sanity-check.mjs
 
@@ -244,10 +220,8 @@ jobs:
       github.actor != 'dependabot[bot]' &&
       (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
       - name: Verificar assinatura publicada da RPC
         run: npm run check:restore-seller-cart-rpc
         env:
@@ -263,12 +237,8 @@ jobs:
     timeout-minutes: 10
     needs: [lint-typecheck, seo-sanity, restore-cart-rpc-gate]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-      - run: npm ci
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
       - run: npm run build
       # E55 — Bundle size (bloqueante)
       # Roda após o build para garantir que dist/assets/ existe.
