@@ -54,6 +54,7 @@ jobs:
   prepare-matrix:
     name: prepare-matrix
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     outputs:
       matrix: ${{ steps.build.outputs.matrix }}
       total_shards: ${{ steps.build.outputs.total_shards }}
@@ -114,6 +115,8 @@ jobs:
       E2E_BASE_URL: http://localhost:8080
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
+      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+      E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
@@ -177,7 +180,7 @@ jobs:
         with:
           name: cart-invariants-timing-${{ matrix.browser }}-shard${{ matrix.shard }}
           path: shard-timings/
-          retention-days: 7
+          retention-days: 14
           if-no-files-found: warn
 
       - name: Upload Playwright HTML report
@@ -210,6 +213,7 @@ jobs:
   invariants-summary:
     name: cart-invariants-summary
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: [prepare-matrix, invariants-smoke]
     if: always()
     steps:
