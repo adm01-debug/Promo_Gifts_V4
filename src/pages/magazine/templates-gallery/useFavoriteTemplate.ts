@@ -1,74 +1,94 @@
-/**
- * useFavoriteTemplate — persiste "template favorito" do usuário em localStorage.
- *
- * SSR-safe (checa `typeof window`). Corrompimento no storage retorna null.
- * Só aceita ids que passem pelo validador do consumidor — este hook não conhece
- * o registry (evita ciclos), apenas armazena o valor bruto.
- */
+/** Favoritos de templates por conta, com leitura do formato legado de favorito único. */
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-const STORAGE_PREFIX = 'magazine:favorite-template:v2';
+const STORAGE_PREFIX = 'magazine:favorite-template:v3';
+const LEGACY_PREFIX = 'magazine:favorite-template:v2';
+const MAX_FAVORITES = 24;
 
-function storageKey(userId: string | null | undefined): string {
-  return `${STORAGE_PREFIX}:${encodeURIComponent(userId || 'anonymous')}`;
+function storageKey(prefix: string, userId: string | null | undefined): string {
+  return `${prefix}:${encodeURIComponent(userId || 'anonymous')}`;
 }
 
-function readStorage(key: string): string | null {
-  if (typeof window === 'undefined') return null;
+function isValidId(value: unknown): value is string {
+  return typeof value === 'string' && value.length > 0 && value.length <= 100;
+}
+
+function readStorage(key: string, legacyKey: string): string[] {
+  if (typeof window === 'undefined') return [];
   try {
-    const v = window.localStorage.getItem(key);
-    if (typeof v !== 'string' || v.length === 0 || v.length > 100) return null;
-    return v;
+    const stored = window.localStorage.getItem(key);
+    if (stored !== null) {
+      const parsed: unknown = JSON.parse(stored);
+      if (!Array.isArray(parsed) || parsed.length > MAX_FAVORITES || !parsed.every(isValidId)) {
+        return [];
+      }
+      return [...new Set(parsed)];
+    }
+    const legacy = window.localStorage.getItem(legacyKey);
+    return isValidId(legacy) ? [legacy] : [];
   } catch {
-    return null;
+    return [];
   }
 }
 
-function writeStorage(key: string, value: string | null): void {
-  if (typeof window === 'undefined') return;
+function writeStorage(key: string, values: string[]): boolean {
+  if (typeof window === 'undefined') return false;
   try {
-    if (value === null) window.localStorage.removeItem(key);
-    else window.localStorage.setItem(key, value);
+    // Persistir [] impede que um favorito legado reapareça após "limpar".
+    window.localStorage.setItem(key, JSON.stringify(values));
+    return true;
   } catch {
-    // storage indisponível (Safari privado, cota estourada) → ignora silenciosamente
+    return false;
   }
 }
 
 export function useFavoriteTemplate(userId?: string | null) {
-  const key = storageKey(userId);
-  const [favoriteId, setFavoriteId] = useState<string | null>(() => readStorage(key));
+  const key = storageKey(STORAGE_PREFIX, userId);
+  const legacyKey = storageKey(LEGACY_PREFIX, userId);
+  const [stored, setStored] = useState(() => ({ key, ids: readStorage(key, legacyKey) }));
+  const favoriteIds = stored.key === key ? stored.ids : readStorage(key, legacyKey);
+  const latest = useRef({ key, ids: favoriteIds });
 
   useEffect(() => {
-    setFavoriteId(readStorage(key));
-  }, [key]);
+    const next = { key, ids: readStorage(key, legacyKey) };
+    latest.current = next;
+    setStored(next);
+  }, [key, legacyKey]);
 
-  // Sincroniza entre abas/janelas
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const onStorage = (e: StorageEvent) => {
-      if (e.key !== key) return;
-      setFavoriteId(readStorage(key));
+    const onStorage = (event: StorageEvent) => {
+      if (event.key !== key && event.key !== legacyKey) return;
+      const next = { key, ids: readStorage(key, legacyKey) };
+      latest.current = next;
+      setStored(next);
     };
     window.addEventListener('storage', onStorage);
     return () => window.removeEventListener('storage', onStorage);
-  }, [key]);
+  }, [key, legacyKey]);
 
   const toggleFavorite = useCallback(
     (id: string) => {
-      setFavoriteId((current) => {
-        const next = current === id ? null : id;
-        writeStorage(key, next);
-        return next;
-      });
+      if (!isValidId(id)) return false;
+      const current = latest.current;
+      const ids = current.key === key ? current.ids : readStorage(key, legacyKey);
+      if (!ids.includes(id) && ids.length >= MAX_FAVORITES) return false;
+      const next = ids.includes(id) ? ids.filter((favorite) => favorite !== id) : [...ids, id];
+      if (!writeStorage(key, next)) return false;
+      latest.current = { key, ids: next };
+      setStored(latest.current);
+      return true;
     },
-    [key],
+    [key, legacyKey],
   );
 
   const clearFavorite = useCallback(() => {
-    writeStorage(key, null);
-    setFavoriteId(null);
+    if (!writeStorage(key, [])) return false;
+    latest.current = { key, ids: [] };
+    setStored(latest.current);
+    return true;
   }, [key]);
 
-  return { favoriteId, toggleFavorite, clearFavorite };
+  return { favoriteIds, toggleFavorite, clearFavorite };
 }

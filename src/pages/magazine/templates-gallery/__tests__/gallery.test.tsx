@@ -186,8 +186,8 @@ describe('MagazineTemplatesGalleryPage', () => {
     renderAt('/magazine/templates');
     const favBtn = screen.getByTestId('template-favorite-editorial-vogue');
     fireEvent.click(favBtn);
-    expect(window.localStorage.getItem('magazine:favorite-template:v2:owner-test')).toBe(
-      'editorial-vogue',
+    expect(window.localStorage.getItem('magazine:favorite-template:v3:owner-test')).toBe(
+      '["editorial-vogue"]',
     );
     // Reordena: primeiro card vira o favorito
     const first = screen.getAllByTestId(/^template-card-/)[0];
@@ -201,6 +201,47 @@ describe('MagazineTemplatesGalleryPage', () => {
     renderAt('/magazine/templates');
     const first = screen.getAllByTestId(/^template-card-/)[0];
     expect(first.getAttribute('data-testid')).toBe('template-card-catalog-grid3x3');
+  });
+
+  it('mantém vários favoritos independentes na galeria', () => {
+    renderAt('/magazine/templates');
+    fireEvent.click(screen.getByTestId('template-favorite-editorial-vogue'));
+    fireEvent.click(screen.getByTestId('template-favorite-catalog-grid3x3'));
+    expect(
+      JSON.parse(window.localStorage.getItem('magazine:favorite-template:v3:owner-test')!),
+    ).toEqual(['editorial-vogue', 'catalog-grid3x3']);
+    expect(screen.getByTestId('template-favorite-editorial-vogue')).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    expect(screen.getByTestId('template-favorite-catalog-grid3x3')).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    fireEvent.click(screen.getByTestId('template-favorite-editorial-vogue'));
+    expect(screen.getByTestId('template-favorite-catalog-grid3x3')).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+  });
+
+  it('falha visivelmente sem marcar o coração quando o storage rejeita a gravação', () => {
+    renderAt('/magazine/templates');
+    const blocked = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('quota');
+    });
+    try {
+      fireEvent.click(screen.getByTestId('template-favorite-editorial-vogue'));
+      expect(screen.getByTestId('template-favorite-editorial-vogue')).toHaveAttribute(
+        'aria-pressed',
+        'false',
+      );
+      expect(toastMock.error).toHaveBeenCalledWith(
+        'Não foi possível salvar o favorito neste navegador.',
+      );
+    } finally {
+      blocked.mockRestore();
+    }
   });
 
   it('aria-live está no grid para anunciar mudanças de filtro', () => {

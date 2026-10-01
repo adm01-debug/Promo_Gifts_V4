@@ -124,7 +124,8 @@ function warmupCrmClient(): Promise<void> {
   return crmWarmupPromise;
 }
 
-warmupCrmClient();
+// Warmup is intentionally fire-and-forget; the function records its own errors.
+void warmupCrmClient();
 
 let corsHeaders: Record<string, string> = {};
 
