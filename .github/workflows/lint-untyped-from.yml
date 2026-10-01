@@ -3,9 +3,8 @@
 # do colapso de 2026-05-24, quando tabelas inexistentes no banco eram
 # chamadas e quebravam features em silêncio (catch { return []; }).
 #
-# Estado: advisory (continue-on-error) até types.ts ser regenerado
-# após PRs #315 e #317. Quando o build voltar a passar, remova o
-# continue-on-error pra tornar este check required.
+# Estado: bloqueante (sem continue-on-error). E35 — 2026-10-01.
+# Allowlist podada: 32 de 33 tabelas já estão em types.ts.
 
 name: Lint untypedFrom
 
@@ -18,6 +17,11 @@ on:
       - '.github/workflows/lint-untyped-from.yml'
   push:
     branches: [main]
+    paths:
+      - 'src/**/*.ts'
+      - 'src/**/*.tsx'
+      - 'scripts/lint-untyped-from.sh'
+      - '.github/workflows/lint-untyped-from.yml'
   workflow_dispatch:
 
 permissions:

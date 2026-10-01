@@ -162,7 +162,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BRANCH"
-          git add src/integrations/supabase/types.ts .github/workflows/lint-untyped-from.yml || true
+          git add src/integrations/supabase/types.ts .github/workflows/lint-untyped-from.yml
           git commit -m "chore: regenerate supabase types ($OLD_LINES -> $NEW_LINES linhas)" \
                      -m "Auto-aplicado via workflow regenerate-supabase-types.yml"
           git push -u origin "$BRANCH"

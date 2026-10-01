@@ -5,10 +5,53 @@
 # Não exige corrigir as ~48k ocorrências existentes de uma vez — apenas impede regressão.
 #
 # Uso:
-#   sh scripts/tsc-unused-ratchet.sh           # verifica contra .tsc-ratchet-baseline
-#   sh scripts/tsc-unused-ratchet.sh --update  # atualiza baseline (falha se regredir vs main)
+#   sh scripts/tsc-unused-ratchet.sh                # verifica contra .tsc-ratchet-baseline
+#   sh scripts/tsc-unused-ratchet.sh --update       # atualiza baseline (falha se regredir vs main)
+#   sh scripts/tsc-unused-ratchet.sh --check-ratchet  # E41: falha se baseline FILE aumentou em PR
+#     Env: GITHUB_BASE_SHA (sha do base branch), GITHUB_LABELS (labels separadas por vírgula)
 
 BASELINE_FILE=".tsc-ratchet-baseline"
+
+# E41: --check-ratchet — verifica se o ARQUIVO de baseline aumentou em relação ao base do PR.
+# Não roda TSC; compara apenas o conteúdo do arquivo. Rápido e sem custo de compilação.
+if [ "$1" = "--check-ratchet" ]; then
+  if [ ! -f "$BASELINE_FILE" ]; then
+    echo "INFO: $BASELINE_FILE não encontrado — nada a verificar."
+    exit 0
+  fi
+
+  current_baseline=$(cat "$BASELINE_FILE")
+  base_ref="${GITHUB_BASE_SHA:-origin/main}"
+
+  base_baseline=$(git show "${base_ref}:${BASELINE_FILE}" 2>/dev/null || echo "")
+
+  if [ -z "$base_baseline" ]; then
+    echo "INFO: $BASELINE_FILE não encontrado em ${base_ref} — nada a comparar."
+    exit 0
+  fi
+
+  # Compara numericamente (ambos são inteiros)
+  if [ "$current_baseline" -gt "$base_baseline" ] 2>/dev/null; then
+    labels="${GITHUB_LABELS:-}"
+    case "$labels" in
+      *ratchet-override*)
+        printf "ℹ️  .tsc-ratchet-baseline aumentou (%s → %s) — label 'ratchet-override' presente; permitido.\n" \
+          "$base_baseline" "$current_baseline"
+        exit 0
+        ;;
+      *)
+        printf "❌ .tsc-ratchet-baseline aumentou de %s para %s sem label 'ratchet-override'.\n" \
+          "$base_baseline" "$current_baseline"
+        echo "   Isso é uma regressão na baseline de TypeScript não utilizado."
+        echo "   Para permitir explicitamente, adicione 'ratchet-override' ao PR."
+        exit 1
+        ;;
+    esac
+  fi
+
+  printf "✅ .tsc-ratchet-baseline não aumentou (%s ≤ %s).\n" "$current_baseline" "$base_baseline"
+  exit 0
+fi
 
 count=$(npx tsc --noUnusedLocals --noEmit 2>&1 | grep -c "error TS" || true)
 

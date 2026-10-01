@@ -121,12 +121,11 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npx playwright install --with-deps chromium
-      - name: Visual regression (bootstrap de baselines faltantes)
+      - name: Visual regression
         run: |
           npx playwright test \
             e2e/admin/stock-future-stock-visual.spec.ts \
-            --project=chromium-authed \
-            --update-snapshots
+            --project=chromium-authed
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
