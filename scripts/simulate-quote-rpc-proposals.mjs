@@ -78,12 +78,13 @@ const args = [
   'VERBOSITY=verbose',
   '-Atq',
 ];
-const docker = (argv, input) =>
+const docker = (argv, input, options = {}) =>
   execFileSync('docker', argv, {
     input,
     encoding: 'utf8',
     timeout: 60000,
     maxBuffer: 4 * 1024 * 1024,
+    ...options,
   });
 const sql = (input) => docker(args, input).trim();
 const attempt = (input) => spawnSync('docker', args, { input, encoding: 'utf8', timeout: 30000 });
@@ -206,10 +207,13 @@ try {
   // desliga antes de subir o servidor final. SELECT 1 sozinho pode passar
   // nessa janela e a fixture seguinte falhar com "socket ... failed".
   await until(() => {
-    const logs = spawnSync('docker', ['logs', container], { encoding: 'utf8', timeout: 2000 });
-    return `${logs.stdout ?? ''}\n${logs.stderr ?? ''}`.includes(
-      'PostgreSQL init process complete; ready for start up.',
-    );
+    try {
+      return docker(['logs', container], undefined, {
+        stdio: ['ignore', 'pipe', 'ignore'],
+      }).includes('PostgreSQL init process complete; ready for start up.');
+    } catch {
+      return false;
+    }
   }, 'isolated PG17 initialization');
   await until(
     () =>
