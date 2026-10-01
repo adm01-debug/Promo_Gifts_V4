@@ -9,7 +9,7 @@
 #
 # O workflow:
 #   1. Regenera types.ts via supabase gen types
-#   2. Gate estrutural (PLANO_DBA E41): compara o inventário de Tables/Views/
+#   2. Gate estrutural (PLANO_DBA E41): compara o inventario de Tables/Views/
 #      Functions/Enums do types.ts novo contra o types.ts antigo (HEAD, antes
 #      da regeneracao) via scripts/check-types-inventory-drift.mjs. Falha o
 #      job se algo sumiu sem entrada em docs/TYPES_INVENTORY_REMOVAL_ALLOWLIST.json
@@ -31,6 +31,10 @@ on:
         description: 'Remover continue-on-error de lint-untyped-from.yml (one-shot, primeira execucao)'
         type: boolean
         default: true
+
+concurrency:
+  group: regenerate-supabase-types
+  cancel-in-progress: false
 
 permissions:
   contents: write

@@ -5,6 +5,10 @@ on:
     - cron: '0 5 * * 1' # Segunda 05:00 UTC
   workflow_dispatch:
 
+concurrency:
+  group: auth-fuzz-weekly
+  cancel-in-progress: false
+
 permissions:
   contents: read
 

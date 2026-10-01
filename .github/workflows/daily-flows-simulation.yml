@@ -9,6 +9,10 @@ on:
         description: 'Multiplicador de cenários (1 = ~600)'
         default: '3'
 
+concurrency:
+  group: daily-flows-simulation
+  cancel-in-progress: false
+
 permissions:
   contents: read
 

@@ -35,6 +35,10 @@ on:
         required: false
         default: ''
 
+concurrency:
+  group: delete-orphan-edges
+  cancel-in-progress: false
+
 permissions:
   contents: read
 
@@ -46,12 +50,10 @@ jobs:
     steps:
       - name: Validate confirmation gate
         if: ${{ inputs.dryRun == false }}
-        env:
-          CONFIRM: ${{ inputs.confirm }}
         run: |
-          if [[  "$CONFIRM" != "DELETE" ]]; then
+          if [[ "${{ inputs.confirm }}" != "DELETE" ]]; then
             echo "::error::Para deletar de verdade, digite exatamente DELETE no campo 'confirm'."
-            echo "::error::Recebido: '$CONFIRM'"
+            echo "::error::Recebido: '${{ inputs.confirm }}'"
             exit 1
           fi
           echo "✅ Confirmação aceita. Procedendo com a remoção real."
