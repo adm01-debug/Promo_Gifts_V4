@@ -7,6 +7,10 @@ name: Required Checks Guard
 on:
   push:
     branches: [main]
+  pull_request:
+    paths:
+      - '.github/workflows/**'
+      - '.github/required-checks.json'
   schedule:
     - cron: '28 9 * * *'
   workflow_dispatch:
@@ -24,6 +28,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          sparse-checkout: .github/required-checks.json
+          sparse-checkout-cone-mode: false
       - name: Check required_status_checks in active main rulesets
         env:
           GH_TOKEN: ${{ secrets.BRANCH_PROTECTION_READ_TOKEN || github.token }}
@@ -31,7 +39,13 @@ jobs:
         run: |
           set -euo pipefail
 
-          REQUIRED="Gate Final - Deploy Ready"
+          # Lê o check obrigatório do JSON (E56) — evita hardcode que desincroniza
+          # quando o nome do gate muda.
+          REQUIRED=$(jq -r '.rulesets[] | select(.name == "main" and (._disabled // false | not)) | .required_checks[0]' .github/required-checks.json)
+          if [[ -z "$REQUIRED" || "$REQUIRED" == "null" ]]; then
+            echo "::error::required-checks.json não contém entry 'main' com required_checks."
+            exit 1
+          fi
           RULESETS_URL="https://api.github.com/repos/$REPO/rulesets?includes_parents=true&per_page=100"
 
           HTTP=$(curl -sS -o /tmp/rulesets.json -w "%{http_code}" \
