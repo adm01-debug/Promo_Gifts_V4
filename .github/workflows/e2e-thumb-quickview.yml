@@ -30,7 +30,7 @@ jobs:
     timeout-minutes: 8
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: ./.github/actions/e2e-setup
         with:
           browsers: 'chromium'
@@ -40,7 +40,7 @@ jobs:
         # matriz bloqueante abaixo. Sem escopo, o Playwright tentava iniciar
         # Firefox/WebKit não instalados e produzia 25 falsos negativos.
         run: npx playwright test e2e/flows/03b-thumb-quickview.smoke.spec.ts --project=chromium-public --reporter=line
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: failure()
         with:
           name: smoke-failure-artifacts
@@ -59,7 +59,7 @@ jobs:
       matrix:
         browser: [chromium, firefox, webkit]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: ./.github/actions/e2e-setup
         with:
           browsers: 'chromium,${{ matrix.browser }}'
@@ -70,7 +70,7 @@ jobs:
             --project=${{ matrix.browser }}-authed \
             --reporter=line,html
       - name: Upload report + traces + videos (${{ matrix.browser }})
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: playwright-${{ matrix.browser }}-report

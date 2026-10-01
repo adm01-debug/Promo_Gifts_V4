@@ -32,9 +32,9 @@ jobs:
     timeout-minutes: 30  # R3 — E2E ≤ 30 min
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version-file: '.nvmrc'  # R4
           cache: npm
@@ -46,7 +46,6 @@ jobs:
         run: ./node_modules/.bin/playwright install --with-deps chromium
 
       - name: Build app
-        # R5 — segredos via env:, não como argumento CLI
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
@@ -59,11 +58,8 @@ jobs:
 
       - name: Run freight E2E (staging — com credenciais reais)
         env:
-          # R5 — segredos via env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
-          # CI_SKIP_FREIGHT_E2E intencionalmente ausente → testes rodam de verdade.
-          # A skip-condition no spec é: !VITE_SUPABASE_URL || CI_SKIP_FREIGHT_E2E === "1"
           CI: 'true'
           E2E_BASE_URL: 'http://localhost:8080'
           E2E_REUSE_EXISTING_SERVER: '1'
@@ -86,18 +82,18 @@ jobs:
 
       - name: Upload Playwright report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: freight-staging-report-${{ github.run_id }}
           path: |
             playwright-report/
             e2e-artifacts/
-          retention-days: 14  # R6
+          retention-days: 14
           if-no-files-found: ignore
 
       - name: Upload artefatos de falha
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: freight-staging-failure-${{ github.run_id }}
           path: |
@@ -105,5 +101,5 @@ jobs:
             test-results/**/*.webm
             test-results/**/*.html
             test-results/**/trace.zip
-          retention-days: 14  # R6
+          retention-days: 14
           if-no-files-found: ignore

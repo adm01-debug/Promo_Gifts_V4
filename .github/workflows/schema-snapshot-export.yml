@@ -7,7 +7,7 @@ name: schema-snapshot-export
 #
 # Semântica:
 #   - ALL_IN_ONE.sql SEMPRE é gerado (não depende de secrets).
-#   - SCHEMA_LIVE.sql e SCHEMA_DRIFT.sql só saúem quando SUPABASE_ACCESS_TOKEN
+#   - SCHEMA_LIVE.sql e SCHEMA_DRIFT.sql só saem quando SUPABASE_ACCESS_TOKEN
 #     e SUPABASE_DB_PASSWORD estão configurados (safe-by-default).
 #   - Este workflow NÃO commita nada — só publica artefato para auditoria.
 #   - Se quiser gate de drift bloqueante, use `db-schema-drift-check.yml`.
@@ -54,15 +54,15 @@ jobs:
       SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF || 'doufsxqlfjyuvxuezpln' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version-file: .nvmrc
 
       - name: Install Supabase CLI
-        uses: supabase/setup-cli@v2
+        uses: supabase/setup-cli@afb1b15109756ea5cf9d8985a359d9095235ca2b # v2
         with:
           version: 2.101.0
 
@@ -70,7 +70,7 @@ jobs:
         run: node scripts/export-schema-snapshot.mjs
 
       - name: Upload snapshot artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: schema-snapshot-${{ github.run_number }}
           path: supabase/migrations-snapshot/
@@ -87,13 +87,13 @@ jobs:
       SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF || 'doufsxqlfjyuvxuezpln' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version-file: .nvmrc
       - name: Install Supabase CLI
-        uses: supabase/setup-cli@v2
+        uses: supabase/setup-cli@afb1b15109756ea5cf9d8985a359d9095235ca2b # v2
         with:
           version: 2.101.0
       - name: Check ledger manifest drift

@@ -41,8 +41,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -85,7 +85,7 @@ jobs:
 
       - name: Upload cobertura
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: stock-coverage
           path: coverage/stock
@@ -97,8 +97,8 @@ jobs:
     timeout-minutes: 15
     needs: unit-and-coverage
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -125,7 +125,7 @@ jobs:
 
       - name: Publicar relatório do PR
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: stock-benchmark-report
           path: stock-benchmark-report.json
@@ -133,7 +133,7 @@ jobs:
 
       - name: Publicar baseline (somente push em main)
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: stock-benchmark-baseline
           path: stock-benchmark-report.json
@@ -151,8 +151,8 @@ jobs:
         # conforme contrato dos testes (VIEWPORTS = desktop + mobile).
         project: [chromium-authed, firefox-authed, webkit-authed, mobile-chrome, mobile-safari]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -171,7 +171,7 @@ jobs:
             e2e/routes/app/stock-table-sticky.spec.ts \
             e2e/admin/stock-search-button.spec.ts \
             e2e/admin/stock-search-race-and-keyboard.spec.ts
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: playwright-report-${{ matrix.project }}

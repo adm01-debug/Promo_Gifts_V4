@@ -68,14 +68,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version-file: '.nvmrc'
           cache: npm
 
-      - uses: oven-sh/setup-bun@v2
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
 
       - name: Install
         run: npm ci --prefer-offline --no-audit
@@ -107,7 +107,7 @@ jobs:
 
       - name: Publicar relatório como artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: cart-header-fuzz-report
           path: qa/reports/cart-header-fuzz-report.md
@@ -133,9 +133,9 @@ jobs:
       TEST_SELLER_A_JWT: ${{ secrets.TEST_SELLER_A_JWT }}
       TEST_SELLER_B_JWT: ${{ secrets.TEST_SELLER_B_JWT }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
-      - uses: denoland/setup-deno@v1
+      - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed # v2
         with:
           deno-version: v1.x
 
