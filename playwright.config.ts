@@ -125,7 +125,7 @@ export default defineConfig({
       testIgnore: [/auth\.setup\.ts/],
     },
 
-    // 5. Smoke — serial, no auth, no retries
+    // 5. Smoke — serial, no auth, no retries, @smoke tag required
     {
       name: 'chromium-smoke',
       use: {
@@ -133,6 +133,7 @@ export default defineConfig({
         viewport: { width: 1280, height: 720 },
       },
       testMatch: [/smoke\.spec\.ts/],
+      grep: /@smoke/,
       retries: 0,
     },
   ],
