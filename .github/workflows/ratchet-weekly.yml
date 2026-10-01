@@ -1,0 +1,133 @@
+name: Ratchet Weekly — Baixar baselines
+
+# E41: Cron semanal que afrouxa ratchets quando o código melhorou.
+# Roda às 08h UTC toda segunda. Nunca aumenta baselines — apenas captura melhoras.
+# Se contagens caíram desde a baseline → abre PR automático com os valores novos.
+#
+# Baselines gerenciadas:
+#   .tsc-ratchet-baseline       — contagem de erros noUnusedLocals
+#   bundle-size-baseline.json   — limites de bundle por chunk e total
+#
+# Guarda: --update em tsc-ratchet recusa aumentar sem RATCHET_OVERRIDE=1.
+# Para bundle: após --update-baseline, reverte se maxTotalBytes aumentou.
+
+on:
+  schedule:
+    - cron: '0 8 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: ratchet-weekly
+  cancel-in-progress: false
+
+jobs:
+  lower-ratchets:
+    name: Baixar baselines se houve melhora
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+
+      # TSC ratchet — --update tem guarda embutida:
+      # recusa aumentar baseline se RATCHET_OVERRIDE != 1.
+      # Só grava arquivo novo se count atual < baseline (melhora).
+      - name: TSC ratchet — atualizar se melhorou
+        run: sh scripts/tsc-unused-ratchet.sh --update
+        env:
+          VITE_SUPABASE_URL: https://placeholder.supabase.co
+          VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
+
+      # Bundle ratchet — build primeiro, depois --update-baseline (grava
+      # tamanhos atuais + 20% de margem). Se o bundle cresceu (maxTotalBytes
+      # aumentou), reverte o arquivo para não inflar o teto silenciosamente.
+      - name: Build Vite (necessário para bundle check)
+        run: npm run build
+        env:
+          VITE_SUPABASE_URL: https://placeholder.supabase.co
+          VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
+
+      - name: Bundle ratchet — atualizar se melhorou (reverte se piorou)
+        run: |
+          OLD_LIMIT=$(node -e "
+            try {
+              const b = JSON.parse(require('fs').readFileSync('bundle-size-baseline.json', 'utf8'));
+              console.log(b.limits.maxTotalBytes);
+            } catch(e) { console.log(0); }
+          ")
+          node scripts/check-bundle-size.mjs --update-baseline
+          NEW_LIMIT=$(node -e "
+            try {
+              const b = JSON.parse(require('fs').readFileSync('bundle-size-baseline.json', 'utf8'));
+              console.log(b.limits.maxTotalBytes);
+            } catch(e) { console.log(0); }
+          ")
+          if [ "$OLD_LIMIT" -gt "0" ] && [ "$NEW_LIMIT" -gt "$OLD_LIMIT" ]; then
+            echo "Bundle aumentou (${OLD_LIMIT} → ${NEW_LIMIT} bytes limite) — revertendo baseline."
+            git checkout bundle-size-baseline.json
+          else
+            echo "Bundle mantido ou melhorado (${OLD_LIMIT} → ${NEW_LIMIT} bytes limite)."
+          fi
+        env:
+          VITE_SUPABASE_URL: https://placeholder.supabase.co
+          VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
+
+      - name: Detectar se baselines melhoraram
+        id: diff
+        run: |
+          if git diff --quiet .tsc-ratchet-baseline bundle-size-baseline.json; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            echo "Baselines sem alteração — nada a commitar."
+          else
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+            echo "Baselines melhoraram:"
+            git diff .tsc-ratchet-baseline bundle-size-baseline.json | head -40
+          fi
+
+      - name: Commitar, publicar branch e abrir PR
+        if: steps.diff.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH="chore/ratchet-lower-$(date -u +%Y%m%d-%H%M)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add .tsc-ratchet-baseline bundle-size-baseline.json
+          git commit -m "chore: ratchet semanal — baselines melhoraram
+
+          Capturado automaticamente por ratchet-weekly.yml (E41).
+          Baselines só diminuem — nenhum PR pode subir sem ratchet-override."
+          git push -u origin "$BRANCH"
+          gh pr create \
+            --base main \
+            --head "$BRANCH" \
+            --title "chore: ratchet semanal — baselines melhoradas" \
+            --body "## O que mudou
+
+          Baselines de ratchet foram automaticamente baixadas porque o código melhorou.
+
+          Verifique o diff para confirmar que os valores apenas diminuíram.
+
+          ## Por que isso é bom
+
+          O ratchet impede que PRs futuros aumentem silenciosamente erros TS não usados
+          ou tamanho de bundle. Ao baixar o teto, tornamos a melhora permanente.
+
+          Auto-gerado por \`.github/workflows/ratchet-weekly.yml\` (E41)."

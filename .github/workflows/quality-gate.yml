@@ -111,6 +111,14 @@ jobs:
         run: |
           BASE="${{ github.event.pull_request.base.sha || 'HEAD~1' }}"
           node scripts/check-types-inventory-drift.mjs --base "$BASE"
+      # E41 — TSC ratchet file guard (PR-only, bloqueante)
+      # Previne que um PR aumente .tsc-ratchet-baseline sem label ratchet-override.
+      - name: Gate 4.6 — TSC ratchet file guard (bloqueante em PR)
+        if: github.event_name == 'pull_request'
+        run: sh scripts/tsc-unused-ratchet.sh --check-ratchet
+        env:
+          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GITHUB_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
 
       # GATE 3: Build (zero build errors)
       - name: Build check
@@ -124,8 +132,12 @@ jobs:
       # (3) limites por chunk crítico + regressão >15% vs snapshot em
       # bundle-size-baseline.json.
       # Para atualizar após refactor intencional: node scripts/check-bundle-size.mjs --update-baseline
+      # E41 — Bundle ratchet: em PR também verifica se o ARQUIVO de baseline aumentou.
       - name: Gate 3.5 — Bundle size check (per-chunk + regression)
-        run: node scripts/check-bundle-size.mjs
+        run: node scripts/check-bundle-size.mjs --check-ratchet
+        env:
+          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GITHUB_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
 
   # GATE 4: Unit tests (fast — no network)
   unit-tests:
