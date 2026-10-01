@@ -1,6 +1,8 @@
 name: CI - Replenishment Module Quality Gate
 
 # 2026-09-27: paths filter — 23min de CI só quando reposição/E2E/supabase muda
+# 2026-10-01: E26 — env scope, remove continue-on-error/--pass-with-no-tests, timeout fix
+# 2026-10-01: E26 v2 — credencial-gate no step de stress test (evita falha sem E22)
 on:
   push:
     branches: [ main ]
@@ -25,7 +27,6 @@ on:
       - '.eslint-baseline.json'
       - '.github/workflows/replenishment-quality.yml'
 
-# Cancela runs antigos do mesmo branch/PR — evita gastar slots em commits superados.
 concurrency:
   group: replenishment-quality-${{ github.ref }}
   cancel-in-progress: true
@@ -36,59 +37,41 @@ permissions:
 jobs:
   audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 30
+    env:
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+      E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
-      
+
       - name: Install dependencies
         run: bun install --frozen-lockfile
-        
+
       - name: Lint check
         run: bun run lint
-        
+
       - name: Type check
         run: node scripts/check-tsc-baseline.mjs
-        
+
       - name: Run Module Tests (Unit & Integration)
         run: TZ=America/Sao_Paulo bunx vitest run src/hooks/products/__tests__/useReplenishments.integration.test.ts
-        env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-        
-      - name: Run E2E Tests (Smoke)
-        continue-on-error: true
-        run: |
-          bunx playwright install --with-deps chromium
-          bunx playwright test e2e/replenishment-stress.spec.ts --pass-with-no-tests
-        env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
 
-      - name: E2E — Paridade visual /novidades vs /reposicao (informativo)
-        id: card_parity_info
-        continue-on-error: true
-        run: |
-          bunx playwright install --with-deps chromium
-          npm run test:e2e:card-parity -- --pass-with-no-tests
-        env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-
-      - name: Card parity — gate estrito (tolerância 4px)
+      - name: Install Playwright browsers
         if: ${{ env.E2E_USER_EMAIL != '' && env.E2E_USER_PASSWORD != '' }}
-        run: |
-          echo "::group::Card parity strict run (sem --pass-with-no-tests)"
-          npm run test:e2e:card-parity
-          echo "::endgroup::"
-        env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+        run: bunx playwright install --with-deps chromium
+
+      - name: Run E2E Tests (Smoke)
+        if: ${{ env.E2E_USER_EMAIL != '' && env.E2E_USER_PASSWORD != '' }}
+        run: bunx playwright test e2e/replenishment-stress.spec.ts
+
+      - name: E2E — Paridade visual /novidades vs /reposicao
+        if: ${{ env.E2E_USER_EMAIL != '' && env.E2E_USER_PASSWORD != '' }}
+        id: card_parity
+        run: npm run test:e2e:card-parity
 
       - name: Upload Playwright artifacts (parity)
         if: always()
@@ -96,4 +79,4 @@ jobs:
         with:
           name: parity-report
           path: playwright-report/
-          retention-days: 7
+          retention-days: 14
