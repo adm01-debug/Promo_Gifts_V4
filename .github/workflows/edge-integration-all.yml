@@ -76,6 +76,21 @@ jobs:
             --coverage.thresholds.branches=0 \
             --coverage.thresholds.statements=0
 
+      - name: Guard — LIVE tests requerem credenciais em push para main
+        if: github.event_name == 'push'
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+        run: |
+          set -euo pipefail
+          missing=''
+          [ -z "${VITE_SUPABASE_URL:-}" ] && missing="$missing VITE_SUPABASE_URL"
+          [ -z "${E2E_USER_EMAIL:-}" ] && missing="$missing E2E_USER_EMAIL"
+          if [ -n "$missing" ]; then
+            echo "::error::LIVE integration tests requerem credenciais em push para main. Ausentes:$missing"
+            exit 1
+          fi
+
       - name: Run all edge function integration tests (LIVE)
         run: npx vitest run tests/edge-functions/live/ --reporter=verbose
         env:
