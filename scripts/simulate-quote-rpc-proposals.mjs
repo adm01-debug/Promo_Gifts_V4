@@ -202,6 +202,15 @@ try {
     manifest.postgres_image,
   ]);
   created = true;
+  // A imagem oficial aceita conexões no servidor temporário de initdb e o
+  // desliga antes de subir o servidor final. SELECT 1 sozinho pode passar
+  // nessa janela e a fixture seguinte falhar com "socket ... failed".
+  await until(() => {
+    const logs = spawnSync('docker', ['logs', container], { encoding: 'utf8', timeout: 2000 });
+    return `${logs.stdout ?? ''}\n${logs.stderr ?? ''}`.includes(
+      'PostgreSQL init process complete; ready for start up.',
+    );
+  }, 'isolated PG17 initialization');
   await until(
     () =>
       spawnSync('docker', args, { input: 'SELECT 1;', encoding: 'utf8', timeout: 2000 }).status ===
