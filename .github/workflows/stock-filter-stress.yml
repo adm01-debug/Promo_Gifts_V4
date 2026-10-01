@@ -61,9 +61,9 @@ jobs:
             echo "STRESS_UNIVERSE_SEED=${DATE_SEED}" >> "$GITHUB_ENV"
           fi
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            [ -n "${{ inputs.master_seed }}" ] && echo "STRESS_MASTER_SEED=${{ inputs.master_seed }}" >> "$GITHUB_ENV" || true
-            [ -n "${{ inputs.sims }}" ]        && echo "STRESS_SIMS=${{ inputs.sims }}"                >> "$GITHUB_ENV" || true
-            [ -n "${{ inputs.replay_seed }}" ] && echo "STRESS_REPLAY_SEED=${{ inputs.replay_seed }}"  >> "$GITHUB_ENV" || true
+            if [ -n "${{ inputs.master_seed }}" ]; then echo "STRESS_MASTER_SEED=${{ inputs.master_seed }}" >> "$GITHUB_ENV"; fi
+            if [ -n "${{ inputs.sims }}" ];        then echo "STRESS_SIMS=${{ inputs.sims }}"               >> "$GITHUB_ENV"; fi
+            if [ -n "${{ inputs.replay_seed }}" ]; then echo "STRESS_REPLAY_SEED=${{ inputs.replay_seed }}" >> "$GITHUB_ENV"; fi
           fi
 
       - name: Roda stress vs oráculo (logs reproduzíveis)
