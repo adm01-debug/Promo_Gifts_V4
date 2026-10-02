@@ -11,7 +11,7 @@
  *
  * @see docs/architecture/A11Y_CLICKABLE.md
  */
-import { readFileSync, writeFileSync, readdirSync, statSync } from 'node:fs';
+import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { resolve, join, extname } from 'node:path';
 
 const ROOT = resolve(process.cwd());
