@@ -1,7 +1,7 @@
 name: Edge Integration Tests — All Functions
 
 # Roda testes de integração mocked para TODAS as 18+ edge functions cobertas.
-# Bloqueia merges se qualquer função crítica falhar.
+# Falha o PR se qualquer função crítica falhar.
 
 # 2026-09-27: paths filter — 11min de edge integration só quando edge functions ou testes mudam
 on:
@@ -35,7 +35,7 @@ permissions:
 
 jobs:
   edge-integration:
-    name: Edge Function Integration Tests
+    name: Edge Functions · Integration All
     runs-on: ubuntu-latest
     timeout-minutes: 20
 

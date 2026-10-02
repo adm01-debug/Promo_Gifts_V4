@@ -37,5 +37,5 @@ jobs:
           yaml-file: .github/labels.yml
           # Mantém labels do GitHub que não estão no YAML (ex: bug, enhancement
           # criadas por padrão). Mude para false se quiser convergência estrita.
-          skip-delete: true
+          skip-delete: false
           dry-run: false

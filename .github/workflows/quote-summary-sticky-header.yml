@@ -1,6 +1,6 @@
 name: Quote Summary — Sticky Header (e2e + visual)
 
-# Bloqueia merges quando o header sticky do Resumo regride (posicionamento,
+# Detecta regressão quando o header sticky do Resumo regride (posicionamento,
 # bordas, backdrop-blur ou clicabilidade dos botões em desktop/mobile/tablet).
 
 on:

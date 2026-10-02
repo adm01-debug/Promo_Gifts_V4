@@ -12,7 +12,7 @@ name: Magazine Flakiness Guard
 #
 # Estratégia:
 #  - PR: executa em modo STRICT quando arquivos relevantes mudam. Flaky OU fail-all
-#    bloqueia merge. Isso é intencional — os helpers de rings são SSOT e não podem
+#    falha o PR. Isso é intencional — os helpers de rings são SSOT e não podem
 #    ter comportamento não-determinístico.
 #  - Schedule diário: pega drift lento (deps, jsdom, runners novos), sem --strict
 #    para não spam-abrir issues por 1 flaky isolado.
