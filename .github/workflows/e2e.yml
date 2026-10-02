@@ -249,3 +249,43 @@ jobs:
         run: |
           echo "::error title=Regression failed::Algumas specs falharam — veja '🧪 E2E Feature Summary' acima, artifacts 'playwright-report' (HTML) e 'e2e-evidence' (screenshots/vídeos/trace)."
           exit 1
+
+  # E91 — Prune gh-pages: mantém ≤20 relatórios em e2e-report/
+  # Roda somente em push para main (mesmo trigger que publica o relatório).
+  prune_ghpages:
+    name: Prune gh-pages (keep ≤20 e2e reports)
+    runs-on: ubuntu-latest
+    needs: e2e
+    if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout gh-pages
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: gh-pages
+          fetch-depth: 1
+
+      - name: Prune old e2e reports (keep newest 20)
+        run: |
+          if [ ! -d e2e-report ]; then echo "e2e-report/ ausente — nada a podar"; exit 0; fi
+          cd e2e-report
+          COUNT=$(ls -d */ 2>/dev/null | wc -l)
+          echo "Relatórios existentes: $COUNT"
+          if [ "$COUNT" -le 20 ]; then echo "≤20 relatórios — nada a podar"; exit 0; fi
+          TO_DELETE=$(( COUNT - 20 ))
+          ls -d */ | sort -n | head -n "$TO_DELETE" | xargs rm -rf
+          echo "Removidos $TO_DELETE relatórios mais antigos"
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --staged --quiet; then
+            echo "Nenhuma mudança — nada a commitar"
+          else
+            git commit -m "chore(ci/e91): prune e2e-report — keep newest 20"
+            git push
+          fi
