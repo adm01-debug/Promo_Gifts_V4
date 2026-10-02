@@ -92,7 +92,6 @@ jobs:
         env:
           E2E_BASE_URL: http://localhost:8080
           PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results-quote-flow.json
-        continue-on-error: false # Alterado para false para falhar o build em caso de regressão
 
       - name: Run Catalog→Kit Flow E2E
         run: |
