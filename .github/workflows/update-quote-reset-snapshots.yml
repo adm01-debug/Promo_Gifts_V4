@@ -72,6 +72,9 @@ jobs:
             --reporter=list
 
       - name: Commit & push baselines
+        env:
+          INPUT_COMMIT_MESSAGE: ${{ inputs.commit_message }}
+          INPUT_BRANCH: ${{ inputs.branch || github.ref_name }}
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -83,8 +86,8 @@ jobs:
             echo "Nenhuma baseline nova/alterada — nada para commitar."
             exit 0
           fi
-          git commit -m "${{ inputs.commit_message }}"
-          git push origin HEAD:${{ inputs.branch || github.ref_name }}
+          git commit -m "$INPUT_COMMIT_MESSAGE"
+          git push origin "HEAD:$INPUT_BRANCH"
 
       - name: Upload HTML report (debug)
         if: always()
