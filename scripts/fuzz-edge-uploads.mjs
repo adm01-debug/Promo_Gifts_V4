@@ -17,7 +17,7 @@ import process from "node:process";
 
 const SUPABASE_URL = (process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "").replace(/\/+$/, "");
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_TEST_BYPASS_TOKEN;
-const DRY_RUN = !SUPABASE_URL || !SERVICE_ROLE_KEY;
+const DRY_RUN = process.env.DRY_RUN === '1' || !SUPABASE_URL || !SERVICE_ROLE_KEY;
 const TIMEOUT_MS = 15_000;
 
 if (DRY_RUN) {
@@ -81,7 +81,7 @@ const HMAC_SIGNATURES_ADVERSARIAIS = [
   "sha256=abc",                 // hash curto
   "invalid-format",             // sem prefixo
   "sha256=" + "0".repeat(64),  // todos zeros
-  "\x00" * 100,                 // bytes nulos
+  "\x00".repeat(100),          // bytes nulos
 ];
 
 const CONTENT_TYPE_BYPASS = [
@@ -294,12 +294,12 @@ async function runUnicodeFuzz() {
   console.log("\n🌐 Suite: Unicode adversarial e bytes nulos");
 
   const unicodeStrings = [
-    " ",              // null bytes
+    "\u0000 ",              // null bytes
     "﻿",                           // BOM
     "‮" + "password",             // RTL override
     "​‌‍",              // zero-width chars
-    "À́̂̃",       // combining chars
-    "𝕳𝖊𝖑𝖑𝖔",                          // mathematical bold
+    "À́̂̃",       // combining chars
+    "𝕳𝖆𝖑𝖑𝖔",  // mathematical bold
     "𐀀",                     // surrogate pair
     "﷽",                               // Arabic ligature (1 char, 4 bytes UTF-8)
     "\n\r\t" + "injection",            // control chars

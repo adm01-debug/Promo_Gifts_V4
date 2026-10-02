@@ -24,7 +24,7 @@ function loadDotEnvIfPresent() {
     const eq = trimmed.indexOf("=");
     if (eq <= 0) continue;
     const key = trimmed.slice(0, eq).trim();
-    const value = trimmed.slice(eq + 1).trim().replace(/^['"]|['"]$/g, "");
+    const value = trimmed.slice(eq + 1).trim().replace(/^['"]]|['"]]$/g, "");
     process.env[key] ??= value;
   }
 }
@@ -39,9 +39,9 @@ const SERVICE_ROLE_KEY =
   process.env.SUPABASE_TEST_BYPASS_TOKEN ||
   process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
+if (process.env.DRY_RUN === '1' || !SUPABASE_URL || !SERVICE_ROLE_KEY) {
   console.log(
-    "[stress-burst] credenciais ausentes. Pulando teste de stress burst."
+    "[stress-burst] credenciais ausentes ou DRY_RUN=1. Pulando teste de stress burst."
   );
   process.exit(0);
 }
