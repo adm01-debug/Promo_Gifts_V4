@@ -47,8 +47,6 @@ jobs:
       - name: Run actionlint
         # shellcheck is run automatically by actionlint for run: blocks.
         # Pre-existing style/info codes suppressed; fix them in E25.
-        # `administration` permission was added to GITHUB_TOKEN by GitHub after
-        # actionlint v1.7.7 was released — suppress until actionlint is upgraded.
         run: |
           /tmp/actionlint \
             -ignore 'SC2006' \
@@ -58,8 +56,7 @@ jobs:
             -ignore 'SC2086' \
             -ignore 'SC2129' \
             -ignore 'SC2188' \
-            -ignore 'SC2215' \
-            -ignore 'unknown permission scope "administration"'
+            -ignore 'SC2215'
 
   workflow-contracts:
     name: Workflow contract checks (C1–8)

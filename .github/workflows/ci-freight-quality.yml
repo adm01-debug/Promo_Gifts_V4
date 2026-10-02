@@ -50,7 +50,7 @@ jobs:
           COVERAGE_JSON_PATH: coverage/coverage-summary.json
 
   webhook-matrix:
-    name: Webhook Scenario Matrix (≥20 cenários, 0 HTTP)
+    name: Webhook Scenario Matrix (≥200 cenários, 0 HTTP)
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

@@ -32,6 +32,8 @@ jobs:
       E2E_BASE_URL: http://localhost:8080
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
+      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+      E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -45,9 +47,6 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - name: Run quote-row-menu-width specs (${{ matrix.viewport }})
-        env:
-          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
         run: |
           npx playwright test \
             e2e/quotes/quote-row-menu-width.spec.ts \

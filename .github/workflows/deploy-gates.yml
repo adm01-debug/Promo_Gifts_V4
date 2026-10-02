@@ -123,6 +123,41 @@ jobs:
         env:
           GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
           GITHUB_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+      # E55 — Detecta arquivos texto encodados acidentalmente em base64.
+      # Heurística: linha ≥ 200 chars de alfabeto base64 puro em arquivo texto.
+      # Integrado ao gate para bloquear via "Gate Final - Deploy Ready".
+      - name: Gate 1.8 — Detect accidentally base64-encoded files (bloqueante)
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          if [[ "$EVENT" == "pull_request" ]]; then
+            git diff --name-only --diff-filter=AM "$BASE_SHA" "$HEAD_SHA" > /tmp/b64-files.txt
+          elif [[ "$EVENT" == "push" ]]; then
+            git diff --name-only --diff-filter=AM HEAD~1 HEAD > /tmp/b64-files.txt \
+              || git ls-files > /tmp/b64-files.txt
+          else
+            git ls-files > /tmp/b64-files.txt
+          fi
+          INCLUDE='\.(ts|tsx|js|jsx|json|sql|sh|md|yaml|yml|html|css|env|env\.example|toml|conf|rc)$'
+          EXCLUDE='(package-lock\.json|pnpm-lock\.yaml|bun\.lock|yarn\.lock|\.min\.|\.bundle\.|^supabase/migrations-snapshot/ALL_IN_ONE\.sql$)'
+          FOUND=0
+          while IFS= read -r F; do
+            [[ -z "$F" || ! -f "$F" ]] && continue
+            [[ "$F" =~ $INCLUDE ]] || continue
+            [[ "$F" =~ $EXCLUDE ]] && continue
+            N=0
+            while IFS= read -r L || [[ -n "$L" ]]; do
+              N=$((N+1)); LEN=${#L}
+              if (( LEN >= 200 )) && [[ "$L" =~ ^[A-Za-z0-9+/=]+$ ]]; then
+                FOUND=$((FOUND+1))
+                echo "::error file=$F,line=$N::${LEN} chars de alfabeto base64 puro — arquivo possivelmente encodado acidentalmente."
+              fi
+            done < "$F"
+          done < /tmp/b64-files.txt
+          exit $(( FOUND > 0 ))
 
   unit-tests:
     name: Gate 2 - Unit Tests
@@ -195,6 +230,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: [ssot-gate]
+    # Gate opcional (CLAUDE.md) — falha não bloqueia deploy-ready.
+    continue-on-error: true
     env:
       VITE_SUPABASE_URL: https://placeholder.supabase.co
       VITE_SUPABASE_PUBLISHABLE_KEY: lighthouse-placeholder-key

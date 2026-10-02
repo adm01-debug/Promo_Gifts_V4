@@ -111,7 +111,7 @@ jobs:
         with:
           name: cart-header-fuzz-report
           path: qa/reports/cart-header-fuzz-report.md
-          retention-days: 30
+          retention-days: 14
 
       - name: Publicar sumário no job
         if: always()
@@ -121,7 +121,7 @@ jobs:
           fi
 
   rls-integration:
-    name: seller_carts RLS (Deno, skip-graceful sem credenciais)
+    name: seller_carts RLS (Deno, falha em push sem credenciais)
     runs-on: ubuntu-latest
     timeout-minutes: 6
     # Só executa quando os segredos existirem. Sem eles o job é pulado
@@ -138,6 +138,18 @@ jobs:
       - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed # v2
         with:
           deno-version: v1.x
+
+      - name: Guard — credenciais RLS obrigatórias em push para main
+        if: github.event_name == 'push'
+        run: |
+          set -euo pipefail
+          missing=''
+          [ -z "${SUPABASE_URL:-}" ] && missing="$missing SUPABASE_URL"
+          [ -z "${TEST_SELLER_A_JWT:-}" ] && missing="$missing TEST_SELLER_A_JWT"
+          if [ -n "$missing" ]; then
+            echo "::error::RLS integration test requer credenciais em push para main. Ausentes:$missing"
+            exit 1
+          fi
 
       - name: Rodar teste de RLS
         run: deno test --allow-net --allow-env supabase/functions/tests/seller-carts-rls_test.ts

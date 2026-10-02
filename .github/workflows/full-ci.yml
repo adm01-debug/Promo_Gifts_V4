@@ -65,6 +65,13 @@ jobs:
             exit 1
           fi
 
+      - name: Vitest — stress + fuzz badges (blocking)
+        run: |
+          TZ=America/Sao_Paulo npx vitest run \
+            src/hooks/products/__tests__/useProductIntelligenceBadges.test.tsx \
+            src/hooks/products/__tests__/useProductIntelligenceBadges.stress.test.tsx \
+            src/hooks/admin/__tests__/useIntelligenceBadgeSettings.fuzz.test.ts
+
       - name: Upload Coverage Report
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
@@ -111,13 +118,6 @@ jobs:
       - name: Install Playwright Browsers
         if: steps.cache-playwright.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps chromium
-
-      - name: Vitest — stress + fuzz badges (blocking)
-        run: |
-          TZ=America/Sao_Paulo npx vitest run \
-            src/hooks/products/__tests__/useProductIntelligenceBadges.test.tsx \
-            src/hooks/products/__tests__/useProductIntelligenceBadges.stress.test.tsx \
-            src/hooks/admin/__tests__/useIntelligenceBadgeSettings.fuzz.test.ts
 
       - name: Run Playwright tests (Sharded Parallel)
         run: |
