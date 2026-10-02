@@ -216,6 +216,10 @@ export function requireAuth(reason = "E2E_USER_EMAIL/PASSWORD não configurados"
   }
   const hasCredentials = !!(process.env.E2E_USER_EMAIL && process.env.E2E_USER_PASSWORD);
   if (!hasCredentials) {
+    // E21: warn explícito em CI para o skip não passar despercebido nos logs.
+    if (process.env.CI) {
+      console.warn(`\n⚠️  [requireAuth] ${reason} em CI — teste será pulado.\n`);
+    }
     test.skip(true, reason);
     return;
   }

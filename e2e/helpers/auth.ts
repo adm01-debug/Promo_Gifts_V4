@@ -86,6 +86,12 @@ export async function loginAs(page: Page, role: Role = "user"): Promise<void> {
                    process.env.E2E_USER_PASSWORD;
 
   if (!email || !password) {
+    // E21: warn explícito em CI para o skip não passar despercebido nos logs.
+    if (process.env.CI) {
+      console.warn(
+        `\n⚠️  [loginAs] Credenciais E2E_${role.toUpperCase()}_EMAIL/PASSWORD ausentes em CI — teste será pulado.\n`,
+      );
+    }
     test.skip(true, `Credenciais E2E_${role.toUpperCase()}_EMAIL/PASSWORD ausentes`);
   }
 

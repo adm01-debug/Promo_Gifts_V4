@@ -39,6 +39,14 @@ setup('authenticate', async ({ page }) => {
   const password = process.env.E2E_USER_PASSWORD;
 
   if (!email || !password) {
+    // E21: warn explícito em CI para que o skip apareça nos logs, não silenciosamente.
+    if (process.env.CI) {
+      console.warn(
+        '\n⚠️  [auth.setup] E2E_USER_EMAIL/E2E_USER_PASSWORD ausentes em CI.' +
+        '\n   Specs autenticados serão PULADOS.' +
+        '\n   Configure os secrets em Settings → Secrets and variables → Actions.\n',
+      );
+    }
     fs.writeFileSync(STORAGE, JSON.stringify({ cookies: [], origins: [] }, null, 2), 'utf-8');
     setup.info().annotations.push({
       type: 'skip-reason',
