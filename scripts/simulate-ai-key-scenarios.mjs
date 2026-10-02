@@ -88,14 +88,14 @@ for (const dbValue of [...DEGENERATE, ...VALID]) {
       try {
         r = simulateHandler({ dbValue, envValue, resolverThrows });
       } catch (e) {
-        fail(`cenário lançou exceção: db=${String(dbValue)} env=${String(envValue)} throws=${resolverThrows} → ${e.message}`);
+        fail(`cenário lançou exceção: db=<val> env=<val> throws=${resolverThrows} → ${e.message}`);
         continue;
       }
       const expectedDb = resolverThrows ? null : normalizeApiKey(dbValue);
       const expectedKey = expectedDb ?? normalizeApiKey(envValue);
       if (expectedKey) {
-        if (r.status !== 200) fail(`esperado 200 com chave válida (db=${String(dbValue)} env=${String(envValue)})`);
-        else if (r.apiKey !== expectedKey) fail(`chave não normalizada: "${r.apiKey}" ≠ "${expectedKey}"`);
+        if (r.status !== 200) fail(`esperado 200 com chave válida (db=${String(dbValue).length}chars env=${String(envValue).length}chars)`);
+        else if (r.apiKey !== expectedKey) fail(`chave não normalizada: len=${r.apiKey.length} ≠ expected=${expectedKey.length}`);
         else if (r.apiKey.trim() !== r.apiKey) fail('chave com espaços nas bordas foi aceita');
         else ok();
       } else {

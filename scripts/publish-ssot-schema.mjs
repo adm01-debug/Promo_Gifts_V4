@@ -16,7 +16,7 @@
  * Exit codes: 0 ok / 1 drift em --check / 2 I-O
  */
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from 'fs';
+import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'fs';
 import { dirname, join } from 'path';
 
 const SRC = 'schemas/ssot-report.schema.json';
@@ -151,22 +151,24 @@ if (immutableViolations.length > 0) {
 
 if (CHECK) {
   const drift = [];
-  const cmp = (path, expected) => {
-    if (!existsSync(path)) drift.push(`ausente: ${path}`);
-    else if (readFileSync(path, 'utf8') !== expected) drift.push(`stale: ${path}`);
+  const cmp = (filePath, expected) => {
+    let cur;
+    try { cur = readFileSync(filePath, 'utf8'); } catch (e) {
+      if (e.code === 'ENOENT') { drift.push(`ausente: ${filePath}`); return; }
+      throw e;
+    }
+    if (cur !== expected) drift.push(`stale: ${filePath}`);
   };
   cmp(LATEST_OUT, publishedText);
   cmp(versionedOut, publishedText);
   // Índice: compara ignorando generatedAt (varia por execução).
-  if (!existsSync(INDEX_OUT)) drift.push(`ausente: ${INDEX_OUT}`);
-  else {
-    try {
-      const cur = JSON.parse(readFileSync(INDEX_OUT, 'utf8'));
-      const norm = (x) => ({ ...x, generatedAt: undefined });
-      if (JSON.stringify(norm(cur)) !== JSON.stringify(norm(indexPayload))) drift.push(`stale: ${INDEX_OUT}`);
-    } catch {
-      drift.push(`inválido: ${INDEX_OUT}`);
-    }
+  try {
+    const cur = JSON.parse(readFileSync(INDEX_OUT, 'utf8'));
+    const norm = (x) => ({ ...x, generatedAt: undefined });
+    if (JSON.stringify(norm(cur)) !== JSON.stringify(norm(indexPayload))) drift.push(`stale: ${INDEX_OUT}`);
+  } catch (e) {
+    if (e.code === 'ENOENT') drift.push(`ausente: ${INDEX_OUT}`);
+    else drift.push(`inválido: ${INDEX_OUT}`);
   }
   if (drift.length) {
     process.stderr.write(`[publish-ssot-schema] ✗ ${drift.length} drift(s):\n`);
