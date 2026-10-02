@@ -106,16 +106,17 @@ jobs:
       - name: Run 04o/04p/04q specs (1ª passada)
         id: run1
         if: steps.creds.outputs.has_creds == 'true'
+        env:
+          CI: "1"
+          FOCUS: ${{ github.event.inputs.focus }}
         run: |
-          if [ -n "${{ github.event.inputs.focus }}" ]; then
-            echo "▶ Focused run: e2e/flows/${{ github.event.inputs.focus }}"
-            npx playwright test "e2e/flows/${{ github.event.inputs.focus }}" \
+          if [ -n "$FOCUS" ]; then
+            echo "▶ Focused run: e2e/flows/$FOCUS"
+            npx playwright test "e2e/flows/$FOCUS" \
               --project=chromium-authed --retries=0 --reporter=html,list,github
           else
             npm run test:e2e:quotes-undo -- --retries=0 --reporter=html,list,github
           fi
-        env:
-          CI: "1"
 
       # 2ª passada — apenas os specs falhos (uma retentativa).
       - name: Re-run failed specs (única retentativa)

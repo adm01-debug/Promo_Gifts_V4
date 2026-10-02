@@ -74,19 +74,22 @@ jobs:
         env:
           CI: 'true'
           NODE_ENV: 'test'
+          INPUT_RUNS: ${{ github.event.inputs.runs || '10' }}
+          INPUT_STRICT: ${{ github.event.inputs.strict }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
-          RUNS="${{ github.event.inputs.runs || '10' }}"
+          RUNS="$INPUT_RUNS"
           # Modo strict:
           #   - PR:                sempre strict (gate obrigatório).
           #   - workflow_dispatch: respeita input (default true).
           #   - schedule:          nunca strict (evita ruído em cron diário).
           STRICT_FLAG=""
-          case "${{ github.event_name }}" in
+          case "$EVENT_NAME" in
             pull_request)
               STRICT_FLAG="--strict"
               ;;
             workflow_dispatch)
-              if [ "${{ github.event.inputs.strict }}" = "true" ]; then
+              if [ "$INPUT_STRICT" = "true" ]; then
                 STRICT_FLAG="--strict"
               fi
               ;;
@@ -111,6 +114,7 @@ jobs:
     name: Magazine Flakiness OK
     needs: [flakiness]
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     if: always()
     steps:
       - name: Check result
