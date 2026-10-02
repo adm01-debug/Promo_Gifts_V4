@@ -90,7 +90,7 @@ jobs:
 
   # E10 — alerta de falha no cron semanal (deduplication via label ci-focused-e2e)
   notify-failure:
-    name: Notificar falha (cron)
+    name: Notificar falha — Quote View No Pres (cron)
     if: failure() && github.event_name == 'schedule'
     needs: [e2e]
     runs-on: ubuntu-latest
