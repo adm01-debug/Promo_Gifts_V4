@@ -40,6 +40,18 @@ interface CheckLoginGateResponse {
   blocked_until?: string;
 }
 
+/**
+ * Reasons da check-login/RPC que indicam FALHA OPERACIONAL (indisponibilidade
+ * da RPC, exceção interna), não uma decisão de bloqueio. Nessas, o gate
+ * fail-open é preservado — bloquear só quando o RPC devolveu uma decisão
+ * explícita de negação (allowed=false com reason não-operacional).
+ */
+const CHECK_LOGIN_OPERATIONAL_REASONS = new Set([
+  'security_check_unavailable',
+  'security_check_error_fail_closed',
+  'internal_error_fail_closed',
+]);
+
 // Tipos de role conforme app_role enum no banco.
 export type AppRole =
   | 'admin'
@@ -349,8 +361,59 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signIn = useCallback(async (email: string, password: string) => {
     const log = createClientLogger('auth.signIn', { base: { email_domain: email.split('@')[1] } });
+
+    // Fonte única da linha em login_attempts: fire-and-forget, cobre sucesso
+    // (a RPC de lockout usa o último success pra zerar o contador de falhas),
+    // falha de credencial e bloqueio por gate. IP real via get-visitor-info —
+    // sem ele a auditoria caía em "unknown".
+    const logAttempt = (userId: string | null, success: boolean, failureReason?: string) => {
+      import('@/lib/edge/safeInvokeCall')
+        .then(async ({ invokeEdge }) => {
+          const { data: visitor } = await invokeEdge<{ ip?: string }>('get-visitor-info', {
+            headers: log.headers(),
+            timeoutMs: 5_000,
+            maxRetries: 0,
+          }).catch(() => ({ data: null }));
+          const { error: invokeError } = await invokeEdge('log-login-attempt', {
+            body: {
+              email,
+              user_id: userId,
+              success,
+              failure_reason: failureReason,
+              user_agent: navigator.userAgent,
+              ...(visitor?.ip ? { ip_address: visitor.ip } : {}),
+            },
+            headers: log.headers(),
+          });
+
+          if (invokeError) {
+            const invokeStatus = (invokeError as { status?: number }).status;
+            log.error('log_login_attempt_failed', {
+              error: invokeError.message,
+              status: invokeStatus,
+              requestId: log.requestId,
+            });
+
+            if (isBadJwtError(invokeError) || invokeStatus === 401) {
+              toast.error(
+                'Erro de autenticação na função de auditoria. Verifique a conexão com o projeto canônico.',
+                {
+                  description: `Request ID: ${log.requestId}`,
+                },
+              );
+            }
+          } else {
+            log.info('log_login_attempt_ok', { requestId: log.requestId });
+          }
+        })
+        .catch((err) => {
+          log.error('log_login_attempt_exception', { err: String(err) });
+        });
+    };
+
     const { allowed, remainingSeconds } = checkLoginAllowed(email);
     if (!allowed) {
+      logAttempt(null, false, 'client_rate_limit');
       return {
         error: {
           message: `Bloqueado. Tente em ${Math.ceil(remainingSeconds / 60)} min.`,
@@ -376,7 +439,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           preserveErrorData: true,
         },
       );
-      if (gate?.allowed === false || gateErr?.status === 403) {
+      const operationalBlock =
+        gate?.allowed === false &&
+        gate.reason !== undefined &&
+        CHECK_LOGIN_OPERATIONAL_REASONS.has(gate.reason);
+      if (gate?.allowed === false && !operationalBlock) {
         const until =
           gate?.blocked_until && !Number.isNaN(Date.parse(gate.blocked_until))
             ? new Date(gate.blocked_until).toLocaleString('pt-BR')
@@ -385,6 +452,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           reason: gate?.reason ?? 'login_blocked',
           requestId: log.requestId,
         });
+        logAttempt(null, false, `login_blocked:${gate?.reason ?? 'unknown'}`);
         return {
           error: {
             message: until
@@ -395,9 +463,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           data: null,
         };
       }
-      if (gateErr) {
+      if (gateErr || operationalBlock || gate?.allowed === false) {
         log.warn('check_login_unavailable', {
-          status: gateErr.status,
+          status: gateErr?.status,
+          reason: gate?.reason,
           requestId: log.requestId,
         });
       }
@@ -412,42 +481,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       clearLoginAttempts(email);
     }
 
-    import('@/lib/edge/safeInvokeCall')
-      .then(async ({ invokeEdge }) => {
-        const { error: invokeError } = await invokeEdge('log-login-attempt', {
-          body: {
-            email,
-            user_id: data?.user?.id,
-            success: !error,
-            failure_reason: error?.message,
-            user_agent: navigator.userAgent,
-          },
-          headers: log.headers(),
-        });
-
-        if (invokeError) {
-          const invokeStatus = (invokeError as { status?: number }).status;
-          log.error('log_login_attempt_failed', {
-            error: invokeError.message,
-            status: invokeStatus,
-            requestId: log.requestId,
-          });
-
-          if (isBadJwtError(invokeError) || invokeStatus === 401) {
-            toast.error(
-              'Erro de autenticação na função de auditoria. Verifique a conexão com o projeto canônico.',
-              {
-                description: `Request ID: ${log.requestId}`,
-              },
-            );
-          }
-        } else {
-          log.info('log_login_attempt_ok', { requestId: log.requestId });
-        }
-      })
-      .catch((err) => {
-        log.error('log_login_attempt_exception', { err: String(err) });
-      });
+    logAttempt(data?.user?.id ?? null, !error, error?.message);
 
     return { error, data };
   }, []);

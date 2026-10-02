@@ -223,7 +223,9 @@ function observeINP(): void {
         }
       }
     });
-    po.observe({ type: 'event', buffered: true, durationThreshold: 40 } as PerformanceObserverInit);
+    // durationThreshold 16ms (mínimo do Event Timing) — threshold maior
+    // perderia interações rápidas e subestimaria o INP.
+    po.observe({ type: 'event', buffered: true, durationThreshold: 16 } as PerformanceObserverInit);
 
     const report = () => {
       if (inpReported || worstInteractionMs <= 0) return;

@@ -3,7 +3,7 @@
  * Gate de CI: ratchet de tamanho de arquivo em src/ (produção).
  *
  * Política:
- *   • Arquivos com mais de MAX_LINES (500) entram no baseline.
+ *   • Arquivos com mais de MAX_LINES entram no baseline.
  *   • Falha se um arquivo NOVO (>MAX_LINES e ausente do baseline) aparecer,
  *     ou se um arquivo do baseline crescer além da contagem registrada.
  *   • Arquivos que encolherem abaixo do limite geram drift positivo (aviso).
@@ -12,31 +12,18 @@
  *   node scripts/check-file-size-baseline.mjs            # verifica
  *   node scripts/check-file-size-baseline.mjs --update   # regrava baseline
  */
-import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join, relative } from 'node:path';
+import { walkSrc } from './lib/baseline-gate.mjs';
 
 const ROOT = process.cwd();
 const BASELINE_PATH = join(ROOT, '.file-size-baseline.json');
 const MAX_LINES = 500;
 const UPDATE = process.argv.includes('--update');
 
-const SKIP_DIRS = new Set(['__tests__', 'tests', 'node_modules']);
-const SKIP_FILE = /\.(test|spec)\.(ts|tsx)$/;
-
-function* walk(dir) {
-  for (const entry of readdirSync(dir, { withFileTypes: true })) {
-    const full = join(dir, entry.name);
-    if (entry.isDirectory()) {
-      if (!SKIP_DIRS.has(entry.name)) yield* walk(full);
-    } else if (/\.(ts|tsx)$/.test(entry.name) && !SKIP_FILE.test(entry.name)) {
-      yield full;
-    }
-  }
-}
-
 function collectOversized() {
   const sizes = {};
-  for (const file of walk(join(ROOT, 'src'))) {
+  for (const file of walkSrc(ROOT)) {
     const lines = readFileSync(file, 'utf8').split('\n').length;
     if (lines > MAX_LINES) sizes[relative(ROOT, file)] = lines;
   }
@@ -79,7 +66,7 @@ for (const [file, lines] of Object.entries(current)) {
     regressions.push({ file, lines, note: `cresceu ${lines - baseLines} linhas (baseline: ${baseLines})` });
   }
 }
-for (const [file, baseLines] of Object.entries(baselineFiles)) {
+for (const file of Object.keys(baselineFiles)) {
   if (!(file in current)) shrunk += 1;
 }
 

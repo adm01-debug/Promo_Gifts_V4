@@ -78,11 +78,31 @@ Deno.serve(async (req) => {
   try {
     const formData = await req.formData();
     const file = formData.get("file") as File;
-    const folder = (formData.get("folder") as string) || "uploads";
+    // folder compõe o path no Storage e é controlado pelo cliente — allowlist
+    // estrita para impedir path traversal ("../../") em object keys.
+    const rawFolder = (formData.get("folder") as string) || "uploads";
+    const folder = /^[a-z0-9][a-z0-9_-]{0,63}$/i.test(rawFolder) ? rawFolder : "uploads";
 
     if (!file) throw new Error("Arquivo obrigatório");
 
     const fileBuffer = await file.arrayBuffer();
+
+    const hashBuffer = await crypto.subtle.digest("SHA-256", fileBuffer);
+    const hashHex = Array.from(new Uint8Array(hashBuffer))
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+    // file_scan_logs exige bucket/path/hash NOT NULL — preencher já na
+    // entrada para as trilhas de rejeição não falharem silenciosamente.
+    auditData = {
+      user_id: auth.userId,
+      bucket: "personalization-images",
+      path: `rejected/${folder}/${safeName}`,
+      hash: hashHex,
+      status_code: 500,
+      scan_result: { message: "Arquivo recebido para análise" },
+    };
 
     if (fileBuffer.byteLength === 0 || fileBuffer.byteLength > MAX_UPLOAD_BYTES) {
       const tooBig = fileBuffer.byteLength > MAX_UPLOAD_BYTES;
@@ -131,19 +151,8 @@ Deno.serve(async (req) => {
         ),
       );
     }
-    const hashBuffer = await crypto.subtle.digest("SHA-256", fileBuffer);
-    const hashHex = Array.from(new Uint8Array(hashBuffer))
-      .map((b) => b.toString(16).padStart(2, "0"))
-      .join("");
-
-    auditData = {
-      user_id: auth.userId,
-      bucket: "personalization-images",
-      path: `verified/${folder}/${file.name}`,
-      hash: hashHex,
-      status_code: 200,
-      scan_result: { message: "Arquivo recebido para análise" },
-    };
+    auditData.path = `verified/${folder}/${safeName}`;
+    auditData.status_code = 200;
 
     let isSuspicious = false;
     let scanDetails: Record<string, unknown> = {
@@ -214,9 +223,12 @@ Deno.serve(async (req) => {
       targetPrefix = "suspect";
     }
 
+    const ext = (file.name.split(".").pop() ?? "")
+      .replace(/[^a-z0-9]/gi, "")
+      .toLowerCase() || "bin";
     const fileName = `${targetPrefix}/${folder}/${Date.now()}-${
       Math.random().toString(36).substring(7)
-    }.${file.name.split(".").pop()}`;
+    }.${ext}`;
     const { data: uploadData, error: uploadError } = await supabaseAdmin.storage
       .from(targetBucket)
       .upload(fileName, fileBuffer, { contentType: file.type, upsert: false });

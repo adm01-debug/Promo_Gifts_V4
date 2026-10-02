@@ -11,7 +11,7 @@
  *   node scripts/check-indexed-access-ratchet.mjs            # verifica
  *   node scripts/check-indexed-access-ratchet.mjs --update   # regrava baseline
  */
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -23,8 +23,9 @@ function countErrors() {
   console.log('⏳ Rodando tsc -p tsconfig.app.json --noEmit --noUncheckedIndexedAccess ...');
   let output = '';
   try {
-    output = execSync(
-      'npx tsc -p tsconfig.app.json --noEmit --noUncheckedIndexedAccess',
+    output = execFileSync(
+      'npx',
+      ['tsc', '-p', 'tsconfig.app.json', '--noEmit', '--noUncheckedIndexedAccess'],
       { encoding: 'utf8', cwd: ROOT, stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 64 * 1024 * 1024 },
     );
   } catch (e) {

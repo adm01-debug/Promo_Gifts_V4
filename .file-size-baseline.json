@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-02T10:52:54.428Z",
+  "generatedAt": "2026-10-02T11:17:09.447Z",
   "description": "Baseline de arquivos src/ com mais de 500 linhas (excluindo testes). Falha em arquivo novo acima do limite ou em crescimento.",
   "maxLines": 500,
   "files": {
@@ -77,7 +77,7 @@
     "src/components/simulator/TechniqueCard.tsx": 557,
     "src/components/simulator/wizard/StepSpecs.tsx": 605,
     "src/components/ui/sidebar.tsx": 737,
-    "src/contexts/AuthContext.tsx": 573,
+    "src/contexts/AuthContext.tsx": 572,
     "src/contexts/SellerCartContext.tsx": 776,
     "src/data/mock-match-products.ts": 940,
     "src/data/pantone-coated.ts": 690,

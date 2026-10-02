@@ -283,7 +283,9 @@ export default function Auth() {
 
       if (error) {
         logger.warn('[AUTH_FAILED] Authentication failed', { status: error.status ?? 'unknown' });
-        await logLoginAttempt(data.email, null, false, error.message);
+        // log-login-attempt já é escrito em AuthContext.signIn (fonte única,
+        // com IP real) — escrever aqui de novo dobrava a linha de falha e
+        // fazia a RPC de lockout atingir o limite na metade das tentativas.
 
         let description = 'Ocorreu um erro ao validar seu acesso. Por favor, tente novamente.';
         let title = 'Não foi possível entrar';
