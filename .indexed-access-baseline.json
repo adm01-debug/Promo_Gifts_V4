@@ -1,0 +1,5 @@
+{
+  "generatedAt": "2026-10-02T10:53:42.674Z",
+  "description": "Baseline de erros do tsc com --noUncheckedIndexedAccess. Falha se a contagem crescer (ratchet descendente).",
+  "errorCount": 889
+}

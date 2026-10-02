@@ -152,4 +152,23 @@ jobs:
           fi
 
       - name: Rodar teste de RLS
-        run: deno test --allow-net --allow-env supabase/functions/tests/seller-carts-rls_test.ts
+        run: |
+          # E27 — se creds ausentes em PR: aviso + skip (sem falha). Em push o guard acima já falhou.
+          if [ -z "${SUPABASE_URL:-}" ] || [ -z "${TEST_SELLER_A_JWT:-}" ]; then
+            if [ "${{ github.event_name }}" = "pull_request" ]; then
+              MISSING=''
+              [ -z "${SUPABASE_URL:-}" ]       && MISSING="$MISSING SUPABASE_URL"
+              [ -z "${TEST_SELLER_A_JWT:-}" ]  && MISSING="$MISSING TEST_SELLER_A_JWT"
+              echo "::warning::RLS integration pulado — credenciais ausentes neste PR:${MISSING}"
+              {
+                echo "## ⚠️ RLS seller_carts pulado neste PR"
+                echo ""
+                echo "Credenciais\`${MISSING}\` ausentes — teste de RLS de \`seller_carts\` não executado."
+                echo "> Em push para \`main\`, o gate falha sem essas credenciais."
+              } >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            echo "::error::Credenciais RLS ausentes em push para main (guard deveria ter falhado antes)."
+            exit 1
+          fi
+          deno test --allow-net --allow-env supabase/functions/tests/seller-carts-rls_test.ts

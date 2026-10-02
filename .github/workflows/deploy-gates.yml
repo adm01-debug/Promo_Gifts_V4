@@ -9,7 +9,8 @@ name: Deploy Gates
 #  0.6. dependency-review - dependency-review-action (E97, PR-only)
 #  1. lint+tsc       - codigo passa lint e typecheck
 #  2. unit-tests     - vitest passa
-#  3. e2e-smoke      - playwright smoke test (login + dashboard)
+#  E23. secrets-check - verifica presença de secrets E2E (saída has_e2e)
+#  3. e2e-smoke      - playwright smoke test (login + dashboard) — apenas se has_e2e=true
 #  4. lighthouse     - perf>=75 a11y>=90 seo>=95 pwa>=80
 #  5. seo-sanity     - canonical/og:url/twitter:url corretos, sem dominios proibidos
 #  6. build          - vite build sem erros (gate de seguranca final)
@@ -174,6 +175,18 @@ jobs:
             done < "$F"
           done < /tmp/b64-files.txt
           exit $(( FOUND > 0 ))
+      # Ratchets de dívida técnica (auditoria 20-dim 2026-10-02) — falham só
+      # em REGRESSÃO vs baselines commitadas; drift positivo apenas avisa.
+      - name: Gate 1.9 — Dívida técnica (ratchets TODO / as / file-size)
+        run: |
+          node scripts/check-todo-baseline.mjs
+          node scripts/check-as-assertions-baseline.mjs
+          node scripts/check-file-size-baseline.mjs
+      # noUncheckedIndexedAccess — advisory por enquanto: roda tsc completo
+      # (lento) e a dívida atual é grande; vira bloqueante quando zerar.
+      - name: Gate 1.10 — Indexed-access ratchet (advisory)
+        continue-on-error: true
+        run: node scripts/check-indexed-access-ratchet.mjs
 
   unit-tests:
     name: Gate 2 - Unit Tests
@@ -215,11 +228,22 @@ jobs:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
 
+  # ============================================================
+  # GATE E23: Verifica presença de secrets E2E
+  # Saída has_e2e=true habilita o Gate 3 (e2e-smoke).
+  # Sem os secrets, e2e-smoke é skipped graciosamente (E21+E23).
+  # ============================================================
+  secrets-check:
+    name: Gate E23 - Verifica secrets E2E
+    uses: ./.github/workflows/_secrets-check.yml
+    secrets: inherit
+
   e2e-smoke:
     name: Gate 3 - E2E Smoke
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    needs: [ssot-gate]
+    needs: [ssot-gate, secrets-check]
+    if: needs.secrets-check.outputs.has_e2e == 'true'
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Setup Node CI
@@ -363,6 +387,7 @@ jobs:
       - lint-typecheck
       - unit-tests
       - database-integrity
+      - secrets-check
       - e2e-smoke
       - lighthouse
       - seo-sanity
@@ -378,6 +403,8 @@ jobs:
           RESTORE_CART: ${{ needs.restore-cart-rpc-gate.result }}
           # dependency-review só roda em PR — skip é esperado em push/dispatch (E97).
           DEP_REVIEW: ${{ needs.dependency-review.result }}
+          # e2e-smoke só roda quando has_e2e=true — skip esperado sem secrets E2E (E21+E23).
+          E2E_SMOKE: ${{ needs.e2e-smoke.result }}
           IS_DEPENDABOT: ${{ github.actor == 'dependabot[bot]' }}
         run: |
           set -euo pipefail
@@ -395,6 +422,9 @@ jobs:
           if [[ ",${GATE_RESULTS}," == *,skipped,* ]]; then
             # Constrói o conjunto de skipped aceitáveis neste contexto
             ALLOWED_SKIP=0
+            # E21+E23: e2e-smoke é skipped quando secrets E2E ausentes (has_e2e=false)
+            # Válido em qualquer evento (PR, push, dispatch).
+            if [[ "$E2E_SMOKE" == "skipped" ]]; then ALLOWED_SKIP=$((ALLOWED_SKIP+1)); fi
             if [[ "$IS_DEPENDABOT" == "true" || "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
               # Para Dependabot e forks: database-integrity e restore-cart-rpc-gate
               # podem ser skipped (sem secrets). Todos os outros skipped são falha.
@@ -411,7 +441,7 @@ jobs:
               echo "::error::Gate(s) inesperadamente skipped (${TOTAL_SKIP} skipped, ${ALLOWED_SKIP} permitidos): ${GATE_RESULTS}" >&2
               FAIL=1
             elif [[ "$ALLOWED_SKIP" -gt 0 ]]; then
-              echo "::warning::${ALLOWED_SKIP} gate(s) skipped (condicionais: E59/E97)"
+              echo "::warning::${ALLOWED_SKIP} gate(s) skipped (condicionais: E59/E97/E21+E23)"
             fi
           fi
 

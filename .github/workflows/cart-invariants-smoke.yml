@@ -130,6 +130,32 @@ jobs:
         # O dependency project `setup` usa Chromium antes do projeto alvo.
         run: npx playwright install --with-deps chromium ${{ matrix.browser }}
 
+      # E27 — guard: sem credenciais E2E o shard falha explicitamente (exit 1)
+      # em vez de rodar 0 testes e aparecer verde. Previne silent-green.
+      # Em PR: skip com warning (exit 0). Em push para main: exit 1 obrigatório.
+      - name: Guard — credenciais E2E obrigatórias
+        run: |
+          if [ -z "${E2E_USER_EMAIL:-}" ] || [ -z "${E2E_USER_PASSWORD:-}" ]; then
+            if [ "${{ github.event_name }}" = "pull_request" ]; then
+              MISSING=''
+              [ -z "${E2E_USER_EMAIL:-}" ]    && MISSING="$MISSING E2E_USER_EMAIL"
+              [ -z "${E2E_USER_PASSWORD:-}" ] && MISSING="$MISSING E2E_USER_PASSWORD"
+              echo "::warning::Credenciais E2E ausentes neste PR:${MISSING} — invariants pulados (silent-green prevenido)."
+              {
+                echo "## ⚠️ Credenciais E2E ausentes — invariants pulados neste PR"
+                echo ""
+                echo "Credenciais\`${MISSING}\` ausentes — invariants de carrinho (\`chromium-authed\`/\`firefox-authed\`) não executados."
+                echo "Configure os secrets do repositório para habilitar."
+                echo ""
+                echo "> Em push para \`main\`, o gate falha sem essas credenciais."
+              } >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            echo "::error::Credenciais E2E ausentes em push para main (E2E_USER_EMAIL / E2E_USER_PASSWORD). Configure os secrets do repositório."
+            exit 1
+          fi
+          echo "✓ Credenciais E2E presentes — prosseguindo com invariants."
+
       # retries=0: qualquer invariant quebrado FALHA o build. Sem "tentar de novo".
       - name: Playwright — invariants do header/sidebar (shard ${{ matrix.shard }}/${{ matrix.total_shards }})
         id: playwright

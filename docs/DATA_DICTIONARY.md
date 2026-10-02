@@ -1,5 +1,7 @@
 # Data Dictionary — Promo Gifts (Local Supabase)
 
+> ⚠️ **DESATUALIZADO (banner 2026-10-02, auditoria 20-dimensões)** — este doc cobre 63 tabelas; o schema `public` tem **383 tabelas base** (ver `docs/SCHEMA_REFERENCE.md`, SSOT canônico de schema). Use como referência histórica dos domínios originais; para dados atuais consulte `SCHEMA_REFERENCE.md` e `src/integrations/supabase/types.ts`.
+
 > SSOT externos (catálogo, CRM) **não** aparecem aqui — ver ADR 0001.
 > Tabelas locais: 63 · Última atualização: 2026-04-17
 

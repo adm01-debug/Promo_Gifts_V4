@@ -61,6 +61,30 @@ jobs:
       - name: Gate 2.3 — as any baseline (zero regressions)
         run: node scripts/check-any-type-baseline.mjs
 
+      # GATE 2.3.1: TODO/FIXME/HACK ratchet (bloqueante) — auditoria 20-dim 2026-10-02.
+      # Congela os marcadores de débito existentes em .todo-baseline.json; falha só
+      # em regressão (mesma política do Gate 2.3).
+      - name: Gate 2.3.1 — TODO baseline (bloqueante)
+        run: node scripts/check-todo-baseline.mjs
+
+      # GATE 2.3.2: `as <Tipo>` ratchet (bloqueante) — auditoria 20-dim 2026-10-02.
+      # Congela as ~2.1k asserções de tipo legadas (excluindo as const/unknown/any)
+      # em .as-assertions-baseline.json; falha só em regressão.
+      - name: Gate 2.3.2 — as-assertions baseline (bloqueante)
+        run: node scripts/check-as-assertions-baseline.mjs
+
+      # GATE 2.3.3: file-size ratchet (bloqueante) — auditoria 20-dim 2026-10-02.
+      # Congela os arquivos src/ com >500 linhas em .file-size-baseline.json;
+      # falha em arquivo novo acima do limite ou crescimento de arquivo baseline.
+      - name: Gate 2.3.3 — File-size baseline (bloqueante)
+        run: node scripts/check-file-size-baseline.mjs
+
+      # GATE 2.3.4: noUncheckedIndexedAccess ratchet (bloqueante) — auditoria 20-dim.
+      # O flag ainda não entra no tsconfig (889 erros legados); este gate congela a
+      # contagem em .indexed-access-baseline.json e falha se ela crescer.
+      - name: Gate 2.3.4 — Indexed-access ratchet (bloqueante)
+        run: node scripts/check-indexed-access-ratchet.mjs
+
       # GATE 2.4: Migration path references — bloqueia referências novas a arquivos
       # inexistentes sob supabase/migrations{,-snapshot}/ e qa/migrations-draft/.
       # Baseline em .migration-refs-baseline.json congela o legado.

@@ -1,5 +1,8 @@
 # 📚 Documentação do Gifts Store
 
+> ⚠️ **ÍNDICE DESATUALIZADO (banner 2026-10-02)** — este README é de 27/12/2025.
+> O índice canônico é **[docs/INDEX.md](./INDEX.md)**.
+
 > Sistema de Catálogo de Brindes Promocionais  
 > **Idioma:** Português do Brasil 🇧🇷  
 > **Última atualização:** 27/12/2025

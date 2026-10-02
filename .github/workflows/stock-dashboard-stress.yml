@@ -58,10 +58,12 @@ jobs:
           CI: true
           REPEAT: ${{ github.event.inputs.repeat || '200' }}
           MAX_AVG: ${{ github.event.inputs.max_avg_seconds || '8' }}
+          SPEC: ${{ matrix.spec }}
         run: |
           set -eo pipefail
           START=$(date +%s)
-          npx playwright test "${{ matrix.spec }}" \
+          npx playwright test "$SPEC" \
+            --project=chromium-public \
             --repeat-each="$REPEAT" \
             --workers=2 \
             --reporter=line
