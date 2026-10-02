@@ -130,6 +130,24 @@ jobs:
         # O dependency project `setup` usa Chromium antes do projeto alvo.
         run: npx playwright install --with-deps chromium ${{ matrix.browser }}
 
+      # E27 — guard: sem credenciais E2E o shard falha explicitamente (exit 1)
+      # em vez de rodar 0 testes e aparecer verde. Previne silent-green.
+      - name: Guard — credenciais E2E obrigatórias
+        run: |
+          if [ -z "${E2E_USER_EMAIL:-}" ] || [ -z "${E2E_USER_PASSWORD:-}" ]; then
+            echo "::warning::Credenciais E2E ausentes (E2E_USER_EMAIL / E2E_USER_PASSWORD). Os projetos chromium-authed/firefox-authed exigem autenticação — configure os secrets do repositório."
+            {
+              echo "## ⚠️ Credenciais E2E ausentes — invariants não executados"
+              echo ""
+              echo "Os projetos \`chromium-authed\`/\`firefox-authed\` exigem \`E2E_USER_EMAIL\` e \`E2E_USER_PASSWORD\`."
+              echo "Configure os secrets do repositório para habilitar os invariants de carrinho."
+              echo ""
+              echo "> **Risco prevenido:** sem esta verificação, o job apareceria verde com 0 testes executados."
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          echo "✓ Credenciais E2E presentes — prosseguindo com invariants."
+
       # retries=0: qualquer invariant quebrado FALHA o build. Sem "tentar de novo".
       - name: Playwright — invariants do header/sidebar (shard ${{ matrix.shard }}/${{ matrix.total_shards }})
         id: playwright
