@@ -237,6 +237,7 @@ jobs:
         with:
           name: drift-report
           path: /tmp/drift_report.csv
+          retention-days: 14
 
       - name: Verify_jwt per function — allowlist gate (E42)
         id: verify_jwt_gate
@@ -256,6 +257,7 @@ jobs:
           name: verify-jwt-report
           path: /tmp/verify_jwt_report.json
           if-no-files-found: ignore
+          retention-days: 14
 
       - name: Comment on PR (drift)
         if: github.event_name == 'pull_request' && (steps.hash_diff.outputs.drift_count != '0' || steps.hash_diff.outputs.missing_in_dl != '0' || steps.slug_diff.outputs.has_orphans == 'true' || steps.slug_diff.outputs.has_missing == 'true')
