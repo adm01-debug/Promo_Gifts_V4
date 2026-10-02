@@ -74,6 +74,7 @@ jobs:
       - name: Roda stress vs oráculo (logs reproduzíveis)
         env:
           EVENT_NAME: ${{ github.event_name }}
+          CI: 'true'
         run: |
           mkdir -p .stress-artifacts
           echo "::group::Seeds da execução"
@@ -85,8 +86,6 @@ jobs:
           echo "::endgroup::"
           TZ=America/Sao_Paulo npx vitest run src/lib/inventory/__tests__/stock-filter.stress.test.ts \
             --reporter=verbose 2>&1 | tee .stress-artifacts/stress.log
-        env:
-          CI: 'true'
 
       - name: Upload logs (para replay)
         if: always()

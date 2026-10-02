@@ -65,9 +65,7 @@ jobs:
     name: E2E — Full User Flows (authed)
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    if: >
-      github.event_name == 'push' ||
-      (github.event_name == 'pull_request' && env.E2E_USER_EMAIL != '')
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
 
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
