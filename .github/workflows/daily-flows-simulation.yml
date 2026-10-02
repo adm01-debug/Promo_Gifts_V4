@@ -41,7 +41,9 @@ jobs:
           node-version-file: '.nvmrc'
       - name: Simulate daily flows
         if: github.event_name != 'schedule' || steps.guard.outputs.skip != 'true'
-        run: node scripts/simulate-daily-flows.mjs --scale=${{ github.event.inputs.scale || '3' }}
+        env:
+          SCALE: ${{ github.event.inputs.scale || '3' }}
+        run: node scripts/simulate-daily-flows.mjs --scale="$SCALE"
       - name: Upload report
         if: always() && (github.event_name != 'schedule' || steps.guard.outputs.skip != 'true')
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

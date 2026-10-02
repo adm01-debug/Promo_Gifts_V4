@@ -97,9 +97,11 @@ jobs:
         id: detect
         env:
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          EVENT_NAME: ${{ github.event_name }}
+          UPDATE_BASELINES: ${{ inputs.update_baselines }}
         run: |
           should_update="false"
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.update_baselines }}" = "true" ]; then
+          if [ "$EVENT_NAME" = "workflow_dispatch" ] && [ "$UPDATE_BASELINES" = "true" ]; then
             should_update="true"
           fi
           if printf '%s\n' "$COMMIT_MESSAGE" | grep -qi '\[update-visual-baselines\]'; then

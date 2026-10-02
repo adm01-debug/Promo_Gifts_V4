@@ -53,8 +53,9 @@ jobs:
         env:
           CI: 'true'
           NODE_ENV: 'test'
+          INPUT_ONLY: ${{ github.event.inputs.only }}
         run: |
-          ONLY="${{ github.event.inputs.only }}"
+          ONLY="$INPUT_ONLY"
           if [ -n "$ONLY" ]; then
             node scripts/mutation-test-magazine.mjs --only="$ONLY"
           else
@@ -73,6 +74,7 @@ jobs:
     name: Magazine Mutation OK
     needs: [mutation]
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     if: always()
     steps:
       - name: Check result

@@ -161,6 +161,7 @@ jobs:
     name: Magazine Tests OK
     needs: [edge-import-contract, unit-tests, postgres-contracts, security-definer-acl]
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     if: always()
     steps:
       - name: Check result
