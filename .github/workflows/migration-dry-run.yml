@@ -31,6 +31,7 @@ jobs:
       PGPASSWORD: ${{ secrets.PGPASSWORD }}
       PGDATABASE: ${{ secrets.PGDATABASE }}
       PGPORT: ${{ secrets.PGPORT || '5432' }}
+      PGOPTIONS: '-c lock_timeout=5s -c statement_timeout=60s'
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -65,6 +66,11 @@ jobs:
         run: |
           set -euo pipefail
           if [ -n "$DRAFT_PATH" ]; then
+            # Validar formato do caminho para evitar path traversal
+            if ! echo "$DRAFT_PATH" | grep -qE '^qa/migrations-draft/[A-Za-z0-9._-]+\.sql$'; then
+              echo "::error::draft_path inválido: '$DRAFT_PATH'. Formato esperado: qa/migrations-draft/<nome>.sql (sem ../ ou chars especiais)"
+              exit 1
+            fi
             echo "$DRAFT_PATH" > /tmp/drafts.txt
           elif [ "$EVENT_NAME" = "pull_request" ]; then
             git fetch origin "$BASE_REF" --depth=1
@@ -92,7 +98,7 @@ jobs:
         run: |
           echo "## Baseline check-security-definer-acl" >> "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"
-          node scripts/check-security-definer-acl.mjs 2>&1 | tee -a "$GITHUB_STEP_SUMMARY" || true
+          node scripts/check-security-definer-acl.mjs 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"
 
       - name: Dry-run drafts

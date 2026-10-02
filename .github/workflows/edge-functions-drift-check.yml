@@ -48,9 +48,8 @@ concurrency:
 jobs:
   drift:
     name: Compare GitHub × Canonical
-    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 30
     env:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
       SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF || 'doufsxqlfjyuvxuezpln' }}
@@ -237,6 +236,11 @@ jobs:
         with:
           name: drift-report
           path: /tmp/drift_report.csv
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version-file: '.nvmrc'
 
       - name: Verify_jwt per function — allowlist gate (E42)
         id: verify_jwt_gate
