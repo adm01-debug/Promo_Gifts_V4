@@ -1,13 +1,13 @@
 name: CI Metrics Weekly (E93)
 
 # Coleta métricas de CI da última semana e publica docs/ci/METRICAS_SEMANAIS.md
-# Roda toda segunda 07:00 UTC e via workflow_dispatch (para forçar manualmente).
+# Roda toda segunda 07:15 UTC e via workflow_dispatch (para forçar manualmente).
 # Usa GITHUB_TOKEN nativo (read:actions). Para substituir por GitHub App token
 # assim que E02 for implementado, troque o env GH_TOKEN abaixo.
 
 on:
   schedule:
-    - cron: '0 7 * * 1' # Segunda 07:00 UTC
+    - cron: '15 7 * * 1' # Segunda 07:15 UTC (jitter E19)
   workflow_dispatch:
 
 concurrency:
