@@ -294,6 +294,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: [lint-typecheck, seo-sanity, restore-cart-rpc-gate]
+    permissions:
+      contents: read
+      id-token: write      # necessário para attest-build-provenance (E99)
+      attestations: write  # necessário para attest-build-provenance (E99)
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Setup Node CI
@@ -315,6 +319,21 @@ jobs:
           name: dist-${{ github.run_id }}
           path: dist/
           retention-days: 7
+      # E99 — SBOM + build provenance attestation (push para main apenas)
+      # Gera SBOM SPDX-JSON do dist/ e atesta proveniência do build no GHCR.
+      # Skipped em PRs e workflow_dispatch — sem impacto no tempo de CI de PRs.
+      - name: Generate SBOM (E99)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: anchore/sbom-action@v0
+        with:
+          artifact-name: sbom-${{ github.run_id }}.spdx.json
+          path: dist/
+          format: spdx-json
+      - name: Attest build provenance (E99)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: 'dist/**/*.js'
 
   deploy-ready:
     name: Gate Final - Deploy Ready
