@@ -240,7 +240,6 @@ jobs:
   # ============================================================
   secrets-check:
     name: Gate E23 - Verifica secrets E2E
-    timeout-minutes: 5
     uses: ./.github/workflows/_secrets-check.yml
     secrets: inherit
 
