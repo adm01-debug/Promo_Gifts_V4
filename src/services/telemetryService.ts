@@ -91,7 +91,7 @@ class TelemetryService {
   private shouldSample(eventType: TelemetryEventType): boolean {
     const rate = SAMPLE_RATE[eventType] ?? 1.0;
     if (rate >= 1) return true;
-    return Math.random() < rate;
+    return crypto.getRandomValues(new Uint32Array(1))[0] / 0x100000000 < rate;
   }
 
   private scheduleFlush() {

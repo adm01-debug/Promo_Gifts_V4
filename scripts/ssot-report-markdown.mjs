@@ -42,7 +42,13 @@ try {
 }
 
 // ---------- helpers ----------
-const esc = (s) => String(s ?? '').replace(/\|/g, '\\|').replace(/\r?\n/g, ' ');
+const esc = (s) =>
+  String(s ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\|/g, '\\|')
+    .replace(/\r?\n/g, ' ');
 const fence = (s, lang = '') =>
   '```' + lang + '\n' + String(s ?? '').replace(/```/g, '`\u200b``') + '\n```';
 const badge = (ok) => (ok ? '🟢 PASS' : '🔴 FAIL');
