@@ -41,14 +41,13 @@ interface CheckLoginGateResponse {
 }
 
 /**
- * Reasons da check-login/RPC que indicam FALHA OPERACIONAL (indisponibilidade
- * da RPC, exceção interna), não uma decisão de bloqueio. Nessas, o gate
- * fail-open é preservado — bloquear só quando o RPC devolveu uma decisão
- * explícita de negação (allowed=false com reason não-operacional).
+ * Reasons da check-login que indicam FALHA OPERACIONAL antes de chegar na RPC
+ * (edge fora, exceção interna). Nessas, o fail-open declarado é preservado.
+ * `security_check_error_fail_closed` NÃO está aqui: é a decisão fail-closed
+ * explícita da RPC (SEC-008) e continua bloqueando.
  */
 const CHECK_LOGIN_OPERATIONAL_REASONS = new Set([
   'security_check_unavailable',
-  'security_check_error_fail_closed',
   'internal_error_fail_closed',
 ]);
 
@@ -413,7 +412,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const { allowed, remainingSeconds } = checkLoginAllowed(email);
     if (!allowed) {
-      logAttempt(null, false, 'client_rate_limit');
+      // Sem escrita em login_attempts: recusas por rate-limit/bloqueio não
+      // podem virar "última falha" e renovar o próprio bloqueio.
       return {
         error: {
           message: `Bloqueado. Tente em ${Math.ceil(remainingSeconds / 60)} min.`,
@@ -452,7 +452,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           reason: gate?.reason ?? 'login_blocked',
           requestId: log.requestId,
         });
-        logAttempt(null, false, `login_blocked:${gate?.reason ?? 'unknown'}`);
+        // Não grava login_attempts aqui: a recusa é consequência do bloqueio,
+        // não uma nova falha de credencial — registrar success=false moveria
+        // "última falha" pra frente e adiaria o desbloqueio a cada tentativa.
         return {
           error: {
             message: until

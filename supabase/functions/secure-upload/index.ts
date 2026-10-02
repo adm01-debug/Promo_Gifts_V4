@@ -78,40 +78,51 @@ Deno.serve(async (req) => {
   try {
     const formData = await req.formData();
     const file = formData.get("file") as File;
-    // folder compõe o path no Storage e é controlado pelo cliente — allowlist
-    // estrita para impedir path traversal ("../../") em object keys.
+    // folder compõe o path no Storage e é controlado pelo cliente — validação
+    // por segmento preserva hierarquias legítimas (products/<id>, groups/<id>)
+    // e barra path traversal ("../"). Entrada inválida é rejeitada com 400 em
+    // vez de cair silenciosamente em outra pasta.
     const rawFolder = (formData.get("folder") as string) || "uploads";
-    const folder = /^[a-z0-9][a-z0-9_-]{0,63}$/i.test(rawFolder) ? rawFolder : "uploads";
+    const folderSegments = rawFolder.split("/");
+    const folderValid =
+      folderSegments.length <= 4 &&
+      folderSegments.every((s) => /^[a-z0-9][a-z0-9_-]{0,63}$/i.test(s));
+    if (!folderValid) {
+      log.warn("upload_blocked_bad_folder", { folder: rawFolder, user_id: auth.userId });
+      await supabaseAdmin.from("file_scan_logs").insert({
+        user_id: auth.userId,
+        bucket: "personalization-images",
+        path: "rejected/invalid_folder",
+        hash: "not_computed",
+        status_code: 400,
+        scan_result: { error: true, reason: "Pasta de destino inválida", folder: rawFolder },
+      });
+      return log.respond(
+        new Response(JSON.stringify({ error: "Pasta de destino inválida", request_id: requestId }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }),
+      );
+    }
+    const folder = rawFolder;
 
     if (!file) throw new Error("Arquivo obrigatório");
 
-    const fileBuffer = await file.arrayBuffer();
-
-    const hashBuffer = await crypto.subtle.digest("SHA-256", fileBuffer);
-    const hashHex = Array.from(new Uint8Array(hashBuffer))
-      .map((b) => b.toString(16).padStart(2, "0"))
-      .join("");
-
     const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-    // file_scan_logs exige bucket/path/hash NOT NULL — preencher já na
-    // entrada para as trilhas de rejeição não falharem silenciosamente.
-    auditData = {
-      user_id: auth.userId,
-      bucket: "personalization-images",
-      path: `rejected/${folder}/${safeName}`,
-      hash: hashHex,
-      status_code: 500,
-      scan_result: { message: "Arquivo recebido para análise" },
-    };
 
-    if (fileBuffer.byteLength === 0 || fileBuffer.byteLength > MAX_UPLOAD_BYTES) {
-      const tooBig = fileBuffer.byteLength > MAX_UPLOAD_BYTES;
+    // Rejeição por tamanho ANTES de materializar o buffer — file.size não
+    // consome memória nem CPU de hashing do worker.
+    if (file.size === 0 || file.size > MAX_UPLOAD_BYTES) {
+      const tooBig = file.size > MAX_UPLOAD_BYTES;
       const status = tooBig ? 413 : 400;
       const message = tooBig
         ? `Arquivo excede o limite de ${MAX_UPLOAD_BYTES / 1024 / 1024}MB`
         : "Arquivo vazio";
       await supabaseAdmin.from("file_scan_logs").insert({
-        ...auditData,
+        user_id: auth.userId,
+        bucket: "personalization-images",
+        path: `rejected/${folder}/${safeName}`,
+        hash: "not_computed",
         status_code: status,
         scan_result: { error: true, reason: message },
       });
@@ -122,6 +133,23 @@ Deno.serve(async (req) => {
         }),
       );
     }
+
+    const fileBuffer = await file.arrayBuffer();
+    const hashBuffer = await crypto.subtle.digest("SHA-256", fileBuffer);
+    const hashHex = Array.from(new Uint8Array(hashBuffer))
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+
+    // file_scan_logs exige bucket/path/hash NOT NULL — preencher já na
+    // entrada para as trilhas de rejeição não falharem silenciosamente.
+    auditData = {
+      user_id: auth.userId,
+      bucket: "personalization-images",
+      path: `rejected/${folder}/${safeName}`,
+      hash: hashHex,
+      status_code: 500,
+      scan_result: { message: "Arquivo recebido para análise" },
+    };
 
     const declaredMime = (file.type || "").toLowerCase().replace("image/jpg", "image/jpeg");
     const sniffedMime = sniffMimeType(new Uint8Array(fileBuffer.slice(0, 512)));
