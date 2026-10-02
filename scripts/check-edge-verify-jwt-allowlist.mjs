@@ -51,7 +51,7 @@
  *             entrada sem reason), 2 (inconclusive/erro de config).
  */
 
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import path from 'node:path';
 import {
@@ -132,11 +132,17 @@ async function fetchLive() {
 }
 
 export function loadAllowlist(allowlistPath = ALLOWLIST_PATH) {
-  if (!existsSync(allowlistPath)) {
-    process.stderr.write(`[edge-verify-jwt] allowlist ausente: ${allowlistPath}\n`);
-    process.exit(2);
+  let raw;
+  try {
+    raw = readFileSync(allowlistPath, 'utf8');
+  } catch (e) {
+    if (e.code === 'ENOENT') {
+      process.stderr.write(`[edge-verify-jwt] allowlist ausente: ${allowlistPath}\n`);
+      process.exit(2);
+    }
+    throw e;
   }
-  const doc = JSON.parse(readFileSync(allowlistPath, 'utf8'));
+  const doc = JSON.parse(raw);
   if (!Array.isArray(doc.functions)) {
     process.stderr.write('[edge-verify-jwt] allowlist.functions inválida\n');
     process.exit(2);

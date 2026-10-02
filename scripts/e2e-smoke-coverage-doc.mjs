@@ -12,7 +12,7 @@
  *   node scripts/e2e-smoke-coverage-doc.mjs           # grava arquivo
  *   node scripts/e2e-smoke-coverage-doc.mjs --check   # falha se desatualizado (CI guard)
  */
-import { readFileSync, writeFileSync, mkdirSync, existsSync, appendFileSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, appendFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -172,7 +172,8 @@ const md = buildMd({ entries, coverage, publicTests });
 
 const isCheck = process.argv.includes("--check");
 if (isCheck) {
-  const cur = existsSync(OUT) ? readFileSync(OUT, "utf8") : "";
+  let cur = "";
+  try { cur = readFileSync(OUT, "utf8"); } catch (e) { if (e.code !== "ENOENT") throw e; }
   // Ignora a linha de data ao comparar (evita falso positivo diário).
   const norm = (s) => s.replace(/em \d{4}-\d{2}-\d{2}/, "em <date>");
   if (norm(cur) !== norm(md)) {

@@ -27,7 +27,7 @@
  * Exit codes: 0 (`passed`/`static-pass`), 1 (drift — falha), 2 (`inconclusive`/erro de config).
  */
 
-import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import {
@@ -69,11 +69,17 @@ async function fetchLive() {
 }
 
 function loadAllowlist() {
-  if (!existsSync(ALLOWLIST_PATH)) {
-    process.stderr.write(`[secdef-anon] allowlist ausente: ${ALLOWLIST_PATH}\n`);
-    process.exit(2);
+  let raw;
+  try {
+    raw = readFileSync(ALLOWLIST_PATH, 'utf8');
+  } catch (e) {
+    if (e.code === 'ENOENT') {
+      process.stderr.write(`[secdef-anon] allowlist ausente: ${ALLOWLIST_PATH}\n`);
+      process.exit(2);
+    }
+    throw e;
   }
-  const doc = JSON.parse(readFileSync(ALLOWLIST_PATH, 'utf8'));
+  const doc = JSON.parse(raw);
   if (!Array.isArray(doc.functions)) {
     process.stderr.write(`[secdef-anon] allowlist.functions inválida\n`);
     process.exit(2);
