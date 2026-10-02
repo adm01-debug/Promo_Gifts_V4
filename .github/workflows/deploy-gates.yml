@@ -187,6 +187,11 @@ jobs:
       - name: Gate 1.10 — Indexed-access ratchet (advisory)
         continue-on-error: true
         run: node scripts/check-indexed-access-ratchet.mjs
+      # E55 — Contratos estruturais dos workflows (E11, bloqueante)
+      # Garante que todo workflow segue as 8 regras do Padrão E12
+      # (permissions, concurrency, timeout, node-version-file, etc.)
+      - name: Gate 1.11 — Workflow contracts (bloqueante)
+        run: node scripts/check-workflow-contracts.mjs
 
   unit-tests:
     name: Gate 2 - Unit Tests
