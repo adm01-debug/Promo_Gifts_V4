@@ -41,7 +41,7 @@ jobs:
 
           # Lê o check obrigatório do JSON (E56) — evita hardcode que desincroniza
           # quando o nome do gate muda.
-          REQUIRED=$(jq -r '.rulesets[] | select(.name == "main" and (._disabled // false | not)) | .required_checks[0]' .github/required-checks.json)
+          REQUIRED=$(jq -r '.rulesets[] | select(.id == "main" and (._disabled // false | not)) | .required_checks[0].name' .github/required-checks.json)
           if [[ -z "$REQUIRED" || "$REQUIRED" == "null" ]]; then
             echo "::error::required-checks.json não contém entry 'main' com required_checks."
             exit 1
