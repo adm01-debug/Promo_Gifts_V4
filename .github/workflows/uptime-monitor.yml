@@ -80,7 +80,8 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           gh label create uptime --color B60205 --description "Falha de disponibilidade detectada pelo Uptime Monitor" 2>/dev/null || true
-          BODY="Falha em $(date -u +%FT%TZ) — site=${{ steps.probe.outputs.site }} health-check=${{ steps.probe.outputs.fn }} check-login(OPTIONS)=${{ steps.probe.outputs.login }} (0 = OK, outro valor = exit code do curl). Run: $RUN_URL"
+          BODY="Falha em $(date -u +%FT%TZ) — site=${{ steps.probe.outputs.site }} health-check=${{ steps.probe.outputs.fn }} check-login(OPTIONS)=${{ steps.probe.outputs.login }} (0 = OK, outro valor = exit code do curl). Run: $RUN_URL
+Runbook: [docs/DISASTER_RECOVERY.md §3](https://github.com/${{ github.repository }}/blob/main/docs/DISASTER_RECOVERY.md)"
           ISSUE=$(gh issue list --label uptime --state open --limit 1 --json number -q '.[0].number // empty')
           if [ -n "$ISSUE" ]; then
             gh issue comment "$ISSUE" --body "$BODY"

@@ -14,6 +14,39 @@ interface ScanLog {
   status_code: number;
 }
 
+const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
+
+const ALLOWED_MIME = new Set([
+  "image/png",
+  "image/jpeg",
+  "image/webp",
+  "image/gif",
+  "image/avif",
+  "image/svg+xml",
+]);
+
+/** Sniffa magic bytes e devolve o MIME real ou null se desconhecido. */
+function sniffMimeType(bytes: Uint8Array): string | null {
+  if (bytes.length >= 8 && bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e &&
+      bytes[3] === 0x47 && bytes[4] === 0x0d && bytes[5] === 0x0a && bytes[6] === 0x1a &&
+      bytes[7] === 0x0a) return "image/png";
+  if (bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) {
+    return "image/jpeg";
+  }
+  if (bytes.length >= 4 && bytes[0] === 0x47 && bytes[1] === 0x49 && bytes[2] === 0x46 &&
+      bytes[3] === 0x38) return "image/gif";
+  if (bytes.length >= 12 && bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 &&
+      bytes[3] === 0x46 && bytes[8] === 0x57 && bytes[9] === 0x45 && bytes[10] === 0x42 &&
+      bytes[11] === 0x50) return "image/webp";
+  if (bytes.length >= 12 && bytes[4] === 0x66 && bytes[5] === 0x74 && bytes[6] === 0x79 &&
+      bytes[7] === 0x70 && ((bytes[8] === 0x61 && bytes[9] === 0x76 && bytes[10] === 0x69 &&
+      bytes[11] === 0x66) || (bytes[8] === 0x61 && bytes[9] === 0x76 && bytes[10] === 0x69 &&
+      bytes[11] === 0x73))) return "image/avif";
+  const head = new TextDecoder().decode(bytes.slice(0, 512)).trimStart().toLowerCase();
+  if (head.startsWith("<svg") || head.startsWith("<?xml")) return "image/svg+xml";
+  return null;
+}
+
 Deno.serve(async (req) => {
   const requestId = getOrCreateRequestId(req);
   const log = createStructuredLogger({ fn: "secure-upload", requestId, req });
@@ -50,6 +83,54 @@ Deno.serve(async (req) => {
     if (!file) throw new Error("Arquivo obrigatório");
 
     const fileBuffer = await file.arrayBuffer();
+
+    if (fileBuffer.byteLength === 0 || fileBuffer.byteLength > MAX_UPLOAD_BYTES) {
+      const tooBig = fileBuffer.byteLength > MAX_UPLOAD_BYTES;
+      const status = tooBig ? 413 : 400;
+      const message = tooBig
+        ? `Arquivo excede o limite de ${MAX_UPLOAD_BYTES / 1024 / 1024}MB`
+        : "Arquivo vazio";
+      await supabaseAdmin.from("file_scan_logs").insert({
+        ...auditData,
+        status_code: status,
+        scan_result: { error: true, reason: message },
+      });
+      return log.respond(
+        new Response(JSON.stringify({ error: message, request_id: requestId }), {
+          status,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }),
+      );
+    }
+
+    const declaredMime = (file.type || "").toLowerCase().replace("image/jpg", "image/jpeg");
+    const sniffedMime = sniffMimeType(new Uint8Array(fileBuffer.slice(0, 512)));
+    if (!ALLOWED_MIME.has(declaredMime) || sniffedMime !== declaredMime) {
+      log.warn("upload_blocked_bad_type", {
+        declared: file.type,
+        sniffed: sniffedMime,
+        user_id: auth.userId,
+      });
+      await supabaseAdmin.from("file_scan_logs").insert({
+        ...auditData,
+        status_code: 415,
+        scan_result: {
+          error: true,
+          reason: "Tipo de arquivo não permitido ou conteúdo divergente do tipo declarado",
+          declared_mime: file.type,
+          sniffed_mime: sniffedMime,
+        },
+      });
+      return log.respond(
+        new Response(
+          JSON.stringify({
+            error: "Tipo de arquivo não permitido (apenas imagens PNG, JPEG, WebP, GIF, AVIF ou SVG)",
+            request_id: requestId,
+          }),
+          { status: 415, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        ),
+      );
+    }
     const hashBuffer = await crypto.subtle.digest("SHA-256", fileBuffer);
     const hashHex = Array.from(new Uint8Array(hashBuffer))
       .map((b) => b.toString(16).padStart(2, "0"))
@@ -101,6 +182,8 @@ Deno.serve(async (req) => {
         } else if (vtRes.status === 404) {
           scanDetails.reason =
             "Arquivo novo no VirusTotal (análise pendente). Permitido upload inicial.";
+          scanDetails.pending_review = true;
+          log.warn("upload_pending_vt_scan", { user_id: auth.userId });
         } else {
           throw new Error(`Falha na API de segurança (Status: ${vtRes.status})`);
         }

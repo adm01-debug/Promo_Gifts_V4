@@ -44,6 +44,8 @@ jobs:
           Log: ${LOG_URL}"
           [ -n "$TARGET_URL" ] && BODY="${BODY}
           URL: ${TARGET_URL}"
+          BODY="${BODY}
+Runbook: [docs/DISASTER_RECOVERY.md §3.1](https://github.com/${{ github.repository }}/blob/main/docs/DISASTER_RECOVERY.md)"
 
           # O Vercel cria o GitHub Deployment com ref = SHA do commit (não o nome da
           # branch), então "gh pr list --head" nunca encontrava o PR e toda falha

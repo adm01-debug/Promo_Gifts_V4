@@ -32,6 +32,14 @@ import {
 } from '@/lib/auth/session-recovery';
 
 import { logger } from '@/lib/logger';
+
+/** Resposta da edge `check-login` (gate server-side de acesso). */
+interface CheckLoginGateResponse {
+  allowed?: boolean;
+  reason?: string;
+  blocked_until?: string;
+}
+
 // Tipos de role conforme app_role enum no banco.
 export type AppRole =
   | 'admin'
@@ -137,8 +145,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       const refreshed =
         res.kind === 'ok' ? ((res.data ?? null) as { session?: Session | null } | null) : null;
-      const nextSession =
-        refreshed?.session ?? (await supabase.auth.getSession()).data.session;
+      const nextSession = refreshed?.session ?? (await supabase.auth.getSession()).data.session;
       if (mountedRef.current) {
         setSession(nextSession);
         setUser(nextSession?.user ?? null);
@@ -351,6 +358,51 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         },
         data: null,
       };
+    }
+
+    // Gate server-side: access_security_settings (IP/city whitelist, lockout).
+    // checkLoginAllowed acima cobre só o cliente (sessionStorage, bypassável).
+    // Edge indisponível → fail-open com warn, padrão já usado em isTokenRevoked;
+    // bloqueio explícito (allowed=false / HTTP 403) é sempre honrado.
+    try {
+      const { invokeEdge } = await import('@/lib/edge/safeInvokeCall');
+      const { data: gate, error: gateErr } = await invokeEdge<CheckLoginGateResponse>(
+        'check-login',
+        {
+          body: { email },
+          headers: log.headers(),
+          timeoutMs: 6_000,
+          maxRetries: 1,
+          preserveErrorData: true,
+        },
+      );
+      if (gate?.allowed === false || gateErr?.status === 403) {
+        const until =
+          gate?.blocked_until && !Number.isNaN(Date.parse(gate.blocked_until))
+            ? new Date(gate.blocked_until).toLocaleString('pt-BR')
+            : null;
+        log.warn('login_blocked_server', {
+          reason: gate?.reason ?? 'login_blocked',
+          requestId: log.requestId,
+        });
+        return {
+          error: {
+            message: until
+              ? `Login bloqueado pelas regras de segurança até ${until}.`
+              : 'Login bloqueado pelas regras de segurança da organização.',
+            status: 403,
+          },
+          data: null,
+        };
+      }
+      if (gateErr) {
+        log.warn('check_login_unavailable', {
+          status: gateErr.status,
+          requestId: log.requestId,
+        });
+      }
+    } catch (gateEx) {
+      log.warn('check_login_exception', { err: String(gateEx) });
     }
 
     const { data, error } = await authService.signIn(email, password);
