@@ -83,7 +83,7 @@ jobs:
 
   # E10 — alerta de falha no cron semanal (deduplication via label ci-focused-e2e)
   notify-failure:
-    name: Notificar falha (cron)
+    name: Notificar falha — Quote View Sticky (cron)
     if: failure() && github.event_name == 'schedule'
     needs: [overflow-static-gate, sticky-and-scroll]
     runs-on: ubuntu-latest
