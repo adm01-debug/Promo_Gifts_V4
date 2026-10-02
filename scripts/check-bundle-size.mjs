@@ -27,7 +27,7 @@
  *   exit 1 — limite ultrapassado, regressão detectada, ou ratchet não autorizado
  *   exit 2 — erro de execução (dist/ ausente ou baseline inválido)
  */
-import { readdirSync, statSync, readFileSync, writeFileSync } from 'node:fs';
+import { readdirSync, statSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { execSync } from 'node:child_process';
 
