@@ -189,7 +189,7 @@ export class AuthFlowTracer {
   private persist(): void {
     if (typeof sessionStorage === 'undefined') return;
     try {
-      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(this.snapshot));
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(this.safeSnapshot()));
     } catch {
       // quota cheia ou storage bloqueado — ignora
     }

@@ -166,7 +166,8 @@ class EnhancedErrorBoundary extends PureComponent<Props, State> {
     try {
       // eslint-disable-next-line no-console
       console.error(
-        `[EnhancedErrorBoundary] incidente ${errorId} @ ${this.erroredPath ?? 'n/a'}`,
+        `[EnhancedErrorBoundary] incidente ${errorId} @`,
+        this.erroredPath ?? 'n/a',
         error,
       );
       if (errorInfo.componentStack) {
