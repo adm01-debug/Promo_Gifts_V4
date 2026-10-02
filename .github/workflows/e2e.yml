@@ -236,4 +236,3 @@ jobs:
         run: |
           echo "::error title=Regression failed::Algumas specs falharam — veja '🧪 E2E Feature Summary' acima, artifacts 'playwright-report' (HTML) e 'e2e-evidence' (screenshots/vídeos/trace)."
           exit 1
-
