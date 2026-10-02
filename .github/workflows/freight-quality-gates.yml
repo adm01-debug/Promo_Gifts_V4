@@ -2,7 +2,7 @@ name: Freight Quest — Quality Gates
 
 on:
   push:
-    branches: [main, "claude/**", "feat/**", "fix/**"]
+    branches: [main]
     paths:
       - "src/**"
       - "tests/**"
@@ -95,9 +95,6 @@ jobs:
             --coverage \
             --coverage.reporter=text \
             --coverage.reporter=json-summary \
-            --coverage.include=src/components/kit-builder/FreightEstimator.tsx \
-            --coverage.include=src/components/quotes/ \
-            --coverage.include=src/lib/validations/ \
             --coverage.thresholds.lines=0 \
             --coverage.thresholds.functions=0 \
             --coverage.thresholds.statements=0 \
