@@ -144,7 +144,8 @@ describe('validate-ssot-report — validação retroativa', () => {
       `--historical-dir=${HIST_DIR}`,
     ]);
     expect(r.status).toBe(1);
-    expect(r.stderr).toMatch(new RegExp(`ssot-report\\.v${missing.replace(/\./g, '\\.')}\\.schema\\.json`));
+    const escapedMissing = missing.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    expect(r.stderr).toMatch(new RegExp(`ssot-report\\.v${escapedMissing}\\.schema\\.json`));
     expect(r.stderr).toMatch(/ssot:schema:publish|snapshot ausente/);
   });
 

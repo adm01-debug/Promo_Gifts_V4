@@ -167,7 +167,7 @@ if (stale.length) {
   console.error(
     `\n⚠️  ${stale.length} entrada(s) da baseline não são mais referências quebradas (limpar):\n`,
   );
-  for (const s of stale) console.error(`  ${s.replace('|', ' → ')}`);
+  for (const s of stale) console.error(`  ${s.replace(/\|/g, ' → ')}`);
   console.error(
     '\nRode: node scripts/check-migration-path-references.mjs --update-baseline\n',
   );
