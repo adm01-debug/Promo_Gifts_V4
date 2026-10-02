@@ -67,7 +67,7 @@ jobs:
     timeout-minutes: 30
     if: >
       github.event_name == 'push' ||
-      (github.event_name == 'pull_request' && vars.E2E_USER_EMAIL != '')
+      (github.event_name == 'pull_request' && env.E2E_USER_EMAIL != '')
 
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4

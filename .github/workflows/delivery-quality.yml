@@ -39,7 +39,7 @@ jobs:
 
     - name: 🌍 E2E & Visual Regression
       if: env.E2E_USER_EMAIL != ''
-      run: npx playwright test e2e/quote-builder-delivery.spec.ts
+      run: npx playwright test e2e/quote-builder-delivery.spec.ts --project=chromium-authed
       env:
         CI: true
 
