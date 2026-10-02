@@ -1,7 +1,7 @@
 name: E2E · Cart Delete Popover (multi-engine)
 
-# Gate obrigatório: valida o fix da corrida Popover×AlertDialog em Chromium,
-# Firefox e WebKit. Bloqueia merges que reintroduzam a regressão.
+# Gate de qualidade: valida o fix da corrida Popover×AlertDialog em Chromium,
+# Firefox e WebKit. Detecta regressões que reintroduzam o bug.
 
 on:
   pull_request:

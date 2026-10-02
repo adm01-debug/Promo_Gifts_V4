@@ -1,6 +1,6 @@
 name: E2E • Thumb QuickView (paridade + a11y)
 
-# Bloqueia merge em regressão. Roda smoke (fail-fast) e DEPOIS a suíte completa
+# Detecta regressão no PR. Roda smoke (fail-fast) e DEPOIS a suíte completa
 # em paralelo nos 3 browsers (chromium/firefox/webkit). Falha em qualquer um
 # = falha o workflow (matrix sem fail-fast desabilitado = comportamento padrão).
 on:
