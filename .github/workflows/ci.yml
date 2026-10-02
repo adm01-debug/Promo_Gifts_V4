@@ -19,6 +19,8 @@ jobs:
     timeout-minutes: 45
     env:
       NODE_OPTIONS: --max-old-space-size=4096
+      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+      E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Setup Node CI
@@ -109,10 +111,25 @@ jobs:
       - name: Hook tests (tests/hooks/** — excluído de test:quality, ver package.json)
         run: TZ=America/Sao_Paulo npx vitest run tests/hooks --reporter=dot
 
+      # E23/E27 — sem credenciais E2E no repositório: PR pula graciosamente
+      # (gate E23 monitora); push para main falha obrigatoriamente.
+      - name: Guard — credenciais E2E
+        run: |
+          if [ -z "${E2E_USER_EMAIL:-}" ] || [ -z "${E2E_USER_PASSWORD:-}" ]; then
+            if [ "${{ github.event_name }}" = "pull_request" ]; then
+              echo "::warning::Credenciais E2E ausentes neste PR — E2E Critical pulado (gate E23 segue monitorando)."
+            else
+              echo "::error::Credenciais E2E ausentes em push para main (E2E_USER_EMAIL / E2E_USER_PASSWORD). Configure os secrets do repositório."
+              exit 1
+            fi
+          fi
+
       - name: Install Playwright browsers
+        if: ${{ env.E2E_USER_EMAIL != '' && env.E2E_USER_PASSWORD != '' }}
         run: npx playwright install --with-deps chromium
 
       - name: Run E2E Critical Tests
+        if: ${{ env.E2E_USER_EMAIL != '' && env.E2E_USER_PASSWORD != '' }}
         run: npm run test:e2e:critical
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
