@@ -73,8 +73,8 @@ describe('AuthFlowTracer', () => {
     const snap = AuthFlowTracer.readLast();
     expect(snap?.finalProvider).toBe('google');
     expect(snap?.finalIssuer).toBe('https://x.supabase.co/auth/v1');
-    // e-mail vem mascarado pelo summarizeUser
-    expect(snap?.finalSessionUser).toMatch(/^j\*+a@example\.com$/);
+    // snapshot persistido nunca guarda o e-mail — só o sentinel mascarado
+    expect(snap?.finalSessionUser).toBe('<masked-email>');
   });
 
   it('cada instância gera flowId distinto', () => {
