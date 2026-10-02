@@ -233,6 +233,7 @@ jobs:
     timeout-minutes: 5
     permissions:
       contents: read
+      administration: read  # necessário para listar /rulesets (v2.0.4)
     steps:
       - name: Query rulesets for main (E52 — substituiu query de campo `protected` que retorna 404 com rulesets)
         env:
