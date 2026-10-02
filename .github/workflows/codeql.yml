@@ -86,14 +86,16 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          # Conta alertas CodeQL abertos com nível SARIF "error" (HIGH no GitHub UI).
+          # Conta alertas CodeQL abertos com security_severity_level=high.
           # fail-on: high foi removido por ser input não documentado em analyze@v4
           # (codeql-action ignora inputs desconhecidos sem falhar — Codex P1, 2026-10-02).
+          # severity=high filtra pelo campo security_severity_level da rule;
+          # severity=error filtraria pelo SARIF problem level (campo distinto — Codex P1).
           COUNT=$(gh api \
-            "repos/${{ github.repository }}/code-scanning/alerts?state=open&severity=error&per_page=100" \
+            "repos/${{ github.repository }}/code-scanning/alerts?state=open&severity=high&per_page=100" \
             --jq 'length')
           if [ "${COUNT:-0}" -gt 0 ]; then
-            echo "::error::❌ ${COUNT} alerta(s) HIGH (severity=error) do CodeQL em aberto — corrija antes de mergear"
+            echo "::error::❌ ${COUNT} alerta(s) HIGH (severity=high) do CodeQL em aberto — corrija antes de mergear"
             exit 1
           fi
           echo "✅ 0 alertas HIGH do CodeQL em aberto"
