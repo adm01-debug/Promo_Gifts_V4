@@ -37,7 +37,9 @@ jobs:
     steps:
       - name: Comentar no PR ou abrir issue
         run: |
-          BODY="Deploy **${STATE}** em \`${ENVIRONMENT}\` para \`${REF}\` (\`${SHA:0:7}\`) em $(date -u +%FT%TZ)."
+          MARKER="<!-- deploy-failure:${SHA} -->"
+          BODY="${MARKER}
+          Deploy **${STATE}** em \`${ENVIRONMENT}\` para \`${REF}\` (\`${SHA:0:7}\`) em $(date -u +%FT%TZ)."
           BODY="${BODY}
           Descrição: ${DESCRIPTION:-sem descrição}"
           [ -n "$LOG_URL" ] && BODY="${BODY}
@@ -53,9 +55,9 @@ jobs:
           PR=$(gh api "repos/$GITHUB_REPOSITORY/commits/$SHA/pulls" \
             --jq '[.[] | select(.state == "open")][0].number // empty' 2>/dev/null || true)
           if [ -n "$PR" ]; then
-            # Evita spam: 1 comentário por SHA
-            if gh pr view "$PR" --repo "$GITHUB_REPOSITORY" --json comments -q '.comments[].body' | grep -q "${SHA:0:7}"; then
-              echo "Já comentado para ${SHA:0:7}"; exit 0
+            # Evita spam: 1 comentário por SHA (marcador exato, não grep de 7 chars)
+            if gh pr view "$PR" --repo "$GITHUB_REPOSITORY" --json comments -q '.comments[].body' | grep -qF "$MARKER"; then
+              echo "Já comentado para ${SHA}"; exit 0
             fi
             gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body "$BODY"
             exit 0
