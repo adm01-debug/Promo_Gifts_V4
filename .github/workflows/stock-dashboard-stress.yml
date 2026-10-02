@@ -19,7 +19,7 @@ on:
         required: false
         default: '8'
   schedule:
-    - cron: '9 3 * * *'
+    - cron: '9 3 * * 1' # semanal, segunda 03:09 UTC
 
 concurrency:
   group: stock-dashboard-stress
