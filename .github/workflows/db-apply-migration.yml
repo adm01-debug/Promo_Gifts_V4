@@ -78,7 +78,7 @@ jobs:
     name: 2. Apply (requer aprovação do environment production)
     needs: preflight
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     environment: production
     permissions:
       contents: read
@@ -151,6 +151,7 @@ jobs:
           PGPORT: ${{ secrets.PGPORT || '5432' }}
           PGSSLMODE: require
           PGCONNECT_TIMEOUT: '15'
+          PGOPTIONS: '-c lock_timeout=30s -c statement_timeout=10min'
         run: |
           if [ "${{ steps.tx_optout.outputs.no_tx }}" = "true" ]; then
             # transaction: none declarado — sem -1 para permitir operações não-transacionais
