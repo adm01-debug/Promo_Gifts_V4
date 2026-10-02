@@ -81,21 +81,26 @@ jobs:
         with:
           category: "/language:${{ matrix.language }}"
 
-      - name: Gate E96 — falha em alertas HIGH do CodeQL
+      - name: Gate E96 — falha em alertas HIGH/CRITICAL do CodeQL
         if: steps.code-security.outputs.enabled == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          # Conta alertas CodeQL abertos com security_severity_level=high.
+          # Conta alertas CodeQL abertos com security_severity_level=high ou critical.
           # fail-on: high foi removido por ser input não documentado em analyze@v4
           # (codeql-action ignora inputs desconhecidos sem falhar — Codex P1, 2026-10-02).
           # severity=high filtra pelo campo security_severity_level da rule;
           # severity=error filtraria pelo SARIF problem level (campo distinto — Codex P1).
-          COUNT=$(gh api \
+          # severity=critical é distinto de high na API — ambos devem ser consultados (Codex P1, 2026-10-02).
+          COUNT_HIGH=$(gh api \
             "repos/${{ github.repository }}/code-scanning/alerts?state=open&severity=high&per_page=100" \
             --jq 'length')
-          if [ "${COUNT:-0}" -gt 0 ]; then
-            echo "::error::❌ ${COUNT} alerta(s) HIGH (severity=high) do CodeQL em aberto — corrija antes de mergear"
+          COUNT_CRITICAL=$(gh api \
+            "repos/${{ github.repository }}/code-scanning/alerts?state=open&severity=critical&per_page=100" \
+            --jq 'length')
+          COUNT=$(( ${COUNT_HIGH:-0} + ${COUNT_CRITICAL:-0} ))
+          if [ "${COUNT}" -gt 0 ]; then
+            echo "::error::❌ ${COUNT} alerta(s) HIGH/CRITICAL do CodeQL em aberto (high=${COUNT_HIGH:-0}, critical=${COUNT_CRITICAL:-0}) — corrija antes de mergear"
             exit 1
           fi
-          echo "✅ 0 alertas HIGH do CodeQL em aberto"
+          echo "✅ 0 alertas HIGH/CRITICAL do CodeQL em aberto"
