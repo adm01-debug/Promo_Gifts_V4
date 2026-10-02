@@ -117,11 +117,11 @@ export function authDebugUrl(scope: string): void {
   const url = new URL(window.location.href);
   const hash = window.location.hash.startsWith('#') ? window.location.hash.slice(1) : '';
   const hashParams = new URLSearchParams(hash);
-  const safeQuery: Record<string, string> = {};
+  const safeQuery: Record<string, string> = Object.create(null) as Record<string, string>;
   url.searchParams.forEach((v, k) => {
     safeQuery[k] = k === 'code' || k.includes('token') ? maskToken(v) : v;
   });
-  const safeHash: Record<string, string> = {};
+  const safeHash: Record<string, string> = Object.create(null) as Record<string, string>;
   hashParams.forEach((v, k) => {
     safeHash[k] = k.includes('token') ? maskToken(v) : v;
   });
