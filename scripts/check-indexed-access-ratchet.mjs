@@ -24,8 +24,14 @@ function countErrors() {
   let output = '';
   try {
     output = execFileSync(
-      'npx',
-      ['tsc', '-p', 'tsconfig.app.json', '--noEmit', '--noUncheckedIndexedAccess'],
+      process.execPath,
+      [
+        'node_modules/typescript/bin/tsc',
+        '-p',
+        'tsconfig.app.json',
+        '--noEmit',
+        '--noUncheckedIndexedAccess',
+      ],
       { encoding: 'utf8', cwd: ROOT, stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 64 * 1024 * 1024 },
     );
   } catch (e) {
