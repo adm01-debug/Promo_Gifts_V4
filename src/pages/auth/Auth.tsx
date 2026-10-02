@@ -283,7 +283,9 @@ export default function Auth() {
 
       if (error) {
         logger.warn('[AUTH_FAILED] Authentication failed', { status: error.status ?? 'unknown' });
-        await logLoginAttempt(data.email, null, false, error.message);
+        // log-login-attempt já é escrito em AuthContext.signIn (fonte única,
+        // com IP real) — escrever aqui de novo dobrava a linha de falha e
+        // fazia a RPC de lockout atingir o limite na metade das tentativas.
 
         let description = 'Ocorreu um erro ao validar seu acesso. Por favor, tente novamente.';
         let title = 'Não foi possível entrar';
@@ -299,6 +301,12 @@ export default function Auth() {
           description =
             'Sua conta ainda não foi ativada. Verifique sua caixa de entrada e spam pelo e-mail de confirmação.';
           hint = 'Ainda não recebeu? Aguarde alguns minutos antes de solicitar um novo envio.';
+        } else if (error.status === 403) {
+          // Bloqueio do gate server-side (check-login) — error.message já é o
+          // texto pt-BR com blocked_until montado em AuthContext.signIn.
+          title = 'Acesso Bloqueado';
+          description = error.message;
+          hint = 'Se você acredita que isto é um engano, contate o administrador.';
         } else if (error.message.includes('rate limit') || error.status === 429) {
           title = 'Acesso Temporariamente Suspenso';
           description =

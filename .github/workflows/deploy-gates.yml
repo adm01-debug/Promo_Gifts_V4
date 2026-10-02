@@ -175,6 +175,18 @@ jobs:
             done < "$F"
           done < /tmp/b64-files.txt
           exit $(( FOUND > 0 ))
+      # Ratchets de dívida técnica (auditoria 20-dim 2026-10-02) — falham só
+      # em REGRESSÃO vs baselines commitadas; drift positivo apenas avisa.
+      - name: Gate 1.9 — Dívida técnica (ratchets TODO / as / file-size)
+        run: |
+          node scripts/check-todo-baseline.mjs
+          node scripts/check-as-assertions-baseline.mjs
+          node scripts/check-file-size-baseline.mjs
+      # noUncheckedIndexedAccess — advisory por enquanto: roda tsc completo
+      # (lento) e a dívida atual é grande; vira bloqueante quando zerar.
+      - name: Gate 1.10 — Indexed-access ratchet (advisory)
+        continue-on-error: true
+        run: node scripts/check-indexed-access-ratchet.mjs
 
   unit-tests:
     name: Gate 2 - Unit Tests
