@@ -100,9 +100,12 @@ export default function SSOCallbackPage() {
     }
 
     // Fallback no hash (?error= dentro do fragment)
+    // GUARD: se há ?code= na URL estamos no fluxo PKCE — o provider nunca coloca
+    // erros no hash nesse fluxo; ignorar para evitar bypass por URL crafted com
+    // #error=... (js/user-controlled-bypass, CodeQL E96).
     const hash = window.location.hash.startsWith('#') ? window.location.hash.slice(1) : '';
     const hashParams = new URLSearchParams(hash);
-    const hashError = hashParams.get('error');
+    const hashError = !searchParams.has('code') ? hashParams.get('error') : null;
     if (hashError) {
       const desc = hashParams.get('error_description');
       const detail = explainOAuthError({ error: hashError, description: desc });
@@ -191,8 +194,7 @@ export default function SSOCallbackPage() {
             return;
           }
           const exData = exRes.data as { session?: unknown } | null;
-          const session = (exData?.session ?? null) as
-            | Parameters<typeof tracer.captureSession>[0];
+          const session = (exData?.session ?? null) as Parameters<typeof tracer.captureSession>[0];
           tracer.captureSession(session);
           tracer.step('pkce-exchange-ok', {
             hasSession: !!session,
