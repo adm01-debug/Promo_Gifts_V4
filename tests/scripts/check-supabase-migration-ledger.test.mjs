@@ -24,7 +24,7 @@ describe('check-supabase-migration-ledger', () => {
     });
   });
 
-  it('bloqueia migrations locais ainda não aplicadas', () => {
+  it('não bloqueia migrations locais ainda não aplicadas (staged/pendentes)', () => {
     const result = auditSupabaseMigrationLedger({
       migrations: [
         { local: '20260901000000', remote: '20260901000000' },
@@ -32,10 +32,46 @@ describe('check-supabase-migration-ledger', () => {
       ],
     });
 
-    expect(result.ok).toBe(false);
+    expect(result.ok).toBe(true);
     expect(result.summary).toMatchObject({
       local_only_count: 1,
       local_only_sample: ['20260901000001'],
+    });
+  });
+
+  it('versão remote_only na allowlist não bloqueia', () => {
+    const result = auditSupabaseMigrationLedger(
+      {
+        migrations: [
+          { local: '20260901000000', remote: '20260901000000' },
+          { local: '', remote: '20260712' },
+        ],
+      },
+      { remoteOnlyAllowlist: ['20260712'] },
+    );
+
+    expect(result.ok).toBe(true);
+    expect(result.summary).toMatchObject({
+      blocking_remote_only_count: 0,
+      allowlisted_remote_only_count: 1,
+      allowlisted_remote_only_sample: ['20260712'],
+    });
+  });
+
+  it('versão remote_only fora da allowlist ainda bloqueia', () => {
+    const result = auditSupabaseMigrationLedger(
+      {
+        migrations: [
+          { local: '', remote: '20260901000001' },
+        ],
+      },
+      { remoteOnlyAllowlist: ['20260712'] },
+    );
+
+    expect(result.ok).toBe(false);
+    expect(result.summary).toMatchObject({
+      blocking_remote_only_count: 1,
+      blocking_remote_only_sample: ['20260901000001'],
     });
   });
 
