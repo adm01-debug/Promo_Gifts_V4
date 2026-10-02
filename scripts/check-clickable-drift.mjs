@@ -11,7 +11,7 @@
  *
  * @see docs/architecture/A11Y_CLICKABLE.md
  */
-import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from 'node:fs';
+import { readFileSync, writeFileSync, readdirSync, statSync } from 'node:fs';
 import { resolve, join, extname } from 'node:path';
 
 const ROOT = resolve(process.cwd());
@@ -56,8 +56,10 @@ if (existsSync(srcDir)) {
 const current = new Set(matches.sort());
 
 let baseline = { files: [] };
-if (existsSync(BASELINE)) {
+try {
   baseline = JSON.parse(readFileSync(BASELINE, 'utf8'));
+} catch (e) {
+  if (e.code !== 'ENOENT') throw e;
 }
 const baselineSet = new Set(baseline.files ?? []);
 

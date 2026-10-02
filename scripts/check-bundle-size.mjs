@@ -27,7 +27,7 @@
  *   exit 1 — limite ultrapassado, regressão detectada, ou ratchet não autorizado
  *   exit 2 — erro de execução (dist/ ausente ou baseline inválido)
  */
-import { readdirSync, statSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readdirSync, statSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { execSync } from 'node:child_process';
 
@@ -168,15 +168,13 @@ let criticalChunks = DEFAULT_CRITICAL_CHUNKS;
 let snapshot = null;
 
 let currentBaselineRaw = null;
-if (existsSync(BASELINE_PATH)) {
-  try {
-    currentBaselineRaw = JSON.parse(readFileSync(BASELINE_PATH, 'utf8'));
-    limits = { ...DEFAULT_LIMITS, ...(currentBaselineRaw.limits ?? {}) };
-    if (currentBaselineRaw.criticalChunks) criticalChunks = currentBaselineRaw.criticalChunks;
-    snapshot = currentBaselineRaw.snapshot ?? null;
-  } catch {
-    console.warn('⚠️  Não foi possível ler bundle-size-baseline.json — usando defaults.');
-  }
+try {
+  currentBaselineRaw = JSON.parse(readFileSync(BASELINE_PATH, 'utf8'));
+  limits = { ...DEFAULT_LIMITS, ...(currentBaselineRaw.limits ?? {}) };
+  if (currentBaselineRaw.criticalChunks) criticalChunks = currentBaselineRaw.criticalChunks;
+  snapshot = currentBaselineRaw.snapshot ?? null;
+} catch (e) {
+  if (e.code !== 'ENOENT') console.warn('⚠️  Não foi possível ler bundle-size-baseline.json — usando defaults.');
 }
 
 // ── E41: Ratchet guard — falha se baseline aumentou em PR sem label ratchet-override
