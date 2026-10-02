@@ -1,7 +1,7 @@
 # AGENTS.md — espelho do CLAUDE.md (contexto multi-agente)
 
 > Este arquivo é gerado/espelhado a partir do `CLAUDE.md` para agentes que só leem AGENTS.md (Codex, OpenCode, etc.). Edite o CLAUDE.md — o Hermes prioriza AGENTS.md sobre CLAUDE.md, então o conteúdo precisa ser idêntico.
-> Última sincronização: 2026-09-27 (E100 + Codex P1).
+> Última sincronização: 2026-10-02 (E96 + Codex P1).
 
 ---
 
