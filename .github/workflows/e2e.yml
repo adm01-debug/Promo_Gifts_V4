@@ -271,11 +271,11 @@ jobs:
         run: |
           if [ ! -d e2e-report ]; then echo "e2e-report/ ausente — nada a podar"; exit 0; fi
           cd e2e-report
-          COUNT=$(ls -d */ 2>/dev/null | wc -l)
+          COUNT=$(find . -maxdepth 1 -mindepth 1 -type d 2>/dev/null | wc -l)
           echo "Relatórios existentes: $COUNT"
           if [ "$COUNT" -le 20 ]; then echo "≤20 relatórios — nada a podar"; exit 0; fi
           TO_DELETE=$(( COUNT - 20 ))
-          ls -d */ | sort -n | head -n "$TO_DELETE" | xargs rm -rf
+          find . -maxdepth 1 -mindepth 1 -type d | sort -n | head -n "$TO_DELETE" | xargs rm -rf
           echo "Removidos $TO_DELETE relatórios mais antigos"
 
       - name: Commit and push if changed
