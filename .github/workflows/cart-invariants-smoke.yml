@@ -335,7 +335,7 @@ jobs:
 
       # Persistência do auto-tune. Só roda:
       #   - quando o step anterior recomendou bump;
-      #   - no branch default (main/master), fora de PR — evita fork PR
+      #   - no branch default (main), fora de PR — evita fork PR
       #     mutando repo state;
       #   - se o secret CART_TUNE_PAT estiver presente (a permissão de
       #     `Variables: Read and write` NÃO existe no GITHUB_TOKEN default).
@@ -345,7 +345,7 @@ jobs:
           always() &&
           steps.summary.outputs.should_bump == '1' &&
           github.event_name == 'push' &&
-          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+          github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ secrets.CART_TUNE_PAT }}
           REC: ${{ steps.summary.outputs.recommended_shards }}
