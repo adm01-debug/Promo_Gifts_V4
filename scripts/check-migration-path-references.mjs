@@ -122,9 +122,8 @@ function scanFile(full, rel) {
 walk(ROOT);
 
 // ---- Baseline (legado congelado) ----
-const baseline = existsSync(BASELINE_PATH)
-  ? JSON.parse(readFileSync(BASELINE_PATH, 'utf8'))
-  : { entries: [] };
+let baseline = { entries: [] };
+try { baseline = JSON.parse(readFileSync(BASELINE_PATH, 'utf8')); } catch (e) { if (e.code !== 'ENOENT') throw e; }
 const baselineSet = new Set(
   (baseline.entries || []).map((e) => `${e.file}|${e.ref}`),
 );
