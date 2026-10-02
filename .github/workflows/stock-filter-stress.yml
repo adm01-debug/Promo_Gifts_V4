@@ -52,25 +52,32 @@ jobs:
       - run: npm ci
 
       - name: Configura seeds (nightly = rotativa, dispatch = inputs)
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_MASTER_SEED: ${{ inputs.master_seed }}
+          INPUT_SIMS: ${{ inputs.sims }}
+          INPUT_REPLAY_SEED: ${{ inputs.replay_seed }}
         run: |
-          if [ "${{ github.event_name }}" = "schedule" ]; then
+          if [ "$EVENT_NAME" = "schedule" ]; then
             echo "STRESS_SIMS=25000" >> "$GITHUB_ENV"
             # seed rotativa baseada na data (YYYYMMDD)
             DATE_SEED=$(date -u +%Y%m%d)
             echo "STRESS_MASTER_SEED=${DATE_SEED}" >> "$GITHUB_ENV"
             echo "STRESS_UNIVERSE_SEED=${DATE_SEED}" >> "$GITHUB_ENV"
           fi
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            if [ -n "${{ inputs.master_seed }}" ]; then echo "STRESS_MASTER_SEED=${{ inputs.master_seed }}" >> "$GITHUB_ENV"; fi
-            if [ -n "${{ inputs.sims }}" ];        then echo "STRESS_SIMS=${{ inputs.sims }}"               >> "$GITHUB_ENV"; fi
-            if [ -n "${{ inputs.replay_seed }}" ]; then echo "STRESS_REPLAY_SEED=${{ inputs.replay_seed }}" >> "$GITHUB_ENV"; fi
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            if [ -n "$INPUT_MASTER_SEED" ]; then echo "STRESS_MASTER_SEED=$INPUT_MASTER_SEED" >> "$GITHUB_ENV"; fi
+            if [ -n "$INPUT_SIMS" ];        then echo "STRESS_SIMS=$INPUT_SIMS"               >> "$GITHUB_ENV"; fi
+            if [ -n "$INPUT_REPLAY_SEED" ]; then echo "STRESS_REPLAY_SEED=$INPUT_REPLAY_SEED" >> "$GITHUB_ENV"; fi
           fi
 
       - name: Roda stress vs oráculo (logs reproduzíveis)
+        env:
+          EVENT_NAME: ${{ github.event_name }}
         run: |
           mkdir -p .stress-artifacts
           echo "::group::Seeds da execução"
-          echo "event=${{ github.event_name }}"
+          echo "event=$EVENT_NAME"
           echo "STRESS_MASTER_SEED=${STRESS_MASTER_SEED}"
           echo "STRESS_UNIVERSE_SEED=${STRESS_UNIVERSE_SEED:-default}"
           echo "STRESS_SIMS=${STRESS_SIMS}"
