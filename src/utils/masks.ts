@@ -87,16 +87,16 @@ export function validateCpf(value: string): boolean {
   if (/^(\d)\1{10}$/.test(digits)) return false;
 
   let sum = 0;
-  for (let i = 0; i < 9; i++) sum += parseInt(digits[i]) * (10 - i);
+  for (let i = 0; i < 9; i++) sum += parseInt(digits.charAt(i)) * (10 - i);
   let d = (sum * 10) % 11;
   if (d === 10) d = 0;
-  if (parseInt(digits[9]) !== d) return false;
+  if (parseInt(digits.charAt(9)) !== d) return false;
 
   sum = 0;
-  for (let i = 0; i < 10; i++) sum += parseInt(digits[i]) * (11 - i);
+  for (let i = 0; i < 10; i++) sum += parseInt(digits.charAt(i)) * (11 - i);
   d = (sum * 10) % 11;
   if (d === 10) d = 0;
-  return parseInt(digits[10]) === d;
+  return parseInt(digits.charAt(10)) === d;
 }
 
 export function normalizeCep(value: string | null | undefined): string {
