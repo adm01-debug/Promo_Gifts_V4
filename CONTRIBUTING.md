@@ -271,3 +271,28 @@ Com cross-reference automática, qualquer dev (ou Claude em sessão futura) tem 
 ### Workflow que faz isso
 
 `.github/workflows/cross-reference-issues.yml` — roda em `pull_request` e `issues` events. Idempotente (não duplica comentários).
+
+## 👤 Bus factor assumido (operação 1-dev)
+
+**Risco assumido e documentado (auditoria 20-dim 2026-10-02):** este projeto opera
+com bus factor = 1. O CODEOWNER (`adm01-debug`) é ao mesmo tempo autor, revisor
+de PR e on-call — `docs/incident-response.md` descreve o mesmo responsável
+detectando, mitigando e escrevendo post-mortem. Não é o ideal; é o contexto real.
+
+O que isso significa na prática:
+
+- **Review:** PRs não-triviais esperam aprovação do CODEOWNER — sem SLA formal.
+  CodeRabbit + CI (gates) são a segunda camada, não substitutos do humano.
+- **Se o CODEOWNER estiver indisponível:** nada é mergeado e nada vai a
+  produção. Não há aprovador de contingência — mergir por conta própria é
+  proibido pela proteção de branch (code-owner review obrigatória).
+- **On-call:** não há backup definido. Mitigação atual: monitoramento proativo
+  (`uptime-monitor.yml`, alertas de CI via issue) + os agentes Devin podem
+  investigar e preparar fix, mas só o CODEOWNER aplica.
+- **Handoff mínimo:** todo conhecimento operacional fica em `docs/` —
+  `docs/incident-response.md`, `docs/DISASTER_RECOVERY.md`,
+  `docs/db/BACKUP_STATUS.md`, `docs/RBAC_MATRIX.md`. Se você assumir manutenção
+  deste projeto, comece por esses quatro.
+
+Se um segundo mantenedor entrar, esta seção deve ser revista (backup de acesso
+ao Supabase/Vercel/GitHub e rotação de on-call são o primeiro passo).
