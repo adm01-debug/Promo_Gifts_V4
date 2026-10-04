@@ -49,8 +49,8 @@ describe('productService', () => {
 
   it('should filter results client-side (category, price, stock)', async () => {
     const mockProducts = [
-      { id: '1', name: 'A', price: 10, category_name: 'Tech', stock: 10 },
-      { id: '2', name: 'B', price: 50, category_name: 'Office', stock: 0 },
+      { id: '1', name: 'A', base_price: 10, category_name: 'Tech', stock: 10 },
+      { id: '2', name: 'B', base_price: 50, category_name: 'Office', stock: 0 },
     ];
     fetchPromobrindProductsMock.mockResolvedValue(
       mockProducts as unknown as Awaited<ReturnType<typeof externalDb.fetchPromobrindProducts>>,
@@ -69,8 +69,8 @@ describe('productService', () => {
 
   it('should ignore invalid price bounds instead of filtering out products', async () => {
     const mockProducts = [
-      { id: '1', name: 'A', price: 10, category_name: 'Tech', stock: 10 },
-      { id: '2', name: 'B', price: 50, category_name: 'Office', stock: 0 },
+      { id: '1', name: 'A', base_price: 10, category_name: 'Tech', stock: 10 },
+      { id: '2', name: 'B', base_price: 50, category_name: 'Office', stock: 0 },
     ];
     fetchPromobrindProductsMock.mockResolvedValue(
       mockProducts as unknown as Awaited<ReturnType<typeof externalDb.fetchPromobrindProducts>>,
