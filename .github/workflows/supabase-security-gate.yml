@@ -1,13 +1,16 @@
 name: Gate 5 — Supabase Security Audit
 
-# Executa em push para main e PRs que tocam migrations ou integrações Supabase.
-# Usa secrets já configurados no repositório:
+# E39 (2026-10-01):
+# - Ref canônico hardcoded (doufsxqlfjyuvxuezpln) — SSOT REGRA #1
+# - db lint limitado a push:main (PR-independente: audita schema inteiro)
+# - CHECK 2 reimplementado via Management API (pg_proc.proconfig),
+#   nunca mais PostgREST/anon key (REGRA #8 corolário)
+# - SUPABASE_PROJECT_REF hardcoded em CHECK 2 e CHECK 5
+#
+# Secrets necessários:
 #   SUPABASE_ACCESS_TOKEN      → Supabase CLI personal access token
 #   VITE_SUPABASE_URL          → https://doufsxqlfjyuvxuezpln.supabase.co
-#   VITE_SUPABASE_PROJECT_ID   → doufsxqlfjyuvxuezpln
-#   VITE_SUPABASE_PUBLISHABLE_KEY → chave publishable; se ela não puder gerar
-#                                    evidência live, o Gate 5 fica inconclusivo
-#                                    em vez de aprovado sem verificação.
+#   VITE_SUPABASE_PUBLISHABLE_KEY → usada apenas em CHECKs 3/4 (smoke/RPC)
 
 on:
   push:
@@ -35,10 +38,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -46,22 +49,28 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Supabase CLI só é necessário para CHECK 1 (db lint), que roda apenas
+      # em push:main — não instalar em PRs para economizar tempo.
       - name: Setup Supabase CLI
-        uses: supabase/setup-cli@v2
+        if: github.event_name != 'pull_request'
+        uses: supabase/setup-cli@afb1b15109756ea5cf9d8985a359d9095235ca2b # v2
         with:
-          # Pin evita falso vermelho por rate limit ao resolver "latest".
           version: 2.101.0
 
-      # ─────────────────────────────────────────────
+      # ─────────────────────────────────────────────────
       # CHECK 1: lint das migrations (idempotência, style)
-      # Nota: --project-id foi removido do CLI; usamos supabase link + --linked.
-      # ─────────────────────────────────────────────
+      # E39: limitado a push:main — db lint audita schema inteiro
+      # (não só o diff do PR) e é PR-independente.
+      # Ref hardcoded: SSOT — nunca de secret para evitar substituição silenciosa.
+      # ─────────────────────────────────────────────────
       - name: 🔗 Link Supabase project
-        run: supabase link --project-ref "${{ secrets.VITE_SUPABASE_PROJECT_ID }}"
+        if: github.event_name != 'pull_request'
+        run: supabase link --project-ref doufsxqlfjyuvxuezpln
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
 
       - name: 🔍 Lint migrations
+        if: github.event_name != 'pull_request'
         run: |
           supabase db lint \
             --linked \
@@ -69,52 +78,43 @@ jobs:
             --level warning
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-        continue-on-error: false
 
-      # ─────────────────────────────────────────────
+      # ─────────────────────────────────────────────────
       # CHECK 2: auditoria de SECURITY DEFINER
-      # Falha se alguma função não tiver search_path explícito.
-      # Obs.: usa anon key; script tem fallback graceful se system tables
-      #       não estiverem acessíveis via PostgREST.
-      # ─────────────────────────────────────────────
+      # E39: via Management API (pg_proc.proconfig), nunca PostgREST/anon key.
+      # --require-live: sem SUPABASE_ACCESS_TOKEN → inconclusive, nunca green.
+      # ─────────────────────────────────────────────────
       - name: 🔒 Audit SECURITY DEFINER functions
-        run: node scripts/check-security-definer-audit.mjs
+        run: node scripts/check-security-definer-audit.mjs --require-live
         env:
-          SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          SUPABASE_SERVICE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
 
-      # ─────────────────────────────────────────────
+      # ─────────────────────────────────────────────────
       # CHECK 3: smoke test da RPC get_profile_and_roles
-      # A ausência de audit/smoke verificável é inconclusiva (exit 2), nunca
-      # uma aprovação de segurança implícita.
-      # ─────────────────────────────────────────────
+      # ─────────────────────────────────────────────────
       - name: 🩺 RPC get_profile_and_roles smoke test
         run: node scripts/check-rpc-get-profile-and-roles.mjs --require-live
         env:
           SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
 
-      # ─────────────────────────────────────────────
+      # ─────────────────────────────────────────────────
       # CHECK 4: verifica que anon NÃO tem EXECUTE na RPC
-      # O acesso negado a information_schema também é inconclusivo até que uma
-      # credencial/read-model autorizado produza evidência verificável.
-      # ─────────────────────────────────────────────
+      # ─────────────────────────────────────────────────
       - name: 🚫 Verify anon cannot execute RPC
         run: node scripts/check-rpc-permissions.mjs --require-live
         env:
           SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
 
-      # ─────────────────────────────────────────────
-      # CHECK 5 (PLANO_DBA E22): gate permanente do P1 de 2026-07-16 (FECHADO,
-      # 0 tabelas) — falha se `anon` tiver GRANT de INSERT/UPDATE/DELETE em
-      # qualquer tabela `public` fora de .security/anon-write-grants-allowlist.json
-      # (vazia por padrão). --require-live: sem credencial o gate falha-fechado
-      # (inconclusive), mesmo padrão dos CHECKs 3/4 acima — nunca aprovação
-      # implícita por ausência de evidência.
-      # ─────────────────────────────────────────────
+      # ─────────────────────────────────────────────────
+      # CHECK 5 (PLANO_DBA E22): gate permanente anon write grants.
+      # --require-live: sem credencial → inconclusive, nunca green.
+      # PROJECT_REF hardcoded (SSOT — REGRA #1).
+      # ─────────────────────────────────────────────────
       - name: 🔓 Verify anon has no write GRANTs (E22)
         run: node scripts/check-anon-write-grants.mjs --require-live
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-          SUPABASE_PROJECT_REF: ${{ secrets.VITE_SUPABASE_PROJECT_ID }}
+          SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln

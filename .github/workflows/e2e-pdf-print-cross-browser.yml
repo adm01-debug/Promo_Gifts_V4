@@ -55,8 +55,8 @@ jobs:
       CI: 'true'
       # Não precisa de Supabase — spec é 100% cliente-side com setContent.
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -76,7 +76,7 @@ jobs:
 
       - name: Upload Playwright report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: playwright-report-print-${{ matrix.browser }}-${{ github.run_id }}
           path: |
@@ -87,7 +87,7 @@ jobs:
 
   # E10 — alerta de falha no cron semanal (deduplication via label ci-focused-e2e)
   notify-failure:
-    name: Notificar falha (cron)
+    name: Notificar falha — PDF Cross-Browser (cron)
     if: failure() && github.event_name == 'schedule'
     needs: [print-cross-browser]
     runs-on: ubuntu-latest

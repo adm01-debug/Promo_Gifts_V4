@@ -33,7 +33,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           # fetch-depth: 0 garante que BASE_SHA do PR está disponível independente
           # do tamanho da branch. fetch-depth: 2 falhava em PRs com 3+ commits porque
@@ -118,4 +118,4 @@ jobs:
             fi
           } >> "$GITHUB_STEP_SUMMARY"
 
-          exit $FOUND
+          exit $(( FOUND > 0 ))

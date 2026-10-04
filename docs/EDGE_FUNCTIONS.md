@@ -1,5 +1,7 @@
 # Edge Functions — Catálogo Completo
 
+> ⚠️ **PARCIALMENTE DESATUALIZADO (banner 2026-10-02, auditoria 20-dimensões)** — este doc diz 81 funções; o inventário real é **108 funções** com `index.ts` em `supabase/functions/`. A fonte de verdade atual de autorização/categorização é `supabase/functions/_shared/edge-authz-manifest.ts`, refletida em `docs/RBAC_MATRIX.md`. Use a tabela abaixo como referência histórica, não como catálogo.
+
 > Última atualização: 2026-05-22 · **81 funções ativas** (24 com `verify_jwt = false`, todas com defesa interna validada — ver auditoria back-end sênior de 2026-05-22)
 > A tabela abaixo é histórica e cobre as ~50 funções originais — o inventário completo de 81 está em `audit/ANALISE_BACKEND_SENIOR_2026-05-22.md` (Seção 1).
 

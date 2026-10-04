@@ -5,8 +5,8 @@
 #   - smoke: supabase functions serve + script HTTP real (precisa do repo, não
 #            roda em forks porque depende de secrets do próprio repositório)
 #
-# Política de bloqueio: unit é obrigatório (status check), smoke é advisory
-# até estabilizar (~2 sprints), depois vira required.
+# Política de bloqueio: unit é obrigatório (status check), smoke é obrigatório
+# (período advisory expirado — ver PLANO_WORKFLOWS_CI_100_ETAPAS_2026-09-26 E30).
 
 name: Contract Tests
 
@@ -28,8 +28,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -40,7 +40,7 @@ jobs:
         if: always()
         run: |
           echo "### Contract test summary" >> "$GITHUB_STEP_SUMMARY"
-          if [ -f tests/contracts ]; then
+          if [ -d tests/contracts ]; then
             find tests/contracts -name '*.contract.test.ts' | wc -l \
               | xargs -I{} echo "{} contract test files" >> "$GITHUB_STEP_SUMMARY"
           fi
@@ -49,23 +49,21 @@ jobs:
     name: Smoke — HTTP against supabase functions serve
     runs-on: ubuntu-latest
     needs: unit
-    # Advisory until the local Supabase stack is stable enough to be required.
-    continue-on-error: true
-    # Só roda em PRs do próprio repo (forks não têm acesso a secrets, e
-    # supabase CLI exige tokens válidos pra subir o stack)
-    if: github.event.pull_request.head.repo.full_name == github.repository
+    # Só roda em PRs do próprio repo ou workflow_dispatch (forks não têm acesso a secrets,
+    # e supabase CLI exige tokens válidos pra subir o stack)
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
     timeout-minutes: 15
     env:
       N8N_PRODUCT_WEBHOOK_SECRET: contract-test-secret
       WEBHOOK_DISPATCHER_SECRET: contract-test-secret
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
-      - uses: supabase/setup-cli@v2
+      - uses: supabase/setup-cli@afb1b15109756ea5cf9d8985a359d9095235ca2b # v2
         with:
           version: 2.101.0
 
@@ -183,5 +181,5 @@ jobs:
       - name: Cleanup
         if: always()
         run: |
-          [ -f /tmp/functions.pid ] && kill "$(cat /tmp/functions.pid)" || true
+          if [ -f /tmp/functions.pid ]; then kill "$(cat /tmp/functions.pid)"; fi
           supabase stop || true

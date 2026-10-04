@@ -6,7 +6,7 @@
  * Script de diagnóstico executado via console do DevTools — console.log é o output intencional.
  */
 
-import { supabase } from './integrations/supabase/client';
+import { supabase } from '../src/integrations/supabase/client';
 
 async function performTechnicalAudit() {
   console.log('--- Iniciando Auditoria Técnica Profunda ---');
@@ -67,5 +67,5 @@ async function performTechnicalAudit() {
 
 // Para rodar no console do devtools se necessário
 (
-  window as unknown as Window & { performTechnicalAudit: () => Promise<void> }
+  globalThis as unknown as Window & { performTechnicalAudit: () => Promise<void> }
 ).performTechnicalAudit = performTechnicalAudit;

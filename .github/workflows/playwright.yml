@@ -21,8 +21,8 @@ jobs:
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
       with:
         node-version-file: '.nvmrc'
         cache: 'npm'
@@ -30,30 +30,23 @@ jobs:
       run: npm ci
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps chromium
-    # Retries (2) reduzem flakiness sem mascarar falhas reais: o teste só passa
-    # se for verde em alguma tentativa; falhas consistentes continuam vermelhas.
-    # Workers=2 mantém isolamento (cada worker tem seu storageState) e ganha
-    # paralelismo moderado no runner GitHub (2 vCPUs).
     - name: Run Playwright tests
-      run: npx playwright test --project=chromium-smoke --retries=2 --workers=2
+      run: npx playwright test --project=chromium-smoke --workers=2
       env:
         E2E_BASE_URL: http://localhost:8080
-    # Specs de restauração de URL em /carrinhos rodam fora do project smoke
-    # (filename não bate com o pattern *smoke.spec.ts). Executamos como job
-    # extra no chromium-authed para garantir cobertura em CI após reload.
     - name: Run /carrinhos URL-state E2E
       run: npx playwright test e2e/carrinhos/list-url-state-restore.spec.ts e2e/carrinhos/list-url-state-overdue-chip.spec.ts e2e/carrinhos/list-url-state-search-debounce.spec.ts e2e/carrinhos/list-url-state-clear-filters.spec.ts e2e/orcamentos/list-url-state-restore.spec.ts --project=chromium-authed --retries=2 --workers=1
       env:
         E2E_BASE_URL: http://localhost:8080
     - name: Upload Playwright HTML report
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
       if: always()
       with:
         name: playwright-report
         path: playwright-report/
-        retention-days: 30
+        retention-days: 14
     - name: Upload Playwright failure artifacts (HTML report + trace + screenshots + videos)
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
       if: failure()
       with:
         name: playwright-failure-bundle
@@ -62,13 +55,10 @@ jobs:
           test-results/**/trace.zip
           test-results/**/*.png
           test-results/**/*.webm
-        retention-days: 30
+        retention-days: 14
         if-no-files-found: ignore
-    # Bundle dedicado para specs @carrinhos — filtra apenas os diretórios de
-    # resultado cujo nome contém "carrinhos", tornando o download no PR ~10x
-    # menor e o diagnóstico direto para o time do módulo.
     - name: Upload @carrinhos failure artifacts (video/screenshot/trace)
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
       if: failure()
       with:
         name: playwright-carrinhos-failures
@@ -77,6 +67,5 @@ jobs:
           test-results/**/*carrinhos*/trace.zip
           test-results/**/*carrinhos*/*.png
           test-results/**/*carrinhos*/*.webm
-        retention-days: 30
+        retention-days: 14
         if-no-files-found: ignore
-

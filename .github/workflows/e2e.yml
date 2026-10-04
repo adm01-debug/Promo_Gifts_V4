@@ -24,10 +24,6 @@ jobs:
     timeout-minutes: 45
     # G-H3: fork guard — pull_request de forks não deve escrever no repo
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
-    # contents: write necessário apenas para Publish HTML Report to GitHub Pages
-    # (peaceiris/actions-gh-pages). Remoção adiada para E91 (consolidação gh-pages).
-    permissions:
-      contents: write
     env:
       CI: "true"
       # Logs limpos no GitHub Actions: sem códigos ANSI no console output
@@ -50,45 +46,12 @@ jobs:
       E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
       ARTIFACT_RETENTION_DAYS: "14"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
-      - uses: actions/setup-node@v4
+      - uses: ./.github/actions/e2e-setup
         with:
-          node-version-file: '.nvmrc'
-          cache: "npm"
-
-      - name: Install deps
-        run: npm ci --no-audit --no-fund
-
-      - name: Cache Playwright browsers
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-          restore-keys: playwright-${{ runner.os }}-
-
-      - name: Install Playwright (browsers)
-        run: npx playwright install --with-deps
-
-      # Pré-gera fixtures de E2E (permissões-matrix → JSON) antes de qualquer
-      # step do Playwright. Separa essa etapa do webServer para que o comando
-      # `vite` inicie imediatamente, sem overhead de geração no timeout de boot.
-      - name: Pre-generate E2E fixtures
-        run: npm run e2e:generate-fixtures
-
-      # ─── Dev server único para todos os Playwright steps ────────────────
-      # Inicia Vite UMA VEZ como background service antes de qualquer step
-      # Playwright. Cada step usa E2E_BASE_URL e NÃO gerencia webServer —
-      # elimina a race condition onde o server morre entre steps (causa de
-      # ERR_CONNECTION_REFUSED em 7 s no step de regression).
-      - name: Start dev server (background)
-        run: npm run dev &
-        env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
-          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
-
-      - name: Wait for dev server to be ready
-        run: timeout 120 bash -c 'until curl -sf http://localhost:8080 > /dev/null 2>&1; do sleep 1; done'
+          browsers: 'chromium'
+          start-vite: 'true'
 
       # Auditoria: garantes que docs/E2E_SMOKE_COVERAGE.md está em dia com
       # _catalog.ts + SMOKE_COVERAGE. Falha se alguém alterou a suíte sem
@@ -181,8 +144,6 @@ jobs:
       # SEM --max-failures: queremos diagnóstico completo. SEM --forbid-only
       # (já validado no smoke). Reporter `line` é compacto e mostra todos
       # os resultados; `html` para drill-down; `json`/`junit` para tooling.
-      # `--pass-with-no-tests` evita falhar se nenhum spec casar (ex: PR só
-      # mexe em smoke).
       # Requer E2E_USER_EMAIL configurado — specs autenticados falham sem
       # credenciais. Quando ausente, step é skipped e o job passa normalmente.
       - name: Run E2E regression (cobertura completa — registra todas as falhas)
@@ -195,13 +156,11 @@ jobs:
           if [ -n "$E2E_USER_EMAIL" ] && [ -n "$E2E_USER_PASSWORD" ]; then
             npx playwright test \
               --grep-invert @smoke \
-              --pass-with-no-tests \
               --reporter=github,line,html,json,junit
           else
             npx playwright test \
               --project=chromium-public \
               --grep-invert @smoke \
-              --pass-with-no-tests \
               --reporter=github,line,html,json,junit
           fi
         env:
@@ -228,24 +187,15 @@ jobs:
 
       - name: Upload Playwright report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: playwright-report
           path: playwright-report
           retention-days: ${{ fromJSON(env.ARTIFACT_RETENTION_DAYS) }}
 
-      - name: Publish HTML Report to GitHub Pages
-        if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: peaceiris/actions-gh-pages@84c30a85c19949d7eee79c4ff27748b70285e453 # v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./playwright-report
-          destination_dir: e2e-report/${{ github.run_number }}
-          keep_files: true
-
       - name: Upload smoke summary (markdown + json)
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: e2e-smoke-summary
           path: |
@@ -256,7 +206,7 @@ jobs:
 
       - name: Upload feature summary (markdown)
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: e2e-feature-summary
           path: playwright-report/feature-summary.md
@@ -265,7 +215,7 @@ jobs:
 
       - name: Upload evidence artifacts (Videos, Screenshots & Network Logs)
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: e2e-evidence
           path: |

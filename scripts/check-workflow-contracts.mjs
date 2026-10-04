@@ -18,6 +18,7 @@
  *   C6  — todo `--project=X` em steps corresponde a um projeto em playwright.config.ts
  *   C7  — todo `npm run X` em steps corresponde a um script em package.json
  *   C8  — todo `node scripts/X.mjs` em steps corresponde a um arquivo existente
+ *   C9  — nenhum `jobs.<id>.name` duplicado entre workflows distintos
  *
  * Allowlist: scripts/check-workflow-contracts.allowlist.json
  *   Formato: { "_allowlisted_files": ["file.yml", ...] }
@@ -54,6 +55,9 @@ export function checkC3Timeout({ file, doc }) {
   const jobs = doc.jobs || {};
   for (const [id, job] of Object.entries(jobs)) {
     if (!job || typeof job !== 'object') continue;
+    // jobs `uses:` (reusable workflow call) não aceitam `timeout-minutes` —
+    // o timeout fica a cargo dos steps internos do workflow chamado.
+    if (job.uses) continue;
     if (job['timeout-minutes'] == null) {
       violations.push(`${file}: job \`${id}\` missing \`timeout-minutes:\``);
     }
@@ -146,12 +150,36 @@ export function checkC8NodeScripts({ file, text }, rootDir) {
   if (!rootDir) return [];
   const violations = [];
   const seen = new Set();
-  for (const m of text.matchAll(/node scripts\/([A-Za-z0-9/_-]+\.m?js)/g)) {
+  for (const m of text.matchAll(/node scripts\/([A-Za-z0-9\/_-]+\.m?js)/g)) {
     const rel = m[1];
     const abs = join(rootDir, 'scripts', rel);
     if (!existsSync(abs) && !seen.has(rel)) {
       seen.add(rel);
       violations.push(`${file}: node scripts/${rel} — file not found`);
+    }
+  }
+  return violations;
+}
+
+export function checkC9DuplicateJobNames(workflows) {
+  const nameToFiles = new Map();
+  for (const { file, doc } of workflows) {
+    if (!doc.jobs || typeof doc.jobs !== 'object') continue;
+    for (const [, jobDef] of Object.entries(doc.jobs)) {
+      if (!jobDef || typeof jobDef.name !== 'string') continue;
+      const n = jobDef.name.trim();
+      if (!n) continue;
+      if (!nameToFiles.has(n)) nameToFiles.set(n, []);
+      nameToFiles.get(n).push(file);
+    }
+  }
+  const violations = [];
+  for (const [name, files] of nameToFiles) {
+    if (files.length > 1) {
+      const sorted = [...new Set(files)].sort();
+      violations.push(
+        `${sorted[0]}: duplicate job display name "${name}" also in ${sorted.slice(1).join(', ')}`,
+      );
     }
   }
   return violations;
@@ -217,6 +245,7 @@ export function runChecks(rootDir = ROOT) {
       ...checkC8NodeScripts(wf, rootDir),
     );
   }
+  all.push(...checkC9DuplicateJobNames(workflows));
 
   return {
     violations: all,
@@ -229,6 +258,7 @@ export function runChecks(rootDir = ROOT) {
       C6: all.filter((v) => v.includes('playwright.config')).length,
       C7: all.filter((v) => v.includes('package.json')).length,
       C8: all.filter((v) => v.includes('file not found')).length,
+      C9: all.filter((v) => v.includes('duplicate job display name')).length,
     },
     workflowCount: workflows.length,
   };
@@ -269,6 +299,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
   console.log(`  C6 playwright proj: ${counts.C6}`);
   console.log(`  C7 npm scripts:     ${counts.C7}`);
   console.log(`  C8 node scripts:    ${counts.C8}`);
+  console.log(`  C9 dup job names:   ${counts.C9}`);
 
   if (fresh.length > 0) {
     console.log('\nFresh violations (not in allowlist):');

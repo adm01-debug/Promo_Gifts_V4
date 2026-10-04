@@ -1,7 +1,7 @@
 name: E2E • Swatch QuickView (Lista + Tabela)
 
 # Gate de regressão para a navegação por bolinhas de cor → QuickView nas views
-# Lista e Tabela. Roda em PR e push em main/master, paralelizado por browser
+# Lista e Tabela. Roda em PR e push em main, paralelizado por browser
 # (chromium/firefox/webkit) para validar foco, teclado e a11y de forma consistente.
 
 on:
@@ -35,14 +35,11 @@ jobs:
       matrix:
         browser: [chromium, firefox, webkit]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version-file: '.nvmrc', cache: npm }
-      - run: npm ci
-      - name: Install Playwright + deps (${{ matrix.browser }})
-        # Projects *-authed dependem do setup Chromium, mesmo quando a suíte
-        # alvo roda em Firefox/WebKit.
-        run: npx playwright install --with-deps chromium ${{ matrix.browser }}
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: ./.github/actions/e2e-setup
+        with:
+          browsers: 'chromium,${{ matrix.browser }}'
+          start-vite: 'false'
       - name: Run swatch→QuickView suite (V1 + V2 + focus/QV)
         run: |
           npx playwright test \
@@ -52,7 +49,7 @@ jobs:
             --project=${{ matrix.browser }}-authed \
             --reporter=line,html
       - name: Upload report + traces + videos (${{ matrix.browser }})
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: playwright-swatch-qv-${{ matrix.browser }}-report

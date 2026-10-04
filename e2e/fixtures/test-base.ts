@@ -216,6 +216,10 @@ export function requireAuth(reason = "E2E_USER_EMAIL/PASSWORD não configurados"
   }
   const hasCredentials = !!(process.env.E2E_USER_EMAIL && process.env.E2E_USER_PASSWORD);
   if (!hasCredentials) {
+    // E21 — modo estrito: em CI, credentials ausentes = falha imediata.
+    if (process.env.CI) {
+      throw new Error(`[requireAuth] E21 — modo estrito: ${reason} em CI.`);
+    }
     test.skip(true, reason);
     return;
   }

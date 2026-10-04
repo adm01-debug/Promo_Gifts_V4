@@ -9,6 +9,10 @@ on:
         description: 'Multiplicador de cenários (1 = ~600)'
         default: '3'
 
+concurrency:
+  group: daily-flows-simulation
+  cancel-in-progress: false
+
 permissions:
   contents: read
 
@@ -17,15 +21,32 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 50
+      - name: Git diff guard (schedule only)
+        id: guard
+        if: github.event_name == 'schedule'
+        run: |
+          CHANGED=$(git log --since="25 hours ago" --oneline -- src/ scripts/simulate-daily-flows.mjs supabase/migrations/ 2>/dev/null | head -1)
+          if [ -z "$CHANGED" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "Nenhuma mudança relevante nas últimas 25h — pulando simulação"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        if: github.event_name != 'schedule' || steps.guard.outputs.skip != 'true'
         with:
           node-version-file: '.nvmrc'
       - name: Simulate daily flows
-        run: node scripts/simulate-daily-flows.mjs --scale=${{ github.event.inputs.scale || '3' }}
+        if: github.event_name != 'schedule' || steps.guard.outputs.skip != 'true'
+        env:
+          SCALE: ${{ github.event.inputs.scale || '3' }}
+        run: node scripts/simulate-daily-flows.mjs --scale="$SCALE"
       - name: Upload report
-        if: always()
-        uses: actions/upload-artifact@v4
+        if: always() && (github.event_name != 'schedule' || steps.guard.outputs.skip != 'true')
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: daily-flows-simulation
           path: qa/reports/daily-flows-simulation-*.*

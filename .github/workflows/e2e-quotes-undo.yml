@@ -69,7 +69,7 @@ jobs:
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       # Guard: sem credenciais, o job real é abortado com mensagem clara
       # (evita horas de execução com "Missing E2E_USER_EMAIL").
@@ -83,7 +83,7 @@ jobs:
             echo "has_creds=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         if: steps.creds.outputs.has_creds == 'true'
         with:
           node-version-file: '.nvmrc'
@@ -106,16 +106,17 @@ jobs:
       - name: Run 04o/04p/04q specs (1ª passada)
         id: run1
         if: steps.creds.outputs.has_creds == 'true'
+        env:
+          CI: "1"
+          FOCUS: ${{ github.event.inputs.focus }}
         run: |
-          if [ -n "${{ github.event.inputs.focus }}" ]; then
-            echo "▶ Focused run: e2e/flows/${{ github.event.inputs.focus }}"
-            npx playwright test "e2e/flows/${{ github.event.inputs.focus }}" \
+          if [ -n "$FOCUS" ]; then
+            echo "▶ Focused run: e2e/flows/$FOCUS"
+            npx playwright test "e2e/flows/$FOCUS" \
               --project=chromium-authed --retries=0 --reporter=html,list,github
           else
             npm run test:e2e:quotes-undo -- --retries=0 --reporter=html,list,github
           fi
-        env:
-          CI: "1"
 
       # 2ª passada — apenas os specs falhos (uma retentativa).
       - name: Re-run failed specs (única retentativa)
@@ -126,7 +127,7 @@ jobs:
 
       - name: Upload Playwright HTML report (real)
         if: steps.creds.outputs.has_creds == 'true' && always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: playwright-report-quotes-undo-real
           path: playwright-report/
@@ -135,7 +136,7 @@ jobs:
 
       - name: Upload test-results (trace, screenshot, HTML dumps)
         if: steps.creds.outputs.has_creds == 'true' && always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: playwright-artifacts-quotes-undo-real
           path: |
@@ -156,9 +157,9 @@ jobs:
       E2E_BASE_URL: http://localhost:8080
       E2E_MOCK_AUTH: "1"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version-file: '.nvmrc'
           cache: npm
@@ -182,7 +183,7 @@ jobs:
 
       - name: Upload Playwright HTML report (mock)
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: playwright-report-quotes-undo-mock
           path: playwright-report/
@@ -191,7 +192,7 @@ jobs:
 
       - name: Upload test-results (mock)
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: playwright-artifacts-quotes-undo-mock
           path: |

@@ -3,8 +3,18 @@ name: URL State — Unit & Fuzz
 on:
   push:
     branches: [main]
+    paths:
+      - 'src/hooks/common/**'
+      - 'src/pages/quotes/**'
+      - '.github/workflows/url-state-unit.yml'
   pull_request:
     branches: [main]
+    paths:
+      - 'src/hooks/common/**'
+      - 'src/pages/quotes/**'
+      - '.github/workflows/url-state-unit.yml'
+  schedule:
+    - cron: '41 6 * * 1' # semanal, segunda 06:00 UTC — varredura incondicional
 
 permissions:
   contents: read
@@ -19,8 +29,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'

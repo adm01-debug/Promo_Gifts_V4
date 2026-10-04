@@ -34,7 +34,7 @@ name: ddl-out-of-band-detector
 
 on:
   schedule:
-    - cron: '0 8 * * 1' # semanal, segunda 08:00 UTC (05:00 BRT)
+    - cron: '8 8 * * 1' # semanal, segunda 08:08 UTC (05:08 BRT)
   workflow_dispatch:
 
 permissions:
@@ -55,10 +55,10 @@ jobs:
       SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF || 'doufsxqlfjyuvxuezpln' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version-file: .nvmrc
           cache: 'npm'
@@ -69,23 +69,27 @@ jobs:
       - name: Run detector
         id: check
         continue-on-error: true
-        run: node scripts/check-ddl-out-of-band.mjs --out=/tmp/ddl-out-of-band.json
+        run: |
+          set +e
+          node scripts/check-ddl-out-of-band.mjs --out=/tmp/ddl-out-of-band.json
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
 
       - name: Upload report artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: ddl-out-of-band-report-${{ github.run_id }}
           path: /tmp/ddl-out-of-band.json
-          retention-days: 90
+          retention-days: 14
           if-no-files-found: ignore
 
       - name: Open or update issue (objetos out-of-band)
-        # exit 1 (FAILED) e exit 2 (INCONCLUSIVE) chegam aqui como 'failure' via
-        # continue-on-error. So' abrimos issue quando o relatorio existe e lista
-        # >=1 objeto — caso contrario (inconclusivo: sem credenciais obrigatorias,
-        # Management API fora do ar, drift_log vazio) so' logamos warning, sem issue.
-        if: steps.check.outcome == 'failure'
+        # exit 1 (FAILED): findings reais — abre/atualiza issue e loga warning.
+        # exit 2 (INCONCLUSIVE): sem credenciais/dados — só loga warning no step seguinte,
+        # sem abrir issue (distinguido via steps.check.outputs.exit_code).
+        if: steps.check.outputs.exit_code == '1'
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         with:
           script: |
@@ -153,7 +157,11 @@ jobs:
               });
             }
 
-      - name: Fail job if detector failed for a reason other than findings
+      - name: Não quebra o build
         if: steps.check.outcome == 'failure'
         run: |
-          echo "::warning::Detector encontrou objeto(s) out-of-band ou ficou inconclusivo — ver issue/artefato desta run. Job nao quebra build (advisory, nao gate)."
+          if [ "${{ steps.check.outputs.exit_code }}" = "2" ]; then
+            echo "::warning::Detector inconclusivo — credenciais ausentes, Management API fora do ar ou schema_signature_drift_log vazio. Nenhum achado avaliado (migration [DBA-E12] pode ainda nao ter sido aplicada)."
+          else
+            echo "::warning::Detector encontrou objeto(s) out-of-band — issue aberta/atualizada nesta run. Job nao quebra build (advisory, nao gate)."
+          fi

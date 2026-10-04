@@ -37,9 +37,9 @@ jobs:
       pull-requests: write
       actions: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -47,9 +47,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # ─── Playwright cache determinístico ──────────────────────────────
-      # A versão do browser é fixada pela versão do pacote `playwright`
-      # instalado; usamos ela como chave para invalidar quando bumpar.
       - name: Resolve Playwright version
         id: pw
         run: |
@@ -58,23 +55,21 @@ jobs:
 
       - name: Cache Playwright browsers
         id: pw-cache
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}
 
       - name: Install Playwright Chromium (com deps do SO se cache miss)
+        env:
+          PW_CACHE_HIT: ${{ steps.pw-cache.outputs.cache-hit }}
         run: |
-          if [ "${{ steps.pw-cache.outputs.cache-hit }}" = "true" ]; then
-            # Cache do bundle já presente — só garante dependências do SO.
+          if [ "$PW_CACHE_HIT" = "true" ]; then
             npx playwright install-deps chromium
           else
             npx playwright install --with-deps chromium
           fi
 
-      # ─── Fontes usadas pelo PDF (Roboto + Montserrat) ─────────────────
-      # Instalar fontes localmente evita variação de rendering entre runs
-      # e reduz dependência da rede do Google Fonts em cada CI.
       - name: Install PDF fonts (Roboto + Montserrat)
         run: |
           sudo apt-get update -qq
@@ -82,7 +77,6 @@ jobs:
           fc-cache -f
           fc-list | grep -Ei 'roboto|montserrat' | head -5 || true
 
-      # ─── Suítes vitest (snapshots + WCAG + allowlist) ─────────────────
       - name: Run PDF test suites (snapshots + WCAG + hardcoded-colors allowlist)
         id: pdf-tests
         if: github.event_name != 'workflow_dispatch'
@@ -91,25 +85,21 @@ jobs:
           TZ=America/Sao_Paulo npx vitest run src/components/pdf 2>&1 | tee pdf-tests.log
           echo "exit_code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
 
-      # No workflow_dispatch, precisamos só gerar HTMLs — export test basta.
       - name: Render HTML samples (workflow_dispatch)
         if: github.event_name == 'workflow_dispatch'
         run: TZ=America/Sao_Paulo npx vitest run src/components/pdf/proposal/__tests__/exportSampleProposal.test.tsx
 
-      # ─── PDF headless ────────────────────────────────────────────────
       - name: Generate headless PDFs
         if: always()
         env:
           PROPOSAL_FIXTURE_ID: >-
             ${{ github.event_name == 'workflow_dispatch' && inputs.fixture_id != 'all' && inputs.fixture_id || '' }}
         run: node scripts/qa/generate-proposal-pdf.mjs
-        continue-on-error: ${{ github.event_name != 'workflow_dispatch' }}
 
-      # ─── Artifacts ────────────────────────────────────────────────────
       - name: Upload PDF + HTML + contrast report as artifacts
         if: always()
         id: upload
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: proposal-pdf-quality
           path: |
@@ -120,7 +110,6 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
 
-      # ─── Comentário no PR quando falhar ──────────────────────────────
       - name: Comment contrast report on PR when tests fail
         if: always() && github.event_name == 'pull_request' && steps.pdf-tests.outputs.exit_code != '0'
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
@@ -144,7 +133,6 @@ jobs:
               .slice(0, 40)
               .join('\n');
 
-            // Lista de arquivos empacotados no artifact — vira link direto.
             const exportsDir = 'qa/exports';
             const files = fs.existsSync(exportsDir)
               ? fs.readdirSync(exportsDir).filter((f) => /^proposal-.+\.(html|pdf)$/.test(f)).sort()
@@ -213,5 +201,7 @@ jobs:
       - name: Fail job if PDF suites failed
         if: github.event_name != 'workflow_dispatch' && steps.pdf-tests.outputs.exit_code != '0'
         run: |
-          echo "PDF test suite failed (exit ${{ steps.pdf-tests.outputs.exit_code }})"
+          echo "PDF test suite failed (exit $PDF_EXIT_CODE)"
           exit 1
+        env:
+          PDF_EXIT_CODE: ${{ steps.pdf-tests.outputs.exit_code }}

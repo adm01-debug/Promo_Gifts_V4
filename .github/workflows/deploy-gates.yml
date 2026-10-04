@@ -5,9 +5,12 @@ name: Deploy Gates
 #
 # Ordem dos gates:
 #  0. ssot-gate      - SSOT Supabase (project ID canônico) — NOVO, bloqueia todos os outros
+#  0.5. dependency-audit - npm audit (sem CVEs high/critical)
+#  0.6. dependency-review - dependency-review-action (E97, PR-only)
 #  1. lint+tsc       - codigo passa lint e typecheck
 #  2. unit-tests     - vitest passa
-#  3. e2e-smoke      - playwright smoke test (login + dashboard)
+#  E23. secrets-check - verifica presença de secrets E2E (saída has_e2e)
+#  3. e2e-smoke      - playwright smoke test (login + dashboard) — apenas se has_e2e=true
 #  4. lighthouse     - perf>=75 a11y>=90 seo>=95 pwa>=80
 #  5. seo-sanity     - canonical/og:url/twitter:url corretos, sem dominios proibidos
 #  6. build          - vite build sem erros (gate de seguranca final)
@@ -38,10 +41,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
         with:
-          node-version-file: '.nvmrc'
+          skip-install: 'true'
       - name: Validate SSOT — client.ts deve apontar para doufsxqlfjyuvxuezpln
         run: node scripts/validate-supabase-config.mjs
         env:
@@ -54,14 +58,25 @@ jobs:
     timeout-minutes: 5
     needs: [ssot-gate]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-      - run: npm ci
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
       - name: Auditar dependências (advisory ≥ high bloqueia deploy)
         run: node scripts/check-dependency-audit.mjs
+
+  dependency-review:
+    name: Gate 0.6 - Dependency Review
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [ssot-gate]
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Dependency Review — falha em deps com CVE severity ≥ high (E97)
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+          allow-licenses: MIT, Apache-2.0, ISC, BSD-2-Clause, BSD-3-Clause, 0BSD, CC0-1.0, Unlicense, CC-BY-4.0, Python-2.0
 
   lint-typecheck:
     name: Gate 1 - Lint + TypeScript
@@ -71,14 +86,11 @@ jobs:
     env:
       NODE_OPTIONS: --max-old-space-size=4096
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-      - run: npm ci
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
       - run: npm run typecheck
         env:
           VITE_SUPABASE_URL: https://placeholder.supabase.co
@@ -119,6 +131,67 @@ jobs:
         env:
           VITE_SUPABASE_URL: https://placeholder.supabase.co
           VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
+      # E41 — TSC ratchet file guard (PR-only, bloqueante)
+      # Previne que um PR aumente .tsc-ratchet-baseline sem label ratchet-override.
+      # Não roda TSC — apenas compara o ARQUIVO de baseline contra o base do PR.
+      - name: Gate 1.7 — TSC ratchet file guard (bloqueante em PR)
+        if: github.event_name == 'pull_request'
+        run: sh scripts/tsc-unused-ratchet.sh --check-ratchet
+        env:
+          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GITHUB_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+      # E55 — Detecta arquivos texto encodados acidentalmente em base64.
+      # Heurística: linha ≥ 200 chars de alfabeto base64 puro em arquivo texto.
+      # Integrado ao gate para bloquear via "Gate Final - Deploy Ready".
+      - name: Gate 1.8 — Detect accidentally base64-encoded files (bloqueante)
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          if [[ "$EVENT" == "pull_request" ]]; then
+            git diff --name-only --diff-filter=AM "$BASE_SHA" "$HEAD_SHA" > /tmp/b64-files.txt
+          elif [[ "$EVENT" == "push" ]]; then
+            git diff --name-only --diff-filter=AM HEAD~1 HEAD > /tmp/b64-files.txt \
+              || git ls-files > /tmp/b64-files.txt
+          else
+            git ls-files > /tmp/b64-files.txt
+          fi
+          INCLUDE='\.(ts|tsx|js|jsx|json|sql|sh|md|yaml|yml|html|css|env|env\.example|toml|conf|rc)$'
+          EXCLUDE='(package-lock\.json|pnpm-lock\.yaml|bun\.lock|yarn\.lock|\.min\.|\.bundle\.|^supabase/migrations-snapshot/ALL_IN_ONE\.sql$)'
+          FOUND=0
+          while IFS= read -r F; do
+            [[ -z "$F" || ! -f "$F" ]] && continue
+            [[ "$F" =~ $INCLUDE ]] || continue
+            [[ "$F" =~ $EXCLUDE ]] && continue
+            N=0
+            while IFS= read -r L || [[ -n "$L" ]]; do
+              N=$((N+1)); LEN=${#L}
+              if (( LEN >= 200 )) && [[ "$L" =~ ^[A-Za-z0-9+/=]+$ ]]; then
+                FOUND=$((FOUND+1))
+                echo "::error file=$F,line=$N::${LEN} chars de alfabeto base64 puro — arquivo possivelmente encodado acidentalmente."
+              fi
+            done < "$F"
+          done < /tmp/b64-files.txt
+          exit $(( FOUND > 0 ))
+      # Ratchets de dívida técnica (auditoria 20-dim 2026-10-02) — falham só
+      # em REGRESSÃO vs baselines commitadas; drift positivo apenas avisa.
+      - name: Gate 1.9 — Dívida técnica (ratchets TODO / as / file-size)
+        run: |
+          node scripts/check-todo-baseline.mjs
+          node scripts/check-as-assertions-baseline.mjs
+          node scripts/check-file-size-baseline.mjs
+      # noUncheckedIndexedAccess — advisory por enquanto: roda tsc completo
+      # (lento) e a dívida atual é grande; vira bloqueante quando zerar.
+      - name: Gate 1.10 — Indexed-access ratchet (advisory)
+        continue-on-error: true
+        run: node scripts/check-indexed-access-ratchet.mjs
+      # E55 — Contratos estruturais dos workflows (E11, bloqueante)
+      # Garante que todo workflow segue as 8 regras do Padrão E12
+      # (permissions, concurrency, timeout, node-version-file, etc.)
+      - name: Gate 1.11 — Workflow contracts (bloqueante)
+        run: node scripts/check-workflow-contracts.mjs
 
   unit-tests:
     name: Gate 2 - Unit Tests
@@ -126,12 +199,9 @@ jobs:
     timeout-minutes: 45
     needs: [ssot-gate]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-      - run: npm ci
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
       # Gate rapido de regressao. Suites amplas seguem no CI principal:
       # `test:quality`, `Hook tests` e `Test Coverage`.
       - run: npm run test:deploy-gate
@@ -152,7 +222,7 @@ jobs:
       github.actor != 'dependabot[bot]' &&
       (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Validate discount approval, grants and trigger races on PG17
         run: scripts/test-approved-plan-database.sh
       - name: Validate guarded quote RPC proposals on pinned isolated PG17
@@ -163,18 +233,26 @@ jobs:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
 
+  # ============================================================
+  # GATE E23: Verifica presença de secrets E2E
+  # Saída has_e2e=true habilita o Gate 3 (e2e-smoke).
+  # Sem os secrets, e2e-smoke é skipped graciosamente (E21+E23).
+  # ============================================================
+  secrets-check:
+    name: Gate E23 - Verifica secrets E2E
+    uses: ./.github/workflows/_secrets-check.yml
+    secrets: inherit
+
   e2e-smoke:
     name: Gate 3 - E2E Smoke
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    needs: [ssot-gate]
+    needs: [ssot-gate, secrets-check]
+    if: needs.secrets-check.outputs.has_e2e == 'true'
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-      - run: npm ci
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
       - name: Run Playwright smoke tests
@@ -186,7 +264,7 @@ jobs:
           fi
       - name: Upload Playwright report
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: playwright-report
           path: playwright-report/
@@ -197,16 +275,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: [ssot-gate]
+    # Gate opcional (CLAUDE.md) — falha não bloqueia deploy-ready.
+    continue-on-error: true
     env:
       VITE_SUPABASE_URL: https://placeholder.supabase.co
       VITE_SUPABASE_PUBLISHABLE_KEY: lighthouse-placeholder-key
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-      - run: npm ci
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
       - run: npm run build
       - name: Run Lighthouse CI
         run: npx lhci autorun --config=.lighthouserc.json
@@ -214,7 +291,7 @@ jobs:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
       - name: Upload Lighthouse report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: lighthouse-report-${{ github.run_id }}
           path: .lighthouseci/
@@ -227,10 +304,11 @@ jobs:
     timeout-minutes: 5
     needs: [ssot-gate]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
         with:
-          node-version-file: '.nvmrc'
+          skip-install: 'true'
       - name: Run SEO sanity check
         run: node scripts/seo-sanity-check.mjs
 
@@ -244,10 +322,9 @@ jobs:
       github.actor != 'dependabot[bot]' &&
       (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
       - name: Verificar assinatura publicada da RPC
         run: npm run check:restore-seller-cart-rpc
         env:
@@ -262,27 +339,46 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: [lint-typecheck, seo-sanity, restore-cart-rpc-gate]
+    permissions:
+      contents: read
+      id-token: write      # necessário para attest-build-provenance (E99)
+      attestations: write  # necessário para attest-build-provenance (E99)
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-      - run: npm ci
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
       - run: npm run build
       # E55 — Bundle size (bloqueante)
       # Roda após o build para garantir que dist/assets/ existe.
+      # E41 — Bundle ratchet: em PR também verifica se o ARQUIVO de baseline aumentou.
       - name: Gate 1.6 — Bundle size dentro dos limites (bloqueante)
-        run: node scripts/check-bundle-size.mjs
+        run: node scripts/check-bundle-size.mjs --check-ratchet
         env:
           VITE_SUPABASE_URL: https://placeholder.supabase.co
           VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
+          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GITHUB_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
       - name: Upload dist artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: dist-${{ github.run_id }}
           path: dist/
           retention-days: 7
+      # E99 — SBOM + build provenance attestation (push para main apenas)
+      # Gera SBOM SPDX-JSON do dist/ e atesta proveniência do build no GHCR.
+      # Skipped em PRs e workflow_dispatch — sem impacto no tempo de CI de PRs.
+      - name: Generate SBOM (E99)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: anchore/sbom-action@v0
+        with:
+          artifact-name: sbom-${{ github.run_id }}.spdx.json
+          path: dist/
+          format: spdx-json
+      - name: Attest build provenance (E99)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: 'dist/**/*.js'
 
   deploy-ready:
     name: Gate Final - Deploy Ready
@@ -292,9 +388,11 @@ jobs:
     needs:
       - ssot-gate
       - dependency-audit
+      - dependency-review
       - lint-typecheck
       - unit-tests
       - database-integrity
+      - secrets-check
       - e2e-smoke
       - lighthouse
       - seo-sanity
@@ -308,6 +406,10 @@ jobs:
           # PRs do Dependabot/fork (sem acesso a secrets live — E59).
           DB_INTEGRITY: ${{ needs.database-integrity.result }}
           RESTORE_CART: ${{ needs.restore-cart-rpc-gate.result }}
+          # dependency-review só roda em PR — skip é esperado em push/dispatch (E97).
+          DEP_REVIEW: ${{ needs.dependency-review.result }}
+          # e2e-smoke só roda quando has_e2e=true — skip esperado sem secrets E2E (E21+E23).
+          E2E_SMOKE: ${{ needs.e2e-smoke.result }}
           IS_DEPENDABOT: ${{ github.actor == 'dependabot[bot]' }}
         run: |
           set -euo pipefail
@@ -320,16 +422,23 @@ jobs:
             FAIL=1
           fi
 
-          # Skipped é aceito APENAS para os 2 gates live-secrets em PRs
-          # do Dependabot ou fork (E59). Em qualquer outro contexto, skipped é falha.
+          # Skipped é aceito APENAS para gates com condicionais explícitas.
+          # Em qualquer outro contexto, skipped é falha.
           if [[ ",${GATE_RESULTS}," == *,skipped,* ]]; then
             # Constrói o conjunto de skipped aceitáveis neste contexto
             ALLOWED_SKIP=0
+            # E21+E23: e2e-smoke é skipped quando secrets E2E ausentes (has_e2e=false)
+            # Válido em qualquer evento (PR, push, dispatch).
+            if [[ "$E2E_SMOKE" == "skipped" ]]; then ALLOWED_SKIP=$((ALLOWED_SKIP+1)); fi
             if [[ "$IS_DEPENDABOT" == "true" || "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
               # Para Dependabot e forks: database-integrity e restore-cart-rpc-gate
               # podem ser skipped (sem secrets). Todos os outros skipped são falha.
               if [[ "$DB_INTEGRITY" == "skipped" ]]; then ALLOWED_SKIP=$((ALLOWED_SKIP+1)); fi
               if [[ "$RESTORE_CART" == "skipped" ]]; then ALLOWED_SKIP=$((ALLOWED_SKIP+1)); fi
+            fi
+            # E97: dependency-review é PR-only — skip esperado em push/dispatch
+            if [[ "$GITHUB_EVENT_NAME" != "pull_request" ]]; then
+              if [[ "$DEP_REVIEW" == "skipped" ]]; then ALLOWED_SKIP=$((ALLOWED_SKIP+1)); fi
             fi
             # Conta total de skipped
             TOTAL_SKIP=$(echo "${GATE_RESULTS}" | tr ',' '\n' | grep -c "^skipped$" || true)
@@ -337,7 +446,7 @@ jobs:
               echo "::error::Gate(s) inesperadamente skipped (${TOTAL_SKIP} skipped, ${ALLOWED_SKIP} permitidos): ${GATE_RESULTS}" >&2
               FAIL=1
             elif [[ "$ALLOWED_SKIP" -gt 0 ]]; then
-              echo "::warning::${ALLOWED_SKIP} gate(s) live-secrets skipped (Dependabot/fork sem secrets — E59)"
+              echo "::warning::${ALLOWED_SKIP} gate(s) skipped (condicionais: E59/E97/E21+E23)"
             fi
           fi
 

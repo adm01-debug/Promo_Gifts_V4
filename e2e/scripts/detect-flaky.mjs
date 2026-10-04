@@ -27,12 +27,13 @@ const args = process.argv.slice(2);
 const issueIdx = args.indexOf('--issue');
 const issueUrl = issueIdx !== -1 ? args[issueIdx + 1] : null;
 
-if (!fs.existsSync(reportPath)) {
-  console.log('No Playwright report found — nothing to detect.');
-  process.exit(0);
+let report;
+try {
+  report = JSON.parse(fs.readFileSync(reportPath, 'utf-8'));
+} catch (e) {
+  if (e.code === 'ENOENT') { console.log('No Playwright report found — nothing to detect.'); process.exit(0); }
+  throw e;
 }
-
-const report = JSON.parse(fs.readFileSync(reportPath, 'utf-8'));
 const flakyTests = [];
 const brokenTests = [];
 

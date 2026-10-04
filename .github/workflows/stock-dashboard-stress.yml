@@ -19,7 +19,11 @@ on:
         required: false
         default: '8'
   schedule:
-    - cron: '9 3 * * *'
+    - cron: '9 3 * * 1' # semanal, segunda 03:09 UTC
+
+concurrency:
+  group: stock-dashboard-stress
+  cancel-in-progress: false
 
 permissions:
   contents: read
@@ -37,8 +41,8 @@ jobs:
           - e2e/admin/stock-dashboard-visual.spec.ts
           - e2e/admin/stock-dashboard-empty.spec.ts
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -54,10 +58,12 @@ jobs:
           CI: true
           REPEAT: ${{ github.event.inputs.repeat || '200' }}
           MAX_AVG: ${{ github.event.inputs.max_avg_seconds || '8' }}
+          SPEC: ${{ matrix.spec }}
         run: |
           set -eo pipefail
           START=$(date +%s)
-          npx playwright test "${{ matrix.spec }}" \
+          npx playwright test "$SPEC" \
+            --project=chromium-public \
             --repeat-each="$REPEAT" \
             --workers=2 \
             --reporter=line
@@ -72,10 +78,10 @@ jobs:
 
       - name: Upload report on failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: stress-report-${{ strategy.job-index }}
           path: |
             playwright-report/
             test-results/
-          retention-days: 7
+          retention-days: 14

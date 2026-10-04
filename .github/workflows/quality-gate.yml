@@ -22,19 +22,11 @@ jobs:
       NODE_OPTIONS: --max-old-space-size=4096
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci --prefer-offline
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
 
       # GATE 0: SSOT Supabase — bloqueia se project ID errado estiver em client.ts
       # Previne reincidência do incidente 401 de produção (2026-06-11).
@@ -68,6 +60,30 @@ jobs:
       # GATE 2.3: `as any` gate — freeze baseline, prevent regressions
       - name: Gate 2.3 — as any baseline (zero regressions)
         run: node scripts/check-any-type-baseline.mjs
+
+      # GATE 2.3.1: TODO/FIXME/HACK ratchet (bloqueante) — auditoria 20-dim 2026-10-02.
+      # Congela os marcadores de débito existentes em .todo-baseline.json; falha só
+      # em regressão (mesma política do Gate 2.3).
+      - name: Gate 2.3.1 — TODO baseline (bloqueante)
+        run: node scripts/check-todo-baseline.mjs
+
+      # GATE 2.3.2: `as <Tipo>` ratchet (bloqueante) — auditoria 20-dim 2026-10-02.
+      # Congela as ~2.1k asserções de tipo legadas (excluindo as const/unknown/any)
+      # em .as-assertions-baseline.json; falha só em regressão.
+      - name: Gate 2.3.2 — as-assertions baseline (bloqueante)
+        run: node scripts/check-as-assertions-baseline.mjs
+
+      # GATE 2.3.3: file-size ratchet (bloqueante) — auditoria 20-dim 2026-10-02.
+      # Congela os arquivos src/ com >500 linhas em .file-size-baseline.json;
+      # falha em arquivo novo acima do limite ou crescimento de arquivo baseline.
+      - name: Gate 2.3.3 — File-size baseline (bloqueante)
+        run: node scripts/check-file-size-baseline.mjs
+
+      # GATE 2.3.4: noUncheckedIndexedAccess ratchet (bloqueante) — auditoria 20-dim.
+      # O flag ainda não entra no tsconfig (889 erros legados); este gate congela a
+      # contagem em .indexed-access-baseline.json e falha se ela crescer.
+      - name: Gate 2.3.4 — Indexed-access ratchet (bloqueante)
+        run: node scripts/check-indexed-access-ratchet.mjs
 
       # GATE 2.4: Migration path references — bloqueia referências novas a arquivos
       # inexistentes sob supabase/migrations{,-snapshot}/ e qa/migrations-draft/.
@@ -119,6 +135,14 @@ jobs:
         run: |
           BASE="${{ github.event.pull_request.base.sha || 'HEAD~1' }}"
           node scripts/check-types-inventory-drift.mjs --base "$BASE"
+      # E41 — TSC ratchet file guard (PR-only, bloqueante)
+      # Previne que um PR aumente .tsc-ratchet-baseline sem label ratchet-override.
+      - name: Gate 4.6 — TSC ratchet file guard (bloqueante em PR)
+        if: github.event_name == 'pull_request'
+        run: sh scripts/tsc-unused-ratchet.sh --check-ratchet
+        env:
+          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GITHUB_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
 
       # GATE 3: Build (zero build errors)
       - name: Build check
@@ -132,8 +156,12 @@ jobs:
       # (3) limites por chunk crítico + regressão >15% vs snapshot em
       # bundle-size-baseline.json.
       # Para atualizar após refactor intencional: node scripts/check-bundle-size.mjs --update-baseline
+      # E41 — Bundle ratchet: em PR também verifica se o ARQUIVO de baseline aumentou.
       - name: Gate 3.5 — Bundle size check (per-chunk + regression)
-        run: node scripts/check-bundle-size.mjs
+        run: node scripts/check-bundle-size.mjs --check-ratchet
+        env:
+          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GITHUB_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
 
   # GATE 4: Unit tests (fast — no network)
   unit-tests:
@@ -142,17 +170,9 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci --prefer-offline
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
 
       - name: Run unit tests
         run: npm run test:ci-core

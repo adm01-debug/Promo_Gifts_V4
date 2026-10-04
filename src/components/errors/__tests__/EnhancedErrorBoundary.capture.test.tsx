@@ -59,7 +59,7 @@ describe('EnhancedErrorBoundary — captura da causa real', () => {
     );
     expect(boundaryCalls.length).toBeGreaterThanOrEqual(2);
 
-    const errorArg = boundaryCalls[0]?.[1];
+    const errorArg = boundaryCalls[0]?.find((a) => a instanceof Error);
     expect(errorArg).toBeInstanceOf(Error);
     expect((errorArg as Error).message).toBe('kaboom-cause-real');
     expect(typeof (errorArg as Error).stack).toBe('string');

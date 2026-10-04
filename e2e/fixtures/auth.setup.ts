@@ -39,6 +39,15 @@ setup('authenticate', async ({ page }) => {
   const password = process.env.E2E_USER_PASSWORD;
 
   if (!email || !password) {
+    // E21 — modo estrito: em CI sem mock, credentials ausentes = falha imediata.
+    if (process.env.CI) {
+      throw new Error(
+        '[auth.setup] E21 — modo estrito: E2E_USER_EMAIL/E2E_USER_PASSWORD ausentes em CI.\n' +
+        'Configure os secrets em Settings → Secrets and variables → Actions.\n' +
+        'Para testes sem autenticação real, use E2E_MOCK_AUTH=1.',
+      );
+    }
+    // Fora do CI, graceful degradation mantida.
     fs.writeFileSync(STORAGE, JSON.stringify({ cookies: [], origins: [] }, null, 2), 'utf-8');
     setup.info().annotations.push({
       type: 'skip-reason',
@@ -51,10 +60,11 @@ setup('authenticate', async ({ page }) => {
     await loginViaUI(page, { email, password });
     await page.context().storageState({ path: STORAGE });
   } catch (err) {
-    // Login falhou (credenciais inválidas, Supabase indisponível, etc.).
-    // Escreve storageState vazio para que specs com requireAuth() sejam
-    // pulados em vez de travar o smoke gate com erro de setup.
     const reason = err instanceof Error ? err.message : String(err);
+    // E21 — modo estrito: em CI, login falhou = falha imediata (não skip silencioso).
+    if (process.env.CI) {
+      throw new Error(`[auth.setup] E21 — login falhou em CI: ${reason}`);
+    }
     console.warn(`[auth.setup] Login falhou — specs autenticados serão pulados. Motivo: ${reason}`);
     fs.writeFileSync(STORAGE, JSON.stringify({ cookies: [], origins: [] }, null, 2), 'utf-8');
     setup.info().annotations.push({

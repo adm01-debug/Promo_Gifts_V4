@@ -16,20 +16,14 @@ concurrency:
 jobs:
   quality-gate:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 45
     env:
       NODE_OPTIONS: --max-old-space-size=4096
+      E2E_HAS_CREDS: ${{ secrets.E2E_USER_EMAIL != '' && secrets.E2E_USER_PASSWORD != '' }}
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-          
-      - name: Install dependencies
-        run: npm ci
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
 
       - name: Dependency vulnerability policy
         run: npm run check:dependency-audit
@@ -110,26 +104,49 @@ jobs:
 
 
 
-
       - name: Run Unit & Integration Tests
         run: npm run test:quality
 
       - name: Hook tests (tests/hooks/** — excluído de test:quality, ver package.json)
         run: TZ=America/Sao_Paulo npx vitest run tests/hooks --reporter=dot
 
+      # E23/E27 — sem credenciais E2E no repositório: em PR apenas os specs
+      # autenticados são pulados (gate E23 monitora); em push para main a
+      # ausência de credenciais falha obrigatoriamente.
+      - name: Guard — credenciais E2E
+        run: |
+          if [ "${E2E_HAS_CREDS}" != "true" ]; then
+            if [ "${{ github.event_name }}" = "pull_request" ]; then
+              echo "::warning::Credenciais E2E ausentes neste PR — specs autenticados pulados (gate E23 segue monitorando)."
+            else
+              echo "::error::Credenciais E2E ausentes em push para main (E2E_USER_EMAIL / E2E_USER_PASSWORD). Configure os secrets do repositório."
+              exit 1
+            fi
+          fi
+
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
-      - name: Run E2E Critical Tests
-        run: npm run test:e2e:critical
+      - name: Run E2E Critical Tests — specs públicos
+        run: npx playwright test --project=chromium-public e2e/login.spec.ts e2e/mockup-generate.spec.ts
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+
+      # R5 — credenciais E2E escopadas apenas ao step que as usa.
+      - name: Run E2E Critical Tests — specs autenticados
+        if: ${{ env.E2E_HAS_CREDS == 'true' }}
+        run: npx playwright test --project=chromium-public e2e/catalog.spec.ts e2e/kit-builder.spec.ts
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
 
   security-audit:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Audit Credentials
         run: npm run audit:credentials

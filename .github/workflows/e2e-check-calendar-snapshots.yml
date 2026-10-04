@@ -23,12 +23,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
           bun-version: latest
       - name: Cache Playwright browsers
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ hashFiles('bun.lock', 'package-lock.json') }}
@@ -53,7 +53,7 @@ jobs:
       - name: Upload diffs (antes/depois)
         if: failure()
         id: upload_diffs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: calendar-visual-diffs
           path: |
@@ -61,14 +61,16 @@ jobs:
             test-results/**/*-actual.png
             test-results/**/*-expected.png
           if-no-files-found: ignore
+          retention-days: 7
       - name: Upload Playwright HTML report
         if: failure()
         id: upload_report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: calendar-playwright-report
           path: playwright-report/**
           if-no-files-found: ignore
+          retention-days: 7
 
       - name: Job Summary com links de artefatos
         if: failure()

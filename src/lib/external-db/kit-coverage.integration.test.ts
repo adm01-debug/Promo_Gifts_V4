@@ -20,9 +20,10 @@ import { computeKitCoverage, compareCoverage } from './kit-coverage';
 
 const INTEGRATION_ENABLED = process.env.RUN_INTEGRATION_TESTS === '1';
 const MIN_VIEW_AVG_COVERAGE_PCT = 70;
+// FIX 2026-10-01: capacity_ml removido de product_kit_components em 2026-06-27 (42703).
 const KIT_SELECT_FIELDS =
   'id, component_name, component_description, material, color, primary_image_url, images, ' +
-  'height_mm, width_mm, length_mm, diameter_mm, circumference_mm, weight_g, capacity_ml, ' +
+  'height_mm, width_mm, length_mm, diameter_mm, circumference_mm, weight_g, ' +
   'component_type_code, supplier_component_code, personalization_notes, display_order';
 
 describe.skipIf(!INTEGRATION_ENABLED)(

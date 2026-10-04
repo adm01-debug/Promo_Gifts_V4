@@ -1,15 +1,5 @@
 name: Production Health Check
 
-# Verifica a saúde do projeto após merge em main.
-# Objetivo: detectar IMEDIATAMENTE se o estado do repositório está inconsistente
-# após um merge — especialmente se o Lovable reverteu arquivos SSOT.
-#
-# Este workflow NÃO substitui os deploy gates (que rodam em PR).
-# Ele é a última linha de defesa: roda APÓS o merge e alerta se algo escapou.
-#
-# Motivação: incidente 401 em produção (2026-06-11) — não havia nenhum check
-# pós-merge que detectasse que o CURRENT_PROJECT_ID estava errado.
-
 on:
   push:
     branches: [main]
@@ -30,15 +20,13 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version-file: .nvmrc
 
-      # CHECK 1: SSOT Supabase — o mais crítico
-      # Se o Lovable reverteu client.ts, este step falha imediatamente
       - name: Check 1 — SSOT Supabase (project ID canônico)
         id: ssot-check
         run: node scripts/validate-supabase-config.mjs
@@ -46,7 +34,6 @@ jobs:
           VITE_SUPABASE_URL: https://placeholder.supabase.co
           VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
 
-      # CHECK 2: Product type fields — campos críticos do catálogo
       - name: Check 2 — Product type fields (price, shortDescription, category_id)
         id: product-fields-check
         run: node scripts/check-product-type-fields.mjs
@@ -54,8 +41,6 @@ jobs:
           VITE_SUPABASE_URL: https://placeholder.supabase.co
           VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
 
-      # CHECK 3: Verifica se o arquivo .lovableignore está íntegro
-      # (não foi apagado ou esvaziado pelo Lovable)
       - name: Check 3 — .lovableignore protege arquivos SSOT
         id: lovableignore-check
         run: |
@@ -68,7 +53,6 @@ jobs:
             exit 1
           fi
           
-          # Verifica se os arquivos críticos estão no .lovableignore
           CRITICAL_FILES=(
             "src/integrations/supabase/client.ts"
             "scripts/validate-supabase-config.mjs"
@@ -91,7 +75,6 @@ jobs:
           
           echo "✅ .lovableignore protege todos os arquivos SSOT críticos"
 
-      # CHECK 4: Verifica se CODEOWNERS inclui arquivos SSOT
       - name: Check 4 — CODEOWNERS protege arquivos SSOT
         id: codeowners-check
         run: |
@@ -101,7 +84,7 @@ jobs:
           if [ ! -f "$CODEOWNERS_FILE" ]; then
             echo "⚠️ .github/CODEOWNERS não encontrado — proteção de revisão ausente"
             echo "::warning::CODEOWNERS ausente — PRs que alteram arquivos SSOT não precisarão de aprovação"
-            exit 0  # Não bloqueante — CODEOWNERS depende de branch protection estar ativa
+            exit 0
           fi
           
           if ! grep -q "src/integrations/supabase/" "$CODEOWNERS_FILE"; then
@@ -111,7 +94,6 @@ jobs:
             echo "✅ CODEOWNERS cobre src/integrations/supabase/"
           fi
 
-      # SUMÁRIO: Status consolidado de todos os checks
       - name: Step Summary — Consolidado
         if: always()
         env:
@@ -164,7 +146,6 @@ jobs:
             echo "Documentação: [CLAUDE.md](CLAUDE.md) | [.lovableignore](.lovableignore)"
           } >> "$GITHUB_STEP_SUMMARY"
 
-      # ALERTA: Notificação Slack opcional em falha
       - name: Notificação Slack em falha
         if: failure() && env.SENTINEL_SLACK_WEBHOOK != ''
         env:

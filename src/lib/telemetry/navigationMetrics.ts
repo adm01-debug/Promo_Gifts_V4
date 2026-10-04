@@ -8,6 +8,8 @@
  *   - dom_interactive (domInteractive - startTime)
  *   - dom_complete    (domComplete - startTime)
  *   - cls            (soma de layout-shifts sem interação do usuário)
+ *   - lcp            (última largest-contentful-paint até a página esconder/sair)
+ *   - inp_approx     (pior duração de evento de interação — aproximação do INP)
  *   - tti_approx     (heurística: `domInteractive` + primeira janela ≥ 5s sem longtask)
  *   - route_change   (ms entre location.pathname mudar e rAF pós-commit)
  *
@@ -30,6 +32,8 @@ type MetricName =
   | 'cls'
   | 'dom_complete'
   | 'dom_interactive'
+  | 'inp_approx'
+  | 'lcp'
   | 'route_change'
   | 'ttfb'
   | 'tti_approx';
@@ -46,6 +50,10 @@ const BUFFER: MetricEvent[] = [];
 const BUFFER_MAX = 40;
 let started = false;
 let clsValue = 0;
+let lcpValue = 0;
+let lcpReported = false;
+let worstInteractionMs = 0;
+let inpReported = false;
 let ttiTimer: ReturnType<typeof setTimeout> | null = null;
 let ttiReported = false;
 
@@ -89,6 +97,10 @@ function rateWebVital(metric: MetricName, value: number): MetricEvent['rating'] 
   if (metric === 'ttfb')
     return value <= 800 ? 'good' : value <= 1800 ? 'needs-improvement' : 'poor';
   if (metric === 'cls') return value <= 0.1 ? 'good' : value <= 0.25 ? 'needs-improvement' : 'poor';
+  if (metric === 'lcp')
+    return value <= 2500 ? 'good' : value <= 4000 ? 'needs-improvement' : 'poor';
+  if (metric === 'inp_approx')
+    return value <= 200 ? 'good' : value <= 500 ? 'needs-improvement' : 'poor';
   if (metric === 'tti_approx' || metric === 'dom_interactive')
     return value <= 2500 ? 'good' : value <= 4000 ? 'needs-improvement' : 'poor';
   if (metric === 'route_change')
@@ -171,6 +183,64 @@ function observeCLS(): void {
   }
 }
 
+function observeLCP(): void {
+  if (typeof PerformanceObserver === 'undefined') return;
+  try {
+    const po = new PerformanceObserver((list) => {
+      const entries = list.getEntries();
+      const last = entries[entries.length - 1];
+      if (last) lcpValue = last.startTime;
+    });
+    po.observe({ type: 'largest-contentful-paint', buffered: true } as PerformanceObserverInit);
+
+    const report = () => {
+      if (lcpReported || lcpValue <= 0) return;
+      lcpReported = true;
+      record('lcp', lcpValue);
+    };
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') report();
+    });
+    window.addEventListener('pagehide', report, { once: true });
+  } catch {
+    /* Some UAs sem suporte — ignore. */
+  }
+}
+
+function observeINP(): void {
+  if (typeof PerformanceObserver === 'undefined') return;
+  try {
+    const po = new PerformanceObserver((list) => {
+      for (const entry of list.getEntries() as PerformanceEntry[]) {
+        const e = entry as PerformanceEntry & { duration?: number; interactionId?: number };
+        if (
+          typeof e.interactionId === 'number' &&
+          e.interactionId > 0 &&
+          typeof e.duration === 'number' &&
+          e.duration > worstInteractionMs
+        ) {
+          worstInteractionMs = e.duration;
+        }
+      }
+    });
+    // durationThreshold 16ms (mínimo do Event Timing) — threshold maior
+    // perderia interações rápidas e subestimaria o INP.
+    po.observe({ type: 'event', buffered: true, durationThreshold: 16 } as PerformanceObserverInit);
+
+    const report = () => {
+      if (inpReported || worstInteractionMs <= 0) return;
+      inpReported = true;
+      record('inp_approx', worstInteractionMs);
+    };
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') report();
+    });
+    window.addEventListener('pagehide', report, { once: true });
+  } catch {
+    /* Event Timing API ausente (Firefox/Safari antigos) — ignore. */
+  }
+}
+
 function observeTTI(): void {
   if (typeof PerformanceObserver === 'undefined') return;
   const IDLE_WINDOW = 5000;
@@ -237,6 +307,8 @@ export function initNavigationMetrics(): void {
   const run = () => {
     observeNavigationTiming();
     observeCLS();
+    observeLCP();
+    observeINP();
     observeTTI();
   };
 
@@ -252,6 +324,10 @@ export function resetForTests(): void {
   BUFFER.length = 0;
   started = false;
   clsValue = 0;
+  lcpValue = 0;
+  lcpReported = false;
+  worstInteractionMs = 0;
+  inpReported = false;
   ttiReported = false;
   routeChangeStart = null;
   lastPath = null;

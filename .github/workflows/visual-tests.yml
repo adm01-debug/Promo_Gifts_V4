@@ -46,8 +46,8 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
       with:
         node-version-file: '.nvmrc'
         cache: 'npm'
@@ -67,11 +67,11 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
 
-    - name: Run Playwright Visual Tests (auto-create missing baselines only)
-      # `--update-snapshots=missing` (Playwright ≥1.50) gera PNGs APENAS para specs
-      # sem baseline ainda. Specs com baseline existente continuam validando regressão
-      # normalmente (fail em diff) — evita churn e protege baselines já aprovados.
-      run: npx playwright test --update-snapshots=missing --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} e2e/flows/99-auth-ui-baseline.spec.ts e2e/flows/supplier-comparison-visual.spec.ts e2e/flows/31-promoflix-player.spec.ts e2e/tooltips-a11y.spec.ts e2e/optimized-image-visual.spec.ts e2e/routes/app/replenishment-grid-visual.spec.ts e2e/routes/app/novelty-grid-visual.spec.ts e2e/routes/app/novelty-card-variations.spec.ts e2e/flows/voice-tooltip.spec.ts e2e/product-card-visual-regression.spec.ts e2e/catalog/product-card-badges-visual.spec.ts e2e/catalog/product-card-to-superfilter.spec.ts e2e/catalog/swatch-picker-v2-visual-baseline.spec.ts e2e/catalog/swatch-picker-v2-focus-and-quickview.spec.ts e2e/catalog/superfiltro-toolbar-actions-alignment.spec.ts e2e/flows/03d-superfiltro-toolbar-alignment.spec.ts e2e/admin/stock-dashboard-visual.spec.ts e2e/admin/stock-dashboard-layout.spec.ts e2e/admin/stock-health-badges.spec.ts e2e/quotes/quote-builder-scroll-and-sidebar.spec.ts
+    - name: Run Playwright Visual Tests
+      # E36: Removido --update-snapshots (incondicional) e --update-snapshots=missing.
+      # Baselines devem estar commitados (E43). Specs sem baseline falham
+      # explicitamente, forçando commit da baseline antes de aprovar o PR.
+      run: npx playwright test --project=chromium-public --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} e2e/flows/99-auth-ui-baseline.spec.ts e2e/flows/supplier-comparison-visual.spec.ts e2e/flows/31-promoflix-player.spec.ts e2e/tooltips-a11y.spec.ts e2e/optimized-image-visual.spec.ts e2e/routes/app/replenishment-grid-visual.spec.ts e2e/routes/app/novelty-grid-visual.spec.ts e2e/routes/app/novelty-card-variations.spec.ts e2e/flows/voice-tooltip.spec.ts e2e/product-card-visual-regression.spec.ts e2e/catalog/product-card-badges-visual.spec.ts e2e/catalog/product-card-to-superfilter.spec.ts e2e/catalog/swatch-picker-v2-visual-baseline.spec.ts e2e/catalog/swatch-picker-v2-focus-and-quickview.spec.ts e2e/catalog/superfiltro-toolbar-actions-alignment.spec.ts e2e/flows/03d-superfiltro-toolbar-alignment.spec.ts e2e/admin/stock-dashboard-visual.spec.ts e2e/admin/stock-dashboard-layout.spec.ts e2e/admin/stock-health-badges.spec.ts e2e/quotes/quote-builder-scroll-and-sidebar.spec.ts
       env:
         CI: true
 
@@ -107,7 +107,7 @@ jobs:
 
     - name: Upload Playwright report
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
       with:
         name: playwright-report-shard-${{ matrix.shardIndex }}
         path: playwright-report/

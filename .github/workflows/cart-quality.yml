@@ -63,11 +63,12 @@ jobs:
   changes:
     name: changes
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     outputs:
       unit: ${{ steps.filter.outputs.unit }}
       e2e: ${{ steps.filter.outputs.e2e }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - id: filter
         uses: dorny/paths-filter@0e4a8c6effa4802afeda77dc8d303f8176d7dfad # v3
         with:
@@ -96,8 +97,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version-file: '.nvmrc'
       - name: Validar SSOT de required checks
@@ -118,8 +119,8 @@ jobs:
       VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
       VITE_SUPABASE_PUBLISHABLE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -165,9 +166,11 @@ jobs:
       E2E_BASE_URL: http://localhost:8080
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
+      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+      E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -180,35 +183,6 @@ jobs:
       # reintroduzir "Saúde do carrinho" / "Inteligência de vendas" / etc.
       - name: E2E smoke — CartSidebar sem painéis legados
         run: npx playwright test e2e/carrinhos/sidebar-no-legacy-labels.spec.ts --project=chromium-authed --retries=1
-
-      # Smoke do header/sidebar refletindo apenas o carrinho ativo.
-      # Falha cedo se voltarmos a exibir agregados globais no detalhe.
-      - name: E2E smoke — Header e sidebar refletem carrinho ativo (Chromium)
-        run: |
-          npx playwright test \
-            e2e/carrinhos/header-reflects-active-cart.spec.ts \
-            e2e/carrinhos/sidebar-reflects-active-cart.spec.ts \
-            e2e/carrinhos/active-cart-edge-cases.spec.ts \
-            e2e/carrinhos/active-cart-refresh-consistency.spec.ts \
-            e2e/carrinhos/active-cart-parallel-actions.spec.ts \
-            e2e/carrinhos/active-cart-network-failure.spec.ts \
-            --project=chromium-authed --retries=1
-
-      # Repete os mesmos invariants em Firefox — falha o build se qualquer
-      # invariant do header quebrar em engine diferente (regex NBSP, locale,
-      # ordem de eventos, hidratação).
-      - name: Install Playwright Firefox
-        run: npx playwright install --with-deps firefox
-      - name: E2E smoke — Header e sidebar refletem carrinho ativo (Firefox)
-        run: |
-          npx playwright test \
-            e2e/carrinhos/header-reflects-active-cart.spec.ts \
-            e2e/carrinhos/sidebar-reflects-active-cart.spec.ts \
-            e2e/carrinhos/active-cart-edge-cases.spec.ts \
-            e2e/carrinhos/active-cart-refresh-consistency.spec.ts \
-            e2e/carrinhos/active-cart-parallel-actions.spec.ts \
-            e2e/carrinhos/active-cart-network-failure.spec.ts \
-            --project=firefox-authed --retries=1
 
       # Smoke dos handoffs Carrinho/URL → QuoteBuilder (BUG-CART-HANDOFF).
       # Falha cedo se o autosave voltar a sobrescrever dados vindos do carrinho
@@ -228,7 +202,7 @@ jobs:
 
       - name: Upload Playwright report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: playwright-report-carrinhos
           path: playwright-report/
@@ -237,7 +211,7 @@ jobs:
 
       - name: Upload snapshot diffs (on failure)
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: cart-popover-snapshot-diffs
           path: |

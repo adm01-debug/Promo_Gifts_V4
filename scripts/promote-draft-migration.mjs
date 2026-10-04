@@ -263,7 +263,12 @@ function main() {
   }
 
   // ---- Aplicação ----
-  writeFileSync(targetPath, sql);
+  try {
+    writeFileSync(targetPath, sql, { flag: 'wx' });
+  } catch (e) {
+    if (e.code === 'EEXIST') { err(`destino já existe (corrida de escrita): supabase/migrations/${targetName}`); process.exit(1); }
+    throw e;
+  }
   ok(`Migration criada: supabase/migrations/${targetName}`);
 
   if (!opts.keepDraft) {
@@ -454,7 +459,6 @@ function readDiffCache(ttlSeconds) {
   try {
     const key = computeDiffCacheKey();
     const p = join(DIFF_CACHE_DIR, key);
-    if (!existsSync(p)) return null;
     const st = statSync(p);
     const ageSec = (Date.now() - st.mtimeMs) / 1000;
     if (ageSec > ttlSeconds) return { stale: true, ageSec, path: p };
