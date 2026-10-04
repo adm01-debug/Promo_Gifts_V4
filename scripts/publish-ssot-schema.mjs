@@ -16,7 +16,7 @@
  * Exit codes: 0 ok / 1 drift em --check / 2 I-O
  */
 
-import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'fs';
+import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync } from 'fs';
 import { dirname, join } from 'path';
 
 const SRC = 'schemas/ssot-report.schema.json';
