@@ -91,7 +91,6 @@ jobs:
 
       - name: Baseline SECURITY DEFINER ACL (antes)
         if: steps.guard.outputs.enabled == 'true' && steps.drafts.outputs.count != '0'
-        continue-on-error: true
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}

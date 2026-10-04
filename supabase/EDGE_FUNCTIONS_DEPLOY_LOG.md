@@ -39,6 +39,7 @@ manualmente, no mesmo dia, com o método `emergência-MCP`.
 | 2026-09-27T11:58:11.497Z | `semantic-search` | 269 | `7297c51db685883e0cd3401e06af79f3bdde2ccb` | 36315788137 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
 | 2026-09-27T11:58:11.558Z | `visual-search` | 272 | `7297c51db685883e0cd3401e06af79f3bdde2ccb` | 36315788137 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
 | 2026-10-01T12:02:29.052Z | `crm-db-bridge` | 298 | `de1c5f949145b77d60ed2460a743cd070c925472` | 36858924000 | GitHub Actions (disparado por adm01-debug) | push |
+| 2026-10-02T14:19:28.343Z | `secure-upload` | 277 | `6b2156c6604ba5c933c6c1c169bc73336efb003a` | 37018857101 | GitHub Actions (disparado por adm01-debug) | push |
 
 ## Retro-registro (casos anteriores a este ledger, E67)
 

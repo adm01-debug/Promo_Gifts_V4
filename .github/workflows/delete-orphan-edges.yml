@@ -190,7 +190,8 @@ jobs:
             echo "Deleted successfully: $PASS"
             echo "Failed:               $FAIL"
             if [[ $FAIL -gt 0 ]]; then
-              echo "::warning::Algumas edges falharam ao deletar (podem já não existir)."
+              echo "::error::$FAIL edge(s) falharam ao deletar."
+              exit 1
             fi
           fi
 

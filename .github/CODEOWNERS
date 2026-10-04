@@ -32,10 +32,19 @@ scripts/                                        @adm01-debug
 # ============================================================
 # Ratchet baselines — aumentar sem aprovação é regressão silenciosa
 # (E41 — PLANO_WORKFLOWS_CI_100_ETAPAS_2026-09-26.md)
+# (E62 — inclui todos os baselines de qualidade)
 # ============================================================
 .tsc-ratchet-baseline                          @adm01-debug
 bundle-size-baseline.json                      @adm01-debug
 docs/TYPES_INVENTORY_REMOVAL_ALLOWLIST.json    @adm01-debug
+.migration-refs-baseline.json                 @adm01-debug
+.todo-baseline.json                           @adm01-debug
+.audit-credentials-baseline.json              @adm01-debug
+.as-assertions-baseline.json                  @adm01-debug
+.any-type-baseline.json                       @adm01-debug
+.invoke-direct-baseline.json                  @adm01-debug
+.outline-none-baseline.json                   @adm01-debug
+.security/supabase-linter-baseline.json       @adm01-debug
 
 # ============================================================
 # Inventário de segredos (E98) — SSOT de secrets.* e vars.*

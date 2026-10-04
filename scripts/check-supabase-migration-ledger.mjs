@@ -10,7 +10,7 @@
  * `db push` — ele exige reconciliação semântica e autorização explícita.
  */
 import { readFileSync, writeFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 function normalizedVersion(value) {
@@ -23,8 +23,13 @@ function sample(values, limit = 20) {
 
 /**
  * Classifica a saída JSON de `supabase migration list --linked --output-format json`.
+ *
+ * @param {object} document  - Resultado de parseSupabaseMigrationLedgerOutput
+ * @param {object} [opts]
+ * @param {string[]} [opts.remoteOnlyAllowlist=[]] - Versões remote_only conhecidas que não bloqueiam.
+ *   Usado para versões legacy (ex: 8 dígitos) que a CLI ignora no diretório local.
  */
-export function auditSupabaseMigrationLedger(document) {
+export function auditSupabaseMigrationLedger(document, { remoteOnlyAllowlist = [] } = {}) {
   if (!document || typeof document !== 'object' || !Array.isArray(document.migrations)) {
     return {
       ok: false,
@@ -60,6 +65,9 @@ export function auditSupabaseMigrationLedger(document) {
     }
   });
 
+  const allowlistedRemoteOnly = remoteOnly.filter((v) => remoteOnlyAllowlist.includes(v));
+  const blockingRemoteOnly = remoteOnly.filter((v) => !remoteOnlyAllowlist.includes(v));
+
   const summary = {
     schema_version: 1,
     source: 'supabase migration list --linked --output-format json',
@@ -67,18 +75,23 @@ export function auditSupabaseMigrationLedger(document) {
     matched,
     local_only_count: localOnly.length,
     remote_only_count: remoteOnly.length,
+    blocking_remote_only_count: blockingRemoteOnly.length,
+    allowlisted_remote_only_count: allowlistedRemoteOnly.length,
     mismatched_count: mismatched.length,
     malformed_row_count: malformedRows.length,
     local_only_sample: sample(localOnly),
     remote_only_sample: sample(remoteOnly),
+    blocking_remote_only_sample: sample(blockingRemoteOnly),
+    allowlisted_remote_only_sample: sample(allowlistedRemoteOnly),
     mismatched_sample: sample(mismatched),
     malformed_row_sample: sample(malformedRows),
   };
 
+  // local_only (migrations staged/pendentes) é estado normal e não bloqueia.
+  // Apenas remote_only não-allowlistado, mismatched e malformed bloqueiam.
   return {
     ok:
-      localOnly.length === 0 &&
-      remoteOnly.length === 0 &&
+      blockingRemoteOnly.length === 0 &&
       mismatched.length === 0 &&
       malformedRows.length === 0,
     error: null,
@@ -160,7 +173,18 @@ export function runCli(argv = process.argv.slice(2)) {
     return { exitCode: 2, result };
   }
 
-  const result = auditSupabaseMigrationLedger(document);
+  let remoteOnlyAllowlist = [];
+  try {
+    const allowlistPath = resolve(
+      dirname(fileURLToPath(import.meta.url)),
+      'migration-ledger-remote-only-allowlist.json',
+    );
+    remoteOnlyAllowlist = JSON.parse(readFileSync(allowlistPath, 'utf8')).versions ?? [];
+  } catch {
+    // allowlist ausente é equivalente a lista vazia — não bloqueia
+  }
+
+  const result = auditSupabaseMigrationLedger(document, { remoteOnlyAllowlist });
   const output = JSON.stringify(result, null, 2) + '\n';
   if (summaryPath) writeFileSync(resolve(summaryPath), output, 'utf8');
   else process.stdout.write(output);
