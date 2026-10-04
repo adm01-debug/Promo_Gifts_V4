@@ -76,10 +76,31 @@ jobs:
               'SLA: 24h para findings tipo (c), 7 dias para tipos (a)/(b).',
             ].join('\n');
 
-            await github.rest.issues.create({
+            // Dedupe por label (o título muda a cada run — contém a data):
+            // se já existe issue aberta com label `gitleaks`, comenta nela em
+            // vez de criar um ticket novo a cada falha (alarm fatigue).
+            const { data: openIssues } = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title,
-              body,
-              labels: ['security', 'priority-high', 'gitleaks'],
+              state: 'open',
+              labels: 'gitleaks',
+              per_page: 1,
             });
+            const existing = openIssues[0];
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body: `Nova falha detectada — ${title}\n\n${body}`,
+              });
+              core.info(`Issue aberta #${existing.number} reutilizada (label gitleaks).`);
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels: ['security', 'priority-high', 'gitleaks'],
+              });
+            }

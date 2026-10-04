@@ -564,6 +564,126 @@ export const WebhookInboundEnvelopeSchemaV1 = z.object({
 }).passthrough();
 
 // ===========================================================================
+// crm-callback-reprocess
+// ===========================================================================
+export const CrmCallbackReprocessSchemaV1 = z.union([
+  z.object({ event_id: uuidSchema }),
+  z.object({
+    batch: z.literal(true),
+    external_quote_id: uuidSchema.optional(),
+    since: z.string().datetime({ offset: true }).optional(),
+    limit: z.number().int().min(1).max(500).default(100),
+  }),
+]);
+
+// ===========================================================================
+// intelligence-substitute-applied
+// ===========================================================================
+const SubstituteAxisEnum = z.enum(["categoryId", "supplierId", "productId"]);
+const SubstituteCulpritEnum = z.enum([
+  "categoryId",
+  "supplierId",
+  "productId",
+  "window",
+  "intersection",
+]);
+
+export const IntelligenceSubstituteAppliedSchemaV1 = z.object({
+  axis: SubstituteAxisEnum,
+  substituteId: z.string().min(1).max(128),
+  substituteName: z.string().max(255).nullable().optional(),
+  days: z.number().int().min(1).max(365),
+  culpritBefore: SubstituteCulpritEnum.nullable().optional(),
+  clientTs: z.string().datetime().optional(),
+});
+
+// ===========================================================================
+// magazine-import-local
+// ===========================================================================
+const MagazineImportItemSchema = z.object({
+  localItemId: z.string().min(1).max(200),
+  productId: uuidSchema,
+  productSnapshot: z.record(z.unknown()),
+  variantColorName: z.string().nullable().optional(),
+  position: z.number().int().min(0).max(1_000_000_000),
+  pageNumber: z.number().int().min(1).max(200).nullable().optional(),
+  overrides: z.record(z.unknown()).optional(),
+});
+
+const MagazineImportEntrySchema = z
+  .object({
+    localId: z.string().min(1).max(200),
+    title: z.string().min(1).max(200).default("Nova Revista"),
+    subtitle: z.string().max(300).default(""),
+    templateId: z.string().default("editorial-vogue"),
+    branding: z.record(z.unknown()).optional(),
+    content: z.record(z.unknown()).optional(),
+    pageOrder: z.unknown().nullable().optional(),
+    items: z.array(MagazineImportItemSchema).max(500).default([]),
+    status: z.enum(["draft", "published", "archived"]).default("draft"),
+  })
+  .superRefine((magazine, context) => {
+    for (const field of ["localItemId", "productId", "position"] as const) {
+      if (new Set(magazine.items.map((item) => item[field])).size !== magazine.items.length) {
+        context.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `items.${field} deve ser único dentro da revista`,
+        });
+      }
+    }
+  });
+
+export const MagazineImportLocalSchemaV1 = z.object({
+  magazines: z.array(MagazineImportEntrySchema).max(200),
+});
+
+// ===========================================================================
+// magazine-public-react / magazine-public-view / magazine-reader-state-write
+// ===========================================================================
+export const MagazinePublicReactSchemaV1 = z.object({
+  token: z.string().min(24).max(64).regex(/^[a-f0-9]+$/i),
+  fingerprint: z.string().min(8).max(128),
+  kind: z.enum(["like", "love", "fire", "idea"]),
+  pageIndex: z.number().int().min(0).max(9999).nullable().optional(),
+  itemId: uuidSchema.nullable().optional(),
+});
+
+export const MagazinePublicViewSchemaV1 = z.object({
+  token: z.string().min(24).max(64).regex(/^[a-f0-9]+$/i, "token deve ser hexadecimal"),
+});
+
+export const MagazineReaderStateWriteSchemaV1 = z.object({
+  token: z.string().min(24).max(64).regex(/^[a-f0-9]+$/i),
+  fingerprint: z.string().min(8).max(128),
+  lastPageIndex: z.number().int().min(0).max(9999).optional(),
+  bookmarks: z.array(z.number().int().min(0)).max(500).optional(),
+  sessionId: z.string().max(128).optional(),
+});
+
+// ===========================================================================
+// product-visual-search
+// ===========================================================================
+export const ProductVisualSearchSchemaV1 = z.object({
+  imageBase64: z.string().min(10, "Image is required").max(10_000_000, "Image too large"),
+  searchTerms: z.array(z.string()).optional(),
+  categoryFilter: z.string().optional(),
+});
+
+// ===========================================================================
+// quote-sync-promo-champions
+// ===========================================================================
+export const QuoteSyncPromoChampionsSchemaV1 = z.object({
+  quote_id: uuidSchema,
+  quote_number: z.string().optional().nullable(),
+  status: z.string().optional().nullable(),
+  client_id: z.string().optional().nullable(),
+  client_name: z.string().optional().nullable(),
+  total: z.number().optional().nullable(),
+  updated_at: z.string().optional().nullable(),
+  seller_email: z.string().optional().nullable(),
+});
+
+// ===========================================================================
 // Contract registry — single source of truth for the test runner
 // ===========================================================================
 export interface ContractDefinition {
@@ -968,6 +1088,54 @@ export const CONTRACTS: Record<string, ContractDefinition> = {
     endpoint: "sync-quote-bitrix",
     description: "Push a quote/proposal to Bitrix as a deal",
     versions: { v1: SyncQuoteBitrixSchemaV1 },
+    defaultVersion: "v1",
+  },
+  "crm-callback-reprocess": {
+    endpoint: "crm-callback-reprocess",
+    description: "Reprocessa eventos do CRM (single event_id ou batch)",
+    versions: { v1: CrmCallbackReprocessSchemaV1 },
+    defaultVersion: "v1",
+  },
+  "intelligence-substitute-applied": {
+    endpoint: "intelligence-substitute-applied",
+    description: "Registra aplicação de substituto sugerido pela inteligência",
+    versions: { v1: IntelligenceSubstituteAppliedSchemaV1 },
+    defaultVersion: "v1",
+  },
+  "magazine-import-local": {
+    endpoint: "magazine-import-local",
+    description: "Importa revistas do storage local (batch idempotente por localId)",
+    versions: { v1: MagazineImportLocalSchemaV1 },
+    defaultVersion: "v1",
+  },
+  "magazine-public-react": {
+    endpoint: "magazine-public-react",
+    description: "Reações públicas (like/love/fire/idea) em revista compartilhada",
+    versions: { v1: MagazinePublicReactSchemaV1 },
+    defaultVersion: "v1",
+  },
+  "magazine-public-view": {
+    endpoint: "magazine-public-view",
+    description: "Registra view pública de revista compartilhada (token hex)",
+    versions: { v1: MagazinePublicViewSchemaV1 },
+    defaultVersion: "v1",
+  },
+  "magazine-reader-state-write": {
+    endpoint: "magazine-reader-state-write",
+    description: "Persiste estado de leitura (página, bookmarks) do leitor público",
+    versions: { v1: MagazineReaderStateWriteSchemaV1 },
+    defaultVersion: "v1",
+  },
+  "product-visual-search": {
+    endpoint: "product-visual-search",
+    description: "Busca visual de produtos por imagem (base64)",
+    versions: { v1: ProductVisualSearchSchemaV1 },
+    defaultVersion: "v1",
+  },
+  "quote-sync-promo-champions": {
+    endpoint: "quote-sync-promo-champions",
+    description: "Recebe sync de quote do Promo Champions (HMAC-verified)",
+    versions: { v1: QuoteSyncPromoChampionsSchemaV1 },
     defaultVersion: "v1",
   },
 };

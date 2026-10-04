@@ -35,7 +35,7 @@ import { getSupabaseClient } from '@/integrations/supabase/lazy-client';
 import { SocialLoginButtons } from '@/components/auth/SocialLoginButtons';
 import { AppLogo } from '@/components/layout/AppLogo';
 import { isSupabaseLighthousePlaceholder } from '@/lib/env/supabase-placeholder';
-import { loginSchema, type LoginFormData } from '@/lib/validations';
+import { loginSchema, isWeakPassword, type LoginFormData } from '@/lib/validations';
 import { logger } from '@/lib/logger';
 import { cn } from '@/lib/utils';
 import { invokeEdge } from '@/lib/edge/safeInvokeCall';
@@ -451,7 +451,20 @@ export default function Auth() {
         });
       }
 
-      // 3. Validação final de IP e Redirecionamento
+      // 3. Senha abaixo da política forte atual (contas legadas): força
+      // troca antes de liberar o app — /reset-password aceita sessão ativa.
+      if (isWeakPassword(data.password)) {
+        navigatedRef.current = true; // impede o redirect do user-effect
+        toast({
+          title: 'Atualize sua senha',
+          description:
+            'Sua senha atual não atende à política de segurança. Defina uma senha forte para continuar.',
+        });
+        navigate('/reset-password', { replace: true });
+        return;
+      }
+
+      // 4. Validação final de IP e Redirecionamento
       await validateAndRedirect(userId, data.email);
     } catch {
       logger.error('[AUTH_LOGIN_EXCEPTION] Unexpected login exception');

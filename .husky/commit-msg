@@ -1,0 +1,5 @@
+# commit-msg — enforcement de Conventional Commits (REGRA #6).
+# Rejeita mensagens fora do formato `tipo(escopo): descrição` antes do commit
+# ser criado. Merge commits e mensagens geradas por ferramentas (dependabot,
+# squash do GitHub) passam pelo type-enum do commitlint.config.js.
+npx --no-install commitlint --edit "$1"

@@ -196,11 +196,8 @@ jobs:
             const sha = '${{ github.sha }}';
             const msg = (process.env.TRIGGER_MESSAGE || '').split('\n')[0].slice(0, 200);
             const runUrl = `https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
-            await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: `🚨 Autoheal: fix ESLint quebrou TSC — ${sha.slice(0,7)}`,
-              body: [
+            const title = `🚨 Autoheal: fix ESLint quebrou TSC — ${sha.slice(0,7)}`;
+            const body = [
                 '## 🚨 Autoheal: fix ESLint quebrou TypeScript',
                 '',
                 `**Commit:** [\`${sha.slice(0,7)}\`](https://github.com/${{ github.repository }}/commit/${sha})`,
@@ -222,9 +219,35 @@ jobs:
                 '',
                 '> **Dica:** `rules-of-hooks` NÃO é auto-fixável.',
                 '> Mover hooks para ANTES de early returns geralmente resolve.',
-              ].join('\n'),
-              labels: ['bug', 'Lovable', 'autoheal'],
+              ].join('\n');
+
+            // Dedupe por label (o título varia com o SHA): reutiliza a issue
+            // aberta com label `autoheal` em vez de criar ticket novo por falha.
+            const { data: openIssues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'autoheal',
+              per_page: 1,
             });
+            const existing = openIssues[0];
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body: `Nova ocorrência — ${title}\n\n${body}`,
+              });
+              core.info(`Issue aberta #${existing.number} reutilizada (label autoheal).`);
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels: ['bug', 'Lovable', 'autoheal'],
+              });
+            }
 
       - name: Step Summary
         if: always()
