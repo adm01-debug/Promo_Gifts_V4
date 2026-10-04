@@ -58,8 +58,9 @@ const ALLOWED_LHCI_PACKAGES = new Set([
 // Aceito como risco transitório, mesmo padrão ALLOWED_LHCI_PACKAGES.
 // Revisit by RISK_REVIEW_DEADLINE (ou antes, na migração Tailwind v4).
 const ALLOWED_BRACES_CHAIN_DIRECT = new Set([
-  'tailwindcss',     // direct devDependency (build-time CSS)
-  'lovable-tagger',  // direct devDependency (Lovable tagger)
+  'tailwindcss',          // direct devDependency (build-time CSS)
+  'tailwindcss-animate',  // direct dep — plugin Tailwind, compila p/ CSS estático
+  'lovable-tagger',       // direct devDependency (Lovable tagger)
 ]);
 const ALLOWED_BRACES_CHAIN_TRANSITIVE = new Set([
   'braces', 'micromatch', 'fast-glob', 'chokidar',
