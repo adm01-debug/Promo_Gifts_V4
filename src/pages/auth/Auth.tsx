@@ -209,27 +209,34 @@ export default function Auth() {
     defaultValues: { email: '', password: '' },
   });
 
-  const validateAndRedirect = async (userId: string, email: string) => {
+  // Validação de IP reutilizável — precisa rodar antes de QUALQUER redirect
+  // com sessão ativa (inclusive o fluxo de senha fraca → /reset-password).
+  const ensureIPAllowed = async (userId: string, email: string): Promise<boolean> => {
+    const ipValidation = await validateIPForAuthenticatedUser(userId);
+
+    if (!ipValidation.isAllowed && ipValidation.hasRestrictions) {
+      await signOut();
+      const reason = ipValidation.reason || 'access_blocked';
+      await logLoginAttempt(email, userId, false, `${reason}: ${ipValidation.error}`);
+
+      setIpBlocked(true);
+      setBlockedIP(ipValidation.currentIP);
+
+      toast({
+        variant: 'destructive',
+        title: 'Acesso Bloqueado',
+        description:
+          ipValidation.error || `Seu IP (${ipValidation.currentIP}) não está autorizado.`,
+        duration: 10000,
+      });
+      return false;
+    }
+    return true;
+  };
+
+  const validateAndRedirect = async (userId: string, email: string, ipChecked = false) => {
     try {
-      const ipValidation = await validateIPForAuthenticatedUser(userId);
-
-      if (!ipValidation.isAllowed && ipValidation.hasRestrictions) {
-        await signOut();
-        const reason = ipValidation.reason || 'access_blocked';
-        await logLoginAttempt(email, userId, false, `${reason}: ${ipValidation.error}`);
-
-        setIpBlocked(true);
-        setBlockedIP(ipValidation.currentIP);
-
-        toast({
-          variant: 'destructive',
-          title: 'Acesso Bloqueado',
-          description:
-            ipValidation.error || `Seu IP (${ipValidation.currentIP}) não está autorizado.`,
-          duration: 10000,
-        });
-        return false;
-      }
+      if (!ipChecked && !(await ensureIPAllowed(userId, email))) return false;
 
       await logLoginAttempt(email, userId, true);
 
@@ -451,10 +458,20 @@ export default function Auth() {
         });
       }
 
-      // 3. Senha abaixo da política forte atual (contas legadas): força
+      // 3. Validação de IP — antes de qualquer redirect com sessão ativa,
+      //    inclusive o fluxo de senha fraca. Fail-open: se a checagem
+      //    indisponível, segue (mesmo comportamento do fluxo normal).
+      try {
+        if (!(await ensureIPAllowed(userId, data.email))) return;
+      } catch {
+        logger.warn('[AUTH_IP_VALIDATION_FAILOPEN] continuing without IP check');
+      }
+
+      // 4. Senha abaixo da política forte atual (contas legadas): força
       // troca antes de liberar o app — /reset-password aceita sessão ativa.
       if (isWeakPassword(data.password)) {
         navigatedRef.current = true; // impede o redirect do user-effect
+        await logLoginAttempt(data.email, userId, true);
         toast({
           title: 'Atualize sua senha',
           description:
@@ -464,8 +481,8 @@ export default function Auth() {
         return;
       }
 
-      // 4. Validação final de IP e Redirecionamento
-      await validateAndRedirect(userId, data.email);
+      // 5. Redirecionamento (IP já validado acima)
+      await validateAndRedirect(userId, data.email, true);
     } catch {
       logger.error('[AUTH_LOGIN_EXCEPTION] Unexpected login exception');
       toast({

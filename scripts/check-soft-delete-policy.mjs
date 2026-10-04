@@ -35,19 +35,27 @@ function scan() {
   const counts = new Map();
   if (!existsSync(MIGRATIONS_DIR)) return counts;
 
+  const CREATE_TABLE_RE = /create\s+table\s+(?:if\s+not\s+exists\s+)?([\w."']+)/gi;
+
   for (const file of readdirSync(MIGRATIONS_DIR)) {
     if (!file.endsWith('.sql')) continue;
     const sql = readFileSync(join(MIGRATIONS_DIR, file), 'utf8');
+    // Comentários viram espaços de mesmo tamanho: preserva offsets (regex não
+    // casa `create table` citado em -- docs) e mantém acesso ao sql original.
+    const code = sql.replace(/--[^\n]*/g, (c) => ' '.repeat(c.length));
     let violations = 0;
 
-    // Statements separados por ';' + newline (convenção das migrations do repo).
-    for (const raw of sql.split(/;\s*(?:\n|$)/)) {
-      const stmt = raw.trim();
-      const m = /create\s+table\s+(?:if\s+not\s+exists\s+)?([\w."']+)/i.exec(stmt);
-      if (!m) continue;
+    // Extrai TODO statement CREATE TABLE (até o próximo ';'), independente de
+    // dois statements dividirem a mesma linha.
+    for (const m of code.matchAll(CREATE_TABLE_RE)) {
       const table = m[1].replace(/["']/g, '').split('.').pop().toLowerCase();
       if (SYSTEM_TABLES.has(table)) continue;
-      if (/soft-delete-exempt/i.test(stmt)) continue;
+      const stmtEnd = code.indexOf(';', m.index) + 1 || code.length;
+      const stmt = code.slice(m.index, stmtEnd);
+      // Marcação `soft-delete-exempt` é um comentário — buscar na região do
+      // statement INCLUINDO comentários desde o ';' do statement anterior.
+      const region = sql.slice(sql.lastIndexOf(';', m.index) + 1, stmtEnd);
+      if (/soft-delete-exempt/i.test(region)) continue;
       // Tabela não-BRONZE precisa de deleted_at OU archived_at. Stages raw/*
       // (append-only por design Medallion) ficam fora — marcadas com exempt.
       if (!/\b(deleted_at|archived_at)\b/i.test(stmt)) violations += 1;

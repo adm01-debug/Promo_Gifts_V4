@@ -128,6 +128,14 @@ describe('cpfOptionalSchema', () => {
   it('rejeita quantidade errada de dígitos', () => {
     expect(cpfOptionalSchema.safeParse('123').success).toBe(false);
   });
+
+  it('rejeita dígitos EXCEDENTES (não trunca para salvar o prefixo)', () => {
+    // Regressão Devin Review: normalize* trunca em edição, mas persistência
+    // deve rejeitar — '529982247259' não pode virar '52998224725'.
+    expect(cpfOptionalSchema.safeParse('529982247259').success).toBe(false);
+    expect(cepOptionalSchema.safeParse('013101009').success).toBe(false);
+    expect(phoneBrOptionalSchema.safeParse('5511987654321').success).toBe(false);
+  });
 });
 
 describe('cepOptionalSchema', () => {

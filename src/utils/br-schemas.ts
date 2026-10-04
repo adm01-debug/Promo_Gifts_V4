@@ -1,12 +1,9 @@
 import { z } from 'zod';
 import {
-  normalizeCpf,
   isNormalizedCpf,
   validateCpf,
-  normalizeCep,
   isNormalizedCep,
   validateCep,
-  normalizePhoneBr,
   isNormalizedPhoneBr,
   validatePhoneBr,
 } from './masks';
@@ -18,17 +15,23 @@ import {
  *
  * Aceita input com máscara para conveniência: normaliza antes de validar.
  * SSOT — usar em todo create/update que persistir CPF, CEP ou telefone.
+ *
+ * NOTA: o strip de não-dígitos aqui NÃO trunca (diferente dos normalize* de
+ * masks.ts, que limitam o campo em edição). Persistência valida o comprimento
+ * real — '529982247259' é rejeitado, não salvo como '52998224725'.
  */
+
+const digitsOnly = (v: string | null | undefined): string | null => {
+  const raw = v?.trim() ?? '';
+  if (raw === '') return null;
+  return raw.replace(/\D/g, '');
+};
 
 export const cpfOptionalSchema = z
   .string()
   .nullable()
   .optional()
-  .transform((v) => {
-    const raw = v?.trim() ?? '';
-    if (raw === '') return null;
-    return normalizeCpf(raw);
-  })
+  .transform(digitsOnly)
   .refine((v) => v === null || isNormalizedCpf(v), {
     message: 'CPF deve conter exatamente 11 dígitos (sem máscara).',
   })
@@ -40,11 +43,7 @@ export const cepOptionalSchema = z
   .string()
   .nullable()
   .optional()
-  .transform((v) => {
-    const raw = v?.trim() ?? '';
-    if (raw === '') return null;
-    return normalizeCep(raw);
-  })
+  .transform(digitsOnly)
   .refine((v) => v === null || isNormalizedCep(v), {
     message: 'CEP deve conter exatamente 8 dígitos (sem máscara).',
   })
@@ -56,11 +55,7 @@ export const phoneBrOptionalSchema = z
   .string()
   .nullable()
   .optional()
-  .transform((v) => {
-    const raw = v?.trim() ?? '';
-    if (raw === '') return null;
-    return normalizePhoneBr(raw);
-  })
+  .transform(digitsOnly)
   .refine((v) => v === null || isNormalizedPhoneBr(v), {
     message: 'Telefone deve ter 10 ou 11 dígitos com DDD (sem máscara).',
   })
