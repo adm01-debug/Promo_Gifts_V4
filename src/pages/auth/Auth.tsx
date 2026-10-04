@@ -39,6 +39,7 @@ import { loginSchema, isWeakPassword, type LoginFormData } from '@/lib/validatio
 import { logger } from '@/lib/logger';
 import { cn } from '@/lib/utils';
 import { invokeEdge } from '@/lib/edge/safeInvokeCall';
+import { createPostLoginGuards } from '@/pages/auth/postLoginGuards';
 
 type LoginForm = LoginFormData;
 
@@ -209,54 +210,17 @@ export default function Auth() {
     defaultValues: { email: '', password: '' },
   });
 
-  // Validação de IP reutilizável — precisa rodar antes de QUALQUER redirect
-  // com sessão ativa (inclusive o fluxo de senha fraca → /reset-password).
-  const ensureIPAllowed = async (userId: string, email: string): Promise<boolean> => {
-    const ipValidation = await validateIPForAuthenticatedUser(userId);
-
-    if (!ipValidation.isAllowed && ipValidation.hasRestrictions) {
-      await signOut();
-      const reason = ipValidation.reason || 'access_blocked';
-      await logLoginAttempt(email, userId, false, `${reason}: ${ipValidation.error}`);
-
-      setIpBlocked(true);
-      setBlockedIP(ipValidation.currentIP);
-
-      toast({
-        variant: 'destructive',
-        title: 'Acesso Bloqueado',
-        description:
-          ipValidation.error || `Seu IP (${ipValidation.currentIP}) não está autorizado.`,
-        duration: 10000,
-      });
-      return false;
-    }
-    return true;
-  };
-
-  const validateAndRedirect = async (userId: string, email: string, ipChecked = false) => {
-    try {
-      if (!ipChecked && !(await ensureIPAllowed(userId, email))) return false;
-
-      await logLoginAttempt(email, userId, true);
-
-      setLoginStatus('success');
-      toast({
-        title: 'Bem-vindo!',
-        description: 'Login realizado com sucesso',
-      });
-
-      // Aguarda o feedback visual de sucesso antes de navegar
-      setTimeout(() => {
-        navigate(resolveRedirectTargetCb(), { replace: true });
-      }, 600);
-      return true;
-    } catch {
-      logger.warn('[AUTH_POST_LOGIN_VALIDATION] continuing with fail-open redirect');
-      navigate(resolveRedirectTargetCb(), { replace: true }); // Fail-open
-      return true;
-    }
-  };
+  const { ensureIPAllowed, validateAndRedirect } = createPostLoginGuards({
+    validateIPForAuthenticatedUser,
+    logLoginAttempt,
+    signOut,
+    toast,
+    navigate,
+    resolveRedirectTarget: resolveRedirectTargetCb,
+    setIpBlocked,
+    setBlockedIP,
+    setLoginStatus,
+  });
 
   const handleLogin = async (data: LoginForm) => {
     if (isSubmitting) return;
