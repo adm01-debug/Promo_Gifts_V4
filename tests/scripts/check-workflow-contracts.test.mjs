@@ -74,6 +74,13 @@ describe('C3 — timeout-minutes', () => {
     expect(violations.length).toBe(1);
     expect(violations[0]).toContain('bad');
   });
+
+  it('skips uses: jobs — reusable workflow calls não aceitam timeout-minutes', () => {
+    const wf = { file: 'foo.yml', doc: { jobs: {
+      caller: { uses: './.github/workflows/_reusable.yml' },
+    } } };
+    expect(checkC3Timeout(wf).length).toBe(0);
+  });
 });
 
 // ---------------------------------------------------------------------------

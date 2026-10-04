@@ -55,6 +55,9 @@ export function checkC3Timeout({ file, doc }) {
   const jobs = doc.jobs || {};
   for (const [id, job] of Object.entries(jobs)) {
     if (!job || typeof job !== 'object') continue;
+    // jobs `uses:` (reusable workflow call) não aceitam `timeout-minutes` —
+    // o timeout fica a cargo dos steps internos do workflow chamado.
+    if (job.uses) continue;
     if (job['timeout-minutes'] == null) {
       violations.push(`${file}: job \`${id}\` missing \`timeout-minutes:\``);
     }
