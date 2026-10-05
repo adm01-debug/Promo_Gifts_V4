@@ -5,8 +5,13 @@
 --   2) suppliers.api_credentials (e qualquer coluna cujo nome indique
 --      segredo) sobrevivia a rotações de chave dentro de details.old/new.
 -- Regra: profiles redige a PII explicitamente; qualquer tabela redige coluna
--- cujo nome case com (credential|secret|token|password|api_key). O log fica
--- com "[REDACTED]" no lugar do valor; changed_fields (só nomes) continua.
+-- cujo nome indique segredo OU dado pessoal de contato/identificação
+-- (credential|secret|token|password|api_key cobre suppliers.api_credentials
+-- e quotes.approval_token; email|phone|telefone|celular|whatsapp|cpf|cnpj|
+-- inscricao|contact_name|contact_person|client_name|full_name cobre a PII
+-- comercial de suppliers e quotes — client_email/client_phone/client_cnpj).
+-- O log fica com "[REDACTED]" no lugar do valor; changed_fields (só nomes)
+-- continua.
 
 CREATE OR REPLACE FUNCTION public.fn_audit_row_change()
 RETURNS trigger
@@ -57,7 +62,7 @@ BEGIN
       j.k,
       CASE
         WHEN j.k = ANY(_redact)
-          OR j.k ~* '(credential|secret|token|password|api_key)'
+          OR j.k ~* '(credential|secret|token|password|api_key|email|phone|telefone|celular|whatsapp|cpf|cnpj|inscricao|contact_name|contact_person|client_name|full_name)'
           THEN '"[REDACTED]"'::jsonb
         ELSE j.v
       END
@@ -69,7 +74,7 @@ BEGIN
       j.k,
       CASE
         WHEN j.k = ANY(_redact)
-          OR j.k ~* '(credential|secret|token|password|api_key)'
+          OR j.k ~* '(credential|secret|token|password|api_key|email|phone|telefone|celular|whatsapp|cpf|cnpj|inscricao|contact_name|contact_person|client_name|full_name)'
           THEN '"[REDACTED]"'::jsonb
         ELSE j.v
       END

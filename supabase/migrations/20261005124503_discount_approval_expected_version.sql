@@ -53,6 +53,27 @@ BEGIN
     RAISE EXCEPTION 'Solicitação mudou durante a decisão.' USING ERRCODE = '40001';
   END IF;
 
+  -- Replay idempotente ANTES da checagem de versão: a decisão gravada bumpa
+  -- version, então um retry idêntico (resposta perdida) chegaria com a versão
+  -- obsoleta e falharia 40001 sem nunca chegar aqui. Replay idêntico (mesmo
+  -- status-alvo, mesmo autor, mesmas notas) devolve a decisão já gravada.
+  IF _request.status = _decision
+     AND _request.admin_id IS NOT DISTINCT FROM _uid
+     AND _request.admin_notes IS NOT DISTINCT FROM NULLIF(btrim(_admin_notes), '') THEN
+    RETURN _request;
+  END IF;
+  -- Mesma decisão com autor/notas divergentes é conflito real: o segundo
+  -- gestor precisa saber que a decisão dele NÃO foi gravada.
+  IF _request.status = _decision THEN
+    RAISE EXCEPTION 'Decisão concorrente divergente: solicitação já está % decidida por outro gestor ou com notas diferentes.',
+      _request.status
+      USING ERRCODE = '40001';
+  END IF;
+  IF _request.status <> 'pending' THEN
+    RAISE EXCEPTION 'Decisão terminal conflitante: solicitação já está %.', _request.status
+      USING ERRCODE = '23514';
+  END IF;
+
   -- Optimistic locking: se o cliente leu a solicitação antes de decidir,
   -- a versão tem que bater com a observada (NULL = não verificar, retrocompat).
   IF _expected_version IS NOT NULL
@@ -60,23 +81,6 @@ BEGIN
     RAISE EXCEPTION 'Solicitação mudou desde a leitura (versão esperada %, atual %). Recarregue e decida de novo.',
       _expected_version, _request.version
       USING ERRCODE = '40001';
-  END IF;
-
-  IF _request.status = _decision THEN
-    -- Idempotência só vale para replay idêntico (mesmo autor, mesmas notas).
-    -- Mesma decisão com notas/autor divergentes é conflito real: o segundo
-    -- gestor precisa saber que a decisão dele NÃO foi gravada.
-    IF _request.admin_id IS DISTINCT FROM _uid
-       OR _request.admin_notes IS DISTINCT FROM NULLIF(btrim(_admin_notes), '') THEN
-      RAISE EXCEPTION 'Decisão concorrente divergente: solicitação já está % decidida por outro gestor ou com notas diferentes.',
-        _request.status
-        USING ERRCODE = '40001';
-    END IF;
-    RETURN _request;
-  END IF;
-  IF _request.status <> 'pending' THEN
-    RAISE EXCEPTION 'Decisão terminal conflitante: solicitação já está %.', _request.status
-      USING ERRCODE = '23514';
   END IF;
 
   _snapshot := public.compute_quote_snapshot_hash(_quote_id);

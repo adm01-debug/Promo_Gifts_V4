@@ -111,22 +111,36 @@ Deno.serve(async (req: Request) => {
     //    a) user_token_revocations — isTokenRevoked rejeita JWTs já emitidos
     //       (signOut sozinho deixa access tokens válidos até expirarem);
     //    b) admin.signOut global — invalida refresh tokens no GoTrue.
-    const { error: revokeErr } = await supabaseAdmin.rpc(
-      "revoke_all_user_tokens",
-      { _user_id: userId },
-    );
-    if (revokeErr) {
-      log.warn("token_revoke_failed", { error: revokeErr.message });
+    //    Ambas falham de dois jeitos (resolve {error} OU rejeita a promise)
+    //    e nenhuma deve esconder que a anonimização já ocorreu — por isso o
+    //    catch local: o cliente recebe sessions:"partial", não um 500 cego.
+    let sessionsWiped = true;
+    try {
+      const { error: revokeErr } = await supabaseAdmin.rpc(
+        "revoke_all_user_tokens",
+        { _user_id: userId },
+      );
+      if (revokeErr) {
+        sessionsWiped = false;
+        log.warn("token_revoke_failed", { error: revokeErr.message });
+      }
+    } catch (revokeThrow) {
+      sessionsWiped = false;
+      log.warn("token_revoke_failed", { error: String(revokeThrow) });
     }
-    const { error: signOutErr } = await supabaseAdmin.auth.admin.signOut(
-      userId,
-      "global",
-    );
-    if (signOutErr) {
-      // signOut resolve com { error } (não lança) — precisa inspeção explícita.
-      log.warn("signout_failed", { error: signOutErr.message });
+    try {
+      const { error: signOutErr } = await supabaseAdmin.auth.admin.signOut(
+        userId,
+        "global",
+      );
+      if (signOutErr) {
+        sessionsWiped = false;
+        log.warn("signout_failed", { error: signOutErr.message });
+      }
+    } catch (signOutThrow) {
+      sessionsWiped = false;
+      log.warn("signout_failed", { error: String(signOutThrow) });
     }
-    const sessionsWiped = !revokeErr && !signOutErr;
 
     log.info("user_anonymized", {
       userId,
