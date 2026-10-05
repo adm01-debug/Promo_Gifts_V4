@@ -56,7 +56,14 @@ fi
 # -p tsconfig.app.json: sem ele o tsc usa tsconfig.json (solution-style com
 # references) e compila praticamente só vite.config.ts — o ratchet era um
 # vácuo e nunca enxergava variáveis mortas em src/ (auditoria 2026-10).
-count=$(npx tsc -p tsconfig.app.json --noUnusedLocals --noEmit 2>&1 | grep -c "error TS" || true)
+# Binário local do node_modules — npx pode baixar/executar pacote arbitrário
+# se o binário sumir (SonarCloud shell:S6505).
+TSC_BIN="./node_modules/.bin/tsc"
+if [ ! -x "$TSC_BIN" ]; then
+  echo "ERRO: $TSC_BIN não encontrado — rode 'npm ci' antes do ratchet."
+  exit 1
+fi
+count=$("$TSC_BIN" -p tsconfig.app.json --noUnusedLocals --noEmit 2>&1 | grep -c "error TS" || true)
 
 if [ "$1" = "--update" ]; then
   # Guarda de regressão: se a baseline em main for menor, recusar o aumento
