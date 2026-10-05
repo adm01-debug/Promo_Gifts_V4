@@ -51,7 +51,7 @@ interface Layout {
   namePaddingRight: number;
 }
 
-function simulate(viewport: number, dpr: number, nameLen: number): Layout {
+function simulate(_viewport: number, _dpr: number, _nameLen: number): Layout {
   // O container de ações tem h = LEADING_PX e items-center → botão centralizado
   const containerH = LEADING_PX; // 18
   const buttonCenterY = containerH / 2; // 9
@@ -61,10 +61,7 @@ function simulate(viewport: number, dpr: number, nameLen: number): Layout {
   const touchSize = BTN_PX + 2 * TOUCH_INSET_PX; // 32
   // Padding-right do nome em px CSS — independe de viewport/DPR
   const namePaddingRight = NAME_PR_PX;
-  // viewport/dpr/nameLen entram só como ruído (não devem afetar a matemática)
-  void viewport;
-  void dpr;
-  void nameLen;
+  // _viewport/_dpr/_nameLen entram só como ruído (não devem afetar a matemática)
   return { containerH, buttonCenterY, textCenterY, touchSize, namePaddingRight };
 }
 

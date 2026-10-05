@@ -8,14 +8,12 @@ import {
   filterLoggerEvents,
   findLoggerEvent,
   resetStructuredLoggerMock,
-  structuredLoggerMockFactory,
 } from '@/test/mockStructuredLogger';
 
 vi.mock('@/lib/telemetry/structuredLogger', async () => {
   const mod = await import('@/test/mockStructuredLogger');
   return mod.structuredLoggerMockFactory();
 });
-void structuredLoggerMockFactory;
 
 const mockInvoke = vi.fn();
 vi.mock('@/integrations/supabase/lazy-client', () => ({

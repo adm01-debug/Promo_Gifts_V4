@@ -107,16 +107,45 @@ Deno.serve(async (req: Request) => {
       log.warn("login_attempts_wipe_failed", { error: attemptsErr.message });
     }
 
-    // 3) Encerra todas as sessões do usuário.
+    // 3) Revoga credenciais em duas camadas complementares:
+    //    a) user_token_revocations — isTokenRevoked rejeita JWTs já emitidos
+    //       (signOut sozinho deixa access tokens válidos até expirarem);
+    //    b) admin.signOut global — invalida refresh tokens no GoTrue.
+    //    Ambas falham de dois jeitos (resolve {error} OU rejeita a promise)
+    //    e nenhuma deve esconder que a anonimização já ocorreu — por isso o
+    //    catch local: o cliente recebe sessions:"partial", não um 500 cego.
+    let sessionsWiped = true;
     try {
-      await supabaseAdmin.auth.admin.signOut(userId, "global");
-    } catch (signOutErr) {
-      log.warn("signout_failed", { error: String(signOutErr) });
+      const { error: revokeErr } = await supabaseAdmin.rpc(
+        "revoke_all_user_tokens",
+        { _user_id: userId },
+      );
+      if (revokeErr) {
+        sessionsWiped = false;
+        log.warn("token_revoke_failed", { error: revokeErr.message });
+      }
+    } catch (revokeThrow) {
+      sessionsWiped = false;
+      log.warn("token_revoke_failed", { error: String(revokeThrow) });
+    }
+    try {
+      const { error: signOutErr } = await supabaseAdmin.auth.admin.signOut(
+        userId,
+        "global",
+      );
+      if (signOutErr) {
+        sessionsWiped = false;
+        log.warn("signout_failed", { error: signOutErr.message });
+      }
+    } catch (signOutThrow) {
+      sessionsWiped = false;
+      log.warn("signout_failed", { error: String(signOutThrow) });
     }
 
     log.info("user_anonymized", {
       userId,
       loginAttemptsWiped: attemptsWiped ?? 0,
+      sessionsWiped,
     });
 
     return jsonRes(corsHeaders, {
@@ -124,6 +153,7 @@ Deno.serve(async (req: Request) => {
       wiped: {
         profile: true,
         login_attempts: attemptsErr ? "failed" : (attemptsWiped ?? 0),
+        sessions: sessionsWiped ? "revoked" : "partial",
       },
     });
   } catch (err) {

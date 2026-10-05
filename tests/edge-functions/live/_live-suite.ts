@@ -59,6 +59,10 @@ export interface LiveSuiteDescriptor {
   invalidInputs?: InvalidInput[];
   /** Função não implementa OPTIONS → pula assert de CORS. */
   skipCors?: boolean;
+  /** Função ainda não deployada no canônico (aguardando deploy-edge-functions.yml
+   *  pós-merge) → aceita 404 na fronteira de auth até o deploy. Remover o flag
+   *  depois que a função estiver no ar. */
+  pendingDeploy?: boolean;
   /** Headers extras aplicados a todas as chamadas (ex.: x-signature). */
   baseHeaders?: Record<string, string>;
 }
@@ -111,7 +115,8 @@ export function runLiveSuite(desc: LiveSuiteDescriptor): void {
         body: desc.validBody ?? {},
       });
       if (anon.mode === "reject") {
-        expect([401, 403], `${fn} anon deve ser rejeitado`).toContain(res.status);
+        const ok = desc.pendingDeploy ? [401, 403, 404] : [401, 403];
+        expect(ok, `${fn} anon deve ser rejeitado`).toContain(res.status);
       } else {
         // public/scoped: handler alcançado — qualquer não-5xx é válido.
         expectNoCrash(res.status, "anon reach");

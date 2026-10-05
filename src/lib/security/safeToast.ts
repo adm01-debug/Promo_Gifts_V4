@@ -73,7 +73,6 @@ function sanitizeOptions(opts: unknown): unknown {
   if ('description' in o && looksTechnical(o.description)) {
     // Remove description técnica — mantém title já sanitizado.
     const { description: _drop, ...rest } = o;
-    void _drop;
     return rest;
   }
   return opts;
