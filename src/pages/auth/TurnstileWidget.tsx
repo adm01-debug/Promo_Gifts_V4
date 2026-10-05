@@ -31,6 +31,13 @@ interface TurnstileApi {
 /** Handle imperativo do widget — o pai chama reset() após consumir o token. */
 export interface TurnstileWidgetHandle {
   reset: () => void;
+  /**
+   * Emite um token NOVO (fora do fluxo onToken): usado quando um segundo
+   * verificador precisa de um token não-consumido — ex.: check-login já fez
+   * siteverify do token do formulário e o GoTrue CAPTCHA pede outro.
+   * Resolve null se o widget não estiver pronto ou o desafio expirar.
+   */
+  getToken: () => Promise<string | null>;
 }
 
 declare global {
@@ -68,6 +75,19 @@ export const TurnstileWidget = forwardRef<
   // Ref evita re-render do widget quando o pai muda a identidade do callback.
   const onTokenRef = useRef(onToken);
   onTokenRef.current = onToken;
+  // Resolver pendente de getToken(): o próximo token emitido pelo callback
+  // vai para ele em vez do onToken (é consumido por outro verificador).
+  const pendingTokenRef = useRef<((token: string | null) => void) | null>(null);
+
+  const emitToken = (token: string | null) => {
+    if (pendingTokenRef.current) {
+      const resolve = pendingTokenRef.current;
+      pendingTokenRef.current = null;
+      resolve(token);
+      return;
+    }
+    onTokenRef.current(token);
+  };
 
   // Token Turnstile é de uso único: após cada tentativa de login o pai chama
   // reset() para o desafio emitir um token novo — sem isso a 2ª tentativa
@@ -76,6 +96,24 @@ export const TurnstileWidget = forwardRef<
     reset: () => {
       if (widgetIdRef.current) window.turnstile?.reset(widgetIdRef.current);
     },
+    getToken: () =>
+      new Promise<string | null>((resolve) => {
+        const widgetId = widgetIdRef.current;
+        if (!widgetId || !window.turnstile) {
+          resolve(null);
+          return;
+        }
+        pendingTokenRef.current?.(null); // liquida pedido anterior pendurado
+        const timer = setTimeout(() => {
+          pendingTokenRef.current = null;
+          resolve(null);
+        }, 15_000);
+        pendingTokenRef.current = (token) => {
+          clearTimeout(timer);
+          resolve(token);
+        };
+        window.turnstile.reset(widgetId);
+      }),
   }));
 
   useEffect(() => {
@@ -87,9 +125,9 @@ export const TurnstileWidget = forwardRef<
         if (cancelled || !hostRef.current || !window.turnstile) return;
         widgetIdRef.current = window.turnstile.render(hostRef.current, {
           sitekey: TURNSTILE_SITE_KEY,
-          callback: (token) => onTokenRef.current(token),
-          'expired-callback': () => onTokenRef.current(null),
-          'error-callback': () => onTokenRef.current(null),
+          callback: (token) => emitToken(token),
+          'expired-callback': () => emitToken(null),
+          'error-callback': () => emitToken(null),
         });
       })
       .catch(() => onTokenRef.current(null));

@@ -76,8 +76,9 @@ export interface LoginGateBlock {
  * - bloqueio real (allowed=false fora das reasons operacionais) → 403;
  * - edge fora/erro COM turnstileToken → 503 fail-closed (anti-bot contornado
  *   se prosseguir); sem token → fail-open operacional com warn;
- * - turnstile_token é single-use → maxRetries 0 para não reenviar token
- *   já consumido pelo siteverify num retry.
+ * - turnstile_token é single-use → maxRetries 1 = UMA tentativa total no
+ *   safeAuthCall (o parâmetro conta tentativas, não reenvios): a edge nunca
+ *   recebe o token já consumido num retry.
  */
 export async function evaluateLoginGate(
   log: LoginGateLogger,
@@ -92,7 +93,7 @@ export async function evaluateLoginGate(
       body: { email, turnstile_token: turnstileToken },
       headers: log.headers(),
       timeoutMs: 6_000,
-      maxRetries: turnstileToken ? 0 : 1,
+      maxRetries: 1,
       preserveErrorData: true,
     });
     const operationalBlock = isOperationalGateBlock(gate);

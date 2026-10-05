@@ -86,7 +86,7 @@ interface AuthContextType {
   signIn: (
     email: string,
     password: string,
-    opts?: { turnstileToken?: string },
+    opts?: { turnstileToken?: string; getCaptchaToken?: () => Promise<string | null> },
   ) => Promise<{
     error: AuthError | { message: string; status?: number } | null;
     data: { user: User | null; session: Session | null } | null;
@@ -344,7 +344,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [isLoading, setIsLoading, setRolesLoaded]);
 
   const signIn = useCallback(
-    async (email: string, password: string, opts?: { turnstileToken?: string }) => {
+    async (
+      email: string,
+      password: string,
+      opts?: { turnstileToken?: string; getCaptchaToken?: () => Promise<string | null> },
+    ) => {
       const log = createClientLogger('auth.signIn', {
         base: { email_domain: email.split('@')[1] },
       });
@@ -426,8 +430,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         };
       }
 
+      // Turnstile é single-use: o token do formulário já foi consumido pelo
+      // siteverify da check-login. Com CAPTCHA ativo no Supabase Auth, o
+      // GoTrue exige um token NOVO — o widget emite um segundo desafio
+      // (getCaptchaToken) em vez de reenviar o mesmo (rejeitado).
+      const captchaToken = opts?.getCaptchaToken
+        ? ((await opts.getCaptchaToken().catch(() => null)) ?? undefined)
+        : undefined;
       const { data, error } = await authService.signIn(email, password, {
-        captchaToken: opts?.turnstileToken,
+        captchaToken,
       });
       if (error) {
         recordFailedAttempt(email);

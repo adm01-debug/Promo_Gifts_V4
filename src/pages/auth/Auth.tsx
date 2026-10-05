@@ -273,6 +273,10 @@ export default function Auth() {
     try {
       const { error } = await signIn(data.email, data.password, {
         turnstileToken: turnstileTokenRef.current ?? undefined,
+        // O token acima é consumido pelo siteverify da check-login; se o
+        // Supabase Auth CAPTCHA também estiver ativo, o GoTrue precisa de um
+        // token novo — o widget emite um segundo desafio sob demanda.
+        getCaptchaToken: () => turnstileWidgetRef.current?.getToken() ?? Promise.resolve(null),
       });
       // Token é de uso único — consome e pede um novo desafio pra próxima
       // tentativa, senão o retry sai com o mesmo token e a edge devolve
