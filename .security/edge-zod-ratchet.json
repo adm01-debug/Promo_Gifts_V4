@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "generated_at": "2026-10-05T10:42:13.292Z",
+  "description": "Edges que aceitam body SEM validação zod hoje (dívida congelada — não pode crescer). Regenere com check:edge-zod-ratchet:update ao quitar dívida.",
+  "functions": [
+    "bulk-random-passwords",
+    "check-login",
+    "generate-mockup",
+    "load-test",
+    "product-webhook",
+    "verify-2fa-token",
+    "webhook-inbound"
+  ]
+}

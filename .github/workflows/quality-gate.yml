@@ -98,6 +98,12 @@ jobs:
       - name: Gate 2.3.6 — Soft-delete policy (bloqueante)
         run: node scripts/check-soft-delete-policy.mjs
 
+      # GATE 2.3.7: ratchet zod nas edges (bloqueante) — edge nova aceitando
+      # body sem validação de schema falha; dívida congelada em
+      # .security/edge-zod-ratchet.json
+      - name: Gate 2.3.7 — Edge zod ratchet (bloqueante)
+        run: node scripts/check-edge-zod-ratchet.mjs
+
       # GATE 2.4: Migration path references — bloqueia referências novas a arquivos
       # inexistentes sob supabase/migrations{,-snapshot}/ e qa/migrations-draft/.
       # Baseline em .migration-refs-baseline.json congela o legado.
