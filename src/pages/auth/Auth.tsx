@@ -278,11 +278,6 @@ export default function Auth() {
         // token novo — o widget emite um segundo desafio sob demanda.
         getCaptchaToken: () => turnstileWidgetRef.current?.getToken() ?? Promise.resolve(null),
       });
-      // Token é de uso único — consome e pede um novo desafio pra próxima
-      // tentativa, senão o retry sai com o mesmo token e a edge devolve
-      // turnstile_failed mesmo com a senha correta.
-      turnstileTokenRef.current = null;
-      turnstileWidgetRef.current?.reset();
 
       if (error) {
         logger.warn('[AUTH_FAILED] Authentication failed', { status: error.status ?? 'unknown' });
@@ -423,7 +418,8 @@ export default function Auth() {
       // troca antes de liberar o app — /reset-password aceita sessão ativa.
       if (isWeakPassword(data.password)) {
         navigatedRef.current = true; // impede o redirect do user-effect
-        await logLoginAttempt(data.email, userId, true);
+        // login_attempts success já foi escrito por AuthContext.signIn
+        // (fonte única, verified via sessão) — não duplicar.
         toast({
           title: 'Atualize sua senha',
           description:
@@ -443,6 +439,10 @@ export default function Auth() {
         description: 'Não foi possível conectar ao servidor. Verifique sua internet.',
       });
     } finally {
+      // Token Turnstile é de uso único — resetar no finally garante desafio
+      // novo mesmo se signIn/guards lançarem exceção (senão o retry sai com token consumido).
+      turnstileTokenRef.current = null;
+      turnstileWidgetRef.current?.reset();
       setIsSubmitting(false);
     }
   };
@@ -798,7 +798,7 @@ export default function Auth() {
                         </button>
                       </div>
                       {loginForm.formState.errors.password && (
-                        <p className="text-sm text-destructive">
+                        <p className="text-sm text-destructive" data-testid="login-error-msg">
                           {loginForm.formState.errors.password.message}
                         </p>
                       )}

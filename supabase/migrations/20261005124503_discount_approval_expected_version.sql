@@ -12,6 +12,10 @@
 --      só é idempotente quando autor E notas são idênticos; divergente = 40001.
 -- DROP+CREATE porque CREATE OR REPLACE não troca assinatura (overload ambíguo
 -- no PostgREST). GRANT/REVOKE replicados da definição original.
+-- Rollback: DROP FUNCTION
+-- respond_discount_approval_transactional(uuid, boolean, text,
+-- integer) e recriar a assinatura de 3 args da definição anterior
+-- (version em 20261004xxx, sem _expected_version).
 
 DROP FUNCTION IF EXISTS public.respond_discount_approval_transactional(uuid, boolean, text);
 

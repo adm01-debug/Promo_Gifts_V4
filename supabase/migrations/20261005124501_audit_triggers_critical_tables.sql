@@ -7,6 +7,9 @@
 -- Captura escrita direta na tabela (bypass das RPCs/edges — defesa em
 -- profundidade que a auditoria app-level via useAuditLog não cobre).
 -- UPDATE "touch-only" (só updated_at/version mudou) não gera linha.
+-- Rollback: DROP TRIGGER trg_audit_row_change em profiles, suppliers,
+-- seller_carts, discount_approval_requests, orders, quotes; DROP
+-- FUNCTION public.fn_audit_row_change().
 
 CREATE OR REPLACE FUNCTION public.fn_audit_row_change()
 RETURNS trigger

@@ -8,7 +8,6 @@
  * - `boxed` (default): borda + fundo primary/10 (usado em tabelas/listas soltas)
  * - `plain`: sem borda/fundo (para uso aninhado dentro de outro card)
  */
-import React from 'react';
 import { cn } from '@/lib/utils';
 
 export type EngravingBadgeVariant = 'boxed' | 'plain';
@@ -52,10 +51,7 @@ export function EngravingBadge({
       )}
       title={tooltip}
     >
-      <span
-        data-testid={`${testId}-title`}
-        className="font-semibold text-primary"
-      >
+      <span data-testid={`${testId}-title`} className="font-semibold text-primary">
         {showMarker && <>{marker} </>}
         {location && (
           <span className="mr-1 rounded bg-primary/15 px-1 py-px text-[9px] font-bold uppercase tracking-wide text-primary">
@@ -65,10 +61,7 @@ export function EngravingBadge({
         {title}
       </span>
       {meta && (
-        <span
-          data-testid={`${testId}-meta`}
-          className="text-[10px] text-muted-foreground"
-        >
+        <span data-testid={`${testId}-meta`} className="text-[10px] text-muted-foreground">
           {meta}
         </span>
       )}

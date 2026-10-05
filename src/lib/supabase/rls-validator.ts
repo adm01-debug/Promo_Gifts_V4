@@ -31,19 +31,6 @@ const CRITICAL_TABLES = [
   'organizations',
 ] as const;
 
-const _EXPECTED_POLICIES: Record<string, Set<string>> = {
-  discount_approval_requests: new Set([
-    'enable_read_for_requesting_user',
-    'enable_insert_for_requesting_user',
-    'enable_update_for_requesting_user',
-  ]),
-  workspace_notifications: new Set([
-    'user_sees_own_notifications',
-    'user_can_insert_own_notifications',
-    'user_can_delete_own_notifications',
-  ]),
-};
-
 /**
  * Validate RLS policies at application boot.
  * Runs silently in background; logs warnings if gaps detected.

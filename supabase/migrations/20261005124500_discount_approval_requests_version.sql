@@ -4,6 +4,10 @@
 -- Padrão idêntico a increment_seller_cart_version (20260905033652): só
 -- incrementa em UPDATE com mudança real (ignora toques em updated_at/version).
 -- Não quebra clientes: coluna com DEFAULT, trigger BEFORE UPDATE.
+-- Rollback: DROP TRIGGER trg_discount_approval_version ON
+-- discount_approval_requests; DROP FUNCTION
+-- increment_discount_approval_version(); ALTER TABLE
+-- discount_approval_requests DROP COLUMN version.
 
 ALTER TABLE public.discount_approval_requests
   ADD COLUMN IF NOT EXISTS version integer NOT NULL DEFAULT 1;

@@ -9,10 +9,12 @@
  * Response 200: { anonymized: true, wiped: { profile, login_attempts } }
  *
  * O que faz (service_role, transacional por passo):
- *   1. profiles: zera PII (nome, email, telefone, avatar, departamento,
+ *   1. auth.users: anonimiza o e-mail e bane a conta (~100 anos) — sem
+ *      isso a conta "esquecida" seguia autenticável com o e-mail real.
+ *   2. profiles: zera PII (nome, email, telefone, avatar, departamento,
  *      preferências, bitrix_id) e marca is_active=false.
- *   2. login_attempts: apaga as linhas do usuário (email + user_id).
- *   3. Encerra todas as sessões do usuário (signOut global).
+ *   3. login_attempts: apaga as linhas do usuário (email + user_id).
+ *   4. Encerra todas as sessões do usuário (revoke + signOut global).
  *
  * O que NÃO faz (documentado):
  *   - Não apaga auth.users nem linhas de negócio (quotes/orders/carts):
@@ -77,8 +79,28 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // 1) Anonimiza o perfil — uuid opaco preserva FKs sem vazar identidade.
+    // 1) Anonimiza auth.users ANTES do perfil: se só o perfil fosse
+    //    anonimizado, a conta continuava autenticável pelo e-mail real
+    //    (dado esquecido) e logava normalmente. ban_duration ~100 anos
+    //    bloqueia novos logins; sessions existentes são revogadas abaixo.
+    //    Falha aqui é fatal: devolver anonymized:true sem isso seria
+    //    esquecimento pela metade.
     const anonymizedEmail = `deleted-${userId}@anonymized.invalid`;
+    try {
+      const { error: authErr } = await supabaseAdmin.auth.admin.updateUserById(
+        userId,
+        { email: anonymizedEmail, ban_duration: "876000h" },
+      );
+      if (authErr) {
+        log.error("auth_user_anonymize_failed", { error: authErr.message });
+        return jsonRes(corsHeaders, { error: "anonymize_failed" }, 500);
+      }
+    } catch (authThrow) {
+      log.error("auth_user_anonymize_failed", { error: String(authThrow) });
+      return jsonRes(corsHeaders, { error: "anonymize_failed" }, 500);
+    }
+
+    // 2) Anonimiza o perfil — uuid opaco preserva FKs sem vazar identidade.
     const { error: profileErr } = await supabaseAdmin
       .from("profiles")
       .update({
@@ -97,11 +119,13 @@ Deno.serve(async (req: Request) => {
       return jsonRes(corsHeaders, { error: "anonymize_failed" }, 500);
     }
 
-    // 2) Apaga tentativas de login (email + user_id carregam PII direta).
+    // 3) Apaga tentativas de login (email + user_id carregam PII direta).
+    //    ilike cobre variações de case de linhas legadas — a edge nova já
+    //    normaliza para lowercase, mas histórico pode ter misto.
     const { error: attemptsErr, count: attemptsWiped } = await supabaseAdmin
       .from("login_attempts")
       .delete({ count: "exact" })
-      .or(`user_id.eq.${userId}${email ? `,email.eq.${email}` : ""}`);
+      .or(`user_id.eq.${userId}${email ? `,email.ilike.${email}` : ""}`);
     if (attemptsErr) {
       // Não é fatal: perfil já foi anonimizado; loga e segue.
       log.warn("login_attempts_wipe_failed", { error: attemptsErr.message });

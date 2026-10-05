@@ -7,6 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { validateCnpj, maskCep, normalizeCnpj } from '@/utils/masks';
 import { assertPersistableCnpj } from '@/utils/cnpj-schema';
+import { assertPersistableCep, assertPersistablePhoneBr } from '@/utils/br-schemas';
 import { cnpjErrorHaystack, mapCnpjError } from '@/utils/cnpj-errors';
 import { fetchAddressByCep } from '@/utils/viacep';
 import { fetchCnpjData } from '@/utils/cnpj-lookup';
@@ -427,6 +428,8 @@ export function useSuppliersManager() {
     try {
       const now = new Date().toISOString();
       const es = editingSupplier;
+      // Mesmo contrato do assertPersistableCnpj: normaliza ou bloqueia o save.
+      const cepDigits = assertPersistableCep(es.cep);
       const addressParts =
         [
           es.tipo_logradouro && es.logradouro
@@ -437,7 +440,7 @@ export function useSuppliersManager() {
           es.bairro,
           es.cidade,
           es.estado,
-          es.cep ? `CEP ${es.cep}` : null,
+          cepDigits ? `CEP ${maskCep(cepDigits)}` : null,
         ]
           .filter(Boolean)
           .join(', ') ||
@@ -460,8 +463,8 @@ export function useSuppliersManager() {
         contact_name: contacts[0]?.name?.trim() || null,
         contact_person: contacts[0]?.role?.trim() || null,
         email: contacts[0]?.email?.trim() || null,
-        phone: foneFixo1.trim() || contacts[0]?.phone?.trim() || null,
-        phone2: foneFixo2.trim() || null,
+        phone: assertPersistablePhoneBr(foneFixo1.trim() || contacts[0]?.phone?.trim() || null),
+        phone2: assertPersistablePhoneBr(foneFixo2.trim() || null),
         address: addressParts,
         website: es.website?.trim() || null,
         default_markup_percent: es.default_markup_percent ?? null,
@@ -523,6 +526,8 @@ export function useSuppliersManager() {
         const cnpjCopy = mapped.message;
         setCnpjError(cnpjCopy);
         toast.error(cnpjCopy);
+      } else if (/telefone|cep|cpf/i.test(hay)) {
+        toast.error(err instanceof Error && err.message ? err.message : hay);
       } else {
         toast.error('Erro ao salvar fornecedor');
       }

@@ -56,7 +56,6 @@ function buildSalesMessage(opts: {
   productSku?: string | null;
   productMinQuantity?: number | null;
 }): string {
-  const _greetingTarget = opts.contactFirstName?.trim() || opts.companyName?.trim() || 'tudo bem?';
   const greeting = opts.contactFirstName?.trim()
     ? `Olá, ${opts.contactFirstName.trim()}! 👋`
     : opts.companyName?.trim()

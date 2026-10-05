@@ -53,7 +53,10 @@ if [ "$1" = "--check-ratchet" ]; then
   exit 0
 fi
 
-count=$(npx tsc --noUnusedLocals --noEmit 2>&1 | grep -c "error TS" || true)
+# -p tsconfig.app.json: sem ele o tsc usa tsconfig.json (solution-style com
+# references) e compila praticamente só vite.config.ts — o ratchet era um
+# vácuo e nunca enxergava variáveis mortas em src/ (auditoria 2026-10).
+count=$(npx tsc -p tsconfig.app.json --noUnusedLocals --noEmit 2>&1 | grep -c "error TS" || true)
 
 if [ "$1" = "--update" ]; then
   # Guarda de regressão: se a baseline em main for menor, recusar o aumento

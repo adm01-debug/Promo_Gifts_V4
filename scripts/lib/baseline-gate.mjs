@@ -40,12 +40,14 @@ export function* walkSrc(root) {
  * pulando linhas que são só comentário. Múltiplas ocorrências na mesma
  * linha contam individualmente (evita bypass do ratchet).
  */
-export function countMatchesInSrc(root, pattern) {
+export function countMatchesInSrc(root, pattern, { includeCommentLines = false } = {}) {
   const counts = new Map();
   for (const file of walkSrc(root)) {
     let total = 0;
     for (const line of readFileSync(file, 'utf8').split('\n')) {
-      if (SKIP_CONTENT.test(line.trimStart())) continue;
+      // Para marcadores de débito (TODO/FIXME/HACK) a linha-comentário
+      // também conta — um `// TODO:` novo não pode ser de graça.
+      if (!includeCommentLines && SKIP_CONTENT.test(line.trimStart())) continue;
       total += [...line.matchAll(pattern)].length;
     }
     if (total > 0) counts.set(relative(root, file), total);
@@ -68,14 +70,7 @@ export function countMatchesInSrc(root, pattern) {
  *   fixHint       instrução mostrada em caso de regressão
  *   scan          () => Map<relativePath, count>
  */
-export function runBaselineGate({
-  baselineFile,
-  label,
-  description,
-  totalKey,
-  fixHint,
-  scan,
-}) {
+export function runBaselineGate({ baselineFile, label, description, totalKey, fixHint, scan }) {
   const ROOT = process.cwd();
   const BASELINE_PATH = join(ROOT, baselineFile);
   const UPDATE = process.argv.includes('--update');
@@ -132,7 +127,9 @@ export function runBaselineGate({
   }
 
   if (positiveDrift > 0) {
-    console.log(`✨ Drift positivo: ${positiveDrift} ocorrência(s) eliminada(s). Considere rodar com --update.`);
+    console.log(
+      `✨ Drift positivo: ${positiveDrift} ocorrência(s) eliminada(s). Considere rodar com --update.`,
+    );
   }
   console.log(`✅ ${label}: nenhuma regressão detectada.`);
   process.exit(0);

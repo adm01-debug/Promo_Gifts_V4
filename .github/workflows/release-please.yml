@@ -14,10 +14,16 @@ permissions:
   contents: write # tags/releases/changelog
   pull-requests: write # abre/atualiza o Release PR
 
+concurrency:
+  # Um Release PR por vez — push novo cancela o anterior (idempotente).
+  group: release-please-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   release-please:
     name: release-please
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: googleapis/release-please-action@5c625bfb5d1ff62eadeeb3772007f7f66fdcf071 # v4.4.1
         with:

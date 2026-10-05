@@ -10,29 +10,44 @@
  *
  * Uso: node scripts/check-edge-live-coverage.mjs
  */
-import fs from "node:fs";
-import path from "node:path";
-import process from "node:process";
+import fs from 'node:fs';
+import path from 'node:path';
+import process from 'node:process';
 
 const ROOT = process.cwd();
-const FUNCTIONS_DIR = path.join(ROOT, "supabase/functions");
-const LIVE_DIR = path.join(ROOT, "tests/edge-functions/live");
-const EXCLUDE = new Set(["_shared", "tests"]);
+const FUNCTIONS_DIR = path.join(ROOT, 'supabase/functions');
+const LIVE_DIR = path.join(ROOT, 'tests/edge-functions/live');
+const EXCLUDE = new Set(['_shared', 'tests']);
 
 const fns = fs
   .readdirSync(FUNCTIONS_DIR, { withFileTypes: true })
   .filter((d) => d.isDirectory() && !EXCLUDE.has(d.name))
-  .filter((d) => fs.existsSync(path.join(FUNCTIONS_DIR, d.name, "index.ts")))
+  .filter((d) => fs.existsSync(path.join(FUNCTIONS_DIR, d.name, 'index.ts')))
   .map((d) => d.name)
   .sort();
 
-const missing = fns.filter((fn) => !fs.existsSync(path.join(LIVE_DIR, `${fn}.test.ts`)));
+// Arquivo existir não basta — um stub vazio (ou só com comentários) passava
+// pelo existsSync e a função ficava sem cobertura real. O shim canônico
+// chama runLiveSuite(descriptorFor(...)).
+const missing = fns.filter((fn) => {
+  const file = path.join(LIVE_DIR, `${fn}.test.ts`);
+  if (!fs.existsSync(file)) return true;
+  const src = fs.readFileSync(file, 'utf8');
+  return !/\brunLiveSuite\s*\(/.test(src);
+});
 
 if (missing.length > 0) {
-  console.error(`❌ ${missing.length} edge function(s) sem teste LIVE em tests/edge-functions/live/:`);
-  for (const m of missing) console.error(`   - ${m} (esperado: tests/edge-functions/live/${m}.test.ts)`);
+  console.error(
+    `❌ ${missing.length} edge function(s) sem teste LIVE em tests/edge-functions/live/:`,
+  );
+  for (const m of missing)
+    console.error(
+      `   - ${m} (esperado: tests/edge-functions/live/${m}.test.ts chamando runLiveSuite)`,
+    );
   console.error(`\n   Rode: node scripts/gen-edge-live-tests.mjs`);
   process.exit(1);
 }
 
-console.log(`✅ Cobertura LIVE completa: ${fns.length}/${fns.length} edge functions têm teste em tests/edge-functions/live/.`);
+console.log(
+  `✅ Cobertura LIVE completa: ${fns.length}/${fns.length} edge functions têm teste em tests/edge-functions/live/.`,
+);

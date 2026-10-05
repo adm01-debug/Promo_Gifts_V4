@@ -151,7 +151,9 @@ Deno.serve(async (req: Request) => {
         allowed,
         reason:        row?.reason        ?? 'unknown',
         blocked_until: row?.blocked_until ?? null,
-        check_details: row?.check_details ?? {},
+        // check_details NÃO é repassado: o blob interno (settings_source,
+        // contadores, whitelist hits) vazava o estado do lockout para o
+        // chamador anônimo. Segue registrado em access_blocked_log.
       }),
       { status: allowed ? 200 : 403, headers: { ...CORS, 'Content-Type': 'application/json' } }
     );

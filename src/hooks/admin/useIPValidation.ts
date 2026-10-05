@@ -169,15 +169,14 @@ export function useIPValidation() {
       failureReason?: string,
     ): Promise<void> => {
       try {
-        const currentIP = await fetchCurrentIP();
-
+        // IP derivado da conexão pela edge — enviar ip_address no body é
+        // forjável e o campo é ignorado (Onda 5, C1).
         // BUG-IPVALIDATION-LOGIN-LOG-SILENT-FAIL FIX: functions.invoke returns { data, error }
         // for application errors — bare await discarded them. try-catch only catches network failures.
         const { error: loginLogErr } = await invokeEdge('log-login-attempt', {
           body: {
             email,
             user_id: userId,
-            ip_address: currentIP || 'unknown',
             success,
             failure_reason: failureReason || null,
             user_agent: navigator.userAgent,
@@ -188,7 +187,7 @@ export function useIPValidation() {
         logger.error('Error logging login attempt (network):', error);
       }
     },
-    [fetchCurrentIP],
+    [],
   );
 
   return {
