@@ -32,7 +32,7 @@ import { toast } from 'sonner';
 import type { PersonalizationArea } from '@/components/mockup/MultiAreaManager';
 
 import { logger } from '@/lib/logger';
-import { invokeEdge } from '@/lib/edge/safeInvokeCall';
+import { invokeEdge, newIdempotencyKey } from '@/lib/edge/safeInvokeCall';
 export interface Technique {
   id: string;
   name: string;
@@ -366,9 +366,11 @@ function buildMockupPayload(params: GenerateMockupParams, area: PersonalizationA
 async function invokeMockupOnce(
   params: GenerateMockupParams,
   area: PersonalizationArea,
+  idemKey: string,
 ): Promise<string> {
   const generateCall = invokeEdge<{ mockupUrl?: string }>('generate-mockup', {
     body: buildMockupPayload(params, area),
+    idempotencyKey: idemKey,
   });
 
   let timer: ReturnType<typeof setTimeout> | undefined;
@@ -417,8 +419,11 @@ async function invokeMockupForArea(
   params: GenerateMockupParams,
   area: PersonalizationArea,
 ): Promise<string> {
+  // Uma key por tentativa lógica de gerar a área — o retry abaixo a reusa,
+  // permitindo dedupe server-side da geração duplicada.
+  const idemKey = newIdempotencyKey();
   try {
-    return await invokeMockupOnce(params, area);
+    return await invokeMockupOnce(params, area, idemKey);
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     if (isTransientError(msg)) {
@@ -426,7 +431,7 @@ async function invokeMockupForArea(
       await new Promise<void>((resolve) => {
         setTimeout(resolve, 2000);
       });
-      return invokeMockupOnce(params, area);
+      return invokeMockupOnce(params, area, idemKey);
     }
     throw err;
   }

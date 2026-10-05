@@ -6,7 +6,7 @@
  * Onda 19.1: chamadas migradas para `invokeEdge` (SSOT `invokeEdgeSafe`).
  */
 import { useCallback, useRef, useState } from 'react';
-import { invokeEdge } from '@/lib/edge/safeInvokeCall';
+import { invokeEdge, newIdempotencyKey } from '@/lib/edge/safeInvokeCall';
 import { logger } from '@/lib/logger';
 
 export type StepUpAction =
@@ -68,6 +68,7 @@ export function useStepUpAuth() {
           action_label: req.actionLabel,
           target_ref: req.targetRef ?? null,
         },
+        idempotencyKey: newIdempotencyKey(),
       });
       if (error || !data?.challenge_id) {
         setState({
@@ -103,6 +104,7 @@ export function useStepUpAuth() {
       const { data, error } = await invokeEdge<{ password_verified?: boolean }>('step-up-verify', {
         op: 'step-up.verify_password',
         body: { step: 'verify_password', challenge_id: challengeId, password },
+        idempotencyKey: newIdempotencyKey(),
       });
       if (error || !data?.password_verified) {
         setState((s) => ({
@@ -126,6 +128,7 @@ export function useStepUpAuth() {
       const { data, error } = await invokeEdge<{ token?: string }>('step-up-verify', {
         op: 'step-up.verify_otp',
         body: { step: 'verify_otp', challenge_id: challengeId, otp },
+        idempotencyKey: newIdempotencyKey(),
       });
       if (error || !data?.token) {
         setState((s) => ({
@@ -150,6 +153,7 @@ export function useStepUpAuth() {
       const { error: cancelErr } = await invokeEdge('step-up-verify', {
         op: 'step-up.cancel',
         body: { step: 'cancel', challenge_id: challengeId, cancel_reason: reason ?? null },
+        idempotencyKey: newIdempotencyKey(),
       });
       if (cancelErr) logger.warn('[step-up] cancel RPC failed:', cancelErr);
     } catch {
