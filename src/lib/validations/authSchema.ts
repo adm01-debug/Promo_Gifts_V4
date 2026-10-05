@@ -1,5 +1,26 @@
 import { z } from 'zod';
 
+/**
+ * SSOT da política de senha forte — usada no signup, no reset e na
+ * detecção de senha fraca pós-login (`isWeakPassword`). Não endurecer aqui
+ * sem revisar os três consumidores.
+ */
+export const strongPasswordSchema = z
+  .string()
+  .min(8, 'Senha deve ter pelo menos 8 caracteres')
+  .regex(/[A-Z]/, 'Senha deve conter letra maiúscula')
+  .regex(/[a-z]/, 'Senha deve conter letra minúscula')
+  .regex(/[0-9]/, 'Senha deve conter número')
+  .regex(/[!@#$%^&*(),.?":{}|<>]/, 'Senha deve conter caractere especial');
+
+/**
+ * True quando a senha não atende à política forte atual.
+ * Usada pós-login para direcionar contas legadas a /reset-password.
+ */
+export function isWeakPassword(password: string): boolean {
+  return !strongPasswordSchema.safeParse(password).success;
+}
+
 export const loginSchema = z.object({
   email: z
     .string()
@@ -16,13 +37,7 @@ export const signupSchema = z
       .min(2, 'Nome deve ter pelo menos 2 caracteres')
       .max(100, 'Nome deve ter no máximo 100 caracteres'),
     email: z.string().min(1, 'Email é obrigatório').email('Email inválido'),
-    password: z
-      .string()
-      .min(8, 'Senha deve ter pelo menos 8 caracteres')
-      .regex(/[A-Z]/, 'Senha deve conter letra maiúscula')
-      .regex(/[a-z]/, 'Senha deve conter letra minúscula')
-      .regex(/[0-9]/, 'Senha deve conter número')
-      .regex(/[!@#$%^&*(),.?":{}|<>]/, 'Senha deve conter caractere especial'),
+    password: strongPasswordSchema,
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -36,13 +51,7 @@ export const forgotPasswordSchema = z.object({
 
 export const resetPasswordSchema = z
   .object({
-    password: z
-      .string()
-      .min(8, 'Senha deve ter pelo menos 8 caracteres')
-      .regex(/[A-Z]/, 'Senha deve conter letra maiúscula')
-      .regex(/[a-z]/, 'Senha deve conter letra minúscula')
-      .regex(/[0-9]/, 'Senha deve conter número')
-      .regex(/[!@#$%^&*(),.?":{}|<>]/, 'Senha deve conter caractere especial'),
+    password: strongPasswordSchema,
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {

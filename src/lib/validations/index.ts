@@ -1,4 +1,11 @@
-export { loginSchema, signupSchema, forgotPasswordSchema, resetPasswordSchema } from './authSchema';
+export {
+  loginSchema,
+  signupSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+  strongPasswordSchema,
+  isWeakPassword,
+} from './authSchema';
 export type {
   LoginFormData,
   SignupFormData,

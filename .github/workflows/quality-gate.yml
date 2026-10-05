@@ -85,6 +85,19 @@ jobs:
       - name: Gate 2.3.4 — Indexed-access ratchet (bloqueante)
         run: node scripts/check-indexed-access-ratchet.mjs
 
+      # GATE 2.3.5: contract coverage (bloqueante) — auditoria 20-dim 2026-10-02.
+      # Toda edge function que aceita body precisa de entrada no CONTRACTS
+      # registry (tests/contracts/webhook-schemas.ts) ou justificativa em
+      # NO_BODY_EXEMPT. O script já existia mas não rodava em workflow nenhum.
+      - name: Gate 2.3.5 — Contract coverage (bloqueante)
+        run: node scripts/check-contract-coverage.mjs
+
+      # GATE 2.3.6: política soft-delete (bloqueante, ratchet) — tabela de
+      # negócio nova exige deleted_at/archived_at ou marcação soft-delete-exempt
+      # (docs/db/POLITICA_SOFT_DELETE.md). Baseline congela o estoque pré-política.
+      - name: Gate 2.3.6 — Soft-delete policy (bloqueante)
+        run: node scripts/check-soft-delete-policy.mjs
+
       # GATE 2.4: Migration path references — bloqueia referências novas a arquivos
       # inexistentes sob supabase/migrations{,-snapshot}/ e qa/migrations-draft/.
       # Baseline em .migration-refs-baseline.json congela o legado.
