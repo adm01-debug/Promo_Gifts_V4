@@ -703,6 +703,9 @@ export interface ContractDefinition {
 export const CheckLoginSchemaV1 = z.object({
   email: z.string().email().max(255).optional(),
   city: z.string().max(100).optional(),
+  // Token Cloudflare Turnstile — verificado só quando a edge tem
+  // TURNSTILE_SECRET_KEY configurada (aí vira obrigatório na prática).
+  turnstile_token: z.string().max(2048).optional(),
 }).passthrough(); // body é opcional — a fn aceita body vazio gracefully
 
 // ===========================================================================

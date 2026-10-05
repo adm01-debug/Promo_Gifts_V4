@@ -17,7 +17,6 @@ import {
   Wifi,
   AlertTriangle,
   RotateCw,
-  CheckCircle2,
   Rocket,
 } from 'lucide-react';
 import { AuthBrandingPanel, SpaceScene } from '@/pages/auth/AuthBranding';
@@ -40,6 +39,13 @@ import { logger } from '@/lib/logger';
 import { cn } from '@/lib/utils';
 import { invokeEdge } from '@/lib/edge/safeInvokeCall';
 import { createPostLoginGuards } from '@/pages/auth/postLoginGuards';
+import { loginErrorCopy } from '@/pages/auth/loginErrorCopy';
+import {
+  TurnstileWidget,
+  TURNSTILE_SITE_KEY,
+  type TurnstileWidgetHandle,
+} from '@/pages/auth/TurnstileWidget';
+import { LoginSuccessSplash } from '@/pages/auth/LoginSuccessSplash';
 
 type LoginForm = LoginFormData;
 
@@ -103,6 +109,9 @@ export default function Auth() {
   // navegador (ex: "website"), que causavam falso-positivo — Chrome/gerenciadores
   // de senha preenchem esses campos mesmo com autoComplete="off" e aria-hidden.
   const honeypotRef = useRef<HTMLInputElement | null>(null);
+  // Token do desafio Turnstile (ativo só quando VITE_TURNSTILE_SITE_KEY existe).
+  const turnstileTokenRef = useRef<string | null>(null);
+  const turnstileWidgetRef = useRef<TurnstileWidgetHandle>(null);
   // Função `retry` publicada pelo SocialLoginButtons para reexecutar o Google login.
   const googleRetryRef = useRef<(() => void) | null>(null);
   const handleRetryGoogle = useCallback(() => {
@@ -249,8 +258,31 @@ export default function Auth() {
       return;
     }
 
+    // Turnstile obrigatório quando a site key está configurada — sem token,
+    // não gasta uma tentativa de login contra o Supabase.
+    if (TURNSTILE_SITE_KEY && !turnstileTokenRef.current) {
+      toast({
+        variant: 'destructive',
+        title: 'Verificação de segurança',
+        description: 'Complete o desafio de segurança antes de entrar.',
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
-      const { error } = await signIn(data.email, data.password);
+      const { error } = await signIn(data.email, data.password, {
+        turnstileToken: turnstileTokenRef.current ?? undefined,
+        // O token acima é consumido pelo siteverify da check-login; se o
+        // Supabase Auth CAPTCHA também estiver ativo, o GoTrue precisa de um
+        // token novo — o widget emite um segundo desafio sob demanda.
+        getCaptchaToken: () => turnstileWidgetRef.current?.getToken() ?? Promise.resolve(null),
+      });
+      // Token é de uso único — consome e pede um novo desafio pra próxima
+      // tentativa, senão o retry sai com o mesmo token e a edge devolve
+      // turnstile_failed mesmo com a senha correta.
+      turnstileTokenRef.current = null;
+      turnstileWidgetRef.current?.reset();
 
       if (error) {
         logger.warn('[AUTH_FAILED] Authentication failed', { status: error.status ?? 'unknown' });
@@ -258,35 +290,8 @@ export default function Auth() {
         // com IP real) — escrever aqui de novo dobrava a linha de falha e
         // fazia a RPC de lockout atingir o limite na metade das tentativas.
 
-        let description = 'Ocorreu um erro ao validar seu acesso. Por favor, tente novamente.';
-        let title = 'Não foi possível entrar';
-        let hint = 'Se o erro persistir, tente redefinir sua senha ou use o login social.';
-
-        if (error.message.includes('Invalid login credentials') || error.status === 400) {
-          title = 'E-mail ou Senha Incorretos';
-          description =
-            'Não encontramos uma conta com esses dados. Verifique se digitou corretamente ou use "Esqueci minha senha".';
-          hint = 'Dica: Verifique se o Caps Lock está ativado.';
-        } else if (error.message.includes('Email not confirmed')) {
-          title = 'E-mail não confirmado';
-          description =
-            'Sua conta ainda não foi ativada. Verifique sua caixa de entrada e spam pelo e-mail de confirmação.';
-          hint = 'Ainda não recebeu? Aguarde alguns minutos antes de solicitar um novo envio.';
-        } else if (error.status === 403) {
-          // Bloqueio do gate server-side (check-login) — error.message já é o
-          // texto pt-BR com blocked_until montado em AuthContext.signIn.
-          title = 'Acesso Bloqueado';
-          description = error.message;
-          hint = 'Se você acredita que isto é um engano, contate o administrador.';
-        } else if (error.message.includes('rate limit') || error.status === 429) {
-          title = 'Acesso Temporariamente Suspenso';
-          description =
-            'Detectamos muitas tentativas seguidas. Por segurança, sua conta foi bloqueada por alguns minutos.';
-          // Extrai o tempo de espera da mensagem do Supabase (ex: "after 47 seconds")
-          const secondsMatch = /after (\d+) seconds?/i.exec(error.message);
-          const waitSeconds = secondsMatch ? parseInt(secondsMatch[1], 10) : 60;
-          hint = `Aguarde ${waitSeconds} segundos antes de tentar novamente.`;
-
+        const { title, description, hint, waitSeconds } = loginErrorCopy(error);
+        if (waitSeconds !== undefined) {
           // Iniciar countdown visual
           if (rateLimitTimerRef.current) clearInterval(rateLimitTimerRef.current);
           setRateLimitCountdown(waitSeconds);
@@ -299,23 +304,6 @@ export default function Auth() {
               return prev - 1;
             });
           }, 1000);
-        } else if (
-          error.status === 0 ||
-          error.message.includes('network') ||
-          error.message.includes('Fetch')
-        ) {
-          title = 'Erro de Conexão';
-          description =
-            'Parece que você está sem internet ou nosso servidor está temporariamente inacessível.';
-          hint = 'Verifique sua conexão Wi-Fi ou dados móveis.';
-        } else if (
-          error.message.includes('Database error') ||
-          (error.status !== undefined && error.status >= 500)
-        ) {
-          title = 'Sistema em Manutenção';
-          description =
-            'Estamos ajustando os motores das nossas galáxias. O serviço deve voltar ao normal em breve.';
-          hint = 'Nossa equipe técnica já foi notificada.';
         }
 
         toast({
@@ -567,26 +555,7 @@ export default function Auth() {
             )}
           >
             {loginStatus === 'success' ? (
-              <div
-                key="success"
-                className="flex flex-col items-center justify-center px-8 py-16 text-center duration-500 animate-in fade-in zoom-in"
-              >
-                <div className="relative mb-8">
-                  <div className="absolute inset-0 animate-ping rounded-full bg-blue-500/30 duration-700" />
-                  <div className="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-3xl bg-blue-500/10 text-blue-400 shadow-[0_0_50px_rgba(59,130,246,0.5)] ring-1 ring-blue-500/20">
-                    <Rocket className="h-12 w-12 -rotate-45 animate-bounce" />
-                  </div>
-                  <div className="absolute -bottom-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full border-4 border-[#030508] bg-emerald-500 shadow-lg duration-300 animate-in zoom-in">
-                    <CheckCircle2 className="h-4 w-4 text-white" />
-                  </div>
-                </div>
-                <h2 className="font-display text-3xl font-bold tracking-tight text-white">
-                  Decolagem autorizada!
-                </h2>
-                <p className="mt-3 text-base text-white/50">
-                  Bem-vindo a bordo. Iniciando sistemas...
-                </p>
-              </div>
+              <LoginSuccessSplash />
             ) : showForgotPassword ? (
               <div
                 key="forgot-password"
@@ -845,6 +814,13 @@ export default function Auth() {
                         Esqueci minha senha
                       </button>
                     </div>
+
+                    <TurnstileWidget
+                      ref={turnstileWidgetRef}
+                      onToken={(token) => {
+                        turnstileTokenRef.current = token;
+                      }}
+                    />
 
                     <button
                       type="submit"
