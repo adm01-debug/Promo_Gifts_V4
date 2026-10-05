@@ -12,7 +12,7 @@ import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
  * Sem site key o componente não renderiza nada e nenhum script externo é
  * carregado — feature totalmente desligada por omissão de env.
  */
-export const TURNSTILE_SITE_KEY = (import.meta.env.VITE_TURNSTILE_SITE_KEY ?? '') as string;
+export const TURNSTILE_SITE_KEY: string = import.meta.env.VITE_TURNSTILE_SITE_KEY ?? '';
 
 interface TurnstileApi {
   render: (
