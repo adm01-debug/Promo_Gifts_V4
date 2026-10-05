@@ -709,6 +709,13 @@ export const CheckLoginSchemaV1 = z.object({
 }).passthrough(); // body é opcional — a fn aceita body vazio gracefully
 
 // ===========================================================================
+// anonymize-user (LGPD)
+// ===========================================================================
+export const AnonymizeUserSchemaV1 = z.object({
+  confirm_phrase: z.literal("EXCLUIR MINHA CONTA"),
+});
+
+// ===========================================================================
 // word-magic
 // ===========================================================================
 export const WordMagicSchemaV1 = z.object({
@@ -785,6 +792,12 @@ export const CONTRACTS: Record<string, ContractDefinition> = {
     endpoint: "check-login",
     description: "Pre-authentication check — verifica se email/IP pode logar",
     versions: { v1: CheckLoginSchemaV1 },
+    defaultVersion: "v1",
+  },
+  "anonymize-user": {
+    endpoint: "anonymize-user",
+    description: "LGPD — anonimiza PII do próprio usuário (frase de confirmação)",
+    versions: { v1: AnonymizeUserSchemaV1 },
     defaultVersion: "v1",
   },
   "word-magic": {

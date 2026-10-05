@@ -67,8 +67,8 @@ export const EDGE_AUTHZ_MANIFEST: Record<string, AuthzEntry> = {
   "elevenlabs-scribe-token": { category: "public", rationale: "Token temporário para ElevenLabs scribe" },
   "elevenlabs-tts": { category: "public", rationale: "TTS público via ElevenLabs" },
   "check-login": { category: "public", rationale: "Pre-login security check — IP/city/lockout, chamada antes de supabase.auth.signIn()", skipAnonBypassTest: true },
-
   // ---------------- Autenticadas (JWT obrigatório) ----------------
+  "anonymize-user": { category: "authenticated", rationale: "LGPD — usuário anonimiza o PRÓPRIO perfil (JWT do dono via authorize + frase de confirmação)" },
   "send-notification": { category: "authenticated", rationale: "Notificação do próprio user" },
   "send-digest": { category: "authenticated", rationale: "Digest do próprio user" },
   "send-scheduled-reports": { category: "authenticated", rationale: "Relatórios agendados do user" },
