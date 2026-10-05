@@ -190,6 +190,9 @@ jobs:
           node scripts/check-contract-coverage.mjs
           node scripts/check-soft-delete-policy.mjs
           node scripts/check-edge-zod-ratchet.mjs
+          # Cobertura do manifest de autorização — o script existia órfão
+          # de workflow (achado da validação exaustiva 2026-10).
+          node scripts/check-edge-authorization.mjs
       # Gate 1.13 — Baseline assinado de RLS policies (auditoria 20-dim Onda 3).
       # Bloqueante quando credenciado; sem SUPABASE_ACCESS_TOKEN (forks) ou com
       # baseline pendente de seed inicial, degrada para static-pass.
@@ -207,7 +210,10 @@ jobs:
       # Garante que todo workflow segue as 8 regras do Padrão E12
       # (permissions, concurrency, timeout, node-version-file, etc.)
       - name: Gate 1.11 — Workflow contracts (bloqueante)
-        run: node scripts/check-workflow-contracts.mjs
+        # --gate: sem o flag o script só reporta e sai 0 — o step dizia
+        # "bloqueante" mas não bloqueava nada (workflow-lint ficava vermelho
+        # em main sem travar deploy).
+        run: node scripts/check-workflow-contracts.mjs --gate
 
   unit-tests:
     name: Gate 2 - Unit Tests

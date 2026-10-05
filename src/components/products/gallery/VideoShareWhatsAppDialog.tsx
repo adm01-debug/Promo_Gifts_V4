@@ -56,7 +56,6 @@ function buildSalesMessage(opts: {
   productSku?: string | null;
   productMinQuantity?: number | null;
 }): string {
-  const _greetingTarget = opts.contactFirstName?.trim() || opts.companyName?.trim() || 'tudo bem?';
   const greeting = opts.contactFirstName?.trim()
     ? `Olá, ${opts.contactFirstName.trim()}! 👋`
     : opts.companyName?.trim()
@@ -90,7 +89,6 @@ function buildSalesMessage(opts: {
     'Posso preparar uma proposta personalizada com personalização da sua marca? É só me chamar por aqui. 😉',
   );
 
-  // _greetingTarget kept for potential future personalization
   return lines.join('\n');
 }
 

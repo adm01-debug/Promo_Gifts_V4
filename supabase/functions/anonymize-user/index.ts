@@ -10,9 +10,15 @@
  *
  * O que faz (service_role, transacional por passo):
  *   1. profiles: zera PII (nome, email, telefone, avatar, departamento,
- *      preferências, bitrix_id) e marca is_active=false.
+ *      preferências, bitrix_id) — is_active continua true: só desativa
+ *      depois do ban confirmar, senão uma falha no passo 3 deixaria
+ *      conta logável com perfil morto.
  *   2. login_attempts: apaga as linhas do usuário (email + user_id).
- *   3. Encerra todas as sessões do usuário (signOut global).
+ *   3. auth.users: anonimiza e-mail/telefone/user_metadata e bane a
+ *      conta (~100 anos) — passo irreversível, por último: se um wipe
+ *      anterior falhar o usuário ainda consegue logar e retentar.
+ *      Só então marca profiles.is_active=false.
+ *   4. Encerra todas as sessões do usuário (revoke + signOut global).
  *
  * O que NÃO faz (documentado):
  *   - Não apaga auth.users nem linhas de negócio (quotes/orders/carts):
@@ -77,8 +83,13 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // 1) Anonimiza o perfil — uuid opaco preserva FKs sem vazar identidade.
     const anonymizedEmail = `deleted-${userId}@anonymized.invalid`;
+
+    // 1) Anonimiza o perfil — uuid opaco preserva FKs sem vazar identidade.
+    //    is_active só vira false depois do ban de auth.users: se a API
+    //    administrativa falhar no passo 3, o usuário fica com login vivo e
+    //    perfil ATIVO (já sem PII) — consegue retentar. Desativar aqui
+    //    deixaria conta logável com perfil morto.
     const { error: profileErr } = await supabaseAdmin
       .from("profiles")
       .update({
@@ -89,7 +100,6 @@ Deno.serve(async (req: Request) => {
         department: null,
         preferences: null,
         bitrix_id: null,
-        is_active: false,
       })
       .eq("user_id", userId);
     if (profileErr) {
@@ -98,16 +108,53 @@ Deno.serve(async (req: Request) => {
     }
 
     // 2) Apaga tentativas de login (email + user_id carregam PII direta).
+    //    ilike cobre variações de case de linhas legadas — a edge nova já
+    //    normaliza para lowercase, mas histórico pode ter misto.
     const { error: attemptsErr, count: attemptsWiped } = await supabaseAdmin
       .from("login_attempts")
       .delete({ count: "exact" })
-      .or(`user_id.eq.${userId}${email ? `,email.eq.${email}` : ""}`);
+      .or(`user_id.eq.${userId}${email ? `,email.ilike.${email}` : ""}`);
     if (attemptsErr) {
       // Não é fatal: perfil já foi anonimizado; loga e segue.
       log.warn("login_attempts_wipe_failed", { error: attemptsErr.message });
     }
 
-    // 3) Revoga credenciais em duas camadas complementares:
+    // 3) Passo irreversível por último: anonimiza auth.users (e-mail,
+    //    telefone e user_metadata — updateUserById substitui o objeto
+    //    inteiro) e bane a conta ~100 anos. Depois deste update o usuário
+    //    não loga mais, então ele só roda quando os wipes de PII já
+    //    passaram — se um deles falhar, o cliente ainda entra e retenta.
+    try {
+      const { error: authErr } = await supabaseAdmin.auth.admin.updateUserById(
+        userId,
+        {
+          email: anonymizedEmail,
+          phone: "",
+          user_metadata: {},
+          ban_duration: "876000h",
+        },
+      );
+      if (authErr) {
+        log.error("auth_user_anonymize_failed", { error: authErr.message });
+        return jsonRes(corsHeaders, { error: "anonymize_failed" }, 500);
+      }
+    } catch (authThrow) {
+      log.error("auth_user_anonymize_failed", { error: String(authThrow) });
+      return jsonRes(corsHeaders, { error: "anonymize_failed" }, 500);
+    }
+
+    // 3b) Ban confirmado: desativa o perfil. Falha aqui não é fatal — a
+    //     conta já está banida no auth e a flag vira cleanup do próximo
+    //     sweep/admin, então só loga.
+    const { error: deactivateErr } = await supabaseAdmin
+      .from("profiles")
+      .update({ is_active: false })
+      .eq("user_id", userId);
+    if (deactivateErr) {
+      log.warn("profile_deactivate_failed", { error: deactivateErr.message });
+    }
+
+    // 4) Revoga credenciais em duas camadas complementares:
     //    a) user_token_revocations — isTokenRevoked rejeita JWTs já emitidos
     //       (signOut sozinho deixa access tokens válidos até expirarem);
     //    b) admin.signOut global — invalida refresh tokens no GoTrue.

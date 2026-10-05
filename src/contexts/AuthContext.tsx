@@ -37,13 +37,7 @@ import { evaluateLoginGate, GOTRUE_CAPTCHA_ENABLED } from '@/lib/auth/checkLogin
 
 // Tipos de role conforme app_role enum no banco.
 export type AppRole =
-  | 'admin'
-  | 'agente'
-  | 'coordenador'
-  | 'dev'
-  | 'manager'
-  | 'supervisor'
-  | 'vendedor';
+  'admin' | 'agente' | 'coordenador' | 'dev' | 'manager' | 'supervisor' | 'vendedor';
 
 export interface Profile {
   id: string;
@@ -354,19 +348,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
 
       // Fonte única da linha em login_attempts: fire-and-forget, cobre sucesso
-      // (a RPC de lockout usa o último success pra zerar o contador de falhas),
-      // falha de credencial e bloqueio por gate. IP real via get-visitor-info —
-      // sem ele a auditoria caía em "unknown".
+      // (a RPC de lockout usa o último success VERIFICADO pra zerar o contador
+      // — o invokeEdge carrega o JWT da sessão recém-criada e a edge valida
+      // via auth.getUser), falha de credencial e bloqueio por gate. O IP é
+      // derivado da conexão pela edge — ip_address vindo do body é forjável
+      // e ignorado.
       const logAttempt = (userId: string | null, success: boolean, failureReason?: string) => {
         import('@/lib/edge/safeInvokeCall')
           .then(async ({ invokeEdge }) => {
-            const { data: visitor } = await invokeEdge<{ ip?: string }>('get-visitor-info', {
-              headers: log.headers(),
-              timeoutMs: 5_000,
-              // maxRetries conta TENTATIVAS totais no safeAuthCall — 0 pulava a
-              // chamada e o IP nunca chegava ao login_attempts.
-              maxRetries: 1,
-            }).catch(() => ({ data: null }));
             const { error: invokeError } = await invokeEdge('log-login-attempt', {
               body: {
                 email,
@@ -374,7 +363,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 success,
                 failure_reason: failureReason,
                 user_agent: navigator.userAgent,
-                ...(visitor?.ip ? { ip_address: visitor.ip } : {}),
               },
               headers: log.headers(),
             });
@@ -450,7 +438,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         clearLoginAttempts(email);
       }
 
-      logAttempt(data?.user?.id ?? null, !error, error?.message);
+      const attemptUserId = data?.user?.id ?? null;
+      // Só falhas são logadas aqui — a linha success VERIFICADA é escrita
+      // pelo caller DEPOIS do gate de IP (ensureIPAllowed), senão um login
+      // bloqueado por IP zerava o contador do par (Devin Review SEC_0002).
+      if (error) {
+        logAttempt(attemptUserId, false, error.message);
+      }
 
       return { error, data };
     },

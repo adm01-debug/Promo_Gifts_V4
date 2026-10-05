@@ -10,8 +10,13 @@
 -- e quotes.approval_token; email|phone|telefone|celular|whatsapp|cpf|cnpj|
 -- inscricao|contact_name|contact_person|client_name|full_name cobre a PII
 -- comercial de suppliers e quotes — client_email/client_phone/client_cnpj).
+-- Onda 5: address|endereco|cep|zip_code|logradouro cobre endereços de
+-- suppliers/customers (PII de localização).
 -- O log fica com "[REDACTED]" no lugar do valor; changed_fields (só nomes)
 -- continua.
+-- Rollback: restaurar a definição de fn_audit_row_change de
+-- 20261005124501_audit_triggers_critical_tables.sql (sem a camada
+-- de redação).
 
 CREATE OR REPLACE FUNCTION public.fn_audit_row_change()
 RETURNS trigger
@@ -62,7 +67,7 @@ BEGIN
       j.k,
       CASE
         WHEN j.k = ANY(_redact)
-          OR j.k ~* '(credential|secret|token|password|api_key|email|phone|telefone|celular|whatsapp|cpf|cnpj|inscricao|contact_name|contact_person|client_name|full_name)'
+          OR j.k ~* '(credential|secret|token|password|api_key|email|phone|telefone|celular|whatsapp|cpf|cnpj|inscricao|contact_name|contact_person|client_name|full_name|address|endereco|cep|zip_code|logradouro)'
           THEN '"[REDACTED]"'::jsonb
         ELSE j.v
       END
@@ -74,7 +79,7 @@ BEGIN
       j.k,
       CASE
         WHEN j.k = ANY(_redact)
-          OR j.k ~* '(credential|secret|token|password|api_key|email|phone|telefone|celular|whatsapp|cpf|cnpj|inscricao|contact_name|contact_person|client_name|full_name)'
+          OR j.k ~* '(credential|secret|token|password|api_key|email|phone|telefone|celular|whatsapp|cpf|cnpj|inscricao|contact_name|contact_person|client_name|full_name|address|endereco|cep|zip_code|logradouro)'
           THEN '"[REDACTED]"'::jsonb
         ELSE j.v
       END

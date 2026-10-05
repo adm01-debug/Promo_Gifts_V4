@@ -278,11 +278,6 @@ export default function Auth() {
         // token novo — o widget emite um segundo desafio sob demanda.
         getCaptchaToken: () => turnstileWidgetRef.current?.getToken() ?? Promise.resolve(null),
       });
-      // Token é de uso único — consome e pede um novo desafio pra próxima
-      // tentativa, senão o retry sai com o mesmo token e a edge devolve
-      // turnstile_failed mesmo com a senha correta.
-      turnstileTokenRef.current = null;
-      turnstileWidgetRef.current?.reset();
 
       if (error) {
         logger.warn('[AUTH_FAILED] Authentication failed', { status: error.status ?? 'unknown' });
@@ -419,11 +414,17 @@ export default function Auth() {
         logger.warn('[AUTH_IP_VALIDATION_FAILOPEN] continuing without IP check');
       }
 
+      // Linha success VERIFICADA — só depois do gate de IP (SEC_0002):
+      // cobre senha fraca e redirect normal abaixo. void: auditoria lenta
+      // não pode segurar o usuário já autenticado na tela.
+      void logLoginAttempt(data.email, userId, true);
+
       // 4. Senha abaixo da política forte atual (contas legadas): força
       // troca antes de liberar o app — /reset-password aceita sessão ativa.
       if (isWeakPassword(data.password)) {
         navigatedRef.current = true; // impede o redirect do user-effect
-        await logLoginAttempt(data.email, userId, true);
+        // login_attempts success já foi escrito acima, após o gate de IP
+        // (verified via sessão) — não duplicar.
         toast({
           title: 'Atualize sua senha',
           description:
@@ -443,6 +444,10 @@ export default function Auth() {
         description: 'Não foi possível conectar ao servidor. Verifique sua internet.',
       });
     } finally {
+      // Token Turnstile é de uso único — resetar no finally garante desafio
+      // novo mesmo se signIn/guards lançarem exceção (senão o retry sai com token consumido).
+      turnstileTokenRef.current = null;
+      turnstileWidgetRef.current?.reset();
       setIsSubmitting(false);
     }
   };
@@ -798,7 +803,7 @@ export default function Auth() {
                         </button>
                       </div>
                       {loginForm.formState.errors.password && (
-                        <p className="text-sm text-destructive">
+                        <p className="text-sm text-destructive" data-testid="login-error-msg">
                           {loginForm.formState.errors.password.message}
                         </p>
                       )}

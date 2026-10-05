@@ -81,47 +81,57 @@ export function useDeviceDetection(targetUserId?: string) {
   const { user } = useAuth();
   const effectiveUserId = targetUserId || user?.id;
 
-  const checkDevice = useCallback(async (): Promise<{
-    isNewDevice: boolean;
-    isNewIP: boolean;
-    error?: string;
-  }> => {
-    if (!user) {
-      return { isNewDevice: false, isNewIP: false, error: 'No user logged in' };
-    }
-
-    try {
-      const deviceInfo = getDeviceInfo();
-
-      const { data, error } = await invokeEdge<{ isNewDevice: boolean; isNewIP: boolean }>(
-        'detect-new-device',
-        {
-          body: {
-            userId: user.id,
-            userEmail: user.email,
-            deviceInfo,
-          },
-        },
-      );
-
-      if (error) {
-        logger.error('Error checking device:', error);
-        return { isNewDevice: false, isNewIP: false, error: error.message };
+  // `explicitUser` cobre o caso em que o caller já tem a sessão mas o
+  // contexto ainda não propagou (ex.: SSOCallbackPage logo após
+  // refreshSession — o callback capturado continuaria vendo user=null).
+  const checkDevice = useCallback(
+    async (explicitUser?: {
+      id: string;
+      email?: string;
+    }): Promise<{
+      isNewDevice: boolean;
+      isNewIP: boolean;
+      error?: string;
+    }> => {
+      const effectiveUser = explicitUser ?? user;
+      if (!effectiveUser) {
+        return { isNewDevice: false, isNewIP: false, error: 'No user logged in' };
       }
 
-      return {
-        isNewDevice: data?.isNewDevice || false,
-        isNewIP: data?.isNewIP || false,
-      };
-    } catch (error: unknown) {
-      logger.error('Device detection error:', error);
-      return {
-        isNewDevice: false,
-        isNewIP: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-      };
-    }
-  }, [user]);
+      try {
+        const deviceInfo = getDeviceInfo();
+
+        const { data, error } = await invokeEdge<{ isNewDevice: boolean; isNewIP: boolean }>(
+          'detect-new-device',
+          {
+            body: {
+              userId: effectiveUser.id,
+              userEmail: effectiveUser.email,
+              deviceInfo,
+            },
+          },
+        );
+
+        if (error) {
+          logger.error('Error checking device:', error);
+          return { isNewDevice: false, isNewIP: false, error: error.message };
+        }
+
+        return {
+          isNewDevice: data?.isNewDevice || false,
+          isNewIP: data?.isNewIP || false,
+        };
+      } catch (error: unknown) {
+        logger.error('Device detection error:', error);
+        return {
+          isNewDevice: false,
+          isNewIP: false,
+          error: error instanceof Error ? error.message : 'Unknown error',
+        };
+      }
+    },
+    [user],
+  );
 
   const getKnownDevices = useCallback(async () => {
     if (!effectiveUserId) return [];

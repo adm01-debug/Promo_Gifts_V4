@@ -16,5 +16,10 @@ runBaselineGate({
   totalKey: 'productionTodoCount',
   fixHint:
     'Resolva o débito ou vincule a uma issue rastreada.\nPara atualizar o baseline (após revisão): node scripts/check-todo-baseline.mjs --update',
-  scan: () => countMatchesInSrc(process.cwd(), /\b(TODO|FIXME|HACK)\b/gi),
+  // includeCommentLines: `// TODO:` em linha-comentário também é débito —
+  // antes passava de graça pelo SKIP_CONTENT do lib (achado 2026-10).
+  scan: () =>
+    countMatchesInSrc(process.cwd(), /\b(TODO|FIXME|HACK)\b/gi, {
+      includeCommentLines: true,
+    }),
 });

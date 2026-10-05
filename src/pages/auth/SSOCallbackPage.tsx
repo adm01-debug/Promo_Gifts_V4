@@ -13,6 +13,9 @@ import { consumePostLoginRedirect } from '@/lib/auth/post-login-redirect';
 import { clearOAuthPending } from '@/lib/auth/oauth-pending';
 import { explainOAuthError, type OAuthErrorExplanation } from '@/lib/auth/oauth-error-explainer';
 import { SpaceScene } from '@/pages/auth/AuthBranding';
+import { useIPValidation } from '@/hooks/admin/useIPValidation';
+import { useDeviceDetection } from '@/hooks/admin/useDeviceDetection';
+import { invokeEdge } from '@/lib/edge/safeInvokeCall';
 
 /**
  * Callback do login social via Supabase Auth.
@@ -38,7 +41,9 @@ const SLOW_HINT_MS = 3000;
 export default function SSOCallbackPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { refreshSession } = useAuth();
+  const { refreshSession, signOut } = useAuth();
+  const { validateIPForAuthenticatedUser } = useIPValidation();
+  const { checkDevice } = useDeviceDetection();
   const handledRef = useRef(false);
   const [status, setStatus] = useState<CallbackStatus>('processing');
   const [userEmail, setUserEmail] = useState<string | null>(null);
@@ -132,9 +137,18 @@ export default function SSOCallbackPage() {
     let unsub: (() => void) | null = null;
     let timeoutId: number | null = null;
     let confirmedHoldId: number | null = null;
+    // Guarda síncrona: listener + timeout-recheck podem disparar goHome
+    // com a mesma sessão enquanto o 1º ainda aguarda a validação de IP —
+    // sem isso sucesso e detect-new-device saíam duplicados (BUG_0002).
+    let goHomeStarted = false;
 
     const goHome = async (session?: Session | null) => {
-      if (cancelled) return;
+      if (cancelled || goHomeStarted) return;
+      goHomeStarted = true;
+      if (timeoutId !== null) {
+        window.clearTimeout(timeoutId);
+        timeoutId = null;
+      }
       if (session) tracer.captureSession(session);
       // Status: sessão capturada, atualizando contexto local
       setStatus('confirming');
@@ -149,6 +163,48 @@ export default function SSOCallbackPage() {
         });
       }
       if (cancelled) return;
+
+      // Pipeline pós-login idêntico ao login por senha (o fluxo OAuth
+      // pulava o gate — achado da validação exaustiva 2026-10):
+      //  1. IP com restrição encerra a sessão + linha de falha auditada;
+      //  2. a linha success VERIFICADA zera o lockout per-(email,ip) —
+      //     sem ela o contador nunca baixava para quem entrava só por
+      //     OAuth;
+      //  3. detect-new-device roda fire-and-forget (não bloqueia).
+      const oauthUid = session?.user?.id;
+      const oauthEmail = session?.user?.email;
+      if (oauthUid && oauthEmail) {
+        const ipCheck = await validateIPForAuthenticatedUser(oauthUid).catch(() => null);
+        if (cancelled) return;
+        if (ipCheck && !ipCheck.isAllowed && ipCheck.hasRestrictions) {
+          await signOut().catch(() => undefined);
+          void invokeEdge('log-login-attempt', {
+            body: {
+              email: oauthEmail,
+              user_id: oauthUid,
+              success: false,
+              failure_reason: `${ipCheck.reason ?? 'access_blocked'}: ${ipCheck.error ?? ''}`,
+              user_agent: navigator.userAgent,
+            },
+          }).catch(() => undefined);
+          tracer.step('ip-blocked', { ip: ipCheck.currentIP });
+          goLogin(ipCheck.error || `Seu IP (${ipCheck.currentIP}) não está autorizado.`);
+          return;
+        }
+        // O invokeEdge carrega o JWT da sessão OAuth — a edge resolve o
+        // token via auth.getUser e marca verified=true.
+        void invokeEdge('log-login-attempt', {
+          body: {
+            email: oauthEmail,
+            user_id: oauthUid,
+            success: true,
+            user_agent: navigator.userAgent,
+          },
+        }).catch(() => undefined);
+        // Usuário explícito: o contexto ainda não propagou — o callback
+        // capturado veria user=null e pularia o primeiro login social.
+        void checkDevice({ id: oauthUid, email: oauthEmail }).catch(() => undefined);
+      }
       const target = consumePostLoginRedirect('/');
       tracer.step('redirect-home', { target });
       tracer.finish('success', target);
@@ -261,7 +317,14 @@ export default function SSOCallbackPage() {
       if (confirmedHoldId !== null) window.clearTimeout(confirmedHoldId);
       window.clearTimeout(slowHintId);
     };
-  }, [navigate, searchParams, refreshSession]);
+  }, [
+    navigate,
+    searchParams,
+    refreshSession,
+    signOut,
+    validateIPForAuthenticatedUser,
+    checkDevice,
+  ]);
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#030508] px-4">

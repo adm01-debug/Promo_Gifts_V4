@@ -290,12 +290,18 @@ describe('useIPValidation', () => {
         'log-login-attempt',
         expect.objectContaining({
           body: expect.objectContaining({
-            ip_address: 'unknown',
             success: false,
             failure_reason: 'Invalid credentials',
           }),
         }),
       );
+      // ip_address não é enviado pelo client — forjável; a edge deriva da conexão (C1)
+      const callBody = (
+        supabase.functions.invoke as unknown as {
+          mock: { calls: Array<Array<{ body?: Record<string, unknown> }>> };
+        }
+      ).mock.calls[0]?.[1]?.body;
+      expect(callBody).not.toHaveProperty('ip_address');
     });
 
     it('calls log-login-attempt edge function', async () => {

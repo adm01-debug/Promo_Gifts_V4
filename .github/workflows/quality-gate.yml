@@ -104,6 +104,11 @@ jobs:
       - name: Gate 2.3.7 — Edge zod ratchet (bloqueante)
         run: node scripts/check-edge-zod-ratchet.mjs
 
+      # GATE 2.3.8: manifest de autorização das edges ↔ funções no FS
+      # (espelha o gate bloqueante do deploy-gates; feedback rápido em PR).
+      - name: Gate 2.3.8 — Edge authorization manifest (bloqueante)
+        run: node scripts/check-edge-authorization.mjs
+
       # GATE 2.4: Migration path references — bloqueia referências novas a arquivos
       # inexistentes sob supabase/migrations{,-snapshot}/ e qa/migrations-draft/.
       # Baseline em .migration-refs-baseline.json congela o legado.

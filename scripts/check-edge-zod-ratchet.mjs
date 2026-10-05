@@ -37,16 +37,28 @@ const UPDATE = process.argv.slice(2).includes('--update-baseline');
 // Cobre os padrões já usados no repo: _shared/zod-validate.ts
 // (parseBodyWithSchema), `import { z } from "npm:zod..."`, `.safeParse(`,
 // helpers locais validateBody/validatePayload.
-const VALIDATION_RE =
-  /parseBodyWithSchema|safeParse|validateBody|validatePayload|from\s+["']npm:zod|from\s+["']\.\.\/_shared\/zod/i;
+// (substituída por CALL_SITE_RE + IMPORT_RE — ver stripStringLiterals)
 
 // A regex acima vale sobre código executável — um "safeParse" dentro de
 // comentário não pode contar como validação. Remove // e /* */ antes de
 // testar (o lookahead preserva "://" dentro de strings/URLs).
 function stripComments(src) {
+  return src.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/(^|[^:.'"\\])\/\/.*/gm, '$1');
+}
+
+// Um "safeParse(" solto dentro de string/template também não pode contar
+// (evasão por literal). Esvazia o conteúdo de literais antes do teste dos
+// CALL SITES; os specifiers de import (`from "npm:zod"`) são testados na
+// versão sem strip de strings — a string ali É o sinal.
+const CALL_SITE_RE =
+  /\bparseBodyWithSchema\s*\(|\bsafeParse\s*\(|\bvalidateBody\s*\(|\bvalidatePayload\s*\(|\.safeParse\s*\(/i;
+const IMPORT_RE = /from\s+["']npm:zod|from\s+["']\.\.\/_shared\/zod/i;
+
+function stripStringLiterals(src) {
   return src
-    .replace(/\/\*[\s\S]*?\*\//g, ' ')
-    .replace(/(^|[^:.'"\\])\/\/.*/gm, '$1');
+    .replace(/"([^"\\\n]|\\.)*"/g, '""')
+    .replace(/'([^'\\\n]|\\.)*'/g, "''")
+    .replace(/`([^`\\]|\\[\s\S])*`/g, '``');
 }
 
 if (!existsSync(REGISTRY)) {
@@ -77,10 +89,11 @@ for (const fn of fnDirs) {
   const idx = join(FN_DIR, fn, 'index.ts');
   if (!existsSync(idx)) continue;
   const src = stripComments(readFileSync(idx, 'utf8'));
-  if (!/req\.json\(\)|req\.text\(\)/.test(src)) continue;
+  const codeOnly = stripStringLiterals(src);
+  if (!/req\.json\(\)|req\.text\(\)/.test(codeOnly)) continue;
   if (exemptKeys.has(fn)) continue;
   bodyAccepting.push(fn);
-  if (!VALIDATION_RE.test(src)) unvalidated.push(fn);
+  if (!CALL_SITE_RE.test(codeOnly) && !IMPORT_RE.test(src)) unvalidated.push(fn);
 }
 
 function loadBaseline() {

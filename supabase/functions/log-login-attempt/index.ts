@@ -6,13 +6,30 @@ import { createStructuredLogger, type StructuredLogger } from "../_shared/struct
 import { getOrCreateRequestId } from "../_shared/request-id.ts";
 
 const LoginAttemptSchema = z.object({
-  email: z.string().email().max(255),
+  email: z.string().email().max(255).transform((e) => e.trim().toLowerCase()),
   user_id: z.string().uuid().nullish(),
-  ip_address: z.string().max(45).default("unknown"),
+  // Aceito por compatibilidade com clientes antigos, mas IGNORADO —
+  // qualquer valor vindo do body é forjável. O IP gravado é o da conexão.
+  ip_address: z.string().max(45).optional(),
   success: z.boolean(),
   failure_reason: z.string().max(500).nullish(),
   user_agent: z.string().max(512).nullish(),
 });
+
+// IP SEMPRE derivado da conexão. O gateway anexa o IP real como ÚLTIMO
+// elemento do x-forwarded-for — o primeiro (e cf-connecting-ip /
+// x-real-ip) pode vir do cliente e é forjável (Devin Review SEC_0001).
+// Ordem: xff[last] → cf-connecting-ip → x-real-ip → 'unknown'.
+function extractIP(req: Request): string {
+  const xff = req.headers.get("x-forwarded-for");
+  const lastXff = xff?.split(",").pop()?.trim();
+  return (
+    (lastXff || undefined) ??
+    req.headers.get("cf-connecting-ip") ??
+    req.headers.get("x-real-ip") ??
+    "unknown"
+  );
+}
 
 // Rate limiter: 10 login log attempts per minute per IP
 const loginLogLimiter = new RateLimiter({
@@ -150,7 +167,8 @@ export async function handleLogLoginAttempt(req: Request): Promise<Response> {
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
-    const { email, user_id, ip_address, success, failure_reason, user_agent } = parsed.data;
+    const { email, user_id, success, failure_reason, user_agent } = parsed.data;
+    const ip_address = extractIP(req);
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -171,11 +189,46 @@ export async function handleLogLoginAttempt(req: Request): Promise<Response> {
     // Use service_role to bypass RLS
     const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
 
+    // Onda 5 (C1): uma linha success=true só zera o contador de lockout
+    // (fn_check_login_allowed) quando verified=true — exige prova de
+    // sessão: o Authorization Bearer precisa resolver via auth.getUser
+    // para um usuário cujo e-mail é o do body. Sem isso, um POST anônimo
+    // com {email, success:true} zerava o lockout de qualquer conta.
+    // success sem prova → verified=false (linha gravada p/ auditoria,
+    // inerte para o lockout). Falha na validação NUNCA impede o insert.
+    let verified = false;
+    if (success) {
+      const authHeader = req.headers.get("authorization") ?? "";
+      const bearer = authHeader.replace(/^bearer\s+/i, "").trim();
+      if (bearer) {
+        try {
+          const { data: userData, error: userErr } = await supabaseAdmin.auth.getUser(bearer);
+          verified =
+            !userErr &&
+            !!userData?.user?.email &&
+            userData.user.email.toLowerCase() === email;
+          if (!verified) {
+            log.warn("session_proof_mismatch", {
+              has_user: !!userData?.user,
+              user_err: userErr?.message ?? null,
+            });
+          }
+        } catch (e) {
+          log.warn("session_proof_error", {
+            err: e instanceof Error ? e.message : String(e),
+          });
+        }
+      } else {
+        log.warn("success_without_session_proof");
+      }
+    }
+
     const { error } = await supabaseAdmin.from("login_attempts").insert({
       email,
       user_id: user_id || null,
-      ip_address: ip_address || "unknown",
+      ip_address,
       success,
+      verified,
       failure_reason: failure_reason || null,
       user_agent: user_agent || null,
     });
@@ -196,9 +249,9 @@ export async function handleLogLoginAttempt(req: Request): Promise<Response> {
     // Sucesso → reseta breaker (fecha se estava half-open).
     recordBreakerSuccess();
 
-    log.info("login_attempt_logged", { email, success });
+    log.info("login_attempt_logged", { email, success, verified });
     return log.respond(new Response(
-      JSON.stringify({ ok: true }),
+      JSON.stringify({ ok: true, verified }),
       {
         status: 200,
         headers: {

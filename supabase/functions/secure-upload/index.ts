@@ -22,7 +22,8 @@ const ALLOWED_MIME = new Set([
   "image/webp",
   "image/gif",
   "image/avif",
-  "image/svg+xml",
+  // SVG propositalmente fora: XML ativo pode carregar <script>/event
+  // handlers e vira stored XSS quando servido como documento.
 ]);
 
 /** Sniffa magic bytes e devolve o MIME real ou null se desconhecido. */
@@ -43,6 +44,8 @@ function sniffMimeType(bytes: Uint8Array): string | null {
       bytes[11] === 0x66) || (bytes[8] === 0x61 && bytes[9] === 0x76 && bytes[10] === 0x69 &&
       bytes[11] === 0x73))) return "image/avif";
   const head = new TextDecoder().decode(bytes.slice(0, 512)).trimStart().toLowerCase();
+  // Detecta SVG mesmo sem estar em ALLOWED_MIME: quem declarar outro
+  // tipo com conteúdo SVG cai no mismatch e é rejeitado do mesmo jeito.
   if (head.startsWith("<svg") || head.startsWith("<?xml")) return "image/svg+xml";
   return null;
 }
@@ -76,8 +79,20 @@ Deno.serve(async (req) => {
   };
 
   try {
-    const formData = await req.formData();
-    const file = formData.get("file") as File;
+    // formData() lança em body malformado/sem boundary — era 500 via
+    // catch externo; requisição inválida é 400, não erro de servidor.
+    let formData: FormData;
+    try {
+      formData = await req.formData();
+    } catch {
+      return log.respond(
+        new Response(JSON.stringify({ error: "Corpo inválido: esperado multipart/form-data", request_id: requestId }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }),
+      );
+    }
+    const fileField = formData.get("file");
     // folder compõe o path no Storage e é controlado pelo cliente — validação
     // por segmento preserva hierarquias legítimas (products/<id>, groups/<id>)
     // e barra path traversal ("../"). Entrada inválida é rejeitada com 400 em
@@ -106,7 +121,25 @@ Deno.serve(async (req) => {
     }
     const folder = rawFolder;
 
-    if (!file) throw new Error("Arquivo obrigatório");
+    // Campo ausente ou string (não-File) → 400 explícito em vez de
+    // TypeError em file.name/file.size caindo no catch externo como 500.
+    if (!(fileField instanceof File)) {
+      await supabaseAdmin.from("file_scan_logs").insert({
+        user_id: auth.userId,
+        bucket: "personalization-images",
+        path: `rejected/${folder}/missing_file`,
+        hash: "not_computed",
+        status_code: 400,
+        scan_result: { error: true, reason: "Arquivo obrigatório" },
+      });
+      return log.respond(
+        new Response(JSON.stringify({ error: "Arquivo obrigatório", request_id: requestId }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }),
+      );
+    }
+    const file = fileField;
 
     const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
 
@@ -172,7 +205,7 @@ Deno.serve(async (req) => {
       return log.respond(
         new Response(
           JSON.stringify({
-            error: "Tipo de arquivo não permitido (apenas imagens PNG, JPEG, WebP, GIF, AVIF ou SVG)",
+            error: "Tipo de arquivo não permitido (apenas imagens PNG, JPEG, WebP, GIF ou AVIF)",
             request_id: requestId,
           }),
           { status: 415, headers: { ...corsHeaders, "Content-Type": "application/json" } },

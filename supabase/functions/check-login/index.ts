@@ -47,11 +47,15 @@ async function verifyTurnstile(token: string, ip: string, secret: string): Promi
   }
 }
 
-// ── Extrai IP real: Cloudflare → X-Forwarded-For → X-Real-IP ───────
+// O gateway anexa o IP real como ÚLTIMO elemento do x-forwarded-for —
+// o primeiro (e cf-connecting-ip / x-real-ip) pode vir do cliente e é
+// forjável (Devin Review SEC_0001). Ordem: xff[last] → cf → x-real-ip.
 function extractIP(req: Request): string {
+  const xff = req.headers.get('x-forwarded-for');
+  const lastXff = xff?.split(',').pop()?.trim();
   return (
+    (lastXff || undefined) ??
     req.headers.get('cf-connecting-ip') ??
-    req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
     req.headers.get('x-real-ip') ??
     'unknown'
   );
@@ -151,7 +155,9 @@ Deno.serve(async (req: Request) => {
         allowed,
         reason:        row?.reason        ?? 'unknown',
         blocked_until: row?.blocked_until ?? null,
-        check_details: row?.check_details ?? {},
+        // check_details NÃO é repassado: o blob interno (settings_source,
+        // contadores, whitelist hits) vazava o estado do lockout para o
+        // chamador anônimo. Segue registrado em access_blocked_log.
       }),
       { status: allowed ? 200 : 403, headers: { ...CORS, 'Content-Type': 'application/json' } }
     );

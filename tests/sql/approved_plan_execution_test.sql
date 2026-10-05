@@ -197,6 +197,10 @@ FOR EACH ROW EXECUTE FUNCTION public.test_dar_events();
 \ir ../../supabase/migrations/20260829121000_discount_approval_orphan_fail_closed.sql
 \ir ../../supabase/migrations/20260829122000_discount_approval_responsible_seller_and_audit_correlation.sql
 \ir ../../supabase/migrations/20260829123000_discount_approval_audit_exact_correlation.sql
+-- Onda 4/5 — coluna version + trigger e a RPC com _expected_version:
+-- os cenários de optimistic locking abaixo exigem estas definições.
+\ir ../../supabase/migrations/20261005124500_discount_approval_requests_version.sql
+\ir ../../supabase/migrations/20261005124503_discount_approval_expected_version.sql
 
 INSERT INTO public.user_roles(user_id,role) VALUES
  ('10000000-0000-4000-8000-000000000010','admin');
@@ -415,10 +419,22 @@ BEGIN
   END IF;
 END $$;
 
--- Aprovação e retry terminal não duplicam evento/histórico.
+-- Aprovação e retry idempotente (mesmo autor E mesmas notas) não duplicam
+-- evento/histórico; retry com notas divergentes é conflito (40001).
 SELECT set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000010',false);
 SELECT (public.respond_discount_approval_transactional(:'request_id',true,'ok')).status;
-SELECT (public.respond_discount_approval_transactional(:'request_id',true,'retry')).status;
+SELECT (public.respond_discount_approval_transactional(:'request_id',true,'ok')).status;
+DO $$
+DECLARE _conflicted boolean := false;
+BEGIN
+  BEGIN
+    PERFORM public.respond_discount_approval_transactional(
+      current_setting('app.test.request_id')::uuid,true,'retry');
+  EXCEPTION WHEN serialization_failure THEN _conflicted := true; END;
+  IF NOT _conflicted THEN
+    RAISE EXCEPTION 'divergent retry did not raise 40001';
+  END IF;
+END $$;
 DO $$ BEGIN
   IF (SELECT status FROM quotes WHERE id='30000000-0000-4000-8000-000000000001') <> 'pending'
      OR (SELECT count(*) FROM test_dar_audit
@@ -561,6 +577,84 @@ DO $$ BEGIN
       current_setting('app.test.request_id')::uuid,false,'conflict');
     RAISE EXCEPTION 'conflicting terminal decision should fail';
   EXCEPTION WHEN check_violation THEN NULL; END;
+END $$;
+
+-- ── Onda 5 — contrato _expected_version (revisão Onda 4) ───────────────
+-- (a) versão observada correta → decisão aprovada.
+SELECT set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',false);
+SELECT (public.create_quote_with_discount_approval_transactional(
+  jsonb_build_object(
+    'id','30000000-0000-4000-8000-000000000030',
+    'quote_number','Q-VERSION','organization_id','20000000-0000-4000-8000-000000000001',
+    'status','pending_approval','subtotal',100,'total',80,
+    'discount_percent',20,'real_discount_percent',20
+  ),'[]'::jsonb,'version contract')).id;
+SELECT id AS vreq_id, version AS vreq_v FROM discount_approval_requests
+  WHERE quote_id='30000000-0000-4000-8000-000000000030' AND status='pending' \gset
+-- psql não substitui :'var' dentro de blocos DO $$ — materializa via GUC.
+SELECT set_config('app.test.vreq_id', :'vreq_id', false);
+SELECT set_config('app.test.vreq_v', :'vreq_v', false);
+
+SELECT set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000010',false);
+SELECT (public.respond_discount_approval_transactional(
+  :'vreq_id', true, 'ok', :vreq_v)).status;
+DO $$ BEGIN
+  IF (SELECT status FROM discount_approval_requests
+      WHERE id=current_setting('app.test.vreq_id')::uuid) <> 'approved' THEN
+    RAISE EXCEPTION 'decision with matching expected_version did not approve';
+  END IF;
+END $$;
+
+-- (b) retry idêntico com a versão pré-decisão é tolerado (versão atual =
+-- esperada+1, produzida pela própria decisão).
+SELECT (public.respond_discount_approval_transactional(
+  :'vreq_id', true, 'ok', :vreq_v)).status;
+
+-- (c) alteração pós-decisão bumpa version de novo → o mesmo retry deixa
+-- de ser tolerado e vira conflito 40001 (finding: replay escondia
+-- alterações posteriores à decisão).
+UPDATE discount_approval_requests SET seller_notes='editado depois da decisão'
+  WHERE id=current_setting('app.test.vreq_id')::uuid;
+DO $$ BEGIN
+  BEGIN
+    PERFORM public.respond_discount_approval_transactional(
+      current_setting('app.test.vreq_id')::uuid, true, 'ok',
+      current_setting('app.test.vreq_v')::integer);
+    RAISE EXCEPTION 'stale replay after post-decision edit should fail';
+  EXCEPTION WHEN serialization_failure THEN NULL; END;
+END $$;
+
+-- (d) decisão com versão defasada numa solicitação ainda pendente →
+-- 40001 (concorrência real); com a versão correta passa.
+SELECT set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',false);
+SELECT (public.create_quote_with_discount_approval_transactional(
+  jsonb_build_object(
+    'id','30000000-0000-4000-8000-000000000031',
+    'quote_number','Q-VERSION2','organization_id','20000000-0000-4000-8000-000000000001',
+    'status','pending_approval','subtotal',100,'total',80,
+    'discount_percent',20,'real_discount_percent',20
+  ),'[]'::jsonb,'version stale')).id;
+SELECT id AS vreq2_id, version AS vreq2_v FROM discount_approval_requests
+  WHERE quote_id='30000000-0000-4000-8000-000000000031' AND status='pending' \gset
+SELECT set_config('app.test.vreq2_id', :'vreq2_id', false);
+SELECT set_config('app.test.vreq2_v', :'vreq2_v', false);
+
+SELECT set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000010',false);
+DO $$ BEGIN
+  BEGIN
+    PERFORM public.respond_discount_approval_transactional(
+      current_setting('app.test.vreq2_id')::uuid, true, 'ok',
+      current_setting('app.test.vreq2_v')::integer + 5);
+    RAISE EXCEPTION 'stale expected_version should fail';
+  EXCEPTION WHEN serialization_failure THEN NULL; END;
+END $$;
+SELECT (public.respond_discount_approval_transactional(
+  :'vreq2_id', true, 'ok', :vreq2_v)).status;
+DO $$ BEGIN
+  IF (SELECT status FROM discount_approval_requests
+      WHERE id=current_setting('app.test.vreq2_id')::uuid) <> 'approved' THEN
+    RAISE EXCEPTION 'decision with correct expected_version did not approve';
+  END IF;
 END $$;
 
 SELECT 'approved plan database scenarios: PASS' AS result;

@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { validateCnpj, maskCep, normalizeCnpj } from '@/utils/masks';
 import { assertPersistableCnpj } from '@/utils/cnpj-schema';
+import { assertPersistableCep, assertPersistablePhoneBr } from '@/utils/br-schemas';
 import { cnpjErrorHaystack, mapCnpjError } from '@/utils/cnpj-errors';
 import { fetchAddressByCep } from '@/utils/viacep';
 import { fetchCnpjData } from '@/utils/cnpj-lookup';
@@ -410,6 +411,24 @@ export function useNewSupplierForm(onCreated: (id: string) => void) {
           .replace(/\s+/g, '_')
           .replace(/[^A-Z0-9_]/g, '')
           .slice(0, 20);
+      let persistableCnpj: string | null;
+      let cepDigits: string | null;
+      let phone1: string | null;
+      let phone2: string | null;
+      try {
+        persistableCnpj = assertPersistableCnpj(cnpj);
+        // Mesmo contrato do CNPJ: normaliza ou bloqueia o save.
+        cepDigits = assertPersistableCep(cep);
+        phone1 = assertPersistablePhoneBr(foneFixo1.trim() || contacts[0]?.phone?.trim() || null);
+        phone2 = assertPersistablePhoneBr(foneFixo2.trim() || null);
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : 'Dado inválido';
+        if (/cnpj/i.test(msg)) setCnpjError(msg);
+        toast.error(msg);
+        setSaving(false);
+        return;
+      }
+
       const addressParts =
         [
           tipoLogradouro && logradouro ? `${tipoLogradouro} ${logradouro}` : logradouro,
@@ -418,7 +437,7 @@ export function useNewSupplierForm(onCreated: (id: string) => void) {
           bairro,
           cidade,
           estado,
-          cep ? `CEP ${cep}` : null,
+          cepDigits ? `CEP ${maskCep(cepDigits)}` : null,
         ]
           .filter(Boolean)
           .join(', ') || null;
@@ -433,17 +452,6 @@ export function useNewSupplierForm(onCreated: (id: string) => void) {
         transportadoraId,
       );
 
-      let persistableCnpj: string | null;
-      try {
-        persistableCnpj = assertPersistableCnpj(cnpj);
-      } catch (err) {
-        const msg = err instanceof Error ? err.message : 'CNPJ inválido';
-        setCnpjError(msg);
-        toast.error(msg);
-        setSaving(false);
-        return;
-      }
-
       const data: Record<string, unknown> = {
         name: name.trim(),
         code: generatedCode,
@@ -455,9 +463,9 @@ export function useNewSupplierForm(onCreated: (id: string) => void) {
         contact_name: contacts[0]?.name?.trim() || null,
         contact_person: contacts[0]?.role?.trim() || null,
         email: contacts[0]?.email?.trim() || null,
-        phone: foneFixo1.trim() || contacts[0]?.phone?.trim() || null,
+        phone: phone1,
         // BUG-06 FIX: persist phone2 to dedicated column
-        phone2: foneFixo2.trim() || null,
+        phone2,
         address: addressParts,
         website: website.trim() || null,
         default_markup_percent: defaultMarkup ? parseFloat(defaultMarkup) : null,

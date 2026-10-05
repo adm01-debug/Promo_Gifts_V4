@@ -34,7 +34,6 @@ import { isFeatureEnabled } from '@/lib/feature-flags';
  */
 const SEARCH_STORAGE_KEY = 'stock.inlineSearch';
 const STATUS_FILTER_STORAGE_KEY = 'stock.statusFilter';
-const _RUPTURE_HORIZON_STORAGE_KEY = 'stock.ruptureHorizon';
 
 /**
  * Chaves legadas (modo agrupar + paginação) a serem purgadas para evitar
@@ -57,19 +56,6 @@ const STATUS_FILTER_VALUES: StatusFilter[] = [
   'critical',
   'out_of_stock',
 ];
-// SSOT — labels alinhados aos cards do StockDashboard (KPI ↔ chip).
-// NÃO ALTERAR sem atualizar o teste de regressão
-// `VariantStockTable.kpi-consistency.test.tsx`.
-const _STATUS_FILTER_LABEL: Record<StatusFilter, string> = {
-  all: 'Todos',
-  in_stock: 'Em Estoque',
-  low_stock: 'Estoque Baixo',
-  critical: 'Crítico',
-  out_of_stock: 'Sem Estoque',
-  overstocked: 'Em Estoque',
-  incoming: 'Chegando',
-};
-
 function readStored(key: string, fallback = ''): string {
   if (typeof window === 'undefined') return fallback;
   try {
@@ -463,29 +449,6 @@ function VariantStockTableInner({
         ),
     );
   }, [products, deferredSearch]);
-
-  /**
-   * Contagem de variações (SKUs) por status — base para chips de filtro.
-   * Indexa por status uma única vez por mudança de busca.
-   */
-  const _statusCounts = useMemo(() => {
-    const counts: Record<StatusFilter, number> = {
-      all: 0,
-      in_stock: 0,
-      low_stock: 0,
-      critical: 0,
-      out_of_stock: 0,
-      overstocked: 0,
-      incoming: 0,
-    };
-    for (const p of searchedProducts) {
-      for (const v of p.variants) {
-        counts.all += 1;
-        counts[v.status] = (counts[v.status] ?? 0) + 1;
-      }
-    }
-    return counts;
-  }, [searchedProducts]);
 
   /**
    * Modo variação-first: 1 linha = 1 SKU. Cada linha carrega seu `effectiveStatus`

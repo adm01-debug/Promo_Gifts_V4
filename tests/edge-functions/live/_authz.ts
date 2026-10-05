@@ -117,6 +117,9 @@ export const DESTRUCTIVE = new Set<string>([
   "bulk-random-passwords",
   "force-global-logout",
   "block-ip-temporarily",
+  // Onda 5 (validação): efeitos irreversíveis / assets reais — só NEGATIVE
+  "anonymize-user",
+  "secure-upload",
   // Mutação de chaves
   "mcp-keys-issue",
   "mcp-keys-revoke",
