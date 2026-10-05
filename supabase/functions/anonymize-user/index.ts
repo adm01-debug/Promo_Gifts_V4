@@ -107,16 +107,31 @@ Deno.serve(async (req: Request) => {
       log.warn("login_attempts_wipe_failed", { error: attemptsErr.message });
     }
 
-    // 3) Encerra todas as sessões do usuário.
-    try {
-      await supabaseAdmin.auth.admin.signOut(userId, "global");
-    } catch (signOutErr) {
-      log.warn("signout_failed", { error: String(signOutErr) });
+    // 3) Revoga credenciais em duas camadas complementares:
+    //    a) user_token_revocations — isTokenRevoked rejeita JWTs já emitidos
+    //       (signOut sozinho deixa access tokens válidos até expirarem);
+    //    b) admin.signOut global — invalida refresh tokens no GoTrue.
+    const { error: revokeErr } = await supabaseAdmin.rpc(
+      "revoke_all_user_tokens",
+      { _user_id: userId },
+    );
+    if (revokeErr) {
+      log.warn("token_revoke_failed", { error: revokeErr.message });
     }
+    const { error: signOutErr } = await supabaseAdmin.auth.admin.signOut(
+      userId,
+      "global",
+    );
+    if (signOutErr) {
+      // signOut resolve com { error } (não lança) — precisa inspeção explícita.
+      log.warn("signout_failed", { error: signOutErr.message });
+    }
+    const sessionsWiped = !revokeErr && !signOutErr;
 
     log.info("user_anonymized", {
       userId,
       loginAttemptsWiped: attemptsWiped ?? 0,
+      sessionsWiped,
     });
 
     return jsonRes(corsHeaders, {
@@ -124,6 +139,7 @@ Deno.serve(async (req: Request) => {
       wiped: {
         profile: true,
         login_attempts: attemptsErr ? "failed" : (attemptsWiped ?? 0),
+        sessions: sessionsWiped ? "revoked" : "partial",
       },
     });
   } catch (err) {
