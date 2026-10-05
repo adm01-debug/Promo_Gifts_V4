@@ -90,7 +90,7 @@ Deno.serve(async (req: Request) => {
     //    administrativa falhar no passo 3, o usuário fica com login vivo e
     //    perfil ATIVO (já sem PII) — consegue retentar. Desativar aqui
     //    deixaria conta logável com perfil morto.
-    const { error: profileErr } = await supabaseAdmin
+    const { error: profileErr, count: profileCount } = await supabaseAdmin
       .from("profiles")
       .update({
         full_name: "Usuário excluído",
@@ -100,7 +100,7 @@ Deno.serve(async (req: Request) => {
         department: null,
         preferences: null,
         bitrix_id: null,
-      })
+      }, { count: "exact" })
       .eq("user_id", userId);
     if (profileErr) {
       log.error("profile_anonymize_failed", { error: profileErr.message });
@@ -110,10 +110,14 @@ Deno.serve(async (req: Request) => {
     // 2) Apaga tentativas de login (email + user_id carregam PII direta).
     //    ilike cobre variações de case de linhas legadas — a edge nova já
     //    normaliza para lowercase, mas histórico pode ter misto.
+    // Email vai interpolado no filtro .or() — PostgREST quebraria a
+    // cláusula em ',', '(' ou ')'. O claim vem do JWT verificado, mas o
+    // custo do whitelist é zero: só mantém chars válidos de email.
+    const safeEmail = (email ?? "").replace(/[^a-zA-Z0-9@._%+\-]/g, "");
     const { error: attemptsErr, count: attemptsWiped } = await supabaseAdmin
       .from("login_attempts")
       .delete({ count: "exact" })
-      .or(`user_id.eq.${userId}${email ? `,email.ilike.${email}` : ""}`);
+      .or(`user_id.eq.${userId}${safeEmail ? `,email.ilike.${safeEmail}` : ""}`);
     if (attemptsErr) {
       // Não é fatal: perfil já foi anonimizado; loga e segue.
       log.warn("login_attempts_wipe_failed", { error: attemptsErr.message });
@@ -198,7 +202,9 @@ Deno.serve(async (req: Request) => {
     return jsonRes(corsHeaders, {
       anonymized: true,
       wiped: {
-        profile: true,
+        // Conta real de linhas — `true` com 0 linhas mentiria que um
+        // perfil foi anonimizado quando nem existia.
+        profile: profileCount ?? 0,
         login_attempts: attemptsErr ? "failed" : (attemptsWiped ?? 0),
         sessions: sessionsWiped ? "revoked" : "partial",
       },
