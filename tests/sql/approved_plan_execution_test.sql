@@ -419,10 +419,21 @@ BEGIN
   END IF;
 END $$;
 
--- Aprovação e retry terminal não duplicam evento/histórico.
+-- Aprovação e retry idempotente (mesmo autor E mesmas notas) não duplicam
+-- evento/histórico; retry com notas divergentes é conflito (40001).
 SELECT set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000010',false);
 SELECT (public.respond_discount_approval_transactional(:'request_id',true,'ok')).status;
-SELECT (public.respond_discount_approval_transactional(:'request_id',true,'retry')).status;
+SELECT (public.respond_discount_approval_transactional(:'request_id',true,'ok')).status;
+DO $$
+DECLARE _conflicted boolean := false;
+BEGIN
+  BEGIN
+    PERFORM public.respond_discount_approval_transactional(:'request_id',true,'retry');
+  EXCEPTION WHEN serialization_failure THEN _conflicted := true; END;
+  IF NOT _conflicted THEN
+    RAISE EXCEPTION 'divergent retry did not raise 40001';
+  END IF;
+END $$;
 DO $$ BEGIN
   IF (SELECT status FROM quotes WHERE id='30000000-0000-4000-8000-000000000001') <> 'pending'
      OR (SELECT count(*) FROM test_dar_audit

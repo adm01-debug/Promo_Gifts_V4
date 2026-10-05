@@ -415,8 +415,9 @@ export default function Auth() {
       }
 
       // Linha success VERIFICADA — só depois do gate de IP (SEC_0002):
-      // cobre senha fraca e redirect normal abaixo.
-      await logLoginAttempt(data.email, userId, true);
+      // cobre senha fraca e redirect normal abaixo. void: auditoria lenta
+      // não pode segurar o usuário já autenticado na tela.
+      void logLoginAttempt(data.email, userId, true);
 
       // 4. Senha abaixo da política forte atual (contas legadas): força
       // troca antes de liberar o app — /reset-password aceita sessão ativa.
