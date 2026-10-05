@@ -428,7 +428,8 @@ DO $$
 DECLARE _conflicted boolean := false;
 BEGIN
   BEGIN
-    PERFORM public.respond_discount_approval_transactional(:'request_id',true,'retry');
+    PERFORM public.respond_discount_approval_transactional(
+      current_setting('app.test.request_id')::uuid,true,'retry');
   EXCEPTION WHEN serialization_failure THEN _conflicted := true; END;
   IF NOT _conflicted THEN
     RAISE EXCEPTION 'divergent retry did not raise 40001';
@@ -590,12 +591,16 @@ SELECT (public.create_quote_with_discount_approval_transactional(
   ),'[]'::jsonb,'version contract')).id;
 SELECT id AS vreq_id, version AS vreq_v FROM discount_approval_requests
   WHERE quote_id='30000000-0000-4000-8000-000000000030' AND status='pending' \gset
+-- psql não substitui :'var' dentro de blocos DO $$ — materializa via GUC.
+SELECT set_config('app.test.vreq_id', :'vreq_id', false);
+SELECT set_config('app.test.vreq_v', :'vreq_v', false);
 
 SELECT set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000010',false);
 SELECT (public.respond_discount_approval_transactional(
   :'vreq_id', true, 'ok', :vreq_v)).status;
 DO $$ BEGIN
-  IF (SELECT status FROM discount_approval_requests WHERE id=:'vreq_id') <> 'approved' THEN
+  IF (SELECT status FROM discount_approval_requests
+      WHERE id=current_setting('app.test.vreq_id')::uuid) <> 'approved' THEN
     RAISE EXCEPTION 'decision with matching expected_version did not approve';
   END IF;
 END $$;
@@ -609,11 +614,12 @@ SELECT (public.respond_discount_approval_transactional(
 -- de ser tolerado e vira conflito 40001 (finding: replay escondia
 -- alterações posteriores à decisão).
 UPDATE discount_approval_requests SET seller_notes='editado depois da decisão'
-  WHERE id=:'vreq_id';
+  WHERE id=current_setting('app.test.vreq_id')::uuid;
 DO $$ BEGIN
   BEGIN
     PERFORM public.respond_discount_approval_transactional(
-      :'vreq_id', true, 'ok', :vreq_v);
+      current_setting('app.test.vreq_id')::uuid, true, 'ok',
+      current_setting('app.test.vreq_v')::integer);
     RAISE EXCEPTION 'stale replay after post-decision edit should fail';
   EXCEPTION WHEN serialization_failure THEN NULL; END;
 END $$;
@@ -630,19 +636,23 @@ SELECT (public.create_quote_with_discount_approval_transactional(
   ),'[]'::jsonb,'version stale')).id;
 SELECT id AS vreq2_id, version AS vreq2_v FROM discount_approval_requests
   WHERE quote_id='30000000-0000-4000-8000-000000000031' AND status='pending' \gset
+SELECT set_config('app.test.vreq2_id', :'vreq2_id', false);
+SELECT set_config('app.test.vreq2_v', :'vreq2_v', false);
 
 SELECT set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000010',false);
 DO $$ BEGIN
   BEGIN
     PERFORM public.respond_discount_approval_transactional(
-      :'vreq2_id', true, 'ok', :vreq2_v + 5);
+      current_setting('app.test.vreq2_id')::uuid, true, 'ok',
+      current_setting('app.test.vreq2_v')::integer + 5);
     RAISE EXCEPTION 'stale expected_version should fail';
   EXCEPTION WHEN serialization_failure THEN NULL; END;
 END $$;
 SELECT (public.respond_discount_approval_transactional(
   :'vreq2_id', true, 'ok', :vreq2_v)).status;
 DO $$ BEGIN
-  IF (SELECT status FROM discount_approval_requests WHERE id=:'vreq2_id') <> 'approved' THEN
+  IF (SELECT status FROM discount_approval_requests
+      WHERE id=current_setting('app.test.vreq2_id')::uuid) <> 'approved' THEN
     RAISE EXCEPTION 'decision with correct expected_version did not approve';
   END IF;
 END $$;

@@ -15,9 +15,11 @@ permissions:
   pull-requests: write # abre/atualiza o Release PR
 
 concurrency:
-  # Um Release PR por vez — push novo cancela o anterior (idempotente).
+  # Um Release PR por vez — runs enfileiram sem cancelar (padrão E12/R2:
+  # em push/schedule cancel-in-progress fica desligado para não abortar
+  # um release/tag em andamento).
   group: release-please-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   release-please:

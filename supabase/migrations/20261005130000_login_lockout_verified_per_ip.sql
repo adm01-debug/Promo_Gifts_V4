@@ -230,9 +230,13 @@ EXCEPTION WHEN OTHERS THEN
 END;
 $function$;
 
+-- Mantém o hardening de 20260904150000 (SEC-008v4): a função aceita
+-- p_ip_address/p_city arbitrários, então só a edge (service_role) pode
+-- chamá-la — via PostgREST um caller forjaria o contexto de conexão.
 REVOKE EXECUTE ON FUNCTION public.fn_check_login_allowed(text, text, text, text) FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION public.fn_check_login_allowed(text, text, text, text) TO anon;
-GRANT EXECUTE ON FUNCTION public.fn_check_login_allowed(text, text, text, text) TO authenticated;
+REVOKE EXECUTE ON FUNCTION public.fn_check_login_allowed(text, text, text, text) FROM anon;
+REVOKE EXECUTE ON FUNCTION public.fn_check_login_allowed(text, text, text, text) FROM authenticated;
+GRANT EXECUTE ON FUNCTION public.fn_check_login_allowed(text, text, text, text) TO service_role;
 
 DO $$
 DECLARE
@@ -264,9 +268,12 @@ BEGIN
   IF v_def NOT LIKE '%ip_unknown_blocked%' THEN
     RAISE EXCEPTION 'Onda5-C1: fn_check_login_allowed perdeu o fix de ip bypass!';
   END IF;
-  IF NOT has_function_privilege('anon', 'public.fn_check_login_allowed(text,text,text,text)', 'EXECUTE')
-     OR NOT has_function_privilege('authenticated', 'public.fn_check_login_allowed(text,text,text,text)', 'EXECUTE') THEN
-    RAISE EXCEPTION 'Onda5-C1: GRANTs de fn_check_login_allowed ausentes!';
+  IF has_function_privilege('anon', 'public.fn_check_login_allowed(text,text,text,text)', 'EXECUTE')
+     OR has_function_privilege('authenticated', 'public.fn_check_login_allowed(text,text,text,text)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'Onda5-C1: anon/authenticated com EXECUTE em fn_check_login_allowed — revogação SEC-008v4 perdida!';
+  END IF;
+  IF NOT has_function_privilege('service_role', 'public.fn_check_login_allowed(text,text,text,text)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'Onda5-C1: service_role sem EXECUTE em fn_check_login_allowed — edge check-login quebraria!';
   END IF;
 
   RAISE NOTICE '✓ [Onda5-C1] login_attempts.verified + lockout por (email,ip) aplicados.';

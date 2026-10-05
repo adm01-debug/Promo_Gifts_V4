@@ -9,11 +9,12 @@
  * Response 200: { anonymized: true, wiped: { profile, login_attempts } }
  *
  * O que faz (service_role, transacional por passo):
- *   1. auth.users: anonimiza o e-mail e bane a conta (~100 anos) — sem
- *      isso a conta "esquecida" seguia autenticável com o e-mail real.
- *   2. profiles: zera PII (nome, email, telefone, avatar, departamento,
+ *   1. profiles: zera PII (nome, email, telefone, avatar, departamento,
  *      preferências, bitrix_id) e marca is_active=false.
- *   3. login_attempts: apaga as linhas do usuário (email + user_id).
+ *   2. login_attempts: apaga as linhas do usuário (email + user_id).
+ *   3. auth.users: anonimiza e-mail/telefone/user_metadata e bane a
+ *      conta (~100 anos) — passo irreversível, por último: se um wipe
+ *      anterior falhar o usuário ainda consegue logar e retentar.
  *   4. Encerra todas as sessões do usuário (revoke + signOut global).
  *
  * O que NÃO faz (documentado):
@@ -79,28 +80,9 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // 1) Anonimiza auth.users ANTES do perfil: se só o perfil fosse
-    //    anonimizado, a conta continuava autenticável pelo e-mail real
-    //    (dado esquecido) e logava normalmente. ban_duration ~100 anos
-    //    bloqueia novos logins; sessions existentes são revogadas abaixo.
-    //    Falha aqui é fatal: devolver anonymized:true sem isso seria
-    //    esquecimento pela metade.
     const anonymizedEmail = `deleted-${userId}@anonymized.invalid`;
-    try {
-      const { error: authErr } = await supabaseAdmin.auth.admin.updateUserById(
-        userId,
-        { email: anonymizedEmail, ban_duration: "876000h" },
-      );
-      if (authErr) {
-        log.error("auth_user_anonymize_failed", { error: authErr.message });
-        return jsonRes(corsHeaders, { error: "anonymize_failed" }, 500);
-      }
-    } catch (authThrow) {
-      log.error("auth_user_anonymize_failed", { error: String(authThrow) });
-      return jsonRes(corsHeaders, { error: "anonymize_failed" }, 500);
-    }
 
-    // 2) Anonimiza o perfil — uuid opaco preserva FKs sem vazar identidade.
+    // 1) Anonimiza o perfil — uuid opaco preserva FKs sem vazar identidade.
     const { error: profileErr } = await supabaseAdmin
       .from("profiles")
       .update({
@@ -119,7 +101,7 @@ Deno.serve(async (req: Request) => {
       return jsonRes(corsHeaders, { error: "anonymize_failed" }, 500);
     }
 
-    // 3) Apaga tentativas de login (email + user_id carregam PII direta).
+    // 2) Apaga tentativas de login (email + user_id carregam PII direta).
     //    ilike cobre variações de case de linhas legadas — a edge nova já
     //    normaliza para lowercase, mas histórico pode ter misto.
     const { error: attemptsErr, count: attemptsWiped } = await supabaseAdmin
@@ -131,7 +113,31 @@ Deno.serve(async (req: Request) => {
       log.warn("login_attempts_wipe_failed", { error: attemptsErr.message });
     }
 
-    // 3) Revoga credenciais em duas camadas complementares:
+    // 3) Passo irreversível por último: anonimiza auth.users (e-mail,
+    //    telefone e user_metadata — updateUserById substitui o objeto
+    //    inteiro) e bane a conta ~100 anos. Depois deste update o usuário
+    //    não loga mais, então ele só roda quando os wipes de PII já
+    //    passaram — se um deles falhar, o cliente ainda entra e retenta.
+    try {
+      const { error: authErr } = await supabaseAdmin.auth.admin.updateUserById(
+        userId,
+        {
+          email: anonymizedEmail,
+          phone: "",
+          user_metadata: {},
+          ban_duration: "876000h",
+        },
+      );
+      if (authErr) {
+        log.error("auth_user_anonymize_failed", { error: authErr.message });
+        return jsonRes(corsHeaders, { error: "anonymize_failed" }, 500);
+      }
+    } catch (authThrow) {
+      log.error("auth_user_anonymize_failed", { error: String(authThrow) });
+      return jsonRes(corsHeaders, { error: "anonymize_failed" }, 500);
+    }
+
+    // 4) Revoga credenciais em duas camadas complementares:
     //    a) user_token_revocations — isTokenRevoked rejeita JWTs já emitidos
     //       (signOut sozinho deixa access tokens válidos até expirarem);
     //    b) admin.signOut global — invalida refresh tokens no GoTrue.
