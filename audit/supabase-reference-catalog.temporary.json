@@ -309,6 +309,7 @@
     "respond_discount_approval_transactional",
     "restore_favorite_from_trash",
     "restore_seller_cart",
+    "revoke_all_user_tokens",
     "save_custom_kit_atomic",
     "search_products_semantic",
     "search_records_rerank",

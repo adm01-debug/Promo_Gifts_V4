@@ -4,18 +4,12 @@
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { safeAuthCall, __resetBreakers, type AuthErrorKind } from '@/lib/auth/safeAuthCall';
-import {
-  resetStructuredLoggerMock,
-  findLoggerEventsByScope,
-  structuredLoggerMockFactory,
-} from '@/test/mockStructuredLogger';
+import { resetStructuredLoggerMock, findLoggerEventsByScope } from '@/test/mockStructuredLogger';
 
 vi.mock('@/lib/telemetry/structuredLogger', async () => {
   const mod = await import('@/test/mockStructuredLogger');
   return mod.structuredLoggerMockFactory();
 });
-// Referência para evitar warning de import não usado no factory tipado.
-void structuredLoggerMockFactory;
 
 const OK = { data: { user: { id: 'u1' } }, error: null };
 

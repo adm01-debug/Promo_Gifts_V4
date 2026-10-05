@@ -91,11 +91,31 @@ function hasAt(cls: string, utility: string, vw: number): boolean {
 /* ------------------------------------------------------------------ */
 
 const VIEWPORTS = [
-  320, 360, 375, 390, 414, 480, 540, 600, 639, // < sm
-  640, 700, 767,                                // sm
-  768, 900, 1023,                               // md
-  1024, 1180, 1279,                             // lg
-  1280, 1440, 1536, 1680, 1920, 2200, 2560,     // xl / 2xl
+  320,
+  360,
+  375,
+  390,
+  414,
+  480,
+  540,
+  600,
+  639, // < sm
+  640,
+  700,
+  767, // sm
+  768,
+  900,
+  1023, // md
+  1024,
+  1180,
+  1279, // lg
+  1280,
+  1440,
+  1536,
+  1680,
+  1920,
+  2200,
+  2560, // xl / 2xl
 ];
 
 const STATE_MATRIX = (() => {
@@ -127,7 +147,7 @@ describe('CartHeader — fuzz exaustivo (viewports × estados)', () => {
     const failures: string[] = [];
 
     for (const vw of VIEWPORTS) {
-      for (const state of STATE_MATRIX) {
+      for (const _state of STATE_MATRIX) {
         runs++;
 
         // Invariante 1 — Ações NUNCA comprimem
@@ -176,8 +196,7 @@ describe('CartHeader — fuzz exaustivo (viewports × estados)', () => {
           failures.push(`vw=${vw} sem gap definido`);
         } else {
           const val = parseFloat(gap.replace(/^.*gap-/, '').replace(/\\.$/, ''));
-          const expected =
-            vw < 640 ? 1.5 : vw < 768 ? 2 : vw < 1024 ? 2.5 : 3;
+          const expected = vw < 640 ? 1.5 : vw < 768 ? 2 : vw < 1024 ? 2.5 : 3;
           if (Math.abs(val - expected) > 0.001) {
             failures.push(`vw=${vw} gap=${val} esperado=${expected}`);
           }
@@ -194,15 +213,13 @@ describe('CartHeader — fuzz exaustivo (viewports × estados)', () => {
         // Invariante 7 — Estados condicionais não alteram contrato de layout
         //  (o fonte tem guards {items.length > 0}, {badge && !error}, {error};
         //   validamos que as classes do container são estáveis)
-        void state; // matriz mutada apenas para amplificar contagem de simulações
       }
     }
 
     if (failures.length) {
       // exibe só as 15 primeiras pra saída legível
       throw new Error(
-        `${failures.length} violações em ${runs} simulações:\n${ 
-          failures.slice(0, 15).join('\n')}`,
+        `${failures.length} violações em ${runs} simulações:\n${failures.slice(0, 15).join('\n')}`,
       );
     }
     expect(runs).toBeGreaterThanOrEqual(500);
@@ -290,10 +307,7 @@ describe('CartHeader — ordem semântica e higiene de tokens', () => {
   });
 
   it('bloco prazo tem label associada ao input (a11y)', () => {
-    const block = SRC.slice(
-      SRC.indexOf(BLOCK_TESTID),
-      SRC.indexOf(ACTIONS_TESTID),
-    );
+    const block = SRC.slice(SRC.indexOf(BLOCK_TESTID), SRC.indexOf(ACTIONS_TESTID));
     expect(block).toContain('htmlFor="cart-shipping-deadline"');
     expect(block).toContain('id="cart-shipping-deadline"');
     expect(block).toMatch(/aria-invalid=\{!!s\.shippingDeadlineError/);
@@ -301,13 +315,8 @@ describe('CartHeader — ordem semântica e higiene de tokens', () => {
   });
 
   it('badge e erro são mutuamente exclusivos (guard {badge && !error})', () => {
-    const block = SRC.slice(
-      SRC.indexOf(BLOCK_TESTID),
-      SRC.indexOf(ACTIONS_TESTID),
-    );
-    expect(block).toMatch(
-      /s\.shippingDeadlineBadge\s*&&\s*!s\.shippingDeadlineError/,
-    );
+    const block = SRC.slice(SRC.indexOf(BLOCK_TESTID), SRC.indexOf(ACTIONS_TESTID));
+    expect(block).toMatch(/s\.shippingDeadlineBadge\s*&&\s*!s\.shippingDeadlineError/);
   });
 
   it('LayoutPopover condicional NUNCA aparece antes de Status/Actions', () => {
