@@ -25,6 +25,16 @@ const CHECK_LOGIN_OPERATIONAL_REASONS = new Set([
   'turnstile_unavailable', // siteverify inalcançável — não derruba login legítimo
 ]);
 
+/**
+ * Com Turnstile ativo (site key + secret configuradas), a verificação do
+ * desafio acontece DENTRO da check-login — se a edge está fora/errou, não há
+ * verificação de token nenhuma e prosseguir contorna o anti-bot. Nesse caso
+ * o signIn falha fechado com esta mensagem (sem Turnstile, o fail-open
+ * operacional de cima continua valendo).
+ */
+export const TURNSTILE_GATE_UNAVAILABLE_MESSAGE =
+  'Verificação de segurança indisponível no momento. Tente novamente em instantes.';
+
 /** Bloqueio "falso": a edge recusou por falha operacional, não por regra. */
 export function isOperationalGateBlock(gate: CheckLoginGateResponse | null | undefined): boolean {
   return (

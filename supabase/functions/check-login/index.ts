@@ -35,6 +35,9 @@ async function verifyTurnstile(token: string, ip: string, secret: string): Promi
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({ secret, response: token, remoteip: ip }).toString(),
+      // 5s: sem timeout próprio, um siteverify pendurado segura a invocação
+      // da edge até o limite da plataforma, consumindo capacidade.
+      signal: AbortSignal.timeout(5_000),
     });
     if (!res.ok) return 'unreachable';
     const data = (await res.json()) as { success?: boolean };

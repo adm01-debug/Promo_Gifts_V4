@@ -33,7 +33,7 @@
  */
 
 import { createHash } from 'node:crypto';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import {
@@ -62,6 +62,10 @@ const SQL = `
   ORDER BY schemaname, tablename, policyname;
 `.trim();
 
+const SQL_MIGRATIONS_LEDGER = `
+  SELECT version FROM supabase_migrations.schema_migrations;
+`.trim();
+
 function normalizeRow(row) {
   return {
     schemaname: String(row.schemaname ?? ''),
@@ -88,12 +92,87 @@ async function fetchLive() {
   if (result.kind !== 'live') {
     return { ...result, maskedUrl: maskUrl(result.target) };
   }
-  return {
+  const live = {
     kind: 'live',
     source: result.source,
     maskedUrl: maskUrl(result.target),
     policies: result.rows.map(normalizeRow),
   };
+
+  // Segunda consulta (best-effort): ledger de migrations aplicadas. Serve
+  // para detectar migrations PENDENTES no repo que criam/removem policies —
+  // sem ela, um PR com migration nova + baseline atualizada falharia o gate
+  // porque o live ainda não recebeu a migration.
+  const ledger = await querySupabaseReadOnly(SQL_MIGRATIONS_LEDGER);
+  if (ledger.kind === 'live') {
+    live.appliedVersions = new Set(ledger.rows.map((r) => String(r.version)));
+  } else {
+    live.appliedVersions = null; // sem ledger → modo conservador (nada tolerado)
+  }
+  return live;
+}
+
+const MIGRATIONS_DIR = path.join(ROOT, 'supabase/migrations');
+const MIGRATION_FILE_RE = /^(\d{14})_[a-z0-9_]+\.sql$/i;
+const RECONCILED_MANIFEST = path.join(
+  ROOT,
+  'docs/MANIFESTO_MIGRATIONS_RECONCILIADAS_2026-09-11.json',
+);
+const POLICY_STMT_RE =
+  /(create|drop)\s+policy\s+(?:if\s+(?:not\s+)?exists\s+)?["']?([\w\s-]+?)["']?\s+on\s+(?:(\w+)\.)?(\w+)/gi;
+
+/**
+ * Versão remota (ledger) de um arquivo de migration: prefixo
+ * YYYYMMDDHHMMSS para nomes canônicos; para nomes legados, o manifesto de
+ * reconciliação mapeia path → remote_version. Sem versão derivável, o
+ * arquivo não entra no cálculo (conservador — não gera tolerância).
+ */
+function ledgerVersionFor(file, reconciledByPath) {
+  const m = MIGRATION_FILE_RE.exec(file);
+  if (m) return m[1];
+  return reconciledByPath.get(`supabase/migrations/${file}`) ?? null;
+}
+
+function loadReconciledVersions() {
+  const map = new Map();
+  try {
+    const doc = JSON.parse(readFileSync(RECONCILED_MANIFEST, 'utf8'));
+    const entries = Array.isArray(doc)
+      ? doc
+      : doc.entries || doc.migrations || doc.files || [];
+    for (const e of entries) {
+      const p = e.path ?? e.file;
+      const v = e.remote_version ?? e.version;
+      if (p && v) map.set(String(p), String(v));
+    }
+  } catch {
+    // Manifesto ausente/ilegível → só versões por prefixo de timestamp.
+  }
+  return map;
+}
+
+/**
+ * Policies que migrations ainda não aplicadas criam ou removem. O drift do
+ * baseline vs live é tolerado nessas chaves: a migration é a fonte da
+ * mudança planejada e o live só converge depois do db-apply.
+ */
+function plannedPolicyKeys(appliedVersions) {
+  const planned = new Set();
+  if (!(appliedVersions instanceof Set)) return planned;
+  const reconciled = loadReconciledVersions();
+  for (const file of readdirSync(MIGRATIONS_DIR)) {
+    if (!file.endsWith('.sql')) continue;
+    const version = ledgerVersionFor(file, reconciled);
+    if (!version || appliedVersions.has(version)) continue;
+    const sql = readFileSync(path.join(MIGRATIONS_DIR, file), 'utf8');
+    for (const stmt of sql.matchAll(POLICY_STMT_RE)) {
+      const name = stmt[2].trim();
+      const schema = stmt[3] ?? 'public';
+      const table = stmt[4];
+      if (schema === 'public') planned.add(`public.${table}.${name}`);
+    }
+  }
+  return planned;
 }
 
 function loadBaseline() {
@@ -126,11 +205,15 @@ function describePolicy(p) {
 async function main() {
   let actual;
   let source = 'from-file';
+  let plannedKeys = new Set();
   if (fromFileArg) {
     const p = fromFileArg.slice('--from-file='.length);
     const raw = JSON.parse(readFileSync(p, 'utf8'));
     const rows = Array.isArray(raw) ? raw : raw.policies || [];
     actual = rows.map(normalizeRow);
+    // Sem ledger nesse modo de teste: trata as migrations do repo como
+    // pendentes (mesma tolerância do caminho live).
+    plannedKeys = plannedPolicyKeys(new Set());
   } else {
     const live = await fetchLive();
     if (live.kind !== 'live') {
@@ -154,6 +237,7 @@ async function main() {
     }
     actual = live.policies;
     source = live.source;
+    plannedKeys = plannedPolicyKeys(live.appliedVersions);
   }
 
   if (UPDATE) {
@@ -205,11 +289,27 @@ async function main() {
   const actualByKey = new Map(actual.map((p) => [policyKey(p), p]));
 
   const added = actual.filter((p) => !baselineByKey.has(policyKey(p)));
-  const removed = baseline.filter((p) => !actualByKey.has(policyKey(p)));
-  const changed = actual.filter((p) => {
+  // Policies ausentes no live que uma migration pendente cria/remove —
+  // mudança planejada (PR com migration + baseline atualizada), não drift.
+  const removedAll = baseline.filter((p) => !actualByKey.has(policyKey(p)));
+  const removed = removedAll.filter((p) => !plannedKeys.has(policyKey(p)));
+  const plannedRemoved = removedAll.filter((p) => plannedKeys.has(policyKey(p)));
+  const changedAll = actual.filter((p) => {
     const base = baselineByKey.get(policyKey(p));
     return base && hashPolicies([base]) !== hashPolicies([p]);
   });
+  // Idem para alterações: migration pendente recria a policy (drop+create).
+  const changed = changedAll.filter((p) => !plannedKeys.has(policyKey(p)));
+  const plannedChanged = changedAll.filter((p) => plannedKeys.has(policyKey(p)));
+
+  if (plannedRemoved.length || plannedChanged.length) {
+    process.stderr.write(
+      `ℹ️  ${plannedRemoved.length + plannedChanged.length} diff(s) tolerado(s) — policy(ies) ` +
+        `criada(s)/alterada(s) por migration ainda não aplicada:\n` +
+        [...plannedRemoved, ...plannedChanged].map((p) => `   - ${policyKey(p)}`).join('\n') +
+        '\n',
+    );
+  }
 
   const problems = [];
   if (added.length) {

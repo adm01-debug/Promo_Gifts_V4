@@ -39,7 +39,12 @@ import { logger } from '@/lib/logger';
 import { cn } from '@/lib/utils';
 import { invokeEdge } from '@/lib/edge/safeInvokeCall';
 import { createPostLoginGuards } from '@/pages/auth/postLoginGuards';
-import { TurnstileWidget, TURNSTILE_SITE_KEY } from '@/pages/auth/TurnstileWidget';
+import { loginErrorCopy } from '@/pages/auth/loginErrorCopy';
+import {
+  TurnstileWidget,
+  TURNSTILE_SITE_KEY,
+  type TurnstileWidgetHandle,
+} from '@/pages/auth/TurnstileWidget';
 import { LoginSuccessSplash } from '@/pages/auth/LoginSuccessSplash';
 
 type LoginForm = LoginFormData;
@@ -106,6 +111,7 @@ export default function Auth() {
   const honeypotRef = useRef<HTMLInputElement | null>(null);
   // Token do desafio Turnstile (ativo só quando VITE_TURNSTILE_SITE_KEY existe).
   const turnstileTokenRef = useRef<string | null>(null);
+  const turnstileWidgetRef = useRef<TurnstileWidgetHandle>(null);
   // Função `retry` publicada pelo SocialLoginButtons para reexecutar o Google login.
   const googleRetryRef = useRef<(() => void) | null>(null);
   const handleRetryGoogle = useCallback(() => {
@@ -268,6 +274,11 @@ export default function Auth() {
       const { error } = await signIn(data.email, data.password, {
         turnstileToken: turnstileTokenRef.current ?? undefined,
       });
+      // Token é de uso único — consome e pede um novo desafio pra próxima
+      // tentativa, senão o retry sai com o mesmo token e a edge devolve
+      // turnstile_failed mesmo com a senha correta.
+      turnstileTokenRef.current = null;
+      turnstileWidgetRef.current?.reset();
 
       if (error) {
         logger.warn('[AUTH_FAILED] Authentication failed', { status: error.status ?? 'unknown' });
@@ -275,35 +286,8 @@ export default function Auth() {
         // com IP real) — escrever aqui de novo dobrava a linha de falha e
         // fazia a RPC de lockout atingir o limite na metade das tentativas.
 
-        let description = 'Ocorreu um erro ao validar seu acesso. Por favor, tente novamente.';
-        let title = 'Não foi possível entrar';
-        let hint = 'Se o erro persistir, tente redefinir sua senha ou use o login social.';
-
-        if (error.message.includes('Invalid login credentials') || error.status === 400) {
-          title = 'E-mail ou Senha Incorretos';
-          description =
-            'Não encontramos uma conta com esses dados. Verifique se digitou corretamente ou use "Esqueci minha senha".';
-          hint = 'Dica: Verifique se o Caps Lock está ativado.';
-        } else if (error.message.includes('Email not confirmed')) {
-          title = 'E-mail não confirmado';
-          description =
-            'Sua conta ainda não foi ativada. Verifique sua caixa de entrada e spam pelo e-mail de confirmação.';
-          hint = 'Ainda não recebeu? Aguarde alguns minutos antes de solicitar um novo envio.';
-        } else if (error.status === 403) {
-          // Bloqueio do gate server-side (check-login) — error.message já é o
-          // texto pt-BR com blocked_until montado em AuthContext.signIn.
-          title = 'Acesso Bloqueado';
-          description = error.message;
-          hint = 'Se você acredita que isto é um engano, contate o administrador.';
-        } else if (error.message.includes('rate limit') || error.status === 429) {
-          title = 'Acesso Temporariamente Suspenso';
-          description =
-            'Detectamos muitas tentativas seguidas. Por segurança, sua conta foi bloqueada por alguns minutos.';
-          // Extrai o tempo de espera da mensagem do Supabase (ex: "after 47 seconds")
-          const secondsMatch = /after (\d+) seconds?/i.exec(error.message);
-          const waitSeconds = secondsMatch ? parseInt(secondsMatch[1], 10) : 60;
-          hint = `Aguarde ${waitSeconds} segundos antes de tentar novamente.`;
-
+        const { title, description, hint, waitSeconds } = loginErrorCopy(error);
+        if (waitSeconds !== undefined) {
           // Iniciar countdown visual
           if (rateLimitTimerRef.current) clearInterval(rateLimitTimerRef.current);
           setRateLimitCountdown(waitSeconds);
@@ -316,23 +300,6 @@ export default function Auth() {
               return prev - 1;
             });
           }, 1000);
-        } else if (
-          error.status === 0 ||
-          error.message.includes('network') ||
-          error.message.includes('Fetch')
-        ) {
-          title = 'Erro de Conexão';
-          description =
-            'Parece que você está sem internet ou nosso servidor está temporariamente inacessível.';
-          hint = 'Verifique sua conexão Wi-Fi ou dados móveis.';
-        } else if (
-          error.message.includes('Database error') ||
-          (error.status !== undefined && error.status >= 500)
-        ) {
-          title = 'Sistema em Manutenção';
-          description =
-            'Estamos ajustando os motores das nossas galáxias. O serviço deve voltar ao normal em breve.';
-          hint = 'Nossa equipe técnica já foi notificada.';
         }
 
         toast({
@@ -845,6 +812,7 @@ export default function Auth() {
                     </div>
 
                     <TurnstileWidget
+                      ref={turnstileWidgetRef}
                       onToken={(token) => {
                         turnstileTokenRef.current = token;
                       }}

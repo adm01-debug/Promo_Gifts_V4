@@ -92,7 +92,9 @@ jobs:
           node-version-file: .nvmrc
 
       - name: Snapshot live → baseline
-        run: node scripts/check-policies-baseline.mjs --update-baseline
+        # --require-live: sem credenciais o script sai 2 em vez de terminar
+        # verde sem gravar nada (seed dormente mascarado como sucesso).
+        run: node scripts/check-policies-baseline.mjs --update-baseline --require-live
 
       - name: Commit baseline e abre PR
         run: |

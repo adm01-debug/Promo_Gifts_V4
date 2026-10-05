@@ -36,6 +36,7 @@ import { logger } from '@/lib/logger';
 import {
   gateBlockMessage,
   isOperationalGateBlock,
+  TURNSTILE_GATE_UNAVAILABLE_MESSAGE,
   type CheckLoginGateResponse,
 } from '@/lib/auth/checkLoginGate';
 
@@ -454,8 +455,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             requestId: log.requestId,
           });
         }
+        // Com Turnstile ativo, a verificação do desafio vive dentro da
+        // check-login: edge fora = anti-bot contornado → falha fechado.
+        if (gateErr && opts?.turnstileToken) {
+          return {
+            error: { message: TURNSTILE_GATE_UNAVAILABLE_MESSAGE, status: 503 },
+            data: null,
+          };
+        }
       } catch (gateEx) {
         log.warn('check_login_exception', { err: String(gateEx) });
+        if (opts?.turnstileToken) {
+          return {
+            error: { message: TURNSTILE_GATE_UNAVAILABLE_MESSAGE, status: 503 },
+            data: null,
+          };
+        }
       }
 
       const { data, error } = await authService.signIn(email, password);

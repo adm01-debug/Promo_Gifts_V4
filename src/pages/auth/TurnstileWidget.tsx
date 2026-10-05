@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 
 /**
  * Cloudflare Turnstile — anti-bot invisível no login.
@@ -24,7 +24,13 @@ interface TurnstileApi {
       'error-callback'?: () => void;
     },
   ) => string;
+  reset: (widgetId: string) => void;
   remove: (widgetId: string) => void;
+}
+
+/** Handle imperativo do widget — o pai chama reset() após consumir o token. */
+export interface TurnstileWidgetHandle {
+  reset: () => void;
 }
 
 declare global {
@@ -47,21 +53,33 @@ function loadTurnstileScript(): Promise<void> {
   return scriptPromise;
 }
 
-export function TurnstileWidget({ onToken }: { onToken: (token: string | null) => void }) {
+export const TurnstileWidget = forwardRef<
+  TurnstileWidgetHandle,
+  { onToken: (token: string | null) => void }
+>(({ onToken }, ref) => {
   const hostRef = useRef<HTMLDivElement>(null);
+  const widgetIdRef = useRef<string | null>(null);
   // Ref evita re-render do widget quando o pai muda a identidade do callback.
   const onTokenRef = useRef(onToken);
   onTokenRef.current = onToken;
 
+  // Token Turnstile é de uso único: após cada tentativa de login o pai chama
+  // reset() para o desafio emitir um token novo — sem isso a 2ª tentativa
+  // reenvia o token já consumido e a edge devolve turnstile_failed.
+  useImperativeHandle(ref, () => ({
+    reset: () => {
+      if (widgetIdRef.current) window.turnstile?.reset(widgetIdRef.current);
+    },
+  }));
+
   useEffect(() => {
     if (!TURNSTILE_SITE_KEY || !hostRef.current) return;
     let cancelled = false;
-    let widgetId: string | null = null;
 
     loadTurnstileScript()
       .then(() => {
         if (cancelled || !hostRef.current || !window.turnstile) return;
-        widgetId = window.turnstile.render(hostRef.current, {
+        widgetIdRef.current = window.turnstile.render(hostRef.current, {
           sitekey: TURNSTILE_SITE_KEY,
           callback: (token) => onTokenRef.current(token),
           'expired-callback': () => onTokenRef.current(null),
@@ -72,10 +90,12 @@ export function TurnstileWidget({ onToken }: { onToken: (token: string | null) =
 
     return () => {
       cancelled = true;
-      if (widgetId) window.turnstile?.remove(widgetId);
+      if (widgetIdRef.current) window.turnstile?.remove(widgetIdRef.current);
+      widgetIdRef.current = null;
     };
   }, []);
 
   if (!TURNSTILE_SITE_KEY) return null;
   return <div ref={hostRef} className="flex justify-center" data-testid="turnstile-widget" />;
-}
+});
+TurnstileWidget.displayName = 'TurnstileWidget';
