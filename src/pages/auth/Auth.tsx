@@ -44,7 +44,7 @@ import {
   TurnstileWidget,
   TURNSTILE_SITE_KEY,
   type TurnstileWidgetHandle,
-} from '@/pages/auth/TurnstileWidget';
+} from '@/components/auth/TurnstileWidget';
 import { LoginSuccessSplash } from '@/pages/auth/LoginSuccessSplash';
 
 type LoginForm = LoginFormData;
