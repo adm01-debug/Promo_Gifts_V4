@@ -202,6 +202,11 @@ export const DESCRIPTORS: Record<string, Descriptor> = {
       { label: "sem imageBase64", body: {} },
     ],
   },
+  "anonymize-user": {
+    // Ainda não deployada no canônico (deploy via deploy-edge-functions.yml
+    // pós-merge do PR #2058) — aceita 404 na fronteira de auth até lá.
+    pendingDeploy: true,
+  },
 };
 
 const DEFAULT: Descriptor = {};

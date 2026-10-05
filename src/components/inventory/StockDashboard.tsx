@@ -262,7 +262,6 @@ export function StockDashboard() {
 
   const ruptureRisk30dCount = ruptureRiskVariantIds ? ruptureRiskVariantIds.size : null;
   const isRuptureRiskActive = Boolean(filters.ruptureRiskVariantIds);
-  // _ruptureAlerts mantido para upstream subscribers (cache warm)
 
   // Toggle on/off do filtro de Risco de Ruptura — espelha o padrão do
   // Estoque Futuro (Switch no popover do botão da toolbar). Persiste o
