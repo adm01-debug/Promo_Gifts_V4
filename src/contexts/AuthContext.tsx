@@ -33,7 +33,7 @@ import {
 
 import { logger } from '@/lib/logger';
 
-import { evaluateLoginGate } from '@/lib/auth/checkLoginGate';
+import { evaluateLoginGate, GOTRUE_CAPTCHA_ENABLED } from '@/lib/auth/checkLoginGate';
 
 // Tipos de role conforme app_role enum no banco.
 export type AppRole =
@@ -363,7 +363,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const { data: visitor } = await invokeEdge<{ ip?: string }>('get-visitor-info', {
               headers: log.headers(),
               timeoutMs: 5_000,
-              maxRetries: 0,
+              // maxRetries conta TENTATIVAS totais no safeAuthCall — 0 pulava a
+              // chamada e o IP nunca chegava ao login_attempts.
+              maxRetries: 1,
             }).catch(() => ({ data: null }));
             const { error: invokeError } = await invokeEdge('log-login-attempt', {
               body: {
@@ -431,12 +433,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       // Turnstile é single-use: o token do formulário já foi consumido pelo
-      // siteverify da check-login. Com CAPTCHA ativo no Supabase Auth, o
-      // GoTrue exige um token NOVO — o widget emite um segundo desafio
-      // (getCaptchaToken) em vez de reenviar o mesmo (rejeitado).
-      const captchaToken = opts?.getCaptchaToken
-        ? ((await opts.getCaptchaToken().catch(() => null)) ?? undefined)
-        : undefined;
+      // siteverify da check-login. Com CAPTCHA ativo no Supabase Auth
+      // (espelhado em VITE_GOTRUE_CAPTCHA), o GoTrue exige um token NOVO —
+      // o widget emite um segundo desafio em vez de reenviar o mesmo
+      // (rejeitado). Sem o flag, nenhum desafio extra atrasa o login.
+      const captchaToken =
+        GOTRUE_CAPTCHA_ENABLED && opts?.getCaptchaToken
+          ? ((await opts.getCaptchaToken().catch(() => null)) ?? undefined)
+          : undefined;
       const { data, error } = await authService.signIn(email, password, {
         captchaToken,
       });

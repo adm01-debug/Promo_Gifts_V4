@@ -35,6 +35,14 @@ const CHECK_LOGIN_OPERATIONAL_REASONS = new Set([
 export const TURNSTILE_GATE_UNAVAILABLE_MESSAGE =
   'Verificação de segurança indisponível no momento. Tente novamente em instantes.';
 
+/**
+ * Espelho client-side do flag "Enable CAPTCHA protection" do Supabase Auth
+ * (dashboard — não há API pública pra consultar). O PO ativa os dois juntos:
+ * `VITE_GOTRUE_CAPTCHA=true` aqui + o toggle no painel. Sem ele, o signIn não
+ * emite o segundo desafio — o token do formulário só serve ao check-login.
+ */
+export const GOTRUE_CAPTCHA_ENABLED = import.meta.env.VITE_GOTRUE_CAPTCHA === 'true';
+
 /** Bloqueio "falso": a edge recusou por falha operacional, não por regra. */
 export function isOperationalGateBlock(gate: CheckLoginGateResponse | null | undefined): boolean {
   return (
