@@ -2,28 +2,11 @@
  * mockupGenerationService — Handles mockup generation API calls and history persistence.
  * Extracted from useMockupGenerator to reduce hook complexity.
  *
- * Fixes (audit 26/05/2026 — Sprint 1):
- * T4: position_x, position_y, logo_url persisted as top-level columns.
- * T7: getTechniquePrompt skips "default" in search loop.
- * T8: fetchMockupHistory limited to 200 records.
- * T10: thumbnail_url now stores mockupUrl (not logoUrl).
- *
- * Fixes (audit sprint-2, 26/05/2026):
- * BUG-C: generateMockupApi wrapped in 60s timeout via Promise.race.
- * BUG-E: SVG logos pre-validated BEFORE calling edge function.
- * BUG-I: Single-area path sends only the relevant area in the `areas` array.
- *
- * Fixes (2026-06-10 — mockup contract restoration):
- * - position_x/position_y/logo_width_cm/logo_height_cm DO exist in generated_mockups
- *   (migration 20251215011449) and layout_url exists (migration 20260301135215). The
- *   earlier "BUG-400b" removal was a misdiagnosis caused by a STALE types.ts — it
- *   regressed geometry persistence to area_config only. Restored the top-level columns
- *   (written via untypedFrom so the stale types do not reject them) while keeping the
- *   area_config mirror for backward-compat with older rows. logoRotation/logoScale are
- *   now persisted in area_config too.
- * - generateMockupApi rewritten: per-area invocation (no dead areas[] payload),
- *   friendly edge-error extraction, SVG pre-validation (assertNotSvg), 60s timeout,
- *   and batch handling that keeps successes and warns on partial failures.
+ * Contrato de persistência: position_x/position_y/logo_width_cm/logo_height_cm
+ * e layout_url são colunas top-level de generated_mockups (migrations
+ * 20251215011449 e 20260301135215), escritas via untypedFrom porque o types.ts
+ * pode ficar atrás do canônico, e também espelhadas em area_config para
+ * backward-compat com linhas antigas. thumbnail_url guarda o mockupUrl.
  */
 import { supabase } from '@/integrations/supabase/client';
 import { untypedFrom } from '@/lib/supabase-untyped';
@@ -170,11 +153,6 @@ export interface SaveMockupParams {
   extra?: { layoutUrl?: string; locationName?: string; colorsCount?: number };
 }
 
-// T10 FIX: thumbnail_url = mockupUrl (was incorrectly set to logoUrl).
-// BUG-400b FIX (2026-06-01): removed position_x/y and logo_width/height_cm from
-// top-level insert — these columns do not exist in generated_mockups. The values
-// are already persisted inside area_config JSONB (positionX, positionY, logoWidth,
-// logoHeight), so no data is lost.
 export async function saveMockupToDb(params: SaveMockupParams): Promise<string | null> {
   const { userId, product, technique, client, area, mockupUrl, annotations, extra } = params;
 
