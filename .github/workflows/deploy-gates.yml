@@ -189,6 +189,15 @@ jobs:
         run: |
           node scripts/check-contract-coverage.mjs
           node scripts/check-soft-delete-policy.mjs
+          node scripts/check-edge-zod-ratchet.mjs
+      # Gate 1.13 — Baseline assinado de RLS policies (auditoria 20-dim Onda 3).
+      # Bloqueante quando credenciado; sem SUPABASE_ACCESS_TOKEN (forks) ou com
+      # baseline pendente de seed inicial, degrada para static-pass.
+      - name: Gate 1.13 — Policies baseline vs pg_policies live (bloqueante c/ credenciais)
+        run: node scripts/check-policies-baseline.mjs
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF || 'doufsxqlfjyuvxuezpln' }}
       # noUncheckedIndexedAccess — advisory por enquanto: roda tsc completo
       # (lento) e a dívida atual é grande; vira bloqueante quando zerar.
       - name: Gate 1.10 — Indexed-access ratchet (advisory)

@@ -1,0 +1,115 @@
+name: Policies Baseline
+
+# =============================================================================
+# Baseline assinado das RLS policies do schema `public` (auditoria 20-dim,
+# Onda 2). Complementa o detector de DDL out-of-band: o schema_signature
+# cobre tabelas/colunas, mas NÃO cobre CREATE/DROP/ALTER POLICY — e uma
+# policy afrouxada fora do fluxo de migrations abre dados silenciosamente.
+#
+# O que faz: roda scripts/check-policies-baseline.mjs, que consulta
+# pg_policies (read-only via Management API) e difa contra o snapshot
+# assinado `.security/policies-baseline.json` (sha256 das linhas).
+#
+# Seed inicial: o baseline commitado vem com `pending_seed: true` (o gate
+# fica dormente/static-pass) porque o snapshot exige credenciais do projeto
+# canônico. Para semear: rode este workflow manualmente com `seed=true` —
+# ele gera o snapshot live e abre um PR com o baseline preenchido; o merge
+# desse PR ativa o gate.
+#
+# Secrets/vars (mesmos do ddl-out-of-band-detector):
+#   - SUPABASE_ACCESS_TOKEN (secret) : PAT da Management API
+#   - SUPABASE_PROJECT_REF   (var)   : default doufsxqlfjyuvxuezpln
+#
+# Sem credenciais (ex.: PR de fork): o script degrada para static-pass.
+# =============================================================================
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/**'
+      - '.security/policies-baseline.json'
+      - 'scripts/check-policies-baseline.mjs'
+      - '.github/workflows/policies-baseline.yml'
+  push:
+    branches: [main]
+  schedule:
+    - cron: '22 9 * * 1' # semanal, segunda 09:22 UTC (06:22 BRT)
+  workflow_dispatch:
+    inputs:
+      seed:
+        description: 'Gerar/regenerar o baseline a partir do live e abrir PR'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: policies-baseline-${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check:
+    name: Drift de policies vs baseline assinado
+    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.seed) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF || 'doufsxqlfjyuvxuezpln' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Check policies baseline
+        run: node scripts/check-policies-baseline.mjs
+
+  seed:
+    name: Seed/regen do baseline + PR
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.seed }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF || 'doufsxqlfjyuvxuezpln' }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Snapshot live → baseline
+        run: node scripts/check-policies-baseline.mjs --update-baseline
+
+      - name: Commit baseline e abre PR
+        run: |
+          set -euo pipefail
+          BRANCH="bot/policies-baseline-seed-$(date +%Y%m%d%H%M%S)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "${BRANCH}"
+          git add .security/policies-baseline.json
+          if git diff --cached --quiet; then
+            echo "baseline já estava em dia — nada a commitar"
+            exit 0
+          fi
+          git commit -m "chore(security): atualiza baseline assinado de RLS policies"
+          git push origin "${BRANCH}"
+          gh pr create \
+            --title "chore(security): baseline de RLS policies ($(date +%Y-%m-%d))" \
+            --body "Snapshot live de \`pg_policies\` (schema public) gravado em \`.security/policies-baseline.json\` com sha256. Revisar a lista de policies antes de mergear — depois do merge, o gate policies-baseline passa a bloquear drift não revisado." \
+            --base main \
+            --head "${BRANCH}"

@@ -33,23 +33,11 @@ import {
 
 import { logger } from '@/lib/logger';
 
-/** Resposta da edge `check-login` (gate server-side de acesso). */
-interface CheckLoginGateResponse {
-  allowed?: boolean;
-  reason?: string;
-  blocked_until?: string;
-}
-
-/**
- * Reasons da check-login que indicam FALHA OPERACIONAL antes de chegar na RPC
- * (edge fora, exceção interna). Nessas, o fail-open declarado é preservado.
- * `security_check_error_fail_closed` NÃO está aqui: é a decisão fail-closed
- * explícita da RPC (SEC-008) e continua bloqueando.
- */
-const CHECK_LOGIN_OPERATIONAL_REASONS = new Set([
-  'security_check_unavailable',
-  'internal_error_fail_closed',
-]);
+import {
+  gateBlockMessage,
+  isOperationalGateBlock,
+  type CheckLoginGateResponse,
+} from '@/lib/auth/checkLoginGate';
 
 // Tipos de role conforme app_role enum no banco.
 export type AppRole =
@@ -102,6 +90,7 @@ interface AuthContextType {
   signIn: (
     email: string,
     password: string,
+    opts?: { turnstileToken?: string },
   ) => Promise<{
     error: AuthError | { message: string; status?: number } | null;
     data: { user: User | null; session: Session | null } | null;
@@ -358,135 +347,130 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => window.clearTimeout(timer);
   }, [isLoading, setIsLoading, setRolesLoaded]);
 
-  const signIn = useCallback(async (email: string, password: string) => {
-    const log = createClientLogger('auth.signIn', { base: { email_domain: email.split('@')[1] } });
+  const signIn = useCallback(
+    async (email: string, password: string, opts?: { turnstileToken?: string }) => {
+      const log = createClientLogger('auth.signIn', {
+        base: { email_domain: email.split('@')[1] },
+      });
 
-    // Fonte única da linha em login_attempts: fire-and-forget, cobre sucesso
-    // (a RPC de lockout usa o último success pra zerar o contador de falhas),
-    // falha de credencial e bloqueio por gate. IP real via get-visitor-info —
-    // sem ele a auditoria caía em "unknown".
-    const logAttempt = (userId: string | null, success: boolean, failureReason?: string) => {
-      import('@/lib/edge/safeInvokeCall')
-        .then(async ({ invokeEdge }) => {
-          const { data: visitor } = await invokeEdge<{ ip?: string }>('get-visitor-info', {
-            headers: log.headers(),
-            timeoutMs: 5_000,
-            maxRetries: 0,
-          }).catch(() => ({ data: null }));
-          const { error: invokeError } = await invokeEdge('log-login-attempt', {
-            body: {
-              email,
-              user_id: userId,
-              success,
-              failure_reason: failureReason,
-              user_agent: navigator.userAgent,
-              ...(visitor?.ip ? { ip_address: visitor.ip } : {}),
-            },
-            headers: log.headers(),
-          });
-
-          if (invokeError) {
-            const invokeStatus = (invokeError as { status?: number }).status;
-            log.error('log_login_attempt_failed', {
-              error: invokeError.message,
-              status: invokeStatus,
-              requestId: log.requestId,
+      // Fonte única da linha em login_attempts: fire-and-forget, cobre sucesso
+      // (a RPC de lockout usa o último success pra zerar o contador de falhas),
+      // falha de credencial e bloqueio por gate. IP real via get-visitor-info —
+      // sem ele a auditoria caía em "unknown".
+      const logAttempt = (userId: string | null, success: boolean, failureReason?: string) => {
+        import('@/lib/edge/safeInvokeCall')
+          .then(async ({ invokeEdge }) => {
+            const { data: visitor } = await invokeEdge<{ ip?: string }>('get-visitor-info', {
+              headers: log.headers(),
+              timeoutMs: 5_000,
+              maxRetries: 0,
+            }).catch(() => ({ data: null }));
+            const { error: invokeError } = await invokeEdge('log-login-attempt', {
+              body: {
+                email,
+                user_id: userId,
+                success,
+                failure_reason: failureReason,
+                user_agent: navigator.userAgent,
+                ...(visitor?.ip ? { ip_address: visitor.ip } : {}),
+              },
+              headers: log.headers(),
             });
 
-            if (isBadJwtError(invokeError) || invokeStatus === 401) {
-              toast.error(
-                'Erro de autenticação na função de auditoria. Verifique a conexão com o projeto canônico.',
-                {
-                  description: `Request ID: ${log.requestId}`,
-                },
-              );
+            if (invokeError) {
+              const invokeStatus = (invokeError as { status?: number }).status;
+              log.error('log_login_attempt_failed', {
+                error: invokeError.message,
+                status: invokeStatus,
+                requestId: log.requestId,
+              });
+
+              if (isBadJwtError(invokeError) || invokeStatus === 401) {
+                toast.error(
+                  'Erro de autenticação na função de auditoria. Verifique a conexão com o projeto canônico.',
+                  {
+                    description: `Request ID: ${log.requestId}`,
+                  },
+                );
+              }
+            } else {
+              log.info('log_login_attempt_ok', { requestId: log.requestId });
             }
-          } else {
-            log.info('log_login_attempt_ok', { requestId: log.requestId });
-          }
-        })
-        .catch((err) => {
-          log.error('log_login_attempt_exception', { err: String(err) });
-        });
-    };
-
-    const { allowed, remainingSeconds } = checkLoginAllowed(email);
-    if (!allowed) {
-      // Sem escrita em login_attempts: recusas por rate-limit/bloqueio não
-      // podem virar "última falha" e renovar o próprio bloqueio.
-      return {
-        error: {
-          message: `Bloqueado. Tente em ${Math.ceil(remainingSeconds / 60)} min.`,
-          status: 429,
-        },
-        data: null,
+          })
+          .catch((err) => {
+            log.error('log_login_attempt_exception', { err: String(err) });
+          });
       };
-    }
 
-    // Gate server-side: access_security_settings (IP/city whitelist, lockout).
-    // checkLoginAllowed acima cobre só o cliente (sessionStorage, bypassável).
-    // Edge indisponível → fail-open com warn, padrão já usado em isTokenRevoked;
-    // bloqueio explícito (allowed=false / HTTP 403) é sempre honrado.
-    try {
-      const { invokeEdge } = await import('@/lib/edge/safeInvokeCall');
-      const { data: gate, error: gateErr } = await invokeEdge<CheckLoginGateResponse>(
-        'check-login',
-        {
-          body: { email },
-          headers: log.headers(),
-          timeoutMs: 6_000,
-          maxRetries: 1,
-          preserveErrorData: true,
-        },
-      );
-      const operationalBlock =
-        gate?.allowed === false &&
-        gate.reason !== undefined &&
-        CHECK_LOGIN_OPERATIONAL_REASONS.has(gate.reason);
-      if (gate?.allowed === false && !operationalBlock) {
-        const until =
-          gate?.blocked_until && !Number.isNaN(Date.parse(gate.blocked_until))
-            ? new Date(gate.blocked_until).toLocaleString('pt-BR')
-            : null;
-        log.warn('login_blocked_server', {
-          reason: gate?.reason ?? 'login_blocked',
-          requestId: log.requestId,
-        });
-        // Não grava login_attempts aqui: a recusa é consequência do bloqueio,
-        // não uma nova falha de credencial — registrar success=false moveria
-        // "última falha" pra frente e adiaria o desbloqueio a cada tentativa.
+      const { allowed, remainingSeconds } = checkLoginAllowed(email);
+      if (!allowed) {
+        // Sem escrita em login_attempts: recusas por rate-limit/bloqueio não
+        // podem virar "última falha" e renovar o próprio bloqueio.
         return {
           error: {
-            message: until
-              ? `Login bloqueado pelas regras de segurança até ${until}.`
-              : 'Login bloqueado pelas regras de segurança da organização.',
-            status: 403,
+            message: `Bloqueado. Tente em ${Math.ceil(remainingSeconds / 60)} min.`,
+            status: 429,
           },
           data: null,
         };
       }
-      if (gateErr || operationalBlock || gate?.allowed === false) {
-        log.warn('check_login_unavailable', {
-          status: gateErr?.status,
-          reason: gate?.reason,
-          requestId: log.requestId,
-        });
+
+      // Gate server-side: access_security_settings (IP/city whitelist, lockout).
+      // checkLoginAllowed acima cobre só o cliente (sessionStorage, bypassável).
+      // Edge indisponível → fail-open com warn, padrão já usado em isTokenRevoked;
+      // bloqueio explícito (allowed=false / HTTP 403) é sempre honrado.
+      try {
+        const { invokeEdge } = await import('@/lib/edge/safeInvokeCall');
+        const { data: gate, error: gateErr } = await invokeEdge<CheckLoginGateResponse>(
+          'check-login',
+          {
+            // turnstile_token só é verificado pela edge quando TURNSTILE_SECRET_KEY
+            // está configurada nela — sem a secret o campo é ignorado.
+            body: { email, turnstile_token: opts?.turnstileToken },
+            headers: log.headers(),
+            timeoutMs: 6_000,
+            maxRetries: 1,
+            preserveErrorData: true,
+          },
+        );
+        const operationalBlock = isOperationalGateBlock(gate);
+        if (gate?.allowed === false && !operationalBlock) {
+          log.warn('login_blocked_server', {
+            reason: gate?.reason ?? 'login_blocked',
+            requestId: log.requestId,
+          });
+          // Não grava login_attempts aqui: a recusa é consequência do bloqueio,
+          // não uma nova falha de credencial — registrar success=false moveria
+          // "última falha" pra frente e adiaria o desbloqueio a cada tentativa.
+          return {
+            error: { message: gateBlockMessage(gate), status: 403 },
+            data: null,
+          };
+        }
+        if (gateErr || operationalBlock || gate?.allowed === false) {
+          log.warn('check_login_unavailable', {
+            status: gateErr?.status,
+            reason: gate?.reason,
+            requestId: log.requestId,
+          });
+        }
+      } catch (gateEx) {
+        log.warn('check_login_exception', { err: String(gateEx) });
       }
-    } catch (gateEx) {
-      log.warn('check_login_exception', { err: String(gateEx) });
-    }
 
-    const { data, error } = await authService.signIn(email, password);
-    if (error) {
-      recordFailedAttempt(email);
-    } else {
-      clearLoginAttempts(email);
-    }
+      const { data, error } = await authService.signIn(email, password);
+      if (error) {
+        recordFailedAttempt(email);
+      } else {
+        clearLoginAttempts(email);
+      }
 
-    logAttempt(data?.user?.id ?? null, !error, error?.message);
+      logAttempt(data?.user?.id ?? null, !error, error?.message);
 
-    return { error, data };
-  }, []);
+      return { error, data };
+    },
+    [],
+  );
 
   const signOut = useCallback(async () => {
     try {

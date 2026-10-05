@@ -17,7 +17,6 @@ import {
   Wifi,
   AlertTriangle,
   RotateCw,
-  CheckCircle2,
   Rocket,
 } from 'lucide-react';
 import { AuthBrandingPanel, SpaceScene } from '@/pages/auth/AuthBranding';
@@ -40,6 +39,8 @@ import { logger } from '@/lib/logger';
 import { cn } from '@/lib/utils';
 import { invokeEdge } from '@/lib/edge/safeInvokeCall';
 import { createPostLoginGuards } from '@/pages/auth/postLoginGuards';
+import { TurnstileWidget, TURNSTILE_SITE_KEY } from '@/pages/auth/TurnstileWidget';
+import { LoginSuccessSplash } from '@/pages/auth/LoginSuccessSplash';
 
 type LoginForm = LoginFormData;
 
@@ -103,6 +104,8 @@ export default function Auth() {
   // navegador (ex: "website"), que causavam falso-positivo — Chrome/gerenciadores
   // de senha preenchem esses campos mesmo com autoComplete="off" e aria-hidden.
   const honeypotRef = useRef<HTMLInputElement | null>(null);
+  // Token do desafio Turnstile (ativo só quando VITE_TURNSTILE_SITE_KEY existe).
+  const turnstileTokenRef = useRef<string | null>(null);
   // Função `retry` publicada pelo SocialLoginButtons para reexecutar o Google login.
   const googleRetryRef = useRef<(() => void) | null>(null);
   const handleRetryGoogle = useCallback(() => {
@@ -249,8 +252,22 @@ export default function Auth() {
       return;
     }
 
+    // Turnstile obrigatório quando a site key está configurada — sem token,
+    // não gasta uma tentativa de login contra o Supabase.
+    if (TURNSTILE_SITE_KEY && !turnstileTokenRef.current) {
+      toast({
+        variant: 'destructive',
+        title: 'Verificação de segurança',
+        description: 'Complete o desafio de segurança antes de entrar.',
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
-      const { error } = await signIn(data.email, data.password);
+      const { error } = await signIn(data.email, data.password, {
+        turnstileToken: turnstileTokenRef.current ?? undefined,
+      });
 
       if (error) {
         logger.warn('[AUTH_FAILED] Authentication failed', { status: error.status ?? 'unknown' });
@@ -567,26 +584,7 @@ export default function Auth() {
             )}
           >
             {loginStatus === 'success' ? (
-              <div
-                key="success"
-                className="flex flex-col items-center justify-center px-8 py-16 text-center duration-500 animate-in fade-in zoom-in"
-              >
-                <div className="relative mb-8">
-                  <div className="absolute inset-0 animate-ping rounded-full bg-blue-500/30 duration-700" />
-                  <div className="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-3xl bg-blue-500/10 text-blue-400 shadow-[0_0_50px_rgba(59,130,246,0.5)] ring-1 ring-blue-500/20">
-                    <Rocket className="h-12 w-12 -rotate-45 animate-bounce" />
-                  </div>
-                  <div className="absolute -bottom-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full border-4 border-[#030508] bg-emerald-500 shadow-lg duration-300 animate-in zoom-in">
-                    <CheckCircle2 className="h-4 w-4 text-white" />
-                  </div>
-                </div>
-                <h2 className="font-display text-3xl font-bold tracking-tight text-white">
-                  Decolagem autorizada!
-                </h2>
-                <p className="mt-3 text-base text-white/50">
-                  Bem-vindo a bordo. Iniciando sistemas...
-                </p>
-              </div>
+              <LoginSuccessSplash />
             ) : showForgotPassword ? (
               <div
                 key="forgot-password"
@@ -845,6 +843,12 @@ export default function Auth() {
                         Esqueci minha senha
                       </button>
                     </div>
+
+                    <TurnstileWidget
+                      onToken={(token) => {
+                        turnstileTokenRef.current = token;
+                      }}
+                    />
 
                     <button
                       type="submit"
