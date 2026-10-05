@@ -4,16 +4,12 @@
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { safeAuthCall, breakerIsOpen, __resetBreakers } from '@/lib/auth/safeAuthCall';
-import {
-  resetStructuredLoggerMock,
-  structuredLoggerMockFactory,
-} from '@/test/mockStructuredLogger';
+import { resetStructuredLoggerMock } from '@/test/mockStructuredLogger';
 
 vi.mock('@/lib/telemetry/structuredLogger', async () => {
   const mod = await import('@/test/mockStructuredLogger');
   return mod.structuredLoggerMockFactory();
 });
-void structuredLoggerMockFactory;
 
 describe('safeAuthCall — circuit breaker (Onda 11)', () => {
   beforeEach(() => {

@@ -84,7 +84,7 @@ function toast(input: ToastInput): ToastReturn {
     title,
     description,
     variant = 'default',
-    action,
+    action: _action,
     duration,
     id: explicitId,
     ...rest
@@ -95,7 +95,6 @@ function toast(input: ToastInput): ToastReturn {
   // Sonner aceita `action` como `{ label, onClick }`, não como ReactNode
   // bruto. Como a Radix passava ReactNode aqui, descartamos com segurança.
   // Quem precisar de action button deve migrar para Sonner direto.
-  void action;
 
   const options: Record<string, unknown> = { ...rest };
   if (description !== undefined && description !== null) {

@@ -761,6 +761,8 @@ da execução e consulta read-only ao catálogo/ledger, sem reaplicar SQL.
 | `20260923114500` | `18663b52473fa9fd0edb031495ebe1ed8fc8c0ea0c262631a3b3bf035d8d91b7` | `87c7eefd2929c273fbedd75e4d61c423` | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug) | E15 | 2026-09-23 11:56:55 UTC | job post-check da run 35857184284 confirmou a version no ledger | aplicada |
 | `20260928212000` | `0ea5dfd928fca67e7553ca2d0ea9414b18efa90a3586588ba5f9870c2c283720` | — | — (aguardando `workflow_dispatch` E15 pelo PO) | E15 | — | pendente: preflight local OK; back-link `products.padronizacao_id` (522 linhas) + `fn_promote_padronizacao` passa a gravar o back-link | **pendente — não aplicada** |
 | `20260928213000` | `2d7310551455781832bb2f474f08a398f8289af1532279dcc3610c3325a87728` | — | — (aguardando `workflow_dispatch` E15 pelo PO) | E15 | — | pendente: backfill `products.main_category_id = category_id` (489 linhas), sem DDL | **pendente — não aplicada** |
+| `20261005124502` | `3624c9628c9b9bcb3d809a18949e83345fe8cce42f62713b4f0de9f32a81cc45` | — | — (aguardando `workflow_dispatch` E15 pelo PO) | E15 | — | pendente: `CREATE OR REPLACE fn_audit_row_change` redige PII/segredos (`[REDACTED]`) em details.old/new | **pendente — não aplicada** |
+| `20261005124503` | `c8c273c2cf157f006739e5b9743fdecccf3209d02ef554cd7a5ee96088fac9ab` | — | — (aguardando `workflow_dispatch` E15 pelo PO) | E15 | — | pendente: `respond_discount_approval_transactional` ganha `_expected_version` (DROP+CREATE, replay idempotente limitado a versão esperada+1) | **pendente — não aplicada** |
 
 ### Evidências do recibo `20260922170000`
 

@@ -4,16 +4,12 @@
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { __resetBreakers } from '@/lib/auth/safeAuthCall';
-import {
-  resetStructuredLoggerMock,
-  structuredLoggerMockFactory,
-} from '@/test/mockStructuredLogger';
+import { resetStructuredLoggerMock } from '@/test/mockStructuredLogger';
 
 vi.mock('@/lib/telemetry/structuredLogger', async () => {
   const mod = await import('@/test/mockStructuredLogger');
   return mod.structuredLoggerMockFactory();
 });
-void structuredLoggerMockFactory;
 
 const mockAuth = {
   signInWithOAuth: vi.fn(),

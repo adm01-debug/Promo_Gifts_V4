@@ -56,10 +56,20 @@ BEGIN
   -- Replay idempotente ANTES da checagem de versão: a decisão gravada bumpa
   -- version, então um retry idêntico (resposta perdida) chegaria com a versão
   -- obsoleta e falharia 40001 sem nunca chegar aqui. Replay idêntico (mesmo
-  -- status-alvo, mesmo autor, mesmas notas) devolve a decisão já gravada.
+  -- status-alvo, mesmo autor, mesmas notas) devolve a decisão já gravada —
+  -- MAS só se a versão atual for a que a própria decisão produziu
+  -- (esperada+1): alterações posteriores à decisão (ex.: validade editada)
+  -- também bumpam version, e aí o retry não pode mais fingir sucesso.
+  -- Com _expected_version NULL (clientes antigos) o replay segue tolerado.
   IF _request.status = _decision
      AND _request.admin_id IS NOT DISTINCT FROM _uid
      AND _request.admin_notes IS NOT DISTINCT FROM NULLIF(btrim(_admin_notes), '') THEN
+    IF _expected_version IS NOT NULL
+       AND _request.version > _expected_version + 1 THEN
+      RAISE EXCEPTION 'Solicitação mudou após a decisão (versão esperada %, atual %). Recarregue e decida de novo.',
+        _expected_version, _request.version
+        USING ERRCODE = '40001';
+    END IF;
     RETURN _request;
   END IF;
   -- Mesma decisão com autor/notas divergentes é conflito real: o segundo
