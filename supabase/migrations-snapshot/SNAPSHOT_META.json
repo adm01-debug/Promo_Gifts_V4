@@ -1,20 +1,22 @@
 {
-  "generated_at": "2026-09-22T14:24:59.027Z",
+  "generated_at": "2026-10-05T07:29:31.304Z",
   "project_ref": "doufsxqlfjyuvxuezpln",
-  "migrations_count": 3006,
+  "migrations_count": 3012,
   "live_schema": {
-    "bytes": 4837722
+    "bytes": 4853938
   },
   "drift": {
     "computed": false,
-    "reason": "Ledger divergente: 2499 pares, 474 somente locais, 2 somente remotos. Replay bloqueado.",
+    "reason": "Ledger divergente: 2503 pares, 476 somente locais, 1 somente remotos. Replay bloqueado.",
     "ledger": {
       "schema_version": 1,
       "source": "supabase migration list --linked --output-format json",
-      "rows": 2975,
-      "matched": 2499,
-      "local_only_count": 474,
-      "remote_only_count": 2,
+      "rows": 2980,
+      "matched": 2503,
+      "local_only_count": 476,
+      "remote_only_count": 1,
+      "blocking_remote_only_count": 1,
+      "allowlisted_remote_only_count": 0,
       "mismatched_count": 0,
       "malformed_row_count": 0,
       "local_only_sample": [
@@ -40,9 +42,12 @@
         "20260526220004"
       ],
       "remote_only_sample": [
-        "20260712",
-        "20260916155725"
+        "20260712"
       ],
+      "blocking_remote_only_sample": [
+        "20260712"
+      ],
+      "allowlisted_remote_only_sample": [],
       "mismatched_sample": [],
       "malformed_row_sample": []
     }
