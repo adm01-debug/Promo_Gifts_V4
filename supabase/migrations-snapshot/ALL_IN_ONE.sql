@@ -1,7 +1,7 @@
 -- ==============================================================
 -- ALL_IN_ONE.sql — snapshot concatenado de supabase/migrations/
--- Gerado em: 2026-09-22T14:23:45.363Z
--- Total de arquivos: 3006
+-- Gerado em: 2026-10-05T07:23:27.372Z
+-- Total de arquivos: 3012
 -- Ordem: alfabética (mesmo critério do Supabase CLI)
 -- Uso: APENAS auditoria/leitura. NÃO aplicar direto no banco.
 -- SSOT continua sendo os arquivos individuais em supabase/migrations/.
@@ -212759,6 +212759,21 @@ VALUES (
 
 -- <<< END 20260712_fix_rls_policies_critical.sql <<<
 
+-- >>> BEGIN 20260712_legacy_initial.sql >>>
+-- STUB: migration legacy aplicada antes da formalização do ledger de migrations.
+-- Versão: 20260712 (formato curto — registrada em supabase_migrations.schema_migrations)
+--
+-- Este arquivo não contém DDL executável. Existe apenas para documentar que a versão
+-- 20260712 está presente no banco de produção (doufsxqlfjyuvxuezpln) como legacy,
+-- aplicada antes do fluxo formal de migrations via Supabase CLI.
+--
+-- NOTA: O Supabase CLI v2.x ignora arquivos com timestamp de 8 dígitos (YYYYMMDD)
+-- no diretório supabase/migrations/. Por isso esta versão é listada em
+-- scripts/migration-ledger-remote-only-allowlist.json como exceção conhecida.
+-- Ref: E04 — PLANO_WORKFLOWS_CI_100_ETAPAS_2026-09-26
+
+-- <<< END 20260712_legacy_initial.sql <<<
+
 -- >>> BEGIN 20260712_performance_indexes.sql >>>
 -- ============================================================================
 -- PERFORMANCE INDEXES: Applied 2026-07-12 to doufsxqlfjyuvxuezpln
@@ -250374,6 +250389,18 @@ $postcondition$;
 
 -- <<< END 20260915113458_zapp_catalog_stats_revoke_authenticated.sql <<<
 
+-- >>> BEGIN 20260916155725_out_of_band_audit_e12.sql >>>
+-- STUB: migration aplicada out-of-band em 2026-09-16 via MCP/dashboard (sem arquivo local).
+-- Versão: 20260916155725 (registrada em supabase_migrations.schema_migrations)
+--
+-- Este arquivo não contém DDL executável. Existe apenas para reconciliar o ledger
+-- local versus o remoto: a versão 20260916155725 estava presente no banco de produção
+-- (doufsxqlfjyuvxuezpln) sem correspondência local, detectada pelo detector E12
+-- (ddl-out-of-band-detector.yml). Documentada retroativamente.
+-- Ref: E04+E12 — PLANO_WORKFLOWS_CI_100_ETAPAS_2026-09-26
+
+-- <<< END 20260916155725_out_of_band_audit_e12.sql <<<
+
 -- >>> BEGIN 20260916181609_backfill_fix_google_provider_secret_name_20260623.sql >>>
 -- Arquivo-espelho para a entrada de ledger não-canônica
 -- `20260623_fix_google_provider_secret_name`.
@@ -252617,6 +252644,399 @@ END;
 $postcondition$;
 
 -- <<< END 20260920120000_fix_handle_new_user_missing_profiles_user_id.sql <<<
+
+-- >>> BEGIN 20260922170000_signup_identity_safe_default.sql >>>
+-- APROVADA pelo PO em 2026-09-22; aplicacao controlada pendente.
+-- Canonico: doufsxqlfjyuvxuezpln. Origem: docs/db/proposals/20260922170000_signup_identity_safe_default.sql.
+-- Substitui a proposta 20260920120000: aplicar apenas uma delas, nunca ambas.
+-- Alvo: public.handle_new_user(). Nenhuma conta existente ou outro objeto e alterado.
+-- Rollback: restaurar pg_get_functiondef capturado antes da janela; isso reintroduz
+-- o defeito de cadastro e a dependencia de metadata nao confiavel. Preferir compensacao
+-- forward-only revisada. Nao alterar/deletar profiles ou user_roles existentes.
+-- Pre-condicao fixa o corpo inspecionado em 22/09, ignorando somente CRLF.
+DO $precondition$
+BEGIN
+  IF NOT EXISTS (
+    SELECT FROM pg_proc p
+    WHERE p.oid = to_regprocedure('public.handle_new_user()')
+      AND md5(replace(p.prosrc,chr(13),'')) = '59e7ff7d047a8a855cc785ee2e9b5ccf'
+  ) THEN
+    RAISE EXCEPTION 'handle_new_user mudou ou nao existe; recoletar e revisar antes de aplicar';
+  END IF;
+  IF NOT EXISTS (
+    SELECT FROM pg_proc p
+    WHERE p.oid = to_regprocedure('public.fn_grant_default_role_on_profile()')
+      AND md5(replace(p.prosrc,chr(13),'')) = '7d526cb5c45ebfe5297f5034cfa2b424'
+  ) THEN
+    RAISE EXCEPTION 'Trigger de concessao de papel mudou; revisar o encadeamento';
+  END IF;
+  IF EXISTS (SELECT FROM public.profiles WHERE user_id IS DISTINCT FROM id) THEN
+    RAISE EXCEPTION 'Identidades existentes divergentes; nao reparar dados implicitamente';
+  END IF;
+END;
+$precondition$;
+
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path TO 'public'
+AS $function$
+DECLARE
+    v_full_name TEXT;
+    v_department TEXT;
+    v_preferences JSONB;
+BEGIN
+    -- GUARD: raw_user_meta_data nao concede privilegios. Promocoes pertencem
+    -- ao fluxo administrativo autenticado; todo cadastro inicia como vendedor.
+    v_full_name := COALESCE(
+        NULLIF(TRIM(NEW.raw_user_meta_data->>'name'), ''),
+        NULLIF(TRIM(NEW.raw_user_meta_data->>'full_name'), ''),
+        NEW.email
+    );
+    v_department := NULLIF(TRIM(NEW.raw_user_meta_data->>'department'), '');
+    v_preferences := '{}'::jsonb;
+    IF NEW.raw_user_meta_data->>'title' IS NOT NULL THEN
+        v_preferences := jsonb_build_object('title', NEW.raw_user_meta_data->>'title');
+    END IF;
+    INSERT INTO public.profiles (
+        id, user_id, email, full_name, role,
+        department, is_active, preferences, created_at, updated_at
+    ) VALUES (
+        NEW.id, NEW.id, NEW.email, v_full_name, 'sales',
+        v_department, TRUE, v_preferences, NOW(), NOW()
+    );
+    RETURN NEW;
+END;
+$function$;
+
+DO $postcondition$
+BEGIN
+  IF NOT EXISTS (
+    SELECT FROM pg_trigger t
+    WHERE t.tgrelid='auth.users'::regclass AND t.tgname='on_auth_user_created'
+      AND t.tgfoid='public.handle_new_user()'::regprocedure
+      AND NOT t.tgisinternal AND t.tgenabled IN ('O','A')
+  ) THEN
+    RAISE EXCEPTION 'Trigger de cadastro ausente, desabilitado ou ligado a outra funcao';
+  END IF;
+END;
+$postcondition$;
+
+-- <<< END 20260922170000_signup_identity_safe_default.sql <<<
+
+-- >>> BEGIN 20260923114500_quote_rpc_lineage_atomicity.sql >>>
+-- Aplicação nominalmente autorizada pelo PO em 23/09/2026.
+-- Projeto canônico: doufsxqlfjyuvxuezpln.
+-- Escopo fechado: somente as três funções transacionais de orçamento abaixo.
+--
+-- Este arquivo é deliberadamente um manifest de promoção para o workflow E15.
+-- `psql -1` mantém os três SQLs revisados na mesma transação e `\ir` resolve
+-- caminhos relativamente a este arquivo. Cada proposta contém preconditions e
+-- postconditions fail-closed contra drift de corpo, ACL, owner, search_path,
+-- colunas e FK.
+--
+-- Fontes imutáveis revisadas:
+-- - 94ec0a32148ddccd2a71f8a67783a8f64f7c3d2d5968a28aa82855c975a90d55
+--   docs/db/proposals/20260922210000_create_quote_lineage.sql
+-- - 502caec43349a3bd5e88e3dbb989f96f4401f9d2b9440e7790124dd4534142be
+--   docs/db/proposals/20260922210500_increment_quote_version_explicit_bump.sql
+-- - ae87ae018f88ab9b9c8496de9fcdafe8b2321778135de79ed46377fb429c57bc
+--   docs/db/proposals/20260922211000_update_quote_lineage_lock.sql
+--
+-- Rollback: aplicar uma nova migration compensatória com as três definições
+-- capturadas imediatamente antes desta promoção; nunca reeditar este arquivo.
+
+\ir ../../docs/db/proposals/20260922210000_create_quote_lineage.sql
+\ir ../../docs/db/proposals/20260922210500_increment_quote_version_explicit_bump.sql
+\ir ../../docs/db/proposals/20260922211000_update_quote_lineage_lock.sql
+
+-- <<< END 20260923114500_quote_rpc_lineage_atomicity.sql <<<
+
+-- >>> BEGIN 20260928212000_fix_products_padronizacao_backlink.sql >>>
+-- Migration: fix_products_padronizacao_backlink
+-- Projeto canônico: doufsxqlfjyuvxuezpln (PG17). Aplicar SÓ via
+-- .github/workflows/db-apply-migration.yml (E15) — CLAUDE.md REGRA #8.
+--
+-- Causa raiz (medida em 2026-09-28, pg_catalog + contagem real):
+--   fn_promote_padronizacao grava produtos_padronizacao.product_id (Silver→Gold)
+--   mas NUNCA gravou products.padronizacao_id (Gold→Silver). A string
+--   'padronizacao_id' não aparece no corpo da função em produção.
+--   Resultado: 528 products com padronizacao_id IS NULL, dos quais 522 têm a
+--   Silver 'promoted' apontando exatamente para eles (pp.product_id = p.id).
+--   O gap cresce a cada promoção nova (XBZ: 469 casos, último em 2026-09-26).
+--   Os 6 restantes (ASIA/88BRINDES, fev–mar/2026) são anteriores ao Medallion
+--   e não têm Silver — ficam fora, de propósito.
+--
+-- Efeito desta migration (idempotente, uma transação via psql -1):
+--   1. Backfill do back-link nos produtos já promovidos, por join exato em
+--      produtos_padronizacao.product_id (não por supplier_reference).
+--   2. fn_promote_padronizacao passa a gravar padronizacao_id no INSERT
+--      (produto novo) e no UPDATE (produto existente). Corpo idêntico ao vivo
+--      (pg_get_functiondef em 2026-09-28) + as duas linhas novas; única
+--      diferença cosmética: `NULLIF(TRIM(v_cat_l1),'') IS NOT NULL` no lugar de
+--      `v_cat_l1 IS NOT NULL AND TRIM(v_cat_l1) <> ''` (mesma semântica; o
+--      analisador PL/SQL do SonarCloud trata '' como NULL e acusa `<> ''`). SECURITY
+--      DEFINER + search_path preservados; CREATE OR REPLACE mantém owner/ACL.
+--   3. Pós-check fail-closed: se sobrar produto sem back-link cuja Silver
+--      'promoted' aponta para ele, RAISE → rollback de tudo.
+--
+-- Triggers em products: 42. Esta migration seta app.write_source='pipeline' e
+--   app.bulk_import_mode='true' (transação-local), exatamente como
+--   fn_promote_padronizacao, para não acionar fn_products_capture_manual_edits
+--   (locked_fields) nem fn_trigger_product_automation. padronizacao_id não
+--   está na lista de campos capturados, mas o GUC é setado por simetria.
+--
+-- Rollback: migration compensatória que (a) restaura a definição anterior de
+--   fn_promote_padronizacao (esta menos as duas linhas `padronizacao_id`) e
+--   (b) `UPDATE products p SET padronizacao_id = NULL FROM produtos_padronizacao
+--   pp WHERE pp.product_id = p.id AND p.padronizacao_id = pp.id AND p.updated_at
+--   >= '<timestamp UTC do apply>'`. Nunca reeditar este arquivo.
+
+SELECT set_config('app.write_source',     'pipeline', true);
+SELECT set_config('app.bulk_import_mode', 'true',     true);
+
+-- 1) Backfill do back-link (522 linhas esperadas em 2026-09-28)
+UPDATE public.products p
+SET    padronizacao_id = pp.id,
+       updated_at      = now()
+FROM   public.produtos_padronizacao pp
+WHERE  pp.product_id     = p.id
+  AND  pp.status         = 'promoted'
+  AND  p.padronizacao_id IS NULL;
+
+-- 2) fn_promote_padronizacao passa a gravar o back-link
+CREATE OR REPLACE FUNCTION public.fn_promote_padronizacao(p_id uuid)
+ RETURNS jsonb
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO 'public'
+AS $function$
+DECLARE
+  s        public.produtos_padronizacao%ROWTYPE;
+  v_pid    uuid;
+  v_org    uuid;
+  v_locked text[];
+  v_is_new boolean := false;
+  v_cat_id   uuid    := NULL;
+  v_cat_src  text;
+  v_cat_l1   text;
+  v_existing_cat uuid := NULL;
+  v_min_qty  integer := NULL;
+  v_display_name text;
+BEGIN
+  SELECT * INTO s FROM public.produtos_padronizacao WHERE id = p_id FOR UPDATE;
+  IF NOT FOUND THEN
+    RETURN jsonb_build_object('success', false, 'error', 'padronizacao_nao_encontrada', 'id', p_id);
+  END IF;
+  IF s.status <> 'standardized' THEN
+    RETURN jsonb_build_object('success', false, 'error', 'status_invalido', 'status', s.status);
+  END IF;
+
+  PERFORM set_config('app.write_source',     'pipeline', true);
+  PERFORM set_config('app.bulk_import_mode', 'true',     true);
+
+  v_display_name := public.fn_display_product_name(s.name);
+
+  SELECT id, locked_fields, category_id INTO v_pid, v_locked, v_existing_cat
+  FROM public.products
+  WHERE supplier_id = s.supplier_id AND supplier_reference = s.supplier_reference;
+
+  IF v_pid IS NULL THEN
+    v_is_new := true;
+    SELECT organization_id INTO v_org FROM public.suppliers WHERE id = s.supplier_id;
+    INSERT INTO public.products (organization_id, supplier_id, supplier_reference, sku, name, is_active, product_type, category_id, padronizacao_id)
+    VALUES (v_org, s.supplier_id, s.supplier_reference,
+            COALESCE(s.supplier_reference, s.name),
+            COALESCE(v_display_name, s.name, 'Produto ' || s.supplier_reference),
+            true, 'product', 'c0000000-0000-0000-0000-000000000000', p_id)
+    RETURNING id, locked_fields INTO v_pid, v_locked;
+  END IF;
+
+  v_locked := COALESCE(v_locked, '{}');
+
+  -- Categoria nível 1
+  IF s.raw_id IS NOT NULL AND NOT ('category_id' = ANY(v_locked)) THEN
+    BEGIN
+      SELECT sfm.source_field INTO v_cat_src
+      FROM public.supplier_field_mappings sfm
+      WHERE sfm.supplier_id = s.supplier_id AND sfm.target_field = 'categories'
+      LIMIT 1;
+      IF v_cat_src IS NOT NULL THEN
+        SELECT split_part(COALESCE(spr.raw_data ->> v_cat_src, ''), '|', 1)
+        INTO v_cat_l1
+        FROM public.supplier_products_raw spr WHERE spr.id = s.raw_id;
+        IF NULLIF(TRIM(v_cat_l1), '') IS NOT NULL THEN
+          SELECT scm.category_id INTO v_cat_id
+          FROM public.supplier_categories sc
+          JOIN public.supplier_category_mappings scm ON scm.supplier_category_id = sc.id
+          WHERE sc.supplier_id = s.supplier_id AND TRIM(sc.supplier_code) = TRIM(v_cat_l1)
+          LIMIT 1;
+        END IF;
+      END IF;
+    EXCEPTION WHEN OTHERS THEN NULL;
+    END;
+  END IF;
+
+  IF v_cat_id IS NULL AND v_existing_cat IS NULL AND NOT ('category_id' = ANY(v_locked)) THEN
+    v_cat_id := public.fn_promote_category_fallback(s.name);
+  END IF;
+
+  IF s.min_quantity IS NOT NULL THEN
+    SELECT GREATEST(s.min_quantity, COALESCE(c.min_order_quantity, 1))
+    INTO v_min_qty
+    FROM public.categories c
+    WHERE c.id = COALESCE(v_cat_id,
+        (SELECT category_id FROM public.products WHERE id = v_pid));
+    v_min_qty := COALESCE(v_min_qty, s.min_quantity);
+  END IF;
+
+  UPDATE public.products p SET
+    sku                = COALESCE(p.sku, s.supplier_reference, s.name),
+    name               = CASE WHEN 'name'               = ANY(v_locked) THEN p.name               ELSE COALESCE(v_display_name, s.name, p.name)           END,
+    description        = CASE WHEN 'description'        = ANY(v_locked) THEN p.description        ELSE COALESCE(s.description,        p.description)        END,
+    short_description  = CASE WHEN 'short_description'  = ANY(v_locked) THEN p.short_description  ELSE COALESCE(s.short_description,  p.short_description)  END,
+    cost_price         = CASE WHEN 'cost_price'         = ANY(v_locked) THEN p.cost_price         ELSE COALESCE(NULLIF(s.cost_price,      0), p.cost_price)      END,
+    suggested_price    = CASE WHEN 'suggested_price'    = ANY(v_locked) THEN p.suggested_price    ELSE COALESCE(NULLIF(s.suggested_price, 0), p.suggested_price) END,
+    stock_quantity     = CASE WHEN 'stock_quantity'     = ANY(v_locked) THEN p.stock_quantity     ELSE COALESCE(s.stock_quantity,     p.stock_quantity)     END,
+    min_quantity       = CASE WHEN 'min_quantity'       = ANY(v_locked) THEN p.min_quantity
+                              WHEN v_min_qty IS NOT NULL                THEN v_min_qty
+                              ELSE COALESCE(s.min_quantity, p.min_quantity)              END,
+    primary_image_url  = CASE
+      WHEN 'primary_image_url' = ANY(v_locked)        THEN p.primary_image_url
+      WHEN p.primary_image_url LIKE '%imagedelivery%' THEN p.primary_image_url
+      ELSE COALESCE(s.primary_image_url, p.primary_image_url)
+    END,
+    images             = CASE WHEN 'images'             = ANY(v_locked) THEN p.images             ELSE COALESCE(s.images,             p.images)             END,
+    ncm_code           = CASE WHEN 'ncm_code'           = ANY(v_locked) THEN p.ncm_code           ELSE COALESCE(NULLIF(s.ncm_code,'00000000'), p.ncm_code)  END,
+    weight_g           = CASE WHEN 'weight_g'           = ANY(v_locked) THEN p.weight_g           ELSE COALESCE(NULLIF(s.weight_g,   0), p.weight_g)   END,
+    height_cm          = CASE WHEN 'height_cm'          = ANY(v_locked) THEN p.height_cm          ELSE COALESCE(NULLIF(s.height_cm,  0), p.height_cm)  END,
+    width_cm           = CASE WHEN 'width_cm'           = ANY(v_locked) THEN p.width_cm           ELSE COALESCE(NULLIF(s.width_cm,   0), p.width_cm)   END,
+    length_cm          = CASE WHEN 'length_cm'          = ANY(v_locked) THEN p.length_cm          ELSE COALESCE(NULLIF(s.length_cm,  0), p.length_cm)  END,
+    circumference_cm   = CASE WHEN 'circumference_cm'   = ANY(v_locked) THEN p.circumference_cm   ELSE COALESCE(NULLIF(s.circumference_cm, 0), p.circumference_cm) END,
+    diameter_cm        = CASE WHEN 'diameter_cm'        = ANY(v_locked) THEN p.diameter_cm        ELSE COALESCE(NULLIF(s.diameter_cm, 0), p.diameter_cm) END,
+    dimensions_display = CASE WHEN 'dimensions_display' = ANY(v_locked) THEN p.dimensions_display ELSE COALESCE(s.dimensions_display, p.dimensions_display) END,
+    box_length_cm      = CASE WHEN 'box_length_cm'      = ANY(v_locked) THEN p.box_length_cm      ELSE COALESCE(s.box_length_cm,      p.box_length_cm)      END,
+    box_width_cm       = CASE WHEN 'box_width_cm'       = ANY(v_locked) THEN p.box_width_cm       ELSE COALESCE(s.box_width_cm,       p.box_width_cm)       END,
+    box_height_cm      = CASE WHEN 'box_height_cm'      = ANY(v_locked) THEN p.box_height_cm      ELSE COALESCE(s.box_height_cm,      p.box_height_cm)      END,
+    box_weight_kg      = CASE WHEN 'box_weight_kg'      = ANY(v_locked) THEN p.box_weight_kg      ELSE COALESCE(s.box_weight_kg,      p.box_weight_kg)      END,
+    box_volume_cm3     = CASE WHEN 'box_volume_cm3'     = ANY(v_locked) THEN p.box_volume_cm3     ELSE COALESCE(s.box_volume_cm3,     p.box_volume_cm3)     END,
+    box_quantity       = CASE WHEN 'box_quantity'       = ANY(v_locked) THEN p.box_quantity       ELSE COALESCE(s.box_quantity,       p.box_quantity)       END,
+    box_inner_quantity = CASE WHEN 'box_inner_quantity' = ANY(v_locked) THEN p.box_inner_quantity ELSE COALESCE(s.box_inner_quantity, p.box_inner_quantity) END,
+    brand              = CASE WHEN 'brand'              = ANY(v_locked) THEN p.brand              ELSE COALESCE(s.brand,              p.brand)              END,
+    packing_type       = CASE WHEN 'packing_type'       = ANY(v_locked) THEN p.packing_type       ELSE COALESCE(s.packing_type,       p.packing_type)       END,
+    repacking_type     = CASE WHEN 'repacking_type'     = ANY(v_locked) THEN p.repacking_type     ELSE COALESCE(s.repacking_type,     p.repacking_type)     END,
+    capacities         = CASE WHEN 'capacities'         = ANY(v_locked) THEN p.capacities         ELSE COALESCE(s.capacities,         p.capacities)         END,
+    capacity_ml        = CASE WHEN 'capacity_ml'        = ANY(v_locked) THEN p.capacity_ml        ELSE COALESCE(NULLIF(s.capacity_ml, 0), p.capacity_ml) END,
+    ipi_rate           = CASE WHEN 'ipi_rate'           = ANY(v_locked) THEN p.ipi_rate           ELSE COALESCE(s.ipi_rate,           p.ipi_rate)           END,
+    engraving_type     = CASE WHEN 'engraving_type'     = ANY(v_locked) THEN p.engraving_type     ELSE COALESCE(s.engraving_type,     p.engraving_type)     END,
+    colors             = CASE WHEN 'colors'             = ANY(v_locked) THEN p.colors             ELSE COALESCE(s.colors,             p.colors)             END,
+    combined_sizes     = CASE WHEN 'combined_sizes'     = ANY(v_locked) THEN p.combined_sizes     ELSE COALESCE(s.combined_sizes,     p.combined_sizes)     END,
+    box_image          = CASE WHEN 'box_image'          = ANY(v_locked) THEN p.box_image          ELSE COALESCE(s.box_image,          p.box_image)          END,
+    is_textil          = CASE WHEN 'is_textil'          = ANY(v_locked) THEN p.is_textil          ELSE COALESCE(s.is_textil,          p.is_textil)          END,
+    category_id        = CASE WHEN 'category_id'        = ANY(v_locked) THEN p.category_id        ELSE COALESCE(v_cat_id, v_existing_cat, p.category_id)     END,
+    padronizacao_id    = p_id,
+    updated_at         = now()
+  WHERE p.id = v_pid;
+
+  INSERT INTO public.product_physical (product_id, weight_g, height_cm, width_cm, length_cm, diameter_cm, circumference_cm, capacity_ml)
+  VALUES (v_pid, NULLIF(s.weight_g,0), NULLIF(s.height_cm,0), NULLIF(s.width_cm,0), NULLIF(s.length_cm,0), NULLIF(s.diameter_cm,0), NULLIF(s.circumference_cm,0), NULLIF(s.capacity_ml,0))
+  ON CONFLICT (product_id) DO UPDATE SET
+    weight_g         = COALESCE(public.product_physical.weight_g,         EXCLUDED.weight_g),
+    height_cm        = COALESCE(public.product_physical.height_cm,        EXCLUDED.height_cm),
+    width_cm         = COALESCE(public.product_physical.width_cm,         EXCLUDED.width_cm),
+    length_cm        = COALESCE(public.product_physical.length_cm,        EXCLUDED.length_cm),
+    diameter_cm      = COALESCE(public.product_physical.diameter_cm,      EXCLUDED.diameter_cm),
+    circumference_cm = COALESCE(public.product_physical.circumference_cm, EXCLUDED.circumference_cm),
+    capacity_ml      = COALESCE(public.product_physical.capacity_ml,      EXCLUDED.capacity_ml),
+    updated_at       = now();
+
+  UPDATE public.produtos_padronizacao SET status = 'promoted', product_id = v_pid, updated_at = now()
+  WHERE id = p_id;
+
+  RETURN jsonb_build_object('success', true, 'created', v_is_new, 'product_id', v_pid);
+END;
+$function$;
+
+-- 3) Pós-check fail-closed (mesma transação: falha → nada é aplicado)
+DO $$
+DECLARE
+  v_left integer;
+  v_fn   text;
+BEGIN
+  SELECT count(*) INTO v_left
+  FROM public.products p
+  JOIN public.produtos_padronizacao pp ON pp.product_id = p.id AND pp.status = 'promoted'
+  WHERE p.padronizacao_id IS NULL;
+  IF v_left <> 0 THEN
+    RAISE EXCEPTION 'fix_products_padronizacao_backlink: % produtos promovidos ainda sem padronizacao_id', v_left;
+  END IF;
+
+  SELECT pg_get_functiondef('public.fn_promote_padronizacao(uuid)'::regprocedure) INTO v_fn;
+  IF position('padronizacao_id    = p_id' IN v_fn) = 0
+     OR position('category_id, padronizacao_id)' IN v_fn) = 0 THEN
+    RAISE EXCEPTION 'fix_products_padronizacao_backlink: fn_promote_padronizacao não contém o back-link esperado';
+  END IF;
+END $$;
+
+-- <<< END 20260928212000_fix_products_padronizacao_backlink.sql <<<
+
+-- >>> BEGIN 20260928213000_backfill_products_main_category_id.sql >>>
+-- Migration: backfill_products_main_category_id
+-- Projeto canônico: doufsxqlfjyuvxuezpln (PG17). Aplicar SÓ via
+-- .github/workflows/db-apply-migration.yml (E15) — CLAUDE.md REGRA #8.
+--
+-- Contexto (medido em 2026-09-28): 489 products com main_category_id IS NULL
+--   (XBZ 450, 88BRINDES 20, STRICKER 10, ASIA 9), todos com category_id
+--   preenchido. Convenção real do banco: nos 7.649 produtos com
+--   main_category_id preenchido, 100% têm main_category_id = category_id
+--   (0 divergentes). fn_sync_main_category_from_pca mantém essa igualdade a
+--   partir do product_category_assignments primário. main_category_id é usado
+--   por fn_super_filtro/facets, SEO (trg_products_seo_autofill,
+--   generate_product_jsonld) e fn_trigger_fill_supplier_subtype — produto sem
+--   ele não entra corretamente no filtro por categoria.
+--
+-- Efeito (idempotente, uma transação via psql -1):
+--   UPDATE main_category_id = category_id onde nulo. Nenhum DDL.
+--
+-- Triggers em products afetados por UPDATE OF main_category_id:
+--   - trg_aa_capture_manual_edits: 'main_category_id' está na lista capturada;
+--     por isso app.write_source='pipeline' (transação-local) — o campo NÃO entra
+--     em locked_fields.
+--   - trg_auto_classify_product: WHEN NOT bulk_import_mode → pulado.
+--   - trg_fill_supplier_subtype: preenche supplier_subtype com o nome da
+--     categoria quando nulo (mesmo efeito que fn_sync_main_category_from_pca
+--     já produz hoje). Intencional.
+--   - trg_product_automation: pulado por bulk_import_mode/write_source.
+--
+-- Rollback: `UPDATE products SET main_category_id = NULL WHERE
+--   main_category_id = category_id AND updated_at >= '<timestamp UTC do apply>'
+--   AND updated_at < '<timestamp UTC do apply> + 1 min'` (os 489 recebem
+--   updated_at = now() na mesma transação). Nunca reeditar este arquivo.
+
+SELECT set_config('app.write_source',     'pipeline', true);
+SELECT set_config('app.bulk_import_mode', 'true',     true);
+
+UPDATE public.products
+SET    main_category_id = category_id,
+       updated_at       = now()
+WHERE  main_category_id IS NULL
+  AND  category_id      IS NOT NULL;
+
+-- Pós-check fail-closed (mesma transação: falha → nada é aplicado)
+DO $$
+DECLARE
+  v_left integer;
+BEGIN
+  SELECT count(*) INTO v_left
+  FROM public.products
+  WHERE main_category_id IS NULL AND category_id IS NOT NULL;
+  IF v_left <> 0 THEN
+    RAISE EXCEPTION 'backfill_products_main_category_id: % produtos ainda sem main_category_id', v_left;
+  END IF;
+END $$;
+
+-- <<< END 20260928213000_backfill_products_main_category_id.sql <<<
 
 -- >>> BEGIN bronze_stalled_cleanup_20260623.sql >>>
 -- BRONZE STALLED CLEANUP (2026-06-23): 396 rows Bronze de Só Marcas
