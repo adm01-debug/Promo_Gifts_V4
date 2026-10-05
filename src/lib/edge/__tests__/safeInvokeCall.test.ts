@@ -22,7 +22,13 @@ vi.mock('@/integrations/supabase/lazy-client', () => ({
   getSupabaseClient: () => Promise.resolve({ functions: { invoke: mockInvoke } }),
 }));
 
-import { invokeEdge, invokeEdgeSafe, normalizeInvokeError } from '@/lib/edge/safeInvokeCall';
+import {
+  invokeEdge,
+  invokeEdgeSafe,
+  normalizeInvokeError,
+  IDEMPOTENCY_KEY_HEADER,
+  newIdempotencyKey,
+} from '@/lib/edge/safeInvokeCall';
 
 describe('safeInvokeCall — Onda 17', () => {
   beforeEach(() => {
@@ -298,6 +304,36 @@ describe('safeInvokeCall — Onda 20 telemetria', () => {
     expect(r.requestId).toBe(fixed);
     const hdrs = mockInvoke.mock.calls[0]?.[1]?.headers as Record<string, string>;
     expect(hdrs[REQUEST_ID_HEADER]).toBe(fixed);
+  });
+
+  it('envia Idempotency-Key quando options.idempotencyKey é fornecida', async () => {
+    mockInvoke.mockResolvedValue({ data: {}, error: null });
+    const key = '11111111-2222-4333-8444-555555555555';
+    await invokeEdgeSafe('idem-fn', { idempotencyKey: key });
+    const hdrs = mockInvoke.mock.calls[0]?.[1]?.headers as Record<string, string>;
+    expect(hdrs[IDEMPOTENCY_KEY_HEADER]).toBe(key);
+  });
+
+  it('respeita Idempotency-Key fornecida via headers custom', async () => {
+    mockInvoke.mockResolvedValue({ data: {}, error: null });
+    const key = '66666666-7777-4888-8999-000000000000';
+    await invokeEdgeSafe('idem-fn', { headers: { [IDEMPOTENCY_KEY_HEADER]: key } });
+    const hdrs = mockInvoke.mock.calls[0]?.[1]?.headers as Record<string, string>;
+    expect(hdrs[IDEMPOTENCY_KEY_HEADER]).toBe(key);
+  });
+
+  it('não envia Idempotency-Key quando não fornecida', async () => {
+    mockInvoke.mockResolvedValue({ data: {}, error: null });
+    await invokeEdgeSafe('idem-fn', {});
+    const hdrs = mockInvoke.mock.calls[0]?.[1]?.headers as Record<string, string>;
+    expect(hdrs[IDEMPOTENCY_KEY_HEADER]).toBeUndefined();
+  });
+
+  it('newIdempotencyKey gera UUIDs distintos', () => {
+    const a = newIdempotencyKey();
+    const b = newIdempotencyKey();
+    expect(a).not.toBe(b);
+    expect(a).toMatch(/^[0-9a-f-]{36}$/i);
   });
 
   it('fuzz × 120 — sempre emite start; ok|failed|breaker_open depois', async () => {

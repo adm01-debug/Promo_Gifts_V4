@@ -84,6 +84,20 @@ Localizados em `supabase/functions/_shared/`:
 5. **Nunca** expor stack traces ou mensagens internas — retornar mensagem genérica + log do detalhe.
 6. **Nunca** confiar em `service_role` em endpoints públicos sem rate-limit + bot protection.
 
+## Headers client → edge
+
+`invokeEdgeSafe` / `invokeEdge` (`src/lib/edge/safeInvokeCall.ts`) propagam dois headers:
+
+- **`X-Request-Id`** (sempre) — UUID v4 gerado por chamada ou reaproveitado via
+  `options.requestId`. Correlação Sentry ↔ edge logs; o edge pode ecoá-lo no
+  resultado/erro para troubleshooting.
+- **`Idempotency-Key`** (opcional) — o caller gera UMA chave por operação
+  lógica com `newIdempotencyKey()` (ex.: no submit do form) e passa em
+  `options.idempotencyKey`. Ela sobrevive aos retries automáticos do
+  `safeAuthCall`. Edges de escrita **devem** deduplicar por ela quando fizer
+  sentido (mesma key + mesma operação = mesma resposta/sem efeito duplo).
+  Regra: nunca gerar a key dentro do retry — isso anula a deduplicação.
+
 ## Como testar
 
 ```bash
