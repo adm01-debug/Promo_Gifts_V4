@@ -47,7 +47,13 @@ function loadTurnstileScript(): Promise<void> {
     script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
     script.async = true;
     script.onload = () => resolve();
-    script.onerror = () => reject(new Error('turnstile_script_failed'));
+    script.onerror = () => {
+      // Falha transitória de rede não pode condenar o widget para sempre:
+      // limpa o singleton e o <script> para o próximo mount tentar de novo.
+      script.remove();
+      scriptPromise = null;
+      reject(new Error('turnstile_script_failed'));
+    };
     document.head.appendChild(script);
   });
   return scriptPromise;

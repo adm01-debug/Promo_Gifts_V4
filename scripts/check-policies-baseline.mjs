@@ -57,7 +57,7 @@ const SQL = `
   SELECT schemaname, tablename, policyname, permissive,
          roles::text AS roles, cmd,
          coalesce(qual, '') AS qual, coalesce(with_check, '') AS with_check
-  FROM pg_policies
+  FROM pg_catalog.pg_policies
   WHERE schemaname = 'public'
   ORDER BY schemaname, tablename, policyname;
 `.trim();
@@ -312,7 +312,11 @@ async function main() {
   const baselineByKey = new Map(baseline.map((p) => [policyKey(p), p]));
   const actualByKey = new Map(actual.map((p) => [policyKey(p), p]));
 
-  const added = actual.filter((p) => !baselineByKey.has(policyKey(p)));
+  // Idem para adições: migration pendente DROPa a policy — o live ainda a
+  // tem e a baseline já não, então ela aparece como `added` até o db-apply.
+  const addedAll = actual.filter((p) => !baselineByKey.has(policyKey(p)));
+  const added = addedAll.filter((p) => !plannedKeys.has(policyKey(p)));
+  const plannedAdded = addedAll.filter((p) => plannedKeys.has(policyKey(p)));
   // Policies ausentes no live que uma migration pendente cria/remove —
   // mudança planejada (PR com migration + baseline atualizada), não drift.
   const removedAll = baseline.filter((p) => !actualByKey.has(policyKey(p)));
@@ -326,11 +330,12 @@ async function main() {
   const changed = changedAll.filter((p) => !plannedKeys.has(policyKey(p)));
   const plannedChanged = changedAll.filter((p) => plannedKeys.has(policyKey(p)));
 
-  if (plannedRemoved.length || plannedChanged.length) {
+  const plannedAll = [...plannedAdded, ...plannedRemoved, ...plannedChanged];
+  if (plannedAll.length) {
     process.stderr.write(
-      `ℹ️  ${plannedRemoved.length + plannedChanged.length} diff(s) tolerado(s) — policy(ies) ` +
-        `criada(s)/alterada(s) por migration ainda não aplicada:\n` +
-        [...plannedRemoved, ...plannedChanged].map((p) => `   - ${policyKey(p)}`).join('\n') +
+      `ℹ️  ${plannedAll.length} diff(s) tolerado(s) — policy(ies) ` +
+        `criada(s)/alterada(s)/removida(s) por migration ainda não aplicada:\n` +
+        plannedAll.map((p) => `   - ${policyKey(p)}`).join('\n') +
         '\n',
     );
   }
