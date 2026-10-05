@@ -1,5 +1,7 @@
 /** Copy pt-BR dos erros de login (extraída de Auth.tsx — ratchet de tamanho). */
 
+import { TURNSTILE_GATE_UNAVAILABLE_MESSAGE } from '@/lib/auth/checkLoginGate';
+
 export interface LoginErrorCopy {
   title: string;
   description: string;
@@ -48,8 +50,9 @@ export function loginErrorCopy(error: { message: string; status?: number }): Log
     copy.description =
       'Parece que você está sem internet ou nosso servidor está temporariamente inacessível.';
     copy.hint = 'Verifique sua conexão Wi-Fi ou dados móveis.';
-  } else if (error.status === 503) {
-    // Turnstile/gate indisponível — error.message já vem pt-BR do gate.
+  } else if (error.status === 503 && error.message === TURNSTILE_GATE_UNAVAILABLE_MESSAGE) {
+    // Só o 503 sintético do gate Turnstile (AuthContext) — um 503 real do
+    // GoTrue/PostgREST cai no branch genérico de manutenção abaixo.
     copy.title = 'Verificação de segurança';
     copy.description = error.message;
     copy.hint = 'Tente novamente em instantes.';

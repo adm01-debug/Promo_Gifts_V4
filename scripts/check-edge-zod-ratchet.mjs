@@ -40,6 +40,15 @@ const UPDATE = process.argv.slice(2).includes('--update-baseline');
 const VALIDATION_RE =
   /parseBodyWithSchema|safeParse|validateBody|validatePayload|from\s+["']npm:zod|from\s+["']\.\.\/_shared\/zod/i;
 
+// A regex acima vale sobre código executável — um "safeParse" dentro de
+// comentário não pode contar como validação. Remove // e /* */ antes de
+// testar (o lookahead preserva "://" dentro de strings/URLs).
+function stripComments(src) {
+  return src
+    .replace(/\/\*[\s\S]*?\*\//g, ' ')
+    .replace(/(^|[^:.'"\\])\/\/.*/gm, '$1');
+}
+
 if (!existsSync(REGISTRY)) {
   console.error(`❌ ${REGISTRY} não encontrado.`);
   process.exit(2);
@@ -67,7 +76,7 @@ const unvalidated = [];
 for (const fn of fnDirs) {
   const idx = join(FN_DIR, fn, 'index.ts');
   if (!existsSync(idx)) continue;
-  const src = readFileSync(idx, 'utf8');
+  const src = stripComments(readFileSync(idx, 'utf8'));
   if (!/req\.json\(\)|req\.text\(\)/.test(src)) continue;
   if (exemptKeys.has(fn)) continue;
   bodyAccepting.push(fn);

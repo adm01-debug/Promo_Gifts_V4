@@ -33,12 +33,7 @@ import {
 
 import { logger } from '@/lib/logger';
 
-import {
-  gateBlockMessage,
-  isOperationalGateBlock,
-  TURNSTILE_GATE_UNAVAILABLE_MESSAGE,
-  type CheckLoginGateResponse,
-} from '@/lib/auth/checkLoginGate';
+import { evaluateLoginGate } from '@/lib/auth/checkLoginGate';
 
 // Tipos de role conforme app_role enum no banco.
 export type AppRole =
@@ -416,64 +411,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         };
       }
 
-      // Gate server-side: access_security_settings (IP/city whitelist, lockout).
-      // checkLoginAllowed acima cobre só o cliente (sessionStorage, bypassável).
-      // Edge indisponível → fail-open com warn, padrão já usado em isTokenRevoked;
-      // bloqueio explícito (allowed=false / HTTP 403) é sempre honrado.
-      try {
-        const { invokeEdge } = await import('@/lib/edge/safeInvokeCall');
-        const { data: gate, error: gateErr } = await invokeEdge<CheckLoginGateResponse>(
-          'check-login',
-          {
-            // turnstile_token só é verificado pela edge quando TURNSTILE_SECRET_KEY
-            // está configurada nela — sem a secret o campo é ignorado.
-            body: { email, turnstile_token: opts?.turnstileToken },
-            headers: log.headers(),
-            timeoutMs: 6_000,
-            maxRetries: 1,
-            preserveErrorData: true,
-          },
-        );
-        const operationalBlock = isOperationalGateBlock(gate);
-        if (gate?.allowed === false && !operationalBlock) {
-          log.warn('login_blocked_server', {
-            reason: gate?.reason ?? 'login_blocked',
-            requestId: log.requestId,
-          });
-          // Não grava login_attempts aqui: a recusa é consequência do bloqueio,
-          // não uma nova falha de credencial — registrar success=false moveria
-          // "última falha" pra frente e adiaria o desbloqueio a cada tentativa.
-          return {
-            error: { message: gateBlockMessage(gate), status: 403 },
-            data: null,
-          };
-        }
-        if (gateErr || operationalBlock || gate?.allowed === false) {
-          log.warn('check_login_unavailable', {
-            status: gateErr?.status,
-            reason: gate?.reason,
-            requestId: log.requestId,
-          });
-        }
-        // Com Turnstile ativo, a verificação do desafio vive dentro da
-        // check-login: edge fora = anti-bot contornado → falha fechado.
-        if (gateErr && opts?.turnstileToken) {
-          return {
-            error: { message: TURNSTILE_GATE_UNAVAILABLE_MESSAGE, status: 503 },
-            data: null,
-          };
-        }
-      } catch (gateEx) {
-        log.warn('check_login_exception', { err: String(gateEx) });
-        if (opts?.turnstileToken) {
-          return {
-            error: { message: TURNSTILE_GATE_UNAVAILABLE_MESSAGE, status: 503 },
-            data: null,
-          };
-        }
+      // Gate server-side: access_security_settings (IP/city whitelist, lockout)
+      // + Turnstile. Edge indisponível → fail-open com warn; com turnstileToken
+      // presente → fail-closed (prosseguir contornaria o anti-bot). Decisão
+      // completa em lib/auth/checkLoginGate.
+      const gateBlock = await evaluateLoginGate(log, email, opts?.turnstileToken);
+      // Não grava login_attempts no bloqueio do gate: a recusa é consequência
+      // do bloqueio, não uma nova falha de credencial — registrar success=false
+      // moveria "última falha" pra frente e adiaria o desbloqueio a cada tentativa.
+      if (gateBlock) {
+        return {
+          error: { message: gateBlock.message, status: gateBlock.status },
+          data: null,
+        };
       }
 
-      const { data, error } = await authService.signIn(email, password);
+      const { data, error } = await authService.signIn(email, password, {
+        captchaToken: opts?.turnstileToken,
+      });
       if (error) {
         recordFailedAttempt(email);
       } else {

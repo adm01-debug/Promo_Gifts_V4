@@ -57,3 +57,67 @@ export function gateBlockMessage(gate: CheckLoginGateResponse | null | undefined
     ? `Login bloqueado pelas regras de segurança até ${until}.`
     : 'Login bloqueado pelas regras de segurança da organização.';
 }
+
+/** Subconjunto do client logger usado pelo gate (estrutural). */
+export interface LoginGateLogger {
+  headers: () => Record<string, string>;
+  warn: (event: string, meta?: Record<string, unknown>) => void;
+  requestId: string;
+}
+
+/** Erro a exibir quando o gate bloqueia o login; null = pode prosseguir. */
+export interface LoginGateBlock {
+  message: string;
+  status: number;
+}
+
+/**
+ * Invoca a edge `check-login` e classifica o resultado:
+ * - bloqueio real (allowed=false fora das reasons operacionais) → 403;
+ * - edge fora/erro COM turnstileToken → 503 fail-closed (anti-bot contornado
+ *   se prosseguir); sem token → fail-open operacional com warn;
+ * - turnstile_token é single-use → maxRetries 0 para não reenviar token
+ *   já consumido pelo siteverify num retry.
+ */
+export async function evaluateLoginGate(
+  log: LoginGateLogger,
+  email: string,
+  turnstileToken?: string,
+): Promise<LoginGateBlock | null> {
+  try {
+    const { invokeEdge } = await import('@/lib/edge/safeInvokeCall');
+    const { data: gate, error: gateErr } = await invokeEdge<CheckLoginGateResponse>('check-login', {
+      // turnstile_token só é verificado pela edge quando TURNSTILE_SECRET_KEY
+      // está configurada nela — sem a secret o campo é ignorado.
+      body: { email, turnstile_token: turnstileToken },
+      headers: log.headers(),
+      timeoutMs: 6_000,
+      maxRetries: turnstileToken ? 0 : 1,
+      preserveErrorData: true,
+    });
+    const operationalBlock = isOperationalGateBlock(gate);
+    if (gate?.allowed === false && !operationalBlock) {
+      log.warn('login_blocked_server', {
+        reason: gate?.reason ?? 'login_blocked',
+        requestId: log.requestId,
+      });
+      return { message: gateBlockMessage(gate), status: 403 };
+    }
+    if (gateErr || operationalBlock || gate?.allowed === false) {
+      log.warn('check_login_unavailable', {
+        status: gateErr?.status,
+        reason: gate?.reason,
+        requestId: log.requestId,
+      });
+    }
+    if (gateErr && turnstileToken) {
+      return { message: TURNSTILE_GATE_UNAVAILABLE_MESSAGE, status: 503 };
+    }
+  } catch (gateEx) {
+    log.warn('check_login_exception', { err: String(gateEx) });
+    if (turnstileToken) {
+      return { message: TURNSTILE_GATE_UNAVAILABLE_MESSAGE, status: 503 };
+    }
+  }
+  return null;
+}

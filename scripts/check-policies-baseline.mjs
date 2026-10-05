@@ -155,15 +155,31 @@ function loadReconciledVersions() {
  * Policies que migrations ainda não aplicadas criam ou removem. O drift do
  * baseline vs live é tolerado nessas chaves: a migration é a fonte da
  * mudança planejada e o live só converge depois do db-apply.
+ *
+ * Bound: só migrations com versão MAIOR que a última aplicada no ledger
+ * dão tolerância. Uma migration antiga fora do ledger não é "pendente" —
+ * é divergência de ledger (REGRA #8) e não pode mascarar drift real
+ * indefinidamente.
  */
 function plannedPolicyKeys(appliedVersions) {
   const planned = new Set();
   if (!(appliedVersions instanceof Set)) return planned;
+  let maxApplied = null;
+  for (const v of appliedVersions) {
+    if (!/^\d+$/.test(v)) continue;
+    const n = BigInt(v);
+    if (maxApplied === null || n > maxApplied) maxApplied = n;
+  }
   const reconciled = loadReconciledVersions();
   for (const file of readdirSync(MIGRATIONS_DIR)) {
     if (!file.endsWith('.sql')) continue;
     const version = ledgerVersionFor(file, reconciled);
     if (!version || appliedVersions.has(version)) continue;
+    // Sem ledger legível (maxApplied null — ex.: --from-file) mantém a
+    // tolerância; com ledger, só versão futura em relação à última aplicada.
+    if (maxApplied !== null && (!/^\d+$/.test(version) || BigInt(version) <= maxApplied)) {
+      continue;
+    }
     const sql = readFileSync(path.join(MIGRATIONS_DIR, file), 'utf8');
     for (const stmt of sql.matchAll(POLICY_STMT_RE)) {
       const name = stmt[2].trim();
@@ -276,7 +292,15 @@ async function main() {
   // aparente vira suspeita de adulteração manual.
   const recordedHash = doc.sha256;
   const recomputedHash = hashPolicies(baseline);
-  if (recordedHash && recordedHash !== recomputedHash) {
+  if (typeof recordedHash !== 'string' || recordedHash.length === 0) {
+    return concludeCheck({
+      check: 'policies-baseline',
+      status: CHECK_RESULT_STATUS.FAILED,
+      summary: 'baseline sem sha256 assinado — apagar o campo não pode desligar o gate; regenere com --update-baseline',
+      details: { recordedHash: recordedHash ?? null },
+    });
+  }
+  if (recordedHash !== recomputedHash) {
     return concludeCheck({
       check: 'policies-baseline',
       status: CHECK_RESULT_STATUS.FAILED,
