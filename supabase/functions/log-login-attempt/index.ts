@@ -16,12 +16,16 @@ const LoginAttemptSchema = z.object({
   user_agent: z.string().max(512).nullish(),
 });
 
-// IP SEMPRE derivado da conexão (mesma ordem de check-login):
-// cf-connecting-ip → x-forwarded-for[0] → x-real-ip → 'unknown'.
+// IP SEMPRE derivado da conexão. O gateway anexa o IP real como ÚLTIMO
+// elemento do x-forwarded-for — o primeiro (e cf-connecting-ip /
+// x-real-ip) pode vir do cliente e é forjável (Devin Review SEC_0001).
+// Ordem: xff[last] → cf-connecting-ip → x-real-ip → 'unknown'.
 function extractIP(req: Request): string {
+  const xff = req.headers.get("x-forwarded-for");
+  const lastXff = xff?.split(",").pop()?.trim();
   return (
+    (lastXff || undefined) ??
     req.headers.get("cf-connecting-ip") ??
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
     req.headers.get("x-real-ip") ??
     "unknown"
   );

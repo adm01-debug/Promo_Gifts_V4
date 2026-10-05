@@ -64,9 +64,9 @@ export function createPostLoginGuards(deps: PostLoginGuardDeps) {
     try {
       if (!ipChecked && !(await ensureIPAllowed(userId, email))) return false;
 
-      // A linha success em login_attempts é escrita por AuthContext.signIn
-      // (fonte única, com prova de sessão → verified=true). Escrever aqui
-      // gerava linha duplicada por login.
+      // A linha success em login_attempts é escrita pelo caller após o
+      // gate de IP passar (com prova de sessão → verified=true). Escrever
+      // aqui gerava linha duplicada por login.
 
       setLoginStatus('success');
       toast({

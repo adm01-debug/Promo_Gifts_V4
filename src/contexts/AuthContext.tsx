@@ -438,7 +438,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         clearLoginAttempts(email);
       }
 
-      logAttempt(data?.user?.id ?? null, !error, error?.message);
+      const attemptUserId = data?.user?.id ?? null;
+      // Só falhas são logadas aqui — a linha success VERIFICADA é escrita
+      // pelo caller DEPOIS do gate de IP (ensureIPAllowed), senão um login
+      // bloqueado por IP zerava o contador do par (Devin Review SEC_0002).
+      if (error) {
+        logAttempt(attemptUserId, false, error.message);
+      }
 
       return { error, data };
     },

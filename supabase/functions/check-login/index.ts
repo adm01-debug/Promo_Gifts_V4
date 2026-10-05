@@ -47,11 +47,15 @@ async function verifyTurnstile(token: string, ip: string, secret: string): Promi
   }
 }
 
-// ── Extrai IP real: Cloudflare → X-Forwarded-For → X-Real-IP ───────
+// O gateway anexa o IP real como ÚLTIMO elemento do x-forwarded-for —
+// o primeiro (e cf-connecting-ip / x-real-ip) pode vir do cliente e é
+// forjável (Devin Review SEC_0001). Ordem: xff[last] → cf → x-real-ip.
 function extractIP(req: Request): string {
+  const xff = req.headers.get('x-forwarded-for');
+  const lastXff = xff?.split(',').pop()?.trim();
   return (
+    (lastXff || undefined) ??
     req.headers.get('cf-connecting-ip') ??
-    req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
     req.headers.get('x-real-ip') ??
     'unknown'
   );

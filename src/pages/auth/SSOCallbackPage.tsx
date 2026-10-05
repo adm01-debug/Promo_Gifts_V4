@@ -137,9 +137,18 @@ export default function SSOCallbackPage() {
     let unsub: (() => void) | null = null;
     let timeoutId: number | null = null;
     let confirmedHoldId: number | null = null;
+    // Guarda síncrona: listener + timeout-recheck podem disparar goHome
+    // com a mesma sessão enquanto o 1º ainda aguarda a validação de IP —
+    // sem isso sucesso e detect-new-device saíam duplicados (BUG_0002).
+    let goHomeStarted = false;
 
     const goHome = async (session?: Session | null) => {
-      if (cancelled) return;
+      if (cancelled || goHomeStarted) return;
+      goHomeStarted = true;
+      if (timeoutId !== null) {
+        window.clearTimeout(timeoutId);
+        timeoutId = null;
+      }
       if (session) tracer.captureSession(session);
       // Status: sessão capturada, atualizando contexto local
       setStatus('confirming');
@@ -192,7 +201,9 @@ export default function SSOCallbackPage() {
             user_agent: navigator.userAgent,
           },
         }).catch(() => undefined);
-        void checkDevice().catch(() => undefined);
+        // Usuário explícito: o contexto ainda não propagou — o callback
+        // capturado veria user=null e pularia o primeiro login social.
+        void checkDevice({ id: oauthUid, email: oauthEmail }).catch(() => undefined);
       }
       const target = consumePostLoginRedirect('/');
       tracer.step('redirect-home', { target });

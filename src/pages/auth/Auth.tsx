@@ -414,12 +414,16 @@ export default function Auth() {
         logger.warn('[AUTH_IP_VALIDATION_FAILOPEN] continuing without IP check');
       }
 
+      // Linha success VERIFICADA — só depois do gate de IP (SEC_0002):
+      // cobre senha fraca e redirect normal abaixo.
+      await logLoginAttempt(data.email, userId, true);
+
       // 4. Senha abaixo da política forte atual (contas legadas): força
       // troca antes de liberar o app — /reset-password aceita sessão ativa.
       if (isWeakPassword(data.password)) {
         navigatedRef.current = true; // impede o redirect do user-effect
-        // login_attempts success já foi escrito por AuthContext.signIn
-        // (fonte única, verified via sessão) — não duplicar.
+        // login_attempts success já foi escrito acima, após o gate de IP
+        // (verified via sessão) — não duplicar.
         toast({
           title: 'Atualize sua senha',
           description:
