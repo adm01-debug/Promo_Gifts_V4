@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Lock, Loader2, Eye, EyeOff, CheckCircle } from 'lucide-react';
@@ -17,23 +16,7 @@ import { PageSEO } from '@/components/seo/PageSEO';
 import { LegalFooter } from '@/components/auth/LegalFooter';
 import { SpaceScene } from '@/pages/auth/AuthBranding';
 
-const resetPasswordSchema = z
-  .object({
-    password: z
-      .string()
-      .min(8, 'Senha deve ter pelo menos 8 caracteres')
-      .regex(/[A-Z]/, 'Senha deve conter letra maiúscula')
-      .regex(/[a-z]/, 'Senha deve conter letra minúscula')
-      .regex(/[0-9]/, 'Senha deve conter número')
-      .regex(/[!@#$%^&*(),.?":{}|<>]/, 'Senha deve conter caractere especial'),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: 'Senhas não conferem',
-    path: ['confirmPassword'],
-  });
-
-type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
+import { resetPasswordSchema, type ResetPasswordFormData } from '@/lib/validations/authSchema';
 
 export default function ResetPassword() {
   const navigate = useNavigate();

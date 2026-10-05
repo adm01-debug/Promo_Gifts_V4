@@ -35,10 +35,11 @@ import { getSupabaseClient } from '@/integrations/supabase/lazy-client';
 import { SocialLoginButtons } from '@/components/auth/SocialLoginButtons';
 import { AppLogo } from '@/components/layout/AppLogo';
 import { isSupabaseLighthousePlaceholder } from '@/lib/env/supabase-placeholder';
-import { loginSchema, type LoginFormData } from '@/lib/validations';
+import { loginSchema, isWeakPassword, type LoginFormData } from '@/lib/validations';
 import { logger } from '@/lib/logger';
 import { cn } from '@/lib/utils';
 import { invokeEdge } from '@/lib/edge/safeInvokeCall';
+import { createPostLoginGuards } from '@/pages/auth/postLoginGuards';
 
 type LoginForm = LoginFormData;
 
@@ -209,47 +210,17 @@ export default function Auth() {
     defaultValues: { email: '', password: '' },
   });
 
-  const validateAndRedirect = async (userId: string, email: string) => {
-    try {
-      const ipValidation = await validateIPForAuthenticatedUser(userId);
-
-      if (!ipValidation.isAllowed && ipValidation.hasRestrictions) {
-        await signOut();
-        const reason = ipValidation.reason || 'access_blocked';
-        await logLoginAttempt(email, userId, false, `${reason}: ${ipValidation.error}`);
-
-        setIpBlocked(true);
-        setBlockedIP(ipValidation.currentIP);
-
-        toast({
-          variant: 'destructive',
-          title: 'Acesso Bloqueado',
-          description:
-            ipValidation.error || `Seu IP (${ipValidation.currentIP}) não está autorizado.`,
-          duration: 10000,
-        });
-        return false;
-      }
-
-      await logLoginAttempt(email, userId, true);
-
-      setLoginStatus('success');
-      toast({
-        title: 'Bem-vindo!',
-        description: 'Login realizado com sucesso',
-      });
-
-      // Aguarda o feedback visual de sucesso antes de navegar
-      setTimeout(() => {
-        navigate(resolveRedirectTargetCb(), { replace: true });
-      }, 600);
-      return true;
-    } catch {
-      logger.warn('[AUTH_POST_LOGIN_VALIDATION] continuing with fail-open redirect');
-      navigate(resolveRedirectTargetCb(), { replace: true }); // Fail-open
-      return true;
-    }
-  };
+  const { ensureIPAllowed, validateAndRedirect } = createPostLoginGuards({
+    validateIPForAuthenticatedUser,
+    logLoginAttempt,
+    signOut,
+    toast,
+    navigate,
+    resolveRedirectTarget: resolveRedirectTargetCb,
+    setIpBlocked,
+    setBlockedIP,
+    setLoginStatus,
+  });
 
   const handleLogin = async (data: LoginForm) => {
     if (isSubmitting) return;
@@ -451,8 +422,31 @@ export default function Auth() {
         });
       }
 
-      // 3. Validação final de IP e Redirecionamento
-      await validateAndRedirect(userId, data.email);
+      // 3. Validação de IP — antes de qualquer redirect com sessão ativa,
+      //    inclusive o fluxo de senha fraca. Fail-open: se a checagem
+      //    indisponível, segue (mesmo comportamento do fluxo normal).
+      try {
+        if (!(await ensureIPAllowed(userId, data.email))) return;
+      } catch {
+        logger.warn('[AUTH_IP_VALIDATION_FAILOPEN] continuing without IP check');
+      }
+
+      // 4. Senha abaixo da política forte atual (contas legadas): força
+      // troca antes de liberar o app — /reset-password aceita sessão ativa.
+      if (isWeakPassword(data.password)) {
+        navigatedRef.current = true; // impede o redirect do user-effect
+        await logLoginAttempt(data.email, userId, true);
+        toast({
+          title: 'Atualize sua senha',
+          description:
+            'Sua senha atual não atende à política de segurança. Defina uma senha forte para continuar.',
+        });
+        navigate('/reset-password', { replace: true });
+        return;
+      }
+
+      // 5. Redirecionamento (IP já validado acima)
+      await validateAndRedirect(userId, data.email, true);
     } catch {
       logger.error('[AUTH_LOGIN_EXCEPTION] Unexpected login exception');
       toast({

@@ -66,6 +66,9 @@
     "check:file-size-baseline:update": "node scripts/check-file-size-baseline.mjs --update",
     "check:indexed-access-ratchet": "node scripts/check-indexed-access-ratchet.mjs",
     "check:indexed-access-ratchet:update": "node scripts/check-indexed-access-ratchet.mjs --update",
+    "check:contract-coverage": "node scripts/check-contract-coverage.mjs",
+    "check:soft-delete-policy": "node scripts/check-soft-delete-policy.mjs",
+    "check:soft-delete-policy:update": "node scripts/check-soft-delete-policy.mjs --update",
     "test": "TZ=America/Sao_Paulo vitest run",
     "test:quote-rpc:postgres": "node scripts/simulate-quote-rpc-proposals.mjs",
     "check:quote-rpc:canonical": "node scripts/check-quote-rpc-canonical-readiness.mjs",
@@ -363,8 +366,10 @@
     "zustand": "^4.5.0"
   },
   "devDependencies": {
-    "@lhci/cli": "0.15.1",
     "@axe-core/playwright": "^4.13.0",
+    "@commitlint/cli": "^21.2.3",
+    "@commitlint/config-conventional": "^21.2.3",
+    "@lhci/cli": "0.15.1",
     "@playwright/test": "^1.63.0",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/jest-dom": "^6.9.1",

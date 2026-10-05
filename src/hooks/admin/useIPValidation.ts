@@ -2,7 +2,7 @@ import { logger } from '@/lib/logger';
 import { useState, useCallback } from 'react';
 import { invokeEdge } from '@/lib/edge/safeInvokeCall';
 
-interface IPValidationResult {
+export interface IPValidationResult {
   isAllowed: boolean;
   currentIP: string | null;
   hasRestrictions: boolean;
