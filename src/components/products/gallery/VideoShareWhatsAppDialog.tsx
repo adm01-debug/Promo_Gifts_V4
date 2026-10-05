@@ -89,7 +89,6 @@ function buildSalesMessage(opts: {
     'Posso preparar uma proposta personalizada com personalização da sua marca? É só me chamar por aqui. 😉',
   );
 
-  // _greetingTarget kept for potential future personalization
   return lines.join('\n');
 }
 
