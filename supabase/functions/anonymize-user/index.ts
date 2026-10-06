@@ -110,14 +110,40 @@ Deno.serve(async (req: Request) => {
     // 2) Apaga tentativas de login (email + user_id carregam PII direta).
     //    ilike cobre variações de case de linhas legadas — a edge nova já
     //    normaliza para lowercase, mas histórico pode ter misto.
-    // Email vai interpolado no filtro .or() — PostgREST quebraria a
-    // cláusula em ',', '(' ou ')'. O claim vem do JWT verificado, mas o
-    // custo do whitelist é zero: só mantém chars válidos de email.
-    const safeEmail = (email ?? "").replace(/[^a-zA-Z0-9@._%+\-]/g, "");
-    const { error: attemptsErr, count: attemptsWiped } = await supabaseAdmin
+    // O filtro .or() é só um superconjunto: aspas no valor protegem ',',
+    // '(' e ')' do parser do PostgREST, mas `%`/`_` do email seguem
+    // curingas do ilike (e sanitizar chars corromperia o match — "o'hara"
+    // viraria "ohara"). Por isso a seleção é refiltrada em JS com comparação
+    // exata case-insensitive antes de deletar só os ids confirmados.
+    const emailClause = email && !email.includes('"')
+      ? `,email.ilike."${email}"`
+      : "";
+    let attemptsErr: { message: string } | null = null;
+    let attemptsWiped = 0;
+    const { data: attemptRows, error: attemptsSelErr } = await supabaseAdmin
       .from("login_attempts")
-      .delete({ count: "exact" })
-      .or(`user_id.eq.${userId}${safeEmail ? `,email.ilike.${safeEmail}` : ""}`);
+      .select("id, user_id, email")
+      .or(`user_id.eq.${userId}${emailClause}`);
+    if (attemptsSelErr) {
+      attemptsErr = attemptsSelErr;
+    } else {
+      const emailLc = (email ?? "").toLowerCase();
+      const ids = (attemptRows ?? [])
+        .filter((r) =>
+          r.user_id === userId ||
+          (emailLc !== "" && typeof r.email === "string" &&
+            r.email.toLowerCase() === emailLc)
+        )
+        .map((r) => r.id);
+      if (ids.length > 0) {
+        const { error: delErr, count } = await supabaseAdmin
+          .from("login_attempts")
+          .delete({ count: "exact" })
+          .in("id", ids);
+        attemptsErr = delErr;
+        attemptsWiped = count ?? ids.length;
+      }
+    }
     if (attemptsErr) {
       // Não é fatal: perfil já foi anonimizado; loga e segue.
       log.warn("login_attempts_wipe_failed", { error: attemptsErr.message });
@@ -195,7 +221,7 @@ Deno.serve(async (req: Request) => {
 
     log.info("user_anonymized", {
       userId,
-      loginAttemptsWiped: attemptsWiped ?? 0,
+      loginAttemptsWiped: attemptsWiped,
       sessionsWiped,
     });
 
@@ -205,7 +231,7 @@ Deno.serve(async (req: Request) => {
         // Conta real de linhas — `true` com 0 linhas mentiria que um
         // perfil foi anonimizado quando nem existia.
         profile: profileCount ?? 0,
-        login_attempts: attemptsErr ? "failed" : (attemptsWiped ?? 0),
+        login_attempts: attemptsErr ? "failed" : (attemptsWiped),
         sessions: sessionsWiped ? "revoked" : "partial",
       },
     });

@@ -477,17 +477,28 @@ Deno.serve(async (req) => {
     // Idempotency-Key (cliente, safeInvokeCall) → caminho determinístico:
     // um retry da mesma operação regrava o MESMO arquivo em vez de criar
     // um segundo objeto órfão no storage. Sem a key, comportamento antigo.
-    const idemKey = (req.headers.get("idempotency-key") ?? "")
-      .replace(/[^a-zA-Z0-9_-]/g, "")
-      .slice(0, 128);
-    const filePath = idemKey
-      ? `${auth.userId}/mockups/idem-${idemKey}.png`
-      : `${auth.userId}/mockups/${Date.now()}-${crypto.randomUUID()}.png`;
+    // O caminho usa digest da key crua — sanitizar/truncar colapsaria
+    // keys distintas ("a.b" e "ab") no mesmo objeto e o upsert
+    // sobrescreveria a imagem de outra geração.
+    const rawIdemKey = req.headers.get("idempotency-key") ?? "";
+    let filePath: string;
+    if (rawIdemKey) {
+      const digest = await crypto.subtle.digest(
+        "SHA-256",
+        new TextEncoder().encode(rawIdemKey),
+      );
+      const hex = Array.from(new Uint8Array(digest), (b) =>
+        b.toString(16).padStart(2, "0"),
+      ).join("");
+      filePath = `${auth.userId}/mockups/idem-${hex.slice(0, 32)}.png`;
+    } else {
+      filePath = `${auth.userId}/mockups/${Date.now()}-${crypto.randomUUID()}.png`;
+    }
     const { error: upErr } = await supabase.storage
       .from("mockup-assets")
       .upload(filePath, await compositeBlob.arrayBuffer(), {
         contentType: "image/png",
-        upsert: idemKey.length > 0,
+        upsert: rawIdemKey.length > 0,
       });
 
     if (upErr) {
