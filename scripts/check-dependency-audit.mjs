@@ -82,15 +82,21 @@ const EXPECTED_CHAIN_ADVISORY_URLS = new Set([
   'https://github.com/advisories/GHSA-rj75-hqrm-r3gf', // postcss-selector-parser
 ]);
 
-// `via` mistura strings (propagação via pacote dependente) e objetos
-// (advisory direto do pacote). Exigimos que TODO objeto de advisory
-// esteja no conjunto esperado — strings passam porque a dependente
-// já tem entrada própria na allowlist.
+// `via` mistura strings (nome do pacote por onde a vuln propaga) e
+// objetos (advisory direto do pacote). Objetos precisam estar em
+// EXPECTED_CHAIN_ADVISORY_URLS; strings só passam se nomearem um pacote
+// já aceito na cadeia — um nome desconhecido indica advisory novo
+// propagado por dependência não revisada, e deve bloquear.
+const ALL_CHAIN_PACKAGES = new Set([
+  ...ALLOWED_BRACES_CHAIN_DIRECT,
+  ...ALLOWED_BRACES_CHAIN_TRANSITIVE,
+]);
 function hasOnlyExpectedChainAdvisories(vulnerability) {
   const via = vulnerability.via ?? [];
-  return via.every(
-    (entry) => typeof entry === 'string' || EXPECTED_CHAIN_ADVISORY_URLS.has(entry?.url),
-  );
+  return via.every((entry) =>
+    typeof entry === 'string'
+      ? ALL_CHAIN_PACKAGES.has(entry)
+      : EXPECTED_CHAIN_ADVISORY_URLS.has(entry?.url));
 }
 
 // All packages that may appear in the accepted[] list — used for defence-in-depth after the loop.

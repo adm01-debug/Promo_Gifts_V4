@@ -135,16 +135,19 @@ Deno.serve(async (req: Request) => {
     // reporta falha em vez de confirmar o expurgo.
     let attemptsErr: { message: string } | null = null;
     let attemptsWiped = 0;
-    let lastAttemptId = 0;
+    // login_attempts.id é UUID — o cursor começa nulo e o .gt() só entra
+    // depois que a primeira página devolve um id real.
+    let lastAttemptId: string | null = null;
     let exhausted = false;
     for (let page = 0; page < 200 && !exhausted && !attemptsErr; page++) {
-      const { data: attemptRows, error: selErr } = await supabaseAdmin
+      let query = supabaseAdmin
         .from("login_attempts")
         .select("id, user_id, email")
         .or(`user_id.eq.${userId}${emailClause}`)
-        .gt("id", lastAttemptId)
         .order("id", { ascending: true })
         .limit(1000);
+      if (lastAttemptId !== null) query = query.gt("id", lastAttemptId);
+      const { data: attemptRows, error: selErr } = await query;
       if (selErr) {
         attemptsErr = selErr;
         break;
@@ -167,9 +170,22 @@ Deno.serve(async (req: Request) => {
       attemptsWiped += count ?? ids.length;
     }
     if (!attemptsErr && !exhausted) {
-      // Bound de tempo atingido com páginas restantes — a resposta deve
-      // refletir que o expurgo não completou, nunca confirmar sucesso.
-      attemptsErr = { message: "login_attempts_purge_incomplete" };
+      // Bound de tempo atingido: confirma com consulta de existência e só
+      // reporta falha se ainda restarem candidatos — a última página pode
+      // ter drenado o conjunto na exata posição 200.
+      let existQ = supabaseAdmin
+        .from("login_attempts")
+        .select("id, user_id, email")
+        .or(`user_id.eq.${userId}${emailClause}`)
+        .order("id", { ascending: true })
+        .limit(1000);
+      if (lastAttemptId !== null) existQ = existQ.gt("id", lastAttemptId);
+      const { data: restRows, error: existErr } = await existQ;
+      if (existErr) {
+        attemptsErr = existErr;
+      } else if ((restRows ?? []).some(isAttemptMatch)) {
+        attemptsErr = { message: "login_attempts_purge_incomplete" };
+      }
     }
     if (attemptsErr) {
       // Não é fatal: perfil já foi anonimizado; loga e segue.
