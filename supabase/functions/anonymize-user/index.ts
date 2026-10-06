@@ -129,9 +129,8 @@ Deno.serve(async (req: Request) => {
     // PostgREST limita o SELECT a 1000 linhas por página. Paginação por
     // keyset (id > lastId, ordem estável) varre o superconjunto INTEIRO
     // mesmo com deletes mutando o conjunto — sem cap de rodadas, então
-    // nenhuma tentativa fica para trás. O bound de 200 páginas (200k
-    // linhas varridas) existe só como segurança de tempo: se for
-    // atingido com candidatos ainda pendentes, marca erro e a resposta
+    // nenhuma tentativa fica para trás. O bound MAX_PAGES existe só como
+    // segurança de tempo: se for atingido, marca erro e a resposta
     // reporta falha em vez de confirmar o expurgo.
     let attemptsErr: { message: string } | null = null;
     let attemptsWiped = 0;
@@ -139,7 +138,7 @@ Deno.serve(async (req: Request) => {
     // depois que a primeira página devolve um id real.
     let lastAttemptId: string | null = null;
     let exhausted = false;
-    for (let page = 0; page < 200 && !exhausted && !attemptsErr; page++) {
+    const nextAttemptPage = async () => {
       let query = supabaseAdmin
         .from("login_attempts")
         .select("id, user_id, email")
@@ -147,7 +146,17 @@ Deno.serve(async (req: Request) => {
         .order("id", { ascending: true })
         .limit(1000);
       if (lastAttemptId !== null) query = query.gt("id", lastAttemptId);
-      const { data: attemptRows, error: selErr } = await query;
+      return await query;
+    };
+    // MAX_PAGES é só segurança de tempo (~400k linhas varridas). Sucesso
+    // exige uma página completamente vazia — nenhuma contagem de páginas
+    // ou amostra parcial prova que o superconjunto acabou, pois linhas
+    // não-candidatas (falsos positivos do ilike) podem preencher páginas
+    // inteiras antes de um candidato real. Se o bound for atingido, a
+    // resposta reporta incompleto, nunca sucesso com dados restantes.
+    const MAX_PAGES = 400;
+    for (let page = 0; page < MAX_PAGES && !exhausted && !attemptsErr; page++) {
+      const { data: attemptRows, error: selErr } = await nextAttemptPage();
       if (selErr) {
         attemptsErr = selErr;
         break;
@@ -170,22 +179,7 @@ Deno.serve(async (req: Request) => {
       attemptsWiped += count ?? ids.length;
     }
     if (!attemptsErr && !exhausted) {
-      // Bound de tempo atingido: confirma com consulta de existência e só
-      // reporta falha se ainda restarem candidatos — a última página pode
-      // ter drenado o conjunto na exata posição 200.
-      let existQ = supabaseAdmin
-        .from("login_attempts")
-        .select("id, user_id, email")
-        .or(`user_id.eq.${userId}${emailClause}`)
-        .order("id", { ascending: true })
-        .limit(1000);
-      if (lastAttemptId !== null) existQ = existQ.gt("id", lastAttemptId);
-      const { data: restRows, error: existErr } = await existQ;
-      if (existErr) {
-        attemptsErr = existErr;
-      } else if ((restRows ?? []).some(isAttemptMatch)) {
-        attemptsErr = { message: "login_attempts_purge_incomplete" };
-      }
+      attemptsErr = { message: "login_attempts_purge_incomplete" };
     }
     if (attemptsErr) {
       // Não é fatal: perfil já foi anonimizado; loga e segue.
