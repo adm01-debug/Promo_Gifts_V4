@@ -474,12 +474,20 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
-    const filePath = `${auth.userId}/mockups/${Date.now()}-${crypto.randomUUID()}.png`;
+    // Idempotency-Key (cliente, safeInvokeCall) → caminho determinístico:
+    // um retry da mesma operação regrava o MESMO arquivo em vez de criar
+    // um segundo objeto órfão no storage. Sem a key, comportamento antigo.
+    const idemKey = (req.headers.get("idempotency-key") ?? "")
+      .replace(/[^a-zA-Z0-9_-]/g, "")
+      .slice(0, 128);
+    const filePath = idemKey
+      ? `${auth.userId}/mockups/idem-${idemKey}.png`
+      : `${auth.userId}/mockups/${Date.now()}-${crypto.randomUUID()}.png`;
     const { error: upErr } = await supabase.storage
       .from("mockup-assets")
       .upload(filePath, await compositeBlob.arrayBuffer(), {
         contentType: "image/png",
-        upsert: false,
+        upsert: idemKey.length > 0,
       });
 
     if (upErr) {
