@@ -122,30 +122,40 @@ Deno.serve(async (req: Request) => {
     const emailFilter = (email ?? "").replace(/"/g, "%");
     const emailClause = emailFilter ? `,email.ilike."${emailFilter}"` : "";
     const emailLc = (email ?? "").toLowerCase();
-    // PostgREST limita o SELECT a 1000 linhas por página — repete o
-    // ciclo select→refiltro→delete até esgotar os candidatos. Cada
-    // rodada remove os ids confirmados, então convergência é garantida;
-    // se uma rodada não deletar nada (só restaram linhas do
-    // superconjunto que não casam exato), sai do loop.
+    const isAttemptMatch = (r: { user_id: string | null; email: string | null }) =>
+      r.user_id === userId ||
+      (emailLc !== "" && typeof r.email === "string" &&
+        r.email.toLowerCase() === emailLc);
+    // PostgREST limita o SELECT a 1000 linhas por página. Paginação por
+    // keyset (id > lastId, ordem estável) varre o superconjunto INTEIRO
+    // mesmo com deletes mutando o conjunto — sem cap de rodadas, então
+    // nenhuma tentativa fica para trás. O bound de 200 páginas (200k
+    // linhas varridas) existe só como segurança de tempo: se for
+    // atingido com candidatos ainda pendentes, marca erro e a resposta
+    // reporta falha em vez de confirmar o expurgo.
     let attemptsErr: { message: string } | null = null;
     let attemptsWiped = 0;
-    for (let round = 0; round < 20; round++) {
+    let lastAttemptId = 0;
+    let exhausted = false;
+    for (let page = 0; page < 200 && !exhausted && !attemptsErr; page++) {
       const { data: attemptRows, error: selErr } = await supabaseAdmin
         .from("login_attempts")
         .select("id, user_id, email")
-        .or(`user_id.eq.${userId}${emailClause}`);
+        .or(`user_id.eq.${userId}${emailClause}`)
+        .gt("id", lastAttemptId)
+        .order("id", { ascending: true })
+        .limit(1000);
       if (selErr) {
         attemptsErr = selErr;
         break;
       }
-      const ids = (attemptRows ?? [])
-        .filter((r) =>
-          r.user_id === userId ||
-          (emailLc !== "" && typeof r.email === "string" &&
-            r.email.toLowerCase() === emailLc)
-        )
-        .map((r) => r.id);
-      if (ids.length === 0) break;
+      if (!attemptRows || attemptRows.length === 0) {
+        exhausted = true;
+        break;
+      }
+      lastAttemptId = attemptRows[attemptRows.length - 1].id;
+      const ids = attemptRows.filter(isAttemptMatch).map((r) => r.id);
+      if (ids.length === 0) continue;
       const { error: delErr, count } = await supabaseAdmin
         .from("login_attempts")
         .delete({ count: "exact" })
@@ -155,6 +165,11 @@ Deno.serve(async (req: Request) => {
         break;
       }
       attemptsWiped += count ?? ids.length;
+    }
+    if (!attemptsErr && !exhausted) {
+      // Bound de tempo atingido com páginas restantes — a resposta deve
+      // refletir que o expurgo não completou, nunca confirmar sucesso.
+      attemptsErr = { message: "login_attempts_purge_incomplete" };
     }
     if (attemptsErr) {
       // Não é fatal: perfil já foi anonimizado; loga e segue.

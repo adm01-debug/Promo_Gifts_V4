@@ -73,6 +73,26 @@ const ALLOWED_BRACES_CHAIN_TRANSITIVE = new Set([
   'postcss-selector-parser', 'postcss-nested',
 ]);
 
+// Únicos advisories aceitos dentro da cadeia build-time. Qualquer
+// advisory NOVO em um desses pacotes (objeto em `via` com URL fora do
+// conjunto) volta a bloquear o gate — a aceitação é por advisory,
+// não em branco por pacote.
+const EXPECTED_CHAIN_ADVISORY_URLS = new Set([
+  'https://github.com/advisories/GHSA-vfj7-8cjw-p6xm', // braces
+  'https://github.com/advisories/GHSA-rj75-hqrm-r3gf', // postcss-selector-parser
+]);
+
+// `via` mistura strings (propagação via pacote dependente) e objetos
+// (advisory direto do pacote). Exigimos que TODO objeto de advisory
+// esteja no conjunto esperado — strings passam porque a dependente
+// já tem entrada própria na allowlist.
+function hasOnlyExpectedChainAdvisories(vulnerability) {
+  const via = vulnerability.via ?? [];
+  return via.every(
+    (entry) => typeof entry === 'string' || EXPECTED_CHAIN_ADVISORY_URLS.has(entry?.url),
+  );
+}
+
 // All packages that may appear in the accepted[] list — used for defence-in-depth after the loop.
 const ALL_KNOWN_ACCEPTED_PACKAGES = new Set([
   'image-size',
@@ -91,6 +111,7 @@ function isAllowedLhciPackage(packageName, vulnerability) {
 }
 
 function isAllowedBracesChainPackage(packageName, vulnerability) {
+  if (!hasOnlyExpectedChainAdvisories(vulnerability)) return false;
   if (ALLOWED_BRACES_CHAIN_DIRECT.has(packageName)) {
     return vulnerability.isDirect === true;
   }
