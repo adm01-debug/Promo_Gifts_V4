@@ -113,21 +113,31 @@ Deno.serve(async (req: Request) => {
     // O filtro .or() é só um superconjunto: aspas no valor protegem ',',
     // '(' e ')' do parser do PostgREST, mas `%`/`_` do email seguem
     // curingas do ilike (e sanitizar chars corromperia o match — "o'hara"
-    // viraria "ohara"). Por isso a seleção é refiltrada em JS com comparação
-    // exata case-insensitive antes de deletar só os ids confirmados.
-    const emailClause = email && !email.includes('"')
-      ? `,email.ilike."${email}"`
-      : "";
+    // viraria "ohara"). `"` não pode ser escapada dentro de um valor
+    // entre aspas no PostgREST, então é trocada por `%` — o ilike casa
+    // qualquer char naquela posição e o superconjunto fica um pouco
+    // maior, sem perder a linha com a aspa literal. A seleção é
+    // refiltrada em JS com comparação exata case-insensitive antes de
+    // deletar só os ids confirmados.
+    const emailFilter = (email ?? "").replace(/"/g, "%");
+    const emailClause = emailFilter ? `,email.ilike."${emailFilter}"` : "";
+    const emailLc = (email ?? "").toLowerCase();
+    // PostgREST limita o SELECT a 1000 linhas por página — repete o
+    // ciclo select→refiltro→delete até esgotar os candidatos. Cada
+    // rodada remove os ids confirmados, então convergência é garantida;
+    // se uma rodada não deletar nada (só restaram linhas do
+    // superconjunto que não casam exato), sai do loop.
     let attemptsErr: { message: string } | null = null;
     let attemptsWiped = 0;
-    const { data: attemptRows, error: attemptsSelErr } = await supabaseAdmin
-      .from("login_attempts")
-      .select("id, user_id, email")
-      .or(`user_id.eq.${userId}${emailClause}`);
-    if (attemptsSelErr) {
-      attemptsErr = attemptsSelErr;
-    } else {
-      const emailLc = (email ?? "").toLowerCase();
+    for (let round = 0; round < 20; round++) {
+      const { data: attemptRows, error: selErr } = await supabaseAdmin
+        .from("login_attempts")
+        .select("id, user_id, email")
+        .or(`user_id.eq.${userId}${emailClause}`);
+      if (selErr) {
+        attemptsErr = selErr;
+        break;
+      }
       const ids = (attemptRows ?? [])
         .filter((r) =>
           r.user_id === userId ||
@@ -135,14 +145,16 @@ Deno.serve(async (req: Request) => {
             r.email.toLowerCase() === emailLc)
         )
         .map((r) => r.id);
-      if (ids.length > 0) {
-        const { error: delErr, count } = await supabaseAdmin
-          .from("login_attempts")
-          .delete({ count: "exact" })
-          .in("id", ids);
+      if (ids.length === 0) break;
+      const { error: delErr, count } = await supabaseAdmin
+        .from("login_attempts")
+        .delete({ count: "exact" })
+        .in("id", ids);
+      if (delErr) {
         attemptsErr = delErr;
-        attemptsWiped = count ?? ids.length;
+        break;
       }
+      attemptsWiped += count ?? ids.length;
     }
     if (attemptsErr) {
       // Não é fatal: perfil já foi anonimizado; loga e segue.

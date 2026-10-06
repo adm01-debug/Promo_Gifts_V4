@@ -64,6 +64,13 @@ const ALLOWED_BRACES_CHAIN_DIRECT = new Set([
 ]);
 const ALLOWED_BRACES_CHAIN_TRANSITIVE = new Set([
   'braces', 'micromatch', 'fast-glob', 'chokidar',
+  // GHSA-rj75-hqrm-r3gf — postcss-selector-parser: DoS por complexidade
+  // quadrática no parsing de seletores (advisory publicado 2026-10).
+  // Mesma cadeia build-time do braces acima — só alcançável via CSS
+  // autorado no repo, nunca por input de usuário em produção:
+  //   tailwindcss 3.x → postcss-nested → postcss-selector-parser
+  // Fix exige tailwindcss@4.x (major). Aceito como risco transitório.
+  'postcss-selector-parser', 'postcss-nested',
 ]);
 
 // All packages that may appear in the accepted[] list — used for defence-in-depth after the loop.
