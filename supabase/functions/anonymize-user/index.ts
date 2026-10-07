@@ -32,6 +32,7 @@ import { getCorsHeaders } from "../_shared/cors.ts";
 import { authorize } from "../_shared/authorize.ts";
 import { createStructuredLogger } from "../_shared/structured-logger.ts";
 import { getOrCreateRequestId } from "../_shared/request-id.ts";
+import { writeAuditEntry, extractRequestMeta } from "../_shared/audit-log.ts";
 
 const AnonymizeUserSchema = z.object({
   confirm_phrase: z.literal("EXCLUIR MINHA CONTA"),
@@ -234,15 +235,73 @@ Deno.serve(async (req: Request) => {
       return jsonRes(corsHeaders, { error: "anonymize_failed" }, 500);
     }
 
-    // 3b) Ban confirmado: desativa o perfil. Falha aqui não é fatal — a
-    //     conta já está banida no auth e a flag vira cleanup do próximo
-    //     sweep/admin, então só loga.
-    const { error: deactivateErr } = await supabaseAdmin
-      .from("profiles")
-      .update({ is_active: false })
-      .eq("user_id", userId);
-    if (deactivateErr) {
-      log.warn("profile_deactivate_failed", { error: deactivateErr.message });
+    // 3b) Ban confirmado: desativa o perfil — sem ela a conta excluída
+    //     segue "Ativa" na listagem admin. Uma falha transitória de banco
+    //     não pode deixar flag mentindo, então retenta uma vez; se ainda
+    //     falhar, a resposta expõe deactivated:false para o cliente
+    //     reagendar/sinalizar, em vez de afirmar wipe completo.
+    //     O await pode rejeitar a promise (falha de transporte) além de
+    //     devolver {error} — o try/catch por tentativa impede que uma
+    //     rejeição escape para o 500 genérico e pule a revogação de
+    //     sessões. `count` decide o sucesso: atualizar 0 linhas com
+    //     perfil existente não é desativação; 0 linhas sem perfil
+    //     (profileCount=0) não tem o que desativar e conta como
+    //     concluído.
+    let deactivatedRows = 0;
+    let deactivateDone = false;
+    for (let attempt = 0; attempt < 2 && !deactivateDone; attempt++) {
+      try {
+        const { error: deactivateErr, count } = await supabaseAdmin
+          .from("profiles")
+          .update({ is_active: false }, { count: "exact" })
+          .eq("user_id", userId);
+        if (deactivateErr) {
+          log.warn("profile_deactivate_failed", {
+            error: deactivateErr.message,
+            attempt: attempt + 1,
+          });
+        } else {
+          deactivatedRows = count ?? 0;
+          // 0 linhas com perfil existente não é concluído — o perfil
+          // pode reaparecer na 2ª tentativa; sem perfil (profileCount=0)
+          // não há flag pendente e o loop encerra.
+          deactivateDone = deactivatedRows >= (profileCount ?? 0);
+        }
+      } catch (deactivateThrow) {
+        log.warn("profile_deactivate_failed", {
+          error: String(deactivateThrow),
+          attempt: attempt + 1,
+        });
+      }
+    }
+    // `deactivated` = "não há flag pendente": perfil desativado de fato
+    // (>= as linhas anonimizadas) OU perfil inexistente (0 >= 0).
+    const deactivated = deactivateDone;
+    if (!deactivated && (profileCount ?? 0) > 0) {
+      // Reparo: o usuário não consegue reinvocar a edge (conta banida),
+      // então a pendência precisa de trilha visível fora da resposta —
+      // admin_audit_log é consultável pelo admin, que pode dar o update
+      // manual (ou varrer action='anonymize_user.deactivate_pending').
+      const meta = extractRequestMeta(req);
+      await writeAuditEntry(supabaseAdmin, {
+        user_id: userId,
+        action: "anonymize_user.deactivate_pending",
+        resource_type: "profiles",
+        resource_id: userId,
+        ip_address: meta.ip,
+        user_agent: meta.ua,
+        details: {
+          remediation:
+            "UPDATE profiles SET is_active=false WHERE user_id=$1",
+          attempts: 2,
+          deactivated_rows: deactivatedRows,
+          profile_rows: profileCount ?? 0,
+        },
+        request_id: requestId,
+        started_at: new Date().toISOString(),
+        status: "partial",
+        source: "edge:anonymize-user",
+      });
     }
 
     // 4) Revoga credenciais em duas camadas complementares:
@@ -283,6 +342,7 @@ Deno.serve(async (req: Request) => {
     log.info("user_anonymized", {
       userId,
       loginAttemptsWiped: attemptsWiped,
+      deactivated,
       sessionsWiped,
     });
 
@@ -292,6 +352,9 @@ Deno.serve(async (req: Request) => {
         // Conta real de linhas — `true` com 0 linhas mentiria que um
         // perfil foi anonimizado quando nem existia.
         profile: profileCount ?? 0,
+        // Separado do count: o perfil pode ter PII zerada e a flag
+        // is_active falhar — deactivated:false é a pendência reparável.
+        deactivated,
         login_attempts: attemptsErr ? "failed" : (attemptsWiped),
         sessions: sessionsWiped ? "revoked" : "partial",
       },
