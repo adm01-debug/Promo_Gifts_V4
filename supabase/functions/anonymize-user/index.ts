@@ -261,7 +261,10 @@ Deno.serve(async (req: Request) => {
           });
         } else {
           deactivatedRows = count ?? 0;
-          deactivateDone = true;
+          // 0 linhas com perfil existente não é concluído — o perfil
+          // pode reaparecer na 2ª tentativa; sem perfil (profileCount=0)
+          // não há flag pendente e o loop encerra.
+          deactivateDone = deactivatedRows >= (profileCount ?? 0);
         }
       } catch (deactivateThrow) {
         log.warn("profile_deactivate_failed", {
@@ -272,8 +275,7 @@ Deno.serve(async (req: Request) => {
     }
     // `deactivated` = "não há flag pendente": perfil desativado de fato
     // (>= as linhas anonimizadas) OU perfil inexistente (0 >= 0).
-    const deactivated = deactivateDone &&
-      deactivatedRows >= (profileCount ?? 0);
+    const deactivated = deactivateDone;
 
     // 4) Revoga credenciais em duas camadas complementares:
     //    a) user_token_revocations — isTokenRevoked rejeita JWTs já emitidos
