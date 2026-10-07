@@ -41,6 +41,7 @@ manualmente, no mesmo dia, com o método `emergência-MCP`.
 | 2026-10-01T12:02:29.052Z | `crm-db-bridge` | 298 | `de1c5f949145b77d60ed2460a743cd070c925472` | 36858924000 | GitHub Actions (disparado por adm01-debug) | push |
 | 2026-10-02T14:19:28.343Z | `secure-upload` | 277 | `6b2156c6604ba5c933c6c1c169bc73336efb003a` | 37018857101 | GitHub Actions (disparado por adm01-debug) | push |
 | 2026-10-05T16:35:55.840Z | `anonymize-user` | 1 | `95c1a1f4e2bee1ebcaa3d91b327f6e34d27c0515` | 37341833593 | GitHub Actions (disparado por adm01-debug) | push |
+| 2026-10-06T10:36:47.127Z | `generate-mockup` | 266 | `df4f35bc084c76dcc9961cc624cfbdc469df08e6` | 37450696209 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
 | 2026-10-06T10:34:07.029Z | `anonymize-user` | 5 | `f5b007542b6fc99df78c8606ac3e92416c068b0f` | 37450487765 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
 | 2026-10-06T10:31:03.257Z | `ai-recommendations` | 292 | `f5b007542b6fc99df78c8606ac3e92416c068b0f` | 37449001108 | GitHub Actions (disparado por adm01-debug) | push |
 | 2026-10-06T10:31:03.285Z | `analyze-logo-colors` | 256 | `f5b007542b6fc99df78c8606ac3e92416c068b0f` | 37449001108 | GitHub Actions (disparado por adm01-debug) | push |
