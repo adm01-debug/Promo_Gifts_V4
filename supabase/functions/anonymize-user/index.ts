@@ -111,41 +111,73 @@ Deno.serve(async (req: Request) => {
     //    ilike cobre variações de case de linhas legadas — a edge nova já
     //    normaliza para lowercase, mas histórico pode ter misto.
     // O filtro .or() é só um superconjunto: aspas no valor protegem ',',
-    // '(' e ')' do parser do PostgREST, mas `%`/`_` do email seguem
-    // curingas do ilike (e sanitizar chars corromperia o match — "o'hara"
-    // viraria "ohara"). `"` não pode ser escapada dentro de um valor
-    // entre aspas no PostgREST, então é trocada por `%` — o ilike casa
-    // qualquer char naquela posição e o superconjunto fica um pouco
-    // maior, sem perder a linha com a aspa literal. A seleção é
-    // refiltrada em JS com comparação exata case-insensitive antes de
-    // deletar só os ids confirmados.
-    const emailFilter = (email ?? "").replace(/"/g, "%");
+    // '(' e ')' do parser do PostgREST. O escape roda em DOIS níveis:
+    // 1) ILIKE (Postgres usa `\` como escape default) — `\`→`\\`,
+    //    `%`→`\%`, `_`→`\_`, para os curingas casarem literalmente;
+    // 2) PostgREST — o parser de valores entre aspas consome um nível de
+    //    barra antes de repassar ao Postgres, então TODA `\` resultante
+    //    do nível 1 é dobrada novamente, chegando `\\`/`\%`/`\_` ao
+    //    ILIKE. `"` não pode ser escapada dentro de um valor entre
+    //    aspas no PostgREST, então é trocada por `%` — o ilike casa
+    //    qualquer char naquela posição e o superconjunto fica um pouco
+    //    maior, sem perder a linha com a aspa literal. A seleção é
+    //    refiltrada em JS com comparação exata case-insensitive antes de
+    //    deletar só os ids confirmados.
+    const ilikeEscaped = (email ?? "")
+      .replace(/\\/g, "\\\\")
+      .replace(/%/g, "\\%")
+      .replace(/_/g, "\\_");
+    const emailFilter = ilikeEscaped
+      .replace(/\\/g, "\\\\")
+      .replace(/"/g, "%");
     const emailClause = emailFilter ? `,email.ilike."${emailFilter}"` : "";
     const emailLc = (email ?? "").toLowerCase();
-    // PostgREST limita o SELECT a 1000 linhas por página — repete o
-    // ciclo select→refiltro→delete até esgotar os candidatos. Cada
-    // rodada remove os ids confirmados, então convergência é garantida;
-    // se uma rodada não deletar nada (só restaram linhas do
-    // superconjunto que não casam exato), sai do loop.
+    const isAttemptMatch = (r: { user_id: string | null; email: string | null }) =>
+      r.user_id === userId ||
+      (emailLc !== "" && typeof r.email === "string" &&
+        r.email.toLowerCase() === emailLc);
+    // PostgREST limita o SELECT a 1000 linhas por página. Paginação por
+    // keyset (id > lastId, ordem estável) percorre o superconjunto mesmo
+    // com deletes mutando o conjunto. O loop só prova expurgo completo
+    // quando uma página volta vazia; se a segurança de tempo MAX_PAGES
+    // for atingida antes, uma contagem exata no banco decide o
+    // resultado (verif. abaixo).
     let attemptsErr: { message: string } | null = null;
     let attemptsWiped = 0;
-    for (let round = 0; round < 20; round++) {
-      const { data: attemptRows, error: selErr } = await supabaseAdmin
+    // login_attempts.id é UUID — o cursor começa nulo e o .gt() só entra
+    // depois que a primeira página devolve um id real.
+    let lastAttemptId: string | null = null;
+    let exhausted = false;
+    const nextAttemptPage = async () => {
+      let query = supabaseAdmin
         .from("login_attempts")
         .select("id, user_id, email")
-        .or(`user_id.eq.${userId}${emailClause}`);
+        .or(`user_id.eq.${userId}${emailClause}`)
+        .order("id", { ascending: true })
+        .limit(1000);
+      if (lastAttemptId !== null) query = query.gt("id", lastAttemptId);
+      return await query;
+    };
+    // MAX_PAGES é só segurança de tempo (~400k linhas varridas). Sucesso
+    // exige uma página completamente vazia — nenhuma contagem de páginas
+    // ou amostra parcial prova que o superconjunto acabou, pois linhas
+    // não-candidatas (falsos positivos do ilike) podem preencher páginas
+    // inteiras antes de um candidato real. Se o bound for atingido, a
+    // resposta reporta incompleto, nunca sucesso com dados restantes.
+    const MAX_PAGES = 400;
+    for (let page = 0; page < MAX_PAGES && !exhausted && !attemptsErr; page++) {
+      const { data: attemptRows, error: selErr } = await nextAttemptPage();
       if (selErr) {
         attemptsErr = selErr;
         break;
       }
-      const ids = (attemptRows ?? [])
-        .filter((r) =>
-          r.user_id === userId ||
-          (emailLc !== "" && typeof r.email === "string" &&
-            r.email.toLowerCase() === emailLc)
-        )
-        .map((r) => r.id);
-      if (ids.length === 0) break;
+      if (!attemptRows || attemptRows.length === 0) {
+        exhausted = true;
+        break;
+      }
+      lastAttemptId = attemptRows[attemptRows.length - 1].id;
+      const ids = attemptRows.filter(isAttemptMatch).map((r) => r.id);
+      if (ids.length === 0) continue;
       const { error: delErr, count } = await supabaseAdmin
         .from("login_attempts")
         .delete({ count: "exact" })
@@ -155,6 +187,23 @@ Deno.serve(async (req: Request) => {
         break;
       }
       attemptsWiped += count ?? ids.length;
+    }
+    if (!attemptsErr && !exhausted) {
+      // Bound atingido não prova nem falha nem sucesso — só uma
+      // contagem exata no banco decide: 0 candidatos restantes = purge
+      // completo; >0 = realmente incompleto. Com curingas escapados o
+      // superconjunto é quase exato; para email com `"` (único fuzzy
+      // restante) a contagem pode incluir look-alikes — falha
+      // conservadora, nunca sucesso com dados restantes.
+      const { count: remain, error: countErr } = await supabaseAdmin
+        .from("login_attempts")
+        .select("id", { count: "exact", head: true })
+        .or(`user_id.eq.${userId}${emailClause}`);
+      if (countErr) {
+        attemptsErr = countErr;
+      } else if ((remain ?? 0) > 0) {
+        attemptsErr = { message: "login_attempts_purge_incomplete" };
+      }
     }
     if (attemptsErr) {
       // Não é fatal: perfil já foi anonimizado; loga e segue.
