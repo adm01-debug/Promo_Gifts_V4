@@ -137,6 +137,7 @@ export function validatePhoneBr(value: string): boolean {
   if (ddd < 11 || ddd > 99) return false;
   if (/^(\d)\1{9,10}$/.test(digits)) return false;
   if (digits.length === 11 && digits[2] !== '9') return false;
+  if (digits.length === 10 && !/^[2-5]/.test(digits.slice(2))) return false;
   return true;
 }
 
