@@ -278,7 +278,12 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
       - name: Run Playwright smoke tests
-        run: npm run test:e2e:smoke
+        run: |
+          if [ ! -d "e2e" ] && [ ! -d "tests/e2e" ] && [ ! -d "playwright" ]; then
+            echo "::error::No e2e folder found — Gate 3 requires e2e tests (add e2e/ or tests/e2e/)"
+            exit 1
+          fi
+          npm run test:e2e:smoke
       - name: Upload Playwright report
         if: failure()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

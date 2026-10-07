@@ -28,7 +28,7 @@
  */
 import type { StepUpAction } from '@/hooks/auth';
 import { handleStepUpError } from '@/lib/auth/step-up-error';
-import { invokeEdge } from '@/lib/edge/safeInvokeCall';
+import { invokeEdge, newIdempotencyKey } from '@/lib/edge/safeInvokeCall';
 
 type ChallengeFn = (req: {
   action: StepUpAction;
@@ -89,12 +89,16 @@ export async function invokeFullScopeFunction<
     autoRetryOnInvalid = true,
   } = opts;
 
+  // Uma key por operação lógica (challenge + invoke + retries dela).
+  const idemKey = newIdempotencyKey();
+
   const runOnce = async (retriesLeft: number): Promise<InvokeFullScopeResult<TData>> => {
     const token = await challenge({ action, actionLabel, targetRef });
     if (!token) return { status: 'cancelled' };
 
     const { data, error } = await invokeEdge(functionName, {
       body: { ...body, step_up_token: token },
+      idempotencyKey: idemKey,
     });
 
     // Detecta step-up errors e exibe toast com CTA "Refazer verificação".
