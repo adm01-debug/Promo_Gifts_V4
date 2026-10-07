@@ -5,6 +5,16 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.0.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.0.1) (2026-10-07)
+
+
+### Bug Fixes
+
+* **auditoria:** Onda 5 — lockout à prova de envenenamento (C1), highs da validação e revisões automáticas ([#2061](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2061)) ([bbb8497](https://github.com/adm01-debug/Promo_Gifts_V4/commit/bbb84978209432d355c54232845d4399f6beefae))
+* **auditoria:** Onda 6 — cobertura do caminho do gate de login + idempotency-key nos call sites ([#2074](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2074)) ([f5b0075](https://github.com/adm01-debug/Promo_Gifts_V4/commit/f5b007542b6fc99df78c8606ac3e92416c068b0f))
+* **revisão:** mockup hasheia key p/ path idempotente + purge exato de login_attempts ([#2075](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2075)) ([44abb13](https://github.com/adm01-debug/Promo_Gifts_V4/commit/44abb13c0f78a2839f7ed724876b1979fc57b2d7))
+* **revisão:** purge de login_attempts por keyset + audit gate por advisory ([#2082](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2082)) ([d6182ee](https://github.com/adm01-debug/Promo_Gifts_V4/commit/d6182ee6c73aaf2368a3e89b5d004619fe618c8b))
+
 ## 1.0.0 (2026-10-05)
 
 

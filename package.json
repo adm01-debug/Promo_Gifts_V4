@@ -1,7 +1,7 @@
 {
   "name": "@adm01-debug/gifts-store",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "scripts": {
     "e2e:generate-fixtures": "tsx e2e/scripts/generate-fixtures.ts",
