@@ -19,7 +19,7 @@ import { Progress } from '@/components/ui/progress';
 import { toast } from 'sonner';
 
 import { logger } from '@/lib/logger';
-import { invokeEdge } from '@/lib/edge/safeInvokeCall';
+import { invokeEdge, newIdempotencyKey } from '@/lib/edge/safeInvokeCall';
 interface SimulationDetail {
   fnName: string;
   status: number;
@@ -85,6 +85,7 @@ export default function SimulationPage() {
         {
           body: mode === 'audit' ? {} : { count: mode === 'load' ? 500 : 100, mode },
           preserveErrorData: mode !== 'audit',
+          idempotencyKey: newIdempotencyKey(),
         },
       );
       if (error?.status === 424) {

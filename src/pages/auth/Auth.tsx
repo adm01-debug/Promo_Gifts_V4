@@ -105,9 +105,8 @@ export default function Auth() {
   // P2-05: honeypot anti-bot. Campo invisível fora do react-hook-form. Humanos
   // não preenchem; bots automáticos costumam preencher todo input encontrado.
   // Lemos via ref no submit pra decidir se rejeita.
-  // FIX 2026-08-15: name/id evita palavras-chave reconhecidas por autofill de
-  // navegador (ex: "website"), que causavam falso-positivo — Chrome/gerenciadores
-  // de senha preenchem esses campos mesmo com autoComplete="off" e aria-hidden.
+  // name/id evita palavras-chave de autofill (ex: "website") — gerenciadores de
+  // senha preenchem esses campos mesmo com autoComplete="off" e causavam falso-positivo.
   const honeypotRef = useRef<HTMLInputElement | null>(null);
   // Token do desafio Turnstile (ativo só quando VITE_TURNSTILE_SITE_KEY existe).
   const turnstileTokenRef = useRef<string | null>(null);

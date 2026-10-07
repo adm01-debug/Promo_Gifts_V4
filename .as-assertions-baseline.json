@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-02T11:17:09.336Z",
+  "generatedAt": "2026-10-05T22:47:26.427Z",
   "description": "Baseline de asserções `as <Tipo>` em src/ (excluindo testes, `as const`, `as unknown` e `as any`). Falha apenas em REGRESSÃO.",
-  "productionAsCount": 2230,
+  "productionAsCount": 2229,
   "counts": {
     "src/App.tsx": 1,
     "src/components/ThemeInitializer.tsx": 1,
@@ -595,7 +595,7 @@
     "src/hooks/products/useVariantSupplierSources.ts": 1,
     "src/hooks/products/useVideoVariantLinks.ts": 1,
     "src/hooks/quotes/useAutoSaveQuote.ts": 2,
-    "src/hooks/quotes/useDiscountApproval.ts": 4,
+    "src/hooks/quotes/useDiscountApproval.ts": 3,
     "src/hooks/quotes/useQuoteBuilderState.ts": 5,
     "src/hooks/quotes/useQuoteConcurrencyGuard.ts": 1,
     "src/hooks/quotes/useQuoteFunnel.ts": 3,

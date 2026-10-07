@@ -5,7 +5,10 @@ import SimulationPage from '@/pages/Simulation';
 import { invokeEdge } from '@/lib/edge/safeInvokeCall';
 import { toast } from 'sonner';
 
-vi.mock('@/lib/edge/safeInvokeCall', () => ({ invokeEdge: vi.fn() }));
+vi.mock('@/lib/edge/safeInvokeCall', () => ({
+  invokeEdge: vi.fn(),
+  newIdempotencyKey: () => 'test-idem-key',
+}));
 vi.mock('sonner', () => ({
   toast: { success: vi.fn(), warning: vi.fn(), error: vi.fn() },
 }));

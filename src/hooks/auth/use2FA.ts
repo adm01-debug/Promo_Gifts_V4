@@ -4,7 +4,7 @@ import * as OTPAuth from 'otpauth';
 import { untypedFrom } from '@/lib/supabase-untyped';
 
 import { logger } from '@/lib/logger';
-import { invokeEdge } from '@/lib/edge/safeInvokeCall';
+import { invokeEdge, newIdempotencyKey } from '@/lib/edge/safeInvokeCall';
 interface TwoFactorSettings {
   id: string;
   user_id: string;
@@ -156,6 +156,7 @@ export function use2FA(targetUserId?: string) {
               token: token ?? null,
               is_admin_bypass: !!targetUserId && !token,
             },
+            idempotencyKey: newIdempotencyKey(),
           },
         );
 

@@ -78,6 +78,11 @@ describe('validatePhoneBr (masks)', () => {
     expect(validatePhoneBr('11887654321')).toBe(false);
   });
 
+  it('rejeita fixo começando fora de 2-5 (ex.: 9 na 3ª posição)', () => {
+    expect(validatePhoneBr('1198765432')).toBe(false);
+    expect(validatePhoneBr('1176543210')).toBe(false);
+  });
+
   it('rejeita tamanhos e repetições inválidas', () => {
     expect(validatePhoneBr('119876543')).toBe(false);
     expect(validatePhoneBr('11111111111')).toBe(false);
