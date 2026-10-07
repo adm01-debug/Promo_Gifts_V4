@@ -32,6 +32,7 @@ import { getCorsHeaders } from "../_shared/cors.ts";
 import { authorize } from "../_shared/authorize.ts";
 import { createStructuredLogger } from "../_shared/structured-logger.ts";
 import { getOrCreateRequestId } from "../_shared/request-id.ts";
+import { writeAuditEntry, extractRequestMeta } from "../_shared/audit-log.ts";
 
 const AnonymizeUserSchema = z.object({
   confirm_phrase: z.literal("EXCLUIR MINHA CONTA"),
@@ -276,6 +277,32 @@ Deno.serve(async (req: Request) => {
     // `deactivated` = "não há flag pendente": perfil desativado de fato
     // (>= as linhas anonimizadas) OU perfil inexistente (0 >= 0).
     const deactivated = deactivateDone;
+    if (!deactivated && (profileCount ?? 0) > 0) {
+      // Reparo: o usuário não consegue reinvocar a edge (conta banida),
+      // então a pendência precisa de trilha visível fora da resposta —
+      // admin_audit_log é consultável pelo admin, que pode dar o update
+      // manual (ou varrer action='anonymize_user.deactivate_pending').
+      const meta = extractRequestMeta(req);
+      await writeAuditEntry(supabaseAdmin, {
+        user_id: userId,
+        action: "anonymize_user.deactivate_pending",
+        resource_type: "profiles",
+        resource_id: userId,
+        ip_address: meta.ip,
+        user_agent: meta.ua,
+        details: {
+          remediation:
+            "UPDATE profiles SET is_active=false WHERE user_id=$1",
+          attempts: 2,
+          deactivated_rows: deactivatedRows,
+          profile_rows: profileCount ?? 0,
+        },
+        request_id: requestId,
+        started_at: new Date().toISOString(),
+        status: "partial",
+        source: "edge:anonymize-user",
+      });
+    }
 
     // 4) Revoga credenciais em duas camadas complementares:
     //    a) user_token_revocations — isTokenRevoked rejeita JWTs já emitidos
