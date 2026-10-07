@@ -239,21 +239,41 @@ Deno.serve(async (req: Request) => {
     //     não pode deixar flag mentindo, então retenta uma vez; se ainda
     //     falhar, a resposta expõe deactivated:false para o cliente
     //     reagendar/sinalizar, em vez de afirmar wipe completo.
-    let deactivated = false;
-    for (let attempt = 0; attempt < 2 && !deactivated; attempt++) {
-      const { error: deactivateErr } = await supabaseAdmin
-        .from("profiles")
-        .update({ is_active: false })
-        .eq("user_id", userId);
-      if (deactivateErr) {
+    //     O await pode rejeitar a promise (falha de transporte) além de
+    //     devolver {error} — o try/catch por tentativa impede que uma
+    //     rejeição escape para o 500 genérico e pule a revogação de
+    //     sessões. `count` decide o sucesso: atualizar 0 linhas com
+    //     perfil existente não é desativação; 0 linhas sem perfil
+    //     (profileCount=0) não tem o que desativar e conta como
+    //     concluído.
+    let deactivatedRows = 0;
+    let deactivateDone = false;
+    for (let attempt = 0; attempt < 2 && !deactivateDone; attempt++) {
+      try {
+        const { error: deactivateErr, count } = await supabaseAdmin
+          .from("profiles")
+          .update({ is_active: false }, { count: "exact" })
+          .eq("user_id", userId);
+        if (deactivateErr) {
+          log.warn("profile_deactivate_failed", {
+            error: deactivateErr.message,
+            attempt: attempt + 1,
+          });
+        } else {
+          deactivatedRows = count ?? 0;
+          deactivateDone = true;
+        }
+      } catch (deactivateThrow) {
         log.warn("profile_deactivate_failed", {
-          error: deactivateErr.message,
+          error: String(deactivateThrow),
           attempt: attempt + 1,
         });
-      } else {
-        deactivated = true;
       }
     }
+    // `deactivated` = "não há flag pendente": perfil desativado de fato
+    // (>= as linhas anonimizadas) OU perfil inexistente (0 >= 0).
+    const deactivated = deactivateDone &&
+      deactivatedRows >= (profileCount ?? 0);
 
     // 4) Revoga credenciais em duas camadas complementares:
     //    a) user_token_revocations — isTokenRevoked rejeita JWTs já emitidos
