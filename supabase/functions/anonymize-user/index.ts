@@ -111,15 +111,20 @@ Deno.serve(async (req: Request) => {
     //    ilike cobre variações de case de linhas legadas — a edge nova já
     //    normaliza para lowercase, mas histórico pode ter misto.
     // O filtro .or() é só um superconjunto: aspas no valor protegem ',',
-    // '(' e ')' do parser do PostgREST, mas `%`/`_` do email seguem
-    // curingas do ilike (e sanitizar chars corromperia o match — "o'hara"
-    // viraria "ohara"). `"` não pode ser escapada dentro de um valor
-    // entre aspas no PostgREST, então é trocada por `%` — o ilike casa
-    // qualquer char naquela posição e o superconjunto fica um pouco
-    // maior, sem perder a linha com a aspa literal. A seleção é
-    // refiltrada em JS com comparação exata case-insensitive antes de
-    // deletar só os ids confirmados.
-    const emailFilter = (email ?? "").replace(/"/g, "%");
+    // '(' e ')' do parser do PostgREST. Os curingas do ILIKE são
+    // escapados com `\` (escape default do ILIKE no Postgres), então
+    // `%`, `_` e `\` casam literalmente — o superconjunto fica exato.
+    // `"` não pode ser escapada dentro de um valor entre aspas no
+    // PostgREST, então é trocada por `%` — o ilike casa qualquer char
+    // naquela posição e o superconjunto fica um pouco maior, sem perder
+    // a linha com a aspa literal. A seleção é refiltrada em JS com
+    // comparação exata case-insensitive antes de deletar só os ids
+    // confirmados.
+    const emailFilter = (email ?? "")
+      .replace(/\\/g, "\\\\")
+      .replace(/%/g, "\\%")
+      .replace(/_/g, "\\_")
+      .replace(/"/g, "%");
     const emailClause = emailFilter ? `,email.ilike."${emailFilter}"` : "";
     const emailLc = (email ?? "").toLowerCase();
     const isAttemptMatch = (r: { user_id: string | null; email: string | null }) =>
@@ -179,7 +184,21 @@ Deno.serve(async (req: Request) => {
       attemptsWiped += count ?? ids.length;
     }
     if (!attemptsErr && !exhausted) {
-      attemptsErr = { message: "login_attempts_purge_incomplete" };
+      // Bound atingido não prova nem falha nem sucesso — só uma
+      // contagem exata no banco decide: 0 candidatos restantes = purge
+      // completo; >0 = realmente incompleto. Com curingas escapados o
+      // superconjunto é quase exato; para email com `"` (único fuzzy
+      // restante) a contagem pode incluir look-alikes — falha
+      // conservadora, nunca sucesso com dados restantes.
+      const { count: remain, error: countErr } = await supabaseAdmin
+        .from("login_attempts")
+        .select("id", { count: "exact", head: true })
+        .or(`user_id.eq.${userId}${emailClause}`);
+      if (countErr) {
+        attemptsErr = countErr;
+      } else if ((remain ?? 0) > 0) {
+        attemptsErr = { message: "login_attempts_purge_incomplete" };
+      }
     }
     if (attemptsErr) {
       // Não é fatal: perfil já foi anonimizado; loga e segue.
