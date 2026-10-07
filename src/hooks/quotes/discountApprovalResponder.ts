@@ -6,8 +6,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { logRlsDenial } from '@/lib/security/rls-denial-logger';
 import { logger } from '@/lib/logger';
-import type { DiscountApprovalRequest } from './useDiscountApproval';
-
 interface ResponderDeps {
   user: { id: string } | null;
   invalidateWidget: () => void;
@@ -117,15 +115,13 @@ export function createRespondToApproval({
         throw updateError;
       }
 
-      const typedReq = request as DiscountApprovalRequest;
-
       // Update quote status: approved → pending (ready to send), rejected → draft (needs adjustment)
       const newStatus = approved ? 'pending' : 'draft';
       const quoteUpdateResult = await supabase
         // rls-allow: fluxo de aprovação admin/seller; RLS filtra por papel
         .from('quotes')
         .update({ status: newStatus })
-        .eq('id', typedReq.quote_id);
+        .eq('id', request.quote_id);
 
       if (quoteUpdateResult.error) {
         logger.error('Failed to update quote status:', quoteUpdateResult.error);
@@ -153,15 +149,15 @@ export function createRespondToApproval({
       // confirmado. Assim, uma falha da escrita principal não produz uma
       // trilha de auditoria ou notificação contraditória.
       const { error: historyError } = await supabase.from('quote_history').insert({
-        quote_id: typedReq.quote_id,
+        quote_id: request.quote_id,
         user_id: user.id,
         action: approved ? 'discount_approved' : 'discount_rejected',
         description: approved
-          ? `Desconto de ${typedReq.requested_discount_percent}% aprovado pelo admin`
-          : `Desconto de ${typedReq.requested_discount_percent}% rejeitado pelo admin`,
+          ? `Desconto de ${request.requested_discount_percent}% aprovado pelo admin`
+          : `Desconto de ${request.requested_discount_percent}% rejeitado pelo admin`,
         field_changed: 'discount',
-        old_value: `${typedReq.max_allowed_percent}%`,
-        new_value: `${typedReq.requested_discount_percent}%`,
+        old_value: `${request.max_allowed_percent}%`,
+        new_value: `${request.requested_discount_percent}%`,
         metadata: {
           admin_notes: adminNotes || null,
           status: approved ? 'approved' : 'rejected',

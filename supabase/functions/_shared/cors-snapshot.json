@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-07-24T12:52:46.127Z",
-  "total": 104,
+  "generated_at": "2026-10-05T22:22:55.257Z",
+  "total": 109,
   "counts": {
-    "shared": 100,
+    "shared": 104,
     "inline": 0,
-    "none": 4
+    "none": 5
   },
   "functions": [
     {
@@ -17,6 +17,14 @@
     },
     {
       "name": "analyze-logo-colors",
+      "mode": "shared",
+      "allowHeaders": [],
+      "exposeHeaders": [],
+      "allowMethods": null,
+      "allowOrigin": null
+    },
+    {
+      "name": "anonymize-user",
       "mode": "shared",
       "allowHeaders": [],
       "exposeHeaders": [],
@@ -249,6 +257,14 @@
     },
     {
       "name": "elevenlabs-tts",
+      "mode": "shared",
+      "allowHeaders": [],
+      "exposeHeaders": [],
+      "allowMethods": null,
+      "allowOrigin": null
+    },
+    {
+      "name": "ema-pipeline-health",
       "mode": "shared",
       "allowHeaders": [],
       "exposeHeaders": [],
@@ -528,7 +544,23 @@
       "allowOrigin": null
     },
     {
+      "name": "mcp-query",
+      "mode": "none",
+      "allowHeaders": [],
+      "exposeHeaders": [],
+      "allowMethods": null,
+      "allowOrigin": null
+    },
+    {
       "name": "mcp-server",
+      "mode": "shared",
+      "allowHeaders": [],
+      "exposeHeaders": [],
+      "allowMethods": null,
+      "allowOrigin": null
+    },
+    {
+      "name": "migrate-helper",
       "mode": "shared",
       "allowHeaders": [],
       "exposeHeaders": [],
@@ -561,6 +593,14 @@
     },
     {
       "name": "process-scheduled-reports",
+      "mode": "shared",
+      "allowHeaders": [],
+      "exposeHeaders": [],
+      "allowMethods": null,
+      "allowOrigin": null
+    },
+    {
+      "name": "product-visual-search",
       "mode": "shared",
       "allowHeaders": [],
       "exposeHeaders": [],
