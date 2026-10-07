@@ -150,6 +150,10 @@ manualmente, no mesmo dia, com o método `emergência-MCP`.
 | 2026-10-05T22:16:41.508Z | `webhook-dispatcher` | 304 | `bbb84978209432d355c54232845d4399f6beefae` | 37380000049 | GitHub Actions (disparado por adm01-debug) | push |
 | 2026-10-05T22:16:41.531Z | `webhook-inbound` | 298 | `bbb84978209432d355c54232845d4399f6beefae` | 37380000049 | GitHub Actions (disparado por adm01-debug) | push |
 | 2026-10-05T22:16:41.629Z | `word-magic` | 122 | `bbb84978209432d355c54232845d4399f6beefae` | 37380000049 | GitHub Actions (disparado por adm01-debug) | push |
+| 2026-10-05T21:52:36.596Z | `anonymize-user` | 2 | `7d4d0a42ff6f85e86ff8c1e565661a4b231980bb` | 37378673430 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-10-05T21:50:31.138Z | `secure-upload` | 278 | `7d4d0a42ff6f85e86ff8c1e565661a4b231980bb` | 37378442614 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-10-05T21:48:13.285Z | `validate-access` | 280 | `7d4d0a42ff6f85e86ff8c1e565661a4b231980bb` | 37378208159 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-10-05T21:46:07.335Z | `check-login` | 126 | `7d4d0a42ff6f85e86ff8c1e565661a4b231980bb` | 37377946904 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
 
 ## Retro-registro (casos anteriores a este ledger, E67)
 
