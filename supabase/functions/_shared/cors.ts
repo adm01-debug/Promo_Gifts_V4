@@ -46,6 +46,7 @@ const ALLOWED_HEADERS_LIST = [
   'x-client-info',
   'apikey',
   'content-type',
+  'idempotency-key',
   'x-request-id',
   'x-step-up-token',
   'x-supabase-client-platform',

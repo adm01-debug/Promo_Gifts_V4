@@ -32,10 +32,6 @@
       "reason": "E18 (2026-09-17): RAISE EXCEPTION se auth.uid() IS NULL; UPDATE restrito via EXISTS (seller_carts.seller_id = auth.uid()) — só atualiza itens do próprio carrinho do chamador."
     },
     {
-      "fn": "public.fn_check_login_allowed(p_email text, p_ip_address text, p_city text, p_user_agent text)",
-      "reason": "E18 (2026-09-17): helper pré-login (mesmo padrão de check_login_rate_limit), roda antes da autenticação, sem auth.uid() por design; já revisado no E17."
-    },
-    {
       "fn": "public.fn_get_all_leaf_categories()",
       "reason": "E18 (2026-09-17): leitura pública de categorias-folha do catálogo (mv_product_leaf_category), sem parâmetro do chamador, sem PII — mesma classe de fn_super_filtro_opcoes."
     },
@@ -352,8 +348,8 @@
       "reason": "E18 (2026-09-17): RAISE EXCEPTION se auth.uid() IS NULL — autenticação obrigatória antes de qualquer efeito."
     },
     {
-      "fn": "public.respond_discount_approval_transactional(_request_id uuid, _approved boolean, _admin_notes text)",
-      "reason": "E18 (2026-09-17): RAISE EXCEPTION se auth.uid() IS NULL OR NOT is_supervisor_or_above(auth.uid()) — só supervisor+ responde solicitação de desconto."
+      "fn": "public.respond_discount_approval_transactional(_request_id uuid, _approved boolean, _admin_notes text, _expected_version integer)",
+      "reason": "E18 (2026-09-17): RAISE EXCEPTION se auth.uid() IS NULL OR NOT is_supervisor_or_above(auth.uid()) — só supervisor+ responde solicitação de desconto. Assinatura 2026-10 (migration 20261005124503): _expected_version adiciona optimistic locking; NULL mantém o comportamento legado."
     },
     {
       "fn": "public.restore_collection_item_from_trash(_item_id uuid)",

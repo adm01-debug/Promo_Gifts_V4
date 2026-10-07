@@ -474,12 +474,31 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
-    const filePath = `${auth.userId}/mockups/${Date.now()}-${crypto.randomUUID()}.png`;
+    // Idempotency-Key (cliente, safeInvokeCall) → caminho determinístico:
+    // um retry da mesma operação regrava o MESMO arquivo em vez de criar
+    // um segundo objeto órfão no storage. Sem a key, comportamento antigo.
+    // O caminho usa digest da key crua — sanitizar/truncar colapsaria
+    // keys distintas ("a.b" e "ab") no mesmo objeto e o upsert
+    // sobrescreveria a imagem de outra geração.
+    const rawIdemKey = req.headers.get("idempotency-key") ?? "";
+    let filePath: string;
+    if (rawIdemKey) {
+      const digest = await crypto.subtle.digest(
+        "SHA-256",
+        new TextEncoder().encode(rawIdemKey),
+      );
+      const hex = Array.from(new Uint8Array(digest), (b) =>
+        b.toString(16).padStart(2, "0"),
+      ).join("");
+      filePath = `${auth.userId}/mockups/idem-${hex.slice(0, 32)}.png`;
+    } else {
+      filePath = `${auth.userId}/mockups/${Date.now()}-${crypto.randomUUID()}.png`;
+    }
     const { error: upErr } = await supabase.storage
       .from("mockup-assets")
       .upload(filePath, await compositeBlob.arrayBuffer(), {
         contentType: "image/png",
-        upsert: false,
+        upsert: rawIdemKey.length > 0,
       });
 
     if (upErr) {

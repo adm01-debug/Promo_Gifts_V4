@@ -19,7 +19,7 @@ export type {
   QuoteItemPersonalization,
   PersonalizationTechnique,
 } from '@/hooks/quotes/quoteTypes';
-import { invokeEdge } from '@/lib/edge/safeInvokeCall';
+import { invokeEdge, newIdempotencyKey } from '@/lib/edge/safeInvokeCall';
 
 type QuoteHistoryOptions = {
   fieldChanged?: string;
@@ -341,6 +341,7 @@ export function useQuotes() {
       const { data, error: fnError } = await invokeEdge('quote-sync', {
         body: { action: 'sync_quote', data: { quoteId } },
         headers: log.headers(),
+        idempotencyKey: newIdempotencyKey(),
       });
       if (fnError) throw new Error(fnError.message);
       const syncData = data as QuoteSyncResponse | null;
