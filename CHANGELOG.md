@@ -5,6 +5,13 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.0.2](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.1...v1.0.2) (2026-10-07)
+
+
+### Bug Fixes
+
+* **revisão:** retry de is_active=false + deactivated na resposta do anonymize-user ([#2084](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2084)) ([93f7a22](https://github.com/adm01-debug/Promo_Gifts_V4/commit/93f7a2237ab17061c6f3edf24b17034071e68dc3))
+
 ## [1.0.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.0...v1.0.1) (2026-10-07)
 
 
