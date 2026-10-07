@@ -6,7 +6,7 @@
 import { toast } from 'sonner';
 import { logger } from '@/lib/logger';
 import type { Quote } from '@/hooks/quotes';
-import { invokeEdge } from '@/lib/edge/safeInvokeCall';
+import { invokeEdge, newIdempotencyKey } from '@/lib/edge/safeInvokeCall';
 
 interface SyncPromoChampionsParams {
   quote: Quote;
@@ -44,6 +44,7 @@ export async function syncQuoteToPromoChampions({
   const { data, error } = await invokeEdge<{ ok?: boolean; error?: string }>(
     'quote-sync-promo-champions',
     {
+      idempotencyKey: newIdempotencyKey(),
       body: {
         quote_id: quoteId,
         quote_number: quote.quote_number,

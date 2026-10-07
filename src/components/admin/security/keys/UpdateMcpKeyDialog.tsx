@@ -45,7 +45,7 @@ import { useDevChallenge } from '@/contexts/DevChallengeContext';
 import { invokeFullScopeFunction } from '@/lib/auth/invoke-full-scope';
 import { handleStepUpError } from '@/lib/auth/step-up-error';
 import type { McpKeyRow } from './useMcpKeys';
-import { invokeEdge } from '@/lib/edge/safeInvokeCall';
+import { invokeEdge, newIdempotencyKey } from '@/lib/edge/safeInvokeCall';
 
 interface Props {
   source: McpKeyRow | null;
@@ -186,6 +186,7 @@ export function UpdateMcpKeyDialog({ source, open, onOpenChange, onUpdated }: Pr
         // Edição comum: chamada direta (sem step-up).
         const { data, error } = await invokeEdge<{ ok: boolean }>('mcp-keys-update', {
           body: { ...body, step_up_token: null },
+          idempotencyKey: newIdempotencyKey(),
         });
         if (
           handleStepUpError(data, error, () => {
