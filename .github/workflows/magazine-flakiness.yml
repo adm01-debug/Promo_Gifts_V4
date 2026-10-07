@@ -12,7 +12,7 @@ name: Magazine Flakiness Guard
 #
 # Estratégia:
 #  - PR: executa em modo STRICT quando arquivos relevantes mudam. Flaky OU fail-all
-#    bloqueia merge. Isso é intencional — os helpers de rings são SSOT e não podem
+#    falha o PR. Isso é intencional — os helpers de rings são SSOT e não podem
 #    ter comportamento não-determinístico.
 #  - Schedule diário: pega drift lento (deps, jsdom, runners novos), sem --strict
 #    para não spam-abrir issues por 1 flaky isolado.
@@ -32,7 +32,7 @@ on:
       - 'scripts/magazine-flakiness-report.mjs'
       - '.github/workflows/magazine-flakiness.yml'
   schedule:
-    - cron: '18 6 * * *' # 06:00 UTC diário (03:00 BRT)
+    - cron: '18 6 * * 1' # semanal, segunda 06:18 UTC — varredura incondicional
   workflow_dispatch:
     inputs:
       runs:
@@ -62,7 +62,7 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -74,19 +74,22 @@ jobs:
         env:
           CI: 'true'
           NODE_ENV: 'test'
+          INPUT_RUNS: ${{ github.event.inputs.runs || '10' }}
+          INPUT_STRICT: ${{ github.event.inputs.strict }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
-          RUNS="${{ github.event.inputs.runs || '10' }}"
+          RUNS="$INPUT_RUNS"
           # Modo strict:
           #   - PR:                sempre strict (gate obrigatório).
           #   - workflow_dispatch: respeita input (default true).
           #   - schedule:          nunca strict (evita ruído em cron diário).
           STRICT_FLAG=""
-          case "${{ github.event_name }}" in
+          case "$EVENT_NAME" in
             pull_request)
               STRICT_FLAG="--strict"
               ;;
             workflow_dispatch)
-              if [ "${{ github.event.inputs.strict }}" = "true" ]; then
+              if [ "$INPUT_STRICT" = "true" ]; then
                 STRICT_FLAG="--strict"
               fi
               ;;
@@ -111,6 +114,7 @@ jobs:
     name: Magazine Flakiness OK
     needs: [flakiness]
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     if: always()
     steps:
       - name: Check result

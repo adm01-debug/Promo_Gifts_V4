@@ -1,0 +1,8 @@
+-- STUB: migration aplicada out-of-band em 2026-09-16 via MCP/dashboard (sem arquivo local).
+-- Versão: 20260916155725 (registrada em supabase_migrations.schema_migrations)
+--
+-- Este arquivo não contém DDL executável. Existe apenas para reconciliar o ledger
+-- local versus o remoto: a versão 20260916155725 estava presente no banco de produção
+-- (doufsxqlfjyuvxuezpln) sem correspondência local, detectada pelo detector E12
+-- (ddl-out-of-band-detector.yml). Documentada retroativamente.
+-- Ref: E04+E12 — PLANO_WORKFLOWS_CI_100_ETAPAS_2026-09-26

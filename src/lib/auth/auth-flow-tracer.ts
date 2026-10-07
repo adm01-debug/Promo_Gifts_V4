@@ -24,6 +24,7 @@ const AUTH_FLOW_DEBUG_ENABLED = import.meta.env.DEV || import.meta.env.VITE_AUTH
 export type FlowPhase =
   | 'auth-listener-subscribed'
   | 'auth-state-change'
+  | 'ip-blocked'
   | 'mount'
   | 'pkce-exchange-failed'
   | 'pkce-exchange-ok'
@@ -189,7 +190,7 @@ export class AuthFlowTracer {
   private persist(): void {
     if (typeof sessionStorage === 'undefined') return;
     try {
-      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(this.snapshot));
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(this.safeSnapshot()));
     } catch {
       // quota cheia ou storage bloqueado — ignora
     }

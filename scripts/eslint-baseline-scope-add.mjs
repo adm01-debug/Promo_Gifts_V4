@@ -11,7 +11,7 @@
  *
  * Ao adicionar o primeiro glob, o `mode` é promovido para 'incremental'.
  */
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const ROOT = process.cwd();
@@ -28,7 +28,6 @@ const DEFAULT = {
 };
 
 function load() {
-  if (!existsSync(SCOPE_PATH)) return { ...DEFAULT };
   try {
     const raw = JSON.parse(readFileSync(SCOPE_PATH, 'utf8'));
     return {
@@ -38,6 +37,7 @@ function load() {
       exclude: Array.isArray(raw.exclude) ? raw.exclude : [],
     };
   } catch (err) {
+    if (err.code === 'ENOENT') return { ...DEFAULT };
     console.error(`❌ .eslint-baseline-scope.json inválido: ${err.message}`);
     process.exit(2);
   }

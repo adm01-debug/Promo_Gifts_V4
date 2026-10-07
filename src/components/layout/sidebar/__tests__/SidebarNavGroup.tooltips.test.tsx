@@ -19,7 +19,8 @@ import {
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { SidebarNavGroup, type NavGroup } from '../SidebarNavGroup';
 
-void UNSAFE_DataRouterContext; // garante import válido (silencia tree-shake)
+// garante import válido (silencia tree-shake)
+const _routerCtx = UNSAFE_DataRouterContext;
 
 vi.mock('@/contexts/AuthContext', () => ({
   useAuth: () => ({ isAdmin: true, isDev: true, user: { id: 'u1' } }),

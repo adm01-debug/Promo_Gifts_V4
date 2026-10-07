@@ -67,8 +67,8 @@ export const EDGE_AUTHZ_MANIFEST: Record<string, AuthzEntry> = {
   "elevenlabs-scribe-token": { category: "public", rationale: "Token temporário para ElevenLabs scribe" },
   "elevenlabs-tts": { category: "public", rationale: "TTS público via ElevenLabs" },
   "check-login": { category: "public", rationale: "Pre-login security check — IP/city/lockout, chamada antes de supabase.auth.signIn()", skipAnonBypassTest: true },
-
   // ---------------- Autenticadas (JWT obrigatório) ----------------
+  "anonymize-user": { category: "authenticated", rationale: "LGPD — usuário anonimiza o PRÓPRIO perfil (JWT do dono via authorize + frase de confirmação)" },
   "send-notification": { category: "authenticated", rationale: "Notificação do próprio user" },
   "send-digest": { category: "authenticated", rationale: "Digest do próprio user" },
   "send-scheduled-reports": { category: "authenticated", rationale: "Relatórios agendados do user" },
@@ -156,6 +156,7 @@ export const EDGE_AUTHZ_MANIFEST: Record<string, AuthzEntry> = {
 
   // ---------------- Scoped (auth custom) ----------------
   "mcp-server": { category: "scoped", rationale: "Token MCP com escopos read/write/admin", enforcedBy: "custom" },
+  "mcp-query": { category: "public", rationale: "DESCOMISSIONADA 2026-09-05 — tombstone que devolve 410 Gone para qualquer chamada (verify_jwt=false)", enforcedBy: "custom" },
   "crm-db-bridge": { category: "scoped", rationale: "JWT + RBAC custom interno", enforcedBy: "custom" },
   "simulation-orchestrator": { category: "dev", rationale: "Orquestrador de simulacoes — JWT dev via authorize compartilhado", enforcedBy: "shared-authorize" },
   "receive-crm-callback": { category: "scoped", rationale: "Callback do CRM Promo Champions — x-api-key custom (timing-safe)", enforcedBy: "custom", skipAnonBypassTest: true, skipAuthBypassTest: true },

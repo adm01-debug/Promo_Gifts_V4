@@ -48,9 +48,8 @@ concurrency:
 jobs:
   drift:
     name: Compare GitHub × Canonical
-    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 30
     env:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
       SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF || 'doufsxqlfjyuvxuezpln' }}
@@ -59,7 +58,7 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Install Supabase CLI
-        uses: supabase/setup-cli@afb1b15109756ea5cf9d8985a359d9095235ca2b # v2
+        uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v2
         with:
           version: 2.101.0
 
@@ -237,6 +236,12 @@ jobs:
         with:
           name: drift-report
           path: /tmp/drift_report.csv
+          retention-days: 14
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: '.nvmrc'
 
       - name: Verify_jwt per function — allowlist gate (E42)
         id: verify_jwt_gate
@@ -256,6 +261,7 @@ jobs:
           name: verify-jwt-report
           path: /tmp/verify_jwt_report.json
           if-no-files-found: ignore
+          retention-days: 14
 
       - name: Comment on PR (drift)
         if: github.event_name == 'pull_request' && (steps.hash_diff.outputs.drift_count != '0' || steps.hash_diff.outputs.missing_in_dl != '0' || steps.slug_diff.outputs.has_orphans == 'true' || steps.slug_diff.outputs.has_missing == 'true')

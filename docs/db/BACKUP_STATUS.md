@@ -1,5 +1,7 @@
 # E03 — Backup/PITR e snapshot lógico pré-plano (2026-09-16)
 
+> Runbook de recuperação completo: `docs/DISASTER_RECOVERY.md` (criado na auditoria 20-dim 2026-10-02).
+
 Etapa `[DB-RO]` de `docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md`. Projeto canônico: `doufsxqlfjyuvxuezpln`.
 
 ## 1. PITR / backup automático — ⏳ PENDENTE (ação humana, painel Supabase)

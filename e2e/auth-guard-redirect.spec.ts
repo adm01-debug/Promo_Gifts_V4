@@ -27,7 +27,8 @@ test('Após redirect, post-login redirect é preservado em sessionStorage', asyn
   await page.goto('/dashboard?utm=test');
   await page.waitForURL(/\/auth/, { timeout: 10_000 });
   const saved = await page.evaluate(() =>
-    sessionStorage.getItem('post_login_redirect')
+    // Mesma chave usada por src/lib/auth/post-login-redirect.ts
+    sessionStorage.getItem('auth:post_login_redirect')
   );
   expect(saved).toContain('/dashboard');
 });

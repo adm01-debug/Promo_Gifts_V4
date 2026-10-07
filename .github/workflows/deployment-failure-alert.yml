@@ -38,7 +38,8 @@ jobs:
       - name: Comentar no PR ou abrir issue
         run: |
           MARKER="<!-- deploy-failure:${SHA} -->"
-          BODY="Deploy **${STATE}** em \`${ENVIRONMENT}\` para \`${REF}\` (\`${SHA:0:7}\`) em $(date -u +%FT%TZ)."
+          BODY="${MARKER}
+          Deploy **${STATE}** em \`${ENVIRONMENT}\` para \`${REF}\` (\`${SHA:0:7}\`) em $(date -u +%FT%TZ)."
           BODY="${BODY}
           Descrição: ${DESCRIPTION:-sem descrição}"
           [ -n "$LOG_URL" ] && BODY="${BODY}
@@ -46,7 +47,7 @@ jobs:
           [ -n "$TARGET_URL" ] && BODY="${BODY}
           URL: ${TARGET_URL}"
           BODY="${BODY}
-          ${MARKER}"
+          Runbook: [docs/DISASTER_RECOVERY.md §3.1](https://github.com/${{ github.repository }}/blob/main/docs/DISASTER_RECOVERY.md)"
 
           # O Vercel cria o GitHub Deployment com ref = SHA do commit (não o nome da
           # branch), então "gh pr list --head" nunca encontrava o PR e toda falha
@@ -54,9 +55,9 @@ jobs:
           PR=$(gh api "repos/$GITHUB_REPOSITORY/commits/$SHA/pulls" \
             --jq '[.[] | select(.state == "open")][0].number // empty' 2>/dev/null || true)
           if [ -n "$PR" ]; then
-            # Evita spam: 1 comentário por SHA (marker estruturado evita falso-positivo)
+            # Evita spam: 1 comentário por SHA (marcador exato, não grep de 7 chars)
             if gh pr view "$PR" --repo "$GITHUB_REPOSITORY" --json comments -q '.comments[].body' | grep -qF "$MARKER"; then
-              echo "Já comentado para ${SHA:0:7}"; exit 0
+              echo "Já comentado para ${SHA}"; exit 0
             fi
             gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body "$BODY"
             exit 0

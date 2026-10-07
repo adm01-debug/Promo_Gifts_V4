@@ -1,0 +1,33 @@
+name: Release Please
+
+# Auditoria 20-dim (Onda 4) — release-please: changelog + release PRs
+# automáticos a partir de conventional commits (já enforced por commit-msg
+# hook + commitlint). Em cada push no main, abre/atualiza um "Release PR";
+# ao mergear, cria a tag vX.Y.Z, o GitHub Release e bumpa version no
+# package.json + CHANGELOG.md.
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write # tags/releases/changelog
+  pull-requests: write # abre/atualiza o Release PR
+
+concurrency:
+  # Um Release PR por vez — runs enfileiram sem cancelar (padrão E12/R2:
+  # em push/schedule cancel-in-progress fica desligado para não abortar
+  # um release/tag em andamento).
+  group: release-please-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    name: release-please
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: googleapis/release-please-action@5c625bfb5d1ff62eadeeb3772007f7f66fdcf071 # v4.4.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          release-type: node

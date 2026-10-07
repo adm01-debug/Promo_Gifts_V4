@@ -111,7 +111,16 @@ Deno.serve(async (req: Request) => {
     const rawBody = await req.json().catch(() => ({}));
     const parsedBody = AccessBodySchema.safeParse(rawBody);
     const body = parsedBody.success ? parsedBody.data : {};
-    const clientIp = body.ip || req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+    // IP vem SÓ dos headers da conexão — body.ip era forjável (Onda 5).
+    // O gateway anexa o IP real como ÚLTIMO elemento do x-forwarded-for;
+    // o primeiro (e cf/x-real-ip) pode vir do cliente (SEC_0001).
+    const xff = req.headers.get("x-forwarded-for");
+    const lastXff = xff?.split(",").pop()?.trim();
+    const clientIp =
+      (lastXff || undefined) ??
+      req.headers.get("cf-connecting-ip") ??
+      req.headers.get("x-real-ip") ??
+      "unknown";
     const userAgent = body.userAgent || req.headers.get("user-agent") || "";
 
     // Buscar configurações de segurança

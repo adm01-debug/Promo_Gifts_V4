@@ -1,7 +1,7 @@
 name: Ratchet Weekly — Baixar baselines
 
 # E41: Cron semanal que afrouxa ratchets quando o código melhorou.
-# Roda às 08h UTC toda segunda. Nunca aumenta baselines — apenas captura melhoras.
+# Roda às 08h54 UTC toda segunda. Nunca aumenta baselines — apenas captura melhoras.
 # Se contagens caíram desde a baseline → abre PR automático com os valores novos.
 #
 # Baselines gerenciadas:
@@ -13,7 +13,7 @@ name: Ratchet Weekly — Baixar baselines
 
 on:
   schedule:
-    - cron: '0 8 * * 1'
+    - cron: '54 8 * * 1' # jitter E19
   workflow_dispatch:
 
 permissions:
@@ -38,7 +38,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Node
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .nvmrc
 

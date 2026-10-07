@@ -52,15 +52,15 @@ export function useQuotesListPage() {
   const setStatusFilter = useCallback((v: string) => setValue('status', v), [setValue]);
   const setSortBy = useCallback((v: SortOption) => setValue('sort', v), [setValue]);
 
-
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const isDeletingRef = useRef(false);
   const [bulkDeleteIds, setBulkDeleteIds] = useState<string[]>([]);
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
-  const [bulkDeleteProgress, setBulkDeleteProgress] = useState<{ done: number; total: number }>(
-    { done: 0, total: 0 },
-  );
+  const [bulkDeleteProgress, setBulkDeleteProgress] = useState<{ done: number; total: number }>({
+    done: 0,
+    total: 0,
+  });
 
   // Search
   const quoteFuse = useMemo(() => {
@@ -186,7 +186,6 @@ export function useQuotesListPage() {
               quote_number: _qn,
               ...rest
             } = snapshot as Quote & { id?: string };
-            void _omitId; void _c; void _u; void _qn;
             const created = await createQuote(rest as Partial<Quote>, items);
             if (created) {
               toast.success('Orçamento restaurado.');
@@ -247,9 +246,7 @@ export function useQuotesListPage() {
 
     if (successCount === 0) {
       // Tudo falhou: preserva bulkDeleteIds e seleção visual para retry.
-      toast.error(
-        `Não foi possível excluir os ${ids.length} orçamentos. Tente novamente.`,
-      );
+      toast.error(`Não foi possível excluir os ${ids.length} orçamentos. Tente novamente.`);
       setBulkDeleteProgress({ done: 0, total: 0 });
       return;
     }
@@ -283,9 +280,13 @@ export function useQuotesListPage() {
               ...it,
             })) as QuoteItem[];
             // remove campos gerados para evitar conflito de PK/timestamps no INSERT
-            const { id: _omitId, created_at: _c, updated_at: _u, quote_number: _qn, ...rest } =
-              snap as Quote & { id?: string };
-            void _omitId; void _c; void _u; void _qn;
+            const {
+              id: _omitId,
+              created_at: _c,
+              updated_at: _u,
+              quote_number: _qn,
+              ...rest
+            } = snap as Quote & { id?: string };
             const created = await createQuote(rest as Partial<Quote>, items);
             if (created) restored += 1;
           } catch {
@@ -310,11 +311,9 @@ export function useQuotesListPage() {
     setBulkDeleteIds([]);
   }, []);
 
-
   const handleClearFilters = useCallback(() => {
     clearAll();
   }, [clearAll]);
-
 
   const handleMarkApproved = async (id: string) => {
     const ok = await updateQuoteStatus(id, 'approved');

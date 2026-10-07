@@ -12,7 +12,6 @@ import {
   FileText,
   History,
   Loader2,
-  
   MoreHorizontal,
   Package,
   RefreshCw,
@@ -44,7 +43,12 @@ import { QuoteHistoryPanel } from '@/components/quotes/QuoteHistoryPanel';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { toast } from 'sonner';
 import { showUndoToast } from '@/utils/undoToast';
-import { type DiscountApprovalRequest, type QuoteItem, useDiscountApproval, useQuotes } from '@/hooks/quotes';
+import {
+  type DiscountApprovalRequest,
+  type QuoteItem,
+  useDiscountApproval,
+  useQuotes,
+} from '@/hooks/quotes';
 import { QuoteStatusTimeline } from '@/components/quotes/QuoteStatusTimeline';
 
 import { QuoteMobileActionBar } from '@/components/quotes/QuoteMobileActionBar';
@@ -135,7 +139,11 @@ export default function QuoteViewPage() {
           <p className="mt-2 text-muted-foreground">
             O orçamento solicitado não existe ou foi removido.
           </p>
-          <Button variant="outline" className="mt-4 rounded-full border-primary/40 hover:border-primary hover:bg-primary/10" onClick={() => navigate('/orcamentos')}>
+          <Button
+            variant="outline"
+            className="mt-4 rounded-full border-primary/40 hover:border-primary hover:bg-primary/10"
+            onClick={() => navigate('/orcamentos')}
+          >
             <ArrowLeft className="mr-2 h-4 w-4 text-primary" /> Voltar para Orçamentos
           </Button>
         </div>
@@ -179,10 +187,15 @@ export default function QuoteViewPage() {
             </Button>
             <div>
               <div className="flex items-center gap-2">
-                <h1 data-testid="page-title-quote-view" className="font-display text-base font-semibold leading-tight tracking-tight">
+                <h1
+                  data-testid="page-title-quote-view"
+                  className="font-display text-base font-semibold leading-tight tracking-tight"
+                >
                   Orçamento {quote.quote_number}
                 </h1>
-                <Badge variant={status.variant} className="h-5 px-1.5 text-[10px]">{status.label}</Badge>
+                <Badge variant={status.variant} className="h-5 px-1.5 text-[10px]">
+                  {status.label}
+                </Badge>
               </div>
               <p className="text-xs text-muted-foreground">
                 Criado em{' '}
@@ -204,19 +217,7 @@ export default function QuoteViewPage() {
                     variant="outline"
                     data-testid="pdf-preview-trigger"
                     aria-label="Abrir preview da proposta para exportar PDF"
-                    className="group relative h-6 min-w-[78px] justify-center gap-1.5 overflow-hidden rounded-full border-primary/40 px-2.5 text-[11px]
-                      animate-[preview-breath_6s_ease-in-out_infinite] motion-reduce:animate-none
-                      shadow-[0_0_6px_hsl(var(--primary)/0.2)] transition-all duration-500
-                      hover:animate-none focus-visible:animate-none
-                      hover:border-primary hover:bg-primary/10 hover:shadow-[0_0_14px_hsl(var(--primary)/0.5)]
-                      before:absolute before:inset-0 before:rounded-full
-                      before:bg-[linear-gradient(110deg,transparent_30%,hsl(var(--primary)/0.35)_50%,transparent_70%)]
-                      before:translate-x-[-120%] before:transition-transform before:duration-700 before:ease-out
-                      hover:before:translate-x-[120%]
-                      after:absolute after:inset-0 after:rounded-full after:border after:border-primary/25
-                      after:animate-[preview-breath-border_6s_ease-in-out_infinite] after:motion-reduce:animate-none
-                      hover:after:animate-none focus-visible:after:animate-none hover:after:border-primary/0
-                      focus-visible:shadow-[0_0_14px_hsl(var(--primary)/0.5)]"
+                    className="group relative h-6 min-w-[78px] animate-[preview-breath_6s_ease-in-out_infinite] justify-center gap-1.5 overflow-hidden rounded-full border-primary/40 px-2.5 text-[11px] shadow-[0_0_6px_hsl(var(--primary)/0.2)] transition-all duration-500 before:absolute before:inset-0 before:translate-x-[-120%] before:rounded-full before:bg-[linear-gradient(110deg,transparent_30%,hsl(var(--primary)/0.35)_50%,transparent_70%)] before:transition-transform before:duration-700 before:ease-out after:absolute after:inset-0 after:animate-[preview-breath-border_6s_ease-in-out_infinite] after:rounded-full after:border after:border-primary/25 hover:animate-none hover:border-primary hover:bg-primary/10 hover:shadow-[0_0_14px_hsl(var(--primary)/0.5)] hover:before:translate-x-[120%] hover:after:animate-none hover:after:border-primary/0 focus-visible:animate-none focus-visible:shadow-[0_0_14px_hsl(var(--primary)/0.5)] focus-visible:after:animate-none motion-reduce:animate-none after:motion-reduce:animate-none"
                   >
                     <Eye className="relative z-10 h-3 w-3 text-primary transition-transform duration-300 group-hover:scale-125 group-hover:drop-shadow-[0_0_4px_hsl(var(--primary))]" />
                     <span className="relative z-10 tracking-wide">Preview</span>
@@ -243,10 +244,10 @@ export default function QuoteViewPage() {
                   {syncingTarget === 'all'
                     ? 'Sincronizando tudo...'
                     : syncingTarget === 'bitrix'
-                    ? 'Bitrix...'
-                    : syncingTarget === 'pc'
-                    ? 'Promo Champions...'
-                    : 'Sincronizar tudo'}
+                      ? 'Bitrix...'
+                      : syncingTarget === 'pc'
+                        ? 'Promo Champions...'
+                        : 'Sincronizar tudo'}
                 </Button>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -280,14 +281,19 @@ export default function QuoteViewPage() {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon" className="h-7 w-7 rounded-full border-primary/40 hover:border-primary hover:bg-primary/10" aria-label="Mais opções">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-7 w-7 rounded-full border-primary/40 hover:border-primary hover:bg-primary/10"
+                  aria-label="Mais opções"
+                >
                   <MoreHorizontal className="h-4 w-4 text-primary" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 align="end"
                 sideOffset={6}
-                className="w-44 rounded-lg p-1.5 text-[12px] leading-tight tracking-tight [&_svg]:h-3.5 [&_svg]:w-3.5 [&_[role=menuitem]]:flex [&_[role=menuitem]]:items-center [&_[role=menuitem]]:gap-2.5 [&_[role=menuitem]]:rounded-md [&_[role=menuitem]]:px-2.5 [&_[role=menuitem]]:py-2"
+                className="w-44 rounded-lg p-1.5 text-[12px] leading-tight tracking-tight [&_[role=menuitem]]:flex [&_[role=menuitem]]:items-center [&_[role=menuitem]]:gap-2.5 [&_[role=menuitem]]:rounded-md [&_[role=menuitem]]:px-2.5 [&_[role=menuitem]]:py-2 [&_svg]:h-3.5 [&_svg]:w-3.5"
               >
                 {quote.status === 'sent' && (
                   <DropdownMenuItem
@@ -435,10 +441,17 @@ export default function QuoteViewPage() {
                 <section aria-labelledby="quote-terms-heading">
                   <SectionEyebrow id="quote-terms-heading">Condições Comerciais</SectionEyebrow>
 
-                  <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 ${qvSpacing.termsGrid}`}>
+                  <div
+                    className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 ${qvSpacing.termsGrid}`}
+                  >
                     {quote.payment_terms && (
-                      <div className={`flex items-start gap-2.5 rounded-lg border border-border/60 bg-muted/30 ${qvSpacing.card}`}>
-                        <CreditCard className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+                      <div
+                        className={`flex items-start gap-2.5 rounded-lg border border-border/60 bg-muted/30 ${qvSpacing.card}`}
+                      >
+                        <CreditCard
+                          className="mt-0.5 h-4 w-4 shrink-0 text-primary"
+                          aria-hidden="true"
+                        />
                         <div>
                           <p className={qvType.eyebrowCard}>Pagamento</p>
                           <p className={`mt-0.5 ${qvType.cardValue}`}>
@@ -448,8 +461,13 @@ export default function QuoteViewPage() {
                       </div>
                     )}
                     {quote.delivery_time && (
-                      <div className={`flex items-start gap-2.5 rounded-lg border border-border/60 bg-muted/30 ${qvSpacing.card}`}>
-                        <Package className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+                      <div
+                        className={`flex items-start gap-2.5 rounded-lg border border-border/60 bg-muted/30 ${qvSpacing.card}`}
+                      >
+                        <Package
+                          className="mt-0.5 h-4 w-4 shrink-0 text-primary"
+                          aria-hidden="true"
+                        />
                         <div>
                           <p className={qvType.eyebrowCard}>Prazo de Entrega</p>
                           <p className={`mt-0.5 ${qvType.cardValue}`}>
@@ -459,8 +477,13 @@ export default function QuoteViewPage() {
                       </div>
                     )}
                     {quote.shipping_type && (
-                      <div className={`flex items-start gap-2.5 rounded-lg border border-border/60 bg-muted/30 ${qvSpacing.card}`}>
-                        <Truck className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+                      <div
+                        className={`flex items-start gap-2.5 rounded-lg border border-border/60 bg-muted/30 ${qvSpacing.card}`}
+                      >
+                        <Truck
+                          className="mt-0.5 h-4 w-4 shrink-0 text-primary"
+                          aria-hidden="true"
+                        />
                         <div>
                           <p className={qvType.eyebrowCard}>Frete</p>
                           <p className={`mt-0.5 ${qvType.cardValue}`}>
@@ -486,7 +509,6 @@ export default function QuoteViewPage() {
                 <div>
                   <SectionEyebrow>Observações</SectionEyebrow>
                   <p className="whitespace-pre-line text-sm text-muted-foreground">{quote.notes}</p>
-
                 </div>
               </>
             )}
@@ -494,7 +516,6 @@ export default function QuoteViewPage() {
         </Card>
 
         {id && <QuoteVersionHistory quoteId={id} currentQuoteId={id} />}
-        
 
         {proposalData && (
           <div className="hidden print:block print:p-0">
@@ -552,7 +573,6 @@ export default function QuoteViewPage() {
                     quote_number: _qn,
                     ...rest
                   } = snapshot as typeof snapshot & { id?: string };
-                  void _omitId; void _c; void _u; void _qn;
                   const created = await createQuote(rest, items);
                   if (created) {
                     toast.success('Orçamento restaurado.');

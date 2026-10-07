@@ -226,7 +226,8 @@ function main() {
     // falha toda execução por causa da nova data.
     const stripTs = (s) =>
       s.replace(/_Atualizado em [^_·]+/g, '_Atualizado em <ts> ');
-    const currentBody = existsSync(OUT) ? readFileSync(OUT, 'utf8') : '';
+    let currentBody = '';
+    try { currentBody = readFileSync(OUT, 'utf8'); } catch (e) { if (e.code !== 'ENOENT') throw e; }
     if (stripTs(currentBody) !== stripTs(body)) {
       console.error('[drafts-map] DRAFTS_STATUS.md desatualizado. Rode: node scripts/map-drafts-to-migrations.mjs');
       process.exit(1);

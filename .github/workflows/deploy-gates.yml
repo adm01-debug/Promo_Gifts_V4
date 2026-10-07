@@ -5,9 +5,12 @@ name: Deploy Gates
 #
 # Ordem dos gates:
 #  0. ssot-gate      - SSOT Supabase (project ID canônico) — NOVO, bloqueia todos os outros
+#  0.5. dependency-audit - npm audit (sem CVEs high/critical)
+#  0.6. dependency-review - dependency-review-action (E97, PR-only)
 #  1. lint+tsc       - codigo passa lint e typecheck
 #  2. unit-tests     - vitest passa
-#  3. e2e-smoke      - playwright smoke test (login + dashboard)
+#  E23. secrets-check - verifica presença de secrets E2E (saída has_e2e)
+#  3. e2e-smoke      - playwright smoke test (login + dashboard) — apenas se has_e2e=true
 #  4. lighthouse     - perf>=75 a11y>=90 seo>=95 pwa>=80
 #  5. seo-sanity     - canonical/og:url/twitter:url corretos, sem dominios proibidos
 #  6. build          - vite build sem erros (gate de seguranca final)
@@ -60,6 +63,20 @@ jobs:
         uses: ./.github/actions/setup-node-ci
       - name: Auditar dependências (advisory ≥ high bloqueia deploy)
         run: node scripts/check-dependency-audit.mjs
+
+  dependency-review:
+    name: Gate 0.6 - Dependency Review
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [ssot-gate]
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Dependency Review — falha em deps com CVE severity ≥ high (E97)
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+          allow-licenses: MIT, Apache-2.0, ISC, BSD-2-Clause, BSD-3-Clause, 0BSD, CC0-1.0, Unlicense, CC-BY-4.0, Python-2.0
 
   lint-typecheck:
     name: Gate 1 - Lint + TypeScript
@@ -158,6 +175,45 @@ jobs:
             done < "$F"
           done < /tmp/b64-files.txt
           exit $(( FOUND > 0 ))
+      # Ratchets de dívida técnica (auditoria 20-dim 2026-10-02) — falham só
+      # em REGRESSÃO vs baselines commitadas; drift positivo apenas avisa.
+      - name: Gate 1.9 — Dívida técnica (ratchets TODO / as / file-size)
+        run: |
+          node scripts/check-todo-baseline.mjs
+          node scripts/check-as-assertions-baseline.mjs
+          node scripts/check-file-size-baseline.mjs
+      # Contract coverage + soft-delete policy (auditoria 20-dim Onda 2) —
+      # aqui e no quality-gate.yml (2.3.5/2.3.6) porque o check obrigatório
+      # "Gate Final - Deploy Ready" agrega só jobs DESTE workflow.
+      - name: Gate 1.12 — Contract coverage + soft-delete policy (bloqueante)
+        run: |
+          node scripts/check-contract-coverage.mjs
+          node scripts/check-soft-delete-policy.mjs
+          node scripts/check-edge-zod-ratchet.mjs
+          # Cobertura do manifest de autorização — o script existia órfão
+          # de workflow (achado da validação exaustiva 2026-10).
+          node scripts/check-edge-authorization.mjs
+      # Gate 1.13 — Baseline assinado de RLS policies (auditoria 20-dim Onda 3).
+      # Bloqueante quando credenciado; sem SUPABASE_ACCESS_TOKEN (forks) ou com
+      # baseline pendente de seed inicial, degrada para static-pass.
+      - name: Gate 1.13 — Policies baseline vs pg_policies live (bloqueante c/ credenciais)
+        run: node scripts/check-policies-baseline.mjs
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF || 'doufsxqlfjyuvxuezpln' }}
+      # noUncheckedIndexedAccess — advisory por enquanto: roda tsc completo
+      # (lento) e a dívida atual é grande; vira bloqueante quando zerar.
+      - name: Gate 1.10 — Indexed-access ratchet (advisory)
+        continue-on-error: true
+        run: node scripts/check-indexed-access-ratchet.mjs
+      # E55 — Contratos estruturais dos workflows (E11, bloqueante)
+      # Garante que todo workflow segue as 8 regras do Padrão E12
+      # (permissions, concurrency, timeout, node-version-file, etc.)
+      - name: Gate 1.11 — Workflow contracts (bloqueante)
+        # --gate: sem o flag o script só reporta e sai 0 — o step dizia
+        # "bloqueante" mas não bloqueava nada (workflow-lint ficava vermelho
+        # em main sem travar deploy).
+        run: node scripts/check-workflow-contracts.mjs --gate
 
   unit-tests:
     name: Gate 2 - Unit Tests
@@ -199,11 +255,22 @@ jobs:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
 
+  # ============================================================
+  # GATE E23: Verifica presença de secrets E2E
+  # Saída has_e2e=true habilita o Gate 3 (e2e-smoke).
+  # Sem os secrets, e2e-smoke é skipped graciosamente (E21+E23).
+  # ============================================================
+  secrets-check:
+    name: Gate E23 - Verifica secrets E2E
+    uses: ./.github/workflows/_secrets-check.yml
+    secrets: inherit
+
   e2e-smoke:
     name: Gate 3 - E2E Smoke
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    needs: [ssot-gate]
+    needs: [ssot-gate, secrets-check]
+    if: needs.secrets-check.outputs.has_e2e == 'true'
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Setup Node CI
@@ -294,6 +361,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: [lint-typecheck, seo-sanity, restore-cart-rpc-gate]
+    permissions:
+      contents: read
+      id-token: write      # necessário para attest-build-provenance (E99)
+      attestations: write  # necessário para attest-build-provenance (E99)
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Setup Node CI
@@ -315,6 +386,21 @@ jobs:
           name: dist-${{ github.run_id }}
           path: dist/
           retention-days: 7
+      # E99 — SBOM + build provenance attestation (push para main apenas)
+      # Gera SBOM SPDX-JSON do dist/ e atesta proveniência do build no GHCR.
+      # Skipped em PRs e workflow_dispatch — sem impacto no tempo de CI de PRs.
+      - name: Generate SBOM (E99)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: anchore/sbom-action@v0
+        with:
+          artifact-name: sbom-${{ github.run_id }}.spdx.json
+          path: dist/
+          format: spdx-json
+      - name: Attest build provenance (E99)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-path: 'dist/**/*.js'
 
   deploy-ready:
     name: Gate Final - Deploy Ready
@@ -324,9 +410,11 @@ jobs:
     needs:
       - ssot-gate
       - dependency-audit
+      - dependency-review
       - lint-typecheck
       - unit-tests
       - database-integrity
+      - secrets-check
       - e2e-smoke
       - lighthouse
       - seo-sanity
@@ -340,6 +428,10 @@ jobs:
           # PRs do Dependabot/fork (sem acesso a secrets live — E59).
           DB_INTEGRITY: ${{ needs.database-integrity.result }}
           RESTORE_CART: ${{ needs.restore-cart-rpc-gate.result }}
+          # dependency-review só roda em PR — skip é esperado em push/dispatch (E97).
+          DEP_REVIEW: ${{ needs.dependency-review.result }}
+          # e2e-smoke só roda quando has_e2e=true — skip esperado sem secrets E2E (E21+E23).
+          E2E_SMOKE: ${{ needs.e2e-smoke.result }}
           IS_DEPENDABOT: ${{ github.actor == 'dependabot[bot]' }}
         run: |
           set -euo pipefail
@@ -352,16 +444,23 @@ jobs:
             FAIL=1
           fi
 
-          # Skipped é aceito APENAS para os 2 gates live-secrets em PRs
-          # do Dependabot ou fork (E59). Em qualquer outro contexto, skipped é falha.
+          # Skipped é aceito APENAS para gates com condicionais explícitas.
+          # Em qualquer outro contexto, skipped é falha.
           if [[ ",${GATE_RESULTS}," == *,skipped,* ]]; then
             # Constrói o conjunto de skipped aceitáveis neste contexto
             ALLOWED_SKIP=0
+            # E21+E23: e2e-smoke é skipped quando secrets E2E ausentes (has_e2e=false)
+            # Válido em qualquer evento (PR, push, dispatch).
+            if [[ "$E2E_SMOKE" == "skipped" ]]; then ALLOWED_SKIP=$((ALLOWED_SKIP+1)); fi
             if [[ "$IS_DEPENDABOT" == "true" || "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
               # Para Dependabot e forks: database-integrity e restore-cart-rpc-gate
               # podem ser skipped (sem secrets). Todos os outros skipped são falha.
               if [[ "$DB_INTEGRITY" == "skipped" ]]; then ALLOWED_SKIP=$((ALLOWED_SKIP+1)); fi
               if [[ "$RESTORE_CART" == "skipped" ]]; then ALLOWED_SKIP=$((ALLOWED_SKIP+1)); fi
+            fi
+            # E97: dependency-review é PR-only — skip esperado em push/dispatch
+            if [[ "$GITHUB_EVENT_NAME" != "pull_request" ]]; then
+              if [[ "$DEP_REVIEW" == "skipped" ]]; then ALLOWED_SKIP=$((ALLOWED_SKIP+1)); fi
             fi
             # Conta total de skipped
             TOTAL_SKIP=$(echo "${GATE_RESULTS}" | tr ',' '\n' | grep -c "^skipped$" || true)
@@ -369,7 +468,7 @@ jobs:
               echo "::error::Gate(s) inesperadamente skipped (${TOTAL_SKIP} skipped, ${ALLOWED_SKIP} permitidos): ${GATE_RESULTS}" >&2
               FAIL=1
             elif [[ "$ALLOWED_SKIP" -gt 0 ]]; then
-              echo "::warning::${ALLOWED_SKIP} gate(s) live-secrets skipped (Dependabot/fork sem secrets — E59)"
+              echo "::warning::${ALLOWED_SKIP} gate(s) skipped (condicionais: E59/E97/E21+E23)"
             fi
           fi
 

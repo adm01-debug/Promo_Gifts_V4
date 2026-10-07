@@ -9,10 +9,14 @@ name: schema-snapshot-export
 #   - ALL_IN_ONE.sql SEMPRE é gerado (não depende de secrets).
 #   - SCHEMA_LIVE.sql e SCHEMA_DRIFT.sql só saem quando SUPABASE_ACCESS_TOKEN
 #     e SUPABASE_DB_PASSWORD estão configurados (safe-by-default).
-#   - Este workflow NÃO commita nada — só publica artefato para auditoria.
-#   - Se quiser gate de drift bloqueante, use `db-schema-drift-check.yml`.
+#   - Em `schedule`: falha explicitamente se SUPABASE_ACCESS_TOKEN ausente —
+#     sem no-op verde (E84).
+#   - Job `commit-snapshot` (E84): commita o snapshot na branch fixa
+#     `bot/schema-snapshot` (force-push) e abre/reutiliza uma única PR.
+#     Roda apenas em `schedule` e `workflow_dispatch` quando secrets presentes.
 #
 # 2026-09-27: paths filter em PR e push — 12min de snapshot só quando schema muda.
+# 2026-10-02: E84 — no-op guard em schedule + branch fixa bot/schema-snapshot.
 # Schedule semanal mantém varredura incondicional (segunda 06:00 UTC).
 # =============================================================================
 
@@ -57,14 +61,27 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Setup Node
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .nvmrc
 
       - name: Install Supabase CLI
-        uses: supabase/setup-cli@afb1b15109756ea5cf9d8985a359d9095235ca2b # v2
+        uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v2
         with:
           version: 2.101.0
+
+      # E84: no-op guard — schedule sem credenciais é falha, não sucesso silencioso.
+      - name: Guard — secrets obrigatórios no schedule
+        if: github.event_name == 'schedule'
+        env:
+          TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: |
+          if [[ -z "${TOKEN:-}" ]]; then
+            echo "::error::SUPABASE_ACCESS_TOKEN não configurado. Schedule sem credenciais é erro, não no-op verde."
+            echo "::error::Configure o secret em Settings → Secrets → Actions e rerun manual."
+            exit 1
+          fi
+          echo "Credenciais presentes — prosseguindo com snapshot live."
 
       - name: Generate snapshot
         run: node scripts/export-schema-snapshot.mjs
@@ -75,6 +92,96 @@ jobs:
           name: schema-snapshot-${{ github.run_number }}
           path: supabase/migrations-snapshot/
           retention-days: 14
+
+  # E84: commita snapshot na branch fixa bot/schema-snapshot e mantém ≤ 1 PR aberta.
+  commit-snapshot:
+    name: Commit snapshot to bot/schema-snapshot
+    needs: export
+    if: >-
+      (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') &&
+      needs.export.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF || 'doufsxqlfjyuvxuezpln' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install Supabase CLI
+        uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v2
+        with:
+          version: 2.101.0
+
+      - name: Generate snapshot (for commit)
+        run: node scripts/export-schema-snapshot.mjs
+
+      - name: Commit snapshot to bot/schema-snapshot (force-push)
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          if ! git diff --quiet -- supabase/migrations-snapshot/; then
+            echo "Snapshot mudou — commitando."
+          else
+            echo "Snapshot sem mudança — nada a commitar."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Cria ou reseta bot/schema-snapshot a partir do HEAD atual de main
+          git checkout -B bot/schema-snapshot
+
+          git add supabase/migrations-snapshot/
+          WEEK=$(date -u +"%Y-W%V")
+          git commit -m "chore(schema-snapshot): snapshot semanal $WEEK (run $RUN_ID)" \
+            -m "Auto-gerado por schema-snapshot-export.yml (E84). Snapshot do schema canônico doufsxqlfjyuvxuezpln."
+          git push --force-with-lease origin bot/schema-snapshot
+
+      - name: Abrir ou atualizar PR única (bot/schema-snapshot)
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          # Verifica se snapshot foi commitado (branch pode não ter mudado)
+          if ! git rev-parse bot/schema-snapshot >/dev/null 2>&1; then
+            echo "Branch bot/schema-snapshot não encontrada — snapshot não mudou, PR dispensada."
+            exit 0
+          fi
+
+          WEEK=$(date -u +"%Y-W%V")
+          EXISTING=$(gh pr list \
+            --base main \
+            --head "adm01-debug:bot/schema-snapshot" \
+            --state open \
+            --json number \
+            --jq '.[0].number' 2>/dev/null || echo "")
+
+          if [[ -n "$EXISTING" ]]; then
+            echo "PR #$EXISTING já existe para bot/schema-snapshot — branch atualizada por force-push, PR reutilizada."
+          else
+            PR_BODY="Snapshot semanal do schema canônico doufsxqlfjyuvxuezpln (run $RUN_ID, semana $WEEK). Arquivos: supabase/migrations-snapshot/ (ALL_IN_ONE.sql, SCHEMA_LIVE.sql, SCHEMA_DRIFT.sql, SNAPSHOT_META.json). Auto-gerado por schema-snapshot-export.yml (E84) — sempre <=1 PR aberta."
+            gh pr create \
+              --base main \
+              --head bot/schema-snapshot \
+              --title "chore(schema-snapshot): snapshot semanal $WEEK" \
+              --body "$PR_BODY"
+            echo "PR criada para bot/schema-snapshot."
+          fi
 
   weekly-live-drift:
     name: Weekly live drift check
@@ -89,11 +196,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Setup Node
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .nvmrc
       - name: Install Supabase CLI
-        uses: supabase/setup-cli@afb1b15109756ea5cf9d8985a359d9095235ca2b # v2
+        uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v2
         with:
           version: 2.101.0
       - name: Check ledger manifest drift

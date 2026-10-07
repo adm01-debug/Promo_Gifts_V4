@@ -112,7 +112,7 @@ exports[`PriceFreshnessBadge Snapshots and A11y > Snapshots > matches snapshot f
         >
           <svg
             aria-hidden="true"
-            class="lucide lucide-circle-check h-3 w-3"
+            class="lucide lucide-circle-check lucide-check-circle-2 h-3 w-3"
             fill="none"
             height="24"
             stroke="currentColor"
@@ -129,7 +129,7 @@ exports[`PriceFreshnessBadge Snapshots and A11y > Snapshots > matches snapshot f
               r="10"
             />
             <path
-              d="m9 12 2 2 4-4"
+              d="m16 9-5.5 5.5L8 12"
             />
           </svg>
           <span
@@ -205,7 +205,7 @@ exports[`PriceFreshnessBadge Snapshots and A11y > Snapshots > matches snapshot f
         >
           <svg
             aria-hidden="true"
-            class="lucide lucide-triangle-alert h-3 w-3"
+            class="lucide lucide-triangle-alert lucide-alert-triangle h-3 w-3"
             fill="none"
             height="24"
             stroke="currentColor"
@@ -304,7 +304,7 @@ exports[`PriceFreshnessBadge Snapshots and A11y > Snapshots > matches snapshot f
         >
           <svg
             aria-hidden="true"
-            class="lucide lucide-circle-question-mark h-3 w-3"
+            class="lucide lucide-circle-question-mark lucide-help-circle lucide-circle-help h-3 w-3"
             fill="none"
             height="24"
             stroke="currentColor"
@@ -569,7 +569,7 @@ exports[`PriceFreshnessBadge Snapshots and A11y > Snapshots > matches snapshot f
         >
           <svg
             aria-hidden="true"
-            class="lucide lucide-circle-check h-3.5 w-3.5"
+            class="lucide lucide-circle-check lucide-check-circle-2 h-3.5 w-3.5"
             fill="none"
             height="24"
             stroke="currentColor"
@@ -586,7 +586,7 @@ exports[`PriceFreshnessBadge Snapshots and A11y > Snapshots > matches snapshot f
               r="10"
             />
             <path
-              d="m9 12 2 2 4-4"
+              d="m16 9-5.5 5.5L8 12"
             />
           </svg>
         </span>
@@ -652,7 +652,7 @@ exports[`PriceFreshnessBadge Snapshots and A11y > Snapshots > matches snapshot f
         >
           <svg
             aria-hidden="true"
-            class="lucide lucide-triangle-alert h-3.5 w-3.5"
+            class="lucide lucide-triangle-alert lucide-alert-triangle h-3.5 w-3.5"
             fill="none"
             height="24"
             stroke="currentColor"
@@ -741,7 +741,7 @@ exports[`PriceFreshnessBadge Snapshots and A11y > Snapshots > matches snapshot f
         >
           <svg
             aria-hidden="true"
-            class="lucide lucide-circle-question-mark h-3.5 w-3.5"
+            class="lucide lucide-circle-question-mark lucide-help-circle lucide-circle-help h-3.5 w-3.5"
             fill="none"
             height="24"
             stroke="currentColor"
@@ -908,7 +908,7 @@ exports[`PriceFreshnessBadge Snapshots and A11y > Snapshots > matches snapshot f
         >
           <svg
             aria-hidden="true"
-            class="lucide lucide-circle-check h-3.5 w-3.5 shrink-0"
+            class="lucide lucide-circle-check lucide-check-circle-2 h-3.5 w-3.5 shrink-0"
             fill="none"
             height="24"
             stroke="currentColor"
@@ -925,7 +925,7 @@ exports[`PriceFreshnessBadge Snapshots and A11y > Snapshots > matches snapshot f
               r="10"
             />
             <path
-              d="m9 12 2 2 4-4"
+              d="m16 9-5.5 5.5L8 12"
             />
           </svg>
           <span
@@ -1000,7 +1000,7 @@ exports[`PriceFreshnessBadge Snapshots and A11y > Snapshots > matches snapshot f
         >
           <svg
             aria-hidden="true"
-            class="lucide lucide-triangle-alert h-3.5 w-3.5 shrink-0"
+            class="lucide lucide-triangle-alert lucide-alert-triangle h-3.5 w-3.5 shrink-0"
             fill="none"
             height="24"
             stroke="currentColor"
@@ -1098,7 +1098,7 @@ exports[`PriceFreshnessBadge Snapshots and A11y > Snapshots > matches snapshot f
         >
           <svg
             aria-hidden="true"
-            class="lucide lucide-circle-question-mark h-3.5 w-3.5 shrink-0"
+            class="lucide lucide-circle-question-mark lucide-help-circle lucide-circle-help h-3.5 w-3.5 shrink-0"
             fill="none"
             height="24"
             stroke="currentColor"
@@ -1268,7 +1268,7 @@ exports[`PriceFreshnessBadge Snapshots and A11y > Snapshots > matches snapshot f
         >
           <svg
             aria-hidden="true"
-            class="lucide lucide-circle-check h-3.5 w-3.5 shrink-0"
+            class="lucide lucide-circle-check lucide-check-circle-2 h-3.5 w-3.5 shrink-0"
             fill="none"
             height="24"
             stroke="currentColor"
@@ -1285,7 +1285,7 @@ exports[`PriceFreshnessBadge Snapshots and A11y > Snapshots > matches snapshot f
               r="10"
             />
             <path
-              d="m9 12 2 2 4-4"
+              d="m16 9-5.5 5.5L8 12"
             />
           </svg>
           <span
@@ -1359,7 +1359,7 @@ exports[`PriceFreshnessBadge Snapshots and A11y > Snapshots > matches snapshot f
         >
           <svg
             aria-hidden="true"
-            class="lucide lucide-triangle-alert mt-0.5 h-3.5 w-3.5 shrink-0"
+            class="lucide lucide-triangle-alert lucide-alert-triangle mt-0.5 h-3.5 w-3.5 shrink-0"
             fill="none"
             height="24"
             stroke="currentColor"
@@ -1463,7 +1463,7 @@ exports[`PriceFreshnessBadge Snapshots and A11y > Snapshots > matches snapshot f
         >
           <svg
             aria-hidden="true"
-            class="lucide lucide-circle-question-mark h-3.5 w-3.5 shrink-0"
+            class="lucide lucide-circle-question-mark lucide-help-circle lucide-circle-help h-3.5 w-3.5 shrink-0"
             fill="none"
             height="24"
             stroke="currentColor"

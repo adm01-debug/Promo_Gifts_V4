@@ -25,32 +25,25 @@
  * Referência: docs/security/SELLER_SCOPE_CHECKER.md (padrão de checker
  * estático), mem://ui/radix-nesting-ref-standard.
  */
-import { promises as fs } from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // ROOT honra ROUTE_REF_ROOT (usado por testes com fixtures); padrão é o
 // diretório-pai do script (raiz do repositório).
 const ROOT = process.env.ROUTE_REF_ROOT
   ? path.resolve(process.env.ROUTE_REF_ROOT)
-  : path.resolve(__dirname, "..");
-const SRC = path.join(ROOT, "src");
+  : path.resolve(__dirname, '..');
+const SRC = path.join(ROOT, 'src');
 
 // --- Configuração ---------------------------------------------------------
 
 /** Componentes que SÃO route guards (não podem usar forwardRef). */
-const ROUTE_GUARDS = new Set([
-  "AdminRoute",
-  "DevRoute",
-  "ProtectedRoute",
-  "DeprecatedRoute",
-]);
+const ROUTE_GUARDS = new Set(['AdminRoute', 'DevRoute', 'ProtectedRoute', 'DeprecatedRoute']);
 
 /** Diretórios cujo conteúdo é renderizado diretamente pelo Router. */
-const ROUTE_DIRS = [
-  path.join(SRC, "pages"),
-];
+const ROUTE_DIRS = [path.join(SRC, 'pages')];
 
 /** Allowlist global (caminhos relativos a ROOT) — arquivos ignorados. */
 const FILE_ALLOWLIST = new Set([
@@ -71,7 +64,7 @@ async function walk(dir) {
   for (const e of entries) {
     const full = path.join(dir, e.name);
     if (e.isDirectory()) {
-      if (["node_modules", ".git", "__tests__"].includes(e.name)) continue;
+      if (['node_modules', '.git', '__tests__'].includes(e.name)) continue;
       out.push(...(await walk(full)));
     } else if (/\.(tsx|jsx)$/.test(e.name)) out.push(full);
   }
@@ -79,13 +72,13 @@ async function walk(dir) {
 }
 
 function lineOf(source, idx) {
-  return source.slice(0, idx).split("\n").length;
+  return source.slice(0, idx).split('\n').length;
 }
 
 function hasAllowComment(source, lineNum) {
-  const lines = source.split("\n");
-  const here = lines[lineNum - 1] ?? "";
-  const above = lines[lineNum - 2] ?? "";
+  const lines = source.split('\n');
+  const here = lines[lineNum - 1] ?? '';
+  const above = lines[lineNum - 2] ?? '';
   return /route-ref-allow:/i.test(here) || /route-ref-allow:/i.test(above);
 }
 
@@ -103,7 +96,7 @@ async function ruleGuardsNoForwardRef(file, source) {
     const line = lineOf(source, m.index);
     if (hasAllowComment(source, line)) continue;
     violations.push({
-      rule: "guard-no-forwardRef",
+      rule: 'guard-no-forwardRef',
       file: path.relative(ROOT, file),
       line,
       detail: `Route guard '${base}' não deve usar forwardRef — Router não passa ref para <Route element>.`,
@@ -128,12 +121,15 @@ function ruleNoRefProp(file, source) {
   while ((m = fnRe.exec(source))) {
     const args = m[2];
     // Função pura com 2 parâmetros e o segundo nomeado `ref` é red flag.
-    const params = args.split(",").map((p) => p.trim()).filter(Boolean);
+    const params = args
+      .split(',')
+      .map((p) => p.trim())
+      .filter(Boolean);
     if (params.length >= 2 && /(^|\b)ref\b/.test(params[1])) {
       const line = lineOf(source, m.index);
       if (hasAllowComment(source, line)) continue;
       violations.push({
-        rule: "no-ref-second-arg",
+        rule: 'no-ref-second-arg',
         file: path.relative(ROOT, file),
         line,
         detail: `'${m[1]}' aceita 'ref' como 2º argumento sem forwardRef — causa warning do React.`,
@@ -143,15 +139,14 @@ function ruleNoRefProp(file, source) {
 
   // Procura `interface XProps { ... ref?: ... }` ou `type XProps = { ... ref?: ... }`
   // em arquivos de rota — sinal de tentar passar ref via prop manualmente.
-  const propsRe =
-    /(?:interface|type)\s+[A-Z][A-Za-z0-9_]*Props\b[^{]*\{([^}]+)\}/g;
+  const propsRe = /(?:interface|type)\s+[A-Z][A-Za-z0-9_]*Props\b[^{]*\{([^}]+)\}/g;
   while ((m = propsRe.exec(source))) {
     if (/(^|\s|;|,)ref\s*[:?]/.test(m[1])) {
-      const refIdx = m.index + m[0].indexOf("ref");
+      const refIdx = m.index + m[0].indexOf('ref');
       const line = lineOf(source, refIdx);
       if (hasAllowComment(source, line)) continue;
       violations.push({
-        rule: "no-ref-in-props-type",
+        rule: 'no-ref-in-props-type',
         file: path.relative(ROOT, file),
         line,
         detail: `Tipo de Props declara 'ref' explicitamente — use forwardRef ou renomeie para 'innerRef'/'rootRef'.`,
@@ -179,13 +174,10 @@ function rulePagesNoForwardRef(file, source) {
   const patterns = [
     {
       re: /export\s+default\s+(?:React\.)?forwardRef\s*[<(]/g,
-      why: "default export usa forwardRef",
+      why: 'default export usa forwardRef',
     },
     {
-      re: new RegExp(
-        `export\\s+const\\s+${baseName}\\s*=\\s*(?:React\\.)?forwardRef\\s*[<(]`,
-        "g",
-      ),
+      re: new RegExp(`export\\s+const\\s+${baseName}\\s*=\\s*(?:React\\.)?forwardRef\\s*[<(]`, 'g'),
       why: `export const ${baseName} (top-level da página) usa forwardRef`,
     },
   ];
@@ -196,7 +188,7 @@ function rulePagesNoForwardRef(file, source) {
       const line = lineOf(source, m.index);
       if (hasAllowComment(source, line)) continue;
       violations.push({
-        rule: "pages-no-forwardRef",
+        rule: 'pages-no-forwardRef',
         file: path.relative(ROOT, file),
         line,
         detail: `Page '${path.relative(SRC, file)}': ${why} — Router não fornece ref; remova o forwardRef.`,
@@ -205,7 +197,9 @@ function rulePagesNoForwardRef(file, source) {
   }
 
   // Padrão `const NAME = forwardRef(...); export default NAME;`
-  const namedDef = /const\s+([A-Z][A-Za-z0-9_]*)\s*=\s*(?:React\.)?forwardRef\s*[<(]/g;
+  // [A-Z_] — nome com underscore inicial (`_Page`) evadia a regra
+  // (achado da validação exaustiva 2026-10).
+  const namedDef = /const\s+([A-Z_][A-Za-z0-9_]*)\s*=\s*(?:React\.)?forwardRef\s*[<(]/g;
   let m;
   while ((m = namedDef.exec(source))) {
     const name = m[1];
@@ -214,7 +208,7 @@ function rulePagesNoForwardRef(file, source) {
     const line = lineOf(source, m.index);
     if (hasAllowComment(source, line)) continue;
     violations.push({
-      rule: "pages-no-forwardRef",
+      rule: 'pages-no-forwardRef',
       file: path.relative(ROOT, file),
       line,
       detail: `Page '${path.relative(SRC, file)}': '${name}' (export default) usa forwardRef — Router não fornece ref.`,
@@ -226,17 +220,17 @@ function rulePagesNoForwardRef(file, source) {
 
 async function checkFile(file) {
   if (FILE_ALLOWLIST.has(path.relative(ROOT, file))) return;
-  const source = await fs.readFile(file, "utf8");
+  const source = await fs.readFile(file, 'utf8');
   await ruleGuardsNoForwardRef(file, source);
   ruleNoRefProp(file, source);
   rulePagesNoForwardRef(file, source);
 }
 
 async function main() {
-  const guardFiles = (await walk(path.join(SRC, "components", "layout"))).filter(
-    (f) => ROUTE_GUARDS.has(path.basename(f, path.extname(f))),
+  const guardFiles = (await walk(path.join(SRC, 'components', 'layout'))).filter((f) =>
+    ROUTE_GUARDS.has(path.basename(f, path.extname(f))),
   );
-  const pageFiles = await walk(path.join(SRC, "pages"));
+  const pageFiles = await walk(path.join(SRC, 'pages'));
   const files = [...new Set([...guardFiles, ...pageFiles])];
   await Promise.all(files.map(checkFile));
 
@@ -248,9 +242,7 @@ async function main() {
     process.exit(0);
   }
 
-  console.error(
-    `\n✗ route-ref checker: ${violations.length} violação(ões) encontrada(s):\n`,
-  );
+  console.error(`\n✗ route-ref checker: ${violations.length} violação(ões) encontrada(s):\n`);
   // Agrupa por regra para legibilidade.
   const byRule = new Map();
   for (const v of violations) {
@@ -274,6 +266,6 @@ async function main() {
 }
 
 main().catch((err) => {
-  console.error("Erro inesperado no route-ref checker:", err);
+  console.error('Erro inesperado no route-ref checker:', err);
   process.exit(2);
 });

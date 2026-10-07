@@ -1,5 +1,7 @@
 # Edge Functions — Catálogo Completo
 
+> ⚠️ **PARCIALMENTE DESATUALIZADO (banner 2026-10-02, auditoria 20-dimensões)** — este doc diz 81 funções; o inventário real é **108 funções** com `index.ts` em `supabase/functions/`. A fonte de verdade atual de autorização/categorização é `supabase/functions/_shared/edge-authz-manifest.ts`, refletida em `docs/RBAC_MATRIX.md`. Use a tabela abaixo como referência histórica, não como catálogo.
+
 > Última atualização: 2026-05-22 · **81 funções ativas** (24 com `verify_jwt = false`, todas com defesa interna validada — ver auditoria back-end sênior de 2026-05-22)
 > A tabela abaixo é histórica e cobre as ~50 funções originais — o inventário completo de 81 está em `audit/ANALISE_BACKEND_SENIOR_2026-05-22.md` (Seção 1).
 
@@ -81,6 +83,20 @@ Localizados em `supabase/functions/_shared/`:
 4. **Sempre** registrar erros com `console.error` (capturado pelo Logflare).
 5. **Nunca** expor stack traces ou mensagens internas — retornar mensagem genérica + log do detalhe.
 6. **Nunca** confiar em `service_role` em endpoints públicos sem rate-limit + bot protection.
+
+## Headers client → edge
+
+`invokeEdgeSafe` / `invokeEdge` (`src/lib/edge/safeInvokeCall.ts`) propagam dois headers:
+
+- **`X-Request-Id`** (sempre) — UUID v4 gerado por chamada ou reaproveitado via
+  `options.requestId`. Correlação Sentry ↔ edge logs; o edge pode ecoá-lo no
+  resultado/erro para troubleshooting.
+- **`Idempotency-Key`** (opcional) — o caller gera UMA chave por operação
+  lógica com `newIdempotencyKey()` (ex.: no submit do form) e passa em
+  `options.idempotencyKey`. Ela sobrevive aos retries automáticos do
+  `safeAuthCall`. Edges de escrita **devem** deduplicar por ela quando fizer
+  sentido (mesma key + mesma operação = mesma resposta/sem efeito duplo).
+  Regra: nunca gerar a key dentro do retry — isso anula a deduplicação.
 
 ## Como testar
 

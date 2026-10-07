@@ -7,6 +7,9 @@
  *   com fnName, request_id, latência e status. Nunca vaza PII (só metadata).
  * - `X-Request-Id` outbound: gerado por chamada (UUID v4) quando o caller não
  *   fornecer; devolvido no resultado para correlação Sentry/edge-logs.
+ * - `Idempotency-Key` opcional: o caller gera UMA chave por operação lógica
+ *   (ex.: `newIdempotencyKey()` no submit) e ela sobrevive aos retries do
+ *   safeAuthCall — edges de escrita podem deduplicar por ela.
  * - Parser defensivo do body (JSON quebrado / HTML de proxy não explode).
  *
  * Uso:
@@ -19,6 +22,18 @@ import { getSupabaseClient } from '@/integrations/supabase/lazy-client';
 import { createClientLogger } from '@/lib/telemetry/structuredLogger';
 import { newRequestId, REQUEST_ID_HEADER } from '@/lib/telemetry/requestId';
 import { recordInvokeEvent } from '@/lib/edge/invokeTelemetrySink';
+
+/** Header padrão client→edge para deduplicação de escrita. */
+export const IDEMPOTENCY_KEY_HEADER = 'Idempotency-Key';
+
+/**
+ * Gera uma idempotency-key nova (UUID v4). REGRA: uma por OPERAÇÃO LÓGICA
+ * (ex.: por clique de submit / por intent de criação), não por tentativa —
+ * gerar dentro do retry anula a deduplicação server-side.
+ */
+export function newIdempotencyKey(): string {
+  return newRequestId();
+}
 
 export type EdgeErrorKind =
   | 'client'
@@ -45,6 +60,10 @@ export interface InvokeOptions {
   /** Preserva o JSON de respostas HTTP não-2xx para consumidores que exibem
    * relatórios estruturados (o erro continua não-nulo e deve ser tratado). */
   preserveErrorData?: boolean;
+  /** Idempotency-key da operação lógica — enviada como `Idempotency-Key`.
+   * Gere com `newIdempotencyKey()` no início da intenção do usuário e reuse
+   * em retries/refetches da MESMA operação. */
+  idempotencyKey?: string;
 }
 
 interface NormalizedError {
@@ -164,6 +183,7 @@ export async function invokeEdgeSafe<T = unknown>(
     signal,
     isDev,
     requestId: providedRequestId,
+    idempotencyKey,
   } = options;
 
   // Request-id por chamada — reaproveita se o caller já fornecer (via option
@@ -171,7 +191,15 @@ export async function invokeEdgeSafe<T = unknown>(
   const callerHeaderId =
     headers?.[REQUEST_ID_HEADER] ?? headers?.[REQUEST_ID_HEADER.toLowerCase()] ?? undefined;
   const requestId = providedRequestId ?? callerHeaderId ?? newRequestId();
-  const outboundHeaders = { ...(headers ?? {}), [REQUEST_ID_HEADER]: requestId };
+  const callerIdemKey =
+    headers?.[IDEMPOTENCY_KEY_HEADER] ?? headers?.[IDEMPOTENCY_KEY_HEADER.toLowerCase()];
+  const outboundHeaders = {
+    ...(headers ?? {}),
+    [REQUEST_ID_HEADER]: requestId,
+    ...(idempotencyKey || callerIdemKey
+      ? { [IDEMPOTENCY_KEY_HEADER]: idempotencyKey ?? callerIdemKey }
+      : {}),
+  };
   const startedAt = Date.now();
 
   edgeLog.info('edge_invoke_start', {

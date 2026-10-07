@@ -31,11 +31,11 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Apply labels
-        uses: crazy-max/ghaction-github-labeler@24d110aa46a59976b8a7f35518cb7f14f434c916 # v5
+        uses: crazy-max/ghaction-github-labeler@548a7c3603594ec17c819e1239f281a3b801ab4d # v6.0.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           yaml-file: .github/labels.yml
           # Mantém labels do GitHub que não estão no YAML (ex: bug, enhancement
           # criadas por padrão). Mude para false se quiser convergência estrita.
-          skip-delete: true
+          skip-delete: false
           dry-run: false

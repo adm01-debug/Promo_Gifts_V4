@@ -46,8 +46,7 @@ jobs:
           npx playwright test \
             e2e/flows/28-error-boundaries.spec.ts \
             --project=chromium-public \
-            --reporter=github,list,html,json \
-            --pass-with-no-tests
+            --reporter=github,list,html,json
         env:
           E2E_BASE_URL: http://localhost:8080
           PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results-error-boundaries.json
@@ -65,9 +64,7 @@ jobs:
     name: E2E — Full User Flows (authed)
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    if: >
-      github.event_name == 'push' ||
-      (github.event_name == 'pull_request' && vars.E2E_USER_EMAIL != '')
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
 
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -91,20 +88,17 @@ jobs:
             e2e/flows/25-quote-full-flow.spec.ts \
             e2e/flows/30-quote-wizard-validations.spec.ts \
             --project=chromium-authed \
-            --reporter=github,list,html,json \
-            --pass-with-no-tests
+            --reporter=github,list,html,json
         env:
           E2E_BASE_URL: http://localhost:8080
           PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results-quote-flow.json
-        continue-on-error: false # Alterado para false para falhar o build em caso de regressão
 
       - name: Run Catalog→Kit Flow E2E
         run: |
           npx playwright test \
             e2e/flows/26-catalog-to-kit-flow.spec.ts \
             --project=chromium-authed \
-            --reporter=github,list,html,json \
-            --pass-with-no-tests
+            --reporter=github,list,html,json
         env:
           E2E_BASE_URL: http://localhost:8080
           PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results-kit-flow.json
@@ -114,8 +108,7 @@ jobs:
           npx playwright test \
             e2e/flows/27-admin-critical-routes.spec.ts \
             --project=chromium-authed \
-            --reporter=github,list,html,json \
-            --pass-with-no-tests
+            --reporter=github,list,html,json
         env:
           E2E_BASE_URL: http://localhost:8080
           PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results-admin-routes.json
@@ -129,8 +122,7 @@ jobs:
           npx playwright test \
             e2e/flows/sidebar-tooltips.spec.ts \
             --project=chromium-authed \
-            --reporter=github,list,html,json \
-            --pass-with-no-tests
+            --reporter=github,list,html,json
         env:
           E2E_BASE_URL: http://localhost:8080
           PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results-sidebar-tooltips-desktop.json
@@ -140,8 +132,7 @@ jobs:
           npx playwright test \
             e2e/flows/sidebar-tooltips.spec.ts \
             --project=mobile-chrome \
-            --reporter=github,list,html,json \
-            --pass-with-no-tests
+            --reporter=github,list,html,json
         env:
           E2E_BASE_URL: http://localhost:8080
           PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results-sidebar-tooltips-mobile.json
@@ -173,8 +164,7 @@ jobs:
           npx playwright test \
             e2e/flows/29-mobile-critical-routes.spec.ts \
             --project=mobile-chrome \
-            --reporter=github,list,html,json \
-            --pass-with-no-tests
+            --reporter=github,list,html,json
         env:
           E2E_BASE_URL: http://localhost:8080
           PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results-mobile.json

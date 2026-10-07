@@ -47,7 +47,10 @@ jobs:
     name: Delete orphan edges
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    environment: production
     steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
       - name: Validate confirmation gate
         if: ${{ inputs.dryRun == false }}
         env:
@@ -60,8 +63,48 @@ jobs:
           fi
           echo "✅ Confirmação aceita. Procedendo com a remoção real."
 
+      - name: Allowlist gate — rejeitar slugs ativos no repo
+        env:
+          EXTRA_EDGES: ${{ inputs.extraEdges }}
+        run: |
+          set -euo pipefail
+          ORPHANS=(
+            super-processor
+            quick-task
+            create_user
+            product-search-v2
+            product-classifier
+            guardrails-ml
+          )
+          if [[ -n "${EXTRA_EDGES// /}" ]]; then
+            IFS=',' read -ra EXTRAS <<< "$EXTRA_EDGES"
+            for extra in "${EXTRAS[@]}"; do
+              trimmed="$(echo "$extra" | xargs)"
+              [[ -n "$trimmed" ]] && ORPHANS+=("$trimmed")
+            done
+          fi
+          FAIL=0
+          for fn in "${ORPHANS[@]}"; do
+            # Rejeitar se slug existe em supabase/functions/<fn>/index.ts
+            if [[ -f "supabase/functions/$fn/index.ts" ]]; then
+              echo "::error::Slug '$fn' tem index.ts ativo em supabase/functions/$fn/ — não pode ser deletado via este workflow. Remova do repo primeiro."
+              FAIL=1
+            fi
+            # Rejeitar se slug está na allowlist canonical-only
+            if [[ -f "audit/edge-functions-canonical-only.json" ]]; then
+              if jq -e --arg slug "$fn" '.functions[] | select(.slug == $slug)' audit/edge-functions-canonical-only.json > /dev/null 2>&1; then
+                echo "::error::Slug '$fn' está em audit/edge-functions-canonical-only.json — precisa de remoção manual da allowlist antes."
+                FAIL=1
+              fi
+            fi
+          done
+          if [[ "$FAIL" -ne 0 ]]; then
+            exit 1
+          fi
+          echo "✅ Allowlist gate passou — nenhum slug ativo detectado."
+
       - name: Setup Supabase CLI
-        uses: supabase/setup-cli@afb1b15109756ea5cf9d8985a359d9095235ca2b # v2
+        uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v2
         with:
           version: 2.101.0
 
@@ -85,7 +128,6 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Lista padrão das 6 edges órfãs auditadas em 10/mai/2026
           ORPHANS=(
             super-processor
             quick-task
@@ -95,15 +137,11 @@ jobs:
             guardrails-ml
           )
 
-          # Adiciona edges extras passadas via input (CSV)
           if [[ -n "${EXTRA_EDGES// /}" ]]; then
             IFS=',' read -ra EXTRAS <<< "$EXTRA_EDGES"
             for extra in "${EXTRAS[@]}"; do
-              # Trim whitespace
               trimmed="$(echo "$extra" | xargs)"
-              if [[ -n "$trimmed" ]]; then
-                ORPHANS+=("$trimmed")
-              fi
+              [[ -n "$trimmed" ]] && ORPHANS+=("$trimmed")
             done
           fi
 
@@ -152,7 +190,8 @@ jobs:
             echo "Deleted successfully: $PASS"
             echo "Failed:               $FAIL"
             if [[ $FAIL -gt 0 ]]; then
-              echo "::warning::Algumas edges falharam ao deletar (podem já não existir)."
+              echo "::error::$FAIL edge(s) falharam ao deletar."
+              exit 1
             fi
           fi
 

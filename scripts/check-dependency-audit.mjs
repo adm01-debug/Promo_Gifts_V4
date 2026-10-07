@@ -47,8 +47,66 @@ const ALLOWED_LHCI_PACKAGES = new Set([
   'ws',
 ]);
 
+// GHSA-vfj7-8cjw-p6xm — braces: stack-exhaustion DoS via deeply nested
+// patterns (advisory publicado 2026-10). Cadeia de propagação inteiramente
+// dev/build-time — NUNCA chega ao bundle de produção:
+//   tailwindcss 3.x → chokidar (watcher), fast-glob → micromatch → braces
+//   lovable-tagger → tailwindcss
+//   vite dev-server → chokidar → braces
+// Não existe fix não-breaking: `npm audit fix --force` instalaria
+// tailwindcss@4.x (mudança major de engine/config — projeto está em 3.4.x).
+// Aceito como risco transitório, mesmo padrão ALLOWED_LHCI_PACKAGES.
+// Revisit by RISK_REVIEW_DEADLINE (ou antes, na migração Tailwind v4).
+const ALLOWED_BRACES_CHAIN_DIRECT = new Set([
+  'tailwindcss',          // direct devDependency (build-time CSS)
+  'tailwindcss-animate',  // direct dep — plugin Tailwind, compila p/ CSS estático
+  'lovable-tagger',       // direct devDependency (Lovable tagger)
+]);
+const ALLOWED_BRACES_CHAIN_TRANSITIVE = new Set([
+  'braces', 'micromatch', 'fast-glob', 'chokidar',
+  // GHSA-rj75-hqrm-r3gf — postcss-selector-parser: DoS por complexidade
+  // quadrática no parsing de seletores (advisory publicado 2026-10).
+  // Mesma cadeia build-time do braces acima — só alcançável via CSS
+  // autorado no repo, nunca por input de usuário em produção:
+  //   tailwindcss 3.x → postcss-nested → postcss-selector-parser
+  // Fix exige tailwindcss@4.x (major). Aceito como risco transitório.
+  'postcss-selector-parser', 'postcss-nested',
+]);
+
+// Únicos advisories aceitos dentro da cadeia build-time. Qualquer
+// advisory NOVO em um desses pacotes (objeto em `via` com URL fora do
+// conjunto) volta a bloquear o gate — a aceitação é por advisory,
+// não em branco por pacote.
+const EXPECTED_CHAIN_ADVISORY_URLS = new Set([
+  'https://github.com/advisories/GHSA-vfj7-8cjw-p6xm', // braces
+  'https://github.com/advisories/GHSA-rj75-hqrm-r3gf', // postcss-selector-parser
+]);
+
+// `via` mistura strings (nome do pacote por onde a vuln propaga) e
+// objetos (advisory direto do pacote). Objetos precisam estar em
+// EXPECTED_CHAIN_ADVISORY_URLS; strings só passam se nomearem um pacote
+// já aceito na cadeia — um nome desconhecido indica advisory novo
+// propagado por dependência não revisada, e deve bloquear.
+const ALL_CHAIN_PACKAGES = new Set([
+  ...ALLOWED_BRACES_CHAIN_DIRECT,
+  ...ALLOWED_BRACES_CHAIN_TRANSITIVE,
+]);
+function hasOnlyExpectedChainAdvisories(vulnerability) {
+  const via = vulnerability.via ?? [];
+  return via.every((entry) =>
+    typeof entry === 'string'
+      ? ALL_CHAIN_PACKAGES.has(entry)
+      : EXPECTED_CHAIN_ADVISORY_URLS.has(entry?.url));
+}
+
 // All packages that may appear in the accepted[] list — used for defence-in-depth after the loop.
-const ALL_KNOWN_ACCEPTED_PACKAGES = new Set(['image-size', 'pptxgenjs', ...ALLOWED_LHCI_PACKAGES]);
+const ALL_KNOWN_ACCEPTED_PACKAGES = new Set([
+  'image-size',
+  'pptxgenjs',
+  ...ALLOWED_LHCI_PACKAGES,
+  ...ALLOWED_BRACES_CHAIN_DIRECT,
+  ...ALLOWED_BRACES_CHAIN_TRANSITIVE,
+]);
 
 function isAllowedLhciPackage(packageName, vulnerability) {
   if (!ALLOWED_LHCI_PACKAGES.has(packageName)) return false;
@@ -56,6 +114,17 @@ function isAllowedLhciPackage(packageName, vulnerability) {
   if (packageName === '@lhci/cli') return vulnerability.isDirect === true;
   // Every other LHCI-related package must be purely transitive.
   return vulnerability.isDirect === false;
+}
+
+function isAllowedBracesChainPackage(packageName, vulnerability) {
+  if (!hasOnlyExpectedChainAdvisories(vulnerability)) return false;
+  if (ALLOWED_BRACES_CHAIN_DIRECT.has(packageName)) {
+    return vulnerability.isDirect === true;
+  }
+  if (ALLOWED_BRACES_CHAIN_TRANSITIVE.has(packageName)) {
+    return vulnerability.isDirect === false;
+  }
+  return false;
 }
 
 function hasExpectedFixAvailable(vulnerability) {
@@ -142,6 +211,10 @@ export function evaluateAuditReport(report, now = new Date()) {
       continue;
     }
     if (isAllowedLhciPackage(packageName, vulnerability)) {
+      accepted.push(packageName);
+      continue;
+    }
+    if (isAllowedBracesChainPackage(packageName, vulnerability)) {
       accepted.push(packageName);
       continue;
     }

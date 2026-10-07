@@ -16,7 +16,7 @@ exports[`NegotiationMarkupCard — snapshots visuais por viewport > snapshot em 
       >
         <svg
           aria-hidden="true"
-          class="lucide lucide-chart-column h-3.5 w-3.5 text-primary"
+          class="lucide lucide-chart-column lucide-bar-chart-3 h-3.5 w-3.5 text-primary"
           fill="none"
           height="24"
           stroke="currentColor"
@@ -326,7 +326,7 @@ exports[`NegotiationMarkupCard — snapshots visuais por viewport > snapshot em 
       >
         <svg
           aria-hidden="true"
-          class="lucide lucide-chart-column h-3.5 w-3.5 text-primary"
+          class="lucide lucide-chart-column lucide-bar-chart-3 h-3.5 w-3.5 text-primary"
           fill="none"
           height="24"
           stroke="currentColor"

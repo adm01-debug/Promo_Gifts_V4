@@ -52,12 +52,18 @@ let created = 0;
 let skipped = 0;
 for (const fn of fns) {
   const file = path.join(LIVE_DIR, `${fn}.test.ts`);
-  if (fs.existsSync(file) && !FORCE) {
-    skipped++;
-    continue;
+  if (FORCE) {
+    fs.writeFileSync(file, shim(fn), 'utf8');
+    created++;
+  } else {
+    try {
+      fs.writeFileSync(file, shim(fn), { flag: 'wx', encoding: 'utf8' });
+      created++;
+    } catch (e) {
+      if (e.code !== 'EEXIST') throw e;
+      skipped++;
+    }
   }
-  fs.writeFileSync(file, shim(fn), "utf8");
-  created++;
 }
 
 console.log(`Edge live test shims — funções: ${fns.length}, criados: ${created}, mantidos: ${skipped}`);

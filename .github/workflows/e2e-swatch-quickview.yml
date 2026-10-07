@@ -1,7 +1,7 @@
 name: E2E • Swatch QuickView (Lista + Tabela)
 
 # Gate de regressão para a navegação por bolinhas de cor → QuickView nas views
-# Lista e Tabela. Roda em PR e push em main/master, paralelizado por browser
+# Lista e Tabela. Roda em PR e push em main, paralelizado por browser
 # (chromium/firefox/webkit) para validar foco, teclado e a11y de forma consistente.
 
 on:

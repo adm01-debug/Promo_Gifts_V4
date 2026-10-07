@@ -69,7 +69,7 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -131,21 +131,37 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      # E40 (2026-10-01): --require-live em push:main e PRs do mesmo repo.
+      # PR de fork não tem secrets → aceita inconclusive (não bloqueia).
       - name: SECURITY DEFINER ACL gate
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-        run: node scripts/check-security-definer-acl.mjs --baseline .security-definer-acl-baseline.json
+        run: |
+          LIVE_FLAG=""
+          IS_FORK_PR="false"
+          if [ "${{ github.event_name }}" = "pull_request" ] && \
+             [ "${{ github.event.pull_request.head.repo.full_name }}" != "${{ github.repository }}" ]; then
+            IS_FORK_PR="true"
+          fi
+          if [ "$IS_FORK_PR" = "false" ]; then
+            LIVE_FLAG="--require-live"
+          fi
+          node scripts/check-security-definer-acl.mjs --baseline .security-definer-acl-baseline.json $LIVE_FLAG
 
   magazine-tests-ok:
     name: Magazine Tests OK
     needs: [edge-import-contract, unit-tests, postgres-contracts, security-definer-acl]
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     if: always()
     steps:
       - name: Check result

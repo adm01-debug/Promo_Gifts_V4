@@ -10,8 +10,11 @@
  *     extraído justamente para teste unitário (sem providers / React Query).
  *
  * Invariantes (qualquer regressão FALHA o build):
- *   1. Chips da tabela preservam labels: low_stock→'Estoque Baixo',
- *      out_of_stock→'Sem Estoque', critical→'Crítico'.
+ *   1. Chips da tabela preservam labels vivos (CHIP_CONFIG em
+ *      VariantStockVisuals): low_stock→'Risco de Ruptura',
+ *      out_of_stock→'Esgotado', critical→'Crítico'.
+ *      (Até a Onda 5 o alvo era o mapa _STATUS_FILTER_LABEL, morto e já
+ *      divergente dos chips reais.)
  *   2. buildStockKpiCards produz os 4 slugs de variação e NÃO reintroduz o
  *      card morto "Estoque Baixo".
  *   3. "Risco de Ruptura" usa variantsCritical no fallback (EMA off) e a contagem
@@ -25,8 +28,8 @@ import { buildStockKpiCards } from '@/components/inventory/stockKpiCards';
 import type { StockDashboardSummary } from '@/types/stock';
 
 const ROOT = resolve(__dirname, '../../..');
-const TABLE_SRC = readFileSync(
-  resolve(ROOT, 'components/inventory/VariantStockTable.tsx'),
+const VISUALS_SRC = readFileSync(
+  resolve(ROOT, 'components/inventory/VariantStockVisuals.tsx'),
   'utf8',
 );
 const DASHBOARD_SRC = readFileSync(
@@ -34,9 +37,7 @@ const DASHBOARD_SRC = readFileSync(
   'utf8',
 );
 
-const summaryOf = (
-  over: Partial<StockDashboardSummary> = {},
-): StockDashboardSummary => ({
+const summaryOf = (over: Partial<StockDashboardSummary> = {}): StockDashboardSummary => ({
   totalProducts: 10,
   totalVariants: 25,
   totalColors: 4,
@@ -58,15 +59,15 @@ const summaryOf = (
   ...over,
 });
 
-describe('SSOT — chips de status da VariantStockTable', () => {
-  it('low_stock preserva o label "Estoque Baixo"', () => {
-    expect(TABLE_SRC).toMatch(/low_stock:\s*'Estoque Baixo'/);
+describe('SSOT — chips de status (CHIP_CONFIG em VariantStockVisuals)', () => {
+  it('low_stock usa "Risco de Ruptura"', () => {
+    expect(VISUALS_SRC).toMatch(/low_stock:\s*\{[^}]*label:\s*'Risco de Ruptura'/);
   });
-  it('out_of_stock usa "Sem Estoque"', () => {
-    expect(TABLE_SRC).toMatch(/out_of_stock:\s*'Sem Estoque'/);
+  it('out_of_stock usa "Esgotado"', () => {
+    expect(VISUALS_SRC).toMatch(/out_of_stock:\s*\{[^}]*label:\s*'Esgotado'/);
   });
   it('critical usa "Crítico"', () => {
-    expect(TABLE_SRC).toMatch(/critical:\s*'Crítico'/);
+    expect(VISUALS_SRC).toMatch(/critical:\s*\{[^}]*label:\s*'Crítico'/);
   });
 });
 
@@ -106,9 +107,9 @@ describe('SSOT — buildStockKpiCards (granularidade variação)', () => {
   });
 
   it('o card crítico usa variantsCritical, NÃO productsCritical', () => {
-    const card = buildStockKpiCards(
-      summaryOf({ variantsCritical: 2, productsCritical: 99 }),
-    ).find((c) => c.slug === 'risco-de-ruptura');
+    const card = buildStockKpiCards(summaryOf({ variantsCritical: 2, productsCritical: 99 })).find(
+      (c) => c.slug === 'risco-de-ruptura',
+    );
     expect(card?.value).toBe(2);
     expect(card?.value).not.toBe(99);
   });

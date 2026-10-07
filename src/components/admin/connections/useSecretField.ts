@@ -125,8 +125,7 @@ export function useSecretField({ secretName, status, connectionId, onSaved }: Us
       const raw = scopedRaw ?? sessionStorage.getItem(legacyDraftKey);
       if (raw) {
         const draft = JSON.parse(raw);
-        if (draft.value) {
-          setValue(draft.value);
+        if (draft.mode) {
           setMode(draft.mode === 'rotate' ? 'rotate' : 'set');
           setEditing(true);
           if (!scopedRaw) {
@@ -141,8 +140,8 @@ export function useSecretField({ secretName, status, connectionId, onSaved }: Us
   }, [secretName, connectionId, draftScope, draftKey, legacyDraftKey]);
 
   useEffect(() => {
-    if (editing && value.length > 0) {
-      sessionStorage.setItem(draftKey, JSON.stringify({ value, mode }));
+    if (editing) {
+      sessionStorage.setItem(draftKey, JSON.stringify({ mode }));
     } else {
       sessionStorage.removeItem(draftKey);
     }

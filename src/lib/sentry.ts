@@ -24,6 +24,34 @@ const ERROR_BUFFER: BufferedError[] = [];
 let bufferedUser: { id: string; email?: string } | null | undefined;
 const BUFFER_MAX = 50;
 
+interface BufferedMessage {
+  message: string;
+  level: 'error' | 'info' | 'warning';
+  tagsAndExtras?: Record<string, unknown>;
+}
+// Métricas de boot (ttfb/DCL/LCP inicial) são emitidas antes do lazy-load
+// do Sentry terminar — sem este buffer elas eram drenadas e descartadas.
+const MESSAGE_BUFFER: BufferedMessage[] = [];
+
+function sendMessageNow(mod: SentryModule, item: BufferedMessage): void {
+  try {
+    const tags: Record<string, string> = {};
+    const extras: Record<string, unknown> = {};
+    if (item.tagsAndExtras) {
+      for (const [k, v] of Object.entries(item.tagsAndExtras)) {
+        if (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean') {
+          tags[k] = String(v);
+        } else {
+          extras[k] = v;
+        }
+      }
+    }
+    mod.captureMessage(item.message, { level: item.level, tags, extra: extras });
+  } catch {
+    /* noop */
+  }
+}
+
 /**
  * Valida o formato do DSN do Sentry/GlitchTip.
  *
@@ -206,6 +234,11 @@ async function loadSentry(): Promise<SentryModule | null> {
         if (!item) break;
         mod.captureException(item.error, { extra: item.context });
       }
+      while (MESSAGE_BUFFER.length) {
+        const item = MESSAGE_BUFFER.shift();
+        if (!item) break;
+        sendMessageNow(mod, item);
+      }
       return mod;
     } catch {
       // Falha em carregar — bloqueia novas tentativas para não thrashear
@@ -275,8 +308,9 @@ export function getSentryErrorBoundary(): typeof SentryNS.ErrorBoundary | null {
 /**
  * Envia uma mensagem informativa/aviso ao Sentry (breadcrumb-like). Usado por
  * `navigationMetrics` para reportar Web Vitals com tags de rota/device.
- * Mensagens emitidas antes do Sentry carregar são silenciosamente descartadas
- * (não faz sentido bufferizar métricas de navegação com TTL indefinido).
+ * Mensagens emitidas antes do Sentry carregar ficam em MESSAGE_BUFFER (cap
+ * BUFFER_MAX) e são flushadas quando o init termina — sem isso as métricas
+ * de boot se perdiam silenciosamente.
  */
 export function captureMessage(
   message: string,
@@ -285,23 +319,11 @@ export function captureMessage(
 ): void {
   if (!shouldLoadSentry()) return;
   if (!sentryRef || !initialized) {
+    if (MESSAGE_BUFFER.length < BUFFER_MAX) {
+      MESSAGE_BUFFER.push({ message, level, tagsAndExtras });
+    }
     void loadSentry();
     return;
   }
-  try {
-    const tags: Record<string, string> = {};
-    const extras: Record<string, unknown> = {};
-    if (tagsAndExtras) {
-      for (const [k, v] of Object.entries(tagsAndExtras)) {
-        if (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean') {
-          tags[k] = String(v);
-        } else {
-          extras[k] = v;
-        }
-      }
-    }
-    sentryRef.captureMessage(message, { level, tags, extra: extras });
-  } catch {
-    /* noop */
-  }
+  sendMessageNow(sentryRef, { message, level, tagsAndExtras });
 }

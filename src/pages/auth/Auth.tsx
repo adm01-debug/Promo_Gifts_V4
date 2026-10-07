@@ -17,7 +17,6 @@ import {
   Wifi,
   AlertTriangle,
   RotateCw,
-  CheckCircle2,
   Rocket,
 } from 'lucide-react';
 import { AuthBrandingPanel, SpaceScene } from '@/pages/auth/AuthBranding';
@@ -35,10 +34,18 @@ import { getSupabaseClient } from '@/integrations/supabase/lazy-client';
 import { SocialLoginButtons } from '@/components/auth/SocialLoginButtons';
 import { AppLogo } from '@/components/layout/AppLogo';
 import { isSupabaseLighthousePlaceholder } from '@/lib/env/supabase-placeholder';
-import { loginSchema, type LoginFormData } from '@/lib/validations';
+import { loginSchema, isWeakPassword, type LoginFormData } from '@/lib/validations';
 import { logger } from '@/lib/logger';
 import { cn } from '@/lib/utils';
 import { invokeEdge } from '@/lib/edge/safeInvokeCall';
+import { createPostLoginGuards } from '@/pages/auth/postLoginGuards';
+import { loginErrorCopy } from '@/pages/auth/loginErrorCopy';
+import {
+  TurnstileWidget,
+  TURNSTILE_SITE_KEY,
+  type TurnstileWidgetHandle,
+} from '@/components/auth/TurnstileWidget';
+import { LoginSuccessSplash } from '@/pages/auth/LoginSuccessSplash';
 
 type LoginForm = LoginFormData;
 
@@ -98,10 +105,12 @@ export default function Auth() {
   // P2-05: honeypot anti-bot. Campo invisível fora do react-hook-form. Humanos
   // não preenchem; bots automáticos costumam preencher todo input encontrado.
   // Lemos via ref no submit pra decidir se rejeita.
-  // FIX 2026-08-15: name/id evita palavras-chave reconhecidas por autofill de
-  // navegador (ex: "website"), que causavam falso-positivo — Chrome/gerenciadores
-  // de senha preenchem esses campos mesmo com autoComplete="off" e aria-hidden.
+  // name/id evita palavras-chave de autofill (ex: "website") — gerenciadores de
+  // senha preenchem esses campos mesmo com autoComplete="off" e causavam falso-positivo.
   const honeypotRef = useRef<HTMLInputElement | null>(null);
+  // Token do desafio Turnstile (ativo só quando VITE_TURNSTILE_SITE_KEY existe).
+  const turnstileTokenRef = useRef<string | null>(null);
+  const turnstileWidgetRef = useRef<TurnstileWidgetHandle>(null);
   // Função `retry` publicada pelo SocialLoginButtons para reexecutar o Google login.
   const googleRetryRef = useRef<(() => void) | null>(null);
   const handleRetryGoogle = useCallback(() => {
@@ -209,47 +218,17 @@ export default function Auth() {
     defaultValues: { email: '', password: '' },
   });
 
-  const validateAndRedirect = async (userId: string, email: string) => {
-    try {
-      const ipValidation = await validateIPForAuthenticatedUser(userId);
-
-      if (!ipValidation.isAllowed && ipValidation.hasRestrictions) {
-        await signOut();
-        const reason = ipValidation.reason || 'access_blocked';
-        await logLoginAttempt(email, userId, false, `${reason}: ${ipValidation.error}`);
-
-        setIpBlocked(true);
-        setBlockedIP(ipValidation.currentIP);
-
-        toast({
-          variant: 'destructive',
-          title: 'Acesso Bloqueado',
-          description:
-            ipValidation.error || `Seu IP (${ipValidation.currentIP}) não está autorizado.`,
-          duration: 10000,
-        });
-        return false;
-      }
-
-      await logLoginAttempt(email, userId, true);
-
-      setLoginStatus('success');
-      toast({
-        title: 'Bem-vindo!',
-        description: 'Login realizado com sucesso',
-      });
-
-      // Aguarda o feedback visual de sucesso antes de navegar
-      setTimeout(() => {
-        navigate(resolveRedirectTargetCb(), { replace: true });
-      }, 600);
-      return true;
-    } catch {
-      logger.warn('[AUTH_POST_LOGIN_VALIDATION] continuing with fail-open redirect');
-      navigate(resolveRedirectTargetCb(), { replace: true }); // Fail-open
-      return true;
-    }
-  };
+  const { ensureIPAllowed, validateAndRedirect } = createPostLoginGuards({
+    validateIPForAuthenticatedUser,
+    logLoginAttempt,
+    signOut,
+    toast,
+    navigate,
+    resolveRedirectTarget: resolveRedirectTargetCb,
+    setIpBlocked,
+    setBlockedIP,
+    setLoginStatus,
+  });
 
   const handleLogin = async (data: LoginForm) => {
     if (isSubmitting) return;
@@ -278,36 +257,35 @@ export default function Auth() {
       return;
     }
 
+    // Turnstile obrigatório quando a site key está configurada — sem token,
+    // não gasta uma tentativa de login contra o Supabase.
+    if (TURNSTILE_SITE_KEY && !turnstileTokenRef.current) {
+      toast({
+        variant: 'destructive',
+        title: 'Verificação de segurança',
+        description: 'Complete o desafio de segurança antes de entrar.',
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
-      const { error } = await signIn(data.email, data.password);
+      const { error } = await signIn(data.email, data.password, {
+        turnstileToken: turnstileTokenRef.current ?? undefined,
+        // O token acima é consumido pelo siteverify da check-login; se o
+        // Supabase Auth CAPTCHA também estiver ativo, o GoTrue precisa de um
+        // token novo — o widget emite um segundo desafio sob demanda.
+        getCaptchaToken: () => turnstileWidgetRef.current?.getToken() ?? Promise.resolve(null),
+      });
 
       if (error) {
         logger.warn('[AUTH_FAILED] Authentication failed', { status: error.status ?? 'unknown' });
-        await logLoginAttempt(data.email, null, false, error.message);
+        // log-login-attempt já é escrito em AuthContext.signIn (fonte única,
+        // com IP real) — escrever aqui de novo dobrava a linha de falha e
+        // fazia a RPC de lockout atingir o limite na metade das tentativas.
 
-        let description = 'Ocorreu um erro ao validar seu acesso. Por favor, tente novamente.';
-        let title = 'Não foi possível entrar';
-        let hint = 'Se o erro persistir, tente redefinir sua senha ou use o login social.';
-
-        if (error.message.includes('Invalid login credentials') || error.status === 400) {
-          title = 'E-mail ou Senha Incorretos';
-          description =
-            'Não encontramos uma conta com esses dados. Verifique se digitou corretamente ou use "Esqueci minha senha".';
-          hint = 'Dica: Verifique se o Caps Lock está ativado.';
-        } else if (error.message.includes('Email not confirmed')) {
-          title = 'E-mail não confirmado';
-          description =
-            'Sua conta ainda não foi ativada. Verifique sua caixa de entrada e spam pelo e-mail de confirmação.';
-          hint = 'Ainda não recebeu? Aguarde alguns minutos antes de solicitar um novo envio.';
-        } else if (error.message.includes('rate limit') || error.status === 429) {
-          title = 'Acesso Temporariamente Suspenso';
-          description =
-            'Detectamos muitas tentativas seguidas. Por segurança, sua conta foi bloqueada por alguns minutos.';
-          // Extrai o tempo de espera da mensagem do Supabase (ex: "after 47 seconds")
-          const secondsMatch = /after (\d+) seconds?/i.exec(error.message);
-          const waitSeconds = secondsMatch ? parseInt(secondsMatch[1], 10) : 60;
-          hint = `Aguarde ${waitSeconds} segundos antes de tentar novamente.`;
-
+        const { title, description, hint, waitSeconds } = loginErrorCopy(error);
+        if (waitSeconds !== undefined) {
           // Iniciar countdown visual
           if (rateLimitTimerRef.current) clearInterval(rateLimitTimerRef.current);
           setRateLimitCountdown(waitSeconds);
@@ -320,23 +298,6 @@ export default function Auth() {
               return prev - 1;
             });
           }, 1000);
-        } else if (
-          error.status === 0 ||
-          error.message.includes('network') ||
-          error.message.includes('Fetch')
-        ) {
-          title = 'Erro de Conexão';
-          description =
-            'Parece que você está sem internet ou nosso servidor está temporariamente inacessível.';
-          hint = 'Verifique sua conexão Wi-Fi ou dados móveis.';
-        } else if (
-          error.message.includes('Database error') ||
-          (error.status !== undefined && error.status >= 500)
-        ) {
-          title = 'Sistema em Manutenção';
-          description =
-            'Estamos ajustando os motores das nossas galáxias. O serviço deve voltar ao normal em breve.';
-          hint = 'Nossa equipe técnica já foi notificada.';
         }
 
         toast({
@@ -443,8 +404,37 @@ export default function Auth() {
         });
       }
 
-      // 3. Validação final de IP e Redirecionamento
-      await validateAndRedirect(userId, data.email);
+      // 3. Validação de IP — antes de qualquer redirect com sessão ativa,
+      //    inclusive o fluxo de senha fraca. Fail-open: se a checagem
+      //    indisponível, segue (mesmo comportamento do fluxo normal).
+      try {
+        if (!(await ensureIPAllowed(userId, data.email))) return;
+      } catch {
+        logger.warn('[AUTH_IP_VALIDATION_FAILOPEN] continuing without IP check');
+      }
+
+      // Linha success VERIFICADA — só depois do gate de IP (SEC_0002):
+      // cobre senha fraca e redirect normal abaixo. void: auditoria lenta
+      // não pode segurar o usuário já autenticado na tela.
+      void logLoginAttempt(data.email, userId, true);
+
+      // 4. Senha abaixo da política forte atual (contas legadas): força
+      // troca antes de liberar o app — /reset-password aceita sessão ativa.
+      if (isWeakPassword(data.password)) {
+        navigatedRef.current = true; // impede o redirect do user-effect
+        // login_attempts success já foi escrito acima, após o gate de IP
+        // (verified via sessão) — não duplicar.
+        toast({
+          title: 'Atualize sua senha',
+          description:
+            'Sua senha atual não atende à política de segurança. Defina uma senha forte para continuar.',
+        });
+        navigate('/reset-password', { replace: true });
+        return;
+      }
+
+      // 5. Redirecionamento (IP já validado acima)
+      await validateAndRedirect(userId, data.email, true);
     } catch {
       logger.error('[AUTH_LOGIN_EXCEPTION] Unexpected login exception');
       toast({
@@ -453,6 +443,10 @@ export default function Auth() {
         description: 'Não foi possível conectar ao servidor. Verifique sua internet.',
       });
     } finally {
+      // Token Turnstile é de uso único — resetar no finally garante desafio
+      // novo mesmo se signIn/guards lançarem exceção (senão o retry sai com token consumido).
+      turnstileTokenRef.current = null;
+      turnstileWidgetRef.current?.reset();
       setIsSubmitting(false);
     }
   };
@@ -565,26 +559,7 @@ export default function Auth() {
             )}
           >
             {loginStatus === 'success' ? (
-              <div
-                key="success"
-                className="flex flex-col items-center justify-center px-8 py-16 text-center duration-500 animate-in fade-in zoom-in"
-              >
-                <div className="relative mb-8">
-                  <div className="absolute inset-0 animate-ping rounded-full bg-blue-500/30 duration-700" />
-                  <div className="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-3xl bg-blue-500/10 text-blue-400 shadow-[0_0_50px_rgba(59,130,246,0.5)] ring-1 ring-blue-500/20">
-                    <Rocket className="h-12 w-12 -rotate-45 animate-bounce" />
-                  </div>
-                  <div className="absolute -bottom-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full border-4 border-[#030508] bg-emerald-500 shadow-lg duration-300 animate-in zoom-in">
-                    <CheckCircle2 className="h-4 w-4 text-white" />
-                  </div>
-                </div>
-                <h2 className="font-display text-3xl font-bold tracking-tight text-white">
-                  Decolagem autorizada!
-                </h2>
-                <p className="mt-3 text-base text-white/50">
-                  Bem-vindo a bordo. Iniciando sistemas...
-                </p>
-              </div>
+              <LoginSuccessSplash />
             ) : showForgotPassword ? (
               <div
                 key="forgot-password"
@@ -827,7 +802,7 @@ export default function Auth() {
                         </button>
                       </div>
                       {loginForm.formState.errors.password && (
-                        <p className="text-sm text-destructive">
+                        <p className="text-sm text-destructive" data-testid="login-error-msg">
                           {loginForm.formState.errors.password.message}
                         </p>
                       )}
@@ -843,6 +818,13 @@ export default function Auth() {
                         Esqueci minha senha
                       </button>
                     </div>
+
+                    <TurnstileWidget
+                      ref={turnstileWidgetRef}
+                      onToken={(token) => {
+                        turnstileTokenRef.current = token;
+                      }}
+                    />
 
                     <button
                       type="submit"

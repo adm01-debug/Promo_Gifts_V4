@@ -157,3 +157,8 @@ verify_jwt = true
 
 [functions.simulation-orchestrator]
 verify_jwt = true
+
+# LGPD — anonimização do próprio perfil; exige JWT de usuário autenticado
+# (identidade revalidada in-code via authorize — nunca anonimiza outro user).
+[functions.anonymize-user]
+verify_jwt = true

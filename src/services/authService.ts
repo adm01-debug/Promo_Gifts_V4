@@ -12,11 +12,14 @@ type RPCCallerFn<T = unknown> = (
 type UnknownData = Record<string, unknown> | null;
 
 export const authService = {
-  async signIn(email: string, password: string) {
+  async signIn(email: string, password: string, opts?: { captchaToken?: string }) {
     const supabase = await getSupabaseClient();
     return supabase.auth.signInWithPassword({
       email,
       password,
+      // captchaToken é exigido pelo GoTrue quando CAPTCHA está ativo no
+      // projeto (Auth → settings); sem a flag ele é ignorado — dormente.
+      ...(opts?.captchaToken ? { options: { captchaToken: opts.captchaToken } } : {}),
     });
   },
 

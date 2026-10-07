@@ -78,13 +78,19 @@ jobs:
 
       - name: Detect edge functions
         id: detect
+        env:
+          FUNCTIONS_JSON: ${{ inputs.functions_json || '' }}
+          FUNCTION_NAME: ${{ inputs.function_name || '' }}
+          EVENT_NAME: ${{ github.event_name }}
+          GIT_BEFORE: ${{ github.event.before }}
+          GIT_AFTER: ${{ github.sha }}
         shell: bash
         run: |
           set -euo pipefail
           cd supabase/functions
 
-          if [[ -n "${{ inputs.functions_json || '' }}" ]]; then
-            JSON='${{ inputs.functions_json }}'
+          if [[ -n "$FUNCTIONS_JSON" ]]; then
+            JSON="$FUNCTIONS_JSON"
             COUNT=$(echo "$JSON" | jq 'length')
             echo "functions=$JSON" >> "$GITHUB_OUTPUT"
             echo "count=$COUNT" >> "$GITHUB_OUTPUT"
@@ -92,8 +98,8 @@ jobs:
               echo "## 📦 Edge Functions (via workflow_call): $COUNT"
               echo "$JSON" | jq -r '.[]' | sed 's/^/- /'
             } >> "$GITHUB_STEP_SUMMARY"
-          elif [[ -n "${{ inputs.function_name || '' }}" ]]; then
-            FN="${{ inputs.function_name }}"
+          elif [[ -n "$FUNCTION_NAME" ]]; then
+            FN="$FUNCTION_NAME"
             if [[ ! -d "$FN" ]]; then
               echo "❌ Pasta $FN não existe em supabase/functions/" >&2
               exit 1
@@ -104,7 +110,7 @@ jobs:
             fi
             echo "functions=[\"$FN\"]" >> "$GITHUB_OUTPUT"
             echo "count=1" >> "$GITHUB_OUTPUT"
-          elif [[ "${{ github.event_name }}" == "push" ]]; then
+          elif [[ "$EVENT_NAME" == "push" ]]; then
             # E63 (plano de 100): antes, todo push redeployava as ~108
             # funções — destruía o sinal "atualizada há X" que expôs o
             # deploy fora do fluxo de kit-ai-builder (auditoria de
@@ -116,8 +122,8 @@ jobs:
             # workflow em main (run 36065556329, "cd: supabase/functions:
             # No such file or directory" na 2ª cd abaixo).
             cd ../..
-            BEFORE="${{ github.event.before }}"
-            AFTER="${{ github.sha }}"
+            BEFORE="$GIT_BEFORE"
+            AFTER="$GIT_AFTER"
             if [[ -z "$BEFORE" || "$BEFORE" =~ ^0+$ ]]; then
               CHANGED=$(git diff --name-only "${AFTER}~1" "$AFTER" -- supabase/functions/ || true)
             else
@@ -163,11 +169,14 @@ jobs:
           fi
 
       - name: Summary
+        env:
+          DETECT_COUNT: ${{ steps.detect.outputs.count }}
+          DETECT_FUNCTIONS: ${{ steps.detect.outputs.functions }}
         shell: bash
         run: |
-          echo "## 📦 Edge Functions detectadas: ${{ steps.detect.outputs.count }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "## 📦 Edge Functions detectadas: $DETECT_COUNT" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo '${{ steps.detect.outputs.functions }}' \
+          echo "$DETECT_FUNCTIONS" \
             | jq -r '.[]' \
             | sed 's/^/- /' >> "$GITHUB_STEP_SUMMARY"
 
@@ -186,7 +195,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Setup Supabase CLI
-        uses: supabase/setup-cli@afb1b15109756ea5cf9d8985a359d9095235ca2b # v2
+        uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v2
         with:
           version: 2.101.0
 
@@ -194,6 +203,7 @@ jobs:
         id: deploy
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          FN: ${{ matrix.fn }}
         shell: bash
         run: |
           set -euo pipefail
@@ -210,29 +220,32 @@ jobs:
           attempt=1
           max_attempts=3
           delays=(5 15 45)
-          until supabase functions deploy "${{ matrix.fn }}" \
+          until supabase functions deploy "$FN" \
             --project-ref "$SUPABASE_PROJECT_REF" \
             --use-api 2>&1 | tee deploy.log; do
             status=${PIPESTATUS[0]}
             if [[ "$attempt" -ge "$max_attempts" ]]; then
-              echo "❌ Deploy de ${{ matrix.fn }} falhou após $attempt tentativa(s) (exit $status)." >&2
+              echo "❌ Deploy de $FN falhou após $attempt tentativa(s) (exit $status)." >&2
               exit "$status"
             fi
             delay="${delays[$((attempt - 1))]}"
-            echo "⚠️ Tentativa $attempt de ${{ matrix.fn }} falhou (exit $status) — retry em ${delay}s." >&2
+            echo "⚠️ Tentativa $attempt de $FN falhou (exit $status) — retry em ${delay}s." >&2
             sleep "$delay"
             attempt=$((attempt + 1))
           done
-          echo "Deployed ${{ matrix.fn }} to project $SUPABASE_PROJECT_REF (tentativa $attempt)."
+          echo "Deployed $FN to project $SUPABASE_PROJECT_REF (tentativa $attempt)."
 
       - name: Mark step status
         if: always()
+        env:
+          DEPLOY_OUTCOME: ${{ steps.deploy.outcome }}
+          FN: ${{ matrix.fn }}
         shell: bash
         run: |
-          if [[ "${{ steps.deploy.outcome }}" == "success" ]]; then
-            echo "✅ ${{ matrix.fn }}" >> "$GITHUB_STEP_SUMMARY"
+          if [[ "$DEPLOY_OUTCOME" == "success" ]]; then
+            echo "✅ $FN" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "❌ ${{ matrix.fn }}" >> "$GITHUB_STEP_SUMMARY"
+            echo "❌ $FN" >> "$GITHUB_STEP_SUMMARY"
           fi
 
   verify:
@@ -243,14 +256,16 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Final summary
+        env:
+          TOTAL_COUNT: ${{ needs.list-functions.outputs.count }}
         shell: bash
         run: |
           echo "## 🏁 Deployment concluído" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "Total de funções processadas: **${{ needs.list-functions.outputs.count }}**" >> "$GITHUB_STEP_SUMMARY"
+          echo "Total de funções processadas: **$TOTAL_COUNT**" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "Verifique status em:" >> "$GITHUB_STEP_SUMMARY"
-          echo "https://supabase.com/dashboard/project/${{ env.SUPABASE_PROJECT_REF }}/functions" >> "$GITHUB_STEP_SUMMARY"
+          echo "https://supabase.com/dashboard/project/$SUPABASE_PROJECT_REF/functions" >> "$GITHUB_STEP_SUMMARY"
 
   ledger:
     # E66 (plano de 100 etapas, 2026-09-24): migrations têm
@@ -275,34 +290,43 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
 
       - name: Setup Supabase CLI
-        uses: supabase/setup-cli@afb1b15109756ea5cf9d8985a359d9095235ca2b # v2
+        uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v2
         with:
           version: 2.101.0
 
       - name: Grava um recibo por função deployada
+        env:
+          FUNCTIONS_TO_DEPLOY: ${{ needs.list-functions.outputs.functions }}
+          GIT_SHA: ${{ github.sha }}
+          RUN_ID: ${{ github.run_id }}
+          ACTOR: ${{ github.actor }}
+          EVENT_NAME: ${{ github.event_name }}
         shell: bash
         run: |
           set -euo pipefail
           supabase functions list --project-ref "$SUPABASE_PROJECT_REF" --output json > /tmp/functions.json
 
-          echo '${{ needs.list-functions.outputs.functions }}' | jq -r '.[]' | while IFS= read -r slug; do
+          echo "$FUNCTIONS_TO_DEPLOY" | jq -r '.[]' | while IFS= read -r slug; do
             [ -z "$slug" ] && continue
             version=$(jq -r --arg slug "$slug" '.[] | select(.slug==$slug) | .version // "-"' /tmp/functions.json)
             node scripts/append-edge-deploy-receipt.mjs \
               --slug="$slug" \
               --version="$version" \
-              --sha="${{ github.sha }}" \
-              --run="${{ github.run_id }}" \
-              --executor="GitHub Actions (disparado por ${{ github.actor }})" \
-              --metodo="${{ github.event_name }}"
+              --sha="$GIT_SHA" \
+              --run="$RUN_ID" \
+              --executor="GitHub Actions (disparado por $ACTOR)" \
+              --metodo="$EVENT_NAME"
           done
 
       - name: Abre PR com o recibo
+        env:
+          RUN_ID: ${{ github.run_id }}
+          ACTOR: ${{ github.actor }}
         shell: bash
         run: |
           set -euo pipefail
@@ -310,16 +334,16 @@ jobs:
             echo "Nada novo em EDGE_FUNCTIONS_DEPLOY_LOG.md — pulando PR."
             exit 0
           fi
-          BRANCH="e66-edge-deploy-receipt-${{ github.run_id }}"
+          BRANCH="e66-edge-deploy-receipt-$RUN_ID"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BRANCH"
           git add supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md
-          git commit -m "docs(edge-deploy-log): recibo do deploy — run ${{ github.run_id }}" \
-                     -m "Auto-gerado por .github/workflows/deploy-edge-functions.yml (run ${{ github.run_id }}), disparado por ${{ github.actor }}. Plano de 100 etapas E66."
+          git commit -m "docs(edge-deploy-log): recibo do deploy — run $RUN_ID" \
+                     -m "Auto-gerado por .github/workflows/deploy-edge-functions.yml (run $RUN_ID), disparado por $ACTOR. Plano de 100 etapas E66."
           git push -u origin "$BRANCH"
           gh pr create \
             --base main \
             --head "$BRANCH" \
-            --title "docs: recibo de deploy de edge function(s) — run ${{ github.run_id }} (E66)" \
-            --body "Recibo automático do deploy via \`deploy-edge-functions.yml\` (run ${{ github.run_id }}, disparado por @${{ github.actor }}). As funções já foram deployadas pelo job \`deploy\` desta mesma run — este PR só registra o recibo textual (E66/E67, docs/plans/PLANO_CONSOLIDACAO_AUDITORIAS_100_ETAPAS_2026-09-24.md)."
+            --title "docs: recibo de deploy de edge function(s) — run $RUN_ID (E66)" \
+            --body "Recibo automático do deploy via \`deploy-edge-functions.yml\` (run $RUN_ID, disparado por @$ACTOR). As funções já foram deployadas pelo job \`deploy\` desta mesma run — este PR só registra o recibo textual (E66/E67, docs/plans/PLANO_CONSOLIDACAO_AUDITORIAS_100_ETAPAS_2026-09-24.md)."

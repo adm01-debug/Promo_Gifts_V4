@@ -1,6 +1,6 @@
 # CLAUDE.md — Instruções para Claude Code (sessões automáticas)
 # Lido pelo Claude Code ao iniciar cada sessão neste repositório.
-# Última atualização: 2026-09-24 — REGRA #8 ganhou corolário de deploy de edge function.
+# Última atualização: 2026-10-02 — E99 SBOM/attestation, E100 gate table atualizada.
 
 ## CONTEXTO DO PROJETO
 
@@ -290,7 +290,7 @@ ao terminar. Ver `docs/plans/PLANO_ENGENHARIA_SENIOR_50_ETAPAS_2026-09-17.md`
 
 ## CI — ESTRUTURA DE GATES E PADRÃO E12
 
-> Atualizado 2026-09-27 (E100 — PLANO_WORKFLOWS_CI_100_ETAPAS_2026-09-26).
+> Atualizado 2026-10-02 (E100 — PLANO_WORKFLOWS_CI_100_ETAPAS_2026-09-26).
 
 ### Gates obrigatórios (required checks em `main`)
 
@@ -302,6 +302,7 @@ sequência; se qualquer um falhar, o deploy é bloqueado.
 |---|---|---|
 | Gate 0 | SSOT — ID canônico `doufsxqlfjyuvxuezpln` (`validate-supabase-config.mjs`) | sim |
 | Gate 0.5 | `npm audit --audit-level high` — sem dependências com CVE high/critical | sim |
+| Gate 0.6 | Dependency Review — deps com CVE severity ≥ high bloqueiam o PR (E97, PR-only) | sim (PR-only) |
 | Gate 1 | Lint (ESLint) + TypeScript sem erros | sim |
 | Gate 1.1 | Campos críticos do tipo `Product` presentes (REGRA #2) | sim |
 | Gate 1.2 | Drift estrutural de `types.ts` (nenhuma tabela/view/function/enum sumiu sem allowlist) | sim |
@@ -309,13 +310,15 @@ sequência; se qualquer um falhar, o deploy é bloqueado.
 | Gate 1.4 | Visual baselines commitados | sim |
 | Gate 1.5 | Sem "Salvar Alterações" em fluxos de rascunho | sim |
 | Gate 1.6 | Bundle size dentro dos limites | sim |
+| Gate 1.7 | TSC ratchet file guard — baseline não aumenta sem label `ratchet-override` (E41, PR-only) | sim (PR-only) |
+| Gate 1.8 | Detect accidentally base64-encoded files — texto encodado em base64 acidentalmente | sim |
 | Gate 2 | Testes unitários (`vitest`) | sim |
 | Gate 2.5 | Integridade transacional PostgreSQL | sim |
 | Gate 3 | E2E Smoke (Playwright, chromium) | sim |
 | Gate 4 | Lighthouse CI (performance/acessibilidade) | opcional |
 | Gate 5 | SEO sanity check | sim |
 | Gate 5.5 | RPC `restore_seller_cart` presente no canônico | sim |
-| Gate 6 | Build Vite sem erro | sim |
+| Gate 6 | Build Vite sem erro + SBOM SPDX-JSON + build provenance attestation (E99, push-only) | sim |
 
 O `required-checks.json` (`.github/required-checks.json`) é a SSOT da lista —
 qualquer PR que altere um `name:` de job em `deploy-gates.yml` deve atualizar

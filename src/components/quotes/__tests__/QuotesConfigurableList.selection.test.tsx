@@ -10,7 +10,7 @@
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { useState } from 'react';
-import { render, screen, act, within } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -426,6 +426,3 @@ describe('QuotesConfigurableList — infinite scroll', () => {
     expect(onRetry).toHaveBeenCalledTimes(1);
   });
 });
-
-// Suprimi warning sobre `within` não usado mantendo o import: removo se lint reclamar.
-void within;

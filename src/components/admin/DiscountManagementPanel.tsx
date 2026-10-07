@@ -123,6 +123,7 @@ export function DiscountManagementPanel() {
       respondDialog.request.id,
       respondDialog.action === 'approve',
       respondDialog.notes,
+      respondDialog.request.version,
     );
     if (ok) {
       setRespondDialog({ open: false, request: null, action: null, notes: '' });
@@ -632,7 +633,6 @@ export function DiscountManagementPanel() {
                               </Button>
                             </div>
                           )}
-
                         </div>
                       </CardContent>
                     </Card>

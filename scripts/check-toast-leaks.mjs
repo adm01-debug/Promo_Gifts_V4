@@ -17,7 +17,7 @@
  *   node scripts/check-toast-leaks.mjs            # gate
  *   UPDATE_BASELINE=1 node scripts/check-toast-leaks.mjs   # regrava baseline
  */
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { execSync } from 'node:child_process';
 import path from 'node:path';
 
@@ -71,7 +71,6 @@ function findLeaks() {
 }
 
 function loadBaseline() {
-  if (!existsSync(BASELINE_PATH)) return { entries: [] };
   try {
     return JSON.parse(readFileSync(BASELINE_PATH, 'utf8'));
   } catch {

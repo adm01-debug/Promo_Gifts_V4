@@ -32,15 +32,12 @@ import {
 } from '@/lib/auth/session-recovery';
 
 import { logger } from '@/lib/logger';
+
+import { evaluateLoginGate, GOTRUE_CAPTCHA_ENABLED } from '@/lib/auth/checkLoginGate';
+
 // Tipos de role conforme app_role enum no banco.
 export type AppRole =
-  | 'admin'
-  | 'agente'
-  | 'coordenador'
-  | 'dev'
-  | 'manager'
-  | 'supervisor'
-  | 'vendedor';
+  'admin' | 'agente' | 'coordenador' | 'dev' | 'manager' | 'supervisor' | 'vendedor';
 
 export interface Profile {
   id: string;
@@ -83,6 +80,7 @@ interface AuthContextType {
   signIn: (
     email: string,
     password: string,
+    opts?: { turnstileToken?: string; getCaptchaToken?: () => Promise<string | null> },
   ) => Promise<{
     error: AuthError | { message: string; status?: number } | null;
     data: { user: User | null; session: Session | null } | null;
@@ -137,8 +135,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       const refreshed =
         res.kind === 'ok' ? ((res.data ?? null) as { session?: Session | null } | null) : null;
-      const nextSession =
-        refreshed?.session ?? (await supabase.auth.getSession()).data.session;
+      const nextSession = refreshed?.session ?? (await supabase.auth.getSession()).data.session;
       if (mountedRef.current) {
         setSession(nextSession);
         setUser(nextSession?.user ?? null);
@@ -340,65 +337,119 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => window.clearTimeout(timer);
   }, [isLoading, setIsLoading, setRolesLoaded]);
 
-  const signIn = useCallback(async (email: string, password: string) => {
-    const log = createClientLogger('auth.signIn', { base: { email_domain: email.split('@')[1] } });
-    const { allowed, remainingSeconds } = checkLoginAllowed(email);
-    if (!allowed) {
-      return {
-        error: {
-          message: `Bloqueado. Tente em ${Math.ceil(remainingSeconds / 60)} min.`,
-          status: 429,
-        },
-        data: null,
-      };
-    }
-
-    const { data, error } = await authService.signIn(email, password);
-    if (error) {
-      recordFailedAttempt(email);
-    } else {
-      clearLoginAttempts(email);
-    }
-
-    import('@/lib/edge/safeInvokeCall')
-      .then(async ({ invokeEdge }) => {
-        const { error: invokeError } = await invokeEdge('log-login-attempt', {
-          body: {
-            email,
-            user_id: data?.user?.id,
-            success: !error,
-            failure_reason: error?.message,
-            user_agent: navigator.userAgent,
-          },
-          headers: log.headers(),
-        });
-
-        if (invokeError) {
-          const invokeStatus = (invokeError as { status?: number }).status;
-          log.error('log_login_attempt_failed', {
-            error: invokeError.message,
-            status: invokeStatus,
-            requestId: log.requestId,
-          });
-
-          if (isBadJwtError(invokeError) || invokeStatus === 401) {
-            toast.error(
-              'Erro de autenticação na função de auditoria. Verifique a conexão com o projeto canônico.',
-              {
-                description: `Request ID: ${log.requestId}`,
-              },
-            );
-          }
-        } else {
-          log.info('log_login_attempt_ok', { requestId: log.requestId });
-        }
-      })
-      .catch((err) => {
-        log.error('log_login_attempt_exception', { err: String(err) });
+  const signIn = useCallback(
+    async (
+      email: string,
+      password: string,
+      opts?: { turnstileToken?: string; getCaptchaToken?: () => Promise<string | null> },
+    ) => {
+      const log = createClientLogger('auth.signIn', {
+        base: { email_domain: email.split('@')[1] },
       });
 
-    return { error, data };
-  }, []);
+      // Fonte única da linha em login_attempts: fire-and-forget, cobre sucesso
+      // (a RPC de lockout usa o último success VERIFICADO pra zerar o contador
+      // — o invokeEdge carrega o JWT da sessão recém-criada e a edge valida
+      // via auth.getUser), falha de credencial e bloqueio por gate. O IP é
+      // derivado da conexão pela edge — ip_address vindo do body é forjável
+      // e ignorado.
+      const logAttempt = (userId: string | null, success: boolean, failureReason?: string) => {
+        import('@/lib/edge/safeInvokeCall')
+          .then(async ({ invokeEdge }) => {
+            const { error: invokeError } = await invokeEdge('log-login-attempt', {
+              body: {
+                email,
+                user_id: userId,
+                success,
+                failure_reason: failureReason,
+                user_agent: navigator.userAgent,
+              },
+              headers: log.headers(),
+            });
+
+            if (invokeError) {
+              const invokeStatus = (invokeError as { status?: number }).status;
+              log.error('log_login_attempt_failed', {
+                error: invokeError.message,
+                status: invokeStatus,
+                requestId: log.requestId,
+              });
+
+              if (isBadJwtError(invokeError) || invokeStatus === 401) {
+                toast.error(
+                  'Erro de autenticação na função de auditoria. Verifique a conexão com o projeto canônico.',
+                  {
+                    description: `Request ID: ${log.requestId}`,
+                  },
+                );
+              }
+            } else {
+              log.info('log_login_attempt_ok', { requestId: log.requestId });
+            }
+          })
+          .catch((err) => {
+            log.error('log_login_attempt_exception', { err: String(err) });
+          });
+      };
+
+      const { allowed, remainingSeconds } = checkLoginAllowed(email);
+      if (!allowed) {
+        // Sem escrita em login_attempts: recusas por rate-limit/bloqueio não
+        // podem virar "última falha" e renovar o próprio bloqueio.
+        return {
+          error: {
+            message: `Bloqueado. Tente em ${Math.ceil(remainingSeconds / 60)} min.`,
+            status: 429,
+          },
+          data: null,
+        };
+      }
+
+      // Gate server-side: access_security_settings (IP/city whitelist, lockout)
+      // + Turnstile. Edge indisponível → fail-open com warn; com turnstileToken
+      // presente → fail-closed (prosseguir contornaria o anti-bot). Decisão
+      // completa em lib/auth/checkLoginGate.
+      const gateBlock = await evaluateLoginGate(log, email, opts?.turnstileToken);
+      // Não grava login_attempts no bloqueio do gate: a recusa é consequência
+      // do bloqueio, não uma nova falha de credencial — registrar success=false
+      // moveria "última falha" pra frente e adiaria o desbloqueio a cada tentativa.
+      if (gateBlock) {
+        return {
+          error: { message: gateBlock.message, status: gateBlock.status },
+          data: null,
+        };
+      }
+
+      // Turnstile é single-use: o token do formulário já foi consumido pelo
+      // siteverify da check-login. Com CAPTCHA ativo no Supabase Auth
+      // (espelhado em VITE_GOTRUE_CAPTCHA), o GoTrue exige um token NOVO —
+      // o widget emite um segundo desafio em vez de reenviar o mesmo
+      // (rejeitado). Sem o flag, nenhum desafio extra atrasa o login.
+      const captchaToken =
+        GOTRUE_CAPTCHA_ENABLED && opts?.getCaptchaToken
+          ? ((await opts.getCaptchaToken().catch(() => null)) ?? undefined)
+          : undefined;
+      const { data, error } = await authService.signIn(email, password, {
+        captchaToken,
+      });
+      if (error) {
+        recordFailedAttempt(email);
+      } else {
+        clearLoginAttempts(email);
+      }
+
+      const attemptUserId = data?.user?.id ?? null;
+      // Só falhas são logadas aqui — a linha success VERIFICADA é escrita
+      // pelo caller DEPOIS do gate de IP (ensureIPAllowed), senão um login
+      // bloqueado por IP zerava o contador do par (Devin Review SEC_0002).
+      if (error) {
+        logAttempt(attemptUserId, false, error.message);
+      }
+
+      return { error, data };
+    },
+    [],
+  );
 
   const signOut = useCallback(async () => {
     try {

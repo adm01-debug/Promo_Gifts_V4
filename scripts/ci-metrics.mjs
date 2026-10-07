@@ -1,141 +1,239 @@
 #!/usr/bin/env node
 /**
- * E93 — Métricas de CI como artefato semanal.
+ * E93 — Coleta métricas de CI da última semana via GitHub REST API
+ * Saída: docs/ci/METRICAS_SEMANAIS.md
  *
- * Consulta a API do GitHub (read-only) e gera docs/ci/METRICAS_SEMANAIS.md
- * com: runs/workflow, minutos, taxa de falha, skips, "verde vazio" (expected==0).
- *
- * Uso:
- *   node scripts/ci-metrics.mjs [--days 7] [--output docs/ci/METRICAS_SEMANAIS.md]
- *
- * Requer: GH_TOKEN (com actions:read) e GITHUB_REPOSITORY (owner/repo).
+ * Uso: GH_TOKEN=<token> GITHUB_REPOSITORY=owner/repo node scripts/ci-metrics.mjs
  */
-import { writeFileSync, mkdirSync } from 'node:fs';
-import { dirname } from 'node:path';
 
-const OWNER_REPO = process.env.GITHUB_REPOSITORY || 'adm01-debug/Promo_Gifts_V4';
+import { writeFileSync, mkdirSync } from 'fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const ROOT = join(__dirname, '..');
+
 const TOKEN = process.env.GH_TOKEN || process.env.GITHUB_TOKEN;
-const args = process.argv.slice(2);
-const daysIdx = args.indexOf('--days');
-const DAYS = daysIdx !== -1 ? parseInt(args[daysIdx + 1], 10) : 7;
-const outIdx = args.indexOf('--output');
-const OUTPUT = outIdx !== -1 ? args[outIdx + 1] : 'docs/ci/METRICAS_SEMANAIS.md';
+const REPO = process.env.GITHUB_REPOSITORY || 'adm01-debug/Promo_Gifts_V4';
+const [OWNER, REPO_NAME] = REPO.split('/');
 
 if (!TOKEN) {
-  console.error('ERRO: GH_TOKEN ou GITHUB_TOKEN não definido.');
+  console.error('GH_TOKEN ou GITHUB_TOKEN obrigatório');
   process.exit(1);
 }
 
-const [owner, repo] = OWNER_REPO.split('/');
-const since = new Date(Date.now() - DAYS * 24 * 60 * 60 * 1000).toISOString();
+const BASE = `https://api.github.com/repos/${OWNER}/${REPO_NAME}`;
+const HEADERS = {
+  Authorization: `Bearer ${TOKEN}`,
+  Accept: 'application/vnd.github+json',
+  'X-GitHub-Api-Version': '2022-11-28',
+  'User-Agent': 'ci-metrics/1.0',
+};
 
-async function gh(path, params = {}) {
-  const url = new URL(`https://api.github.com/repos/${owner}/${repo}/${path}`);
-  Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
-  const res = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${TOKEN}`,
-      Accept: 'application/vnd.github+json',
-      'X-GitHub-Api-Version': '2022-11-28',
-    },
-  });
-  if (!res.ok) throw new Error(`GitHub API ${res.status}: ${await res.text()}`);
-  return res.json();
+async function ghGet(url) {
+  const r = await fetch(url, { headers: HEADERS });
+  if (!r.ok) throw new Error(`GET ${url} → ${r.status} ${r.statusText}`);
+  return r.json();
 }
 
-async function paginate(path, params = {}, key = null) {
-  const items = [];
+async function paginate(url, key) {
+  const results = [];
   let page = 1;
   while (true) {
-    const data = await gh(path, { ...params, per_page: 100, page });
-    const batch = key ? data[key] : data;
-    items.push(...batch);
-    if (batch.length < 100) break;
+    const sep = url.includes('?') ? '&' : '?';
+    const data = await ghGet(`${url}${sep}per_page=100&page=${page}`);
+    const items = key ? data[key] : data;
+    results.push(...items);
+    if (items.length < 100) break;
     page++;
+    if (page > 5) break; // safety cap: max 500 items
   }
-  return items;
+  return results;
 }
 
-console.log(`Coletando métricas dos últimos ${DAYS} dias (desde ${since.slice(0, 10)})…`);
-
-const workflows = await paginate('actions/workflows', {}, 'workflows');
-console.log(`  ${workflows.length} workflows encontrados`);
-
-const metrics = [];
-
-for (const wf of workflows) {
-  const runs = await paginate(`actions/workflows/${wf.id}/runs`, { created: `>=${since.slice(0, 10)}` }, 'workflow_runs');
-
-  if (runs.length === 0) {
-    metrics.push({ name: wf.name, path: wf.path, runs: 0, minutes: 0, failures: 0, skips: 0, noTests: 0, lastRun: null });
-    continue;
-  }
-
-  let minutes = 0;
-  let failures = 0;
-  let skips = 0;
-  let noTests = 0;
-
-  for (const run of runs) {
-    // Duração aproximada (created_at → updated_at)
-    const durMs = new Date(run.updated_at) - new Date(run.created_at);
-    minutes += durMs / 60000;
-    if (run.conclusion === 'failure') failures++;
-    if (run.conclusion === 'skipped') skips++;
-    // Heurística "verde vazio": run com success em < 30 s provavelmente não executou nenhum teste
-    // (path filter, branch filter ou todos os steps skipped). Semana típica tem poucos desses.
-    if (run.conclusion === 'success' && durMs < 30_000) noTests++;
-  }
-
-  const lastRun = runs[0].created_at?.slice(0, 10) ?? null;
-
-  metrics.push({ name: wf.name, path: wf.path, runs: runs.length, minutes: Math.round(minutes), failures, skips, noTests, lastRun });
+function p95(durations) {
+  if (!durations.length) return 0;
+  const sorted = [...durations].sort((a, b) => a - b);
+  const idx = Math.ceil(sorted.length * 0.95) - 1;
+  return sorted[Math.max(0, idx)];
 }
 
-metrics.sort((a, b) => b.minutes - a.minutes);
+function fmtDuration(ms) {
+  if (!ms) return '—';
+  const s = Math.round(ms / 1000);
+  if (s < 60) return `${s}s`;
+  const m = Math.floor(s / 60);
+  const rem = s % 60;
+  return rem ? `${m}m${rem}s` : `${m}m`;
+}
 
-const totalRuns = metrics.reduce((s, m) => s + m.runs, 0);
-const totalMinutes = metrics.reduce((s, m) => s + m.minutes, 0);
-const totalFailures = metrics.reduce((s, m) => s + m.failures, 0);
-const totalNoTests = metrics.reduce((s, m) => s + m.noTests, 0);
-const zeroRunCount = metrics.filter(m => m.runs === 0).length;
+function fmtMin(ms) {
+  if (!ms) return 0;
+  return (ms / 60000).toFixed(1);
+}
 
-const now = new Date().toISOString().slice(0, 10);
+async function main() {
+  const now = new Date();
+  const since7d = new Date(now - 7 * 86400 * 1000).toISOString();
+  const since30d = new Date(now - 30 * 86400 * 1000).toISOString();
 
-const md = `# Métricas de CI — últimos ${DAYS} dias (${now})
+  console.log(`Coletando workflows de ${OWNER}/${REPO_NAME}...`);
+  const workflows = await paginate(`${BASE}/actions/workflows`, 'workflows');
+  console.log(`  ${workflows.length} workflows encontrados`);
 
-> Gerado por \`scripts/ci-metrics.mjs\` (E93). Fonte: GitHub Actions API (read-only).
+  const rows = [];
 
-## Resumo
+  for (const wf of workflows) {
+    if (wf.state !== 'active') continue;
 
-| Métrica | Valor |
-| --- | --- |
-| Total de runs | ${totalRuns} |
-| Total de minutos | ${totalMinutes} |
-| Total de falhas | ${totalFailures} |
-| Taxa de falha | ${totalRuns > 0 ? ((totalFailures / totalRuns) * 100).toFixed(1) : 0}% |
-| Verde vazio (< 30 s) | ${totalNoTests} |
-| Workflows sem run | ${zeroRunCount} de ${metrics.length} |
+    // runs dos últimos 30 dias (p95 precisa de mais amostras)
+    let runs30 = [];
+    try {
+      runs30 = await paginate(
+        `${BASE}/actions/workflows/${wf.id}/runs?created=>=${since30d}&status=completed`,
+        'workflow_runs',
+      );
+    } catch {
+      runs30 = [];
+    }
 
-## Por workflow (top 30 por minutos)
+    const runs7 = runs30.filter((r) => r.created_at >= since7d);
 
-> "Verde vazio" = run com success em < 30 s (heurística: provavelmente path/branch filter ou steps todos skipped).
+    const total = runs7.length;
+    const failures = runs7.filter(
+      (r) => r.conclusion === 'failure' || r.conclusion === 'startup_failure',
+    ).length;
+    const skipped = runs7.filter((r) => r.conclusion === 'skipped').length;
+    const successRuns = runs7.filter(
+      (r) => r.conclusion === 'success' || r.conclusion === 'neutral',
+    );
 
-| Workflow | Runs | Min | Falhas | Skips | Verde vazio | Último run |
-| --- | --- | --- | --- | --- | --- | --- |
-${metrics.slice(0, 30).map(m =>
-  `| ${m.name} | ${m.runs} | ${m.minutes} | ${m.failures} | ${m.skips} | ${m.noTests > 0 ? `**${m.noTests}**` : '0'} | ${m.lastRun ?? '—'} |`
-).join('\n')}
+    // durations in ms
+    const durations = runs30
+      .filter((r) => r.run_started_at && r.updated_at)
+      .map((r) => new Date(r.updated_at) - new Date(r.run_started_at))
+      .filter((d) => d > 0);
 
-## Workflows sem run nos últimos ${DAYS} dias
+    const p95ms = p95(durations);
 
-${zeroRunCount === 0 ? '_Nenhum._' : metrics.filter(m => m.runs === 0).map(m => `- \`${m.path}\``).join('\n')}
+    // minutes billed approximation (GitHub rounds up per job; we approximate)
+    const totalMinutes = runs7.reduce((acc, r) => {
+      const dur = r.updated_at
+        ? new Date(r.updated_at) - new Date(r.run_started_at || r.created_at)
+        : 0;
+      return acc + Math.ceil(Math.max(dur, 0) / 60000);
+    }, 0);
 
----
-_Gerado automaticamente por scripts/ci-metrics.mjs_
-`;
+    // consecutive failures (look at last 5 runs ordered by created_at desc)
+    const lastRuns = runs30
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      .slice(0, 5);
+    let consecutiveFails = 0;
+    for (const r of lastRuns) {
+      if (r.conclusion === 'failure' || r.conclusion === 'startup_failure') {
+        consecutiveFails++;
+      } else {
+        break;
+      }
+    }
 
-mkdirSync(dirname(OUTPUT), { recursive: true });
-writeFileSync(OUTPUT, md);
-console.log(`Relatório gravado em ${OUTPUT}`);
-console.log(`  ${totalRuns} runs · ${totalMinutes} min · ${totalFailures} falhas · ${zeroRunCount} workflows sem run`);
+    // last run timestamp
+    const lastRun = runs30[0]
+      ? new Date(runs30[0].created_at).toISOString().slice(0, 10)
+      : null;
+    const daysSinceLastRun = lastRun
+      ? Math.floor((now - new Date(lastRun)) / 86400000)
+      : 999;
+
+    const alerts = [];
+    if (daysSinceLastRun >= 7 && total === 0)
+      alerts.push(`⚠️ sem run em ≥7d`);
+    if (consecutiveFails >= 3)
+      alerts.push(`🔴 ${consecutiveFails} falhas consecutivas`);
+
+    rows.push({
+      name: wf.name,
+      path: wf.path.replace('.github/workflows/', ''),
+      total,
+      failures,
+      failureRate:
+        total > 0 ? ((failures / total) * 100).toFixed(0) + '%' : '—',
+      skipped,
+      minutesTotal: totalMinutes,
+      p95ms,
+      lastRun: lastRun || '—',
+      daysSinceLast: daysSinceLastRun,
+      alerts: alerts.join(' '),
+      consecutiveFails,
+    });
+  }
+
+  rows.sort((a, b) => b.failures - a.failures || b.total - a.total);
+
+  const dateStr = now.toISOString().slice(0, 10);
+  const weekStr = `semana de ${since7d.slice(0, 10)} a ${dateStr}`;
+
+  const alertRows = rows.filter((r) => r.alerts);
+  const totalRuns = rows.reduce((s, r) => s + r.total, 0);
+  const totalFails = rows.reduce((s, r) => s + r.failures, 0);
+  const totalMins = rows.reduce((s, r) => s + r.minutesTotal, 0);
+
+  const md = [
+    `# Métricas de CI — ${dateStr}`,
+    ``,
+    `> **Período:** ${weekStr}  `,
+    `> **Gerado por:** \`scripts/ci-metrics.mjs\` (E93)  `,
+    `> **Repo:** ${OWNER}/${REPO_NAME}`,
+    ``,
+    `## Resumo`,
+    ``,
+    `| Métrica | Valor |`,
+    `|---|---|`,
+    `| Workflows ativos | ${rows.length} |`,
+    `| Total de runs (7d) | ${totalRuns} |`,
+    `| Total de falhas (7d) | ${totalFails} |`,
+    `| Taxa de falha global | ${totalRuns > 0 ? ((totalFails / totalRuns) * 100).toFixed(1) : 0}% |`,
+    `| Minutos estimados (7d) | ~${totalMins} |`,
+    `| Alertas ativos | ${alertRows.length} |`,
+    ``,
+  ];
+
+  if (alertRows.length > 0) {
+    md.push(`## Alertas`, ``);
+    for (const r of alertRows) {
+      md.push(`- **${r.name}** (\`${r.path}\`): ${r.alerts}`);
+    }
+    md.push(``);
+  }
+
+  md.push(
+    `## Por workflow`,
+    ``,
+    `| Workflow | Runs | Falhas | Taxa | Skipped | Min est. | p95 (30d) | Último run | Alertas |`,
+    `|---|---|---|---|---|---|---|---|---|`,
+  );
+
+  for (const r of rows) {
+    md.push(
+      `| ${r.name} | ${r.total} | ${r.failures} | ${r.failureRate} | ${r.skipped} | ${r.minutesTotal} | ${fmtDuration(r.p95ms)} | ${r.lastRun} | ${r.alerts || '✅'} |`,
+    );
+  }
+
+  md.push(``, `---`, `_Gerado automaticamente. Não editar manualmente._`);
+
+  const outPath = join(ROOT, 'docs/ci/METRICAS_SEMANAIS.md');
+  mkdirSync(dirname(outPath), { recursive: true });
+  writeFileSync(outPath, md.join('\n') + '\n');
+  console.log(`Relatório escrito em docs/ci/METRICAS_SEMANAIS.md`);
+  console.log(`  ${rows.length} workflows, ${totalRuns} runs, ${totalFails} falhas, ${alertRows.length} alertas`);
+
+  if (alertRows.length > 0) {
+    console.log('\nAlertas:');
+    for (const r of alertRows) console.log(`  ${r.name}: ${r.alerts}`);
+  }
+}
+
+main().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});

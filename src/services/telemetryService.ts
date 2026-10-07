@@ -76,7 +76,7 @@ class TelemetryService {
   private flushing = false;
 
   constructor() {
-    this.sessionId = Math.random().toString(36).substring(2, 15);
+    this.sessionId = crypto.randomUUID().replace(/-/g, '');
     if (typeof window !== 'undefined') {
       // Flush no fechamento da página/aba — eventos pendentes não somem
       window.addEventListener('pagehide', () => {
@@ -91,7 +91,7 @@ class TelemetryService {
   private shouldSample(eventType: TelemetryEventType): boolean {
     const rate = SAMPLE_RATE[eventType] ?? 1.0;
     if (rate >= 1) return true;
-    return Math.random() < rate;
+    return crypto.getRandomValues(new Uint32Array(1))[0] / 0x100000000 < rate;
   }
 
   private scheduleFlush() {

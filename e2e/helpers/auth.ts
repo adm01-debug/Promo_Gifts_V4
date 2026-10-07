@@ -86,6 +86,12 @@ export async function loginAs(page: Page, role: Role = "user"): Promise<void> {
                    process.env.E2E_USER_PASSWORD;
 
   if (!email || !password) {
+    // E21 — modo estrito: em CI, credentials ausentes = falha imediata.
+    if (process.env.CI) {
+      throw new Error(
+        `[loginAs] E21 — modo estrito: E2E_${role.toUpperCase()}_EMAIL/PASSWORD ausentes em CI.`,
+      );
+    }
     test.skip(true, `Credenciais E2E_${role.toUpperCase()}_EMAIL/PASSWORD ausentes`);
   }
 

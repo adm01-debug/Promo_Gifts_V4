@@ -22,11 +22,40 @@ import { getOrCreateRequestId } from '../_shared/request-id.ts';
 
 const CORS = buildPublicCorsHeaders({ allowMethods: 'POST, OPTIONS' });
 
-// ── Extrai IP real: Cloudflare → X-Forwarded-For → X-Real-IP ───────
+// ── Cloudflare Turnstile — anti-bot no login ───────────────────────
+// Enforcement é controlado pela presença de TURNSTILE_SECRET_KEY nos secrets
+// da edge: com secret configurada, o body PRECISA trazer turnstile_token
+// válido (cliente envia quando VITE_TURNSTILE_SITE_KEY renderiza o widget).
+// Sem secret → verificação desligada (feature inerte).
+type TurnstileResult = 'passed' | 'failed' | 'unreachable';
+
+async function verifyTurnstile(token: string, ip: string, secret: string): Promise<TurnstileResult> {
+  try {
+    const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ secret, response: token, remoteip: ip }).toString(),
+      // 5s: sem timeout próprio, um siteverify pendurado segura a invocação
+      // da edge até o limite da plataforma, consumindo capacidade.
+      signal: AbortSignal.timeout(5_000),
+    });
+    if (!res.ok) return 'unreachable';
+    const data = (await res.json()) as { success?: boolean };
+    return data?.success === true ? 'passed' : 'failed';
+  } catch {
+    return 'unreachable';
+  }
+}
+
+// O gateway anexa o IP real como ÚLTIMO elemento do x-forwarded-for —
+// o primeiro (e cf-connecting-ip / x-real-ip) pode vir do cliente e é
+// forjável (Devin Review SEC_0001). Ordem: xff[last] → cf → x-real-ip.
 function extractIP(req: Request): string {
+  const xff = req.headers.get('x-forwarded-for');
+  const lastXff = xff?.split(',').pop()?.trim();
   return (
+    (lastXff || undefined) ??
     req.headers.get('cf-connecting-ip') ??
-    req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
     req.headers.get('x-real-ip') ??
     'unknown'
   );
@@ -75,6 +104,28 @@ Deno.serve(async (req: Request) => {
       );
     }
 
+    // Turnstile: secret configurada → token obrigatório e válido.
+    // 'turnstile_unavailable' é tratado como falha operacional (fail-open) pelo
+    // cliente — não bloqueia logins por indisponibilidade do verificador.
+    const TURNSTILE_SECRET = Deno.env.get('TURNSTILE_SECRET_KEY') ?? '';
+    if (TURNSTILE_SECRET) {
+      const turnstileToken = typeof body.turnstile_token === 'string' ? body.turnstile_token : '';
+      const turnstile: TurnstileResult = turnstileToken
+        ? await verifyTurnstile(turnstileToken, ipAddress, TURNSTILE_SECRET)
+        : 'failed';
+      if (turnstile !== 'passed') {
+        const reason = !turnstileToken
+          ? 'turnstile_required'
+          : turnstile === 'unreachable'
+            ? 'turnstile_unavailable'
+            : 'turnstile_failed';
+        return new Response(
+          JSON.stringify({ allowed: false, reason }),
+          { status: 403, headers: { ...CORS, 'Content-Type': 'application/json', 'X-Request-Id': __reqId } }
+        );
+      }
+    }
+
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL')!,
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
@@ -104,7 +155,9 @@ Deno.serve(async (req: Request) => {
         allowed,
         reason:        row?.reason        ?? 'unknown',
         blocked_until: row?.blocked_until ?? null,
-        check_details: row?.check_details ?? {},
+        // check_details NÃO é repassado: o blob interno (settings_source,
+        // contadores, whitelist hits) vazava o estado do lockout para o
+        // chamador anônimo. Segue registrado em access_blocked_log.
       }),
       { status: allowed ? 200 : 403, headers: { ...CORS, 'Content-Type': 'application/json' } }
     );
