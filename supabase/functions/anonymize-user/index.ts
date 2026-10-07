@@ -234,15 +234,25 @@ Deno.serve(async (req: Request) => {
       return jsonRes(corsHeaders, { error: "anonymize_failed" }, 500);
     }
 
-    // 3b) Ban confirmado: desativa o perfil. Falha aqui não é fatal — a
-    //     conta já está banida no auth e a flag vira cleanup do próximo
-    //     sweep/admin, então só loga.
-    const { error: deactivateErr } = await supabaseAdmin
-      .from("profiles")
-      .update({ is_active: false })
-      .eq("user_id", userId);
-    if (deactivateErr) {
-      log.warn("profile_deactivate_failed", { error: deactivateErr.message });
+    // 3b) Ban confirmado: desativa o perfil — sem ela a conta excluída
+    //     segue "Ativa" na listagem admin. Uma falha transitória de banco
+    //     não pode deixar flag mentindo, então retenta uma vez; se ainda
+    //     falhar, a resposta expõe deactivated:false para o cliente
+    //     reagendar/sinalizar, em vez de afirmar wipe completo.
+    let deactivated = false;
+    for (let attempt = 0; attempt < 2 && !deactivated; attempt++) {
+      const { error: deactivateErr } = await supabaseAdmin
+        .from("profiles")
+        .update({ is_active: false })
+        .eq("user_id", userId);
+      if (deactivateErr) {
+        log.warn("profile_deactivate_failed", {
+          error: deactivateErr.message,
+          attempt: attempt + 1,
+        });
+      } else {
+        deactivated = true;
+      }
     }
 
     // 4) Revoga credenciais em duas camadas complementares:
@@ -283,6 +293,7 @@ Deno.serve(async (req: Request) => {
     log.info("user_anonymized", {
       userId,
       loginAttemptsWiped: attemptsWiped,
+      deactivated,
       sessionsWiped,
     });
 
@@ -292,6 +303,9 @@ Deno.serve(async (req: Request) => {
         // Conta real de linhas — `true` com 0 linhas mentiria que um
         // perfil foi anonimizado quando nem existia.
         profile: profileCount ?? 0,
+        // Separado do count: o perfil pode ter PII zerada e a flag
+        // is_active falhar — deactivated:false é a pendência reparável.
+        deactivated,
         login_attempts: attemptsErr ? "failed" : (attemptsWiped),
         sessions: sessionsWiped ? "revoked" : "partial",
       },
