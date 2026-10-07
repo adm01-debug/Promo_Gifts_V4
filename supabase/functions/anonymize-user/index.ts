@@ -132,11 +132,11 @@ Deno.serve(async (req: Request) => {
       (emailLc !== "" && typeof r.email === "string" &&
         r.email.toLowerCase() === emailLc);
     // PostgREST limita o SELECT a 1000 linhas por página. Paginação por
-    // keyset (id > lastId, ordem estável) varre o superconjunto INTEIRO
-    // mesmo com deletes mutando o conjunto — sem cap de rodadas, então
-    // nenhuma tentativa fica para trás. O bound MAX_PAGES existe só como
-    // segurança de tempo: se for atingido, marca erro e a resposta
-    // reporta falha em vez de confirmar o expurgo.
+    // keyset (id > lastId, ordem estável) percorre o superconjunto mesmo
+    // com deletes mutando o conjunto. O loop só prova expurgo completo
+    // quando uma página volta vazia; se a segurança de tempo MAX_PAGES
+    // for atingida antes, uma contagem exata no banco decide o
+    // resultado (verif. abaixo).
     let attemptsErr: { message: string } | null = null;
     let attemptsWiped = 0;
     // login_attempts.id é UUID — o cursor começa nulo e o .gt() só entra
