@@ -91,3 +91,32 @@ Correções:
 82. [F:workertestes][O3] Smoke E2E real em STAGING (plano 063/092/036 reescrito): gerar → salvar → anexar ao orçamento → link assinado de 7 dias → lixeira; inclui o Kit Builder gerando mockup para a caixa. Precisa de ambiente staging + JWT de teste + dados descartáveis → [J] fornece o ambiente.
 83. [F:complexo][O2] Inventário e adaptação dos consumidores de URL de mockup/arte FORA do módulo: Kit Builder (`useKitBuilderQuote`), `quoteHelpers`, `quoteService`, simulador — todos passam a guardar caminho/id e resolver URL assinada na leitura; testes de contrato do payload do orçamento atualizados (`quoteServicePayloadContract.test.ts`). **Pré-requisito da etapa 4.**
 84. [F:workersql][O3] PROPOSTA SQL de backfill: converter URLs públicas legadas em `quote_items.mockup_urls`/`artwork_urls` (e `generated_mockups.mockup_url/thumbnail_url/layout_url`) para caminhos de storage, em lotes, com rollback e contagem antes/depois. Depois do backfill o bucket legado pode ficar privado.
+
+---
+
+# Adendo 4 — pastas individuais por vendedor (orçamentos, mockups, Magic Up) — etapas 85–92
+Pedido do dono (08/10): cada vendedor só vê a sua pasta de orçamentos, mockups e Magic Up; o coordenador vê tudo. Substitui o desenho simples "bucket novo privado" da D4: o bucket novo já nasce com pasta por vendedor.
+
+## Fatos verificados no código/schema
+- Papéis (`app_role`): dev, supervisor, admin, manager, agente, **coordenador**, vendedor. O banco converte `manager` ↔ `coordenador` em dois pontos (SCHEMA_LIVE:26868, 29761); `is_supervisor_or_above()` cobre dev/supervisor/admin/manager (**não cita 'coordenador' literalmente**) → confirmar se coordenador ≡ manager.
+- Mockup já grava logo em `{userId}/logos/…` (`src/lib/mockup-storage.ts:12`) — a convenção de pasta por vendedor já existe parcialmente; imagens e layouts não seguem.
+- Orçamentos: PDFs vão para `art-files/quotes/{quoteId}/…` (público, por orçamento — NÃO por vendedor); dono do orçamento = `quotes.created_by`.
+- Magic Up: NÃO usa bucket; imagem base64 dentro de `magic_up_generations`.
+- Policies de `storage.objects` não aparecem no SCHEMA_LIVE (só schema `public`): precisam ser lidas no banco real antes de aplicar → [NV].
+
+## Desenho
+Três buckets privados novos, todos com a regra: **1ª pasta = uid do vendedor** (`{uid}/…`). Dono lê/grava/exclui a sua pasta; coordenador+ lê todas; anon nada; URL sempre assinada.
+- `mockup-private/{uid}/{mockups|logos|layouts|arte}/…`
+- `quotes-private/{uid}/{quote_id}/…` (PDF do orçamento, arte anexa, mockups anexados)
+- `magic-up-private/{uid}/…` (imagens geradas — sai do base64 da tabela)
+Legados (`mockup-assets`, `art-files/quotes/{id}`) permanecem até o backfill (etapa 84, ampliada para MOVER para as pastas por vendedor), preservando o que orçamentos emitidos referenciam.
+
+## Etapas
+85. [F:workersql][O2] PROPOSTA SQL: helper `is_coordinator_or_above(uid)` (definição conforme a resposta Q-A) + 3 buckets privados + policies de `storage.objects` por pasta `{uid}/` (dono: tudo na sua; coordenador+: SELECT em todas; anon: nenhuma). Prova no clone: vendedor A lista/lê só a sua; B não vê A; coordenador vê as duas; anon nada.
+86. [F:workersql][O2] PROPOSTA SQL: conferir/corrigir RLS das tabelas — `quotes`/`quote_items` (created_by), `generated_mockups` (user_id), `magic_up_*` (user_id): dono vê as suas; coordenador+ vê todas (hoje a regra do histórico do mockup ainda é "supervisor vê equipe": alinhar à Q-A).
+87. [F:hugo][O2] Mockup grava TUDO (imagem, thumbnail, layout, logo, arte) em `mockup-private/{uid}/…` e resolve URL assinada na leitura (estende etapas 9/10).
+88. [F:complexo][O3] Orçamentos: novos PDFs/artes/mockups anexados em `quotes-private/{created_by}/{quote_id}/…`; leitura por URL assinada; os caminhos (não URLs) vão para `mockup_urls`/`artwork_urls` (casa com 83). Legados lidos pelo caminho antigo até o backfill.
+89. [F:hugo][O3] Magic Up: parar de gravar base64 em `magic_up_generations.generated_image_url`; subir para `magic-up-private/{uid}/…` e guardar o caminho; compartilhar = link assinado. (Módulo Magic Up — a entrevista dele define o resto; só a ESTRUTURA de pasta é decidida aqui.)
+90. [F:iris][O3] Tela "Meus arquivos": 3 pastas (Orçamentos · Mockups · Magic Up) do vendedor; para coordenador+, seletor de vendedor (padrão somente leitura).
+91. [F:workertestes][O3] Testes de isolamento no banco de teste (`sql_teste.py como authenticated --sub A/B`): A não vê B (tabelas E storage), coordenador vê tudo, anon nada; teste de regressão da listagem do bucket.
+92. [J][O3] Aplicar as propostas 85–86 e 84 (backfill/mover); criar os buckets; validar em staging (etapa 82).
