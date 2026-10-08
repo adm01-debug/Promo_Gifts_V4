@@ -159,20 +159,19 @@ describe('Analise estatica — mockupGenerationService.ts', () => {
     });
   });
 
-  describe('BUG-C — timeout via Promise.race', () => {
-    it('usa Promise.race', () => {
-      expect(src).toContain('Promise.race');
-    });
-    it('GENERATE_TIMEOUT_MS definida', () => {
-      expect(src).toContain('GENERATE_TIMEOUT_MS');
-    });
-    it('timeout >= 30000 ms', () => {
+  describe('Q16 — timeout único de 30 s + cancelamento via AbortSignal', () => {
+    it('GENERATE_TIMEOUT_MS definida em 30 s', () => {
       const match = /GENERATE_TIMEOUT_MS\s*=\s*(\d+)/.exec(src);
       expect(match).not.toBeNull();
-      expect(parseInt(match![1], 10)).toBeGreaterThanOrEqual(30_000);
+      expect(parseInt(match![1], 10)).toBe(30_000);
     });
-    it('mensagem de timeout em PT-BR', () => {
-      expect(src).toContain('Tempo esgotado ao gerar mockup');
+    it('a chamada da edge recebe timeoutMs, uma única tentativa e signal', () => {
+      // Q16: um único orçamento de 30 s (aplicado pelo wrapper) e UMA tentativa;
+      // o cancelamento vem do AbortController do hook (signal repassado em params).
+      expect(src).toContain('timeoutMs: GENERATE_TIMEOUT_MS');
+      expect(src).toContain('maxRetries: 1');
+      expect(src).toContain('signal: params.signal');
+      expect(src).not.toMatch(/Promise\.race/);
     });
   });
 

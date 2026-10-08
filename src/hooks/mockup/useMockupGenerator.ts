@@ -40,6 +40,7 @@ import {
   downloadMockupAsPdf,
   deleteMockupFromDb,
 } from '@/hooks/mockup/mockupGenerationService';
+import { buildHistoryClients } from '@/hooks/mockup/mockupHistoryClients';
 
 import { logger } from '@/lib/logger';
 export type { Technique, GeneratedMockup };
@@ -80,6 +81,7 @@ export function useMockupGenerator() {
   // concurrent invocation returns immediately — preventing duplicate edge calls,
   // duplicate history rows, and orphaned storage PNGs.
   const isGeneratingRef = useRef(false);
+  const generationAbortRef = useRef<AbortController | null>(null); // Q16: geração cancelável
   const [generationError, setGenerationError] = useState<string | null>(null);
   const [mockupAnnotations, setMockupAnnotations] = useState<
     { id: string; x: number; y: number; text: string }[]
@@ -135,17 +137,9 @@ export function useMockupGenerator() {
     selectedProduct?.id,
   );
   const hasLogo = personalizationAreas.some((a) => !!a.logoPreview);
+  useEffect(() => () => generationAbortRef.current?.abort(), [productSelection]);
 
-  const historyClients = useMemo(() => {
-    if (!mockupHistory.length) return [];
-    const map = new Map<string, { id: string; name: string }>();
-    for (const m of mockupHistory) {
-      const clientKey = m.client_id || m.client_name;
-      if (clientKey && m.client_name && !map.has(clientKey))
-        map.set(clientKey, { id: m.client_id || m.client_name, name: m.client_name });
-    }
-    return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name));
-  }, [mockupHistory]);
+  const historyClients = useMemo(() => buildHistoryClients(mockupHistory), [mockupHistory]);
 
   const productLocations = useMemo(() => {
     if (!customizationOptions?.locations?.length) return null;
@@ -571,12 +565,15 @@ export function useMockupGenerator() {
     setGenerationError(null);
     setMockupAnnotations([]);
     setBeforeImage(productImage);
+    const controller = new AbortController();
+    generationAbortRef.current = controller;
     try {
       const result = await generateMockupApi({
         productImage,
         productName: selectedProduct?.name ?? '',
         technique: selectedTechnique,
         areas: personalizationAreas,
+        signal: controller.signal,
         // Same derivation the preview uses (LogoPositionEditor) so the generated
         // mockup matches the on-screen logo size (WYSIWYG); null ⇒ edge /20 fallback.
         productWidthCm:
@@ -587,6 +584,7 @@ export function useMockupGenerator() {
           selectedProduct?.dimensions?.height_cm ??
           (selectedProduct?.metadata?.height_mm ? selectedProduct.metadata.height_mm / 10 : null),
       });
+      if (controller.signal.aborted) return;
       if (result.singleUrl && result.batchResults.length === 0) {
         setGeneratedMockup(result.singleUrl);
         const recordId = await saveMockupToHistory(result.singleUrl, areasWithLogos[0]);
@@ -632,6 +630,7 @@ export function useMockupGenerator() {
       // only called once on mount. Refresh it now so the new record appears immediately.
       fetchHistory();
     } catch (error: unknown) {
+      if (controller.signal.aborted) return;
       logger.error('Error generating mockup:', error);
       const errorMessage = error instanceof Error ? error.message : 'Erro ao gerar mockup';
       setGenerationError(errorMessage);
