@@ -174,15 +174,12 @@ export async function saveMockupToDb(params: SaveMockupParams): Promise<string |
     // caught below and retried with product_id: null (~200ms saved on every save).
     const safeProductId = product.id || null;
 
-    // BUG-10 FIX: generated_mockups.technique_id has a FK constraint pointing to
-    // `personalization_techniques`, but the techniques shown in the UI come from
-    // `tabela_preco_gravacao_oficial`. The two tables have ZERO overlapping UUIDs,
-    // so inserting a `tabela_preco` UUID into `technique_id` always raises a FK
-    // violation, causing saveMockupToDb to silently return null on EVERY invocation.
-    // Solution: always null-out technique_id (the technique name is already persisted
-    // in the `technique_name` text column, which is what all read paths use). The FK
-    // column should only be set once the UI loads techniques from `personalization_techniques`.
-    const safeTechniqueId = null;
+    // technique_id: fonte de verdade = id da tabela_preco_gravacao_oficial vindo da RPC
+    // fn_get_product_customization_options (a mesma dos orçamentos), exposto por
+    // useMockupTechniques em technique.id. Antes (BUG-10) era sempre null.
+    // Se o banco ainda tiver a FK antiga para personalization_techniques, o insert
+    // dá 23503 e o retry abaixo regrava sem technique_id (technique_name segue salvo).
+    const safeTechniqueId = technique.id || null;
     // BUG-CLIENT-ID FIX: persist client_id and client_name as top-level columns.
     const safeClientId = client?.id || null;
     const clientName = client?.nome_fantasia || client?.razao_social || client?.name || null;
@@ -231,13 +228,15 @@ export async function saveMockupToDb(params: SaveMockupParams): Promise<string |
       .single();
 
     if (error) {
-      if (error.code === '23503' && safeProductId) {
-        // product_id FK violation — product UUID not in products table; retry with null.
-        logger.warn('[saveMockupToDb] FK violation on product_id — retrying with null', {
+      if (error.code === '23503' && (safeProductId || safeTechniqueId)) {
+        // FK violation — product_id fora de products e/ou technique_id fora da FK do
+        // banco; retry com ambos null para não perder o histórico.
+        logger.warn('[saveMockupToDb] FK violation — retrying without product_id/technique_id', {
           productId: safeProductId,
+          techniqueId: safeTechniqueId,
         });
         const { data: retryRow, error: retryError } = await untypedFrom('generated_mockups')
-          .insert({ ...insertPayload, product_id: null })
+          .insert({ ...insertPayload, product_id: null, technique_id: null })
           .select('id')
           .single();
         if (!retryError) return retryRow?.id || null;

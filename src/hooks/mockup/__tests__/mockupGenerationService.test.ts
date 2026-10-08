@@ -170,15 +170,28 @@ describe('saveMockupToDb', () => {
     expect(cfg.logoScale).toBe(150);
   });
 
-  // BUG-10 regression: technique_id has a FK to personalization_techniques but the UI
-  // loads techniques from tabela_preco_gravacao_oficial — zero UUID overlap. Sending a
-  // tabela_preco UUID causes a FK violation and silently prevents every save.
-  // The fix: always send null for technique_id; technique_name (text) carries the name.
-  it('always sends technique_id: null to avoid FK violation (BUG-10)', async () => {
-    tableResults.products = { data: { id: 'prod-1' }, error: null };
+  it('grava technique_id (id da RPC) e client_id/client_name do cliente escolhido', async () => {
     tableResults.generated_mockups = { data: { id: 'rec-1' }, error: null };
 
     await saveMockupToDb({
+      userId: 'user-1',
+      product: { id: 'prod-1', name: 'Caneca', sku: 'CAN-001' },
+      technique: { id: 'oficial-uuid-9', name: 'Serigrafia', code: 'silk' },
+      client: { id: 'singu-42', name: 'Acme Ltda' },
+      area: area(),
+      mockupUrl: 'https://cdn.example.com/mockup.png',
+    });
+
+    expect(captured.insert!.technique_id).toBe('oficial-uuid-9');
+    expect(captured.insert!.technique_name).toBe('Serigrafia');
+    expect(captured.insert!.client_id).toBe('singu-42');
+    expect(captured.insert!.client_name).toBe('Acme Ltda');
+  });
+
+  it('sem cliente selecionado, client_id/client_name vão null sem erro', async () => {
+    tableResults.generated_mockups = { data: { id: 'rec-1' }, error: null };
+
+    const recordId = await saveMockupToDb({
       userId: 'user-1',
       product: { id: 'prod-1', name: 'Caneca', sku: 'CAN-001' },
       technique: silk,
@@ -187,6 +200,28 @@ describe('saveMockupToDb', () => {
       mockupUrl: 'https://cdn.example.com/mockup.png',
     });
 
+    expect(recordId).toBe('rec-1');
+    expect(captured.insert!.client_id).toBeNull();
+    expect(captured.insert!.client_name).toBeNull();
+    expect(captured.insert!.technique_id).toBe('tech-1');
+  });
+
+  it('FK 23503 em technique_id: retry sem technique_id, histórico não se perde', async () => {
+    tableResults.generated_mockups = [
+      { data: null, error: { code: '23503', message: 'fk technique_id' } },
+      { data: { id: 'rec-3' }, error: null },
+    ];
+
+    const recordId = await saveMockupToDb({
+      userId: 'user-1',
+      product: { id: 'prod-1', name: 'Caneca' },
+      technique: silk,
+      client: null,
+      area: area(),
+      mockupUrl: 'https://cdn.example.com/m.png',
+    });
+
+    expect(recordId).toBe('rec-3');
     expect(captured.insert!.technique_id).toBeNull();
     expect(captured.insert!.technique_name).toBe('Serigrafia');
   });
