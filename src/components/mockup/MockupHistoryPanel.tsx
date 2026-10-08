@@ -1,9 +1,7 @@
-/**
- * MockupHistoryPanel — History grid with filters and pagination
- * Refatorado: Lightbox extraído para MockupLightbox.tsx
- */
+/** MockupHistoryPanel — grid/lista do histórico do gerador (atalho: 10 últimos + link para a página completa). */
 
 import { useState, useMemo, useCallback, useDeferredValue, memo } from 'react';
+import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { LayoutPopover } from '@/components/products/LayoutPopover';
 import { getDefaultColumns, type ColumnCount } from '@/components/products/ColumnSelector';
@@ -45,6 +43,7 @@ import { MockupHistorySkeleton } from '@/components/loading/ModernSkeletons';
 import { MockupCompareDialog } from './MockupCompareDialog';
 import { MockupLightbox } from './MockupLightbox';
 import type { GeneratedMockup } from '@/hooks/mockup/mockupGenerationService';
+import { MOCKUP_HISTORY_PANEL_LIMIT } from '@/hooks/mockup/mockupHistoryAdapter';
 import { ShareMenu } from './ShareMenu';
 
 // GeneratedMockup importado de @/hooks/mockup/mockupGenerationService (SSOT)
@@ -69,7 +68,7 @@ interface MockupHistoryPanelProps {
   onDelete: (id: string) => void;
 }
 
-const ITEMS_PER_PAGE = 12;
+const ITEMS_PER_PAGE = MOCKUP_HISTORY_PANEL_LIMIT;
 
 export function MockupHistoryPanel({
   mockupHistory,
@@ -110,22 +109,25 @@ export function MockupHistoryPanel({
   }, []);
 
   const compareMode = selectedForCompare.size > 0;
-  const compareMockups = mockupHistory.filter((m) => selectedForCompare.has(m.id));
+
+  // Atalho: só os 10 mais recentes (o servidor já entrega no máximo ITEMS_PER_PAGE).
+  const recentMockups = useMemo(() => mockupHistory.slice(0, ITEMS_PER_PAGE), [mockupHistory]);
+  const compareMockups = recentMockups.filter((m) => selectedForCompare.has(m.id));
 
   const historyTechniques = useMemo(() => {
     const seen = new Set<string>();
     const result: { id: string; name: string }[] = [];
-    for (const m of mockupHistory) {
+    for (const m of recentMockups) {
       if (m.technique_name && !seen.has(m.technique_name)) {
         seen.add(m.technique_name);
         result.push({ id: m.technique_name, name: m.technique_name });
       }
     }
     return result.sort((a, b) => a.name.localeCompare(b.name));
-  }, [mockupHistory]);
+  }, [recentMockups]);
 
   const filteredMockups = useMemo(() => {
-    return mockupHistory.filter((mockup) => {
+    return recentMockups.filter((mockup) => {
       const hasClient = mockup.client_id || mockup.client_name;
       if (filterClient === 'none' && hasClient) return false;
       if (filterClient !== 'all' && filterClient !== 'none') {
@@ -177,7 +179,12 @@ export function MockupHistoryPanel({
               <History className="h-5 w-5 text-primary" aria-hidden="true" />
               Histórico de Mockups
             </CardTitle>
-            <CardDescription>Mockups gerados anteriormente</CardDescription>
+            <CardDescription>
+              Mockups gerados anteriormente — os {ITEMS_PER_PAGE} mais recentes.{' '}
+              <Link to="/mockups/historico" className="font-medium text-primary hover:underline">
+                Ver histórico completo
+              </Link>
+            </CardDescription>
           </div>
           <div className="flex items-center gap-2">
             {compareMode && (
@@ -318,7 +325,7 @@ export function MockupHistoryPanel({
         {/* Content */}
         {isLoading ? (
           <MockupHistorySkeleton count={8} />
-        ) : mockupHistory.length === 0 ? (
+        ) : recentMockups.length === 0 ? (
           <div className="animate-fade-in py-16 text-center">
             <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-primary/5">
               <Wand2 className="h-10 w-10 text-primary/60" aria-hidden="true" />
@@ -410,26 +417,6 @@ export function MockupHistoryPanel({
                 >
                   <ChevronLeft className="h-4 w-4" aria-hidden="true" />
                 </Button>
-                <div className="flex items-center gap-1">
-                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                    let pageNum: number;
-                    if (totalPages <= 5) pageNum = i + 1;
-                    else if (currentPage <= 3) pageNum = i + 1;
-                    else if (currentPage >= totalPages - 2) pageNum = totalPages - 4 + i;
-                    else pageNum = currentPage - 2 + i;
-                    return (
-                      <Button
-                        key={pageNum}
-                        variant={currentPage === pageNum ? 'default' : 'outline'}
-                        size="sm"
-                        className="h-8 w-8 p-0"
-                        onClick={() => setCurrentPage(pageNum)}
-                      >
-                        {pageNum}
-                      </Button>
-                    );
-                  })}
-                </div>
                 <Button
                   variant="outline"
                   size="icon"
@@ -470,9 +457,7 @@ export function MockupHistoryPanel({
   );
 }
 
-// ============================================
 // Sub-components (inlined — small enough)
-// ============================================
 
 const MockupGridCard = memo(
   ({
@@ -494,6 +479,7 @@ const MockupGridCard = memo(
   }) => {
     return (
       <div
+        data-testid="mockup-history-card"
         className={cn(
           'group relative overflow-hidden rounded-xl border border-border/30 bg-card transition-all duration-300 hover:shadow-lg hover:ring-2 hover:ring-primary/30',
           isCompareSelected && 'shadow-lg ring-2 ring-primary',

@@ -26,6 +26,29 @@ vi.mock("@/components/mockup/ShareMenu", () => ({
   ShareMenu: () => null,
 }));
 
+/** Mockup na ordem em que o servidor entrega (created_at desc → index 0 = mais recente). */
+const makeMockup = (index: number) => ({
+  id: `m${index}`,
+  product_id: `p${index}`,
+  product_name: `Produto ${index}`,
+  product_sku: `SKU-${index}`,
+  technique_id: "t1",
+  technique_name: "Laser",
+  mockup_url: `https://example.com/mockup-${index}.jpg`,
+  layout_url: null,
+  logo_url: null,
+  position_x: 50,
+  position_y: 50,
+  logo_width_cm: 5,
+  logo_height_cm: 3,
+  location_name: "Frente",
+  colors_count: 1,
+  created_at: new Date(Date.now() - index * 60_000).toISOString(),
+  client_id: "c1",
+  client_name: "Cliente A",
+  annotations: null,
+});
+
 describe("MockupHistoryPanel", () => {
   const defaultProps = {
     mockupHistory: [],
@@ -81,5 +104,27 @@ describe("MockupHistoryPanel", () => {
       />
     );
     expect(document.body).toBeTruthy();
+  });
+
+  it("mostra só os 10 últimos mockups e aponta para o histórico completo", async () => {
+    const { MockupHistoryPanel } = await import("@/components/mockup/MockupHistoryPanel");
+    const { MOCKUP_HISTORY_PANEL_LIMIT } = await import("@/hooks/mockup/mockupHistoryAdapter");
+    // O teto de 10 itens pedidos ao servidor é provado em
+    // tests/hooks/mockupHistoryAdapter.test.ts (fetchRecentMockupHistory → .limit(10)).
+    expect(MOCKUP_HISTORY_PANEL_LIMIT).toBe(10);
+
+    const many = Array.from({ length: 25 }, (_, index) => makeMockup(index));
+    renderWithProviders(<MockupHistoryPanel {...defaultProps} mockupHistory={many} />);
+
+    const cards = await screen.findAllByTestId("mockup-history-card");
+    // A aba do gerador é atalho: 25 linhas recebidas, 10 renderizadas.
+    expect(cards).toHaveLength(MOCKUP_HISTORY_PANEL_LIMIT);
+    expect(screen.getByText("Produto 0")).toBeInTheDocument();
+    expect(screen.queryByText("Produto 10")).not.toBeInTheDocument();
+
+    expect(screen.getByRole("link", { name: /ver histórico completo/i })).toHaveAttribute(
+      "href",
+      "/mockups/historico"
+    );
   });
 });

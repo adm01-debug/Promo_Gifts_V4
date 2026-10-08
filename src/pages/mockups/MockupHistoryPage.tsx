@@ -1,7 +1,5 @@
 import { useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -22,68 +20,24 @@ import { PageSEO } from '@/components/seo/PageSEO';
 import { useDebounce } from '@/hooks/common';
 import { MockupHistorySkeleton } from '@/components/loading/ModernSkeletons';
 import { DiagnosticProfiler } from '@/components/dev/DiagnosticProfiler';
-
-interface GeneratedMockup {
-  id: string;
-  product_name: string | null;
-  product_sku: string | null;
-  client_name: string | null;
-  technique_name: string | null;
-  location_name: string | null;
-  colors_count: number | null;
-  logo_width_cm: number | null;
-  logo_height_cm: number | null;
-  mockup_url: string | null;
-  layout_url: string | null;
-  created_at: string;
-}
+import {
+  deleteMockupHistoryItem,
+  fetchMockupHistoryPage,
+  MOCKUP_HISTORY_PAGE_SIZE,
+} from '@/hooks/mockup/mockupHistoryAdapter';
 
 export default function MockupHistoryPage() {
-  const { user } = useAuth();
-  const userId = user?.id;
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 400);
-  const pageSize = 20;
+  const pageSize = MOCKUP_HISTORY_PAGE_SIZE;
 
+  // Histórico completo: paginação + busca no servidor, pelo mesmo adaptador de dados
+  // que a aba do gerador usa (mockupHistoryAdapter). Sem filtro de dono no cliente —
+  // a RLS de generated_mockups decide o que cada usuário vê.
   const { data, isLoading, refetch } = useQuery({
-    queryKey: ['mockup-history', userId, page, debouncedSearch],
-    queryFn: async () => {
-      if (!userId) return { mockups: [], totalCount: 0 };
-      let query = supabase
-        .from('generated_mockups')
-        .select('*', { count: 'exact' })
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false })
-        .range((page - 1) * pageSize, page * pageSize - 1);
-
-      if (debouncedSearch) {
-        // BUG-400 FIX (2026-06-01): removed client_name.ilike filter — client_name is
-        // not a column on generated_mockups (it lives in area_config JSONB). Using it
-        // in an .or() filter causes PostgREST HTTP 400.
-        query = query.or(
-          `product_name.ilike.%${debouncedSearch}%,product_sku.ilike.%${debouncedSearch}%,technique_name.ilike.%${debouncedSearch}%`,
-        );
-      }
-
-      const { data: queryData, error, count } = await query;
-      if (error) throw error;
-      // Map area_config JSONB fields into the flat shape the component uses.
-      const mockups = (queryData ?? []).map((row) => {
-        const cfg = (row.area_config ?? {}) as Record<string, unknown>;
-        return {
-          ...row,
-          client_name: (cfg.clientName as string | null) ?? null,
-          location_name: row.area_name ?? null,
-          logo_width_cm: (cfg.logoWidth as number | null) ?? null,
-          logo_height_cm: (cfg.logoHeight as number | null) ?? null,
-          colors_count: (cfg.colorsCount as number | null) ?? null,
-          layout_url: null,
-        } as unknown as GeneratedMockup;
-      });
-      return { mockups, totalCount: count || 0 };
-    },
-    enabled: !!userId,
+    queryKey: ['mockup-history', 'page', page, debouncedSearch],
+    queryFn: () => fetchMockupHistoryPage({ page, pageSize, search: debouncedSearch }),
     staleTime: 1000 * 60 * 5, // 5 minutos
   });
 
@@ -94,12 +48,12 @@ export default function MockupHistoryPage() {
   }, []);
 
   const handleDelete = async (id: string) => {
-    const { error } = await supabase.from('generated_mockups').delete().eq('id', id);
-    if (error) {
-      toast.error('Erro ao remover mockup');
-    } else {
+    try {
+      await deleteMockupHistoryItem(id);
       toast.success('Mockup removido');
       refetch();
+    } catch {
+      toast.error('Erro ao remover mockup');
     }
   };
 

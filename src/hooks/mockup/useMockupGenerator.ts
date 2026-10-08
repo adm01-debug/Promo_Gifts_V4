@@ -34,13 +34,12 @@ import {
   type Technique,
   type GeneratedMockup,
   createDefaultArea,
-  fetchMockupHistory,
   saveMockupToDb,
   generateMockupApi,
   downloadMockupAsPdf,
   deleteMockupFromDb,
 } from '@/hooks/mockup/mockupGenerationService';
-
+import { fetchRecentMockupHistory } from '@/hooks/mockup/mockupHistoryAdapter';
 import { logger } from '@/lib/logger';
 export type { Technique, GeneratedMockup };
 
@@ -382,14 +381,14 @@ export function useMockupGenerator() {
   const fetchHistory = useCallback(async () => {
     setIsLoadingHistory(true);
     try {
-      const data = await fetchMockupHistory(user?.id);
+      const data = await fetchRecentMockupHistory();
       setMockupHistory(data);
     } catch (error) {
       logger.error('Error fetching history:', error);
     } finally {
       setIsLoadingHistory(false);
     }
-  }, [user?.id]);
+  }, []);
 
   const updateActiveArea = useCallback(
     (updates: Partial<PersonalizationArea>) => {
