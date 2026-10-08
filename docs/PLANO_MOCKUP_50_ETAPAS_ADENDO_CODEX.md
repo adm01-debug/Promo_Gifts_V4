@@ -177,3 +177,15 @@ Rodar também o rollback no clone e confirmar que as colunas somem e a consulta 
   `types.ts` deve ser regenerado pelo fluxo da casa depois da aplicação (fora deste cartão).
 - Trigger novo roda por linha em INSERT/UPDATE: custo de um SELECT por PK só quando há pai.
 - Volta: bloco `-- Rollback:` acima (inverso executável; policies/GRANTs não foram tocados).
+
+### Prova executada no banco de teste da fábrica (08/10/2026)
+
+Banco clonado de `teste_base` (nunca produção); SQL aplicado por inteiro, sem os `BEGIN/COMMIT` do bloco.
+Fixtures: 2 usuários e 2 jobs, 1 mockup do usuário 2. Papel `authenticated` (sub = usuário 1), com rollback:
+- revisão 1 e revisão 2 (parent = 1, revision = 2) inseridas; revisão 1 marcada `is_stale = true`:
+  `a1 | 1 | True | NULL` e `a2 | 2 | False | a1` — OK.
+- consulta legada (`id, mockup_url, area_config`) continua retornando as duas linhas — OK.
+- negativos falharam como esperado: UPDATE de snapshot -> 23514 (imutável); parent de outro usuário -> 23503;
+  `revision = 0` -> 23514 `generated_mockups_revision_chk`.
+- Rollback executado: hash do schema (`snapshot`) idêntico ao de antes da migration
+  (`sha256=0926470d…ed99e`, 13943 itens); usuário 2 continua lendo seu mockup legado.
