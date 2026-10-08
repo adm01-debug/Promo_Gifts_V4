@@ -91,7 +91,7 @@ export function ArtFileUpload({
   // Trava síncrona: o estado só atualiza no próximo render, então dois envios seguidos passariam.
   const uploadingRef = useRef(false);
 
-  const handleFiles = useCallback(
+  const uploadFiles = useCallback(
     async (files: File[] | FileList) => {
       if (!userId) {
         toast.error('Faça login para anexar arquivos');
@@ -101,6 +101,89 @@ export function ArtFileUpload({
       const list = Array.from(files);
       if (list.length === 0) return;
 
+      const uploaded: ArtFileAttachment[] = [];
+
+      for (const file of list) {
+        const ext = `.${file.name.split('.').pop()?.toLowerCase() ?? ''}`;
+        const invalid = validateArtFile(file);
+        if (invalid) {
+          toast.error(invalid);
+          continue;
+        }
+        if (!(await hasValidSignature(file))) {
+          toast.error(`${file.name}: conteúdo não corresponde à extensão`);
+          continue;
+        }
+
+        const safe = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+        const path = `${userId}/${Date.now()}-${safe}`;
+
+        const { error: upErr } = await supabase.storage
+          .from('mockup-art-files')
+          .upload(path, file, {
+            contentType: file.type || 'application/octet-stream',
+            upsert: false,
+          });
+
+        if (upErr) {
+          logger.error('[ArtFileUpload] upload error', upErr);
+          toast.error(`Falha ao enviar ${file.name}`);
+          continue;
+        }
+
+        // BUG-ARTFILE-SIGNEDURL-SILENT-FAIL FIX: if createSignedUrl failed, signed was null
+        // and file_url: '' was inserted into the DB — corrupt record with inaccessible file.
+        const { data: signed, error: signErr } = await supabase.storage
+          .from('mockup-art-files')
+          .createSignedUrl(path, 60 * 60 * 24 * 7);
+
+        if (signErr || !signed?.signedUrl) {
+          logger.error('[ArtFileUpload] createSignedUrl failed — skipping file', signErr);
+          toast.error(`Falha ao gerar URL de acesso para ${file.name}`);
+          const { error: cleanupErr } = await supabase.storage.from('mockup-art-files').remove([path]);
+          if (cleanupErr) logger.warn('[ArtFileUpload] storage cleanup after signedUrl fail:', cleanupErr);
+          continue;
+        }
+
+        const { data: row, error: insErr } = await supabase
+          .from('art_file_attachments')
+          .insert({
+            user_id: userId,
+            mockup_id: mockupId ?? null,
+            quote_id: quoteId ?? null,
+            file_url: signed?.signedUrl ?? '',
+            file_path: path,
+            original_name: file.name,
+            mime_type: file.type || null,
+            file_size_bytes: file.size,
+            file_extension: ext,
+          })
+          .select()
+          .single();
+
+        if (insErr || !row) {
+          logger.error('[ArtFileUpload] db insert error', insErr);
+          toast.error(`Falha ao registrar ${file.name}`);
+          // BUG-ARTFILE-CLEANUP-SILENT-FAIL FIX: storage.remove returns { data, error } — best-effort cleanup.
+          const { error: cleanupErr } = await supabase.storage.from('mockup-art-files').remove([path]);
+          if (cleanupErr) logger.warn('[ArtFileUpload] storage cleanup failed:', cleanupErr);
+          continue;
+        }
+
+        uploaded.push(row as ArtFileAttachment);
+      }
+
+      if (uploaded.length > 0) {
+        onAttachmentsChange([...attachments, ...uploaded]);
+        toast.success(`${uploaded.length} arquivo(s) enviado(s)`);
+      }
+    },
+    [userId, mockupId, quoteId, attachments, onAttachmentsChange],
+  );
+
+  // Seletor e arraste passam por aqui: um envio por vez, e a trava sempre é liberada (inclusive se o envio lançar).
+  const handleFiles = useCallback(
+    async (files: File[] | FileList) => {
       if (uploadingRef.current) {
         toast.error('Aguarde o envio em andamento terminar');
         return;
@@ -108,93 +191,13 @@ export function ArtFileUpload({
       uploadingRef.current = true;
       setIsUploading(true);
       try {
-        const uploaded: ArtFileAttachment[] = [];
-
-        for (const file of list) {
-          const ext = `.${file.name.split('.').pop()?.toLowerCase() ?? ''}`;
-          const invalid = validateArtFile(file);
-          if (invalid) {
-            toast.error(invalid);
-            continue;
-          }
-          if (!(await hasValidSignature(file))) {
-            toast.error(`${file.name}: conteúdo não corresponde à extensão`);
-            continue;
-          }
-
-          const safe = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
-          const path = `${userId}/${Date.now()}-${safe}`;
-
-          const { error: upErr } = await supabase.storage
-            .from('mockup-art-files')
-            .upload(path, file, {
-              contentType: file.type || 'application/octet-stream',
-              upsert: false,
-            });
-
-          if (upErr) {
-            logger.error('[ArtFileUpload] upload error', upErr);
-            toast.error(`Falha ao enviar ${file.name}`);
-            continue;
-          }
-
-          // BUG-ARTFILE-SIGNEDURL-SILENT-FAIL FIX: if createSignedUrl failed, signed was null
-          // and file_url: '' was inserted into the DB — corrupt record with inaccessible file.
-          const { data: signed, error: signErr } = await supabase.storage
-            .from('mockup-art-files')
-            .createSignedUrl(path, 60 * 60 * 24 * 7);
-
-          if (signErr || !signed?.signedUrl) {
-            logger.error('[ArtFileUpload] createSignedUrl failed — skipping file', signErr);
-            toast.error(`Falha ao gerar URL de acesso para ${file.name}`);
-            const { error: cleanupErr } = await supabase.storage
-              .from('mockup-art-files')
-              .remove([path]);
-            if (cleanupErr)
-              logger.warn('[ArtFileUpload] storage cleanup after signedUrl fail:', cleanupErr);
-            continue;
-          }
-
-          const { data: row, error: insErr } = await supabase
-            .from('art_file_attachments')
-            .insert({
-              user_id: userId,
-              mockup_id: mockupId ?? null,
-              quote_id: quoteId ?? null,
-              file_url: signed?.signedUrl ?? '',
-              file_path: path,
-              original_name: file.name,
-              mime_type: file.type || null,
-              file_size_bytes: file.size,
-              file_extension: ext,
-            })
-            .select()
-            .single();
-
-          if (insErr || !row) {
-            logger.error('[ArtFileUpload] db insert error', insErr);
-            toast.error(`Falha ao registrar ${file.name}`);
-            // BUG-ARTFILE-CLEANUP-SILENT-FAIL FIX: storage.remove returns { data, error } — best-effort cleanup.
-            const { error: cleanupErr } = await supabase.storage
-              .from('mockup-art-files')
-              .remove([path]);
-            if (cleanupErr) logger.warn('[ArtFileUpload] storage cleanup failed:', cleanupErr);
-            continue;
-          }
-
-          uploaded.push(row as ArtFileAttachment);
-        }
-
-        if (uploaded.length > 0) {
-          onAttachmentsChange([...attachments, ...uploaded]);
-          toast.success(`${uploaded.length} arquivo(s) enviado(s)`);
-        }
+        await uploadFiles(files);
       } finally {
         uploadingRef.current = false;
         setIsUploading(false);
       }
     },
-    [userId, mockupId, quoteId, attachments, onAttachmentsChange],
+    [uploadFiles],
   );
 
   const handleRemove = useCallback(
