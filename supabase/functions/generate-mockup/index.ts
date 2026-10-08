@@ -2,6 +2,16 @@ import { getCorsHeaders } from "../_shared/cors.ts";
 import { authenticateRequest, authErrorResponse } from "../_shared/auth.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.49.4";
 import { assertSwitchEnabled } from "../_shared/kill_switch.ts";
+// Tetos de entrada (corpo/lote/imagem) em módulo testável — ver limits.ts.
+import {
+  MAX_BATCH_AREAS,
+  MAX_BODY_BYTES,
+  MAX_IMAGE_BYTES,
+  PayloadTooLargeError,
+  batchExceedsLimit,
+  readBodyTextCapped,
+  readImageResponseCapped,
+} from "./limits.ts";
 
 // ─ Types ─────────────────────────────────────────────────────────────────
 
@@ -18,6 +28,11 @@ interface GenerateMockupBody {
   // does not use it internally (single-area compositor) but declaring it prevents
   // implicit `any` in the parsed body and documents the full client contract.
   areaName?: string;
+  // Optional batch declaration: the client fans out one invocation per area
+  // (mockupGenerationService.generateMockupApi) running them in parallel, so a
+  // caller that declares the whole batch sends the list here. Above MAX_BATCH_AREAS
+  // the request is refused BEFORE any fetch/composition (see handler).
+  areas?: unknown[];
   positionX?: number;
   positionY?: number;
   logoWidthCm?: number;
@@ -48,6 +63,23 @@ function validationError(
   return new Response(
     JSON.stringify({ error: "validation_failed", errorCode, message }),
     { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+  );
+}
+
+// C-4: corpo acima de MAX_BODY_BYTES é recusado ANTES de parsear/processar, com
+// status próprio (413) e corpo estruturado — nunca 200 com erro dentro.
+function bodyTooLargeResponse(
+  corsHeaders: Record<string, string>,
+  limitBytes: number,
+): Response {
+  return new Response(
+    JSON.stringify({
+      error: "payload_too_large",
+      errorCode: "BODY_TOO_LARGE",
+      message: `Corpo da requisição acima do limite de ${limitBytes} bytes.`,
+      limit_bytes: limitBytes,
+    }),
+    { status: 413, headers: { ...corsHeaders, "Content-Type": "application/json" } },
   );
 }
 
@@ -152,11 +184,9 @@ function svgError(corsHeaders: Record<string, string>): Response {
 
 // ─ Image helpers ────────────────────────────────────────────────────────────
 
-// Hard cap on any fetched/decoded image (product or logo). Without this a caller can
-// point productImageUrl at a huge file on an allowed CDN, or send a massive base64
-// logo, to exhaust the edge worker's memory (the bucket's 10 MB limit only bounds the
-// OUTPUT upload, not these inputs).
-const MAX_IMAGE_BYTES = 15 * 1024 * 1024; // 15 MB
+// Hard cap on any fetched/decoded image (product or logo) lives in ./limits.ts
+// (MAX_IMAGE_BYTES) together with the body/batch caps, so the numbers are proven by
+// index.size.test.ts. Kept referenced here so the intent stays visible at the call site.
 
 async function fetchBytes(url: string, ms = 14_000): Promise<Uint8Array> {
   const ctrl = new AbortController();
@@ -164,17 +194,10 @@ async function fetchBytes(url: string, ms = 14_000): Promise<Uint8Array> {
   try {
     const res = await fetch(url, { signal: ctrl.signal });
     if (!res.ok) throw new Error(`HTTP ${res.status} fetching image`);
-    // Reject oversized payloads up-front via Content-Length when the server provides it…
-    const declared = Number(res.headers.get("content-length") || 0);
-    if (declared > MAX_IMAGE_BYTES) {
-      throw new Error(`Image too large (${declared} bytes > ${MAX_IMAGE_BYTES} max)`);
-    }
-    const bytes = new Uint8Array(await res.arrayBuffer());
-    // …and again after download, for servers that omit or under-report Content-Length.
-    if (bytes.byteLength > MAX_IMAGE_BYTES) {
-      throw new Error(`Image too large (${bytes.byteLength} bytes > ${MAX_IMAGE_BYTES} max)`);
-    }
-    return bytes;
+    // C-4: recusa acima de MAX_IMAGE_BYTES pelo Content-Length declarado E pela
+    // contagem de bytes realmente lidos — o download é cortado no teto em vez de
+    // bufferizar o arquivo inteiro com arrayBuffer() para só depois comparar.
+    return await readImageResponseCapped(res, MAX_IMAGE_BYTES);
   } finally { clearTimeout(t); }
 }
 
@@ -358,14 +381,32 @@ Deno.serve(async (req) => {
 
   let body: GenerateMockupBody;
   try {
-    const parsed = await req.json();
+    // C-4: corpo lido com TETO e contagem de bytes (MAX_BODY_BYTES) — recusa 413
+    // antes de parsear/processar, em vez de bufferizar um JSON de tamanho livre.
+    // Sem stream (corpo ausente) a leitura padrão devolve "" e mantém o 400 de JSON
+    // inválido — e é ela que mantém a edge classificada como body-accepting pelas
+    // heurísticas do portão (req.json/req.text), que audita a dívida de validação.
+    const raw = req.body ? await readBodyTextCapped(req, MAX_BODY_BYTES) : await req.text();
+    const parsed: unknown = JSON.parse(raw);
     // Guard: null / array / primitive bodies would throw when we access
     // body.productImageUrl below — treat them as an empty object so the
     // validation error path fires cleanly instead of a 500.
     body = (parsed !== null && typeof parsed === 'object' && !Array.isArray(parsed))
       ? (parsed as GenerateMockupBody)
       : ({} as GenerateMockupBody);
-  } catch { return validationError("Request body must be valid JSON", corsHeaders); }
+  } catch (e) {
+    if (e instanceof PayloadTooLargeError) return bodyTooLargeResponse(corsHeaders, e.limitBytes);
+    return validationError("Request body must be valid JSON", corsHeaders);
+  }
+
+  // C-4: lote declarado acima do teto é recusado antes de qualquer fetch/composição,
+  // para um chamador não multiplicar memória e CPU por N áreas em paralelo.
+  if (batchExceedsLimit(body.areas))
+    return validationError(
+      `No máximo ${MAX_BATCH_AREAS} áreas por lote.`,
+      corsHeaders,
+      "BATCH_TOO_LARGE",
+    );
 
   // isFetchableUrl unifies scheme validation + SSRF blocking + optional allowlist.
   if (!isFetchableUrl(body.productImageUrl))
@@ -389,6 +430,8 @@ Deno.serve(async (req) => {
 
   // Bound the inline logo BEFORE decoding it (base64 inflates ~4/3 vs. the raw bytes),
   // so an oversized data: URL can't exhaust memory in base64ToBytes/createImageBitmap.
+  // Invariant: MAX_IMAGE_BYTES * 4/3 (~13,3 MB) < MAX_BODY_BYTES (15 MB) — um logo
+  // inline no limite da imagem ainda passa pelo teto do corpo.
   if (body.logoBase64 && body.logoBase64.length > Math.ceil((MAX_IMAGE_BYTES * 4) / 3) + 64)
     return validationError(
       "Logo é muito grande. Envie uma imagem menor.",
