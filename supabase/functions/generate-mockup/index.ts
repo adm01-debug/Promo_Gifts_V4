@@ -2,6 +2,14 @@ import { getCorsHeaders } from "../_shared/cors.ts";
 import { authenticateRequest, authErrorResponse } from "../_shared/auth.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.49.4";
 import { assertSwitchEnabled } from "../_shared/kill_switch.ts";
+// Gate de egresso (allowlist + validação de redirect) extraído para módulo próprio,
+// sem `Deno.serve`, para ser testável em index.test.ts. Ver fetch-guard.ts.
+import {
+  fetchBytes,
+  ImageFetchError,
+  isFetchableUrl,
+  MAX_IMAGE_BYTES,
+} from "./fetch-guard.ts";
 
 // ─ Types ─────────────────────────────────────────────────────────────────
 
@@ -51,87 +59,10 @@ function validationError(
   );
 }
 
-// ─ SSRF hardening ────────────────────────────────────────────────────────────
-// AUDIT 2026-06-17: this function fetches arbitrary productImageUrl / logoUrl
-// values supplied by the caller. Without egress controls that is a Server-Side
-// Request Forgery vector — a caller could aim the URL at cloud metadata
-// (169.254.169.254), loopback, or RFC1918 hosts and read internal responses.
-// We now reject private/reserved/internal targets UNCONDITIONALLY (independent of
-// the allowlist), covering IPv4, IPv6, IPv4-mapped IPv6, and decimal/hex IP
-// obfuscation. The optional MOCKUP_FETCH_ALLOWED_HOSTS allowlist narrows egress
-// further to known CDNs when set.
-// NOTE: this blocks IP *literals* and obvious internal hostnames; it does not on
-// its own stop DNS-rebinding (a public name that resolves to a private IP).
-// Setting MOCKUP_FETCH_ALLOWED_HOSTS to the real product/logo CDNs closes that gap.
-function isBlockedV4(ip: string): boolean {
-  const p = ip.split(".").map(Number);
-  if (p.length !== 4 || p.some((o) => !Number.isInteger(o) || o < 0 || o > 255)) return true;
-  const [a, b, c] = p;
-  if (a === 0 || a === 10 || a === 127) return true;        // this-host / RFC1918-10 / loopback
-  if (a === 100 && b >= 64 && b <= 127) return true;        // CGNAT 100.64/10
-  if (a === 169 && b === 254) return true;                  // link-local + cloud metadata
-  if (a === 172 && b >= 16 && b <= 31) return true;         // RFC1918 172.16/12
-  if (a === 192 && b === 168) return true;                  // RFC1918 192.168/16
-  if (a === 192 && b === 0 && c === 0) return true;         // 192.0.0.0/24
-  if (a === 198 && (b === 18 || b === 19)) return true;     // benchmarking 198.18/15
-  if (a >= 224) return true;                                // multicast / reserved
-  return false;
-}
-// Reduce an IPv4-mapped IPv6 address to its dotted IPv4, handling BOTH the decimal
-// form (::ffff:127.0.0.1) and the hex form the URL parser normalises to (::ffff:7f00:1).
-function v4FromMapped(ip: string): string | null {
-  let m = ip.match(/:ffff:(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
-  if (m) return `${+m[1]}.${+m[2]}.${+m[3]}.${+m[4]}`;
-  m = ip.match(/:ffff:([0-9a-f]{1,4}):([0-9a-f]{1,4})$/i);
-  if (m) {
-    const hi = parseInt(m[1], 16), lo = parseInt(m[2], 16);
-    return `${(hi >> 8) & 255}.${hi & 255}.${(lo >> 8) & 255}.${lo & 255}`;
-  }
-  return null;
-}
-function isBlockedHost(hostname: string): boolean {
-  const h = (hostname || "").toLowerCase().trim().replace(/\.$/, "");
-  if (h === "") return true;
-  if (h === "localhost" || h.endsWith(".localhost") || h === "localhost.localdomain") return true;
-  if (h === "metadata" || h === "metadata.google.internal" || h.endsWith(".internal")) return true;
-  if (h.includes(":")) { // IPv6 literal
-    const ip = h.replace(/^\[/, "").replace(/\]$/, "");
-    if (ip === "::1" || ip === "::") return true;
-    if (ip.startsWith("fe80")) return true;                 // link-local
-    if (ip.startsWith("fc") || ip.startsWith("fd")) return true; // ULA fc00::/7
-    const mapped = v4FromMapped(ip);
-    if (mapped) return isBlockedV4(mapped);
-    return false;                                            // global-unicast v6 allowed
-  }
-  const v4 = h.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
-  if (v4) return isBlockedV4(h);
-  if (/^(0x[0-9a-f]+|\d+)$/i.test(h)) return true;           // decimal/hex IP obfuscation
-  return false;                                              // DNS hostname — allowlist handles the rest
-}
-
-// Single egress gate: valid http(s) scheme + not an internal/blocked target +
-// (optionally) within the MOCKUP_FETCH_ALLOWED_HOSTS allowlist. Replaces the old
-// isValidHttpUrl + hostAllowed pair (which allowed ALL hosts when the env was unset).
-function isFetchableUrl(value: unknown): value is string {
-  if (typeof value !== "string") return false;
-  let u: URL;
-  try { u = new URL(value); } catch { return false; }
-  if (u.protocol !== "https:" && u.protocol !== "http:") return false;
-  if (isBlockedHost(u.hostname)) {
-    console.warn(`[generate-mockup] blocked SSRF-unsafe host: ${u.hostname}`);
-    return false;
-  }
-  const allow = (Deno.env.get("MOCKUP_FETCH_ALLOWED_HOSTS") || "")
-    .split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
-  if (allow.length > 0) {
-    const host = u.hostname.toLowerCase();
-    if (!allow.some((a) => host === a || host.endsWith("." + a))) {
-      console.warn(`[generate-mockup] host not in MOCKUP_FETCH_ALLOWED_HOSTS: ${host}`);
-      return false;
-    }
-  }
-  return true;
-}
+// ─ Egresso (SSRF + allowlist + redirects) ────────────────────────────────────
+// O gate vive em ./fetch-guard.ts: rejeita alvos internos/reservados, exige
+// allowlist (default restrito ao host Supabase do projeto quando
+// MOCKUP_FETCH_ALLOWED_HOSTS não está definida) e revalida CADA hop de redirect.
 
 // SVG cannot be rasterised by createImageBitmap in the Deno edge runtime, so it must
 // be rejected up-front with an actionable, machine-readable error code.
@@ -152,31 +83,8 @@ function svgError(corsHeaders: Record<string, string>): Response {
 
 // ─ Image helpers ────────────────────────────────────────────────────────────
 
-// Hard cap on any fetched/decoded image (product or logo). Without this a caller can
-// point productImageUrl at a huge file on an allowed CDN, or send a massive base64
-// logo, to exhaust the edge worker's memory (the bucket's 10 MB limit only bounds the
-// OUTPUT upload, not these inputs).
-const MAX_IMAGE_BYTES = 15 * 1024 * 1024; // 15 MB
-
-async function fetchBytes(url: string, ms = 14_000): Promise<Uint8Array> {
-  const ctrl = new AbortController();
-  const t = setTimeout(() => ctrl.abort(), ms);
-  try {
-    const res = await fetch(url, { signal: ctrl.signal });
-    if (!res.ok) throw new Error(`HTTP ${res.status} fetching image`);
-    // Reject oversized payloads up-front via Content-Length when the server provides it…
-    const declared = Number(res.headers.get("content-length") || 0);
-    if (declared > MAX_IMAGE_BYTES) {
-      throw new Error(`Image too large (${declared} bytes > ${MAX_IMAGE_BYTES} max)`);
-    }
-    const bytes = new Uint8Array(await res.arrayBuffer());
-    // …and again after download, for servers that omit or under-report Content-Length.
-    if (bytes.byteLength > MAX_IMAGE_BYTES) {
-      throw new Error(`Image too large (${bytes.byteLength} bytes > ${MAX_IMAGE_BYTES} max)`);
-    }
-    return bytes;
-  } finally { clearTimeout(t); }
-}
+// MAX_IMAGE_BYTES e fetchBytes (download com allowlist/redirect validados) vivem em
+// ./fetch-guard.ts.
 
 function base64ToBytes(dataUrl: string): Uint8Array {
   const b64 = dataUrl.includes(",") ? dataUrl.split(",")[1] : dataUrl;
@@ -367,7 +275,8 @@ Deno.serve(async (req) => {
       : ({} as GenerateMockupBody);
   } catch { return validationError("Request body must be valid JSON", corsHeaders); }
 
-  // isFetchableUrl unifies scheme validation + SSRF blocking + optional allowlist.
+  // isFetchableUrl unifies scheme validation + SSRF blocking + allowlist (default =
+  // host Supabase do projeto quando MOCKUP_FETCH_ALLOWED_HOSTS não está definida).
   if (!isFetchableUrl(body.productImageUrl))
     return validationError(
       "productImageUrl é obrigatória, deve ser http(s) e não pode apontar para um host interno/bloqueado.",
@@ -420,19 +329,31 @@ Deno.serve(async (req) => {
         body.logoBase64 ? base64ToBytes(body.logoBase64) : await fetchBytes(body.logoUrl!, 12_000))(),
     ]);
 
+    // Falha de download: o motivo técnico (host/status/detalhe do guard) fica SÓ no log
+    // do servidor — o cliente recebe mensagem genérica, sem detalhes internos.
     if (prodSettled.status === "rejected") {
+      const reason = prodSettled.reason;
+      console.error(
+        "[generate-mockup] product image unavailable:",
+        reason instanceof ImageFetchError ? reason.detail : reason,
+      );
       return new Response(
         JSON.stringify({
           error: "product_image_unavailable",
-          message: (prodSettled.reason as Error)?.message ?? "Falha ao baixar imagem do produto",
+          message: "Não foi possível baixar a imagem do produto.",
         }),
         { status: 422, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     if (logoSettled.status === "rejected") {
+      const reason = logoSettled.reason;
+      console.error(
+        "[generate-mockup] logo unavailable:",
+        reason instanceof ImageFetchError ? reason.detail : reason,
+      );
       return new Response(
         JSON.stringify({
           error: "logo_unavailable",
-          message: (logoSettled.reason as Error)?.message ?? "Falha ao processar o logo",
+          message: "Não foi possível processar o logo.",
         }),
         { status: 422, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
