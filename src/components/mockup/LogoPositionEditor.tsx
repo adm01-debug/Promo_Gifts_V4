@@ -182,6 +182,12 @@ export const LogoPositionEditor = memo(
             colorConfigFilter={colorConfigFilter}
             techniqueColorConfig={techniqueColorConfig}
             techniqueName={techniqueName}
+            productWidthCm={productWidthCm}
+            productHeightCm={productHeightCm}
+            maxWidthCm={maxWidth}
+            maxHeightCm={maxHeight}
+            logoWidthCm={logoWidth}
+            logoHeightCm={logoHeight}
             onPointerDown={handlePointerDown}
             onColorConfigClick={onColorConfigClick}
           />
