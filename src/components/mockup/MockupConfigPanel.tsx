@@ -5,7 +5,10 @@
  * Handles: Client, Product, Technique selection + Areas.
  */
 
+import { useCallback } from 'react';
 import { Loader2, Paintbrush, RefreshCw, Info, ChevronDown, Wand2 } from 'lucide-react';
+import { toast } from 'sonner';
+import { createClientLogger } from '@/lib/telemetry/structuredLogger';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -25,6 +28,8 @@ import { MultiAreaManager, type PersonalizationArea } from './MultiAreaManager';
 import { ArtFileUpload, type ArtFileAttachment } from './ArtFileUpload';
 import { LogoColorAnalyzer } from './LogoColorAnalyzer';
 import type { DetectedColor } from '@/hooks/simulation';
+
+const log = createClientLogger('mockup-config-panel');
 
 interface Technique {
   id: string;
@@ -115,6 +120,36 @@ export function MockupConfigPanel({
 }: MockupConfigPanelProps) {
   const hasLogo = personalizationAreas.some((a) => a.logoPreview);
 
+  // Aplica a logo cadastrada no CRM à área ativa. A imagem baixada vira um File e entra
+  // no MESMO caminho do upload manual (onLogoUpload → handleAreaLogoUpload: formato,
+  // tamanho, rejeição de SVG + análise de cores). Nada é aplicado se falhar.
+  const handleUseClientLogo = useCallback(
+    async (client: MockupClient) => {
+      const logoUrl = client.logo_url;
+      // A ação só é oferecida para clientes com logo — guarda para o tipo opcional.
+      if (!logoUrl) return;
+      const areaId = activeAreaId ?? personalizationAreas[0]?.id ?? null;
+      if (!areaId) {
+        toast.error('Selecione uma área de personalização antes de usar a logo do cliente.');
+        return;
+      }
+      try {
+        const response = await fetch(logoUrl);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const blob = await response.blob();
+        const file = new File([blob], 'logo-cliente', { type: blob.type || 'image/png' });
+        onLogoUpload(areaId, file);
+      } catch (err) {
+        // Não mexe em cliente nem produto: avisa e deixa o upload manual disponível.
+        toast.error('Não foi possível carregar a logo do cliente. Faça o upload manual.');
+        log.error('use_client_logo_failed', {
+          error: err instanceof Error ? err.message : String(err),
+        });
+      }
+    },
+    [activeAreaId, personalizationAreas, onLogoUpload],
+  );
+
   return (
     <Card className="border-border/30">
       <CardHeader>
@@ -152,6 +187,7 @@ export function MockupConfigPanel({
               <MockupClientSelector
                 selectedClient={selectedClient}
                 onClientSelect={onClientSelect}
+                onUseClientLogo={handleUseClientLogo}
               />
             </MobileCollapsibleSection>
 

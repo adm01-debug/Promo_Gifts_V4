@@ -5,7 +5,7 @@
 
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { useClientFuzzySearch } from '@/hooks/common';
-import { X, Building2, Search, Loader2, AlertCircle, RefreshCw } from 'lucide-react';
+import { X, Building2, Search, Loader2, AlertCircle, RefreshCw, ImagePlus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -19,6 +19,12 @@ import type { MockupClient } from './MockupConfigPanel';
 interface MockupClientSelectorProps {
   selectedClient: MockupClient | null;
   onClientSelect: (client: MockupClient | null) => void;
+  /**
+   * Aciona a marca do cliente na área ativa do mockup. Só é oferecido quando o
+   * cliente selecionado tem logo cadastrada no CRM; a imagem passa pelo mesmo
+   * caminho de validação do upload manual.
+   */
+  onUseClientLogo?: (client: MockupClient) => void;
 }
 
 function CompanyAvatar({
@@ -61,6 +67,7 @@ function CompanyAvatar({
 export function MockupClientSelector({
   selectedClient,
   onClientSelect,
+  onUseClientLogo,
 }: MockupClientSelectorProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
@@ -102,7 +109,7 @@ export function MockupClientSelector({
 
   // Se há empresa selecionada, mostrar chip
   if (selectedClient) {
-    return (
+    const chip = (
       <div
         role="button"
         tabIndex={0}
@@ -143,6 +150,27 @@ export function MockupClientSelector({
           aria-hidden="true"
         />
       </div>
+    );
+
+    // Fora do chip (não aninha controles interativos): a marca do CRM entra no MESMO
+    // caminho de validação do upload manual, dentro da área ativa do mockup.
+    return (
+      <>
+        {chip}
+        {selectedClient.logo_url && onUseClientLogo && (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            data-testid="mockup-client-use-logo"
+            className="mt-2 w-full gap-2"
+            onClick={() => onUseClientLogo(selectedClient)}
+          >
+            <ImagePlus className="h-4 w-4" aria-hidden="true" />
+            Usar logo do cliente
+          </Button>
+        )}
+      </>
     );
   }
 
