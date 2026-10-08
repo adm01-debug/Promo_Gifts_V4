@@ -64,3 +64,30 @@ Segunda passada (08/10/2026): partes do PDF que ainda não tinham virado etapa �
 ## Do documento do Codex que NÃO viramos etapa
 - Percentuais fixos 62/38 e 31/69 do layout; "alvos 44–48 px" em tudo; comparar 3 vs 4 — preferências, não requisitos.
 - Qualquer item de cor/paleta (instrução do dono).
+
+---
+
+# Adendo 3 — planos antigos do repositório que ainda valem + risco achado (etapas 81–84)
+Varredura (08/10/2026) dos planos de 100/50 etapas, roadmap, Kit Maker e da lista de planos da memória do dono. Resultado: o plano "cartão de arquivo (mockup)" da memória é do **Zapp Web V2** (um mockup de UI, outro projeto) — não é deste módulo.
+
+## Planos do repositório sobre o Mockup ainda NÃO feitos
+| Origem | Item | Veredito |
+|---|---|---|
+| Plano 100: 002 | owner e criticidade do módulo ("owner TBD" em todos os docs) | **Vale** — barato; entra no ADR (etapa 49) → etapa 81 |
+| Plano 100: 063 · 092 / Plano 50: 036 | provar o mockup E2E em staging; hoje exigem "cobrança simulada e aprovação", que NÃO existem (créditos arquivados — Q11; aprovação interna — Q5) | **Vale, reescrito** → etapa 82 (fluxo real: gerar → salvar → anexar ao orçamento → link assinado → lixeira) |
+| Roadmap :713 / ANALISE_109 :126 | aprovação pública pelo cliente | **Futuro** (decisão Q5); fica no roadmap |
+| Kit Maker 080 | aceite integrado com mockup real | **Vale** → coberto pela 82 (Kit Maker entra no smoke) |
+| E39 (aceite visual "mockup x produção") | é design de tela, não o módulo | Ignorado |
+
+## RISCO descoberto (muda 3 etapas já aprovadas)
+O orçamento e o **Kit Builder já gravam URLs de mockup/arte** (`quote_items.mockup_urls` e `artwork_urls`, `src/pages/kit-builder/useKitBuilderQuote.ts:250,284`; `src/hooks/quotes/quoteHelpers.ts:234-235`; `src/lib/mockup-storage.ts:50` usa `getPublicUrl`). Orçamentos antigos guardam essas URLs públicas. Se o bucket virar privado (decisão Q6) e as etapas 4/9 forem aplicadas como estão, **toda imagem de mockup de orçamento já emitido quebra**. Além disso, URL assinada expira: gravar URL assinada no orçamento (etapa 38) também quebra com o tempo.
+Correções:
+- Etapa 38/37: o orçamento passa a guardar o **caminho no storage (ou o id do mockup)**, nunca uma URL; a URL assinada é gerada na hora de exibir/gerar PDF.
+- Etapa 4: em vez de tornar o bucket atual privado de imediato, usar **transição em duas fases** (ver D4): bucket NOVO privado para tudo que for gerado daqui em diante; o bucket legado fica com leitura por objeto apenas para o que orçamentos antigos referenciam, até o backfill dos caminhos.
+- Etapa 9: o serviço aceita os dois formatos (URL legada e caminho) durante a transição.
+
+## Etapas novas
+81. [F:vera][O2] Owner e criticidade do módulo no ADR da fronteira (etapa 49): owner = Joaquim, criticidade C1 (não bloqueia o orçamento) — confirmar (D3).
+82. [F:workertestes][O3] Smoke E2E real em STAGING (plano 063/092/036 reescrito): gerar → salvar → anexar ao orçamento → link assinado de 7 dias → lixeira; inclui o Kit Builder gerando mockup para a caixa. Precisa de ambiente staging + JWT de teste + dados descartáveis → [J] fornece o ambiente.
+83. [F:complexo][O2] Inventário e adaptação dos consumidores de URL de mockup/arte FORA do módulo: Kit Builder (`useKitBuilderQuote`), `quoteHelpers`, `quoteService`, simulador — todos passam a guardar caminho/id e resolver URL assinada na leitura; testes de contrato do payload do orçamento atualizados (`quoteServicePayloadContract.test.ts`). **Pré-requisito da etapa 4.**
+84. [F:workersql][O3] PROPOSTA SQL de backfill: converter URLs públicas legadas em `quote_items.mockup_urls`/`artwork_urls` (e `generated_mockups.mockup_url/thumbnail_url/layout_url`) para caminhos de storage, em lotes, com rollback e contagem antes/depois. Depois do backfill o bucket legado pode ficar privado.
