@@ -269,7 +269,7 @@ export interface GenerateMockupParams {
 export interface GenerateMockupResult {
   mockupUrl?: string;
   singleUrl?: string | null;
-  batchResults: { url: string; areaName: string }[];
+  batchResults: { url: string; areaName: string; areaId?: string }[];
   jobId?: string;
   revisionsLeft?: number;
 }
@@ -444,10 +444,14 @@ export async function generateMockupApi(
   // first error).
   const settled = await Promise.allSettled(
     areasWithLogos.map((area) =>
-      invokeMockupForArea(params, area).then((url) => ({ url, areaName: area.name })),
+      invokeMockupForArea(params, area).then((url) => ({
+        url,
+        areaName: area.name,
+        areaId: area.id,
+      })),
     ),
   );
-  const batchResults: { url: string; areaName: string }[] = [];
+  const batchResults: { url: string; areaName: string; areaId?: string }[] = [];
   let failures = 0;
   for (const result of settled) {
     if (result.status === 'fulfilled') {

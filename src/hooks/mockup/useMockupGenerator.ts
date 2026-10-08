@@ -42,6 +42,16 @@ import {
 } from '@/hooks/mockup/mockupGenerationService';
 
 import { logger } from '@/lib/logger';
+
+/** Máximo de áreas (com logo) por lote de geração (decisão Q14). */
+export const MAX_BATCH_AREAS = 6;
+
+export interface BatchMockupResult {
+  /** Id estável da área — nomes de área podem se repetir. */
+  areaId?: string;
+  areaName: string;
+  url: string;
+}
 export type { Technique, GeneratedMockup };
 
 export function useMockupGenerator() {
@@ -69,9 +79,11 @@ export function useMockupGenerator() {
   ]);
   const [activeAreaId, setActiveAreaId] = useState<string | null>(null);
   const [generatedMockup, setGeneratedMockup] = useState<string | null>(null);
-  const [generatedBatchMockups, setGeneratedBatchMockups] = useState<
-    { areaName: string; url: string }[]
-  >([]);
+  const [generatedBatchMockups, setGeneratedBatchMockups] = useState<BatchMockupResult[]>([]);
+  // Erro por área (id estável) do último lote + áreas em regeração individual.
+  const [areaErrors, setAreaErrors] = useState<Record<string, string>>({});
+  const [retryingAreaIds, setRetryingAreaIds] = useState<string[]>([]);
+  const retryingRef = useRef<Set<string>>(new Set());
   const [artAttachments, setArtAttachments] = useState<ArtFileAttachment[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   // Re-entrancy guard for generateMockup: setIsLoading(true) is async/batched and
@@ -532,6 +544,12 @@ export function useMockupGenerator() {
       toast.error('Selecione empresa, produto, técnica e faça upload de pelo menos um logo');
       return;
     }
+    if (areasWithLogos.length > MAX_BATCH_AREAS) {
+      toast.error(
+        `Máximo de ${MAX_BATCH_AREAS} áreas por lote (${areasWithLogos.length} com logo). Remova o logo de ${areasWithLogos.length - MAX_BATCH_AREAS} área(s) e tente de novo.`,
+      );
+      return;
+    }
     const productImage = getProductImage();
     if (!productImage) {
       toast.error('O produto selecionado não possui imagem');
@@ -568,6 +586,7 @@ export function useMockupGenerator() {
     setIsLoading(true);
     setGeneratedMockup(null);
     setGeneratedBatchMockups([]);
+    setAreaErrors({});
     setGenerationError(null);
     setMockupAnnotations([]);
     setBeforeImage(productImage);
@@ -603,19 +622,33 @@ export function useMockupGenerator() {
         });
       } else {
         // T5 FIX: parallel DB writes.
+        // Associação por id estável da área (nomes repetidos não colidem). Sem areaId
+        // (resposta legada) cai no índice — nunca no nome.
         const batchSaveResults = await Promise.allSettled(
           result.batchResults.map((r, i) => {
-            const area = areasWithLogos.find((a) => a.name === r.areaName) || areasWithLogos[i];
+            const area = r.areaId
+              ? areasWithLogos.find((a) => a.id === r.areaId)
+              : areasWithLogos[i];
+            if (!area) return Promise.resolve({ recordId: null, r });
             return saveMockupToHistory(r.url, area).then((recordId) => ({ recordId, r }));
           }),
         );
+        // Áreas que não voltaram no lote ficam com erro próprio + regerar individual.
+        if (result.batchResults.every((r) => r.areaId)) {
+          const okIds = new Set(result.batchResults.map((r) => r.areaId));
+          const errs: Record<string, string> = {};
+          for (const a of areasWithLogos) {
+            if (!okIds.has(a.id)) errs[a.id] = 'Falha ao gerar esta área. Tente regerar só ela.';
+          }
+          setAreaErrors(errs);
+        }
         const lastFulfilled = batchSaveResults
           .filter(
             (
               res,
             ): res is PromiseFulfilledResult<{
               recordId: string | null;
-              r: { areaName: string; url: string };
+              r: BatchMockupResult;
             }> => res.status === 'fulfilled',
           )
           .pop();
@@ -652,6 +685,67 @@ export function useMockupGenerator() {
     fetchHistory,
   ]);
 
+  // Regera SÓ uma área que falhou no lote; as já salvas permanecem intactas.
+  const retryArea = useCallback(
+    async (areaId: string) => {
+      if (isGeneratingRef.current || retryingRef.current.has(areaId)) return;
+      const area = personalizationAreas.find((a) => a.id === areaId);
+      const productImage = getProductImage();
+      if (!area?.logoPreview || !selectedTechnique || !productImage) {
+        toast.error('Não foi possível regerar esta área: faltam logo, técnica ou imagem.');
+        return;
+      }
+      retryingRef.current.add(areaId);
+      setRetryingAreaIds((prev) => [...prev, areaId]);
+      try {
+        const result = await generateMockupApi({
+          productImage,
+          productName: selectedProduct?.name ?? '',
+          technique: selectedTechnique,
+          areas: [area],
+          productWidthCm:
+            selectedProduct?.dimensions?.width_cm ??
+            selectedProduct?.dimensions?.diameter_cm ??
+            (selectedProduct?.metadata?.width_mm ? selectedProduct.metadata.width_mm / 10 : null),
+          productHeightCm:
+            selectedProduct?.dimensions?.height_cm ??
+            (selectedProduct?.metadata?.height_mm ? selectedProduct.metadata.height_mm / 10 : null),
+        });
+        const url = result.singleUrl ?? result.batchResults[0]?.url;
+        if (!url) throw new Error('O serviço não retornou uma imagem.');
+        await saveMockupToHistory(url, area);
+        setGeneratedBatchMockups((prev) => [
+          ...prev.filter((b) => b.areaId !== areaId),
+          { areaId, areaName: area.name, url },
+        ]);
+        setGeneratedMockup((prev) => prev ?? url);
+        setAreaErrors((prev) => {
+          const rest = { ...prev };
+          delete rest[areaId];
+          return rest;
+        });
+        toast.success(`Área "${area.name}" gerada com sucesso!`);
+        fetchHistory();
+      } catch (error: unknown) {
+        logger.error('Error regenerating area mockup:', error);
+        const message = error instanceof Error ? error.message : 'Erro ao gerar esta área';
+        setAreaErrors((prev) => ({ ...prev, [areaId]: message }));
+        toast.error(message);
+      } finally {
+        retryingRef.current.delete(areaId);
+        setRetryingAreaIds((prev) => prev.filter((id) => id !== areaId));
+      }
+    },
+    [
+      personalizationAreas,
+      getProductImage,
+      selectedTechnique,
+      selectedProduct,
+      saveMockupToHistory,
+      fetchHistory,
+    ],
+  );
+
   const deleteMockup = useCallback(async () => {
     if (!mockupToDelete) return;
     try {
@@ -676,6 +770,7 @@ export function useMockupGenerator() {
     setActiveAreaId(null);
     setGeneratedMockup(null);
     setGeneratedBatchMockups([]);
+    setAreaErrors({});
     setArtAttachments([]);
     setGenerationError(null);
     setMockupAnnotations([]);
@@ -790,6 +885,9 @@ export function useMockupGenerator() {
       generatedMockup,
       setGeneratedMockup,
       generatedBatchMockups,
+      areaErrors,
+      retryingAreaIds,
+      retryArea,
       artAttachments,
       setArtAttachments,
       isLoading,
@@ -852,6 +950,9 @@ export function useMockupGenerator() {
       productLocations,
       generatedMockup,
       generatedBatchMockups,
+      areaErrors,
+      retryingAreaIds,
+      retryArea,
       artAttachments,
       isLoading,
       generationError,

@@ -75,6 +75,9 @@ interface MockupConfigPanelProps {
   onActiveAreaChange: (id: string | null) => void;
   onLogoUpload: (areaId: string, file: File) => void;
   onLogoRemove?: (areaId: string) => void;
+  areaErrors?: Record<string, string>;
+  retryingAreaIds?: string[];
+  onRetryArea?: (areaId: string) => void;
   /** Real product locations from DB — if provided, locks areas to these */
   productLocations: { code: string; name: string; order: number }[] | null;
   /** Logo color analysis */
@@ -107,6 +110,9 @@ export function MockupConfigPanel({
   onActiveAreaChange,
   onLogoUpload,
   onLogoRemove,
+  areaErrors,
+  retryingAreaIds,
+  onRetryArea,
   productLocations,
   logoColorAnalysis,
   artAttachments,
@@ -314,6 +320,9 @@ export function MockupConfigPanel({
                 onActiveAreaChange={onActiveAreaChange}
                 onLogoUpload={onLogoUpload}
                 onLogoRemove={onLogoRemove}
+                areaErrors={areaErrors}
+                retryingAreaIds={retryingAreaIds}
+                onRetryArea={onRetryArea}
                 productLocations={productLocations}
               />
             </MobileCollapsibleSection>
