@@ -22,6 +22,33 @@ const ACCEPTED_MIME = [
 ];
 const MAX_SIZE_MB = 25;
 
+/** Validação sem rede: extensão, tipo informado pelo navegador e tamanho. Retorna a mensagem de erro ou null. */
+export function validateArtFile(file: File): string | null {
+  const ext = `.${file.name.split('.').pop()?.toLowerCase() ?? ''}`;
+  if (!ACCEPTED_EXTENSIONS.includes(ext)) {
+    return `${file.name}: formato não suportado (${ACCEPTED_EXTENSIONS.join(', ')})`;
+  }
+  // Alguns navegadores deixam o tipo vazio para .ai/.cdr; tipo preenchido tem de estar na lista.
+  if (file.type && !ACCEPTED_MIME.includes(file.type)) {
+    return `${file.name}: tipo de arquivo inválido`;
+  }
+  if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+    return `${file.name}: excede ${MAX_SIZE_MB}MB`;
+  }
+  return null;
+}
+
+/** Tipo real: PDF precisa começar com %PDF. */
+async function hasValidSignature(file: File): Promise<boolean> {
+  if (!file.name.toLowerCase().endsWith('.pdf')) return true;
+  try {
+    const head = new Uint8Array(await file.slice(0, 4).arrayBuffer());
+    return String.fromCharCode(...head) === '%PDF';
+  } catch {
+    return true;
+  }
+}
+
 export interface ArtFileAttachment {
   id: string;
   file_url: string;
@@ -61,6 +88,8 @@ export function ArtFileUpload({
   const inputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  // Trava síncrona: o estado só atualiza no próximo render, então dois envios seguidos passariam.
+  const uploadingRef = useRef(false);
 
   const handleFiles = useCallback(
     async (files: File[] | FileList) => {
@@ -72,84 +101,98 @@ export function ArtFileUpload({
       const list = Array.from(files);
       if (list.length === 0) return;
 
+      if (uploadingRef.current) {
+        toast.error('Aguarde o envio em andamento terminar');
+        return;
+      }
+      uploadingRef.current = true;
       setIsUploading(true);
-      const uploaded: ArtFileAttachment[] = [];
+      try {
+        const uploaded: ArtFileAttachment[] = [];
 
-      for (const file of list) {
-        const ext = `.${file.name.split('.').pop()?.toLowerCase() ?? ''}`;
-        if (!ACCEPTED_EXTENSIONS.includes(ext)) {
-          toast.error(`${file.name}: formato não suportado (${ACCEPTED_EXTENSIONS.join(', ')})`);
-          continue;
+        for (const file of list) {
+          const ext = `.${file.name.split('.').pop()?.toLowerCase() ?? ''}`;
+          const invalid = validateArtFile(file);
+          if (invalid) {
+            toast.error(invalid);
+            continue;
+          }
+          if (!(await hasValidSignature(file))) {
+            toast.error(`${file.name}: conteúdo não corresponde à extensão`);
+            continue;
+          }
+
+          const safe = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+          const path = `${userId}/${Date.now()}-${safe}`;
+
+          const { error: upErr } = await supabase.storage
+            .from('mockup-art-files')
+            .upload(path, file, {
+              contentType: file.type || 'application/octet-stream',
+              upsert: false,
+            });
+
+          if (upErr) {
+            logger.error('[ArtFileUpload] upload error', upErr);
+            toast.error(`Falha ao enviar ${file.name}`);
+            continue;
+          }
+
+          // BUG-ARTFILE-SIGNEDURL-SILENT-FAIL FIX: if createSignedUrl failed, signed was null
+          // and file_url: '' was inserted into the DB — corrupt record with inaccessible file.
+          const { data: signed, error: signErr } = await supabase.storage
+            .from('mockup-art-files')
+            .createSignedUrl(path, 60 * 60 * 24 * 7);
+
+          if (signErr || !signed?.signedUrl) {
+            logger.error('[ArtFileUpload] createSignedUrl failed — skipping file', signErr);
+            toast.error(`Falha ao gerar URL de acesso para ${file.name}`);
+            const { error: cleanupErr } = await supabase.storage
+              .from('mockup-art-files')
+              .remove([path]);
+            if (cleanupErr)
+              logger.warn('[ArtFileUpload] storage cleanup after signedUrl fail:', cleanupErr);
+            continue;
+          }
+
+          const { data: row, error: insErr } = await supabase
+            .from('art_file_attachments')
+            .insert({
+              user_id: userId,
+              mockup_id: mockupId ?? null,
+              quote_id: quoteId ?? null,
+              file_url: signed?.signedUrl ?? '',
+              file_path: path,
+              original_name: file.name,
+              mime_type: file.type || null,
+              file_size_bytes: file.size,
+              file_extension: ext,
+            })
+            .select()
+            .single();
+
+          if (insErr || !row) {
+            logger.error('[ArtFileUpload] db insert error', insErr);
+            toast.error(`Falha ao registrar ${file.name}`);
+            // BUG-ARTFILE-CLEANUP-SILENT-FAIL FIX: storage.remove returns { data, error } — best-effort cleanup.
+            const { error: cleanupErr } = await supabase.storage
+              .from('mockup-art-files')
+              .remove([path]);
+            if (cleanupErr) logger.warn('[ArtFileUpload] storage cleanup failed:', cleanupErr);
+            continue;
+          }
+
+          uploaded.push(row as ArtFileAttachment);
         }
-        if (file.size > MAX_SIZE_MB * 1024 * 1024) {
-          toast.error(`${file.name}: excede ${MAX_SIZE_MB}MB`);
-          continue;
+
+        if (uploaded.length > 0) {
+          onAttachmentsChange([...attachments, ...uploaded]);
+          toast.success(`${uploaded.length} arquivo(s) enviado(s)`);
         }
-
-        const safe = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
-        const path = `${userId}/${Date.now()}-${safe}`;
-
-        const { error: upErr } = await supabase.storage
-          .from('mockup-art-files')
-          .upload(path, file, {
-            contentType: file.type || 'application/octet-stream',
-            upsert: false,
-          });
-
-        if (upErr) {
-          logger.error('[ArtFileUpload] upload error', upErr);
-          toast.error(`Falha ao enviar ${file.name}`);
-          continue;
-        }
-
-        // BUG-ARTFILE-SIGNEDURL-SILENT-FAIL FIX: if createSignedUrl failed, signed was null
-        // and file_url: '' was inserted into the DB — corrupt record with inaccessible file.
-        const { data: signed, error: signErr } = await supabase.storage
-          .from('mockup-art-files')
-          .createSignedUrl(path, 60 * 60 * 24 * 7);
-
-        if (signErr || !signed?.signedUrl) {
-          logger.error('[ArtFileUpload] createSignedUrl failed — skipping file', signErr);
-          toast.error(`Falha ao gerar URL de acesso para ${file.name}`);
-          const { error: cleanupErr } = await supabase.storage.from('mockup-art-files').remove([path]);
-          if (cleanupErr) logger.warn('[ArtFileUpload] storage cleanup after signedUrl fail:', cleanupErr);
-          continue;
-        }
-
-        const { data: row, error: insErr } = await supabase
-          .from('art_file_attachments')
-          .insert({
-            user_id: userId,
-            mockup_id: mockupId ?? null,
-            quote_id: quoteId ?? null,
-            file_url: signed?.signedUrl ?? '',
-            file_path: path,
-            original_name: file.name,
-            mime_type: file.type || null,
-            file_size_bytes: file.size,
-            file_extension: ext,
-          })
-          .select()
-          .single();
-
-        if (insErr || !row) {
-          logger.error('[ArtFileUpload] db insert error', insErr);
-          toast.error(`Falha ao registrar ${file.name}`);
-          // BUG-ARTFILE-CLEANUP-SILENT-FAIL FIX: storage.remove returns { data, error } — best-effort cleanup.
-          const { error: cleanupErr } = await supabase.storage.from('mockup-art-files').remove([path]);
-          if (cleanupErr) logger.warn('[ArtFileUpload] storage cleanup failed:', cleanupErr);
-          continue;
-        }
-
-        uploaded.push(row as ArtFileAttachment);
+      } finally {
+        uploadingRef.current = false;
+        setIsUploading(false);
       }
-
-      if (uploaded.length > 0) {
-        onAttachmentsChange([...attachments, ...uploaded]);
-        toast.success(`${uploaded.length} arquivo(s) enviado(s)`);
-      }
-
-      setIsUploading(false);
     },
     [userId, mockupId, quoteId, attachments, onAttachmentsChange],
   );
@@ -192,6 +235,18 @@ export function ArtFileUpload({
   return (
     <div className={cn('space-y-3', className)}>
       <Card
+        role="button"
+        tabIndex={0}
+        aria-busy={isUploading}
+        aria-disabled={isUploading}
+        aria-label="Enviar arquivos de arte vetorial"
+        onKeyDown={(e) => {
+          if (e.target !== e.currentTarget) return;
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            if (!isUploading) inputRef.current?.click();
+          }
+        }}
         onDragOver={(e) => {
           e.preventDefault();
           setIsDragging(true);
@@ -205,9 +260,13 @@ export function ArtFileUpload({
         data-testid="mockup-art-file-dropzone"
         className={cn(
           'cursor-pointer border-2 border-dashed p-6 text-center transition-colors',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+          isUploading && 'cursor-not-allowed opacity-70',
           isDragging ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50',
         )}
-        onClick={() => inputRef.current?.click()}
+        onClick={() => {
+          if (!isUploading) inputRef.current?.click();
+        }}
       >
         <input
           ref={inputRef}
@@ -216,12 +275,18 @@ export function ArtFileUpload({
           accept={[...ACCEPTED_EXTENSIONS, ...ACCEPTED_MIME].join(',')}
           className="hidden"
           aria-label="Upload de arquivos de arte vetorial"
-          onChange={(e) => e.target.files && handleFiles(e.target.files)}
+          onClick={(e) => e.stopPropagation()}
+          onChange={(e) => {
+            if (e.target.files) void handleFiles(e.target.files);
+            e.target.value = '';
+          }}
         />
         {isUploading ? (
           <div className="flex flex-col items-center gap-2 text-muted-foreground">
             <Loader2 className="h-6 w-6 animate-spin" aria-hidden="true" />
-            <p className="text-sm">Enviando…</p>
+            <p className="text-sm" role="status">
+              Enviando…
+            </p>
           </div>
         ) : (
           <div className="flex flex-col items-center gap-2 text-muted-foreground">
