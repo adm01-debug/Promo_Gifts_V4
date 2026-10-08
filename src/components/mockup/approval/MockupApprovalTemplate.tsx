@@ -3,13 +3,69 @@
  * One product per page. Rendered as a web page, exportable to PDF.
  */
 
-import { forwardRef } from 'react';
+import { forwardRef, type CSSProperties } from 'react';
 import type { MockupApprovalData } from '@/types/mockup-approval';
 import { LogoWithTransparentBg } from '@/components/pdf/proposal/LogoWithTransparentBg';
 import { maskCnpj } from '@/utils/masks';
 
-const GREEN = '#00c853';
-const DARK = '#000000';
+/**
+ * Tokens do documento timbrado.
+ *
+ * Decisão Q19: o papel impresso preserva a identidade da marca (verde
+ * institucional) e o app segue o Blue Premium — por isso este documento NÃO
+ * usa os tokens de UI. Toda cor literal do timbrado vive AQUI.
+ */
+export const DOC_TOKENS = {
+  /** Verde institucional: títulos de seção, faixas e filete do cabeçalho */
+  green: '#00c853',
+  /** Fallback quando o produto não traz colorHex */
+  greenFallback: '#2e7d32',
+  black: '#000000',
+  white: '#ffffff',
+  /** Texto */
+  inkStrong: '#111',
+  inkHeading: '#1a1a1a',
+  inkBody: '#333',
+  inkLabel: '#222',
+  inkMuted: '#666',
+  inkSoft: '#777',
+  inkCaption: '#999',
+  /** Superfícies e bordas */
+  surface: '#fafafa',
+  surfaceAlt: '#f8f9fa',
+  surfaceChip: '#f5f5f5',
+  border: '#e8e8e8',
+  borderSoft: '#f0f0f0',
+  borderChip: '#e0e0e0',
+  borderSwatch: '#ddd',
+  divider: '#eee',
+  /** Sombra do quadro do mockup */
+  shadowFrame: 'rgba(0,0,0,0.08)',
+} as const;
+
+/** Rótulo de seção do timbrado (o mesmo bloco de estilo aparece 4× no documento). */
+function sectionLabelStyle(fontSize: string, marginBottom: string): CSSProperties {
+  return {
+    fontFamily: "'Montserrat', sans-serif",
+    fontWeight: 700,
+    fontSize,
+    color: DOC_TOKENS.green,
+    textTransform: 'uppercase',
+    letterSpacing: '0.5px',
+    marginBottom,
+  };
+}
+
+/** Célula de cabeçalho da tabela de cores Pantone (colunas idênticas). */
+const PANTONE_TH_STYLE: CSSProperties = {
+  textAlign: 'left',
+  padding: '4px 8px',
+  backgroundColor: DOC_TOKENS.black,
+  color: DOC_TOKENS.white,
+  fontSize: '9px',
+  textTransform: 'uppercase',
+  letterSpacing: '0.5px',
+};
 
 export const MockupApprovalTemplate = forwardRef<HTMLDivElement, { data: MockupApprovalData }>(
   ({ data }, ref) => {
@@ -27,9 +83,9 @@ export const MockupApprovalTemplate = forwardRef<HTMLDivElement, { data: MockupA
         style={{
           width: '794px',
           minHeight: '1123px',
-          backgroundColor: '#fff',
+          backgroundColor: DOC_TOKENS.white,
           fontFamily: "'Roboto', 'Segoe UI', Helvetica, Arial, sans-serif",
-          color: '#333',
+          color: DOC_TOKENS.inkBody,
           position: 'relative',
           boxSizing: 'border-box',
           overflow: 'hidden',
@@ -53,14 +109,14 @@ export const MockupApprovalTemplate = forwardRef<HTMLDivElement, { data: MockupA
                 style={{
                   width: '483px',
                   height: '630px',
-                  border: '1px solid #e8e8e8',
+                  border: `1px solid ${DOC_TOKENS.border}`,
                   borderRadius: '8px',
                   overflow: 'hidden',
-                  backgroundColor: '#fafafa',
+                  backgroundColor: DOC_TOKENS.surface,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  boxShadow: '0 2px 12px rgba(0,0,0,0.08)',
+                  boxShadow: `0 2px 12px ${DOC_TOKENS.shadowFrame}`,
                 }}
               >
                 <img
@@ -76,7 +132,7 @@ export const MockupApprovalTemplate = forwardRef<HTMLDivElement, { data: MockupA
                   marginTop: '4px',
                   textAlign: 'center',
                   fontSize: '10px',
-                  color: '#777',
+                  color: DOC_TOKENS.inkSoft,
                   textTransform: 'uppercase',
                   letterSpacing: '1px',
                   fontFamily: "'Montserrat', sans-serif",
@@ -92,27 +148,20 @@ export const MockupApprovalTemplate = forwardRef<HTMLDivElement, { data: MockupA
               {/* Product info — compact, name + SKU + color only */}
               <div
                 style={{
-                  border: '1px solid #e8e8e8',
+                  border: `1px solid ${DOC_TOKENS.border}`,
                   borderRadius: '6px',
                   padding: '14px',
-                  backgroundColor: '#fafafa',
+                  backgroundColor: DOC_TOKENS.surface,
                 }}
               >
+                <div style={sectionLabelStyle('11px', '8px')}>Produto</div>
                 <div
                   style={{
-                    fontFamily: "'Montserrat', sans-serif",
                     fontWeight: 700,
-                    fontSize: '11px',
-                    color: GREEN,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px',
-                    marginBottom: '8px',
+                    fontSize: '13px',
+                    color: DOC_TOKENS.inkStrong,
+                    marginBottom: '6px',
                   }}
-                >
-                  Produto
-                </div>
-                <div
-                  style={{ fontWeight: 700, fontSize: '13px', color: '#111', marginBottom: '6px' }}
                 >
                   {data.product.name}
                 </div>
@@ -121,24 +170,24 @@ export const MockupApprovalTemplate = forwardRef<HTMLDivElement, { data: MockupA
                     style={{
                       display: 'inline-block',
                       background: (() => {
-                        const hex = data.product.colorHex || '#2e7d32';
+                        const hex = data.product.colorHex || DOC_TOKENS.greenFallback;
                         const c = hex.replace('#', '');
                         const lum =
                           (0.299 * parseInt(c.substring(0, 2), 16) +
                             0.587 * parseInt(c.substring(2, 4), 16) +
                             0.114 * parseInt(c.substring(4, 6), 16)) /
                           255;
-                        return lum > 0.85 ? '#333333' : hex;
+                        return lum > 0.85 ? DOC_TOKENS.inkBody : hex;
                       })(),
                       color: (() => {
-                        const hex = data.product.colorHex || '#2e7d32';
+                        const hex = data.product.colorHex || DOC_TOKENS.greenFallback;
                         const c = hex.replace('#', '');
                         const lum =
                           (0.299 * parseInt(c.substring(0, 2), 16) +
                             0.587 * parseInt(c.substring(2, 4), 16) +
                             0.114 * parseInt(c.substring(4, 6), 16)) /
                           255;
-                        return lum > 0.85 ? '#ffffff' : getContrastColor(hex);
+                        return lum > 0.85 ? DOC_TOKENS.white : getContrastColor(hex);
                       })(),
                       fontSize: '10px',
                       padding: '1px 5px',
@@ -156,12 +205,13 @@ export const MockupApprovalTemplate = forwardRef<HTMLDivElement, { data: MockupA
                     gap: '16px',
                     marginTop: '8px',
                     fontSize: '11px',
-                    color: '#666',
+                    color: DOC_TOKENS.inkMuted,
                   }}
                 >
                   {data.product.color && (
                     <span>
-                      Cor: <strong style={{ color: '#333' }}>{data.product.color}</strong>
+                      Cor:{' '}
+                      <strong style={{ color: DOC_TOKENS.inkBody }}>{data.product.color}</strong>
                     </span>
                   )}
                 </div>
@@ -170,25 +220,13 @@ export const MockupApprovalTemplate = forwardRef<HTMLDivElement, { data: MockupA
               {/* Personalization */}
               <div
                 style={{
-                  border: '1px solid #e8e8e8',
+                  border: `1px solid ${DOC_TOKENS.border}`,
                   borderRadius: '6px',
                   padding: '14px',
-                  backgroundColor: '#fafafa',
+                  backgroundColor: DOC_TOKENS.surface,
                 }}
               >
-                <div
-                  style={{
-                    fontFamily: "'Montserrat', sans-serif",
-                    fontWeight: 700,
-                    fontSize: '11px',
-                    color: GREEN,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px',
-                    marginBottom: '8px',
-                  }}
-                >
-                  Personalização
-                </div>
+                <div style={sectionLabelStyle('11px', '8px')}>Personalização</div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                   <InfoCell label="Técnica" value={data.personalization.techniqueName} />
                   <InfoCell label="Local" value={data.personalization.locationName} />
@@ -226,9 +264,9 @@ export const MockupApprovalTemplate = forwardRef<HTMLDivElement, { data: MockupA
               style={{
                 marginTop: '14px',
                 fontSize: '11px',
-                color: '#666',
+                color: DOC_TOKENS.inkMuted,
                 lineHeight: '1.5',
-                borderTop: '1px solid #eee',
+                borderTop: `1px solid ${DOC_TOKENS.divider}`,
                 paddingTop: '8px',
               }}
             >
@@ -236,7 +274,7 @@ export const MockupApprovalTemplate = forwardRef<HTMLDivElement, { data: MockupA
                 style={{
                   fontWeight: 700,
                   fontSize: '10px',
-                  color: '#333',
+                  color: DOC_TOKENS.inkBody,
                   marginBottom: '3px',
                   textTransform: 'uppercase',
                 }}
@@ -275,13 +313,16 @@ function ApprovalHeader({ documentNumber, date }: { documentNumber: string; date
         viewBox={`0 0 ${W} ${H}`}
         style={{ position: 'absolute', top: 0, left: 0 }}
       >
-        <rect x="0" y="0" width={W} height={H} fill="#ffffff" />
-        <polygon points={`${darkStart},0 ${W},0 ${W},${H} ${darkEnd},${H}`} fill="#000000" />
+        <rect x="0" y="0" width={W} height={H} fill={DOC_TOKENS.white} />
+        <polygon
+          points={`${darkStart},0 ${W},0 ${W},${H} ${darkEnd},${H}`}
+          fill={DOC_TOKENS.black}
+        />
         <polygon
           points={`${greenStart},0 ${darkStart},0 ${darkEnd},${H} ${greenEnd},${H}`}
-          fill={GREEN}
+          fill={DOC_TOKENS.green}
         />
-        <rect x="0" y={H - barH} width={W} height={barH} fill={GREEN} />
+        <rect x="0" y={H - barH} width={W} height={barH} fill={DOC_TOKENS.green} />
       </svg>
       <div
         style={{
@@ -309,7 +350,7 @@ function ApprovalHeader({ documentNumber, date }: { documentNumber: string; date
           position: 'absolute',
           zIndex: 10,
           textAlign: 'right',
-          color: '#ffffff',
+          color: DOC_TOKENS.white,
           top: '0',
           bottom: '0',
           right: '32px',
@@ -381,7 +422,7 @@ function ClientSection({ client }: { client: MockupApprovalData['client'] }) {
   return (
     <div
       style={{
-        backgroundColor: '#f8f9fa',
+        backgroundColor: DOC_TOKENS.surfaceAlt,
         padding: '10px 18px',
         marginTop: '12px',
         marginBottom: '14px',
@@ -397,7 +438,7 @@ function ClientSection({ client }: { client: MockupApprovalData['client'] }) {
             fontFamily: "'Montserrat', sans-serif",
             fontWeight: 700,
             fontSize: '13px',
-            color: '#00c853',
+            color: DOC_TOKENS.green,
             textTransform: 'uppercase',
             letterSpacing: '0.5px',
             margin: '0 0 4px 0',
@@ -405,16 +446,25 @@ function ClientSection({ client }: { client: MockupApprovalData['client'] }) {
         >
           Empresa
         </p>
-        <p style={{ fontWeight: 700, fontSize: '15px', color: '#1a1a1a', margin: 0 }}>
+        <p style={{ fontWeight: 700, fontSize: '15px', color: DOC_TOKENS.inkHeading, margin: 0 }}>
           {client.name}
         </p>
         {client.cnpj && (
-          <p style={{ fontSize: '11px', color: '#666', margin: '3px 0 0 0', fontWeight: 700 }}>
+          <p
+            style={{
+              fontSize: '11px',
+              color: DOC_TOKENS.inkMuted,
+              margin: '3px 0 0 0',
+              fontWeight: 700,
+            }}
+          >
             CNPJ: {maskCnpj(client.cnpj)}
           </p>
         )}
         {client.phone && (
-          <p style={{ fontSize: '11px', color: '#666', margin: '2px 0 0 0' }}>☎ {client.phone}</p>
+          <p style={{ fontSize: '11px', color: DOC_TOKENS.inkMuted, margin: '2px 0 0 0' }}>
+            ☎ {client.phone}
+          </p>
         )}
       </div>
       <div style={{ textAlign: 'right' }}>
@@ -423,7 +473,7 @@ function ClientSection({ client }: { client: MockupApprovalData['client'] }) {
             fontFamily: "'Montserrat', sans-serif",
             fontWeight: 700,
             fontSize: '13px',
-            color: '#00c853',
+            color: DOC_TOKENS.green,
             textTransform: 'uppercase',
             letterSpacing: '0.5px',
             margin: '0 0 4px 0',
@@ -432,7 +482,7 @@ function ClientSection({ client }: { client: MockupApprovalData['client'] }) {
         >
           Solicitante
         </p>
-        <p style={{ fontWeight: 700, fontSize: '15px', color: '#1a1a1a', margin: 0 }}>
+        <p style={{ fontWeight: 700, fontSize: '15px', color: DOC_TOKENS.inkHeading, margin: 0 }}>
           {client.contactName || '—'}
         </p>
       </div>
@@ -445,22 +495,29 @@ function InfoCell({ label, value }: { label: string; value: string }) {
     <div
       style={{
         padding: '4px 6px',
-        backgroundColor: '#fff',
+        backgroundColor: DOC_TOKENS.white,
         borderRadius: '4px',
-        border: '1px solid #f0f0f0',
+        border: `1px solid ${DOC_TOKENS.borderSoft}`,
       }}
     >
       <div
         style={{
           fontSize: '9px',
-          color: '#999',
+          color: DOC_TOKENS.inkCaption,
           textTransform: 'uppercase',
           letterSpacing: '0.5px',
         }}
       >
         {label}
       </div>
-      <div style={{ fontSize: '11px', fontWeight: 600, color: '#222', marginTop: '2px' }}>
+      <div
+        style={{
+          fontSize: '11px',
+          fontWeight: 600,
+          color: DOC_TOKENS.inkLabel,
+          marginTop: '2px',
+        }}
+      >
         {value}
       </div>
     </div>
@@ -471,66 +528,18 @@ function InfoCell({ label, value }: { label: string; value: string }) {
 function PantoneSection({ colors }: { colors: MockupApprovalData['pantoneColors'] }) {
   return (
     <div style={{ marginTop: '16px' }}>
-      <div
-        style={{
-          fontFamily: "'Montserrat', sans-serif",
-          fontWeight: 700,
-          fontSize: '10px',
-          color: GREEN,
-          textTransform: 'uppercase',
-          letterSpacing: '0.5px',
-          marginBottom: '6px',
-        }}
-      >
-        Cores Pantone
-      </div>
+      <div style={sectionLabelStyle('10px', '6px')}>Cores Pantone</div>
       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px' }}>
         <thead>
           <tr>
-            <th
-              style={{
-                textAlign: 'left',
-                padding: '4px 8px',
-                backgroundColor: DARK,
-                color: '#fff',
-                fontSize: '9px',
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px',
-              }}
-            >
-              Swatch
-            </th>
-            <th
-              style={{
-                textAlign: 'left',
-                padding: '4px 8px',
-                backgroundColor: DARK,
-                color: '#fff',
-                fontSize: '9px',
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px',
-              }}
-            >
-              Código Pantone
-            </th>
-            <th
-              style={{
-                textAlign: 'left',
-                padding: '4px 8px',
-                backgroundColor: DARK,
-                color: '#fff',
-                fontSize: '9px',
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px',
-              }}
-            >
-              Hex
-            </th>
+            <th style={PANTONE_TH_STYLE}>Swatch</th>
+            <th style={PANTONE_TH_STYLE}>Código Pantone</th>
+            <th style={PANTONE_TH_STYLE}>Hex</th>
           </tr>
         </thead>
         <tbody>
           {colors.map((color, idx) => (
-            <tr key={idx} style={{ borderBottom: '1px solid #f0f0f0' }}>
+            <tr key={idx} style={{ borderBottom: `1px solid ${DOC_TOKENS.borderSoft}` }}>
               <td style={{ padding: '3px 8px' }}>
                 <div
                   style={{
@@ -538,7 +547,7 @@ function PantoneSection({ colors }: { colors: MockupApprovalData['pantoneColors'
                     height: '18px',
                     borderRadius: '3px',
                     backgroundColor: color.hex,
-                    border: '1px solid #ddd',
+                    border: `1px solid ${DOC_TOKENS.borderSwatch}`,
                   }}
                 />
               </td>
@@ -550,7 +559,7 @@ function PantoneSection({ colors }: { colors: MockupApprovalData['pantoneColors'
                   padding: '3px 8px',
                   fontFamily: "'Roboto Mono', monospace",
                   fontSize: '10px',
-                  color: '#666',
+                  color: DOC_TOKENS.inkMuted,
                 }}
               >
                 {color.hex.toUpperCase()}
@@ -580,7 +589,7 @@ function ApprovalFooter({
           alignItems: 'center',
           padding: '4px 36px',
           fontSize: '11px',
-          color: '#000000',
+          color: DOC_TOKENS.black,
           fontFamily: "'Montserrat', sans-serif",
           gap: '40px',
         }}
@@ -593,7 +602,7 @@ function ApprovalFooter({
           </span>
         )}
       </div>
-      <div style={{ width: '794px', height: '40px', backgroundColor: GREEN }} />
+      <div style={{ width: '794px', height: '40px', backgroundColor: DOC_TOKENS.green }} />
     </div>
   );
 }
@@ -629,19 +638,7 @@ function ProductSpecsStrip({ product }: { product: MockupApprovalData['product']
 
   return (
     <div style={{ marginTop: '16px', padding: '12px 0' }}>
-      <div
-        style={{
-          fontFamily: "'Montserrat', sans-serif",
-          fontWeight: 700,
-          fontSize: '10px',
-          color: GREEN,
-          textTransform: 'uppercase',
-          letterSpacing: '0.5px',
-          marginBottom: '10px',
-        }}
-      >
-        Especificações do Produto
-      </div>
+      <div style={sectionLabelStyle('10px', '10px')}>Especificações do Produto</div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '18px' }}>
         {specs.map((s, i) => (
           <div
@@ -650,8 +647,8 @@ function ProductSpecsStrip({ product }: { product: MockupApprovalData['product']
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              backgroundColor: '#f5f5f5',
-              border: '1px solid #e0e0e0',
+              backgroundColor: DOC_TOKENS.surfaceChip,
+              border: `1px solid ${DOC_TOKENS.borderChip}`,
               borderRadius: '6px',
               padding: '6px 10px',
               minWidth: '90px',
@@ -662,12 +659,12 @@ function ProductSpecsStrip({ product }: { product: MockupApprovalData['product']
                 width: '26px',
                 height: '26px',
                 borderRadius: '5px',
-                backgroundColor: '#1a1a1a',
+                backgroundColor: DOC_TOKENS.inkHeading,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontSize: '13px',
-                color: GREEN,
+                color: DOC_TOKENS.green,
                 flexShrink: 0,
               }}
             >
@@ -677,7 +674,7 @@ function ProductSpecsStrip({ product }: { product: MockupApprovalData['product']
               <div
                 style={{
                   fontSize: '8px',
-                  color: '#999',
+                  color: DOC_TOKENS.inkCaption,
                   textTransform: 'uppercase',
                   letterSpacing: '0.3px',
                   fontFamily: "'Montserrat', sans-serif",
@@ -690,7 +687,7 @@ function ProductSpecsStrip({ product }: { product: MockupApprovalData['product']
                 style={{
                   fontSize: '11px',
                   fontWeight: 700,
-                  color: '#222',
+                  color: DOC_TOKENS.inkLabel,
                   fontFamily: "'Montserrat', sans-serif",
                 }}
               >
@@ -711,5 +708,5 @@ function getContrastColor(hex: string): string {
   const g = parseInt(c.substring(2, 4), 16);
   const b = parseInt(c.substring(4, 6), 16);
   const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-  return luminance > 0.5 ? '#1a1a1a' : '#ffffff';
+  return luminance > 0.5 ? DOC_TOKENS.inkHeading : DOC_TOKENS.white;
 }
