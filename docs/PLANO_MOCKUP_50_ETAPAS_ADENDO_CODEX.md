@@ -120,3 +120,6 @@ Legados (`mockup-assets`, `art-files/quotes/{id}`) permanecem até o backfill (e
 90. [F:iris][O3] Tela "Meus arquivos": 3 pastas (Orçamentos · Mockups · Magic Up) do vendedor; para coordenador+, seletor de vendedor (padrão somente leitura).
 91. [F:workertestes][O3] Testes de isolamento no banco de teste (`sql_teste.py como authenticated --sub A/B`): A não vê B (tabelas E storage), coordenador vê tudo, anon nada; teste de regressão da listagem do bucket.
 92. [J][O3] Aplicar as propostas 85–86 e 84 (backfill/mover); criar os buckets; validar em staging (etapa 82).
+
+## Decisões fechadas em 08/10 (adendo 4)
+Q-A: coordenador, manager, supervisor, admin e dev veem TODAS as pastas. Q-B: coordenador+ só LÊ; editar e excluir arquivos de vendedor = admin e dev. Q-C: estrutura + controle de acesso agora; tela "Meus arquivos" depois (etapa 90). Q-D: Magic Up entra só na estrutura (base64 → `magic-up-private`). Q-E: o backfill MOVE os arquivos antigos para as pastas por vendedor (contagem antes/depois e rollback). D3 confirmada (owner Joaquim, C1). D4 aprovada e absorvida pelo desenho de pastas por vendedor. Pendentes: D1 (cliente obrigatório só no documento timbrado?) e D2 (Pantone em uso?).
