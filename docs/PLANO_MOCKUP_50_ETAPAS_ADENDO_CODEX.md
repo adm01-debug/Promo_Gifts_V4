@@ -42,3 +42,25 @@ Cada geração captura um snapshot imutável (produto+variante+foto, marca+vers�
 
 ## Fora (instrução do dono)
 - Mudanças de paleta/cor da UI propostas pelo PDF: ignoradas. O app segue o Blue Premium como está; o timbrado segue a marca (Q19).
+
+---
+
+# Adendo 2 — o que MAIS se aproveita do documento do Codex (etapas 69–80)
+Segunda passada (08/10/2026): partes do PDF que ainda não tinham virado etapa — contrato de dados, estados de conclusão, jornada, acessibilidade e a matriz de aceite. Cores de UI continuam ignoradas.
+
+69. [F:workersql][O2] PROPOSTA SQL — snapshot de revisão em `generated_mockups`: `snapshot jsonb` (identidade; produto/variante/foto original; marca + versão aplicada; cores escolhidas; geometria por área com id estável; cliente; data real), `revision int`, `is_stale boolean`, `snapshot_version int` (contrato p.15 do PDF). Estende a etapa 16 (`parent_mockup_id`). Rollback incluso.
+70. [F:hugo][O3] Compor SEMPRE gerando o snapshot; PNG e ficha leem DELE (nunca dos campos atuais da tela). Qualquer edição relevante marca a revisão anterior como desatualizada; "Novo mockup para este cliente" abre revisão nova sem sobrescrever (M14, M19). Depende da 69.
+71. [F:iris][O3] Três estados de conclusão distintos e visíveis — Imagem gerada · Projeto salvo · Ficha disponível — cada um com erro e retentativa próprios; falha de um mantém a imagem anterior; "Salvo" só com persistência confirmada (p.12).
+72. [F:hugo][O2] Original de arte preservado + versão de aplicação identificada (redução de cores/tratamento determinístico); o vendedor volta à marca original sem reenviar o arquivo (p.8).
+73. [F:iris][O2] Multi-área: "Usar este logo nas outras áreas" copia só a marca (sem prometer tamanho/técnica validados); cada área com ID estável e foto/vista associada quando existir (p.11).
+74. [F:iris][O2] Estados de geometria rotulados na prévia: validada · dimensões conhecidas sem máscara (posicionamento ilustrativo, sem fronteira oficial desenhada) · técnica sem regra (nunca vira selo "compatível") — sem régua com falsa precisão. OBS: a decisão Q13 (produto SEM dimensões não gera) continua valendo; estes rótulos cobrem os casos parciais.
+75. [F:iris][O3] Passo Produto com estados reais: sem produto / carregando (skeleton) / sem foto utilizável (impede avançar com placeholder) / troca de variante preserva cliente e logo e reavalia técnica, área e revisão visual (p.7).
+76. [F:iris][O3] Cabeçalho de trabalho: cliente, nome do projeto quando necessário, "Trocar cliente" (reconcilia a marca aplicada, nunca troca em silêncio), estado de salvamento e acesso a "Meus mockups"; voltar não apaga trabalho; invalidações anunciadas (p.6, M28/M32).
+77. [F:workertestes][O3] Matriz de aceite A01–A20 vira testes, um cartão por grupo, com fixtures FIXAS (nunca marca/cliente real): (a) marca CRM e upload+reload, (b) variante/foto, (c) Pantone alterado, (d) áreas diferentes e remoção por área, (e) técnica/limite e escala conhecida×estimada, (f) rotação/escala, (g) edição pós-geração, (h) atalhos seguros, (i) teclado/toque, (j) responsividade 375/768/1024/1440, (k) falhas de análise/salvar/lote parcial, (l) imagem×ficha, (m) histórico/exclusão, (n) formatos e limites. Evidência = asserções do estado persistido, não "título do cenário".
+78. [F:iris][O3] Acessibilidade geral (W3C 2.5.7/1.4.3/2.5.8): busca como combobox acessível, nomes em sliders/diálogos, foco visível, Esc fecha SÓ a camada ativa, contraste 4,5:1 em pares reais (inclui hover/placeholder), alvos ≥44 px nas ações frequentes, `prefers-reduced-motion` respeitado, sucesso discreto.
+79. [F:iris][O3] Histórico: busca por produto/SKU; filtros por cliente/técnica/período no servidor; alternância imagem×ficha explícita; comparar até 3 com checkbox visível; estados distintos (filtro vazio / sem histórico / falha de carga); sem KPIs decorativos (p.13).
+80. [F:workertestes][O3] e2e do módulo: trocar seletores antigos de `mockup-generator.spec.ts`, cobrir timeout sem geração e assertar o estado persistido (M40). Roda no workflow que o Joaquim incluir (etapa 50).
+
+## Do documento do Codex que NÃO viramos etapa
+- Percentuais fixos 62/38 e 31/69 do layout; "alvos 44–48 px" em tudo; comparar 3 vs 4 — preferências, não requisitos.
+- Qualquer item de cor/paleta (instrução do dono).
