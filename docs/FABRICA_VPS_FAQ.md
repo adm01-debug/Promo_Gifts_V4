@@ -13,9 +13,10 @@ com `npm run typecheck` e `npx vitest related --run <arquivos>`. O código nasce
 
 ## 2. Por que a fábrica nunca faz merge na `main`?
 
-Porque nenhum agente aprova o próprio trabalho. Push, merge e deploy são do integrador humano:
-a fábrica entrega a branch pronta, não o resultado em produção. Essa barreira é o que impede
-que uma regressão — por exemplo uma guarda de SSOT revertida — chegue à `main` sem revisão.
+Porque nenhum agente aprova o próprio trabalho. Push e abertura do PR são do integrador da
+fábrica (um perfil automatizado); merge e deploy só acontecem com a aprovação do dono no PR (ver
+pergunta 5): a fábrica entrega a branch pronta, não o resultado em produção. Essa barreira
+impede que uma regressão — por exemplo uma guarda de SSOT revertida — chegue à `main` sem revisão.
 
 ## 3. O que acontece quando o portão automático reprova?
 
