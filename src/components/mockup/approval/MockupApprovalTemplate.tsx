@@ -67,7 +67,7 @@ export const MockupApprovalTemplate = forwardRef<HTMLDivElement, { data: MockupA
                   src={data.mockupImageUrl}
                   alt="Mockup"
                   crossOrigin="anonymous"
-                  style={{ maxWidth: '160%', maxHeight: '160%', objectFit: 'contain' }}
+                  style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
                   loading="lazy"
                 />
               </div>
