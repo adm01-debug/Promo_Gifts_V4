@@ -62,6 +62,9 @@ vi.mock('@/integrations/supabase/client', () => ({
   supabase: { from: mockFrom },
 }));
 
+const { mockUploadLogo } = vi.hoisted(() => ({ mockUploadLogo: vi.fn() }));
+vi.mock('@/lib/mockup-storage', () => ({ uploadLogoToStorage: mockUploadLogo }));
+
 vi.mock('@/lib/logger', () => ({
   logger: { error: vi.fn(), warn: vi.fn() },
 }));
@@ -109,6 +112,8 @@ beforeEach(() => {
   mockMaybeSingle.mockClear();
   mockDelete.mockClear();
   mockSelect.mockClear();
+  mockUploadLogo.mockReset();
+  mockUploadLogo.mockResolvedValue('https://storage.test/mockup-assets/u/logos/logo.png');
 
   // Default backend: nenhum draft
   mockMaybeSingle.mockResolvedValue({ data: null, error: null });
@@ -433,5 +438,117 @@ describe('clearDraft', () => {
       expect.stringContaining('limpar rascunho'),
       expect.objectContaining({ code: 'PGRST301' }),
     );
+  });
+});
+
+// ── logo enviada (data: URL) sobrevive ao rascunho ───────────────────────────
+describe('logo do rascunho', () => {
+  const DATA_URL = 'data:image/png;base64,iVBORw0KGgo=';
+  const STORAGE_URL = 'https://storage.test/mockup-assets/u/logos/logo.png';
+
+  function draftWithLogo(logo: string | null, updatedAt = T_NEW): MockupDraftData {
+    const d = makeDraft(updatedAt);
+    d.personalizationAreas[0].logoPreview = logo;
+    return d;
+  }
+
+  async function saveAndFlush(draft: MockupDraftData) {
+    const { useMockupDraft } = await import('../useMockupDraft');
+    const hook = renderHook(() => useMockupDraft());
+    act(() => {
+      hook.result.current.saveDraft(draft);
+    });
+    await act(async () => {
+      await vi.runAllTimersAsync();
+    });
+    return hook;
+  }
+
+  function firstPayload(): Record<string, unknown> {
+    return (mockUpsert.mock.calls[0] as unknown[])[0] as Record<string, unknown>;
+  }
+
+  it('sobe a data: URL ao storage e grava a URL http no rascunho do backend', async () => {
+    await saveAndFlush(draftWithLogo(DATA_URL));
+
+    expect(mockUploadLogo).toHaveBeenCalledTimes(1);
+    expect(mockUploadLogo).toHaveBeenCalledWith('user-test-001', DATA_URL, expect.any(String));
+    const payload = firstPayload();
+    const areas = payload.personalization_areas as Array<{ logoPreview: string | null }>;
+    expect(areas[0].logoPreview).toBe(STORAGE_URL);
+    expect(payload.logo_data).toBe(STORAGE_URL);
+    expect(JSON.stringify(payload)).not.toContain('data:image');
+  });
+
+  it('loadDraft devolve a logo utilizável (URL http) após salvar com data: URL', async () => {
+    const { result } = await saveAndFlush(draftWithLogo(DATA_URL));
+    const payload = firstPayload();
+
+    // outro dispositivo / localStorage limpo: só o backend resta
+    localStorage.clear();
+    mockMaybeSingle.mockResolvedValue({ data: payload, error: null });
+
+    let draft: MockupDraftData | null = null;
+    await act(async () => {
+      draft = await result.current.loadDraft();
+    });
+    expect((draft as MockupDraftData | null)?.personalizationAreas[0].logoPreview).toBe(
+      STORAGE_URL,
+    );
+  });
+
+  it('quando o localStorage (sem logo) vence, recupera a URL http do backend', async () => {
+    const { useMockupDraft } = await import('../useMockupDraft');
+    localStorage.setItem(localKey(), JSON.stringify(draftWithLogo(null, T_NEW)));
+    mockMaybeSingle.mockResolvedValue({
+      data: {
+        product_id: 'prod-1',
+        product_name: 'Caneca',
+        technique_id: 'tec-1',
+        technique_name: 'Serigrafia',
+        client_id: 'cli-1',
+        client_name: 'João',
+        personalization_areas: [{ id: 'area-1', name: 'Frente', logoPreview: STORAGE_URL }],
+        logo_data: STORAGE_URL,
+        updated_at: T_OLD,
+      },
+      error: null,
+    });
+    const { result } = renderHook(() => useMockupDraft());
+    let draft: MockupDraftData | null = null;
+    await act(async () => {
+      draft = await result.current.loadDraft();
+    });
+    expect((draft as MockupDraftData | null)?.personalizationAreas[0].logoPreview).toBe(
+      STORAGE_URL,
+    );
+  });
+
+  it('não reenvia a mesma logo a cada autosave', async () => {
+    const { result } = await saveAndFlush(draftWithLogo(DATA_URL));
+    act(() => {
+      result.current.saveDraft(draftWithLogo(DATA_URL));
+    });
+    await act(async () => {
+      await vi.runAllTimersAsync();
+    });
+    expect(mockUploadLogo).toHaveBeenCalledTimes(1);
+    expect(mockUpsert).toHaveBeenCalledTimes(2);
+  });
+
+  it('falha no upload: salva o rascunho sem logo (sem base64) e não quebra', async () => {
+    mockUploadLogo.mockResolvedValue(null);
+    await saveAndFlush(draftWithLogo(DATA_URL));
+    const payload = firstPayload();
+    expect(payload.logo_data).toBeNull();
+    expect(JSON.stringify(payload)).not.toContain('data:image');
+  });
+
+  it('rascunho sem logo continua funcionando e não chama o storage', async () => {
+    await saveAndFlush(draftWithLogo(null));
+    expect(mockUploadLogo).not.toHaveBeenCalled();
+    const payload = firstPayload();
+    expect(payload.logo_data).toBeNull();
+    expect(payload.product_name).toBe('Caneca');
   });
 });

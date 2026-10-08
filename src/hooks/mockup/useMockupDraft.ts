@@ -5,6 +5,7 @@ import { type PersonalizationArea } from '@/components/mockup/MultiAreaManager';
 import type { Json } from '@/integrations/supabase/types';
 
 import { logger } from '@/lib/logger';
+import { uploadLogoToStorage } from '@/lib/mockup-storage';
 const LOCAL_STORAGE_KEY = 'mockup_draft_v1';
 const AUTO_SAVE_DELAY = 2000; // 2 segundos de debounce
 
@@ -31,6 +32,8 @@ export function useMockupDraft(options: UseMockupDraftOptions = {}) {
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [error, setError] = useState<string | null>(null);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  // data: URL -> URL pública já enviada ao bucket (evita reenviar a cada autosave)
+  const uploadedLogosRef = useRef<Map<string, string>>(new Map());
 
   const saveToLocal = useCallback(
     (data: MockupDraftData) => {
@@ -81,13 +84,24 @@ export function useMockupDraft(options: UseMockupDraftOptions = {}) {
       setError(null);
 
       try {
-        const areasWithoutLogos = data.personalizationAreas.map((a) => ({
-          ...a,
-          logoPreview: null,
-        }));
+        // Logo recém-enviada é data: URL — sobe ao bucket de logos do fluxo normal e
+        // guarda só a URL http no rascunho (nunca base64 na linha do banco).
+        const areasWithLogos = await Promise.all(
+          data.personalizationAreas.map(async (a) => {
+            const preview = a.logoPreview;
+            if (!preview) return { ...a, logoPreview: null };
+            if (preview.startsWith('http')) return a;
+            if (!preview.startsWith('data:')) return { ...a, logoPreview: null };
+            let url = uploadedLogosRef.current.get(preview) ?? null;
+            if (!url) {
+              url = await uploadLogoToStorage(user.id, preview, `draft-${draftKey}`);
+              if (url) uploadedLogosRef.current.set(preview, url);
+            }
+            return { ...a, logoPreview: url };
+          }),
+        );
 
-        const firstLogo = data.personalizationAreas.find((a) => a.logoPreview)?.logoPreview || null;
-        const safeLogoData = firstLogo?.startsWith('http') ? firstLogo : null;
+        const safeLogoData = areasWithLogos.find((a) => a.logoPreview)?.logoPreview || null;
 
         // BUG-A FIX: IDs used directly — no pre-validation queries.
         // FK violations are caught below and handled via fallback.
@@ -104,7 +118,7 @@ export function useMockupDraft(options: UseMockupDraftOptions = {}) {
           technique_name: data.techniqueName,
           client_id: safeClientId,
           client_name: data.clientName,
-          personalization_areas: areasWithoutLogos as unknown as Json,
+          personalization_areas: areasWithLogos as unknown as Json,
           logo_data: safeLogoData,
           updated_at: new Date().toISOString(),
         };
@@ -257,6 +271,17 @@ export function useMockupDraft(options: UseMockupDraftOptions = {}) {
               localData.personalizationAreas.find((la) => la.id === a.id) ??
               localData.personalizationAreas[i];
             return localMatch?.logoPreview ? { ...a, logoPreview: localMatch.logoPreview } : a;
+          });
+        }
+        // Inverso: o localStorage descarta data: URLs; se ele vence, recupera a URL
+        // do storage guardada no backend (por id de área, senão por índice).
+        if (chosen === localData) {
+          chosen.personalizationAreas = chosen.personalizationAreas.map((a, i) => {
+            if (a.logoPreview) return a;
+            const backendMatch =
+              backendData.personalizationAreas.find((ba) => ba.id === a.id) ??
+              backendData.personalizationAreas[i];
+            return backendMatch?.logoPreview ? { ...a, logoPreview: backendMatch.logoPreview } : a;
           });
         }
         return chosen;
