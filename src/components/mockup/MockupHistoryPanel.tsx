@@ -3,7 +3,7 @@
  * Refatorado: Lightbox extraído para MockupLightbox.tsx
  */
 
-import { useState, useMemo, useCallback, useDeferredValue, memo } from 'react';
+import { useState, useMemo, useCallback, useDeferredValue, useEffect, memo } from 'react';
 import { cn } from '@/lib/utils';
 import { LayoutPopover } from '@/components/products/LayoutPopover';
 import { getDefaultColumns, type ColumnCount } from '@/components/products/ColumnSelector';
@@ -70,6 +70,8 @@ interface MockupHistoryPanelProps {
 }
 
 const ITEMS_PER_PAGE = 12;
+// Limite de itens na comparação (o checkbox permanece visível mesmo no limite).
+const COMPARE_LIMIT = 3;
 
 export function MockupHistoryPanel({
   mockupHistory,
@@ -102,7 +104,7 @@ export function MockupHistoryPanel({
         next.delete(id);
         return next;
       }
-      if (prev.size >= 4) return prev;
+      if (prev.size >= COMPARE_LIMIT) return prev;
       const next = new Set(prev);
       next.add(id);
       return next;
@@ -159,6 +161,28 @@ export function MockupHistoryPanel({
     filterProduct ||
     filterTechnique !== 'all' ||
     filterDateRange !== 'all';
+
+  // Reconciliação da página: quando a lista encolhe (item excluído), `currentPage`
+  // pode ficar acima do novo total e a grade renderiza vazia — volta para a última
+  // página válida.
+  useEffect(() => {
+    setCurrentPage((page) => Math.min(page, Math.max(1, totalPages)));
+  }, [totalPages]);
+
+  // Reconciliação da seleção: item excluído não pode continuar contando na comparação.
+  useEffect(() => {
+    setSelectedForCompare((prev) => {
+      if (prev.size === 0) return prev;
+      const presentIds = new Set(mockupHistory.map((m) => m.id));
+      const next = new Set<string>();
+      let removed = false;
+      for (const id of prev) {
+        if (presentIds.has(id)) next.add(id);
+        else removed = true;
+      }
+      return removed ? next : prev;
+    });
+  }, [mockupHistory]);
 
   const clearFilters = () => {
     setFilterClient('all');

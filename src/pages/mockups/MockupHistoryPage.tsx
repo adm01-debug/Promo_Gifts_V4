@@ -97,8 +97,20 @@ export default function MockupHistoryPage() {
     const { error } = await supabase.from('generated_mockups').delete().eq('id', id);
     if (error) {
       toast.error('Erro ao remover mockup');
+      return;
+    }
+    toast.success('Mockup removido');
+    // Reconciliação da página: excluir o último item da última página não pode deixar
+    // `page` acima do novo total (tabela vazia e paginador oculto). Volta para a
+    // última página válida; se ela mudou, a nova queryKey já refaz a busca.
+    const nextTotalPages = Math.max(
+      1,
+      Math.ceil(Math.max(0, (data?.totalCount ?? 0) - 1) / pageSize),
+    );
+    const nextPage = Math.min(page, nextTotalPages);
+    if (nextPage !== page) {
+      setPage(nextPage);
     } else {
-      toast.success('Mockup removido');
       refetch();
     }
   };
