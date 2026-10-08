@@ -113,7 +113,13 @@ export default function MockupHistoryPage() {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleConfirmDelete = async () => {
-    if (!pendingDeleteId || !userId) return;
+    if (!pendingDeleteId) return;
+    if (!userId) {
+      // Sessão caiu com o diálogo aberto: avisar e fechar em vez de falhar em silêncio.
+      toast.error('Sessão expirada. Entre novamente para excluir o mockup.');
+      setPendingDeleteId(null);
+      return;
+    }
     setIsDeleting(true);
     try {
       await deleteMockupFromDb(pendingDeleteId, userId);

@@ -3,15 +3,16 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-const { builder, deleteMock } = vi.hoisted(() => {
+const { builder, deleteMock, auth } = vi.hoisted(() => {
   const builder: Record<string, any> = {};
-  return { builder, deleteMock: vi.fn() };
+  const auth: { user: { id: string } | null } = { user: { id: 'user-1' } };
+  return { builder, deleteMock: vi.fn(), auth };
 });
 
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: { from: vi.fn(() => builder) },
 }));
-vi.mock('@/contexts/AuthContext', () => ({ useAuth: () => ({ user: { id: 'user-1' } }) }));
+vi.mock('@/contexts/AuthContext', () => ({ useAuth: () => ({ user: auth.user }) }));
 vi.mock('@/hooks/mockup/mockupGenerationService', () => ({
   deleteMockupFromDb: (...a: unknown[]) => deleteMock(...a),
 }));
@@ -23,6 +24,7 @@ vi.mock('@/components/dev/DiagnosticProfiler', () => ({
 vi.mock('@/components/loading/ModernSkeletons', () => ({ MockupHistorySkeleton: () => null }));
 vi.mock('sonner', () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
 
+import { toast } from 'sonner';
 import MockupHistoryPage from '../MockupHistoryPage';
 
 const row = {
@@ -38,16 +40,20 @@ const row = {
 
 function renderPage() {
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-  return render(
+  const tree = () => (
     <QueryClientProvider client={qc}>
       <MockupHistoryPage />
-    </QueryClientProvider>,
+    </QueryClientProvider>
   );
+  const utils = render(tree());
+  return { ...utils, rerenderPage: () => utils.rerender(tree()) };
 }
 
 describe('MockupHistoryPage', () => {
   beforeEach(() => {
     deleteMock.mockReset().mockResolvedValue(undefined);
+    auth.user = { id: 'user-1' };
+    vi.mocked(toast.error).mockClear();
     for (const k of ['select', 'eq', 'order', 'range', 'or']) {
       builder[k] = vi.fn(() => builder);
     }
@@ -76,6 +82,21 @@ describe('MockupHistoryPage', () => {
     renderPage();
     await user.click(await screen.findByTestId('mockup-history-delete-btn'));
     await user.click(await screen.findByRole('button', { name: 'Cancelar' }));
+    expect(deleteMock).not.toHaveBeenCalled();
+  });
+
+  it('sessão expirada com o diálogo aberto: avisa, fecha e não exclui', async () => {
+    const user = userEvent.setup();
+    const { rerenderPage } = renderPage();
+    await user.click(await screen.findByTestId('mockup-history-delete-btn'));
+    expect(await screen.findByText('Excluir mockup?')).toBeInTheDocument();
+    auth.user = null;
+    rerenderPage();
+    await user.click(screen.getByRole('button', { name: 'Excluir' }));
+    await waitFor(() =>
+      expect(toast.error).toHaveBeenCalledWith(expect.stringMatching(/Sessão expirada/)),
+    );
+    await waitFor(() => expect(screen.queryByText('Excluir mockup?')).not.toBeInTheDocument());
     expect(deleteMock).not.toHaveBeenCalled();
   });
 
