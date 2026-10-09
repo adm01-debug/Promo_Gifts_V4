@@ -17,7 +17,8 @@
 | Orçamento | ativo | `/orcamentos*` | — | v0.1 §5 |
 | Desconto (aprovações) | ativo | quote builder + `/admin/limites-desconto`, `/admin/aprovacoes-desconto/:id` | — | migrations versionadas desde o import inicial (`13c588251`); reconciliação da tabela no merge `fe9a92739`; hardening de grants/índices em `fb0131782` |
 | Estoque | ativo | `/estoque` | `useEmaRupture` (on), `supplierReliability` (on) — só painéis | v0.1 §7 |
-| Mockup | ativo | `/mockup-generator`, `/magic-up`, `/mockups/historico` | `magic_up` (on); IA externo gerenciado | v0.1 §8 |
+| Mockup | ativo | `/mockup-generator`, `/mockups/historico` | — (sem flag; compositor determinístico, sem IA na geração; o assistente Matheus é chat simulado, sem modelo conectado) | v0.1 §8; `ADR_FRONTEIRA_MOCKUP_MAGICUP.md` |
+| Magic Up | ativo | `/magic-up` | `magic_up` (on, **não consultada** — sem consumidor em `src/`); IA externo gerenciado | `ADR_FRONTEIRA_MOCKUP_MAGICUP.md` |
 | Magazine | parcial | `/magazine*`, `/revista-publica/:token` | `magazineModule` (on, **não consultada** no código — não é gate) | v0.1 §9 |
 | Kit builder | parcial | `/montar-kit`, `/meus-kits` | `custom_kits_v2` (**off**, não consultada) | **lacuna:** `handleSaveKit` vazio; handoff não atômico (v0.1 §10) |
 | BI comercial | ativo | `/ferramentas/bi*`, `/inteligencia-comercial`, `/tendencias`, `/ferramentas/cobertura` | `advanced_analytics` (on; roles admin/manager — **não consultada** no código; não é gate) | — |
