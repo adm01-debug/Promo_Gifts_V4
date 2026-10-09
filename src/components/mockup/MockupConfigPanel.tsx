@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { useMediaQuery } from '@/hooks/ui/useMediaQuery';
 import { TechniqueTooltip } from './TechniqueTooltip';
 import { MockupClientSelector } from './MockupClientSelector';
 import { MockupProductSelector, type MockupProductSelection } from './MockupProductSelector';
@@ -399,20 +400,16 @@ function MobileCollapsibleSection({
   trailing,
   children,
 }: MobileCollapsibleSectionProps) {
-  // Desktop: always expanded. Mobile: collapsible, auto-collapse when completed.
+  // Desktop: sempre aberto. Mobile: colapsável, auto-colapsa quando concluído.
+  //
+  // O ramo é escolhido ANTES de montar os filhos: antes, desktop e mobile
+  // renderizavam os mesmos `children` em dois wrappers escondidos por CSS, o que
+  // duplicava chamadas ao CRM/catálogo, inputs de arquivo e data-testid.
+  const isMobile = useMediaQuery('(max-width: 767px)');
+
   return (
     <div id={id} className="scroll-mt-20 space-y-2">
-      {/* Desktop view — always visible */}
-      <div className="hidden space-y-2 md:block">
-        <Label className="flex items-center gap-2">
-          {label} {required && <span className="text-destructive">*</span>}
-          {trailing}
-        </Label>
-        {children}
-      </div>
-
-      {/* Mobile view — collapsible */}
-      <div className="md:hidden">
+      {isMobile ? (
         <Collapsible defaultOpen={!isCompleted}>
           <CollapsibleTrigger className="w-full">
             <div className="flex items-center justify-between rounded-lg p-2 transition-colors hover:bg-muted/50">
@@ -436,7 +433,15 @@ function MobileCollapsibleSection({
           </CollapsibleTrigger>
           <CollapsibleContent className="pt-2">{children}</CollapsibleContent>
         </Collapsible>
-      </div>
+      ) : (
+        <div className="space-y-2">
+          <Label className="flex items-center gap-2">
+            {label} {required && <span className="text-destructive">*</span>}
+            {trailing}
+          </Label>
+          {children}
+        </div>
+      )}
     </div>
   );
 }
