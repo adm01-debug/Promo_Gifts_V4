@@ -58,7 +58,9 @@ async function selecionarPrimeiroProduto(page: Page): Promise<string> {
   const variante = page.getByRole("button", { name: /un$|Estoque zerado/ }).first();
   const selecionado = page.getByLabel("Remover produto selecionado");
   await expect(variante.or(selecionado).first()).toBeVisible({ timeout: 15000 });
-  if (await variante.isVisible().catch(() => false)) {
+  // count() não lança (0 = produto já selecionado sem variantes), então não
+  // esconde falha nenhuma: só evita clicar num botão que pode não existir.
+  if ((await variante.count()) > 0) {
     await variante.click();
   }
   await expect(selecionado).toBeVisible({ timeout: 10000 });
