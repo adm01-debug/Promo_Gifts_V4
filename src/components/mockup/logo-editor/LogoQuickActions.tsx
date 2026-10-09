@@ -37,53 +37,57 @@ export function LogoQuickActions({
 
   return (
     <>
-      {/* Centering buttons */}
+      {/* Centralizar — cada ação declara o alvo (horizontal, vertical ou ambos) */}
       <div className="flex gap-2">
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onPositionChange(50, positionY)}
-              disabled={!logoPreview}
-              className="flex-1"
-            >
-              <Target aria-hidden="true" className="mr-1 h-3.5 w-3.5" />
-              Centro V
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>Alinhar à linha vertical central</TooltipContent>
-        </Tooltip>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onPositionChange(50, 50)}
-              disabled={!logoPreview}
-              className="flex-1"
-            >
-              <Target aria-hidden="true" className="mr-1 h-3.5 w-3.5" />
-              Centro
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>Centralizar horizontal e verticalmente</TooltipContent>
-        </Tooltip>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onPositionChange(positionX, 50)}
-              disabled={!logoPreview}
-              className="flex-1"
-            >
-              <Target aria-hidden="true" className="mr-1 h-3.5 w-3.5" />
-              Centro H
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>Alinhar à linha horizontal central</TooltipContent>
-        </Tooltip>
+        <div role="group" aria-label="Centralizar logo" className="flex flex-1 gap-2">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onPositionChange(50, positionY)}
+                disabled={!logoPreview}
+                className="flex-1"
+              >
+                <Target aria-hidden="true" className="mr-1 h-3.5 w-3.5" />
+                Horizontal
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Centraliza o logo no eixo horizontal</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onPositionChange(50, 50)}
+                disabled={!logoPreview}
+                className="flex-1"
+              >
+                <Target aria-hidden="true" className="mr-1 h-3.5 w-3.5" />
+                Ambos
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              Centraliza o logo nos dois eixos (horizontal e vertical)
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onPositionChange(positionX, 50)}
+                disabled={!logoPreview}
+                className="flex-1"
+              >
+                <Target aria-hidden="true" className="mr-1 h-3.5 w-3.5" />
+                Vertical
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Centraliza o logo no eixo vertical</TooltipContent>
+          </Tooltip>
+        </div>
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
@@ -98,10 +102,10 @@ export function LogoQuickActions({
               ) : (
                 <FlipHorizontal2 aria-hidden="true" className="mr-1 h-4 w-4" />
               )}
-              {(logoRotation || 0) % 180 === 0 ? 'Vertical' : 'Horizontal'}
+              Girar
             </Button>
           </TooltipTrigger>
-          <TooltipContent>Alternar orientação do logo</TooltipContent>
+          <TooltipContent>Rotacionar o logo 90° (alternar orientação)</TooltipContent>
         </Tooltip>
       </div>
 
