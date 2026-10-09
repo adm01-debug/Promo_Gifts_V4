@@ -3,8 +3,10 @@
 // compartilhada — nao e deste cartao), entao este shim importa o arquivo
 // co-localizado para que o Vitest o colete e execute de verdade.
 import { expect, it } from 'vitest';
-import '../../supabase/functions/e2e-cleanup/index.mockups.test.ts';
+import { mockupSuiteHandlerLoaded } from '../../supabase/functions/e2e-cleanup/index.mockups.test.ts';
 
 it('carrega a suite de limpeza de mockups do e2e-cleanup', () => {
-  expect(true).toBe(true);
+  // Asserção real: só vem `true` se o import acima tiver registrado o handler
+  // do e2e-cleanup via `Deno.serve` no módulo de produção.
+  expect(mockupSuiteHandlerLoaded).toBe(true);
 });
