@@ -4,7 +4,10 @@
  */
 
 import { useState, useRef, useEffect, useMemo } from 'react';
-import { useClientFuzzySearch } from '@/hooks/common';
+import { useQuery } from '@tanstack/react-query';
+import { useClientFuzzySearch, useDebounce } from '@/hooks/common';
+import { searchCrm } from '@/lib/crm-db';
+import { getCompanyDisplayName, type CrmCompany } from '@/types/crm';
 import { X, Building2, Search, Loader2, AlertCircle, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
@@ -58,6 +61,37 @@ function CompanyAvatar({
   );
 }
 
+const SEARCH_MIN_CHARS = 2;
+const SEARCH_DEBOUNCE_MS = 300;
+const SEARCH_SELECT =
+  'id, razao_social, nome_fantasia, ramo_atividade, cnpj, logo_url, is_customer, deleted_at';
+
+type CompanyRow = CrmCompany & { is_customer?: boolean | null; deleted_at?: string | null };
+
+/** Busca no servidor (CRM) — cobre clientes fora das páginas já carregadas. */
+async function searchCompaniesRemote(term: string) {
+  const [byRazao, byFantasia] = await Promise.all([
+    searchCrm<CompanyRow>('companies', 'razao_social', term, { select: SEARCH_SELECT, limit: 50 }),
+    searchCrm<CompanyRow>('companies', 'nome_fantasia', term, { select: SEARCH_SELECT, limit: 50 }),
+  ]);
+  const seen = new Set<string>();
+  const out = [];
+  for (const c of [...byRazao, ...byFantasia]) {
+    if (seen.has(c.id) || c.deleted_at || !c.is_customer) continue;
+    seen.add(c.id);
+    out.push({
+      id: c.id,
+      name: getCompanyDisplayName(c),
+      razao_social: c.razao_social,
+      nome_fantasia: c.nome_fantasia,
+      ramo: c.ramo_atividade,
+      logo_url: c.logo_url,
+      cnpj: c.cnpj,
+    });
+  }
+  return out;
+}
+
 export function MockupClientSelector({
   selectedClient,
   onClientSelect,
@@ -79,13 +113,31 @@ export function MockupClientSelector({
     refetch,
   } = useCrmInfiniteCompanySelector();
 
-  const errorMessage = error instanceof Error ? error.message : null;
+  const trimmedQuery = searchQuery.trim();
+  const debouncedQuery = useDebounce(trimmedQuery, SEARCH_DEBOUNCE_MS);
+  const isSearching = trimmedQuery.length >= SEARCH_MIN_CHARS;
+  const remoteEnabled = debouncedQuery.length >= SEARCH_MIN_CHARS;
+  const remote = useQuery({
+    queryKey: ['mockup-client-search', debouncedQuery],
+    queryFn: () => searchCompaniesRemote(debouncedQuery),
+    enabled: remoteEnabled,
+    staleTime: 2 * 60 * 1000,
+    retry: false,
+  });
+  // Termo digitado ainda não refletido na busca remota (debounce/requisição em andamento)
+  const searchPending =
+    isSearching && (!remoteEnabled || debouncedQuery !== trimmedQuery || remote.isFetching);
+  const searchFailed = isSearching && remoteEnabled && remote.isError && !searchPending;
+  const showError = searchFailed || (isError && !isSearching);
+  const activeError = searchFailed ? remote.error : error;
+  const errorMessage = activeError instanceof Error ? activeError.message : null;
 
   const allCompanies = useMemo(() => {
     return data?.pages.flatMap((page) => page.records) ?? [];
   }, [data]);
 
-  const { results: filteredCompanies } = useClientFuzzySearch(allCompanies, searchQuery);
+  const { results: fuzzyCompanies } = useClientFuzzySearch(allCompanies, searchQuery);
+  const filteredCompanies = isSearching ? (remote.data ?? []) : fuzzyCompanies;
 
   // Fechar dropdown ao clicar fora
   useEffect(() => {
@@ -150,7 +202,7 @@ export function MockupClientSelector({
   const itemHeight = 56;
   const maxVisibleItems = 5;
   const dynamicHeight = Math.min(filteredCompanies.length, maxVisibleItems) * itemHeight;
-  const dropdownHeight = isError
+  const dropdownHeight = showError
     ? 140
     : filteredCompanies.length === 0
       ? 80
@@ -224,9 +276,9 @@ export function MockupClientSelector({
                 aria-live="polite"
                 aria-atomic="true"
               >
-                {isLoading
+                {isLoading || searchPending
                   ? 'Carregando...'
-                  : isError
+                  : showError
                     ? 'Erro no carregamento'
                     : searchQuery.trim().length >= 2
                       ? `${filteredCompanies.length} resultado${filteredCompanies.length !== 1 ? 's' : ''}`
@@ -237,7 +289,7 @@ export function MockupClientSelector({
             {/* Lista com scroll */}
             <div className="relative">
               <ScrollArea style={{ height: `${dropdownHeight}px` }}>
-                {isError ? (
+                {showError ? (
                   <div
                     role="alert"
                     className="flex flex-col items-center justify-center gap-3 px-4 py-8 text-center"
@@ -262,7 +314,8 @@ export function MockupClientSelector({
                       onClick={(e) => {
                         e.stopPropagation();
                         // Refetch preserva o estado atual da query (incluindo searchQuery que está fora da queryKey)
-                        refetch();
+                        if (searchFailed) void remote.refetch();
+                        else void refetch();
                       }}
                       className="mt-1 h-8 gap-2 border-destructive/20 transition-colors hover:bg-destructive/5 hover:text-destructive"
                     >
@@ -272,6 +325,10 @@ export function MockupClientSelector({
                       />
                       {isLoading ? 'Tentando...' : 'Tentar novamente'}
                     </Button>
+                  </div>
+                ) : searchPending && filteredCompanies.length === 0 ? (
+                  <div className="flex items-center justify-center px-4 py-6" role="status">
+                    <Loader2 aria-hidden="true" className="h-5 w-5 animate-spin text-primary" />
                   </div>
                 ) : filteredCompanies.length === 0 ? (
                   <div className="flex flex-col items-center justify-center gap-2 px-4 py-6 text-center">
@@ -338,7 +395,7 @@ export function MockupClientSelector({
                     ))}
                   </div>
                 )}
-                {hasNextPage && (
+                {hasNextPage && !isSearching && (
                   <div className="flex justify-center border-t border-border/30 p-2">
                     <Button
                       variant="ghost"
@@ -352,8 +409,6 @@ export function MockupClientSelector({
                     >
                       {isFetchingNextPage ? (
                         <Loader2 aria-hidden="true" className="mr-2 h-3 w-3 animate-spin" />
-                      ) : searchQuery ? (
-                        'Buscar em mais registros...'
                       ) : (
                         'Carregar mais empresas...'
                       )}
