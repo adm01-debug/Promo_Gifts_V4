@@ -1337,30 +1337,35 @@ describe("MagicUpVariationComparator keyboard navigation", () => {
       expect(card1).toHaveAttribute("aria-pressed", "true");
     });
 
-    it("ArrowRight no último faz wrap para o primeiro; ArrowLeft no primeiro faz wrap para o último; Home/End funcionam", async () => {
+    it("ArrowRight no último card e ArrowLeft no primeiro param no limite (mesma regra dos dots/thumbnails); Home/End funcionam", async () => {
       const user = userEvent.setup();
       render(<ArrowHarness initial={2} />);
 
       const card1 = select.card(1);
       const card3 = select.card(3);
 
+      // No último card (índice 2) ArrowRight não cicla: foco e seleção permanecem.
       card3.focus();
       expect(card3).toHaveFocus();
       await user.keyboard("{ArrowRight}");
-      expect(card1).toHaveFocus();
-      expect(card1).toHaveAttribute("aria-pressed", "true");
-
-      expect(card1).toHaveFocus();
-      await user.keyboard("{ArrowLeft}");
       expect(card3).toHaveFocus();
       expect(card3).toHaveAttribute("aria-pressed", "true");
 
-      expect(card3).toHaveFocus();
+      // No meio da lista a seta anda normalmente.
+      await user.keyboard("{ArrowLeft}");
+      const card2 = select.card(2);
+      expect(card2).toHaveFocus();
+      expect(card2).toHaveAttribute("aria-pressed", "true");
+
+      // Home/End saltam para os extremos; no primeiro card ArrowLeft também para no limite.
       await user.keyboard("{Home}");
       expect(card1).toHaveFocus();
       expect(card1).toHaveAttribute("aria-pressed", "true");
 
+      await user.keyboard("{ArrowLeft}");
       expect(card1).toHaveFocus();
+      expect(card1).toHaveAttribute("aria-pressed", "true");
+
       await user.keyboard("{End}");
       expect(card3).toHaveFocus();
       expect(card3).toHaveAttribute("aria-pressed", "true");
@@ -1429,15 +1434,18 @@ describe("MagicUpVariationComparator keyboard navigation", () => {
       expect(screen.getByRole("button", { name: /^Selecionar variação 1/ })).toHaveAttribute("aria-pressed", "false");
       expect(screen.getByRole("button", { name: /^Selecionar variação 3/ })).toHaveAttribute("aria-pressed", "false");
 
+      onSelect.mockClear();
       rerender(renderWith(2));
       const card3Sel = screen.getByRole("button", { name: /^Selecionar variação 3/ });
       card3Sel.focus();
       expect(card3Sel).toHaveFocus();
       await user.keyboard("{ArrowRight}");
-      expect(onSelect).toHaveBeenLastCalledWith(0);
+      // Não-wrap: no último card a seta para no limite (mesma regra dos dots/thumbnails).
+      expect(onSelect).not.toHaveBeenCalled();
+      expect(card3Sel).toHaveFocus();
     });
 
-    it("ArrowLeft retrocede e faz wrap-around do índice 0 para o último", async () => {
+    it("ArrowLeft no índice 0 para no limite (sem wrap) e retrocede normalmente nos demais", async () => {
       const user = userEvent.setup();
       const onSelect = vi.fn();
       const onSelectWinner = vi.fn();
@@ -1449,7 +1457,8 @@ describe("MagicUpVariationComparator keyboard navigation", () => {
       card1A.focus();
       expect(card1A).toHaveFocus();
       await user.keyboard("{ArrowLeft}");
-      expect(onSelect).toHaveBeenLastCalledWith(2);
+      expect(onSelect).not.toHaveBeenCalled();
+      expect(card1A).toHaveFocus();
 
       onSelect.mockClear();
       const card3B = screen.getByRole("button", { name: /^Selecionar variação 3/ });
@@ -2141,7 +2150,7 @@ describe("MagicUpVariationComparator keyboard navigation", () => {
       expect(card1B).toHaveAttribute("aria-pressed", "false");
     });
 
-    it("aria-pressed permanece exclusivo (1 ativo) em sequência de setas, Home, End e wrap-around", async () => {
+    it("aria-pressed permanece exclusivo (1 ativo) em sequência de setas, Home e End (sem wrap)", async () => {
       const user = userEvent.setup();
 
       function ControlledWrapper() {
@@ -2171,15 +2180,21 @@ describe("MagicUpVariationComparator keyboard navigation", () => {
       card1.focus();
       expect(getActiveCardIndex()).toBe(1);
 
-      for (let step = 1; step <= total + 1; step++) {
+      for (let step = 0; step < total - 1; step++) {
         await user.keyboard("{ArrowRight}");
-        const expectedActive = (step % total) + 1;
+        const expectedActive = 2 + step;
         expect(getActiveCardIndex()).toBe(expectedActive);
         const activeByLabel = screen.getByRole("button", {
           name: new RegExp(`^Selecionar variação ${expectedActive}`),
         });
         expect(activeByLabel).toHaveFocus();
       }
+
+      // No último card a seta para no limite (não cicla para o primeiro).
+      await user.keyboard("{ArrowRight}");
+      expect(getActiveCardIndex()).toBe(total);
+      await user.keyboard("{ArrowDown}");
+      expect(getActiveCardIndex()).toBe(total);
 
       for (let step = 1; step <= total + 1; step++) {
         await user.keyboard("{ArrowLeft}");
