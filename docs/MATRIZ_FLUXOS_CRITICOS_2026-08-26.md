@@ -265,7 +265,7 @@ O único owner de fluxo encontrado em documentação é **Promo Brindes Engineer
 ### Contratos detectados
 
 - **DB:** `generated_mockups`, `mockup_drafts` e `art_file_attachments`.
-- **Storage:** buckets `mockup-assets` e `art-files` nos caminhos detectados pelo código.
+- **Storage:** buckets `mockup-assets` (`src/hooks/mockup/mockupGenerationService.ts:521`) e `mockup-art-files` (`src/components/mockup/ArtFileUpload.tsx:93`) nos caminhos detectados pelo código. (`art-files` é bucket de outro fluxo — orçamento/Bitrix, `src/pages/quotes/quote-view/QuoteActionHandlers.ts:148` — não do mockup.)
 - **Edge:** `generate-mockup` e `analyze-logo-colors`.
 - **Externo:** imagens de produto/logo em hosts permitidos; qualquer provedor de análise de cor fica encapsulado pela Edge. A Edge `generate-mockup` atual é um compositor canvas determinístico: `techniquePrompt` é metadado e não altera visualmente a composição.
 

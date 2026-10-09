@@ -16,25 +16,25 @@ O roteamento é centralizado e **lazy**: todas as páginas são declaradas em
 
 | Arquivo de rota | Ferramentas montadas |
 |---|---|
-| `src/routes/tools-routes.tsx:36-71` | simulador, estoque, kit builder, mockup, magic-up, BI, match, dropbox, cobertura, raio-x, magazine |
-| `src/routes/product-routes.tsx:22-38` | produtos, novidades, reposição, favoritos, carrinhos, comparar, coleções |
+| `src/routes/tools-routes.tsx:48-79` | simulador, estoque, kit builder, mockup, magic-up, BI, match, dropbox, cobertura, raio-x, magazine |
+| `src/routes/product-routes.tsx:22-44` | produtos, novidades, reposição, favoritos, carrinhos, comparar, coleções |
 | `src/routes/admin-routes.tsx:62-150` | admin, segurança, workflows, telemetria, EMA health, kit-templates |
 
 Rotas concretas das ferramentas deste escopo:
 
-- `/estoque` → `src/routes/tools-routes.tsx:40`
-- `/montar-kit` → `src/routes/tools-routes.tsx:42`
-- `/meus-kits` → `src/routes/tools-routes.tsx:44`
-- `/mockup-generator` → `src/routes/tools-routes.tsx:47`
-- `/mockups/historico` → `src/routes/tools-routes.tsx:48`
-- `/magic-up` → `src/routes/tools-routes.tsx:49`
-- `/inteligencia-comercial` → `src/routes/tools-routes.tsx:50`
-- `/ferramentas/bi` → `src/routes/tools-routes.tsx:51`
-- `/simulador` → `src/routes/tools-routes.tsx:38`
-- `/simulador-precos` → `src/routes/tools-routes.tsx:39`
-- `/novidades` → `src/routes/product-routes.tsx:32`
-- `/reposicao` → `src/routes/product-routes.tsx:33`
-- `/colecoes` → `src/routes/product-routes.tsx:36`
+- `/estoque` → `src/routes/tools-routes.tsx:52`
+- `/montar-kit` → `src/routes/tools-routes.tsx:54`
+- `/meus-kits` → `src/routes/tools-routes.tsx:56`
+- `/mockup-generator` → `src/routes/tools-routes.tsx:59`
+- `/mockups/historico` → `src/routes/tools-routes.tsx:60`
+- `/magic-up` → `src/routes/tools-routes.tsx:61`
+- `/inteligencia-comercial` → `src/routes/tools-routes.tsx:62`
+- `/ferramentas/bi` → `src/routes/tools-routes.tsx:63`
+- `/simulador` → `src/routes/tools-routes.tsx:50`
+- `/simulador-precos` → `src/routes/tools-routes.tsx:51`
+- `/novidades` → `src/routes/product-routes.tsx:35`
+- `/reposicao` → `src/routes/product-routes.tsx:36`
+- `/colecoes` → `src/routes/product-routes.tsx:41`
 - `/tendencias` → `src/routes/admin-routes.tsx:64`
 - `/admin/workflows` → `src/routes/admin-routes.tsx:135`
 

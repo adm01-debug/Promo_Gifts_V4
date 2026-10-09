@@ -16,7 +16,7 @@
 | BUG-013 | 🟠 Alto | `expert-chat`: 2 locais residuais com `EXTERNAL_SUPABASE_SERVICE_KEY` (fix BUG-011 incompleto) | ✅ Corrigido |
 | BUG-014 | 🟡 Médio | `cnpj-lookup`: `CNPJA_API_KEY` via `Deno.env.get()` bypassa SSOT | ✅ Corrigido |
 | BUG-015 | 🟡 Médio | `bitrix-sync`: `BITRIX24_WEBHOOK_URL` via `Deno.env.get()` bypassa SSOT | ✅ Corrigido |
-| BUG-016 | 🔴 Crítico | `generate-mockup/index.ts` é PLACEHOLDER — feature completamente quebrada | ⚠️ Documentado |
+| BUG-016 | 🔴 Crítico | `generate-mockup/index.ts` é PLACEHOLDER — feature completamente quebrada | ✅ Resolvido — falso positivo (ver nota) |
 
 ---
 
@@ -98,11 +98,20 @@ const EXT_KEY2 = Deno.env.get('EXTERNAL_SUPABASE_SERVICE_KEY');
 
 ---
 
-## 🔴 BUG-016 — `generate-mockup/index.ts` é PLACEHOLDER
+## 🔴 BUG-016 — `generate-mockup/index.ts` é PLACEHOLDER → ✅ RESOLVIDO (falso positivo)
 
-O arquivo contém apenas `GENERATE_PLACEHOLDER` — a edge function **não existe de fato** no repositório. O gerador de mockups com IA está completamente inoperante via edge function.
+**Correção de registro (revisão de documentação):** a alegação de que o arquivo contém apenas
+`GENERATE_PLACEHOLDER` **não corresponde ao código atual**. `supabase/functions/generate-mockup/index.ts`
+tem 542 linhas e é um **compositor de canvas determinístico** — importa `_shared/cors.ts`,
+`_shared/auth.ts`, `_shared/kill_switch.ts` e `@supabase/supabase-js`, e compõe a arte em
+`OffscreenCanvas` (`index.ts:189`, `:277`, `:337`). Não existe `GENERATE_PLACEHOLDER` em nenhum
+arquivo do repositório (`grep -rn "GENERATE_PLACEHOLDER" src/ supabase/` → vazio).
 
-**Ação necessária:** Restaurar implementação real. **Status:** Pendente — ação manual necessária.
+A antiga rota de IA ("nano-banana") foi **removida** — `index.ts:13`: *"this function is a deterministic
+canvas compositor (the AI/\"nano-banana\" route was removed)"*; `index.ts:446`: *"this is canvas
+composition (no AI)"*. Logo, o texto "gerador de mockups com IA" também está obsoleto.
+
+**Ação necessária:** nenhuma — a implementação real existe. **Status:** ✅ Resolvido (falso positivo).
 
 ---
 
