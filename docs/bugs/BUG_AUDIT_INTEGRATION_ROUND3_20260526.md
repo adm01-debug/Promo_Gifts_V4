@@ -16,7 +16,7 @@
 | BUG-013 | 🟠 Alto | `expert-chat`: 2 locais residuais com `EXTERNAL_SUPABASE_SERVICE_KEY` (fix BUG-011 incompleto) | ✅ Corrigido |
 | BUG-014 | 🟡 Médio | `cnpj-lookup`: `CNPJA_API_KEY` via `Deno.env.get()` bypassa SSOT | ✅ Corrigido |
 | BUG-015 | 🟡 Médio | `bitrix-sync`: `BITRIX24_WEBHOOK_URL` via `Deno.env.get()` bypassa SSOT | ✅ Corrigido |
-| BUG-016 | 🔴 Crítico | `generate-mockup/index.ts` é PLACEHOLDER — feature completamente quebrada | ⚠️ Documentado |
+| BUG-016 | 🔴 Crítico | `generate-mockup/index.ts` é PLACEHOLDER — feature completamente quebrada | ✅ Resolvido depois do Round 3 (ver nota) |
 
 ---
 
@@ -98,11 +98,30 @@ const EXT_KEY2 = Deno.env.get('EXTERNAL_SUPABASE_SERVICE_KEY');
 
 ---
 
-## 🔴 BUG-016 — `generate-mockup/index.ts` é PLACEHOLDER
+## 🔴 BUG-016 — `generate-mockup/index.ts` é PLACEHOLDER → ✅ RESOLVIDO (implementação restaurada depois)
 
-O arquivo contém apenas `GENERATE_PLACEHOLDER` — a edge function **não existe de fato** no repositório. O gerador de mockups com IA está completamente inoperante via edge function.
+**Registro original (26/05/2026):** o arquivo continha apenas `GENERATE_PLACEHOLDER` — a edge function
+não existia de fato no repositório. O bug era real à época deste Round 3 (não é falso positivo).
 
-**Ação necessária:** Restaurar implementação real. **Status:** Pendente — ação manual necessária.
+**Atualização de registro (09/10/2026):** o defeito foi corrigido depois deste PR; "Documentado / Pendente"
+está superado. Cronologia conferida no histórico git:
+
+- `3c74e2840` (#429, 26/05/2026): `index.ts` com o conteúdo `GENERATE_PLACEHOLDER`.
+- `a2032a700` (#439, 26/05/2026): trocado por um stub de 51 linhas que responde `501 not_implemented`.
+- `ed77949ed` ("Changes", 26/05/2026): volta a implementação real — compositor em `OffscreenCanvas` (233 linhas).
+
+**Estado atual:** `supabase/functions/generate-mockup/index.ts` tem 542 linhas e é um **compositor de canvas
+determinístico** — importa `_shared/cors.ts`, `_shared/auth.ts`, `_shared/kill_switch.ts` e
+`@supabase/supabase-js`, e compõe a arte em `OffscreenCanvas` (`index.ts:254` `compositeImages`, `:277`,
+`:337`). Hoje não existe `GENERATE_PLACEHOLDER` em `src/` nem em `supabase/`
+(`git grep -n "GENERATE_PLACEHOLDER" -- src supabase` → vazio).
+
+A antiga rota de IA ("nano-banana") foi **removida** — `index.ts:13`: *"this function is a deterministic
+canvas compositor (the AI/\"nano-banana\" route was removed)"*; `index.ts:446`: *"this is canvas
+composition (no AI)"*. Logo, o texto original "gerador de mockups com IA ... inoperante" também está obsoleto:
+o gerador não usa IA.
+
+**Ação necessária:** nenhuma. **Status:** ✅ Resolvido (implementação real restaurada em 26/05/2026).
 
 ---
 
