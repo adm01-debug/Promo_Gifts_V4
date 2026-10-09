@@ -4,6 +4,14 @@ import { callAiWithTracking, QuotaExceededError } from '../_shared/ai-usage.ts';
 import { z } from "../_shared/contracts/_zod.ts";
 import { runBotProtection } from '../_shared/bot-protection.ts';
 import { resolveAiApiKey } from "../_shared/ai-credentials.ts";
+import {
+  markUserData,
+  reduceBrandKit,
+  reduceCampaignBrief,
+  USER_DATA_RULE,
+  USER_TEXT_LIMITS,
+  wrapUserData,
+} from "./sanitize.ts";
 
 // BUG-MAGICUP-ADPROMPT-1 FIX (2026-08-17): campos abaixo eram `.optional()` sem
 // `.nullable()` — o cliente (useMagicUpGeneration.ts) sempre envia `null`
@@ -156,21 +164,39 @@ LOGO APPLICATION: ${productHint.logoTip}`
       ? `\nBRAND COLORS: The client brand uses ${brandColorName || brandColorHex} (${brandColorHex}). Subtly incorporate this color in the scene elements (props, background accents, clothing details) for brand harmony.`
       : '';
 
-    const brandKitInstruction = brandKit
-      ? `\nBRAND KIT:\n- Primary color: ${brandKit.primaryColor || brandColorHex || 'not provided'}\n- Secondary color: ${brandKit.secondaryColor || 'not provided'}\n- Tone of voice: ${brandKit.toneOfVoice || 'premium consultative'}\n- Visual style: ${brandKit.visualStyle || 'clean corporate'}\n- Required words/concepts: ${(brandKit.requiredWords || []).join(', ') || 'none'}\n- Forbidden words/concepts: ${(brandKit.forbiddenWords || []).join(', ') || 'none'}\n- Internal notes: ${brandKit.notes || 'none'}`
+    const safeBrandKit = reduceBrandKit(brandKit);
+    const brandKitBody = brandKit
+      ? [
+          `- Primary color: ${safeBrandKit.primaryColor || brandColorHex || 'not provided'}`,
+          `- Secondary color: ${safeBrandKit.secondaryColor || 'not provided'}`,
+          `- Tone of voice: ${safeBrandKit.toneOfVoice || 'premium consultative'}`,
+          `- Visual style: ${safeBrandKit.visualStyle || 'clean corporate'}`,
+          `- Required words/concepts: ${(safeBrandKit.requiredWords || []).join(', ') || 'none'}`,
+          `- Forbidden words/concepts: ${(safeBrandKit.forbiddenWords || []).join(', ') || 'none'}`,
+          `- Internal notes: ${safeBrandKit.notes || 'none'}`,
+        ].join('\n')
+      : '';
+    const brandKitInstruction = brandKitBody
+      ? `\nBRAND KIT:\n${markUserData(brandKitBody, USER_TEXT_LIMITS.brandKitBlock)}`
       : '\nBRAND KIT: Use the provided logo and keep a consistent, professional B2B brand expression.';
 
-    const refinementBlock = refinementInstruction
-      ? `\nREFINEMENT INSTRUCTION: ${refinementInstruction}`
-      : '\nREFINEMENT INSTRUCTION: none';
+    const refinementText = wrapUserData(refinementInstruction, USER_TEXT_LIMITS.refinementInstruction);
+    const refinementBlock = `\nREFINEMENT INSTRUCTION: ${refinementText || 'none'}`;
 
+    // BATCH VARIANT também é JSON cru vindo do cliente: mesma classe de defeito
+    // do campaignBrief, então entra entre os delimitadores (e com limite).
     const batchBlock = batchVariant
-      ? `\nBATCH VARIANT: ${JSON.stringify(batchVariant)}`
+      ? `\nBATCH VARIANT: ${wrapUserData(JSON.stringify(batchVariant), USER_TEXT_LIMITS.batchVariantBlock)}`
+      : '';
+
+    const safeCampaignBrief = reduceCampaignBrief(campaignBrief);
+    const campaignBriefText = Object.keys(safeCampaignBrief).length > 0
+      ? markUserData(JSON.stringify(safeCampaignBrief), USER_TEXT_LIMITS.campaignBriefBlock)
       : '';
 
     const strategyInstruction = `
 CAMPAIGN BRIEF:
-${campaignBrief ? JSON.stringify(campaignBrief, null, 2) : 'general B2B promotional sales campaign'}
+${campaignBriefText || 'general B2B promotional sales campaign'}
 ${brandKitInstruction}
 PRODUCT DIRECTION:
 Product must stay faithful to the reference image, color, material, and personalization area.
@@ -183,10 +209,12 @@ ${refinementBlock}${batchBlock}`;
 
     const prompt = `Create a HIGH-QUALITY commercial advertising photograph for a promotional product company.
 
+${USER_DATA_RULE}
+
 PRODUCT: ${productName}${productColor ? ` in ${productColor} color` : ''}
 CUSTOMIZATION: The product has the company logo applied via ${techniqueName || 'printing'} on the ${locationName || 'front'}.
 ${materialInstruction}
-SCENE: ${scenePrompt}
+SCENE: ${wrapUserData(scenePrompt, USER_TEXT_LIMITS.scenePrompt)}
 ${brandColorInstruction}
 ${strategyInstruction}
 
