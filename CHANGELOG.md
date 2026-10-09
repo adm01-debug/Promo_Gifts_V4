@@ -5,6 +5,19 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.0.3](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.2...v1.0.3) (2026-10-09)
+
+
+### Bug Fixes
+
+* **ci:** repassa E2E_USER_EMAIL/E2E_USER_PASSWORD pro job Playwright E2E do Full CI ([#2113](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2113)) ([0284679](https://github.com/adm01-debug/Promo_Gifts_V4/commit/028467954d70d756ee533363306e003d4d8b6c23))
+* confirmação de exclusão e sanitização de busca no histórico de mockups ([#2108](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2108)) ([2a07825](https://github.com/adm01-debug/Promo_Gifts_V4/commit/2a078250342ebdb129dab36ef52b6067ac0dd275))
+* corrige lint do fix de busca de cliente (PR [#2095](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2095)) ([#2109](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2109)) ([45e8f10](https://github.com/adm01-debug/Promo_Gifts_V4/commit/45e8f104d8135836325ac171adf6e05341669df0))
+* **generate-mockup:** valida cada hop de redirect e exige allowlist de egresso ([#2105](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2105)) ([6a3d076](https://github.com/adm01-debug/Promo_Gifts_V4/commit/6a3d0766d270c02a9ca991611ef7141f7e1d5c81))
+* **mockup:** barra de status prioriza o erro atual sobre o Salvo antigo ([#2094](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2094)) ([8a18f05](https://github.com/adm01-debug/Promo_Gifts_V4/commit/8a18f0515bb25ac3c2dafaa52e47b4189e7a5877))
+* remove return desnecessário no handler de atalhos (PR [#2096](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2096)) ([#2110](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2110)) ([3ebd35e](https://github.com/adm01-debug/Promo_Gifts_V4/commit/3ebd35e6d379ce27f6d6687e2a5bbc31bb8baae9))
+* restringe acesso anon a links de aprovação de mockup e bucket mockup-assets ([#2097](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2097)) ([60d743e](https://github.com/adm01-debug/Promo_Gifts_V4/commit/60d743e925c4b345d085ccd2d3d9112d9a40a484))
+
 ## [1.0.2](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.1...v1.0.2) (2026-10-07)
 
 
