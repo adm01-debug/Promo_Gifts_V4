@@ -31,6 +31,11 @@ export function useMockupDraft(options: UseMockupDraftOptions = {}) {
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [error, setError] = useState<string | null>(null);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  // B F-10 FIX: saves already sent to the backend (timer fired, request in
+  // flight). clearDraft waits for them to settle before deleting — otherwise a
+  // saveToBackend started just before clearDraft would resolve AFTER the delete
+  // and re-create the row, so the draft reappeared after being cleared.
+  const inFlightSavesRef = useRef<Set<Promise<boolean>>>(new Set());
 
   const saveToLocal = useCallback(
     (data: MockupDraftData) => {
@@ -224,7 +229,12 @@ export function useMockupDraft(options: UseMockupDraftOptions = {}) {
       }
 
       saveTimeoutRef.current = setTimeout(() => {
-        saveToBackend(data);
+        saveTimeoutRef.current = null;
+        const savePromise = saveToBackend(data);
+        inFlightSavesRef.current.add(savePromise);
+        void savePromise.finally(() => {
+          inFlightSavesRef.current.delete(savePromise);
+        });
       }, AUTO_SAVE_DELAY);
     },
     [saveToLocal, saveToBackend],
@@ -278,6 +288,15 @@ export function useMockupDraft(options: UseMockupDraftOptions = {}) {
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current);
       saveTimeoutRef.current = null;
+    }
+
+    // B F-10 FIX: a save may already be in flight (timer fired, request sent)
+    // and clearDraft cannot cancel it. Wait for it to settle BEFORE deleting so
+    // the delete is always the last write — otherwise the in-flight upsert
+    // resolves after the cleanup and the draft reappears.
+    const inFlight = Array.from(inFlightSavesRef.current);
+    if (inFlight.length > 0) {
+      await Promise.allSettled(inFlight);
     }
 
     try {
