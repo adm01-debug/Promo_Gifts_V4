@@ -5,22 +5,8 @@ test.describe('QuoteBuilderPage - Delivery Field E2E', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the new quote page
     await loginAs(page);
+    await page.goto('/orcamentos/novo');
 
-    // Isola o estado do painel "Condições" entre specs: o colapso é persistido em
-    // localStorage (quote-builder:conditions-collapsed:*) e vaza de specs anteriores
-    // que rodam no mesmo contexto/worker, derrubando o waitForSelector abaixo.
-    await page.addInitScript(() => {
-      try {
-        Object.keys(localStorage)
-          .filter((k) => k.startsWith('quote-builder:conditions-collapsed:'))
-          .forEach((k) => localStorage.removeItem(k));
-      } catch {
-        /* localStorage indisponível (ex.: origem about:blank) — ignora */
-      }
-    });
-
-    await page.goto('/quotes/new');
-    
     // Wait for the page to load
     await page.waitForSelector('[data-testid="delivery-label"]', { timeout: 15000 });
   });
