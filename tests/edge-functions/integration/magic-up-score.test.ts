@@ -1,163 +1,259 @@
 /**
- * Integration tests — magic-up-score edge function
- * Cobre: cálculo de score, produtos elegíveis, sem auth, payloads adversariais.
+ * Integration tests — edge function `magic-up-score` contra o CONTRATO REAL.
+ *
+ * Ao contrário da versão anterior (que mockava `fetch` e assertava contra o
+ * próprio mock, inventando `product_id`/`factors`/`tier`/`eligible_for_magic_up`
+ * inexistentes), aqui a função REAL é carregada e executada em processo:
+ * capturamos o handler entregue a `Deno.serve` em
+ * `supabase/functions/magic-up-score/index.ts` e o invocamos com `Request`
+ * reais, assertando as `Response` reais. Apenas as dependências Deno-only
+ * (auth, bot-protection, ai-usage, ai-credentials, cors — todas com import
+ * `npm:`/`Deno.env`) são substituídas por stubs.
+ *
+ * Contrato real (index.ts): entrada `{ imageUrl(min 10), productName?,
+ * clientName?, campaignBrief?, brandKit?, creativeControls?, promptText?,
+ * channel?, aspectRatio? }`; sucesso `{ total, label, summary, criteria[4..10],
+ * strengths, risks, recommendations, source:'ai' }`; 400 `{ error:"Validation
+ * failed", details }`; 401 auth; repassa status da IA (ex.: 402); 429 quota.
+ *
+ * Se o handler mudar (schema de entrada, status codes, envelope de sucesso,
+ * modelo ou mensagens), estes testes ficam vermelhos.
  */
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { mockEdgeFunctionFetch, resetExternalMocks, type EdgeFnResponseSpec } from "../../p0/_mocks";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-const BASE = "https://nmojwpihnslkssljowjh.supabase.co/functions/v1";
+type EdgeHandler = (req: Request) => Promise<Response>;
 
-describe("magic-up-score", () => {
-  beforeEach(() => mockEdgeFunctionFetch({}));
-  afterEach(() => resetExternalMocks());
+const shared = vi.hoisted(() => {
+  class QuotaExceededError extends Error {}
+  return {
+    QuotaExceededError,
+    authenticate: vi.fn(),
+    authError: vi.fn(),
+    botProtection: vi.fn(),
+    cors: vi.fn(),
+    resolveKey: vi.fn(),
+    callAi: vi.fn(),
+  };
+});
 
-  describe("cálculo de score — happy path", () => {
-    it("retorna 200 com score entre 0 e 100 para produto válido", async () => {
-      const ok: EdgeFnResponseSpec = {
-        status: 200,
-        body: {
-          product_id: "prod-001",
-          score: 78.5,
-          factors: {
-            demand: 0.85,
-            margin: 0.72,
-            stock: 1.0,
-            recency: 0.65,
-          },
-          tier: "high",
-          eligible_for_magic_up: true,
-        },
-      };
-      mockEdgeFunctionFetch({ "/magic-up-score": ok });
-      const res = await fetch(`${BASE}/magic-up-score`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: "Bearer valid-jwt" },
-        body: JSON.stringify({ product_id: "prod-001" }),
-      });
-      const data = await res.json();
-      expect(res.status).toBe(200);
-      expect(typeof data.score).toBe("number");
-      expect(data.score).toBeGreaterThanOrEqual(0);
-      expect(data.score).toBeLessThanOrEqual(100);
-    });
+vi.mock("../../../supabase/functions/_shared/cors.ts", () => ({ getCorsHeaders: shared.cors }));
+vi.mock("../../../supabase/functions/_shared/auth.ts", () => ({
+  authenticateRequest: shared.authenticate,
+  authErrorResponse: shared.authError,
+}));
+vi.mock("../../../supabase/functions/_shared/bot-protection.ts", () => ({
+  runBotProtection: shared.botProtection,
+}));
+vi.mock("../../../supabase/functions/_shared/ai-credentials.ts", () => ({
+  resolveAiApiKey: shared.resolveKey,
+}));
+vi.mock("../../../supabase/functions/_shared/ai-usage.ts", () => ({
+  callAiWithTracking: shared.callAi,
+  QuotaExceededError: shared.QuotaExceededError,
+}));
 
-    it("fatores (demand, margin, stock, recency) são valores 0-1", async () => {
-      const ok: EdgeFnResponseSpec = {
-        status: 200,
-        body: {
-          product_id: "prod-001",
-          score: 65,
-          factors: { demand: 0.7, margin: 0.6, stock: 0.8, recency: 0.5 },
-        },
-      };
-      mockEdgeFunctionFetch({ "/magic-up-score": ok });
-      const res = await fetch(`${BASE}/magic-up-score`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: "Bearer valid-jwt" },
-        body: JSON.stringify({ product_id: "prod-001" }),
-      });
-      const data = await res.json();
-      if (data.factors) {
-        for (const [key, val] of Object.entries(data.factors)) {
-          expect(typeof val).toBe("number");
-          expect(val as number).toBeGreaterThanOrEqual(0);
-          expect(val as number).toBeLessThanOrEqual(1);
-        }
-      }
-    });
+const CORS_ORIGIN = "https://www.promogifts.com.br";
+const IMAGE_URL = "https://cdn.example.com/magic-up/ad.png";
 
-    it("tier é um dos valores esperados (low, medium, high)", async () => {
-      const ok: EdgeFnResponseSpec = {
-        status: 200,
-        body: { product_id: "p1", score: 50, tier: "medium", eligible_for_magic_up: false },
-      };
-      mockEdgeFunctionFetch({ "/magic-up-score": ok });
-      const res = await fetch(`${BASE}/magic-up-score`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: "Bearer valid-jwt" },
-        body: JSON.stringify({ product_id: "p1" }),
-      });
-      const data = await res.json();
-      if (data.tier) {
-        expect(["low", "medium", "high"]).toContain(data.tier);
-      }
-    });
+// Envelope de sucesso no formato REAL do DiagnosisSchema (index.ts:29-37).
+const DIAGNOSIS = {
+  total: 78.5,
+  label: "boa",
+  summary: "Peça clara, com boa visibilidade de logo.",
+  criteria: [
+    { id: "product_clarity", label: "Clareza do produto", score: 85, passed: true, weight: 3, recommendation: "Manter o enquadramento atual." },
+    { id: "logo_visibility", label: "Visibilidade do logo", score: 70, passed: true, weight: 4, recommendation: "Aumentar o contraste do logo." },
+    { id: "channel_fit", label: "Adequação ao canal", score: 65, passed: true, weight: 3, recommendation: "Ajustar o formato ao canal." },
+    { id: "brand_coherence", label: "Coerência com a marca", score: 80, passed: true, weight: 2, recommendation: "Manter as cores da marca." },
+  ],
+  strengths: ["Boa iluminação"],
+  risks: ["Pouco espaço para copy"],
+  recommendations: ["Ampliar a área de CTA"],
+};
 
-    it("produto inativo retorna eligible_for_magic_up=false", async () => {
-      const ok: EdgeFnResponseSpec = {
-        status: 200,
-        body: { product_id: "p-inactive", score: 0, eligible_for_magic_up: false, reason: "product_inactive" },
-      };
-      mockEdgeFunctionFetch({ "/magic-up-score": ok });
-      const res = await fetch(`${BASE}/magic-up-score`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: "Bearer valid-jwt" },
-        body: JSON.stringify({ product_id: "p-inactive" }),
-      });
-      const data = await res.json();
-      expect(data.eligible_for_magic_up).toBe(false);
-    });
+function aiContent(content: unknown): Response {
+  const text = typeof content === "string" ? content : JSON.stringify(content);
+  return new Response(JSON.stringify({ choices: [{ message: { content: text } }] }), {
+    status: 200,
+    headers: { "Content-Type": "application/json" },
+  });
+}
+
+function upstream(status: number, payload: unknown): Response {
+  return new Response(JSON.stringify(payload), {
+    status,
+    headers: { "Content-Type": "application/json" },
+  });
+}
+
+function post(body: unknown): Request {
+  return new Request("https://edge.local/functions/v1/magic-up-score", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: "Bearer valid-jwt" },
+    body: JSON.stringify(body),
+  });
+}
+
+let handler!: EdgeHandler;
+
+beforeAll(async () => {
+  const serve = vi.fn<(h: EdgeHandler) => void>();
+  (globalThis as unknown as Record<string, unknown>).Deno = { serve };
+  await import("../../../supabase/functions/magic-up-score/index.ts");
+  expect(serve).toHaveBeenCalledTimes(1);
+  handler = serve.mock.calls[0][0];
+});
+
+beforeEach(() => {
+  shared.authenticate.mockClear();
+  shared.authError.mockClear();
+  shared.botProtection.mockClear();
+  shared.cors.mockClear();
+  shared.resolveKey.mockClear();
+  shared.callAi.mockReset();
+  shared.authenticate.mockResolvedValue({
+    userId: "u-1",
+    userRole: "vendedor",
+    userRoles: ["vendedor"],
+    localServiceClient: {},
+  });
+  shared.botProtection.mockResolvedValue({ allowed: true, blockResponse: undefined });
+  shared.cors.mockReturnValue({ "Access-Control-Allow-Origin": CORS_ORIGIN });
+  shared.resolveKey.mockResolvedValue({ apiKey: "test-key" });
+  shared.authError.mockImplementation((err: { status?: number; message?: string }) =>
+    new Response(JSON.stringify({ error: err?.message ?? "Erro de autenticação" }), {
+      status: typeof err?.status === "number" ? err.status : 500,
+      headers: { "Access-Control-Allow-Origin": CORS_ORIGIN, "Content-Type": "application/json" },
+    }),
+  );
+  shared.callAi.mockReset();
+});
+
+describe("magic-up-score — contrato real do handler", () => {
+  it("401 quando a autenticação falha (usa authErrorResponse com o status do erro)", async () => {
+    shared.authenticate.mockRejectedValue({ status: 401, message: "Token de autenticação ausente" });
+    const res = await handler(post({ imageUrl: IMAGE_URL }));
+    expect(res.status).toBe(401);
+    expect(await res.json()).toEqual({ error: "Token de autenticação ausente" });
+    expect(shared.callAi).not.toHaveBeenCalled();
   });
 
-  describe("produto não encontrado — 404", () => {
-    it("retorna 404 para product_id inexistente", async () => {
-      const err: EdgeFnResponseSpec = { status: 404, body: { error: "product_not_found" } };
-      mockEdgeFunctionFetch({ "/magic-up-score": err });
-      const res = await fetch(`${BASE}/magic-up-score`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: "Bearer valid-jwt" },
-        body: JSON.stringify({ product_id: "nonexistent-id" }),
-      });
-      expect(res.status).toBe(404);
-    });
+  it("400 'Validation failed' quando imageUrl está ausente (e não chama a IA)", async () => {
+    const res = await handler(post({}));
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toBe("Validation failed");
+    expect(body.details).toHaveProperty("imageUrl");
+    expect(shared.callAi).not.toHaveBeenCalled();
   });
 
-  describe("validação de entrada — 400", () => {
-    it("retorna 400 quando product_id está ausente", async () => {
-      const err: EdgeFnResponseSpec = { status: 400, body: { error: "missing_product_id" } };
-      mockEdgeFunctionFetch({ "/magic-up-score": err });
-      const res = await fetch(`${BASE}/magic-up-score`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: "Bearer valid-jwt" },
-        body: JSON.stringify({}),
-      });
-      expect(res.status).toBe(400);
-    });
-
-    it("não retorna 500 para product_id com SQL injection", async () => {
-      const err: EdgeFnResponseSpec = { status: 400, body: { error: "invalid_input" } };
-      mockEdgeFunctionFetch({ "/magic-up-score": err });
-      const res = await fetch(`${BASE}/magic-up-score`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: "Bearer valid-jwt" },
-        body: JSON.stringify({ product_id: "'; DROP TABLE products;--" }),
-      });
-      expect(res.status).not.toBe(500);
-    });
+  it("400 quando imageUrl tem menos de 10 caracteres (min(10) do schema real)", async () => {
+    const res = await handler(post({ imageUrl: "curto" }));
+    expect(res.status).toBe(400);
+    expect((await res.json()).error).toBe("Validation failed");
+    expect(shared.callAi).not.toHaveBeenCalled();
   });
 
-  describe("autenticação — 401", () => {
-    it("retorna 401 sem token", async () => {
-      const err: EdgeFnResponseSpec = { status: 401, body: { error: "unauthorized" } };
-      mockEdgeFunctionFetch({ "/magic-up-score": err });
-      const res = await fetch(`${BASE}/magic-up-score`, {
-        method: "POST",
-        body: JSON.stringify({ product_id: "p1" }),
-      });
-      expect(res.status).toBe(401);
-    });
+  it("200 com o envelope REAL {total,label,summary,criteria,strengths,risks,recommendations,source:'ai'}", async () => {
+    shared.callAi.mockResolvedValue(aiContent(DIAGNOSIS));
+    const res = await handler(post({ imageUrl: IMAGE_URL }));
+
+    expect(res.status).toBe(200);
+    expect(res.headers.get("Content-Type")).toContain("application/json");
+    const body = await res.json();
+    expect(body).toMatchObject({ source: "ai", total: 78.5, label: "boa", summary: DIAGNOSIS.summary });
+    expect(body.criteria).toHaveLength(4);
+    expect(body.criteria[0]).toMatchObject({ id: "product_clarity", passed: true, weight: 3 });
+    expect(body.strengths).toEqual(["Boa iluminação"]);
+    expect(body.risks).toEqual(["Pouco espaço para copy"]);
+    expect(body.recommendations).toEqual(["Ampliar a área de CTA"]);
+
+    // O contrato imaginado do teste antigo NÃO existe no handler real.
+    expect(body).not.toHaveProperty("product_id");
+    expect(body).not.toHaveProperty("factors");
+    expect(body).not.toHaveProperty("tier");
+    expect(body).not.toHaveProperty("eligible_for_magic_up");
   });
 
-  describe("CORS", () => {
-    it("OPTIONS retorna CORS headers", async () => {
-      const cors: EdgeFnResponseSpec = {
-        status: 200,
-        body: null,
-        headers: { "access-control-allow-origin": "*", "access-control-expose-headers": "x-request-id" },
+  it("encaminha à IA o modelo google/gemini-2.5-pro e functionName magic-up-score", async () => {
+    shared.callAi.mockResolvedValue(aiContent(DIAGNOSIS));
+    await handler(
+      post({ imageUrl: IMAGE_URL, channel: "instagram", productName: "Caneca", aspectRatio: "1:1" }),
+    );
+
+    expect(shared.callAi).toHaveBeenCalledTimes(1);
+    const args = shared.callAi.mock.calls[0][0] as {
+      functionName: string;
+      model: string;
+      requestBody: {
+        model: string;
+        messages: Array<{ content: Array<{ type: string; text?: string; image_url?: { url: string } }> }>;
       };
-      mockEdgeFunctionFetch({ "/magic-up-score": cors });
-      const res = await fetch(`${BASE}/magic-up-score`, { method: "OPTIONS" });
-      expect([200, 204]).toContain(res.status);
+    };
+    expect(args.functionName).toBe("magic-up-score");
+    expect(args.model).toBe("google/gemini-2.5-pro");
+    expect(args.requestBody.model).toBe("google/gemini-2.5-pro");
+
+    const parts = args.requestBody.messages[0].content;
+    expect(parts.find((p) => p.type === "image_url")?.image_url?.url).toBe(IMAGE_URL);
+    // O contexto estruturado leva os campos opcionais recebidos.
+    expect(parts.find((p) => p.type === "text")?.text).toContain('"channel": "instagram"');
+  });
+
+  it("500 quando a IA devolve um diagnóstico que viola o schema real (criteria < 4)", async () => {
+    shared.callAi.mockResolvedValue(aiContent({ ...DIAGNOSIS, criteria: DIAGNOSIS.criteria.slice(0, 3) }));
+    const res = await handler(post({ imageUrl: IMAGE_URL }));
+    expect(res.status).toBe(500);
+  });
+
+  it("500 quando o content da IA não contém JSON", async () => {
+    shared.callAi.mockResolvedValue(aiContent("desculpe, não consigo avaliar"));
+    const res = await handler(post({ imageUrl: IMAGE_URL }));
+    expect(res.status).toBe(500);
+  });
+
+  it("500 quando a resposta da IA não tem content textual", async () => {
+    shared.callAi.mockResolvedValue(upstream(200, { choices: [] }));
+    const res = await handler(post({ imageUrl: IMAGE_URL }));
+    expect(res.status).toBe(500);
+    expect((await res.json()).error).toBe("AI response missing content");
+  });
+
+  it("repassa o status da IA (402 → créditos esgotados)", async () => {
+    shared.callAi.mockResolvedValue(upstream(402, { error: "no credits" }));
+    const res = await handler(post({ imageUrl: IMAGE_URL }));
+    expect(res.status).toBe(402);
+    expect((await res.json()).error).toBe("Créditos de IA esgotados para análise de score.");
+  });
+
+  it("429 quando a quota de IA é excedida (QuotaExceededError)", async () => {
+    shared.callAi.mockRejectedValue(new shared.QuotaExceededError("quota"));
+    const res = await handler(post({ imageUrl: IMAGE_URL }));
+    expect(res.status).toBe(429);
+    expect((await res.json()).error).toBe("Limite mensal de IA atingido.");
+  });
+
+  it("respeita o bloqueio anti-bot (devolve o blockResponse)", async () => {
+    shared.botProtection.mockResolvedValue({
+      allowed: false,
+      blockResponse: new Response(JSON.stringify({ error: "rate_limited" }), {
+        status: 429,
+        headers: { "Access-Control-Allow-Origin": CORS_ORIGIN },
+      }),
     });
+    const res = await handler(post({ imageUrl: IMAGE_URL }));
+    expect(res.status).toBe(429);
+    expect((await res.json()).error).toBe("rate_limited");
+    expect(shared.callAi).not.toHaveBeenCalled();
+  });
+
+  it("OPTIONS devolve preflight (200 vazio) com os headers CORS, sem exigir auth", async () => {
+    const res = await handler(
+      new Request("https://edge.local/functions/v1/magic-up-score", { method: "OPTIONS" }),
+    );
+    expect(res.status).toBe(200);
+    expect(res.headers.get("Access-Control-Allow-Origin")).toBe(CORS_ORIGIN);
+    expect(await res.text()).toBe("");
+    expect(shared.authenticate).not.toHaveBeenCalled();
   });
 });
