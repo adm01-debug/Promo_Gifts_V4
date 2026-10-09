@@ -13,6 +13,9 @@ export const LOGO_FIXTURE = 'https://fixture.invalid/logos/FIXTURE-LOGO.png';
 /** Mockup fictício já gerado (resultado antigo que uma edição deve invalidar). */
 export const MOCKUP_FIXTURE_URL = 'https://fixture.invalid/mockups/FIXTURE-MOCKUP.png';
 
+/** Mockup fictício da geração seguinte (depois de editar e gerar de novo). */
+export const MOCKUP_FIXTURE_URL_B = 'https://fixture.invalid/mockups/FIXTURE-MOCKUP-B.png';
+
 // ─── A10 — configuração "atual" (A) e "editada" (B) da ficha ─────────
 
 /** Cliente fictício do CRM — configuração original. */
@@ -68,6 +71,8 @@ export const AREA_B: PersonalizationArea = {
   name: 'FIXTURE-COSTAS',
   logoWidth: 9,
   logoHeight: 4,
+  maxWidthCm: 10,
+  maxHeightCm: 5,
 };
 
 /** Técnicas fictícias da tabela de preço (código curto do adaptador). */
