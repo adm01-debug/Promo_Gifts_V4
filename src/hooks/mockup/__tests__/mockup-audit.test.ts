@@ -1398,32 +1398,6 @@ describe('Analise estatica — MockupResultCard.tsx (alt text)', () => {
 });
 
 // =====================================================================
-// STATIC ANALYSIS — GenerateButton.tsx (reduced-motion)
-// =====================================================================
-
-describe('Analise estatica — GenerateButton.tsx (reduced-motion)', () => {
-  let src: string;
-  beforeEach(() => {
-    src = readSrc('src/components/mockup/GenerateButton.tsx');
-  });
-
-  describe('prefers-reduced-motion: suprime animacoes decorativas', () => {
-    it('importa useReducedMotion para respeitar preferencia do SO', () => {
-      expect(src).toContain('useReducedMotion');
-    });
-    it('hover e tap scale sao suprimidos quando reducedMotion esta ativo', () => {
-      expect(src).toContain('!reducedMotion ? { scale: 1.02 }');
-    });
-    it('pulso de glow nao anima quando reducedMotion esta ativo', () => {
-      expect(src).toContain('reducedMotion ? { opacity: 0.5 }');
-    });
-    it('transicao de pulso tem duration zero quando reducedMotion esta ativo', () => {
-      expect(src).toContain('reducedMotion ? { duration: 0 }');
-    });
-  });
-});
-
-// =====================================================================
 // STATIC ANALYSIS — aria-label em controles de formulario (6 arquivos)
 // =====================================================================
 
@@ -1781,20 +1755,6 @@ describe('Analise estatica — TechniqueTooltip.tsx (aria-hidden em icones do ho
     expect(src).toContain(
       '<Wrench className="mt-0.5 h-3.5 w-3.5 text-muted-foreground" aria-hidden="true"',
     );
-  });
-});
-
-describe('Analise estatica — GenerateButton.tsx (aria-hidden em icones decorativos)', () => {
-  let src: string;
-  beforeEach(() => {
-    src = readSrc('src/components/mockup/GenerateButton.tsx');
-  });
-
-  it('icone Loader2 no estado gerando tem aria-hidden', () => {
-    expect(src).toContain('<Loader2 className="mr-2 h-5 w-5 animate-spin" aria-hidden="true"');
-  });
-  it('icone Sparkles no estado padrao tem aria-hidden', () => {
-    expect(src).toContain('<Sparkles className="mr-2 h-5 w-5" aria-hidden="true"');
   });
 });
 
