@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { type PersonalizationArea } from '@/components/mockup/MultiAreaManager';
+import type { MockupSelectionSnapshot } from '@/hooks/mockup/mockupSelectionSnapshot';
 import type { Json } from '@/integrations/supabase/types';
 
 import { logger } from '@/lib/logger';
@@ -17,6 +18,14 @@ export interface MockupDraftData {
   clientName: string | null;
   personalizationAreas: PersonalizationArea[];
   updatedAt: string;
+  /**
+   * Seleção exata do vendedor (variante + foto) para remontar a seleção ao
+   * reabrir o rascunho. `mockup_drafts` não tem coluna para isso e o schema
+   * está congelado (REGRA #8), então o campo viaja só na cópia local do
+   * rascunho — como a logo em data-URL — e é re-hidratado do localStorage
+   * quando o registro do backend vence a checagem de recência.
+   */
+  selection?: MockupSelectionSnapshot | null;
 }
 
 interface UseMockupDraftOptions {
@@ -258,6 +267,10 @@ export function useMockupDraft(options: UseMockupDraftOptions = {}) {
               localData.personalizationAreas[i];
             return localMatch?.logoPreview ? { ...a, logoPreview: localMatch.logoPreview } : a;
           });
+          // Mesma razão das logos acima: `selection` não existe em mockup_drafts
+          // (schema congelado), então a seleção (variante + foto) continua
+          // vindo da cópia local quando o backend vence a recência.
+          if (!chosen.selection && localData.selection) chosen.selection = localData.selection;
         }
         return chosen;
       }

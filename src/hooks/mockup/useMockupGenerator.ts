@@ -20,6 +20,7 @@ import {
   type TechniqueWithLimits,
 } from './useMockupTechniques';
 import { useMockupDraft } from './useMockupDraft';
+import { mockupSelection } from './mockupSelectionSnapshot';
 import { useLogoColorAnalysis, usePositionHistory } from '@/hooks/simulation';
 import { useProductsContext } from '@/contexts/ProductsContext';
 import { getMockupWizardStep } from '@/components/mockup/mockupWizardStep';
@@ -252,12 +253,7 @@ export function useMockupGenerator() {
         ) {
           if (draft.productId) {
             const product = getProductById(draft.productId);
-            if (product)
-              setProductSelection({
-                product,
-                variant: null,
-                imageUrl: product.images?.[0] || '/placeholder.svg',
-              });
+            if (product) setProductSelection(mockupSelection.restore(product, draft.selection));
           }
           if (draft.techniqueId) {
             const technique = techniques.find((t) => t.id === draft.techniqueId);
@@ -331,6 +327,7 @@ export function useMockupGenerator() {
         clientId: selectedClient?.id || null,
         clientName: selectedClient?.name || null,
         personalizationAreas,
+        selection: mockupSelection.snapshot(productSelection),
         updatedAt: new Date().toISOString(),
       });
     }, 1000);
@@ -496,7 +493,7 @@ export function useMockupGenerator() {
       extra?: { layoutUrl?: string; locationName?: string; colorsCount?: number },
     ): Promise<string | null> => {
       if (!user || !selectedProduct || !selectedTechnique || !area.logoPreview) return null;
-      return saveMockupToDb({
+      const recordId = await saveMockupToDb({
         userId: user.id,
         product: selectedProduct,
         technique: selectedTechnique,
@@ -506,8 +503,13 @@ export function useMockupGenerator() {
         annotations: mockupAnnotations,
         extra,
       });
+      // Histórico sem coluna para variante/foto: guarda a seleção com o registro.
+      const selectionSnapshot = mockupSelection.snapshot(productSelection);
+      if (recordId && selectionSnapshot)
+        mockupSelection.saveForHistory(user.id, recordId, selectionSnapshot);
+      return recordId;
     },
-    [user, selectedProduct, selectedTechnique, selectedClient, mockupAnnotations],
+    [user, selectedProduct, selectedTechnique, selectedClient, mockupAnnotations, productSelection],
   );
 
   const downloadMockup = useCallback(
@@ -656,6 +658,7 @@ export function useMockupGenerator() {
     if (!mockupToDelete) return;
     try {
       await deleteMockupFromDb(mockupToDelete, user?.id);
+      mockupSelection.clearForHistory(user?.id, mockupToDelete);
       setMockupHistory((prev) => prev.filter((m) => m.id !== mockupToDelete));
       toast.success('Mockup excluído');
     } catch (error) {
@@ -709,13 +712,10 @@ export function useMockupGenerator() {
         (mockup.technique_name &&
           techniques.find((t) => t.name.toLowerCase() === mockup.technique_name?.toLowerCase())) ||
         null;
-      if (product)
-        setProductSelection({
-          product,
-          variant: null,
-          imageUrl: product.images?.[0] || '/placeholder.svg',
-        });
-      else setProductSelection(null);
+      if (product) {
+        const snapshot = mockupSelection.readForHistory(user?.id, mockup.id);
+        setProductSelection(mockupSelection.restore(product, snapshot));
+      } else setProductSelection(null);
       setSelectedTechnique(technique || null);
       // BUG-LOADFROMHISTORY-CLIENT FIX: client_id was always null (BUG-CLIENT-ID) so
       // the client was never restored. Restore the client for display when only the
@@ -755,7 +755,7 @@ export function useMockupGenerator() {
       await clearDraft();
       toast.success('Configurações carregadas!');
     },
-    [techniques, getProductById, logoColorAnalysis, clearDraft, positionHistory],
+    [techniques, getProductById, logoColorAnalysis, clearDraft, positionHistory, user?.id],
   );
 
   const wizardStep = getMockupWizardStep({
