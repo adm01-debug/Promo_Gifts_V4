@@ -34,8 +34,7 @@
 | `external-db-inspect` | Public | Restrita | Zod | Não | Inspeção de schemas externos (debug) |
 | `generate-ad-image` | JWT | Restrita | Zod | DB (ai) | Gera imagem publicitária (Magic Up) |
 | `generate-ad-prompt` | JWT | Restrita | Zod | DB (ai) | Gera prompt para campanha |
-| `generate-mockup` | JWT | Restrita | Zod | DB (ai) | Mockup via Gemini 2.5 Pro |
-| `generate-mockup-nanobanana` | JWT | Restrita | Zod | DB (ai) | Mockup via Gemini 3 Flash Image |
+| `generate-mockup` | JWT | Restrita | Manual | Não | Compositor canvas determinístico (produto + logo), sem IA |
 | `generate-product-seo` | JWT | Restrita | Zod | DB (ai) | Gera meta description SEO |
 | `get-visitor-info` | Public | **Pública** | N/A | Não | Geo-IP do visitante |
 | `github-fix-config` | JWT | Restrita | N/A | Não | Tool dev — corrige tsconfig via API GitHub |

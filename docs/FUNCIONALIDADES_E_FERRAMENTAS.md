@@ -122,12 +122,11 @@
 | Edge Function | `supabase/functions/visual-search/index.ts` | Deno, Lovable AI Gateway |
 | Análise de imagem e busca por similaridade | Lovable AI | google/gemini-2.5-flash |
 
-### 2.5 Geração de Mockups com IA
+### 2.5 Geração de Mockups (composição em canvas, sem IA)
 | Funcionalidade | Arquivo Principal | Ferramentas/Bibliotecas |
 |----------------|-------------------|-------------------------|
-| Página Gerador | `src/pages/MockupGenerator.tsx` | React |
-| Edge Function | `supabase/functions/generate-mockup/index.ts` | Deno, Lovable AI Gateway |
-| Edge Function NanoBanana | `supabase/functions/generate-mockup-nanobanana/index.ts` | Deno, NanoBanana API |
+| Página Gerador | `src/pages/mockups/MockupGenerator.tsx` | React |
+| Edge Function | `supabase/functions/generate-mockup/index.ts` | Deno, Canvas (OffscreenCanvas) |
 | Editor de Posição | `src/components/mockup/LogoPositionEditor.tsx` | Canvas API |
 | Multi-Área | `src/components/mockup/MultiAreaManager.tsx` | React, @dnd-kit |
 | Seletor de Produto | `src/components/mockup/MockupProductSelector.tsx` | React |
@@ -150,17 +149,17 @@
 | Share Menu | `src/components/mockup/ShareMenu.tsx` | React, Web Share API |
 | Keyboard Shortcuts | `src/components/mockup/KeyboardShortcuts.tsx` | React |
 | Success Toast | `src/components/mockup/MockupSuccessToast.tsx` | React |
-| Skeleton Loading | `src/components/mockup/MockupSkeleton.tsx` | React |
+| Skeleton Loading | `src/components/loading/ModernSkeletons.tsx` | React |
 | Generating Overlay | `src/components/mockup/GeneratingOverlay.tsx` | React, Framer Motion |
 | Generate Button | `src/components/mockup/GenerateButton.tsx` | React |
 | Technique Tooltip | `src/components/mockup/TechniqueTooltip.tsx` | React |
-| Hook Gerador | `src/hooks/useMockupGenerator.ts` | Supabase |
-| Hook Draft | `src/hooks/useMockupDraft.ts` | Supabase |
-| Hook Técnicas | `src/hooks/useMockupTechniques.ts` | Supabase |
-| Hook Cores da Logo | `src/hooks/useLogoColorAnalysis.ts` | React |
-| Hook Posição | `src/hooks/usePositionHistory.ts` | React |
-| Hook Print Areas | `src/hooks/usePrintAreas.ts` | Supabase |
-| Hook Product Bounds | `src/hooks/useProductBounds.ts` | React |
+| Hook Gerador | `src/hooks/mockup/useMockupGenerator.ts` | Supabase |
+| Hook Draft | `src/hooks/mockup/useMockupDraft.ts` | Supabase |
+| Hook Técnicas | `src/hooks/mockup/useMockupTechniques.ts` | Supabase |
+| Hook Cores da Logo | `src/hooks/simulation/useLogoColorAnalysis.ts` | React |
+| Hook Posição | `src/hooks/simulation/usePositionHistory.ts` | React |
+| Hook Print Areas | `src/hooks/simulation/usePrintAreas.ts` | Supabase |
+| Hook Product Bounds | `src/hooks/products/useProductBounds.ts` | React |
 | Lib Storage | `src/lib/mockup-storage.ts` | Supabase Storage |
 | Lib Product Bounds | `src/lib/product-bounds-detector.ts` | Canvas API |
 | Lib Print Area Grouping | `src/lib/print-area-grouping.ts` | TypeScript |
@@ -1119,8 +1118,7 @@
 | `external-db-inspect` | Inspeção de schema do banco externo | External PostgreSQL |
 | `generate-ad-image` | Geração de imagens publicitárias | Lovable AI Gateway |
 | `generate-ad-prompt` | Geração de prompts publicitários | Lovable AI Gateway |
-| `generate-mockup` | Geração de mockups com IA | Lovable AI Gateway |
-| `generate-mockup-nanobanana` | Geração via NanoBanana API | NanoBanana API |
+| `generate-mockup` | Composição de mockups (canvas, sem IA) | Deno, Canvas (OffscreenCanvas) |
 | `github-fix-config` | Fix de configuração GitHub | GitHub API |
 | `manage-users` | Gestão de usuários admin | Supabase Admin |
 | `materials-api` | API de materiais | External PostgreSQL |
@@ -1279,7 +1277,6 @@ Painel estratégico com KPIs, rankings e narrativa de IA acionável a partir das
 | `EXTERNAL_DB_URL` | Banco externo Promobrind |
 | `CRM_DB_URL` | Banco CRM externo |
 | `DROPBOX_ACCESS_TOKEN` | Integração Dropbox |
-| `NANOBANANA_API_KEY` | Geração de mockups NanoBanana |
 
 ---
 
