@@ -73,7 +73,7 @@ describe('MockupLayoutButtons — Gerar Mockup / Gerar documento', () => {
     fireEvent.click(btn(/Gerar Mockup/));
     await waitFor(() => expect(onGenerateMockup).toHaveBeenCalledTimes(1));
     // o hook entrega o mockup: o componente recebe generatedMockup preenchido
-    await act(() => {
+    act(() => {
       rerender(ui({ ...props, generatedMockup: 'https://cdn.example/mockup.png' }));
     });
     expect(screen.queryByTestId('approval-preview')).toBeNull();
