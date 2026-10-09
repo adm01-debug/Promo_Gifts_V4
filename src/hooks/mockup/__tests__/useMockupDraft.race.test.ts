@@ -90,9 +90,41 @@ function localKey(userId = 'user-test-001', draftKey = 'default') {
 
 // ── Setup / teardown ──────────────────────────────────────────────────────────
 
+// Node >= 22.4 expõe um `localStorage` experimental no globalThis que fica
+// `undefined` sem `--localstorage-file` — e, como o global já existe, o Vitest
+// não instala o localStorage do jsdom por cima. Sem este stub o teste (e o hook)
+// quebra com "Cannot read properties of undefined" em qualquer runtime Node
+// moderno. Storage em memória: o teste passa a depender só do contrato, não do
+// runtime. O hook usa exatamente este mesmo global.
+function createMemoryStorage(): Storage {
+  const store = new Map<string, string>();
+  return {
+    get length() {
+      return store.size;
+    },
+    clear: () => store.clear(),
+    getItem: (k: string) => (store.has(k) ? (store.get(k) as string) : null),
+    key: (i: number) => Array.from(store.keys())[i] ?? null,
+    removeItem: (k: string) => {
+      store.delete(k);
+    },
+    setItem: (k: string, v: string) => {
+      store.set(k, String(v));
+    },
+  } as Storage;
+}
+
+const memoryStorage = createMemoryStorage();
+
 let resolveUpsert: ((value: { error: null }) => void) | undefined;
 
 beforeEach(() => {
+  Object.defineProperty(globalThis, 'localStorage', {
+    value: memoryStorage,
+    configurable: true,
+    writable: true,
+  });
+  memoryStorage.clear();
   vi.useFakeTimers();
   localStorage.clear();
   backendRow = null;
