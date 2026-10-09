@@ -7,8 +7,8 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
+import { readFileSync, existsSync, readdirSync } from 'fs';
+import { resolve, join } from 'path';
 
 function readSrc(relativePath: string) {
   return readFileSync(resolve(__dirname, '..', '..', '..', '..', relativePath), 'utf-8');
@@ -803,23 +803,36 @@ describe('Analise estatica — ProductSearchCombobox.tsx', () => {
 });
 
 // =====================================================================
-// STATIC ANALYSIS — TemplateSelector.tsx
+// HIGIENE — TemplateSelector.tsx removido (codigo morto, decisao Q15)
 // =====================================================================
 
-describe('Analise estatica — TemplateSelector.tsx', () => {
-  let src: string;
-  beforeEach(() => {
-    src = readSrc('src/components/mockup/TemplateSelector.tsx');
+describe('Higiene — TemplateSelector.tsx removido (sem importadores)', () => {
+  const repoRoot = resolve(__dirname, '..', '..', '..', '..');
+
+  it('o arquivo src/components/mockup/TemplateSelector.tsx nao existe mais', () => {
+    expect(existsSync(resolve(repoRoot, 'src/components/mockup/TemplateSelector.tsx'))).toBe(
+      false,
+    );
   });
 
-  describe('a11y — aria-label contextual no botao de excluir template', () => {
-    it('botao de excluir usa aria-label com nome do template', () => {
-      expect(src).toContain('aria-label={`Excluir template ');
-      expect(src).toContain('template.name}`}');
-    });
-    it('aria-label generico "Excluir" nao existe mais', () => {
-      expect(src).not.toContain('aria-label="Excluir"');
-    });
+  it('nenhum arquivo em src/ importa o modulo TemplateSelector', () => {
+    const importRe = /from\s+['"][^'"]*TemplateSelector['"]/;
+    const offenders: string[] = [];
+    const walk = (dir: string) => {
+      for (const entry of readdirSync(dir, { withFileTypes: true })) {
+        const full = join(dir, entry.name);
+        if (entry.isDirectory()) {
+          walk(full);
+        } else if (
+          (entry.name.endsWith('.ts') || entry.name.endsWith('.tsx')) &&
+          importRe.test(readFileSync(full, 'utf-8'))
+        ) {
+          offenders.push(full);
+        }
+      }
+    };
+    walk(resolve(repoRoot, 'src'));
+    expect(offenders).toEqual([]);
   });
 });
 
@@ -2078,35 +2091,6 @@ describe('Analise estatica — MockupSuccessToast.tsx (aria-hidden em icones dec
   });
   it('icone ExternalLink no botao abrir nova aba tem aria-hidden', () => {
     expect(src).toContain('<ExternalLink aria-hidden="true" className="h-4 w-4"');
-  });
-});
-
-describe('Analise estatica — TemplateSelector.tsx (aria-hidden em icones decorativos)', () => {
-  let src: string;
-  beforeEach(() => {
-    src = readSrc('src/components/mockup/TemplateSelector.tsx');
-  });
-
-  it('icone LayoutTemplate no botao trigger tem aria-hidden', () => {
-    expect(src).toContain('<LayoutTemplate aria-hidden="true" className="mr-1 h-4 w-4"');
-  });
-  it('icone dinamico de template (mr-2) no item do menu tem aria-hidden', () => {
-    expect(src).toContain('<template.icon aria-hidden="true" className="mr-2 h-4 w-4"');
-  });
-  it('icone dinamico de template (text-primary) no HoverCard tem aria-hidden', () => {
-    expect(src).toContain('<template.icon aria-hidden="true" className="h-4 w-4 text-primary"');
-  });
-  it('icone User nos templates customizados (mr-2) tem aria-hidden', () => {
-    expect(src).toContain('<User aria-hidden="true" className="mr-2 h-4 w-4 text-primary"');
-  });
-  it('icone Trash2 no botao excluir template tem aria-hidden', () => {
-    expect(src).toContain('<Trash2 aria-hidden="true" className="h-3 w-3"');
-  });
-  it('icone User no HoverCard de template customizado tem aria-hidden', () => {
-    expect(src).toContain('<User aria-hidden="true" className="h-4 w-4 text-primary"');
-  });
-  it('icone Save no item salvar posicionamento tem aria-hidden', () => {
-    expect(src).toContain('<Save aria-hidden="true" className="mr-2 h-4 w-4"');
   });
 });
 
