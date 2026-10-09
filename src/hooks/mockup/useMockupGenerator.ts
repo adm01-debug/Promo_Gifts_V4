@@ -9,6 +9,7 @@
 
 import { dbInvoke } from '@/lib/db/postgrest';
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import { needsConversion, ensureSupportedFormat } from '@/lib/image-converter';
 import { getCdnUrl } from '@/utils/image-utils';
@@ -43,6 +44,35 @@ import {
 
 import { logger } from '@/lib/logger';
 export type { Technique, GeneratedMockup };
+
+/** Entradas aceitas para pré-selecionar o produto do gerador (a ordem importa). */
+export interface MockupEntryRefs {
+  /** Query string do deep link: `?product_id=` (legado) ou `?productId=` (QuickQuoteFAB). */
+  search?: string | null;
+  /** `location.state` do router: `preSelectedProduct.id` (badge "Visualizar com Logo"). */
+  routerState?: unknown;
+}
+
+/**
+ * A-7: resolve o id do produto pré-selecionado a partir das três entradas do
+ * gerador, na ordem: `?product_id=` (deep link legado) → `?productId=`
+ * (QuickQuoteFAB) → `state.preSelectedProduct.id` (ProductCategoryBadges).
+ * Entrada vazia ou de tipo errado é ignorada (sem erro); sem nenhuma entrada
+ * válida devolve null. A validação contra o catálogo é do chamador.
+ */
+export function resolveEntryProductId({ search, routerState }: MockupEntryRefs = {}):
+  string | null {
+  const params = new URLSearchParams(search ?? '');
+  for (const key of ['product_id', 'productId']) {
+    const value = params.get(key)?.trim();
+    if (value) return value;
+  }
+  if (!routerState || typeof routerState !== 'object') return null;
+  const preSelected = (routerState as { preSelectedProduct?: { id?: unknown } | null })
+    .preSelectedProduct;
+  const id = preSelected?.id;
+  return typeof id === 'string' && id.trim() ? id.trim() : null;
+}
 
 export function useMockupGenerator() {
   const { user } = useAuth();
@@ -288,10 +318,15 @@ export function useMockupGenerator() {
   }, [isLoadingData, techniques, loadDraft, hasDraftRestored, getProductById]);
 
   const urlParamsApplied = useRef(false);
+  const location = useLocation();
   useEffect(() => {
     if (urlParamsApplied.current || isLoadingData || !hasDraftRestored) return;
     const params = new URLSearchParams(window.location.search);
-    const productId = params.get('product_id');
+    // A-7: aceita os três formatos de entrada (deep link, QuickQuoteFAB, router state).
+    const productId = resolveEntryProductId({
+      search: window.location.search,
+      routerState: location.state,
+    });
     if (!productId) return;
     urlParamsApplied.current = true;
     const product = getProductById(productId);
@@ -309,8 +344,12 @@ export function useMockupGenerator() {
       if (technique) setSelectedTechnique(technique);
     }
     // T9 FIX: only remove the params we processed — preserve everything else.
+    const hasEntryParams =
+      params.has('product_id') || params.has('productId') || params.has('technique');
+    if (!hasEntryParams) return;
     const newParams = new URLSearchParams(window.location.search);
     newParams.delete('product_id');
+    newParams.delete('productId');
     newParams.delete('technique');
     const newSearch = newParams.toString();
     window.history.replaceState(
@@ -318,7 +357,7 @@ export function useMockupGenerator() {
       '',
       window.location.pathname + (newSearch ? `?${newSearch}` : ''),
     );
-  }, [isLoadingData, hasDraftRestored, techniques, getProductById]);
+  }, [isLoadingData, hasDraftRestored, techniques, getProductById, location.state]);
 
   useEffect(() => {
     if (!hasDraftRestored || isRestoringDraft.current) return;
