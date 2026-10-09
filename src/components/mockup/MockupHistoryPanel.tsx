@@ -171,7 +171,7 @@ export function MockupHistoryPanel({
   return (
     <Card className="border-border/30">
       <CardHeader>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
             <CardTitle className="flex items-center gap-2">
               <History className="h-5 w-5 text-primary" aria-hidden="true" />
@@ -179,19 +179,18 @@ export function MockupHistoryPanel({
             </CardTitle>
             <CardDescription>Mockups gerados anteriormente</CardDescription>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center justify-end gap-2">
             {compareMode && (
               <>
                 <Badge variant="secondary">{selectedForCompare.size} selecionados</Badge>
                 <Button
-                  size="sm"
                   onClick={() => setShowCompare(true)}
                   disabled={selectedForCompare.size < 2}
                 >
                   <Columns2 className="mr-1 h-4 w-4" aria-hidden="true" /> Comparar
                 </Button>
                 <Button
-                  size="sm"
+                  size="icon"
                   variant="ghost"
                   aria-label="Cancelar seleção para comparação"
                   onClick={() => setSelectedForCompare(new Set())}
@@ -309,7 +308,7 @@ export function MockupHistoryPanel({
 
         {hasFilters && (
           <div className="flex justify-end">
-            <Button variant="ghost" size="sm" onClick={clearFilters}>
+            <Button variant="ghost" onClick={clearFilters}>
               <RefreshCw className="mr-1 h-4 w-4" aria-hidden="true" /> Limpar filtros
             </Button>
           </div>
@@ -337,7 +336,7 @@ export function MockupHistoryPanel({
             </div>
             <h3 className="mb-2 font-display text-lg font-semibold">Nenhum resultado</h3>
             <p className="mb-4 text-muted-foreground">Ajuste os filtros de busca.</p>
-            <Button variant="outline" size="sm" onClick={clearFilters}>
+            <Button variant="outline" onClick={clearFilters}>
               <RefreshCw className="mr-2 h-4 w-4" aria-hidden="true" /> Limpar filtros
             </Button>
           </div>
@@ -391,10 +390,9 @@ export function MockupHistoryPanel({
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-2 pt-4">
+              <div className="flex flex-wrap items-center justify-center gap-2 pt-4">
                 <Button
                   variant="outline"
-                  size="sm"
                   onClick={() => setCurrentPage(1)}
                   disabled={currentPage === 1}
                 >
@@ -404,7 +402,6 @@ export function MockupHistoryPanel({
                   variant="outline"
                   size="icon"
                   aria-label="Página anterior"
-                  className="h-8 w-8"
                   onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
                 >
@@ -421,8 +418,8 @@ export function MockupHistoryPanel({
                       <Button
                         key={pageNum}
                         variant={currentPage === pageNum ? 'default' : 'outline'}
-                        size="sm"
-                        className="h-8 w-8 p-0"
+                        size="icon"
+                        className="p-0"
                         onClick={() => setCurrentPage(pageNum)}
                       >
                         {pageNum}
@@ -434,7 +431,6 @@ export function MockupHistoryPanel({
                   variant="outline"
                   size="icon"
                   aria-label="Próxima página"
-                  className="h-8 w-8"
                   onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                   disabled={currentPage === totalPages}
                 >
@@ -442,7 +438,6 @@ export function MockupHistoryPanel({
                 </Button>
                 <Button
                   variant="outline"
-                  size="sm"
                   onClick={() => setCurrentPage(totalPages)}
                   disabled={currentPage === totalPages}
                 >
@@ -506,7 +501,7 @@ const MockupGridCard = memo(
             aria-label={`Selecionar ${mockup.product_name} para comparação`}
             tabIndex={0}
             className={cn(
-              'flex h-6 w-6 cursor-pointer items-center justify-center rounded-md border-2 bg-background/80 backdrop-blur-sm transition-all',
+              'flex h-11 w-11 cursor-pointer items-center justify-center rounded-md border-2 bg-background/80 backdrop-blur-sm transition-all',
               isCompareSelected
                 ? 'border-primary bg-primary text-primary-foreground'
                 : 'border-muted-foreground/30 opacity-0 group-hover:opacity-100',
@@ -553,7 +548,7 @@ const MockupGridCard = memo(
             <div className="absolute bottom-1 left-1">
               <Badge
                 variant="secondary"
-                className="bg-background/80 px-1 py-0 text-[9px] backdrop-blur-sm"
+                className="bg-background/80 px-1 py-0 text-xs backdrop-blur-sm"
               >
                 <FileImage className="mr-0.5 h-2.5 w-2.5" aria-hidden="true" />
                 Layout
@@ -576,23 +571,23 @@ const MockupGridCard = memo(
             </TooltipContent>
           </Tooltip>
           {mockup.product_sku && (
-            <span className="font-mono text-[10px] text-muted-foreground">
+            <span className="font-mono text-xs text-muted-foreground">
               {mockup.product_sku}
             </span>
           )}
           <div className="flex flex-wrap items-center gap-1">
-            <Badge variant="secondary" className="px-1.5 py-0 text-[10px]">
+            <Badge variant="secondary" className="px-1.5 py-0 text-xs">
               {mockup.technique_name}
             </Badge>
             {mockup.location_name && (
-              <Badge variant="outline" className="gap-0.5 px-1.5 py-0 text-[10px]">
+              <Badge variant="outline" className="gap-0.5 px-1.5 py-0 text-xs">
                 <MapPin className="h-2.5 w-2.5" aria-hidden="true" />
                 {mockup.location_name}
               </Badge>
             )}
           </div>
           {(mockup.logo_width_cm || mockup.logo_height_cm) && (
-            <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+            <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <Ruler className="h-2.5 w-2.5" aria-hidden="true" />
               {mockup.logo_width_cm?.toFixed(1)}×{mockup.logo_height_cm?.toFixed(1)} cm
               {mockup.colors_count && (
@@ -611,14 +606,15 @@ const MockupGridCard = memo(
             {safeFormatDistance(mockup.created_at)}
           </div>
         </div>
-        <div className="absolute right-2 top-2 flex translate-y-1 gap-1.5 opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100">
+        {/* Ações do item: alvos ≥44px (kit size="icon"), com quebra de linha em tela estreita */}
+        <div className="absolute right-1 top-1 flex max-w-[calc(100%-0.5rem)] translate-y-1 flex-wrap justify-end gap-1 opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100">
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
                 size="icon"
                 aria-label={`Regenerar mockup de ${mockup.product_name}`}
                 variant="secondary"
-                className="h-8 w-8 shadow-md"
+                className="shadow-md"
                 onClick={() => onLoadFromHistory(mockup)}
               >
                 <RotateCcw className="h-4 w-4" aria-hidden="true" />
@@ -630,7 +626,7 @@ const MockupGridCard = memo(
             mockupUrl={mockup.mockup_url}
             productName={mockup.product_name}
             techniqueName={mockup.technique_name}
-            className="h-8 w-8 p-0 shadow-md [&>svg]:h-4 [&>svg]:w-4"
+            className="h-11 w-11 min-h-[44px] min-w-[44px] p-0 shadow-md [&>svg]:h-4 [&>svg]:w-4"
           />
           <Tooltip>
             <TooltipTrigger asChild>
@@ -638,7 +634,7 @@ const MockupGridCard = memo(
                 size="icon"
                 aria-label={`Baixar mockup de ${mockup.product_name}`}
                 variant="secondary"
-                className="h-8 w-8 shadow-md"
+                className="shadow-md"
                 onClick={() => onDownload(mockup.layout_url || mockup.mockup_url)}
               >
                 <Download className="h-4 w-4" aria-hidden="true" />
@@ -653,7 +649,7 @@ const MockupGridCard = memo(
                 aria-label={`Excluir mockup de ${mockup.product_name}`}
                 data-testid="delete-mockup-button"
                 variant="destructive"
-                className="h-8 w-8 shadow-md"
+                className="shadow-md"
                 onClick={() => onDelete(mockup.id)}
               >
                 <Trash2 className="h-4 w-4" aria-hidden="true" />
@@ -698,7 +694,7 @@ const MockupListRow = memo(
           aria-label={`Selecionar ${mockup.product_name} para comparação`}
           tabIndex={0}
           className={cn(
-            'flex h-5 w-5 flex-shrink-0 cursor-pointer items-center justify-center rounded border-2 transition-all',
+            'flex h-11 w-11 flex-shrink-0 cursor-pointer items-center justify-center rounded border-2 transition-all',
             isCompareSelected
               ? 'border-primary bg-primary text-primary-foreground'
               : 'border-muted-foreground/30',
@@ -716,7 +712,7 @@ const MockupListRow = memo(
           }}
         >
           {isCompareSelected && (
-            <span className="text-[10px] font-bold" aria-hidden="true">
+            <span className="text-xs font-bold" aria-hidden="true">
               ✓
             </span>
           )}
@@ -736,29 +732,29 @@ const MockupListRow = memo(
           <div className="flex items-center gap-2">
             <span className="truncate text-sm font-medium">{mockup.product_name}</span>
             {mockup.product_sku && (
-              <Badge variant="outline" className="shrink-0 px-1.5 py-0 font-mono text-[10px]">
+              <Badge variant="outline" className="shrink-0 px-1.5 py-0 font-mono text-xs">
                 {mockup.product_sku}
               </Badge>
             )}
           </div>
           <div className="flex flex-wrap items-center gap-1.5">
-            <Badge variant="secondary" className="px-1.5 py-0 text-[10px]">
+            <Badge variant="secondary" className="px-1.5 py-0 text-xs">
               {mockup.technique_name}
             </Badge>
             {mockup.location_name && (
-              <Badge variant="outline" className="gap-0.5 px-1.5 py-0 text-[10px]">
+              <Badge variant="outline" className="gap-0.5 px-1.5 py-0 text-xs">
                 <MapPin className="h-2.5 w-2.5" aria-hidden="true" />
                 {mockup.location_name}
               </Badge>
             )}
             {(mockup.logo_width_cm || mockup.logo_height_cm) && (
-              <span className="flex items-center gap-0.5 text-[10px] text-muted-foreground">
+              <span className="flex items-center gap-0.5 text-xs text-muted-foreground">
                 <Ruler className="h-2.5 w-2.5" aria-hidden="true" />
                 {mockup.logo_width_cm?.toFixed(1)}×{mockup.logo_height_cm?.toFixed(1)} cm
               </span>
             )}
             {mockup.colors_count && (
-              <span className="flex items-center gap-0.5 text-[10px] text-muted-foreground">
+              <span className="flex items-center gap-0.5 text-xs text-muted-foreground">
                 <Palette className="h-2.5 w-2.5" aria-hidden="true" />
                 {mockup.colors_count} cor{mockup.colors_count > 1 ? 'es' : ''}
               </span>
@@ -771,14 +767,13 @@ const MockupListRow = memo(
             </span>
           </div>
         </div>
-        <div className="flex shrink-0 items-center gap-1.5 opacity-0 transition-opacity group-hover:opacity-100">
+        <div className="flex flex-wrap items-center justify-end gap-1.5 opacity-0 transition-opacity group-hover:opacity-100">
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
                 size="icon"
                 aria-label={`Regenerar mockup de ${mockup.product_name}`}
                 variant="secondary"
-                className="h-8 w-8"
                 onClick={() => onLoadFromHistory(mockup)}
               >
                 <RotateCcw className="h-4 w-4" aria-hidden="true" />
@@ -790,7 +785,7 @@ const MockupListRow = memo(
             mockupUrl={mockup.mockup_url}
             productName={mockup.product_name}
             techniqueName={mockup.technique_name}
-            className="h-8 w-8 p-0 [&>svg]:h-4 [&>svg]:w-4"
+            className="h-11 w-11 min-h-[44px] min-w-[44px] p-0 [&>svg]:h-4 [&>svg]:w-4"
           />
           <Tooltip>
             <TooltipTrigger asChild>
@@ -798,7 +793,6 @@ const MockupListRow = memo(
                 size="icon"
                 aria-label={`Baixar mockup de ${mockup.product_name}`}
                 variant="secondary"
-                className="h-8 w-8"
                 onClick={() => onDownload(mockup.layout_url || mockup.mockup_url)}
               >
                 <Download className="h-4 w-4" aria-hidden="true" />
@@ -813,7 +807,6 @@ const MockupListRow = memo(
                 aria-label={`Excluir mockup de ${mockup.product_name}`}
                 data-testid="delete-mockup-button"
                 variant="destructive"
-                className="h-8 w-8"
                 onClick={() => onDelete(mockup.id)}
               >
                 <Trash2 className="h-4 w-4" aria-hidden="true" />
