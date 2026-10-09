@@ -65,7 +65,20 @@ export function MockupToolbar({
       </Tooltip>
 
       <div className="ml-1">
-        {isDraftSaving ? (
+        {/* Prioridade: erro atual > salvando > salvo (um Salvo antigo não encobre falha nova) */}
+        {draftError ? (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="inline-flex">
+                <Badge variant="destructive" className="flex cursor-default items-center gap-1.5">
+                  <CloudOff className="h-3 w-3" />
+                  Erro ao salvar
+                </Badge>
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>{draftError}</TooltipContent>
+          </Tooltip>
+        ) : isDraftSaving ? (
           <Badge variant="secondary" className="flex items-center gap-1.5">
             <Loader2 className="h-3 w-3 animate-spin" />
             Salvando...
@@ -83,18 +96,6 @@ export function MockupToolbar({
             <TooltipContent>
               Último salvamento: {format(lastSaved, 'HH:mm:ss', { locale: ptBR })}
             </TooltipContent>
-          </Tooltip>
-        ) : draftError ? (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <span className="inline-flex">
-                <Badge variant="destructive" className="flex cursor-default items-center gap-1.5">
-                  <CloudOff className="h-3 w-3" />
-                  Erro ao salvar
-                </Badge>
-              </span>
-            </TooltipTrigger>
-            <TooltipContent>{draftError}</TooltipContent>
           </Tooltip>
         ) : null}
       </div>
