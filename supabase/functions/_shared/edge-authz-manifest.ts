@@ -87,6 +87,10 @@ export const EDGE_AUTHZ_MANIFEST: Record<string, AuthzEntry> = {
   "comparison-price-watcher": { category: "authenticated", rationale: "Watcher de preços para comparação" },
   "external-db-bridge": { category: "authenticated", rationale: "Bridge para DB externo do user" },
   "kit-ai-builder": { category: "authenticated", rationale: "Builder de kit por IA" },
+  // mockup-assistant: chat de orientação do Matheus — JWT obrigatório
+  // (authenticateRequest). NÃO gera imagem e não guarda o texto do cliente.
+  // verify_jwt=true (config.toml) é ação do Joaquim, fora deste PR.
+  "mockup-assistant": { category: "authenticated", rationale: "Assistente Matheus — JWT user, IA Flash sem geração de imagem", enforcedBy: "custom" },
   "kit-identity-suggest": { category: "authenticated", rationale: "Sugestão de identidade do kit" },
   "expert-chat": { category: "authenticated", rationale: "Chat com expert — JWT user" },
   "visual-search": { category: "authenticated", rationale: "Busca visual — JWT user" },
