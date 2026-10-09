@@ -3,7 +3,7 @@
  * Manages product loading, client search, generation, and history.
  * Generation logic delegated to useMagicUpGeneration.
  */
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
@@ -18,6 +18,10 @@ import type { PrintAreaWithTechniques, AreaShape } from '@/types/gravacao';
 import type { ScenePrompt } from '@/components/magic-up/PromptBank';
 import type { GenerationHistoryItem } from '@/components/magic-up/AdImageResult';
 import { useMagicUpGeneration } from '@/hooks/intelligence/useMagicUpGeneration';
+import {
+  brandKitSyncKey,
+  buildBrandKitFromClient,
+} from '@/hooks/intelligence/magicUpBrandKitSync';
 import {
   DEFAULT_BRAND_KIT,
   DEFAULT_BRIEF,
@@ -143,6 +147,9 @@ export function useMagicUpState() {
     useState<MagicUpCreativeControls>(DEFAULT_CREATIVE_CONTROLS);
   const [brandNotes, setBrandNotes] = useState('');
   const [brandKit, setBrandKit] = useState<MagicUpBrandKit>(DEFAULT_BRAND_KIT);
+  // E-6: identidade do kit já sincronizado — evita reaplicar o kit do servidor
+  // (e apagar edições locais) quando o efeito roda por outro motivo, ex.: troca de logo.
+  const brandKitSyncRef = useRef<string | null>(null);
   const [activeRefinement, setActiveRefinement] = useState<MagicUpRefinement | null>(null);
   const [batchQueue, setBatchQueue] = useState<MagicUpBatchVariant[]>([]);
   const [batchRunning, setBatchRunning] = useState(false);
@@ -445,10 +452,17 @@ export function useMagicUpState() {
 
   useEffect(() => {
     if (!selectedClient) {
+      brandKitSyncRef.current = null;
       setBrandKit(DEFAULT_BRAND_KIT);
       setBrandNotes('');
       return;
     }
+    const syncKey = brandKitSyncKey(selectedClient, loadedBrandKit);
+    // E-6: o kit do servidor entra SÓ na carga inicial do cliente. Enquanto a
+    // chave de sincronização não mudar, manter o estado local (edições do
+    // usuário e a logo principal recém-escolhida) intacto.
+    if (brandKitSyncRef.current === syncKey) return;
+    brandKitSyncRef.current = syncKey;
     if (loadedBrandKit) {
       setBrandKit(loadedBrandKit);
       setBrandNotes(buildBrandKitNotes(loadedBrandKit));
@@ -456,24 +470,7 @@ export function useMagicUpState() {
         setLogoPreview(loadedBrandKit.primaryLogoUrl);
       return;
     }
-    setBrandKit({
-      ...DEFAULT_BRAND_KIT,
-      clientId: selectedClient.id,
-      clientName: selectedClient.name,
-      primaryLogoUrl: selectedClient.logo_url || null,
-      logoUrls: selectedClient.logo_url
-        ? [
-            {
-              id: 'crm-logo',
-              label: 'Logo CRM',
-              url: selectedClient.logo_url,
-              variant: 'principal',
-              isPrimary: true,
-            },
-          ]
-        : [],
-      primaryColor: selectedClient.cor_primaria_hex || null,
-    });
+    setBrandKit(buildBrandKitFromClient(selectedClient));
   }, [loadedBrandKit, logoPreview, selectedClient]);
 
   // ─── Derived: Techniques from print areas ───────────────────────
