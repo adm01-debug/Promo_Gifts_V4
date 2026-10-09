@@ -3,7 +3,14 @@
  * Um único input que filtra e mostra resultados inline (sem botão separado)
  */
 
-import { useState, useRef, useEffect, useMemo } from 'react';
+import {
+  useState,
+  useRef,
+  useEffect,
+  useMemo,
+  useId,
+  type KeyboardEvent,
+} from 'react';
 import { useClientFuzzySearch } from '@/hooks/common';
 import { X, Building2, Search, Loader2, AlertCircle, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -12,6 +19,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useCrmInfiniteCompanySelector } from '@/hooks/crm';
 import { m as motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { useReducedMotion } from '@/hooks/ui/useReducedMotion';
 import { maskCnpj } from '@/utils/masks';
 import type { MockupClient } from './MockupConfigPanel';
@@ -64,9 +72,12 @@ export function MockupClientSelector({
 }: MockupClientSelectorProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const reducedMotion = useReducedMotion();
+  const listboxId = useId();
 
   const {
     data,
@@ -100,49 +111,119 @@ export function MockupClientSelector({
 
   const showDropdown = isFocused && !selectedClient;
 
-  // Se há empresa selecionada, mostrar chip
+  const optionId = (companyId: string) => `${listboxId}-option-${companyId}`;
+
+  const selectCompany = (company: (typeof filteredCompanies)[number]) => {
+    onClientSelect({
+      id: company.id,
+      name: company.name,
+      razao_social: company.razao_social ?? undefined,
+      nome_fantasia: company.nome_fantasia ?? undefined,
+      ramo: company.ramo ?? undefined,
+      logo_url: company.logo_url ?? undefined,
+      cnpj: company.cnpj ?? undefined,
+    });
+    setSearchQuery('');
+    setIsFocused(false);
+    setActiveIndex(-1);
+  };
+
+  // Navegação por teclado do combobox (padrão WAI-ARIA listbox + aria-activedescendant)
+  const handleInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    const count = filteredCompanies.length;
+
+    if (!showDropdown) {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        setIsFocused(true);
+      }
+      return;
+    }
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        setActiveIndex((prev) => (count === 0 ? -1 : prev < 0 ? 0 : (prev + 1) % count));
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        setActiveIndex((prev) =>
+          count === 0 ? -1 : prev < 0 ? count - 1 : (prev - 1 + count) % count,
+        );
+        break;
+      case 'Enter':
+        if (activeIndex >= 0 && activeIndex < count) {
+          e.preventDefault();
+          selectCompany(filteredCompanies[activeIndex]);
+        }
+        break;
+      case 'Escape':
+        // Fecha APENAS a lista — a empresa selecionada permanece intacta.
+        e.preventDefault();
+        setIsFocused(false);
+        setActiveIndex(-1);
+        break;
+      default:
+        break;
+    }
+  };
+
+  // Se há empresa selecionada, mostrar chip com ação explícita de remover
   if (selectedClient) {
     return (
-      <div
-        role="button"
-        tabIndex={0}
-        className="group flex min-h-[44px] w-full cursor-pointer items-center gap-3 rounded-md border border-border bg-background px-3 py-2 transition-colors hover:border-primary/50"
-        data-testid="mockup-client-chip"
-        aria-label={`Empresa selecionada: ${selectedClient.name}. Clique para remover`}
-        onClick={() => {
-          onClientSelect(null);
-          setTimeout(() => inputRef.current?.focus(), 50);
-        }}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
+      <>
+        <div
+          className="flex min-h-[44px] w-full items-center gap-3 rounded-md border border-border bg-background px-3 py-2 transition-colors"
+          data-testid="mockup-client-chip"
+        >
+          <CompanyAvatar name={selectedClient.name} logoUrl={selectedClient.logo_url} />
+          <div className="flex min-w-0 flex-1 flex-col">
+            <span className="truncate text-sm font-medium">{selectedClient.name}</span>
+            <div className="flex items-center gap-2">
+              {selectedClient.ramo && (
+                <span className="truncate text-xs text-muted-foreground">
+                  {selectedClient.ramo}
+                </span>
+              )}
+              {selectedClient.cnpj && (
+                <>
+                  {selectedClient.ramo && <span className="text-xs text-muted-foreground">·</span>}
+                  <span className="font-mono text-xs text-muted-foreground">
+                    {maskCnpj(selectedClient.cnpj)}
+                  </span>
+                </>
+              )}
+            </div>
+          </div>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            data-testid="mockup-client-remove"
+            aria-label="Remover empresa"
+            className="h-7 w-7 flex-shrink-0 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+            onClick={() => setConfirmRemoveOpen(true)}
+          >
+            <X aria-hidden="true" className="h-4 w-4" />
+          </Button>
+        </div>
+
+        {/* Remover o cliente exige confirmação — evita perda acidental no 1º clique */}
+        <ConfirmDialog
+          open={confirmRemoveOpen}
+          onOpenChange={setConfirmRemoveOpen}
+          variant="destructive"
+          title="Remover empresa?"
+          description={`A empresa "${selectedClient.name}" será removida deste mockup.`}
+          confirmLabel="Remover"
+          cancelLabel="Cancelar"
+          testId="mockup-client-remove-confirm"
+          onConfirm={() => {
             onClientSelect(null);
             setTimeout(() => inputRef.current?.focus(), 50);
-          }
-        }}
-      >
-        <CompanyAvatar name={selectedClient.name} logoUrl={selectedClient.logo_url} />
-        <div className="flex min-w-0 flex-1 flex-col">
-          <span className="truncate text-sm font-medium">{selectedClient.name}</span>
-          <div className="flex items-center gap-2">
-            {selectedClient.ramo && (
-              <span className="truncate text-xs text-muted-foreground">{selectedClient.ramo}</span>
-            )}
-            {selectedClient.cnpj && (
-              <>
-                {selectedClient.ramo && <span className="text-xs text-muted-foreground">·</span>}
-                <span className="font-mono text-xs text-muted-foreground">
-                  {maskCnpj(selectedClient.cnpj)}
-                </span>
-              </>
-            )}
-          </div>
-        </div>
-        <X
-          className="h-4 w-4 flex-shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100"
-          aria-hidden="true"
+          }}
         />
-      </div>
+      </>
     );
   }
 
@@ -167,11 +248,24 @@ export function MockupClientSelector({
         <Input
           ref={inputRef}
           data-testid="mockup-client-search-input"
+          role="combobox"
           aria-label="Buscar empresa"
+          aria-expanded={showDropdown}
+          aria-controls={showDropdown ? listboxId : undefined}
+          aria-autocomplete="list"
+          aria-activedescendant={
+            showDropdown && activeIndex >= 0 && activeIndex < filteredCompanies.length
+              ? optionId(filteredCompanies[activeIndex].id)
+              : undefined
+          }
           placeholder="Buscar empresa..."
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={(e) => {
+            setSearchQuery(e.target.value);
+            setActiveIndex(-1);
+          }}
           onFocus={() => setIsFocused(true)}
+          onKeyDown={handleInputKeyDown}
           className="h-11 bg-background pl-9"
         />
         {isLoading ? (
@@ -288,30 +382,23 @@ export function MockupClientSelector({
                     </div>
                   </div>
                 ) : (
-                  <div className="py-1">
+                  <div role="listbox" id={listboxId} aria-label="Empresas" className="py-1">
                     {filteredCompanies.map((company, index) => (
                       <button
                         key={company.id}
                         type="button"
+                        id={optionId(company.id)}
+                        role="option"
+                        aria-selected={index === activeIndex}
                         data-testid={`mockup-client-option-${company.id}`}
                         className={cn(
                           'flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors duration-150',
                           'hover:bg-primary/10 focus-visible:bg-primary/10 focus-visible:outline-none',
+                          index === activeIndex && 'bg-primary/10',
                           index < filteredCompanies.length - 1 && 'border-b border-border/30',
                         )}
-                        onClick={() => {
-                          onClientSelect({
-                            id: company.id,
-                            name: company.name,
-                            razao_social: company.razao_social ?? undefined,
-                            nome_fantasia: company.nome_fantasia ?? undefined,
-                            ramo: company.ramo ?? undefined,
-                            logo_url: company.logo_url ?? undefined,
-                            cnpj: company.cnpj ?? undefined,
-                          });
-                          setSearchQuery('');
-                          setIsFocused(false);
-                        }}
+                        onMouseEnter={() => setActiveIndex(index)}
+                        onClick={() => selectCompany(company)}
                       >
                         <CompanyAvatar name={company.name} logoUrl={company.logo_url} size="sm" />
                         <div className="flex min-w-0 flex-1 flex-col">
