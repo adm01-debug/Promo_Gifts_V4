@@ -131,6 +131,14 @@ describe('getTechniquePrompt', () => {
     expect(getTechniquePrompt({ id: '3', name: 'Laser', code: 'laser' })).toMatch(/laser engraved/);
   });
 
+  it('maps the remaining known codes (uv, sublimacao)', () => {
+    // Carried over from the retired mockup-audit.test.ts T7 local copy.
+    expect(getTechniquePrompt({ id: '6', name: 'UV Digital', code: 'uv' })).toMatch(/UV printed/);
+    expect(getTechniquePrompt({ id: '7', name: 'Sublimacao', code: 'sublimacao' })).toMatch(
+      /sublimation printed/,
+    );
+  });
+
   it('falls back to default for unknown techniques', () => {
     expect(getTechniquePrompt({ id: '4', name: 'Nova', code: null })).toMatch(
       /professionally printed/,
@@ -164,6 +172,9 @@ describe('saveMockupToDb', () => {
     const row = captured.insert!;
     expect(row.thumbnail_url).toBe('https://cdn.example.com/mockup.png');
     expect(row.position_x).toBe(50);
+    expect(row.position_y).toBe(50);
+    expect(row.logo_width_cm).toBe(5);
+    expect(row.logo_height_cm).toBe(3);
     expect(row.logo_url).toBe('https://cdn.example.com/logo.png');
     const cfg = row.area_config as Record<string, unknown>;
     expect(cfg.logoRotation).toBe(45);
