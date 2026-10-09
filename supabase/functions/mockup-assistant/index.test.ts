@@ -2,8 +2,9 @@
  * Contrato da edge `mockup-assistant` (teste co-localizado). Prova: sem JWT →
  * 401; corpo inválido → 422; 21ª mensagem no minuto → 429; roteador sem
  * override de modelo (o flash vem da ROTA) e só texto; erro do provedor →
- * mensagem genérica; log nunca contém o texto do usuário. Fronteiras Deno-only
- * são mockadas; a validação Zod é a REAL.
+ * mensagem genérica; log nunca contém o texto do usuário; cota mensal → 429;
+ * resposta vazia ou de modelo fora do Flash → 502. Fronteiras Deno-only são
+ * mockadas; a validação Zod é a REAL.
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
@@ -19,7 +20,11 @@ const h = vi.hoisted(() => ({
   rateIds: [] as string[],
   rateLimiterUsed: null as unknown,
   aiCalls: [] as CapturedAiCall[],
-  aiResult: { content: 'Posicione a logo a 8 cm da gola.', used_model_name: 'deepseek-flash' },
+  aiResult: { content: 'Posicione a logo a 8 cm da gola.', used_model_name: 'deepseek-flash' } as {
+    content: string;
+    used_model_name: string | undefined;
+    finish_reason?: string;
+  },
   aiError: null as null | Error,
   served: null as null | ((req: Request) => Promise<Response>),
 }));
@@ -61,6 +66,15 @@ vi.mock('../_shared/ai-router/index.ts', () => ({
   },
 }));
 
+vi.mock('../_shared/ai-usage.ts', () => ({
+  QuotaExceededError: class QuotaExceededError extends Error {
+    constructor() {
+      super('AI quota exceeded');
+      this.name = 'QuotaExceededError';
+    }
+  },
+}));
+
 // A edge registra o handler via `Deno.serve`; o runner Node não tem `Deno`.
 const denoGlobal = globalThis as unknown as { Deno?: { serve: (fn: (req: Request) => Promise<Response>) => unknown } };
 denoGlobal.Deno = {
@@ -72,6 +86,7 @@ denoGlobal.Deno = {
 
 const mod = await import('./index.ts');
 const { rateLimiters } = await import('../_shared/rate-limiter.ts');
+const { QuotaExceededError } = await import('../_shared/ai-usage.ts');
 
 const ENTRY = h.served ?? mod.serveMockupAssistant;
 const AUTH_HEADER: Record<string, string> = { Authorization: 'Bearer test.jwt.token' };
@@ -116,6 +131,23 @@ describe('mockup-assistant — contrato da edge', () => {
     expect(res.status).toBe(401);
     expect((await res.json()).error).toBe('Token de autenticação ausente');
     expect(h.aiCalls).toHaveLength(0);
+    expect(h.rateIds).toHaveLength(0); // quem não autentica não consome nem polui o limite
+  });
+
+  it('token inválido, expirado, revogado ou sem permissão não chega ao limiter nem à IA', async () => {
+    const negados = [
+      { status: 401, message: 'Token inválido ou expirado' },
+      { status: 401, message: 'Sessao foi revogada. Faca login novamente.' },
+      { status: 403, message: "Acesso restrito ao papel 'vendedor'" },
+    ];
+    for (const negado of negados) {
+      h.authThrow = negado;
+      const res = await ENTRY(post({ message: 'oi' }, { Authorization: 'Bearer token.invalido.x' }));
+      expect(res.status).toBe(negado.status);
+      expect((await res.json()).error).toBe(negado.message);
+    }
+    expect(h.aiCalls).toHaveLength(0);
+    expect(h.rateIds).toHaveLength(0);
   });
 
   it('corpo inválido é rejeitado pelo Zod com 422', async () => {
@@ -139,9 +171,9 @@ describe('mockup-assistant — contrato da edge', () => {
     expect(statuses.slice(0, 20).every((status) => status === 200)).toBe(true);
     expect(statuses[20]).toBe(429);
 
-    // O limite é delegado ao limiter SSOT de IA (20 req/min) pelo id do usuário.
+    // O limite é delegado ao limiter SSOT de IA, pelo id do usuário (o valor 20/min do
+    // SSOT real é provado lendo o fonte em tests/edge-functions/integration/mockup-assistant.test.ts).
     expect(h.rateLimiterUsed).toBe(rateLimiters.ai);
-    expect(rateLimiters.ai.maxRequests).toBe(20);
     expect(h.rateIds.every((id) => id === h.userId)).toBe(true);
 
     const limited = await ENTRY(post({ message: 'pergunta 22' }));
@@ -194,6 +226,45 @@ describe('mockup-assistant — contrato da edge', () => {
     expect(logged).toContain('provider_error');
     expect(logged).not.toContain(segredo);
     expect(logged).not.toContain('Quero gravar');
+  });
+
+  it('cota mensal de IA esgotada devolve 429 claro (não "indisponível") e não loga o texto', async () => {
+    h.aiError = new QuotaExceededError();
+    const consoleSpy = captureConsole();
+    let logged = '';
+    let res: Response;
+    try {
+      res = await ENTRY(post({ message: 'TEXTO-SECRETO-COTA-123' }));
+      logged = consoleSpy.text();
+    } finally {
+      consoleSpy.restore();
+    }
+    expect(res.status).toBe(429);
+    expect((await res.json()).error).toBe(mod.QUOTA_ERROR_MESSAGE);
+    expect(logged).toContain('quota_exceeded');
+    expect(logged).not.toContain('TEXTO-SECRETO-COTA-123');
+  });
+
+  it('resposta vazia do provedor vira 502, nunca 200 com answer vazio', async () => {
+    for (const content of ['', '   \n']) {
+      h.aiResult = { content, used_model_name: 'deepseek-v4-flash', finish_reason: 'length' };
+      const res = await ENTRY(post({ message: 'Qual o tamanho ideal?' }));
+      expect(res.status).toBe(502);
+      const body = await res.json();
+      expect(body.error).toBe(mod.PROVIDER_ERROR_MESSAGE);
+      expect(body).not.toHaveProperty('answer');
+    }
+  });
+
+  it('resposta de modelo que não é Flash (ex.: Pro) é recusada com 502 e não chega ao usuário', async () => {
+    expect(mod.isFlashModel('deepseek-v4-flash')).toBe(true);
+    expect(mod.isFlashModel('deepseek-flash')).toBe(true);
+    for (const model of ['deepseek-v4-pro', 'claude-sonnet-4-6', '', undefined]) {
+      h.aiResult = { content: 'RESPOSTA-DO-MODELO-ERRADO', used_model_name: model };
+      const res = await ENTRY(post({ message: 'oi' }));
+      expect(res.status).toBe(502);
+      expect(JSON.stringify(await res.json())).not.toContain('RESPOSTA-DO-MODELO-ERRADO');
+    }
   });
 
   it('no caminho de sucesso o log não contém o texto do usuário', async () => {
