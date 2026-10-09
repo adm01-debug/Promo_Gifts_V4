@@ -72,6 +72,12 @@ envMap.set('E2E_CLEANUP_RATE_LIMIT_WINDOW_SECONDS', '60');
 await import('./index.ts');
 expect(handler).toBeTypeOf('function');
 
+// Export consumido pelo carregador em `tests/edge-functions/` (o include do
+// Vitest cobre `tests/**`, nunca `supabase/functions/**`). Ele so pode ser
+// `true` se o import acima tiver registrado o handler real via `Deno.serve`,
+// provando que a suite carregou o codigo de producao — nao um stub.
+export const mockupSuiteHandlerLoaded = typeof handler === 'function';
+
 type Recorded = { method: string; pathname: string; query: string; body: string };
 const recorded: Recorded[] = [];
 const originalFetch = globalThis.fetch;
