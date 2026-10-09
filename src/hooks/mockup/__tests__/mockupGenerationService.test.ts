@@ -164,15 +164,16 @@ describe('saveMockupToDb', () => {
       product: { id: 'prod-1', name: 'Caneca', sku: 'CAN-001' },
       technique: silk,
       client: { id: 'c1', name: 'Cliente' },
-      area: area({ logoRotation: 45, logoScale: 150 }),
+      area: area({ logoRotation: 45, logoScale: 150, positionX: 30, positionY: 70 }),
       mockupUrl: 'https://cdn.example.com/mockup.png',
     });
 
     expect(recordId).toBe('rec-1');
     const row = captured.insert!;
     expect(row.thumbnail_url).toBe('https://cdn.example.com/mockup.png');
-    expect(row.position_x).toBe(50);
-    expect(row.position_y).toBe(50);
+    // X e Y distintos: trocar position_x por position_y no INSERT quebra o teste.
+    expect(row.position_x).toBe(30);
+    expect(row.position_y).toBe(70);
     expect(row.logo_width_cm).toBe(5);
     expect(row.logo_height_cm).toBe(3);
     expect(row.logo_url).toBe('https://cdn.example.com/logo.png');

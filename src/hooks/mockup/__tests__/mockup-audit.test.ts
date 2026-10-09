@@ -15,6 +15,121 @@ function readSrc(relativePath: string) {
 }
 
 // =====================================================================
+// STATIC ANALYSIS — useMockupGenerator.ts (guardas de runtime mantidas:
+// ainda sem teste de comportamento equivalente do hook na main)
+// =====================================================================
+
+describe('Analise estatica — useMockupGenerator.ts', () => {
+  let src: string;
+  beforeEach(() => {
+    src = readSrc('src/hooks/mockup/useMockupGenerator.ts');
+  });
+
+  describe('T3 — Memory leaks: cleanup de timeouts', () => {
+    it('historyPushTimeout limpo em cleanup', () => {
+      expect(src).toContain('clearTimeout(historyPushTimeout.current)');
+    });
+    it('draftNoticeTimeoutRef criada como useRef', () => {
+      expect(src).toContain('draftNoticeTimeoutRef');
+    });
+    it('draftNoticeTimeoutRef limpa em cleanup', () => {
+      expect(src).toContain('clearTimeout(draftNoticeTimeoutRef.current)');
+    });
+    it('pelo menos 2 useEffect de cleanup', () => {
+      const cleanups = src.match(/return\s*\(\)\s*=>\s*\{[^}]*clearTimeout/g);
+      expect(cleanups?.length ?? 0).toBeGreaterThanOrEqual(2);
+    });
+  });
+
+  describe('T5 — Batch DB saves: Promise.allSettled', () => {
+    it('usa Promise.allSettled', () => {
+      expect(src).toContain('Promise.allSettled');
+    });
+    it('resultado filtrado por "fulfilled"', () => {
+      expect(src).toContain("res.status === 'fulfilled'");
+    });
+  });
+
+  describe('T6 — deleteMockup passa userId', () => {
+    it('chama deleteMockupFromDb com user?.id', () => {
+      expect(src).toContain('deleteMockupFromDb(mockupToDelete, user?.id)');
+    });
+  });
+
+  describe('T9 — URL params preservados', () => {
+    it('usa URLSearchParams.delete para product_id', () => {
+      expect(src).toContain("newParams.delete('product_id')");
+    });
+    it('usa URLSearchParams.delete para technique', () => {
+      expect(src).toContain("newParams.delete('technique')");
+    });
+    it('NAO usa replaceState com pathname puro', () => {
+      expect(src).not.toContain("replaceState({}, '', window.location.pathname)");
+    });
+    it('URL final preserva params extras', () => {
+      expect(src).toMatch(/newSearch\s*\?\s*`\?\${newSearch}`\s*:\s*''/);
+    });
+  });
+
+  describe('BUG-F — resetForm: async + await clearDraft()', () => {
+    it('resetForm é async', () => {
+      expect(src).toMatch(/const\s+resetForm\s*=\s*useCallback\s*\(\s*async/);
+    });
+    it('clearDraft é awaited dentro de resetForm', () => {
+      const resetBlock = src.split('const resetForm')[1].split('}, [')[0];
+      expect(resetBlock).toContain('await clearDraft()');
+    });
+  });
+
+  describe('BUG-J — isDraftLoading exposto', () => {
+    it('isDraftLoading presente no return', () => {
+      expect(src).toContain('isDraftLoading,');
+    });
+    it('isDraftLoading desestruturado de useMockupDraft', () => {
+      expect(src).toContain('isLoading: isDraftLoading,');
+    });
+  });
+
+  describe('FileReader.onerror em handleAreaLogoUpload', () => {
+    it('reader.onerror está definido', () => {
+      // Regression guard: missing onerror means corrupted/unreadable files fail silently.
+      const uploadBlock =
+        src.split('const handleAreaLogoUpload')[1]?.split('const getProductImage')[0] ?? '';
+      expect(uploadBlock).toContain('reader.onerror');
+    });
+    it('reader.onerror exibe toast de erro', () => {
+      const uploadBlock =
+        src.split('const handleAreaLogoUpload')[1]?.split('const getProductImage')[0] ?? '';
+      expect(uploadBlock).toMatch(/reader\.onerror[\s\S]*?toast\.error/);
+    });
+  });
+
+  describe('loadFromHistory — clearDraft awaited', () => {
+    it('loadFromHistory é async', () => {
+      expect(src).toMatch(/const\s+loadFromHistory\s*=\s*useCallback\s*\(\s*async/);
+    });
+    it('clearDraft é awaited dentro de loadFromHistory', () => {
+      const block = src.split('const loadFromHistory')[1]?.split('const wizardStep')[0] ?? '';
+      expect(block).toContain('await clearDraft()');
+    });
+  });
+
+  describe('Re-entrancy — generateMockup não dispara 2x concorrente', () => {
+    it('declara isGeneratingRef como useRef(false)', () => {
+      expect(src).toContain('const isGeneratingRef = useRef(false)');
+    });
+    it('generateMockup retorna cedo quando já está gerando', () => {
+      const block = src.split('const generateMockup')[1]?.split('const deleteMockup')[0] ?? '';
+      expect(block).toContain('if (isGeneratingRef.current) return;');
+    });
+    it('reseta o guard no finally (não trava após erro/sucesso)', () => {
+      const block = src.split('const generateMockup')[1]?.split('const deleteMockup')[0] ?? '';
+      expect(block).toContain('isGeneratingRef.current = false;');
+    });
+  });
+});
+
+// =====================================================================
 // STATIC ANALYSIS — useMockupDraft.ts
 // =====================================================================
 
