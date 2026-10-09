@@ -51,7 +51,7 @@ export const RASCUNHO_MARCA_CLIENTE: MockupDraftData = {
     {
       id: 'fixture-area-frente',
       name: 'FIXTURE-FRENTE',
-      positionX: 50,
+      positionX: 35,
       positionY: 40,
       logoWidth: 6,
       logoHeight: 4,
@@ -77,7 +77,7 @@ export const MOCKUP_SALVO_PNG: GeneratedMockup = {
   mockup_url: MOCKUP_PNG_URL,
   layout_url: null,
   logo_url: LOGO_PNG_URL,
-  position_x: 50,
+  position_x: 38,
   position_y: 42,
   logo_width_cm: 6,
   logo_height_cm: 4,

@@ -4,11 +4,23 @@
  * Um teste por cenário, nomeado com o ID. Fixtures fixas em `./grupo1.fixtures.ts`
  * (nunca marca/cliente real). Nenhum teste desativado.
  *
- * A01 — marca do cliente aplicada e reaberta sem upload manual: exercita o
- *       `restoreDraft` de `useMockupGenerator` (rascunho com logo http + cliente
- *       + produto) e assere que a marca volta aplicada sem novo upload.
- * A02 — PNG válido salvo e recarregado restaura logo, cliente e produto: exercita
- *       `loadFromHistory` (logoPreview = `logo_url` do mockup persistido).
+ * COBERTO (passa no código atual, com o `useMockupGenerator` REAL; só as
+ * dependências de dados — rascunho, catálogo, serviço — são substituídas):
+ * A01 — reabrir o rascunho restaura, sem novo upload, a logo (marca) JÁ HOSPEDADA
+ *       (http), o cliente, o produto e a técnica: exercita o `restoreDraft`.
+ * A02 — recarregar do histórico o mockup salvo com PNG restaura a logo, o cliente,
+ *       o produto, a técnica e a geometria: exercita o `loadFromHistory`.
+ *
+ * PENDENTE (depende de correção ainda não integrada; por isso NÃO vira teste agora):
+ * A01 "marca do cliente APLICADA": hoje o `logo_url` que o CRM (Singu) devolve só
+ *       vira avatar e cabeçalho da ficha, nunca logo do mockup. A ação "Usar logo do
+ *       cliente" (plano Mockup, etapa 54) está na branch v2/s54-2610081948, ainda não
+ *       integrada; quando entrar, este item vira teste. O teste acima prova só o
+ *       "reaberta sem upload".
+ * A01 com logo recém-enviada (data URL): `useMockupDraft` descarta logo que não
+ *       seja http ao gravar o rascunho (etapa 11, branch v2/refazer-ac17539c) — por
+ *       isso a marca do rascunho da fixture já está hospedada. (O salvamento do PNG
+ *       enviado é coberto em `src/hooks/mockup/__tests__/mockupGenerationService.test.ts`.)
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { waitFor, act } from '@testing-library/react';
@@ -45,7 +57,9 @@ vi.mock('@/components/mockup/techniqueColorUtils', () => ({
   techniqueNeedsColorConfig: () => false,
 }));
 // Dependências do hook — não é o comportamento sob teste.
-vi.mock('@/hooks/mockup/useMockupTechniques', () => ({
+// Só os dois hooks de dados são trocados; o resto do módulo (ex.: `resolveTechnique`) segue real.
+vi.mock('@/hooks/mockup/useMockupTechniques', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/hooks/mockup/useMockupTechniques')>()),
   useFilteredTechniques: () => [],
   useProductCustomizationOptionsForMockup: () => ({ data: null }),
 }));
@@ -86,15 +100,14 @@ vi.mock('@/hooks/mockup/mockupGenerationService', () => ({
 }));
 
 // Pontos controláveis: rascunho, catálogo de técnicas e produto do CRM.
-const { mockLoadDraft, mockSaveDraft, mockClearDraft, mockGetProductById, mockDbInvoke } = vi.hoisted(
-  () => ({
+const { mockLoadDraft, mockSaveDraft, mockClearDraft, mockGetProductById, mockDbInvoke } =
+  vi.hoisted(() => ({
     mockLoadDraft: vi.fn(),
     mockSaveDraft: vi.fn(),
     mockClearDraft: vi.fn(),
     mockGetProductById: vi.fn(),
     mockDbInvoke: vi.fn(),
-  }),
-);
+  }));
 
 vi.mock('@/hooks/mockup/useMockupDraft', () => ({
   useMockupDraft: () => ({
@@ -142,15 +155,16 @@ beforeEach(() => {
 });
 
 describe('A01 — marca do cliente aplicada e reaberta sem upload manual', () => {
-  it('rascunho reaberto reaplica a marca (logo) do cliente, o cliente e o produto, sem novo upload', async () => {
+  it('rascunho reaberto restaura a marca (logo já hospedada), o cliente, o produto e a técnica, sem novo upload', async () => {
     mockLoadDraft.mockResolvedValue(RASCUNHO_MARCA_CLIENTE);
 
     const { result } = renderHookWithProviders(() => useMockupGenerator());
 
     await waitFor(() => expect(result.current.selectedClient?.id).toBe(CLIENTE_FIXTURE.id));
 
-    // Marca do cliente veio do rascunho reaberto — nenhum upload foi disparado neste teste.
+    // A marca veio do rascunho reaberto — nenhum upload foi disparado neste teste.
     expect(result.current.personalizationAreas).toHaveLength(1);
+    expect(result.current.activeArea.id).toBe(RASCUNHO_MARCA_CLIENTE.personalizationAreas[0].id);
     expect(result.current.personalizationAreas[0].logoPreview).toBe(MARCA_CLIENTE_URL);
     expect(result.current.personalizationAreas[0].logoWidth).toBe(
       RASCUNHO_MARCA_CLIENTE.personalizationAreas[0].logoWidth,
@@ -168,7 +182,7 @@ describe('A01 — marca do cliente aplicada e reaberta sem upload manual', () =>
 });
 
 describe('A02 — PNG válido salvo e recarregado restaura logo, cliente e produto', () => {
-  it('recarregar o mockup salvo do histórico reaplica a logo (PNG), o cliente e o produto', async () => {
+  it('recarregar o mockup salvo do histórico restaura a logo (PNG), o cliente, o produto, a técnica e a geometria', async () => {
     const { result } = renderHookWithProviders(() => useMockupGenerator());
 
     // Espera o carregamento de montagem (catálogo de técnicas) para o histórico casar a técnica.
@@ -186,10 +200,17 @@ describe('A02 — PNG válido salvo e recarregado restaura logo, cliente e produ
     expect(result.current.selectedClient?.name).toBe(CLIENTE_FIXTURE.name);
     expect(result.current.selectedProduct?.id).toBe(PRODUTO_FIXTURE.id);
     expect(result.current.selectedTechnique?.name).toBe(TECNICA_FIXTURE.name);
+    // Posição e medida gravadas no registro voltam para a área (não os padrões).
+    const area = result.current.personalizationAreas[0];
+    expect(area.name).toBe(MOCKUP_SALVO_PNG.location_name);
+    expect(area.positionX).toBe(MOCKUP_SALVO_PNG.position_x);
+    expect(area.positionY).toBe(MOCKUP_SALVO_PNG.position_y);
+    expect(area.logoWidth).toBe(MOCKUP_SALVO_PNG.logo_width_cm);
+    expect(area.logoHeight).toBe(MOCKUP_SALVO_PNG.logo_height_cm);
     // Rascunho antigo limpo (não re-persiste o PNG carregado por cima) + feedback ao usuário.
     expect(mockClearDraft).toHaveBeenCalledTimes(1);
-    expect((toast as unknown as { success: ReturnType<typeof vi.fn> }).success).toHaveBeenCalledWith(
-      'Configurações carregadas!',
-    );
+    expect(
+      (toast as unknown as { success: ReturnType<typeof vi.fn> }).success,
+    ).toHaveBeenCalledWith('Configurações carregadas!');
   });
 });
