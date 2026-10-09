@@ -1,11 +1,12 @@
 /**
- * MockupLayoutButtons — "Gerar Layout" buttons for the mockup result panel.
- * Two modes: AI (uses existing generated mockup) and Static (high-res composition).
+ * MockupLayoutButtons — botões de ação do painel de mockup.
+ * "Gerar Mockup" (principal) só compõe a imagem; "Gerar documento" monta o papel timbrado
+ * a partir do mockup pronto; "Gerar Layout" mantém a composição estática em alta resolução.
  */
 
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { Sparkles, ImageIcon, Loader2 } from 'lucide-react';
+import { Sparkles, ImageIcon, Loader2, FileText } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { toast } from 'sonner';
 import { detectProductBounds } from '@/lib/product-bounds-detector';
@@ -98,7 +99,6 @@ export function MockupLayoutButtons({
   const [previewOpen, setPreviewOpen] = useState(false);
   const [approvalData, setApprovalData] = useState<MockupApprovalData | null>(null);
   const [isGeneratingStatic, setIsGeneratingStatic] = useState(false);
-  const pendingLayoutAI = useRef(false);
 
   const buildApprovalData = useCallback(
     (mockupUrl: string, mode: 'ai' | 'static'): MockupApprovalData => {
@@ -155,39 +155,28 @@ export function MockupLayoutButtons({
     [client, seller, product, technique, activeArea, pantoneColors, colorsCount],
   );
 
-  // When generatedMockup arrives and we were waiting for it, auto-open layout
-  useEffect(() => {
-    if (pendingLayoutAI.current && generatedMockup) {
-      pendingLayoutAI.current = false;
-      const data = buildApprovalData(generatedMockup, 'ai');
-      setApprovalData(data);
-      setPreviewOpen(true);
-    }
+  // "Gerar documento": abre o papel timbrado só a partir de um mockup já pronto.
+  const handleGenerateDocument = useCallback(() => {
+    if (!generatedMockup) return;
+    setApprovalData(buildApprovalData(generatedMockup, 'ai'));
+    setPreviewOpen(true);
   }, [generatedMockup, buildApprovalData]);
 
-  const handleLayoutAI = useCallback(async () => {
-    if (generatedMockup) {
-      // Mockup already exists, open layout directly
-      const data = buildApprovalData(generatedMockup, 'ai');
-      setApprovalData(data);
-      setPreviewOpen(true);
-      return;
-    }
-    // No mockup yet — trigger generation, layout opens via useEffect above
+  // "Gerar Mockup": só compõe a imagem — NÃO abre o documento (nem quando o mockup chega).
+  const handleGenerateMockup = useCallback(async () => {
     if (!onGenerateMockup) {
       toast.error('Configure o gerador de mockup primeiro.');
       return;
     }
-    // BUG-LAY1 FIX: wrap in try/catch so that (a) unhandled rejection is prevented
-    // and (b) pendingLayoutAI is cleared if onGenerateMockup throws, stopping it
-    // from auto-opening the layout dialog on the next unrelated mockup generation.
-    pendingLayoutAI.current = true;
     try {
       await onGenerateMockup();
-    } catch {
-      pendingLayoutAI.current = false;
+    } catch (err) {
+      // useMockupGenerator.generateMockup já avisa os erros que ele mesmo trata; se o
+      // promise rejeitar, ninguém avisou o usuário — então avisamos aqui.
+      logger.error('Mockup generation error:', err);
+      toast.error('Erro ao gerar mockup. Tente novamente.');
     }
-  }, [generatedMockup, buildApprovalData, onGenerateMockup]);
+  }, [onGenerateMockup]);
 
   const handleLayoutStatic = useCallback(async () => {
     if (!product?.imageUrl || !activeArea?.logoPreview) {
@@ -319,22 +308,25 @@ export function MockupLayoutButtons({
 
   return (
     <>
-      <div className="flex items-center gap-2">
+      <div
+        className="flex w-full flex-wrap items-center gap-2 sm:w-auto"
+        data-testid="mockup-action-buttons"
+      >
         <Tooltip>
           <TooltipTrigger asChild>
-            <span className="flex-1">
+            <span className="min-w-[8.5rem] flex-1">
               <Button
                 size="sm"
-                onClick={handleLayoutStatic}
-                disabled={!activeArea?.logoPreview || isGeneratingStatic}
+                onClick={handleGenerateMockup}
+                disabled={!activeArea?.logoPreview || !!isGeneratingMockup}
                 className="w-full gap-1.5 !bg-primary font-semibold !text-primary-foreground shadow-md shadow-primary/30 transition-all hover:!bg-primary/80 hover:shadow-lg hover:shadow-primary/40 disabled:cursor-not-allowed disabled:!opacity-40"
               >
-                {isGeneratingStatic ? (
+                {isGeneratingMockup ? (
                   <Loader2 aria-hidden="true" className="h-3.5 w-3.5 animate-spin" />
                 ) : (
-                  <ImageIcon aria-hidden="true" className="h-3.5 w-3.5" />
+                  <Sparkles aria-hidden="true" className="h-3.5 w-3.5" />
                 )}
-                Gerar Layout
+                Gerar Mockup
               </Button>
             </span>
           </TooltipTrigger>
@@ -347,19 +339,42 @@ export function MockupLayoutButtons({
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <span className="flex-1">
+            <span className="min-w-[8.5rem] flex-1">
               <Button
                 size="sm"
-                onClick={handleLayoutAI}
-                disabled={!activeArea?.logoPreview || isGeneratingMockup}
-                className="w-full gap-1.5 !bg-primary font-semibold !text-primary-foreground shadow-md shadow-primary/30 transition-all hover:!bg-primary/80 hover:shadow-lg hover:shadow-primary/40 disabled:cursor-not-allowed disabled:!opacity-40"
+                variant="outline"
+                onClick={handleGenerateDocument}
+                disabled={!generatedMockup || !!isGeneratingMockup}
+                className="w-full gap-1.5 font-semibold disabled:cursor-not-allowed disabled:!opacity-40"
               >
-                {isGeneratingMockup ? (
+                <FileText aria-hidden="true" className="h-3.5 w-3.5" />
+                Gerar documento
+              </Button>
+            </span>
+          </TooltipTrigger>
+          {!generatedMockup && (
+            <TooltipContent side="bottom">
+              <p>Gere o mockup primeiro</p>
+            </TooltipContent>
+          )}
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span className="min-w-[8.5rem] flex-1">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleLayoutStatic}
+                disabled={!activeArea?.logoPreview || isGeneratingStatic}
+                className="w-full gap-1.5 font-semibold disabled:cursor-not-allowed disabled:!opacity-40"
+              >
+                {isGeneratingStatic ? (
                   <Loader2 aria-hidden="true" className="h-3.5 w-3.5 animate-spin" />
                 ) : (
-                  <Sparkles aria-hidden="true" className="h-3.5 w-3.5" />
+                  <ImageIcon aria-hidden="true" className="h-3.5 w-3.5" />
                 )}
-                Gerar Layout - IA
+                Gerar Layout
               </Button>
             </span>
           </TooltipTrigger>
