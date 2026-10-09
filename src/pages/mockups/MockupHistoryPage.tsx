@@ -22,6 +22,21 @@ import { PageSEO } from '@/components/seo/PageSEO';
 import { useDebounce } from '@/hooks/common';
 import { MockupHistorySkeleton } from '@/components/loading/ModernSkeletons';
 import { DiagnosticProfiler } from '@/components/dev/DiagnosticProfiler';
+import { deleteMockupFromDb } from '@/hooks/mockup/mockupGenerationService';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+
+// Remove caracteres que alteram a semântica de .or()/.ilike() do PostgREST
+// (mesma regra do useGlobalSearch): % _ \ ( ) , . *
+const sanitizeSearchTerm = (raw: string) => raw.replace(/[%_\\(),.*]/g, '').trim();
 
 interface GeneratedMockup {
   id: string;
@@ -57,12 +72,13 @@ export default function MockupHistoryPage() {
         .order('created_at', { ascending: false })
         .range((page - 1) * pageSize, page * pageSize - 1);
 
-      if (debouncedSearch) {
+      const term = sanitizeSearchTerm(debouncedSearch);
+      if (term) {
         // BUG-400 FIX (2026-06-01): removed client_name.ilike filter — client_name is
         // not a column on generated_mockups (it lives in area_config JSONB). Using it
         // in an .or() filter causes PostgREST HTTP 400.
         query = query.or(
-          `product_name.ilike.%${debouncedSearch}%,product_sku.ilike.%${debouncedSearch}%,technique_name.ilike.%${debouncedSearch}%`,
+          `product_name.ilike.%${term}%,product_sku.ilike.%${term}%,technique_name.ilike.%${term}%`,
         );
       }
 
@@ -93,13 +109,27 @@ export default function MockupHistoryPage() {
     setPage(1);
   }, []);
 
-  const handleDelete = async (id: string) => {
-    const { error } = await supabase.from('generated_mockups').delete().eq('id', id);
-    if (error) {
-      toast.error('Erro ao remover mockup');
-    } else {
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleConfirmDelete = async () => {
+    if (!pendingDeleteId) return;
+    if (!userId) {
+      // Sessão caiu com o diálogo aberto: avisar e fechar em vez de falhar em silêncio.
+      toast.error('Sessão expirada. Entre novamente para excluir o mockup.');
+      setPendingDeleteId(null);
+      return;
+    }
+    setIsDeleting(true);
+    try {
+      await deleteMockupFromDb(pendingDeleteId, userId);
       toast.success('Mockup removido');
       refetch();
+    } catch {
+      toast.error('Erro ao remover mockup');
+    } finally {
+      setIsDeleting(false);
+      setPendingDeleteId(null);
     }
   };
 
@@ -251,7 +281,7 @@ export default function MockupHistoryPage() {
                             variant="ghost"
                             size="icon"
                             aria-label="Excluir"
-                            onClick={() => handleDelete(m.id)}
+                            onClick={() => setPendingDeleteId(m.id)}
                             className="text-destructive hover:text-destructive"
                             data-testid="mockup-history-delete-btn"
                           >
@@ -292,6 +322,33 @@ export default function MockupHistoryPage() {
             )}
           </CardContent>
         </Card>
+        <AlertDialog
+          open={pendingDeleteId !== null}
+          onOpenChange={(open) => {
+            if (!open && !isDeleting) setPendingDeleteId(null);
+          }}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Excluir mockup?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Esta ação não pode ser desfeita. O mockup e suas imagens associadas serão removidos.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={isDeleting}>Cancelar</AlertDialogCancel>
+              <AlertDialogAction
+                disabled={isDeleting}
+                onClick={(e) => {
+                  e.preventDefault();
+                  void handleConfirmDelete();
+                }}
+              >
+                Excluir
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </DiagnosticProfiler>
   );
