@@ -5,8 +5,8 @@ test.describe('QuoteBuilderPage - Delivery Field E2E', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the new quote page
     await loginAs(page);
-    await page.goto('/quotes/new');
-    
+    await page.goto('/orcamentos/novo');
+
     // Wait for the page to load
     await page.waitForSelector('[data-testid="delivery-label"]', { timeout: 15000 });
   });
