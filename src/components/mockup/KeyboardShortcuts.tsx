@@ -82,33 +82,3 @@ export function useKeyboardShortcuts({
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyDown]);
 }
-
-// Component that shows keyboard shortcuts hint
-export function KeyboardShortcutsHint({ className }: { className?: string }) {
-  return (
-    <div className={className}>
-      <div className="flex flex-wrap gap-4 text-[10px] text-muted-foreground">
-        <span className="flex items-center gap-1">
-          <kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-[9px]">Ctrl</kbd>
-          <span>+</span>
-          <kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-[9px]">Enter</kbd>
-          <span className="ml-1">Gerar</span>
-        </span>
-        <span className="flex items-center gap-1">
-          <kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-[9px]">Ctrl</kbd>
-          <span>+</span>
-          <kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-[9px]">D</kbd>
-          <span className="ml-1">Baixar</span>
-        </span>
-        <span className="flex items-center gap-1">
-          <kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-[9px]">1-6</kbd>
-          <span className="ml-1">Passos</span>
-        </span>
-        <span className="flex items-center gap-1">
-          <kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-[9px]">Esc</kbd>
-          <span className="ml-1">Limpar</span>
-        </span>
-      </div>
-    </div>
-  );
-}
