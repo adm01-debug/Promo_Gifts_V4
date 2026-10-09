@@ -1,36 +1,97 @@
-/**
- * Integration (contract) tests — generate-mockup edge function.
- *
- * The Deno edge function cannot run in-process under vitest (Deno.serve, OffscreenCanvas,
- * npm: imports), so these tests mock the HTTP layer and assert against the function's
- * REAL request/response contract. End-to-end execution lives in tests/edge-functions/live/.
- *
- * Contract (see supabase/functions/generate-mockup/index.ts):
- *   Input  : { productImageUrl, logoBase64 | logoUrl, positionX, positionY,
- *              logoWidthCm, logoHeightCm, logoRotation, logoScale, techniqueName }
- *   Success: { ok:true, mockupUrl, mockup_url, mockup_id, generated_at, generation_ms, technique }
- *   Errors : validation_failed(400, errorCode?), product_image_unavailable(422),
- *            logo_unavailable(422), composition_timeout(504), canvas_runtime_unavailable(501),
- *            composition_failed(500), storage_upload_failed(500)
- */
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { mockEdgeFunctionFetch, resetExternalMocks, type EdgeFnResponseSpec } from "../../p0/_mocks";
+/** Contrato HTTP do handler REAL de generate-mockup (B F-29): index.ts é empacotado em
+ * memória pelo esbuild (só npm:@supabase/supabase-js é stubado) e chamado com `Request` reais. */
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import type { Plugin } from "esbuild";
 
-const BASE = "https://nmojwpihnslkssljowjh.supabase.co/functions/v1";
-
+const SRC = resolve(__dirname, "../../../supabase/functions/generate-mockup/index.ts");
+const ENDPOINT = "https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1/generate-mockup"; // REGRA #1
 const PRODUCT_URL = "https://cdn.example.com/products/mug.png";
 const LOGO_URL = "https://cdn.example.com/logos/acme.png";
+const MOCKUP_URL = "https://cdn.example.com/mockups/1717000000000-abc.png";
+const USER_ID = "11111111-1111-1111-1111-111111111111";
+const TEST_JWT = "e30.e30.e30"; // header.payload.sig, payload {} — nenhuma assinatura válida
+const PNG_B64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="; // PNG 1×1 sintético
+const png = (): Uint8Array<ArrayBuffer> => { const bin = atob(PNG_B64); const out = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i); return out; };
 
-const MOCKUP_SUCCESS = {
-  ok: true,
-  mockupUrl: "https://cdn.example.com/mockups/abc123.png",
-  mockup_url: "https://cdn.example.com/mockups/abc123.png",
-  mockup_id: "1717000000000-abc123",
-  generated_at: new Date().toISOString(),
-  generation_ms: 842,
-  technique: "Serigrafia",
-};
+type Handler = (req: Request) => Promise<Response>;
+const S = { product: "ok" as "ok" | "refused", logo: "ok" as "ok" | "refused", auth: false, bitmapError: null as string | null, uploadError: null as { message: string } | null, publicUrl: MOCKUP_URL as string | null };
+const DENO_ENV: Record<string, string> = { SUPABASE_URL: "http://localhost:54321", SUPABASE_ANON_KEY: "test-anon-key", SUPABASE_SERVICE_ROLE_KEY: "test-service-role-key" };
+const realm = globalThis as unknown as Record<string, unknown>;
 
+// Rede: só o transporte é stubado; o fetch é feito pelo handler real.
+function stubNetwork(): void {
+  globalThis.fetch = (async (input: RequestInfo | URL): Promise<Response> => {
+    const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
+    if (url.includes("system_kill_switches")) return new Response("[]", { status: 200 }); // sem kill switch
+    if (url.includes("/products/") || url.includes("/logos/")) {
+      const refused = url.includes("/products/") ? S.product : S.logo;
+      if (refused === "refused") throw new TypeError("fetch failed: ECONNREFUSED");
+      return new Response(png(), { status: 200 });
+    }
+    throw new TypeError(`fetch inesperado no teste: ${url}`);
+  }) as typeof globalThis.fetch;
+}
+
+const CTX = { fillStyle: "", fillRect: () => {}, drawImage: () => {}, save: () => {}, restore: () => {}, translate: () => {}, rotate: () => {} };
+class CanvasStub {
+  width: number; height: number;
+  constructor(w: number, h: number) { this.width = w; this.height = h; }
+  getContext(): typeof CTX { return CTX; }
+  async convertToBlob(): Promise<Blob> { return new Blob([png()], { type: "image/png" }); }
+}
+async function bitmapStub(): Promise<{ width: number; height: number; close: () => void }> {
+  if (S.bitmapError) throw new Error(S.bitmapError); // erro de decodificação força composition_failed
+  return { width: 64, height: 64, close: () => {} };
+}
+const supabaseStub = () => ({
+  auth: { getUser: async () => (S.auth ? { data: { user: null }, error: { message: "invalid JWT" } } : { data: { user: { id: USER_ID, aud: "authenticated" } }, error: null }) },
+  from: () => ({ select: () => ({ eq: async () => ({ data: [{ role: "vendedor" }], error: null }) }) }),
+  storage: { from: () => ({ upload: async () => (S.uploadError ? { error: S.uploadError } : { error: null }), getPublicUrl: () => ({ data: { publicUrl: S.publicUrl } }) }) },
+});
+
+let handler: Handler;
+const ORIGINAL = { TextEncoder: realm.TextEncoder, TextDecoder: realm.TextDecoder, Uint8Array: realm.Uint8Array, OffscreenCanvas: realm.OffscreenCanvas, createImageBitmap: realm.createImageBitmap, Deno: realm.Deno, fetch: globalThis.fetch };
+
+beforeAll(async () => {
+  // esbuild aborta se o realm não bater: o jsdom cria Uint8Array noutro realm que o TextEncoder do Node.
+  const util = await import("node:util");
+  realm.TextEncoder = util.TextEncoder;
+  realm.TextDecoder = util.TextDecoder;
+  realm.Uint8Array = Object.getPrototypeOf(new util.TextEncoder().encode("")).constructor;
+  realm.OffscreenCanvas = CanvasStub;
+  realm.createImageBitmap = bitmapStub;
+  realm.__generateMockupCreateClient = supabaseStub;
+  const esbuild = await import("esbuild");
+  const stub: Plugin = {
+    name: "stub-supabase-js",
+    setup(build) {
+      build.onResolve({ filter: /^npm:@supabase\/supabase-js/ }, (a) => ({ path: a.path, namespace: "supa" }));
+      build.onLoad({ filter: /.*/, namespace: "supa" }, () => ({ loader: "js", contents: "export const createClient = (...a) => globalThis.__generateMockupCreateClient(...a);\nexport const SupabaseClient = undefined;\n" }));
+    },
+  };
+  const out = await esbuild.build({ stdin: { contents: readFileSync(SRC, "utf8"), resolveDir: resolve(SRC, ".."), loader: "ts" }, bundle: true, write: false, format: "iife", platform: "neutral", target: "es2022", plugins: [stub] });
+  const code = out.outputFiles?.[0]?.text;
+  if (!code) throw new Error("esbuild não produziu bundle para generate-mockup");
+  realm.Deno = { env: { get: (n: string) => DENO_ENV[n] }, serve: (h: Handler) => { handler = h; } };
+  new Function(code)();
+  if (!handler) throw new Error("generate-mockup: Deno.serve não registrou o handler");
+});
+
+beforeEach(() => { Object.assign(S, { product: "ok", logo: "ok", auth: false, bitmapError: null, uploadError: null, publicUrl: MOCKUP_URL }); stubNetwork(); });
+afterAll(() => { Object.assign(realm, ORIGINAL); delete realm.__generateMockupCreateClient; });
+
+function call(o: { method?: string; body?: unknown; auth?: boolean } = {}): Promise<Response> {
+  const headers: Record<string, string> = {};
+  if (o.auth !== false) headers.Authorization = `Bearer ${TEST_JWT}`;
+  const init: RequestInit = { method: o.method ?? "POST", headers };
+  if (o.body !== undefined) {
+    headers["Content-Type"] = "application/json";
+    init.body = typeof o.body === "string" ? o.body : JSON.stringify(o.body);
+  }
+  return handler(new Request(ENDPOINT, init));
+}
 function validBody(extra: Record<string, unknown> = {}) {
   return {
     productImageUrl: PRODUCT_URL,
@@ -45,215 +106,99 @@ function validBody(extra: Record<string, unknown> = {}) {
     ...extra,
   };
 }
+const json = async (r: Response): Promise<Record<string, unknown>> => (await r.json()) as Record<string, unknown>;
 
-async function post(body: unknown, withAuth = true) {
-  return fetch(`${BASE}/generate-mockup`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(withAuth ? { Authorization: "Bearer valid-jwt" } : {}),
-    },
-    body: JSON.stringify(body),
-  });
-}
-
-describe("generate-mockup", () => {
-  beforeEach(() => mockEdgeFunctionFetch({}));
-  afterEach(() => resetExternalMocks());
-
-  describe("happy path", () => {
-    it("returns 200 with mockupUrl/mockup_url and a mockup_id", async () => {
-      mockEdgeFunctionFetch({ "/generate-mockup": { status: 200, body: MOCKUP_SUCCESS } });
-      const res = await post(validBody());
-      const data = await res.json();
-      expect(res.status).toBe(200);
-      expect(data.ok).toBe(true);
-      expect(data.mockupUrl).toMatch(/^https?:\/\//);
-      expect(data.mockup_url).toBe(data.mockupUrl);
-      expect(data.mockup_id).toBeTruthy();
-    });
-
-    it("mockupUrl points to a safe https CDN (no javascript:/data:)", async () => {
-      mockEdgeFunctionFetch({ "/generate-mockup": { status: 200, body: MOCKUP_SUCCESS } });
-      const data = await (await post(validBody())).json();
-      expect(data.mockupUrl).not.toContain("javascript:");
-      expect(data.mockupUrl).not.toContain("data:");
-    });
-
-    it("returns generated_at as ISO 8601 and echoes the technique metadata", async () => {
-      mockEdgeFunctionFetch({ "/generate-mockup": { status: 200, body: MOCKUP_SUCCESS } });
-      const data = await (await post(validBody())).json();
-      expect(new Date(data.generated_at).toISOString()).toBe(data.generated_at);
-      expect(data.technique).toBe("Serigrafia");
-    });
-
-    it("accepts a base64 logo instead of a logoUrl", async () => {
-      mockEdgeFunctionFetch({ "/generate-mockup": { status: 200, body: MOCKUP_SUCCESS } });
-      const res = await post(
-        validBody({ logoUrl: undefined, logoBase64: "data:image/png;base64,iVBORw0KGgo=" }),
-      );
-      expect(res.status).toBe(200);
-    });
+describe("generate-mockup — contrato do handler REAL", () => {
+  it("sem JWT → 401 sem payload de sucesso; JWT inválido/revogado → 401", async () => {
+    const r = await call({ body: validBody(), auth: false });
+    expect(r.status).toBe(401);
+    const d = await json(r);
+    expect(typeof d.error).toBe("string");
+    expect(d).not.toHaveProperty("mockupUrl");
+    expect(d).not.toHaveProperty("ok");
+    S.auth = true;
+    expect((await call({ body: validBody() })).status).toBe(401);
   });
 
-  describe("validation — 400", () => {
-    const invalidInputs = [
-      { label: "missing productImageUrl", body: { logoUrl: LOGO_URL } },
-      { label: "productImageUrl not a URL", body: validBody({ productImageUrl: "not-a-url" }) },
-      {
-        label: "productImageUrl with javascript: protocol",
-        body: validBody({ productImageUrl: "javascript:alert(1)" }),
-      },
-      {
-        label: "productImageUrl relative (/placeholder.svg)",
-        body: validBody({ productImageUrl: "/placeholder.svg" }),
-      },
-      { label: "missing both logoBase64 and logoUrl", body: { productImageUrl: PRODUCT_URL } },
-      { label: "empty body", body: {} },
-    ];
+  it.each([
+    ["JSON inválido", '{"broken": ', null],
+    ["corpo vazio", {}, "PRODUCT_URL_UNFETCHABLE"],
+    ["productImageUrl não-URL", validBody({ productImageUrl: "not-a-url" }), "PRODUCT_URL_UNFETCHABLE"],
+    ["host SSRF (metadata)", validBody({ productImageUrl: "https://169.254.169.254/latest" }), "PRODUCT_URL_UNFETCHABLE"],
+    ["sem logo", { productImageUrl: PRODUCT_URL }, null],
+    ["logo SVG", validBody({ logoUrl: undefined, logoBase64: "data:image/svg+xml;base64,PHN2Zz4=" }), "SVG_NOT_SUPPORTED"],
+  ] as Array<[string, unknown, string | null]>)("corpo inválido → 400 validation_failed (%s)", async (_l, b, code) => {
+    const r = await call({ body: b });
+    expect(r.status).toBe(400);
+    const d = await json(r);
+    expect(d.error).toBe("validation_failed");
+    if (code) expect(d.errorCode).toBe(code);
+  });
 
-    for (const { label, body } of invalidInputs) {
-      it(`returns 400 validation_failed for: ${label}`, async () => {
-        mockEdgeFunctionFetch({
-          "/generate-mockup": { status: 400, body: { error: "validation_failed" } },
-        });
-        const res = await post(body);
-        const data = await res.json();
-        expect(res.status).toBe(400);
-        expect(data.error).toBe("validation_failed");
-      });
+  it("host recusado → 422 product_image_unavailable / logo_unavailable", async () => {
+    S.product = "refused";
+    let r = await call({ body: validBody() });
+    expect(r.status).toBe(422);
+    let d = await json(r);
+    expect(d.error).toBe("product_image_unavailable");
+    expect(typeof d.message).toBe("string");
+    S.product = "ok"; S.logo = "refused";
+    r = await call({ body: validBody() });
+    expect(r.status).toBe(422);
+    expect((await json(r)).error).toBe("logo_unavailable");
+  });
+
+  it("200 com PNG sintético em memória: payload canônico (e logo base64)", async () => {
+    const r = await call({ body: validBody() });
+    expect(r.status).toBe(200);
+    const d = await json(r);
+    expect(d.ok).toBe(true);
+    expect(d.mockupUrl).toBe(MOCKUP_URL);
+    expect(d.mockup_url).toBe(d.mockupUrl);
+    expect(typeof d.mockup_id).toBe("string");
+    expect((d.mockup_id as string).length).toBeGreaterThan(0);
+    expect(d.technique).toBe("Serigrafia");
+    expect(typeof d.generation_ms).toBe("number");
+    expect(new Date(d.generated_at as string).toISOString()).toBe(d.generated_at);
+    const r2 = await call({ body: validBody({ logoUrl: undefined, logoBase64: `data:image/png;base64,${PNG_B64}` }) });
+    expect(r2.status).toBe(200);
+    expect((await json(r2)).ok).toBe(true);
+  });
+
+  it("falhas 500 → composition_failed / storage_upload_failed / url_resolution_failed", async () => {
+    S.bitmapError = "boom ao decodificar bitmap";
+    let r = await call({ body: validBody() });
+    expect(r.status).toBe(500);
+    const text = JSON.stringify(await json(r));
+    expect(text).toContain("composition_failed");
+    expect(text).not.toMatch(/at\s+\w+\s+\(/);
+    S.bitmapError = null; S.uploadError = { message: "bucket indisponível" };
+    r = await call({ body: validBody() });
+    expect(r.status).toBe(500);
+    expect((await json(r)).error).toBe("storage_upload_failed");
+    S.uploadError = null; S.publicUrl = null;
+    r = await call({ body: validBody() });
+    expect(r.status).toBe(500);
+    expect((await json(r)).error).toBe("url_resolution_failed");
+  });
+
+  it("runtime sem OffscreenCanvas → 501 canvas_runtime_unavailable", async () => {
+    realm.OffscreenCanvas = undefined;
+    try {
+      const r = await call({ body: validBody() });
+      expect(r.status).toBe(501);
+      expect((await json(r)).error).toBe("canvas_runtime_unavailable");
+    } finally {
+      realm.OffscreenCanvas = CanvasStub;
     }
-
-    it("rejects SVG logos with errorCode SVG_NOT_SUPPORTED", async () => {
-      const spec: EdgeFnResponseSpec = {
-        status: 400,
-        body: {
-          error: "validation_failed",
-          errorCode: "SVG_NOT_SUPPORTED",
-          message: "Logos SVG não são suportados. Use PNG ou JPG.",
-        },
-      };
-      mockEdgeFunctionFetch({ "/generate-mockup": spec });
-      const res = await post(
-        validBody({ logoUrl: undefined, logoBase64: "data:image/svg+xml;base64,PHN2Zz4=" }),
-      );
-      const data = await res.json();
-      expect(res.status).toBe(400);
-      expect(data.errorCode).toBe("SVG_NOT_SUPPORTED");
-    });
-
-    it("rejects disallowed fetch hosts with errorCode HOST_NOT_ALLOWED", async () => {
-      mockEdgeFunctionFetch({
-        "/generate-mockup": {
-          status: 400,
-          body: { error: "validation_failed", errorCode: "HOST_NOT_ALLOWED" },
-        },
-      });
-      const data = await (
-        await post(validBody({ productImageUrl: "https://169.254.169.254/latest/meta-data" }))
-      ).json();
-      expect(data.errorCode).toBe("HOST_NOT_ALLOWED");
-    });
   });
 
-  describe("authentication — 401", () => {
-    it("returns 401 without a token", async () => {
-      mockEdgeFunctionFetch({
-        "/generate-mockup": { status: 401, body: { error: "unauthorized" } },
-      });
-      const res = await post(validBody(), false);
-      expect(res.status).toBe(401);
-    });
-  });
-
-  describe("upstream image failures — 422", () => {
-    it("returns 422 product_image_unavailable when the product image cannot be fetched", async () => {
-      mockEdgeFunctionFetch({
-        "/generate-mockup": {
-          status: 422,
-          body: { error: "product_image_unavailable", message: "HTTP 404 fetching image" },
-        },
-      });
-      const res = await post(validBody());
-      const data = await res.json();
-      expect(res.status).toBe(422);
-      expect(data.error).toBe("product_image_unavailable");
-    });
-
-    it("returns 422 logo_unavailable when the logo cannot be fetched/decoded", async () => {
-      mockEdgeFunctionFetch({
-        "/generate-mockup": {
-          status: 422,
-          body: { error: "logo_unavailable", message: "HTTP 403 fetching image" },
-        },
-      });
-      const res = await post(validBody());
-      expect(res.status).toBe(422);
-      expect((await res.json()).error).toBe("logo_unavailable");
-    });
-  });
-
-  describe("composition / runtime failures", () => {
-    it("returns 504 composition_timeout (not 500) when the time budget is exceeded", async () => {
-      mockEdgeFunctionFetch({
-        "/generate-mockup": { status: 504, body: { error: "composition_timeout" } },
-      });
-      const res = await post(validBody());
-      expect(res.status).toBe(504);
-      expect(res.status).not.toBe(500);
-      expect((await res.json()).error).toBe("composition_timeout");
-    });
-
-    it("returns 501 canvas_runtime_unavailable when the runtime lacks OffscreenCanvas", async () => {
-      mockEdgeFunctionFetch({
-        "/generate-mockup": {
-          status: 501,
-          body: { error: "canvas_runtime_unavailable", message: "OffscreenCanvas não está disponível" },
-        },
-      });
-      const res = await post(validBody());
-      expect(res.status).toBe(501);
-      expect((await res.json()).error).toBe("canvas_runtime_unavailable");
-    });
-
-    it("returns 500 composition_failed for a generic canvas error", async () => {
-      mockEdgeFunctionFetch({
-        "/generate-mockup": { status: 500, body: { error: "composition_failed" } },
-      });
-      expect((await post(validBody())).status).toBe(500);
-    });
-
-    it("returns 500 storage_upload_failed when the upload fails", async () => {
-      mockEdgeFunctionFetch({
-        "/generate-mockup": { status: 500, body: { error: "storage_upload_failed" } },
-      });
-      const data = await (await post(validBody())).json();
-      expect(data.error).toBe("storage_upload_failed");
-    });
-
-    it("never leaks a stack trace in the error body", async () => {
-      mockEdgeFunctionFetch({
-        "/generate-mockup": {
-          status: 500,
-          body: { error: "internal_error", message: "Internal server error" },
-        },
-      });
-      const body = JSON.stringify(await (await post(validBody())).json());
-      expect(body).not.toMatch(/at\s+\w+\s+\(/);
-    });
-  });
-
-  describe("CORS", () => {
-    it("OPTIONS returns CORS headers", async () => {
-      mockEdgeFunctionFetch({
-        "/generate-mockup": {
-          status: 200,
-          body: null,
-          headers: { "access-control-allow-origin": "*" },
-        },
-      });
-      const res = await fetch(`${BASE}/generate-mockup`, { method: "OPTIONS" });
-      expect([200, 204]).toContain(res.status);
-    });
+  it("GET → 405 method_not_allowed; OPTIONS → preflight com CORS", async () => {
+    const g = await call({ method: "GET" });
+    expect(g.status).toBe(405);
+    expect((await json(g)).error).toBe("method_not_allowed");
+    const o = await call({ method: "OPTIONS" });
+    expect(o.status).toBeLessThan(400);
+    expect(o.headers.get("access-control-allow-origin")).toBeTruthy();
   });
 });
