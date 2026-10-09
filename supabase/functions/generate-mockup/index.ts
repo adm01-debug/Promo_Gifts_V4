@@ -1,4 +1,4 @@
-import { getCorsHeaders } from "../_shared/cors.ts";
+import { getMockupCorsHeaders } from "./cors.ts";
 import { authenticateRequest, authErrorResponse } from "../_shared/auth.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.49.4";
 import { assertSwitchEnabled } from "../_shared/kill_switch.ts";
@@ -340,7 +340,7 @@ async function compositeImages(
 // ─ Handler ─────────────────────────────────────────────────────────────────
 
 Deno.serve(async (req) => {
-  const corsHeaders = getCorsHeaders(req);
+  const corsHeaders = getMockupCorsHeaders(req);
 
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
