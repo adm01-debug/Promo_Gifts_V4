@@ -3,6 +3,12 @@
  * Um teste por cenário, nomeado com o ID; fixtures fixas em ./grupo6.fixtures.ts.
  * Nenhum teste desativado. Só comportamento que JÁ passa no código atual; o que
  * depende de correção não integrada está listado no relato como PENDENTE.
+ *
+ * PENDENTE (A15, "resposta antiga"): resposta de uma análise ANTERIOR que chega
+ * DEPOIS de uma análise mais nova ainda sobrescreve as cores
+ * (useLogoColorAnalysis não confere `controller.signal.aborted` após o await da
+ * edge). Hoje só vale o caso sequencial abaixo; o caso tardio fica para o cartão
+ * que corrigir o hook.
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import React from 'react';
@@ -71,12 +77,21 @@ interface DbResult { data: unknown; error: unknown; }
 /** Fila de respostas de INSERT por tabela (consumida em ordem). */
 const insertQueues: Record<string, DbResult[]> = {};
 
+/** Payloads recebidos pelo INSERT, por tabela (prova o que foi realmente gravado). */
+const insertPayloads: Record<string, Array<Record<string, unknown>>> = {};
+
 /** Mock chainable de from()/untypedFrom() do Supabase. */
 function makeBuilder(table: string) {
   let isInsert = false;
   const builder: Record<string, unknown> = {};
   for (const method of ['select', 'insert', 'update', 'delete', 'upsert', 'eq', 'order', 'limit']) {
-    builder[method] = vi.fn(() => { if (method === 'insert') isInsert = true; return builder; });
+    builder[method] = vi.fn((...args: unknown[]) => {
+      if (method === 'insert') {
+        isInsert = true;
+        (insertPayloads[table] ??= []).push(args[0] as Record<string, unknown>);
+      }
+      return builder;
+    });
   }
   const resolveResult = (): DbResult => {
     if (isInsert) {
@@ -119,6 +134,7 @@ async function montarGerador() {
 beforeEach(() => {
   vi.clearAllMocks();
   for (const key of Object.keys(insertQueues)) delete insertQueues[key];
+  for (const key of Object.keys(insertPayloads)) delete insertPayloads[key];
   seedGenerator();
 });
 
@@ -187,7 +203,7 @@ describe('A15 — erro de análise e resposta antiga', () => {
     HTMLCanvasElement.prototype.getContext = getContextOriginal;
   });
 
-  it('erro da análise vira estado de erro e uma nova análise descarta a resposta antiga', async () => {
+  it('erro da análise vira estado de erro e o resultado da análise anterior deixa de ser exibido', async () => {
     mocks.invokeEdge.mockResolvedValueOnce({ data: { colors: [COR_VERDE] }, error: null, requestId: 'r-verde' });
     const { result } = renderHook(() => useLogoColorAnalysis());
     await act(async () => { await result.current.analyzeImage(IMAGEM_BASE64_A); });
@@ -221,6 +237,12 @@ describe('A16 — falha de salvar e repetir', () => {
     expect(result.current.generatedMockup).toBe(MOCKUP_FRENTE_URL);
     expect(result.current.lastSavedRecordId).toBe(REGISTRO_SALVO_ID);
     expect(vi.mocked(toast.error)).not.toHaveBeenCalledWith(ERRO_SALVAR);
+
+    // O 1º insert levou o produto; a repetição foi gravada com product_id nulo.
+    const payloads = insertPayloads.generated_mockups;
+    expect(payloads).toHaveLength(2);
+    expect(payloads[0].product_id).toBe(PRODUTO_FIXTURE.id);
+    expect(payloads[1].product_id).toBeNull();
   });
 
   it('falha dura avisa o erro, mantém o mockup visível e repetir o salvar persiste de novo', async () => {
