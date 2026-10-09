@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const { builder, deleteMock, auth } = vi.hoisted(() => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const builderMock: Record<string, any> = {};
   const authState: { user: { id: string } | null } = { user: { id: 'user-1' } };
   return { builder: builderMock, deleteMock: vi.fn(), auth: authState };
