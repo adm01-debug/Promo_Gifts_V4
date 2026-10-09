@@ -3,9 +3,11 @@
  * chama o provedor com o MESMO tempo limite configurado no `generate-ad-image`,
  * e o estouro devolve erro genérico com `code: "timeout"`.
  *
- * Antes: `callAiWithTracking({...})` não passava `legacyTimeoutMs` — o provedor
- * caía no default e prompts longos estouravam antes da resposta (o
- * generate-ad-image já roda com `timeoutMs: 60_000` no cliente).
+ * Antes: `callAiWithTracking({...})` não passava `legacyTimeoutMs` (default de
+ * 45s no caminho legado) e o cliente (PromptGenerator) chamava com o default de
+ * 10s do invokeEdge, enquanto o generate-ad-image já roda com `timeoutMs: 60_000`
+ * no cliente. A prova do lado do cliente está em
+ * tests/components/magic-up-prompt-generator.timeout.test.tsx.
  *
  * O `index.ts` não é importado (sobe `Deno.serve` + `npm:`); o helper puro é
  * testado de verdade via `./timeout.ts`, e o restante é o contrato do fonte —

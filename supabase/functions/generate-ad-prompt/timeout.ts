@@ -10,13 +10,14 @@
 // O generate-ad-image já roda com 60 s no cliente (`timeoutMs: 60_000` em
 // `src/hooks/intelligence/useMagicUpGeneration.ts`), justamente porque a
 // geração no provedor demora mais que o default de 10 s do invokeEdge. Esta é a
-// edge irmã dele no Magic Up: usamos o MESMO teto para prompts longos não
-// estourarem antes da resposta.
+// edge irmã dele no Magic Up: o cliente (`PromptGenerator.tsx`) usa o MESMO
+// timeoutMs e o caminho legado desta edge acompanha esse teto. No caminho do
+// roteador o teto é o `timeout_ms` do provedor cadastrado no banco.
 export const AI_PROVIDER_TIMEOUT_MS = 60_000;
 
-// Código estável devolvido no corpo quando o provedor estoura o tempo limite.
-// O cliente usa `code` para diferenciar timeout de erro genérico, sem nunca
-// receber stack trace nem a mensagem crua do adapter.
+// Código estável devolvido no corpo quando o provedor estoura o tempo limite,
+// sem stack trace nem a mensagem crua do adapter. (Hoje o PromptGenerator só lê
+// `error.message`; o código fica disponível para quem precisar distinguir.)
 export const TIMEOUT_ERROR_CODE = "timeout";
 
 /**

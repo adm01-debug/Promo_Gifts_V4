@@ -6,10 +6,12 @@ import { runBotProtection } from '../_shared/bot-protection.ts';
 import { resolveAiApiKey } from "../_shared/ai-credentials.ts";
 // BUG-MAGICUP-TIMEOUT-1 FIX (E-14, 2026-08-17): o generate-ad-image já roda com
 // 60s no cliente (timeoutMs: 60_000 em useMagicUpGeneration.ts) porque a geração
-// no provedor demora mais que o default de 10s do invokeEdge. Esta edge irmã
-// ficou para trás: a chamada ao provedor usava o default do callAiWithTracking e
-// estourava em prompts longos. O helper puro fica em ./timeout.ts (testável fora
-// do runtime Deno) e é aplicado abaixo, na chamada e no catch.
+// no provedor demora mais que o default de 10s do invokeEdge. O cliente desta
+// edge (PromptGenerator.tsx) recebeu o mesmo timeoutMs. Aqui, o teto do caminho
+// legado do callAiWithTracking acompanha esse valor e o estouro vira resposta
+// clara (504 + code "timeout"). No caminho do roteador o teto é o timeout_ms do
+// provedor cadastrado (banco), que este arquivo não altera. O helper puro fica
+// em ./timeout.ts (testável fora do runtime Deno).
 import {
   AI_PROVIDER_TIMEOUT_MS,
   TIMEOUT_ERROR_CODE,
@@ -158,8 +160,9 @@ Create ${numPrompts} distinct scene concepts that:
       functionName: "generate-ad-prompt",
       model,
       apiKey: LOVABLE_API_KEY ?? '',
-      // E-14 / BUG-MAGICUP-TIMEOUT-1: mesmo teto do generate-ad-image (60s).
-      // Sem isto, prompts longos estouravam o default antes da resposta.
+      // E-14 / BUG-MAGICUP-TIMEOUT-1: mesmo valor do timeoutMs do cliente do
+      // generate-ad-image (60s). Vale só para o caminho legado (fetch direto ao
+      // gateway, com AbortController); o roteador usa o timeout_ms do provedor.
       legacyTimeoutMs: AI_PROVIDER_TIMEOUT_MS,
       requestBody: {
         messages: [
@@ -221,9 +224,10 @@ Create ${numPrompts} distinct scene concepts that:
     }
     // E-14 / BUG-MAGICUP-TIMEOUT-1: estouro do tempo limite do provedor devolve
     // erro GENÉRICO + `code: "timeout"` (nunca a mensagem crua do adapter nem
-    // stack trace). O cliente usa o código para tratar timeout separadamente.
+    // stack trace). O erro não é engolido: segue como 504 e fica no log, sem o
+    // conteúdo do pedido do usuário.
     if (isProviderTimeoutError(error)) {
-      console.error(`[ad-prompt] AI provider timeout após ${AI_PROVIDER_TIMEOUT_MS}ms`);
+      console.error("[ad-prompt] AI provider timeout (tempo limite do provedor estourou)");
       return new Response(
         JSON.stringify({
           error: "Tempo limite ao gerar prompts. Tente novamente em instantes.",

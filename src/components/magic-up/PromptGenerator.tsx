@@ -180,6 +180,11 @@ export function PromptGenerator({
       const { data, error } = await invokeEdge<{ prompts?: GeneratedPrompt[]; error?: string }>(
         'generate-ad-prompt',
         {
+          // E-14 (mesmo padrão do BUG-MAGICUP-TIMEOUT-1 em useMagicUpGeneration.ts):
+          // o default do invokeEdge é 10s, pouco para a IA gerar 4 cenários e a
+          // chamada esgotava as 2 tentativas mesmo quando a edge responderia.
+          // Mesmo valor da generate-ad-image (AI_PROVIDER_TIMEOUT_MS da edge).
+          timeoutMs: 60_000,
           body: {
             productName,
             productColor,
