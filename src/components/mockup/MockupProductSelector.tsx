@@ -9,7 +9,7 @@
 import { useState, useMemo, useRef, useCallback } from 'react';
 import { useDebounce } from '@/hooks/common';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { Search, Package, X, SearchX, Filter } from 'lucide-react';
+import { Search, Package, X, SearchX, Filter, AlertTriangle, RefreshCw } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -40,6 +40,29 @@ interface MockupProductSelectorProps {
   disabled?: boolean;
 }
 
+/** Fotos utilizáveis na geração: só URLs REAIS (a variante manda; as do produto só entram quando
+ * a variante não tem nenhuma). Cada foto é resolvida para o ORIGINAL (`/public`) via getCdnUrl —
+ * essa URL canônica também é a chave de deduplicação, então miniatura e original da MESMA foto
+ * colapsam num único item (SSOT do sufixo de tamanho: src/utils/image-utils). */
+export function getUsablePhotos(
+  variant: ExternalVariantStock | null,
+  product: Product | null,
+): string[] {
+  const real = (urls: (string | null | undefined)[]) =>
+    urls.filter((url): url is string => !!url && !url.includes('placeholder'));
+  const own = real([...(variant?.images ?? []), variant?.selected_thumbnail]);
+  const raw = own.length ? own : real([...(product?.images ?? []), product?.image_url]);
+  const seen = new Set<string>();
+  const photos: string[] = [];
+  for (const url of raw) {
+    const original = getCdnUrl(url, 'public');
+    if (seen.has(original)) continue;
+    seen.add(original);
+    photos.push(original);
+  }
+  return photos;
+}
+
 export function MockupProductSelector({
   selection,
   onSelect,
@@ -65,6 +88,8 @@ export function MockupProductSelector({
 
   // Internal state: product picked, loading full data or choosing color
   const [pendingProductId, setPendingProductId] = useState<string | null>(null);
+  // Estado "sem foto utilizável": a variante escolhida não tem foto real para gerar
+  const [noPhoto, setNoPhoto] = useState(false);
 
   const handleScroll = useCallback(() => {
     if (!scrollParentRef.current) return;
@@ -107,37 +132,58 @@ export function MockupProductSelector({
   const isSearching = debouncedQuery.length >= 2;
   const resultCount = sortedProducts.length;
 
+  /** Abre o passo de variante/cor do produto (selecionado ou recém-escolhido). */
+  const startPending = (productId: string) => {
+    setNoPhoto(false);
+    setPendingProductId(productId);
+  };
+
+  /** Volta para a busca — usada pelo alerta "sem foto utilizável" e pelo "Voltar". */
+  const backToSearch = () => {
+    setNoPhoto(false);
+    setPendingProductId(null);
+  };
+
   const handleProductPick = (product: Product) => {
-    setPendingProductId(product.id);
+    startPending(product.id);
     setSearchQuery('');
   };
 
+  /**
+   * Confirma a cor escolhida. Sem foto utilizável NÃO avança (nada de `/placeholder.svg` na
+   * geração): mostra o alerta e oferece outra foto ou outro produto. A troca de variante emite
+   * sempre uma seleção completa, então cliente e logo seguem intactos.
+   */
   const handleColorSelect = (variant: ExternalVariantStock | null, product: Product) => {
-    const variantThumb = variant?.selected_thumbnail
-      ? getCdnUrl(variant.selected_thumbnail, 'thumbnail')
-      : null;
-    const variantFirstImg = variant?.images?.[0] ? getCdnUrl(variant.images[0], 'thumbnail') : null;
-    const imageUrl = variantThumb || variantFirstImg || product.images?.[0] || '/placeholder.svg';
+    const photos = getUsablePhotos(variant, product);
+    if (!photos.length) {
+      setNoPhoto(true);
+      return;
+    }
 
     onSelect({
       product,
       variant,
       colorName: variant?.color_name ?? undefined,
       colorHex: variant?.color_hex ?? undefined,
-      imageUrl,
+      imageUrl: photos[0],
     });
     setPendingProductId(null);
+    setNoPhoto(false);
     setIsDialogOpen(false);
   };
 
   const handleClear = () => {
     onSelect(null);
     setPendingProductId(null);
+    setNoPhoto(false);
     setSearchQuery('');
   };
 
   // ─── State: Product + Color confirmed ──────────────────────────────
-  if (selection) {
+  // `!pendingProductId`: enquanto o usuário troca a variante de um produto já confirmado, o
+  // passo pendente (escolha de cor) vence a ficha — senão o botão "Trocar variante" não abriria nada.
+  if (selection && !pendingProductId) {
     return (
       <div className="flex items-center gap-3 rounded-lg border border-border/30 bg-card p-3">
         <div className="h-11 w-11 shrink-0 overflow-hidden rounded-lg bg-muted">
@@ -180,6 +226,16 @@ export function MockupProductSelector({
         <Button
           size="icon"
           variant="ghost"
+          className="h-7 w-7 shrink-0"
+          onClick={() => startPending(selection.product.id)}
+          disabled={disabled}
+          aria-label={`Trocar variante de ${selection.product.name}`}
+        >
+          <RefreshCw aria-hidden="true" className="h-3.5 w-3.5" />
+        </Button>
+        <Button
+          size="icon"
+          variant="ghost"
           className="h-7 w-7 shrink-0 hover:bg-destructive/10 hover:text-destructive"
           onClick={handleClear}
           disabled={disabled}
@@ -194,21 +250,60 @@ export function MockupProductSelector({
   // ─── State: Product picked, loading full data + choosing color ─────
   if (pendingProductId) {
     return (
-      <ProductLoaderAndColorSelector
-        productId={pendingProductId}
-        onSelect={handleColorSelect}
-        onBack={() => setPendingProductId(null)}
-      />
+      <div className="space-y-3">
+        {noPhoto && (
+          <div
+            role="alert"
+            className="space-y-2 rounded-lg border border-destructive/30 bg-destructive/5 p-3"
+          >
+            <div className="flex items-start gap-2">
+              <AlertTriangle
+                aria-hidden="true"
+                className="mt-0.5 h-4 w-4 shrink-0 text-destructive"
+              />
+              <div className="min-w-0">
+                <p className="text-sm font-medium">Sem foto utilizável</p>
+                <p className="text-[11px] text-muted-foreground">
+                  Esta cor não tem foto real para gerar o mockup.
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2 pl-6">
+              <Button
+                size="sm"
+                variant="outline"
+                className="h-7 text-[11px]"
+                onClick={() => setNoPhoto(false)}
+              >
+                Escolher outra foto
+              </Button>
+              <Button size="sm" variant="ghost" className="h-7 text-[11px]" onClick={backToSearch}>
+                Escolher outro produto
+              </Button>
+            </div>
+          </div>
+        )}
+        <ProductLoaderAndColorSelector
+          productId={pendingProductId}
+          onSelect={handleColorSelect}
+          onBack={backToSearch}
+        />
+      </div>
     );
   }
 
   // ─── State: Product list (search) ──────────────────────────────────
   return (
     <div className="flex flex-col gap-3">
+      <p id="mockup-product-empty-hint" className="text-[11px] text-muted-foreground">
+        Nenhum produto selecionado — busque o brinde para orientar a técnica, a área e a revisão
+        visual.
+      </p>
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogTrigger asChild>
           <Button
             variant="outline"
+            aria-describedby="mockup-product-empty-hint"
             className="group flex h-24 w-full flex-col gap-2 rounded-xl border-dashed border-primary/30 bg-primary/5 transition-all duration-300 hover:border-primary/50 hover:bg-primary/10"
             disabled={disabled}
           >
@@ -300,7 +395,12 @@ export function MockupProductSelector({
                 onScroll={handleScroll}
               >
                 {isLoadingProducts || isFilterPending ? (
-                  <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+                  <div
+                    role="status"
+                    aria-busy="true"
+                    aria-label="Carregando produtos"
+                    className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4"
+                  >
                     {Array.from({ length: 12 }).map((_, i) => (
                       <div
                         key={i}
