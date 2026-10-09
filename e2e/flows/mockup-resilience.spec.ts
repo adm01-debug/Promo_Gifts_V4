@@ -99,8 +99,10 @@ test.describe("Mockup Resilience and Error Handling", () => {
     // 3. Overlay de geração visível enquanto "espera"
     await expect(page.locator('[data-testid="generating-overlay"]')).toBeVisible();
 
-    // 4. Mensagem de erro controlada (504 é transitório: 1 retry + backoff de 2s)
-    await expect(page.getByText(/IA service timeout/i).first()).toBeVisible({ timeout: 20000 });
+    // 4. Mensagem de erro controlada. O 504 é retentado em duas camadas: invokeEdge
+    //    (2 tentativas, backoff ~200ms) e mockupGenerationService (1 retry após 2s
+    //    para erro com "timeout"). Com 3s por resposta isso soma ~15s antes do erro final.
+    await expect(page.getByText(/IA service timeout/i).first()).toBeVisible({ timeout: 30000 });
 
     // 5. Botão de gerar volta a ficar habilitado (a tela se recupera)
     await expect(generateBtn).toBeEnabled();
@@ -146,11 +148,12 @@ test.describe("Mockup Resilience and Error Handling", () => {
       .first()
       .setInputFiles(LOGO);
 
-    // 2. 1ª chamada falha, 2ª sucede
-    let callCount = 0;
+    // 2. A geração falha enquanto `falhar` for true e sucede depois. Não dá para
+    //    contar chamadas: invokeEdge já retenta 5xx (2 tentativas por clique), então
+    //    "1ª chamada falha, 2ª sucede" faria o PRIMEIRO clique terminar com sucesso.
+    let falhar = true;
     await page.route("**/functions/v1/generate-mockup", async (route) => {
-      callCount++;
-      if (callCount === 1) {
+      if (falhar) {
         await route.fulfill({
           status: 500,
           contentType: "application/json",
@@ -179,10 +182,12 @@ test.describe("Mockup Resilience and Error Handling", () => {
     // As seleções continuam na tela
     await expect(page.getByTestId("mockup-client-chip")).toBeVisible();
 
-    // Segunda tentativa — resultado na tela
+    // Segunda tentativa — a geração passa a suceder; resultado na tela
+    falhar = false;
     await generateBtn.click();
     await expect(page.getByTestId("mockup-result-card")).toBeVisible({ timeout: 15000 });
-    await expect(page.locator('img[src="https://example.com/mockup.png"]')).toBeVisible();
+    // .first(): evita violação de strict mode se mais de um <img> exibir o mesmo mockup.
+    await expect(page.locator('img[src="https://example.com/mockup.png"]').first()).toBeVisible();
   });
 
   test("should show skeletons during data loading deterministically", async ({ page }) => {
