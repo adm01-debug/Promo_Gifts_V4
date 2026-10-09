@@ -8,6 +8,47 @@ import { logger } from '@/lib/logger';
 import { uploadLogoToStorage } from '@/lib/mockup-storage';
 const LOCAL_STORAGE_KEY = 'mockup_draft_v1';
 const AUTO_SAVE_DELAY = 2000; // 2 segundos de debounce
+// Marca, no logoPreview do localStorage, uma logo data: URL que não cabe ali (quota).
+// O sufixo é a impressão digital da imagem, que também vai no nome do arquivo enviado
+// ao bucket: só a MESMA imagem, na MESMA área (id), é recuperada do backend.
+// null continua significando "sem logo" (inclusive removida pelo usuário) e nunca é preenchido.
+const LOGO_PENDING_PREFIX = 'draft-logo-pending:';
+const LOGO_UPLOAD_ERROR = 'Não foi possível salvar a logo no rascunho';
+
+/** FNV-1a 32 bits em hex — identifica a imagem sem guardar o base64. */
+function logoFingerprint(dataUrl: string): string {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < dataUrl.length; i++) {
+    h ^= dataUrl.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return (h >>> 0).toString(16).padStart(8, '0');
+}
+
+/**
+ * Troca os marcadores de logo pendente do rascunho local pela URL http do backend
+ * quando a área de mesmo id guarda o upload da mesma imagem; senão a área fica sem logo.
+ */
+function resolvePendingLogos(
+  local: MockupDraftData,
+  backend: MockupDraftData | null,
+): MockupDraftData {
+  return {
+    ...local,
+    personalizationAreas: local.personalizationAreas.map((a) => {
+      if (!a.logoPreview?.startsWith(LOGO_PENDING_PREFIX)) return a;
+      const fp = a.logoPreview.slice(LOGO_PENDING_PREFIX.length);
+      const uploaded = backend?.personalizationAreas.find((ba) => ba.id === a.id)?.logoPreview;
+      const match = uploaded?.startsWith('http') && uploaded.includes(`-${fp}.`) ? uploaded : null;
+      if (!match) {
+        logger.warn('[useMockupDraft] logo do rascunho local não chegou ao backend', {
+          areaId: a.id,
+        });
+      }
+      return { ...a, logoPreview: match };
+    }),
+  };
+}
 
 export interface MockupDraftData {
   productId: string | null;
@@ -32,8 +73,23 @@ export function useMockupDraft(options: UseMockupDraftOptions = {}) {
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [error, setError] = useState<string | null>(null);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  // data: URL -> URL pública já enviada ao bucket (evita reenviar a cada autosave)
-  const uploadedLogosRef = useRef<Map<string, string>>(new Map());
+  // data: URL -> upload (Promise) ao bucket. Guardar a Promise, e não o resultado,
+  // faz dois autosaves simultâneos compartilharem um único upload da mesma logo.
+  const uploadedLogosRef = useRef<Map<string, Promise<string | null>>>(new Map());
+  const fingerprintsRef = useRef<Map<string, string>>(new Map());
+  // Ordem dos saves: um save superado por outro mais novo não grava, e os upserts
+  // são encadeados para que o mais antigo nunca chegue depois do mais novo.
+  const saveSeqRef = useRef(0);
+  const upsertChainRef = useRef<Promise<void>>(Promise.resolve());
+
+  const fingerprintOf = useCallback((dataUrl: string): string => {
+    let fp = fingerprintsRef.current.get(dataUrl);
+    if (!fp) {
+      fp = logoFingerprint(dataUrl);
+      fingerprintsRef.current.set(dataUrl, fp);
+    }
+    return fp;
+  }, []);
 
   const saveToLocal = useCallback(
     (data: MockupDraftData) => {
@@ -42,21 +98,25 @@ export function useMockupDraft(options: UseMockupDraftOptions = {}) {
         // BUG-DRAFT-LOCAL-STORAGE-QUOTA FIX: strip data URL logos before writing to
         // localStorage — a single 5MB upload encodes to ~7MB base64 which easily
         // blows the 5-10MB per-origin quota and causes a silent DOMException.
-        // Only keep http(s) URLs (already-uploaded logos); the loadDraft
-        // re-hydration path restores data URLs from the backend when available.
+        // Only keep http(s) URLs (already-uploaded logos); a data: URL becomes a
+        // pending marker that loadDraft resolves against the backend upload.
         const safeData: MockupDraftData = {
           ...data,
-          personalizationAreas: data.personalizationAreas.map((a) => ({
-            ...a,
-            logoPreview: a.logoPreview?.startsWith('http') ? a.logoPreview : null,
-          })),
+          personalizationAreas: data.personalizationAreas.map((a) => {
+            const preview = a.logoPreview;
+            if (preview?.startsWith('http')) return a;
+            if (preview?.startsWith('data:')) {
+              return { ...a, logoPreview: `${LOGO_PENDING_PREFIX}${fingerprintOf(preview)}` };
+            }
+            return { ...a, logoPreview: null };
+          }),
         };
         localStorage.setItem(key, JSON.stringify(safeData));
       } catch (err) {
         logger.error('Erro ao salvar no localStorage:', err);
       }
     },
-    [user?.id, draftKey],
+    [user?.id, draftKey, fingerprintOf],
   );
 
   const loadFromLocal = useCallback((): MockupDraftData | null => {
@@ -80,28 +140,53 @@ export function useMockupDraft(options: UseMockupDraftOptions = {}) {
     async (data: MockupDraftData): Promise<boolean> => {
       if (!user) return false;
 
+      const seq = ++saveSeqRef.current;
+      let releaseChain: () => void = () => undefined;
       setIsSaving(true);
       setError(null);
 
       try {
         // Logo recém-enviada é data: URL — sobe ao bucket de logos do fluxo normal e
         // guarda só a URL http no rascunho (nunca base64 na linha do banco).
+        let logoUploadFailed = false;
         const areasWithLogos = await Promise.all(
-          data.personalizationAreas.map(async (a) => {
+          data.personalizationAreas.map(async (a, areaIndex) => {
             const preview = a.logoPreview;
             if (!preview) return { ...a, logoPreview: null };
             if (preview.startsWith('http')) return a;
             if (!preview.startsWith('data:')) return { ...a, logoPreview: null };
-            let url = uploadedLogosRef.current.get(preview) ?? null;
+            const cached = uploadedLogosRef.current.get(preview);
+            const upload: Promise<string | null> =
+              cached ??
+              uploadLogoToStorage(user.id, preview, `draft-${draftKey}-${fingerprintOf(preview)}`);
+            if (!cached) uploadedLogosRef.current.set(preview, upload);
+            let url: string | null = null;
+            let uploadError: unknown = null;
+            try {
+              url = await upload;
+            } catch (err: unknown) {
+              uploadError = err;
+            }
             if (!url) {
-              url = await uploadLogoToStorage(user.id, preview, `draft-${draftKey}`);
-              if (url) uploadedLogosRef.current.set(preview, url);
+              // Falha não fica no cache: o próximo autosave tenta de novo.
+              if (uploadedLogosRef.current.get(preview) === upload) {
+                uploadedLogosRef.current.delete(preview);
+              }
+              logoUploadFailed = true;
+              logger.warn('[useMockupDraft] upload da logo do rascunho falhou', {
+                draftKey,
+                areaIndex,
+                areaId: a.id,
+                error: uploadError,
+              });
             }
             return { ...a, logoPreview: url };
           }),
         );
 
-        const safeLogoData = areasWithLogos.find((a) => a.logoPreview)?.logoPreview || null;
+        // logo_data só leva a logo da 1ª área: loadFromBackend a usa para preencher
+        // areas[0], então gravar a logo de outra área aqui a poria na área errada.
+        const safeLogoData = areasWithLogos[0]?.logoPreview ?? null;
 
         // BUG-A FIX: IDs used directly — no pre-validation queries.
         // FK violations are caught below and handled via fallback.
@@ -122,6 +207,16 @@ export function useMockupDraft(options: UseMockupDraftOptions = {}) {
           logo_data: safeLogoData,
           updated_at: new Date().toISOString(),
         };
+
+        // Um save mais novo começou enquanto este subia a logo: ele grava o estado
+        // atual; gravar este só sobrescreveria o rascunho com dados velhos.
+        // A cadeia garante que a gravação (inclusive o fallback FK) de um save
+        // termina antes da do save seguinte começar.
+        await upsertChainRef.current;
+        if (seq !== saveSeqRef.current) return false;
+        upsertChainRef.current = new Promise<void>((resolve) => {
+          releaseChain = resolve;
+        });
 
         const { error: upsertError } = await supabase
           .from('mockup_drafts')
@@ -162,17 +257,19 @@ export function useMockupDraft(options: UseMockupDraftOptions = {}) {
         }
 
         setLastSaved(new Date());
-        setError(null);
+        // A logo que não subiu não pode sumir do rascunho em silêncio.
+        setError(logoUploadFailed ? LOGO_UPLOAD_ERROR : null);
         return true;
       } catch (err: unknown) {
         logger.error('Erro ao salvar rascunho no backend:', err);
         setError(err instanceof Error ? err.message : 'Erro ao salvar rascunho');
         return false;
       } finally {
-        setIsSaving(false);
+        releaseChain();
+        if (seq === saveSeqRef.current) setIsSaving(false);
       }
     },
-    [user, draftKey],
+    [user, draftKey, fingerprintOf],
   );
 
   const loadFromBackend = useCallback(async (): Promise<MockupDraftData | null> => {
@@ -254,43 +351,25 @@ export function useMockupDraft(options: UseMockupDraftOptions = {}) {
         loadFromBackend(),
       ]);
 
-      if (localData && backendData) {
-        const localDate = new Date(localData.updatedAt || 0);
+      // Pareamento de logo SÓ por id de área e SÓ para marcador de logo pendente
+      // (a mesma imagem, pela impressão digital). Logo ausente (null) nunca é
+      // preenchida pelo outro lado: é assim que uma logo removida pelo usuário
+      // não volta e que uma área nova não herda a logo de outra área.
+      // (O antigo re-hydrate local→backend por índice saiu: o local não guarda mais
+      // data: URL, só URL http — que o backend já tem — ou o marcador pendente.)
+      const local = localData ? resolvePendingLogos(localData, backendData) : null;
+
+      if (local && backendData) {
+        const localDate = new Date(local.updatedAt || 0);
         const backendDate = new Date(backendData.updatedAt || 0);
-        const chosen = backendDate > localDate ? backendData : localData;
-        // AUDIT 2026-06-17 — data: URL logos are intentionally NOT persisted to the
-        // backend draft (saveToBackend only keeps http logos to avoid multi-MB base64
-        // rows), but localStorage keeps the full preview. When the backend copy wins
-        // the recency check it would otherwise come back with the logo stripped, so a
-        // freshly-uploaded logo silently vanished on reload. Re-hydrate any missing
-        // logo previews from the local copy (matched by area id, falling back to index).
-        if (chosen === backendData) {
-          chosen.personalizationAreas = chosen.personalizationAreas.map((a, i) => {
-            if (a.logoPreview) return a;
-            const localMatch =
-              localData.personalizationAreas.find((la) => la.id === a.id) ??
-              localData.personalizationAreas[i];
-            return localMatch?.logoPreview ? { ...a, logoPreview: localMatch.logoPreview } : a;
-          });
-        }
-        // Inverso: o localStorage descarta data: URLs; se ele vence, recupera a URL
-        // do storage guardada no backend (por id de área, senão por índice).
-        if (chosen === localData) {
-          chosen.personalizationAreas = chosen.personalizationAreas.map((a, i) => {
-            if (a.logoPreview) return a;
-            const backendMatch =
-              backendData.personalizationAreas.find((ba) => ba.id === a.id) ??
-              backendData.personalizationAreas[i];
-            return backendMatch?.logoPreview ? { ...a, logoPreview: backendMatch.logoPreview } : a;
-          });
-        }
-        return chosen;
+        return backendDate > localDate ? backendData : local;
       }
 
-      return backendData || localData;
+      return backendData || local;
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Erro ao carregar rascunho');
-      return loadFromLocal();
+      const fallback = loadFromLocal();
+      return fallback ? resolvePendingLogos(fallback, null) : null;
     } finally {
       setIsLoading(false);
     }

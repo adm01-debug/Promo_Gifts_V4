@@ -464,8 +464,8 @@ describe('logo do rascunho', () => {
     return hook;
   }
 
-  function firstPayload(): Record<string, unknown> {
-    return (mockUpsert.mock.calls[0] as unknown[])[0] as Record<string, unknown>;
+  function firstPayload(i = 0): Record<string, unknown> {
+    return (mockUpsert.mock.calls[i] as unknown[])[0] as Record<string, unknown>;
   }
 
   it('sobe a data: URL ao storage e grava a URL http no rascunho do backend', async () => {
@@ -497,31 +497,72 @@ describe('logo do rascunho', () => {
     );
   });
 
-  it('quando o localStorage (sem logo) vence, recupera a URL http do backend', async () => {
+  // URL que o storage devolve: contém o nome de arquivo pedido (como o real).
+  const urlFor = (name: string) => `https://storage.test/mockup-assets/u/logos/1-${name}.png`;
+  const OTHER_LOGO = urlFor('draft-default-deadbeef'); // upload de OUTRA imagem
+
+  // Backend mais VELHO que o local, com a área informada (só os campos lidos).
+  async function loadWith(areaId: string, logo: string | null, error: unknown = null) {
     const { useMockupDraft } = await import('../useMockupDraft');
-    localStorage.setItem(localKey(), JSON.stringify(draftWithLogo(null, T_NEW)));
-    mockMaybeSingle.mockResolvedValue({
-      data: {
-        product_id: 'prod-1',
-        product_name: 'Caneca',
-        technique_id: 'tec-1',
-        technique_name: 'Serigrafia',
-        client_id: 'cli-1',
-        client_name: 'João',
-        personalization_areas: [{ id: 'area-1', name: 'Frente', logoPreview: STORAGE_URL }],
-        logo_data: STORAGE_URL,
-        updated_at: T_OLD,
-      },
-      error: null,
-    });
+    const row = error
+      ? null
+      : {
+          personalization_areas: [{ id: areaId, logoPreview: logo }],
+          logo_data: logo,
+          updated_at: T_OLD,
+        };
+    mockMaybeSingle.mockResolvedValue({ data: row, error });
     const { result } = renderHook(() => useMockupDraft());
-    let draft: MockupDraftData | null = null;
+    const box: { draft: MockupDraftData | null } = { draft: null };
     await act(async () => {
-      draft = await result.current.loadDraft();
+      box.draft = await result.current.loadDraft();
     });
-    expect((draft as MockupDraftData | null)?.personalizationAreas[0].logoPreview).toBe(
-      STORAGE_URL,
+    return box.draft?.personalizationAreas[0];
+  }
+
+  it('localStorage guarda marcador da logo pendente, nunca o base64', async () => {
+    await saveAndFlush(draftWithLogo(DATA_URL));
+    const raw = localStorage.getItem(localKey()) ?? '';
+    expect(raw).not.toContain('data:image');
+    expect(raw).toMatch(/"logoPreview":"draft-logo-pending:[0-9a-f]{8}"/);
+  });
+
+  it('quando o localStorage vence, recupera do backend a URL do upload da MESMA logo', async () => {
+    mockUploadLogo.mockImplementation((_u: string, _d: string, name: string) =>
+      Promise.resolve(urlFor(name)),
     );
+    await saveAndFlush(draftWithLogo(DATA_URL, T_NEW));
+    const url = urlFor(String(mockUploadLogo.mock.calls[0]?.[2]));
+    expect(url).toMatch(/-draft-default-[0-9a-f]{8}\.png$/);
+    expect((await loadWith('area-1', url))?.logoPreview).toBe(url);
+  });
+
+  // [caso, logo local, id da área local, logo do backend na area-1] -> área local sem logo
+  it.each([
+    ['área nova sem logo NÃO herda a logo de outra área', null, 'area-nova', STORAGE_URL],
+    ['logo pendente de área nova NÃO pega a de outra área', DATA_URL, 'area-nova', OTHER_LOGO],
+    ['logo pendente NÃO pega logo antiga da mesma área', DATA_URL, 'area-1', OTHER_LOGO],
+    ['logo removida pelo usuário NÃO volta do backend', null, 'area-1', STORAGE_URL],
+  ])('%s', async (_t, localLogo, localAreaId, backendLogo) => {
+    const local = draftWithLogo(localLogo, T_NEW);
+    local.personalizationAreas[0].id = localAreaId;
+    await saveAndFlush(local);
+    const area = await loadWith('area-1', backendLogo);
+    expect(area?.id).toBe(localAreaId);
+    expect(area?.logoPreview).toBeNull();
+  });
+
+  it('backend com erro: marcador pendente nunca vaza como logoPreview', async () => {
+    await saveAndFlush(draftWithLogo(DATA_URL, T_NEW));
+    expect((await loadWith('area-1', null, { message: 'denied' }))?.logoPreview).toBeNull();
+  });
+
+  it('logo_data só leva a logo da 1ª área (não a de outra área)', async () => {
+    const d = draftWithLogo(null);
+    d.personalizationAreas.push({ ...d.personalizationAreas[0], id: 'a2', logoPreview: DATA_URL });
+    await saveAndFlush(d);
+    expect(JSON.stringify(firstPayload().personalization_areas)).toContain(STORAGE_URL);
+    expect(firstPayload().logo_data).toBeNull();
   });
 
   it('não reenvia a mesma logo a cada autosave', async () => {
@@ -536,12 +577,61 @@ describe('logo do rascunho', () => {
     expect(mockUpsert).toHaveBeenCalledTimes(2);
   });
 
-  it('falha no upload: salva o rascunho sem logo (sem base64) e não quebra', async () => {
-    mockUploadLogo.mockResolvedValue(null);
-    await saveAndFlush(draftWithLogo(DATA_URL));
-    const payload = firstPayload();
-    expect(payload.logo_data).toBeNull();
-    expect(JSON.stringify(payload)).not.toContain('data:image');
+  it.each([
+    ['upload devolve null', () => mockUploadLogo.mockResolvedValueOnce(null)],
+    ['upload LANÇA erro', () => mockUploadLogo.mockRejectedValueOnce(new Error('network down'))],
+  ])('%s: salva sem logo, logger.warn com contexto, erro exposto e retry', async (_t, arrange) => {
+    const { logger } = await import('@/lib/logger');
+    vi.mocked(logger.warn).mockClear();
+    arrange();
+    const { result } = await saveAndFlush(draftWithLogo(DATA_URL));
+    expect(mockUpsert).toHaveBeenCalledTimes(1);
+    expect(firstPayload().logo_data).toBeNull();
+    expect(JSON.stringify(firstPayload())).not.toContain('data:image');
+    expect(logger.warn).toHaveBeenCalledWith(
+      expect.stringContaining('upload da logo'),
+      expect.objectContaining({ draftKey: 'default', areaIndex: 0, areaId: 'area-1' }),
+    );
+    expect(result.current.error).toBe('Não foi possível salvar a logo no rascunho');
+
+    // falha não fica em cache: o próximo autosave reenvia e limpa o erro
+    act(() => {
+      result.current.saveDraft(draftWithLogo(DATA_URL));
+    });
+    await act(async () => {
+      await vi.runAllTimersAsync();
+    });
+    expect(mockUploadLogo).toHaveBeenCalledTimes(2);
+    expect(firstPayload(1).logo_data).toBe(STORAGE_URL);
+    expect(result.current.error).toBeNull();
+  });
+
+  it('dois autosaves com upload pendente: um só upload e só a versão nova grava', async () => {
+    let finishUpload: (url: string) => void = () => undefined;
+    mockUploadLogo.mockReturnValue(
+      new Promise<string>((resolve) => {
+        finishUpload = resolve;
+      }),
+    );
+    const { useMockupDraft } = await import('../useMockupDraft');
+    const { result } = renderHook(() => useMockupDraft());
+    // cada save passa o debounce e fica preso no upload: os dois rodam ao mesmo tempo
+    for (const productName of ['Versão antiga', 'Versão nova']) {
+      act(() => {
+        result.current.saveDraft({ ...draftWithLogo(DATA_URL), productName });
+      });
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(2000);
+      });
+    }
+    expect(mockUploadLogo).toHaveBeenCalledTimes(1);
+    await act(async () => {
+      finishUpload(STORAGE_URL);
+      await vi.runAllTimersAsync();
+    });
+    const names = mockUpsert.mock.calls.map((_c, i) => firstPayload(i).product_name);
+    expect(names).toEqual(['Versão nova']);
+    expect(mockUploadLogo).toHaveBeenCalledTimes(1);
   });
 
   it('rascunho sem logo continua funcionando e não chama o storage', async () => {
