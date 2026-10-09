@@ -4,6 +4,17 @@ import { callAiWithTracking, QuotaExceededError } from '../_shared/ai-usage.ts';
 import { z } from '../_shared/zod-validate.ts';
 import { runBotProtection } from '../_shared/bot-protection.ts';
 import { resolveAiApiKey } from "../_shared/ai-credentials.ts";
+// BUG-MAGICUP-TIMEOUT-1 FIX (E-14, 2026-08-17): o generate-ad-image já roda com
+// 60s no cliente (timeoutMs: 60_000 em useMagicUpGeneration.ts) porque a geração
+// no provedor demora mais que o default de 10s do invokeEdge. Esta edge irmã
+// ficou para trás: a chamada ao provedor usava o default do callAiWithTracking e
+// estourava em prompts longos. O helper puro fica em ./timeout.ts (testável fora
+// do runtime Deno) e é aplicado abaixo, na chamada e no catch.
+import {
+  AI_PROVIDER_TIMEOUT_MS,
+  TIMEOUT_ERROR_CODE,
+  isProviderTimeoutError,
+} from "./timeout.ts";
 
 Deno.serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
@@ -147,6 +158,9 @@ Create ${numPrompts} distinct scene concepts that:
       functionName: "generate-ad-prompt",
       model,
       apiKey: LOVABLE_API_KEY ?? '',
+      // E-14 / BUG-MAGICUP-TIMEOUT-1: mesmo teto do generate-ad-image (60s).
+      // Sem isto, prompts longos estouravam o default antes da resposta.
+      legacyTimeoutMs: AI_PROVIDER_TIMEOUT_MS,
       requestBody: {
         messages: [
           { role: "system", content: systemPrompt },
@@ -204,6 +218,19 @@ Create ${numPrompts} distinct scene concepts that:
     }
     if ((error as any)?.status === 401 || (error as any)?.status === 403) {
       return authErrorResponse(error, corsHeaders);
+    }
+    // E-14 / BUG-MAGICUP-TIMEOUT-1: estouro do tempo limite do provedor devolve
+    // erro GENÉRICO + `code: "timeout"` (nunca a mensagem crua do adapter nem
+    // stack trace). O cliente usa o código para tratar timeout separadamente.
+    if (isProviderTimeoutError(error)) {
+      console.error(`[ad-prompt] AI provider timeout após ${AI_PROVIDER_TIMEOUT_MS}ms`);
+      return new Response(
+        JSON.stringify({
+          error: "Tempo limite ao gerar prompts. Tente novamente em instantes.",
+          code: TIMEOUT_ERROR_CODE,
+        }),
+        { status: 504, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
     console.error("[ad-prompt] Error:", error);
     const message = error instanceof Error ? error.message : "Falha ao gerar prompts";
