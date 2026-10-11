@@ -87,10 +87,11 @@ Deno.serve(async (req: Request) => {
     const anonymizedEmail = `deleted-${userId}@anonymized.invalid`;
 
     // 1) Anonimiza o perfil — uuid opaco preserva FKs sem vazar identidade.
-    //    is_active só vira false depois do ban de auth.users: se a API
-    //    administrativa falhar no passo 3, o usuário fica com login vivo e
-    //    perfil ATIVO (já sem PII) — consegue retentar. Desativar aqui
-    //    deixaria conta logável com perfil morto.
+    //    is_active vira false no passo 3, ANTES do ban de auth.users:
+    //    flag falha → aborta com a conta íntegra e re-tentável; ban
+    //    falha → a flag é revertida. Nunca sobra estado que só um admin
+    //    possa reparar (conta banida com flag ativa, ou inativa com
+    //    login vivo).
     const { error: profileErr, count: profileCount } = await supabaseAdmin
       .from("profiles")
       .update({
@@ -211,42 +212,19 @@ Deno.serve(async (req: Request) => {
       log.warn("login_attempts_wipe_failed", { error: attemptsErr.message });
     }
 
-    // 3) Passo irreversível por último: anonimiza auth.users (e-mail,
-    //    telefone e user_metadata — updateUserById substitui o objeto
-    //    inteiro) e bane a conta ~100 anos. Depois deste update o usuário
-    //    não loga mais, então ele só roda quando os wipes de PII já
-    //    passaram — se um deles falhar, o cliente ainda entra e retenta.
-    try {
-      const { error: authErr } = await supabaseAdmin.auth.admin.updateUserById(
-        userId,
-        {
-          email: anonymizedEmail,
-          phone: "",
-          user_metadata: {},
-          ban_duration: "876000h",
-        },
-      );
-      if (authErr) {
-        log.error("auth_user_anonymize_failed", { error: authErr.message });
-        return jsonRes(corsHeaders, { error: "anonymize_failed" }, 500);
-      }
-    } catch (authThrow) {
-      log.error("auth_user_anonymize_failed", { error: String(authThrow) });
-      return jsonRes(corsHeaders, { error: "anonymize_failed" }, 500);
-    }
-
-    // 3b) Ban confirmado: desativa o perfil — sem ela a conta excluída
-    //     segue "Ativa" na listagem admin. Uma falha transitória de banco
-    //     não pode deixar flag mentindo, então retenta uma vez; se ainda
-    //     falhar, a resposta expõe deactivated:false para o cliente
-    //     reagendar/sinalizar, em vez de afirmar wipe completo.
-    //     O await pode rejeitar a promise (falha de transporte) além de
-    //     devolver {error} — o try/catch por tentativa impede que uma
-    //     rejeição escape para o 500 genérico e pule a revogação de
-    //     sessões. `count` decide o sucesso: atualizar 0 linhas com
-    //     perfil existente não é desativação; 0 linhas sem perfil
-    //     (profileCount=0) não tem o que desativar e conta como
-    //     concluído.
+    // 3) Desativa o perfil ANTES do passo irreversível. Se a flag falhar
+    //    aqui, a conta está íntegra (login vivo, is_active true) e o
+    //    usuário pode reinvocar a edge para retentar — não existe
+    //    pendência órfã. Uma falha transitória de banco não pode deixar
+    //    flag mentindo, então retenta uma vez; se ainda falhar, grava a
+    //    pendência em admin_audit_log e ABORTA antes do ban — nunca se
+    //    chega a uma conta banida com flag ativa.
+    //    O await pode rejeitar a promise (falha de transporte) além de
+    //    devolver {error} — o try/catch por tentativa impede que uma
+    //    rejeição escape para o 500 genérico. `count` decide o sucesso:
+    //    atualizar 0 linhas com perfil existente não é desativação; 0
+    //    linhas sem perfil (profileCount=0) não tem o que desativar e
+    //    conta como concluído.
     let deactivatedRows = 0;
     let deactivateDone = false;
     for (let attempt = 0; attempt < 2 && !deactivateDone; attempt++) {
@@ -262,9 +240,6 @@ Deno.serve(async (req: Request) => {
           });
         } else {
           deactivatedRows = count ?? 0;
-          // 0 linhas com perfil existente não é concluído — o perfil
-          // pode reaparecer na 2ª tentativa; sem perfil (profileCount=0)
-          // não há flag pendente e o loop encerra.
           deactivateDone = deactivatedRows >= (profileCount ?? 0);
         }
       } catch (deactivateThrow) {
@@ -274,14 +249,8 @@ Deno.serve(async (req: Request) => {
         });
       }
     }
-    // `deactivated` = "não há flag pendente": perfil desativado de fato
-    // (>= as linhas anonimizadas) OU perfil inexistente (0 >= 0).
     const deactivated = deactivateDone;
     if (!deactivated && (profileCount ?? 0) > 0) {
-      // Reparo: o usuário não consegue reinvocar a edge (conta banida),
-      // então a pendência precisa de trilha visível fora da resposta —
-      // admin_audit_log é consultável pelo admin, que pode dar o update
-      // manual (ou varrer action='anonymize_user.deactivate_pending').
       const meta = extractRequestMeta(req);
       await writeAuditEntry(supabaseAdmin, {
         user_id: userId,
@@ -302,6 +271,49 @@ Deno.serve(async (req: Request) => {
         status: "partial",
         source: "edge:anonymize-user",
       });
+      // Aborta ANTES do ban: a conta continua íntegra e re-tentável.
+      return jsonRes(corsHeaders, { error: "deactivate_failed" }, 500);
+    }
+
+    // 4) Passo irreversível por último: anonimiza auth.users (e-mail,
+    //    telefone e user_metadata — updateUserById substitui o objeto
+    //    inteiro) e bane a conta ~100 anos. Depois deste update o usuário
+    //    não loga mais, então ele só roda quando os wipes de PII e a
+    //    desativação já passaram. Se o ban falhar, a flag is_active é
+    //    revertida (best-effort) — sem isso a conta ficaria "inativa"
+    //    com login vivo, pendência que só admin destrava.
+    const restoreActiveFlag = async () => {
+      if (!deactivated || (profileCount ?? 0) === 0) return;
+      try {
+        await supabaseAdmin
+          .from("profiles")
+          .update({ is_active: true })
+          .eq("user_id", userId);
+      } catch (restoreThrow) {
+        log.warn("profile_reactivate_rollback_failed", {
+          error: String(restoreThrow),
+        });
+      }
+    };
+    try {
+      const { error: authErr } = await supabaseAdmin.auth.admin.updateUserById(
+        userId,
+        {
+          email: anonymizedEmail,
+          phone: "",
+          user_metadata: {},
+          ban_duration: "876000h",
+        },
+      );
+      if (authErr) {
+        log.error("auth_user_anonymize_failed", { error: authErr.message });
+        await restoreActiveFlag();
+        return jsonRes(corsHeaders, { error: "anonymize_failed" }, 500);
+      }
+    } catch (authThrow) {
+      log.error("auth_user_anonymize_failed", { error: String(authThrow) });
+      await restoreActiveFlag();
+      return jsonRes(corsHeaders, { error: "anonymize_failed" }, 500);
     }
 
     // 4) Revoga credenciais em duas camadas complementares:
@@ -352,8 +364,8 @@ Deno.serve(async (req: Request) => {
         // Conta real de linhas — `true` com 0 linhas mentiria que um
         // perfil foi anonimizado quando nem existia.
         profile: profileCount ?? 0,
-        // Separado do count: o perfil pode ter PII zerada e a flag
-        // is_active falhar — deactivated:false é a pendência reparável.
+        // A desativação roda antes do ban e aborta no fracasso — ao
+        // chegar aqui `deactivated` é sempre true (não há pendência).
         deactivated,
         login_attempts: attemptsErr ? "failed" : (attemptsWiped),
         sessions: sessionsWiped ? "revoked" : "partial",
