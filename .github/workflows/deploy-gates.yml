@@ -182,6 +182,9 @@ jobs:
           node scripts/check-todo-baseline.mjs
           node scripts/check-as-assertions-baseline.mjs
           node scripts/check-file-size-baseline.mjs
+
+      - name: Gate 1.9.1 — console.* baseline (bloqueante)
+        run: node scripts/check-console-baseline.mjs
       # Contract coverage + soft-delete policy (auditoria 20-dim Onda 2) —
       # aqui e no quality-gate.yml (2.3.5/2.3.6) porque o check obrigatório
       # "Gate Final - Deploy Ready" agrega só jobs DESTE workflow.
