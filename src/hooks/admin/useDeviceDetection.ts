@@ -139,7 +139,8 @@ export function useDeviceDetection(targetUserId?: string) {
     const { data, error } = await untypedFrom('user_known_devices')
       .select('*')
       .eq('user_id', effectiveUserId)
-      .order('last_seen_at', { ascending: false });
+      .order('last_seen_at', { ascending: false })
+      .limit(200);
 
     if (error) {
       logger.error('Error fetching known devices:', error);

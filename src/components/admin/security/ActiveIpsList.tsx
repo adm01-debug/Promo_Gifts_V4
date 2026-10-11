@@ -56,7 +56,8 @@ export function ActiveIpsList() {
     const { data, error } = await supabase
       .from('ip_access_control')
       .select('id, ip_address, list_type, reason, expires_at, created_at, created_by')
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .limit(500);
     if (error) {
       toast({
         title: 'Erro ao carregar IPs',
