@@ -30,6 +30,10 @@ env:
   # check-login é a edge crítica de negócio (gate de login). verify_jwt=false; o preflight
   # OPTIONS responde via _shared/cors.ts sem autenticação — prova que a função está no ar.
   LOGIN_FN_URL: https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1/check-login
+  # GoTrue: /auth/v1/health responde 200 quando o serviço de auth está de pé.
+  # Sem ela, uma queda só do GoTrue (site+edges OK) passa batida — aconteceu
+  # em 2026-10-11: auth 522 por ~1h com todos os outros probes verdes.
+  AUTH_HEALTH_URL: https://doufsxqlfjyuvxuezpln.supabase.co/auth/v1/health
 
 jobs:
   check:
@@ -52,6 +56,7 @@ jobs:
             echo "site=-1" >> "$GITHUB_OUTPUT"
             echo "fn=-1" >> "$GITHUB_OUTPUT"
             echo "login=-1" >> "$GITHUB_OUTPUT"
+            echo "auth=-1" >> "$GITHUB_OUTPUT"
             exit 1
           fi
           curl -sf --max-time 15 --retry 2 --retry-delay 3 --retry-all-errors \
@@ -68,10 +73,16 @@ jobs:
             -H "Access-Control-Request-Method: POST" \
             -o /dev/null "$LOGIN_FN_URL"
           LOGIN=$?
+          curl -sf --max-time 15 --retry 2 --retry-delay 3 --retry-all-errors \
+            -H "apikey: $ANON_KEY" \
+            -H "Authorization: Bearer $ANON_KEY" \
+            -o /dev/null "$AUTH_HEALTH_URL"
+          AUTH=$?
           echo "site=$SITE" >> "$GITHUB_OUTPUT"
           echo "fn=$FN" >> "$GITHUB_OUTPUT"
           echo "login=$LOGIN" >> "$GITHUB_OUTPUT"
-          [ "$SITE" -eq 0 ] && [ "$FN" -eq 0 ] && [ "$LOGIN" -eq 0 ]
+          echo "auth=$AUTH" >> "$GITHUB_OUTPUT"
+          [ "$SITE" -eq 0 ] && [ "$FN" -eq 0 ] && [ "$LOGIN" -eq 0 ] && [ "$AUTH" -eq 0 ]
 
       - name: Abrir ou comentar issue de falha
         if: failure()
@@ -80,7 +91,7 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           gh label create uptime --color B60205 --description "Falha de disponibilidade detectada pelo Uptime Monitor" 2>/dev/null || true
-          BODY="Falha em $(date -u +%FT%TZ) — site=${{ steps.probe.outputs.site }} health-check=${{ steps.probe.outputs.fn }} check-login(OPTIONS)=${{ steps.probe.outputs.login }} (0 = OK, outro valor = exit code do curl). Run: $RUN_URL
+          BODY="Falha em $(date -u +%FT%TZ) — site=${{ steps.probe.outputs.site }} health-check=${{ steps.probe.outputs.fn }} check-login(OPTIONS)=${{ steps.probe.outputs.login }} auth-health=${{ steps.probe.outputs.auth }} (0 = OK, outro valor = exit code do curl). Run: $RUN_URL
           Runbook: [docs/DISASTER_RECOVERY.md §3](https://github.com/${{ github.repository }}/blob/main/docs/DISASTER_RECOVERY.md)"
           ISSUE=$(gh issue list --label uptime --state open --limit 1 --json number -q '.[0].number // empty')
           if [ -n "$ISSUE" ]; then
