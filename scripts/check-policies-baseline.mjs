@@ -238,9 +238,15 @@ async function main() {
       // rate-limit, 5xx) não podem falhar o gate; a razão fica em details.
       // Respostas que chegaram mas vieram quebradas (invalid-json/response)
       // seguem inconclusive — indicam contrato de API alterado.
-      const softKinds = new Set(['missing-config', 'network-error', 'http-error']);
+      // http-error só é soft quando transitório (429/5xx); 4xx (401/403/404)
+      // indica credencial/perm errada — esconder isso aprovaria drift real.
+      const isSoft =
+        live.kind === 'missing-config' ||
+        live.kind === 'network-error' ||
+        (live.kind === 'http-error' &&
+          (live.httpStatus === 429 || live.httpStatus >= 500));
       const status =
-        softKinds.has(live.kind) && !REQUIRE_LIVE
+        isSoft && !REQUIRE_LIVE
           ? CHECK_RESULT_STATUS.STATIC_PASS
           : CHECK_RESULT_STATUS.INCONCLUSIVE;
       return concludeCheck({
