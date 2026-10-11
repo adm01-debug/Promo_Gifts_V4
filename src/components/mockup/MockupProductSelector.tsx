@@ -6,7 +6,7 @@
  * Flow: Search products -> Select product -> Load full data -> Choose color/variant -> Confirmed.
  */
 
-import { useState, useMemo, useRef, useCallback } from 'react';
+import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import { useDebounce } from '@/hooks/common';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { Search, Package, X, SearchX, Filter } from 'lucide-react';
@@ -40,6 +40,23 @@ interface MockupProductSelectorProps {
   disabled?: boolean;
 }
 
+/**
+ * Breakpoints do grid de produtos. Espelham EXATAMENTE as classes usadas no grid
+ * (`grid-cols-2 sm:grid-cols-3 lg:grid-cols-4`) — o virtualizador fatia os produtos
+ * por LINHA, então precisa do mesmo número de colunas que o CSS realmente renderiza.
+ * Com 4 fixo, cada linha virtual continha 4 cards renderizados em 2/3 sub-linhas e
+ * as linhas se sobrepunham.
+ */
+export const MOCKUP_GRID_BREAKPOINT_SM = 640;
+export const MOCKUP_GRID_BREAKPOINT_LG = 1024;
+
+/** Colunas reais do grid para a largura de viewport informada (2, 3 ou 4). */
+export function getMockupGridColumnCount(viewportWidth: number): number {
+  if (viewportWidth >= MOCKUP_GRID_BREAKPOINT_LG) return 4;
+  if (viewportWidth >= MOCKUP_GRID_BREAKPOINT_SM) return 3;
+  return 2;
+}
+
 export function MockupProductSelector({
   selection,
   onSelect,
@@ -65,6 +82,20 @@ export function MockupProductSelector({
 
   // Internal state: product picked, loading full data or choosing color
   const [pendingProductId, setPendingProductId] = useState<string | null>(null);
+
+  // Colunas reais do grid. Medida por largura (viewport) para casar com as classes
+  // responsivas: o virtualizador fatia as LINHAS com esta contagem.
+  const [viewportWidth, setViewportWidth] = useState(() =>
+    typeof window === 'undefined' ? MOCKUP_GRID_BREAKPOINT_LG : window.innerWidth,
+  );
+
+  useEffect(() => {
+    const handleResize = () => setViewportWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const columnCount = getMockupGridColumnCount(viewportWidth);
 
   const handleScroll = useCallback(() => {
     if (!scrollParentRef.current) return;
@@ -93,13 +124,21 @@ export function MockupProductSelector({
     }
   }, [products, sortBy]);
 
-  const columnCount = 4; // Max columns as per grid class
   const rowVirtualizer = useVirtualizer({
     count: Math.ceil(sortedProducts.length / columnCount),
     getScrollElement: () => scrollParentRef.current,
+    // Estimativa inicial de uma linha (card de 4 colunas + texto). A altura REAL de cada
+    // linha é medida no DOM via `measureElement` mais abaixo: com 2 ou 3 colunas o card
+    // fica mais largo (imagem `aspect-square`) e mais alto, então uma altura fixa de 280 px
+    // empurrava a linha seguinte para cima do conteúdo — sobreposição.
     estimateSize: () => 280,
     overscan: 3,
   });
+
+  // Ao mudar o número de colunas, os cards mudam de altura: descarta as medições antigas.
+  useEffect(() => {
+    rowVirtualizer.measure();
+  }, [columnCount, rowVirtualizer]);
 
   const formatCurrency = (value: number) =>
     value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -276,7 +315,7 @@ export function MockupProductSelector({
                 <div className="flex items-center gap-2">
                   <Filter aria-hidden="true" className="h-3.5 w-3.5 text-muted-foreground" />
                   <select
-                    aria-label="Ordenar produtos"
+                    aria-label="Ordenar produtos (apenas itens já carregados)"
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
                     onBlur={(e) => setSortBy(e.target.value as typeof sortBy)}
@@ -288,6 +327,11 @@ export function MockupProductSelector({
                     <option value="price-asc">Menor preço</option>
                     <option value="price-desc">Maior preço</option>
                   </select>
+                  {/* A ordenação é client-side: só reordena o que já foi carregado.
+                      O rótulo diz o alcance para não parecer que ordena o catálogo inteiro. */}
+                  <span className="text-[10px] text-muted-foreground" data-testid="sort-scope">
+                    apenas carregados
+                  </span>
                 </div>
               </div>
             </div>
@@ -339,9 +383,15 @@ export function MockupProductSelector({
                       return (
                         <div
                           key={virtualRow.key}
-                          className="absolute left-0 top-0 grid w-full grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4"
+                          data-index={virtualRow.index}
+                          data-testid="mockup-product-row"
+                          ref={rowVirtualizer.measureElement}
+                          className="absolute left-0 top-0 grid w-full gap-4"
                           style={{
                             transform: `translateY(${virtualRow.start}px)`,
+                            // Mesma contagem de colunas usada para fatiar a linha — garante que
+                            // cada linha virtual seja UMA linha visual (sem sub-linhas sobrepostas).
+                            gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))`,
                           }}
                         >
                           {rowItems.map((product) => (
