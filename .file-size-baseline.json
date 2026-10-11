@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-11T15:25:14.564Z",
+  "generatedAt": "2026-10-11T15:31:31.005Z",
   "description": "Baseline de arquivos src/ com mais de 500 linhas (excluindo testes). Falha em arquivo novo acima do limite ou em crescimento.",
   "maxLines": 500,
   "files": {
@@ -49,7 +49,7 @@
     "src/components/layout/SidebarReorganized.tsx": 648,
     "src/components/loading/ModernSkeletons.tsx": 756,
     "src/components/mockup/MockupHistoryPanel.tsx": 830,
-    "src/components/mockup/approval/MockupApprovalTemplate.tsx": 716,
+    "src/components/mockup/approval/MockupApprovalTemplate.tsx": 738,
     "src/components/notifications/NotificationDrawer.tsx": 726,
     "src/components/novelties/NoveltyCards.tsx": 544,
     "src/components/novelties/NoveltyProductGrid.tsx": 903,
