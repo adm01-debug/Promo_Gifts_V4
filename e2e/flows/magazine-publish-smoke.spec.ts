@@ -33,7 +33,7 @@
 import { expect } from "@playwright/test";
 
 import { test } from "../fixtures/test-base";
-import { loginAs } from "../helpers/auth";
+import { loginAs, dismissOnboardingTour } from "../helpers/auth";
 import { gotoAndSettle, waitForRouteIdle } from "../helpers/nav";
 import { e2eName } from "../helpers/e2e-resources";
 
@@ -53,6 +53,9 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
     // 1) Vai para /magazine e cria uma revista nova.
     await gotoAndSettle(page, "/magazine");
     await expect(page).toHaveURL(/\/magazine(\/|$)/);
+    // O tour pode aparecer depois do loginAs (fetch de user_onboarding) e
+    // cobre a tela inteira, interceptando o clique no botão de criar.
+    await dismissOnboardingTour(page);
 
     const createBtn = page.locator('[data-testid="magazine-create-btn"]').first();
     await createBtn.waitFor({ state: "visible", timeout: 10_000 });

@@ -114,11 +114,29 @@ export async function loginAs(page: Page, role: Role = "user"): Promise<void> {
     .first()
     .isVisible()
     .catch(() => false);
-  if (!onAuthPage && !loginFormVisible) {
-    return;
+  if (onAuthPage || loginFormVisible) {
+    await loginViaUI(page, { email: email!, password: password! });
   }
 
-  await loginViaUI(page, { email: email!, password: password! });
+  await dismissOnboardingTour(page);
+}
+
+/**
+ * O tour de onboarding (`user_onboarding.has_completed_tour=false`) abre um
+ * overlay full-screen ("Passo 1 de 13") que intercepta cliques em qualquer
+ * página autenticada. Clica em "Pular" se aparecer — marca o tour como
+ * concluído para a conta E2E e libera a interação com a página.
+ */
+export async function dismissOnboardingTour(page: Page): Promise<void> {
+  const skipBtn = page.getByRole("button", { name: "Pular" }).first();
+  try {
+    // O tour aparece de forma assíncrona (fetch de user_onboarding).
+    await skipBtn.waitFor({ state: "visible", timeout: 4_000 });
+    await skipBtn.click();
+    await skipBtn.waitFor({ state: "hidden", timeout: 5_000 }).catch(() => {});
+  } catch {
+    // Tour não apareceu — nada a fazer.
+  }
 }
 
 /**
