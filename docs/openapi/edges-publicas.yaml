@@ -1,0 +1,374 @@
+openapi: 3.0.3
+info:
+  title: Promo Gifts V4 — Edge Functions públicas
+  version: "1.0.0"
+  description: >
+    Contrato das Edge Functions acessíveis sem JWT de usuário (verify_jwt=false
+    ou auth inline). O `apikey`/`Authorization: Bearer <anon key>` do Supabase
+    continua obrigatório no gateway, EXCETO onde indicado. Fonte de verdade:
+    `supabase/functions/<nome>/index.ts` — este documento é gerado à mão a
+    partir dos schemas zod de cada handler e deve ser atualizado junto com a
+    edge (ver `docs/EDGE_FUNCTIONS.md`).
+  contact:
+    name: Promo Brindes Engenharia
+servers:
+  - url: https://doufsxqlfjyuvxuezpln.supabase.co
+    description: Supabase canônico (produção)
+tags:
+  - name: public
+    description: Acessíveis pelo browser sem sessão (CORS público)
+  - name: webhook
+    description: Recebimento de eventos de sistemas externos (auth por assinatura/API key)
+  - name: internal
+    description: Uso interno/CI — não consumir de clientes
+
+paths:
+  /functions/v1/health-check:
+    get:
+      tags: [public]
+      summary: Health probe agregado do projeto
+      description: >
+        Retorna status agregado (healthy/degraded/unhealthy) com checks por
+        serviço. Resposta cacheada ~50ms; `?fresh=1` força probe novo.
+      parameters:
+        - name: fresh
+          in: query
+          schema: { type: string, enum: ["1"] }
+          required: false
+          description: Força nova medição em vez do snapshot cacheado.
+      responses:
+        "200":
+          description: healthy ou degraded
+          headers:
+            X-Health-Version: { schema: { type: string } }
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status, timestamp, checks]
+                properties:
+                  status: { type: string, enum: [healthy, degraded] }
+                  timestamp: { type: string, format: date-time }
+                  total_latency_ms: { type: number }
+                  cached: { type: boolean }
+                  cache_age_ms: { type: number }
+                  checks: { type: object, additionalProperties: true }
+                  request_id: { type: string }
+        "503":
+          description: unhealthy — um ou mais serviços fora
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, enum: [unhealthy] }
+
+  /functions/v1/check-login:
+    post:
+      tags: [public]
+      summary: Gate pré-login (IP, cidade, Turnstile)
+      description: >
+        Chamado pelo cliente ANTES de `auth.signInWithPassword`. Avalia se a
+        tentativa de login é permitida (IP bloqueado, whitelist de cidade via
+        headers Cloudflare confiáveis, Turnstile quando configurado).
+        `city` só é confiável quando `X-Cf-Origin-Secret` bate com o segredo —
+        nunca vem do body.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email: { type: string, format: email }
+                cf-turnstile-response:
+                  type: string
+                  description: Token Turnstile (obrigatório quando TURNSTILE_SECRET_KEY configurado)
+      responses:
+        "200":
+          description: Decisão do gate
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  allowed: { type: boolean }
+                  reason: { type: string }
+        "400":
+          description: email ausente/inválido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: { type: string, enum: [invalid_email] }
+        "405":
+          description: método não permitido (só POST)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: { type: string, enum: [method_not_allowed] }
+
+  /functions/v1/magazine-public-view:
+    get:
+      tags: [public]
+      summary: Leitura pública de revista publicada
+      description: >
+        Único caminho de leitura pública de revista — usa service_role
+        internamente e nunca expõe dados de outras tabelas. Rate limit
+        20 req/min por IP.
+      parameters:
+        - name: token
+          in: query
+          required: true
+          schema: { type: string, minLength: 24, maxLength: 64, pattern: "^[a-f0-9]+$" }
+          description: public_token hex da revista
+      responses:
+        "200":
+          description: Revista renderizável (capa, páginas, itens)
+        "400": { description: token inválido (formato) }
+        "404": { description: revista não encontrada / não publicada }
+        "429": { description: rate limit excedido }
+    post:
+      tags: [public]
+      summary: Leitura pública via body (mesmo contrato do GET)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token]
+              properties:
+                token: { type: string, minLength: 24, maxLength: 64, pattern: "^[a-f0-9]+$" }
+      responses:
+        "200": { description: Revista renderizável }
+        "400": { description: token inválido }
+        "404": { description: não encontrada }
+        "429": { description: rate limit }
+
+  /functions/v1/magazine-public-react:
+    post:
+      tags: [public]
+      summary: Reação anônima em página/item de revista
+      description: Rate limit 5 req/min por IP (chave token+fingerprint).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token, fingerprint, kind]
+              properties:
+                token: { type: string, minLength: 24, maxLength: 64, pattern: "^[a-f0-9]+$" }
+                fingerprint: { type: string, minLength: 8, maxLength: 128 }
+                kind: { type: string, enum: [like, love, fire, idea] }
+                pageIndex: { type: integer, minimum: 0, maximum: 9999, nullable: true }
+                itemId: { type: string, format: uuid, nullable: true }
+      responses:
+        "200": { description: Reação registrada }
+        "400": { description: body inválido (zod) }
+        "429": { description: rate limit }
+
+  /functions/v1/magazine-reader-state-read:
+    get:
+      tags: [public]
+      summary: Estado de leitura anônimo (página, bookmarks)
+      description: Rate limit 30 req/min por IP.
+      parameters:
+        - name: token
+          in: query
+          required: true
+          schema: { type: string, minLength: 24, maxLength: 64, pattern: "^[a-f0-9]+$" }
+        - name: fingerprint
+          in: query
+          required: true
+          schema: { type: string, minLength: 8, maxLength: 128 }
+      responses:
+        "200":
+          description: Estado persistido do leitor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  lastPageIndex: { type: integer }
+                  bookmarks: { type: array, items: { type: integer } }
+        "400": { description: parâmetros inválidos }
+        "429": { description: rate limit }
+
+  /functions/v1/magazine-reader-state-write:
+    post:
+      tags: [public]
+      summary: Persiste estado de leitura anônimo
+      description: Rate limit 5 req/s por IP.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token, fingerprint]
+              properties:
+                token: { type: string, minLength: 24, maxLength: 64, pattern: "^[a-f0-9]+$" }
+                fingerprint: { type: string, minLength: 8, maxLength: 128 }
+                lastPageIndex: { type: integer, minimum: 0, maximum: 9999 }
+                bookmarks:
+                  type: array
+                  maxItems: 500
+                  items: { type: integer, minimum: 0 }
+                sessionId: { type: string, maxLength: 128 }
+      responses:
+        "200": { description: Estado salvo }
+        "400": { description: body inválido }
+        "429": { description: rate limit }
+
+  /functions/v1/receive-crm-callback:
+    post:
+      tags: [webhook]
+      summary: Callback do CRM (aprovação/rejeição/pedido de orçamento)
+      description: >
+        verify_jwt=false — autenticação inline via header `x-api-key`
+        (comparação timing-safe contra CRM_CALLBACK_API_KEY).
+      parameters:
+        - name: x-api-key
+          in: header
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [external_quote_id, event_type, occurred_at]
+              properties:
+                external_quote_id: { type: string, format: uuid }
+                crm_quote_id: { type: string, format: uuid }
+                event_type:
+                  type: string
+                  enum: [approved, rejected, order_created, sent_to_client, expired]
+                status: { type: string }
+                occurred_at: { type: string, format: date-time }
+                payload:
+                  type: object
+                  properties:
+                    order_id: { type: string, format: uuid }
+                    order_number: { type: string, maxLength: 64 }
+                    rejection_reason: { type: string, maxLength: 2000 }
+                    approved_by: { type: string, maxLength: 255 }
+                    total_value: { type: number }
+                  additionalProperties: true
+      responses:
+        "200": { description: Callback aceito e enfileirado/processado }
+        "400": { description: body inválido (CallbackSchema) }
+        "401": { description: x-api-key ausente/incorreto }
+        "405": { description: método não permitido }
+
+  /functions/v1/webhook-inbound:
+    post:
+      tags: [webhook]
+      summary: Webhook genérico inbound por slug
+      description: >
+        Recebe payloads arbitrários roteados por `?slug=`. Proteção em
+        camadas: rate limit DB-backed 500/60s + block 30min, HMAC do slug.
+        `x-internal-call: true` + Bearer service_role bypassa proteção de bot
+        (uso por outras edges).
+      parameters:
+        - name: slug
+          in: query
+          required: true
+          schema: { type: string }
+          description: Identificador do endpoint lógico registrado
+        - name: x-internal-call
+          in: header
+          required: false
+          schema: { type: string, enum: ["true"] }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        "200": { description: Payload aceito }
+        "400":
+          description: slug ausente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: string, enum: [missing_slug] }
+                  message: { type: string }
+        "405":
+          description: método não permitido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: string, enum: [method_not_allowed] }
+        "429": { description: rate limit / bot protection }
+
+  /functions/v1/product-webhook:
+    post:
+      tags: [webhook]
+      summary: Webhook de produtos (n8n) com assinatura HMAC
+      description: >
+        Recebe eventos de catálogo. Auth por assinatura: headers
+        `x-webhook-signature`, `x-webhook-nonce`, `x-webhook-timestamp`
+        verificados contra `N8N_PRODUCT_WEBHOOK_SECRET` (vault) com
+        tolerância de timestamp configurável
+        (`N8N_PRODUCT_WEBHOOK_TOLERANCE_SEC`).
+      parameters:
+        - { name: x-webhook-signature, in: header, required: true, schema: { type: string } }
+        - { name: x-webhook-nonce, in: header, required: true, schema: { type: string } }
+        - { name: x-webhook-timestamp, in: header, required: true, schema: { type: integer } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        "200": { description: Evento aceito }
+        "401": { description: assinatura ausente/inválida ou secret não configurado }
+
+  /functions/v1/e2e-cleanup:
+    post:
+      tags: [internal]
+      summary: Cleanup de dados de teste E2E (CI apenas)
+      description: >
+        Remove dados marcados com prefixo e2e do usuário de teste. Exige
+        header `x-e2e-cleanup-token` e email presente em
+        `E2E_CLEANUP_ALLOWED_EMAILS` (CSV). NUNCA chamar de produção.
+      parameters:
+        - name: x-e2e-cleanup-token
+          in: header
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email: { type: string, format: email }
+      responses:
+        "200": { description: Cleanup executado }
+        "403": { description: email fora da allowlist }
+        "404": { description: usuário não encontrado }
+
+components:
+  securitySchemes:
+    supabaseAnonKey:
+      type: apiKey
+      in: header
+      name: apikey
+      description: >
+        Anon key do projeto (exigida pelo gateway Supabase em todas as rotas
+        /functions/v1/*, salvo configuração de bypass).
