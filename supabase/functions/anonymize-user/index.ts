@@ -282,16 +282,59 @@ Deno.serve(async (req: Request) => {
     //    desativação já passaram. Se o ban falhar, a flag is_active é
     //    revertida (best-effort) — sem isso a conta ficaria "inativa"
     //    com login vivo, pendência que só admin destrava.
+    // Rollback da flag quando o ban falha. O PostgREST resolve com
+    // {error} em falha de banco — conferir error E count é o que prova
+    // a reversão; um await sem checagem finge sucesso e deixa o perfil
+    // "inativo" com login vivo, bloqueando o usuário de retentar.
+    // Se a reversão não confirmar nem na retentativa, registra a
+    // pendência de reativação em admin_audit_log — é o único estado
+    // restante que precisa de reparo manual, e fica com trilha visível.
     const restoreActiveFlag = async () => {
       if (!deactivated || (profileCount ?? 0) === 0) return;
-      try {
-        await supabaseAdmin
-          .from("profiles")
-          .update({ is_active: true })
-          .eq("user_id", userId);
-      } catch (restoreThrow) {
-        log.warn("profile_reactivate_rollback_failed", {
-          error: String(restoreThrow),
+      let restoredRows = 0;
+      let restored = false;
+      for (let attempt = 0; attempt < 2 && !restored; attempt++) {
+        try {
+          const { error: restoreErr, count } = await supabaseAdmin
+            .from("profiles")
+            .update({ is_active: true }, { count: "exact" })
+            .eq("user_id", userId);
+          if (restoreErr) {
+            log.warn("profile_reactivate_rollback_failed", {
+              error: restoreErr.message,
+              attempt: attempt + 1,
+            });
+          } else {
+            restoredRows = count ?? 0;
+            restored = restoredRows >= (profileCount ?? 0);
+          }
+        } catch (restoreThrow) {
+          log.warn("profile_reactivate_rollback_failed", {
+            error: String(restoreThrow),
+            attempt: attempt + 1,
+          });
+        }
+      }
+      if (!restored) {
+        const meta = extractRequestMeta(req);
+        await writeAuditEntry(supabaseAdmin, {
+          user_id: userId,
+          action: "anonymize_user.reactivate_pending",
+          resource_type: "profiles",
+          resource_id: userId,
+          ip_address: meta.ip,
+          user_agent: meta.ua,
+          details: {
+            remediation:
+              "UPDATE profiles SET is_active=true WHERE user_id=$1",
+            attempts: 2,
+            restored_rows: restoredRows,
+            profile_rows: profileCount ?? 0,
+          },
+          request_id: requestId,
+          started_at: new Date().toISOString(),
+          status: "partial",
+          source: "edge:anonymize-user",
         });
       }
     };
