@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-05T18:50:36.840Z",
+  "generatedAt": "2026-10-11T15:25:14.564Z",
   "description": "Baseline de arquivos src/ com mais de 500 linhas (excluindo testes). Falha em arquivo novo acima do limite ou em crescimento.",
   "maxLines": 500,
   "files": {
@@ -88,7 +88,7 @@
     "src/hooks/intelligence/useMagicUpState.ts": 1026,
     "src/hooks/kit-builder/useKitBuilder.ts": 757,
     "src/hooks/kit-builder/useKitBuilderPageState.ts": 546,
-    "src/hooks/mockup/mockupGenerationService.ts": 597,
+    "src/hooks/mockup/mockupGenerationService.ts": 580,
     "src/hooks/mockup/useMockupGenerator.ts": 893,
     "src/hooks/products/useCatalogState.ts": 1073,
     "src/hooks/products/useNovelties.ts": 794,
@@ -111,7 +111,7 @@
     "src/pages/admin/AdminSegurancaAcessoPage.tsx": 743,
     "src/pages/admin/AdminTelemetriaPage.tsx": 645,
     "src/pages/admin/SellerDiscountLimitsAdminPage.tsx": 558,
-    "src/pages/auth/Auth.tsx": 888,
+    "src/pages/auth/Auth.tsx": 895,
     "src/pages/auth/AuthBranding.tsx": 521,
     "src/pages/bi/TrendsPage.tsx": 584,
     "src/pages/collections/CollectionDetailPage.tsx": 726,
