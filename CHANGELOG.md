@@ -5,6 +5,13 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.0.5](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.4...v1.0.5) (2026-10-11)
+
+
+### Bug Fixes
+
+* adiciona alt no mock de teste de tokens do timbrado (substitui [#2103](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2103)) ([#2111](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2111)) ([ea132d2](https://github.com/adm01-debug/Promo_Gifts_V4/commit/ea132d2b4bbcb67b49d10d26312f2cd18e7e4cf5))
+
 ## [1.0.4](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.3...v1.0.4) (2026-10-11)
 
 
