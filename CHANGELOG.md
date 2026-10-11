@@ -5,6 +5,15 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.0.4](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.3...v1.0.4) (2026-10-11)
+
+
+### Bug Fixes
+
+* corrige perda/contaminação de logo no rascunho de mockup ([#2106](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2106)) ([bae84dd](https://github.com/adm01-debug/Promo_Gifts_V4/commit/bae84dd2424ee352cb1fa081696584039b0c9977))
+* **mockup:** grade do seletor de produto usa colunas reais por largura e ordenacao honesta ([#2100](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2100)) ([3c66906](https://github.com/adm01-debug/Promo_Gifts_V4/commit/3c669062ac7590e04e615fdd627913db4caaf5bd))
+* **mockup:** monta as secoes do painel uma unica vez por breakpoint ([#2099](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2099)) ([c2d55e1](https://github.com/adm01-debug/Promo_Gifts_V4/commit/c2d55e181ac1165eb044025b1b87c89da7f75c78))
+
 ## [1.0.3](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.2...v1.0.3) (2026-10-11)
 
 
