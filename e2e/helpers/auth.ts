@@ -42,7 +42,11 @@ const LOGIN_URL_RE = /\/login(\?|#|$)/;
  * `expectFail: true`).
  */
 export async function loginViaUI(page: Page, creds: LoginCreds): Promise<boolean> {
-  const timeout = creds.timeoutMs ?? 20_000;
+  // CI: edges frias (cold start pós-restart/upgrade do Supabase) + invokeEdge
+  // com 2×10s de retry podem empurrar o signIn além de 20s — o auth.setup já
+  // mediu ~21s reais. 45s em CI mantém a verificação real sem flake de
+  // fronteira; local continua rápido.
+  const timeout = creds.timeoutMs ?? (process.env.CI ? 45_000 : 20_000);
   await gotoAndSettle(page, "/login");
 
   const emailLoc = page.locator(Sel.login.email).first();

@@ -23,6 +23,7 @@ import {
   findUnknownCoveredFeatures,
 } from "../routes/_catalog";
 import { gotoAndWaitReady, pollUntil } from "../helpers/waits";
+import { loginAs } from "../helpers/auth";
 
 /** Ordem fixa: garante mesmo relatório em todo run do CI. */
 test.describe.configure({ mode: "serial" });
@@ -392,6 +393,9 @@ test.describe("@smoke RLS guard (gate de CI)", () => {
       "VITE_SUPABASE_* ou E2E credentials ausentes",
     );
 
+    // chromium-smoke não carrega storageState — login UI real, mesmo padrão
+    // dos specs vizinhos (magazine-smoke, magazine-publish-smoke).
+    await loginAs(page);
     await page.goto("/produtos");
     await page.waitForLoadState("domcontentloaded");
     expect(/\/login/.test(page.url()), "sessão necessária para RLS smoke").toBe(false);
