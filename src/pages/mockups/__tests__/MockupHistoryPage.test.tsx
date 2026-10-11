@@ -4,9 +4,9 @@ import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const { builder, deleteMock, auth } = vi.hoisted(() => {
-  const builder: Record<string, any> = {};
-  const auth: { user: { id: string } | null } = { user: { id: 'user-1' } };
-  return { builder, deleteMock: vi.fn(), auth };
+  const queryBuilder: Record<string, unknown> = {};
+  const authState: { user: { id: string } | null } = { user: { id: 'user-1' } };
+  return { builder: queryBuilder, deleteMock: vi.fn(), auth: authState };
 });
 
 vi.mock('@/integrations/supabase/client', () => ({
@@ -106,7 +106,7 @@ describe('MockupHistoryPage', () => {
     await screen.findByText('Caneta');
     await user.type(screen.getByPlaceholderText(/Buscar/), 'a,b(c)%d');
     await waitFor(() => expect(builder.or).toHaveBeenCalled());
-    const arg = builder.or.mock.calls.at(-1)![0] as string;
+    const arg = (builder.or as ReturnType<typeof vi.fn>).mock.calls.at(-1)![0] as string;
     expect(arg).toBe(
       'product_name.ilike.%abcd%,product_sku.ilike.%abcd%,technique_name.ilike.%abcd%',
     );
