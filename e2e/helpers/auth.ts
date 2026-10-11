@@ -35,6 +35,9 @@ export interface LoginCreds {
 export type Role = "user" | "admin" | "dev" | "editor";
 
 const LOGIN_URL_RE = /\/login(\?|#|$)/;
+// Rotas públicas protegidas redirecionam para /auth (além de /login): a
+// checagem de "já autenticado" precisa cobrir ambos ou o login nunca acontece.
+const AUTH_LIKE_URL_RE = /\/(login|auth)(\?|#|$)/;
 
 /**
  * Executa o fluxo de login via UI usando seletores SSOT.
@@ -42,7 +45,9 @@ const LOGIN_URL_RE = /\/login(\?|#|$)/;
  * `expectFail: true`).
  */
 export async function loginViaUI(page: Page, creds: LoginCreds): Promise<boolean> {
-  const timeout = creds.timeoutMs ?? 20_000;
+  // CI: signIn encadeia check-login + GoTrue + profile/roles/IP — em edge fria
+  // passa de 20s fácil (botão fica "Iniciando Sistemas..." travado).
+  const timeout = creds.timeoutMs ?? (process.env.CI ? 45_000 : 20_000);
   await gotoAndSettle(page, "/login");
 
   const emailLoc = page.locator(Sel.login.email).first();
@@ -62,8 +67,10 @@ export async function loginViaUI(page: Page, creds: LoginCreds): Promise<boolean
     return false;
   }
 
-  await expect(page, "esperado redirect para fora de /login").not.toHaveURL(
-    LOGIN_URL_RE,
+  // Sucesso = saiu da tela de auth (login falho também permanece em /auth,
+  // então checar só /login abriria falso-positivo).
+  await expect(page, "esperado redirect para fora da tela de login").not.toHaveURL(
+    AUTH_LIKE_URL_RE,
     { timeout },
   );
   await waitForRouteIdle(page);
@@ -96,9 +103,18 @@ export async function loginAs(page: Page, role: Role = "user"): Promise<void> {
   }
 
   // Se já estamos autenticados (storageState aplicado pelo project), uma
-  // visita rápida à home não deve cair em /login.
+  // visita rápida à home não deve cair em tela de auth nem exibir o form.
+  // URL sozinha não basta: "/" pode não redirecionar (landing pública) ou ir
+  // para /auth em vez de /login — em ambos os casos URL diz "autenticado" sem
+  // sessão, e os specs corriam deslogados (falso-negativo silencioso).
   await gotoAndSettle(page, "/");
-  if (!LOGIN_URL_RE.test(page.url())) {
+  const onAuthPage = AUTH_LIKE_URL_RE.test(page.url());
+  const loginFormVisible = await page
+    .locator(Sel.login.email)
+    .first()
+    .isVisible()
+    .catch(() => false);
+  if (!onAuthPage && !loginFormVisible) {
     return;
   }
 
