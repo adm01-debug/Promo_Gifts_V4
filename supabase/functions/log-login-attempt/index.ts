@@ -46,6 +46,9 @@ const loginLogLimiter = new RateLimiter({
 
 type FallbackReason = "missing_env" | "db_insert_failed" | "internal_error" | "breaker_open";
 
+// Retenção LGPD de login_attempts (dias). Mantido em sync com docs/LGPD.md.
+const RETENTION_DAYS = 90;
+
 function fallbackResponse(
   log: StructuredLogger,
   reason: FallbackReason,
@@ -248,6 +251,23 @@ export async function handleLogLoginAttempt(req: Request): Promise<Response> {
 
     // Sucesso → reseta breaker (fecha se estava half-open).
     recordBreakerSuccess();
+
+    // Retenção LGPD (~1% das chamadas): apaga tentativas com mais de
+    // RETENTION_DAYS dias. Best-effort — falha nunca derruba a resposta.
+    if (Math.random() < 0.01) {
+      const cutoff = new Date(
+        Date.now() - RETENTION_DAYS * 24 * 60 * 60 * 1000,
+      ).toISOString();
+      const { error: purgeError } = await supabaseAdmin
+        .from("login_attempts")
+        .delete()
+        .lt("created_at", cutoff);
+      if (purgeError) {
+        log.warn("retention_purge_failed", { error: purgeError.message });
+      } else {
+        log.info("retention_purge", { cutoff });
+      }
+    }
 
     log.info("login_attempt_logged", { email, success, verified });
     return log.respond(new Response(

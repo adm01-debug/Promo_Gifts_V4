@@ -30,6 +30,10 @@ concurrency:
   group: workflow-lint-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+  E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+
 jobs:
   actionlint:
     name: actionlint + shellcheck

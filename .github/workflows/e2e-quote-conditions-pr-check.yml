@@ -23,6 +23,10 @@ concurrency:
   group: e2e-quote-conditions-pr-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+  E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+
 jobs:
   visual-check:
     runs-on: ubuntu-latest

@@ -27,6 +27,10 @@ concurrency:
   group: e2e-quote-view-sticky-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+  E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+
 jobs:
   overflow-static-gate:
     runs-on: ubuntu-latest
