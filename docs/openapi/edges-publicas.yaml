@@ -287,13 +287,54 @@ paths:
           in: header
           required: false
           schema: { type: string, enum: ["true"] }
+        - name: accept-version
+          in: header
+          required: false
+          schema: { type: string, enum: ["1", "2"], default: "2" }
+          description: >
+            Versão do contrato. OMISSÃO = v2 (envelope abaixo). v1 aceita
+            payload livre mas está restrita: exige
+            WEBHOOK_INBOUND_V1_COMPAT_ENABLED=true e o emissor
+            (`x-webhook-issuer` ou slug) em WEBHOOK_INBOUND_V1_ALLOWLIST —
+            fora isso responde 426 `legacy_version_blocked`.
       requestBody:
         required: true
         content:
           application/json:
-            schema: { type: object, additionalProperties: true }
+            schema:
+              type: object
+              required: [event, occurred_at, data]
+              additionalProperties: false
+              properties:
+                event:
+                  type: string
+                  pattern: '^[a-zA-Z][a-zA-Z0-9_.-]*$'
+                  description: Nome slug-like do evento
+                occurred_at:
+                  type: string
+                  format: date-time
+                  description: Quando o evento ocorreu no sistema de origem
+                data:
+                  type: object
+                  additionalProperties: true
+                idempotency_key:
+                  type: string
+                  format: uuid
+            example:
+              event: catalog.product.updated
+              occurred_at: "2026-10-11T12:00:00Z"
+              data: { product_id: 123 }
       responses:
         "200": { description: Payload aceito }
+        "426":
+          description: contrato v1 solicitado sem compat/allowlist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: string, enum: [legacy_version_blocked, legacy_payload_invalid] }
+                  message: { type: string }
         "400":
           description: slug ausente
           content:
@@ -358,8 +399,15 @@ paths:
               required: [email]
               properties:
                 email: { type: string, format: email }
+                dryRun:
+                  type: boolean
+                  default: true
+                  description: >
+                    Omitido ou true = SIMULAÇÃO (nada é apagado, resposta 200
+                    com o que seria removido). Remoção real exige
+                    explicitamente `dryRun: false`.
       responses:
-        "200": { description: Cleanup executado }
+        "200": { description: Cleanup executado (ou simulado quando dryRun!=false) }
         "403": { description: email fora da allowlist }
         "404": { description: usuário não encontrado }
 
