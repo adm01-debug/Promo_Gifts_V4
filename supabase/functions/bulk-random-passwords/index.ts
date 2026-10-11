@@ -4,6 +4,22 @@
 import { createStructuredLogger } from "../_shared/structured-logger.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.49.4";
 import { buildPublicCorsHeaders } from "../_shared/cors.ts";
+import { z } from "../_shared/zod-validate.ts";
+
+// Tipos do body — falha de schema cai em {} (dry_run + defaults), mesmo
+// comportamento atual de body inválido.
+const bodySchema = z.object({
+  mode: z.enum(["dry_run", "apply"]).optional(),
+  length: z.number().min(1).max(64).optional(),
+  includeUpper: z.boolean().optional(),
+  includeLower: z.boolean().optional(),
+  includeDigits: z.boolean().optional(),
+  includeSymbols: z.boolean().optional(),
+  excludeEmails: z.array(z.string().max(320)).max(1000).optional(),
+  onlyEmails: z.array(z.string().max(320)).max(1000).optional(),
+  maxUsers: z.number().min(1).max(1000).optional(),
+  pageSize: z.number().min(1).max(500).optional(),
+}).passthrough();
 
 type RunMode = "dry_run" | "apply";
 
@@ -134,7 +150,9 @@ Deno.serve(async (req: Request) => {
 
     let body: BulkRequest = {};
     try {
-      body = await req.json();
+      const raw: unknown = await req.json();
+      const parsedBody = bodySchema.safeParse(raw);
+      body = parsedBody.success ? parsedBody.data : {};
     } catch {
       body = {};
     }

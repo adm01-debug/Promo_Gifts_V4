@@ -82,7 +82,7 @@ paths:
               required: [email]
               properties:
                 email: { type: string, format: email }
-                cf-turnstile-response:
+                turnstile_token:
                   type: string
                   description: Token Turnstile (obrigatório quando TURNSTILE_SECRET_KEY configurado)
       responses:

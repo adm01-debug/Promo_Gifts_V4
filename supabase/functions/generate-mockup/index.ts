@@ -1,6 +1,7 @@
 import { getCorsHeaders } from "../_shared/cors.ts";
 import { authenticateRequest, authErrorResponse } from "../_shared/auth.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.49.4";
+import { z } from "../_shared/zod-validate.ts";
 import { assertSwitchEnabled } from "../_shared/kill_switch.ts";
 import {
   allowedFetchHosts, fetchBytes as guardedFetchBytes, ImageFetchError, isAllowedFetchHost, MAX_IMAGE_BYTES,
@@ -40,6 +41,29 @@ interface GenerateMockupBody {
   productFractionX?: number;
   productFractionY?: number;
 }
+
+// Tipos do body — coerce nos numéricos porque clientes antigos enviam
+// strings; falha de schema cai em {} e dispara o validationError de
+// productImageUrl, preservando o contrato de erro atual.
+const mockupBodySchema = z.object({
+  productImageUrl: z.string().max(4096).optional(),
+  logoBase64: z.string().max(8_000_000).optional(),
+  logoUrl: z.string().max(4096).optional(),
+  techniqueName: z.string().max(200).optional(),
+  techniquePrompt: z.string().max(8000).optional(),
+  areaName: z.string().max(200).optional(),
+  positionX: z.coerce.number().finite().optional(),
+  positionY: z.coerce.number().finite().optional(),
+  logoWidthCm: z.coerce.number().finite().optional(),
+  logoHeightCm: z.coerce.number().finite().optional(),
+  logoRotation: z.coerce.number().finite().optional(),
+  logoScale: z.coerce.number().finite().optional(),
+  productName: z.string().max(500).optional(),
+  productWidthCm: z.coerce.number().finite().optional(),
+  productHeightCm: z.coerce.number().finite().optional(),
+  productFractionX: z.coerce.number().finite().optional(),
+  productFractionY: z.coerce.number().finite().optional(),
+}).passthrough();
 
 // ─ Validation ──────────────────────────────────────────────────────────────
 
@@ -341,9 +365,11 @@ Deno.serve(async (req) => {
     // Guard: null / array / primitive bodies would throw when we access
     // body.productImageUrl below — treat them as an empty object so the
     // validation error path fires cleanly instead of a 500.
-    body = (parsed !== null && typeof parsed === 'object' && !Array.isArray(parsed))
-      ? (parsed as GenerateMockupBody)
-      : ({} as GenerateMockupBody);
+    const guarded = (parsed !== null && typeof parsed === 'object' && !Array.isArray(parsed))
+      ? parsed
+      : {};
+    const bodyParsed = mockupBodySchema.safeParse(guarded);
+    body = (bodyParsed.success ? bodyParsed.data : {}) as GenerateMockupBody;
   } catch { return validationError("Request body must be valid JSON", corsHeaders); }
 
   // isFetchableUrl unifies scheme validation + SSRF blocking + mandatory allowlist.
