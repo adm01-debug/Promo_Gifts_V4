@@ -9,7 +9,7 @@ import { z } from '../_shared/zod-validate.ts';
 // do fluxo atual (body vazio), preservando o contrato de erro.
 const bodySchema = z.object({
   action: z.enum(['verify', 'disable']).optional(),
-  token: z.string().max(64).optional(),
+  token: z.string().max(64).nullable().optional(),
   target_user_id: z.string().uuid().optional(),
   is_admin_bypass: z.boolean().optional(),
 }).passthrough();

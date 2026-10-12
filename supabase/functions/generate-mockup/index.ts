@@ -47,7 +47,9 @@ interface GenerateMockupBody {
 // productImageUrl, preservando o contrato de erro atual.
 const mockupBodySchema = z.object({
   productImageUrl: z.string().max(4096).optional(),
-  logoBase64: z.string().max(8_000_000).optional(),
+  // Mesmo teto do base64ToBytes (MAX_IMAGE_BYTES=15MiB decodificados):
+  // 15*1024*1024 * 4/3 ≈ 20.971.520 chars + margem p/ prefixo data URL.
+  logoBase64: z.string().max(21_000_000).optional(),
   logoUrl: z.string().max(4096).optional(),
   techniqueName: z.string().max(200).optional(),
   techniquePrompt: z.string().max(8000).optional(),

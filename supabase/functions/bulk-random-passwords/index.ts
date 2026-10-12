@@ -10,15 +10,18 @@ import { z } from "../_shared/zod-validate.ts";
 // comportamento atual de body inválido.
 const bodySchema = z.object({
   mode: z.enum(["dry_run", "apply"]).optional(),
-  length: z.number().min(1).max(64).optional(),
+  // Numéricos sem teto aqui: o handler já faz Math.min/Math.max nos
+  // valores (clamp existente) — capar no schema converteria um pedido
+  // apply em dry_run silencioso via fallback {}.
+  length: z.number().optional(),
   includeUpper: z.boolean().optional(),
   includeLower: z.boolean().optional(),
   includeDigits: z.boolean().optional(),
   includeSymbols: z.boolean().optional(),
-  excludeEmails: z.array(z.string().max(320)).max(1000).optional(),
-  onlyEmails: z.array(z.string().max(320)).max(1000).optional(),
-  maxUsers: z.number().min(1).max(1000).optional(),
-  pageSize: z.number().min(1).max(500).optional(),
+  excludeEmails: z.array(z.string().max(320)).optional(),
+  onlyEmails: z.array(z.string().max(320)).optional(),
+  maxUsers: z.number().optional(),
+  pageSize: z.number().optional(),
 }).passthrough();
 
 type RunMode = "dry_run" | "apply";
