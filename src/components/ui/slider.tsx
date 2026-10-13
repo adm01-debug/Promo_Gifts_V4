@@ -18,8 +18,8 @@ const Slider = React.forwardRef<
     {/* A11y (WCAG 4.1.2 / axe aria-input-field-name): o nome acessível de um slider
         pertence ao `role="slider"` (o thumb), não ao Root — o Radix não repassa
         `aria-label`/`aria-labelledby` do Root para o Thumb, então o thumb fica sem
-        nome e reprova no axe. Repassamos explicitamente, mantendo as props no Root
-        para não quebrar consumidores existentes. */}
+        nome e reprova no axe. Repassamos explicitamente, mantendo essas props também no
+        Root para não quebrar consumidores existentes. */}
     <SliderPrimitive.Thumb
       aria-label={props['aria-label']}
       aria-labelledby={props['aria-labelledby']}
