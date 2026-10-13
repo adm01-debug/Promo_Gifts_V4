@@ -19,8 +19,16 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.4';
 import { buildPublicCorsHeaders, handleCorsPreflight } from '../_shared/cors.ts';
 import { createStructuredLogger } from '../_shared/structured-logger.ts';
 import { getOrCreateRequestId } from '../_shared/request-id.ts';
+import { z } from '../_shared/zod-validate.ts';
 
 const CORS = buildPublicCorsHeaders({ allowMethods: 'POST, OPTIONS' });
+
+// Tipos do body — email/turnstile_token com tipo errado caem nos paths
+// existentes (invalid_email / turnstile_required), preservando o contrato.
+const bodySchema = z.object({
+  email: z.string().max(320).optional(),
+  turnstile_token: z.string().max(4096).optional(),
+}).passthrough();
 
 // ── Cloudflare Turnstile — anti-bot no login ───────────────────────
 // Enforcement é controlado pela presença de TURNSTILE_SECRET_KEY nos secrets
@@ -78,6 +86,7 @@ Deno.serve(async (req: Request) => {
   try {
     let body: Record<string, unknown> = {};
     try { body = await req.json(); } catch { /* body vazio — ok */ }
+    if (!bodySchema.safeParse(body).success) body = {};
 
     const email      = typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
     // City MUST come from a trusted Cloudflare-proxied header — never from client body.

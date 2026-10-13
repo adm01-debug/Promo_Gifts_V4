@@ -5,6 +5,13 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.0.6](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.5...v1.0.6) (2026-10-13)
+
+
+### Bug Fixes
+
+* **test:** contrato a11y do select de ordenação alinhado ao label honesto do [#2100](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2100) ([#2120](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2120)) ([d163b40](https://github.com/adm01-debug/Promo_Gifts_V4/commit/d163b403f6e96a729395ebad45633624281f792d))
+
 ## [1.0.5](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.4...v1.0.5) (2026-10-11)
 
 
