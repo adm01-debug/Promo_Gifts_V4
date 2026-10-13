@@ -117,7 +117,7 @@ export const MockupWizard = forwardRef<HTMLDivElement, MockupWizardProps>(
       <div ref={ref} className={cn('w-full transition-all duration-300', className)}>
         {onStepClick && (
           <div className="mb-1 flex items-center">
-            {/* Voltar navega para a etapa anterior SEM resetar nada: as escolhas
+            {/* Voltar navega para a etapa anterior SEM resetar nada: escolhas
                 já feitas permanecem (quem controla o estado é a página). */}
             <Button
               variant="ghost"
