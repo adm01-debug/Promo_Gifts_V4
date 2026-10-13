@@ -6,7 +6,7 @@ import { MagicUpQualityScore } from "@/components/magic-up/MagicUpQualityScore";
 import { MagicUpQualityChecklist } from "@/components/magic-up/MagicUpQualityChecklist";
 import { MagicUpCurationStatus } from "@/components/magic-up/MagicUpCurationStatus";
 import { MagicUpVariationComparator } from "@/components/magic-up/MagicUpVariationComparator";
-import type { VariationItem } from "@/hooks/useMagicUpState";
+import type { VariationItem } from "@/hooks/intelligence/useMagicUpState";
 import type { MagicUpQualityDiagnosis } from "@/pages/magic-up/magicUpStrategy";
 
 const diagnosis = (total: number, source: "ai" | "heuristic" = "ai"): MagicUpQualityDiagnosis => ({
@@ -3148,9 +3148,9 @@ describe("MagicUpVariationComparator — empate total de scores (determinismo)",
     const onSelectWinner = vi.fn();
 
     const variations: VariationItem[] = [
-      { id: "var-A", imageUrl: "https://example.com/a.png", qualityScore: 60 },
-      { id: "var-B", imageUrl: "https://example.com/b.png", qualityScore: 90 },
-      { id: "var-C", imageUrl: "https://example.com/c.png", qualityScore: 40 },
+      { id: "var-A", imageUrl: "https://example.com/a.png", isFavorite: false, qualityScore: 60 },
+      { id: "var-B", imageUrl: "https://example.com/b.png", isFavorite: false, qualityScore: 90 },
+      { id: "var-C", imageUrl: "https://example.com/c.png", isFavorite: false, qualityScore: 40 },
     ];
     const winnerIndex = 1;
 
@@ -3311,9 +3311,9 @@ describe("MagicUpVariationComparator — empate total de scores (determinismo)",
 
     // Setup: var-A é winner único (95); var-B e var-C empatadas em 70 (perdedoras)
     const variations: VariationItem[] = [
-      { id: "var-A", imageUrl: "https://example.com/a.png", qualityScore: 95 },
-      { id: "var-B", imageUrl: "https://example.com/b.png", qualityScore: 70 },
-      { id: "var-C", imageUrl: "https://example.com/c.png", qualityScore: 70 },
+      { id: "var-A", imageUrl: "https://example.com/a.png", isFavorite: false, qualityScore: 95 },
+      { id: "var-B", imageUrl: "https://example.com/b.png", isFavorite: false, qualityScore: 70 },
+      { id: "var-C", imageUrl: "https://example.com/c.png", isFavorite: false, qualityScore: 70 },
     ];
     const winnerIndex = 0;
 
