@@ -1,7 +1,7 @@
 -- ==============================================================
 -- ALL_IN_ONE.sql — snapshot concatenado de supabase/migrations/
--- Gerado em: 2026-10-05T07:23:27.372Z
--- Total de arquivos: 3012
+-- Gerado em: 2026-10-12T16:08:31.952Z
+-- Total de arquivos: 3018
 -- Ordem: alfabética (mesmo critério do Supabase CLI)
 -- Uso: APENAS auditoria/leitura. NÃO aplicar direto no banco.
 -- SSOT continua sendo os arquivos individuais em supabase/migrations/.
@@ -253037,6 +253037,916 @@ BEGIN
 END $$;
 
 -- <<< END 20260928213000_backfill_products_main_category_id.sql <<<
+
+-- >>> BEGIN 20261005124500_discount_approval_requests_version.sql >>>
+-- Auditoria 20-dim (Onda 4) — optimistic locking em discount_approval_requests.
+-- orders/quotes/seller_carts já têm version + trigger auto-incremento;
+-- discount_approval_requests era a única tabela de escrita concorrente sem.
+-- Padrão idêntico a increment_seller_cart_version (20260905033652): só
+-- incrementa em UPDATE com mudança real (ignora toques em updated_at/version).
+-- Não quebra clientes: coluna com DEFAULT, trigger BEFORE UPDATE.
+-- Rollback: DROP TRIGGER trg_discount_approval_version ON
+-- discount_approval_requests; DROP FUNCTION
+-- increment_discount_approval_version(); ALTER TABLE
+-- discount_approval_requests DROP COLUMN version.
+
+ALTER TABLE public.discount_approval_requests
+  ADD COLUMN IF NOT EXISTS version integer NOT NULL DEFAULT 1;
+
+CREATE OR REPLACE FUNCTION public.increment_discount_approval_version()
+RETURNS trigger
+LANGUAGE plpgsql
+SET search_path = public, pg_temp
+AS $$
+DECLARE
+  _old jsonb := to_jsonb(OLD) - 'updated_at' - 'version';
+  _new jsonb := to_jsonb(NEW) - 'updated_at' - 'version';
+BEGIN
+  IF _old IS DISTINCT FROM _new THEN
+    NEW.version := COALESCE(OLD.version, 0) + 1;
+  ELSE
+    NEW.version := COALESCE(OLD.version, 1);
+  END IF;
+  RETURN NEW;
+END
+$$;
+
+REVOKE EXECUTE ON FUNCTION public.increment_discount_approval_version() FROM PUBLIC, anon, authenticated;
+
+DROP TRIGGER IF EXISTS trg_discount_approval_version ON public.discount_approval_requests;
+CREATE TRIGGER trg_discount_approval_version
+  BEFORE UPDATE ON public.discount_approval_requests
+  FOR EACH ROW EXECUTE FUNCTION public.increment_discount_approval_version();
+
+COMMENT ON COLUMN public.discount_approval_requests.version IS
+  'Optimistic locking: incrementado por trg_discount_approval_version a cada UPDATE com mudança real. Cliente concorrente deve enviar WHERE version = <esperado> e tratar 0 linhas afetadas como conflito.';
+
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_trigger
+    WHERE tgname = 'trg_discount_approval_version'
+      AND tgrelid = 'public.discount_approval_requests'::regclass
+  ) THEN
+    RAISE EXCEPTION 'trg_discount_approval_version não criado';
+  END IF;
+END $$;
+
+-- <<< END 20261005124500_discount_approval_requests_version.sql <<<
+
+-- >>> BEGIN 20261005124501_audit_triggers_critical_tables.sql >>>
+-- Auditoria 20-dim (Onda 4) — trilha de auditoria DB-level nas tabelas
+-- críticas restantes. user_roles já tem audit_user_role_changes (T28);
+-- esta migration generaliza o mesmo padrão (admin_audit_log, SECURITY
+-- DEFINER, nunca quebra a escrita principal) para:
+--   profiles, suppliers, seller_carts, discount_approval_requests,
+--   orders, quotes
+-- Captura escrita direta na tabela (bypass das RPCs/edges — defesa em
+-- profundidade que a auditoria app-level via useAuditLog não cobre).
+-- UPDATE "touch-only" (só updated_at/version mudou) não gera linha.
+-- Rollback: DROP TRIGGER trg_audit_row_change em profiles, suppliers,
+-- seller_carts, discount_approval_requests, orders, quotes; DROP
+-- FUNCTION public.fn_audit_row_change().
+
+CREATE OR REPLACE FUNCTION public.fn_audit_row_change()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  _actor uuid := auth.uid();
+  _rec jsonb;
+  _old jsonb;
+  _rid uuid;
+  _changed text[];
+BEGIN
+  _rec := CASE WHEN TG_OP = 'DELETE' THEN to_jsonb(OLD) ELSE to_jsonb(NEW) END;
+  _old := CASE WHEN TG_OP = 'INSERT' THEN NULL ELSE to_jsonb(OLD) END;
+
+  -- UPDATE sem mudança de dados (só colunas de sistema) não é evento auditável.
+  IF TG_OP = 'UPDATE' THEN
+    SELECT array_agg(k) INTO _changed
+    FROM jsonb_each(_old) AS j(k, v)
+    WHERE v IS DISTINCT FROM _rec -> k;
+    IF _changed IS NULL OR _changed <@ ARRAY['updated_at', 'version']::text[] THEN
+      RETURN NEW;
+    END IF;
+  END IF;
+
+  _rid := COALESCE(
+    (_rec ->> 'id')::uuid,
+    (_rec ->> 'user_id')::uuid,
+    (_rec ->> 'seller_id')::uuid,
+    (_rec ->> 'created_by')::uuid
+  );
+
+  INSERT INTO public.admin_audit_log (
+    user_id, action, resource_type, resource_id, details, source, created_at
+  ) VALUES (
+    COALESCE(
+      _actor,
+      (_rec ->> 'user_id')::uuid,
+      (_rec ->> 'seller_id')::uuid,
+      (_rec ->> 'created_by')::uuid,
+      '00000000-0000-0000-0000-000000000000'::uuid
+    ),
+    TG_TABLE_NAME || '.' || lower(TG_OP),
+    TG_TABLE_NAME,
+    COALESCE(_rid::text, TG_TABLE_NAME || ':' || TG_OP),
+    jsonb_build_object(
+      'op', TG_OP,
+      'old', _old,
+      'new', CASE WHEN TG_OP = 'DELETE' THEN NULL ELSE _rec END,
+      'changed_fields', to_jsonb(_changed)
+    ),
+    CASE WHEN _actor IS NULL THEN 'system' ELSE 'database_trigger' END,
+    now()
+  );
+
+  RETURN COALESCE(NEW, OLD);
+EXCEPTION WHEN OTHERS THEN
+  -- Auditoria nunca derruba a escrita principal (mesmo padrão de
+  -- audit_user_role_changes): loga warning e devolve a row.
+  RAISE WARNING 'fn_audit_row_change failed on %: %', TG_TABLE_NAME, SQLERRM;
+  RETURN COALESCE(NEW, OLD);
+END;
+$$;
+
+REVOKE EXECUTE ON FUNCTION public.fn_audit_row_change() FROM PUBLIC, anon, authenticated;
+
+COMMENT ON FUNCTION public.fn_audit_row_change() IS
+  'Trigger genérica de auditoria → admin_audit_log (resource_type = tabela, action = <tabela>.<op>). Onda 4 da auditoria 20-dim.';
+
+DO $$
+DECLARE
+  _t text;
+BEGIN
+  FOREACH _t IN ARRAY ARRAY[
+    'profiles', 'suppliers', 'seller_carts',
+    'discount_approval_requests', 'orders', 'quotes'
+  ] LOOP
+    EXECUTE format(
+      'DROP TRIGGER IF EXISTS trg_audit_%1$s ON public.%1$I;
+       CREATE TRIGGER trg_audit_%1$s
+         AFTER INSERT OR UPDATE OR DELETE ON public.%1$I
+         FOR EACH ROW EXECUTE FUNCTION public.fn_audit_row_change()',
+      _t
+    );
+  END LOOP;
+
+  FOREACH _t IN ARRAY ARRAY[
+    'profiles', 'suppliers', 'seller_carts',
+    'discount_approval_requests', 'orders', 'quotes'
+  ] LOOP
+    IF NOT EXISTS (
+      SELECT 1 FROM pg_trigger
+      WHERE tgname = 'trg_audit_' || _t
+        AND tgrelid = format('public.%I', _t)::regclass
+    ) THEN
+      RAISE EXCEPTION 'trg_audit_% não criado', _t;
+    END IF;
+  END LOOP;
+END $$;
+
+-- <<< END 20261005124501_audit_triggers_critical_tables.sql <<<
+
+-- >>> BEGIN 20261005124502_audit_redact_sensitive_columns.sql >>>
+-- Auditoria 20-dim (Onda 4, revisão) — redação de colunas sensíveis em
+-- fn_audit_row_change (criada em 20261005124501). Sem isto, dois vazamentos:
+--   1) LGPD: o UPDATE de anonimização de profiles gravava details.old com
+--      a PII inteira (full_name/email/phone/...) recuperável por 90 dias;
+--   2) suppliers.api_credentials (e qualquer coluna cujo nome indique
+--      segredo) sobrevivia a rotações de chave dentro de details.old/new.
+-- Regra: profiles redige a PII explicitamente; qualquer tabela redige coluna
+-- cujo nome indique segredo OU dado pessoal de contato/identificação
+-- (credential|secret|token|password|api_key cobre suppliers.api_credentials
+-- e quotes.approval_token; email|phone|telefone|celular|whatsapp|cpf|cnpj|
+-- inscricao|contact_name|contact_person|client_name|full_name cobre a PII
+-- comercial de suppliers e quotes — client_email/client_phone/client_cnpj).
+-- Onda 5: address|endereco|cep|zip_code|logradouro cobre endereços de
+-- suppliers/customers (PII de localização).
+-- O log fica com "[REDACTED]" no lugar do valor; changed_fields (só nomes)
+-- continua.
+-- Rollback: restaurar a definição de fn_audit_row_change de
+-- 20261005124501_audit_triggers_critical_tables.sql (sem a camada
+-- de redação).
+
+CREATE OR REPLACE FUNCTION public.fn_audit_row_change()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  _actor uuid := auth.uid();
+  _rec jsonb;
+  _old jsonb;
+  _rec_safe jsonb;
+  _old_safe jsonb;
+  _rid uuid;
+  _changed text[];
+  _redact text[];
+BEGIN
+  _rec := CASE WHEN TG_OP = 'DELETE' THEN to_jsonb(OLD) ELSE to_jsonb(NEW) END;
+  _old := CASE WHEN TG_OP = 'INSERT' THEN NULL ELSE to_jsonb(OLD) END;
+
+  -- UPDATE sem mudança de dados (só colunas de sistema) não é evento auditável.
+  IF TG_OP = 'UPDATE' THEN
+    SELECT array_agg(k) INTO _changed
+    FROM jsonb_each(_old) AS j(k, v)
+    WHERE v IS DISTINCT FROM _rec -> k;
+    IF _changed IS NULL OR _changed <@ ARRAY['updated_at', 'version']::text[] THEN
+      RETURN NEW;
+    END IF;
+  END IF;
+
+  _rid := COALESCE(
+    (_rec ->> 'id')::uuid,
+    (_rec ->> 'user_id')::uuid,
+    (_rec ->> 'seller_id')::uuid,
+    (_rec ->> 'created_by')::uuid
+  );
+
+  _redact := CASE
+    WHEN TG_TABLE_NAME = 'profiles' THEN ARRAY[
+      'full_name', 'email', 'phone', 'avatar_url',
+      'department', 'preferences', 'bitrix_id'
+    ]
+    ELSE ARRAY[]::text[]
+  END;
+
+  _rec_safe := (
+    SELECT jsonb_object_agg(
+      j.k,
+      CASE
+        WHEN j.k = ANY(_redact)
+          OR j.k ~* '(credential|secret|token|password|api_key|email|phone|telefone|celular|whatsapp|cpf|cnpj|inscricao|contact_name|contact_person|client_name|full_name|address|endereco|cep|zip_code|logradouro)'
+          THEN '"[REDACTED]"'::jsonb
+        ELSE j.v
+      END
+    )
+    FROM jsonb_each(_rec) AS j(k, v)
+  );
+  _old_safe := CASE WHEN _old IS NULL THEN NULL ELSE (
+    SELECT jsonb_object_agg(
+      j.k,
+      CASE
+        WHEN j.k = ANY(_redact)
+          OR j.k ~* '(credential|secret|token|password|api_key|email|phone|telefone|celular|whatsapp|cpf|cnpj|inscricao|contact_name|contact_person|client_name|full_name|address|endereco|cep|zip_code|logradouro)'
+          THEN '"[REDACTED]"'::jsonb
+        ELSE j.v
+      END
+    )
+    FROM jsonb_each(_old) AS j(k, v)
+  ) END;
+
+  INSERT INTO public.admin_audit_log (
+    user_id, action, resource_type, resource_id, details, source, created_at
+  ) VALUES (
+    COALESCE(
+      _actor,
+      (_rec ->> 'user_id')::uuid,
+      (_rec ->> 'seller_id')::uuid,
+      (_rec ->> 'created_by')::uuid,
+      '00000000-0000-0000-0000-000000000000'::uuid
+    ),
+    TG_TABLE_NAME || '.' || lower(TG_OP),
+    TG_TABLE_NAME,
+    COALESCE(_rid::text, TG_TABLE_NAME || ':' || TG_OP),
+    jsonb_build_object(
+      'op', TG_OP,
+      'old', _old_safe,
+      'new', CASE WHEN TG_OP = 'DELETE' THEN NULL ELSE _rec_safe END,
+      'changed_fields', to_jsonb(_changed)
+    ),
+    CASE WHEN _actor IS NULL THEN 'system' ELSE 'database_trigger' END,
+    now()
+  );
+
+  RETURN COALESCE(NEW, OLD);
+EXCEPTION WHEN OTHERS THEN
+  -- Auditoria nunca derruba a escrita principal (mesmo padrão de
+  -- audit_user_role_changes): loga warning e devolve a row.
+  RAISE WARNING 'fn_audit_row_change failed on %: %', TG_TABLE_NAME, SQLERRM;
+  RETURN COALESCE(NEW, OLD);
+END;
+$$;
+
+REVOKE EXECUTE ON FUNCTION public.fn_audit_row_change() FROM PUBLIC, anon, authenticated;
+
+COMMENT ON FUNCTION public.fn_audit_row_change() IS
+  'Trigger genérica de auditoria → admin_audit_log com redação de PII/segredos (Onda 4).';
+
+-- <<< END 20261005124502_audit_redact_sensitive_columns.sql <<<
+
+-- >>> BEGIN 20261005124503_discount_approval_expected_version.sql >>>
+-- Auditoria 20-dim (Onda 4, revisão) — enforcement real do version em
+-- respond_discount_approval_transactional (contrato criado em 20261005124500).
+-- Dois gaps apontados na revisão:
+--   1) decisões concorrentes: nenhuma escrita comparava a versão lida. Agora a
+--      RPC aceita _expected_version opcional (retrocompatível — DEFAULT NULL)
+--      e falha com 40001 quando a versão mudou desde a leitura. O caminho de
+--      fallback do cliente (useDiscountApproval.respondToApproval) também
+--      passa a condicionar o UPDATE ao version observado.
+--   2) replay idempotente escondia decisões divergentes: status igual ao da
+--      decisão retornava sucesso SILENCIOSO mesmo com notas/autor diferentes
+--      (segundo gestor "aprovava" com notas que nunca eram gravadas). Replay
+--      só é idempotente quando autor E notas são idênticos; divergente = 40001.
+-- DROP+CREATE porque CREATE OR REPLACE não troca assinatura (overload ambíguo
+-- no PostgREST). GRANT/REVOKE replicados da definição original.
+-- Rollback: DROP FUNCTION
+-- respond_discount_approval_transactional(uuid, boolean, text,
+-- integer) e recriar a assinatura de 3 args da definição anterior
+-- (version em 20261004xxx, sem _expected_version).
+
+DROP FUNCTION IF EXISTS public.respond_discount_approval_transactional(uuid, boolean, text);
+
+CREATE OR REPLACE FUNCTION public.respond_discount_approval_transactional(
+  _request_id uuid,
+  _approved boolean,
+  _admin_notes text DEFAULT NULL,
+  _expected_version integer DEFAULT NULL
+)
+RETURNS public.discount_approval_requests
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path TO public
+AS $function$
+DECLARE
+  _uid uuid := auth.uid();
+  _quote_id uuid;
+  _q public.quotes;
+  _request public.discount_approval_requests;
+  _decision text := CASE WHEN _approved THEN 'approved' ELSE 'rejected' END;
+  _snapshot text;
+BEGIN
+  IF _uid IS NULL OR NOT public.is_supervisor_or_above(_uid) THEN
+    RAISE EXCEPTION 'Apenas coordenador ou superior pode decidir aprovação.'
+      USING ERRCODE = '42501';
+  END IF;
+
+  SELECT quote_id INTO _quote_id
+  FROM public.discount_approval_requests WHERE id = _request_id;
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Solicitação não encontrada.' USING ERRCODE = 'P0002';
+  END IF;
+
+  SELECT * INTO _q FROM public.quotes WHERE id = _quote_id FOR UPDATE;
+  SELECT * INTO _request
+  FROM public.discount_approval_requests WHERE id = _request_id FOR UPDATE;
+
+  IF _request.quote_id IS DISTINCT FROM _quote_id THEN
+    RAISE EXCEPTION 'Solicitação mudou durante a decisão.' USING ERRCODE = '40001';
+  END IF;
+
+  -- Replay idempotente ANTES da checagem de versão: a decisão gravada bumpa
+  -- version, então um retry idêntico (resposta perdida) chegaria com a versão
+  -- obsoleta e falharia 40001 sem nunca chegar aqui. Replay idêntico (mesmo
+  -- status-alvo, mesmo autor, mesmas notas) devolve a decisão já gravada —
+  -- MAS só se a versão atual for a que a própria decisão produziu
+  -- (esperada+1): alterações posteriores à decisão (ex.: validade editada)
+  -- também bumpam version, e aí o retry não pode mais fingir sucesso.
+  -- Com _expected_version NULL (clientes antigos) o replay segue tolerado.
+  IF _request.status = _decision
+     AND _request.admin_id IS NOT DISTINCT FROM _uid
+     AND _request.admin_notes IS NOT DISTINCT FROM NULLIF(btrim(_admin_notes), '') THEN
+    IF _expected_version IS NOT NULL
+       AND _request.version > _expected_version + 1 THEN
+      RAISE EXCEPTION 'Solicitação mudou após a decisão (versão esperada %, atual %). Recarregue e decida de novo.',
+        _expected_version, _request.version
+        USING ERRCODE = '40001';
+    END IF;
+    RETURN _request;
+  END IF;
+  -- Mesma decisão com autor/notas divergentes é conflito real: o segundo
+  -- gestor precisa saber que a decisão dele NÃO foi gravada.
+  IF _request.status = _decision THEN
+    RAISE EXCEPTION 'Decisão concorrente divergente: solicitação já está % decidida por outro gestor ou com notas diferentes.',
+      _request.status
+      USING ERRCODE = '40001';
+  END IF;
+  IF _request.status <> 'pending' THEN
+    RAISE EXCEPTION 'Decisão terminal conflitante: solicitação já está %.', _request.status
+      USING ERRCODE = '23514';
+  END IF;
+
+  -- Optimistic locking: se o cliente leu a solicitação antes de decidir,
+  -- a versão tem que bater com a observada (NULL = não verificar, retrocompat).
+  IF _expected_version IS NOT NULL
+     AND _request.version IS DISTINCT FROM _expected_version THEN
+    RAISE EXCEPTION 'Solicitação mudou desde a leitura (versão esperada %, atual %). Recarregue e decida de novo.',
+      _expected_version, _request.version
+      USING ERRCODE = '40001';
+  END IF;
+
+  _snapshot := public.compute_quote_snapshot_hash(_quote_id);
+  IF _request.quote_snapshot_hash IS DISTINCT FROM _snapshot
+     OR _request.requested_discount_percent < COALESCE(_q.real_discount_percent, 0) THEN
+    RAISE EXCEPTION 'Snapshot ou percentual mudou; solicite nova aprovação.'
+      USING ERRCODE = '23514';
+  END IF;
+
+  UPDATE public.discount_approval_requests
+  SET status = _decision,
+      admin_id = _uid,
+      admin_notes = NULLIF(btrim(_admin_notes), ''),
+      responded_at = clock_timestamp(),
+      valid_until = CASE WHEN _approved THEN clock_timestamp() + interval '30 days' ELSE NULL END
+  WHERE id = _request_id
+  RETURNING * INTO _request;
+
+  IF NOT _approved THEN
+    PERFORM set_config('app.discount_approval_request_id', _request_id::text, true);
+  END IF;
+
+  UPDATE public.quotes
+  SET status = CASE WHEN _approved THEN 'pending' ELSE 'draft' END
+  WHERE id = _quote_id;
+
+  INSERT INTO public.quote_history (
+    quote_id, user_id, action, description, field_changed,
+    old_value, new_value, metadata
+  ) VALUES (
+    _quote_id, _uid,
+    CASE WHEN _approved THEN 'discount_approved' ELSE 'discount_rejected' END,
+    format('Desconto de %s%% %s pelo gestor',
+      _request.requested_discount_percent,
+      CASE WHEN _approved THEN 'aprovado' ELSE 'rejeitado' END),
+    'discount', _request.max_allowed_percent::text || '%',
+    _request.requested_discount_percent::text || '%',
+    jsonb_build_object(
+      'request_id', _request_id,
+      'admin_notes', NULLIF(btrim(_admin_notes), ''),
+      'status', _decision
+    )
+  );
+
+  RETURN _request;
+END;
+$function$;
+
+REVOKE ALL ON FUNCTION public.respond_discount_approval_transactional(uuid, boolean, text, integer)
+  FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.respond_discount_approval_transactional(uuid, boolean, text, integer)
+  TO authenticated, service_role;
+
+-- `_expected_version` foi adicionado agora: clientes antigos chamam com 3
+-- args e o DEFAULT NULL mantém o comportamento anterior. Para o cliente TS
+-- passar o parâmetro basta regerar types.ts após aplicar esta migration.
+
+-- <<< END 20261005124503_discount_approval_expected_version.sql <<<
+
+-- >>> BEGIN 20261005130000_login_lockout_verified_per_ip.sql >>>
+-- Auditoria 20-dim (Onda 5, C1) — lockout anti-brute-force à prova de
+-- envenenamento de login_attempts.
+--
+-- Achado CRITICAL da validação exaustiva: a edge `log-login-attempt`
+-- (verify_jwt=false, insert via service_role) aceitava {email, success}
+-- arbitrário. Um POST anônimo com success=true avançava _last_success e
+-- ZERAVA o contador de falhas — desligando o lockout (única proteção
+-- anti-brute-force ativa). Um POST com success=false mantinha
+-- blocked_until fresco — DoS permanente da conta.
+--
+-- Correções coordenadas (migration + edges + cliente):
+--   1. login_attempts.verified — a edge só grava true quando success vem
+--      com prova de sessão (Authorization Bearer validado via
+--      auth.getUser e e-mail casado). Linhas forjadas ficam
+--      verified=false — visíveis na auditoria, inertes para o lockout.
+--   2. fn_check_login_allowed conta falhas por PAR (email, ip_address)
+--      e só reseta via sucesso VERIFICADO do mesmo par. Falhas
+--      fabricadas vindas do IP do atacante só trancam o par
+--      (email, ip-do-atacante) — o DoS de conta desaparece.
+--   3. Comparação case-insensitive: a edge normaliza email para
+--      lowercase no insert; lower() aqui cobre linhas legadas mistas.
+--
+-- Ordem de deploy (PO): aplicar esta migration ANTES do deploy das
+-- edges `log-login-attempt` e `check-login` desta mesma onda. Sem a
+-- coluna `verified`, o insert da edge nova falha (fallback 200 —
+-- telemetria perdida, login preservado).
+--
+-- Rollback: restaurar a definição de `fn_check_login_allowed` da
+-- migration 20260904130000_audit_r4_sec008_ip_bypass_fix.sql e
+-- `ALTER TABLE public.login_attempts DROP COLUMN verified;`
+-- (reverter também o deploy da edge log-login-attempt).
+
+ALTER TABLE public.login_attempts
+  ADD COLUMN IF NOT EXISTS verified boolean NOT NULL DEFAULT false;
+
+COMMENT ON COLUMN public.login_attempts.verified IS
+  'true somente quando a edge log-login-attempt validou a sessão do usuário (Authorization Bearer + e-mail casado) para linhas success=true. fn_check_login_allowed ignora success não verificado ao zerar o contador de lockout.';
+
+CREATE INDEX IF NOT EXISTS idx_login_attempts_email_ip_created
+  ON public.login_attempts (email, ip_address, created_at DESC);
+
+CREATE OR REPLACE FUNCTION public.fn_check_login_allowed(
+  p_email       text,
+  p_ip_address  text    DEFAULT NULL,
+  p_city        text    DEFAULT NULL,
+  p_user_agent  text    DEFAULT NULL
+)
+RETURNS TABLE(
+  allowed       boolean,
+  reason        text,
+  blocked_until timestamptz,
+  check_details jsonb
+)
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = 'public'
+AS $function$
+DECLARE
+  _s              RECORD;
+  _failed_count   INT   := 0;
+  _last_failure   TIMESTAMPTZ;
+  _last_success   TIMESTAMPTZ;
+  _lockout_until  TIMESTAMPTZ;
+  _details        JSONB := '{}'::JSONB;
+  _ip_safe        TEXT;
+BEGIN
+  _ip_safe := COALESCE(p_ip_address, 'unknown');
+
+  IF p_email IS NULL OR length(trim(p_email)) = 0 THEN
+    RETURN QUERY SELECT false, 'invalid_email'::TEXT,
+      NULL::TIMESTAMPTZ, '{}'::JSONB;
+    RETURN;
+  END IF;
+  p_email := lower(trim(p_email));
+
+  SELECT * INTO _s FROM public.access_security_settings LIMIT 1;
+  IF NOT FOUND THEN
+    _s.ip_whitelist_enabled     := false;
+    _s.city_whitelist_enabled   := false;
+    _s.block_unknown_locations  := false;
+    _s.max_failed_attempts      := 5;
+    _s.lockout_duration_minutes := 30;
+    _s.strict_access_mode       := false;
+    _details := _details || '{"settings_source":"defaults"}'::JSONB;
+  ELSE
+    _details := _details || '{"settings_source":"db"}'::JSONB;
+  END IF;
+
+  _s.max_failed_attempts      := GREATEST(COALESCE(_s.max_failed_attempts, 5), 1);
+  _s.lockout_duration_minutes := GREATEST(COALESCE(_s.lockout_duration_minutes, 30), 1);
+
+  -- P1 fix v3 (mantido): ip_whitelist_enabled=true + p_ip_address IS NULL → bloquear.
+  IF _s.ip_whitelist_enabled THEN
+    IF p_ip_address IS NULL THEN
+      _details := _details || '{"ip_check":"blocked_null_ip"}'::JSONB;
+      BEGIN
+        INSERT INTO public.access_blocked_log
+          (email, ip_address, city, block_reason, user_agent)
+        VALUES (p_email, 'unknown', p_city, 'ip_unknown_blocked', p_user_agent);
+      EXCEPTION WHEN OTHERS THEN NULL;
+      END;
+      RETURN QUERY SELECT false, 'ip_unknown_blocked'::TEXT,
+        NULL::TIMESTAMPTZ, _details;
+      RETURN;
+    END IF;
+    IF EXISTS (SELECT 1 FROM public.ip_whitelist WHERE is_active = true LIMIT 1) THEN
+      IF NOT EXISTS (
+        SELECT 1 FROM public.ip_whitelist
+        WHERE ip_address = p_ip_address AND is_active = true
+      ) THEN
+        _details := _details
+          || jsonb_build_object('ip_check','blocked','ip',p_ip_address);
+        BEGIN
+          INSERT INTO public.access_blocked_log
+            (email, ip_address, city, block_reason, user_agent)
+          VALUES (p_email, _ip_safe, p_city, 'ip_not_whitelisted', p_user_agent);
+        EXCEPTION WHEN OTHERS THEN NULL;
+        END;
+        RETURN QUERY SELECT false, 'ip_not_whitelisted'::TEXT,
+          NULL::TIMESTAMPTZ, _details;
+        RETURN;
+      END IF;
+      _details := _details || '{"ip_check":"allowed"}'::JSONB;
+    ELSE
+      _details := _details || '{"ip_check":"skipped_empty_whitelist"}'::JSONB;
+    END IF;
+  ELSE
+    _details := _details || '{"ip_check":"disabled"}'::JSONB;
+  END IF;
+
+  -- P1 fix v2 (mantido): city_whitelist_enabled=true + p_city IS NULL → bloquear.
+  IF _s.city_whitelist_enabled THEN
+    IF p_city IS NULL THEN
+      _details := _details || '{"city_check":"blocked_null_city"}'::JSONB;
+      BEGIN
+        INSERT INTO public.access_blocked_log
+          (email, ip_address, city, block_reason, user_agent)
+        VALUES (p_email, _ip_safe, NULL, 'city_unknown_blocked', p_user_agent);
+      EXCEPTION WHEN OTHERS THEN NULL;
+      END;
+      RETURN QUERY SELECT false, 'city_unknown_blocked'::TEXT,
+        NULL::TIMESTAMPTZ, _details;
+      RETURN;
+    END IF;
+    IF EXISTS (SELECT 1 FROM public.city_whitelist WHERE is_active = true LIMIT 1) THEN
+      IF NOT EXISTS (
+        SELECT 1 FROM public.city_whitelist
+        WHERE upper(city_name) = upper(p_city) AND is_active = true
+      ) THEN
+        _details := _details
+          || jsonb_build_object('city_check','blocked','city',p_city);
+        BEGIN
+          INSERT INTO public.access_blocked_log
+            (email, ip_address, city, block_reason, user_agent)
+          VALUES (p_email, _ip_safe, p_city, 'city_not_whitelisted', p_user_agent);
+        EXCEPTION WHEN OTHERS THEN NULL;
+        END;
+        RETURN QUERY SELECT false, 'city_not_whitelisted'::TEXT,
+          NULL::TIMESTAMPTZ, _details;
+        RETURN;
+      END IF;
+      _details := _details || '{"city_check":"allowed"}'::JSONB;
+    ELSE
+      _details := _details || '{"city_check":"skipped_empty_whitelist"}'::JSONB;
+    END IF;
+  ELSE
+    _details := _details || '{"city_check":"disabled"}'::JSONB;
+  END IF;
+
+  -- Onda 5 C1 — contagem por PAR (email, ip):
+  --   · _last_success exige verified=true — só a edge produz essa linha
+  --     quando success chega com o JWT recém-emitido do próprio usuário;
+  --     um POST anônimo não consegue forjar verified (insert usa
+  --     service_role mas a flag é decidida no código da edge, não no
+  --     body). Sucesso forjado já não zera o contador.
+  --   · Falhas contam só no par (email, ip do caller). Envenenar
+  --     login_attempts com falhas de outro IP tranca apenas
+  --     (email, ip-do-atacante) — não a conta do usuário real.
+  --   · p_ip_address NULL (caller legado sem contexto de IP) mantém a
+  --     contagem por e-mail inteiro — comportamento anterior.
+  SELECT max(created_at) INTO _last_success
+  FROM public.login_attempts
+  WHERE lower(email) = p_email
+    AND success = true
+    AND verified = true
+    AND (p_ip_address IS NULL OR ip_address = p_ip_address);
+
+  SELECT count(*), max(created_at)
+    INTO _failed_count, _last_failure
+  FROM public.login_attempts
+  WHERE lower(email) = p_email
+    AND success = false
+    AND created_at > now()
+        - (_s.lockout_duration_minutes || ' minutes')::interval
+    AND (p_ip_address IS NULL OR ip_address = p_ip_address)
+    AND (_last_success IS NULL OR created_at > _last_success);
+
+  _details := _details || jsonb_build_object(
+    'failed_attempts',   _failed_count,
+    'max_allowed',       _s.max_failed_attempts,
+    'window_minutes',    _s.lockout_duration_minutes
+  );
+
+  IF _failed_count >= _s.max_failed_attempts AND _last_failure IS NOT NULL THEN
+    _lockout_until := _last_failure
+      + (_s.lockout_duration_minutes || ' minutes')::interval;
+    IF _lockout_until > now() THEN
+      _details := _details
+        || jsonb_build_object('lockout_until', _lockout_until);
+      BEGIN
+        INSERT INTO public.access_blocked_log
+          (email, ip_address, city, block_reason, user_agent)
+        VALUES (p_email, _ip_safe, p_city,
+                'too_many_failed_attempts', p_user_agent);
+      EXCEPTION WHEN OTHERS THEN NULL;
+      END;
+      RETURN QUERY SELECT false, 'too_many_failed_attempts'::TEXT,
+        _lockout_until, _details;
+      RETURN;
+    END IF;
+  END IF;
+
+  _details := _details || '{"result":"all_checks_passed"}'::JSONB;
+  RETURN QUERY SELECT true, 'allowed'::TEXT, NULL::TIMESTAMPTZ, _details;
+
+EXCEPTION WHEN OTHERS THEN
+  -- SEC-008: fail-closed. Retorna genérico sem vazar mensagem interna.
+  RETURN QUERY SELECT false, 'security_check_error_fail_closed'::TEXT,
+    NULL::TIMESTAMPTZ, '{}'::JSONB;
+END;
+$function$;
+
+-- Mantém o hardening de 20260904150000 (SEC-008v4): a função aceita
+-- p_ip_address/p_city arbitrários, então só a edge (service_role) pode
+-- chamá-la — via PostgREST um caller forjaria o contexto de conexão.
+REVOKE EXECUTE ON FUNCTION public.fn_check_login_allowed(text, text, text, text) FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.fn_check_login_allowed(text, text, text, text) FROM anon;
+REVOKE EXECUTE ON FUNCTION public.fn_check_login_allowed(text, text, text, text) FROM authenticated;
+GRANT EXECUTE ON FUNCTION public.fn_check_login_allowed(text, text, text, text) TO service_role;
+
+DO $$
+DECLARE
+  v_def text;
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'login_attempts'
+      AND column_name = 'verified'
+  ) THEN
+    RAISE EXCEPTION 'Onda5-C1: login_attempts.verified não criado!';
+  END IF;
+
+  SELECT pg_get_functiondef(oid) INTO v_def
+  FROM pg_proc
+  WHERE proname = 'fn_check_login_allowed'
+    AND pronamespace = 'public'::regnamespace;
+
+  IF v_def IS NULL THEN
+    RAISE EXCEPTION 'Onda5-C1: fn_check_login_allowed não existe após CREATE OR REPLACE!';
+  END IF;
+  IF v_def NOT LIKE '%verified%' THEN
+    RAISE EXCEPTION 'Onda5-C1: fn_check_login_allowed não filtra success verificado!';
+  END IF;
+  IF v_def NOT LIKE '%security_check_error_fail_closed%' THEN
+    RAISE EXCEPTION 'Onda5-C1: fn_check_login_allowed perdeu o handler fail-closed!';
+  END IF;
+  IF v_def NOT LIKE '%ip_unknown_blocked%' THEN
+    RAISE EXCEPTION 'Onda5-C1: fn_check_login_allowed perdeu o fix de ip bypass!';
+  END IF;
+  IF has_function_privilege('anon', 'public.fn_check_login_allowed(text,text,text,text)', 'EXECUTE')
+     OR has_function_privilege('authenticated', 'public.fn_check_login_allowed(text,text,text,text)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'Onda5-C1: anon/authenticated com EXECUTE em fn_check_login_allowed — revogação SEC-008v4 perdida!';
+  END IF;
+  IF NOT has_function_privilege('service_role', 'public.fn_check_login_allowed(text,text,text,text)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'Onda5-C1: service_role sem EXECUTE em fn_check_login_allowed — edge check-login quebraria!';
+  END IF;
+
+  RAISE NOTICE '✓ [Onda5-C1] login_attempts.verified + lockout por (email,ip) aplicados.';
+END;
+$$;
+
+-- <<< END 20261005130000_login_lockout_verified_per_ip.sql <<<
+
+-- >>> BEGIN 20261008230000_restringir_anon_mockup_approval_links.sql >>>
+-- ============================================================================
+-- fix_version: 20261008_restringir_anon_mockup_approval_links
+-- Plano Mockup (etapas 1-2) — aprovada pelo dono em 08/10/2026.
+--
+-- (1) anon deixa de ler mockup_approval_links. A tabela guarda public_token e client_notes; a migration
+--     20260717143414_grant_anon_catalog_readpath_v2 concedeu SELECT ao anon junto de 36 tabelas de catalogo
+--     (e a politica mal_public_select_active deixa ler TODAS as linhas com is_active = true). Nenhum codigo
+--     (src/ ou functions) usa essa tabela como anon. O link publico de aprovacao do cliente (futuro) deve usar
+--     uma funcao segura que busca UMA linha pelo token, nunca SELECT direto.
+--     ATENCAO: aquela migration pede RE-CONCEDER se algo revogar. Aqui a revogacao e INTENCIONAL; por isso a funcao
+--     tripwire fn_verify_anon_catalog_grants e recriada (v4) sem esta tabela.
+-- (2) bucket mockup-assets: a politica de listagem (storage.objects) era sempre verdadeira (name IS NOT NULL);
+--     passa a listar so a propria pasta <uid>/...  (getPublicUrl nao depende desta politica).
+--
+-- ROLLBACK (restaura o estado anterior, GRANTs exatamente como no SCHEMA_LIVE):
+--   DROP POLICY IF EXISTS "Authenticated users can view mockup assets" ON storage.objects;
+--   CREATE POLICY "Authenticated users can view mockup assets" ON storage.objects FOR SELECT TO authenticated
+--     USING ((bucket_id = 'mockup-assets'::text) AND (name IS NOT NULL) AND (length(name) > 0));
+--   GRANT SELECT, INSERT, REFERENCES, DELETE, TRIGGER, MAINTAIN, UPDATE ON TABLE public.mockup_approval_links TO anon;
+--   CREATE POLICY "mal_public_select_active" ON public.mockup_approval_links FOR SELECT TO anon USING (is_active = true);
+--   (e reaplicar a funcao fn_verify_anon_catalog_grants da migration 20260717173510)
+-- ============================================================================
+
+-- (1) links de aprovacao: fim do acesso anonimo
+DROP POLICY IF EXISTS "mal_public_select_active" ON public.mockup_approval_links;
+REVOKE ALL ON TABLE public.mockup_approval_links FROM anon;
+
+-- (2) listagem do bucket mockup-assets: so a propria pasta
+DROP POLICY IF EXISTS "Authenticated users can view mockup assets" ON storage.objects;
+CREATE POLICY "Authenticated users can view mockup assets" ON storage.objects
+  FOR SELECT TO authenticated
+  USING (
+    bucket_id = 'mockup-assets'
+    AND (storage.foldername(name))[1] = (SELECT auth.uid())::text
+  );
+
+-- (3) tripwire v4 (sem a tabela revogada)
+-- ============================================================================
+-- fix_version: 20261008_fn_verify_anon_catalog_grants_v4
+-- v4 (08/10/2026): mockup_approval_links SAIU da lista de tabelas anon obrigatórias (guarda public_token e client_notes; ver cabeçalho da migration de restrição).
+-- (herdado) MELHORIA 5/6: Tripwire v3 — cobertura completa de todos os fixes desta sessão.
+-- Adicionado: v_tabela_preco_gravacao_oficial_public, fn_product_active_for_rls EXECUTE,
+-- pg_stat_statements bloqueado, tabela_preco_gravacao_oficial bloqueada,
+-- product_variants_anon_read is_active check, 9 views DEFINER completas.
+-- ============================================================================
+CREATE OR REPLACE FUNCTION public.fn_verify_anon_catalog_grants()
+RETURNS TABLE(object_name text, object_kind text, issue text)
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path TO 'public'
+AS $fn$
+BEGIN
+  -- (1) Views/tabelas que DEVEM ter anon SELECT
+  RETURN QUERY
+  WITH req(sch, nm) AS (VALUES
+    -- Views DEFINER (catálogo principal)
+    ('public','v_products_public'),('public','v_suppliers_public'),
+    ('public','v_variant_sale_prices_public'),
+    ('public','v_tabela_preco_gravacao_oficial_public'),
+    -- 9 views _public
+    ('public','v_color_nuances_public'),('public','v_kit_component_media_public'),
+    ('public','v_kit_component_print_areas_public'),
+    ('public','v_personalization_techniques_public'),
+    ('public','v_print_area_techniques_public'),('public','v_product_compositions_public'),
+    ('public','v_product_properties_public'),('public','v_product_tags_public'),
+    ('public','v_tags_public'),
+    -- Matviews cross-schema
+    ('public','mv_product_compositions'),
+    ('internal','mv_product_leaf_category'),('analytics','mv_product_compositions'),
+    -- Tabelas de catálogo (não sensíveis)
+    ('public','categories'),('public','collection_products'),('public','collections'),
+    ('public','color_groups'),('public','color_synonym_map'),('public','color_variations'),
+    ('public','content_articles'),('public','favorite_item_reactions'),
+    ('public','favorite_items'),('public','favorite_lists'),('public','kit_typical_dims'),
+    ('public','material_types'),
+    ('public','print_area_techniques'),('public','product_ai_content'),
+    ('public','product_attributes'),('public','product_badge_definitions'),
+    ('public','product_commemorative_dates'),('public','product_fiscal'),
+    ('public','product_kit_components'),('public','product_materials'),
+    ('public','product_novelties'),('public','product_physical'),('public','product_seo'),
+    ('public','product_supply'),('public','product_variants'),
+    ('public','produto_ramo_atividade'),('public','ramo_atividade'),
+    ('public','ramo_atividade_filho'),('public','spot_typecode_map'),
+    ('public','supplier_sub_brands'),('public','system_kill_switches'),
+    ('public','tabela_preco_gravacao_oficial_faixa'),  -- faixa de preço de venda OK
+    ('public','tecnicas_gravacao'),('public','video_sim_results'),
+    ('public','color_nuances'),('public','kit_component_print_areas'),
+    ('public','personalization_techniques'),('public','product_properties'),
+    ('public','tags'),('public','product_tags')
+  )
+  SELECT req.sch||'.'||req.nm, 'table/view'::text, 'FALTA anon SELECT'::text
+  FROM req
+  WHERE to_regclass(req.sch||'.'||req.nm) IS NULL
+     OR NOT has_table_privilege('anon', (req.sch||'.'||req.nm)::regclass, 'SELECT');
+
+  -- (2) Funções com anon EXECUTE obrigatório
+  RETURN QUERY
+  SELECT 'public.'||v.fn, 'function'::text, 'FALTA anon EXECUTE'::text
+  FROM (VALUES ('fn_super_filtro'),('fn_super_filtro_facets'),('fn_super_filtro_price_range'),
+               ('fn_global_search'),('get_catalog_bestseller_page'),
+               ('fn_product_active_for_rls')) v(fn)  -- NOVO v3
+  WHERE EXISTS (SELECT 1 FROM pg_proc WHERE proname=v.fn AND pronamespace='public'::regnamespace)
+    AND NOT has_function_privilege('anon',
+          (SELECT oid FROM pg_proc WHERE proname=v.fn AND pronamespace='public'::regnamespace LIMIT 1),'EXECUTE');
+
+  -- (3) Tabelas SENSÍVEIS que NÃO podem ter anon SELECT
+  RETURN QUERY
+  SELECT 'public.'||v.nm, 'table'::text, 'VAZAMENTO: anon SELECT em tabela sensível'::text
+  FROM (VALUES ('variant_supplier_sources'),('markup_configurations'),('user_organizations'),
+               ('quotes'),('quote_items'),
+               ('products'),('suppliers'),   -- custo/credenciais
+               ('tabela_preco_gravacao_oficial'))  -- NOVO v3: custo_setup/markup
+             v(nm)
+  WHERE to_regclass('public.'||v.nm) IS NOT NULL
+    AND has_table_privilege('anon', ('public.'||v.nm)::regclass, 'SELECT');
+
+  -- (4) pg_stat_statements NÃO pode ter anon SELECT (information disclosure de queries)
+  RETURN QUERY
+  SELECT 'extensions.pg_stat_statements', 'system_view'::text,
+         'VAZAMENTO: anon lê queries SQL internas'::text
+  WHERE has_table_privilege('anon', 'extensions.pg_stat_statements'::regclass, 'SELECT');
+
+  -- (5) Funções sensíveis que NÃO devem ter anon EXECUTE
+  RETURN QUERY
+  SELECT 'public.get_promo_sales_ranking', 'function'::text,
+         'VAZAMENTO: anon executa ranking de vendas'::text
+  WHERE EXISTS (SELECT 1 FROM pg_proc WHERE proname='get_promo_sales_ranking' AND pronamespace='public'::regnamespace)
+    AND has_function_privilege('anon',
+          (SELECT oid FROM pg_proc WHERE proname='get_promo_sales_ranking' AND pronamespace='public'::regnamespace LIMIT 1),'EXECUTE');
+
+  -- (6) Views críticas devem ser SECURITY DEFINER (security_invoker=false)
+  RETURN QUERY
+  SELECT 'public.'||v.nm, 'view'::text, 'RISCO: view sensível com security_invoker=true'::text
+  FROM (VALUES ('v_products_public'),('v_suppliers_public'),
+               ('v_variant_sale_prices_public'),
+               ('v_tabela_preco_gravacao_oficial_public'),  -- NOVO v3
+               ('v_kit_component_media_public'),('v_kit_component_print_areas_public'),
+               ('v_product_compositions_public'),('v_product_properties_public'),
+               ('v_product_tags_public')) v(nm)
+  WHERE to_regclass('public.'||v.nm) IS NOT NULL
+    AND COALESCE((SELECT option_value FROM pg_options_to_table(
+        (SELECT reloptions FROM pg_class WHERE relname=v.nm AND relnamespace='public'::regnamespace))
+      WHERE option_name='security_invoker'), 'false') = 'true';
+
+  -- (7) NOVO v3: product_variants anon deve ter política com is_active filter
+  RETURN QUERY
+  SELECT 'public.product_variants', 'rls_policy'::text,
+         'RISCO: política anon sem filtro is_active (202 variantes inativas expostas)'::text
+  WHERE EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname='public' AND tablename='product_variants'
+      AND cmd IN ('SELECT','ALL')
+      AND 'anon'=ANY(roles)
+      AND qual='true'
+  );
+END $fn$;
+
+COMMENT ON FUNCTION public.fn_verify_anon_catalog_grants() IS
+  'Tripwire anti-regressao v4 (fix_version 20261008). Cobre: 56+ objetos obrigatórios, '
+  '8 travas de sensíveis (products/suppliers/tabela_gravacao/pg_stat_statements), '
+  '6 RPCs (5 seguros + fn_product_active_for_rls), 9 views DEFINER, '
+  'produto_variants is_active policy. 0 linhas = saudável.';;
+
+-- <<< END 20261008230000_restringir_anon_mockup_approval_links.sql <<<
 
 -- >>> BEGIN bronze_stalled_cleanup_20260623.sql >>>
 -- BRONZE STALLED CLEANUP (2026-06-23): 396 rows Bronze de Só Marcas
