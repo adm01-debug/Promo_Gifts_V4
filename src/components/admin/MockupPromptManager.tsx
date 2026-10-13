@@ -158,7 +158,8 @@ export function MockupPromptManager() {
         .from('mockup_prompt_history')
         .select('*')
         .eq('config_id', configId)
-        .order('version', { ascending: false });
+        .order('version', { ascending: false })
+        .limit(100);
       if (error) throw error;
       setHistory(data || []);
     } catch {

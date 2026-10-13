@@ -9,6 +9,7 @@ import { createClient } from "npm:@supabase/supabase-js@2.49.4";
 import { z } from "npm:zod@3.23.8";
 import { parseBodyWithSchema } from "../_shared/zod-validate.ts";
 import { resolveCredential } from "../_shared/credentials.ts";
+import { fetchWithBreaker, CircuitOpenError, circuitOpenResponse } from "../_shared/external-fetch.ts";
 
 const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
 const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -218,7 +219,7 @@ Deno.serve(async (req) => {
 
         if (n8nWebhookUrl) {
           try {
-            const response = await fetch(n8nWebhookUrl, {
+            const response = await fetchWithBreaker("n8n", n8nWebhookUrl, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ test: true, timestamp: new Date().toISOString() }),
@@ -234,7 +235,7 @@ Deno.serve(async (req) => {
         const { value: salesProApiKey } = await resolveCredential("QUOTE_SYNC_API_KEY");
         if (salesProUrl && salesProApiKey) {
           try {
-            const response = await fetch(salesProUrl, {
+            const response = await fetchWithBreaker("salespro", salesProUrl, {
               method: "POST",
               headers: { "Content-Type": "application/json", "x-api-key": salesProApiKey },
               body: JSON.stringify({ test: true, timestamp: new Date().toISOString(), source: "gifts-store" }),
@@ -253,6 +254,7 @@ Deno.serve(async (req) => {
       }
     }
   } catch (error) {
+    if (error instanceof CircuitOpenError) return circuitOpenResponse(error, corsHeaders);
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
     console.error("Quote sync error:", error);
     return new Response(JSON.stringify({ error: errorMessage }), {
@@ -365,7 +367,7 @@ function toExternalPayload({ internal_real_subtotal, internal_real_discount_perc
 
 // BUG-010 FIX: sendToN8N now receives webhookUrl as parameter (no more module-scope closure).
 async function sendToN8N(quoteData: QuoteData, webhookUrl: string): Promise<Record<string, unknown>> {
-  const response = await fetch(webhookUrl, {
+  const response = await fetchWithBreaker("n8n", webhookUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ action: "create_or_update_quote", quote: toExternalPayload(quoteData), timestamp: new Date().toISOString() }),
@@ -384,7 +386,7 @@ async function sendToSalesPro(quoteData: QuoteData): Promise<void> {
   if (!webhookUrl || !apiKey) { console.warn("SalesPro not configured, skipping"); return; }
 
   try {
-    const response = await fetch(webhookUrl, {
+    const response = await fetchWithBreaker("salespro", webhookUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-api-key": apiKey },
       body: JSON.stringify({ action: "create_or_update_quote", quote: toExternalPayload(quoteData), source: "gifts-store", timestamp: new Date().toISOString() }),
