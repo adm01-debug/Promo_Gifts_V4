@@ -254,7 +254,7 @@ export async function handleLogLoginAttempt(req: Request): Promise<Response> {
 
     // Retenção LGPD (~1% das chamadas): apaga tentativas com mais de
     // RETENTION_DAYS dias. Best-effort — falha nunca derruba a resposta.
-    if (Math.random() < 0.01) {
+    if (crypto.getRandomValues(new Uint32Array(1))[0] / 0x100000000 < 0.01) {
       const cutoff = new Date(
         Date.now() - RETENTION_DAYS * 24 * 60 * 60 * 1000,
       ).toISOString();

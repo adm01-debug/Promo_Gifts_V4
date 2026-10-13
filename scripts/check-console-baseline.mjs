@@ -15,13 +15,13 @@ const ALLOW = /\.(test|spec)\.|__tests__|log-safety|structuredLogger|error-repor
 const grep = spawnSync(
   'grep',
   ['-rlE', 'console\\.(log|warn|error|info|debug)', 'src/', '--include=*.ts', '--include=*.tsx'],
-  { encoding: 'utf8' },
+  { encoding: 'utf8', env: { PATH: '/usr/bin:/bin:/usr/local/bin' } },
 );
 if (grep.status !== 0 && grep.status !== 1) {
   console.error(`❌ grep falhou (status ${grep.status}): ${grep.stderr}`);
   process.exit(1);
 }
-const files = grep.stdout.trim().split('\n').filter((f) => f && !ALLOW.test(f)).sort();
+const files = grep.stdout.trim().split('\n').filter((f) => f && !ALLOW.test(f)).sort((a, b) => a.localeCompare(b));
 
 const counts = {};
 for (const f of files) {
@@ -36,7 +36,7 @@ const baselineCounts = baseline.counts || {};
 if (UPDATE) {
   writeFileSync(BASELINE, JSON.stringify({
     description: baseline.description,
-    files: Object.keys(counts).sort(),
+    files: Object.keys(counts).sort((a, b) => a.localeCompare(b)),
     counts,
   }, null, 2) + '\n');
   console.log(`✅ ${BASELINE} atualizado — ${Object.keys(counts).length} arquivos.`);
