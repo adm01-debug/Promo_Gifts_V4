@@ -181,7 +181,12 @@ async function mockBackend(page: Page, options: BackendOptions = {}): Promise<Co
 async function selecionarProduto(page: Page): Promise<void> {
   await page.getByTestId('mockup-product-combobox-trigger').click();
   await page.getByTestId(`mockup-product-option-${PRODUTO.id}`).click();
-  await expect(page.getByText(`SKU: ${PRODUTO.sku}`)).toBeVisible();
+  // `.filter({ visible: true })`: o SKU aparece em mais de um lugar — a opção no
+  // popover do combobox (que fica OCULTA depois da seleção) e o painel do
+  // produto escolhido. Sem o filtro, o matcher estrito do Playwright resolve
+  // para 2 elementos (ou pega o oculto); o visível é a prova de que o produto
+  // foi selecionado de fato.
+  await expect(page.getByText(`SKU: ${PRODUTO.sku}`).filter({ visible: true }).first()).toBeVisible();
 }
 
 /** Preenche produto + logo + cenário até o CTA de geração ficar habilitado. */
@@ -253,12 +258,18 @@ test.describe('/magic-up — tabelas e rotas reais', () => {
     const contadores = await mockBackend(page, { produtosStatus: 503 });
 
     await gotoAndSettle(page, '/magic-up');
-    await waitRouteReady(page);
 
+    // O toast do sonner se auto-dispensa em ~4s (ver `assertCartAddErrorToast`,
+    // que checa exatamente esse auto-dismiss). Como `waitRouteReady` pode levar
+    // mais que isso enquanto a página termina de carregar, o poll do toast
+    // começa AQUI (logo depois do domcontentloaded) — do contrário o assert
+    // corre atrás de um toast que já desapareceu e falha com "element(s) not
+    // found" mesmo com a mensagem tendo sido exibida ao usuário.
     await expect(page.getByText('Erro ao carregar produtos').first()).toBeVisible({
-      timeout: 10_000,
+      timeout: 30_000,
     });
     await expect.poll(() => contadores.produtos, { timeout: 10_000 }).toBeGreaterThan(0);
+    await waitRouteReady(page);
   });
 
   test("falha: geração (500 em generate-ad-image) dispara a edge e mostra 'Erro ao gerar imagem'", async ({
