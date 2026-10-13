@@ -51,7 +51,7 @@ function stripComments(src) {
 // CALL SITES; os specifiers de import (`from "npm:zod"`) são testados na
 // versão sem strip de strings — a string ali É o sinal.
 const CALL_SITE_RE =
-  /\bparseBodyWithSchema\s*\(|\bsafeParse\s*\(|\bvalidateBody\s*\(|\bvalidatePayload\s*\(|\.safeParse\s*\(/i;
+  /\bparseBodyWithSchema\s*\(|\bparseContract\s*\(|\bsafeParse\s*\(|\bvalidateBody\s*\(|\bvalidatePayload\s*\(|\.safeParse\s*\(/i;
 const IMPORT_RE = /from\s+["']npm:zod|from\s+["']\.\.\/_shared\/zod/i;
 
 function stripStringLiterals(src) {

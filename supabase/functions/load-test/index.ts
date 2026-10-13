@@ -2,6 +2,17 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { getCorsHeaders } from "../_shared/cors.ts";
 import { createStructuredLogger } from "../_shared/structured-logger.ts";
 import { getOrCreateRequestId } from "../_shared/request-id.ts";
+import { z } from "../_shared/zod-validate.ts";
+
+const bodySchema = z.object({
+  concurrency: z.number().int().min(1).max(1000).optional(),
+  totalRequests: z.number().int().min(1).max(100_000).optional(),
+  targetEndpoint: z.string().max(2048).optional(),
+  method: z.string().max(16).optional(),
+  body: z.unknown().optional(),
+  headers: z.record(z.string()).optional(),
+  useIdempotency: z.boolean().optional(),
+}).passthrough();
 
 /**
  * Load test to simulate thousands of webhook events and concurrent requests.
@@ -19,9 +30,11 @@ Deno.serve(async (req: Request) => {
     const parsed = await req.json().catch(() => ({}));
     // Guard: if body is null/array/primitive, fall back to empty object so
     // destructuring doesn't throw a TypeError.
-    const safeBody = (parsed !== null && typeof parsed === 'object' && !Array.isArray(parsed))
-      ? (parsed as Record<string, unknown>)
+    const guarded = (parsed !== null && typeof parsed === 'object' && !Array.isArray(parsed))
+      ? parsed
       : {};
+    const bodyParsed = bodySchema.safeParse(guarded);
+    const safeBody: Record<string, unknown> = bodyParsed.success ? bodyParsed.data : {};
     const {
       concurrency = 10,
       totalRequests = 100,
@@ -30,7 +43,7 @@ Deno.serve(async (req: Request) => {
       body = null,
       headers = {},
       useIdempotency = false
-    } = safeBody as {
+    } = safeBody as Record<string, unknown> & {
       concurrency?: number;
       totalRequests?: number;
       targetEndpoint?: string;
