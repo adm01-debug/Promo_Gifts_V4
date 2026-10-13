@@ -1,6 +1,7 @@
 import { test, expect } from './fixtures/test-base';
 import { gotoAndSettle } from './helpers/nav';
 import { loginAs } from './helpers/auth';
+import { requireE2EBaseUrl, requireE2EAnonKey } from './helpers/require-env-base-url';
 
 /**
  * Chaos and Performance Stress Suite
@@ -115,18 +116,16 @@ test.describe('Chaos & Performance Validation', () => {
     });
   }
 
-  test('Security/RLS: step_up_audit_log protection', async ({ page, request }) => {
-    // 1. Get Supabase URL and Key from the browser context
-    const { url, key } = await page.evaluate(() => {
-      // In this app, these are exported from a client module, but we can try to guess or find them
-      // Actually, since we are in the browser, let's just use the ones available in the window/env if possible
-      // or try to fetch them from a common location.
-      return { 
-        url: (window as any).env?.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co',
-        key: (window as any).env?.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' 
-      };
-    });
-    
+  test('Security/RLS: step_up_audit_log protection', async ({ request }) => {
+    // Incidente 2026-10-13: a versão anterior lia `window.env` (nunca exposto
+    // pelo app, logo sempre cai no fallback) com fallback hardcoded para a
+    // URL de PRODUÇÃO + uma anon key truncada/placeholder. Isso fazia este
+    // teste martelar produção de verdade em qualquer ambiente sem a env var
+    // configurada. Resolvemos direto do processo Node (sem precisar do
+    // browser) e falhamos alto se a env var não estiver setada.
+    const url = requireE2EBaseUrl();
+    const key = requireE2EAnonKey();
+
     // 2. Attempt anonymous request via Playwright request context (server-side check)
     // This simulates an external attacker trying to read the audit log.
     const anonResponse = await request.get(`${url}/rest/v1/step_up_audit_log`, {

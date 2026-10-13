@@ -2,6 +2,10 @@ import { createClient } from '@supabase/supabase-js';
 import type { Database } from "./types";
 
 import { createClientLogger } from '@/lib/telemetry/structuredLogger';
+// Interceptor global 401/403 (incidente 2026-10-13): session-recovery.ts só
+// importa este módulo via dynamic import dentro de getSupabaseClient() — sem
+// ciclo em tempo de avaliação do módulo (ver lazy-client.ts).
+import { maybeRecoverFromError } from '@/lib/auth/session-recovery';
 
 const log = createClientLogger('supabase.client');
 
@@ -125,9 +129,9 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
     fetch: async (url, options) => {
       try {
         const response = await fetch(url, options);
-        if (response.status === 401) {
+        if (response.status === 401 || response.status === 403) {
           const body = await response.clone().json().catch(() => ({}));
-          if (body.code === 'UNAUTHORIZED_LEGACY_JWT' || body.message?.includes('Invalid JWT') || body.message?.includes('Invalid API key')) {
+          if (response.status === 401 && (body.code === 'UNAUTHORIZED_LEGACY_JWT' || body.message?.includes('Invalid JWT') || body.message?.includes('Invalid API key'))) {
             const projectId = SUPABASE_URL.split('.')[0].split('//')[1];
             const isCanonical = projectId === CURRENT_PROJECT_ID;
             const diagnostic = isCanonical
@@ -150,6 +154,15 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
               );
             }
           }
+          // Interceptor global 401/403 (incidente 2026-10-13): se o corpo indica
+          // JWT invalido/expirado (bad_jwt — ver BAD_JWT_PATTERNS em
+          // lib/auth/session-recovery.ts), dispara UMA tentativa de refresh
+          // deduplicada; se falhar, session-recovery.ts já faz signOut + redirect
+          // para /login sem loop (circuit breaker de 3 tentativas/1h + debounce
+          // de 5s). Não aguardamos a Promise aqui — é fire-and-forget em
+          // background, a resposta 401/403 original ainda é devolvida ao
+          // caller (que trata o erro normalmente nesta requisição).
+          maybeRecoverFromError(body, `fetch:${response.status}`);
         }
         return response;
       } catch (error) {

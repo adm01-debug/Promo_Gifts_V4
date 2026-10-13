@@ -5,9 +5,8 @@ import {
   Zap,
   CheckCircle2,
   AlertCircle,
-  Plus,
-  Pencil,
-  User as UserIcon,
+  XCircle,
+  Link2,
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -18,19 +17,23 @@ import { rpcAdminSyncExternalConnections } from '@/integrations/supabase/gold';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
+// NOTE: colunas alinhadas ao schema real de `external_connections_sync_log`
+// (started_at/completed_at/connection_id/connection_name/sync_type/
+// records_processed/records_failed) — o shape anterior (ran_at/trigger_op/
+// triggered_by_*/processed/created_count/updated_count/details) não existe
+// na tabela e fazia o `.select()` explícito retornar 400 em produção.
 type SyncLogRow = {
   id: string;
-  ran_at: string;
+  started_at: string;
+  completed_at: string | null;
   status: string;
-  trigger_op: string | null;
-  triggered_by_secret_name: string | null;
-  triggered_by_user_id: string | null;
-  processed: number;
-  created_count: number;
-  updated_count: number;
+  connection_id: string | null;
+  connection_name: string | null;
+  sync_type: string | null;
+  records_processed: number | null;
+  records_failed: number | null;
   duration_ms: number | null;
   error_message: string | null;
-  details: unknown;
 };
 
 function formatRelative(iso: string): string {
@@ -56,7 +59,7 @@ export function LastSyncRunPanel() {
     const { data, error: loadError } = await supabase
       .from('external_connections_sync_log')
       .select('*')
-      .order('ran_at', { ascending: false })
+      .order('started_at', { ascending: false })
       .limit(1);
     if (loadError) {
       setError(loadError.message);
@@ -125,8 +128,7 @@ export function LastSyncRunPanel() {
 
       <CardContent>
         {loading ? (
-          <div className="grid gap-3 md:grid-cols-4">
-            <Skeleton className="h-20 w-full" />
+          <div className="grid gap-3 md:grid-cols-3">
             <Skeleton className="h-20 w-full" />
             <Skeleton className="h-20 w-full" />
             <Skeleton className="h-20 w-full" />
@@ -152,14 +154,14 @@ export function LastSyncRunPanel() {
                 )}
                 <div>
                   <div className="text-sm font-semibold">
-                    {new Date(last.ran_at).toLocaleString('pt-BR')}{' '}
+                    {new Date(last.started_at).toLocaleString('pt-BR')}{' '}
                     <span className="text-xs font-normal text-muted-foreground">
-                      ({formatRelative(last.ran_at)})
+                      ({formatRelative(last.started_at)})
                     </span>
                   </div>
                   <div className="font-mono text-[11px] text-muted-foreground">
                     status={last.status}
-                    {last.trigger_op ? ` • op=${last.trigger_op}` : ''}
+                    {last.sync_type ? ` • tipo=${last.sync_type}` : ''}
                     {typeof last.duration_ms === 'number' ? ` • ${last.duration_ms}ms` : ''}
                   </div>
                 </div>
@@ -177,33 +179,24 @@ export function LastSyncRunPanel() {
             </div>
 
             {/* KPIs */}
-            <div className="grid gap-2 md:grid-cols-4">
-              <div className="rounded-lg border p-3">
-                <div className="text-[11px] uppercase tracking-wide text-muted-foreground">
-                  Processadas
-                </div>
-                <div className="text-2xl font-bold tabular-nums">{last.processed}</div>
-                <div className="text-[10px] text-muted-foreground">env_keys avaliadas</div>
-              </div>
+            <div className="grid gap-2 md:grid-cols-3">
               <div className="rounded-lg border border-green-500/20 bg-green-500/5 p-3">
                 <div className="flex items-center gap-1 text-[11px] uppercase tracking-wide text-green-700">
-                  <Plus className="h-3 w-3" /> Criadas
+                  <CheckCircle2 className="h-3 w-3" /> Processadas
                 </div>
                 <div className="text-2xl font-bold tabular-nums text-green-700">
-                  {last.created_count}
+                  {last.records_processed ?? 0}
                 </div>
-                <div className="text-[10px] text-muted-foreground">
-                  novas linhas em external_connections
-                </div>
+                <div className="text-[10px] text-muted-foreground">registros sincronizados</div>
               </div>
-              <div className="rounded-lg border border-blue-500/20 bg-blue-500/5 p-3">
-                <div className="flex items-center gap-1 text-[11px] uppercase tracking-wide text-blue-700">
-                  <Pencil className="h-3 w-3" /> Atualizadas
+              <div className="rounded-lg border border-red-500/20 bg-red-500/5 p-3">
+                <div className="flex items-center gap-1 text-[11px] uppercase tracking-wide text-red-700">
+                  <XCircle className="h-3 w-3" /> Falharam
                 </div>
-                <div className="text-2xl font-bold tabular-nums text-blue-700">
-                  {last.updated_count}
+                <div className="text-2xl font-bold tabular-nums text-red-700">
+                  {last.records_failed ?? 0}
                 </div>
-                <div className="text-[10px] text-muted-foreground">linhas existentes alteradas</div>
+                <div className="text-[10px] text-muted-foreground">registros com erro</div>
               </div>
               <div className="rounded-lg border p-3">
                 <div className="text-[11px] uppercase tracking-wide text-muted-foreground">
@@ -217,30 +210,22 @@ export function LastSyncRunPanel() {
               </div>
             </div>
 
-            {/* Disparador */}
+            {/* Conexão / tipo de sync */}
             <div className="space-y-1 rounded-lg border p-3 text-xs">
               <div className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
-                Disparo
+                Conexão
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 <Badge variant="outline" className="font-mono text-[10px]">
-                  {last.trigger_op ?? '—'}
+                  {last.sync_type ?? '—'}
                 </Badge>
-                {last.triggered_by_secret_name ? (
-                  <span className="font-mono text-[11px]">
-                    secret ={' '}
-                    <code className="rounded bg-muted px-1">{last.triggered_by_secret_name}</code>
+                {last.connection_name ? (
+                  <span className="flex items-center gap-1 font-mono text-[11px]">
+                    <Link2 className="h-3 w-3" />
+                    <code className="rounded bg-muted px-1">{last.connection_name}</code>
                   </span>
                 ) : (
-                  <span className="italic text-muted-foreground">
-                    sem secret associado (manual ou cron)
-                  </span>
-                )}
-                {last.triggered_by_user_id && (
-                  <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
-                    <UserIcon className="h-3 w-3" />
-                    <code className="text-[10px]">{last.triggered_by_user_id.slice(0, 8)}…</code>
-                  </span>
+                  <span className="italic text-muted-foreground">conexão não identificada</span>
                 )}
               </div>
             </div>

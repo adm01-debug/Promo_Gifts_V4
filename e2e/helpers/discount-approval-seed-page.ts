@@ -7,11 +7,10 @@
  * faltar JWT (retorna 0). Não lança em RLS denied — apenas registra no console.
  */
 import type { Page } from "@playwright/test";
+import { requireE2EBaseUrl } from "./require-env-base-url";
 
 const SUPABASE_URL =
-  process.env.VITE_SUPABASE_URL ||
-  process.env.SUPABASE_URL ||
-  "https://doufsxqlfjyuvxuezpln.supabase.co";
+  requireE2EBaseUrl();
 const SUPABASE_ANON_KEY =
   process.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
   process.env.VITE_SUPABASE_ANON_KEY ||

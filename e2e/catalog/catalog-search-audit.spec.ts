@@ -14,7 +14,11 @@
  *   @search-regression-bug6  Header "N resultados" = sugestões, não total da grade
  *
  * PRESSUPOSTOS (ajuste em UI_ASSUMPTIONS conforme os data-testid reais):
- *  - baseURL via env BASE_URL (default: produção). Auth via storageState (env STORAGE_STATE) se exigida.
+ *  - baseURL via env E2E_BASE_URL — ver playwright.config.ts (default:
+ *    http://localhost:8080; NUNCA produção por padrão — ver incidente
+ *    2026-10-13, tráfego de testes batendo em produção). Para rodar contra
+ *    um preview/staging, exporte E2E_BASE_URL=https://<preview>.lovable.app
+ *    antes de `npx playwright test`. Auth via storageState (env STORAGE_STATE) se exigida.
  *  - O input de busca do catálogo é alcançável por placeholder OU data-testid.
  *  - Cards de produto e o dropdown de sugestões expõem texto/role acessíveis.
  *

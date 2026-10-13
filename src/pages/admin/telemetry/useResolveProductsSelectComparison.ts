@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
 /**
  * Comparativo "antes vs depois" do `resolveProductsSelect` em listings de
@@ -131,6 +132,7 @@ export function useResolveProductsSelectComparison(
   cutoverIso: string,
   windowSize: ComparisonWindow = '7d',
 ) {
+  const { rolesLoaded, isAdmin } = useAuth();
   const query = useQuery({
     queryKey: ['resolve-products-select-comparison', cutoverIso, windowSize],
     queryFn: async (): Promise<ResolveProductsSelectComparison> => {
@@ -163,8 +165,11 @@ export function useResolveProductsSelectComparison(
         },
       };
     },
-    refetchInterval: 60_000,
-    staleTime: 30_000,
+    // 2026-10-13: guard de sessão + polling reduzido ao mínimo recomendado p/
+    // dashboards (15min) — comparativo histórico não precisa de cadência de 60s.
+    enabled: rolesLoaded && Boolean(isAdmin),
+    refetchInterval: 15 * 60_000,
+    staleTime: 5 * 60_000,
   });
 
   return {
