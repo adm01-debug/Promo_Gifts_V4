@@ -2,29 +2,27 @@
 // Gate: zero console.* fora do logger central em arquivos NOVOS de src/.
 // Arquivos no .console-baseline.json não podem aumentar a contagem (ratchet).
 // Aceitar novo estado (só com revisão): --update
-import { spawnSync } from 'node:child_process';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, readdirSync, statSync } from 'node:fs';
+import { join } from 'node:path';
 
 const BASELINE = '.console-baseline.json';
 const UPDATE = process.argv.includes('--update');
 const RE = /console\.(log|warn|error|info|debug)/g;
 const ALLOW = /\.(test|spec)\.|__tests__|log-safety|structuredLogger|error-reporter|console-filter/;
 
-// grep sai 1 quando não acha nada — lista vazia é o estado ideal do ratchet,
-// não erro. Status >1 é erro real de execução.
-const grep = spawnSync(
-  'grep',
-  ['-rlE', 'console\\.(log|warn|error|info|debug)', 'src/', '--include=*.ts', '--include=*.tsx'],
-  { encoding: 'utf8', env: { PATH: '/usr/bin:/bin:/usr/local/bin' } },
-);
-if (grep.status !== 0 && grep.status !== 1) {
-  console.error(`❌ grep falhou (status ${grep.status}): ${grep.stderr}`);
-  process.exit(1);
+// Walk em Node puro (sem subprocess → sem PATH controlável).
+function* walk(dir) {
+  for (const e of readdirSync(dir)) {
+    const p = join(dir, e);
+    const st = statSync(p);
+    if (st.isDirectory()) yield* walk(p);
+    else if (/\.(ts|tsx)$/.test(e)) yield p;
+  }
 }
-const files = grep.stdout.trim().split('\n').filter((f) => f && !ALLOW.test(f)).sort((a, b) => a.localeCompare(b));
 
 const counts = {};
-for (const f of files) {
+for (const f of walk('src')) {
+  if (ALLOW.test(f)) continue;
   const m = readFileSync(f, 'utf8').match(RE);
   if (m) counts[f] = m.length;
 }
