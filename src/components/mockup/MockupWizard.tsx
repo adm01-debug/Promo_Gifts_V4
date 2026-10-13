@@ -1,6 +1,16 @@
 import { forwardRef } from 'react';
 import { cn } from '@/lib/utils';
-import { CheckCircle2, Package, Paintbrush, Upload, Move, Sparkles, Building2 } from 'lucide-react';
+import {
+  CheckCircle2,
+  Package,
+  Paintbrush,
+  Upload,
+  Move,
+  Sparkles,
+  Building2,
+  ChevronLeft,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface MockupWizardStep {
   id: number;
@@ -105,6 +115,24 @@ export const MockupWizard = forwardRef<HTMLDivElement, MockupWizardProps>(
 
     return (
       <div ref={ref} className={cn('w-full transition-all duration-300', className)}>
+        {onStepClick && (
+          <div className="mb-1 flex items-center">
+            {/* Voltar navega para a etapa anterior SEM resetar nada: as escolhas
+                já feitas permanecem (quem controla o estado é a página). */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 gap-1 px-2 text-xs"
+              aria-label="Voltar para a etapa anterior"
+              disabled={currentStep <= 1}
+              onClick={() => onStepClick(currentStep - 1)}
+            >
+              <ChevronLeft aria-hidden="true" className="h-4 w-4" />
+              Voltar
+            </Button>
+          </div>
+        )}
+
         {/* Desktop Stepper */}
         <nav aria-label="Etapas do processo de criação de mockup" className="hidden py-1 md:block">
           <div className="relative flex items-start justify-between">
