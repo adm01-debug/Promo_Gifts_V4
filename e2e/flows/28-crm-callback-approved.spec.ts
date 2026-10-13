@@ -17,11 +17,14 @@
  */
 import { test, expect } from "@playwright/test";
 import { loginAs } from "../helpers/auth";
+import { requireE2EBaseUrl } from "../helpers/require-env-base-url";
 
 const CRM_KEY = process.env.CRM_CALLBACK_API_KEY;
-const V4_URL =
-  process.env.V4_CALLBACK_URL ??
-  "https://doufsxqlfjyuvxuezpln.functions.supabase.co/receive-crm-callback";
+// Incidente 2026-10-13: nunca cair em produção por padrão — requer
+// V4_CALLBACK_URL explícito quando CRM_CALLBACK_API_KEY está setado (o
+// `test.skip` abaixo já impede a execução sem a key; isto cobre o caso de
+// alguém setar a key sem setar a URL).
+const V4_URL = CRM_KEY ? requireE2EBaseUrl('V4_CALLBACK_URL') : '';
 
 test.describe("CRM callback approved E2E", () => {
   test.skip(!CRM_KEY, "CRM_CALLBACK_API_KEY ausente — pule com secret configurado");

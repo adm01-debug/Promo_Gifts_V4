@@ -18,8 +18,9 @@
 import { test, expect } from "./fixtures/test-base";
 import { loginAs } from "./helpers/auth";
 import { gotoAndSettle, expectOnRoute } from "./helpers/nav";
+import { requireE2EBaseUrl } from "./helpers/require-env-base-url";
 
-const SUPABASE_URL = process.env.VITE_SUPABASE_URL ?? "https://doufsxqlfjyuvxuezpln.supabase.co";
+const SUPABASE_URL = requireE2EBaseUrl();
 const USER_ENDPOINT = `${SUPABASE_URL}/auth/v1/user**`;
 const REFRESH_ENDPOINT = `${SUPABASE_URL}/auth/v1/token**`;
 

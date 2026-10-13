@@ -13,14 +13,13 @@
 import { test, expect, requireAdmin } from "../fixtures/test-base";
 import { setupDiscountAdmin } from "../helpers/setup-discount-admin";
 import { gotoAndSettle } from "../helpers/nav";
+import { requireE2EBaseUrl } from "../helpers/require-env-base-url";
 
 test.describe.configure({ mode: "parallel" });
 test.use({ trace: "retain-on-failure", screenshot: "only-on-failure" });
 
 const SUPABASE_URL =
-  process.env.VITE_SUPABASE_URL ||
-  process.env.SUPABASE_URL ||
-  "https://doufsxqlfjyuvxuezpln.supabase.co";
+  requireE2EBaseUrl();
 const SUPABASE_ANON_KEY =
   process.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
   process.env.VITE_SUPABASE_ANON_KEY ||
