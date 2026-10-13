@@ -334,7 +334,14 @@ export default function Auth() {
         ).PasswordCredential;
         if (CredCtor && navigator.credentials?.store) {
           const cred = new CredCtor({ id: data.email, password: data.password, name: data.email });
-          await navigator.credentials.store(cred);
+          // Em browser sem UI de "salvar senha" (headless/E2E) a promise pode
+          // nunca resolver — o login não pode ficar refém dela.
+          await Promise.race([
+            navigator.credentials.store(cred),
+            new Promise<void>((resolve) => {
+              setTimeout(resolve, 3_000);
+            }),
+          ]);
         }
       } catch {
         logger.warn('[AUTH_CRED_STORE] Credential store failed');

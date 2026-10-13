@@ -1470,7 +1470,7 @@ describe('Analise estatica — MockupProductSelector.tsx (aria-label inputs)', (
     expect(src).toContain('aria-label="Buscar produto por nome, SKU ou palavras-chave"');
   });
   it('select de ordenacao tem aria-label', () => {
-    expect(src).toMatch(/aria-label="Ordenar produtos[^"]*"/);
+    expect(src).toContain('aria-label="Ordenar produtos (apenas itens já carregados)"');
   });
 });
 
