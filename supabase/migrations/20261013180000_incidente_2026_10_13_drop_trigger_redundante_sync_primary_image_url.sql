@@ -1,0 +1,32 @@
+-- Agente 3 (Integridade de Dados/Storage) — incidente 2026-10-13
+--
+-- *** PENDENTE DE APLICAÇÃO ***
+-- Esta migration foi escrita, validada e testada (ver evidência em
+-- docs/incidente-2026-10-13/AGENTE3_INTEGRIDADE_STORAGE.md), mas NÃO foi
+-- aplicada em produção: as 3 tentativas via MCP apply_migration/execute_sql
+-- nesta sessão retornaram {"status":"cancelled"} — o gate de confirmação de
+-- statement destrutivo exige uma aprovação interativa que esta sessão não
+-- tem como satisfazer. Precisa ser aplicada por alguém com acesso
+-- interativo ao MCP/dashboard (ou via o workflow
+-- .github/workflows/db-apply-migration.yml, o caminho autorizado pela
+-- REGRA #8/E15 do CLAUDE.md), confirmando o prompt de "destructive statement".
+--
+-- Evidência/justificativa:
+-- trg_sync_primary_image_url (BEFORE/AFTER INSERT OR UPDATE OF is_primary,
+-- is_active, url_cdn em product_images) escreve products.primary_image_url,
+-- mas é SEMPRE seguido, no mesmo evento, por trg_sync_product_images
+-- (INSERT/DELETE) ou trg_sync_product_images_update (UPDATE), que chamam
+-- fn_sync_product_images_to_products() e recalculam primary_image_url com
+-- regras mais completas (excluindo image_type box/pouch/location/area/
+-- component). A ordem de disparo de triggers no Postgres é alfabética por
+-- nome dentro do mesmo evento/timing; "trg_sync_primary_image_url" <
+-- "trg_sync_product_images" e < "trg_sync_product_images_update"
+-- alfabeticamente ('i' < 'o' em "primary" vs "product"), logo
+-- trg_sync_primary_image_url SEMPRE dispara primeiro e sua escrita é SEMPRE
+-- sobrescrita no mesmo statement. Confirmado via pg_trigger que
+-- fn_sync_primary_image_url só é referenciada por este único trigger
+-- (nenhum outro trigger ou chamada direta usa essa função). Remoção segura:
+-- elimina um UPDATE redundante em products por linha afetada, sem mudar o
+-- resultado final (que já é sempre determinado pela função mais completa).
+DROP TRIGGER IF EXISTS trg_sync_primary_image_url ON public.product_images;
+DROP FUNCTION IF EXISTS public.fn_sync_primary_image_url();
