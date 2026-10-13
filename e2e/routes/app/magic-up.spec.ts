@@ -216,7 +216,10 @@ test.describe('/magic-up — tabelas e rotas reais', () => {
     await gotoAndSettle(page, '/magic-up');
     await waitRouteReady(page);
 
-    await expect(page.getByTestId('page-title-magic-up')).toBeVisible();
+    // 30s: o primeiro render da rota em dev (vite sem cache) monta o chunk
+    // pesado do /magic-up bem depois do domcontentloaded — o default de 15s do
+    // config é apertado para a primeira carga de cada sessão.
+    await expect(page.getByTestId('page-title-magic-up')).toBeVisible({ timeout: 30_000 });
     // Prova de que o spec aponta para as tabelas reais: as duas consultas dispararam.
     await expect.poll(() => contadores.produtos, { timeout: 10_000 }).toBeGreaterThan(0);
     await expect.poll(() => contadores.historicoGet, { timeout: 10_000 }).toBeGreaterThan(0);
@@ -341,7 +344,8 @@ test.describe('/magic-up — tabelas e rotas reais', () => {
     await gotoAndSettle(page, '/magic-up');
     await waitRouteReady(page);
 
-    await expect(page.getByTestId('page-title-magic-up')).toBeVisible();
+    // Mesmo motivo do teste de render: primeira carga da rota em dev é lenta.
+    await expect(page.getByTestId('page-title-magic-up')).toBeVisible({ timeout: 30_000 });
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth > window.innerWidth + 2,
     );
