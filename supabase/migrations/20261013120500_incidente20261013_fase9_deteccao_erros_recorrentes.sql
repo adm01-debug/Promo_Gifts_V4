@@ -18,6 +18,10 @@
 -- alerta futuro (canal de notificação fora do escopo desta etapa — ver
 -- CLAUDE.md REGRA #8, mudança de infraestrutura de notificação requer
 -- aprovação própria do PO).
+--
+-- Rollback: DROP FUNCTION IF EXISTS public.fn_detect_recurring_errors_last_hour(integer);
+-- Função somente leitura (SELECT em query_telemetry/frontend_telemetry),
+-- sem efeitos colaterais — remover é seguro em qualquer momento.
 -- ============================================================================
 
 CREATE OR REPLACE FUNCTION public.fn_detect_recurring_errors_last_hour(

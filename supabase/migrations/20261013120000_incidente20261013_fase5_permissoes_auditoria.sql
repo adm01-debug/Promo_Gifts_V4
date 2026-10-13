@@ -5,6 +5,15 @@
 -- de migration versionado reproduzindo o efeito já aplicado em produção.
 --
 -- Cobre etapas 53, 54, 56, 57, 60, 62 do plano de correção.
+--
+-- Rollback: recriar log_access_denied/record_dev_route_telemetry/
+-- log_user_logout como SECURITY INVOKER (versão anterior); re-conceder os
+-- GRANTs de INSERT/UPDATE/DELETE revogados de authenticated em
+-- admin_audit_log e os GRANTs revogados de anon em profiles/user_roles/
+-- ip_access_control/outbound_webhooks; revogar o EXECUTE concedido a
+-- authenticated em check_telemetry_regression(); restaurar o COMMENT ON
+-- TABLE video_import_queue anterior caso o histórico seja necessário
+-- (sem reintroduzir o token Cloudflare).
 -- ============================================================================
 
 -- ----------------------------------------------------------------------------
