@@ -111,7 +111,7 @@
     "src/pages/admin/AdminSegurancaAcessoPage.tsx": 743,
     "src/pages/admin/AdminTelemetriaPage.tsx": 645,
     "src/pages/admin/SellerDiscountLimitsAdminPage.tsx": 558,
-    "src/pages/auth/Auth.tsx": 888,
+    "src/pages/auth/Auth.tsx": 895,
     "src/pages/auth/AuthBranding.tsx": 521,
     "src/pages/bi/TrendsPage.tsx": 584,
     "src/pages/collections/CollectionDetailPage.tsx": 726,
