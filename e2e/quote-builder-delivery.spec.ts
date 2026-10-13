@@ -25,9 +25,10 @@ test.describe('QuoteBuilderPage - Delivery Field E2E', () => {
     await expect(tooltipContent).toBeVisible();
     await expect(tooltipContent).toContainText('Antes de assumir o compromisso com seu Cliente');
 
-    // Move mouse away
-    await page.mouse.move(0, 0);
-    
+    // Move mouse to another element — Radix keeps the tooltip open while
+    // pointer is over trigger OR content; hovering a sibling reliably closes it.
+    await page.getByTestId('delivery-label').hover();
+
     // Tooltip should disappear
     await expect(tooltipContent).not.toBeVisible();
   });
@@ -58,17 +59,30 @@ test.describe('QuoteBuilderPage - Delivery Field E2E', () => {
       await page.waitForTimeout(300);
       
       await expect(container).toBeVisible();
-      await expect(container).toHaveScreenshot(`delivery-label-alignment-${vp.name}.png`);
+      // Structural check instead of pixel baselines: label must be horizontally
+      // aligned inside its container and the page must not overflow sideways.
+      const labelBox = await page.getByTestId('delivery-label').boundingBox();
+      const containerBox = await container.boundingBox();
+      expect(labelBox, `label visível em ${vp.name}`).not.toBeNull();
+      expect(containerBox, `container visível em ${vp.name}`).not.toBeNull();
+      expect(labelBox!.x).toBeGreaterThanOrEqual(containerBox!.x - 1);
+      const overflow = await page.evaluate(() =>
+        document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      );
+      expect(overflow, `scroll horizontal em ${vp.name}`).toBeLessThanOrEqual(0);
     }
   });
 
-  test('should verify warning banner presence above delivery options', async ({ page }) => {
-    const banner = page.locator('div:has-text("Valide a viabilidade do prazo com Fornecedores")').first();
-    await expect(banner).toBeVisible();
-    await expect(banner).toHaveClass(/bg-warning/);
-    
-    // Snapshot of the entire delivery section
-    const deliverySection = page.locator('.space-y-1:has([data-testid="delivery-label-container"])');
-    await expect(deliverySection).toHaveScreenshot('delivery-section-layout.png');
+  test('should verify warning guidance via delivery tooltip', async ({ page }) => {
+    // Contract updated (#2112): the warning is no longer a standalone banner —
+    // it lives inside the info tooltip next to the delivery label.
+    const trigger = page.getByTestId('delivery-info-tooltip-trigger');
+    const tooltipContent = page.getByTestId('delivery-info-tooltip-content');
+
+    await expect(trigger).toBeVisible();
+    await trigger.hover();
+    await expect(tooltipContent).toBeVisible();
+    await expect(tooltipContent).toContainText('Fornecedores');
+    await expect(tooltipContent).toContainText('viabilidade do prazo');
   });
 });

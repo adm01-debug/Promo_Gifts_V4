@@ -184,12 +184,24 @@ export const test = base.extend<Fixtures>({
 
 export { expect };
 
-/** Retorna true se o storageState gravado por auth.setup tem cookies reais. */
-function authStorageHasCookies(): boolean {
+/** Retorna true se o storageState gravado por auth.setup contém uma sessão
+ *  utilizável. Supabase-js persiste a sessão em localStorage (`origins[]`),
+ *  não em cookies — por isso aceitamos qualquer cookie OU uma entrada
+ *  `sb-*-auth-token` nos origins. O mock E2E_MOCK_AUTH continua coberto
+ *  porque grava um cookie sentinela. */
+function authStorageHasSession(): boolean {
   try {
     const raw = fs.readFileSync(STORAGE_STATE, "utf-8");
-    const state = JSON.parse(raw) as { cookies?: unknown[] };
-    return Array.isArray(state.cookies) && state.cookies.length > 0;
+    const state = JSON.parse(raw) as {
+      cookies?: unknown[];
+      origins?: { localStorage?: { name?: string }[] }[];
+    };
+    if (Array.isArray(state.cookies) && state.cookies.length > 0) return true;
+    return (state.origins ?? []).some((o) =>
+      (o.localStorage ?? []).some((item) =>
+        /sb-.*-auth-token/.test(item.name ?? ""),
+      ),
+    );
   } catch {
     return false;
   }
@@ -209,7 +221,7 @@ export function requireAuth(reason = "E2E_USER_EMAIL/PASSWORD não configurados"
     // Em modo mock só exigimos que o storageState exista com cookies (o
     // script mock-auth-setup grava a sentinela).
     test.skip(
-      !authStorageHasCookies(),
+      !authStorageHasSession(),
       "E2E_MOCK_AUTH=1 mas storageState mock não foi gerado. Rode `node scripts/e2e-mock-auth-setup.mjs` antes.",
     );
     return;
@@ -224,7 +236,7 @@ export function requireAuth(reason = "E2E_USER_EMAIL/PASSWORD não configurados"
     return;
   }
   test.skip(
-    !authStorageHasCookies(),
+    !authStorageHasSession(),
     "Auth setup falhou — credenciais inválidas ou Supabase indisponível",
   );
 }

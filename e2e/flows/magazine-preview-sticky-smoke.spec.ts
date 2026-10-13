@@ -34,7 +34,9 @@ test.describe("@smoke Magazine Editor — preview sticky/aligned", () => {
     const hasMagazine = await firstCard.count();
     test.skip(hasMagazine === 0, "sem revistas cadastradas na conta de teste");
 
-    await firstCard.click();
+    // O card inteiro não é clicável: a navegação fica no link do thumbnail.
+    // Clicar no centro do <article> cai em área morta (título/metadados).
+    await firstCard.getByRole("link").first().click();
     await expect(page).toHaveURL(/\/magazine\/(?!templates)[^/]+$/);
 
     const hero = page.getByTestId("magazine-editor-hero-row");

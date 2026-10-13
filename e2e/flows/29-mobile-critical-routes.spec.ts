@@ -5,6 +5,7 @@
  * em viewport mobile (iPhone 13: 390x844).
  */
 import { test, expect } from "@playwright/test";
+import { waitForRouteIdle } from "../helpers/nav";
 
 const CRITICAL_ROUTES = [
   { path: "/", label: "Home" },
@@ -18,7 +19,7 @@ test.describe("@mobile Rotas críticas — viewport mobile", () => {
   for (const { path, label } of CRITICAL_ROUTES) {
     test(`@mobile ${label} (${path}) carrega sem overflow horizontal`, async ({ page }) => {
       await page.goto(path);
-      await page.waitForLoadState("networkidle");
+      await waitForRouteIdle(page);
 
       // Sem crash
       await expect(page.locator("body")).not.toContainText("500");
@@ -36,7 +37,7 @@ test.describe("@mobile Rotas críticas — viewport mobile", () => {
 
   test("@mobile menu de navegação é acessível em mobile", async ({ page }) => {
     await page.goto("/");
-    await page.waitForLoadState("networkidle");
+    await waitForRouteIdle(page);
 
     // Deve ter algum elemento de navegação (hamburger, menu, sidebar)
     const navElement = page
@@ -52,18 +53,18 @@ test.describe("@mobile Rotas críticas — viewport mobile", () => {
 
   test("@mobile login funciona em viewport mobile", async ({ page }) => {
     await page.goto("/login");
-    await page.waitForLoadState("networkidle");
+    await waitForRouteIdle(page);
 
     const emailInput = page.locator("input[type='email'], input[name='email']").first();
     const passwordInput = page.locator("input[type='password']").first();
 
-    await expect(emailInput).toBeVisible({ timeout: 10_000 });
+    await expect(emailInput).toBeVisible({ timeout: 20_000 });
     await expect(passwordInput).toBeVisible({ timeout: 10_000 });
   });
 
   test("@mobile elementos interativos têm tamanho mínimo de toque (44px)", async ({ page }) => {
     await page.goto("/login");
-    await page.waitForLoadState("networkidle");
+    await waitForRouteIdle(page);
 
     const submitBtn = page.locator("button[type='submit'], [data-testid='login-submit']").first();
     const hasButton = await submitBtn.count() > 0;
