@@ -34,10 +34,11 @@ export interface LoginCreds {
 
 export type Role = "user" | "admin" | "dev" | "editor";
 
-const LOGIN_URL_RE = /\/login(\?|#|$)/;
-// Rotas públicas protegidas redirecionam para /auth (além de /login): a
-// checagem de "já autenticado" precisa cobrir ambos ou o login nunca acontece.
-const AUTH_LIKE_URL_RE = /\/(login|auth)(\?|#|$)/;
+// /login é alias legado da rota canônica /auth — ambas renderizam <Auth/>.
+// Se o signIn falha, a página pode permanecer em qualquer uma das duas; checar
+// só /login faria loginViaUI "passar" com sessão inexistente (specs falhavam
+// depois, opacos, redirecionados para /auth).
+const LOGIN_URL_RE = /\/(login|auth)(\?|#|$)/;
 
 /**
  * Executa o fluxo de login via UI usando seletores SSOT.
@@ -45,8 +46,10 @@ const AUTH_LIKE_URL_RE = /\/(login|auth)(\?|#|$)/;
  * `expectFail: true`).
  */
 export async function loginViaUI(page: Page, creds: LoginCreds): Promise<boolean> {
-  // CI: signIn encadeia check-login + GoTrue + profile/roles/IP — em edge fria
-  // passa de 20s fácil (botão fica "Iniciando Sistemas..." travado).
+  // CI: edges frias (cold start pós-restart/upgrade do Supabase) + invokeEdge
+  // com 2×10s de retry podem empurrar o signIn além de 20s — o auth.setup já
+  // mediu ~21s reais. 45s em CI mantém a verificação real sem flake de
+  // fronteira; local continua rápido.
   const timeout = creds.timeoutMs ?? (process.env.CI ? 45_000 : 20_000);
   await gotoAndSettle(page, "/login");
 
@@ -67,10 +70,8 @@ export async function loginViaUI(page: Page, creds: LoginCreds): Promise<boolean
     return false;
   }
 
-  // Sucesso = saiu da tela de auth (login falho também permanece em /auth,
-  // então checar só /login abriria falso-positivo).
-  await expect(page, "esperado redirect para fora da tela de login").not.toHaveURL(
-    AUTH_LIKE_URL_RE,
+  await expect(page, "esperado redirect para fora de /login").not.toHaveURL(
+    LOGIN_URL_RE,
     { timeout },
   );
   await waitForRouteIdle(page);
@@ -103,40 +104,13 @@ export async function loginAs(page: Page, role: Role = "user"): Promise<void> {
   }
 
   // Se já estamos autenticados (storageState aplicado pelo project), uma
-  // visita rápida à home não deve cair em tela de auth nem exibir o form.
-  // URL sozinha não basta: "/" pode não redirecionar (landing pública) ou ir
-  // para /auth em vez de /login — em ambos os casos URL diz "autenticado" sem
-  // sessão, e os specs corriam deslogados (falso-negativo silencioso).
+  // visita rápida à home não deve cair em /login.
   await gotoAndSettle(page, "/");
-  const onAuthPage = AUTH_LIKE_URL_RE.test(page.url());
-  const loginFormVisible = await page
-    .locator(Sel.login.email)
-    .first()
-    .isVisible()
-    .catch(() => false);
-  if (onAuthPage || loginFormVisible) {
-    await loginViaUI(page, { email: email!, password: password! });
+  if (!LOGIN_URL_RE.test(page.url())) {
+    return;
   }
 
-  await dismissOnboardingTour(page);
-}
-
-/**
- * O tour de onboarding (`user_onboarding.has_completed_tour=false`) abre um
- * overlay full-screen ("Passo 1 de 13") que intercepta cliques em qualquer
- * página autenticada. Clica em "Pular" se aparecer — marca o tour como
- * concluído para a conta E2E e libera a interação com a página.
- */
-export async function dismissOnboardingTour(page: Page): Promise<void> {
-  const skipBtn = page.getByRole("button", { name: "Pular" }).first();
-  try {
-    // O tour aparece de forma assíncrona (fetch de user_onboarding).
-    await skipBtn.waitFor({ state: "visible", timeout: 4_000 });
-    await skipBtn.click();
-    await skipBtn.waitFor({ state: "hidden", timeout: 5_000 }).catch(() => {});
-  } catch {
-    // Tour não apareceu — nada a fazer.
-  }
+  await loginViaUI(page, { email: email!, password: password! });
 }
 
 /**
