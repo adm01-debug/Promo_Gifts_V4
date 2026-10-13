@@ -34,7 +34,11 @@ export interface LoginCreds {
 
 export type Role = "user" | "admin" | "dev" | "editor";
 
-const LOGIN_URL_RE = /\/login(\?|#|$)/;
+// /login é alias legado da rota canônica /auth — ambas renderizam <Auth/>.
+// Se o signIn falha, a página pode permanecer em qualquer uma das duas; checar
+// só /login faria loginViaUI "passar" com sessão inexistente (specs falhavam
+// depois, opacos, redirecionados para /auth).
+const LOGIN_URL_RE = /\/(login|auth)(\?|#|$)/;
 
 /**
  * Executa o fluxo de login via UI usando seletores SSOT.
@@ -42,7 +46,11 @@ const LOGIN_URL_RE = /\/login(\?|#|$)/;
  * `expectFail: true`).
  */
 export async function loginViaUI(page: Page, creds: LoginCreds): Promise<boolean> {
-  const timeout = creds.timeoutMs ?? 20_000;
+  // CI: edges frias (cold start pós-restart/upgrade do Supabase) + invokeEdge
+  // com 2×10s de retry podem empurrar o signIn além de 20s — o auth.setup já
+  // mediu ~21s reais. 45s em CI mantém a verificação real sem flake de
+  // fronteira; local continua rápido.
+  const timeout = creds.timeoutMs ?? (process.env.CI ? 45_000 : 20_000);
   await gotoAndSettle(page, "/login");
 
   const emailLoc = page.locator(Sel.login.email).first();
