@@ -25,6 +25,10 @@ concurrency:
   group: freight-e2e-staging-${{ github.run_id }}
   cancel-in-progress: false
 
+env:
+  E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+  E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+
 jobs:
   freight_e2e_staging:
     name: freight-e2e-staging (chromium-public)
