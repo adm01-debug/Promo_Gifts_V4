@@ -17,5 +17,14 @@
     "mantê-la para sempre — ela só precisa existir enquanto a remoção estiver",
     "dentro da janela comparada pelo --base usado)."
   ],
-  "entries": []
+  "entries": [
+    {
+      "schema": "public",
+      "category": "Tables",
+      "name": "supplier_products_raw_history_p2026_06",
+      "reason": "Partição mensal de supplier_products_raw_history removida pela rotina normal de retenção (fn_purge_spr_history, 90 dias, cron diário às 03:30 — migration 20260604231642). Confirmado contra pg_catalog: partições vivas vão de p2026_07 a p2027_01, p2026_06 ausente. Não relacionado ao incidente 2026-10-13.",
+      "approvedBy": "comercial@aquarellaprint.com.br",
+      "date": "2026-10-13"
+    }
+  ]
 }
