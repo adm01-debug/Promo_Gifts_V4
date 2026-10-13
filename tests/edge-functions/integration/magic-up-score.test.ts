@@ -127,6 +127,12 @@ beforeEach(() => {
     }),
   );
   shared.callAi.mockReset();
+  // O handler REAL loga `console.error('[magic-up-score] Error:', ...)` nos
+  // caminhos de erro (500). O guard `STRICT_TEST_SIDE_EFFECTS=1` do repo
+  // (tests/setup-strict-side-effects.ts, usado pelo `test:ci-core`) reprova
+  // `console.error` não interceptado pelo próprio teste — o teste é que tem de
+  // silenciar o log esperado, senão o caminho de erro vira vermelho falso.
+  vi.spyOn(console, "error").mockImplementation(() => undefined);
 });
 
 describe("magic-up-score — contrato real do handler", () => {
