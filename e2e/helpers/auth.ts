@@ -34,7 +34,11 @@ export interface LoginCreds {
 
 export type Role = "user" | "admin" | "dev" | "editor";
 
-const LOGIN_URL_RE = /\/login(\?|#|$)/;
+// /login é alias legado da rota canônica /auth — ambas renderizam <Auth/>.
+// Se o signIn falha, a página pode permanecer em qualquer uma das duas; checar
+// só /login faria loginViaUI "passar" com sessão inexistente (specs falhavam
+// depois, opacos, redirecionados para /auth).
+const LOGIN_URL_RE = /\/(login|auth)(\?|#|$)/;
 
 /**
  * Executa o fluxo de login via UI usando seletores SSOT.
