@@ -9,7 +9,7 @@ de UI nem de schema executado — a fábrica só **propõe** SQL; quem aplica é
 
 - `[IMPLEMENTADO]` — existe hoje no código; a evidência é `caminho:linha`.
 - `[PLANEJADO]` — decidido (Q7) mas ainda **não** existe; nada abaixo de `[PLANEJADO]` está no ar.
-- Toda linha deste documento foi conferida no código desta branch (base `main` em `4cf61adae`,
+- Toda linha deste documento foi conferida no código desta branch (base `main` em `a9c8bd9c4`,
   13/10/2026) — os `caminho:linha` abaixo foram reconferidos nessa base.
 
 ---
@@ -36,9 +36,9 @@ Hoje **nenhum** dos dois está implementado (ver §3).
 o PNG composto associados (`mockup_url`, `logo_url`). A linha, uma vez excluída, não volta.
 
 - A tabela `generated_mockups` **não tem** coluna `deleted_at`/`is_deleted`
-  (`src/integrations/supabase/types.ts:7943-8388` — o bloco inteiro da tabela).
+  (`src/integrations/supabase/types.ts:7946-8391` — o bloco inteiro da tabela).
 - **Não existe** cron nem função de expurgo de mockup (ver §2.4 para o que existe em outras entidades).
-- Rascunhos vivem em `mockup_drafts` (`src/integrations/supabase/types.ts:13826-13873`), gravados
+- Rascunhos vivem em `mockup_drafts` (`src/integrations/supabase/types.ts:13868-13915`), gravados
   por `src/hooks/mockup/useMockupDraft.ts` — **sem TTL**.
 
 ### 2.2 Já existe confirmação antes de excluir `[IMPLEMENTADO]`
@@ -52,8 +52,8 @@ o PNG composto associados (`mockup_url`, `logo_url`). A linha, uma vez excluída
 ### 2.3 Onde os arquivos vivem `[IMPLEMENTADO]`
 
 - Bucket **`mockup-assets`**, com pasta por vendedor já em uso:
-  - logos: `{userId}/logos/{ts}-{nome}.{ext}` (`src/lib/mockup-storage.ts:38`);
-  - PNG composto: `{userId}/mockups/{ts}-{uuid}.png` (`supabase/functions/generate-mockup/index.ts:476-478`).
+  - logos: `{userId}/logos/{ts}-{nome}.{ext}` (`src/lib/mockup-storage.ts:36`);
+  - PNG composto: `{userId}/mockups/{ts}-{uuid}.png` (`supabase/functions/generate-mockup/index.ts:506`).
 
 ### 2.4 O padrão de lixeira que JÁ existe no sistema (de OUTRAS entidades) `[IMPLEMENTADO]`
 
@@ -165,7 +165,7 @@ END $$;
 
 ### 3.4 Mockup anexado a orçamento **não** é excluído (Q21) `[PLANEJADO]`
 
-- A coluna existe: `quote_items.mockup_urls` (`src/integrations/supabase/types.ts:34749`) e é
+- A coluna existe: `quote_items.mockup_urls` (`src/integrations/supabase/types.ts:34791`) e é
   transportada no payload do orçamento (`src/hooks/quotes/quoteHelpers.ts:234`). Hoje **nenhum**
   fluxo do módulo Mockup a preenche — quem grava arte no orçamento é o Kit Builder, em
   `artwork_urls` (`src/pages/kit-builder/useKitBuilderQuote.ts:250,284`).
@@ -212,7 +212,7 @@ END $$;
 - Padrão de purge por cron: `supabase/cron/cron-config.sql:67-77`; função `purge_favorite_trash_old`
   em `docs/db/BACKUP_SCHEMA_ONLY_2026-09-16.sql:65573`.
 - Padrão de Edge Function de limpeza: `supabase/functions/cleanup-notifications/index.ts`.
-- Código do Mockup: `src/hooks/mockup/mockupGenerationService.ts:483-525`,
+- Código do Mockup: `src/hooks/mockup/mockupGenerationService.ts:483-526`,
   `src/hooks/mockup/useMockupDraft.ts`, `src/pages/mockups/MockupHistoryPage.tsx:115-134`,
-  `src/pages/mockups/mockup-generator/MockupDialogs.tsx:58-71`, `src/lib/mockup-storage.ts:38`,
-  `supabase/functions/generate-mockup/index.ts:476-478`.
+  `src/pages/mockups/mockup-generator/MockupDialogs.tsx:58-72`, `src/lib/mockup-storage.ts:36`,
+  `supabase/functions/generate-mockup/index.ts:506`.
