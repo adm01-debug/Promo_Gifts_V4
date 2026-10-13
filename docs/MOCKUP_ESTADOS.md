@@ -4,8 +4,9 @@
 **Origem:** achado do documento do Codex (08/10/2026), p.12 e p.15, registrado no adendo do plano
 (`docs/PLANO_MOCKUP_50_ETAPAS_ADENDO_CODEX.md`, seção *“Conceito-chave adotado do Codex: SNAPSHOT
 DE REVISÃO”*, etapa 71 para a p.12 e etapas 69/70 para o `snapshot_version` da p.15).
-**Fontes de evidência:** leitura de `src/` e `git grep` no repositório, na worktree do cartão
-(branch `v2/n60-2610082250`). Cada linha do código citada abaixo existe no repositório.
+**Fontes de evidência:** leitura de `src/` e `git grep` no repositório, na revisão `a9c8bd9c4`
+(worktree do cartão original, branch `v2/n60-2610082250`). Cada linha do código citada abaixo
+existe no repositório nessa revisão.
 
 ## 1. Por que separar os estados
 
@@ -139,7 +140,7 @@ A barra de status do gerador já segue essa ordem — erro atual > salvando > sa
   descoberto*).
 - **Estado no código:**
   - A coluna existe e é lida: `quote_items.mockup_urls` em
-    `src/integrations/supabase/types.ts:34749` e `:34786`, tipada em
+    `src/integrations/supabase/types.ts:34791` e `:34828`, tipada em
     `src/hooks/quotes/quoteTypes.ts:39`, mapeada em `src/hooks/quotes/quoteHelpers.ts:234` e
     selecionada em `src/services/quoteService.ts:84`; o contrato de payload é coberto por
     `src/services/__tests__/quoteServicePayloadContract.test.ts:113,132`.
