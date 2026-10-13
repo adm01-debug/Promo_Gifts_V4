@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-import { loginViaUI } from '../helpers/auth';
+import { loginViaUI, dismissOnboardingTour } from '../helpers/auth';
 
 const STORAGE = path.resolve(__dirname, '../.auth/storageState.json');
 
@@ -58,6 +58,10 @@ setup('authenticate', async ({ page }) => {
 
   try {
     await loginViaUI(page, { email, password });
+    // Persiste has_completed_tour=true pra conta E2E — sem isso o overlay do
+    // tour intercepta cliques em TODOS os specs autenticados (inclusive os
+    // que só usam storageState e nunca chamam loginAs).
+    await dismissOnboardingTour(page);
     await page.context().storageState({ path: STORAGE });
   } catch (err) {
     const reason = err instanceof Error ? err.message : String(err);
