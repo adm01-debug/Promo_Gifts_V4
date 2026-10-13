@@ -3,6 +3,16 @@ import * as OTPAuth from 'https://esm.sh/otpauth@9.3.5';
 import { getCorsHeaders } from '../_shared/cors.ts';
 import { createStructuredLogger } from '../_shared/structured-logger.ts';
 import { getOrCreateRequestId } from '../_shared/request-id.ts';
+import { z } from '../_shared/zod-validate.ts';
+
+// Tipos do body — falha de schema cai no mesmo 400 'Action desconhecida'
+// do fluxo atual (body vazio), preservando o contrato de erro.
+const bodySchema = z.object({
+  action: z.enum(['verify', 'disable']).optional(),
+  token: z.string().max(64).nullable().optional(),
+  target_user_id: z.string().uuid().optional(),
+  is_admin_bypass: z.boolean().optional(),
+}).passthrough();
 
 /**
  * Edge Function: verify-2fa-token
@@ -70,6 +80,7 @@ Deno.serve(async (req: Request) => {
     body = (parsed !== null && typeof parsed === 'object' && !Array.isArray(parsed))
       ? (parsed as Record<string, unknown>)
       : {};
+    if (!bodySchema.safeParse(body).success) body = {};
   } catch {
     return json({ success: false, error: 'Body JSON invalido' }, 400);
   }
