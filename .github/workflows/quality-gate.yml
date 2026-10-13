@@ -67,6 +67,12 @@ jobs:
       - name: Gate 2.3.1 — TODO baseline (bloqueante)
         run: node scripts/check-todo-baseline.mjs
 
+      # GATE 2.3.5: console.* ratchet (bloqueante) — auditoria 22-dim 2026-10-11.
+      # Zero console.* fora do logger central em arquivos NOVOS; arquivos do
+      # baseline (.console-baseline.json) não podem aumentar a contagem.
+      - name: Gate 2.3.5 — console.* baseline (bloqueante)
+        run: node scripts/check-console-baseline.mjs
+
       # GATE 2.3.2: `as <Tipo>` ratchet (bloqueante) — auditoria 20-dim 2026-10-02.
       # Congela as ~2.1k asserções de tipo legadas (excluindo as const/unknown/any)
       # em .as-assertions-baseline.json; falha só em regressão.

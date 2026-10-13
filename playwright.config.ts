@@ -125,13 +125,19 @@ export default defineConfig({
       testIgnore: [/auth\.setup\.ts/],
     },
 
-    // 5. Smoke — serial, no auth, no retries, @smoke tag required
+    // 5. Smoke — serial, no retries, @smoke tag required.
+    // Reaproveita a sessão do `setup` (1 login real por suite): specs que
+    // testam fluxo desautenticado limpam o estado via test.use explícito —
+    // sem storageState, ~45 specs authed pulavam silenciosamente via
+    // requireAuth/test.skip e o gate de smoke rodava vacuamente.
     {
       name: 'chromium-smoke',
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1280, height: 720 },
+        storageState: path.resolve('e2e/.auth/storageState.json'),
       },
+      dependencies: ['setup'],
       testMatch: [/smoke\.spec\.ts/],
       grep: /@smoke/,
       retries: 0,
