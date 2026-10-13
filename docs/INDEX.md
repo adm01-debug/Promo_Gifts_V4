@@ -31,6 +31,8 @@
 | Doc | Para quê |
 |---|---|
 | `DISASTER_RECOVERY.md` | **Runbook de DR** — cenários, restore, contatos, RPO/RTO |
+| `SUPABASE_PANEL_CONFIG.md` | **IaC-lite** — inventário declarativo das configs de painel do canônico |
+| `openapi/edges-publicas.yaml` | **OpenAPI 3.0** das edge functions públicas/webhooks |
 | `ci/METRICAS_SEMANAIS.md` | Métricas de CI geradas semanalmente |
 | `PERF_OPTIMIZATIONS.md` | Otimizações de performance aplicadas |
 

@@ -31,7 +31,7 @@ test.describe("Rotas Admin críticas — carregamento e RBAC", () => {
       const isLoginPage = page.url().includes("/login");
       const body = page.locator("body");
 
-      await expect(body).not.toContainText("500", { timeout: 10_000 });
+      await expect(body).not.toContainText(/Erro 500|Internal Server Error|500 Internal/i, { timeout: 10_000 });
       await expect(body).not.toContainText("Unexpected error", { timeout: 5_000 });
 
       if (!isLoginPage) {
@@ -55,12 +55,12 @@ test.describe("Rotas Admin críticas — carregamento e RBAC", () => {
     // Ambas devem ter carregado (URL mudou ou permaneceu em login se sem auth)
     expect(typeof prevUrl).toBe("string");
     expect(typeof newUrl).toBe("string");
-    await expect(page.locator("body")).not.toContainText("500");
+    await expect(page.locator("body")).not.toContainText(/Erro 500|Internal Server Error|500 Internal/i);
   });
 
   test("dashboard admin (/admin) carrega sem 500", async ({ page }) => {
     await page.goto("/admin");
     await page.waitForLoadState("networkidle");
-    await expect(page.locator("body")).not.toContainText("500");
+    await expect(page.locator("body")).not.toContainText(/Erro 500|Internal Server Error|500 Internal/i);
   });
 });

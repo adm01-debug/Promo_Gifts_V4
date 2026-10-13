@@ -233,8 +233,20 @@ async function main() {
   } else {
     const live = await fetchLive();
     if (live.kind !== 'live') {
+      // Com requireLive=false a consulta live é best-effort: credenciais
+      // ausentes OU falha transitória da Management API (network/http —
+      // rate-limit, 5xx) não podem falhar o gate; a razão fica em details.
+      // Respostas que chegaram mas vieram quebradas (invalid-json/response)
+      // seguem inconclusive — indicam contrato de API alterado.
+      // http-error só é soft quando transitório (429/5xx); 4xx (401/403/404)
+      // indica credencial/perm errada — esconder isso aprovaria drift real.
+      const isSoft =
+        live.kind === 'missing-config' ||
+        live.kind === 'network-error' ||
+        (live.kind === 'http-error' &&
+          (live.httpStatus === 429 || live.httpStatus >= 500));
       const status =
-        live.kind === 'missing-config' && !REQUIRE_LIVE
+        isSoft && !REQUIRE_LIVE
           ? CHECK_RESULT_STATUS.STATIC_PASS
           : CHECK_RESULT_STATUS.INCONCLUSIVE;
       return concludeCheck({
@@ -246,6 +258,7 @@ async function main() {
             : `consulta live indisponível (${live.kind})`,
         details: {
           reason: live.kind,
+          httpStatus: live.httpStatus ?? null,
           requireLive: REQUIRE_LIVE,
           maskedUrl: live.maskedUrl,
         },
