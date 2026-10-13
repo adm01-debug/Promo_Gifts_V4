@@ -3,16 +3,15 @@
  * (produto + variante + foto) para o rascunho e o histórico do gerador.
  *
  * CRÍTICO (2026-10-09 · etapa 55 · M07): a restauração remontava a seleção com
- * `variant: null` e `product.images[0]`, devolvendo a PRIMEIRA foto do produto
- * no lugar da foto (e da variante) escolhidas. `mockup_drafts` e
- * `generated_mockups` não têm coluna para isso e o schema está congelado
- * (REGRA #8): o snapshot viaja no rascunho local (localStorage — mesmo caminho
- * da logo em data-URL) e num registro local por mockup salvo no histórico.
- * DO NOT REMOVE: é o contrato de restauração do gerador.
+ * `variant: null` e `product.images[0]` — a PRIMEIRA foto no lugar da escolhida.
+ * `mockup_drafts`/`generated_mockups` não têm coluna para isso e o schema está
+ * congelado (REGRA #8): o snapshot viaja no rascunho local (localStorage) e num
+ * registro local por mockup salvo. DO NOT REMOVE: é o contrato de restauração.
  */
 import type { ExternalVariantStock, Product } from '@/hooks/products';
 import type { MockupProductSelection } from '@/components/mockup/MockupProductSelector';
 import { logger } from '@/lib/logger';
+import { toast } from 'sonner';
 
 export interface MockupSelectionSnapshot {
   /** Variante escolhida no seletor; null quando o produto não tem variante. */
@@ -26,7 +25,9 @@ export interface MockupSelectionSnapshot {
 const HISTORY_KEY = 'mockup_selection_v1';
 
 function isVariantStock(value: unknown): value is ExternalVariantStock {
-  return typeof value === 'object' && value !== null && 'id' in value && typeof value.id === 'string';
+  return (
+    typeof value === 'object' && value !== null && 'id' in value && typeof value.id === 'string'
+  );
 }
 
 /** Valida o snapshot vindo de fora (JSON/localStorage) antes de usá-lo. */
@@ -84,9 +85,10 @@ export const mockupSelection = {
     try {
       localStorage.setItem(key, JSON.stringify(snapshot));
     } catch (err) {
-      // Degradação local (quota/modo privado): o mockup já foi gerado e salvo,
-      // então só registra — não aborta o fluxo do vendedor.
+      // Degradação local (quota/modo privado): avisa o vendedor — sem isso a
+      // variante/foto sumiriam sem sinal nenhum no próximo "abrir do histórico".
       logger.error('[mockupSelection] Erro ao guardar seleção do histórico:', err);
+      toast.error('Não foi possível guardar a variante e a foto escolhidas neste mockup.');
     }
   },
 
@@ -104,6 +106,7 @@ export const mockupSelection = {
       return isSnapshot(parsed) ? parsed : null;
     } catch (err) {
       logger.error('[mockupSelection] Erro ao ler seleção do histórico:', err);
+      toast.error('Não foi possível restaurar a variante e a foto deste mockup.');
       return null;
     }
   },

@@ -1,15 +1,15 @@
 /**
  * Restauração da seleção (produto + variante + foto) do rascunho e do histórico.
  * Defeito M07/etapa 55: reabrir remontava a seleção com `variant: null` e
- * `product.images[0]` — a PRIMEIRA foto no lugar da escolhida. O ambiente
- * (Node 26 + jsdom) não expõe `localStorage`: o teste instala um Storage em
- * memória antes de importar os hooks.
+ * `product.images[0]` — a PRIMEIRA foto no lugar da escolhida.
  */
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { toast } from 'sonner';
 import type { ExternalVariantStock, Product } from '@/hooks/products';
 import { type MockupDraftData, useMockupDraft } from '@/hooks/mockup/useMockupDraft';
 import { useMockupGenerator } from '@/hooks/mockup/useMockupGenerator';
+import { mockupSelection } from '@/hooks/mockup/mockupSelectionSnapshot';
 import type { GeneratedMockup } from '@/hooks/mockup/mockupGenerationService';
 import type { PersonalizationArea } from '@/components/mockup/MultiAreaManager';
 
@@ -28,8 +28,6 @@ const PRODUCT = {
 const VARIANTE_B = {
   id: 'var-B',
   product_id: 'prod-1',
-  color_name: 'Azul',
-  color_hex: '#0000ff',
   selected_thumbnail: FOTO_3,
 } as ExternalVariantStock;
 
@@ -42,16 +40,11 @@ const AREA = {
 const MOCKUP_ROW = {
   id: 'rec-B',
   product_id: 'prod-1',
-  technique_id: null,
   technique_name: 'Serigrafia',
   created_at: T_NEW,
 } as GeneratedMockup;
 
-const SELECAO_B = {
-  variant: VARIANTE_B,
-  colorName: 'Azul',
-  imageUrl: FOTO_3,
-};
+const SELECAO_B = { variant: VARIANTE_B, colorName: 'Azul', imageUrl: FOTO_3 };
 
 const DRAFT_BASE: MockupDraftData = {
   productId: 'prod-1',
@@ -64,31 +57,31 @@ const DRAFT_BASE: MockupDraftData = {
   updatedAt: T_OLD,
 };
 
-// ── Storage em memória ───────────────────────────────────────────────────────
-
+// O ambiente não expõe `localStorage`: Storage em memória para os hooks.
 vi.stubGlobal(
   'localStorage',
   (() => {
     const store = new Map<string, string>();
     return {
-      getItem: (key: string): string | null => store.get(key) ?? null,
-      setItem: (key: string, value: string): void => {
-        store.set(key, String(value));
-      },
-      removeItem: (key: string): void => {
-        store.delete(key);
-      },
-      clear: (): void => {
-        store.clear();
-      },
+      getItem: (k: string) => store.get(k) ?? null,
+      setItem: (k: string, v: string) => store.set(k, String(v)),
+      removeItem: (k: string) => store.delete(k),
+      clear: () => store.clear(),
     };
   })(),
 );
 
-// ── Mocks ────────────────────────────────────────────────────────────────────
+// ── Mocks das dependências dos hooks ─────────────────────────────────────────
 
-vi.mock('@/contexts/AuthContext', () => ({
-  useAuth: () => ({ user: { id: 'user-test-001' } }),
+vi.mock('@/contexts/AuthContext', () => ({ useAuth: () => ({ user: { id: 'user-test-001' } }) }));
+vi.mock('@/lib/logger', () => ({
+  logger: { error: vi.fn(), warn: vi.fn(), info: vi.fn(), debug: vi.fn() },
+}));
+vi.mock('sonner', () => ({
+  toast: { success: vi.fn(), error: vi.fn(), info: vi.fn(), warning: vi.fn() },
+}));
+vi.mock('@/lib/db/postgrest', () => ({
+  dbInvoke: vi.fn(() => Promise.resolve({ records: [], count: 0 })),
 }));
 
 const supabaseMock = vi.hoisted(() => {
@@ -111,21 +104,9 @@ vi.mock('@/integrations/supabase/client', () => ({
   },
 }));
 
-vi.mock('@/lib/logger', () => ({
-  logger: { error: vi.fn(), warn: vi.fn(), info: vi.fn(), debug: vi.fn() },
-}));
-
-vi.mock('sonner', () => ({
-  toast: { success: vi.fn(), error: vi.fn(), info: vi.fn(), warning: vi.fn() },
-}));
-
 vi.mock('@/lib/image-converter', () => ({
   needsConversion: vi.fn(() => false),
   ensureSupportedFormat: vi.fn((file: File) => Promise.resolve(file)),
-}));
-
-vi.mock('@/lib/db/postgrest', () => ({
-  dbInvoke: vi.fn(() => Promise.resolve({ records: [], count: 0 })),
 }));
 
 vi.mock('@/contexts/ProductsContext', () => ({
@@ -154,8 +135,6 @@ vi.mock('@/hooks/mockup/mockupGenerationService', () => ({
   deleteMockupFromDb: vi.fn(() => Promise.resolve(undefined)),
 }));
 
-// ── Setup / teardown ─────────────────────────────────────────────────────────
-
 beforeEach(() => {
   localStorage.clear();
   supabaseMock.maybeSingle.mockReset();
@@ -167,8 +146,6 @@ beforeEach(() => {
 function seedDraft(selection: unknown) {
   localStorage.setItem(LOCAL_KEY, JSON.stringify({ ...DRAFT_BASE, selection }));
 }
-
-// ── Rascunho e histórico ─────────────────────────────────────────────────────
 
 describe('reabrir rascunho ou histórico restaura variante e foto exatas', () => {
   it('rascunho restaura a variante B e a foto 3 (não a primeira foto)', async () => {
@@ -214,7 +191,6 @@ describe('reabrir rascunho ou histórico restaura variante e foto exatas', () =>
         product: PRODUCT,
         variant: VARIANTE_B,
         colorName: 'Azul',
-        colorHex: '#0000ff',
         imageUrl: FOTO_3,
       });
       result.current.setSelectedTechnique({ id: 'tec-1', name: 'Serigrafia', code: 'silk' });
@@ -229,5 +205,21 @@ describe('reabrir rascunho ou histórico restaura variante e foto exatas', () =>
     expect(result.current.productSelection?.product.id).toBe('prod-1');
     expect(result.current.productSelection?.variant?.id).toBe('var-B');
     expect(result.current.productSelection?.imageUrl).toBe(FOTO_3);
+  });
+});
+
+describe('falha do localStorage avisa o vendedor em vez de engolir o erro', () => {
+  it('gravar e ler a seleção do histórico avisam e não quebram o fluxo', () => {
+    const indisponivel = () => {
+      throw new Error('localStorage indisponível');
+    };
+    const setItem = vi.spyOn(localStorage, 'setItem').mockImplementation(indisponivel);
+    expect(() => mockupSelection.saveForHistory('u-1', 'rec-B', SELECAO_B)).not.toThrow();
+    setItem.mockRestore();
+
+    const getItem = vi.spyOn(localStorage, 'getItem').mockImplementation(indisponivel);
+    expect(mockupSelection.readForHistory('u-1', 'rec-B')).toBeNull();
+    expect(toast.error).toHaveBeenCalledTimes(2);
+    getItem.mockRestore();
   });
 });

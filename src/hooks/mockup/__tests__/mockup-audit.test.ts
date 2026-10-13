@@ -238,7 +238,7 @@ describe('Analise estatica — useMockupGenerator.ts', () => {
 
     it('saveMockupToHistory: array de deps inclui todas as closures criticas', () => {
       expect(src).toContain(
-        '[user, selectedProduct, selectedTechnique, selectedClient, mockupAnnotations]',
+        '[user, selectedProduct, selectedTechnique, selectedClient, mockupAnnotations, productSelection]',
       );
     });
 
