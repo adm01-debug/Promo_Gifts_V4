@@ -77,9 +77,11 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
     const productSearch = page.locator('[data-testid="magazine-product-search"]').first();
     await productSearch.waitFor({ state: "visible", timeout: 15_000 });
 
-    // Seleciona o primeiro produto disponível (button[aria-pressed] dentro do grid).
+    // Seleciona o primeiro produto disponível. O botão de seleção usa
+    // aria-label "Selecionar <nome>" — exigir :has(img) quebra quando o
+    // produto não tem imagem cadastrada.
     const firstProductBtn = page
-      .locator('button[aria-pressed]:not([disabled]):has(img)')
+      .locator('button[aria-pressed][aria-label^="Selecionar "]:not([disabled])')
       .first();
     const catalogError = page.getByText("Catálogo indisponível");
     const catalogEmpty = page.getByText("Nenhum produto corresponde aos filtros.");
