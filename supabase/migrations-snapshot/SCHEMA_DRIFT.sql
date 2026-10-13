@@ -1,5 +1,5 @@
 -- SCHEMA_DRIFT.sql — NÃO CALCULADO
 -- Projeto: doufsxqlfjyuvxuezpln
--- Gerado em: 2026-10-05T07:29:31.303Z
--- Ledger divergente: 2503 pares, 476 somente locais, 1 somente remotos. Replay bloqueado.
+-- Gerado em: 2026-10-12T16:14:07.605Z
+-- Ledger divergente: 2508 pares, 477 somente locais, 1 somente remotos. Replay bloqueado.
 -- Este arquivo não demonstra ausência de drift estrutural.
