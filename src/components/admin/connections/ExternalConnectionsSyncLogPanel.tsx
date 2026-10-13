@@ -9,15 +9,19 @@ import { History, RefreshCw, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
 
+// NOTE: colunas alinhadas ao schema real de `external_connections_sync_log`
+// (started_at/connection_name/sync_type/records_processed/records_failed) —
+// o shape anterior (ran_at/trigger_op/triggered_by_*/processed/
+// created_count/updated_count) não existe na tabela e fazia o `.select()`
+// explícito retornar 400 em produção.
 interface SyncLogRow {
   id: string;
-  ran_at: string;
-  triggered_by_user_id: string | null;
-  triggered_by_secret_name: string | null;
-  trigger_op: string | null;
-  processed: number;
-  created_count: number;
-  updated_count: number;
+  started_at: string;
+  connection_id: string | null;
+  connection_name: string | null;
+  sync_type: string | null;
+  records_processed: number | null;
+  records_failed: number | null;
   status: string;
   error_message: string | null;
   duration_ms: number | null;
@@ -70,9 +74,9 @@ export function ExternalConnectionsSyncLogPanel() {
     const { data, error: err } = await supabase
       .from('external_connections_sync_log')
       .select(
-        'id, ran_at, triggered_by_user_id, triggered_by_secret_name, trigger_op, processed, created_count, updated_count, status, error_message, duration_ms',
+        'id, started_at, connection_id, connection_name, sync_type, records_processed, records_failed, status, error_message, duration_ms',
       )
-      .order('ran_at', { ascending: false })
+      .order('started_at', { ascending: false })
       .limit(20);
 
     if (err) {
@@ -134,14 +138,14 @@ export function ExternalConnectionsSyncLogPanel() {
                 <div className="text-muted-foreground">Última execução OK</div>
                 <div className="font-medium">
                   {lastOk
-                    ? `${formatRelative(lastOk.ran_at)} • ${lastOk.processed} processada(s)`
+                    ? `${formatRelative(lastOk.started_at)} • ${lastOk.records_processed ?? 0} processada(s)`
                     : '—'}
                 </div>
               </div>
               <div className="rounded-md border border-border/40 p-2">
                 <div className="text-muted-foreground">Última falha</div>
                 <div className="font-medium">
-                  {lastError ? formatRelative(lastError.ran_at) : 'Nenhuma'}
+                  {lastError ? formatRelative(lastError.started_at) : 'Nenhuma'}
                 </div>
               </div>
             </div>
@@ -156,10 +160,10 @@ export function ExternalConnectionsSyncLogPanel() {
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
                         {statusBadge(r.status)}
-                        {opBadge(r.trigger_op)}
+                        {opBadge(r.sync_type)}
                         <span className="text-muted-foreground">
-                          {formatRelative(r.ran_at)} ·{' '}
-                          {new Date(r.ran_at).toLocaleString('pt-BR', {
+                          {formatRelative(r.started_at)} ·{' '}
+                          {new Date(r.started_at).toLocaleString('pt-BR', {
                             dateStyle: 'short',
                             timeStyle: 'medium',
                           })}
@@ -172,21 +176,19 @@ export function ExternalConnectionsSyncLogPanel() {
 
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                       <span>
-                        Processadas: <strong className="tabular-nums">{r.processed}</strong>
+                        Processadas:{' '}
+                        <strong className="tabular-nums">{r.records_processed ?? 0}</strong>
                       </span>
-                      <span className="text-green-600 dark:text-green-400">
-                        +{r.created_count} criadas
-                      </span>
-                      <span className="text-blue-600 dark:text-blue-400">
-                        ~{r.updated_count} atualizadas
+                      <span className="text-destructive">
+                        {r.records_failed ?? 0} falharam
                       </span>
                     </div>
 
-                    {r.triggered_by_secret_name && (
+                    {r.connection_name && (
                       <div className="text-muted-foreground">
-                        Disparado por:{' '}
+                        Conexão:{' '}
                         <code className="rounded bg-muted px-1 py-0.5 font-mono text-[10px]">
-                          {r.triggered_by_secret_name}
+                          {r.connection_name}
                         </code>
                       </div>
                     )}
