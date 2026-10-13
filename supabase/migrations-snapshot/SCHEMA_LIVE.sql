@@ -1,7 +1,7 @@
 -- ==============================================================
 -- SCHEMA_LIVE.sql — dump do schema `public` do projeto canônico
 -- Projeto: doufsxqlfjyuvxuezpln
--- Gerado em: 2026-10-05T07:29:28.576Z
+-- Gerado em: 2026-10-12T16:14:05.180Z
 -- Fonte: supabase db dump --linked --schema public
 -- ==============================================================
 
@@ -14145,6 +14145,113 @@ CREATE OR REPLACE FUNCTION "public"."fn_audit_role_changes"() RETURNS "trigger"
 ALTER FUNCTION "public"."fn_audit_role_changes"() OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."fn_audit_row_change"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+  _actor uuid := auth.uid();
+  _rec jsonb;
+  _old jsonb;
+  _rec_safe jsonb;
+  _old_safe jsonb;
+  _rid uuid;
+  _changed text[];
+  _redact text[];
+BEGIN
+  _rec := CASE WHEN TG_OP = 'DELETE' THEN to_jsonb(OLD) ELSE to_jsonb(NEW) END;
+  _old := CASE WHEN TG_OP = 'INSERT' THEN NULL ELSE to_jsonb(OLD) END;
+
+  -- UPDATE sem mudança de dados (só colunas de sistema) não é evento auditável.
+  IF TG_OP = 'UPDATE' THEN
+    SELECT array_agg(k) INTO _changed
+    FROM jsonb_each(_old) AS j(k, v)
+    WHERE v IS DISTINCT FROM _rec -> k;
+    IF _changed IS NULL OR _changed <@ ARRAY['updated_at', 'version']::text[] THEN
+      RETURN NEW;
+    END IF;
+  END IF;
+
+  _rid := COALESCE(
+    (_rec ->> 'id')::uuid,
+    (_rec ->> 'user_id')::uuid,
+    (_rec ->> 'seller_id')::uuid,
+    (_rec ->> 'created_by')::uuid
+  );
+
+  _redact := CASE
+    WHEN TG_TABLE_NAME = 'profiles' THEN ARRAY[
+      'full_name', 'email', 'phone', 'avatar_url',
+      'department', 'preferences', 'bitrix_id'
+    ]
+    ELSE ARRAY[]::text[]
+  END;
+
+  _rec_safe := (
+    SELECT jsonb_object_agg(
+      j.k,
+      CASE
+        WHEN j.k = ANY(_redact)
+          OR j.k ~* '(credential|secret|token|password|api_key|email|phone|telefone|celular|whatsapp|cpf|cnpj|inscricao|contact_name|contact_person|client_name|full_name|address|endereco|cep|zip_code|logradouro)'
+          THEN '"[REDACTED]"'::jsonb
+        ELSE j.v
+      END
+    )
+    FROM jsonb_each(_rec) AS j(k, v)
+  );
+  _old_safe := CASE WHEN _old IS NULL THEN NULL ELSE (
+    SELECT jsonb_object_agg(
+      j.k,
+      CASE
+        WHEN j.k = ANY(_redact)
+          OR j.k ~* '(credential|secret|token|password|api_key|email|phone|telefone|celular|whatsapp|cpf|cnpj|inscricao|contact_name|contact_person|client_name|full_name|address|endereco|cep|zip_code|logradouro)'
+          THEN '"[REDACTED]"'::jsonb
+        ELSE j.v
+      END
+    )
+    FROM jsonb_each(_old) AS j(k, v)
+  ) END;
+
+  INSERT INTO public.admin_audit_log (
+    user_id, action, resource_type, resource_id, details, source, created_at
+  ) VALUES (
+    COALESCE(
+      _actor,
+      (_rec ->> 'user_id')::uuid,
+      (_rec ->> 'seller_id')::uuid,
+      (_rec ->> 'created_by')::uuid,
+      '00000000-0000-0000-0000-000000000000'::uuid
+    ),
+    TG_TABLE_NAME || '.' || lower(TG_OP),
+    TG_TABLE_NAME,
+    COALESCE(_rid::text, TG_TABLE_NAME || ':' || TG_OP),
+    jsonb_build_object(
+      'op', TG_OP,
+      'old', _old_safe,
+      'new', CASE WHEN TG_OP = 'DELETE' THEN NULL ELSE _rec_safe END,
+      'changed_fields', to_jsonb(_changed)
+    ),
+    CASE WHEN _actor IS NULL THEN 'system' ELSE 'database_trigger' END,
+    now()
+  );
+
+  RETURN COALESCE(NEW, OLD);
+EXCEPTION WHEN OTHERS THEN
+  -- Auditoria nunca derruba a escrita principal (mesmo padrão de
+  -- audit_user_role_changes): loga warning e devolve a row.
+  RAISE WARNING 'fn_audit_row_change failed on %: %', TG_TABLE_NAME, SQLERRM;
+  RETURN COALESCE(NEW, OLD);
+END;
+$$;
+
+
+ALTER FUNCTION "public"."fn_audit_row_change"() OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."fn_audit_row_change"() IS 'Trigger genérica de auditoria → admin_audit_log com redação de PII/segredos (Onda 4).';
+
+
+
 CREATE OR REPLACE FUNCTION "public"."fn_auto_classify_kit_product"() RETURNS "trigger"
     LANGUAGE "plpgsql"
     SET "search_path" TO 'public'
@@ -18164,7 +18271,7 @@ COMMENT ON FUNCTION "public"."fn_check_item_fits"("p_packaging_id" "uuid", "p_pr
 
 CREATE OR REPLACE FUNCTION "public"."fn_check_login_allowed"("p_email" "text", "p_ip_address" "text" DEFAULT NULL::"text", "p_city" "text" DEFAULT NULL::"text", "p_user_agent" "text" DEFAULT NULL::"text") RETURNS TABLE("allowed" boolean, "reason" "text", "blocked_until" timestamp with time zone, "check_details" "jsonb")
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   _s              RECORD;
@@ -18200,6 +18307,7 @@ BEGIN
   _s.max_failed_attempts      := GREATEST(COALESCE(_s.max_failed_attempts, 5), 1);
   _s.lockout_duration_minutes := GREATEST(COALESCE(_s.lockout_duration_minutes, 30), 1);
 
+  -- P1 fix v3 (mantido): ip_whitelist_enabled=true + p_ip_address IS NULL → bloquear.
   IF _s.ip_whitelist_enabled THEN
     IF p_ip_address IS NULL THEN
       _details := _details || '{"ip_check":"blocked_null_ip"}'::JSONB;
@@ -18238,6 +18346,7 @@ BEGIN
     _details := _details || '{"ip_check":"disabled"}'::JSONB;
   END IF;
 
+  -- P1 fix v2 (mantido): city_whitelist_enabled=true + p_city IS NULL → bloquear.
   IF _s.city_whitelist_enabled THEN
     IF p_city IS NULL THEN
       _details := _details || '{"city_check":"blocked_null_city"}'::JSONB;
@@ -18276,17 +18385,32 @@ BEGIN
     _details := _details || '{"city_check":"disabled"}'::JSONB;
   END IF;
 
+  -- Onda 5 C1 — contagem por PAR (email, ip):
+  --   · _last_success exige verified=true — só a edge produz essa linha
+  --     quando success chega com o JWT recém-emitido do próprio usuário;
+  --     um POST anônimo não consegue forjar verified (insert usa
+  --     service_role mas a flag é decidida no código da edge, não no
+  --     body). Sucesso forjado já não zera o contador.
+  --   · Falhas contam só no par (email, ip do caller). Envenenar
+  --     login_attempts com falhas de outro IP tranca apenas
+  --     (email, ip-do-atacante) — não a conta do usuário real.
+  --   · p_ip_address NULL (caller legado sem contexto de IP) mantém a
+  --     contagem por e-mail inteiro — comportamento anterior.
   SELECT max(created_at) INTO _last_success
   FROM public.login_attempts
-  WHERE email = p_email AND success = true;
+  WHERE lower(email) = p_email
+    AND success = true
+    AND verified = true
+    AND (p_ip_address IS NULL OR ip_address = p_ip_address);
 
   SELECT count(*), max(created_at)
     INTO _failed_count, _last_failure
   FROM public.login_attempts
-  WHERE email = p_email
+  WHERE lower(email) = p_email
     AND success = false
     AND created_at > now()
         - (_s.lockout_duration_minutes || ' minutes')::interval
+    AND (p_ip_address IS NULL OR ip_address = p_ip_address)
     AND (_last_success IS NULL OR created_at > _last_success);
 
   _details := _details || jsonb_build_object(
@@ -18318,6 +18442,7 @@ BEGIN
   RETURN QUERY SELECT true, 'allowed'::TEXT, NULL::TIMESTAMPTZ, _details;
 
 EXCEPTION WHEN OTHERS THEN
+  -- SEC-008: fail-closed. Retorna genérico sem vazar mensagem interna.
   RETURN QUERY SELECT false, 'security_check_error_fail_closed'::TEXT,
     NULL::TIMESTAMPTZ, '{}'::JSONB;
 END;
@@ -59652,6 +59777,27 @@ $$;
 ALTER FUNCTION "public"."hex_to_color_name"("p_hex" "text") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."increment_discount_approval_version"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'public', 'pg_temp'
+    AS $$
+DECLARE
+  _old jsonb := to_jsonb(OLD) - 'updated_at' - 'version';
+  _new jsonb := to_jsonb(NEW) - 'updated_at' - 'version';
+BEGIN
+  IF _old IS DISTINCT FROM _new THEN
+    NEW.version := COALESCE(OLD.version, 0) + 1;
+  ELSE
+    NEW.version := COALESCE(OLD.version, 1);
+  END IF;
+  RETURN NEW;
+END
+$$;
+
+
+ALTER FUNCTION "public"."increment_discount_approval_version"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."increment_kit_template_usage"("_template_id" "uuid") RETURNS integer
     LANGUAGE "sql"
     SET "search_path" TO 'public'
@@ -65689,6 +65835,7 @@ CREATE TABLE IF NOT EXISTS "public"."discount_approval_requests" (
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "valid_until" timestamp with time zone,
     "quote_snapshot_hash" "text",
+    "version" integer DEFAULT 1 NOT NULL,
     CONSTRAINT "dar_valid_until_required_when_approved" CHECK ((("status" <> 'approved'::"text") OR ("valid_until" IS NOT NULL))),
     CONSTRAINT "discount_approval_requests_max_allowed_percent_check" CHECK ((("max_allowed_percent" >= (0)::numeric) AND ("max_allowed_percent" <= (100)::numeric))),
     CONSTRAINT "discount_approval_requests_requested_discount_percent_check" CHECK ((("requested_discount_percent" >= (0)::numeric) AND ("requested_discount_percent" <= (100)::numeric))),
@@ -65702,6 +65849,10 @@ ALTER TABLE "public"."discount_approval_requests" OWNER TO "postgres";
 
 
 COMMENT ON TABLE "public"."discount_approval_requests" IS 'Workflow de aprovação de desconto acima do limite. Vendedor solicita, supervisor+ aprova/rejeita. Schema oficial extraído de useDiscountApproval.ts.';
+
+
+
+COMMENT ON COLUMN "public"."discount_approval_requests"."version" IS 'Optimistic locking: incrementado por trg_discount_approval_version a cada UPDATE com mudança real. Cliente concorrente deve enviar WHERE version = <esperado> e tratar 0 linhas afetadas como conflito.';
 
 
 
@@ -65972,7 +66123,7 @@ END $$;
 ALTER FUNCTION "public"."reset_user_step_up_state"("_user_id" "uuid") OWNER TO "postgres";
 
 
-CREATE OR REPLACE FUNCTION "public"."respond_discount_approval_transactional"("_request_id" "uuid", "_approved" boolean, "_admin_notes" "text" DEFAULT NULL::"text") RETURNS "public"."discount_approval_requests"
+CREATE OR REPLACE FUNCTION "public"."respond_discount_approval_transactional"("_request_id" "uuid", "_approved" boolean, "_admin_notes" "text" DEFAULT NULL::"text", "_expected_version" integer DEFAULT NULL::integer) RETURNS "public"."discount_approval_requests"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public'
     AS $$
@@ -66002,10 +66153,45 @@ BEGIN
   IF _request.quote_id IS DISTINCT FROM _quote_id THEN
     RAISE EXCEPTION 'Solicitação mudou durante a decisão.' USING ERRCODE = '40001';
   END IF;
-  IF _request.status = _decision THEN RETURN _request; END IF;
+
+  -- Replay idempotente ANTES da checagem de versão: a decisão gravada bumpa
+  -- version, então um retry idêntico (resposta perdida) chegaria com a versão
+  -- obsoleta e falharia 40001 sem nunca chegar aqui. Replay idêntico (mesmo
+  -- status-alvo, mesmo autor, mesmas notas) devolve a decisão já gravada —
+  -- MAS só se a versão atual for a que a própria decisão produziu
+  -- (esperada+1): alterações posteriores à decisão (ex.: validade editada)
+  -- também bumpam version, e aí o retry não pode mais fingir sucesso.
+  -- Com _expected_version NULL (clientes antigos) o replay segue tolerado.
+  IF _request.status = _decision
+     AND _request.admin_id IS NOT DISTINCT FROM _uid
+     AND _request.admin_notes IS NOT DISTINCT FROM NULLIF(btrim(_admin_notes), '') THEN
+    IF _expected_version IS NOT NULL
+       AND _request.version > _expected_version + 1 THEN
+      RAISE EXCEPTION 'Solicitação mudou após a decisão (versão esperada %, atual %). Recarregue e decida de novo.',
+        _expected_version, _request.version
+        USING ERRCODE = '40001';
+    END IF;
+    RETURN _request;
+  END IF;
+  -- Mesma decisão com autor/notas divergentes é conflito real: o segundo
+  -- gestor precisa saber que a decisão dele NÃO foi gravada.
+  IF _request.status = _decision THEN
+    RAISE EXCEPTION 'Decisão concorrente divergente: solicitação já está % decidida por outro gestor ou com notas diferentes.',
+      _request.status
+      USING ERRCODE = '40001';
+  END IF;
   IF _request.status <> 'pending' THEN
     RAISE EXCEPTION 'Decisão terminal conflitante: solicitação já está %.', _request.status
       USING ERRCODE = '23514';
+  END IF;
+
+  -- Optimistic locking: se o cliente leu a solicitação antes de decidir,
+  -- a versão tem que bater com a observada (NULL = não verificar, retrocompat).
+  IF _expected_version IS NOT NULL
+     AND _request.version IS DISTINCT FROM _expected_version THEN
+    RAISE EXCEPTION 'Solicitação mudou desde a leitura (versão esperada %, atual %). Recarregue e decida de novo.',
+      _expected_version, _request.version
+      USING ERRCODE = '40001';
   END IF;
 
   _snapshot := public.compute_quote_snapshot_hash(_quote_id);
@@ -66055,7 +66241,7 @@ END;
 $$;
 
 
-ALTER FUNCTION "public"."respond_discount_approval_transactional"("_request_id" "uuid", "_approved" boolean, "_admin_notes" "text") OWNER TO "postgres";
+ALTER FUNCTION "public"."respond_discount_approval_transactional"("_request_id" "uuid", "_approved" boolean, "_admin_notes" "text", "_expected_version" integer) OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."restore_collection_item_from_trash"("_item_id" "uuid") RETURNS boolean
@@ -76272,11 +76458,16 @@ CREATE TABLE IF NOT EXISTS "public"."login_attempts" (
     "success" boolean NOT NULL,
     "failure_reason" "text",
     "metadata" "jsonb" DEFAULT '{}'::"jsonb",
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "verified" boolean DEFAULT false NOT NULL
 );
 
 
 ALTER TABLE "public"."login_attempts" OWNER TO "postgres";
+
+
+COMMENT ON COLUMN "public"."login_attempts"."verified" IS 'true somente quando a edge log-login-attempt validou a sessão do usuário (Authorization Bearer + e-mail casado) para linhas success=true. fn_check_login_allowed ignora success não verificado ao zerar o contador de lockout.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."magazine_duplicate_requests" (
@@ -94184,6 +94375,10 @@ CREATE INDEX "idx_kit_variants_kit_master_id" ON "public"."kit_variants" USING "
 
 
 
+CREATE INDEX "idx_login_attempts_email_ip_created" ON "public"."login_attempts" USING "btree" ("email", "ip_address", "created_at" DESC);
+
+
+
 CREATE INDEX "idx_login_attempts_ip" ON "public"."login_attempts" USING "btree" ("ip_address", "created_at" DESC);
 
 
@@ -96572,11 +96767,35 @@ CREATE OR REPLACE TRIGGER "trg_audit_discount_approval" AFTER INSERT OR UPDATE O
 
 
 
+CREATE OR REPLACE TRIGGER "trg_audit_discount_approval_requests" AFTER INSERT OR DELETE OR UPDATE ON "public"."discount_approval_requests" FOR EACH ROW EXECUTE FUNCTION "public"."fn_audit_row_change"();
+
+
+
 CREATE OR REPLACE TRIGGER "trg_audit_gravacao" AFTER INSERT OR DELETE OR UPDATE ON "public"."tabela_preco_gravacao_oficial" FOR EACH ROW EXECUTE FUNCTION "public"."fn_audit_gravacao_changes"();
 
 
 
 CREATE OR REPLACE TRIGGER "trg_audit_gravacao_faixa" AFTER INSERT OR DELETE OR UPDATE ON "public"."tabela_preco_gravacao_oficial_faixa" FOR EACH ROW EXECUTE FUNCTION "public"."fn_audit_gravacao_changes"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_audit_orders" AFTER INSERT OR DELETE OR UPDATE ON "public"."orders" FOR EACH ROW EXECUTE FUNCTION "public"."fn_audit_row_change"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_audit_profiles" AFTER INSERT OR DELETE OR UPDATE ON "public"."profiles" FOR EACH ROW EXECUTE FUNCTION "public"."fn_audit_row_change"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_audit_quotes" AFTER INSERT OR DELETE OR UPDATE ON "public"."quotes" FOR EACH ROW EXECUTE FUNCTION "public"."fn_audit_row_change"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_audit_seller_carts" AFTER INSERT OR DELETE OR UPDATE ON "public"."seller_carts" FOR EACH ROW EXECUTE FUNCTION "public"."fn_audit_row_change"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_audit_suppliers" AFTER INSERT OR DELETE OR UPDATE ON "public"."suppliers" FOR EACH ROW EXECUTE FUNCTION "public"."fn_audit_row_change"();
 
 
 
@@ -96816,6 +97035,10 @@ CREATE OR REPLACE TRIGGER "trg_dar_updated_at" BEFORE UPDATE ON "public"."discou
 
 
 CREATE OR REPLACE TRIGGER "trg_derive_similarity_on_member_insert" AFTER INSERT ON "public"."product_similarity_group_members" FOR EACH ROW EXECUTE FUNCTION "public"."fn_derive_similarity_pairs_on_insert"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_discount_approval_version" BEFORE UPDATE ON "public"."discount_approval_requests" FOR EACH ROW EXECUTE FUNCTION "public"."increment_discount_approval_version"();
 
 
 
@@ -106679,6 +106902,11 @@ GRANT ALL ON FUNCTION "public"."fn_audit_role_changes"() TO "anon";
 
 
 
+REVOKE ALL ON FUNCTION "public"."fn_audit_row_change"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."fn_audit_row_change"() TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."fn_auto_classify_kit_product"() TO "anon";
 GRANT ALL ON FUNCTION "public"."fn_auto_classify_kit_product"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_auto_classify_kit_product"() TO "service_role";
@@ -111363,6 +111591,11 @@ GRANT ALL ON FUNCTION "public"."hex_to_color_name"("p_hex" "text") TO "service_r
 
 
 
+REVOKE ALL ON FUNCTION "public"."increment_discount_approval_version"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."increment_discount_approval_version"() TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."increment_kit_template_usage"("_template_id" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."increment_kit_template_usage"("_template_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."increment_kit_template_usage"("_template_id" "uuid") TO "service_role";
@@ -112324,9 +112557,9 @@ GRANT ALL ON FUNCTION "public"."reset_user_step_up_state"("_user_id" "uuid") TO 
 
 
 
-REVOKE ALL ON FUNCTION "public"."respond_discount_approval_transactional"("_request_id" "uuid", "_approved" boolean, "_admin_notes" "text") FROM PUBLIC;
-GRANT ALL ON FUNCTION "public"."respond_discount_approval_transactional"("_request_id" "uuid", "_approved" boolean, "_admin_notes" "text") TO "authenticated";
-GRANT ALL ON FUNCTION "public"."respond_discount_approval_transactional"("_request_id" "uuid", "_approved" boolean, "_admin_notes" "text") TO "service_role";
+REVOKE ALL ON FUNCTION "public"."respond_discount_approval_transactional"("_request_id" "uuid", "_approved" boolean, "_admin_notes" "text", "_expected_version" integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."respond_discount_approval_transactional"("_request_id" "uuid", "_approved" boolean, "_admin_notes" "text", "_expected_version" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."respond_discount_approval_transactional"("_request_id" "uuid", "_approved" boolean, "_admin_notes" "text", "_expected_version" integer) TO "service_role";
 
 
 
