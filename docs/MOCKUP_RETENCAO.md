@@ -9,7 +9,8 @@ de UI nem de schema executado — a fábrica só **propõe** SQL; quem aplica é
 
 - `[IMPLEMENTADO]` — existe hoje no código; a evidência é `caminho:linha`.
 - `[PLANEJADO]` — decidido (Q7) mas ainda **não** existe; nada abaixo de `[PLANEJADO]` está no ar.
-- Toda linha deste documento foi conferida no código desta branch (`v2/n58-2610082250`).
+- Toda linha deste documento foi conferida no código desta branch (base `main` em `4cf61adae`,
+  13/10/2026) — os `caminho:linha` abaixo foram reconferidos nessa base.
 
 ---
 
@@ -30,19 +31,19 @@ Hoje **nenhum** dos dois está implementado (ver §3).
 
 ### 2.1 A exclusão de mockup é DEFINITIVA hoje `[IMPLEMENTADO]`
 
-`deleteMockupFromDb(id, userId?)` (`src/hooks/mockup/mockupGenerationService.ts:483-525`) faz
+`deleteMockupFromDb(id, userId?)` (`src/hooks/mockup/mockupGenerationService.ts:483-526`) faz
 `DELETE` na linha de `generated_mockups` e, em seguida, remove do bucket `mockup-assets` o logo e
 o PNG composto associados (`mockup_url`, `logo_url`). A linha, uma vez excluída, não volta.
 
 - A tabela `generated_mockups` **não tem** coluna `deleted_at`/`is_deleted`
-  (`src/integrations/supabase/types.ts:7943-8040`).
+  (`src/integrations/supabase/types.ts:7943-8388` — o bloco inteiro da tabela).
 - **Não existe** cron nem função de expurgo de mockup (ver §2.4 para o que existe em outras entidades).
-- Rascunhos vivem em `mockup_drafts` (`src/integrations/supabase/types.ts:13826-13870`), gravados
+- Rascunhos vivem em `mockup_drafts` (`src/integrations/supabase/types.ts:13826-13873`), gravados
   por `src/hooks/mockup/useMockupDraft.ts` — **sem TTL**.
 
 ### 2.2 Já existe confirmação antes de excluir `[IMPLEMENTADO]`
 
-- `DeleteMockupDialog` (`src/pages/mockups/mockup-generator/MockupDialogs.tsx:58-71`) mostra
+- `DeleteMockupDialog` (`src/pages/mockups/mockup-generator/MockupDialogs.tsx:58-72`) mostra
   "Excluir mockup?" / **"Esta ação não pode ser desfeita."** — o texto é honesto justamente
   porque hoje não há lixeira.
 - A página de histórico confirma antes de chamar o serviço
@@ -128,7 +129,7 @@ linha em `storage.objects` deixa blob órfão). A remoção dos arquivos precisa
 de limpeza, no padrão de `supabase/functions/cleanup-notifications/index.ts` (autenticada por
 `authorizeCron`/`x-cron-secret`): ela lista as linhas com `deleted_at` vencido e chama
 `storage.from('mockup-assets').remove([...])` — exatamente o que `deleteMockupFromDb` já faz hoje
-para um mockup por vez (`mockupGenerationService.ts:518-523`).
+para um mockup por vez (`mockupGenerationService.ts:518-525`).
 
 **Rascunhos (7 dias):** o mesmo desenho, com uma função proposta `purge_mockup_drafts_old()` e um
 job `purge-mockup-drafts`, limpando `public.mockup_drafts` onde `updated_at < now() - interval '7 days'`
