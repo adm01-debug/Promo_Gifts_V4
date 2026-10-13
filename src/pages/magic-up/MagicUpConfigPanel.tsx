@@ -610,26 +610,15 @@ function GenerateButton({ m }: { m: MagicUpStateReturn }) {
       <label
         className={cn(
           'flex cursor-pointer items-center justify-between gap-3 rounded-lg border px-3 py-2 transition-colors',
-          m.fastMode
-            ? 'border-amber-400/60 bg-amber-50/60 dark:border-amber-700/60 dark:bg-amber-950/30'
-            : 'border-border bg-muted/30 hover:bg-muted/50',
+          m.fastMode ? 'border-warning/60 bg-warning/10' : 'border-border bg-muted/30 hover:bg-muted/50',
         )}
       >
         <div className="flex items-center gap-2 text-sm">
-          <Zap
-            className={cn(
-              'h-4 w-4',
-              m.fastMode ? 'text-amber-600 dark:text-amber-400' : 'text-muted-foreground',
-            )}
-          />
+          <Zap className={cn('h-4 w-4', m.fastMode ? 'text-warning' : 'text-muted-foreground')} />
           <div className="flex flex-col">
             <span className="font-medium">
               Modo Rápido{' '}
-              {m.fastMode && (
-                <span className="text-xs font-normal text-amber-700 dark:text-amber-400">
-                  (Nano Banana)
-                </span>
-              )}
+              {m.fastMode && <span className="text-xs font-normal text-warning">(Nano Banana)</span>}
             </span>
             <span className="text-[11px] leading-tight text-muted-foreground">
               {m.fastMode
