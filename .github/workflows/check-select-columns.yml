@@ -1,0 +1,40 @@
+name: Select Columns vs Types
+
+# Incidente 2026-10-13 — frontend consultava colunas que não existem mais no
+# banco (ex. ran_at/category_name). Gate leve best-effort: compara colunas
+# usadas em `supabase.from('t').select('...')` (literal) contra
+# src/integrations/supabase/types.ts (scripts/check-select-columns.mjs).
+# Escopo e limitações documentados no header do script — fail-open quando
+# não consegue resolver uma chamada (não é um type-checker completo).
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/**/*.ts'
+      - 'src/**/*.tsx'
+      - 'src/integrations/supabase/types.ts'
+      - 'scripts/check-select-columns.mjs'
+      - 'scripts/extract-types-inventory.mjs'
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-select-columns-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  select_columns:
+    name: Check select() columns vs types.ts
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - uses: ./.github/actions/setup-node-ci
+
+      - name: Check select() columns vs types.ts
+        run: node scripts/check-select-columns.mjs
