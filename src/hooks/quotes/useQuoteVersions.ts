@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { useQuotes, type Quote } from '@/hooks/quotes/useQuotes';
 
 import { logger } from '@/lib/logger';
+import { hasIds } from '@/lib/supabase/empty-in-guard';
 export interface QuoteVersion {
   id: string;
   quote_number: string;
@@ -68,10 +69,12 @@ export function useQuoteVersions(quoteId?: string) {
         // BUG-QUOTEVERSIONS-ITEMCOUNTS-SELECT-SILENT-FAIL FIX: { data: itemCounts } without
         // error check — RLS failure silently showed items_count=0 on all versions.
         // Secondary fetch: primary versions query already succeeded; log.warn and degrade.
-        const { data: itemCounts, error: itemCountsErr } = await supabase
-          .from('quote_items')
-          .select('quote_id')
-          .in('quote_id', versionIds);
+        // Empty-IN guard (REGRA incidente 2026-10-13): versionIds nunca deveria ficar
+        // vazio aqui (rootId sempre casa com a própria quote), mas evita o round-trip
+        // caso `data` venha vazio por algum motivo defensivo futuro.
+        const { data: itemCounts, error: itemCountsErr } = hasIds(versionIds)
+          ? await supabase.from('quote_items').select('quote_id').in('quote_id', versionIds)
+          : { data: [] as { quote_id: string }[], error: null };
         if (itemCountsErr) logger.warn('Failed to fetch item counts for versions:', itemCountsErr);
 
         const countMap = new Map<string, number>();
