@@ -1,6 +1,6 @@
 # Auditoria do módulo Magic Up — resumo para a entrevista (08/10/2026)
 
-> Insumo da entrevista do módulo. Escrito em 13/10/2026 sobre o HEAD `3ebd35e6d` da `main`.
+> Insumo da entrevista do módulo. Escrito em 13/10/2026 sobre o commit `3ebd35e6d` da `main`.
 > Toda linha citada foi conferida lendo o arquivo no código atual (worktree do cartão `n59` / `t_9763c723`).
 
 ## 1. O que foi auditado e de onde vem este resumo
@@ -51,7 +51,7 @@ ao `main`; `sem branch` = cartão ainda em `todo`/`ready`; `bloqueado` = espera 
 | F-13 | Import morto (`handleCorsPreflightIfNeeded`) e zod vindo de caminho diferente do módulo compartilhado | `supabase/functions/generate-ad-image/index.ts:1,4`; `supabase/functions/generate-ad-prompt/index.ts:1` | m18 · `t_3746c6d0` · `v2/m18-2610082248` | branch (1 commit) |
 | F-05 | Texto livre do usuário (`scenePrompt`, `brandKit`, `campaignBrief` cru, `refinementInstruction`) entra no prompt sem delimitação nem teto: dá para tentar sobrescrever instruções | `generate-ad-image/index.ts:13-41` (schema) e uso no prompt | m19 · `t_9c019135` · `v2/m19-2610082248` | branch (1 commit) |
 | F-05/F-07 | `magic-up-score` aceita `imageUrl` e textos sem limite de tamanho: um payload enorme consome custo e memória | `supabase/functions/magic-up-score/index.ts:17-27` (nenhum `max` no schema) | m20 · `t_357bbb90` · `v2/m20-2610082248` | branch (1 commit) |
-| F-07 | `logoBase64` sem limite de tamanho decodificado nem lista de formatos | `generate-ad-image/index.ts:15,102` | m30 · `t_d788d80e` · `v2/m30-2610082251` | sem commit |
+| F-07 | `logoBase64` sem limite de tamanho decodificado nem lista de formatos | `generate-ad-image/index.ts:15,102` | m30 · `t_d788d80e` · `v2/m30-2610082251` | branch (1 commit, 13/10 13:04) |
 | F-08 | `word-magic` chama o provedor sem limite por minuto, sem cota (`acquire_ai_quota` não aparece em nenhuma edge de copy) e sem registro de consumo: um laço com `force_regenerate` esgota a chave | `supabase/functions/word-magic/index.ts:22-25,138` | m21 · `t_6b861386` · `v2/m21-2610082248` | branch (1 commit) |
 | F-09 | Só existe índice simples por usuário no histórico do Magic Up; faltam os compostos (`user_id, created_at desc`) usados na lista de 50 mais recentes | proposta SQL (nenhum arquivo de código) | m28 · `t_df50fb77` · `v2/m28-2610082249` | sem commit (proposta) |
 | F-02 / E-1 | A imagem gerada volta em base64 e é **gravada inteira** em `magic_up_generations.generated_image_url`; o histórico baixa 50 dessas linhas por vez | `useMagicUpGeneration.ts:222` (gravação), `:545` (leitura) | m27 | **bloqueado** (aplicação da proposta SQL de bucket privado é do Joaquim) |
@@ -148,11 +148,12 @@ Ressalvas de leitura:
 ## 5. Estado das correções e como reconferir
 
 - 18 cartões do lote têm **commit próprio em branch** (`v2/m01`, `v2/m07` e `v2/m11`–`v2/m26`);
-  **nenhum está integrado ao `main`** nesta data (`git log main --oneline | grep -c "magic-up"` = 0, e
-  a branch de integração de E-14, `v2/fix-ad-prompt-timeout-int`, também está fora da `main`). `m28` e
-  `m30` ainda não têm commit; `m27` nasceu bloqueado (proposta SQL de bucket privado) e `m29` está em
-  `todo`.
+  **nenhum está integrado ao `main`** nesta data (`git rev-list --count main..<branch>` = 1 nas 18; dos
+  commits do `main` que citam "magic-up" — 2, de maio e junho, de teste e de tipos — nenhum é correção
+  deste lote; a branch de integração de E-14, `v2/fix-ad-prompt-timeout-int`, também está fora da `main`).
+  `m28` ainda não tem commit (a branch só tem a base) e `m30` ganhou o dele em 13/10 13:04; `m27` nasceu
+  bloqueado (proposta SQL de bucket privado) e `m29` está em `todo`.
 - Reconferir um único achado: `grep -n "<linha citada>" <arquivo>` no clone; reconferir o estado de um
   cartão: `git rev-list --count main..<branch>` (1 = corrigido no branch, 0 = ainda não).
-- Tipo de divergência esperado neste documento: as linhas foram conferidas no HEAD `3ebd35e6d`; se o
+- Tipo de divergência esperado neste documento: as linhas foram conferidas no commit `3ebd35e6d`; se o
   Lovable commitar mudanças no módulo, os números mudam (o defeito, não necessariamente).
