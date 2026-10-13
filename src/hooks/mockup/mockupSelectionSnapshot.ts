@@ -119,6 +119,7 @@ export const mockupSelection = {
       localStorage.removeItem(key);
     } catch (err) {
       logger.error('[mockupSelection] Erro ao limpar seleção do histórico:', err);
+      toast.error('Não foi possível limpar a seleção guardada deste mockup.');
     }
   },
 };

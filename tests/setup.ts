@@ -26,6 +26,25 @@ afterEach(() => {
   cleanup();
 });
 
+// Node 22+ expõe um `localStorage` global próprio (só funcional com
+// --localstorage-file) que impede o vitest de instalar o do jsdom — sob Node 26
+// `window.localStorage` também vem undefined. Sem ele, todo teste que toca
+// localStorage quebra. Só age quando falta (CI/Node 20: não muda nada).
+if (typeof globalThis.localStorage === 'undefined') {
+  const store = new Map<string, string>();
+  const storage: Storage = {
+    get length() {
+      return store.size;
+    },
+    key: (index: number) => [...store.keys()][index] ?? null,
+    getItem: (key: string) => store.get(key) ?? null,
+    setItem: (key: string, value: string) => store.set(key, String(value)),
+    removeItem: (key: string) => store.delete(key),
+    clear: () => store.clear(),
+  };
+  Object.defineProperty(globalThis, 'localStorage', { configurable: true, value: storage });
+}
+
 // Mock do window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
   writable: true,

@@ -1,7 +1,6 @@
 /**
  * Restauração da seleção (produto + variante + foto) do rascunho e do histórico.
- * Defeito M07/etapa 55: reabrir remontava a seleção com `variant: null` e
- * `product.images[0]` — a PRIMEIRA foto no lugar da escolhida.
+ * Defeito M07/etapa 55: reabrir remontava a seleção com `variant: null` e `product.images[0]`.
  */
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
@@ -24,7 +23,6 @@ const PRODUCT = {
   images: [FOTO_1, 'https://cdn.test/caneca-foto-2.jpg', FOTO_3],
 } as Product;
 
-/** Variante B: a foto 3 é a foto original escolhida pelo vendedor. */
 const VARIANTE_B = {
   id: 'var-B',
   product_id: 'prod-1',
@@ -56,22 +54,6 @@ const DRAFT_BASE: MockupDraftData = {
   personalizationAreas: [],
   updatedAt: T_OLD,
 };
-
-// O ambiente não expõe `localStorage`: Storage em memória para os hooks.
-vi.stubGlobal(
-  'localStorage',
-  (() => {
-    const store = new Map<string, string>();
-    return {
-      getItem: (k: string) => store.get(k) ?? null,
-      setItem: (k: string, v: string) => store.set(k, String(v)),
-      removeItem: (k: string) => store.delete(k),
-      clear: () => store.clear(),
-    };
-  })(),
-);
-
-// ── Mocks das dependências dos hooks ─────────────────────────────────────────
 
 vi.mock('@/contexts/AuthContext', () => ({ useAuth: () => ({ user: { id: 'user-test-001' } }) }));
 vi.mock('@/lib/logger', () => ({
@@ -165,7 +147,6 @@ describe('reabrir rascunho ou histórico restaura variante e foto exatas', () =>
         product_id: 'prod-1',
         product_name: 'Caneca Copo',
         personalization_areas: [],
-        logo_data: null,
         updated_at: T_NEW,
       },
       error: null,
