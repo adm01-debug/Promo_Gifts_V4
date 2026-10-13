@@ -21,6 +21,14 @@
 -- Etapas 5 (rotação da anon/publishable key), 7 (revisão das 8 views
 -- SECURITY DEFINER) e verificação da etapa 7 (17 imagens-raiz) NÃO geram DDL
 -- — ver detalhes/evidência no corpo do PR e no relatório da sessão.
+--
+-- Rollback: restaurar a versão anterior de fn_autolink_canonical_on_content_hash
+-- (sem os dois filtros de auto-referência) e de get_edge_function_secret (sem
+-- ASIA_INGESTION_CRON_SECRET na allowlist) a partir do histórico de
+-- pg_proc/migrations anterior a esta; DROP POLICY nas policies criadas em
+-- anon_catalog_grant_audit_log e magazine_duplicate_requests; GRANT SELECT de
+-- volta para authenticated/anon em mv_stock_rupture_alert e mv_ema_kpi_by_level
+-- caso o acesso público a essas MVs precise ser restaurado.
 -- ============================================================================
 
 -- ----------------------------------------------------------------------------
