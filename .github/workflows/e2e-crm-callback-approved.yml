@@ -29,6 +29,10 @@ concurrency:
 permissions:
   contents: read
 
+env:
+  E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+  E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+
 jobs:
   e2e-crm-callback:
     name: approved → V4 → CRM (no-mock)

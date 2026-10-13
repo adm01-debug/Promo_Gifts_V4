@@ -41,7 +41,8 @@ export function CollectionsTrashView({ collectionId, onCountChange }: Props) {
       .from('collection_items_trash' as never)
       .select('*')
       .eq('collection_id', collectionId)
-      .order('deleted_at', { ascending: false });
+      .order('deleted_at', { ascending: false })
+      .limit(500);
     if (error) {
       toast.error('Erro ao carregar lixeira');
       setItems([]);
