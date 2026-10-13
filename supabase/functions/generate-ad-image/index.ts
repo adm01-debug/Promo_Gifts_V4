@@ -49,6 +49,62 @@ const BodySchema = z.object({
   message: "Either logoBase64 or logoUrl must be provided",
 });
 
+// ─── Logo inline: teto de tamanho + formatos aceitos (F pergunta 7) ───────────
+// O cliente manda o logo como data URL base64 dentro do corpo. Sem teto, um logo
+// gigante fica na memória do isolate e é reenviado inteiro ao provedor (custo por
+// imagem); sem whitelist, qualquer tipo declarado no data URL passava — inclusive
+// formatos que não servem como logo (SVG, GIF). Mesmo padrão do generate-mockup: o
+// tamanho é medido ANTES de decodificar, pela aritmética do próprio base64, então o
+// payload grande nunca vira bytes na memória.
+const LOGO_MAX_BYTES = 10 * 1024 * 1024; // 10 MB decodificados
+// `image/jpg` é o apelido não-canônico que alguns clientes mandam para JPEG —
+// mesmo formato do `image/jpeg`, então os dois entram na whitelist.
+const LOGO_ALLOWED_MIME_TYPES: readonly string[] = [
+  "image/png",
+  "image/jpeg",
+  "image/jpg",
+  "image/webp",
+];
+const LOGO_DATA_URL_RE = /^data:([^;,]+)[^,]*,/i;
+
+/** Tamanho decodificado de um payload base64, sem materializar os bytes. */
+function decodedBase64Bytes(payload: string): number {
+  const padding = payload.endsWith("==") ? 2 : payload.endsWith("=") ? 1 : 0;
+  return Math.max(0, Math.floor((payload.length * 3) / 4) - padding);
+}
+
+/**
+ * Guarda do `logoBase64`: devolve `null` quando o logo pode seguir para o provedor e,
+ * caso contrário, o status + código + mensagem da recusa (413 acima de 10 MB, 415
+ * formato fora de PNG/JPG/WebP). Exportada para o teste direto (`index.logo.test.ts`),
+ * porque o handler em si só é alcançável com requisição autenticada.
+ */
+export function rejectLogoBase64(
+  logoBase64: string | undefined,
+): { status: 413 | 415; code: "logo_too_large" | "logo_type_not_allowed"; message: string } | null {
+  if (!logoBase64) return null;
+
+  const raw = logoBase64.trim();
+  const match = LOGO_DATA_URL_RE.exec(raw);
+  if (!match || !LOGO_ALLOWED_MIME_TYPES.includes(match[1].toLowerCase())) {
+    return {
+      status: 415,
+      code: "logo_type_not_allowed",
+      message: "Formato de logo não suportado. Envie o logo em PNG, JPG ou WebP.",
+    };
+  }
+
+  if (decodedBase64Bytes(raw.slice(match[0].length)) > LOGO_MAX_BYTES) {
+    return {
+      status: 413,
+      code: "logo_too_large",
+      message: "Logo muito grande: o limite é 10 MB.",
+    };
+  }
+
+  return null;
+}
+
 Deno.serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
   if (req.method === "OPTIONS") {
@@ -98,6 +154,17 @@ Deno.serve(async (req) => {
       aspectRatio, qualityMode, compositionMode, creativeMode, negativePrompt,
       brandKit, refinementInstruction, batchVariant, imageModel,
     } = parsed.data;
+
+    // F pergunta 7: recusa logo grande/em formato não suportado ANTES de montar o
+    // prompt e chamar o provedor — memória do isolate e custo por imagem.
+    const logoRejection = rejectLogoBase64(logoBase64);
+    if (logoRejection) {
+      console.log(`[ad-image] logo recusado: ${logoRejection.code}`);
+      return new Response(
+        JSON.stringify({ error: logoRejection.code, message: logoRejection.message }),
+        { status: logoRejection.status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     const logoImageSrc = logoBase64 || logoUrl!;
 
