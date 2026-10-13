@@ -393,12 +393,14 @@ test.describe("@smoke RLS guard (gate de CI)", () => {
       "VITE_SUPABASE_* ou E2E credentials ausentes",
     );
 
-    // chromium-smoke não carrega storageState — login UI real, mesmo padrão
-    // dos specs vizinhos (magazine-smoke, magazine-publish-smoke).
+    // O project chromium-smoke não aplica storageState — autenticar antes de
+    // medir o acesso (sem login o localStorage não tem token e o guard falhava
+    // com "access_token ausente").
     await loginAs(page);
+
     await page.goto("/produtos");
     await page.waitForLoadState("domcontentloaded");
-    expect(/\/login/.test(page.url()), "sessão necessária para RLS smoke").toBe(false);
+    expect(/\/(login|auth)(\?|#|$)/.test(page.url()), "sessão necessária para RLS smoke").toBe(false);
 
     const token = await page.evaluate(() => {
       for (const k of Object.keys(localStorage)) {

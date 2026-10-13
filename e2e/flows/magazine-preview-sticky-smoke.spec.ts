@@ -34,10 +34,9 @@ test.describe("@smoke Magazine Editor — preview sticky/aligned", () => {
     const hasMagazine = await firstCard.count();
     test.skip(hasMagazine === 0, "sem revistas cadastradas na conta de teste");
 
-    // O navegável é o link/botão interno do card, não o container — clicar no
-    // centro do card pode cair em área morta (título, badge, ações) e não
-    // disparar o onClick de navegação.
-    await firstCard.locator('[aria-label^="Abrir"]').first().click();
+    // O card inteiro não é clicável: a navegação fica no link do thumbnail.
+    // Clicar no centro do <article> cai em área morta (título/metadados).
+    await firstCard.getByRole("link").first().click();
     await expect(page).toHaveURL(/\/magazine\/(?!templates)[^/]+$/);
 
     const hero = page.getByTestId("magazine-editor-hero-row");
