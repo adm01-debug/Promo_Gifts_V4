@@ -1470,7 +1470,7 @@ describe('Analise estatica — MockupProductSelector.tsx (aria-label inputs)', (
     expect(src).toContain('aria-label="Buscar produto por nome, SKU ou palavras-chave"');
   });
   it('select de ordenacao tem aria-label', () => {
-    expect(src).toContain('aria-label="Ordenar produtos"');
+    expect(src).toMatch(/aria-label="Ordenar produtos[^"]*"/);
   });
 });
 
@@ -2236,7 +2236,9 @@ describe('Analise estatica — ProductSearchCombobox.tsx (aria-hidden em icones 
   });
   it('icone Package no item de lista sem imagem tem aria-hidden', () => {
     // Prettier may wrap multi-attribute JSX across lines; assert tolerant to whitespace.
-    expect(src).toMatch(/<Package\s+aria-hidden="true"\s+className="h-5 w-5 text-muted-foreground"/);
+    expect(src).toMatch(
+      /<Package\s+aria-hidden="true"\s+className="h-5 w-5 text-muted-foreground"/,
+    );
   });
   it('icone X no botao remover produto tem aria-hidden', () => {
     expect(src).toContain('<X aria-hidden="true" className="h-3.5 w-3.5"');
