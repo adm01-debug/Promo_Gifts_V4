@@ -24,7 +24,7 @@ Convenção: **Implementado** = existe no código desta branch. **Planejado** = 
 | **Gerada** (imagem) | Implementado | “Gerar Mockup” com empresa + produto + técnica + logo | Vendedor; Edge `generate-mockup` (compositor determinístico) | Ver, comparar antes/depois, anotar, baixar PNG/PDF, compartilhar |
 | **Projeto salvo** (rascunho) | Implementado | Autosave do gerador (2 s) | `useMockupDraft` (automático) | Voltar ao gerador e retomar produto/técnica/cliente/áreas |
 | **Projeto salvo** (registro) | Implementado | Autosave da geração, logo após a imagem ficar pronta | `saveMockupToDb` (automático) | Aparecer no histórico, gerar ficha, carregar/configurar de novo, excluir |
-| **Ficha disponível** | Implementado | “Gerar Layout” (estático) ou “Gerar Layout - IA” com registro já salvo | Vendedor + `OffscreenLayoutCapture` (html2canvas → `layout_url`) | Imagem de ficha em `layout_url`, consumida pelo painel/lightbox/comparador |
+| **Ficha disponível** | Implementado | Captura automática com registro já salvo (caminho “Gerar Layout” estático ou geração normal) | Vendedor + `OffscreenLayoutCapture` (html2canvas → `layout_url`) | Imagem de ficha em `layout_url`, consumida pelo painel/lightbox/comparador |
 | **Desatualizada** (`is_stale`) | **Planejado** (etapas 69/70) | Edição relevante depois de salvar | Snapshot de revisão (proposto) | Marcar a revisão anterior e abrir revisão nova |
 | **Anexada a orçamento** | **Planejado** (etapas 38/39) | Ação “Anexar mockups” no item do orçamento | Orçamento (`quote_items.mockup_urls`) | Bloquear exclusão do mockup anexado |
 | **Na lixeira** | **Planejado** (etapas 6/10, Q7) | Exclusão passa a marcar `deleted_at` | `deleteMockupFromDb` reescrito (proposto) | Restaurar; hoje a exclusão é definitiva |
@@ -62,15 +62,15 @@ A barra de status do gerador já segue essa ordem — erro atual > salvando > sa
 
 - **Como se chega:** automático. Cada mudança de produto/técnica/cliente/áreas dispara
   `saveDraft` com debounce de 1 s no hook (`useMockupGenerator.ts:323-345`) e 2 s de autosave do
-  rascunho (`src/hooks/mockup/useMockupDraft.ts:9`), gravando `mockup_drafts` via upsert
-  (`useMockupDraft.ts:112-114`) e uma cópia no `localStorage` (`:35-57`).
+  rascunho (`src/hooks/mockup/useMockupDraft.ts:10`), gravando `mockup_drafts` via upsert
+  (`useMockupDraft.ts:221-223`) e uma cópia no `localStorage` (`:97-114`).
 - **Produzido por:** `useMockupDraft` (automático) — não é ação do vendedor.
 - **Permite:** retomar o trabalho (a carga compara a cópia local e a do backend por data —
-  `useMockupDraft.ts:243-262`); o vendedor vê o estado na barra (`Salvando...` / `Salvo` /
+  `useMockupDraft.ts:344,363-364`); o vendedor vê o estado na barra (`Salvando...` / `Salvo` /
   `Erro ao salvar`, nessa prioridade — `src/pages/mockups/mockup-generator/MockupToolbar.tsx:68-100`,
   com teste em `__tests__/MockupToolbar.test.tsx`).
 - **Bloqueia/limita hoje:** o rascunho **não** guarda logo em `data:` URL no backend
-  (`useMockupDraft.ts:84-90`) nem no `localStorage` (`:44-50`) — a logo volta pelo arquivo já
+  (`useMockupDraft.ts:149-189`) nem no `localStorage` (`:103-114`) — a logo volta pelo arquivo já
   enviado ao storage; e o rascunho não é o registro do histórico, ou seja, “Salvo” na barra
   **não** significa imagem no histórico.
 
@@ -98,8 +98,9 @@ A barra de status do gerador já segue essa ordem — erro atual > salvando > sa
   documento em imagem (`html2canvas`), envia para o bucket `mockup-assets` em
   `{userId}/mockup-layouts/…` e grava o resultado em `generated_mockups.layout_url`
   (`src/components/mockup/approval/OffscreenLayoutCapture.tsx:111-126`).
-- **Produzido por:** vendedor (abre “Gerar Layout” / “Gerar Layout - IA”,
-  `src/components/mockup/approval/MockupLayoutButtons.tsx:337` e `:362`) + captura automática.
+- **Produzido por:** captura automática depois de o registro existir (acima); no painel o vendedor tem
+  “Gerar documento” (papel timbrado; `src/components/mockup/approval/MockupLayoutButtons.tsx:346`,
+  handler `:159`) e “Gerar Layout” (composição estática; `:368`, handler `:181`).
 - **Permite:** exibir e baixar a ficha pelo painel/lightbox/comparador, que preferem `layout_url` e
   caem para `mockup_url` (`src/components/mockup/MockupHistoryPanel.tsx:547,642,726,802`;
   `MockupLightbox.tsx:105,127`; `MockupCompareDialog.tsx:73,97`).
@@ -177,8 +178,9 @@ A barra de status do gerador já segue essa ordem — erro atual > salvando > sa
 
 - **Modo do layout** (`lastSavedLayoutMode`, tipo `'ai' | 'static'` em
   `src/hooks/mockup/useMockupGenerator.ts:97`; uso em `MockupGenerator.tsx:196,491`): é como a imagem
-  foi produzida, não um estado de ciclo de vida. O rótulo “- IA” do botão é legado — a geração do
-  Mockup é composição determinística e a etapa 43 remove esses rótulos.
+  foi produzida, não um estado de ciclo de vida. Os botões do painel já não usam o rótulo “- IA”
+  (commit `3c1ae11d4`: “Gerar Mockup”, “Gerar documento”, “Gerar Layout”); os textos “IA” que restam
+  no fluxo (`MockupWizard.tsx:85`, `MockupApprovalTemplate.tsx:108`) seguem como alvo da etapa 43.
 - **Créditos/revisões** (`mockup_credits`, mensagem “Você ainda tem N revisões disponíveis” em
   `mockupGenerationService.ts:548-558`): a etapa 5 arquiva essas tabelas (decisão Q11); o contador
   não é estado do mockup.
