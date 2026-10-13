@@ -134,7 +134,7 @@
       "schema": "public",
       "category": "Functions",
       "name": "fn_sync_primary_image_url",
-      "reason": "Função redundante removida junto com trg_sync_primary_image_url (sempre sobrescrita por fn_sync_product_images_to_products no mesmo statement, ver supabase/migrations/20261013180000_...). DROP ainda não aplicado em produção.",
+      "reason": "Função redundante removida junto com trg_sync_primary_image_url (sempre sobrescrita por fn_sync_product_images_to_products no mesmo statement, ver supabase/migrations/20261013180000_incidente_2026_10_13_drop_trigger_redundante_sync_primary_image_url.sql). DROP ainda não aplicado em produção.",
       "approvedBy": "PO (incidente 2026-10-13 — PREENCHER NOME ANTES DO MERGE)",
       "date": "2026-10-13"
     }
