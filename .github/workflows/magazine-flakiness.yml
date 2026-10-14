@@ -7,11 +7,12 @@ name: Magazine Flakiness Guard
 #  - tests/magazine/                                — fuzz de rings, breakpoints, layout.
 #  - tests/utils/tailwindRings.interaction.test.tsx — helpers SSOT ringsOf/focusRingsOf/
 #    hoverRingsOf/focusWithinRingsOf/dataStateRingsOf sob interação real (mouse+teclado).
-#    Promovido a gate obrigatório porque QUALQUER regressão nesses helpers invalida
+#    Crítico para qualidade: QUALQUER regressão nesses helpers invalida
 #    silenciosamente todos os testes de rings do Magazine e do CompareTableView.
 #
 # Estratégia (E81 2026-10-14):
 #  - Flakiness é detecção de deriva lenta (deps, jsdom, runners) — não gate de PR.
+#    (E58: "gate obrigatório" removido — único required check é Gate Final em deploy-gates.yml)
 #    Promovido para PR causava 10 runs extra por PR nos arquivos de magazine.
 #  - Schedule semanal: pega drift lento, sem --strict para não spam issues.
 #  - Manual: workflow_dispatch permite ajustar `runs=N` e `strict=true|false`.
@@ -77,9 +78,9 @@ jobs:
         run: |
           RUNS="$INPUT_RUNS"
           # Modo strict:
-          #   - PR:                sempre strict (gate obrigatório).
+          #   - PR:                não roda (E81 — não é gate de PR).
           #   - workflow_dispatch: respeita input (default true).
-          #   - schedule:          nunca strict (evita ruído em cron diário).
+          #   - schedule:          nunca strict (evita ruído em cron semanal).
           STRICT_FLAG=""
           # strict só em workflow_dispatch com input explícito
           if [ "$EVENT_NAME" = "workflow_dispatch" ] && [ "$INPUT_STRICT" = "true" ]; then

@@ -1,9 +1,10 @@
 name: E2E · Carts Undo RPC Atomic
 
-# Gate obrigatório: valida o fluxo Desfazer/restaurar via RPC atômica
+# E2E focado: valida o fluxo Desfazer/restaurar via RPC atômica
 # (restore_seller_cart) — sucesso + falha por RLS — instalando Chromium
 # via `npx playwright install --with-deps chromium` para que o teste
 # realmente execute.
+# (E58: "Gate obrigatório" removido — único required check é o Gate Final em deploy-gates.yml)
 
 on:
   pull_request:

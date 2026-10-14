@@ -2,18 +2,34 @@ name: Deploy Gates
 
 # Quality gates antes do deploy em main.
 # Rodam em paralelo onde possível. Se QUALQUER UM falhar, bloqueia o pipeline.
+# Atualizado E58 (2026-10-14) para refletir todos os gates ativos.
 #
-# Ordem dos gates:
-#  0. ssot-gate      - SSOT Supabase (project ID canônico) — NOVO, bloqueia todos os outros
-#  0.5. dependency-audit - npm audit (sem CVEs high/critical)
-#  0.6. dependency-review - dependency-review-action (E97, PR-only)
-#  1. lint+tsc       - codigo passa lint e typecheck
-#  2. unit-tests     - vitest passa
-#  E23. secrets-check - verifica presença de secrets E2E (saída has_e2e)
-#  3. e2e-smoke      - playwright smoke test (login + dashboard) — apenas se has_e2e=true
-#  4. lighthouse     - perf>=75 a11y>=90 seo>=95 pwa>=80
-#  5. seo-sanity     - canonical/og:url/twitter:url corretos, sem dominios proibidos
-#  6. build          - vite build sem erros (gate de seguranca final)
+# Ordem dos gates (bloqueantes, exceto Gate 4 que é opcional):
+#  0    ssot-gate         — SSOT Supabase (project ID canônico)
+#  0.5  dependency-audit  — npm audit (sem CVEs high/critical)
+#  0.6  dependency-review — dependency-review-action (E97, PR-only)
+#  1    lint+tsc          — ESLint + TypeScript sem erros
+#  1.1  product-fields    — campos críticos do tipo Product presentes
+#  1.2  types-drift       — drift estrutural de types.ts (tabelas/views/functions/enums)
+#  1.3  migration-preflight — contratos de migration (sem DDL perigoso)
+#  1.4  visual-baselines  — baselines visuais commitados
+#  1.5  drafts-save       — sem "Salvar Alterações" em fluxos de rascunho
+#  1.7  tsc-ratchet       — baseline de noUnusedLocals não aumenta sem label
+#  1.8  base64-detect     — sem arquivos texto encodados em base64 acidentalmente
+#  1.9  tech-debt         — ratchets TODO/as/file-size
+#  1.9.1 console-baseline — console.* não aumenta sem justificativa
+#  1.10 indexed-access    — indexed-access ratchet (advisory)
+#  1.11 workflow-contracts — check-workflow-contracts --gate (C10–C23)
+#  1.12 contract-coverage  — soft-delete policy + contrato de cobertura
+#  1.13 policies-baseline  — policies live vs baseline
+#  E23  secrets-check      — verifica presença de secrets E2E (saída has_e2e)
+#  2    unit-tests         — vitest
+#  2.5  pg-integrity       — integridade transacional PostgreSQL
+#  3    e2e-smoke          — Playwright smoke (login + dashboard), se has_e2e=true
+#  4    lighthouse         — perf≥75 a11y≥90 seo≥95 pwa≥80 (opcional)
+#  5    seo-sanity         — canonical/og:url/twitter:url corretos
+#  5.5  rpc-restore-cart   — RPC restore_seller_cart presente no canônico
+#  6    build              — Vite build sem erros + SBOM SPDX-JSON
 
 on:
   pull_request:
