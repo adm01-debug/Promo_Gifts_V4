@@ -3,11 +3,17 @@
  * Valida baselines PNG do spec de colapso (mobile/tablet/desktop).
  * Falha com instrução exata (`npm run e2e:collapse:update:<vp>`) quando ausente.
  *
+ * Playwright nomeia snapshots com sufixo de projeto/plataforma quando o projeto
+ * é explicitamente passado (ex: location-panel-expanded-mobile-chromium-authed-linux.png).
+ * Este script aceita qualquer uma das formas:
+ *   - location-panel-{state}-{vp}.png          (sem sufixo)
+ *   - location-panel-{state}-{vp}-*.png        (com sufixo — qualquer projeto/OS)
+ *
  * Uso:
  *   node scripts/qa/check-collapse-baselines.mjs             # todos
  *   node scripts/qa/check-collapse-baselines.mjs --viewport tablet
  */
-import { existsSync } from "node:fs";
+import { existsSync, readdirSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -30,11 +36,20 @@ const only = args.get("viewport");
 const VIEWPORTS = ["mobile", "tablet", "desktop"].filter((v) => !only || v === only);
 const STATES = ["expanded", "collapsed"];
 
+/** Aceita 'location-panel-{st}-{vp}.png' ou 'location-panel-{st}-{vp}-*.png' */
+function baselineExists(snapDir, st, vp) {
+  const exact = join(snapDir, `location-panel-${st}-${vp}.png`);
+  if (existsSync(exact)) return true;
+  if (!existsSync(snapDir)) return false;
+  const prefix = `location-panel-${st}-${vp}-`;
+  return readdirSync(snapDir).some((f) => f.startsWith(prefix) && f.endsWith(".png"));
+}
+
 const missing = [];
 for (const vp of VIEWPORTS) {
   for (const st of STATES) {
     const file = `location-panel-${st}-${vp}.png`;
-    if (!existsSync(join(SNAP_DIR, file))) missing.push({ vp, file });
+    if (!baselineExists(SNAP_DIR, st, vp)) missing.push({ vp, file });
   }
 }
 
