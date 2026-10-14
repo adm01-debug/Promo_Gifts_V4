@@ -10,7 +10,7 @@ on:
   push:
     branches: [main]
   schedule:
-    # Toda segunda-feira às 06:30 (UTC) — 03:30 BRT
+    # Toda segunda-feira às 06:25 (UTC) — 03:25 BRT
     - cron: '25 6 * * 1'
 
 permissions:

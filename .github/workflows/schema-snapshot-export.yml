@@ -17,7 +17,7 @@ name: schema-snapshot-export
 #
 # 2026-09-27: paths filter em PR e push — 12min de snapshot só quando schema muda.
 # 2026-10-02: E84 — no-op guard em schedule + branch fixa bot/schema-snapshot.
-# Schedule semanal mantém varredura incondicional (segunda 06:00 UTC).
+# Schedule semanal mantém varredura incondicional (segunda 06:36 UTC).
 # =============================================================================
 
 on:

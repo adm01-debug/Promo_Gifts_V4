@@ -5,7 +5,7 @@ on:
     branches: [main]
   # 2026-09-27: pull_request removido — CodeQL em todo PR adicionava 12min/2 jobs
   # ao fan-out do repo (123 workflows). Varredura continua em cada push na main e
-  # na segunda 09:00 UTC. Sem branch protection, não bloqueia nenhuma PR.
+  # na segunda 09:33 UTC. Sem branch protection, não bloqueia nenhuma PR.
   schedule:
     - cron: '33 9 * * 1'
 

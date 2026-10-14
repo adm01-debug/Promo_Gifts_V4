@@ -1,7 +1,7 @@
 name: Kit Coverage — Integration
 
 # Roda contra o SSOT real (v_kit_component_complete vs product_kit_components).
-# - Nightly às 03:00 UTC para detectar regressão da view sem bloquear PRs
+# - Nightly às 03:41 UTC para detectar regressão da view sem bloquear PRs
 # - On-demand via workflow_dispatch (com KIT_FIXTURE_ID opcional)
 # NÃO roda em push/PR — exige credenciais do SSOT.
 #

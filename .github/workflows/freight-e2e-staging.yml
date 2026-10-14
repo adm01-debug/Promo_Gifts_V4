@@ -67,7 +67,7 @@ jobs:
           ./node_modules/.bin/vite preview --port 8080 &
           timeout 30 sh -c 'until curl -sf http://localhost:8080/ > /dev/null 2>&1; do sleep 1; done'
 
-      - name: Run freight E2E (staging — com credenciais reais)
+      - name: Run freight E2E (projeto canônico doufsxqlfjyuvxuezpln)
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}

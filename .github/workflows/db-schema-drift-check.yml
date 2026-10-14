@@ -18,7 +18,7 @@ name: db-schema-drift-check
 #   4. Falha o job se sobrar DDL (apos remover comentarios e linhas em branco).
 #
 # Roda:
-#   - cron diario (06:30 BRT = 09:30 UTC) — offset do edge-functions-drift-check
+#   - cron diario (06:29 BRT = 09:29 UTC) — offset do edge-functions-drift-check
 #   - PRs que tocam supabase/migrations/** ou supabase/config.toml
 #   - manual (workflow_dispatch)
 #

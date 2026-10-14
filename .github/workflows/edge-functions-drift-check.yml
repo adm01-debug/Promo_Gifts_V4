@@ -5,7 +5,7 @@ name: edge-functions-drift-check
 # Supabase. Falha o build se um ou mais slugs estiverem com hash divergente.
 #
 # Rodadas:
-#   - cron diário (06:00 BRT = 09:00 UTC)
+#   - cron diário (06:06 BRT = 09:06 UTC)
 #   - todo PR que toca supabase/functions/**
 #   - manual via workflow_dispatch
 #   - logo após "Deploy Edge Functions" terminar em main (E65)
