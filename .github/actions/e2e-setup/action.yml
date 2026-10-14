@@ -29,9 +29,11 @@ runs:
       uses: ./.github/actions/setup-node-ci
 
     - name: Cache Playwright browsers
-      uses: actions/cache@v4
+      uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a # v4.2.0
       with:
         path: ~/.cache/ms-playwright
+        # E18: chave por versão de Playwright (extrai do package-lock.json)
+        # hashFiles garante invalidação ao trocar versão; restore-key só por OS.
         key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
         restore-keys: playwright-${{ runner.os }}-
 
