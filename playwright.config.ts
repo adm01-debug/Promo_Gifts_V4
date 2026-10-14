@@ -29,7 +29,10 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
-  workers: 1,
+  // E21: CI usa 2 workers (mede flakiness em 3 runs nightly; specs que precisam
+  // serialização — chromium-smoke — definem workers:1 no projeto). Localmente
+  // Playwright determina o número ideal de workers automaticamente.
+  workers: process.env.CI ? 2 : undefined,
   // E43: no CI, never auto-create a missing baseline (prevents flaky green on first missing snapshot)
   updateSnapshots: process.env.CI ? 'none' : 'missing',
   reporter: [['html', { open: 'never' }], ['list'], ['github'], ['json', { outputFile: 'playwright-report/results.json' }]],
@@ -143,6 +146,7 @@ export default defineConfig({
       testMatch: [/smoke\.spec\.ts/],
       grep: /@smoke/,
       retries: 0,
+      workers: 1,  // E21: smoke serializado — storageState compartilhado + fail-fast determinístico
     },
   ],
 

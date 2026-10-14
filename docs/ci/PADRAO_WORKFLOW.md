@@ -46,7 +46,21 @@ jobs:
 ```
 
 Sem timeout, um job travado consome minutos até o limite do runner (6h).
-Use o mínimo razoável: gates rápidos ≤ 10 min; E2E completo ≤ 30 min; crons pesados ≤ 60 min.
+
+**E24 — Tabela de classes de timeout (obrigatório a partir de 2026-10-14):**
+
+| Classe | Exemplos | `timeout-minutes` máximo |
+|---|---|---|
+| Estático | lint, typecheck, SSOT, ratchets, audit | ≤ 5 |
+| Unitário | vitest, unit+integration | ≤ 10 |
+| E2E leg / shard | 1 shard de regression, smoke gate, E2E CI | ≤ 20 |
+| Full job (nightly, segurança) | full-ci, codeql, fuzz, drift check | ≤ 60 |
+| Cron pesado | ci-metrics, schema export, capacity report | ≤ 60 |
+
+Gate CI (C15 em `check-workflow-contracts.mjs`) valida que nenhum job ultrapassa
+o limite da sua classe. Jobs de nightly/schedule com `timeout-minutes > 20` só
+são permitidos em workflows cujo `name:` contém "Nightly", "Weekly", "Monthly",
+"Security" ou "Drift", ou cujo arquivo está em `docs/ci/TIMEOUT_ALLOWLIST.json`.
 
 ---
 
