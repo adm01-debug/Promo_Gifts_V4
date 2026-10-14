@@ -70,5 +70,5 @@ jobs:
           path: |
             e2e-artifacts/
             playwright-report/
-          retention-days: 7
+          retention-days: 14
           if-no-files-found: ignore

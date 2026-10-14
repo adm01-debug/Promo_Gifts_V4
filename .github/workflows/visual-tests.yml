@@ -122,4 +122,4 @@ jobs:
       with:
         name: playwright-report-shard-${{ matrix.shardIndex }}
         path: playwright-report/
-        retention-days: 7
+        retention-days: 14

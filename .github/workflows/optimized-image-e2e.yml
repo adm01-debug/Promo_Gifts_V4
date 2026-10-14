@@ -62,4 +62,4 @@ jobs:
       with:
         name: optimized-image-report
         path: playwright-report/
-        retention-days: 7
+        retention-days: 14

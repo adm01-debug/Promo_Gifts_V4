@@ -55,4 +55,4 @@ jobs:
         with:
           name: stock-rupture-fuzz-${{ github.run_id }}
           path: .fuzz-artifacts/
-          retention-days: 30
+          retention-days: 14

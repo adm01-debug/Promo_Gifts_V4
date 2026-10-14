@@ -134,7 +134,7 @@ jobs:
         with:
           name: playwright-freight-report
           path: playwright-report/
-          retention-days: 7
+          retention-days: 14
 
   massive-fuzzing:
     name: Massive Fuzzing Session

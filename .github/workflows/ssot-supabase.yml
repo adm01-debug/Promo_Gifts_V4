@@ -79,7 +79,7 @@ jobs:
             ssot-report.json
             ssot-report.md
           if-no-files-found: warn
-          retention-days: 30
+          retention-days: 14
 
       - name: Upload report.json (individual)
         if: always()
@@ -88,7 +88,7 @@ jobs:
           name: report-json
           path: ssot-report.json
           if-no-files-found: warn
-          retention-days: 30
+          retention-days: 14
 
       - name: Upload report.md (individual)
         if: always()
@@ -97,7 +97,7 @@ jobs:
           name: report-md
           path: ssot-report.md
           if-no-files-found: warn
-          retention-days: 30
+          retention-days: 14
 
       - name: Comentar relatório no PR (sticky, idempotente)
         if: always() && github.event_name == 'pull_request'

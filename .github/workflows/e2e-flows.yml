@@ -63,7 +63,7 @@ jobs:
         with:
           name: e2e-error-boundaries-report-${{ github.run_id }}
           path: playwright-report/
-          retention-days: 7
+          retention-days: 14
 
   e2e-full-flows:
     name: E2E — Full User Flows (authed)
@@ -148,7 +148,7 @@ jobs:
         with:
           name: e2e-full-flows-report-${{ github.run_id }}
           path: playwright-report/
-          retention-days: 7
+          retention-days: 14
           if-no-files-found: ignore
 
   e2e-mobile:
@@ -180,5 +180,5 @@ jobs:
         with:
           name: e2e-mobile-report-${{ github.run_id }}
           path: playwright-report/
-          retention-days: 7
+          retention-days: 14
           if-no-files-found: ignore

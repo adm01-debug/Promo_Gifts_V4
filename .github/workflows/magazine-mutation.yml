@@ -73,7 +73,7 @@ jobs:
         with:
           name: magazine-mutation-report
           path: reports/mutation/
-          retention-days: 30
+          retention-days: 14
 
   mutation-ok:
     name: Magazine Mutation OK

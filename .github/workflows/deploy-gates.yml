@@ -416,7 +416,7 @@ jobs:
         with:
           name: dist-${{ github.run_id }}
           path: dist/
-          retention-days: 7
+          retention-days: 14
       # E99 — SBOM + build provenance attestation (push para main apenas)
       # Gera SBOM SPDX-JSON do dist/ e atesta proveniência do build no GHCR.
       # Skipped em PRs e workflow_dispatch — sem impacto no tempo de CI de PRs.

@@ -153,7 +153,7 @@ jobs:
         with:
           name: visual-preview-report-${{ github.run_id }}
           path: playwright-report/
-          retention-days: 7
+          retention-days: 14
 
       - name: Upload baseline diffs (screenshots actual/diff/expected)
         if: failure()
@@ -163,7 +163,7 @@ jobs:
           path: |
             test-results/
             !test-results/axe/
-          retention-days: 7
+          retention-days: 14
 
       - name: Upload axe contrast logs
         if: always()
@@ -172,4 +172,4 @@ jobs:
           name: visual-preview-axe-${{ github.run_id }}
           path: test-results/axe/
           if-no-files-found: ignore
-          retention-days: 7
+          retention-days: 14

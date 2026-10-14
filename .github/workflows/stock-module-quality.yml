@@ -142,7 +142,7 @@ jobs:
         with:
           name: stock-benchmark-baseline
           path: stock-benchmark-report.json
-          retention-days: 365
+          retention-days: 14  # E88 — era 365, padrão é 14
 
   e2e-cross-browser:
     name: e2e ${{ matrix.project }}

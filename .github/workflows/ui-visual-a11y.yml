@@ -66,7 +66,7 @@ jobs:
           path: |
             playwright-report
             test-results
-          retention-days: 7
+          retention-days: 14
 
   alert-dialog:
     name: AlertDialog · visual + no-clip H/V
@@ -100,7 +100,7 @@ jobs:
           path: |
             playwright-report
             test-results
-          retention-days: 7
+          retention-days: 14
 
   optimized-image:
     name: OptimizedImage · unit

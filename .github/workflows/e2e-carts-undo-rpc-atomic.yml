@@ -63,4 +63,4 @@ jobs:
         with:
           name: playwright-report-carts-undo-rpc
           path: playwright-report/
-          retention-days: 7
+          retention-days: 14

@@ -111,7 +111,7 @@ jobs:
         with:
           name: freight-unit-coverage
           path: coverage/
-          retention-days: 7
+          retention-days: 14
 
   integration-tests-freight:
     name: "Gate 3 — Integration Tests (freight-quest)"
@@ -150,7 +150,7 @@ jobs:
           path: |
             test-results/
             vitest-report.json
-          retention-days: 7
+          retention-days: 14
 
   fuzz-tests:
     name: "Gate 4 — Fuzz & Adversarial Validation"

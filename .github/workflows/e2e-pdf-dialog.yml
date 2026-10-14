@@ -108,7 +108,7 @@ jobs:
             test-results/**/*.png
             e2e/**/__screenshots__/**/proposal-watermark-*.png
             e2e/**/__screenshots__/**/proposal-page-watermark-*.png
-          retention-days: 30
+          retention-days: 14
           if-no-files-found: warn
 
       # Baseline "oficial" só é publicado no dispatch de update para deixar
@@ -121,7 +121,7 @@ jobs:
           path: |
             e2e/**/__screenshots__/**/proposal-watermark-*.png
             e2e/**/__screenshots__/**/proposal-page-watermark-*.png
-          retention-days: 30
+          retention-days: 14
           if-no-files-found: warn
 
       # ── Recalibração automática de thresholds ─────────────────────────
@@ -149,7 +149,7 @@ jobs:
             qa/reports/watermark-threshold-recalibration.md
             qa/reports/watermark-threshold-recalibration.json
             test-results/**/*-diff.png
-          retention-days: 30
+          retention-days: 14
           if-no-files-found: warn
 
       # Comentário sticky no PR SOMENTE quando a recalibração sugere

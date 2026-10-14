@@ -309,7 +309,7 @@ jobs:
         with:
           name: magazine-typed-queries-revalidation-${{ github.run_number }}
           path: qa/reports/
-          retention-days: 90
+          retention-days: 90  # E88 — auditoria qa/reports; retenção longa justificada
           if-no-files-found: error
 
       - name: Comenta resumo no PR (upsert)

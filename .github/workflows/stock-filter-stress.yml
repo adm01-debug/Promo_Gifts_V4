@@ -98,4 +98,4 @@ jobs:
         with:
           name: stock-filter-stress-${{ github.run_id }}
           path: .stress-artifacts/
-          retention-days: 30
+          retention-days: 14

@@ -116,7 +116,7 @@ jobs:
         with:
           name: magazine-coverage
           path: coverage/
-          retention-days: 7
+          retention-days: 14
 
   postgres-contracts:
     name: PostgreSQL 17 RPC Contracts (Magazine)

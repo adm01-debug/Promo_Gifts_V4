@@ -70,7 +70,7 @@ jobs:
             test-results/**/*-actual.png
             test-results/**/*-expected.png
           if-no-files-found: ignore
-          retention-days: 7
+          retention-days: 14
       - name: Upload Playwright HTML report
         if: failure()
         id: upload_report
@@ -79,7 +79,7 @@ jobs:
           name: calendar-playwright-report
           path: playwright-report/**
           if-no-files-found: ignore
-          retention-days: 7
+          retention-days: 14
 
       - name: Job Summary com links de artefatos
         if: failure()
