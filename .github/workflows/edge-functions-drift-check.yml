@@ -109,11 +109,11 @@ jobs:
         run: |
           set -euo pipefail
           # ok (comm || true): comm pode falhar se um dos arquivos estiver vazio — arquivo de saída vazio é resultado válido para cada diff
-          comm -23 /tmp/repo_slugs.txt /tmp/canonical_slugs.txt > /tmp/missing_deploy.txt || true
-          comm -13 /tmp/repo_slugs.txt /tmp/canonical_slugs.txt > /tmp/canonical_not_in_repo.txt || true
-          comm -23 /tmp/canonical_not_in_repo.txt /tmp/canonical_only_allowlist.txt > /tmp/orphans.txt || true
-          comm -12 /tmp/canonical_not_in_repo.txt /tmp/canonical_only_allowlist.txt > /tmp/canonical_only_present.txt || true
-          comm -23 /tmp/canonical_only_allowlist.txt /tmp/canonical_slugs.txt > /tmp/canonical_only_stale.txt || true
+          comm -23 /tmp/repo_slugs.txt /tmp/canonical_slugs.txt > /tmp/missing_deploy.txt || true  # ok: comm exits 1 on empty input — empty output is valid
+          comm -13 /tmp/repo_slugs.txt /tmp/canonical_slugs.txt > /tmp/canonical_not_in_repo.txt || true  # ok: idem
+          comm -23 /tmp/canonical_not_in_repo.txt /tmp/canonical_only_allowlist.txt > /tmp/orphans.txt || true  # ok: idem
+          comm -12 /tmp/canonical_not_in_repo.txt /tmp/canonical_only_allowlist.txt > /tmp/canonical_only_present.txt || true  # ok: idem
+          comm -23 /tmp/canonical_only_allowlist.txt /tmp/canonical_slugs.txt > /tmp/canonical_only_stale.txt || true  # ok: idem
           {
             echo "## Slug-level diff"
             echo

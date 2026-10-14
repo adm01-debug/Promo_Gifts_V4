@@ -34,7 +34,7 @@ on:
   push:
     branches: [main]
   schedule:
-    - cron: '37 9 * * 1' # semanal, segunda 09:37 UTC (06:37 BRT) — E89: +15min vs db-schema-drift-check (09:22)
+    - cron: '30 10 * * 1' # semanal, segunda 10:30 UTC — E89: ≥20min after security-definer-acl-multi-env (10:09)
   workflow_dispatch:
     inputs:
       seed:

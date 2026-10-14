@@ -5,7 +5,7 @@ name: log-login-attempt — Fuzz Stress Weekly
 
 on:
   schedule:
-    - cron: '13 6 * * 1' # segunda 06:13 UTC (03:13 BRT) — E89
+    - cron: '17 6 * * 1' # segunda 06:17 UTC (03:17 BRT) — E89: ≥5min after daily-flows-simulation (06:12)
   workflow_dispatch:
     inputs:
       stress_factor:

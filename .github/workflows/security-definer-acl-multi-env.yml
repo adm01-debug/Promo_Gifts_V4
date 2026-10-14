@@ -21,7 +21,7 @@ name: SECURITY DEFINER ACL — Multi-Env
 
 on:
   schedule:
-    - cron: "46 9 * * *"
+    - cron: "9 10 * * *"  # E89: ≥20min after restore-seller-cart-rpc (09:48)
   workflow_dispatch:
     inputs:
       environment:

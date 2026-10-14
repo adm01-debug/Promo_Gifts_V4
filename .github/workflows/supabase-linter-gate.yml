@@ -7,7 +7,7 @@ on:
     branches: [main]
   schedule:
     # Roda diariamente às 06:00 UTC para detectar drift fora de PR
-    - cron: "46 6 * * *"
+    - cron: "57 6 * * *"  # E89: ≥20min after schema-snapshot-export Mon 06:36 (daily stays clear)
   workflow_dispatch:
 
 permissions:

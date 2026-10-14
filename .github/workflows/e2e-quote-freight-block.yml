@@ -35,7 +35,7 @@ on:
       - '.github/workflows/e2e-quote-freight-block.yml'
   workflow_dispatch:
   schedule:
-    - cron: '16 4 * * 1'  # E10/E89 — weekly Monday 04:16 UTC
+    - cron: '28 4 * * 1'  # E10/E89 — weekly Monday 04:28 UTC (≥5min gaps: 04:15/04:22/04:28/04:34/04:44/04:50)
 
 permissions:
   contents: read

@@ -31,7 +31,7 @@ on:
       - '.github/workflows/e2e-quote-item-editor-sheet.yml'
   workflow_dispatch:
   schedule:
-    - cron: '42 4 * * 1'  # E10/E89 — weekly Monday 04:42 UTC
+    - cron: '50 4 * * 1'  # E10/E89 — weekly Monday 04:50 UTC (≥5min after 04:44)
 
 permissions:
   contents: read
