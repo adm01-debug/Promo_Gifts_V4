@@ -20,9 +20,9 @@ name: Deploy Gates
 #  1.9.1 console-baseline — console.* não aumenta sem justificativa
 #  1.10 indexed-access    — indexed-access ratchet (advisory)
 #  1.11 workflow-contracts — check-workflow-contracts --gate (C10–C23)
-#  1.12 secrets-inventory  — secrets/vars referenciados todos documentados em SEGREDOS.md (E40/E98)
-#  1.13 contract-coverage  — soft-delete policy + contrato de cobertura
+#  1.12 contract-coverage  — soft-delete policy + contrato de cobertura
 #  1.13 policies-baseline  — policies live vs baseline
+#  1.14 secrets-inventory  — secrets/vars referenciados todos documentados em SEGREDOS.md (E40/E98)
 #  E23  secrets-check      — verifica presença de secrets E2E (saída has_e2e)
 #  2    unit-tests         — vitest
 #  2.5  pg-integrity       — integridade transacional PostgreSQL
@@ -249,7 +249,7 @@ jobs:
       # E40/E98 — Inventário de segredos documentado (bloqueante)
       # Garante que todo secrets.NAME / vars.NAME referenciado nos workflows
       # está documentado em docs/ci/SEGREDOS.md.
-      - name: Gate 1.12 — Secrets inventory (bloqueante)
+      - name: Gate 1.14 — Secrets inventory (bloqueante)
         run: node scripts/check-secrets-inventory.mjs --gate
 
   unit-tests:

@@ -316,8 +316,9 @@ sequência; se qualquer um falhar, o deploy é bloqueado.
 | Gate 1.9.1 | `console.*` baseline — número de chamadas não aumenta sem justificativa | sim |
 | Gate 1.10 | indexed-access ratchet — `object[key]` não aumenta (advisory) | opcional |
 | Gate 1.11 | Workflow contracts `check-workflow-contracts --gate` (C10–C23) | sim |
-| Gate 1.12 | Secrets inventory `check-secrets-inventory --gate` — todos `secrets.*`/`vars.*` documentados em SEGREDOS.md (E40/E98) | sim |
-| Gate 1.13 | Contract coverage + soft-delete policy commitada | sim |
+| Gate 1.12 | Contract coverage + soft-delete policy commitada | sim |
+| Gate 1.13 | RLS policies baseline vs pg_policies live (bloqueante com credenciais) | sim |
+| Gate 1.14 | Secrets inventory `check-secrets-inventory --gate` — todos `secrets.*`/`vars.*` documentados em SEGREDOS.md (E40/E98) | sim |
 | Gate 1.13 | Policies baseline vs `pg_policies` ao vivo (bloqueante com credenciais) | sim |
 | Gate E23 | Secrets check — sem referências a segredos não declarados em `SEGREDOS.md` | sim |
 | Gate 2 | Testes unitários (`vitest`) | sim |

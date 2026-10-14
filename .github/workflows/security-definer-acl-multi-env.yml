@@ -14,7 +14,7 @@ name: SECURITY DEFINER ACL — Multi-Env
 #   - O RPC `audit_security_definer_acl` é read-only; nunca escreve no banco.
 #
 # Gatilhos:
-#   - schedule: diário 09:00 UTC (06:00 BRT) — regressão contínua.
+#   - schedule: diário 10:09 UTC (07:09 BRT) — regressão contínua.
 #   - workflow_dispatch: execução manual (permite escolher ambiente).
 #   - push em main: re-valida após merge.
 # ────────────────────────────────────────────────────────────────────────────
