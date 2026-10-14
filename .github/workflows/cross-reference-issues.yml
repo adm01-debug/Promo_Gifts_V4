@@ -16,9 +16,9 @@ name: Cross-reference PR ↔ Issue
 
 on:
   pull_request:
-    types: [opened, edited, synchronize, closed]
+    types: [opened, closed]
   issues:
-    types: [opened, edited]
+    types: [opened]
 
 permissions:
   pull-requests: write
@@ -26,8 +26,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: cross-reference-issues-${{ github.ref }}
-  cancel-in-progress: true
+  group: cross-reference-issues-${{ github.event.pull_request.number || github.event.issue.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   cross-reference:

@@ -4,15 +4,10 @@ name: Template — Workflow Name Here
 # Modelo canônico para novos workflows. Segue o Padrão E12 (docs/ci/PADRAO_WORKFLOW.md).
 # Copie este arquivo, renomeie e adapte. Não apague os comentários até ter revisado.
 
-# R7: nunca use `master` ou `develop` — branches inexistentes no projeto.
+# E20: _template não deve disparar runs reais — só workflow_dispatch para testar o template.
+# Copie este arquivo, adapte o trigger conforme o tipo de workflow.
 on:
-  push:
-    branches: [main]
-    paths: ['.github/workflows/_template.yml']
-  pull_request:
-    branches: [main]
-    paths: ['.github/workflows/_template.yml']
-  # workflow_dispatch: {}   # descomente se precisar de trigger manual
+  workflow_dispatch: {}
 
 # R1: permissions explícito — princípio do mínimo privilégio.
 permissions:
