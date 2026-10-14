@@ -51,6 +51,8 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      with:
+          persist-credentials: false  # E32
 
       - name: Valida input antes de qualquer uso no shell
         run: node scripts/validate-migration-target.mjs --version-only
@@ -92,6 +94,8 @@ jobs:
       applied_at: ${{ steps.hash.outputs.applied_at }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      with:
+          persist-credentials: false  # E32
 
       - name: Guard — versão e destino PostgreSQL canônico
         env:
@@ -189,6 +193,8 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      with:
+          persist-credentials: false  # E32
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -211,6 +217,8 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      with:
+          persist-credentials: false  # E32
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:

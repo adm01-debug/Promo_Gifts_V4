@@ -75,6 +75,7 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
+          persist-credentials: false  # E32
           # E63 (plano de 100): fetch-depth 0 — `git diff` abaixo compara
           # github.event.before..github.sha para achar só as funções
           # alteradas neste push; um checkout raso (depth 1, o default) não
@@ -198,6 +199,8 @@ jobs:
         fn: ${{ fromJSON(needs.list-functions.outputs.functions) }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      with:
+          persist-credentials: false  # E32
 
       - name: Setup Supabase CLI
         uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v2
@@ -294,6 +297,8 @@ jobs:
       SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      with:
+          persist-credentials: false  # E32
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
