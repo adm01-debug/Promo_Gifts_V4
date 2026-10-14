@@ -3,10 +3,10 @@ name: E2E — Visual Regression (Preview button)
 # Snapshot visual + contraste do botão Preview da QuoteViewPage.
 #
 # Atualização de baselines:
-#  - Commit com `[update-visual-baselines]` na mensagem, OU
 #  - workflow_dispatch com input update_baselines=true
-# Quando aprovado, o job re-roda com --update-snapshots e commita
-# os PNGs sob e2e/visual/preview-button.spec.ts-snapshots/.
+# O job re-roda com --update-snapshots e publica os PNGs como artifact.
+# Para persistir: baixe o artifact e commite manualmente.
+# E61: removido trigger [update-visual-baselines] por commit — risco de push automático em PR.
 
 on:
   push:
@@ -67,8 +67,9 @@ jobs:
     # G-H3: fork guard — pull_request de forks não deve escrever no repo
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
 
+    # E61: visual workflows must not push to the repo — baselines update via workflow_dispatch + artifact download
     permissions:
-      contents: write
+      contents: read
 
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -105,7 +106,6 @@ jobs:
       - name: Detectar pedido de atualização de baselines
         id: detect
         env:
-          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
           EVENT_NAME: ${{ github.event_name }}
           UPDATE_BASELINES: ${{ inputs.update_baselines }}
         run: |
@@ -113,9 +113,7 @@ jobs:
           if [ "$EVENT_NAME" = "workflow_dispatch" ] && [ "$UPDATE_BASELINES" = "true" ]; then
             should_update="true"
           fi
-          if printf '%s\n' "$COMMIT_MESSAGE" | grep -qi '\[update-visual-baselines\]'; then
-            should_update="true"
-          fi
+          # E61: removed [update-visual-baselines] commit tag trigger — baselines update only via workflow_dispatch
           echo "should_update=$should_update" >> "$GITHUB_OUTPUT"
 
       - name: Run visual + axe specs
@@ -139,18 +137,15 @@ jobs:
         env:
           E2E_BASE_URL: http://localhost:8080
 
-      - name: Commit updated baselines
+      # E61: replaced git commit+push with artifact upload — developer downloads and commits manually
+      - name: Upload updated baselines (artifact — commit manualmente)
         if: steps.detect.outputs.should_update == 'true'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet -- e2e/visual; then
-            echo "Nenhuma mudança de baseline."
-            exit 0
-          fi
-          git add e2e/visual
-          git commit -m "chore(visual): atualiza baselines do botão Preview [skip ci]"
-          git push
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: visual-baselines-updated-${{ github.run_id }}
+          path: e2e/visual/**-snapshots/
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Upload Playwright report
         if: always()

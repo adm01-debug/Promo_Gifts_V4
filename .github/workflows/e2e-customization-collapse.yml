@@ -132,16 +132,15 @@ jobs:
           PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results-collapse.json
           UPDATE_SNAPSHOTS: ${{ inputs.update_snapshots }}
 
-      - name: Commit updated baselines
+      # E61: replaced git commit+push with artifact upload — developer downloads and commits manually
+      - name: Upload updated baselines (artifact — commit manualmente)
         if: inputs.update_snapshots == true && steps.auth.outputs.authed == 'true'
-        run: |
-          if [ -n "$(git status --porcelain 'e2e/customization/**-snapshots')" ]; then
-            git config user.name  "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add e2e/customization/**-snapshots
-            git commit -m "test(e2e): atualiza baselines visuais do colapso do LocationPanel"
-            git push
-          fi
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: collapse-baselines-updated-${{ github.run_id }}
+          path: e2e/customization/**-snapshots/
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Build visual diff summary (pixel-a-pixel)
         if: always()
