@@ -46,6 +46,7 @@ on:
       - '!supabase/functions/**/*.test.ts'
       - '!supabase/functions/tests/**'
       - '!supabase/functions/README.md'
+      - '.github/workflows/deploy-edge-functions.yml'
 
 env:
   # Defina em Settings → Secrets and variables → Actions → Variables

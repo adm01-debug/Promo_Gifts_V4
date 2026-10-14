@@ -20,11 +20,13 @@ on:
       - 'e2e/flows/pdf-dialog.spec.ts'
       - 'src/components/pdf/**'
       - 'src/components/quotes/PdfGenerationDialog*'
+      - '.github/workflows/e2e-pdf-dialog.yml'
   pull_request:
     paths:
       - 'e2e/flows/pdf-dialog.spec.ts'
       - 'src/components/pdf/**'
       - 'src/components/quotes/PdfGenerationDialog*'
+      - '.github/workflows/e2e-pdf-dialog.yml'
   workflow_dispatch:
     inputs:
       update_snapshots:

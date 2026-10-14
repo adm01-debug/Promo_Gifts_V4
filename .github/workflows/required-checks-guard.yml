@@ -11,6 +11,7 @@ on:
     paths:
       - '.github/workflows/**'
       - '.github/required-checks.json'
+      - '.github/workflows/required-checks-guard.yml'
   schedule:
     - cron: '28 9 * * *'
   workflow_dispatch:

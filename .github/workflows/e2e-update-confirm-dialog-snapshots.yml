@@ -8,6 +8,7 @@ on:
     paths:
       - "e2e/ui/confirm-dialog-visual.spec.ts"
       - "src/pages/dev/ConfirmDialogHarness.tsx"
+      - ".github/workflows/e2e-update-confirm-dialog-snapshots.yml"
 
 permissions:
   contents: write

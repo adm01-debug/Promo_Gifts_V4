@@ -9,6 +9,7 @@ on:
     paths:
       - "e2e/ui/dialog-visual.spec.ts"
       - "src/pages/dev/DialogHarness.tsx"
+      - ".github/workflows/e2e-update-dialog-snapshots.yml"
 
 permissions:
   contents: write

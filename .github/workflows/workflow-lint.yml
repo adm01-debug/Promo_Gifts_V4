@@ -12,6 +12,7 @@ on:
       - 'package.json'
       - 'scripts/check-workflow-contracts.mjs'
       - 'scripts/check-workflow-contracts.allowlist.json'
+      - '.github/workflows/workflow-lint.yml'
   pull_request:
     branches: [main]
     paths:
@@ -20,6 +21,7 @@ on:
       - 'package.json'
       - 'scripts/check-workflow-contracts.mjs'
       - 'scripts/check-workflow-contracts.allowlist.json'
+      - '.github/workflows/workflow-lint.yml'
 
 permissions:
   contents: read

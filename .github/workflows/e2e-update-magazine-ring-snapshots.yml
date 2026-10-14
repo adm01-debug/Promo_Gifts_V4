@@ -8,6 +8,7 @@ on:
     paths:
       - "e2e/ui/magazine-ring-visual.spec.ts"
       - "src/pages/dev/MagazineRingHarness.tsx"
+      - ".github/workflows/e2e-update-magazine-ring-snapshots.yml"
 
 permissions:
   contents: write

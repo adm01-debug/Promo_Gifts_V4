@@ -8,6 +8,7 @@ on:
     paths:
       - "e2e/ui/alert-dialog-visual.spec.ts"
       - "src/pages/dev/AlertDialogHarness.tsx"
+      - ".github/workflows/e2e-update-alert-dialog-snapshots.yml"
 
 permissions:
   contents: write

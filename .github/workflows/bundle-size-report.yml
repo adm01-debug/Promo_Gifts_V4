@@ -9,6 +9,7 @@ on:
       - 'package-lock.json'
       - 'vite.config.ts'
       - 'bundle-size-baseline.json'
+      - '.github/workflows/bundle-size-report.yml'
 
 concurrency:
   group: bundle-size-report-${{ github.ref }}
