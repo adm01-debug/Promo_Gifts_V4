@@ -32,7 +32,7 @@ concurrency:
   cancel-in-progress: true
 ```
 
-Em workflows de `push: main` ou `schedule`, **omita** `cancel-in-progress: true` — cancelar um cron ou um push em `main` perde o resultado sem rerun automático.
+Em workflows de `push: main` ou `schedule`, use `cancel-in-progress: false` explicitamente (E19) — cancelar um cron ou um push em `main` perde o resultado sem rerun automático. Nunca omita completamente; a omissão dá resultado imprevisível em upgrades do GitHub Actions.
 
 ---
 

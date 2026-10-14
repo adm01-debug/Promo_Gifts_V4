@@ -312,6 +312,7 @@ sequência; se qualquer um falhar, o deploy é bloqueado.
 | Gate 1.6 | Bundle size dentro dos limites | sim |
 | Gate 1.7 | TSC ratchet file guard — baseline não aumenta sem label `ratchet-override` (E41, PR-only) | sim (PR-only) |
 | Gate 1.8 | Detect accidentally base64-encoded files — texto encodado em base64 acidentalmente | sim |
+| Gate E23 | Secrets check — sem referências a segredos não declarados em `SEGREDOS.md` | sim |
 | Gate 2 | Testes unitários (`vitest`) | sim |
 | Gate 2.5 | Integridade transacional PostgreSQL | sim |
 | Gate 3 | E2E Smoke (Playwright, chromium) | sim |
@@ -330,7 +331,7 @@ Todo workflow em `.github/workflows/` deve seguir as 8 regras documentadas em
 `docs/ci/PADRAO_WORKFLOW.md`. Resumo:
 
 1. **R1** — `permissions:` explícito no topo (`contents: read` mínimo)
-2. **R2** — `concurrency:` com `cancel-in-progress: true` em PRs (omitir em push/schedule)
+2. **R2** — `concurrency:` com `cancel-in-progress: true` em PRs; `false` em push/schedule (E19: deploy/cron nunca cancelado)
 3. **R3** — `timeout-minutes:` em todo job (gates ≤ 10 min; E2E ≤ 30 min; crons ≤ 60 min)
 4. **R4** — `node-version-file: .nvmrc` — nunca literais como `'22'`
 5. **R5** — Segredos via `env:` no step, jamais como argumento CLI
