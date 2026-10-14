@@ -22,8 +22,7 @@ on:
       - '.github/workflows/visual-tests.yml'
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 
 concurrency:
@@ -39,9 +38,8 @@ jobs:
     # G-H3: fork guard — pull_request de forks não deve escrever no repo
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     permissions:
-      contents: write
+      contents: write      # push de baselines (push→main apenas, guardado no step)
       pull-requests: write
-      issues: write
     strategy:
       fail-fast: false
       matrix:
@@ -80,7 +78,9 @@ jobs:
         CI: true
 
     - name: Commit new baselines if generated
-      if: always()
+      # E30/E29: só em push para main — PRs não devem atualizar baselines automaticamente
+      # (empurrar para a branch do PR em contexto de pull_request bypassa o review).
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       env:
         GITHUB_EVENT_PULL_REQUEST_HEAD_REPO_FULL_NAME: ${{ github.event.pull_request.head.repo.full_name }}
       run: |

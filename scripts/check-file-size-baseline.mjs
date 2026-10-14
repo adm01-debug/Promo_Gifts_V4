@@ -21,11 +21,19 @@ const BASELINE_PATH = join(ROOT, '.file-size-baseline.json');
 const MAX_LINES = 500;
 const UPDATE = process.argv.includes('--update');
 
+// Arquivos gerados por ferramentas externas: não devem ser medidos pelo ratchet
+// de tamanho (só crescem junto com o schema, não com código de produto).
+const GENERATED_FILES = new Set([
+  'src/integrations/supabase/types.ts',
+]);
+
 function collectOversized() {
   const sizes = {};
   for (const file of walkSrc(ROOT)) {
+    const rel = relative(ROOT, file);
+    if (GENERATED_FILES.has(rel)) continue;
     const lines = readFileSync(file, 'utf8').split('\n').length;
-    if (lines > MAX_LINES) sizes[relative(ROOT, file)] = lines;
+    if (lines > MAX_LINES) sizes[rel] = lines;
   }
   return sizes;
 }

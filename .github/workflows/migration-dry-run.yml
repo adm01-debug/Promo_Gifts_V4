@@ -1,10 +1,10 @@
 name: migration-dry-run
 
 on:
-  pull_request:
-    paths:
-      - 'qa/migrations-draft/**.sql'
-      - 'scripts/dry-run-migration-draft.mjs'
+  # SEGURANÇA (E25): pull_request removido em 2026-10-14.
+  # Executar SQL de PR de contributor contra o banco canônico de produção
+  # (doufsxqlfjyuvxuezpln) viola a REGRA #8 (Lovable/bot não autoriza DDL).
+  # O reviewer/PO dispara manualmente via workflow_dispatch após revisar o draft.
   workflow_dispatch:
     inputs:
       draft_path:

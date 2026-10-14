@@ -375,6 +375,13 @@ jobs:
     name: Gate 6 - Build
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    # Roda mesmo quando restore-cart-rpc-gate é skipped (Dependabot/fork sem secrets).
+    # Só bloqueia se restore-cart-rpc-gate falhou; skip é tratado como ausência de dado.
+    if: >-
+      always() &&
+      needs.lint-typecheck.result == 'success' &&
+      needs.seo-sanity.result == 'success' &&
+      needs.restore-cart-rpc-gate.result != 'failure'
     needs: [lint-typecheck, seo-sanity, restore-cart-rpc-gate]
     permissions:
       contents: read
@@ -382,6 +389,10 @@ jobs:
       attestations: write  # necessário para attest-build-provenance (E99)
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      # E04 — fetch base SHA para o ratchet funcionar em PRs (git show $BASE_SHA:baseline.json)
+      - name: Fetch base SHA for bundle ratchet
+        if: github.event_name == 'pull_request' && github.event.pull_request.base.sha != ''
+        run: git fetch origin ${{ github.event.pull_request.base.sha }} --depth=1 2>/dev/null || true
       - name: Setup Node CI
         uses: ./.github/actions/setup-node-ci
       - run: npm run build
@@ -448,15 +459,34 @@ jobs:
           # e2e-smoke só roda quando has_e2e=true — skip esperado sem secrets E2E (E21+E23).
           E2E_SMOKE: ${{ needs.e2e-smoke.result }}
           IS_DEPENDABOT: ${{ github.actor == 'dependabot[bot]' }}
+          IS_DEPENDABOT: ${{ github.actor == 'dependabot[bot]' }}
+          # lighthouse é opcional (continue-on-error:true — Gate 4).
+          # Com continue-on-error:true, failure reporta como 'success' no needs.*.result.
+          # 'cancelled' (cascade de concurrency) pode aparecer e não deve bloquear.
+          LIGHTHOUSE: ${{ needs.lighthouse.result }}
         run: |
           set -euo pipefail
           FAIL=0
 
-          # Falha em qualquer gate que quebrou ou foi cancelado
-          if [[ ",${GATE_RESULTS}," == *,failure,* || \
-                ",${GATE_RESULTS}," == *,cancelled,* ]]; then
-            echo "Blocking gate result: ${GATE_RESULTS}" >&2
+          # Falha em qualquer gate que quebrou — lighthouse com continue-on-error:true
+          # reporta 'success' mesmo em falha, então este check é correto para todos.
+          if [[ ",${GATE_RESULTS}," == *,failure,* ]]; then
+            echo "Blocking gate failure: ${GATE_RESULTS}" >&2
             FAIL=1
+          fi
+
+          # cancelled indica workflow cancelado em cascata.
+          # Lighthouse é Gate 4 opcional — seu cancelled é aceitável.
+          CANCELLED_COUNT=$(echo "${GATE_RESULTS}" | tr ',' '\n' | grep -c "^cancelled$" || true)
+          if [[ "$CANCELLED_COUNT" -gt 0 ]]; then
+            LIGHTHOUSE_CANCELLED=0
+            [[ "$LIGHTHOUSE" == "cancelled" ]] && LIGHTHOUSE_CANCELLED=1
+            if [[ "$CANCELLED_COUNT" -gt "$LIGHTHOUSE_CANCELLED" ]]; then
+              echo "Blocking gate cancelled (excl. lighthouse): ${GATE_RESULTS}" >&2
+              FAIL=1
+            elif [[ "$LIGHTHOUSE_CANCELLED" -eq 1 ]]; then
+              echo "::warning::Lighthouse (Gate 4, opcional) cancelado — não bloqueia."
+            fi
           fi
 
           # Skipped é aceito APENAS para gates com condicionais explícitas.
