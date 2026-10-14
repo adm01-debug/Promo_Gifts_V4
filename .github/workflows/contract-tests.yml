@@ -12,6 +12,12 @@ name: Contract Tests
 
 on:
   pull_request:
+    branches: [main]
+    paths:  # E14: evitar CI em PRs doc-only
+      - 'src/**'
+      - 'tests/**'
+      - 'supabase/**'
+      - 'package*.json'
   workflow_dispatch:
 
 permissions:

@@ -3,6 +3,10 @@ name: Security Scan
 on:
   pull_request:
     branches: [main]
+    paths-ignore:  # E14: docs-only PRs dificilmente introduzem secrets
+      - 'docs/**'
+      - '*.md'
+      - 'CHANGELOG*'
   push:
     branches: [main]
   schedule:

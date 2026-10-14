@@ -4,6 +4,13 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+    paths:  # E14: evitar CI em PRs doc-only
+      - 'src/**'
+      - 'tests/**'
+      - 'e2e/**'
+      - 'package*.json'
+      - '.nvmrc'
+      - 'vite.config.*'
 
 permissions:
   contents: read

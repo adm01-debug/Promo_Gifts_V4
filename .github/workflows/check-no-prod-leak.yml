@@ -8,6 +8,10 @@ name: No Prod Leak in Dev/Test Config
 on:
   pull_request:
     branches: [main]
+    paths-ignore:  # E14: docs-only PRs não introduzem prod leak
+      - 'docs/**'
+      - '*.md'
+      - 'CHANGELOG*'
   push:
     branches: [main]
 

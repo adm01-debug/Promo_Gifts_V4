@@ -3,6 +3,11 @@ name: Supabase Linter Gate
 on:
   pull_request:
     branches: [main]
+    paths:  # E14: só relevante quando supabase ou integrações mudam
+      - 'supabase/**'
+      - 'src/integrations/supabase/**'
+      - 'scripts/*supabase*'
+      - 'package*.json'
   push:
     branches: [main]
   schedule:
