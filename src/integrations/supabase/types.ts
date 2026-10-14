@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.5"
+    PostgrestVersion: "14.1"
   }
   graphql_public: {
     Tables: {
@@ -6696,6 +6696,7 @@ export type Database = {
           status: string
           updated_at: string
           valid_until: string | null
+          version: number
         }
         Insert: {
           admin_id?: string | null
@@ -6712,6 +6713,7 @@ export type Database = {
           status?: string
           updated_at?: string
           valid_until?: string | null
+          version?: number
         }
         Update: {
           admin_id?: string | null
@@ -6728,6 +6730,7 @@ export type Database = {
           status?: string
           updated_at?: string
           valid_until?: string | null
+          version?: number
         }
         Relationships: [
           {
@@ -11611,6 +11614,7 @@ export type Database = {
           success: boolean
           user_agent: string | null
           user_id: string | null
+          verified: boolean
         }
         Insert: {
           created_at?: string
@@ -11622,6 +11626,7 @@ export type Database = {
           success: boolean
           user_agent?: string | null
           user_id?: string | null
+          verified?: boolean
         }
         Update: {
           created_at?: string
@@ -11633,6 +11638,7 @@ export type Database = {
           success?: boolean
           user_agent?: string | null
           user_id?: string | null
+          verified?: boolean
         }
         Relationships: []
       }
@@ -12004,6 +12010,42 @@ export type Database = {
         Relationships: []
       }
       magazine_public_view_events_2026_12: {
+        Row: {
+          id: number
+          ip_hash: string
+          magazine_id: string
+          page_index: number | null
+          referer_host: string | null
+          session_id: string | null
+          token_hash: string
+          user_agent_hash: string | null
+          viewed_at: string
+        }
+        Insert: {
+          id?: number
+          ip_hash: string
+          magazine_id: string
+          page_index?: number | null
+          referer_host?: string | null
+          session_id?: string | null
+          token_hash: string
+          user_agent_hash?: string | null
+          viewed_at?: string
+        }
+        Update: {
+          id?: number
+          ip_hash?: string
+          magazine_id?: string
+          page_index?: number | null
+          referer_host?: string | null
+          session_id?: string | null
+          token_hash?: string
+          user_agent_hash?: string | null
+          viewed_at?: string
+        }
+        Relationships: []
+      }
+      magazine_public_view_events_2027_01: {
         Row: {
           id: number
           ip_hash: string
@@ -40455,36 +40497,6 @@ export type Database = {
         }
         Relationships: []
       }
-      supplier_products_raw_history_p2026_06: {
-        Row: {
-          captured_at: string
-          content_hash: string | null
-          id: string
-          raw_data: Json | null
-          raw_id: string | null
-          supplier_id: string | null
-          supplier_reference: string | null
-        }
-        Insert: {
-          captured_at?: string
-          content_hash?: string | null
-          id?: string
-          raw_data?: Json | null
-          raw_id?: string | null
-          supplier_id?: string | null
-          supplier_reference?: string | null
-        }
-        Update: {
-          captured_at?: string
-          content_hash?: string | null
-          id?: string
-          raw_data?: Json | null
-          raw_id?: string | null
-          supplier_id?: string | null
-          supplier_reference?: string | null
-        }
-        Relationships: []
-      }
       supplier_products_raw_history_p2026_07: {
         Row: {
           captured_at: string
@@ -40636,6 +40648,36 @@ export type Database = {
         Relationships: []
       }
       supplier_products_raw_history_p2026_12: {
+        Row: {
+          captured_at: string
+          content_hash: string | null
+          id: string
+          raw_data: Json | null
+          raw_id: string | null
+          supplier_id: string | null
+          supplier_reference: string | null
+        }
+        Insert: {
+          captured_at?: string
+          content_hash?: string | null
+          id?: string
+          raw_data?: Json | null
+          raw_id?: string | null
+          supplier_id?: string | null
+          supplier_reference?: string | null
+        }
+        Update: {
+          captured_at?: string
+          content_hash?: string | null
+          id?: string
+          raw_data?: Json | null
+          raw_id?: string | null
+          supplier_id?: string | null
+          supplier_reference?: string | null
+        }
+        Relationships: []
+      }
+      supplier_products_raw_history_p2027_01: {
         Row: {
           captured_at: string
           content_hash: string | null
@@ -59244,6 +59286,13 @@ export type Database = {
         Args: { p_batch_size?: number; p_dry_run?: boolean }
         Returns: Json
       }
+      fn_backfill_queue_reap_stuck: {
+        Args: { p_max_attempts?: number; p_stuck_minutes?: number }
+        Returns: {
+          reaped_to_failed: number
+          reaped_to_pending: number
+        }[]
+      }
       fn_batch_extract_materials_from_name: {
         Args: { p_limit?: number }
         Returns: {
@@ -59604,6 +59653,16 @@ export type Database = {
       fn_derive_parent_ref: {
         Args: { p_raw: Json; p_supplier_id: string; p_variant_ref: string }
         Returns: string
+      }
+      fn_detect_recurring_errors_last_hour: {
+        Args: { _min_occurrences?: number }
+        Returns: {
+          first_seen: string
+          last_seen: string
+          message: string
+          occurrences: number
+          source: string
+        }[]
       }
       fn_detecta_familia_cor: {
         Args: { p_b: number; p_g: number; p_r: number }
@@ -63488,6 +63547,47 @@ export type Database = {
         Returns: Record<string, unknown>
       }
       parse_xbz_dimensions: { Args: { p_raw_data: Json }; Returns: Json }
+      pg_relpages:
+        | {
+            Args: { relname: unknown }
+            Returns: {
+              error: true
+            } & "Could not choose the best candidate function between: public.pg_relpages(relname => text), public.pg_relpages(relname => regclass). Try renaming the parameters or the function itself in the database so function overloading can be resolved"
+          }
+        | {
+            Args: { relname: string }
+            Returns: {
+              error: true
+            } & "Could not choose the best candidate function between: public.pg_relpages(relname => text), public.pg_relpages(relname => regclass). Try renaming the parameters or the function itself in the database so function overloading can be resolved"
+          }
+      pgstatginindex: {
+        Args: { relname: unknown }
+        Returns: Record<string, unknown>
+      }
+      pgstathashindex: {
+        Args: { relname: unknown }
+        Returns: Record<string, unknown>
+      }
+      pgstatindex:
+        | {
+            Args: { relname: unknown }
+            Returns: {
+              error: true
+            } & "Could not choose the best candidate function between: public.pgstatindex(relname => text), public.pgstatindex(relname => regclass). Try renaming the parameters or the function itself in the database so function overloading can be resolved"
+          }
+        | {
+            Args: { relname: string }
+            Returns: {
+              error: true
+            } & "Could not choose the best candidate function between: public.pgstatindex(relname => text), public.pgstatindex(relname => regclass). Try renaming the parameters or the function itself in the database so function overloading can be resolved"
+          }
+      pgstattuple:
+        | { Args: { relname: string }; Returns: Record<string, unknown> }
+        | { Args: { reloid: unknown }; Returns: Record<string, unknown> }
+      pgstattuple_approx: {
+        Args: { reloid: unknown }
+        Returns: Record<string, unknown>
+      }
       populate_import_staging: {
         Args: {
           p_batch_id?: string
@@ -63774,6 +63874,7 @@ export type Database = {
           status: string
           updated_at: string
           valid_until: string | null
+          version: number
         }
         SetofOptions: {
           from: "*"
@@ -63805,7 +63906,12 @@ export type Database = {
         Returns: undefined
       }
       respond_discount_approval_transactional: {
-        Args: { _admin_notes?: string; _approved: boolean; _request_id: string }
+        Args: {
+          _admin_notes?: string
+          _approved: boolean
+          _expected_version?: number
+          _request_id: string
+        }
         Returns: {
           admin_id: string | null
           admin_notes: string | null
@@ -63821,6 +63927,7 @@ export type Database = {
           status: string
           updated_at: string
           valid_until: string | null
+          version: number
         }
         SetofOptions: {
           from: "*"

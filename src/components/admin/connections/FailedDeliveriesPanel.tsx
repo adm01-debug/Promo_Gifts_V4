@@ -21,6 +21,7 @@ import { ptBR } from 'date-fns/locale';
 import { ExportButton } from './ExportButton';
 import { cn } from '@/lib/utils';
 import { invokeEdge } from '@/lib/edge/safeInvokeCall';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface FailedDelivery {
   id: string;
@@ -37,12 +38,16 @@ const PAGE_SIZE = 25;
 
 export function FailedDeliveriesPanel() {
   const qc = useQueryClient();
+  const { rolesLoaded, isAdmin } = useAuth();
   const [page, setPage] = useState(0);
   const [eventFilter, setEventFilter] = useState('');
   const [replayingId, setReplayingId] = useState<string | null>(null);
 
   const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: ['failed-deliveries', page, eventFilter],
+    // Evita disparar antes do JWT/role estar pronto (401/403 de largada —
+    // mesmo padrão usado em IntegrationsHealthCard/usePulseBarStatus).
+    enabled: rolesLoaded && Boolean(isAdmin),
     queryFn: async () => {
       let q = supabase
         .from('webhook_deliveries')

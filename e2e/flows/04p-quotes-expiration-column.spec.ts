@@ -16,6 +16,7 @@
 import { test, expect, requireAuth } from "../fixtures/test-base";
 import { gotoAndSettle } from "../helpers/nav";
 import { e2eName } from "../helpers/e2e-resources";
+import { requireE2EBaseUrl } from "../helpers/require-env-base-url";
 
 // Matriz de fusos: a contagem regressiva usa `new Date(y,m,d)` local, então
 // validamos em 3 fusos distintos para garantir que 0/1/7/-1 dia continuam
@@ -23,9 +24,7 @@ import { e2eName } from "../helpers/e2e-resources";
 const TIMEZONES = ["America/Sao_Paulo", "UTC", "Europe/Lisbon"] as const;
 
 const SUPABASE_URL =
-  process.env.VITE_SUPABASE_URL ||
-  process.env.SUPABASE_URL ||
-  "https://doufsxqlfjyuvxuezpln.supabase.co";
+  requireE2EBaseUrl();
 const SUPABASE_ANON_KEY =
   process.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
   process.env.VITE_SUPABASE_ANON_KEY ||

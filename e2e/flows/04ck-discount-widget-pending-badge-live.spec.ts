@@ -16,11 +16,10 @@ import { test, expect, requireAdmin } from "../fixtures/test-base";
 import { loginAs } from "../helpers/auth";
 import { gotoAndSettle } from "../helpers/nav";
 import { TID } from "../fixtures/selectors";
+import { requireE2EBaseUrl } from "../helpers/require-env-base-url";
 
 const SUPABASE_URL =
-  process.env.VITE_SUPABASE_URL ||
-  process.env.SUPABASE_URL ||
-  "https://doufsxqlfjyuvxuezpln.supabase.co";
+  requireE2EBaseUrl();
 const SUPABASE_ANON_KEY =
   process.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
   process.env.VITE_SUPABASE_ANON_KEY ||

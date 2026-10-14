@@ -47,6 +47,8 @@
     "build": "node scripts/guard-canonical-project.mjs && node scripts/validate-supabase-config.mjs && node scripts/check-pptx-image-parser-exposure.mjs && vite build && node scripts/check-chunk-cycles.mjs && node scripts/check-production-harnesses.mjs",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
+    "check:no-prod-leak": "node scripts/check-no-prod-leak.mjs",
+    "check:select-columns": "node scripts/check-select-columns.mjs",
     "check:bundle-size": "node scripts/check-bundle-size.mjs",
     "check:chunk-cycles": "node scripts/check-chunk-cycles.mjs",
     "check:production-harnesses": "node scripts/check-production-harnesses.mjs",

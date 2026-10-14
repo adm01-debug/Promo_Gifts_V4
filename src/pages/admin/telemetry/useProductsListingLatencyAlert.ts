@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
 /**
  * Detecta regressão de latência em listings de `products` com limit alto (> 50).
@@ -91,6 +92,7 @@ async function fetchWindow(fromIso: string, toIso: string): Promise<TelemetryRow
 }
 
 export function useProductsListingLatencyAlert() {
+  const { rolesLoaded, isAdmin } = useAuth();
   const query = useQuery({
     queryKey: ['products-listing-latency-alert'],
     queryFn: async (): Promise<ProductsListingLatencyAlert> => {
@@ -175,8 +177,11 @@ export function useProductsListingLatencyAlert() {
 
       return { severity, reasons, current, baseline, avgDeltaPct };
     },
-    refetchInterval: 60_000,
-    staleTime: 30_000,
+    // 2026-10-13: guard de sessão + polling reduzido ao mínimo recomendado p/
+    // dashboards (15min) — ver REGRA do incidente 2026-10-13.
+    enabled: rolesLoaded && Boolean(isAdmin),
+    refetchInterval: 15 * 60_000,
+    staleTime: 5 * 60_000,
   });
 
   return {

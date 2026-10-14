@@ -12,6 +12,7 @@
  */
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
 export type GuardrailStatus = 'error' | 'insufficient_data' | 'ok' | 'regression' | 'warning';
 
@@ -42,10 +43,14 @@ export interface GuardrailReport {
 const QUERY_KEY = ['telemetry', 'regression-guardrail'];
 
 export function useRegressionGuardrail() {
+  const { rolesLoaded, isAdmin } = useAuth();
   const { data, isLoading, refetch, dataUpdatedAt } = useQuery({
     queryKey: QUERY_KEY,
-    refetchInterval: 60_000,
-    staleTime: 30_000,
+    // 2026-10-13: guard de sessão + polling reduzido ao mínimo recomendado p/
+    // dashboards (15min) — ver REGRA do incidente 2026-10-13.
+    enabled: rolesLoaded && Boolean(isAdmin),
+    refetchInterval: 15 * 60_000,
+    staleTime: 5 * 60_000,
     queryFn: async (): Promise<GuardrailReport> => {
       const { data: rpcData, error } = await supabase.rpc('check_telemetry_regression');
       if (error) {

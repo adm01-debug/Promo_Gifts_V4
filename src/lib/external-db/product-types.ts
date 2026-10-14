@@ -220,9 +220,16 @@ export function getProductStock(product: PromobrindProduct): number {
 // `price_freshness_threshold_days` é opcional durante a transição de schema.
 // Não selecionamos a coluna por padrão para evitar 400/tela branca quando o
 // schema do BD externo ainda não foi aplicado; consumidores usam default 60d.
+//
+// NOTE (2026-10-13): `category_name` não existe mais em `v_products_public`
+// (renomeada para `leaf_category_name` — ver docs/SCHEMA_REFERENCE.md). O
+// alias PostgREST `category_name:leaf_category_name` abaixo lê a coluna real
+// mas devolve a chave `category_name` no JSON de resposta, preservando o
+// campo crítico do tipo `Product` (REGRA #2) sem precisar tocar em todos os
+// consumidores que leem `p.category_name`.
 export const PRODUCT_SELECT_FIELDS_WITH_SALE =
   'id, name, sku, sale_price, cost_price, images, primary_image_url, primary_image_fallback_url, set_image_url, ' +
-  'category_id, main_category_id, category_name, supplier_id, supplier_reference, description, ' +
+  'category_id, main_category_id, category_name:leaf_category_name, supplier_id, supplier_reference, description, ' +
   'short_description, meta_description, brand, is_active, active, stock_quantity, colors, ' +
   'materials, dimensions, min_quantity, created_at, updated_at, price_updated_at, ' +
   'price_freshness_threshold_days, ' +
@@ -233,7 +240,7 @@ export const PRODUCT_SELECT_FIELDS_WITH_SALE =
 
 export const PRODUCT_SELECT_FIELDS_WITH_SALE_NO_THRESHOLD =
   'id, name, sku, sale_price, cost_price, images, primary_image_url, primary_image_fallback_url, set_image_url, ' +
-  'category_id, main_category_id, category_name, supplier_id, supplier_reference, description, ' +
+  'category_id, main_category_id, category_name:leaf_category_name, supplier_id, supplier_reference, description, ' +
   'short_description, meta_description, brand, is_active, active, stock_quantity, colors, ' +
   'materials, dimensions, min_quantity, created_at, updated_at, price_updated_at, ' +
   'is_featured, is_bestseller, is_new, is_on_sale, is_kit, gender, allows_personalization, ' +
@@ -246,7 +253,7 @@ export const PRODUCT_SELECT_FIELDS_LEGACY =
   // Never fall back to `cost_price`: that is an internal cost and must not be
   // exposed as the price shown to customers.
   'id, name, sku, base_price, cost_price, images, primary_image_url, primary_image_fallback_url, set_image_url, ' +
-  'category_id, main_category_id, category_name, supplier_id, supplier_reference, description, ' +
+  'category_id, main_category_id, category_name:leaf_category_name, supplier_id, supplier_reference, description, ' +
   'short_description, meta_description, brand, is_active, active, stock_quantity, colors, ' +
   'materials, dimensions, min_quantity, created_at, updated_at, price_updated_at, ' +
   'price_freshness_threshold_days, ' +
@@ -257,7 +264,7 @@ export const PRODUCT_SELECT_FIELDS_LEGACY =
 
 export const PRODUCT_SELECT_FIELDS_LEGACY_NO_THRESHOLD =
   'id, name, sku, base_price, cost_price, images, primary_image_url, primary_image_fallback_url, set_image_url, ' +
-  'category_id, main_category_id, category_name, supplier_id, supplier_reference, description, ' +
+  'category_id, main_category_id, category_name:leaf_category_name, supplier_id, supplier_reference, description, ' +
   'short_description, meta_description, brand, is_active, active, stock_quantity, colors, ' +
   'materials, dimensions, min_quantity, created_at, updated_at, price_updated_at, ' +
   'is_featured, is_bestseller, is_new, is_on_sale, is_kit, allows_personalization, ' +

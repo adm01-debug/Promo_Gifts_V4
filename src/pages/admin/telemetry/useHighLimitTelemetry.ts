@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
 /**
  * Série temporal de telemetria SOMENTE para listings com `limit > 50`,
@@ -187,6 +188,7 @@ function summarize(rows: TelemetryRow[]) {
 }
 
 export function useHighLimitTelemetry(filters: HighLimitFiltersState) {
+  const { rolesLoaded, isAdmin } = useAuth();
   const query = useQuery({
     queryKey: [
       'admin.telemetry.highLimit',
@@ -205,8 +207,11 @@ export function useHighLimitTelemetry(filters: HighLimitFiltersState) {
       const points = bucketize(rows, fromMs, toMs, bucketMs);
       return { fromIso, toIso, bucketMs, points, totals: summarize(rows) };
     },
-    refetchInterval: 60_000,
-    staleTime: 30_000,
+    // 2026-10-13: evita disparar antes do JWT/role estar pronto (401/403 de
+    // largada) e reduz polling de dashboard para o mínimo recomendado (15min).
+    enabled: rolesLoaded && Boolean(isAdmin),
+    refetchInterval: 15 * 60_000,
+    staleTime: 5 * 60_000,
   });
 
   return {

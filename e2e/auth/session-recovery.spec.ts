@@ -26,9 +26,10 @@
 import { test, expect, type Page } from "@playwright/test";
 import { loginViaUI } from "../helpers/auth";
 import { gotoAndSettle } from "../helpers/nav";
+import { requireE2EBaseUrl } from "../helpers/require-env-base-url";
 
 const SUPABASE_URL =
-  process.env.VITE_SUPABASE_URL ?? "https://doufsxqlfjyuvxuezpln.supabase.co";
+  requireE2EBaseUrl();
 const PROJECT_REF = new URL(SUPABASE_URL).hostname.split(".")[0];
 const STORAGE_KEY = `sb-${PROJECT_REF}-auth-token`;
 const REFRESH_ENDPOINT_RE = new RegExp(

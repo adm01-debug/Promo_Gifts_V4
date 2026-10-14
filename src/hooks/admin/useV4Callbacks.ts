@@ -53,8 +53,12 @@ export function useV4Callbacks(filters: CallbackFilters) {
   return useQuery({
     queryKey: ['v4-callbacks', filters, since, limit],
     queryFn: async (): Promise<CallbackEventRow[]> => {
-      // NOTE: `crm_callback_events` vive no banco canônico e não está no types.ts
-      // gerado (que reflete pqp). Cast via any até regenerar tipos do canônico.
+      // NOTE: `crm_callback_events` vive no banco canônico. A coluna real é
+      // `received_at` (não `created_at`) — ver incidente 2026-10-13 (schema
+      // drift entre frontend e banco). O alias PostgREST `created_at:received_at`
+      // abaixo preserva a chave `created_at` no objeto retornado (usada por
+      // CallbackEventRow, AdminV4CallbacksPage e toCSV) sem precisar tocar nos
+      // consumidores.
       type QB = {
         select: (c: string) => QB;
         gte: (col: string, val: string) => QB;
@@ -67,10 +71,10 @@ export function useV4Callbacks(filters: CallbackFilters) {
       let q = client
         .from('crm_callback_events')
         .select(
-          'id, external_quote_id, crm_quote_id, event_type, occurred_at, created_at, result, error_message, payload',
+          'id, external_quote_id, crm_quote_id, event_type, occurred_at, created_at:received_at, result, error_message, payload',
         )
-        .gte('created_at', since)
-        .order('created_at', { ascending: false })
+        .gte('received_at', since)
+        .order('received_at', { ascending: false })
         .limit(limit);
 
       if (filters.externalQuoteId?.trim()) {

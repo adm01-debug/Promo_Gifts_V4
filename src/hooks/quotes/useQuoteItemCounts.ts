@@ -4,6 +4,7 @@
  */
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { hasIds } from '@/lib/supabase/empty-in-guard';
 
 export type ItemCountByQuoteId = Record<string, number>;
 
@@ -16,6 +17,10 @@ export function useQuoteItemCounts(quoteIds: Array<string | null | undefined>) {
     staleTime: 60 * 1000,
     gcTime: 5 * 60 * 1000,
     queryFn: async () => {
+      // `enabled` já evita que o React Query dispare com ids vazio, mas o
+      // guard aqui protege o call site em si (ex.: chamada direta da queryFn
+      // em testes, ou refetch manual) — ver empty-in-guard.ts.
+      if (!hasIds(ids)) return {};
       const { data, error } = await supabase
         .from('quote_items')
         .select('quote_id')
