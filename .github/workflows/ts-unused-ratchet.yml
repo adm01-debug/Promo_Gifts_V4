@@ -18,7 +18,7 @@ on:
       - 'scripts/tsc-unused-ratchet.sh'
       - '.github/workflows/ts-unused-ratchet.yml'
   schedule:
-    - cron: '47 6 * * 1' # semanal, segunda 06:00 UTC — varredura incondicional
+    - cron: '47 6 * * 1' # semanal, segunda 06:47 UTC — varredura incondicional — E89
 
 concurrency:
   group: ts-ratchet-${{ github.ref }}

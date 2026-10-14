@@ -15,7 +15,7 @@ on:
 
 permissions:
   contents: read
-  security-events: write       # para upload de SARIF
+  # security-events: write — removido E92 (SARIF salvo como artefato, não no Security Dashboard)
   issues: write                # para abrir issue automatica em finding
 
 concurrency:

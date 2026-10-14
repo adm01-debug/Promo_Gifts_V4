@@ -15,7 +15,7 @@ on:
       - 'scripts/mutation-test-magazine.mjs'
       - '.github/workflows/magazine-mutation.yml'
   schedule:
-    - cron: '27 6 * * 1' # Segundas 06:30 UTC (drift semanal)
+    - cron: '27 6 * * 1' # Segundas 06:27 UTC (drift semanal) — E89
   workflow_dispatch:
     inputs:
       only:

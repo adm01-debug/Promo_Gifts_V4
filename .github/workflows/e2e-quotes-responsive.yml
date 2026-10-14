@@ -27,7 +27,7 @@ on:
       - '.github/workflows/e2e-quotes-responsive.yml'
   workflow_dispatch:
   schedule:
-    - cron: '34 4 * * 1'  # E10 — weekly Monday 04:23 UTC
+    - cron: '34 4 * * 1'  # E10/E89 — weekly Monday 04:34 UTC
 
 permissions:
   contents: read

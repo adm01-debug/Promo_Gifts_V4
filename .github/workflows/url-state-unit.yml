@@ -14,7 +14,7 @@ on:
       - 'src/pages/quotes/**'
       - '.github/workflows/url-state-unit.yml'
   schedule:
-    - cron: '41 6 * * 1' # semanal, segunda 06:00 UTC — varredura incondicional
+    - cron: '41 6 * * 1' # semanal, segunda 06:41 UTC — varredura incondicional — E89
 
 permissions:
   contents: read
