@@ -176,6 +176,7 @@ jobs:
             e2e-artifacts/
             playwright-report/
             test-results/
+            !test-results/**/trace.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
             visual-diff-report/
           retention-days: 14
           if-no-files-found: ignore

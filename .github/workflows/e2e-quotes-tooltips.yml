@@ -110,6 +110,7 @@ jobs:
           name: playwright-artifacts-04m-tooltips
           path: |
             test-results/
+            !test-results/**/trace.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
             e2e/.evidence/
           retention-days: 14
           if-no-files-found: ignore

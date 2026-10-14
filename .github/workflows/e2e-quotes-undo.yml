@@ -148,6 +148,7 @@ jobs:
           name: playwright-artifacts-quotes-undo-real
           path: |
             test-results/
+            !test-results/**/trace.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
             e2e/.evidence/
           retention-days: 14
           if-no-files-found: ignore
@@ -206,6 +207,7 @@ jobs:
           name: playwright-artifacts-quotes-undo-mock
           path: |
             test-results/
+            !test-results/**/trace.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
             e2e/.evidence/
           retention-days: 14
           if-no-files-found: ignore

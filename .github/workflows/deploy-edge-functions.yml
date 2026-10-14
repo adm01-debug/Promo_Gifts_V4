@@ -58,7 +58,7 @@ permissions:
 
 concurrency:
   group: deploy-edge-functions-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false  # R2/E19: deploy em push/main nunca deve ser cancelado
 
 
 defaults:

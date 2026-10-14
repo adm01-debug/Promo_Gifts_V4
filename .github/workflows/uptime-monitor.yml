@@ -13,7 +13,7 @@ name: Uptime Monitor
 
 on:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '*/30 * * * *'  # E20: reduzido de 15→30 min (96→48 runs/dia)
   workflow_dispatch:
 
 concurrency:

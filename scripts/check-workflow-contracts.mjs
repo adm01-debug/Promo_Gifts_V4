@@ -585,10 +585,14 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
     allowlist = JSON.parse(readFileSync(allowlistPath, 'utf-8'));
   }
   const allowlistedFiles = new Set(allowlist._allowlisted_files || []);
+  // _allowlisted_violations: exact violation strings that are pre-approved (more granular than file-level)
+  const allowlistedViolations = new Set(allowlist._allowlisted_violations || []);
 
   const { violations, counts, workflowCount } = runChecks(ROOT);
 
-  const fresh = violations.filter((v) => !allowlistedFiles.has(v.split(':')[0].trim()));
+  const fresh = violations.filter(
+    (v) => !allowlistedFiles.has(v.split(':')[0].trim()) && !allowlistedViolations.has(v),
+  );
   const total = violations.length;
   const allowlisted = total - fresh.length;
 

@@ -228,6 +228,7 @@ jobs:
           path: |
             e2e-artifacts/
             test-results/
+            !test-results/**/trace.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
             playwright-report/
           retention-days: ${{ fromJSON(env.ARTIFACT_RETENTION_DAYS) }}
 

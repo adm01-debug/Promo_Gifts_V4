@@ -53,6 +53,7 @@ jobs:
           path: |
             playwright-report/
             test-results/
+            !test-results/**/trace.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
           retention-days: 14
 
   thumb-quickview:
@@ -84,4 +85,5 @@ jobs:
           path: |
             playwright-report/
             test-results/
+            !test-results/**/trace.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
           retention-days: 14

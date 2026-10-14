@@ -93,6 +93,7 @@ jobs:
           path: |
             playwright-report/
             test-results/
+            !test-results/**/trace.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
           if-no-files-found: ignore
           retention-days: 14
       - name: Upload HTML diff preview
