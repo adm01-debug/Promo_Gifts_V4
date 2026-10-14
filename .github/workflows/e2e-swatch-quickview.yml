@@ -48,13 +48,19 @@ jobs:
           browsers: 'chromium,${{ matrix.browser }}'
           start-vite: 'false'
       - name: Run swatch→QuickView suite (V1 + V2 + focus/QV)
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results-swatch-${{ matrix.browser }}.json
         run: |
           npx playwright test \
             e2e/catalog/swatch-quickview-list-table.spec.ts \
             e2e/catalog/swatch-quickview-v2-list-table.spec.ts \
             e2e/catalog/swatch-picker-v2-focus-and-quickview.spec.ts \
-            --project=${{ matrix.browser }}-authed \
-            --reporter=line,html
+            --project=${{ matrix.browser }}-authed
+      - name: Check min tests executed  # E42
+        if: always()
+        uses: ./.github/actions/check-min-tests
+        with:
+          results-json: 'playwright-report/results-swatch-${{ matrix.browser }}.json'
       - name: Upload report + traces + videos (${{ matrix.browser }})
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()

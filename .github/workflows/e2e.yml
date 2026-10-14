@@ -192,6 +192,12 @@ jobs:
             } >> "$GITHUB_STEP_SUMMARY"
           fi
 
+      - name: Check min tests executed  # E42
+        if: always()
+        uses: ./.github/actions/check-min-tests
+        with:
+          results-json: 'playwright-report/results.json'
+
       - name: Upload Playwright report
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

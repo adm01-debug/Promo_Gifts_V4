@@ -59,6 +59,12 @@ jobs:
           PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results-error-boundaries.json
         id: e2e_error_boundaries
 
+      - name: Check min tests executed  # E42
+        if: always()
+        uses: ./.github/actions/check-min-tests
+        with:
+          results-json: 'playwright-report/results-error-boundaries.json'
+
       - name: Upload report
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -145,6 +151,12 @@ jobs:
         env:
           E2E_BASE_URL: http://localhost:8080
           PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results-sidebar-tooltips-mobile.json
+
+      - name: Check min tests executed  # E42
+        if: always()
+        uses: ./.github/actions/check-min-tests
+        with:
+          results-json: 'playwright-report/results-quote-flow.json'
 
       - name: Upload full flows report
         if: always()
