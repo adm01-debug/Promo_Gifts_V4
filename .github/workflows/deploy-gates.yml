@@ -260,10 +260,10 @@ jobs:
       (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - name: Validate discount approval, grants and trigger races on PG17
-        run: scripts/test-approved-plan-database.sh
         with:
           persist-credentials: false  # E32
+      - name: Validate discount approval, grants and trigger races on PG17
+        run: scripts/test-approved-plan-database.sh
       - name: Validate guarded quote RPC proposals on pinned isolated PG17
         run: npm run test:quote-rpc:postgres
       - name: Block frontend promotion until canonical quote RPC contract is live
@@ -415,7 +415,7 @@ jobs:
           persist-credentials: false  # E32
       - name: Fetch base SHA for bundle ratchet
         if: github.event_name == 'pull_request' && github.event.pull_request.base.sha != ''
-        run: git fetch origin ${{ github.event.pull_request.base.sha }} --depth=1 2>/dev/null || true
+        run: git fetch --no-tags --depth=1 origin ${{ github.event.pull_request.base.sha }}
       - name: Setup Node CI
         uses: ./.github/actions/setup-node-ci
       - run: npm run build
@@ -465,83 +465,76 @@ jobs:
       - database-integrity
       - secrets-check
       - e2e-smoke
-      - lighthouse
+      # lighthouse removido de needs (Gate 4 optional, continue-on-error:true — E03)
       - seo-sanity
       - restore-cart-rpc-gate
       - build
     steps:
-      - name: Require every blocking gate to pass
+      - name: Require every blocking gate to pass (E03 — tabela explícita por job)
         env:
-          GATE_RESULTS: ${{ join(needs.*.result, ',') }}
-          # database-integrity e restore-cart-rpc-gate podem ser skipped em
-          # PRs do Dependabot/fork (sem acesso a secrets live — E59).
-          DB_INTEGRITY: ${{ needs.database-integrity.result }}
-          RESTORE_CART: ${{ needs.restore-cart-rpc-gate.result }}
-          # dependency-review só roda em PR — skip é esperado em push/dispatch (E97).
-          DEP_REVIEW: ${{ needs.dependency-review.result }}
-          # e2e-smoke só roda quando has_e2e=true — skip esperado sem secrets E2E (E21+E23).
-          E2E_SMOKE: ${{ needs.e2e-smoke.result }}
+          R_SSOT:        ${{ needs.ssot-gate.result }}
+          R_DEP_AUDIT:   ${{ needs.dependency-audit.result }}
+          R_DEP_REVIEW:  ${{ needs.dependency-review.result }}
+          R_LINT:        ${{ needs.lint-typecheck.result }}
+          R_UNIT:        ${{ needs.unit-tests.result }}
+          R_DB_INT:      ${{ needs.database-integrity.result }}
+          R_SECRETS:     ${{ needs.secrets-check.result }}
+          R_E2E:         ${{ needs.e2e-smoke.result }}
+          R_SEO:         ${{ needs.seo-sanity.result }}
+          R_RESTORE:     ${{ needs.restore-cart-rpc-gate.result }}
+          R_BUILD:       ${{ needs.build.result }}
           IS_DEPENDABOT: ${{ github.actor == 'dependabot[bot]' }}
-          IS_DEPENDABOT: ${{ github.actor == 'dependabot[bot]' }}
-          # lighthouse é opcional (continue-on-error:true — Gate 4).
-          # Com continue-on-error:true, failure reporta como 'success' no needs.*.result.
-          # 'cancelled' (cascade de concurrency) pode aparecer e não deve bloquear.
-          LIGHTHOUSE: ${{ needs.lighthouse.result }}
+          # IS_FORK: true quando PR de fork externo (sem acesso a secrets live — E59)
+          IS_FORK:       ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
         run: |
           set -euo pipefail
           FAIL=0
+          fail_gate() { echo "::error::$1" >&2; FAIL=1; }
 
-          # Falha em qualquer gate que quebrou — lighthouse com continue-on-error:true
-          # reporta 'success' mesmo em falha, então este check é correto para todos.
-          if [[ ",${GATE_RESULTS}," == *,failure,* ]]; then
-            echo "Blocking gate failure: ${GATE_RESULTS}" >&2
-            FAIL=1
+          # ── Gates sempre bloqueantes ─────────────────────────────────────────
+          [[ "$R_SSOT"      == "success" ]] || fail_gate "Gate 0 SSOT falhou (${R_SSOT})"
+          [[ "$R_DEP_AUDIT" == "success" ]] || fail_gate "Gate 0.5 Dependency Audit falhou (${R_DEP_AUDIT})"
+          [[ "$R_LINT"      == "success" ]] || fail_gate "Gate 1 Lint+TypeScript falhou (${R_LINT})"
+          [[ "$R_UNIT"      == "success" ]] || fail_gate "Gate 2 Unit Tests falhou (${R_UNIT})"
+          [[ "$R_SEO"       == "success" ]] || fail_gate "Gate 5 SEO Sanity falhou (${R_SEO})"
+          [[ "$R_BUILD"     == "success" ]] || fail_gate "Gate 6 Build falhou (${R_BUILD})"
+          [[ "$R_SECRETS"   == "success" ]] || fail_gate "Gate E23 Secrets Check falhou (${R_SECRETS})"
+
+          # ── Gate 0.6 dependency-review: PR-only (E97) ───────────────────────
+          if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+            [[ "$R_DEP_REVIEW" == "success" ]] || \
+              fail_gate "Gate 0.6 Dependency Review falhou em PR (${R_DEP_REVIEW})"
+          else
+            [[ "$R_DEP_REVIEW" == "success" || "$R_DEP_REVIEW" == "skipped" ]] || \
+              fail_gate "Gate 0.6 Dependency Review falhou (${R_DEP_REVIEW})"
           fi
 
-          # cancelled indica workflow cancelado em cascata.
-          # Lighthouse é Gate 4 opcional — seu cancelled é aceitável.
-          CANCELLED_COUNT=$(echo "${GATE_RESULTS}" | tr ',' '\n' | grep -c "^cancelled$" || true)
-          if [[ "$CANCELLED_COUNT" -gt 0 ]]; then
-            LIGHTHOUSE_CANCELLED=0
-            [[ "$LIGHTHOUSE" == "cancelled" ]] && LIGHTHOUSE_CANCELLED=1
-            if [[ "$CANCELLED_COUNT" -gt "$LIGHTHOUSE_CANCELLED" ]]; then
-              echo "Blocking gate cancelled (excl. lighthouse): ${GATE_RESULTS}" >&2
-              FAIL=1
-            elif [[ "$LIGHTHOUSE_CANCELLED" -eq 1 ]]; then
-              echo "::warning::Lighthouse (Gate 4, opcional) cancelado — não bloqueia."
-            fi
+          # ── Gates 2.5/5.5: skip permitido em Dependabot e forks (E59) ───────
+          if [[ "$IS_DEPENDABOT" == "true" || "$IS_FORK" == "true" ]]; then
+            [[ "$R_DB_INT"  == "success" || "$R_DB_INT"  == "skipped" ]] || \
+              fail_gate "Gate 2.5 DB Integrity falhou (${R_DB_INT})"
+            [[ "$R_RESTORE" == "success" || "$R_RESTORE" == "skipped" ]] || \
+              fail_gate "Gate 5.5 restore-cart falhou (${R_RESTORE})"
+          else
+            [[ "$R_DB_INT"  == "success" ]] || \
+              fail_gate "Gate 2.5 DB Integrity falhou (${R_DB_INT}) — fora de fork/Dependabot"
+            [[ "$R_RESTORE" == "success" ]] || \
+              fail_gate "Gate 5.5 restore-cart falhou (${R_RESTORE}) — fora de fork/Dependabot"
           fi
 
-          # Skipped é aceito APENAS para gates com condicionais explícitas.
-          # Em qualquer outro contexto, skipped é falha.
-          if [[ ",${GATE_RESULTS}," == *,skipped,* ]]; then
-            # Constrói o conjunto de skipped aceitáveis neste contexto
-            ALLOWED_SKIP=0
-            # E21+E23: e2e-smoke é skipped quando secrets E2E ausentes (has_e2e=false)
-            # Válido em qualquer evento (PR, push, dispatch).
-            if [[ "$E2E_SMOKE" == "skipped" ]]; then ALLOWED_SKIP=$((ALLOWED_SKIP+1)); fi
-            if [[ "$IS_DEPENDABOT" == "true" || "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
-              # Para Dependabot e forks: database-integrity e restore-cart-rpc-gate
-              # podem ser skipped (sem secrets). Todos os outros skipped são falha.
-              if [[ "$DB_INTEGRITY" == "skipped" ]]; then ALLOWED_SKIP=$((ALLOWED_SKIP+1)); fi
-              if [[ "$RESTORE_CART" == "skipped" ]]; then ALLOWED_SKIP=$((ALLOWED_SKIP+1)); fi
-            fi
-            # E97: dependency-review é PR-only — skip esperado em push/dispatch
+          # ── Gate 3 e2e-smoke: skip só em PR quando has_e2e=false (E21+E23) ──
+          # Em push para main: E2E_USER_* existem (09/10); skip = falha de configuração.
+          if [[ "$R_E2E" == "skipped" ]]; then
             if [[ "$GITHUB_EVENT_NAME" != "pull_request" ]]; then
-              if [[ "$DEP_REVIEW" == "skipped" ]]; then ALLOWED_SKIP=$((ALLOWED_SKIP+1)); fi
+              fail_gate "Gate 3 e2e-smoke skipped não permitido em push — verifique secrets E2E_USER_EMAIL/PASSWORD"
+            else
+              echo "::warning::Gate 3 e2e-smoke skipped (has_e2e=false em PR)"
             fi
-            # Conta total de skipped
-            TOTAL_SKIP=$(echo "${GATE_RESULTS}" | tr ',' '\n' | grep -c "^skipped$" || true)
-            if [[ "$TOTAL_SKIP" -gt "$ALLOWED_SKIP" ]]; then
-              echo "::error::Gate(s) inesperadamente skipped (${TOTAL_SKIP} skipped, ${ALLOWED_SKIP} permitidos): ${GATE_RESULTS}" >&2
-              FAIL=1
-            elif [[ "$ALLOWED_SKIP" -gt 0 ]]; then
-              echo "::warning::${ALLOWED_SKIP} gate(s) skipped (condicionais: E59/E97/E21+E23)"
-            fi
+          elif [[ "$R_E2E" != "success" ]]; then
+            fail_gate "Gate 3 E2E Smoke falhou (${R_E2E})"
           fi
 
-          if [[ "$FAIL" -eq 1 ]]; then
-            echo "Blocking gate result: ${GATE_RESULTS}" >&2
-            exit 1
+          if [[ "$FAIL" -eq 0 ]]; then
+            echo "✅ Todos os gates de deploy passaram."
           fi
-          echo "All blocking deploy gates passed: ${GATE_RESULTS}"
+          exit "$FAIL"

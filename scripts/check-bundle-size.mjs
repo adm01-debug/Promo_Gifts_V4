@@ -215,6 +215,10 @@ if (CHECK_RATCHET && currentBaselineRaw) {
       console.log('ℹ️  Baseline aumentado — label `ratchet-override` presente; permitido.');
     }
   } catch (e) {
+    if (process.env.GITHUB_EVENT_NAME === 'pull_request') {
+      console.error(`❌ Ratchet check: não foi possível ler baseline da base (${baseRef}): ${e.message}`);
+      process.exit(1);
+    }
     console.warn(`⚠️  Ratchet check: não foi possível comparar baseline com ${baseRef}: ${e.message}`);
   }
 }

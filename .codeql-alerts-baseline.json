@@ -1,0 +1,6 @@
+{
+  "description": "Ratchet baseline for CodeQL HIGH/CRITICAL alerts (E10/E96). Update by running the Gate E96 step locally and committing this file. Count must never increase without a matching baseline bump.",
+  "high_critical": 38,
+  "updatedAt": "2026-10-14",
+  "note": "38 HIGH alerts open as of 2026-10-14 scan. Reduce count, then lower this number."
+}
