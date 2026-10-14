@@ -20,7 +20,8 @@ name: Deploy Gates
 #  1.9.1 console-baseline — console.* não aumenta sem justificativa
 #  1.10 indexed-access    — indexed-access ratchet (advisory)
 #  1.11 workflow-contracts — check-workflow-contracts --gate (C10–C23)
-#  1.12 contract-coverage  — soft-delete policy + contrato de cobertura
+#  1.12 secrets-inventory  — secrets/vars referenciados todos documentados em SEGREDOS.md (E40/E98)
+#  1.13 contract-coverage  — soft-delete policy + contrato de cobertura
 #  1.13 policies-baseline  — policies live vs baseline
 #  E23  secrets-check      — verifica presença de secrets E2E (saída has_e2e)
 #  2    unit-tests         — vitest
@@ -245,6 +246,11 @@ jobs:
         # "bloqueante" mas não bloqueava nada (workflow-lint ficava vermelho
         # em main sem travar deploy).
         run: node scripts/check-workflow-contracts.mjs --gate
+      # E40/E98 — Inventário de segredos documentado (bloqueante)
+      # Garante que todo secrets.NAME / vars.NAME referenciado nos workflows
+      # está documentado em docs/ci/SEGREDOS.md.
+      - name: Gate 1.12 — Secrets inventory (bloqueante)
+        run: node scripts/check-secrets-inventory.mjs --gate
 
   unit-tests:
     name: Gate 2 - Unit Tests
