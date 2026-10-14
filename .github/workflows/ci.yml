@@ -27,11 +27,11 @@ jobs:
       E2E_HAS_CREDS: ${{ secrets.E2E_USER_EMAIL != '' && secrets.E2E_USER_PASSWORD != '' }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - name: Setup Node CI
         uses: ./.github/actions/setup-node-ci
 
-        with:
-          persist-credentials: false  # E32
       - name: Dependency vulnerability policy
         run: npm run check:dependency-audit
         
@@ -155,7 +155,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - name: Audit Credentials
-        run: npm run audit:credentials
         with:
           persist-credentials: false  # E32
+      - name: Audit Credentials
+        run: npm run audit:credentials

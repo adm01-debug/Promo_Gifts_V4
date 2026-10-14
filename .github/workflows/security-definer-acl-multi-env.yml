@@ -79,10 +79,10 @@ jobs:
       PGURL: postgresql://postgres@localhost:5432/postgres
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - name: Create exact and near-match fixtures
-        run: psql "$PGURL" -X -f tests/security/sql/audit_security_definer_acl_fixture.sql
         with:
           persist-credentials: false  # E32
+      - name: Create exact and near-match fixtures
+        run: psql "$PGURL" -X -f tests/security/sql/audit_security_definer_acl_fixture.sql
       - name: Apply forward-only ACL audit migration
         run: psql "$PGURL" -X -v ON_ERROR_STOP=1 -f supabase/migrations/20260909210000_audit_security_definer_acl_allow_public_endpoints.sql
       - name: Assert exact signatures remain narrow

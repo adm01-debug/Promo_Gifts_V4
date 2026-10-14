@@ -58,9 +58,10 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed # v2
         with:
           persist-credentials: false  # E32
+      - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed # v2
+        with:
           deno-version: v2.x
       - name: Test transactional local import logic
         run: deno test --allow-net supabase/functions/magazine-import-local/logic.test.ts
