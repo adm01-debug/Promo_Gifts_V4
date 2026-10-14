@@ -98,7 +98,9 @@ jobs:
 
       - name: Run E2E — approved → V4 → CRM (sem mocking)
         if: steps.guard.outputs.skip != 'true'
-        run: npx playwright test e2e/flows/28-crm-callback-approved.spec.ts --project=chromium-smoke --retries=1 --workers=1
+        # E16: chromium-smoke → chromium-public; o spec específico não usa o filtro @smoke
+        # do projeto chromium-smoke (grep: /@smoke/) — que silenciaria o spec se não tagged.
+        run: npx playwright test e2e/flows/28-crm-callback-approved.spec.ts --project=chromium-public --retries=1 --workers=1
 
       - name: Upload Playwright report
         if: always() && steps.guard.outputs.skip != 'true'

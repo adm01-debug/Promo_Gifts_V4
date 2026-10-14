@@ -337,6 +337,11 @@ jobs:
         uses: ./.github/actions/setup-node-ci
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
+      # E16: checks de smoke migrados de e2e.yml (único dono de chromium-smoke).
+      - name: Validar doc de auditoria do smoke (drift check)
+        run: node scripts/e2e-smoke-coverage-doc.mjs --check
+      - name: Validar tags @smoke no spec do gate
+        run: node scripts/check-smoke-tags.mjs
       - name: Run Playwright smoke tests
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
