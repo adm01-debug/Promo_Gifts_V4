@@ -156,6 +156,34 @@ jobs:
           echo "::error title=Header sticky regression::O Header global deixou de ser sticky em alguma rota/viewport. Spec: e2e/flows/22-header-sticky.spec.ts. Causa raiz típica: 'overflow' / 'transform' / 'filter' em ancestral do <header> em src/components/layout/MainLayout.tsx criando scroll container ou stacking context indevido. Veja o artifact 'playwright-report' (screenshot + vídeo + trace) para a rota específica."
           exit 1
 
+      # ─── CARRINHOS URL-STATE ─────────────────────────────────────────────
+      # E15: migrado de playwright.yml (agora removido). Specs de URL-state
+      # de carrinhos e orçamentos requerem autenticação (chromium-authed).
+      # --workers=1 e --retries=2 por serem specs de estado de URL que
+      # dependem de localStorage — paralelismo causava interferência.
+      - name: 🛒 Run /carrinhos & /orcamentos URL-state E2E
+        id: e2e_carrinhos_urlstate
+        if: steps.e2e_smoke.outcome == 'success' && steps.e2e_header_sticky.outcome == 'success' && env.E2E_USER_EMAIL != ''
+        run: |
+          npx playwright test \
+            e2e/carrinhos/list-url-state-restore.spec.ts \
+            e2e/carrinhos/list-url-state-overdue-chip.spec.ts \
+            e2e/carrinhos/list-url-state-search-debounce.spec.ts \
+            e2e/carrinhos/list-url-state-clear-filters.spec.ts \
+            e2e/orcamentos/list-url-state-restore.spec.ts \
+            --project=chromium-authed \
+            --retries=2 \
+            --workers=1
+        env:
+          E2E_BASE_URL: http://localhost:8080
+        continue-on-error: true
+
+      - name: 🛑 Fail se carrinhos URL-state falhou
+        if: steps.e2e_carrinhos_urlstate.outcome == 'failure'
+        run: |
+          echo "::error title=Carrinhos URL-state regression::Specs de URL-state em /carrinhos ou /orcamentos falharam. Veja artifact 'playwright-report' para screenshots/trace."
+          exit 1
+
       # ─── REGRESSION: registra TUDO ──────────────────────────────────────
       # SEM --max-failures: queremos diagnóstico completo. SEM --forbid-only
       # (já validado no smoke). Reporter `line` é compacto e mostra todos
@@ -163,7 +191,7 @@ jobs:
       # Requer E2E_USER_EMAIL configurado — specs autenticados falham sem
       # credenciais. Quando ausente, step é skipped e o job passa normalmente.
       - name: Run E2E regression (cobertura completa — registra todas as falhas)
-        if: steps.e2e_smoke.outcome == 'success' && steps.e2e_header_sticky.outcome == 'success' && env.E2E_USER_EMAIL != ''
+        if: steps.e2e_smoke.outcome == 'success' && steps.e2e_header_sticky.outcome == 'success' && steps.e2e_carrinhos_urlstate.outcome != 'failure' && env.E2E_USER_EMAIL != ''
         run: |
           # Sem credenciais de autenticação, limita à suíte pública (routes-public)
           # para evitar que centenas de testes autenticados falhem com redirect para

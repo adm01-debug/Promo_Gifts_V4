@@ -1,17 +1,21 @@
-name: Full CI
+name: Nightly Full CI
 
+# E15: renomeado de full-ci.yml → nightly-full.yml.
+# Antes rodava em PR + push (duplicando deploy-gates.yml). Agora só noturno
+# (schedule) e dispatch manual — cobertura completa de vitest + E2E shardado
+# custa ~30min+, inadequado para cada PR.
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  schedule:
+    # Todo dia às 02:43 UTC (fora do horário de pico de PRs)
+    - cron: '43 2 * * *'
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: full-ci-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  group: nightly-full-ci-${{ github.ref }}
+  cancel-in-progress: false  # E19: schedule nunca cancelado
 
 
 defaults:

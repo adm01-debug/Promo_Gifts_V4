@@ -314,7 +314,7 @@ sequência; se qualquer um falhar, o deploy é bloqueado.
 | Gate 1.8 | Detect accidentally base64-encoded files — texto encodado em base64 acidentalmente | sim |
 | Gate 1.9 | Dívida técnica — ratchets TODO/FIXME/`as any`/file-size não aumentam | sim |
 | Gate 1.9.1 | `console.*` baseline — número de chamadas não aumenta sem justificativa | sim |
-| Gate 1.10 | indexed-access ratchet — `object[key]` não aumenta (advisory) | opcional |
+| Gate 1.10 | indexed-access ratchet — `object[key]` não aumenta (E15: promovido de advisory para bloqueante) | sim |
 | Gate 1.11 | Workflow contracts `check-workflow-contracts --gate` (C10–C23) | sim |
 | Gate 1.12 | Contract coverage + soft-delete policy commitada | sim |
 | Gate 1.13 | RLS policies baseline vs pg_policies live (bloqueante com credenciais) | sim |
@@ -380,7 +380,7 @@ linha nesse arquivo com dono, escopo e rotação declarados.
 | `.github/CODEOWNERS` | Proteção de revisão obrigatória |
 | `scripts/sentinel-check.sh` | Guarda do Branch Protection Sentinel |
 | `.github/workflows/deploy-gates.yml` | Pipeline de deploy com Gate 0 |
-| `.github/workflows/quality-gate.yml` | Quality gate com Gate 0 |
+| ~~`.github/workflows/quality-gate.yml`~~ | Deletado em E15 — gates migrados para deploy-gates.yml (Gates 1.15/1.16) |
 | `docs/SCHEMA_REFERENCE.md` | Retrato pg_catalog do BD canônico — REGRA #8 |
 
 ## Frescura do Grafo
