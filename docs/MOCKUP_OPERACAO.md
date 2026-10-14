@@ -26,7 +26,7 @@ Passos:
    pode chegar pela URL (`?product_id=` / `?technique=`, `useMockupGenerator.ts:291-321`) — é o
    caminho usado pelo botão "Gerar Mockup" do catálogo (`src/components/quotes/QuickQuoteFAB.tsx:112`).
 2. **Upload do logo** por área de personalização. Validação no cliente: só imagem, máx 10 MB,
-   SVG recusado (`.tsx` `useMockupGenerator.ts:439-482`). O logo ainda é um `data:` URL neste ponto.
+   SVG recusado (`useMockupGenerator.ts:439-482`). O logo ainda é um `data:` URL neste ponto.
 3. **Gerar (composição sem IA).** `generateMockup` (`useMockupGenerator.ts:526`) chama
    `generateMockupApi` (`src/hooks/mockup/mockupGenerationService.ts:418`), que invoca a Edge
    Function `generate-mockup` (`mockupGenerationService.ts:349`). A função é um **compositor
