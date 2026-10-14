@@ -44,9 +44,33 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-
         with:
           persist-credentials: false  # E32
+          fetch-depth: ${{ github.event_name == 'pull_request' && 2 || 1 }}
+
+      - name: Derivar escopo de mutações a partir do diff (PR)
+        id: scope
+        if: github.event_name == 'pull_request'
+        run: |
+          # E81: --only derivado do diff em PR; completo no cron.
+          # M1-M3 → tests/utils/tailwindRings.ts
+          # M4-M6 → src/pages/magazine/components/PagesRail.tsx
+          # Qualquer outro arquivo no paths → todas
+          CHANGED=$(git diff --name-only HEAD^ 2>/dev/null || echo "")
+          IDS=""
+          echo "$CHANGED" | grep -qF "tests/utils/tailwindRings.ts"           && IDS="${IDS}M1,M2,M3,"
+          echo "$CHANGED" | grep -qF "src/pages/magazine/components/PagesRail.tsx" && IDS="${IDS}M4,M5,M6,"
+          OTHER=$(echo "$CHANGED" \
+            | grep -vF "tests/utils/tailwindRings.ts" \
+            | grep -vF "src/pages/magazine/components/PagesRail.tsx" \
+            | grep -c . || true)
+          if [ "${OTHER:-0}" -gt "0" ]; then
+            IDS="M1,M2,M3,M4,M5,M6"
+          fi
+          CLEAN=$(echo "$IDS" | tr ',' '\n' | sort -u | grep -v '^$' | tr '\n' ',' | sed 's/,$//')
+          echo "only=${CLEAN}" >> "$GITHUB_OUTPUT"
+          echo "Mutações selecionadas: ${CLEAN:-todas}"
+
       - name: Setup Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -60,7 +84,8 @@ jobs:
         env:
           CI: 'true'
           NODE_ENV: 'test'
-          INPUT_ONLY: ${{ github.event.inputs.only }}
+          # E81: PR → escopo derivado do diff; dispatch → manual; cron → vazio (todas)
+          INPUT_ONLY: ${{ steps.scope.outputs.only || github.event.inputs.only }}
         run: |
           ONLY="$INPUT_ONLY"
           if [ -n "$ONLY" ]; then
