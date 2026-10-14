@@ -44,7 +44,7 @@ concurrency:
 jobs:
   project:
     name: Projeta crescimento a partir de ops.table_size_history
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     env:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}

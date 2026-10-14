@@ -40,7 +40,7 @@ permissions:
 jobs:
   collapse-e2e:
     name: LocationPanel collapse (authed)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
       UPDATE_SNAPSHOTS: ${{ inputs.update_snapshots }}

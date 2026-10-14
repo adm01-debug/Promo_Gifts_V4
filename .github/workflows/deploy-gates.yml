@@ -38,7 +38,7 @@ jobs:
   # ============================================================
   ssot-gate:
     name: Gate 0 - SSOT Supabase (project ID canônico)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 3
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -54,7 +54,7 @@ jobs:
 
   dependency-audit:
     name: Gate 0.5 - Dependency Audit
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     needs: [ssot-gate]
     steps:
@@ -66,7 +66,7 @@ jobs:
 
   dependency-review:
     name: Gate 0.6 - Dependency Review
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     needs: [ssot-gate]
     if: github.event_name == 'pull_request'
@@ -80,7 +80,7 @@ jobs:
 
   lint-typecheck:
     name: Gate 1 - Lint + TypeScript
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     needs: [ssot-gate]
     env:
@@ -220,7 +220,7 @@ jobs:
 
   unit-tests:
     name: Gate 2 - Unit Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     needs: [ssot-gate]
     steps:
@@ -238,7 +238,7 @@ jobs:
 
   database-integrity:
     name: Gate 2.5 - PostgreSQL Transactional Integrity
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     needs: [ssot-gate]
     # Dependabot e forks não têm acesso a secrets live — marca skipped
@@ -270,7 +270,7 @@ jobs:
 
   e2e-smoke:
     name: Gate 3 - E2E Smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     needs: [ssot-gate, secrets-check]
     if: needs.secrets-check.outputs.has_e2e == 'true'
@@ -309,7 +309,7 @@ jobs:
 
   lighthouse:
     name: Gate 4 - Lighthouse CI
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     needs: [ssot-gate]
     # Gate opcional (CLAUDE.md) — falha não bloqueia deploy-ready.
@@ -337,7 +337,7 @@ jobs:
 
   seo-sanity:
     name: Gate 5 - SEO Sanity Check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     needs: [ssot-gate]
     steps:
@@ -351,7 +351,7 @@ jobs:
 
   restore-cart-rpc-gate:
     name: Gate 5.5 - RPC restore_seller_cart presente no canônico
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 3
     needs: [ssot-gate]
     # Dependabot e forks não têm acesso a SERVICE_ROLE_KEY — skipa (E59).
@@ -373,7 +373,7 @@ jobs:
 
   build:
     name: Gate 6 - Build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     # Roda mesmo quando restore-cart-rpc-gate é skipped (Dependabot/fork sem secrets).
     # Só bloqueia se restore-cart-rpc-gate falhou; skip é tratado como ausência de dado.
@@ -431,7 +431,7 @@ jobs:
   deploy-ready:
     name: Gate Final - Deploy Ready
     if: always()
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 2
     needs:
       - ssot-gate

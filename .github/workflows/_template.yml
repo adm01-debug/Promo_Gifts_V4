@@ -28,7 +28,7 @@ jobs:
   # R8: ID de job em snake_case estável — mudar o ID quebra required checks silenciosamente.
   build_and_test:
     name: Build & Test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # R3: timeout obrigatório — gates ≤ 10 min, E2E ≤ 30 min, crons ≤ 60 min.
     timeout-minutes: 10
     steps:

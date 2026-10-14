@@ -59,7 +59,7 @@ env:
 jobs:
   dry-run:
     name: Aplica patch em cópia e valida
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     # workflow_run só faz sentido quando a regeneração foi bem-sucedida.
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}

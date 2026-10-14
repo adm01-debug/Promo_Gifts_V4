@@ -29,7 +29,7 @@ env:
 jobs:
   confirm-dialog:
     name: ConfirmDialog · unit + a11y + visual
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -65,7 +65,7 @@ jobs:
 
   alert-dialog:
     name: AlertDialog · visual + no-clip H/V
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -99,7 +99,7 @@ jobs:
 
   optimized-image:
     name: OptimizedImage · unit
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4

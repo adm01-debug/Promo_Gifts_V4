@@ -36,7 +36,7 @@ env:
 jobs:
   e2e-crm-callback:
     name: approved → V4 → CRM (no-mock)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
       CI: "true"

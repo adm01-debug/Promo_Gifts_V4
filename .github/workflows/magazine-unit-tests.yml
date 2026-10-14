@@ -49,7 +49,7 @@ permissions:
 jobs:
   edge-import-contract:
     name: Deno Magazine import contract
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -61,7 +61,7 @@ jobs:
 
   unit-tests:
     name: Vitest Unit Tests (Magazine)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
 
     steps:
@@ -115,7 +115,7 @@ jobs:
 
   postgres-contracts:
     name: PostgreSQL 17 RPC Contracts (Magazine)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -124,7 +124,7 @@ jobs:
 
   security-definer-acl:
     name: SECURITY DEFINER ACL Gate
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - name: Checkout
@@ -160,7 +160,7 @@ jobs:
   magazine-tests-ok:
     name: Magazine Tests OK
     needs: [edge-import-contract, unit-tests, postgres-contracts, security-definer-acl]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     if: always()
     steps:

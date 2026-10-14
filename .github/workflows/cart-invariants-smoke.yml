@@ -53,7 +53,7 @@ jobs:
   # ─────────────────────────────────────────────────────────────────────
   prepare-matrix:
     name: prepare-matrix
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     outputs:
       matrix: ${{ steps.build.outputs.matrix }}
@@ -104,7 +104,7 @@ jobs:
   # ─────────────────────────────────────────────────────────────────────
   invariants-smoke:
     name: cart-invariants (${{ matrix.project }} · shard ${{ matrix.shard }}/${{ matrix.total_shards }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [prepare-matrix]
     timeout-minutes: 15
     strategy:
@@ -238,7 +238,7 @@ jobs:
   # ─────────────────────────────────────────────────────────────────────
   invariants-summary:
     name: cart-invariants-summary
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     needs: [prepare-matrix, invariants-smoke]
     if: always()

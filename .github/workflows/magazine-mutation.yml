@@ -33,7 +33,7 @@ permissions:
 jobs:
   mutation:
     name: Mutation Score (M1–M6)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
 
     steps:
@@ -73,7 +73,7 @@ jobs:
   mutation-ok:
     name: Magazine Mutation OK
     needs: [mutation]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     if: always()
     steps:

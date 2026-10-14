@@ -33,7 +33,7 @@ permissions:
 
 jobs:
   kit-coverage-integration:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     env:
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}

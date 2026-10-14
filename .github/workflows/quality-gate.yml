@@ -16,7 +16,7 @@ concurrency:
 jobs:
   quality-gate:
     name: TypeScript + ESLint Gate
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     env:
       NODE_OPTIONS: --max-old-space-size=4096
@@ -196,7 +196,7 @@ jobs:
   # GATE 4: Unit tests (fast — no network)
   unit-tests:
     name: Vitest Unit Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
 
     steps:

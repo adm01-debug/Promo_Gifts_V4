@@ -41,6 +41,7 @@ on:
     paths:
       - 'supabase/migrations/**'
       - 'supabase/config.toml'
+      - '.github/workflows/db-schema-drift-check.yml'
   workflow_dispatch:
 
 permissions:
@@ -54,7 +55,7 @@ concurrency:
 jobs:
   drift:
     name: Migrations x Canonical schema
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 12
     env:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}

@@ -29,6 +29,7 @@ on:
       - 'tailwind.config.ts'
       - 'src/index.css'
       - 'e2e/visual/**'
+      - '.github/workflows/e2e-visual-preview-button.yml'
   workflow_dispatch:
     inputs:
       update_baselines:
@@ -56,7 +57,7 @@ permissions:
 jobs:
   visual:
     name: Visual snapshots + axe contrast
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     # G-H3: fork guard — pull_request de forks não deve escrever no repo
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository

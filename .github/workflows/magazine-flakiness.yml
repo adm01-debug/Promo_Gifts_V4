@@ -54,7 +54,7 @@ permissions:
 jobs:
   flakiness:
     name: Magazine + Rings Flakiness (repeat × N)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
 
     steps:
@@ -113,7 +113,7 @@ jobs:
   flakiness-ok:
     name: Magazine Flakiness OK
     needs: [flakiness]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     if: always()
     steps:

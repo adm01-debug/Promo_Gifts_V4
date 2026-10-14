@@ -45,7 +45,7 @@ concurrency:
 jobs:
   check:
     name: Compara ops.wraparound_monitor_log contra THRESHOLDS
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     env:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}

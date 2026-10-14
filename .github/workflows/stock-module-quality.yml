@@ -38,7 +38,7 @@ permissions:
 jobs:
   unit-and-coverage:
     name: unit + fuzz/stress + coverage
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -93,7 +93,7 @@ jobs:
 
   benchmark-10k:
     name: benchmark 10k SKUs (antes/depois)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     needs: unit-and-coverage
     steps:
@@ -141,7 +141,7 @@ jobs:
 
   e2e-cross-browser:
     name: e2e ${{ matrix.project }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     strategy:
       fail-fast: false

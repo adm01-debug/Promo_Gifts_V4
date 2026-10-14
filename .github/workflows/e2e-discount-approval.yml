@@ -37,7 +37,7 @@ concurrency:
 jobs:
   discount-approval-e2e:
     name: Playwright — 04c* (discount approval)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
       E2E_BASE_URL: http://localhost:8080
@@ -98,7 +98,7 @@ jobs:
 
   discount-widget-badge-live:
     name: Playwright — 04ck (badge pendentes ao vivo) ×3
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     env:
       E2E_BASE_URL: http://localhost:8080

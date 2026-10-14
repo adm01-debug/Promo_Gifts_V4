@@ -33,7 +33,7 @@ permissions:
 jobs:
   update-snapshots:
     name: Regerar baselines (--update-snapshots)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     permissions:
       contents: write

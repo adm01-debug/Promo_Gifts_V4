@@ -55,7 +55,7 @@ permissions:
 jobs:
   acl-migration-pg17:
     name: ACL migration contract — PostgreSQL 17
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     services:
       postgres:
@@ -83,7 +83,7 @@ jobs:
 
   acl-check:
     name: "ACL check — ${{ matrix.env_name }}"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     # `environment:` escopa os secrets ao ambiente correspondente.
     environment: ${{ matrix.env_name }}

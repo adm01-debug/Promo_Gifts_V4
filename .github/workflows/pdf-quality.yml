@@ -13,6 +13,7 @@ on:
       - 'src/components/pdf/**'
       - 'scripts/qa/generate-proposal-pdf.mjs'
       - 'qa/pdf-color-allowlist.json'
+      - '.github/workflows/pdf-quality.yml'
   workflow_dispatch:
     inputs:
       fixture_id:
@@ -34,7 +35,7 @@ env:
 
 jobs:
   pdf-suite:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       contents: read

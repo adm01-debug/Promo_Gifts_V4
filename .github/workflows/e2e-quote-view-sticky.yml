@@ -33,7 +33,7 @@ env:
 
 jobs:
   overflow-static-gate:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 3
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -44,7 +44,7 @@ jobs:
 
   sticky-and-scroll:
     needs: overflow-static-gate
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     strategy:
       fail-fast: false
@@ -90,7 +90,7 @@ jobs:
     name: Notificar falha — Quote View Sticky (cron)
     if: failure() && github.event_name == 'schedule'
     needs: [overflow-static-gate, sticky-and-scroll]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
@@ -131,7 +131,7 @@ jobs:
     name: Fechar issue — Quote View Sticky (cron recuperado)
     if: success() && github.event_name == 'schedule'
     needs: [overflow-static-gate, sticky-and-scroll]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0

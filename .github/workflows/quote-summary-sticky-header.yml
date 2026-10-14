@@ -32,7 +32,7 @@ permissions:
 jobs:
   sticky-header-e2e:
     name: Quote Summary sticky header — Playwright (e2e + visual)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     permissions:
       contents: read

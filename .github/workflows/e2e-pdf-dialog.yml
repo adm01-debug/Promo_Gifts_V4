@@ -50,7 +50,7 @@ env:
 jobs:
   pdf-dialog:
     name: PDF dialog + watermark pixel-diff
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     env:
       CI: 'true'

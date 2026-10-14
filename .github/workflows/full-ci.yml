@@ -16,7 +16,7 @@ concurrency:
 jobs:
   quality-gate:
     name: Lint, Typecheck & Coverage
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
       NODE_OPTIONS: --max-old-space-size=4096
@@ -81,7 +81,7 @@ jobs:
 
   e2e-tests:
     name: Playwright E2E
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: quality-gate
     timeout-minutes: 20
     strategy:
@@ -157,7 +157,7 @@ jobs:
 
   audit-report:
     name: Final Audit Report
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     needs: [quality-gate, e2e-tests]
     steps:

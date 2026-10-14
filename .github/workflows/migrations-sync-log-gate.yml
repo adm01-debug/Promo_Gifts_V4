@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'supabase/migrations/**'
+      - '.github/workflows/migrations-sync-log-gate.yml'
 
 permissions:
   contents: read
@@ -16,7 +17,7 @@ concurrency:
 jobs:
   gate:
     name: Recibo de migration em MIGRATIONS_SYNC_LOG.md
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - name: Checkout

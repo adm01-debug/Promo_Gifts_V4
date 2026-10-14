@@ -24,6 +24,7 @@ on:
     paths:
       - 'supabase/migrations/**'
       - 'src/integrations/supabase/**'
+      - '.github/workflows/supabase-security-gate.yml'
 
 permissions:
   contents: read
@@ -35,7 +36,7 @@ concurrency:
 jobs:
   supabase-security-gate:
     name: Gate 5 — DB Security Audit
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4

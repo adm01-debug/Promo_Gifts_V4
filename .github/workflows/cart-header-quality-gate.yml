@@ -65,7 +65,7 @@ permissions:
 jobs:
   fuzz:
     name: CartHeader fuzz + notas internas
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -122,7 +122,7 @@ jobs:
 
   rls-integration:
     name: seller_carts RLS (Deno, falha em push sem credenciais)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 6
     # Só executa quando os segredos existirem. Sem eles o job é pulado
     # (não falha), mantendo o gate estável em PRs de contribuidores externos.

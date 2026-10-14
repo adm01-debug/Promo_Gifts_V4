@@ -62,7 +62,7 @@ jobs:
   # ─────────────────────────────────────────────────────────────────────────
   changes:
     name: changes
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     outputs:
       unit: ${{ steps.filter.outputs.unit }}
@@ -94,7 +94,7 @@ jobs:
   # ─────────────────────────────────────────────────────────────────────────
   required-checks-drift:
     name: required-checks-drift
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -112,7 +112,7 @@ jobs:
     needs: changes
     # PR: só roda se o bucket "unit" mudou. push/dispatch: sempre roda.
     if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.unit == 'true' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     env:
       VITE_SUPABASE_URL: https://placeholder.supabase.co
@@ -159,7 +159,7 @@ jobs:
     needs: [changes, typecheck-unit]
     # PR: só roda se o bucket "e2e" mudou. push/dispatch: sempre roda.
     if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.e2e == 'true' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     env:
       CI: 'true'

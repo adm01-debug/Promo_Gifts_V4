@@ -30,7 +30,7 @@ permissions:
 jobs:
   e2e:
     name: E2E · chromium-authed
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
       E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}

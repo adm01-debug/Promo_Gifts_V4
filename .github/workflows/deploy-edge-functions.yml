@@ -62,7 +62,7 @@ concurrency:
 jobs:
   list-functions:
     name: Detect functions to deploy
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     outputs:
       functions: ${{ steps.detect.outputs.functions }}
@@ -184,7 +184,7 @@ jobs:
     name: Deploy ${{ matrix.fn }}
     needs: list-functions
     if: ${{ !inputs.dry_run && needs.list-functions.outputs.count != '0' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     strategy:
       fail-fast: false
@@ -252,7 +252,7 @@ jobs:
     name: Verify deployment
     needs: [list-functions, deploy]
     if: always() && !inputs.dry_run
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - name: Final summary
@@ -278,7 +278,7 @@ jobs:
     name: Registrar recibo do deploy (E66)
     needs: [list-functions, deploy]
     if: needs.deploy.result == 'success'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       contents: write

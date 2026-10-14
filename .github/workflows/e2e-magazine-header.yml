@@ -45,7 +45,7 @@ env:
 jobs:
   e2e-magazine-header:
     name: E2E — Magazine Header (authed)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
 
     steps:
@@ -127,7 +127,7 @@ jobs:
   magazine-header-ok:
     name: Magazine Header OK
     needs: [e2e-magazine-header]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     if: always()
     steps:

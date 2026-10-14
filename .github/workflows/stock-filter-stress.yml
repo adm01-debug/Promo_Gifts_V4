@@ -35,7 +35,7 @@ concurrency:
 jobs:
   stress:
     name: stock-filter stress (PR=5k / nightly=25k)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
       # Default PR

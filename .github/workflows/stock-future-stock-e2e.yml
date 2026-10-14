@@ -26,7 +26,7 @@ concurrency:
 jobs:
   unit-and-fuzz:
     name: Unit + fuzz (useFutureStockPreference)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -68,7 +68,7 @@ jobs:
 
   e2e:
     name: E2E ${{ matrix.browser }} (functional + a11y)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     strategy:
       fail-fast: false
@@ -104,7 +104,7 @@ jobs:
 
   visual:
     name: Visual regression (Chromium, multi-viewport × DPR)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     # G-H3: fork guard — pull_request de forks não deve escrever no repo
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository

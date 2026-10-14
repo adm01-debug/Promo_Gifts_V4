@@ -55,7 +55,7 @@ concurrency:
 jobs:
   verify-merge-pattern:
     name: Verify push to main matches accepted patterns
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -233,7 +233,7 @@ jobs:
   # ============================================================================
   check-protection-config:
     name: Verify Branch Protection is enabled on main
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
       contents: read

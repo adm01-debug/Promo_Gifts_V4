@@ -43,7 +43,7 @@ permissions:
 jobs:
   lint-typecheck:
     name: "Gate 1 — Lint & Typecheck"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -70,7 +70,7 @@ jobs:
 
   unit-tests-freight:
     name: "Gate 2 — Unit Tests (freight-quest)"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     needs: lint-typecheck
     steps:
@@ -110,7 +110,7 @@ jobs:
 
   integration-tests-freight:
     name: "Gate 3 — Integration Tests (freight-quest)"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     needs: unit-tests-freight
     steps:
@@ -149,7 +149,7 @@ jobs:
 
   fuzz-tests:
     name: "Gate 4 — Fuzz & Adversarial Validation"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     needs: lint-typecheck
     steps:
@@ -178,7 +178,7 @@ jobs:
 
   e2e-smoke:
     name: "Gate 5 — E2E Smoke (Playwright)"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     needs: [unit-tests-freight, integration-tests-freight]
     steps:
@@ -228,7 +228,7 @@ jobs:
 
   coverage-gate:
     name: "Gate 6 — Coverage Threshold"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     needs: lint-typecheck
     steps:
@@ -271,7 +271,7 @@ jobs:
 
   load-test-dry:
     name: "Gate 7 — Load Test (dry-run)"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     needs: [unit-tests-freight, integration-tests-freight]
     steps:
@@ -300,7 +300,7 @@ jobs:
 
   security-audit:
     name: "Gate 8 — Security & Credential Audit"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     needs: lint-typecheck
     steps:
@@ -339,7 +339,7 @@ jobs:
 
   regression-suite:
     name: "Gate 9 — Regression Suite"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     needs: lint-typecheck
     steps:
@@ -362,7 +362,7 @@ jobs:
 
   property-tests:
     name: "Gate 10 — Property-Based Tests"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     needs: lint-typecheck
     steps:
@@ -387,7 +387,7 @@ jobs:
 
   quality-summary:
     name: "Quality Gates Summary"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     if: always()
     needs:

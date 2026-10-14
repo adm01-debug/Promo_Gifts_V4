@@ -39,7 +39,7 @@ permissions:
 jobs:
   preflight:
     name: 1. Preflight (read-only)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       contents: read
@@ -77,7 +77,7 @@ jobs:
   apply:
     name: 2. Apply (requer aprovação do environment production)
     needs: preflight
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     environment: production
     permissions:
@@ -180,7 +180,7 @@ jobs:
   post-check:
     name: 3. Pós-check (read-only)
     needs: apply
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -197,7 +197,7 @@ jobs:
   receipt:
     name: 4. Recibo (abre PR em MIGRATIONS_SYNC_LOG.md)
     needs: [apply, post-check]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       contents: write

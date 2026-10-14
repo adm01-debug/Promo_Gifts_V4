@@ -25,7 +25,7 @@ concurrency:
 jobs:
   unit:
     name: Unit — Zod schemas
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -47,7 +47,7 @@ jobs:
 
   smoke:
     name: Smoke — HTTP against supabase functions serve
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: unit
     # Só roda em PRs do próprio repo ou workflow_dispatch (forks não têm acesso a secrets,
     # e supabase CLI exige tokens válidos pra subir o stack)

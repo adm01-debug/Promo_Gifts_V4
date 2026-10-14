@@ -43,7 +43,7 @@ env:
 jobs:
   print-cross-browser:
     name: Print fallback (${{ matrix.project }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     strategy:
       fail-fast: false
@@ -94,7 +94,7 @@ jobs:
     name: Notificar falha — PDF Cross-Browser (cron)
     if: failure() && github.event_name == 'schedule'
     needs: [print-cross-browser]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
@@ -135,7 +135,7 @@ jobs:
     name: Fechar issue — PDF Print cross-browser (cron recuperado)
     if: success() && github.event_name == 'schedule'
     needs: [print-cross-browser]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0

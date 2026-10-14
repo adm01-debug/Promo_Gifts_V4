@@ -32,7 +32,7 @@ env:
 jobs:
   freight_e2e_staging:
     name: freight-e2e-staging (chromium-public)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30  # R3 — E2E ≤ 30 min
 
     steps:

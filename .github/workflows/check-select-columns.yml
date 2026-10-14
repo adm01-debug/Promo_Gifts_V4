@@ -16,6 +16,7 @@ on:
       - 'src/integrations/supabase/types.ts'
       - 'scripts/check-select-columns.mjs'
       - 'scripts/extract-types-inventory.mjs'
+      - '.github/workflows/check-select-columns.yml'
   push:
     branches: [main]
 
@@ -29,7 +30,7 @@ concurrency:
 jobs:
   select_columns:
     name: Check select() columns vs types.ts
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
