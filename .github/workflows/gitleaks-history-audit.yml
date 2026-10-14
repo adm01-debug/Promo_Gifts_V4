@@ -107,6 +107,6 @@ jobs:
                 repo: context.repo.repo,
                 title,
                 body,
-                labels: ['security', 'priority-high', 'gitleaks'],
+                labels: ['security', 'priority/high', 'gitleaks'],
               });
             }

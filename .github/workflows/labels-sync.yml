@@ -42,7 +42,8 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           yaml-file: .github/labels.yml
-          # Mantém labels do GitHub que não estão no YAML (ex: bug, enhancement
-          # criadas por padrão). Mude para false se quiser convergência estrita.
-          skip-delete: false
+          # E12: skip-delete: true preserva labels criadas fora do YAML
+          # (ex: uptime, ci-inconclusive abertas por ci-issue action).
+          # false apagaria essas labels e quebraria issues em aberto.
+          skip-delete: true
           dry-run: false
