@@ -16,9 +16,9 @@
 #      — substitui o proxy antigo (contagem de linhas / "export type"), que
 #      nao detecta remocao de tabela de dentro do union Database.public.Tables
 #      (ver REGRA #4 do CLAUDE.md e o incidente magazine_*, 2026-07-16).
-#   3. Remove continue-on-error de lint-untyped-from.yml (promove a required)
-#   4. Roda o lint local pra validar
-#   5. Commita em branch nova e abre PR
+#   3. Roda o lint local pra validar
+#   4. Commita em branch nova e abre PR
+# E67: removido input promote_lint (dead code — lint-untyped-from.yml ja eh bloqueante desde E35).
 #
 # Pode ser usado a qualquer momento pra sincronizar types.ts com o schema do banco.
 
@@ -26,11 +26,6 @@ name: Regenerate Supabase Types
 
 on:
   workflow_dispatch:
-    inputs:
-      promote_lint:
-        description: 'Remover continue-on-error de lint-untyped-from.yml (one-shot, primeira execucao)'
-        type: boolean
-        default: true
 
 concurrency:
   group: regenerate-supabase-types
@@ -106,23 +101,6 @@ jobs:
       - name: Gate estrutural de types.ts (PLANO_DBA E41)
         run: node scripts/check-types-inventory-drift.mjs --base HEAD
 
-      - name: Promote lint to required
-        if: inputs.promote_lint
-        run: |
-          python3 -c "
-          import re
-          p = '.github/workflows/lint-untyped-from.yml'
-          c = open(p).read()
-          new = re.sub(r'\n    # TODO.*?\n    continue-on-error: true\n', '\n', c, flags=re.DOTALL)
-          if new == c:
-              new = re.sub(r'\n    continue-on-error: true\n', '\n', c)
-          if new == c:
-              print('::warning::continue-on-error not found, lint may already be required')
-          else:
-              open(p, 'w').write(new)
-              print('continue-on-error removido (lint agora eh required)')
-          "
-
       - name: Run lint locally
         run: bash scripts/lint-untyped-from.sh
 
@@ -148,7 +126,6 @@ jobs:
           ## Mudancas
 
           - `types.ts`: regenerado via `supabase gen types typescript --project-id doufsxqlfjyuvxuezpln --schema public,graphql_public`
-          - `lint-untyped-from.yml`: `continue-on-error: true` removido se ainda presente (promovido a required)
 
           ## Validacao
 
@@ -167,7 +144,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BRANCH"
-          git add src/integrations/supabase/types.ts .github/workflows/lint-untyped-from.yml
+          git add src/integrations/supabase/types.ts
           git commit -m "chore: regenerate supabase types ($OLD_LINES -> $NEW_LINES linhas)" \
                      -m "Auto-aplicado via workflow regenerate-supabase-types.yml"
           git push -u origin "$BRANCH"
