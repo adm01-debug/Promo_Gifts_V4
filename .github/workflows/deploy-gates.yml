@@ -63,10 +63,11 @@ jobs:
     timeout-minutes: 3
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - name: Setup Node CI
         uses: ./.github/actions/setup-node-ci
         with:
-          persist-credentials: false  # E32
           skip-install: 'true'
       - name: Validate SSOT — client.ts deve apontar para doufsxqlfjyuvxuezpln
         run: node scripts/validate-supabase-config.mjs
@@ -81,10 +82,10 @@ jobs:
     needs: [ssot-gate]
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - name: Setup Node CI
-        uses: ./.github/actions/setup-node-ci
         with:
           persist-credentials: false  # E32
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
       - name: Auditar dependências (advisory ≥ high bloqueia deploy)
         run: node scripts/check-dependency-audit.mjs
 
@@ -96,10 +97,11 @@ jobs:
     if: github.event_name == 'pull_request'
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - name: Dependency Review — falha em deps com CVE severity ≥ high (E97)
         uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
         with:
-          persist-credentials: false  # E32
           fail-on-severity: high
           allow-licenses: MIT, Apache-2.0, ISC, BSD-2-Clause, BSD-3-Clause, 0BSD, CC0-1.0, Unlicense, CC-BY-4.0, Python-2.0
 
@@ -251,12 +253,12 @@ jobs:
     needs: [ssot-gate]
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - name: Setup Node CI
         uses: ./.github/actions/setup-node-ci
       # Gate rapido de regressao. Suites amplas seguem no CI principal:
       # `test:quality`, `Hook tests` e `Test Coverage`.
-        with:
-          persist-credentials: false  # E32
       - run: npm run test:deploy-gate
       - name: Webhook scenario matrix (contratos Zod, 0 HTTP)
         run: |
@@ -313,10 +315,10 @@ jobs:
       E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - name: Setup Node CI
-        uses: ./.github/actions/setup-node-ci
         with:
           persist-credentials: false  # E32
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
       - name: Run Playwright smoke tests
@@ -351,10 +353,10 @@ jobs:
       VITE_SUPABASE_PUBLISHABLE_KEY: lighthouse-placeholder-key
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - name: Setup Node CI
-        uses: ./.github/actions/setup-node-ci
         with:
           persist-credentials: false  # E32
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
       - run: npm run build
       - name: Run Lighthouse CI
         run: npx lhci autorun --config=.lighthouserc.json
@@ -376,10 +378,11 @@ jobs:
     needs: [ssot-gate]
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - name: Setup Node CI
         uses: ./.github/actions/setup-node-ci
         with:
-          persist-credentials: false  # E32
           skip-install: 'true'
       - name: Run SEO sanity check
         run: node scripts/seo-sanity-check.mjs
@@ -395,10 +398,10 @@ jobs:
       (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - name: Setup Node CI
-        uses: ./.github/actions/setup-node-ci
         with:
           persist-credentials: false  # E32
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
       - name: Verificar assinatura publicada da RPC
         run: npm run check:restore-seller-cart-rpc
         env:
