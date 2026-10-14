@@ -32,7 +32,7 @@ permissions:
 
 concurrency:
   group: e2e-discount-approval-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   discount-approval-e2e:

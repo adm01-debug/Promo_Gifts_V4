@@ -21,7 +21,7 @@ permissions:
 
 concurrency:
   group: labels-sync-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   sync:

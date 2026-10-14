@@ -24,7 +24,7 @@ on:
 
 concurrency:
   group: e2e-customization-collapse-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   CI: "true"

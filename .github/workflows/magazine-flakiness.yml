@@ -46,7 +46,7 @@ on:
 
 concurrency:
   group: magazine-flakiness-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read

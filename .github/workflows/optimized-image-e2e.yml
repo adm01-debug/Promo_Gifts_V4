@@ -21,7 +21,7 @@ permissions:
 
 concurrency:
   group: optimized-image-e2e-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}

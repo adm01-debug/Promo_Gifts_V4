@@ -15,7 +15,7 @@ permissions:
 # Evita execuções simultâneas — a última em fila cancela as anteriores no mesmo ref.
 concurrency:
   group: e2e-update-alert-dialog-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 env:
   E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}

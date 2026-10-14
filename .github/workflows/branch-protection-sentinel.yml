@@ -50,7 +50,7 @@ permissions:
 
 concurrency:
   group: branch-protection-sentinel-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   verify-merge-pattern:

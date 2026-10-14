@@ -43,7 +43,7 @@ permissions:
 
 concurrency:
   group: edge-functions-drift-check-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   drift:

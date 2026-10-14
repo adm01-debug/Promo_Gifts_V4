@@ -20,7 +20,7 @@ permissions:
 
 concurrency:
   group: gitleaks-history-audit-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   gitleaks-full-history:

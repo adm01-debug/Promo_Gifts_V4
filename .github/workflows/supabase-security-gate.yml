@@ -30,7 +30,7 @@ permissions:
 
 concurrency:
   group: supabase-security-gate-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   supabase-security-gate:

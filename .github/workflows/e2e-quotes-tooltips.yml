@@ -33,7 +33,7 @@ permissions:
 
 concurrency:
   group: e2e-quotes-tooltips-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   quotes-tooltips-e2e:

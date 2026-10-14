@@ -38,7 +38,7 @@ on:
 
 concurrency:
   group: e2e-visual-preview-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   TZ: America/Sao_Paulo

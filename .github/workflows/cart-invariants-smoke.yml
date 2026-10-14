@@ -34,7 +34,7 @@ on:
 
 concurrency:
   group: cart-invariants-smoke-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 # Thresholds de duração (segundos) — usados no summary para alertar quando
 # um shard está lento demais e sugerir aumento de sharding.

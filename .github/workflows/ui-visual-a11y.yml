@@ -20,7 +20,7 @@ permissions:
 
 concurrency:
   group: ui-visual-a11y-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}

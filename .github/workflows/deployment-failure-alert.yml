@@ -20,9 +20,12 @@ concurrency:
 
 jobs:
   alert:
+    # E20: filtra por environment Production — preview failures comentam no PR
+    # mas não abrem issues; os 2 projetos Vercel geravam 65 runs/dia com skips
     if: >-
-      github.event.deployment_status.state == 'failure' ||
-      github.event.deployment_status.state == 'error'
+      (github.event.deployment_status.state == 'failure' ||
+       github.event.deployment_status.state == 'error') &&
+      github.event.deployment.environment == 'Production'
     runs-on: ubuntu-latest
     timeout-minutes: 3
     env:

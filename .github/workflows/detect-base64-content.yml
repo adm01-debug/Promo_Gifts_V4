@@ -24,7 +24,7 @@ permissions:
 
 concurrency:
   group: detect-base64-content-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   scan:

@@ -30,7 +30,7 @@ permissions:
 
 concurrency:
   group: ci-quotes-wizard-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   validate-quotes:

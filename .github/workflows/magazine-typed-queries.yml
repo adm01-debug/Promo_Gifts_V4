@@ -45,7 +45,7 @@ permissions:
 
 concurrency:
   group: magazine-typed-queries-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 # Contagens esperadas do padrão tipado/transacional (SSOT do gate).
 # Em 2026-09-09, as mutações migraram para RPCs v2 com CAS. Restaram apenas

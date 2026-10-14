@@ -22,7 +22,7 @@ permissions:
 # R2: concurrency cancelável em PRs para evitar fila de builds obsoletos.
 concurrency:
   group: <workflow-slug>-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   # R8: ID de job em snake_case estável — mudar o ID quebra required checks silenciosamente.

@@ -99,3 +99,16 @@ jobs:
           else
             gh issue create --title "Uptime: falha de disponibilidade detectada" --label uptime --body "$BODY"
           fi
+
+      - name: Fechar issue de uptime na recuperação
+        # E12 — fecha a issue quando todos os probes passam
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUE=$(gh issue list --label uptime --state open --limit 1 --json number -q '.[0].number // empty')
+          if [ -n "$ISSUE" ]; then
+            gh issue comment "$ISSUE" \
+              --body "✅ Todos os probes passaram em $(date -u +%FT%TZ) — fechando."
+            gh issue close "$ISSUE" --reason completed
+          fi

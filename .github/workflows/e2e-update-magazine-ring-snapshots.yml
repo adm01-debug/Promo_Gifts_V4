@@ -14,7 +14,7 @@ permissions:
 
 concurrency:
   group: e2e-update-magazine-ring-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 env:
   E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
