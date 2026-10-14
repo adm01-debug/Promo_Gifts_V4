@@ -23,6 +23,11 @@ concurrency:
   group: labels-sync-${{ github.ref }}
   cancel-in-progress: false
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   sync:
     runs-on: ubuntu-24.04

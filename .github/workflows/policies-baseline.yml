@@ -49,6 +49,11 @@ concurrency:
   group: policies-baseline-${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   check:
     name: Drift de policies vs baseline assinado
@@ -68,7 +73,8 @@ jobs:
           node-version-file: .nvmrc
 
       - name: Check policies baseline
-        run: node scripts/check-policies-baseline.mjs
+        # E56: --require-live prevents soft-pass when credentials are missing
+        run: node scripts/check-policies-baseline.mjs --require-live
 
   seed:
     name: Seed/regen do baseline + PR

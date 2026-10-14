@@ -45,6 +45,11 @@ concurrency:
   group: ddl-out-of-band-detector
   cancel-in-progress: false
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   detect:
     name: Cruza schema_signature_drift_log x ledger de migrations

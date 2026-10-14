@@ -37,6 +37,11 @@ env:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   collapse-e2e:
     name: LocationPanel collapse (authed)

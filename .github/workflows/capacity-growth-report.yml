@@ -41,6 +41,11 @@ concurrency:
   group: capacity-growth-report
   cancel-in-progress: false
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   project:
     name: Projeta crescimento a partir de ops.table_size_history

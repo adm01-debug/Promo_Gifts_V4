@@ -34,6 +34,11 @@ concurrency:
   group: e2e-discount-approval-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   discount-approval-e2e:
     name: Playwright — 04c* (discount approval)

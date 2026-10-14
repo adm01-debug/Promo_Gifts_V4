@@ -18,6 +18,11 @@ concurrency:
   group: codeql-${{ github.ref }}
   cancel-in-progress: false
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   analyze:
     name: Analyze (${{ matrix.language }})

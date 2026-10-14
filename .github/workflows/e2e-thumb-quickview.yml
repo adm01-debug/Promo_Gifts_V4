@@ -24,6 +24,11 @@ env:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   smoke:
     name: Smoke (fail-fast)

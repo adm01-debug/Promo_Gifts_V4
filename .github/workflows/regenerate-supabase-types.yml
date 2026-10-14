@@ -40,6 +40,11 @@ permissions:
   contents: write
   pull-requests: write
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   regen:
     name: Regenerate types and open PR
@@ -150,7 +155,7 @@ jobs:
           - Gate estrutural (PLANO_DBA E41, `scripts/check-types-inventory-drift.mjs`) passou: nenhuma Table/View/Function/Enum sumiu sem justificativa em `docs/TYPES_INVENTORY_REMOVAL_ALLOWLIST.json`.
           - Lint rodou local no runner e passou.
 
-          Auto-aplicado via Claude MCP.
+          Auto-aplicado via workflow `regenerate-supabase-types.yml`.
           BODYEOF
 
       - name: Commit, push, and open PR

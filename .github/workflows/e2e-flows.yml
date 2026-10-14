@@ -27,6 +27,11 @@ env:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   e2e-error-boundaries:
     name: E2E — Error Boundaries (sem auth)

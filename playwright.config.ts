@@ -30,7 +30,9 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   workers: 1,
-  reporter: [['html', { open: 'never' }], ['list'], ['github']],
+  // E43: no CI, never auto-create a missing baseline (prevents flaky green on first missing snapshot)
+  updateSnapshots: process.env.CI ? 'none' : 'missing',
+  reporter: [['html', { open: 'never' }], ['list'], ['github'], ['json', { outputFile: 'playwright-report/results.json' }]],
   use: {
     baseURL: externalBaseUrl || 'http://localhost:8080',
     trace: 'retain-on-failure',

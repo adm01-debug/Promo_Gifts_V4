@@ -26,6 +26,11 @@ permissions:
   issues: write
   pull-requests: write
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   autoheal:
     name: ESLint auto-fix (Lovable commits)

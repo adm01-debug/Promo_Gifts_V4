@@ -5,8 +5,8 @@
 #   - smoke: supabase functions serve + script HTTP real (precisa do repo, não
 #            roda em forks porque depende de secrets do próprio repositório)
 #
-# Política de bloqueio: unit é obrigatório (status check), smoke é obrigatório
-# (período advisory expirado — ver PLANO_WORKFLOWS_CI_100_ETAPAS_2026-09-26 E30).
+# Política de bloqueio: unit e smoke são informativos; o único required check em main
+# é "Gate Final - Deploy Ready" (deploy-gates.yml).
 
 name: Contract Tests
 
@@ -21,6 +21,11 @@ permissions:
 concurrency:
   group: contract-tests-${{ github.ref }}
   cancel-in-progress: true
+
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   unit:

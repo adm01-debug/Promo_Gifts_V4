@@ -45,6 +45,11 @@ env:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   color-swatch-grid:
     name: ColorSwatch grid (2 linhas + clipping + +N)

@@ -30,6 +30,11 @@ concurrency:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   # ============================================================
   # GATE 0: SSOT Supabase — DEVE PASSAR antes de todos os outros

@@ -37,6 +37,11 @@ concurrency:
   group: e2e-quotes-responsive-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   responsive:
     runs-on: ubuntu-24.04

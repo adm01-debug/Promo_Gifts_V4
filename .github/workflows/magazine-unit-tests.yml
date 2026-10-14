@@ -46,6 +46,11 @@ concurrency:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   edge-import-contract:
     name: Deno Magazine import contract

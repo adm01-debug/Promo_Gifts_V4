@@ -20,6 +20,11 @@ concurrency:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   fuzz-stress:
     name: Fuzz stress (log-login-attempt)

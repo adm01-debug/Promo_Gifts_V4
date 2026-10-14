@@ -33,6 +33,11 @@ concurrency:
   group: supabase-security-gate-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   supabase-security-gate:
     name: Gate 5 — DB Security Audit

@@ -12,6 +12,11 @@ concurrency:
   group: prod-health-${{ github.ref }}
   cancel-in-progress: false
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   health-check:
     name: Verificação de saúde pós-merge

@@ -21,6 +21,11 @@ concurrency:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   ssot-gates:
     name: SSOT Gates (validate + guard + hosts)

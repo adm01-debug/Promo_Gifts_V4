@@ -40,6 +40,11 @@ env:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   lint-typecheck:
     name: "Gate 1 — Lint & Typecheck"

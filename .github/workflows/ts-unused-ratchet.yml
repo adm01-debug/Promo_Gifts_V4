@@ -27,6 +27,11 @@ concurrency:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   ratchet:
     name: noUnusedLocals ratchet

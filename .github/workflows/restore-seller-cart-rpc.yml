@@ -36,6 +36,11 @@ concurrency:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   rpc-availability:
     name: RPC availability · ${{ matrix.env_name }}

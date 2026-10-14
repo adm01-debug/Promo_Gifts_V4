@@ -30,6 +30,11 @@ concurrency:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   mutation:
     name: Mutation Score (M1–M6)

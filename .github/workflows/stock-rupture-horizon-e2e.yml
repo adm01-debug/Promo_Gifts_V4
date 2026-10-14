@@ -20,6 +20,11 @@ concurrency:
   group: stock-rupture-horizon-e2e-${{ github.ref }}
   cancel-in-progress: true
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   e2e:
     name: ${{ matrix.spec }}

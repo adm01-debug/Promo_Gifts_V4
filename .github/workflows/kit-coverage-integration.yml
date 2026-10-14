@@ -31,6 +31,11 @@ concurrency:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   kit-coverage-integration:
     runs-on: ubuntu-24.04

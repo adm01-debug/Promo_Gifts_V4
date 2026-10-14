@@ -16,6 +16,11 @@ concurrency:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   simulate:
     runs-on: ubuntu-24.04

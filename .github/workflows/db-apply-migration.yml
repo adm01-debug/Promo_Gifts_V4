@@ -36,6 +36,11 @@ env:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   preflight:
     name: 1. Preflight (read-only)

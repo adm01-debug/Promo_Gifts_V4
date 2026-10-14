@@ -21,6 +21,11 @@ concurrency:
   group: global-search-gate-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   vitest:
     name: Vitest - Component Tests

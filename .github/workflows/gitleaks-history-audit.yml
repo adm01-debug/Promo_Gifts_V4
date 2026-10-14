@@ -22,6 +22,11 @@ concurrency:
   group: gitleaks-history-audit-${{ github.ref }}
   cancel-in-progress: false
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   gitleaks-full-history:
     name: Scan complete git history for leaked secrets

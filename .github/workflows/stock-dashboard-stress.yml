@@ -4,7 +4,7 @@ name: Estoque — Stress Loop (anti-flake)
 # antes que chegue ao main. Falha se qualquer iteração quebrar OU se o tempo
 # médio por iteração ultrapassar o limite.
 #
-# Disparo manual (workflow_dispatch) + nightly (cron 03:00 UTC).
+# Disparo manual (workflow_dispatch) + semanal (segunda 03:09 UTC).
 # Não bloqueia PRs por padrão — promova para required check depois de calibrar.
 
 on:
@@ -31,6 +31,11 @@ permissions:
 env:
   E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
   E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   stress:

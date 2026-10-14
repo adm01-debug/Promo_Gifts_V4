@@ -19,6 +19,11 @@ concurrency:
   group: stock-rupture-fuzz-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   fuzz:
     name: Risco de Ruptura — fuzz (800 sims, 10 invariantes)

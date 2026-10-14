@@ -18,6 +18,11 @@ concurrency:
   group: sentinel-self-test-${{ github.ref }}
   cancel-in-progress: true
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   fixtures:
     name: Run sentinel-check.sh against fixture matrix

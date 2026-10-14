@@ -35,6 +35,11 @@ env:
   # em 2026-10-11: auth 522 por ~1h com todos os outros probes verdes.
   AUTH_HEALTH_URL: https://doufsxqlfjyuvxuezpln.supabase.co/auth/v1/health
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   check:
     runs-on: ubuntu-24.04

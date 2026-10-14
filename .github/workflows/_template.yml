@@ -19,6 +19,11 @@ concurrency:
   group: <workflow-slug>-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   # R8: ID de job em snake_case estável — mudar o ID quebra required checks silenciosamente.
   build_and_test:

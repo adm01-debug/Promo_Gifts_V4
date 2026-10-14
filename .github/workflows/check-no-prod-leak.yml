@@ -18,6 +18,11 @@ concurrency:
   group: check-no-prod-leak-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   no_prod_leak:
     name: Check no prod leak

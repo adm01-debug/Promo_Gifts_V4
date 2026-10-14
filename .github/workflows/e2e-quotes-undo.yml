@@ -49,6 +49,11 @@ concurrency:
   group: e2e-quotes-undo-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   # ==========================================================================
   # JOB 1 — Ambiente REAL com credenciais E2E do repositório.

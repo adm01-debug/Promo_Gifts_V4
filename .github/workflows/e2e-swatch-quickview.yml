@@ -25,6 +25,11 @@ env:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   swatch-quickview:
     name: ${{ matrix.browser }} • swatch→QV

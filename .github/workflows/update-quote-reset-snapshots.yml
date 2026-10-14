@@ -30,6 +30,11 @@ env:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   update-snapshots:
     name: Regerar baselines (--update-snapshots)

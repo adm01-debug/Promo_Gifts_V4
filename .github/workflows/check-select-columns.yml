@@ -27,6 +27,11 @@ concurrency:
   group: check-select-columns-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   select_columns:
     name: Check select() columns vs types.ts

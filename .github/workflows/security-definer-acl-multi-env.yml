@@ -52,6 +52,11 @@ concurrency:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   acl-migration-pg17:
     name: ACL migration contract — PostgreSQL 17

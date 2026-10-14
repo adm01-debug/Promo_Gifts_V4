@@ -52,6 +52,11 @@ concurrency:
   group: db-schema-drift-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   drift:
     name: Migrations x Canonical schema

@@ -51,6 +51,11 @@ concurrency:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   flakiness:
     name: Magazine + Rings Flakiness (repeat × N)

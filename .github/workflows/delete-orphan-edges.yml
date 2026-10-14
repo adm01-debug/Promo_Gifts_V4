@@ -42,6 +42,11 @@ concurrency:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   delete:
     name: Delete orphan edges

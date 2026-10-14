@@ -27,6 +27,11 @@ env:
   E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
   E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   visual-check:
     runs-on: ubuntu-24.04

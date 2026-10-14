@@ -21,6 +21,11 @@ concurrency:
   group: release-please-${{ github.ref }}
   cancel-in-progress: false
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   release-please:
     name: release-please

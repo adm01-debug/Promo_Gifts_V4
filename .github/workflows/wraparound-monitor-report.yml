@@ -42,6 +42,11 @@ concurrency:
   group: wraparound-monitor-report
   cancel-in-progress: false
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   check:
     name: Compara ops.wraparound_monitor_log contra THRESHOLDS

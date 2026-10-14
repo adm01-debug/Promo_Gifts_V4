@@ -20,6 +20,11 @@ concurrency:
   group: migration-dry-run-${{ github.ref }}
   cancel-in-progress: true
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   dry-run:
     name: Dry-run migration drafts

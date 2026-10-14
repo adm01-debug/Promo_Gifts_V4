@@ -45,6 +45,11 @@ concurrency:
   group: edge-functions-drift-check-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   drift:
     name: Compare GitHub × Canonical

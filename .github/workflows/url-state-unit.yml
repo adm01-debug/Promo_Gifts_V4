@@ -23,6 +23,11 @@ concurrency:
   group: url-state-unit-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   url-state-unit:
     name: useListUrlState (unit + fuzz) & useQuotesListPage URL state

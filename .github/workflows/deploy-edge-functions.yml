@@ -59,6 +59,11 @@ concurrency:
   group: deploy-edge-functions-${{ github.ref }}
   cancel-in-progress: true
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   list-functions:
     name: Detect functions to deploy

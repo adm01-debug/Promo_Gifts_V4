@@ -62,6 +62,11 @@ concurrency:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   fuzz:
     name: CartHeader fuzz + notas internas

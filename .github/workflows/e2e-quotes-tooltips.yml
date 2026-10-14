@@ -35,6 +35,11 @@ concurrency:
   group: e2e-quotes-tooltips-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   quotes-tooltips-e2e:
     name: Playwright — 04m-quotes-status-tooltip*

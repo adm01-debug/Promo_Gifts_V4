@@ -1,9 +1,7 @@
-name: Workflow Lint (E11)
+name: Workflow Lint
 
-# E11 — PLANO_WORKFLOWS_CI_100_ETAPAS_2026-09-26
 # Valida contratos estruturais (actionlint + shellcheck + check-workflow-contracts.mjs)
 # em qualquer PR que toque .github/** ou scripts de contratos.
-# Modo REPORT até E20 (gate será habilitado lá via --gate flag).
 
 on:
   push:
@@ -29,6 +27,11 @@ permissions:
 concurrency:
   group: workflow-lint-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   actionlint:
@@ -59,7 +62,7 @@ jobs:
             -ignore 'SC2215'
 
   workflow-contracts:
-    name: Workflow contract checks (C1–8)
+    name: Workflow contract checks
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:

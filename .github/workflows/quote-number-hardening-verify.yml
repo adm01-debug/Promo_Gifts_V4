@@ -18,6 +18,11 @@ concurrency:
   group: quote-number-hardening-verify
   cancel-in-progress: false
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   verify:
     name: Verify trigger + unique index no banco canônico

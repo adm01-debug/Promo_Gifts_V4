@@ -22,6 +22,11 @@ concurrency:
   group: ci-freight-quality-${{ github.ref }}
   cancel-in-progress: true
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   freight-unit:
     name: Freight Unit Tests + Coverage
@@ -85,7 +90,8 @@ jobs:
             --reporter=dot
 
   edge-coverage-gate:
-    name: Edge Coverage Gate (≥60%)
+    # E49: renamed to reflect what it actually measures (contract presence, not code coverage)
+    name: Edge Integration Presence Gate (≥60% functions covered)
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
@@ -94,8 +100,8 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
-      - run: npm ci
-      - name: Check edge integration coverage percentage
+      # E49: script only reads filesystem — no npm install needed
+      - name: Check edge integration presence percentage
         run: node scripts/check-edge-integration-coverage.mjs
         env:
           EDGE_COVERAGE_THRESHOLD: '60'
@@ -121,7 +127,7 @@ jobs:
         env:
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-          E2E_BASE_URL: ${{ vars.E2E_BASE_URL || 'http://localhost:5173' }}
+          E2E_BASE_URL: ${{ vars.E2E_BASE_URL || 'http://localhost:8080' }}
       - name: Upload Playwright report on failure
         if: failure()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

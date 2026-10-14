@@ -18,6 +18,11 @@ concurrency:
   group: deployment-failure-${{ github.event.deployment.ref }}
   cancel-in-progress: false
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   alert:
     # E20: filtra por environment Production — preview failures comentam no PR

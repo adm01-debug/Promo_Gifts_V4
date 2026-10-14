@@ -24,6 +24,11 @@ concurrency:
   group: ratchet-weekly
   cancel-in-progress: false
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   lower-ratchets:
     name: Baixar baselines se houve melhora

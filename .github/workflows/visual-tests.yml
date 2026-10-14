@@ -33,6 +33,11 @@ env:
   E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
   E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   visual-baseline:
     # G-H3: fork guard — pull_request de forks não deve escrever no repo

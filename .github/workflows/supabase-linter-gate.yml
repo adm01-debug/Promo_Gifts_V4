@@ -17,6 +17,11 @@ concurrency:
   group: supabase-linter-gate-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   linter:
     runs-on: ubuntu-24.04

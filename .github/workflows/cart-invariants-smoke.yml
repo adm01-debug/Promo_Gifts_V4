@@ -46,6 +46,11 @@ env:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   # ─────────────────────────────────────────────────────────────────────
   # 1) Prepara a matriz dinamicamente. total_shards vem de input →

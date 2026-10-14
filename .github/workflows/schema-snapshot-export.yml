@@ -47,6 +47,11 @@ concurrency:
   group: schema-snapshot-${{ github.ref }}-${{ github.event_name }}
   cancel-in-progress: true
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   export:
     name: Export schema snapshot
@@ -204,5 +209,5 @@ jobs:
         with:
           version: 2.101.0
       - name: Check ledger manifest drift
+        # E56: removed continue-on-error — drift check must fail loudly
         run: node scripts/check-ledger-manifest-drift.mjs
-        continue-on-error: true

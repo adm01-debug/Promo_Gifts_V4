@@ -29,6 +29,11 @@ concurrency:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   sticky-header-e2e:
     name: Quote Summary sticky header — Playwright (e2e + visual)

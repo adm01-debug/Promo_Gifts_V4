@@ -35,6 +35,11 @@ env:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   unit-and-coverage:
     name: unit + fuzz/stress + coverage

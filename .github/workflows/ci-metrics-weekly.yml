@@ -18,6 +18,11 @@ permissions:
   contents: write  # para fazer commit do relatório
   actions: read    # para ler workflow runs via API
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   collect:
     runs-on: ubuntu-24.04

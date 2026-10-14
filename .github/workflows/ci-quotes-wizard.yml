@@ -32,6 +32,11 @@ concurrency:
   group: ci-quotes-wizard-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   validate-quotes:
     name: Validação Novo Orçamento

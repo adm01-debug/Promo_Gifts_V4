@@ -33,6 +33,11 @@ env:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   edge-integration:
     name: Edge Functions · Integration All

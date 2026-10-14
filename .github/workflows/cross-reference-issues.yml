@@ -29,6 +29,11 @@ concurrency:
   group: cross-reference-issues-${{ github.event.pull_request.number || github.event.issue.number || github.run_id }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   cross-reference:
     runs-on: ubuntu-24.04

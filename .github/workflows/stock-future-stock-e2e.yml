@@ -23,6 +23,11 @@ concurrency:
   group: stock-future-stock-e2e-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   unit-and-fuzz:
     name: Unit + fuzz (useFutureStockPreference)

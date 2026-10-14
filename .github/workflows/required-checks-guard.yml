@@ -22,6 +22,11 @@ concurrency:
   group: required-checks-guard-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   assert-required-checks:
     name: Assert Gate Final is required on main

@@ -26,6 +26,11 @@ concurrency:
   group: detect-base64-content-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   scan:
     name: Scan for accidentally base64-encoded text files

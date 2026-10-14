@@ -56,6 +56,11 @@ env:
   EXPECTED_MUTATION_RPCS_V2: '13'
   EXPECTED_UNTYPEDFROM_AFTER: '0'
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   dry-run:
     name: Aplica patch em cópia e valida

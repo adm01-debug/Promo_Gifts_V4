@@ -52,6 +52,11 @@ concurrency:
   group: branch-protection-sentinel-${{ github.ref }}
   cancel-in-progress: false
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   verify-merge-pattern:
     name: Verify push to main matches accepted patterns

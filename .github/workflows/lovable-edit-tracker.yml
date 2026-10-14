@@ -36,6 +36,11 @@ concurrency:
   group: lovable-edit-tracker-${{ github.ref }}
   cancel-in-progress: false
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   track-lovable-edits:
     name: Rastrear edições do Lovable

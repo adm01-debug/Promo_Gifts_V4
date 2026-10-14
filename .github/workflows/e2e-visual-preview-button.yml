@@ -54,6 +54,11 @@ env:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   visual:
     name: Visual snapshots + axe contrast

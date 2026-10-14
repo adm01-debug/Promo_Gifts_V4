@@ -27,6 +27,11 @@ concurrency:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   e2e:
     name: E2E · chromium-authed
