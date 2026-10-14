@@ -65,7 +65,7 @@ debounce de 1 s no hook (`useMockupGenerator.ts:325-337`) e 2 s no serviço de r
 ### 1.1 Anexar ao orçamento — `[PLANEJADO]` no fluxo padrão
 
 No fluxo padrão do orçamento **não há** caminho que anexe o mockup gerado a um item. A coluna
-`quote_items.mockup_urls` existe (`src/integrations/supabase/types.ts:34749`;
+`quote_items.mockup_urls` existe (`src/integrations/supabase/types.ts:34791`;
 `src/hooks/quotes/quoteHelpers.ts:234`), mas nenhum código a **preenche** — `buildItemsInsertPayload`
 apenas lê `item.mockup_urls ?? []`, e nada escreve nesse campo. O único caminho que hoje leva uma
 imagem gerada para o orçamento é o **Kit Builder**, em `artwork_urls`
@@ -147,7 +147,7 @@ que retorna `true` para **`dev`, `supervisor` e `admin` legado**
 | **Admin** | `admin` (legado) / `dev` | Ler/editar/excluir **de todos** (`is_admin_or_above`) |
 
 Vocabulário de papéis: `app_role` = `dev, supervisor, admin, manager, agente, coordenador,
-vendedor` (`src/integrations/supabase/types.ts:64369`); rótulos de UI em `src/lib/roles.ts:31-82`
+vendedor` (`src/integrations/supabase/types.ts:64470`); rótulos de UI em `src/lib/roles.ts:31-82`
 (vendedor="Agente", supervisor/coordenador="gestão").
 
 > Observação a confirmar com o Joaquim: o enum tem `coordenador` e `manager`, mas a função de
