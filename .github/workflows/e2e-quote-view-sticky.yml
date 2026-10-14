@@ -21,7 +21,6 @@ on:
 
 permissions:
   contents: read
-  issues: write
 
 concurrency:
   group: e2e-quote-view-sticky-${{ github.ref }}
@@ -98,6 +97,8 @@ jobs:
   # E10 — alerta de falha no cron semanal (deduplication via label ci-focused-e2e)
   notify-failure:
     name: Notificar falha — Quote View Sticky (cron)
+    permissions:
+      issues: write
     if: failure() && github.event_name == 'schedule'
     needs: [overflow-static-gate, sticky-and-scroll]
     runs-on: ubuntu-24.04
@@ -139,6 +140,8 @@ jobs:
   # E12 — fecha a issue quando o cron volta a passar
   notify-success:
     name: Fechar issue — Quote View Sticky (cron recuperado)
+    permissions:
+      issues: write
     if: success() && github.event_name == 'schedule'
     needs: [overflow-static-gate, sticky-and-scroll]
     runs-on: ubuntu-24.04

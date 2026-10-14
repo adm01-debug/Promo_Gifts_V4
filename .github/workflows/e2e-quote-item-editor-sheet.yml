@@ -35,7 +35,6 @@ on:
 
 permissions:
   contents: read
-  issues: write
 
 concurrency:
   group: e2e-quote-item-editor-sheet-${{ github.ref }}
@@ -101,6 +100,8 @@ jobs:
   # E10 — alerta de falha no cron semanal (deduplication via label ci-focused-e2e)
   notify-failure:
     name: Notificar falha — Quote Item Editor (cron)
+    permissions:
+      issues: write
     if: failure() && github.event_name == 'schedule'
     needs: [editor-sheet]
     runs-on: ubuntu-24.04
@@ -142,6 +143,8 @@ jobs:
   # E12 — fecha a issue quando o cron volta a passar
   notify-success:
     name: Fechar issue — Quote Item Editor Sheet (cron recuperado)
+    permissions:
+      issues: write
     if: success() && github.event_name == 'schedule'
     needs: [editor-sheet]
     runs-on: ubuntu-24.04

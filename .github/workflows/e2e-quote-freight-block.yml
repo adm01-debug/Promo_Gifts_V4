@@ -39,8 +39,6 @@ on:
 
 permissions:
   contents: read
-  pull-requests: write
-  issues: write
 
 concurrency:
   group: e2e-quote-freight-block-${{ github.ref }}
@@ -57,6 +55,9 @@ defaults:
 
 jobs:
   freight-block-visual:
+    permissions:
+      contents: read
+      issues: write   # E92: PR comment step (github.rest.issues.createComment)
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     strategy:
@@ -170,6 +171,8 @@ jobs:
   # E10 — alerta de falha no cron semanal (deduplication via label ci-focused-e2e)
   notify-failure:
     name: Notificar falha — Quote Freight Block (cron)
+    permissions:
+      issues: write
     if: failure() && github.event_name == 'schedule'
     needs: [freight-block-visual]
     runs-on: ubuntu-24.04
@@ -211,6 +214,8 @@ jobs:
   # E12 — fecha a issue quando o cron volta a passar
   notify-success:
     name: Fechar issue — Quote Freight Block (cron recuperado)
+    permissions:
+      issues: write
     if: success() && github.event_name == 'schedule'
     needs: [freight-block-visual]
     runs-on: ubuntu-24.04
