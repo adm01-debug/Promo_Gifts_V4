@@ -235,8 +235,9 @@ jobs:
           SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
       # noUncheckedIndexedAccess — advisory por enquanto: roda tsc completo
       # (lento) e a dívida atual é grande; vira bloqueante quando zerar.
-      - name: Gate 1.10 — Indexed-access ratchet (advisory)
-        continue-on-error: true
+      # E15: Gate 1.10 promovido de advisory para bloqueante — dívida congelada
+      # em .indexed-access-baseline.json; falha só em regressão (novo código).
+      - name: Gate 1.10 — Indexed-access ratchet (bloqueante)
         run: node scripts/check-indexed-access-ratchet.mjs
       # E55 — Contratos estruturais dos workflows (E11, bloqueante)
       # Garante que todo workflow segue as 8 regras do Padrão E12
@@ -251,6 +252,15 @@ jobs:
       # está documentado em docs/ci/SEGREDOS.md.
       - name: Gate 1.14 — Secrets inventory (bloqueante)
         run: node scripts/check-secrets-inventory.mjs --gate
+      # E15: Gates migrados de quality-gate.yml (agora removido) para evitar duplicação.
+      # Gate 2.6 e 2.7 eram únicos naquele arquivo; os demais já existiam aqui.
+      - name: Gate 1.15 — overflow-x-clip em MainLayout (bloqueante)
+        run: node scripts/check-overflow-x-clip.mjs
+      - name: Gate 1.16 — Quotes list invariants (bloqueante)
+        run: node scripts/validate-quotes-list.mjs
+        env:
+          VITE_SUPABASE_URL: https://placeholder.supabase.co
+          VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
 
   unit-tests:
     name: Gate 2 - Unit Tests
