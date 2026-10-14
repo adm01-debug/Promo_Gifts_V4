@@ -5,6 +5,23 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.6...v1.1.0) (2026-10-14)
+
+
+### Features
+
+* **auditoria:** Onda Quick Wins 22-dim — env E2E em 31 workflows, gate console.*, retenção LGPD e docs ([#2121](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2121)) ([c1b5b15](https://github.com/adm01-debug/Promo_Gifts_V4/commit/c1b5b154c202efdc1ec0a3ef4aeee2fa9b0e74a5))
+
+
+### Bug Fixes
+
+* **ci:** restaura entrada de allowlist perdida em conflito de merge pós-incidente ([#2148](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2148)) ([f8b2e29](https://github.com/adm01-debug/Promo_Gifts_V4/commit/f8b2e29af3f5a427b6e836c363bedd6811f63750))
+* **db:** contenção e segurança — incidente 2026-10-13 (produção) ([#2141](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2141)) ([a63b950](https://github.com/adm01-debug/Promo_Gifts_V4/commit/a63b9507c0a68846b2d8b1653227bfa5e9559333))
+* **db:** integridade de dados e storage — incidente 2026-10-13 (Agente 3) ([#2143](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2143)) ([b7f9719](https://github.com/adm01-debug/Promo_Gifts_V4/commit/b7f9719489c5fcda60e5d139769eedacd7cbf428))
+* **db:** permissões, auditoria e secrets — incidente 2026-10-13 (Fase 5/9) ([#2142](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2142)) ([38b83fd](https://github.com/adm01-debug/Promo_Gifts_V4/commit/38b83fd93ba03b02523aca0f80a9c431cdddf710))
+* **db:** reescreve policies RLS por-linha e corrige timeouts de cron (incidente 2026-10-13) ([#2144](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2144)) ([fe196f4](https://github.com/adm01-debug/Promo_Gifts_V4/commit/fe196f49104ec94adc232fc9e72944c651d8f889))
+* **frontend/schema:** alinha frontend ao schema real + nunca cair em produção nos testes ([#2145](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2145)) ([a9c8bd9](https://github.com/adm01-debug/Promo_Gifts_V4/commit/a9c8bd9c4e3f2fa5a4a52fb663ea5d3b44c7e982))
+
 ## [1.0.6](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.5...v1.0.6) (2026-10-13)
 
 
