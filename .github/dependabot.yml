@@ -37,9 +37,11 @@ updates:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
 
-  # GitHub Actions
+  # GitHub Actions — workflows + composite actions (E73)
   - package-ecosystem: "github-actions"
-    directory: "/"
+    directories:
+      - "/"
+      - ".github/actions"
     schedule:
       interval: "weekly"
       day: "monday"

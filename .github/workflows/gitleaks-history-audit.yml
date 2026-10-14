@@ -56,7 +56,7 @@ jobs:
         with:
           name: gitleaks-report-${{ github.run_id }}
           path: results.sarif
-          retention-days: 90
+          retention-days: 90  # E88 — auditoria de vazamento de segredos (SARIF); retenção longa justificada para rastreabilidade de segurança
 
       - name: Open issue if leaks found
         if: failure()
