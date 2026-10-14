@@ -55,10 +55,13 @@ jobs:
         include:
           - project: chromium-public
             browser: chromium
+          # E54: Firefox e WebKit falham constantemente em PR — isolados no cron semanal
           - project: firefox-public
             browser: firefox
+            schedule_only: true
           - project: webkit-public
             browser: webkit
+            schedule_only: true
     env:
       CI: 'true'
       # Não precisa de Supabase — spec é 100% cliente-side com setContent.
@@ -75,9 +78,11 @@ jobs:
         run: npm ci
 
       - name: Install Playwright browser (${{ matrix.browser }})
+        if: ${{ !matrix.schedule_only || github.event_name == 'schedule' }}
         run: npx playwright install --with-deps ${{ matrix.browser }}
 
       - name: Run print cross-browser spec
+        if: ${{ !matrix.schedule_only || github.event_name == 'schedule' }}
         run: |
           npx playwright test \
             e2e/flows/pdf-print-cross-browser.spec.ts \

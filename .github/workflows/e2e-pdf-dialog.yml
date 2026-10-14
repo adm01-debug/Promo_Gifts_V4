@@ -202,8 +202,8 @@ jobs:
         if: always()
         run: |
           if [ ! -f qa/reports/watermark-threshold-recalibration.json ]; then
-            echo "::warning::JSON de recalibração ausente — pulando gate."
-            exit 0
+            echo "::warning::JSON de recalibração ausente — baselines não gerados. Rode workflow_dispatch com update_snapshots=true primeiro."
+            exit 0  # E54: sem baseline não falha o gate (primeira execução)
           fi
           node -e "
             const p = JSON.parse(require('fs').readFileSync('qa/reports/watermark-threshold-recalibration.json','utf8'));

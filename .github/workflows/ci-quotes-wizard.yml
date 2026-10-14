@@ -27,6 +27,7 @@ env:
 
 permissions:
   contents: read
+  pull-requests: write  # E51: github-script comment steps
 
 concurrency:
   group: ci-quotes-wizard-${{ github.ref }}
@@ -249,8 +250,7 @@ jobs:
           npx playwright test \
             e2e/quotes/quote-number-subtitle.spec.ts \
             --project=chromium-authed \
-            --retries=1 \
-            --reporter=list
+            --retries=1
 
       - name: Upload Playwright HTML report
         if: always()
@@ -362,8 +362,7 @@ jobs:
           npx playwright test \
             e2e/quotes/quote-pdf-quote-number.spec.ts \
             --project=chromium-authed \
-            --retries=1 \
-            --reporter=list
+            --retries=1
 
       - name: Upload Playwright HTML report
         if: always()
@@ -499,8 +498,7 @@ jobs:
             e2e/quotes/quote-pdf-trigger-uniqueness.spec.ts \
             e2e/quotes/quote-pdf-trigger-a11y.spec.ts \
             e2e/quotes/quote-pdf-header-snapshot.spec.ts \
-            --project=chromium-authed \
-            --reporter=list
+            --project=chromium-authed
 
       - name: Upload Playwright HTML report
         if: always()
