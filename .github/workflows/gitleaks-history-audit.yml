@@ -37,6 +37,7 @@ jobs:
       - name: Checkout (full history)
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
+          persist-credentials: false  # E32
           fetch-depth: 0       # baixa TODO o historico, nao apenas o ultimo commit
 
       - name: Run Gitleaks

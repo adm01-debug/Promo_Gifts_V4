@@ -38,6 +38,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: ./.github/actions/e2e-setup
         with:
+          persist-credentials: false  # E32
           browsers: 'chromium'
           start-vite: 'false'
       - name: Smoke
@@ -67,6 +68,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: ./.github/actions/e2e-setup
         with:
+          persist-credentials: false  # E32
           browsers: 'chromium,${{ matrix.browser }}'
           start-vite: 'false'
       - name: Run thumb-quickview suite

@@ -40,6 +40,8 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
+        with:
+          persist-credentials: false  # E32
       - uses: ./.github/actions/setup-node-ci
 
       - name: Check select() columns vs types.ts

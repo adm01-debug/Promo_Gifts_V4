@@ -30,6 +30,8 @@ jobs:
       - name: Setup Node CI
         uses: ./.github/actions/setup-node-ci
 
+        with:
+          persist-credentials: false  # E32
       - name: Dependency vulnerability policy
         run: npm run check:dependency-audit
         
@@ -155,3 +157,5 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Audit Credentials
         run: npm run audit:credentials
+        with:
+          persist-credentials: false  # E32

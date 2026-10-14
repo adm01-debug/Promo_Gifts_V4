@@ -35,6 +35,7 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
+          persist-credentials: false  # E32
           sparse-checkout: .github/required-checks.json
           sparse-checkout-cone-mode: false
       - name: Check required_status_checks in active main rulesets

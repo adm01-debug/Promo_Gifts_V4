@@ -29,6 +29,7 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
+          persist-credentials: false  # E32
           fetch-depth: 0
       - name: Setup Node CI
         uses: ./.github/actions/setup-node-ci
@@ -209,6 +210,8 @@ jobs:
       - name: Setup Node CI
         uses: ./.github/actions/setup-node-ci
 
+        with:
+          persist-credentials: false  # E32
       - name: Run unit tests
         run: npm run test:ci-core
         env:
