@@ -32,7 +32,7 @@ on:
 
 concurrency:
   group: stock-module-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   # Seeds fixas: garantem reprodutibilidade e detecção determinística de flakes.
