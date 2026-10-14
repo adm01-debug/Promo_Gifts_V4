@@ -88,7 +88,15 @@ Segredos em argumentos CLI aparecem em `ps aux` e nos logs do runner.
 
 ---
 
-### R6 — `retention-days: 14` para artefatos (salvo exceção justificada)
+### R6 — `retention-days` por categoria (E88 — 2026-10-14)
+
+Três tiers obrigatórios:
+
+| Tier | Valor | Quando usar |
+|------|-------|-------------|
+| Padrão | `14` | Todos os artefatos de CI (Playwright reports, dist builds, snapshots, logs) |
+| Relatório semanal | `30` | Artefatos de workflows com `schedule` semanal (`magazine-flakiness`, `daily-flows-simulation`) |
+| Auditoria | `90` | Apenas artefatos de auditoria/compliance — **obrigatório** adicionar comentário `# E88 — auditoria <motivo>` |
 
 ```yaml
 - uses: actions/upload-artifact@v4
@@ -98,8 +106,16 @@ Segredos em argumentos CLI aparecem em `ps aux` e nos logs do runner.
     retention-days: 14
 ```
 
-O padrão do GitHub é 90 dias. Artefatos de CI têm custo de storage e raramente são úteis após 2 semanas.
-Exceção: artefatos de auditoria/compliance podem exigir 90 dias — documentar no workflow.
+```yaml
+- uses: actions/upload-artifact@v4
+  with:
+    name: qa-audit-report
+    path: qa/reports/
+    retention-days: 90  # E88 — auditoria qa/reports; retenção longa justificada
+```
+
+O padrão do GitHub é 90 dias. Sem política, storage cresce silenciosamente.
+Nunca use `365` — sem justificativa de compliance esse valor indica descuido.
 
 ---
 
@@ -302,7 +318,7 @@ e atualizar todos os workflows ao mesmo tempo.
 
 ---
 
-## Checklist de revisão antes de abrir PR (atualizado E76)
+## Checklist de revisão antes de abrir PR (atualizado E76, E88)
 
 ```sh
 # Verificar literais de Node (deve retornar 0)

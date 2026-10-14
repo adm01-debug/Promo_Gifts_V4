@@ -1,6 +1,6 @@
 # CLAUDE.md — Instruções para Claude Code (sessões automáticas)
 # Lido pelo Claude Code ao iniciar cada sessão neste repositório.
-# Última atualização: 2026-10-02 — E99 SBOM/attestation, E100 gate table atualizada.
+# Última atualização: 2026-10-14 — E88 política de artefatos (retention-days por tier), E89/E91/E92 higiene CI.
 
 ## CONTEXTO DO PROJETO
 
@@ -334,7 +334,7 @@ Todo workflow em `.github/workflows/` deve seguir as 8 regras documentadas em
 3. **R3** — `timeout-minutes:` em todo job (gates ≤ 10 min; E2E ≤ 30 min; crons ≤ 60 min)
 4. **R4** — `node-version-file: .nvmrc` — nunca literais como `'22'`
 5. **R5** — Segredos via `env:` no step, jamais como argumento CLI
-6. **R6** — `retention-days: 14` em artefatos (padrão GitHub é 90 dias)
+6. **R6** — `retention-days` por tier: 14 (padrão), 30 (relatórios semanais), 90 (auditoria com comentário `# E88`) — E88
 7. **R7** — Sem `master` ou `develop` nos triggers (branches inexistentes)
 8. **R8** — ID de job em snake-case, estável; mudar o ID quebra required checks silenciosamente
 
