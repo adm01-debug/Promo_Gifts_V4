@@ -1,4 +1,4 @@
-name: Production Health Check
+name: Static Health Checks
 
 on:
   push:
@@ -107,7 +107,7 @@ jobs:
           COMMIT_MESSAGE: ${{ github.event.head_commit.message || 'workflow_dispatch' }}
         run: |
           {
-            echo "## 🏥 Production Health Check — $(date -u '+%Y-%m-%d %H:%M UTC')"
+            echo "## 🔍 Static Health Checks — $(date -u '+%Y-%m-%d %H:%M UTC')"
             echo ""
             echo "### Commit analisado"
             echo "\`${{ github.sha }}\` — $COMMIT_MESSAGE"
@@ -161,7 +161,7 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           SHA: ${{ github.sha }}
         run: |
-          PAYLOAD=$(printf '{"text":"🚨 *Production Health Check FALHOU* em %s\n• Commit: `%s`\n• Run: %s\n• Ação necessária: verificar SSOT Supabase"}' \
+          PAYLOAD=$(printf '{"text":"🚨 *Static Health Checks FALHOU* em %s\n• Commit: `%s`\n• Run: %s\n• Ação necessária: verificar SSOT Supabase"}' \
                     "$REPO" "${SHA:0:7}" "$RUN_URL")
           curl -sS -X POST -H 'Content-Type: application/json' \
                --data "$PAYLOAD" \

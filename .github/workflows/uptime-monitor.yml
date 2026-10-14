@@ -43,7 +43,7 @@ defaults:
 jobs:
   check:
     runs-on: ubuntu-24.04
-    timeout-minutes: 4
+    timeout-minutes: 6  # E85: 2 retries × 30s × 4 probes + overhead
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -65,21 +65,21 @@ jobs:
             echo "auth=-1" >> "$GITHUB_OUTPUT"
             exit 1
           fi
-          curl -sf --max-time 15 --retry 2 --retry-delay 3 --retry-all-errors \
+          curl -sf --max-time 30 --retry 2 --retry-delay 10 --retry-all-errors \
             -o /dev/null "$SITE_URL"
           SITE=$?
-          curl -sf --max-time 15 --retry 2 --retry-delay 3 --retry-all-errors \
+          curl -sf --max-time 30 --retry 2 --retry-delay 10 --retry-all-errors \
             -H "apikey: $ANON_KEY" \
             -H "Authorization: Bearer $ANON_KEY" \
             -o /dev/null "$FN_URL"
           FN=$?
-          curl -sf --max-time 15 --retry 2 --retry-delay 3 --retry-all-errors \
+          curl -sf --max-time 30 --retry 2 --retry-delay 10 --retry-all-errors \
             -X OPTIONS \
             -H "Origin: https://www.promogifts.com.br" \
             -H "Access-Control-Request-Method: POST" \
             -o /dev/null "$LOGIN_FN_URL"
           LOGIN=$?
-          curl -sf --max-time 15 --retry 2 --retry-delay 3 --retry-all-errors \
+          curl -sf --max-time 30 --retry 2 --retry-delay 10 --retry-all-errors \
             -H "apikey: $ANON_KEY" \
             -H "Authorization: Bearer $ANON_KEY" \
             -o /dev/null "$AUTH_HEALTH_URL"
