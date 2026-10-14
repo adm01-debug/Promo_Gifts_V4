@@ -31,11 +31,11 @@ Passos:
    `generateMockupApi` (`src/hooks/mockup/mockupGenerationService.ts:418`), que invoca a Edge
    Function `generate-mockup` (`mockupGenerationService.ts:349`). A função é um **compositor
    determinístico de canvas** — a rota de IA/"nano-banana" foi removida
-   (`supabase/functions/generate-mockup/index.ts:12-14,446`). Ela desenha produto + logo num
-   canvas de 1024 px com fundo branco e `object-contain` (`index.ts:191,309-315`), dimensiona o
-   logo em cm→px espelhando o preview WYSIWYG (`index.ts:216-248`) e sobe o PNG resultante no
-   bucket `mockup-assets` em `${userId}/mockups/...` (`index.ts:493-502`), devolvendo `mockupUrl`
-   (`index.ts:511-533`). Várias áreas = uma invocação por área, em paralelo (`mockupGenerationService.ts:445-449`).
+   (`supabase/functions/generate-mockup/index.ts:12-17,457`). Ela desenha produto + logo num
+   canvas de 1024 px com fundo branco e `object-contain` (`generate-mockup/index.ts:196,308-315`), dimensiona o
+   logo em cm→px espelhando o preview WYSIWYG (`generate-mockup/index.ts:221-248`) e sobe o PNG resultante no
+   bucket `mockup-assets` em `${userId}/mockups/...` (`generate-mockup/index.ts:504-522`), devolvendo `mockupUrl`
+   (`generate-mockup/index.ts:522-543`). Várias áreas = uma invocação por área, em paralelo (`mockupGenerationService.ts:445-449`).
 4. **Salvar no histórico.** Cada URL gerada vira uma linha em `generated_mockups` via
    `saveMockupToDb` (`mockupGenerationService.ts:156,190-231`). `technique_id` é gravado sempre
    `null` de propósito (a FK aponta para outra tabela; o nome vai em `technique_name`,
@@ -83,8 +83,8 @@ e "documento".
 
 | Estado | O que é | Onde vive (fonte) |
 |---|---|---|
-| **Imagem gerada** | PNG 1024×1024 composto (produto + logo) | Bucket `mockup-assets`, caminho `${userId}/mockups/*.png`; URL devolvida em `mockupUrl` (`generate-mockup/index.ts:493-502`). Em memória: state `generatedMockup` (`useMockupGenerator.ts:71`). |
-| **Projeto salvo** | (a) rascunho editável; (b) registro persistente do histórico | (a) `mockup_drafts` (`supabase/migrations/20260107013155_...sql:2`, chave `user_id,draft_key` + `personalization_areas` JSONB). (b) `generated_mockups` (`mockupGenerationService.ts:190-226`), com `position_x/y`, `logo_width_cm/height_cm`, `layout_url` em colunas top-level (`migrations/20251215011449_...sql:51-57`) e `client_id`/`client_name`/`logo_rotation`/`logo_scale` (`migrations/20260620000001_mockup_client_logo_rotation_cols.sql:19-39`). |
+| **Imagem gerada** | PNG 1024×1024 composto (produto + logo) | Bucket `mockup-assets`, caminho `${userId}/mockups/*.png`; URL devolvida em `mockupUrl` (`generate-mockup/index.ts:504-522`). Em memória: state `generatedMockup` (`useMockupGenerator.ts:71`). |
+| **Projeto salvo** | (a) rascunho editável; (b) registro persistente do histórico | (a) `mockup_drafts` (`supabase/migrations/20260107013155_66a04f90-a966-424c-a356-15f40b5f08b7.sql:2`, chave `user_id,draft_key` + `personalization_areas` JSONB). (b) `generated_mockups` (`mockupGenerationService.ts:190-226`), com `position_x/y`, `logo_width_cm/height_cm`, `layout_url` em colunas top-level (`supabase/migrations/20251215011449_730d6884-f2e8-4fe0-96e6-b03c13694aa4.sql:51-57`) e `client_id`/`client_name`/`logo_rotation`/`logo_scale` (`supabase/migrations/20260620000001_mockup_client_logo_rotation_cols.sql:19-39`). |
 | **Ficha (documento)** | Ficha de aprovação capturada (JPEG) com cabeçalho timbrado | `generated_mockups.layout_url`; arquivo em `${userId}/mockup-layouts/` (`OffscreenLayoutCapture.tsx:111,125`). O histórico prefere mostrar a ficha quando existe: `mockup.layout_url \|\| mockup.mockup_url` (`src/components/mockup/MockupHistoryPanel.tsx:547`). |
 
 Observação: o rascunho **não** guarda `data:` URLs no backend — só logos já em `http(s)` para não
@@ -107,9 +107,9 @@ Todos os caminhos abaixo mostram erro ao usuário (toast/banner) ou relançam �
 | Algumas áreas falharam (batch) | toast "N área(s) não puderam ser geradas. Mostrando as N que deram certo." | `mockupGenerationService.ts:464-469` |
 | Todas as áreas falharam | erro "Nenhum mockup gerado: todas as áreas falharam." | `mockupGenerationService.ts:461-463` |
 | Gerou mas não salvou | toast "Mockup gerado, mas não foi possível salvar no histórico." | `mockupGenerationService.ts:246-254` |
-| Edge responde erro | 400 `validation_failed`; 422 `product_image_unavailable`/`logo_unavailable`; 500 `storage_upload_failed`/`composition_failed`; 501 `canvas_runtime_unavailable`; 504 `composition_timeout` | `supabase/functions/generate-mockup/index.ts:43-52,423-470` |
-| Host interno/inexistente (SSRF) | host bloqueado e registrado; URL reprovada antes de buscar | `generate-mockup/index.ts:54-134,370-384` |
-| Kill switch ligado | a geração é interrompida pelo switch `edge_generate_mockup` | `generate-mockup/index.ts:347` |
+| Edge responde erro | 400 `validation_failed`; 422 `product_image_unavailable`/`logo_unavailable`; 500 `storage_upload_failed`/`composition_failed`; 501 `canvas_runtime_unavailable`; 504 `composition_timeout` | `supabase/functions/generate-mockup/index.ts:43-52,78,436-477,518` |
+| Host interno/inexistente (SSRF) | host bloqueado e registrado; URL reprovada antes de buscar; a allowlist de egresso é obrigatória (sem env, só o host do projeto) e **cada hop de redirect é revalidado** pelo mesmo gate antes de ser buscado | `generate-mockup/index.ts:95-144,370-384`; `generate-mockup/fetch-guard.ts:25-88` |
+| Kill switch ligado | a geração é interrompida pelo switch `edge_generate_mockup` | `generate-mockup/index.ts:352` |
 | Captura da ficha falhou | erro logado, **sem** `layout_url`; trava de 3 tentativas por registro | `OffscreenLayoutCapture.tsx:52-58,137-139` |
 
 Nota de UI: o "Assistente IA de Mockup" (`AIMockupAssistant`) **não chama IA alguma** — é
@@ -130,20 +130,20 @@ para vendedor (`agente`/`vendedor`).
 `gm_select_own_or_admin` / `gm_update_own_or_admin` / `gm_delete_own_or_admin` (`auth.uid() =
 user_id` **ou** `is_admin_or_above(auth.uid())`) e `gm_insert_self` (`auth.uid() = user_id`) —
 `supabase/migrations/20260512000001_t25_fix_auth_rls_initplan.sql:489-504`. O mesmo padrão de
-posse vale para `mockup_drafts` (`migrations/20260107013155_...sql:22-57`) e `art_file_attachments`
-(`migrations/20260514000002_t39_create_missing_tables.sql:533-560`).
+posse vale para `mockup_drafts` (`supabase/migrations/20260107013155_66a04f90-a966-424c-a356-15f40b5f08b7.sql:22-57`) e `art_file_attachments`
+(`supabase/migrations/20260514000002_t39_create_missing_tables.sql:533-560`).
 
 **c) Papel de gestão lê/edita/exclui de todos.** `is_admin_or_above` delega para
-`is_supervisor_or_above` (`migrations/20260522030000_rls_002_security_definer_hardening.sql:40`),
+`is_supervisor_or_above` (`supabase/migrations/20260522030000_rls_002_security_definer_hardening.sql:40`),
 que retorna `true` para **`dev`, `supervisor` e `admin` legado**
-(`migrations/20260426010557_27a64407-f199-43c2-87b2-e8aeaec63f40.sql:62-73`). No front,
+(`supabase/migrations/20260426010557_27a64407-f199-43c2-87b2-e8aeaec63f40.sql:62-73`). No front,
 `isAdmin = isSupervisorOrAbove` (`src/contexts/AuthContext.tsx:486`), que também inclui `manager`
 (`src/lib/auth/auth-utils.ts:41-43`).
 
 | Perfil (rótulo de UI) | Papéis no banco (`app_role`) | Mockups |
 |---|---|---|
 | **Vendedor** | `agente` / `vendedor` | Ver, criar, editar e excluir **os seus** (`gm_insert_self`; `gm_*_own_or_admin`) |
-| **Coordenador** | `supervisor` / `manager` / `coordenador` | `supervisor` e `manager` herdam gestão no front (`auth-utils.ts:41`); no banco só `supervisor` entra em `is_supervisor_or_above` — os valores `coordenador`/`manager` do enum **não** estão nessa função (`20260426010557_...sql:62-73`). Ver observação abaixo. |
+| **Coordenador** | `supervisor` / `manager` / `coordenador` | `supervisor` e `manager` herdam gestão no front (`auth-utils.ts:41`); no banco só `supervisor` entra em `is_supervisor_or_above` — os valores `coordenador`/`manager` do enum **não** estão nessa função (`supabase/migrations/20260426010557_27a64407-f199-43c2-87b2-e8aeaec63f40.sql:62-73`). Ver observação abaixo. |
 | **Admin** | `admin` (legado) / `dev` | Ler/editar/excluir **de todos** (`is_admin_or_above`) |
 
 Vocabulário de papéis: `app_role` = `dev, supervisor, admin, manager, agente, coordenador,
@@ -158,12 +158,12 @@ vendedor` (`src/integrations/supabase/types.ts:64369`); rótulos de UI em `src/l
 
 **Storage — "pastas por vendedor".** Cada arquivo fica sob uma pasta cujo primeiro segmento é o
 `auth.uid()` do dono, e as policies comparam `(storage.foldername(name))[1]` com o usuário:
-`mockup-assets` (`migrations/20260716000007_sec_storage_mockup_assets.sql`,
+`mockup-assets` (`supabase/migrations/20260716000007_sec_storage_mockup_assets.sql`,
 `INSERT`/`UPDATE`/`DELETE`/`SELECT` escopados) e `mockup-art-files` (bucket privado,
-`migrations/20260416195918_...sql:171-203`). Consequência: um vendedor não lê os logos, PNGs nem
+`supabase/migrations/20260416195918_397d6363-83a0-45f5-a8f6-ea33e21352a6.sql:171-203`). Consequência: um vendedor não lê os logos, PNGs nem
 fichas de outro; a Edge Function usa `service_role` para gravar o PNG composto
-(`generate-mockup/index.ts:472-502`). Limites do bucket `mockup-assets`: 10 MB e
-`image/jpeg|png|webp|gif` (`migrations/20260620000001_...sql:89-94`).
+(`generate-mockup/index.ts:504-522`). Limites do bucket `mockup-assets`: 10 MB e
+`image/jpeg|png|webp|gif` (`supabase/migrations/20260620000001_mockup_client_logo_rotation_cols.sql:89-94`).
 
 ---
 
