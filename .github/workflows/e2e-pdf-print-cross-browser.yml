@@ -35,11 +35,6 @@ concurrency:
   group: e2e-pdf-print-cross-browser-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
-env:
-  E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-  E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-
-
 defaults:
   run:
     shell: bash
