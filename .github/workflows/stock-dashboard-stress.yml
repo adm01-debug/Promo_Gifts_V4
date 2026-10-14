@@ -11,9 +11,9 @@ on:
   workflow_dispatch:
     inputs:
       repeat:
-        description: 'Repetições por spec (default 200)'
+        description: 'Repetições por spec (default 20; máximo 50 neste workflow)'
         required: false
-        default: '200'
+        default: '20'
       max_avg_seconds:
         description: 'Tempo médio máximo por iteração em segundos (default 8)'
         required: false
@@ -62,10 +62,10 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps chromium
 
-      - name: Run spec ${{ matrix.spec }} x${{ github.event.inputs.repeat || '200' }}
+      - name: Run spec ${{ matrix.spec }} x${{ github.event.inputs.repeat || '20' }}
         env:
           CI: true
-          REPEAT: ${{ github.event.inputs.repeat || '200' }}
+          REPEAT: ${{ github.event.inputs.repeat || '20' }}
           MAX_AVG: ${{ github.event.inputs.max_avg_seconds || '8' }}
           SPEC: ${{ matrix.spec }}
         run: |

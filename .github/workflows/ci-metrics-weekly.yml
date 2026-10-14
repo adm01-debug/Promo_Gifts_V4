@@ -43,6 +43,10 @@ jobs:
         run: node scripts/ci-metrics.mjs
 
       - name: Commit relatório se houve mudança
+        # E89/A-23: push direto em main só via workflow_dispatch (nunca pelo cron).
+        # O cron gera o relatório e o expõe como artifact; o operador faz dispatch
+        # quando quiser persistir no repo.
+        if: github.event_name == 'workflow_dispatch'
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -53,3 +57,10 @@ jobs:
             git commit -m "chore(ci): atualiza METRICAS_SEMANAIS.md $(date -u +%Y-%m-%d)"
             git push origin HEAD
           fi
+      - name: Upload relatório (sempre — cron não commita)
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: ci-metrics-weekly-${{ github.run_id }}
+          path: docs/ci/METRICAS_SEMANAIS.md
+          retention-days: 14

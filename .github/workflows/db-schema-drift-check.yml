@@ -46,7 +46,7 @@ on:
 
 permissions:
   contents: read
-  pull-requests: write
+  # pull-requests: write — removido E92 (não usado neste workflow)
 
 concurrency:
   group: db-schema-drift-${{ github.ref }}
