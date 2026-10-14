@@ -1,12 +1,7 @@
 name: stock-filter-stress
 
 on:
-  pull_request:
-    paths:
-      - 'src/lib/inventory/**'
-      - 'src/types/stock.ts'
-      - 'src/components/inventory/**'
-      - '.github/workflows/stock-filter-stress.yml'
+  # E38: stress só por agenda e workflow_dispatch, nunca em PR (carga desnecessária em revisão)
   schedule:
     # Nightly 03:17 UTC — seed rotativa por data para ampliar cobertura
     - cron: '17 3 * * *'
@@ -30,7 +25,7 @@ permissions:
 
 concurrency:
   group: stock-filter-stress-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  cancel-in-progress: false  # R2/E38: stress/schedule nunca cancelado
 
 
 defaults:
@@ -39,11 +34,11 @@ defaults:
 
 jobs:
   stress:
-    name: stock-filter stress (PR=5k / nightly=25k)
+    name: stock-filter stress (dispatch=5k / nightly=25k)
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
-      # Default PR
+      # Default dispatch (nightly sobrescreve para 25k)
       STRESS_SIMS: '5000'
       STRESS_MASTER_SEED: '48879' # 0xbeef
     steps:

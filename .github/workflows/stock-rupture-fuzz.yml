@@ -1,12 +1,7 @@
 name: stock-rupture-fuzz
 
 on:
-  pull_request:
-    paths:
-      - 'src/lib/inventory/**'
-      - 'src/types/stock.ts'
-      - 'src/components/inventory/**'
-      - '.github/workflows/stock-rupture-fuzz.yml'
+  # E38: fuzz só por agenda e workflow_dispatch, nunca em PR (carga desnecessária em revisão)
   workflow_dispatch:
   schedule:
     # Nightly 04:11 UTC — varredura adicional
@@ -17,7 +12,7 @@ permissions:
 
 concurrency:
   group: stock-rupture-fuzz-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  cancel-in-progress: false  # R2/E38: fuzz/schedule nunca cancelado
 
 
 defaults:
