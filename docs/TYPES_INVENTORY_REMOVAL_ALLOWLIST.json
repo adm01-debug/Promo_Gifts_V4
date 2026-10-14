@@ -23,7 +23,7 @@
       "category": "Tables",
       "name": "backup_produto_ramo_atividade_20260625",
       "reason": "Tabela de backup temporária da faxina de 2026-06-25 (docs/FAXINA_DB_2026-06-20.md), ~4 meses vencida, 0 referências em código. DROP pendente em supabase/migrations/20261013180500_incidente_2026_10_13_drop_tabelas_backup_vencidas.sql (ainda não aplicado em produção — ver pendência no PR do incidente 2026-10-13).",
-      "approvedBy": "PO (incidente 2026-10-13 — PREENCHER NOME ANTES DO MERGE)",
+      "approvedBy": "comercial@aquarellaprint.com.br",
       "date": "2026-10-13"
     },
     {
@@ -31,7 +31,7 @@
       "category": "Tables",
       "name": "_archive_product_seo_20260626",
       "reason": "Tabela de arquivo temporária da faxina de 2026-06-26, ~4 meses vencida, 0 referências em código. Mesmo DROP pendente do item anterior.",
-      "approvedBy": "PO (incidente 2026-10-13 — PREENCHER NOME ANTES DO MERGE)",
+      "approvedBy": "comercial@aquarellaprint.com.br",
       "date": "2026-10-13"
     },
     {
@@ -39,7 +39,7 @@
       "category": "Tables",
       "name": "_archive_supplier_price_tiers_20260626",
       "reason": "Tabela de arquivo temporária da faxina de 2026-06-26, ~4 meses vencida, 0 referências em código. Mesmo DROP pendente do item anterior.",
-      "approvedBy": "PO (incidente 2026-10-13 — PREENCHER NOME ANTES DO MERGE)",
+      "approvedBy": "comercial@aquarellaprint.com.br",
       "date": "2026-10-13"
     },
     {
@@ -47,7 +47,7 @@
       "category": "Tables",
       "name": "_archive_product_ai_20260626",
       "reason": "Tabela de arquivo temporária da faxina de 2026-06-26, ~4 meses vencida, 0 referências em código. Mesmo DROP pendente do item anterior.",
-      "approvedBy": "PO (incidente 2026-10-13 — PREENCHER NOME ANTES DO MERGE)",
+      "approvedBy": "comercial@aquarellaprint.com.br",
       "date": "2026-10-13"
     },
     {
@@ -55,7 +55,7 @@
       "category": "Tables",
       "name": "_bkp_kcvs_pre_normalize_20260624",
       "reason": "Tabela de backup temporária pré-normalização de 2026-06-24, ~4 meses vencida, 0 referências em código. Mesmo DROP pendente do item anterior.",
-      "approvedBy": "PO (incidente 2026-10-13 — PREENCHER NOME ANTES DO MERGE)",
+      "approvedBy": "comercial@aquarellaprint.com.br",
       "date": "2026-10-13"
     },
     {
@@ -63,7 +63,7 @@
       "category": "Tables",
       "name": "_bkp_kit_dims_20260619",
       "reason": "Tabela de backup temporária de 2026-06-19, ~4 meses vencida, 0 referências em código. Mesmo DROP pendente do item anterior.",
-      "approvedBy": "PO (incidente 2026-10-13 — PREENCHER NOME ANTES DO MERGE)",
+      "approvedBy": "comercial@aquarellaprint.com.br",
       "date": "2026-10-13"
     },
     {
@@ -71,7 +71,7 @@
       "category": "Tables",
       "name": "_bkp_kit_color_from_name_20260624",
       "reason": "Tabela de backup temporária de 2026-06-24, ~4 meses vencida, 0 referências em código. Mesmo DROP pendente do item anterior.",
-      "approvedBy": "PO (incidente 2026-10-13 — PREENCHER NOME ANTES DO MERGE)",
+      "approvedBy": "comercial@aquarellaprint.com.br",
       "date": "2026-10-13"
     },
     {
@@ -79,7 +79,7 @@
       "category": "Tables",
       "name": "_bkp_kit_pkg_material_20260624",
       "reason": "Tabela de backup temporária de 2026-06-24, ~4 meses vencida, 0 referências em código. Mesmo DROP pendente do item anterior.",
-      "approvedBy": "PO (incidente 2026-10-13 — PREENCHER NOME ANTES DO MERGE)",
+      "approvedBy": "comercial@aquarellaprint.com.br",
       "date": "2026-10-13"
     },
     {
@@ -87,7 +87,7 @@
       "category": "Tables",
       "name": "_bkp_kit_packing_type_20260624",
       "reason": "Tabela de backup temporária de 2026-06-24, ~4 meses vencida, 0 referências em código. Mesmo DROP pendente do item anterior.",
-      "approvedBy": "PO (incidente 2026-10-13 — PREENCHER NOME ANTES DO MERGE)",
+      "approvedBy": "comercial@aquarellaprint.com.br",
       "date": "2026-10-13"
     },
     {
@@ -95,7 +95,7 @@
       "category": "Tables",
       "name": "_bkp_orphan_active_variants_20260619",
       "reason": "Tabela de backup temporária de 2026-06-19, ~4 meses vencida, 0 referências em código. Mesmo DROP pendente do item anterior.",
-      "approvedBy": "PO (incidente 2026-10-13 — PREENCHER NOME ANTES DO MERGE)",
+      "approvedBy": "comercial@aquarellaprint.com.br",
       "date": "2026-10-13"
     },
     {
@@ -103,7 +103,7 @@
       "category": "Tables",
       "name": "eco_backfill_log_20260625",
       "reason": "Log temporário de backfill de 2026-06-25, ~4 meses vencido, 0 referências em código. Mesmo DROP pendente do item anterior.",
-      "approvedBy": "PO (incidente 2026-10-13 — PREENCHER NOME ANTES DO MERGE)",
+      "approvedBy": "comercial@aquarellaprint.com.br",
       "date": "2026-10-13"
     },
     {
@@ -111,7 +111,7 @@
       "category": "Tables",
       "name": "material_reconcile_log_20260626",
       "reason": "Log temporário de reconciliação de 2026-06-26, ~4 meses vencido, 0 referências em código. Mesmo DROP pendente do item anterior.",
-      "approvedBy": "PO (incidente 2026-10-13 — PREENCHER NOME ANTES DO MERGE)",
+      "approvedBy": "comercial@aquarellaprint.com.br",
       "date": "2026-10-13"
     },
     {
@@ -119,7 +119,7 @@
       "category": "Tables",
       "name": "eco_date_reconcile_log_20260626",
       "reason": "Log temporário de reconciliação de datas de 2026-06-26, ~4 meses vencido, 0 referências em código. Mesmo DROP pendente do item anterior.",
-      "approvedBy": "PO (incidente 2026-10-13 — PREENCHER NOME ANTES DO MERGE)",
+      "approvedBy": "comercial@aquarellaprint.com.br",
       "date": "2026-10-13"
     },
     {
@@ -127,15 +127,23 @@
       "category": "Tables",
       "name": "cnpj_backfill_audit",
       "reason": "Tabela de auditoria de backfill de CNPJ, retenção já vencida (8 linhas residuais), 0 referências em código. Mesmo DROP pendente do item anterior.",
-      "approvedBy": "PO (incidente 2026-10-13 — PREENCHER NOME ANTES DO MERGE)",
+      "approvedBy": "comercial@aquarellaprint.com.br",
       "date": "2026-10-13"
     },
     {
       "schema": "public",
       "category": "Functions",
       "name": "fn_sync_primary_image_url",
-      "reason": "Função redundante removida junto com trg_sync_primary_image_url (sempre sobrescrita por fn_sync_product_images_to_products no mesmo statement, ver supabase/migrations/20261013180000_...). DROP ainda não aplicado em produção.",
-      "approvedBy": "PO (incidente 2026-10-13 — PREENCHER NOME ANTES DO MERGE)",
+      "reason": "Função redundante removida junto com trg_sync_primary_image_url (sempre sobrescrita por fn_sync_product_images_to_products no mesmo statement, ver supabase/migrations/20261013180000_incidente_2026_10_13_drop_trigger_redundante_sync_primary_image_url.sql). DROP ainda não aplicado em produção. (Esta referência truncada já tinha sido corrigida uma vez no PR #2143 — commit f54deac — mas a correção foi perdida no mesmo conflito de merge que apagou a entrada supplier_products_raw_history_p2026_06; ver nota nessa entrada.)",
+      "approvedBy": "comercial@aquarellaprint.com.br",
+      "date": "2026-10-13"
+    },
+    {
+      "schema": "public",
+      "category": "Tables",
+      "name": "supplier_products_raw_history_p2026_06",
+      "reason": "Partição mensal de supplier_products_raw_history removida pela rotina normal de retenção (fn_purge_spr_history, 90 dias, cron diário às 03:30 — migration 20260604231642). Confirmado contra pg_catalog: partições vivas vão de p2026_07 a p2027_01, p2026_06 ausente. Não relacionado ao incidente 2026-10-13. Reintroduzida nesta entrada após ter sido perdida silenciosamente num conflito de merge entre os PRs #2143 e #2145 (ambos editaram o array `entries` então vazio; a resolução manual do conflito manteve só a versão do #2143) — ver REGRA #3 do CLAUDE.md.",
+      "approvedBy": "comercial@aquarellaprint.com.br",
       "date": "2026-10-13"
     }
   ]
