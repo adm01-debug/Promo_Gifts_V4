@@ -76,7 +76,7 @@ jobs:
           mkdir -p diff-artifacts
           if [ -d test-results ]; then
             find test-results -type f \( -name "*-diff.png" -o -name "*-actual.png" -o -name "*-expected.png" \) \
-              -exec cp --parents {} diff-artifacts/ \; || true
+              -exec cp --parents {} diff-artifacts/ \; || true  # ok: find retorna non-zero se nenhum arquivo encontrado — sem diffs é resultado válido
           fi
       - name: Gerar HTML preview (baseline × actual × diff)
         if: failure()

@@ -121,7 +121,7 @@ jobs:
           diff -u \
             qa/reports/magazineService.before.ts \
             qa/reports/magazineService.after.ts \
-            > qa/reports/magazineService.diff.patch || true
+            > qa/reports/magazineService.diff.patch || true  # ok: diff exits 1 quando os arquivos são idênticos — sem mudanças é resultado válido
 
           # Diff filtrado apenas às linhas que citam as tabelas alvo
           # (facilita auditoria da substituição untypedFrom → .from tipado).
@@ -148,6 +148,7 @@ jobs:
         if: steps.gate.outputs.ready == 'true'
         run: |
           set -e
+          # ok (grep -c || true): grep -c exits 1 quando não encontra nada — 0 é resultado válido para todos esses contadores
           TS_MAG=$(grep -cE "magazines: \{" src/integrations/supabase/types.ts || true)
           TS_MI=$(grep -cE "magazine_items: \{" src/integrations/supabase/types.ts || true)
           UF_COUNT=$(grep -c "untypedFrom" src/services/magazineService.ts || true)
@@ -222,6 +223,7 @@ jobs:
         run: |
           set -e
           REPORT="qa/reports/magazine-typed-queries-revalidation.md"
+          # ok (grep -c || true): 0 é valor válido para cada contador
           TS_MAG=$(grep -cE "magazines: \{" src/integrations/supabase/types.ts || true)
           TS_MI=$(grep -cE "magazine_items: \{" src/integrations/supabase/types.ts || true)
           UF_COUNT=$(grep -c "untypedFrom" src/services/magazineService.ts || true)

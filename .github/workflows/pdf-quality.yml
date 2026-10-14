@@ -87,7 +87,7 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends fonts-roboto fonts-montserrat fontconfig
           fc-cache -f
-          fc-list | grep -Ei 'roboto|montserrat' | head -5 || true
+          fc-list | grep -Ei 'roboto|montserrat' | head -5 || true  # ok: diagnóstico informativo; ausência de font match não deve quebrar o job
 
       - name: Run PDF test suites (snapshots + WCAG + hardcoded-colors allowlist)
         id: pdf-tests

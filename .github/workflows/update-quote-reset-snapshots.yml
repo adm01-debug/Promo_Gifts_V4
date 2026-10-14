@@ -87,7 +87,7 @@ jobs:
           git add e2e/quotes/quote-reset-stepper-layout.spec.ts-snapshots/ \
                   e2e/quotes/quote-number-subtitle.spec.ts-snapshots/ \
                   e2e/quotes/quote-pdf-header-snapshot.spec.ts-snapshots/ \
-                  e2e/quotes/quote-new-fab.spec.ts-snapshots/ || true
+                  e2e/quotes/quote-new-fab.spec.ts-snapshots/ || true  # ok: sem snapshots novos é resultado válido — verificado por git diff --cached abaixo
           if git diff --cached --quiet; then
             echo "Nenhuma baseline nova/alterada — nada para commitar."
             exit 0

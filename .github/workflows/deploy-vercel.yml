@@ -145,7 +145,7 @@ jobs:
           done
           if [ "$HEALTH_OK" != "1" ]; then
             echo "❌ /api/health falhou (correlationId=$REQ_ID)"
-            cat /tmp/health.json 2>/dev/null || true
+            cat /tmp/health.json 2>/dev/null || true  # ok: dump diagnóstico — arquivo pode não existir se curl falhou antes de criar
             exit 1
           fi
 
@@ -158,7 +158,7 @@ jobs:
             STATUS=$(jq -r '.status // empty' /tmp/ready.json 2>/dev/null)
             if [ "$CODE" = "200" ] && [ "$STATUS" = "ready" ]; then
               echo "✅ Ready"
-              jq -r '.checks | to_entries[] | "  - \(.key): \(.value.status)\(if .value.latency_ms then " (\(.value.latency_ms)ms)" else "" end)"' /tmp/ready.json 2>/dev/null || true
+              jq -r '.checks | to_entries[] | "  - \(.key): \(.value.status)\(if .value.latency_ms then " (\(.value.latency_ms)ms)" else "" end)"' /tmp/ready.json 2>/dev/null || true  # ok: dump informativo — checks ausentes não bloqueiam
               {
                 echo "## ✅ Smoke check"
                 echo "- version: \`$VERSION\`"
@@ -174,7 +174,7 @@ jobs:
           done
           if [ "$READY_OK" != "1" ]; then
             echo "❌ /api/ready falhou (correlationId=$REQ_ID)"
-            cat /tmp/ready.json 2>/dev/null || true
+            cat /tmp/ready.json 2>/dev/null || true  # ok: dump diagnóstico — arquivo pode não existir
             exit 1
           fi
 

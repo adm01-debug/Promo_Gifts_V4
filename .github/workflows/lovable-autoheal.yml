@@ -82,7 +82,7 @@ jobs:
             exit 0
           fi
 
-          CHANGED=$(git diff --name-only "${DIFF_BASE}" "${TARGET}" -- '*.ts' '*.tsx' | grep -E '^(src|tests|e2e)/' || true)
+          CHANGED=$(git diff --name-only "${DIFF_BASE}" "${TARGET}" -- '*.ts' '*.tsx' | grep -E '^(src|tests|e2e)/' || true)  # ok: grep exits 1 when zero files match — empty CHANGED é resultado válido
 
           if [ -z "$CHANGED" ]; then
             echo "has_ts_files=false" >> "$GITHUB_OUTPUT"
@@ -101,7 +101,7 @@ jobs:
         run: |
           FILES="${{ steps.changed_files.outputs.files }}"
           echo "ESLint --fix em: $FILES"
-          NODE_OPTIONS="--max-old-space-size=4096" node node_modules/eslint/bin/eslint.js --fix $FILES 2>&1 || true
+          NODE_OPTIONS="--max-old-space-size=4096" node node_modules/eslint/bin/eslint.js --fix $FILES 2>&1 || true  # ok: autoheal é best-effort; eslint errors são reportados no passo seguinte via git diff
 
       - name: Verificar se há correções a commitar
         id: check_changes

@@ -131,7 +131,7 @@ jobs:
             echo "::error::supabase db diff falhou:"; cat /tmp/diff.stderr; exit 1;
           }
           grep -vE '^[[:space:]]*(--.*)?$' /tmp/schema_drift.sql 2>/dev/null \
-            | grep -viE 'no schema changes found' > /tmp/schema_drift.clean || true
+            | grep -viE 'no schema changes found' > /tmp/schema_drift.clean || true  # ok: grep exits 1 se todos os lines foram filtrados — arquivo vazio = sem drift
           if [ -s /tmp/schema_drift.clean ]; then
             cnt=$(wc -l < /tmp/schema_drift.clean | tr -d ' ')
             {

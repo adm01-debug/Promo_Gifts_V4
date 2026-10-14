@@ -312,6 +312,12 @@ sequência; se qualquer um falhar, o deploy é bloqueado.
 | Gate 1.6 | Bundle size dentro dos limites | sim |
 | Gate 1.7 | TSC ratchet file guard — baseline não aumenta sem label `ratchet-override` (E41, PR-only) | sim (PR-only) |
 | Gate 1.8 | Detect accidentally base64-encoded files — texto encodado em base64 acidentalmente | sim |
+| Gate 1.9 | Dívida técnica — ratchets TODO/FIXME/`as any`/file-size não aumentam | sim |
+| Gate 1.9.1 | `console.*` baseline — número de chamadas não aumenta sem justificativa | sim |
+| Gate 1.10 | indexed-access ratchet — `object[key]` não aumenta (advisory) | opcional |
+| Gate 1.11 | Workflow contracts `check-workflow-contracts --gate` (C10–C23) | sim |
+| Gate 1.12 | Contract coverage + soft-delete policy commitada | sim |
+| Gate 1.13 | Policies baseline vs `pg_policies` ao vivo (bloqueante com credenciais) | sim |
 | Gate E23 | Secrets check — sem referências a segredos não declarados em `SEGREDOS.md` | sim |
 | Gate 2 | Testes unitários (`vitest`) | sim |
 | Gate 2.5 | Integridade transacional PostgreSQL | sim |

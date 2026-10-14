@@ -98,7 +98,7 @@ jobs:
               # Garantir que temos o commit before (pode ser fetch parcial)
               if ! git cat-file -e "$PUSH_BEFORE" 2>/dev/null; then
                 echo "::warning::Commit $PUSH_BEFORE não encontrado localmente — fazendo fetch"
-                git fetch --depth=200 origin "$PUSH_BEFORE" || true
+                git fetch --depth=200 origin "$PUSH_BEFORE" || true  # ok: commit pode ter sido force-pushed — sem ele a auditoria avança sem base
               fi
               if git cat-file -e "$PUSH_BEFORE" 2>/dev/null; then
                 # Fix [10]: se HEAD é merge-commit de PR, audita apenas HEAD

@@ -132,9 +132,9 @@ jobs:
             BEFORE="$GIT_BEFORE"
             AFTER="$GIT_AFTER"
             if [[ -z "$BEFORE" || "$BEFORE" =~ ^0+$ ]]; then
-              CHANGED=$(git diff --name-only "${AFTER}~1" "$AFTER" -- supabase/functions/ || true)
+              CHANGED=$(git diff --name-only "${AFTER}~1" "$AFTER" -- supabase/functions/ || true)  # ok: primeiro push (BEFORE=0) — diff de um commit atrás
             else
-              CHANGED=$(git diff --name-only "$BEFORE" "$AFTER" -- supabase/functions/ || true)
+              CHANGED=$(git diff --name-only "$BEFORE" "$AFTER" -- supabase/functions/ || true)  # ok: git diff exits non-zero em certas condições de histórico raso
             fi
             cd supabase/functions
 

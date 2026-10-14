@@ -114,7 +114,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add e2e/ui/__screenshots__/quote-conditions-visual.spec.ts || true
+          git add e2e/ui/__screenshots__/quote-conditions-visual.spec.ts || true  # ok: sem snapshots novos é resultado válido
           if git diff --cached --quiet; then
             echo "Sem mudanças nos baselines."; exit 0
           fi

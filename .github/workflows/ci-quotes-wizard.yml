@@ -351,7 +351,7 @@ jobs:
           node-version-file: '.nvmrc'
           cache: npm
       - run: npm ci
-      - run: npm install -D pdf-parse @types/pdf-parse || true
+      - run: npm install -D pdf-parse @types/pdf-parse || true  # ok: optional pdf-parse devDep; spec degrades gracefully if absent
       - run: npm run test:e2e:install
       - name: Run Playwright — quote-pdf-quote-number
         run: |

@@ -98,7 +98,7 @@ jobs:
       # colapsável para diagnóstico, e bloco "FINAL SUMMARY" sem ANSI no fim.
       - name: 📋 Generate SMOKE summary (sempre — log final + annotations)
         if: always()
-        run: node scripts/e2e-smoke-summary.mjs || true
+        run: node scripts/e2e-smoke-summary.mjs || true  # ok: resumo é best-effort; não deve bloquear upload de artefato
 
       - name: 📤 Append SMOKE summary to GitHub UI
         if: always() && steps.e2e_smoke.outcome != 'skipped'
@@ -179,7 +179,7 @@ jobs:
 
       - name: 📋 Generate feature summary (regression)
         if: always()
-        run: node scripts/e2e-feature-summary.mjs || true
+        run: node scripts/e2e-feature-summary.mjs || true  # ok: resumo é best-effort; não deve bloquear upload de artefato
 
       - name: 📤 Append feature summary to GitHub UI
         if: always() && steps.e2e_run.outcome != 'skipped'

@@ -125,7 +125,7 @@ jobs:
         id: locate
         run: |
           set -euo pipefail
-          mapfile -t FILES < <(ls supabase/migrations/"${MIGRATION_VERSION}"_*.sql 2>/dev/null || true)
+          mapfile -t FILES < <(ls supabase/migrations/"${MIGRATION_VERSION}"_*.sql 2>/dev/null || true)  # ok: ls com glob retorna non-zero se nenhum arquivo encontrado — tamanho do array é verificado abaixo
           if [ "${#FILES[@]}" -ne 1 ]; then
             echo "::error::esperava exatamente 1 arquivo supabase/migrations/${MIGRATION_VERSION}_*.sql, encontrei ${#FILES[@]} (o job 'preflight' deveria ter barrado isso antes)."
             exit 1

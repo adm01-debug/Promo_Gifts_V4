@@ -93,7 +93,7 @@ jobs:
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
-        git add --force 'e2e/**/*.png' '**/*.spec.ts-snapshots/**' 2>/dev/null || true
+        git add --force 'e2e/**/*.png' '**/*.spec.ts-snapshots/**' 2>/dev/null || true  # ok: sem PNGs novos é resultado válido; 2>/dev/null suprime "pathspec did not match"
         if ! git diff --staged --quiet; then
           TARGET_BRANCH="${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
           STAGED_LIST=$(git diff --staged --name-only)
@@ -103,13 +103,13 @@ jobs:
             mkdir -p "${TMPDIR_PNGS}/$(dirname "$f")"
             cp "$f" "${TMPDIR_PNGS}/$f"
           done <<< "$STAGED_LIST"
-          git checkout "$TARGET_BRANCH" 2>/dev/null || git switch "$TARGET_BRANCH" 2>/dev/null || true
+          git checkout "$TARGET_BRANCH" 2>/dev/null || git switch "$TARGET_BRANCH" 2>/dev/null || true  # ok: tenta checkout, depois switch; fallback || true evita falha em detached HEAD
           while IFS= read -r f; do
             [ -z "$f" ] && continue
             mkdir -p "$(dirname "$f")"
             cp "${TMPDIR_PNGS}/$f" "$f"
           done <<< "$STAGED_LIST"
-          git add --force 'e2e/**/*.png' '**/*.spec.ts-snapshots/**' 2>/dev/null || true
+          git add --force 'e2e/**/*.png' '**/*.spec.ts-snapshots/**' 2>/dev/null || true  # ok: idem linha acima — sem PNGs é OK
           if ! git diff --staged --quiet; then
             git commit -m "chore(visual-tests): atualiza baselines visuais [skip ci]"
             git push origin "$TARGET_BRANCH"

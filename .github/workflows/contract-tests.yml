@@ -103,7 +103,7 @@ jobs:
           # transitórias sem mascarar erro persistente — o log é preservado p/ diagnóstico.
           if ! start_stack; then
             echo "::warning::supabase start falhou na 1ª tentativa — limpando e tentando novamente"
-            supabase stop || true
+            supabase stop || true  # ok: stop antes de retry — falha de stop não impede retry
             start_stack
           fi
           # captura anon key local
@@ -131,7 +131,7 @@ jobs:
 
           for i in $(seq 1 30); do
             HTTP=$(curl -sS -o /tmp/functions-health.json -w "%{http_code}" \
-              "$SUPABASE_URL/functions/v1/health-check" || true)
+              "$SUPABASE_URL/functions/v1/health-check" || true)  # ok: curl pode falhar com rede ainda subindo — loop verifica HTTP code
             if [[ "$HTTP" != "000" ]]; then
               echo "Edge runtime ready via health-check (HTTP $HTTP)"
               break
@@ -141,7 +141,7 @@ jobs:
 
           if [[ "${HTTP:-000}" == "000" ]]; then
             echo "::error::Edge runtime did not become reachable through /functions/v1/health-check"
-            cat /tmp/functions.log || true
+            cat /tmp/functions.log || true  # ok: dump diagnóstico — arquivo pode não existir se serve nunca iniciou
             exit 1
           fi
 
@@ -149,7 +149,7 @@ jobs:
             HTTP=$(curl -sS -o /tmp/product-webhook-ready.json -w "%{http_code}" \
               -X POST "$SUPABASE_URL/functions/v1/product-webhook" \
               -H "content-type: application/json" \
-              --data '{}' || true)
+              --data '{}' || true)  # ok: curl pode falhar enquanto função ainda não está pronta — loop verifica HTTP
             if [[ "$HTTP" != "000" && "$HTTP" != "502" ]]; then
               echo "product-webhook ready (HTTP $HTTP)"
               break
@@ -159,7 +159,7 @@ jobs:
 
           if [[ "${HTTP:-000}" == "000" || "${HTTP:-000}" == "502" ]]; then
             echo "::error::product-webhook did not become reachable"
-            cat /tmp/functions.log || true
+            cat /tmp/functions.log || true  # ok: dump diagnóstico — arquivo pode não existir se serve nunca iniciou
             exit 1
           fi
 
@@ -173,20 +173,20 @@ jobs:
         if: failure()
         run: |
           echo "::group::supabase start log"
-          cat /tmp/supabase-start.log || true
+          cat /tmp/supabase-start.log || true  # ok: dump diagnóstico — falha na falha não deve mascarar o erro original
           echo "::endgroup::"
           echo "::group::supabase functions serve log"
-          cat /tmp/functions.log || true
+          cat /tmp/functions.log || true  # ok: dump diagnóstico — idem
           echo "::endgroup::"
           echo "::group::docker containers"
-          docker ps -a || true
+          docker ps -a || true  # ok: dump diagnóstico — docker pode não estar disponível
           echo "::endgroup::"
           echo "::group::supabase status"
-          supabase status || true
+          supabase status || true  # ok: dump diagnóstico — stack pode já ter falhado
           echo "::endgroup::"
 
       - name: Cleanup
         if: always()
         run: |
-          if [ -f /tmp/functions.pid ]; then kill "$(cat /tmp/functions.pid)" 2>/dev/null || true; fi
-          supabase stop || true
+          if [ -f /tmp/functions.pid ]; then kill "$(cat /tmp/functions.pid)" 2>/dev/null || true; fi  # ok: processo pode já ter terminado — E92
+          supabase stop || true  # ok: cleanup — stop pode falhar se stack já não estava rodando

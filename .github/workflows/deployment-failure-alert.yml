@@ -61,7 +61,7 @@ jobs:
           # branch), então "gh pr list --head" nunca encontrava o PR e toda falha
           # caía na issue compartilhada. A API commits→pulls resolve pelo SHA.
           PR=$(gh api "repos/$GITHUB_REPOSITORY/commits/$SHA/pulls" \
-            --jq '[.[] | select(.state == "open")][0].number // empty' 2>/dev/null || true)
+            --jq '[.[] | select(.state == "open")][0].number // empty' 2>/dev/null || true)  # ok: 404 quando SHA não tem PR aberto — PR vazio é resultado esperado
           if [ -n "$PR" ]; then
             # Evita spam: 1 comentário por SHA (marcador exato, não grep de 7 chars)
             if gh pr view "$PR" --repo "$GITHUB_REPOSITORY" --json comments -q '.comments[].body' | grep -qF "$MARKER"; then
@@ -72,7 +72,7 @@ jobs:
           fi
 
           gh label create deploy-failure --repo "$GITHUB_REPOSITORY" --color B60205 \
-            --description "Deploy Vercel com estado failure/error" 2>/dev/null || true
+            --description "Deploy Vercel com estado failure/error" 2>/dev/null || true  # ok: label pode já existir — idempotente
           ISSUE=$(gh issue list --repo "$GITHUB_REPOSITORY" --label deploy-failure --state open --limit 1 --json number -q '.[0].number // empty')
           if [ -n "$ISSUE" ]; then
             gh issue comment "$ISSUE" --repo "$GITHUB_REPOSITORY" --body "$BODY"

@@ -108,6 +108,7 @@ jobs:
         id: slug_diff
         run: |
           set -euo pipefail
+          # ok (comm || true): comm pode falhar se um dos arquivos estiver vazio — arquivo de saída vazio é resultado válido para cada diff
           comm -23 /tmp/repo_slugs.txt /tmp/canonical_slugs.txt > /tmp/missing_deploy.txt || true
           comm -13 /tmp/repo_slugs.txt /tmp/canonical_slugs.txt > /tmp/canonical_not_in_repo.txt || true
           comm -23 /tmp/canonical_not_in_repo.txt /tmp/canonical_only_allowlist.txt > /tmp/orphans.txt || true
@@ -177,7 +178,7 @@ jobs:
 
             canon_dir="$target_dir/supabase/functions/$slug"
             if [ ! -d "$canon_dir" ]; then
-              canon_index="$(find "$target_dir" -name index.ts -print -quit || true)"
+              canon_index="$(find "$target_dir" -name index.ts -print -quit || true)"  # ok: find retorna non-zero em certas condições de permissão — string vazia é tratada abaixo
               if [ -n "$canon_index" ]; then
                 canon_dir="$(dirname "$canon_index")"
               fi

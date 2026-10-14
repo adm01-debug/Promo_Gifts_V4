@@ -81,7 +81,7 @@ jobs:
           elif [ "$EVENT_NAME" = "pull_request" ]; then
             git fetch origin "$BASE_REF" --depth=1
             git diff --name-only "origin/$BASE_REF...HEAD" \
-              | grep -E '^qa/migrations-draft/.*\.sql$' > /tmp/drafts.txt || true
+              | grep -E '^qa/migrations-draft/.*\.sql$' > /tmp/drafts.txt || true  # ok: grep exits 1 quando PR não toca nenhum SQL — arquivo vazio é resultado esperado
           else
             ls qa/migrations-draft/*.sql > /tmp/drafts.txt
           fi

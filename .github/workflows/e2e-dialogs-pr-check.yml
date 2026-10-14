@@ -95,9 +95,9 @@ jobs:
           mkdir -p diff-artifacts
           if [ -d test-results ]; then
             find test-results -type f \( -name "*-diff.png" -o -name "*-actual.png" -o -name "*-expected.png" \) \
-              -exec cp --parents {} diff-artifacts/ \; || true
+              -exec cp --parents {} diff-artifacts/ \; || true  # ok: sem diffs png é resultado válido
           fi
-          node <<'JS' > diff-artifacts/summary.md || true
+          node <<'JS' > diff-artifacts/summary.md || true  # ok: summary é best-effort; results.json pode não existir
           const fs = require('fs');
           const p = 'playwright-report/results.json';
           if (!fs.existsSync(p)) { console.log('_(sem results.json)_'); process.exit(0); }

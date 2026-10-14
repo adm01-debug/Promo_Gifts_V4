@@ -151,7 +151,7 @@ jobs:
           node scripts/build-visual-diff-report.mjs \
             --results test-results \
             --out visual-diff-report/index.html \
-            --title 'Colapso do LocationPanel — diffs visuais' || true
+            --title 'Colapso do LocationPanel — diffs visuais' || true  # ok: geração de relatório HTML é best-effort; não bloqueia o job
           # Também gera um resumo Markdown no Job Summary do PR.
           if [ -d test-results ]; then
             {
