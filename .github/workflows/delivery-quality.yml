@@ -11,6 +11,7 @@ on:
       - 'package*.json'
       - '.nvmrc'
       - 'vite.config.*'
+      - '.github/workflows/delivery-quality.yml'
 
 permissions:
   contents: read

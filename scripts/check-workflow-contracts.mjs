@@ -464,6 +464,21 @@ export function checkC23NoLiteralNodeVersion({ file, text }) {
   return [];
 }
 
+// C24 — no bare npm install in run: steps (use npm ci) (E96)
+export function checkC24NpmInstallInRun({ file, text }) {
+  const violations = [];
+  const lines = text.split('\n');
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if (/^\s*#/.test(line)) continue;
+    // Flag npm install (not npm ci, not npm install -g/--global)
+    if (/\bnpm\s+install\b/.test(line) && !/\bnpm\s+install\s+(-g|--global)\b/.test(line)) {
+      violations.push(`${file}:${i + 1}: npm install in run: — use npm ci for reproducible installs (E96/C24)`);
+    }
+  }
+  return violations;
+}
+
 // ---------------------------------------------------------------------------
 // Filesystem helpers
 // ---------------------------------------------------------------------------
@@ -537,6 +552,7 @@ export function runChecks(rootDir = ROOT) {
       ...checkC21RetentionDays(wf),
       ...checkC22NoGitPushInPR(wf),
       ...checkC23NoLiteralNodeVersion(wf),
+      ...checkC24NpmInstallInRun(wf),
     );
   }
   all.push(...checkC9DuplicateJobNames(workflows));
@@ -567,6 +583,7 @@ export function runChecks(rootDir = ROOT) {
       C21: all.filter((v) => v.includes('retention-days')).length,
       C22: all.filter((v) => v.includes('git push')).length,
       C23: all.filter((v) => v.includes('literal node-version')).length,
+      C24: all.filter((v) => v.includes('npm install in run')).length,
     },
     workflowCount: workflows.length,
   };
@@ -626,6 +643,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
   console.log(`  C21 retention-days:       ${counts.C21}`);
   console.log(`  C22 git push in PR:       ${counts.C22}`);
   console.log(`  C23 literal node-ver:     ${counts.C23}`);
+  console.log(`  C24 npm install in run:   ${counts.C24}`);
 
   if (fresh.length > 0) {
     console.log('\nFresh violations (not in allowlist):');

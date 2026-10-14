@@ -17,6 +17,7 @@ on:
     paths:  # E14: só precisa rodar quando src/ muda (label estático)
       - 'src/**'
       - 'package*.json'
+      - '.github/workflows/draft-label-guard.yml'
 
 permissions:
   contents: read

@@ -12,6 +12,7 @@ on:
       - '.nvmrc'
       - 'playwright.config.*'
       - 'vite.config.*'
+      - '.github/workflows/playwright.yml'
 
 permissions:
   contents: read

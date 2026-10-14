@@ -16,6 +16,7 @@ on:
       - '.nvmrc'
       - 'playwright.config.*'
       - 'vite.config.*'
+      - '.github/workflows/e2e-thumb-quickview.yml'
 
 concurrency:
   group: e2e-thumb-quickview-${{ github.ref }}

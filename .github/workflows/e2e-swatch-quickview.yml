@@ -17,6 +17,7 @@ on:
       - '.nvmrc'
       - 'playwright.config.*'
       - 'vite.config.*'
+      - '.github/workflows/e2e-swatch-quickview.yml'
 
 concurrency:
   group: e2e-swatch-quickview-${{ github.ref }}

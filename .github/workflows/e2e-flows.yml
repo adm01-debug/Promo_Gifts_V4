@@ -17,6 +17,7 @@ on:
       - '.nvmrc'
       - 'playwright.config.*'
       - 'vite.config.*'
+      - '.github/workflows/e2e-flows.yml'
   workflow_dispatch:
 
 concurrency:

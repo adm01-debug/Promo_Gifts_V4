@@ -3,9 +3,11 @@
   "_date": "2026-10-14",
   "_allowlisted_files": [],
   "_allowlisted_violations": [
-    "deploy-gates.yml: job `lighthouse` has continue-on-error: true — gate jobs must not hide failures (C17)"
+    "deploy-gates.yml: job `lighthouse` has continue-on-error: true — gate jobs must not hide failures (C17)",
+    "ci-quotes-wizard.yml:358: npm install in run: — use npm ci for reproducible installs (E96/C24)"
   ],
   "_violation_justifications": {
-    "deploy-gates.yml/lighthouse/C17": "Gate 4 (Lighthouse CI) é intencionalmente opcional — documentado em CLAUDE.md tabela de gates ('Gate 4 | opcional'). O job lighthouse foi removido de needs: no deploy-ready (E03), portanto falha não bloqueia deploy. continue-on-error:true é necessário para que o workflow geral não fique vermelho quando métricas de Lighthouse variam. Aprovado E19/2026-10-14."
+    "deploy-gates.yml/lighthouse/C17": "Gate 4 (Lighthouse CI) é intencionalmente opcional — documentado em CLAUDE.md tabela de gates ('Gate 4 | opcional'). O job lighthouse foi removido de needs: no deploy-ready (E03), portanto falha não bloqueia deploy. continue-on-error:true é necessário para que o workflow geral não fique vermelho quando métricas de Lighthouse variam. Aprovado E19/2026-10-14.",
+    "ci-quotes-wizard.yml:358/C24": "npm install -D pdf-parse @types/pdf-parse || true — instala devDep opcional de PDF em runtime; '|| true' é intencional pois o teste degrada graciosamente sem o pacote. Não pode ser em npm ci pois o pacote é opcionalmente ausente. Aprovado E96/2026-10-14."
   }
 }

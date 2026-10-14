@@ -8,6 +8,7 @@ on:
       - 'src/integrations/supabase/**'
       - 'scripts/*supabase*'
       - 'package*.json'
+      - '.github/workflows/supabase-linter-gate.yml'
   push:
     branches: [main]
   schedule:

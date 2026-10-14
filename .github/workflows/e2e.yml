@@ -17,6 +17,7 @@ on:
       - '.nvmrc'
       - 'playwright.config.*'
       - 'vite.config.*'
+      - '.github/workflows/e2e.yml'
   workflow_dispatch:
 
 permissions:
