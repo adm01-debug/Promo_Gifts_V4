@@ -146,11 +146,80 @@ export function prepareWorkdir({ rootDir, outDir, appliedVersions, projectRef })
     join(outDir, 'supabase', 'config.toml'),
     `project_id = "${projectRef}"\n\n[db]\nmajor_version = ${SHADOW_MAJOR_VERSION}\n`,
   );
-  copyFileSync(baseline.file, join(outMigrations, baseline.name));
+  const sanitized = sanitizeBaselineForReplay(readFileSync(baseline.file, 'utf8'));
+  writeFileSync(join(outMigrations, baseline.name), sanitized.sql);
   replay.forEach((f, i) => {
     copyFileSync(join(migrationsDir, f), join(outMigrations, replayFileName(baseline.version, i, f)));
   });
-  return { baselineVersion: baseline.version, replayed: replay, workdir: outDir };
+  return {
+    baselineVersion: baseline.version,
+    replayed: replay,
+    workdir: outDir,
+    removedStatements: sanitized.removed,
+  };
+}
+
+// `supabase db dump` não emite CREATE EVENT TRIGGER (os event triggers ficam de
+// fora), mas emite o COMMENT ON EVENT TRIGGER / ALTER EVENT TRIGGER que os
+// referencia: aplicado no shadow, o último comando do baseline falha com
+// `event trigger "..." does not exist` e o db diff nem chega a comparar
+// (db-schema-drift-check de 2026-10-15, baseline 20261015140000, linha 120985).
+// O arquivo de baseline permanece idêntico ao dump; a limpeza é feita ao montar
+// a pasta de replay.
+const EVENT_TRIGGER_STATEMENT = /^\s*(?:ALTER|COMMENT\s+ON)\s+EVENT\s+TRIGGER\b/i;
+
+// Avança o estado léxico (aspas simples, dollar-quote) por uma linha e diz se
+// houve `;` fora de literal e de comentário de linha.
+function scanLine(line, state) {
+  let terminated = false;
+  for (let i = 0; i < line.length; i += 1) {
+    const c = line[i];
+    if (state.dollar) {
+      if (line.startsWith(state.dollar, i)) {
+        i += state.dollar.length - 1;
+        state.dollar = null;
+      }
+    } else if (state.quote) {
+      if (c === "'") {
+        if (line[i + 1] === "'") i += 1;
+        else state.quote = false;
+      }
+    } else if (c === "'") {
+      state.quote = true;
+    } else if (c === '$') {
+      const tag = /^\$[A-Za-z_]*\$/.exec(line.slice(i));
+      if (tag) {
+        state.dollar = tag[0];
+        i += tag[0].length - 1;
+      }
+    } else if (c === '-' && line[i + 1] === '-') {
+      break;
+    } else if (c === ';') {
+      terminated = true;
+    }
+  }
+  return terminated;
+}
+
+export function sanitizeBaselineForReplay(sql) {
+  const kept = [];
+  const removed = [];
+  const state = { quote: false, dollar: null };
+  let skipping = false;
+  sql.split('\n').forEach((line, index) => {
+    const atStatementStart = !skipping && !state.quote && !state.dollar;
+    if (atStatementStart && EVENT_TRIGGER_STATEMENT.test(line)) {
+      skipping = true;
+      removed.push({ line: index + 1, statement: line.trim().slice(0, 90) });
+    }
+    const terminated = scanLine(line, state);
+    if (skipping) {
+      if (terminated && !state.quote && !state.dollar) skipping = false;
+      return;
+    }
+    kept.push(line);
+  });
+  return { sql: kept.join('\n'), removed };
 }
 
 export function loadAllowlist(text) {
