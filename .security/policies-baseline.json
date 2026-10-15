@@ -1,9 +1,9 @@
 {
   "version": 1,
   "pending_seed": false,
-  "generated_at": "2026-10-11T17:14:36.465Z",
+  "generated_at": "2026-10-15T13:55:18.607Z",
   "project_ref": "doufsxqlfjyuvxuezpln",
-  "sha256": "52dc1cfba04229192137c5d046a2e66052f77587223f9af6ed2611e07bb61fb3",
+  "sha256": "a078eddeb31114dc9d390a7c3aa3c7ed994be18697c9abe57c90398aa0d4f8b4",
   "policies": [
     {
       "schemaname": "public",
@@ -364,6 +364,26 @@
       "cmd": "SELECT",
       "qual": "((user_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR is_coord_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid)))",
       "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "anon_catalog_grant_audit_log",
+      "policyname": "anon_catalog_grant_audit_log_admin_read",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "is_admin_or_above(( SELECT auth.uid() AS uid))",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "anon_catalog_grant_audit_log",
+      "policyname": "anon_catalog_grant_audit_log_service_all",
+      "permissive": "PERMISSIVE",
+      "roles": "{service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
     },
     {
       "schemaname": "public",
@@ -782,7 +802,7 @@
       "permissive": "PERMISSIVE",
       "roles": "{public}",
       "cmd": "DELETE",
-      "qual": "is_org_owner_or_admin(organization_id)",
+      "qual": "(organization_id IN ( SELECT uo.organization_id\n   FROM user_organizations uo\n  WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role])))))",
       "with_check": ""
     },
     {
@@ -793,7 +813,7 @@
       "roles": "{public}",
       "cmd": "INSERT",
       "qual": "",
-      "with_check": "is_org_owner_or_admin(organization_id)"
+      "with_check": "(organization_id IN ( SELECT uo.organization_id\n   FROM user_organizations uo\n  WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role])))))"
     },
     {
       "schemaname": "public",
@@ -812,8 +832,8 @@
       "permissive": "PERMISSIVE",
       "roles": "{public}",
       "cmd": "UPDATE",
-      "qual": "is_org_owner_or_admin(organization_id)",
-      "with_check": "is_org_owner_or_admin(organization_id)"
+      "qual": "(organization_id IN ( SELECT uo.organization_id\n   FROM user_organizations uo\n  WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role])))))",
+      "with_check": "(organization_id IN ( SELECT uo.organization_id\n   FROM user_organizations uo\n  WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role])))))"
     },
     {
       "schemaname": "public",
@@ -3267,6 +3287,36 @@
     },
     {
       "schemaname": "public",
+      "tablename": "magazine_duplicate_requests",
+      "policyname": "magazine_duplicate_requests_own_insert",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "INSERT",
+      "qual": "",
+      "with_check": "(actor_id = ( SELECT auth.uid() AS uid))"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "magazine_duplicate_requests",
+      "policyname": "magazine_duplicate_requests_own_select",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "(actor_id = ( SELECT auth.uid() AS uid))",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "magazine_duplicate_requests",
+      "policyname": "magazine_duplicate_requests_service_all",
+      "permissive": "PERMISSIVE",
+      "roles": "{service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
       "tablename": "magazine_items",
       "policyname": "magazine_items_via_owner_or_org",
       "permissive": "PERMISSIVE",
@@ -5192,7 +5242,7 @@
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",
       "cmd": "DELETE",
-      "qual": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_category_assignments.product_id) AND is_org_owner_or_admin(p.organization_id))))",
+      "qual": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_category_assignments.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))",
       "with_check": ""
     },
     {
@@ -5203,7 +5253,7 @@
       "roles": "{authenticated}",
       "cmd": "INSERT",
       "qual": "",
-      "with_check": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_category_assignments.product_id) AND is_org_owner_or_admin(p.organization_id))))"
+      "with_check": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_category_assignments.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))"
     },
     {
       "schemaname": "public",
@@ -5212,8 +5262,8 @@
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",
       "cmd": "UPDATE",
-      "qual": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_category_assignments.product_id) AND is_org_owner_or_admin(p.organization_id))))",
-      "with_check": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_category_assignments.product_id) AND is_org_owner_or_admin(p.organization_id))))"
+      "qual": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_category_assignments.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_category_assignments.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))"
     },
     {
       "schemaname": "public",
@@ -5222,7 +5272,7 @@
       "permissive": "PERMISSIVE",
       "roles": "{public}",
       "cmd": "SELECT",
-      "qual": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_category_assignments.product_id) AND user_belongs_to_org(p.organization_id))))",
+      "qual": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_category_assignments.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE (uo.user_id = ( SELECT auth.uid() AS uid)))))))",
       "with_check": ""
     },
     {
@@ -5632,7 +5682,7 @@
       "permissive": "PERMISSIVE",
       "roles": "{public}",
       "cmd": "DELETE",
-      "qual": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_images.product_id) AND is_org_owner_or_admin(p.organization_id))))",
+      "qual": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_images.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))",
       "with_check": ""
     },
     {
@@ -5643,7 +5693,7 @@
       "roles": "{authenticated}",
       "cmd": "INSERT",
       "qual": "",
-      "with_check": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_images.product_id) AND is_org_owner_or_admin(p.organization_id))))"
+      "with_check": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_images.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))"
     },
     {
       "schemaname": "public",
@@ -5652,8 +5702,8 @@
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",
       "cmd": "UPDATE",
-      "qual": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_images.product_id) AND is_org_owner_or_admin(p.organization_id))))",
-      "with_check": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_images.product_id) AND is_org_owner_or_admin(p.organization_id))))"
+      "qual": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_images.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_images.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))"
     },
     {
       "schemaname": "public",
@@ -5662,7 +5712,7 @@
       "permissive": "PERMISSIVE",
       "roles": "{public}",
       "cmd": "SELECT",
-      "qual": "((is_active = true) OR is_org_owner_or_admin(organization_id))",
+      "qual": "((is_active = true) OR (organization_id IN ( SELECT uo.organization_id\n   FROM user_organizations uo\n  WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))",
       "with_check": ""
     },
     {
@@ -6202,7 +6252,7 @@
       "permissive": "PERMISSIVE",
       "roles": "{public}",
       "cmd": "DELETE",
-      "qual": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_variants.product_id) AND is_org_owner_or_admin(p.organization_id))))",
+      "qual": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_variants.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))",
       "with_check": ""
     },
     {
@@ -6213,7 +6263,7 @@
       "roles": "{authenticated}",
       "cmd": "INSERT",
       "qual": "",
-      "with_check": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_variants.product_id) AND is_org_owner_or_admin(p.organization_id))))"
+      "with_check": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_variants.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))"
     },
     {
       "schemaname": "public",
@@ -6222,8 +6272,8 @@
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",
       "cmd": "UPDATE",
-      "qual": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_variants.product_id) AND is_org_owner_or_admin(p.organization_id))))",
-      "with_check": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_variants.product_id) AND is_org_owner_or_admin(p.organization_id))))"
+      "qual": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_variants.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_variants.product_id) AND (p.organization_id IN ( SELECT uo.organization_id\n           FROM user_organizations uo\n          WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role]))))))))"
     },
     {
       "schemaname": "public",
@@ -6332,7 +6382,7 @@
       "permissive": "PERMISSIVE",
       "roles": "{public}",
       "cmd": "DELETE",
-      "qual": "is_org_owner_or_admin(organization_id)",
+      "qual": "(organization_id IN ( SELECT uo.organization_id\n   FROM user_organizations uo\n  WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role])))))",
       "with_check": ""
     },
     {
@@ -6343,7 +6393,7 @@
       "roles": "{public}",
       "cmd": "INSERT",
       "qual": "",
-      "with_check": "is_org_owner_or_admin(organization_id)"
+      "with_check": "(organization_id IN ( SELECT uo.organization_id\n   FROM user_organizations uo\n  WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role])))))"
     },
     {
       "schemaname": "public",
@@ -6352,8 +6402,8 @@
       "permissive": "PERMISSIVE",
       "roles": "{public}",
       "cmd": "UPDATE",
-      "qual": "is_org_owner_or_admin(organization_id)",
-      "with_check": "is_org_owner_or_admin(organization_id)"
+      "qual": "(organization_id IN ( SELECT uo.organization_id\n   FROM user_organizations uo\n  WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role])))))",
+      "with_check": "(organization_id IN ( SELECT uo.organization_id\n   FROM user_organizations uo\n  WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role])))))"
     },
     {
       "schemaname": "public",
@@ -8338,21 +8388,51 @@
     {
       "schemaname": "public",
       "tablename": "system_settings",
-      "policyname": "system_settings_admin_all",
+      "policyname": "system_settings_admin_delete",
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",
-      "cmd": "ALL",
-      "qual": "is_admin(( SELECT ( SELECT auth.uid() AS uid) AS uid))",
-      "with_check": "is_admin(( SELECT ( SELECT auth.uid() AS uid) AS uid))"
+      "cmd": "DELETE",
+      "qual": "is_admin(( SELECT auth.uid() AS uid))",
+      "with_check": ""
     },
     {
       "schemaname": "public",
       "tablename": "system_settings",
-      "policyname": "system_settings_public_read_maintenance",
+      "policyname": "system_settings_admin_insert",
       "permissive": "PERMISSIVE",
-      "roles": "{anon,authenticated}",
+      "roles": "{authenticated}",
+      "cmd": "INSERT",
+      "qual": "",
+      "with_check": "is_admin(( SELECT auth.uid() AS uid))"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "system_settings",
+      "policyname": "system_settings_admin_update",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "UPDATE",
+      "qual": "is_admin(( SELECT auth.uid() AS uid))",
+      "with_check": "is_admin(( SELECT auth.uid() AS uid))"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "system_settings",
+      "policyname": "system_settings_anon_select",
+      "permissive": "PERMISSIVE",
+      "roles": "{anon}",
       "cmd": "SELECT",
       "qual": "(key = 'maintenance_mode'::text)",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "system_settings",
+      "policyname": "system_settings_authenticated_select",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "((key = 'maintenance_mode'::text) OR is_admin(( SELECT auth.uid() AS uid)))",
       "with_check": ""
     },
     {
@@ -9052,7 +9132,7 @@
       "permissive": "PERMISSIVE",
       "roles": "{public}",
       "cmd": "SELECT",
-      "qual": "user_belongs_to_org(organization_id)",
+      "qual": "(organization_id IN ( SELECT uo.organization_id\n   FROM user_organizations uo\n  WHERE (uo.user_id = ( SELECT auth.uid() AS uid))))",
       "with_check": ""
     },
     {
@@ -9062,7 +9142,7 @@
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",
       "cmd": "DELETE",
-      "qual": "is_org_owner_or_admin(organization_id)",
+      "qual": "(organization_id IN ( SELECT uo.organization_id\n   FROM user_organizations uo\n  WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role])))))",
       "with_check": ""
     },
     {
@@ -9073,7 +9153,7 @@
       "roles": "{authenticated}",
       "cmd": "INSERT",
       "qual": "",
-      "with_check": "is_org_owner_or_admin(organization_id)"
+      "with_check": "(organization_id IN ( SELECT uo.organization_id\n   FROM user_organizations uo\n  WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role])))))"
     },
     {
       "schemaname": "public",
@@ -9082,8 +9162,8 @@
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",
       "cmd": "UPDATE",
-      "qual": "is_org_owner_or_admin(organization_id)",
-      "with_check": "is_org_owner_or_admin(organization_id)"
+      "qual": "(organization_id IN ( SELECT uo.organization_id\n   FROM user_organizations uo\n  WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role])))))",
+      "with_check": "(organization_id IN ( SELECT uo.organization_id\n   FROM user_organizations uo\n  WHERE ((uo.user_id = ( SELECT auth.uid() AS uid)) AND (uo.role = ANY (ARRAY['owner'::org_role, 'admin'::org_role])))))"
     },
     {
       "schemaname": "public",
