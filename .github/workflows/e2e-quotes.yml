@@ -1,0 +1,195 @@
+name: E2E Quotes — Matrix (E77)
+
+# Consolidação de 12 workflows de quotes em uma única matriz.
+# Substitui: e2e-quotes-responsive, e2e-quotes-tooltips, e2e-quotes-undo,
+#   e2e-quote-conditions-pr-check, e2e-quote-freight-block,
+#   e2e-quote-item-editor-sheet, e2e-quote-items-table-header,
+#   e2e-quote-row-menu-width, e2e-quote-view-no-presentation-mode,
+#   e2e-quote-view-sticky, quote-summary-collapse-all,
+#   quote-summary-sticky-header.
+# Os workflows individuais permanecem ativos mas este é o dono canônico.
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'e2e/**'
+      - 'src/components/**'
+      - '.github/workflows/e2e-quotes.yml'
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: 'Suite a executar (vazio = todas)'
+        required: false
+        default: ''
+
+# R1 — permissões mínimas
+permissions:
+  contents: read
+
+# R2 — PRs cancelam runs anteriores; dispatch não
+concurrency:
+  group: e2e-quotes-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  # Verificação antecipada de secrets antes de disparar a matriz
+  secrets_check:
+    name: Verify E2E secrets
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    permissions:
+      contents: read
+    steps:
+      - name: Check required secrets
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+        run: |
+          missing=()
+          [ -z "$E2E_USER_EMAIL" ]    && missing+=(E2E_USER_EMAIL)
+          [ -z "$E2E_USER_PASSWORD" ] && missing+=(E2E_USER_PASSWORD)
+          if [ ${#missing[@]} -gt 0 ]; then
+            echo "::error::Secrets ausentes: ${missing[*]} — configure em Settings › Secrets › Actions"
+            exit 1
+          fi
+          echo "Secrets OK"
+
+  e2e_matrix:
+    name: E2E · ${{ matrix.suite }}
+    needs: [secrets_check]
+    runs-on: ubuntu-24.04
+    # R3 — timeout por job
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        suite:
+          - responsive
+          - tooltips
+          - undo
+          - conditions
+          - freight-block
+          - item-editor-sheet
+          - items-table-header
+          - row-menu-width
+          - view-no-presentation-mode
+          - view-sticky
+          - summary-collapse-all
+          - summary-sticky-header
+        include:
+          - suite: responsive
+            spec: >-
+              e2e/routes/quotes/quote-list-responsive.spec.ts
+              e2e/quotes/quote-items-table-header-radius.spec.ts
+            project: chromium-public
+          - suite: tooltips
+            spec: 'e2e/flows/04m-quotes-status-tooltip*.spec.ts'
+            project: chromium-public
+          - suite: undo
+            spec: >-
+              e2e/flows/04o-*.spec.ts
+              e2e/flows/04p-*.spec.ts
+              e2e/flows/04q-*.spec.ts
+              e2e/flows/04r-*.spec.ts
+              e2e/flows/04s-*.spec.ts
+            project: chromium-authed
+          - suite: conditions
+            spec: 'e2e/ui/quote-conditions-visual.spec.ts'
+            project: chromium-public
+          - suite: freight-block
+            spec: 'e2e/visual/quote-freight-block.spec.ts'
+            project: chromium-public
+          - suite: item-editor-sheet
+            spec: >-
+              e2e/quotes/quote-item-editor-sheet-header.spec.ts
+              e2e/quotes/quote-add-product-button.spec.ts
+            project: chromium-public
+          - suite: items-table-header
+            spec: >-
+              e2e/quotes/quote-items-table-header-radius.spec.ts
+              e2e/quotes/quote-items-inner-scroll.spec.ts
+            project: chromium-public
+          - suite: row-menu-width
+            spec: >-
+              e2e/quotes/quote-row-menu-width.spec.ts
+              e2e/quotes/quote-row-menu-width-zoom.spec.ts
+            project: chromium-public
+          - suite: view-no-presentation-mode
+            spec: >-
+              e2e/quotes/quote-view-no-presentation-mode.spec.ts
+              e2e/quotes/quote-view-mainlayout-overflow.spec.ts
+              e2e/quotes/quote-view-overflow-regression.spec.ts
+            project: chromium-public
+          - suite: view-sticky
+            spec: >-
+              e2e/quotes/quote-view-sticky-sidebar.spec.ts
+              e2e/quotes/quote-view-sticky-visual.spec.ts
+            project: chromium-public
+          - suite: summary-collapse-all
+            spec: 'e2e/quotes/quote-summary-collapse-all.spec.ts'
+            project: chromium-public
+          - suite: summary-sticky-header
+            spec: >-
+              e2e/quotes/quote-summary-sticky-header.spec.ts
+              e2e/quotes/quote-summary-sticky-header-visual.spec.ts
+              e2e/quotes/quote-summary-action-buttons.spec.ts
+              e2e/quotes/quote-summary-action-buttons-states.spec.ts
+            project: chromium-public
+    # R5 — secrets via env:, nunca como argumento CLI
+    env:
+      CI: 'true'
+      FORCE_COLOR: '0'
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
+      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+      E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
+
+      # R4 — node-version-file: .nvmrc
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - run: npm ci --no-audit --no-fund
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: playwright-${{ runner.os }}-
+
+      - run: npx playwright install --with-deps chromium
+
+      - name: Filtrar suite
+        if: github.event.inputs.suite != '' && github.event.inputs.suite != matrix.suite
+        run: |
+          echo "::notice::Suite ${{ matrix.suite }} ignorada (filtro: ${{ github.event.inputs.suite }})"
+          exit 0
+
+      - name: Run E2E · ${{ matrix.suite }}
+        run: |
+          npx playwright test ${{ matrix.spec }} \
+            --project=${{ matrix.project }} \
+            --reporter=line,html
+
+      # R6 — retention-days: 14
+      - name: Upload report + artifacts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: e2e-quotes-${{ matrix.suite }}
+          path: |
+            playwright-report
+            test-results
+          if-no-files-found: ignore
+          retention-days: 14
