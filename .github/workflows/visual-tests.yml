@@ -38,8 +38,7 @@ jobs:
     # G-H3: fork guard — pull_request de forks não deve escrever no repo
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     permissions:
-      contents: write      # push de baselines (push→main apenas, guardado no step)
-      pull-requests: write
+      contents: read  # E60: somente-leitura — baselines são atualizados via _update-snapshots.yml (E59)
     strategy:
       fail-fast: false
       matrix:
@@ -78,38 +77,6 @@ jobs:
       run: npx playwright test --project=chromium-public --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} e2e/flows/99-auth-ui-baseline.spec.ts e2e/flows/supplier-comparison-visual.spec.ts e2e/flows/31-promoflix-player.spec.ts e2e/tooltips-a11y.spec.ts e2e/optimized-image-visual.spec.ts e2e/routes/app/replenishment-grid-visual.spec.ts e2e/routes/app/novelty-grid-visual.spec.ts e2e/routes/app/novelty-card-variations.spec.ts e2e/flows/voice-tooltip.spec.ts e2e/product-card-visual-regression.spec.ts e2e/catalog/product-card-badges-visual.spec.ts e2e/catalog/product-card-to-superfilter.spec.ts e2e/catalog/swatch-picker-v2-visual-baseline.spec.ts e2e/catalog/swatch-picker-v2-focus-and-quickview.spec.ts e2e/catalog/superfiltro-toolbar-actions-alignment.spec.ts e2e/flows/03d-superfiltro-toolbar-alignment.spec.ts e2e/admin/stock-dashboard-visual.spec.ts e2e/admin/stock-dashboard-layout.spec.ts e2e/admin/stock-health-badges.spec.ts e2e/quotes/quote-builder-scroll-and-sidebar.spec.ts
       env:
         CI: true
-
-    - name: Commit new baselines if generated
-      # E30/E29: só em push para main — PRs não devem atualizar baselines automaticamente
-      # (empurrar para a branch do PR em contexto de pull_request bypassa o review).
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      env:
-        GITHUB_EVENT_PULL_REQUEST_HEAD_REPO_FULL_NAME: ${{ github.event.pull_request.head.repo.full_name }}
-      run: |
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        git add --force 'e2e/**/*.png' '**/*.spec.ts-snapshots/**' 2>/dev/null || true  # ok: sem PNGs novos é resultado válido; 2>/dev/null suprime "pathspec did not match"
-        if ! git diff --staged --quiet; then
-          TARGET_BRANCH="${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
-          STAGED_LIST=$(git diff --staged --name-only)
-          TMPDIR_PNGS=$(mktemp -d)
-          while IFS= read -r f; do
-            [ -z "$f" ] && continue
-            mkdir -p "${TMPDIR_PNGS}/$(dirname "$f")"
-            cp "$f" "${TMPDIR_PNGS}/$f"
-          done <<< "$STAGED_LIST"
-          git checkout "$TARGET_BRANCH" 2>/dev/null || git switch "$TARGET_BRANCH" 2>/dev/null || true  # ok: tenta checkout, depois switch; fallback || true evita falha em detached HEAD
-          while IFS= read -r f; do
-            [ -z "$f" ] && continue
-            mkdir -p "$(dirname "$f")"
-            cp "${TMPDIR_PNGS}/$f" "$f"
-          done <<< "$STAGED_LIST"
-          git add --force 'e2e/**/*.png' '**/*.spec.ts-snapshots/**' 2>/dev/null || true  # ok: idem linha acima — sem PNGs é OK
-          if ! git diff --staged --quiet; then
-            git commit -m "chore(visual-tests): atualiza baselines visuais [skip ci]"
-            git push origin "$TARGET_BRANCH"
-          fi
-        fi
 
     - name: Upload Playwright report
       if: always()
