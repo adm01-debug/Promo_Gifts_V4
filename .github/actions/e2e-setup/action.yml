@@ -39,8 +39,10 @@ runs:
 
     - name: Install Playwright browsers
       shell: sh
+      env:
+        BROWSERS: ${{ inputs.browsers }}
       run: |
-        BROWSERS="${{ inputs.browsers }}"
+        set -euo pipefail
         npx playwright install --with-deps $(echo "$BROWSERS" | tr ',' ' ')
 
     - name: Generate E2E fixtures
