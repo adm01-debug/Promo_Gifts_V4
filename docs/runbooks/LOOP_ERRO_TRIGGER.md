@@ -57,7 +57,7 @@ SELECT * FROM pg_locks WHERE NOT granted;
 - Função `SECURITY INVOKER` que deveria ser `SECURITY DEFINER` chocando com
   RLS mais restritiva do que o caller tem (foi o achado deste mesmo incidente
   em `log_access_denied`/`record_dev_route_telemetry`/`log_user_logout` —
-  ver migration `20261013120000_incidente20261013_fase5_permissoes_auditoria.sql`).
+  ver migration `20261013170913_incidente20261013_fase5_permissoes_auditoria.sql`).
 - Trigger `BEFORE UPDATE` que reexecuta `UPDATE` na mesma linha sem guarda de
   recursão (`pg_trigger_depth() > 1`).
 
