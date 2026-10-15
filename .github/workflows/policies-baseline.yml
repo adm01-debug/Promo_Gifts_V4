@@ -165,7 +165,7 @@ jobs:
           gh pr create \
             --title "chore(security): baseline de RLS policies ($(date +%Y-%m-%d))" \
             --body "Snapshot live de \`pg_policies\` (schema public) gravado em \`.security/policies-baseline.json\` com sha256. Revisar a lista de policies antes de mergear — depois do merge, o gate policies-baseline passa a bloquear drift não revisado." \
-            --label "ci-automation" \
+            --label "automated" \
             --base main \
             --head "${{ steps.changes.outputs.branch }}"
         env:
