@@ -131,3 +131,21 @@ jobs:
 
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "\`$REQUIRED\` está obrigatório e o estado remoto foi comprovado." >> "$GITHUB_STEP_SUMMARY"
+
+  # E71 — Verifica checks fantasmas: required-checks.json vs jobs reais nos workflows
+  ghost-check-guard:
+    name: Ghost Check Guard — required-checks.json vs workflows
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Install js-yaml
+        run: npm ci --ignore-scripts
+      - name: Check for phantom required checks (E71)
+        run: node scripts/check-required-checks.mjs

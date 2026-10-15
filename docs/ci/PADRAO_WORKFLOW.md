@@ -196,6 +196,7 @@ npx --yes actionlint .github/workflows/meu-workflow.yml
 | Ação composta setup-node | `.github/actions/setup-node-ci/` | E13 |
 | SSOT versão Node | `.nvmrc` | E18 |
 | Required checks | `.github/required-checks.json` | E56 |
+| Ghost check guard | `scripts/check-required-checks.mjs` | E71 |
 | Codeowners | `.github/CODEOWNERS` | E62 |
 
 ---
@@ -329,6 +330,139 @@ Quando uma versão nova do Ubuntu for necessária, migrar explicitamente com PR 
 e atualizar todos os workflows ao mesmo tempo.
 
 **Check CI:** C15 em `scripts/check-workflow-contracts.mjs`.
+
+---
+
+---
+
+### R15 — Todas as actions externas devem ser pinadas por SHA completo de 40 chars (C16)
+
+```yaml
+# PROIBIDO:
+- uses: actions/checkout@v4
+- uses: actions/setup-node@4.1.0
+
+# Correto:
+- uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+- uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
+```
+
+Uma tag mutável (`@v4`) pode ser silenciosamente redirecionada para código
+malicioso sem qualquer alteração no workflow. O SHA de 40 chars imutável garante
+que o exato código auditado é o que será executado.
+
+**Check CI:** C16 em `scripts/check-workflow-contracts.mjs`.
+
+---
+
+### R16 — `continue-on-error: true` proibido a nível de job (C17)
+
+```yaml
+jobs:
+  my-gate:
+    # PROIBIDO:
+    continue-on-error: true   # ← oculta falhas do gate
+
+    # Correto: omitir (padrão é false) ou declarar false explicitamente
+```
+
+`continue-on-error: true` a nível de job faz o GitHub reportar o job como
+sucesso mesmo em falha — silencia gates de qualidade. Permitido a nível de step
+para etapas opcionais (ex.: notificações), nunca no job inteiro.
+
+**Exceção documentada:** Lighthouse (Gate 4) é `continue-on-error: true` pois é
+advisory — precisa de justificativa explícita e comentário no YAML.
+
+**Check CI:** C17 em `scripts/check-workflow-contracts.mjs`.
+
+---
+
+### R17 — Workflows com triggers `push:` e `pull_request:` usam `cancel-in-progress` condicional (C18)
+
+```yaml
+concurrency:
+  group: my-workflow-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+```
+
+Workflows mistos (push + PR) precisam de comportamento diferente: cancelar PRs
+velhos economiza minutos; cancelar um push em `main` perde o resultado sem rerun.
+Valor booleano fixo (`true` ou `false`) é errado para pelo menos um dos triggers.
+
+**Check CI:** C18 em `scripts/check-workflow-contracts.mjs`.
+
+---
+
+### R18 — `supabase db push` proibido em qualquer step `run:` (C19)
+
+Ver REGRA #8 do `CLAUDE.md` e E15. O único caminho autorizado para aplicar migration
+em `doufsxqlfjyuvxuezpln` é via `.github/workflows/db-apply-migration.yml`
+(`workflow_dispatch(version)`). `supabase db push` contorna o fluxo de revisão,
+aplica diretamente em produção e cria divergência no ledger de migrations.
+
+**Check CI:** C19 em `scripts/check-workflow-contracts.mjs`.
+
+---
+
+### R19 — Nenhum workflow referencia o projeto proibido `pqpdolkaeqlyzpdpbizo` (C20)
+
+Ver REGRA #1 do `CLAUDE.md`. O projeto `pqpdolkaeqlyzpdpbizo` é o antigo projeto
+obsoleto. Qualquer referência em workflow deve ser substituída por
+`doufsxqlfjyuvxuezpln` (o canônico).
+
+**Check CI:** C20 em `scripts/check-workflow-contracts.mjs`.
+
+---
+
+### R20 — Todo `upload-artifact` declara `retention-days:` (C21)
+
+Ver R6. A ausência de `retention-days:` herda o padrão do GitHub (90 dias).
+Declarar explicitamente é obrigatório para auditoria e controle de storage.
+
+**Check CI:** C21 em `scripts/check-workflow-contracts.mjs`.
+
+---
+
+### R21 — Workflows com trigger `pull_request` não devem ter `git push` em steps `run:` (C22)
+
+Workflows disparados por PR executam no contexto do fork/PR. Um `git push` ali
+pode gravar no repositório upstream quando o `GITHUB_TOKEN` tem permissão write.
+Código a ser persistido deve usar upload-artifact ou PR dedicado.
+
+**Check CI:** C22 em `scripts/check-workflow-contracts.mjs`.
+
+---
+
+### R22 — Steps `actions/setup-node` não usam `node-version:` literal (C23)
+
+Ver R4. `node-version: '22'` é proibido. Usar sempre `node-version-file: .nvmrc`.
+
+**Check CI:** C23 em `scripts/check-workflow-contracts.mjs`.
+
+---
+
+## Tabela de Contratos C10–C23 (E76)
+
+Tabela de referência rápida. Todos verificados por `scripts/check-workflow-contracts.mjs --gate`.
+
+| Contrato | Regra | Descrição | Bloqueante |
+|---|---|---|---|
+| C10 | R9 | `actions/checkout` deve declarar `persist-credentials: false` | sim |
+| C11 | R10 | Workflows com `run:` devem ter `defaults.run.shell: bash` | sim |
+| C12 | R11 | Workflows `pull_request` proibidos de ter `permissions.contents: write` | sim |
+| C13 | R12 | Workflows com `paths:` devem incluir o próprio arquivo `.github/workflows/<nome>.yml` | sim |
+| C14 | R13 | `upload-artifact` com path SOMENTE `test-results/` proibido | sim |
+| C15 | R14 | `runs-on:` deve ser `ubuntu-24.04` (nunca `ubuntu-latest` ou `ubuntu-22.04`) | sim |
+| C16 | R15 | Actions externas devem ser pinadas por SHA de 40 chars | sim |
+| C17 | R16 | `continue-on-error: true` proibido a nível de job | sim |
+| C18 | R17 | Workflows mistos `push`+`pull_request` devem usar `cancel-in-progress` condicional | sim |
+| C19 | R18 | `supabase db push` proibido em `run:` steps | sim |
+| C20 | R19 | Nenhum workflow referencia `pqpdolkaeqlyzpdpbizo` | sim |
+| C21 | R20 | Todo `upload-artifact` declara `retention-days:` | sim |
+| C22 | R21 | Workflows `pull_request` não têm `git push` em `run:` | sim |
+| C23 | R22 | `actions/setup-node` usa `node-version-file:`, não `node-version:` literal | sim |
+
+**Nota:** C24 (`npm ci` vs `npm install`) também é verificado pelo script (E96).
 
 ---
 

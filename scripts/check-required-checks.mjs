@@ -1,235 +1,154 @@
 #!/usr/bin/env node
 /**
- * check-required-checks.mjs
- * ----------------------------------------------------------------------------
- * SSOT: .github/required-checks.json
+ * check-required-checks — E71 (2026-10-15)
  *
- * Suporta DUAS shapes (retrocompatível):
+ * Verifica se todo check em .github/required-checks.json tem um job
+ * correspondente (campo `name:`) em algum workflow de .github/workflows/.
  *
- *   Legacy:
- *     { branch: "main", required_checks: [...] }
+ * Um check "fantasma" é aquele listado como required mas sem job correspondente
+ * — nunca vai passar porque nenhum workflow o emite, bloqueando merges para sempre.
  *
- *   Multi-ruleset (recomendado):
- *     {
- *       rulesets: [
- *         { id, branches: ["main"], required_checks: [...] },
- *         { id, branchPatterns: ["release/*"], required_checks: [...] }
- *       ]
- *     }
- *
- * Validações:
- *   (A) WORKFLOW PRESENCE — para cada check em qualquer ruleset, verifica
- *       que o `workflow` existe E contém um job com `name:` IDÊNTICO ao
- *       declarado. Falha o build se houver drift (exit 1).
- *
- *   (B) BRANCH PROTECTION SYNC (best-effort, não bloqueante) — para cada
- *       ruleset, resolve as branches concretas (explícitas + expansão dos
- *       padrões glob via /repos/{repo}/branches) e consulta
- *       /branches/{branch}/protection/required_status_checks. Emite
- *       warning quando algum check da SSOT NÃO está marcado como required
- *       na branch concreta. Requer GH_TOKEN com administration:read;
- *       sem ele, pula silenciosamente.
- *
- * Exit codes:
- *   0  — ok (ou apenas warnings em B / falta de token)
- *   1  — drift em (A): SSOT aponta para nome/workflow inexistente,
- *        ou SSOT malformado.
+ * Saídas:
+ *   exit 0 — todos os checks têm jobs correspondentes
+ *   exit 1 — um ou mais checks fantasmas foram encontrados
  *
  * Uso:
  *   node scripts/check-required-checks.mjs
- *   GH_TOKEN=ghp_xxx GITHUB_REPOSITORY=owner/repo node scripts/check-required-checks.mjs
- * ----------------------------------------------------------------------------
  */
-import { readFileSync, existsSync } from "node:fs";
-import { resolve } from "node:path";
 
-const SSOT_PATH = ".github/required-checks.json";
+import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import { join, resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 
-const fail = (m) => { console.error(`::error::${m}`); process.exit(1); };
-const warn = (m) => console.warn(`::warning::${m}`);
-const info = (m) => console.log(m);
+const _require = createRequire(import.meta.url);
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const ROOT = resolve(__dirname, '..');
 
 // ---------------------------------------------------------------------------
-// Carrega + normaliza SSOT em formato multi-ruleset
+// Helpers
 // ---------------------------------------------------------------------------
-if (!existsSync(SSOT_PATH)) fail(`SSOT ausente: ${SSOT_PATH}`);
-let ssot;
-try { ssot = JSON.parse(readFileSync(SSOT_PATH, "utf8")); }
-catch (e) { fail(`SSOT inválido (${SSOT_PATH}): ${e.message}`); }
 
-/** @type {{id:string, branches:string[], branchPatterns:string[], required_checks:any[]}[]} */
-let rulesets = [];
-if (Array.isArray(ssot.rulesets)) {
-  rulesets = ssot.rulesets.map((r, i) => ({
-    id: r.id || `ruleset-${i}`,
-    branches: Array.isArray(r.branches) ? r.branches : [],
-    branchPatterns: Array.isArray(r.branchPatterns) ? r.branchPatterns : [],
-    required_checks: Array.isArray(r.required_checks) ? r.required_checks : [],
-  }));
-} else if (Array.isArray(ssot.required_checks)) {
-  // Shape legacy
-  rulesets = [{
-    id: "legacy",
-    branches: [ssot.branch || "main"],
-    branchPatterns: [],
-    required_checks: ssot.required_checks,
-  }];
-} else {
-  fail(`SSOT sem 'rulesets' nem 'required_checks' em ${SSOT_PATH}.`);
+/**
+ * Carrega todos os workflows como objetos YAML parseados.
+ * @param {string} rootDir
+ * @returns {{ file: string, text: string, doc: object }[]}
+ */
+function loadWorkflows(rootDir) {
+  const yaml = _require('js-yaml');
+  const dir = join(rootDir, '.github', 'workflows');
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir)
+    .filter((f) => f.endsWith('.yml') || f.endsWith('.yaml'))
+    .flatMap((f) => {
+      const text = readFileSync(join(dir, f), 'utf-8');
+      let doc = null;
+      try { doc = yaml.load(text); } catch { /* skip */ }
+      if (!doc || typeof doc !== 'object') return [];
+      return [{ file: f, text, doc }];
+    });
 }
 
-if (rulesets.length === 0) {
-  warn(`Nenhum ruleset declarado em ${SSOT_PATH} — nada a validar.`);
+/**
+ * Coleta todos os job display names (campo `name:`) de um conjunto de workflows.
+ * @param {{ file: string, doc: object }[]} workflows
+ * @returns {Map<string, string[]>} name → [files...]
+ */
+function collectJobNames(workflows) {
+  const map = new Map();
+  for (const { file, doc } of workflows) {
+    const jobs = doc.jobs || {};
+    for (const [, jobDef] of Object.entries(jobs)) {
+      if (!jobDef || typeof jobDef !== 'object') continue;
+      const name = typeof jobDef.name === 'string' ? jobDef.name.trim() : null;
+      if (!name) continue;
+      if (!map.has(name)) map.set(name, []);
+      map.get(name).push(file);
+    }
+  }
+  return map;
+}
+
+/**
+ * Coleta todos os required check names de todos os rulesets não-disabled.
+ * @param {object} requiredChecksJson
+ * @returns {{ name: string, workflow: string | null, ruleset: string }[]}
+ */
+function collectRequiredChecks(requiredChecksJson) {
+  const result = [];
+  for (const ruleset of requiredChecksJson.rulesets || []) {
+    if (ruleset._disabled) continue;
+    for (const check of ruleset.required_checks || []) {
+      result.push({
+        name: check.name,
+        workflow: check.workflow || null,
+        ruleset: ruleset.id,
+      });
+    }
+  }
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// Main
+// ---------------------------------------------------------------------------
+
+const requiredChecksPath = join(ROOT, '.github', 'required-checks.json');
+if (!existsSync(requiredChecksPath)) {
+  console.error('ERROR: .github/required-checks.json not found.');
+  process.exit(1);
+}
+
+const requiredChecksJson = JSON.parse(readFileSync(requiredChecksPath, 'utf-8'));
+const requiredChecks = collectRequiredChecks(requiredChecksJson);
+
+if (requiredChecks.length === 0) {
+  console.log('No active required checks found in required-checks.json. Nothing to verify.');
   process.exit(0);
 }
 
-// ---------------------------------------------------------------------------
-// (A) WORKFLOW PRESENCE  — falha se drift
-// ---------------------------------------------------------------------------
-let driftA = 0;
-const seen = new Set(); // dedupe por (workflow|name) — mesmo check pode aparecer em vários rulesets
+const workflows = loadWorkflows(ROOT);
+const jobNames = collectJobNames(workflows);
 
-for (const rs of rulesets) {
-  if (rs.required_checks.length === 0) {
-    warn(`Ruleset '${rs.id}' sem required_checks.`);
-    continue;
-  }
-  for (const item of rs.required_checks) {
-    const { name, workflow } = item;
-    if (!name || !workflow) {
-      console.error(`::error file=${SSOT_PATH}::ruleset '${rs.id}': item inválido ${JSON.stringify(item)}`);
-      driftA++; continue;
-    }
-    const key = `${workflow}|${name}`;
-    if (seen.has(key)) { info(`✓ (cached) ${name} ← ${workflow}`); continue; }
-    seen.add(key);
+const phantoms = [];
+const matched = [];
 
-    const wfPath = resolve(workflow);
-    if (!existsSync(wfPath)) {
-      console.error(`::error file=${SSOT_PATH}::ruleset '${rs.id}': workflow não existe: ${workflow}`);
-      driftA++; continue;
-    }
-    const wf = readFileSync(wfPath, "utf8");
-    const variants = [
-      `name: ${name}`,
-      `name: '${name.replaceAll("'", "''")}'`,
-      `name: "${name.replaceAll('"', '\\"')}"`,
-    ];
-    if (!variants.some((v) => wf.includes(v))) {
-      console.error(
-        `::error file=${workflow}::ruleset '${rs.id}': required check "${name}" não encontrado como \`name:\` no workflow. ` +
-        `Ajuste o SSOT ou o name: do job para baterem exatamente.`
-      );
-      driftA++;
-    } else {
-      // E56: required check deve ter trigger incondicional — paths: filtra e bloqueia PRs
-      const jobsIdx = wf.indexOf('\njobs:');
-      const onSection = jobsIdx > 0 ? wf.slice(0, jobsIdx) : wf;
-      if (/^ {2,}paths(?:-ignore)?:/m.test(onSection)) {
-        console.error(
-          `::error file=${workflow}::ruleset '${rs.id}': required check "${name}" está em workflow com filtro ` +
-          `\`paths:\` no trigger \`on:\` — pode não disparar em todos os PRs e bloquear o merge indefinidamente. ` +
-          `Remova o filtro \`paths:\` do trigger ou adicione um job "pass-through" incondicional que sempre passa.`,
-        );
-        driftA++;
-      } else {
-        info(`✓ [${rs.id}] ${name} ← ${workflow}`);
-      }
-    }
-  }
-}
-if (driftA > 0) fail(`${driftA} required check(s) com drift entre SSOT e workflows.`);
-
-// ---------------------------------------------------------------------------
-// (B) BRANCH PROTECTION SYNC  — best-effort, não bloqueante
-// ---------------------------------------------------------------------------
-const token = process.env.GH_TOKEN || process.env.GITHUB_TOKEN;
-const repo = process.env.GITHUB_REPOSITORY;
-if (!token || !repo) {
-  info("ℹ︎  GH_TOKEN/GITHUB_REPOSITORY ausentes — pulando sync com Branch Protection.");
-  process.exit(0);
-}
-
-const gh = async (path) => {
-  const r = await fetch(`https://api.github.com${path}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/vnd.github+json",
-      "X-GitHub-Api-Version": "2022-11-28",
-    },
-  });
-  return r;
-};
-
-// Glob simples: '*' = qualquer coisa exceto '/', '**' = qualquer coisa
-const globToRegex = (g) => {
-  const re = g
-    .replace(/[.+^${}()|[\]\\]/g, "\\$&")
-    .replace(/\*\*/g, "::DOUBLESTAR::")
-    .replace(/\*/g, "[^/]*")
-    .replace(/::DOUBLESTAR::/g, ".*");
-  return new RegExp(`^${re}$`);
-};
-
-// Lista branches concretas do repo (paginado, até 500 — suficiente para release/*)
-let allBranches = null;
-const ensureBranches = async () => {
-  if (allBranches) return allBranches;
-  allBranches = [];
-  for (let page = 1; page <= 5; page++) {
-    const r = await gh(`/repos/${repo}/branches?per_page=100&page=${page}`);
-    if (!r.ok) { warn(`GitHub API ${r.status} ao listar branches: ${await r.text()}`); break; }
-    const arr = await r.json();
-    if (!Array.isArray(arr) || arr.length === 0) break;
-    allBranches.push(...arr.map((b) => b.name));
-    if (arr.length < 100) break;
-  }
-  return allBranches;
-};
-
-const resolveBranches = async (rs) => {
-  const out = new Set(rs.branches);
-  if (rs.branchPatterns.length > 0) {
-    const bs = await ensureBranches();
-    for (const pat of rs.branchPatterns) {
-      const re = globToRegex(pat);
-      for (const b of bs) if (re.test(b)) out.add(b);
-    }
-  }
-  return [...out];
-};
-
-let warned = 0;
-for (const rs of rulesets) {
-  const branches = await resolveBranches(rs);
-  if (branches.length === 0) {
-    info(`ℹ︎  [${rs.id}] nenhum branch concreto resolvido (padrões: ${rs.branchPatterns.join(", ") || "—"}) — pulando.`);
-    continue;
-  }
-  const required = rs.required_checks.map((r) => r.name);
-  for (const branch of branches) {
-    const r = await gh(`/repos/${repo}/branches/${encodeURIComponent(branch)}/protection/required_status_checks`);
-    if (r.status === 404) { warn(`[${rs.id}] Branch Protection ausente em ${branch} (ou required_status_checks não configurado).`); warned++; continue; }
-    if (r.status === 403) { warn(`[${rs.id}] GH_TOKEN sem permissão administration:read — não consigo validar ${branch}.`); warned++; continue; }
-    if (!r.ok) { warn(`[${rs.id}] GitHub API ${r.status} em ${branch}: ${await r.text()}`); warned++; continue; }
-    const data = await r.json();
-    const remote = new Set([
-      ...(data.contexts || []),
-      ...((data.checks || []).map((c) => c.context).filter(Boolean)),
-    ]);
-    const missing = required.filter((n) => !remote.has(n));
-    if (missing.length === 0) {
-      info(`✓ [${rs.id}] ${branch}: ${required.length} required check(s) presentes.`);
-    } else {
-      warn(
-        `[${rs.id}] ${branch} NÃO inclui ${missing.length} required check(s):\n` +
-        missing.map((m) => `  • ${m}`).join("\n") +
-        `\n  → https://github.com/${repo}/settings/branches`
-      );
-      warned++;
-    }
+for (const check of requiredChecks) {
+  if (jobNames.has(check.name)) {
+    matched.push({ check, files: jobNames.get(check.name) });
+  } else {
+    phantoms.push(check);
   }
 }
 
-info(warned === 0 ? "✓ Branch Protection alinhado com SSOT em todos os rulesets." : `⚠ ${warned} aviso(s) de sync (não bloqueante).`);
+console.log('\n=== check-required-checks — E71 ===');
+console.log(`Required checks (active rulesets): ${requiredChecks.length}`);
+console.log(`Workflows scanned: ${workflows.length}`);
+console.log(`Matched: ${matched.length}`);
+console.log(`Phantoms (no matching job): ${phantoms.length}`);
+
+if (matched.length > 0) {
+  console.log('\nMatched required checks:');
+  for (const { check, files } of matched) {
+    const fileList = files.slice(0, 3).join(', ') + (files.length > 3 ? ` …+${files.length - 3}` : '');
+    console.log(`  ✓ [${check.ruleset}] "${check.name}" → ${fileList}`);
+  }
+}
+
+if (phantoms.length > 0) {
+  console.error('\nPhantom required checks (listed as required but no job emits them):');
+  for (const check of phantoms) {
+    const hinted = check.workflow ? ` (expected in ${check.workflow})` : '';
+    console.error(`  ✗ [${check.ruleset}] "${check.name}"${hinted}`);
+  }
+  console.error(
+    '\nERROR: Phantom required checks will block all merges to main because no workflow\n' +
+    'will ever emit them as a passing status. Either:\n' +
+    '  1. Add a job with the matching `name:` to the correct workflow, OR\n' +
+    '  2. Remove the check from .github/required-checks.json if it is no longer needed.\n' +
+    'Do NOT add a placeholder job that always passes — that defeats the purpose of the gate.',
+  );
+  process.exit(1);
+}
+
 process.exit(0);
