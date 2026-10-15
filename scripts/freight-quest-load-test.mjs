@@ -47,7 +47,15 @@ const SUPABASE_URL = (
 const SERVICE_ROLE_KEY =
   process.env.SUPABASE_TEST_BYPASS_TOKEN || process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-const DRY_RUN = !SUPABASE_URL || !SERVICE_ROLE_KEY;
+const DRY_RUN = !SUPABASE_URL || !SERVICE_ROLE_KEY || process.env.DRY_RUN !== '0';
+
+// E38 — bloqueia execução live contra projeto canônico de produção sem gating explícito
+const CANONICAL_PROJECT = 'doufsxqlfjyuvxuezpln';
+if (!DRY_RUN && SUPABASE_URL.includes(CANONICAL_PROJECT) && process.env.ALLOW_PROD_LOAD !== '1') {
+  console.error('[freight-quest-load-test] BLOQUEADO: URL aponta para o projeto canônico de produção.');
+  console.error('  Defina ALLOW_PROD_LOAD=1 somente em dispatch gated (environment: production-readonly).');
+  process.exit(1);
+}
 
 const REQUEST_TIMEOUT_MS = Number(process.env.LOAD_TIMEOUT_MS) || 8_000;
 const OUTPUT_FILE = process.env.LOAD_OUTPUT_FILE || "load-test-report.json";
