@@ -13,9 +13,17 @@
  * muda de estrutura: a pasta de replay é montada em diretório temporário e o
  * CLI roda com --workdir.
  *
+ * O dump não reconstrói o shadow byte a byte: ele descarta comentários de coluna 0
+ * (inclusive dentro de corpo de função), reordena os roles de policies, reescreve
+ * `ARRAY[...::varchar]::text[]` numa forma que o parser achata e não emite os
+ * REVOKE dos privilégios padrão do shadow. Cada um desses vira ruído no `db diff`;
+ * os três últimos são neutralizados ao montar a pasta de replay
+ * (sanitizeBaselineForReplay + REPLAY_SEED_SQL), o primeiro ao filtrar o diff
+ * (dropDumpLossyFunctions). Nenhuma regra esconde mudança de comportamento.
+ *
  * Subcomandos:
  *   prepare-workdir --ledger <json do migration list> --out <dir>
- *   filter-diff --diff <arquivo> --allowlist <arquivo>   (imprime o resíduo)
+ *   filter-diff --diff <arquivo> --allowlist <arquivo> [--workdir <dir>]   (imprime o resíduo)
  */
 import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -33,6 +41,20 @@ const MIGRATION_RE = /^(\d+)_[^/]+\.sql$/;
 // Produção roda PG 17.6; sem isto o shadow do CLI usa PG 15 e os GRANTs com
 // MAINTAIN (privilégio do PG 17) falham no replay.
 export const SHADOW_MAJOR_VERSION = 17;
+
+// O shadow do CLI concede ALL em tabelas/sequências/funções novas de `public` a
+// anon/authenticated/service_role (privilégios padrão da imagem). O dump só
+// emite os GRANTs que existem em produção e nunca um REVOKE de role ausente,
+// então sem esta semente o shadow nasce com mais privilégios que o remoto e o
+// diff vira milhares de `revoke ... from anon`. Roda antes do baseline; o
+// próprio baseline restaura os privilégios padrão de produção no fim do arquivo.
+export const REPLAY_SEED_NAME = '00000000000001_drift_replay_seed.sql';
+export const REPLAY_SEED_SQL = `-- Semente do replay do db-schema-drift-check (scripts/drift-baseline.mjs).
+-- Não é migration do repositório: existe só na pasta temporária do drift-check.
+ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON TABLES FROM anon, authenticated, service_role;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON SEQUENCES FROM anon, authenticated, service_role;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON FUNCTIONS FROM anon, authenticated, service_role;
+`;
 
 const SECRET_PATTERNS = [
   ['jwt', /eyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}/],
@@ -192,6 +214,7 @@ export function prepareWorkdir({ rootDir, outDir, appliedVersions, projectRef })
     `project_id = "${projectRef}"\n\n[db]\nmajor_version = ${SHADOW_MAJOR_VERSION}\n`,
   );
   const sanitized = sanitizeBaselineForReplay(readFileSync(baseline.file, 'utf8'));
+  writeFileSync(join(outMigrations, REPLAY_SEED_NAME), REPLAY_SEED_SQL);
   writeFileSync(join(outMigrations, baseline.name), sanitized.sql);
   replay.forEach((f, i) => {
     copyFileSync(join(migrationsDir, f), join(outMigrations, replayFileName(baseline.version, i, f)));
@@ -201,6 +224,7 @@ export function prepareWorkdir({ rootDir, outDir, appliedVersions, projectRef })
     replayed: replay,
     workdir: outDir,
     removedStatements: sanitized.removed,
+    rewrites: sanitized.rewrites,
   };
 }
 
@@ -273,9 +297,63 @@ function scanLine(line, state) {
   return terminated;
 }
 
+// Round-trip do dump: o que o pg_dump imprime nem sempre volta ao mesmo catálogo
+// quando reaplicado no shadow. Duas formas medidas no db-schema-drift-check de
+// 2026-10-15 (baseline 20261015140000), cada uma neutralizada reescrevendo o
+// texto de replay para a forma que reproduz o catálogo de produção:
+//
+// 1. `(ARRAY['a'::character varying, …])::"text"[]` — o parser achata o cast
+//    quando ele incide direto sobre o ARRAY[] e guarda `ARRAY[('a')::text, …]`;
+//    produção guarda o ArrayCoerceExpr. Passar por `::character varying[]`
+//    antes impede o achatamento e o catálogo fica idêntico ao remoto
+//    (27 CHECKs e 7 views no run de referência).
+// 2. `CREATE POLICY … TO "authenticated", "anon"` — o dump lista os roles na
+//    ordem dos oids do banco de origem; produção guarda a ordem de criação
+//    (1008 de 1010 policies em ordem alfabética). A ordem não tem semântica e
+//    o `db diff` compara o array bruto; ordenar alfabeticamente reproduz
+//    produção.
+const VARCHAR_ARRAY_CAST =
+  /\(ARRAY\[((?:'(?:[^']|'')*'::character varying(?:, )?)+)\]\)::"text"\[\]/g;
+const POLICY_ROLES =
+  /^(CREATE POLICY "(?<name>(?:[^"]|"")+)" ON (?:"(?:[^"]|"")+"\.)?"(?<table>(?:[^"]|"")+)"(?: AS (?:PERMISSIVE|RESTRICTIVE))?(?: FOR (?:ALL|SELECT|INSERT|UPDATE|DELETE))? TO )((?:"(?:[^"]|"")+"|[A-Za-z_][A-Za-z_0-9]*)(?:, (?:"(?:[^"]|"")+"|[A-Za-z_][A-Za-z_0-9]*))*)(?=\s|;|$)/;
+
+// As duas únicas policies de produção cujo array de roles NÃO está em ordem
+// alfabética (pg_policy, 2026-10-15: 2 de 1010). O dump já as imprime na ordem
+// de produção, então elas ficam como vieram; ordenar criaria drift falso.
+const POLICY_ROLE_ORDER_KEPT = new Set([
+  'supplier_sub_brands.supplier_sub_brands_public_read',
+  'product_badge_definitions.pbd_public_read',
+]);
+
+function roleName(token) {
+  return token.startsWith('"') ? token.slice(1, -1).replaceAll('""', '"') : token;
+}
+
+// Só chamada em linha que começa e termina fora de literal/dollar-quote: corpo
+// de função e string não podem ter o texto reescrito (viraria diferença de corpo).
+function roundTripRewrite(line, counts) {
+  let out = line;
+  out = out.replace(VARCHAR_ARRAY_CAST, (_all, elements) => {
+    counts.varcharArrayCasts += 1;
+    return `((ARRAY[${elements}])::character varying[])::"text"[]`;
+  });
+  out = out.replace(POLICY_ROLES, (...match) => {
+    const [_all, head, , , roles] = match;
+    const { name, table } = match.at(-1);
+    if (POLICY_ROLE_ORDER_KEPT.has(`${table}.${name}`)) return _all;
+    const list = roles.split(', ');
+    const sorted = [...list].sort((a, b) => byCodeUnit(roleName(a), roleName(b)));
+    if (sorted.join(', ') === roles) return _all;
+    counts.policyRoleOrders += 1;
+    return `${head}${sorted.join(', ')}`;
+  });
+  return out;
+}
+
 export function sanitizeBaselineForReplay(sql) {
   const kept = [];
   const removed = [];
+  const rewrites = { varcharArrayCasts: 0, policyRoleOrders: 0 };
   const state = { quote: false, ident: false, dollar: null };
   const inLiteral = () => state.quote || state.ident || state.dollar;
   let skipping = false;
@@ -285,14 +363,18 @@ export function sanitizeBaselineForReplay(sql) {
       skipping = true;
       removed.push({ line: index + 1, statement: line.trim().slice(0, 90) });
     }
+    const startedOutside = !skipping && !inLiteral();
     const terminated = scanLine(line, state);
+    // `$` na linha só impede a reescrita quando pode ser dollar-quote (corpo de
+    // função inline); policy tem `$` legítimo em regex de string ('…$').
+    const rewritable = startedOutside && !inLiteral() && (!line.includes('$') || line.startsWith('CREATE POLICY '));
     if (skipping) {
       if (terminated && !inLiteral()) skipping = false;
       return;
     }
-    kept.push(line);
+    kept.push(rewritable ? roundTripRewrite(line, rewrites) : line);
   });
-  return { sql: kept.join('\n'), removed };
+  return { sql: kept.join('\n'), removed, rewrites };
 }
 
 // Linhas de DDL de um objeto que não existe: uma entrada que casa com qualquer
@@ -326,6 +408,107 @@ export function loadAllowlist(text) {
     });
 }
 
+// O dump descarta toda linha que começa na coluna 0 com `--`, inclusive dentro
+// do corpo de função (`-- fix_version: …`): o shadow guarda o corpo sem esses
+// comentários e o `db diff` mostra a função inteira como diferente (26 funções
+// no run de referência, todas só com comentário de coluna 0 a menos). Comentário
+// não muda comportamento; a função só sai do resíduo se, ignorando essas linhas
+// e o espaçamento, cabeçalho (assinatura, retorno, linguagem, SECURITY, SET) e
+// corpo forem iguais à definição vigente no replay. Qualquer outra diferença
+// continua no resíduo.
+const FUNCTION_START = /^[ \t]*CREATE[ \t]+(?:OR[ \t]+REPLACE[ \t]+)?(FUNCTION|PROCEDURE)\b/gim;
+const DOLLAR_AS = /\bAS\s+(\$[A-Za-z_][A-Za-z_0-9]*\$|\$\$)/i;
+
+export function extractFunctionStatements(sql) {
+  const found = [];
+  FUNCTION_START.lastIndex = 0;
+  let start;
+  while ((start = FUNCTION_START.exec(sql)) !== null) {
+    const rest = sql.slice(start.index);
+    const as = DOLLAR_AS.exec(rest);
+    if (!as) continue;
+    const bodyStart = as.index + as[0].length;
+    const close = rest.indexOf(as[1], bodyStart);
+    if (close < 0) continue;
+    let end = close + as[1].length;
+    const tail = /^\s*;/.exec(rest.slice(end));
+    if (tail) end += tail[0].length;
+    found.push({ start: start.index, end: start.index + end, text: rest.slice(0, end), tag: as[1], asIndex: as.index, bodyStart, close });
+    FUNCTION_START.lastIndex = start.index + end;
+  }
+  return found;
+}
+
+// Nome qualificado + lista de argumentos (parênteses balanceados, ignorando
+// aspas): identifica "a mesma função" entre definições sucessivas.
+function functionSignature(header) {
+  const m = /^\s*create\s+(?:or\s+replace\s+)?(?:function|procedure)\s+/i.exec(header);
+  if (!m) return null;
+  const rest = header.slice(m[0].length);
+  const open = rest.indexOf('(');
+  if (open < 0) return null;
+  let depth = 0;
+  let quote = false;
+  let end = -1;
+  for (let i = open; i < rest.length; i += 1) {
+    const c = rest[i];
+    if (quote) {
+      if (c === "'") quote = false;
+    } else if (c === "'") quote = true;
+    else if (c === '(') depth += 1;
+    else if (c === ')') {
+      depth -= 1;
+      if (depth === 0) {
+        end = i;
+        break;
+      }
+    }
+  }
+  if (end < 0) return null;
+  return normalizeHeader(rest.slice(0, end + 1));
+}
+
+function normalizeHeader(text) {
+  return text.replaceAll('"', '').replace(/\s+/g, ' ').trim().toLowerCase();
+}
+
+function normalizeFunction(statement) {
+  const header = statement.text.slice(0, statement.asIndex);
+  const signature = functionSignature(header);
+  if (!signature) return null;
+  const body = statement.text
+    .slice(statement.bodyStart, statement.close)
+    .split('\n')
+    .filter((l) => !l.startsWith('--'))
+    .join('\n')
+    .replace(/\s+/g, ' ')
+    .trim();
+  const head = normalizeHeader(header).replace(/^create (?:or replace )?(function|procedure)/, 'create $1');
+  return { signature, text: `${head} as $$ ${body} $$` };
+}
+
+// shadowSql = baseline sanitizado + migrations replayadas, na ordem em que o
+// shadow as aplicou: a última definição de cada assinatura é a vigente.
+export function dropDumpLossyFunctions(diffSql, shadowSql) {
+  const current = new Map();
+  for (const statement of extractFunctionStatements(shadowSql)) {
+    const norm = normalizeFunction(statement);
+    if (norm) current.set(norm.signature, norm.text);
+  }
+  const dropped = [];
+  let out = '';
+  let cursor = 0;
+  for (const statement of extractFunctionStatements(diffSql)) {
+    const norm = normalizeFunction(statement);
+    if (!norm || current.get(norm.signature) !== norm.text) continue;
+    out += diffSql.slice(cursor, statement.start);
+    cursor = statement.end;
+    dropped.push(norm.signature);
+  }
+  out += diffSql.slice(cursor);
+  return { sql: out, dropped };
+}
+
 export function filterDiff(diffSql, allowlist) {
   return diffSql
     .split('\n')
@@ -357,11 +540,24 @@ export function runCli(argv = process.argv.slice(2), rootDir = process.cwd()) {
     const allowlist = allowlistPath && existsSync(allowlistPath)
       ? loadAllowlist(readFileSync(allowlistPath, 'utf8'))
       : [];
-    const residue = filterDiff(readFileSync(arg(argv, '--diff'), 'utf8'), allowlist);
+    let diffSql = readFileSync(arg(argv, '--diff'), 'utf8');
+    const workdir = arg(argv, '--workdir');
+    if (workdir) {
+      const dir = join(workdir, 'supabase', 'migrations');
+      const shadowSql = readdirSync(dir)
+        .filter((f) => f.endsWith('.sql'))
+        .sort(byCodeUnit)
+        .map((f) => readFileSync(join(dir, f), 'utf8'))
+        .join('\n');
+      const lossy = dropDumpLossyFunctions(diffSql, shadowSql);
+      diffSql = lossy.sql;
+      console.error(`drift-baseline: ${lossy.dropped.length} função(ões) iguais ao replay exceto comentário de coluna 0 (ruído do dump) fora do resíduo`);
+    }
+    const residue = filterDiff(diffSql, allowlist);
     if (residue.length) console.log(residue.join('\n'));
     return 0;
   }
-  console.error('uso: drift-baseline.mjs prepare-workdir --ledger <json> --out <dir> | filter-diff --diff <f> --allowlist <f>');
+  console.error('uso: drift-baseline.mjs prepare-workdir --ledger <json> --out <dir> | filter-diff --diff <f> --allowlist <f> [--workdir <dir>]');
   return 2;
 }
 

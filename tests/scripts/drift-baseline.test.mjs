@@ -8,7 +8,11 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
+  REPLAY_SEED_NAME,
+  REPLAY_SEED_SQL,
   byCodeUnit,
+  dropDumpLossyFunctions,
+  extractFunctionStatements,
   filterDiff,
   findBaseline,
   findSecrets,
@@ -86,6 +90,7 @@ describe('prepareWorkdir', () => {
     });
     expect(res.replayed).toEqual(['20260928212000_back_link.sql', '20261016090000_nova.sql']);
     expect(readdirSync(join(out, 'supabase', 'migrations')).sort(byCodeUnit)).toEqual([
+      REPLAY_SEED_NAME,
       '20261015140000_baseline_schema.sql',
       '20261015140001_20260928212000_back_link.sql',
       '20261015140002_20261016090000_nova.sql',
@@ -306,6 +311,7 @@ describe('prepareWorkdir — nomes de migration com caracteres especiais', () =>
     });
     expect(res.replayed).toEqual(names);
     expect(readdirSync(join(out, 'supabase', 'migrations')).sort(byCodeUnit)).toEqual([
+      REPLAY_SEED_NAME,
       '20261015140000_baseline_schema.sql',
       `20261015140001_${names[0]}`,
       `20261015140002_${names[1]}`,
@@ -442,5 +448,119 @@ describe('export-schema-snapshot — credenciais presentes e CLI ausente', () =>
 
   it('sem token (PR/push) só pula o dump', () => {
     expect(run({}).status).toBe(0);
+  });
+});
+
+describe('sanitizeBaselineForReplay — round-trip do dump', () => {
+  it('passa o ARRAY de varchar por `::character varying[]` antes do cast para text[]', () => {
+    const sql = `CREATE TABLE "public"."t" (
+    "kind" character varying,
+    CONSTRAINT "t_kind_check" CHECK ((("kind")::"text" = ANY ((ARRAY['a'::character varying, 'b c'::character varying])::"text"[])))
+);`;
+    const out = sanitizeBaselineForReplay(sql);
+    expect(out.rewrites.varcharArrayCasts).toBe(1);
+    expect(out.sql).toContain(`ANY (((ARRAY['a'::character varying, 'b c'::character varying])::character varying[])::"text"[])`);
+  });
+
+  it('não reescreve dentro de corpo de função (dollar-quote)', () => {
+    const body = `x := (ARRAY['a'::character varying])::"text"[];`;
+    const sql = `CREATE FUNCTION "public"."f"() RETURNS void LANGUAGE plpgsql AS $$\nBEGIN\n${body}\nEND;\n$$;`;
+    const out = sanitizeBaselineForReplay(sql);
+    expect(out.rewrites.varcharArrayCasts).toBe(0);
+    expect(out.sql).toContain(body);
+  });
+
+  it('ordena os roles de CREATE POLICY e preserva as policies de ordem própria em produção', () => {
+    const sql = [
+      'CREATE POLICY "p1" ON "public"."categories" FOR SELECT TO "authenticated", "anon" USING (true);',
+      'CREATE POLICY "p2" ON "public"."t" TO "service_role", "anon", "authenticated" USING (false) WITH CHECK (false);',
+      'CREATE POLICY "pbd_public_read" ON "public"."product_badge_definitions" FOR SELECT TO "authenticated", "anon" USING (true);',
+      'CREATE POLICY "p3" ON "public"."t" FOR SELECT USING (true);',
+    ].join('\n');
+    const out = sanitizeBaselineForReplay(sql);
+    expect(out.rewrites.policyRoleOrders).toBe(2);
+    const lines = out.sql.split('\n');
+    expect(lines[0]).toContain('TO "anon", "authenticated" USING');
+    expect(lines[1]).toContain('TO "anon", "authenticated", "service_role" USING (false) WITH CHECK (false)');
+    expect(lines[2]).toContain('TO "authenticated", "anon" USING');
+    expect(lines[3]).toBe('CREATE POLICY "p3" ON "public"."t" FOR SELECT USING (true);');
+  });
+
+  it('policy com `$` em regex de string continua reescrita', () => {
+    const sql = `CREATE POLICY "p" ON "public"."t" FOR INSERT TO "authenticated", "anon" WITH CHECK ((("email")::"text" ~* '^[a-z]+$'::"text"));`;
+    expect(sanitizeBaselineForReplay(sql).rewrites.policyRoleOrders).toBe(1);
+  });
+});
+
+describe('prepareWorkdir — semente de privilégios padrão', () => {
+  it('grava a semente antes do baseline e ela revoga os privilégios padrão do shadow', () => {
+    const root = fixtureRepo({ baselineVersion: '20261015140000', ledgerVersions: ['20261015140000'], migrations: [] });
+    const out = join(tmp(), 'wd');
+    prepareWorkdir({ rootDir: root, outDir: out, appliedVersions: ['20261015140000'], projectRef: 'x' });
+    const dir = join(out, 'supabase', 'migrations');
+    expect(readdirSync(dir).sort(byCodeUnit)[0]).toBe(REPLAY_SEED_NAME);
+    expect(readFileSync(join(dir, REPLAY_SEED_NAME), 'utf8')).toBe(REPLAY_SEED_SQL);
+    for (const kind of ['TABLES', 'SEQUENCES', 'FUNCTIONS']) {
+      expect(REPLAY_SEED_SQL).toContain(`REVOKE ALL ON ${kind} FROM anon, authenticated, service_role`);
+    }
+  });
+});
+
+describe('dropDumpLossyFunctions', () => {
+  const shadow = `CREATE OR REPLACE FUNCTION "public"."fn_a"("p_x" "text" DEFAULT 'k'::"text") RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+  v int;
+BEGIN
+  v := 1;
+
+  RAISE WARNING 'x %', v;
+END;
+$$;
+
+ALTER FUNCTION "public"."fn_a"("p_x" "text") OWNER TO "postgres";`;
+  const diff = (extra = '', attrs = 'SECURITY DEFINER\n') => `CREATE OR REPLACE FUNCTION public.fn_a(p_x text DEFAULT 'k'::text)
+ RETURNS void
+ LANGUAGE plpgsql
+ ${attrs} SET search_path TO 'public'
+AS $function$
+-- fix_version: comentário de coluna 0
+DECLARE
+  v int;
+BEGIN
+  v := 1;
+  RAISE WARNING 'x %', v;${extra}
+END;
+$function$
+;
+create policy "z" on "public"."t" for select to anon using (true);
+`;
+
+  it('descarta a função que só difere por comentário de coluna 0 e espaçamento', () => {
+    const out = dropDumpLossyFunctions(diff(), shadow);
+    expect(out.dropped).toEqual(['public.fn_a(p_x text default \'k\'::text)']);
+    expect(out.sql).not.toContain('fn_a');
+    expect(out.sql).toContain('create policy "z"');
+  });
+
+  it('mantém a função quando o corpo muda de verdade', () => {
+    const out = dropDumpLossyFunctions(diff('\n  v := 2;'), shadow);
+    expect(out.dropped).toEqual([]);
+    expect(out.sql).toContain('v := 2;');
+  });
+
+  it('mantém a função quando só o cabeçalho muda (SECURITY DEFINER removido)', () => {
+    expect(dropDumpLossyFunctions(diff('', ''), shadow).dropped).toEqual([]);
+  });
+
+  it('usa a última definição do replay: migration posterior que mudou a função mantém o drift', () => {
+    const later = shadow.replace('v := 1;', 'v := 9;');
+    expect(dropDumpLossyFunctions(diff(), `${shadow}\n${later}`).dropped).toEqual([]);
+  });
+
+  it('extractFunctionStatements ignora CREATE FUNCTION sem corpo em dollar-quote', () => {
+    expect(extractFunctionStatements("CREATE FUNCTION f() RETURNS int AS 'select 1' LANGUAGE sql;")).toEqual([]);
   });
 });
