@@ -359,3 +359,15 @@ NODE_PATH=/tmp/jsyaml-install/node_modules node scripts/check-workflow-contracts
 # Actionlint (gate E11)
 npx --yes actionlint .github/workflows/meu-workflow.yml
 ```
+
+
+## Metas de saúde da esteira (E87)
+
+| Métrica | Meta | Fonte |
+|---|---|---|
+| Runs totais/dia | ≤ 150 | `scripts/ci-metrics.mjs` |
+| Fila média (p95 por workflow) | < 2 min | idem |
+| Workflows verde-vazio (0 tests) | 0 | idem |
+| Cache total do repositório | ≤ 8 GB | API `/actions/cache/usage` |
+
+Relatório semanal em `docs/ci/METRICAS_SEMANAIS.md` (gerado por `ci-metrics-weekly.yml`).
