@@ -38,27 +38,28 @@ runs:
         restore-keys: playwright-${{ runner.os }}-
 
     - name: Install Playwright browsers
-      shell: sh
+      shell: bash
       env:
         BROWSERS: ${{ inputs.browsers }}
       run: |
         set -euo pipefail
+        # shellcheck disable=SC2046 # split intencional: um argumento por browser
         npx playwright install --with-deps $(echo "$BROWSERS" | tr ',' ' ')
 
     - name: Generate E2E fixtures
-      shell: sh
+      shell: bash
       run: npm run e2e:generate-fixtures 2>/dev/null || true
 
     - name: Setup mock auth
       if: inputs.mock-auth == 'true'
-      shell: sh
+      shell: bash
       env:
         E2E_MOCK_AUTH: "1"
       run: node scripts/e2e-mock-auth-setup.mjs
 
     - name: Check auth credentials
       if: inputs.require-auth == 'true' && inputs.mock-auth != 'true'
-      shell: sh
+      shell: bash
       run: |
         if [ -z "$E2E_USER_EMAIL" ] || [ -z "$E2E_USER_PASSWORD" ]; then
           echo "ERRO: E2E_USER_EMAIL ou E2E_USER_PASSWORD não configurados."
@@ -67,12 +68,12 @@ runs:
 
     - name: Run auth setup
       if: inputs.require-auth == 'true' && inputs.mock-auth != 'true'
-      shell: sh
+      shell: bash
       run: npx playwright test --project=setup
 
     - name: Start Vite dev server
       if: inputs.start-vite == 'true'
-      shell: sh
+      shell: bash
       run: |
         npm run dev &
         echo $! > /tmp/vite.pid

@@ -41,12 +41,12 @@ runs:
 
     - name: Check lockfile sync
       if: inputs.install != 'false' && inputs.skip-install != 'true'
-      shell: sh
+      shell: bash
       run: node scripts/check-lockfile-sync.mjs
 
     - name: Install dependencies
       if: inputs.install != 'false' && inputs.skip-install != 'true'
-      shell: sh
+      shell: bash
       working-directory: ${{ inputs.working-directory }}
       env:
         IGNORE_SCRIPTS: ${{ inputs.ignore-scripts }}
