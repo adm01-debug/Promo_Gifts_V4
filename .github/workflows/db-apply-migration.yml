@@ -68,9 +68,10 @@ jobs:
           ref: main  # E35: checkout sempre de main, nunca de branch de PR
 
       - name: Valida approved_by não-vazio (E35 — rejeição antecipada)
+        env:
+          APPROVED_BY: ${{ inputs.approved_by }}
         run: |
           set -euo pipefail
-          APPROVED_BY="${{ inputs.approved_by }}"
           if [ -z "${APPROVED_BY// /}" ]; then
             echo "::error::approved_by é obrigatório e não pode ser vazio (E35). Informe o revisor que aprovou a migration antes de prosseguir."
             exit 1
@@ -256,26 +257,31 @@ jobs:
           node-version-file: '.nvmrc'
 
       - name: Valida approved_by não-vazio (E35)
+        env:
+          APPROVED_BY: ${{ inputs.approved_by }}
         run: |
           set -euo pipefail
-          APPROVED_BY="${{ inputs.approved_by }}"
           if [ -z "${APPROVED_BY// /}" ]; then
             echo "::error::approved_by é obrigatório e não pode ser vazio (E35). Informe o revisor que aprovou a migration."
             exit 1
           fi
 
       - name: Monta o recibo em MIGRATIONS_SYNC_LOG.md
+        env:
+          APPROVED_BY: ${{ inputs.approved_by }}
         run: |
           node scripts/append-migration-receipt.mjs \
             --version="$MIGRATION_VERSION" \
             --sha256="${{ needs.apply.outputs.sha256 }}" \
-            --executor="GitHub Actions (db-apply-migration.yml, disparado por ${{ github.actor }}, aprovado por ${{ inputs.approved_by }})" \
+            --executor="GitHub Actions (db-apply-migration.yml, disparado por ${{ github.actor }}, aprovado por $APPROVED_BY)" \
             --metodo="E15" \
             --data-utc="${{ needs.apply.outputs.applied_at }}" \
             --pos-check="job post-check da run ${{ github.run_id }} confirmou a version no ledger" \
             --status="aplicada"
 
       - name: Abre PR com o recibo
+        env:
+          APPROVED_BY: ${{ inputs.approved_by }}
         run: |
           set -euo pipefail
           BRANCH="e15-receipt-${MIGRATION_VERSION}-${{ github.run_id }}"
@@ -284,10 +290,10 @@ jobs:
           git checkout -b "$BRANCH"
           git add supabase/MIGRATIONS_SYNC_LOG.md
           git commit -m "docs(migrations-log): recibo E15 — aplicação de ${MIGRATION_VERSION}" \
-                     -m "Auto-gerado por .github/workflows/db-apply-migration.yml (run ${{ github.run_id }}), disparado por ${{ github.actor }}. Aprovado por: ${{ inputs.approved_by }}. PLANO_DBA E15."
+                     -m "Auto-gerado por .github/workflows/db-apply-migration.yml (run ${{ github.run_id }}), disparado por ${{ github.actor }}. Aprovado por: $APPROVED_BY. PLANO_DBA E15."
           git push -u origin "$BRANCH"
           gh pr create \
             --base main \
             --head "$BRANCH" \
             --title "docs: recibo de aplicação — ${MIGRATION_VERSION} (E15)" \
-            --body "Recibo automático da aplicação de \`${MIGRATION_VERSION}\` via \`db-apply-migration.yml\` (run ${{ github.run_id }}, disparado por @${{ github.actor }}, aprovado por ${{ inputs.approved_by }}). A migration já foi aplicada e confirmada no ledger pelos jobs \`apply\`/\`post-check\` desta mesma run — este PR só registra o recibo textual (PLANO_DBA E15/E48)."
+            --body "Recibo automático da aplicação de \`${MIGRATION_VERSION}\` via \`db-apply-migration.yml\` (run ${{ github.run_id }}, disparado por @${{ github.actor }}, aprovado por $APPROVED_BY). A migration já foi aplicada e confirmada no ledger pelos jobs \`apply\`/\`post-check\` desta mesma run — este PR só registra o recibo textual (PLANO_DBA E15/E48)."

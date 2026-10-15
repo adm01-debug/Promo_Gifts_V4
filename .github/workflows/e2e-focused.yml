@@ -145,8 +145,10 @@ jobs:
 
       - name: Filtrar suite
         if: github.event.inputs.suite != '' && github.event.inputs.suite != matrix.suite
+        env:
+          SUITE_FILTER: ${{ github.event.inputs.suite }}
         run: |
-          echo "::notice::Suite ${{ matrix.suite }} ignorada (filtro: ${{ github.event.inputs.suite }})"
+          echo "::notice::Suite ${{ matrix.suite }} ignorada (filtro: $SUITE_FILTER)"
           exit 0
 
       - name: Run E2E Focused · ${{ matrix.suite }}
