@@ -62,7 +62,7 @@ Serve de referência de implementação (não é do Mockup):
 - **Favoritos:** tabela `favorite_items_trash` com TTL 30 dias, função
   `public.purge_favorite_trash_old()` (`docs/db/BACKUP_SCHEMA_ONLY_2026-09-16.sql:65573`) e job
   de cron `purge-favorite-trash` executando todo dia às 04:00 UTC
-  (`supabase/cron/cron-config.sql:67-77`). Há restauração real via RPC
+  (`supabase/cron/cron-config.sql:67-78`). Há restauração real via RPC
   `restore_favorite_from_trash` (`src/hooks/favorites/useFavoriteLists.ts:368`) e tela de lixeira
   `src/components/favorites/FavoritesTrashView.tsx`.
 - **Coleções:** `collection_items_trash` com o mesmo desenho.
@@ -112,7 +112,7 @@ END $$;
 ```
 
 O job de cron entra em `supabase/cron/cron-config.sql` no mesmo formato do JOB 4
-(`supabase/cron/cron-config.sql:67-77`):
+(`supabase/cron/cron-config.sql:67-78`):
 
 ```sql
 -- JOB 6 (DRAFT — NÃO APLICAR SEM APROVAÇÃO): purga da lixeira de mockup (04:00 UTC)
@@ -209,7 +209,7 @@ END $$;
 
 - Decisão Q7: `docs/PLANO_MOCKUP_50_ETAPAS_2026-10-08.md` (etapas 6, 10, 38, 39).
 - Lixeira parcial Q7 / assets compartilhados: `docs/PLANO_MOCKUP_50_ETAPAS_ADENDO_CODEX.md` (etapas 64, 82, 84).
-- Padrão de purge por cron: `supabase/cron/cron-config.sql:67-77`; função `purge_favorite_trash_old`
+- Padrão de purge por cron: `supabase/cron/cron-config.sql:67-78`; função `purge_favorite_trash_old`
   em `docs/db/BACKUP_SCHEMA_ONLY_2026-09-16.sql:65573`.
 - Padrão de Edge Function de limpeza: `supabase/functions/cleanup-notifications/index.ts`.
 - Código do Mockup: `src/hooks/mockup/mockupGenerationService.ts:483-526`,
