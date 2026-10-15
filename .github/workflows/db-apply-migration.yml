@@ -24,6 +24,10 @@ on:
         description: 'Versão da migration (prefixo numérico de supabase/migrations/<version>_*.sql)'
         required: true
         type: string
+      approved_by:
+        description: 'Nome do revisor que aprovou esta migration (ex.: @usuario) — obrigatório (E35)'
+        required: true
+        type: string
 
 concurrency:
   group: db-apply-migration
@@ -53,6 +57,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false  # E32
+          ref: main  # E35: checkout sempre de main, nunca de branch de PR
 
       - name: Valida input antes de qualquer uso no shell
         run: node scripts/validate-migration-target.mjs --version-only
@@ -96,6 +101,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false  # E32
+          ref: main  # E35: checkout sempre de main, nunca de branch de PR
 
       - name: Guard — versão e destino PostgreSQL canônico
         env:
@@ -195,6 +201,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false  # E32
+          ref: main  # E35: checkout sempre de main, nunca de branch de PR
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -219,6 +226,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false  # E32
+          ref: main  # E35: checkout sempre de main, nunca de branch de PR
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:

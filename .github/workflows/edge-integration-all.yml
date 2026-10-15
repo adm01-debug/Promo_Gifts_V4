@@ -83,8 +83,12 @@ jobs:
             --coverage.thresholds.branches=0 \
             --coverage.thresholds.statements=0
 
+      # E28: LIVE tests tocam produção — não devem rodar em PRs de forks.
+      # Guard e execução ficam condicionados ao mesmo critério.
       - name: Guard — LIVE tests requerem credenciais em push para main
-        if: github.event_name == 'push'
+        if: >-
+          github.event_name == 'push' &&
+          (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
@@ -99,6 +103,8 @@ jobs:
           fi
 
       - name: Run all edge function integration tests (LIVE)
+        # E28: não toca produção a partir de PRs de forks
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
         run: npx vitest run tests/edge-functions/live/ --reporter=verbose
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}

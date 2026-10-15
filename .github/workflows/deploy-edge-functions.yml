@@ -39,14 +39,8 @@ on:
         required: false
         type: boolean
         default: false
-  push:
-    branches: [main]
-    paths:
-      - 'supabase/functions/**'
-      - '!supabase/functions/**/*.test.ts'
-      - '!supabase/functions/tests/**'
-      - '!supabase/functions/README.md'
-      - '.github/workflows/deploy-edge-functions.yml'
+  # E34: push automático removido — deploy só via workflow_dispatch ou workflow_call
+  # (evita deploy sem aprovação explícita)
 
 env:
   # Defina em Settings → Secrets and variables → Actions → Variables
@@ -77,6 +71,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false  # E32
+          ref: ${{ github.sha }}  # E34: ref explícito — nunca branch dinâmico
           # E63 (plano de 100): fetch-depth 0 — `git diff` abaixo compara
           # github.event.before..github.sha para achar só as funções
           # alteradas neste push; um checkout raso (depth 1, o default) não
@@ -193,6 +188,8 @@ jobs:
     if: ${{ !inputs.dry_run && needs.list-functions.outputs.count != '0' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
+    # E34: deploy em produção exige aprovação do environment
+    environment: production
     strategy:
       fail-fast: false
       max-parallel: 4
@@ -202,6 +199,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false  # E32
+          ref: ${{ github.sha }}  # E34: ref explícito
 
       - name: Setup Supabase CLI
         uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v2
@@ -300,6 +298,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false  # E32
+          ref: ${{ github.sha }}  # E34: ref explícito
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
