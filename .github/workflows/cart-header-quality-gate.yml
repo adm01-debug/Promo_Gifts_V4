@@ -137,8 +137,6 @@ jobs:
     env:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-      TEST_SELLER_A_JWT: ${{ secrets.TEST_SELLER_A_JWT }}
-      TEST_SELLER_B_JWT: ${{ secrets.TEST_SELLER_B_JWT }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
@@ -154,30 +152,34 @@ jobs:
           set -euo pipefail
           missing=''
           [ -z "${SUPABASE_URL:-}" ] && missing="$missing SUPABASE_URL"
-          [ -z "${TEST_SELLER_A_JWT:-}" ] && missing="$missing TEST_SELLER_A_JWT"
           if [ -n "$missing" ]; then
             echo "::error::RLS integration test requer credenciais em push para main. Ausentes:$missing"
             exit 1
           fi
 
-      - name: Rodar teste de RLS
+      # E27 — em PR sem credenciais: step abaixo aparece como `skipped` (cinza) em vez
+      # de verde. Prevenção de silent-green: um step que sai 0 via exit 0 mascarava a
+      # ausência de credenciais. Com a estrutura guard-id + if: nas etapas seguintes o
+      # estado real é visível na UI.
+      - name: Guard — credenciais RLS em PR (skip gracioso)
+        id: rls_creds_pr
+        if: github.event_name == 'pull_request'
         run: |
-          # E27 — se creds ausentes em PR: aviso + skip (sem falha). Em push o guard acima já falhou.
-          if [ -z "${SUPABASE_URL:-}" ] || [ -z "${TEST_SELLER_A_JWT:-}" ]; then
-            if [ "${{ github.event_name }}" = "pull_request" ]; then
-              MISSING=''
-              [ -z "${SUPABASE_URL:-}" ]       && MISSING="$MISSING SUPABASE_URL"
-              [ -z "${TEST_SELLER_A_JWT:-}" ]  && MISSING="$MISSING TEST_SELLER_A_JWT"
-              echo "::warning::RLS integration pulado — credenciais ausentes neste PR:${MISSING}"
-              {
-                echo "## ⚠️ RLS seller_carts pulado neste PR"
-                echo ""
-                echo "Credenciais\`${MISSING}\` ausentes — teste de RLS de \`seller_carts\` não executado."
-                echo "> Em push para \`main\`, o gate falha sem essas credenciais."
-              } >> "$GITHUB_STEP_SUMMARY"
-              exit 0
-            fi
-            echo "::error::Credenciais RLS ausentes em push para main (guard deveria ter falhado antes)."
-            exit 1
+          if [ -z "${SUPABASE_URL:-}" ]; then
+            MISSING=''
+            [ -z "${SUPABASE_URL:-}" ] && MISSING="$MISSING SUPABASE_URL"
+            echo "::warning::RLS integration pulado — credenciais ausentes neste PR:${MISSING}"
+            {
+              echo "## ⚠️ RLS seller_carts pulado neste PR"
+              echo ""
+              echo "Credenciais\`${MISSING}\` ausentes — teste de RLS de \`seller_carts\` não executado."
+              echo "> Em push para \`main\`, o gate falha sem essas credenciais."
+            } >> "$GITHUB_STEP_SUMMARY"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
-          deno test --allow-net --allow-env supabase/functions/tests/seller-carts-rls_test.ts
+
+      - name: Rodar teste de RLS
+        if: github.event_name != 'pull_request' || steps.rls_creds_pr.outputs.skip != 'true'
+        run: deno test --allow-net --allow-env supabase/functions/tests/seller-carts-rls_test.ts
