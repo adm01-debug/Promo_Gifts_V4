@@ -82,13 +82,23 @@ describe('controlled migration target', () => {
       (step) => step.run === 'node scripts/validate-migration-target.mjs --require-live-pooler',
     );
     const apply = steps.findIndex((step) =>
-      step.run?.includes('psql -X -w -1 -v ON_ERROR_STOP=1 -f') &&
-      step.run?.includes('psql -X -w -v ON_ERROR_STOP=1 -f'),
+      step.run?.includes('psql -X -w -1 -v ON_ERROR_STOP=1') &&
+      step.run?.includes('psql -X -w -v ON_ERROR_STOP=1'),
     );
     expect(guard).toBeGreaterThan(-1);
     expect(apply).toBeGreaterThan(guard);
-    expect(steps[apply].run).toContain('steps.tx_optout.outputs.no_tx');
+    expect(steps[apply].env.NO_TX).toBe('${{ steps.tx_optout.outputs.no_tx }}');
     expect(steps[apply].run).toContain('if [');
+    // Timeouts via SET dentro da sessão/transação — PGOPTIONS é ignorado pelo
+    // pooler (run 38730252412). SET LOCAL precisa vir antes do -f no caminho -1.
+    expect(steps[apply].env.PGOPTIONS).toBeUndefined();
+    expect(workflow.jobs.apply.env.MIGRATION_LOCK_TIMEOUT).toBe('1s');
+    const run = steps[apply].run;
+    const txPath = run.slice(run.indexOf('psql -X -w -1'));
+    expect(txPath.indexOf("SET LOCAL lock_timeout = '${MIGRATION_LOCK_TIMEOUT}'")).toBeGreaterThan(-1);
+    expect(txPath.indexOf('SET LOCAL statement_timeout')).toBeGreaterThan(-1);
+    expect(txPath.indexOf('SET LOCAL lock_timeout')).toBeLessThan(txPath.indexOf('-f "$MIGRATION_FILE"'));
+    expect(run).toContain("-c \"SET lock_timeout = '${MIGRATION_LOCK_TIMEOUT}'\"");
     expect(steps[apply].env.PGSSLMODE).toBe('require');
     expect(steps[guard].env.SUPABASE_ACCESS_TOKEN).toBe('${{ secrets.SUPABASE_ACCESS_TOKEN }}');
     const connection = steps.findIndex((step) => step.run?.includes('BEGIN READ ONLY'));
