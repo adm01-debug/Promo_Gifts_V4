@@ -77,7 +77,7 @@ export function VirtualizedReplenishmentGrid({
       className="overflow-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       style={SCROLL_CONTAINER_STYLE}
       role="list"
-      aria-label={`Grade de produtos repostos — ${products.length} item${products.length !== 1 ? 's' : ''}`}
+      aria-label={`Grade de produtos repostos — ${products.length} ${products.length !== 1 ? 'itens' : 'item'}`}
       aria-live="polite"
       aria-relevant="additions removals"
       tabIndex={0}

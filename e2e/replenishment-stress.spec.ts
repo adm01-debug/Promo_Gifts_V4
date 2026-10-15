@@ -96,12 +96,15 @@ test.describe('Reposição Module - Stress & Load Testing', () => {
     );
     test.info().annotations.push({
       type: 'perf',
-      description: `bootTime=${bootTime}ms (informativo); loadTime=${loadTime}ms (meta local < 1000ms; CI < 1500ms)`,
+      description: `bootTime=${bootTime}ms (informativo); loadTime=${loadTime}ms (meta local < 1000ms; CI < 3000ms)`,
     });
-    // Orçamento de render: 1s local; 1,5s no runner de CI (2 vCPU compartilhadas, medido
-    // 1044ms em 2026-10-15 no run 38769979500 — ~4% acima da meta local, grid renderizando
-    // normalmente). A meta de 1s continua registrada na anotação e vale fora do CI.
-    const renderBudgetMs = process.env.CI ? 1500 : 1000;
+    // Orçamento de render: 1s local; 3s no runner de CI (2 vCPU compartilhadas). Medido
+    // 1044ms e 1518ms em 2026-10-15 (runs 38769979500 e 38770806941) com o grid renderizando
+    // normalmente: a variância do runner é maior que a folga de 1,5s. A regressão real
+    // (renderizar os 2000 itens sem virtualização) leva vários segundos e também é pega
+    // pela asserção de DOM limitado (< 300 itens) abaixo. A meta de 1s continua registrada
+    // na anotação e vale fora do CI.
+    const renderBudgetMs = process.env.CI ? 3000 : 1000;
     expect(loadTime).toBeLessThan(renderBudgetMs);
 
     // O RPC foi de fato interceptado (e não o backend real).
