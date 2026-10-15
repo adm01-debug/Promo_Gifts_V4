@@ -60,11 +60,12 @@ function collectYamlFiles(dir) {
 // ---------------------------------------------------------------------------
 function extractRefs(content) {
   const refs = new Map(); // "secrets.NAME" → Set<file>
-  const secretRe = /\$\{\{\s*(secrets|vars)\.([A-Z][A-Z0-9_]*)\s*\}\}/g;
-  // Também captura: secrets.NAME no contexto de if: ou expressions
+  // Strip YAML comment lines before scanning so inline doc examples don't pollute results
+  const noComments = content.split('\n').map(l => /^\s*#/.test(l) ? '' : l).join('\n');
+  // Captura: secrets.NAME / vars.NAME no contexto de ${{ }} e de if: expressions
   const exprRe = /(secrets|vars)\.([A-Z][A-Z0-9_]*)/g;
   let m;
-  while ((m = exprRe.exec(content)) !== null) {
+  while ((m = exprRe.exec(noComments)) !== null) {
     const key = `${m[1]}.${m[2]}`;
     if (!refs.has(key)) refs.set(key, new Set());
   }
