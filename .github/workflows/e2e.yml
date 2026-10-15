@@ -202,7 +202,7 @@ jobs:
 
       - name: 📋 Generate feature summary
         if: always()
-        run: node scripts/e2e-feature-summary.mjs || true
+        run: node scripts/e2e-feature-summary.mjs || true  # ok: resumo é best-effort; não deve bloquear upload de artefato
 
       - name: 📤 Append feature summary to GitHub UI
         if: always()
