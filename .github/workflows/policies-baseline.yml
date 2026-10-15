@@ -78,8 +78,26 @@ jobs:
           node-version-file: .nvmrc
 
       - name: Check policies baseline
-        # E56: --require-live prevents soft-pass when credentials are missing
-        run: node scripts/check-policies-baseline.mjs --require-live
+        id: check_baseline
+        continue-on-error: true
+        # E56: --require-live emite exit 2 (inconclusive) sem credenciais —
+        # tri-state: 0=ok, 1=drift, 2=inconclusivo (não bloqueia).
+        run: |
+          set +e
+          node scripts/check-policies-baseline.mjs --require-live
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Verificar resultado (E56 — tri-state)
+        if: steps.check_baseline.outcome == 'failure'
+        run: |
+          if [ "${{ steps.check_baseline.outputs.exit_code }}" = "2" ]; then
+            echo "::warning::policies-baseline inconclusivo (exit 2) — sem SUPABASE_ACCESS_TOKEN (PR de fork) ou baseline com pending_seed: true. Gate dormente."
+          else
+            echo "::error::Drift de RLS policies detectado — veja o output do step acima."
+            exit 1
+          fi
 
   seed:
     name: Seed/regen do baseline + PR
@@ -94,6 +112,11 @@ jobs:
       SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
+      - name: Verify required secrets
+        run: |
+          set -euo pipefail
+          : "${SUPABASE_ACCESS_TOKEN:?SUPABASE_ACCESS_TOKEN não configurado — seed requer PAT da Management API}"
+
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
