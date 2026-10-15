@@ -13,6 +13,7 @@ import {
   loadAllowlist,
   maxNumericVersion,
   prepareWorkdir,
+  sanitizeBaselineForReplay,
   replayFileName,
   selectReplayMigrations,
 } from '../../scripts/drift-baseline.mjs';
@@ -159,6 +160,64 @@ describe('findSecrets — anon key pública', () => {
     const service = jwtFor({ role: 'service_role' });
     expect(findSecrets(`select '${service}';`).map((h) => h.kind)).toEqual(['jwt']);
     expect(findSecrets(`select '${anon}', '${service}';`).map((h) => h.kind)).toEqual(['jwt']);
+  });
+});
+
+describe('sanitizeBaselineForReplay', () => {
+  it('remove COMMENT/ALTER ON EVENT TRIGGER, que o dump emite sem o CREATE correspondente', () => {
+    const sql = [
+      'CREATE TABLE "public"."t" (id int);',
+      'ALTER EVENT TRIGGER "evt_x" OWNER TO "postgres";',
+      `COMMENT ON EVENT TRIGGER "evt_revoke_view_write_grants" IS 'Dispara fn() após CREATE [OR REPLACE] VIEW; só SELECT.';`,
+      'COMMENT ON TABLE "public"."t" IS \'ok\';',
+    ].join('\n');
+    const out = sanitizeBaselineForReplay(sql);
+    expect(out.sql.split('\n')).toEqual([
+      'CREATE TABLE "public"."t" (id int);',
+      'COMMENT ON TABLE "public"."t" IS \'ok\';',
+    ]);
+    expect(out.removed.map((r) => r.line)).toEqual([2, 3]);
+  });
+
+  it('remove o comando inteiro quando o texto do comentário ocupa várias linhas e tem ponto-e-vírgula', () => {
+    const sql = [
+      "COMMENT ON EVENT TRIGGER \"evt_y\" IS 'primeira linha;",
+      'segunda linha com \'\'aspas\'\' e ; solto',
+      "fim';",
+      'SELECT 1;',
+    ].join('\n');
+    const out = sanitizeBaselineForReplay(sql);
+    expect(out.sql).toBe('SELECT 1;');
+    expect(out.removed).toHaveLength(1);
+  });
+
+  it('não toca na mesma frase dentro de corpo de função (dollar-quote) nem em string', () => {
+    const sql = [
+      'CREATE FUNCTION f() RETURNS void LANGUAGE plpgsql AS $fn$',
+      'BEGIN',
+      'COMMENT ON EVENT TRIGGER evt IS \'x\';',
+      'END;',
+      '$fn$;',
+      "SELECT 'texto',",
+      "'ALTER EVENT TRIGGER y OWNER TO z';",
+    ].join('\n');
+    const out = sanitizeBaselineForReplay(sql);
+    expect(out.sql).toBe(sql);
+    expect(out.removed).toEqual([]);
+  });
+
+  it('prepareWorkdir entrega ao shadow o baseline já sem event trigger, sem alterar o arquivo original', () => {
+    const root = fixtureRepo({ baselineVersion: '20261015140000', ledgerVersions: ['20261015140000'], migrations: [] });
+    const file = join(root, 'supabase', 'baseline', '20261015140000_baseline_schema.sql');
+    const raw = 'CREATE TABLE t (id int);\nCOMMENT ON EVENT TRIGGER "e" IS \'c\';\n';
+    writeFileSync(file, raw);
+    const out = join(tmp(), 'wd');
+    const res = prepareWorkdir({ rootDir: root, outDir: out, appliedVersions: ['20261015140000'], projectRef: 'x' });
+    const delivered = readFileSync(join(out, 'supabase', 'migrations', '20261015140000_baseline_schema.sql'), 'utf8');
+    expect(/EVENT TRIGGER/.test(delivered)).toBe(false);
+    expect(delivered).toContain('CREATE TABLE t');
+    expect(res.removedStatements).toHaveLength(1);
+    expect(readFileSync(file, 'utf8')).toBe(raw);
   });
 });
 
