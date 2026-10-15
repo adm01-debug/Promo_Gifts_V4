@@ -6,6 +6,7 @@ import { mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSyn
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import {
+  byCodeUnit,
   filterDiff,
   findBaseline,
   findSecrets,
@@ -80,7 +81,7 @@ describe('prepareWorkdir', () => {
       projectRef: 'doufsxqlfjyuvxuezpln',
     });
     expect(res.replayed).toEqual(['20260928212000_back_link.sql', '20261016090000_nova.sql']);
-    expect(readdirSync(join(out, 'supabase', 'migrations')).sort()).toEqual([
+    expect(readdirSync(join(out, 'supabase', 'migrations')).sort(byCodeUnit)).toEqual([
       '20261015140000_baseline_schema.sql',
       '20261015140001_20260928212000_back_link.sql',
       '20261015140002_20261016090000_nova.sql',

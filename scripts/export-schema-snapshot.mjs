@@ -38,6 +38,7 @@ import {
   BASELINE_DIR,
   BASELINE_NAME_RE,
   buildBaselineSql,
+  byCodeUnit,
   findSecrets,
   ledgerSnapshotName,
   maxNumericVersion,
@@ -137,15 +138,15 @@ function readLedger() {
 // vice-versa). Alimenta SCHEMA_LIVE.sql e o baseline do drift-check.
 function dumpLiveSchema(ledger) {
   log('Exportando schema vivo (supabase db dump --linked)');
-  let sql;
-  try {
-    sql = execSync('supabase db dump --linked 2>/dev/null', {
-      encoding: 'utf8', maxBuffer: 256 * 1024 * 1024, shell: '/bin/bash',
-    });
-  } catch (e) {
-    err(`Falha ao dumpar schema vivo: ${e.message}`);
+  // Sem shell; stderr do CLI (progresso) descartado para não entrar no dump.
+  const r = spawnSync('supabase', ['db', 'dump', '--linked'], {
+    encoding: 'utf8', maxBuffer: 256 * 1024 * 1024, stdio: ['ignore', 'pipe', 'ignore'],
+  });
+  if (r.error || r.status !== 0) {
+    err(`Falha ao dumpar schema vivo: ${r.error?.message ?? `exit ${r.status}`}`);
     return { ok: false };
   }
+  const sql = r.stdout;
   const generatedAt = new Date().toISOString();
   const secrets = findSecrets(sql);
   if (secrets.length) {
@@ -183,7 +184,7 @@ function dumpLiveSchema(ledger) {
   );
   writeFileSync(
     join(dir, ledgerSnapshotName(version)),
-    `${JSON.stringify({ baseline_version: version, generated_at: generatedAt, versions: [...versions].sort() }, null, 2)}\n`,
+    `${JSON.stringify({ baseline_version: version, generated_at: generatedAt, versions: [...versions].sort(byCodeUnit) }, null, 2)}\n`,
   );
   ok(`Baseline ${version} gerado (${versions.length} versões no ledger).`);
   return { ok: true, bytes: sql.length, baselineVersion: version, ledgerVersions: versions.length };
@@ -212,22 +213,27 @@ function main() {
     writeMeta(meta);
     return;
   }
+  // Com credenciais (CI em schedule/dispatch) falha de ledger ou dump é erro.
+  // Sem elas, um link local sem `supabase login` só pula o dump — como em PR
+  // e push, onde as credenciais não são entregues ao job.
+  const strict = Boolean(process.env.SUPABASE_ACCESS_TOKEN);
   if (!tryLink()) {
     writeMeta(meta);
+    if (strict) process.exitCode = 1;
     return;
   }
 
   const ledger = readLedger();
   if (!ledger) {
     writeMeta(meta);
-    process.exitCode = 1;
+    if (strict) process.exitCode = 1;
     return;
   }
   const live = dumpLiveSchema(ledger);
   if (live.ok) {
     meta.live_schema = { bytes: live.bytes };
     meta.baseline = { version: live.baselineVersion, ledger_versions: live.ledgerVersions };
-  } else {
+  } else if (strict) {
     process.exitCode = 1;
   }
   meta.drift = 'calculado por .github/workflows/db-schema-drift-check.yml a partir do baseline';

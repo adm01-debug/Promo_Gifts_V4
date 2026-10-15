@@ -50,8 +50,12 @@ export function findSecrets(sql) {
   return hits;
 }
 
+// Ordem por code unit: versões de 14 dígitos e nomes de migration ordenam
+// igual ao CLI (que aplica por nome de arquivo).
+export const byCodeUnit = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
+
 export function maxNumericVersion(versions) {
-  const numeric = versions.filter((v) => /^\d{14}$/.test(String(v))).sort();
+  const numeric = versions.filter((v) => /^\d{14}$/.test(String(v))).sort(byCodeUnit);
   return numeric.length ? numeric[numeric.length - 1] : null;
 }
 
@@ -82,7 +86,7 @@ export function ledgerSnapshotName(version) {
 export function findBaseline(rootDir) {
   const dir = join(rootDir, BASELINE_DIR);
   if (!existsSync(dir)) return null;
-  const found = readdirSync(dir).filter((f) => BASELINE_NAME_RE.test(f)).sort();
+  const found = readdirSync(dir).filter((f) => BASELINE_NAME_RE.test(f)).sort(byCodeUnit);
   if (found.length > 1) throw new Error(`mais de um baseline em ${BASELINE_DIR}: ${found.join(', ')}`);
   if (!found.length) return null;
   const version = BASELINE_NAME_RE.exec(found[0])[1];
@@ -101,7 +105,7 @@ export function selectReplayMigrations({ files, baselineVersions, appliedVersion
     .map((f) => ({ f, m: MIGRATION_RE.exec(f) }))
     .filter(({ m }) => m && applied.has(m[1]) && !baselineVersions.has(m[1]))
     .map(({ f }) => f)
-    .sort();
+    .sort(byCodeUnit);
 }
 
 // O shadow aplica em ordem de nome; tudo que vem depois do baseline ganha
