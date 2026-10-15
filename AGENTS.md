@@ -250,9 +250,12 @@ nunca copiar para `supabase/migrations/`, nunca aplicar em produção, não serv
 para criar ambiente novo (não tem auth, cron, storage, vault, seed). Ruído do
 diff vai em `supabase/baseline/drift-allowlist.txt`, uma entrada específica e
 justificada por linha; objeto criado em produção sem migration vira migration
-espelho, não entrada de allowlist. Migration registrada com `mode: repair-only`
+espelho, não entrada de allowlist. O export só gira o baseline depois de um
+drift-check verde na mesma execução (job `drift-gate`) — senão o dump novo
+absorveria a DDL fora de migration. Migration registrada com `mode: repair-only`
 (ou aplicada fora da ordem de versão) depois do baseline quebra o replay — o
-remédio é gerar baseline novo (`schema-snapshot-export.yml` via dispatch).
+remédio é dispatch do `schema-snapshot-export.yml` com `force_rotate: true`,
+revisando o diff do baseline na PR do bot antes do merge.
 
 ### NUNCA rode contra `doufsxqlfjyuvxuezpln` (apagam o histórico do ledger):
 - `supabase migration squash --linked` (apaga do ledger tudo ≤ versão)

@@ -15,6 +15,9 @@ name: schema-snapshot-export
 #   - Job `commit-snapshot` (E84): commita o snapshot na branch fixa
 #     `bot/schema-snapshot` (force-push) e abre/reutiliza uma única PR.
 #     Roda apenas em `schedule` e `workflow_dispatch` quando secrets presentes.
+#   - Job `drift-gate` (2026-10-15): o export de schedule/dispatch só roda se
+#     db-schema-drift-check (reutilizável) passar com o baseline atual — senão
+#     o baseline novo absorveria drift. `force_rotate` (dispatch) pula a trava.
 #
 # 2026-09-27: paths filter em PR e push — 12min de snapshot só quando schema muda.
 # 2026-10-02: E84 — no-op guard em schedule + branch fixa bot/schema-snapshot.
@@ -40,6 +43,14 @@ on:
   schedule:
     - cron: '36 6 * * 1' # semanal, segunda 06:36 UTC (03:36 BRT) — E89: ≥20min after wraparound-monitor (06:15)
   workflow_dispatch:
+    inputs:
+      force_rotate:
+        description: >-
+          Gira o baseline mesmo com o drift-check vermelho (ex.: replay quebrado por
+          repair-only). Revise o diff do baseline na PR antes do merge.
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -54,12 +65,29 @@ defaults:
     shell: bash
 
 jobs:
+  # Baseline novo só depois de provar que o atual não tem drift: sem isto o
+  # dump semanal absorveria objeto criado fora de migration e o drift-check
+  # deixaria de acusá-lo. Sem baseline anterior (bootstrap) passa direto.
+  drift-gate:
+    name: Drift gate antes de girar o baseline
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/db-schema-drift-check.yml
+    with:
+      allow_missing_baseline: true
+    secrets: inherit
+
   export:
     name: Export schema snapshot
+    needs: drift-gate
     runs-on: ubuntu-24.04
     timeout-minutes: 10
-    # E27: SUPABASE_ACCESS_TOKEN não deve chegar a PRs de forks
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    # E27: SUPABASE_ACCESS_TOKEN não deve chegar a PRs de forks.
+    # drift-gate: skipped em PR/push; em schedule/dispatch tem de passar, salvo force_rotate.
+    if: >-
+      !cancelled() &&
+      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) &&
+      (needs.drift-gate.result == 'success' || needs.drift-gate.result == 'skipped' ||
+       (github.event_name == 'workflow_dispatch' && inputs.force_rotate))
     env:
       # Dump ao vivo (supabase db dump --linked) só em schedule/dispatch. Em PR e
       # push o pg_dump segurava AccessShareLock em todas as tabelas de produção por
@@ -85,14 +113,16 @@ jobs:
         with:
           version: 2.101.0
 
-      # E84: no-op guard — schedule sem credenciais é falha, não sucesso silencioso.
-      - name: Guard — secrets obrigatórios no schedule
-        if: github.event_name == 'schedule'
+      # E84: no-op guard — schedule/dispatch sem credenciais é falha, não sucesso
+      # silencioso (dispatch é o caminho para gerar baseline novo).
+      - name: Guard — secrets obrigatórios no schedule/dispatch
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         env:
           TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
         run: |
-          if [[ -z "${TOKEN:-}" ]]; then
-            echo "::error::SUPABASE_ACCESS_TOKEN não configurado. Schedule sem credenciais é erro, não no-op verde."
+          if [[ -z "${TOKEN:-}" || -z "${DB_PASSWORD:-}" ]]; then
+            echo "::error::SUPABASE_ACCESS_TOKEN/SUPABASE_DB_PASSWORD ausentes. Schedule/dispatch sem credenciais é erro, não no-op verde."
             echo "::error::Configure o secret em Settings → Secrets → Actions e rerun manual."
             exit 1
           fi
