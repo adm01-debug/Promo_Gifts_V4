@@ -28,6 +28,14 @@ on:
         description: 'Nome do revisor que aprovou esta migration (ex.: @usuario) — obrigatório (E35)'
         required: true
         type: string
+      mode:
+        description: 'apply (padrão) = executa SQL + repair; repair-only = só registra no ledger sem aplicar SQL (E05: reconciliação pós-DDL via MCP)'
+        required: false
+        type: choice
+        default: apply
+        options:
+          - apply
+          - repair-only
 
 concurrency:
   group: db-apply-migration
@@ -114,6 +122,7 @@ jobs:
           ref: main  # E35: checkout sempre de main, nunca de branch de PR
 
       - name: Guard — versão e destino PostgreSQL canônico
+        if: inputs.mode != 'repair-only'
         env:
           PGHOST: ${{ secrets.PGHOST }}
           PGUSER: ${{ secrets.PGUSER }}
@@ -124,9 +133,11 @@ jobs:
         run: node scripts/validate-migration-target.mjs --require-live-pooler
 
       - name: Instala postgresql-client
+        if: inputs.mode != 'repair-only'
         run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends postgresql-client
 
       - name: Confirma autenticação PostgreSQL antes de qualquer DDL (somente leitura)
+        if: inputs.mode != 'repair-only'
         env:
           PGHOST: ${{ secrets.PGHOST }}
           PGUSER: ${{ secrets.PGUSER }}
@@ -155,6 +166,7 @@ jobs:
           echo "applied_at=$(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_OUTPUT"
 
       - name: Detecta opt-out de transação no cabeçalho
+        if: inputs.mode != 'repair-only'
         id: tx_optout
         run: |
           # Espelha a lógica de parseOptOut() em scripts/preflight-migration-apply.mjs:
@@ -168,6 +180,7 @@ jobs:
           fi
 
       - name: Aplica a migration (psql; omite -1 se transaction:none declarado)
+        if: inputs.mode != 'repair-only'
         env:
           PGHOST: ${{ secrets.PGHOST }}
           PGUSER: ${{ secrets.PGUSER }}
