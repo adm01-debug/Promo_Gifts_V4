@@ -5,7 +5,7 @@ name: log-login-attempt — Fuzz Stress Weekly
 
 on:
   schedule:
-    - cron: '13 6 * * 1' # segunda 06:00 UTC (03:00 BRT)
+    - cron: '17 6 * * 1' # segunda 06:17 UTC (03:17 BRT) — E89: ≥5min after daily-flows-simulation (06:12)
   workflow_dispatch:
     inputs:
       stress_factor:
@@ -15,19 +15,26 @@ on:
 
 concurrency:
   group: log-login-fuzz-weekly
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   fuzz-stress:
     name: Fuzz stress (log-login-attempt)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'

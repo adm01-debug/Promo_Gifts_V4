@@ -24,15 +24,20 @@ on:
 
 concurrency:
   group: quote-summary-sticky-header-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   sticky-header-e2e:
     name: Quote Summary sticky header — Playwright (e2e + visual)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     permissions:
       contents: read
@@ -49,6 +54,8 @@ jobs:
       PW_TEST_HTML_REPORT_OPEN: never
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'

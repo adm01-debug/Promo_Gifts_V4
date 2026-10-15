@@ -28,7 +28,7 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   TZ: America/Sao_Paulo
@@ -40,13 +40,20 @@ env:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   lint-typecheck:
     name: "Gate 1 — Lint & Typecheck"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -70,11 +77,13 @@ jobs:
 
   unit-tests-freight:
     name: "Gate 2 — Unit Tests (freight-quest)"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     needs: lint-typecheck
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -95,26 +104,24 @@ jobs:
             --reporter=verbose \
             --coverage \
             --coverage.reporter=text \
-            --coverage.reporter=json-summary \
-            --coverage.thresholds.lines=0 \
-            --coverage.thresholds.functions=0 \
-            --coverage.thresholds.statements=0 \
-            --coverage.thresholds.branches=0
+            --coverage.reporter=json-summary
       - name: Upload unit test coverage
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: freight-unit-coverage
           path: coverage/
-          retention-days: 7
+          retention-days: 14
 
   integration-tests-freight:
     name: "Gate 3 — Integration Tests (freight-quest)"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     needs: unit-tests-freight
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -145,15 +152,17 @@ jobs:
           path: |
             test-results/
             vitest-report.json
-          retention-days: 7
+          retention-days: 14
 
   fuzz-tests:
     name: "Gate 4 — Fuzz & Adversarial Validation"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     needs: lint-typecheck
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -178,11 +187,13 @@ jobs:
 
   e2e-smoke:
     name: "Gate 5 — E2E Smoke (Playwright)"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     needs: [unit-tests-freight, integration-tests-freight]
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -228,11 +239,13 @@ jobs:
 
   coverage-gate:
     name: "Gate 6 — Coverage Threshold"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     needs: lint-typecheck
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -257,10 +270,11 @@ jobs:
           FUNCS=$(node -e "try { const s = require('./coverage/coverage-summary.json'); console.log(s.total.functions.pct); } catch (e) { console.log('0'); }")
           echo "Coverage: lines=$LINES% functions=$FUNCS%"
           FAIL=0
-          if (( $(echo "$LINES < 0" | bc -l) )); then echo "::error::Lines coverage $LINES% < 0% threshold"; FAIL=1; fi
-          if (( $(echo "$FUNCS < 0" | bc -l) )); then echo "::error::Functions coverage $FUNCS% < 0% threshold"; FAIL=1; fi
+          # E46: piso real de 1% (coverage = 0% → testes não rodaram ou erro de setup)
+          if (( $(echo "$LINES < 1" | bc -l) )); then echo "::error::Lines coverage $LINES% < 1% threshold — testes não produziram cobertura"; FAIL=1; fi
+          if (( $(echo "$FUNCS < 1" | bc -l) )); then echo "::error::Functions coverage $FUNCS% < 1% threshold — testes não produziram cobertura"; FAIL=1; fi
           if [ $FAIL -eq 1 ]; then exit 1; fi
-          echo "✅ Coverage thresholds met"
+          echo "✅ Coverage thresholds met (lines=$LINES% functions=$FUNCS%)"
       - name: Upload coverage report
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
@@ -271,11 +285,13 @@ jobs:
 
   load-test-dry:
     name: "Gate 7 — Load Test (dry-run)"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     needs: [unit-tests-freight, integration-tests-freight]
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -300,11 +316,13 @@ jobs:
 
   security-audit:
     name: "Gate 8 — Security & Credential Audit"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     needs: lint-typecheck
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -339,11 +357,13 @@ jobs:
 
   regression-suite:
     name: "Gate 9 — Regression Suite"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     needs: lint-typecheck
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -362,11 +382,13 @@ jobs:
 
   property-tests:
     name: "Gate 10 — Property-Based Tests"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     needs: lint-typecheck
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -387,7 +409,7 @@ jobs:
 
   quality-summary:
     name: "Quality Gates Summary"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     if: always()
     needs:
@@ -422,7 +444,7 @@ jobs:
             case $result in
               success) echo "✅ $name"; PASSED=$((PASSED+1)) ;;
               skipped) echo "⏭️  $name (skipped)"; SKIPPED=$((SKIPPED+1)) ;;
-              cancelled) echo "⚠️  $name (cancelled)"; SKIPPED=$((SKIPPED+1)) ;;
+              cancelled) echo "❌ $name (cancelled)"; FAILED=$((FAILED+1)) ;;
               *) echo "❌ $name ($result)"; FAILED=$((FAILED+1)) ;;
             esac
           done

@@ -1,27 +1,40 @@
-name: CI/CD Pipeline
+name: CI Security & Drift Checks
 
+# E15: renomeado de ci.yml → ci-security-drift.yml.
+# Rodava em PR + push (duplicando deploy-gates.yml em PRs). Agora só em
+# push para main, schedule semanal e dispatch manual — os checks de segurança
+# que exigem secrets não funcionam em PRs de fork de qualquer forma.
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  schedule:
+    # Toda segunda-feira às 06:17 UTC (jitter para não conflitar com outros crons)
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  group: ci-security-drift-${{ github.ref }}
+  cancel-in-progress: false  # E19: push/schedule nunca cancelado
+
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   quality-gate:
-    runs-on: ubuntu-latest
-    timeout-minutes: 45
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30  # E24: security + unit checks; 45 era excesso de margem (medido: 18-22 min)
     env:
       NODE_OPTIONS: --max-old-space-size=4096
       E2E_HAS_CREDS: ${{ secrets.E2E_USER_EMAIL != '' && secrets.E2E_USER_PASSWORD != '' }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - name: Setup Node CI
         uses: ./.github/actions/setup-node-ci
 
@@ -144,9 +157,11 @@ jobs:
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
 
   security-audit:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - name: Audit Credentials
         run: npm run audit:credentials

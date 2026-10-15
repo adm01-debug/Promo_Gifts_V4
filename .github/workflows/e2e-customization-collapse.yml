@@ -24,7 +24,7 @@ on:
 
 concurrency:
   group: e2e-customization-collapse-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   CI: "true"
@@ -36,11 +36,17 @@ env:
 
 permissions:
   contents: read
+  pull-requests: write  # comentário em PR (visual diff summary)
+
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   collapse-e2e:
     name: LocationPanel collapse (authed)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
       UPDATE_SNAPSHOTS: ${{ inputs.update_snapshots }}
@@ -48,6 +54,8 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
+        with:
+          persist-credentials: false  # E32
       - name: Validate required secrets
         run: |
           missing=0
@@ -94,23 +102,17 @@ jobs:
       - name: Setup auth state (fixture de sessão)
         id: auth
         run: |
-          if [ -n "$E2E_USER_EMAIL" ] && [ -n "$E2E_USER_PASSWORD" ]; then
-            npx playwright test --project=setup
-            echo "authed=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "::warning::E2E_USER_EMAIL/E2E_USER_PASSWORD ausentes — spec autenticado será pulado."
-            echo "authed=false" >> "$GITHUB_OUTPUT"
-          fi
+          # E50: sem else morto — a validação de secrets acima já falhou se estiverem ausentes.
+          npx playwright test --project=setup
+          echo "authed=true" >> "$GITHUB_OUTPUT"
         env:
           E2E_BASE_URL: http://localhost:8080
 
       - name: Check baselines exist (mobile/tablet/desktop)
-        if: steps.auth.outputs.authed == 'true' && inputs.update_snapshots != true
+        if: inputs.update_snapshots != true
         run: node scripts/qa/check-collapse-baselines.mjs
 
       - name: Run collapse E2E (behavior + visual reflow)
-
-        if: steps.auth.outputs.authed == 'true'
         run: |
           UPDATE_FLAG=""
           if [ "$UPDATE_SNAPSHOTS" = "true" ]; then
@@ -127,16 +129,15 @@ jobs:
           PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results-collapse.json
           UPDATE_SNAPSHOTS: ${{ inputs.update_snapshots }}
 
-      - name: Commit updated baselines
-        if: inputs.update_snapshots == true && steps.auth.outputs.authed == 'true'
-        run: |
-          if [ -n "$(git status --porcelain 'e2e/customization/**-snapshots')" ]; then
-            git config user.name  "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add e2e/customization/**-snapshots
-            git commit -m "test(e2e): atualiza baselines visuais do colapso do LocationPanel"
-            git push
-          fi
+      # E61: replaced git commit+push with artifact upload — developer downloads and commits manually
+      - name: Upload updated baselines (artifact — commit manualmente)
+        if: inputs.update_snapshots == true
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: collapse-baselines-updated-${{ github.run_id }}
+          path: e2e/customization/**-snapshots/
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Build visual diff summary (pixel-a-pixel)
         if: always()
@@ -145,7 +146,7 @@ jobs:
           node scripts/build-visual-diff-report.mjs \
             --results test-results \
             --out visual-diff-report/index.html \
-            --title 'Colapso do LocationPanel — diffs visuais' || true
+            --title 'Colapso do LocationPanel — diffs visuais' || true  # ok: geração de relatório HTML é best-effort; não bloqueia o job
           # Também gera um resumo Markdown no Job Summary do PR.
           if [ -d test-results ]; then
             {
@@ -170,6 +171,7 @@ jobs:
             e2e-artifacts/
             playwright-report/
             test-results/
+            !test-results/**/trace.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
             visual-diff-report/
           retention-days: 14
           if-no-files-found: ignore
@@ -207,8 +209,14 @@ jobs:
         with:
           script: |
             const fs = require('fs');
+            const { readdirSync } = fs;
             const marker = '<!-- collapse-visual-diff-report -->';
-            const totalDiffs = 0; // simplified
+            // E50: contar diffs reais em vez de hardcoded 0
+            let totalDiffs = 0;
+            try {
+              const files = readdirSync('test-results', { recursive: true });
+              totalDiffs = files.filter(f => String(f).endsWith('-diff.png')).length;
+            } catch { /* test-results ausente = 0 diffs */ }
             const status = totalDiffs === 0 ? '✅ Nenhum diff visual detectado' : `⚠️ **${totalDiffs}** diff(s) visual(is) detectado(s)`;
             const body = [
               marker,

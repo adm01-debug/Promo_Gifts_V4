@@ -45,7 +45,7 @@ permissions:
 
 concurrency:
   group: magazine-typed-queries-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 # Contagens esperadas do padrão tipado/transacional (SSOT do gate).
 # Em 2026-09-09, as mutações migraram para RPCs v2 com CAS. Restaram apenas
@@ -56,10 +56,15 @@ env:
   EXPECTED_MUTATION_RPCS_V2: '13'
   EXPECTED_UNTYPEDFROM_AFTER: '0'
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   dry-run:
     name: Aplica patch em cópia e valida
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     # workflow_run só faz sentido quando a regeneração foi bem-sucedida.
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
@@ -67,7 +72,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-
+        with:
+          persist-credentials: false  # E32
+          # E57: workflow_run usa o SHA exato após regeneração de types.ts
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
       - name: Setup Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -114,7 +122,7 @@ jobs:
           diff -u \
             qa/reports/magazineService.before.ts \
             qa/reports/magazineService.after.ts \
-            > qa/reports/magazineService.diff.patch || true
+            > qa/reports/magazineService.diff.patch || true  # ok: diff exits 1 quando os arquivos são idênticos — sem mudanças é resultado válido
 
           # Diff filtrado apenas às linhas que citam as tabelas alvo
           # (facilita auditoria da substituição untypedFrom → .from tipado).
@@ -141,12 +149,13 @@ jobs:
         if: steps.gate.outputs.ready == 'true'
         run: |
           set -e
-          TS_MAG=$(grep -cE "magazines: \{" src/integrations/supabase/types.ts || true)
-          TS_MI=$(grep -cE "magazine_items: \{" src/integrations/supabase/types.ts || true)
-          UF_COUNT=$(grep -c "untypedFrom" src/services/magazineService.ts || true)
-          FROM_MAG=$(grep -cE "\.from\((\"|')magazines(\"|')" src/services/magazineService.ts || true)
-          FROM_MI=$(grep -cE "\.from\((\"|')magazine_items(\"|')" src/services/magazineService.ts || true)
-          RPC_V2=$(grep -cE "\.rpc\((\"|')magazine_[a-z_]+_v2(\"|')" src/services/magazineService.ts || true)
+          # ok (grep -c || true): grep -c exits 1 quando não encontra nada — 0 é resultado válido para todos esses contadores
+          TS_MAG=$(grep -cE "magazines: \{" src/integrations/supabase/types.ts || true)  # ok: grep exits 1 on no match — 0 is valid
+          TS_MI=$(grep -cE "magazine_items: \{" src/integrations/supabase/types.ts || true)  # ok: idem
+          UF_COUNT=$(grep -c "untypedFrom" src/services/magazineService.ts || true)  # ok: idem
+          FROM_MAG=$(grep -cE "\.from\((\"|')magazines(\"|')" src/services/magazineService.ts || true)  # ok: idem
+          FROM_MI=$(grep -cE "\.from\((\"|')magazine_items(\"|')" src/services/magazineService.ts || true)  # ok: idem
+          RPC_V2=$(grep -cE "\.rpc\((\"|')magazine_[a-z_]+_v2(\"|')" src/services/magazineService.ts || true)  # ok: idem
 
           echo "ts_magazines=$TS_MAG"           >> "$GITHUB_OUTPUT"
           echo "ts_magazine_items=$TS_MI"       >> "$GITHUB_OUTPUT"
@@ -215,12 +224,13 @@ jobs:
         run: |
           set -e
           REPORT="qa/reports/magazine-typed-queries-revalidation.md"
-          TS_MAG=$(grep -cE "magazines: \{" src/integrations/supabase/types.ts || true)
-          TS_MI=$(grep -cE "magazine_items: \{" src/integrations/supabase/types.ts || true)
-          UF_COUNT=$(grep -c "untypedFrom" src/services/magazineService.ts || true)
-          FROM_MAG=$(grep -cE "\.from\((\"|')magazines(\"|')" src/services/magazineService.ts || true)
-          FROM_MI=$(grep -cE "\.from\((\"|')magazine_items(\"|')" src/services/magazineService.ts || true)
-          RPC_V2=$(grep -cE "\.rpc\((\"|')magazine_[a-z_]+_v2(\"|')" src/services/magazineService.ts || true)
+          # ok (grep -c || true): 0 é valor válido para cada contador
+          TS_MAG=$(grep -cE "magazines: \{" src/integrations/supabase/types.ts || true)  # ok: grep exits 1 on no match — 0 is valid
+          TS_MI=$(grep -cE "magazine_items: \{" src/integrations/supabase/types.ts || true)  # ok: idem
+          UF_COUNT=$(grep -c "untypedFrom" src/services/magazineService.ts || true)  # ok: idem
+          FROM_MAG=$(grep -cE "\.from\((\"|')magazines(\"|')" src/services/magazineService.ts || true)  # ok: idem
+          FROM_MI=$(grep -cE "\.from\((\"|')magazine_items(\"|')" src/services/magazineService.ts || true)  # ok: idem
+          RPC_V2=$(grep -cE "\.rpc\((\"|')magazine_[a-z_]+_v2(\"|')" src/services/magazineService.ts || true)  # ok: idem
 
           ARTIFACT_URL="https://github.com/$REPO/actions/runs/$RUN_ID#artifacts"
 
@@ -304,7 +314,7 @@ jobs:
         with:
           name: magazine-typed-queries-revalidation-${{ github.run_number }}
           path: qa/reports/
-          retention-days: 90
+          retention-days: 90  # E88 — auditoria qa/reports; retenção longa justificada
           if-no-files-found: error
 
       - name: Comenta resumo no PR (upsert)

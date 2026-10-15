@@ -14,14 +14,14 @@ name: SECURITY DEFINER ACL — Multi-Env
 #   - O RPC `audit_security_definer_acl` é read-only; nunca escreve no banco.
 #
 # Gatilhos:
-#   - schedule: diário 09:00 UTC (06:00 BRT) — regressão contínua.
+#   - schedule: diário 10:09 UTC (07:09 BRT) — regressão contínua.
 #   - workflow_dispatch: execução manual (permite escolher ambiente).
 #   - push em main: re-valida após merge.
 # ────────────────────────────────────────────────────────────────────────────
 
 on:
   schedule:
-    - cron: "46 9 * * *"
+    - cron: "9 10 * * *"  # E89: ≥20min after restore-seller-cart-rpc (09:48)
   workflow_dispatch:
     inputs:
       environment:
@@ -52,10 +52,15 @@ concurrency:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   acl-migration-pg17:
     name: ACL migration contract — PostgreSQL 17
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     services:
       postgres:
@@ -74,6 +79,8 @@ jobs:
       PGURL: postgresql://postgres@localhost:5432/postgres
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - name: Create exact and near-match fixtures
         run: psql "$PGURL" -X -f tests/security/sql/audit_security_definer_acl_fixture.sql
       - name: Apply forward-only ACL audit migration
@@ -83,7 +90,7 @@ jobs:
 
   acl-check:
     name: "ACL check — ${{ matrix.env_name }}"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     # `environment:` escopa os secrets ao ambiente correspondente.
     environment: ${{ matrix.env_name }}
@@ -94,6 +101,8 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'

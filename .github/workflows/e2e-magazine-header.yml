@@ -31,21 +31,26 @@ permissions:
 
 concurrency:
   group: e2e-magazine-header-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   TZ: America/Sao_Paulo
   CI: "true"
   FORCE_COLOR: "0"
-  VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-  VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+  VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}  # E54: fallback
+  VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}  # E54: fallback
   E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
   E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   e2e-magazine-header:
     name: E2E — Magazine Header (authed)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
 
     steps:
@@ -121,13 +126,13 @@ jobs:
         with:
           name: e2e-magazine-header-report-${{ github.run_id }}
           path: playwright-report/
-          retention-days: 7
+          retention-days: 14
           if-no-files-found: ignore
 
   magazine-header-ok:
     name: Magazine Header OK
     needs: [e2e-magazine-header]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     if: always()
     steps:

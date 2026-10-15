@@ -1,0 +1,131 @@
+name: CI Issue Deduplicator
+description: |
+  Abre ou fecha issues de CI com dedupe real.
+  - state=open: procura issue aberta com marcador <!-- ci-issue:<key> -->;
+    se existir, adiciona comentário (dedupe por hash do corpo);
+    se não existir, cria nova issue com o marcador no corpo.
+  - state=resolved: comenta "Recuperado em <run>" e fecha a issue.
+  Criado em E12 (PLANO_WORKFLOWS_CI_V2_100_ETAPAS_2026-10-14.md).
+
+inputs:
+  key:
+    description: "Chave única de dedupe (ex: uptime-prod, deploy-failure-main)"
+    required: true
+  title:
+    description: "Título da issue (usada só na criação)"
+    required: true
+  body:
+    description: "Corpo/detalhe do evento (falha, diff, erro)"
+    required: true
+  labels:
+    description: "Labels separadas por vírgula (ex: uptime,priority/high)"
+    required: false
+    default: "ci"
+  state:
+    description: "'open' para reportar falha; 'resolved' para fechar ao recuperar"
+    required: false
+    default: "open"
+
+outputs:
+  issue_number:
+    description: "Número da issue criada, comentada ou fechada"
+    value: ${{ steps.ci-issue.outputs.issue_number }}
+  action_taken:
+    description: "'created', 'commented', 'resolved', or 'noop'"
+    value: ${{ steps.ci-issue.outputs.action_taken }}
+
+runs:
+  using: composite
+  steps:
+    - name: Deduplicate CI issue
+      id: ci-issue
+      uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+      with:
+        github-token: ${{ github.token }}
+        script: |
+          const key        = ${{ toJSON(inputs.key) }};
+          const title      = ${{ toJSON(inputs.title) }};
+          const body       = ${{ toJSON(inputs.body) }};
+          const labelsRaw  = ${{ toJSON(inputs.labels) }};
+          const state      = ${{ toJSON(inputs.state) }};
+          const runUrl     = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+          const marker     = `<!-- ci-issue:${key} -->`;
+          const labels     = labelsRaw ? labelsRaw.split(',').map(l => l.trim()).filter(Boolean) : ['ci'];
+
+          // Busca issue aberta com o marcador no corpo
+          const { data: issues } = await github.rest.search.issuesAndPullRequests({
+            q: `repo:${process.env.GITHUB_REPOSITORY} is:issue is:open in:body "${marker}"`,
+            per_page: 10,
+          });
+          const existing = issues.items.find(i => i.body && i.body.includes(marker));
+
+          if (state === 'resolved') {
+            if (!existing) {
+              core.info(`Nenhuma issue aberta com key="${key}" — nada a fechar.`);
+              core.setOutput('issue_number', '');
+              core.setOutput('action_taken', 'noop');
+              return;
+            }
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              issue_number: existing.number,
+              body: `✅ **Recuperado** em [run ${process.env.GITHUB_RUN_ID}](${runUrl}).\n\nFechando automaticamente — reabrir se o problema persistir.`,
+            });
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              issue_number: existing.number,
+              state: 'closed',
+              state_reason: 'completed',
+            });
+            core.info(`Issue #${existing.number} fechada (recuperada).`);
+            core.setOutput('issue_number', String(existing.number));
+            core.setOutput('action_taken', 'resolved');
+            return;
+          }
+
+          // state === 'open'
+          if (existing) {
+            // Dedupe por hash simples do corpo (evita flood de comentários idênticos)
+            const crypto = require('crypto');
+            const bodyHash = crypto.createHash('sha1').update(body).digest('hex').slice(0, 8);
+            const dedupeMark = `<!-- body-hash:${bodyHash} -->`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              issue_number: existing.number,
+              per_page: 50,
+            });
+            const alreadyPosted = comments.some(c => c.body && c.body.includes(dedupeMark));
+            if (alreadyPosted) {
+              core.info(`Comentário idêntico já existe na issue #${existing.number} — skip.`);
+              core.setOutput('issue_number', String(existing.number));
+              core.setOutput('action_taken', 'noop');
+              return;
+            }
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              issue_number: existing.number,
+              body: `🔁 **Nova ocorrência** — [run ${process.env.GITHUB_RUN_ID}](${runUrl})\n\n${body}\n\n${dedupeMark}`,
+            });
+            core.info(`Comentário adicionado na issue #${existing.number}.`);
+            core.setOutput('issue_number', String(existing.number));
+            core.setOutput('action_taken', 'commented');
+            return;
+          }
+
+          // Cria nova issue
+          const fullBody = `${body}\n\n---\n\n*Aberta automaticamente por [run ${process.env.GITHUB_RUN_ID}](${runUrl})*\n\n${marker}`;
+          const { data: created } = await github.rest.issues.create({
+            owner: context.repo.owner,
+            repo:  context.repo.repo,
+            title,
+            body: fullBody,
+            labels,
+          });
+          core.info(`Issue #${created.number} criada: "${title}"`);
+          core.setOutput('issue_number', String(created.number));
+          core.setOutput('action_taken', 'created');

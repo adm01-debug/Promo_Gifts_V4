@@ -73,10 +73,25 @@ export async function loginViaUI(page: Page, creds: LoginCreds): Promise<boolean
 
   // Sucesso = saiu da tela de auth (login falho também permanece em /auth,
   // então checar só /login abriria falso-positivo).
-  await expect(page, "esperado redirect para fora da tela de login").not.toHaveURL(
-    AUTH_LIKE_URL_RE,
-    { timeout },
-  );
+  // E02: captura URL e status atual no timeout para diagnóstico em 1 run.
+  try {
+    await expect(page, "esperado redirect para fora da tela de login").not.toHaveURL(
+      AUTH_LIKE_URL_RE,
+      { timeout },
+    );
+  } catch (err) {
+    const currentUrl = page.url();
+    const bodySnippet = await page
+      .locator("body")
+      .textContent({ timeout: 2_000 })
+      .catch(() => "(sem body)");
+    throw new Error(
+      `[loginViaUI] Timeout aguardando redirect pós-login.\n` +
+        `  URL atual: ${currentUrl}\n` +
+        `  Trecho da página: ${String(bodySnippet).slice(0, 300)}\n` +
+        `  Causa original: ${String(err)}`,
+    );
+  }
   await waitForRouteIdle(page);
   return true;
 }

@@ -26,23 +26,27 @@ on:
       - '.github/workflows/e2e-quote-view-no-presentation-mode.yml'
   workflow_dispatch:
   schedule:
-    - cron: '15 4 * * 1'  # E10 — weekly Monday 04:23 UTC
+    - cron: '15 4 * * 1'  # E10/E89 — weekly Monday 04:15 UTC
 
 permissions:
   contents: read
-  issues: write
 
 concurrency:
   group: e2e-quote-view-no-presentation-mode-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
   E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   e2e:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     env:
       CI: "true"
@@ -51,6 +55,8 @@ jobs:
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -95,9 +101,11 @@ jobs:
   # E10 — alerta de falha no cron semanal (deduplication via label ci-focused-e2e)
   notify-failure:
     name: Notificar falha — Quote View No Pres (cron)
+    permissions:
+      issues: write
     if: failure() && github.event_name == 'schedule'
     needs: [e2e]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
@@ -131,5 +139,39 @@ jobs:
                   '',
                   'Verifique os artifacts do run para screenshots, diffs e traces.',
                 ].join('\n'),
+              });
+            }
+  # E12 — fecha a issue quando o cron volta a passar
+  notify-success:
+    name: Fechar issue — Quote View Sem Apresentação (cron recuperado)
+    permissions:
+      issues: write
+    if: success() && github.event_name == 'schedule'
+    needs: [e2e]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const title = '[CI] E2E Quote View — Sem Modo Apresentação falhou no cron semanal';
+            const label = 'ci-focused-e2e';
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              labels: label, state: 'open',
+            });
+            const existing = issues.find(i => i.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: existing.number,
+                body: `✅ Cron passou em ${new Date().toISOString()} — fechando. Run: ${runUrl}`,
+              });
+              await github.rest.issues.update({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: existing.number,
+                state: 'closed', state_reason: 'completed',
               });
             }

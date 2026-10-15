@@ -47,7 +47,12 @@ permissions:
 
 concurrency:
   group: e2e-quotes-undo-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   # ==========================================================================
@@ -56,7 +61,7 @@ jobs:
   # ==========================================================================
   quotes-undo-e2e-real:
     name: Playwright — 04q real (credenciais E2E)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     # Evita rodar em PRs de forks (não têm acesso aos secrets do repo).
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
@@ -73,6 +78,8 @@ jobs:
 
       # Guard: sem credenciais, o job real é abortado com mensagem clara
       # (evita horas de execução com "Missing E2E_USER_EMAIL").
+        with:
+          persist-credentials: false  # E32
       - name: Verificar secrets de credenciais
         id: creds
         run: |
@@ -141,6 +148,7 @@ jobs:
           name: playwright-artifacts-quotes-undo-real
           path: |
             test-results/
+            !test-results/**/trace.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
             e2e/.evidence/
           retention-days: 14
           if-no-files-found: ignore
@@ -151,7 +159,7 @@ jobs:
   # ==========================================================================
   quotes-undo-e2e-mock:
     name: Playwright — 04q mock (sem credenciais)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     env:
       E2E_BASE_URL: http://localhost:8080
@@ -159,6 +167,8 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -197,6 +207,7 @@ jobs:
           name: playwright-artifacts-quotes-undo-mock
           path: |
             test-results/
+            !test-results/**/trace.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
             e2e/.evidence/
           retention-days: 14
           if-no-files-found: ignore

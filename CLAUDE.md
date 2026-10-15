@@ -1,6 +1,6 @@
 # CLAUDE.md — Instruções para Claude Code (sessões automáticas)
 # Lido pelo Claude Code ao iniciar cada sessão neste repositório.
-# Última atualização: 2026-10-02 — E99 SBOM/attestation, E100 gate table atualizada.
+# Última atualização: 2026-10-14 — E88 política de artefatos (retention-days por tier), E89/E91/E92 higiene CI.
 
 ## CONTEXTO DO PROJETO
 
@@ -312,6 +312,15 @@ sequência; se qualquer um falhar, o deploy é bloqueado.
 | Gate 1.6 | Bundle size dentro dos limites | sim |
 | Gate 1.7 | TSC ratchet file guard — baseline não aumenta sem label `ratchet-override` (E41, PR-only) | sim (PR-only) |
 | Gate 1.8 | Detect accidentally base64-encoded files — texto encodado em base64 acidentalmente | sim |
+| Gate 1.9 | Dívida técnica — ratchets TODO/FIXME/`as any`/file-size não aumentam | sim |
+| Gate 1.9.1 | `console.*` baseline — número de chamadas não aumenta sem justificativa | sim |
+| Gate 1.10 | indexed-access ratchet — `object[key]` não aumenta (E15: promovido de advisory para bloqueante) | sim |
+| Gate 1.11 | Workflow contracts `check-workflow-contracts --gate` (C10–C23) | sim |
+| Gate 1.12 | Contract coverage + soft-delete policy commitada | sim |
+| Gate 1.13 | RLS policies baseline vs pg_policies live (bloqueante com credenciais) | sim |
+| Gate 1.14 | Secrets inventory `check-secrets-inventory --gate` — todos `secrets.*`/`vars.*` documentados em SEGREDOS.md (E40/E98) | sim |
+| Gate 1.13 | Policies baseline vs `pg_policies` ao vivo (bloqueante com credenciais) | sim |
+| Gate E23 | Secrets check — sem referências a segredos não declarados em `SEGREDOS.md` | sim |
 | Gate 2 | Testes unitários (`vitest`) | sim |
 | Gate 2.5 | Integridade transacional PostgreSQL | sim |
 | Gate 3 | E2E Smoke (Playwright, chromium) | sim |
@@ -330,11 +339,11 @@ Todo workflow em `.github/workflows/` deve seguir as 8 regras documentadas em
 `docs/ci/PADRAO_WORKFLOW.md`. Resumo:
 
 1. **R1** — `permissions:` explícito no topo (`contents: read` mínimo)
-2. **R2** — `concurrency:` com `cancel-in-progress: true` em PRs (omitir em push/schedule)
+2. **R2** — `concurrency:` com `cancel-in-progress: true` em PRs; `false` em push/schedule (E19: deploy/cron nunca cancelado)
 3. **R3** — `timeout-minutes:` em todo job (gates ≤ 10 min; E2E ≤ 30 min; crons ≤ 60 min)
 4. **R4** — `node-version-file: .nvmrc` — nunca literais como `'22'`
 5. **R5** — Segredos via `env:` no step, jamais como argumento CLI
-6. **R6** — `retention-days: 14` em artefatos (padrão GitHub é 90 dias)
+6. **R6** — `retention-days` por tier: 14 (padrão), 30 (relatórios semanais), 90 (auditoria com comentário `# E88`) — E88
 7. **R7** — Sem `master` ou `develop` nos triggers (branches inexistentes)
 8. **R8** — ID de job em snake-case, estável; mudar o ID quebra required checks silenciosamente
 
@@ -371,7 +380,7 @@ linha nesse arquivo com dono, escopo e rotação declarados.
 | `.github/CODEOWNERS` | Proteção de revisão obrigatória |
 | `scripts/sentinel-check.sh` | Guarda do Branch Protection Sentinel |
 | `.github/workflows/deploy-gates.yml` | Pipeline de deploy com Gate 0 |
-| `.github/workflows/quality-gate.yml` | Quality gate com Gate 0 |
+| ~~`.github/workflows/quality-gate.yml`~~ | Deletado em E15 — gates migrados para deploy-gates.yml (Gates 1.15/1.16) |
 | `docs/SCHEMA_REFERENCE.md` | Retrato pg_catalog do BD canônico — REGRA #8 |
 
 ## Frescura do Grafo

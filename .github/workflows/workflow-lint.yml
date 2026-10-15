@@ -1,9 +1,7 @@
-name: Workflow Lint (E11)
+name: Workflow Lint
 
-# E11 — PLANO_WORKFLOWS_CI_100_ETAPAS_2026-09-26
-# Valida contratos estruturais (actionlint + shellcheck + check-workflow-contracts.mjs)
-# em qualquer PR que toque .github/** ou scripts de contratos.
-# Modo REPORT até E20 (gate será habilitado lá via --gate flag).
+# Valida workflows com actionlint + shellcheck em qualquer PR que toque .github/**.
+# check-workflow-contracts.mjs --gate roda em deploy-gates.yml Gate 1.11 (E91).
 
 on:
   push:
@@ -14,6 +12,7 @@ on:
       - 'package.json'
       - 'scripts/check-workflow-contracts.mjs'
       - 'scripts/check-workflow-contracts.allowlist.json'
+      - '.github/workflows/workflow-lint.yml'
   pull_request:
     branches: [main]
     paths:
@@ -22,56 +21,44 @@ on:
       - 'package.json'
       - 'scripts/check-workflow-contracts.mjs'
       - 'scripts/check-workflow-contracts.allowlist.json'
+      - '.github/workflows/workflow-lint.yml'
 
 permissions:
   contents: read
 
 concurrency:
   group: workflow-lint-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   actionlint:
     name: actionlint + shellcheck
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
+        with:
+          persist-credentials: false  # E32
       - name: Install actionlint
         run: |
+          set -euo pipefail
           curl -sSL https://github.com/rhysd/actionlint/releases/download/v1.7.7/actionlint_1.7.7_linux_amd64.tar.gz -o /tmp/actionlint.tar.gz
+          # SHA256 verificado contra checksums oficiais (E91 2026-10-14)
+          echo "023070a287cd8cccd71515fedc843f1985bf96c436b7effaecce67290e7e0757  /tmp/actionlint.tar.gz" | sha256sum -c -
           tar xzf /tmp/actionlint.tar.gz -C /tmp actionlint
           chmod +x /tmp/actionlint
 
       - name: Run actionlint
-        # shellcheck is run automatically by actionlint for run: blocks.
-        # Pre-existing style/info codes suppressed; fix them in E25.
+        # shellcheck é executado automaticamente pelo actionlint em run: blocks.
+        # SC2129: '>>' múltiplos redirecionamentos — falso positivo de estilo; aceito.
+        # TODOS os outros códigos SC são erros reais (E91 — sem -ignore amplos).
         run: |
           /tmp/actionlint \
-            -ignore 'SC2006' \
-            -ignore 'SC2016' \
-            -ignore 'SC2034' \
-            -ignore 'SC2038' \
-            -ignore 'SC2086' \
-            -ignore 'SC2129' \
-            -ignore 'SC2188' \
-            -ignore 'SC2215'
+            -ignore 'SC2129'
 
-  workflow-contracts:
-    name: Workflow contract checks (C1–8)
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Check workflow contracts (gate mode — E20)
-        run: node scripts/check-workflow-contracts.mjs --gate

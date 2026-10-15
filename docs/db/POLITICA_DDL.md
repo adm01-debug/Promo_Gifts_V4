@@ -6,7 +6,8 @@ Projeto canônico: `doufsxqlfjyuvxuezpln`. Esta política é referenciada pela R
 
 ## Regra
 
-**O caminho padrão para DDL é `supabase/migrations/**.sql` + `supabase db push`/CI.**
+**O caminho padrão para DDL é `supabase/migrations/**.sql` via `.github/workflows/db-apply-migration.yml` (`workflow_dispatch`).**
+`supabase db push` é proibido (REGRA #8/E15) — o único caminho autorizado fora de MCP-ticket é o workflow acima.
 
 DDL aplicada direto via MCP (`execute_sql`/`apply_migration`) ou dashboard (Studio SQL Editor)
 só é aceitável quando as **três** condições abaixo forem satisfeitas:

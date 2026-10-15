@@ -8,10 +8,19 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+    paths:  # E14: evitar CI em PRs doc-only
+      - 'src/**'
+      - 'e2e/**'
+      - 'public/**'
+      - 'package*.json'
+      - '.nvmrc'
+      - 'playwright.config.*'
+      - 'vite.config.*'
+      - '.github/workflows/e2e-thumb-quickview.yml'
 
 concurrency:
   group: e2e-thumb-quickview-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   CI: "true"
@@ -24,13 +33,20 @@ env:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   smoke:
     name: Smoke (fail-fast)
     timeout-minutes: 8
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: ./.github/actions/e2e-setup
         with:
           browsers: 'chromium'
@@ -39,7 +55,12 @@ jobs:
         # O smoke instala somente Chromium; os três engines são cobertos pela
         # matriz bloqueante abaixo. Sem escopo, o Playwright tentava iniciar
         # Firefox/WebKit não instalados e produzia 25 falsos negativos.
-        run: npx playwright test e2e/flows/03b-thumb-quickview.smoke.spec.ts --project=chromium-public --reporter=line
+        run: npx playwright test e2e/flows/03b-thumb-quickview.smoke.spec.ts --project=chromium-public
+      - name: Check min tests executed  # E42
+        if: always()
+        uses: ./.github/actions/check-min-tests
+        with:
+          results-json: 'playwright-report/results.json'
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: failure()
         with:
@@ -47,28 +68,37 @@ jobs:
           path: |
             playwright-report/
             test-results/
+            !test-results/**/trace.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
           retention-days: 14
 
   thumb-quickview:
     name: ${{ matrix.browser }} • 03b
     needs: smoke
     timeout-minutes: 25
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
         browser: [chromium, firefox, webkit]
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: ./.github/actions/e2e-setup
         with:
           browsers: 'chromium,${{ matrix.browser }}'
           start-vite: 'false'
       - name: Run thumb-quickview suite
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results-thumb-${{ matrix.browser }}.json
         run: |
           npx playwright test e2e/flows/03b-product-thumb-quickview.spec.ts \
-            --project=${{ matrix.browser }}-authed \
-            --reporter=line,html
+            --project=${{ matrix.browser }}-authed
+      - name: Check min tests executed  # E42
+        if: always()
+        uses: ./.github/actions/check-min-tests
+        with:
+          results-json: 'playwright-report/results-thumb-${{ matrix.browser }}.json'
       - name: Upload report + traces + videos (${{ matrix.browser }})
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
@@ -77,4 +107,5 @@ jobs:
           path: |
             playwright-report/
             test-results/
+            !test-results/**/trace.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
           retention-days: 14

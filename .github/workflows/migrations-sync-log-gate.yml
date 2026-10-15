@@ -5,23 +5,28 @@ on:
     branches: [main]
     paths:
       - 'supabase/migrations/**'
+      - '.github/workflows/migrations-sync-log-gate.yml'
 
 permissions:
   contents: read
 
 concurrency:
   group: migrations-sync-log-gate-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}  # E19: PR cancela; dispatch não
+defaults:
+  run:
+    shell: bash
 
 jobs:
   gate:
     name: Recibo de migration em MIGRATIONS_SYNC_LOG.md
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
+          persist-credentials: false  # E32
           fetch-depth: 0
 
       - name: Setup Node

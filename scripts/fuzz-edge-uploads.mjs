@@ -17,11 +17,19 @@ import process from "node:process";
 
 const SUPABASE_URL = (process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "").replace(/\/+$/, "");
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_TEST_BYPASS_TOKEN;
-const DRY_RUN = !SUPABASE_URL || !SERVICE_ROLE_KEY;
+const DRY_RUN = !SUPABASE_URL || !SERVICE_ROLE_KEY || process.env.DRY_RUN !== '0';
 const TIMEOUT_MS = 15_000;
 
+// E38 — bloqueia execução live contra projeto canônico de produção sem gating explícito
+const CANONICAL_PROJECT = 'doufsxqlfjyuvxuezpln';
+if (!DRY_RUN && SUPABASE_URL.includes(CANONICAL_PROJECT) && process.env.ALLOW_PROD_LOAD !== '1') {
+  console.error('[fuzz-edge-uploads] BLOQUEADO: URL aponta para o projeto canônico de produção.');
+  console.error('  Defina ALLOW_PROD_LOAD=1 somente em dispatch gated (environment: production-readonly).');
+  process.exit(1);
+}
+
 if (DRY_RUN) {
-  console.log("⚠️  Credenciais ausentes — modo dry-run (geração + validação de payloads sem HTTP).");
+  console.log("⚠️  Credenciais ausentes ou DRY_RUN ≠ 0 — modo dry-run (geração + validação de payloads sem HTTP).");
 }
 
 // ---------------------------------------------------------------------------

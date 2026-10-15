@@ -8,6 +8,10 @@ name: No Prod Leak in Dev/Test Config
 on:
   pull_request:
     branches: [main]
+    paths-ignore:  # E14: docs-only PRs não introduzem prod leak
+      - 'docs/**'
+      - '*.md'
+      - 'CHANGELOG*'
   push:
     branches: [main]
 
@@ -16,16 +20,23 @@ permissions:
 
 concurrency:
   group: check-no-prod-leak-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   no_prod_leak:
     name: Check no prod leak
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version-file: '.nvmrc'

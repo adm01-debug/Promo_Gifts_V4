@@ -21,15 +21,22 @@ permissions:
 
 concurrency:
   group: stock-future-stock-e2e-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   unit-and-fuzz:
     name: Unit + fuzz (useFutureStockPreference)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -68,7 +75,7 @@ jobs:
 
   e2e:
     name: E2E ${{ matrix.browser }} (functional + a11y)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     strategy:
       fail-fast: false
@@ -83,6 +90,8 @@ jobs:
       E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -104,12 +113,12 @@ jobs:
 
   visual:
     name: Visual regression (Chromium, multi-viewport × DPR)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     # G-H3: fork guard — pull_request de forks não deve escrever no repo
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     permissions:
-      contents: write
+      contents: read  # E32: visual job não faz git push
     env:
       CI: 'true'
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
@@ -119,6 +128,8 @@ jobs:
       E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'

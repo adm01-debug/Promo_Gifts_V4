@@ -1,28 +1,39 @@
-name: Full CI
+name: Nightly Full CI
 
+# E15: renomeado de full-ci.yml → nightly-full.yml.
+# Antes rodava em PR + push (duplicando deploy-gates.yml). Agora só noturno
+# (schedule) e dispatch manual — cobertura completa de vitest + E2E shardado
+# custa ~30min+, inadequado para cada PR.
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  schedule:
+    # Todo dia às 02:43 UTC (fora do horário de pico de PRs)
+    - cron: '43 2 * * *'
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: full-ci-${{ github.ref }}
-  cancel-in-progress: true
+  group: nightly-full-ci-${{ github.ref }}
+  cancel-in-progress: false  # E19: schedule nunca cancelado
+
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   quality-gate:
     name: Lint, Typecheck & Coverage
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
       NODE_OPTIONS: --max-old-space-size=4096
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       
+        with:
+          persist-credentials: false  # E32
       - name: Setup Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -81,7 +92,7 @@ jobs:
 
   e2e-tests:
     name: Playwright E2E
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: quality-gate
     timeout-minutes: 20
     strategy:
@@ -91,6 +102,8 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       
+        with:
+          persist-credentials: false  # E32
       - name: Setup Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -157,12 +170,14 @@ jobs:
 
   audit-report:
     name: Final Audit Report
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     needs: [quality-gate, e2e-tests]
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       
+        with:
+          persist-credentials: false  # E32
       - name: Setup Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:

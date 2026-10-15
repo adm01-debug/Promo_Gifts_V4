@@ -1,0 +1,35 @@
+name: Check Min Tests Executed
+description: >
+  E42 — Valida que pelo menos N testes Playwright foram executados.
+  Detecta runs green-empty (secrets ausentes, spec vazia, suite inteiramente
+  skipped ou abortada antes de rodar). Deve ser chamado com `if: always()`
+  após o passo `npx playwright test`.
+
+inputs:
+  results-json:
+    description: "Caminho para o JSON de resultados do Playwright (--reporter=json)"
+    required: false
+    default: "playwright-report/results.json"
+  min:
+    description: "Número mínimo de testes executados (expected + unexpected + flaky)"
+    required: false
+    default: "1"
+  max-skipped-ratio:
+    description: >
+      Ratio máximo skipped/(executed+skipped), entre 0 e 1.
+      0.5 = falha se mais de 50% da suite foi skipped.
+      1.0 = sem limite (default).
+    required: false
+    default: "0.5"
+
+runs:
+  using: composite
+  steps:
+    - name: Check min tests executed
+      if: always()
+      shell: bash
+      run: |
+        node scripts/check-playwright-min-executed.mjs \
+          "${{ inputs.results-json }}" \
+          --min "${{ inputs.min }}" \
+          --max-skipped-ratio "${{ inputs.max-skipped-ratio }}"

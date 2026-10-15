@@ -41,18 +41,25 @@ on:
 
 concurrency:
   group: magazine-unit-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   edge-import-contract:
     name: Deno Magazine import contract
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed # v2
         with:
           deno-version: v2.x
@@ -61,13 +68,15 @@ jobs:
 
   unit-tests:
     name: Vitest Unit Tests (Magazine)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
 
     steps:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
+        with:
+          persist-credentials: false  # E32
       - name: Setup Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -99,7 +108,7 @@ jobs:
       - name: Detect React act warnings (advisory)
         if: always()
         run: |
-          COUNT=$(grep -c "not wrapped in act" /tmp/magazine-vitest.log 2>/dev/null || true)
+          COUNT=$(grep -c "not wrapped in act" /tmp/magazine-vitest.log 2>/dev/null || true)  # ok: 0 warnings é resultado válido; 2>/dev/null suprime "no such file"
           echo "React act warnings: $COUNT" >> "$GITHUB_STEP_SUMMARY"
           if [ "$COUNT" -gt 0 ]; then
             echo "::warning title=Magazine React act warnings::$COUNT warning(s) detected; advisory until fixtures are repaired"
@@ -111,25 +120,34 @@ jobs:
         with:
           name: magazine-coverage
           path: coverage/
-          retention-days: 7
+          retention-days: 14
 
   postgres-contracts:
     name: PostgreSQL 17 RPC Contracts (Magazine)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0  # E47
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
       - name: Run forward-only RPC, idempotence and concurrency scenarios
         run: npm run test:magazine:sql
 
   security-definer-acl:
     name: SECURITY DEFINER ACL Gate
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-
+        with:
+          persist-credentials: false  # E32
       - name: Setup Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -160,7 +178,7 @@ jobs:
   magazine-tests-ok:
     name: Magazine Tests OK
     needs: [edge-import-contract, unit-tests, postgres-contracts, security-definer-acl]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     if: always()
     steps:

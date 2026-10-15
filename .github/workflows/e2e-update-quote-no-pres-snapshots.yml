@@ -21,15 +21,19 @@ permissions:
 
 concurrency:
   group: e2e-update-quote-no-pres-${{ github.event.inputs.branch }}
-  cancel-in-progress: true
-
+  cancel-in-progress: false  # E19: dispatch-only nunca cancelado
 env:
   E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
   E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
       CI: "true"
@@ -39,6 +43,7 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
+          persist-credentials: false  # E32
           ref: ${{ github.event.inputs.branch }}
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -97,7 +102,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add e2e/quotes/quote-view-no-presentation-mode.spec.ts-snapshots || true
+          git add e2e/quotes/quote-view-no-presentation-mode.spec.ts-snapshots || true  # ok: sem snapshots novos é resultado válido
           if git diff --cached --quiet; then
             echo "Sem mudanças nos baselines."; exit 0
           fi

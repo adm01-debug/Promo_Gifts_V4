@@ -1,12 +1,7 @@
 name: stock-rupture-fuzz
 
 on:
-  pull_request:
-    paths:
-      - 'src/lib/inventory/**'
-      - 'src/types/stock.ts'
-      - 'src/components/inventory/**'
-      - '.github/workflows/stock-rupture-fuzz.yml'
+  # E38: fuzz só por agenda e workflow_dispatch, nunca em PR (carga desnecessária em revisão)
   workflow_dispatch:
   schedule:
     # Nightly 04:11 UTC — varredura adicional
@@ -17,16 +12,23 @@ permissions:
 
 concurrency:
   group: stock-rupture-fuzz-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false  # R2/E38: fuzz/schedule nunca cancelado
+
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   fuzz:
     name: Risco de Ruptura — fuzz (800 sims, 10 invariantes)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -50,4 +52,4 @@ jobs:
         with:
           name: stock-rupture-fuzz-${{ github.run_id }}
           path: .fuzz-artifacts/
-          retention-days: 30
+          retention-days: 14

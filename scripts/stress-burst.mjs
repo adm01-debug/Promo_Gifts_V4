@@ -39,6 +39,10 @@ const SERVICE_ROLE_KEY =
   process.env.SUPABASE_TEST_BYPASS_TOKEN ||
   process.env.SUPABASE_SERVICE_ROLE_KEY;
 
+// E38 — DRY_RUN=1 por padrão; produção só com ALLOW_PROD_LOAD=1 em dispatch gated
+const CANONICAL_PROJECT = 'doufsxqlfjyuvxuezpln';
+const DRY_RUN = process.env.DRY_RUN !== '0';
+
 if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
   console.log(
     "[stress-burst] credenciais ausentes. Pulando teste de stress burst."
@@ -46,8 +50,21 @@ if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
   process.exit(0);
 }
 
-const BURST_CONCURRENCY = Number(process.env.BURST_CONCURRENCY) || 200;
-const BURST_DURATION_SECONDS = Number(process.env.BURST_DURATION_SECONDS) || 5;
+if (SUPABASE_URL.includes(CANONICAL_PROJECT) && process.env.ALLOW_PROD_LOAD !== '1') {
+  console.error('[stress-burst] BLOQUEADO: URL aponta para o projeto canônico de produção.');
+  console.error('  Defina ALLOW_PROD_LOAD=1 somente em dispatch gated (environment: production-readonly).');
+  process.exit(1);
+}
+
+if (DRY_RUN) {
+  console.log('[stress-burst] DRY_RUN=1 (padrão) — nenhuma requisição HTTP enviada.');
+  console.log('  Para executar: DRY_RUN=0 BURST_CONCURRENCY=<N> (máx 50 em produção)');
+  process.exit(0);
+}
+
+// E38: cap de concorrência
+const BURST_CONCURRENCY = Math.min(Number(process.env.BURST_CONCURRENCY) || 50, 50);
+const BURST_DURATION_SECONDS = Math.min(Number(process.env.BURST_DURATION_SECONDS) || 5, 10);
 const RECOVERY_PROBE_INTERVAL_MS = 500;
 const RECOVERY_TIMEOUT_MS = 10_000;
 const REQUEST_TIMEOUT_MS = 8_000;

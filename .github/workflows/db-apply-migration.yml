@@ -24,6 +24,18 @@ on:
         description: 'Versão da migration (prefixo numérico de supabase/migrations/<version>_*.sql)'
         required: true
         type: string
+      approved_by:
+        description: 'Nome do revisor que aprovou esta migration (ex.: @usuario) — obrigatório (E35)'
+        required: true
+        type: string
+      mode:
+        description: 'apply (padrão) = executa SQL + repair; repair-only = só registra no ledger sem aplicar SQL (E05: reconciliação pós-DDL via MCP)'
+        required: false
+        type: choice
+        default: apply
+        options:
+          - apply
+          - repair-only
 
 concurrency:
   group: db-apply-migration
@@ -36,16 +48,35 @@ env:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   preflight:
     name: 1. Preflight (read-only)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       contents: read
       actions: read
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
+          ref: main  # E35: checkout sempre de main, nunca de branch de PR
+
+      - name: Valida approved_by não-vazio (E35 — rejeição antecipada)
+        env:
+          APPROVED_BY: ${{ inputs.approved_by }}
+        run: |
+          set -euo pipefail
+          if [ -z "${APPROVED_BY// /}" ]; then
+            echo "::error::approved_by é obrigatório e não pode ser vazio (E35). Informe o revisor que aprovou a migration antes de prosseguir."
+            exit 1
+          fi
+          echo "approved_by presente: '$APPROVED_BY' — prosseguindo com preflight."
 
       - name: Valida input antes de qualquer uso no shell
         run: node scripts/validate-migration-target.mjs --version-only
@@ -77,7 +108,7 @@ jobs:
   apply:
     name: 2. Apply (requer aprovação do environment production)
     needs: preflight
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     environment: production
     permissions:
@@ -87,8 +118,12 @@ jobs:
       applied_at: ${{ steps.hash.outputs.applied_at }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
+          ref: main  # E35: checkout sempre de main, nunca de branch de PR
 
       - name: Guard — versão e destino PostgreSQL canônico
+        if: inputs.mode != 'repair-only'
         env:
           PGHOST: ${{ secrets.PGHOST }}
           PGUSER: ${{ secrets.PGUSER }}
@@ -99,9 +134,11 @@ jobs:
         run: node scripts/validate-migration-target.mjs --require-live-pooler
 
       - name: Instala postgresql-client
+        if: inputs.mode != 'repair-only'
         run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends postgresql-client
 
       - name: Confirma autenticação PostgreSQL antes de qualquer DDL (somente leitura)
+        if: inputs.mode != 'repair-only'
         env:
           PGHOST: ${{ secrets.PGHOST }}
           PGUSER: ${{ secrets.PGUSER }}
@@ -116,7 +153,7 @@ jobs:
         id: locate
         run: |
           set -euo pipefail
-          mapfile -t FILES < <(ls supabase/migrations/"${MIGRATION_VERSION}"_*.sql 2>/dev/null || true)
+          mapfile -t FILES < <(ls supabase/migrations/"${MIGRATION_VERSION}"_*.sql 2>/dev/null || true)  # ok: ls com glob retorna non-zero se nenhum arquivo encontrado — tamanho do array é verificado abaixo
           if [ "${#FILES[@]}" -ne 1 ]; then
             echo "::error::esperava exatamente 1 arquivo supabase/migrations/${MIGRATION_VERSION}_*.sql, encontrei ${#FILES[@]} (o job 'preflight' deveria ter barrado isso antes)."
             exit 1
@@ -130,6 +167,7 @@ jobs:
           echo "applied_at=$(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_OUTPUT"
 
       - name: Detecta opt-out de transação no cabeçalho
+        if: inputs.mode != 'repair-only'
         id: tx_optout
         run: |
           # Espelha a lógica de parseOptOut() em scripts/preflight-migration-apply.mjs:
@@ -143,6 +181,7 @@ jobs:
           fi
 
       - name: Aplica a migration (psql; omite -1 se transaction:none declarado)
+        if: inputs.mode != 'repair-only'
         env:
           PGHOST: ${{ secrets.PGHOST }}
           PGUSER: ${{ secrets.PGUSER }}
@@ -180,10 +219,13 @@ jobs:
   post-check:
     name: 3. Pós-check (read-only)
     needs: apply
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
+          ref: main  # E35: checkout sempre de main, nunca de branch de PR
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -197,7 +239,7 @@ jobs:
   receipt:
     name: 4. Recibo (abre PR em MIGRATIONS_SYNC_LOG.md)
     needs: [apply, post-check]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       contents: write
@@ -206,23 +248,40 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
+          ref: main  # E35: checkout sempre de main, nunca de branch de PR
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
 
+      - name: Valida approved_by não-vazio (E35)
+        env:
+          APPROVED_BY: ${{ inputs.approved_by }}
+        run: |
+          set -euo pipefail
+          if [ -z "${APPROVED_BY// /}" ]; then
+            echo "::error::approved_by é obrigatório e não pode ser vazio (E35). Informe o revisor que aprovou a migration."
+            exit 1
+          fi
+
       - name: Monta o recibo em MIGRATIONS_SYNC_LOG.md
+        env:
+          APPROVED_BY: ${{ inputs.approved_by }}
         run: |
           node scripts/append-migration-receipt.mjs \
             --version="$MIGRATION_VERSION" \
             --sha256="${{ needs.apply.outputs.sha256 }}" \
-            --executor="GitHub Actions (db-apply-migration.yml, disparado por ${{ github.actor }})" \
+            --executor="GitHub Actions (db-apply-migration.yml, disparado por ${{ github.actor }}, aprovado por $APPROVED_BY)" \
             --metodo="E15" \
             --data-utc="${{ needs.apply.outputs.applied_at }}" \
             --pos-check="job post-check da run ${{ github.run_id }} confirmou a version no ledger" \
             --status="aplicada"
 
       - name: Abre PR com o recibo
+        env:
+          APPROVED_BY: ${{ inputs.approved_by }}
         run: |
           set -euo pipefail
           BRANCH="e15-receipt-${MIGRATION_VERSION}-${{ github.run_id }}"
@@ -231,10 +290,10 @@ jobs:
           git checkout -b "$BRANCH"
           git add supabase/MIGRATIONS_SYNC_LOG.md
           git commit -m "docs(migrations-log): recibo E15 — aplicação de ${MIGRATION_VERSION}" \
-                     -m "Auto-gerado por .github/workflows/db-apply-migration.yml (run ${{ github.run_id }}), disparado por ${{ github.actor }}. PLANO_DBA E15."
+                     -m "Auto-gerado por .github/workflows/db-apply-migration.yml (run ${{ github.run_id }}), disparado por ${{ github.actor }}. Aprovado por: $APPROVED_BY. PLANO_DBA E15."
           git push -u origin "$BRANCH"
           gh pr create \
             --base main \
             --head "$BRANCH" \
             --title "docs: recibo de aplicação — ${MIGRATION_VERSION} (E15)" \
-            --body "Recibo automático da aplicação de \`${MIGRATION_VERSION}\` via \`db-apply-migration.yml\` (run ${{ github.run_id }}, disparado por @${{ github.actor }}). A migration já foi aplicada e confirmada no ledger pelos jobs \`apply\`/\`post-check\` desta mesma run — este PR só registra o recibo textual (PLANO_DBA E15/E48)."
+            --body "Recibo automático da aplicação de \`${MIGRATION_VERSION}\` via \`db-apply-migration.yml\` (run ${{ github.run_id }}, disparado por @${{ github.actor }}, aprovado por $APPROVED_BY). A migration já foi aplicada e confirmada no ledger pelos jobs \`apply\`/\`post-check\` desta mesma run — este PR só registra o recibo textual (PLANO_DBA E15/E48)."

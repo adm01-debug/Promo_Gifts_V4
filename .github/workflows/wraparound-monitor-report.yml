@@ -42,18 +42,25 @@ concurrency:
   group: wraparound-monitor-report
   cancel-in-progress: false
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   check:
     name: Compara ops.wraparound_monitor_log contra THRESHOLDS
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     env:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-      SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF || 'doufsxqlfjyuvxuezpln' }}
+      SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
     steps:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
+        with:
+          persist-credentials: false  # E32
       - name: Setup Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -66,7 +73,13 @@ jobs:
       - name: Roda checagem de wraparound/TOAST/sequências
         id: check
         continue-on-error: true
-        run: node scripts/wraparound-monitor-check.mjs --out=/tmp/wraparound.json
+        # E56: captura exit_code para tri-state (0=ok, 1=alerta, 2=inconclusivo)
+        run: |
+          set +e
+          node scripts/wraparound-monitor-check.mjs --out=/tmp/wraparound.json
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
 
       - name: Upload report artifact
         if: always()
@@ -150,5 +163,10 @@ jobs:
 
       - name: Não quebra o build
         if: steps.check.outcome == 'failure'
+        # E56: tri-state — distingue falha real (exit 1) de inconclusivo (exit 2)
         run: |
-          echo "::warning::Checagem de wraparound/TOAST/sequências encontrou objeto(s) acima do limiar ou ficou inconclusiva — ver issue/artefato desta run. Job não quebra build (advisory, não gate)."
+          if [ "${{ steps.check.outputs.exit_code }}" = "2" ]; then
+            echo "::warning::Checagem de wraparound/TOAST/sequências inconclusiva (exit 2) — sem SUPABASE_ACCESS_TOKEN ou ops.wraparound_monitor_log ausente (E33 pendente). Nenhum objeto sinalizado."
+          else
+            echo "::warning::Checagem de wraparound/TOAST/sequências encontrou objeto(s) acima do limiar — ver issue/artefato desta run. Job não quebra build (advisory, não gate)."
+          fi

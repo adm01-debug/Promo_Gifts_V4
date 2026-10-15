@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-11T15:31:31.005Z",
+  "generatedAt": "2026-10-14T21:02:35.319Z",
   "description": "Baseline de arquivos src/ com mais de 500 linhas (excluindo testes). Falha em arquivo novo acima do limite ou em crescimento.",
   "maxLines": 500,
   "files": {
@@ -97,7 +97,6 @@
     "src/hooks/simulation/useSimulation.ts": 606,
     "src/hooks/stock/stockFetcher.ts": 707,
     "src/hooks/ui/useWorkspaceNotifications.tsx": 554,
-    "src/integrations/supabase/types.ts": 64734,
     "src/lib/bi/dossierPdfGenerator.ts": 598,
     "src/lib/bi/pptxGenerator.ts": 952,
     "src/lib/crm-db.ts": 789,

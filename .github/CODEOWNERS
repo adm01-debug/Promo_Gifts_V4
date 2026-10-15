@@ -54,6 +54,29 @@ docs/ci/SEGREDOS.md                            @adm01-debug
 docs/ci/                                       @adm01-debug
 
 # ============================================================
+# Build/test config — alterações silenciosas quebram CI sem aviso
+# (E72 — PLANO_WORKFLOWS_CI_V2_100_ETAPAS_2026-10-14.md)
+# ============================================================
+package.json                                   @adm01-debug
+package-lock.json                              @adm01-debug
+.nvmrc                                         @adm01-debug
+playwright.config.ts                           @adm01-debug
+vitest.config.ts                               @adm01-debug
+.lighthouserc.json                             @adm01-debug
+.gitleaks.toml                                 @adm01-debug
+.github/dependabot.yml                        @adm01-debug
+e2e/quarantine.json                            @adm01-debug
+e2e/                                           @adm01-debug
+
+# ============================================================
+# Banco de dados — migrations e política DDL
+# (E72 — garante que nenhum PR altere migrations sem revisão)
+# ============================================================
+supabase/migrations/                           @adm01-debug
+supabase/MIGRATIONS_SYNC_LOG.md               @adm01-debug
+docs/db/                                       @adm01-debug
+
+# ============================================================
 # Edge functions com correções de segurança aplicadas manualmente
 # ============================================================
 supabase/functions/send-transactional-email/    @adm01-debug

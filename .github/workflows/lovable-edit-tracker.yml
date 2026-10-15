@@ -34,18 +34,24 @@ permissions:
 
 concurrency:
   group: lovable-edit-tracker-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
+
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   track-lovable-edits:
     name: Rastrear edições do Lovable
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 3
 
     steps:
       - name: Checkout com histórico
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
+          persist-credentials: false  # E32
           fetch-depth: 50  # últimos 50 commits para análise
 
       - name: Extrair e catalogar Edit IDs do Lovable

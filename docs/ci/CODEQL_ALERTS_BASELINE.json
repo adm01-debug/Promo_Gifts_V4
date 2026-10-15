@@ -1,0 +1,34 @@
+{
+  "generatedAt": "2026-10-14",
+  "note": "Baseline of open CodeQL alerts as of 2026-10-14. Target: 0 HIGH by E100.",
+  "summary": {
+    "total": 62,
+    "critical": 0,
+    "high": 38,
+    "medium": 0,
+    "low": 24
+  },
+  "byRule": {
+    "js/file-system-race": {"count": 8, "severity": "high"},
+    "js/regex/missing-regexp-anchor": {"count": 6, "severity": "high"},
+    "js/insecure-temporary-file": {"count": 5, "severity": "high"},
+    "js/insecure-randomness": {"count": 4, "severity": "high"},
+    "js/incomplete-url-substring-sanitization": {"count": 4, "severity": "high"},
+    "js/clear-text-storage-of-sensitive-data": {"count": 3, "severity": "high"},
+    "js/remote-property-injection": {"count": 2, "severity": "high"},
+    "js/user-controlled-bypass": {"count": 1, "severity": "high"},
+    "js/tainted-format-string": {"count": 1, "severity": "high"},
+    "js/clear-text-logging": {"count": 1, "severity": "high"},
+    "js/other": {"count": 3, "severity": "low"}
+  },
+  "topLocations": {
+    "supabase/functions/**": 10,
+    "scripts/**": 12,
+    "src/**": 40
+  },
+  "triage": {
+    "status": "pending",
+    "nextAction": "Fix supabase/functions/** and scripts/** first (CI scope)",
+    "target": "0 HIGH open by E100"
+  }
+}

@@ -39,30 +39,30 @@ on:
         required: false
         type: boolean
         default: false
-  push:
-    branches: [main]
-    paths:
-      - 'supabase/functions/**'
-      - '!supabase/functions/**/*.test.ts'
-      - '!supabase/functions/tests/**'
-      - '!supabase/functions/README.md'
+  # E34: push automático removido — deploy só via workflow_dispatch ou workflow_call
+  # (evita deploy sem aprovação explícita)
 
 env:
   # Defina em Settings → Secrets and variables → Actions → Variables
   # como SUPABASE_PROJECT_REF (ex.: doufsxqlfjyuvxuezpln).
-  SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF || 'doufsxqlfjyuvxuezpln' }}
+  SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
 
 permissions:
   contents: read
 
 concurrency:
   group: deploy-edge-functions-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false  # R2/E19: deploy em push/main nunca deve ser cancelado
+
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   list-functions:
     name: Detect functions to deploy
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     outputs:
       functions: ${{ steps.detect.outputs.functions }}
@@ -70,6 +70,8 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
+          persist-credentials: false  # E32
+          ref: ${{ github.sha }}  # E34: ref explícito — nunca branch dinâmico
           # E63 (plano de 100): fetch-depth 0 — `git diff` abaixo compara
           # github.event.before..github.sha para achar só as funções
           # alteradas neste push; um checkout raso (depth 1, o default) não
@@ -125,9 +127,9 @@ jobs:
             BEFORE="$GIT_BEFORE"
             AFTER="$GIT_AFTER"
             if [[ -z "$BEFORE" || "$BEFORE" =~ ^0+$ ]]; then
-              CHANGED=$(git diff --name-only "${AFTER}~1" "$AFTER" -- supabase/functions/ || true)
+              CHANGED=$(git diff --name-only "${AFTER}~1" "$AFTER" -- supabase/functions/ || true)  # ok: primeiro push (BEFORE=0) — diff de um commit atrás
             else
-              CHANGED=$(git diff --name-only "$BEFORE" "$AFTER" -- supabase/functions/ || true)
+              CHANGED=$(git diff --name-only "$BEFORE" "$AFTER" -- supabase/functions/ || true)  # ok: git diff exits non-zero em certas condições de histórico raso
             fi
             cd supabase/functions
 
@@ -184,8 +186,10 @@ jobs:
     name: Deploy ${{ matrix.fn }}
     needs: list-functions
     if: ${{ !inputs.dry_run && needs.list-functions.outputs.count != '0' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
+    # E34: deploy em produção exige aprovação do environment
+    environment: production
     strategy:
       fail-fast: false
       max-parallel: 4
@@ -193,6 +197,9 @@ jobs:
         fn: ${{ fromJSON(needs.list-functions.outputs.functions) }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
+          ref: ${{ github.sha }}  # E34: ref explícito
 
       - name: Setup Supabase CLI
         uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v2
@@ -252,7 +259,7 @@ jobs:
     name: Verify deployment
     needs: [list-functions, deploy]
     if: always() && !inputs.dry_run
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - name: Final summary
@@ -278,7 +285,7 @@ jobs:
     name: Registrar recibo do deploy (E66)
     needs: [list-functions, deploy]
     if: needs.deploy.result == 'success'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       contents: write
@@ -286,9 +293,12 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-      SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF || 'doufsxqlfjyuvxuezpln' }}
+      SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
+          ref: ${{ github.sha }}  # E34: ref explícito
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:

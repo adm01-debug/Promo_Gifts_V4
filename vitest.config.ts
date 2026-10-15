@@ -95,7 +95,8 @@ export default defineConfig({
     // maxWorkers: 2 para evitar contenção.
     pool: 'threads',
     maxWorkers: 2,
-    retry: 2,
+    // E47: retry is 0 by default; set VITEST_RETRY=2 for flakiness-detection runs only
+    retry: process.env.VITEST_RETRY ? Number(process.env.VITEST_RETRY) : 0,
     // Não permita que uma rejeição não tratada seja só reportada: o default do
     // Vitest já é false, mas a declaração explícita protege esse contrato em
     // upgrades de toolchain e torna a intenção auditável.

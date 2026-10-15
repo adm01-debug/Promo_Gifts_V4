@@ -22,35 +22,34 @@ on:
       - '.github/workflows/visual-tests.yml'
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 
 concurrency:
   group: visual-tests-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
-env:
-  E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-  E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+defaults:
+  run:
+    shell: bash
 
 jobs:
   visual-baseline:
     # G-H3: fork guard — pull_request de forks não deve escrever no repo
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     permissions:
-      contents: write
-      pull-requests: write
-      issues: write
+      contents: read  # E60: somente-leitura — baselines são atualizados via _update-snapshots.yml (E59)
     strategy:
       fail-fast: false
       matrix:
         shardIndex: [1, 2]
         shardTotal: [2]
     timeout-minutes: 60
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      with:
+        persist-credentials: false  # E32
     - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
       with:
         node-version-file: '.nvmrc'
@@ -79,40 +78,10 @@ jobs:
       env:
         CI: true
 
-    - name: Commit new baselines if generated
-      if: always()
-      env:
-        GITHUB_EVENT_PULL_REQUEST_HEAD_REPO_FULL_NAME: ${{ github.event.pull_request.head.repo.full_name }}
-      run: |
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        git add --force 'e2e/**/*.png' '**/*.spec.ts-snapshots/**' 2>/dev/null || true
-        if ! git diff --staged --quiet; then
-          TARGET_BRANCH="${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
-          STAGED_LIST=$(git diff --staged --name-only)
-          TMPDIR_PNGS=$(mktemp -d)
-          while IFS= read -r f; do
-            [ -z "$f" ] && continue
-            mkdir -p "${TMPDIR_PNGS}/$(dirname "$f")"
-            cp "$f" "${TMPDIR_PNGS}/$f"
-          done <<< "$STAGED_LIST"
-          git checkout "$TARGET_BRANCH" 2>/dev/null || git switch "$TARGET_BRANCH" 2>/dev/null || true
-          while IFS= read -r f; do
-            [ -z "$f" ] && continue
-            mkdir -p "$(dirname "$f")"
-            cp "${TMPDIR_PNGS}/$f" "$f"
-          done <<< "$STAGED_LIST"
-          git add --force 'e2e/**/*.png' '**/*.spec.ts-snapshots/**' 2>/dev/null || true
-          if ! git diff --staged --quiet; then
-            git commit -m "chore(visual-tests): atualiza baselines visuais [skip ci]"
-            git push origin "$TARGET_BRANCH"
-          fi
-        fi
-
     - name: Upload Playwright report
       if: always()
       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
       with:
         name: playwright-report-shard-${{ matrix.shardIndex }}
         path: playwright-report/
-        retention-days: 7
+        retention-days: 14

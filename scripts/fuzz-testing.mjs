@@ -32,10 +32,18 @@ const CONCURRENCY = Number(process.env.FUZZ_CONCURRENCY) || 6;
 const FUNCTION_CONCURRENCY = Number(process.env.FUZZ_FUNCTION_CONCURRENCY) || 3;
 const MAX_COMBINATIONS_PER_FUNCTION = Number(process.env.FUZZ_MAX_COMBINATIONS) || 120;
 const TIMEOUT_MS = 15_000;
-const DRY_RUN = !SUPABASE_URL || !SERVICE_ROLE_KEY;
+const DRY_RUN = !SUPABASE_URL || !SERVICE_ROLE_KEY || process.env.DRY_RUN !== '0';
+
+// E38 — bloqueia execução live contra projeto canônico de produção sem gating explícito
+const CANONICAL_PROJECT = 'doufsxqlfjyuvxuezpln';
+if (!DRY_RUN && SUPABASE_URL.includes(CANONICAL_PROJECT) && process.env.ALLOW_PROD_LOAD !== '1') {
+  console.error('[fuzz-testing] BLOQUEADO: URL aponta para o projeto canônico de produção.');
+  console.error('  Defina ALLOW_PROD_LOAD=1 somente em dispatch gated.');
+  process.exit(1);
+}
 
 if (DRY_RUN) {
-  console.log("⚠️  Credenciais ausentes — modo dry-run: gerando e validando payloads sem HTTP.");
+  console.log("⚠️  Credenciais ausentes ou DRY_RUN ≠ 0 — modo dry-run: gerando e validando payloads sem HTTP.");
 }
 
 // ---------------------------------------------------------------------------

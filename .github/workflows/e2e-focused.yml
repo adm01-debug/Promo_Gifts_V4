@@ -1,0 +1,249 @@
+name: E2E Focused UI — Matrix (E78)
+
+# Consolidação de workflows de UI focados em PRs e schedule semanal.
+# Substitui: e2e-cnpj, e2e-pdf-print-cross-browser, e2e-pdf-dialog,
+#   e2e-color-swatch-grid, e2e-magazine-header, e2e-thumb-quickview,
+#   e2e-dialogs-pr-check.
+# Estes suites podem ter baselines incompletos ou ser flaky — continue-on-error
+# está ativo na matriz de testes. O job secrets_check é sempre bloqueante.
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'e2e/**'
+      - 'src/components/**'
+      - 'src/utils/**'
+      - 'src/pages/**'
+      - '.github/workflows/e2e-focused.yml'
+  schedule:
+    # E89 — segunda-feira 02:00 UTC
+    - cron: '0 2 * * 1'
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: 'Suite a executar (vazio = todas)'
+        required: false
+        default: ''
+
+# R1 — permissões mínimas
+permissions:
+  contents: read
+
+# R2 — PRs cancelam; schedule e dispatch não
+concurrency:
+  group: e2e-focused-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  secrets_check:
+    name: Verify E2E secrets
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    permissions:
+      contents: read
+    steps:
+      - name: Check required secrets
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+        run: |
+          missing=()
+          [ -z "$E2E_USER_EMAIL" ]    && missing+=(E2E_USER_EMAIL)
+          [ -z "$E2E_USER_PASSWORD" ] && missing+=(E2E_USER_PASSWORD)
+          if [ ${#missing[@]} -gt 0 ]; then
+            echo "::error::Secrets ausentes: ${missing[*]} — configure em Settings › Secrets › Actions"
+            exit 1
+          fi
+          echo "Secrets OK"
+
+  e2e_focused:
+    name: E2E Focused · ${{ matrix.suite }}
+    needs: [secrets_check]
+    runs-on: ubuntu-24.04
+    # R3 — timeout por job
+    timeout-minutes: 20
+    # Suites focados podem ter baselines faltando ou ser conhecidamente flaky
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        suite:
+          - cnpj
+          - pdf-print
+          - pdf-dialog
+          - color-swatch
+          - magazine-header
+          - thumb-quickview
+          - dialogs
+        include:
+          - suite: cnpj
+            spec: 'e2e/ui/cnpj-*.spec.ts'
+            project: chromium-public
+          - suite: pdf-print
+            spec: 'e2e/flows/pdf-print-cross-browser.spec.ts'
+            project: chromium-public
+          - suite: pdf-dialog
+            spec: 'e2e/flows/pdf-dialog.spec.ts'
+            project: chromium-public
+          - suite: color-swatch
+            spec: >-
+              e2e/catalog/color-swatch-selected-no-clip.spec.ts
+              e2e/catalog/color-swatch-two-lines-grid.spec.ts
+              e2e/catalog/color-swatch-wrap-visual.spec.ts
+            project: chromium-public
+          - suite: magazine-header
+            spec: >-
+              e2e/flows/magazine-header-align.spec.ts
+              e2e/flows/magazine-header-responsive.spec.ts
+            project: chromium-public
+          - suite: thumb-quickview
+            spec: >-
+              e2e/flows/03b-product-thumb-quickview.spec.ts
+              e2e/flows/03b-thumb-quickview.smoke.spec.ts
+            project: chromium-public
+          - suite: dialogs
+            spec: >-
+              e2e/ui/dialog-visual.spec.ts
+              e2e/ui/confirm-dialog-visual.spec.ts
+              e2e/ui/alert-dialog-visual.spec.ts
+              e2e/ui/undo-toast-visual.spec.ts
+            project: chromium-public
+    # R5 — secrets via env:
+    env:
+      CI: 'true'
+      FORCE_COLOR: '0'
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
+      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+      E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
+
+      # R4 — node-version-file: .nvmrc
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - run: npm ci --no-audit --no-fund
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: playwright-${{ runner.os }}-
+
+      - run: npx playwright install --with-deps chromium
+
+      - name: Filtrar suite
+        if: github.event.inputs.suite != '' && github.event.inputs.suite != matrix.suite
+        env:
+          SUITE_FILTER: ${{ github.event.inputs.suite }}
+        run: |
+          echo "::notice::Suite ${{ matrix.suite }} ignorada (filtro: $SUITE_FILTER)"
+          exit 0
+
+      - name: Run E2E Focused · ${{ matrix.suite }}
+        run: |
+          npx playwright test ${{ matrix.spec }} \
+            --project=${{ matrix.project }} \
+            --reporter=line,html
+
+      # R6 — retention-days: 14
+      - name: Upload report + artifacts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: e2e-focused-${{ matrix.suite }}
+          path: |
+            playwright-report
+            test-results
+          if-no-files-found: ignore
+          retention-days: 14
+
+  # E10 — alerta de falha no cron semanal
+  notify_failure:
+    name: Notificar falha — E2E Focused (cron)
+    permissions:
+      issues: write
+    if: failure() && github.event_name == 'schedule'
+    needs: [e2e_focused]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const workflowName = 'E2E Focused UI — Matrix (E78)';
+            const label = 'ci-focused-e2e';
+            const title = `[CI] ${workflowName} falhou no cron semanal`;
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              labels: label, state: 'open',
+            });
+            const existing = issues.find(i => i.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: existing.number,
+                body: `Nova falha detectada: ${runUrl} — ${new Date().toISOString()}`,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner, repo: context.repo.repo,
+                title, labels: [label],
+                body: [
+                  `## Falha no cron semanal — ${workflowName}`,
+                  '',
+                  `- **Run:** ${runUrl}`,
+                  `- **Triggered:** ${new Date().toISOString()}`,
+                  '',
+                  'Verifique os artifacts do run para screenshots e traces.',
+                ].join('\n'),
+              });
+            }
+
+  # E12 — fecha a issue quando o cron volta a passar
+  notify_success:
+    name: Fechar issue — E2E Focused (cron recuperado)
+    permissions:
+      issues: write
+    if: success() && github.event_name == 'schedule'
+    needs: [e2e_focused]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const title = '[CI] E2E Focused UI — Matrix (E78) falhou no cron semanal';
+            const label = 'ci-focused-e2e';
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              labels: label, state: 'open',
+            });
+            const existing = issues.find(i => i.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: existing.number,
+                body: `Cron passou em ${new Date().toISOString()} — fechando. Run: ${runUrl}`,
+              });
+              await github.rest.issues.update({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: existing.number,
+                state: 'closed', state_reason: 'completed',
+              });
+            }

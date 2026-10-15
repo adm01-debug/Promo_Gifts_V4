@@ -30,10 +30,15 @@ env:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   update-snapshots:
     name: Regerar baselines (--update-snapshots)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     permissions:
       contents: write
@@ -46,6 +51,7 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
+          persist-credentials: false  # E32
           ref: ${{ inputs.branch || github.ref }}
           fetch-depth: 0
 
@@ -81,7 +87,7 @@ jobs:
           git add e2e/quotes/quote-reset-stepper-layout.spec.ts-snapshots/ \
                   e2e/quotes/quote-number-subtitle.spec.ts-snapshots/ \
                   e2e/quotes/quote-pdf-header-snapshot.spec.ts-snapshots/ \
-                  e2e/quotes/quote-new-fab.spec.ts-snapshots/ || true
+                  e2e/quotes/quote-new-fab.spec.ts-snapshots/ || true  # ok: sem snapshots novos é resultado válido — verificado por git diff --cached abaixo
           if git diff --cached --quiet; then
             echo "Nenhuma baseline nova/alterada — nada para commitar."
             exit 0

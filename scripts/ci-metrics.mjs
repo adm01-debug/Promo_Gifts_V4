@@ -103,6 +103,7 @@ async function main() {
     const failures = runs7.filter(
       (r) => r.conclusion === 'failure' || r.conclusion === 'startup_failure',
     ).length;
+    const cancelled = runs7.filter((r) => r.conclusion === 'cancelled').length;
     const skipped = runs7.filter((r) => r.conclusion === 'skipped').length;
     const successRuns = runs7.filter(
       (r) => r.conclusion === 'success' || r.conclusion === 'neutral',
@@ -158,6 +159,7 @@ async function main() {
       failures,
       failureRate:
         total > 0 ? ((failures / total) * 100).toFixed(0) + '%' : '—',
+      cancelled,
       skipped,
       minutesTotal: totalMinutes,
       p95ms,
@@ -170,19 +172,31 @@ async function main() {
 
   rows.sort((a, b) => b.failures - a.failures || b.total - a.total);
 
+  // cache usage (best-effort — not a hard requirement)
+  let cacheUsageGB = null;
+  try {
+    const cacheData = await ghGet(`${BASE}/actions/cache/usage`);
+    cacheUsageGB = cacheData.active_caches_size_in_bytes
+      ? (cacheData.active_caches_size_in_bytes / 1073741824).toFixed(2)
+      : null;
+  } catch {
+    // advisory: missing scope or quota exceeded — skip silently
+  }
+
   const dateStr = now.toISOString().slice(0, 10);
   const weekStr = `semana de ${since7d.slice(0, 10)} a ${dateStr}`;
 
   const alertRows = rows.filter((r) => r.alerts);
   const totalRuns = rows.reduce((s, r) => s + r.total, 0);
   const totalFails = rows.reduce((s, r) => s + r.failures, 0);
+  const totalCancelled = rows.reduce((s, r) => s + r.cancelled, 0);
   const totalMins = rows.reduce((s, r) => s + r.minutesTotal, 0);
 
   const md = [
     `# Métricas de CI — ${dateStr}`,
     ``,
     `> **Período:** ${weekStr}  `,
-    `> **Gerado por:** \`scripts/ci-metrics.mjs\` (E93)  `,
+    `> **Gerado por:** \`scripts/ci-metrics.mjs\` (E87/E93)  `,
     `> **Repo:** ${OWNER}/${REPO_NAME}`,
     ``,
     `## Resumo`,
@@ -192,8 +206,10 @@ async function main() {
     `| Workflows ativos | ${rows.length} |`,
     `| Total de runs (7d) | ${totalRuns} |`,
     `| Total de falhas (7d) | ${totalFails} |`,
+    `| Total de cancelados (7d) | ${totalCancelled} |`,
     `| Taxa de falha global | ${totalRuns > 0 ? ((totalFails / totalRuns) * 100).toFixed(1) : 0}% |`,
     `| Minutos estimados (7d) | ~${totalMins} |`,
+    `| Cache ativo (repo) | ${cacheUsageGB !== null ? `${cacheUsageGB} GB` : '—'} |`,
     `| Alertas ativos | ${alertRows.length} |`,
     ``,
   ];
@@ -206,16 +222,29 @@ async function main() {
     md.push(``);
   }
 
+  // top-10 por minutos estimados
+  const top10 = [...rows].sort((a, b) => b.minutesTotal - a.minutesTotal).slice(0, 10);
+  md.push(
+    `## Top 10 por minutos estimados (7d)`,
+    ``,
+    `| # | Workflow | Min est. | Runs | Falhas |`,
+    `|---|---|---|---|---|`,
+  );
+  top10.forEach((r, i) => {
+    md.push(`| ${i + 1} | ${r.name} | ${r.minutesTotal} | ${r.total} | ${r.failures} |`);
+  });
+  md.push(``);
+
   md.push(
     `## Por workflow`,
     ``,
-    `| Workflow | Runs | Falhas | Taxa | Skipped | Min est. | p95 (30d) | Último run | Alertas |`,
-    `|---|---|---|---|---|---|---|---|---|`,
+    `| Workflow | Runs | Falhas | Taxa | Cancelados | Skipped | Min est. | p95 (30d) | Último run | Alertas |`,
+    `|---|---|---|---|---|---|---|---|---|---|`,
   );
 
   for (const r of rows) {
     md.push(
-      `| ${r.name} | ${r.total} | ${r.failures} | ${r.failureRate} | ${r.skipped} | ${r.minutesTotal} | ${fmtDuration(r.p95ms)} | ${r.lastRun} | ${r.alerts || '✅'} |`,
+      `| ${r.name} | ${r.total} | ${r.failures} | ${r.failureRate} | ${r.cancelled} | ${r.skipped} | ${r.minutesTotal} | ${fmtDuration(r.p95ms)} | ${r.lastRun} | ${r.alerts || '✅'} |`,
     );
   }
 
@@ -225,7 +254,8 @@ async function main() {
   mkdirSync(dirname(outPath), { recursive: true });
   writeFileSync(outPath, md.join('\n') + '\n');
   console.log(`Relatório escrito em docs/ci/METRICAS_SEMANAIS.md`);
-  console.log(`  ${rows.length} workflows, ${totalRuns} runs, ${totalFails} falhas, ${alertRows.length} alertas`);
+  console.log(`  ${rows.length} workflows, ${totalRuns} runs, ${totalFails} falhas, ${totalCancelled} cancelados, ${alertRows.length} alertas`);
+  if (cacheUsageGB !== null) console.log(`  Cache: ${cacheUsageGB} GB`);
 
   if (alertRows.length > 0) {
     console.log('\nAlertas:');

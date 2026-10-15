@@ -7,15 +7,14 @@ name: Magazine Flakiness Guard
 #  - tests/magazine/                                — fuzz de rings, breakpoints, layout.
 #  - tests/utils/tailwindRings.interaction.test.tsx — helpers SSOT ringsOf/focusRingsOf/
 #    hoverRingsOf/focusWithinRingsOf/dataStateRingsOf sob interação real (mouse+teclado).
-#    Promovido a gate obrigatório porque QUALQUER regressão nesses helpers invalida
+#    Crítico para qualidade: QUALQUER regressão nesses helpers invalida
 #    silenciosamente todos os testes de rings do Magazine e do CompareTableView.
 #
-# Estratégia:
-#  - PR: executa em modo STRICT quando arquivos relevantes mudam. Flaky OU fail-all
-#    falha o PR. Isso é intencional — os helpers de rings são SSOT e não podem
-#    ter comportamento não-determinístico.
-#  - Schedule diário: pega drift lento (deps, jsdom, runners novos), sem --strict
-#    para não spam-abrir issues por 1 flaky isolado.
+# Estratégia (E81 2026-10-14):
+#  - Flakiness é detecção de deriva lenta (deps, jsdom, runners) — não gate de PR.
+#    (E58: "gate obrigatório" removido — único required check é Gate Final em deploy-gates.yml)
+#    Promovido para PR causava 10 runs extra por PR nos arquivos de magazine.
+#  - Schedule semanal: pega drift lento, sem --strict para não spam issues.
 #  - Manual: workflow_dispatch permite ajustar `runs=N` e `strict=true|false`.
 #
 # Falha o job quando:
@@ -23,14 +22,6 @@ name: Magazine Flakiness Guard
 #   - modo strict + qualquer teste flaky (1..N-1 falhas).
 
 on:
-  pull_request:
-    paths:
-      - 'tests/magazine/**'
-      - 'tests/utils/tailwindRings.ts'
-      - 'tests/utils/tailwindRings.interaction.test.tsx'
-      - 'src/pages/magazine/**'
-      - 'scripts/magazine-flakiness-report.mjs'
-      - '.github/workflows/magazine-flakiness.yml'
   schedule:
     - cron: '18 6 * * 1' # semanal, segunda 06:18 UTC — varredura incondicional
   workflow_dispatch:
@@ -42,25 +33,32 @@ on:
       strict:
         description: 'Falhar em qualquer flakiness detectado'
         required: false
-        default: 'true'
+        default: 'false'
 
 concurrency:
-  group: magazine-flakiness-${{ github.ref }}
-  cancel-in-progress: true
+  group: magazine-flakiness-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: false
 
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   flakiness:
     name: Magazine + Rings Flakiness (repeat × N)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
 
     steps:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
+        with:
+          persist-credentials: false  # E32
       - name: Setup Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -80,25 +78,17 @@ jobs:
         run: |
           RUNS="$INPUT_RUNS"
           # Modo strict:
-          #   - PR:                sempre strict (gate obrigatório).
+          #   - PR:                não roda (E81 — não é gate de PR).
           #   - workflow_dispatch: respeita input (default true).
-          #   - schedule:          nunca strict (evita ruído em cron diário).
+          #   - schedule:          nunca strict (evita ruído em cron semanal).
           STRICT_FLAG=""
-          case "$EVENT_NAME" in
-            pull_request)
-              STRICT_FLAG="--strict"
-              ;;
-            workflow_dispatch)
-              if [ "$INPUT_STRICT" = "true" ]; then
-                STRICT_FLAG="--strict"
-              fi
-              ;;
-            schedule)
-              STRICT_FLAG=""
-              ;;
-          esac
+          # strict só em workflow_dispatch com input explícito
+          if [ "$EVENT_NAME" = "workflow_dispatch" ] && [ "$INPUT_STRICT" = "true" ]; then
+            STRICT_FLAG="--strict"
+          fi
           node scripts/magazine-flakiness-report.mjs \
             --runs="$RUNS" \
+            --retry=0 \
             --pattern="tests/magazine/,tests/utils/tailwindRings.interaction.test.tsx" \
             $STRICT_FLAG
 
@@ -113,7 +103,7 @@ jobs:
   flakiness-ok:
     name: Magazine Flakiness OK
     needs: [flakiness]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     if: always()
     steps:

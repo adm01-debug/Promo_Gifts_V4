@@ -5,16 +5,24 @@ description: >
   de invocar esta ação (GitHub Actions não consegue carregar uma action local
   sem o repositório já ter sido clonado).
   Cobre os steps de setup de ~90% dos workflows deste repo.
+  E90: inputs padronizados (install, ignore-scripts); ${{ inputs.* }} fora de run: (via env:).
 
 inputs:
+  install:
+    description: >
+      Executar lockfile check e npm ci. Use 'false' para só instalar Node.js.
+      Equivalente inverso de skip-install (mantido para compatibilidade).
+    required: false
+    default: 'true'
   ignore-scripts:
     description: Passar --ignore-scripts ao npm ci
     required: false
     default: 'false'
   skip-install:
     description: >
+      DEPRECATED: use install: 'false' em seu lugar.
       Pular lockfile check e npm ci (apenas setup-node).
-      Usar em gates que só precisam de Node.js puro (sem node_modules).
+      Mantido para compatibilidade retroativa com workflows existentes.
     required: false
     default: 'false'
   working-directory:
@@ -25,22 +33,25 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+    - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
       with:
         node-version-file: '.nvmrc'
         cache: 'npm'
 
     - name: Check lockfile sync
-      if: ${{ inputs.skip-install != 'true' }}
+      if: inputs.install != 'false' && inputs.skip-install != 'true'
       shell: sh
       run: node scripts/check-lockfile-sync.mjs
 
     - name: Install dependencies
-      if: ${{ inputs.skip-install != 'true' }}
+      if: inputs.install != 'false' && inputs.skip-install != 'true'
       shell: sh
       working-directory: ${{ inputs.working-directory }}
+      env:
+        IGNORE_SCRIPTS: ${{ inputs.ignore-scripts }}
       run: |
-        if [ "${{ inputs.ignore-scripts }}" = "true" ]; then
+        set -euo pipefail
+        if [ "$IGNORE_SCRIPTS" = "true" ]; then
           npm ci --no-audit --no-fund --ignore-scripts
         else
           npm ci --no-audit --no-fund

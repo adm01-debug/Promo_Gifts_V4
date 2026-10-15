@@ -51,8 +51,9 @@ function getPct(entry, metric) {
 
 function main() {
   if (!existsSync(COVERAGE_JSON)) {
-    console.log(`⚠️  coverage JSON não encontrado em ${COVERAGE_JSON} — pulando.`);
-    process.exit(0);
+    // E49: coverage JSON missing = gate cannot run = failure, not skip
+    console.error(`❌ coverage JSON não encontrado em ${COVERAGE_JSON} — run vitest com --coverage primeiro.`);
+    process.exit(1);
   }
 
   const summary = JSON.parse(readFileSync(COVERAGE_JSON, "utf8"));

@@ -26,24 +26,23 @@ on:
       - '.github/workflows/e2e-pdf-print-cross-browser.yml'
   workflow_dispatch:
   schedule:
-    - cron: '44 4 * * 1'  # E10 — weekly Monday 04:23 UTC
+    - cron: '44 4 * * 1'  # E10/E89 — weekly Monday 04:44 UTC
 
 permissions:
   contents: read
-  issues: write
 
 concurrency:
   group: e2e-pdf-print-cross-browser-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
-env:
-  E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-  E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+defaults:
+  run:
+    shell: bash
 
 jobs:
   print-cross-browser:
     name: Print fallback (${{ matrix.project }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     strategy:
       fail-fast: false
@@ -51,15 +50,20 @@ jobs:
         include:
           - project: chromium-public
             browser: chromium
+          # E54: Firefox e WebKit falham constantemente em PR — isolados no cron semanal
           - project: firefox-public
             browser: firefox
+            schedule_only: true
           - project: webkit-public
             browser: webkit
+            schedule_only: true
     env:
       CI: 'true'
       # Não precisa de Supabase — spec é 100% cliente-side com setContent.
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -69,9 +73,11 @@ jobs:
         run: npm ci
 
       - name: Install Playwright browser (${{ matrix.browser }})
+        if: ${{ !matrix.schedule_only || github.event_name == 'schedule' }}
         run: npx playwright install --with-deps ${{ matrix.browser }}
 
       - name: Run print cross-browser spec
+        if: ${{ !matrix.schedule_only || github.event_name == 'schedule' }}
         run: |
           npx playwright test \
             e2e/flows/pdf-print-cross-browser.spec.ts \
@@ -86,15 +92,18 @@ jobs:
           path: |
             playwright-report/
             test-results/
+            !test-results/**/trace.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
           retention-days: 14
           if-no-files-found: ignore
 
   # E10 — alerta de falha no cron semanal (deduplication via label ci-focused-e2e)
   notify-failure:
     name: Notificar falha — PDF Cross-Browser (cron)
+    permissions:
+      issues: write
     if: failure() && github.event_name == 'schedule'
     needs: [print-cross-browser]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
@@ -128,5 +137,39 @@ jobs:
                   '',
                   'Verifique os artifacts do run para screenshots, diffs e traces.',
                 ].join('\n'),
+              });
+            }
+  # E12 — fecha a issue quando o cron volta a passar
+  notify-success:
+    name: Fechar issue — PDF Print cross-browser (cron recuperado)
+    permissions:
+      issues: write
+    if: success() && github.event_name == 'schedule'
+    needs: [print-cross-browser]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const title = '[CI] E2E — PDF Print (cross-browser) falhou no cron semanal';
+            const label = 'ci-focused-e2e';
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              labels: label, state: 'open',
+            });
+            const existing = issues.find(i => i.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: existing.number,
+                body: `✅ Cron passou em ${new Date().toISOString()} — fechando. Run: ${runUrl}`,
+              });
+              await github.rest.issues.update({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: existing.number,
+                state: 'closed', state_reason: 'completed',
               });
             }

@@ -28,7 +28,7 @@ name: capacity-growth-report
 
 on:
   # schedule:
-  #   - cron: '16 9 * * 1' # semanal, segunda 09:00 UTC (06:00 BRT)
+  #   - cron: '16 9 * * 1' # semanal, segunda 09:16 UTC (06:16 BRT)
   # E31: schedule desabilitado — aguardando migration [DBA-E30] (ops.table_size_history).
   # Reativar após aplicação via .github/workflows/db-apply-migration.yml.
   workflow_dispatch:
@@ -41,18 +41,25 @@ concurrency:
   group: capacity-growth-report
   cancel-in-progress: false
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   project:
     name: Projeta crescimento a partir de ops.table_size_history
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     env:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-      SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF || 'doufsxqlfjyuvxuezpln' }}
+      SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
     steps:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
+        with:
+          persist-credentials: false  # E32
       - name: Setup Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -65,7 +72,13 @@ jobs:
       - name: Roda projeção
         id: check
         continue-on-error: true
-        run: node scripts/capacity-growth-projection.mjs --out=/tmp/capacity-growth.json
+        # E56: captura exit_code para tri-state (0=ok, 1=alerta, 2=inconclusivo)
+        run: |
+          set +e
+          node scripts/capacity-growth-projection.mjs --out=/tmp/capacity-growth.json
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
 
       - name: Upload report artifact
         if: always()
@@ -149,5 +162,10 @@ jobs:
 
       - name: Não quebra o build
         if: steps.check.outcome == 'failure'
+        # E56: tri-state — distingue falha real (exit 1) de inconclusivo (exit 2)
         run: |
-          echo "::warning::Projeção encontrou tabela(s) acima do limiar ou ficou inconclusiva — ver issue/artefato desta run. Job não quebra build (advisory, não gate)."
+          if [ "${{ steps.check.outputs.exit_code }}" = "2" ]; then
+            echo "::warning::Projeção de capacidade inconclusiva (exit 2) — sem SUPABASE_ACCESS_TOKEN ou ops.table_size_history ausente (E30 pendente). Nenhuma tabela sinalizada."
+          else
+            echo "::warning::Projeção encontrou tabela(s) acima do limiar — ver issue/artefato desta run. Job não quebra build (advisory, não gate)."
+          fi

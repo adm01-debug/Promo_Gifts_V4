@@ -27,19 +27,27 @@ env:
 
 permissions:
   contents: read
+  pull-requests: write  # E51: github-script comment steps
 
 concurrency:
   group: ci-quotes-wizard-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   validate-quotes:
     name: Validação Novo Orçamento
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -56,7 +64,7 @@ jobs:
   # PNGs + trace) quando falha para revisão rápida do baseline no PR.
   quote-missing-fields-popover-e2e:
     name: E2E Popover Campos Pendentes
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
       E2E_BASE_URL: http://localhost:8080
@@ -66,6 +74,8 @@ jobs:
       E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -105,7 +115,7 @@ jobs:
   # diffs PNG (actual/expected/diff), trace e vídeos quando falha.
   quote-reset-stepper-layout-e2e:
     name: E2E Stepper Layout pós-Reset
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
       E2E_BASE_URL: http://localhost:8080
@@ -115,6 +125,8 @@ jobs:
       E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -215,7 +227,7 @@ jobs:
   # `update-quote-reset-snapshots.yml` para regenerar baselines).
   quote-number-subtitle-e2e:
     name: E2E Subtítulo quote_number (visual)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
       E2E_BASE_URL: http://localhost:8080
@@ -225,6 +237,8 @@ jobs:
       E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -236,8 +250,7 @@ jobs:
           npx playwright test \
             e2e/quotes/quote-number-subtitle.spec.ts \
             --project=chromium-authed \
-            --retries=1 \
-            --reporter=list
+            --retries=1
 
       - name: Upload Playwright HTML report
         if: always()
@@ -325,7 +338,7 @@ jobs:
   # regressão de conteúdo do PDF (quote_number ausente, frase legada vazando).
   quote-pdf-quote-number-e2e:
     name: E2E PDF exportado · quote_number
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
       E2E_BASE_URL: http://localhost:8080
@@ -335,20 +348,21 @@ jobs:
       E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
           cache: npm
       - run: npm ci
-      - run: npm install -D pdf-parse @types/pdf-parse || true
+      - run: npm install -D pdf-parse @types/pdf-parse || true  # ok: optional pdf-parse devDep; spec degrades gracefully if absent
       - run: npm run test:e2e:install
       - name: Run Playwright — quote-pdf-quote-number
         run: |
           npx playwright test \
             e2e/quotes/quote-pdf-quote-number.spec.ts \
             --project=chromium-authed \
-            --retries=1 \
-            --reporter=list
+            --retries=1
 
       - name: Upload Playwright HTML report
         if: always()
@@ -459,7 +473,7 @@ jobs:
   # quando houver falha de diff visual.
   quote-pdf-trigger-and-header-e2e:
     name: E2E PDF · trigger uniqueness + header snapshot
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
       E2E_BASE_URL: http://localhost:8080
@@ -469,6 +483,8 @@ jobs:
       E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -482,8 +498,7 @@ jobs:
             e2e/quotes/quote-pdf-trigger-uniqueness.spec.ts \
             e2e/quotes/quote-pdf-trigger-a11y.spec.ts \
             e2e/quotes/quote-pdf-header-snapshot.spec.ts \
-            --project=chromium-authed \
-            --reporter=list
+            --project=chromium-authed
 
       - name: Upload Playwright HTML report
         if: always()

@@ -3,30 +3,40 @@ name: Security Scan
 on:
   pull_request:
     branches: [main]
+    paths-ignore:  # E14: docs-only PRs dificilmente introduzem secrets
+      - 'docs/**'
+      - '*.md'
+      - 'CHANGELOG*'
   push:
     branches: [main]
   schedule:
-    # Toda segunda-feira às 06:30 (UTC) — 03:30 BRT
+    # Toda segunda-feira às 06:25 (UTC) — 03:25 BRT
     - cron: '25 6 * * 1'
 
 permissions:
   contents: read
   pull-requests: read
-  security-events: write
+  # security-events: write — removido E92 (nenhum upload SARIF neste workflow)
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   gitleaks:
     name: Gitleaks — Secret Scan
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
+          persist-credentials: false  # E32
           fetch-depth: 0
 
       - name: Run Gitleaks
@@ -38,11 +48,13 @@ jobs:
 
   headers-mirror:
     name: CSP mirror — public/_headers == vercel.json
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'

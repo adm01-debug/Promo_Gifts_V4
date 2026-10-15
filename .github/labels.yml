@@ -63,10 +63,9 @@
   color: "d73a4a"
   description: "Algo não está funcionando como esperado"
 
-# ─── priority (aliases legados usados em workflows) ──────────────────────────
-- name: "priority-high"
-  color: "b60205"
-  description: "Alta prioridade (alias usado por workflows automáticos)"
+# ─── priority (formato slash) ─────────────────────────────────────────────────
+# E12: priority-high (dash) removido — usar priority/high (slash) como padrão.
+# Workflows antigos que usavam priority-high devem migrar para priority/high.
 - name: "priority/high"
   color: "b60205"
   description: "Alta prioridade (formato slash)"

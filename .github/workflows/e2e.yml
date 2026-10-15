@@ -1,5 +1,6 @@
 name: E2E (Playwright)
 
+# E17: sharding 4×2 — job e2e-gates (pre-flight), e2e-shard (matrix), merge-reports.
 # Job opcional: roda os specs públicos sempre; specs autenticados só se
 # E2E_USER_EMAIL/E2E_USER_PASSWORD estiverem configurados como secrets do repo.
 # Artefatos (relatório HTML, screenshots, vídeos, traces) são publicados.
@@ -9,6 +10,15 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+    paths:  # E14: evitar CI em PRs doc-only
+      - 'src/**'
+      - 'e2e/**'
+      - 'public/**'
+      - 'package*.json'
+      - '.nvmrc'
+      - 'playwright.config.*'
+      - 'vite.config.*'
+      - '.github/workflows/e2e.yml'
   workflow_dispatch:
 
 permissions:
@@ -16,113 +26,44 @@ permissions:
 
 concurrency:
   group: e2e-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}  # E19: PR cancela; push/dispatch não
 
+
+defaults:
+  run:
+    shell: bash
+
+# ─── JOB 1: PRÉ-VÔOS (header-sticky + carrinhos URL-state) ──────────────────
+# Roda uma vez; se falhar, os shards não sobem (needs: e2e-gates).
 jobs:
-  e2e:
-    runs-on: ubuntu-latest
-    timeout-minutes: 45
-    # G-H3: fork guard — pull_request de forks não deve escrever no repo
+  e2e-gates:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    # G-H3: fork guard
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     env:
       CI: "true"
-      # Logs limpos no GitHub Actions: sem códigos ANSI no console output
-      # (relatório HTML continua colorido). Reporters dedicados (github/list)
-      # cuidam da formatação amigável.
       FORCE_COLOR: "0"
-      # Falha imediatamente se algum spec ainda tiver `test.only` esquecido.
       PWTEST_FORBID_ONLY: "1"
-      # VITE_* são valores "publishable" (já embutidos no bundle de browser em
-      # todo deploy). Precisam ser injetados no webServer (`npm run dev`) para
-      # que o Supabase client inicialize sem lançar "supabaseUrl is required"
-      # — o que derrubava todos os smoke tests públicos (90-95, issue #167).
-      # Fallback = valores públicos do projeto (URL + chave publishable não-JWT);
-      # secret sobrescreve quando configurado.
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
       E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
       E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
       E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
       E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
-      ARTIFACT_RETENTION_DAYS: "14"
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-
+        with:
+          persist-credentials: false  # E32
       - uses: ./.github/actions/e2e-setup
         with:
           browsers: 'chromium'
           start-vite: 'true'
 
-      # Auditoria: garantes que docs/E2E_SMOKE_COVERAGE.md está em dia com
-      # _catalog.ts + SMOKE_COVERAGE. Falha se alguém alterou a suíte sem
-      # regenerar o doc (`npm run e2e:smoke-coverage-doc`).
-      - name: Validar doc de auditoria do smoke (drift check)
-        run: node scripts/e2e-smoke-coverage-doc.mjs --check
-
-      # Garantes que TODO test() no spec do smoke está sob describe @smoke.
-      # Tests fora de describe @smoke seriam silenciosamente IGNORADOS pelo
-      # gate (project chromium-smoke usa `grep: /@smoke/`). Falha CI cedo.
-      - name: 🏷  Validar tags @smoke no spec do gate
-        run: node scripts/check-smoke-tags.mjs
-
-      # ─── SMOKE: fail-fast agressivo ─────────────────────────────────────
-      # `--max-failures=1` para na PRIMEIRA falha (gate determinístico —
-      # qualquer falha do smoke invalida o run; rodar mais é desperdício).
-      # `--forbid-only` falha se algum spec tem `test.only` esquecido.
-      # Reporter `github` emite annotations clicáveis no PR; `list` é
-      # human-friendly no log; `json` alimenta o summary script.
-      - name: Run E2E smoke (gate — para na 1ª falha)
-        id: e2e_smoke
-        run: |
-          mkdir -p playwright-report
-          npx playwright test \
-            --project=chromium-smoke \
-            --max-failures=1 \
-            --forbid-only \
-            --reporter=github,list,json \
-            && touch playwright-report/.smoke-passed
-        env:
-          E2E_BASE_URL: http://localhost:8080
-          PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results.json
-        continue-on-error: true
-
-      # Resumo dedicado do smoke: 1 linha por funcionalidade no log do step,
-      # `::error file=...::` por falha (anotação inline no PR), `::group::`
-      # colapsável para diagnóstico, e bloco "FINAL SUMMARY" sem ANSI no fim.
-      - name: 📋 Generate SMOKE summary (sempre — log final + annotations)
-        if: always()
-        run: node scripts/e2e-smoke-summary.mjs || true
-
-      - name: 📤 Append SMOKE summary to GitHub UI
-        if: always() && steps.e2e_smoke.outcome != 'skipped'
-        run: |
-          if test -f playwright-report/smoke-summary.md; then
-            {
-              echo "## 🚦 E2E Smoke Summary"
-              echo ""
-              cat playwright-report/smoke-summary.md
-            } >> "$GITHUB_STEP_SUMMARY"
-          fi
-
-      - name: 🛑 Fail-fast se smoke falhou (gate)
-        if: steps.e2e_smoke.outcome != 'success'
-        run: |
-          echo "::error title=Smoke gate failed::Smoke parou na 1ª falha — veja '🚦 E2E Smoke Summary' acima e o artifact 'playwright-report' (screenshots+vídeos+trace)."
-          exit 1
-
-      # ─── HEADER STICKY GATE ─────────────────────────────────────────────
-      # Spec dedicado `e2e/flows/22-header-sticky.spec.ts` que valida que o
-      # `<header data-testid="app-header">` permanece `position: sticky` em
-      # y≈0 ao rolar — em todas as rotas autenticadas estáticas do catálogo,
-      # × 3 viewports (mobile/tablet/desktop), + cenários de pós-login e
-      # navegação encadeada entre módulos.
-      #
-      # Fail-fast (`--max-failures=1`): qualquer regressão de sticky
-      # invalida o run. Reporter `github` cria annotation clicável no PR
-      # apontando o spec exato; `list` deixa o log human-readable.
+      # ─── HEADER STICKY GATE ────────────────────────────────────────────────
       - name: 🧲 Run E2E header-sticky gate (fail-fast por rota/viewport)
         id: e2e_header_sticky
-        if: steps.e2e_smoke.outcome == 'success'
+        if: env.E2E_USER_EMAIL != ''
         run: |
           npx playwright test \
             e2e/flows/22-header-sticky.spec.ts \
@@ -135,47 +76,136 @@ jobs:
         continue-on-error: true
 
       - name: 🛑 Fail-fast se header sticky falhou
-        if: steps.e2e_smoke.outcome == 'success' && steps.e2e_header_sticky.outcome != 'success'
+        if: steps.e2e_header_sticky.outcome == 'failure'
         run: |
-          echo "::error title=Header sticky regression::O Header global deixou de ser sticky em alguma rota/viewport. Spec: e2e/flows/22-header-sticky.spec.ts. Causa raiz típica: 'overflow' / 'transform' / 'filter' em ancestral do <header> em src/components/layout/MainLayout.tsx criando scroll container ou stacking context indevido. Veja o artifact 'playwright-report' (screenshot + vídeo + trace) para a rota específica."
+          echo "::error title=Header sticky regression::O Header global deixou de ser sticky em alguma rota/viewport. Spec: e2e/flows/22-header-sticky.spec.ts. Causa raiz típica: 'overflow' / 'transform' / 'filter' em ancestral do <header> em src/components/layout/MainLayout.tsx criando scroll container ou stacking context indevido."
           exit 1
 
-      # ─── REGRESSION: registra TUDO ──────────────────────────────────────
-      # SEM --max-failures: queremos diagnóstico completo. SEM --forbid-only
-      # (já validado no smoke). Reporter `line` é compacto e mostra todos
-      # os resultados; `html` para drill-down; `json`/`junit` para tooling.
-      # Requer E2E_USER_EMAIL configurado — specs autenticados falham sem
-      # credenciais. Quando ausente, step é skipped e o job passa normalmente.
-      - name: Run E2E regression (cobertura completa — registra todas as falhas)
-        if: steps.e2e_smoke.outcome == 'success' && steps.e2e_header_sticky.outcome == 'success' && env.E2E_USER_EMAIL != ''
+      # ─── CARRINHOS URL-STATE ───────────────────────────────────────────────
+      - name: 🛒 Run /carrinhos & /orcamentos URL-state E2E
+        id: e2e_carrinhos_urlstate
+        if: (steps.e2e_header_sticky.outcome == 'success' || steps.e2e_header_sticky.outcome == 'skipped') && env.E2E_USER_EMAIL != ''
         run: |
-          # Sem credenciais de autenticação, limita à suíte pública (routes-public)
-          # para evitar que centenas de testes autenticados falhem com redirect para
-          # /login e estourem o timeout do job. Quando as credenciais estiverem
-          # disponíveis, roda a cobertura completa normalmente.
-          if [ -n "$E2E_USER_EMAIL" ] && [ -n "$E2E_USER_PASSWORD" ]; then
-            npx playwright test \
-              --grep-invert @smoke \
-              --reporter=github,line,html,json,junit
-          else
-            npx playwright test \
-              --project=chromium-public \
-              --grep-invert @smoke \
-              --reporter=github,line,html,json,junit
-          fi
+          npx playwright test \
+            e2e/carrinhos/list-url-state-restore.spec.ts \
+            e2e/carrinhos/list-url-state-overdue-chip.spec.ts \
+            e2e/carrinhos/list-url-state-search-debounce.spec.ts \
+            e2e/carrinhos/list-url-state-clear-filters.spec.ts \
+            e2e/orcamentos/list-url-state-restore.spec.ts \
+            --project=chromium-authed \
+            --retries=2 \
+            --workers=1
+        env:
+          E2E_BASE_URL: http://localhost:8080
+        continue-on-error: true
+
+      - name: 🛑 Fail se carrinhos URL-state falhou
+        if: steps.e2e_carrinhos_urlstate.outcome == 'failure'
+        run: |
+          echo "::error title=Carrinhos URL-state regression::Specs de URL-state em /carrinhos ou /orcamentos falharam."
+          exit 1
+
+# ─── JOB 2: SHARDS DE REGRESSÃO ──────────────────────────────────────────────
+# matriz shard:[1,2,3,4] × project:[chromium-public,chromium-authed]
+# chromium-authed só roda quando E2E_USER_EMAIL estiver configurado.
+  e2e-shard:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30  # E24: E2E leg ≤ 30 min por shard
+    needs: e2e-gates
+    if: needs.e2e-gates.result == 'success'
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+        project: [chromium-public, chromium-authed]
+    env:
+      CI: "true"
+      FORCE_COLOR: "0"
+      PWTEST_FORBID_ONLY: "1"
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
+      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+      E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+      E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
+      E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
+      - uses: ./.github/actions/e2e-setup
+        with:
+          browsers: 'chromium'
+          start-vite: 'true'
+
+      - name: Run E2E regression shard ${{ matrix.shard }}/4 (${{ matrix.project }})
+        if: matrix.project == 'chromium-public' || env.E2E_USER_EMAIL != ''
+        run: |
+          npx playwright test \
+            --project=${{ matrix.project }} \
+            --shard=${{ matrix.shard }}/4 \
+            --grep-invert @smoke \
+            --reporter=blob
         env:
           E2E_BASE_URL: http://localhost:8080
           PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results.json
-          PLAYWRIGHT_JUNIT_OUTPUT_NAME: playwright-report/results.xml
-        continue-on-error: true
-        id: e2e_run
 
-      - name: 📋 Generate feature summary (regression)
+      - name: Upload blob report (shard ${{ matrix.shard }}, ${{ matrix.project }})
         if: always()
-        run: node scripts/e2e-feature-summary.mjs || true
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: blob-report-${{ matrix.project }}-shard-${{ matrix.shard }}
+          path: blob-report
+          retention-days: 1  # temporário — só para merge-reports; E88 tier padrão não se aplica
+
+      - name: Upload evidence artifacts (shard ${{ matrix.shard }}, ${{ matrix.project }})
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: e2e-evidence-${{ matrix.project }}-shard-${{ matrix.shard }}
+          path: |
+            e2e-artifacts/
+            test-results/
+            !test-results/**/trace.zip  # E26: trace contém dados de formulário
+          retention-days: 14
+
+# ─── JOB 3: MERGE DE RELATÓRIOS ──────────────────────────────────────────────
+# Baixa todos os blob-report-* e gera um único HTML report + JSON + JUnit.
+  merge-reports:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10  # E24: estático ≤ 10 min (merge/upload puro)
+    needs: e2e-shard
+    if: always() && (needs.e2e-gates.result == 'success')
+    env:
+      ARTIFACT_RETENTION_DAYS: "14"
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
+
+      - name: Download all blob reports
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          pattern: blob-report-*
+          merge-multiple: true
+          path: all-blob-reports
+
+      - name: Merge Playwright reports
+        run: |
+          npx playwright merge-reports \
+            --reporter=html,json,junit \
+            ./all-blob-reports
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results.json
+          PLAYWRIGHT_JUNIT_OUTPUT_NAME: playwright-report/results.xml
+
+      - name: 📋 Generate feature summary
+        if: always()
+        run: node scripts/e2e-feature-summary.mjs || true  # ok: resumo é best-effort; não deve bloquear upload de artefato
 
       - name: 📤 Append feature summary to GitHub UI
-        if: always() && steps.e2e_run.outcome != 'skipped'
+        if: always()
         run: |
           if test -f playwright-report/feature-summary.md; then
             {
@@ -185,6 +215,12 @@ jobs:
             } >> "$GITHUB_STEP_SUMMARY"
           fi
 
+      - name: Check min tests executed  # E42
+        if: always()
+        uses: ./.github/actions/check-min-tests
+        with:
+          results-json: 'playwright-report/results.json'
+
       - name: Upload Playwright report
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -192,17 +228,6 @@ jobs:
           name: playwright-report
           path: playwright-report
           retention-days: ${{ fromJSON(env.ARTIFACT_RETENTION_DAYS) }}
-
-      - name: Upload smoke summary (markdown + json)
-        if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: e2e-smoke-summary
-          path: |
-            playwright-report/smoke-summary.md
-            playwright-report/smoke-summary.json
-          retention-days: ${{ fromJSON(env.ARTIFACT_RETENTION_DAYS) }}
-          if-no-files-found: ignore
 
       - name: Upload feature summary (markdown)
         if: always()
@@ -213,22 +238,8 @@ jobs:
           retention-days: ${{ fromJSON(env.ARTIFACT_RETENTION_DAYS) }}
           if-no-files-found: ignore
 
-      - name: Upload evidence artifacts (Videos, Screenshots & Network Logs)
-        if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: e2e-evidence
-          path: |
-            e2e-artifacts/
-            test-results/
-            playwright-report/
-          retention-days: ${{ fromJSON(env.ARTIFACT_RETENTION_DAYS) }}
-
-      # Gate final do job: o smoke já falhou cedo (Fail-fast acima), aqui
-      # apenas falhamos se a regression registrou alguma falha. Mensagem
-      # nomeia explicitamente onde olhar.
-      - name: 🛑 Fail job se regression registrou falhas
-        if: steps.e2e_run.outcome == 'failure'
+      - name: 🛑 Fail job se algum shard registrou falhas
+        if: needs.e2e-shard.result == 'failure'
         run: |
-          echo "::error title=Regression failed::Algumas specs falharam — veja '🧪 E2E Feature Summary' acima, artifacts 'playwright-report' (HTML) e 'e2e-evidence' (screenshots/vídeos/trace)."
+          echo "::error title=Regression failed::Alguns shards falharam — veja 'playwright-report' (HTML) e 'e2e-evidence-*' (screenshots/vídeos)."
           exit 1

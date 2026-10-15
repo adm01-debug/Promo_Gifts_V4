@@ -24,16 +24,22 @@ concurrency:
   group: ratchet-weekly
   cancel-in-progress: false
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   lower-ratchets:
     name: Baixar baselines se houve melhora
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
 
     steps:
       - name: Checkout main
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
+          persist-credentials: false  # E32
           ref: main
           fetch-depth: 0
 
@@ -55,8 +61,9 @@ jobs:
           VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
 
       # Bundle ratchet — build primeiro, depois --update-baseline (grava
-      # tamanhos atuais + 20% de margem). Se o bundle cresceu (maxTotalBytes
-      # aumentou), reverte o arquivo para não inflar o teto silenciosamente.
+      # tamanhos atuais + 20% de margem, mas NUNCA aumenta nenhum limite —
+      # check-bundle-size.mjs usa min(atual×1.2, prev) para todos os campos).
+      # Este guard é defense-in-depth: reverte se qualquer campo aumentou (E04).
       - name: Build Vite (necessário para bundle check)
         run: npm run build
         env:
@@ -65,24 +72,45 @@ jobs:
 
       - name: Bundle ratchet — atualizar se melhorou (reverte se piorou)
         run: |
-          OLD_LIMIT=$(node -e "
+          # E04: captura todos os campos relevantes do baseline antes da atualização
+          OLD_TOTAL=$(node -e "
             try {
               const b = JSON.parse(require('fs').readFileSync('bundle-size-baseline.json', 'utf8'));
-              console.log(b.limits.maxTotalBytes);
+              console.log(b.limits?.maxTotalBytes ?? 0);
+            } catch(e) { console.log(0); }
+          ")
+          OLD_CHUNK=$(node -e "
+            try {
+              const b = JSON.parse(require('fs').readFileSync('bundle-size-baseline.json', 'utf8'));
+              console.log(b.limits?.maxChunkBytes ?? 0);
             } catch(e) { console.log(0); }
           ")
           node scripts/check-bundle-size.mjs --update-baseline
-          NEW_LIMIT=$(node -e "
+          NEW_TOTAL=$(node -e "
             try {
               const b = JSON.parse(require('fs').readFileSync('bundle-size-baseline.json', 'utf8'));
-              console.log(b.limits.maxTotalBytes);
+              console.log(b.limits?.maxTotalBytes ?? 0);
             } catch(e) { console.log(0); }
           ")
-          if [ "$OLD_LIMIT" -gt "0" ] && [ "$NEW_LIMIT" -gt "$OLD_LIMIT" ]; then
-            echo "Bundle aumentou (${OLD_LIMIT} → ${NEW_LIMIT} bytes limite) — revertendo baseline."
+          NEW_CHUNK=$(node -e "
+            try {
+              const b = JSON.parse(require('fs').readFileSync('bundle-size-baseline.json', 'utf8'));
+              console.log(b.limits?.maxChunkBytes ?? 0);
+            } catch(e) { console.log(0); }
+          ")
+          INCREASED=false
+          if [ "$OLD_TOTAL" -gt "0" ] && [ "$NEW_TOTAL" -gt "$OLD_TOTAL" ]; then
+            echo "::warning::maxTotalBytes aumentou (${OLD_TOTAL} → ${NEW_TOTAL}) — revertendo baseline."
+            INCREASED=true
+          fi
+          if [ "$OLD_CHUNK" -gt "0" ] && [ "$NEW_CHUNK" -gt "$OLD_CHUNK" ]; then
+            echo "::warning::maxChunkBytes aumentou (${OLD_CHUNK} → ${NEW_CHUNK}) — revertendo baseline."
+            INCREASED=true
+          fi
+          if [ "$INCREASED" = "true" ]; then
             git checkout bundle-size-baseline.json
           else
-            echo "Bundle mantido ou melhorado (${OLD_LIMIT} → ${NEW_LIMIT} bytes limite)."
+            echo "Bundle mantido ou melhorado (total: ${OLD_TOTAL} → ${NEW_TOTAL}, chunk: ${OLD_CHUNK} → ${NEW_CHUNK})."
           fi
         env:
           VITE_SUPABASE_URL: https://placeholder.supabase.co

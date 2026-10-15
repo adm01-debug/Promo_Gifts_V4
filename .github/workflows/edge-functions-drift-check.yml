@@ -5,7 +5,7 @@ name: edge-functions-drift-check
 # Supabase. Falha o build se um ou mais slugs estiverem com hash divergente.
 #
 # Rodadas:
-#   - cron diário (06:00 BRT = 09:00 UTC)
+#   - cron diário (06:06 BRT = 09:06 UTC)
 #   - todo PR que toca supabase/functions/**
 #   - manual via workflow_dispatch
 #   - logo após "Deploy Edge Functions" terminar em main (E65)
@@ -43,20 +43,34 @@ permissions:
 
 concurrency:
   group: edge-functions-drift-check-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   drift:
     name: Compare GitHub × Canonical
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
+    # E27: SUPABASE_ACCESS_TOKEN não deve chegar a PRs de forks
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     env:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-      SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF || 'doufsxqlfjyuvxuezpln' }}
+      SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
     steps:
+      - name: Verify required secrets
+        run: |
+          set -euo pipefail
+          : "${SUPABASE_ACCESS_TOKEN:?SUPABASE_ACCESS_TOKEN não configurado}"
       - name: Checkout repo
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-
+        with:
+          persist-credentials: false  # E32
+          # E57: workflow_run usa o SHA exato que foi deployado, não o HEAD do branch
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
       - name: Install Supabase CLI
         uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v2
         with:
@@ -101,11 +115,12 @@ jobs:
         id: slug_diff
         run: |
           set -euo pipefail
-          comm -23 /tmp/repo_slugs.txt /tmp/canonical_slugs.txt > /tmp/missing_deploy.txt || true
-          comm -13 /tmp/repo_slugs.txt /tmp/canonical_slugs.txt > /tmp/canonical_not_in_repo.txt || true
-          comm -23 /tmp/canonical_not_in_repo.txt /tmp/canonical_only_allowlist.txt > /tmp/orphans.txt || true
-          comm -12 /tmp/canonical_not_in_repo.txt /tmp/canonical_only_allowlist.txt > /tmp/canonical_only_present.txt || true
-          comm -23 /tmp/canonical_only_allowlist.txt /tmp/canonical_slugs.txt > /tmp/canonical_only_stale.txt || true
+          # ok (comm || true): comm pode falhar se um dos arquivos estiver vazio — arquivo de saída vazio é resultado válido para cada diff
+          comm -23 /tmp/repo_slugs.txt /tmp/canonical_slugs.txt > /tmp/missing_deploy.txt || true  # ok: comm exits 1 on empty input — empty output is valid
+          comm -13 /tmp/repo_slugs.txt /tmp/canonical_slugs.txt > /tmp/canonical_not_in_repo.txt || true  # ok: idem
+          comm -23 /tmp/canonical_not_in_repo.txt /tmp/canonical_only_allowlist.txt > /tmp/orphans.txt || true  # ok: idem
+          comm -12 /tmp/canonical_not_in_repo.txt /tmp/canonical_only_allowlist.txt > /tmp/canonical_only_present.txt || true  # ok: idem
+          comm -23 /tmp/canonical_only_allowlist.txt /tmp/canonical_slugs.txt > /tmp/canonical_only_stale.txt || true  # ok: idem
           {
             echo "## Slug-level diff"
             echo
@@ -170,7 +185,7 @@ jobs:
 
             canon_dir="$target_dir/supabase/functions/$slug"
             if [ ! -d "$canon_dir" ]; then
-              canon_index="$(find "$target_dir" -name index.ts -print -quit || true)"
+              canon_index="$(find "$target_dir" -name index.ts -print -quit || true)"  # ok: find retorna non-zero em certas condições de permissão — string vazia é tratada abaixo
               if [ -n "$canon_index" ]; then
                 canon_dir="$(dirname "$canon_index")"
               fi

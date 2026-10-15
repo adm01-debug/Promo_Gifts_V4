@@ -7,13 +7,14 @@ readonly database="magazine_hardening_test"
 readonly actor="00000000-0000-0000-0000-000000000001"
 race_dir=$(mktemp -d /tmp/promo-magazine-hardening-race-XXXXXX)
 
-legacy_callers=$(rg -n \
+# E47: use grep -rE (available on all runners) instead of rg to prevent silent pass on missing binary
+legacy_callers=$(grep -rEn \
   'magazine_(add_items|remove_items|reorder_items|duplicate|update_metadata|publish)_atomic' \
   src supabase/functions \
-  --glob '*.{ts,tsx,js,jsx}' \
-  --glob '!src/integrations/supabase/types.ts' \
-  --glob '!**/__tests__/**' \
-  --glob '!**/*.test.*' || true)
+  --include='*.ts' --include='*.tsx' --include='*.js' --include='*.jsx' \
+  --exclude='*types.ts' \
+  --exclude-dir='__tests__' \
+  2>/dev/null || true)
 if [[ -n "${legacy_callers}" ]]; then
   echo "Executable Magazine code still calls a legacy RPC:" >&2
   echo "${legacy_callers}" >&2

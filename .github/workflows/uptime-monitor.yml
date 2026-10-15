@@ -13,7 +13,7 @@ name: Uptime Monitor
 
 on:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '*/30 * * * *'  # E20: reduzido de 15→30 min (96→48 runs/dia)
   workflow_dispatch:
 
 concurrency:
@@ -35,13 +35,19 @@ env:
   # em 2026-10-11: auth 522 por ~1h com todos os outros probes verdes.
   AUTH_HEALTH_URL: https://doufsxqlfjyuvxuezpln.supabase.co/auth/v1/health
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   check:
-    runs-on: ubuntu-latest
-    timeout-minutes: 4
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6  # E85: 2 retries × 30s × 4 probes + overhead
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
+          persist-credentials: false  # E32
           sparse-checkout: |
             src/integrations/supabase/client.ts
           sparse-checkout-cone-mode: false
@@ -59,21 +65,21 @@ jobs:
             echo "auth=-1" >> "$GITHUB_OUTPUT"
             exit 1
           fi
-          curl -sf --max-time 15 --retry 2 --retry-delay 3 --retry-all-errors \
+          curl -sf --max-time 30 --retry 2 --retry-delay 10 --retry-all-errors \
             -o /dev/null "$SITE_URL"
           SITE=$?
-          curl -sf --max-time 15 --retry 2 --retry-delay 3 --retry-all-errors \
+          curl -sf --max-time 30 --retry 2 --retry-delay 10 --retry-all-errors \
             -H "apikey: $ANON_KEY" \
             -H "Authorization: Bearer $ANON_KEY" \
             -o /dev/null "$FN_URL"
           FN=$?
-          curl -sf --max-time 15 --retry 2 --retry-delay 3 --retry-all-errors \
+          curl -sf --max-time 30 --retry 2 --retry-delay 10 --retry-all-errors \
             -X OPTIONS \
             -H "Origin: https://www.promogifts.com.br" \
             -H "Access-Control-Request-Method: POST" \
             -o /dev/null "$LOGIN_FN_URL"
           LOGIN=$?
-          curl -sf --max-time 15 --retry 2 --retry-delay 3 --retry-all-errors \
+          curl -sf --max-time 30 --retry 2 --retry-delay 10 --retry-all-errors \
             -H "apikey: $ANON_KEY" \
             -H "Authorization: Bearer $ANON_KEY" \
             -o /dev/null "$AUTH_HEALTH_URL"
@@ -84,18 +90,43 @@ jobs:
           echo "auth=$AUTH" >> "$GITHUB_OUTPUT"
           [ "$SITE" -eq 0 ] && [ "$FN" -eq 0 ] && [ "$LOGIN" -eq 0 ] && [ "$AUTH" -eq 0 ]
 
-      - name: Abrir ou comentar issue de falha
+      - name: Garantir label uptime
         if: failure()
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          gh label create uptime --color B60205 --description "Falha de disponibilidade detectada pelo Uptime Monitor" 2>/dev/null || true
-          BODY="Falha em $(date -u +%FT%TZ) — site=${{ steps.probe.outputs.site }} health-check=${{ steps.probe.outputs.fn }} check-login(OPTIONS)=${{ steps.probe.outputs.login }} auth-health=${{ steps.probe.outputs.auth }} (0 = OK, outro valor = exit code do curl). Run: $RUN_URL
-          Runbook: [docs/DISASTER_RECOVERY.md §3](https://github.com/${{ github.repository }}/blob/main/docs/DISASTER_RECOVERY.md)"
-          ISSUE=$(gh issue list --label uptime --state open --limit 1 --json number -q '.[0].number // empty')
-          if [ -n "$ISSUE" ]; then
-            gh issue comment "$ISSUE" --body "$BODY"
-          else
-            gh issue create --title "Uptime: falha de disponibilidade detectada" --label uptime --body "$BODY"
-          fi
+          gh label create uptime --color B60205 \
+            --description "Falha de disponibilidade detectada pelo Uptime Monitor" \
+            2>/dev/null || true  # ok: label pode já existir — idempotente
+
+      - name: Reportar falha de uptime
+        # E12 — ci-issue action com dedupe por hash e marcador <!-- ci-issue:uptime-prod -->
+        if: failure()
+        uses: ./.github/actions/ci-issue
+        with:
+          key: uptime-prod
+          title: "Uptime: falha de disponibilidade detectada"
+          body: |
+            | Probe | Exit code |
+            |---|---|
+            | site | ${{ steps.probe.outputs.site }} |
+            | health-check | ${{ steps.probe.outputs.fn }} |
+            | check-login (OPTIONS) | ${{ steps.probe.outputs.login }} |
+            | auth-health | ${{ steps.probe.outputs.auth }} |
+
+            (0 = OK; qualquer outro valor = exit code do curl)
+
+            Runbook: [docs/DISASTER_RECOVERY.md §3](https://github.com/${{ github.repository }}/blob/main/docs/DISASTER_RECOVERY.md)
+          labels: uptime
+          state: open
+
+      - name: Fechar issue de uptime na recuperação
+        # E12 — fecha a issue quando todos os probes passam
+        if: success()
+        uses: ./.github/actions/ci-issue
+        with:
+          key: uptime-prod
+          title: "Uptime: falha de disponibilidade detectada"
+          body: "Todos os probes passaram."
+          labels: uptime
+          state: resolved

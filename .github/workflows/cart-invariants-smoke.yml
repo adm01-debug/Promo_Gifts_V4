@@ -6,8 +6,7 @@ name: Cart Invariants Smoke (Chrome + Firefox, sharded)
 # Sharding dinâmico:
 #   - Um job `prepare-matrix` calcula `total_shards` (padrão: 2) a partir de:
 #       1) input do workflow_dispatch (`total_shards`);
-#       2) repo/environment variable `CART_TOTAL_SHARDS`;
-#       3) fallback fixo (2).
+#       2) fallback fixo (2).
 #     e emite a matriz JSON consumida por `invariants-smoke`.
 #   - O job `invariants-summary` mede a razão (avg / wall) por browser e:
 #       - imprime tabela formatada de duração por shard;
@@ -34,7 +33,7 @@ on:
 
 concurrency:
   group: cart-invariants-smoke-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 # Thresholds de duração (segundos) — usados no summary para alertar quando
 # um shard está lento demais e sugerir aumento de sharding.
@@ -46,6 +45,11 @@ env:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   # ─────────────────────────────────────────────────────────────────────
   # 1) Prepara a matriz dinamicamente. total_shards vem de input →
@@ -53,7 +57,7 @@ jobs:
   # ─────────────────────────────────────────────────────────────────────
   prepare-matrix:
     name: prepare-matrix
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     outputs:
       matrix: ${{ steps.build.outputs.matrix }}
@@ -62,10 +66,9 @@ jobs:
       - id: build
         env:
           INPUT_TOTAL_SHARDS: ${{ github.event.inputs.total_shards }}
-          VAR_TOTAL_SHARDS: ${{ vars.CART_TOTAL_SHARDS }}
         run: |
           set -e
-          RAW="${INPUT_TOTAL_SHARDS:-${VAR_TOTAL_SHARDS:-2}}"
+          RAW="${INPUT_TOTAL_SHARDS:-2}"
           # Normaliza para inteiro e clampeia entre 1 e 4.
           if ! [[ "$RAW" =~ ^[0-9]+$ ]]; then RAW=2; fi
           if [ "$RAW" -lt 1 ]; then RAW=1; fi
@@ -93,8 +96,6 @@ jobs:
           echo "- **jobs totais:** \`$((TOTAL * 2))\` (chromium + firefox × $TOTAL shards)" >> "$GITHUB_STEP_SUMMARY"
           if [ -n "$INPUT_TOTAL_SHARDS" ]; then
             echo "- **fonte:** workflow_dispatch input" >> "$GITHUB_STEP_SUMMARY"
-          elif [ -n "$VAR_TOTAL_SHARDS" ]; then
-            echo "- **fonte:** repo variable \`CART_TOTAL_SHARDS\`" >> "$GITHUB_STEP_SUMMARY"
           else
             echo "- **fonte:** default (2)" >> "$GITHUB_STEP_SUMMARY"
           fi
@@ -104,7 +105,7 @@ jobs:
   # ─────────────────────────────────────────────────────────────────────
   invariants-smoke:
     name: cart-invariants (${{ matrix.project }} · shard ${{ matrix.shard }}/${{ matrix.total_shards }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [prepare-matrix]
     timeout-minutes: 15
     strategy:
@@ -119,6 +120,8 @@ jobs:
       E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -238,7 +241,7 @@ jobs:
   # ─────────────────────────────────────────────────────────────────────
   invariants-summary:
     name: cart-invariants-summary
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     needs: [prepare-matrix, invariants-smoke]
     if: always()
@@ -353,54 +356,14 @@ jobs:
             echo "" >> "$SUMMARY_FILE"
             echo "> Os shards estão **bem balanceados** (avg/wall ≥ ${RATIO}) mas o wall clock" >> "$SUMMARY_FILE"
             echo "> ultrapassou o limiar de \`${WARN}s\`. Recomendado: **total_shards = \`$REC\`**." >> "$SUMMARY_FILE"
-            echo "> O step seguinte tenta persistir \`vars.CART_TOTAL_SHARDS=$REC\` automaticamente" >> "$SUMMARY_FILE"
-            echo "> (requer secret \`CART_TUNE_PAT\` com permissão \`Variables: Read and write\`)." >> "$SUMMARY_FILE"
+            echo "> Ajuste \`total_shards\` manualmente via workflow_dispatch para aplicar." >> "$SUMMARY_FILE"
           else
             echo "> ℹ️ Nenhum ajuste de sharding recomendado neste run." >> "$SUMMARY_FILE"
           fi
 
-      # Persistência do auto-tune. Só roda:
-      #   - quando o step anterior recomendou bump;
-      #   - no branch default (main), fora de PR — evita fork PR
-      #     mutando repo state;
-      #   - se o secret CART_TUNE_PAT estiver presente (a permissão de
-      #     `Variables: Read and write` NÃO existe no GITHUB_TOKEN default).
-      # Caso o secret não exista, o step apenas registra um aviso e segue.
-      - name: Persistir CART_TOTAL_SHARDS (auto-tune)
-        if: >
-          always() &&
-          steps.summary.outputs.should_bump == '1' &&
-          github.event_name == 'push' &&
-          github.ref == 'refs/heads/main'
-        env:
-          GH_TOKEN: ${{ secrets.CART_TUNE_PAT }}
-          REC: ${{ steps.summary.outputs.recommended_shards }}
-        run: |
-          set -e
-          if [ -z "${GH_TOKEN:-}" ]; then
-            echo "::warning::Secret CART_TUNE_PAT ausente — não é possível persistir CART_TOTAL_SHARDS. Defina manualmente em Settings → Secrets and variables → Actions → Variables."
-            {
-              echo ""
-              echo "> ⚠️ **Auto-tune não persistiu.** Configure o secret \`CART_TUNE_PAT\` (PAT fine-grained com escopo \`Variables: Read and write\` no repo) para habilitar."
-            } >> "$GITHUB_STEP_SUMMARY"
-            exit 0
-          fi
-
-          echo "→ Aplicando gh variable set CART_TOTAL_SHARDS=${REC} em ${GITHUB_REPOSITORY}"
-          if gh variable set CART_TOTAL_SHARDS --body "${REC}" --repo "${GITHUB_REPOSITORY}"; then
-            {
-              echo ""
-              echo "### ✅ Auto-tune aplicado"
-              echo ""
-              echo "> \`vars.CART_TOTAL_SHARDS\` foi definido para **\`${REC}\`**. O próximo run já usará essa configuração — sem oscilar de volta para 2."
-            } >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo "::warning::Falha ao executar 'gh variable set'. Verifique se o PAT tem escopo 'Variables: Read and write' no repositório."
-            {
-              echo ""
-              echo "> ❌ **Auto-tune falhou** ao persistir a variável. Ajuste manualmente para \`${REC}\` ou revise o PAT."
-            } >> "$GITHUB_STEP_SUMMARY"
-          fi
+      # Nota: o passo de persistência automática de total_shards foi removido pois
+      # dependia de secret CART_TUNE_PAT que não existe. Ajuste total_shards
+      # manualmente via workflow_dispatch quando recomendado pelo step acima.
 
 
       - name: Falha se algum shard falhou

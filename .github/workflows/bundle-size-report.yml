@@ -9,22 +9,28 @@ on:
       - 'package-lock.json'
       - 'vite.config.ts'
       - 'bundle-size-baseline.json'
+      - '.github/workflows/bundle-size-report.yml'
 
 concurrency:
   group: bundle-size-report-${{ github.ref }}
-  cancel-in-progress: true
-
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}  # E19: PR cancela; dispatch não
 permissions:
   contents: read
   pull-requests: write
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   report:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
+          persist-credentials: false  # E32
           fetch-depth: 1
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0

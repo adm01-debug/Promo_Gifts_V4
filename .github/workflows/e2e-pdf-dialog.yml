@@ -20,11 +20,13 @@ on:
       - 'e2e/flows/pdf-dialog.spec.ts'
       - 'src/components/pdf/**'
       - 'src/components/quotes/PdfGenerationDialog*'
+      - '.github/workflows/e2e-pdf-dialog.yml'
   pull_request:
     paths:
       - 'e2e/flows/pdf-dialog.spec.ts'
       - 'src/components/pdf/**'
       - 'src/components/quotes/PdfGenerationDialog*'
+      - '.github/workflows/e2e-pdf-dialog.yml'
   workflow_dispatch:
     inputs:
       update_snapshots:
@@ -41,16 +43,21 @@ permissions:
 
 concurrency:
   group: e2e-pdf-dialog-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
   E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   pdf-dialog:
     name: PDF dialog + watermark pixel-diff
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     env:
       CI: 'true'
@@ -59,6 +66,8 @@ jobs:
       E2E_BASE_URL: http://localhost:8080
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -103,7 +112,7 @@ jobs:
             test-results/**/*.png
             e2e/**/__screenshots__/**/proposal-watermark-*.png
             e2e/**/__screenshots__/**/proposal-page-watermark-*.png
-          retention-days: 30
+          retention-days: 14
           if-no-files-found: warn
 
       # Baseline "oficial" só é publicado no dispatch de update para deixar
@@ -116,7 +125,7 @@ jobs:
           path: |
             e2e/**/__screenshots__/**/proposal-watermark-*.png
             e2e/**/__screenshots__/**/proposal-page-watermark-*.png
-          retention-days: 30
+          retention-days: 14
           if-no-files-found: warn
 
       # ── Recalibração automática de thresholds ─────────────────────────
@@ -144,7 +153,7 @@ jobs:
             qa/reports/watermark-threshold-recalibration.md
             qa/reports/watermark-threshold-recalibration.json
             test-results/**/*-diff.png
-          retention-days: 30
+          retention-days: 14
           if-no-files-found: warn
 
       # Comentário sticky no PR SOMENTE quando a recalibração sugere
@@ -193,8 +202,8 @@ jobs:
         if: always()
         run: |
           if [ ! -f qa/reports/watermark-threshold-recalibration.json ]; then
-            echo "::warning::JSON de recalibração ausente — pulando gate."
-            exit 0
+            echo "::warning::JSON de recalibração ausente — baselines não gerados. Rode workflow_dispatch com update_snapshots=true primeiro."
+            exit 0  # E54: sem baseline não falha o gate (primeira execução)
           fi
           node -e "
             const p = JSON.parse(require('fs').readFileSync('qa/reports/watermark-threshold-recalibration.json','utf8'));

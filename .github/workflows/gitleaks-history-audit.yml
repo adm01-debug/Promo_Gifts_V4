@@ -8,30 +8,36 @@ name: Gitleaks — Full History Audit
 
 on:
   schedule:
-    - cron: '44 6 * * *'      # diario as 06h UTC (03h BRT)
+    - cron: '44 6 * * *'      # diario as 06:44 UTC (03:44 BRT)
   workflow_dispatch:           # botao "Run workflow" no GitHub UI
   push:
     branches: [main]           # tambem audita a cada merge em main
 
 permissions:
   contents: read
-  security-events: write       # para upload de SARIF
+  # security-events: write — removido E92 (SARIF salvo como artefato, não no Security Dashboard)
   issues: write                # para abrir issue automatica em finding
 
 concurrency:
   group: gitleaks-history-audit-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
+
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   gitleaks-full-history:
     name: Scan complete git history for leaked secrets
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
 
     steps:
       - name: Checkout (full history)
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
+          persist-credentials: false  # E32
           fetch-depth: 0       # baixa TODO o historico, nao apenas o ultimo commit
 
       - name: Run Gitleaks
@@ -50,7 +56,7 @@ jobs:
         with:
           name: gitleaks-report-${{ github.run_id }}
           path: results.sarif
-          retention-days: 90
+          retention-days: 90  # E88 — auditoria de vazamento de segredos (SARIF); retenção longa justificada para rastreabilidade de segurança
 
       - name: Open issue if leaks found
         if: failure()
@@ -101,6 +107,6 @@ jobs:
                 repo: context.repo.repo,
                 title,
                 body,
-                labels: ['security', 'priority-high', 'gitleaks'],
+                labels: ['security', 'priority/high', 'gitleaks'],
               });
             }

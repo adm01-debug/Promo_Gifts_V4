@@ -88,7 +88,8 @@ for (let i = 1; i <= RUNS; i++) {
     ],
     {
       stdio: ['ignore', 'inherit', 'inherit'],
-      env: { ...process.env, TZ: 'America/Sao_Paulo', CI: 'true', NODE_ENV: 'test' },
+      // E47: VITEST_RETRY=0 so flaky tests surface instead of being silently re-tried
+      env: { ...process.env, TZ: 'America/Sao_Paulo', CI: 'true', NODE_ENV: 'test', VITEST_RETRY: '0' },
     },
   );
   const elapsed = ((Date.now() - started) / 1000).toFixed(1);

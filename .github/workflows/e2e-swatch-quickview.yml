@@ -9,10 +9,19 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+    paths:  # E14: evitar CI em PRs doc-only
+      - 'src/**'
+      - 'e2e/**'
+      - 'public/**'
+      - 'package*.json'
+      - '.nvmrc'
+      - 'playwright.config.*'
+      - 'vite.config.*'
+      - '.github/workflows/e2e-swatch-quickview.yml'
 
 concurrency:
   group: e2e-swatch-quickview-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   CI: "true"
@@ -25,29 +34,42 @@ env:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   swatch-quickview:
     name: ${{ matrix.browser }} • swatch→QV
     timeout-minutes: 25
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
         browser: [chromium, firefox, webkit]
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: ./.github/actions/e2e-setup
         with:
           browsers: 'chromium,${{ matrix.browser }}'
           start-vite: 'false'
       - name: Run swatch→QuickView suite (V1 + V2 + focus/QV)
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results-swatch-${{ matrix.browser }}.json
         run: |
           npx playwright test \
             e2e/catalog/swatch-quickview-list-table.spec.ts \
             e2e/catalog/swatch-quickview-v2-list-table.spec.ts \
             e2e/catalog/swatch-picker-v2-focus-and-quickview.spec.ts \
-            --project=${{ matrix.browser }}-authed \
-            --reporter=line,html
+            --project=${{ matrix.browser }}-authed
+      - name: Check min tests executed  # E42
+        if: always()
+        uses: ./.github/actions/check-min-tests
+        with:
+          results-json: 'playwright-report/results-swatch-${{ matrix.browser }}.json'
       - name: Upload report + traces + videos (${{ matrix.browser }})
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
@@ -56,4 +78,5 @@ jobs:
           path: |
             playwright-report/
             test-results/
+            !test-results/**/trace.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
           retention-days: 14

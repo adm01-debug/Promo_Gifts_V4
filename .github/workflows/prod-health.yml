@@ -1,4 +1,4 @@
-name: Production Health Check
+name: Static Health Checks
 
 on:
   push:
@@ -10,18 +10,25 @@ permissions:
 
 concurrency:
   group: prod-health-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
+
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   health-check:
     name: Verificação de saúde pós-merge
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
 
     steps:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
+        with:
+          persist-credentials: false  # E32
       - name: Setup Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -100,7 +107,7 @@ jobs:
           COMMIT_MESSAGE: ${{ github.event.head_commit.message || 'workflow_dispatch' }}
         run: |
           {
-            echo "## 🏥 Production Health Check — $(date -u '+%Y-%m-%d %H:%M UTC')"
+            echo "## 🔍 Static Health Checks — $(date -u '+%Y-%m-%d %H:%M UTC')"
             echo ""
             echo "### Commit analisado"
             echo "\`${{ github.sha }}\` — $COMMIT_MESSAGE"
@@ -154,7 +161,7 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           SHA: ${{ github.sha }}
         run: |
-          PAYLOAD=$(printf '{"text":"🚨 *Production Health Check FALHOU* em %s\n• Commit: `%s`\n• Run: %s\n• Ação necessária: verificar SSOT Supabase"}' \
+          PAYLOAD=$(printf '{"text":"🚨 *Static Health Checks FALHOU* em %s\n• Commit: `%s`\n• Run: %s\n• Ação necessária: verificar SSOT Supabase"}' \
                     "$REPO" "${SHA:0:7}" "$RUN_URL")
           curl -sS -X POST -H 'Content-Type: application/json' \
                --data "$PAYLOAD" \

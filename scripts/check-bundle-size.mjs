@@ -116,7 +116,8 @@ if (UPDATE_FLAG) {
   const total = chunks.reduce((sum, c) => sum + c.size, 0);
   const maxChunk = chunks[0]?.size ?? 0;
 
-  // Preserva criticalChunks existentes; recalcula os limites com +20%.
+  // Preserva criticalChunks existentes; recalcula os limites com +20% mas
+  // NUNCA aumenta um limite existente — E04: ratchet só desce.
   const previousBaseline = existsSync(BASELINE_PATH)
     ? JSON.parse(readFileSync(BASELINE_PATH, 'utf8'))
     : {};
@@ -125,19 +126,26 @@ if (UPDATE_FLAG) {
   const criticalChunks = {};
   for (const [prefix, def] of Object.entries(existingCritical)) {
     const found = findChunkByPrefix(chunks, prefix);
+    const newMax = found ? Math.ceil(found.size * 1.2) : def.maxBytes;
     criticalChunks[prefix] = {
       ...def,
-      maxBytes: found ? Math.ceil(found.size * 1.2) : def.maxBytes,
+      // min(atual×1.2, prev) — nunca aumenta o teto (E04)
+      maxBytes: Math.min(newMax, def.maxBytes),
       currentBytes: found ? found.size : null,
     };
   }
+
+  const prevLimits = previousBaseline.limits ?? {};
+  const newMaxChunk = Math.ceil(maxChunk * 1.2);
+  const newMaxTotal = Math.ceil(total * 1.2);
 
   const baseline = {
     generatedAt: new Date().toISOString(),
     description: 'Bundle size baseline (raw JS bytes). Update: node scripts/check-bundle-size.mjs --update-baseline',
     limits: {
-      maxChunkBytes: Math.ceil(maxChunk * 1.2),
-      maxTotalBytes: Math.ceil(total * 1.2),
+      // min(atual×1.2, prev) — nunca aumenta o teto (E04)
+      maxChunkBytes: prevLimits.maxChunkBytes ? Math.min(newMaxChunk, prevLimits.maxChunkBytes) : newMaxChunk,
+      maxTotalBytes: prevLimits.maxTotalBytes ? Math.min(newMaxTotal, prevLimits.maxTotalBytes) : newMaxTotal,
       warningThresholdPct: DEFAULT_LIMITS.warningThresholdPct,
       regressionThresholdPct: DEFAULT_LIMITS.regressionThresholdPct,
     },
@@ -215,6 +223,10 @@ if (CHECK_RATCHET && currentBaselineRaw) {
       console.log('ℹ️  Baseline aumentado — label `ratchet-override` presente; permitido.');
     }
   } catch (e) {
+    if (process.env.GITHUB_EVENT_NAME === 'pull_request') {
+      console.error(`❌ Ratchet check: não foi possível ler baseline da base (${baseRef}): ${e.message}`);
+      process.exit(1);
+    }
     console.warn(`⚠️  Ratchet check: não foi possível comparar baseline com ${baseRef}: ${e.message}`);
   }
 }

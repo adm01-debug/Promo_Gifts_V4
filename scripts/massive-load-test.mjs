@@ -29,6 +29,10 @@ const SUPABASE_URL = (process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL 
 const SERVICE_ROLE_KEY =
   process.env.SUPABASE_TEST_BYPASS_TOKEN || process.env.SUPABASE_SERVICE_ROLE_KEY;
 
+// E38 — DRY_RUN=1 por padrão; produção só com ALLOW_PROD_LOAD=1 em dispatch gated
+const CANONICAL_PROJECT = 'doufsxqlfjyuvxuezpln';
+const DRY_RUN = process.env.DRY_RUN !== '0';
+
 if (!SUPABASE_URL) {
   console.log('[massive-load-test] credenciais ausentes. Pulando teste de carga real.');
   process.exit(0);
@@ -39,7 +43,19 @@ if (!SERVICE_ROLE_KEY) {
   process.exit(0);
 }
 
-const TOTAL_REQUESTS = Number(process.env.LOAD_TOTAL_REQUESTS) || 1_000;
+if (SUPABASE_URL.includes(CANONICAL_PROJECT) && process.env.ALLOW_PROD_LOAD !== '1') {
+  console.error('[massive-load-test] BLOQUEADO: URL aponta para o projeto canônico de produção.');
+  console.error('  Defina ALLOW_PROD_LOAD=1 somente em dispatch gated (environment: production-readonly).');
+  process.exit(1);
+}
+
+if (DRY_RUN) {
+  console.log('[massive-load-test] DRY_RUN=1 (padrão) — nenhuma requisição HTTP enviada.');
+  console.log('  Para executar de verdade: DRY_RUN=0 LOAD_TARGET_URL=<url-não-canônica>');
+  process.exit(0);
+}
+
+const TOTAL_REQUESTS = Math.min(Number(process.env.LOAD_TOTAL_REQUESTS) || 500, 500); // E38: cap 500
 const REQUEST_TIMEOUT_MS = 15_000;
 
 // SLA thresholds

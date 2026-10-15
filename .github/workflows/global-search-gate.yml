@@ -6,26 +6,35 @@ on:
     paths:
       - 'src/components/search/**'
       - 'e2e/flows/global-search-comprehensive.spec.ts'
+      - '.github/workflows/global-search-gate.yml'
   pull_request:
     branches: [ main ]
     paths:
       - 'src/components/search/**'
       - 'e2e/flows/global-search-comprehensive.spec.ts'
+      - '.github/workflows/global-search-gate.yml'
 
 permissions:
   contents: read
 
 concurrency:
   group: global-search-gate-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   vitest:
     name: Vitest - Component Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -59,10 +68,12 @@ jobs:
 
   playwright:
     name: Playwright - Cross-browser E2E
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'

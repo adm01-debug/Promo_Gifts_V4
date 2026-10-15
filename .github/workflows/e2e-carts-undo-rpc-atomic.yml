@@ -1,9 +1,10 @@
 name: E2E · Carts Undo RPC Atomic
 
-# Gate obrigatório: valida o fluxo Desfazer/restaurar via RPC atômica
+# E2E focado: valida o fluxo Desfazer/restaurar via RPC atômica
 # (restore_seller_cart) — sucesso + falha por RLS — instalando Chromium
 # via `npx playwright install --with-deps chromium` para que o teste
 # realmente execute.
+# (E58: "Gate obrigatório" removido — único required check é o Gate Final em deploy-gates.yml)
 
 on:
   pull_request:
@@ -22,15 +23,20 @@ on:
 
 concurrency:
   group: e2e-carts-undo-rpc-atomic-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   e2e:
     name: E2E · chromium-authed
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
       E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
@@ -40,6 +46,8 @@ jobs:
       E2E_BASE_URL: http://localhost:8080
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .nvmrc
@@ -58,4 +66,4 @@ jobs:
         with:
           name: playwright-report-carts-undo-rpc
           path: playwright-report/
-          retention-days: 7
+          retention-days: 14

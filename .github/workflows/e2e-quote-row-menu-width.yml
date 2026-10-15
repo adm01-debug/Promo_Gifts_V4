@@ -21,12 +21,17 @@ permissions:
 
 concurrency:
   group: e2e-quote-row-menu-width-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   menu-width:
     timeout-minutes: 20
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       CI: 'true'
       E2E_BASE_URL: http://localhost:8080
@@ -40,6 +45,8 @@ jobs:
         viewport: [desktop, mobile]
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -61,5 +68,6 @@ jobs:
           path: |
             playwright-report/
             test-results/
+            !test-results/**/trace.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
           retention-days: 14
           if-no-files-found: ignore

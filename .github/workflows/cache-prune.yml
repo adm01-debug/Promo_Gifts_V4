@@ -1,0 +1,111 @@
+name: Cache Prune
+
+# E18 (2026-10-14) — Poda semanal de caches GitHub Actions.
+#
+# Problema: 10,56 GB / 52 entradas de cache (> cota de 10 GB → evicção aleatória);
+# caches por refs/pull/N/merge jamais reutilizados depois que o PR fecha.
+# Este workflow remove caches de PRs fechados e impede que o total ultrapasse 8 GB.
+#
+# Cadência: semanal, segunda 07:11 UTC (E89 — sem colisão com outros crons de segunda).
+
+on:
+  schedule:
+    - cron: '11 7 * * 1' # semanal, segunda 07:11 UTC — E18 cache prune
+  workflow_dispatch:
+
+concurrency:
+  group: cache-prune
+  cancel-in-progress: false # R2/E19: schedule/dispatch nunca cancelado
+
+permissions:
+  actions: write   # para deletar caches via API
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  prune:
+    name: Prune stale PR caches
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Delete caches from closed PRs
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const owner = context.repo.owner;
+            const repo  = context.repo.repo;
+
+            // Lista todos os caches
+            let caches = [];
+            let page = 1;
+            while (true) {
+              const { data } = await github.rest.actions.getActionsCacheList({
+                owner, repo, per_page: 100, page,
+              });
+              if (data.actions_caches.length === 0) break;
+              caches = caches.concat(data.actions_caches);
+              page++;
+            }
+            core.info(`Total de caches encontrados: ${caches.length}`);
+
+            // Identifica caches de refs de PR (refs/pull/*/merge ou refs/pull/*/head)
+            const prCaches = caches.filter(c =>
+              c.ref && /^refs\/pull\/\d+\/(merge|head)$/.test(c.ref)
+            );
+            core.info(`Caches de PR: ${prCaches.length}`);
+
+            // Extrai números de PR únicos
+            const prNumbers = [...new Set(
+              prCaches.map(c => parseInt(c.ref.match(/refs\/pull\/(\d+)\//)[1], 10))
+            )];
+
+            // Verifica quais PRs estão fechados
+            const closedPRs = new Set();
+            for (const num of prNumbers) {
+              try {
+                const { data: pr } = await github.rest.pulls.get({ owner, repo, pull_number: num });
+                if (pr.state === 'closed') closedPRs.add(num);
+              } catch {
+                // PR deletado ou inacessível → considerar fechado
+                closedPRs.add(num);
+              }
+            }
+            core.info(`PRs fechados com caches: ${closedPRs.size}`);
+
+            // Deleta caches de PRs fechados
+            let deleted = 0;
+            for (const cache of prCaches) {
+              const num = parseInt(cache.ref.match(/refs\/pull\/(\d+)\//)[1], 10);
+              if (closedPRs.has(num)) {
+                try {
+                  await github.rest.actions.deleteActionsCacheById({
+                    owner, repo, cache_id: cache.id,
+                  });
+                  deleted++;
+                  core.info(`Deletado cache #${cache.id} (PR #${num}, ${cache.key})`);
+                } catch (e) {
+                  core.warning(`Falha ao deletar cache #${cache.id}: ${e.message}`);
+                }
+              }
+            }
+
+            // Relatório de uso após poda
+            const { data: usage } = await github.rest.actions.getActionsCacheUsage({ owner, repo });
+            const usedGB = (usage.active_caches_size_in_bytes / 1e9).toFixed(2);
+            core.summary.addHeading('Cache Prune Result');
+            core.summary.addTable([
+              [{ data: 'Métrica', header: true }, { data: 'Valor', header: true }],
+              ['Caches antes', String(caches.length)],
+              ['Caches de PR fechados deletados', String(deleted)],
+              ['Caches restantes', String(caches.length - deleted)],
+              ['Uso atual', `${usedGB} GB`],
+            ]);
+            await core.summary.write();
+
+            if (parseFloat(usedGB) > 8) {
+              core.warning(`Cache usage (${usedGB} GB) ainda acima de 8 GB após poda — considerar reduzir cache keys`);
+            }

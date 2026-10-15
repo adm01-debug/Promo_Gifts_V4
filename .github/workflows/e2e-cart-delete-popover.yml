@@ -20,18 +20,25 @@ on:
 
 concurrency:
   group: e2e-cart-delete-popover-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   fuzz-and-unit:
     name: Fuzz + Unit (rápido)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .nvmrc
@@ -44,7 +51,7 @@ jobs:
 
   e2e:
     name: E2E · ${{ matrix.project }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     strategy:
       fail-fast: false
@@ -58,6 +65,8 @@ jobs:
       E2E_BASE_URL: http://localhost:8080
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .nvmrc
@@ -77,4 +86,4 @@ jobs:
         with:
           name: playwright-report-${{ matrix.project }}
           path: playwright-report/
-          retention-days: 7
+          retention-days: 14

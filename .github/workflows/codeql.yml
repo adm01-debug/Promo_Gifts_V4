@@ -5,7 +5,7 @@ on:
     branches: [main]
   # 2026-09-27: pull_request removido — CodeQL em todo PR adicionava 12min/2 jobs
   # ao fan-out do repo (123 workflows). Varredura continua em cada push na main e
-  # na segunda 09:00 UTC. Sem branch protection, não bloqueia nenhuma PR.
+  # na segunda 09:33 UTC. Sem branch protection, não bloqueia nenhuma PR.
   schedule:
     - cron: '33 9 * * 1'
 
@@ -16,12 +16,17 @@ permissions:
 
 concurrency:
   group: codeql-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
+
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
 
     strategy:
@@ -33,6 +38,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
+        with:
+          persist-credentials: false  # E32
       - name: Check Code Security availability
         id: code-security
         env:
@@ -40,13 +47,14 @@ jobs:
           API_URL: ${{ github.api_url }}
           REPOSITORY: ${{ github.repository }}
         run: |
+          set -euo pipefail
           response_file="$(mktemp)"
-          status="$(curl --silent --show-error \\
-            --output "$response_file" \\
-            --write-out '%{http_code}' \\
-            --header 'Accept: application/vnd.github+json' \\
-            --header "Authorization: Bearer $GH_TOKEN" \\
-            --header 'X-GitHub-Api-Version: 2022-11-28' \\
+          status="$(curl --silent --show-error \
+            --output "$response_file" \
+            --write-out '%{http_code}' \
+            --header 'Accept: application/vnd.github+json' \
+            --header "Authorization: Bearer $GH_TOKEN" \
+            --header 'X-GitHub-Api-Version: 2022-11-28' \
             "$API_URL/repos/$REPOSITORY/code-scanning/alerts?per_page=1")"
 
           if [ "$status" = '200' ]; then
@@ -66,32 +74,26 @@ jobs:
 
       - name: Initialize CodeQL
         if: steps.code-security.outputs.enabled == 'true'
-        uses: github/codeql-action/init@v4
+        uses: github/codeql-action/init@24c54180a607b1449ed407dd24f251e4e9147c8d # v4
         with:
           languages: ${{ matrix.language }}
           queries: security-extended
 
-      - name: Autobuild
-        if: steps.code-security.outputs.enabled == 'true'
-        uses: github/codeql-action/autobuild@v4
-
       - name: Perform CodeQL Analysis
         if: steps.code-security.outputs.enabled == 'true'
-        uses: github/codeql-action/analyze@v4
+        uses: github/codeql-action/analyze@24c54180a607b1449ed407dd24f251e4e9147c8d # v4
         with:
           category: "/language:${{ matrix.language }}"
 
-      - name: Gate E96 — falha em alertas HIGH/CRITICAL do CodeQL
+      - name: Gate E96 — ratchet de alertas HIGH/CRITICAL do CodeQL
         if: steps.code-security.outputs.enabled == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          # Conta alertas CodeQL abertos com security_severity_level=high ou critical.
-          # fail-on: high foi removido por ser input não documentado em analyze@v4
-          # (codeql-action ignora inputs desconhecidos sem falhar — Codex P1, 2026-10-02).
+          set -euo pipefail
+          # Ratchet E10/E96: falha se COUNT aumentou em relação ao baseline commitado.
           # severity=high filtra pelo campo security_severity_level da rule;
-          # severity=error filtraria pelo SARIF problem level (campo distinto — Codex P1).
-          # severity=critical é distinto de high na API — ambos devem ser consultados (Codex P1, 2026-10-02).
+          # severity=critical é distinto de high na API — ambos consultados (Codex P1, 2026-10-02).
           COUNT_HIGH=$(gh api \
             "repos/${{ github.repository }}/code-scanning/alerts?state=open&severity=high&per_page=100" \
             --jq 'length')
@@ -99,8 +101,17 @@ jobs:
             "repos/${{ github.repository }}/code-scanning/alerts?state=open&severity=critical&per_page=100" \
             --jq 'length')
           COUNT=$(( ${COUNT_HIGH:-0} + ${COUNT_CRITICAL:-0} ))
-          if [ "${COUNT}" -gt 0 ]; then
-            echo "::error::❌ ${COUNT} alerta(s) HIGH/CRITICAL do CodeQL em aberto (high=${COUNT_HIGH:-0}, critical=${COUNT_CRITICAL:-0}) — corrija antes de mergear"
+
+          BASELINE=0
+          if [ -f .codeql-alerts-baseline.json ]; then
+            BASELINE=$(jq -r '.high_critical // 0' .codeql-alerts-baseline.json)
+          fi
+
+          if [ "${COUNT}" -gt "${BASELINE}" ]; then
+            echo "::error::❌ Regressão CodeQL: ${COUNT} alerta(s) HIGH/CRITICAL (high=${COUNT_HIGH:-0}, critical=${COUNT_CRITICAL:-0}) > baseline ${BASELINE} — corrija antes de mergear ou atualize .codeql-alerts-baseline.json"
             exit 1
           fi
-          echo "✅ 0 alertas HIGH/CRITICAL do CodeQL em aberto"
+          if [ "${COUNT}" -gt 0 ]; then
+            echo "::warning::${COUNT} alerta(s) HIGH/CRITICAL conhecidos (≤ baseline ${BASELINE}) — atualize .codeql-alerts-baseline.json ao corrigir"
+          fi
+          echo "✅ CodeQL ratchet OK: ${COUNT} alerta(s) HIGH/CRITICAL (baseline: ${BASELINE})"

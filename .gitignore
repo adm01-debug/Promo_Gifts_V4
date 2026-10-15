@@ -86,3 +86,5 @@ reports/mutation/
 graphify-out/*
 !graphify-out/GRAPH_REPORT.md
 !graphify-out/manifest.json
+bun.lock
+bun.lockb

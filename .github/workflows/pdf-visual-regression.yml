@@ -22,26 +22,29 @@ permissions:
 
 concurrency:
   group: pdf-visual-regression-${{ github.ref }}
-  cancel-in-progress: true
-
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}  # E19: PR cancela; dispatch não
 env:
   E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
   E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   pdf-diff:
     name: Diff visual dos PDFs de proposta
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
-    permissions:
-      contents: write
-      pull-requests: write
+    # E61: removed contents:write — baselines update via artifact download, not git push
     env:
       PDF_VISUAL_THRESHOLD_PCT: '0.1'
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
+          persist-credentials: false  # E32
           fetch-depth: 0
 
       - name: Setup Node
@@ -69,20 +72,15 @@ jobs:
         if: ${{ github.event.inputs.update_baseline == 'true' }}
         run: node scripts/qa/diff-proposal-pdfs.mjs --update-baseline
 
-      - name: Commitar baseline atualizado
+      # E61: replaced git commit+push with artifact upload — developer downloads and commits manually
+      - name: Upload baseline atualizado (artifact — commit manualmente)
         if: ${{ github.event.inputs.update_baseline == 'true' }}
-        env:
-          HUSKY: '0'
-        run: |
-          git config user.name  'github-actions[bot]'
-          git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git add qa/exports/baseline/*.png
-          if git diff --cached --quiet; then
-            echo "Nenhuma mudança no baseline."
-          else
-            git commit -m "chore(pdf): atualizar baseline visual dos PDFs de proposta"
-            git push
-          fi
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: pdf-baseline-updated-${{ github.run_id }}
+          path: qa/exports/baseline/*.png
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Publicar artifacts (diffs + renderizações)
         if: failure() || github.event.inputs.update_baseline == 'true'

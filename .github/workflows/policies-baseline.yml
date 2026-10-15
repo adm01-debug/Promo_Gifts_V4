@@ -34,7 +34,7 @@ on:
   push:
     branches: [main]
   schedule:
-    - cron: '22 9 * * 1' # semanal, segunda 09:22 UTC (06:22 BRT)
+    - cron: '30 10 * * 1' # semanal, segunda 10:30 UTC — E89: ≥20min after security-definer-acl-multi-env (10:09)
   workflow_dispatch:
     inputs:
       seed:
@@ -49,18 +49,28 @@ concurrency:
   group: policies-baseline-${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   check:
     name: Drift de policies vs baseline assinado
-    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.seed) }}
-    runs-on: ubuntu-latest
+    # E27: SUPABASE_ACCESS_TOKEN não deve chegar a PRs de forks
+    if: >-
+      !(github.event_name == 'workflow_dispatch' && inputs.seed) &&
+      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     env:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-      SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF || 'doufsxqlfjyuvxuezpln' }}
+      SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
     steps:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
 
       - name: Setup Node
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
@@ -68,23 +78,49 @@ jobs:
           node-version-file: .nvmrc
 
       - name: Check policies baseline
-        run: node scripts/check-policies-baseline.mjs
+        id: check_baseline
+        continue-on-error: true
+        # E56: --require-live emite exit 2 (inconclusive) sem credenciais —
+        # tri-state: 0=ok, 1=drift, 2=inconclusivo (não bloqueia).
+        run: |
+          set +e
+          node scripts/check-policies-baseline.mjs --require-live
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Verificar resultado (E56 — tri-state)
+        if: steps.check_baseline.outcome == 'failure'
+        run: |
+          if [ "${{ steps.check_baseline.outputs.exit_code }}" = "2" ]; then
+            echo "::warning::policies-baseline inconclusivo (exit 2) — sem SUPABASE_ACCESS_TOKEN (PR de fork) ou baseline com pending_seed: true. Gate dormente."
+          else
+            echo "::error::Drift de RLS policies detectado — veja o output do step acima."
+            exit 1
+          fi
 
   seed:
     name: Seed/regen do baseline + PR
     if: ${{ github.event_name == 'workflow_dispatch' && inputs.seed }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       contents: write
       pull-requests: write
     env:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-      SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF || 'doufsxqlfjyuvxuezpln' }}
+      SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
+      - name: Verify required secrets
+        run: |
+          set -euo pipefail
+          : "${SUPABASE_ACCESS_TOKEN:?SUPABASE_ACCESS_TOKEN não configurado — seed requer PAT da Management API}"
+
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
 
       - name: Setup Node
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
@@ -96,7 +132,8 @@ jobs:
         # verde sem gravar nada (seed dormente mascarado como sucesso).
         run: node scripts/check-policies-baseline.mjs --update-baseline --require-live
 
-      - name: Commit baseline e abre PR
+      - name: Commit baseline (detecta mudanças)
+        id: changes
         run: |
           set -euo pipefail
           BRANCH="bot/policies-baseline-seed-$(date +%Y%m%d%H%M%S)"
@@ -104,14 +141,25 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "${BRANCH}"
           git add .security/policies-baseline.json
-          if git diff --cached --quiet; then
-            echo "baseline já estava em dia — nada a commitar"
-            exit 0
+          if git --no-pager diff --cached --quiet; then
+            echo "::notice::Nenhuma mudança detectada no baseline — nada a commitar."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            git commit -m "chore(security): atualiza baseline assinado de RLS policies"
+            git push origin "${BRANCH}"
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "branch=${BRANCH}" >> "$GITHUB_OUTPUT"
           fi
-          git commit -m "chore(security): atualiza baseline assinado de RLS policies"
-          git push origin "${BRANCH}"
+
+      - name: Cria PR com baseline atualizado
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
           gh pr create \
             --title "chore(security): baseline de RLS policies ($(date +%Y-%m-%d))" \
             --body "Snapshot live de \`pg_policies\` (schema public) gravado em \`.security/policies-baseline.json\` com sha256. Revisar a lista de policies antes de mergear — depois do merge, o gate policies-baseline passa a bloquear drift não revisado." \
+            --label "ci-automation" \
             --base main \
-            --head "${BRANCH}"
+            --head "${{ steps.changes.outputs.branch }}"
+        env:
+          GH_TOKEN: ${{ github.token }}

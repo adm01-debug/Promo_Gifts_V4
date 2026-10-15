@@ -8,11 +8,11 @@ name: E2E · restore_seller_cart RPC (multi-env)
 # ANTES do usuário reclamar do toast "Não foi possível restaurar o carrinho".
 #
 # Fonte da verdade: tests/security/restore-seller-cart-rpc.test.ts
-# Cron: diário 09:15 UTC (06:15 BRT). Manual via workflow_dispatch.
+# Cron: diário 09:48 UTC (06:48 BRT). Manual via workflow_dispatch.
 
 on:
   schedule:
-    - cron: "15 9 * * *"
+    - cron: "48 9 * * *"  # E89: ≥20min after db-schema-drift-check (09:27)
   workflow_dispatch:
     inputs:
       environment:
@@ -36,10 +36,15 @@ concurrency:
 permissions:
   contents: read
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   rpc-availability:
     name: RPC availability · ${{ matrix.env_name }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     strategy:
       fail-fast: false
@@ -76,8 +81,12 @@ jobs:
           fi
 
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
         if: steps.creds.outputs.has_creds == 'true'
 
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         if: steps.creds.outputs.has_creds == 'true'
         with:

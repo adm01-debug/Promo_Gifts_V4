@@ -4,15 +4,10 @@ name: Template — Workflow Name Here
 # Modelo canônico para novos workflows. Segue o Padrão E12 (docs/ci/PADRAO_WORKFLOW.md).
 # Copie este arquivo, renomeie e adapte. Não apague os comentários até ter revisado.
 
-# R7: nunca use `master` ou `develop` — branches inexistentes no projeto.
+# E20: _template não deve disparar runs reais — só workflow_dispatch para testar o template.
+# Copie este arquivo, adapte o trigger conforme o tipo de workflow.
 on:
-  push:
-    branches: [main]
-    paths: ['.github/workflows/_template.yml']
-  pull_request:
-    branches: [main]
-    paths: ['.github/workflows/_template.yml']
-  # workflow_dispatch: {}   # descomente se precisar de trigger manual
+  workflow_dispatch: {}
 
 # R1: permissions explícito — princípio do mínimo privilégio.
 permissions:
@@ -22,17 +17,24 @@ permissions:
 # R2: concurrency cancelável em PRs para evitar fila de builds obsoletos.
 concurrency:
   group: <workflow-slug>-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   # R8: ID de job em snake_case estável — mudar o ID quebra required checks silenciosamente.
   build_and_test:
     name: Build & Test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # R3: timeout obrigatório — gates ≤ 10 min, E2E ≤ 30 min, crons ≤ 60 min.
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
 
       # R4: node-version-file, nunca literal '22' ou '20'.
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
@@ -55,5 +57,5 @@ jobs:
         with:
           name: output-${{ github.run_id }}
           path: dist/
-          # R6: retention 14 dias (padrão GitHub é 90 dias — caro e desnecessário).
+          # R6 (E88): 14 padrão; 30 para relatórios semanais; 90 só auditoria + comentário.
           retention-days: 14

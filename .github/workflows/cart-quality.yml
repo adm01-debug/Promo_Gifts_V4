@@ -54,7 +54,12 @@ permissions:
 
 concurrency:
   group: cart-quality-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   # ─────────────────────────────────────────────────────────────────────────
@@ -62,13 +67,15 @@ jobs:
   # ─────────────────────────────────────────────────────────────────────────
   changes:
     name: changes
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     outputs:
       unit: ${{ steps.filter.outputs.unit }}
       e2e: ${{ steps.filter.outputs.e2e }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - id: filter
         uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
         with:
@@ -94,10 +101,12 @@ jobs:
   # ─────────────────────────────────────────────────────────────────────────
   required-checks-drift:
     name: required-checks-drift
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -112,7 +121,7 @@ jobs:
     needs: changes
     # PR: só roda se o bucket "unit" mudou. push/dispatch: sempre roda.
     if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.unit == 'true' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     env:
       VITE_SUPABASE_URL: https://placeholder.supabase.co
@@ -120,6 +129,8 @@ jobs:
       VITE_SUPABASE_PUBLISHABLE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -159,7 +170,7 @@ jobs:
     needs: [changes, typecheck-unit]
     # PR: só roda se o bucket "e2e" mudou. push/dispatch: sempre roda.
     if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.e2e == 'true' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     env:
       CI: 'true'
@@ -170,6 +181,8 @@ jobs:
       E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -196,7 +209,6 @@ jobs:
             --project=chromium-authed --retries=1
 
       # Suíte completa de carrinhos (popover footer matrix, limite 10, etc.).
-      # Falha = merge bloqueado pelo branch protection (required check).
       - name: Run E2E — Carrinhos (suíte completa)
         run: npm run test:e2e:carrinhos -- --retries=2
 

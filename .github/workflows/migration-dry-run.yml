@@ -1,10 +1,10 @@
 name: migration-dry-run
 
 on:
-  pull_request:
-    paths:
-      - 'qa/migrations-draft/**.sql'
-      - 'scripts/dry-run-migration-draft.mjs'
+  # SEGURANÇA (E25): pull_request removido em 2026-10-14.
+  # Executar SQL de PR de contributor contra o banco canônico de produção
+  # (doufsxqlfjyuvxuezpln) viola a REGRA #8 (Lovable/bot não autoriza DDL).
+  # O reviewer/PO dispara manualmente via workflow_dispatch após revisar o draft.
   workflow_dispatch:
     inputs:
       draft_path:
@@ -14,16 +14,19 @@ on:
 
 permissions:
   contents: read
-  pull-requests: write
+  # pull-requests: write — removido E92 (não usado neste workflow)
 
 concurrency:
   group: migration-dry-run-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false  # E19: dispatch-only nunca cancelado
+defaults:
+  run:
+    shell: bash
 
 jobs:
   dry-run:
     name: Dry-run migration drafts
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     env:
       PGHOST: ${{ secrets.PGHOST }}
@@ -35,6 +38,7 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
+          persist-credentials: false  # E32
           fetch-depth: 0
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
@@ -75,7 +79,7 @@ jobs:
           elif [ "$EVENT_NAME" = "pull_request" ]; then
             git fetch origin "$BASE_REF" --depth=1
             git diff --name-only "origin/$BASE_REF...HEAD" \
-              | grep -E '^qa/migrations-draft/.*\.sql$' > /tmp/drafts.txt || true
+              | grep -E '^qa/migrations-draft/.*\.sql$' > /tmp/drafts.txt || true  # ok: grep exits 1 quando PR não toca nenhum SQL — arquivo vazio é resultado esperado
           else
             ls qa/migrations-draft/*.sql > /tmp/drafts.txt
           fi

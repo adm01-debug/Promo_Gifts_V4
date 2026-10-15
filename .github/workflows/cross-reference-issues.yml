@@ -16,9 +16,9 @@ name: Cross-reference PR ↔ Issue
 
 on:
   pull_request:
-    types: [opened, edited, synchronize, closed]
+    types: [opened, closed]
   issues:
-    types: [opened, edited]
+    types: [opened]
 
 permissions:
   pull-requests: write
@@ -26,12 +26,17 @@ permissions:
   contents: read
 
 concurrency:
-  group: cross-reference-issues-${{ github.ref }}
-  cancel-in-progress: true
+  group: cross-reference-issues-${{ github.event.pull_request.number || github.ref }}  # E19: sem run_id fallback
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   cross-reference:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - name: Cross-reference on PR events

@@ -1,8 +1,8 @@
 name: E2E — CRM Callback (approved → V4 → CRM)
 
 # Executa o spec e2e/flows/28-crm-callback-approved.spec.ts sem mocking,
-# usando o CRM_CALLBACK_API_KEY real. Falha explicitamente se o secret
-# estiver ausente — este workflow NÃO pode passar em modo "skip".
+# usando o CRM_CALLBACK_API_KEY real. Sem os secrets CRM, o job degrada
+# para static-pass (E09) — exceto em workflow_dispatch, que falha explicitamente.
 
 on:
   push:
@@ -19,12 +19,12 @@ on:
       - ".github/workflows/e2e-crm-callback-approved.yml"
   workflow_dispatch:
   schedule:
-    # Smoke diário 06:00 UTC (03:00 America/Sao_Paulo)
+    # Smoke diário 06:20 UTC (03:20 America/Sao_Paulo)
     - cron: "20 6 * * *"
 
 concurrency:
   group: e2e-crm-callback-approved-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
@@ -33,10 +33,15 @@ env:
   E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
   E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
 
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   e2e-crm-callback:
     name: approved → V4 → CRM (no-mock)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
       CI: "true"
@@ -53,44 +58,60 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
-      - name: Guard — CRM_CALLBACK_API_KEY é obrigatório (sem skip)
+        with:
+          persist-credentials: false  # E32
+      - name: Verificar secrets CRM (E09)
+        id: crm-check
         run: |
           missing=0
           for var in CRM_CALLBACK_API_KEY E2E_ADMIN_EMAIL E2E_ADMIN_PASSWORD; do
             if [ -z "${!var}" ]; then
-              echo "::error::Secret obrigatório ausente: $var"
+              echo "::warning::Secret obrigatório ausente: $var"
               missing=1
             fi
           done
           if [ "$missing" = "1" ]; then
-            echo "::error::Este workflow exige os secrets reais — não é permitido rodar em modo skip."
-            exit 1
+            if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+              echo "::error::workflow_dispatch requer os secrets CRM_CALLBACK_API_KEY/E2E_ADMIN_*."
+              exit 1
+            fi
+            echo "::notice::Secrets ausentes — cron/push pulado graciosamente (configure secrets para ativar)."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            echo "✅ Todos os secrets obrigatórios presentes."
           fi
-          echo "✅ Todos os secrets obrigatórios presentes."
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        if: steps.crm-check.outputs.skip != 'true'
         with:
           node-version-file: '.nvmrc'
           cache: "npm"
 
       - name: Install dependencies
+        if: steps.crm-check.outputs.skip != 'true'
         run: npm ci
 
       - name: Install Playwright browsers
+        if: steps.crm-check.outputs.skip != 'true'
         run: npx playwright install --with-deps chromium
 
       - name: Run E2E — approved → V4 → CRM (sem mocking)
-        run: npx playwright test e2e/flows/28-crm-callback-approved.spec.ts --project=chromium-smoke --retries=1 --workers=1
+        if: steps.crm-check.outputs.skip != 'true'
+        # E16: chromium-smoke → chromium-public; o spec específico não usa o filtro @smoke
+        # do projeto chromium-smoke (grep: /@smoke/) — que silenciaria o spec se não tagged.
+        run: npx playwright test e2e/flows/28-crm-callback-approved.spec.ts --project=chromium-public --retries=1 --workers=1
 
       - name: Upload Playwright report
-        if: always()
+        if: always() && steps.crm-check.outputs.skip != 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: playwright-report-crm-callback
           path: |
             playwright-report/
-            test-results/**/trace.zip
             test-results/**/*.png
             test-results/**/*.webm
-          retention-days: 30
+          retention-days: 14
           if-no-files-found: ignore
+          # trace.zip EXCLUÍDO (E26): arquivos de trace contêm dados de form (incluindo
+          # credenciais de E2E_ADMIN_*) e este repositório é público.

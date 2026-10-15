@@ -12,6 +12,7 @@ on:
       - 'tests/contracts/webhook-scenario-matrix.test.ts'
       - 'tests/edge-functions/integration/**'
       - 'e2e/flows/33-*'
+      - '.github/workflows/ci-freight-quality.yml'
   workflow_dispatch:
 
 permissions:
@@ -19,15 +20,20 @@ permissions:
 
 concurrency:
   group: ci-freight-quality-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}  # E19: PR cancela; dispatch não
+defaults:
+  run:
+    shell: bash
 
 jobs:
   freight-unit:
     name: Freight Unit Tests + Coverage
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -51,10 +57,12 @@ jobs:
 
   webhook-matrix:
     name: Webhook Scenario Matrix (≥200 cenários, 0 HTTP)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -68,10 +76,12 @@ jobs:
 
   edge-integration-suite:
     name: Edge Functions · Freight CI
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -84,27 +94,32 @@ jobs:
             --reporter=dot
 
   edge-coverage-gate:
-    name: Edge Coverage Gate (≥60%)
-    runs-on: ubuntu-latest
+    # E49: renamed to reflect what it actually measures (contract presence, not code coverage)
+    name: Edge Integration Presence Gate (≥60% functions covered)
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
-      - run: npm ci
-      - name: Check edge integration coverage percentage
+      # E49: script only reads filesystem — no npm install needed
+      - name: Check edge integration presence percentage
         run: node scripts/check-edge-integration-coverage.mjs
         env:
           EDGE_COVERAGE_THRESHOLD: '60'
 
   freight-e2e:
     name: E2E Freight Flow
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
@@ -120,40 +135,23 @@ jobs:
         env:
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-          E2E_BASE_URL: ${{ vars.E2E_BASE_URL || 'http://localhost:5173' }}
+          E2E_BASE_URL: ${{ vars.E2E_BASE_URL || 'http://localhost:8080' }}
       - name: Upload Playwright report on failure
         if: failure()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: playwright-freight-report
           path: playwright-report/
-          retention-days: 7
-
-  load-advisory:
-    name: Load Test (advisory — não bloqueia)
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    continue-on-error: true
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-      - run: npm ci
-      - name: Run massive load test
-        run: node scripts/massive-load-test.mjs
-        env:
-          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
-          SUPABASE_TEST_BYPASS_TOKEN: ${{ secrets.SUPABASE_TEST_BYPASS_TOKEN }}
-          LOAD_TOTAL_REQUESTS: 5000
+          retention-days: 14
 
   massive-fuzzing:
     name: Massive Fuzzing Session
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: '.nvmrc'
