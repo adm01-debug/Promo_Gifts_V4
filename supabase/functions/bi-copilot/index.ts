@@ -51,6 +51,13 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // Validação do payload ANTES de tocar credencial/dependência: body malformado
+    // deve devolver 400/422 mesmo quando a IA não está configurada (503). Só um
+    // payload válido chega ao 503 "ai_not_configured".
+    const contractResult = await parseContract(req, BiCopilotSchemas, { corsHeaders });
+    if (!contractResult.ok) return contractResult.response;
+    const { data: body, responseHeaders } = contractResult;
+
     // BUG-009 FIX: resolve LOVABLE_API_KEY inside handler (not at module scope).
     // Supports key rotation without isolate restart via DB-first SSOT.
     const { value: LOVABLE_API_KEY } = await resolveCredential('LOVABLE_API_KEY');
@@ -62,10 +69,6 @@ Deno.serve(async (req) => {
         'Copiloto de BI indisponível no momento. Tente novamente mais tarde.',
       );
     }
-
-    const contractResult = await parseContract(req, BiCopilotSchemas, { corsHeaders });
-    if (!contractResult.ok) return contractResult.response;
-    const { data: body, responseHeaders } = contractResult;
 
     const systemPrompt = `Voce e um copiloto de Business Intelligence comercial para vendedores B2B de brindes corporativos.
 Voce analisa dados reais de UM cliente especifico e responde perguntas estrategicas com clareza, brevidade e acao.
