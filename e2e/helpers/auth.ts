@@ -16,7 +16,7 @@
  *   await loginAs(page, "admin");                 // admin
  *   await loginViaUI(page, { email, password, expectFail: true });
  */
-import { expect, type Page } from "@playwright/test";
+import { expect, type Page, type Request } from "@playwright/test";
 
 import { Sel } from "../fixtures/selectors";
 import { test } from "../fixtures/test-base";
@@ -49,10 +49,22 @@ const AUTH_LIKE_URL_RE = /\/(login|auth)(\?|#|$)/;
  * `expectFail: true`).
  */
 export async function loginViaUI(page: Page, creds: LoginCreds): Promise<boolean> {
-  // CI: signIn encadeia check-login + GoTrue + profile/roles/IP — em edge fria
-  // passa de 20s fácil (botão fica "Iniciando Sistemas..." travado).
-  const timeout = creds.timeoutMs ?? (process.env.CI ? 45_000 : 20_000);
-  await gotoAndSettle(page, "/login");
+  // CI: signIn encadeia check-login (6s) + GoTrue + credentials.store (3s) +
+  // profile/roles + guard de IP (get-visitor-info 2x10s -> ipify 5s ->
+  // validate-access 2x10s, todos fail-open). Com edge/DB lentos a soma passa de
+  // 45s: medido em CI (run 38766909249), o login que concluiu levou ~38s, e os demais foram
+  // abortados pelo timeout do helper ANTES de escrever a linha success em
+  // login_attempts (sem linha de falha também — o login estava em voo, não
+  // recusado). O orçamento abaixo cobre o pior caso documentado dessa cadeia
+  // sem relaxar o assert: continuar em /login ainda reprova.
+  const timeout = creds.timeoutMs ?? (process.env.CI ? 75_000 : 20_000);
+  const netLog = createNetworkLog(page);
+  try {
+    await gotoAndSettle(page, "/login");
+  } catch (err) {
+    netLog.stop();
+    throw err;
+  }
 
   const emailLoc = page.locator(Sel.login.email).first();
   const passLoc = page.locator(Sel.login.password).first();
@@ -63,6 +75,7 @@ export async function loginViaUI(page: Page, creds: LoginCreds): Promise<boolean
   await clickTestId(page, "login-submit");
 
   if (creds.expectFail) {
+    netLog.stop();
     // Continua em /login OU mostra mensagem de erro — auto-retry expect.
     await expect(page, "esperado falhar e permanecer em /login").toHaveURL(
       LOGIN_URL_RE,
@@ -81,19 +94,80 @@ export async function loginViaUI(page: Page, creds: LoginCreds): Promise<boolean
     );
   } catch (err) {
     const currentUrl = page.url();
-    const bodySnippet = await page
-      .locator("body")
+    // O início do body é só o painel de marca (igual em qualquer estado do
+    // form) — o que diferencia "em voo" de "recusado" é o botão de submit e os
+    // toasts, além da linha do tempo das chamadas Supabase.
+    const submitText = await page
+      .getByTestId("login-submit")
+      .first()
       .textContent({ timeout: 2_000 })
-      .catch(() => "(sem body)");
+      .catch(() => "(botão ausente)");
+    const toastText = await page
+      .locator('[data-sonner-toast], [role="status"], [role="alert"]')
+      .allTextContents()
+      .catch(() => [] as string[]);
     throw new Error(
       `[loginViaUI] Timeout aguardando redirect pós-login.\n` +
         `  URL atual: ${currentUrl}\n` +
-        `  Trecho da página: ${String(bodySnippet).slice(0, 300)}\n` +
+        `  Botão submit: ${String(submitText).trim().slice(0, 80)}\n` +
+        `  Toasts: ${toastText.map((t) => t.trim().slice(0, 160)).join(" | ") || "(nenhum)"}\n` +
+        `  Chamadas Supabase (${timeout}ms de espera):\n${netLog.dump()}\n` +
         `  Causa original: ${String(err)}`,
     );
+  } finally {
+    netLog.stop();
   }
   await waitForRouteIdle(page);
   return true;
+}
+
+/**
+ * Linha do tempo das chamadas ao Supabase (auth/functions/rest) durante o login:
+ * duração e status das concluídas e idade das ainda pendentes. Só é lida no
+ * caminho de falha — diferencia login lento (requests pendentes/lentas) de login
+ * recusado (toast + 4xx) sem precisar de trace (que fica fora dos artefatos).
+ */
+function createNetworkLog(page: Page) {
+  const startedAt = Date.now();
+  const pending = new Map<unknown, { label: string; t0: number }>();
+  const done: string[] = [];
+  const label = (url: string, method: string): string | null => {
+    const m = /\/(auth\/v1|functions\/v1|rest\/v1)\/([^?]*)/.exec(url);
+    return m ? `${method} ${m[1]}/${m[2]}` : url.includes("api.ipify.org") ? `${method} ipify` : null;
+  };
+  const onRequest = (req: Request) => {
+    const l = label(req.url(), req.method());
+    if (l) pending.set(req, { label: l, t0: Date.now() });
+  };
+  const finish = (req: Request, status: string) => {
+    const p = pending.get(req);
+    if (!p) return;
+    pending.delete(req);
+    done.push(`    +${p.t0 - startedAt}ms ${p.label} -> ${status} (${Date.now() - p.t0}ms)`);
+  };
+  const onFinished = async (req: Request) => {
+    const res = await req.response().catch(() => null);
+    finish(req, String(res?.status() ?? "?"));
+  };
+  const onFailed = (req: Request) =>
+    finish(req, `FAILED ${req.failure()?.errorText ?? ""}`.trim());
+  page.on("request", onRequest);
+  page.on("requestfinished", onFinished);
+  page.on("requestfailed", onFailed);
+  return {
+    dump(): string {
+      const now = Date.now();
+      const open = [...pending.values()].map(
+        (p) => `    +${p.t0 - startedAt}ms ${p.label} -> PENDENTE há ${now - p.t0}ms`,
+      );
+      return [...done.slice(-25), ...open].join("\n") || "    (nenhuma chamada observada)";
+    },
+    stop() {
+      page.off("request", onRequest);
+      page.off("requestfinished", onFinished);
+      page.off("requestfailed", onFailed);
+    },
+  };
 }
 
 /**

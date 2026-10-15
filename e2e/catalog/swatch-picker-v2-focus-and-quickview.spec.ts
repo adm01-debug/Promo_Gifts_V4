@@ -1,18 +1,25 @@
 /**
- * Cobertura funcional + visual do <ColorSwatchPicker> V2 nas 4 rotas que
- * consomem o pipeline: /produtos, /filtros, /novidades, /reposicao.
+ * Cobertura funcional do <ColorSwatchPicker> V2 nas 4 rotas que consomem o
+ * pipeline (grid): /produtos, /filtros, /novidades, /reposicao.
  *
  * Valida:
- *   1. Tab-order: foco percorre os swatches V2 na ordem do DOM e segue para
- *      o próximo controle focável após o último swatch.
+ *   1. Tab-order: foco percorre os swatches V2 na ordem do DOM e, após o último,
+ *      sai do picker.
  *   2. Estado idle  → nenhum swatch com aria-pressed="true".
  *      Estado ativo → exatamente 1 com aria-pressed="true" + ring visível
  *      (outline OU box-shadow não-zero via `:focus-visible` ou classe ring).
- *   3. Abrir QuickView (clique no swatch) e fechar (Escape) restaura foco
- *      a um swatch focável; estado do picker preservado.
- *   4. Snapshot visual do QuickView com cor selecionada (regressão modal).
+ *   3. Contrato vigente (FIX-SWATCH-INLINE-V2 em ProductCard / BaseProductGridCard):
+ *      clicar na bolinha seleciona a cor INLINE e NÃO abre o QuickView; o QuickView
+ *      abre pela FOTO. Abrir e fechar (Escape) preserva o estado do picker.
  *
- * Animações são congeladas globalmente para snapshots determinísticos.
+ * Histórico: a versão anterior esperava que o clique na bolinha abrisse o QuickView
+ * (removido em FIX-SWATCH-INLINE-V2), esperava o foco voltar a um swatch após o
+ * Escape (agora volta à foto) e fazia `toHaveScreenshot` sem baselines commitados
+ * (com `updateSnapshots: 'none'` no CI, falha garantida). A regressão visual do
+ * picker/QuickView é responsabilidade de swatch-picker-v2-visual-baseline.spec.ts,
+ * cujos baselines são gerados pelo workflow dedicado de snapshots.
+ *
+ * Animações são congeladas globalmente para interações determinísticas.
  *
  * Flag canônica: `ff_useColorSwatchesV2=true` (ver src/lib/feature-flags.ts).
  */
@@ -51,28 +58,56 @@ async function bootstrap(page: Page, path: string) {
   await page.addStyleTag({ content: FREEZE_CSS });
 }
 
+/** Rotas obrigatórias: com dado ausente o teste FALHA; nas satélites, pode pular. */
+const REQUIRED_ROUTES = new Set<string>(['catalogo', 'super-filtro']);
+
+/** Tempo generoso: o backend do CI chega a levar 15–60 s por request sob carga. */
+const DATA_TIMEOUT_MS = 60_000;
+
 async function firstPicker(page: Page): Promise<Locator | null> {
   const first = page.locator(V2_SWATCH).first();
-  const ok = await first.waitFor({ state: 'visible', timeout: 20_000 }).then(() => true).catch(() => false);
+  const ok = await first
+    .waitFor({ state: 'visible', timeout: DATA_TIMEOUT_MS })
+    .then(() => true)
+    .catch(() => false);
   if (!ok) return null;
   return first.locator(
     'xpath=ancestor::div[contains(@class,"flex")][contains(@class,"flex-wrap")][1]'
   );
 }
 
+/** Thumbs que abrem o QuickView no grid de cada módulo (ProductCard / Novidades / Reposição). */
+const GRID_THUMB = [
+  '[data-testid="product-card-image-quickview"]',
+  '[data-testid="novelty-grid-card-thumb"]',
+  '[data-testid="replenishment-grid-card-thumb"]',
+].join(', ');
+
+const GRID_THUMB_XPATH = [
+  "@data-testid='product-card-image-quickview'",
+  "@data-testid='novelty-grid-card-thumb'",
+  "@data-testid='replenishment-grid-card-thumb'",
+].join(' or ');
+
 for (const route of ROUTES) {
   test.describe(`V2 ColorSwatchPicker • ${route.slug}`, () => {
-    test(`${route.slug}: Tab-order + foco idle/ativo + QuickView`, async ({ page }) => {
+    test(`${route.slug}: Tab-order + foco idle/ativo + seleção inline + QuickView pela foto`, async ({ page }) => {
+      test.setTimeout(240_000); // backend do CI chega a levar 15–60 s por request
       await bootstrap(page, route.path);
 
       const picker = await firstPicker(page);
-      test.skip(picker === null, `Sem produtos com color_swatches em ${route.path}.`);
+      if (picker === null && !REQUIRED_ROUTES.has(route.slug)) {
+        test.skip(true, `Sem produtos com color_swatches em ${route.path} (rota satélite).`);
+        return;
+      }
+      expect(picker, `nenhum produto com color_swatches V2 em ${route.path}`).not.toBeNull();
       const pickerEl = picker!;
       await pickerEl.scrollIntoViewIfNeeded();
 
       const swatches = pickerEl.locator(V2_SWATCH);
       const count = await swatches.count();
       expect(count, 'pelo menos 1 swatch V2 visível').toBeGreaterThan(0);
+      const dialog = page.locator('[role="dialog"]').first();
 
       // --- (1) Estado idle: nenhum aria-pressed="true" ---
       const pressedIdle = await swatches.evaluateAll(
@@ -92,43 +127,24 @@ for (const route of ROUTES) {
       }
       // Após o último swatch, Tab DEVE sair do picker (focar outro elemento).
       await page.keyboard.press('Tab');
-      const escapedPicker = await page.evaluate(
-        (sel) => !document.activeElement?.matches(sel),
-        V2_SWATCH
-      );
+      const escapedPicker = await pickerEl.evaluate((el) => !el.contains(document.activeElement));
       expect(escapedPicker, 'Tab após último swatch sai do picker').toBe(true);
 
-      // --- (3) Estado ativo + ring visível ---
+      // --- (3) Estado ativo: seleção INLINE (sem abrir QuickView) + ring visível ---
       const targetIdx = count >= 2 ? 1 : 0;
       const target = swatches.nth(targetIdx);
       const targetLabel = labels[targetIdx];
       await target.click();
 
-      // QuickView abre — usa o seletor canônico do Radix Dialog.
-      const dialog = page.locator('[role="dialog"]').first();
-      await expect(dialog).toBeVisible({ timeout: 10_000 });
+      await expect(target).toHaveAttribute('aria-pressed', 'true');
+      await expect(target).toHaveAttribute('aria-label', targetLabel);
+      await expect(dialog, 'clique na bolinha NÃO abre o QuickView').toHaveCount(0);
 
-      // Fecha via Escape para validar restauração de foco.
-      await page.keyboard.press('Escape');
-      await expect(dialog).toBeHidden({ timeout: 5_000 });
-
-      // requestAnimationFrame x2 para Radix terminar o focus-return.
-      await page.evaluate(() => new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r()))));
-
-      // Foco restaurado em UM swatch V2 (idealmente o clicado).
-      const focusBack = await page.evaluate(
-        (sel) => document.activeElement?.matches(sel) ?? false,
-        V2_SWATCH
-      );
-      expect(focusBack, 'foco volta para um swatch V2 após Escape').toBe(true);
-
-      // aria-pressed="true" no swatch clicado + 1 e somente 1 ativo.
+      // 1 e somente 1 swatch ativo no picker.
       const pressedCount = await swatches.evaluateAll(
         (els) => els.filter((e) => e.getAttribute('aria-pressed') === 'true').length
       );
       expect(pressedCount, 'exatamente 1 swatch ativo').toBe(1);
-      await expect(target).toHaveAttribute('aria-pressed', 'true');
-      await expect(target).toHaveAttribute('aria-label', targetLabel);
 
       // Ring visível: box-shadow OU outline não-zero (cobre `ring-*` Tailwind
       // e `:focus-visible` do user-agent).
@@ -140,21 +156,24 @@ for (const route of ROUTES) {
       });
       expect(hasRing, 'swatch ativo tem ring/outline visível').toBe(true);
 
-      // --- (4) Snapshot do picker em estado ativo ---
-      await expect(pickerEl).toHaveScreenshot(
-        `v2-picker-${route.slug}-active-focused.png`,
-        { maxDiffPixelRatio: 0.02, animations: 'disabled' }
-      );
-
-      // --- (5) Snapshot do QuickView com cor selecionada ---
-      // Reabre clicando no mesmo swatch (foco já está nele).
-      await page.keyboard.press('Enter');
+      // --- (4) QuickView abre pela FOTO e fecha com Escape; picker preserva o estado ---
+      // Thumb do MESMO card do picker (o ancestral mais próximo que contém uma foto
+      // clicável): um `.first()` global abriria o QuickView de outro produto.
+      const cardThumb = pickerEl
+        .locator(`xpath=ancestor::*[.//*[${GRID_THUMB_XPATH}]][1]`)
+        .locator(GRID_THUMB)
+        .first();
+      await cardThumb.click();
       await expect(dialog).toBeVisible({ timeout: 10_000 });
-      // Estabilização: aguarda imagem do dialog assentar.
-      await page.waitForTimeout(200);
-      await expect(dialog).toHaveScreenshot(
-        `v2-quickview-${route.slug}-color-active.png`,
-        { maxDiffPixelRatio: 0.03, animations: 'disabled' }
+      await page.keyboard.press('Escape');
+      await expect(dialog).toBeHidden({ timeout: 5_000 });
+
+      // requestAnimationFrame x2 para Radix terminar o focus-return.
+      await page.evaluate(() => new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r()))));
+
+      await expect(target, 'estado do picker preservado após abrir/fechar o QuickView').toHaveAttribute(
+        'aria-pressed',
+        'true',
       );
     });
   });

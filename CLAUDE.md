@@ -242,8 +242,12 @@ migrations aplicadas depois do dump, numa pasta temporária
 nunca copiar para `supabase/migrations/`, nunca aplicar em produção, não serve
 para criar ambiente novo (não tem auth, cron, storage, vault, seed). Ruído do
 diff vai em `supabase/baseline/drift-allowlist.txt`, uma entrada específica e
-justificada por linha; objeto criado em produção sem migration vira migration
-espelho, não entrada de allowlist. O export só gira o baseline depois de um
+justificada por linha (o script recusa entrada genérica como `.*` ou
+`^create table`); objeto criado em produção sem migration vira migration
+espelho, não entrada de allowlist. O `supabase db dump` omite event triggers e
+publications mas emite o `ALTER`/`COMMENT` que os referenciam: o replay os
+descarta (`sanitizeBaselineForReplay`, só na pasta temporária — o arquivo do
+baseline fica idêntico ao dump). O export só gira o baseline depois de um
 drift-check verde na mesma execução (job `drift-gate`) — senão o dump novo
 absorveria a DDL fora de migration. Migration registrada com `mode: repair-only`
 (ou aplicada fora da ordem de versão) depois do baseline quebra o replay — o

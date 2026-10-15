@@ -6,7 +6,8 @@
  *  - Fixture `quote-items-table-fixture-many` (8 itens): scroll interno LIGADO,
  *    `tabIndex=0`, `role=region`, `aria-label`, scrollHeight > clientHeight.
  *  - Página continua rolando até a seção "Versões do Orçamento".
- *  - thead sticky permanece visível enquanto o body rola internamente.
+ *  - thead (fora do scroller, em `quote-items-table-header-wrap`) permanece
+ *    fixo e visível enquanto o body rola internamente.
  */
 import { test, expect, type Page } from '@playwright/test';
 import { gotoAndSettle } from '../helpers/nav';
@@ -49,9 +50,13 @@ test('>5 itens: scroll interno ativo, a11y e thead sticky', async ({ page }) => 
   // Estado inicial: topo da rolagem interna.
   await expect(scroller).toHaveAttribute('data-scroll-at-top', 'true');
 
-  // Rola internamente e confirma que o thead sticky se mantém no topo do
-  // container (mesma Y do scroller após o scroll).
-  const thead = scroller.locator('thead').first();
+  // O header NÃO vive dentro do scroller: `QuoteItemsTable` renderiza o <thead>
+  // numa <table> própria (`quote-items-table-header-wrap`) acima da área
+  // rolável (ver quote-items-table-header-radius.spec.ts). Ele permanece fixo
+  // por construção enquanto o body rola internamente.
+  const fixture = page.getByTestId('quote-items-table-fixture-many');
+  const thead = fixture.getByTestId('quote-items-table-header-wrap').locator('thead').first();
+  await expect(scroller.locator('thead')).toHaveCount(0);
   const headBefore = await thead.boundingBox();
   await scroller.evaluate((el) => {
     el.scrollTop = el.scrollHeight;
@@ -60,9 +65,10 @@ test('>5 itens: scroll interno ativo, a11y e thead sticky', async ({ page }) => 
   const headAfter = await thead.boundingBox();
   const scrollerBox = await scroller.boundingBox();
   expect(headBefore && headAfter && scrollerBox).toBeTruthy();
-  // Header sticky: top do thead permanece colado ao top do scroller (±2px).
-  expect(Math.abs((headAfter!.y) - scrollerBox!.y)).toBeLessThanOrEqual(2);
-  expect(Math.abs((headAfter!.y) - (headBefore!.y))).toBeLessThanOrEqual(2);
+  // Header fixo: não se move com a rolagem interna (±2px) e termina onde o
+  // scroller começa (colado ao topo da área rolável, ±2px).
+  expect(Math.abs(headAfter!.y - headBefore!.y)).toBeLessThanOrEqual(2);
+  expect(Math.abs(headAfter!.y + headAfter!.height - scrollerBox!.y)).toBeLessThanOrEqual(2);
 });
 
 test('página continua rolando até "Versões do Orçamento"', async ({ page }) => {

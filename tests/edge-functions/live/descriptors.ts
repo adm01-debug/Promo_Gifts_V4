@@ -16,7 +16,7 @@
  * (read-only / idempotente / dry-run). Geração cara fica atrás de `costly`.
  */
 import type { LiveSuiteDescriptor } from './_live-suite';
-import { catalogListSchema, healthSchema } from './_schemas';
+import { healthSchema, materialsGroupsSchema } from './_schemas';
 
 type Descriptor = Omit<LiveSuiteDescriptor, 'fn'>;
 
@@ -28,9 +28,10 @@ export const DESCRIPTORS: Record<string, Descriptor> = {
     happyPath: { method: 'GET', expectStatus: [200], schema: healthSchema },
   },
   'materials-api': {
-    // action válida do enum; retorna {data:[]} mesmo sem DB externo (200).
+    // action válida do enum; 200 com { data: { groups, count }, success } (ou
+    // { data: [], _unconfigured } sem DB externo) — ver materialsGroupsSchema.
     validBody: { action: 'groups' },
-    happyPath: { body: { action: 'groups' }, expectStatus: [200], schema: catalogListSchema },
+    happyPath: { body: { action: 'groups' }, expectStatus: [200], schema: materialsGroupsSchema },
     invalidInputs: [{ label: 'action desconhecida', body: { action: '___nope___' } }],
   },
   'categories-api': {
