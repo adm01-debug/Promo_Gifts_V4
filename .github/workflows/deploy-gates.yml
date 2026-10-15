@@ -19,7 +19,7 @@ name: Deploy Gates
 #  1.9  tech-debt         — ratchets TODO/as/file-size
 #  1.9.1 console-baseline — console.* não aumenta sem justificativa
 #  1.10 indexed-access    — indexed-access ratchet (advisory)
-#  1.11 workflow-contracts — check-workflow-contracts --gate (C10–C23)
+#  1.11 workflow-contracts — check-workflow-contracts --gate (C10–C24)
 #  1.12 contract-coverage  — soft-delete policy + contrato de cobertura
 #  1.13 policies-baseline  — policies live vs baseline
 #  1.14 secrets-inventory  — secrets/vars referenciados todos documentados em SEGREDOS.md (E40/E98)
