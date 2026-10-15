@@ -72,7 +72,13 @@ jobs:
       - name: Roda projeção
         id: check
         continue-on-error: true
-        run: node scripts/capacity-growth-projection.mjs --out=/tmp/capacity-growth.json
+        # E56: captura exit_code para tri-state (0=ok, 1=alerta, 2=inconclusivo)
+        run: |
+          set +e
+          node scripts/capacity-growth-projection.mjs --out=/tmp/capacity-growth.json
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
 
       - name: Upload report artifact
         if: always()
@@ -156,5 +162,10 @@ jobs:
 
       - name: Não quebra o build
         if: steps.check.outcome == 'failure'
+        # E56: tri-state — distingue falha real (exit 1) de inconclusivo (exit 2)
         run: |
-          echo "::warning::Projeção encontrou tabela(s) acima do limiar ou ficou inconclusiva — ver issue/artefato desta run. Job não quebra build (advisory, não gate)."
+          if [ "${{ steps.check.outputs.exit_code }}" = "2" ]; then
+            echo "::warning::Projeção de capacidade inconclusiva (exit 2) — sem SUPABASE_ACCESS_TOKEN ou ops.table_size_history ausente (E30 pendente). Nenhuma tabela sinalizada."
+          else
+            echo "::warning::Projeção encontrou tabela(s) acima do limiar — ver issue/artefato desta run. Job não quebra build (advisory, não gate)."
+          fi
