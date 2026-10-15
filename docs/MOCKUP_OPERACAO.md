@@ -41,10 +41,13 @@ Passos:
    `null` de propósito (a FK aponta para outra tabela; o nome vai em `technique_name`,
    `mockupGenerationService.ts:177-185`); se `product_id` violar FK, a linha é re-gravada com
    `product_id=null` (`:234-244`).
-5. **Documento timbrado (ficha de aprovação).** Os botões "Gerar Layout" / "Gerar Layout - IA"
-   (`src/components/mockup/approval/MockupLayoutButtons.tsx:320-372`) abrem
-   `MockupApprovalPreview` (`:374-381`), que renderiza `MockupApprovalTemplate` (cabeçalho
-   timbrado, dados do cliente/produto/técnica/Pantone) e exporta em PDF via html2canvas+jsPDF
+5. **Documento timbrado (ficha de aprovação).** Os botões "Gerar documento"
+   (`src/components/mockup/approval/MockupLayoutButtons.tsx:343-352`, que só monta o papel a
+   partir de um mockup já pronto — `:159-163`) e "Gerar Layout" (`:365-378`, composição estática
+   em canvas — `:181-288`) abrem o `MockupApprovalPreview` (`:389-396`), que renderiza
+   `MockupApprovalTemplate` (cabeçalho
+   timbrado, dados do cliente/produto/técnica/Pantone; `:149`) e exporta em PDF via
+   html2canvas+jsPDF
    (`src/components/mockup/approval/MockupApprovalPreview.tsx:69-119`). Em paralelo, o
    `OffscreenLayoutCapture` renderiza o mesmo template fora da tela, captura em JPEG, sobe em
    `${userId}/mockup-layouts/` e grava a URL em `generated_mockups.layout_url`
@@ -57,10 +60,11 @@ Passos:
    objetos do storage (logo + PNG composto) em best-effort (`mockupGenerationService.ts:483-525`).
 
 **Rascunho (auto-save).** Enquanto o vendedor monta o mockup, o estado é salvo em duas camadas:
-`localStorage` e a tabela `mockup_drafts` (`src/hooks/mockup/useMockupDraft.ts:8-9,112-114`), com
+`localStorage` (`src/hooks/mockup/useMockupDraft.ts:9,103-114`) e a tabela `mockup_drafts`
+(`useMockupDraft.ts:221-223`), com
 debounce de 1 s no hook (`useMockupGenerator.ts:325-337`) e 2 s no serviço de rascunho
-(`useMockupDraft.ts:9,226-228`). Ao reabrir, o mais recente (local × backend) vence
-(`useMockupDraft.ts:243-262`).
+(`useMockupDraft.ts:10,337-339`). Ao reabrir, o mais recente (local × backend) vence
+(`useMockupDraft.ts:362-368`).
 
 ### 1.1 Anexar ao orçamento — `[PLANEJADO]` no fluxo padrão
 
@@ -88,7 +92,8 @@ e "documento".
 | **Ficha (documento)** | Ficha de aprovação capturada (JPEG) com cabeçalho timbrado | `generated_mockups.layout_url`; arquivo em `${userId}/mockup-layouts/` (`OffscreenLayoutCapture.tsx:111,125`). O histórico prefere mostrar a ficha quando existe: `mockup.layout_url \|\| mockup.mockup_url` (`src/components/mockup/MockupHistoryPanel.tsx:547`). |
 
 Observação: o rascunho **não** guarda `data:` URLs no backend — só logos já em `http(s)` para não
-gravar base64 de vários MB (`useMockupDraft.ts:84-90,247-260`).
+gravar base64 de vários MB (`useMockupDraft.ts:149-157`); o mesmo corte acontece no `localStorage`
+(um `data:` URL vira marcador de logo pendente, `:97-114`).
 
 ---
 
