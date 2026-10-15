@@ -24,7 +24,12 @@ import { parseSupabaseMigrationLedgerOutput } from './check-supabase-migration-l
 
 export const BASELINE_DIR = join('supabase', 'baseline');
 export const BASELINE_NAME_RE = /^(\d{14})_baseline_schema\.sql$/;
-const MIGRATION_RE = /^(\d{14})_[^/]+\.sql$/;
+// Mesma regra do CLI (`^([0-9]+)_(.*)\.sql$`): a versão é o prefixo numérico, de
+// qualquer largura. Produção tem versões de 3, 8 e 19 dígitos no ledger
+// (001, 20260712, 2026062311292414001); exigir 14 dígitos aqui descartaria em
+// silêncio uma migration dessas aplicada depois do dump e o drift-check
+// acusaria drift falso.
+const MIGRATION_RE = /^(\d+)_[^/]+\.sql$/;
 // Produção roda PG 17.6; sem isto o shadow do CLI usa PG 15 e os GRANTs com
 // MAINTAIN (privilégio do PG 17) falham no replay.
 export const SHADOW_MAJOR_VERSION = 17;
@@ -38,6 +43,15 @@ const SECRET_PATTERNS = [
   ['aws-key', /\bAKIA[0-9A-Z]{16}\b/],
   ['openai-key', /\bsk-(?:proj-)?[A-Za-z0-9_-]{32,}\b/],
   ['private-key', /-----BEGIN [A-Z ]*PRIVATE KEY-----/],
+  // Formatos que o schema pode embutir em corpo de função/COMMENT/OPTIONS:
+  // chave secreta nova do Supabase (a anon/publishable é pública, esta não),
+  // URL de conexão com senha, tokens de Slack/SendGrid/Google e `PASSWORD '…'`.
+  ['supabase-secret-key', /\bsb_secret_[A-Za-z0-9_-]{20,}/],
+  ['db-url-password', /\bpostgres(?:ql)?:\/\/[^\s:/@'"]+:[^\s@'"]+@/i],
+  ['slack-token', /\bxox[abprs]-[A-Za-z0-9-]{10,}/],
+  ['sendgrid-key', /\bSG\.[A-Za-z0-9_-]{16,}\.[A-Za-z0-9_-]{16,}/],
+  ['google-api-key', /\bAIza[0-9A-Za-z_-]{35}\b/],
+  ['password-literal', /\bPASSWORD\s+'[^']{4,}'/i],
 ];
 
 // A anon key é pública por desenho (vai no bundle do front) e o schema vivo
@@ -79,6 +93,13 @@ export function appliedVersionsFromLedger(document) {
   return document.migrations.map((m) => String(m.remote ?? '').trim()).filter(Boolean);
 }
 
+// O CLI sai com 0 e corpo vazio/curto em alguns erros de rede; um baseline assim
+// giraria um dump que não descreve nada e o próximo drift-check mostraria o
+// banco inteiro como drift.
+export function looksLikeSchemaDump(sql) {
+  return typeof sql === 'string' && sql.length > 10_000 && /^CREATE TABLE\b/m.test(sql);
+}
+
 export function buildBaselineSql({ dump, version, projectRef, generatedAt }) {
   return [
     '-- =============================================================================',
@@ -108,8 +129,29 @@ export function findBaseline(rootDir) {
   const version = BASELINE_NAME_RE.exec(found[0])[1];
   const ledgerPath = join(dir, ledgerSnapshotName(version));
   if (!existsSync(ledgerPath)) throw new Error(`baseline ${found[0]} sem ${ledgerSnapshotName(version)}`);
-  const { versions } = JSON.parse(readFileSync(ledgerPath, 'utf8'));
-  return { version, file: join(dir, found[0]), name: found[0], versions: new Set(versions) };
+  const snapshot = readLedgerSnapshot(ledgerPath, version);
+  return { version, file: join(dir, found[0]), name: found[0], versions: new Set(snapshot.versions) };
+}
+
+// Um JSON sem `versions` (ou com versões que não são texto) viraria um Set vazio
+// e o drift-check replayaria o histórico inteiro por cima do baseline.
+function readLedgerSnapshot(ledgerPath, version) {
+  const label = ledgerSnapshotName(version);
+  let document;
+  try {
+    document = JSON.parse(readFileSync(ledgerPath, 'utf8'));
+  } catch (error) {
+    throw new Error(`${label} ilegível: ${error.message}`);
+  }
+  if (!document || typeof document !== 'object') throw new Error(`${label} não é um objeto JSON`);
+  if (String(document.baseline_version) !== version) {
+    throw new Error(`${label}: baseline_version ${JSON.stringify(document.baseline_version)} difere da versão do arquivo (${version})`);
+  }
+  const { versions } = document;
+  if (!Array.isArray(versions) || !versions.length || !versions.every((v) => typeof v === 'string' && v.trim())) {
+    throw new Error(`${label}: "versions" ausente, vazio ou com item que não é texto`);
+  }
+  return document;
 }
 
 // Replaya toda versão aplicada que não estava no ledger quando o baseline foi
@@ -168,8 +210,26 @@ export function prepareWorkdir({ rootDir, outDir, appliedVersions, projectRef })
 // a pasta de replay.
 const EVENT_TRIGGER_STATEMENT = /^\s*(?:ALTER|COMMENT\s+ON)\s+EVENT\s+TRIGGER\b/i;
 
-// Avança o estado léxico (aspas simples, dollar-quote) por uma linha e diz se
-// houve `;` fora de literal e de comentário de linha.
+// Mesma lacuna para publications: o dump traz ALTER PUBLICATION … OWNER/ADD TABLE
+// sem o CREATE PUBLICATION. A única que o shadow do CLI já tem é a da própria
+// plataforma (supabase_realtime — o replay do baseline atual passa por ela);
+// qualquer outra que passe a existir em produção quebraria o replay com
+// `publication "..." does not exist`.
+const PUBLICATION_STATEMENT = /^\s*(?:ALTER|COMMENT\s+ON)\s+PUBLICATION\s+(?:"((?:[^"]|"")+)"|([^\s;]+))/i;
+const PUBLICATIONS_IN_SHADOW = new Set(['supabase_realtime']);
+
+function isStatementMissingFromDump(line) {
+  if (EVENT_TRIGGER_STATEMENT.test(line)) return true;
+  const publication = PUBLICATION_STATEMENT.exec(line);
+  if (!publication) return false;
+  const name = publication[1] !== undefined ? publication[1].replaceAll('""', '"') : publication[2].toLowerCase();
+  return !PUBLICATIONS_IN_SHADOW.has(name);
+}
+
+// Avança o estado léxico (aspas simples, identificador entre aspas duplas,
+// dollar-quote) por uma linha e diz se houve `;` fora de literal e de comentário
+// de linha. Identificador com apóstrofo (`"can't"`) ou `--` dentro de aspas
+// duplas não pode virar início de string/comentário.
 function scanLine(line, state) {
   let terminated = false;
   for (let i = 0; i < line.length; i += 1) {
@@ -184,10 +244,19 @@ function scanLine(line, state) {
         if (line[i + 1] === "'") i += 1;
         else state.quote = false;
       }
+    } else if (state.ident) {
+      if (c === '"') {
+        if (line[i + 1] === '"') i += 1;
+        else state.ident = false;
+      }
     } else if (c === "'") {
       state.quote = true;
+    } else if (c === '"') {
+      state.ident = true;
     } else if (c === '$') {
-      const tag = /^\$[A-Za-z_]*\$/.exec(line.slice(i));
+      // Tag pode ter dígitos ($q1$) e só abre dollar-quote fora de identificador
+      // (`col$1$x` é nome, não literal).
+      const tag = /[A-Za-z0-9_$]/.test(line[i - 1] ?? '') ? null : /^\$(?:[A-Za-z_][A-Za-z_0-9]*)?\$/.exec(line.slice(i));
       if (tag) {
         state.dollar = tag[0];
         i += tag[0].length - 1;
@@ -204,17 +273,18 @@ function scanLine(line, state) {
 export function sanitizeBaselineForReplay(sql) {
   const kept = [];
   const removed = [];
-  const state = { quote: false, dollar: null };
+  const state = { quote: false, ident: false, dollar: null };
+  const inLiteral = () => state.quote || state.ident || state.dollar;
   let skipping = false;
   sql.split('\n').forEach((line, index) => {
-    const atStatementStart = !skipping && !state.quote && !state.dollar;
-    if (atStatementStart && EVENT_TRIGGER_STATEMENT.test(line)) {
+    const atStatementStart = !skipping && !inLiteral();
+    if (atStatementStart && isStatementMissingFromDump(line)) {
       skipping = true;
       removed.push({ line: index + 1, statement: line.trim().slice(0, 90) });
     }
     const terminated = scanLine(line, state);
     if (skipping) {
-      if (terminated && !state.quote && !state.dollar) skipping = false;
+      if (terminated && !inLiteral()) skipping = false;
       return;
     }
     kept.push(line);
@@ -222,12 +292,35 @@ export function sanitizeBaselineForReplay(sql) {
   return { sql: kept.join('\n'), removed };
 }
 
+// Linhas de DDL de um objeto que não existe: uma entrada que casa com qualquer
+// uma delas esconde drift de TODO objeto (ex.: `.*`, `^create table`, `public`).
+// Entrada legítima nomeia o objeto e não casa com um nome de sonda.
+const ALLOWLIST_PROBES = [
+  'create table "public"."__drift_probe__" (id integer);',
+  'create index "__drift_probe__" on "public"."__drift_probe__" using btree ("id");',
+  'create policy "__drift_probe__" on "public"."__drift_probe__" for select to authenticated using (true);',
+  'create or replace function "public"."__drift_probe__"() returns void language sql as $function$ select 1 $function$;',
+  'create or replace view "public"."__drift_probe__" as select 1;',
+  'alter table "public"."__drift_probe__" add column "c" integer;',
+  'alter table "public"."__drift_probe__" enable row level security;',
+  'drop table "public"."__drift_probe__";',
+  'grant select on table "public"."__drift_probe__" to "anon";',
+  'revoke all on table "public"."__drift_probe__" from "anon";',
+];
+
 export function loadAllowlist(text) {
   return text
     .split('\n')
     .map((l) => l.trim())
     .filter((l) => l && !l.startsWith('#'))
-    .map((l) => new RegExp(l));
+    .map((l) => {
+      const re = new RegExp(l);
+      const probe = ALLOWLIST_PROBES.find((p) => re.test(p));
+      if (probe !== undefined || re.test('')) {
+        throw new Error(`drift-allowlist: entrada genérica demais (${l}) — casaria "${probe ?? ''}"; nomeie o objeto`);
+      }
+      return re;
+    });
 }
 
 export function filterDiff(diffSql, allowlist) {

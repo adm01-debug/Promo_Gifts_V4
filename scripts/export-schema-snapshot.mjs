@@ -41,6 +41,7 @@ import {
   byCodeUnit,
   findSecrets,
   ledgerSnapshotName,
+  looksLikeSchemaDump,
   maxNumericVersion,
 } from './drift-baseline.mjs';
 
@@ -79,16 +80,14 @@ function tryLink() {
     warn('Credenciais de link ausentes e link local canônico não encontrado — pulando live/drift.');
     return false;
   }
-  try {
-    execSync(
-      `supabase link --project-ref ${PROJECT_REF} -p "$SUPABASE_DB_PASSWORD"`,
-      { stdio: 'inherit', shell: '/bin/bash' },
-    );
-    return true;
-  } catch (e) {
-    err(`Falha ao linkar projeto ${PROJECT_REF}: ${e.message}`);
+  // Sem shell e sem `-p`: o CLI lê a senha de SUPABASE_DB_PASSWORD (R5 — segredo
+  // nunca como argumento, que apareceria na linha de comando do processo).
+  const r = spawnSync('supabase', ['link', '--project-ref', PROJECT_REF], { stdio: 'inherit', env: process.env });
+  if (r.error || r.status !== 0) {
+    err(`Falha ao linkar projeto ${PROJECT_REF}: ${r.error?.message ?? `exit ${r.status}`}`);
     return false;
   }
+  return true;
 }
 
 function buildAllInOne() {
@@ -147,6 +146,10 @@ function dumpLiveSchema(ledger) {
     return { ok: false };
   }
   const sql = r.stdout;
+  if (!looksLikeSchemaDump(sql)) {
+    err('Dump vazio ou sem CREATE TABLE — nada gravado.');
+    return { ok: false };
+  }
   // O dump leva minutos: migration aplicada no meio entraria no schema mas
   // não na lista de versões, e o drift-check a replayaria em cima dela.
   const after = readLedger();
@@ -216,15 +219,16 @@ function main() {
     drift: null,
   };
 
+  // Com credenciais (CI em schedule/dispatch) falha de CLI, link, ledger ou dump
+  // é erro. Sem elas, um link local sem `supabase login` só pula o dump — como em
+  // PR e push, onde as credenciais não são entregues ao job.
+  const strict = Boolean(process.env.SUPABASE_ACCESS_TOKEN);
   if (!hasSupabaseCli()) {
     warn('CLI `supabase` não encontrado — pulando SCHEMA_LIVE.sql e o baseline.');
     writeMeta(meta);
+    if (strict) process.exitCode = 1;
     return;
   }
-  // Com credenciais (CI em schedule/dispatch) falha de ledger ou dump é erro.
-  // Sem elas, um link local sem `supabase login` só pula o dump — como em PR
-  // e push, onde as credenciais não são entregues ao job.
-  const strict = Boolean(process.env.SUPABASE_ACCESS_TOKEN);
   if (!tryLink()) {
     writeMeta(meta);
     if (strict) process.exitCode = 1;
