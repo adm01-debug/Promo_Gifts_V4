@@ -1,23 +1,13 @@
 /**
  * Integration tests — edge function `magic-up-score` contra o CONTRATO REAL.
  *
- * Ao contrário da versão anterior (que mockava `fetch` e assertava contra o
- * próprio mock, inventando `product_id`/`factors`/`tier`/`eligible_for_magic_up`
- * inexistentes), aqui a função REAL é carregada e executada em processo:
- * capturamos o handler entregue a `Deno.serve` em
- * `supabase/functions/magic-up-score/index.ts` e o invocamos com `Request`
- * reais, assertando as `Response` reais. Apenas as dependências Deno-only
- * (auth, bot-protection, ai-usage, ai-credentials, cors — todas com import
- * `npm:`/`Deno.env`) são substituídas por stubs.
- *
- * Contrato real (index.ts): entrada `{ imageUrl(min 10), productName?,
- * clientName?, campaignBrief?, brandKit?, creativeControls?, promptText?,
- * channel?, aspectRatio? }`; sucesso `{ total, label, summary, criteria[4..10],
- * strengths, risks, recommendations, source:'ai' }`; 400 `{ error:"Validation
- * failed", details }`; 401 auth; repassa status da IA (ex.: 402); 429 quota.
- *
- * Se o handler mudar (schema de entrada, status codes, envelope de sucesso,
- * modelo ou mensagens), estes testes ficam vermelhos.
+ * O handler real de `supabase/functions/magic-up-score/index.ts` é capturado em
+ * `Deno.serve` e invocado com `Request` reais; só as dependências Deno-only
+ * (auth, bot-protection, ai-usage, ai-credentials, cors) viram stubs. Contrato:
+ * `{ imageUrl(min 10) + opcionais }` → `{ total, label, summary, criteria[4..10],
+ * strengths, risks, recommendations, source:'ai' }`; 400 "Validation failed";
+ * 401 auth; status da IA repassado (402); 429 quota; 500 loga em `console.error`
+ * (index.ts:118), interceptado sob `STRICT_TEST_SIDE_EFFECTS=1`.
  */
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -94,6 +84,19 @@ function post(body: unknown): Request {
   });
 }
 
+// Os caminhos de 500 do handler real logam em `console.error` (index.ts:118);
+// sob STRICT_TEST_SIDE_EFFECTS=1 (test:ci-core) o log precisa ser interceptado
+// pelo próprio teste — interceptamos e asseguramos a mensagem real.
+async function callExpectingServerError(req: Request) {
+  const spy = vi.spyOn(console, "error").mockImplementation(() => undefined);
+  try {
+    const res = await handler(req);
+    return { res, logged: spy.mock.calls };
+  } finally {
+    spy.mockRestore();
+  }
+}
+
 let handler!: EdgeHandler;
 
 beforeAll(async () => {
@@ -126,7 +129,6 @@ beforeEach(() => {
       headers: { "Access-Control-Allow-Origin": CORS_ORIGIN, "Content-Type": "application/json" },
     }),
   );
-  shared.callAi.mockReset();
 });
 
 describe("magic-up-score — contrato real do handler", () => {
@@ -202,21 +204,28 @@ describe("magic-up-score — contrato real do handler", () => {
 
   it("500 quando a IA devolve um diagnóstico que viola o schema real (criteria < 4)", async () => {
     shared.callAi.mockResolvedValue(aiContent({ ...DIAGNOSIS, criteria: DIAGNOSIS.criteria.slice(0, 3) }));
-    const res = await handler(post({ imageUrl: IMAGE_URL }));
+    const { res, logged } = await callExpectingServerError(post({ imageUrl: IMAGE_URL }));
     expect(res.status).toBe(500);
+    expect(logged).toHaveLength(1);
+    expect(logged[0]?.[0]).toBe("[magic-up-score] Error:");
+    expect(String(logged[0]?.[1])).toContain("criteria");
   });
 
   it("500 quando o content da IA não contém JSON", async () => {
     shared.callAi.mockResolvedValue(aiContent("desculpe, não consigo avaliar"));
-    const res = await handler(post({ imageUrl: IMAGE_URL }));
+    const { res, logged } = await callExpectingServerError(post({ imageUrl: IMAGE_URL }));
     expect(res.status).toBe(500);
+    expect(logged).toHaveLength(1);
+    expect((logged[0]?.[1] as Error).message).toBe("AI response did not contain JSON");
   });
 
   it("500 quando a resposta da IA não tem content textual", async () => {
     shared.callAi.mockResolvedValue(upstream(200, { choices: [] }));
-    const res = await handler(post({ imageUrl: IMAGE_URL }));
+    const { res, logged } = await callExpectingServerError(post({ imageUrl: IMAGE_URL }));
     expect(res.status).toBe(500);
     expect((await res.json()).error).toBe("AI response missing content");
+    expect(logged).toHaveLength(1);
+    expect((logged[0]?.[1] as Error).message).toBe("AI response missing content");
   });
 
   it("repassa o status da IA (402 → créditos esgotados)", async () => {
