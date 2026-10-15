@@ -71,16 +71,19 @@ test.describe('Reposição Module - Stress & Load Testing', () => {
       });
     });
 
-    // Mede o tempo até o primeiro item (inclui boot da SPA + chunk lazy + RPC + render).
-    // Orçamento 5s: o alvo antigo (<1s) era medido DEPOIS do load e nunca considerou
-    // o boot do app no runner de CI; serve para pegar regressão grosseira, não micro-perf.
-    const startTime = Date.now();
     await page.reload();
+
+    // Mede o tempo de carregamento inicial DEPOIS do reload, como o spec sempre
+    // mediu (o orçamento de 1s nunca incluiu o boot da SPA). O tempo medido vai
+    // para as anotações do relatório: se o runner de CI precisar de outro limite,
+    // o número real está lá — nenhum orçamento é afrouxado sem medição.
+    const startTime = Date.now();
     const firstItem = page.getByText('Produto Stress Test 0', { exact: true }).first();
     await expect(firstItem).toBeVisible();
     const loadTime = Date.now() - startTime;
-    console.log(`Initial load time (reload -> first item): ${loadTime}ms`);
-    expect(loadTime).toBeLessThan(5000);
+    console.log(`Initial load time (post-reload -> first item): ${loadTime}ms`);
+    test.info().annotations.push({ type: 'perf', description: `loadTime=${loadTime}ms (meta < 1000ms)` });
+    expect(loadTime).toBeLessThan(1000); // Meta: < 1s
 
     // O RPC foi de fato interceptado (e não o backend real).
     expect(rpcBodies.length).toBeGreaterThan(0);
@@ -108,7 +111,6 @@ test.describe('Reposição Module - Stress & Load Testing', () => {
     expect(await grid.getByRole('listitem').count()).toBeLessThan(300);
 
     // Volta ao topo: o primeiro item reaparece (reciclagem de linhas funciona).
-    // Orçamento 2s (era 500ms): inclui re-render do virtualizer sob CI com 2 workers.
     const scrollStartTime = Date.now();
     await grid.evaluate((el) => {
       el.scrollTop = 0;
@@ -116,7 +118,8 @@ test.describe('Reposição Module - Stress & Load Testing', () => {
     await expect(page.getByText('Produto Stress Test 0', { exact: true }).first()).toBeVisible();
     const scrollBackTime = Date.now() - scrollStartTime;
     console.log(`Scroll back to top: ${scrollBackTime}ms`);
-    expect(scrollBackTime).toBeLessThan(2000);
+    test.info().annotations.push({ type: 'perf', description: `scrollBackTime=${scrollBackTime}ms (meta < 500ms)` });
+    expect(scrollBackTime).toBeLessThan(500);
   });
 
   test('Resiliência sob 410 Gone (External DB Bridge)', async ({ page }) => {
