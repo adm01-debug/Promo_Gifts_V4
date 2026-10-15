@@ -715,6 +715,13 @@ describe('dropDumpLossyFunctions — mudanças posteriores ao CREATE não são e
     expect(dropped(`${create}DROP FUNCTION "public"."g"();\n`)).toEqual([]);
   });
 
+  it('DROP FUNCTION sem lista de argumentos (IF EXISTS … CASCADE) invalida o nome e não puxa "(" de outro comando', () => {
+    expect(dropped(`${create}DROP FUNCTION IF EXISTS public.g CASCADE;\n`)).toEqual([]);
+    expect(dropped(`${create}DROP FUNCTION public.g;\nCREATE FUNCTION public.o(a int) RETURNS void LANGUAGE sql AS $$ select 1 $$;\n`)).toEqual([]);
+    // Outra função dropada não afeta `g`.
+    expect(dropped(`${create}DROP FUNCTION IF EXISTS public.zzz CASCADE;\n`)).toEqual(['public.g()']);
+  });
+
   it('CREATE dentro de comentário de bloco não é definição vigente', () => {
     expect(dropped(`/* ${create} */\n`)).toEqual([]);
   });

@@ -83,6 +83,12 @@ const GRID_THUMB = [
   '[data-testid="replenishment-grid-card-thumb"]',
 ].join(', ');
 
+const GRID_THUMB_XPATH = [
+  "@data-testid='product-card-image-quickview'",
+  "@data-testid='novelty-grid-card-thumb'",
+  "@data-testid='replenishment-grid-card-thumb'",
+].join(' or ');
+
 for (const route of ROUTES) {
   test.describe(`V2 ColorSwatchPicker • ${route.slug}`, () => {
     test(`${route.slug}: Tab-order + foco idle/ativo + seleção inline + QuickView pela foto`, async ({ page }) => {
@@ -151,7 +157,13 @@ for (const route of ROUTES) {
       expect(hasRing, 'swatch ativo tem ring/outline visível').toBe(true);
 
       // --- (4) QuickView abre pela FOTO e fecha com Escape; picker preserva o estado ---
-      await page.locator(GRID_THUMB).first().click();
+      // Thumb do MESMO card do picker (o ancestral mais próximo que contém uma foto
+      // clicável): um `.first()` global abriria o QuickView de outro produto.
+      const cardThumb = pickerEl
+        .locator(`xpath=ancestor::*[.//*[${GRID_THUMB_XPATH}]][1]`)
+        .locator(GRID_THUMB)
+        .first();
+      await cardThumb.click();
       await expect(dialog).toBeVisible({ timeout: 10_000 });
       await page.keyboard.press('Escape');
       await expect(dialog).toBeHidden({ timeout: 5_000 });

@@ -733,19 +733,24 @@ export function dropDumpLossyFunctions(diffSql, shadowSql) {
   let touch;
   while ((touch = touchesFunction.exec(shadowSql)) !== null) {
     if (!mask[touch.index + (touch[0].length - touch[0].trimStart().length)]) continue;
-    const afterKeyword = shadowSql.slice(touch.index + touch[0].length);
-    const open = afterKeyword.indexOf('(');
-    if (open < 0) continue;
-    const ifExists = /^if[ \t]+exists[ \t]+/i.exec(afterKeyword.slice(0, 16));
-    const name = normalizeHeader(afterKeyword.slice(ifExists ? ifExists[0].length : 0, open));
-    // `ALTER … OWNER TO` é inócuo; qualquer outra forma (ou parêntese que não fecha
-    // como esperado) tira a assinatura do mapa.
-    const close = afterKeyword.indexOf(')', open);
+    // Só o próprio comando: `DROP FUNCTION IF EXISTS f CASCADE;` (sem lista de
+    // argumentos) não pode puxar o `(` de um comando posterior.
+    const rest = shadowSql.slice(touch.index + touch[0].length);
+    const terminator = rest.indexOf(';');
+    const statement = terminator < 0 ? rest : rest.slice(0, terminator);
+    const afterIfExists = statement.replace(/^if[ \t]+exists[ \t]+/i, '');
+    const open = afterIfExists.indexOf('(');
+    const nameText = open < 0 ? afterIfExists.trim().split(/[ \t\r\n,]/)[0] : afterIfExists.slice(0, open);
+    const name = normalizeHeader(nameText);
+    if (!name) continue;
+    // `ALTER … OWNER TO` é inócuo; qualquer outra forma tira o nome do mapa.
+    const close = open < 0 ? -1 : afterIfExists.indexOf(')', open);
     const ownerOnly =
       touch[1].toLowerCase() === 'alter' &&
       close > 0 &&
-      /^owner[ \t]+to[ \t]/i.test(afterKeyword.slice(close + 1).trimStart());
+      /^owner[ \t]+to[ \t]/i.test(afterIfExists.slice(close + 1).trimStart());
     if (ownerOnly) continue;
+    // Sem lista de argumentos, o DROP vale para todas as sobrecargas do nome.
     for (const signature of [...current.keys()]) {
       if (signature.startsWith(`${name}(`) || signature.startsWith(`public.${name}(`)) current.delete(signature);
     }
