@@ -113,6 +113,15 @@ jobs:
     environment: production
     permissions:
       contents: read
+    env:
+      # lock_timeout curto: o role anon tem statement_timeout=3s, e leitores
+      # enfileirados atrás de um AccessExclusiveLock pendente começam a falhar
+      # após ~1s (run 38730252412: DROP POLICY esperou 2 min, 7 statements de
+      # outras sessões cancelados). Melhor a migration falhar rápido e ser
+      # re-disparada. Uma migration pode sobrescrever com o seu próprio
+      # `SET LOCAL lock_timeout = '...'` (ou `SET` se transaction: none).
+      MIGRATION_LOCK_TIMEOUT: '1s'
+      MIGRATION_STATEMENT_TIMEOUT: '10min'
     outputs:
       sha256: ${{ steps.hash.outputs.sha256 }}
       applied_at: ${{ steps.hash.outputs.applied_at }}
@@ -190,15 +199,38 @@ jobs:
           PGPORT: ${{ secrets.PGPORT || '5432' }}
           PGSSLMODE: require
           PGCONNECT_TIMEOUT: '15'
-          PGOPTIONS: '-c lock_timeout=30s -c statement_timeout=10min'
+          MIGRATION_FILE: ${{ steps.locate.outputs.file }}
+          NO_TX: ${{ steps.tx_optout.outputs.no_tx }}
         run: |
-          if [ "${{ steps.tx_optout.outputs.no_tx }}" = "true" ]; then
+          set -euo pipefail
+          # Timeouts são aplicados com SET dentro da sessão/transação, NÃO via
+          # PGOPTIONS: o pooler (Supavisor) ignora startup options — no run
+          # 38730252412 nem lock_timeout=30s nem statement_timeout=10min valeram.
+          for t in "$MIGRATION_LOCK_TIMEOUT" "$MIGRATION_STATEMENT_TIMEOUT"; do
+            if ! [[ "$t" =~ ^[0-9]+(ms|s|min)$ ]]; then
+              echo "::error::timeout inválido: '$t'"
+              exit 1
+            fi
+          done
+          if [ "$NO_TX" = "true" ]; then
             # transaction: none declarado — sem -1 para permitir operações não-transacionais
             # (CONCURRENTLY, ALTER TYPE ADD VALUE, etc.) aprovadas no preflight.
-            psql -X -w -v ON_ERROR_STOP=1 -f "${{ steps.locate.outputs.file }}"
+            # SET de sessão: vale para todos os statements do arquivo só com o pooler
+            # em modo session (porta 5432, o padrão de PGPORT). Em 6543 (transaction)
+            # o SET não persistiria entre statements.
+            psql -X -w -v ON_ERROR_STOP=1 \
+              -c "SET lock_timeout = '${MIGRATION_LOCK_TIMEOUT}'" \
+              -c "SET statement_timeout = '${MIGRATION_STATEMENT_TIMEOUT}'" \
+              -f "$MIGRATION_FILE"
           else
             # Migração transacional padrão — -1 garante rollback atômico em caso de erro.
-            psql -X -w -1 -v ON_ERROR_STOP=1 -f "${{ steps.locate.outputs.file }}"
+            # Com -1, psql emite BEGIN antes do primeiro -c/-f e COMMIT após o último
+            # (ROLLBACK se algum falhar com ON_ERROR_STOP): os SET LOCAL e o arquivo
+            # rodam na MESMA transação, na ordem dada.
+            psql -X -w -1 -v ON_ERROR_STOP=1 \
+              -c "SET LOCAL lock_timeout = '${MIGRATION_LOCK_TIMEOUT}'" \
+              -c "SET LOCAL statement_timeout = '${MIGRATION_STATEMENT_TIMEOUT}'" \
+              -f "$MIGRATION_FILE"
           fi
 
       - name: Setup Supabase CLI
@@ -279,8 +311,14 @@ jobs:
             --pos-check="job post-check da run ${{ github.run_id }} confirmou a version no ledger" \
             --status="aplicada"
 
+      - name: Credencial de push sem token em disco (E32)
+        run: |
+          # persist-credentials:false nao grava token; o helper le GIT_PUSH_TOKEN so no passo de push.
+          # shellcheck disable=SC2016 # aspas simples intencionais: o git expande $1 e GIT_PUSH_TOKEN ao chamar o helper
+          git config --local credential.helper '!f() { test "$1" = get || exit 0; echo username=x-access-token; echo "password=${GIT_PUSH_TOKEN}"; }; f'
       - name: Abre PR com o recibo
         env:
+          GIT_PUSH_TOKEN: ${{ github.token }}
           APPROVED_BY: ${{ inputs.approved_by }}
         run: |
           set -euo pipefail

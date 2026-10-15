@@ -10,8 +10,11 @@ Migrations (reconciliadas com o ledger em 2026-10-15, B2): o que foi de fato apl
 `supabase/migrations/20261013172634_agente2_fase6_workmem_and_index.sql`; o que foi aplicado fora de
 migration (policy `variant_stocks_select_org` e os `cron.alter_job`) está em
 `supabase/migrations/20261015120000_reconcilia_oob_incidente_2026_10_13.sql`; o que nunca foi
-aplicado (`system_settings` e `test_agente2_probe`) está pendente em
-`supabase/migrations/20261015120500_fase3_system_settings_policies_e_remove_probe.sql`. Os arquivos
+aplicado está pendente em
+`supabase/migrations/20261015120500_fase3_system_settings_policies.sql` (`system_settings`) e
+`supabase/migrations/20261015130000_remove_test_agente2_probe.sql` (`test_agente2_probe`), separadas
+em 2026-10-15 depois que o DROP da probe travou a aplicação conjunta por lock em
+`variant_supplier_sources` (run 38730252412, revertida; ver `supabase/MIGRATIONS_SYNC_LOG.md`). Os arquivos
 originais `20261013141300_fase3_rls_performance.sql` e `20261013141700_fase6_cron_pipelines.sql`
 continuam legíveis via `git show 1b59d0f:<caminho>`.
 

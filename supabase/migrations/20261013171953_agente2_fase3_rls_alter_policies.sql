@@ -8,7 +8,7 @@
 --   - policy variant_stocks_select_org: aplicada fora de migration; registrada em
 --     20261015120000_reconcilia_oob_incidente_2026_10_13.sql;
 --   - seção 7 (system_settings) e remoção de test_agente2_probe: nunca aplicadas; pendentes em
---     20261015120500_fase3_system_settings_policies_e_remove_probe.sql.
+--     20261015120500_fase3_system_settings_policies.sql e 20261015130000_remove_test_agente2_probe.sql.
 -- Corpo = statements do ledger, byte a byte: md5 = 071dfc8fb3c630b1f74eec00c0b859dd.
 -- Evidência de performance (5,5 s -> 0,86 s) na versão comentada anterior:
 --   git show 1b59d0f:supabase/migrations/20261013141300_fase3_rls_performance.sql

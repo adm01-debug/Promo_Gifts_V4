@@ -43,10 +43,16 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: node scripts/ci-metrics.mjs
 
+      - name: Credencial de push sem token em disco (E32)
+        run: |
+          # persist-credentials:false nao grava token; o helper le GIT_PUSH_TOKEN so no passo de push.
+          # shellcheck disable=SC2016 # aspas simples intencionais: $1 e GIT_PUSH_TOKEN expandem quando o git chama o helper
+          git config --local credential.helper '!f() { test "$1" = get || exit 0; echo username=x-access-token; echo "password=${GIT_PUSH_TOKEN}"; }; f'
       - name: Abrir PR com relatório se houve mudança
         # E66/E87: nunca push direto em main — entrega via PR em branch ci-metrics/YYYY-WNN.
         # Cron e workflow_dispatch se comportam igual: se mudou, abre PR.
         env:
+          GIT_PUSH_TOKEN: ${{ github.token }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name  "github-actions[bot]"

@@ -132,7 +132,14 @@ jobs:
         # verde sem gravar nada (seed dormente mascarado como sucesso).
         run: node scripts/check-policies-baseline.mjs --update-baseline --require-live
 
+      - name: Credencial de push sem token em disco (E32)
+        run: |
+          # persist-credentials:false nao grava token; o helper le GIT_PUSH_TOKEN so no passo de push.
+          # shellcheck disable=SC2016 # aspas simples intencionais: $1 e GIT_PUSH_TOKEN expandem quando o git chama o helper
+          git config --local credential.helper '!f() { test "$1" = get || exit 0; echo username=x-access-token; echo "password=${GIT_PUSH_TOKEN}"; }; f'
       - name: Commit baseline (detecta mudanças)
+        env:
+          GIT_PUSH_TOKEN: ${{ github.token }}
         id: changes
         run: |
           set -euo pipefail

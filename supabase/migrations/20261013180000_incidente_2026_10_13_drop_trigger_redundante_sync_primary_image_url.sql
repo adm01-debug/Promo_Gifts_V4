@@ -21,7 +21,7 @@
 -- REGRA #8/E15 do CLAUDE.md), confirmando o prompt de "destructive statement".
 --
 -- Evidência/justificativa:
--- trg_sync_primary_image_url (BEFORE/AFTER INSERT OR UPDATE OF is_primary,
+-- trg_sync_primary_image_url (AFTER INSERT OR UPDATE OF is_primary,
 -- is_active, url_cdn em product_images) escreve products.primary_image_url,
 -- mas é SEMPRE seguido, no mesmo evento, por trg_sync_product_images
 -- (INSERT/DELETE) ou trg_sync_product_images_update (UPDATE), que chamam
@@ -37,6 +37,12 @@
 -- (nenhum outro trigger ou chamada direta usa essa função). Remoção segura:
 -- elimina um UPDATE redundante em products por linha afetada, sem mudar o
 -- resultado final (que já é sempre determinado pela função mais completa).
+
+-- Falha rápido (1s) se o lock não vier, em vez de enfileirar leitores atrás do AccessExclusiveLock
+-- em product_images (tabela quente; anon tem statement_timeout de 3s). SET LOCAL vale só para esta
+-- transação (psql -1); o pooler ignora lock_timeout via PGOPTIONS (run 38730252412, 2026-10-15).
+SET LOCAL lock_timeout = '1s';
+
 DROP TRIGGER IF EXISTS trg_sync_primary_image_url ON public.product_images;
 DROP FUNCTION IF EXISTS public.fn_sync_primary_image_url();
 
@@ -84,7 +90,7 @@ DROP FUNCTION IF EXISTS public.fn_sync_primary_image_url();
 --   RETURN NEW;
 -- END;
 -- $function$;
--- REVOKE ALL ON FUNCTION public.fn_sync_primary_image_url() FROM PUBLIC;
+-- REVOKE ALL ON FUNCTION public.fn_sync_primary_image_url() FROM PUBLIC, anon, authenticated;
 -- GRANT EXECUTE ON FUNCTION public.fn_sync_primary_image_url() TO service_role;
 -- CREATE TRIGGER trg_sync_primary_image_url AFTER INSERT OR UPDATE OF is_primary, is_active, url_cdn
 --   ON public.product_images FOR EACH ROW EXECUTE FUNCTION fn_sync_primary_image_url();
