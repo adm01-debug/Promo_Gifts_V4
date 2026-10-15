@@ -30,8 +30,8 @@
  */
 
 import { execSync, spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { accessSync, constants, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { delimiter, isAbsolute, join } from 'node:path';
 import { parseSupabaseMigrationLedgerOutput } from './check-supabase-migration-ledger.mjs';
 import {
   appliedVersionsFromLedger,
@@ -65,8 +65,29 @@ function ensureOutDir() {
   if (!existsSync(OUT_DIR)) mkdirSync(OUT_DIR, { recursive: true });
 }
 
+// Resolve o CLI para um caminho absoluto antes de executar: só entram diretórios
+// absolutos do PATH que o grupo/outros não podem escrever, então um PATH
+// adulterado com diretório gravável não troca o binário (Sonar S4036).
+function resolveCli(name) {
+  for (const dir of (process.env.PATH ?? '').split(delimiter)) {
+    if (!dir || !isAbsolute(dir)) continue;
+    try {
+      if (statSync(dir).mode & 0o022) continue;
+      const candidate = join(dir, name);
+      accessSync(candidate, constants.X_OK);
+      return candidate;
+    } catch {
+      // diretório inexistente ou sem o binário: tenta o próximo
+    }
+  }
+  return null;
+}
+
+const SUPABASE_CLI = resolveCli('supabase');
+
 function hasSupabaseCli() {
-  const r = spawnSync('supabase', ['--version'], { encoding: 'utf8' });
+  if (!SUPABASE_CLI) return false;
+  const r = spawnSync(SUPABASE_CLI, ['--version'], { encoding: 'utf8' });
   return r.status === 0;
 }
 
@@ -82,7 +103,7 @@ function tryLink() {
   }
   // Sem shell e sem `-p`: o CLI herda o ambiente e lê SUPABASE_DB_PASSWORD (R5 — segredo
   // nunca como argumento, que apareceria na linha de comando do processo).
-  const r = spawnSync('supabase', ['link', '--project-ref', PROJECT_REF], { stdio: 'inherit' });
+  const r = spawnSync(SUPABASE_CLI, ['link', '--project-ref', PROJECT_REF], { stdio: 'inherit' });
   if (r.error || r.status !== 0) {
     err(`Falha ao linkar projeto ${PROJECT_REF}: ${r.error?.message ?? `exit ${r.status}`}`);
     return false;
@@ -138,7 +159,7 @@ function readLedger() {
 function dumpLiveSchema(ledger) {
   log('Exportando schema vivo (supabase db dump --linked)');
   // Sem shell; stderr do CLI (progresso) descartado para não entrar no dump.
-  const r = spawnSync('supabase', ['db', 'dump', '--linked'], {
+  const r = spawnSync(SUPABASE_CLI, ['db', 'dump', '--linked'], {
     encoding: 'utf8', maxBuffer: 256 * 1024 * 1024, stdio: ['ignore', 'pipe', 'ignore'],
   });
   if (r.error || r.status !== 0) {
