@@ -1,4 +1,13 @@
 -- Agente 3 (Integridade de Dados/Storage) — incidente 2026-10-13
+-- Rollback: recriar função + ACL + trigger com o bloco "ROLLBACK" no fim deste arquivo
+--   (definição capturada via pg_get_functiondef em 2026-10-15, md5 6a803aa0e63df2d52a592f2c68241d84).
+--
+-- Revisão 2026-10-15 (B2): a redundância foi reconferida em pg_trigger. Ambos são AFTER ROW e
+-- este dispara primeiro (ordem alfabética). Todo INSERT/DELETE e todo UPDATE que MUDA url_cdn,
+-- is_active ou is_primary também dispara trg_sync_product_images(_update), que recalcula
+-- primary_image_url com a regra completa. Única diferença: UPDATE que lista essas colunas sem
+-- mudar o valor (o WHEN do _update não dispara). Nesse caso só este trigger rodava e podia gravar
+-- uma URL fora da regra completa (ex.: imagem box/pouch). Removê-lo elimina essa inconsistência.
 --
 -- *** PENDENTE DE APLICAÇÃO ***
 -- Esta migration foi escrita, validada e testada (ver evidência em
@@ -30,3 +39,52 @@
 -- resultado final (que já é sempre determinado pela função mais completa).
 DROP TRIGGER IF EXISTS trg_sync_primary_image_url ON public.product_images;
 DROP FUNCTION IF EXISTS public.fn_sync_primary_image_url();
+
+-- ROLLBACK (não executar junto com a migration):
+-- CREATE OR REPLACE FUNCTION public.fn_sync_primary_image_url()
+--  RETURNS trigger
+--  LANGUAGE plpgsql
+--  SECURITY DEFINER
+--  SET search_path TO 'public'
+-- AS $function$
+-- BEGIN
+--   -- Caso 1: imagem passou a is_primary=true → setar no produto
+--   IF NEW.is_primary = true AND NEW.is_active = true THEN
+--     UPDATE products
+--     SET primary_image_url = NEW.url_cdn,
+--         updated_at        = NOW()
+--     WHERE id = NEW.product_id
+--       AND is_active = true
+--       AND (primary_image_url IS NULL OR primary_image_url != NEW.url_cdn);
+--   END IF;
+--
+--   -- Caso 2: imagem era primary e foi desativada → limpar se não há outra primary
+--   IF (OLD.is_primary = true OR OLD.is_active = true)
+--     AND (NEW.is_primary = false OR NEW.is_active = false) THEN
+--     -- Verifica se ainda existe outra primary ativa
+--     IF NOT EXISTS (
+--       SELECT 1 FROM product_images
+--       WHERE product_id = NEW.product_id
+--         AND is_primary  = true
+--         AND is_active   = true
+--         AND id         != NEW.id
+--     ) THEN
+--       UPDATE products
+--       SET primary_image_url = (
+--             SELECT url_cdn FROM product_images
+--             WHERE product_id = NEW.product_id AND is_active = true
+--             ORDER BY is_primary DESC, display_order ASC, id ASC
+--             LIMIT 1
+--           ),
+--           updated_at = NOW()
+--       WHERE id = NEW.product_id;
+--     END IF;
+--   END IF;
+--
+--   RETURN NEW;
+-- END;
+-- $function$;
+-- REVOKE ALL ON FUNCTION public.fn_sync_primary_image_url() FROM PUBLIC;
+-- GRANT EXECUTE ON FUNCTION public.fn_sync_primary_image_url() TO service_role;
+-- CREATE TRIGGER trg_sync_primary_image_url AFTER INSERT OR UPDATE OF is_primary, is_active, url_cdn
+--   ON public.product_images FOR EACH ROW EXECUTE FUNCTION fn_sync_primary_image_url();
