@@ -3,6 +3,11 @@ name: Branch Protection Sentinel
 # ============================================================================
 # CHANGELOG (resumo — detalhes em .github/SENTINEL_CHANGELOG.md):
 #
+# v2.1.0 (2026-10-15) — E11: check-protection-config verifica regras específicas
+#   • Não mais verifica apenas "alguma regra existe", mas:
+#     required_status_checks com "Gate Final - Deploy Ready" + pull_request + non_fast_forward
+#   • Mensagem de erro lista quais regras estão faltando
+#
 # v2.0.5 (2026-10-02) — fix check-protection-config: remove administration:read (scope inválido)
 #   • "administration" não é um scope válido no GitHub Actions (actionlint falha)
 #   • GITHUB_TOKEN com contents:read já é suficiente para ler /rulesets publicamente
@@ -243,7 +248,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - name: Query rulesets for main (E52 — substituiu query de campo `protected` que retorna 404 com rulesets)
+      - name: Query rulesets for main (E11/E52 — rules/branches/main, verifica Gate Final + pull_request + non_fast_forward)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
@@ -251,26 +256,35 @@ jobs:
           set -euo pipefail
 
           # A flag `protected` da API branches/ retorna false com rulesets (método antigo — descontinuado).
-          # Usa GET /repos/{owner}/{repo}/rules/branches/{branch} — retorna regras aplicáveis ao branch
-          # diretamente (inclui rulesets ativados para main), sem precisar iterar /rulesets e buscar
+          # Usa GET /repos/{owner}/{repo}/rules/branches/{branch} — retorna regras efetivas aplicáveis
+          # ao branch (inclui rulesets ativados para main), sem precisar iterar /rulesets e buscar
           # conditions individualmente (que não vêm na listagem paginada).
           RULES=$(curl -sS -f -H "Authorization: Bearer $GH_TOKEN" \
                            -H "Accept: application/vnd.github+json" \
                            "https://api.github.com/repos/$REPO/rules/branches/main" || echo "[]")
 
-          HAS_ACTIVE=$(echo "$RULES" | python3 -c "import sys,json; rules=json.load(sys.stdin); print(isinstance(rules,list) and len(rules)>0)")
+          # E11: verificar não apenas "alguma regra existe" mas que as regras críticas estão presentes:
+          # - required_status_checks com "Gate Final - Deploy Ready"
+          # - pull_request (aprovação de PR obrigatória)
+          # - non_fast_forward (sem push direto)
+          RESULT=$(echo "$RULES" | python3 -c "import sys,json; rules=json.load(sys.stdin); types={r.get('type') for r in rules} if isinstance(rules,list) else set(); gate_ok=any('Gate Final' in c.get('context','') or 'deploy-ready' in c.get('context','').lower() for r in rules if r.get('type')=='required_status_checks' for c in r.get('parameters',{}).get('required_status_checks',[])); missing=[x for x,ok in [('required_status_checks:Gate-Final-Deploy-Ready','required_status_checks' in types and gate_ok),('pull_request','pull_request' in types),('non_fast_forward','non_fast_forward' in types)] if not ok]; print('NONE' if not isinstance(rules,list) or not rules else ('OK' if not missing else 'MISSING:'+','.join(missing)))")
 
           {
             echo "### 🔐 Branch Protection (Rulesets) — status de \`main\`"
             echo ""
           } >> "$GITHUB_STEP_SUMMARY"
 
-          if [[ "$HAS_ACTIVE" == "True" ]]; then
-            echo "✅ Branch \`main\` tem ruleset ativo." >> "$GITHUB_STEP_SUMMARY"
-            echo "Ruleset ATIVO para main"
+          if [[ "$RESULT" == "OK" ]]; then
+            echo "✅ Branch \`main\` tem ruleset ativo com Gate Final + pull_request + non_fast_forward." >> "$GITHUB_STEP_SUMMARY"
+            echo "Ruleset ATIVO para main (Gate Final + pull_request + non_fast_forward)"
           else
             {
-              echo "❌ **Branch \`main\` não tem ruleset ativo.**"
+              echo "❌ **Branch \`main\` não tem ruleset ativo ou faltam regras críticas: \`$RESULT\`**"
+              echo ""
+              echo "Regras obrigatórias:"
+              echo "- \`required_status_checks\` com \`Gate Final - Deploy Ready\`"
+              echo "- \`pull_request\` (aprovação de PR)"
+              echo "- \`non_fast_forward\` (sem push direto)"
               echo ""
               echo "O sentinel sozinho é apenas alarme reativo — sem Branch Protection,"
               echo "qualquer push direto chega em \`main\` e só depois é detectado."
@@ -278,6 +292,6 @@ jobs:
               echo "👉 **Configurar agora:** https://github.com/$REPO/settings/rules"
               echo "📖 **Passo a passo:** [.github/BRANCH_PROTECTION_SETUP.md](${{ github.server_url }}/${{ github.repository }}/blob/main/.github/BRANCH_PROTECTION_SETUP.md)"
             } >> "$GITHUB_STEP_SUMMARY"
-            echo "::error::Nenhum ruleset ativo encontrado para main. Configure em $REPO/settings/rules"
+            echo "::error::Branch protection insuficiente para main: $RESULT. Configure em $REPO/settings/rules"
             exit 1
           fi
