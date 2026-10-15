@@ -7,7 +7,8 @@
  *  1. header inicia colado no topo (y ≈ 0);
  *  2. injeta spacer (se necessário) e rola para 1500px;
  *  3. header continua em y ≈ 0 após scroll;
- *  4. `getComputedStyle(header).position === "sticky"`.
+ *  4. `getComputedStyle(header).position` é `sticky` ou `fixed` (o Header global
+ *     é `fixed` + spacer no MainLayout; ver `PINNED_POSITIONS` abaixo).
  *
  * Rotas dinâmicas com placeholders (`SAMPLE_ID`/`SAMPLE_TOKEN`) são filtradas
  * — renderizariam estado vazio/erro e sujariam o sinal.
@@ -40,6 +41,13 @@ import {
 // Tolerância em px para acomodar a transição de altura do header
 // (h-14 → h-12 quando isScrolled ativa).
 const Y_TOLERANCE_PX = 2;
+
+// O Header global (`src/components/layout/Header.tsx`) é `position: fixed` por
+// desenho — `left: var(--header-left)` acompanha a sidebar e `MainLayout` reserva
+// o espaço com um spacer de `--header-h`. `sticky` também mantém o header no topo.
+// O que a regressão histórica quebrava (ancestral com overflow rolando junto) é
+// pego pelas asserções de y ≈ 0 após o scroll; aqui só se recusa `static`/`relative`/`absolute`.
+const PINNED_POSITIONS = ["sticky", "fixed"];
 
 /** Viewports cobertos pela matriz. Tamanhos compatíveis com `set_viewport_size`. */
 const VIEWPORTS = [
@@ -107,9 +115,9 @@ async function assertHeaderSticky(
 
   const position = await header.evaluate((el) => getComputedStyle(el).position);
   expect(
-    position,
-    `Header em ${routePath} [${viewportLabel}] não está sticky`,
-  ).toBe("sticky");
+    PINNED_POSITIONS,
+    `Header em ${routePath} [${viewportLabel}] não está fixo no topo (position=${position})`,
+  ).toContain(position);
 
   return "ok";
 }
@@ -251,9 +259,10 @@ test.describe("Header sticky — pós-login e navegação entre módulos", () =>
       ).toBeLessThanOrEqual(Y_TOLERANCE_PX);
 
       const position = await header.evaluate((el) => getComputedStyle(el).position);
-      expect(position, `Header em ${route} não está sticky após navegação`).toBe(
-        "sticky",
-      );
+      expect(
+        PINNED_POSITIONS,
+        `Header em ${route} não está fixo no topo após navegação (position=${position})`,
+      ).toContain(position);
     }
   });
 });
