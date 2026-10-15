@@ -58,7 +58,10 @@ export const PUBLIC_ROUTES: RouteEntry[] = [
  * App autenticado (qualquer role)
  * ============================================================ */
 export const APP_ROUTES: RouteEntry[] = [
-  { path: "/", area: "app", titleSlug: "dashboard", feature: "dashboard-home", smoke: true, description: "Dashboard inicial" },
+  // "/" monta <Index /> (home = catálogo, src/routes/client-routes.tsx) cujo <h1> é
+  // `page-title-produtos` (CatalogHeader). `page-title-dashboard` só existe em /dashboard
+  // (CustomizableDashboard). Ver causa raiz em 20-all-features-smoke "01 · Dashboard inicial".
+  { path: "/", area: "app", titleSlug: "produtos", feature: "dashboard-home", smoke: true, description: "Dashboard inicial" },
   { path: "/dashboard", area: "app", titleSlug: "dashboard", feature: "dashboard-custom", smoke: true, description: "Dashboard customizável" },
   { path: "/produtos", area: "app", titleSlug: "produtos", feature: "catalog", smoke: true, description: "Catálogo de produtos" },
   { path: "/filtros", area: "app", titleSlug: "produtos", feature: "catalog-filters", smoke: true, description: "Filtros avançados" },
