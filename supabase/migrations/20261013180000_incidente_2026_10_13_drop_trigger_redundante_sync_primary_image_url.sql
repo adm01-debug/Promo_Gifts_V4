@@ -21,7 +21,7 @@
 -- REGRA #8/E15 do CLAUDE.md), confirmando o prompt de "destructive statement".
 --
 -- Evidência/justificativa:
--- trg_sync_primary_image_url (BEFORE/AFTER INSERT OR UPDATE OF is_primary,
+-- trg_sync_primary_image_url (AFTER INSERT OR UPDATE OF is_primary,
 -- is_active, url_cdn em product_images) escreve products.primary_image_url,
 -- mas é SEMPRE seguido, no mesmo evento, por trg_sync_product_images
 -- (INSERT/DELETE) ou trg_sync_product_images_update (UPDATE), que chamam
@@ -90,7 +90,7 @@ DROP FUNCTION IF EXISTS public.fn_sync_primary_image_url();
 --   RETURN NEW;
 -- END;
 -- $function$;
--- REVOKE ALL ON FUNCTION public.fn_sync_primary_image_url() FROM PUBLIC;
+-- REVOKE ALL ON FUNCTION public.fn_sync_primary_image_url() FROM PUBLIC, anon, authenticated;
 -- GRANT EXECUTE ON FUNCTION public.fn_sync_primary_image_url() TO service_role;
 -- CREATE TRIGGER trg_sync_primary_image_url AFTER INSERT OR UPDATE OF is_primary, is_active, url_cdn
 --   ON public.product_images FOR EACH ROW EXECUTE FUNCTION fn_sync_primary_image_url();
