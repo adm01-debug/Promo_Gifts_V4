@@ -476,8 +476,27 @@ const DOLLAR_AS = /\bAS\s+(\$[A-Za-z_][A-Za-z_0-9]*\$|\$\$)/i;
 const DOLLAR_TAG = /\$(?:[A-Za-z_][A-Za-z_0-9]*)?\$/y;
 // Atributos entre o fechamento do corpo e o `;` (`$$ SECURITY DEFINER;`, `STABLE`,
 // `SET search_path = ''`): mudam comportamento e o `db diff` nunca os emite depois
-// do corpo, então fazem parte da comparação.
-const TRAILING_ATTRS = /^((?:[^;']|'(?:[^']|'')*')*);/;
+// do corpo, então fazem parte da comparação. Varredura linear (sem regex com
+// repetição aninhada): devolve o texto até o `;` fora de literal e o tamanho
+// consumido (com o `;`), ou null se não houver `;`.
+function trailingAttributes(text) {
+  let i = 0;
+  while (i < text.length) {
+    const c = text[i];
+    if (c === ';') return { attrs: text.slice(0, i), length: i + 1 };
+    if (c === "'") {
+      let j = i + 1;
+      while (j < text.length) {
+        if (text[j] === "'") {
+          if (text[j + 1] === "'") j += 2;
+          else break;
+        } else j += 1;
+      }
+      i = j + 1;
+    } else i += 1;
+  }
+  return null;
+}
 
 // máscara[i] = 1 quando a posição i começa em código SQL (fora de comentário,
 // literal, identificador entre aspas e corpo dollar-quoted). Um `CREATE FUNCTION`
@@ -531,9 +550,9 @@ export function extractFunctionStatements(sql) {
     const close = rest.indexOf(as[1], bodyStart);
     if (close < 0) continue;
     let end = close + as[1].length;
-    const tail = TRAILING_ATTRS.exec(rest.slice(end));
-    const trailing = tail ? tail[1].trim() : '';
-    if (tail) end += tail[0].length;
+    const tail = trailingAttributes(rest.slice(end));
+    const trailing = tail ? tail.attrs.trim() : '';
+    if (tail) end += tail.length;
     found.push({ start: start.index, end: start.index + end, text: rest.slice(0, end), tag: as[1], asIndex: as.index, bodyStart, close, trailing });
     FUNCTION_START.lastIndex = start.index + end;
   }
@@ -710,12 +729,23 @@ export function dropDumpLossyFunctions(diffSql, shadowSql) {
   // muda a função sem passar pelo texto do CREATE: a assinatura sai do mapa. Só
   // `OWNER TO` (que o dump emite para toda função) é inócuo.
   const mask = codeMask(shadowSql);
-  const touchesFunction = /^[ \t]*(alter|drop)[ \t]+(?:function|procedure|routine)[ \t]+(?:if[ \t]+exists[ \t]+)?((?:"(?:[^"]|"")+"|[A-Za-z_][\w$]*)(?:\.(?:"(?:[^"]|"")+"|[A-Za-z_][\w$]*))?)[ \t]*\(([^;]*);?/gim;
+  const touchesFunction = /^[ \t]*(alter|drop)[ \t]+(?:function|procedure|routine)[ \t]+/gim;
   let touch;
   while ((touch = touchesFunction.exec(shadowSql)) !== null) {
     if (!mask[touch.index + (touch[0].length - touch[0].trimStart().length)]) continue;
-    if (/^alter$/i.test(touch[1]) && /\)\s*owner\s+to\s+(?:"(?:[^"]|"")+"|\w+)\s*$/i.test(touch[0].replace(/;\s*$/, ''))) continue;
-    const name = normalizeHeader(touch[2]);
+    const afterKeyword = shadowSql.slice(touch.index + touch[0].length);
+    const open = afterKeyword.indexOf('(');
+    if (open < 0) continue;
+    const ifExists = /^if[ \t]+exists[ \t]+/i.exec(afterKeyword.slice(0, 16));
+    const name = normalizeHeader(afterKeyword.slice(ifExists ? ifExists[0].length : 0, open));
+    // `ALTER … OWNER TO` é inócuo; qualquer outra forma (ou parêntese que não fecha
+    // como esperado) tira a assinatura do mapa.
+    const close = afterKeyword.indexOf(')', open);
+    const ownerOnly =
+      touch[1].toLowerCase() === 'alter' &&
+      close > 0 &&
+      /^owner[ \t]+to[ \t]/i.test(afterKeyword.slice(close + 1).trimStart());
+    if (ownerOnly) continue;
     for (const signature of [...current.keys()]) {
       if (signature.startsWith(`${name}(`) || signature.startsWith(`public.${name}(`)) current.delete(signature);
     }
