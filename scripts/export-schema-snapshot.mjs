@@ -80,9 +80,9 @@ function tryLink() {
     warn('Credenciais de link ausentes e link local canônico não encontrado — pulando live/drift.');
     return false;
   }
-  // Sem shell e sem `-p`: o CLI lê a senha de SUPABASE_DB_PASSWORD (R5 — segredo
+  // Sem shell e sem `-p`: o CLI herda o ambiente e lê SUPABASE_DB_PASSWORD (R5 — segredo
   // nunca como argumento, que apareceria na linha de comando do processo).
-  const r = spawnSync('supabase', ['link', '--project-ref', PROJECT_REF], { stdio: 'inherit', env: process.env });
+  const r = spawnSync('supabase', ['link', '--project-ref', PROJECT_REF], { stdio: 'inherit' });
   if (r.error || r.status !== 0) {
     err(`Falha ao linkar projeto ${PROJECT_REF}: ${r.error?.message ?? `exit ${r.status}`}`);
     return false;
