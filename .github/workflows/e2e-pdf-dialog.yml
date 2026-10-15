@@ -142,7 +142,7 @@ jobs:
           node scripts/recalibrate-watermark-thresholds.mjs \
             --samples test-results \
             --out qa/reports/watermark-threshold-recalibration.md \
-            --json qa/reports/watermark-threshold-recalibration.json || echo "recalibrate_exit=$?" >> $GITHUB_OUTPUT
+            --json qa/reports/watermark-threshold-recalibration.json || echo "recalibrate_exit=$?" >> "$GITHUB_OUTPUT"
 
       - name: Upload artifact de recalibração (report + json + diffs)
         if: always()

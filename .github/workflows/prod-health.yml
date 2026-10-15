@@ -161,6 +161,7 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           SHA: ${{ github.sha }}
         run: |
+          # shellcheck disable=SC2016 # crases são markdown literal do Slack, não command substitution
           PAYLOAD=$(printf '{"text":"🚨 *Static Health Checks FALHOU* em %s\n• Commit: `%s`\n• Run: %s\n• Ação necessária: verificar SSOT Supabase"}' \
                     "$REPO" "${SHA:0:7}" "$RUN_URL")
           curl -sS -X POST -H 'Content-Type: application/json' \
