@@ -18,9 +18,7 @@ permissions:
 
 concurrency:
   group: migration-dry-run-${{ github.ref }}
-  cancel-in-progress: true
-
-
+  cancel-in-progress: false  # E19: dispatch-only nunca cancelado
 defaults:
   run:
     shell: bash

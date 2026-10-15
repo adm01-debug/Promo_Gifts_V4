@@ -20,9 +20,7 @@ permissions:
 
 concurrency:
   group: ci-freight-quality-${{ github.ref }}
-  cancel-in-progress: true
-
-
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}  # E19: PR cancela; dispatch não
 defaults:
   run:
     shell: bash

@@ -13,8 +13,7 @@ on:
 
 concurrency:
   group: bundle-size-report-${{ github.ref }}
-  cancel-in-progress: true
-
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}  # E19: PR cancela; dispatch não
 permissions:
   contents: read
   pull-requests: write

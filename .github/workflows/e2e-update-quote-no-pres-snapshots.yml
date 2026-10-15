@@ -21,8 +21,7 @@ permissions:
 
 concurrency:
   group: e2e-update-quote-no-pres-${{ github.event.inputs.branch }}
-  cancel-in-progress: true
-
+  cancel-in-progress: false  # E19: dispatch-only nunca cancelado
 env:
   E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
   E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}

@@ -22,7 +22,7 @@ permissions:
 
 # R2 — concurrency sem cancel para trigger manual (evita matar run em progresso)
 concurrency:
-  group: freight-e2e-staging-${{ github.run_id }}
+  group: freight-e2e-staging-${{ github.ref }}  # E19: sem run_id
   cancel-in-progress: false
 
 env:

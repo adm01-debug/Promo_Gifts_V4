@@ -26,7 +26,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: cross-reference-issues-${{ github.event.pull_request.number || github.event.issue.number || github.run_id }}
+  group: cross-reference-issues-${{ github.event.pull_request.number || github.ref }}  # E19: sem run_id fallback
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 
