@@ -1,13 +1,12 @@
-name: CI Metrics Weekly (E93)
+name: CI Metrics Weekly (E66/E87)
 
-# Coleta métricas de CI da última semana e publica docs/ci/METRICAS_SEMANAIS.md
+# E66/E87: Coleta métricas de CI da última semana e abre PR com docs/ci/METRICAS_SEMANAIS.md
 # Roda toda segunda 07:15 UTC e via workflow_dispatch (para forçar manualmente).
-# Usa GITHUB_TOKEN nativo (read:actions). Para substituir por GitHub App token
-# assim que E02 for implementado, troque o env GH_TOKEN abaixo.
+# Nunca faz push direto em main — entrega via PR em branch ci-metrics/YYYY-WNN.
 
 on:
   schedule:
-    - cron: '15 7 * * 1' # Segunda 07:15 UTC (jitter E19)
+    - cron: '15 7 * * 1' # Segunda 07:15 UTC (jitter E89)
   workflow_dispatch:
 
 concurrency:
@@ -15,8 +14,9 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: write  # para fazer commit do relatório
-  actions: read    # para ler workflow runs via API
+  contents: write      # para criar branch e fazer commit
+  pull-requests: write # para abrir PR
+  actions: read        # para ler workflow runs via API
 
 
 defaults:
@@ -43,20 +43,43 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: node scripts/ci-metrics.mjs
 
-      - name: Commit relatório se houve mudança
-        # E89/A-23: push direto em main só via workflow_dispatch (nunca pelo cron).
-        # O cron gera o relatório e o expõe como artifact; o operador faz dispatch
-        # quando quiser persistir no repo.
-        if: github.event_name == 'workflow_dispatch'
+      - name: Abrir PR com relatório se houve mudança
+        # E66/E87: nunca push direto em main — entrega via PR em branch ci-metrics/YYYY-WNN.
+        # Cron e workflow_dispatch se comportam igual: se mudou, abre PR.
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add docs/ci/METRICAS_SEMANAIS.md
           if git diff --staged --quiet; then
-            echo "Sem mudança no relatório."
+            echo "Sem mudança no relatório — nenhum PR a abrir."
+            exit 0
+          fi
+          WEEK=$(date -u +%Y-W%V)
+          BRANCH="ci-metrics/${WEEK}"
+          git checkout -b "$BRANCH"
+          git commit -m "chore(ci): métricas semanais ${WEEK}
+
+          Relatório automático gerado por ci-metrics-weekly.yml (E66/E87).
+          Revise antes de mergear — dados de runs/dia, fila e cache."
+          git push -u origin "$BRANCH"
+          # Verifica se já existe PR aberto para esta semana (idempotência)
+          EXISTING=$(gh pr list --head "$BRANCH" --state open --json number -q '.[0].number // empty')
+          if [ -n "$EXISTING" ]; then
+            echo "PR #${EXISTING} já existe para ${BRANCH} — branch atualizado."
           else
-            git commit -m "chore(ci): atualiza METRICAS_SEMANAIS.md $(date -u +%Y-%m-%d)"
-            git push origin HEAD
+            gh pr create \
+              --base main \
+              --head "$BRANCH" \
+              --title "chore(ci): métricas semanais ${WEEK}" \
+              --body "## Métricas de CI — semana ${WEEK}
+
+          Relatório gerado automaticamente por \`.github/workflows/ci-metrics-weekly.yml\`.
+
+          Verifique \`docs/ci/METRICAS_SEMANAIS.md\` e mergee para registrar as métricas da semana.
+
+          > Auto-gerado por [ci-metrics-weekly](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})"
           fi
       - name: Upload relatório (sempre — cron não commita)
         if: always()
