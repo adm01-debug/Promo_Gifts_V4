@@ -256,8 +256,7 @@ jobs:
           node scripts/append-migration-receipt.mjs \
             --version="$MIGRATION_VERSION" \
             --sha256="${{ needs.apply.outputs.sha256 }}" \
-            --executor="GitHub Actions (db-apply-migration.yml, disparado por ${{ github.actor }})" \
-            --approved-by="${{ inputs.approved_by }}" \
+            --executor="GitHub Actions (db-apply-migration.yml, disparado por ${{ github.actor }}, aprovado por ${{ inputs.approved_by }})" \
             --metodo="E15" \
             --data-utc="${{ needs.apply.outputs.applied_at }}" \
             --pos-check="job post-check da run ${{ github.run_id }} confirmou a version no ledger" \
