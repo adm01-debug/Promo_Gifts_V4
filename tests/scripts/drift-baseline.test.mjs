@@ -315,6 +315,17 @@ describe('prepareWorkdir — nomes de migration com caracteres especiais', () =>
   });
 });
 
+describe('prepareWorkdir — project ref', () => {
+  it('recusa ref que quebraria a string TOML do config.toml', () => {
+    const root = fixtureRepo({ baselineVersion: '20261015140000', ledgerVersions: ['20261015140000'], migrations: [] });
+    const attempt = (projectRef) =>
+      prepareWorkdir({ rootDir: root, outDir: join(tmp(), 'wd'), appliedVersions: [], projectRef });
+    expect(() => attempt('x"\n[db]\nmajor_version = 15\n#')).toThrow(/project ref inválido/);
+    expect(() => attempt('')).toThrow(/project ref inválido/);
+    expect(attempt('doufsxqlfjyuvxuezpln').baselineVersion).toBe('20261015140000');
+  });
+});
+
 describe('sanitizeBaselineForReplay — lacunas além do event trigger', () => {
   it('remove ALTER/COMMENT de publication que o shadow não tem, e mantém supabase_realtime', () => {
     const sql = [

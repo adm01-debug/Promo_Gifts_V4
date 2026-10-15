@@ -174,6 +174,9 @@ export function replayFileName(baselineVersion, index, original) {
 }
 
 export function prepareWorkdir({ rootDir, outDir, appliedVersions, projectRef }) {
+  // projectRef entra numa string TOML: aspas/quebra de linha reescreveriam o
+  // config.toml (ex.: trocar major_version do shadow).
+  if (!/^[A-Za-z0-9_-]+$/.test(String(projectRef))) throw new Error(`project ref inválido: ${JSON.stringify(projectRef)}`);
   const baseline = findBaseline(rootDir);
   if (!baseline) throw new Error(`nenhum baseline em ${BASELINE_DIR}`);
   const migrationsDir = join(rootDir, 'supabase', 'migrations');
