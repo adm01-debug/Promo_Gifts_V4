@@ -32,6 +32,19 @@ name: db-schema-drift-check
 #
 # Variavel sobrescrivivel (nao-secret):
 #   SUPABASE_PROJECT_REF (default: doufsxqlfjyuvxuezpln)
+#
+# Sessões em produção (investigação 2026-10-15, runs 38730003472/38734310352):
+#   - Este job só abre conexões remotas em `link`, `migration list` e na fase
+#     migra do `db diff` (consultas de catálogo, sem pg_dump e sem lock por
+#     tabela). O `db diff` primeiro replaya as migrations num shadow LOCAL; se
+#     o replay falha, ele nem chega a conectar no remoto.
+#   - As sessões `pg_dump` (AccessShareLock em ~500 tabelas, timeouts zerados
+#     por SET de sessão do próprio pg_dump) vistas no mesmo horário vinham do
+#     `supabase db dump` de schema-snapshot-export.yml, que roda em paralelo
+#     no mesmo PR. Ver recomendação no PR/relatório; aqui só endurecemos este
+#     job para não deixar cliente vivo contra o canônico após o step:
+#       * `timeout --signal=INT` no `db diff` (cancelamento limpo do CLI);
+#       * step `if: always()` que remove containers do CLI (shadow + migra).
 # =============================================================================
 
 on:
@@ -129,9 +142,17 @@ jobs:
         if: steps.guard.outputs.enabled == 'true'
         run: |
           set -euo pipefail
-          supabase db diff --linked --schema public > /tmp/schema_drift.sql 2> /tmp/diff.stderr || {
-            echo "::error::supabase db diff falhou:"; cat /tmp/diff.stderr; exit 1;
-          }
+          # Limite próprio < timeout do job: SIGINT deixa o CLI cancelar o
+          # contexto e remover os containers shadow/migra antes do runner morrer.
+          rc=0
+          timeout --signal=INT --kill-after=30s 9m \
+            supabase db diff --linked --schema public > /tmp/schema_drift.sql 2> /tmp/diff.stderr || rc=$?
+          if [ "$rc" -ne 0 ]; then
+            if [ "$rc" -eq 124 ] || [ "$rc" -eq 137 ]; then
+              echo "::error::supabase db diff excedeu 9 min e foi interrompido (rc=$rc)."
+            fi
+            echo "::error::supabase db diff falhou:"; cat /tmp/diff.stderr; exit 1
+          fi
           grep -vE '^[[:space:]]*(--.*)?$' /tmp/schema_drift.sql 2>/dev/null \
             | grep -viE 'no schema changes found' > /tmp/schema_drift.clean || true  # ok: grep exits 1 se todos os lines foram filtrados — arquivo vazio = sem drift
           if [ -s /tmp/schema_drift.clean ]; then
@@ -155,6 +176,22 @@ jobs:
             echo
             echo "Migrations versionadas descrevem 100% do schema public do projeto canonico."
           } >> "$GITHUB_STEP_SUMMARY"
+
+      # Garante que nenhum container do CLI (shadow DB / edge-runtime migra)
+      # continue conectado ao canônico depois do step — inclusive em cancel
+      # (cancel-in-progress) ou timeout. Só toca containers rotulados pelo CLI.
+      - name: Cleanup Supabase CLI containers
+        if: ${{ always() && steps.guard.outputs.enabled == 'true' }}
+        run: |
+          set -uo pipefail
+          ids=$(docker ps -aq --filter "label=com.supabase.cli.project" || true)
+          if [ -n "$ids" ]; then
+            echo "Removendo containers do Supabase CLI: $ids"
+            # shellcheck disable=SC2086 # lista de IDs separada por espaço/linha
+            docker rm -f $ids || true
+          else
+            echo "Nenhum container do Supabase CLI ativo."
+          fi
 
       - name: Upload drift artifact
         if: ${{ always() && steps.guard.outputs.enabled == 'true' }}
