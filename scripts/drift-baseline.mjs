@@ -391,6 +391,30 @@ const ALLOWLIST_PROBES = [
   'drop table "public"."__drift_probe__";',
   'grant select on table "public"."__drift_probe__" to "anon";',
   'revoke all on table "public"."__drift_probe__" from "anon";',
+  // Demais classes de DDL que o `db diff` emite: um padrão como `^drop function`
+  // ou `^create sequence` esconderia o drift de toda a classe.
+  'drop function "public"."__drift_probe__"();',
+  'drop view "public"."__drift_probe__";',
+  'drop index "public"."__drift_probe__";',
+  'drop policy "__drift_probe__" on "public"."__drift_probe__";',
+  'drop trigger "__drift_probe__" on "public"."__drift_probe__";',
+  'drop sequence "public"."__drift_probe__";',
+  'drop type "public"."__drift_probe__";',
+  'create sequence "public"."__drift_probe__";',
+  'create trigger "__drift_probe__" after insert on "public"."__drift_probe__" for each row execute function "public"."__drift_probe__"();',
+  'create type "public"."__drift_probe__" as enum (\'a\');',
+  'create materialized view "public"."__drift_probe__" as select 1;',
+  'alter table "public"."__drift_probe__" drop column "c";',
+  'alter table "public"."__drift_probe__" add constraint "__drift_probe__" check ((id > 0));',
+  'alter table "public"."__drift_probe__" drop constraint "__drift_probe__";',
+  'alter table "public"."__drift_probe__" alter column "c" set default 0;',
+  'alter table "public"."__drift_probe__" owner to "postgres";',
+  'alter function "public"."__drift_probe__"() owner to "postgres";',
+  'alter sequence "public"."__drift_probe__" owned by "public"."__drift_probe__"."id";',
+  'alter policy "__drift_probe__" on "public"."__drift_probe__" to authenticated;',
+  'comment on table "public"."__drift_probe__" is \'x\';',
+  'comment on function "public"."__drift_probe__"() is \'x\';',
+  'create extension if not exists "__drift_probe__" with schema "extensions";',
 ];
 
 export function loadAllowlist(text) {
@@ -468,8 +492,34 @@ function functionSignature(header) {
   return normalizeHeader(rest.slice(0, end + 1));
 }
 
+// Normaliza só o que o Postgres trata como equivalente: espaçamento e caixa de
+// palavra-chave/identificador sem aspas, e aspas redundantes (`"public"."f"` =
+// `public.f`). Literais ('A' ≠ 'a') e identificadores entre aspas que dependem
+// delas (`"F"` ≠ `f`, `"my col"`) ficam intactos — são diferença de comportamento.
 function normalizeHeader(text) {
-  return text.replaceAll('"', '').replace(/\s+/g, ' ').trim().toLowerCase();
+  let out = '';
+  let i = 0;
+  while (i < text.length) {
+    const c = text[i];
+    if (c === "'" || c === '"') {
+      let j = i + 1;
+      while (j < text.length) {
+        if (text[j] === c) {
+          if (text[j + 1] === c) j += 2;
+          else break;
+        } else j += 1;
+      }
+      const token = text.slice(i, j + 1);
+      out += c === '"' && /^"[a-z_][a-z0-9_]*"$/.test(token) ? token.slice(1, -1) : token;
+      i = j + 1;
+    } else {
+      let j = i;
+      while (j < text.length && text[j] !== "'" && text[j] !== '"') j += 1;
+      out += text.slice(i, j).replace(/\s+/g, ' ').toLowerCase();
+      i = j;
+    }
+  }
+  return out.trim();
 }
 
 // Colapsa o espaçamento do corpo SEM tocar em literais: 'a  b' e 'a b' são

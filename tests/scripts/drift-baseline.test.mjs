@@ -1,4 +1,3 @@
-// @vitest-environment node
 // Testa scripts/drift-baseline.mjs: montagem da pasta de replay do
 // db-schema-drift-check (baseline + migrations aplicadas depois do dump),
 // filtro de ruído do diff e varredura de segredos do dump.
@@ -7,7 +6,6 @@ import { mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSyn
 import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import {
   REPLAY_SEED_NAME,
   REPLAY_SEED_SQL,
@@ -389,13 +387,37 @@ describe('loadAllowlist — entrada genérica', () => {
     expect(loadAllowlist('')).toEqual([]);
   });
 
+  it('recusa padrão que esconderia uma classe inteira de DDL (Codex P2)', () => {
+    for (const entry of [
+      '^drop function',
+      '^drop view',
+      '^drop index',
+      '^drop policy',
+      '^drop trigger',
+      '^drop sequence',
+      '^create sequence',
+      '^create trigger',
+      '^create type',
+      '^alter function',
+      '^alter policy',
+      '^comment on',
+      '^alter table "public"\\."[a-z_]+" drop constraint',
+    ]) {
+      expect(() => loadAllowlist(entry), entry).toThrow(/genérica demais/);
+    }
+  });
+
   it('aceita entrada que nomeia o objeto', () => {
     expect(loadAllowlist('^alter table "public"\\."tabela_x" ')).toHaveLength(1);
     expect(loadAllowlist('^create or replace function "public"\\."fn_x"\\(')).toHaveLength(1);
+    expect(loadAllowlist('^drop function "public"\\."fn_antiga"\\(')).toHaveLength(1);
+    expect(loadAllowlist('^create sequence "public"\\."seq_x"')).toHaveLength(1);
   });
 
   it('o arquivo versionado continua carregando', () => {
-    const file = fileURLToPath(new URL('../../supabase/baseline/drift-allowlist.txt', import.meta.url));
+    // Suíte roda da raiz do repo (vitest.config.ts); `import.meta.url` no ambiente
+    // jsdom não é um URL `file:` confiável.
+    const file = join(process.cwd(), 'supabase/baseline/drift-allowlist.txt');
     expect(Array.isArray(loadAllowlist(readFileSync(file, 'utf8')))).toBe(true);
   });
 });
@@ -434,7 +456,7 @@ describe('looksLikeSchemaDump', () => {
 });
 
 describe('export-schema-snapshot — credenciais presentes e CLI ausente', () => {
-  const script = fileURLToPath(new URL('../../scripts/export-schema-snapshot.mjs', import.meta.url));
+  const script = join(process.cwd(), 'scripts/export-schema-snapshot.mjs');
   function run(env) {
     const root = tmp();
     mkdirSync(join(root, 'supabase', 'migrations'), { recursive: true });
@@ -590,5 +612,54 @@ AS $function$ SELECT '${lit}' $function$
 `;
     expect(dropDumpLossyFunctions(mkDiff('a  b'), mk('a b')).dropped).toEqual([]);
     expect(dropDumpLossyFunctions(mkDiff('a b'), mk('a b')).dropped).toEqual(['public.f()']);
+  });
+});
+
+describe('dropDumpLossyFunctions — cabeçalho preserva literais e identificadores (Codex P1)', () => {
+  // `shadow` = migration/baseline (nomes com aspas, como o dump); `remote` = db diff.
+  const shadow = (name, args, set) => `CREATE OR REPLACE FUNCTION ${name}(${args}) RETURNS "text"
+    LANGUAGE "sql"${set}
+    AS $$ SELECT 1 $$;`;
+  const remote = (name, args, set) => `CREATE OR REPLACE FUNCTION ${name}(${args})
+ RETURNS text
+ LANGUAGE sql${set}
+AS $function$ SELECT 1 $function$
+;
+`;
+
+  it('DEFAULT com caixa diferente é diferença real e fica no resíduo', () => {
+    const same = dropDumpLossyFunctions(
+      remote('public.f', "p text DEFAULT 'A'::text", ''),
+      shadow('"public"."f"', "\"p\" \"text\" DEFAULT 'A'::\"text\"", ''),
+    );
+    expect(same.dropped).toEqual(["public.f(p text default 'A'::text)"]);
+    const differ = dropDumpLossyFunctions(
+      remote('public.f', "p text DEFAULT 'a'::text", ''),
+      shadow('"public"."f"', "\"p\" \"text\" DEFAULT 'A'::\"text\"", ''),
+    );
+    expect(differ.dropped).toEqual([]);
+    expect(differ.sql).toContain("'a'::text");
+  });
+
+  it('identificador entre aspas com maiúscula não equivale ao minúsculo', () => {
+    expect(dropDumpLossyFunctions(remote('public.f', '', ''), shadow('"public"."F"', '', '')).dropped).toEqual([]);
+    expect(dropDumpLossyFunctions(remote('public."F"', '', ''), shadow('"public"."f"', '', '')).dropped).toEqual([]);
+    expect(dropDumpLossyFunctions(remote('public."F"', '', ''), shadow('"public"."F"', '', '')).dropped).toEqual(['public."F"()']);
+  });
+
+  it('aspas redundantes e caixa de palavra-chave seguem equivalentes', () => {
+    const out = dropDumpLossyFunctions(
+      remote('public.f', 'p text', '\n SECURITY DEFINER'),
+      shadow('"public"."f"', '"p" "text"', '\n    security   definer'),
+    );
+    expect(out.dropped).toEqual(['public.f(p text)']);
+  });
+
+  it('literal do SET no cabeçalho com caixa diferente fica no resíduo', () => {
+    const set = (v) => `\n SET search_path TO '${v}'`;
+    expect(dropDumpLossyFunctions(remote('public.f', '', set('Public')), shadow('"public"."f"', '', set('public'))).dropped).toEqual([]);
+    expect(dropDumpLossyFunctions(remote('public.f', '', set('public')), shadow('"public"."f"', '', set('public'))).dropped).toEqual([
+      'public.f()',
+    ]);
   });
 });
