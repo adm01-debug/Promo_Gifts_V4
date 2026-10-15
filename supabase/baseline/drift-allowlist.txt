@@ -1,0 +1,13 @@
+# drift-allowlist.txt — ruído conhecido do db-schema-drift-check.
+#
+# Uma regex (sintaxe JavaScript) por linha; linhas vazias e começando com #
+# são ignoradas. Cada linha do diff que casar com alguma regex sai do resíduo.
+#
+# Regras para adicionar entrada:
+#   - Específica: nomeie o objeto (schema."tabela", função com assinatura).
+#     Nunca regex genérica como ^grant  ou ^alter table — esconde drift real.
+#   - Justificada: comentário acima com o motivo e a data, e o run do
+#     db-schema-drift-check que mostrou a linha.
+#   - Ruído do próprio `db diff` (ex.: objeto que o shadow cria por padrão e
+#     o remoto não tem) entra aqui; objeto criado em produção sem migration
+#     NÃO entra — vira migration espelho (REGRA #8, docs/db/POLITICA_DDL.md).

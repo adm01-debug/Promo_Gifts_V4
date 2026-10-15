@@ -3,11 +3,12 @@ name: schema-snapshot-export
 # =============================================================================
 # Roda o script `scripts/export-schema-snapshot.mjs` em toda PR e no push para
 # `main`, publicando os artefatos gerados em `supabase/migrations-snapshot/`
-# (ALL_IN_ONE.sql, SCHEMA_LIVE.sql, SCHEMA_DRIFT.sql, SNAPSHOT_META.json).
+# (ALL_IN_ONE.sql, SCHEMA_LIVE.sql, SNAPSHOT_META.json) e o baseline do
+# db-schema-drift-check em `supabase/baseline/`.
 #
 # Semântica:
 #   - ALL_IN_ONE.sql SEMPRE é gerado (não depende de secrets).
-#   - SCHEMA_LIVE.sql e SCHEMA_DRIFT.sql só saem quando SUPABASE_ACCESS_TOKEN
+#   - SCHEMA_LIVE.sql e o baseline só saem quando SUPABASE_ACCESS_TOKEN
 #     e SUPABASE_DB_PASSWORD estão configurados (safe-by-default).
 #   - Em `schedule`: falha explicitamente se SUPABASE_ACCESS_TOKEN ausente —
 #     sem no-op verde (E84).
@@ -104,7 +105,10 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: schema-snapshot-${{ github.run_number }}
-          path: supabase/migrations-snapshot/
+          path: |
+            supabase/migrations-snapshot/
+            supabase/baseline/
+          if-no-files-found: ignore
           retention-days: 14
 
   # E84: commita snapshot na branch fixa bot/schema-snapshot e mantém ≤ 1 PR aberta.
@@ -121,9 +125,6 @@ jobs:
       pull-requests: write
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
-      SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
     steps:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -131,18 +132,35 @@ jobs:
           persist-credentials: false  # E32
           fetch-depth: 0
 
-      - name: Setup Node
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      # Reaproveita o dump do job export: um único pg_dump por execução em
+      # produção (antes este job refazia o dump inteiro).
+      - name: Baixa o snapshot do job export
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
-          node-version-file: .nvmrc
+          name: schema-snapshot-${{ github.run_number }}
+          path: ${{ runner.temp }}/snapshot
 
-      - name: Install Supabase CLI
-        uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v2
-        with:
-          version: 2.101.0
-
-      - name: Generate snapshot (for commit)
-        run: node scripts/export-schema-snapshot.mjs
+      # O download não apaga arquivos que já estão no checkout: troca o baseline
+      # só quando o export gerou um novo (senão ficariam dois baselines e o
+      # drift-check falha) e remove o SCHEMA_DRIFT.sql aposentado.
+      - name: Aplica o snapshot no checkout
+        env:
+          SNAP: ${{ runner.temp }}/snapshot
+        run: |
+          set -euo pipefail
+          # supabase/baseline/drift-allowlist.txt está versionado: o artifact sempre
+          # tem as duas pastas e a raiz dele é supabase/.
+          find "$SNAP" -maxdepth 2 -type f
+          cp -R "$SNAP/migrations-snapshot/." supabase/migrations-snapshot/
+          rm -f supabase/migrations-snapshot/SCHEMA_DRIFT.sql
+          if compgen -G "$SNAP/baseline/*_baseline_schema.sql" > /dev/null; then
+            mkdir -p supabase/baseline
+            find supabase/baseline -maxdepth 1 -type f \
+              \( -name '*_baseline_schema.sql' -o -name '*_ledger_versions.json' \) -delete
+            cp "$SNAP"/baseline/*_baseline_schema.sql "$SNAP"/baseline/*_ledger_versions.json supabase/baseline/
+          else
+            echo "::warning::Export sem baseline novo — baseline atual mantido."
+          fi
 
       - name: Credencial de push sem token em disco (E32)
         run: |
@@ -156,7 +174,8 @@ jobs:
           RUN_ID: ${{ github.run_id }}
         run: |
           set -euo pipefail
-          if ! git --no-pager diff --quiet -- supabase/migrations-snapshot/; then
+          if ! git --no-pager diff --quiet -- supabase/migrations-snapshot/ supabase/baseline/ \
+            || [ -n "$(git ls-files --others --exclude-standard -- supabase/baseline/)" ]; then
             echo "Snapshot mudou — commitando."
           else
             echo "::notice::Nenhuma mudança detectada no snapshot — nada a commitar."
@@ -169,7 +188,7 @@ jobs:
           # Cria ou reseta bot/schema-snapshot a partir do HEAD atual de main
           git checkout -B bot/schema-snapshot
 
-          git add supabase/migrations-snapshot/
+          git add -A supabase/migrations-snapshot/ supabase/baseline/
           WEEK=$(date -u +"%Y-W%V")
           git commit -m "chore(schema-snapshot): snapshot semanal $WEEK (run $RUN_ID)" \
             -m "Auto-gerado por schema-snapshot-export.yml (E84). Snapshot do schema canônico doufsxqlfjyuvxuezpln."
@@ -199,7 +218,7 @@ jobs:
           if [[ -n "$EXISTING" ]]; then
             echo "PR #$EXISTING já existe para bot/schema-snapshot — branch atualizada por force-push, PR reutilizada."
           else
-            PR_BODY="Snapshot semanal do schema canônico doufsxqlfjyuvxuezpln (run $RUN_ID, semana $WEEK). Arquivos: supabase/migrations-snapshot/ (ALL_IN_ONE.sql, SCHEMA_LIVE.sql, SCHEMA_DRIFT.sql, SNAPSHOT_META.json). Auto-gerado por schema-snapshot-export.yml (E84) — sempre <=1 PR aberta."
+            PR_BODY="Snapshot semanal do schema canônico doufsxqlfjyuvxuezpln (run $RUN_ID, semana $WEEK). Arquivos: supabase/migrations-snapshot/ (ALL_IN_ONE.sql, SCHEMA_LIVE.sql, SNAPSHOT_META.json) e supabase/baseline/ (baseline do db-schema-drift-check + versões do ledger no momento do dump). Auto-gerado por schema-snapshot-export.yml (E84) — sempre <=1 PR aberta."
             gh pr create \
               --base main \
               --head bot/schema-snapshot \

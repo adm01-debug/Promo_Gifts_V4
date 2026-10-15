@@ -8,11 +8,12 @@
  *
  * Saídas em `supabase/migrations-snapshot/`:
  *   - ALL_IN_ONE.sql             — concatenação alfabética de supabase/migrations/**
- *   - SCHEMA_LIVE.sql            — snapshot do schema `public` do projeto linkado
- *                                  (via `supabase db dump --linked --schema public`)
- *   - SCHEMA_DRIFT.sql           — DDL que o `db diff` acusaria (drift entre
- *                                  migrations versionadas e o schema vivo)
+ *   - SCHEMA_LIVE.sql            — dump do schema do projeto linkado
+ *                                  (via `supabase db dump --linked`, todos os schemas da aplicação)
  *   - SNAPSHOT_META.json         — metadados (timestamp, contagens, project ref)
+ * E em `supabase/baseline/` o baseline do db-schema-drift-check (ver
+ * scripts/drift-baseline.mjs). O drift em si é calculado pelo
+ * db-schema-drift-check; o antigo SCHEMA_DRIFT.sql é removido.
  *
  * IMPORTANTE:
  *   - Nada aqui aplica DDL. É read-only.
@@ -29,12 +30,18 @@
  */
 
 import { execSync, spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { parseSupabaseMigrationLedgerOutput } from './check-supabase-migration-ledger.mjs';
 import {
-  auditSupabaseMigrationLedger,
-  parseSupabaseMigrationLedgerOutput,
-} from './check-supabase-migration-ledger.mjs';
+  appliedVersionsFromLedger,
+  BASELINE_DIR,
+  BASELINE_NAME_RE,
+  buildBaselineSql,
+  findSecrets,
+  ledgerSnapshotName,
+  maxNumericVersion,
+} from './drift-baseline.mjs';
 
 const ROOT = process.cwd();
 const MIGRATIONS_DIR = join(ROOT, 'supabase', 'migrations');
@@ -111,87 +118,75 @@ function buildAllInOne() {
   return { count: files.length, path: outPath };
 }
 
-function dumpLiveSchema() {
-  log('Exportando schema vivo (supabase db dump --linked --schema public)');
-  const outPath = join(OUT_DIR, 'SCHEMA_LIVE.sql');
-  try {
-    const sql = execSync(
-      `supabase db dump --linked --schema public 2>/dev/null`,
-      { encoding: 'utf8', maxBuffer: 128 * 1024 * 1024, shell: '/bin/bash' },
-    );
-    const header = [
-      '-- ==============================================================',
-      '-- SCHEMA_LIVE.sql — dump do schema `public` do projeto canônico',
-      `-- Projeto: ${PROJECT_REF}`,
-      `-- Gerado em: ${new Date().toISOString()}`,
-      '-- Fonte: supabase db dump --linked --schema public',
-      '-- ==============================================================',
-      '',
-    ].join('\n');
-    writeFileSync(outPath, header + sql);
-    ok('SCHEMA_LIVE.sql gerado.');
-    return { path: outPath, bytes: sql.length };
-  } catch (e) {
-    err(`Falha ao dumpar schema vivo: ${e.message}`);
-    return null;
-  }
-}
-
-function computeDrift() {
-  log('Calculando drift (supabase db diff --linked --schema public)');
-  const outPath = join(OUT_DIR, 'SCHEMA_DRIFT.sql');
-  let ledger;
+function readLedger() {
   try {
     const output = execSync('supabase migration list --linked --output-format json', {
       encoding: 'utf8', maxBuffer: 16 * 1024 * 1024,
     });
-    ledger = auditSupabaseMigrationLedger(parseSupabaseMigrationLedgerOutput(output));
+    return parseSupabaseMigrationLedgerOutput(output);
   } catch (error) {
-    const reason = `Ledger remoto indisponível: ${error.message}`;
-    writeFileSync(outPath, `-- SCHEMA_DRIFT.sql — NÃO CALCULADO\n-- ${reason}\n`);
-    warn(reason);
-    return { computed: false, reason };
+    err(`Ledger remoto indisponível: ${error.message}`);
+    return null;
   }
-  if (!ledger.ok) {
-    const { matched, local_only_count: localOnly, remote_only_count: remoteOnly } = ledger.summary;
-    const reason = `Ledger divergente: ${matched} pares, ${localOnly} somente locais, ${remoteOnly} somente remotos. Replay bloqueado.`;
-    writeFileSync(outPath, [
-      '-- SCHEMA_DRIFT.sql — NÃO CALCULADO',
-      `-- Projeto: ${PROJECT_REF}`,
-      `-- Gerado em: ${new Date().toISOString()}`,
-      `-- ${reason}`,
-      '-- Este arquivo não demonstra ausência de drift estrutural.',
-      '',
-    ].join('\n'));
-    warn(reason);
-    return { computed: false, reason, ledger: ledger.summary };
-  }
+}
+
+// Um único `supabase db dump --linked` (sem --schema): todos os schemas da
+// aplicação (public, analytics, internal, cf_recon, prod_audit,
+// supplier_stricker, classification_audit…) e os CREATE EXTENSION — public
+// sozinho não reconstrói o banco (views de public dependem de analytics e
+// vice-versa). Alimenta SCHEMA_LIVE.sql e o baseline do drift-check.
+function dumpLiveSchema(ledger) {
+  log('Exportando schema vivo (supabase db dump --linked)');
+  let sql;
   try {
-    const sql = execSync(
-      `supabase db diff --linked --schema public 2>/dev/null`,
-      { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, shell: '/bin/bash' },
-    );
-    const header = [
-      '-- ==============================================================',
-      '-- SCHEMA_DRIFT.sql — DDL restante entre migrations e schema vivo',
-      `-- Projeto: ${PROJECT_REF}`,
-      `-- Gerado em: ${new Date().toISOString()}`,
-      '-- Fonte: supabase db diff --linked --schema public',
-      '-- Ideal: arquivo vazio (sem drift).',
-      '-- ==============================================================',
-      '',
-    ].join('\n');
-    writeFileSync(outPath, header + (sql || '-- (sem drift)\n'));
-    const meaningful = sql
-      .split('\n')
-      .filter((l) => l.trim() && !l.trim().startsWith('--'))
-      .length;
-    ok(`SCHEMA_DRIFT.sql gerado (${meaningful} linha(s) de DDL efetiva).`);
-    return { computed: true, path: outPath, driftLines: meaningful };
+    sql = execSync('supabase db dump --linked 2>/dev/null', {
+      encoding: 'utf8', maxBuffer: 256 * 1024 * 1024, shell: '/bin/bash',
+    });
   } catch (e) {
-    err(`Falha ao calcular drift: ${e.message}`);
-    return { computed: false, reason: e.message };
+    err(`Falha ao dumpar schema vivo: ${e.message}`);
+    return { ok: false };
   }
+  const generatedAt = new Date().toISOString();
+  const secrets = findSecrets(sql);
+  if (secrets.length) {
+    err(`Possível segredo no dump (${secrets.map((h) => `${h.kind}@linha ${h.line}`).join(', ')}) — nada gravado.`);
+    return { ok: false, secrets };
+  }
+  writeFileSync(join(OUT_DIR, 'SCHEMA_LIVE.sql'), [
+    '-- ==============================================================',
+    '-- SCHEMA_LIVE.sql — dump do schema do projeto canônico',
+    `-- Projeto: ${PROJECT_REF}`,
+    `-- Gerado em: ${generatedAt}`,
+    '-- Fonte: supabase db dump --linked',
+    '-- ==============================================================',
+    '',
+  ].join('\n') + sql);
+  ok('SCHEMA_LIVE.sql gerado.');
+  // SCHEMA_DRIFT.sql nunca foi calculável pelo replay do histórico; o drift
+  // agora sai do db-schema-drift-check (baseline + replay).
+  rmSync(join(OUT_DIR, 'SCHEMA_DRIFT.sql'), { force: true });
+
+  const versions = appliedVersionsFromLedger(ledger);
+  const version = maxNumericVersion(versions);
+  if (!version) {
+    err('Ledger sem versões numéricas — baseline não gerado.');
+    return { ok: false };
+  }
+  const dir = join(ROOT, BASELINE_DIR);
+  mkdirSync(dir, { recursive: true });
+  for (const f of readdirSync(dir)) {
+    if (BASELINE_NAME_RE.test(f) || /^\d{14}_ledger_versions\.json$/.test(f)) rmSync(join(dir, f));
+  }
+  writeFileSync(
+    join(dir, `${version}_baseline_schema.sql`),
+    buildBaselineSql({ dump: sql, version, projectRef: PROJECT_REF, generatedAt }),
+  );
+  writeFileSync(
+    join(dir, ledgerSnapshotName(version)),
+    `${JSON.stringify({ baseline_version: version, generated_at: generatedAt, versions: [...versions].sort() }, null, 2)}\n`,
+  );
+  ok(`Baseline ${version} gerado (${versions.length} versões no ledger).`);
+  return { ok: true, bytes: sql.length, baselineVersion: version, ledgerVersions: versions.length };
 }
 
 function writeMeta(meta) {
@@ -213,7 +208,7 @@ function main() {
   };
 
   if (!hasSupabaseCli()) {
-    warn('CLI `supabase` não encontrado — pulando SCHEMA_LIVE.sql e SCHEMA_DRIFT.sql.');
+    warn('CLI `supabase` não encontrado — pulando SCHEMA_LIVE.sql e o baseline.');
     writeMeta(meta);
     return;
   }
@@ -222,11 +217,20 @@ function main() {
     return;
   }
 
-  const live = dumpLiveSchema();
-  if (live) meta.live_schema = { bytes: live.bytes };
-
-  const drift = computeDrift();
-  if (drift) meta.drift = drift;
+  const ledger = readLedger();
+  if (!ledger) {
+    writeMeta(meta);
+    process.exitCode = 1;
+    return;
+  }
+  const live = dumpLiveSchema(ledger);
+  if (live.ok) {
+    meta.live_schema = { bytes: live.bytes };
+    meta.baseline = { version: live.baselineVersion, ledger_versions: live.ledgerVersions };
+  } else {
+    process.exitCode = 1;
+  }
+  meta.drift = 'calculado por .github/workflows/db-schema-drift-check.yml a partir do baseline';
 
   meta.generated_at = new Date().toISOString();
   writeMeta(meta);

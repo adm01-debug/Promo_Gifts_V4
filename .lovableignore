@@ -43,6 +43,14 @@ scripts/sentinel-check.sh
 scripts/check-tsc-baseline.mjs
 scripts/check-eslint-baseline.mjs
 scripts/seo-sanity-check.mjs
+
+# ============================================================
+# Baseline do db-schema-drift-check — dump do schema de produção
+# gerado por schema-snapshot-export.yml. Não é migration; editar à mão
+# invalida o drift-check. Só o workflow regenera.
+# ============================================================
+supabase/baseline/
+scripts/drift-baseline.mjs
 # ============================================================
 # Resumo do Orçamento — botão "Recolher / Expandir" + invariantes a11y
 # Lovable já reverteu (2026-06) tooltip dinâmico, aria-expanded,

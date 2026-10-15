@@ -11,11 +11,19 @@ name: db-schema-drift-check
 #   2. supabase migration list --linked
 #      -> falha antes do replay se repo e ledger canônico não estiverem iguais.
 #         Não aplica as migrations locais pendentes.
-#   3. supabase db diff --linked --schema public
-#      -> DDL necessario p/ alinhar o shadow (migrations) ao remoto.
-#         Migrations descrevendo 100% do schema => diff VAZIO.
+#   3. Monta uma pasta de replay temporária (scripts/drift-baseline.mjs):
+#      config.toml com PG 17 + supabase/baseline/<B>_baseline_schema.sql
+#      (dump do schema vivo, gerado por schema-snapshot-export.yml) + as
+#      migrations aplicadas depois do dump, renumeradas B+1, B+2…
+#      O histórico completo de supabase/migrations/ não reconstrói o banco
+#      (tabelas criadas fora de migration desde 2026-05), por isso o replay
+#      parte do baseline. Nada é escrito no banco nem no ledger.
+#   4. supabase db diff --workdir <pasta> --linked --schema public
+#      -> DDL necessario p/ alinhar o shadow (baseline + replay) ao remoto.
 #         Qualquer DDL restante = objeto em prod sem migration = DRIFT.
-#   4. Falha o job se sobrar DDL (apos remover comentarios e linhas em branco).
+#   5. Falha o job se sobrar DDL depois de remover comentarios, linhas em
+#      branco e o ruído listado em supabase/baseline/drift-allowlist.txt
+#      (cada entrada específica e justificada).
 #
 # Roda:
 #   - cron diario (06:29 BRT = 09:29 UTC) — offset do edge-functions-drift-check
@@ -54,6 +62,8 @@ on:
     paths:
       - 'supabase/migrations/**'
       - 'supabase/config.toml'
+      - 'supabase/baseline/**'
+      - 'scripts/drift-baseline.mjs'
       - '.github/workflows/db-schema-drift-check.yml'
   workflow_dispatch:
 
@@ -103,6 +113,12 @@ jobs:
           fi
           echo "enabled=true" >> "$GITHUB_OUTPUT"
 
+      - name: Setup Node
+        if: steps.guard.outputs.enabled == 'true'
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+
       - name: Install Supabase CLI
         if: steps.guard.outputs.enabled == 'true'
         uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v2
@@ -113,7 +129,8 @@ jobs:
         if: steps.guard.outputs.enabled == 'true'
         run: |
           set -euo pipefail
-          supabase link --project-ref "$SUPABASE_PROJECT_REF" -p "$SUPABASE_DB_PASSWORD"
+          # Senha via SUPABASE_DB_PASSWORD (env do job), nunca como argumento (R5).
+          supabase link --project-ref "$SUPABASE_PROJECT_REF"
 
       - name: Ledger parity (repo x canonical)
         if: steps.guard.outputs.enabled == 'true'
@@ -138,7 +155,29 @@ jobs:
             exit 1
           fi
 
-      - name: Schema drift check (migrations x remote)
+      - name: Monta replay (baseline + migrations aplicadas depois do dump)
+        if: steps.guard.outputs.enabled == 'true'
+        run: |
+          set -euo pipefail
+          if ! node scripts/drift-baseline.mjs prepare-workdir \
+            --ledger /tmp/migration-ledger.json --out /tmp/drift-wd > /tmp/drift-wd.json 2> /tmp/drift-wd.stderr; then
+            {
+              echo "## Drift check sem baseline válido"
+              echo
+              echo '```'
+              cat /tmp/drift-wd.stderr
+              echo '```'
+              echo "Gere o baseline rodando schema-snapshot-export.yml (workflow_dispatch) e"
+              echo "mergeie a PR de bot/schema-snapshot. Não copie o baseline para supabase/migrations/."
+            } >> "$GITHUB_STEP_SUMMARY"
+            echo "::error::$(cat /tmp/drift-wd.stderr)"
+            exit 1
+          fi
+          cat /tmp/drift-wd.json
+          # Link da pasta de replay (o link do passo anterior vale só para a raiz do repo).
+          supabase link --workdir /tmp/drift-wd --project-ref "$SUPABASE_PROJECT_REF"
+
+      - name: Schema drift check (baseline + replay x remote)
         if: steps.guard.outputs.enabled == 'true'
         run: |
           set -euo pipefail
@@ -146,27 +185,33 @@ jobs:
           # contexto e remover os containers shadow/migra antes do runner morrer.
           rc=0
           timeout --signal=INT --kill-after=30s 9m \
-            supabase db diff --linked --schema public > /tmp/schema_drift.sql 2> /tmp/diff.stderr || rc=$?
+            supabase db diff --workdir /tmp/drift-wd --linked --schema public \
+            > /tmp/schema_drift.sql 2> /tmp/diff.stderr || rc=$?
           if [ "$rc" -ne 0 ]; then
             if [ "$rc" -eq 124 ] || [ "$rc" -eq 137 ]; then
               echo "::error::supabase db diff excedeu 9 min e foi interrompido (rc=$rc)."
             fi
             echo "::error::supabase db diff falhou:"; cat /tmp/diff.stderr; exit 1
           fi
-          grep -vE '^[[:space:]]*(--.*)?$' /tmp/schema_drift.sql 2>/dev/null \
-            | grep -viE 'no schema changes found' > /tmp/schema_drift.clean || true  # ok: grep exits 1 se todos os lines foram filtrados — arquivo vazio = sem drift
+          node scripts/drift-baseline.mjs filter-diff --diff /tmp/schema_drift.sql \
+            --allowlist supabase/baseline/drift-allowlist.txt > /tmp/schema_drift.clean
+          baseline=$(node -e 'console.log(JSON.parse(require("fs").readFileSync("/tmp/drift-wd.json","utf8")).baselineVersion)')
+          replayed=$(node -e 'console.log(JSON.parse(require("fs").readFileSync("/tmp/drift-wd.json","utf8")).replayed_count)')
           if [ -s /tmp/schema_drift.clean ]; then
             cnt=$(wc -l < /tmp/schema_drift.clean | tr -d ' ')
             {
               echo "## Schema drift detectado"
               echo
-              echo "O schema canonico tem DDL ($cnt+ linha(s)) nao descrito pelas migrations versionadas."
+              echo "Baseline $baseline + $replayed migration(s) replayada(s)."
+              echo "O schema canonico tem DDL ($cnt linha(s) fora da allowlist) nao descrito por migration."
               echo "Provavel objeto criado direto em producao sem migration."
               echo
-              echo "### DDL para reconciliar (gere uma migration com isto):"
+              echo "### Resíduo (fora da allowlist)"
               echo '```sql'
-              cat /tmp/schema_drift.sql
+              cat /tmp/schema_drift.clean
               echo '```'
+              echo
+              echo "Diff completo no artifact schema-reconciliation-evidence."
             } >> "$GITHUB_STEP_SUMMARY"
             echo "::error::Schema drift detectado - veja o job summary / artifact."
             exit 1
@@ -174,7 +219,8 @@ jobs:
           {
             echo "## Sem drift de schema"
             echo
-            echo "Migrations versionadas descrevem 100% do schema public do projeto canonico."
+            echo "Baseline $baseline + $replayed migration(s) aplicada(s) depois dele descrevem"
+            echo "o schema public do projeto canonico (fora o ruído em supabase/baseline/drift-allowlist.txt)."
           } >> "$GITHUB_STEP_SUMMARY"
 
       # Garante que nenhum container do CLI (shadow DB / edge-runtime migra)
@@ -200,6 +246,8 @@ jobs:
           name: schema-reconciliation-evidence
           path: |
             /tmp/schema_drift.sql
+            /tmp/schema_drift.clean
+            /tmp/drift-wd.json
             /tmp/migration-ledger.json
             /tmp/migration-ledger-summary.json
           if-no-files-found: ignore
