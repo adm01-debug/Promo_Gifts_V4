@@ -656,12 +656,28 @@ const QUOTE_SENSITIVE = new Set([
   'some', 'symmetric', 'union', 'variadic', 'window', 'both', 'collate', 'create', 'deferrable',
 ]);
 
+// Fim (exclusivo) do literal dollar-quoted que abre em `i`, ou -1 se `i` não abre um:
+// o `$` precisa vir depois de não-identificador (`a$b` não é tag) e a tag precisa fechar.
+function dollarQuoteEnd(text, i) {
+  if (text[i] !== '$' || /[A-Za-z0-9_$]/.test(text[i - 1] ?? '')) return -1;
+  DOLLAR_TAG.lastIndex = i;
+  const tag = DOLLAR_TAG.exec(text);
+  if (!tag) return -1;
+  const end = text.indexOf(tag[0], i + tag[0].length);
+  return end < 0 ? text.length : end + tag[0].length;
+}
+
 function normalizeHeader(text) {
   let out = '';
   let i = 0;
   while (i < text.length) {
     const c = text[i];
-    if (c === "'" || c === '"') {
+    const dollarEnd = dollarQuoteEnd(text, i);
+    if (dollarEnd > 0) {
+      // DEFAULT $$A  B$$ / SET x = $$Y$$: conteúdo é dado, nem caixa nem espaço mudam.
+      out += text.slice(i, dollarEnd);
+      i = dollarEnd;
+    } else if (c === "'" || c === '"') {
       const j = quotedEnd(text, i);
       const token = text.slice(i, j + 1);
       const plain = c === '"' && /^"[a-z_][a-z0-9_]*"$/.test(token) && !QUOTE_SENSITIVE.has(token.slice(1, -1));
@@ -669,7 +685,7 @@ function normalizeHeader(text) {
       i = j + 1;
     } else {
       let j = i;
-      while (j < text.length && text[j] !== "'" && text[j] !== '"') j += 1;
+      while (j < text.length && text[j] !== "'" && text[j] !== '"' && dollarQuoteEnd(text, j) < 0) j += 1;
       out += text.slice(i, j).replace(/\s+/g, ' ').toLowerCase();
       i = j;
     }

@@ -802,3 +802,32 @@ describe('loadAllowlist — produto verbo × classe e GRANT × privilégio (Code
     expect(loadAllowlist('^grant usage on schema "legacy_x" to')).toHaveLength(1);
   });
 });
+
+describe('dropDumpLossyFunctions — dollar-quote no cabeçalho (Codex P1)', () => {
+  const shadow = (dflt) => `CREATE OR REPLACE FUNCTION "public"."d"("p" "text" DEFAULT ${dflt}) RETURNS "text"
+    LANGUAGE "sql"
+    AS $$ SELECT 1 $$;`;
+  const remote = (dflt) => `CREATE OR REPLACE FUNCTION public.d(p text DEFAULT ${dflt})
+ RETURNS text
+ LANGUAGE sql
+AS $function$ SELECT 1 $function$
+;
+`;
+
+  it('DEFAULT $$…$$ com caixa ou espaço diferente é diferença real e fica no resíduo', () => {
+    expect(dropDumpLossyFunctions(remote('$$a b$$'), shadow('$$A  B$$')).dropped).toEqual([]);
+    expect(dropDumpLossyFunctions(remote('$$a  b$$'), shadow('$$a b$$')).dropped).toEqual([]);
+  });
+
+  it('DEFAULT $$…$$ idêntico segue equivalente', () => {
+    expect(dropDumpLossyFunctions(remote('$$A  B$$'), shadow('$$A  B$$')).dropped).toHaveLength(1);
+  });
+
+  it('`a$b` num identificador não abre dollar-quote', () => {
+    const out = dropDumpLossyFunctions(
+      `CREATE OR REPLACE FUNCTION public.d()\n RETURNS text\n LANGUAGE sql\nAS $function$ SELECT 1 $function$\n;\n`,
+      `CREATE OR REPLACE FUNCTION "public"."d"() RETURNS "text" LANGUAGE "sql" AS $$ SELECT 1 $$;`,
+    );
+    expect(out.dropped).toEqual(['public.d()']);
+  });
+});
