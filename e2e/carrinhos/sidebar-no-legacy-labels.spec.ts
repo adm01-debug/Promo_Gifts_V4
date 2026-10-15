@@ -23,7 +23,7 @@ test.describe('CartSidebar · smoke pós-faxina (sem painéis legados)', () => {
     await page.setViewportSize({ width: 1440, height: 900 });
   });
 
-  test('sidebar mostra hero + CTA e NÃO renderiza Saúde/Inteligência/Histórico/Sugestões', async ({
+  test('página do carrinho hidrata (CTA no header) e NÃO renderiza Saúde/Inteligência/Histórico/Sugestões', async ({
     page,
   }) => {
     const { cartA } = await setupAuthedWithCarts(page, {
@@ -34,22 +34,26 @@ test.describe('CartSidebar · smoke pós-faxina (sem painéis legados)', () => {
     });
     await gotoAndSettle(page, `/carrinhos/${cartA.id}`);
 
-    // Espera o CartSidebar marcar data-loaded="true" no card hero —
-    // mais determinístico que networkidle (que sofre com WebSockets/polling)
-    // e elimina falso-verde em que getByText(...).toHaveCount(0) passa
-    // antes do componente ter renderizado.
-    await page.waitForFunction(
-      () =>
-        document.querySelector(
-          '[data-testid="cart-sidebar-hero"][data-loaded="true"]',
-        ) !== null,
-      undefined,
-      { timeout: 15_000 },
-    );
+    // Marcador de hidratação: o CTA "Gerar Orçamento" vive no CartHeaderActions
+    // (a sidebar só mantém o card hero de peso/volume — ver CartSidebar.tsx e
+    // CartSidebar.render.test.tsx). Esperar o CTA habilitado garante que a página do
+    // carrinho montou com os 3 itens semeados, eliminando o falso-verde em que
+    // getByText(...).toHaveCount(0) passa antes do componente renderizar.
+    // Timeout folgado: o backend do CI chega a levar 15–60 s por request.
+    const cta = page.getByTestId('cart-checkout-cta').first();
+    await expect(cta).toBeVisible({ timeout: 60_000 });
+    await expect(cta).toBeEnabled();
 
-    // Sanity: hero + CTA visíveis
-    await expect(page.getByTestId('cart-sidebar-hero')).toBeVisible();
-    await expect(page.getByTestId('cart-checkout-cta')).toBeVisible();
+    // O hero (`cart-sidebar-hero`) só renderiza quando há peso/volume calculável a
+    // partir de produtos REAIS do catálogo (useSellerCartsPage.weightVolume). Os
+    // carrinhos mockados usam product_id `mock-prod-*`, sem dimensões, então o hero
+    // é opcional aqui: quando presente, precisa estar marcado como carregado e NÃO
+    // pode conter o CTA (que foi movido para o header).
+    const hero = page.getByTestId('cart-sidebar-hero');
+    if (await hero.count()) {
+      await expect(hero).toHaveAttribute('data-loaded', 'true');
+      await expect(hero.getByTestId('cart-checkout-cta')).toHaveCount(0);
+    }
 
     // Nenhum dos rótulos dos painéis removidos pode aparecer no DOM
     for (const label of FORBIDDEN_LABELS) {

@@ -38,7 +38,11 @@ const ROUTE = '/produtos';
 const VIEWS: RowView[] = ['list', 'table'];
 
 test.describe('Swatch → QuickView (Lista e Tabela)', () => {
-  test.beforeEach(() => requireAuth());
+  test.beforeEach(() => {
+    requireAuth();
+    // Backend do CI chega a levar 15–60 s por request: folga sobre o timeout padrão (120 s).
+    test.setTimeout(240_000);
+  });
 
   for (const mode of VIEWS) {
     test(`[${mode}] swatch seleciona cor inline + "Todos" limpa + foto abre QV na cor`, async ({

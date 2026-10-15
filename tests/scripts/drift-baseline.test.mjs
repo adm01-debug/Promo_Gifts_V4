@@ -2,7 +2,7 @@
 // db-schema-drift-check (baseline + migrations aplicadas depois do dump),
 // filtro de ruído do diff e varredura de segredos do dump.
 import { afterEach, describe, expect, it } from 'vitest';
-import { mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -407,6 +407,40 @@ describe('loadAllowlist — entrada genérica', () => {
     }
   });
 
+  it('rejeita também variantes if exists / unique / only e classes restantes (revisão adversarial)', () => {
+    for (const entry of [
+      'if exists',
+      '^drop function if exists',
+      '^drop trigger if exists',
+      '^drop index if exists',
+      '^create unique index',
+      '^create or replace trigger',
+      '^create function',
+      '^create view',
+      '^create schema',
+      '^create domain',
+      '^alter table only',
+      '^alter type',
+      '^alter view',
+      '^alter publication',
+      '^alter default privileges',
+      '^alter table .* alter column .* type',
+      '^alter table .* validate constraint',
+      '^alter table .* force row level',
+      '^grant .* on function',
+      '^comment on column',
+      '^drop extension',
+      '^drop schema',
+      'references',
+      'foreign key',
+      'not valid',
+      'security definer',
+    ]) {
+      expect(() => loadAllowlist(entry), entry).toThrow(/genérica demais/);
+    }
+    expect(loadAllowlist('^drop function if exists "public"\\."fn_x"\\(')).toHaveLength(1);
+  });
+
   it('aceita entrada que nomeia o objeto', () => {
     expect(loadAllowlist('^alter table "public"\\."tabela_x" ')).toHaveLength(1);
     expect(loadAllowlist('^create or replace function "public"\\."fn_x"\\(')).toHaveLength(1);
@@ -418,6 +452,7 @@ describe('loadAllowlist — entrada genérica', () => {
     // Suíte roda da raiz do repo (vitest.config.ts); `import.meta.url` no ambiente
     // jsdom não é um URL `file:` confiável.
     const file = join(process.cwd(), 'supabase/baseline/drift-allowlist.txt');
+    expect(existsSync(file)).toBe(true);
     expect(Array.isArray(loadAllowlist(readFileSync(file, 'utf8')))).toBe(true);
   });
 });
@@ -661,5 +696,55 @@ AS $function$ SELECT 1 $function$
     expect(dropDumpLossyFunctions(remote('public.f', '', set('public')), shadow('"public"."f"', '', set('public'))).dropped).toEqual([
       'public.f()',
     ]);
+  });
+});
+
+describe('dropDumpLossyFunctions — mudanças posteriores ao CREATE não são escondidas (revisão adversarial)', () => {
+  const create = `CREATE OR REPLACE FUNCTION "public"."g"() RETURNS void LANGUAGE "sql" AS $$ select 1 $$;\n`;
+  const remote = `create or replace function public.g() returns void language sql as $function$ select 1 $function$;\n`;
+  const dropped = (shadow, diff = remote) => dropDumpLossyFunctions(diff, shadow).dropped;
+
+  it('controle: CREATE idêntico é removido do resíduo; OWNER TO é inócuo', () => {
+    expect(dropped(create)).toEqual(['public.g()']);
+    expect(dropped(`${create}ALTER FUNCTION "public"."g"() OWNER TO "postgres";\n`)).toEqual(['public.g()']);
+  });
+
+  it('ALTER FUNCTION (SECURITY DEFINER / SET) e DROP FUNCTION posteriores mantêm a função no resíduo', () => {
+    expect(dropped(`${create}ALTER FUNCTION "public"."g"() SECURITY DEFINER;\n`)).toEqual([]);
+    expect(dropped(`${create}ALTER FUNCTION "public"."g"() SET search_path = '';\n`)).toEqual([]);
+    expect(dropped(`${create}DROP FUNCTION "public"."g"();\n`)).toEqual([]);
+  });
+
+  it('CREATE dentro de comentário de bloco não é definição vigente', () => {
+    expect(dropped(`/* ${create} */\n`)).toEqual([]);
+  });
+
+  it('atributos depois do corpo ($$ … $$ SECURITY DEFINER;) são comparados', () => {
+    const attrs = (a) => `CREATE FUNCTION "public"."g"() RETURNS void LANGUAGE sql AS $$ select 1 $$ ${a};\n`;
+    expect(dropped(attrs('SECURITY DEFINER'))).toEqual([]);
+    expect(dropped(attrs('STABLE'))).toEqual([]);
+  });
+
+  it('linha "--" de coluna 0 dentro de literal multilinha é dado, fora dele é comentário', () => {
+    const mk = (kw, inner) => `${kw} FUNCTION public.q() RETURNS text LANGUAGE sql AS $$ select ${inner} $$;\n`;
+    expect(
+      dropped(mk('CREATE', "'a\n-- SELECT 1\nb'"), mk('create or replace', "'a\n-- DROP TABLE x\nb'").replace('$$', '$function$').replace(/\$\$;/, '$function$;')),
+    ).toEqual([]);
+    const outside = `create or replace function public.q() returns text language sql as $function$\n-- nota\nselect 1 $function$;\n`;
+    expect(dropped(mk('CREATE', '1'), outside)).toEqual(['public.q()']);
+  });
+
+  it('"char" (tipo interno) não equivale a char', () => {
+    const sh = `CREATE FUNCTION public.h(x char) RETURNS void LANGUAGE sql AS $$ select 1 $$;\n`;
+    const rm = `create or replace function public.h(x "char") returns void language sql as $function$ select 1 $function$;\n`;
+    expect(dropped(sh, rm)).toEqual([]);
+  });
+});
+
+describe('filterDiff — "No schema changes found" só como linha inteira', () => {
+  it('não esconde DDL que apenas menciona a frase', () => {
+    const line = `comment on table "public"."t" is 'No schema changes found';`;
+    expect(filterDiff(line, [])).toEqual([line]);
+    expect(filterDiff('No schema changes found', [])).toEqual([]);
   });
 });

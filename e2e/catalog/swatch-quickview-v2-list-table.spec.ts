@@ -52,7 +52,11 @@ const VIEWS: RowView[] = ['list', 'table'];
 const V2_RESET = 'button[aria-label="Ver todas as cores"]';
 
 test.describe('Swatch V2 → QuickView (Lista e Tabela)', () => {
-  test.beforeEach(() => requireAuth());
+  test.beforeEach(() => {
+    requireAuth();
+    // Backend do CI chega a levar 15–60 s por request: folga sobre o timeout padrão (120 s).
+    test.setTimeout(240_000);
+  });
 
   // ── (1) + (2) — Seleção inline, reset e QuickView pela foto ───────────────
   for (const mode of VIEWS) {

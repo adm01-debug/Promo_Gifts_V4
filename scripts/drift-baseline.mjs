@@ -415,6 +415,37 @@ const ALLOWLIST_PROBES = [
   'comment on table "public"."__drift_probe__" is \'x\';',
   'comment on function "public"."__drift_probe__"() is \'x\';',
   'create extension if not exists "__drift_probe__" with schema "extensions";',
+  // Variantes `if exists`/`or replace`/`unique`/`only` e classes restantes: o migra
+  // emite `drop … if exists`, e um padrão genérico esconderia a classe inteira.
+  'drop function if exists "public"."__drift_probe__"();',
+  'drop trigger if exists "__drift_probe__" on "public"."__drift_probe__";',
+  'drop index if exists "public"."__drift_probe__";',
+  'drop view if exists "public"."__drift_probe__";',
+  'drop policy if exists "__drift_probe__" on "public"."__drift_probe__";',
+  'drop extension if exists "__drift_probe__";',
+  'drop schema if exists "__drift_probe__";',
+  'drop materialized view if exists "public"."__drift_probe__";',
+  'create unique index "__drift_probe__" on "public"."__drift_probe__" using btree ("id");',
+  'create or replace trigger "__drift_probe__" after insert on "public"."__drift_probe__" for each row execute function "public"."__drift_probe__"();',
+  'create function "public"."__drift_probe__"() returns void language sql security definer as $function$ select 1 $function$;',
+  'create view "public"."__drift_probe__" as select 1;',
+  'create schema "__drift_probe__";',
+  'create domain "public"."__drift_probe__" as integer;',
+  'alter table only "public"."__drift_probe__" add constraint "__drift_probe__" foreign key ("id") references "public"."__drift_probe__" ("id") not valid;',
+  'alter table "public"."__drift_probe__" validate constraint "__drift_probe__";',
+  'alter table "public"."__drift_probe__" rename to "__drift_probe_2__";',
+  'alter table "public"."__drift_probe__" alter column "c" type text;',
+  'alter table "public"."__drift_probe__" alter column "c" drop not null;',
+  'alter table "public"."__drift_probe__" force row level security;',
+  'alter table "public"."__drift_probe__" disable row level security;',
+  'alter table "public"."__drift_probe__" disable trigger "__drift_probe__";',
+  'alter type "public"."__drift_probe__" add value \'x\';',
+  'alter view "public"."__drift_probe__" owner to "postgres";',
+  'alter publication "__drift_probe__" add table "public"."__drift_probe__";',
+  'alter default privileges in schema "public" grant all on tables to "anon";',
+  'grant execute on function "public"."__drift_probe__"() to "anon";',
+  'comment on column "public"."__drift_probe__"."c" is \'x\';',
+  'comment on policy "__drift_probe__" on "public"."__drift_probe__" is \'x\';',
 ];
 
 export function loadAllowlist(text) {
@@ -442,12 +473,57 @@ export function loadAllowlist(text) {
 // continua no resíduo.
 const FUNCTION_START = /^[ \t]*CREATE[ \t]+(?:OR[ \t]+REPLACE[ \t]+)?(FUNCTION|PROCEDURE)\b/gim;
 const DOLLAR_AS = /\bAS\s+(\$[A-Za-z_][A-Za-z_0-9]*\$|\$\$)/i;
+const DOLLAR_TAG = /\$(?:[A-Za-z_][A-Za-z_0-9]*)?\$/y;
+// Atributos entre o fechamento do corpo e o `;` (`$$ SECURITY DEFINER;`, `STABLE`,
+// `SET search_path = ''`): mudam comportamento e o `db diff` nunca os emite depois
+// do corpo, então fazem parte da comparação.
+const TRAILING_ATTRS = /^((?:[^;']|'(?:[^']|'')*')*);/;
+
+// máscara[i] = 1 quando a posição i começa em código SQL (fora de comentário,
+// literal, identificador entre aspas e corpo dollar-quoted). Um `CREATE FUNCTION`
+// dentro de `/* … */` ou de um `EXECUTE $y$ … $y$` não é uma definição vigente.
+export function codeMask(sql) {
+  const n = sql.length;
+  const mask = new Uint8Array(n);
+  let i = 0;
+  while (i < n) {
+    const c = sql[i];
+    mask[i] = 1;
+    if (c === "'" || c === '"') {
+      let j = i + 1;
+      while (j < n) {
+        if (sql[j] === c) {
+          if (sql[j + 1] === c) j += 2;
+          else break;
+        } else j += 1;
+      }
+      i = j + 1;
+    } else if (c === '-' && sql[i + 1] === '-') {
+      const j = sql.indexOf('\n', i);
+      i = j < 0 ? n : j;
+    } else if (c === '/' && sql[i + 1] === '*') {
+      const end = sql.indexOf('*/', i + 2);
+      i = end < 0 ? n : end + 2;
+    } else if (c === '$' && !/[A-Za-z0-9_$]/.test(sql[i - 1] ?? '')) {
+      DOLLAR_TAG.lastIndex = i;
+      const tag = DOLLAR_TAG.exec(sql);
+      if (tag) {
+        const end = sql.indexOf(tag[0], i + tag[0].length);
+        i = end < 0 ? n : end + tag[0].length;
+      } else i += 1;
+    } else i += 1;
+  }
+  return mask;
+}
 
 export function extractFunctionStatements(sql) {
   const found = [];
+  const mask = codeMask(sql);
   FUNCTION_START.lastIndex = 0;
   let start;
   while ((start = FUNCTION_START.exec(sql)) !== null) {
+    const keyword = start.index + (start[0].length - start[0].trimStart().length);
+    if (!mask[keyword]) continue;
     const rest = sql.slice(start.index);
     const as = DOLLAR_AS.exec(rest);
     if (!as) continue;
@@ -455,9 +531,10 @@ export function extractFunctionStatements(sql) {
     const close = rest.indexOf(as[1], bodyStart);
     if (close < 0) continue;
     let end = close + as[1].length;
-    const tail = /^\s*;/.exec(rest.slice(end));
+    const tail = TRAILING_ATTRS.exec(rest.slice(end));
+    const trailing = tail ? tail[1].trim() : '';
     if (tail) end += tail[0].length;
-    found.push({ start: start.index, end: start.index + end, text: rest.slice(0, end), tag: as[1], asIndex: as.index, bodyStart, close });
+    found.push({ start: start.index, end: start.index + end, text: rest.slice(0, end), tag: as[1], asIndex: as.index, bodyStart, close, trailing });
     FUNCTION_START.lastIndex = start.index + end;
   }
   return found;
@@ -496,6 +573,19 @@ function functionSignature(header) {
 // palavra-chave/identificador sem aspas, e aspas redundantes (`"public"."f"` =
 // `public.f`). Literais ('A' ≠ 'a') e identificadores entre aspas que dependem
 // delas (`"F"` ≠ `f`, `"my col"`) ficam intactos — são diferença de comportamento.
+// `"char"` (tipo interno) ≠ `char` (bpchar), `"user"` ≠ `user` (função): para
+// palavras reservadas/de tipo as aspas mudam o significado e ficam intactas.
+const QUOTE_SENSITIVE = new Set([
+  'char', 'user', 'current_user', 'session_user', 'current_role', 'current_date', 'current_time',
+  'current_timestamp', 'current_catalog', 'current_schema', 'localtime', 'localtimestamp', 'any', 'all',
+  'array', 'case', 'cast', 'check', 'default', 'select', 'table', 'null', 'true', 'false', 'end', 'in',
+  'order', 'group', 'limit', 'offset', 'primary', 'references', 'unique', 'when', 'then', 'else', 'from',
+  'where', 'and', 'or', 'not', 'as', 'on', 'to', 'for', 'using', 'with', 'column', 'constraint',
+  'analyse', 'analyze', 'asc', 'desc', 'distinct', 'do', 'except', 'fetch', 'foreign', 'grant', 'having',
+  'initially', 'intersect', 'into', 'lateral', 'leading', 'trailing', 'only', 'placing', 'returning',
+  'some', 'symmetric', 'union', 'variadic', 'window', 'both', 'collate', 'create', 'deferrable',
+]);
+
 function normalizeHeader(text) {
   let out = '';
   let i = 0;
@@ -510,7 +600,8 @@ function normalizeHeader(text) {
         } else j += 1;
       }
       const token = text.slice(i, j + 1);
-      out += c === '"' && /^"[a-z_][a-z0-9_]*"$/.test(token) ? token.slice(1, -1) : token;
+      const plain = c === '"' && /^"[a-z_][a-z0-9_]*"$/.test(token) && !QUOTE_SENSITIVE.has(token.slice(1, -1));
+      out += plain ? token.slice(1, -1) : token;
       i = j + 1;
     } else {
       let j = i;
@@ -582,19 +673,29 @@ export function collapseSqlWhitespace(text) {
   return out.trim();
 }
 
+// Remove só a linha `--` de coluna 0 que começa em código: dentro de um literal
+// multilinha (SQL dinâmico) ela é dado e continua no corpo.
+function stripColumnZeroComments(body) {
+  const mask = codeMask(body);
+  let offset = 0;
+  return body
+    .split('\n')
+    .filter((line) => {
+      const keep = !(line.startsWith('--') && mask[offset]);
+      offset += line.length + 1;
+      return keep;
+    })
+    .join('\n');
+}
+
 function normalizeFunction(statement) {
   const header = statement.text.slice(0, statement.asIndex);
   const signature = functionSignature(header);
   if (!signature) return null;
-  const body = collapseSqlWhitespace(
-    statement.text
-      .slice(statement.bodyStart, statement.close)
-      .split('\n')
-      .filter((l) => !l.startsWith('--'))
-      .join('\n'),
-  );
+  const body = collapseSqlWhitespace(stripColumnZeroComments(statement.text.slice(statement.bodyStart, statement.close)));
   const head = normalizeHeader(header).replace(/^create (?:or replace )?(function|procedure)/, 'create $1');
-  return { signature, text: `${head} as $$ ${body} $$` };
+  const trailing = statement.trailing ? ` ${normalizeHeader(statement.trailing)}` : '';
+  return { signature, text: `${head} as $$ ${body} $$${trailing}` };
 }
 
 // shadowSql = baseline sanitizado + migrations replayadas, na ordem em que o
@@ -604,6 +705,20 @@ export function dropDumpLossyFunctions(diffSql, shadowSql) {
   for (const statement of extractFunctionStatements(shadowSql)) {
     const norm = normalizeFunction(statement);
     if (norm) current.set(norm.signature, norm.text);
+  }
+  // ALTER/DROP FUNCTION posterior (SECURITY DEFINER, SET search_path, drop+recria)
+  // muda a função sem passar pelo texto do CREATE: a assinatura sai do mapa. Só
+  // `OWNER TO` (que o dump emite para toda função) é inócuo.
+  const mask = codeMask(shadowSql);
+  const touchesFunction = /^[ \t]*(alter|drop)[ \t]+(?:function|procedure|routine)[ \t]+(?:if[ \t]+exists[ \t]+)?((?:"(?:[^"]|"")+"|[A-Za-z_][\w$]*)(?:\.(?:"(?:[^"]|"")+"|[A-Za-z_][\w$]*))?)[ \t]*\(([^;]*);?/gim;
+  let touch;
+  while ((touch = touchesFunction.exec(shadowSql)) !== null) {
+    if (!mask[touch.index + (touch[0].length - touch[0].trimStart().length)]) continue;
+    if (/^alter$/i.test(touch[1]) && /\)\s*owner\s+to\s+(?:"(?:[^"]|"")+"|\w+)\s*$/i.test(touch[0].replace(/;\s*$/, ''))) continue;
+    const name = normalizeHeader(touch[2]);
+    for (const signature of [...current.keys()]) {
+      if (signature.startsWith(`${name}(`) || signature.startsWith(`public.${name}(`)) current.delete(signature);
+    }
   }
   const dropped = [];
   let out = '';
@@ -623,7 +738,7 @@ export function filterDiff(diffSql, allowlist) {
   return diffSql
     .split('\n')
     .filter((l) => l.trim() && !l.trim().startsWith('--'))
-    .filter((l) => !/no schema changes found/i.test(l))
+    .filter((l) => !/^\s*no schema changes found[.;]?\s*$/i.test(l))
     .filter((l) => !allowlist.some((re) => re.test(l)));
 }
 
