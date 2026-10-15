@@ -132,7 +132,8 @@ jobs:
         # verde sem gravar nada (seed dormente mascarado como sucesso).
         run: node scripts/check-policies-baseline.mjs --update-baseline --require-live
 
-      - name: Commit baseline e abre PR
+      - name: Commit baseline (detecta mudanças)
+        id: changes
         run: |
           set -euo pipefail
           BRANCH="bot/policies-baseline-seed-$(date +%Y%m%d%H%M%S)"
@@ -140,14 +141,25 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "${BRANCH}"
           git add .security/policies-baseline.json
-          if git diff --cached --quiet; then
-            echo "baseline já estava em dia — nada a commitar"
-            exit 0
+          if git --no-pager diff --cached --quiet; then
+            echo "::notice::Nenhuma mudança detectada no baseline — nada a commitar."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            git commit -m "chore(security): atualiza baseline assinado de RLS policies"
+            git push origin "${BRANCH}"
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "branch=${BRANCH}" >> "$GITHUB_OUTPUT"
           fi
-          git commit -m "chore(security): atualiza baseline assinado de RLS policies"
-          git push origin "${BRANCH}"
+
+      - name: Cria PR com baseline atualizado
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
           gh pr create \
             --title "chore(security): baseline de RLS policies ($(date +%Y-%m-%d))" \
             --body "Snapshot live de \`pg_policies\` (schema public) gravado em \`.security/policies-baseline.json\` com sha256. Revisar a lista de policies antes de mergear — depois do merge, o gate policies-baseline passa a bloquear drift não revisado." \
+            --label "ci-automation" \
             --base main \
-            --head "${BRANCH}"
+            --head "${{ steps.changes.outputs.branch }}"
+        env:
+          GH_TOKEN: ${{ github.token }}

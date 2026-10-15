@@ -140,14 +140,16 @@ jobs:
         run: node scripts/export-schema-snapshot.mjs
 
       - name: Commit snapshot to bot/schema-snapshot (force-push)
+        id: commit
         env:
           RUN_ID: ${{ github.run_id }}
         run: |
           set -euo pipefail
-          if ! git diff --quiet -- supabase/migrations-snapshot/; then
+          if ! git --no-pager diff --quiet -- supabase/migrations-snapshot/; then
             echo "Snapshot mudou — commitando."
           else
-            echo "Snapshot sem mudança — nada a commitar."
+            echo "::notice::Nenhuma mudança detectada no snapshot — nada a commitar."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           git config user.name "github-actions[bot]"
@@ -161,8 +163,10 @@ jobs:
           git commit -m "chore(schema-snapshot): snapshot semanal $WEEK (run $RUN_ID)" \
             -m "Auto-gerado por schema-snapshot-export.yml (E84). Snapshot do schema canônico doufsxqlfjyuvxuezpln."
           git push --force-with-lease origin bot/schema-snapshot
+          echo "changed=true" >> "$GITHUB_OUTPUT"
 
       - name: Abrir ou atualizar PR única (bot/schema-snapshot)
+        if: steps.commit.outputs.changed == 'true'
         env:
           RUN_ID: ${{ github.run_id }}
         run: |
