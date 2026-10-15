@@ -119,7 +119,7 @@ describe('prepareWorkdir', () => {
 
 describe('filterDiff', () => {
   it('remove comentários, linhas vazias, "no schema changes" e o que a allowlist cobre', () => {
-    const allowlist = loadAllowlist('# ruído conhecido\n^grant maintain on table "public"\\.\n');
+    const allowlist = loadAllowlist('# ruído conhecido\n^grant maintain on table "public"\\."x" to\n');
     const diff = [
       '-- comentário',
       '',
@@ -876,10 +876,53 @@ describe('loadAllowlist — privilégios novos e entrada sem identificador (Code
   }
 
   it('exige ao menos um identificador entre aspas, mesmo que nenhuma sonda case', () => {
-    expect(() => loadAllowlist('^grant algum_privilegio_futuro on table')).toThrow(/nenhum identificador entre aspas/);
+    expect(() => loadAllowlist('^grant algum_privilegio_futuro on table')).toThrow(/nenhum objeto entre aspas/);
   });
 
   it('aceita entrada que cita o objeto', () => {
     expect(loadAllowlist('^grant maintain on table "public"\\."tabela_x" to')).toHaveLength(1);
+  });
+});
+
+describe('loadAllowlist — entrada literal e objeto concreto (Codex P2)', () => {
+  for (const entry of [
+    '^create table "public"\\."(?!__drift_probe__)',
+    '^create table "public"\\."',
+    '^create table "public"\\."[a-z_]+"',
+    '^grant select on table "public"\\."t.*" to',
+    '^drop table "public"\\."a"|^drop table "public"\\."b"',
+    '^alter table "public"\\.\\w+',
+  ]) {
+    it(`recusa ${entry}`, () => {
+      expect(() => loadAllowlist(entry)).toThrow(/genérica demais/);
+    });
+  }
+
+  it('só schema ou papel citado não nomeia objeto', () => {
+    expect(() => loadAllowlist('^revoke all on schema "public" from "anon"')).toThrow(/nenhum objeto entre aspas/);
+  });
+
+  it('prefixo literal com objeto continua aceito', () => {
+    expect(loadAllowlist('^create table "public"\\."criada_fora" \\(')).toHaveLength(1);
+  });
+});
+
+describe('dropDumpLossyFunctions — tipo entre aspas com nome de palavra-chave (Codex P1)', () => {
+  const shadow = (ty) => `CREATE OR REPLACE FUNCTION "public"."f"("x" ${ty}) RETURNS void LANGUAGE "sql" AS $$ select 1 $$;\n`;
+  const remote = (ty) => `create or replace function public.f(x ${ty}) returns void language sql as $function$ select 1 $function$;\n`;
+
+  it('"integer" (tipo de usuário) não equivale a integer (built-in)', () => {
+    expect(dropDumpLossyFunctions(remote('integer'), shadow('"integer"')).dropped).toEqual([]);
+    expect(dropDumpLossyFunctions(remote('"integer"'), shadow('integer')).dropped).toEqual([]);
+  });
+
+  it('outros apelidos de tipo e palavras-chave também preservam as aspas', () => {
+    for (const ty of ['bigint', 'smallint', 'boolean', 'numeric', 'timestamp', 'interval', 'real', 'varchar', 'bit']) {
+      expect(dropDumpLossyFunctions(remote(ty), shadow(`"${ty}"`)).dropped).toEqual([]);
+    }
+  });
+
+  it('controle: "text" (não é palavra-chave) segue equivalente a text', () => {
+    expect(dropDumpLossyFunctions(remote('text'), shadow('"text"')).dropped).toEqual(['public.f(x text)']);
   });
 });

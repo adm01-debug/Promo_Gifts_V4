@@ -503,6 +503,13 @@ for (const priv of PROBE_PRIVILEGES) {
   }
 }
 
+// Nomes que não identificam um objeto sozinhos: schemas do Supabase/PG e papéis.
+const NON_OBJECT_NAMES = new Set([
+  'public', 'auth', 'storage', 'extensions', 'graphql', 'graphql_public', 'realtime', 'vault', 'pgsodium',
+  'net', 'cron', 'supabase_functions', 'supabase_migrations', 'pg_catalog', 'information_schema', 'anon',
+  'authenticated', 'service_role', 'postgres', 'supabase_admin',
+]);
+
 export function loadAllowlist(text) {
   return text
     .split('\n')
@@ -510,10 +517,18 @@ export function loadAllowlist(text) {
     .filter((l) => l && !l.startsWith('#'))
     .map((l) => {
       const re = new RegExp(l);
-      // A lista de sondas é finita (PG17 trouxe MAINTAIN; haverá outros): toda entrada
-      // precisa citar um identificador entre aspas, isto é, nomear um objeto.
-      if (!/"[^"]+"/.test(l)) {
-        throw new Error(`drift-allowlist: entrada genérica demais (${l}) — nenhum identificador entre aspas; nomeie o objeto`);
+      // Entrada = prefixo LITERAL de um comando: só `^`, `$` e pontuação escapada
+      // (`\.`, `\(`). Classes, quantificadores, alternância e lookahead
+      // (`(?!__drift_probe__)`) esconderiam uma classe inteira e escapam de qualquer lista
+      // finita de sondas.
+      const unescaped = l.replace(/\\[^A-Za-z0-9]/g, '');
+      if (/\\/.test(unescaped) || /[.*+?[\](){}|]/.test(unescaped)) {
+        throw new Error(`drift-allowlist: entrada genérica demais (${l}) — use só texto literal (^, $ e pontuação escapada); nomeie o objeto`);
+      }
+      // E precisa citar um identificador entre aspas que não seja só schema ou papel.
+      const named = (l.match(/"[^"]+"/g) ?? []).map((q) => q.slice(1, -1));
+      if (!named.some((name) => !NON_OBJECT_NAMES.has(name))) {
+        throw new Error(`drift-allowlist: entrada genérica demais (${l}) — nenhum objeto entre aspas (só schema/papel ou nada); nomeie o objeto`);
       }
       const probe = ALLOWLIST_PROBES.find((p) => re.test(p));
       if (probe !== undefined || re.test('')) {
@@ -659,6 +674,21 @@ const QUOTE_SENSITIVE = new Set([
   'analyse', 'analyze', 'asc', 'desc', 'distinct', 'do', 'except', 'fetch', 'foreign', 'grant', 'having',
   'initially', 'intersect', 'into', 'lateral', 'leading', 'trailing', 'only', 'placing', 'returning',
   'some', 'symmetric', 'union', 'variadic', 'window', 'both', 'collate', 'create', 'deferrable',
+  'asymmetric', 'system_user',
+  // COL_NAME_KEYWORD (inclui os apelidos de tipo: `integer` é o built-in, `"integer"` é
+  // um tipo de usuário) e TYPE_FUNC_NAME_KEYWORD do PostgreSQL 17: com aspas deixam de
+  // ser a palavra-chave, então a equivalência com a forma sem aspas não é provável.
+  'between', 'bigint', 'bit', 'boolean', 'character', 'coalesce', 'dec', 'decimal', 'exists', 'extract',
+  'float', 'greatest', 'grouping', 'inout', 'int', 'integer', 'interval', 'json', 'json_array',
+  'json_arrayagg', 'json_exists', 'json_object', 'json_objectagg', 'json_query', 'json_scalar',
+  'json_serialize', 'json_table', 'json_value', 'least', 'merge_action', 'national', 'nchar', 'none',
+  'normalize', 'nullif', 'numeric', 'out', 'overlay', 'position', 'precision', 'real', 'row', 'setof',
+  'smallint', 'substring', 'time', 'timestamp', 'treat', 'trim', 'values', 'varchar', 'xmlattributes',
+  'xmlconcat', 'xmlelement', 'xmlexists', 'xmlforest', 'xmlnamespaces', 'xmlparse', 'xmlpi', 'xmlroot',
+  'xmlserialize', 'xmltable',
+  'authorization', 'binary', 'collation', 'concurrently', 'cross', 'freeze', 'full', 'ilike', 'inner', 'is',
+  'isnull', 'join', 'left', 'like', 'natural', 'notnull', 'outer', 'overlaps', 'right', 'similar',
+  'tablesample', 'verbose',
 ]);
 
 // Fim (exclusivo) do literal dollar-quoted que abre em `i`, ou -1 se `i` não abre um:
