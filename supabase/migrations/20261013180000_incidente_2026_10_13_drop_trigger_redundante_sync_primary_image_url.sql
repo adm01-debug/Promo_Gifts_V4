@@ -37,6 +37,12 @@
 -- (nenhum outro trigger ou chamada direta usa essa função). Remoção segura:
 -- elimina um UPDATE redundante em products por linha afetada, sem mudar o
 -- resultado final (que já é sempre determinado pela função mais completa).
+
+-- Falha rápido (1s) se o lock não vier, em vez de enfileirar leitores atrás do AccessExclusiveLock
+-- em product_images (tabela quente; anon tem statement_timeout de 3s). SET LOCAL vale só para esta
+-- transação (psql -1); o pooler ignora lock_timeout via PGOPTIONS (run 38730252412, 2026-10-15).
+SET LOCAL lock_timeout = '1s';
+
 DROP TRIGGER IF EXISTS trg_sync_primary_image_url ON public.product_images;
 DROP FUNCTION IF EXISTS public.fn_sync_primary_image_url();
 
