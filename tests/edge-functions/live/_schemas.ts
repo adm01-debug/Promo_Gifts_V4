@@ -6,13 +6,24 @@
  */
 import { z } from "zod";
 
+/**
+ * Item de `fields` no envelope de validação. O contrato canônico
+ * (supabase/functions/_shared/contracts/errors.ts → FieldIssue e
+ * _shared/zod-validate.ts → ValidationFieldError) emite objetos
+ * { path, message, code? }; strings simples ficam aceitas por compat.
+ */
+const fieldIssueSchema = z.union([
+  z.string(),
+  z.object({ path: z.string(), message: z.string(), code: z.string().optional() }).passthrough(),
+]);
+
 /** Contrato de erro padrão das edges migradas: { code, message, fields? }. */
 export const errorEnvelopeSchema = z
   .object({
     code: z.string().optional(),
     error: z.string().optional(),
     message: z.string().optional(),
-    fields: z.array(z.string()).optional(),
+    fields: z.array(fieldIssueSchema).optional(),
   })
   .passthrough()
   // ao menos um identificador de erro presente
