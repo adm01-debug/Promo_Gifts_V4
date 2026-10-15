@@ -47,6 +47,7 @@ jobs:
           API_URL: ${{ github.api_url }}
           REPOSITORY: ${{ github.repository }}
         run: |
+          set -euo pipefail
           response_file="$(mktemp)"
           status="$(curl --silent --show-error \
             --output "$response_file" \
@@ -89,6 +90,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          set -euo pipefail
           # Ratchet E10/E96: falha se COUNT aumentou em relação ao baseline commitado.
           # severity=high filtra pelo campo security_severity_level da rule;
           # severity=critical é distinto de high na API — ambos consultados (Codex P1, 2026-10-02).

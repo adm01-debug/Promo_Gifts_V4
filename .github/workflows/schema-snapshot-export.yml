@@ -57,6 +57,8 @@ jobs:
     name: Export schema snapshot
     runs-on: ubuntu-24.04
     timeout-minutes: 10
+    # E27: SUPABASE_ACCESS_TOKEN não deve chegar a PRs de forks
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     env:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
       SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
