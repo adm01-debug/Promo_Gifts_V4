@@ -377,6 +377,25 @@ export function sanitizeBaselineForReplay(sql) {
   return { sql: kept.join('\n'), removed, rewrites };
 }
 
+// Fim de um literal/identificador entre aspas que abre em `i`. `''`/`""` escapam a
+// própria aspa; em string de escape (`E'…'`) o `\` também escapa o caractere seguinte
+// (`E'a\'b'` é UM literal). Devolve o índice da aspa de fechamento (ou o tamanho do
+// texto, se não fechar).
+function quotedEnd(text, i) {
+  const c = text[i];
+  const prev = text[i - 1] ?? '';
+  const escapes = c === "'" && /[eE]/.test(prev) && !/[A-Za-z0-9_$]/.test(text[i - 2] ?? '');
+  let j = i + 1;
+  while (j < text.length) {
+    if (escapes && text[j] === '\\') j += 2;
+    else if (text[j] === c) {
+      if (text[j + 1] === c) j += 2;
+      else break;
+    } else j += 1;
+  }
+  return Math.min(j, text.length);
+}
+
 // Linhas de DDL de um objeto que não existe: uma entrada que casa com qualquer
 // uma delas esconde drift de TODO objeto (ex.: `.*`, `^create table`, `public`).
 // Entrada legítima nomeia o objeto e não casa com um nome de sonda.
@@ -448,6 +467,42 @@ const ALLOWLIST_PROBES = [
   'comment on policy "__drift_probe__" on "public"."__drift_probe__" is \'x\';',
 ];
 
+// Sondas geradas: verbo × classe de objeto e GRANT/REVOKE × privilégio. A lista
+// escrita à mão acima não cobre toda combinação (`^grant usage`, `^comment on view`
+// passavam e escondiam a classe inteira); estas fecham o produto cartesiano.
+const PROBE_OBJECT_KINDS = [
+  'table', 'view', 'materialized view', 'foreign table', 'function', 'procedure', 'routine', 'sequence',
+  'schema', 'type', 'domain', 'index', 'extension', 'publication', 'role', 'trigger', 'policy', 'column',
+  'constraint', 'collation', 'aggregate', 'operator', 'event trigger', 'rule', 'language', 'server',
+];
+const PROBE_PRIVILEGES = [
+  'select', 'insert', 'update', 'delete', 'truncate', 'references', 'trigger', 'usage', 'execute', 'create',
+  'connect', 'temporary', 'all', 'all privileges',
+];
+for (const kind of PROBE_OBJECT_KINDS) {
+  const obj = '"__drift_probe__"';
+  ALLOWLIST_PROBES.push(
+    `create ${kind} ${obj};`,
+    `create or replace ${kind} ${obj};`,
+    `create ${kind} if not exists ${obj};`,
+    `alter ${kind} ${obj} owner to "postgres";`,
+    `alter ${kind} ${obj} rename to "__drift_probe_2__";`,
+    `drop ${kind} ${obj};`,
+    `drop ${kind} if exists ${obj};`,
+    `comment on ${kind} ${obj} is 'x';`,
+  );
+}
+for (const priv of PROBE_PRIVILEGES) {
+  for (const kind of ['table', 'schema', 'function', 'sequence', 'type', 'all tables in schema']) {
+    const target = `${kind} "__drift_probe__"`;
+    ALLOWLIST_PROBES.push(
+      `grant ${priv} on ${target} to "anon";`,
+      `revoke ${priv} on ${target} from "anon";`,
+      `grant ${priv} on ${target} to "authenticated" with grant option;`,
+    );
+  }
+}
+
 export function loadAllowlist(text) {
   return text
     .split('\n')
@@ -484,16 +539,8 @@ function trailingAttributes(text) {
   while (i < text.length) {
     const c = text[i];
     if (c === ';') return { attrs: text.slice(0, i), length: i + 1 };
-    if (c === "'") {
-      let j = i + 1;
-      while (j < text.length) {
-        if (text[j] === "'") {
-          if (text[j + 1] === "'") j += 2;
-          else break;
-        } else j += 1;
-      }
-      i = j + 1;
-    } else i += 1;
+    if (c === "'") i = quotedEnd(text, i) + 1;
+    else i += 1;
   }
   return null;
 }
@@ -509,14 +556,7 @@ export function codeMask(sql) {
     const c = sql[i];
     mask[i] = 1;
     if (c === "'" || c === '"') {
-      let j = i + 1;
-      while (j < n) {
-        if (sql[j] === c) {
-          if (sql[j + 1] === c) j += 2;
-          else break;
-        } else j += 1;
-      }
-      i = j + 1;
+      i = quotedEnd(sql, i) + 1;
     } else if (c === '-' && sql[i + 1] === '-') {
       const j = sql.indexOf('\n', i);
       i = j < 0 ? n : j;
@@ -622,13 +662,7 @@ function normalizeHeader(text) {
   while (i < text.length) {
     const c = text[i];
     if (c === "'" || c === '"') {
-      let j = i + 1;
-      while (j < text.length) {
-        if (text[j] === c) {
-          if (text[j + 1] === c) j += 2;
-          else break;
-        } else j += 1;
-      }
+      const j = quotedEnd(text, i);
       const token = text.slice(i, j + 1);
       const plain = c === '"' && /^"[a-z_][a-z0-9_]*"$/.test(token) && !QUOTE_SENSITIVE.has(token.slice(1, -1));
       out += plain ? token.slice(1, -1) : token;
@@ -660,13 +694,7 @@ export function collapseSqlWhitespace(text) {
   while (i < text.length) {
     const c = text[i];
     if (c === "'" || c === '"') {
-      let j = i + 1;
-      while (j < text.length) {
-        if (text[j] === c) {
-          if (text[j + 1] === c) j += 2;
-          else break;
-        } else j += 1;
-      }
+      const j = quotedEnd(text, i);
       emit(text.slice(i, j + 1));
       i = j + 1;
     } else if (c === '$') {

@@ -761,3 +761,44 @@ describe('filterDiff — "No schema changes found" só como linha inteira', () =
     expect(filterDiff('No schema changes found', [])).toEqual([]);
   });
 });
+
+describe("collapseSqlWhitespace — string de escape E'…' (Codex P1)", () => {
+  it('a barra invertida escapa a aspa: o espaçamento dentro do literal é dado', () => {
+    expect(collapseSqlWhitespace("SELECT E'a\\'  b'")).not.toBe(collapseSqlWhitespace("SELECT E'a\\' b'"));
+    expect(collapseSqlWhitespace("SELECT e'a\\'  b'  ")).toBe("SELECT e'a\\'  b'");
+  });
+
+  it('sem o prefixo E a barra invertida é literal (standard_conforming_strings)', () => {
+    expect(collapseSqlWhitespace("SELECT 'a\\'   x")).toBe("SELECT 'a\\' x");
+  });
+
+  it('função cujo corpo muda só dentro de E\'…\' continua no resíduo', () => {
+    const shadow = (lit) => `CREATE OR REPLACE FUNCTION "public"."e"() RETURNS "text" LANGUAGE "sql" AS $$ select E'${lit}' $$;\n`;
+    const remote = (lit) => `create or replace function public.e() returns text language sql as $function$ select E'${lit}' $function$;\n`;
+    expect(dropDumpLossyFunctions(remote("a\\'  b"), shadow("a\\'  b")).dropped).toEqual(['public.e()']);
+    expect(dropDumpLossyFunctions(remote("a\\' b"), shadow("a\\'  b")).dropped).toEqual([]);
+  });
+});
+
+describe('loadAllowlist — produto verbo × classe e GRANT × privilégio (Codex P2)', () => {
+  for (const entry of [
+    '^grant usage',
+    '^grant usage on schema',
+    '^revoke all privileges',
+    '^comment on view',
+    '^comment on schema',
+    '^alter view',
+    '^drop domain',
+    '^create collation',
+    '^alter default privileges',
+  ]) {
+    it(`recusa ${entry}`, () => {
+      expect(() => loadAllowlist(entry)).toThrow(/genérica demais/);
+    });
+  }
+
+  it('aceita entrada que nomeia o objeto', () => {
+    expect(loadAllowlist('^comment on view "public"\\."v_relatorio_x" is')).toHaveLength(1);
+    expect(loadAllowlist('^grant usage on schema "legacy_x" to')).toHaveLength(1);
+  });
+});
