@@ -87,7 +87,7 @@ jobs:
             --title "Card Condições — PR #${{ github.event.pull_request.number || github.run_id }}"
       - name: Upload Playwright HTML report + traces on failure
         if: failure()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: playwright-report-quote-conditions
           path: |
@@ -99,7 +99,7 @@ jobs:
       - name: Upload HTML diff preview
         if: failure()
         id: upload_preview
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: quote-conditions-visual-diff-preview
           path: visual-diff-report/
@@ -108,7 +108,7 @@ jobs:
       - name: Upload diff PNGs on failure
         if: failure()
         id: upload_diff
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: quote-conditions-visual-diffs
           path: diff-artifacts/
