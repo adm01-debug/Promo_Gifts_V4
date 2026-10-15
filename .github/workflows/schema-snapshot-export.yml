@@ -3,17 +3,21 @@ name: schema-snapshot-export
 # =============================================================================
 # Roda o script `scripts/export-schema-snapshot.mjs` em toda PR e no push para
 # `main`, publicando os artefatos gerados em `supabase/migrations-snapshot/`
-# (ALL_IN_ONE.sql, SCHEMA_LIVE.sql, SCHEMA_DRIFT.sql, SNAPSHOT_META.json).
+# (ALL_IN_ONE.sql, SCHEMA_LIVE.sql, SNAPSHOT_META.json) e o baseline do
+# db-schema-drift-check em `supabase/baseline/`.
 #
 # Semântica:
 #   - ALL_IN_ONE.sql SEMPRE é gerado (não depende de secrets).
-#   - SCHEMA_LIVE.sql e SCHEMA_DRIFT.sql só saem quando SUPABASE_ACCESS_TOKEN
+#   - SCHEMA_LIVE.sql e o baseline só saem quando SUPABASE_ACCESS_TOKEN
 #     e SUPABASE_DB_PASSWORD estão configurados (safe-by-default).
 #   - Em `schedule`: falha explicitamente se SUPABASE_ACCESS_TOKEN ausente —
 #     sem no-op verde (E84).
 #   - Job `commit-snapshot` (E84): commita o snapshot na branch fixa
 #     `bot/schema-snapshot` (force-push) e abre/reutiliza uma única PR.
 #     Roda apenas em `schedule` e `workflow_dispatch` quando secrets presentes.
+#   - Job `drift-gate` (2026-10-15): o export de schedule/dispatch só roda se
+#     db-schema-drift-check (reutilizável) passar com o baseline atual — senão
+#     o baseline novo absorveria drift. `force_rotate` (dispatch) pula a trava.
 #
 # 2026-09-27: paths filter em PR e push — 12min de snapshot só quando schema muda.
 # 2026-10-02: E84 — no-op guard em schedule + branch fixa bot/schema-snapshot.
@@ -39,6 +43,14 @@ on:
   schedule:
     - cron: '36 6 * * 1' # semanal, segunda 06:36 UTC (03:36 BRT) — E89: ≥20min after wraparound-monitor (06:15)
   workflow_dispatch:
+    inputs:
+      force_rotate:
+        description: >-
+          Gira o baseline mesmo com o drift-check vermelho (ex.: replay quebrado por
+          repair-only). Revise o diff do baseline na PR antes do merge.
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -53,12 +65,29 @@ defaults:
     shell: bash
 
 jobs:
+  # Baseline novo só depois de provar que o atual não tem drift: sem isto o
+  # dump semanal absorveria objeto criado fora de migration e o drift-check
+  # deixaria de acusá-lo. Sem baseline anterior (bootstrap) passa direto.
+  drift-gate:
+    name: Drift gate antes de girar o baseline
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/db-schema-drift-check.yml
+    with:
+      allow_missing_baseline: true
+    secrets: inherit
+
   export:
     name: Export schema snapshot
+    needs: drift-gate
     runs-on: ubuntu-24.04
     timeout-minutes: 10
-    # E27: SUPABASE_ACCESS_TOKEN não deve chegar a PRs de forks
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    # E27: SUPABASE_ACCESS_TOKEN não deve chegar a PRs de forks.
+    # drift-gate: skipped em PR/push; em schedule/dispatch tem de passar, salvo force_rotate.
+    if: >-
+      !cancelled() &&
+      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) &&
+      (needs.drift-gate.result == 'success' || needs.drift-gate.result == 'skipped' ||
+       (github.event_name == 'workflow_dispatch' && inputs.force_rotate))
     env:
       # Dump ao vivo (supabase db dump --linked) só em schedule/dispatch. Em PR e
       # push o pg_dump segurava AccessShareLock em todas as tabelas de produção por
@@ -84,14 +113,16 @@ jobs:
         with:
           version: 2.101.0
 
-      # E84: no-op guard — schedule sem credenciais é falha, não sucesso silencioso.
-      - name: Guard — secrets obrigatórios no schedule
-        if: github.event_name == 'schedule'
+      # E84: no-op guard — schedule/dispatch sem credenciais é falha, não sucesso
+      # silencioso (dispatch é o caminho para gerar baseline novo).
+      - name: Guard — secrets obrigatórios no schedule/dispatch
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         env:
           TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
         run: |
-          if [[ -z "${TOKEN:-}" ]]; then
-            echo "::error::SUPABASE_ACCESS_TOKEN não configurado. Schedule sem credenciais é erro, não no-op verde."
+          if [[ -z "${TOKEN:-}" || -z "${DB_PASSWORD:-}" ]]; then
+            echo "::error::SUPABASE_ACCESS_TOKEN/SUPABASE_DB_PASSWORD ausentes. Schedule/dispatch sem credenciais é erro, não no-op verde."
             echo "::error::Configure o secret em Settings → Secrets → Actions e rerun manual."
             exit 1
           fi
@@ -104,7 +135,10 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: schema-snapshot-${{ github.run_number }}
-          path: supabase/migrations-snapshot/
+          path: |
+            supabase/migrations-snapshot/
+            supabase/baseline/
+          if-no-files-found: ignore
           retention-days: 14
 
   # E84: commita snapshot na branch fixa bot/schema-snapshot e mantém ≤ 1 PR aberta.
@@ -121,9 +155,6 @@ jobs:
       pull-requests: write
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
-      SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
     steps:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -131,18 +162,35 @@ jobs:
           persist-credentials: false  # E32
           fetch-depth: 0
 
-      - name: Setup Node
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      # Reaproveita o dump do job export: um único pg_dump por execução em
+      # produção (antes este job refazia o dump inteiro).
+      - name: Baixa o snapshot do job export
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
-          node-version-file: .nvmrc
+          name: schema-snapshot-${{ github.run_number }}
+          path: ${{ runner.temp }}/snapshot
 
-      - name: Install Supabase CLI
-        uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v2
-        with:
-          version: 2.101.0
-
-      - name: Generate snapshot (for commit)
-        run: node scripts/export-schema-snapshot.mjs
+      # O download não apaga arquivos que já estão no checkout: troca o baseline
+      # só quando o export gerou um novo (senão ficariam dois baselines e o
+      # drift-check falha) e remove o SCHEMA_DRIFT.sql aposentado.
+      - name: Aplica o snapshot no checkout
+        env:
+          SNAP: ${{ runner.temp }}/snapshot
+        run: |
+          set -euo pipefail
+          # supabase/baseline/drift-allowlist.txt está versionado: o artifact sempre
+          # tem as duas pastas e a raiz dele é supabase/.
+          find "$SNAP" -maxdepth 2 -type f
+          cp -R "$SNAP/migrations-snapshot/." supabase/migrations-snapshot/
+          rm -f supabase/migrations-snapshot/SCHEMA_DRIFT.sql
+          if compgen -G "$SNAP/baseline/*_baseline_schema.sql" > /dev/null; then
+            mkdir -p supabase/baseline
+            find supabase/baseline -maxdepth 1 -type f \
+              \( -name '*_baseline_schema.sql' -o -name '*_ledger_versions.json' \) -delete
+            cp "$SNAP"/baseline/*_baseline_schema.sql "$SNAP"/baseline/*_ledger_versions.json supabase/baseline/
+          else
+            echo "::warning::Export sem baseline novo — baseline atual mantido."
+          fi
 
       - name: Credencial de push sem token em disco (E32)
         run: |
@@ -156,7 +204,8 @@ jobs:
           RUN_ID: ${{ github.run_id }}
         run: |
           set -euo pipefail
-          if ! git --no-pager diff --quiet -- supabase/migrations-snapshot/; then
+          if ! git --no-pager diff --quiet -- supabase/migrations-snapshot/ supabase/baseline/ \
+            || [ -n "$(git ls-files --others --exclude-standard -- supabase/baseline/)" ]; then
             echo "Snapshot mudou — commitando."
           else
             echo "::notice::Nenhuma mudança detectada no snapshot — nada a commitar."
@@ -169,7 +218,7 @@ jobs:
           # Cria ou reseta bot/schema-snapshot a partir do HEAD atual de main
           git checkout -B bot/schema-snapshot
 
-          git add supabase/migrations-snapshot/
+          git add -A supabase/migrations-snapshot/ supabase/baseline/
           WEEK=$(date -u +"%Y-W%V")
           git commit -m "chore(schema-snapshot): snapshot semanal $WEEK (run $RUN_ID)" \
             -m "Auto-gerado por schema-snapshot-export.yml (E84). Snapshot do schema canônico doufsxqlfjyuvxuezpln."
@@ -199,7 +248,7 @@ jobs:
           if [[ -n "$EXISTING" ]]; then
             echo "PR #$EXISTING já existe para bot/schema-snapshot — branch atualizada por force-push, PR reutilizada."
           else
-            PR_BODY="Snapshot semanal do schema canônico doufsxqlfjyuvxuezpln (run $RUN_ID, semana $WEEK). Arquivos: supabase/migrations-snapshot/ (ALL_IN_ONE.sql, SCHEMA_LIVE.sql, SCHEMA_DRIFT.sql, SNAPSHOT_META.json). Auto-gerado por schema-snapshot-export.yml (E84) — sempre <=1 PR aberta."
+            PR_BODY="Snapshot semanal do schema canônico doufsxqlfjyuvxuezpln (run $RUN_ID, semana $WEEK). Arquivos: supabase/migrations-snapshot/ (ALL_IN_ONE.sql, SCHEMA_LIVE.sql, SNAPSHOT_META.json) e supabase/baseline/ (baseline do db-schema-drift-check + versões do ledger no momento do dump). Auto-gerado por schema-snapshot-export.yml (E84) — sempre <=1 PR aberta."
             gh pr create \
               --base main \
               --head bot/schema-snapshot \

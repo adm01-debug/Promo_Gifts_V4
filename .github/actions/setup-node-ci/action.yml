@@ -5,7 +5,8 @@ description: >
   de invocar esta ação (GitHub Actions não consegue carregar uma action local
   sem o repositório já ter sido clonado).
   Cobre os steps de setup de ~90% dos workflows deste repo.
-  E90: inputs padronizados (install, ignore-scripts); ${{ inputs.* }} fora de run: (via env:).
+  E90: inputs padronizados (install, ignore-scripts); expressões de inputs fora de run: (via env:).
+  (Sem a sintaxe de expressão aqui: o runner avalia a description e falha ao carregar a action.)
 
 inputs:
   install:
@@ -40,12 +41,12 @@ runs:
 
     - name: Check lockfile sync
       if: inputs.install != 'false' && inputs.skip-install != 'true'
-      shell: sh
+      shell: bash
       run: node scripts/check-lockfile-sync.mjs
 
     - name: Install dependencies
       if: inputs.install != 'false' && inputs.skip-install != 'true'
-      shell: sh
+      shell: bash
       working-directory: ${{ inputs.working-directory }}
       env:
         IGNORE_SCRIPTS: ${{ inputs.ignore-scripts }}

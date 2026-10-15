@@ -74,6 +74,8 @@ e2e/                                           @adm01-debug
 # ============================================================
 supabase/migrations/                           @adm01-debug
 supabase/MIGRATIONS_SYNC_LOG.md               @adm01-debug
+supabase/baseline/                             @adm01-debug
+scripts/drift-baseline.mjs                     @adm01-debug
 docs/db/                                       @adm01-debug
 
 # ============================================================

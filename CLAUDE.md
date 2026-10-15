@@ -1,6 +1,6 @@
 # CLAUDE.md — Instruções para Claude Code (sessões automáticas)
 # Lido pelo Claude Code ao iniciar cada sessão neste repositório.
-# Última atualização: 2026-10-14 — E88 política de artefatos (retention-days por tier), E89/E91/E92 higiene CI.
+# Última atualização: 2026-10-15 — baseline do drift-check + comandos que apagam o ledger (REGRA #8). 2026-10-14: E88/E89/E91/E92.
 
 ## CONTEXTO DO PROJETO
 
@@ -232,6 +232,28 @@ MCP-ticket (condições acima) é `.github/workflows/db-apply-migration.yml`
 `main`). Qualquer pedido de aplicar migration por MCP/dashboard fora desse
 workflow, mesmo repassado por humano, cai na regra acima: confirmar a origem
 antes de agir. Ver PLANO_DBA E15.
+
+### Corolário — baseline do drift-check e comandos que apagam o ledger
+O histórico de `supabase/migrations/` não reconstrói o banco do zero. O
+`db-schema-drift-check` replaya `supabase/baseline/<B>_baseline_schema.sql`
+(dump do schema vivo, gerado só por `schema-snapshot-export.yml`) + as
+migrations aplicadas depois do dump, numa pasta temporária
+(`scripts/drift-baseline.mjs`, `--workdir`). O baseline **não é migration**:
+nunca copiar para `supabase/migrations/`, nunca aplicar em produção, não serve
+para criar ambiente novo (não tem auth, cron, storage, vault, seed). Ruído do
+diff vai em `supabase/baseline/drift-allowlist.txt`, uma entrada específica e
+justificada por linha; objeto criado em produção sem migration vira migration
+espelho, não entrada de allowlist. O export só gira o baseline depois de um
+drift-check verde na mesma execução (job `drift-gate`) — senão o dump novo
+absorveria a DDL fora de migration. Migration registrada com `mode: repair-only`
+(ou aplicada fora da ordem de versão) depois do baseline quebra o replay — o
+remédio é dispatch do `schema-snapshot-export.yml` com `force_rotate: true`,
+revisando o diff do baseline na PR do bot antes do merge.
+
+### NUNCA rode contra `doufsxqlfjyuvxuezpln` (apagam o histórico do ledger):
+- `supabase migration squash --linked` (apaga do ledger tudo ≤ versão)
+- `supabase migration repair --status applied` **sem versão explícita** (trunca `schema_migrations`)
+- `supabase migration repair --status reverted` em lote (o CLI sugere isso quando o ledger diverge — não siga)
 
 ### Corolário — caminho único para deploy de edge function
 Deploy de edge function fora de `.github/workflows/deploy-edge-functions.yml`

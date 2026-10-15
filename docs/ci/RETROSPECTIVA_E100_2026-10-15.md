@@ -31,7 +31,7 @@ Base: `main` @ `df8b43a` (2026-10-14)
 | E31 | Criar GitHub App para PRs de bot (CI_APP_ID/CI_APP_PRIVATE_KEY) | Média |
 | E36 | Edge function rollback (depende de E34 completo + App) | Baixa |
 | E37 | Decisão: manter/remover `deploy-vercel.yml` (VERCEL_TOKEN não existe) | Baixa |
-| E39 | Rotacionar/revogar chave legada `pqpdolkaeqlyzpdpbizo` + resolver alerta #1 | **Alta (P0)** |
+| E39 | Rotacionar/revogar chave do projeto legado (não use) `pqpdolkaeqlyzpdpbizo` + resolver alerta #1 | **Alta (P0)** |
 | E62 | Gerar baselines visuais faltantes via _update-snapshots.yml dispatch | Alta |
 | E69 | Ruleset de `main`: exigir 1 aprovação, bypass só por PR | Alta |
 | E70 | Environment `Production`: desabilitar auto-aprovação | Alta |
