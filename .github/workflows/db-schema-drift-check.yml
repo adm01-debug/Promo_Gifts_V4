@@ -191,6 +191,21 @@ jobs:
             if [ "$rc" -eq 124 ] || [ "$rc" -eq 137 ]; then
               echo "::error::supabase db diff excedeu 9 min e foi interrompido (rc=$rc)."
             fi
+            # Replay quebrado no shadow: quase sempre uma migration registrada
+            # depois do dump cujo SQL já estava no baseline (repair-only de DDL
+            # feita fora do fluxo) ou aplicada fora da ordem de versão. O
+            # remédio é um baseline novo, não editar a migration.
+            last=$(grep -o 'Applying migration [^ ]*' /tmp/diff.stderr | tail -1 || true)
+            if [ -n "$last" ]; then
+              {
+                echo "## Replay do baseline falhou"
+                echo
+                echo "Último passo: \`$last\`."
+                echo "Se a migration foi registrada com \`mode: repair-only\` depois do baseline (DDL já"
+                echo "existia no dump) ou aplicada fora da ordem de versão, gere um baseline novo:"
+                echo "\`schema-snapshot-export.yml\` (workflow_dispatch) e merge da PR de bot/schema-snapshot."
+              } >> "$GITHUB_STEP_SUMMARY"
+            fi
             echo "::error::supabase db diff falhou:"; cat /tmp/diff.stderr; exit 1
           fi
           node scripts/drift-baseline.mjs filter-diff --diff /tmp/schema_drift.sql \

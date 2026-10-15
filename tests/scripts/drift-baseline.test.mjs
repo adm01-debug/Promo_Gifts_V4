@@ -142,6 +142,26 @@ describe('findSecrets', () => {
   });
 });
 
+describe('findSecrets — anon key pública', () => {
+  const jwtFor = (claims) => [
+    'eyJ' + 'hbGciOiJIUzI1NiJ9',
+    Buffer.from(JSON.stringify(claims)).toString('base64url'),
+    'abcdefghijklmnop',
+  ].join('.');
+
+  it('aceita a anon key (role anon) embutida no schema, como em get_edge_anon_key()', () => {
+    const sql = `  SELECT '${jwtFor({ iss: 'supabase', ref: 'doufsxqlfjyuvxuezpln', role: 'anon' })}'::text;`;
+    expect(findSecrets(sql)).toEqual([]);
+  });
+
+  it('bloqueia service_role, inclusive na mesma linha de uma anon key', () => {
+    const anon = jwtFor({ role: 'anon' });
+    const service = jwtFor({ role: 'service_role' });
+    expect(findSecrets(`select '${service}';`).map((h) => h.kind)).toEqual(['jwt']);
+    expect(findSecrets(`select '${anon}', '${service}';`).map((h) => h.kind)).toEqual(['jwt']);
+  });
+});
+
 describe('maxNumericVersion', () => {
   it('ignora versões não numéricas do ledger', () => {
     expect(maxNumericVersion(['20261015140000', '20260623_bugalert1', '20261013180000'])).toBe('20261015140000');

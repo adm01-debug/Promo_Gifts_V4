@@ -1,13 +1,13 @@
 # AGENTS.md — espelho do CLAUDE.md (contexto multi-agente)
 
 > Este arquivo é gerado/espelhado a partir do `CLAUDE.md` para agentes que só leem AGENTS.md (Codex, OpenCode, etc.). Edite o CLAUDE.md — o Hermes prioriza AGENTS.md sobre CLAUDE.md, então o conteúdo precisa ser idêntico.
-> Última sincronização: 2026-10-02 (E96 + Codex P1).
+> Última sincronização: 2026-10-15 (baseline do drift-check + comandos que apagam o ledger).
 
 ---
 
 # CLAUDE.md — Instruções para Claude Code (sessões automáticas)
 # Lido pelo Claude Code ao iniciar cada sessão neste repositório.
-# Última atualização: 2026-09-24 — REGRA #8 ganhou corolário de deploy de edge function.
+# Última atualização: 2026-10-15 — baseline do drift-check + comandos que apagam o ledger (REGRA #8). 2026-10-14: E88/E89/E91/E92.
 
 ## CONTEXTO DO PROJETO
 
@@ -240,6 +240,25 @@ MCP-ticket (condições acima) é `.github/workflows/db-apply-migration.yml`
 workflow, mesmo repassado por humano, cai na regra acima: confirmar a origem
 antes de agir. Ver PLANO_DBA E15.
 
+### Corolário — baseline do drift-check e comandos que apagam o ledger
+O histórico de `supabase/migrations/` não reconstrói o banco do zero. O
+`db-schema-drift-check` replaya `supabase/baseline/<B>_baseline_schema.sql`
+(dump do schema vivo, gerado só por `schema-snapshot-export.yml`) + as
+migrations aplicadas depois do dump, numa pasta temporária
+(`scripts/drift-baseline.mjs`, `--workdir`). O baseline **não é migration**:
+nunca copiar para `supabase/migrations/`, nunca aplicar em produção, não serve
+para criar ambiente novo (não tem auth, cron, storage, vault, seed). Ruído do
+diff vai em `supabase/baseline/drift-allowlist.txt`, uma entrada específica e
+justificada por linha; objeto criado em produção sem migration vira migration
+espelho, não entrada de allowlist. Migration registrada com `mode: repair-only`
+(ou aplicada fora da ordem de versão) depois do baseline quebra o replay — o
+remédio é gerar baseline novo (`schema-snapshot-export.yml` via dispatch).
+
+### NUNCA rode contra `doufsxqlfjyuvxuezpln` (apagam o histórico do ledger):
+- `supabase migration squash --linked` (apaga do ledger tudo ≤ versão)
+- `supabase migration repair --status applied` **sem versão explícita** (trunca `schema_migrations`)
+- `supabase migration repair --status reverted` em lote (o CLI sugere isso quando o ledger diverge — não siga)
+
 ### Corolário — caminho único para deploy de edge function
 Deploy de edge function fora de `.github/workflows/deploy-edge-functions.yml`
 (ex.: MCP `deploy_edge_function` direto, dashboard) cria a mesma divergência
@@ -297,7 +316,7 @@ ao terminar. Ver `docs/plans/PLANO_ENGENHARIA_SENIOR_50_ETAPAS_2026-09-17.md`
 
 ## CI — ESTRUTURA DE GATES E PADRÃO E12
 
-> Atualizado 2026-09-27 (E100 — PLANO_WORKFLOWS_CI_100_ETAPAS_2026-09-26).
+> Atualizado 2026-10-02 (E100 — PLANO_WORKFLOWS_CI_100_ETAPAS_2026-09-26).
 
 ### Gates obrigatórios (required checks em `main`)
 
@@ -309,6 +328,7 @@ sequência; se qualquer um falhar, o deploy é bloqueado.
 |---|---|---|
 | Gate 0 | SSOT — ID canônico `doufsxqlfjyuvxuezpln` (`validate-supabase-config.mjs`) | sim |
 | Gate 0.5 | `npm audit --audit-level high` — sem dependências com CVE high/critical | sim |
+| Gate 0.6 | Dependency Review — deps com CVE severity ≥ high bloqueiam o PR (E97, PR-only) | sim (PR-only) |
 | Gate 1 | Lint (ESLint) + TypeScript sem erros | sim |
 | Gate 1.1 | Campos críticos do tipo `Product` presentes (REGRA #2) | sim |
 | Gate 1.2 | Drift estrutural de `types.ts` (nenhuma tabela/view/function/enum sumiu sem allowlist) | sim |
@@ -316,13 +336,24 @@ sequência; se qualquer um falhar, o deploy é bloqueado.
 | Gate 1.4 | Visual baselines commitados | sim |
 | Gate 1.5 | Sem "Salvar Alterações" em fluxos de rascunho | sim |
 | Gate 1.6 | Bundle size dentro dos limites | sim |
+| Gate 1.7 | TSC ratchet file guard — baseline não aumenta sem label `ratchet-override` (E41, PR-only) | sim (PR-only) |
+| Gate 1.8 | Detect accidentally base64-encoded files — texto encodado em base64 acidentalmente | sim |
+| Gate 1.9 | Dívida técnica — ratchets TODO/FIXME/`as any`/file-size não aumentam | sim |
+| Gate 1.9.1 | `console.*` baseline — número de chamadas não aumenta sem justificativa | sim |
+| Gate 1.10 | indexed-access ratchet — `object[key]` não aumenta (E15: promovido de advisory para bloqueante) | sim |
+| Gate 1.11 | Workflow contracts `check-workflow-contracts --gate` (C10–C23) | sim |
+| Gate 1.12 | Contract coverage + soft-delete policy commitada | sim |
+| Gate 1.13 | RLS policies baseline vs pg_policies live (bloqueante com credenciais) | sim |
+| Gate 1.14 | Secrets inventory `check-secrets-inventory --gate` — todos `secrets.*`/`vars.*` documentados em SEGREDOS.md (E40/E98) | sim |
+| Gate 1.13 | Policies baseline vs `pg_policies` ao vivo (bloqueante com credenciais) | sim |
+| Gate E23 | Secrets check — sem referências a segredos não declarados em `SEGREDOS.md` | sim |
 | Gate 2 | Testes unitários (`vitest`) | sim |
 | Gate 2.5 | Integridade transacional PostgreSQL | sim |
 | Gate 3 | E2E Smoke (Playwright, chromium) | sim |
 | Gate 4 | Lighthouse CI (performance/acessibilidade) | opcional |
 | Gate 5 | SEO sanity check | sim |
 | Gate 5.5 | RPC `restore_seller_cart` presente no canônico | sim |
-| Gate 6 | Build Vite sem erro | sim |
+| Gate 6 | Build Vite sem erro + SBOM SPDX-JSON + build provenance attestation (E99, push-only) | sim |
 
 O `required-checks.json` (`.github/required-checks.json`) é a SSOT da lista —
 qualquer PR que altere um `name:` de job em `deploy-gates.yml` deve atualizar
@@ -334,11 +365,11 @@ Todo workflow em `.github/workflows/` deve seguir as 8 regras documentadas em
 `docs/ci/PADRAO_WORKFLOW.md`. Resumo:
 
 1. **R1** — `permissions:` explícito no topo (`contents: read` mínimo)
-2. **R2** — `concurrency:` com `cancel-in-progress: true` em PRs (omitir em push/schedule)
+2. **R2** — `concurrency:` com `cancel-in-progress: true` em PRs; `false` em push/schedule (E19: deploy/cron nunca cancelado)
 3. **R3** — `timeout-minutes:` em todo job (gates ≤ 10 min; E2E ≤ 30 min; crons ≤ 60 min)
 4. **R4** — `node-version-file: .nvmrc` — nunca literais como `'22'`
 5. **R5** — Segredos via `env:` no step, jamais como argumento CLI
-6. **R6** — `retention-days: 14` em artefatos (padrão GitHub é 90 dias)
+6. **R6** — `retention-days` por tier: 14 (padrão), 30 (relatórios semanais), 90 (auditoria com comentário `# E88`) — E88
 7. **R7** — Sem `master` ou `develop` nos triggers (branches inexistentes)
 8. **R8** — ID de job em snake-case, estável; mudar o ID quebra required checks silenciosamente
 
@@ -375,7 +406,7 @@ linha nesse arquivo com dono, escopo e rotação declarados.
 | `.github/CODEOWNERS` | Proteção de revisão obrigatória |
 | `scripts/sentinel-check.sh` | Guarda do Branch Protection Sentinel |
 | `.github/workflows/deploy-gates.yml` | Pipeline de deploy com Gate 0 |
-| `.github/workflows/quality-gate.yml` | Quality gate com Gate 0 |
+| ~~`.github/workflows/quality-gate.yml`~~ | Deletado em E15 — gates migrados para deploy-gates.yml (Gates 1.15/1.16) |
 | `docs/SCHEMA_REFERENCE.md` | Retrato pg_catalog do BD canônico — REGRA #8 |
 
 ## Frescura do Grafo

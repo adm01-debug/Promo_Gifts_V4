@@ -40,11 +40,27 @@ const SECRET_PATTERNS = [
   ['private-key', /-----BEGIN [A-Z ]*PRIVATE KEY-----/],
 ];
 
+// A anon key é pública por desenho (vai no bundle do front) e o schema vivo
+// a embute em public.get_edge_anon_key(); JWT com qualquer outra role
+// (service_role, supabase_admin…) ou ilegível continua bloqueando.
+export function isPublicAnonJwt(token) {
+  try {
+    const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64url').toString('utf8'));
+    return payload?.role === 'anon';
+  } catch {
+    return false;
+  }
+}
+
+const JWT_GLOBAL = new RegExp(SECRET_PATTERNS[0][1].source, 'g');
+
 export function findSecrets(sql) {
   const hits = [];
   sql.split('\n').forEach((line, i) => {
     for (const [name, re] of SECRET_PATTERNS) {
-      if (re.test(line)) hits.push({ line: i + 1, kind: name });
+      if (!re.test(line)) continue;
+      if (name === 'jwt' && (line.match(JWT_GLOBAL) ?? []).every(isPublicAnonJwt)) continue;
+      hits.push({ line: i + 1, kind: name });
     }
   });
   return hits;

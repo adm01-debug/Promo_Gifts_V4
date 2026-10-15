@@ -147,6 +147,14 @@ function dumpLiveSchema(ledger) {
     return { ok: false };
   }
   const sql = r.stdout;
+  // O dump leva minutos: migration aplicada no meio entraria no schema mas
+  // não na lista de versões, e o drift-check a replayaria em cima dela.
+  const after = readLedger();
+  const before = appliedVersionsFromLedger(ledger).sort(byCodeUnit).join(',');
+  if (!after || appliedVersionsFromLedger(after).sort(byCodeUnit).join(',') !== before) {
+    err('Ledger mudou (ou ficou ilegível) durante o dump — nada gravado; rode de novo.');
+    return { ok: false };
+  }
   const generatedAt = new Date().toISOString();
   const secrets = findSecrets(sql);
   if (secrets.length) {
