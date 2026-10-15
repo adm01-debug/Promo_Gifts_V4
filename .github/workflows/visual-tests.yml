@@ -65,23 +65,46 @@ jobs:
       run: |
         rm -rf e2e-artifacts/
         rm -rf playwright-report/
+        rm -rf playwright-report-authed/
         rm -rf test-results/
 
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
 
-    - name: Run Playwright Visual Tests
+    # Specs que NÃO precisam de sessão: baseline canônico em chromium-public (sem credenciais).
+    # O optimized-image-visual dá test.skip fora de chromium-public; 99-auth-ui usa storageState vazio.
+    - name: Run Playwright Visual Tests (públicos — chromium-public)
       # E36: Removido --update-snapshots (incondicional) e --update-snapshots=missing.
       # Baselines devem estar commitados (E43). Specs sem baseline falham
       # explicitamente, forçando commit da baseline antes de aprovar o PR.
-      run: npx playwright test --project=chromium-public --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} e2e/flows/99-auth-ui-baseline.spec.ts e2e/flows/supplier-comparison-visual.spec.ts e2e/flows/31-promoflix-player.spec.ts e2e/tooltips-a11y.spec.ts e2e/optimized-image-visual.spec.ts e2e/routes/app/replenishment-grid-visual.spec.ts e2e/routes/app/novelty-grid-visual.spec.ts e2e/routes/app/novelty-card-variations.spec.ts e2e/flows/voice-tooltip.spec.ts e2e/product-card-visual-regression.spec.ts e2e/catalog/product-card-badges-visual.spec.ts e2e/catalog/product-card-to-superfilter.spec.ts e2e/catalog/swatch-picker-v2-visual-baseline.spec.ts e2e/catalog/swatch-picker-v2-focus-and-quickview.spec.ts e2e/catalog/superfiltro-toolbar-actions-alignment.spec.ts e2e/flows/03d-superfiltro-toolbar-alignment.spec.ts e2e/admin/stock-dashboard-visual.spec.ts e2e/admin/stock-dashboard-layout.spec.ts e2e/admin/stock-health-badges.spec.ts e2e/quotes/quote-builder-scroll-and-sidebar.spec.ts
+      run: npx playwright test --project=chromium-public --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} e2e/flows/99-auth-ui-baseline.spec.ts e2e/optimized-image-visual.spec.ts e2e/catalog/swatch-picker-v2-visual-baseline.spec.ts e2e/catalog/swatch-picker-v2-focus-and-quickview.spec.ts
       env:
         CI: true
+
+    # Specs que exigem login (requireAuth/loginAs ou skip por E2E_USER_*): rodam em
+    # chromium-authed, que depende do projeto `setup` (gera e2e/.auth/storageState.json).
+    # E21 (modo estrito) permanece: sem E2E_USER_* em CI o setup e os specs falham.
+    # E33 havia removido E2E_USER_* deste workflow por engano — estes specs autenticam.
+    # Os segredos entram só neste passo (nível de step), não no workflow inteiro.
+    - name: Run Playwright Visual Tests (autenticados — chromium-authed)
+      if: ${{ !cancelled() }}
+      run: npx playwright test --project=chromium-authed --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} e2e/flows/supplier-comparison-visual.spec.ts e2e/flows/31-promoflix-player.spec.ts e2e/tooltips-a11y.spec.ts e2e/routes/app/replenishment-grid-visual.spec.ts e2e/routes/app/novelty-grid-visual.spec.ts e2e/routes/app/novelty-card-variations.spec.ts e2e/flows/voice-tooltip.spec.ts e2e/product-card-visual-regression.spec.ts e2e/catalog/product-card-badges-visual.spec.ts e2e/catalog/product-card-to-superfilter.spec.ts e2e/catalog/superfiltro-toolbar-actions-alignment.spec.ts e2e/flows/03d-superfiltro-toolbar-alignment.spec.ts e2e/admin/stock-dashboard-visual.spec.ts e2e/admin/stock-dashboard-layout.spec.ts e2e/admin/stock-health-badges.spec.ts e2e/quotes/quote-builder-scroll-and-sidebar.spec.ts
+      env:
+        CI: true
+        # Relatório separado: o HTML reporter limpa a pasta de saída e sobrescreveria o do passo anterior.
+        PLAYWRIGHT_HTML_REPORT: playwright-report-authed
+        VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
+        VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
+        E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+        E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
 
     - name: Upload Playwright report
       if: always()
       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
       with:
         name: playwright-report-shard-${{ matrix.shardIndex }}
-        path: playwright-report/
+        path: |
+          playwright-report/
+          playwright-report-authed/
         retention-days: 14
+        if-no-files-found: warn
