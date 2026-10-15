@@ -6,7 +6,7 @@ Criado no incidente 2026-10-13 (Fase 9, etapa 99) — caso real que motivou
 este runbook: token Cloudflare Stream (`cfat_...`) exposto em texto claro no
 `COMMENT ON TABLE public.video_import_queue` desde ~2026-06-07, encontrado e
 sanitizado na migration
-`20261013120000_incidente20261013_fase5_permissoes_auditoria.sql` (etapa 60).
+`20261013170913_incidente20261013_fase5_permissoes_auditoria.sql` (etapa 60).
 
 ## Sintomas / onde procurar
 

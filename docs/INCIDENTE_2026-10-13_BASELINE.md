@@ -67,7 +67,7 @@ ORDER BY table_name, grantee, privilege_type;
   desde ~2026-06-07 (histórico de correções do próprio comentário mostra a
   data).
 - Comentário sanitizado nesta sessão (migration
-  `20261013120000_incidente20261013_fase5_permissoes_auditoria.sql`).
+  `20261013170913_incidente20261013_fase5_permissoes_auditoria.sql`).
 - **Pendência (decisão do PO):** rotacionar o token Cloudflare real — não
   executado por esta sessão (serviço externo, fora do escopo de uma sessão
   automatizada no Supabase).

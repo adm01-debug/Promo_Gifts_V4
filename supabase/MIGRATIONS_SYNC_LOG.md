@@ -781,6 +781,42 @@ da execução e consulta read-only ao catálogo/ledger, sem reaplicar SQL.
 - O job `receipt` falhou **somente no push**: GitHub recusou a criação da branch pelo GitHub App sem permissão `workflows`. O status global vermelho dessa tentativa não significa falha de DDL. Este recibo é uma recuperação documental posterior, não sucesso retroativo do job.
 - Limites: não certifica cadastro pela UI/GoTrue, promoção administrativa E2E nem conclusão do plano inteiro. Não reaplicar a migration para corrigir documentação. Nenhuma permissão, credencial, workflow, dado de negócio ou SQL foi alterado nesta recuperação.
 
+## Recibos — reconciliação B2 do incidente 2026-10-13 (2026-10-15)
+
+Em 2026-10-13 dez migrations foram aplicadas via MCP `apply_migration` e o
+`migration repair` exigido por `docs/db/POLITICA_DDL.md` (c) nunca foi feito
+porque a sessão não tinha o CLI. O ledger registrou as versões corretas; o repo
+ficou divergente: 3 arquivos com timestamp diferente do ledger (`120000`,
+`120500`, `170914`), 4 versões do ledger sem arquivo (`agente2_*`) e 2 arquivos
+(`141300`, `141700`) cujo conteúdo não era o que foi aplicado.
+
+Correção feita **só no repo** (nenhuma escrita em produção, nenhum `repair`):
+os arquivos foram renomeados para a versão do ledger e o corpo de cada um foi
+substituído pelos `statements` do ledger, verificados por md5
+(`md5(array_to_string(statements, chr(10)))` = md5 do trecho abaixo da linha
+sentinela `-- >>> statements do ledger (byte-exato) abaixo desta linha <<<`).
+O que foi aplicado por `execute_sql`, fora de migration, foi conferido em
+`pg_policies`/`cron.job` e registrado em `20261015120000` (idempotente). O que
+nunca foi aplicado ficou pendente. Versões comentadas originais:
+`git show 1b59d0f:supabase/migrations/<arquivo antigo>`.
+
+| versão | sha256 arquivo | md5 statements | executor | método | data UTC | pós-check | status |
+|---|---|---|---|---|---|---|---|
+| `20261013170913` | `a2adba57c9266be0cf4baeedc1ede7739822792afbeb28e9537932c4cfa28a5f` | `58a805b0099333a30853aa7fcf590eb3` | sessão de agente via MCP `apply_migration` (incidente 2026-10-13, aprovado pelo PO) | MCP-ticket | 2026-10-13 17:09:13 UTC (version do ledger) | ledger read-only em 2026-10-15: version presente; md5 dos statements = arquivo (espelho byte-exato) | aplicada; recibo recuperado documentalmente (B2) |
+| `20261013171010` | `81051f1498ae4db5eebbc79d60bc4e03bb027cb6568024cd3a74636c0b218995` | `3c482b22ea795a6ef1a4932676072e41` | sessão de agente via MCP `apply_migration` (incidente 2026-10-13, aprovado pelo PO) | MCP-ticket | 2026-10-13 17:10:10 UTC (version do ledger) | ledger read-only em 2026-10-15: version presente; md5 dos statements = arquivo (espelho byte-exato) | aplicada; recibo recuperado documentalmente (B2) |
+| `20261013171045` | `5eb3c2a36a1047f74744c55aa9315b4d0b4b7d752fe462c05be687db7cba873c` | `91aebf2a4160c4cbb53585252bca098b` | sessão de agente via MCP `apply_migration` (incidente 2026-10-13, aprovado pelo PO) | MCP-ticket | 2026-10-13 17:10:45 UTC (version do ledger) | ledger read-only em 2026-10-15: version presente; md5 dos statements = arquivo (espelho byte-exato) | aplicada; recibo recuperado documentalmente (B2) |
+| `20261013171417` | `0101e13ec88484d676a27a06c20dd150663ef0a9c674080e53d61f3d916de871` | `a5d293eb6cc4ea9d7566c52d77767f71` | sessão de agente via MCP `apply_migration` (incidente 2026-10-13, aprovado pelo PO) | MCP-ticket | 2026-10-13 17:14:17 UTC (version do ledger) | ledger read-only em 2026-10-15: version presente; md5 dos statements = arquivo (corpo equivalente (igual sem comentários/whitespace)) | aplicada; recibo recuperado documentalmente (B2) |
+| `20261013171421` | `475f4c8bb8f69f8362a3cd5669ca2996b6a3507593443de504ec3b43d09c69ff` | `0ea8d898e48650bfdbec56bf55b0d6ba` | sessão de agente via MCP `apply_migration` (incidente 2026-10-13, aprovado pelo PO) | MCP-ticket | 2026-10-13 17:14:21 UTC (version do ledger) | ledger read-only em 2026-10-15: version presente; md5 dos statements = arquivo (corpo equivalente (igual sem comentários/whitespace)) | aplicada; recibo recuperado documentalmente (B2) |
+| `20261013171425` | `66139cd9c74bf5a35ccac0039d17dd72638bd611c08aa78eca7bee364fbf0e80` | `8c304df5987e36fe93f80511c37b8ce7` | sessão de agente via MCP `apply_migration` (incidente 2026-10-13, aprovado pelo PO) | MCP-ticket | 2026-10-13 17:14:25 UTC (version do ledger) | ledger read-only em 2026-10-15: version presente; md5 dos statements = arquivo (corpo equivalente (igual sem comentários/whitespace)) | aplicada; recibo recuperado documentalmente (B2) |
+| `20261013171541` | `2cbcb98ce25a8e18a6281e92d2241b109833583a6f0caf184cd6f48903a684ed` | `ccb5b4481bced39454dca6d845601d54` | sessão de agente via MCP `apply_migration` (incidente 2026-10-13, aprovado pelo PO) | MCP-ticket | 2026-10-13 17:15:41 UTC (version do ledger) | ledger read-only em 2026-10-15: version presente; md5 dos statements = arquivo (espelho byte-exato) | aplicada; recibo recuperado documentalmente (B2) |
+| `20261013171601` | `ecfb305f84c43541120033d5db3036913e097d442416e4471d4426b78647939d` | `cfb42430d4cae9f09b7e6b793b4bd557` | sessão de agente via MCP `apply_migration` (incidente 2026-10-13, aprovado pelo PO) | MCP-ticket | 2026-10-13 17:16:01 UTC (version do ledger) | ledger read-only em 2026-10-15: version presente; md5 dos statements = arquivo (espelho byte-exato) | aplicada; recibo recuperado documentalmente (B2) |
+| `20261013171953` | `8b613d7b662bede2dafb4329c121cee242173b5793f7d2c9ca9bce30caf4218c` | `071dfc8fb3c630b1f74eec00c0b859dd` | sessão de agente via MCP `apply_migration` (incidente 2026-10-13, aprovado pelo PO) | MCP-ticket | 2026-10-13 17:19:53 UTC (version do ledger) | ledger read-only em 2026-10-15: version presente; md5 dos statements = arquivo (espelho byte-exato) | aplicada; recibo recuperado documentalmente (B2) |
+| `20261013172634` | `b656cab7fef38893b5f7cf69dd4437344a584d60695ab8953948ecb67aa12aae` | `f7107c430d32ddbdb92967f6c26dbddd` | sessão de agente via MCP `apply_migration` (incidente 2026-10-13, aprovado pelo PO) | MCP-ticket | 2026-10-13 17:26:34 UTC (version do ledger) | ledger read-only em 2026-10-15: version presente; md5 dos statements = arquivo (espelho byte-exato) | aplicada; recibo recuperado documentalmente (B2) |
+| `20261013180000` | `fdbca4eb8bafca06d32b405034caeb004f7e9e4d678c7b01aa53214b6e75a7fa` | — | — (aguardando `workflow_dispatch` E15 pelo PO) | E15 | — | pendente: DROP de `trg_sync_primary_image_url`/`fn_sync_primary_image_url` (trigger confirmado vivo em 2026-10-15) | **pendente — não aplicada** |
+| `20261013180500` | `65d7094cab084bf2570f1aed8f7dda8a3277fefe157a135ee66f32c599271966` | — | — (aguardando `workflow_dispatch` E15 pelo PO) | E15 | — | pendente: DROP das 14 tabelas de backup/arquivo vencidas (14/14 confirmadas vivas em 2026-10-15) | **pendente — não aplicada** |
+| `20261015120000` | `5f794574d2a223e64eb6943a31780861cd6d2fa6cc19b91ea12ff0336dbc5c38` | — | — (aguardando `workflow_dispatch` E15 pelo PO) | E15 | — | pendente: registro idempotente do estado aplicado fora de migration em 2026-10-13 (policy `variant_stocks_select_org` + 7 `cron.alter_job`); no-op em produção | **pendente — não aplicada** |
+| `20261015120500` | `9ce9122a4e732c214142bae90741a7fcf6b53f2ab686017e9124af1079491d53` | — | — (aguardando `workflow_dispatch` E15 pelo PO) | E15 | — | pendente: `system_settings`: 1 policy de SELECT por role + DROP de `test_agente2_probe` (corrige a seção 7 original, que quebraria leitura anônima) | **pendente — não aplicada** |
+
 ## Gate de CI (E48)
 
 `scripts/check-migrations-sync-log-gate.mjs` (padrão de graceful-degradation de
