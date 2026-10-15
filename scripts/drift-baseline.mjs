@@ -472,17 +472,77 @@ function normalizeHeader(text) {
   return text.replaceAll('"', '').replace(/\s+/g, ' ').trim().toLowerCase();
 }
 
+// Colapsa o espaçamento do corpo SEM tocar em literais: 'a  b' e 'a b' são
+// valores diferentes (e identificadores entre aspas e dollar-quotes internos
+// idem), então só o espaço fora de string/identificador/comentário é normalizado.
+// Comentário de linha é copiado até o fim da linha e o \n é preservado, para o
+// que vem depois dele não virar comentário.
+export function collapseSqlWhitespace(text) {
+  let out = '';
+  let i = 0;
+  let pendingSpace = false;
+  const emit = (chunk) => {
+    if (pendingSpace && out && !out.endsWith('\n')) out += ' ';
+    pendingSpace = false;
+    out += chunk;
+  };
+  while (i < text.length) {
+    const c = text[i];
+    if (c === "'" || c === '"') {
+      let j = i + 1;
+      while (j < text.length) {
+        if (text[j] === c) {
+          if (text[j + 1] === c) j += 2;
+          else break;
+        } else j += 1;
+      }
+      emit(text.slice(i, j + 1));
+      i = j + 1;
+    } else if (c === '$') {
+      const tag = /^\$(?:[A-Za-z_][A-Za-z_0-9]*)?\$/.exec(text.slice(i));
+      const prev = text[i - 1] ?? '';
+      if (tag && !/[A-Za-z0-9_$]/.test(prev)) {
+        const end = text.indexOf(tag[0], i + tag[0].length);
+        const stop = end < 0 ? text.length : end + tag[0].length;
+        emit(text.slice(i, stop));
+        i = stop;
+      } else {
+        emit(c);
+        i += 1;
+      }
+    } else if (c === '-' && text[i + 1] === '-') {
+      let j = text.indexOf('\n', i);
+      if (j < 0) j = text.length;
+      emit(text.slice(i, j).trimEnd());
+      out += '\n';
+      i = j + 1;
+    } else if (c === '/' && text[i + 1] === '*') {
+      const end = text.indexOf('*/', i + 2);
+      const stop = end < 0 ? text.length : end + 2;
+      emit(text.slice(i, stop));
+      i = stop;
+    } else if (/\s/.test(c)) {
+      pendingSpace = true;
+      i += 1;
+    } else {
+      emit(c);
+      i += 1;
+    }
+  }
+  return out.trim();
+}
+
 function normalizeFunction(statement) {
   const header = statement.text.slice(0, statement.asIndex);
   const signature = functionSignature(header);
   if (!signature) return null;
-  const body = statement.text
-    .slice(statement.bodyStart, statement.close)
-    .split('\n')
-    .filter((l) => !l.startsWith('--'))
-    .join('\n')
-    .replace(/\s+/g, ' ')
-    .trim();
+  const body = collapseSqlWhitespace(
+    statement.text
+      .slice(statement.bodyStart, statement.close)
+      .split('\n')
+      .filter((l) => !l.startsWith('--'))
+      .join('\n'),
+  );
   const head = normalizeHeader(header).replace(/^create (?:or replace )?(function|procedure)/, 'create $1');
   return { signature, text: `${head} as $$ ${body} $$` };
 }

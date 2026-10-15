@@ -1,3 +1,4 @@
+// @vitest-environment node
 // Testa scripts/drift-baseline.mjs: montagem da pasta de replay do
 // db-schema-drift-check (baseline + migrations aplicadas depois do dump),
 // filtro de ruído do diff e varredura de segredos do dump.
@@ -11,6 +12,7 @@ import {
   REPLAY_SEED_NAME,
   REPLAY_SEED_SQL,
   byCodeUnit,
+  collapseSqlWhitespace,
   dropDumpLossyFunctions,
   extractFunctionStatements,
   filterDiff,
@@ -562,5 +564,31 @@ create policy "z" on "public"."t" for select to anon using (true);
 
   it('extractFunctionStatements ignora CREATE FUNCTION sem corpo em dollar-quote', () => {
     expect(extractFunctionStatements("CREATE FUNCTION f() RETURNS int AS 'select 1' LANGUAGE sql;")).toEqual([]);
+  });
+});
+
+describe('collapseSqlWhitespace — literais preservados', () => {
+  it('normaliza espaço fora de literal e mantém o de dentro', () => {
+    expect(collapseSqlWhitespace("SELECT   'a  b'\n  FROM   t")).toBe("SELECT 'a  b' FROM t");
+    expect(collapseSqlWhitespace('SELECT "col  x"   , 1')).toBe('SELECT "col  x" , 1');
+    expect(collapseSqlWhitespace('x := $q$a  b$q$;   y')).toBe('x := $q$a  b$q$; y');
+  });
+
+  it('mantém o \\n depois de comentário de linha', () => {
+    expect(collapseSqlWhitespace('a  -- nota   aqui  \n  b')).toBe('a -- nota   aqui\nb');
+  });
+
+  it('literal com espaço diferente mantém a função no resíduo (Codex P1)', () => {
+    const mk = (lit) => `CREATE OR REPLACE FUNCTION "public"."f"() RETURNS "text"
+    LANGUAGE "sql"
+    AS $$ SELECT '${lit}' $$;`;
+    const mkDiff = (lit) => `CREATE OR REPLACE FUNCTION public.f()
+ RETURNS text
+ LANGUAGE sql
+AS $function$ SELECT '${lit}' $function$
+;
+`;
+    expect(dropDumpLossyFunctions(mkDiff('a  b'), mk('a b')).dropped).toEqual([]);
+    expect(dropDumpLossyFunctions(mkDiff('a b'), mk('a b')).dropped).toEqual(['public.f()']);
   });
 });
