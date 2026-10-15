@@ -73,7 +73,13 @@ jobs:
       - name: Roda checagem de wraparound/TOAST/sequências
         id: check
         continue-on-error: true
-        run: node scripts/wraparound-monitor-check.mjs --out=/tmp/wraparound.json
+        # E56: captura exit_code para tri-state (0=ok, 1=alerta, 2=inconclusivo)
+        run: |
+          set +e
+          node scripts/wraparound-monitor-check.mjs --out=/tmp/wraparound.json
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
 
       - name: Upload report artifact
         if: always()
@@ -157,5 +163,10 @@ jobs:
 
       - name: Não quebra o build
         if: steps.check.outcome == 'failure'
+        # E56: tri-state — distingue falha real (exit 1) de inconclusivo (exit 2)
         run: |
-          echo "::warning::Checagem de wraparound/TOAST/sequências encontrou objeto(s) acima do limiar ou ficou inconclusiva — ver issue/artefato desta run. Job não quebra build (advisory, não gate)."
+          if [ "${{ steps.check.outputs.exit_code }}" = "2" ]; then
+            echo "::warning::Checagem de wraparound/TOAST/sequências inconclusiva (exit 2) — sem SUPABASE_ACCESS_TOKEN ou ops.wraparound_monitor_log ausente (E33 pendente). Nenhum objeto sinalizado."
+          else
+            echo "::warning::Checagem de wraparound/TOAST/sequências encontrou objeto(s) acima do limiar — ver issue/artefato desta run. Job não quebra build (advisory, não gate)."
+          fi
