@@ -726,6 +726,12 @@ describe('dropDumpLossyFunctions — mudanças posteriores ao CREATE não são e
     expect(dropped(`/* ${create} */\n`)).toEqual([]);
   });
 
+  it('comentário de bloco aninhado só fecha no `*/` mais externo', () => {
+    expect(dropped(`/* externo /* interno */ ${create} */\n`)).toEqual([]);
+    // Depois do fechamento externo o CREATE volta a ser código.
+    expect(dropped(`/* externo /* interno */ ainda comentário */\n${create}`)).toEqual(['public.g()']);
+  });
+
   it('atributos depois do corpo ($$ … $$ SECURITY DEFINER;) são comparados', () => {
     const attrs = (a) => `CREATE FUNCTION "public"."g"() RETURNS void LANGUAGE sql AS $$ select 1 $$ ${a};\n`;
     expect(dropped(attrs('SECURITY DEFINER'))).toEqual([]);

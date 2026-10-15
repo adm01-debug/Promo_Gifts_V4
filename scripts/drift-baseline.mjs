@@ -521,8 +521,19 @@ export function codeMask(sql) {
       const j = sql.indexOf('\n', i);
       i = j < 0 ? n : j;
     } else if (c === '/' && sql[i + 1] === '*') {
-      const end = sql.indexOf('*/', i + 2);
-      i = end < 0 ? n : end + 2;
+      // Comentários de bloco aninham no PostgreSQL: só o `*/` do nível mais externo fecha.
+      let depth = 1;
+      let j = i + 2;
+      while (j < n && depth > 0) {
+        if (sql[j] === '/' && sql[j + 1] === '*') {
+          depth += 1;
+          j += 2;
+        } else if (sql[j] === '*' && sql[j + 1] === '/') {
+          depth -= 1;
+          j += 2;
+        } else j += 1;
+      }
+      i = j;
     } else if (c === '$' && !/[A-Za-z0-9_$]/.test(sql[i - 1] ?? '')) {
       DOLLAR_TAG.lastIndex = i;
       const tag = DOLLAR_TAG.exec(sql);
