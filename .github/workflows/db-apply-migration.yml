@@ -279,8 +279,13 @@ jobs:
             --pos-check="job post-check da run ${{ github.run_id }} confirmou a version no ledger" \
             --status="aplicada"
 
+      - name: Credencial de push sem token em disco (E32)
+        run: |
+          # persist-credentials:false nao grava token; o helper le GIT_PUSH_TOKEN so no passo de push.
+          git config --local credential.helper '!f() { test "$1" = get || exit 0; echo username=x-access-token; echo "password=${GIT_PUSH_TOKEN}"; }; f'
       - name: Abre PR com o recibo
         env:
+          GIT_PUSH_TOKEN: ${{ github.token }}
           APPROVED_BY: ${{ inputs.approved_by }}
         run: |
           set -euo pipefail

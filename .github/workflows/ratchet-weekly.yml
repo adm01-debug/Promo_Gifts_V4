@@ -128,9 +128,14 @@ jobs:
             git diff .tsc-ratchet-baseline bundle-size-baseline.json | head -40
           fi
 
+      - name: Credencial de push sem token em disco (E32)
+        run: |
+          # persist-credentials:false nao grava token; o helper le GIT_PUSH_TOKEN so no passo de push.
+          git config --local credential.helper '!f() { test "$1" = get || exit 0; echo username=x-access-token; echo "password=${GIT_PUSH_TOKEN}"; }; f'
       - name: Commitar, publicar branch e abrir PR
         if: steps.diff.outputs.has_changes == 'true'
         env:
+          GIT_PUSH_TOKEN: ${{ github.token }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           BRANCH="chore/ratchet-lower-$(date -u +%Y%m%d-%H%M)"

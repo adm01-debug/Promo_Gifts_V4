@@ -91,9 +91,14 @@ jobs:
           npx playwright test e2e/visual/quote-freight-block.spec.ts \
             --project=chromium-public --update-snapshots --reporter=list
 
+      - name: Credencial de push sem token em disco (E32)
+        run: |
+          # persist-credentials:false nao grava token; o helper le GIT_PUSH_TOKEN so no passo de push.
+          git config --local credential.helper '!f() { test "$1" = get || exit 0; echo username=x-access-token; echo "password=${GIT_PUSH_TOKEN}"; }; f'
       - name: Comitar baselines e abrir PR
         if: ${{ github.event.inputs.safe_mode == 'false' || (steps.dryrun.outcome == 'failure' && steps.classify.outputs.kind == 'visual') }}
         env:
+          GIT_PUSH_TOKEN: ${{ github.token }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SAFE_MODE_RAW: ${{ github.event.inputs.safe_mode }}
           TARGET_BRANCH: ${{ github.event.inputs.branch }}

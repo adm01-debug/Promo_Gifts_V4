@@ -139,9 +139,14 @@ jobs:
       - name: Generate snapshot (for commit)
         run: node scripts/export-schema-snapshot.mjs
 
+      - name: Credencial de push sem token em disco (E32)
+        run: |
+          # persist-credentials:false nao grava token; o helper le GIT_PUSH_TOKEN so no passo de push.
+          git config --local credential.helper '!f() { test "$1" = get || exit 0; echo username=x-access-token; echo "password=${GIT_PUSH_TOKEN}"; }; f'
       - name: Commit snapshot to bot/schema-snapshot (force-push)
         id: commit
         env:
+          GIT_PUSH_TOKEN: ${{ github.token }}
           RUN_ID: ${{ github.run_id }}
         run: |
           set -euo pipefail

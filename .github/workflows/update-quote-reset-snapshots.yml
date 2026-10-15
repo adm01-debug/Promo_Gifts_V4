@@ -77,8 +77,13 @@ jobs:
             --update-snapshots \
             --reporter=list
 
+      - name: Credencial de push sem token em disco (E32)
+        run: |
+          # persist-credentials:false nao grava token; o helper le GIT_PUSH_TOKEN so no passo de push.
+          git config --local credential.helper '!f() { test "$1" = get || exit 0; echo username=x-access-token; echo "password=${GIT_PUSH_TOKEN}"; }; f'
       - name: Commit & push baselines
         env:
+          GIT_PUSH_TOKEN: ${{ github.token }}
           INPUT_COMMIT_MESSAGE: ${{ inputs.commit_message }}
           INPUT_BRANCH: ${{ inputs.branch || github.ref_name }}
         run: |
