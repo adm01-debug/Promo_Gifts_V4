@@ -9,8 +9,8 @@ de UI nem de schema executado — a fábrica só **propõe** SQL; quem aplica é
 
 - `[IMPLEMENTADO]` — existe hoje no código; a evidência é `caminho:linha`.
 - `[PLANEJADO]` — decidido (Q7) mas ainda **não** existe; nada abaixo de `[PLANEJADO]` está no ar.
-- Toda linha deste documento foi conferida no código desta branch (base `main` em `a9c8bd9c4`,
-  13/10/2026) — os `caminho:linha` abaixo foram reconferidos nessa base.
+- Toda linha deste documento foi conferida no código desta branch (base `main` em `1b59d0f57`,
+  15/10/2026) — os `caminho:linha` abaixo foram reconferidos nessa base.
 
 ---
 
