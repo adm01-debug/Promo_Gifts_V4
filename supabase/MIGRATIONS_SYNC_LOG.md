@@ -771,6 +771,7 @@ da execução e consulta read-only ao catálogo/ledger, sem reaplicar SQL.
 | `20261005124501` | `466c2c0a51c186581c64eca247e2ad0b173f9598a476cfbb4de058b8b93eae99` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug) | E15 | 2026-10-05 21:18:43 UTC | job post-check da run 37374730545 confirmou a version no ledger | aplicada |
 | `20261005124500` | `e3225c1a3238947bac7c233f5960630f3f88ecea7b756bdf63875e833571cedb` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug) | E15 | 2026-10-05 21:13:23 UTC | job post-check da run 37373118681 confirmou a version no ledger | aplicada |
 | `20261005130000` | `406650663259774deaa1058f19bf0c64a44e132e76d5e29d0a892e383d61bf26` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug) | E15 | 2026-10-05 20:45:57 UTC | job post-check da run 37370061047 confirmou a version no ledger | aplicada |
+| `20261013180000` | `ff317b5c6a377245ede1a8a9bee8023d6f11fc9cd12300076e4ffafd7ff56079` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug (PO, autorizado no chat da sessão 01EB6TjhPiZDUWE9etaH7LqH)) | E15 | 2026-10-15 13:34:01 UTC | job post-check da run 38738153585 confirmou a version no ledger | aplicada |
 
 ### Evidências do recibo `20260922170000`
 
