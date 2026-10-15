@@ -40,6 +40,8 @@ jobs:
   # Verificação antecipada de secrets antes de disparar a matriz
   secrets_check:
     name: Verify E2E secrets
+    # E82 — PR usa mock-auth; secrets só são necessários em push/dispatch
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-24.04
     timeout-minutes: 2
     permissions:
@@ -62,6 +64,8 @@ jobs:
   e2e_matrix:
     name: E2E · ${{ matrix.suite }}
     needs: [secrets_check]
+    # E82 — roda em PR (secrets_check skipped) ou em push/dispatch (secrets_check success)
+    if: always() && (needs.secrets_check.result == 'success' || needs.secrets_check.result == 'skipped')
     runs-on: ubuntu-24.04
     # R3 — timeout por job
     timeout-minutes: 20
@@ -141,11 +145,13 @@ jobs:
               e2e/quotes/quote-summary-action-buttons-states.spec.ts
             project: chromium-public
     # R5 — secrets via env:, nunca como argumento CLI
+    # E82 — PR: E2E_MOCK_AUTH=1 (sem credenciais reais); push/dispatch: credenciais reais
     env:
       CI: 'true'
       FORCE_COLOR: '0'
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
+      E2E_MOCK_AUTH: ${{ github.event_name == 'pull_request' && '1' || '0' }}
       E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
       E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
     steps:
