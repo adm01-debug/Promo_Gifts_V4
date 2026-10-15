@@ -831,3 +831,55 @@ AS $function$ SELECT 1 $function$
     expect(out.dropped).toEqual(['public.d()']);
   });
 });
+
+describe('dropDumpLossyFunctions — DROP sem argumentos com nome entre aspas (Codex P1)', () => {
+  const create = `CREATE OR REPLACE FUNCTION "public"."my f"() RETURNS void LANGUAGE "sql" AS $$ select 1 $$;\n`;
+  const remote = `create or replace function public."my f"() returns void language sql as $function$ select 1 $function$;\n`;
+  const dropped = (shadow) => dropDumpLossyFunctions(remote, shadow).dropped;
+
+  it('controle: sem DROP posterior a função é removida do resíduo', () => {
+    expect(dropped(create)).toEqual(['public."my f"()']);
+  });
+
+  it('`DROP FUNCTION public."my f";` invalida o nome inteiro, não só até o primeiro espaço', () => {
+    expect(dropped(`${create}DROP FUNCTION public."my f";\n`)).toEqual([]);
+    expect(dropped(`${create}DROP FUNCTION IF EXISTS "public"."my f" CASCADE;\n`)).toEqual([]);
+  });
+
+  it('DROP com vários alvos separados por vírgula invalida cada um', () => {
+    expect(dropped(`${create}DROP FUNCTION public.outra, public."my f";\n`)).toEqual([]);
+    expect(dropped(`${create}DROP FUNCTION public."my f"(), public.outra(int);\n`)).toEqual([]);
+  });
+
+  it('`;` dentro de identificador entre aspas não encerra o comando', () => {
+    expect(dropped(`${create}DROP FUNCTION public."my f", public."a;b";\n`)).toEqual([]);
+  });
+
+  it('outro nome com prefixo parecido não é afetado', () => {
+    expect(dropped(`${create}DROP FUNCTION public."my f2";\n`)).toEqual(['public."my f"()']);
+  });
+
+  it('ALTER … OWNER TO com argumentos aninhados continua inócuo', () => {
+    const nested = `CREATE OR REPLACE FUNCTION "public"."n"("a" numeric) RETURNS void LANGUAGE "sql" AS $$ select 1 $$;\n`;
+    const rn = `create or replace function public.n(a numeric) returns void language sql as $function$ select 1 $function$;\n`;
+    expect(
+      dropDumpLossyFunctions(rn, `${nested}ALTER FUNCTION "public"."n"("a" numeric(10,2)) OWNER TO "postgres";\n`).dropped,
+    ).toEqual(['public.n(a numeric)']);
+  });
+});
+
+describe('loadAllowlist — privilégios novos e entrada sem identificador (Codex P2)', () => {
+  for (const entry of ['^grant maintain', '^revoke maintain', '^grant set on parameter', '^drop foreign data wrapper']) {
+    it(`recusa ${entry}`, () => {
+      expect(() => loadAllowlist(entry)).toThrow(/genérica demais/);
+    });
+  }
+
+  it('exige ao menos um identificador entre aspas, mesmo que nenhuma sonda case', () => {
+    expect(() => loadAllowlist('^grant algum_privilegio_futuro on table')).toThrow(/nenhum identificador entre aspas/);
+  });
+
+  it('aceita entrada que cita o objeto', () => {
+    expect(loadAllowlist('^grant maintain on table "public"\\."tabela_x" to')).toHaveLength(1);
+  });
+});

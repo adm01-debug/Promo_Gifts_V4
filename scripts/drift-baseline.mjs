@@ -476,7 +476,7 @@ const PROBE_OBJECT_KINDS = [
   'constraint', 'collation', 'aggregate', 'operator', 'event trigger', 'rule', 'language', 'server',
 ];
 const PROBE_PRIVILEGES = [
-  'select', 'insert', 'update', 'delete', 'truncate', 'references', 'trigger', 'usage', 'execute', 'create',
+  'maintain', 'set', 'alter system', 'select', 'insert', 'update', 'delete', 'truncate', 'references', 'trigger', 'usage', 'execute', 'create',
   'connect', 'temporary', 'all', 'all privileges',
 ];
 for (const kind of PROBE_OBJECT_KINDS) {
@@ -510,6 +510,11 @@ export function loadAllowlist(text) {
     .filter((l) => l && !l.startsWith('#'))
     .map((l) => {
       const re = new RegExp(l);
+      // A lista de sondas é finita (PG17 trouxe MAINTAIN; haverá outros): toda entrada
+      // precisa citar um identificador entre aspas, isto é, nomear um objeto.
+      if (!/"[^"]+"/.test(l)) {
+        throw new Error(`drift-allowlist: entrada genérica demais (${l}) — nenhum identificador entre aspas; nomeie o objeto`);
+      }
       const probe = ALLOWLIST_PROBES.find((p) => re.test(p));
       if (probe !== undefined || re.test('')) {
         throw new Error(`drift-allowlist: entrada genérica demais (${l}) — casaria "${probe ?? ''}"; nomeie o objeto`);
@@ -774,6 +779,70 @@ function normalizeFunction(statement) {
 
 // shadowSql = baseline sanitizado + migrations replayadas, na ordem em que o
 // shadow as aplicou: a última definição de cada assinatura é a vigente.
+// Índice do `;` que termina o comando (fora de literal/identificador entre aspas) ou
+// o tamanho do texto, se não houver.
+function statementEnd(text) {
+  let i = 0;
+  while (i < text.length) {
+    const c = text[i];
+    if (c === ';') return i;
+    if (c === "'" || c === '"') i = quotedEnd(text, i) + 1;
+    else i += 1;
+  }
+  return text.length;
+}
+
+// Fim (exclusivo) do identificador qualificado que começa em `start`: segmentos sem
+// aspas ou entre aspas (`public."my f"`), separados por `.`.
+function qualifiedNameEnd(text, start) {
+  let i = start;
+  for (;;) {
+    if (text[i] === '"') i = quotedEnd(text, i) + 1;
+    else while (i < text.length && !/[\s(,.;"]/.test(text[i])) i += 1;
+    if (text[i] === '.') i += 1;
+    else return i;
+  }
+}
+
+// Alvos de um `DROP/ALTER FUNCTION`: nome (texto cru), se há lista de argumentos e o
+// que vem depois do alvo. DROP aceita `a, b(int), c`; ALTER tem um alvo só.
+function routineTargets(statement, single) {
+  const targets = [];
+  const skipSpace = (from) => {
+    let j = from;
+    while (j < statement.length && /\s/.test(statement[j])) j += 1;
+    return j;
+  };
+  let i = skipSpace(0);
+  for (;;) {
+    const end = qualifiedNameEnd(statement, i);
+    if (end === i) break;
+    const nameText = statement.slice(i, end);
+    i = skipSpace(end);
+    let hasArgs = false;
+    if (statement[i] === '(') {
+      hasArgs = true;
+      let depth = 0;
+      while (i < statement.length) {
+        const c = statement[i];
+        if (c === "'" || c === '"') i = quotedEnd(statement, i) + 1;
+        else {
+          if (c === '(') depth += 1;
+          else if (c === ')') depth -= 1;
+          i += 1;
+          if (depth === 0) break;
+        }
+      }
+    }
+    targets.push({ nameText, hasArgs, tail: statement.slice(i) });
+    if (single) break;
+    i = skipSpace(i);
+    if (statement[i] !== ',') break;
+    i = skipSpace(i + 1);
+  }
+  return targets;
+}
+
 export function dropDumpLossyFunctions(diffSql, shadowSql) {
   const current = new Map();
   for (const statement of extractFunctionStatements(shadowSql)) {
@@ -789,25 +858,21 @@ export function dropDumpLossyFunctions(diffSql, shadowSql) {
   while ((touch = touchesFunction.exec(shadowSql)) !== null) {
     if (!mask[touch.index + (touch[0].length - touch[0].trimStart().length)]) continue;
     // Só o próprio comando: `DROP FUNCTION IF EXISTS f CASCADE;` (sem lista de
-    // argumentos) não pode puxar o `(` de um comando posterior.
+    // argumentos) não pode puxar o `(` de um comando posterior. O `;` e os nomes são
+    // lidos respeitando aspas (`public."my f"`), e o DROP aceita vários alvos
+    // separados por vírgula.
     const rest = shadowSql.slice(touch.index + touch[0].length);
-    const terminator = rest.indexOf(';');
-    const statement = terminator < 0 ? rest : rest.slice(0, terminator);
-    const afterIfExists = statement.replace(/^if[ \t]+exists[ \t]+/i, '');
-    const open = afterIfExists.indexOf('(');
-    const nameText = open < 0 ? afterIfExists.trim().split(/[ \t\r\n,]/)[0] : afterIfExists.slice(0, open);
-    const name = normalizeHeader(nameText);
-    if (!name) continue;
-    // `ALTER … OWNER TO` é inócuo; qualquer outra forma tira o nome do mapa.
-    const close = open < 0 ? -1 : afterIfExists.indexOf(')', open);
-    const ownerOnly =
-      touch[1].toLowerCase() === 'alter' &&
-      close > 0 &&
-      /^owner[ \t]+to[ \t]/i.test(afterIfExists.slice(close + 1).trimStart());
-    if (ownerOnly) continue;
-    // Sem lista de argumentos, o DROP vale para todas as sobrecargas do nome.
-    for (const signature of [...current.keys()]) {
-      if (signature.startsWith(`${name}(`) || signature.startsWith(`public.${name}(`)) current.delete(signature);
+    const statement = rest.slice(0, statementEnd(rest)).replace(/^if[ \t]+exists[ \t]+/i, '');
+    const isAlter = touch[1].toLowerCase() === 'alter';
+    for (const target of routineTargets(statement, isAlter)) {
+      const name = normalizeHeader(target.nameText);
+      if (!name) continue;
+      // `ALTER … OWNER TO` é inócuo; qualquer outra forma tira o nome do mapa.
+      if (isAlter && target.hasArgs && /^owner[ \t]+to[ \t]/i.test(target.tail.trimStart())) continue;
+      // Sem lista de argumentos, o DROP vale para todas as sobrecargas do nome.
+      for (const signature of [...current.keys()]) {
+        if (signature.startsWith(`${name}(`) || signature.startsWith(`public.${name}(`)) current.delete(signature);
+      }
     }
   }
   const dropped = [];
