@@ -63,7 +63,7 @@ jobs:
           OTHER=$(echo "$CHANGED" \
             | grep -vF "tests/utils/tailwindRings.ts" \
             | grep -vF "src/pages/magazine/components/PagesRail.tsx" \
-            | grep -c . || true)
+            | grep -c . || true)  # ok: grep -c exits 1 quando 0 matches — 0 é resultado válido
           if [ "${OTHER:-0}" -gt "0" ]; then
             IDS="M1,M2,M3,M4,M5,M6"
           fi
