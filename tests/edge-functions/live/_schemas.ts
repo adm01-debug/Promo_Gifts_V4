@@ -50,6 +50,21 @@ export const catalogListSchema = z.union([
   z.object({ results: z.array(z.unknown()) }).passthrough(),
 ]);
 
+/**
+ * materials-api (action "groups"): sucesso = { data: { groups: [...], count }, success: true }
+ * (consumido por src/services/materialService.ts via `result.data`). Com o banco
+ * externo não configurado devolve { data: [], _unconfigured: true } (200).
+ */
+export const materialsGroupsSchema = z.union([
+  z
+    .object({
+      data: z.object({ groups: z.array(z.unknown()), count: z.number() }).passthrough(),
+      success: z.literal(true),
+    })
+    .passthrough(),
+  z.object({ data: z.array(z.unknown()), _unconfigured: z.literal(true) }).passthrough(),
+]);
+
 /** Relatório de auditoria/dry-run: objeto com algum campo de resumo. */
 export const auditReportSchema = z.object({}).passthrough();
 
