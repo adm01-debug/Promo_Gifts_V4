@@ -308,6 +308,29 @@ jobs:
       # Não precisa de secrets — lê .github/workflows/ diretamente via fs.
       - name: Gate E89 — Cron spacing ≥ 20 min entre workflows privilegiados (bloqueante)
         run: node scripts/ci-cron-table.mjs --min-spacing 20
+      # E095 — CORS snapshot: buildPublicCorsHeaders proibido em funções autenticadas;
+      # sem literal 'Access-Control-Allow-Origin: *' em supabase/functions/.
+      - name: Gate E95 — CORS snapshot (buildPublicCorsHeaders em funções auth + literal *) (bloqueante)
+        run: |
+          set -euo pipefail
+          fail=0
+          for f in supabase/functions/bulk-random-passwords/index.ts \
+                   supabase/functions/audit-suite/index.ts \
+                   supabase/functions/e2e-cleanup/index.ts; do
+            count=$(grep -c "buildPublicCorsHeaders" "$f" || true)
+            if [ "$count" -gt 0 ]; then
+              echo "FAIL: buildPublicCorsHeaders encontrado em $f ($count vez(es))"
+              fail=1
+            fi
+          done
+          literal=$(grep -rl "'Access-Control-Allow-Origin': '\*'" supabase/functions/ || true)
+          if [ -n "$literal" ]; then
+            echo "FAIL: literal 'Access-Control-Allow-Origin: *' em:"
+            echo "$literal"
+            fail=1
+          fi
+          [ "$fail" -eq 0 ] || exit 1
+          echo "OK: CORS snapshot limpo"
 
   unit-tests:
     name: Gate 2 - Unit Tests
