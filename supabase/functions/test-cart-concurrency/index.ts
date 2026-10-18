@@ -9,6 +9,7 @@
  */
 import { createClient } from "npm:@supabase/supabase-js@2.49.4";
 import { getCorsHeaders } from "../_shared/cors.ts";
+import { authorize } from "../_shared/authorize.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -18,13 +19,17 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: getCorsHeaders(req) });
   }
 
+  // E024: exigir role dev
+  const authResult = await authorize(req, { requireRole: 'dev' });
+  if (!authResult.ok) return authResult.response;
+
   const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
 
   // 1. Cria usuário temporário para satisfazer FK seller_carts.seller_id → auth.users
   const testEmail = `ci-cart-concurrency-${Date.now()}@test.internal`;
   const { data: authData, error: authErr } = await supabase.auth.admin.createUser({
     email: testEmail,
-    password: "ci-test-password-2026",
+    password: (() => { const b = new Uint8Array(18); crypto.getRandomValues(b); return Array.from(b, x => x.toString(16).padStart(2, '0')).join(''); })(),  // E024: senha aleatória
     email_confirm: true,
   });
 

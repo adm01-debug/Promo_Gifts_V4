@@ -81,7 +81,7 @@ jobs:
 
       - name: Run pdf-dialog spec (chromium-authed)
         if: ${{ github.event.inputs.update_snapshots != 'true' }}
-        run: npx playwright test e2e/flows/pdf-dialog.spec.ts --project=chromium-authed --retries=2
+        run: npx playwright test e2e/flows/pdf-dialog.spec.ts --project=chromium-authed --retries=0
 
       - name: Update snapshots (chromium-authed)
         if: ${{ github.event.inputs.update_snapshots == 'true' }}

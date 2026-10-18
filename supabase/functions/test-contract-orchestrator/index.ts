@@ -3,6 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { encodeHex } from "https://deno.land/std@0.224.0/encoding/hex.ts";
 import { buildPublicCorsHeaders } from "../_shared/cors.ts";
 import { resolveCredential } from "../_shared/credentials.ts";
+import { authorize } from "../_shared/authorize.ts";
 
 
 const corsHeaders = buildPublicCorsHeaders({ allowMethods: "POST, OPTIONS" });
@@ -18,6 +19,10 @@ async function hmacSign(payload: string, secret: string): Promise<string> {
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+
+  // E026: exigir role dev — sem auth = 401
+  const authResult = await authorize(req, { requireRole: 'dev' });
+  if (!authResult.ok) return authResult.response;
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -66,14 +71,7 @@ Deno.serve(async (req) => {
       // Usar o mesmo segredo já resolvido para assinar (consistente com o endpoint mockado).
       const signature = "sha256=" + await hmacSign(JSON.stringify(payload), SIM_BYPASS);
 
-      
-      // Criar endpoint de teste se não existir
-      await supabase.from("inbound_webhook_endpoints").upsert({
-        slug: "test-automated",
-        active: true,
-        hmac_secret_ref: "SIMULATION_BYPASS_KEY" // Apontando para a chave que inserimos
-      }, { onConflict: "slug" });
-
+      // E026: endpoint de teste deve existir via migration, não provisionado em runtime
       const inboundRes = await fetch(`${supabaseUrl}/functions/v1/webhook-inbound?slug=test-automated`, {
         method: "POST",
         headers: { 

@@ -73,7 +73,7 @@ jobs:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     uses: ./.github/workflows/db-schema-drift-check.yml
     with:
-      allow_missing_baseline: true
+      allow_missing_baseline: false
     secrets: inherit
 
   export:
@@ -131,6 +131,56 @@ jobs:
       - name: Generate snapshot
         run: node scripts/export-schema-snapshot.mjs
 
+      - name: Export event triggers snapshot (E036)
+        if: env.SUPABASE_DB_PASSWORD != ''
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          bases=(supabase/baseline/*_baseline_schema.sql)
+          if [ "${#bases[@]}" -ne 1 ]; then
+            echo "::notice::Sem baseline SQL gerado — pulando snapshot de event triggers."
+            exit 0
+          fi
+          fname="${bases[0]##*/}"
+          B="${fname%_baseline_schema.sql}"
+          DB_URL="postgresql://postgres:${SUPABASE_DB_PASSWORD}@db.${SUPABASE_PROJECT_REF}.supabase.co:5432/postgres"
+          psql "$DB_URL" -t -A -c \
+            "SELECT COALESCE(json_agg(t ORDER BY t.evtname),'[]'::json) FROM (SELECT evtname,evtevent,evtenabled,evtfoid::regproc::text AS evtfunc FROM pg_event_trigger) t;" \
+            | tr -d '\n' > /tmp/event_triggers.json
+          node -e "JSON.parse(require('fs').readFileSync('/tmp/event_triggers.json','utf8')); console.log('JSON válido');"
+          cp /tmp/event_triggers.json "supabase/baseline/${B}_event_triggers.json"
+          count=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/event_triggers.json','utf8')).length)")
+          echo "::notice::${count} event trigger(s) exportados → ${B}_event_triggers.json"
+
+      - name: Export cron jobs snapshot (E037)
+        if: env.SUPABASE_DB_PASSWORD != ''
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          bases=(supabase/baseline/*_baseline_schema.sql)
+          if [ "${#bases[@]}" -ne 1 ]; then
+            echo "::notice::Sem baseline SQL gerado — pulando snapshot de cron jobs."
+            exit 0
+          fi
+          fname="${bases[0]##*/}"
+          B="${fname%_baseline_schema.sql}"
+          DB_URL="postgresql://postgres:${SUPABASE_DB_PASSWORD}@db.${SUPABASE_PROJECT_REF}.supabase.co:5432/postgres"
+          # E037: cron.job (pg_cron) — falha silenciosa se extensão ausente
+          psql "$DB_URL" -t -A -c \
+            "SELECT COALESCE(json_agg(t ORDER BY t.jobname),'[]'::json) FROM (SELECT jobid::text,jobname,schedule,command,nodename,active FROM cron.job) t;" \
+            2>/tmp/cron_err.txt | tr -d '\n' > /tmp/cron_jobs.json || {
+            if grep -q 'does not exist\|schema "cron"' /tmp/cron_err.txt 2>/dev/null; then
+              echo '[]' > /tmp/cron_jobs.json
+              echo "::notice::cron schema ausente — snapshot vazio gerado."
+            else
+              cat /tmp/cron_err.txt >&2; exit 1
+            fi
+          }
+          node -e "JSON.parse(require('fs').readFileSync('/tmp/cron_jobs.json','utf8')); console.log('JSON válido');"
+          cp /tmp/cron_jobs.json "supabase/baseline/${B}_cron_jobs.json"
+          count=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/cron_jobs.json','utf8')).length)")
+          echo "::notice::${count} cron job(s) exportados → ${B}_cron_jobs.json"
+
       - name: Upload snapshot artifacts
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
@@ -186,8 +236,14 @@ jobs:
           if compgen -G "$SNAP/baseline/*_baseline_schema.sql" > /dev/null; then
             mkdir -p supabase/baseline
             find supabase/baseline -maxdepth 1 -type f \
-              \( -name '*_baseline_schema.sql' -o -name '*_ledger_versions.json' \) -delete
+              \( -name '*_baseline_schema.sql' -o -name '*_ledger_versions.json' \
+                 -o -name '*_event_triggers.json' -o -name '*_cron_jobs.json' \) -delete
             cp "$SNAP"/baseline/*_baseline_schema.sql "$SNAP"/baseline/*_ledger_versions.json supabase/baseline/
+            # E036/E037: copia snapshots de event triggers e cron jobs quando presentes
+            compgen -G "$SNAP/baseline/*_event_triggers.json" > /dev/null && \
+              cp "$SNAP"/baseline/*_event_triggers.json supabase/baseline/ || true
+            compgen -G "$SNAP/baseline/*_cron_jobs.json" > /dev/null && \
+              cp "$SNAP"/baseline/*_cron_jobs.json supabase/baseline/ || true
           else
             echo "::warning::Export sem baseline novo — baseline atual mantido."
           fi

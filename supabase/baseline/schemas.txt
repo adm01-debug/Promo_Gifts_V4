@@ -1,0 +1,12 @@
+# Schemas de aplicação verificados pelo db-schema-drift-check e exportados pelo
+# schema-snapshot-export. Edite aqui quando criar ou remover um schema — os dois
+# workflows lêem este arquivo e ficam sempre em sincronia.
+# NÃO inclua: storage, vault, auth, extensions (gerenciados pelo Supabase Platform).
+public
+analytics
+api
+cf_recon
+classification_audit
+internal
+prod_audit
+supplier_stricker
