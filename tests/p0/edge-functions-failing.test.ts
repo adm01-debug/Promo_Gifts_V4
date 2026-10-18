@@ -30,7 +30,7 @@ describe("P0 — Edge functions com falha", () => {
   });
 
   // ─── full-op-diagnostics (já corrigido em P0.2 — manter como regressão) ──
-  it.skip("full-op-diagnostics: retorna 4 checks server-side com sucesso", async () => {
+  it.todo("full-op-diagnostics: retorna 4 checks server-side com sucesso", async () => {
     // TODO(P0): validar o shape após o fix de catch unknown.
     const ok: EdgeFnResponseSpec = {
       status: 200,
@@ -90,25 +90,14 @@ describe("P0 — Edge functions com falha", () => {
   });
 
   // ─── connections-auto-test ─────────────────────────────────────────────
-  it.skip("connections-auto-test: roda 5 conexões em paralelo sem timeout global", async () => {
-    // TODO(P0): cobrir refactor para usar castSupabaseClient adapter.
-    expect(true).toBe(true);
-  });
+  it.skip("connections-auto-test: roda 5 conexões em paralelo sem timeout global");
 
   // ─── e2e-cleanup ───────────────────────────────────────────────────────
-  it.skip("e2e-cleanup: usa service role e remove apenas usuários de teste (@e2e.test)", async () => {
-    // TODO(P0): garantir guarda de domínio para nunca apagar usuários reais.
-    expect(true).toBe(true);
-  });
+  it.todo("e2e-cleanup: usa service role e remove apenas usuários de teste (@e2e.test)");
 
   // ─── force-global-logout ───────────────────────────────────────────────
-  it.skip("force-global-logout: invalida sessão de TODOS os usuários quando flag set", async () => {
-    expect(true).toBe(true);
-  });
+  it.todo("force-global-logout: invalida sessão de TODOS os usuários quando flag set");
 
   // ─── full-op-diagnostics (regressão de tipos) ──────────────────────────
-  it.skip("nenhuma edge function vaza `error: unknown` no response", async () => {
-    // TODO(P0): grep de produção — nenhum response.error deve ser objeto vazio.
-    expect(true).toBe(true);
-  });
+  it.todo("nenhuma edge function vaza `error: unknown` no response");
 });

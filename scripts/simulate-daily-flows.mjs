@@ -38,6 +38,7 @@ const args = new Map(
 );
 const SCALE = Math.max(1, Number(args.get("scale") || 1));
 const JSON_OUT = args.get("json");
+const OUT_DIR = args.get("out-dir");
 
 // ─── Deterministic RNG (mulberry32) ────────────────────────────────────────
 function rng(seed) {
@@ -326,7 +327,7 @@ report.totalFailed = Object.values(report.flows).reduce((s, f) => s + f.failed, 
 
 // ─── Output ────────────────────────────────────────────────────────────────
 const today = new Date().toISOString().slice(0, 10);
-const reportsDir = join(process.cwd(), "qa", "reports");
+const reportsDir = OUT_DIR || join(process.cwd(), "qa", "reports");
 mkdirSync(reportsDir, { recursive: true });
 
 const jsonPath = JSON_OUT || join(reportsDir, `daily-flows-simulation-${today}.json`);
