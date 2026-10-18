@@ -58244,7 +58244,7 @@ export type Database = {
       admin_active_sessions: {
         Args: never
         Returns: {
-          email: string
+          email: string | null
           ip: string | null
           live_refresh_token: boolean
           not_after: string | null

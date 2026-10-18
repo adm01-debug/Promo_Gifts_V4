@@ -21,15 +21,24 @@
 
 1. Supabase dashboard → **New project** (free tier basta): nome
    `promo-gifts-v4-staging`, mesma região do canônico (sa-east-1).
-2. Bootstrap do schema: rodar `.github/workflows/schema-snapshot-export.yml`
-   no canônico → aplicar `supabase/migrations-snapshot/ALL_IN_ONE.sql` no
-   staging via SQL Editor, ou `supabase db push --db-url <staging>` (staging
-   não é o canônico — a proibição da REGRA #8 não se aplica).
-3. GitHub → Settings → Environments → criar `staging` com secrets
-   `STAGING_SUPABASE_PROJECT_REF`, `STAGING_SUPABASE_ACCESS_TOKEN`,
-   `STAGING_SUPABASE_DB_PASSWORD`, `STAGING_SUPABASE_URL`,
-   `STAGING_SUPABASE_ANON_KEY` (prefixo `STAGING_` para nunca colidir com
-   os secrets do canônico).
+2. Bootstrap do schema: `supabase db dump -f supabase/tmp/staging_seed.sql`
+   linkado ao canônico (read-only — dump de schema só) e depois
+   `psql <staging-url> -f supabase/tmp/staging_seed.sql`. NÃO usar
+   `supabase/migrations-snapshot/ALL_IN_ONE.sql` — é artefato de auditoria
+   (o README do snapshot marca como audit-only e o histórico de migrations
+   não reconstrói o banco do zero; replay parcial gera staging divergente
+   e invalida os gates).
+3. GitHub → Settings → Environments → criar `staging`:
+   - **variable** `STAGING_SUPABASE_PROJECT_REF` (o ref não é segredo e a
+     expressão de override lê o contexto `vars` — cadastrar como secret
+     faz o fallback `|| 'doufsxqlfjyuvxuezpln'` vencer e o gate continua
+     mirando produção);
+   - **secrets** `STAGING_SUPABASE_ACCESS_TOKEN`,
+     `STAGING_SUPABASE_DB_PASSWORD`, `STAGING_SUPABASE_URL`,
+     `STAGING_SUPABASE_ANON_KEY` (prefixo `STAGING_` para nunca colidir
+     com os secrets do canônico).
+   O ref de staging anotado em `docs/IAC_SUPABASE_CANONICO.md` assim que
+   provisionado (IaC-lite registra refs de infra).
 
 ## Como apontar um gate para o staging
 
@@ -45,6 +54,16 @@ env:
 e, no mesmo job, ler `SUPABASE_ACCESS_TOKEN`/`SUPABASE_DB_PASSWORD` do
 environment `staging` quando o ref for staging. `security-definer-acl-multi-env.yml`
 já faz exatamente isso — usar como referência.
+
+Atenção: hoje `supabase-security-gate.yml` passa o ref canônico LITERAL
+em `supabase link` e nos envs por step — o override precisa ser aplicado
+em cada referência do job, não só no `env:` de nível de job, senão os
+comandos continuam mirando produção. Validar no PR: rodar o gate com o
+ref de staging e conferir no log que `link --project-ref` mostra o
+ref de staging. Se a variável de staging estiver ausente, o job deve
+FALHAR (fail closed), não cair no canônico — preferir
+`${{ vars.STAGING_SUPABASE_PROJECT_REF }}` sem fallback no job de
+aplicação em ROLLBACK.
 
 ## Regras
 

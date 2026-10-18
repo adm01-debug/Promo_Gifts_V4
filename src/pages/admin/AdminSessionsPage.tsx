@@ -53,7 +53,7 @@ export default function AdminSessionsPage() {
   const filtered = useMemo(() => {
     const rows = sessions ?? [];
     const q = emailFilter.trim().toLowerCase();
-    return q ? rows.filter((s) => s.email.toLowerCase().includes(q)) : rows;
+    return q ? rows.filter((s) => (s.email ?? '').toLowerCase().includes(q)) : rows;
   }, [sessions, emailFilter]);
 
   const uniqueUsers = useMemo(() => new Set(filtered.map((s) => s.user_id)).size, [filtered]);
@@ -154,7 +154,9 @@ export default function AdminSessionsPage() {
                 )}
                 {filtered.map((s) => (
                   <TableRow key={s.session_id}>
-                    <TableCell className="font-medium">{s.email}</TableCell>
+                    <TableCell className="font-medium">
+                      {s.email ?? `sem e-mail (${s.user_id.slice(0, 8)}…)`}
+                    </TableCell>
                     <TableCell>{s.ip ?? '—'}</TableCell>
                     <TableCell className="max-w-[280px] truncate" title={s.user_agent ?? ''}>
                       {shortAgent(s.user_agent)}
@@ -194,10 +196,13 @@ export default function AdminSessionsPage() {
       <AlertDialog open={!!target} onOpenChange={(open) => !open && setTarget(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Revogar sessões de {target?.email}?</AlertDialogTitle>
+            <AlertDialogTitle>
+              Revogar sessões de {target?.email ?? 'usuário sem e-mail'}?
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              Todas as sessões ativas deste usuário serão encerradas e ele precisará fazer login
-              novamente em cada dispositivo. A ação fica registrada na auditoria.
+              Todos os tokens deste usuário serão revogados: as edges protegidas passam a rejeitar
+              as sessões dele e ele precisará fazer login novamente. A ação fica registrada na
+              auditoria.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

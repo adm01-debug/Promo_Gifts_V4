@@ -6,7 +6,7 @@ import { logger } from '@/lib/logger';
 
 export interface AdminSessionRow {
   user_id: string;
-  email: string;
+  email: string | null;
   session_id: string;
   session_created_at: string | null;
   session_updated_at: string | null;
@@ -29,7 +29,10 @@ export function useAdminSessions() {
       if (error) throw error;
       return data ?? [];
     },
+    // Painel de segurança precisa refletir logins/revogações de outros
+    // dispositivos e operadores — staleTime só marca o cache, não refaz fetch.
     staleTime: 30_000,
+    refetchInterval: 60_000,
   });
 }
 
@@ -41,9 +44,12 @@ export function useRevokeUserSessions() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (userId: string) => {
+      // Revogação não é idempotente para a auditoria: uma retentativa após
+      // resposta perdida duplicaria a linha de audit. Uma tentativa só.
+      // audit_logged:false expõe falha de trilha sem esconder a revogação.
       const { data, error } = await invokeEdge<{ success?: boolean; error?: string }>(
         'manage-users',
-        { body: { action: 'revoke_sessions', user_id: userId } },
+        { body: { action: 'revoke_sessions', user_id: userId }, maxRetries: 1 },
       );
       if (error) throw new Error(error.message);
       if (data?.error || !data?.success) {
@@ -52,7 +58,7 @@ export function useRevokeUserSessions() {
       return userId;
     },
     onSuccess: () => {
-      toast.success('Sessões revogadas. O usuário precisará fazer login novamente.');
+      toast.success('Tokens revogados. O usuário ficará bloqueado nas edges protegidas.');
       queryClient.invalidateQueries({ queryKey: ['admin-active-sessions'] });
     },
     onError: (error) => {

@@ -2,9 +2,24 @@
   "description": "Importações cross-domain históricas entre src/pages/<domínio>. Novas violações falham o gate — código compartilhado vai em src/components|lib|hooks|services.",
   "violations": [
     {
+      "file": "pages/__tests__/QuoteBuilderDeliveryTooltip.test.tsx",
+      "from": "__tests__",
+      "to": "quotes"
+    },
+    {
       "file": "pages/__tests__/SimulationPage.blocked.test.tsx",
       "from": "__tests__",
       "to": "Simulation"
+    },
+    {
+      "file": "pages/__tests__/SSOCallbackPage.test.tsx",
+      "from": "__tests__",
+      "to": "auth"
+    },
+    {
+      "file": "pages/admin/AdminCadastrosPage.tsx",
+      "from": "admin",
+      "to": "tools"
     },
     {
       "file": "pages/bi/TrendsPage.tsx",
