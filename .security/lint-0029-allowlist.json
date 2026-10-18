@@ -1,6 +1,6 @@
 {
   "$schema": "./lint-0029-allowlist.schema.json",
-  "description": "Allowlist do lint Supabase 0029 (SECURITY DEFINER executável por signed-in). Cada entrada precisa de reason documentado. Novos itens não listados aqui fazem o gate CI falhar. Snapshot inicial: 2026-07-15.",
+  "description": "Allowlist do lint Supabase 0029 (SECURITY DEFINER executável por signed-in). Cada entrada precisa de reason documentado. Novos itens não listados aqui fazem o gate CI falhar. Snapshot inicial: 2026-07-15. (E050 2026-10-18: funções de supabase-linter-baseline.json absorvidas aqui; baseline removido.)",
   "documented_in": "security-memory (padrão RLS/has_role)",
   "functions": [
     {
@@ -374,6 +374,186 @@
     {
       "fn": "public.zapp_catalog_stats()",
       "reason": "Achado E07 (já rastreado): EXECUTE concedido a authenticated sem necessidade (migration de correção nunca chegou a rodar — divergência ledger/schema documentada em E12/POLITICA_DDL). REVOKE preparado no Pacote de Aprovação #1, aguardando aprovação do PO."
+    },
+    {
+      "fn": "public.can_approve_discount()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.can_grant_mcp_full()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.can_manage_connections()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.can_manage_quotes()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.can_view_all_sales()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.can_view_audit_logs()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.can_view_connections()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.can_view_telemetry()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.check_ai_quota()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.check_telemetry_regression()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.ensure_default_favorite_list()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.execute_role_migration_batch()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.get_app_health_summary()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.get_auto_test_job_status()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.get_bundle_suggestions()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.get_client_seasonality()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.get_client_top_products()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.get_connection_failure_window_minutes()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.get_connections_auto_test_interval()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.get_favorites_weekly_count()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.get_industry_benchmark_stats()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.get_industry_top_products()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.get_platform_failure_metrics()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.get_top_compared_products()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.get_top_favorited_products()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.get_user_org_ids()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.get_user_recent_comparisons()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.has_org_role()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.has_role()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.is_admin()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.is_admin_strict()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.is_dev()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.is_kit_collaborator()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.is_kit_owner()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.is_manager_or_admin()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.is_seller_only()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.is_supervisor_or_above()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.log_rls_denial()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.log_user_logout()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.lookup_request_id()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.record_dev_route_telemetry()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.repair_ownership_orphans()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.search_records_rerank()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.set_connection_failure_window_minutes()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.set_connections_auto_test_interval()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
     }
   ]
 }
