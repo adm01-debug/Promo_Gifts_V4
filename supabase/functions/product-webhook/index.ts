@@ -104,6 +104,7 @@ type UpsertOutcome = {
   failed: number;
   processed: number;
   errors: string[];
+  client_errors: string[];
   warnings: string[];
   db_roundtrips: number;
   duration_ms: number;
@@ -341,6 +342,7 @@ Deno.serve(async (req) => {
       failed: 0,
       processed: 0,
       errors: [],
+      client_errors: [],
       warnings: [],
       db_roundtrips: 0,
       duration_ms: 0,
@@ -429,17 +431,18 @@ Deno.serve(async (req) => {
         duration_ms: outcome.duration_ms,
         db_roundtrips: outcome.db_roundtrips,
         chunk_metrics: outcome.chunk_metrics,
-        errors: outcome.errors,
+        errors: outcome.client_errors,
         warnings: outcome.warnings,
         sync_log_id: syncLogId,
       }),
       { headers: okHeaders },
     );
   } catch (error) {
-    const errorMessage = errMessage(error);
     console.error('Product webhook error:', error);
+    // Motivo real fica no console/sync_log — ao cliente só um genérico:
+    // mensagem de PostgrestError pode conter detalhes de schema/query.
     return new Response(
-      JSON.stringify({ code: 'internal_error', message: errorMessage, fields: [] }),
+      JSON.stringify({ code: 'internal_error', message: 'Erro interno ao processar o lote', fields: [] }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
     );
   }
@@ -453,7 +456,15 @@ async function upsertProducts(
 ): Promise<UpsertOutcome> {
   const startedAt = Date.now();
   const resolvers = await buildEntityResolvers(supabase);
-  const normalized = products.map((p) => normalizeProduct(p, resolvers));
+  // Dedup por sku (última ocorrência vence) ANTES de normalizar/resolver —
+  // duas linhas com o mesmo sku no mesmo INSERT fazem o Postgres recusar o
+  // lote inteiro (21000 cardinality_violation), e warnings/rejected devem
+  // descrever só a ocorrência que de fato será gravada.
+  const bySku = new Map<string, ProductPayload>();
+  for (const p of products) bySku.set(p.sku, p);
+  const deduped = [...bySku.values()];
+  const dedupedCount = products.length - deduped.length;
+  const normalized = deduped.map((p) => normalizeProduct(p, resolvers));
   const unresolved = {
     category: [] as string[],
     supplier: [] as string[],
@@ -463,7 +474,7 @@ async function upsertProducts(
   const valid: NormalizedProduct[] = [];
   const rejected: string[] = [];
   for (const [i, n] of normalized.entries()) {
-    const p = products[i];
+    const p = deduped[i];
     if (n.category_id === null && (p.category_id !== undefined || p.category_name))
       unresolved.category.push(p.sku);
     if (n.supplier_id === null && (p.supplier_id !== undefined || p.supplier_name))
@@ -520,20 +531,13 @@ async function upsertProducts(
         `destaque DESLIGADO no upsert (ex: ${unresolved.featured_cleared.slice(0, 5).join(', ')})`,
     );
 
-  // Dedup por sku (última ocorrência vence): duas linhas com o mesmo sku no
-  // mesmo INSERT fazem o Postgres recusar o lote inteiro — ON CONFLICT DO
-  // UPDATE não pode afetar a mesma linha duas vezes (21000
-  // cardinality_violation). Sem dedup, um sku repetido no payload do n8n
-  // derrubava todos os produtos do chunk.
-  const validBySku = new Map<string, NormalizedProduct>();
-  for (const n of valid) validBySku.set(n.sku, n);
-  if (validBySku.size !== valid.length) {
+  if (dedupedCount > 0) {
     warnings.push(
-      `sku duplicado no payload: ${valid.length - validBySku.size} linha(s) descartada(s) — última ocorrência vence`,
+      `sku duplicado no payload: ${dedupedCount} linha(s) descartada(s) — última ocorrência vence`,
     );
   }
 
-  const chunks = chunkArray([...validBySku.values()], chunkSize);
+  const chunks = chunkArray(valid, chunkSize);
 
   let created = 0;
   let updated = 0;
@@ -541,6 +545,9 @@ async function upsertProducts(
   let processed = 0;
   let db_roundtrips = 0;
   const errors: string[] = [];
+  // errors: detalhe real (sync_log/console internos). client_errors: texto
+  // sanitizado pra resposta HTTP — motivo do banco não vaza pro caller.
+  const clientErrors: string[] = [];
   const chunk_metrics: UpsertOutcome['chunk_metrics'] = [];
 
   for (const [index, chunk] of chunks.entries()) {
@@ -662,6 +669,9 @@ async function upsertProducts(
       processed += chunkPersisted;
       failed += remaining;
       errors.push(`chunk_${index + 1}: ${errMsg}`);
+      clientErrors.push(
+        `chunk_${index + 1}: falha interna ao gravar (${remaining} pendente(s))`,
+      );
       db_roundtrips += chunkRoundtrips;
       chunk_metrics.push({
         chunk: index + 1,
@@ -683,6 +693,9 @@ async function upsertProducts(
       `rejected_unresolved: ${rejected.length} produto(s) sem NOT NULL resolvido ` +
         `(ex: ${rejected.slice(0, 5).join('; ')})`,
     );
+    clientErrors.push(
+      `rejected_unresolved: ${rejected.length} produto(s) sem campos obrigatórios resolvidos`,
+    );
   }
 
   return {
@@ -691,6 +704,7 @@ async function upsertProducts(
     failed,
     processed,
     errors,
+    client_errors: clientErrors,
     warnings,
     db_roundtrips,
     duration_ms: Date.now() - startedAt,
@@ -894,7 +908,7 @@ function normalizeProduct(
     supplier_id: supplierId,
     // brand é varchar(100) no banco; supplier_name (zod ≤255) maior que
     // isso caía em 22001 value-too-long e derrubava o batch inteiro.
-    brand: product.supplier_name ? product.supplier_name.slice(0, 100) : null,
+    brand: product.supplier_name ? Array.from(product.supplier_name).slice(0, 100).join('') : null,
     stock_quantity: stockQty,
     is_stockout: stockQty <= 0,
     sync_status: 'synced',
