@@ -16,22 +16,47 @@ const UPDATE = process.argv.includes('--update');
 // `import x = require('y')`) e `import.meta.glob('x')`. Aspas simples,
 // duplas ou template literal ESTÁTICO. `import x = require(...)` é pego
 // pelo braço de `require`.
-const SPEC_RE =
-  /\bfrom\s*['"`]([^'"`]+)['"`]|\bimport\s*\(\s*['"`]([^'"`]+)['"`]|\bimport\s+['"`]([^'"`]+)['"`]|\brequire\s*\(\s*['"]([^'"]+)['"]|\bimport\.meta\.glob(?:Eager)?\s*\(\s*['"]([^'"]+)['"]/g;
+// Lookbehind: `obj.import(`/`m.require(` são métodos chamados import/require,
+// não loaders de módulo — não flagrar.
+const LB = '(?<![.\\w$])';
+// `import.meta.glob` tolera espaços/comentários entre os membros e bracket
+// notation (`import .meta['glob']`) — comentários já viraram espaços na visão.
+const GLOB_HEAD =
+  `${LB}import\\s*\\.\\s*meta\\s*(?:\\.\\s*glob(?:Eager)?|\\[\\s*['"]glob(?:Eager)?['"]\\s*\\])`;
+const SPEC_RE = new RegExp(
+  [
+    `${LB}from\\s*['"\`]([^'"\`]+)['"\`]`,
+    `${LB}import\\s*\\(\\s*['"\`]([^'"\`]+)['"\`]`,
+    `${LB}import\\s*['"\`]([^'"\`]+)['"\`]`, // bare `import'x'` — sem espaço é sintaxe válida
+    `${LB}require\\s*\\(\\s*['"]([^'"]+)['"]`,
+    `${GLOB_HEAD}\\s*\\(\\s*['"]([^'"]+)['"]`,
+    `${LB}new\\s+Worker\\s*\\(\\s*['"]([^'"]+)['"]`,
+    `${LB}(?:vi\\.importActual|vi\\.mock|jest\\.mock|serviceWorker\\.register)\\s*\\(\\s*['"]([^'"]+)['"]`,
+  ].join('|'),
+  'g',
+);
 // import.meta.glob também aceita array literal de padrões estáticos.
-const GLOB_ARRAY_RE =
-  /\bimport\.meta\.glob(?:Eager)?\s*\(\s*\[([^\]]*)\]/g;
+const GLOB_ARRAY_RE = new RegExp(`${GLOB_HEAD}\\s*\\(\\s*\\[([^\\]]*)\\]`, 'g');
 // Specifier computado (não-literal): não podemos provar o destino, então
 // conta como violação — sem isso `import(var)`/`require(var)`/`glob(var)`
 // evadem o gate inteiro. Roda sobre a visão "masked" (conteúdo de strings
 // apagado) — texto de UI citando `import(name)` não é chamada. O braço do
 // glob exclui `[` porque array literal é tratado por GLOB_ARRAY_RE.
-const DYNAMIC_RE =
-  /\bimport\s*\(\s*[^'"`\s)]|\brequire\s*\(\s*[^'"\s)]|\bimport\.meta\.glob(?:Eager)?\s*\(\s*[^'"[]/g;
+const DYNAMIC_RE = new RegExp(
+  [
+    `${LB}import\\s*\\(\\s*[^'"\`\\s)]`,
+    `${LB}require\\s*\\(\\s*[^'"\\s)]`,
+    `${GLOB_HEAD}\\s*\\(\\s*[^'"\\[]`,
+  ].join('|'),
+  'g',
+);
 // Concatenação após literal no 1º argumento = computado:
-// `require('@/' + x)` na visão masked vira `require(' ' + ...)`.
-const CONCAT_RE =
-  /\b(?:import|require|import\.meta\.glob(?:Eager)?)\s*\(\s*['"][^'"]*['"]\s*\+/g;
+// `require('@/' + x)` e `require('@/'.concat(x))` na visão masked valem o mesmo.
+const CONCAT_RE = new RegExp(
+  `${LB}(?:import|require)\\s*\\(\\s*['"][^'"]*['"]\\s*(?:\\+|\\.concat\\s*\\()|` +
+    `${GLOB_HEAD}\\s*\\(\\s*['"][^'"]*['"]\\s*(?:\\+|\\.concat\\s*\\()`,
+  'g',
+);
 
 // Lexer mínimo string/comment-aware: produz duas visões preservando quebras
 // de linha (line numbers corretos):
@@ -46,12 +71,59 @@ function lexSource(src) {
   const hide = (c) => { code.push(c); masked.push(c === '\n' ? '\n' : ' '); };
   // comentário: apagado das DUAS visões (SPEC_RE nunca vê specifier em comentário)
   const blank = (c) => { code.push(c === '\n' ? '\n' : ' '); masked.push(c === '\n' ? '\n' : ' '); };
+  // JS encerra line-comment também em CR / U+2028 / U+2029 — sem isso
+  // `// c␍import('x')` seria apagado mas executaria em runtime.
+  const LINE_END_RE = /[\n\r\u2028\u2029]/;
+  // `/` abre regex literal quando o token anterior é operador/abertura ou
+  // keyword de expressão — senão é divisão. `/[//]/` e `/[/*]/` NÃO são
+  // comentários: o `//` e `/*` vivem dentro da classe do regex.
+  const REGEX_CTX_CHARS = new Set('=([{,;:!&|?+-*%^~<>/'.split(''));
+  const REGEX_CTX_WORDS = new Set([
+    'return', 'typeof', 'case', 'in', 'of', 'new', 'delete', 'void',
+    'instanceof', 'yield', 'await', 'else', 'do', 'throw',
+  ]);
+  let lastSig = null; // último char significativo de código (fora de literal/comentário)
+  let word = '';      // identificador/keyword em acumulação
+  const sig = (c) => {
+    if (/[$\w]/.test(c)) word += c;
+    else word = '';
+    if (/\S/.test(c)) lastSig = c;
+  };
+  const isRegexCtx = () => {
+    if (lastSig === null) return true;
+    if (REGEX_CTX_CHARS.has(lastSig)) return true;
+    return word !== '' && REGEX_CTX_WORDS.has(word);
+  };
   let i = 0, strQuote = null;
+  // Regex literal não cruza linha — se não fecha antes do fim da linha era
+  // divisão e o `/` volta a ser código comum (retorna false sem consumir).
+  const consumeRegex = () => {
+    let j = i + 1, inClass = false, esc = false;
+    while (j < src.length) {
+      const d = src[j];
+      if (esc) { esc = false; j++; continue; }
+      if (d === '\\') { esc = true; j++; continue; }
+      if (LINE_END_RE.test(d)) return false;
+      if (inClass) { if (d === ']') inClass = false; j++; continue; }
+      if (d === '[') { inClass = true; j++; continue; }
+      if (d === '/') {
+        keep('/'); sig('/');
+        for (let k = i + 1; k < j; k++) hide(src[k]);
+        i = j + 1;
+        while (i < src.length && /[$\w]/.test(src[i])) { keep(src[i]); i++; } // flags
+        return true;
+      }
+      j++;
+    }
+    return false;
+  };
   while (i < src.length) {
     const c = src[i];
     if (strQuote === null) {
+      // `//` e `/*` SÃO sempre comentários — regex nunca pode começar com eles
+      // (`/x/` começa com `/` seguido de qualquer coisa menos `/` ou `*`).
       if (c === '/' && src[i + 1] === '/') {
-        while (i < src.length && src[i] !== '\n') { blank(src[i]); i++; }
+        while (i < src.length && !LINE_END_RE.test(src[i])) { blank(src[i]); i++; }
         continue;
       }
       if (c === '/' && src[i + 1] === '*') {
@@ -60,8 +132,9 @@ function lexSource(src) {
         if (i < src.length) { blank(src[i]); blank(src[i + 1]); i += 2; }
         continue;
       }
-      if (c === "'" || c === '"' || c === '`') { strQuote = c; keep(c); i++; continue; }
-      keep(c); i++;
+      if (c === '/' && isRegexCtx() && consumeRegex()) continue;
+      if (c === "'" || c === '"' || c === '`') { strQuote = c; keep(c); sig(c); i++; continue; }
+      keep(c); sig(c); i++;
       continue;
     }
     if (c === '\\') { hide(c); if (i + 1 < src.length) hide(src[i + 1]); i += 2; continue; }
@@ -81,7 +154,7 @@ function lexSource(src) {
           continue;
         }
         if (e === '/' && src[i + 1] === '/') {
-          while (i < src.length && src[i] !== '\n') { blank(src[i]); i++; }
+          while (i < src.length && !LINE_END_RE.test(src[i])) { blank(src[i]); i++; }
           continue;
         }
         if (e === '/' && src[i + 1] === '*') {
@@ -90,6 +163,7 @@ function lexSource(src) {
           if (i < src.length) { blank(src[i]); blank(src[i + 1]); i += 2; }
           continue;
         }
+        if (e === '/' && isRegexCtx() && consumeRegex()) continue;
         if (e === '{') depth++;
         if (e === '}') { depth--; if (depth === 0) { keep('}'); i++; break; } }
         keep(e); i++;
@@ -106,7 +180,7 @@ function* walk(dir) {
     const p = join(dir, e);
     const st = statSync(p);
     if (st.isDirectory()) yield* walk(p);
-    else if (/\.(ts|tsx|js|jsx|mts|cts)$/.test(e)) yield p;
+    else if (/\.(ts|tsx|js|jsx|mts|cts|mjs|cjs)$/i.test(e)) yield p;
   }
 }
 
@@ -115,26 +189,39 @@ function* walk(dir) {
 // src/pages. Cobre alias `@/...` e relativos (`../bar/B` a partir de
 // pages/foo/ — sem exigir um segmento literal `pages/`).
 function resolveTarget(spec, importerFile) {
+  // Escapes `\uXXXX`/`\xNN` no specifier são decodificados pelo runtime —
+  // `@/\u0070ages/x` ≡ `@/pages/x` e precisa ser comparado decodificado.
+  const decoded = spec.replace(
+    /\\u([0-9a-fA-F]{4})|\\x([0-9a-fA-F]{2})/g,
+    (_m, u, x) => String.fromCharCode(parseInt(u ?? x, 16)),
+  );
   let rel;
-  if (spec.startsWith('@/')) {
-    // `@//pages/x` e `@/pages/foo/../bar/x` — normaliza barras e `..`.
-    rel = normalize(spec.slice(2).replace(/^\/+/, '')).split('\\').join('/');
-  } else if (spec.startsWith('.')) {
-    rel = normalize(join(dirname(importerFile), spec)).split('\\').join('/');
-    // `../../src/pages/x` escapa de pages/ e volta por src/ — mesma coisa.
-    if (rel.startsWith('src/')) rel = rel.slice(4);
+  if (decoded.startsWith('@/')) {
+    // `@/` é alias de `src/` — `@/../src/pages/x` ≡ `src/pages/x`.
+    rel = normalize(join('src', decoded.slice(2))).split('\\').join('/');
+  } else if (decoded.startsWith('.')) {
+    rel = normalize(join(dirname(importerFile), decoded)).split('\\').join('/');
   } else {
     return null;
   }
+  // `../../src/pages/x` escapa de pages/ e volta por src/ — mesma coisa.
+  if (rel.startsWith('src/')) rel = rel.slice(4);
   return rel.startsWith('pages/') ? rel : null;
 }
 
 const violations = [];
 for (const f of walk('src/pages')) {
   const rel = relative('src', f).split('\\').join('/');
+  const segs = rel.split('/');
   // Testes importam a unidade sob teste — não são acoplamento de produção.
-  if (/(__tests__\/|\.(test|spec)\.)/.test(rel)) continue;
-  const srcDom = rel.split('/')[1].split('.')[0];
+  // `__tests__` exige SEGMENTO exato: `x__tests__` não é isenção (lavadora).
+  if (segs.includes('__tests__') || /\.(test|spec)\.[^.]+$/.test(segs.at(-1))) continue;
+  // Domínio = 1º segmento de pages/ VERBATIM quando é diretório
+  // (`pages/quotes.evil/` NÃO é `pages/quotes/`); arquivo solto em pages/
+  // perde a extensão.
+  const srcDom = statSync(join('src/pages', segs[1])).isDirectory()
+    ? segs[1]
+    : segs[1].split('.')[0];
   const raw = readFileSync(f, 'utf8');
   const { code: src, masked } = lexSource(raw);
   const dynamic = (idx) => {
@@ -162,7 +249,7 @@ for (const f of walk('src/pages')) {
     violations.push({ file: rel, line, from: srcDom, to: targetDom, target });
   };
   for (const m of src.matchAll(SPEC_RE)) {
-    checkSpec(m[1] ?? m[2] ?? m[3] ?? m[4] ?? m[5], m.index);
+    checkSpec(m.slice(1).find((g) => g !== undefined), m.index);
   }
   // glob com array literal: cada elemento citado é specifier; elemento
   // não-literal (variável, template com ${}) é computado.
@@ -177,9 +264,17 @@ for (const f of walk('src/pages')) {
   for (const m of masked.matchAll(DYNAMIC_RE)) dynamic(m.index);
   for (const m of masked.matchAll(CONCAT_RE)) dynamic(m.index);
 }
-violations.sort(
+// Dedupe: o mesmo site pode ser flagrado por braços distintos
+// (`import('x' + y)` = dinâmico + concat) — conta uma vez por
+// arquivo:linha:target para não inflar o ratchet.
+const bySite = new Map();
+for (const v of violations) bySite.set(`${v.file}:${v.line}:${v.target}`, v);
+const deduped = [...bySite.values()];
+deduped.sort(
   (a, b) => a.file.localeCompare(b.file) || a.line - b.line || a.to.localeCompare(b.to),
 );
+violations.length = 0;
+violations.push(...deduped);
 
 const baseline = JSON.parse(readFileSync(BASELINE, 'utf8'));
 // Identidade do import = arquivo importador + specifier resolvido. N
