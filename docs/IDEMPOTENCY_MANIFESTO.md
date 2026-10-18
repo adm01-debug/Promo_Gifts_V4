@@ -17,8 +17,8 @@
 |---|---|---|
 | `generate-mockup` | ✅ | `idem-<sha256(key)>` → path único no storage; resposta reutilizada |
 | `anonymize-user` | n/a | Operação monótona por estado da conta (idempotente por natureza) |
-| `mcp-keys-update` / `step-up-verify` / `verify-2fa-token` | ✅ parcial | retry é no-op pela validação de estado na edge; o header `Idempotency-Key` enviado pelo cliente é ignorado hoje (cosmético) |
-| `webhook-inbound` | ✅ | `idempotency_key` (header `x-idempotency-key` ou body) deduplica em `inbound_webhook_events` |
+| `mcp-keys-update` / `step-up-verify` / `verify-2fa-token` | ✅ parcial | retry não duplica o efeito principal (validação de estado na edge), mas produz efeitos laterais (novo challenge, linha de auditoria); o header `Idempotency-Key` enviado pelo cliente é ignorado hoje (cosmético) |
+| `webhook-inbound` | ✅ | chave de dedup em `inbound_webhook_events`: `payload.idempotency_key` > `sig:<assinatura>` (fallback de chamadas HMAC) > header `x-idempotency-key` (só chamadas internas) |
 | `log-login-attempt` | ❌ por design | cada tentativa é um evento distinto (append) |
 | `secure-upload` | parcial | nome de objeto único por upload; retry cria objeto novo (aceitável) |
 | demais edges de escrita | pendente | adotar tabela `idempotency_keys (key, user_id, response)` quando houver retry de cliente |

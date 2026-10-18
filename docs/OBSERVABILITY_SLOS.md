@@ -18,7 +18,9 @@
 3. **breaker aberto:** `breaker_open` em qualquer edge por > 5min → investigar
    dependência. Hoje emitem: `log-login-attempt` (reason em `log_login_fallback`)
    e as edges com `fetchWithBreaker` (quote-sync, sync-quote-bitrix,
-   webhook-dispatcher, etc. — logam `console.warn [circuit-breaker:<nome>] OPEN`;
+   bitrix-sync, cnpj-lookup, etc. — logam `console.warn [circuit-breaker:<nome>] OPEN`;
+   `webhook-dispatcher` usa `getBreaker` próprio por hostname e registra
+   `circuit_open` na tabela de deliveries, sem o warn acima;
    o cliente emite `edge_invoke_breaker_open`). O gate de login `check-login`
    não tem breaker ainda.
 4. **fallback audit:** `log_login_fallback` > 10/hora → auditoria degradada.
