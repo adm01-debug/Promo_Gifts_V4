@@ -85,6 +85,7 @@ type NormalizedProduct = {
   is_kit: boolean;
   is_active: boolean;
   is_featured: boolean;        // DB column: is_featured (was: featured)
+  is_featured_expires_at: string | null; // CHECK exige NOT NULL quando is_featured=true
   is_new: boolean;             // DB column: is_new (was: new_arrival)
   is_on_sale: boolean;         // DB column: is_on_sale (was: on_sale)
   images: string[];
@@ -439,22 +440,34 @@ async function upsertProducts(
   const startedAt = Date.now();
   const resolvers = await buildEntityResolvers(supabase);
   const normalized = products.map((p) => normalizeProduct(p, resolvers));
-  const unresolved = { category: [] as string[], supplier: [] as string[] };
+  const unresolved = { category: [] as string[], supplier: [] as string[], featured_dropped: [] as string[] };
+  const valid: NormalizedProduct[] = [];
+  const rejected: string[] = [];
   for (const [i, n] of normalized.entries()) {
     const p = products[i];
     if (n.category_id === null && (p.category_id !== undefined || p.category_name))
       unresolved.category.push(p.sku);
-    if (n.supplier_id === null && (p.supplier_id || p.supplier_name))
+    if (n.supplier_id === null && (p.supplier_id !== undefined || p.supplier_name))
       unresolved.supplier.push(p.sku);
+    if (p.featured === true && !n.is_featured) unresolved.featured_dropped.push(p.sku);
+    // NOT NULL no banco: linha sem categoria/fornecedor resolvido falha 23502 —
+    // exclui do chunk para um produto ruim não derrubar os bons do lote.
+    const missing = [
+      n.category_id === null ? 'category_id' : null,
+      n.supplier_id === null ? 'supplier_id' : null,
+    ].filter(Boolean);
+    if (missing.length) rejected.push(`${n.sku}(sem ${missing.join(',')})`);
+    else valid.push(n);
   }
-  if (unresolved.category.length || unresolved.supplier.length) {
+  if (unresolved.category.length || unresolved.supplier.length || unresolved.featured_dropped.length) {
     console.warn(
       `[product-webhook] ids externos não resolvidos: ` +
         `category=${unresolved.category.length} (ex: ${unresolved.category.slice(0, 3).join(',')}) ` +
-        `supplier=${unresolved.supplier.length} (ex: ${unresolved.supplier.slice(0, 3).join(',')})`,
+        `supplier=${unresolved.supplier.length} (ex: ${unresolved.supplier.slice(0, 3).join(',')}) ` +
+        `featured_dropped=${unresolved.featured_dropped.length} (ex: ${unresolved.featured_dropped.slice(0, 3).join(',')})`,
     );
   }
-  const chunks = chunkArray(normalized, chunkSize);
+  const chunks = chunkArray(valid, chunkSize);
 
   let created = 0;
   let updated = 0;
@@ -554,6 +567,14 @@ async function upsertProducts(
     }
   }
 
+  if (rejected.length) {
+    failed += rejected.length;
+    errors.push(
+      `rejected_unresolved: ${rejected.length} produto(s) sem NOT NULL resolvido ` +
+        `(ex: ${rejected.slice(0, 5).join('; ')})`,
+    );
+  }
+
   return {
     created,
     updated,
@@ -577,13 +598,21 @@ type EntityResolvers = {
   categoryByName: Map<string, string | null>;
   supplierByCode: Map<string, string | null>;
   supplierByName: Map<string, string | null>;
+  // Ids vivos da tabela — `null` quando a consulta falhou e UUIDs de payload
+  // não podem ser verificados (passthrough: o banco decide com a FK 23503).
+  categoryIds: Set<string> | null;
+  supplierIds: Set<string> | null;
 };
 
 const normalizeKey = (s: string): string => s.trim().toLowerCase().replace(/\s+/g, ' ');
 
 const setKey = <K>(map: Map<K, string | null>, key: K, id: string | null | undefined) => {
   if (id == null) return;
-  map.set(key, map.has(key) ? null : id); // segunda ocorrência = ambíguo
+  const prev = map.get(key);
+  // MESMO id lido de novo (linha capturada 2x por deslocamento de página)
+  // não é ambiguidade — só ids diferentes disputando a chave tornam-na null.
+  if (prev === undefined) map.set(key, id);
+  else if (prev !== id) map.set(key, null);
 };
 
 // PostgREST capa cada resposta em ~1000 linhas (max_rows do painel) —
@@ -632,18 +661,34 @@ async function buildEntityResolvers(
     if (row.code) setKey(supplierByCode, normalizeKey(row.code), row.id);
     if (row.name) setKey(supplierByName, normalizeKey(row.name), row.id);
   }
-  return { categoryByBitrixId, categoryByName, supplierByCode, supplierByName };
+  return {
+    categoryByBitrixId,
+    categoryByName,
+    supplierByCode,
+    supplierByName,
+    categoryIds: categories ? new Set(categories.map((r) => r.id)) : null,
+    supplierIds: suppliers ? new Set(suppliers.map((r) => r.id)) : null,
+  };
 }
 
 function resolveCategoryUuid(
   product: ProductPayload,
   resolvers: EntityResolvers | null,
 ): string | null {
-  if (isUUID(product.category_id)) return product.category_id as string;
+  const raw = product.category_id;
+  const asString = typeof raw === 'string' ? raw.trim() : null;
+  // UUID com a tabela carregada: valida existência — UUID morto vira
+  // "não resolvido" honesto em vez de 23503 na FK.
+  if (typeof raw === 'string' && isUUID(raw)) {
+    if (!resolvers || resolvers.categoryIds === null) return raw;
+    return resolvers.categoryIds.has(raw) ? raw : null;
+  }
   const numeric =
-    typeof product.category_id === 'number' && Number.isInteger(product.category_id)
-      ? product.category_id
-      : null;
+    typeof raw === 'number' && Number.isInteger(raw)
+      ? raw
+      : asString !== null && /^\d+$/.test(asString)
+        ? Number(asString)
+        : null;
   if (resolvers) {
     if (numeric !== null) {
       const hit = resolvers.categoryByBitrixId.get(numeric);
@@ -654,6 +699,11 @@ function resolveCategoryUuid(
       const hit = resolvers.categoryByName.get(normalizeKey(candidate));
       if (hit) return hit;
     }
+    // category_id em string não-numérica ainda pode ser o próprio nome.
+    if (asString !== null && asString.length > 0) {
+      const hit = resolvers.categoryByName.get(normalizeKey(asString));
+      if (hit) return hit;
+    }
   }
   return null;
 }
@@ -662,11 +712,15 @@ function resolveSupplierUuid(
   product: ProductPayload,
   resolvers: EntityResolvers | null,
 ): string | null {
-  if (isUUID(product.supplier_id)) return product.supplier_id;
+  const raw = product.supplier_id;
+  if (typeof raw === 'string' && isUUID(raw)) {
+    if (!resolvers || resolvers.supplierIds === null) return raw;
+    return resolvers.supplierIds.has(raw) ? raw : null;
+  }
   if (resolvers) {
-    for (const candidate of [product.supplier_id, product.supplier_name]) {
-      if (typeof candidate !== 'string') continue;
-      const key = normalizeKey(candidate);
+    for (const candidate of [raw, product.supplier_name]) {
+      if (typeof candidate !== 'string' && typeof candidate !== 'number') continue;
+      const key = normalizeKey(String(candidate));
       const hit = resolvers.supplierByCode.get(key) ?? resolvers.supplierByName.get(key);
       if (hit) return hit;
     }
@@ -682,6 +736,11 @@ function normalizeProduct(
   const isActive = product.is_active !== false;
   const categoryId = resolveCategoryUuid(product, resolvers);
   const supplierId = resolveSupplierUuid(product, resolvers);
+  // chk_products_featured_requires_expires exige is_featured_expires_at quando
+  // is_featured=true. Sem expiração no payload a flag é derrubada para a linha
+  // salvar — o SKU é listado em featured_dropped no retorno.
+  const featuredExpiresAt = product.featured_expires_at ?? null;
+  const isFeatured = product.featured === true && featuredExpiresAt !== null;
   // Merge metadata + kit_items into schema_json (single jsonb column).
   const schemaJson: Record<string, unknown> = {
     ...((product.metadata || {}) as Record<string, unknown>),
@@ -707,7 +766,8 @@ function normalizeProduct(
     sync_status: 'synced',
     is_kit: product.is_kit || false,
     is_active: isActive,
-    is_featured: product.featured || false,
+    is_featured: isFeatured,
+    is_featured_expires_at: featuredExpiresAt,
     is_new: product.new_arrival || false,
     is_on_sale: product.on_sale || false,
     images: product.images || [],
