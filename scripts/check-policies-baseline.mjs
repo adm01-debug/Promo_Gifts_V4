@@ -221,11 +221,14 @@ function plannedPolicyKeys(appliedVersions) {
           const qualNorm = usingMatch ? usingMatch[1].trim() : null;
           if (cmdMatch) {
             const cmdKey = baseKey + '|' + cmdMatch[1].toUpperCase();
-            // E048: chave com cmd e qual quando ambos disponíveis (mais específico)
             if (qualNorm !== null) {
+              // E048: quando qual foi extraído da migration, só aceita match exato (cmd+qual).
+              // Não adicionar base|cmd isolado para não tolerar qual diferente.
               planned.add(cmdKey + '|' + qualNorm);
+            } else {
+              // Migration sem USING clause: tolerância por cmd apenas.
+              planned.add(cmdKey);
             }
-            planned.add(cmdKey); // fallback sem qual (backward compat)
           } else {
             planned.add(baseKey); // sem FOR explícito: chave legada (backward compat)
           }

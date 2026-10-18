@@ -23,6 +23,7 @@ name: Deploy Gates
 #  1.12 contract-coverage  — soft-delete policy + contrato de cobertura
 #  1.13 policies-baseline  — policies live vs baseline
 #  1.13.1 rls-no-policy    — tabelas RLS com zero policies (deny-all silencioso, E045)
+#  1.13.2 anon-rate-guard  — 7 tabelas INSERT anônimo com trigger rate guard (E049)
 #  1.14 secrets-inventory  — secrets/vars referenciados todos documentados em SEGREDOS.md (E40/E98)
 #  E23  secrets-check      — verifica presença de secrets E2E (saída has_e2e)
 #  2    unit-tests         — vitest
@@ -250,6 +251,10 @@ jobs:
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
+      # E049 — 7 tabelas com INSERT anônimo real: verifica manifest + trigger rate guard
+      # --gate: valida manifest (7 tabelas, campos obrigatórios). Sem live DB.
+      - name: Gate 1.13.2 — Anon-insert rate guard manifest (E049)
+        run: node scripts/check-anon-insert-rate-guard.mjs --gate
       # noUncheckedIndexedAccess — advisory por enquanto: roda tsc completo
       # (lento) e a dívida atual é grande; vira bloqueante quando zerar.
       # E15: Gate 1.10 promovido de advisory para bloqueante — dívida congelada
