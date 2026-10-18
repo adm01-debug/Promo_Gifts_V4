@@ -18,7 +18,7 @@
  */
 
 import { test, expect, requireAuth } from "../fixtures/test-base";
-import { gotoAndSettle } from "../helpers/nav";
+import { gotoAndSettle, waitForRouteIdle } from "../helpers/nav";
 import { waitForTestIdVisible } from "../helpers/waits";
 import { Sel } from "../fixtures/selectors";
 
@@ -98,7 +98,7 @@ test.describe("Discount approval — idempotency & audit", () => {
     test.skip(isBlocked, "Usuário E2E não tem papel admin — painel inacessível");
 
     // Aguarda a fila renderizar (pode estar vazia em ambientes limpos)
-    await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => null);
+    await waitForRouteIdle(page);
 
     // Se há ao menos uma solicitação, o componente de auditoria deve estar visível
     const auditToggle = page.locator('[data-testid^="discount-audit-toggle-"]').first();

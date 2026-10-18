@@ -144,7 +144,6 @@ test.describe("Fluxo: Orçamento + Frete", () => {
     const saveDraft = page.locator(Sel.quote.saveDraft);
     if (await saveDraft.isVisible()) {
       await saveDraft.click();
-      await page.waitForTimeout(1_000);
     }
   });
 

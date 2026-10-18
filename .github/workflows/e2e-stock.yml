@@ -43,7 +43,7 @@ defaults:
 
 jobs:
   secrets_check:
-    name: Verify E2E secrets
+    name: Verify E2E secrets (Stock)
     runs-on: ubuntu-24.04
     timeout-minutes: 2
     permissions:

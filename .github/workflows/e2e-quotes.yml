@@ -39,7 +39,7 @@ defaults:
 jobs:
   # Verificação antecipada de secrets antes de disparar a matriz
   secrets_check:
-    name: Verify E2E secrets
+    name: Verify E2E secrets (Quotes)
     # E82 — PR usa mock-auth; secrets só são necessários em push/dispatch
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-24.04

@@ -41,10 +41,10 @@ const IGNORE_DIRS = new Set([
   'medallion', // docs internos de arquitetura, links soltos aceitos
   '.workspace', '.agents', '.claude',
 ]);
-// O cache do Graphify é uma projeção do corpus, não uma fonte canônica de
-// referências. Ele pode reter paths históricos de migrations já reconciliadas
-// e não deve fazer o gate falhar por texto derivado.
-const IGNORE_RELATIVE_DIRS = new Set(['graphify-out/cache']);
+// Todo o graphify-out/ é conteúdo derivado (grafo, wiki, manifesto, cache).
+// Ele pode reter paths históricos de migrations já reconciliadas e não deve
+// fazer o gate falhar por texto derivado (E13.3).
+const IGNORE_RELATIVE_DIRS = new Set(['graphify-out/cache', 'graphify-out']);
 // Arquivos que só falam de paths (README/snapshot meta), varremos normal —
 // mas ignoramos o próprio SELF para não recursivar em exemplos.
 const SELF = 'scripts/check-migration-path-references.mjs';

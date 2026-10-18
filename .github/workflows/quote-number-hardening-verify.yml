@@ -2,7 +2,7 @@ name: Quote Number Hardening — Verify (canonical DB)
 
 on:
   schedule:
-    - cron: '17 */6 * * *' # a cada 6h
+    - cron: '15 */6 * * *'  # E89: a cada 6h (00:15, 06:15, 12:15, 18:15 UTC) — ≥20min de ci-security-drift e schema-snapshot
   workflow_dispatch:
   push:
     branches: [main]

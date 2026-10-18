@@ -7,7 +7,7 @@ name: Nightly Full CI
 on:
   schedule:
     # Todo dia às 02:43 UTC (fora do horário de pico de PRs)
-    - cron: '43 2 * * *'
+    - cron: '43 2 * * *'  # diário 02:43 UTC (E89)
   workflow_dispatch:
 
 permissions:

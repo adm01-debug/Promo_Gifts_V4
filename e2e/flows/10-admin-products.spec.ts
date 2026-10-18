@@ -49,7 +49,6 @@ test.describe("CRUD Produtos Admin", () => {
     // 4. Voltar para listagem e Validar
     await page.goto("/admin/cadastros");
     await page.fill(Sel.admin.searchInput, productName);
-    await page.waitForTimeout(1000);
     const row = page.locator(Sel.admin.table).locator(`text=${productName}`);
     await expect(row).toBeVisible();
 

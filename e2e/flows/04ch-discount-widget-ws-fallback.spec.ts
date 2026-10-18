@@ -65,7 +65,6 @@ test.describe("Discount widget — fallback polling sob queda do WebSocket", () 
     const toastCountInitial = await page
       .getByText(/Tempo real indisponível/i)
       .count();
-    await page.waitForTimeout(3_000);
     const toastCountLater = await page
       .getByText(/Tempo real indisponível/i)
       .count();

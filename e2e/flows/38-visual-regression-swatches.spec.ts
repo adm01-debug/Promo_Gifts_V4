@@ -33,7 +33,6 @@ test.describe("Regressão Visual: Bolinhas de Cores (Swatches)", () => {
     // 5. Verifica estado HOVER (Zoom)
     await firstSwatch.hover();
     // Aguarda a transição de scale (300ms)
-    await page.waitForTimeout(400);
     
     const hoverBox = await firstSwatch.boundingBox();
     if (containerBox && hoverBox) {

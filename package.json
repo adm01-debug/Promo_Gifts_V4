@@ -271,7 +271,8 @@
     "lint:lockfile": "node scripts/check-lockfile-sync.mjs",
     "simulate:bi-degradation": "node scripts/simulate-bi-partial-degradation.mjs",
     "check:public-views-drift": "node scripts/check-public-views-drift.mjs",
-    "check:migrations-sync-log-gate": "node scripts/check-migrations-sync-log-gate.mjs"
+    "check:migrations-sync-log-gate": "node scripts/check-migrations-sync-log-gate.mjs",
+    "plan:status": "node scripts/plan-status.mjs"
   },
   "lint-staged": {
     "src/**/*.{ts,tsx}": [

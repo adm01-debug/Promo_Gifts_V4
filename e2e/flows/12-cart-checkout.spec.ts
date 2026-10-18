@@ -40,7 +40,6 @@ async function ensureActiveCart(page: Page): Promise<boolean> {
   const firstCompany = page.locator(Sel.cart.companyPickerSelect).first();
   if (await firstCompany.isVisible().catch(() => false)) {
     await firstCompany.click().catch(() => {});
-    await page.waitForTimeout(800);
     return true;
   }
   // Sem empresas cadastradas
@@ -91,7 +90,6 @@ async function addFirstProductToCart(page: Page): Promise<string | null> {
 
   if (await addBtn.isEnabled().catch(() => false)) {
     await addBtn.click();
-    await page.waitForTimeout(600);
     return productId || null;
   }
   return null;
@@ -132,7 +130,6 @@ test.describe("Fluxo: Carrinho → Checkout", () => {
 
     const plusBtn = itemCard.locator(Sel.cart.increment).first();
     await plusBtn.click();
-    await page.waitForTimeout(250);
     await plusBtn.click();
 
     await expect

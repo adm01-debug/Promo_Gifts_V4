@@ -91,7 +91,7 @@ test.describe("Analytics — troca de carrinho via sidebar/URL", () => {
     // gerar 2º evento. Reruns do effect (por refetch de `carts`) são
     // filtrados pela ref `lastSwitchEmittedForRef` no hook.
     await gotoAndSettle(page, `/carrinhos/${cartB.id}`);
-    await page.waitForTimeout(500); // janela p/ possível re-emit
+ // janela p/ possível re-emit
     const after = await readAnalyticsEvents(page);
     const switchedAfter = after.filter(
       (e) =>
@@ -116,7 +116,6 @@ test.describe("Analytics — troca de carrinho via sidebar/URL", () => {
 
     await resetAnalyticsBuffer(page);
     await gotoAndSettle(page, `/carrinhos/${cartA.id}`);
-    await page.waitForTimeout(600);
 
     const events = await readAnalyticsEvents(page);
     const switched = events.filter((e) => e.name === EVT);

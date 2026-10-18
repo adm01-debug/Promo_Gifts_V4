@@ -13,6 +13,7 @@
  *      pós-reorder (lida via `data-quote-item-id`).
  */
 import { test, expect, type Page } from "@playwright/test";
+import { gotoAndSettle, waitForRouteIdle } from "../helpers/nav";
 
 const HANDLE = (idx: number) => `[data-testid="quote-summary-drag-handle-${idx}"]`;
 const ITEM = (idx: number) => `[data-testid="quote-summary-item-${idx}"]`;
@@ -34,8 +35,7 @@ async function ensureAtLeastThreeItems(page: Page): Promise<boolean> {
 
 test.describe("Quote Summary — reorder e persistência", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/orcamentos/novo");
-    await page.waitForLoadState("networkidle");
+    await gotoAndSettle(page, "/orcamentos/novo");
   });
 
   test("DragOverlay e handle existem; body do card não é draggable", async ({ page }) => {
@@ -56,14 +56,14 @@ test.describe("Quote Summary — reorder e persistência", () => {
     const before = await readOrder(page);
     // Move item 2 para a primeira posição arrastando pelo handle.
     await page.locator(HANDLE(2)).dragTo(page.locator(HANDLE(0)));
-    await page.waitForTimeout(300);
+    await waitForRouteIdle(page);
 
     const afterReorder = await readOrder(page);
     expect(afterReorder[0]).toBe(before[2]);
 
     // Persistência: reload e revalida ordem.
     await page.reload();
-    await page.waitForLoadState("networkidle");
+    await waitForRouteIdle(page);
     const afterReload = await readOrder(page);
     expect(afterReload).toEqual(afterReorder);
   });
@@ -78,7 +78,7 @@ test.describe("Quote Summary — reorder e persistência", () => {
     await page.keyboard.press("Space"); // ativa drag-mode dnd-kit
     await page.keyboard.press("ArrowUp");
     await page.keyboard.press("Space"); // confirma drop
-    await page.waitForTimeout(300);
+    await waitForRouteIdle(page);
 
     const after = await readOrder(page);
     expect(after[0]).toBe(before[1]);
@@ -86,7 +86,7 @@ test.describe("Quote Summary — reorder e persistência", () => {
 
     // Persistência.
     await page.reload();
-    await page.waitForLoadState("networkidle");
+    await waitForRouteIdle(page);
     expect(await readOrder(page)).toEqual(after);
   });
 });

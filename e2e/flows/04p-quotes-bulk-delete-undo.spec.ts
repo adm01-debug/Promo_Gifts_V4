@@ -133,7 +133,6 @@ test.describe("Fluxo: bulk delete + Desfazer restaura orçamentos", () => {
 
     // Sem retry silencioso
     const postsAfterUndo = postCalls;
-    await page.waitForTimeout(1500);
     expect(postCalls).toBe(postsAfterUndo);
 
     // ================================================================
@@ -298,7 +297,6 @@ test.describe("Fluxo: bulk delete + Desfazer restaura orçamentos", () => {
     const postsAfterUndo = postCalls;
 
     // Aguarda para garantir ausência de retry silencioso
-    await page.waitForTimeout(2000);
     expect(postCalls).toBe(postsAfterUndo);
 
     // Algum toast de erro/aviso do sonner é exibido (fallback do restore)

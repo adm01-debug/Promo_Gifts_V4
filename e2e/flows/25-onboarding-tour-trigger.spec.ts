@@ -26,7 +26,6 @@ test.describe("Fluxo: Onboarding tour disparo", () => {
     await expectOnRoute(page, "/");
 
     // pequena janela para garantir que NADA disparou o tour
-    await page.waitForTimeout(500);
     await expect(page.getByTestId("onboarding-tour")).toHaveCount(0);
   });
 

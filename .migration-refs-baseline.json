@@ -148,6 +148,14 @@
     {
       "file": "tests/security/restore-seller-cart-rpc.test.ts",
       "ref": "supabase/migrations/20260713101342_...sql"
+    },
+    {
+      "file": ".github/workflows/schema-snapshot-export.yml",
+      "ref": "supabase/migrations-snapshot/SCHEMA_DRIFT.sql"
+    },
+    {
+      "file": "graphify-out/manifest.json",
+      "ref": "supabase/migrations-snapshot/SCHEMA_DRIFT.sql"
     }
   ]
 }

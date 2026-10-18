@@ -19,7 +19,7 @@
  */
 import { test, expect, type Page } from "../fixtures/test-base";
 import { loginAs } from "../helpers/auth";
-import { gotoAndSettle } from "../helpers/nav";
+import { gotoAndSettle, waitForRouteIdle } from "../helpers/nav";
 
 const VIEWPORTS = [
   { name: "sm", width: 640, height: 900 },
@@ -52,7 +52,7 @@ async function openFirstEditor(page: Page): Promise<boolean> {
   // Estabilização de snapshot: aguarda fonts e rede quiescente para reduzir flake
   // no FOUT do Outfit e assets async.
   await page.evaluate(() => (document as unknown as { fonts: { ready: Promise<unknown> } }).fonts.ready);
-  await page.waitForLoadState("networkidle").catch(() => {});
+  await waitForRouteIdle(page);
   return true;
 }
 

@@ -45,7 +45,7 @@ defaults:
 
 jobs:
   secrets_check:
-    name: Verify E2E secrets
+    name: Verify E2E secrets (Cart)
     # E82 — PR usa mock-auth; secrets só são necessários em push/dispatch
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-24.04

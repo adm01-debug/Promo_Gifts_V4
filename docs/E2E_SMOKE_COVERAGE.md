@@ -1,6 +1,6 @@
 # Auditoria de cobertura — Smoke E2E
 
-> **Gerado automaticamente** por `scripts/e2e-smoke-coverage-doc.mjs` em 2026-07-17.
+> **Gerado automaticamente** por `scripts/e2e-smoke-coverage-doc.mjs` em 2026-10-18.
 > **Não edite à mão** — a fonte de verdade é `e2e/routes/_catalog.ts` + `SMOKE_COVERAGE` em `e2e/flows/20-all-features-smoke.spec.ts`.
 
 ## Resumo
@@ -9,7 +9,7 @@
 |---|---|
 | Rotas no catálogo | **58** |
 | Rotas `smoke: true` | **30** |
-| Features autenticadas cobertas | **31** |
+| Features autenticadas cobertas | **30** |
 | Smoke público (sem auth) | **0** |
 
 Suíte: [`e2e/flows/20-all-features-smoke.spec.ts`](../e2e/flows/20-all-features-smoke.spec.ts) · Project Playwright: `chromium-smoke` (workers=1, retries=0).
@@ -33,24 +33,23 @@ Ordem do array `SMOKE_COVERAGE`. Numeração bate com os títulos `NN · Nome` n
 | `11` | `quotes-list` | Lista de orçamentos | `/orcamentos` | — |
 | `12` | `quotes-dashboard` | Dashboard de orçamentos | `/orcamentos/dashboard` | — |
 | `13` | `quotes-kanban` | Funil (Kanban) de orçamentos | `/orcamentos/kanban` | — |
-| `14` | `quotes-templates` | ⚠ **ausente no catálogo** | — | — |
-| `15` | `quote-new` | Criar novo orçamento (wizard) | `/orcamentos/novo` | — |
-| `16` | `simulator` | Simulador (wizard) | `/simulador` | — |
-| `17` | `price-simulator` | Simulador de preços | `/simulador-precos` | — |
-| `18` | `price-search` | Busca avançada de preço | `/busca-preco` | — |
-| `19` | `stock` | Estoque | `/estoque` | — |
-| `20` | `restock` | Reposição | `/reposicao` | — |
-| `21` | `kit-builder` | Kit Builder | `/montar-kit` | — |
-| `22` | `my-kits` | Meus Kits | `/meus-kits` | — |
-| `23` | `mockup-generator` | Gerador de Mockup | `/mockup-generator` | — |
-| `24` | `mockup-history` | Histórico de Mockups | `/mockups/historico` | — |
-| `25` | `magic-up` | Magic Up (publicidade IA) | `/magic-up` | — |
-| `26` | `commercial-intel` | Inteligência comercial | `/inteligencia-comercial` | — |
-| `27` | `bi` | Business Intelligence | `/ferramentas/bi` | — |
-| `28` | `bi-compare` | BI — Comparador de clientes | `/ferramentas/bi/comparar` | — |
-| `29` | `match` | Match de produtos | `/match` | — |
-| `30` | `dropbox` | Dropbox browser | `/dropbox` | — |
-| `31` | `magazine-templates-gallery` | Galeria de Templates de Revista | `/magazine/templates` | — |
+| `14` | `quote-new` | Criar novo orçamento (wizard) | `/orcamentos/novo` | — |
+| `15` | `simulator` | Simulador (wizard) | `/simulador` | — |
+| `16` | `price-simulator` | Simulador de preços | `/simulador-precos` | — |
+| `17` | `price-search` | Busca avançada de preço | `/busca-preco` | — |
+| `18` | `stock` | Estoque | `/estoque` | — |
+| `19` | `restock` | Reposição | `/reposicao` | — |
+| `20` | `kit-builder` | Kit Builder | `/montar-kit` | — |
+| `21` | `my-kits` | Meus Kits | `/meus-kits` | — |
+| `22` | `mockup-generator` | Gerador de Mockup | `/mockup-generator` | — |
+| `23` | `mockup-history` | Histórico de Mockups | `/mockups/historico` | — |
+| `24` | `magic-up` | Magic Up (publicidade IA) | `/magic-up` | — |
+| `25` | `commercial-intel` | Inteligência comercial | `/inteligencia-comercial` | — |
+| `26` | `bi` | Business Intelligence | `/ferramentas/bi` | — |
+| `27` | `bi-compare` | BI — Comparador de clientes | `/ferramentas/bi/comparar` | — |
+| `28` | `match` | Match de produtos | `/match` | — |
+| `29` | `dropbox` | Dropbox browser | `/dropbox` | — |
+| `30` | `magazine-templates-gallery` | Galeria de Templates de Revista | `/magazine/templates` | — |
 
 ## Smoke público (sem auth)
 
@@ -62,9 +61,7 @@ Ordem do array `SMOKE_COVERAGE`. Numeração bate com os títulos `NN · Nome` n
 
 ✅ Nenhuma rota `smoke: true` órfã (todas listadas em `SMOKE_COVERAGE`).
 
-### ⚠ Features em `SMOKE_COVERAGE` MAS ausentes (ou `smoke:false`) no catálogo
-
-- `quotes-templates`
+✅ Nenhuma feature fantasma em `SMOKE_COVERAGE`.
 
 ---
 _Para regenerar:_ `node scripts/e2e-smoke-coverage-doc.mjs`

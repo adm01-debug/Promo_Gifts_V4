@@ -40,7 +40,6 @@ test.describe("CRUD Cadastros Admin", () => {
 
     // 3. Buscar e Validar
     await page.fill(Sel.admin.searchInput, supplierName);
-    await page.waitForTimeout(1000);
     const row = page.locator(Sel.admin.table).locator(`text=${supplierName}`);
     await expect(row).toBeVisible();
 

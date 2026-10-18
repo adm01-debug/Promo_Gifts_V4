@@ -55,7 +55,6 @@ test.describe("Quote Builder — Stepper Sticky (regressão responsiva)", () => 
       // 3) Sticky: após scroll, o container sticky permanece no topo (>= 0)
       //    e abaixo do header global (top efetivo deve refletir --header-h).
       await page.evaluate(() => window.scrollBy(0, 800));
-      await page.waitForTimeout(120);
 
       const stickyTop = await wizard.evaluate((el) => {
         let cur: HTMLElement | null = el as HTMLElement;

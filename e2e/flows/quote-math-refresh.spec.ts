@@ -51,7 +51,7 @@ test.describe("E2E: Quote Refresh & Math Validation", () => {
 
     // Refresh para carregar do AutoSave
     await page.reload();
-    await page.waitForTimeout(1000); // Aguarda restauração
+ // Aguarda restauração
 
     // Validar se o item está lá
     await expect(page.locator(Sel.quote.item(0))).toBeVisible();
