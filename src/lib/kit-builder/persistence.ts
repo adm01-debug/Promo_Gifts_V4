@@ -97,8 +97,8 @@ export async function persistCustomKitAtomically({
 
   const { data, error } = await supabase.rpc('save_custom_kit_atomic', {
     p_request_id: requestId,
-    p_kit_id: (kitId ?? null) as unknown as string,
-    p_expected_revision: (kitId ? expectedRevision : null) as unknown as number,
+    p_kit_id: (kitId ?? null)!, // nullable em PG; PostgREST não modela nullability
+    p_expected_revision: (kitId ? expectedRevision : null)!, // idem
     p_payload: payload as unknown as Json,
   });
 

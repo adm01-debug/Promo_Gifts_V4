@@ -11,6 +11,12 @@ type RPCCallerFn<T = unknown> = (
 
 type UnknownData = Record<string, unknown> | null;
 
+// E122 — elimina `as unknown as` em safeAuthCall: adapta qualquer resultado
+// Supabase para o shape genérico { data: UnknownData; error: unknown }.
+function adaptAuth(r: { data: unknown; error: unknown }): { data: UnknownData; error: unknown } {
+  return { data: r.data as UnknownData, error: r.error };
+}
+
 export const authService = {
   async signIn(email: string, password: string, opts?: { captchaToken?: string }) {
     const supabase = await getSupabaseClient();
@@ -36,11 +42,7 @@ export const authService = {
   ): Promise<SafeAuthResult<UnknownData>> {
     const supabase = await getSupabaseClient();
     return safeAuthCall(
-      () =>
-        supabase.auth.signInWithPassword({ email, password }) as unknown as Promise<{
-          data: UnknownData;
-          error: unknown;
-        }>,
+      () => supabase.auth.signInWithPassword({ email, password }).then(adaptAuth),
       { op: 'signIn', signal: opts.signal },
     );
   },
@@ -55,25 +57,23 @@ export const authService = {
     const supabase = await getSupabaseClient();
     return safeAuthCall(
       () =>
-        supabase.auth.signUp({
-          email,
-          password,
-          options: opts.emailRedirectTo ? { emailRedirectTo: opts.emailRedirectTo } : undefined,
-        }) as unknown as Promise<{ data: UnknownData; error: unknown }>,
+        supabase.auth
+          .signUp({
+            email,
+            password,
+            options: opts.emailRedirectTo ? { emailRedirectTo: opts.emailRedirectTo } : undefined,
+          })
+          .then(adaptAuth),
       { op: 'signUp', signal: opts.signal },
     );
   },
 
   async signOutSafe(opts: { signal?: AbortSignal } = {}): Promise<SafeAuthResult<UnknownData>> {
     const supabase = await getSupabaseClient();
-    return safeAuthCall(
-      () =>
-        supabase.auth.signOut({ scope: 'global' }) as unknown as Promise<{
-          data: UnknownData;
-          error: unknown;
-        }>,
-      { op: 'signOut', signal: opts.signal },
-    );
+    return safeAuthCall(() => supabase.auth.signOut({ scope: 'global' }).then(adaptAuth), {
+      op: 'signOut',
+      signal: opts.signal,
+    });
   },
 
   async resetPasswordSafe(
@@ -83,9 +83,11 @@ export const authService = {
     const supabase = await getSupabaseClient();
     return safeAuthCall(
       () =>
-        supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: opts.redirectTo,
-        }) as unknown as Promise<{ data: UnknownData; error: unknown }>,
+        supabase.auth
+          .resetPasswordForEmail(email, {
+            redirectTo: opts.redirectTo,
+          })
+          .then(adaptAuth),
       { op: 'resetPassword', signal: opts.signal },
     );
   },
@@ -95,14 +97,10 @@ export const authService = {
     opts: { signal?: AbortSignal } = {},
   ): Promise<SafeAuthResult<UnknownData>> {
     const supabase = await getSupabaseClient();
-    return safeAuthCall(
-      () =>
-        supabase.auth.updateUser({ password }) as unknown as Promise<{
-          data: UnknownData;
-          error: unknown;
-        }>,
-      { op: 'updatePassword', signal: opts.signal },
-    );
+    return safeAuthCall(() => supabase.auth.updateUser({ password }).then(adaptAuth), {
+      op: 'updatePassword',
+      signal: opts.signal,
+    });
   },
 
   async verifyOtpSafe(
@@ -110,28 +108,20 @@ export const authService = {
     opts: { signal?: AbortSignal } = {},
   ): Promise<SafeAuthResult<UnknownData>> {
     const supabase = await getSupabaseClient();
-    return safeAuthCall(
-      () =>
-        supabase.auth.verifyOtp(params) as unknown as Promise<{
-          data: UnknownData;
-          error: unknown;
-        }>,
-      { op: 'verifyOtp', signal: opts.signal },
-    );
+    return safeAuthCall(() => supabase.auth.verifyOtp(params).then(adaptAuth), {
+      op: 'verifyOtp',
+      signal: opts.signal,
+    });
   },
 
   async refreshSessionSafe(
     opts: { signal?: AbortSignal } = {},
   ): Promise<SafeAuthResult<UnknownData>> {
     const supabase = await getSupabaseClient();
-    return safeAuthCall(
-      () =>
-        supabase.auth.refreshSession() as unknown as Promise<{
-          data: UnknownData;
-          error: unknown;
-        }>,
-      { op: 'refreshSession', signal: opts.signal },
-    );
+    return safeAuthCall(() => supabase.auth.refreshSession().then(adaptAuth), {
+      op: 'refreshSession',
+      signal: opts.signal,
+    });
   },
 
   // ==== Onda 16 — OAuth boot/redirect + PKCE callback ====
@@ -143,10 +133,12 @@ export const authService = {
     const supabase = await getSupabaseClient();
     return safeAuthCall(
       () =>
-        supabase.auth.signInWithOAuth({
-          provider: params.provider,
-          options: params.redirectTo ? { redirectTo: params.redirectTo } : undefined,
-        }) as unknown as Promise<{ data: UnknownData; error: unknown }>,
+        supabase.auth
+          .signInWithOAuth({
+            provider: params.provider,
+            options: params.redirectTo ? { redirectTo: params.redirectTo } : undefined,
+          })
+          .then(adaptAuth),
       { op: 'signInWithOAuth', signal: opts.signal, maxRetries: 1 },
     );
   },
@@ -156,14 +148,11 @@ export const authService = {
     opts: { signal?: AbortSignal } = {},
   ): Promise<SafeAuthResult<UnknownData>> {
     const supabase = await getSupabaseClient();
-    return safeAuthCall(
-      () =>
-        supabase.auth.exchangeCodeForSession(code) as unknown as Promise<{
-          data: UnknownData;
-          error: unknown;
-        }>,
-      { op: 'exchangeCodeForSession', signal: opts.signal, maxRetries: 1 },
-    );
+    return safeAuthCall(() => supabase.auth.exchangeCodeForSession(code).then(adaptAuth), {
+      op: 'exchangeCodeForSession',
+      signal: opts.signal,
+      maxRetries: 1,
+    });
   },
 
   async signOut() {
