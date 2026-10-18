@@ -10,7 +10,7 @@
  * Para auditoria server-side mais forte (ex.: alimentar `admin_audit_log`),
  * use uma edge function com service role — fora do escopo deste helper.
  */
-import { getSupabaseClient } from '@/integrations/supabase/lazy-client';
+import { supabase } from '@/integrations/supabase/client';
 
 const THROTTLE_KEY = 'access_denied_throttle';
 const THROTTLE_MS = 30_000;
@@ -50,7 +50,6 @@ export async function logAccessDenied(input: LogAccessDeniedInput): Promise<void
   saveThrottle(map);
 
   // 1) Notificação visível ao próprio usuário (UX)
-  const supabase = await getSupabaseClient();
   const notify = supabase
     .from('workspace_notifications')
     .insert({

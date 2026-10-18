@@ -18,7 +18,7 @@
  *   console.log('correlation:', r.requestId);
  */
 import { safeAuthCall, type SafeAuthResult } from '@/lib/auth/safeAuthCall';
-import { getSupabaseClient } from '@/integrations/supabase/lazy-client';
+import { supabase } from '@/integrations/supabase/client';
 import { createClientLogger } from '@/lib/telemetry/structuredLogger';
 import { newRequestId, REQUEST_ID_HEADER } from '@/lib/telemetry/requestId';
 import { recordInvokeEvent } from '@/lib/edge/invokeTelemetrySink';
@@ -36,13 +36,7 @@ export function newIdempotencyKey(): string {
 }
 
 export type EdgeErrorKind =
-  | 'client'
-  | 'credential'
-  | 'network'
-  | 'ratelimit'
-  | 'server'
-  | 'timeout'
-  | 'unknown';
+  'client' | 'credential' | 'network' | 'ratelimit' | 'server' | 'timeout' | 'unknown';
 
 /** Resultado estendido: mantém shape do safeAuthCall + requestId de correlação. */
 export type SafeInvokeResult<T> = SafeAuthResult<T> & { requestId: string };
@@ -212,7 +206,7 @@ export async function invokeEdgeSafe<T = unknown>(
   recordInvokeEvent({ ts: startedAt, kind: 'start', fn: fnName, requestId });
 
   const call = async (): Promise<{ data: T | null; error: NormalizedError | null }> => {
-    const supa = await getSupabaseClient();
+    const supa = supabase;
     // `body` é `unknown` na nossa API pública; o cliente aceita apenas tipos
     // serializáveis. Cast defensivo mantém o contrato do wrapper.
     const { data, error } = await supa.functions.invoke<T>(fnName, {

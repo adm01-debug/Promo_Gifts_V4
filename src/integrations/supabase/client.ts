@@ -3,9 +3,7 @@ import type { Database } from "./types";
 
 import { createClientLogger } from '@/lib/telemetry/structuredLogger';
 import { newRequestId, REQUEST_ID_HEADER } from '@/lib/telemetry/requestId';
-// Interceptor global 401/403 (incidente 2026-10-13): session-recovery.ts só
-// importa este módulo via dynamic import dentro de getSupabaseClient() — sem
-// ciclo em tempo de avaliação do módulo (ver lazy-client.ts).
+// Interceptor global 401/403 (incidente 2026-10-13).
 import { maybeRecoverFromError } from '@/lib/auth/session-recovery';
 
 const log = createClientLogger('supabase.client');

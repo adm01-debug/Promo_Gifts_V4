@@ -1,4 +1,4 @@
-import { getSupabaseClient } from '@/integrations/supabase/lazy-client';
+import { supabase } from '@/integrations/supabase/client';
 import type { Json } from '@/integrations/supabase/types';
 
 import { logger } from '@/lib/logger';
@@ -118,7 +118,6 @@ class TelemetryService {
     }
 
     try {
-      const supabase = await getSupabaseClient();
       const { error } = await supabase.from('frontend_telemetry').insert(batch);
       if (error) {
         // Não re-bufferiza pra evitar loop infinito se erro for RLS/quota

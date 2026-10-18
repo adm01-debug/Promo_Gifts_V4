@@ -1,4 +1,4 @@
-import { getSupabaseClient } from '@/integrations/supabase/lazy-client';
+import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import { safeAuthCall, type SafeAuthResult } from '@/lib/auth/safeAuthCall';
 import type { PostgrestError } from '@supabase/supabase-js';
@@ -20,7 +20,6 @@ function adaptAuth(r: { data?: unknown; error: unknown }): { data: UnknownData; 
 
 export const authService = {
   async signIn(email: string, password: string, opts?: { captchaToken?: string }) {
-    const supabase = await getSupabaseClient();
     return supabase.auth.signInWithPassword({
       email,
       password,
@@ -41,7 +40,6 @@ export const authService = {
     password: string,
     opts: { signal?: AbortSignal } = {},
   ): Promise<SafeAuthResult<UnknownData>> {
-    const supabase = await getSupabaseClient();
     return safeAuthCall(
       () => supabase.auth.signInWithPassword({ email, password }).then(adaptAuth),
       { op: 'signIn', signal: opts.signal },
@@ -55,7 +53,6 @@ export const authService = {
     password: string,
     opts: { signal?: AbortSignal; emailRedirectTo?: string } = {},
   ): Promise<SafeAuthResult<UnknownData>> {
-    const supabase = await getSupabaseClient();
     return safeAuthCall(
       () =>
         supabase.auth
@@ -70,7 +67,6 @@ export const authService = {
   },
 
   async signOutSafe(opts: { signal?: AbortSignal } = {}): Promise<SafeAuthResult<UnknownData>> {
-    const supabase = await getSupabaseClient();
     return safeAuthCall(() => supabase.auth.signOut({ scope: 'global' }).then(adaptAuth), {
       op: 'signOut',
       signal: opts.signal,
@@ -81,7 +77,6 @@ export const authService = {
     email: string,
     opts: { signal?: AbortSignal; redirectTo?: string } = {},
   ): Promise<SafeAuthResult<UnknownData>> {
-    const supabase = await getSupabaseClient();
     return safeAuthCall(
       () =>
         supabase.auth
@@ -97,7 +92,6 @@ export const authService = {
     password: string,
     opts: { signal?: AbortSignal } = {},
   ): Promise<SafeAuthResult<UnknownData>> {
-    const supabase = await getSupabaseClient();
     return safeAuthCall(() => supabase.auth.updateUser({ password }).then(adaptAuth), {
       op: 'updatePassword',
       signal: opts.signal,
@@ -108,7 +102,6 @@ export const authService = {
     params: { email: string; token: string; type: 'email' | 'magiclink' | 'recovery' },
     opts: { signal?: AbortSignal } = {},
   ): Promise<SafeAuthResult<UnknownData>> {
-    const supabase = await getSupabaseClient();
     return safeAuthCall(() => supabase.auth.verifyOtp(params).then(adaptAuth), {
       op: 'verifyOtp',
       signal: opts.signal,
@@ -118,7 +111,6 @@ export const authService = {
   async refreshSessionSafe(
     opts: { signal?: AbortSignal } = {},
   ): Promise<SafeAuthResult<UnknownData>> {
-    const supabase = await getSupabaseClient();
     return safeAuthCall(() => supabase.auth.refreshSession().then(adaptAuth), {
       op: 'refreshSession',
       signal: opts.signal,
@@ -131,7 +123,6 @@ export const authService = {
     params: { provider: 'apple' | 'google'; redirectTo?: string },
     opts: { signal?: AbortSignal } = {},
   ): Promise<SafeAuthResult<UnknownData>> {
-    const supabase = await getSupabaseClient();
     return safeAuthCall(
       () =>
         supabase.auth
@@ -148,7 +139,6 @@ export const authService = {
     code: string,
     opts: { signal?: AbortSignal } = {},
   ): Promise<SafeAuthResult<UnknownData>> {
-    const supabase = await getSupabaseClient();
     return safeAuthCall(() => supabase.auth.exchangeCodeForSession(code).then(adaptAuth), {
       op: 'exchangeCodeForSession',
       signal: opts.signal,
@@ -157,7 +147,6 @@ export const authService = {
   },
 
   async signOut() {
-    const supabase = await getSupabaseClient();
     try {
       await Promise.race([
         supabase.rpc('log_user_logout'),
@@ -172,7 +161,6 @@ export const authService = {
   },
 
   async fetchAAL() {
-    const supabase = await getSupabaseClient();
     const [{ data: aalData }, { data: factorsData }] = await Promise.all([
       supabase.auth.mfa.getAuthenticatorAssuranceLevel(),
       supabase.auth.mfa.listFactors(),
@@ -189,7 +177,6 @@ export const authService = {
    * Mantido para callers legados fora do useProfileRoles.
    */
   async queryRoles(userId: string) {
-    const supabase = await getSupabaseClient();
     return supabase.from('user_roles').select('role').eq('user_id', userId);
   },
 
@@ -201,7 +188,6 @@ export const authService = {
     data: { profile: Record<string, unknown> | null; roles: string[] | null } | null;
     error: PostgrestError | null;
   }> {
-    const supabase = await getSupabaseClient();
     const caller = supabase.rpc as unknown as RPCCallerFn<{
       profile: Record<string, unknown> | null;
       roles: string[] | null;
@@ -210,12 +196,10 @@ export const authService = {
   },
 
   async fetchProfile(userId: string) {
-    const supabase = await getSupabaseClient();
     return supabase.from('profiles').select('*').eq('user_id', userId).single();
   },
 
   async updateLastLogin(userId: string) {
-    const supabase = await getSupabaseClient();
     return supabase
       .from('profiles')
       .update({ last_login_at: new Date().toISOString() })

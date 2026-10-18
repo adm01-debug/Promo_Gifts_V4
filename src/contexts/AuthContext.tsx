@@ -9,7 +9,7 @@ import {
   type ReactNode,
 } from 'react';
 import { type User, type Session, type AuthError } from '@supabase/supabase-js';
-import { getSupabaseClient } from '@/integrations/supabase/lazy-client';
+import { supabase } from '@/integrations/supabase/client';
 import { createClientLogger } from '@/lib/telemetry/structuredLogger';
 import { checkLoginAllowed, recordFailedAttempt, clearLoginAttempts } from '@/lib/auth/rate-limit';
 import { toast } from 'sonner';
@@ -122,7 +122,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const log = createClientLogger('auth.refreshSession');
     log.info('start');
     try {
-      const supabase = await getSupabaseClient();
       // Onda 13 — refreshSession via wrapper Safe (timeout + retry + breaker).
       const res = await authService.refreshSessionSafe();
 
@@ -174,13 +173,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // em focus/online/visibility e dispara recovery se detectar bad_jwt.
     const detachRevalidation = attachSessionRevalidation();
 
-    void getSupabaseClient().then((supabase) => {
-      // BUG-2 FIX: flag local para coordenar onAuthStateChange com getSession().
-      // onAuthStateChange dispara INITIAL_SESSION antes de getSession() resolver;
-      // sem essa flag, ambos chamam fetchUserData para o mesmo userId, resultando
-      // em duas requests idênticas em ~300ms de intervalo.
-      let initialFetchScheduled = false;
+    // BUG-2 FIX: flag local para coordenar onAuthStateChange com getSession().
+    // onAuthStateChange dispara INITIAL_SESSION antes de getSession() resolver;
+    // sem essa flag, ambos chamam fetchUserData para o mesmo userId, resultando
+    // em duas requests idênticas em ~300ms de intervalo.
+    let initialFetchScheduled = false;
 
+    {
       const {
         data: { subscription },
       } = supabase.auth.onAuthStateChange((event, newSession) => {
@@ -269,7 +268,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setIsLoading(false);
         }
       });
-    });
+    }
 
     return () => {
       mountedRef.current = false;
