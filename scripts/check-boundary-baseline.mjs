@@ -41,9 +41,14 @@ const SPEC_RE = new RegExp(
     `${LB}import\\s*['"\`]([^'"\`]+)['"\`]`, // bare `import'x'` — sem espaço é sintaxe válida
     `${LB}require\\s*\\(\\s*['"]([^'"]+)['"]`,
     `${GLOB_HEAD}\\s*\\(\\s*['"]([^'"]+)['"]`,
-    `${WORKER_HEAD}\\s*(?:new\\s+URL\\s*\\(\\s*)?['"]([^'"]+)['"]`,
-    `${MOCK_HEAD}\\s*\\(\\s*['"]([^'"]+)['"]`,
-    `${SW_HEAD}\\s*\\(\\s*['"]([^'"]+)['"]`,
+    `${WORKER_HEAD}\\s*['"\`]([^'"\`]+)['"\`]`,
+    // `new Worker(new URL('x', import.meta.url))` — só resolve quando o
+    // construtor é o ÚNICO arg do Worker (options `{...}` depois ok).
+    // Qualquer sufixo/transformação (.href, .toString(), +, outra base,
+    // arg extra no URL) cai no braço dinâmico abaixo.
+    `${WORKER_HEAD}\\s*new\\s+URL\\s*\\(\\s*['"\`]([^'"\`]+)['"\`]\\s*,\\s*import\\s*\\.\\s*meta\\s*\\.\\s*url\\s*\\)\\s*(?:,\\s*[^)]*)?\\)`,
+    `${MOCK_HEAD}\\s*\\(\\s*['"\`]([^'"\`]+)['"\`]`,
+    `${SW_HEAD}\\s*\\(\\s*['"\`]([^'"\`]+)['"\`]`,
   ].join('|'),
   'g',
 );
@@ -79,11 +84,13 @@ const DYNAMIC_RE = new RegExp(
     `${GLOB_HEAD}\\s*\\(\\s*[^'"\\[\\s)]`,
     `${MOCK_HEAD}\\s*\\(\\s*[^'"\\s)]`,
     `${SW_HEAD}\\s*\\(\\s*[^'"\\s)]`,
-    // `new Worker(v)` flaga; `new Worker(new URL('lit', import.meta.url))` é
-    // LITERAL (o braço de SPEC_RE resolve) — sem o lookahead o 'n' de `new`
-    // casaria `[^'"\\s)]` quando o grupo opcional retrocede (falso dinâmico).
-    `${WORKER_HEAD}\\s*new\\s+URL\\s*\\(\\s*[^'"\\s)]`,
-    `${WORKER_HEAD}\\s*(?!new\\s+URL\\b)[^'"\\s)]`,
+    // `new URL(v, ...)` — 1º arg não-literal → não-auditável.
+    `${WORKER_HEAD}\\s*new\\s+URL\\s*\\(\\s*[^'"\`\\s)]`,
+    // `new URL('lit', ...)` literal mas NÃO isolado como único arg do
+    // Worker: sufixo/transformação (.href, .toString(), +, base !=
+    // import.meta.url, arg extra no URL) muda a URL final — não resolve.
+    `${WORKER_HEAD}\\s*new\\s+URL\\s*\\(\\s*['"\`][^'"\`]*['"\`](?!\\s*,\\s*import\\s*\\.\\s*meta\\s*\\.\\s*url\\s*\\)\\s*(?:,\\s*[^)]*)?\\))`,
+    `${WORKER_HEAD}\\s*(?!new\\s+URL\\b)[^'"\`\\s)]`,
   ].join('|'),
   'g',
 );
