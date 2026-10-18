@@ -10,7 +10,7 @@ export async function querySupabaseReadOnly(sql) {
   const projectRef = process.env.SUPABASE_PROJECT_REF;
 
   if (accessToken && projectRef) {
-    return fetchRows({
+    return fetchRowsWithRetry({
       endpoint: `https://api.supabase.com/v1/projects/${encodeURIComponent(projectRef)}/database/query/read-only`,
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -25,8 +25,8 @@ export async function querySupabaseReadOnly(sql) {
   const url = process.env.VITE_SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (url && serviceRoleKey) {
-    return fetchRows({
-      endpoint: `${url.replace(/\/$/, '')}/pg-meta/default/query`,
+    return fetchRowsWithRetry({
+      endpoint: `${url.replace(/\/$/,  '')}/pg-meta/default/query`,
       headers: {
         apikey: serviceRoleKey,
         Authorization: `Bearer ${serviceRoleKey}`,
@@ -39,6 +39,30 @@ export async function querySupabaseReadOnly(sql) {
   }
 
   return { kind: 'missing-config' };
+}
+
+// E56: retry 3× com backoff exponencial (1s, 2s, 4s) para 429/5xx transitórios.
+// Após esgotar tentativas, 429/5xx retorna http-error → INCONCLUSIVE (não STATIC_PASS).
+async function sleep(ms) {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
+async function fetchRowsWithRetry(opts, maxRetries = 3) {
+  let lastResult;
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    if (attempt > 0) {
+      await sleep(1000 * Math.pow(2, attempt - 1));
+      process.stderr.write(
+        `[supabase-read-only-query] HTTP ${lastResult.httpStatus} — retry ${attempt}/${maxRetries}\n`,
+      );
+    }
+    lastResult = await fetchRows(opts);
+    const isTransient =
+      lastResult.kind === 'http-error' &&
+      (lastResult.httpStatus === 429 || lastResult.httpStatus >= 500);
+    if (!isTransient) return lastResult;
+  }
+  return lastResult;
 }
 
 async function fetchRows({ endpoint, headers, body, source, target }) {

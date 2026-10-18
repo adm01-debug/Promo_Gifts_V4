@@ -1,5 +1,8 @@
 title = "Promo Gifts — Gitleaks Config"
 
+[extend]
+useDefault = true
+
 # ─── Valores públicos conhecidos ──────────────────────────────────────────────
 # A Supabase publishable key (formato sb_publishable_*) é explicitamente
 # projetada para ser embutida em código de browser (prefixo VITE_).
@@ -23,3 +26,7 @@ regexes = [
   # Chave anon é pública por design (role sem privilégios, embutida nos bundles).
   '''eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRvdWZzeHFsZmp5dXZ4dWV6cGxuIiwicm9sZSI6ImFub24i''',
 ]
+
+# Commit histórico com service_role hardcoded (E002 removeu do código fonte).
+# A chave precisa ser rotacionada (E001, PO) antes de remover esta entrada.
+commits = ["b5e044f459c0a755b12c47403fa4ff2014be955e"]

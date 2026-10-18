@@ -6,6 +6,10 @@
       "ref": "qa/migrations-draft/2026-07-12_magazine_items_unique_product.sql"
     },
     {
+      "file": ".github/workflows/deploy-gates.yml",
+      "ref": "supabase/migrations-snapshot/ALL_IN_ONE"
+    },
+    {
       "file": ".github/workflows/drafts-index-check.yml",
       "ref": "qa/migrations-draft/PR_COMMENT.md"
     },
@@ -94,6 +98,10 @@
       "ref": "supabase/migrations/README.md"
     },
     {
+      "file": "graphify-out/manifest.json",
+      "ref": "supabase/migrations-snapshot/SCHEMA_DRIFT.sql"
+    },
+    {
       "file": "qa/reports/magazine-exhaustive-validation-2026-07-15.md",
       "ref": "qa/migrations-draft/2026-07-12_magazine_items_unique_product.sql"
     },
@@ -140,6 +148,14 @@
     {
       "file": "tests/security/restore-seller-cart-rpc.test.ts",
       "ref": "supabase/migrations/20260713101342_...sql"
+    },
+    {
+      "file": ".github/workflows/schema-snapshot-export.yml",
+      "ref": "supabase/migrations-snapshot/SCHEMA_DRIFT.sql"
+    },
+    {
+      "file": "graphify-out/manifest.json",
+      "ref": "supabase/migrations-snapshot/SCHEMA_DRIFT.sql"
     }
   ]
 }

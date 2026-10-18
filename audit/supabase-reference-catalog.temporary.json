@@ -490,6 +490,14 @@
       "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
     },
     {
+      "kind": "rpc",
+      "file": "src/hooks/auth/useProfileRoles.ts",
+      "receiver": "(supabase as unknown as { rpc: RPCCallerFn }).rpc",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico legado: `(supabase as unknown as { rpc: RPCCallerFn }).rpc.bind(supabase)` restaura o this binding — visível ao gate desde que `.bind`/`.call`/`.apply` passaram a ser inspecionados (auditoria adversarial de gates, 2026-10-18); nova ocorrência exige revisão de contrato."
+    },
+    {
       "kind": "relation",
       "file": "src/hooks/common/useOrgData.ts",
       "receiver": "supabase",

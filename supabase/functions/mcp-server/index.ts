@@ -9,6 +9,7 @@ import { createClient } from "@supabase/supabase-js";
 import { getOrCreateRequestId, REQUEST_ID_HEADER } from "../_shared/request-id.ts";
 import { summarizePayload } from "../_shared/audit-log.ts";
 import { castRpcResult } from "../_shared/supabase-client-adapter.ts";
+import { z } from "../_shared/zod-validate.ts";
 
 // Fallback CORS headers — sobrescritos per-request via getCorsHeaders(c.req.raw).
 let corsHeaders: Record<string, string> = buildPublicCorsHeaders();
@@ -57,6 +58,7 @@ const ERR = {
   KEY_AUTO_REVOKED_DEV: "MCP_KEY_AUTO_REVOKED_DEV_LOST",
   SCOPE_MISSING: "MCP_SCOPE_MISSING",
   WRITE_FORBIDDEN: "MCP_WRITE_FORBIDDEN",
+  INVALID_PARAMS: "MCP_INVALID_PARAMS",
   INTERNAL: "MCP_INTERNAL_ERROR",
 } as const;
 
@@ -214,6 +216,7 @@ function defineTool<I>(
   guard: ToolGuard,
   description: string,
   inputSchema: Record<string, unknown>,
+  inputValidator: z.ZodTypeAny,
   handler: ToolHandler<I>,
 ) {
   mcpServer.tool(name, {
@@ -225,7 +228,22 @@ function defineTool<I>(
       const payloadSummary = summarizePayload(input);
       try {
         const authed = authorizeTool(ctx, name, guard);
-        const result = await handler(input, authed);
+        // inputSchema (JSON Schema) é só advertise pro cliente — o mcp-lite
+        // não o aplica. O zod schema é o enforcement real dos argumentos,
+        // com os mesmos tipos do contrato anunciado.
+        const parsedInput = inputValidator.safeParse(input);
+        if (!parsedInput.success) {
+          const issues = parsedInput.error.issues
+            .map((i) => `${i.path.join(".") || "(root)"}: ${i.message}`)
+            .join("; ");
+          throw new McpAuthError(
+            ERR.INVALID_PARAMS,
+            `Argumentos inválidos: ${issues}`,
+            400,
+            { issues },
+          );
+        }
+        const result = await handler(parsedInput.data as I, authed);
         await audit(
           "mcp_tool.granted",
           authed,
@@ -284,6 +302,12 @@ defineTool<{ status?: string; limit?: number }>(
       limit: { type: "number", description: "Máximo 50", default: 20 },
     },
   },
+  // limit: o handler faz clamp 1..50 — o schema só valida o tipo (coerce
+  // preserva o Number() legado, que aceitava "30"; null cai no default 20).
+  z.object({
+    status: z.string().nullish(),
+    limit: z.coerce.number().nullish(),
+  }).passthrough(),
   async ({ status, limit }) => {
     const lim = Math.min(Math.max(Number(limit ?? 20), 1), 50);
     let q = supabase.from("quotes").select(
@@ -305,6 +329,7 @@ defineTool<{ id: string }>(
     required: ["id"],
     properties: { id: { type: "string", description: "UUID do orçamento" } },
   },
+  z.object({ id: z.string().min(1) }).passthrough(),
   async ({ id }) => {
     const { data, error } = await supabase.from("quotes").select("*, quote_items(*)").eq("id", id).maybeSingle();
     if (error) throw new Error(error.message);
@@ -320,6 +345,10 @@ defineTool<{ search?: string; limit?: number }>(
     type: "object",
     properties: { search: { type: "string" }, limit: { type: "number", default: 20 } },
   },
+  z.object({
+    search: z.string().nullish(),
+    limit: z.coerce.number().nullish(),
+  }).passthrough(),
   async ({ search, limit }) => {
     const lim = Math.min(Math.max(Number(limit ?? 20), 1), 50);
     let q = supabase.from("quotes").select("client_name, client_email, client_company")
@@ -339,6 +368,9 @@ defineTool<{ limit?: number }>(
     type: "object",
     properties: { limit: { type: "number", default: 20 } },
   },
+  z.object({
+    limit: z.coerce.number().nullish(),
+  }).passthrough(),
   async ({ limit }) => {
     const lim = Math.min(Math.max(Number(limit ?? 20), 1), 50);
     const { data, error } = await supabase.from("orders").select(

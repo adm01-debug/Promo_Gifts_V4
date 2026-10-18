@@ -525,6 +525,50 @@ export function checkC24NpmInstallInRun({ file, text }) {
   return violations;
 }
 
+// C25 — E2E_USER_* secrets only in workflows that call `playwright test` with authed project (E33)
+// Authed = project name contains "authed" or "setup" or "chromium-smoke", incl. matrix variables
+// Approach: if the whole file text references any authed project AND has playwright test, OK.
+export function checkC25E2ECredsOnlyInAuthedJobs({ file, text, doc }) {
+  const violations = [];
+  if (!doc || !doc.jobs) return violations;
+  const CRED_KEYS = ['E2E_USER_EMAIL', 'E2E_USER_PASSWORD'];
+  // Match authed project patterns anywhere in file (literal or matrix refs like chromium-authed)
+  const AUTH_PATTERN = /(-authed|chromium-smoke|--project=setup|project:\s*(setup|.*-authed))/;
+  // File has playwright test at all
+  const hasPWTest = /playwright\s+test/.test(text);
+  // File references an authed project anywhere (literal or in matrix)
+  const fileHasAuthedRef = AUTH_PATTERN.test(text);
+
+  function envHasCreds(envObj) {
+    if (!envObj || typeof envObj !== 'object') return false;
+    return CRED_KEYS.some((k) => k in envObj);
+  }
+
+  // If the whole workflow has creds + playwright test but NEVER an authed project ref → flag
+  const anyJobHasCreds = Object.values(doc.jobs).some((job) => envHasCreds(job.env));
+  if (!anyJobHasCreds) return violations;
+
+  if (hasPWTest && fileHasAuthedRef) return violations; // legitimate
+
+  // Check per-job: flag jobs that set creds but there's no authed usage in the entire file
+  for (const [jobId, job] of Object.entries(doc.jobs)) {
+    if (!envHasCreds(job.env)) continue;
+    // If this file has playwright test but no authed ref anywhere → violation
+    if (hasPWTest && !fileHasAuthedRef) {
+      violations.push(
+        `${file}: job '${jobId}' sets E2E_USER_* in env: but file never references authed playwright project — remove creds (E33/C25)`,
+      );
+    }
+    // If this file has no playwright test at all → also flag
+    if (!hasPWTest) {
+      violations.push(
+        `${file}: job '${jobId}' sets E2E_USER_* in env: but file has no playwright test call — remove creds (E33/C25)`,
+      );
+    }
+  }
+  return violations;
+}
+
 // ---------------------------------------------------------------------------
 // Filesystem helpers
 // ---------------------------------------------------------------------------
@@ -583,7 +627,7 @@ export function runChecks(rootDir = ROOT) {
       ...checkC6PlaywrightProjects(wf, playwrightProjects),
       ...checkC7NpmScripts(wf, packageScripts),
       ...checkC8NodeScripts(wf, rootDir),
-      // C10–C23 (E76, 2026-10-14)
+      // C10–C25 (E76/E33, 2026-10-14/2026-10-18)
       ...checkC10PersistCredentials(wf),
       ...checkC11ShellStrict(wf),
       ...checkC12NoContentsWriteInPR(wf),
@@ -599,6 +643,7 @@ export function runChecks(rootDir = ROOT) {
       ...checkC22NoGitPushInPR(wf),
       ...checkC23NoLiteralNodeVersion(wf),
       ...checkC24NpmInstallInRun(wf),
+      ...checkC25E2ECredsOnlyInAuthedJobs(wf),
       ...checkC26NpxUnknownPkg(wf, rootDir),
     );
   }
@@ -631,6 +676,7 @@ export function runChecks(rootDir = ROOT) {
       C22: all.filter((v) => v.includes('git push')).length,
       C23: all.filter((v) => v.includes('literal node-version')).length,
       C24: all.filter((v) => v.includes('npm install in run')).length,
+      C25: all.filter((v) => v.includes('E2E_USER_*')).length,
       C26: all.filter((v) => v.includes('npx') && v.includes('node_modules/.bin')).length,
     },
     workflowCount: workflows.length,
@@ -692,6 +738,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
   console.log(`  C22 git push in PR:       ${counts.C22}`);
   console.log(`  C23 literal node-ver:     ${counts.C23}`);
   console.log(`  C24 npm install in run:   ${counts.C24}`);
+  console.log(`  C25 E2E creds isolated:   ${counts.C25}`);
   console.log(`  C26 npx unknown pkg:      ${counts.C26}`);
 
   if (fresh.length > 0) {

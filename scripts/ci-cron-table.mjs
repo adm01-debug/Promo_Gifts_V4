@@ -1,227 +1,231 @@
 #!/usr/bin/env node
 /**
- * ci-cron-table.mjs — E89
- * Lê todos os .github/workflows/*.yml e produz:
- *   1. Tabela Markdown de crons ordenada por horário UTC
- *   2. Detecção de colisões entre workflows que usam PAT (SUPABASE_ACCESS_TOKEN)
- *      com menos de 20 min de intervalo
+ * E89: ci-cron-table.mjs
  *
- * Uso: node scripts/ci-cron-table.mjs [--check]
- *   --check  sai com código 1 se houver colisões de PAT
+ * Valida o espaçamento entre crons privilegiados (PAT/ci_readonly) e
+ * gera a tabela de `docs/ci/PADRAO_WORKFLOW.md`.
+ *
+ * Regra: workflows que usam PAT ou CI_READONLY devem ter crons
+ * separados por ≥ MIN_SPACING minutos quando disputam o mesmo slot semanal.
+ *
+ * Uso: node scripts/ci-cron-table.mjs [--json] [--min-spacing N]
+ * Saída: tabela Markdown + resumo; exit 1 se colisão.
  */
 
 import { readFileSync, readdirSync } from 'fs';
-import { join } from 'path';
+import { join, basename, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
-const WORKFLOWS_DIR = '.github/workflows';
-const PAT_MARKER = 'SUPABASE_ACCESS_TOKEN';
-const GAP_MINUTES = 20;
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const WORKFLOWS_DIR = join(__dirname, '..', '.github', 'workflows');
+const DOW_NAMES = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
-// --- helpers ---
+const args = process.argv.slice(2);
+const JSON_MODE = args.includes('--json');
+const minSpacingArg = args.indexOf('--min-spacing');
+const MIN_SPACING = minSpacingArg !== -1 ? parseInt(args[minSpacingArg + 1]) : 20;
 
-function parseCronFields(expr) {
+// Patterns that indicate a workflow uses a privileged token (PAT or read-only service token)
+const PRIVILEGED_PATTERNS = [
+  /secrets\.GH_PAT\b/,
+  /secrets\.CI_READONLY\b/,
+  /secrets\.GH_TOKEN\b/,
+  /secrets\.DEPLOY_PAT\b/,
+  /secrets\.ADMIN_TOKEN\b/,
+  /secrets\.PAT\b/,
+  /secrets\.SUPABASE_ACCESS_TOKEN\b/,
+];
+
+/** Returns all workflow YAML files */
+function getWorkflowFiles() {
+  try {
+    return readdirSync(WORKFLOWS_DIR)
+      .filter(f => f.endsWith('.yml') || f.endsWith('.yaml'))
+      .map(f => join(WORKFLOWS_DIR, f));
+  } catch {
+    console.error(`Erro: não encontrou ${WORKFLOWS_DIR}`);
+    process.exit(1);
+  }
+}
+
+/** Extracts all cron expressions from a workflow file's content */
+function extractCrons(content) {
+  const crons = [];
+  const cronLineRe = /^\s+-\s+cron:\s*['"]?([^'"#\n]+?)['"]?\s*(?:#.*)?$/gm;
+  let m;
+  while ((m = cronLineRe.exec(content)) !== null) {
+    const expr = m[1].trim();
+    if (expr) crons.push(expr);
+  }
+  return crons;
+}
+
+/** Returns true if the workflow content uses a privileged token */
+function isPrivileged(content) {
+  return PRIVILEGED_PATTERNS.some(p => p.test(content));
+}
+
+/**
+ * Parses a 5-field cron expression into a list of weekly firing times.
+ * Returns null if unparseable. Each item: { day, hour, minute, weekMinute }.
+ * weekMinute = day*1440 + hour*60 + minute (Mon=1 → 1440..2879)
+ */
+function parseCron(expr) {
   const parts = expr.trim().split(/\s+/);
   if (parts.length !== 5) return null;
-  const [min, hour, dom, month, dow] = parts;
-  return { min, hour, dom, month, dow, raw: expr.trim() };
-}
 
-function cronToLabel(f) {
-  if (!f) return '?';
-  // */N pattern
-  if (f.min.startsWith('*/')) {
-    const n = f.min.slice(2);
-    return `a cada ${n}min`;
-  }
-  if (f.hour.startsWith('*/')) {
-    const n = f.hour.slice(2);
-    const minPad = f.min.padStart(2, '0');
-    return `a cada ${n}h (xx:${minPad})`;
-  }
-  // numeric hour:min
-  const h = f.hour.padStart(2, '0');
-  const m = f.min.padStart(2, '0');
-  const timeStr = `${h}:${m} UTC`;
-  const days = {
-    '0': 'dom', '1': 'seg', '2': 'ter', '3': 'qua',
-    '4': 'qui', '5': 'sex', '6': 'sáb',
-    '*': 'diário',
+  const [minuteF, hourF, , , dowF] = parts;
+
+  const expand = (field, max) => {
+    if (field === '*') return Array.from({ length: max + 1 }, (_, i) => i);
+    if (/^\*\/\d+$/.test(field)) {
+      const step = parseInt(field.slice(2));
+      const r = [];
+      for (let i = 0; i <= max; i += step) r.push(i);
+      return r;
+    }
+    if (field.includes(',')) return field.split(',').map(Number);
+    if (/^\d+-\d+$/.test(field)) {
+      const [a, b] = field.split('-').map(Number);
+      return Array.from({ length: b - a + 1 }, (_, i) => a + i);
+    }
+    const n = parseInt(field);
+    return isNaN(n) ? null : [n];
   };
-  const dayLabel = days[f.dow] ?? f.dow;
-  if (f.dom !== '*') return `${timeStr} (dias ${f.dom})`;
-  return f.dow === '*' ? `${timeStr} diário` : `${timeStr} ${dayLabel}`;
-}
 
-// Returns minutes-since-midnight for a simple cron, or null for */N patterns.
-// For */N hour patterns (e.g. "17 */6"), expands to all firing minutes in 24h.
-function cronToMinutes(f) {
-  if (!f) return null;
-  if (f.min.startsWith('*/') || f.hour.startsWith('*/')) return null;
-  const h = parseInt(f.hour, 10);
-  const m = parseInt(f.min, 10);
-  if (isNaN(h) || isNaN(m)) return null;
-  return h * 60 + m;
-}
+  const minutes = expand(minuteF, 59);
+  const hours = expand(hourF, 23);
+  const rawDows = dowF === '*' ? [0, 1, 2, 3, 4, 5, 6] : expand(dowF, 7);
+  if (!minutes || !hours || !rawDows) return null;
+  const dows = [...new Set(rawDows.map(d => d % 7))];
 
-// Expands a cron into all minutes-since-midnight values it fires at in 24h.
-// Simple "H M" → [H*60+M]; "M */N" → fires at 0,N,2N,... hours at minute M.
-function cronToAllMinutes(f) {
-  if (!f) return [];
-  const m = parseInt(f.min, 10);
-  if (isNaN(m) || f.min.startsWith('*/')) return [];
-  if (f.hour.startsWith('*/')) {
-    const step = parseInt(f.hour.slice(2), 10);
-    if (isNaN(step) || step <= 0) return [];
-    const result = [];
-    for (let h = 0; h < 24; h += step) result.push(h * 60 + m);
-    return result;
-  }
-  const h = parseInt(f.hour, 10);
-  if (isNaN(h)) return [];
-  return [h * 60 + m];
-}
-
-// --- read workflows ---
-
-const files = readdirSync(WORKFLOWS_DIR)
-  .filter((f) => f.endsWith('.yml') || f.endsWith('.yaml'))
-  .sort();
-
-const rows = [];
-
-for (const fname of files) {
-  const path = join(WORKFLOWS_DIR, fname);
-  const text = readFileSync(path, 'utf8');
-
-  // Extract workflow name (first `name:` line)
-  const nameMatch = text.match(/^name:\s*(.+)/m);
-  const wfName = nameMatch ? nameMatch[1].trim() : fname.replace('.yml', '');
-
-  // Extract cron expressions
-  const cronMatches = [...text.matchAll(/- cron:\s*['"]([^'"]+)['"]/g)];
-  if (cronMatches.length === 0) continue;
-
-  // Check PAT usage (only in non-commented lines)
-  const nonCommentLines = text
-    .split('\n')
-    .filter((l) => !l.trimStart().startsWith('#'))
-    .join('\n');
-  const usesPat = nonCommentLines.includes(PAT_MARKER);
-
-  for (const m of cronMatches) {
-    const raw = m[1];
-    // Skip commented-out crons (the line before the match contains #)
-    const matchIndex = m.index;
-    const lineStart = text.lastIndexOf('\n', matchIndex) + 1;
-    const lineContent = text.slice(lineStart, matchIndex + m[0].length);
-    if (lineContent.trimStart().startsWith('#')) continue;
-
-    const fields = parseCronFields(raw);
-    rows.push({
-      file: fname,
-      name: wfName,
-      raw,
-      label: cronToLabel(fields),
-      minutes: cronToMinutes(fields),
-      fields,
-      usesPat,
-    });
-  }
-}
-
-// Sort: null (*/N) first, then by minutes
-rows.sort((a, b) => {
-  if (a.minutes === null && b.minutes === null) return a.raw.localeCompare(b.raw);
-  if (a.minutes === null) return -1;
-  if (b.minutes === null) return 1;
-  return a.minutes - b.minutes;
-});
-
-// --- detect PAT collisions ---
-
-// Expand each PAT row into individual firing entries (handles */N patterns).
-const patEntries = [];
-for (const r of rows) {
-  if (!r.usesPat) continue;
-  const allMins = cronToAllMinutes(r.fields);
-  for (const mins of allMins) {
-    patEntries.push({ ...r, minutes: mins });
-  }
-}
-
-const collisions = [];
-
-// Group by day-of-week; a "daily (*)" entry overlaps every specific weekday.
-const dowGroups = {};
-for (const e of patEntries) {
-  const key = e.fields?.dow ?? '*';
-  if (!dowGroups[key]) dowGroups[key] = [];
-  dowGroups[key].push(e);
-}
-
-// Also merge daily (*) entries into every weekday group for cross-day collision check.
-const dailyEntries = dowGroups['*'] ?? [];
-
-// For each group (including '*' vs specific day), check adjacent gaps
-const allDowKeys = new Set([...Object.keys(dowGroups)]);
-for (const dow of allDowKeys) {
-  const group = [...(dowGroups[dow] ?? [])];
-  // If this is a specific weekday, also include entries that run daily (dow='*')
-  if (dow !== '*') {
-    for (const de of dailyEntries) {
-      if (!group.find((x) => x.file === de.file && x.minutes === de.minutes)) {
-        group.push(de);
+  const times = [];
+  for (const d of dows) {
+    for (const h of hours) {
+      for (const m of minutes) {
+        times.push({ day: d, hour: h, minute: m, weekMinute: d * 1440 + h * 60 + m });
       }
     }
   }
-  // Sort by minutes within group
-  const sorted = [...group].sort((a, b) => a.minutes - b.minutes);
-  for (let i = 0; i < sorted.length - 1; i++) {
-    const gap = sorted[i + 1].minutes - sorted[i].minutes;
-    if (gap < GAP_MINUTES) {
-      collisions.push({
-        dow,
-        a: sorted[i],
-        b: sorted[i + 1],
-        gap,
-      });
+  return times;
+}
+
+/** Returns the cadence label for a cron expression */
+function cadenceLabel(expr) {
+  const parts = expr.trim().split(/\s+/);
+  if (parts.length !== 5) return '?';
+  const [, , , , dow] = parts;
+  if (dow === '*') return 'diário';
+  if (/^\*\/\d+$/.test(dow)) return `cada ${dow.slice(2)}d`;
+  const days = [...new Set(dow.split(',').map(d => DOW_NAMES[parseInt(d) % 7]))];
+  return `semanal (${days.join('/')})`;
+}
+
+/**
+ * Checks if two sets of firing times have any pair within minSpacing minutes
+ * on the same calendar day.
+ */
+function hasConflict(timesA, timesB, minSpacing) {
+  for (const a of timesA) {
+    for (const b of timesB) {
+      if (a.day !== b.day) continue;
+      const diff = Math.abs(a.hour * 60 + a.minute - b.hour * 60 - b.minute);
+      if (diff < minSpacing) {
+        return {
+          diff,
+          aTime: `${String(a.hour).padStart(2,'0')}:${String(a.minute).padStart(2,'0')}`,
+          bTime: `${String(b.hour).padStart(2,'0')}:${String(b.minute).padStart(2,'0')}`,
+          day: a.day,
+        };
+      }
     }
   }
+  return null;
 }
 
-// --- output ---
+function main() {
+  const files = getWorkflowFiles();
+  const entries = [];
 
-const checkMode = process.argv.includes('--check');
+  for (const file of files) {
+    const name = basename(file);
+    let content;
+    try { content = readFileSync(file, 'utf8'); } catch { continue; }
 
-console.log('## Tabela de crons — CI (gerada por scripts/ci-cron-table.mjs)\n');
-console.log('> Regra E89: workflows com `SUPABASE_ACCESS_TOKEN` (PAT) devem ter ≥ 20 min de intervalo.\n');
+    const crons = extractCrons(content);
+    if (crons.length === 0) continue;
 
-console.log('| Horário UTC | Dia | Arquivo | Usa PAT |');
-console.log('|---|---|---|---|');
+    const privileged = isPrivileged(content);
 
-for (const r of rows) {
-  const timeStr = r.minutes !== null
-    ? `${String(r.fields.hour).padStart(2, '0')}:${String(r.fields.min).padStart(2, '0')}`
-    : r.label;
-  const dows = { '0': 'Dom', '1': 'Seg', '2': 'Ter', '3': 'Qua', '4': 'Qui', '5': 'Sex', '6': 'Sáb', '*': 'diário' };
-  const dayStr = r.fields?.dow !== undefined ? (dows[r.fields.dow] ?? r.fields.dow) : '-';
-  const patStr = r.usesPat ? '✓ PAT' : '';
-  console.log(`| \`${timeStr}\` | ${dayStr} | \`${r.file}\` | ${patStr} |`);
-}
+    for (const cron of crons) {
+      const times = parseCron(cron);
+      if (!times || times.length === 0) continue;
 
-if (collisions.length === 0) {
-  console.log('\n✅ Nenhuma colisão de PAT detectada (intervalo mínimo: 20 min).');
-} else {
-  console.log(`\n❌ ${collisions.length} colisão(ões) de PAT detectada(s):\n`);
-  for (const c of collisions) {
-    const dows = { '0': 'Dom', '1': 'Seg', '2': 'Ter', '3': 'Qua', '4': 'Qui', '5': 'Sex', '6': 'Sáb', '*': 'diário' };
-    const dayLabel = dows[c.dow] ?? c.dow;
-    console.log(
-      `  - ${dayLabel}: \`${c.a.file}\` (${c.a.label}) × \`${c.b.file}\` (${c.b.label}) — intervalo: ${c.gap} min`
-    );
+      const [, , , , dow] = cron.trim().split(/\s+/);
+      const daily = dow === '*';
+
+      entries.push({ workflow: name, cron, privileged, daily, times });
+    }
+  }
+
+  // Sort by first firing time in the week
+  entries.sort((a, b) => (a.times[0]?.weekMinute ?? 0) - (b.times[0]?.weekMinute ?? 0));
+
+  const privilegedEntries = entries.filter(e => e.privileged);
+
+  // --- Collision check ---
+  const collisions = [];
+  for (let i = 0; i < privilegedEntries.length; i++) {
+    for (let j = i + 1; j < privilegedEntries.length; j++) {
+      const a = privilegedEntries[i];
+      const b = privilegedEntries[j];
+
+      // For daily crons, project onto all days that the other also runs
+      const allTimesA = a.daily
+        ? [0,1,2,3,4,5,6].flatMap(d => a.times.map(t => ({ ...t, day: d })))
+        : a.times;
+      const allTimesB = b.daily
+        ? [0,1,2,3,4,5,6].flatMap(d => b.times.map(t => ({ ...t, day: d })))
+        : b.times;
+
+      const conflict = hasConflict(allTimesA, allTimesB, MIN_SPACING);
+      if (conflict) {
+        collisions.push({ a: a.workflow, aCron: a.cron, b: b.workflow, bCron: b.cron, ...conflict });
+      }
+    }
+  }
+
+  if (JSON_MODE) {
+    console.log(JSON.stringify({ entries: entries.map(e => ({ workflow: e.workflow, cron: e.cron, privileged: e.privileged, daily: e.daily })), privilegedCount: privilegedEntries.length, collisions }, null, 2));
+    process.exit(collisions.length > 0 ? 1 : 0);
+  }
+
+  // --- Markdown table ---
+  console.log('\n## Tabela de Crons CI — E89\n');
+  console.log(`> Gerado por \`scripts/ci-cron-table.mjs\`. Espaçamento mínimo privilegiado: **${MIN_SPACING} min**.\n`);
+  console.log('| Workflow | Expressão | Horário (UTC) | Cadência | Priv. |');
+  console.log('|---|---|---|---|:---:|');
+
+  for (const e of entries) {
+    const t = e.times[0];
+    const timeStr = t ? `${String(t.hour).padStart(2,'0')}:${String(t.minute).padStart(2,'0')}` : '—';
+    const priv = e.privileged ? '✓' : '';
+    console.log(`| \`${e.workflow}\` | \`${e.cron}\` | ${timeStr} | ${cadenceLabel(e.cron)} | ${priv} |`);
+  }
+
+  console.log(`\n**Total:** ${entries.length} crons • ${privilegedEntries.length} privilegiados\n`);
+
+  if (collisions.length === 0) {
+    console.log(`✅ **0 colisões** — todos os crons privilegiados estão separados por ≥${MIN_SPACING} min.\n`);
+    process.exit(0);
+  } else {
+    console.error(`\n❌ **${collisions.length} colisão(ões)** encontrada(s) entre crons privilegiados:\n`);
+    for (const c of collisions) {
+      const day = DOW_NAMES[c.day] ?? 'dia';
+      console.error(`  ${c.a} (${c.aCron}, ${c.aTime}) ↔ ${c.b} (${c.bCron}, ${c.bTime}) no ${day}: ${c.diff}min < ${MIN_SPACING}min\n`);
+    }
+    process.exit(1);
   }
 }
 
-if (checkMode && collisions.length > 0) {
-  process.exit(1);
-}
+main();

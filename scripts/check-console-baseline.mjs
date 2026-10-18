@@ -7,7 +7,14 @@ import { join } from 'node:path';
 
 const BASELINE = '.console-baseline.json';
 const UPDATE = process.argv.includes('--update');
-const RE = /console\.(log|warn|error|info|debug)/g;
+// Cobre as formas que já evadiam o padrão literal `console.` (prova em
+// auditoria adversarial): opcional `?.`/espaço antes do método, bracket
+// `console['warn']`, wrapper `(console).log`, destructure `const {log} =
+// console`, e métodos fora da lista original (table/trace/dir/group/assert/
+// count/time/clear/profile). A direção do gate é conservadora: match em
+// comentário/string já contava antes e continua contando.
+const RE =
+  /console\s*(?:\?\s*)?(?:\.\s*|\[\s*['"])(log|warn|error|info|debug|trace|table|dir|assert|count|countReset|time|timeEnd|timeLog|group|groupEnd|groupCollapsed|profile|profileEnd|clear)|\(\s*console\s*\)\s*\.\s*(log|warn|error|info|debug|trace|table|dir|assert|count|time|group)|(?:const|let|var)\s*\{[^}\n]*\}\s*=\s*console\b/g;
 const ALLOW = /\.(test|spec)\.|__tests__|log-safety|structuredLogger|error-reporter|console-filter/;
 
 // Walk em Node puro (sem subprocess → sem PATH controlável).

@@ -178,7 +178,10 @@ Deno.serve(async (req: Request) => {
 
         const email = u.email ?? null;
         if (email && excludeEmails.has(email)) continue;
-        if (onlyEmails && email && !onlyEmails.has(email)) continue;
+        // Usuário SEM e-mail não pode estar em onlyEmails — o guard anterior
+        // (`email && !has`) deixava contas sem e-mail serem resetadas mesmo
+        // com a lista restritiva ligada.
+        if (onlyEmails && (!email || !onlyEmails.has(email))) continue;
 
         const password = generatePassword({
           length: pwLength,

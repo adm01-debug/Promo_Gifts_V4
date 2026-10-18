@@ -13,6 +13,11 @@ import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-q
 import { useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import {
+  assertDiscountApprovalTransition,
+  darDecisionTarget,
+  type DiscountApprovalStatus,
+} from '@/lib/discount-approval-status-config';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -129,12 +134,18 @@ export function DiscountApprovalQueue() {
       quoteId: string;
       approved: boolean;
     }) => {
+      // Máquina do DAR (src/lib/discount-approval-status-config.ts): só
+      // pending -> approved/rejected; uma linha já decidida não pode ser
+      // re-decidida (espelha a validação da RPC respond_discount_approval_transactional).
+      const targetStatus = darDecisionTarget(approved);
+      const row = flat.find((r) => r.id === id);
+      if (row) assertDiscountApprovalTransition(row.status as DiscountApprovalStatus, targetStatus);
       const { data: u } = await supabase.auth.getUser();
       const { error } = await supabase
         // rls-allow: admin-only via has_role; RLS filtra
         .from('discount_approval_requests')
         .update({
-          status: approved ? 'approved' : 'rejected',
+          status: targetStatus,
           admin_id: u.user?.id ?? null,
           admin_notes: notes[id] ?? null,
           responded_at: new Date().toISOString(),

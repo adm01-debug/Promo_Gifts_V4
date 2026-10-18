@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Skeleton } from '@/components/ui/skeleton';
 import { Activity } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { fetchAllPages } from '@/lib/db/fetch-all-pages';
 import { subDays } from 'date-fns';
 import { cn } from '@/lib/utils';
 
@@ -24,9 +25,23 @@ export function TrendsHeatmap({ days }: TrendsHeatmapProps) {
     queryFn: async () => {
       const { isDemoMode, buildMockHeatmap } = await import('@/pages/trends/trends-mock');
       if (isDemoMode()) return buildMockHeatmap();
-      const [{ data: views }, { data: searches }] = await Promise.all([
-        supabase.from('product_views').select('created_at').gte('created_at', since),
-        supabase.from('search_analytics').select('created_at').gte('created_at', since),
+      const [views, searches] = await Promise.all([
+        fetchAllPages<{ created_at: string }>((from, to) =>
+          supabase
+            .from('product_views')
+            .select('created_at')
+            .gte('created_at', since)
+            .order('id', { ascending: true })
+            .range(from, to),
+        ),
+        fetchAllPages<{ created_at: string }>((from, to) =>
+          supabase
+            .from('search_analytics')
+            .select('created_at')
+            .gte('created_at', since)
+            .order('id', { ascending: true })
+            .range(from, to),
+        ),
       ]);
       // matriz [day][hour]
       const matrix: number[][] = Array.from({ length: 7 }, () => Array(24).fill(0));

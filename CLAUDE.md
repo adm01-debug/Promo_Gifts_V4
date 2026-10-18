@@ -299,11 +299,11 @@ ao terminar. Ver `docs/plans/PLANO_ENGENHARIA_SENIOR_50_ETAPAS_2026-09-17.md`
 ### SEMPRE faça:
 - Se a sessão criar 1+ commit relevante para segurança, CI/CD ou governança
   (workflows, gates, migrations, scripts `check:*`) → `git push` ao final da
-  sessão, mesmo sem PR aberto. Trabalho de governança só existe se estiver
-  visível a quem revisa.
+  sessão e **abrir PR** — nunca deixar orphan branch.
+- Arquivos de governança críticos (`.github/**`, `CODEOWNERS`, `supabase/migrations/**`,
+  `scripts/check-*`, `.gitleaks.toml`) exigem PR aberto (não apenas push). A revisão
+  humana é parte do processo — commit de governança sem PR aberto = proteção invisível.
 - Se o branch já tiver PR aberto → nada extra a fazer, o push já o atualiza.
-- Se não houver PR ainda e o trabalho estiver pronto para revisão → abrir um
-  (`gh pr create`), não só empurrar o branch e deixar órfão.
 
 ### NUNCA faça:
 - Terminar uma sessão de governança/segurança com commits só no disco local,
@@ -311,6 +311,8 @@ ao terminar. Ver `docs/plans/PLANO_ENGENHARIA_SENIOR_50_ETAPAS_2026-09-17.md`
 - Fazer `git push --force` em branch compartilhado sem confirmação explícita
   do humano (isso continua exigindo aprovação — REGRA #9 pede push normal,
   não força bruta).
+- Fazer push de arquivos de governança sem abrir PR — push solitário deixa
+  proteções reais ocultas da revisão (incidente 2026-09-17: 29 commits locais).
 
 ---
 

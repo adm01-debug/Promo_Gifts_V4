@@ -280,14 +280,27 @@ export function scanSupabaseReferences(source, file = 'src/example.ts') {
     }
 
     const expression = node.expression;
-    if (ts.isPropertyAccessExpression(expression) && (expression.name.text === 'from' || expression.name.text === 'rpc')) {
-      const kind = expression.name.text === 'from' ? 'relation' : 'rpc';
-      const receiver = expression.expression.getText(sourceFile);
+    // Resolve `.from`/`.rpc` em acesso por propriedade (`x.from(...)`) OU por
+    // elemento (`x['from'](...)`) — a segunda forma evadia o gate antes.
+    const memberName = ts.isPropertyAccessExpression(expression)
+      ? expression.name.text
+      : ts.isElementAccessExpression(expression) && ts.isStringLiteral(expression.argumentExpression)
+        ? expression.argumentExpression.text
+        : null;
+    const memberReceiver = memberName
+      ? ts.isPropertyAccessExpression(expression) || ts.isElementAccessExpression(expression)
+        ? expression.expression
+        : null
+      : null;
+
+    if (memberReceiver && (memberName === 'from' || memberName === 'rpc')) {
+      const kind = memberName === 'from' ? 'relation' : 'rpc';
+      const receiver = memberReceiver.getText(sourceFile);
       const dynamicWrapperImplementation = literalText(node.arguments[0]) === null &&
         GENERIC_WRAPPER_IMPLEMENTATION_FILES.has(normalizePath(file));
       const classification = dynamicWrapperImplementation
         ? 'wrapper_implementation'
-        : classifyReceiver(sourceFile, expression.expression, bindings);
+        : classifyReceiver(sourceFile, memberReceiver, bindings);
       add({
         call: node,
         kind,
@@ -296,6 +309,37 @@ export function scanSupabaseReferences(source, file = 'src/example.ts') {
         receiver,
         form: 'direct',
       });
+    } else if (memberReceiver && (memberName === 'call' || memberName === 'apply' || memberName === 'bind')) {
+      // `supabase.rpc.call/apply/bind(...)` também evadia: a chamada externa
+      // era invisível. O receiver real é a expressão interna `.from`/`.rpc`.
+      const inner = ts.isPropertyAccessExpression(memberReceiver) || ts.isElementAccessExpression(memberReceiver)
+        ? memberReceiver
+        : null;
+      const innerName = inner && ts.isPropertyAccessExpression(inner)
+        ? inner.name.text
+        : inner && ts.isElementAccessExpression(inner) && ts.isStringLiteral(inner.argumentExpression)
+          ? inner.argumentExpression.text
+          : null;
+      if (inner && (innerName === 'from' || innerName === 'rpc')) {
+        const kind = innerName === 'from' ? 'relation' : 'rpc';
+        // call(thisArg, name, ...) → nome no arg[1]; apply(thisArg, [name, ...])
+        // → primeiro elemento do array no arg[1]; bind(thisArg) não carrega o
+        // nome → dinâmico (name null → exige entrada em dynamic_baseline).
+        let nameArg = null;
+        if (memberName === 'call') nameArg = node.arguments[1] ?? null;
+        else if (memberName === 'apply') {
+          const arr = node.arguments[1];
+          if (arr && ts.isArrayLiteralExpression(arr)) nameArg = arr.elements[0] ?? null;
+        }
+        add({
+          call: node,
+          kind,
+          name: nameArg ? literalText(nameArg) : null,
+          classification: classifyReceiver(sourceFile, inner.expression, bindings),
+          receiver: memberReceiver.getText(sourceFile),
+          form: 'direct',
+        });
+      }
     } else if (ts.isIdentifier(expression) && WRAPPER_KINDS.has(expression.text)) {
       const kind = WRAPPER_KINDS.get(expression.text);
       const name = expression.text === 'dbInvoke' || expression.text === 'restNativeInvoke'

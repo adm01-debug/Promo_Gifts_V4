@@ -105,6 +105,13 @@ function recordBreakerFailure(now: number = Date.now()): void {
   // GC failures fora da janela
   breaker.failures = breaker.failures.filter((t) => now - t < BREAKER_WINDOW_MS);
   breaker.failures.push(now);
+  // Half-open com falha na sonda → reabre imediatamente. Sem isso o
+  // openedAt velho mantinha o estado preso em half-open para sempre e
+  // TODO request voltava a bater no DB quebrado (breaker inútil pós-cooldown).
+  if (breaker.openedAt !== null && now - breaker.openedAt >= BREAKER_COOLDOWN_MS) {
+    breaker.openedAt = now;
+    return;
+  }
   if (breaker.failures.length >= BREAKER_THRESHOLD && breaker.openedAt === null) {
     breaker.openedAt = now;
   }
@@ -134,7 +141,15 @@ export async function handleLogLoginAttempt(req: Request): Promise<Response> {
 
   try {
     // Rate limit by IP
-    const rateLimitResponse = await applyRateLimit(req, loginLogLimiter);
+    // Identificador do limiter precisa ser o MESMO IP derivado da conexão
+    // (xff[last]) — o header bruto inclui o prefixo forjável do cliente e
+    // um atacante rotacionaria um x-forwarded-for falso por request para
+    // pular o rate limit (SEC_0001).
+    const rateLimitResponse = await applyRateLimit(
+      req,
+      loginLogLimiter,
+      (r) => extractIP(r),
+    );
     if (rateLimitResponse) {
       log.warn("rate_limit_exceeded");
       const headers = new Headers(rateLimitResponse.headers);
@@ -269,7 +284,12 @@ export async function handleLogLoginAttempt(req: Request): Promise<Response> {
       }
     }
 
-    log.info("login_attempt_logged", { email, success, verified });
+    // LGPD: e-mail completo é PII — só o domínio vai para o log.
+    log.info("login_attempt_logged", {
+      email_domain: email.split("@")[1] ?? "unknown",
+      success,
+      verified,
+    });
     return log.respond(new Response(
       JSON.stringify({ ok: true, verified }),
       {
