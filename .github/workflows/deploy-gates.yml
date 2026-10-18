@@ -1,1 +1,657 @@
-placeholder
+name: Deploy Gates
+
+# Quality gates antes do deploy em main.
+# Rodam em paralelo onde possível. Se QUALQUER UM falhar, bloqueia o pipeline.
+# Atualizado E58 (2026-10-14) para refletir todos os gates ativos.
+#
+# Ordem dos gates (bloqueantes, exceto Gate 4 que é opcional):
+#  0    ssot-gate         — SSOT Supabase (project ID canônico)
+#  0.5  dependency-audit  — npm audit (sem CVEs high/critical)
+#  0.6  dependency-review — dependency-review-action (E97, PR-only)
+#  1    lint+tsc          — ESLint + TypeScript sem erros
+#  1.1  product-fields    — campos críticos do tipo Product presentes
+#  1.2  types-drift       — drift estrutural de types.ts (tabelas/views/functions/enums)
+#  1.3  migration-preflight — contratos de migration (sem DDL perigoso)
+#  1.4  visual-baselines  — baselines visuais commitados
+#  1.5  drafts-save       — sem "Salvar Alterações" em fluxos de rascunho
+#  1.7  tsc-ratchet       — baseline de noUnusedLocals não aumenta sem label
+#  1.8  base64-detect     — sem arquivos texto encodados em base64 acidentalmente
+#  1.9  tech-debt         — ratchets TODO/as/file-size
+#  1.9.1 console-baseline — console.* não aumenta sem justificativa
+#  1.10 indexed-access    — indexed-access ratchet (advisory)
+#  1.11 workflow-contracts — check-workflow-contracts --gate (C10–C24)
+#  1.12 contract-coverage  — soft-delete policy + contrato de cobertura
+#  1.13 policies-baseline  — policies live vs baseline
+#  1.14 secrets-inventory  — secrets/vars referenciados todos documentados em SEGREDOS.md (E40/E98)
+#  E23  secrets-check      — verifica presença de secrets E2E (saída has_e2e)
+#  2    unit-tests         — vitest
+#  2.5  pg-integrity       — integridade transacional PostgreSQL
+#  3    e2e-smoke          — Playwright smoke (login + dashboard), se has_e2e=true
+#  4    lighthouse         — perf≥75 a11y≥90 seo≥95 pwa≥80 (opcional)
+#  5    seo-sanity         — canonical/og:url/twitter:url corretos
+#  5.5  rpc-restore-cart   — RPC restore_seller_cart presente no canônico
+#  6    build              — Vite build sem erros + SBOM SPDX-JSON
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Cancela runs anteriores do mesmo PR (pull_request); preserva push/dispatch.
+concurrency:
+  group: deploy-gates-${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  # ============================================================
+  # GATE 0: SSOT Supabase — DEVE PASSAR antes de todos os outros
+  # Previne reincidência do incidente 401 de produção (2026-06-11).
+  # Lovable reverteu CURRENT_PROJECT_ID 6+ vezes sem que CI detectasse.
+  # ============================================================
+  ssot-gate:
+    name: Gate 0 - SSOT Supabase (project ID canônico)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
+        with:
+          skip-install: 'true'
+      - name: Validate SSOT — client.ts deve apontar para doufsxqlfjyuvxuezpln
+        run: node scripts/validate-supabase-config.mjs
+        env:
+          VITE_SUPABASE_URL: https://placeholder.supabase.co
+          VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
+
+  dependency-audit:
+    name: Gate 0.5 - Dependency Audit
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    needs: [ssot-gate]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
+      - name: Auditar dependências (advisory ≥ high bloqueia deploy)
+        run: node scripts/check-dependency-audit.mjs
+
+  dependency-review:
+    name: Gate 0.6 - Dependency Review
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    needs: [ssot-gate]
+    # E03: skip em Dependabot/fork — token restrito não permite chamar a API
+    # de comparação de dependências. Gate 0.5 (npm audit) cobre esses PRs.
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.actor != 'dependabot[bot]' &&
+      !github.event.pull_request.head.repo.fork
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
+      - name: Dependency Review — falha em deps com CVE severity ≥ high (E97)
+        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
+        with:
+          fail-on-severity: high
+          allow-licenses: MIT, Apache-2.0, ISC, BSD-2-Clause, BSD-3-Clause, 0BSD, CC0-1.0, Unlicense, CC-BY-4.0, Python-2.0
+
+  lint-typecheck:
+    name: Gate 1 - Lint + TypeScript
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    needs: [ssot-gate]
+    env:
+      NODE_OPTIONS: --max-old-space-size=4096
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
+          fetch-depth: 0
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
+      - run: npm run typecheck
+        env:
+          VITE_SUPABASE_URL: https://placeholder.supabase.co
+          VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
+      - run: npm run lint:baseline
+      # REGRA #2 — Product type fields (bloqueante)
+      # Previne remoção silenciosa de price/sale_price/shortDescription/category_id
+      # durante merge (gap C2) ou renomeação pelo Lovable (gap L3).
+      - name: Gate 1.1 — Product type fields (bloqueante)
+        run: node scripts/check-product-type-fields.mjs
+        env:
+          VITE_SUPABASE_URL: https://placeholder.supabase.co
+          VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
+      # REGRA #4 — Types inventory drift (bloqueante)
+      # Previne remoção de Tables/Views/Functions/Enums de types.ts sem allowlist.
+      # Incidente: 7716ae9 Lovable removeu magazine_* → 80+ erros TS.
+      - name: Gate 1.2 — Types inventory drift (bloqueante)
+        run: |
+          BASE="${{ github.event.pull_request.base.sha || 'HEAD~1' }}"
+          node scripts/check-types-inventory-drift.mjs --base "$BASE"
+      # Migration contracts (bloqueante) — previne referências a arquivos inexistentes,
+      # nomes sem timestamp UTC e RPCs/tabelas não catalogadas.
+      - name: Gate 1.3 — Migration contracts (bloqueante)
+        run: |
+          set -euo pipefail
+          node scripts/check-migration-path-references.mjs
+          node scripts/check-supabase-reference-catalog.mjs
+          node scripts/check-migration-filename-contract.mjs
+      # REGRA E44 — Visual baselines (bloqueante)
+      # Previne remoção de PNGs de baseline de specs rodadas em CI sem
+      # --update-snapshots (e2e-dialogs-pr-check, ui-visual-a11y, etc.)
+      - name: Gate 1.4 — Visual baselines commitados (bloqueante)
+        run: node scripts/check-visual-baselines.mjs
+      # E55 — "Salvar Alterações" em fluxo de rascunho (bloqueante)
+      # Previne que o Lovable reintroduza o pattern draft-lock detectado nos
+      # rascunhos do fluxo de orçamentos.
+      - name: Gate 1.5 — Sem "Salvar Alterações" em fluxos de rascunho (bloqueante)
+        run: node scripts/check-no-salvar-alteracoes-draft.mjs
+        env:
+          VITE_SUPABASE_URL: https://placeholder.supabase.co
+          VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
+      # E41 — TSC ratchet file guard (PR-only, bloqueante)
+      # Previne que um PR aumente .tsc-ratchet-baseline sem label ratchet-override.
+      # Não roda TSC — apenas compara o ARQUIVO de baseline contra o base do PR.
+      - name: Gate 1.7 — TSC ratchet file guard (bloqueante em PR)
+        if: github.event_name == 'pull_request'
+        run: sh scripts/tsc-unused-ratchet.sh --check-ratchet
+        env:
+          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GITHUB_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+      # E55 — Detecta arquivos texto encodados acidentalmente em base64.
+      # Heurística: linha ≥ 200 chars de alfabeto base64 puro em arquivo texto.
+      # Integrado ao gate para bloquear via "Gate Final - Deploy Ready".
+      - name: Gate 1.8 — Detect accidentally base64-encoded files (bloqueante)
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          if [[ "$EVENT" == "pull_request" ]]; then
+            git diff --name-only --diff-filter=AM "$BASE_SHA" "$HEAD_SHA" > /tmp/b64-files.txt
+          elif [[ "$EVENT" == "push" ]]; then
+            git diff --name-only --diff-filter=AM HEAD~1 HEAD > /tmp/b64-files.txt \
+              || git ls-files > /tmp/b64-files.txt
+          else
+            git ls-files > /tmp/b64-files.txt
+          fi
+          INCLUDE='\.(ts|tsx|js|jsx|json|sql|sh|md|yaml|yml|html|css|env|env\.example|toml|conf|rc)$'
+          EXCLUDE='(package-lock\.json|pnpm-lock\.yaml|bun\.lock|yarn\.lock|\.min\.|\.bundle\.|^supabase/migrations-snapshot/ALL_IN_ONE\.sql$)'
+          FOUND=0
+          while IFS= read -r F; do
+            [[ -z "$F" || ! -f "$F" ]] && continue
+            [[ "$F" =~ $INCLUDE ]] || continue
+            [[ "$F" =~ $EXCLUDE ]] && continue
+            N=0
+            while IFS= read -r L || [[ -n "$L" ]]; do
+              N=$((N+1)); LEN=${#L}
+              if (( LEN >= 200 )) && [[ "$L" =~ ^[A-Za-z0-9+/=]+$ ]]; then
+                FOUND=$((FOUND+1))
+                echo "::error file=$F,line=$N::${LEN} chars de alfabeto base64 puro — arquivo possivelmente encodado acidentalmente."
+              fi
+            done < "$F"
+          done < /tmp/b64-files.txt
+          exit $(( FOUND > 0 ))
+      # Ratchets de dívida técnica (auditoria 20-dim 2026-10-02) — falham só
+      # em REGRESSÃO vs baselines commitadas; drift positivo apenas avisa.
+      - name: Gate 1.9 — Dívida técnica (ratchets TODO / as / file-size)
+        run: |
+          set -euo pipefail
+          node scripts/check-todo-baseline.mjs
+          node scripts/check-as-assertions-baseline.mjs
+          node scripts/check-file-size-baseline.mjs
+
+      - name: Gate 1.9.1 — console.* baseline (bloqueante)
+        run: node scripts/check-console-baseline.mjs
+      # Contract coverage + soft-delete policy (auditoria 20-dim Onda 2) —
+      # aqui e no quality-gate.yml (2.3.5/2.3.6) porque o check obrigatório
+      # "Gate Final - Deploy Ready" agrega só jobs DESTE workflow.
+      - name: Gate 1.12 — Contract coverage + soft-delete policy (bloqueante)
+        run: |
+          set -euo pipefail
+          node scripts/check-contract-coverage.mjs
+          node scripts/check-soft-delete-policy.mjs
+          node scripts/check-edge-zod-ratchet.mjs
+          # Cobertura do manifest de autorização — o script existia órfão
+          # de workflow (achado da validação exaustiva 2026-10).
+          node scripts/check-edge-authorization.mjs
+      # Gate 1.13 — Baseline assinado de RLS policies (auditoria 20-dim Onda 3).
+      # Bloqueante quando credenciado; sem SUPABASE_ACCESS_TOKEN (forks) ou com
+      # baseline pendente de seed inicial, degrada para static-pass.
+      - name: Gate 1.13 — Policies baseline vs pg_policies live (bloqueante c/ credenciais)
+        run: node scripts/check-policies-baseline.mjs --require-live  # E008: falha se sem credenciais, não static-pass
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
+      # noUncheckedIndexedAccess — advisory por enquanto: roda tsc completo
+      # (lento) e a dívida atual é grande; vira bloqueante quando zerar.
+      # E15: Gate 1.10 promovido de advisory para bloqueante — dívida congelada
+      # em .indexed-access-baseline.json; falha só em regressão (novo código).
+      - name: Gate 1.10 — Indexed-access ratchet (bloqueante)
+        run: node scripts/check-indexed-access-ratchet.mjs
+      # E55 — Contratos estruturais dos workflows (E11, bloqueante)
+      # Garante que todo workflow segue as 8 regras do Padrão E12
+      # (permissions, concurrency, timeout, node-version-file, etc.)
+      - name: Gate 1.11 — Workflow contracts (bloqueante)
+        # --gate: sem o flag o script só reporta e sai 0 — o step dizia
+        # "bloqueante" mas não bloqueava nada (workflow-lint ficava vermelho
+        # em main sem travar deploy).
+        run: node scripts/check-workflow-contracts.mjs --gate
+      # E40/E98 — Inventário de segredos documentado (bloqueante)
+      # Garante que todo secrets.NAME / vars.NAME referenciado nos workflows
+      # está documentado em docs/ci/SEGREDOS.md.
+      - name: Gate 1.14 — Secrets inventory (bloqueante)
+        run: node scripts/check-secrets-inventory.mjs --gate
+      # E15: Gates migrados de quality-gate.yml (agora removido) para evitar duplicação.
+      # Gate 2.6 e 2.7 eram únicos naquele arquivo; os demais já existiam aqui.
+      - name: Gate 1.15 — overflow-x-clip em MainLayout (bloqueante)
+        run: node scripts/check-overflow-x-clip.mjs
+      - name: Gate 1.16 — Quotes list invariants (bloqueante)
+        run: node scripts/validate-quotes-list.mjs
+        env:
+          VITE_SUPABASE_URL: https://placeholder.supabase.co
+          VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
+
+  unit-tests:
+    name: Gate 2 - Unit Tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    needs: [ssot-gate]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
+      # Gate rapido de regressao. Suites amplas seguem no CI principal:
+      # `test:quality`, `Hook tests` e `Test Coverage`.
+      - run: npm run test:deploy-gate
+      - name: Webhook scenario matrix (contratos Zod, 0 HTTP)
+        run: |
+          set -euo pipefail
+          TZ=America/Sao_Paulo npx vitest run \
+            tests/contracts/webhook-scenario-matrix.test.ts \
+            --reporter=dot
+
+  database-integrity:
+    name: Gate 2.5 - PostgreSQL Transactional Integrity
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    needs: [ssot-gate]
+    # Dependabot e forks não têm acesso a secrets live — marca skipped
+    # explicitamente em vez de falhar verde vazio (E59).
+    if: |
+      github.actor != 'dependabot[bot]' &&
+      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
+      - name: Validate discount approval, grants and trigger races on PG17
+        run: scripts/test-approved-plan-database.sh
+      - name: Validate guarded quote RPC proposals on pinned isolated PG17
+        run: npm run test:quote-rpc:postgres
+      - name: Block frontend promotion until canonical quote RPC contract is live
+        run: npm run check:quote-rpc:canonical -- --require-live
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
+
+  # ============================================================
+  # GATE E23: Verifica presença de secrets E2E
+  # Saída has_e2e=true habilita o Gate 3 (e2e-smoke).
+  # Sem os secrets, e2e-smoke é skipped graciosamente (E21+E23).
+  # ============================================================
+  secrets-check:
+    name: Gate E23 - Verifica secrets E2E
+    uses: ./.github/workflows/_secrets-check.yml
+    with:
+      fail_if_missing: true  # E007: gate falha explicitamente se E2E_USER_* não configurados
+    secrets: inherit
+
+  e2e-smoke:
+    name: Gate 3 - E2E Smoke
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    needs: [ssot-gate, secrets-check]
+    # E015: sem guard — Gate 3 sempre executa (authed ou public-only)
+    env:
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
+      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+      E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+      E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
+      E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+      # E16: checks de smoke migrados de e2e.yml (único dono de chromium-smoke).
+      - name: Validar doc de auditoria do smoke (drift check)
+        run: node scripts/e2e-smoke-coverage-doc.mjs --check
+      - name: Validar tags @smoke no spec do gate
+        run: node scripts/check-smoke-tags.mjs
+      - name: Run Playwright smoke tests
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [ ! -d "e2e" ] && [ ! -d "tests/e2e" ] && [ ! -d "playwright" ]; then
+            echo "::error::No e2e folder found — Gate 3 requires e2e tests (add e2e/ or tests/e2e/)"
+            exit 1
+          fi
+          # E015: authed smoke quando credentials disponíveis; public-only caso contrário
+          if [ -n "$E2E_USER_EMAIL" ]; then
+            npm run test:e2e:smoke
+          else
+            echo "::notice::E015 — sem credenciais E2E: rodando smoke público (@smoke, chromium-public)"
+            npx playwright test --project=chromium-public --grep @smoke --reporter=github,list
+          fi
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14
+
+  lighthouse:
+    name: Gate 4 - Lighthouse CI
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    needs: [ssot-gate]
+    # Gate opcional (CLAUDE.md) — falha não bloqueia deploy-ready.
+    continue-on-error: true
+    env:
+      VITE_SUPABASE_URL: https://placeholder.supabase.co
+      VITE_SUPABASE_PUBLISHABLE_KEY: lighthouse-placeholder-key
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
+      - run: npm run build
+      - name: Run Lighthouse CI
+        run: npx lhci autorun --config=.lighthouserc.json
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+      - name: Upload Lighthouse report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: lighthouse-report-${{ github.run_id }}
+          path: .lighthouseci/
+          retention-days: 14
+          if-no-files-found: ignore
+
+  seo-sanity:
+    name: Gate 5 - SEO Sanity Check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    needs: [ssot-gate]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
+        with:
+          skip-install: 'true'
+      - name: Run SEO sanity check
+        run: node scripts/seo-sanity-check.mjs
+
+  restore-cart-rpc-gate:
+    name: Gate 5.5 - RPC restore_seller_cart presente no canônico
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    needs: [ssot-gate]
+    # Dependabot e forks não têm acesso a SERVICE_ROLE_KEY — skipa (E59).
+    if: |
+      github.actor != 'dependabot[bot]' &&
+      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
+      - name: Verificar assinatura publicada da RPC
+        run: npm run check:restore-seller-cart-rpc
+        env:
+          CANONICAL_SUPABASE_URL: https://doufsxqlfjyuvxuezpln.supabase.co
+          # A RPC é deliberadamente invisível para anon. O smoke precisa de
+          # service_role para distinguir assinatura ausente de ACL correta.
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          STRICT: '1'
+
+  build:
+    name: Gate 6 - Build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    # Roda mesmo quando restore-cart-rpc-gate é skipped (Dependabot/fork sem secrets).
+    # Só bloqueia se restore-cart-rpc-gate falhou; skip é tratado como ausência de dado.
+    if: >-
+      always() &&
+      needs.lint-typecheck.result == 'success' &&
+      needs.seo-sanity.result == 'success' &&
+      needs.restore-cart-rpc-gate.result != 'failure'
+    needs: [lint-typecheck, seo-sanity, restore-cart-rpc-gate]
+    permissions:
+      contents: read
+      id-token: write      # necessário para attest-build-provenance (E99)
+      attestations: write  # necessário para attest-build-provenance (E99)
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      # E04 — fetch base SHA para o ratchet funcionar em PRs (git show $BASE_SHA:baseline.json)
+        with:
+          persist-credentials: false  # E32
+      - name: Fetch base SHA for bundle ratchet
+        if: github.event_name == 'pull_request' && github.event.pull_request.base.sha != ''
+        run: git fetch --no-tags --depth=1 origin ${{ github.event.pull_request.base.sha }}
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
+      - run: npm run build
+      # E55 — Bundle size (bloqueante)
+      # Roda após o build para garantir que dist/assets/ existe.
+      # E41 — Bundle ratchet: em PR também verifica se o ARQUIVO de baseline aumentou.
+      - name: Gate 1.6 — Bundle size dentro dos limites (bloqueante)
+        run: node scripts/check-bundle-size.mjs --check-ratchet
+        env:
+          VITE_SUPABASE_URL: https://placeholder.supabase.co
+          VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
+          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GITHUB_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: dist-${{ github.run_id }}
+          path: dist/
+          retention-days: 14
+      # E99 — SBOM + build provenance attestation (push para main apenas)
+      # Gera SBOM SPDX-JSON do dist/ e atesta proveniência do build no GHCR.
+      # Skipped em PRs e workflow_dispatch — sem impacto no tempo de CI de PRs.
+      - name: Generate SBOM (E99)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: anchore/sbom-action@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
+        with:
+          artifact-name: sbom-${{ github.run_id }}.spdx.json
+          path: dist/
+          format: spdx-json
+      - name: Attest build provenance (E99)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4
+        with:
+          subject-path: 'dist/**/*.js'
+
+  # E040: verifica se arquivos de migration/baseline mudaram para acionar drift-check
+  check-schema-paths:
+    name: Gate E40 - Detect schema file changes
+    needs: [ssot-gate]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    outputs:
+      changed: ${{ steps.detect.outputs.changed }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0   # necessário para git diff com BASE_SHA de PRs
+      - name: Detect schema-relevant path changes
+        id: detect
+        env:
+          BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          BASE="${BASE_SHA:-}"
+          # Fallback para push inicial ou workflow_dispatch (sem BASE_SHA)
+          if [ -z "$BASE" ] || [ "$BASE" = "0000000000000000000000000000000000000000" ]; then
+            BASE="HEAD~1"
+          fi
+          changed=$(git diff --name-only "${BASE}...${HEAD_SHA}" 2>/dev/null | \
+            grep -cE '^supabase/(migrations/|baseline/|config\.toml)|^scripts/drift-baseline\.mjs|\.github/workflows/db-schema-drift-check\.yml' \
+            || echo 0)
+          if [ "$changed" -gt 0 ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::${changed} arquivo(s) de schema/migration alterados — drift-check ativado."
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Nenhum arquivo de schema/migration alterado — drift-check dispensado."
+          fi
+
+  # E040: chama db-schema-drift-check.yml quando migrations/baseline mudaram
+  schema-drift-gate:
+    name: Gate E40 - Schema Drift Check
+    needs: [check-schema-paths]
+    if: >-
+      needs.check-schema-paths.outputs.changed == 'true' &&
+      (github.event_name != 'pull_request' ||
+       github.event.pull_request.head.repo.full_name == github.repository)
+    uses: ./.github/workflows/db-schema-drift-check.yml
+    secrets: inherit
+
+  deploy-ready:
+    name: Gate Final - Deploy Ready
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    needs:
+      - ssot-gate
+      - dependency-audit
+      - dependency-review
+      - lint-typecheck
+      - unit-tests
+      - database-integrity
+      - secrets-check
+      - e2e-smoke
+      # lighthouse removido de needs (Gate 4 optional, continue-on-error:true — E03)
+      - seo-sanity
+      - restore-cart-rpc-gate
+      - build
+      - check-schema-paths   # E040
+      - schema-drift-gate    # E040
+    steps:
+      - name: Require every blocking gate to pass (E03 — tabela explícita por job)
+        env:
+          R_SSOT:          ${{ needs.ssot-gate.result }}
+          R_DEP_AUDIT:     ${{ needs.dependency-audit.result }}
+          R_DEP_REVIEW:    ${{ needs.dependency-review.result }}
+          R_LINT:          ${{ needs.lint-typecheck.result }}
+          R_UNIT:          ${{ needs.unit-tests.result }}
+          R_DB_INT:        ${{ needs.database-integrity.result }}
+          R_SECRETS:       ${{ needs.secrets-check.result }}
+          R_E2E:           ${{ needs.e2e-smoke.result }}
+          R_SEO:           ${{ needs.seo-sanity.result }}
+          R_RESTORE:       ${{ needs.restore-cart-rpc-gate.result }}
+          R_BUILD:         ${{ needs.build.result }}
+          R_SCHEMA_DRIFT:  ${{ needs.schema-drift-gate.result }}
+          IS_DEPENDABOT: ${{ github.actor == 'dependabot[bot]' }}
+          # IS_FORK: true quando PR de fork externo (sem acesso a secrets live — E59)
+          IS_FORK:       ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
+        run: |
+          set -euo pipefail
+          FAIL=0
+          fail_gate() { echo "::error::$1" >&2; FAIL=1; }
+
+          # ── Gates sempre bloqueantes ─────────────────────────────────────────
+          [[ "$R_SSOT"      == "success" ]] || fail_gate "Gate 0 SSOT falhou (${R_SSOT})"
+          [[ "$R_DEP_AUDIT" == "success" ]] || fail_gate "Gate 0.5 Dependency Audit falhou (${R_DEP_AUDIT})"
+          [[ "$R_LINT"      == "success" ]] || fail_gate "Gate 1 Lint+TypeScript falhou (${R_LINT})"
+          [[ "$R_UNIT"      == "success" ]] || fail_gate "Gate 2 Unit Tests falhou (${R_UNIT})"
+          [[ "$R_SEO"       == "success" ]] || fail_gate "Gate 5 SEO Sanity falhou (${R_SEO})"
+          [[ "$R_BUILD"        == "success" ]] || fail_gate "Gate 6 Build falhou (${R_BUILD})"
+          [[ "$R_SECRETS"      == "success" ]] || fail_gate "Gate E23 Secrets Check falhou (${R_SECRETS})"
+          # E040: schema-drift-gate é bloqueante quando mudanças de schema foram detectadas; skip = sem mudança
+          [[ "$R_SCHEMA_DRIFT" == "success" || "$R_SCHEMA_DRIFT" == "skipped" ]] || \
+            fail_gate "Gate E40 Schema Drift falhou (${R_SCHEMA_DRIFT})"
+
+          # ── Gate 0.6 dependency-review: PR-only; skip em Dependabot/fork (E97/E03) ──
+          if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+            if [[ "$IS_DEPENDABOT" == "true" || "$IS_FORK" == "true" ]]; then
+              # Dependabot/fork: dep-review é skipped por if: no job (E03) — aceitar skipped
+              [[ "$R_DEP_REVIEW" == "success" || "$R_DEP_REVIEW" == "skipped" ]] || \
+                fail_gate "Gate 0.6 Dependency Review falhou em PR de bot/fork (${R_DEP_REVIEW})"
+            else
+              [[ "$R_DEP_REVIEW" == "success" ]] || \
+                fail_gate "Gate 0.6 Dependency Review falhou em PR (${R_DEP_REVIEW})"
+            fi
+          else
+            [[ "$R_DEP_REVIEW" == "success" || "$R_DEP_REVIEW" == "skipped" ]] || \
+              fail_gate "Gate 0.6 Dependency Review falhou (${R_DEP_REVIEW})"
+          fi
+
+          # ── Gates 2.5/5.5: skip permitido em Dependabot e forks (E59) ───────
+          if [[ "$IS_DEPENDABOT" == "true" || "$IS_FORK" == "true" ]]; then
+            [[ "$R_DB_INT"  == "success" || "$R_DB_INT"  == "skipped" ]] || \
+              fail_gate "Gate 2.5 DB Integrity falhou (${R_DB_INT})"
+            [[ "$R_RESTORE" == "success" || "$R_RESTORE" == "skipped" ]] || \
+              fail_gate "Gate 5.5 restore-cart falhou (${R_RESTORE})"
+          else
+            [[ "$R_DB_INT"  == "success" ]] || \
+              fail_gate "Gate 2.5 DB Integrity falhou (${R_DB_INT}) — fora de fork/Dependabot"
+            [[ "$R_RESTORE" == "success" ]] || \
+              fail_gate "Gate 5.5 restore-cart falhou (${R_RESTORE}) — fora de fork/Dependabot"
+          fi
+
+          # ── Gate 3 e2e-smoke: skip só em PR quando has_e2e=false (E21+E23) ──
+          # Em push para main: E2E_USER_* existem (09/10); skip = falha de configuração.
+          if [[ "$R_E2E" == "skipped" ]]; then
+            if [[ "$GITHUB_EVENT_NAME" != "pull_request" ]]; then
+              fail_gate "Gate 3 e2e-smoke skipped não permitido em push — verifique secrets E2E_USER_EMAIL/PASSWORD"
+            else
+              echo "::warning::Gate 3 e2e-smoke skipped (has_e2e=false em PR)"
+            fi
+          elif [[ "$R_E2E" != "success" ]]; then
+            fail_gate "Gate 3 E2E Smoke falhou (${R_E2E})"
+          fi
+
+          if [[ "$FAIL" -eq 0 ]]; then
+            echo "✅ Todos os gates de deploy passaram."
+          fi
+          exit "$FAIL"
