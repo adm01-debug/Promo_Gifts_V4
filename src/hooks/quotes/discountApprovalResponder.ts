@@ -6,6 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { logRlsDenial } from '@/lib/security/rls-denial-logger';
 import { logger } from '@/lib/logger';
+import { darDecisionTarget } from '@/lib/discount-approval-status-config';
 interface ResponderDeps {
   user: { id: string } | null;
   invalidateWidget: () => void;
@@ -87,7 +88,7 @@ export function createRespondToApproval({
         // rls-allow: fluxo de aprovação admin/seller; RLS filtra por papel
         .from('discount_approval_requests')
         .update({
-          status: approved ? 'approved' : 'rejected',
+          status: darDecisionTarget(approved),
           admin_id: user.id,
           admin_notes: adminNotes || null,
           responded_at: new Date().toISOString(),
@@ -125,23 +126,14 @@ export function createRespondToApproval({
 
       if (quoteUpdateResult.error) {
         logger.error('Failed to update quote status:', quoteUpdateResult.error);
-        // Compensação de melhor esforço: mantém o DAR pendente se a segunda
-        // escrita falhar. A atomicidade real entre tabelas requer RPC/trigger
-        // dedicado; não existe transação multi-tabela no cliente PostgREST.
-        const { error: compensationError } = await supabase
-          .from('discount_approval_requests')
-          .update({
-            status: 'pending',
-            admin_id: null,
-            admin_notes: null,
-            responded_at: null,
-            valid_until: null,
-          })
-          .eq('id', requestId)
-          .eq('status', approved ? 'approved' : 'rejected');
-        if (compensationError) {
-          logger.error('Failed to compensate discount approval decision:', compensationError);
-        }
+        // Sem compensação DB-side: reabrir a solicitação (decidido -> 'pending')
+        // é proibido pela máquina do DAR — espelha fn_dar_forbid_reopen, que
+        // rejeitaria o UPDATE de qualquer forma. O DAR fica no estado decidido
+        // e o erro propaga, deixando a divergência visível na fila.
+        logger.error(
+          'Failed to update quote status after discount decision; request left in decided state',
+          { requestId, decidedStatus: darDecisionTarget(approved) },
+        );
         throw quoteUpdateResult.error;
       }
 
