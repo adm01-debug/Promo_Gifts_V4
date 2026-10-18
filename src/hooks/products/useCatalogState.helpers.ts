@@ -20,7 +20,7 @@ export type SortOption =
   | 'price-desc'
   | 'stock';
 
-const VIEW_MODE_KEY = 'catalog-view-mode';
+export const VIEW_MODE_KEY = 'catalog-view-mode';
 const SORT_SESSION_KEY = 'catalog:sortBy';
 
 // BUG-SORT-01 FIX: Conjunto dos valores válidos derivado do SSOT (SORT_OPTIONS).

@@ -106,7 +106,7 @@ export async function fetchCommercialKPIs(args: {
   hasFilter: boolean;
   productIds: Set<string> | null | undefined;
   since: string;
-  orgId: string | undefined;
+  orgId: string | null | undefined;
 }): Promise<IntelligenceKPI> {
   const { hasFilter, productIds, since, orgId } = args;
   const now = new Date();

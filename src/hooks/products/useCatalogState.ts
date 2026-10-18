@@ -40,6 +40,7 @@ import { ensureDailyCatalogDefaults } from '@/hooks/products/dailyCatalogDefault
 
 import {
   ITEMS_PER_PAGE,
+  VIEW_MODE_KEY,
   countActiveFilters,
   applyColorEnrichment,
   buildStatBadges,
@@ -823,6 +824,7 @@ export function useCatalogState() {
     isTransitioning,
     hasMoreProducts,
     ITEMS_PER_PAGE,
+    VIEW_MODE_KEY,
     loadMore,
     scrollResetKey,
   };

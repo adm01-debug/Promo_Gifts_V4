@@ -16,6 +16,8 @@ import {
   type MagicUpBrandLogo,
   type MagicUpCampaign,
   type MagicUpCampaignStatus,
+  type MagicUpCurationStatus,
+  type MagicUpQualityDiagnosis,
 } from '@/pages/magic-up/magicUpStrategy';
 
 export interface MagicUpProduct {
