@@ -3,11 +3,13 @@ name: Deploy Gates
 # Quality gates antes do deploy em main.
 # Rodam em paralelo onde possível. Se QUALQUER UM falhar, bloqueia o pipeline.
 # Atualizado E58 (2026-10-14) para refletir todos os gates ativos.
+# E14 (2026-10-18): docs-only path filter — PRs que só tocam docs pulam gates pesados.
 #
 # Ordem dos gates (bloqueantes, exceto Gate 4 que é opcional):
 #  0    ssot-gate         — SSOT Supabase (project ID canônico)
 #  0.5  dependency-audit  — npm audit (sem CVEs high/critical)
 #  0.6  dependency-review — dependency-review-action (E97, PR-only)
+#  E14  changes           — detecta PRs docs-only (skip de lint/test/e2e/build)
 #  1    lint+tsc          — ESLint + TypeScript sem erros
 #  1.1  product-fields    — campos críticos do tipo Product presentes
 #  1.2  types-drift       — drift estrutural de types.ts (tabelas/views/functions/enums)
@@ -80,17 +82,21 @@ jobs:
           VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
 
   # ============================================================
-  # E14: Detecta PRs docs-only para pular gates caros.
-  # Só roda em pull_request; em push para main é skipped e os
-  # gates caros rodam normalmente (needs.changes.result == 'skipped').
+  # E14: Detecta PRs docs-only para skip de gates pesados.
+  # Quando TODOS os arquivos mudados são docs (*.md, docs/**,
+  # .changeset/**, etc.): lint-typecheck, unit-tests, e2e-smoke
+  # e build são pulados — sem impacto em segurança ou SSOT.
+  # Em push e dispatch: job é skipped (output docs_only = ''),
+  # todos os outros gates rodam normalmente ('' != 'true').
   # ============================================================
   changes:
-    name: Detect docs-only changes (E14)
+    name: Gate E14 - Detect docs-only PR
     runs-on: ubuntu-24.04
     timeout-minutes: 2
+    needs: [ssot-gate]
     if: github.event_name == 'pull_request'
     outputs:
-      docs_only: ${{ steps.docs_only.outputs.docs_only }}
+      docs_only: ${{ steps.filter.outputs.docs_only }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -99,28 +105,13 @@ jobs:
         id: filter
         with:
           filters: |
-            non_docs:
-              - 'src/**'
-              - 'scripts/**'
-              - '.github/**'
-              - 'supabase/**'
-              - 'public/**'
-              - 'package*.json'
-              - '.nvmrc'
-              - 'vite.config.*'
-              - 'playwright.config.*'
-              - 'tsconfig*.json'
-              - 'eslint.config.*'
-              - '.lighthouserc.*'
-              - 'e2e/**'
-              - 'tests/**'
-      - id: docs_only
-        run: |
-          if [[ "${{ steps.filter.outputs.non_docs }}" == "false" ]]; then
-            echo "docs_only=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "docs_only=false" >> "$GITHUB_OUTPUT"
-          fi
+            docs_only:
+              - '**/*.md'
+              - 'docs/**'
+              - '.changeset/**'
+              - '*.txt'
+              - 'LICENSE'
+              - '.gitignore'
 
   dependency-audit:
     name: Gate 0.5 - Dependency Audit
@@ -162,11 +153,14 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     needs: [ssot-gate, changes]
-    # E14: skip em PRs docs-only (sem src/scripts/etc); em push (changes=skipped) roda normalmente.
+    # E14: skip em PRs docs-only (output docs_only='true').
+    # always() garante que o job roda mesmo quando changes está skipped
+    # (push/dispatch): nesse caso docs_only é '' que != 'true'.
     if: >-
       always() &&
       needs.ssot-gate.result == 'success' &&
-      (needs.changes.result == 'skipped' || needs.changes.outputs.docs_only != 'true')
+      needs.changes.result != 'failure' &&
+      needs.changes.outputs.docs_only != 'true'
     env:
       NODE_OPTIONS: --max-old-space-size=4096
     steps:
@@ -340,11 +334,13 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 15  # E24: unitário+contrato Zod — 2 suites vitest puro, 0 HTTP (≤ 15 min)
     needs: [ssot-gate, changes]
-    # E14: skip em PRs docs-only; em push (changes=skipped) roda normalmente.
+    # E14: skip em PRs docs-only. always() garante que roda em push/dispatch
+    # quando changes está skipped (output vazio != 'true').
     if: >-
       always() &&
       needs.ssot-gate.result == 'success' &&
-      (needs.changes.result == 'skipped' || needs.changes.outputs.docs_only != 'true')
+      needs.changes.result != 'failure' &&
+      needs.changes.outputs.docs_only != 'true'
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -401,13 +397,14 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     needs: [ssot-gate, secrets-check, changes]
-    # E14: skip em PRs docs-only; em push (changes=skipped) roda normalmente.
-    # E015: Gate 3 executa (authed ou public-only) quando não é docs-only.
+    # E14: skip em PRs docs-only. always() garante que roda em push/dispatch
+    # quando changes está skipped. Também verifica que secrets-check passou.
     if: >-
       always() &&
       needs.ssot-gate.result == 'success' &&
       needs.secrets-check.result == 'success' &&
-      (needs.changes.result == 'skipped' || needs.changes.outputs.docs_only != 'true')
+      needs.changes.result != 'failure' &&
+      needs.changes.outputs.docs_only != 'true'
     env:
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
@@ -529,14 +526,14 @@ jobs:
     timeout-minutes: 10
     # Roda mesmo quando restore-cart-rpc-gate é skipped (Dependabot/fork sem secrets).
     # Só bloqueia se restore-cart-rpc-gate falhou; skip é tratado como ausência de dado.
-    # E14: skip em PRs docs-only (lint-typecheck será skipped; changes.result == 'success' && docs_only == 'true').
+    # E14: lint-typecheck pode estar skipped (docs-only) — nesse caso build também salta.
     if: >-
       always() &&
-      (needs.changes.result == 'skipped' || needs.changes.outputs.docs_only != 'true') &&
-      needs.lint-typecheck.result == 'success' &&
+      needs.lint-typecheck.result != 'failure' &&
       needs.seo-sanity.result == 'success' &&
-      needs.restore-cart-rpc-gate.result != 'failure'
-    needs: [lint-typecheck, seo-sanity, restore-cart-rpc-gate, changes]
+      needs.restore-cart-rpc-gate.result != 'failure' &&
+      needs.lint-typecheck.result != 'skipped'
+    needs: [lint-typecheck, seo-sanity, restore-cart-rpc-gate]
     permissions:
       contents: read
       id-token: write      # necessário para attest-build-provenance (E99)
@@ -638,9 +635,9 @@ jobs:
     timeout-minutes: 2
     needs:
       - ssot-gate
-      - changes             # E14: docs-only detection
       - dependency-audit
       - dependency-review
+      - changes          # E14
       - lint-typecheck
       - unit-tests
       - database-integrity
@@ -667,37 +664,38 @@ jobs:
           R_RESTORE:       ${{ needs.restore-cart-rpc-gate.result }}
           R_BUILD:         ${{ needs.build.result }}
           R_SCHEMA_DRIFT:  ${{ needs.schema-drift-gate.result }}
+          # E14: docs_only='true' quando PR toca só docs; '' em push/dispatch
+          DOCS_ONLY:       ${{ needs.changes.outputs.docs_only }}
           IS_DEPENDABOT: ${{ github.actor == 'dependabot[bot]' }}
           # IS_FORK: true quando PR de fork externo (sem acesso a secrets live — E59)
           IS_FORK:       ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
-          # E14: true em PRs docs-only (sem src/scripts/etc) — gates caros são skipped
-          DOCS_ONLY:     ${{ needs.changes.outputs.docs_only || 'false' }}
         run: |
           set -euo pipefail
           FAIL=0
           fail_gate() { echo "::error::$1" >&2; FAIL=1; }
-          # E14: aceita skipped quando PR docs-only (lint/unit/e2e/build são skip intencionais)
-          ok_gate() {
-            local r="$1" name="$2"
-            if [[ "$r" == "success" ]]; then return 0; fi
-            if [[ "$DOCS_ONLY" == "true" && "$r" == "skipped" ]]; then
-              echo "::notice::${name} skipped (docs-only PR — E14)"
-              return 0
-            fi
-            fail_gate "${name} falhou (${r})"
-          }
 
-          # ── Gates sempre bloqueantes ───────────────────────────────────────────────────────
+          # ── Gate 0 sempre bloqueante ──────────────────────────────────────────────
           [[ "$R_SSOT"      == "success" ]] || fail_gate "Gate 0 SSOT falhou (${R_SSOT})"
           [[ "$R_DEP_AUDIT" == "success" ]] || fail_gate "Gate 0.5 Dependency Audit falhou (${R_DEP_AUDIT})"
-          ok_gate "$R_LINT"  "Gate 1 Lint+TypeScript"
-          ok_gate "$R_UNIT"  "Gate 2 Unit Tests"
           [[ "$R_SEO"       == "success" ]] || fail_gate "Gate 5 SEO Sanity falhou (${R_SEO})"
-          ok_gate "$R_BUILD"   "Gate 6 Build"
           [[ "$R_SECRETS"      == "success" ]] || fail_gate "Gate E23 Secrets Check falhou (${R_SECRETS})"
           # E040: schema-drift-gate é bloqueante quando mudanças de schema foram detectadas; skip = sem mudança
           [[ "$R_SCHEMA_DRIFT" == "success" || "$R_SCHEMA_DRIFT" == "skipped" ]] || \
             fail_gate "Gate E40 Schema Drift falhou (${R_SCHEMA_DRIFT})"
+
+          # ── Gates skippable em docs-only PR (E14) ────────────────────────────────
+          # DOCS_ONLY='true': lint/test/e2e/build foram pulados intencionalmente.
+          # DOCS_ONLY='':     push/dispatch ou PR com código — todos devem passar.
+          if [[ "${DOCS_ONLY:-}" == "true" ]]; then
+            echo "::notice::E14 — PR docs-only: lint/unit/e2e/build podem ser skipped."
+            [[ "$R_LINT"  == "success" || "$R_LINT"  == "skipped" ]] || fail_gate "Gate 1 Lint+TypeScript falhou (${R_LINT})"
+            [[ "$R_UNIT"  == "success" || "$R_UNIT"  == "skipped" ]] || fail_gate "Gate 2 Unit Tests falhou (${R_UNIT})"
+            [[ "$R_BUILD" == "success" || "$R_BUILD" == "skipped" ]] || fail_gate "Gate 6 Build falhou (${R_BUILD})"
+          else
+            [[ "$R_LINT"  == "success" ]] || fail_gate "Gate 1 Lint+TypeScript falhou (${R_LINT})"
+            [[ "$R_UNIT"  == "success" ]] || fail_gate "Gate 2 Unit Tests falhou (${R_UNIT})"
+            [[ "$R_BUILD" == "success" ]] || fail_gate "Gate 6 Build falhou (${R_BUILD})"
+          fi
 
           # ── Gate 0.6 dependency-review: PR-only; skip em Dependabot/fork (E97/E03) ──
           if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
@@ -727,12 +725,12 @@ jobs:
               fail_gate "Gate 5.5 restore-cart falhou (${R_RESTORE}) — fora de fork/Dependabot"
           fi
 
-          # ── Gate 3 e2e-smoke: skip em PR docs-only (E14) ou quando has_e2e=false (E21+E23) ──
+          # ── Gate 3 e2e-smoke: skip só em PR quando has_e2e=false (E21+E23) ou docs-only (E14) ──
           # Em push para main: E2E_USER_* existem (09/10); skip = falha de configuração.
           if [[ "$R_E2E" == "skipped" ]]; then
             if [[ "$GITHUB_EVENT_NAME" != "pull_request" ]]; then
               fail_gate "Gate 3 e2e-smoke skipped não permitido em push — verifique secrets E2E_USER_EMAIL/PASSWORD"
-            elif [[ "$DOCS_ONLY" == "true" ]]; then
+            elif [[ "${DOCS_ONLY:-}" == "true" ]]; then
               echo "::notice::Gate 3 e2e-smoke skipped (docs-only PR — E14)"
             else
               echo "::warning::Gate 3 e2e-smoke skipped (has_e2e=false em PR)"
