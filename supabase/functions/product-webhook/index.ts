@@ -71,12 +71,13 @@ type NormalizedProduct = {
   // tipos gerados. Enviar a key no upsert quebrava TODA a linha com
   // PGRST204. A identidade de dedupe real é `sku` (products_sku_key).
   sku: string;
+  sku_promo: string;           // DB column: sku_promo NOT NULL + CHECK = sku (trigger trg_sync_sku_promo also enforces)
   name: string;
   description: string | null;
   sale_price: number;          // DB column: sale_price (was: price)
   min_quantity: number;
-  category_id: string | null;  // UUID or null; numeric IDs from webhook are rejected
-  supplier_id: string | null;  // UUID or null; validated before insertion
+  category_id: string | null;  // UUID NOT NULL — resolved via categories.bitrix_id/name; null only when unresolvable
+  supplier_id: string | null;  // UUID NOT NULL — resolved via suppliers.code/name; null only when unresolvable
   brand: string | null;        // DB column: brand (was: supplier_name)
   stock_quantity: number;      // DB column: stock_quantity (was: stock)
   is_stockout: boolean;        // DB column: is_stockout (was: stock_status string)
@@ -436,7 +437,23 @@ async function upsertProducts(
   chunkSize: number,
 ): Promise<UpsertOutcome> {
   const startedAt = Date.now();
-  const normalized = products.map(normalizeProduct);
+  const resolvers = await buildEntityResolvers(supabase);
+  const normalized = products.map((p) => normalizeProduct(p, resolvers));
+  const unresolved = { category: [] as string[], supplier: [] as string[] };
+  for (const [i, n] of normalized.entries()) {
+    const p = products[i];
+    if (n.category_id === null && (p.category_id !== undefined || p.category_name))
+      unresolved.category.push(p.sku);
+    if (n.supplier_id === null && (p.supplier_id || p.supplier_name))
+      unresolved.supplier.push(p.sku);
+  }
+  if (unresolved.category.length || unresolved.supplier.length) {
+    console.warn(
+      `[product-webhook] ids externos não resolvidos: ` +
+        `category=${unresolved.category.length} (ex: ${unresolved.category.slice(0, 3).join(',')}) ` +
+        `supplier=${unresolved.supplier.length} (ex: ${unresolved.supplier.slice(0, 3).join(',')})`,
+    );
+  }
   const chunks = chunkArray(normalized, chunkSize);
 
   let created = 0;
@@ -549,15 +566,94 @@ async function upsertProducts(
   };
 }
 
-function normalizeProduct(product: ProductPayload): NormalizedProduct {
+// category_id/supplier_id chegam do Bitrix como ID numérico ou nome — o banco
+// exige UUID NOT NULL. Resolvemos contra categories (bitrix_id, depois name) e
+// suppliers (code, depois name). Sem resolução, todo upsert morre em 23502.
+type EntityResolvers = {
+  categoryByBitrixId: Map<number, string>;
+  categoryByName: Map<string, string>;
+  supplierByCode: Map<string, string>;
+  supplierByName: Map<string, string>;
+};
+
+const normalizeKey = (s: string): string => s.trim().toLowerCase().replace(/\s+/g, ' ');
+
+async function buildEntityResolvers(
+  supabase: SupabaseClient<Database>,
+): Promise<EntityResolvers | null> {
+  try {
+    const [categoriesRes, suppliersRes] = await Promise.all([
+      supabase.from('categories').select('id,name,bitrix_id').limit(5000),
+      supabase.from('suppliers').select('id,name,code').limit(1000),
+    ]);
+    if (categoriesRes.error) throw categoriesRes.error;
+    if (suppliersRes.error) throw suppliersRes.error;
+    const categoryByBitrixId = new Map<number, string>();
+    const categoryByName = new Map<string, string>();
+    for (const row of categoriesRes.data ?? []) {
+      if (typeof row.bitrix_id === 'number') categoryByBitrixId.set(row.bitrix_id, row.id);
+      if (row.name) categoryByName.set(normalizeKey(row.name), row.id);
+    }
+    const supplierByCode = new Map<string, string>();
+    const supplierByName = new Map<string, string>();
+    for (const row of suppliersRes.data ?? []) {
+      if (row.code) supplierByCode.set(normalizeKey(row.code), row.id);
+      if (row.name) supplierByName.set(normalizeKey(row.name), row.id);
+    }
+    return { categoryByBitrixId, categoryByName, supplierByCode, supplierByName };
+  } catch (err) {
+    console.error('[product-webhook] falha ao carregar mapa categoria/fornecedor:', err);
+    return null;
+  }
+}
+
+function resolveCategoryUuid(
+  product: ProductPayload,
+  resolvers: EntityResolvers | null,
+): string | null {
+  if (isUUID(product.category_id)) return product.category_id as string;
+  const numeric =
+    typeof product.category_id === 'number' && Number.isInteger(product.category_id)
+      ? product.category_id
+      : null;
+  if (resolvers) {
+    if (numeric !== null) {
+      const hit = resolvers.categoryByBitrixId.get(numeric);
+      if (hit) return hit;
+    }
+    for (const candidate of [product.category_name, product.subcategory]) {
+      if (typeof candidate !== 'string') continue;
+      const hit = resolvers.categoryByName.get(normalizeKey(candidate));
+      if (hit) return hit;
+    }
+  }
+  return null;
+}
+
+function resolveSupplierUuid(
+  product: ProductPayload,
+  resolvers: EntityResolvers | null,
+): string | null {
+  if (isUUID(product.supplier_id)) return product.supplier_id;
+  if (resolvers) {
+    for (const candidate of [product.supplier_id, product.supplier_name]) {
+      if (typeof candidate !== 'string') continue;
+      const key = normalizeKey(candidate);
+      const hit = resolvers.supplierByCode.get(key) ?? resolvers.supplierByName.get(key);
+      if (hit) return hit;
+    }
+  }
+  return null;
+}
+
+function normalizeProduct(
+  product: ProductPayload,
+  resolvers: EntityResolvers | null,
+): NormalizedProduct {
   const stockQty = product.stock ?? 0;
   const isActive = product.is_active !== false;
-  // category_id from external systems is a Bitrix numeric ID; DB column is UUID.
-  // String "42" would be stored as-is but fail UUID FK lookups. Null it out until
-  // a category-reconciliation step looks up the UUID via categories.bitrix_id.
-  const categoryId = isUUID(product.category_id) ? (product.category_id as string) : null;
-  // supplier_id must be a valid UUID referencing the suppliers table.
-  const supplierId = isUUID(product.supplier_id) ? product.supplier_id : null;
+  const categoryId = resolveCategoryUuid(product, resolvers);
+  const supplierId = resolveSupplierUuid(product, resolvers);
   // Merge metadata + kit_items into schema_json (single jsonb column).
   const schemaJson: Record<string, unknown> = {
     ...((product.metadata || {}) as Record<string, unknown>),
@@ -570,6 +666,7 @@ function normalizeProduct(product: ProductPayload): NormalizedProduct {
 
   return {
     sku: product.sku,
+    sku_promo: product.sku, // CHECK chk_products_sku_promo_equals_sku exige igualdade
     name: product.name,
     description: product.description || null,
     sale_price: product.price,       // webhook 'price' field = sale_price in DB
