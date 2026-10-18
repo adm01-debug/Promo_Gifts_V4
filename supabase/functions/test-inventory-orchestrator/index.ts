@@ -2,11 +2,16 @@ import { createStructuredLogger } from "../_shared/structured-logger.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { resolveCredential } from "../_shared/credentials.ts";
 import { buildPublicCorsHeaders } from "../_shared/cors.ts";
+import { authorize } from "../_shared/authorize.ts";
 
 const corsHeaders = buildPublicCorsHeaders({ allowMethods: "GET, OPTIONS" });
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+
+  // E027: fechar oráculo de configuração — exigir role dev
+  const authResult = await authorize(req, { requireRole: 'dev' });
+  if (!authResult.ok) return authResult.response;
 
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL")!,

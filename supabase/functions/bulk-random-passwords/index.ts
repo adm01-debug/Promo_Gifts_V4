@@ -4,6 +4,7 @@
 import { createStructuredLogger } from "../_shared/structured-logger.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.49.4";
 import { buildPublicCorsHeaders } from "../_shared/cors.ts";
+import { authorize } from "../_shared/authorize.ts";
 import { z } from "../_shared/zod-validate.ts";
 
 // Tipos do body — falha de schema cai em {} (dry_run + defaults), mesmo
@@ -45,7 +46,7 @@ interface UpdatedUser {
 }
 
 const corsHeaders = buildPublicCorsHeaders({
-  extraAllowHeaders: ["x-admin-token"],
+  // x-admin-token removido: E028 migrou para authorize() com requireRole dev
   allowMethods: "POST, OPTIONS",
 });
 
@@ -123,23 +124,9 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    const adminTokenHeader = req.headers.get("x-admin-token");
-    const expectedAdminToken = Deno.env.get("ADMIN_BATCH_TOKEN");
-
-    if (!expectedAdminToken) {
-      return new Response(JSON.stringify({ error: "Missing ADMIN_BATCH_TOKEN secret" }), {
-        status: 503,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    // BUG-EF-002 FIX: timingSafeEqual em vez de comparacao direta
-    if (!adminTokenHeader || !timingSafeEqual(adminTokenHeader, expectedAdminToken)) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
+    // E028: autorização via JWT com role dev (substitui x-admin-token estático)
+    const authResult = await authorize(req, { requireRole: 'dev' });
+    if (!authResult.ok) return authResult.response;
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -213,8 +200,13 @@ Deno.serve(async (req: Request) => {
       }
     }
 
+    // E029: dry_run não expõe lista de usuários/emails — só contagem
+    const responsePayload = mode === 'apply'
+      ? { mode, count: updatedUsers.length, users: updatedUsers }
+      : { mode, count: updatedUsers.length };  // E029: sem dump de diretório em dry_run
+
     return new Response(
-      JSON.stringify({ mode, count: updatedUsers.length, users: updatedUsers }),
+      JSON.stringify(responsePayload),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
 

@@ -507,6 +507,53 @@ jobs:
         with:
           subject-path: 'dist/**/*.js'
 
+  # E040: verifica se arquivos de migration/baseline mudaram para acionar drift-check
+  check-schema-paths:
+    name: Gate E40 - Detect schema file changes
+    needs: [ssot-gate]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    outputs:
+      changed: ${{ steps.detect.outputs.changed }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0   # necessário para git diff com BASE_SHA de PRs
+      - name: Detect schema-relevant path changes
+        id: detect
+        env:
+          BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          BASE="${BASE_SHA:-}"
+          # Fallback para push inicial ou workflow_dispatch (sem BASE_SHA)
+          if [ -z "$BASE" ] || [ "$BASE" = "0000000000000000000000000000000000000000" ]; then
+            BASE="HEAD~1"
+          fi
+          changed=$(git diff --name-only "${BASE}...${HEAD_SHA}" 2>/dev/null | \
+            grep -cE '^supabase/(migrations/|baseline/|config\.toml)|^scripts/drift-baseline\.mjs|^\.github/workflows/db-schema-drift-check\.yml' \
+            || echo 0)
+          if [ "$changed" -gt 0 ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::${changed} arquivo(s) de schema/migration alterados — drift-check ativado."
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Nenhum arquivo de schema/migration alterado — drift-check dispensado."
+          fi
+
+  # E040: chama db-schema-drift-check.yml quando migrations/baseline mudaram
+  schema-drift-gate:
+    name: Gate E40 - Schema Drift Check
+    needs: [check-schema-paths]
+    if: >-
+      needs.check-schema-paths.outputs.changed == 'true' &&
+      (github.event_name != 'pull_request' ||
+       github.event.pull_request.head.repo.full_name == github.repository)
+    uses: ./.github/workflows/db-schema-drift-check.yml
+    secrets: inherit
+
   deploy-ready:
     name: Gate Final - Deploy Ready
     if: always()
@@ -525,20 +572,23 @@ jobs:
       - seo-sanity
       - restore-cart-rpc-gate
       - build
+      - check-schema-paths   # E040
+      - schema-drift-gate    # E040
     steps:
       - name: Require every blocking gate to pass (E03 — tabela explícita por job)
         env:
-          R_SSOT:        ${{ needs.ssot-gate.result }}
-          R_DEP_AUDIT:   ${{ needs.dependency-audit.result }}
-          R_DEP_REVIEW:  ${{ needs.dependency-review.result }}
-          R_LINT:        ${{ needs.lint-typecheck.result }}
-          R_UNIT:        ${{ needs.unit-tests.result }}
-          R_DB_INT:      ${{ needs.database-integrity.result }}
-          R_SECRETS:     ${{ needs.secrets-check.result }}
-          R_E2E:         ${{ needs.e2e-smoke.result }}
-          R_SEO:         ${{ needs.seo-sanity.result }}
-          R_RESTORE:     ${{ needs.restore-cart-rpc-gate.result }}
-          R_BUILD:       ${{ needs.build.result }}
+          R_SSOT:          ${{ needs.ssot-gate.result }}
+          R_DEP_AUDIT:     ${{ needs.dependency-audit.result }}
+          R_DEP_REVIEW:    ${{ needs.dependency-review.result }}
+          R_LINT:          ${{ needs.lint-typecheck.result }}
+          R_UNIT:          ${{ needs.unit-tests.result }}
+          R_DB_INT:        ${{ needs.database-integrity.result }}
+          R_SECRETS:       ${{ needs.secrets-check.result }}
+          R_E2E:           ${{ needs.e2e-smoke.result }}
+          R_SEO:           ${{ needs.seo-sanity.result }}
+          R_RESTORE:       ${{ needs.restore-cart-rpc-gate.result }}
+          R_BUILD:         ${{ needs.build.result }}
+          R_SCHEMA_DRIFT:  ${{ needs.schema-drift-gate.result }}
           IS_DEPENDABOT: ${{ github.actor == 'dependabot[bot]' }}
           # IS_FORK: true quando PR de fork externo (sem acesso a secrets live — E59)
           IS_FORK:       ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
@@ -553,8 +603,11 @@ jobs:
           [[ "$R_LINT"      == "success" ]] || fail_gate "Gate 1 Lint+TypeScript falhou (${R_LINT})"
           [[ "$R_UNIT"      == "success" ]] || fail_gate "Gate 2 Unit Tests falhou (${R_UNIT})"
           [[ "$R_SEO"       == "success" ]] || fail_gate "Gate 5 SEO Sanity falhou (${R_SEO})"
-          [[ "$R_BUILD"     == "success" ]] || fail_gate "Gate 6 Build falhou (${R_BUILD})"
-          [[ "$R_SECRETS"   == "success" ]] || fail_gate "Gate E23 Secrets Check falhou (${R_SECRETS})"
+          [[ "$R_BUILD"        == "success" ]] || fail_gate "Gate 6 Build falhou (${R_BUILD})"
+          [[ "$R_SECRETS"      == "success" ]] || fail_gate "Gate E23 Secrets Check falhou (${R_SECRETS})"
+          # E040: schema-drift-gate é bloqueante quando mudanças de schema foram detectadas; skip = sem mudança
+          [[ "$R_SCHEMA_DRIFT" == "success" || "$R_SCHEMA_DRIFT" == "skipped" ]] || \
+            fail_gate "Gate E40 Schema Drift falhou (${R_SCHEMA_DRIFT})"
 
           # ── Gate 0.6 dependency-review: PR-only; skip em Dependabot/fork (E97/E03) ──
           if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then

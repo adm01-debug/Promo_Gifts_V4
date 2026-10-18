@@ -90,15 +90,29 @@ export function isPublicAnonJwt(token) {
 
 const JWT_GLOBAL = new RegExp(SECRET_PATTERNS[0][1].source, 'g');
 
+// E039: ref do projeto proibido (Lovable Cloud antigo, sem catálogo) e ref canônico
+const FORBIDDEN_PROJECT_REF = 'pqpdolkaeqlyzpdpbizo';
+const CANONICAL_PROJECT_REF = 'doufsxqlfjyuvxuezpln';
+
 export function findSecrets(sql) {
   const hits = [];
+  let hasCanonical = false;
   sql.split('\n').forEach((line, i) => {
     for (const [name, re] of SECRET_PATTERNS) {
       if (!re.test(line)) continue;
       if (name === 'jwt' && (line.match(JWT_GLOBAL) ?? []).every(isPublicAnonJwt)) continue;
       hits.push({ line: i + 1, kind: name });
     }
+    // E039: baseline gerado do projeto proibido aborta o export
+    if (line.includes(FORBIDDEN_PROJECT_REF)) {
+      hits.push({ line: i + 1, kind: 'forbidden-project-ref' });
+    }
+    if (line.includes(CANONICAL_PROJECT_REF)) hasCanonical = true;
   });
+  // E039: baseline sem ref canônico sugere projeto errado
+  if (sql.length > 10_000 && !hasCanonical) {
+    hits.push({ line: 0, kind: 'missing-canonical-project-ref' });
+  }
   return hits;
 }
 
@@ -515,8 +529,13 @@ export function loadAllowlist(text) {
     .split('\n')
     .map((l) => l.trim())
     .filter((l) => l && !l.startsWith('#'))
-    .map((l) => {
-      const re = new RegExp(l);
+    .map((l, idx) => {
+      let re;
+      try {
+        re = new RegExp(l);
+      } catch (err) {
+        throw new Error(`drift-allowlist: regex inválida na linha ${idx + 1} (${l}) — ${err.message}`);
+      }
       // Entrada = prefixo LITERAL de um comando: só `^`, `$` e pontuação escapada
       // (`\.`, `\(`). Classes, quantificadores, alternância e lookahead
       // (`(?!__drift_probe__)`) esconderiam uma classe inteira e escapam de qualquer lista

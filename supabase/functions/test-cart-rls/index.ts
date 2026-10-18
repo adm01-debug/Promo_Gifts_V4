@@ -14,6 +14,7 @@
  */
 import { createClient } from "npm:@supabase/supabase-js@2.49.4";
 import { getCorsHeaders } from "../_shared/cors.ts";
+import { authorize } from "../_shared/authorize.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -24,9 +25,16 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: getCorsHeaders(req) });
   }
 
+  // E025: exigir role dev
+  const authResult = await authorize(req, { requireRole: 'dev' });
+  if (!authResult.ok) return authResult.response;
+
   const admin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
   const now = Date.now();
-  const pw = "rls-test-pass-2026!";
+  // E025: senha aleatória — nenhum segredo hardcoded
+  const pwBytes = new Uint8Array(18);
+  crypto.getRandomValues(pwBytes);
+  const pw = Array.from(pwBytes, b => b.toString(16).padStart(2, '0')).join('');
   const u1Email = `rls-u1-${now}@test.internal`;
   const u2Email = `rls-u2-${now}@test.internal`;
 

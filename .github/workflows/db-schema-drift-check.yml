@@ -202,9 +202,11 @@ jobs:
           set -euo pipefail
           # Limite próprio < timeout do job: SIGINT deixa o CLI cancelar o
           # contexto e remover os containers shadow/migra antes do runner morrer.
+          # E035: schemas lidos do arquivo compartilhado (mesmo usado pelo export)
+          SCHEMAS=$(grep -v '^#' supabase/baseline/schemas.txt | grep -v '^$' | tr '\n' ',' | sed 's/,$//')
           rc=0
           timeout --signal=INT --kill-after=30s 9m \
-            supabase db diff --workdir /tmp/drift-wd --linked --schema public \
+            supabase db diff --workdir /tmp/drift-wd --linked --schema "$SCHEMAS" \
             > /tmp/schema_drift.sql 2> /tmp/diff.stderr || rc=$?
           if [ "$rc" -ne 0 ]; then
             if [ "$rc" -eq 124 ] || [ "$rc" -eq 137 ]; then
@@ -256,6 +258,20 @@ jobs:
             echo "Baseline $baseline + $replayed migration(s) aplicada(s) depois dele descrevem"
             echo "o schema public do projeto canonico (fora o ruído em supabase/baseline/drift-allowlist.txt)."
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Event trigger drift check (E036)
+        if: steps.guard.outputs.enabled == 'true' && steps.replay.outputs.skip != 'true'
+        env:
+          SUPABASE_PROJECT_REF: ${{ env.SUPABASE_PROJECT_REF }}
+        run: |
+          set -euo pipefail
+          node scripts/check-event-triggers-drift.mjs
+
+      - name: Cron job drift check (E037)
+        if: steps.guard.outputs.enabled == 'true' && steps.replay.outputs.skip != 'true'
+        run: |
+          set -euo pipefail
+          node scripts/check-cron-drift.mjs
 
       # Garante que nenhum container do CLI (shadow DB / edge-runtime migra)
       # continue conectado ao canônico depois do step — inclusive em cancel
