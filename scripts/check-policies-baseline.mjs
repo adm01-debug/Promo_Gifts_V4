@@ -141,7 +141,7 @@ const RECONCILED_MANIFEST = path.join(
   'docs/MANIFESTO_MIGRATIONS_RECONCILIADAS_2026-09-11.json',
 );
 const POLICY_STMT_RE =
-  /(create|drop)\s+policy\s+(?:if\s+(?:not\s+)?exists\s+)?["']?([\w\s-]+?)["']?\s+on\s+(?:(\w+)\.)?(\w+)/gi;
+  /(create|drop)\s+policy\s+(?:if\s+(?:not\s+)?exists\s+)?["']?([\w\s-]+?)["']?\s+on\s+(?:["']?(\w+)["']?\.)?["']?(\w+)["']?/gi;
 
 /**
  * Versão remota (ledger) de um arquivo de migration: prefixo
@@ -204,10 +204,28 @@ function plannedPolicyKeys(appliedVersions) {
     }
     const sql = readFileSync(path.join(MIGRATIONS_DIR, file), 'utf8');
     for (const stmt of sql.matchAll(POLICY_STMT_RE)) {
+      const op = stmt[1].toLowerCase();
       const name = stmt[2].trim();
       const schema = stmt[3] ?? 'public';
       const table = stmt[4];
-      if (schema === 'public') planned.add(`public.${table}.${name}`);
+      if (schema === 'public') {
+        const baseKey = `public.${table}.${name}`;
+        if (op === 'create') {
+          // E048: extrair FOR cmd do contexto do statement (até o próximo ';')
+          const afterMatch = sql.slice(stmt.index + stmt[0].length);
+          const nextSemi = afterMatch.indexOf(';');
+          const stmtRest = nextSemi >= 0 ? afterMatch.slice(0, nextSemi + 1) : afterMatch;
+          const cmdMatch = stmtRest.match(/\bfor\s+(select|insert|update|delete|all)\b/i);
+          if (cmdMatch) {
+            planned.add(baseKey + '|' + cmdMatch[1].toUpperCase());
+          } else {
+            planned.add(baseKey); // sem FOR explícito: chave legada (backward compat)
+          }
+        } else {
+          // DROP POLICY: não tem cmd — chave base para tolerar remoção
+          planned.add(baseKey);
+        }
+      }
     }
   }
   return planned;
@@ -238,6 +256,25 @@ function loadBaseline() {
 
 function describePolicy(p) {
   return `${policyKey(p)} [${p.cmd}|${p.permissive}|roles=${p.roles}]`;
+}
+
+// E043: policy nova com roles={public}/anon + PERMISSIVE + USING(true) é sempre recusada.
+// As policies existentes no baseline (legado) passam; só novas são bloqueadas.
+function isPublicOpenPolicy(p) {
+  const r = p.roles.toLowerCase();
+  const hasPublicOrAnon = r === '{public}' || r === '{}' || r.includes('anon');
+  const isPermissive = p.permissive.toUpperCase() === 'PERMISSIVE';
+  const hasOpenQual = p.qual === '(true)' || p.qual === 'true';
+  return hasPublicOrAnon && isPermissive && hasOpenQual;
+}
+
+// E048: chave de tolerância que inclui cmd quando disponível nas migrations.
+// Fallback para chave legada (sem cmd) em migrations sem FOR explícito.
+function isAddedPlanned(p, plannedKeys) {
+  return (
+    plannedKeys.has(policyKey(p) + '|' + p.cmd.toUpperCase()) ||
+    plannedKeys.has(policyKey(p)) // legado: migration sem FOR explícito
+  );
 }
 
 async function main() {
@@ -351,8 +388,12 @@ async function main() {
   // Idem para adições: migration pendente DROPa a policy — o live ainda a
   // tem e a baseline já não, então ela aparece como `added` até o db-apply.
   const addedAll = actual.filter((p) => !baselineByKey.has(policyKey(p)));
-  const added = addedAll.filter((p) => !plannedKeys.has(policyKey(p)));
-  const plannedAdded = addedAll.filter((p) => plannedKeys.has(policyKey(p)));
+  // E043: policies novas públicas/abertas são sempre recusadas — mesmo se estiverem em plannedKeys.
+  const e043Violations = addedAll.filter(isPublicOpenPolicy);
+  const addedNonE043 = addedAll.filter((p) => !isPublicOpenPolicy(p));
+  // E048: verifica cmd além do nome na chave de tolerância (fallback para chave legada sem cmd).
+  const added = addedNonE043.filter((p) => !isAddedPlanned(p, plannedKeys));
+  const plannedAdded = addedNonE043.filter((p) => isAddedPlanned(p, plannedKeys));
   // Policies ausentes no live que uma migration pendente cria/remove —
   // mudança planejada (PR com migration + baseline atualizada), não drift.
   const removedAll = baseline.filter((p) => !actualByKey.has(policyKey(p)));
@@ -376,23 +417,14 @@ async function main() {
     );
   }
 
-  // E043: policy NOVA com roles={public} ou anon+USING(true) bloqueada mesmo
-  // antes de entrar no baseline — o quarto deve ser esvaziado, não enchido.
-  function isForbiddenNewPolicy(p) {
-    const roles = (p.roles ?? '').replace(/[{}]/g, '');
-    const roleList = roles.split(',').map((r) => r.trim());
-    if (roleList.includes('public')) return true;
-    if (roleList.includes('anon') && (p.qual ?? '').trim() === 'true') return true;
-    return false;
-  }
-  const forbiddenNew = added.filter(isForbiddenNewPolicy);
-
   const problems = [];
-  if (forbiddenNew.length) {
+  // E043: policies novas com acesso público/anon aberto — recusadas sempre,
+  // mesmo se estiverem em plannedKeys (migration não pode autorizar policy aberta).
+  if (e043Violations.length) {
     problems.push(
-      `🚨 E043: ${forbiddenNew.length} policy(ies) NOVA(S) com padrão proibido (roles=public ou anon+USING(true)):\n` +
-        forbiddenNew.map((p) => `   - ${describePolicy(p)}`).join('\n') +
-        '\n   Reescreva usando TO authenticated / TO service_role antes de commitar o baseline.',
+      `🚨 ${e043Violations.length} policy(ies) NOVA(S) rejeitada(s) — roles={public}/anon + USING(true) (E043):\n` +
+        e043Violations.map((p) => `   - ${describePolicy(p)}`).join('\n') +
+        '\n   Policies públicas/abertas não são aceitas. Use migration revisada e regenere o baseline após aprovação do PO.',
     );
   }
   if (added.length) {
@@ -425,9 +457,10 @@ async function main() {
     return concludeCheck({
       check: 'policies-baseline',
       status: CHECK_RESULT_STATUS.FAILED,
-      summary: `drift de policies: +${added.length} / -${removed.length} / ~${changed.length}`,
+      summary: `drift de policies: e043=${e043Violations.length} +${added.length} / -${removed.length} / ~${changed.length}`,
       details: {
         source,
+        e043: e043Violations.map(policyKey),
         added: added.map(policyKey),
         removed: removed.map(policyKey),
         changed: changed.map(policyKey),
