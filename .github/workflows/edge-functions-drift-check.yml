@@ -205,7 +205,7 @@ jobs:
             canon_sha=$(printf '%s' "$canon_manifest" | sha256sum | awk '{print $1}')
 
             # E030: symmetric — also detects files in repo absent from canonical
-            printf '%s\n' "$canon_manifest" | awk '{print $2}' > /tmp/canon_paths_${slug}.txt
+            printf '%s\n' "$canon_manifest" | awk '{print $2}' > "/tmp/canon_paths_${slug}.txt"
             repo_manifest=$(
               while IFS= read -r line; do
                 [ -z "$line" ] && continue
@@ -218,12 +218,12 @@ jobs:
                 printf '%s  %s\n' "$h" "$relpath"
               done <<< "$canon_manifest"
               find "supabase/functions/$slug" -type f 2>/dev/null | sort | while IFS= read -r f; do
-                if ! grep -qxF "$f" /tmp/canon_paths_${slug}.txt 2>/dev/null; then
+                if ! grep -qxF "$f" "/tmp/canon_paths_${slug}.txt" 2>/dev/null; then
                   printf 'REPO_ONLY  %s\n' "$f"
                 fi
               done
             )
-            rm -f /tmp/canon_paths_${slug}.txt
+            rm -f "/tmp/canon_paths_${slug}.txt"
             repo_sha=$(printf '%s' "$repo_manifest" | sha256sum | awk '{print $1}')
 
             if [ "$repo_sha" = "$canon_sha" ]; then
