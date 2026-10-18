@@ -33,6 +33,7 @@ const PRIVILEGED_PATTERNS = [
   /secrets\.DEPLOY_PAT\b/,
   /secrets\.ADMIN_TOKEN\b/,
   /secrets\.PAT\b/,
+  /secrets\.SUPABASE_ACCESS_TOKEN\b/,
 ];
 
 /** Returns all workflow YAML files */
