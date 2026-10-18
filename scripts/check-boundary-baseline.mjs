@@ -11,18 +11,36 @@ import { dirname, join, normalize, relative } from 'node:path';
 
 const BASELINE = '.boundary-baseline.json';
 const UPDATE = process.argv.includes('--update');
-// Specifiers: `from 'x'` (import/export estáticos), `import('x')` dinâmico e
-// bare `import 'x'`. Aspas simples, duplas ou template literal ESTÁTICO;
-// templates com ${} são dinâmicos — não resolvíveis, ignorados.
+// Specifiers literais: `from'x'` (import/export — com ou sem espaço),
+// `import('x')`, bare `import 'x'`, `require('x')` (inclui TS
+// `import x = require('y')`) e `import.meta.glob('x')`. Aspas simples,
+// duplas ou template literal ESTÁTICO. `import x = require(...)` é pego
+// pelo braço de `require`.
 const SPEC_RE =
-  /from\s+['"`]([^'"`]+)['"`]|import\s*\(\s*['"`]([^'"`]+)['"`]|import\s+['"`]([^'"`]+)['"`]/g;
+  /\bfrom\s*['"`]([^'"`]+)['"`]|\bimport\s*\(\s*['"`]([^'"`]+)['"`]|\bimport\s+['"`]([^'"`]+)['"`]|\brequire\s*\(\s*['"]([^'"]+)['"]|\bimport\.meta\.glob(?:Eager)?\s*\(\s*['"]([^'"]+)['"]/g;
+// Specifier computado (não-literal): não podemos provar o destino, então
+// conta como violação — sem isso `import(var)`/`require(var)`/`glob(var)`
+// evadem o gate inteiro.
+const DYNAMIC_RE =
+  /\bimport\s*\(\s*[^'"`\s)]|\brequire\s*\(\s*[^'"\s)]|\bimport\.meta\.glob(?:Eager)?\s*\(\s*[^'"]/g;
+
+// Comentários removidos preservando quebras de linha (line numbers ficam
+// corretos) — evasão `from /*c*/ 'x'` e falso-positivo de import citado
+// em comentário.
+function stripComments(src) {
+  return src
+    .replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, ' '))
+    // `//` dentro de specifier de path (`'@//pages/x'`, `'a//b'`) não é
+    // comentário — excluídos @, / e . do lado esquerdo.
+    .replace(/(^|[^:'"`\/@.])\/\/[^\n]*/g, '$1');
+}
 
 function* walk(dir) {
   for (const e of readdirSync(dir)) {
     const p = join(dir, e);
     const st = statSync(p);
     if (st.isDirectory()) yield* walk(p);
-    else if (/\.(ts|tsx)$/.test(e)) yield p;
+    else if (/\.(ts|tsx|js|jsx|mts|cts)$/.test(e)) yield p;
   }
 }
 
@@ -33,9 +51,12 @@ function* walk(dir) {
 function resolveTarget(spec, importerFile) {
   let rel;
   if (spec.startsWith('@/')) {
-    rel = spec.slice(2);
+    // `@//pages/x` e `@/pages/foo/../bar/x` — normaliza barras e `..`.
+    rel = normalize(spec.slice(2).replace(/^\/+/, '')).split('\\').join('/');
   } else if (spec.startsWith('.')) {
     rel = normalize(join(dirname(importerFile), spec)).split('\\').join('/');
+    // `../../src/pages/x` escapa de pages/ e volta por src/ — mesma coisa.
+    if (rel.startsWith('src/')) rel = rel.slice(4);
   } else {
     return null;
   }
@@ -48,16 +69,37 @@ for (const f of walk('src/pages')) {
   // Testes importam a unidade sob teste — não são acoplamento de produção.
   if (/(__tests__\/|\.(test|spec)\.)/.test(rel)) continue;
   const srcDom = rel.split('/')[1].split('.')[0];
-  const src = readFileSync(f, 'utf8');
+  const src = stripComments(readFileSync(f, 'utf8'));
   for (const m of src.matchAll(SPEC_RE)) {
-    const spec = m[1] ?? m[2] ?? m[3];
-    if (!spec || spec.includes('${')) continue; // template dinâmico
+    const spec = m[1] ?? m[2] ?? m[3] ?? m[4] ?? m[5];
+    const line = src.slice(0, m.index).split('\n').length;
+    if (!spec) continue;
+    if (spec.includes('${')) {
+      // template com ${} = specifier computado — não resolvível, viola.
+      violations.push({
+        file: rel,
+        line,
+        from: srcDom,
+        to: '?',
+        target: 'specifier dinâmico não-literal',
+      });
+      continue;
+    }
     const target = resolveTarget(spec, rel);
     if (!target) continue;
     const targetDom = target.split('/')[1];
     if (targetDom === srcDom) continue;
-    const line = src.slice(0, m.index).split('\n').length;
     violations.push({ file: rel, line, from: srcDom, to: targetDom, target });
+  }
+  for (const m of src.matchAll(DYNAMIC_RE)) {
+    const line = src.slice(0, m.index).split('\n').length;
+    violations.push({
+      file: rel,
+      line,
+      from: srcDom,
+      to: '?',
+      target: 'specifier dinâmico não-literal',
+    });
   }
 }
 violations.sort(
