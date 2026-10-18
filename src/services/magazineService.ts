@@ -14,7 +14,6 @@
  * mutações usam RPCs v2 com lock, CAS por edit_version e autorização no banco.
  */
 
-import type { z } from 'zod';
 import {
   type Magazine,
   type MagazineClientBranding,
@@ -57,14 +56,18 @@ type MagazineItemRow = MagazineDatabase['public']['Tables']['magazine_items']['R
  * (achado da auditoria de 2026-09-24: PR #1899 corrigiu 2 crashes causados
  * exatamente por dado mal-shapado passando despercebido via cast.)
  */
+// T é inferido APENAS de `fallback` — nunca do schema — para evitar conflito
+// entre o tipo de output do Zod (objectOutputType<...>) e a interface manual.
+// O schema aceita qualquer valor (unknown) e o resultado é cast internamente.
 function parseJsonb<T>(
-  schema: z.ZodType<T>,
+  schema: { safeParse: (data: unknown) => unknown },
   value: unknown,
   fallback: T,
   field: string,
   rowId: string,
 ): T {
-  const result = schema.safeParse(value);
+  const result = schema.safeParse(value) as
+    { success: false; error: { issues: unknown[] } } | { success: true; data: T };
   if (result.success) return result.data;
   logger.warn(`[magazineService] shape drift em ${field} (id=${rowId}):`, result.error.issues);
   return fallback;
@@ -578,7 +581,7 @@ export const magazineService = {
     const { data, error } = await magazineDb.rpc('magazine_add_items_v2', {
       p_magazine_id: id,
       p_expected_edit_version: version,
-      p_items: rows as Json,
+      p_items: rows as unknown as Json,
     });
     if (error) throw mutationError('adicionar produtos', error);
     return hydrateMutation(

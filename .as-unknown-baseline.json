@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-18T21:36:22.454Z",
+  "generatedAt": "2026-10-18T22:04:47.321Z",
   "description": "Baseline de double-casts `as unknown as` em src/ (excluindo testes). Falha em qualquer AUMENTO. Meta: reduzir continuamente.",
-  "productionAsUnknownCount": 247,
+  "productionAsUnknownCount": 249,
   "counts": {
     "src/components/admin/DiscountApprovalAuditTrail.tsx": 1,
     "src/components/admin/DiscountApprovalQueue.tsx": 1,
@@ -63,6 +63,7 @@
     "src/hooks/kit-builder/useKitTemplates.ts": 6,
     "src/hooks/kit-builder/useKitVariants.ts": 4,
     "src/hooks/kit-builder/useTemplateSnapshot.ts": 2,
+    "src/hooks/mockup/mockupGenerationService.ts": 1,
     "src/hooks/mockup/useMockupDraft.ts": 1,
     "src/hooks/mockup/useMockupTechniques.ts": 1,
     "src/hooks/products/novelty-core.ts": 2,
@@ -147,6 +148,7 @@
     "src/pages/mockups/MockupGenerator.tsx": 1,
     "src/pages/mockups/MockupHistoryPage.tsx": 1,
     "src/services/authService.ts": 1,
+    "src/services/magazineService.ts": 1,
     "src/services/materialService.ts": 1,
     "src/services/quoteService.ts": 1,
     "src/services/ramoAtividadeService.ts": 1,

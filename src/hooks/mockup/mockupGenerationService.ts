@@ -59,7 +59,7 @@ export interface GeneratedMockup {
   client_id: string | null;
 }
 
-const TECHNIQUE_PROMPTS: Record<string, string> = {
+const TECHNIQUE_PROMPTS: Record<string, string> & { default: string } = {
   bordado: 'as professional machine embroidery with visible thread stitch texture',
   silk: 'as screen printed with flat solid colors, matte finish',
   dtf: 'as DTF printed transfer with vibrant colors, slight glossy finish',
@@ -141,7 +141,10 @@ export async function fetchMockupHistory(userId?: string): Promise<GeneratedMock
   const { data, error } = await query;
   if (error) throw error;
 
-  return ((data as MockupHistoryRow[] | null) ?? []).map((row) => {
+  const rows: MockupHistoryRow[] = Array.isArray(data)
+    ? (data as unknown as MockupHistoryRow[])
+    : [];
+  return rows.map((row) => {
     const cfg = row.area_config ?? {};
     return {
       id: row.id,

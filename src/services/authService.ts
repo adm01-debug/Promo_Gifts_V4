@@ -13,8 +13,9 @@ type UnknownData = Record<string, unknown> | null;
 
 // E122 — elimina `as unknown as` em safeAuthCall: adapta qualquer resultado
 // Supabase para o shape genérico { data: UnknownData; error: unknown }.
-function adaptAuth(r: { data: unknown; error: unknown }): { data: UnknownData; error: unknown } {
-  return { data: r.data as UnknownData, error: r.error };
+// data é opcional pois métodos como signOut retornam apenas { error }.
+function adaptAuth(r: { data?: unknown; error: unknown }): { data: UnknownData; error: unknown } {
+  return { data: (r.data ?? null) as UnknownData, error: r.error };
 }
 
 export const authService = {
