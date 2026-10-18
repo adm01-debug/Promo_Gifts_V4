@@ -119,7 +119,7 @@ const RECONCILED_MANIFEST = path.join(
   'docs/MANIFESTO_MIGRATIONS_RECONCILIADAS_2026-09-11.json',
 );
 const POLICY_STMT_RE =
-  /(create|drop)\s+policy\s+(?:if\s+(?:not\s+)?exists\s+)?["']?([\w\s-]+?)["']?\s+on\s+(?:(\w+)\.)?( \w+)/gi;
+  /(create|drop)\s+policy\s+(?:if\s+(?:not\s+)?exists\s+)?["']?([\w\s-]+?)["']?\s+on\s+(?:(\w+)\.)?(\w+)/gi;
 
 /**
  * Versão remota (ledger) de um arquivo de migration: prefixo
