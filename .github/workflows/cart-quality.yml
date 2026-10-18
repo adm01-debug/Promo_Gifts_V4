@@ -21,7 +21,6 @@ on:
     paths:
       - 'src/components/cart/**'
       - 'src/pages/products/seller-carts/**'
-      - 'src/pages/products/**'
       - 'src/contexts/SellerCartContext.tsx'
       - 'src/contexts/__tests__/SellerCartContext.test.tsx'
       - 'src/hooks/products/useSellerCarts.ts'
@@ -36,7 +35,6 @@ on:
     paths:
       - 'src/components/cart/**'
       - 'src/pages/products/seller-carts/**'
-      - 'src/pages/products/**'
       - 'src/contexts/SellerCartContext.tsx'
       - 'src/contexts/__tests__/SellerCartContext.test.tsx'
       - 'src/hooks/products/useSellerCarts.ts'
