@@ -74,6 +74,7 @@ Deno.serve(async (req) => {
   } catch (error) {
     return safeErrorResponse(error, {
       corsHeaders,
+      req,
       publicMessage: 'queue_processing_failed',
       logLabel: 'Queue processing error:',
     });
