@@ -85,7 +85,11 @@ export function changedMigrationFilenames(diffOutput) {
  */
 export function countVersionOccurrences(logContent) {
   const counts = new Map();
-  for (const match of logContent.matchAll(REGISTERED_VERSION_RE)) {
+  // Só conta versões em linhas de tabela markdown (| ... |) para evitar
+  // falsos duplicados em texto narrativo que menciona versões.
+  const tableLines = logContent.split('\n').filter((l) => l.trimStart().startsWith('|'));
+  const tableContent = tableLines.join('\n');
+  for (const match of tableContent.matchAll(REGISTERED_VERSION_RE)) {
     const v = match[1];
     counts.set(v, (counts.get(v) ?? 0) + 1);
   }

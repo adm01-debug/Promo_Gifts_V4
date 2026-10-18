@@ -967,7 +967,7 @@ export function splitDiffStatements(sql) {
 
     if (dollarTag) {
       // Dentro de dollar-quote: esperar o fechamento
-      const opens = (line.match(new RegExp(`\\${dollarTag.replace(/\$/g, '\\$')}`, 'g')) ?? []).length;
+      const opens = (line.match(new RegExp(dollarTag.replace(/\$/g, '\\$'), 'g')) ?? []).length;
       // Se esta linha fecha o dollar-quote (número ímpar de ocorrências) E termina com ';'
       if (opens % 2 === 1 && current.length > 1) {
         dollarTag = null;

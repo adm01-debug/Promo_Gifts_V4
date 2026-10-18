@@ -403,8 +403,12 @@ async function main() {
   // Idem para adições: migration pendente DROPa a policy — o live ainda a
   // tem e a baseline já não, então ela aparece como `added` até o db-apply.
   const addedAll = actual.filter((p) => !baselineByKey.has(policyKey(p)));
-  // E043: policies novas públicas/abertas são sempre recusadas — mesmo se estiverem em plannedKeys.
-  const e043Violations = addedAll.filter(isPublicOpenPolicy);
+  // E043: policies novas públicas/abertas são recusadas — EXCETO as que têm DROP
+  // pendente em plannedKeys (policy pré-existente sendo fase-out, não uma nova
+  // adição), para não bloquear o PR que as remove (Codex P1 2026-10-18).
+  const e043Violations = addedAll.filter(
+    (p) => isPublicOpenPolicy(p) && !isAddedPlanned(p, plannedKeys),
+  );
   const addedNonE043 = addedAll.filter((p) => !isPublicOpenPolicy(p));
   // E048: verifica cmd além do nome na chave de tolerância (fallback para chave legada sem cmd).
   const added = addedNonE043.filter((p) => !isAddedPlanned(p, plannedKeys));
@@ -412,8 +416,16 @@ async function main() {
   // Policies ausentes no live que uma migration pendente cria/remove —
   // mudança planejada (PR com migration + baseline atualizada), não drift.
   const removedAll = baseline.filter((p) => !actualByKey.has(policyKey(p)));
-  const removed = removedAll.filter((p) => !plannedKeys.has(policyKey(p)));
-  const plannedRemoved = removedAll.filter((p) => plannedKeys.has(policyKey(p)));
+  // E048: além da chave base, verifica se qualquer planned key cmd-qualificada
+  // começa com o mesmo prefixo (migration criando a policy ainda não aplicada).
+  const isRemovedPlanned = (p) => {
+    const base = policyKey(p);
+    if (plannedKeys.has(base)) return true;
+    for (const k of plannedKeys) { if (k.startsWith(base + '|')) return true; }
+    return false;
+  };
+  const removed = removedAll.filter((p) => !isRemovedPlanned(p));
+  const plannedRemoved = removedAll.filter((p) => isRemovedPlanned(p));
   const changedAll = actual.filter((p) => {
     const base = baselineByKey.get(policyKey(p));
     return base && hashPolicies([base]) !== hashPolicies([p]);

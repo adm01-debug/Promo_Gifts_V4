@@ -10,13 +10,9 @@
           "name": "Gate Final - Deploy Ready",
           "workflow": ".github/workflows/deploy-gates.yml",
           "rationale": "E58: único required check em main — agrega todos os gates de qualidade do deploy-gates.yml (Gates 0–6+). Alguns gates são condicionais (E2E smoke exige has_e2e; Lighthouse é opcional); o Gate Final em si roda sempre. Evita deadlock de checks focais condicionados por paths."
-        },
-        {
-          "name": "Compare GitHub × Canonical",
-          "workflow": ".github/workflows/edge-functions-drift-check.yml",
-          "rationale": "E030: drift entre edge functions no git e no canônico só é visível quando este check é required. Sem ele, função deployada via MCP/dashboard sem commit passa despercebida indefinidamente."
         }
-      ]
+      ],
+      "_note_edge_drift": "edge-functions-drift-check.yml removido de required_checks (Codex P1 2026-10-18): o workflow usa paths: filter no pull_request trigger — PRs que não tocam supabase/functions/** nunca disparam o check, travando o PR indefinidamente. Proteção mantida via cron diário + workflow_run após deploy."
     },
     {
       "id": "release",

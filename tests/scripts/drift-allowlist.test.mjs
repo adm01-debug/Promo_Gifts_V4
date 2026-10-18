@@ -1,8 +1,8 @@
 // E038: Testa loadAllowlist (entrada genérica, regex inválida com nº de linha)
 // e filterDiff (DDL multi-linha agrupado por statement).
-// Roda com: node --test tests/scripts/drift-allowlist.test.mjs
+// Roda com: npx vitest run tests/scripts/drift-allowlist.test.mjs
 import { strict as assert } from 'node:assert';
-import { describe, it } from 'node:test';
+import { describe, it } from 'vitest';
 import { loadAllowlist, filterDiff } from '../../scripts/drift-baseline.mjs';
 
 describe('loadAllowlist — entrada genérica', () => {
