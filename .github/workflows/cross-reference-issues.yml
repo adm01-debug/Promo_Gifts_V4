@@ -17,6 +17,12 @@ name: Cross-reference PR ↔ Issue
 on:
   pull_request:
     types: [opened, closed]
+    paths-ignore: # E14: PRs só-de-docs não disparam cross-ref
+      - 'docs/**'
+      - '**/*.md'
+      - 'supabase/**_LOG.md'
+      - 'CHANGELOG.md'
+      - '.github/ISSUE_TEMPLATE/**'
   issues:
     types: [opened]
 
