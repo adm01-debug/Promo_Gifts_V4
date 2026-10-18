@@ -1,9 +1,9 @@
 import { createClient, type SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { buildPublicCorsHeaders, handleCorsPreflight } from "../_shared/cors.ts";
+import { authorize } from "../_shared/authorize.ts";
 import { createStructuredLogger } from '../_shared/structured-logger.ts';
 import { getOrCreateRequestId } from '../_shared/request-id.ts';
 
-const getCorsHeaders = () => buildPublicCorsHeaders();
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
@@ -32,10 +32,18 @@ Deno.serve(async (req) => {
   const preflight = handleCorsPreflight(req);
   if (preflight) return preflight;
 
+  // E022: exigir role dev — bloqueia chamadas anônimas
+  const authResult = await authorize(req, { requireRole: 'dev', enforceServerSide: true });
+  if (!authResult.ok) return authResult.response;
+
   const results: TestResult[] = [];
   const admin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
+
+  // E023: declare IDs fora do try para o finally poder acessar
+  let s1Id: string | undefined;
+  let s2Id: string | undefined;
 
   try {
     const tag = `audit-${Date.now().toString(36)}`;
@@ -51,8 +59,8 @@ Deno.serve(async (req) => {
     
     if (createS1.error || createS2.error) throw new Error("Failed to create test users: " + (createS1.error?.message || createS2.error?.message));
     
-    const s1Id = createS1.data.user!.id;
-    const s2Id = createS2.data.user!.id;
+    s1Id = createS1.data.user!.id;
+    s2Id = createS2.data.user!.id;
 
     await admin.from("user_roles").insert([
       { user_id: s1Id, role: "user" },
@@ -125,20 +133,20 @@ Deno.serve(async (req) => {
     }
     results.push(test3);
 
-    // Cleanup
-    await admin.auth.admin.deleteUser(s1Id);
-    await admin.auth.admin.deleteUser(s2Id);
-
     return new Response(JSON.stringify({
       status: results.every(r => r.passed) ? "PASSED" : "FAILED",
       timestamp: new Date().toISOString(),
       results
-    }), { status: 200, headers: { ...getCorsHeaders(req), "Content-Type": "application/json", "X-Request-Id": __reqId } });
+    }), { status: 200, headers: { ...buildPublicCorsHeaders(), "Content-Type": "application/json", "X-Request-Id": __reqId } });
 
   } catch (e) {
     return new Response(JSON.stringify({ error: (e as Error).message }), { 
       status: 500, 
-      headers: { ...getCorsHeaders(req), "Content-Type": "application/json", "X-Request-Id": __reqId } 
+      headers: { ...buildPublicCorsHeaders(), "Content-Type": "application/json", "X-Request-Id": __reqId } 
     });
+  } finally {
+    // E023: cleanup em finally — garante remoção mesmo em exceção
+    if (s1Id) await admin.auth.admin.deleteUser(s1Id);
+    if (s2Id) await admin.auth.admin.deleteUser(s2Id);
   }
 });

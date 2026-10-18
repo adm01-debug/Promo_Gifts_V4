@@ -10,9 +10,10 @@
  *
  *   2. ENFORCEMENT: edges declaradas como `supervisor` ou `dev`
  *      DEVEM importar `authorize` do `_shared/authorize.ts` e
- *      passar `requireRole` correspondente. Verificação por regex
- *      conservadora — alternativas custom são permitidas se
- *      `skipAnonBypassTest`/`skipAuthBypassTest` justificarem.
+ *      passar `requireRole` correspondente.
+ *      E030: entradas `enforcedBy: "custom"` também devem conter
+ *      pelo menos uma primitiva de auth reconhecida no index.ts —
+ *      sem isso, qualquer remove silencioso de auth passa verde.
  *
  *   3. ANTI-REGRESSION: detecta funções que tinham `authorize(...)`
  *      e foram modificadas removendo a chamada (heurística simples).
@@ -79,14 +80,28 @@ const ROLE_REQUIRED = {
   supervisor: ["supervisor", "dev"], // accept either at the call site
   dev: ["dev"],
 };
+
+// E030: primitivas de auth reconhecidas para entradas enforcedBy: "custom"
+// Qualquer uma dessas no index.ts é suficiente para passar o gate.
+const CUSTOM_AUTH_PRIMITIVES = [
+  /\bauthorize\s*\(\s*req/,
+  /requireRole\s*:/,
+  /has_role\s*\(/,
+  /timingSafeEqual\s*\(/,       // custom token comparison
+  /x-admin-token/,              // legado — aceito mas gera warning
+  /SIMULATION_BYPASS_KEY/,      // bypass de teste com resolveCredential
+  /resolveCredential\s*\(/,     // credencial dinâmica via vault
+  /service_role/i,              // service-to-service explícito
+];
+
+const CUSTOM_AUTH_WARNING_ONLY = [
+  /x-admin-token/,  // deve migrar para authorize() — E028
+];
+
 for (const fn of fns) {
   const entry = entries.get(fn);
   if (!entry) continue;
   if (!ROLE_REQUIRED[entry.category]) continue; // só validamos supervisor/dev
-
-  // Edges com enforcedBy: "custom" têm validação inline própria (has_role,
-  // is_dev, scope MCP). O manifest documenta a decisão; o gate aceita.
-  if (entry.enforcedBy === "custom") continue;
 
   const path = join(FN_DIR, fn, "index.ts");
   let src;
@@ -97,6 +112,26 @@ for (const fn of fns) {
     continue;
   }
 
+  if (entry.enforcedBy === "custom") {
+    // E030: custom entries must have at least one recognized auth primitive
+    const hasAnyPrimitive = CUSTOM_AUTH_PRIMITIVES.some((re) => re.test(src));
+    if (!hasAnyPrimitive) {
+      errors.push(
+        `[enforcement] ${fn} (categoria=${entry.category}, enforcedBy=custom): index.ts não contém ` +
+          `nenhuma primitiva de auth reconhecida. Adicione authorize(), has_role(), token check ` +
+          `ou documente em edge-authz-manifest.ts por que esta função não precisa de auth.`,
+      );
+    }
+    // Warn on legacy x-admin-token
+    if (CUSTOM_AUTH_WARNING_ONLY.some((re) => re.test(src)) && !/\bauthorize\s*\(\s*req/.test(src)) {
+      warnings.push(
+        `[enforcement] ${fn}: usa x-admin-token estático — migrar para authorize() com requireRole dev (E028).`,
+      );
+    }
+    continue;
+  }
+
+  // shared-authorize path
   const importsAuthorize = /from\s+["']\.\.\/_shared\/authorize\.ts["']/.test(src);
   const callsAuthorize = /\bauthorize\s*\(\s*req/.test(src);
 

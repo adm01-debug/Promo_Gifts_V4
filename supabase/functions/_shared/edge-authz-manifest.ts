@@ -118,7 +118,7 @@ export const EDGE_AUTHZ_MANIFEST: Record<string, AuthzEntry> = {
   "manage-users": { category: "supervisor", rationale: "Gestão de usuários via has_role inline", enforcedBy: "custom" },
   "block-ip-temporarily": { category: "supervisor", rationale: "Bloqueio de IP — has_role inline", enforcedBy: "custom" },
   "ownership-repair": { category: "supervisor", rationale: "Reparo de órfãos — has_role inline + dry-run", enforcedBy: "custom" },
-  "bulk-random-passwords": { category: "supervisor", rationale: "Bulk reset de senhas — x-admin-token inline", enforcedBy: "custom" },
+  "bulk-random-passwords": { category: "dev", rationale: "Bulk reset de senhas — authorize(dev), dry_run sem dump de emails (E028/E029)" },
 
   // ---------------- Dev-only ----------------
   "secrets-manager": { category: "dev", rationale: "is_dev() inline check", enforcedBy: "custom" },
@@ -148,8 +148,8 @@ export const EDGE_AUTHZ_MANIFEST: Record<string, AuthzEntry> = {
   "mcp-keys-revoke": { category: "dev", rationale: "MCP keys — has_role(dev) inline", enforcedBy: "custom" },
   "mcp-keys-rotate": { category: "dev", rationale: "MCP keys — has_role(dev) + step-up token", enforcedBy: "custom" },
   "mcp-keys-update": { category: "dev", rationale: "MCP keys — has_role(dev) inline", enforcedBy: "custom" },
-  "test-contract-orchestrator": { category: "dev", rationale: "Teste de contratos — dev/CI only, HMAC inline", enforcedBy: "custom" },
-  "test-inventory-orchestrator": { category: "dev", rationale: "Teste de inventario — dev/CI only, service_role inline", enforcedBy: "custom" },
+  "test-contract-orchestrator": { category: "dev", rationale: "Teste de contratos — authorize(dev), sem provisionamento de webhook em runtime (E026)" },
+  "test-inventory-orchestrator": { category: "dev", rationale: "Teste de inventario — authorize(dev), oráculo fechado (E027)" },
   "load-test": { category: "dev", rationale: "Load testing utility — sem auth no caller; uso dev/CI only", enforcedBy: "custom" },
 
   "verify-2fa-token": { category: "authenticated", rationale: "Verificação TOTP server-side — JWT Bearer obrigatório (verify_jwt: true)", enforcedBy: "jwt" },
@@ -168,11 +168,11 @@ export const EDGE_AUTHZ_MANIFEST: Record<string, AuthzEntry> = {
   "backfill-image-dimensions": { category: "service", rationale: "Backfill dimensões product_images — cron via x-cron-secret (BACKFILL_DIM_CRON_SECRET)", enforcedBy: "custom" },
   "generate-blurhashes": { category: "service", rationale: "Gera blurhashes — cron via authorizeCron (service_role + x-cron-secret)", enforcedBy: "custom" },
   "hash-product-images": { category: "service", rationale: "Hash perceptual de imagens — cron via authorizeCron (service_role + x-cron-secret)", enforcedBy: "custom" },
-  "audit-suite": { category: "dev", rationale: "Suite de auditoria — service_role + has_role(dev) inline", enforcedBy: "custom" },
+  "audit-suite": { category: "dev", rationale: "Suite de auditoria — authorize(dev) + finally cleanup (E022/E023)" },
   "word-magic": { category: "authenticated", rationale: "Geração de copy via IA — authenticateRequest (JWT obrigatório)", enforcedBy: "custom" },
 
   // ---------------- Test CI edges (não-produção, Lovable 2026-06-19) ----------------
-  "test-cart-concurrency": { category: "dev", rationale: "Teste CI de concorrência de carrinho — service_role interno", enforcedBy: "custom" },
-  "test-cart-limit": { category: "dev", rationale: "Teste CI de limite de carrinho — service_role interno", enforcedBy: "custom" },
-  "test-cart-rls": { category: "dev", rationale: "Teste CI de RLS de carrinho — service_role interno", enforcedBy: "custom" },
+  "test-cart-concurrency": { category: "dev", rationale: "Teste CI de concorrência de carrinho — authorize(dev) + senha aleatória (E024)" },
+  "test-cart-limit": { category: "dev", rationale: "Teste CI de limite de carrinho — authorize(dev) + senha aleatória (E024)" },
+  "test-cart-rls": { category: "dev", rationale: "Teste CI de RLS de carrinho — authorize(dev) + senha aleatória (E025)" },
 };
