@@ -28,16 +28,16 @@ on:
   pull_request:
     branches: [main]
     # 2026-09-27: paths filter — 12min de snapshot só quando schema/migrations muda
+    # E68: removido supabase/functions/** — snapshot de schema não depende de edge functions
     paths:
       - 'supabase/migrations/**'
-      - 'supabase/functions/**'
       - 'package.json'
       - '.github/workflows/schema-snapshot-export.yml'
   push:
     branches: [main]
+    # E68: removido supabase/functions/** — paths só supabase/migrations/**
     paths:
       - 'supabase/migrations/**'
-      - 'supabase/functions/**'
       - 'package.json'
       - '.github/workflows/schema-snapshot-export.yml'
   schedule:
@@ -306,9 +306,10 @@ jobs:
           fi
 
           WEEK=$(date -u +"%Y-W%V")
+          # E68: --head usa repository_owner dinâmico em vez de org hardcoded
           EXISTING=$(gh pr list \
             --base main \
-            --head "adm01-debug:bot/schema-snapshot" \
+            --head "${{ github.repository_owner }}:bot/schema-snapshot" \
             --state open \
             --json number \
             --jq '.[0].number' 2>/dev/null || echo "")
