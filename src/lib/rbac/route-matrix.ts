@@ -384,6 +384,16 @@ export const RBAC_ROUTES: RbacRouteEntry[] = [
     category: 'audit',
   },
   {
+    path: '/admin/sessoes',
+    label: 'Sessões ativas',
+    guard: 'DevRoute',
+    role: 'dev',
+    mfaAal2: true,
+    rlsHelper: 'admin_active_sessions (RPC, admin/supervisor/dev)',
+    category: 'audit',
+    notes: 'lista auth.sessions vivas; revoga via manage-users revoke_sessions.',
+  },
+  {
     path: '/admin/workflows',
     label: 'Workflows IA',
     guard: 'DevRoute',

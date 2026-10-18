@@ -22,6 +22,7 @@ export const DEV_ONLY_ROUTE_PREFIXES = [
   '/admin/validade-precos',
   '/admin/rate-limit',
   '/admin/login-attempts',
+  '/admin/sessoes',
   '/admin/status',
   '/admin/rbac-rotas',
   '/admin/qa',

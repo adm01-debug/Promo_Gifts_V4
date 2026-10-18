@@ -5,6 +5,7 @@ import { castRpcResult } from "../_shared/supabase-client-adapter.ts";
 import { safeJson } from "../_shared/json-parser.ts";
 import { getOrCreateRequestId, REQUEST_ID_HEADER } from "../_shared/request-id.ts";
 import { createStructuredLogger } from "../_shared/structured-logger.ts";
+import { readJwtAal } from "../_shared/authorize.ts";
 
 const uuidSchema = z.string().uuid();
 const emailSchema = z.string().email().max(255);
@@ -38,6 +39,14 @@ const DeleteSchema = z.object({
   user_id: uuidSchema,
 });
 
+// Revoga TODAS as sessões de um usuário (GoTrue só oferece signOut global por
+// usuário — não há revogação de uma sessão específica). Usado pelo painel de
+// sessões ativas (/admin/sessoes).
+const RevokeSessionsSchema = z.object({
+  action: z.literal('revoke_sessions'),
+  user_id: uuidSchema,
+});
+
 /**
  * Promoção de papel (agente <-> supervisor) com step-up:
  * exige a senha do próprio caller + justificativa que vai para auditoria.
@@ -55,6 +64,7 @@ const PayloadSchema = z.discriminatedUnion('action', [
   UpdateEmailSchema,
   UpdatePasswordSchema,
   DeleteSchema,
+  RevokeSessionsSchema,
   PromoteRoleSchema,
 ]);
 
@@ -176,6 +186,82 @@ Deno.serve(async (req) => {
       }
 
       return jsonRes(corsHeaders, { success: true });
+    }
+
+    if (payload.action === 'revoke_sessions') {
+      // Rota /admin/sessoes é devOnly + AAL2 — espelha a restrição aqui no
+      // servidor: a guarda global da função só garante supervisor+, então a
+      // action exige o papel dev e claim aal=aal2 do JWT do caller.
+      const { data: isDev, error: devErr } = await supabaseAdmin.rpc(
+        'has_role',
+        { _user_id: caller.id, _role: 'dev' }
+      );
+      if (devErr || !isDev) {
+        return jsonRes(corsHeaders, { error: 'Apenas devs podem revogar sessões' }, 403);
+      }
+      const callerToken = authHeader.replace(/^Bearer\s+/i, '');
+      const aal = readJwtAal(callerToken);
+      if (aal !== 'aal2') {
+        return jsonRes(corsHeaders, { error: 'aal2_required', message: 'MFA assurance level 2 is required' }, 403);
+      }
+
+      if (payload.user_id === caller.id) {
+        return jsonRes(
+          corsHeaders,
+          { error: 'Para revogar suas próprias sessões use a opção de logout nos outros dispositivos' },
+          400
+        );
+      }
+
+      // auth.admin.signOut exige o JWT da sessão alvo — um user_id não é
+      // aceito. admin_revoke_user_sessions (migration 20261015150000)
+      // revoga refresh_tokens + hmac v2 e marca revoke_all_user_tokens.
+      // Chamada via callerClient (JWT do dev): auth.uid() com service role
+      // seria NULL e a guarda dev+aal2 dentro da RPC rejeitaria a chamada.
+      const { error: revokeError } = await callerClient.rpc(
+        'admin_revoke_user_sessions',
+        { _user_id: payload.user_id }
+      );
+      if (revokeError) {
+        log.error('admin_revoke_user_sessions falhou', {
+          target_user_id: payload.user_id,
+          error: revokeError.message,
+        });
+        // Erros SQL não voltam ao cliente — podem expor internals do banco.
+        return jsonRes(corsHeaders, { error: 'Falha ao revogar sessões' }, 400);
+      }
+
+      // IP derivado da conexão: o gateway anexa o IP real como ÚLTIMO
+      // elemento do x-forwarded-for — o primeiro e x-real-ip são forjáveis
+      // (mesmo padrão de log-login-attempt, Devin Review SEC_0001).
+      const xff = req.headers.get('x-forwarded-for');
+      const ipAddress =
+        xff?.split(',').pop()?.trim() ||
+        req.headers.get('cf-connecting-ip') ??
+        req.headers.get('x-real-ip') ??
+        null;
+
+      const { error: auditError } = await supabaseAdmin
+        .from('admin_audit_log')
+        .insert({
+          user_id: caller.id,
+          action: 'session.revoke_all',
+          resource_type: 'auth',
+          resource_id: payload.user_id,
+          status: 'success',
+          source: 'manage-users.revoke_sessions',
+          details: { target_user_id: payload.user_id, scope: 'global' },
+          ip_address: ipAddress,
+          user_agent: req.headers.get('user-agent') ?? null,
+        });
+      if (auditError) {
+        log.error('audit insert falhou após revoke_sessions', {
+          target_user_id: payload.user_id,
+          error: auditError.message,
+        });
+      }
+
+      return jsonRes(corsHeaders, { success: true, audit_logged: !auditError });
     }
 
     if (payload.action === 'promote_role') {

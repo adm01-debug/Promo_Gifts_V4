@@ -11,6 +11,7 @@ import {
   AdminDesignTokensPage,
   AdminExternalDbPage,
   AdminLoginAttemptsPage,
+  AdminSessionsPage,
   AdminMigracaoPapeisPage,
   AdminProductFormPage,
   AdminPromoverUsuarioPage,
@@ -22,10 +23,8 @@ import {
   AdminTelemetriaPage,
   EmaHealthPage,
   AdminV4CallbacksPage,
-
   AdminUsuariosPage,
   DiscountRequestDetailPage,
-
   AdminVideoVariantsPage,
   AdminWorkflowsPage,
   DevChallengeExamplesPage,
@@ -81,10 +80,7 @@ export const adminRoutes = (
         path="/admin/aprovacoes-desconto"
         element={<Navigate to="/admin/usuarios?tab=discounts" replace />}
       />
-      <Route
-        path="/admin/aprovacoes-desconto/:id"
-        element={<DiscountRequestDetailPage />}
-      />
+      <Route path="/admin/aprovacoes-desconto/:id" element={<DiscountRequestDetailPage />} />
 
       <Route
         path="/admin/performance"
@@ -134,6 +130,7 @@ export const adminRoutes = (
       <Route path="/admin/rate-limit" element={<RateLimitDashboard />} />
       <Route path="/admin/workflows" element={<AdminWorkflowsPage />} />
       <Route path="/admin/login-attempts" element={<AdminLoginAttemptsPage />} />
+      <Route path="/admin/sessoes" element={<AdminSessionsPage />} />
       <Route path="/admin/external-db" element={<AdminExternalDbPage />} />
       <Route path="/admin/consumo-ia" element={<AdminAiUsagePage />} />
       <Route path="/admin/conexoes" element={<AdminConexoesPage />} />
