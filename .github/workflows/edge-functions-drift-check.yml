@@ -88,7 +88,10 @@ jobs:
             exit 0
           fi
           needs_drift=false
-          if printf '%s\n' "$changed" | grep -qE '^(supabase/functions/|audit/edge-functions-canonical-only\.json|\.github/workflows/edge-functions-drift-check\.yml|supabase/config\.toml|\.security/edge-functions-verify-jwt-false-allowlist\.json)'; then
+          # Usar herestring <<< ao invés de printf|grep-q para evitar SIGPIPE
+          # com pipefail ativo (grep -q sai cedo após match, status 141 do pipe
+          # propaga via pipefail e o if avalia falso silenciosamente).
+          if grep -qE '^(supabase/functions/|audit/edge-functions-canonical-only\.json|\.github/workflows/edge-functions-drift-check\.yml|supabase/config\.toml|\.security/edge-functions-verify-jwt-false-allowlist\.json)' <<< "$changed"; then
             needs_drift=true
           fi
           echo "needs_drift=$needs_drift" >> "$GITHUB_OUTPUT"
@@ -214,7 +217,7 @@ jobs:
                   --workdir "$target_dir" > /tmp/dl.log 2>&1; then
               echo "::warning::Falha ao baixar $slug: $(tail -n 1 /tmp/dl.log)"
               missing_in_dl=$((missing_in_dl+1))
-              echo "$slug,download_failed,,,," >> /tmp/drift_report.csv
+              echo "$slug,download_failed,,," >> /tmp/drift_report.csv
               continue
             fi
 
@@ -229,7 +232,7 @@ jobs:
             if [ ! -d "$canon_dir" ] || [ -z "$(find "$canon_dir" -type f -print -quit)" ]; then
               echo "::warning::diretório da função não encontrado após download para $slug"
               missing_in_dl=$((missing_in_dl+1))
-              echo "$slug,no_index_after_download,,,," >> /tmp/drift_report.csv
+              echo "$slug,no_index_after_download,,," >> /tmp/drift_report.csv
               continue
             fi
 
