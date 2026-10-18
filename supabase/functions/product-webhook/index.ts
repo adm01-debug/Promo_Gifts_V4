@@ -355,7 +355,7 @@ Deno.serve(async (req) => {
     const unprocessable = (msg: string) =>
       new Response(
         JSON.stringify({ code: 'invalid_request', message: msg, fields: [] }),
-        { status: 422, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+        { status: 422, headers: { ...okHeaders } },
       );
 
     switch (data.action) {
