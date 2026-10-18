@@ -197,6 +197,8 @@
   ],
   "rpcs": [
     "acquire_ai_quota",
+    "admin_active_sessions",
+    "admin_revoke_user_sessions",
     "audit_ownership_orphans",
     "audit_rls_matrix",
     "can_grant_mcp_full",
