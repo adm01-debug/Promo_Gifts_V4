@@ -4,7 +4,7 @@
   "_allowlisted_files": [],
   "_allowlisted_violations": [
     "deploy-gates.yml: job `lighthouse` has continue-on-error: true — gate jobs must not hide failures (C17)",
-    "ci-quotes-wizard.yml:358: npm install in run: — use npm ci for reproducible installs (E96/C24)",
+    "ci-quotes-wizard.yml:359: npm install in run: — use npm ci for reproducible installs (E96/C24)",
     "e2e-focused.yml: job `e2e_focused` has continue-on-error: true — gate jobs must not hide failures (C17)",
     "e2e-cart.yml: duplicate job display name \"Verify E2E secrets\" also in e2e-focused.yml, e2e-freight.yml, e2e-quotes.yml, e2e-stock.yml",
     "deploy-gates.yml: job 'e2e-smoke' sets E2E_USER_* in env: but file has no playwright test call — remove creds (E33/C25)",
@@ -12,7 +12,7 @@
   ],
   "_violation_justifications": {
     "deploy-gates.yml/lighthouse/C17": "Gate 4 (Lighthouse CI) é intencionalmente opcional — documentado em CLAUDE.md tabela de gates ('Gate 4 | opcional'). O job lighthouse foi removido de needs: no deploy-ready (E03), portanto falha não bloqueia deploy. continue-on-error:true é necessário para que o workflow geral não fique vermelho quando métricas de Lighthouse variam. Aprovado E19/2026-10-14.",
-    "ci-quotes-wizard.yml:358/C24": "npm install -D pdf-parse @types/pdf-parse || true — instala devDep opcional de PDF em runtime; '|| true' é intencional pois o teste degrada graciosamente sem o pacote. Não pode ser em npm ci pois o pacote é opcionalmente ausente. Aprovado E96/2026-10-14.",
+    "ci-quotes-wizard.yml:359/C24": "npm install -D pdf-parse @types/pdf-parse || true — instala devDep opcional de PDF em runtime; '|| true' é intencional pois o teste degrada graciosamente sem o pacote. Não pode ser em npm ci pois o pacote é opcionalmente ausente. Aprovado E96/2026-10-14.",
     "e2e-focused.yml/e2e_focused/C17": "E2E Focused suites (voice-tooltip, promoflix-player, tooltips-a11y etc.) têm baselines incompletos ou são flaky por natureza. continue-on-error:true é intencional neste workflow para não bloquear CI com falhas de snapshot visual intermitentes — documentado no cabeçalho do arquivo. Aprovado E78/2026-10-15.",
     "C9/Verify-E2E-secrets": "Job 'Verify E2E secrets' aparece em 5 workflows de E2E distintos (e2e-cart, e2e-focused, e2e-freight, e2e-quotes, e2e-stock) — cada um é um workflow independente e pode ter jobs com o mesmo nome. Não há conflito de ID pois jobs IDs são únicos por workflow. Aprovado E77-E80/2026-10-15.",
     "deploy-gates.yml/e2e-smoke/C25": "False positive: o job roda 'npm run test:e2e:smoke' que invoca playwright com --project=chromium-smoke (authed). O nome do projeto está em playwright.config.ts, não inline no workflow — a análise estática de texto não alcança. Aprovado E33/2026-10-18.",
