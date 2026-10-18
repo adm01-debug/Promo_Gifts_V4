@@ -536,3 +536,55 @@ npx --yes actionlint .github/workflows/meu-workflow.yml
 | Cache total do repositório | ≤ 8 GB | API `/actions/cache/usage` |
 
 Relatório semanal em `docs/ci/METRICAS_SEMANAIS.md` (gerado por `ci-metrics-weekly.yml`).
+
+---
+
+## Tabela de crons — CI (E89)
+
+> Regra E89: workflows com `SUPABASE_ACCESS_TOKEN` (PAT) devem ter ≥ 20 min de intervalo.
+> Gerado por `scripts/ci-cron-table.mjs`. Atualizar ao adicionar/alterar crons.
+
+| Horário UTC | Dia | Arquivo | Usa PAT |
+|---|---|---|---|
+| `a cada 30min` | diário | `uptime-monitor.yml` |  |
+| `a cada 6h (xx:15)` | diário | `quote-number-hardening-verify.yml` | ✓ PAT |
+| `02:00` | Seg | `e2e-focused.yml` |  |
+| `02:43` | diário | `nightly-full.yml` |  |
+| `03:09` | Seg | `stock-dashboard-stress.yml` |  |
+| `03:17` | diário | `stock-filter-stress.yml` |  |
+| `03:41` | diário | `kit-coverage-integration.yml` |  |
+| `04:11` | diário | `stock-rupture-fuzz.yml` |  |
+| `04:15` | Seg | `e2e-quote-view-no-presentation-mode.yml` |  |
+| `04:22` | Seg | `e2e-quote-view-sticky.yml` |  |
+| `04:28` | Seg | `e2e-quote-freight-block.yml` |  |
+| `04:34` | Seg | `e2e-quotes-responsive.yml` |  |
+| `04:44` | Seg | `e2e-pdf-print-cross-browser.yml` |  |
+| `04:50` | Seg | `e2e-quote-item-editor-sheet.yml` |  |
+| `05:12` | Seg | `auth-fuzz-weekly.yml` |  |
+| `05:55` | Seg | `ci-security-drift.yml` | ✓ PAT |
+| `06:12` | diário | `daily-flows-simulation.yml` |  |
+| `06:17` | Seg | `log-login-fuzz-weekly.yml` |  |
+| `06:18` | Seg | `magazine-flakiness.yml` |  |
+| `06:20` | diário | `e2e-crm-callback-approved.yml` |  |
+| `06:25` | Seg | `security.yml` |  |
+| `06:27` | Seg | `magazine-mutation.yml` |  |
+| `06:36` | Seg | `schema-snapshot-export.yml` | ✓ PAT |
+| `06:41` | Seg | `url-state-unit.yml` |  |
+| `06:44` | diário | `gitleaks-history-audit.yml` |  |
+| `06:47` | Seg | `ts-unused-ratchet.yml` |  |
+| `06:57` | diário | `supabase-linter-gate.yml` | ✓ PAT |
+| `07:11` | Seg | `cache-prune.yml` |  |
+| `07:15` | Seg | `ci-metrics-weekly.yml` |  |
+| `08:08` | Seg | `ddl-out-of-band-detector.yml` | ✓ PAT |
+| `08:54` | Seg | `ratchet-weekly.yml` |  |
+| `09:06` | diário | `edge-functions-drift-check.yml` | ✓ PAT |
+| `09:28` | diário | `required-checks-guard.yml` |  |
+| `09:29` | diário | `db-schema-drift-check.yml` | ✓ PAT |
+| `09:33` | Seg | `codeql.yml` |  |
+| `09:48` | diário | `restore-seller-cart-rpc.yml` |  |
+| `10:09` | diário | `security-definer-acl-multi-env.yml` |  |
+| `10:30` | Seg | `policies-baseline.yml` | ✓ PAT |
+
+✅ Nenhuma colisão de PAT detectada (intervalo mínimo: 20 min).
+
+Para verificar: `node scripts/ci-cron-table.mjs --check`
