@@ -176,7 +176,7 @@ jobs:
     # PR: só roda se o bucket "e2e" mudou. push/dispatch: sempre roda.
     if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.e2e == 'true' }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    timeout-minutes: 20  # E24: E2E leg ≤ 20 min
     env:
       CI: 'true'
       E2E_BASE_URL: http://localhost:8080
