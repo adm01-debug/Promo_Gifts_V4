@@ -17,13 +17,6 @@
           "rationale": "E74: verifica que o código das edge functions no GitHub bate com o deployado no projeto canônico doufsxqlfjyuvxuezpln. Previne divergência silenciosa entre git e produção (casos reais: kit-ai-builder 2026-09-23, magazine-reader-state-read 2026-09-24). Paths filter removido em PR #2233 para não bloquear PRs que não tocam supabase/functions/**."
         }
       ]
-    },
-    {
-      "id": "release",
-      "branchPatterns": ["release/*"],
-      "_disabled": true,
-      "_reason": "E56: os 3 checks abaixo apontam para workflows com paths: filter — bloqueariam branches release/* em qualquer PR que não toque esses paths. Restaurar quando os workflows removerem o filtro paths:. Workflows afetados: stock-rupture-fuzz.yml, magazine-unit-tests.yml, ssot-supabase.yml.",
-      "required_checks": []
     }
   ]
 }
