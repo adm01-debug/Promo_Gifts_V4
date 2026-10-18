@@ -5,6 +5,14 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.2.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.2.0...v1.2.1) (2026-10-18)
+
+
+### Bug Fixes
+
+* **ci:** Wave 4 — gates honestos (E41/E43/E46) ([#2186](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2186)) ([594e1f1](https://github.com/adm01-debug/Promo_Gifts_V4/commit/594e1f106b0354bf8bd0225bd6bb8b2d117b4aef))
+* **security:** E022-E030 — auth em 7 edge functions expostas + gate enforce ([12c2855](https://github.com/adm01-debug/Promo_Gifts_V4/commit/12c285558ddb09b436776a92c0d501070d29e5ac))
+
 ## [1.2.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.1.0...v1.2.0) (2026-10-18)
 
 
