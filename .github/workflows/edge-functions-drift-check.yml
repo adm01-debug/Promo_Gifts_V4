@@ -68,6 +68,8 @@ jobs:
           persist-credentials: false  # E32
           # E57: workflow_run usa o SHA exato que foi deployado, não o HEAD do branch
           ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          # fetch-depth: 2 necessário para git diff HEAD^1 HEAD no step check_paths (E74 fix)
+          fetch-depth: 2
 
       - name: Check se arquivos de edge function mudaram
         id: check_paths
@@ -78,7 +80,13 @@ jobs:
             exit 0
           fi
           # HEAD^1 = parent 1 do merge commit = tip do branch base do PR
-          changed=$(git diff --name-only HEAD^1 HEAD 2>/dev/null || true)
+          # fetch-depth: 2 no checkout garante que HEAD^1 existe.
+          # Se o diff falhar por qualquer motivo, conservativamente executa o drift check.
+          if ! changed=$(git diff --name-only HEAD^1 HEAD 2>/dev/null); then
+            echo "::warning::git diff HEAD^1 HEAD falhou — executando drift check por precaução"
+            echo "needs_drift=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           needs_drift=false
           if printf '%s\n' "$changed" | grep -qE '^(supabase/functions/|audit/edge-functions-canonical-only\.json|\.github/workflows/edge-functions-drift-check\.yml|supabase/config\.toml|\.security/edge-functions-verify-jwt-false-allowlist\.json)'; then
             needs_drift=true
