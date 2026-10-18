@@ -27,6 +27,14 @@ test.describe("@smoke Magazine — Gold DB smoke", () => {
   test("lista /magazine carrega do BD Gold para usuário autenticado", async ({ page }) => {
     await loginAs(page);
 
+    // Registra o waitForResponse ANTES de navegar para não perder a request
+    // disparada pelo useEffect([user?.id]) logo após auth hidratar — esse evento
+    // chega depois que gotoAndSettle resolve (page settled, sem skeleton visível).
+    const waitMagazines = page.waitForResponse(
+      (res) => res.url().includes("/rest/v1/magazines"),
+      { timeout: 15_000 },
+    );
+
     // Captura response da edge magazine-reader-state (get/set) e da consulta
     // à tabela magazines para provar que a lista veio do BD (não localStorage).
     const magazineRequests: Array<{ url: string; status: number }> = [];
@@ -42,6 +50,8 @@ test.describe("@smoke Magazine — Gold DB smoke", () => {
     });
 
     await gotoAndSettle(page, "/magazine");
+    // Aguarda auth hidratar e a request partir (capturada pelo listener acima).
+    await waitMagazines.catch(() => {});
 
     // O h1 canônico da página (page-title-magazine — ver memory Page Title Testids).
     await waitForTestIdVisible(page, "page-title-magazine").catch(() => {

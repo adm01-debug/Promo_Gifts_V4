@@ -234,6 +234,21 @@ Deno.serve(async (req) => {
     // fix: ssot-bypass — credential vault
     const vtApiKey = await getCredential("VIRUSTOTAL_API_KEY");
 
+    // E020: fail-closed — sem chave VirusTotal = configuração ausente = rejeita upload
+    if (!vtApiKey) {
+      log.error("vt_key_missing", { user_id: auth.userId });
+      await supabaseAdmin.from("file_scan_logs").insert({
+        ...auditData,
+        status_code: 503,
+        scan_result: { error: true, reason: "VIRUSTOTAL_API_KEY não configurado" },
+      });
+      return log.respond(
+        new Response(JSON.stringify({ error: "Serviço de segurança indisponível: chave de varredura ausente", request_id: requestId }), {
+          status: 503,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }),
+      );
+    }
     if (vtApiKey) {
       try {
         const controller = new AbortController();

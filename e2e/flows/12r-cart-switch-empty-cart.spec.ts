@@ -138,7 +138,6 @@ test.describe("Troca de empresa para carrinho VAZIO", () => {
 
     // 4b. Force-click para provar que nem via bypass o handler dispara.
     await cta.click({ force: true }).catch(() => {});
-    await page.waitForTimeout(500);
     expect(
       page.url(),
       "URL não pode mudar para /orcamentos/novo a partir de carrinho vazio",
@@ -174,7 +173,6 @@ test.describe("Troca de empresa para carrinho VAZIO", () => {
 
     // Force-click no item desabilitado — Radix deve ignorar.
     await rowMenuGenerate.click({ force: true }).catch(() => {});
-    await page.waitForTimeout(400);
     expect(
       page.url(),
       "URL não pode ter navegado para /orcamentos/novo pelo row menu",

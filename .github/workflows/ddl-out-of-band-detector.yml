@@ -65,7 +65,7 @@ jobs:
         with:
           persist-credentials: false  # E32
       - name: Setup Node
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
           cache: 'npm'
@@ -92,96 +92,72 @@ jobs:
           retention-days: 14
           if-no-files-found: ignore
 
-      - name: Open or update issue (objetos out-of-band)
-        # exit 1 (FAILED): findings reais — abre/atualiza issue e loga warning.
+      - name: Compute issue body (objetos out-of-band)
+        # exit 1 (FAILED): findings reais — computa body para ci-issue action.
         # exit 2 (INCONCLUSIVE): sem credenciais/dados — só loga warning no step seguinte,
         # sem abrir issue (distinguido via steps.check.outputs.exit_code).
+        id: issue_body
         if: steps.check.outputs.exit_code == '1'
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
-        with:
-          script: |
-            // E12 — ci-issue compatible: marker-based search + hash dedup
-            const key    = 'ddl-out-of-band';
-            const marker = `<!-- ci-issue:${key} -->`;
-            const crypto = require('crypto');
-            const fs     = require('fs');
-            const runUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
-            let report = null;
-            try {
-              report = JSON.parse(fs.readFileSync('/tmp/ddl-out-of-band.json', 'utf-8'));
-            } catch (e) {
-              core.warning(`Detector inconclusivo ou sem relatorio (${e.message}) — nao e' um achado de out-of-band, apenas logando.`);
-              return;
-            }
+        run: |
+          node <<'NODEEOF' >> "$GITHUB_OUTPUT"
+          const fs = require('fs');
+          const DELIM = 'BODY_EOF_DDL';
+          let skip = 'true';
+          let title = '';
+          let body = '';
+          try {
+            const report = JSON.parse(fs.readFileSync('/tmp/ddl-out-of-band.json', 'utf-8'));
             const outOfBand = report?.outOfBand || [];
             if (outOfBand.length === 0) {
-              core.warning('Relatorio existe mas outOfBand esta vazio — nada a fazer.');
-              return;
-            }
-            const today = new Date().toISOString().slice(0, 10);
-            const title = `[ddl-out-of-band] ${outOfBand.length} objeto(s) sem migration correspondente — ${today}`;
-
-            const lines = outOfBand.map((o) => {
-              const parent = o.partitionParent ? ` (particao de \`${o.partitionParent}\`)` : '';
-              const cols = o.columns ? ` — colunas: ${Array.isArray(o.columns) ? o.columns.join(', ') : JSON.stringify(o.columns)}` : '';
-              return `- \`${o.object}\`${parent} — ${o.kind}${cols}`;
-            });
-
-            const body = [
-              '## Objetos sem correspondencia em `supabase_migrations.schema_migrations`',
-              '',
-              `Drift log id \`${report?.driftLogId ?? '?'}\` (ran_at ${report?.ranAt ?? '?'}), baseline \`${report?.baselineLabel ?? '?'}\`.`,
-              '',
-              ...lines,
-              '',
-              `Run: ${runUrl}`,
-              '',
-              '### Como regularizar (docs/db/POLITICA_DDL.md)',
-              'Para cada objeto acima, confirmar as 3 condicoes ou regularizar retroativamente:',
-              '1. Ticket explicando por que a DDL nao esperou o fluxo normal.',
-              '2. Migration versionada em `supabase/migrations/` reproduzindo o efeito (fonte da verdade daqui em diante).',
-              '3. `supabase migration repair --status applied <version> --linked` registrando a versao no ledger.',
-              '',
-              '_Heuristica por nome textual — pode ser falso-positivo._',
-            ].join('\n');
-
-            // Busca issue com marcador (E12 — ci-issue compatible search)
-            const { data: searchResult } = await github.rest.search.issuesAndPullRequests({
-              q: `repo:${process.env.GITHUB_REPOSITORY} is:issue is:open in:body "${marker}"`,
-              per_page: 10,
-            });
-            const existing = searchResult.items.find(i => i.body && i.body.includes(marker));
-
-            if (existing) {
-              // Hash-based dedup (E12) — evita flood de comentários idênticos
-              const bodyHash   = crypto.createHash('sha1').update(body).digest('hex').slice(0, 8);
-              const dedupeMark = `<!-- body-hash:${bodyHash} -->`;
-              const { data: comments } = await github.rest.issues.listComments({
-                owner: context.repo.owner,
-                repo:  context.repo.repo,
-                issue_number: existing.number,
-                per_page: 50,
-              });
-              if (comments.some(c => c.body && c.body.includes(dedupeMark))) {
-                core.info(`Comentário idêntico já existe na issue #${existing.number} — skip.`);
-                return;
-              }
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo:  context.repo.repo,
-                issue_number: existing.number,
-                body: `Atualizacao do dia ${today}:\n\n${body}\n\n${dedupeMark}`,
-              });
+              process.stderr.write('Relatorio existe mas outOfBand esta vazio — nada a fazer.\n');
             } else {
-              const fullBody = `${body}\n\n---\n\n*Aberta automaticamente por [run ${process.env.GITHUB_RUN_ID}](${runUrl})*\n\n${marker}`;
-              await github.rest.issues.create({
-                owner: context.repo.owner,
-                repo:  context.repo.repo,
-                title,
-                body: fullBody,
-                labels: ['ddl-out-of-band', 'priority/medium'],
+              const today = new Date().toISOString().slice(0, 10);
+              title = `[ddl-out-of-band] ${outOfBand.length} objeto(s) sem migration correspondente — ${today}`;
+              const lines = outOfBand.map((o) => {
+                const parent = o.partitionParent ? ` (particao de \`${o.partitionParent}\`)` : '';
+                const cols = o.columns ? ` — colunas: ${Array.isArray(o.columns) ? o.columns.join(', ') : JSON.stringify(o.columns)}` : '';
+                return `- \`${o.object}\`${parent} — ${o.kind}${cols}`;
               });
+              const runUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+              body = [
+                '## Objetos sem correspondencia em `supabase_migrations.schema_migrations`',
+                '',
+                `Drift log id \`${report?.driftLogId ?? '?'}\` (ran_at ${report?.ranAt ?? '?'}), baseline \`${report?.baselineLabel ?? '?'}\`.`,
+                '',
+                ...lines,
+                '',
+                `Run: ${runUrl}`,
+                '',
+                '### Como regularizar (docs/db/POLITICA_DDL.md)',
+                'Para cada objeto acima, confirmar as 3 condicoes ou regularizar retroativamente:',
+                '1. Ticket explicando por que a DDL nao esperou o fluxo normal.',
+                '2. Migration versionada em `supabase/migrations/` reproduzindo o efeito (fonte da verdade daqui em diante).',
+                '3. `supabase migration repair --status applied <version> --linked` registrando a versao no ledger.',
+                '',
+                '_Heuristica por nome textual — pode ser falso-positivo._',
+              ].join('\n');
+              skip = 'false';
             }
+          } catch (e) {
+            process.stderr.write(`Detector inconclusivo ou sem relatorio (${e.message}) — nao e um achado de out-of-band, apenas logando.\n`);
+          }
+          process.stdout.write(`skip=${skip}\n`);
+          if (skip === 'false') {
+            process.stdout.write(`title=${title}\n`);
+            process.stdout.write(`body<<${DELIM}\n${body}\n${DELIM}\n`);
+          }
+          NODEEOF
+
+      - name: Reportar issue DDL out-of-band
+        # E12 — ci-issue action com dedupe por marcador <!-- ci-issue:ddl-out-of-band -->
+        if: steps.check.outputs.exit_code == '1' && steps.issue_body.outputs.skip != 'true'
+        uses: ./.github/actions/ci-issue
+        with:
+          key: ddl-out-of-band
+          title: ${{ steps.issue_body.outputs.title }}
+          body: ${{ steps.issue_body.outputs.body }}
+          labels: ddl-out-of-band,priority/medium
+          state: open
 
       - name: Não quebra o build
         if: steps.check.outcome == 'failure'

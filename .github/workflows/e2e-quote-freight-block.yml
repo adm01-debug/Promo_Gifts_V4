@@ -71,7 +71,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false  # E32
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -167,9 +167,9 @@ jobs:
             echo "- Artefato: [quote-freight-block-${{ matrix.browser }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts)"
           } >> "$GITHUB_STEP_SUMMARY"
 
-  # E10 — alerta de falha no cron semanal (deduplication via label ci-focused-e2e)
+  # E12 — usa ci-issue action para dedupe real
   notify-failure:
-    name: Notificar falha — Quote Freight Block (cron)
+    name: Notificar falha — Quote Freight Block Visual (cron)
     permissions:
       issues: write
     if: failure() && github.event_name == 'schedule'
@@ -177,42 +177,27 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
-      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const workflowName = 'E2E Quote Freight Block (visual)';
-            const label = 'ci-focused-e2e';
-            const title = `[CI] ${workflowName} falhou no cron semanal`;
-            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
-            const { data: issues } = await github.rest.issues.listForRepo({
-              owner: context.repo.owner, repo: context.repo.repo,
-              labels: label, state: 'open',
-            });
-            const existing = issues.find(i => i.title === title);
-            if (existing) {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner, repo: context.repo.repo,
-                issue_number: existing.number,
-                body: `Nova falha detectada: ${runUrl} — ${new Date().toISOString()}`,
-              });
-            } else {
-              await github.rest.issues.create({
-                owner: context.repo.owner, repo: context.repo.repo,
-                title, labels: [label],
-                body: [
-                  `## ❌ ${workflowName} falhou no cron semanal`,
-                  '',
-                  `- **Run:** ${runUrl}`,
-                  `- **Triggered:** ${new Date().toISOString()}`,
-                  '',
-                  'Verifique os artifacts do run para screenshots, diffs e traces.',
-                ].join('\n'),
-              });
-            }
+          persist-credentials: false
+          sparse-checkout: .github/actions/ci-issue
+          sparse-checkout-cone-mode: false
+      - uses: ./.github/actions/ci-issue
+        with:
+          key: e2e-quote-freight-block
+          title: "[CI] E2E Quote Freight Block (visual) falhou no cron semanal"
+          body: |
+            ## ❌ E2E Quote Freight Block (visual) falhou no cron semanal
+
+            - **Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            - **Triggered:** ${{ github.run_started_at }}
+
+            Verifique os artifacts do run para screenshots, diffs e traces.
+          labels: ci-focused-e2e
+          state: open
   # E12 — fecha a issue quando o cron volta a passar
   notify-success:
-    name: Fechar issue — Quote Freight Block (cron recuperado)
+    name: Fechar issue — Quote Freight Block Visual (cron recuperado)
     permissions:
       issues: write
     if: success() && github.event_name == 'schedule'
@@ -220,27 +205,15 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
-      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const title = '[CI] E2E Quote Freight Block (visual) falhou no cron semanal';
-            const label = 'ci-focused-e2e';
-            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
-            const { data: issues } = await github.rest.issues.listForRepo({
-              owner: context.repo.owner, repo: context.repo.repo,
-              labels: label, state: 'open',
-            });
-            const existing = issues.find(i => i.title === title);
-            if (existing) {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner, repo: context.repo.repo,
-                issue_number: existing.number,
-                body: `✅ Cron passou em ${new Date().toISOString()} — fechando. Run: ${runUrl}`,
-              });
-              await github.rest.issues.update({
-                owner: context.repo.owner, repo: context.repo.repo,
-                issue_number: existing.number,
-                state: 'closed', state_reason: 'completed',
-              });
-            }
+          persist-credentials: false
+          sparse-checkout: .github/actions/ci-issue
+          sparse-checkout-cone-mode: false
+      - uses: ./.github/actions/ci-issue
+        with:
+          key: e2e-quote-freight-block
+          title: "[CI] E2E Quote Freight Block (visual) falhou no cron semanal"
+          body: "Todos os testes passaram."
+          labels: ci-focused-e2e
+          state: resolved

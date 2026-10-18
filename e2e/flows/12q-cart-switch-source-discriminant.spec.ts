@@ -128,7 +128,6 @@ test.describe("Analytics — `source` de cart.company_switched por UI de origem"
     await gotoAndSettle(page, `/carrinhos/${cartB.id}`);
     // Pequena janela p/ eventuais eventos residuais do mount (não deveriam
     // emitir — coberto pelo spec 12o, aqui só evitamos race).
-    await page.waitForTimeout(300);
     const preNavCount = (await readAnalyticsEvents(page)).filter(
       (e) => e.name === EVT,
     ).length;

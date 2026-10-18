@@ -18,7 +18,7 @@ on:
       - '.github/workflows/e2e-focused.yml'
   schedule:
     # E89 — segunda-feira 02:00 UTC
-    - cron: '0 2 * * 1'
+    - cron: '0 2 * * 1'  # E89 — segunda 02:00 UTC
   workflow_dispatch:
     inputs:
       suite:
@@ -41,7 +41,7 @@ defaults:
 
 jobs:
   secrets_check:
-    name: Verify E2E secrets
+    name: Verify E2E secrets (Focused)
     runs-on: ubuntu-24.04
     timeout-minutes: 2
     permissions:
@@ -67,8 +67,6 @@ jobs:
     runs-on: ubuntu-24.04
     # R3 — timeout por job
     timeout-minutes: 20
-    # Suites focados podem ter baselines faltando ou ser conhecidamente flaky
-    continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
@@ -127,7 +125,7 @@ jobs:
           persist-credentials: false  # E32
 
       # R4 — node-version-file: .nvmrc
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -152,6 +150,8 @@ jobs:
           exit 0
 
       - name: Run E2E Focused · ${{ matrix.suite }}
+        # Suites focados podem ter baselines faltando ou ser conhecidamente flaky (C17: step-level OK)
+        continue-on-error: true
         run: |
           npx playwright test ${{ matrix.spec }} \
             --project=${{ matrix.project }} \
@@ -169,81 +169,76 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
-  # E10 — alerta de falha no cron semanal
+  # E10/E12 — alerta de falha no cron semanal (ci-issue action com dedupe)
   notify_failure:
     name: Notificar falha — E2E Focused (cron)
     permissions:
+      contents: read
       issues: write
     if: failure() && github.event_name == 'schedule'
     needs: [e2e_focused]
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
-      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+      - name: Checkout (sparse — ci-issue action)
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const workflowName = 'E2E Focused UI — Matrix (E78)';
-            const label = 'ci-focused-e2e';
-            const title = `[CI] ${workflowName} falhou no cron semanal`;
-            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
-            const { data: issues } = await github.rest.issues.listForRepo({
-              owner: context.repo.owner, repo: context.repo.repo,
-              labels: label, state: 'open',
-            });
-            const existing = issues.find(i => i.title === title);
-            if (existing) {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner, repo: context.repo.repo,
-                issue_number: existing.number,
-                body: `Nova falha detectada: ${runUrl} — ${new Date().toISOString()}`,
-              });
-            } else {
-              await github.rest.issues.create({
-                owner: context.repo.owner, repo: context.repo.repo,
-                title, labels: [label],
-                body: [
-                  `## Falha no cron semanal — ${workflowName}`,
-                  '',
-                  `- **Run:** ${runUrl}`,
-                  `- **Triggered:** ${new Date().toISOString()}`,
-                  '',
-                  'Verifique os artifacts do run para screenshots e traces.',
-                ].join('\n'),
-              });
-            }
+          persist-credentials: false  # E32
+          sparse-checkout: .github/actions/ci-issue
+
+      - name: Compute issue body (e2e-focused cron falha)
+        id: issue_body
+        run: |
+          node <<'NODEEOF' >> "$GITHUB_OUTPUT"
+          const DELIM = 'BODY_EOF_E2E_FOCUSED';
+          const runUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+          const today = new Date().toISOString().slice(0, 10);
+          const title = `[CI] E2E Focused UI — Matrix (E78) falhou no cron semanal — ${today}`;
+          const body = [
+            '## Falha no cron semanal — E2E Focused UI — Matrix (E78)',
+            '',
+            `- **Run:** ${runUrl}`,
+            `- **Triggered:** ${new Date().toISOString()}`,
+            '',
+            'Verifique os artifacts do run para screenshots e traces.',
+          ].join('\n');
+          process.stdout.write(`title=${title}\n`);
+          process.stdout.write(`body<<${DELIM}\n${body}\n${DELIM}\n`);
+          NODEEOF
+
+      - name: Reportar issue — E2E Focused (cron)
+        # E12 — ci-issue action com dedupe por marcador <!-- ci-issue:e2e-focused -->
+        uses: ./.github/actions/ci-issue
+        with:
+          key: e2e-focused
+          title: ${{ steps.issue_body.outputs.title }}
+          body: ${{ steps.issue_body.outputs.body }}
+          labels: ci-focused-e2e
+          state: open
 
   # E12 — fecha a issue quando o cron volta a passar
   notify_success:
     name: Fechar issue — E2E Focused (cron recuperado)
     permissions:
+      contents: read
       issues: write
     if: success() && github.event_name == 'schedule'
     needs: [e2e_focused]
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
-      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+      - name: Checkout (sparse — ci-issue action)
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const title = '[CI] E2E Focused UI — Matrix (E78) falhou no cron semanal';
-            const label = 'ci-focused-e2e';
-            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
-            const { data: issues } = await github.rest.issues.listForRepo({
-              owner: context.repo.owner, repo: context.repo.repo,
-              labels: label, state: 'open',
-            });
-            const existing = issues.find(i => i.title === title);
-            if (existing) {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner, repo: context.repo.repo,
-                issue_number: existing.number,
-                body: `Cron passou em ${new Date().toISOString()} — fechando. Run: ${runUrl}`,
-              });
-              await github.rest.issues.update({
-                owner: context.repo.owner, repo: context.repo.repo,
-                issue_number: existing.number,
-                state: 'closed', state_reason: 'completed',
-              });
-            }
+          persist-credentials: false  # E32
+          sparse-checkout: .github/actions/ci-issue
+
+      - name: Fechar issue — E2E Focused recuperado
+        # E12 — ci-issue action state:resolved fecha issue aberta com mesmo key
+        uses: ./.github/actions/ci-issue
+        with:
+          key: e2e-focused
+          title: '[CI] E2E Focused UI recuperado'
+          body: 'Cron passou — fechando issue de falha anterior.'
+          labels: ci-focused-e2e
+          state: resolved

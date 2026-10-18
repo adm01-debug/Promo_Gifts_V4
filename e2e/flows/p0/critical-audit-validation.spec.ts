@@ -51,7 +51,7 @@ test.describe("Auditoria Técnica - Fluxos Críticos", () => {
 
         // Scroll para baixo para ativar os botões flutuantes
         await page.evaluate(() => window.scrollTo(0, 1000));
-        await page.waitForTimeout(500); // Aguarda transição CSS
+ // Aguarda transição CSS
 
         const fab = page.locator('[data-testid="quick-quote-fab"], button[aria-label*="Ações rápidas"]').first();
         const scrollToTop = page.locator('[data-testid="scroll-to-top"], button[aria-label*="voltar ao topo"]').first();

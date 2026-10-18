@@ -6,8 +6,8 @@ interface RateLimitConfig {
   windowMs: number;
   keyPrefix?: string;
   /**
-   * When true, DB errors block the request (fail-closed). Use for auth/sensitive endpoints.
-   * When false (default), DB errors allow the request (fail-open). Use for non-critical endpoints.
+   * When true (default), DB errors block the request (fail-closed). Seguro por padrão — E018.
+   * Set explicitly to false for non-critical, high-availability endpoints that prefer fail-open.
    */
   failClosed?: boolean;
 }
@@ -38,7 +38,7 @@ export class RateLimiter {
 
       if (error) {
         console.error(`[rate-limiter] Error checking rate limit for ${key}:`, error);
-        if (this.config.failClosed) {
+        if (this.config.failClosed !== false) {  // E018: default fail-closed; set false explicitly for fail-open
           // Fail-closed: block the request when rate limit DB is unavailable (auth endpoints).
           return { allowed: false, remaining: 0, resetAt: Date.now() + this.config.windowMs };
         }
@@ -64,7 +64,7 @@ export class RateLimiter {
       };
     } catch (err) {
       console.error(`[rate-limiter] Fatal error checking rate limit for ${key}:`, err);
-      if (this.config.failClosed) {
+      if (this.config.failClosed !== false) {  // E018: default fail-closed
         return { allowed: false, remaining: 0, resetAt: Date.now() + this.config.windowMs };
       }
       return { allowed: true, remaining: 1, resetAt: Date.now() + this.config.windowMs };

@@ -29,7 +29,6 @@ test.describe("Quote Builder — Auto-save silencioso", () => {
     }
 
     // 3) Debounce do auto-save = 2000ms. Aguarda o flush no localStorage.
-    await page.waitForTimeout(2500);
 
     const draftKeys = await page.evaluate(() =>
       Object.keys(localStorage).filter((k) => k.startsWith("quote_draft_")),

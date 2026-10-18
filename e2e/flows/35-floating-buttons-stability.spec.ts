@@ -38,7 +38,6 @@ test.describe('Floating Buttons Visual Stability', () => {
       await expect(scrollToTop).toBeVisible();
       
       // Wait for layout transitions
-      await page.waitForTimeout(500);
 
       const fabBox = await quickActionFAB.boundingBox();
       const sttBox = await scrollToTop.boundingBox();
@@ -63,7 +62,6 @@ test.describe('Floating Buttons Visual Stability', () => {
 
       // Click Scroll to Top
       await scrollToTop.click();
-      await page.waitForTimeout(500);
       const scrollY = await page.evaluate(() => window.scrollY);
       expect(scrollY).toBeLessThan(100);
 

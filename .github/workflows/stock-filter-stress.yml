@@ -4,7 +4,7 @@ on:
   # E38: stress só por agenda e workflow_dispatch, nunca em PR (carga desnecessária em revisão)
   schedule:
     # Nightly 03:17 UTC — seed rotativa por data para ampliar cobertura
-    - cron: '17 3 * * *'
+    - cron: '17 3 * * *'  # diário 03:17 UTC (E89)
   workflow_dispatch:
     inputs:
       master_seed:
@@ -46,7 +46,7 @@ jobs:
 
         with:
           persist-credentials: false  # E32
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'

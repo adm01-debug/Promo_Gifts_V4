@@ -58,55 +58,44 @@ jobs:
           path: results.sarif
           retention-days: 90  # E88 — auditoria de vazamento de segredos (SARIF); retenção longa justificada para rastreabilidade de segurança
 
-      - name: Open issue if leaks found
+      - name: Compute issue body (gitleaks)
+        id: issue_body
         if: failure()
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
-        with:
-          script: |
-            const today = new Date().toISOString().slice(0, 10);
-            const title = `[SECURITY] Gitleaks encontrou secrets vazados — ${today}`;
-            const body = [
-              '## Gitleaks detectou possiveis secrets no historico',
-              '',
-              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-              '',
-              '### Acoes obrigatorias',
-              '1. Baixar o artifact `gitleaks-report-${{ github.run_id }}` para detalhes',
-              '2. Categorizar cada finding em:',
-              '   - (a) false positive -> adicionar ao allowlist em `.gitleaks.toml`',
-              '   - (b) chave ja rotacionada -> documentar e adicionar ao allowlist',
-              '   - (c) chave AINDA VALIDA -> **ROTACIONAR IMEDIATAMENTE**',
-              '3. Para findings tipo (c): documentar o que foi rotacionado e quando',
-              '4. Fechar esta issue apos resolver todos os findings',
-              '',
-              'SLA: 24h para findings tipo (c), 7 dias para tipos (a)/(b).',
-            ].join('\n');
+        run: |
+          node <<'NODEEOF' >> "$GITHUB_OUTPUT"
+          const DELIM = 'BODY_EOF_GITLEAKS';
+          const today = new Date().toISOString().slice(0, 10);
+          const runUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+          const title = `[SECURITY] Gitleaks encontrou secrets vazados — ${today}`;
+          const body = [
+            '## Gitleaks detectou possiveis secrets no historico',
+            '',
+            `Run: ${runUrl}`,
+            `Artifact: gitleaks-report-${process.env.GITHUB_RUN_ID}`,
+            '',
+            '### Acoes obrigatorias',
+            `1. Baixar o artifact \`gitleaks-report-${process.env.GITHUB_RUN_ID}\` para detalhes`,
+            '2. Categorizar cada finding em:',
+            '   - (a) false positive -> adicionar ao allowlist em `.gitleaks.toml`',
+            '   - (b) chave ja rotacionada -> documentar e adicionar ao allowlist',
+            '   - (c) chave AINDA VALIDA -> **ROTACIONAR IMEDIATAMENTE**',
+            '3. Para findings tipo (c): documentar o que foi rotacionado e quando',
+            '4. Fechar esta issue apos resolver todos os findings',
+            '',
+            'SLA: 24h para findings tipo (c), 7 dias para tipos (a)/(b).',
+          ].join('\n');
+          process.stdout.write(`title=${title}\n`);
+          process.stdout.write(`body<<${DELIM}\n${body}\n${DELIM}\n`);
+          process.stdout.write(`skip=false\n`);
+          NODEEOF
 
-            // Dedupe por label (o título muda a cada run — contém a data):
-            // se já existe issue aberta com label `gitleaks`, comenta nela em
-            // vez de criar um ticket novo a cada falha (alarm fatigue).
-            const { data: openIssues } = await github.rest.issues.listForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: 'open',
-              labels: 'gitleaks',
-              per_page: 1,
-            });
-            const existing = openIssues[0];
-            if (existing) {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: existing.number,
-                body: `Nova falha detectada — ${title}\n\n${body}`,
-              });
-              core.info(`Issue aberta #${existing.number} reutilizada (label gitleaks).`);
-            } else {
-              await github.rest.issues.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title,
-                body,
-                labels: ['security', 'priority/high', 'gitleaks'],
-              });
-            }
+      - name: Reportar issue de gitleaks
+        # E12 — ci-issue action com dedupe por marcador <!-- ci-issue:gitleaks-audit -->
+        if: failure() && steps.issue_body.outputs.skip != 'true'
+        uses: ./.github/actions/ci-issue
+        with:
+          key: gitleaks-audit
+          title: ${{ steps.issue_body.outputs.title }}
+          body: ${{ steps.issue_body.outputs.body }}
+          labels: security,priority/high,gitleaks
+          state: open

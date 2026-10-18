@@ -125,7 +125,7 @@ jobs:
 
       - name: Setup Node
         if: steps.guard.outputs.enabled == 'true'
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
 
@@ -216,7 +216,7 @@ jobs:
             # depois do dump cujo SQL já estava no baseline (repair-only de DDL
             # feita fora do fluxo) ou aplicada fora da ordem de versão. O
             # remédio é um baseline novo, não editar a migration.
-            last=$(grep -o 'Applying migration [^ ]*' /tmp/diff.stderr | tail -1 || true)
+            last=$(grep -o 'Applying migration [^ ]*' /tmp/diff.stderr | tail -1 || true)  # ok: grep retorna 1 quando não há match; resultado vazio é válido
             if [ -n "$last" ]; then
               {
                 echo "## Replay do baseline falhou"
@@ -280,11 +280,11 @@ jobs:
         if: ${{ always() && steps.guard.outputs.enabled == 'true' }}
         run: |
           set -uo pipefail
-          ids=$(docker ps -aq --filter "label=com.supabase.cli.project" || true)
+          ids=$(docker ps -aq --filter "label=com.supabase.cli.project" || true)  # ok: docker pode não estar rodando; ids vazio = nada a remover
           if [ -n "$ids" ]; then
             echo "Removendo containers do Supabase CLI: $ids"
             # shellcheck disable=SC2086 # lista de IDs separada por espaço/linha
-            docker rm -f $ids || true
+            docker rm -f $ids || true  # ok: cleanup best-effort; falha não deve abortar o job
           else
             echo "Nenhum container do Supabase CLI ativo."
           fi

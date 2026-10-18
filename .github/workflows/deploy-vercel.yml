@@ -58,6 +58,9 @@ jobs:
               echo ""
               echo "Configure VERCEL_TOKEN, VERCEL_ORG_ID e VERCEL_PROJECT_ID nos secrets do repositório."
             } >> "$GITHUB_STEP_SUMMARY"
+            # E016: falha explicitamente — workflow_dispatch sem secrets = erro de config, não skip silencioso
+            echo "::error::VERCEL_TOKEN, VERCEL_ORG_ID ou VERCEL_PROJECT_ID ausentes. Configure os secrets antes de usar este fallback."
+            exit 1
           fi
 
   deploy:
@@ -72,7 +75,7 @@ jobs:
         with:
           persist-credentials: false  # E32
       - name: Setup Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: '.nvmrc'
           cache: npm

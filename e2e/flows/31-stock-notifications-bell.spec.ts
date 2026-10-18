@@ -16,7 +16,7 @@
  * explícito em vez de falhar.
  */
 import { test, expect } from '../fixtures/test-base';
-import { gotoAndSettle } from '../helpers/nav';
+import { gotoAndSettle, waitForRouteIdle } from '../helpers/nav';
 import { TID } from '../fixtures/selectors';
 import type { Page } from '@playwright/test';
 
@@ -49,7 +49,7 @@ test.describe('Notificações de Estoque — sino do header', () => {
 
     await page.getByRole('button', { name: /Chegou/ }).click();
     // aguarda a lista (RPC) assentar
-    await page.waitForLoadState('networkidle').catch(() => {});
+    await waitForRouteIdle(page);
 
     // Reposição = produto que voltou a ter estoque → jamais 0 un.
     await expect(page.getByText('0 un.')).toHaveCount(0);
@@ -60,7 +60,7 @@ test.describe('Notificações de Estoque — sino do header', () => {
     test.skip(!ok, 'Sino de estoque indisponível (sessão não autenticada).');
 
     await page.getByRole('button', { name: /Zerou/ }).click();
-    await page.waitForLoadState('networkidle').catch(() => {});
+    await waitForRouteIdle(page);
 
     const esgotados = page.getByText('Esgotado');
     const count = await esgotados.count();

@@ -8,8 +8,7 @@ on:
   push:
     branches: [ main ]
   schedule:
-    # Toda segunda-feira às 07:17 UTC (jitter para não conflitar com outros crons)
-    - cron: '17 7 * * 1' # E89: 20 min após supabase-linter-gate (Mon 06:57); era 06:17 (colisão c/ quote-number)
+    - cron: '55 5 * * 1'  # E89: segunda 05:55 UTC — ≥40min before schema-snapshot-export (06:36)
   workflow_dispatch:
 
 permissions:

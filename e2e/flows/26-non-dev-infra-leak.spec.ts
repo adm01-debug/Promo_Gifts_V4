@@ -95,7 +95,6 @@ test.describe("Dev Infra Gate — não-dev não vê mensagens internas", () => {
 
     await context.setOffline(true);
     await page.reload({ waitUntil: "domcontentloaded" }).catch(() => {});
-    await page.waitForTimeout(1500);
     await assertNoInfraLeak(page, "/dashboard (offline)");
     await context.setOffline(false);
   });

@@ -7,7 +7,7 @@ on:
   # ao fan-out do repo (123 workflows). Varredura continua em cada push na main e
   # na segunda 09:33 UTC. Sem branch protection, não bloqueia nenhuma PR.
   schedule:
-    - cron: '33 9 * * 1'
+    - cron: '33 9 * * 1'  # segunda 09:33 UTC (E89)
 
 permissions:
   contents: read
@@ -62,12 +62,15 @@ jobs:
             exit 0
           fi
 
-          message="$(jq -r '.message // ""' "$response_file")"
-          if [ "$status" = '403' ] && [[ "$message" == *'not enabled for this repository'* ]]; then
+          # E017: qualquer 403 da code-scanning API = Code Security não habilitado ou sem permissão
+          # Mensagem exata varia ("not enabled", "Advanced Security must be enabled", etc.)
+          if [ "$status" = '403' ]; then
             echo 'enabled=false' >> "$GITHUB_OUTPUT"
-            echo '::notice title=CodeQL indisponível::O repositório privado não possui GitHub Code Security habilitado; análise não iniciada.'
+            message="$(jq -r '.message // ""' "$response_file")"
+            echo "::notice title=CodeQL indisponível::Code Security não habilitado ou sem permissão (HTTP 403: $message)"
             exit 0
           fi
+          message="$(jq -r '.message // ""' "$response_file")" 
 
           echo "::error title=Falha ao consultar Code Security::GitHub API respondeu HTTP $status: $message"
           exit 1

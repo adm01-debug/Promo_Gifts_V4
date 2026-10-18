@@ -126,7 +126,6 @@ test.describe("Mockup Resilience and Error Handling", () => {
     await expect(page.getByText(/Rot: 15°/i)).toBeVisible();
 
     // 2. Espera o auto-save (debounce de 2000ms)
-    await page.waitForTimeout(3000);
 
     // 3. Recarrega
     await page.reload();

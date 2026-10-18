@@ -62,7 +62,7 @@ jobs:
         with:
           persist-credentials: false  # E32
       - name: Setup Node
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
           cache: 'npm'
@@ -97,69 +97,68 @@ jobs:
         # credenciais obrigatórias, Management API fora do ar,
         # ops.wraparound_monitor_log ainda não existe porque E33 não foi
         # aplicado) só logamos warning, sem issue.
+        id: issue_body
         if: steps.check.outcome == 'failure'
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
-        with:
-          script: |
-            const fs = require('fs');
-            let report = null;
-            try {
-              report = JSON.parse(fs.readFileSync('/tmp/wraparound.json', 'utf-8'));
-            } catch (e) {
-              core.warning(`Checagem inconclusiva ou sem relatório (${e.message}) — provavelmente ops.wraparound_monitor_log ainda não existe (E33 aguardando aprovação do PO). Não é um achado de risco, apenas logando.`);
-              return;
-            }
+        run: |
+          node <<'NODEEOF' >> "$GITHUB_OUTPUT"
+          const fs = require('fs');
+          const DELIM = 'BODY_EOF_WRAPAROUND';
+          let skip = 'true';
+          let title = '';
+          let body = '';
+          let key = '';
+          try {
+            const report = JSON.parse(fs.readFileSync('/tmp/wraparound.json', 'utf-8'));
             const warnings = report?.warnings || [];
             const criticals = report?.criticals || [];
             if (warnings.length === 0 && criticals.length === 0) {
-              core.warning('Relatório existe mas warnings/criticals estão vazios — nada a fazer.');
-              return;
-            }
-            const label = criticals.length > 0 ? 'db-critical' : 'db-warning';
-            const today = new Date().toISOString().slice(0, 10);
-            const title = `[${label}] ${criticals.length + warnings.length} objeto(s) de wraparound/TOAST/sequência sinalizado(s) — ${today}`;
-
-            const fmt = (e) => `- \`${e.metric}\` em \`${e.object_name}\` — value_numeric=${e.value_numeric ?? 'n/a'} value_pct=${e.value_pct ?? 'n/a'} (captura ${e.captured_at})`;
-            const lines = [
-              ...(criticals.length ? ['### Crítico', ...criticals.map(fmt)] : []),
-              ...(warnings.length ? ['### Aviso', ...warnings.map(fmt)] : []),
-            ];
-
-            const body = [
-              '## Objeto(s) de risco de wraparound/TOAST/sequência acima do threshold',
-              '',
-              ...lines,
-              '',
-              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-              '',
-              '### Como agir',
-              'Não é uma ordem de execução automática — só um alerta de threshold estourado (PLANO_DBA E33, ver docs/E33_MONITOR_WRAPAROUND_2026-09-16.md para os thresholds e a justificativa de cada um).',
-              'Investigar a causa antes de propor qualquer ação (ex.: `VACUUM FREEZE` manual para xid_age, `ALTER SEQUENCE`/migração de tipo para sequência, `pg_drop_replication_slot` para slot morto, `VACUUM FULL`/revisão de coluna para TOAST) — qualquer DDL resultante segue a REGRA #8 (aprovação explícita do PO por objeto).',
-            ].join('\n');
-
-            const existing = await github.rest.issues.listForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: 'open',
-              labels: label,
-            });
-            const dup = existing.data.find((i) => i.title.startsWith(`[${label}]`));
-            if (dup) {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: dup.number,
-                body: `Atualização do dia ${today}:\n\n${body}`,
-              });
+              process.stderr.write('Relatório existe mas warnings/criticals estão vazios — nada a fazer.\n');
             } else {
-              await github.rest.issues.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title,
-                body,
-                labels: [label, 'priority/low'],
-              });
+              const label = criticals.length > 0 ? 'db-critical' : 'db-warning';
+              key = `wraparound-${label}`;
+              const today = new Date().toISOString().slice(0, 10);
+              title = `[${label}] ${criticals.length + warnings.length} objeto(s) de wraparound/TOAST/sequência sinalizado(s) — ${today}`;
+              const fmt = (e) => `- \`${e.metric}\` em \`${e.object_name}\` — value_numeric=${e.value_numeric ?? 'n/a'} value_pct=${e.value_pct ?? 'n/a'} (captura ${e.captured_at})`;
+              const lines = [
+                ...(criticals.length ? ['### Crítico', ...criticals.map(fmt)] : []),
+                ...(warnings.length ? ['### Aviso', ...warnings.map(fmt)] : []),
+              ];
+              const runUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+              body = [
+                '## Objeto(s) de risco de wraparound/TOAST/sequência acima do threshold',
+                '',
+                ...lines,
+                '',
+                `Run: ${runUrl}`,
+                '',
+                '### Como agir',
+                'Não é uma ordem de execução automática — só um alerta de threshold estourado (PLANO_DBA E33, ver docs/E33_MONITOR_WRAPAROUND_2026-09-16.md para os thresholds e a justificativa de cada um).',
+                'Investigar a causa antes de propor qualquer ação (ex.: `VACUUM FREEZE` manual para xid_age, `ALTER SEQUENCE`/migração de tipo para sequência, `pg_drop_replication_slot` para slot morto, `VACUUM FULL`/revisão de coluna para TOAST) — qualquer DDL resultante segue a REGRA #8 (aprovação explícita do PO por objeto).',
+              ].join('\n');
+              skip = 'false';
+              process.stdout.write(`labels=${label},priority/low\n`);
             }
+          } catch (e) {
+            process.stderr.write(`Checagem inconclusiva ou sem relatório (${e.message}) — provavelmente ops.wraparound_monitor_log ainda não existe (E33 aguardando aprovação do PO). Não é um achado de risco, apenas logando.\n`);
+          }
+          process.stdout.write(`skip=${skip}\n`);
+          if (skip === 'false') {
+            process.stdout.write(`key=${key}\n`);
+            process.stdout.write(`title=${title}\n`);
+            process.stdout.write(`body<<${DELIM}\n${body}\n${DELIM}\n`);
+          }
+          NODEEOF
+
+      - name: Reportar issue de wraparound
+        # E12 — ci-issue action com dedupe por marcador <!-- ci-issue:wraparound-{db-critical|db-warning} -->
+        if: steps.check.outcome == 'failure' && steps.issue_body.outputs.skip != 'true'
+        uses: ./.github/actions/ci-issue
+        with:
+          key: ${{ steps.issue_body.outputs.key }}
+          title: ${{ steps.issue_body.outputs.title }}
+          body: ${{ steps.issue_body.outputs.body }}
+          labels: ${{ steps.issue_body.outputs.labels }}
+          state: open
 
       - name: Não quebra o build
         if: steps.check.outcome == 'failure'

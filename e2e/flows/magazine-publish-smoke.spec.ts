@@ -51,11 +51,21 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
     });
 
     // 1) Vai para /magazine e cria uma revista nova.
+    // Registra o waitForResponse ANTES de navegar: auth hidrata de forma
+    // assíncrona e o useEffect([user?.id]) só dispara a request depois que
+    // gotoAndSettle já resolveu. Sem isso, handleCreate tem guarda
+    // `if (!user) return` e o clique em Criar é um no-op silencioso.
+    const waitMagazinesReady = page.waitForResponse(
+      (res) => res.url().includes("/rest/v1/magazines"),
+      { timeout: 15_000 },
+    );
     await gotoAndSettle(page, "/magazine");
     await expect(page).toHaveURL(/\/magazine(\/|$)/);
     // O tour pode aparecer depois do loginAs (fetch de user_onboarding) e
     // cobre a tela inteira, interceptando o clique no botão de criar.
     await dismissOnboardingTour(page);
+    // Garante que a lista carregou do BD (auth hidrou) antes de clicar em Criar.
+    await waitMagazinesReady.catch(() => {});
 
     const createBtn = page.locator('[data-testid="magazine-create-btn"]').first();
     await createBtn.waitFor({ state: "visible", timeout: 10_000 });

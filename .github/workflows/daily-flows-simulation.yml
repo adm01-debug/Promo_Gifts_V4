@@ -15,6 +15,7 @@ concurrency:
 
 permissions:
   contents: read
+  actions: read   # E81: gh api para ler timestamp do último run bem-sucedido
 
 
 defaults:
@@ -29,19 +30,29 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false  # E32
-          fetch-depth: 50
+          fetch-depth: 0              # E81: histórico completo para git log --after
       - name: Git diff guard (schedule only)
         id: guard
         if: github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          CHANGED=$(git log --since="25 hours ago" --oneline -- src/ scripts/simulate-daily-flows.mjs supabase/migrations/ 2>/dev/null | head -1)
-          if [ -z "$CHANGED" ]; then
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-            echo "Nenhuma mudança relevante nas últimas 25h — pulando simulação"
-          else
+          # E81: guard "desde o último success" via API (mais robusto que --since="25h")
+          LAST_SUCCESS=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/daily-flows-simulation.yml/runs?status=success&per_page=1" \
+            --jq '.workflow_runs[0].created_at // empty' 2>/dev/null || true)  # ok: primeiro run não tem histórico
+          if [ -z "$LAST_SUCCESS" ]; then
+            echo "Nenhum run bem-sucedido anterior — rodando simulação incondicional"
             echo "skip=false" >> "$GITHUB_OUTPUT"
+          else
+            CHANGED=$(git log --after="$LAST_SUCCESS" --oneline -- src/ scripts/simulate-daily-flows.mjs supabase/migrations/ 2>/dev/null | head -1)
+            if [ -z "$CHANGED" ]; then
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+              echo "Nenhuma mudança relevante desde o último run bem-sucedido ($LAST_SUCCESS) — pulando simulação"
+            else
+              echo "skip=false" >> "$GITHUB_OUTPUT"
+            fi
           fi
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         if: github.event_name != 'schedule' || steps.guard.outputs.skip != 'true'
         with:
           node-version-file: '.nvmrc'

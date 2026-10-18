@@ -12,7 +12,7 @@ name: E2E · restore_seller_cart RPC (multi-env)
 
 on:
   schedule:
-    - cron: "48 9 * * *"  # E89: ≥20min after db-schema-drift-check (09:27)
+    - cron: "48 9 * * *"  # E89: ≥20min after db-schema-drift-check (09:29)
   workflow_dispatch:
     inputs:
       environment:
@@ -29,9 +29,7 @@ on:
 
 concurrency:
   group: restore-seller-cart-rpc-${{ github.ref }}
-  # 2026-09-27: mesmo motivo do security-definer-acl-multi-env — jobs com environment:
-  # aguardando aprovação bloqueavam runner slot por 24h. Schedule agora cancela run anterior.
-  cancel-in-progress: ${{ github.event_name == 'schedule' }}
+  cancel-in-progress: false  # E19: schedule/push nunca cancelado; timeout-minutes garante term.
 
 permissions:
   contents: read
@@ -85,7 +83,7 @@ jobs:
           persist-credentials: false  # E32
         if: steps.creds.outputs.has_creds == 'true'
 
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         if: steps.creds.outputs.has_creds == 'true'
         with:
           node-version-file: .nvmrc

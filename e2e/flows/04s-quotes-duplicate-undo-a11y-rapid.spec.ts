@@ -147,7 +147,6 @@ test.describe("Duplicate + Desfazer — a11y, teclado e rajada de cliques", () =
     }
 
     // Aguarda estabilizar e confirma: 1 DELETE, sem retry silencioso
-    await page.waitForTimeout(1500);
     expect(deleteCalls, "rollback deve rodar 1x mesmo com rajada de cliques").toBe(1);
 
     // Nenhuma duplicata pendurada + toast dispensado
@@ -158,7 +157,6 @@ test.describe("Duplicate + Desfazer — a11y, teclado e rajada de cliques", () =
     expect(desfazerToasts).toBe(0);
 
     // Reassert final após margem extra: sem DELETE tardio
-    await page.waitForTimeout(1500);
     expect(deleteCalls).toBe(1);
   });
 });

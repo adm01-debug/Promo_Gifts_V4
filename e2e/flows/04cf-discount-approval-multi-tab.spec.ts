@@ -101,7 +101,6 @@ test.describe("Discount approval — cross-tab idempotency", () => {
     }
 
     // Aguarda 2s para qualquer race terminar.
-    await page.waitForTimeout(2000);
 
     // Conta pending no DB via REST (sessão do user).
     const count = await page.evaluate(

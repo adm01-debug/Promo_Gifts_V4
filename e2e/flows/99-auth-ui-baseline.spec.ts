@@ -62,7 +62,6 @@ test.describe.skip("Auth UI Baseline", () => {
   test("Estado Normal (Desktop)", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await gotoAndSettle(page, "/login");
-    await page.waitForTimeout(1000);
     
     // Verificamos se as estrelas estão presentes e animando (através do data-testid)
     const star = page.locator('[data-testid^="star-breathing-"]').first();
@@ -82,7 +81,6 @@ test.describe.skip("Auth UI Baseline", () => {
     await page.click('[data-testid="login-submit"]');
     
     // Pequena espera para os erros aparecerem no DOM
-    await page.waitForTimeout(500);
     
     await expect(page).toHaveScreenshot("auth-login-error-state.png", {
       maxDiffPixelRatio: 0.01
@@ -114,7 +112,6 @@ test.describe.skip("Auth UI Baseline", () => {
   test("Responsividade Mobile", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
     await gotoAndSettle(page, "/login");
-    await page.waitForTimeout(1000);
     
     await expect(page).toHaveScreenshot("auth-login-mobile-baseline.png", {
       fullPage: true,
