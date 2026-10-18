@@ -1,0 +1,78 @@
+name: DR Drill Reminder
+
+# E074 (P200): lembrete trimestral de drill de recuperação de desastre.
+# Abre issue com o checklist do DISASTER_RECOVERY.md e atribui ao PO.
+# Não executa o restore — só cria o lembrete.
+
+on:
+  schedule:
+    # Primeira segunda-feira de jan/abr/jul/out às 09:00 UTC (aproximado via cron mensal)
+    - cron: '0 9 1-7 1,4,7,10 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dr-drill-reminder
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  open-drill-issue:
+    name: Open DR Drill Issue
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Open quarterly DR drill issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          QUARTER=$(date +"%Y-Q$(( ($(date +%-m)-1)/3 + 1 ))")
+          TITLE="[DR Drill] Checklist trimestral de recuperação — ${QUARTER}"
+
+          # Verifica se já existe issue aberta com esse título para evitar duplicata
+          EXISTING=$(gh issue list --state open --search "${TITLE}" --json number --jq length)
+          if [ "${EXISTING}" -gt "0" ]; then
+            echo "Issue '${TITLE}' já existe (aberta). Pulando."
+            exit 0
+          fi
+
+          gh issue create \
+            --title "${TITLE}" \
+            --body "## Drill Trimestral de Recuperação de Desastre
+
+          **Referência:** \`docs/DISASTER_RECOVERY.md\`
+
+          ### Checklist obrigatório
+
+          - [ ] PITR está habilitado no painel Supabase
+          - [ ] Retenção de backup está confirmada (mínimo 7 dias)
+          - [ ] Data do último backup automático confirmada
+          - [ ] RPO aceitável definido e registrado em \`docs/db/BACKUP_STATUS.md\`
+          - [ ] Restore de schema testado em projeto descartável
+          - [ ] Duração do restore medida e registrada no runbook
+          - [ ] RTO de banco atualizado em \`docs/DISASTER_RECOVERY.md\`
+
+          ### Ação
+
+          Executar o drill, preencher cada item acima e fechar esta issue com \`Drill concluído em: YYYY-MM-DD\`.
+
+          _Issue criada automaticamente por \`.github/workflows/dr-drill-reminder.yml\` (P200-E074)._" \
+            --label "maintenance,dr-drill" 2>/dev/null || \
+          gh issue create \
+            --title "${TITLE}" \
+            --body "## Drill Trimestral de Recuperação de Desastre
+
+          Executar checklist em docs/DISASTER_RECOVERY.md e fechar com data de conclusão." \
+            || echo "Labels não encontradas, issue pode já ter sido criada de outra forma."

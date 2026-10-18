@@ -38,9 +38,25 @@ export const BASELINE_NAME_RE = /^(\d{14})_baseline_schema\.sql$/;
 // silêncio uma migration dessas aplicada depois do dump e o drift-check
 // acusaria drift falso.
 const MIGRATION_RE = /^(\d+)_[^/]+\.sql$/;
+
+// E077: lê a major do PostgreSQL de supabase/config.toml (fonte única).
+// Se ausente, cai para 17 como fallback seguro, mas o drift-check loga aviso.
+function readShadowMajorVersionFromConfig() {
+  try {
+    const configPath = join(process.cwd(), 'supabase', 'config.toml');
+    const content = readFileSync(configPath, 'utf8');
+    const m = content.match(/^\[db\][\s\S]*?major_version\s*=\s*(\d+)/m);
+    if (m) return parseInt(m[1], 10);
+  } catch {
+    // config.toml ausente ou ilegível — fallback
+  }
+  return 17;
+}
+
 // Produção roda PG 17.6; sem isto o shadow do CLI usa PG 15 e os GRANTs com
 // MAINTAIN (privilégio do PG 17) falham no replay.
-export const SHADOW_MAJOR_VERSION = 17;
+// E077: valor lido de supabase/config.toml[db].major_version (não mais literal).
+export const SHADOW_MAJOR_VERSION = readShadowMajorVersionFromConfig();
 
 // O shadow do CLI concede ALL em tabelas/sequências/funções novas de `public` a
 // anon/authenticated/service_role (privilégios padrão da imagem). O dump só
