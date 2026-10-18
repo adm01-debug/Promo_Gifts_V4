@@ -42,6 +42,7 @@ permissions:
   contents: read
   issues: write
   pull-requests: write
+  actions: write  # E57: download/upload do artefato drift-state entre runs
 
 concurrency:
   group: edge-functions-drift-check-${{ github.ref }}
@@ -73,6 +74,28 @@ jobs:
           persist-credentials: false  # E32
           # E57: workflow_run usa o SHA exato que foi deployado, não o HEAD do branch
           ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - name: Download previous drift state (E57)
+        id: prev_state
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/drift-state /tmp/new-drift-state
+          # Busca o artefato mais recente não-expirado chamado "drift-state" deste workflow
+          artifact_id=$(gh api \
+            "/repos/${{ github.repository }}/actions/artifacts?name=drift-state&per_page=10" \
+            --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | last | .id // empty' 2>/dev/null || echo "")
+          if [ -n "$artifact_id" ]; then
+            gh api "/repos/${{ github.repository }}/actions/artifacts/${artifact_id}/zip" \
+              > /tmp/drift-state.zip 2>/dev/null \
+              && unzip -q /tmp/drift-state.zip -d /tmp/drift-state/ 2>/dev/null \
+              && echo "artifact_found=true" >> "$GITHUB_OUTPUT" \
+              || echo "artifact_found=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "artifact_found=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Install Supabase CLI
         uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v2
         with:
@@ -263,6 +286,38 @@ jobs:
           path: /tmp/drift_report.csv
           retention-days: 14
 
+      - name: Compute consecutive failures (E57)
+        id: consec
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_run'
+        env:
+          HAS_DRIFT: ${{ steps.hash_diff.outputs.drift_count != '0' || steps.hash_diff.outputs.missing_in_dl != '0' || steps.slug_diff.outputs.has_orphans == 'true' || steps.slug_diff.outputs.has_missing == 'true' }}
+        run: |
+          set -euo pipefail
+          prev_consec=0
+          if [ -f /tmp/drift-state/drift-state.json ]; then
+            prev_consec=$(jq -r '.consecutive_failures // 0' /tmp/drift-state/drift-state.json 2>/dev/null || echo 0)
+          fi
+          if [ "$HAS_DRIFT" = "true" ]; then
+            new_consec=$((prev_consec + 1))
+          else
+            new_consec=0
+          fi
+          echo "consecutive_failures=$new_consec" >> "$GITHUB_OUTPUT"
+          # Só abre issue após 2+ falhas consecutivas
+          if [ "$new_consec" -ge 2 ]; then
+            echo "should_open_issue=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "should_open_issue=false" >> "$GITHUB_OUTPUT"
+          fi
+          # Persiste estado para o próximo upload
+          mkdir -p /tmp/new-drift-state
+          jq -n \
+            --argjson cf "$new_consec" \
+            --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --arg hd "$HAS_DRIFT" \
+            '{consecutive_failures: $cf, last_run_at: $ts, has_drift: ($hd == "true")}' \
+            > /tmp/new-drift-state/drift-state.json
+
       - name: Setup Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
@@ -316,7 +371,8 @@ jobs:
             github.rest.issues.createComment({ issue_number: context.issue.number, owner: context.repo.owner, repo: context.repo.repo, body });
 
       - name: Open issue (scheduled drift)
-        if: (github.event_name == 'schedule' || github.event_name == 'workflow_run') && (steps.hash_diff.outputs.drift_count != '0' || steps.hash_diff.outputs.missing_in_dl != '0' || steps.slug_diff.outputs.has_orphans == 'true' || steps.slug_diff.outputs.has_missing == 'true')
+        # E57: só abre issue após 2 falhas consecutivas (evita alarme em falha transitória)
+        if: (github.event_name == 'schedule' || github.event_name == 'workflow_run') && steps.consec.outputs.should_open_issue == 'true'
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
@@ -350,3 +406,14 @@ jobs:
           echo "::error::Correção: documentar em .security/edge-functions-verify-jwt-false-allowlist.json com um reason real,"
           echo "::error::ou reverter verify_jwt=false indevido em supabase/config.toml."
           exit 1
+
+      - name: Upload drift state (E57)
+        # Persiste o contador de falhas consecutivas para a próxima run (cron/workflow_run)
+        if: always() && (github.event_name == 'schedule' || github.event_name == 'workflow_run')
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: drift-state
+          path: /tmp/new-drift-state/drift-state.json
+          if-no-files-found: ignore
+          retention-days: 90  # E88: estado de governança — 90 dias
+          overwrite: true
