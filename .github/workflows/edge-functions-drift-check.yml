@@ -81,7 +81,7 @@ jobs:
         run: |
           set -euo pipefail
           slugs=$(find supabase/functions -mindepth 2 -maxdepth 2 -name 'index.ts' \
-            -exec dirname {} \; | xargs -n1 basename | sort -u)
+            -exec dirname {} + | xargs -n1 basename | sort -u)
           echo "Found $(echo "$slugs" | wc -l) slugs in repo"
           echo "$slugs" > /tmp/repo_slugs.txt
 

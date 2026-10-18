@@ -136,7 +136,7 @@ jobs:
           nohup supabase functions serve --no-verify-jwt --env-file /tmp/contract-functions.env > /tmp/functions.log 2>&1 &
           echo $! > /tmp/functions.pid
 
-          for i in $(seq 1 30); do
+          for _ in $(seq 1 30); do
             HTTP=$(curl -sS -o /tmp/functions-health.json -w "%{http_code}" \
               "$SUPABASE_URL/functions/v1/health-check" || true)  # ok: curl pode falhar com rede ainda subindo — loop verifica HTTP code
             if [[ "$HTTP" != "000" ]]; then
@@ -152,7 +152,7 @@ jobs:
             exit 1
           fi
 
-          for i in $(seq 1 30); do
+          for _ in $(seq 1 30); do
             HTTP=$(curl -sS -o /tmp/product-webhook-ready.json -w "%{http_code}" \
               -X POST "$SUPABASE_URL/functions/v1/product-webhook" \
               -H "content-type: application/json" \

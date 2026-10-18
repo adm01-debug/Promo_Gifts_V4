@@ -65,7 +65,7 @@ jobs:
       - name: Start Vite (background)
         run: |
           nohup bun run dev > /tmp/vite.log 2>&1 &
-          for i in $(seq 1 60); do
+          for _ in $(seq 1 60); do
             if curl -sf http://localhost:8080 >/dev/null; then
               echo "vite up"
               exit 0

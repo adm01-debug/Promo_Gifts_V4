@@ -71,7 +71,7 @@ jobs:
           set +e
           npx playwright test "e2e/routes/app/${{ matrix.spec }}" \
             --project=chromium-authed \
-            --workers=${PW_WORKERS} \
+            --workers="${PW_WORKERS}" \
             --reporter=list,html,json 2>&1 | tee playwright-output.log
           echo "exit=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
 

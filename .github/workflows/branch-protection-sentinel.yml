@@ -231,6 +231,7 @@ jobs:
             echo "SENTINEL_SLACK_WEBHOOK não configurado — pulando notificação"
             exit 0
           fi
+          # shellcheck disable=SC2016 — backticks e %s são literais pro printf/Slack
           PAYLOAD=$(printf '{"text":"🚨 *Branch Protection Sentinel* disparou em %s\\n• Commit: `%s`\\n• Run: %s"}' \
                     "$REPO" "${SHA:0:7}" "$RUN_URL")
           curl -sS -X POST -H 'Content-Type: application/json' \
