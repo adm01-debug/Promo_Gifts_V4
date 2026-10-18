@@ -13,7 +13,7 @@
  * no config para permitir controle inline.
  */
 // deno-lint-ignore-file no-explicit-any
-import { createClient } from "npm:@supabase/supabase-js@2";
+import { createClient } from "npm:@supabase/supabase-js@2.49.4";
 import { z } from "npm:zod@3.23.8";
 import { buildPublicCorsHeaders, handleCorsPreflight } from "../_shared/cors.ts";
 import { createStructuredLogger } from "../_shared/structured-logger.ts";
