@@ -49,5 +49,10 @@
     "src/utils/br-schemas.ts": 1,
     "src/utils/masks.ts": 1,
     "src/utils/proposalPdfReactGenerator.ts": 1
+  },
+  "meta": {
+    "target": 30,
+    "deadline": "2027-01-31",
+    "note": "Resolver TODOs legacy por área"
   }
 }

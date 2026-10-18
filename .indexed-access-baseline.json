@@ -1,5 +1,10 @@
 {
   "generatedAt": "2026-10-02T10:53:42.674Z",
   "description": "Baseline de erros do tsc com --noUncheckedIndexedAccess. Falha se a contagem crescer (ratchet descendente).",
-  "errorCount": 889
+  "errorCount": 889,
+  "meta": {
+    "target": 600,
+    "deadline": "2027-01-31",
+    "note": "Atacar top 3 arquivos por sprint"
+  }
 }

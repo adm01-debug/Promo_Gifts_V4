@@ -857,5 +857,10 @@
     "src/utils/proposalPdfReactGenerator.ts": 3,
     "src/utils/undoToast.tsx": 1,
     "src/utils/viacep.ts": 1
+  },
+  "meta": {
+    "target": 1500,
+    "deadline": "2027-01-31",
+    "note": "Tipar mappers em vez de assertar (E125+)"
   }
 }
