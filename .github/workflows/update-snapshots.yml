@@ -1,0 +1,156 @@
+name: E2E · Atualizar snapshots visuais (E155)
+
+# Substitui os 9 workflows individuais de update de baselines visuais:
+#   e2e-update-alert-dialog-snapshots.yml
+#   e2e-update-calendar-snapshots.yml
+#   e2e-update-confirm-dialog-snapshots.yml
+#   e2e-update-dialog-snapshots.yml
+#   e2e-update-magazine-ring-snapshots.yml
+#   e2e-update-quote-conditions-snapshots.yml
+#   e2e-update-quote-freight-snapshots.yml
+#   e2e-update-quote-no-pres-snapshots.yml
+#   update-quote-reset-snapshots.yml
+
+on:
+  workflow_dispatch:
+    inputs:
+      spec:
+        description: >
+          Spec(s) a atualizar, separados por espaço
+          (ex: e2e/ui/alert-dialog-visual.spec.ts)
+        required: true
+        type: string
+      project:
+        description: "Playwright project"
+        required: false
+        default: chromium-public
+        type: choice
+        options:
+          - chromium-public
+          - chromium-authed
+      branch:
+        description: "Branch destino do commit (default: branch atual)"
+        required: false
+        default: ""
+        type: string
+      commit_message:
+        description: "Mensagem do commit de baselines"
+        required: false
+        default: "chore(e2e): update visual snapshots"
+        type: string
+
+# R1 — permissões mínimas no topo; job sobrescreve com write para o passo de push
+permissions:
+  contents: read
+
+# R2 — dispatch-only nunca cancelado (E19)
+concurrency:
+  group: update-snapshots-${{ github.event.inputs.branch || github.ref_name }}
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  update:
+    name: Regenerar baselines
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      CI: "true"
+      FORCE_COLOR: "0"
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
+          ref: ${{ github.event.inputs.branch || github.ref }}
+          fetch-depth: 0
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Cache node_modules
+        id: cache-node-modules
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-
+
+      - name: Install dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci --no-audit --no-fund
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: playwright-${{ runner.os }}-
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Regenerar snapshots
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+        run: |
+          npx playwright test ${{ github.event.inputs.spec }} \
+            --project=${{ github.event.inputs.project }} \
+            --update-snapshots \
+            --reporter=list
+
+      - name: Credencial de push sem token em disco (E32)
+        run: |
+          # persist-credentials:false nao grava token; o helper le GIT_PUSH_TOKEN so no passo de push.
+          # shellcheck disable=SC2016 # aspas simples intencionais: $1 e GIT_PUSH_TOKEN expandem quando o git chama o helper
+          git config --local credential.helper '!f() { test "$1" = get || exit 0; echo username=x-access-token; echo "password=${GIT_PUSH_TOKEN}"; }; f'
+
+      - name: Comitar baselines e abrir PR
+        env:
+          GIT_PUSH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INPUT_COMMIT_MESSAGE: ${{ github.event.inputs.commit_message }}
+          TARGET_BRANCH: ${{ github.event.inputs.branch || github.ref_name }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add e2e/ || true
+          if git diff --cached --quiet; then
+            echo "Nenhuma baseline nova/alterada — nada para commitar."
+            exit 0
+          fi
+          TS=$(date -u +%y%m%d-%H%M)
+          BRANCH="chore/e2e-snapshots-${TS}"
+          git checkout -b "${BRANCH}"
+          git commit -m "${INPUT_COMMIT_MESSAGE}"
+          git push origin "${BRANCH}"
+          BODY="Baselines PNG gerados automaticamente pelo workflow \`update-snapshots\`. Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          gh pr create \
+            --base "${TARGET_BRANCH}" \
+            --head "${BRANCH}" \
+            --title "${INPUT_COMMIT_MESSAGE}" \
+            --body "${BODY}"
+
+      - name: Upload diffs visuais
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: visual-diffs-${{ github.run_id }}
+          path: |
+            test-results/**/*-diff.png
+            test-results/**/*-actual.png
+            test-results/**/*-expected.png
+            playwright-report/**
+          if-no-files-found: ignore
+          retention-days: 14
