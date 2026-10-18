@@ -513,7 +513,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
-          fetch-depth: 2
+          fetch-depth: 0   # necessário para git diff com BASE_SHA de PRs
       - name: Detect schema-relevant path changes
         id: detect
         env:
