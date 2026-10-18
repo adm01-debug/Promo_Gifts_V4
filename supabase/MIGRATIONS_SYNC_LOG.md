@@ -772,6 +772,8 @@ da execução e consulta read-only ao catálogo/ledger, sem reaplicar SQL.
 | `20261005124501` | `466c2c0a51c186581c64eca247e2ad0b173f9598a476cfbb4de058b8b93eae99` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug) | E15 | 2026-10-05 21:18:43 UTC | job post-check da run 37374730545 confirmou a version no ledger | aplicada |
 | `20261005124500` | `e3225c1a3238947bac7c233f5960630f3f88ecea7b756bdf63875e833571cedb` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug) | E15 | 2026-10-05 21:13:23 UTC | job post-check da run 37373118681 confirmou a version no ledger | aplicada |
 | `20261005130000` | `406650663259774deaa1058f19bf0c64a44e132e76d5e29d0a892e383d61bf26` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug) | E15 | 2026-10-05 20:45:57 UTC | job post-check da run 37370061047 confirmou a version no ledger | aplicada |
+| `20261018160000` | `eec6f7c84cc9cf53334ce280ab806e7c6b3d0c0c97ad4e25e862db5a0e6adf93` | — | — (aguardando `workflow_dispatch` E15 pelo PO) | E15 | — | pendente: `admin_revoke_user_sessions` ganha guard anti-self + INSERT em `admin_audit_log` no DB (auditoria da edge não cobria chamada direta via PostgREST). Aplicar APÓS `20261015150000` — reaplicá-la depois reverte guard+auditoria | **pendente — não aplicada** |
+| `20261018160100` | `d357297914857cb69629785fd27491581ad7af92a5bfe1f21a8f2b684c15f808` | — | — (aguardando `workflow_dispatch` E15 pelo PO) | E15 | — | pendente: índice funcional `login_attempts(lower(email), ip_address, created_at DESC)` — `fn_check_login_allowed` filtra `lower(email)` e nunca usava `idx_login_attempts_email_ip_created` (seq scan por login) | **pendente — não aplicada** |
 
 ### Evidências do recibo `20260922170000`
 
