@@ -72,7 +72,8 @@ jobs:
       - name: Start preview server
         run: |
           npx vite preview --port 8080 --host 127.0.0.1 &
-          npx wait-on http://localhost:8080 -t 60000
+          # E96/C26: substituído npx wait-on (não está no lockfile) por loop bash nativo
+          timeout 60 bash -c 'until curl -sf http://localhost:8080 > /dev/null; do sleep 1; done'
       - name: Run Playwright (${{ matrix.project }})
         run: |
           npx playwright test \

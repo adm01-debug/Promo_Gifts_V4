@@ -35,6 +35,7 @@
  *   C21 — todo upload-artifact deve declarar retention-days: (R6)
  *   C22 — workflows com trigger pull_request não devem conter `git push` em run: steps
  *   C23 — steps actions/setup-node não devem usar node-version: literal (usar node-version-file)
+ *   C26 — npx <pkg> in run: steps must use a package in node_modules/.bin/ (E96)
  *
  * Allowlist: scripts/check-workflow-contracts.allowlist.json
  *   Formato: { "_allowlisted_files": ["file.yml", ...] }
@@ -464,6 +465,51 @@ export function checkC23NoLiteralNodeVersion({ file, text }) {
   return [];
 }
 
+// C25 placeholder (reserved)
+
+// C26 — npx <pkg> in run: steps must reference a locally installed package (E96)
+// Flags `npx <cmd>` when <cmd> is not available in node_modules/.bin/ (or the static
+// known-safe list when node_modules hasn't been installed yet).
+// Fix: install the package as a devDependency, or replace with a bash-native approach.
+export function checkC26NpxUnknownPkg({ file, text }, rootDir) {
+  const violations = [];
+  const lines = text.split('\n');
+
+  // Build the set of known local binaries
+  const knownBins = new Set();
+  const binDir = join(rootDir, 'node_modules', '.bin');
+  if (existsSync(binDir)) {
+    readdirSync(binDir).forEach((f) => knownBins.add(f));
+  }
+  // Static fallback for runs without node_modules (pre-install local checks)
+  const staticKnownBins = new Set([
+    'playwright', 'vitest', 'vite', 'tsc', 'eslint', 'tsx', 'ts-node',
+    'tailwindcss', 'lhci', 'prettier', 'rollup', 'husky', 'lint-staged',
+    'postcss', 'open-cli', 'commitlint', 'playwright',
+  ]);
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if (/^\s*#/.test(line)) continue;
+    // Match: npx [optional-flags] <cmd>
+    // Ignore lines with --no-install (forces local lookup, safe)
+    if (/--no-install/.test(line)) continue;
+    const m = line.match(/\bnpx\s+(?:--[^\s]+\s+)*([a-zA-Z@][^\s/'"`]*)/);
+    if (!m) continue;
+    const rawCmd = m[1];
+    // Strip @scope/ prefix to get the binary name (e.g. @playwright/test → playwright)
+    const bin = rawCmd.startsWith('@') ? rawCmd.replace(/^@[^/]+\//, '') : rawCmd;
+    const inNodeModules = knownBins.size > 0 && (knownBins.has(rawCmd) || knownBins.has(bin));
+    const inStaticList = staticKnownBins.has(bin) || staticKnownBins.has(rawCmd);
+    if (!inNodeModules && !inStaticList) {
+      violations.push(
+        `${file}:${i + 1}: npx ${rawCmd} in run: — package not in node_modules/.bin (install as devDep or use bash alternative) (E96/C26)`,
+      );
+    }
+  }
+  return violations;
+}
+
 // C24 — no bare npm install in run: steps (use npm ci) (E96)
 export function checkC24NpmInstallInRun({ file, text }) {
   const violations = [];
@@ -553,6 +599,7 @@ export function runChecks(rootDir = ROOT) {
       ...checkC22NoGitPushInPR(wf),
       ...checkC23NoLiteralNodeVersion(wf),
       ...checkC24NpmInstallInRun(wf),
+      ...checkC26NpxUnknownPkg(wf, rootDir),
     );
   }
   all.push(...checkC9DuplicateJobNames(workflows));
@@ -584,6 +631,7 @@ export function runChecks(rootDir = ROOT) {
       C22: all.filter((v) => v.includes('git push')).length,
       C23: all.filter((v) => v.includes('literal node-version')).length,
       C24: all.filter((v) => v.includes('npm install in run')).length,
+      C26: all.filter((v) => v.includes('npx') && v.includes('node_modules/.bin')).length,
     },
     workflowCount: workflows.length,
   };
@@ -644,6 +692,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
   console.log(`  C22 git push in PR:       ${counts.C22}`);
   console.log(`  C23 literal node-ver:     ${counts.C23}`);
   console.log(`  C24 npm install in run:   ${counts.C24}`);
+  console.log(`  C26 npx unknown pkg:      ${counts.C26}`);
 
   if (fresh.length > 0) {
     console.log('\nFresh violations (not in allowlist):');
