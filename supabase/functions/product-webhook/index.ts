@@ -158,6 +158,17 @@ function timingSafeEqual(a: string, b: string): boolean {
   return r === 0;
 }
 
+// PostgrestError é objeto plano ({message,details,hint,code}), não Error —
+// `instanceof Error` descartava o motivo real e todo erro virava
+// 'Unknown error' no sync log/resposta (23502, 22001, 23505 sumiam).
+function errMessage(e: unknown): string {
+  if (e instanceof Error) return e.message;
+  if (e && typeof e === 'object' && typeof (e as { message?: unknown }).message === 'string') {
+    return (e as { message: string }).message;
+  }
+  return 'Unknown error';
+}
+
 async function isReplayNonce(
   // deno-lint-ignore no-explicit-any
   supabase: SupabaseClient<Database>,
@@ -425,7 +436,7 @@ Deno.serve(async (req) => {
       { headers: okHeaders },
     );
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorMessage = errMessage(error);
     console.error('Product webhook error:', error);
     return new Response(
       JSON.stringify({ code: 'internal_error', message: errorMessage, fields: [] }),
@@ -509,7 +520,20 @@ async function upsertProducts(
         `destaque DESLIGADO no upsert (ex: ${unresolved.featured_cleared.slice(0, 5).join(', ')})`,
     );
 
-  const chunks = chunkArray(valid, chunkSize);
+  // Dedup por sku (última ocorrência vence): duas linhas com o mesmo sku no
+  // mesmo INSERT fazem o Postgres recusar o lote inteiro — ON CONFLICT DO
+  // UPDATE não pode afetar a mesma linha duas vezes (21000
+  // cardinality_violation). Sem dedup, um sku repetido no payload do n8n
+  // derrubava todos os produtos do chunk.
+  const validBySku = new Map<string, NormalizedProduct>();
+  for (const n of valid) validBySku.set(n.sku, n);
+  if (validBySku.size !== valid.length) {
+    warnings.push(
+      `sku duplicado no payload: ${valid.length - validBySku.size} linha(s) descartada(s) — última ocorrência vence`,
+    );
+  }
+
+  const chunks = chunkArray([...validBySku.values()], chunkSize);
 
   let created = 0;
   let updated = 0;
@@ -600,7 +624,7 @@ async function upsertProducts(
           chunkPersisted += batch.rows.length;
         }
       } catch (upsertErr) {
-        const upsertErrMsg = upsertErr instanceof Error ? upsertErr.message : 'Unknown error';
+        const upsertErrMsg = errMessage(upsertErr);
         const remaining = chunk.length - chunkPersisted;
         throw new Error(
           `${upsertErrMsg} — ${chunkPersisted} gravado(s) antes da falha, ${remaining} pendente(s)`,
@@ -628,7 +652,7 @@ async function upsertProducts(
         `[product-webhook][chunk ${index + 1}] received=${chunk.length} processed=${chunkPersisted} duration_ms=${chunkDuration} db_roundtrips=${chunkRoundtrips}`,
       );
     } catch (err) {
-      const errMsg = err instanceof Error ? err.message : 'Unknown error';
+      const errMsg = errMessage(err);
       const remaining = chunk.length - chunkPersisted;
       // Batches confirmados antes da falha contam como sucesso; só o
       // restante não gravado vira failed — resposta/log não contradizem
@@ -868,7 +892,9 @@ function normalizeProduct(
     min_quantity: product.min_quantity || 1,
     category_id: categoryId,
     supplier_id: supplierId,
-    brand: product.supplier_name || null,
+    // brand é varchar(100) no banco; supplier_name (zod ≤255) maior que
+    // isso caía em 22001 value-too-long e derrubava o batch inteiro.
+    brand: product.supplier_name ? product.supplier_name.slice(0, 100) : null,
     stock_quantity: stockQty,
     is_stockout: stockQty <= 0,
     sync_status: 'synced',
