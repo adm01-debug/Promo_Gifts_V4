@@ -214,15 +214,19 @@ Deno.serve(async (req) => {
       }
 
       // auth.admin.signOut exige o JWT da sessão alvo — um user_id não é
-      // aceito. O mecanismo de revogação do repo é revoke_all_user_tokens
-      // (user_token_revocations.revoked_at, checado por isTokenRevoked na
-      // authorize() das edges).
+      // aceito. admin_revoke_user_sessions (migration 20261015150000)
+      // revoga refresh_tokens + hmac v2 e marca revoke_all_user_tokens.
       const { error: revokeError } = await supabaseAdmin.rpc(
-        'revoke_all_user_tokens',
+        'admin_revoke_user_sessions',
         { _user_id: payload.user_id }
       );
       if (revokeError) {
-        return jsonRes(corsHeaders, { error: revokeError.message }, 400);
+        log.error('admin_revoke_user_sessions falhou', {
+          target_user_id: payload.user_id,
+          error: revokeError.message,
+        });
+        // Erros SQL não voltam ao cliente — podem expor internals do banco.
+        return jsonRes(corsHeaders, { error: 'Falha ao revogar sessões' }, 400);
       }
 
       // IP derivado da conexão: o gateway anexa o IP real como ÚLTIMO

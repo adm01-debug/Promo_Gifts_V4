@@ -4,72 +4,86 @@
     {
       "file": "pages/__tests__/QuoteBuilderDeliveryTooltip.test.tsx",
       "from": "__tests__",
-      "to": "quotes"
+      "to": "quotes",
+      "target": "pages/quotes/QuoteBuilderPage"
     },
     {
       "file": "pages/__tests__/SimulationPage.blocked.test.tsx",
       "from": "__tests__",
-      "to": "Simulation"
+      "to": "Simulation",
+      "target": "pages/Simulation"
     },
     {
       "file": "pages/__tests__/SSOCallbackPage.test.tsx",
       "from": "__tests__",
-      "to": "auth"
+      "to": "auth",
+      "target": "pages/auth/SSOCallbackPage"
     },
     {
       "file": "pages/admin/AdminCadastrosPage.tsx",
       "from": "admin",
-      "to": "tools"
+      "to": "tools",
+      "target": "pages/tools/EngravingRegistrationPage"
     },
     {
       "file": "pages/bi/TrendsPage.tsx",
       "from": "bi",
-      "to": "trends"
+      "to": "trends",
+      "target": "pages/trends/TrendsCharts"
     },
     {
       "file": "pages/bi/TrendsPage.tsx",
       "from": "bi",
-      "to": "trends"
+      "to": "trends",
+      "target": "pages/trends/TrendsKpiCards"
     },
     {
       "file": "pages/bi/TrendsPage.tsx",
       "from": "bi",
-      "to": "trends"
+      "to": "trends",
+      "target": "pages/trends/trends-mock"
     },
     {
       "file": "pages/products/FiltersPage.tsx",
       "from": "products",
-      "to": "filters"
+      "to": "filters",
+      "target": "pages/filters/useFiltersPageState"
     },
     {
       "file": "pages/products/FiltersPage.tsx",
       "from": "products",
-      "to": "filters"
+      "to": "filters",
+      "target": "pages/filters/useFiltersSelectionMode"
     },
     {
       "file": "pages/tools/AdvancedPriceSearchPage.tsx",
       "from": "tools",
-      "to": "advanced-price-search"
+      "to": "advanced-price-search",
+      "target": "pages/advanced-price-search/useAdvancedPriceSearch"
     },
     {
       "file": "pages/tools/AdvancedPriceSearchPage.tsx",
       "from": "tools",
-      "to": "advanced-price-search"
+      "to": "advanced-price-search",
+      "target": "pages/advanced-price-search/types"
     },
     {
       "file": "pages/tools/AdvancedPriceSearchPage.tsx",
       "from": "tools",
-      "to": "advanced-price-search"
+      "to": "advanced-price-search",
+      "target": "pages/advanced-price-search/ResultViews"
     },
     {
       "file": "pages/tools/MagicUp.tsx",
       "from": "tools",
-      "to": "magic-up"
+      "to": "magic-up",
+      "target": "pages/magic-up/MagicUpConfigPanel"
     },
     {
       "file": "pages/tools/MagicUp.tsx",
       "from": "tools",
-      "to": "magic-up"
+      "to": "magic-up",
+      "target": "pages/magic-up/MagicUpResultPanel"
     }
   ]
 }

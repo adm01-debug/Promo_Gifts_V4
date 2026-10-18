@@ -58256,6 +58256,10 @@ export type Database = {
           user_id: string
         }[]
       }
+      admin_revoke_user_sessions: {
+        Args: { _user_id: string }
+        Returns: undefined
+      }
       apply_transform: {
         Args: {
           p_transform_config?: Json

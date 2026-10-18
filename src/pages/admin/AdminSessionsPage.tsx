@@ -152,41 +152,42 @@ export default function AdminSessionsPage() {
                     </TableCell>
                   </TableRow>
                 )}
-                {filtered.map((s) => (
-                  <TableRow key={s.session_id}>
-                    <TableCell className="font-medium">
-                      {s.email ?? `sem e-mail (${s.user_id.slice(0, 8)}…)`}
-                    </TableCell>
-                    <TableCell>{s.ip ?? '—'}</TableCell>
-                    <TableCell className="max-w-[280px] truncate" title={s.user_agent ?? ''}>
-                      {shortAgent(s.user_agent)}
-                    </TableCell>
-                    <TableCell>{fmt(s.session_created_at)}</TableCell>
-                    <TableCell>{fmt(s.refreshed_at ?? s.session_updated_at)}</TableCell>
-                    <TableCell>
-                      {s.live_refresh_token ? (
-                        <Badge variant="default">ativa</Badge>
-                      ) : (
-                        <Badge variant="secondary">expirando</Badge>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        disabled={s.user_id === user?.id || revoke.isPending}
-                        title={
-                          s.user_id === user?.id
-                            ? 'Você não pode revogar a própria sessão por aqui'
-                            : 'Revogar todas as sessões deste usuário'
-                        }
-                        onClick={() => setTarget(s)}
-                      >
-                        <ShieldOff className="mr-1.5 h-3.5 w-3.5" /> Revogar
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {!error &&
+                  filtered.map((s) => (
+                    <TableRow key={s.session_id}>
+                      <TableCell className="font-medium">
+                        {s.email ?? `sem e-mail (${s.user_id.slice(0, 8)}…)`}
+                      </TableCell>
+                      <TableCell>{s.ip ?? '—'}</TableCell>
+                      <TableCell className="max-w-[280px] truncate" title={s.user_agent ?? ''}>
+                        {shortAgent(s.user_agent)}
+                      </TableCell>
+                      <TableCell>{fmt(s.session_created_at)}</TableCell>
+                      <TableCell>{fmt(s.refreshed_at ?? s.session_updated_at)}</TableCell>
+                      <TableCell>
+                        {s.live_refresh_token ? (
+                          <Badge variant="default">ativa</Badge>
+                        ) : (
+                          <Badge variant="secondary">expirando</Badge>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          disabled={s.user_id === user?.id || revoke.isPending}
+                          title={
+                            s.user_id === user?.id
+                              ? 'Você não pode revogar a própria sessão por aqui'
+                              : 'Revogar todas as sessões deste usuário'
+                          }
+                          onClick={() => setTarget(s)}
+                        >
+                          <ShieldOff className="mr-1.5 h-3.5 w-3.5" /> Revogar
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </CardContent>

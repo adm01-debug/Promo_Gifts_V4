@@ -47,8 +47,9 @@ sobrescrevível (default `doufsxqlfjyuvxuezpln`). Para mover o gate RLS:
 
 ```yaml
 # supabase-security-gate.yml — job de aplicação em ROLLBACK
+# Sem fallback: variável ausente FALHA o job, nunca cai no canônico.
 env:
-  SUPABASE_PROJECT_REF: ${{ vars.STAGING_SUPABASE_PROJECT_REF || 'doufsxqlfjyuvxuezpln' }}
+  SUPABASE_PROJECT_REF: ${{ vars.STAGING_SUPABASE_PROJECT_REF }}
 ```
 
 e, no mesmo job, ler `SUPABASE_ACCESS_TOKEN`/`SUPABASE_DB_PASSWORD` do
