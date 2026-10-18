@@ -27,8 +27,6 @@ env:
   CI: "true"
   VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
   VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
-  E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-  E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
   E2E_BASE_URL: http://localhost:8080
 
 permissions:
@@ -61,6 +59,9 @@ jobs:
         # (playwright-report/results.json). Quando `outputFile` existe, o Playwright
         # IGNORA PLAYWRIGHT_JSON_OUTPUT_NAME — por isso o guard E42 abaixo lê o
         # results.json padrão (cada job da matriz roda num runner isolado).
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
         run: |
           npx playwright test \
             e2e/catalog/swatch-quickview-list-table.spec.ts \

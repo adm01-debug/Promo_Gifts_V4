@@ -45,11 +45,6 @@ concurrency:
   group: e2e-pdf-dialog-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
-env:
-  E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-  E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-
-
 defaults:
   run:
     shell: bash
@@ -81,10 +76,16 @@ jobs:
 
       - name: Run pdf-dialog spec (chromium-authed)
         if: ${{ github.event.inputs.update_snapshots != 'true' }}
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
         run: npx playwright test e2e/flows/pdf-dialog.spec.ts --project=chromium-authed --retries=0
 
       - name: Update snapshots (chromium-authed)
         if: ${{ github.event.inputs.update_snapshots == 'true' }}
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
         run: npx playwright test e2e/flows/pdf-dialog.spec.ts --project=chromium-authed --update-snapshots
 
       # Sempre publicar (push, PR e dispatch) — permite revisar diffs de
