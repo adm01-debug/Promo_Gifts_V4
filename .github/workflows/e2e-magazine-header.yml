@@ -59,10 +59,6 @@ jobs:
     if: needs.secrets-check.outputs.has_e2e == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 20
-    env:
-      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-      E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -101,6 +97,8 @@ jobs:
         run: npx playwright test --project=setup
         env:
           E2E_BASE_URL: http://localhost:8080
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
 
       - name: Run Magazine Header E2E
         run: |
@@ -121,6 +119,8 @@ jobs:
         env:
           E2E_BASE_URL: http://localhost:8080
           PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results-magazine-header.json
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
 
       - name: Upload report
         if: always()

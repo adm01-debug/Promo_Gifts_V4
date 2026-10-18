@@ -54,10 +54,6 @@ jobs:
       PWTEST_FORBID_ONLY: "1"
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
-      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-      E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-      E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
-      E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -70,7 +66,10 @@ jobs:
       # ─── HEADER STICKY GATE ────────────────────────────────────────────────
       - name: 🧲 Run E2E header-sticky gate (fail-fast por rota/viewport)
         id: e2e_header_sticky
-        if: env.E2E_USER_EMAIL != ''
+        if: ${{ secrets.E2E_USER_EMAIL != '' }}
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
         run: |
           npx playwright test \
             e2e/flows/22-header-sticky.spec.ts \
@@ -91,7 +90,10 @@ jobs:
       # ─── CARRINHOS URL-STATE ───────────────────────────────────────────────
       - name: 🛒 Run /carrinhos & /orcamentos URL-state E2E
         id: e2e_carrinhos_urlstate
-        if: (steps.e2e_header_sticky.outcome == 'success' || steps.e2e_header_sticky.outcome == 'skipped') && env.E2E_USER_EMAIL != ''
+        if: (steps.e2e_header_sticky.outcome == 'success' || steps.e2e_header_sticky.outcome == 'skipped') && ${{ secrets.E2E_USER_EMAIL != '' }}
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
         run: |
           npx playwright test \
             e2e/carrinhos/list-url-state-restore.spec.ts \
@@ -132,10 +134,6 @@ jobs:
       PWTEST_FORBID_ONLY: "1"
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
-      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-      E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-      E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
-      E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -147,6 +145,11 @@ jobs:
 
       - name: Run E2E regression shard ${{ matrix.shard }}/4 (${{ matrix.project }})
         # E013: sem guard por step — a matrix já exclui chromium-authed sem creds
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+          E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
+          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
         run: |
           npx playwright test \
             --project=${{ matrix.project }} \
