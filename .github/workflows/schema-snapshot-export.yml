@@ -129,6 +129,14 @@ jobs:
           fi
           echo "Credenciais presentes — prosseguindo com snapshot live."
 
+      - name: Read schemas.txt (E035 — SSOT compartilhado com db-schema-drift-check)
+        run: |
+          # E035: este arquivo é a SSOT dos schemas de aplicação.
+          # db-schema-drift-check.yml também o lê (grep schemas.txt ali).
+          SCHEMAS=$(grep -v '^#' supabase/baseline/schemas.txt | grep -v '^$' | tr '\n' ',' | sed 's/,$//')
+          echo "SCHEMAS=${SCHEMAS}" >> "$GITHUB_ENV"
+          echo "::notice::Schemas registrados em schemas.txt: ${SCHEMAS}"
+
       - name: Generate snapshot
         run: node scripts/export-schema-snapshot.mjs
 
