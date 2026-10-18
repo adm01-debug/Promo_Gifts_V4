@@ -93,4 +93,4 @@ jobs:
         with:
           name: ci-metrics-weekly-${{ github.run_id }}
           path: docs/ci/METRICAS_SEMANAIS.md
-          retention-days: 14
+          retention-days: 30  # R6: relatórios semanais
