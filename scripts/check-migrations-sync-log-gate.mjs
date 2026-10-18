@@ -84,22 +84,43 @@ export function changedMigrationFilenames(diffOutput) {
 /**
  * Conta quantas vezes cada versão aparece em backticks no log.
  * Retorna Map<version, count>.
+ *
+ * A contagem é feita POR SEÇÃO (delimitada por linhas que começam com `#`).
+ * Uma versão que aparece em seções distintas (ex: tabela principal de backfill
+ * E48 + tabela "Recibos — E15") é intencional por design e NÃO é duplicata.
+ * Só é duplicata quando a mesma versão aparece mais de 1 vez dentro da MESMA
+ * seção — isso indica erro de escrita no log.
  */
 export function countVersionOccurrences(logContent) {
-  const counts = new Map();
-  // Conta versões apenas na PRIMEIRA célula (coluna de versão) de cada linha de
-  // tabela markdown, evitando falsos positivos de versões citadas em descrições
-  // ou outras colunas. Ex: | `20260923` | applied | menciona `20260923` na desc |
-  // → conta 1 vez (só 1ª célula), não 2 vezes.
-  const tableLines = logContent.split('\n').filter((l) => l.trimStart().startsWith('|'));
-  for (const line of tableLines) {
+  // maxCountPerVersion[v] = máximo de ocorrências de v em qualquer seção única.
+  const maxCountPerVersion = new Map();
+  let sectionCounts = new Map();
+
+  const flushSection = () => {
+    for (const [v, count] of sectionCounts) {
+      if (count > (maxCountPerVersion.get(v) ?? 0)) {
+        maxCountPerVersion.set(v, count);
+      }
+    }
+    sectionCounts = new Map();
+  };
+
+  for (const line of logContent.split('\n')) {
+    if (line.startsWith('#')) {
+      flushSection();
+      continue;
+    }
+    if (!line.trimStart().startsWith('|')) continue;
+    // Conta só na PRIMEIRA célula (coluna de versão) — evita falsos positivos
+    // de versões citadas em descrições ou outras colunas.
     const firstCell = line.split('|')[1] ?? '';
     for (const match of firstCell.matchAll(REGISTERED_VERSION_RE)) {
       const v = match[1];
-      counts.set(v, (counts.get(v) ?? 0) + 1);
+      sectionCounts.set(v, (sectionCounts.get(v) ?? 0) + 1);
     }
   }
-  return counts;
+  flushSection(); // flush da última seção
+  return maxCountPerVersion;
 }
 
 /**

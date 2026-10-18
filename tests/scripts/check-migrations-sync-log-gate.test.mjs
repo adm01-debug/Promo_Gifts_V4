@@ -213,14 +213,15 @@ describe('runCheck', () => {
     // Usa o repo real (cwd do processo de teste) como root, e injeta só o
     // diff — confirma que runCheck lê supabase/MIGRATIONS_SYNC_LOG.md de
     // verdade e que a versão do "último recibo" documentado (E48) está
-    // registrada nele.
-    // Nota: o status pode ser 'failed' por versões duplicadas em SUB-SEÇÕES do
-    // log (ex: E15 documenta a mesma versão na seção agregada E48 e na sub-seção
-    // Recibos E15 — isso não é falha real de recibo). Por isso verificamos apenas
-    // que a versão E48 específica NÃO está na lista de ausentes.
+    // registrada nele. Com countVersionOccurrences corrigido (conta por seção,
+    // não globalmente), versões que aparecem em múltiplas seções legítimas (ex:
+    // tabela principal E48 + tabela E15) não são mais detectadas como duplicatas
+    // → resultado deve ser 'passed' sem duplicatas.
     const result = runCheck({
       diffOutput: `${migrationPath('20260916155725_catalog_stats_price_range_top_colors_materials.sql')}\n`,
     });
+    expect(result.status).toBe(CHECK_RESULT_STATUS.PASSED);
+    expect(result.details?.duplicates ?? []).toHaveLength(0);
     const missingVersions = (result.details?.missing ?? []).map((m) => m.version);
     expect(missingVersions).not.toContain('20260916155725');
   });
