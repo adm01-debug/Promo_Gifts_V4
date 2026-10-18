@@ -117,10 +117,116 @@ jobs:
           fail-on-severity: high
           allow-licenses: MIT, Apache-2.0, ISC, BSD-2-Clause, BSD-3-Clause, 0BSD, CC0-1.0, Unlicense, CC-BY-4.0, Python-2.0
 
-  lint-typecheck:
-    name: Gate 1 - Lint + TypeScript
+  # ============================================================
+  # E162: lint-typecheck monolítico (15 min, 37+ steps) quebrado em
+  # 3 jobs paralelos — static-gates, drift-gates, security-gates.
+  # Cada job tem timeout ≤ 5 min e expõe falhas individualmente.
+  # ============================================================
+
+  static-gates:
+    name: Gate 1 — Lint + TypeScript + Static Checks
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 5
+    needs: [ssot-gate]
+    env:
+      NODE_OPTIONS: --max-old-space-size=4096
+      VITE_SUPABASE_URL: https://placeholder.supabase.co
+      VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
+      - run: npm run typecheck
+      - run: npm run lint:baseline
+      - name: Gate 1.1 — Product type fields (bloqueante)
+        run: node scripts/check-product-type-fields.mjs
+      - name: Gate 1.3 — Migration contracts (bloqueante)
+        run: |
+          set -euo pipefail
+          node scripts/check-migration-path-references.mjs
+          node scripts/check-supabase-reference-catalog.mjs
+          node scripts/check-migration-filename-contract.mjs
+      - name: Gate 1.4 — Visual baselines commitados (bloqueante)
+        run: node scripts/check-visual-baselines.mjs
+      - name: Gate 1.5 — Sem "Salvar Alterações" em fluxos de rascunho (bloqueante)
+        run: node scripts/check-no-salvar-alteracoes-draft.mjs
+      - name: Gate 1.9 — Dívida técnica (ratchets TODO / as / file-size / eslint-disable)
+        run: |
+          set -euo pipefail
+          node scripts/check-todo-baseline.mjs
+          node scripts/check-as-assertions-baseline.mjs
+          node scripts/check-as-unknown-baseline.mjs
+          node scripts/check-file-size-baseline.mjs
+          node scripts/check-eslint-disable-baseline.mjs
+      - name: Gate 1.9.1 — console.* baseline (bloqueante)
+        run: node scripts/check-console-baseline.mjs
+      - name: Gate 1.9.2 — boundary cross-domain entre pages (bloqueante)
+        run: node scripts/check-boundary-baseline.mjs
+      - name: Gate 1.12 — Contract coverage + soft-delete policy (bloqueante)
+        run: |
+          set -euo pipefail
+          node scripts/check-contract-coverage.mjs
+          node scripts/check-soft-delete-policy.mjs
+          node scripts/check-edge-zod-ratchet.mjs
+          node scripts/check-edge-authorization.mjs
+      - name: Gate 1.15 — overflow-x-clip em MainLayout (bloqueante)
+        run: node scripts/check-overflow-x-clip.mjs
+      - name: Gate 1.16 — Quotes list invariants (bloqueante)
+        run: node scripts/validate-quotes-list.mjs
+      - name: Gate E89 — Cron spacing ≥ 20 min entre workflows privilegiados (bloqueante)
+        run: node scripts/ci-cron-table.mjs --min-spacing 20
+      - name: Gate E95 — CORS snapshot (bloqueante)
+        run: |
+          set -euo pipefail
+          fail=0
+          for f in supabase/functions/bulk-random-passwords/index.ts \
+                   supabase/functions/audit-suite/index.ts \
+                   supabase/functions/e2e-cleanup/index.ts; do
+            count=$(grep -c "buildPublicCorsHeaders" "$f" || true)
+            if [ "$count" -gt 0 ]; then
+              echo "FAIL: buildPublicCorsHeaders encontrado em $f ($count vez(es))"
+              fail=1
+            fi
+          done
+          literal=$(grep -rl "'Access-Control-Allow-Origin': '\*'" supabase/functions/ || true)
+          if [ -n "$literal" ]; then
+            echo "FAIL: literal 'Access-Control-Allow-Origin: *' em:"
+            echo "$literal"
+            fail=1
+          fi
+          [ "$fail" -eq 0 ] || exit 1
+          echo "OK: CORS snapshot limpo"
+      - name: Gate E113 — Toast leaks (bloqueante)
+        run: node scripts/check-toast-leaks.mjs
+      - name: Gate E118a — asChild nesting (bloqueante)
+        run: node scripts/check-aschild-nesting.mjs
+      - name: Gate E118b — route-ref-usage (bloqueante)
+        run: node scripts/check-route-ref-usage.mjs
+      - name: Gate E118c — route-error-element (bloqueante)
+        run: node scripts/check-route-error-element.mjs
+      - name: Gate E118d — no-inline-cors (bloqueante)
+        run: node scripts/check-no-inline-cors.mjs
+      - name: Gate E118e — summary-color-tokens (bloqueante)
+        run: node scripts/check-summary-color-tokens.mjs
+      - name: Gate E118f — seller-scope (bloqueante)
+        run: node scripts/check-seller-scope.mjs
+      - name: Gate E118g — client-structured-logging (bloqueante)
+        run: node scripts/check-client-structured-logging.mjs
+      - name: Gate E118h — schema-reference-drift (bloqueante)
+        run: node scripts/check-schema-reference-drift.mjs
+      - name: Gate E118i — public-views-drift (bloqueante)
+        run: node scripts/check-public-views-drift.mjs
+      - name: Gate E118j — proposed-configs (bloqueante)
+        run: node scripts/check-eslint-config-current.mjs --strict
+      - name: Gate E119 — Product interface ratchet (bloqueante)
+        run: node scripts/check-product-type-duplicates.mjs
+
+  drift-gates:
+    name: Gate 1 — Drift & Ratchets
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
     needs: [ssot-gate]
     env:
       NODE_OPTIONS: --max-old-space-size=4096
@@ -131,59 +237,16 @@ jobs:
           fetch-depth: 0
       - name: Setup Node CI
         uses: ./.github/actions/setup-node-ci
-      - run: npm run typecheck
-        env:
-          VITE_SUPABASE_URL: https://placeholder.supabase.co
-          VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
-      - run: npm run lint:baseline
-      # REGRA #2 — Product type fields (bloqueante)
-      # Previne remoção silenciosa de price/sale_price/shortDescription/category_id
-      # durante merge (gap C2) ou renomeação pelo Lovable (gap L3).
-      - name: Gate 1.1 — Product type fields (bloqueante)
-        run: node scripts/check-product-type-fields.mjs
-        env:
-          VITE_SUPABASE_URL: https://placeholder.supabase.co
-          VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
-      # REGRA #4 — Types inventory drift (bloqueante)
-      # Previne remoção de Tables/Views/Functions/Enums de types.ts sem allowlist.
-      # Incidente: 7716ae9 Lovable removeu magazine_* → 80+ erros TS.
       - name: Gate 1.2 — Types inventory drift (bloqueante)
         run: |
           BASE="${{ github.event.pull_request.base.sha || 'HEAD~1' }}"
           node scripts/check-types-inventory-drift.mjs --base "$BASE"
-      # Migration contracts (bloqueante) — previne referências a arquivos inexistentes,
-      # nomes sem timestamp UTC e RPCs/tabelas não catalogadas.
-      - name: Gate 1.3 — Migration contracts (bloqueante)
-        run: |
-          set -euo pipefail
-          node scripts/check-migration-path-references.mjs
-          node scripts/check-supabase-reference-catalog.mjs
-          node scripts/check-migration-filename-contract.mjs
-      # REGRA E44 — Visual baselines (bloqueante)
-      # Previne remoção de PNGs de baseline de specs rodadas em CI sem
-      # --update-snapshots (e2e-dialogs-pr-check, ui-visual-a11y, etc.)
-      - name: Gate 1.4 — Visual baselines commitados (bloqueante)
-        run: node scripts/check-visual-baselines.mjs
-      # E55 — "Salvar Alterações" em fluxo de rascunho (bloqueante)
-      # Previne que o Lovable reintroduza o pattern draft-lock detectado nos
-      # rascunhos do fluxo de orçamentos.
-      - name: Gate 1.5 — Sem "Salvar Alterações" em fluxos de rascunho (bloqueante)
-        run: node scripts/check-no-salvar-alteracoes-draft.mjs
-        env:
-          VITE_SUPABASE_URL: https://placeholder.supabase.co
-          VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
-      # E41 — TSC ratchet file guard (PR-only, bloqueante)
-      # Previne que um PR aumente .tsc-ratchet-baseline sem label ratchet-override.
-      # Não roda TSC — apenas compara o ARQUIVO de baseline contra o base do PR.
       - name: Gate 1.7 — TSC ratchet file guard (bloqueante em PR)
         if: github.event_name == 'pull_request'
         run: sh scripts/tsc-unused-ratchet.sh --check-ratchet
         env:
           GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
           GITHUB_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
-      # E55 — Detecta arquivos texto encodados acidentalmente em base64.
-      # Heurística: linha ≥ 200 chars de alfabeto base64 puro em arquivo texto.
-      # Integrado ao gate para bloquear via "Gate Final - Deploy Ready".
       - name: Gate 1.8 — Detect accidentally base64-encoded files (bloqueante)
         env:
           EVENT: ${{ github.event_name }}
@@ -216,151 +279,43 @@ jobs:
             done < "$F"
           done < /tmp/b64-files.txt
           exit $(( FOUND > 0 ))
-      # Ratchets de dívida técnica (auditoria 20-dim 2026-10-02) — falham só
-      # em REGRESSÃO vs baselines commitadas; drift positivo apenas avisa.
-      - name: Gate 1.9 — Dívida técnica (ratchets TODO / as / file-size / eslint-disable)
-        run: |
-          set -euo pipefail
-          node scripts/check-todo-baseline.mjs
-          node scripts/check-as-assertions-baseline.mjs
-          node scripts/check-as-unknown-baseline.mjs
-          node scripts/check-file-size-baseline.mjs
-          node scripts/check-eslint-disable-baseline.mjs
+      - name: Gate 1.10 — Indexed-access ratchet (bloqueante)
+        run: node scripts/check-indexed-access-ratchet.mjs
+      - name: Gate 1.11 — Workflow contracts (bloqueante)
+        run: node scripts/check-workflow-contracts.mjs --gate
+      - name: Gate 1.14 — Secrets inventory (bloqueante)
+        run: node scripts/check-secrets-inventory.mjs --gate
+      - name: Gate 1.17 — CODEOWNERS coverage de gate files (bloqueante)
+        run: node scripts/check-codeowners-coverage.mjs --gate
 
-      - name: Gate 1.9.1 — console.* baseline (bloqueante)
-        run: node scripts/check-console-baseline.mjs
-
-      - name: Gate 1.9.2 — boundary cross-domain entre pages (bloqueante)
-        run: node scripts/check-boundary-baseline.mjs
-      # Contract coverage + soft-delete policy (auditoria 20-dim Onda 2) —
-      # aqui e no quality-gate.yml (2.3.5/2.3.6) porque o check obrigatório
-      # "Gate Final - Deploy Ready" agrega só jobs DESTE workflow.
-      - name: Gate 1.12 — Contract coverage + soft-delete policy (bloqueante)
-        run: |
-          set -euo pipefail
-          node scripts/check-contract-coverage.mjs
-          node scripts/check-soft-delete-policy.mjs
-          node scripts/check-edge-zod-ratchet.mjs
-          # Cobertura do manifest de autorização — o script existia órfão
-          # de workflow (achado da validação exaustiva 2026-10).
-          node scripts/check-edge-authorization.mjs
-      # Gate 1.13 — Baseline assinado de RLS policies (auditoria 20-dim Onda 3).
-      # Bloqueante quando credenciado; sem SUPABASE_ACCESS_TOKEN (forks) ou com
-      # baseline pendente de seed inicial, degrada para static-pass.
+  security-gates:
+    name: Gate 1 — Security & Policy Gates
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    needs: [ssot-gate]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
       - name: Gate 1.13 — Policies baseline vs pg_policies live (bloqueante c/ credenciais)
         run: node scripts/check-policies-baseline.mjs
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
-      # E045 — Tabelas com RLS habilitada e ZERO policies (deny-all silencioso)
-      # --gate: valida só integridade da allowlist (sem live DB); bloqueante sempre.
-      # Com SUPABASE_ACCESS_TOKEN: também confere o banco ao vivo.
       - name: Gate 1.13.1 — RLS sem policy (E045)
         run: node scripts/check-rls-no-policy-drift.mjs --gate
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
-      # E049 — 7 tabelas com INSERT anônimo real: verifica manifest + trigger rate guard
-      # --gate: valida manifest (7 tabelas, campos obrigatórios). Sem live DB.
       - name: Gate 1.13.2 — Anon-insert rate guard manifest (E049)
         run: node scripts/check-anon-insert-rate-guard.mjs --gate
-      # E055 — migrations aplicadas sem recibo em MIGRATIONS_SYNC_LOG.md há >24h
-      # --gate: valida existência e estrutura do log. Com credenciais: confere o banco.
       - name: Gate 1.13.3 — Migration receipts (E055)
         run: node scripts/check-migration-receipts.mjs --gate
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
-      # noUncheckedIndexedAccess — advisory por enquanto: roda tsc completo
-      # (lento) e a dívida atual é grande; vira bloqueante quando zerar.
-      # E15: Gate 1.10 promovido de advisory para bloqueante — dívida congelada
-      # em .indexed-access-baseline.json; falha só em regressão (novo código).
-      - name: Gate 1.10 — Indexed-access ratchet (bloqueante)
-        run: node scripts/check-indexed-access-ratchet.mjs
-      # E55 — Contratos estruturais dos workflows (E11, bloqueante)
-      # Garante que todo workflow segue as 8 regras do Padrão E12
-      # (permissions, concurrency, timeout, node-version-file, etc.)
-      - name: Gate 1.11 — Workflow contracts (bloqueante)
-        # --gate: sem o flag o script só reporta e sai 0 — o step dizia
-        # "bloqueante" mas não bloqueava nada (workflow-lint ficava vermelho
-        # em main sem travar deploy).
-        run: node scripts/check-workflow-contracts.mjs --gate
-      # E40/E98 — Inventário de segredos documentado (bloqueante)
-      # Garante que todo secrets.NAME / vars.NAME referenciado nos workflows
-      # está documentado em docs/ci/SEGREDOS.md.
-      - name: Gate 1.14 — Secrets inventory (bloqueante)
-        run: node scripts/check-secrets-inventory.mjs --gate
-      # E15: Gates migrados de quality-gate.yml (agora removido) para evitar duplicação.
-      # Gate 2.6 e 2.7 eram únicos naquele arquivo; os demais já existiam aqui.
-      - name: Gate 1.15 — overflow-x-clip em MainLayout (bloqueante)
-        run: node scripts/check-overflow-x-clip.mjs
-      - name: Gate 1.16 — Quotes list invariants (bloqueante)
-        run: node scripts/validate-quotes-list.mjs
-        env:
-          VITE_SUPABASE_URL: https://placeholder.supabase.co
-          VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
-      # E72/GAP 2026-10 — scripts/check-codeowners-coverage.mjs --gate existia
-      # sem ser chamado em CI: gate files podiam mudar sem revisão @adm01-debug.
-      # (achado auditoria de governança 2026-10-18, agente a9c0d304d5417a6d1).
-      - name: Gate 1.17 — CODEOWNERS coverage de gate files (bloqueante)
-        run: node scripts/check-codeowners-coverage.mjs --gate
-      # E89/GAP-4 — Cron spacing gate (bloqueante)
-      # scripts/ci-cron-table.mjs existe desde E89 mas nunca foi chamado em CI:
-      # colisões de cron ≤ 20 min entre workflows privilegiados passavam sem bloqueio.
-      # Não precisa de secrets — lê .github/workflows/ diretamente via fs.
-      - name: Gate E89 — Cron spacing ≥ 20 min entre workflows privilegiados (bloqueante)
-        run: node scripts/ci-cron-table.mjs --min-spacing 20
-      # E095 — CORS snapshot: buildPublicCorsHeaders proibido em funções autenticadas;
-      # sem literal 'Access-Control-Allow-Origin: *' em supabase/functions/.
-      - name: Gate E95 — CORS snapshot (buildPublicCorsHeaders em funções auth + literal *) (bloqueante)
-        run: |
-          set -euo pipefail
-          fail=0
-          for f in supabase/functions/bulk-random-passwords/index.ts \
-                   supabase/functions/audit-suite/index.ts \
-                   supabase/functions/e2e-cleanup/index.ts; do
-            count=$(grep -c "buildPublicCorsHeaders" "$f" || true)
-            if [ "$count" -gt 0 ]; then
-              echo "FAIL: buildPublicCorsHeaders encontrado em $f ($count vez(es))"
-              fail=1
-            fi
-          done
-          literal=$(grep -rl "'Access-Control-Allow-Origin': '\*'" supabase/functions/ || true)
-          if [ -n "$literal" ]; then
-            echo "FAIL: literal 'Access-Control-Allow-Origin: *' em:"
-            echo "$literal"
-            fail=1
-          fi
-          [ "$fail" -eq 0 ] || exit 1
-          echo "OK: CORS snapshot limpo"
-      # E113 — Toast leak gate: nenhum toast.error/warning pode vazar mensagem técnica
-      # de edge function ou backend diretamente na UI sem sanitização.
-      - name: Gate E113 — Toast leaks (bloqueante)
-        run: node scripts/check-toast-leaks.mjs
-      # E118 — Gates órfãos ligados ao CI (estáticos, sem BD vivo)
-      - name: Gate E118a — asChild nesting (bloqueante)
-        run: node scripts/check-aschild-nesting.mjs
-      - name: Gate E118b — route-ref-usage (bloqueante)
-        run: node scripts/check-route-ref-usage.mjs
-      - name: Gate E118c — route-error-element (bloqueante)
-        run: node scripts/check-route-error-element.mjs
-      - name: Gate E118d — no-inline-cors (bloqueante)
-        run: node scripts/check-no-inline-cors.mjs
-      - name: Gate E118e — summary-color-tokens (bloqueante)
-        run: node scripts/check-summary-color-tokens.mjs
-      - name: Gate E118f — seller-scope (bloqueante)
-        run: node scripts/check-seller-scope.mjs
-      - name: Gate E118g — client-structured-logging (bloqueante)
-        run: node scripts/check-client-structured-logging.mjs
-      - name: Gate E118h — schema-reference-drift (bloqueante)
-        run: node scripts/check-schema-reference-drift.mjs
-      - name: Gate E118i — public-views-drift (bloqueante)
-        run: node scripts/check-public-views-drift.mjs
-      - name: Gate E118j — proposed-configs (bloqueante)
-        run: node scripts/check-eslint-config-current.mjs --strict
-      # E119 — ratchet de definições locais de `interface Product` (não aumenta)
-      - name: Gate E119 — Product interface ratchet (bloqueante)
-        run: node scripts/check-product-type-duplicates.mjs
 
   unit-tests:
     name: Gate 2 - Unit Tests
@@ -483,15 +438,37 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false  # E32
+          fetch-depth: 0
+      - name: Check if src/ changed (E161)
+        id: src-check
+        run: |
+          BASE="${{ github.event.pull_request.base.sha }}"
+          if [ -z "$BASE" ]; then
+            BASE="${{ github.event.before }}"
+          fi
+          if [ -z "$BASE" ] || ! git rev-parse "$BASE" >/dev/null 2>&1; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            CHANGED=$(git diff --name-only "$BASE" HEAD -- src/ | wc -l)
+            if [ "$CHANGED" -gt 0 ]; then
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "changed=false" >> "$GITHUB_OUTPUT"
+              echo "::notice::Nenhuma mudança em src/ — Lighthouse CI pulado."
+            fi
+          fi
       - name: Setup Node CI
+        if: steps.src-check.outputs.changed == 'true'
         uses: ./.github/actions/setup-node-ci
-      - run: npm run build
+      - if: steps.src-check.outputs.changed == 'true'
+        run: npm run build
       - name: Run Lighthouse CI
+        if: steps.src-check.outputs.changed == 'true'
         run: npx lhci autorun --config=.lighthouserc.json
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
       - name: Upload Lighthouse report
-        if: always()
+        if: always() && steps.src-check.outputs.changed == 'true'
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: lighthouse-report-${{ github.run_id }}
@@ -547,10 +524,12 @@ jobs:
     # Só bloqueia se restore-cart-rpc-gate falhou; skip é tratado como ausência de dado.
     if: >-
       always() &&
-      needs.lint-typecheck.result == 'success' &&
+      needs.static-gates.result == 'success' &&
+      needs.drift-gates.result == 'success' &&
+      needs.security-gates.result == 'success' &&
       needs.seo-sanity.result == 'success' &&
       needs.restore-cart-rpc-gate.result != 'failure'
-    needs: [lint-typecheck, seo-sanity, restore-cart-rpc-gate]
+    needs: [static-gates, drift-gates, security-gates, seo-sanity, restore-cart-rpc-gate]
     permissions:
       contents: read
       id-token: write      # necessário para attest-build-provenance (E99)
@@ -654,7 +633,9 @@ jobs:
       - ssot-gate
       - dependency-audit
       - dependency-review
-      - lint-typecheck
+      - static-gates
+      - drift-gates
+      - security-gates
       - unit-tests
       - database-integrity
       - secrets-check
@@ -671,7 +652,9 @@ jobs:
           R_SSOT:          ${{ needs.ssot-gate.result }}
           R_DEP_AUDIT:     ${{ needs.dependency-audit.result }}
           R_DEP_REVIEW:    ${{ needs.dependency-review.result }}
-          R_LINT:          ${{ needs.lint-typecheck.result }}
+          R_STATIC:        ${{ needs.static-gates.result }}
+          R_DRIFT:         ${{ needs.drift-gates.result }}
+          R_SECURITY:      ${{ needs.security-gates.result }}
           R_UNIT:          ${{ needs.unit-tests.result }}
           R_DB_INT:        ${{ needs.database-integrity.result }}
           R_SECRETS:       ${{ needs.secrets-check.result }}
@@ -691,7 +674,9 @@ jobs:
           # ── Gates sempre bloqueantes ───────────────────────────────────────────────────────
           [[ "$R_SSOT"      == "success" ]] || fail_gate "Gate 0 SSOT falhou (${R_SSOT})"
           [[ "$R_DEP_AUDIT" == "success" ]] || fail_gate "Gate 0.5 Dependency Audit falhou (${R_DEP_AUDIT})"
-          [[ "$R_LINT"      == "success" ]] || fail_gate "Gate 1 Lint+TypeScript falhou (${R_LINT})"
+          [[ "$R_STATIC"    == "success" ]] || fail_gate "Gate 1 Static Gates falhou (${R_STATIC})"
+          [[ "$R_DRIFT"     == "success" ]] || fail_gate "Gate 1 Drift Gates falhou (${R_DRIFT})"
+          [[ "$R_SECURITY"  == "success" ]] || fail_gate "Gate 1 Security Gates falhou (${R_SECURITY})"
           [[ "$R_UNIT"      == "success" ]] || fail_gate "Gate 2 Unit Tests falhou (${R_UNIT})"
           [[ "$R_SEO"       == "success" ]] || fail_gate "Gate 5 SEO Sanity falhou (${R_SEO})"
           [[ "$R_BUILD"        == "success" ]] || fail_gate "Gate 6 Build falhou (${R_BUILD})"

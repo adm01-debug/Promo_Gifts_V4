@@ -146,9 +146,8 @@ jobs:
       - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
         with:
           node-version-file: .nvmrc
-          cache: npm
       - name: Install js-yaml
-        run: npm ci --ignore-scripts
+        run: npm i --no-save js-yaml@4.3.2
       - name: Check for phantom required checks (E71)
         run: node scripts/check-required-checks.mjs
 

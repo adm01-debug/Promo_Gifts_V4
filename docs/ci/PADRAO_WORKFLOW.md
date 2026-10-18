@@ -57,10 +57,10 @@ Sem timeout, um job travado consome minutos até o limite do runner (6h).
 | Full job (nightly, segurança) | full-ci, codeql, fuzz, drift check | ≤ 60 |
 | Cron pesado | ci-metrics, schema export, capacity report | ≤ 60 |
 
-Gate CI (C15 em `check-workflow-contracts.mjs`) valida que nenhum job ultrapassa
-o limite da sua classe. Jobs de nightly/schedule com `timeout-minutes > 20` só
-são permitidos em workflows cujo `name:` contém "Nightly", "Weekly", "Monthly",
-"Security" ou "Drift", ou cujo arquivo está em `docs/ci/TIMEOUT_ALLOWLIST.json`.
+Workflows com `timeout-minutes > 20` devem ter `name:` contendo "Nightly",
+"Weekly", "Monthly", "Security" ou "Drift" para indicar que são jobs de longa
+duração. O check de timeout por classe não está implementado em CI atualmente
+(C15 em `check-workflow-contracts.mjs` valida `runs-on:`, não timeout).
 
 ---
 
