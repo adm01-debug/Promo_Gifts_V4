@@ -94,18 +94,6 @@
       "ref": "supabase/migrations/README.md"
     },
     {
-      "file": "graphify-out/2026-10-05/graph.json",
-      "ref": "supabase/migrations-snapshot/SCHEMA_DRIFT.sql"
-    },
-    {
-      "file": "graphify-out/2026-10-05/manifest.json",
-      "ref": "supabase/migrations-snapshot/SCHEMA_DRIFT.sql"
-    },
-    {
-      "file": "graphify-out/graph.json",
-      "ref": "supabase/migrations-snapshot/SCHEMA_DRIFT.sql"
-    },
-    {
       "file": "graphify-out/manifest.json",
       "ref": "supabase/migrations-snapshot/SCHEMA_DRIFT.sql"
     },
