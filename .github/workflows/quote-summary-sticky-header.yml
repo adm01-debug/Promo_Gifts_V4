@@ -94,7 +94,8 @@ jobs:
             test-results/**/*-diff.png
             test-results/**/*-actual.png
             test-results/**/*-expected.png
-            !test-results/**/trace.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
+            # E26: trace contém dados de formulário (incluindo senhas E2E)
+            !test-results/**/trace.zip
             test-results/**/video.webm
           retention-days: 14
           if-no-files-found: ignore
