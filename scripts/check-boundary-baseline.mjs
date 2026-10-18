@@ -23,6 +23,17 @@ const LB = '(?<![.\\w$])';
 // notation (`import .meta['glob']`) — comentários já viraram espaços na visão.
 const GLOB_HEAD =
   `${LB}import\\s*\\.\\s*meta\\s*(?:\\.\\s*glob(?:Eager)?|\\[\\s*['"]glob(?:Eager)?['"]\\s*\\])`;
+// `vi.*`/`jest.*` mocks com specifier — tolera espaços/comentários entre os
+// membros (`vi . mock`, `vi/*c*/.mock` — comentário já virou espaço na visão).
+const MOCK_HEAD =
+  `${LB}(?:vi|jest)\\s*\\.\\s*` +
+  `(?:mock|doMock|unmock|doUnmock|deepUnmock|importMock|importActual|requireActual|requireMock)`;
+// `serviceWorker.register` com qualifier opcional (`navigator.`/`window.`).
+const SW_HEAD = `${LB}(?:[A-Za-z_$][\\w$]*\\s*\\.\\s*)*serviceWorker\\s*\\.\\s*register`;
+// `new Worker`/`new SharedWorker`: qualifier (`window.`/`self.`/`globalThis.`),
+// parêntese extra (`new (Worker)`) e `new URL('x', import.meta.url)` de 1º arg.
+const WORKER_HEAD =
+  `${LB}new\\s*\\(?\\s*(?:[A-Za-z_$][\\w$]*\\s*\\.\\s*)*(?:Shared)?Worker\\s*\\)?\\s*\\(`;
 const SPEC_RE = new RegExp(
   [
     `${LB}from\\s*['"\`]([^'"\`]+)['"\`]`,
@@ -30,8 +41,9 @@ const SPEC_RE = new RegExp(
     `${LB}import\\s*['"\`]([^'"\`]+)['"\`]`, // bare `import'x'` — sem espaço é sintaxe válida
     `${LB}require\\s*\\(\\s*['"]([^'"]+)['"]`,
     `${GLOB_HEAD}\\s*\\(\\s*['"]([^'"]+)['"]`,
-    `${LB}new\\s+Worker\\s*\\(\\s*['"]([^'"]+)['"]`,
-    `${LB}(?:vi\\.importActual|vi\\.mock|jest\\.mock|serviceWorker\\.register)\\s*\\(\\s*['"]([^'"]+)['"]`,
+    `${WORKER_HEAD}\\s*(?:new\\s+URL\\s*\\(\\s*)?['"]([^'"]+)['"]`,
+    `${MOCK_HEAD}\\s*\\(\\s*['"]([^'"]+)['"]`,
+    `${SW_HEAD}\\s*\\(\\s*['"]([^'"]+)['"]`,
   ].join('|'),
   'g',
 );
@@ -65,16 +77,29 @@ const DYNAMIC_RE = new RegExp(
     `${LB}import\\s*\\(\\s*[^'"\`\\s)]`,
     `${LB}require\\s*\\(\\s*[^'"\\s)]`,
     `${GLOB_HEAD}\\s*\\(\\s*[^'"\\[\\s)]`,
+    `${MOCK_HEAD}\\s*\\(\\s*[^'"\\s)]`,
+    `${SW_HEAD}\\s*\\(\\s*[^'"\\s)]`,
+    `${WORKER_HEAD}\\s*(?:new\\s+URL\\s*\\(\\s*)?[^'"\\s)]`,
   ].join('|'),
   'g',
 );
 // Concatenação após literal no 1º argumento = computado:
 // `require('@/' + x)` e `require('@/'.concat(x))` na visão masked valem o mesmo.
 const CONCAT_RE = new RegExp(
-  `${LB}(?:import|require)\\s*\\(\\s*['"][^'"]*['"]\\s*(?:\\+|\\.concat\\s*\\()|` +
+  [
+    `${LB}(?:import|require)\\s*\\(\\s*['"][^'"]*['"]\\s*(?:\\+|\\.concat\\s*\\()`,
     `${GLOB_HEAD}\\s*\\(\\s*['"][^'"]*['"]\\s*(?:\\+|\\.concat\\s*\\()`,
+    `${MOCK_HEAD}\\s*\\(\\s*['"][^'"]*['"]\\s*(?:\\+|\\.concat\\s*\\()`,
+    `${SW_HEAD}\\s*\\(\\s*['"][^'"]*['"]\\s*(?:\\+|\\.concat\\s*\\()`,
+    `${WORKER_HEAD}\\s*(?:new\\s+URL\\s*\\(\\s*)?['"][^'"]*['"]\\s*(?:\\+|\\.concat\\s*\\()`,
+  ].join('|'),
   'g',
 );
+// Escape `\uXXXX`/`\u{...}`/`\xNN` em posição de código (visível na visão
+// masked = fora de literal/comentário/regex): `requir\u0065`, `Work\u0065r`,
+// `vi.moc\u006b` são identificadores válidos em runtime mas invisíveis para
+// os braços de specifier — marcado como não-auditável (violação dinâmica).
+const ESCAPE_CODE_RE = /\\u\{[0-9a-fA-F]{1,6}\}|\\u[0-9a-fA-F]{4}|\\x[0-9a-fA-F]{2}/g;
 
 // Lexer mínimo string/comment-aware: produz duas visões preservando quebras
 // de linha (line numbers corretos):
@@ -101,16 +126,46 @@ function lexSource(src) {
     'instanceof', 'yield', 'await', 'else', 'do', 'throw',
   ]);
   let lastSig = null; // último char significativo de código (fora de literal/comentário)
+  let prevSig = null; // char significativo anterior a lastSig
   let word = '';      // identificador/keyword em acumulação
+  let wordPre = null; // char significativo imediatamente antes do token atual
+  // `word` reseta em qualquer char não-palavra (espaço incluído) — então o
+  // contexto de keyword NÃO pode ler `word` direto: `return /re/` tem espaço.
+  // `lastWasKeyword` congela "o token que TERMINA em lastSig é keyword não-
+  // pontuada" — `x.return /` desqualifica via wordPre === '.'. prevWasKeyword
+  // é o mesmo flag um char antes (para o `!` prefix vs TS `x!` non-null).
+  let lastWasKeyword = false, prevWasKeyword = false;
+  // `/re/ /x` — o `/` que fecha uma regex já é operando completo: o `/`
+  // seguinte é divisão, não outra regex.
+  let afterRegex = false;
   const sig = (c) => {
-    if (/[$\w]/.test(c)) word += c;
-    else word = '';
-    if (/\S/.test(c)) lastSig = c;
+    if (/[$\w]/.test(c)) {
+      if (word === '') wordPre = lastSig;
+      word += c;
+    } else {
+      word = '';
+    }
+    if (/\S/.test(c)) {
+      prevSig = lastSig;
+      prevWasKeyword = lastWasKeyword;
+      lastSig = c;
+      lastWasKeyword = word !== '' && wordPre !== '.' && REGEX_CTX_WORDS.has(word);
+      afterRegex = false;
+    }
   };
   const isRegexCtx = () => {
     if (lastSig === null) return true;
+    // postfix/operando completo antes do `/`: divisão, não regex — sem isso
+    // `x++\n/import(v)/y`, `x!/import(v)/2` e `/a/ /import(v)/2` escondem o
+    // specifier dinâmico dentro da "regex" fantasma.
+    if (lastSig === '/' && afterRegex) return false;
+    if ((lastSig === '+' || lastSig === '-') && prevSig === lastSig) return false;
+    if (
+      lastSig === '!' && prevSig !== null && /[$\w)\]'`}]/.test(prevSig) &&
+      !prevWasKeyword
+    ) return false;
     if (REGEX_CTX_CHARS.has(lastSig)) return true;
-    return word !== '' && REGEX_CTX_WORDS.has(word);
+    return lastWasKeyword;
   };
   let i = 0;
   // Regex literal não cruza linha — se não fecha antes do fim da linha era
@@ -129,6 +184,7 @@ function lexSource(src) {
         for (let k = i + 1; k < j; k++) hide(src[k]);
         i = j + 1;
         while (i < src.length && /[$\w]/.test(src[i])) { keep(src[i]); i++; } // flags
+        afterRegex = true;
         return true;
       }
       j++;
@@ -216,9 +272,18 @@ function* walk(dir) {
 function resolveTarget(spec, importerFile) {
   // Escapes `\uXXXX`/`\xNN` no specifier são decodificados pelo runtime —
   // `@/\u0070ages/x` ≡ `@/pages/x` e precisa ser comparado decodificado.
+  // Escapes no specifier são decodificados pelo runtime: `\uXXXX`, `\xNN`,
+  // `\u{...}` e escapes de identidade (`\.` → `.`, `\p` → `p`).
+  // `'..\u{2f}quotes'` ≡ `'../quotes'` e `'.\./x'` ≡ `'../x'`.
   const decoded = spec.replace(
-    /\\u([0-9a-fA-F]{4})|\\x([0-9a-fA-F]{2})/g,
-    (_m, u, x) => String.fromCharCode(parseInt(u ?? x, 16)),
+    /\\u\{([0-9a-fA-F]{1,6})\}|\\u([0-9a-fA-F]{4})|\\x([0-9a-fA-F]{2})|\\([\s\S])/g,
+    (_m, uc, u, x, c) => {
+      if (uc !== undefined) return String.fromCodePoint(parseInt(uc, 16));
+      if (u !== undefined || x !== undefined)
+        return String.fromCharCode(parseInt(u ?? x, 16));
+      if (c === '\n' || c === '\r') return ''; // continuação de linha
+      return { n: '\n', r: '\r', t: '\t', b: '\b', f: '\f', v: '\v', '0': '\0' }[c] ?? c;
+    },
   );
   let rel;
   if (decoded.startsWith('@/')) {
@@ -226,6 +291,9 @@ function resolveTarget(spec, importerFile) {
     rel = normalize(join('src', decoded.slice(2))).split('\\').join('/');
   } else if (decoded.startsWith('.')) {
     rel = normalize(join(dirname(importerFile), decoded)).split('\\').join('/');
+  } else if (decoded.startsWith('/')) {
+    // Vite resolve `/x` a partir da raiz do projeto — `/src/pages/...`.
+    rel = normalize(decoded.slice(1)).split('\\').join('/');
   } else {
     return null;
   }
@@ -290,6 +358,7 @@ for (const f of walk('src/pages')) {
   }
   for (const m of masked.matchAll(DYNAMIC_RE)) dynamic(m.index);
   for (const m of masked.matchAll(CONCAT_RE)) dynamic(m.index);
+  for (const m of masked.matchAll(ESCAPE_CODE_RE)) dynamic(m.index);
 }
 // Dedupe: o mesmo site pode ser flagrado por braços distintos
 // (`import('x' + y)` = dinâmico + concat) — conta uma vez por
