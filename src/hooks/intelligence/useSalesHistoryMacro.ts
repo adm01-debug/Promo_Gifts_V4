@@ -81,7 +81,7 @@ export function useSalesHistoryMacro(days = 30) {
         }
         const rows: T[] = [];
         for (const batch of idBatches) {
-          const page = await fetchAllPages<T>((from, to) => {
+          const page = await fetchAllPages<T>(async (from, to) => {
             let q = supabase
               .from(table)
               .select(select)
@@ -90,7 +90,8 @@ export function useSalesHistoryMacro(days = 30) {
               .order('id', { ascending: true })
               .range(from, to);
             if (batch) q = q.in(fkColumn, batch);
-            return q;
+            const { data, error } = await q;
+            return { data: (data ?? null) as T[] | null, error };
           });
           rows.push(...page);
         }
