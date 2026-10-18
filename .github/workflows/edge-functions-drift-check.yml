@@ -20,12 +20,14 @@ name: edge-functions-drift-check
 
 on:
   schedule:
-    - cron: '6 9 * * *'   # E89: diário 09:06 UTC (06:06 BRT)
+    - cron: '6 9 * * *'   # 06:00 BRT
   pull_request:
     paths:
       - 'supabase/functions/**'
       - 'audit/edge-functions-canonical-only.json'
       - '.github/workflows/edge-functions-drift-check.yml'
+      - 'supabase/config.toml'
+      - '.security/edge-functions-verify-jwt-false-allowlist.json'
   workflow_dispatch:
   # E65 (plano de 100, 2026-09-24): antes só rodava em PR e no cron diário —
   # drift introduzido entre um merge e o próximo cron (até 24h) era
@@ -202,6 +204,8 @@ jobs:
             files_compared=$(echo "$canon_manifest" | wc -l)
             canon_sha=$(printf '%s' "$canon_manifest" | sha256sum | awk '{print $1}')
 
+            # E030: symmetric — also detects files in repo absent from canonical
+            printf '%s\n' "$canon_manifest" | awk '{print $2}' > "/tmp/canon_paths_${slug}.txt"
             repo_manifest=$(
               while IFS= read -r line; do
                 [ -z "$line" ] && continue
@@ -213,7 +217,13 @@ jobs:
                 fi
                 printf '%s  %s\n' "$h" "$relpath"
               done <<< "$canon_manifest"
+              find "supabase/functions/$slug" -type f 2>/dev/null | sort | while IFS= read -r f; do
+                if ! grep -qxF "$f" "/tmp/canon_paths_${slug}.txt" 2>/dev/null; then
+                  printf 'REPO_ONLY  %s\n' "$f"
+                fi
+              done
             )
+            rm -f "/tmp/canon_paths_${slug}.txt"
             repo_sha=$(printf '%s' "$repo_manifest" | sha256sum | awk '{print $1}')
 
             if [ "$repo_sha" = "$canon_sha" ]; then
@@ -305,36 +315,22 @@ jobs:
             body += '\n_Antes de mergear: aplicar PR conciliador trazendo o source canônico para o repo, ou redeployar o branch do PR._';
             github.rest.issues.createComment({ issue_number: context.issue.number, owner: context.repo.owner, repo: context.repo.repo, body });
 
-      - name: Compute issue body (scheduled drift)
-        id: drift_issue_body
-        if: (github.event_name == 'schedule' || github.event_name == 'workflow_run') && (steps.hash_diff.outputs.drift_count != '0' || steps.hash_diff.outputs.missing_in_dl != '0' || steps.slug_diff.outputs.has_orphans == 'true' || steps.slug_diff.outputs.has_missing == 'true')
-        run: |
-          node <<'NODEEOF' >> "$GITHUB_OUTPUT"
-          const fs = require('fs');
-          const DELIM = 'BODY_EOF_DRIFT';
-          const csv = fs.readFileSync('/tmp/drift_report.csv', 'utf-8');
-          const drifted = csv.split('\n').filter(l => l.includes(',DRIFT,'));
-          const downloadFailed = csv.split('\n').filter(l => l.includes(',download_failed,'));
-          const today = new Date().toISOString().slice(0, 10);
-          const title = `[drift-check] ${drifted.length} divergência(s), ${downloadFailed.length} download(s) inconclusivo(s) em ${today}`;
-          const body = `Detectadas ${drifted.length} divergências no cron diário.\n\n`
-            + drifted.map(l => `- \`${l.split(',')[0]}\``).join('\n')
-            + (downloadFailed.length ? `\n\nDownloads inconclusivos: ${downloadFailed.map(l => `\`${l.split(',')[0]}\``).join(', ')}` : '')
-            + '\n\nVer artefato `drift-report` desta execução para os hashes.';
-          process.stdout.write(`title=${title}\n`);
-          process.stdout.write(`body<<${DELIM}\n${body}\n${DELIM}\n`);
-          NODEEOF
-
       - name: Open issue (scheduled drift)
-        # E12 — ci-issue action com dedupe por marcador <!-- ci-issue:edge-functions-drift -->
         if: (github.event_name == 'schedule' || github.event_name == 'workflow_run') && (steps.hash_diff.outputs.drift_count != '0' || steps.hash_diff.outputs.missing_in_dl != '0' || steps.slug_diff.outputs.has_orphans == 'true' || steps.slug_diff.outputs.has_missing == 'true')
-        uses: ./.github/actions/ci-issue
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
-          key: edge-functions-drift
-          title: ${{ steps.drift_issue_body.outputs.title }}
-          body: ${{ steps.drift_issue_body.outputs.body }}
-          labels: drift-check,priority/high
-          state: open
+          script: |
+            const fs = require('fs');
+            const csv = fs.readFileSync('/tmp/drift_report.csv', 'utf-8');
+            const drifted = csv.split('\n').filter(l => l.includes(',DRIFT,'));
+            const downloadFailed = csv.split('\n').filter(l => l.includes(',download_failed,'));
+            const today = new Date().toISOString().slice(0,10);
+            const title = `[drift-check] ${drifted.length} divergência(s), ${downloadFailed.length} download(s) inconclusivo(s) em ${today}`;
+            const existing = await github.rest.issues.listForRepo({ owner: context.repo.owner, repo: context.repo.repo, state: 'open', labels: 'drift-check' });
+            const dup = existing.data.find(i => i.title.startsWith('[drift-check]'));
+            const body = `Detectadas ${drifted.length} divergências no cron diário.\n\n` + drifted.map(l => `- \`${l.split(',')[0]}\``).join('\n') + (downloadFailed.length ? `\n\nDownloads inconclusivos: ${downloadFailed.map(l => `\`${l.split(',')[0]}\``).join(', ')}` : '') + '\n\nVer artefato `drift-report` desta execução para os hashes.';
+            if (dup) { await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: dup.number, body: `Atualização do dia ${today}:\n\n${body}` }); }
+            else { await github.rest.issues.create({ owner: context.repo.owner, repo: context.repo.repo, title, body, labels: ['drift-check','priority/high'] }); }
 
       - name: Fail if drift detected
         if: steps.hash_diff.outputs.drift_count != '0' || steps.hash_diff.outputs.missing_in_dl != '0' || steps.slug_diff.outputs.has_orphans == 'true' || steps.slug_diff.outputs.has_missing == 'true'
