@@ -238,13 +238,13 @@ async function main() {
       // rate-limit, 5xx) não podem falhar o gate; a razão fica em details.
       // Respostas que chegaram mas vieram quebradas (invalid-json/response)
       // seguem inconclusive — indicam contrato de API alterado.
-      // http-error só é soft quando transitório (429/5xx); 4xx (401/403/404)
-      // indica credencial/perm errada — esconder isso aprovaria drift real.
+      // E56: 429/5xx → INCONCLUSIVE após retries (supabase-read-only-query.mjs
+      // retenta 3×); só missing-config e network-error são soft (sem credenciais
+      // ou rede inacessível). 4xx (401/403/404) sempre INCONCLUSIVE — esconder
+      // credencial errada aprovaria drift real sem testar nada.
       const isSoft =
         live.kind === 'missing-config' ||
-        live.kind === 'network-error' ||
-        (live.kind === 'http-error' &&
-          (live.httpStatus === 429 || live.httpStatus >= 500));
+        live.kind === 'network-error';
       const status =
         isSoft && !REQUIRE_LIVE
           ? CHECK_RESULT_STATUS.STATIC_PASS

@@ -6,6 +6,10 @@
       "ref": "qa/migrations-draft/2026-07-12_magazine_items_unique_product.sql"
     },
     {
+      "file": ".github/workflows/deploy-gates.yml",
+      "ref": "supabase/migrations-snapshot/ALL_IN_ONE"
+    },
+    {
       "file": ".github/workflows/drafts-index-check.yml",
       "ref": "qa/migrations-draft/PR_COMMENT.md"
     },

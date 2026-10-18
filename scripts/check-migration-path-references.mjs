@@ -54,8 +54,13 @@ const SELF = 'scripts/check-migration-path-references.mjs';
 //   supabase/migrations/20260101_x.sql
 //   `supabase/migrations-snapshot/ALL_IN_ONE.sql`
 //   qa/migrations-draft/2026-06-27_quotes_status_allow_cancelled.sql
+// O prefixo aceita qualquer não-word-char: `[^\w]` cobre `./supabase/...`,
+// `](/supabase/...)`, `path:`, `ver=` e `→` — delimitadores que a classe
+// anterior `[\s`("'\[<]` deixava escapar (evasão real, provada em auditoria).
+// Só não casa quando o char anterior é [A-Za-z0-9_] (ex.: `xsupabase/...`),
+// que é o caso que o delimitador existe para proteger.
 const PATH_RE =
-  /(?:^|[\s`("'\[<])(supabase\/migrations(?:-snapshot)?\/[A-Za-z0-9_./*-]+|qa\/migrations-draft\/[A-Za-z0-9_./*-]+)/g;
+  /(?:^|[^\w])(supabase\/migrations(?:-snapshot)?\/[A-Za-z0-9_./*-]+|qa\/migrations-draft\/[A-Za-z0-9_./*-]+)/g;
 
 // Referências "base" que sempre existem se o dir existir — não são citação de arquivo.
 const BASE_PATHS = new Set([
