@@ -10,6 +10,10 @@
       "ref": "qa/migrations-draft/PR_COMMENT.md"
     },
     {
+      "file": ".github/workflows/schema-snapshot-export.yml",
+      "ref": "supabase/migrations-snapshot/SCHEMA_DRIFT.sql"
+    },
+    {
       "file": "CONTRIBUTING.md",
       "ref": "supabase/migrations/README.md"
     },
