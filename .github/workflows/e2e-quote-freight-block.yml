@@ -44,8 +44,6 @@ concurrency:
   group: e2e-quote-freight-block-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
-env:
-
 
 defaults:
   run:
