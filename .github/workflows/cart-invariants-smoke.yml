@@ -22,20 +22,13 @@ name: Cart Invariants Smoke (Chrome + Firefox, sharded)
 on:
   pull_request:
     branches: [main]
-    paths-ignore:
-      - 'docs/**'
-      - '**/*.md'
-      - 'supabase/**/*_LOG.md'
-      - 'CHANGELOG.md'
-      - '.github/ISSUE_TEMPLATE/**'
+    paths:
+      - 'src/contexts/SellerCartContext.tsx'
+      - 'src/hooks/products/useSellerCarts.ts'
+      - 'e2e/carrinhos/**'
+      - '.github/workflows/cart-invariants-smoke.yml'  # R12
   push:
     branches: [main]
-    paths-ignore:
-      - 'docs/**'
-      - '**/*.md'
-      - 'supabase/**/*_LOG.md'
-      - 'CHANGELOG.md'
-      - '.github/ISSUE_TEMPLATE/**'
   workflow_dispatch:
     inputs:
       total_shards:
