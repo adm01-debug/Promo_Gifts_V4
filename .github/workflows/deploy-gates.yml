@@ -16,7 +16,7 @@ name: Deploy Gates
 #  1.5  drafts-save       — sem "Salvar Alterações" em fluxos de rascunho
 #  1.7  tsc-ratchet       — baseline de noUnusedLocals não aumenta sem label
 #  1.8  base64-detect     — sem arquivos texto encodados em base64 acidentalmente
-#  1.9  tech-debt         — ratchets TODO/as/file-size
+#  1.9  tech-debt         — ratchets TODO/as/file-size/eslint-disable
 #  1.9.1 console-baseline — console.* não aumenta sem justificativa
 #  1.9.2 boundary          — sem import cross-domain novo entre src/pages/*
 #  1.10 indexed-access    — indexed-access ratchet (advisory)
@@ -218,13 +218,14 @@ jobs:
           exit $(( FOUND > 0 ))
       # Ratchets de dívida técnica (auditoria 20-dim 2026-10-02) — falham só
       # em REGRESSÃO vs baselines commitadas; drift positivo apenas avisa.
-      - name: Gate 1.9 — Dívida técnica (ratchets TODO / as / file-size)
+      - name: Gate 1.9 — Dívida técnica (ratchets TODO / as / file-size / eslint-disable)
         run: |
           set -euo pipefail
           node scripts/check-todo-baseline.mjs
           node scripts/check-as-assertions-baseline.mjs
           node scripts/check-as-unknown-baseline.mjs
           node scripts/check-file-size-baseline.mjs
+          node scripts/check-eslint-disable-baseline.mjs
 
       - name: Gate 1.9.1 — console.* baseline (bloqueante)
         run: node scripts/check-console-baseline.mjs

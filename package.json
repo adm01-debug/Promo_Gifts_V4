@@ -66,6 +66,8 @@
     "check:as-assertions-baseline:update": "node scripts/check-as-assertions-baseline.mjs --update",
     "check:as-unknown-baseline": "node scripts/check-as-unknown-baseline.mjs",
     "check:as-unknown-baseline:update": "node scripts/check-as-unknown-baseline.mjs --update",
+    "check:eslint-disable-baseline": "node scripts/check-eslint-disable-baseline.mjs",
+    "check:eslint-disable-baseline:update": "node scripts/check-eslint-disable-baseline.mjs --update",
     "check:file-size-baseline": "node scripts/check-file-size-baseline.mjs",
     "check:file-size-baseline:update": "node scripts/check-file-size-baseline.mjs --update",
     "check:indexed-access-ratchet": "node scripts/check-indexed-access-ratchet.mjs",
