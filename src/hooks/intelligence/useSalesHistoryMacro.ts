@@ -82,7 +82,8 @@ export function useSalesHistoryMacro(days = 30) {
         const rows: T[] = [];
         for (const batch of idBatches) {
           const page = await fetchAllPages<T>((from, to) => {
-            let q = supabase
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            let q: any = supabase
               .from(table)
               .select(select)
               .gte('created_at', cutoffStr)
@@ -90,7 +91,7 @@ export function useSalesHistoryMacro(days = 30) {
               .order('id', { ascending: true })
               .range(from, to);
             if (batch) q = q.in(fkColumn, batch);
-            return q;
+            return q as PromiseLike<{ data: T[] | null; error: unknown }>;
           });
           rows.push(...page);
         }
