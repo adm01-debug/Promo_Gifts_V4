@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import type { PromobrindProduct } from '@/lib/external-db';
+import { fetchAllPages } from '@/lib/db/fetch-all-pages';
 
 import { logger } from '@/lib/logger';
 // Re-export extracted hooks for backwards compatibility
@@ -44,22 +45,51 @@ export function useProductRecommendations(productId?: string, productSku?: strin
     queryFn: async (): Promise<FrequentlyBoughtTogether[]> => {
       if (!productSku) return [];
 
-      const { data: ordersWithProduct, error: ordersError } = await supabase
-        .from('order_items')
-        .select('order_id')
-        .eq('product_sku', productSku);
+      let ordersWithProduct: Array<{ order_id: string | null }>;
+      try {
+        ordersWithProduct = await fetchAllPages((from, to) =>
+          supabase
+            .from('order_items')
+            .select('order_id')
+            .eq('product_sku', productSku)
+            .order('id', { ascending: true })
+            .range(from, to),
+        );
+      } catch {
+        return [];
+      }
 
-      if (ordersError || !ordersWithProduct?.length) return [];
+      if (!ordersWithProduct.length) return [];
 
-      const orderIds = ordersWithProduct.map((o) => o.order_id);
+      const orderIds = ordersWithProduct.map((o) => o.order_id).filter(Boolean) as string[];
 
-      const { data: relatedItems, error: relatedError } = await supabase
-        .from('order_items')
-        .select('product_id, product_sku, product_name, product_image_url, unit_price')
-        .in('order_id', orderIds)
-        .neq('product_sku', productSku);
+      // `.in()` com centenas de ids estoura a querystring do PostgREST — lotes de 200.
+      const relatedItems: Array<{
+        product_id: string | null;
+        product_sku: string | null;
+        product_name: string | null;
+        product_image_url: string | null;
+        unit_price: number | null;
+      }> = [];
+      try {
+        for (let i = 0; i < orderIds.length; i += 200) {
+          const idBatch = orderIds.slice(i, i + 200);
+          const batchItems = await fetchAllPages((from, to) =>
+            supabase
+              .from('order_items')
+              .select('product_id, product_sku, product_name, product_image_url, unit_price')
+              .in('order_id', idBatch)
+              .neq('product_sku', productSku)
+              .order('id', { ascending: true })
+              .range(from, to),
+          );
+          relatedItems.push(...batchItems);
+        }
+      } catch {
+        return [];
+      }
 
-      if (relatedError || !relatedItems?.length) return [];
+      if (!relatedItems.length) return [];
 
       const productCounts = relatedItems.reduce<Record<string, FrequentlyBoughtTogether>>(
         (acc, item) => {
@@ -166,12 +196,26 @@ export function useProductRecommendations(productId?: string, productSku?: strin
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-      const { data: recentQuoteItems, error } = await supabase
-        .from('quote_items')
-        .select('product_sku, product_name, product_image_url, unit_price')
-        .gte('created_at', thirtyDaysAgo.toISOString());
+      let recentQuoteItems: Array<{
+        product_sku: string | null;
+        product_name: string | null;
+        product_image_url: string | null;
+        unit_price: number | null;
+      }>;
+      try {
+        recentQuoteItems = await fetchAllPages((from, to) =>
+          supabase
+            .from('quote_items')
+            .select('product_sku, product_name, product_image_url, unit_price')
+            .gte('created_at', thirtyDaysAgo.toISOString())
+            .order('id', { ascending: true })
+            .range(from, to),
+        );
+      } catch {
+        return [];
+      }
 
-      if (error || !recentQuoteItems?.length) return [];
+      if (!recentQuoteItems.length) return [];
 
       const productCounts = recentQuoteItems.reduce<Record<string, ProductCount>>((acc, item) => {
         const key = item.product_sku || item.product_name;

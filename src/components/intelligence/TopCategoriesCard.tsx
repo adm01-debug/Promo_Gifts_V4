@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Layers, TrendingUp, Sparkles } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { fetchAllPages } from '@/lib/db/fetch-all-pages';
 import { subDays } from 'date-fns';
 import { calculateTrendingScore } from '@/lib/trending-score';
 
@@ -57,14 +58,20 @@ export function TopCategoriesCard({ days }: TopCategoriesCardProps) {
           growthPercent: [142, 98, 67, 32, 18, 0][idx] ?? 0,
         }));
       }
-      const { data: queryRows, error } = await supabase
-        .from('product_views')
-        .select('product_name, created_at')
-        .gte('created_at', sinceCurrent);
-      if (error) throw error;
+      const queryRows = await fetchAllPages<{
+        product_name: string | null;
+        created_at: string;
+      }>((from, to) =>
+        supabase
+          .from('product_views')
+          .select('product_name, created_at')
+          .gte('created_at', sinceCurrent)
+          .order('id', { ascending: true })
+          .range(from, to),
+      );
 
       const map = new Map<string, { views: number; recent: number }>();
-      (queryRows ?? []).forEach((v: { product_name: string | null; created_at: string }) => {
+      queryRows.forEach((v) => {
         const cat = extractCategory(v.product_name);
         const existing = map.get(cat) ?? { views: 0, recent: 0 };
         existing.views += 1;

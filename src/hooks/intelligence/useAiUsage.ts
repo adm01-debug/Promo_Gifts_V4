@@ -4,6 +4,7 @@
  */
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { fetchAllPages } from '@/lib/db/fetch-all-pages';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 
@@ -69,7 +70,9 @@ export function useAiUsageLogs(options?: {
     queryFn: async () => {
       let query = supabase
         .from('ai_usage_logs')
-        .select('id,user_id,function_name,model,input_tokens,output_tokens,total_tokens,estimated_cost_usd,duration_ms,status,error_message,metadata,created_at')
+        .select(
+          'id,user_id,function_name,model,input_tokens,output_tokens,total_tokens,estimated_cost_usd,duration_ms,status,error_message,metadata,created_at',
+        )
         .order('created_at', { ascending: false })
         .limit(limit);
 
@@ -103,7 +106,10 @@ export function useAiQuotas() {
   return useQuery({
     queryKey: ['ai-usage-quotas'],
     queryFn: async () => {
-      const { data, error } = await supabase.from('ai_usage_quotas').select('id,role,monthly_limit,is_unlimited').order('role');
+      const { data, error } = await supabase
+        .from('ai_usage_quotas')
+        .select('id,role,monthly_limit,is_unlimited')
+        .order('role');
       if (error) throw error;
       return (data || []) as AiUsageQuota[];
     },
@@ -151,14 +157,19 @@ export function useAiUsageStats(period: 'day' | 'month' | 'week' = 'month') {
         start = new Date(now.getFullYear(), now.getMonth(), 1);
       }
 
-      const { data, error } = await supabase
-        .from('ai_usage_logs')
-        .select('id,user_id,function_name,model,input_tokens,output_tokens,total_tokens,estimated_cost_usd,duration_ms,status,error_message,metadata,created_at')
-        .gte('created_at', start.toISOString())
-        .order('created_at', { ascending: true });
-      if (error) throw error;
+      const data = await fetchAllPages((from, to) =>
+        supabase
+          .from('ai_usage_logs')
+          .select(
+            'id,user_id,function_name,model,input_tokens,output_tokens,total_tokens,estimated_cost_usd,duration_ms,status,error_message,metadata,created_at',
+          )
+          .gte('created_at', start.toISOString())
+          .order('created_at', { ascending: true })
+          .order('id', { ascending: true })
+          .range(from, to),
+      );
 
-      const logs = (data || []) as AiUsageLog[];
+      const logs = data as AiUsageLog[];
       const totalRequests = logs.length;
       const successCount = logs.filter((l) => l.status === 'success').length;
       const totalTokens = logs.reduce((s, l) => s + l.total_tokens, 0);

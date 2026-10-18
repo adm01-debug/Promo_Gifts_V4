@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { untypedFrom } from '@/lib/supabase-untyped';
+import { fetchAllPages } from '@/lib/db/fetch-all-pages';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Select,
@@ -115,19 +116,21 @@ export default function TrendsPage() {
   } = useQuery({
     queryKey: ['trends-products', dateRange, scopeKey],
     queryFn: async (): Promise<AggregatedProduct[]> => {
-      let q = untypedFrom('product_views')
-        .select('product_id, product_name, product_sku, view_type, created_at, seller_id')
-        .gte('created_at', sincePrevious)
-        .order('created_at', { ascending: false });
-      if (sellerScope) q = q.eq('seller_id', sellerScope);
-      const { data, error } = await q;
-      if (error) throw error;
+      const data = await fetchAllPages<ProductView>((from, to) => {
+        let q = untypedFrom('product_views')
+          .select('product_id, product_name, product_sku, view_type, created_at, seller_id')
+          .gte('created_at', sincePrevious)
+          .order('created_at', { ascending: false })
+          .order('id', { ascending: false });
+        if (sellerScope) q = q.eq('seller_id', sellerScope);
+        return q.range(from, to);
+      });
 
       const productMap = new Map<string, AggregatedProduct>();
       const recentDays = Math.max(Math.floor(days / 3), 1);
       const baselineDays = days - recentDays;
 
-      (data ?? []).forEach((view: ProductView) => {
+      data.forEach((view) => {
         const key = view.product_id || view.product_name;
         if (!key) return;
         const isInCurrentWindow = view.created_at >= sinceCurrent;
@@ -190,18 +193,20 @@ export default function TrendsPage() {
   } = useQuery({
     queryKey: ['trends-searches', dateRange, scopeKey],
     queryFn: async () => {
-      let q = untypedFrom('search_analytics')
-        .select('search_term, results_count, created_at, seller_id')
-        .gte('created_at', sincePrevious)
-        .order('created_at', { ascending: false });
-      if (sellerScope) q = q.eq('seller_id', sellerScope);
-      const { data, error } = await q;
-      if (error) throw error;
+      const data = await fetchAllPages<SearchRow>((from, to) => {
+        let q = untypedFrom('search_analytics')
+          .select('search_term, results_count, created_at, seller_id')
+          .gte('created_at', sincePrevious)
+          .order('created_at', { ascending: false })
+          .order('id', { ascending: false });
+        if (sellerScope) q = q.eq('seller_id', sellerScope);
+        return q.range(from, to);
+      });
 
       const current = new Map<string, { count: number; totalResults: number }>();
       const previous = new Map<string, { count: number }>();
 
-      (data ?? []).forEach((s: SearchRow) => {
+      data.forEach((s) => {
         const term = (s.search_term ?? '').toLowerCase().trim();
         if (!term) return;
         if (s.created_at >= sinceCurrent) {
@@ -238,17 +243,18 @@ export default function TrendsPage() {
   const { data: dailyData, isLoading: loadingDaily } = useQuery({
     queryKey: ['trends-daily', dateRange, scopeKey],
     queryFn: async () => {
-      const buildQ = (table: string, since: string) => {
-        let q = untypedFrom(table).select('created_at, seller_id').gte('created_at', since);
+      const buildPage = (table: string, since: string) => (from: number, to: number) => {
+        let q = untypedFrom(table)
+          .select('created_at, seller_id')
+          .gte('created_at', since)
+          .order('id', { ascending: true });
         if (sellerScope) q = q.eq('seller_id', sellerScope);
-        return q;
+        return q.range(from, to);
       };
-      const [{ data: views, error: ve }, { data: searches, error: se }] = await Promise.all([
-        buildQ('product_views', sincePrevious),
-        buildQ('search_analytics', sincePrevious),
+      const [views, searches] = await Promise.all([
+        fetchAllPages<{ created_at: string }>(buildPage('product_views', sincePrevious)),
+        fetchAllPages<{ created_at: string }>(buildPage('search_analytics', sincePrevious)),
       ]);
-      const trendErr = ve || se;
-      if (trendErr) throw new Error(trendErr.message ?? String(trendErr));
 
       // Buckets atual + anterior (mesmo número de dias)
       const cur = new Map<string, { date: string; views: number; searches: number }>();
@@ -261,7 +267,7 @@ export default function TrendsPage() {
         const d = format(subDays(new Date(), days + i), 'yyyy-MM-dd');
         prev.set(d, { views: 0, searches: 0 });
       }
-      views?.forEach((v: { created_at: string }) => {
+      views.forEach((v) => {
         const d = format(new Date(v.created_at), 'yyyy-MM-dd');
         const c = cur.get(d);
         if (c) {
@@ -271,7 +277,7 @@ export default function TrendsPage() {
         const p = prev.get(d);
         if (p) p.views += 1;
       });
-      searches?.forEach((s: { created_at: string }) => {
+      searches.forEach((s) => {
         const d = format(new Date(s.created_at), 'yyyy-MM-dd');
         const c = cur.get(d);
         if (c) {
@@ -300,23 +306,24 @@ export default function TrendsPage() {
   const { data: kpiSnapshot } = useQuery({
     queryKey: ['trends-kpi-snapshot', dateRange, scopeKey],
     queryFn: async () => {
-      const buildQ = (table: string, fields: string) => {
-        let q = untypedFrom(table).select(fields).gte('created_at', sincePrevious);
+      const buildPage = (table: string, fields: string) => (from: number, to: number) => {
+        let q = untypedFrom(table)
+          .select(fields)
+          .gte('created_at', sincePrevious)
+          .order('id', { ascending: true });
         if (sellerScope) q = q.eq('seller_id', sellerScope);
-        return q;
+        return q.range(from, to);
       };
-      const [{ data: vAllRaw }, { data: sAllRaw }] = await Promise.all([
-        buildQ('product_views', 'product_id, product_name, created_at, seller_id'),
-        buildQ('search_analytics', 'search_term, created_at, seller_id'),
+      const [vAllRaw, sAllRaw] = await Promise.all([
+        fetchAllPages(
+          buildPage('product_views', 'product_id, product_name, created_at, seller_id'),
+        ),
+        fetchAllPages(buildPage('search_analytics', 'search_term, created_at, seller_id')),
       ]);
       // untypedFrom is the escape hatch for tables outside the generated schema;
       // the select() rows come back loosely typed, so narrow to the shape we read.
-      const vAll = (vAllRaw ?? []) as unknown as Array<
-        Record<string, unknown> & { created_at: string }
-      >;
-      const sAll = (sAllRaw ?? []) as unknown as Array<
-        Record<string, unknown> & { created_at: string }
-      >;
+      const vAll = vAllRaw as unknown as Array<Record<string, unknown> & { created_at: string }>;
+      const sAll = sAllRaw as unknown as Array<Record<string, unknown> & { created_at: string }>;
       const split = (
         rows: Array<{ created_at: string }>,
         keyFn: (r: Record<string, unknown>) => string | null,
@@ -517,13 +524,13 @@ export default function TrendsPage() {
         {/* Forecast Chart com toggles vs anterior + previsão + anomalias */}
         <SectionErrorBoundary section="trends-forecast" label="o gráfico de tendências">
           <TrendsForecastChart
-          dailyTrends={displayDaily?.current}
-          previousTrends={displayDaily?.previous}
-          isLoading={displayLoadingDaily}
-          showForecast={showForecast}
-          onToggleForecast={setShowForecast}
-          showCompare={showCompare}
-          onToggleCompare={setShowCompare}
+            dailyTrends={displayDaily?.current}
+            previousTrends={displayDaily?.previous}
+            isLoading={displayLoadingDaily}
+            showForecast={showForecast}
+            onToggleForecast={setShowForecast}
+            showCompare={showCompare}
+            onToggleCompare={setShowCompare}
           />
         </SectionErrorBoundary>
 

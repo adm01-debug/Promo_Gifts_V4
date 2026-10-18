@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { untypedFrom } from '@/lib/supabase-untyped';
+import { fetchAllPages } from '@/lib/db/fetch-all-pages';
 import { logger } from '@/lib/logger';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -47,21 +48,39 @@ export function useProductInsights(productId?: string, productSku?: string) {
       // product appear with zero views, quotes, and orders.
       const [
         { count: viewsCount, error: e1 },
-        { data: quoteItems, count: quotesCount, error: e2 },
-        { data: orderItems, count: ordersCount, error: e3 },
+        { count: quotesCount, error: e2 },
+        { count: ordersCount, error: e3 },
       ] = await Promise.all([
         untypedFrom('product_views')
           .select('*', { count: 'exact', head: true })
           .eq('product_sku', productSku),
         untypedFrom('quote_items')
-          .select('quantity, quote_id', { count: 'exact' })
+          .select('quantity', { count: 'exact', head: true })
           .eq('product_sku', productSku),
         untypedFrom('order_items')
-          .select('quantity, order_id', { count: 'exact' })
+          .select('quantity', { count: 'exact', head: true })
           .eq('product_sku', productSku),
       ]);
       const primaryErr = e1 ?? e2 ?? e3;
       if (primaryErr) throw primaryErr;
+
+      // Os dados completos vêm paginados (o count acima já traz o total real).
+      const [quoteItems, orderItems] = await Promise.all([
+        fetchAllPages<{ quantity: number | null; quote_id: string }>((from, to) =>
+          untypedFrom('quote_items')
+            .select('quantity, quote_id')
+            .eq('product_sku', productSku)
+            .order('id', { ascending: true })
+            .range(from, to),
+        ),
+        fetchAllPages<{ quantity: number | null; order_id: string | null }>((from, to) =>
+          untypedFrom('order_items')
+            .select('quantity, order_id')
+            .eq('product_sku', productSku)
+            .order('id', { ascending: true })
+            .range(from, to),
+        ),
+      ]);
 
       const allQuantities = [
         ...(quoteItems || []).map((q) => q.quantity),
@@ -83,14 +102,27 @@ export function useProductInsights(productId?: string, productSku?: string) {
       if (orderIds.length > 0) {
         // BUG-PRODUCTINSIGHTS-ORDERS-SELECT-SILENT-FAIL FIX: { data: orders } without error —
         // RLS failure silently returned null, producing empty topSegments without diagnostic.
-        const { data: orders, error: ordersErr } = await supabase
-          // rls-allow: seller-scope enforced by RLS policy; orderIds filtered from seller's own items
-          .from('orders')
-          .select('client_id')
-          .in('id', orderIds);
-        if (ordersErr) logger.warn('[useProductInsights] orders fetch for segments failed:', ordersErr);
+        // `.in()` com centenas de ids estoura a querystring do PostgREST — lotes de 200.
+        const orders: Array<{ client_id: string | null }> = [];
+        try {
+          for (let i = 0; i < orderIds.length; i += 200) {
+            const idBatch = orderIds.slice(i, i + 200);
+            // rls-allow: seller-scope enforced by RLS policy; orderIds filtered from seller's own items
+            const batch = await fetchAllPages<{ client_id: string | null }>((from, to) =>
+              supabase
+                .from('orders')
+                .select('client_id')
+                .in('id', idBatch)
+                .order('id', { ascending: true })
+                .range(from, to),
+            );
+            orders.push(...batch);
+          }
+        } catch (ordersErr) {
+          logger.warn('[useProductInsights] orders fetch for segments failed:', ordersErr);
+        }
 
-        const clientIds = [...new Set((orders || []).map((o) => o.client_id).filter(Boolean))];
+        const clientIds = [...new Set(orders.map((o) => o.client_id).filter(Boolean))];
 
         if (clientIds.length > 0) {
           const { selectCrm } = await import('@/lib/crm-db');
@@ -105,7 +137,7 @@ export function useProductInsights(productId?: string, productSku?: string) {
           });
 
           const segmentCounts: Record<string, number> = {};
-          (orders || []).forEach((order) => {
+          orders.forEach((order) => {
             const segment = order.client_id ? clientSegmentMap[order.client_id] : null;
             if (segment) {
               segmentCounts[segment] = (segmentCounts[segment] || 0) + 1;
@@ -123,18 +155,19 @@ export function useProductInsights(productId?: string, productSku?: string) {
 
       // BUG-PRODUCTINSIGHTS-RECENT-PARALLEL-SILENT-FAIL FIX: both destructures omitted error —
       // RLS failure silently produced empty recentActivity without any diagnostic.
-      const [{ data: recentViews, error: e4 }, { data: recentQuotes, error: e5 }] = await Promise.all([
-        untypedFrom('product_views')
-          .select('created_at, seller_id')
-          .eq('product_sku', productSku)
-          .order('created_at', { ascending: false })
-          .limit(3),
-        untypedFrom('quote_items')
-          .select('created_at, quantity')
-          .eq('product_sku', productSku)
-          .order('created_at', { ascending: false })
-          .limit(3),
-      ]);
+      const [{ data: recentViews, error: e4 }, { data: recentQuotes, error: e5 }] =
+        await Promise.all([
+          untypedFrom('product_views')
+            .select('created_at, seller_id')
+            .eq('product_sku', productSku)
+            .order('created_at', { ascending: false })
+            .limit(3),
+          untypedFrom('quote_items')
+            .select('created_at, quantity')
+            .eq('product_sku', productSku)
+            .order('created_at', { ascending: false })
+            .limit(3),
+        ]);
       const recentErr = e4 ?? e5;
       if (recentErr) logger.warn('[useProductInsights] recent activity fetch failed:', recentErr);
 
