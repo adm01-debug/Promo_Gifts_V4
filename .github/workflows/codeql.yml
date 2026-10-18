@@ -62,13 +62,13 @@ jobs:
             exit 0
           fi
 
-          # E017: qualquer 403 da code-scanning API = Code Security não habilitado ou sem permissão
-          # Mensagem exata varia ("not enabled", "Advanced Security must be enabled", etc.)
+          # E017: 403 da code-scanning API em repo público = erro real de permissão/configuração.
+          # exit 1 garante que o job falhe visível (vermelho) em vez de passar verde sem scan.
           if [ "$status" = '403' ]; then
             echo 'enabled=false' >> "$GITHUB_OUTPUT"
             message="$(jq -r '.message // ""' "$response_file")"
-            echo "::notice title=CodeQL indisponível::Code Security não habilitado ou sem permissão (HTTP 403: $message)"
-            exit 0
+            echo "::error title=CodeQL indisponível::Code Security não habilitado ou sem permissão (HTTP 403: $message). Repositório público deve ter CodeQL disponível — verifique Advanced Security nas configurações."
+            exit 1
           fi
           message="$(jq -r '.message // ""' "$response_file")" 
 

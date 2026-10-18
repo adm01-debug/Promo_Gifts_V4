@@ -28,16 +28,16 @@ on:
   pull_request:
     branches: [main]
     # 2026-09-27: paths filter — 12min de snapshot só quando schema/migrations muda
+    # E68: removido supabase/functions/** — snapshot de schema não depende de edge functions
     paths:
       - 'supabase/migrations/**'
-      - 'supabase/functions/**'
       - 'package.json'
       - '.github/workflows/schema-snapshot-export.yml'
   push:
     branches: [main]
+    # E68: removido supabase/functions/** — paths só supabase/migrations/**
     paths:
       - 'supabase/migrations/**'
-      - 'supabase/functions/**'
       - 'package.json'
       - '.github/workflows/schema-snapshot-export.yml'
   schedule:
@@ -127,6 +127,14 @@ jobs:
             exit 1
           fi
           echo "Credenciais presentes — prosseguindo com snapshot live."
+
+      - name: Read schemas.txt (E035 — SSOT compartilhado com db-schema-drift-check)
+        run: |
+          # E035: este arquivo é a SSOT dos schemas de aplicação.
+          # db-schema-drift-check.yml também o lê (grep schemas.txt ali).
+          SCHEMAS=$(grep -v '^#' supabase/baseline/schemas.txt | grep -v '^$' | tr '\n' ',' | sed 's/,$//')
+          echo "SCHEMAS=${SCHEMAS}" >> "$GITHUB_ENV"
+          echo "::notice::Schemas registrados em schemas.txt: ${SCHEMAS}"
 
       - name: Generate snapshot
         run: node scripts/export-schema-snapshot.mjs
@@ -305,9 +313,10 @@ jobs:
           fi
 
           WEEK=$(date -u +"%Y-W%V")
+          # E68: --head usa repository_owner dinâmico em vez de org hardcoded
           EXISTING=$(gh pr list \
             --base main \
-            --head "adm01-debug:bot/schema-snapshot" \
+            --head "${{ github.repository_owner }}:bot/schema-snapshot" \
             --state open \
             --json number \
             --jq '.[0].number' 2>/dev/null || echo "")

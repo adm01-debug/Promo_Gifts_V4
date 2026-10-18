@@ -938,12 +938,60 @@ export function dropDumpLossyFunctions(diffSql, shadowSql) {
   return { sql: out, dropped };
 }
 
+// E038: agrupa linhas em statements SQL antes de filtrar. Sem agrupamento,
+// um statement multi-linha como `CREATE INDEX … ON … (col);` teria só a
+// primeira linha removida pela allowlist, deixando as continuações como ruído.
+export function splitDiffStatements(sql) {
+  const stmts = [];
+  const lines = sql.split('\n');
+  let current = [];
+  let dollarTag = null;
+
+  for (const line of lines) {
+    const t = line.trim();
+
+    // Fora de qualquer statement: pular linhas de ruído/cabeçalho
+    if (!current.length) {
+      if (!t) continue;
+      if (t.startsWith('--')) continue;
+      if (/^no schema changes found[.;]?\s*$/i.test(t)) continue;
+    }
+
+    // Rastrear abertura de dollar-quote
+    if (!dollarTag) {
+      const dm = line.match(/\bAS\s+(\$[A-Za-z0-9_]*\$)/i) ?? line.match(/^(\$[A-Za-z0-9_]*\$)/);
+      if (dm) dollarTag = dm[1];
+    }
+
+    current.push(line);
+
+    if (dollarTag) {
+      // Dentro de dollar-quote: esperar o fechamento
+      const opens = (line.match(new RegExp(`\\${dollarTag.replace(/\$/g, '\\$')}`, 'g')) ?? []).length;
+      // Se esta linha fecha o dollar-quote (número ímpar de ocorrências) E termina com ';'
+      if (opens % 2 === 1 && current.length > 1) {
+        dollarTag = null;
+        if (t.endsWith(';')) { stmts.push(current.join('\n')); current = []; }
+      }
+      continue;
+    }
+
+    // Fora de dollar-quote: ';' final do statement
+    if (t.endsWith(';')) {
+      stmts.push(current.join('\n'));
+      current = [];
+    }
+  }
+
+  if (current.some((l) => l.trim())) stmts.push(current.join('\n'));
+  return stmts;
+}
+
 export function filterDiff(diffSql, allowlist) {
-  return diffSql
-    .split('\n')
-    .filter((l) => l.trim() && !l.trim().startsWith('--'))
-    .filter((l) => !/^\s*no schema changes found[.;]?\s*$/i.test(l))
-    .filter((l) => !allowlist.some((re) => re.test(l)));
+  return splitDiffStatements(diffSql).filter((stmt) => {
+    const first = stmt.split('\n').find((l) => l.trim() && !l.trim().startsWith('--')) ?? '';
+    return !allowlist.some((re) => re.test(first.trim()));
+  });
 }
 
 function arg(argv, name) {

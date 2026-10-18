@@ -1,4 +1,4 @@
-# Política de DDL — quando MCP/dashboard é aceitável (E12)
+# Política de DDL — quando MCP/dashboard é aceitável (E12/E75)
 
 Projeto canônico: `doufsxqlfjyuvxuezpln`. Esta política é referenciada pela REGRA #8 de
 `CLAUDE.md` e é aplicada (de forma best-effort, não bloqueante) pelo workflow
@@ -8,6 +8,13 @@ Projeto canônico: `doufsxqlfjyuvxuezpln`. Esta política é referenciada pela R
 
 **O caminho padrão para DDL é `supabase/migrations/**.sql` via `.github/workflows/db-apply-migration.yml` (`workflow_dispatch`).**
 `supabase db push` é proibido (REGRA #8/E15) — o único caminho autorizado fora de MCP-ticket é o workflow acima.
+
+### MCP como leitura vs. escrita (E75)
+
+Ferramentas MCP (`execute_sql`, `apply_migration`, `supabase_db_query` etc.) são, por padrão,
+**somente leitura** neste projeto. Usos legítimos de leitura incluem: auditoria via `pg_catalog`,
+análise de schema, diagnóstico de dados. **Escrita via MCP só é autorizada pelo PO**, nas
+condições abaixo.
 
 DDL aplicada direto via MCP (`execute_sql`/`apply_migration`) ou dashboard (Studio SQL Editor)
 só é aceitável quando as **três** condições abaixo forem satisfeitas:
@@ -28,6 +35,33 @@ só é aceitável quando as **três** condições abaixo forem satisfeitas:
 Se qualquer uma das três faltar, a alteração é **DDL out-of-band**: aplicada em produção sem
 rastro correspondente no ledger versionado. Não é proibida retroativamente, mas deve ser
 regularizada (registrar (a)/(b)/(c) a posteriori) assim que detectada.
+
+### Reconciliação com `mode: repair-only` (E05/E75)
+
+Quando uma migration foi aplicada fora de ordem ou via MCP/dashboard e o ledger já divergiu,
+o caminho de reconciliação autorizado é `mode: repair-only`:
+
+1. Criar o arquivo `.sql` correspondente em `supabase/migrations/` (item (b) acima).
+2. Registrar no ledger via `supabase migration repair --status applied <version> --linked`
+   com a versão **exata** — nunca sem versão explícita (REGRA #8: trunca `schema_migrations`).
+3. **Nunca** usar `--status reverted` em lote: o CLI sugere isso quando o ledger diverge,
+   mas apaga histórico. O remédio sempre é adicionar a versão, não remover o conflito.
+4. Se a reconciliação for feita via `db-apply-migration.yml` com a flag `repair_only`, o
+   workflow cuida do `migration repair` e registra recibo em `supabase/MIGRATIONS_SYNC_LOG.md`
+   automaticamente — esse é o caminho preferido.
+
+### Ledger de recibos — `MIGRATIONS_SYNC_LOG.md` (E75)
+
+`supabase/MIGRATIONS_SYNC_LOG.md` é o **recibo tabular** de toda migration aplicada. Contrato:
+
+- **1 linha por versão** na tabela "Recibos — E15" — duplicatas são erro, não aviso.
+- **Formato de status**: `pendente` só é válido quando a migration está sendo *adicionada* neste
+  PR (nunca para migrations já existentes que foram só modificadas). `aplicada` exige `run` + data.
+- **Gate de PR**: `scripts/check-migrations-sync-log-gate.mjs` bloqueia merge se qualquer
+  arquivo `.sql` novo/modificado em `supabase/migrations/` não tiver recibo correspondente.
+  O gate também detecta versões duplicadas no log (mais de 1 ocorrência da mesma versão).
+- **Prevenção de duplicatas**: `scripts/append-migration-receipt.mjs` faz upsert — se já
+  existe linha `pendente` para a versão, substitui ela em vez de anexar nova linha.
 
 ## Por que isso importa (casos medidos)
 
@@ -115,3 +149,7 @@ Para validar o ciclo completo sem tocar o banco de produção:
   não substitui este detector, que é granularidade coluna via `schema_signature_drift_log`).
 - `.github/workflows/schema-snapshot-export.yml` — snapshot do schema live, não compara com
   o ledger.
+- `scripts/check-migrations-sync-log-gate.mjs` — gate de PR: verifica recibos em
+  `supabase/MIGRATIONS_SYNC_LOG.md`, detecta duplicatas e `pendente` sem adição no PR (E75).
+- `scripts/append-migration-receipt.mjs` — escreve/atualiza recibo no log; faz upsert de
+  linha `pendente` → `aplicada` em vez de sempre anexar (E75).

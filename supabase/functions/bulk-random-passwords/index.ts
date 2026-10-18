@@ -203,6 +203,18 @@ Deno.serve(async (req: Request) => {
       }
     }
 
+    // E028: registrar execução apply em admin_audit_log
+    if (mode === 'apply') {
+      await admin.from("admin_audit_log").insert({
+        user_id: authResult.user.id,
+        action: "bulk_password_reset",
+        resource_type: "auth",
+        details: { count: updatedUsers.length, maxUsers, pwLength },
+        ip_address: req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || null,
+        user_agent: req.headers.get("user-agent") || null,
+      });
+    }
+
     // E029: dry_run não expõe lista de usuários/emails — só contagem
     const responsePayload = mode === 'apply'
       ? { mode, count: updatedUsers.length, users: updatedUsers }
