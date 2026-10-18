@@ -35,14 +35,29 @@ const GATE_MODE = argv.includes('--gate');
 const REQUIRE_LIVE = shouldRequireLive(argv);
 const fromFileArg = argv.find((a) => a.startsWith('--from-file='));
 
-// SQL: migrations aplicadas no ledger, mais recentes primeiro
+// SQL: migrations aplicadas no ledger.
+// NOTA: supabase_migrations.schema_migrations NÃO tem coluna `inserted_at`.
+// Colunas reais: version, statements, name, created_by, idempotency_key, rollback.
+// O filtro de ">24h" é feito em JS parseando os 14 dígitos do version (YYYYMMDDHHMMSS).
 const SQL = `
-  SELECT version::text, inserted_at::text
+  SELECT version::text
   FROM supabase_migrations.schema_migrations
-  WHERE inserted_at < NOW() - INTERVAL '24 hours'
-  ORDER BY inserted_at DESC
+  ORDER BY version DESC
   LIMIT 200;
 `.trim();
+
+/** Retorna true se version (formato YYYYMMDDHHMMSS, 14 dígitos) foi aplicada há >24h. */
+function isOlderThan24h(version) {
+  if (typeof version !== 'string' || version.length < 14) return true;
+  const y = version.slice(0, 4);
+  const mo = version.slice(4, 6);
+  const d = version.slice(6, 8);
+  const h = version.slice(8, 10);
+  const mi = version.slice(10, 12);
+  const s = version.slice(12, 14);
+  const vDate = new Date(`${y}-${mo}-${d}T${h}:${mi}:${s}Z`);
+  return !Number.isNaN(vDate.getTime()) && Date.now() - vDate.getTime() > 24 * 60 * 60 * 1000;
+}
 
 function loadSyncLog() {
   if (!existsSync(SYNC_LOG_PATH)) return null;
@@ -79,11 +94,14 @@ async function fetchLiveVersions() {
   if (result.kind !== 'live') {
     return { ...result, maskedUrl: maskUrl(result.target) };
   }
+  // Filtra lado JS: só versões aplicadas há >24h (sem `inserted_at` no schema).
+  const allVersions = result.rows.map((r) => r.version).filter(Boolean);
+  const versions = allVersions.filter(isOlderThan24h);
   return {
     kind: 'live',
     source: result.source,
     maskedUrl: maskUrl(result.target),
-    versions: result.rows.map((r) => ({ version: r.version, inserted_at: r.inserted_at })),
+    versions,
   };
 }
 
