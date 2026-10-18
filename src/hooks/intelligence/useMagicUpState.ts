@@ -7,12 +7,10 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-import { normalizeProductSearch } from '@/utils/product-search';
-import type { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
+import type { TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAriaLive } from '@/components/a11y';
 import { useProductCustomizationOptionsForMockup } from '@/hooks/mockup';
-import { searchCrm } from '@/lib/crm-db';
 import { getCompanyDisplayName, type CrmCompany } from '@/types/crm';
 import type { PrintAreaWithTechniques, AreaShape } from '@/types/gravacao';
 import type { ScenePrompt } from '@/components/magic-up/PromptBank';
@@ -21,7 +19,6 @@ import { useMagicUpGeneration } from '@/hooks/intelligence/useMagicUpGeneration'
 import {
   DEFAULT_BRAND_KIT,
   DEFAULT_BRIEF,
-  DEFAULT_CAMPAIGN,
   DEFAULT_CREATIVE_CONTROLS,
   buildBrandKitNotes,
   buildCopyPack,
@@ -35,68 +32,33 @@ import {
   type MagicUpCampaignStatus,
   type MagicUpCreativeControls,
   type MagicUpCurationStatus,
-  type MagicUpQualityDiagnosis,
   type MagicUpRefinement,
 } from '@/pages/magic-up/magicUpStrategy';
 
 // ─── Types ───────────────────────────────────────────────────────────
 
-export interface MagicUpProduct {
-  id: string;
-  name: string;
-  sku: string;
-  images: Array<{
-    url_cdn?: string;
-    url_original?: string;
-    is_primary?: boolean;
-    is_og_image?: boolean;
-    image_type?: string;
-    supplier_code?: string;
-  }> | null;
-  primary_image_url?: string | null;
-  og_image_url?: string | null;
-}
-
-export interface Technique {
-  id: string;
-  name: string;
-  code: string;
-}
-
-export interface ProductColor {
-  hex: string;
-  name: string;
-  code: string;
-  stock?: number;
-}
-
-export interface ProductImage {
-  url: string;
-  supplierCode: string | null;
-  isPrimary: boolean;
-  isOgImage: boolean;
-}
-
-export interface SelectedClient {
-  id: string;
-  name: string;
-  logo_url?: string | null;
-  ramo_atividade?: string | null;
-  cor_primaria_hex?: string | null;
-  cor_primaria_nome?: string | null;
-}
-
-export interface VariationItem {
-  id: string | null;
-  imageUrl: string;
-  isFavorite: boolean;
-  qualityScore?: number;
-  qualityDiagnosis?: MagicUpQualityDiagnosis;
-  curationStatus?: MagicUpCurationStatus;
-  isWinner?: boolean;
-}
-
-// ─── Hook ────────────────────────────────────────────────────────────
+import {
+  searchMagicUpClients,
+  fetchMagicUpHistory,
+  fetchMagicUpCampaigns,
+  fetchMagicUpBrandKit,
+  fetchMagicUpProducts,
+  saveMagicUpCampaignRow,
+  type MagicUpProduct,
+  type Technique,
+  type ProductColor,
+  type ProductImage,
+  type SelectedClient,
+  type VariationItem,
+} from './useMagicUpState.helpers';
+export type {
+  MagicUpProduct,
+  Technique,
+  ProductColor,
+  ProductImage,
+  SelectedClient,
+  VariationItem,
+};
 
 export function useMagicUpState() {
   const { user } = useAuth();
@@ -165,115 +127,26 @@ export function useMagicUpState() {
 
   const { data: clientResults = [], isLoading: loadingClients } = useQuery({
     queryKey: ['magic-up-clients', debouncedClientSearch],
-    queryFn: async () => {
-      if (debouncedClientSearch.length < 3) return [];
-      const [byRazao, byNomeFantasia] = await Promise.all([
-        searchCrm<CrmCompany>('companies', 'razao_social', debouncedClientSearch, {
-          select: 'id, razao_social, nome_fantasia, ramo_atividade, logo_url',
-          limit: 20,
-        }),
-        searchCrm<CrmCompany>('companies', 'nome_fantasia', debouncedClientSearch, {
-          select: 'id, razao_social, nome_fantasia, ramo_atividade, logo_url',
-          limit: 20,
-        }),
-      ]);
-      const map = new Map<string, CrmCompany>();
-      [...byRazao, ...byNomeFantasia].forEach((c) => map.set(c.id, c));
-      return Array.from(map.values()).slice(0, 20);
-    },
+    queryFn: () => searchMagicUpClients(debouncedClientSearch),
     enabled: debouncedClientSearch.length >= 3,
   });
 
   // ─── Load History ──────────────────────────────────────────────
   const { data: history = [] } = useQuery<GenerationHistoryItem[]>({
     queryKey: ['magic-up-history', user?.id],
-    queryFn: async () => {
-      if (!user?.id) return [];
-      // BUG-MAGICUPSTATE-HISTORY-SELECT-SILENT-FAIL FIX: { data } without error check —
-      // RLS failure silently returned [] making queryFn succeed with empty history list.
-      const { data, error: histErr } = await supabase
-        .from('magic_up_generations')
-        .select(
-          'id, generated_image_url, product_name, scene_title, scene_category, is_favorite, created_at, client_name, quality_score, status, channel, aspect_ratio, metadata, copy_pack',
-        )
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(50);
-      if (histErr) throw histErr;
-      return (data || []) as GenerationHistoryItem[];
-    },
+    queryFn: () => fetchMagicUpHistory(user?.id),
     enabled: !!user?.id,
   });
 
   const { data: campaigns = [] } = useQuery<MagicUpCampaign[]>({
     queryKey: ['magic-up-campaigns', user?.id],
-    queryFn: async () => {
-      if (!user?.id) return [];
-      const { data, error } = await supabase
-        .from('magic_up_campaigns')
-        .select(
-          'id, title, status, client_id, client_name, objective, channel, audience, tone, cta, occasion, created_at, updated_at',
-        )
-        .eq('user_id', user.id)
-        .order('updated_at', { ascending: false })
-        .limit(30);
-      if (error) throw error;
-      return ((data || []) as Tables<'magic_up_campaigns'>[]).map((row) => ({
-        id: row.id,
-        title: row.title,
-        status: row.status as MagicUpCampaignStatus,
-        clientId: row.client_id,
-        clientName: row.client_name,
-        objective: row.objective || DEFAULT_BRIEF.objective,
-        channel: row.channel || DEFAULT_BRIEF.channel,
-        audience: row.audience || DEFAULT_BRIEF.audience,
-        tone: row.tone || DEFAULT_BRIEF.tone,
-        cta: row.cta || DEFAULT_BRIEF.cta,
-        occasion: row.occasion || DEFAULT_BRIEF.occasion,
-        createdAt: row.created_at,
-        updatedAt: row.updated_at,
-      }));
-    },
+    queryFn: () => fetchMagicUpCampaigns(user?.id),
     enabled: !!user?.id,
   });
 
   const { data: loadedBrandKit, isFetching: loadingBrandKit } = useQuery<MagicUpBrandKit | null>({
     queryKey: ['magic-up-brand-kit', user?.id, selectedClient?.id],
-    queryFn: async () => {
-      if (!user?.id || !selectedClient?.id) return null;
-      const { data, error } = await supabase
-        .from('magic_up_brand_kits')
-        .select(
-          'id, client_id, client_name, logo_urls, primary_color, secondary_color, tone_of_voice, visual_style, required_words, forbidden_words, notes, updated_at',
-        )
-        .eq('user_id', user.id)
-        .eq('client_id', selectedClient.id)
-        .maybeSingle();
-      if (error) throw error;
-      if (!data) return null;
-      const logos = Array.isArray(data.logo_urls)
-        ? (data.logo_urls as unknown as MagicUpBrandLogo[])
-        : [];
-      return {
-        id: data.id,
-        clientId: data.client_id,
-        clientName: data.client_name,
-        primaryLogoUrl:
-          logos.find((logo) => logo.isPrimary)?.url ||
-          logos[0]?.url ||
-          selectedClient.logo_url ||
-          null,
-        logoUrls: logos,
-        primaryColor: data.primary_color,
-        secondaryColor: data.secondary_color,
-        toneOfVoice: data.tone_of_voice || DEFAULT_BRAND_KIT.toneOfVoice,
-        visualStyle: data.visual_style || DEFAULT_BRAND_KIT.visualStyle,
-        requiredWords: data.required_words || [],
-        forbiddenWords: data.forbidden_words || [],
-        notes: data.notes || '',
-        updatedAt: data.updated_at,
-      };
-    },
+    queryFn: () => fetchMagicUpBrandKit(user?.id, selectedClient),
     enabled: !!user?.id && !!selectedClient?.id,
   });
 
@@ -307,31 +180,8 @@ export function useMagicUpState() {
     (async () => {
       setLoadingProducts(true);
       try {
-        const { fetchPromobrindProducts } = await import('@/lib/external-db');
-        const search = debouncedProductSearch || undefined;
-        const data = await fetchPromobrindProducts({
-          search,
-          limit: search ? 150 : 50,
-        });
+        const ranked = await fetchMagicUpProducts(debouncedProductSearch);
         if (cancelled) return;
-        const mapped = data.map((p) => ({
-          id: p.id,
-          name: p.name,
-          sku: p.sku,
-          images: p.images || [],
-          primary_image_url: p.primary_image_url || p.image_url || null,
-          og_image_url: p.og_image_url || null,
-        })) as unknown as MagicUpProduct[];
-        const ranked = search
-          ? (() => {
-              const term = normalizeProductSearch(search);
-              const nameMatches = mapped.filter((p) =>
-                normalizeProductSearch(p.name).includes(term),
-              );
-              const rest = mapped.filter((p) => !normalizeProductSearch(p.name).includes(term));
-              return [...nameMatches, ...rest].slice(0, 50);
-            })()
-          : mapped;
         setProducts(ranked);
       } catch {
         if (!cancelled) toast.error('Erro ao carregar produtos');
@@ -635,46 +485,25 @@ CENÁRIO: ${effectivePrompt}`;
         clientName: selectedClient?.name,
         productName: selectedProduct?.name,
       });
-    const basePayload = {
-      title: draft.title || DEFAULT_CAMPAIGN.title,
-      client_id: selectedClient?.id || draft.clientId,
-      client_name: selectedClient?.name || draft.clientName,
-      objective: draft.objective,
-      channel: draft.channel,
-      audience: draft.audience,
-      tone: draft.tone,
-      cta: draft.cta,
-      occasion: draft.occasion,
-      status: draft.status,
-      metadata: {
-        source: 'magic-up',
-        brand_notes: brandNotes,
-        product_id: selectedProduct?.id || null,
-      },
-    };
-    const result = draft.id
-      ? await supabase
-          .from('magic_up_campaigns')
-          .update(basePayload satisfies TablesUpdate<'magic_up_campaigns'>)
-          .eq('id', draft.id)
-          .select('id, updated_at')
-          .single()
-      : await supabase
-          .from('magic_up_campaigns')
-          .insert({ ...basePayload, user_id: user.id } satisfies TablesInsert<'magic_up_campaigns'>)
-          .select('id, created_at, updated_at')
-          .single();
-    if (result.error || !result.data) {
+    const saved = await saveMagicUpCampaignRow({
+      userId: user.id,
+      draft,
+      selectedClientId: selectedClient?.id,
+      selectedClientName: selectedClient?.name,
+      selectedProductId: selectedProduct?.id,
+      brandNotes,
+    });
+    if (!saved) {
       toast.error('Erro ao salvar campanha');
       announceAlert('Erro ao salvar campanha');
       return;
     }
     setActiveCampaign({
       ...draft,
-      id: result.data.id,
-      clientId: basePayload.client_id || null,
-      clientName: basePayload.client_name || null,
-      updatedAt: result.data.updated_at,
+      id: saved.id,
+      clientId: saved.client_id,
+      clientName: saved.client_name,
+      updatedAt: saved.updated_at,
     });
     queryClient.invalidateQueries({ queryKey: ['magic-up-campaigns'] });
     toast.success('Campanha salva');
