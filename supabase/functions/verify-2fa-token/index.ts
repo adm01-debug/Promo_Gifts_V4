@@ -164,6 +164,25 @@ Deno.serve(async (req: Request) => {
       return json({ success: false, error: 'Erro ao desabilitar 2FA' }, 500);
     }
 
+    // Auditoria: desabilitar 2FA de outro usuário via bypass é ação
+    // administrativa sensível — precisa de trilha em admin_audit_log.
+    if (bypass) {
+      await admin.from('admin_audit_log').insert({
+        user_id: user.id,
+        action: 'user_2fa.admin_disable',
+        resource_type: 'user_2fa_settings',
+        resource_id: effectiveUserId,
+        status: 'success',
+        source: 'verify-2fa-token.disable',
+        details: { bypass: true, caller_roles_checked: true },
+        ip_address:
+          req.headers.get('x-forwarded-for')?.split(',').pop()?.trim() ?? null,
+        user_agent: req.headers.get('user-agent') ?? null,
+      }).then(({ error: auditErr }) => {
+        if (auditErr) console.error('[verify-2fa-token] audit log failed:', auditErr.message);
+      });
+    }
+
     return json({ success: true });
   }
 

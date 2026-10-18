@@ -194,13 +194,24 @@ Deno.serve(async (req) => {
           try {
             const quoteData = await fetchQuoteFromCRM(quote.id);
             if (quoteData) {
+              // FIX-E05 (batch): o gate do caminho single também vale aqui —
+              // marcar synced_to_bitrix sem o n8n ter recebido tira a quote
+              // da fila de pendências e perde a sincronização silenciosamente.
               let response: Record<string, unknown> = {};
+              let n8nSucceeded = !n8nWebhookUrl;
               if (n8nWebhookUrl) {
-                try { response = await sendToN8N(quoteData, n8nWebhookUrl); } catch { /* skip */ }
+                try {
+                  response = await sendToN8N(quoteData, n8nWebhookUrl);
+                  n8nSucceeded = true;
+                } catch { /* skip — não marca como synced */ }
               }
               await sendToSalesPro(quoteData);
-              await updateCRMSyncStatus(quote.id, response);
-              results.push({ id: quote.id, success: true });
+              if (n8nSucceeded) {
+                await updateCRMSyncStatus(quote.id, response);
+              }
+              results.push(n8nSucceeded
+                ? { id: quote.id, success: true }
+                : { id: quote.id, success: false, error: 'n8n sync failed — kept pending' });
             }
           } catch (syncErr) {
             const errorMessage = syncErr instanceof Error ? syncErr.message : "Unknown error";
