@@ -86,8 +86,35 @@ Deno.serve(async (req) => {
 
     const externalSupabase = createClient(externalUrl, externalKey);
 
+    // Default: list all tables — também serve como allowlist para mode=columns (E089)
+    const tablesToTest = [
+      'products', 'categories', 'suppliers', 'tags',
+      'personalization_techniques', 'customization_price_tables',
+      'product_images', 'product_videos', 'product_variants',
+      'product_materials', 'product_tags', 'product_categories',
+      'product_suppliers', 'product_print_areas', 'product_kit_components',
+      'color_groups', 'color_nuances', 'color_equivalences', 'color_variations',
+      'material_groups', 'material_types', 'material_variations',
+      'supplier_colors', 'supplier_materials',
+      'supplier_attribute_definitions', 'supplier_product_attributes',
+      'product_attributes', 'category_attributes',
+      'price_lists', 'variant_stocks', 'variant_cost_tiers', 'variant_sale_prices',
+      'variation_types', 'variation_values', 'stock_movements',
+      'collections', 'collection_products',
+      'ramo_atividade', 'ramo_atividade_filho', 'produto_ramo_atividade',
+      'bitrix_clients', 'organizations', 'client_contacts', 'business_sectors',
+      'mockup_drafts', 'generated_mockups',
+      'print_area_techniques', 'v_print_area_techniques_public',
+      'tabela_preco_gravacao_oficial', 'tabela_preco_gravacao_oficial_faixa',
+      'tecnicas_gravacao', 'v_audit_paradoxos_gravacao',
+    ];
+
     // Inspect specific table columns + row count (service-role bypassa RLS — só leitura)
     if (mode === 'columns' && tableName) {
+      // E089: validar tableName contra allowlist estática antes de executar a query
+      if (!tablesToTest.includes(tableName)) {
+        return jsonResponse({ success: false, error: `Tabela '${tableName}' fora da allowlist` }, 400);
+      }
       try {
         const { data, error, count } = await externalSupabase
           .from(tableName)
@@ -119,30 +146,7 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Default: list all tables
-    const tablesToTest = [
-      'products', 'categories', 'suppliers', 'tags',
-      'personalization_techniques', 'customization_price_tables',
-      'product_images', 'product_videos', 'product_variants',
-      'product_materials', 'product_tags', 'product_categories',
-      'product_suppliers', 'product_print_areas', 'product_kit_components',
-      'color_groups', 'color_nuances', 'color_equivalences', 'color_variations',
-      'material_groups', 'material_types', 'material_variations',
-      'supplier_colors', 'supplier_materials',
-      'supplier_attribute_definitions', 'supplier_product_attributes',
-      'product_attributes', 'category_attributes',
-      'price_lists', 'variant_stocks', 'variant_cost_tiers', 'variant_sale_prices',
-      'variation_types', 'variation_values', 'stock_movements',
-      'collections', 'collection_products',
-      'ramo_atividade', 'ramo_atividade_filho', 'produto_ramo_atividade',
-      'bitrix_clients', 'organizations', 'client_contacts', 'business_sectors',
-      'mockup_drafts', 'generated_mockups',
-      // Arquitetura de Gravação (auditoria do vínculo product↔técnica)
-      'print_area_techniques', 'v_print_area_techniques_public',
-      'tabela_preco_gravacao_oficial', 'tabela_preco_gravacao_oficial_faixa',
-      'tecnicas_gravacao', 'v_audit_paradoxos_gravacao',
-    ];
-
+    // tablesToTest também serve de allowlist para mode=columns (definida acima — E089)
     const results: Array<{ name: string; exists: boolean; columns: string[]; rowCount: number; error?: string }> = [];
 
     const batchSize = 10;
