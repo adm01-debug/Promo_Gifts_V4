@@ -33,7 +33,7 @@ defaults:
   run:
     shell: bash
 
-# ─── JOB 0: DETECÇÃO DE SECRETS ──────────────────────────────────────────────
+# ─── JOB 0: DETECÇÃO DE SECRETS ─────────────────────────────────────────────
 # E013: Determina quais projetos Playwright estão disponíveis com base nos secrets.
 # chromium-authed só entra na matrix quando has_e2e == 'true'.
 jobs:
@@ -41,7 +41,7 @@ jobs:
     uses: ./.github/workflows/_secrets-check.yml
     secrets: inherit
 
-# ─── JOB 1: PRÉ-VÔOS (header-sticky + carrinhos URL-state) ──────────────────
+# ─── JOB 1: PRÉ-VÔOS (header-sticky + carrinhos URL-state) ──────────────
 # Roda uma vez; se falhar, os shards não sobem (needs: e2e-gates).
   e2e-gates:
     runs-on: ubuntu-24.04
@@ -54,6 +54,8 @@ jobs:
       PWTEST_FORBID_ONLY: "1"
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
+      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+      E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -63,13 +65,11 @@ jobs:
           browsers: 'chromium'
           start-vite: 'true'
 
-      # ─── HEADER STICKY GATE ────────────────────────────────────────────────
+      # ─── HEADER STICKY GATE ──────────────────────────────────────────────────────────────────────
       - name: 🧲 Run E2E header-sticky gate (fail-fast por rota/viewport)
         id: e2e_header_sticky
-        if: secrets.E2E_USER_EMAIL != ''
+        if: env.E2E_USER_EMAIL != ''
         env:
-          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
           E2E_BASE_URL: http://localhost:8080
         run: |
           npx playwright test \
@@ -86,13 +86,11 @@ jobs:
           echo "::error title=Header sticky regression::O Header global deixou de ser sticky em alguma rota/viewport. Spec: e2e/flows/22-header-sticky.spec.ts. Causa raiz típica: 'overflow' / 'transform' / 'filter' em ancestral do <header> em src/components/layout/MainLayout.tsx criando scroll container ou stacking context indevido."
           exit 1
 
-      # ─── CARRINHOS URL-STATE ───────────────────────────────────────────────
+      # ─── CARRINHOS URL-STATE ───────────────────────────────────────────────────────────────────
       - name: 🛒 Run /carrinhos & /orcamentos URL-state E2E
         id: e2e_carrinhos_urlstate
-        if: (steps.e2e_header_sticky.outcome == 'success' || steps.e2e_header_sticky.outcome == 'skipped') && secrets.E2E_USER_EMAIL != ''
+        if: (steps.e2e_header_sticky.outcome == 'success' || steps.e2e_header_sticky.outcome == 'skipped') && env.E2E_USER_EMAIL != ''
         env:
-          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
           E2E_BASE_URL: http://localhost:8080
         run: |
           npx playwright test \
@@ -112,7 +110,7 @@ jobs:
           echo "::error title=Carrinhos URL-state regression::Specs de URL-state em /carrinhos ou /orcamentos falharam."
           exit 1
 
-# ─── JOB 2: SHARDS DE REGRESSÃO ──────────────────────────────────────────────
+# ─── JOB 2: SHARDS DE REGRESSÃO ───────────────────────────────────────────────
 # matriz shard:[1,2,3,4] × project:[chromium-public,chromium-authed]
 # chromium-authed só roda quando E2E_USER_EMAIL estiver configurado.
   e2e-shard:
@@ -184,7 +182,7 @@ jobs:
             !test-results/**/trace.zip  # E26: trace contém dados de formulário
           retention-days: 14
 
-# ─── JOB 3: MERGE DE RELATÓRIOS ──────────────────────────────────────────────
+# ─── JOB 3: MERGE DE RELATÓRIOS ────────────────────────────────────────────
 # Baixa todos os blob-report-* e gera um único HTML report + JSON + JUnit.
   merge-reports:
     runs-on: ubuntu-24.04
