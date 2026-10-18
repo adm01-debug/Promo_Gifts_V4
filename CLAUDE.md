@@ -484,7 +484,7 @@ Antes de consultar graphify, verifique se o grafo esta atualizado:
 git rev-parse --short HEAD
 grep "Built from commit" graphify-out/GRAPH_REPORT.md
 ```
-Se divergirem, o auto-sync via N8N deve ter corrigido em ate 15 min.
+Se divergirem, o auto-sync via N8N **não está ativo** (E120, 2026-10-18). Rebuild manual necessário.
 Para forcar rebuild manual: `graphify update . --force`
 
 ## graphify

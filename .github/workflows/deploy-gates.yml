@@ -335,6 +335,30 @@ jobs:
       # de edge function ou backend diretamente na UI sem sanitização.
       - name: Gate E113 — Toast leaks (bloqueante)
         run: node scripts/check-toast-leaks.mjs
+      # E118 — Gates órfãos ligados ao CI (estáticos, sem BD vivo)
+      - name: Gate E118a — asChild nesting (bloqueante)
+        run: node scripts/check-aschild-nesting.mjs
+      - name: Gate E118b — route-ref-usage (bloqueante)
+        run: node scripts/check-route-ref-usage.mjs
+      - name: Gate E118c — route-error-element (bloqueante)
+        run: node scripts/check-route-error-element.mjs
+      - name: Gate E118d — no-inline-cors (bloqueante)
+        run: node scripts/check-no-inline-cors.mjs
+      - name: Gate E118e — summary-color-tokens (bloqueante)
+        run: node scripts/check-summary-color-tokens.mjs
+      - name: Gate E118f — seller-scope (bloqueante)
+        run: node scripts/check-seller-scope.mjs
+      - name: Gate E118g — client-structured-logging (bloqueante)
+        run: node scripts/check-client-structured-logging.mjs
+      - name: Gate E118h — schema-reference-drift (bloqueante)
+        run: node scripts/check-schema-reference-drift.mjs
+      - name: Gate E118i — public-views-drift (bloqueante)
+        run: node scripts/check-public-views-drift.mjs
+      - name: Gate E118j — proposed-configs (bloqueante)
+        run: node scripts/check-eslint-config-current.mjs --strict
+      # E119 — ratchet de definições locais de `interface Product` (não aumenta)
+      - name: Gate E119 — Product interface ratchet (bloqueante)
+        run: node scripts/check-product-type-duplicates.mjs
 
   unit-tests:
     name: Gate 2 - Unit Tests
