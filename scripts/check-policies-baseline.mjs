@@ -211,13 +211,21 @@ function plannedPolicyKeys(appliedVersions) {
       if (schema === 'public') {
         const baseKey = `public.${table}.${name}`;
         if (op === 'create') {
-          // E048: extrair FOR cmd do contexto do statement (até o próximo ';')
+          // E048: extrair FOR cmd e USING (qual) do contexto do statement.
           const afterMatch = sql.slice(stmt.index + stmt[0].length);
           const nextSemi = afterMatch.indexOf(';');
           const stmtRest = nextSemi >= 0 ? afterMatch.slice(0, nextSemi + 1) : afterMatch;
           const cmdMatch = stmtRest.match(/\bfor\s+(select|insert|update|delete|all)\b/i);
+          // Extrai USING (...) — captura até parêntese balanceado
+          const usingMatch = stmtRest.match(/\busing\s*\(([^)]*(?:\([^)]*\)[^)]*)*)\)/i);
+          const qualNorm = usingMatch ? usingMatch[1].trim() : null;
           if (cmdMatch) {
-            planned.add(baseKey + '|' + cmdMatch[1].toUpperCase());
+            const cmdKey = baseKey + '|' + cmdMatch[1].toUpperCase();
+            // E048: chave com cmd e qual quando ambos disponíveis (mais específico)
+            if (qualNorm !== null) {
+              planned.add(cmdKey + '|' + qualNorm);
+            }
+            planned.add(cmdKey); // fallback sem qual (backward compat)
           } else {
             planned.add(baseKey); // sem FOR explícito: chave legada (backward compat)
           }
@@ -269,11 +277,15 @@ function isPublicOpenPolicy(p) {
 }
 
 // E048: chave de tolerância que inclui cmd quando disponível nas migrations.
-// Fallback para chave legada (sem cmd) em migrations sem FOR explícito.
+// E048: casar cmd + qual + chave; fallback para backward compat.
+// Ordem: mais específico (cmd+qual) → cmd apenas → sem cmd (legado).
 function isAddedPlanned(p, plannedKeys) {
+  const base = policyKey(p);
+  const qualNorm = (p.qual ?? '').replace(/^\(|\)$/g, '').trim();
   return (
-    plannedKeys.has(policyKey(p) + '|' + p.cmd.toUpperCase()) ||
-    plannedKeys.has(policyKey(p)) // legado: migration sem FOR explícito
+    plannedKeys.has(base + '|' + p.cmd.toUpperCase() + '|' + qualNorm) ||
+    plannedKeys.has(base + '|' + p.cmd.toUpperCase()) ||
+    plannedKeys.has(base)
   );
 }
 
