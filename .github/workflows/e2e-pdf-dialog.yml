@@ -89,14 +89,13 @@ jobs:
 
       # Sempre publicar (push, PR e dispatch) — permite revisar diffs de
       # pixel-diff direto do PR sem precisar rodar localmente.
-      - name: Upload Playwright HTML report + trace
+      - name: Upload Playwright HTML report (sem trace)
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: playwright-report-pdf-dialog-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             playwright-report/
-            test-results/**/trace.zip
           retention-days: 14
           if-no-files-found: warn
 
