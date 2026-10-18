@@ -259,6 +259,18 @@ revisando o diff do baseline na PR do bot antes do merge.
 - `supabase migration repair --status applied` **sem versão explícita** (trunca `schema_migrations`)
 - `supabase migration repair --status reverted` em lote (o CLI sugere isso quando o ledger diverge — não siga)
 
+### Corolário — caminho de reconciliação `repair-only` (E99 — 2026-10-18)
+Quando DDL foi aplicada fora do fluxo de migration (via MCP, dashboard ou emergência)
+e o ledger está dessincronizado, o caminho de reconciliação é:
+1. Criar a migration espelho (arquivo `.sql` em `supabase/migrations/`), nomear com timestamp da aplicação real
+2. Registrar no ledger via `supabase migration repair --status applied <version>` (com versão explícita)
+3. Abrir PR com ambos — o arquivo e o recibo em `supabase/MIGRATIONS_SYNC_LOG.md`
+4. Rodar `schema-snapshot-export.yml` com `force_rotate: true` se o baseline ficou desatualizado
+
+**Modo `repair-only`** (CI): quando uma migration foi aplicada fora do workflow (`db-apply-migration.yml`)
+e precisa apenas do registro no ledger sem reaplicar — o preflight aceita `transaction: none` com `approved-by`
+do PO. Isso não aplica DDL, só registra. Ver `docs/db/POLITICA_DDL.md`.
+
 ### Corolário — caminho único para deploy de edge function
 Deploy de edge function fora de `.github/workflows/deploy-edge-functions.yml`
 (ex.: MCP `deploy_edge_function` direto, dashboard) cria a mesma divergência
@@ -363,11 +375,32 @@ O `required-checks.json` (`.github/required-checks.json`) é a SSOT da lista —
 qualquer PR que altere um `name:` de job em `deploy-gates.yml` deve atualizar
 esse arquivo ao mesmo tempo ou o Branch Protection Sentinel vai alertar.
 
-### Padrão E12 — 8 regras obrigatórias para workflows
+### Quem roda o quê (E99 — 2026-10-18)
 
-Todo workflow em `.github/workflows/` deve seguir as 8 regras documentadas em
-`docs/ci/PADRAO_WORKFLOW.md`. Resumo:
+| Trigger | Workflows principais | Propósito |
+|---|---|---|
+| **PR** | `deploy-gates.yml` (Gate Final) | Todos os gates obrigatórios |
+| **PR** | `workflow-lint.yml` | actionlint + shellcheck |
+| **PR** | `required-checks-guard.yml` | Checks fantasmas + divergência required-checks.json |
+| **push: main** | `deploy-gates.yml` + `codeql.yml` | Gate Final + scan de segurança |
+| **push: main** | `ddl-out-of-band-detector.yml` | Detecta DDL fora do fluxo |
+| **schedule (diário)** | `required-checks-guard.yml` | Auditoria de checks |
+| **schedule (semanal)** | `codeql.yml` | Scan completo seg 09:33 UTC |
+| **schedule (semanal)** | `ddl-out-of-band-detector.yml` | Drift do ledger |
+| **schedule (30 min)** | `uptime-monitor.yml` | Health check externo |
+| **workflow_dispatch** | `db-apply-migration.yml` | ÚNICO caminho para migration em prod |
+| **workflow_dispatch** | `deploy-edge-functions.yml` | ÚNICO caminho para deploy de edge function |
+| **workflow_dispatch** | `schema-snapshot-export.yml` | Gira baseline do drift-check |
 
+**Regra geral:** nenhum job com trigger `pull_request` pode ter `permissions.contents: write`
+ou referenciar segredo de escrita (R11). Exceção: labels/checks automáticos via `github.token` read-only.
+
+### Padrão E12 — 20 regras obrigatórias para workflows (E99 — atualizado 2026-10-18)
+
+Todo workflow em `.github/workflows/` deve seguir as regras documentadas em
+`docs/ci/PADRAO_WORKFLOW.md`. Resumo das regras (R1–R20, completas no PADRAO_WORKFLOW.md):
+
+**R1–R8 (estrutura básica):**
 1. **R1** — `permissions:` explícito no topo (`contents: read` mínimo)
 2. **R2** — `concurrency:` com `cancel-in-progress: true` em PRs; `false` em push/schedule (E19: deploy/cron nunca cancelado)
 3. **R3** — `timeout-minutes:` em todo job (gates ≤ 10 min; E2E ≤ 30 min; crons ≤ 60 min)
@@ -377,8 +410,24 @@ Todo workflow em `.github/workflows/` deve seguir as 8 regras documentadas em
 7. **R7** — Sem `master` ou `develop` nos triggers (branches inexistentes)
 8. **R8** — ID de job em snake-case, estável; mudar o ID quebra required checks silenciosamente
 
+**R9–R14 (segurança e checkout):**
+9. **R9** — `persist-credentials: false` em todo `actions/checkout` com token de escrita (E32)
+10. **R10** — `defaults.run.shell: bash` obrigatório em workflows com steps `run:`
+11. **R11** — `permissions.contents: write` **proibido** em workflows com trigger `pull_request` — nenhum segredo de escrita em job de PR
+12. **R12** — Workflows com `paths:` devem incluir o próprio arquivo `.github/workflows/<self>.yml`
+13. **R13** — Artefatos `test-results/` nunca como único path de upload — sempre incluir relatório completo
+14. **R14** — Runner fixo `ubuntu-24.04` (nunca `ubuntu-latest` — migra para Ubuntu 26 em 19/10/2026)
+
+**R15–R20 (supply chain e lint):**
+15. **R15** — Actions externas pinadas por SHA completo de 40 chars (C16)
+16. **R16** — `continue-on-error: true` proibido a nível de job em gates bloqueantes (C17)
+17. **R17** — `cancel-in-progress: ${{ github.event_name == 'pull_request' }}` em workflows com triggers mistos push+PR (C18)
+18. **R18** — `supabase db push` proibido em qualquer step `run:` (C19)
+19. **R19** — Nenhum workflow referencia projeto proibido `pqpdolkaeqlyzpdpbizo` (C20)
+20. **R20** — Todo `upload-artifact` declara `retention-days:` explícito (C21)
+
 Gate de lint de workflows: `actionlint` + `shellcheck` rodando em
-`.github/workflows/workflow-lint.yml` (E11). Rodar antes de abrir PR:
+`.github/workflows/workflow-lint.yml` (E11, E91). Rodar antes de abrir PR:
 ```sh
 npx --yes actionlint .github/workflows/meu-workflow.yml
 ```
