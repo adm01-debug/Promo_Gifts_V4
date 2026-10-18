@@ -237,6 +237,13 @@ jobs:
               exit 1
             fi
           done
+          # E078: transaction: none + pooler transaction (6543) perdem os SET de sessão.
+          # Reprovar antes de aplicar para evitar lock silencioso sem timeout.
+          if [ "$NO_TX" = "true" ] && [ "${PGPORT:-5432}" != "5432" ]; then
+            echo "::error::E078: PGPORT=${PGPORT} (pooler transaction) incompatível com 'transaction: none' — os SET lock_timeout/statement_timeout não persistiriam. Use a porta session (5432) ou remova o cabeçalho 'transaction: none'."
+            exit 1
+          fi
+
           if [ "$NO_TX" = "true" ]; then
             # transaction: none declarado — sem -1 para permitir operações não-transacionais
             # (CONCURRENTLY, ALTER TYPE ADD VALUE, etc.) aprovadas no preflight.
