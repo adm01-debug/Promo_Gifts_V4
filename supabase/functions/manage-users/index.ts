@@ -236,8 +236,7 @@ Deno.serve(async (req) => {
       // (mesmo padrão de log-login-attempt, Devin Review SEC_0001).
       const xff = req.headers.get('x-forwarded-for');
       const ipAddress =
-        xff?.split(',').pop()?.trim() ||
-        req.headers.get('cf-connecting-ip') ??
+        (xff?.split(',').pop()?.trim() || req.headers.get('cf-connecting-ip')) ??
         req.headers.get('x-real-ip') ??
         null;
 

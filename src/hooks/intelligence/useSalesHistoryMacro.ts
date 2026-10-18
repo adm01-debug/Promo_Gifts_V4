@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSalesScope } from '@/lib/auth/visibility-scope';
+import { fetchAllPages } from '@/lib/db/fetch-all-pages';
 import { logger } from '@/lib/logger';
 import {
   emptyKpis,
@@ -30,45 +31,97 @@ export function useSalesHistoryMacro(days = 30) {
       let scopedQuoteIds: string[] | null = null;
       let scopedOrderIds: string[] | null = null;
       if (scope === 'self' && user?.id) {
+        // fetchAllPages: o PostgREST trunca em max-rows (1000) — o .limit(2000)
+        // anterior truncava silenciosamente.
         const [myQuotes, myOrders] = await Promise.all([
-          supabase
-            .from('quotes')
-            .select('id')
-            .eq('seller_id', user.id)
-            .gte('created_at', cutoffStr)
-            .limit(2000),
-          supabase
-            .from('orders')
-            .select('id')
-            .eq('seller_id', user.id)
-            .gte('created_at', cutoffStr)
-            .limit(2000),
+          fetchAllPages<{ id: string }>((from, to) =>
+            supabase
+              .from('quotes')
+              .select('id')
+              .eq('seller_id', user.id)
+              .gte('created_at', cutoffStr)
+              .order('id', { ascending: true })
+              .range(from, to),
+          ).catch(() => []),
+          fetchAllPages<{ id: string }>((from, to) =>
+            supabase
+              .from('orders')
+              .select('id')
+              .eq('seller_id', user.id)
+              .gte('created_at', cutoffStr)
+              .order('id', { ascending: true })
+              .range(from, to),
+          ).catch(() => []),
         ]);
-        scopedQuoteIds = (myQuotes.data ?? []).map((r) => r.id);
-        scopedOrderIds = (myOrders.data ?? []).map((r) => r.id);
+        scopedQuoteIds = myQuotes.map((r) => r.id);
+        scopedOrderIds = myOrders.map((r) => r.id);
         if (scopedQuoteIds.length === 0 && scopedOrderIds.length === 0) {
           return { daily: [], kpis: emptyKpis() };
         }
       }
 
-      // Fetch quote_items and order_items in parallel — restritos aos ids do vendedor quando aplicável
-      let qiQuery = supabase
-        .from('quote_items')
-        .select('quantity, unit_price, subtotal, created_at, quote_id')
-        .gte('created_at', cutoffStr)
-        .order('created_at', { ascending: true })
-        .limit(5000);
-      let oiQuery = supabase
-        .from('order_items')
-        .select('quantity, unit_price, created_at, order_id')
-        .gte('created_at', cutoffStr)
-        .order('created_at', { ascending: true })
-        .limit(5000);
-      if (scopedQuoteIds)
-        qiQuery = qiQuery.in('quote_id', scopedQuoteIds.length ? scopedQuoteIds : ['__none__']);
-      if (scopedOrderIds)
-        oiQuery = oiQuery.in('order_id', scopedOrderIds.length ? scopedOrderIds : ['__none__']);
-      const [{ data: quoteItems }, { data: orderItems }] = await Promise.all([qiQuery, oiQuery]);
+      // Fetch quote_items and order_items in parallel — restritos aos ids do vendedor quando aplicável.
+      // `.in()` com centenas de ids estoura a querystring do PostgREST — lotes de 200;
+      // o cap de 1000 linhas/request exige fetchAllPages em vez de .limit(5000).
+      const fetchScopedItems = async <T>(
+        table: 'order_items' | 'quote_items',
+        fkColumn: 'order_id' | 'quote_id',
+        select: string,
+        scopedIds: string[] | null,
+      ): Promise<T[]> => {
+        const idBatches: (string[] | null)[] = [];
+        if (scopedIds === null) {
+          idBatches.push(null);
+        } else if (scopedIds.length === 0) {
+          idBatches.push(['__none__']);
+        } else {
+          for (let i = 0; i < scopedIds.length; i += 200) {
+            idBatches.push(scopedIds.slice(i, i + 200));
+          }
+        }
+        const rows: T[] = [];
+        for (const batch of idBatches) {
+          const page = await fetchAllPages<T>((from, to) => {
+            let q = supabase
+              .from(table)
+              .select(select)
+              .gte('created_at', cutoffStr)
+              .order('created_at', { ascending: true })
+              .order('id', { ascending: true })
+              .range(from, to);
+            if (batch) q = q.in(fkColumn, batch);
+            return q;
+          });
+          rows.push(...page);
+        }
+        return rows;
+      };
+
+      const [quoteItems, orderItems] = await Promise.all([
+        fetchScopedItems<{
+          quantity: number | null;
+          unit_price: number | null;
+          subtotal: number | null;
+          created_at: string | null;
+          quote_id: string;
+        }>(
+          'quote_items',
+          'quote_id',
+          'quantity, unit_price, subtotal, created_at, quote_id',
+          scopedQuoteIds,
+        ).catch(() => []),
+        fetchScopedItems<{
+          quantity: number | null;
+          unit_price: number | null;
+          created_at: string | null;
+          order_id: string | null;
+        }>(
+          'order_items',
+          'order_id',
+          'quantity, unit_price, created_at, order_id',
+          scopedOrderIds,
+        ).catch(() => []),
+      ]);
 
       // Fetch quotes/orders for seller info + status
       const quoteIds = [...new Set((quoteItems || []).map((q) => q.quote_id))];
@@ -76,25 +129,47 @@ export function useSalesHistoryMacro(days = 30) {
         ...new Set((orderItems || []).map((o) => o.order_id).filter(Boolean)),
       ] as string[];
 
-      const [quotesRes, ordersRes] = await Promise.all([
-        quoteIds.length > 0
-          ? supabase
-              .from('quotes') // rls-allow: filtrado por seller_id explícito
-              .select('id, seller_id, status')
-              .in('id', quoteIds.slice(0, 500))
-              .in('status', ['sent', 'approved', 'rejected', 'expired', 'converted'])
-          : Promise.resolve({ data: [] }),
-        orderIds.length > 0
-          ? // rls-allow: filtrado por seller_id explícito (já presente na linha)
-            supabase.from('orders').select('id, seller_id, status').in('id', orderIds.slice(0, 500))
-          : Promise.resolve({ data: [] }),
+      // `.in()` com centenas de ids estoura a querystring do PostgREST — lotes de 200
+      // (o slice(0, 500) anterior ainda gerava URLs acima do limite).
+      const fetchDocsByIds = async (
+        table: 'orders' | 'quotes',
+        ids: string[],
+        statuses?: string[],
+      ) => {
+        const rows: Array<{ id: string; seller_id: string | null; status: string | null }> = [];
+        for (let i = 0; i < ids.length; i += 200) {
+          let q = supabase
+            // rls-allow: filtrado por seller_id explícito
+            .from(table)
+            .select('id, seller_id, status')
+            .in('id', ids.slice(i, i + 200));
+          if (statuses) q = q.in('status', statuses);
+          const { data, error } = await q;
+          if (error) {
+            logger.warn(`[useSalesHistoryMacro] ${table} fetch failed:`, error);
+            continue;
+          }
+          rows.push(...(data ?? []));
+        }
+        return rows;
+      };
+
+      const [quotesData, ordersData] = await Promise.all([
+        fetchDocsByIds('quotes', quoteIds, [
+          'sent',
+          'approved',
+          'rejected',
+          'expired',
+          'converted',
+        ]),
+        fetchDocsByIds('orders', orderIds),
       ]);
 
       const quotesMap: Record<string, { seller_id: string }> = {};
-      for (const q of quotesRes.data || []) quotesMap[q.id] = { seller_id: q.seller_id ?? '' };
+      for (const q of quotesData) quotesMap[q.id] = { seller_id: q.seller_id ?? '' };
 
       const ordersMap: Record<string, { seller_id: string }> = {};
-      for (const o of ordersRes.data || []) ordersMap[o.id] = { seller_id: o.seller_id ?? '' };
+      for (const o of ordersData) ordersMap[o.id] = { seller_id: o.seller_id ?? '' };
 
       // Seller names
       const allSellerIds = [
@@ -112,7 +187,10 @@ export function useSalesHistoryMacro(days = 30) {
           .select('user_id, full_name')
           .in('user_id', allSellerIds);
         if (profErr) {
-          logger.warn('[useSalesHistoryMacro] profile enrichment failed — showing user IDs:', profErr);
+          logger.warn(
+            '[useSalesHistoryMacro] profile enrichment failed — showing user IDs:',
+            profErr,
+          );
         } else {
           for (const p of profiles || []) {
             if (p.user_id) sellerNames[p.user_id] = p.full_name || 'Vendedor';

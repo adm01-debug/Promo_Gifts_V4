@@ -71,8 +71,10 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false  # E32
-          # E57: workflow_run usa o SHA exato que foi deployado, não o HEAD do branch
-          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          # E57: pull_request usa SHA exato do head (não o merge commit do tip do branch);
+          #      workflow_run usa o SHA que acabou de ser deployado;
+          #      fallback para github.sha nos demais eventos.
+          ref: ${{ github.event.pull_request.head.sha || github.event.workflow_run.head_sha || github.sha }}
       - name: Install Supabase CLI
         uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v2
         with:
@@ -175,13 +177,23 @@ jobs:
             target_dir="/tmp/canonical_download/$slug"
             mkdir -p "$target_dir/supabase"
 
-            if ! supabase functions download "$slug" \
-                  --project-ref "$SUPABASE_PROJECT_REF" \
-                  --use-api \
-                  --workdir "$target_dir" > /tmp/dl.log 2>&1; then
-              echo "::warning::Falha ao baixar $slug: $(tail -n 1 /tmp/dl.log)"
+            # E57: 2 retries (3 tentativas no total) em caso de falha de download.
+            # Erros transitórios da Management API causavam falsos positivos.
+            _dl_ok=0
+            for _dl_attempt in 1 2 3; do
+              if supabase functions download "$slug" \
+                    --project-ref "$SUPABASE_PROJECT_REF" \
+                    --use-api \
+                    --workdir "$target_dir" > /tmp/dl.log 2>&1; then
+                _dl_ok=1
+                break
+              fi
+              echo "::warning::Download attempt $_dl_attempt/3 for $slug failed: $(tail -n 1 /tmp/dl.log)"
+              [ "$_dl_attempt" -lt 3 ] && sleep 5
+            done
+            if [ "$_dl_ok" -eq 0 ]; then
               missing_in_dl=$((missing_in_dl+1))
-              echo "$slug,download_failed,,,," >> /tmp/drift_report.csv
+              echo "$slug,download_failed,,," >> /tmp/drift_report.csv
               continue
             fi
 
@@ -196,7 +208,7 @@ jobs:
             if [ ! -d "$canon_dir" ] || [ -z "$(find "$canon_dir" -type f -print -quit)" ]; then
               echo "::warning::diretório da função não encontrado após download para $slug"
               missing_in_dl=$((missing_in_dl+1))
-              echo "$slug,no_index_after_download,,,," >> /tmp/drift_report.csv
+              echo "$slug,no_index_after_download,,," >> /tmp/drift_report.csv
               continue
             fi
 
@@ -257,7 +269,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload drift report
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: drift-report
           path: /tmp/drift_report.csv
@@ -281,7 +293,7 @@ jobs:
 
       - name: Upload verify_jwt report
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: verify-jwt-report
           path: /tmp/verify_jwt_report.json
@@ -315,7 +327,11 @@ jobs:
             body += '\n_Antes de mergear: aplicar PR conciliador trazendo o source canônico para o repo, ou redeployar o branch do PR._';
             github.rest.issues.createComment({ issue_number: context.issue.number, owner: context.repo.owner, repo: context.repo.repo, body });
 
-      - name: Open issue (scheduled drift)
+      - name: Open or escalate issue (scheduled drift)
+        # E57: consecutive-failure gate.
+        # 1ª falha  → cria issue drift-check-pending (silenciosa, sem notificação de equipe).
+        # 2ª falha consecutiva → escala pending para drift-check (notifica a equipe).
+        # Se drift-check já existe (falhas anteriores já escaladas) → apenas comenta.
         if: (github.event_name == 'schedule' || github.event_name == 'workflow_run') && (steps.hash_diff.outputs.drift_count != '0' || steps.hash_diff.outputs.missing_in_dl != '0' || steps.slug_diff.outputs.has_orphans == 'true' || steps.slug_diff.outputs.has_missing == 'true')
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
@@ -325,12 +341,83 @@ jobs:
             const drifted = csv.split('\n').filter(l => l.includes(',DRIFT,'));
             const downloadFailed = csv.split('\n').filter(l => l.includes(',download_failed,'));
             const today = new Date().toISOString().slice(0,10);
-            const title = `[drift-check] ${drifted.length} divergência(s), ${downloadFailed.length} download(s) inconclusivo(s) em ${today}`;
-            const existing = await github.rest.issues.listForRepo({ owner: context.repo.owner, repo: context.repo.repo, state: 'open', labels: 'drift-check' });
-            const dup = existing.data.find(i => i.title.startsWith('[drift-check]'));
-            const body = `Detectadas ${drifted.length} divergências no cron diário.\n\n` + drifted.map(l => `- \`${l.split(',')[0]}\``).join('\n') + (downloadFailed.length ? `\n\nDownloads inconclusivos: ${downloadFailed.map(l => `\`${l.split(',')[0]}\``).join(', ')}` : '') + '\n\nVer artefato `drift-report` desta execução para os hashes.';
-            if (dup) { await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: dup.number, body: `Atualização do dia ${today}:\n\n${body}` }); }
-            else { await github.rest.issues.create({ owner: context.repo.owner, repo: context.repo.repo, title, body, labels: ['drift-check','priority/high'] }); }
+            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+
+            const detailBody = `Detectadas ${drifted.length} divergências no cron diário.\n\n`
+              + (drifted.length ? drifted.map(l => `- \`${l.split(',')[0]}\``).join('\n') : '_(sem slugs drifted)_')
+              + (downloadFailed.length
+                ? `\n\nDownloads inconclusivos (após 3 tentativas): ${downloadFailed.map(l => `\`${l.split(',')[0]}\``).join(', ')}`
+                : '')
+              + `\n\nVer artefato \`drift-report\` em [run #${context.runId}](${runUrl}) para os hashes.`;
+
+            // E57: verifica pending (1ª falha) e confirmed (2ª+ falha) separadamente
+            const [pendingRes, confirmedRes] = await Promise.all([
+              github.rest.issues.listForRepo({
+                owner: context.repo.owner, repo: context.repo.repo,
+                state: 'open', labels: 'drift-check-pending', per_page: 10
+              }),
+              github.rest.issues.listForRepo({
+                owner: context.repo.owner, repo: context.repo.repo,
+                state: 'open', labels: 'drift-check', per_page: 10
+              })
+            ]);
+
+            const pendingIssue = pendingRes.data.find(i => i.title.startsWith('[drift-check-pending]'));
+            const confirmedIssue = confirmedRes.data.find(i => i.title.startsWith('[drift-check]'));
+
+            if (confirmedIssue) {
+              // Issue confirmada já existe → apenas comentar com atualização (dedupe)
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: confirmedIssue.number,
+                body: `**Atualização ${today}:**\n\n${detailBody}`
+              });
+            } else if (pendingIssue) {
+              // 2ª falha consecutiva → escala para drift-check real (notifica equipe)
+              const confirmedTitle = `[drift-check] ${drifted.length} divergência(s), ${downloadFailed.length} download(s) inconclusivo(s) em ${today}`;
+              await github.rest.issues.update({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: pendingIssue.number,
+                title: confirmedTitle,
+                labels: ['drift-check', 'priority/high'],
+                body: `**2ª falha consecutiva — drift confirmado (E57 consecutive-failure gate).**\n\n${detailBody}\n\n_(Promovido de \`drift-check-pending\` após 2 falhas consecutivas sem sucesso entre elas.)_`
+              });
+            } else {
+              // 1ª falha → cria pending (não notifica ainda, aguarda confirmação)
+              const pendingTitle = `[drift-check-pending] ${drifted.length} divergência(s) em ${today}`;
+              await github.rest.issues.create({
+                owner: context.repo.owner, repo: context.repo.repo,
+                title: pendingTitle,
+                body: `**1ª falha detectada — aguardando confirmação na próxima execução (E57 consecutive-failure gate).**\n\n${detailBody}\n\n_(Será escalada para \`drift-check\` se a próxima execução também falhar. Se a próxima for OK, esta issue será fechada automaticamente.)_`,
+                labels: ['drift-check-pending']
+              });
+            }
+
+      - name: Reset consecutive-failure counter on success (scheduled)
+        # E57: fecha qualquer issue drift-check-pending em aberto quando o drift some,
+        # resetando o contador para que uma falha isolada futura comece do zero.
+        if: (github.event_name == 'schedule' || github.event_name == 'workflow_run') && steps.hash_diff.outputs.drift_count == '0' && steps.hash_diff.outputs.missing_in_dl == '0' && steps.slug_diff.outputs.has_orphans != 'true' && steps.slug_diff.outputs.has_missing != 'true'
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const today = new Date().toISOString().slice(0,10);
+            const pendingRes = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              state: 'open', labels: 'drift-check-pending', per_page: 10
+            });
+            for (const issue of pendingRes.data.filter(i => i.title.startsWith('[drift-check-pending]'))) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: issue.number,
+                body: `✅ Sem drift em ${today} — execução bem-sucedida após a falha anterior. Contador resetado.`
+              });
+              await github.rest.issues.update({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: issue.number,
+                state: 'closed',
+                state_reason: 'not_planned'
+              });
+            }
 
       - name: Fail if drift detected
         if: steps.hash_diff.outputs.drift_count != '0' || steps.hash_diff.outputs.missing_in_dl != '0' || steps.slug_diff.outputs.has_orphans == 'true' || steps.slug_diff.outputs.has_missing == 'true'
