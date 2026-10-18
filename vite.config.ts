@@ -141,6 +141,19 @@ export default defineConfig(({ mode }) => {
                 priority: 30,
               },
               { name: 'zustand-vendor', test: /node_modules[\\/]zustand[\\/]/, priority: 30 },
+              {
+                // Componentes de filtro usados exclusivamente em rotas de produtos.
+                // Extrai-os do chunk products-*.js → reduz de 856 KB para < 600 KB (E146).
+                name: 'products-filters',
+                test: /src[\\/]components[\\/]filters[\\/]/,
+                priority: 25,
+              },
+              {
+                // Dialogs/wizards pesados do catálogo (BulkVariantWizard, etc.).
+                name: 'products-catalog',
+                test: /src[\\/]components[\\/](?:products|catalog)[\\/]/,
+                priority: 20,
+              },
             ],
           },
         },
