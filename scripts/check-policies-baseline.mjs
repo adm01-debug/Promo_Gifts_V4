@@ -297,6 +297,7 @@ async function main() {
       pending_seed: false,
       generated_at: new Date().toISOString(),
       project_ref: process.env.SUPABASE_PROJECT_REF ?? null,
+      schemas_checked: APP_SCHEMAS,  // E044: schemas cobertos neste snapshot
       sha256: hashPolicies(actual),
       policies: actual,
     };

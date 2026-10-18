@@ -25,9 +25,9 @@
  * Exit codes: 0 (passed/static-pass), 1 (drift/allowlist inválida), 2 (erro)
  */
 
-import { readFileSync, writeFileSync } from 'fs';
-import { fileURLToPath } from 'url';
-import path from 'path';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 import {
   CHECK_RESULT_STATUS,
   concludeCheck,
@@ -39,6 +39,7 @@ import { querySupabaseReadOnly } from './supabase-read-only-query.mjs';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 const ALLOWLIST_PATH = path.join(ROOT, '.security/rls-no-policy-allowlist.json');
+const SCHEMAS_TXT = path.join(ROOT, 'supabase/baseline/schemas.txt');
 
 const argv = process.argv.slice(2);
 const fromFileArg = argv.find((a) => a.startsWith('--from-file='));
@@ -47,9 +48,19 @@ const REQUIRE_LIVE = shouldRequireLive(argv);
 // --gate: valida integridade da allowlist (sem live DB)
 const GATE_MODE = argv.includes('--gate');
 
-// Schemas de aplicação cobertos (mesma SSOT de schemas.txt)
-const APP_SCHEMAS = ['public', 'analytics', 'api', 'cf_recon', 'classification_audit',
-  'internal', 'prod_audit', 'supplier_stricker', 'ops'];
+// E045: lê schemas de aplicação do SSOT (schemas.txt — mesmo do check-policies-baseline)
+function loadAppSchemas() {
+  try {
+    const raw = readFileSync(SCHEMAS_TXT, 'utf8');
+    const schemas = raw.split('\n').map((l) => l.trim()).filter((l) => l && !l.startsWith('#'));
+    return schemas.length > 0 ? schemas : ['public'];
+  } catch {
+    return ['public'];
+  }
+}
+
+const APP_SCHEMAS = loadAppSchemas();
+const schemasLiteral = APP_SCHEMAS.map((s) => `'${s}'`).join(', ');
 
 const SQL = `
   SELECT n.nspname || '.' || c.relname AS "table"
@@ -57,7 +68,7 @@ const SQL = `
   JOIN pg_namespace n ON n.oid = c.relnamespace
   WHERE c.relkind IN ('r','p')
     AND c.relrowsecurity = true
-    AND n.nspname = ANY($1::text[])
+    AND n.nspname = ANY(ARRAY[${schemasLiteral}])
     AND NOT EXISTS (
       SELECT 1 FROM pg_policy pol WHERE pol.polrelid = c.oid
     )
@@ -65,7 +76,7 @@ const SQL = `
 `.trim();
 
 async function fetchLive() {
-  const result = await querySupabaseReadOnly(SQL, [APP_SCHEMAS]);
+  const result = await querySupabaseReadOnly(SQL);
   if (result.kind !== 'live') {
     return { ...result, maskedUrl: maskUrl(result.target) };
   }
