@@ -36,7 +36,25 @@ const SPEC_RE = new RegExp(
   'g',
 );
 // import.meta.glob também aceita array literal de padrões estáticos.
-const GLOB_ARRAY_RE = new RegExp(`${GLOB_HEAD}\\s*\\(\\s*\\[([^\\]]*)\\]`, 'g');
+// O corpo é extraído por globArrayBody (aspas/escapes) — regex não pode,
+// porque `['../x/[ab].ts']` tem `]` dentro de string.
+const GLOB_ARRAY_RE = new RegExp(`${GLOB_HEAD}\\s*\\(\\s*\\[`, 'g');
+function globArrayBody(src, openIdx) {
+  let depth = 0, q = null, esc = false;
+  for (let j = openIdx; j < src.length; j++) {
+    const c = src[j];
+    if (q !== null) {
+      if (esc) { esc = false; continue; }
+      if (c === '\\') { esc = true; continue; }
+      if (c === q) q = null;
+      continue;
+    }
+    if (c === "'" || c === '"' || c === '`') { q = c; continue; }
+    if (c === '[') depth++;
+    if (c === ']' && --depth === 0) return src.slice(openIdx + 1, j);
+  }
+  return null;
+}
 // Specifier computado (não-literal): não podemos provar o destino, então
 // conta como violação — sem isso `import(var)`/`require(var)`/`glob(var)`
 // evadem o gate inteiro. Roda sobre a visão "masked" (conteúdo de strings
@@ -46,7 +64,7 @@ const DYNAMIC_RE = new RegExp(
   [
     `${LB}import\\s*\\(\\s*[^'"\`\\s)]`,
     `${LB}require\\s*\\(\\s*[^'"\\s)]`,
-    `${GLOB_HEAD}\\s*\\(\\s*[^'"\\[]`,
+    `${GLOB_HEAD}\\s*\\(\\s*[^'"\\[\\s)]`,
   ].join('|'),
   'g',
 );
@@ -94,7 +112,7 @@ function lexSource(src) {
     if (REGEX_CTX_CHARS.has(lastSig)) return true;
     return word !== '' && REGEX_CTX_WORDS.has(word);
   };
-  let i = 0, strQuote = null;
+  let i = 0;
   // Regex literal não cruza linha — se não fecha antes do fim da linha era
   // divisão e o `/` volta a ser código comum (retorna false sem consumir).
   const consumeRegex = () => {
@@ -117,60 +135,67 @@ function lexSource(src) {
     }
     return false;
   };
-  while (i < src.length) {
-    const c = src[i];
-    if (strQuote === null) {
-      // `//` e `/*` SÃO sempre comentários — regex nunca pode começar com eles
-      // (`/x/` começa com `/` seguido de qualquer coisa menos `/` ou `*`).
-      if (c === '/' && src[i + 1] === '/') {
+  // Corpo de string/template: conteúdo escondido da visão masked; em
+  // template, `${...}` é código — tratado por consumeExpr. Recursão mútua:
+  // template dentro de `${}` volta a expor suas próprias expressões.
+  const lexString = (quote) => {
+    while (i < src.length) {
+      const d = src[i];
+      if (d === '\\') { hide(d); if (i + 1 < src.length) hide(src[i + 1]); i += 2; continue; }
+      if (d === quote) { keep(d); i++; return; }
+      if (quote === '`' && d === '$' && src[i + 1] === '{') {
+        keep('$'); keep('{'); sig('{'); i += 2;
+        consumeExpr();
+        continue;
+      }
+      hide(d); i++;
+    }
+  };
+  // Expressão `${...}` dentro de template: código real — mesmos scanners do
+  // loop principal (comentários, regex literal, strings aninhadas). sig()
+  // alimenta isRegexCtx para `${/[//]/.test(v) ? import(x) : null}`.
+  const consumeExpr = () => {
+    let depth = 1;
+    while (i < src.length && depth > 0) {
+      const e = src[i];
+      if (e === "'" || e === '"' || e === '`') {
+        keep(e); sig(e); i++;
+        lexString(e); sig(e);
+        continue;
+      }
+      if (e === '/' && src[i + 1] === '/') {
         while (i < src.length && !LINE_END_RE.test(src[i])) { blank(src[i]); i++; }
         continue;
       }
-      if (c === '/' && src[i + 1] === '*') {
-        blank(src[i]); blank(src[i + 1]); i += 2;
+      if (e === '/' && src[i + 1] === '*') {
+        blank(e); blank(src[i + 1]); i += 2;
         while (i < src.length && !(src[i] === '*' && src[i + 1] === '/')) { blank(src[i]); i++; }
         if (i < src.length) { blank(src[i]); blank(src[i + 1]); i += 2; }
         continue;
       }
-      if (c === '/' && isRegexCtx() && consumeRegex()) continue;
-      if (c === "'" || c === '"' || c === '`') { strQuote = c; keep(c); sig(c); i++; continue; }
-      keep(c); sig(c); i++;
+      if (e === '/' && isRegexCtx() && consumeRegex()) continue;
+      if (e === '{') depth++;
+      if (e === '}') { depth--; if (depth === 0) { keep('}'); sig('}'); i++; return; } }
+      keep(e); sig(e); i++;
+    }
+  };
+  while (i < src.length) {
+    const c = src[i];
+    // `//` e `/*` SÃO sempre comentários — regex nunca pode começar com eles
+    // (`/x/` começa com `/` seguido de qualquer coisa menos `/` ou `*`).
+    if (c === '/' && src[i + 1] === '/') {
+      while (i < src.length && !LINE_END_RE.test(src[i])) { blank(src[i]); i++; }
       continue;
     }
-    if (c === '\\') { hide(c); if (i + 1 < src.length) hide(src[i + 1]); i += 2; continue; }
-    if (c === strQuote) { strQuote = null; keep(c); i++; continue; }
-    if (strQuote === '`' && c === '$' && src[i + 1] === '{') {
-      keep('$'); keep('{'); i += 2;
-      let depth = 1;
-      while (i < src.length && depth > 0) {
-        const e = src[i];
-        if (e === "'" || e === '"' || e === '`') {
-          keep(e); i++;
-          while (i < src.length && src[i] !== e) {
-            if (src[i] === '\\') { hide(src[i]); if (i + 1 < src.length) hide(src[i + 1]); i += 2; continue; }
-            hide(src[i]); i++;
-          }
-          if (i < src.length) { keep(src[i]); i++; }
-          continue;
-        }
-        if (e === '/' && src[i + 1] === '/') {
-          while (i < src.length && !LINE_END_RE.test(src[i])) { blank(src[i]); i++; }
-          continue;
-        }
-        if (e === '/' && src[i + 1] === '*') {
-          blank(e); blank(src[i + 1]); i += 2;
-          while (i < src.length && !(src[i] === '*' && src[i + 1] === '/')) { blank(src[i]); i++; }
-          if (i < src.length) { blank(src[i]); blank(src[i + 1]); i += 2; }
-          continue;
-        }
-        if (e === '/' && isRegexCtx() && consumeRegex()) continue;
-        if (e === '{') depth++;
-        if (e === '}') { depth--; if (depth === 0) { keep('}'); i++; break; } }
-        keep(e); i++;
-      }
+    if (c === '/' && src[i + 1] === '*') {
+      blank(src[i]); blank(src[i + 1]); i += 2;
+      while (i < src.length && !(src[i] === '*' && src[i + 1] === '/')) { blank(src[i]); i++; }
+      if (i < src.length) { blank(src[i]); blank(src[i + 1]); i += 2; }
       continue;
     }
-    hide(c); i++;
+    if (c === '/' && isRegexCtx() && consumeRegex()) continue;
+    if (c === "'" || c === '"' || c === '`') { keep(c); sig(c); i++; lexString(c); continue; }
+    keep(c); sig(c); i++;
   }
   return { code: code.join(''), masked: masked.join('') };
 }
@@ -229,6 +254,7 @@ for (const f of walk('src/pages')) {
     violations.push({
       file: rel,
       line,
+      pos: idx,
       from: srcDom,
       to: '?',
       target: 'specifier dinâmico não-literal',
@@ -246,7 +272,7 @@ for (const f of walk('src/pages')) {
     const targetDom = target.split('/')[1];
     if (targetDom === srcDom) return;
     const line = src.slice(0, idx).split('\n').length;
-    violations.push({ file: rel, line, from: srcDom, to: targetDom, target });
+    violations.push({ file: rel, line, pos: idx, from: srcDom, to: targetDom, target });
   };
   for (const m of src.matchAll(SPEC_RE)) {
     checkSpec(m.slice(1).find((g) => g !== undefined), m.index);
@@ -255,7 +281,8 @@ for (const f of walk('src/pages')) {
   // não-literal (variável, template com ${}) é computado.
   const GLOB_LIT_RE = /(['"`])((?:(?!\1)[^\\]|\\.)*)\1/g;
   for (const m of src.matchAll(GLOB_ARRAY_RE)) {
-    const body = m[1];
+    const body = globArrayBody(src, m.index + m[0].length - 1);
+    if (body === null) { dynamic(m.index); continue; }
     const lits = [...body.matchAll(GLOB_LIT_RE)];
     const residue = body.replace(GLOB_LIT_RE, '').replace(/[\s,!]/g, '');
     if (residue !== '' || body.includes('${')) { dynamic(m.index); continue; }
@@ -266,9 +293,10 @@ for (const f of walk('src/pages')) {
 }
 // Dedupe: o mesmo site pode ser flagrado por braços distintos
 // (`import('x' + y)` = dinâmico + concat) — conta uma vez por
-// arquivo:linha:target para não inflar o ratchet.
+// arquivo:offset:target; dois imports distintos na mesma linha (offsets
+// diferentes) continuam contando separado.
 const bySite = new Map();
-for (const v of violations) bySite.set(`${v.file}:${v.line}:${v.target}`, v);
+for (const v of violations) bySite.set(`${v.file}:${v.pos}:${v.target}`, v);
 const deduped = [...bySite.values()];
 deduped.sort(
   (a, b) => a.file.localeCompare(b.file) || a.line - b.line || a.to.localeCompare(b.to),
