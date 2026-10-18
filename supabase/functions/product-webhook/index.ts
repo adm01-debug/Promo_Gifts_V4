@@ -569,42 +569,70 @@ async function upsertProducts(
 // category_id/supplier_id chegam do Bitrix como ID numérico ou nome — o banco
 // exige UUID NOT NULL. Resolvemos contra categories (bitrix_id, depois name) e
 // suppliers (code, depois name). Sem resolução, todo upsert morre em 23502.
+// Maps resolvem para `null` quando a chave é ambígua (ex.: duas categorias
+// homônimas em ramos diferentes) — lookup ambíguo cai em "não resolvido" em
+// vez de gravar na entidade errada.
 type EntityResolvers = {
-  categoryByBitrixId: Map<number, string>;
-  categoryByName: Map<string, string>;
-  supplierByCode: Map<string, string>;
-  supplierByName: Map<string, string>;
+  categoryByBitrixId: Map<number, string | null>;
+  categoryByName: Map<string, string | null>;
+  supplierByCode: Map<string, string | null>;
+  supplierByName: Map<string, string | null>;
 };
 
 const normalizeKey = (s: string): string => s.trim().toLowerCase().replace(/\s+/g, ' ');
 
+const setKey = <K>(map: Map<K, string | null>, key: K, id: string | null | undefined) => {
+  if (id == null) return;
+  map.set(key, map.has(key) ? null : id); // segunda ocorrência = ambíguo
+};
+
+// PostgREST capa cada resposta em ~1000 linhas (max_rows do painel) —
+// .limit() maior não ajuda; pagina com .range() até esgotar. Falha da
+// consulta retorna null e NÃO invalida o mapa da outra entidade.
+async function fetchAllRows<T>(
+  supabase: SupabaseClient<Database>,
+  table: string,
+  columns: string,
+  pageSize = 800,
+): Promise<T[] | null> {
+  const rows: T[] = [];
+  for (let from = 0; ; from += pageSize) {
+    const { data, error } = await supabase
+      .from(table as never)
+      .select(columns)
+      .order('id')
+      .range(from, from + pageSize - 1);
+    if (error) {
+      console.error(`[product-webhook] falha ao ler ${table}:`, error);
+      return null;
+    }
+    rows.push(...((data ?? []) as T[]));
+    if (!data || data.length < pageSize) return rows;
+  }
+}
+
 async function buildEntityResolvers(
   supabase: SupabaseClient<Database>,
-): Promise<EntityResolvers | null> {
-  try {
-    const [categoriesRes, suppliersRes] = await Promise.all([
-      supabase.from('categories').select('id,name,bitrix_id').limit(5000),
-      supabase.from('suppliers').select('id,name,code').limit(1000),
-    ]);
-    if (categoriesRes.error) throw categoriesRes.error;
-    if (suppliersRes.error) throw suppliersRes.error;
-    const categoryByBitrixId = new Map<number, string>();
-    const categoryByName = new Map<string, string>();
-    for (const row of categoriesRes.data ?? []) {
-      if (typeof row.bitrix_id === 'number') categoryByBitrixId.set(row.bitrix_id, row.id);
-      if (row.name) categoryByName.set(normalizeKey(row.name), row.id);
-    }
-    const supplierByCode = new Map<string, string>();
-    const supplierByName = new Map<string, string>();
-    for (const row of suppliersRes.data ?? []) {
-      if (row.code) supplierByCode.set(normalizeKey(row.code), row.id);
-      if (row.name) supplierByName.set(normalizeKey(row.name), row.id);
-    }
-    return { categoryByBitrixId, categoryByName, supplierByCode, supplierByName };
-  } catch (err) {
-    console.error('[product-webhook] falha ao carregar mapa categoria/fornecedor:', err);
-    return null;
+): Promise<EntityResolvers> {
+  type CategoryRow = { id: string; name: string | null; bitrix_id: number | null };
+  type SupplierRow = { id: string; name: string | null; code: string | null };
+  const [categories, suppliers] = await Promise.all([
+    fetchAllRows<CategoryRow>(supabase, 'categories', 'id,name,bitrix_id'),
+    fetchAllRows<SupplierRow>(supabase, 'suppliers', 'id,name,code'),
+  ]);
+  const categoryByBitrixId = new Map<number, string | null>();
+  const categoryByName = new Map<string, string | null>();
+  for (const row of categories ?? []) {
+    if (typeof row.bitrix_id === 'number') setKey(categoryByBitrixId, row.bitrix_id, row.id);
+    if (row.name) setKey(categoryByName, normalizeKey(row.name), row.id);
   }
+  const supplierByCode = new Map<string, string | null>();
+  const supplierByName = new Map<string, string | null>();
+  for (const row of suppliers ?? []) {
+    if (row.code) setKey(supplierByCode, normalizeKey(row.code), row.id);
+    if (row.name) setKey(supplierByName, normalizeKey(row.name), row.id);
+  }
+  return { categoryByBitrixId, categoryByName, supplierByCode, supplierByName };
 }
 
 function resolveCategoryUuid(
