@@ -70,7 +70,6 @@ jobs:
   # deixaria de acusá-lo. Sem baseline anterior (bootstrap) passa direto.
   drift-gate:
     name: Drift gate antes de girar o baseline
-    timeout-minutes: 10
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     uses: ./.github/workflows/db-schema-drift-check.yml
     with:
