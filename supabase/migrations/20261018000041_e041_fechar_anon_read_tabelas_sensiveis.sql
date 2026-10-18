@@ -1,8 +1,7 @@
 -- E041: Fechar leitura anon em tabelas fiscais/sensíveis
 -- Remove acesso de role 'anon' substituindo policy {anon,authenticated} por {authenticated}
 -- Tabelas: product_ai_content, product_fiscal, product_seo, product_supply, system_kill_switches
-
-BEGIN;
+-- Rollback: recriar policies anon com DROP/CREATE de volta para TO public ou TO anon,authenticated
 
 -- product_ai_content
 DROP POLICY IF EXISTS "product_ai_anon_select" ON public.product_ai_content;
@@ -29,4 +28,3 @@ DROP POLICY IF EXISTS "kill_switches_read_all" ON public.system_kill_switches;
 CREATE POLICY "system_kill_switches_authenticated_select"
   ON public.system_kill_switches FOR SELECT TO authenticated USING (true);
 
-COMMIT;

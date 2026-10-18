@@ -5,8 +5,7 @@
 --          recently_viewed_products
 -- Todas as policies já exigem auth.uid() / org functions na qual/with_check.
 -- Mudar TO public → TO authenticated não quebra nenhum consumidor legítimo.
-
-BEGIN;
+-- Rollback: recriar as policies com TO public usando os mesmos DROP POLICY IF EXISTS / CREATE POLICY
 
 -- ── b2b_collection_products ──────────────────────────────────────────────────
 DROP POLICY IF EXISTS "collection_products_delete" ON public.b2b_collection_products;
@@ -228,4 +227,3 @@ CREATE POLICY "Users can update their own recently viewed products"
   USING (( SELECT auth.uid()) = user_id)
   WITH CHECK (( SELECT auth.uid()) = user_id);
 
-COMMIT;

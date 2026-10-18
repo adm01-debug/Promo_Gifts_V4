@@ -3,8 +3,7 @@
 -- Com RESTRICTIVE, o acesso passa a ser interseção (AND) em vez de união (OR).
 -- Isso garante que nenhuma policy PERMISSIVE futura amplie inadvertidamente
 -- o acesso a essas tabelas — toda policy nova precisa satisfazer também a RESTRICTIVE.
-
-BEGIN;
+-- Rollback: DROP POLICY IF EXISTS "rls_restrictive_*" nas 5 tabelas listadas acima
 
 DROP POLICY IF EXISTS "rls_restrictive_product_ai_content" ON public.product_ai_content;
 CREATE POLICY "rls_restrictive_product_ai_content"
@@ -41,4 +40,3 @@ CREATE POLICY "rls_restrictive_system_kill_switches"
   TO authenticated, service_role
   USING (true);
 
-COMMIT;

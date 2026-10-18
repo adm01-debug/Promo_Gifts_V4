@@ -86,7 +86,15 @@ function hasReceiptForVersion(logContent, version) {
   // Usa word-boundary numérico para evitar falso positivo por substring.
   // Ex: versão "2026091615572" (13 dígitos) não faz match em "20260916155725".
   const re = new RegExp(`(?<!\\d)${version}(?!\\d)`);
-  return re.test(logContent);
+  // Linha "pendente-only" (contém a versão mas apenas status pendente, sem "aplicada")
+  // NÃO conta como recibo — a migration ainda não foi efetivada em produção.
+  const lines = logContent.split('\n').filter((l) => re.test(l));
+  if (lines.length === 0) return false;
+  return lines.some((l) => {
+    if (!/pendente/i.test(l)) return true;
+    // Tem "pendente" — só conta se também tem "aplicada" positivo (não "não aplicada")
+    return /\baplicada\b/i.test(l) && !/não\s+aplicada/i.test(l);
+  });
 }
 
 async function fetchLiveVersions() {

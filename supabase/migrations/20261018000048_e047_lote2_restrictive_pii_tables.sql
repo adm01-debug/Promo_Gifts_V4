@@ -4,8 +4,7 @@
 -- Com RESTRICTIVE TO authenticated, service_role USING(true), qualquer policy
 -- PERMISSIVE futura só pode ampliar acesso para authenticated/service_role —
 -- nunca para anon ou roles não listados. Mesma convenção do lote 1 (E047).
-
-BEGIN;
+-- Rollback: DROP POLICY IF EXISTS "rls_restrictive_*" nas 5 tabelas listadas acima
 
 DROP POLICY IF EXISTS "rls_restrictive_notification_preferences" ON public.notification_preferences;
 CREATE POLICY "rls_restrictive_notification_preferences"
@@ -42,4 +41,3 @@ CREATE POLICY "rls_restrictive_ai_usage_quotas"
   TO authenticated, service_role
   USING (true);
 
-COMMIT;

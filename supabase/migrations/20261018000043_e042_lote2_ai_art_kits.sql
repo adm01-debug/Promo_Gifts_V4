@@ -2,8 +2,7 @@
 -- Tabelas: ai_usage_quotas, art_file_attachments, kit_collaborators
 -- Estas tabelas já exigem auth.uid() / is_dev() / is_kit_owner() em toda qual/with_check.
 -- A migration E042 lote 1 (20261018000042) cobre outras 9 tabelas.
-
-BEGIN;
+-- Rollback: recriar as policies com TO public usando os mesmos DROP POLICY IF EXISTS / CREATE POLICY
 
 -- ai_usage_quotas (4 policies)
 DROP POLICY IF EXISTS "ai_usage_quotas_admin_delete" ON public.ai_usage_quotas;
@@ -69,4 +68,3 @@ CREATE POLICY "View collaborators if owner or self"
   ON public.kit_collaborators FOR SELECT TO authenticated
   USING ((is_kit_owner(kit_id, (SELECT auth.uid())) OR (user_id = auth.uid())));
 
-COMMIT;

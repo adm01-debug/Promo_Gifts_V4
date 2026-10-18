@@ -2863,7 +2863,7 @@
       "roles": "{authenticated}",
       "cmd": "INSERT",
       "qual": "",
-      "with_check": "is_kit_owner(kit_id)"
+      "with_check": "is_kit_owner(kit_id, ( SELECT auth.uid() AS uid))"
     },
     {
       "schemaname": "public",
@@ -2872,7 +2872,7 @@
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",
       "cmd": "DELETE",
-      "qual": "is_kit_owner(kit_id)",
+      "qual": "is_kit_owner(kit_id, ( SELECT auth.uid() AS uid))",
       "with_check": ""
     },
     {
@@ -2882,7 +2882,7 @@
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",
       "cmd": "UPDATE",
-      "qual": "is_kit_owner(kit_id)",
+      "qual": "is_kit_owner(kit_id, ( SELECT auth.uid() AS uid))",
       "with_check": ""
     },
     {
@@ -2892,7 +2892,7 @@
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",
       "cmd": "SELECT",
-      "qual": "(is_kit_owner(kit_id) OR (user_id = auth.uid()))",
+      "qual": "(is_kit_owner(kit_id, ( SELECT auth.uid() AS uid)) OR (user_id = auth.uid()))",
       "with_check": ""
     },
     {
