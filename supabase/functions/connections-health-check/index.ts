@@ -205,6 +205,6 @@ Deno.serve(async (req) => {
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (err) {
-    return safeErrorResponse(err, { corsHeaders, publicMessage: "internal_error", logLabel: "connections-health-check error:" });
+    return safeErrorResponse(err, { corsHeaders, req, publicMessage: "internal_error", logLabel: "connections-health-check error:" });
   }
 });

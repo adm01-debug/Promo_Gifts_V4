@@ -54,7 +54,7 @@ ALTER ROLE service_role SET idle_session_timeout = '300000';                   -
 
 Defesa em profundidade: mesmo com RLS ativa, REVOKE remove a tabela do schema introspection do PostgREST/GraphQL e impede acesso se a RLS for desabilitada por engano.
 
-Aplicado via [`20260524130000_colapso_fase2_timeouts_e_revoke_sensitive.sql`](../supabase/migrations/20260524130000_colapso_fase2_timeouts_e_revoke_sensitive.sql).
+Aplicado via [`20260524211024_colapso_fase2_timeouts_e_revoke_sensitive.sql`](../supabase/migrations/20260524211024_colapso_fase2_timeouts_e_revoke_sensitive.sql).
 
 ### 3. Kill-switch da edge function `external-db-bridge`
 

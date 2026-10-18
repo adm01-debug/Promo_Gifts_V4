@@ -14,6 +14,7 @@ import {
   aggregateClients,
 } from '@/hooks/intelligence/intelligenceHelpers';
 import { degradeOrThrow } from '@/lib/intelligence/degradation';
+import { fetchAllPages } from '@/lib/db/fetch-all-pages';
 
 /** Tipos derivados dos agregadores — usados como fallback degradado. */
 type ClientAggregate = ReturnType<typeof aggregateClients>[number];
@@ -151,41 +152,52 @@ export function useCommercialKPIs(
             revenueThisMonth: 0,
           };
 
-        const [
-          { data: quoteItems },
-          { data: orderItems },
-          { data: orderItemsMonth },
-          { data: quoteItemsMonth },
-        ] = await Promise.all([
-          supabase
-            .from('quote_items')
-            .select('quote_id, product_id')
-            .gte('created_at', since)
-            .in('product_id', pids.slice(0, 200)),
-          supabase
-            .from('order_items')
-            .select('order_id, product_id, quantity, unit_price')
-            .gte('created_at', since)
-            .in('product_id', pids.slice(0, 200)),
-          supabase
-            .from('order_items')
-            .select('order_id, product_id, quantity, unit_price')
-            .gte('created_at', startOfMonth)
-            .in('product_id', pids.slice(0, 200)),
-          supabase
-            .from('quote_items')
-            .select('quote_id, product_id')
-            .gte('created_at', startOfMonth)
-            .in('product_id', pids.slice(0, 200)),
+        const [quoteItems, orderItems, orderItemsMonth, quoteItemsMonth] = await Promise.all([
+          fetchAllPages((from, to) =>
+            supabase
+              .from('quote_items')
+              .select('quote_id, product_id')
+              .gte('created_at', since)
+              .in('product_id', pids.slice(0, 200))
+              .order('id', { ascending: true })
+              .range(from, to),
+          ).catch(() => []),
+          fetchAllPages((from, to) =>
+            supabase
+              .from('order_items')
+              .select('order_id, product_id, quantity, unit_price')
+              .gte('created_at', since)
+              .in('product_id', pids.slice(0, 200))
+              .order('id', { ascending: true })
+              .range(from, to),
+          ).catch(() => []),
+          fetchAllPages((from, to) =>
+            supabase
+              .from('order_items')
+              .select('order_id, product_id, quantity, unit_price')
+              .gte('created_at', startOfMonth)
+              .in('product_id', pids.slice(0, 200))
+              .order('id', { ascending: true })
+              .range(from, to),
+          ).catch(() => []),
+          fetchAllPages((from, to) =>
+            supabase
+              .from('quote_items')
+              .select('quote_id, product_id')
+              .gte('created_at', startOfMonth)
+              .in('product_id', pids.slice(0, 200))
+              .order('id', { ascending: true })
+              .range(from, to),
+          ).catch(() => []),
         ]);
 
-        const uqQuotes = new Set((quoteItems || []).map((qi) => qi.quote_id));
-        const uqOrders = new Set((orderItems || []).map((oi) => oi.order_id));
-        const totalRevenue = (orderItems || []).reduce(
+        const uqQuotes = new Set(quoteItems.map((qi) => qi.quote_id));
+        const uqOrders = new Set(orderItems.map((oi) => oi.order_id));
+        const totalRevenue = orderItems.reduce(
           (s, i) => s + (i.quantity ?? 0) * (i.unit_price ?? 0),
           0,
         );
-        const revenueMonth = (orderItemsMonth || []).reduce(
+        const revenueMonth = orderItemsMonth.reduce(
           (s, i) => s + (i.quantity ?? 0) * (i.unit_price ?? 0),
           0,
         );
@@ -196,42 +208,55 @@ export function useCommercialKPIs(
           conversionRate: uqQuotes.size > 0 ? Math.round((uqOrders.size / uqQuotes.size) * 100) : 0,
           totalRevenue,
           averageTicket: uqOrders.size > 0 ? totalRevenue / uqOrders.size : 0,
-          quotesThisMonth: new Set((quoteItemsMonth || []).map((qi) => qi.quote_id)).size,
-          ordersThisMonth: new Set((orderItemsMonth || []).map((oi) => oi.order_id)).size,
+          quotesThisMonth: new Set(quoteItemsMonth.map((qi) => qi.quote_id)).size,
+          ordersThisMonth: new Set(orderItemsMonth.map((oi) => oi.order_id)).size,
           revenueThisMonth: revenueMonth,
         };
-      }
-
-      let q1 = supabase
-        // rls-allow: respeita can_view_all_sales server-side
-        .from('quotes')
-        .select('id, total, status, created_at')
-        .gte('created_at', since);
-      let o1 = supabase
-        // rls-allow: respeita can_view_all_sales server-side
-        .from('orders')
-        .select('id, total, status, created_at')
-        .gte('created_at', since);
-      // rls-allow: respeita can_view_all_sales server-side
-      let q2 = supabase.from('quotes').select('id, total').gte('created_at', startOfMonth);
-      // rls-allow: respeita can_view_all_sales server-side
-      let o2 = supabase.from('orders').select('id, total').gte('created_at', startOfMonth);
-
-      if (orgId) {
-        q1 = q1.eq('organization_id', orgId);
-        o1 = o1.eq('organization_id', orgId);
-        q2 = q2.eq('organization_id', orgId);
-        o2 = o2.eq('organization_id', orgId);
       }
 
       // REMOVIDO: applySellerScope.
       // Agora o BI mostra dados agregados de mercado (conforme can_view_all_sales() atualizado no banco).
       // O escopo individual do vendedor é mantido para fins de RLS granular, mas o BI
       // deliberadamente consome a visão macro.
-
-      const [qr, or, qmr, omr] = await Promise.all([q1, o1, q2, o2]);
-      const quotes = qr.data || [];
-      const orders = or.data || [];
+      // rls-allow: respeita can_view_all_sales server-side
+      const [quotes, orders, qmr, omr] = await Promise.all([
+        fetchAllPages((from, to) => {
+          let q = supabase
+            // rls-allow: respeita can_view_all_sales server-side
+            .from('quotes')
+            .select('id, total, status, created_at')
+            .gte('created_at', since);
+          if (orgId) q = q.eq('organization_id', orgId);
+          return q.order('id', { ascending: true }).range(from, to);
+        }).catch(() => []),
+        fetchAllPages((from, to) => {
+          let q = supabase
+            // rls-allow: respeita can_view_all_sales server-side
+            .from('orders')
+            .select('id, total, status, created_at')
+            .gte('created_at', since);
+          if (orgId) q = q.eq('organization_id', orgId);
+          return q.order('id', { ascending: true }).range(from, to);
+        }).catch(() => []),
+        fetchAllPages((from, to) => {
+          let q = supabase
+            // rls-allow: respeita can_view_all_sales server-side
+            .from('quotes')
+            .select('id, total')
+            .gte('created_at', startOfMonth);
+          if (orgId) q = q.eq('organization_id', orgId);
+          return q.order('id', { ascending: true }).range(from, to);
+        }).catch(() => []),
+        fetchAllPages((from, to) => {
+          let q = supabase
+            // rls-allow: respeita can_view_all_sales server-side
+            .from('orders')
+            .select('id, total')
+            .gte('created_at', startOfMonth);
+          if (orgId) q = q.eq('organization_id', orgId);
+          return q.order('id', { ascending: true }).range(from, to);
+        }).catch(() => []),
+      ]);
       const totalRevenue = orders.reduce((s, o) => s + (o.total ?? 0), 0);
 
       return {
@@ -240,9 +265,9 @@ export function useCommercialKPIs(
         conversionRate: quotes.length > 0 ? Math.round((orders.length / quotes.length) * 100) : 0,
         totalRevenue,
         averageTicket: orders.length > 0 ? totalRevenue / orders.length : 0,
-        quotesThisMonth: (qmr.data || []).length,
-        ordersThisMonth: (omr.data || []).length,
-        revenueThisMonth: (omr.data || []).reduce((s, o) => s + (o.total ?? 0), 0),
+        quotesThisMonth: qmr.length,
+        ordersThisMonth: omr.length,
+        revenueThisMonth: omr.reduce((s, o) => s + (o.total ?? 0), 0),
       };
     },
     staleTime: 1000 * 60 * 5,
@@ -279,38 +304,30 @@ export function useTrendingProducts(
     ],
     queryFn: async (): Promise<TrendingProduct[]> => {
       const pids = productIds ? Array.from(productIds).slice(0, 200) : undefined;
-      const [{ data: orderItems }, { data: quoteItems }] = await Promise.all([
-        pids
-          ? supabase
-              .from('order_items')
-              .select(
-                'product_id, product_sku, product_name, product_image_url, quantity, unit_price, order_id, created_at',
-              )
-              .gte('created_at', since)
-              .in('product_id', pids)
-          : supabase
-              .from('order_items')
-              .select(
-                'product_id, product_sku, product_name, product_image_url, quantity, unit_price, order_id, created_at',
-              )
-              .gte('created_at', since),
-        pids
-          ? supabase
-              .from('quote_items')
-              .select(
-                'product_id, product_sku, product_name, product_image_url, quantity, unit_price, created_at',
-              )
-              .gte('created_at', since)
-              .in('product_id', pids)
-          : supabase
-              .from('quote_items')
-              .select(
-                'product_id, product_sku, product_name, product_image_url, quantity, unit_price, created_at',
-              )
-              .gte('created_at', since),
+      const [orderItems, quoteItems] = await Promise.all([
+        fetchAllPages((from, to) => {
+          let q = supabase
+            .from('order_items')
+            .select(
+              'product_id, product_sku, product_name, product_image_url, quantity, unit_price, order_id, created_at',
+            )
+            .gte('created_at', since);
+          if (pids) q = q.in('product_id', pids);
+          return q.order('id', { ascending: true }).range(from, to);
+        }).catch(() => []),
+        fetchAllPages((from, to) => {
+          let q = supabase
+            .from('quote_items')
+            .select(
+              'product_id, product_sku, product_name, product_image_url, quantity, unit_price, created_at',
+            )
+            .gte('created_at', since);
+          if (pids) q = q.in('product_id', pids);
+          return q.order('id', { ascending: true }).range(from, to);
+        }).catch(() => []),
       ]);
 
-      if (!orderItems?.length) return [];
+      if (!orderItems.length) return [];
       const productMap = new Map<string, TrendingProduct>();
       orderItems.forEach((item) => {
         const key = item.product_sku || item.product_id || item.product_name;
@@ -340,7 +357,7 @@ export function useTrendingProducts(
         existing.totalRevenue += (item.quantity ?? 0) * (item.unit_price ?? 0);
         productMap.set(key, existing);
       });
-      quoteItems?.forEach((item) => {
+      quoteItems.forEach((item) => {
         const key = item.product_sku || item.product_id || item.product_name;
         const product = key ? productMap.get(key) : undefined;
         if (product) product.quoteCount += 1;
@@ -351,9 +368,7 @@ export function useTrendingProducts(
           ...p,
           conversionRate: p.quoteCount > 0 ? Math.round((p.orderCount / p.quoteCount) * 100) : 100,
           trend: (p.totalRevenue > 1000 ? 'up' : p.totalRevenue > 200 ? 'stable' : 'down') as
-            | 'down'
-            | 'stable'
-            | 'up',
+            'down' | 'stable' | 'up',
         }))
         .sort((a, b) => b.totalRevenue - a.totalRevenue)
         .slice(0, limit);
@@ -387,15 +402,21 @@ export function useSegmentAnalysis(
         if (!pids.length) return [];
         // BUG-COMMERCIALINTEL-SEGMENTS-OI-SELECT-SILENT-FAIL FIX: { data: oi } without error
         // check — RLS failure silently returned [] making queryFn succeed with empty segments.
-        const { data: oi, error: oiErr } = await supabase
-          .from('order_items')
-          .select('order_id')
-          .gte('created_at', since)
-          .in('product_id', pids);
-        if (oiErr) return degradeOrThrow(oiErr, 'segments.order_items', [] as SegmentData[]);
-        const orderIds = [
-          ...new Set((oi || []).map((o) => o.order_id).filter(Boolean)),
-        ] as string[];
+        let oi: Array<{ order_id: string | null }>;
+        try {
+          oi = await fetchAllPages<{ order_id: string | null }>((from, to) =>
+            supabase
+              .from('order_items')
+              .select('order_id')
+              .gte('created_at', since)
+              .in('product_id', pids)
+              .order('id', { ascending: true })
+              .range(from, to),
+          );
+        } catch (oiErr) {
+          return degradeOrThrow(oiErr, 'segments.order_items', [] as SegmentData[]);
+        }
+        const orderIds = [...new Set(oi.map((o) => o.order_id).filter(Boolean))] as string[];
         if (!orderIds.length) return [];
         // BUG-COMMERCIALINTEL-SEGMENTS-ORDERS-SELECT-SILENT-FAIL FIX: { data: orders } without
         // error check — failure silently produced empty segments instead of triggering retry.
@@ -408,13 +429,22 @@ export function useSegmentAnalysis(
         return aggregateSegments(orders || []);
       }
       // BUG-COMMERCIALINTEL-SEGMENTS-ALLORDERS-SELECT-SILENT-FAIL FIX
-      const { data: orders, error: ordersErr } = await supabase
+      let orders: Array<{ client_company: string | null; total: number | null }>;
+      try {
         // rls-allow: respeita can_view_all_sales server-side
-        .from('orders')
-        .select('client_company, total')
-        .gte('created_at', since);
-      if (ordersErr) return degradeOrThrow(ordersErr, 'segments.orders_all', [] as SegmentData[]);
-      return aggregateSegments(orders || []);
+        orders = await fetchAllPages<{ client_company: string | null; total: number | null }>(
+          (from, to) =>
+            supabase
+              .from('orders')
+              .select('client_company, total')
+              .gte('created_at', since)
+              .order('id', { ascending: true })
+              .range(from, to),
+        );
+      } catch (ordersErr) {
+        return degradeOrThrow(ordersErr, 'segments.orders_all', [] as SegmentData[]);
+      }
+      return aggregateSegments(orders);
     },
     staleTime: 1000 * 60 * 5,
     enabled: !!user && (!hasFilter || productIds !== undefined),
@@ -439,33 +469,27 @@ export function useOpportunities(
     queryKey: ['commercial-opportunities', user?.id, days, categoryId, supplierId],
     queryFn: async (): Promise<OpportunityProduct[]> => {
       const pids = productIds ? Array.from(productIds).slice(0, 200) : undefined;
-      const [{ data: quoteItems }, { data: orderItems }] = await Promise.all([
-        pids
-          ? supabase
-              .from('quote_items')
-              .select(
-                'product_id, product_sku, product_name, product_image_url, quantity, created_at',
-              )
-              .gte('created_at', since)
-              .in('product_id', pids)
-          : supabase
-              .from('quote_items')
-              .select(
-                'product_id, product_sku, product_name, product_image_url, quantity, created_at',
-              )
-              .gte('created_at', since),
-        pids
-          ? supabase
-              .from('order_items')
-              .select('product_id, product_sku, product_name, created_at')
-              .gte('created_at', since)
-              .in('product_id', pids)
-          : supabase
-              .from('order_items')
-              .select('product_id, product_sku, product_name, created_at')
-              .gte('created_at', since),
+      const [quoteItems, orderItems] = await Promise.all([
+        fetchAllPages((from, to) => {
+          let q = supabase
+            .from('quote_items')
+            .select(
+              'product_id, product_sku, product_name, product_image_url, quantity, created_at',
+            )
+            .gte('created_at', since);
+          if (pids) q = q.in('product_id', pids);
+          return q.order('id', { ascending: true }).range(from, to);
+        }).catch(() => []),
+        fetchAllPages((from, to) => {
+          let q = supabase
+            .from('order_items')
+            .select('product_id, product_sku, product_name, created_at')
+            .gte('created_at', since);
+          if (pids) q = q.in('product_id', pids);
+          return q.order('id', { ascending: true }).range(from, to);
+        }).catch(() => []),
       ]);
-      if (!quoteItems?.length) return [];
+      if (!quoteItems.length) return [];
 
       const quoteMap = new Map<
         string,
@@ -486,7 +510,7 @@ export function useOpportunities(
       });
 
       const orderCountMap = new Map<string, number>();
-      orderItems?.forEach((item) => {
+      orderItems.forEach((item) => {
         const key = item.product_sku || item.product_id || '';
         if (key) orderCountMap.set(key, (orderCountMap.get(key) || 0) + 1);
       });
@@ -544,16 +568,21 @@ export function useTopClients(
         if (!pids.length) return [];
         // BUG-TOPCLIENTS-OI-SELECT-SILENT-FAIL FIX: { data: oi } without error check —
         // RLS failure silently returned [] making queryFn succeed with empty client list.
-        const { data: oi, error: oiErr } = await supabase
-          .from('order_items')
-          .select('order_id, quantity, unit_price')
-          .gte('created_at', since)
-          .in('product_id', pids);
-        if (oiErr)
+        let oi: Array<{ order_id: string | null }>;
+        try {
+          oi = await fetchAllPages<{ order_id: string | null }>((from, to) =>
+            supabase
+              .from('order_items')
+              .select('order_id, quantity, unit_price')
+              .gte('created_at', since)
+              .in('product_id', pids)
+              .order('id', { ascending: true })
+              .range(from, to),
+          );
+        } catch (oiErr) {
           return degradeOrThrow(oiErr, 'top_clients.order_items', [] as ClientAggregate[]);
-        const orderIds = [
-          ...new Set((oi || []).map((o) => o.order_id).filter(Boolean)),
-        ] as string[];
+        }
+        const orderIds = [...new Set(oi.map((o) => o.order_id).filter(Boolean))] as string[];
         if (!orderIds.length) return [];
         // BUG-TOPCLIENTS-ORDERS-FILTERED-SELECT-SILENT-FAIL FIX
         const { data: orders, error: ordersFilteredErr } = await supabase
@@ -566,14 +595,29 @@ export function useTopClients(
         return aggregateClients(orders || []);
       }
       // BUG-TOPCLIENTS-ALLORDERS-SELECT-SILENT-FAIL FIX
-      const { data: orders, error: ordersErr } = await supabase
+      let orders: Array<{
+        client_name: string | null;
+        client_company: string | null;
+        total: number | null;
+      }>;
+      try {
         // rls-allow: respeita can_view_all_sales server-side
-        .from('orders')
-        .select('client_name, client_company, total')
-        .gte('created_at', since);
-      if (ordersErr)
+        orders = await fetchAllPages<{
+          client_name: string | null;
+          client_company: string | null;
+          total: number | null;
+        }>((from, to) =>
+          supabase
+            .from('orders')
+            .select('client_name, client_company, total')
+            .gte('created_at', since)
+            .order('id', { ascending: true })
+            .range(from, to),
+        );
+      } catch (ordersErr) {
         return degradeOrThrow(ordersErr, 'top_clients.orders_all', [] as ClientAggregate[]);
-      return aggregateClients(orders || []);
+      }
+      return aggregateClients(orders);
     },
     staleTime: 1000 * 60 * 5,
     enabled: !!user && (!hasFilter || productIds !== undefined),
@@ -600,18 +644,31 @@ export function useCategoryRanking(
       const pids = productIds ? Array.from(productIds).slice(0, 200) : undefined;
       // BUG-COMMERCIAL-CATRANK-SILENT-FAIL FIX: { data } without error check silently returned
       // empty results on RLS denial — now throws so TanStack Query retries/surfaces the error.
-      const { data: orderItems, error: orderErr } = pids
-        ? await supabase
-            .from('order_items')
-            .select('product_id, quantity, unit_price')
-            .gte('created_at', since)
-            .in('product_id', pids)
-        : await supabase
+      let orderItems: Array<{
+        product_id: string | null;
+        quantity: number | null;
+        unit_price: number | null;
+      }>;
+      try {
+        orderItems = await fetchAllPages<{
+          product_id: string | null;
+          quantity: number | null;
+          unit_price: number | null;
+        }>((from, to) => {
+          let q = supabase
             .from('order_items')
             .select('product_id, quantity, unit_price')
             .gte('created_at', since);
-      if (orderErr)
-        return degradeOrThrow(orderErr, 'category_ranking.order_items', [] as CategoryRankingItem[]);
+          if (pids) q = q.in('product_id', pids);
+          return q.order('id', { ascending: true }).range(from, to);
+        });
+      } catch (orderErr) {
+        return degradeOrThrow(
+          orderErr,
+          'category_ranking.order_items',
+          [] as CategoryRankingItem[],
+        );
+      }
 
       const { fetchPromobrindProducts } = await import('@/lib/external-db');
       const products = await fetchPromobrindProducts({ limit: 5000 });
@@ -623,7 +680,7 @@ export function useCategoryRanking(
       });
 
       const categoryMap = new Map<string, CategoryRankingItem>();
-      (orderItems || []).forEach((item) => {
+      orderItems.forEach((item) => {
         const cat = productCategoryMap.get(item.product_id || '');
         if (!cat) return;
         const e = categoryMap.get(cat.catId) || {
@@ -702,19 +759,30 @@ export function useSupplierSales(
     queryFn: async () => {
       const pids = productIds ? Array.from(productIds).slice(0, 200) : undefined;
       // BUG-COMMERCIAL-SUPPLIERSALES-SILENT-FAIL FIX: { data } without error check.
-      const { data: orderItems, error: orderErr } = pids
-        ? await supabase
-            .from('order_items')
-            .select('product_id, product_name, quantity, unit_price')
-            .gte('created_at', since)
-            .in('product_id', pids)
-        : await supabase
+      let orderItems: Array<{
+        product_id: string | null;
+        product_name: string | null;
+        quantity: number | null;
+        unit_price: number | null;
+      }>;
+      try {
+        orderItems = await fetchAllPages<{
+          product_id: string | null;
+          product_name: string | null;
+          quantity: number | null;
+          unit_price: number | null;
+        }>((from, to) => {
+          let q = supabase
             .from('order_items')
             .select('product_id, product_name, quantity, unit_price')
             .gte('created_at', since);
-      if (orderErr)
+          if (pids) q = q.in('product_id', pids);
+          return q.order('id', { ascending: true }).range(from, to);
+        });
+      } catch (orderErr) {
         return degradeOrThrow(orderErr, 'supplier_sales.order_items', [] as SupplierSalesRow[]);
-      if (!orderItems?.length) return [];
+      }
+      if (!orderItems.length) return [];
 
       const { fetchPromobrindProducts } = await import('@/lib/external-db');
       const products = await fetchPromobrindProducts({ limit: 5000 });
