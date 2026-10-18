@@ -91,7 +91,7 @@ jobs:
       # pixel-diff direto do PR sem precisar rodar localmente.
       - name: Upload Playwright HTML report (sem trace)
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: playwright-report-pdf-dialog-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
@@ -104,7 +104,7 @@ jobs:
       # (não só workflow_dispatch) para facilitar review de PR.
       - name: Upload pixel-diff PNGs (actual/expected/diff)
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: pdf-dialog-pixel-diff-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
@@ -118,7 +118,7 @@ jobs:
       # claro que o download desse artifact é o commit candidato.
       - name: Upload updated baselines (dispatch only)
         if: ${{ github.event.inputs.update_snapshots == 'true' }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: pdf-dialog-baselines-${{ github.run_id }}
           path: |
@@ -145,7 +145,7 @@ jobs:
 
       - name: Upload artifact de recalibração (report + json + diffs)
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: watermark-threshold-recalibration-${{ github.run_id }}-${{ github.run_attempt }}
           path: |

@@ -12,7 +12,7 @@ name: E2E · restore_seller_cart RPC (multi-env)
 
 on:
   schedule:
-    - cron: "48 9 * * *"  # E89: ≥20min after db-schema-drift-check (09:29)
+    - cron: "49 9 * * *"  # E89: ≥20min after db-schema-drift-check (09:29), ≥20min before security-definer-acl (10:09)
   workflow_dispatch:
     inputs:
       environment:

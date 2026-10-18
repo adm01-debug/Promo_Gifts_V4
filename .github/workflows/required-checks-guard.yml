@@ -15,7 +15,7 @@ on:
       - 'scripts/check-secrets-inventory.mjs'
       - 'docs/ci/SEGREDOS.md'
   schedule:
-    - cron: '28 9 * * *'  # diário 09:28 UTC (E89)
+    - cron: '45 8 * * *'  # diário 08:45 UTC — E89: ≥20min de edge-functions-drift-check (09:06)
   workflow_dispatch:
 
 permissions:
