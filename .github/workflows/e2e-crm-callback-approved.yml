@@ -20,7 +20,7 @@ on:
   workflow_dispatch:
   schedule:
     # Smoke diário 06:20 UTC (03:20 America/Sao_Paulo)
-    - cron: "20 6 * * *"
+    - cron: "20 6 * * *"  # diário 06:20 UTC (E89)
 
 concurrency:
   group: e2e-crm-callback-approved-${{ github.ref }}

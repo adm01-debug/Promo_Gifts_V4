@@ -18,7 +18,7 @@ on:
       - '.github/workflows/e2e-focused.yml'
   schedule:
     # E89 — segunda-feira 02:00 UTC
-    - cron: '0 2 * * 1'
+    - cron: '0 2 * * 1'  # E89 — segunda 02:00 UTC
   workflow_dispatch:
     inputs:
       suite:
