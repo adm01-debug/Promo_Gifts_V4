@@ -21,7 +21,7 @@ import {
   type EdgeFnResponseSpec,
 } from "../p0/_mocks";
 
-const BASE = "https://nmojwpihnslkssljowjh.supabase.co/functions/v1";
+const BASE = "https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1";
 
 // ─── Lógica compartilhada (espelha fontes) ────────────────────────────────────
 

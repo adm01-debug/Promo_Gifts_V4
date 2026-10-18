@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Simulating Edge Function environment
-const BASE_URL = 'https://nmojwpihnslkssljowjh.supabase.co/functions/v1';
+const BASE_URL = 'https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1';
 
 describe('Edge Functions Integration: Catalog & Data Layers', () => {
   beforeEach(() => {
