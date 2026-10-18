@@ -79,7 +79,7 @@ Deno.serve(async (req) => {
       case 'get_active_dates': {
         const { data, error } = await externalSupabase.rpc('get_active_commemorative_dates');
         if (error) {
-          return safeErrorResponse(error, { corsHeaders, publicMessage: 'query_failed', status: 400, logLabel: 'commemorative-dates query error:' });
+          return safeErrorResponse(error, { corsHeaders, req, publicMessage: 'query_failed', status: 400, logLabel: 'commemorative-dates query error:' });
         }
         result = data;
         break;
@@ -91,7 +91,7 @@ Deno.serve(async (req) => {
           p_days_ahead: daysAhead
         });
         if (error) {
-          return safeErrorResponse(error, { corsHeaders, publicMessage: 'query_failed', status: 400, logLabel: 'commemorative-dates query error:' });
+          return safeErrorResponse(error, { corsHeaders, req, publicMessage: 'query_failed', status: 400, logLabel: 'commemorative-dates query error:' });
         }
         result = data;
         break;
@@ -112,7 +112,7 @@ Deno.serve(async (req) => {
           p_include_all_colors: includeAllColors
         });
         if (error) {
-          return safeErrorResponse(error, { corsHeaders, publicMessage: 'query_failed', status: 400, logLabel: 'commemorative-dates query error:' });
+          return safeErrorResponse(error, { corsHeaders, req, publicMessage: 'query_failed', status: 400, logLabel: 'commemorative-dates query error:' });
         }
         result = data;
         break;
@@ -126,7 +126,7 @@ Deno.serve(async (req) => {
           .order('date_month')
           .order('date_day');
         if (error) {
-          return safeErrorResponse(error, { corsHeaders, publicMessage: 'query_failed', status: 400, logLabel: 'commemorative-dates query error:' });
+          return safeErrorResponse(error, { corsHeaders, req, publicMessage: 'query_failed', status: 400, logLabel: 'commemorative-dates query error:' });
         }
         result = data;
         break;
@@ -139,6 +139,6 @@ Deno.serve(async (req) => {
     );
 
   } catch (error) {
-    return safeErrorResponse(error, { corsHeaders, publicMessage: 'internal_error', logLabel: 'commemorative-dates unexpected error:' });
+    return safeErrorResponse(error, { corsHeaders, req, publicMessage: 'internal_error', logLabel: 'commemorative-dates unexpected error:' });
   }
 });

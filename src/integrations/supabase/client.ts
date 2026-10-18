@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 import type { Database } from "./types";
 
 import { createClientLogger } from '@/lib/telemetry/structuredLogger';
+import { newRequestId, REQUEST_ID_HEADER } from '@/lib/telemetry/requestId';
 // Interceptor global 401/403 (incidente 2026-10-13): session-recovery.ts só
 // importa este módulo via dynamic import dentro de getSupabaseClient() — sem
 // ciclo em tempo de avaliação do módulo (ver lazy-client.ts).
@@ -118,6 +119,28 @@ const getStorageOrUndefined = (): SupabaseStorage | undefined => {
 
 const storage = getStorageOrUndefined();
 
+// Tracing ponta-a-ponta: toda chamada a edge function (`/functions/v1/`) sai
+// com `X-Request-Id` — UUID v4 gerado por requisição. invokeEdgeSafe já envia
+// o seu próprio id; aqui só injetamos quando o header está ausente, cobrindo
+// os call sites que ainda invocam supabase.functions.invoke direto.
+const EDGE_FUNCTION_PATH = '/functions/v1/';
+
+const requestUrlOf = (u: RequestInfo | URL): string =>
+  typeof u === 'string' ? u : u instanceof Request ? u.url : u.toString();
+
+const withEdgeRequestId = (
+  url: RequestInfo | URL,
+  options?: RequestInit,
+): { options: RequestInit | undefined; requestId?: string } => {
+  if (!requestUrlOf(url).includes(EDGE_FUNCTION_PATH)) return { options };
+  const headers = new Headers(options?.headers);
+  const existing = headers.get(REQUEST_ID_HEADER);
+  if (existing) return { options, requestId: existing };
+  const requestId = newRequestId();
+  headers.set(REQUEST_ID_HEADER, requestId);
+  return { options: { ...(options ?? {}), headers }, requestId };
+};
+
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   auth: {
     storage,
@@ -127,8 +150,9 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
   },
   global: {
     fetch: async (url, options) => {
+      const { options: tracedOptions, requestId } = withEdgeRequestId(url, options);
       try {
-        const response = await fetch(url, options);
+        const response = await fetch(url, tracedOptions);
         if (response.status === 401 || response.status === 403) {
           const body = await response.clone().json().catch(() => ({}));
           if (response.status === 401 && (body.code === 'UNAUTHORIZED_LEGACY_JWT' || body.message?.includes('Invalid JWT') || body.message?.includes('Invalid API key'))) {
@@ -144,6 +168,7 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
               project_id: projectId,
               is_canonical: isCanonical,
               diagnostic,
+              request_id: requestId,
               recommendation: 'painel Lovable → Cloud → Database → reconectar projeto canônico',
             });
             if (import.meta.env.DEV) {
@@ -174,7 +199,7 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
         const isAbort =
           error instanceof Error && error.name === 'AbortError';
         if (!isAbort) {
-          log.error('request_failed', { error });
+          log.error('request_failed', { error, request_id: requestId });
         }
         throw error;
       }

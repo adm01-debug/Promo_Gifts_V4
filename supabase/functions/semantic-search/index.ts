@@ -443,6 +443,6 @@ Responda APENAS com JSON válido no formato especificado.`;
     if ((error as any)?.status === 401 || (error as any)?.status === 403) {
       return authErrorResponse(error, corsHeaders);
     }
-    return safeErrorResponse(error, { corsHeaders, publicMessage: "internal_error", logLabel: "[Error] semantic-search:", extra: { success: false } });
+    return safeErrorResponse(error, { corsHeaders, req, publicMessage: "internal_error", logLabel: "[Error] semantic-search:", extra: { success: false } });
   }
 });
