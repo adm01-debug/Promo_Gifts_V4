@@ -33,10 +33,10 @@
       "label": "Radix UI + cmdk",
       "currentBytes": 191399
     },
-    "icons-vendor": {
-      "maxBytes": 759885,
+    "critical-icons": {
+      "maxBytes": 250000,
       "label": "lucide-react",
-      "currentBytes": null
+      "currentBytes": 8720
     },
     "date-vendor": {
       "maxBytes": 64196,

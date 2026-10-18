@@ -2,134 +2,179 @@
 /**
  * check-product-type-fields.mjs
  *
- * Verifica que campos críticos do tipo Product estão presentes nos arquivos
- * de definição de tipos. Previne:
- *   - Remoção silenciosa durante conflito de merge (gap C2, 2026-06-11)
- *   - Renomeação silenciosa pelo Lovable (gap L3: price → sale_price)
+ * E111: Verifica que campos críticos do tipo Product estão presentes na
+ * declaração `export interface Product` em src/types/product-catalog.ts,
+ * usando TypeScript Compiler API (não blob-grep).
+ *
+ * Antes (blob-grep): passava mesmo com `interface Product` deletada, porque
+ * types.ts tem 19 ocorrências de `sale_price` e o regex as encontrava.
+ * Agora: analisa o AST do arquivo canônico e checa membros da interface.
  *
  * Uso: node scripts/check-product-type-fields.mjs
- * Retorna: 0 = OK, 1 = campos ausentes ou inconsistentes
+ * Retorna: 0 = OK, 1 = campos ausentes ou interface não encontrada
  */
 
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
+import ts from 'typescript';
 
 const ROOT = process.cwd();
 
-// Arquivos onde o tipo Product ou seus campos podem estar definidos
-const TYPE_FILES = [
-  'src/types/product-catalog.ts',
-  'src/integrations/supabase/types.ts',
-  'src/types/index.ts',
-  'src/types/products.ts',
-  'src/types/catalog.ts',
-].map(f => join(ROOT, f)).filter(existsSync);
+// Arquivo canônico — único alvo. types.ts deliberadamente excluído: tem 19+
+// ocorrências de sale_price e tornava o gate um falso-positivo por definição.
+const CANONICAL_FILE = join(ROOT, 'src/types/product-catalog.ts');
+const CANONICAL_NAME = 'Product'; // nome exato da interface
 
-if (TYPE_FILES.length === 0) {
-  console.error('❌ Nenhum arquivo de tipos encontrado. Verifique os caminhos em check-product-type-fields.mjs.');
+if (!existsSync(CANONICAL_FILE)) {
+  console.error(`❌ Arquivo canônico não encontrado: ${CANONICAL_FILE}`);
   process.exit(1);
 }
 
-// Campos críticos que DEVEM existir em pelo menos um dos arquivos de tipos
-// Formato: { field, description, critical }
+// Campos críticos que DEVEM ser membros diretos de `interface Product`
+// (ou do TypeLiteral de `type Product = { ... }`)
 const REQUIRED_FIELDS = [
   {
-    patterns: ['price', 'sale_price'],
-    description: 'Campo de preço do produto',
-    rule: 'AT_LEAST_ONE',
+    name: 'price',
+    description: 'Preço original do produto',
     critical: true,
     note: 'Lovable renomeou price→sale_price em 2026-06-11 causando 400s em produção',
   },
   {
-    patterns: ['shortDescription'],
+    name: 'sale_price',
+    description: 'Preço de venda (pode ser opcional)',
+    critical: true,
+    note: 'Adicionado após incidente 2026-06-11 — REGRA #2 do CLAUDE.md',
+  },
+  {
+    name: 'shortDescription',
     description: 'Descrição curta do produto',
-    rule: 'ALL',
     critical: true,
     note: 'Removido durante merge do PR #701 (commit f22e1e2)',
   },
   {
-    patterns: ['category_id'],
+    name: 'category_id',
     description: 'ID da categoria',
-    rule: 'ALL',
     critical: true,
     note: 'Removido durante merge do PR #701 (commit f22e1e2)',
   },
   {
-    patterns: ['category_name', 'category'],
+    name: 'category_name',
     description: 'Nome da categoria',
-    rule: 'AT_LEAST_ONE',
     critical: false,
-    note: 'Pode aparecer como category_name ou category conforme contexto',
+    note: 'Campo de conveniência — ausente é aviso, não erro',
   },
 ];
 
-// Lê todos os arquivos de tipo em um único blob para busca
-const typeContents = TYPE_FILES.map(f => {
-  const content = readFileSync(f, 'utf-8');
-  return { file: f.replace(ROOT + '/', ''), content };
-});
+/**
+ * Extrai os nomes de todos os membros de uma InterfaceDeclaration ou do
+ * TypeLiteral de uma TypeAliasDeclaration com o nome dado.
+ * Retorna null se a declaração não for encontrada.
+ */
+function extractInterfaceMembers(sourceText, interfaceName) {
+  const sf = ts.createSourceFile(
+    CANONICAL_FILE,
+    sourceText,
+    ts.ScriptTarget.Latest,
+    /* setParentNodes */ true,
+  );
 
-const allContent = typeContents.map(t => t.content).join('\n');
+  const memberNames = new Set();
+
+  function visit(node) {
+    // interface Product { ... }
+    if (
+      ts.isInterfaceDeclaration(node) &&
+      node.name.text === interfaceName
+    ) {
+      for (const member of node.members) {
+        if (ts.isPropertySignature(member) && member.name) {
+          const name = ts.isIdentifier(member.name)
+            ? member.name.text
+            : ts.isStringLiteral(member.name)
+              ? member.name.text
+              : null;
+          if (name) memberNames.add(name);
+        }
+      }
+    }
+
+    // type Product = { ... }
+    if (
+      ts.isTypeAliasDeclaration(node) &&
+      node.name.text === interfaceName &&
+      ts.isTypeLiteralNode(node.type)
+    ) {
+      for (const member of node.type.members) {
+        if (ts.isPropertySignature(member) && member.name) {
+          const name = ts.isIdentifier(member.name)
+            ? member.name.text
+            : ts.isStringLiteral(member.name)
+              ? member.name.text
+              : null;
+          if (name) memberNames.add(name);
+        }
+      }
+    }
+
+    ts.forEachChild(node, visit);
+  }
+
+  visit(sf);
+  return memberNames.size > 0 ? memberNames : null;
+}
+
+// ----- main -----
+
+const source = readFileSync(CANONICAL_FILE, 'utf-8');
+const members = extractInterfaceMembers(source, CANONICAL_NAME);
+
+console.log(`🔍 Verificando campos críticos de \`interface ${CANONICAL_NAME}\` em ${CANONICAL_FILE.replace(ROOT + '/', '')}...\n`);
+
+if (!members) {
+  console.error(`❌ \`interface ${CANONICAL_NAME}\` (ou \`type ${CANONICAL_NAME} = {...}\`) não encontrada em ${CANONICAL_FILE.replace(ROOT + '/', '')}.`);
+  console.error('   Isso pode acontecer se o Lovable deletou ou renomeou a declaração.');
+  console.error('   Verifique: git log --oneline -5 -- src/types/product-catalog.ts');
+  process.exit(1);
+}
+
+console.log(`Membros encontrados em \`interface ${CANONICAL_NAME}\`: ${members.size}`);
+console.log();
 
 let errors = 0;
 let warnings = 0;
-const results = [];
-
-console.log('🔍 Verificando campos críticos do tipo Product...\n');
-console.log(`Arquivos analisados:`);
-typeContents.forEach(t => console.log(`  - ${t.file}`));
-console.log();
 
 for (const field of REQUIRED_FIELDS) {
-  const found = field.patterns.filter(p => {
-    // Busca o campo como propriedade de tipo TypeScript
-    // Exemplos: price: number, price?: number, "price": number, sale_price:
-    const regex = new RegExp(`['"\\s]${p}['"\\s]?[?:]`, 'i');
-    return regex.test(allContent);
-  });
-
-  const allPresent = found.length === field.patterns.length;
-  const anyPresent = found.length > 0;
-
+  const present = members.has(field.name);
   let status;
-  if (field.rule === 'ALL' && !allPresent) {
-    status = '❌ AUSENTE';
-    if (field.critical) errors++;
-    else warnings++;
-    results.push({ status, field, found });
-  } else if (field.rule === 'AT_LEAST_ONE' && !anyPresent) {
+
+  if (!present) {
     status = field.critical ? '❌ AUSENTE' : '⚠️  AVISO';
     if (field.critical) errors++;
     else warnings++;
-    results.push({ status, field, found });
   } else {
     status = '✅ OK';
-    results.push({ status, field, found });
   }
 
-  const foundStr = found.length > 0 ? found.join(', ') : 'nenhum';
-  console.log(`${status} ${field.description}`);
-  console.log(`   Padrões buscados: ${field.patterns.join(', ')}`);
-  console.log(`   Encontrados: ${foundStr}`);
-  if (field.note && (status.includes('❌') || status.includes('⚠️'))) {
-    console.log(`   📝 Nota: ${field.note}`);
+  console.log(`${status} ${field.name} — ${field.description}`);
+  if (!present && field.note) {
+    console.log(`   📝 ${field.note}`);
   }
-  console.log();
 }
 
-// Resumo
+console.log();
+
 if (errors > 0) {
-  console.error(`\n❌ ${errors} campo(s) crítico(s) ausente(s) nos tipos do Product.`);
-  console.error('\nComo corrigir:');
-  console.error('  1. Verifique o último commit que alterou src/types/ ou src/integrations/supabase/types.ts');
-  console.error('  2. git log --oneline -10 -- src/types/ src/integrations/supabase/types.ts');
-  console.error('  3. Restaure os campos ausentes ou investigue se houve rename intencional');
-  console.error('\nCampos obrigatórios documentados em: CLAUDE.md#regra-2');
+  console.error(`❌ ${errors} campo(s) crítico(s) ausente(s) em \`interface ${CANONICAL_NAME}\` (${CANONICAL_FILE.replace(ROOT + '/', '')}).`);
+  console.error('');
+  console.error('Como corrigir:');
+  console.error('  1. git log --oneline -10 -- src/types/product-catalog.ts');
+  console.error('  2. Restaure os campos na interface Product (não em types.ts)');
+  console.error('  3. CLAUDE.md REGRA #2 documenta os campos obrigatórios');
   process.exit(1);
 } else if (warnings > 0) {
-  console.warn(`\n⚠️  ${warnings} aviso(s). Campos opcionais ausentes — não é bloqueante.`);
+  console.warn(`⚠️  ${warnings} aviso(s) — campo(s) opcional(is) ausente(s). Não é bloqueante.`);
   process.exit(0);
 } else {
-  console.log(`✅ Todos os campos críticos do Product type estão presentes.`);
+  console.log(`✅ Todos os campos críticos de \`interface ${CANONICAL_NAME}\` estão presentes.`);
   process.exit(0);
 }

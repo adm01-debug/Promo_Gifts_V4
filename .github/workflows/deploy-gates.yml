@@ -331,6 +331,10 @@ jobs:
           fi
           [ "$fail" -eq 0 ] || exit 1
           echo "OK: CORS snapshot limpo"
+      # E113 — Toast leak gate: nenhum toast.error/warning pode vazar mensagem técnica
+      # de edge function ou backend diretamente na UI sem sanitização.
+      - name: Gate E113 — Toast leaks (bloqueante)
+        run: node scripts/check-toast-leaks.mjs
 
   unit-tests:
     name: Gate 2 - Unit Tests
@@ -345,7 +349,7 @@ jobs:
         uses: ./.github/actions/setup-node-ci
       # Gate rapido de regressao. Suites amplas seguem no CI principal:
       # `test:quality`, `Hook tests` e `Test Coverage`.
-      - run: npm run test:deploy-gate
+      - run: npm run test:ci-core
       - name: Webhook scenario matrix (contratos Zod, 0 HTTP)
         run: |
           set -euo pipefail
