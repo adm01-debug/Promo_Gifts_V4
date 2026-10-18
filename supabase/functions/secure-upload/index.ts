@@ -4,6 +4,7 @@ import { getOrCreateRequestId } from "../_shared/request-id.ts";
 import { getCorsHeaders } from "../_shared/cors.ts";
 import { safeErrorResponse } from "../_shared/error-response.ts";
 import { getCredential } from "../_shared/credentials.ts";
+import { z } from "../_shared/zod-validate.ts";
 
 interface ScanLog {
   user_id: string;
@@ -25,6 +26,21 @@ const ALLOWED_MIME = new Set([
   // SVG propositalmente fora: XML ativo pode carregar <script>/event
   // handlers e vira stored XSS quando servido como documento.
 ]);
+
+// Campos do multipart validados por zod, preservando a regra legada:
+// `folder` compõe o path no Storage e é controlado pelo cliente — até 4
+// segmentos slug, o que barra path traversal ("../") mantendo hierarquias
+// legítimas (products/<id>, groups/<id>). Um campo `folder` não-string
+// (ex.: File) falha o schema em vez de explodir num TypeError no split.
+// `file` precisa ser File; ambos caem nos mesmos 400/audit de sempre.
+const folderSchema = z.string().refine((value) => {
+  const segments = value.split("/");
+  return (
+    segments.length <= 4 &&
+    segments.every((s) => /^[a-z0-9][a-z0-9_-]{0,63}$/i.test(s))
+  );
+});
+const fileFieldSchema = z.instanceof(File);
 
 /** Sniffa magic bytes e devolve o MIME real ou null se desconhecido. */
 function sniffMimeType(bytes: Uint8Array): string | null {
@@ -93,16 +109,8 @@ Deno.serve(async (req) => {
       );
     }
     const fileField = formData.get("file");
-    // folder compõe o path no Storage e é controlado pelo cliente — validação
-    // por segmento preserva hierarquias legítimas (products/<id>, groups/<id>)
-    // e barra path traversal ("../"). Entrada inválida é rejeitada com 400 em
-    // vez de cair silenciosamente em outra pasta.
     const rawFolder = (formData.get("folder") as string) || "uploads";
-    const folderSegments = rawFolder.split("/");
-    const folderValid =
-      folderSegments.length <= 4 &&
-      folderSegments.every((s) => /^[a-z0-9][a-z0-9_-]{0,63}$/i.test(s));
-    if (!folderValid) {
+    if (!folderSchema.safeParse(rawFolder).success) {
       log.warn("upload_blocked_bad_folder", { folder: rawFolder, user_id: auth.userId });
       await supabaseAdmin.from("file_scan_logs").insert({
         user_id: auth.userId,
@@ -123,7 +131,8 @@ Deno.serve(async (req) => {
 
     // Campo ausente ou string (não-File) → 400 explícito em vez de
     // TypeError em file.name/file.size caindo no catch externo como 500.
-    if (!(fileField instanceof File)) {
+    const parsedFile = fileFieldSchema.safeParse(fileField);
+    if (!parsedFile.success) {
       await supabaseAdmin.from("file_scan_logs").insert({
         user_id: auth.userId,
         bucket: "personalization-images",
@@ -139,7 +148,7 @@ Deno.serve(async (req) => {
         }),
       );
     }
-    const file = fileField;
+    const file = parsedFile.data;
 
     const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
 
