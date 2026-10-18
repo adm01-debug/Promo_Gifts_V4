@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """Asia Import - Batch extraction de dimensões dos kits via API MCP Worker"""
-import urllib.request, re, json, sys, time
+import urllib.request, re, json, sys, time, os
 
 SUPA = 'https://doufsxqlfjyuvxuezpln.supabase.co'
-KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRvdWZzeHFsZmp5dXZ4dWV6cGxuIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NzM4NjY0MywiZXhwIjoyMDgyOTYyNjQzfQ.97elRH8MIOfybKMog91JStBOzVx4elcgMTQH0Fw68N8'
+KEY  = os.environ.get('SUPABASE_SERVICE_ROLE_KEY', '')
+if not KEY:
+    print('ERRO: SUPABASE_SERVICE_ROLE_KEY não definida. Defina antes de rodar.', file=sys.stderr)
+    sys.exit(1)
 ASIA_MCP = 'https://asia-import-mcp.adm01.workers.dev/mcp'
 DRY = '--dry' in sys.argv
 HDRS = {'apikey': KEY, 'Authorization': f'Bearer {KEY}', 'Content-Type': 'application/json'}
