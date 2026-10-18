@@ -38,12 +38,20 @@ export interface AuthzEntry {
    * Mecanismo de enforcement. Default = "shared-authorize" (helper SSOT).
    * "custom" = implementação própria legítima (validação inline de
    * has_role, scope MCP, HMAC, etc.) — exige rationale claro.
+   * "jwt" = autenticação garantida pela plataforma (verify_jwt: true no
+   * config.toml) — JWT Bearer válido é obrigatório antes do handler rodar.
    */
-  enforcedBy?: "shared-authorize" | "custom";
+  enforcedBy?: "shared-authorize" | "custom" | "jwt";
   /** Se true, o teste de bypass anon é dispensado */
   skipAnonBypassTest?: boolean;
   /** Se true, o teste de bypass authenticated é dispensado */
   skipAuthBypassTest?: boolean;
+  /**
+   * Se true (só com enforcedBy: "custom"), a verificação de papel acontece
+   * DENTRO da RPC chamada (has_role no SQL) — o edge exige JWT válido mas
+   * não contém primitiva de auth própria. Exige rationale explícito.
+   */
+  roleCheckInRpc?: boolean;
 }
 
 export const EDGE_AUTHZ_MANIFEST: Record<string, AuthzEntry> = {
@@ -117,7 +125,7 @@ export const EDGE_AUTHZ_MANIFEST: Record<string, AuthzEntry> = {
   "bitrix-sync": { category: "supervisor", rationale: "Sync no CRM externo — admin/dev", enforcedBy: "shared-authorize" },
   "manage-users": { category: "supervisor", rationale: "Gestão de usuários via has_role inline", enforcedBy: "custom" },
   "block-ip-temporarily": { category: "supervisor", rationale: "Bloqueio de IP — has_role inline", enforcedBy: "custom" },
-  "ownership-repair": { category: "supervisor", rationale: "Reparo de órfãos — has_role inline + dry-run", enforcedBy: "custom" },
+  "ownership-repair": { category: "supervisor", rationale: "Reparo de órfãos — has_role(admin|dev) dentro da RPC repair_ownership_orphans + JWT exigido no handler", enforcedBy: "custom", roleCheckInRpc: true },
   "bulk-random-passwords": { category: "dev", rationale: "Bulk reset de senhas — authorize(dev), dry_run sem dump de emails (E028/E029)" },
 
   // ---------------- Dev-only ----------------
