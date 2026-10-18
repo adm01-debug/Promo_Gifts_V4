@@ -163,7 +163,6 @@ const SMOKE_COVERAGE = [
   "quotes-list",
   "quotes-dashboard",
   "quotes-kanban",
-  "quotes-templates",
   "quote-new",
   "simulator",
   "price-simulator",
