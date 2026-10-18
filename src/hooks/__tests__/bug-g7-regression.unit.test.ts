@@ -247,7 +247,7 @@ describe('SORT-SESSION — ranking do catálogo não alterna após seleção', (
   });
 
   it('preferências persistidas fora da sessão não sobrescrevem o ranking escolhido na sessão', () => {
-    const src = catalogState();
+    const src = catalogState() + readSrc('src/hooks/products/useCatalogState.helpers.ts');
     expect(src).toContain("const SORT_SESSION_KEY = 'catalog:sortBy'");
     expect(src).toContain('validateSortOption(getSessionSortPreference())');
     expect(src).not.toContain('prefsLoaded');
