@@ -3,7 +3,7 @@
 // BUG-EF-010 FIXED: supabase-js@2.49.8 (futuro/typo) -> @2.49.4.
 import { createStructuredLogger } from "../_shared/structured-logger.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.49.4";
-import { buildPublicCorsHeaders } from "../_shared/cors.ts";
+import { getCorsHeaders } from "../_shared/cors.ts";
 import { authorize } from "../_shared/authorize.ts";
 import { z } from "../_shared/zod-validate.ts";
 
@@ -45,10 +45,9 @@ interface UpdatedUser {
   email: string | null;
 }
 
-const corsHeaders = buildPublicCorsHeaders({
-  // x-admin-token removido: E028 migrou para authorize() com requireRole dev
-  allowMethods: "POST, OPTIONS",
-});
+// E094: corsHeaders calculado por request — origem restrita ao domínio do solicitante
+// (não mais Access-Control-Allow-Origin: *)
+let _corsHeaders: Record<string, string> = {};
 
 function pick(chars: string): string {
   const arr = new Uint32Array(1);
@@ -112,6 +111,8 @@ function timingSafeEqual(a: string, b: string): boolean {
 }
 
 Deno.serve(async (req: Request) => {
+  // E094: origen restrita por request — não mais Access-Control-Allow-Origin: *
+  const corsHeaders = getCorsHeaders(req);
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }

@@ -98,6 +98,7 @@ Deno.serve(async (req) => {
 
           await fetch("https://api.resend.com/emails", {
             method: "POST",
+            signal: AbortSignal.timeout(25_000),
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${resendKey}`,

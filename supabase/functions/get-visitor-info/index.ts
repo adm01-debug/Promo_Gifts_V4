@@ -1,5 +1,14 @@
 import { publicCorsHeaders } from '../_shared/cors.ts';
 import { runBotProtection } from '../_shared/bot-protection.ts';
+import { fetchWithBreaker } from '../_shared/external-fetch.ts';
+
+// E097: validar IPv4 e IPv6 antes de interpolar na URL
+const IPV4_RE = /^(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)$/;
+const IPV6_RE = /^[0-9a-fA-F:]{2,39}$/;
+
+function isValidIp(ip: string): boolean {
+  return IPV4_RE.test(ip) || IPV6_RE.test(ip);
+}
 
 Deno.serve(async (req: Request): Promise<Response> => {
   if (req.method === 'OPTIONS') {
@@ -16,21 +25,30 @@ Deno.serve(async (req: Request): Promise<Response> => {
   if (!botResult.allowed) return botResult.blockResponse!;
 
   try {
-    // Extract visitor IP from proxy headers — only use the first (leftmost) entry
+    // E097: usar ÚLTIMO elemento do XFF (mais confiável — adicionado pelo proxy mais próximo)
+    // O primeiro elemento é forjável pelo cliente; o último é inserido pelo proxy de borda.
+    const xff = req.headers.get('x-forwarded-for');
     const ip =
-      req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+      (xff ? xff.split(',').pop()?.trim() : null) ||
       req.headers.get('x-real-ip') ||
       null;
+
+    // E097: validar IP antes de interpolar na URL — IP inválido → 400
+    if (ip && ip !== 'unknown' && !isValidIp(ip)) {
+      return new Response(JSON.stringify({ error: 'IP inválido' }), { status: 400, headers });
+    }
 
     let city: string | null = null;
     let countryCode: string | null = null;
 
-    // Server-side geolocation lookup (no CORS/sandbox issues)
+    // Server-side geolocation lookup via HTTPS (E097: trocar http:// → https://)
     if (ip && ip !== 'unknown') {
       try {
-        const geoRes = await fetch(`http://ip-api.com/json/${ip}?fields=city,countryCode`, {
-          signal: AbortSignal.timeout(3000),
-        });
+        // E097: fetchWithBreaker para registrar falhas no circuit breaker
+        const geoRes = await fetchWithBreaker(
+          'ip-api',
+          `https://ip-api.com/json/${ip}?fields=city,countryCode`,
+        );
         if (geoRes.ok) {
           const geo = await geoRes.json();
           city = geo.city || null;

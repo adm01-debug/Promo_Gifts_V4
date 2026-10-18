@@ -130,7 +130,7 @@ function getRequestCorsHeaders(req: Request): Record<string, string> {
 
   return {
     ...PRODUCT_WEBHOOK_CORS_HEADERS,
-    'Access-Control-Allow-Origin': requestOrigin || '*',
+    'Access-Control-Allow-Origin': requestOrigin || 'https://www.promogifts.com.br',
     Vary: 'Origin',
   };
 }

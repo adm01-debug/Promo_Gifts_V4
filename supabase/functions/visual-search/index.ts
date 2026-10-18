@@ -298,6 +298,7 @@ Responda APENAS em JSON com este formato:
         const minimaxResponse = await fetch(
           'https://api.minimax.io/v1/chat/completions',
           {
+            signal: AbortSignal.timeout(25_000),
             headers: {
               Authorization: `Bearer ${AI_MINIMAX_API_KEY}`,
               'Content-Type': 'application/json',
