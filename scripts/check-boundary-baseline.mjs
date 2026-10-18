@@ -45,6 +45,8 @@ function resolveTarget(spec, importerFile) {
 const violations = [];
 for (const f of walk('src/pages')) {
   const rel = relative('src', f).split('\\').join('/');
+  // Testes importam a unidade sob teste — não são acoplamento de produção.
+  if (/(__tests__\/|\.(test|spec)\.)/.test(rel)) continue;
   const srcDom = rel.split('/')[1].split('.')[0];
   const src = readFileSync(f, 'utf8');
   for (const m of src.matchAll(SPEC_RE)) {
