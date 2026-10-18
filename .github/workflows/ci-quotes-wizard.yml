@@ -105,8 +105,7 @@ jobs:
             test-results/**/*-actual.png
             test-results/**/*-expected.png
             test-results/**/*-diff.png
-            # E26: trace contém dados de formulário (incluindo senhas E2E)
-            !test-results/**/trace.zip
+            !test-results/**/trace.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
             test-results/**/*.webm
           retention-days: 14
           if-no-files-found: ignore
@@ -178,13 +177,11 @@ jobs:
             test-results/**/*-actual.png
             test-results/**/*-expected.png
             test-results/**/*-diff.png
-            # E26: trace contém dados de formulário (incluindo senhas E2E)
-            !test-results/**/trace.zip
+            !test-results/**/trace.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
             test-results/**/video.webm
             test-results/**/*.webm
             test-results/**/*.png
-            # E26: trace contém dados de formulário (incluindo senhas E2E)
-            !test-results-headed/**/trace.zip
+            !test-results-headed/**/trace.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
             test-results-headed/**/*.webm
             test-results-headed/**/*.png
           retention-days: 14
@@ -273,8 +270,7 @@ jobs:
             test-results/**/*-actual.png
             test-results/**/*-expected.png
             test-results/**/*-diff.png
-            # E26: trace contém dados de formulário (incluindo senhas E2E)
-            !test-results/**/trace.zip
+            !test-results/**/trace.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
           retention-days: 14
           if-no-files-found: ignore
 
@@ -392,8 +388,7 @@ jobs:
             test-results/**/*-expected.png
             test-results/**/*-diff.png
             test-results/**/*.zip
-            # E26: trace contém dados de formulário (incluindo senhas E2E)
-            !test-results/**/trace*.zip
+            !test-results/**/trace*.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
             test-results/**/*.webm
           retention-days: 14
           if-no-files-found: ignore
@@ -524,8 +519,7 @@ jobs:
           path: |
             test-results/**/quote-pdf-header-snapshot-*/**/*.png
             test-results/**/quote-pdf-header-snapshot-*/**/*.html
-            # E26: trace contém dados de formulário (incluindo senhas E2E)
-            !test-results/**/quote-pdf-header-snapshot-*/**/trace*.zip
+            !test-results/**/quote-pdf-header-snapshot-*/**/trace*.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
             test-results/**/quote-pdf-header-snapshot-*/**/*.webm
             test-results/**/*-actual.png
             test-results/**/*-expected.png
