@@ -57,8 +57,11 @@ jobs:
       - name: Run actionlint
         # shellcheck é executado automaticamente pelo actionlint em run: blocks.
         # SC2129: '>>' múltiplos redirecionamentos — falso positivo de estilo; aceito.
+        # run_started_at: propriedade válida do contexto github (GH Actions), ausente
+        #   do schema do actionlint v1.7.7 — ignoramos até o schema ser atualizado.
         # TODOS os outros códigos SC são erros reais (E91 — sem -ignore amplos).
         run: |
           /tmp/actionlint \
-            -ignore 'SC2129'
+            -ignore 'SC2129' \
+            -ignore 'property "run_started_at" is not defined'
 
