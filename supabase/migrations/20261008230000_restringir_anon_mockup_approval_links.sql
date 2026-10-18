@@ -12,7 +12,7 @@
 -- (2) bucket mockup-assets: a politica de listagem (storage.objects) era sempre verdadeira (name IS NOT NULL);
 --     passa a listar so a propria pasta <uid>/...  (getPublicUrl nao depende desta politica).
 --
--- ROLLBACK (restaura o estado anterior, GRANTs exatamente como no SCHEMA_LIVE):
+-- Rollback: restaura o estado anterior, GRANTs exatamente como no SCHEMA_LIVE
 --   DROP POLICY IF EXISTS "Authenticated users can view mockup assets" ON storage.objects;
 --   CREATE POLICY "Authenticated users can view mockup assets" ON storage.objects FOR SELECT TO authenticated
 --     USING ((bucket_id = 'mockup-assets'::text) AND (name IS NOT NULL) AND (length(name) > 0));
