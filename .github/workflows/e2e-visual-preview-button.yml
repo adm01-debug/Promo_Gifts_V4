@@ -139,7 +139,7 @@ jobs:
       # E61: replaced git commit+push with artifact upload — developer downloads and commits manually
       - name: Upload updated baselines (artifact — commit manualmente)
         if: steps.detect.outputs.should_update == 'true'
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: visual-baselines-updated-${{ github.run_id }}
           path: e2e/visual/**-snapshots/
@@ -148,7 +148,7 @@ jobs:
 
       - name: Upload Playwright report
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: visual-preview-report-${{ github.run_id }}
           path: playwright-report/
@@ -156,7 +156,7 @@ jobs:
 
       - name: Upload baseline diffs (screenshots actual/diff/expected)
         if: failure()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: visual-preview-diffs-${{ github.run_id }}
           path: |
@@ -167,7 +167,7 @@ jobs:
 
       - name: Upload axe contrast logs
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: visual-preview-axe-${{ github.run_id }}
           path: |
