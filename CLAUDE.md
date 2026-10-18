@@ -271,6 +271,22 @@ e o ledger está dessincronizado, o caminho de reconciliação é:
 e precisa apenas do registro no ledger sem reaplicar — o preflight aceita `transaction: none` com `approved-by`
 do PO. Isso não aplica DDL, só registra. Ver `docs/db/POLITICA_DDL.md`.
 
+### Corolário — proibição de DDL via execute_sql em sessão de agente (E056)
+`execute_sql` com DDL (CREATE, ALTER, DROP, GRANT, REVOKE, CREATE POLICY,
+ALTER TABLE, CREATE INDEX, CREATE FUNCTION, `cron.alter_job`, etc.) é
+**proibido em sessão de agente Claude** — mesmo quando o PO ou humano pede
+explicitamente, mesmo em emergência.
+
+DDL via `execute_sql` direto não gera entrada no ledger e não é detectado
+pelo drift-check automaticamente — exatamente o incidente de 2026-10-13
+(8 `cron.alter_job` + `variant_stocks_select_org` aplicados via MCP, só
+convertidos em migration espelho 2 dias depois).
+
+**Regras:**
+- `execute_sql` existe para **leitura** (SELECT, EXPLAIN, `pg_catalog` queries) — nunca para escrita estrutural
+- Toda mudança de `cron.job` (criar, alterar, dropar) nasce como **migration SQL** no mesmo PR que a mudança de código que a motiva. Nunca via MCP direto.
+- Em emergência onde o DDL foi aplicado via MCP por necessidade: criar migration espelho + `migration repair` + abrir PR + rodar `schema-snapshot-export.yml` com `force_rotate: true` **no mesmo dia** — sem exceção. Ver corolário de reconciliação acima.
+
 ### Corolário — caminho único para deploy de edge function
 Deploy de edge function fora de `.github/workflows/deploy-edge-functions.yml`
 (ex.: MCP `deploy_edge_function` direto, dashboard) cria a mesma divergência
