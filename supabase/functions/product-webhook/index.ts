@@ -546,9 +546,6 @@ async function upsertProducts(
         existingRows.filter((row) => row.sku).map((row) => [row.sku as string, row]),
       );
 
-      let chunkCreated = 0;
-      let chunkUpdated = 0;
-
       // PostgREST upsert (merge-duplicates) trata chave ausente como NULL e
       // copiar o valor lido antes do upsert tem corrida: edição de featured
       // feita entre o probe e a gravação seria revertida. Preservação atômica
@@ -557,6 +554,7 @@ async function upsertProducts(
       // sobrevive qualquer edição concorrente no momento da escrita.
       const withFeatured: NormalizedProduct[] = [];
       const noFeatured: NormalizedProduct[] = [];
+      let wFCreated = 0, wFUpdated = 0, nFCreated = 0, nFUpdated = 0;
       for (const item of chunk) {
         // 'variations' is NOT a products column (variant data lives in product_variants).
         // Leaving it in the upsert payload 400s the entire chunk (PGRST204), so strip it.
@@ -566,6 +564,7 @@ async function upsertProducts(
         if (item.is_featured === undefined && existing) {
           delete (item as Record<string, unknown>).is_featured_expires_at;
           noFeatured.push(item);
+          nFUpdated += 1;
         } else {
           // Produto novo sem decisão (ou payload decidiu): grava o valor.
           if (item.is_featured === undefined) {
@@ -573,43 +572,58 @@ async function upsertProducts(
             item.is_featured_expires_at = null;
           }
           withFeatured.push(item);
-        }
-
-        if (existing) {
-          chunkUpdated += 1;
-        } else {
-          chunkCreated += 1;
+          if (existing) wFUpdated += 1; else wFCreated += 1;
         }
       }
 
-      for (const batch of [withFeatured, noFeatured]) {
-        if (batch.length === 0) continue;
-        const { error: upsertBySkuError } = await supabase
-          .from('products')
-          .upsert(batch as never, { onConflict: 'sku', ignoreDuplicates: false });
-        chunkRoundtrips += 1;
-        if (upsertBySkuError) throw upsertBySkuError;
+      // Os 2 batches são requisições separadas, sem transação — contabiliza
+      // cada batch confirmado antes de tentar o seguinte: falha no 2º não
+      // esconde as gravações do 1º (partial, não zero).
+      let chunkPersisted = 0;
+      let chunkPersistedCreated = 0;
+      let chunkPersistedUpdated = 0;
+      try {
+        for (const batch of [
+          { rows: withFeatured, created: wFCreated, updated: wFUpdated },
+          { rows: noFeatured, created: nFCreated, updated: nFUpdated },
+        ]) {
+          if (batch.rows.length === 0) continue;
+          const { error: upsertBySkuError } = await supabase
+            .from('products')
+            .upsert(batch.rows as never, { onConflict: 'sku', ignoreDuplicates: false });
+          chunkRoundtrips += 1;
+          if (upsertBySkuError) throw upsertBySkuError;
+          chunkPersistedCreated += batch.created;
+          chunkPersistedUpdated += batch.updated;
+          chunkPersisted += batch.rows.length;
+        }
+      } catch (upsertErr) {
+        const upsertErrMsg = upsertErr instanceof Error ? upsertErr.message : 'Unknown error';
+        const remaining = chunk.length - chunkPersisted;
+        throw new Error(
+          `${upsertErrMsg} — ${chunkPersisted} gravado(s) antes da falha, ${remaining} pendente(s)`,
+        );
       }
 
-      created += chunkCreated;
-      updated += chunkUpdated;
-      processed += chunk.length;
+      created += chunkPersistedCreated;
+      updated += chunkPersistedUpdated;
+      processed += chunkPersisted;
       db_roundtrips += chunkRoundtrips;
 
       const chunkDuration = Date.now() - chunkStart;
       chunk_metrics.push({
         chunk: index + 1,
         received: chunk.length,
-        processed: chunk.length,
+        processed: chunkPersisted,
         duration_ms: chunkDuration,
         db_roundtrips: chunkRoundtrips,
-        created: chunkCreated,
-        updated: chunkUpdated,
+        created: chunkPersistedCreated,
+        updated: chunkPersistedUpdated,
         failed: 0,
       });
 
       console.log(
-        `[product-webhook][chunk ${index + 1}] received=${chunk.length} processed=${chunk.length} duration_ms=${chunkDuration} db_roundtrips=${chunkRoundtrips}`,
+        `[product-webhook][chunk ${index + 1}] received=${chunk.length} processed=${chunkPersisted} duration_ms=${chunkDuration} db_roundtrips=${chunkRoundtrips}`,
       );
     } catch (err) {
       const errMsg = err instanceof Error ? err.message : 'Unknown error';
