@@ -7,7 +7,7 @@
 # requeiram aprovação manual de @adm01-debug.
 
 # ============================================================
-# SSOT — Incidente 401 (2026-06-11): Lovable revertiu estes
+# SSOT — Incidente 401 (2026-06-11): Lovable reverteu estes
 # arquivos 6+ vezes em 10 minutos causando 401 em produção.
 # Qualquer alteração nestes arquivos EXIGE revisão humana.
 # ============================================================
@@ -67,6 +67,8 @@ vitest.config.ts                               @adm01-debug
 .github/dependabot.yml                        @adm01-debug
 e2e/quarantine.json                            @adm01-debug
 e2e/                                           @adm01-debug
+# E72: baselines visuais de snapshot são infraestrutura de teste — alterações exigem revisão
+e2e/**/*-snapshots/                            @adm01-debug
 
 # ============================================================
 # Banco de dados — migrations e política DDL
