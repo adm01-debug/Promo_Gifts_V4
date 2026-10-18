@@ -88,7 +88,7 @@ export function useProductInsights(productId?: string, productSku?: string) {
       ];
       const averageQuantity =
         allQuantities.length > 0
-          ? allQuantities.reduce((a, b) => a + (b ?? 0), 0) / allQuantities.length
+          ? allQuantities.reduce((a: number, b) => a + (b ?? 0), 0) / allQuantities.length
           : 0;
 
       const conversionRate =

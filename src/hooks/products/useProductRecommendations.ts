@@ -198,9 +198,9 @@ export function useProductRecommendations(productId?: string, productSku?: strin
 
       let recentQuoteItems: Array<{
         product_sku: string | null;
-        product_name: string | null;
+        product_name: string;
         product_image_url: string | null;
-        unit_price: number | null;
+        unit_price: number;
       }>;
       try {
         recentQuoteItems = await fetchAllPages((from, to) =>

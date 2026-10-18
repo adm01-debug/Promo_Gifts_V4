@@ -219,27 +219,43 @@ export function useCommercialKPIs(
       // O escopo individual do vendedor é mantido para fins de RLS granular, mas o BI
       // deliberadamente consome a visão macro.
       // rls-allow: respeita can_view_all_sales server-side
-      const buildPage =
-        (table: 'orders' | 'quotes', fields: string, gteSince: string) =>
-        (from: number, to: number) => {
-          let q = supabase.from(table).select(fields).gte('created_at', gteSince);
+      const [quotes, orders, qmr, omr] = await Promise.all([
+        fetchAllPages((from, to) => {
+          let q = supabase
+            // rls-allow: respeita can_view_all_sales server-side
+            .from('quotes')
+            .select('id, total, status, created_at')
+            .gte('created_at', since);
           if (orgId) q = q.eq('organization_id', orgId);
           return q.order('id', { ascending: true }).range(from, to);
-        };
-
-      const [quotes, orders, qmr, omr] = await Promise.all([
-        fetchAllPages<{ id: string; total: number | null; status: string | null }>(
-          buildPage('quotes', 'id, total, status, created_at', since),
-        ).catch(() => []),
-        fetchAllPages<{ id: string; total: number | null; status: string | null }>(
-          buildPage('orders', 'id, total, status, created_at', since),
-        ).catch(() => []),
-        fetchAllPages<{ id: string; total: number | null }>(
-          buildPage('quotes', 'id, total', startOfMonth),
-        ).catch(() => []),
-        fetchAllPages<{ id: string; total: number | null }>(
-          buildPage('orders', 'id, total', startOfMonth),
-        ).catch(() => []),
+        }).catch(() => []),
+        fetchAllPages((from, to) => {
+          let q = supabase
+            // rls-allow: respeita can_view_all_sales server-side
+            .from('orders')
+            .select('id, total, status, created_at')
+            .gte('created_at', since);
+          if (orgId) q = q.eq('organization_id', orgId);
+          return q.order('id', { ascending: true }).range(from, to);
+        }).catch(() => []),
+        fetchAllPages((from, to) => {
+          let q = supabase
+            // rls-allow: respeita can_view_all_sales server-side
+            .from('quotes')
+            .select('id, total')
+            .gte('created_at', startOfMonth);
+          if (orgId) q = q.eq('organization_id', orgId);
+          return q.order('id', { ascending: true }).range(from, to);
+        }).catch(() => []),
+        fetchAllPages((from, to) => {
+          let q = supabase
+            // rls-allow: respeita can_view_all_sales server-side
+            .from('orders')
+            .select('id, total')
+            .gte('created_at', startOfMonth);
+          if (orgId) q = q.eq('organization_id', orgId);
+          return q.order('id', { ascending: true }).range(from, to);
+        }).catch(() => []),
       ]);
       const totalRevenue = orders.reduce((s, o) => s + (o.total ?? 0), 0);
 
