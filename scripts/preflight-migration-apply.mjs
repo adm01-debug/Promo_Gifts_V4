@@ -48,6 +48,7 @@ import { querySupabaseReadOnly } from './supabase-read-only-query.mjs';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
 const MIGRATIONS_DIR = join(ROOT, 'supabase/migrations');
+const ROLLBACKS_DIR = join(ROOT, 'supabase/rollbacks');
 
 const NON_TX_DDL = [
   /CREATE\s+INDEX\s+CONCURRENTLY/i,
@@ -169,19 +170,21 @@ const EXPECT_APPLIED = argv.includes('--expect-applied');
 const versionArg = argv.find((a) => a.startsWith('--version='));
 const VERSION = versionArg ? versionArg.slice('--version='.length) : null;
 
-/** Lista, dentro de `dir`, os arquivos `.sql` cujo nome começa com `<version>_`. */
+/** Lista, dentro de `dir`, os arquivos `.sql` cujo nome começa com `<version>_` (exclui `_rollback.sql` — E058). */
 export function findMigrationFiles(version, dir = MIGRATIONS_DIR) {
   if (!existsSync(dir)) return [];
   return readdirSync(dir)
-    .filter((f) => f.startsWith(`${version}_`) && f.endsWith('.sql'))
+    .filter((f) => f.startsWith(`${version}_`) && f.endsWith('.sql') && !f.endsWith('_rollback.sql'))
     .sort();
 }
 
-/** Retorna o nome do arquivo `<version>_rollback.sql` se existir em `dir`, ou `null`. */
+/** Retorna o nome do arquivo `<version>_rollback.sql` se existir em `dir` ou em `supabase/rollbacks/`, ou `null`. */
 export function findRollbackFile(version, dir = MIGRATIONS_DIR) {
-  if (!existsSync(dir)) return null;
   const name = `${version}_rollback.sql`;
-  return existsSync(join(dir, name)) ? name : null;
+  if (existsSync(dir) && existsSync(join(dir, name))) return name;
+  // E058: rollbacks migrados para supabase/rollbacks/ para evitar prefixo duplicado
+  if (existsSync(ROLLBACKS_DIR) && existsSync(join(ROLLBACKS_DIR, name))) return name;
+  return null;
 }
 
 /** `true` se houver uma linha `-- Rollback:` (case-insensitive) nas primeiras `headLines` linhas. */
@@ -265,7 +268,7 @@ export function evaluatePreflight({ version, files, sqlContent, isInLedger, expe
     if (!findRollbackFile(version)) {
       problems.push(
         `arquivo de rollback ${version}_rollback.sql não encontrado. ` +
-        `Para migrations novas, crie o arquivo irmão supabase/migrations/${version}_rollback.sql com os comandos de reversão.`,
+        `Para migrations novas, crie supabase/rollbacks/${version}_rollback.sql com os comandos de reversão (E058: rollbacks vivem em supabase/rollbacks/, não em supabase/migrations/).`,
       );
     }
   }

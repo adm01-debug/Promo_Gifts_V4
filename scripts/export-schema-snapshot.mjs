@@ -276,18 +276,22 @@ function main() {
 
   const ledger = readLedger();
   if (!ledger) {
+    // E060: emitir 0 como default quando ledger indisponível (sem credenciais em PR/push)
+    meta.blocking_remote_only_count = 0;
     writeMeta(meta);
     if (strict) process.exitCode = 1;
     return;
+  }
+  // E060: emitir blocking_remote_only_count calculado com allowlist, independente do dump
+  if (ledger._audit?.summary) {
+    meta.blocking_remote_only_count = ledger._audit.summary.blocking_remote_only_count ?? 0;
+  } else {
+    meta.blocking_remote_only_count = 0;
   }
   const live = dumpLiveSchema(ledger);
   if (live.ok) {
     meta.live_schema = { bytes: live.bytes };
     meta.baseline = { version: live.baselineVersion, ledger_versions: live.ledgerVersions };
-    // E060: emitir blocking_remote_only_count calculado com allowlist (0 = OK)
-    if (ledger._audit?.summary) {
-      meta.blocking_remote_only_count = ledger._audit.summary.blocking_remote_only_count;
-    }
   } else if (strict) {
     process.exitCode = 1;
   }
