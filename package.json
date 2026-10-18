@@ -76,6 +76,7 @@
     "check:rls-no-policy": "node scripts/check-rls-no-policy-drift.mjs --gate",
     "check:rls-no-policy:update": "node scripts/check-rls-no-policy-drift.mjs --update-allowlist",
     "check:anon-rate-guard": "node scripts/check-anon-insert-rate-guard.mjs --gate",
+    "check:migration-receipts": "node scripts/check-migration-receipts.mjs --gate",
     "check:edge-zod-ratchet": "node scripts/check-edge-zod-ratchet.mjs",
     "check:edge-zod-ratchet:update": "node scripts/check-edge-zod-ratchet.mjs --update-baseline",
     "test": "TZ=America/Sao_Paulo vitest run",
