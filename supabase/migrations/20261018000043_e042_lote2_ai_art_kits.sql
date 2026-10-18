@@ -8,17 +8,17 @@
 DROP POLICY IF EXISTS "ai_usage_quotas_admin_delete" ON public.ai_usage_quotas;
 CREATE POLICY "ai_usage_quotas_admin_delete"
   ON public.ai_usage_quotas FOR DELETE TO authenticated
-  USING (is_dev());
+  USING (is_dev() OR has_role(auth.uid(), 'admin'::app_role));
 
 DROP POLICY IF EXISTS "ai_usage_quotas_admin_insert" ON public.ai_usage_quotas;
 CREATE POLICY "ai_usage_quotas_admin_insert"
   ON public.ai_usage_quotas FOR INSERT TO authenticated
-  WITH CHECK (is_dev());
+  WITH CHECK (is_dev() OR has_role(auth.uid(), 'admin'::app_role));
 
 DROP POLICY IF EXISTS "ai_usage_quotas_admin_update" ON public.ai_usage_quotas;
 CREATE POLICY "ai_usage_quotas_admin_update"
   ON public.ai_usage_quotas FOR UPDATE TO authenticated
-  USING (is_dev());
+  USING (is_dev() OR has_role(auth.uid(), 'admin'::app_role));
 
 DROP POLICY IF EXISTS "ai_usage_quotas_read_authenticated" ON public.ai_usage_quotas;
 CREATE POLICY "ai_usage_quotas_read_authenticated"

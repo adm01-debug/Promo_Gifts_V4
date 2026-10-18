@@ -960,7 +960,13 @@ export function splitDiffStatements(sql) {
     // Rastrear abertura de dollar-quote
     if (!dollarTag) {
       const dm = line.match(/\bAS\s+(\$[A-Za-z0-9_]*\$)/i) ?? line.match(/^(\$[A-Za-z0-9_]*\$)/);
-      if (dm) dollarTag = dm[1];
+      if (dm) {
+        const tag = dm[1];
+        const tagRe = new RegExp(tag.replace(/\$/g, '\\$'), 'g');
+        const occurrences = (line.match(tagRe) ?? []).length;
+        // Número ímpar = abre sem fechar nesta linha; par = função inline, sem estado
+        if (occurrences % 2 === 1) dollarTag = tag;
+      }
     }
 
     current.push(line);
