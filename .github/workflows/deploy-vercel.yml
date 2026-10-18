@@ -58,6 +58,9 @@ jobs:
               echo ""
               echo "Configure VERCEL_TOKEN, VERCEL_ORG_ID e VERCEL_PROJECT_ID nos secrets do repositório."
             } >> "$GITHUB_STEP_SUMMARY"
+            # E016: falha explicitamente — workflow_dispatch sem secrets = erro de config, não skip silencioso
+            echo "::error::VERCEL_TOKEN, VERCEL_ORG_ID ou VERCEL_PROJECT_ID ausentes. Configure os secrets antes de usar este fallback."
+            exit 1
           fi
 
   deploy:
