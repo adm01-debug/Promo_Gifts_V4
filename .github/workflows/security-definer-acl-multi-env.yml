@@ -64,6 +64,8 @@ jobs:
     timeout-minutes: 5
     services:
       postgres:
+        # E73: TODO — pin to SHA digest: docker pull postgres:17 && docker inspect --format='{{index .RepoDigests 0}}' postgres:17
+        # Until then, tag alone is used. SHA can be obtained from: docker manifest inspect postgres:17 | jq '.manifests[]|select(.platform.architecture=="amd64")|.digest'
         image: postgres:17
         env:
           POSTGRES_PASSWORD: postgres
