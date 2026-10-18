@@ -794,6 +794,30 @@
       "occurrences": 1,
       "stage": 53,
       "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/hooks/intelligence/useSalesHistory.ts",
+      "receiver": "supabase",
+      "occurrences": 1,
+      "stage": 100,
+      "reason": "Despacho dinâmico em fetchDocsByIds — tabela 'orders'/'quotes' com filtro .in('id', batch) de ids já validados; receiver supabase canônico SSOT doufsxqlfjyuvxuezpln."
+    },
+    {
+      "kind": "relation",
+      "file": "src/hooks/intelligence/useSalesHistoryMacro.ts",
+      "receiver": "supabase",
+      "occurrences": 2,
+      "stage": 100,
+      "reason": "Despacho dinâmico em fetchScopedItems (let q: any = supabase.from(table)) e fetchDocsByIds (supabase.from(table)); tabelas order_items/quote_items/orders/quotes com filtros de escopo aplicados antes da execução."
+    },
+    {
+      "kind": "relation",
+      "file": "src/hooks/products/useNovelties.helpers.ts",
+      "receiver": "untypedFrom",
+      "occurrences": 1,
+      "stage": 100,
+      "reason": "Despacho dinâmico via untypedFrom(resolveTable(table)) — helper de novidades; padrão equivalente ao já catalogado em useNovelties.ts (stage 53)."
     }
   ]
 }
