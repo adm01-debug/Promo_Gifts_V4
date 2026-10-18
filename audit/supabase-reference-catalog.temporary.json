@@ -794,6 +794,30 @@
       "occurrences": 1,
       "stage": 53,
       "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/hooks/intelligence/useSalesHistory.ts",
+      "receiver": "supabase",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico bounded: table ∈ {orders,quotes} (união literal) no batching .in() de 200 ids (#2222); revisar em próxima atualização do catálogo."
+    },
+    {
+      "kind": "relation",
+      "file": "src/hooks/intelligence/useSalesHistoryMacro.ts",
+      "receiver": "supabase",
+      "occurrences": 2,
+      "stage": 53,
+      "reason": "Despacho dinâmico bounded: table ∈ {orders,quotes} (união literal) no batching .in() de 200 ids (#2222); revisar em próxima atualização do catálogo."
+    },
+    {
+      "kind": "relation",
+      "file": "src/hooks/products/useNovelties.helpers.ts",
+      "receiver": "untypedFrom",
+      "occurrences": 1,
+      "stage": 53,
+      "reason": "Despacho dinâmico bounded: resolveTable() restringe a união de tabelas do catálogo de produtos; helper extraído de useNovelties.ts (entrada legada movida) (#2222)."
     }
   ]
 }
