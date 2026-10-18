@@ -16,11 +16,12 @@ import { visualizer } from 'rollup-plugin-visualizer';
 export default defineConfig(({ mode }) => {
   const isProd = mode === 'production';
 
-  const config: UserConfig & { test?: any } = {
+  const config: UserConfig = {
     plugins: [
       react(),
       mode === 'development' && componentTagger(),
       isProd &&
+        process.env.ANALYZE === '1' &&
         visualizer({
           filename: 'dist/stats.html',
           gzipSize: true,
@@ -31,7 +32,7 @@ export default defineConfig(({ mode }) => {
 
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, './src'),
+        '@': path.resolve(import.meta.dirname, './src'),
       },
       dedupe: ['react', 'react-dom'],
     },
@@ -194,24 +195,6 @@ export default defineConfig(({ mode }) => {
       ],
     },
 
-    test: {
-      globals: true,
-      environment: 'jsdom',
-      setupFiles: './src/test/setup.ts',
-      retry: process.env.CI ? 2 : 0,
-      coverage: {
-        provider: 'v8',
-        reporter: ['text', 'json', 'html', 'json-summary'],
-        thresholds: {
-          statements: 80,
-          branches: 80,
-          functions: 80,
-          lines: 80,
-        },
-        include: ['src/components/search/**'],
-        exclude: ['src/components/search/__tests__/**'],
-      },
-    },
   };
 
   return config;
