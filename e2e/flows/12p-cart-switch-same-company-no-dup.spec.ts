@@ -47,7 +47,7 @@ test.describe("Analytics — re-seleção da mesma empresa NÃO duplica evento",
       gotoUrl: "/produtos",
     });
     if (!cartB) {
-      test.skip(true, "cartB ausente — configuração inesperada");
+      expect(false, "[E108] cartB ausente — configuração inesperada").toBeTruthy();
       return;
     }
 
@@ -56,7 +56,7 @@ test.describe("Analytics — re-seleção da mesma empresa NÃO duplica evento",
     // ---------- Abrir QuickAdd num card do catálogo ----------------------
     const card = page.locator(Sel.product.card).first();
     if (!(await card.isVisible().catch(() => false))) {
-      test.skip(true, "Catálogo vazio neste ambiente");
+      expect(false, "[E108] Catálogo vazio neste ambiente").toBeTruthy();
       return;
     }
 
@@ -66,7 +66,7 @@ test.describe("Analytics — re-seleção da mesma empresa NÃO duplica evento",
     }
     const cartTrigger = card.locator(Sel.product.cartTrigger).first();
     if (!(await cartTrigger.isVisible().catch(() => false))) {
-      test.skip(true, "Card sem trigger de carrinho neste ambiente");
+      expect(false, "[E108] Card sem trigger de carrinho neste ambiente").toBeTruthy();
       return;
     }
     await cartTrigger.click();
@@ -85,14 +85,14 @@ test.describe("Analytics — re-seleção da mesma empresa NÃO duplica evento",
     ]).catch(() => null);
 
     if (!first) {
-      test.skip(true, "Popover do QuickAdd não abriu");
+      expect(false, "[E108] Popover do QuickAdd não abriu").toBeTruthy();
       return;
     }
 
     if (first === "quantity") {
       const trocar = page.getByRole("button", { name: /^trocar$/i }).first();
       if (!(await trocar.isVisible().catch(() => false))) {
-        test.skip(true, "Botão Trocar ausente — não é possível reabrir o selector");
+        expect(false, "[E108] Botão Trocar ausente — não é possível reabrir o selector").toBeTruthy();
         return;
       }
       await trocar.click();

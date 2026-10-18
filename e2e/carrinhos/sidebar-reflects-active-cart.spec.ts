@@ -31,7 +31,7 @@ test.describe('Carrinhos · sidebar reflete carrinho ativo @carrinhos', () => {
     });
     const total = await rows.count();
     if (total < 2) {
-      test.skip(true, 'precisa de ao menos 2 carrinhos para validar alternância');
+      expect(false, '[E108] precisa de ao menos 2 carrinhos para validar alternância').toBeTruthy();
     }
 
     const ids: string[] = [];
@@ -62,7 +62,7 @@ test.describe('Carrinhos · sidebar reflete carrinho ativo @carrinhos', () => {
 
     if (!a.visible) {
       // Sem itens → sidebar não renderiza; nada a validar.
-      test.skip(true, 'carrinho A sem itens — sidebar não é exibida');
+      expect(false, '[E108] carrinho A sem itens — sidebar não é exibida').toBeTruthy();
     }
 
     // CTA principal existe.
@@ -79,7 +79,7 @@ test.describe('Carrinhos · sidebar reflete carrinho ativo @carrinhos', () => {
     const b = await readSidebar();
     setDebugContext(testInfo, { sidebarB: b });
 
-    if (!b.visible) test.skip(true, 'carrinho B sem itens — sidebar não é exibida');
+    if (!b.visible) expect(false, '[E108] carrinho B sem itens — sidebar não é exibida').toBeTruthy();
 
     expect(b.hasCta).toBe(true);
     expect(b.text).not.toMatch(/Subtotal do carrinho/i);

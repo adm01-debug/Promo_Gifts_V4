@@ -37,12 +37,12 @@ test.describe('PDF exportado · quote_number no topo', () => {
       page,
     }) => {
       const ok = await gotoQuoteScenario(page, scenario);
-      if (!ok) test.skip(true, `Sem orçamento ${scenario} no ambiente.`);
+      if (!ok) expect(false, `[E108] Sem orçamento ${scenario} no ambiente.`).toBeTruthy();
 
       const subtitle = page.getByTestId('quote-number-display');
       const subText = (await subtitle.textContent()) ?? '';
       const match = subText.match(QUOTE_NUMBER_REGEX);
-      if (!match) test.skip(true, `Orçamento ${scenario} sem quote_number — não testável.`);
+      if (!match) expect(false, `[E108] Orçamento ${scenario} sem quote_number — não testável.`).toBeTruthy();
       const quoteNumber = match![0];
 
       // Desktop: abre o dialog via `pdf-preview-trigger` e dispara o download
@@ -91,12 +91,12 @@ test.describe('PDF exportado · quote_number no topo', () => {
     // Garante que o fallback amigável não quebra o layout do PDF.
     await page.goto('/orcamentos/novo');
     const exportBtn = page.getByTestId('pdf-generate-confirm');
-    if ((await exportBtn.count()) === 0) test.skip(true, 'Export PDF indisponível em /novo.');
+    if ((await exportBtn.count()) === 0) expect(false, '[E108] Export PDF indisponível em /novo.').toBeTruthy();
 
     const downloadPromise = page.waitForEvent('download', { timeout: 30_000 }).catch(() => null);
     await exportBtn.first().click({ trial: false }).catch(() => undefined);
     const download = await downloadPromise;
-    if (!download) test.skip(true, 'PDF não baixado em modo novo (esperado em algumas configurações).');
+    if (!download) expect(false, '[E108] PDF não baixado em modo novo (esperado em algumas configurações).').toBeTruthy();
 
     const path = await download!.path();
     const buf = await fs.readFile(path!);
@@ -122,7 +122,7 @@ test.describe('PDF exportado · quote_number no topo', () => {
       .first();
 
     if ((await fallback.count()) === 0) {
-      test.skip(true, 'Fallback display não presente nesta rota.');
+      expect(false, '[E108] Fallback display não presente nesta rota.').toBeTruthy();
     }
     await expect(fallback).toBeVisible();
 

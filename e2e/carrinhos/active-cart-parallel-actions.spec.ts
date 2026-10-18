@@ -57,7 +57,7 @@ test.describe('Carrinhos · alternância paralela A→B→A→C @carrinhos', () 
     await gotoAndSettle(page, '/carrinhos');
 
     const ids = await collectCartIds(page);
-    if (ids.length < 3) test.skip(true, 'precisa de 3+ carrinhos para A→B→A→C');
+    if (ids.length < 3) expect(false, '[E108] precisa de 3+ carrinhos para A→B→A→C').toBeTruthy();
     const [A, B, C] = ids;
     recordCarts(testInfo, { A, B, C });
 
@@ -121,7 +121,7 @@ test.describe('Carrinhos · alternância paralela A→B→A→C @carrinhos', () 
     await gotoAndSettle(page, '/carrinhos');
 
     const ids = await collectCartIds(page);
-    if (ids.length < 2) test.skip(true, 'precisa de 2+ carrinhos');
+    if (ids.length < 2) expect(false, '[E108] precisa de 2+ carrinhos').toBeTruthy();
     const [A, B] = ids;
 
     await gotoAndSettle(page, `/carrinhos/${A}`);

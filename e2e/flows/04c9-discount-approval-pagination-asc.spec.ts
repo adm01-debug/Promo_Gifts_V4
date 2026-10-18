@@ -62,7 +62,7 @@ test.describe("Discount approval — cursor ASC consistente", () => {
     );
 
     if (result.skipped) {
-      test.skip(true, `REST ASC skip: ${result.skipped}`);
+      expect(false, `[E108] REST ASC skip: ${result.skipped}`).toBeTruthy();
     }
     const { r1, r2, cursor } = result as {
       r1: Array<{ id: string; created_at: string }>;

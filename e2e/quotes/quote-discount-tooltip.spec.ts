@@ -42,7 +42,7 @@ test.describe("Quote Builder — Discount tooltip", () => {
 
     const input = page.getByTestId("quote-discount-input");
     if (!(await input.isVisible({ timeout: 5_000 }).catch(() => false))) {
-      test.skip(true, "Sem itens no orçamento — campo de desconto oculto.");
+      expect(false, "[E108] Sem itens no orçamento — campo de desconto oculto.").toBeTruthy();
     }
 
     await input.fill("99");

@@ -25,7 +25,7 @@ test.describe('Novidades — scroll interno do grid', () => {
 
     const items = await page.locator('div[role="listitem"]').count();
     if (items === 0) {
-      test.skip(true, 'Nenhuma novidade no dataset — scroll não aplicável.');
+      expect(false, '[E108] Nenhuma novidade no dataset — scroll não aplicável.').toBeTruthy();
       return;
     }
 

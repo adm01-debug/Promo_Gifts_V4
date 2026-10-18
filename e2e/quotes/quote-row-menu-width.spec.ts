@@ -52,7 +52,7 @@ async function openFirstRowMenu(page: Page): Promise<Locator> {
   await gotoAndSettle(page, ROUTE);
   const trigger = page.locator('[aria-haspopup="menu"]').first();
   if ((await trigger.count()) === 0) {
-    test.skip(true, 'lista vazia — sem trigger de menu disponível');
+    expect(false, '[E108] lista vazia — sem trigger de menu disponível').toBeTruthy();
   }
   await trigger.click();
   const content = page.locator('[data-testid^="quote-row-menu-"][role="menu"]').first();

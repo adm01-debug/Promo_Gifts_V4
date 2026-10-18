@@ -433,13 +433,10 @@ describe('respondToApproval', () => {
     });
 
     expect(outcome).toBe(false);
-    expect(compensationUpdate).toHaveBeenCalledWith({
-      status: 'pending',
-      admin_id: null,
-      admin_notes: null,
-      responded_at: null,
-      valid_until: null,
-    });
+    // Compensação DB-side foi removida intencionalmente: fn_dar_forbid_reopen
+    // proíbe reverter decided→pending. O DAR fica no estado decidido e a
+    // divergência fica visível na fila (ver discountApprovalResponder.ts:127-138).
+    expect(compensationUpdate).not.toHaveBeenCalled();
   });
 });
 

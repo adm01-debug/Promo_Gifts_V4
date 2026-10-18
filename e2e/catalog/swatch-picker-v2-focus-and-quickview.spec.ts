@@ -97,7 +97,7 @@ for (const route of ROUTES) {
 
       const picker = await firstPicker(page);
       if (picker === null && !REQUIRED_ROUTES.has(route.slug)) {
-        test.skip(true, `Sem produtos com color_swatches em ${route.path} (rota satélite).`);
+        expect(false, `[E108] Sem produtos com color_swatches em ${route.path} (rota satélite).`).toBeTruthy();
         return;
       }
       expect(picker, `nenhum produto com color_swatches V2 em ${route.path}`).not.toBeNull();

@@ -37,7 +37,7 @@ test.describe('Novidades — estabilidade de altura do container interno', () =>
 
     const items = await page.locator('div[role="listitem"]').count();
     if (items === 0) {
-      test.skip(true, 'Sem novidades no dataset — transição não aplicável.');
+      expect(false, '[E108] Sem novidades no dataset — transição não aplicável.').toBeTruthy();
       return;
     }
 

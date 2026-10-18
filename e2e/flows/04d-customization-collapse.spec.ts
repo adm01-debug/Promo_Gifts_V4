@@ -49,7 +49,7 @@ test.describe("ConfigurationPanelV6 — colapso", () => {
 
     const toggle = page.locator(TOGGLE).first();
     if (!(await toggle.isVisible({ timeout: 5_000 }).catch(() => false))) {
-      test.skip(true, "Painel de personalização indisponível neste ambiente.");
+      expect(false, "[E108] Painel de personalização indisponível neste ambiente.").toBeTruthy();
       return;
     }
 

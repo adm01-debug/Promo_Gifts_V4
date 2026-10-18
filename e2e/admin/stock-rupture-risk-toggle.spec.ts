@@ -59,7 +59,7 @@ test.describe('Estoque — toggle Risco de Ruptura (paridade com Estoque Futuro)
     const sw = page.locator(Sel.stock.ruptureRiskSwitch);
     await expect(sw).toBeVisible();
     if (await sw.isDisabled()) {
-      test.skip(true, 'sem SKUs em risco para validar o toggle');
+      expect(false, '[E108] sem SKUs em risco para validar o toggle').toBeTruthy();
     }
     await sw.click();
     await expect(sw).toHaveAttribute('aria-checked', 'true');
@@ -102,7 +102,7 @@ test.describe('Estoque — toggle Risco de Ruptura (paridade com Estoque Futuro)
     await toggle.click();
     const sw = page.locator(Sel.stock.ruptureRiskSwitch);
     if (await sw.isDisabled()) {
-      test.skip(true, 'sem SKUs em risco para validar o toggle');
+      expect(false, '[E108] sem SKUs em risco para validar o toggle').toBeTruthy();
     }
 
     // Liga e depois desliga.

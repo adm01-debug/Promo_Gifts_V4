@@ -57,7 +57,7 @@ test.describe('Novidades — body-lock + jitter', () => {
 
     const items = await page.locator('div[role="listitem"]').count();
     if (items === 0) {
-      test.skip(true, 'Sem novidades — jitter não aplicável.');
+      expect(false, '[E108] Sem novidades — jitter não aplicável.').toBeTruthy();
       return;
     }
 

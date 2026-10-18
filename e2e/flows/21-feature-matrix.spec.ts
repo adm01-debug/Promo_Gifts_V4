@@ -15,7 +15,7 @@ test.describe("Cross-feature matrix", () => {
   test("Catálogo → Produto → Favoritar → Lista de Favoritos", async ({ page }) => {
     await gotoAndSettle(page, "/produtos");
     const card = page.locator(Sel.product.card).first();
-    if (!(await card.count())) test.skip(true, "Catálogo vazio neste ambiente");
+    if (!(await card.count())) expect(false, "[E108] Catálogo vazio neste ambiente").toBeTruthy();
 
     const fav = card.locator(Sel.product.favorite).first();
     if (await fav.count()) await fav.click().catch(() => {});
@@ -27,7 +27,7 @@ test.describe("Cross-feature matrix", () => {
   test("Produto → Comparar → Página de Comparação", async ({ page }) => {
     await gotoAndSettle(page, "/produtos");
     const card = page.locator(Sel.product.card).first();
-    if (!(await card.count())) test.skip(true, "Catálogo vazio");
+    if (!(await card.count())) expect(false, "[E108] Catálogo vazio").toBeTruthy();
     // Não exigimos botão específico — apenas valida que /comparar abre limpa
     await gotoAndSettle(page, "/comparar");
     await expect(page).not.toHaveURL(/login/);

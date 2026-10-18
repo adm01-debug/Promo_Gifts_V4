@@ -78,7 +78,7 @@ test.describe("Regressão: 429 na troca de empresa", () => {
 
     const card = page.locator(Sel.product.card).first();
     if (!(await card.isVisible().catch(() => false))) {
-      test.skip(true, "Catálogo vazio neste ambiente");
+      expect(false, "[E108] Catálogo vazio neste ambiente").toBeTruthy();
       return;
     }
 
@@ -88,7 +88,7 @@ test.describe("Regressão: 429 na troca de empresa", () => {
     }
     const cartTrigger = card.locator(Sel.product.cartTrigger).first();
     if (!(await cartTrigger.isVisible().catch(() => false))) {
-      test.skip(true, "Card sem trigger de carrinho neste ambiente");
+      expect(false, "[E108] Card sem trigger de carrinho neste ambiente").toBeTruthy();
       return;
     }
     await cartTrigger.click();
@@ -101,13 +101,13 @@ test.describe("Regressão: 429 na troca de empresa", () => {
     ]).catch(() => null);
 
     if (!first) {
-      test.skip(true, "Popover do QuickAdd não abriu (variante obrigatória)");
+      expect(false, "[E108] Popover do QuickAdd não abriu (variante obrigatória)").toBeTruthy();
       return;
     }
     if (first === "quantity") {
       const trocar = page.getByRole("button", { name: /^trocar$/i }).first();
       if (!(await trocar.isVisible().catch(() => false))) {
-        test.skip(true, "Botão Trocar ausente");
+        expect(false, "[E108] Botão Trocar ausente").toBeTruthy();
         return;
       }
       await trocar.click();

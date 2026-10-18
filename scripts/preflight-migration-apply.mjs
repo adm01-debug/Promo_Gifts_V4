@@ -246,7 +246,7 @@ export function detectExtensionWithoutSchema(sqlContent) {
  * (arquivos encontrados, conteúdo do arquivo, presença no ledger). Sem I/O,
  * testável por mutação (mesmo padrão de computeViolations em E22).
  */
-export function evaluatePreflight({ version, files, sqlContent, isInLedger, expectApplied }) {
+export function evaluatePreflight({ version, files, sqlContent, isInLedger, expectApplied, rollbackExists = undefined }) {
   const problems = [];
 
   if (!VERSION_RE.test(version || '')) {
@@ -265,7 +265,8 @@ export function evaluatePreflight({ version, files, sqlContent, isInLedger, expe
 
   // E063 — rollback como arquivo, não como comentário (migrations novas)
   if (files.length === 1 && sqlContent != null && !expectApplied) {
-    if (!findRollbackFile(version)) {
+    const hasRollbackFile = rollbackExists !== undefined ? rollbackExists : !!findRollbackFile(version);
+    if (!hasRollbackFile) {
       problems.push(
         `arquivo de rollback ${version}_rollback.sql não encontrado. ` +
         `Para migrations novas, crie supabase/rollbacks/${version}_rollback.sql com os comandos de reversão (E058: rollbacks vivem em supabase/rollbacks/, não em supabase/migrations/).`,

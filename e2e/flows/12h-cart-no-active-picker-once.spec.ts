@@ -65,7 +65,7 @@ test.describe("Regressão: sem activeCart, seletor abre 1x e finalização não 
 
     const card = page.locator(Sel.product.card).first();
     if (!(await card.isVisible().catch(() => false))) {
-      test.skip(true, "Catálogo vazio neste ambiente");
+      expect(false, "[E108] Catálogo vazio neste ambiente").toBeTruthy();
       return;
     }
 
@@ -76,7 +76,7 @@ test.describe("Regressão: sem activeCart, seletor abre 1x e finalização não 
     }
     const cartTrigger = card.locator(Sel.product.cartTrigger).first();
     if (!(await cartTrigger.isVisible().catch(() => false))) {
-      test.skip(true, "Card sem trigger de carrinho neste ambiente");
+      expect(false, "[E108] Card sem trigger de carrinho neste ambiente").toBeTruthy();
       return;
     }
     await cartTrigger.click();
@@ -94,7 +94,7 @@ test.describe("Regressão: sem activeCart, seletor abre 1x e finalização não 
     ]).catch(() => null);
 
     if (!initialStage) {
-      test.skip(true, "Popover do QuickAdd não abriu (variante obrigatória neste card)");
+      expect(false, "[E108] Popover do QuickAdd não abriu (variante obrigatória neste card)").toBeTruthy();
       return;
     }
 
@@ -102,7 +102,7 @@ test.describe("Regressão: sem activeCart, seletor abre 1x e finalização não 
     // esse cenário já é coberto pelo 12g — encerra sem falha para não sobrepor
     // matriz de cobertura.
     if (initialStage === "quantity") {
-      test.skip(true, "Ambiente com activeCart persistido — cenário coberto pelo 12g");
+      expect(false, "[E108] Ambiente com activeCart persistido — cenário coberto pelo 12g").toBeTruthy();
       return;
     }
 
