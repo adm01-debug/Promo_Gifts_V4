@@ -6,7 +6,8 @@ name: edge-functions-drift-check
 #
 # Rodadas:
 #   - cron diário (06:06 BRT = 09:06 UTC)
-#   - todo PR que toca supabase/functions/**
+#   - todo PR (sem filtro paths — step check_paths decide se drift é necessário;
+#     E74 fix: required check funciona em qualquer PR, não só os que tocam funções)
 #   - manual via workflow_dispatch
 #   - logo após "Deploy Edge Functions" terminar em main (E65)
 #
@@ -22,12 +23,10 @@ on:
   schedule:
     - cron: '6 9 * * *'   # 09:06 UTC / 06:06 BRT (E58)
   pull_request:
-    paths:
-      - 'supabase/functions/**'
-      - 'audit/edge-functions-canonical-only.json'
-      - '.github/workflows/edge-functions-drift-check.yml'
-      - 'supabase/config.toml'
-      - '.security/edge-functions-verify-jwt-false-allowlist.json'
+    # Sem filtro paths — roda em todos os PRs para que o required check
+    # "Compare GitHub × Canonical" seja efetivo (E74 fix — Codex P1).
+    # O step check_paths detecta se algum arquivo de edge function mudou;
+    # se não mudou, o job passa sem executar o drift check custoso.
   workflow_dispatch:
   # E65 (plano de 100, 2026-09-24): antes só rodava em PR e no cron diário —
   # drift introduzido entre um merge e o próximo cron (até 24h) era
@@ -63,23 +62,46 @@ jobs:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
       SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
     steps:
-      - name: Verify required secrets
-        run: |
-          set -euo pipefail
-          : "${SUPABASE_ACCESS_TOKEN:?SUPABASE_ACCESS_TOKEN não configurado}"
       - name: Checkout repo
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false  # E32
           # E57: workflow_run usa o SHA exato que foi deployado, não o HEAD do branch
           ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Check se arquivos de edge function mudaram
+        id: check_paths
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "needs_drift=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          # HEAD^1 = parent 1 do merge commit = tip do branch base do PR
+          changed=$(git diff --name-only HEAD^1 HEAD 2>/dev/null || true)
+          needs_drift=false
+          if printf '%s\n' "$changed" | grep -qE '^(supabase/functions/|audit/edge-functions-canonical-only\.json|\.github/workflows/edge-functions-drift-check\.yml|supabase/config\.toml|\.security/edge-functions-verify-jwt-false-allowlist\.json)'; then
+            needs_drift=true
+          fi
+          echo "needs_drift=$needs_drift" >> "$GITHUB_OUTPUT"
+          if [ "$needs_drift" = "false" ]; then
+            echo "::notice::Nenhum arquivo de edge function alterado — drift check pulado. Required check satisfeito."
+          fi
+
+      - name: Verify required secrets
+        if: steps.check_paths.outputs.needs_drift != 'false'
+        run: |
+          set -euo pipefail
+          : "${SUPABASE_ACCESS_TOKEN:?SUPABASE_ACCESS_TOKEN não configurado}"
       - name: Install Supabase CLI
+        if: steps.check_paths.outputs.needs_drift != 'false'
         uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v2
         with:
           version: 2.101.0
 
       - name: Resolve list of slugs from repo
         id: list_slugs
+        if: steps.check_paths.outputs.needs_drift != 'false'
         run: |
           set -euo pipefail
           slugs=$(find supabase/functions -mindepth 2 -maxdepth 2 -name 'index.ts' -print0 \
@@ -107,6 +129,7 @@ jobs:
           fi
 
       - name: List edge functions in canonical
+        if: steps.check_paths.outputs.needs_drift != 'false'
         run: |
           set -euo pipefail
           supabase functions list --project-ref "$SUPABASE_PROJECT_REF" --output json \
@@ -115,6 +138,7 @@ jobs:
 
       - name: Detect orphans and missing deploys
         id: slug_diff
+        if: steps.check_paths.outputs.needs_drift != 'false'
         run: |
           set -euo pipefail
           # ok (comm || true): comm pode falhar se um dos arquivos estiver vazio — arquivo de saída vazio é resultado válido para cada diff
@@ -160,6 +184,7 @@ jobs:
 
       - name: Download functions from canonical and diff content
         id: hash_diff
+        if: steps.check_paths.outputs.needs_drift != 'false'
         run: |
           set -euo pipefail
           mkdir -p /tmp/canonical_download
@@ -257,6 +282,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload drift report
+        if: steps.check_paths.outputs.needs_drift != 'false'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: drift-report
@@ -264,12 +290,14 @@ jobs:
           retention-days: 14
 
       - name: Setup Node.js
+        if: steps.check_paths.outputs.needs_drift != 'false'
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: '.nvmrc'
 
       - name: Verify_jwt per function — allowlist gate (E42)
         id: verify_jwt_gate
+        if: steps.check_paths.outputs.needs_drift != 'false'
         continue-on-error: true
         run: |
           set +e
@@ -280,7 +308,7 @@ jobs:
           exit 0
 
       - name: Upload verify_jwt report
-        if: always()
+        if: always() && steps.check_paths.outputs.needs_drift != 'false'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: verify-jwt-report
@@ -289,7 +317,7 @@ jobs:
           retention-days: 14
 
       - name: Comment on PR (drift)
-        if: github.event_name == 'pull_request' && (steps.hash_diff.outputs.drift_count != '0' || steps.hash_diff.outputs.missing_in_dl != '0' || steps.slug_diff.outputs.has_orphans == 'true' || steps.slug_diff.outputs.has_missing == 'true')
+        if: github.event_name == 'pull_request' && steps.check_paths.outputs.needs_drift != 'false' && (steps.hash_diff.outputs.drift_count != '0' || steps.hash_diff.outputs.missing_in_dl != '0' || steps.slug_diff.outputs.has_orphans == 'true' || steps.slug_diff.outputs.has_missing == 'true')
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
@@ -333,7 +361,7 @@ jobs:
             else { await github.rest.issues.create({ owner: context.repo.owner, repo: context.repo.repo, title, body, labels: ['drift-check','priority/high'] }); }
 
       - name: Fail if drift detected
-        if: steps.hash_diff.outputs.drift_count != '0' || steps.hash_diff.outputs.missing_in_dl != '0' || steps.slug_diff.outputs.has_orphans == 'true' || steps.slug_diff.outputs.has_missing == 'true'
+        if: steps.check_paths.outputs.needs_drift != 'false' && (steps.hash_diff.outputs.drift_count != '0' || steps.hash_diff.outputs.missing_in_dl != '0' || steps.slug_diff.outputs.has_orphans == 'true' || steps.slug_diff.outputs.has_missing == 'true')
         run: |
           echo "::error::Drift detectado entre GitHub e canônico. Veja sumário do job e artefato drift-report.csv."
           echo "::error::Resoluções possíveis:"
@@ -343,7 +371,7 @@ jobs:
           exit 1
 
       - name: Fail if verify_jwt allowlist gate failed
-        if: steps.verify_jwt_gate.outputs.exit_code != '0'
+        if: steps.check_paths.outputs.needs_drift != 'false' && steps.verify_jwt_gate.outputs.exit_code != '0'
         run: |
           echo "::error::Gate de verify_jwt/allowlist falhou (scripts/check-edge-verify-jwt-allowlist.mjs, exit=${{ steps.verify_jwt_gate.outputs.exit_code }})."
           echo "::error::Veja o log do passo 'Verify_jwt per function — allowlist gate (E42)' acima para a lista de funções sem allowlist."
