@@ -57,7 +57,7 @@ name: db-schema-drift-check
 
 on:
   schedule:
-    - cron: '29 9 * * *' # 06:29 BRT — E89: ≥20min after edge-functions-drift-check (09:06), ≥1min after required-checks-guard (09:28)
+    - cron: '29 9 * * *' # 06:29 BRT — E89: ≥20min after edge-functions-drift-check (09:06), ≥20min before restore-seller-cart-rpc (09:49)
   pull_request:
     paths:
       - 'supabase/migrations/**'
@@ -104,9 +104,11 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-
         with:
           persist-credentials: false  # E32
+          # E57: usa o SHA exato do head do PR (não o merge commit do tip do branch).
+          # Para eventos sem PR, github.sha já aponta para o commit correto.
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Gate - secrets obrigatórios presentes?
         id: guard
         run: |
@@ -291,7 +293,7 @@ jobs:
 
       - name: Upload drift artifact
         if: ${{ always() && steps.guard.outputs.enabled == 'true' }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: schema-reconciliation-evidence
           path: |

@@ -48,8 +48,6 @@ jobs:
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
       E2E_BASE_URL: http://localhost:8080
-      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-      E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
       # Força Playwright a gravar trace/screenshot/vídeo apenas em falha
       PW_TEST_HTML_REPORT_OPEN: never
     steps:
@@ -65,6 +63,9 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Run Quote Summary specs (e2e + visual + action buttons)
         id: pwtest
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
         run: |
           npx playwright test \
             e2e/quotes/quote-summary-sticky-header.spec.ts \
@@ -77,7 +78,7 @@ jobs:
       - name: Upload Playwright HTML report
         if: always()
         id: upload-report
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: playwright-report-quote-summary
           path: playwright-report/
@@ -86,7 +87,7 @@ jobs:
       - name: Upload failure artifacts (screenshots, diffs, traces, videos)
         if: failure()
         id: upload-failures
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: playwright-failures-quote-summary
           path: |
@@ -94,7 +95,7 @@ jobs:
             test-results/**/*-diff.png
             test-results/**/*-actual.png
             test-results/**/*-expected.png
-            test-results/**/trace.zip
+            !test-results/**/trace.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
             test-results/**/video.webm
           retention-days: 14
           if-no-files-found: ignore

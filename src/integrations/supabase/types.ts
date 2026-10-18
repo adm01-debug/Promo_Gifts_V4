@@ -58241,6 +58241,25 @@ export type Database = {
         Args: { _function_name: string; _model: string; _user_id: string }
         Returns: Json
       }
+      admin_active_sessions: {
+        Args: never
+        Returns: {
+          email: string | null
+          ip: string | null
+          live_refresh_token: boolean
+          not_after: string | null
+          refreshed_at: string | null
+          session_created_at: string | null
+          session_id: string
+          session_updated_at: string | null
+          user_agent: string | null
+          user_id: string
+        }[]
+      }
+      admin_revoke_user_sessions: {
+        Args: { _user_id: string }
+        Returns: undefined
+      }
       apply_transform: {
         Args: {
           p_transform_config?: Json

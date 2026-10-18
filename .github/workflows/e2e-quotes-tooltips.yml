@@ -47,10 +47,6 @@ jobs:
     timeout-minutes: 25
     env:
       E2E_BASE_URL: http://localhost:8080
-      E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
-      E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
-      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-      E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
     steps:
@@ -83,20 +79,28 @@ jobs:
       # 1ª passada: roda os 3 specs sem retries internos.
       - name: Run 04m-quotes-status-tooltip* (1ª passada)
         id: run1
-        run: npx playwright test e2e/flows/04m-quotes-status-tooltip --project=chromium-authed --retries=0 --reporter=html,list,github
         env:
           CI: "1"
+          E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
+          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+        run: npx playwright test e2e/flows/04m-quotes-status-tooltip --project=chromium-authed --retries=0 --reporter=html,list,github
 
       # 2ª passada: rerroda APENAS os specs que falharam, uma única vez.
       - name: Re-run failed specs (única retentativa)
         if: failure() && steps.run1.conclusion == 'failure'
-        run: npx playwright test --last-failed --project=chromium-authed --retries=0 --reporter=html,list,github
         env:
           CI: "1"
+          E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
+          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+        run: npx playwright test --last-failed --project=chromium-authed --retries=0 --reporter=html,list,github
 
       - name: Upload Playwright HTML report
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: playwright-report-04m-tooltips
           path: playwright-report/
@@ -105,7 +109,7 @@ jobs:
 
       - name: Upload test-results (trace, screenshot, video)
         if: failure()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: playwright-artifacts-04m-tooltips
           path: |

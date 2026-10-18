@@ -26,6 +26,7 @@
  */
 
 import { readFileSync, readdirSync, statSync, existsSync, writeFileSync } from 'node:fs';
+import { execSync } from 'node:child_process';
 import { join, relative, extname } from 'node:path';
 
 const ROOT = process.cwd();
@@ -71,6 +72,15 @@ const BASE_PATHS = new Set([
   'qa/migrations-draft/',
 ]);
 
+// Só arquivos versionados entram no gate: artefatos locais não rastreados
+// (ex.: cache do graphify) existem no dev box mas não no checkout do CI —
+// varrer o filesystem faria o resultado divergir entre os dois ambientes.
+const TRACKED = new Set(
+  execSync('git ls-files', { cwd: ROOT, encoding: 'utf8' })
+    .split('\n')
+    .filter(Boolean),
+);
+
 const problems = [];
 
 function walk(dir) {
@@ -88,6 +98,7 @@ function walk(dir) {
     } else if (st.isFile()) {
       const rel = relative(ROOT, full);
       if (rel === SELF) continue;
+      if (!TRACKED.has(rel)) continue;
       if (!EXT_ALLOW.has(extname(entry))) continue;
       scanFile(full, rel);
     }

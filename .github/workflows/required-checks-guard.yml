@@ -12,8 +12,10 @@ on:
       - '.github/workflows/**'
       - '.github/required-checks.json'
       - '.github/workflows/required-checks-guard.yml'
+      - 'scripts/check-secrets-inventory.mjs'
+      - 'docs/ci/SEGREDOS.md'
   schedule:
-    - cron: '28 9 * * *'  # diário 09:28 UTC (E89)
+    - cron: '45 8 * * *'  # diário 08:45 UTC — E89: ≥20min de edge-functions-drift-check (09:06)
   workflow_dispatch:
 
 permissions:
@@ -141,7 +143,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v4
+      - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -149,3 +151,46 @@ jobs:
         run: npm ci --ignore-scripts
       - name: Check for phantom required checks (E71)
         run: node scripts/check-required-checks.mjs
+
+  # E40 — Inventário de segredos: abre issue quando há referências não documentadas
+  secrets-inventory-check:
+    name: Secrets Inventory Check (E40)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write  # ci-issue action (E12) — abre/fecha issues de violação
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
+      - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Check secrets inventory (E40)
+        id: inventory
+        run: node scripts/check-secrets-inventory.mjs --gate
+      - name: Abrir issue de violação (schedule/push)
+        if: failure() && (github.event_name == 'schedule' || github.event_name == 'push')
+        uses: ./.github/actions/ci-issue
+        with:
+          key: secrets-inventory-orphan
+          title: '[CI] Secrets inventory — referências não documentadas em docs/ci/SEGREDOS.md'
+          body: |
+            O job `secrets-inventory-check` encontrou segredos/vars referenciados nos workflows mas não documentados em `docs/ci/SEGREDOS.md`.
+
+            Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            **Ação:** executar `node scripts/check-secrets-inventory.mjs --update` para ver a lista e atualizar `docs/ci/SEGREDOS.md`.
+          labels: 'ci,ci-inconclusive'
+          state: open
+      - name: Fechar issue na recuperação (schedule/push)
+        if: success() && (github.event_name == 'schedule' || github.event_name == 'push')
+        uses: ./.github/actions/ci-issue
+        with:
+          key: secrets-inventory-orphan
+          title: '[CI] Secrets inventory — referências não documentadas em docs/ci/SEGREDOS.md'
+          body: 'Todos os secrets/vars estão documentados em SEGREDOS.md.'
+          state: resolved

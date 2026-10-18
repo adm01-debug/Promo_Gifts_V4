@@ -59,7 +59,7 @@ function jsonResponse(
   });
 }
 
-function readJwtAal(token: string): string | null {
+export function readJwtAal(token: string): string | null {
   try {
     const payload = token.split(".")[1];
     if (!payload) return null;

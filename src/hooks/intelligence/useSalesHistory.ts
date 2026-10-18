@@ -4,6 +4,7 @@
  */
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { fetchAllPages } from '@/lib/db/fetch-all-pages';
 import { logger } from '@/lib/logger';
 
 // ---------- Types ----------
@@ -50,22 +51,41 @@ export function useSalesHistory(productId: string | undefined, days = 30) {
       cutoff.setDate(cutoff.getDate() - days);
       const cutoffStr = cutoff.toISOString();
 
-      // Both fetches are independent — run in parallel
-      const [{ data: quoteItems }, { data: orderItems }] = await Promise.all([
-        supabase
-          .from('quote_items')
-          .select('quantity, unit_price, subtotal, created_at, quote_id')
-          .eq('product_id', productId)
-          .gte('created_at', cutoffStr)
-          .order('created_at', { ascending: true })
-          .limit(5000),
-        supabase
-          .from('order_items')
-          .select('quantity, unit_price, created_at, order_id')
-          .eq('product_id', productId)
-          .gte('created_at', cutoffStr)
-          .order('created_at', { ascending: true })
-          .limit(5000),
+      // Both fetches are independent — run in parallel.
+      // fetchAllPages: o PostgREST trunca em max-rows (1000) — o .limit(5000)
+      // anterior truncava silenciosamente; paginação por created_at+id é estável.
+      const [quoteItems, orderItems] = await Promise.all([
+        fetchAllPages<{
+          quantity: number | null;
+          unit_price: number | null;
+          subtotal: number | null;
+          created_at: string | null;
+          quote_id: string;
+        }>((from, to) =>
+          supabase
+            .from('quote_items')
+            .select('quantity, unit_price, subtotal, created_at, quote_id')
+            .eq('product_id', productId)
+            .gte('created_at', cutoffStr)
+            .order('created_at', { ascending: true })
+            .order('id', { ascending: true })
+            .range(from, to),
+        ).catch(() => []),
+        fetchAllPages<{
+          quantity: number | null;
+          unit_price: number | null;
+          created_at: string | null;
+          order_id: string | null;
+        }>((from, to) =>
+          supabase
+            .from('order_items')
+            .select('quantity, unit_price, created_at, order_id')
+            .eq('product_id', productId)
+            .gte('created_at', cutoffStr)
+            .order('created_at', { ascending: true })
+            .order('id', { ascending: true })
+            .range(from, to),
+        ).catch(() => []),
       ]);
 
       // Fetch related quotes for seller info
@@ -75,26 +95,41 @@ export function useSalesHistory(productId: string | undefined, days = 30) {
       const quotesMap: Record<string, { seller_id: string; status: string }> = {};
       const ordersMap: Record<string, { seller_id: string; status: string }> = {};
 
+      // `.in()` com centenas de ids estoura a querystring do PostgREST — lotes de 200.
+      const fetchDocsByIds = async (
+        table: 'orders' | 'quotes',
+        ids: string[],
+        statuses?: string[],
+      ) => {
+        const rows: Array<{ id: string; seller_id: string | null; status: string | null }> = [];
+        for (let i = 0; i < ids.length; i += 200) {
+          let q = supabase
+            // rls-allow: applySellerScope aplicado conforme escopo do usuário
+            .from(table)
+            .select('id, seller_id, status')
+            .in('id', ids.slice(i, i + 200));
+          if (statuses) q = q.in('status', statuses);
+          const { data, error } = await q;
+          if (error) {
+            logger.warn(`[useSalesHistory] ${table} fetch failed:`, error);
+            continue;
+          }
+          rows.push(...(data ?? []));
+        }
+        return rows;
+      };
+
       // G15 fix: only count quotes with relevant statuses (not drafts)
       // Both queries are independent — run in parallel
       const [quotesData, ordersData] = await Promise.all([
-        quoteIds.length > 0
-          ? supabase
-              // rls-allow: applySellerScope aplicado conforme escopo do usuário
-              .from('quotes')
-              .select('id, seller_id, status')
-              .in('id', quoteIds)
-              .in('status', ['sent', 'approved', 'rejected', 'expired', 'converted'])
-              .then((r) => r.data)
-          : Promise.resolve(null),
-        orderIds.length > 0
-          ? supabase
-              // rls-allow: applySellerScope aplicado conforme escopo do usuário
-              .from('orders')
-              .select('id, seller_id, status')
-              .in('id', orderIds.filter(Boolean) as string[])
-              .then((r) => r.data)
-          : Promise.resolve(null),
+        fetchDocsByIds('quotes', quoteIds, [
+          'sent',
+          'approved',
+          'rejected',
+          'expired',
+          'converted',
+        ]),
+        fetchDocsByIds('orders', orderIds.filter(Boolean) as string[]),
       ]);
       for (const q of quotesData || []) {
         quotesMap[q.id] = { seller_id: q.seller_id ?? '', status: q.status ?? '' };

@@ -31,9 +31,6 @@ env:
   FORCE_COLOR: "0"
   VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
   VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
-  E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-  E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-
 permissions:
   contents: read
   pull-requests: write  # comentário em PR (visual diff summary)
@@ -57,6 +54,9 @@ jobs:
         with:
           persist-credentials: false  # E32
       - name: Validate required secrets
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
         run: |
           missing=0
           if [ -z "$E2E_USER_EMAIL" ]; then
@@ -107,6 +107,8 @@ jobs:
           echo "authed=true" >> "$GITHUB_OUTPUT"
         env:
           E2E_BASE_URL: http://localhost:8080
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
 
       - name: Check baselines exist (mobile/tablet/desktop)
         if: inputs.update_snapshots != true
@@ -128,11 +130,13 @@ jobs:
           E2E_BASE_URL: http://localhost:8080
           PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results-collapse.json
           UPDATE_SNAPSHOTS: ${{ inputs.update_snapshots }}
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
 
       # E61: replaced git commit+push with artifact upload — developer downloads and commits manually
       - name: Upload updated baselines (artifact — commit manualmente)
         if: inputs.update_snapshots == true
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: collapse-baselines-updated-${{ github.run_id }}
           path: e2e/customization/**-snapshots/
@@ -164,7 +168,7 @@ jobs:
       - name: Upload artifacts (trace + vídeo + screenshots + diffs + report)
         id: upload
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: customization-collapse-e2e
           path: |

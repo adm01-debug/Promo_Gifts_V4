@@ -29,11 +29,6 @@ concurrency:
 permissions:
   contents: read
 
-env:
-  E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-  E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-
-
 defaults:
   run:
     shell: bash
@@ -51,8 +46,6 @@ jobs:
       # Segredos reais — o job falha antes do Playwright rodar se ausentes.
       CRM_CALLBACK_API_KEY: ${{ secrets.CRM_CALLBACK_API_KEY }}
       V4_CALLBACK_URL: ${{ secrets.V4_CALLBACK_URL }}
-      E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
-      E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
       E2E_BASE_URL: http://localhost:8080
 
     steps:
@@ -62,6 +55,9 @@ jobs:
           persist-credentials: false  # E32
       - name: Verificar secrets CRM (E09)
         id: crm-check
+        env:
+          E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
+          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
         run: |
           missing=0
           for var in CRM_CALLBACK_API_KEY E2E_ADMIN_EMAIL E2E_ADMIN_PASSWORD; do
@@ -100,11 +96,14 @@ jobs:
         if: steps.crm-check.outputs.skip != 'true'
         # E16: chromium-smoke → chromium-public; o spec específico não usa o filtro @smoke
         # do projeto chromium-smoke (grep: /@smoke/) — que silenciaria o spec se não tagged.
+        env:
+          E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
+          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
         run: npx playwright test e2e/flows/28-crm-callback-approved.spec.ts --project=chromium-public --retries=1 --workers=1
 
       - name: Upload Playwright report
         if: always() && steps.crm-check.outputs.skip != 'true'
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: playwright-report-crm-callback
           path: |

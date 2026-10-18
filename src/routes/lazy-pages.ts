@@ -94,6 +94,7 @@ export const AdminWorkflowsPage = lazyWithRetry(() => import('@/pages/admin/Admi
 export const AdminLoginAttemptsPage = lazyWithRetry(
   () => import('@/pages/admin/AdminLoginAttemptsPage'),
 );
+export const AdminSessionsPage = lazyWithRetry(() => import('@/pages/admin/AdminSessionsPage'));
 export const AdminExternalDbPage = lazyWithRetry(() => import('@/pages/admin/AdminExternalDbPage'));
 export const AdminVideoVariantsPage = lazyWithRetry(
   () => import('@/pages/admin/AdminVideoVariantsPage'),
@@ -181,9 +182,7 @@ export const MagazineListPage = lazyWithRetry(() => import('@/pages/magazine/Mag
 export const MagazineEditorPage = lazyWithRetry(
   () => import('@/pages/magazine/MagazineEditorPage'),
 );
-export const MagazinePrintPage = lazyWithRetry(
-  () => import('@/pages/magazine/MagazinePrintPage'),
-);
+export const MagazinePrintPage = lazyWithRetry(() => import('@/pages/magazine/MagazinePrintPage'));
 export const PublicMagazineView = lazyWithRetry(
   () => import('@/pages/magazine/PublicMagazineView'),
 );

@@ -70,8 +70,6 @@ jobs:
       E2E_BASE_URL: http://localhost:8080
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
-      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-      E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -85,11 +83,14 @@ jobs:
       - name: Install Playwright Chromium
         run: npm run test:e2e:install
       - name: Run Playwright — quote-missing-fields-popover
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
         run: npx playwright test e2e/quotes/quote-missing-fields-popover.spec.ts --project=chromium-authed --retries=2
 
       - name: Upload Playwright HTML report
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: playwright-report-quote-missing-fields
           path: playwright-report/
@@ -98,14 +99,14 @@ jobs:
 
       - name: Upload snapshot diffs (on failure)
         if: failure()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: quote-missing-fields-snapshot-diffs
           path: |
             test-results/**/*-actual.png
             test-results/**/*-expected.png
             test-results/**/*-diff.png
-            test-results/**/trace.zip
+            !test-results/**/trace.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
             test-results/**/*.webm
           retention-days: 14
           if-no-files-found: ignore
@@ -121,8 +122,6 @@ jobs:
       E2E_BASE_URL: http://localhost:8080
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
-      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-      E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -140,6 +139,9 @@ jobs:
       # toHaveScreenshot, que já produz *-actual/*-expected/*-diff em falha.
       - name: Run Playwright — quote-reset-stepper-layout
         id: pw_run
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
         run: npx playwright test e2e/quotes/quote-reset-stepper-layout.spec.ts --project=chromium-authed --retries=2 --reporter=html
 
       # Reexecução headed (apenas em falha) com trace/vídeo "on" para facilitar
@@ -161,7 +163,7 @@ jobs:
 
       - name: Upload Playwright HTML report
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: playwright-report-quote-reset-stepper
           path: playwright-report/
@@ -170,18 +172,18 @@ jobs:
 
       - name: Upload snapshot diffs + traces + vídeos (on failure)
         if: failure()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: quote-reset-stepper-failure-bundle
           path: |
             test-results/**/*-actual.png
             test-results/**/*-expected.png
             test-results/**/*-diff.png
-            test-results/**/trace.zip
+            !test-results/**/trace.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
             test-results/**/video.webm
             test-results/**/*.webm
             test-results/**/*.png
-            test-results-headed/**/trace.zip
+            !test-results-headed/**/trace.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
             test-results-headed/**/*.webm
             test-results-headed/**/*.png
           retention-days: 14
@@ -233,8 +235,6 @@ jobs:
       E2E_BASE_URL: http://localhost:8080
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
-      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-      E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -246,6 +246,9 @@ jobs:
       - run: npm ci
       - run: npm run test:e2e:install
       - name: Run Playwright — quote-number-subtitle (sem --update-snapshots)
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
         run: |
           npx playwright test \
             e2e/quotes/quote-number-subtitle.spec.ts \
@@ -254,7 +257,7 @@ jobs:
 
       - name: Upload Playwright HTML report
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: playwright-report-quote-number-subtitle
           path: playwright-report/
@@ -263,14 +266,14 @@ jobs:
 
       - name: Upload snapshot diffs (on failure)
         if: failure()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: quote-number-subtitle-failure-bundle
           path: |
             test-results/**/*-actual.png
             test-results/**/*-expected.png
             test-results/**/*-diff.png
-            test-results/**/trace.zip
+            !test-results/**/trace.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
           retention-days: 14
           if-no-files-found: ignore
 
@@ -344,8 +347,6 @@ jobs:
       E2E_BASE_URL: http://localhost:8080
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
-      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-      E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -358,6 +359,9 @@ jobs:
       - run: npm install -D pdf-parse @types/pdf-parse || true  # ok: optional pdf-parse devDep; spec degrades gracefully if absent
       - run: npm run test:e2e:install
       - name: Run Playwright — quote-pdf-quote-number
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
         run: |
           npx playwright test \
             e2e/quotes/quote-pdf-quote-number.spec.ts \
@@ -366,7 +370,7 @@ jobs:
 
       - name: Upload Playwright HTML report
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: playwright-report-quote-pdf
           path: playwright-report/
@@ -377,7 +381,7 @@ jobs:
       # vídeos e screenshots quando o spec falha.
       - name: Upload PDF + preview HTML + diffs (on failure)
         if: failure()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: quote-pdf-failure-bundle
           path: |
@@ -387,8 +391,8 @@ jobs:
             test-results/**/*-actual.png
             test-results/**/*-expected.png
             test-results/**/*-diff.png
-            test-results/**/trace*.zip
             test-results/**/*.zip
+            !test-results/**/trace*.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
             test-results/**/*.webm
           retention-days: 14
           if-no-files-found: ignore
@@ -479,8 +483,6 @@ jobs:
       E2E_BASE_URL: http://localhost:8080
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
-      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-      E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -493,6 +495,9 @@ jobs:
       - run: npm run test:e2e:install
 
       - name: Run Playwright — trigger uniqueness + a11y + header snapshot
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
         run: |
           npx playwright test \
             e2e/quotes/quote-pdf-trigger-uniqueness.spec.ts \
@@ -502,7 +507,7 @@ jobs:
 
       - name: Upload Playwright HTML report
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: playwright-report-pdf-trigger-header
           path: playwright-report/
@@ -513,13 +518,13 @@ jobs:
       # traces + actual/expected/diff PNGs + HTML do dialog + videos.
       - name: Upload header snapshot failure bundle
         if: failure()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: quote-pdf-header-snapshot-failure
           path: |
             test-results/**/quote-pdf-header-snapshot-*/**/*.png
             test-results/**/quote-pdf-header-snapshot-*/**/*.html
-            test-results/**/quote-pdf-header-snapshot-*/**/trace*.zip
+            !test-results/**/quote-pdf-header-snapshot-*/**/trace*.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
             test-results/**/quote-pdf-header-snapshot-*/**/*.webm
             test-results/**/*-actual.png
             test-results/**/*-expected.png

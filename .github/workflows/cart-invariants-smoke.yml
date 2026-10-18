@@ -128,8 +128,6 @@ jobs:
       E2E_BASE_URL: http://localhost:8080
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
-      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-      E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -149,6 +147,9 @@ jobs:
       # em vez de rodar 0 testes e aparecer verde. Previne silent-green.
       # Em PR: skip com warning (exit 0). Em push para main: exit 1 obrigatório.
       - name: Guard — credenciais E2E obrigatórias
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
         run: |
           if [ -z "${E2E_USER_EMAIL:-}" ] || [ -z "${E2E_USER_PASSWORD:-}" ]; then
             if [ "${{ github.event_name }}" = "pull_request" ]; then
@@ -174,6 +175,9 @@ jobs:
       # retries=0: qualquer invariant quebrado FALHA o build. Sem "tentar de novo".
       - name: Playwright — invariants do header/sidebar (shard ${{ matrix.shard }}/${{ matrix.total_shards }})
         id: playwright
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
         run: |
           START_TS=$(date +%s)
           set +e
@@ -217,7 +221,7 @@ jobs:
 
       - name: Upload timing do shard
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: cart-invariants-timing-${{ matrix.browser }}-shard${{ matrix.shard }}
           path: shard-timings/
@@ -226,7 +230,7 @@ jobs:
 
       - name: Upload Playwright HTML report
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: cart-invariants-report-${{ matrix.browser }}-shard${{ matrix.shard }}
           path: playwright-report/
@@ -235,7 +239,7 @@ jobs:
 
       - name: Upload artefatos de falha (screenshot/video/HTML/trace/debug-context)
         if: failure()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: cart-invariants-failure-${{ matrix.browser }}-shard${{ matrix.shard }}
           path: |
@@ -243,7 +247,7 @@ jobs:
             test-results/**/*.webm
             test-results/**/*.html
             test-results/**/*.json
-            test-results/**/trace.zip
+            !test-results/**/trace.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
           retention-days: 14
           if-no-files-found: ignore
 

@@ -40,11 +40,6 @@ concurrency:
   group: e2e-quote-item-editor-sheet-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
-env:
-  E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-  E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-
-
 defaults:
   run:
     shell: bash
@@ -79,6 +74,9 @@ jobs:
       - run: npx playwright install --with-deps ${{ matrix.browser }}
 
       - name: Run QuoteItemEditorSheet spec (${{ matrix.browser }})
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
         run: |
           npx playwright test \
             e2e/quotes/quote-item-editor-sheet-header.spec.ts \
@@ -88,7 +86,7 @@ jobs:
 
       - name: Upload report + snapshots
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: quote-item-editor-sheet-${{ matrix.browser }}
           path: |

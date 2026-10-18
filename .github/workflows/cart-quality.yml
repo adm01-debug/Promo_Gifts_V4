@@ -182,8 +182,6 @@ jobs:
       E2E_BASE_URL: http://localhost:8080
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
-      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-      E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -200,12 +198,18 @@ jobs:
       # Smoke rápido do sidebar (sem painéis legados). Falha cedo se alguém
       # reintroduzir "Saúde do carrinho" / "Inteligência de vendas" / etc.
       - name: E2E smoke — CartSidebar sem painéis legados
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
         run: npx playwright test e2e/carrinhos/sidebar-no-legacy-labels.spec.ts --project=chromium-authed --retries=1
 
       # Smoke dos handoffs Carrinho/URL → QuoteBuilder (BUG-CART-HANDOFF).
       # Falha cedo se o autosave voltar a sobrescrever dados vindos do carrinho
       # ou de URL params ao trocar de aba ou recarregar a página.
       - name: E2E smoke — Handoffs QuoteBuilder (carrinho + URL params)
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
         run: |
           npx playwright test \
             e2e/carrinhos/cart-to-quote-handoff.spec.ts \
@@ -215,11 +219,14 @@ jobs:
 
       # Suíte completa de carrinhos (popover footer matrix, limite 10, etc.).
       - name: Run E2E — Carrinhos (suíte completa)
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
         run: npm run test:e2e:carrinhos -- --retries=2
 
       - name: Upload Playwright report
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: playwright-report-carrinhos
           path: playwright-report/
@@ -228,13 +235,13 @@ jobs:
 
       - name: Upload snapshot diffs (on failure)
         if: failure()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: cart-popover-snapshot-diffs
           path: |
             test-results/**/*-actual.png
             test-results/**/*-expected.png
             test-results/**/*-diff.png
-            test-results/**/trace.zip
+            !test-results/**/trace.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
           retention-days: 14
           if-no-files-found: ignore
