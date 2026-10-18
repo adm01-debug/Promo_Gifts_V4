@@ -9,7 +9,12 @@
         {
           "name": "Gate Final - Deploy Ready",
           "workflow": ".github/workflows/deploy-gates.yml",
-          "rationale": "E58: único required check em main — agrega todos os gates de qualidade do deploy-gates.yml (Gates 0–6+). Alguns gates são condicionais (E2E smoke exige has_e2e; Lighthouse é opcional); o Gate Final em si roda sempre. Evita deadlock de checks focais condicionados por paths."
+          "rationale": "Agrega os gates de qualidade em PRs para main: SSOT, lint/TypeScript, unitários, integridade PostgreSQL, E2E smoke, Lighthouse, SEO, RPC canônica e build. Evita deadlock de checks focais condicionados por paths. Nota: Gate 0.6 (Dependency Review) roda só em pull_request; Gate 2.5/5.5 são omitidos em push sem deployment env — o agregador skipa esses jobs conforme o contexto sem bloquear o check principal. (E58)"
+        },
+        {
+          "name": "Compare GitHub × Canonical",
+          "workflow": ".github/workflows/edge-functions-drift-check.yml",
+          "rationale": "E74: verifica que o código das edge functions no GitHub bate com o deployado no projeto canônico doufsxqlfjyuvxuezpln. Previne divergência silenciosa entre git e produção (casos reais: kit-ai-builder 2026-09-23, magazine-reader-state-read 2026-09-24)."
         }
       ]
     },
