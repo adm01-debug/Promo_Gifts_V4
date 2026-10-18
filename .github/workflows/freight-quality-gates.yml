@@ -265,9 +265,9 @@ jobs:
           FUNCS=$(node -e "try { const s = require('./coverage/coverage-summary.json'); console.log(s.total.functions.pct); } catch (e) { console.log('0'); }")
           echo "Coverage: lines=$LINES% functions=$FUNCS%"
           FAIL=0
-          # E46: piso real de 1% (coverage = 0% → testes não rodaram ou erro de setup)
-          if (( $(echo "$LINES < 1" | bc -l) )); then echo "::error::Lines coverage $LINES% < 1% threshold — testes não produziram cobertura"; FAIL=1; fi
-          if (( $(echo "$FUNCS < 1" | bc -l) )); then echo "::error::Functions coverage $FUNCS% < 1% threshold — testes não produziram cobertura"; FAIL=1; fi
+          # E46: piso real de 60% — alinhado com vitest.config.ts (lines=60, functions=60)
+          if (( $(echo "$LINES < 60" | bc -l) )); then echo "::error::Lines coverage $LINES% < 60% threshold — ver vitest.config.ts"; FAIL=1; fi
+          if (( $(echo "$FUNCS < 60" | bc -l) )); then echo "::error::Functions coverage $FUNCS% < 60% threshold — ver vitest.config.ts"; FAIL=1; fi
           if [ $FAIL -eq 1 ]; then exit 1; fi
           echo "✅ Coverage thresholds met (lines=$LINES% functions=$FUNCS%)"
       - name: Upload coverage report
