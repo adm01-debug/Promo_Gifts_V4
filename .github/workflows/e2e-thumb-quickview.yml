@@ -89,8 +89,10 @@ jobs:
           browsers: 'chromium,${{ matrix.browser }}'
           start-vite: 'false'
       - name: Run thumb-quickview suite
-        env:
-          PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results-thumb-${{ matrix.browser }}.json
+        # O reporter json do playwright.config.ts já tem `outputFile` explícito
+        # (playwright-report/results.json). Quando `outputFile` existe, o Playwright
+        # IGNORA PLAYWRIGHT_JSON_OUTPUT_NAME — por isso o guard E42 abaixo lê o
+        # results.json padrão (cada job da matriz roda num runner isolado).
         run: |
           npx playwright test e2e/flows/03b-product-thumb-quickview.spec.ts \
             --project=${{ matrix.browser }}-authed
@@ -98,7 +100,7 @@ jobs:
         if: always()
         uses: ./.github/actions/check-min-tests
         with:
-          results-json: 'playwright-report/results-thumb-${{ matrix.browser }}.json'
+          results-json: 'playwright-report/results.json'
       - name: Upload report + traces + videos (${{ matrix.browser }})
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()

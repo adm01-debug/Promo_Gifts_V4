@@ -191,6 +191,15 @@ jobs:
           else
             echo "::warning::Export sem baseline novo — baseline atual mantido."
           fi
+          # Exatamente um baseline, com o JSON do ledger da mesma versão: dois
+          # arquivos (ou um sem o outro) deixariam o drift-check vermelho depois
+          # do merge da PR do bot.
+          shopt -s nullglob
+          bases=(supabase/baseline/*_baseline_schema.sql)
+          if [ "${#bases[@]}" -ne 1 ] || [ ! -f "${bases[0]%_baseline_schema.sql}_ledger_versions.json" ]; then
+            echo "::error::supabase/baseline precisa de exatamente um <B>_baseline_schema.sql com o <B>_ledger_versions.json correspondente (achei ${#bases[@]} baseline(s))."
+            exit 1
+          fi
 
       - name: Credencial de push sem token em disco (E32)
         run: |

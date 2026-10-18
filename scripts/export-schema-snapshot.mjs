@@ -30,8 +30,8 @@
  */
 
 import { execSync, spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { accessSync, constants, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { delimiter, isAbsolute, join } from 'node:path';
 import { parseSupabaseMigrationLedgerOutput } from './check-supabase-migration-ledger.mjs';
 import {
   appliedVersionsFromLedger,
@@ -41,6 +41,7 @@ import {
   byCodeUnit,
   findSecrets,
   ledgerSnapshotName,
+  looksLikeSchemaDump,
   maxNumericVersion,
 } from './drift-baseline.mjs';
 
@@ -64,8 +65,29 @@ function ensureOutDir() {
   if (!existsSync(OUT_DIR)) mkdirSync(OUT_DIR, { recursive: true });
 }
 
+// Resolve o CLI para um caminho absoluto antes de executar: só entram diretórios
+// absolutos do PATH que o grupo/outros não podem escrever, então um PATH
+// adulterado com diretório gravável não troca o binário (Sonar S4036).
+function resolveCli(name) {
+  for (const dir of (process.env.PATH ?? '').split(delimiter)) {
+    if (!dir || !isAbsolute(dir)) continue;
+    try {
+      if (statSync(dir).mode & 0o022) continue;
+      const candidate = join(dir, name);
+      accessSync(candidate, constants.X_OK);
+      return candidate;
+    } catch {
+      // diretório inexistente ou sem o binário: tenta o próximo
+    }
+  }
+  return null;
+}
+
+const SUPABASE_CLI = resolveCli('supabase');
+
 function hasSupabaseCli() {
-  const r = spawnSync('supabase', ['--version'], { encoding: 'utf8' });
+  if (!SUPABASE_CLI) return false;
+  const r = spawnSync(SUPABASE_CLI, ['--version'], { encoding: 'utf8' });
   return r.status === 0;
 }
 
@@ -79,16 +101,14 @@ function tryLink() {
     warn('Credenciais de link ausentes e link local canônico não encontrado — pulando live/drift.');
     return false;
   }
-  try {
-    execSync(
-      `supabase link --project-ref ${PROJECT_REF} -p "$SUPABASE_DB_PASSWORD"`,
-      { stdio: 'inherit', shell: '/bin/bash' },
-    );
-    return true;
-  } catch (e) {
-    err(`Falha ao linkar projeto ${PROJECT_REF}: ${e.message}`);
+  // Sem shell e sem `-p`: o CLI herda o ambiente e lê SUPABASE_DB_PASSWORD (R5 — segredo
+  // nunca como argumento, que apareceria na linha de comando do processo).
+  const r = spawnSync(SUPABASE_CLI, ['link', '--project-ref', PROJECT_REF], { stdio: 'inherit' });
+  if (r.error || r.status !== 0) {
+    err(`Falha ao linkar projeto ${PROJECT_REF}: ${r.error?.message ?? `exit ${r.status}`}`);
     return false;
   }
+  return true;
 }
 
 function buildAllInOne() {
@@ -139,7 +159,7 @@ function readLedger() {
 function dumpLiveSchema(ledger) {
   log('Exportando schema vivo (supabase db dump --linked)');
   // Sem shell; stderr do CLI (progresso) descartado para não entrar no dump.
-  const r = spawnSync('supabase', ['db', 'dump', '--linked'], {
+  const r = spawnSync(SUPABASE_CLI, ['db', 'dump', '--linked'], {
     encoding: 'utf8', maxBuffer: 256 * 1024 * 1024, stdio: ['ignore', 'pipe', 'ignore'],
   });
   if (r.error || r.status !== 0) {
@@ -147,6 +167,10 @@ function dumpLiveSchema(ledger) {
     return { ok: false };
   }
   const sql = r.stdout;
+  if (!looksLikeSchemaDump(sql)) {
+    err('Dump vazio ou sem CREATE TABLE — nada gravado.');
+    return { ok: false };
+  }
   // O dump leva minutos: migration aplicada no meio entraria no schema mas
   // não na lista de versões, e o drift-check a replayaria em cima dela.
   const after = readLedger();
@@ -216,15 +240,16 @@ function main() {
     drift: null,
   };
 
+  // Com credenciais (CI em schedule/dispatch) falha de CLI, link, ledger ou dump
+  // é erro. Sem elas, um link local sem `supabase login` só pula o dump — como em
+  // PR e push, onde as credenciais não são entregues ao job.
+  const strict = Boolean(process.env.SUPABASE_ACCESS_TOKEN);
   if (!hasSupabaseCli()) {
     warn('CLI `supabase` não encontrado — pulando SCHEMA_LIVE.sql e o baseline.');
     writeMeta(meta);
+    if (strict) process.exitCode = 1;
     return;
   }
-  // Com credenciais (CI em schedule/dispatch) falha de ledger ou dump é erro.
-  // Sem elas, um link local sem `supabase login` só pula o dump — como em PR
-  // e push, onde as credenciais não são entregues ao job.
-  const strict = Boolean(process.env.SUPABASE_ACCESS_TOKEN);
   if (!tryLink()) {
     writeMeta(meta);
     if (strict) process.exitCode = 1;

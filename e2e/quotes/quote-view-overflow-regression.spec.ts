@@ -109,7 +109,12 @@ test('teclado: setas/PageDown/Home/End movem o scroll interno e anunciam estado'
   // End vai ao final e dispara anúncio "Fim da lista"
   await page.keyboard.press('End');
   await expect(scroller).toHaveAttribute('data-scroll-at-bottom', 'true');
-  const status = scroller.locator('xpath=following-sibling::*[@role="status"]').first();
+  // O live region (`<p role="status">`) é irmão do WRAPPER do scroller, não do
+  // scroller em si — por isso busca-se dentro do fixture.
+  const status = page
+    .getByTestId('quote-items-table-fixture-many')
+    .locator('p[role="status"]')
+    .first();
   await expect(status).toHaveText(/Fim da lista/i);
 
   // Home volta ao topo
@@ -117,25 +122,33 @@ test('teclado: setas/PageDown/Home/End movem o scroll interno e anunciam estado'
   await expect(scroller).toHaveAttribute('data-scroll-at-top', 'true');
 });
 
-test('@smoke thead permanece sticky durante rolagem interna em md e lg', async ({ page }) => {
+test('@smoke thead permanece fixo durante rolagem interna em md e lg', async ({ page }) => {
   for (const [w, h] of [
     [768, 900],
     [1280, 900],
   ] as const) {
     await open(page, w, h);
-    const scroller = page
-      .getByTestId('quote-items-table-fixture-many')
-      .getByTestId('quote-items-table-scroll');
-    const thead = scroller.locator('thead').first();
+    const fixture = page.getByTestId('quote-items-table-fixture-many');
+    const scroller = fixture.getByTestId('quote-items-table-scroll');
+    // O <thead> vive numa <table> própria (`quote-items-table-header-wrap`),
+    // acima do scroller — nunca dentro dele.
+    const thead = fixture.getByTestId('quote-items-table-header-wrap').locator('thead').first();
+    await expect(scroller.locator('thead')).toHaveCount(0);
+    const before = await thead.boundingBox();
     await scroller.evaluate((el) => {
       el.scrollTop = el.scrollHeight;
     });
+    await expect(scroller).toHaveAttribute('data-scroll-at-bottom', 'true');
     const tBox = await thead.boundingBox();
     const sBox = await scroller.boundingBox();
-    expect(tBox && sBox).toBeTruthy();
+    expect(before && tBox && sBox).toBeTruthy();
     expect(
-      Math.abs(tBox!.y - sBox!.y),
-      `viewport ${w}x${h}: thead descolou (${tBox!.y} vs ${sBox!.y})`,
+      Math.abs(tBox!.y - before!.y),
+      `viewport ${w}x${h}: thead se moveu com a rolagem (${before!.y} → ${tBox!.y})`,
+    ).toBeLessThanOrEqual(2);
+    expect(
+      Math.abs(tBox!.y + tBox!.height - sBox!.y),
+      `viewport ${w}x${h}: thead não termina no topo do scroller (${tBox!.y + tBox!.height} vs ${sBox!.y})`,
     ).toBeLessThanOrEqual(2);
   }
 });
