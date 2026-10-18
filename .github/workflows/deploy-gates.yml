@@ -18,6 +18,7 @@ name: Deploy Gates
 #  1.8  base64-detect     — sem arquivos texto encodados em base64 acidentalmente
 #  1.9  tech-debt         — ratchets TODO/as/file-size
 #  1.9.1 console-baseline — console.* não aumenta sem justificativa
+#  1.9.2 boundary          — sem import cross-domain novo entre src/pages/*
 #  1.10 indexed-access    — indexed-access ratchet (advisory)
 #  1.11 workflow-contracts — check-workflow-contracts --gate (C10–C24)
 #  1.12 contract-coverage  — soft-delete policy + contrato de cobertura
@@ -221,6 +222,9 @@ jobs:
 
       - name: Gate 1.9.1 — console.* baseline (bloqueante)
         run: node scripts/check-console-baseline.mjs
+
+      - name: Gate 1.9.2 — boundary cross-domain entre pages (bloqueante)
+        run: node scripts/check-boundary-baseline.mjs
       # Contract coverage + soft-delete policy (auditoria 20-dim Onda 2) —
       # aqui e no quality-gate.yml (2.3.5/2.3.6) porque o check obrigatório
       # "Gate Final - Deploy Ready" agrega só jobs DESTE workflow.

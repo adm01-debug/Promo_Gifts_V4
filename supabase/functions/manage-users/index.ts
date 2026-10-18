@@ -38,6 +38,14 @@ const DeleteSchema = z.object({
   user_id: uuidSchema,
 });
 
+// Revoga TODAS as sessões de um usuário (GoTrue só oferece signOut global por
+// usuário — não há revogação de uma sessão específica). Usado pelo painel de
+// sessões ativas (/admin/sessoes).
+const RevokeSessionsSchema = z.object({
+  action: z.literal('revoke_sessions'),
+  user_id: uuidSchema,
+});
+
 /**
  * Promoção de papel (agente <-> supervisor) com step-up:
  * exige a senha do próprio caller + justificativa que vai para auditoria.
@@ -55,6 +63,7 @@ const PayloadSchema = z.discriminatedUnion('action', [
   UpdateEmailSchema,
   UpdatePasswordSchema,
   DeleteSchema,
+  RevokeSessionsSchema,
   PromoteRoleSchema,
 ]);
 
@@ -174,6 +183,41 @@ Deno.serve(async (req) => {
       if (deleteError) {
         return jsonRes(corsHeaders, { error: deleteError.message }, 400);
       }
+
+      return jsonRes(corsHeaders, { success: true });
+    }
+
+    if (payload.action === 'revoke_sessions') {
+      if (payload.user_id === caller.id) {
+        return jsonRes(
+          corsHeaders,
+          { error: 'Para revogar suas próprias sessões use a opção de logout nos outros dispositivos' },
+          400
+        );
+      }
+
+      const { error: signOutError } = await supabaseAdmin.auth.admin.signOut(
+        payload.user_id,
+        'global'
+      );
+      if (signOutError) {
+        return jsonRes(corsHeaders, { error: signOutError.message }, 400);
+      }
+
+      await supabaseAdmin.from('admin_audit_log').insert({
+        user_id: caller.id,
+        action: 'session.revoke_all',
+        resource_type: 'auth',
+        resource_id: payload.user_id,
+        status: 'success',
+        source: 'manage-users.revoke_sessions',
+        details: { target_user_id: payload.user_id, scope: 'global' },
+        ip_address:
+          req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
+          req.headers.get('x-real-ip') ??
+          null,
+        user_agent: req.headers.get('user-agent') ?? null,
+      });
 
       return jsonRes(corsHeaders, { success: true });
     }

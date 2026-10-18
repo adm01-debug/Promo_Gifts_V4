@@ -1,0 +1,60 @@
+{
+  "description": "Importações cross-domain históricas entre src/pages/<domínio>. Novas violações falham o gate — código compartilhado vai em src/components|lib|hooks|services.",
+  "violations": [
+    {
+      "file": "pages/__tests__/SimulationPage.blocked.test.tsx",
+      "from": "__tests__",
+      "to": "Simulation"
+    },
+    {
+      "file": "pages/bi/TrendsPage.tsx",
+      "from": "bi",
+      "to": "trends"
+    },
+    {
+      "file": "pages/bi/TrendsPage.tsx",
+      "from": "bi",
+      "to": "trends"
+    },
+    {
+      "file": "pages/bi/TrendsPage.tsx",
+      "from": "bi",
+      "to": "trends"
+    },
+    {
+      "file": "pages/products/FiltersPage.tsx",
+      "from": "products",
+      "to": "filters"
+    },
+    {
+      "file": "pages/products/FiltersPage.tsx",
+      "from": "products",
+      "to": "filters"
+    },
+    {
+      "file": "pages/tools/AdvancedPriceSearchPage.tsx",
+      "from": "tools",
+      "to": "advanced-price-search"
+    },
+    {
+      "file": "pages/tools/AdvancedPriceSearchPage.tsx",
+      "from": "tools",
+      "to": "advanced-price-search"
+    },
+    {
+      "file": "pages/tools/AdvancedPriceSearchPage.tsx",
+      "from": "tools",
+      "to": "advanced-price-search"
+    },
+    {
+      "file": "pages/tools/MagicUp.tsx",
+      "from": "tools",
+      "to": "magic-up"
+    },
+    {
+      "file": "pages/tools/MagicUp.tsx",
+      "from": "tools",
+      "to": "magic-up"
+    }
+  ]
+}

@@ -269,6 +269,13 @@ const navGroups: NavGroup[] = [
         tooltip: 'Bloqueie acessos indevidos e proteja o catálogo contra cópias automáticas.',
       },
       {
+        icon: ShieldCheck,
+        label: 'Sessões',
+        href: '/admin/sessoes',
+        devOnly: true,
+        tooltip: 'Veja sessões de login ativas e revogue o acesso de um usuário.',
+      },
+      {
         icon: Plug,
         label: 'Conexões',
         href: '/admin/conexoes',
@@ -435,8 +442,8 @@ export const SidebarReorganized = React.memo(
       staleTime: 15_000,
       retry: 0,
       retryOnMount: false,
-      refetchOnWindowFocus: false,  // BUG-SIDEBAR-ABORT: evita abort extra ao focar aba
-      refetchOnReconnect: false,    // BUG-SIDEBAR-ABORT: evita abort extra ao reconectar
+      refetchOnWindowFocus: false, // BUG-SIDEBAR-ABORT: evita abort extra ao focar aba
+      refetchOnReconnect: false, // BUG-SIDEBAR-ABORT: evita abort extra ao reconectar
     });
 
     const enrichedNavGroups = useMemo(() => {
