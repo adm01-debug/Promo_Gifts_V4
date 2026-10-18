@@ -2,14 +2,20 @@
 /**
  * check-policies-baseline.mjs
  *
- * Baseline assinado das RLS policies do schema `public` (auditoria 20-dim,
- * Onda 2 — complementa o schema_signature do drift de DDL).
+ * Baseline assinado das RLS policies de todos os schemas de aplicação
+ * (E044: lê supabase/baseline/schemas.txt — SSOT compartilhada com
+ * db-schema-drift-check.yml e schema-snapshot-export.yml).
+ * Antes cobria só `public`; agora cobre todos os schemas listados.
  *
  * O que faz: consulta `pg_policies` no projeto canônico (read-only, via
  * Management API) e compara com `.security/policies-baseline.json`, um
  * snapshot com hash sha256 das linhas. Qualquer policy criada, removida ou
  * alterada (qual/with_check/cmd/roles) FORA de um PR revisado aparece como
  * drift — é o equivalente, para RLS, do detector de DDL out-of-band.
+ *
+ * E043: policy NOVA com roles={public} ou anon+USING(true) é recusada pelo
+ * gate — as 248 existentes passam por estarem no baseline (legado a drenar);
+ * qualquer nova entrada com esses padrões é bloqueada antes de entrar.
  *
  * Por que importa: uma policy dropada ou afrouxada fora do fluxo de
  * migrations abre dados silenciosamente (e o schema_signature não cobre
@@ -47,18 +53,34 @@ import { querySupabaseReadOnly } from './supabase-read-only-query.mjs';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 const BASELINE_PATH = path.join(ROOT, '.security/policies-baseline.json');
+const SCHEMAS_TXT = path.join(ROOT, 'supabase/baseline/schemas.txt');
 
 const argv = process.argv.slice(2);
 const fromFileArg = argv.find((a) => a.startsWith('--from-file='));
 const UPDATE = argv.includes('--update-baseline');
 const REQUIRE_LIVE = shouldRequireLive(argv);
 
+// E044: lê schemas de aplicação do SSOT (schemas.txt). Fallback: só 'public'.
+function loadAppSchemas() {
+  try {
+    const raw = readFileSync(SCHEMAS_TXT, 'utf8');
+    const schemas = raw.split('\n').map((l) => l.trim()).filter((l) => l && !l.startsWith('#'));
+    return schemas.length > 0 ? schemas : ['public'];
+  } catch {
+    return ['public'];
+  }
+}
+
+const APP_SCHEMAS = loadAppSchemas();
+
+// E044: filtra todos os schemas de aplicação, não só 'public'.
+const schemasLiteral = APP_SCHEMAS.map((s) => `'${s}'`).join(', ');
 const SQL = `
   SELECT schemaname, tablename, policyname, permissive,
          roles::text AS roles, cmd,
          coalesce(qual, '') AS qual, coalesce(with_check, '') AS with_check
   FROM pg_catalog.pg_policies
-  WHERE schemaname = 'public'
+  WHERE schemaname = ANY(ARRAY[${schemasLiteral}])
   ORDER BY schemaname, tablename, policyname;
 `.trim();
 
@@ -353,7 +375,25 @@ async function main() {
     );
   }
 
+  // E043: policy NOVA com roles={public} ou anon+USING(true) bloqueada mesmo
+  // antes de entrar no baseline — o quarto deve ser esvaziado, não enchido.
+  function isForbiddenNewPolicy(p) {
+    const roles = (p.roles ?? '').replace(/[{}]/g, '');
+    const roleList = roles.split(',').map((r) => r.trim());
+    if (roleList.includes('public')) return true;
+    if (roleList.includes('anon') && (p.qual ?? '').trim() === 'true') return true;
+    return false;
+  }
+  const forbiddenNew = added.filter(isForbiddenNewPolicy);
+
   const problems = [];
+  if (forbiddenNew.length) {
+    problems.push(
+      `🚨 E043: ${forbiddenNew.length} policy(ies) NOVA(S) com padrão proibido (roles=public ou anon+USING(true)):\n` +
+        forbiddenNew.map((p) => `   - ${describePolicy(p)}`).join('\n') +
+        '\n   Reescreva usando TO authenticated / TO service_role antes de commitar o baseline.',
+    );
+  }
   if (added.length) {
     problems.push(
       `🚨 ${added.length} policy(ies) NOVA(S) fora do baseline:\n` +
