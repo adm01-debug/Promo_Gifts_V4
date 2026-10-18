@@ -1,245 +1,134 @@
 /**
- * E2E — Swatch → QuickView nas views Lista e Tabela.
+ * E2E — Swatch (V1) → QuickView nas views Lista e Tabela.
  *
- * Garante para /produtos em ambos os modos (list/table):
- *  1. Clique numa bolinha de cor abre o QuickView posicionado naquela cor
- *     (header "Cor: <nome>" + botão "Todas as cores" visível).
- *  2. Clique em "Todas as cores" limpa a seleção dentro do QuickView
- *     (header volta a "Cor" e botão some).
- *  3. Clique na imagem/thumb abre o QuickView com a cor previamente
- *     selecionada na linha (paridade com swatch).
- *  4. A11y: swatches expõem role="radio" + aria-label "Opção de cor: ..."
- *     e respondem a Enter e Space (cobre `onSelect` no `ProductColorSwatches`).
- *  5. Foco visível: tabular para o swatch o deixa como `document.activeElement`.
- *  6. Foco restaurado ao fechar o QuickView via Escape.
+ * Contrato vigente (FIX-SWATCH-INLINE-V1 em ProductListItem / ProductTableRow):
+ *  1. Clique numa bolinha seleciona a cor INLINE (aria-checked="true") e NÃO
+ *     abre o QuickView.
+ *  2. Botão "Todos" da própria row (`color-swatches-clear`) limpa a seleção.
+ *  3. Clique na foto/thumb abre o QuickView já posicionado na cor selecionada
+ *     (header "Cor: <nome>" + botão "Todas as cores" + estoque com `data-color-id`).
+ *  4. "Todas as cores" no QuickView limpa a cor (header volta a "Cor").
+ *  5. A11y: swatches expõem role="radio" + aria-label "Opção de cor: ..." e
+ *     respondem a Enter e Space.
  *
- * Skipa graciosamente quando a rota não retorna cards com cores (sem dados/auth).
+ * Histórico: a versão anterior esperava que o clique na bolinha abrisse o QuickView
+ * (comportamento removido em FIX-SWATCH-INLINE), procurava os botões `view-mode-*`
+ * fora do Popover "Layout" (nunca trocava a visão) e contava swatches imediatamente
+ * (`product.colors` só hidrata depois, via useProductsColorsBatch). Resultado: todos
+ * os testes terminavam em skip silencioso. Helpers em ./helpers/swatch-view.ts.
+ *
+ * O pipeline V2 vem LIGADO por padrão (feature-flags.ts); este spec força OFF para
+ * exercitar o fallback `ProductColorSwatches`. A cobertura V2 está em
+ * swatch-quickview-v2-list-table.spec.ts.
  */
 import { test, expect, requireAuth } from '../fixtures/test-base';
 import { gotoAndSettle } from '../helpers/nav';
+import {
+  DATA_TIMEOUT_MS,
+  V1_SWATCH,
+  presetSwatchesV2,
+  rowThumb,
+  switchCatalogView,
+  viewRows,
+  waitForRowWithSwatches,
+  type RowView,
+} from './helpers/swatch-view';
 
 const ROUTE = '/produtos';
-
-const VIEWS = [
-  {
-    mode: 'list' as const,
-    toggleTid: 'view-mode-list',
-    rowSelector: '[data-testid="product-list-item-thumb"]',
-  },
-  {
-    mode: 'table' as const,
-    toggleTid: 'view-mode-table',
-    // Em tabela, o trigger de QuickView por imagem é a thumb da row;
-    // qualquer ancestral clicável funciona — aqui usamos a célula da imagem.
-    rowSelector: 'div[data-index]',
-  },
-];
-
+const VIEWS: RowView[] = ['list', 'table'];
 
 test.describe('Swatch → QuickView (Lista e Tabela)', () => {
-  test.beforeEach(() => requireAuth());
+  test.beforeEach(() => {
+    requireAuth();
+    // Backend do CI chega a levar 15–60 s por request: folga sobre o timeout padrão (120 s).
+    test.setTimeout(240_000);
+  });
 
-  for (const v of VIEWS) {
-    test(`[${v.mode}] swatch abre QV na cor + "Todas as cores" limpa + foto usa cor selecionada`, async ({
+  for (const mode of VIEWS) {
+    test(`[${mode}] swatch seleciona cor inline + "Todos" limpa + foto abre QV na cor`, async ({
       page,
     }) => {
+      await presetSwatchesV2(page, false);
       await page.setViewportSize({ width: 1366, height: 900 });
       await gotoAndSettle(page, ROUTE);
+      await switchCatalogView(page, mode);
 
-      const toggle = page.locator(`[data-testid="${v.toggleTid}"]`).first();
-      if (await toggle.count()) {
-        await toggle.click().catch(() => undefined);
-      }
+      const rows = viewRows(page, mode);
+      await expect(rows.first(), `nenhum item em ${ROUTE} (${mode})`).toBeVisible({
+        timeout: DATA_TIMEOUT_MS,
+      });
+      const { index, count: rowSwatches } = await waitForRowWithSwatches(rows, V1_SWATCH);
 
-      // Aguarda alguma row aparecer.
-      const rows = page.locator(v.rowSelector);
-      await rows.first().waitFor({ timeout: 10_000 }).catch(() => undefined);
-      const total = await rows.count();
-      test.skip(total === 0, `Sem itens em ${ROUTE} (${v.mode}).`);
-
-      // Localiza a primeira row que tenha pelo menos 2 swatches (para garantir
-      // "Todas as cores" + escolha consistente). Cai para qualquer row com 1
-      // swatch se nenhuma tiver 2.
-      const swatchSel = '[data-testid^="color-swatch-"]';
-      let rowIdx = -1;
-      let rowSwatches = 0;
-      const sample = Math.min(total, 20);
-      for (let i = 0; i < sample; i++) {
-        const n = await rows.nth(i).locator(swatchSel).count();
-        if (n >= 2) {
-          rowIdx = i;
-          rowSwatches = n;
-          break;
-        }
-        if (n >= 1 && rowIdx === -1) {
-          rowIdx = i;
-          rowSwatches = n;
-        }
-      }
-      test.skip(rowIdx === -1, `Sem rows com cores em ${ROUTE} (${v.mode}).`);
-
-      const row = rows.nth(rowIdx);
-      const firstSwatch = row.locator(swatchSel).first();
+      const row = rows.nth(index);
+      const swatches = row.locator(V1_SWATCH);
+      const firstSwatch = swatches.first();
+      const dialog = page.getByRole('dialog');
 
       // ── A11y: role + aria-label canônicos ─────────────────────────────────
-      await expect(firstSwatch).toHaveAttribute('role', 'radio');
-      const aria = await firstSwatch.getAttribute('aria-label');
-      expect(aria ?? '').toMatch(/Op[cç][aã]o de cor:/i);
-      const colorName = (
-        await firstSwatch.getAttribute('data-color-name')
-      )?.trim();
-      expect(colorName, 'swatch precisa expor data-color-name').toBeTruthy();
-
-      // ── 1) Click no swatch abre QV posicionado na cor ─────────────────────
       await firstSwatch.scrollIntoViewIfNeeded();
-      await firstSwatch.click();
+      await expect(firstSwatch).toHaveAttribute('role', 'radio');
+      expect((await firstSwatch.getAttribute('aria-label')) ?? '').toMatch(/Op[cç][aã]o de cor:/i);
+      const colorName = ((await firstSwatch.getAttribute('data-color-name')) ?? '').trim();
+      expect(colorName, 'swatch precisa expor data-color-name').toBeTruthy();
+      await expect(firstSwatch).toHaveAttribute('aria-checked', 'false');
 
-      const dialog = page.getByRole('dialog');
+      // ── 1) Clique na bolinha: seleção inline, SEM abrir QuickView ─────────
+      await firstSwatch.click();
+      await expect(firstSwatch).toHaveAttribute('aria-checked', 'true');
+      await expect(dialog).toHaveCount(0);
+
+      // ── 2) "Todos" da row limpa a seleção ─────────────────────────────────
+      const rowClear = row.getByTestId('color-swatches-clear');
+      await expect(rowClear).toBeVisible();
+      await rowClear.click();
+      await expect(rowClear).toBeHidden();
+      await expect(firstSwatch).toHaveAttribute('aria-checked', 'false');
+
+      // ── 3) Foto abre o QuickView usando a cor selecionada na row ─────────
+      await firstSwatch.click();
+      await expect(firstSwatch).toHaveAttribute('aria-checked', 'true');
+      await rowThumb(row, mode).click();
       await expect(dialog).toBeVisible({ timeout: 8_000 });
 
-      // Header "Cor: <name>" (case-insensitive).
       const colorHeader = dialog.getByText(/^Cor:\s*/i).first();
       await expect(colorHeader).toBeVisible();
-      await expect(colorHeader).toContainText(new RegExp(colorName!, 'i'));
+      await expect(colorHeader).toContainText(new RegExp(escapeRegExp(colorName), 'i'));
 
-      // Botão "Todas as cores" presente.
+      const stockBadge = dialog.getByTestId('quickview-stock');
+      await expect(stockBadge).toHaveAttribute('data-color-id', /.+/);
+
+      // ── 4) "Todas as cores" no QuickView limpa a cor do QuickView ────────
       const clearBtn = dialog.getByTestId('quickview-clear-color');
       await expect(clearBtn).toBeVisible();
-
-      // ── 2) "Todas as cores" limpa a seleção ───────────────────────────────
       await clearBtn.click();
       await expect(clearBtn).toBeHidden();
-      // Header colapsa para "Cor" (sem ":") — checagem por regex específica.
       await expect(dialog.locator('p').filter({ hasText: /^Cor$/ }).first()).toBeVisible();
+      await expect(stockBadge).toHaveAttribute('data-color-id', '');
 
-      // Fecha QV.
       await page.keyboard.press('Escape');
       await expect(dialog).toBeHidden({ timeout: 5_000 });
 
-      // ── 3) Foto/thumb abre QV usando a cor selecionada na row ─────────────
-      // A seleção via swatch persistiu (via store + URL). Agora basta clicar
-      // numa região "imagem" da row.
-      const thumb =
-        v.mode === 'list'
-          ? row // a row em list já É o thumb (testid product-list-item-thumb)
-          : row.locator('img').first();
-      // Em tabela a imagem está dentro da row; clique no <img> propaga ao
-      // handler de QV via `handleOpenQV` no ProductTableRow.
-      if (await thumb.count()) {
-        await thumb.first().click({ position: { x: 8, y: 8 } });
-        await expect(dialog).toBeVisible({ timeout: 8_000 });
-        // A cor ativa deve refletir a última escolhida (mesmo nome).
-        await expect(dialog.getByText(/^Cor:\s*/i).first()).toContainText(
-          new RegExp(colorName!, 'i'),
-        );
-        await page.keyboard.press('Escape');
-        await expect(dialog).toBeHidden({ timeout: 5_000 });
-      }
+      // ── 5) Teclado: Enter e Space selecionam (sem abrir QuickView) ───────
+      // Reseta a seleção anterior para um estado conhecido.
+      if (await rowClear.isVisible()) await rowClear.click();
+      const target = rowSwatches >= 2 ? swatches.nth(1) : firstSwatch;
 
-      // ── 4) Teclado: Enter no swatch abre QV ───────────────────────────────
-      if (rowSwatches >= 1) {
-        await firstSwatch.focus();
-        // Foco visível: o elemento focado é exatamente o swatch.
-        const isFocused = await firstSwatch.evaluate(
-          (el) => el === document.activeElement,
-        );
-        expect(isFocused).toBe(true);
-        await page.keyboard.press('Enter');
-        await expect(dialog).toBeVisible({ timeout: 8_000 });
-        await page.keyboard.press('Escape');
-        await expect(dialog).toBeHidden({ timeout: 5_000 });
+      await target.focus();
+      await expect(target).toBeFocused();
+      await page.keyboard.press('Enter');
+      await expect(target).toHaveAttribute('aria-checked', 'true');
+      await expect(dialog).toHaveCount(0);
 
-        // ── 5) Space também abre QV ────────────────────────────────────────
-        await firstSwatch.focus();
-        await page.keyboard.press(' ');
-        await expect(dialog).toBeVisible({ timeout: 8_000 });
-
-        // ── 6) Foco restaurado ao fechar via Escape ─────────────────────────
-        await page.keyboard.press('Escape');
-        await expect(dialog).toBeHidden({ timeout: 5_000 });
-        // Aguarda 2 frames para Radix restaurar o foco.
-        await page.evaluate(
-          () =>
-            new Promise<void>((r) =>
-              requestAnimationFrame(() => requestAnimationFrame(() => r())),
-            ),
-        );
-        // O foco volta para o swatch OU para um ancestral (Radix re-foca o
-        // trigger original — aceitamos ambos).
-        const focusOk = await page.evaluate((tid) => {
-          const a = document.activeElement;
-          if (!a) return false;
-          return (
-            a.getAttribute('data-testid')?.startsWith(tid) ||
-            !!a.closest(`[data-testid^="${tid}"]`)
-          );
-        }, 'color-swatch-');
-        expect(focusOk).toBe(true);
-      }
-
-      // ── 7) Tab percorre os swatches em ordem ──────────────────────────────
-      if (rowSwatches >= 2) {
-        await firstSwatch.focus();
-        await page.keyboard.press('Tab');
-        const nextIsSwatch = await page.evaluate(() => {
-          const a = document.activeElement as HTMLElement | null;
-          return !!a?.getAttribute('data-testid')?.startsWith('color-swatch-');
-        });
-        expect(nextIsSwatch, 'Tab deve mover para o próximo swatch').toBe(true);
-      }
-
-      // ── 8) Estoque muda ao alternar cor e ao limpar via "Todas as cores" ─
-      const allSwatches = row.locator(swatchSel);
-      const n = await allSwatches.count();
-      if (n >= 2) {
-        await allSwatches.nth(0).click();
-        await expect(dialog).toBeVisible({ timeout: 8_000 });
-        const stockBadge = dialog.getByTestId('quickview-stock');
-        await expect(stockBadge).toBeVisible();
-        const colorId0 = await stockBadge.getAttribute('data-color-id');
-        expect(colorId0, 'estoque deve refletir cor selecionada').toBeTruthy();
-
-        const dialogSwatches = dialog.locator(swatchSel);
-        if ((await dialogSwatches.count()) >= 2) {
-          await dialogSwatches.nth(1).click();
-          await expect
-            .poll(async () => stockBadge.getAttribute('data-color-id'))
-            .not.toBe(colorId0);
-        }
-
-        // "Todas as cores" reseta color-id para vazio (estoque total).
-        const clear = dialog.getByTestId('quickview-clear-color');
-        if (await clear.count()) {
-          await clear.click();
-          await expect
-            .poll(async () => stockBadge.getAttribute('data-color-id'))
-            .toBe('');
-        }
-
-        // ── 9) Fecha QV pelo backdrop e foco restaura para o swatch ────────
-        await firstSwatch.evaluate((el) =>
-          el.setAttribute('data-focus-marker', '1'),
-        );
-        await page.mouse.click(5, 5);
-        await expect(dialog).toBeHidden({ timeout: 5_000 });
-        await page.evaluate(
-          () =>
-            new Promise<void>((r) =>
-              requestAnimationFrame(() => requestAnimationFrame(() => r())),
-            ),
-        );
-        const restored = await page.evaluate(() => {
-          const a = document.activeElement as HTMLElement | null;
-          if (!a) return false;
-          return (
-            a.getAttribute('data-focus-marker') === '1' ||
-            !!a.closest('[data-focus-marker="1"]') ||
-            !!a.getAttribute('data-testid')?.startsWith('color-swatch-')
-          );
-        });
-        expect(restored, 'foco deve restaurar para um swatch').toBe(true);
-      }
+      if (await rowClear.isVisible()) await rowClear.click();
+      await expect(target).toHaveAttribute('aria-checked', 'false');
+      await target.focus();
+      await page.keyboard.press(' ');
+      await expect(target).toHaveAttribute('aria-checked', 'true');
+      await expect(dialog).toHaveCount(0);
     });
   }
 });
 
+function escapeRegExp(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}

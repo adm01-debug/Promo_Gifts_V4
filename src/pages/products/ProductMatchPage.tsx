@@ -129,7 +129,9 @@ export default function ProductMatchPage() {
       />
       <div className="mx-auto w-full max-w-[1920px] space-y-4 px-3 py-4 sm:px-4 lg:px-6">
         <div>
-          <h1 className="font-display text-xl font-bold">Match de Produtos</h1>
+          <h1 data-testid="page-title-match-produtos" className="font-display text-xl font-bold">
+            Match de Produtos
+          </h1>
           <p className="text-sm text-muted-foreground">
             Selecione um produto para encontrar similares e complementares
           </p>

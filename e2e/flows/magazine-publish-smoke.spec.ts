@@ -7,7 +7,7 @@
  *   3. Preenche título com prefixo `e2eName(...)` para o cleanup escopado
  *      não deixar lixo no BD Gold.
  *   4. Adiciona 1 produto (step "Produtos").
- *   5. Concede permissão de clipboard e clica em "Publicar".
+ *   5. Concede permissão de clipboard, vai à etapa "Layout & Gerar" e clica em "Publicar".
  *   6. Valida:
  *      - Toast de sucesso "Revista publicada. Link copiado…"
  *      - Clipboard contém uma URL no formato /revista-publica/<32 hex>
@@ -117,7 +117,21 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
     });
     await addBtn.click();
 
-    // 4) Clica em "Publicar" — o botão do header (o primeiro).
+    // 4) Vai para a etapa "Layout & Gerar" e clica em "Publicar".
+    //    No wizard atual (MagazineEditorPage, §24) o header só exibe "Publicar"
+    //    nas etapas identity/layout; em products/content/design ele mostra
+    //    "Salvar rascunho" + "Continuar". Sem trocar de etapa o botão não existe.
+    //    O avanço é validado contra `magazine.items`, que atualiza após o
+    //    "Adicionar" — por isso repete clique+asserção até a etapa ficar ativa.
+    const layoutStep = page.locator('[data-testid="magazine-step-layout"]').first();
+    await expect(async () => {
+      await layoutStep.click();
+      await expect(layoutStep).toHaveAttribute("aria-current", "step", { timeout: 2_000 });
+    }, "etapa 'Layout & Gerar' não ficou ativa após adicionar o produto").toPass({
+      timeout: 15_000,
+    });
+
+    // Botão do header (o primeiro "Publicar"; o do rodapé se chama "Publicar revista").
     const publishBtn = page.getByRole("button", { name: /^Publicar$/ }).first();
     await expect(publishBtn, "'Publicar' deve estar habilitado com título+produto").toBeEnabled({
       timeout: 10_000,

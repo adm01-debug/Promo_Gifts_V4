@@ -2,11 +2,11 @@
  * QuoteItemEditorSheet — header order, overflow e foco em 320/375/768.
  *
  * Valida:
- *  1. DOM: botão "+ Produto" precede "Detalhes do Item" (ordem visual + leitura).
- *  2. Visual: "+ Produto" à esquerda, título à direita (centro X).
+ *  1. DOM: botão "Salvar" presente; título "Detalhes do Item" removido.
+ *  2. Visual: "Salvar" (testid `quote-save-item-button-sheet`) à esquerda do header.
  *  3. Sem overflow horizontal do sheet em 320/375/768.
- *  4. A11y: foco inicial cai dentro do dialog; primeiro elemento focável
- *     é o botão "+ Produto" (consistente com a nova ordem de tab).
+ *  4. A11y: foco inicial cai dentro do dialog; "Salvar" é um dos primeiros
+ *     focáveis (ordem visual = ordem DOM = ordem de tab).
  *  5. Snapshot visual do header por viewport.
  */
 import { test, expect } from '@playwright/test';
@@ -64,18 +64,24 @@ for (const vp of VIEWPORTS) {
       expect(scrollW).toBeLessThanOrEqual(clientW + 1);
     });
 
-    test('a11y: foco entra no dialog e primeiro Tab focável é "+ Produto"', async ({
+    test('a11y: foco entra no dialog e "Salvar" é um dos primeiros focáveis', async ({
       page,
     }) => {
+      // Com item ativo o "Salvar" fica habilitado (sem item ele é `disabled` e
+      // sai da ordem de tab, então não dá para medir a posição dele).
+      await gotoAndSettle(page, `${ROUTE}?withItem=1`);
+      await page.getByTestId('open-editor-sheet').click();
+      await expect(page.getByRole('dialog')).toBeVisible();
+
       const focusInside = await page.evaluate(() => {
         const dlg = document.querySelector('[role="dialog"]');
         return !!dlg && !!document.activeElement && dlg.contains(document.activeElement);
       });
       expect(focusInside, 'foco inicial deve estar dentro do dialog').toBe(true);
 
-      // Radix Sheet foca o close button primeiro; o próximo Tab deve cair
-      // no botão "+ Produto" (ordem visual = ordem DOM = ordem de tab).
-      const reachedAddProduct = await page.evaluate(() => {
+      // O header (com "Salvar") precede o conteúdo do item e o botão de fechar:
+      // ordem visual = ordem DOM = ordem de tab.
+      const reachedSave = await page.evaluate(() => {
         const dlg = document.querySelector('[role="dialog"]');
         const target = dlg?.querySelector(
           '[data-testid="quote-save-item-button-sheet"]',
@@ -87,10 +93,10 @@ for (const vp of VIEWPORTS) {
           ),
         ).filter((el) => !el.hasAttribute('disabled'));
         const idx = focusables.indexOf(target);
-        // "+ Produto" deve estar entre os primeiros focáveis do header (≤ 2).
+        // "Salvar" deve estar entre os primeiros focáveis do header (≤ 2).
         return idx >= 0 && idx <= 2;
       });
-      expect(reachedAddProduct).toBe(true);
+      expect(reachedSave).toBe(true);
     });
 
     test('snapshot visual do header', async ({ page }) => {
@@ -155,13 +161,18 @@ for (const vp of VIEWPORTS) {
       expect(gap, `rodapé vazio detectado: ${gap}px`).toBeLessThanOrEqual(vp.maxGap);
     });
 
-    test('a11y: "Salvar" expõe aria-label, title e ícone decorativo', async ({ page }) => {
+    test('a11y: "Salvar" expõe aria-label, tooltip e ícone decorativo', async ({ page }) => {
+      // O botão usa Tooltip do Radix (não o atributo `title`) e só recebe
+      // foco/tooltip quando habilitado — por isso o harness roda com item ativo.
+      await gotoAndSettle(page, `${ROUTE}?withItem=1`);
+      await page.getByTestId('open-editor-sheet').click();
+      await expect(page.getByRole('dialog')).toBeVisible();
+
       const btn = page.getByTestId('quote-save-item-button-sheet');
       await expect(btn).toBeVisible();
-      const aria = await btn.getAttribute('aria-label');
-      expect(aria, 'aria-label deve conter "Salvar"').toMatch(/Salvar/i);
-      const title = await btn.getAttribute('title');
-      expect(title, 'title deve conter "Salvar"').toMatch(/Salvar/i);
+      await expect(btn).toHaveAttribute('aria-label', /Salvar/i);
+      await btn.focus();
+      await expect(page.getByRole('tooltip').first()).toContainText(/Confirma as escolhas/i);
       const iconAriaHidden = await btn.locator('svg').first().getAttribute('aria-hidden');
       expect(iconAriaHidden).toBe('true');
     });
@@ -295,6 +306,13 @@ for (const vp of VIEWPORTS) {
       const sheet = page.getByTestId('quote-item-editor-sheet');
       await expect(sheet).toBeVisible();
 
+      // O foco inicial do sheet cai no "Salvar", cujo Tooltip abre ao receber
+      // foco e consome o 1º ESC (Radix fecha só a camada mais alta). O cenário
+      // real de "alterações não salvas" é o usuário editando um campo, então o
+      // foco vai para a quantidade antes do ESC.
+      const qty = sheet.getByLabel('Quantidade', { exact: true });
+      await qty.focus();
+
       // ESC → AlertDialog aparece; "Continuar editando" mantém sheet aberto.
       await page.keyboard.press('Escape');
       const confirmDialog = page.getByTestId('quote-editor-unsaved-dialog');
@@ -308,7 +326,10 @@ for (const vp of VIEWPORTS) {
         expect(Math.abs(dialogBox.width - expectedWidth)).toBeLessThanOrEqual(4);
       }
 
-      for (const testId of ['quote-editor-unsaved-cancel', 'quote-editor-unsaved-confirm']) {
+      // ConfirmDialog deriva os testids dos botões do `testId` do diálogo.
+      const cancelId = 'quote-editor-unsaved-dialog-no';
+      const confirmId = 'quote-editor-unsaved-dialog-yes';
+      for (const testId of [cancelId, confirmId]) {
         const metrics = await page.getByTestId(testId).evaluate((el) => {
           const node = el as HTMLElement;
           return {
@@ -321,15 +342,16 @@ for (const vp of VIEWPORTS) {
         expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.clientWidth + 1);
       }
 
-      await page.getByTestId('quote-editor-unsaved-cancel').click();
+      await page.getByTestId(cancelId).click();
       await expect(confirmDialog).toBeHidden();
       await expect(sheet).toBeVisible();
       await expect(page.getByTestId('sheet-open-state')).toHaveAttribute('data-open', '1');
 
       // ESC → confirmar → sheet fecha.
+      await qty.focus();
       await page.keyboard.press('Escape');
       await expect(confirmDialog).toBeVisible();
-      await page.getByTestId('quote-editor-unsaved-confirm').click();
+      await page.getByTestId(confirmId).click();
       await expect(sheet).toBeHidden();
       await expect(page.getByTestId('sheet-open-state')).toHaveAttribute('data-open', '0');
     });
@@ -355,23 +377,26 @@ for (const vp of VIEWPORTS) {
       const sheet = page.getByTestId('quote-item-editor-sheet');
       await expect(sheet).toBeVisible();
 
-      // Captura uma assinatura do conteúdo (product_name + notas) antes de fechar.
+      // Assinatura do que o sheet exibe (nome, SKU e quantidade) antes de
+      // fechar. As `notes` do item não são renderizadas pelo editor.
+      const qty = sheet.getByLabel('Quantidade', { exact: true });
       const before = await sheet.evaluate((el) => el.textContent ?? '');
       expect(before).toMatch(/Caneca cer[âa]mica/i);
-      expect(before).toMatch(/Linha 1 de observação/i);
+      expect(before).toMatch(/STUB-001/);
+      await expect(qty).toHaveValue('10');
 
       // Salvar → fecha.
       await page.getByTestId('quote-save-item-button-sheet').click();
       await expect(sheet).toBeHidden();
       await expect(page.getByTestId('sheet-open-state')).toHaveAttribute('data-open', '0');
 
-      // Reabrir → o mesmo item (mesmo product_name e notas) deve continuar lá.
+      // Reabrir → o mesmo item (mesmo nome, SKU e quantidade) deve continuar lá.
       await page.getByTestId('open-editor-sheet').click();
       await expect(sheet).toBeVisible();
       const after = await sheet.evaluate((el) => el.textContent ?? '');
       expect(after).toMatch(/Caneca cer[âa]mica/i);
-      expect(after).toMatch(/Linha 1 de observação/i);
-      expect(after).toMatch(/Linha 12 de observação/i);
+      expect(after).toMatch(/STUB-001/);
+      await expect(qty).toHaveValue('10');
     });
   });
 }

@@ -70,7 +70,13 @@ export function CompareEmptyStateSmart() {
           <GitCompare className="h-10 w-10 text-muted-foreground" />
         </div>
         <div className="text-center">
-          <h1 className="mb-2 font-display text-2xl font-bold text-foreground">
+          {/* Mesmo testid do título de ComparePage: os dois estados são exclusivos e o
+              smoke de rotas (e2e/flows/20-all-features-smoke) exige o título da rota,
+              inclusive para um usuário sem produtos no comparador. */}
+          <h1
+            data-testid="page-title-comparador"
+            className="mb-2 font-display text-2xl font-bold text-foreground"
+          >
             Comparador de Produtos
           </h1>
           <p className="max-w-md text-muted-foreground">

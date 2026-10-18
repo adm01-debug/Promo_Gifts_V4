@@ -1,6 +1,11 @@
 import { getCorsHeaders, handleCorsPreflightIfNeeded } from '../_shared/cors.ts';
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { z } from "npm:zod@3.23.8";
+import {
+  invalidJsonResponse,
+  missingBodyResponse,
+  validationErrorResponse,
+} from '../_shared/contracts/errors.ts';
 
 const AccessBodySchema = z.object({
   ip: z.string().max(45).optional(),
@@ -107,8 +112,25 @@ Deno.serve(async (req: Request) => {
     const userId = user.id;
     const userEmail = user.email || "";
 
-    // Obter e validar body da request
-    const rawBody = await req.json().catch(() => ({}));
+    // Obter e validar body da request.
+    // Forma do body é estrita (JSON objeto, não vazio) — payload malformado vira
+    // 400/422 no envelope canônico em vez de ser silenciosamente ignorado (200).
+    // Os CAMPOS (ip/userAgent) continuam tolerantes: o cliente falha aberto em
+    // qualquer erro, então um 4xx por UA longo demais desligaria a checagem de IP.
+    const rawText = await req.text().catch(() => "");
+    if (!rawText.trim()) return missingBodyResponse({ corsHeaders });
+    let rawBody: unknown;
+    try {
+      rawBody = JSON.parse(rawText);
+    } catch {
+      return invalidJsonResponse({ corsHeaders });
+    }
+    if (rawBody === null || typeof rawBody !== "object" || Array.isArray(rawBody)) {
+      return validationErrorResponse(
+        [{ path: "$", message: "Body must be a JSON object.", code: "invalid_type" }],
+        { corsHeaders },
+      );
+    }
     const parsedBody = AccessBodySchema.safeParse(rawBody);
     const body = parsedBody.success ? parsedBody.data : {};
     // IP vem SÓ dos headers da conexão — body.ip era forjável (Onda 5).

@@ -124,7 +124,7 @@ jobs:
         if: always()
         run: |
           if [ -f qa/reports/cart-header-fuzz-report.md ]; then
-            cat qa/reports/cart-header-fuzz-report.md >> $GITHUB_STEP_SUMMARY
+            cat qa/reports/cart-header-fuzz-report.md >> "$GITHUB_STEP_SUMMARY"
           fi
 
   rls-integration:

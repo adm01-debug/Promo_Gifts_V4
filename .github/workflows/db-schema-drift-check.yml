@@ -227,7 +227,7 @@ jobs:
             fi
             echo "::error::supabase db diff falhou:"; cat /tmp/diff.stderr; exit 1
           fi
-          node scripts/drift-baseline.mjs filter-diff --diff /tmp/schema_drift.sql \
+          node scripts/drift-baseline.mjs filter-diff --diff /tmp/schema_drift.sql --workdir /tmp/drift-wd \
             --allowlist supabase/baseline/drift-allowlist.txt > /tmp/schema_drift.clean
           baseline=$(node -e 'console.log(JSON.parse(require("fs").readFileSync("/tmp/drift-wd.json","utf8")).baselineVersion)')
           replayed=$(node -e 'console.log(JSON.parse(require("fs").readFileSync("/tmp/drift-wd.json","utf8")).replayed_count)')

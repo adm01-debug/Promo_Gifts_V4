@@ -51,30 +51,37 @@ test.describe("@mobile Rotas críticas — viewport mobile", () => {
     expect(typeof navVisible).toBe("boolean");
   });
 
-  test("@mobile login funciona em viewport mobile", async ({ page }) => {
-    await page.goto("/login");
-    await waitForRouteIdle(page);
+  // O projeto `mobile-chrome` roda com o storageState autenticado, e uma sessão
+  // válida faz `/login` redirecionar — o formulário nunca aparece. Estes dois
+  // testes exercitam a tela de login, então rodam sem sessão.
+  test.describe("tela de login (sem sessão)", () => {
+    test.use({ storageState: { cookies: [], origins: [] } });
 
-    const emailInput = page.locator("input[type='email'], input[name='email']").first();
-    const passwordInput = page.locator("input[type='password']").first();
+    test("@mobile login funciona em viewport mobile", async ({ page }) => {
+      await page.goto("/login");
+      await waitForRouteIdle(page);
 
-    await expect(emailInput).toBeVisible({ timeout: 20_000 });
-    await expect(passwordInput).toBeVisible({ timeout: 10_000 });
-  });
+      const emailInput = page.locator("input[type='email'], input[name='email']").first();
+      const passwordInput = page.locator("input[type='password']").first();
 
-  test("@mobile elementos interativos têm tamanho mínimo de toque (44px)", async ({ page }) => {
-    await page.goto("/login");
-    await waitForRouteIdle(page);
+      await expect(emailInput).toBeVisible({ timeout: 20_000 });
+      await expect(passwordInput).toBeVisible({ timeout: 10_000 });
+    });
 
-    const submitBtn = page.locator("button[type='submit'], [data-testid='login-submit']").first();
-    const hasButton = await submitBtn.count() > 0;
+    test("@mobile elementos interativos têm tamanho mínimo de toque (44px)", async ({ page }) => {
+      await page.goto("/login");
+      await waitForRouteIdle(page);
 
-    if (hasButton) {
-      const box = await submitBtn.boundingBox();
-      if (box) {
-        // WCAG 2.5.5 recomenda 44x44px para alvo de toque
-        expect(box.height).toBeGreaterThanOrEqual(36); // Threshold mínimo real
+      const submitBtn = page.locator("button[type='submit'], [data-testid='login-submit']").first();
+      const hasButton = await submitBtn.count() > 0;
+
+      if (hasButton) {
+        const box = await submitBtn.boundingBox();
+        if (box) {
+          // WCAG 2.5.5 recomenda 44x44px para alvo de toque
+          expect(box.height).toBeGreaterThanOrEqual(36); // Threshold mínimo real
+        }
       }
-    }
+    });
   });
 });

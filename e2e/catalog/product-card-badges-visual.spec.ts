@@ -6,8 +6,8 @@
  *  - badges nunca sobrepõem as badges de categoria
  *  - tooltip de Hot Item / Best-seller aparece com a descrição correta
  *
- * Baselines são auto-geradas pelo workflow `visual-tests.yml`
- * (passo `--update-snapshots`).
+ * Roda no workflow `visual-tests.yml` (projeto chromium-authed). Baselines NÃO são
+ * auto-geradas em CI (E36/E43: updateSnapshots='none'): precisam ser commitadas.
  */
 import { test, expect, requireAuth } from '../fixtures/test-base';
 import { gotoAndSettle } from '../helpers/nav';

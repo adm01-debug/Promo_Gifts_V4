@@ -18,6 +18,7 @@
  *      contendo texto de "Desfazer".
  */
 import { test, expect } from "../fixtures/test-base";
+import { dismissOnboardingTour } from "../helpers/auth";
 import { installMockAuth, isMockAuthEnabled } from "../helpers/mock-auth";
 import { gotoAndSettle } from "../helpers/nav";
 
@@ -75,6 +76,9 @@ test.describe("Toast Desfazer — acessibilidade + teclado", () => {
     // Qualquer rota autenticada serve; a home carrega os providers e o
     // `<Toaster />`. Não precisamos de dados de orçamento.
     await gotoAndSettle(page, "/orcamentos");
+    // O tour de onboarding (overlay full-screen) intercepta cliques e prende o
+    // foco; sem dispensá-lo, Tab/clique nunca chegam ao toast.
+    await dismissOnboardingTour(page);
   });
 
   test("A. aria-label começa com 'Desfazer ação' e cita segundos restantes/totais", async ({
@@ -100,7 +104,7 @@ test.describe("Toast Desfazer — acessibilidade + teclado", () => {
     await page.locator("body").click({ position: { x: 5, y: 5 } });
 
     let focused = false;
-    for (let i = 0; i < 25; i++) {
+    for (let i = 0; i < 150; i++) {
       await page.keyboard.press("Tab");
       const isFocused = await page.locator(UNDO_BTN).evaluate(
         (el) => el === document.activeElement,

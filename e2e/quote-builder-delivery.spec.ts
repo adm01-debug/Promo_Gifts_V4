@@ -25,9 +25,19 @@ test.describe('QuoteBuilderPage - Delivery Field E2E', () => {
     await expect(tooltipContent).toBeVisible();
     await expect(tooltipContent).toContainText('Antes de assumir o compromisso com seu Cliente');
 
-    // Move mouse to another element — Radix keeps the tooltip open while
-    // pointer is over trigger OR content; hovering a sibling reliably closes it.
+    // Move mouse to another element. Radix keeps the tooltip open while the pointer
+    // is over the trigger OR content, and — because the content is hoverable — also
+    // while it is inside the "grace area" polygon drawn from the point where the
+    // pointer left the trigger. Playwright's `hover()` teleports the pointer in a
+    // single event, so it lands exactly on that exit point (inside the polygon) and
+    // no further pointermove ever arrives to close the tooltip (CI: the content stayed
+    // `data-state="delayed-open"` for the whole 15s expect). A real user generates a
+    // stream of pointermoves, so emulate that: hover the sibling label, then keep
+    // moving the pointer, in steps, to the opposite corner from the tooltip (which
+    // opens above the trigger).
     await page.getByTestId('delivery-label').hover();
+    const viewport = page.viewportSize() ?? { width: 1280, height: 720 };
+    await page.mouse.move(5, viewport.height - 5, { steps: 8 });
 
     // Tooltip should disappear
     await expect(tooltipContent).not.toBeVisible();
