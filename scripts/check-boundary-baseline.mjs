@@ -79,7 +79,11 @@ const DYNAMIC_RE = new RegExp(
     `${GLOB_HEAD}\\s*\\(\\s*[^'"\\[\\s)]`,
     `${MOCK_HEAD}\\s*\\(\\s*[^'"\\s)]`,
     `${SW_HEAD}\\s*\\(\\s*[^'"\\s)]`,
-    `${WORKER_HEAD}\\s*(?:new\\s+URL\\s*\\(\\s*)?[^'"\\s)]`,
+    // `new Worker(v)` flaga; `new Worker(new URL('lit', import.meta.url))` é
+    // LITERAL (o braço de SPEC_RE resolve) — sem o lookahead o 'n' de `new`
+    // casaria `[^'"\\s)]` quando o grupo opcional retrocede (falso dinâmico).
+    `${WORKER_HEAD}\\s*new\\s+URL\\s*\\(\\s*[^'"\\s)]`,
+    `${WORKER_HEAD}\\s*(?!new\\s+URL\\b)[^'"\\s)]`,
   ].join('|'),
   'g',
 );
@@ -138,7 +142,23 @@ function lexSource(src) {
   // `/re/ /x` — o `/` que fecha uma regex já é operando completo: o `/`
   // seguinte é divisão, não outra regex.
   let afterRegex = false;
+  // Pilha de '(': keyword de controle abre paren de CONTROLE — `if (x)` /
+  // `for (x)` / `while (x)` / `switch (x)` / `catch (e)` / `with (x)`. O `)`
+  // que fecha um paren de controle encerra um STATEMENT — o que vem depois
+  // está em posição de statement: `/re/` é regex literal e `!` é prefixo,
+  // nunca divisão nem postfix TS (`f()!`/`(a)!` continuam sendo postfix).
+  const CONTROL_WORDS = new Set(['if', 'for', 'while', 'switch', 'catch', 'with']);
+  const parenStack = [];
+  let parenWasControl = false;
+  // Token que TERMINA em lastSig (vazio quando lastSig não é char de
+  // palavra) + o char significativo que o precedeu ('.' = propriedade).
+  let wordAtSig = '', wordPreAtSig = null;
   const sig = (c) => {
+    if (c === '(') {
+      parenStack.push(wordAtSig !== '' && wordPreAtSig !== '.' && CONTROL_WORDS.has(wordAtSig));
+    } else if (c === ')') {
+      parenWasControl = parenStack.pop() ?? false;
+    }
     if (/[$\w]/.test(c)) {
       if (word === '') wordPre = lastSig;
       word += c;
@@ -149,6 +169,8 @@ function lexSource(src) {
       prevSig = lastSig;
       prevWasKeyword = lastWasKeyword;
       lastSig = c;
+      wordAtSig = word;
+      wordPreAtSig = wordPre;
       lastWasKeyword = word !== '' && wordPre !== '.' && REGEX_CTX_WORDS.has(word);
       afterRegex = false;
     }
@@ -162,8 +184,11 @@ function lexSource(src) {
     if ((lastSig === '+' || lastSig === '-') && prevSig === lastSig) return false;
     if (
       lastSig === '!' && prevSig !== null && /[$\w)\]'`}]/.test(prevSig) &&
-      !prevWasKeyword
+      !prevWasKeyword && !(prevSig === ')' && parenWasControl)
     ) return false;
+    // `)` de paren de controle encerra statement — `/` abre regex literal
+    // (`if (x) /re/.test(s)`); `)` de expressão/chamada é operando → divisão.
+    if (lastSig === ')' && parenWasControl) return true;
     if (REGEX_CTX_CHARS.has(lastSig)) return true;
     return lastWasKeyword;
   };
