@@ -57,7 +57,9 @@ export const MIGRATION_PATH_PREFIX = `${MIGRATIONS_RELATIVE_DIR}/`;
 export const REGISTERED_VERSION_RE = /`(\d{8,19}(?:_[A-Za-z0-9]+)*)`/g;
 
 export function extractMigrationVersion(filename) {
-  const match = /^(\d{6,19})_/.exec(filename);
+  // B2 fix: alinhar com REGISTERED_VERSION_RE ({8,19}); versões 6-7 dígitos
+  // nunca aparecem no log (todos os migrations Supabase usam 14 dígitos).
+  const match = /^(\d{8,19})_/.exec(filename);
   return match ? match[1] : null;
 }
 

@@ -269,13 +269,15 @@ function describePolicy(p) {
   return `${policyKey(p)} [${p.cmd}|${p.permissive}|roles=${p.roles}]`;
 }
 
-// E043: policy nova com roles={public}/anon + PERMISSIVE + USING(true) é sempre recusada.
-// As policies existentes no baseline (legado) passam; só novas são bloqueadas.
+// E043: policy nova com roles={public}/anon + PERMISSIVE + USING(true) ou WITH_CHECK(true)
+// é sempre recusada. As policies existentes no baseline (legado) passam; só novas são bloqueadas.
+// W1 fix: INSERT policies têm qual='' e with_check='(true)' — checar ambos.
 function isPublicOpenPolicy(p) {
   const r = p.roles.toLowerCase();
   const hasPublicOrAnon = r === '{public}' || r === '{}' || r.includes('anon');
   const isPermissive = p.permissive.toUpperCase() === 'PERMISSIVE';
-  const hasOpenQual = p.qual === '(true)' || p.qual === 'true';
+  const hasOpenQual = p.qual === '(true)' || p.qual === 'true'
+    || p.with_check === '(true)' || p.with_check === 'true';
   return hasPublicOrAnon && isPermissive && hasOpenQual;
 }
 
@@ -301,9 +303,19 @@ async function main() {
     const raw = JSON.parse(readFileSync(p, 'utf8'));
     const rows = Array.isArray(raw) ? raw : raw.policies || [];
     actual = rows.map(normalizeRow);
-    // Sem ledger nesse modo de teste: trata as migrations do repo como
-    // pendentes (mesma tolerância do caminho live).
-    plannedKeys = plannedPolicyKeys(new Set());
+    // B3 fix: passar new Set() causava maxApplied=null, tolerando TODAS as
+    // migrations como pendentes — falso negativo. Em modo --from-file, não há
+    // ledger real; usamos todas as versões de migration do repo como "aplicadas"
+    // (maxApplied = versão mais recente). Assim nenhuma migration é "pendente"
+    // neste modo — tolerância desativada, comportamento estrito.
+    const allVersions = new Set();
+    try {
+      for (const f of readdirSync(MIGRATIONS_DIR)) {
+        const m = /^(\d{8,19})_/.exec(f);
+        if (m) allVersions.add(m[1]);
+      }
+    } catch (_) { /* pasta ausente — allVersions vazio, equivale ao comportamento anterior */ }
+    plannedKeys = plannedPolicyKeys(allVersions);
   } else {
     const live = await fetchLive();
     if (live.kind !== 'live') {

@@ -53,17 +53,25 @@ function validateSyncLogIntegrity(content) {
   if (!content || content.trim().length === 0) {
     return ['arquivo MIGRATIONS_SYNC_LOG.md está vazio'];
   }
-  // Check for at least one version line (starts with ##)
-  const versionLines = content.split('\n').filter((l) => l.startsWith('## ') && /\d{14}/.test(l));
-  if (versionLines.length === 0) {
-    return ['MIGRATIONS_SYNC_LOG.md não contém nenhuma entrada de recibo (## <versão>)'];
+  // Conta versões em linhas de tabela (1ª célula), não em cabeçalhos de seção.
+  // Cabeçalhos como "## Recibos — ... (versão > `20260623111612`)" têm 14 dígitos
+  // mas não são recibos individuais.
+  const receiptLines = content.split('\n').filter((l) => {
+    if (!l.trimStart().startsWith('|')) return false;
+    const firstCell = l.split('|')[1] ?? '';
+    return /`\d{14}/.test(firstCell);
+  });
+  if (receiptLines.length === 0) {
+    return ['MIGRATIONS_SYNC_LOG.md não contém nenhuma linha de recibo em tabela'];
   }
   return [];
 }
 
 function hasReceiptForVersion(logContent, version) {
-  // Look for version string in the log
-  return logContent.includes(version);
+  // Usa word-boundary numérico para evitar falso positivo por substring.
+  // Ex: versão "2026091615572" (13 dígitos) não faz match em "20260916155725".
+  const re = new RegExp(`(?<!\\d)${version}(?!\\d)`);
+  return re.test(logContent);
 }
 
 async function fetchLiveVersions() {
