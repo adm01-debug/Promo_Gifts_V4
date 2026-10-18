@@ -9,10 +9,11 @@
  */
 import { test, expect } from "@playwright/test";
 
+import { gotoAndSettle, waitForRouteIdle } from "../helpers/nav";
+
 test.describe("Error Boundaries e tratamento de erros", () => {
   test("rota inexistente exibe página 404 amigável (não stack trace)", async ({ page }) => {
-    await page.goto("/rota-que-nao-existe-12345");
-    await page.waitForLoadState("networkidle");
+    await gotoAndSettle(page, "/rota-que-nao-existe-12345");
 
     const body = page.locator("body");
     // Não deve exibir stack trace bruto
@@ -30,8 +31,7 @@ test.describe("Error Boundaries e tratamento de erros", () => {
   });
 
   test("URL com parâmetro de produto inválido não crashar em 500", async ({ page }) => {
-    await page.goto("/produtos/produto-id-invalido-xyz-nao-existe");
-    await page.waitForLoadState("networkidle");
+    await gotoAndSettle(page, "/produtos/produto-id-invalido-xyz-nao-existe");
 
     const body = page.locator("body");
     await expect(body).not.toContainText("500");
@@ -40,8 +40,7 @@ test.describe("Error Boundaries e tratamento de erros", () => {
   });
 
   test("URL com ID de orçamento inválido não expõe stack trace", async ({ page }) => {
-    await page.goto("/orcamentos/00000000-0000-0000-0000-000000000000");
-    await page.waitForLoadState("networkidle");
+    await gotoAndSettle(page, "/orcamentos/00000000-0000-0000-0000-000000000000");
 
     const body = page.locator("body");
     await expect(body).not.toContainText("at Object.<anonymous>", { timeout: 5_000 });
@@ -49,8 +48,7 @@ test.describe("Error Boundaries e tratamento de erros", () => {
   });
 
   test("query params com XSS não são renderizados sem escape", async ({ page }) => {
-    await page.goto("/produtos?q=<script>alert(1)</script>");
-    await page.waitForLoadState("networkidle");
+    await gotoAndSettle(page, "/produtos?q=<script>alert(1)</script>");
 
     // O script não deve ter executado — verificamos pelo título da página
     const title = await page.title();
@@ -63,8 +61,7 @@ test.describe("Error Boundaries e tratamento de erros", () => {
   });
 
   test("rota de admin inexistente não expõe informações sensíveis", async ({ page }) => {
-    await page.goto("/admin/rota-inexistente-segura");
-    await page.waitForLoadState("networkidle");
+    await gotoAndSettle(page, "/admin/rota-inexistente-segura");
 
     const body = page.locator("body");
     await expect(body).not.toContainText("SUPABASE_SERVICE_ROLE", { timeout: 5_000 });
@@ -73,8 +70,7 @@ test.describe("Error Boundaries e tratamento de erros", () => {
   });
 
   test("aplicação mantém header sticky em página de erro", async ({ page }) => {
-    await page.goto("/pagina-que-nao-existe");
-    await page.waitForLoadState("networkidle");
+    await gotoAndSettle(page, "/pagina-que-nao-existe");
 
     const header = page.locator("header, [data-testid='app-header']").first();
     const isVisible = await header.isVisible().catch(() => false);
@@ -86,14 +82,12 @@ test.describe("Error Boundaries e tratamento de erros", () => {
   });
 
   test("navegação de volta funciona após 404", async ({ page }) => {
-    await page.goto("/produtos");
-    await page.waitForLoadState("networkidle");
+    await gotoAndSettle(page, "/produtos");
 
-    await page.goto("/rota-inexistente-xyz");
-    await page.waitForLoadState("networkidle");
+    await gotoAndSettle(page, "/rota-inexistente-xyz");
 
     await page.goBack();
-    await page.waitForLoadState("networkidle");
+    await waitForRouteIdle(page);
 
     // Deve voltar para /produtos ou estar em página válida
     await expect(page.locator("body")).not.toContainText("500");
