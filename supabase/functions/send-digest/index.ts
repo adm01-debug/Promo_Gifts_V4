@@ -95,6 +95,7 @@ Deno.serve(async (req) => {
   } catch (error) {
     return safeErrorResponse(error, {
       corsHeaders,
+      req,
       publicMessage: 'digest_failed',
       logLabel: 'Digest error:',
     });

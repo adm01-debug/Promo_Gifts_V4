@@ -289,8 +289,11 @@ Deno.serve(async (req) => {
       }, 404);
     }
 
+    // O gateway anexa o IP real como ÚLTIMO elemento do x-forwarded-for —
+    // o primeiro é forjável pelo cliente e permitiria burlar allowed_ips
+    // (mesmo fix SEC_0001 das outras edges).
     const sourceIp =
-      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || null;
+      req.headers.get("x-forwarded-for")?.split(",").pop()?.trim() || null;
     if (
       endpoint.allowed_ips?.length &&
       (!sourceIp || !endpoint.allowed_ips.includes(sourceIp))

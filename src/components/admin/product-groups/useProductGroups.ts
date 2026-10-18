@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { fetchAllPages } from '@/lib/db/fetch-all-pages';
 import { toast } from 'sonner';
 
 export interface ProductGroup {
@@ -47,8 +48,13 @@ export function useProductGroups() {
   const { data: groupMembers } = useQuery({
     queryKey: ['product-group-members'],
     queryFn: async () => {
-      const { data, error } = await supabase.from('product_group_members').select('*');
-      if (error) throw error;
+      const data = await fetchAllPages((from, to) =>
+        supabase
+          .from('product_group_members')
+          .select('*')
+          .order('id', { ascending: true })
+          .range(from, to),
+      );
       return data as ProductGroupMember[];
     },
   });

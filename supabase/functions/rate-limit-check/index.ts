@@ -129,6 +129,7 @@ Deno.serve(async (req) => {
     // Fail-open: em erro interno liberamos a requisição, sem vazar o motivo.
     return safeErrorResponse(error, {
       corsHeaders,
+      req,
       status: 200,
       publicMessage: 'rate_limit_unavailable',
       logLabel: 'Rate limit check error:',

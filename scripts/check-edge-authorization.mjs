@@ -41,7 +41,12 @@ const entries = new Map();
     const body = m[2];
     const cat = body.match(/category:\s*"([a-z]+)"/)?.[1];
     const enforcedBy = body.match(/enforcedBy:\s*"([a-z-]+)"/)?.[1] ?? "shared-authorize";
-    if (cat) entries.set(m[1], { category: cat, enforcedBy });
+    // Pasta declarada como não-função (sem handler HTTP) — ex.: `tests/`:
+    // as duas flags de bypass-test juntas sinalizam que não há index.ts a validar.
+    const declaredNonFunction =
+      /skipAnonBypassTest:\s*true/.test(body) && /skipAuthBypassTest:\s*true/.test(body);
+    const roleCheckInRpc = /roleCheckInRpc:\s*true/.test(body);
+    if (cat) entries.set(m[1], { category: cat, enforcedBy, declaredNonFunction, roleCheckInRpc });
   }
 }
 
@@ -108,11 +113,20 @@ for (const fn of fns) {
   try {
     src = readFileSync(path, "utf8");
   } catch {
+    if (entry.declaredNonFunction) continue;
     errors.push(`[enforcement] ${fn}: index.ts ausente.`);
     continue;
   }
+  // Comentários não executam: `// authorize(req)` ou `/* requireRole: "dev" */`
+  // evadiam o gate sem nenhuma primitiva real. Strip antes das regexes.
+  src = src
+    .replace(/\/\*[\s\S]*?\*\//g, " ")
+    .replace(/(^|[^:'"`])\/\/[^\n]*/g, "$1");
 
   if (entry.enforcedBy === "custom") {
+    // Declaração no manifest: papel verificado dentro da RPC (has_role no SQL),
+    // que o gate não enxerga — exige rationale explícito no manifest.
+    if (entry.roleCheckInRpc) continue;
     // E030: custom entries must have at least one recognized auth primitive
     const hasAnyPrimitive = CUSTOM_AUTH_PRIMITIVES.some((re) => re.test(src));
     if (!hasAnyPrimitive) {

@@ -5,6 +5,7 @@ import { sanitizeError } from '@/lib/security/sanitize-error';
 import { authService } from '@/services/authService';
 
 import { logger } from '@/lib/logger';
+import { assertPasswordResetTransition } from '@/lib/password-reset-status-config';
 export interface PasswordResetRequest {
   id: string;
   email: string;
@@ -52,6 +53,9 @@ export function usePasswordResetRequests() {
       // Buscar a solicitação
       const request = requests.find((r) => r.id === requestId);
       if (!request) throw new Error('Solicitação não encontrada');
+      // Máquina do reset (src/lib/password-reset-status-config.ts): só
+      // pending -> approved/rejected; decisão é terminal.
+      assertPasswordResetTransition(request.status, 'approved');
 
       // Atualizar status
       const supabase = await getSupabaseClient();
@@ -112,6 +116,10 @@ export function usePasswordResetRequests() {
 
   const rejectRequest = async (requestId: string, notes?: string) => {
     try {
+      const request = requests.find((r) => r.id === requestId);
+      if (!request) throw new Error('Solicitação não encontrada');
+      assertPasswordResetTransition(request.status, 'rejected');
+
       const supabase = await getSupabaseClient();
       const {
         data: { user },

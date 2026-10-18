@@ -138,6 +138,6 @@ Escolha o que melhor combina com o tema. Tag deve ser MARKETING, ex.: ONBOARDING
       status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (err) {
-    return safeErrorResponse(err, { corsHeaders, publicMessage: 'internal_error', logLabel: 'kit-identity-suggest error:' });
+    return safeErrorResponse(err, { corsHeaders, req, publicMessage: 'internal_error', logLabel: 'kit-identity-suggest error:' });
   }
 });

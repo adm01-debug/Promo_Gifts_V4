@@ -322,6 +322,7 @@ jobs:
   # ============================================================
   secrets-check:
     name: Gate E23 - Verifica secrets E2E
+    timeout-minutes: 5
     uses: ./.github/workflows/_secrets-check.yml
     with:
       fail_if_missing: true  # E007: gate falha explicitamente se E2E_USER_* não configurados
@@ -542,6 +543,7 @@ jobs:
   # E040: chama db-schema-drift-check.yml quando migrations/baseline mudaram
   schema-drift-gate:
     name: Gate E40 - Schema Drift Check
+    timeout-minutes: 10
     needs: [check-schema-paths]
     if: >-
       needs.check-schema-paths.outputs.changed == 'true' &&

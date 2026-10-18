@@ -66,7 +66,10 @@ type ProductPayload =
 // `on_sale`, `synced_at` — none of which exist as column names in the DB.
 // All upserts were silently failing with column-not-found errors. Fixed 2026-06-18.
 type NormalizedProduct = {
-  external_id: string | null;
+  // external_id NÃO é coluna de `products` no schema canônico (baseline
+  // 2026-10-15) — nunca chegou a existir em produção e foi removida dos
+  // tipos gerados. Enviar a key no upsert quebrava TODA a linha com
+  // PGRST204. A identidade de dedupe real é `sku` (products_sku_key).
   sku: string;
   name: string;
   description: string | null;
@@ -80,7 +83,6 @@ type NormalizedProduct = {
   sync_status: string;         // DB column: sync_status, always 'synced' on webhook write
   is_kit: boolean;
   is_active: boolean;
-  active: boolean;             // mirrors is_active (both booleans exist in DB)
   is_featured: boolean;        // DB column: is_featured (was: featured)
   is_new: boolean;             // DB column: is_new (was: new_arrival)
   is_on_sale: boolean;         // DB column: is_on_sale (was: on_sale)
@@ -300,9 +302,10 @@ Deno.serve(async (req) => {
     const externalIds = data.external_ids as string[] | undefined;
     const productsReceived = products?.length || (singleProduct ? 1 : 0);
 
-    // product_sync_logs lives in the `archive` schema, not `public`.
-    const archiveClient = supabase.schema('archive');
-    const { data: syncLog, error: logError } = await archiveClient
+    // product_sync_logs vive no schema `public` (baseline canônico) —
+    // `.schema('archive')` apontava para um schema inexistente e o log
+    // falhava silenciosamente em toda execução.
+    const { data: syncLog, error: logError } = await supabase
       .from('product_sync_logs')
       .insert({
         status: 'processing',
@@ -354,15 +357,19 @@ Deno.serve(async (req) => {
         // Soft-delete: set is_active=false + is_deleted=true + deleted_at timestamp.
         // Hard delete is irreversible and has no audit trail; misconfigured n8n nodes
         // could permanently wipe catalog entries. Soft-delete allows recovery.
+        // external_ids não resolve para nenhuma coluna do schema canônico
+        // (products.external_id não existe). Casar em `sku` arriscaria
+        // desativar produtos errados se os ids externos divergirem do sku,
+        // então o lookup é exato por sku — se nada bater, count=0 fica
+        // honesto em vez de deletar por identidade errada.
         const { error: deleteError, count } = await supabase
           .from('products')
           .update({
             is_active: false,
-            active: false,
             is_deleted: true,
             deleted_at: new Date().toISOString(),
           })
-          .in('external_id', externalIds);
+          .in('sku', externalIds);
         if (deleteError) throw deleteError;
         outcome = { ...outcome, processed: externalIds.length, db_roundtrips: 1 };
         console.log(`[product-webhook] Soft-deleted ${count ?? 0} products via external_ids`);
@@ -374,7 +381,7 @@ Deno.serve(async (req) => {
     }
 
     if (syncLogId) {
-      const { error: logUpdateError } = await archiveClient
+      const { error: logUpdateError } = await supabase
         .from('product_sync_logs')
         .update({
           status: outcome.failed > 0 ? 'partial' : 'completed',
@@ -444,44 +451,25 @@ async function upsertProducts(
     const chunkStart = Date.now();
     let chunkRoundtrips = 0;
     try {
-      const externalIds = Array.from(
-        new Set(chunk.map((item) => item.external_id).filter(Boolean)),
-      ) as string[];
       const skus = Array.from(new Set(chunk.map((item) => item.sku).filter(Boolean)));
 
-      let existingRows: Array<{ id: string; external_id: string | null; sku: string | null }> = [];
-      if (externalIds.length > 0 || skus.length > 0) {
-        // SECURITY (CWE-943): never interpolate caller-controlled sku/external_id into the
+      let existingRows: Array<{ id: string; sku: string | null }> = [];
+      if (skus.length > 0) {
+        // SECURITY (CWE-943): never interpolate caller-controlled sku into the
         // PostgREST `.or()` filter DSL — a value containing ',', ')' or '.' breaks out of
         // the in.(...) list and injects arbitrary filter expressions. Use parameterized
         // `.in()` probes (supabase-js URL-encodes the values) and merge results by id.
-        const byId = new Map<string, { id: string; external_id: string | null; sku: string | null }>();
-        if (externalIds.length > 0) {
-          const { data, error } = await supabase
-            .from('products')
-            .select('id,external_id,sku')
-            .in('external_id', externalIds);
-          chunkRoundtrips += 1;
-          if (error) throw error;
-          for (const row of data ?? []) byId.set(row.id, row);
-        }
-        if (skus.length > 0) {
-          const { data, error } = await supabase
-            .from('products')
-            .select('id,external_id,sku')
-            .in('sku', skus);
-          chunkRoundtrips += 1;
-          if (error) throw error;
-          for (const row of data ?? []) byId.set(row.id, row);
-        }
+        const byId = new Map<string, { id: string; sku: string | null }>();
+        const { data, error } = await supabase
+          .from('products')
+          .select('id,sku')
+          .in('sku', skus);
+        chunkRoundtrips += 1;
+        if (error) throw error;
+        for (const row of data ?? []) byId.set(row.id, row);
         existingRows = Array.from(byId.values());
       }
 
-      const existingByExternalId = new Map(
-        existingRows
-          .filter((row) => row.external_id)
-          .map((row) => [row.external_id as string, row]),
-      );
       const existingBySku = new Map(
         existingRows.filter((row) => row.sku).map((row) => [row.sku as string, row]),
       );
@@ -489,43 +477,23 @@ async function upsertProducts(
       let chunkCreated = 0;
       let chunkUpdated = 0;
 
-      const withExternalId: NormalizedProduct[] = [];
-      const withoutExternalId: NormalizedProduct[] = [];
-
       for (const item of chunk) {
         // 'variations' is NOT a products column (variant data lives in product_variants).
         // Leaving it in the upsert payload 400s the entire chunk (PGRST204), so strip it.
         delete (item as Record<string, unknown>).variations;
-        const existing = item.external_id
-          ? (existingByExternalId.get(item.external_id) ?? existingBySku.get(item.sku))
-          : existingBySku.get(item.sku);
+        const existing = existingBySku.get(item.sku);
 
         if (existing) {
           chunkUpdated += 1;
-          if (!item.external_id && existing.external_id) item.external_id = existing.external_id;
         } else {
           chunkCreated += 1;
         }
-
-        if (item.external_id) {
-          withExternalId.push(item);
-        } else {
-          withoutExternalId.push(item);
-        }
       }
 
-      if (withExternalId.length > 0) {
-        const { error: upsertByExternalError } = await supabase
-          .from('products')
-          .upsert(withExternalId as never, { onConflict: 'external_id', ignoreDuplicates: false });
-        chunkRoundtrips += 1;
-        if (upsertByExternalError) throw upsertByExternalError;
-      }
-
-      if (withoutExternalId.length > 0) {
+      if (chunk.length > 0) {
         const { error: upsertBySkuError } = await supabase
           .from('products')
-          .upsert(withoutExternalId as never, { onConflict: 'sku', ignoreDuplicates: false });
+          .upsert(chunk as never, { onConflict: 'sku', ignoreDuplicates: false });
         chunkRoundtrips += 1;
         if (upsertBySkuError) throw upsertBySkuError;
       }
@@ -601,7 +569,6 @@ function normalizeProduct(product: ProductPayload): NormalizedProduct {
   const videos = product.video_url ? [{ url: product.video_url }] : [];
 
   return {
-    external_id: product.external_id || null,
     sku: product.sku,
     name: product.name,
     description: product.description || null,
@@ -615,7 +582,6 @@ function normalizeProduct(product: ProductPayload): NormalizedProduct {
     sync_status: 'synced',
     is_kit: product.is_kit || false,
     is_active: isActive,
-    active: isActive,
     is_featured: product.featured || false,
     is_new: product.new_arrival || false,
     is_on_sale: product.on_sale || false,
