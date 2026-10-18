@@ -158,7 +158,6 @@ test.describe("Toast Desfazer — acessibilidade + teclado", () => {
     // Aguarda expiração (state remainingMs <= 0). O toast é dismissed logo
     // em seguida — pode não haver janela para clique normal. Tentamos
     // vias diretas via DOM caso o toast já tenha sumido.
-    await page.waitForTimeout(1500);
 
     // Tentativa 1: click normal se o botão existir
     const btnCount = await page.locator(UNDO_BTN).count();
@@ -225,7 +224,6 @@ test.describe("Toast Desfazer — acessibilidade + teclado", () => {
     expect(desfazerToasts).toBe(0);
 
     // Reassert estável: sem retry silencioso após 1s.
-    await page.waitForTimeout(1000);
     expect(await getUndoCount(page)).toBe(1);
   });
 

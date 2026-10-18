@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
   schedule:
     # Nightly 04:11 UTC — varredura adicional
-    - cron: '11 4 * * *'
+    - cron: '11 4 * * *'  # diário 04:11 UTC (E89)
 
 permissions:
   contents: read

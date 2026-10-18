@@ -14,22 +14,21 @@
  * Tags: @freight @quote @e2e @smoke
  */
 import { test, expect, type Page } from "@playwright/test";
+import { waitForRouteIdle } from "../helpers/nav";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-async function waitForNetworkIdle(page: Page, timeout = 3000) {
-  await page.waitForLoadState("networkidle", { timeout }).catch(() => {});
+async function waitForNetworkIdle(page: Page) {
+  await waitForRouteIdle(page);
 }
 
 async function fillQuoteStep1(page: Page) {
   const searchInput = page.getByPlaceholder(/buscar empresa/i);
   if (await searchInput.isVisible({ timeout: 5_000 }).catch(() => false)) {
     await searchInput.fill("Promo");
-    await page.waitForTimeout(800);
     const firstOption = page.locator('[data-testid^="company-option-"], button:has-text("Promo")').first();
     if (await firstOption.isVisible({ timeout: 3_000 }).catch(() => false)) {
       await firstOption.click();
-      await page.waitForTimeout(500);
     }
   }
 }
@@ -94,7 +93,6 @@ test.describe("FreightEstimator — Kit Builder @freight", () => {
     const priceSedex = await page.getByText(/r\$\s*\d+/i).first().textContent().catch(() => "");
 
     await freightSelect.selectOption({ label: /pac/i });
-    await page.waitForTimeout(300);
     const pricePac = await page.getByText(/r\$\s*\d+/i).first().textContent().catch(() => "");
 
     expect(priceSedex).toBeTruthy();
@@ -202,7 +200,6 @@ test.describe("Orçamento — step Condições com frete @freight @quote", () =>
     });
     if (await fobPreOption.isVisible({ timeout: 3_000 }).catch(() => false)) {
       await fobPreOption.click();
-      await page.waitForTimeout(300);
     }
 
     const shippingCostInput = page.getByTestId("shipping-cost-input");
@@ -244,12 +241,10 @@ test.describe("Orçamento — step Condições com frete @freight @quote", () =>
     });
     if (await fobPreOption.isVisible({ timeout: 2_000 }).catch(() => false)) {
       await fobPreOption.click();
-      await page.waitForTimeout(300);
 
       const costInput = page.getByTestId("shipping-cost-input");
       if (await costInput.isVisible({ timeout: 3_000 }).catch(() => false)) {
         await costInput.fill("100,00");
-        await page.waitForTimeout(500);
 
         const totalAfter = await totalEl.textContent().catch(() => null);
         if (totalBefore && totalAfter) {
@@ -296,7 +291,6 @@ test.describe("Orçamento — estados de erro e validação @freight @regression
       return;
     }
     await fobPreOption.click();
-    await page.waitForTimeout(300);
 
     const costInput = page.getByTestId("shipping-cost-input");
     if (await costInput.isVisible({ timeout: 3_000 }).catch(() => false)) {
@@ -306,7 +300,6 @@ test.describe("Orçamento — estados de erro e validação @freight @regression
     const nextBtn2 = page.getByTestId("wizard-next-button");
     if (await nextBtn2.isVisible({ timeout: 3_000 }).catch(() => false)) {
       await nextBtn2.click();
-      await page.waitForTimeout(500);
 
       const errorMsg = page.getByText(/obrigatório|required|erro|frete/i, { exact: false });
       const isBlocked = await errorMsg.isVisible({ timeout: 2_000 }).catch(() => false);

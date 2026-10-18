@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       repeat:
-        description: 'Repetições por spec (default 20; máximo 50 neste workflow)'
+        description: 'Repetições por spec (default 20; hard-cap 20 aplicado no script — E81)'
         required: false
         default: '20'
       max_avg_seconds:
@@ -70,6 +70,8 @@ jobs:
           SPEC: ${{ matrix.spec }}
         run: |
           set -eo pipefail
+          # E81: hard-cap de 20 repetições para evitar runs de 60+ min
+          REPEAT=$(( REPEAT > 20 ? 20 : REPEAT ))
           START=$(date +%s)
           npx playwright test "$SPEC" \
             --project=chromium-public \

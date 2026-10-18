@@ -23,7 +23,7 @@
  */
 import { test, expect, type Page } from "../fixtures/test-base";
 import { loginAs } from "../helpers/auth";
-import { gotoAndSettle } from "../helpers/nav";
+import { gotoAndSettle, waitForRouteIdle } from "../helpers/nav";
 
 const FREEZE_CSS = `
   *, *::before, *::after {
@@ -59,7 +59,7 @@ async function openFirstEditor(page: Page): Promise<boolean> {
       (document as unknown as { fonts: { ready: Promise<unknown> } }).fonts.ready,
     )
     .catch(() => {});
-  await page.waitForLoadState("networkidle").catch(() => {});
+  await waitForRouteIdle(page);
   return true;
 }
 
@@ -139,7 +139,7 @@ test.describe("@smoke Magazine Editor — alinhamento Salvo/PDF/Publicar × Troc
         "Título extremamente longo para simular idiomas verbosos e nomes reais compridos de revistas corporativas — teste de wrap";
     });
     // Deixa o layout reagir ao reflow.
-    await page.waitForTimeout(150);
+    await page.waitForFunction(() => document.readyState === 'complete');
 
     const trigger = page.getByTestId("magazine-template-swap-trigger");
     const publicar = rightColButton(page, "Publicar");

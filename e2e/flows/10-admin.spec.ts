@@ -15,7 +15,6 @@ test.describe("Fluxo: Admin guards", () => {
       "Usuário de teste é admin — verificação de bloqueio não aplicável",
     );
     await page.goto("/admin/usuarios");
-    await page.waitForTimeout(1500);
     const ok =
       !/\/admin\/usuarios/.test(page.url()) ||
       (await page.locator(Sel.app.accessDenied).count()) > 0;

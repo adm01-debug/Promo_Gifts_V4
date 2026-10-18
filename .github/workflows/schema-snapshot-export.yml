@@ -144,8 +144,8 @@ jobs:
           fi
           fname="${bases[0]##*/}"
           B="${fname%_baseline_schema.sql}"
-          DB_URL="postgresql://postgres:${SUPABASE_DB_PASSWORD}@db.${SUPABASE_PROJECT_REF}.supabase.co:5432/postgres"
-          psql "$DB_URL" -t -A -c \
+          DB_URL="postgresql://postgres@db.${SUPABASE_PROJECT_REF}.supabase.co:5432/postgres"
+          PGPASSWORD="${SUPABASE_DB_PASSWORD}" psql "$DB_URL" -t -A -c \
             "SELECT COALESCE(json_agg(t ORDER BY t.evtname),'[]'::json) FROM (SELECT evtname,evtevent,evtenabled,evtfoid::regproc::text AS evtfunc FROM pg_event_trigger) t;" \
             | tr -d '\n' > /tmp/event_triggers.json
           node -e "JSON.parse(require('fs').readFileSync('/tmp/event_triggers.json','utf8')); console.log('JSON válido');"
@@ -165,9 +165,9 @@ jobs:
           fi
           fname="${bases[0]##*/}"
           B="${fname%_baseline_schema.sql}"
-          DB_URL="postgresql://postgres:${SUPABASE_DB_PASSWORD}@db.${SUPABASE_PROJECT_REF}.supabase.co:5432/postgres"
+          DB_URL="postgresql://postgres@db.${SUPABASE_PROJECT_REF}.supabase.co:5432/postgres"
           # E037: cron.job (pg_cron) — falha silenciosa se extensão ausente
-          psql "$DB_URL" -t -A -c \
+          PGPASSWORD="${SUPABASE_DB_PASSWORD}" psql "$DB_URL" -t -A -c \
             "SELECT COALESCE(json_agg(t ORDER BY t.jobname),'[]'::json) FROM (SELECT jobid::text,jobname,schedule,command,nodename,active FROM cron.job) t;" \
             2>/tmp/cron_err.txt | tr -d '\n' > /tmp/cron_jobs.json || {
             if grep -q 'does not exist\|schema "cron"' /tmp/cron_err.txt 2>/dev/null; then

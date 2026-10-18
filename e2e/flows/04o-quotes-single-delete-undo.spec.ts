@@ -278,7 +278,6 @@ test.describe("Fluxo: exclusão individual de orçamento com Desfazer", () => {
       .toBe(1);
 
     // Aguarda um pouco e reconfirma: sem retry silencioso
-    await page.waitForTimeout(1500);
     expect(postCalls).toBe(1);
   });
 

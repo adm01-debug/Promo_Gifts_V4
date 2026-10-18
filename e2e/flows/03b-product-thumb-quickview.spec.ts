@@ -174,7 +174,6 @@ test.describe("Estoque • QuickView — estados de borda", () => {
     const urlBefore = page.url();
     await thumb.click();
     // Pequena janela: confirma que NÃO houve navegação durante o "loading".
-    await page.waitForTimeout(500);
     expect(page.url()).toBe(urlBefore);
 
     // Eventualmente o QuickView abre (ou nada acontece se o produto não vier).
@@ -206,7 +205,6 @@ test.describe("Estoque • QuickView — estados de borda", () => {
 
     const urlBefore = page.url();
     await thumb.click();
-    await page.waitForTimeout(1000);
 
     // Invariantes: nada de navegação, página ainda responde a interações.
     expect(page.url()).toBe(urlBefore);

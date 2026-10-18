@@ -12,14 +12,12 @@
  *
  * Tags: @freight @dashboard @stress @e2e
  */
-import { test, expect, type Page, type BrowserContext } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
+
+import { gotoAndSettle, waitForRouteIdle } from "../helpers/nav";
 
 const SKIP_CONDITION =
   !process.env.VITE_SUPABASE_URL || process.env.CI_SKIP_FREIGHT_E2E === "1";
-
-async function idle(page: Page, ms = 3000) {
-  await page.waitForLoadState("networkidle", { timeout: ms }).catch(() => {});
-}
 
 async function maybeFill(page: Page, selector: string, value: string) {
   const el = page.locator(selector).first();
@@ -60,8 +58,7 @@ test.describe("dashboard: carregamento de rotas críticas @smoke", () => {
         if (res.status() >= 500) errors.push(`HTTP ${res.status()} ${res.url()}`);
       });
 
-      await page.goto(path);
-      await idle(page);
+      await gotoAndSettle(page, path);
 
       const bodyText = await page.textContent("body").catch(() => "");
       expect(bodyText).not.toContain("Internal Server Error");
@@ -76,8 +73,7 @@ test.describe("wizard orçamento: validação de cada botão e transição @frei
   test.skip(SKIP_CONDITION, "Credenciais ausentes ou CI_SKIP_FREIGHT_E2E=1");
 
   test("botão Próximo desabilitado quando campos obrigatórios ausentes", async ({ page }) => {
-    await page.goto("/orcamentos/novo");
-    await idle(page);
+    await gotoAndSettle(page, "/orcamentos/novo");
 
     const nextBtn = page
       .getByTestId("wizard-next-button")
@@ -89,7 +85,6 @@ test.describe("wizard orçamento: validação de cada botão e transição @frei
     }
 
     await nextBtn.click();
-    await page.waitForTimeout(500);
 
     const isDisabled = await nextBtn.isDisabled().catch(() => false);
     const hasError = await page
@@ -101,8 +96,7 @@ test.describe("wizard orçamento: validação de cada botão e transição @frei
   });
 
   test("step indicador mostra progresso ao avançar steps", async ({ page }) => {
-    await page.goto("/orcamentos/novo");
-    await idle(page);
+    await gotoAndSettle(page, "/orcamentos/novo");
 
     const stepper = page
       .getByTestId("quote-stepper")
@@ -113,8 +107,7 @@ test.describe("wizard orçamento: validação de cada botão e transição @frei
   });
 
   test("botão Cancelar/Voltar retorna para lista de orçamentos", async ({ page }) => {
-    await page.goto("/orcamentos/novo");
-    await idle(page);
+    await gotoAndSettle(page, "/orcamentos/novo");
 
     const cancelBtn = page
       .getByTestId("wizard-cancel-button")
@@ -126,7 +119,7 @@ test.describe("wizard orçamento: validação de cada botão e transição @frei
     }
 
     await cancelBtn.click();
-    await idle(page);
+    await waitForRouteIdle(page);
 
     const isOnList = page.url().includes("/orcamentos") && !page.url().includes("/novo");
     expect(isOnList || true).toBe(true);
@@ -139,8 +132,7 @@ test.describe("campos frete: interação e validação em tempo real @freight", 
   test.skip(SKIP_CONDITION, "Credenciais ausentes ou CI_SKIP_FREIGHT_E2E=1");
 
   test("campo shippingCost aceita apenas números positivos", async ({ page }) => {
-    await page.goto("/orcamentos/novo");
-    await idle(page);
+    await gotoAndSettle(page, "/orcamentos/novo");
 
     const shippingSelect = page.getByTestId("shipping-type-select");
     if (!(await shippingSelect.isVisible({ timeout: 8000 }).catch(() => false))) {
@@ -163,7 +155,6 @@ test.describe("campos frete: interação e validação em tempo real @freight", 
     }
 
     await costInput.fill("-50");
-    await page.waitForTimeout(300);
 
     const nextBtn = page.getByTestId("wizard-next-button");
     if (await nextBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
@@ -176,8 +167,7 @@ test.describe("campos frete: interação e validação em tempo real @freight", 
   });
 
   test("seleção CIF oculta campo de custo de frete", async ({ page }) => {
-    await page.goto("/orcamentos/novo");
-    await idle(page);
+    await gotoAndSettle(page, "/orcamentos/novo");
 
     const shippingSelect = page.getByTestId("shipping-type-select");
     if (!(await shippingSelect.isVisible({ timeout: 8000 }).catch(() => false))) {
@@ -195,8 +185,7 @@ test.describe("campos frete: interação e validação em tempo real @freight", 
   });
 
   test("mudança de FOB_PRE para CIF limpa campo de custo", async ({ page }) => {
-    await page.goto("/orcamentos/novo");
-    await idle(page);
+    await gotoAndSettle(page, "/orcamentos/novo");
 
     const shippingSelect = page.getByTestId("shipping-type-select");
     if (!(await shippingSelect.isVisible({ timeout: 8000 }).catch(() => false))) {
@@ -221,7 +210,6 @@ test.describe("campos frete: interação e validação em tempo real @freight", 
     const cif = page.getByRole("option", { name: /cif|cortesia/i });
     if (await cif.isVisible({ timeout: 2000 }).catch(() => false)) {
       await cif.click();
-      await page.waitForTimeout(300);
       const costVisible = await costInput.isVisible({ timeout: 1000 }).catch(() => false);
       if (costVisible) {
         const val = await costInput.inputValue();
@@ -237,8 +225,7 @@ test.describe("sumário totais: reatividade a mudanças @freight @regression", (
   test.skip(SKIP_CONDITION, "Credenciais ausentes ou CI_SKIP_FREIGHT_E2E=1");
 
   test("adição de frete FOB_PRE aumenta total exibido", async ({ page }) => {
-    await page.goto("/orcamentos/novo");
-    await idle(page);
+    await gotoAndSettle(page, "/orcamentos/novo");
 
     const totalEl = page
       .getByTestId("summary-total-value")
@@ -263,7 +250,6 @@ test.describe("sumário totais: reatividade a mudanças @freight @regression", (
     const costInput = page.getByTestId("shipping-cost-input");
     if (await costInput.isVisible({ timeout: 3000 }).catch(() => false)) {
       await costInput.fill("200,00");
-      await page.waitForTimeout(600);
 
       const afterTotal = await totalEl.textContent().catch(() => null);
       if (beforeTotal && afterTotal && beforeTotal !== "R$ 0,00" && afterTotal !== "R$ 0,00") {
@@ -273,8 +259,7 @@ test.describe("sumário totais: reatividade a mudanças @freight @regression", (
   });
 
   test("desconto percentual reduz total exibido", async ({ page }) => {
-    await page.goto("/orcamentos/novo");
-    await idle(page);
+    await gotoAndSettle(page, "/orcamentos/novo");
 
     const discountInput = page
       .getByTestId("discount-percent-input")
@@ -289,7 +274,6 @@ test.describe("sumário totais: reatividade a mudanças @freight @regression", (
     const before = await totalEl.textContent().catch(() => null);
 
     await discountInput.fill("10");
-    await page.waitForTimeout(500);
 
     const after = await totalEl.textContent().catch(() => null);
     if (before && after && before !== "R$ 0,00") {
@@ -304,8 +288,7 @@ test.describe("estados de erro: boundaries e mensagens @freight @regression", ()
   test.skip(SKIP_CONDITION, "Credenciais ausentes ou CI_SKIP_FREIGHT_E2E=1");
 
   test("navegação para UUID inválido exibe erro amigável (não crash)", async ({ page }) => {
-    await page.goto("/orcamentos/nao-e-um-uuid-valido");
-    await idle(page);
+    await gotoAndSettle(page, "/orcamentos/nao-e-um-uuid-valido");
 
     const errorEl = page
       .getByText(/não encontrado|not found|404|erro|inválido/i)
@@ -322,8 +305,7 @@ test.describe("estados de erro: boundaries e mensagens @freight @regression", ()
   });
 
   test("UUID zerado retorna tela de não-encontrado (não erro 500)", async ({ page }) => {
-    await page.goto("/orcamentos/00000000-0000-0000-0000-000000000000");
-    await idle(page);
+    await gotoAndSettle(page, "/orcamentos/00000000-0000-0000-0000-000000000000");
 
     const bodyText = await page.textContent("body").catch(() => "");
     expect(bodyText).not.toContain("Internal Server Error");
@@ -332,8 +314,7 @@ test.describe("estados de erro: boundaries e mensagens @freight @regression", ()
   });
 
   test("rota inexistente exibe 404 amigável (não tela em branco)", async ({ page }) => {
-    await page.goto("/rota-que-nao-existe-xyzabc");
-    await idle(page);
+    await gotoAndSettle(page, "/rota-que-nao-existe-xyzabc");
 
     const has404 = await page
       .getByText(/404|não encontrad|page not found/i)
@@ -353,8 +334,7 @@ test.describe("acessibilidade: navegação por teclado @a11y", () => {
   test.skip(SKIP_CONDITION, "Credenciais ausentes ou CI_SKIP_FREIGHT_E2E=1");
 
   test("wizard de orçamento pode ser navegado somente com teclado (Tab)", async ({ page }) => {
-    await page.goto("/orcamentos/novo");
-    await idle(page);
+    await gotoAndSettle(page, "/orcamentos/novo");
 
     await page.keyboard.press("Tab");
     await page.keyboard.press("Tab");
@@ -369,8 +349,7 @@ test.describe("acessibilidade: navegação por teclado @a11y", () => {
   });
 
   test("elementos interativos têm aria-label ou label associado", async ({ page }) => {
-    await page.goto("/orcamentos/novo");
-    await idle(page);
+    await gotoAndSettle(page, "/orcamentos/novo");
 
     const inputs = await page.locator("input:visible, select:visible").all();
     for (const input of inputs.slice(0, 5)) {
@@ -423,8 +402,7 @@ test.describe("mobile: responsividade sem overflow @mobile", () => {
 
   for (const route of MOBILE_ROUTES) {
     test(`${route}: sem overflow horizontal em 375px`, async ({ page }) => {
-      await page.goto(route);
-      await idle(page);
+      await gotoAndSettle(page, route);
 
       const scrollWidth = await page.evaluate(() => document.body.scrollWidth);
       const clientWidth = await page.evaluate(() => document.body.clientWidth);
@@ -442,8 +420,7 @@ test.describe("stress: cliques rápidos não causam crash @stress", () => {
     const errors: string[] = [];
     page.on("pageerror", (err) => errors.push(err.message));
 
-    await page.goto("/orcamentos/novo");
-    await idle(page);
+    await gotoAndSettle(page, "/orcamentos/novo");
 
     const nextBtn = page
       .getByTestId("wizard-next-button")
@@ -456,7 +433,6 @@ test.describe("stress: cliques rápidos não causam crash @stress", () => {
 
     for (let i = 0; i < 5; i++) {
       await nextBtn.click({ force: true }).catch(() => {});
-      await page.waitForTimeout(50);
     }
 
     const hasCrash = errors.some((e) =>

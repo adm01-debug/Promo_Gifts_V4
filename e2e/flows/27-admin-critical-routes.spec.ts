@@ -7,6 +7,7 @@
  *   - Exibem conteúdo correto para usuários autenticados
  */
 import { test, expect } from "@playwright/test";
+import { gotoAndSettle, waitForRouteIdle } from "../helpers/nav";
 
 const ADMIN_ROUTES = [
   { path: "/admin/usuarios", label: "Gestão de Usuários" },
@@ -24,8 +25,7 @@ const ADMIN_ROUTES = [
 test.describe("Rotas Admin críticas — carregamento e RBAC", () => {
   for (const { path, label } of ADMIN_ROUTES) {
     test(`${label} (${path}) carrega ou redireciona para login`, async ({ page }) => {
-      await page.goto(path);
-      await page.waitForLoadState("networkidle");
+      await gotoAndSettle(page, path);
 
       // Deve carregar OU redirecionar para login — nunca retornar 500
       const isLoginPage = page.url().includes("/login");
@@ -43,12 +43,10 @@ test.describe("Rotas Admin críticas — carregamento e RBAC", () => {
   }
 
   test("navegação entre rotas admin é fluida (sem full reload)", async ({ page }) => {
-    await page.goto("/admin/usuarios");
-    await page.waitForLoadState("networkidle");
+    await gotoAndSettle(page, "/admin/usuarios");
 
     const prevUrl = page.url();
-    await page.goto("/admin/roles");
-    await page.waitForLoadState("networkidle");
+    await gotoAndSettle(page, "/admin/roles");
 
     const newUrl = page.url();
 
@@ -59,8 +57,7 @@ test.describe("Rotas Admin críticas — carregamento e RBAC", () => {
   });
 
   test("dashboard admin (/admin) carrega sem 500", async ({ page }) => {
-    await page.goto("/admin");
-    await page.waitForLoadState("networkidle");
+    await gotoAndSettle(page, "/admin");
     await expect(page.locator("body")).not.toContainText(/Erro 500|Internal Server Error|500 Internal/i);
   });
 });

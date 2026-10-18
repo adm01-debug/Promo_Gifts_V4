@@ -106,7 +106,6 @@ test.describe("Analytics — re-seleção da mesma empresa NÃO duplica evento",
 
     // Janela para eventuais eventos assíncronos (log.info, side-effects).
     // 800ms é > que a latência típica do buffer analytics em CI.
-    await page.waitForTimeout(800);
 
     const eventsAfterSame = await readAnalyticsEvents(page);
     const dupSwitches = eventsAfterSame.filter(

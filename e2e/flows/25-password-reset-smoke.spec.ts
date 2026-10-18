@@ -14,11 +14,8 @@ test.describe("Fluxo: Password Reset UI", () => {
 
   test("renderiza formulário quando há token no hash", async ({ page }) => {
     // Simula o redirecionamento do Supabase com token de recuperação
-    await page.goto("/reset-password#access_token=mock-token&type=recovery");
-    
-    // Aguarda o settlement da página
-    await page.waitForLoadState("networkidle");
-    
+    await gotoAndSettle(page, "/reset-password#access_token=mock-token&type=recovery");
+
     // Deve mostrar o formulário de redefinição. O heading do formulário é
     // "Nova Senha" (o texto "Redefinir Senha" é o botão de submit).
     await expect(page.getByRole("heading", { name: "Nova Senha" })).toBeVisible();
@@ -28,8 +25,7 @@ test.describe("Fluxo: Password Reset UI", () => {
   });
 
   test("valida força da senha e critérios em tempo real", async ({ page }) => {
-    await page.goto("/reset-password#access_token=mock-token&type=recovery");
-    
+    await gotoAndSettle(page, "/reset-password#access_token=mock-token&type=recovery");
     const pwdInput = page.locator("input#password");
     await pwdInput.fill("123");
     

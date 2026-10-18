@@ -20,6 +20,7 @@
  *   exit 2 — erro de config/rede
  */
 import { spawnSync } from "node:child_process";
+import { readFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -114,10 +115,45 @@ export async function runLinter({
     logger.error("❌ UPDATE_BASELINE=1 não é compatível com os Advisors atuais; revise as exceções por objeto.");
     return 2;
   }
+
+  // Carrega funções aceitas de .security/supabase-linter-baseline.json (E97)
+  const baselinePath = resolve(".security/supabase-linter-baseline.json");
+  const acceptedFunctions = new Set();
+  if (existsSync(baselinePath)) {
+    try {
+      const baseline = JSON.parse(readFileSync(baselinePath, "utf8"));
+      if (Array.isArray(baseline.accepted)) {
+        for (const entry of baseline.accepted) {
+          if (entry.name) acceptedFunctions.add(entry.name);
+        }
+      }
+      logger.log(`🔐 Baseline E97: ${acceptedFunctions.size} funções aceitas carregadas.`);
+    } catch {
+      logger.warn("⚠️  Não foi possível ler .security/supabase-linter-baseline.json; nenhuma exceção carregada.");
+    }
+  }
+
   const errors = findings.lints.filter((finding) => finding?.level === "ERROR");
   const unreviewed = errors.filter((finding) => {
     const object = `${finding.metadata?.schema || ""}.${finding.metadata?.name || ""}`;
-    return finding.name !== "security_definer_view" || !REVIEWED_SECURITY_DEFINER_VIEWS.has(object);
+    const fnName = finding.metadata?.name || "";
+
+    // security_definer_view: revisadas via REVIEWED_SECURITY_DEFINER_VIEWS
+    if (finding.name === "security_definer_view") {
+      return !REVIEWED_SECURITY_DEFINER_VIEWS.has(object);
+    }
+
+    // security_definer_function (old: 0029_authenticated_security_definer_function_executable,
+    // new: anon_security_definer_function_executable / authenticated_security_definer_function_executable)
+    // Verifica contra baseline se o nome da função está aceito (E97)
+    if (finding.name && (
+      finding.name.includes("security_definer_function_executable") ||
+      finding.name.includes("0029_")
+    )) {
+      return !acceptedFunctions.has(fnName);
+    }
+
+    return true; // todos os outros ERRORs são não revisados
   });
   const warnings = findings.lints.filter((finding) => finding?.level === "WARN").length;
   logger.log(`📊 Security Advisors: ${findings.lints.length} findings (${errors.length} ERROR, ${warnings} WARN); ${unreviewed.length} ERROR não revisados.`);
