@@ -7,30 +7,35 @@
 
 BEGIN;
 
+DROP POLICY IF EXISTS "rls_restrictive_notification_preferences" ON public.notification_preferences;
 CREATE POLICY "rls_restrictive_notification_preferences"
   ON public.notification_preferences
   AS RESTRICTIVE FOR ALL
   TO authenticated, service_role
   USING (true);
 
+DROP POLICY IF EXISTS "rls_restrictive_push_subscriptions" ON public.push_subscriptions;
 CREATE POLICY "rls_restrictive_push_subscriptions"
   ON public.push_subscriptions
   AS RESTRICTIVE FOR ALL
   TO authenticated, service_role
   USING (true);
 
+DROP POLICY IF EXISTS "rls_restrictive_recently_viewed_products" ON public.recently_viewed_products;
 CREATE POLICY "rls_restrictive_recently_viewed_products"
   ON public.recently_viewed_products
   AS RESTRICTIVE FOR ALL
   TO authenticated, service_role
   USING (true);
 
+DROP POLICY IF EXISTS "rls_restrictive_kit_collaborators" ON public.kit_collaborators;
 CREATE POLICY "rls_restrictive_kit_collaborators"
   ON public.kit_collaborators
   AS RESTRICTIVE FOR ALL
   TO authenticated, service_role
   USING (true);
 
+DROP POLICY IF EXISTS "rls_restrictive_ai_usage_quotas" ON public.ai_usage_quotas;
 CREATE POLICY "rls_restrictive_ai_usage_quotas"
   ON public.ai_usage_quotas
   AS RESTRICTIVE FOR ALL

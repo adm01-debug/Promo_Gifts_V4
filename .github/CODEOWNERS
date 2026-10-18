@@ -45,6 +45,10 @@ docs/TYPES_INVENTORY_REMOVAL_ALLOWLIST.json    @adm01-debug
 .invoke-direct-baseline.json                  @adm01-debug
 .outline-none-baseline.json                   @adm01-debug
 .security/supabase-linter-baseline.json       @adm01-debug
+.security/                                    @adm01-debug
+.security/policies-baseline.json             @adm01-debug
+.security/lint-0029-allowlist.json            @adm01-debug
+.security/anon-insert-rate-guard-manifest.json @adm01-debug
 
 # ============================================================
 # Inventário de segredos (E98) — SSOT de secrets.* e vars.*
