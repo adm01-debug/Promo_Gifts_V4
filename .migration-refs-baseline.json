@@ -10,6 +10,10 @@
       "ref": "qa/migrations-draft/PR_COMMENT.md"
     },
     {
+      "file": ".github/workflows/schema-snapshot-export.yml",
+      "ref": "supabase/migrations-snapshot/SCHEMA_DRIFT.sql"
+    },
+    {
       "file": "CONTRIBUTING.md",
       "ref": "supabase/migrations/README.md"
     },
@@ -88,6 +92,22 @@
     {
       "file": "docs/sessoes/2026-05-09-09h57-onda-1-completa-handoff.md",
       "ref": "supabase/migrations/README.md"
+    },
+    {
+      "file": "graphify-out/2026-10-05/graph.json",
+      "ref": "supabase/migrations-snapshot/SCHEMA_DRIFT.sql"
+    },
+    {
+      "file": "graphify-out/2026-10-05/manifest.json",
+      "ref": "supabase/migrations-snapshot/SCHEMA_DRIFT.sql"
+    },
+    {
+      "file": "graphify-out/graph.json",
+      "ref": "supabase/migrations-snapshot/SCHEMA_DRIFT.sql"
+    },
+    {
+      "file": "graphify-out/manifest.json",
+      "ref": "supabase/migrations-snapshot/SCHEMA_DRIFT.sql"
     },
     {
       "file": "qa/reports/magazine-exhaustive-validation-2026-07-15.md",
