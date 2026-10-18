@@ -77118,7 +77118,7 @@ AS $function$
 DECLARE
   _event text;
   _payload jsonb;
-  _project_url text := 'https://pqpdolkaeqlyzpdpbizo.supabase.co';
+  _project_url text := 'https://doufsxqlfjyuvxuezpln.supabase.co';
   _dispatcher_secret text;
 BEGIN
   IF TG_TABLE_NAME = 'quotes' THEN
@@ -77176,7 +77176,7 @@ SECURITY DEFINER
 SET search_path = public
 AS $function$
 DECLARE
-  v_supabase_url text := 'https://pqpdolkaeqlyzpdpbizo.supabase.co';
+  v_supabase_url text := 'https://doufsxqlfjyuvxuezpln.supabase.co';
   v_service_key text;
   v_dispatcher_secret text;
   v_retried int := 0;
@@ -77262,7 +77262,7 @@ SELECT cron.schedule(
   '*/15 * * * *',
   $cron$
   SELECT net.http_post(
-    url := 'https://pqpdolkaeqlyzpdpbizo.supabase.co/functions/v1/connections-auto-test',
+    url := 'https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1/connections-auto-test',
     headers := jsonb_build_object(
       'Content-Type', 'application/json',
       'x-cron-secret', public.get_edge_function_secret('CONNECTIONS_AUTO_TEST_SECRET')
@@ -81645,7 +81645,7 @@ GRANT EXECUTE ON FUNCTION public.record_schema_drift_result(jsonb) TO service_ro
 -- >>> BEGIN 20260522151608_fase_4_gate_ci_drift_check_sql_native.sql >>>
 -- Fase 4 v2 - Drift check SQL nativo via pg_net
 INSERT INTO public.system_settings (key,value,description) VALUES
-  ('lovable_url','"https://pqpdolkaeqlyzpdpbizo.supabase.co"','Fase 4: URL do Supabase interno do Lovable Cloud.'),
+  ('lovable_url','"https://doufsxqlfjyuvxuezpln.supabase.co"','Fase 4: URL do Supabase interno do Lovable Cloud.'),
   ('lovable_anon_key','null','Fase 4: ANON KEY do Lovable Cloud. Preencher manualmente.')
 ON CONFLICT (key) DO NOTHING;
 
@@ -81799,11 +81799,11 @@ COMMIT;
 -- Migration (LOVABLE-ONLY, documentação): align_wave_3_5_2_lovable_uuid_casts
 -- Date: 2026-05-22 15:50 UTC
 -- Phase: Redeploy Fase 3.5 - Wave 2 (Integridade FK)
--- Applied via: lovable_db_query (PROJECT pqpdolkaeqlyzpdpbizo)
+-- Applied via: lovable_db_query (PROJECT doufsxqlfjyuvxuezpln)
 -- ============================================================================
 -- IMPORTANTE: este arquivo NÃO é executado via `supabase db push`. Decision 010
 -- proíbe push contra o oficial. Este SQL foi aplicado diretamente no banco
--- Lovable Cloud interno (pqpdolkaeqlyzpdpbizo) via MCP, e serve aqui como
+-- Lovable Cloud interno (doufsxqlfjyuvxuezpln) via MCP, e serve aqui como
 -- histórico/auditoria.
 -- ============================================================================
 -- Objetivo: alinhar tipos de FK (text → uuid) nas tabelas de favoritos no
@@ -81893,7 +81893,7 @@ CREATE TRIGGER set_updated_at BEFORE UPDATE ON public.ip_access_control FOR EACH
 -- Migration (LOVABLE-ONLY, documentação): align_wave_3_5_4_lovable_order_items
 -- Date: 2026-05-22 15:55 UTC
 -- Phase: Redeploy Fase 3.5 - Wave 4 (caso grave - order_items)
--- Applied via: lovable_db_query (PROJECT pqpdolkaeqlyzpdpbizo)
+-- Applied via: lovable_db_query (PROJECT doufsxqlfjyuvxuezpln)
 -- ============================================================================
 -- IMPORTANTE: arquivo doc-only. Decision 010 proíbe push contra oficial.
 -- Aplicado diretamente no Lovable Cloud interno.
@@ -82066,7 +82066,7 @@ CREATE POLICY "Admins manage drift allowlist"
   WITH CHECK (EXISTS (SELECT 1 FROM public.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
 
 COMMENT ON TABLE public.schema_drift_allowlist IS
-  'Tabelas onde divergência de schema entre Lovable interno (pqpdolkaeqlyzpdpbizo) e Oficial (pqpdolkaeqlyzpdpbizo) é aceitável por design (cache, infra, particionamento).';
+  'Tabelas onde divergência de schema entre Lovable interno (doufsxqlfjyuvxuezpln) e Oficial (doufsxqlfjyuvxuezpln) é aceitável por design (cache, infra, particionamento).';
 
 -- Atualizar fn_compute_and_record_drift para considerar allowlist
 CREATE OR REPLACE FUNCTION public.fn_compute_and_record_drift(p_lovable_signatures jsonb)
@@ -82164,7 +82164,7 @@ COMMIT;
 -- Migration (LOVABLE-ONLY, documentação): fase_1_1_drop_legacy_lovable
 -- Date: 2026-05-22 16:18 UTC
 -- Phase: Redeploy Fase 1.1 - DROP legacy no Lovable
--- Applied via: lovable_db_query (PROJECT pqpdolkaeqlyzpdpbizo)
+-- Applied via: lovable_db_query (PROJECT doufsxqlfjyuvxuezpln)
 -- ============================================================================
 -- Objetivo: dropar 3 tabelas legacy no Lovable Cloud interno que foram
 -- substituídas por implementações novas mas continuaram existindo (sobras).
@@ -86171,7 +86171,7 @@ BEGIN
   _url := public.get_edge_functions_base_url();
 
   _pattern := CASE lower(coalesce(_environment, ''))
-    WHEN 'prod' THEN '^https://pqpdolkaeqlyzpdpbizo\.supabase\.co$'
+    WHEN 'prod' THEN '^https://doufsxqlfjyuvxuezpln.supabase.co$'
     WHEN 'stage' THEN '^https://[a-z0-9-]+\.supabase\.co$'
     WHEN 'dev' THEN '^https://[a-z0-9-]+\.supabase\.co$'
     ELSE '^https://[a-z0-9-]+\.supabase\.co$'
@@ -90164,7 +90164,7 @@ SELECT 1;
 -- >>> BEGIN 20260530173000_etapa3_c2_products_cost_leak_anon.sql >>>
 -- =============================================================================
 -- Etapa 3 — Correção C2: vazamento de cost_price para o público (anon)
--- Projeto: pqpdolkaeqlyzpdpbizo (Promo Brindes / PromoGifts)
+-- Projeto: doufsxqlfjyuvxuezpln (Promo Brindes / PromoGifts)
 -- Aplicado em produção via Supabase MCP em 2026-05-30. Este arquivo existe para
 -- rastreio/versionamento em git (o estado do banco já reflete estas mudanças).
 -- =============================================================================
@@ -90241,7 +90241,7 @@ COMMIT;
 -- >>> BEGIN 20260530174500_etapa4_rls_harden_seller_management.sql >>>
 -- ============================================================================
 -- Etapa 4 (pré-requisito) — Endurecimento de RLS de ESCRITA: GESTÃO != VENDEDOR
--- Projeto: pqpdolkaeqlyzpdpbizo (Promo Brindes / PromoGifts)
+-- Projeto: doufsxqlfjyuvxuezpln (Promo Brindes / PromoGifts)
 -- Aplicado em produção via Supabase MCP em 2026-05-30 (este arquivo = rastreio git).
 -- ----------------------------------------------------------------------------
 -- REGRA DE NEGÓCIO: gestão (editar/criar/excluir) de produtos, fornecedores,
@@ -91134,7 +91134,7 @@ $$;
 -- que era NULL (ALTER DATABASE SET não está disponível via MCP/pipeline — exige Dashboard).
 -- url=NULL → NOT NULL violation em net.http_request_queue → ~4 falhas/hora → cron_health_1h FAIL.
 --
--- Solução: recriar o job com URL hardcoded do projeto pqpdolkaeqlyzpdpbizo.
+-- Solução: recriar o job com URL hardcoded do projeto doufsxqlfjyuvxuezpln.
 -- A chave anon é pública (frontend key, visível a todos os clientes).
 -- Idempotente: unschedule é no-op se não existir; schedule recria.
 
@@ -91145,7 +91145,7 @@ SELECT cron.schedule(
   '*/15 * * * *',
   $$
   SELECT net.http_post(
-    url := 'https://pqpdolkaeqlyzpdpbizo.supabase.co/functions/v1/connections-auto-test',
+    url := 'https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1/connections-auto-test',
     headers := jsonb_build_object(
       'Content-Type', 'application/json',
       'apikey', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRvdWZzeHFsZmp5dXZ4dWV6cGxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjczODY2NDMsImV4cCI6MjA4Mjk2MjY0M30.nm3WMOBSx5SUnIBmvF_Mj0Y-4hV6UohrBF0sUpuQvPc'
@@ -91403,7 +91403,7 @@ SELECT cron.schedule(
     '*/15 * * * *',
     $$
     SELECT net.http_post(
-        url := 'https://pqpdolkaeqlyzpdpbizo.supabase.co/functions/v1/connections-auto-test',
+        url := 'https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1/connections-auto-test',
         headers := jsonb_build_object(
             'Content-Type', 'application/json',
             'x-cron-secret', public.get_edge_function_secret('CRON_SECRET')
@@ -97033,7 +97033,7 @@ DROP FUNCTION IF EXISTS public.fn_process_raw_v2(uuid, integer);
 -- >>> BEGIN 20260604184447_spot_v2_fix_products_depara_and_cost.sql >>>
 -- ============================================================
 -- Paridade Spot → fn_process_raw_v2 : correções CRÍTICAS (config-only)
--- Projeto pqpdolkaeqlyzpdpbizo · Spot supplier_id bcfc0d02-44c6-48ae-8472-12b1a3f3d8e0
+-- Projeto doufsxqlfjyuvxuezpln · Spot supplier_id bcfc0d02-44c6-48ae-8472-12b1a3f3d8e0
 -- ============================================================
 
 -- G1) De-para de products morto: os 7 mappings ativos guardavam source_path em
@@ -173478,7 +173478,7 @@ NOTIFY pgrst, 'reload schema';
 --
 --   A última migration que tocou o cron 'connections-auto-test'
 --   (20260602020000_fix_hardcoded_api_key_cron) recria o job com a URL
---   HARDCODED do projeto PROIBIDO (Lovable Cloud) 'pqpdolkaeqlyzpdpbizo'.
+--   HARDCODED do projeto PROIBIDO (Lovable Cloud) 'doufsxqlfjyuvxuezpln'.
 --   A produção já foi corrigida para o projeto canônico Gold
 --   'doufsxqlfjyuvxuezpln' (SSOT — ver CLAUDE.md REGRA #1), mas um replay
 --   limpo das migrations (branch novo / DR rebuild) reintroduziria a URL
@@ -173489,7 +173489,7 @@ NOTIFY pgrst, 'reload schema';
 --   (recria o job com a forma idêntica à que já existe).
 --
 -- VERIFICAÇÃO (live DB doufsxqlfjyuvxuezpln, 2026-06-19, read-only):
---   • Nenhuma função hardcoda 'pqpdolkaeqlyzpdpbizo' (scan pg_get_functiondef).
+--   • Nenhuma função hardcoda 'doufsxqlfjyuvxuezpln' (scan pg_get_functiondef).
 --   • Nenhum cron job referencia o ref proibido.
 --   • public.get_edge_functions_base_url() resolve para a URL canônica.
 --   • cron 'connections-auto-test' (jobid 48) JÁ usa a URL canônica.
