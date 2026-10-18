@@ -216,7 +216,9 @@ Deno.serve(async (req) => {
       // auth.admin.signOut exige o JWT da sessão alvo — um user_id não é
       // aceito. admin_revoke_user_sessions (migration 20261015150000)
       // revoga refresh_tokens + hmac v2 e marca revoke_all_user_tokens.
-      const { error: revokeError } = await supabaseAdmin.rpc(
+      // Chamada via callerClient (JWT do dev): auth.uid() com service role
+      // seria NULL e a guarda dev+aal2 dentro da RPC rejeitaria a chamada.
+      const { error: revokeError } = await callerClient.rpc(
         'admin_revoke_user_sessions',
         { _user_id: payload.user_id }
       );
