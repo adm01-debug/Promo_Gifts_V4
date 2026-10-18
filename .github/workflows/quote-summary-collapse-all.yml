@@ -46,11 +46,8 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false  # E32
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-      - run: npm ci
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
       - name: Run fuzz suite
         run: TZ=America/Sao_Paulo npx vitest run src/components/quotes/__tests__/QuoteBuilderSummaryCollapseAll.fuzz.test.ts
 
@@ -67,13 +64,8 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false  # E32
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-      - run: npm ci
-      - name: Install Playwright Chromium
-        run: npx playwright install --with-deps chromium
+      - name: Setup E2E
+        uses: ./.github/actions/e2e-setup
       - name: Run e2e spec
         env:
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}

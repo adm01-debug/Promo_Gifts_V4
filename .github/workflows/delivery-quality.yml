@@ -36,19 +36,11 @@ jobs:
     - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       with:
         persist-credentials: false  # E32
-    - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-      with:
-        node-version-file: '.nvmrc'
-        cache: 'npm'
-    
-    - name: Install dependencies
-      run: npm ci
+    - name: Setup E2E
+      uses: ./.github/actions/e2e-setup
 
     - name: 🧪 Unit Tests (Vitest)
       run: TZ=America/Sao_Paulo npx vitest run src/pages/__tests__/QuoteBuilderDeliveryTooltip.test.tsx
-
-    - name: 🎭 Install Playwright
-      run: npx playwright install --with-deps chromium
 
     - name: 🌍 E2E & Visual Regression
       if: ${{ secrets.E2E_USER_EMAIL != '' }}
