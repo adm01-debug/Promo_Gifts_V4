@@ -441,7 +441,37 @@ Ver R4. `node-version: '22'` é proibido. Usar sempre `node-version-file: .nvmrc
 
 ---
 
-## Tabela de Contratos C10–C23 (E76)
+### R23 — Workflows com `pull_request` e `push` em `main` devem declarar `paths-ignore` para docs (E14)
+
+Workflows que rodam em todo PR **e** em push em `main` devem excluir mudanças docs-only
+para não desperdiçar minutos de runner:
+
+```yaml
+on:
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+      - 'supabase/**/*_LOG.md'
+      - 'CHANGELOG.md'
+      - '.github/ISSUE_TEMPLATE/**'
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+      - 'supabase/**/*_LOG.md'
+      - 'CHANGELOG.md'
+      - '.github/ISSUE_TEMPLATE/**'
+```
+
+**Exceções:** workflows event-driven (`issues:`, `deployment_status:`, `workflow_run:`) ignoram `paths-ignore`.
+Workflows com `paths:` positivo (focados em subconjunto de arquivos) não precisam de `paths-ignore`.
+
+---
+
+## Tabela de Contratos C10–C24 (E76, E96)
 
 Tabela de referência rápida. Todos verificados por `scripts/check-workflow-contracts.mjs --gate`.
 
@@ -461,8 +491,9 @@ Tabela de referência rápida. Todos verificados por `scripts/check-workflow-con
 | C21 | R20 | Todo `upload-artifact` declara `retention-days:` | sim |
 | C22 | R21 | Workflows `pull_request` não têm `git push` em `run:` | sim |
 | C23 | R22 | `actions/setup-node` usa `node-version-file:`, não `node-version:` literal | sim |
+| C24 | — | `npm install` em steps `run:` proibido; usar `npm ci` (ou ação composta) | sim |
 
-**Nota:** C24 (`npm ci` vs `npm install`) também é verificado pelo script (E96).
+**Nota:** C25 (`|| true` só com `# ok:`) e C26 (`npx <pkg>` fora do lockfile) verificados pelo script (E92/E96).
 
 ---
 
