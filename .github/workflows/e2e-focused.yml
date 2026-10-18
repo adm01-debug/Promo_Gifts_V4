@@ -41,7 +41,7 @@ defaults:
 
 jobs:
   secrets_check:
-    name: Verify E2E secrets
+    name: Verify E2E secrets (Focused)
     runs-on: ubuntu-24.04
     timeout-minutes: 2
     permissions:
@@ -67,8 +67,6 @@ jobs:
     runs-on: ubuntu-24.04
     # R3 — timeout por job
     timeout-minutes: 20
-    # Suites focados podem ter baselines faltando ou ser conhecidamente flaky
-    continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
@@ -152,6 +150,8 @@ jobs:
           exit 0
 
       - name: Run E2E Focused · ${{ matrix.suite }}
+        # Suites focados podem ter baselines faltando ou ser conhecidamente flaky (C17: step-level OK)
+        continue-on-error: true
         run: |
           npx playwright test ${{ matrix.spec }} \
             --project=${{ matrix.project }} \
