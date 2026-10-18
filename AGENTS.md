@@ -1,13 +1,13 @@
 # AGENTS.md — espelho do CLAUDE.md (contexto multi-agente)
 
 > Este arquivo é gerado/espelhado a partir do `CLAUDE.md` para agentes que só leem AGENTS.md (Codex, OpenCode, etc.). Edite o CLAUDE.md — o Hermes prioriza AGENTS.md sobre CLAUDE.md, então o conteúdo precisa ser idêntico.
-> Última sincronização: 2026-10-15 (baseline do drift-check + comandos que apagam o ledger).
+> Última sincronização: 2026-10-18 (Regra #9: PR obrigatório para commits de governança).
 
 ---
 
 # CLAUDE.md — Instruções para Claude Code (sessões automáticas)
 # Lido pelo Claude Code ao iniciar cada sessão neste repositório.
-# Última atualização: 2026-10-15 — baseline do drift-check + comandos que apagam o ledger (REGRA #8). 2026-10-14: E88/E89/E91/E92.
+# Última atualização: 2026-10-18 — Regra #9 sync: PR obrigatório para commits de governança.
 
 ## CONTEXTO DO PROJETO
 
@@ -306,11 +306,11 @@ ao terminar. Ver `docs/plans/PLANO_ENGENHARIA_SENIOR_50_ETAPAS_2026-09-17.md`
 ### SEMPRE faça:
 - Se a sessão criar 1+ commit relevante para segurança, CI/CD ou governança
   (workflows, gates, migrations, scripts `check:*`) → `git push` ao final da
-  sessão, mesmo sem PR aberto. Trabalho de governança só existe se estiver
-  visível a quem revisa.
+  sessão e **abrir PR** — nunca deixar orphan branch.
+- Arquivos de governança críticos (`.github/**`, `CODEOWNERS`, `supabase/migrations/**`,
+  `scripts/check-*`, `.gitleaks.toml`) exigem PR aberto (não apenas push). A revisão
+  humana é parte do processo — commit de governança sem PR aberto = proteção invisível.
 - Se o branch já tiver PR aberto → nada extra a fazer, o push já o atualiza.
-- Se não houver PR ainda e o trabalho estiver pronto para revisão → abrir um
-  (`gh pr create`), não só empurrar o branch e deixar órfão.
 
 ### NUNCA faça:
 - Terminar uma sessão de governança/segurança com commits só no disco local,
@@ -318,6 +318,8 @@ ao terminar. Ver `docs/plans/PLANO_ENGENHARIA_SENIOR_50_ETAPAS_2026-09-17.md`
 - Fazer `git push --force` em branch compartilhado sem confirmação explícita
   do humano (isso continua exigindo aprovação — REGRA #9 pede push normal,
   não força bruta).
+- Fazer push de arquivos de governança sem abrir PR — push solitário deixa
+  proteções reais ocultas da revisão (incidente 2026-09-17: 29 commits locais).
 
 ---
 
