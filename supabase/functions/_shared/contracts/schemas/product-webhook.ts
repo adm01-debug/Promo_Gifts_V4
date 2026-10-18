@@ -64,7 +64,9 @@ const VariationSchema = z.unknown().superRefine((value, ctx) => {
 
 const ProductV1 = z.object({
   external_id: z.string().max(255).optional(),
-  sku: z.string().min(1).max(100),
+  // products.sku_promo é varchar(50) com CHECK sku_promo=sku — sku >50
+  // nunca grava; rejeita aqui com 422 claro em vez de 23502 no banco.
+  sku: z.string().min(1).max(50),
   name: z.string().min(1).max(500),
   description: z.string().max(5000).optional(),
   price: z.number().nonnegative(),

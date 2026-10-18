@@ -84,8 +84,8 @@ type NormalizedProduct = {
   sync_status: string;         // DB column: sync_status, always 'synced' on webhook write
   is_kit: boolean;
   is_active: boolean;
-  is_featured: boolean;        // DB column: is_featured (was: featured)
-  is_featured_expires_at: string | null; // CHECK exige NOT NULL quando is_featured=true
+  is_featured?: boolean;       // DB column: is_featured (was: featured) — omitido preserva o valor existente
+  is_featured_expires_at?: string | null; // CHECK exige NOT NULL quando is_featured=true
   is_new: boolean;             // DB column: is_new (was: new_arrival)
   is_on_sale: boolean;         // DB column: is_on_sale (was: on_sale)
   images: string[];
@@ -104,6 +104,7 @@ type UpsertOutcome = {
   failed: number;
   processed: number;
   errors: string[];
+  warnings: string[];
   db_roundtrips: number;
   duration_ms: number;
   chunk_metrics: Array<{
@@ -329,6 +330,7 @@ Deno.serve(async (req) => {
       failed: 0,
       processed: 0,
       errors: [],
+      warnings: [],
       db_roundtrips: 0,
       duration_ms: 0,
       chunk_metrics: [],
@@ -417,6 +419,7 @@ Deno.serve(async (req) => {
         db_roundtrips: outcome.db_roundtrips,
         chunk_metrics: outcome.chunk_metrics,
         errors: outcome.errors,
+        warnings: outcome.warnings,
         sync_log_id: syncLogId,
       }),
       { headers: okHeaders },
@@ -449,6 +452,8 @@ async function upsertProducts(
       unresolved.category.push(p.sku);
     if (n.supplier_id === null && (p.supplier_id !== undefined || p.supplier_name))
       unresolved.supplier.push(p.sku);
+    // featured:true sem expires no payload: produto novo fica sem destaque;
+    // existente preserva o destaque atual (colunas omitidas no upsert).
     if (p.featured === true && !n.is_featured) unresolved.featured_dropped.push(p.sku);
     // NOT NULL no banco: linha sem categoria/fornecedor resolvido falha 23502 —
     // exclui do chunk para um produto ruim não derrubar os bons do lote.
@@ -467,6 +472,23 @@ async function upsertProducts(
         `featured_dropped=${unresolved.featured_dropped.length} (ex: ${unresolved.featured_dropped.slice(0, 3).join(',')})`,
     );
   }
+  // Warnings vão na resposta — rejected/error já eram visíveis mas ids não
+  // resolvidos e featured preservado eram só console.warn (invisível pro caller).
+  const warnings: string[] = [];
+  if (unresolved.category.length)
+    warnings.push(
+      `category_id não resolvido p/ ${unresolved.category.length} sku(s) (ex: ${unresolved.category.slice(0, 5).join(', ')})`,
+    );
+  if (unresolved.supplier.length)
+    warnings.push(
+      `supplier_id não resolvido p/ ${unresolved.supplier.length} sku(s) (ex: ${unresolved.supplier.slice(0, 5).join(', ')})`,
+    );
+  if (unresolved.featured_dropped.length)
+    warnings.push(
+      `featured sem featured_expires_at p/ ${unresolved.featured_dropped.length} sku(s) — ` +
+        `novos ficam sem destaque; existentes preservam o destaque atual (ex: ${unresolved.featured_dropped.slice(0, 5).join(', ')})`,
+    );
+
   const chunks = chunkArray(valid, chunkSize);
 
   let created = 0;
@@ -483,16 +505,24 @@ async function upsertProducts(
     try {
       const skus = Array.from(new Set(chunk.map((item) => item.sku).filter(Boolean)));
 
-      let existingRows: Array<{ id: string; sku: string | null }> = [];
+      let existingRows: Array<{
+        id: string;
+        sku: string | null;
+        is_featured: boolean | null;
+        is_featured_expires_at: string | null;
+      }> = [];
       if (skus.length > 0) {
         // SECURITY (CWE-943): never interpolate caller-controlled sku into the
         // PostgREST `.or()` filter DSL — a value containing ',', ')' or '.' breaks out of
         // the in.(...) list and injects arbitrary filter expressions. Use parameterized
         // `.in()` probes (supabase-js URL-encodes the values) and merge results by id.
-        const byId = new Map<string, { id: string; sku: string | null }>();
+        const byId = new Map<
+          string,
+          { id: string; sku: string | null; is_featured: boolean | null; is_featured_expires_at: string | null }
+        >();
         const { data, error } = await supabase
           .from('products')
-          .select('id,sku')
+          .select('id,sku,is_featured,is_featured_expires_at')
           .in('sku', skus);
         chunkRoundtrips += 1;
         if (error) throw error;
@@ -512,6 +542,20 @@ async function upsertProducts(
         // Leaving it in the upsert payload 400s the entire chunk (PGRST204), so strip it.
         delete (item as Record<string, unknown>).variations;
         const existing = existingBySku.get(item.sku);
+
+        // PostgREST upsert (merge-duplicates) trata chave ausente como NULL —
+        // "omitir" featured NÃO preserva o valor, apaga. Preservação real =
+        // read-merge-write: sem decisão no payload, copia os valores atuais
+        // do banco; produto novo sem featured grava o default sem destaque.
+        if (item.is_featured === undefined) {
+          if (existing) {
+            item.is_featured = existing.is_featured ?? false;
+            item.is_featured_expires_at = existing.is_featured_expires_at;
+          } else {
+            item.is_featured = false;
+            item.is_featured_expires_at = null;
+          }
+        }
 
         if (existing) {
           chunkUpdated += 1;
@@ -581,6 +625,7 @@ async function upsertProducts(
     failed,
     processed,
     errors,
+    warnings,
     db_roundtrips,
     duration_ms: Date.now() - startedAt,
     chunk_metrics,
@@ -680,8 +725,11 @@ function resolveCategoryUuid(
   // UUID com a tabela carregada: valida existência — UUID morto vira
   // "não resolvido" honesto em vez de 23503 na FK.
   if (typeof raw === 'string' && isUUID(raw)) {
-    if (!resolvers || resolvers.categoryIds === null) return raw;
-    return resolvers.categoryIds.has(raw) ? raw : null;
+    // banco devolve UUID canônico minúsculo — normaliza antes do Set.has,
+    // senão UUID maiúsculo rejeita uma referência que existe.
+    const uuid = raw.toLowerCase();
+    if (!resolvers || resolvers.categoryIds === null) return uuid;
+    return resolvers.categoryIds.has(uuid) ? uuid : null;
   }
   const numeric =
     typeof raw === 'number' && Number.isInteger(raw)
@@ -714,14 +762,23 @@ function resolveSupplierUuid(
 ): string | null {
   const raw = product.supplier_id;
   if (typeof raw === 'string' && isUUID(raw)) {
-    if (!resolvers || resolvers.supplierIds === null) return raw;
-    return resolvers.supplierIds.has(raw) ? raw : null;
+    const uuid = raw.toLowerCase();
+    if (!resolvers || resolvers.supplierIds === null) return uuid;
+    return resolvers.supplierIds.has(uuid) ? uuid : null;
   }
   if (resolvers) {
     for (const candidate of [raw, product.supplier_name]) {
       if (typeof candidate !== 'string' && typeof candidate !== 'number') continue;
       const key = normalizeKey(String(candidate));
-      const hit = resolvers.supplierByCode.get(key) ?? resolvers.supplierByName.get(key);
+      if (resolvers.supplierByCode.has(key)) {
+        // Chave existe como código: resolve direto ou é ambíguo (ex.: 'ABC'
+        // e 'abc' coexistem). `??` para nome com a MESMA chave amarraria
+        // num fornecedor homônimo errado — ambiguidade = não resolvido.
+        const hit = resolvers.supplierByCode.get(key);
+        if (hit) return hit;
+        continue;
+      }
+      const hit = resolvers.supplierByName.get(key);
       if (hit) return hit;
     }
   }
@@ -736,11 +793,20 @@ function normalizeProduct(
   const isActive = product.is_active !== false;
   const categoryId = resolveCategoryUuid(product, resolvers);
   const supplierId = resolveSupplierUuid(product, resolvers);
-  // chk_products_featured_requires_expires exige is_featured_expires_at quando
-  // is_featured=true. Sem expiração no payload a flag é derrubada para a linha
-  // salvar — o SKU é listado em featured_dropped no retorno.
-  const featuredExpiresAt = product.featured_expires_at ?? null;
-  const isFeatured = product.featured === true && featuredExpiresAt !== null;
+  // featured_expires_at AUSENTE ≠ null explícito: sem decisão da integração,
+  // omitir as duas colunas preserva destaque/expiração de produto existente —
+  // um sync de preço não pode derrubar um destaque ativo. featured:false
+  // explícito limpa os dois. featured:true só grava quando expires vem junto
+  // (chk_products_featured_requires_expires exige expires com is_featured=true).
+  const featuredCols: Pick<NormalizedProduct, 'is_featured' | 'is_featured_expires_at'> = {};
+  if (product.featured_expires_at !== undefined) {
+    const expires = product.featured_expires_at ?? null;
+    featuredCols.is_featured = product.featured === true && expires !== null;
+    featuredCols.is_featured_expires_at = expires;
+  } else if (product.featured === false) {
+    featuredCols.is_featured = false;
+    featuredCols.is_featured_expires_at = null;
+  }
   // Merge metadata + kit_items into schema_json (single jsonb column).
   const schemaJson: Record<string, unknown> = {
     ...((product.metadata || {}) as Record<string, unknown>),
@@ -766,8 +832,7 @@ function normalizeProduct(
     sync_status: 'synced',
     is_kit: product.is_kit || false,
     is_active: isActive,
-    is_featured: isFeatured,
-    is_featured_expires_at: featuredExpiresAt,
+    ...featuredCols,
     is_new: product.new_arrival || false,
     is_on_sale: product.on_sale || false,
     images: product.images || [],
