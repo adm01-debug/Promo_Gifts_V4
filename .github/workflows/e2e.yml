@@ -33,9 +33,16 @@ defaults:
   run:
     shell: bash
 
+# ─── JOB 0: DETECÇÃO DE SECRETS ──────────────────────────────────────────────
+# E013: Determina quais projetos Playwright estão disponíveis com base nos secrets.
+# chromium-authed só entra na matrix quando has_e2e == 'true'.
+jobs:
+  secrets-check:
+    uses: ./.github/workflows/_secrets-check.yml
+    secrets: inherit
+
 # ─── JOB 1: PRÉ-VÔOS (header-sticky + carrinhos URL-state) ──────────────────
 # Roda uma vez; se falhar, os shards não sobem (needs: e2e-gates).
-jobs:
   e2e-gates:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
@@ -111,13 +118,14 @@ jobs:
   e2e-shard:
     runs-on: ubuntu-24.04
     timeout-minutes: 30  # E24: E2E leg ≤ 30 min por shard
-    needs: e2e-gates
+    needs: [e2e-gates, secrets-check]
     if: needs.e2e-gates.result == 'success'
     strategy:
       fail-fast: false
       matrix:
         shard: [1, 2, 3, 4]
-        project: [chromium-public, chromium-authed]
+        # E013: inclui chromium-authed somente quando secrets E2E estão configurados
+        project: ${{ fromJSON(needs.secrets-check.outputs.has_e2e == 'true' && '["chromium-public","chromium-authed"]' || '["chromium-public"]') }}
     env:
       CI: "true"
       FORCE_COLOR: "0"
@@ -138,16 +146,24 @@ jobs:
           start-vite: 'true'
 
       - name: Run E2E regression shard ${{ matrix.shard }}/4 (${{ matrix.project }})
-        if: matrix.project == 'chromium-public' || env.E2E_USER_EMAIL != ''
+        # E013: sem guard por step — a matrix já exclui chromium-authed sem creds
         run: |
           npx playwright test \
             --project=${{ matrix.project }} \
             --shard=${{ matrix.shard }}/4 \
             --grep-invert @smoke \
-            --reporter=blob
+            --reporter=blob,json
         env:
           E2E_BASE_URL: http://localhost:8080
           PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-report/results.json
+
+      # E012: valida mínimo de testes por shard (evita false-green com 0 testes)
+      - name: Check min tests executed (shard ${{ matrix.shard }}, ${{ matrix.project }})
+        if: always()
+        uses: ./.github/actions/check-min-tests
+        with:
+          results-json: 'playwright-report/results.json'
+          min: '1'
 
       - name: Upload blob report (shard ${{ matrix.shard }}, ${{ matrix.project }})
         if: always()
@@ -174,7 +190,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10  # E24: estático ≤ 10 min (merge/upload puro)
     needs: [e2e-gates, e2e-shard]
-    if: always() && (needs.e2e-gates.result == 'success')
+    if: always() && needs.e2e-shard.result != 'skipped'  # E011: roda quando shards rodaram, mesmo que falhem
     env:
       ARTIFACT_RETENTION_DAYS: "14"
     steps:

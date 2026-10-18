@@ -112,7 +112,7 @@ Deno.serve(async (req: Request) => {
     }
 
     // 3. Email allowlist
-    if (ALLOWED_EMAILS.size > 0 && !ALLOWED_EMAILS.has(email)) {
+    if (ALLOWED_EMAILS.size === 0 || !ALLOWED_EMAILS.has(email)) {  // E019: fail-closed — empty allowlist = env var ausente = rejeita tudo
       await supabase.from("e2e_cleanup_audit").insert({
         ip: clientIp, status: "forbidden", reason: "email_not_allowed",
         dry_run: dryRun, total_ms: Date.now() - startMs,
