@@ -177,6 +177,13 @@ export function findMigrationFiles(version, dir = MIGRATIONS_DIR) {
     .sort();
 }
 
+/** Retorna o nome do arquivo `<version>_rollback.sql` se existir em `dir`, ou `null`. */
+export function findRollbackFile(version, dir = MIGRATIONS_DIR) {
+  if (!existsSync(dir)) return null;
+  const name = `${version}_rollback.sql`;
+  return existsSync(join(dir, name)) ? name : null;
+}
+
 /** `true` se houver uma linha `-- Rollback:` (case-insensitive) nas primeiras `headLines` linhas. */
 export function hasRollbackHeader(sqlContent, headLines = 40) {
   const lines = sqlContent.split('\n').slice(0, headLines);
@@ -186,6 +193,49 @@ export function hasRollbackHeader(sqlContent, headLines = 40) {
 /** Padrões de DDL não-transacional encontrados no conteúdo (para aviso, não bloqueio). */
 export function detectNonTransactionalDdl(sqlContent) {
   return NON_TX_DDL.filter((re) => re.test(sqlContent)).map((re) => re.source);
+}
+
+/**
+ * E066: detecta funções com SECURITY DEFINER sem pg_temp no SET search_path.
+ * Retorna array de nomes de funções problemáticas.
+ */
+export function detectSecurityDefinerWithoutPgTemp(sqlContent) {
+  const executable = sqlContent.replace(/--[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, '');
+  const results = [];
+  // Captura blocos CREATE [OR REPLACE] FUNCTION ... SECURITY DEFINER
+  const fnRe = /CREATE\s+(?:OR\s+REPLACE\s+)?FUNCTION\s+([\w.]+)\s*\([^)]*\)[^;]*?SECURITY\s+DEFINER/gi;
+  let m;
+  while ((m = fnRe.exec(executable)) !== null) {
+    const fnName = m[1];
+    // Extrai o bloco da função até o próximo $$ ou LANGUAGE
+    const startIdx = m.index;
+    const snippet = executable.slice(startIdx, startIdx + 2000);
+    // Verifica se há SET search_path sem pg_temp
+    const hasSetPath = /SET\s+search_path\s*=/i.test(snippet);
+    const hasPgTemp = /pg_temp/i.test(snippet);
+    if (hasSetPath && !hasPgTemp) {
+      results.push(fnName);
+    } else if (!hasSetPath) {
+      // Sem SET search_path algum — também problemático
+      results.push(fnName);
+    }
+  }
+  return results;
+}
+
+/**
+ * E067: detecta CREATE EXTENSION sem WITH SCHEMA extensions.
+ * Retorna array de nomes de extensões.
+ */
+export function detectExtensionWithoutSchema(sqlContent) {
+  const executable = sqlContent.replace(/--[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, '');
+  const results = [];
+  const re = /CREATE\s+EXTENSION\s+(?:IF\s+NOT\s+EXISTS\s+)?["']?(\w+)["']?(?!\s+WITH\s+SCHEMA)/gi;
+  let m;
+  while ((m = re.exec(executable)) !== null) {
+    results.push(m[1]);
+  }
+  return results;
 }
 
 /**
@@ -208,6 +258,16 @@ export function evaluatePreflight({ version, files, sqlContent, isInLedger, expe
 
   if (files.length === 1 && sqlContent != null && !hasRollbackHeader(sqlContent)) {
     problems.push('arquivo não tem cabeçalho de rollback lógico ("-- Rollback:" nas primeiras 40 linhas).');
+  }
+
+  // E063 — rollback como arquivo, não como comentário (migrations novas)
+  if (files.length === 1 && sqlContent != null && !expectApplied) {
+    if (!findRollbackFile(version)) {
+      problems.push(
+        `arquivo de rollback ${version}_rollback.sql não encontrado. ` +
+        `Para migrations novas, crie o arquivo irmão supabase/migrations/${version}_rollback.sql com os comandos de reversão.`,
+      );
+    }
   }
 
   if (expectApplied) {
@@ -245,6 +305,26 @@ export function evaluatePreflight({ version, files, sqlContent, isInLedger, expe
           '— considere CONCURRENTLY para tabelas grandes (>1M linhas), com "-- transaction: none".',
         );
       }
+    }
+
+    // E066 — SECURITY DEFINER sem pg_temp no search_path
+    const secdefIssues = detectSecurityDefinerWithoutPgTemp(sqlContent);
+    for (const fn of secdefIssues) {
+      problems.push(
+        `SECURITY DEFINER sem "pg_temp" no SET search_path em função "${fn}": ` +
+        'vulnerável a shadowing por objetos em pg_temp. ' +
+        'Adicione SET search_path = pg_catalog, pg_temp (ou inclua pg_temp explicitamente).',
+      );
+    }
+
+    // E067 — CREATE EXTENSION sem WITH SCHEMA extensions
+    const extIssues = detectExtensionWithoutSchema(sqlContent);
+    for (const ext of extIssues) {
+      problems.push(
+        `CREATE EXTENSION "${ext}" sem WITH SCHEMA extensions: ` +
+        'instala objetos no schema default (lint 0014 extension_in_public). ' +
+        'Use CREATE EXTENSION IF NOT EXISTS "' + ext + '" WITH SCHEMA extensions;',
+      );
     }
   }
 
