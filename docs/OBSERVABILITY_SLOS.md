@@ -15,9 +15,16 @@
 
 1. **burn-rate rápido:** erro de login > 3× o orçamento em 1h → página o on-call.
 2. **burn-rate lento:** consumo de orçamento > 50% em 6h → abrir issue.
-3. **breaker aberto:** evento `breaker_open` em qualquer edge (login-gate,
-   log-login-attempt) por > 5min → investigar dependência (Supabase/auth).
+3. **breaker aberto:** `breaker_open` em qualquer edge por > 5min → investigar
+   dependência. Hoje emitem: `log-login-attempt` (reason em `log_login_fallback`)
+   e as edges com `fetchWithBreaker` (quote-sync, sync-quote-bitrix,
+   bitrix-sync, cnpj-lookup, etc. — logam `console.warn [circuit-breaker:<nome>] OPEN`;
+   `webhook-dispatcher` usa `getBreaker` próprio por hostname e registra
+   `circuit_open` na tabela de deliveries, sem o warn acima;
+   o cliente emite `edge_invoke_breaker_open`). O gate de login `check-login`
+   não tem breaker ainda.
 4. **fallback audit:** `log_login_fallback` > 10/hora → auditoria degradada.
 
-Fonte dos eventos: `src/lib/navigation-metrics` (buffer), `log-safety`,
-`structuredLogger` nas edges (`log.info/warn/error` com `source=`).
+Fonte dos eventos: `src/lib/telemetry/navigationMetrics.ts` (buffer),
+`supabase/functions/_shared/log-safety.ts`, `structuredLogger` nas edges
+(`log.info/warn/error` com `source=`).
