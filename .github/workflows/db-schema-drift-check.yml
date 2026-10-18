@@ -104,9 +104,11 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-
         with:
           persist-credentials: false  # E32
+          # E57: usa o SHA exato do head do PR (não o merge commit do tip do branch).
+          # Para eventos sem PR, github.sha já aponta para o commit correto.
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Gate - secrets obrigatórios presentes?
         id: guard
         run: |
