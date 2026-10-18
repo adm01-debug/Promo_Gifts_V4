@@ -223,6 +223,7 @@ jobs:
           set -euo pipefail
           node scripts/check-todo-baseline.mjs
           node scripts/check-as-assertions-baseline.mjs
+          node scripts/check-as-unknown-baseline.mjs
           node scripts/check-file-size-baseline.mjs
 
       - name: Gate 1.9.1 — console.* baseline (bloqueante)

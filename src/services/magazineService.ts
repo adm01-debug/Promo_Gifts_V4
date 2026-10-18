@@ -50,41 +50,72 @@ type MagazineItemRow = MagazineDatabase['public']['Tables']['magazine_items']['R
 // ---------------------------------------------------------------------------
 
 /**
- * Valida (só-observabilidade) um campo JSONB contra o schema esperado e loga
- * quando diverge — NUNCA altera o valor retornado nem bloqueia a leitura. O
- * cast permissivo (`as unknown as T`) continua sendo o comportamento real;
- * isto só dá visibilidade de quando ele está mascarando dado legado/quebrado
+ * Parseia um campo JSONB via schema zod. Retorna o valor validado quando
+ * válido; loga a divergência e retorna o fallback caso contrário.
+ * Substitui o antigo cast permissivo — garante que o tipo de domínio é
+ * satisfeito sem depender de uma asserção não verificada.
  * (achado da auditoria de 2026-09-24: PR #1899 corrigiu 2 crashes causados
- * exatamente por esse tipo de divergência passando despercebida).
+ * exatamente por dado mal-shapado passando despercebido via cast.)
  */
-function logShapeDrift(field: string, rowId: string, schema: z.ZodTypeAny, value: unknown): void {
+function parseJsonb<T>(
+  schema: z.ZodType<T>,
+  value: unknown,
+  fallback: T,
+  field: string,
+  rowId: string,
+): T {
   const result = schema.safeParse(value);
-  if (!result.success) {
-    logger.warn(`[magazineService] shape drift em ${field} (id=${rowId}):`, result.error.issues);
-  }
+  if (result.success) return result.data;
+  logger.warn(`[magazineService] shape drift em ${field} (id=${rowId}):`, result.error.issues);
+  return fallback;
 }
 
 function rowToItem(row: MagazineItemRow): MagazineItem {
-  logShapeDrift('product_snapshot', row.id, magazineProductSnapshotSchema, row.product_snapshot);
-  if (row.overrides)
-    logShapeDrift('overrides', row.id, magazineContentSettingsSchema, row.overrides);
   return {
     id: row.id,
     productId: row.product_id,
-    productSnapshot: row.product_snapshot as unknown as MagazineProductSnapshot,
+    productSnapshot: parseJsonb(
+      magazineProductSnapshotSchema,
+      row.product_snapshot,
+      {} as MagazineProductSnapshot,
+      'product_snapshot',
+      row.id,
+    ),
     variantColorName: row.variant_color_name,
     position: row.position,
     pageNumber: row.page_number,
-    overrides: (row.overrides ?? {}) as unknown as Partial<MagazineContentSettings>,
+    overrides: parseJsonb(
+      magazineContentSettingsSchema,
+      row.overrides ?? {},
+      {} as Partial<MagazineContentSettings>,
+      'overrides',
+      row.id,
+    ),
   };
 }
 
 function rowToMagazine(row: MagazineRow, items: MagazineItemRow[]): Magazine {
-  if (row.branding) logShapeDrift('branding', row.id, magazineClientBrandingSchema, row.branding);
-  if (row.content_settings)
-    logShapeDrift('content_settings', row.id, magazineContentSettingsSchema, row.content_settings);
-  if (!isValidMagazinePageOrder(row.page_order))
-    logger.warn(`[magazineService] shape drift em page_order (id=${row.id})`);
+  const branding = row.branding
+    ? parseJsonb(
+        magazineClientBrandingSchema,
+        row.branding,
+        {} as MagazineClientBranding,
+        'branding',
+        row.id,
+      )
+    : ({} as MagazineClientBranding);
+  const contentSettings = row.content_settings
+    ? parseJsonb(
+        magazineContentSettingsSchema,
+        row.content_settings,
+        {} as MagazineContentSettings,
+        'content_settings',
+        row.id,
+      )
+    : ({} as MagazineContentSettings);
+  const pageOrder: MagazinePageOrder = isValidMagazinePageOrder(row.page_order)
+    ? row.page_order
+    : (logger.warn(`[magazineService] shape drift em page_order (id=${row.id})`), null);
   return {
     id: row.id,
     ownerId: row.owner_id,
@@ -94,18 +125,18 @@ function rowToMagazine(row: MagazineRow, items: MagazineItemRow[]): Magazine {
     templateId: row.template_id as MagazineTemplateId,
     branding: {
       ...DEFAULT_BRANDING,
-      ...((row.branding as unknown as MagazineClientBranding) ?? {}),
+      ...branding,
       colors: {
         ...DEFAULT_BRANDING.colors,
-        ...((row.branding as unknown as MagazineClientBranding)?.colors ?? {}),
+        ...(branding.colors ?? {}),
       },
     },
     content: {
       ...DEFAULT_MAGAZINE_CONTENT,
-      ...((row.content_settings as unknown as MagazineContentSettings) ?? {}),
+      ...contentSettings,
     },
     items: [...items].sort((a, b) => a.position - b.position).map(rowToItem),
-    pageOrder: row.page_order as unknown as MagazinePageOrder,
+    pageOrder,
     status: row.status as 'archived' | 'draft' | 'published',
     publicToken: row.public_token,
     viewCount: row.view_count ?? 0,
@@ -547,7 +578,7 @@ export const magazineService = {
     const { data, error } = await magazineDb.rpc('magazine_add_items_v2', {
       p_magazine_id: id,
       p_expected_edit_version: version,
-      p_items: rows as unknown as Json,
+      p_items: rows as Json,
     });
     if (error) throw mutationError('adicionar produtos', error);
     return hydrateMutation(
