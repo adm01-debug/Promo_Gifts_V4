@@ -31,8 +31,9 @@
 
 import { execSync, spawnSync } from 'node:child_process';
 import { accessSync, constants, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
-import { delimiter, isAbsolute, join } from 'node:path';
-import { parseSupabaseMigrationLedgerOutput } from './check-supabase-migration-ledger.mjs';
+import { delimiter, dirname, isAbsolute, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { auditSupabaseMigrationLedger, parseSupabaseMigrationLedgerOutput } from './check-supabase-migration-ledger.mjs';
 import {
   appliedVersionsFromLedger,
   BASELINE_DIR,
@@ -139,12 +140,29 @@ function buildAllInOne() {
   return { count: files.length, path: outPath };
 }
 
+function loadRemoteOnlyAllowlist() {
+  try {
+    const allowlistPath = resolve(
+      dirname(fileURLToPath(import.meta.url)),
+      'migration-ledger-remote-only-allowlist.json',
+    );
+    return JSON.parse(readFileSync(allowlistPath, 'utf8')).versions ?? [];
+  } catch {
+    return [];
+  }
+}
+
 function readLedger() {
   try {
     const output = execSync('supabase migration list --linked --output-format json', {
       encoding: 'utf8', maxBuffer: 16 * 1024 * 1024,
     });
-    return parseSupabaseMigrationLedgerOutput(output);
+    const document = parseSupabaseMigrationLedgerOutput(output);
+    // E060: auditar com allowlist para que blocking_remote_only_count reflita só versões não-cobertas
+    const remoteOnlyAllowlist = loadRemoteOnlyAllowlist();
+    const audit = auditSupabaseMigrationLedger(document, { remoteOnlyAllowlist });
+    document._audit = audit;
+    return document;
   } catch (error) {
     err(`Ledger remoto indisponível: ${error.message}`);
     return null;
@@ -266,6 +284,10 @@ function main() {
   if (live.ok) {
     meta.live_schema = { bytes: live.bytes };
     meta.baseline = { version: live.baselineVersion, ledger_versions: live.ledgerVersions };
+    // E060: emitir blocking_remote_only_count calculado com allowlist (0 = OK)
+    if (ledger._audit?.summary) {
+      meta.blocking_remote_only_count = ledger._audit.summary.blocking_remote_only_count;
+    }
   } else if (strict) {
     process.exitCode = 1;
   }

@@ -70,6 +70,36 @@ const ALTER_TYPE_ADD_VALUE = /ALTER\s+TYPE\s+\S+\s+ADD\s+VALUE\b/i;
 // E97/Codex P2: lookahead inclui \s+ para cobrir múltiplos espaços entre keyword e IF EXISTS
 const DROP_WITHOUT_IF_EXISTS = /DROP\s+(?:TABLE|VIEW|FUNCTION|PROCEDURE|SCHEMA|TYPE|SEQUENCE|POLICY)(?!\s+IF\s+EXISTS\b)/i;
 
+/**
+ * E061/E062: tabelas de produção conhecidas como grandes (>1M linhas).
+ * CREATE INDEX sem CONCURRENTLY nessas tabelas bloqueia escrita por minutos.
+ * A lista cresce à medida que novos casos são confirmados via pg_stat_user_tables.
+ */
+const KNOWN_LARGE_TABLES = [
+  'stock_snapshots',    // 3.6M linhas (P200-E061)
+  'order_items',        // alta cardinalidade histórica
+  'products',           // catálogo principal
+];
+
+/** E061/E062: detecta CREATE INDEX sem CONCURRENTLY no SQL executável. */
+export function detectCreateIndexWithoutConcurrently(sqlContent) {
+  // Remove comments before analysis
+  const executable = sqlContent.replace(/--[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, '');
+  // Match: CREATE [UNIQUE] INDEX [IF NOT EXISTS] [name] ON [schema.]table
+  const re = /CREATE\s+(?:UNIQUE\s+)?INDEX\s+(?:CONCURRENTLY\s+)?(?:IF\s+NOT\s+EXISTS\s+)?(\w+)?\s+ON\s+(?:\w+\.)?(\w+)/gi;
+  const results = [];
+  let m;
+  while ((m = re.exec(executable)) !== null) {
+    const fullMatch = m[0];
+    const tableName = m[2] || '';
+    const hasConcurrently = /CONCURRENTLY/i.test(fullMatch);
+    if (!hasConcurrently) {
+      results.push({ tableName, isLarge: KNOWN_LARGE_TABLES.includes(tableName.toLowerCase()) });
+    }
+  }
+  return results;
+}
+
 const VERSION_RE = /^\d{6,19}(?:_[A-Za-z0-9]+)*$/;
 
 /**
@@ -189,6 +219,7 @@ export function evaluatePreflight({ version, files, sqlContent, isInLedger, expe
   }
 
   const nonTransactionalDdl = files.length === 1 && sqlContent != null ? detectNonTransactionalDdl(sqlContent) : [];
+  const warnings = [];
 
   // E63 — checagem de DDL bloqueante (nova)
   if (files.length === 1 && sqlContent != null) {
@@ -196,11 +227,31 @@ export function evaluatePreflight({ version, files, sqlContent, isInLedger, expe
     const hasTransactionNoneOptOut = optOut.transactionNone && optOut.approvedBy !== null;
     const blockingDdl = detectBlockingDdl(sqlContent, { hasTransactionNoneOptOut });
     problems.push(...blockingDdl);
+
+    // E061/E062 — CREATE INDEX sem CONCURRENTLY
+    const indexesWithoutConcurrently = detectCreateIndexWithoutConcurrently(sqlContent);
+    for (const { tableName, isLarge } of indexesWithoutConcurrently) {
+      if (isLarge) {
+        // E061: tabela grande conhecida — BLOQUEIA
+        problems.push(
+          `CREATE INDEX sem CONCURRENTLY em tabela grande "${tableName}": ` +
+          'bloqueia escrita por toda a duração da criação do índice. ' +
+          'Use CREATE INDEX CONCURRENTLY com "-- transaction: none" + "-- approved-by:" no cabeçalho.',
+        );
+      } else {
+        // E062: qualquer outra tabela — AVISO (não bloqueia)
+        warnings.push(
+          `CREATE INDEX sem CONCURRENTLY em "${tableName || '(tabela desconhecida)'}" ` +
+          '— considere CONCURRENTLY para tabelas grandes (>1M linhas), com "-- transaction: none".',
+        );
+      }
+    }
   }
 
   return {
     ok: problems.length === 0,
     problems,
+    warnings,
     nonTransactionalDdl,
   };
 }
@@ -258,6 +309,7 @@ async function main() {
     files,
     isInLedger,
     nonTransactionalDdl: result.nonTransactionalDdl,
+    warnings: result.warnings,
     expectApplied: EXPECT_APPLIED,
   };
 
@@ -270,6 +322,10 @@ async function main() {
     });
   }
 
+  const warnSuffix = result.warnings.length
+    ? ` — aviso(s): ${result.warnings.join(' | ')}`
+    : '';
+
   return concludeCheck({
     check: 'preflight-migration-apply',
     status: CHECK_RESULT_STATUS.PASSED,
@@ -277,7 +333,7 @@ async function main() {
       ? `version ${VERSION} confirmada no ledger pós-aplicação.`
       : `version ${VERSION} pronta para aplicação (arquivo único, rollback documentado, ainda não no ledger)${
           result.nonTransactionalDdl.length ? ` — aviso: DDL não-transacional detectada (${result.nonTransactionalDdl.join(', ')})` : ''
-        }.`,
+        }${warnSuffix}.`,
     details,
   });
 }
