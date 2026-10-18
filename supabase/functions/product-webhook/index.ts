@@ -349,10 +349,19 @@ Deno.serve(async (req) => {
       chunk_metrics: [],
     };
 
+    // Erros de ENTRADA (campo obrigatório da action ausente, action
+    // desconhecida) respondem 422 com a mensagem — não vazam nada interno,
+    // e um 500 opaco impediria o caller de corrigir a requisição.
+    const unprocessable = (msg: string) =>
+      new Response(
+        JSON.stringify({ code: 'invalid_request', message: msg, fields: [] }),
+        { status: 422, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      );
+
     switch (data.action) {
       case 'upsert': {
         if (!singleProduct) {
-          throw new Error('Product data is required for upsert action');
+          return unprocessable('Product data is required for upsert action');
         }
         outcome = await upsertProducts(supabase, [singleProduct], BATCH_SIZE);
         break;
@@ -361,7 +370,7 @@ Deno.serve(async (req) => {
       case 'batch_upsert':
       case 'sync': {
         if (!products || products.length === 0) {
-          throw new Error('Products array is required for batch_upsert/sync action');
+          return unprocessable('Products array is required for batch_upsert/sync action');
         }
         outcome = await upsertProducts(supabase, products, BATCH_SIZE);
         break;
@@ -369,7 +378,7 @@ Deno.serve(async (req) => {
 
       case 'delete': {
         if (!externalIds || externalIds.length === 0) {
-          throw new Error('external_ids array is required for delete action');
+          return unprocessable('external_ids array is required for delete action');
         }
         // Soft-delete: set is_active=false + is_deleted=true + deleted_at timestamp.
         // Hard delete is irreversible and has no audit trail; misconfigured n8n nodes
@@ -394,7 +403,7 @@ Deno.serve(async (req) => {
       }
 
       default:
-        throw new Error(`Unknown action: ${(data as { action: string }).action}`);
+        return unprocessable(`Unknown action: ${(data as { action: string }).action}`);
     }
 
     if (syncLogId) {
@@ -456,15 +465,23 @@ async function upsertProducts(
 ): Promise<UpsertOutcome> {
   const startedAt = Date.now();
   const resolvers = await buildEntityResolvers(supabase);
-  // Dedup por sku (última ocorrência vence) ANTES de normalizar/resolver —
-  // duas linhas com o mesmo sku no mesmo INSERT fazem o Postgres recusar o
-  // lote inteiro (21000 cardinality_violation), e warnings/rejected devem
-  // descrever só a ocorrência que de fato será gravada.
-  const bySku = new Map<string, ProductPayload>();
-  for (const p of products) bySku.set(p.sku, p);
-  const deduped = [...bySku.values()];
-  const dedupedCount = products.length - deduped.length;
-  const normalized = deduped.map((p) => normalizeProduct(p, resolvers));
+  const normalized = products.map((p) => normalizeProduct(p, resolvers));
+  // Dedup por sku: duas linhas com o mesmo sku no mesmo INSERT fazem o
+  // Postgres recusar o lote inteiro (21000 cardinality_violation). Vence a
+  // ÚLTIMA ocorrência GRAVÁVEL (categoria+fornecedor resolvidos) — dedup da
+  // última crua podia descartar uma atualização válida quando a repetição
+  // vinha quebrada. Se nenhuma resolve, a última alimenta o rejected.
+  const lastIdx = new Map<string, number>();
+  const lastWritable = new Map<string, number>();
+  normalized.forEach((n, i) => {
+    lastIdx.set(n.sku, i);
+    if (n.category_id !== null && n.supplier_id !== null) lastWritable.set(n.sku, i);
+  });
+  const chosen = new Map<string, number>();
+  for (const n of normalized) {
+    chosen.set(n.sku, lastWritable.get(n.sku) ?? (lastIdx.get(n.sku) as number));
+  }
+  const dedupedCount = products.length - chosen.size;
   const unresolved = {
     category: [] as string[],
     supplier: [] as string[],
@@ -474,7 +491,8 @@ async function upsertProducts(
   const valid: NormalizedProduct[] = [];
   const rejected: string[] = [];
   for (const [i, n] of normalized.entries()) {
-    const p = deduped[i];
+    if (chosen.get(n.sku) !== i) continue;
+    const p = products[i];
     if (n.category_id === null && (p.category_id !== undefined || p.category_name))
       unresolved.category.push(p.sku);
     if (n.supplier_id === null && (p.supplier_id !== undefined || p.supplier_name))
@@ -533,7 +551,7 @@ async function upsertProducts(
 
   if (dedupedCount > 0) {
     warnings.push(
-      `sku duplicado no payload: ${dedupedCount} linha(s) descartada(s) — última ocorrência vence`,
+      `sku duplicado no payload: ${dedupedCount} linha(s) descartada(s) — última ocorrência gravável vence`,
     );
   }
 
@@ -693,8 +711,11 @@ async function upsertProducts(
       `rejected_unresolved: ${rejected.length} produto(s) sem NOT NULL resolvido ` +
         `(ex: ${rejected.slice(0, 5).join('; ')})`,
     );
+    // SKUs são dado do próprio caller — seguro devolver para ele corrigir
+    // (o que não pode vazar é mensagem de banco, já sanitizada acima).
     clientErrors.push(
-      `rejected_unresolved: ${rejected.length} produto(s) sem campos obrigatórios resolvidos`,
+      `rejected_unresolved: ${rejected.length} produto(s) sem campos obrigatórios resolvidos ` +
+        `(ex: ${rejected.slice(0, 5).join('; ')})`,
     );
   }
 
