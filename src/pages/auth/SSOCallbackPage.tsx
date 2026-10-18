@@ -45,6 +45,13 @@ export default function SSOCallbackPage() {
   const { validateIPForAuthenticatedUser } = useIPValidation();
   const { checkDevice } = useDeviceDetection();
   const handledRef = useRef(false);
+  // Callbacks derivados de `user` no AuthContext (refreshSession, checkDevice)
+  // mudam de identidade quando a sessão propaga — se entrarem nas deps, o
+  // efeito re-executa, o cleanup cancela o run() em voo e handledRef impede
+  // restart (página travada em "confirming" para sempre). Via ref o efeito
+  // roda uma única vez e ainda enxerga a versão mais nova de cada função.
+  const fnsRef = useRef({ refreshSession, signOut, validateIPForAuthenticatedUser, checkDevice });
+  fnsRef.current = { refreshSession, signOut, validateIPForAuthenticatedUser, checkDevice };
   const [status, setStatus] = useState<CallbackStatus>('processing');
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -154,7 +161,7 @@ export default function SSOCallbackPage() {
       setStatus('confirming');
       if (session?.user?.email) setUserEmail(session.user.email);
       try {
-        await refreshSession();
+        await fnsRef.current.refreshSession();
       } catch (e) {
         tracer.stepError('redirect-home', e);
         logger.warn('[sso-callback] refreshSession failed', {
@@ -174,10 +181,12 @@ export default function SSOCallbackPage() {
       const oauthUid = session?.user?.id;
       const oauthEmail = session?.user?.email;
       if (oauthUid && oauthEmail) {
-        const ipCheck = await validateIPForAuthenticatedUser(oauthUid).catch(() => null);
+        const ipCheck = await fnsRef.current
+          .validateIPForAuthenticatedUser(oauthUid)
+          .catch(() => null);
         if (cancelled) return;
         if (ipCheck && !ipCheck.isAllowed && ipCheck.hasRestrictions) {
-          await signOut().catch(() => undefined);
+          await fnsRef.current.signOut().catch(() => undefined);
           void invokeEdge('log-login-attempt', {
             body: {
               email: oauthEmail,
@@ -203,7 +212,7 @@ export default function SSOCallbackPage() {
         }).catch(() => undefined);
         // Usuário explícito: o contexto ainda não propagou — o callback
         // capturado veria user=null e pularia o primeiro login social.
-        void checkDevice({ id: oauthUid, email: oauthEmail }).catch(() => undefined);
+        void fnsRef.current.checkDevice({ id: oauthUid, email: oauthEmail }).catch(() => undefined);
       }
       const target = consumePostLoginRedirect('/');
       tracer.step('redirect-home', { target });
@@ -285,7 +294,13 @@ export default function SSOCallbackPage() {
             void goHome(newSession);
           }
         });
-        unsub = () => data.subscription.unsubscribe();
+        // Se a página desmontou enquanto o getSession estava em voo, o
+        // cleanup já rodou — cancelar a inscrição aqui em vez de vazá-la.
+        if (cancelled) {
+          data.subscription.unsubscribe();
+        } else {
+          unsub = () => data.subscription.unsubscribe();
+        }
 
         // Timeout de segurança: 8s sem sessão → volta para login.
         timeoutId = window.setTimeout(() => {
@@ -317,14 +332,10 @@ export default function SSOCallbackPage() {
       if (confirmedHoldId !== null) window.clearTimeout(confirmedHoldId);
       window.clearTimeout(slowHintId);
     };
-  }, [
-    navigate,
-    searchParams,
-    refreshSession,
-    signOut,
-    validateIPForAuthenticatedUser,
-    checkDevice,
-  ]);
+    // Deps estáveis de propósito: callbacks derivados de `user` (AuthContext
+    // os recria quando a sessão propaga) são lidos via fnsRef — incluí-los
+    // aqui re-executava o efeito e cancelava o goHome em voo.
+  }, [navigate, searchParams]);
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#030508] px-4">
