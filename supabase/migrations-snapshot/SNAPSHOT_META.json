@@ -1,55 +1,13 @@
 {
-  "generated_at": "2026-10-12T16:14:07.605Z",
+  "generated_at": "2026-10-18T10:51:31.885Z",
   "project_ref": "doufsxqlfjyuvxuezpln",
-  "migrations_count": 3018,
+  "migrations_count": 3034,
   "live_schema": {
-    "bytes": 4863307
+    "bytes": 4983446
   },
-  "drift": {
-    "computed": false,
-    "reason": "Ledger divergente: 2508 pares, 477 somente locais, 1 somente remotos. Replay bloqueado.",
-    "ledger": {
-      "schema_version": 1,
-      "source": "supabase migration list --linked --output-format json",
-      "rows": 2986,
-      "matched": 2508,
-      "local_only_count": 477,
-      "remote_only_count": 1,
-      "blocking_remote_only_count": 1,
-      "allowlisted_remote_only_count": 0,
-      "mismatched_count": 0,
-      "malformed_row_count": 0,
-      "local_only_sample": [
-        "20260511235900",
-        "20260512000000",
-        "20260525200106",
-        "20260525232003",
-        "20260526103000",
-        "20260526120000",
-        "20260526133316",
-        "20260526134911",
-        "20260526135538",
-        "20260526140224",
-        "20260526140530",
-        "20260526140856",
-        "20260526141234",
-        "20260526200904",
-        "20260526201213",
-        "20260526201551",
-        "20260526210100",
-        "20260526210206",
-        "20260526220000",
-        "20260526220004"
-      ],
-      "remote_only_sample": [
-        "20260712"
-      ],
-      "blocking_remote_only_sample": [
-        "20260712"
-      ],
-      "allowlisted_remote_only_sample": [],
-      "mismatched_sample": [],
-      "malformed_row_sample": []
-    }
+  "drift": "calculado por .github/workflows/db-schema-drift-check.yml a partir do baseline",
+  "baseline": {
+    "version": "20261015140000",
+    "ledger_versions": 2524
   }
 }

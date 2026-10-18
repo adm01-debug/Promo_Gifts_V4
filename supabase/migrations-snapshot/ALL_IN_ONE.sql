@@ -1,7 +1,7 @@
 -- ==============================================================
 -- ALL_IN_ONE.sql — snapshot concatenado de supabase/migrations/
--- Gerado em: 2026-10-12T16:08:31.952Z
--- Total de arquivos: 3018
+-- Gerado em: 2026-10-18T10:44:29.553Z
+-- Total de arquivos: 3034
 -- Ordem: alfabética (mesmo critério do Supabase CLI)
 -- Uso: APENAS auditoria/leitura. NÃO aplicar direto no banco.
 -- SSOT continua sendo os arquivos individuais em supabase/migrations/.
@@ -253947,6 +253947,1358 @@ COMMENT ON FUNCTION public.fn_verify_anon_catalog_grants() IS
   'produto_variants is_active policy. 0 linhas = saudável.';;
 
 -- <<< END 20261008230000_restringir_anon_mockup_approval_links.sql <<<
+
+-- >>> BEGIN 20261013170913_incidente20261013_fase5_permissoes_auditoria.sql >>>
+-- Espelho do ledger (reconciliação B2, 2026-10-15)
+-- version=20261013170913 name=incidente20261013_fase5_permissoes_auditoria
+-- Aplicada em doufsxqlfjyuvxuezpln em 2026-10-13 via MCP apply_migration (Agente 5, incidente 2026-10-13).
+-- O arquivo existia como 20261013120000_* (timestamp diferente do ledger). Renomeado e com o
+-- corpo substituído pelos statements do ledger, byte a byte: md5 = 58a805b0099333a30853aa7fcf590eb3.
+-- A justificativa etapa a etapa (53/54/56/57/60/62) está na versão comentada anterior:
+--   git show 1b59d0f:supabase/migrations/20261013120000_incidente20261013_fase5_permissoes_auditoria.sql
+-- Já está no ledger: NÃO reaplicar.
+-- >>> statements do ledger (byte-exato) abaixo desta linha <<<
+-- ============================================================================
+-- INCIDENTE 2026-10-13 — Fase 5 (Permissões, Auditoria, Secrets)
+-- Ticket: incidente 2026-10-13, aprovado pelo PO neste chat (Agente 5/5).
+-- ============================================================================
+
+CREATE OR REPLACE FUNCTION public.log_access_denied(
+  _blocked_path text,
+  _required_role text,
+  _user_role text DEFAULT NULL::text,
+  _reason text DEFAULT 'route_blocked'::text
+)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path TO 'public'
+AS $function$
+DECLARE _uid uuid := auth.uid();
+BEGIN
+  IF _uid IS NULL THEN RETURN; END IF;
+  IF _required_role NOT IN ('dev','admin','supervisor') THEN
+    RAISE EXCEPTION 'invalid required_role: %', _required_role;
+  END IF;
+  INSERT INTO public.admin_audit_log (
+    user_id, action, resource_type, resource_id, status, source,
+    started_at, finished_at, duration_ms, request_id, payload_summary, details
+  ) VALUES (
+    _uid, 'route.access_denied', 'route', _blocked_path, 'denied', 'frontend-guard',
+    now(), now(), 0, gen_random_uuid()::text,
+    jsonb_build_object('blocked_path', _blocked_path),
+    jsonb_build_object('reason', _reason, 'blocked_path', _blocked_path,
+                       'required_role', _required_role, 'user_role', _user_role)
+  );
+END;
+$function$;
+
+CREATE OR REPLACE FUNCTION public.record_dev_route_telemetry(
+  _event_type text,
+  _blocked_path text,
+  _user_role text DEFAULT NULL::text,
+  _duration_ms integer DEFAULT NULL::integer
+)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path TO 'public'
+AS $function$
+DECLARE
+  _uid uuid := auth.uid();
+  _safe_path text; _safe_role text; _safe_duration integer; _recent_count integer;
+  _allowed_events constant text[] := ARRAY['view','back','retry','fallback','request_access','copy_link','mail','abandon'];
+BEGIN
+  IF _uid IS NULL THEN RETURN; END IF;
+  IF NOT (_event_type = ANY (_allowed_events)) THEN
+    RAISE EXCEPTION 'invalid event_type: %', _event_type USING ERRCODE = '22023';
+  END IF;
+  _safe_path := substring(coalesce(_blocked_path, '') from 1 for 200);
+  IF length(_safe_path) = 0 THEN RAISE EXCEPTION 'blocked_path required' USING ERRCODE = '22023'; END IF;
+  _safe_role := substring(coalesce(_user_role, '') from 1 for 32);
+  IF _safe_role NOT IN ('dev','admin','supervisor','agente','agent','vendedor','') THEN _safe_role := 'unknown'; END IF;
+  IF length(_safe_role) = 0 THEN _safe_role := NULL; END IF;
+  IF _duration_ms IS NULL THEN _safe_duration := NULL;
+  ELSIF _duration_ms < 0 THEN _safe_duration := 0;
+  ELSIF _duration_ms > 3600000 THEN _safe_duration := 3600000;
+  ELSE _safe_duration := _duration_ms; END IF;
+  SELECT count(*) INTO _recent_count FROM public.admin_audit_log
+  WHERE user_id = _uid AND action = 'route.ux_event' AND source = 'dev-route-ui'
+    AND created_at > now() - interval '1 minute';
+  IF _recent_count >= 30 THEN RETURN; END IF;
+  INSERT INTO public.admin_audit_log (
+    user_id, action, resource_type, resource_id, status, source,
+    started_at, finished_at, duration_ms, request_id, payload_summary, details
+  ) VALUES (
+    _uid, 'route.ux_event', 'route', _safe_path,
+    CASE WHEN _event_type IN ('view','abandon','copy_link','mail') THEN 'denied'
+         WHEN _event_type IN ('back','retry','fallback') THEN 'partial'
+         WHEN _event_type = 'request_access' THEN 'success' ELSE 'denied' END,
+    'dev-route-ui', now(), now(), _safe_duration, gen_random_uuid()::text,
+    jsonb_build_object('event_type', _event_type, 'blocked_path', _safe_path),
+    jsonb_build_object('event_type', _event_type, 'blocked_path', _safe_path, 'user_role', _safe_role, 'duration_ms', _safe_duration)
+  );
+END; $function$;
+
+CREATE OR REPLACE FUNCTION public.log_user_logout()
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path TO 'public'
+AS $function$
+DECLARE _uid uuid := auth.uid();
+BEGIN
+  IF _uid IS NULL THEN RETURN; END IF;
+  INSERT INTO public.admin_audit_log (
+    user_id, action, resource_type, status, source, details
+  ) VALUES (
+    _uid, 'user.logout', 'auth', 'success', 'client.auth',
+    jsonb_build_object('timestamp', now())
+  );
+END;
+$function$;
+
+COMMENT ON FUNCTION public.log_access_denied(text, text, text, text) IS
+  'Incidente 2026-10-13: convertida para SECURITY DEFINER. Antes disso, INSERT em admin_audit_log violava a RLS (requer is_admin_or_above) para todo usuario autenticado nao-admin que caisse numa rota bloqueada, propagando erro ao frontend.';
+COMMENT ON FUNCTION public.record_dev_route_telemetry(text, text, text, integer) IS
+  'Incidente 2026-10-13: convertida para SECURITY DEFINER. Mesmo motivo de log_access_denied.';
+COMMENT ON FUNCTION public.log_user_logout() IS
+  'Incidente 2026-10-13: convertida para SECURITY DEFINER e adicionado guard de auth.uid() IS NULL. Antes disso, todo logout de usuario nao-admin violava a RLS de INSERT em admin_audit_log.';
+
+REVOKE INSERT, UPDATE, DELETE ON public.admin_audit_log FROM authenticated;
+
+GRANT EXECUTE ON FUNCTION public.check_telemetry_regression() TO authenticated;
+
+REVOKE ALL PRIVILEGES ON public.profiles FROM anon;
+REVOKE ALL PRIVILEGES ON public.user_roles FROM anon;
+REVOKE ALL PRIVILEGES ON public.ip_access_control FROM anon;
+REVOKE ALL PRIVILEGES ON public.outbound_webhooks FROM anon;
+
+REVOKE INSERT, UPDATE, DELETE ON public.mcp_api_keys FROM authenticated;
+REVOKE INSERT, UPDATE, DELETE ON public.secret_rotation_log FROM authenticated;
+REVOKE INSERT, UPDATE, DELETE ON public.login_attempts FROM authenticated;
+
+COMMENT ON TABLE public.video_import_queue IS
+'Fila de importacao de videos YouTube -> Cloudflare Stream.
+Consumida pelo VPS /workspace/xbz_video_import.js em background.
+
+---- ESTADOS (coluna status) ----
+  pending          -> aguardando processamento
+  downloading      -> yt-dlp baixando o MP4 (FOR UPDATE SKIP LOCKED -- safe para parallel)
+  error_download   -> falha no download (retry automatico ate max_retries=3)
+  error_upload     -> falha no upload CF (retry automatico ate max_retries=3)
+  done             -> upload CF concluido (aguardando link ao produto)
+  linked           -> fn_xbz_link_video executada com sucesso (estado final)
+
+---- FORNECEDORES ----
+  ''SPOT'' (padrao): 139 videos na conta (historico, pipeline anterior)
+  ''xbz'':          155 videos enfileirados em 2026-06-07 (129 pendentes, 22 linked, 3 error)
+
+---- PROCESSADORES ----
+  fn_video_queue_next(supplier)  -> pega proximo item (SECURITY DEFINER, FOR UPDATE SKIP LOCKED)
+  fn_video_queue_update(...)     -> atualiza status/campos CF
+  fn_video_link_to_products(id)  -> vincula SPOT ao produto (INSERT em product_videos)
+  fn_xbz_link_video(...)         -> vincula XBZ ao produto (UPDATE em product_videos existente)
+
+---- VPS SCRIPT ----
+  /workspace/xbz_video_import.js (v3, Node.js, DELAY_MS=8000)
+  Monitorar: cat /workspace/xbz_video_stats.json
+  Resetar itens stuck: UPDATE video_import_queue SET status=''pending'', started_at=NULL
+    WHERE source_supplier=''xbz'' AND status=''downloading''
+
+---- CLOUDFLARE STREAM ----
+  Account ID:      cd0f4eee542191c4957567814e1f8ca1
+  Account Hash:    ksi0mrlcw6rwzezz   (subdomain correto, != accountId)
+  Token:           ver vault/integration_credentials -- NAO colocar token em COMMENT ON (incidente 2026-10-13: token cfat_* ficou exposto em texto claro aqui por ~4 meses; ROTACAO PENDENTE -- decisao do PO, nao executada por sessao automatizada).
+  Storage:         ~208min usados / 1.000min no plano (em 2026-06-07, revisar)
+  Throttle:        code 971 = rate limit de uploads (~7/min). Aguardar 30s extras.';
+
+-- <<< END 20261013170913_incidente20261013_fase5_permissoes_auditoria.sql <<<
+
+-- >>> BEGIN 20261013171010_incidente20261013_fase9_deteccao_erros_recorrentes.sql >>>
+-- Espelho do ledger (reconciliação B2, 2026-10-15)
+-- version=20261013171010 name=incidente20261013_fase9_deteccao_erros_recorrentes
+-- Aplicada em doufsxqlfjyuvxuezpln em 2026-10-13 via MCP apply_migration (incidente 2026-10-13).
+-- O arquivo existia como 20261013120500_* (timestamp diferente do ledger). Renomeado e com o
+-- corpo substituído pelos statements do ledger, byte a byte: md5(array_to_string(statements, chr(10)))
+-- = 3c482b22ea795a6ef1a4932676072e41. Versão comentada anterior:
+--   git show 1b59d0f:supabase/migrations/20261013120500_incidente20261013_fase9_deteccao_erros_recorrentes.sql
+-- Já está no ledger: NÃO reaplicar.
+-- >>> statements do ledger (byte-exato) abaixo desta linha <<<
+CREATE OR REPLACE FUNCTION public.fn_detect_recurring_errors_last_hour(
+  _min_occurrences integer DEFAULT 100
+)
+RETURNS TABLE (
+  source text,
+  message text,
+  occurrences bigint,
+  first_seen timestamptz,
+  last_seen timestamptz
+)
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path TO 'public'
+AS $function$
+  SELECT
+    'query_telemetry' AS source,
+    coalesce(qt.error_message, qt.error_kind, 'unknown') AS message,
+    count(*) AS occurrences,
+    min(qt.created_at) AS first_seen,
+    max(qt.created_at) AS last_seen
+  FROM public.query_telemetry qt
+  WHERE qt.created_at >= now() - interval '1 hour'
+    AND qt.severity = 'error'
+  GROUP BY coalesce(qt.error_message, qt.error_kind, 'unknown')
+  HAVING count(*) > _min_occurrences
+
+  UNION ALL
+
+  SELECT
+    'frontend_telemetry' AS source,
+    coalesce(ft.metadata->>'message', ft.name, 'unknown') AS message,
+    count(*) AS occurrences,
+    min(ft.created_at) AS first_seen,
+    max(ft.created_at) AS last_seen
+  FROM public.frontend_telemetry ft
+  WHERE ft.created_at >= now() - interval '1 hour'
+    AND ft.event_type = 'error'
+  GROUP BY coalesce(ft.metadata->>'message', ft.name, 'unknown')
+  HAVING count(*) > _min_occurrences
+
+  ORDER BY occurrences DESC;
+$function$;
+
+COMMENT ON FUNCTION public.fn_detect_recurring_errors_last_hour(integer) IS
+  'Incidente 2026-10-13 (etapa 93/94). Base de deteccao para alerta futuro: agrega erros de query_telemetry/frontend_telemetry na ultima hora por mensagem e retorna as que passam de _min_occurrences (default 100). Nao cobre postgres_logs (nao e consultavel via SQL dentro do banco -- ver query_logs via MCP/Management API). Nao implementa canal de notificacao -- apenas a funcao de deteccao, conforme escopo da etapa.';
+
+GRANT EXECUTE ON FUNCTION public.fn_detect_recurring_errors_last_hour(integer) TO service_role;
+
+-- <<< END 20261013171010_incidente20261013_fase9_deteccao_erros_recorrentes.sql <<<
+
+-- >>> BEGIN 20261013171045_fase0_fase8_contencao_seguranca.sql >>>
+-- Espelho do ledger (reconciliação B2, 2026-10-15)
+-- version=20261013171045 name=fase0_fase8_contencao_seguranca
+-- Aplicada em doufsxqlfjyuvxuezpln em 2026-10-13 via MCP apply_migration (Agente 1, incidente 2026-10-13).
+-- O arquivo existia como 20261013170914_* (timestamp diferente do ledger). Renomeado e com o
+-- corpo substituído pelos statements do ledger, byte a byte: md5 = 91aebf2a4160c4cbb53585252bca098b.
+-- A justificativa de cada item (bug de auto-referência, allowlist do vault, policies, REVOKEs)
+-- está na versão comentada anterior:
+--   git show 1b59d0f:supabase/migrations/20261013170914_fase0_fase8_contencao_seguranca.sql
+-- Já está no ledger: NÃO reaplicar (os CREATE POLICY falhariam por já existirem).
+-- >>> statements do ledger (byte-exato) abaixo desta linha <<<
+-- ============================================================================
+-- Incidente 2026-10-13 — diagnóstico de produção, aprovado pelo PO neste chat
+-- Agente 1 de 5 (Contenção e Segurança)
+-- ============================================================================
+
+-- 1) fn_autolink_canonical_on_content_hash — Fase 0, etapa 6
+CREATE OR REPLACE FUNCTION public.fn_autolink_canonical_on_content_hash()
+ RETURNS trigger
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO 'pg_catalog', 'public'
+AS $function$
+DECLARE
+  v_root_id               uuid;
+  v_existing_canonical_hash text;
+  v_old_group_root        uuid;
+  v_elected_dep_root      uuid;
+BEGIN
+  IF NEW.content_hash IS NULL OR (OLD.content_hash IS NOT NULL AND OLD.content_hash = NEW.content_hash) THEN
+    RETURN NEW;
+  END IF;
+
+  IF NEW.canonical_image_id IS NOT NULL THEN
+    IF OLD.content_hash IS NOT NULL AND OLD.content_hash IS DISTINCT FROM NEW.content_hash THEN
+      NEW.canonical_image_id := NULL;
+      NEW.is_shared := false;
+    ELSE
+      SELECT content_hash INTO v_existing_canonical_hash
+      FROM public.product_images
+      WHERE id = NEW.canonical_image_id;
+
+      IF v_existing_canonical_hash IS NOT DISTINCT FROM NEW.content_hash THEN
+        RETURN NEW;
+      END IF;
+      NEW.canonical_image_id := NULL;
+      NEW.is_shared := false;
+    END IF;
+  END IF;
+
+  SELECT id INTO v_root_id
+  FROM public.product_images
+  WHERE content_hash = NEW.content_hash
+    AND deleted_at IS NULL
+    AND canonical_image_id IS NULL
+    AND id <> NEW.id
+    AND is_shared = false
+  ORDER BY created_at ASC, id ASC
+  LIMIT 1;
+
+  IF v_root_id IS NOT NULL THEN
+    NEW.canonical_image_id := v_root_id;
+    NEW.is_shared := true;
+  ELSE
+    SELECT pi2.canonical_image_id INTO v_root_id
+    FROM public.product_images pi2
+    WHERE pi2.content_hash = NEW.content_hash
+      AND pi2.deleted_at IS NULL
+      AND pi2.canonical_image_id IS NOT NULL
+      AND pi2.id <> NEW.id
+      AND pi2.canonical_image_id <> NEW.id
+    LIMIT 1;
+
+    IF v_root_id = NEW.id THEN
+      v_root_id := NULL;
+    END IF;
+
+    IF v_root_id IS NOT NULL THEN
+      NEW.canonical_image_id := v_root_id;
+      NEW.is_shared := true;
+    END IF;
+  END IF;
+
+  IF OLD.canonical_image_id IS NULL AND OLD.content_hash IS NOT NULL THEN
+
+    SELECT id INTO v_old_group_root
+    FROM public.product_images
+    WHERE content_hash = OLD.content_hash
+      AND deleted_at IS NULL
+      AND canonical_image_id IS NULL
+      AND id <> NEW.id
+    ORDER BY created_at ASC, id ASC
+    LIMIT 1;
+
+    IF v_old_group_root IS NOT NULL THEN
+      UPDATE public.product_images
+      SET canonical_image_id = v_old_group_root,
+          is_shared           = true,
+          updated_at          = now()
+      WHERE canonical_image_id = NEW.id
+        AND id <> NEW.id
+        AND deleted_at IS NULL;
+
+    ELSE
+      SELECT id INTO v_elected_dep_root
+      FROM public.product_images
+      WHERE canonical_image_id = NEW.id
+        AND id <> NEW.id
+        AND deleted_at IS NULL
+      ORDER BY created_at ASC, id ASC
+      LIMIT 1;
+
+      IF v_elected_dep_root IS NOT NULL THEN
+        UPDATE public.product_images
+        SET canonical_image_id = NULL,
+            is_shared           = false,
+            updated_at          = now()
+        WHERE id = v_elected_dep_root;
+
+        UPDATE public.product_images
+        SET canonical_image_id = v_elected_dep_root,
+            is_shared           = true,
+            updated_at          = now()
+        WHERE canonical_image_id = NEW.id
+          AND id <> NEW.id
+          AND id <> v_elected_dep_root
+          AND deleted_at IS NULL;
+      END IF;
+    END IF;
+
+  END IF;
+
+  RETURN NEW;
+END;
+$function$;
+
+-- 3) get_edge_function_secret — Fase 0, etapa 8
+CREATE OR REPLACE FUNCTION public.get_edge_function_secret(_name text)
+ RETURNS text
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO 'vault', 'public', 'pg_temp'
+AS $function$
+DECLARE
+  _secret text;
+BEGIN
+  IF _name NOT IN (
+    'WEBHOOK_DISPATCHER_SECRET',
+    'WEBHOOK_DISPATCHER_URL',
+    'WEBHOOK_SECRET',
+    'CONNECTIONS_AUTO_TEST_SECRET',
+    'CRON_SECRET',
+    'HASH_PRODUCT_IMAGES_CRON_SECRET',
+    'GENERATE_BLURHASHES_CRON_SECRET',
+    'BACKFILL_DIM_CRON_SECRET',
+    'ASIA_INGESTION_CRON_SECRET'
+  ) THEN
+    RAISE EXCEPTION 'Nome de secret nao autorizado: %', _name
+      USING ERRCODE = 'insufficient_privilege';
+  END IF;
+
+  SELECT decrypted_secret INTO _secret
+  FROM vault.decrypted_secrets
+  WHERE name = _name
+  LIMIT 1;
+
+  IF _secret IS NULL THEN
+    RAISE EXCEPTION 'Secret % nao encontrado no vault', _name
+      USING ERRCODE = 'no_data_found';
+  END IF;
+
+  RETURN _secret;
+END;
+$function$;
+
+-- 4) Pausa de cron jobs não críticos — Fase 0, etapa 9
+SELECT cron.alter_job(job_id := 262, active := false); -- monitor-connections
+SELECT cron.alter_job(job_id := 294, active := false); -- dispatcher-log-sync
+SELECT cron.alter_job(job_id := 242, active := false); -- generate-blurhashes
+
+-- 8) Policies mínimas — Fase 8, etapa 87
+CREATE POLICY anon_catalog_grant_audit_log_admin_read
+  ON public.anon_catalog_grant_audit_log
+  FOR SELECT
+  TO authenticated
+  USING (is_admin_or_above((SELECT auth.uid())));
+
+CREATE POLICY anon_catalog_grant_audit_log_service_all
+  ON public.anon_catalog_grant_audit_log
+  FOR ALL
+  TO service_role
+  USING (true)
+  WITH CHECK (true);
+
+CREATE POLICY magazine_duplicate_requests_own_select
+  ON public.magazine_duplicate_requests
+  FOR SELECT
+  TO authenticated
+  USING (actor_id = (SELECT auth.uid()));
+
+CREATE POLICY magazine_duplicate_requests_own_insert
+  ON public.magazine_duplicate_requests
+  FOR INSERT
+  TO authenticated
+  WITH CHECK (actor_id = (SELECT auth.uid()));
+
+CREATE POLICY magazine_duplicate_requests_service_all
+  ON public.magazine_duplicate_requests
+  FOR ALL
+  TO service_role
+  USING (true)
+  WITH CHECK (true);
+
+-- 9) Revoga SELECT de authenticated/anon nas matviews — Fase 8, etapa 88
+REVOKE SELECT ON public.mv_stock_rupture_alert FROM authenticated, anon;
+REVOKE SELECT ON public.mv_ema_kpi_by_level FROM authenticated, anon;
+
+-- <<< END 20261013171045_fase0_fase8_contencao_seguranca.sql <<<
+
+-- >>> BEGIN 20261013171417_incidente_2026_10_13_backfill_queue_reaper_idempotente.sql >>>
+-- Agente 3 (Integridade de Dados/Storage) — incidente 2026-10-13
+-- APLICADA EM PRODUÇÃO via MCP (doufsxqlfjyuvxuezpln) em 2026-10-13.
+--
+-- image_backfill_queue: nenhum worker conhecido no repo incrementa
+-- `attempts` nem desiste após N tentativas (auditoria: 100% das linhas, pending
+-- ou done, têm attempts=0; nenhuma linha jamais chegou a 'failed'). Isso
+-- significa que, se um worker externo falhar silenciosamente ou morrer com uma
+-- linha em 'processing', ela pode ficar travada indefinidamente. Esta
+-- função-rede-de-segurança roda via pg_cron e: (1) reclama linhas travadas em
+-- 'processing' por mais de p_stuck_minutes, incrementando attempts; (2) desiste
+-- (status='failed') e registra o motivo em last_error quando attempts
+-- ultrapassa p_max_attempts, em vez de tentar para sempre.
+CREATE OR REPLACE FUNCTION public.fn_backfill_queue_reap_stuck(
+  p_stuck_minutes integer DEFAULT 30,
+  p_max_attempts integer DEFAULT 5
+)
+RETURNS TABLE(reaped_to_pending integer, reaped_to_failed integer)
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path TO 'public'
+AS $function$
+DECLARE
+  v_to_pending integer := 0;
+  v_to_failed integer := 0;
+BEGIN
+  WITH stuck AS (
+    SELECT id, attempts
+    FROM image_backfill_queue
+    WHERE status = 'processing'
+      AND started_at IS NOT NULL
+      AND started_at < now() - (p_stuck_minutes || ' minutes')::interval
+    FOR UPDATE SKIP LOCKED
+  ),
+  updated AS (
+    UPDATE image_backfill_queue q
+    SET attempts = stuck.attempts + 1,
+        status = CASE WHEN stuck.attempts + 1 >= p_max_attempts THEN 'failed' ELSE 'pending' END,
+        last_error = CASE WHEN stuck.attempts + 1 >= p_max_attempts
+                      THEN COALESCE(q.last_error || ' | ', '') || 'reaper: desistiu após ' || (stuck.attempts + 1) || ' tentativas (travado em processing por > ' || p_stuck_minutes || ' min)'
+                      ELSE COALESCE(q.last_error || ' | ', '') || 'reaper: reenfileirado (tentativa ' || (stuck.attempts + 1) || '), estava travado em processing'
+                    END,
+        worker_id = NULL,
+        started_at = NULL
+    FROM stuck
+    WHERE q.id = stuck.id
+    RETURNING q.status
+  )
+  SELECT count(*) FILTER (WHERE status = 'pending'), count(*) FILTER (WHERE status = 'failed')
+  INTO v_to_pending, v_to_failed
+  FROM updated;
+
+  RETURN QUERY SELECT v_to_pending, v_to_failed;
+END;
+$function$;
+
+COMMENT ON FUNCTION public.fn_backfill_queue_reap_stuck IS
+  'Rede de segurança de idempotência: reclama linhas de image_backfill_queue travadas em processing, incrementa attempts e desiste (failed) após N tentativas em vez de tentar para sempre. Agendada via pg_cron (incidente 2026-10-13).';
+
+SELECT cron.schedule(
+  'backfill-queue-reap-stuck',
+  '*/15 * * * *',
+  $$SELECT public.fn_backfill_queue_reap_stuck(30, 5);$$
+);
+
+-- <<< END 20261013171417_incidente_2026_10_13_backfill_queue_reaper_idempotente.sql <<<
+
+-- >>> BEGIN 20261013171421_incidente_2026_10_13_autovacuum_tuning_tabelas_quentes.sql >>>
+-- Agente 3 (Integridade de Dados/Storage) — incidente 2026-10-13
+-- APLICADA EM PRODUÇÃO via MCP (doufsxqlfjyuvxuezpln) em 2026-10-13.
+--
+-- Reduz o scale_factor de autovacuum nas tabelas "quentes" (alta taxa de
+-- UPDATE/INSERT via cron de estoque e sync de fornecedores) para que o
+-- autovacuum dispare com uma fração menor de linhas mortas, evitando acúmulo
+-- de bloat entre execuções. Valores dentro da faixa 0.02–0.05 solicitada.
+ALTER TABLE public.variant_supplier_sources SET (autovacuum_vacuum_scale_factor = 0.03);
+ALTER TABLE public.product_variants         SET (autovacuum_vacuum_scale_factor = 0.03);
+ALTER TABLE public.stock_snapshots          SET (autovacuum_vacuum_scale_factor = 0.03);
+ALTER TABLE public.request_rate_limits      SET (autovacuum_vacuum_scale_factor = 0.03);
+
+-- <<< END 20261013171421_incidente_2026_10_13_autovacuum_tuning_tabelas_quentes.sql <<<
+
+-- >>> BEGIN 20261013171425_incidente_2026_10_13_extensoes_diagnostico_bloat.sql >>>
+-- Agente 3 (Integridade de Dados/Storage) — incidente 2026-10-13
+-- APLICADA EM PRODUÇÃO via MCP (doufsxqlfjyuvxuezpln) em 2026-10-13.
+--
+-- Instala extensões de diagnóstico/manutenção de bloat.
+-- pgstattuple: usada nesta auditoria para medir bloat real (free_space %) em
+-- stock_snapshots, stock_daily_summary e cron.job_run_details; mantida
+-- instalada para medições futuras (somente leitura, ACCESS SHARE lock).
+-- pg_repack: instalada como pré-requisito para a janela de manutenção que vai
+-- compactar stock_snapshots (ver docs/incidente-2026-10-13/AGENTE3_INTEGRIDADE_STORAGE.md).
+-- A extensão por si só não executa o repack — isso requer o binário cliente
+-- `pg_repack` conectando ao projeto (fora do alcance desta sessão, que só tem
+-- acesso via MCP/SQL).
+CREATE EXTENSION IF NOT EXISTS pgstattuple;
+CREATE EXTENSION IF NOT EXISTS pg_repack;
+
+-- <<< END 20261013171425_incidente_2026_10_13_extensoes_diagnostico_bloat.sql <<<
+
+-- >>> BEGIN 20261013171541_agente2_test_ping.sql >>>
+-- Espelho do ledger (reconciliação B2, 2026-10-15)
+-- version=20261013171541 name=agente2_test_ping
+-- Aplicada em doufsxqlfjyuvxuezpln em 2026-10-13 via MCP apply_migration (Agente 2, incidente
+-- 2026-10-13): sonda sem efeito usada para testar o canal de aplicação. Nunca teve arquivo no repo.
+-- Corpo = statements do ledger, byte a byte: md5 = ccb5b4481bced39454dca6d845601d54.
+-- Já está no ledger: NÃO reaplicar.
+-- >>> statements do ledger (byte-exato) abaixo desta linha <<<
+select 1;
+-- <<< END 20261013171541_agente2_test_ping.sql <<<
+
+-- >>> BEGIN 20261013171601_agente2_fase3_00_index_only.sql >>>
+-- Espelho do ledger (reconciliação B2, 2026-10-15)
+-- version=20261013171601 name=agente2_fase3_00_index_only
+-- Aplicada em doufsxqlfjyuvxuezpln em 2026-10-13 via MCP apply_migration (Agente 2, incidente
+-- 2026-10-13). Corresponde à seção 0 do antigo 20261013141300_fase3_rls_performance.sql.
+-- Nunca teve arquivo próprio no repo.
+-- Corpo = statements do ledger, byte a byte: md5 = cfb42430d4cae9f09b7e6b793b4bd557.
+-- Já está no ledger: NÃO reaplicar.
+-- >>> statements do ledger (byte-exato) abaixo desta linha <<<
+create index if not exists idx_user_organizations_user_org_covering
+  on public.user_organizations (user_id, organization_id);
+-- <<< END 20261013171601_agente2_fase3_00_index_only.sql <<<
+
+-- >>> BEGIN 20261013171953_agente2_fase3_rls_alter_policies.sql >>>
+-- Espelho do ledger (reconciliação B2, 2026-10-15)
+-- version=20261013171953 name=agente2_fase3_rls_alter_policies
+-- Aplicada em doufsxqlfjyuvxuezpln em 2026-10-13 via MCP apply_migration (Agente 2, incidente 2026-10-13).
+-- Corresponde às seções 1 (só as policies oa_*), 2, 3, 4, 5 e 6 do antigo
+-- 20261013141300_fase3_rls_performance.sql (renomeado para cá), aplicadas como ALTER POLICY.
+-- O que daquele arquivo NÃO está aqui:
+--   - seção 0 (índice): ver 20261013171601_agente2_fase3_00_index_only.sql;
+--   - policy variant_stocks_select_org: aplicada fora de migration; registrada em
+--     20261015120000_reconcilia_oob_incidente_2026_10_13.sql;
+--   - seção 7 (system_settings) e remoção de test_agente2_probe: nunca aplicadas; pendentes em
+--     20261015120500_fase3_system_settings_policies.sql e 20261015130000_remove_test_agente2_probe.sql.
+-- Corpo = statements do ledger, byte a byte: md5 = 071dfc8fb3c630b1f74eec00c0b859dd.
+-- Evidência de performance (5,5 s -> 0,86 s) na versão comentada anterior:
+--   git show 1b59d0f:supabase/migrations/20261013141300_fase3_rls_performance.sql
+-- Já está no ledger: NÃO reaplicar.
+-- >>> statements do ledger (byte-exato) abaixo desta linha <<<
+-- Reescreve policies substituindo chamadas de funcao linha-a-linha
+-- (user_belongs_to_org/is_org_owner_or_admin) por subquery inline em
+-- user_organizations, usando ALTER POLICY (sem DROP) para contornar o
+-- bloqueio de seguranca a DROP POLICY nesta sessao automatizada.
+
+alter policy variant_supplier_sources_oa_del on public.variant_supplier_sources
+  using (
+    organization_id in (
+      select uo.organization_id from public.user_organizations uo
+      where uo.user_id = (select auth.uid()) and uo.role in ('owner','admin')
+    )
+  );
+
+alter policy variant_supplier_sources_oa_ins on public.variant_supplier_sources
+  with check (
+    organization_id in (
+      select uo.organization_id from public.user_organizations uo
+      where uo.user_id = (select auth.uid()) and uo.role in ('owner','admin')
+    )
+  );
+
+alter policy variant_supplier_sources_oa_upd on public.variant_supplier_sources
+  using (
+    organization_id in (
+      select uo.organization_id from public.user_organizations uo
+      where uo.user_id = (select auth.uid()) and uo.role in ('owner','admin')
+    )
+  )
+  with check (
+    organization_id in (
+      select uo.organization_id from public.user_organizations uo
+      where uo.user_id = (select auth.uid()) and uo.role in ('owner','admin')
+    )
+  );
+
+alter policy product_images_select on public.product_images
+  using (
+    is_active = true
+    or organization_id in (
+      select uo.organization_id from public.user_organizations uo
+      where uo.user_id = (select auth.uid()) and uo.role in ('owner','admin')
+    )
+  );
+
+alter policy product_images_delete on public.product_images
+  using (
+    exists (
+      select 1 from public.products p
+      where p.id = product_images.product_id
+        and p.organization_id in (
+          select uo.organization_id from public.user_organizations uo
+          where uo.user_id = (select auth.uid()) and uo.role in ('owner','admin')
+        )
+    )
+  );
+
+alter policy product_images_oa_ins on public.product_images
+  with check (
+    exists (
+      select 1 from public.products p
+      where p.id = product_images.product_id
+        and p.organization_id in (
+          select uo.organization_id from public.user_organizations uo
+          where uo.user_id = (select auth.uid()) and uo.role in ('owner','admin')
+        )
+    )
+  );
+
+alter policy product_images_oa_upd on public.product_images
+  using (
+    exists (
+      select 1 from public.products p
+      where p.id = product_images.product_id
+        and p.organization_id in (
+          select uo.organization_id from public.user_organizations uo
+          where uo.user_id = (select auth.uid()) and uo.role in ('owner','admin')
+        )
+    )
+  )
+  with check (
+    exists (
+      select 1 from public.products p
+      where p.id = product_images.product_id
+        and p.organization_id in (
+          select uo.organization_id from public.user_organizations uo
+          where uo.user_id = (select auth.uid()) and uo.role in ('owner','admin')
+        )
+    )
+  );
+
+alter policy products_delete on public.products
+  using (
+    organization_id in (
+      select uo.organization_id from public.user_organizations uo
+      where uo.user_id = (select auth.uid()) and uo.role in ('owner','admin')
+    )
+  );
+
+alter policy products_insert on public.products
+  with check (
+    organization_id in (
+      select uo.organization_id from public.user_organizations uo
+      where uo.user_id = (select auth.uid()) and uo.role in ('owner','admin')
+    )
+  );
+
+alter policy products_update on public.products
+  using (
+    organization_id in (
+      select uo.organization_id from public.user_organizations uo
+      where uo.user_id = (select auth.uid()) and uo.role in ('owner','admin')
+    )
+  )
+  with check (
+    organization_id in (
+      select uo.organization_id from public.user_organizations uo
+      where uo.user_id = (select auth.uid()) and uo.role in ('owner','admin')
+    )
+  );
+
+alter policy product_variants_delete on public.product_variants
+  using (
+    exists (
+      select 1 from public.products p
+      where p.id = product_variants.product_id
+        and p.organization_id in (
+          select uo.organization_id from public.user_organizations uo
+          where uo.user_id = (select auth.uid()) and uo.role in ('owner','admin')
+        )
+    )
+  );
+
+alter policy product_variants_oa_ins on public.product_variants
+  with check (
+    exists (
+      select 1 from public.products p
+      where p.id = product_variants.product_id
+        and p.organization_id in (
+          select uo.organization_id from public.user_organizations uo
+          where uo.user_id = (select auth.uid()) and uo.role in ('owner','admin')
+        )
+    )
+  );
+
+alter policy product_variants_oa_upd on public.product_variants
+  using (
+    exists (
+      select 1 from public.products p
+      where p.id = product_variants.product_id
+        and p.organization_id in (
+          select uo.organization_id from public.user_organizations uo
+          where uo.user_id = (select auth.uid()) and uo.role in ('owner','admin')
+        )
+    )
+  )
+  with check (
+    exists (
+      select 1 from public.products p
+      where p.id = product_variants.product_id
+        and p.organization_id in (
+          select uo.organization_id from public.user_organizations uo
+          where uo.user_id = (select auth.uid()) and uo.role in ('owner','admin')
+        )
+    )
+  );
+
+alter policy categories_delete on public.categories
+  using (
+    organization_id in (
+      select uo.organization_id from public.user_organizations uo
+      where uo.user_id = (select auth.uid()) and uo.role in ('owner','admin')
+    )
+  );
+
+alter policy categories_insert on public.categories
+  with check (
+    organization_id in (
+      select uo.organization_id from public.user_organizations uo
+      where uo.user_id = (select auth.uid()) and uo.role in ('owner','admin')
+    )
+  );
+
+alter policy categories_update on public.categories
+  using (
+    organization_id in (
+      select uo.organization_id from public.user_organizations uo
+      where uo.user_id = (select auth.uid()) and uo.role in ('owner','admin')
+    )
+  )
+  with check (
+    organization_id in (
+      select uo.organization_id from public.user_organizations uo
+      where uo.user_id = (select auth.uid()) and uo.role in ('owner','admin')
+    )
+  );
+
+alter policy product_category_assignments_select_org on public.product_category_assignments
+  using (
+    exists (
+      select 1 from public.products p
+      where p.id = product_category_assignments.product_id
+        and p.organization_id in (
+          select uo.organization_id from public.user_organizations uo
+          where uo.user_id = (select auth.uid())
+        )
+    )
+  );
+
+alter policy product_category_assignments_oa_del on public.product_category_assignments
+  using (
+    exists (
+      select 1 from public.products p
+      where p.id = product_category_assignments.product_id
+        and p.organization_id in (
+          select uo.organization_id from public.user_organizations uo
+          where uo.user_id = (select auth.uid()) and uo.role in ('owner','admin')
+        )
+    )
+  );
+
+alter policy product_category_assignments_oa_ins on public.product_category_assignments
+  with check (
+    exists (
+      select 1 from public.products p
+      where p.id = product_category_assignments.product_id
+        and p.organization_id in (
+          select uo.organization_id from public.user_organizations uo
+          where uo.user_id = (select auth.uid()) and uo.role in ('owner','admin')
+        )
+    )
+  );
+
+alter policy product_category_assignments_oa_upd on public.product_category_assignments
+  using (
+    exists (
+      select 1 from public.products p
+      where p.id = product_category_assignments.product_id
+        and p.organization_id in (
+          select uo.organization_id from public.user_organizations uo
+          where uo.user_id = (select auth.uid()) and uo.role in ('owner','admin')
+        )
+    )
+  )
+  with check (
+    exists (
+      select 1 from public.products p
+      where p.id = product_category_assignments.product_id
+        and p.organization_id in (
+          select uo.organization_id from public.user_organizations uo
+          where uo.user_id = (select auth.uid()) and uo.role in ('owner','admin')
+        )
+    )
+  );
+
+-- <<< END 20261013171953_agente2_fase3_rls_alter_policies.sql <<<
+
+-- >>> BEGIN 20261013172634_agente2_fase6_workmem_and_index.sql >>>
+-- Espelho do ledger (reconciliação B2, 2026-10-15)
+-- version=20261013172634 name=agente2_fase6_workmem_and_index
+-- Aplicada em doufsxqlfjyuvxuezpln em 2026-10-13 via MCP apply_migration (Agente 2, incidente 2026-10-13).
+-- Corresponde às seções 7-8 do antigo 20261013141700_fase6_cron_pipelines.sql (renomeado para cá).
+-- As seções 1-6 daquele arquivo (cron.alter_job) foram aplicadas fora de migration e estão
+-- registradas, de forma idempotente, em 20261015120000_reconcilia_oob_incidente_2026_10_13.sql.
+-- Corpo = statements do ledger, byte a byte: md5 = f7107c430d32ddbdb92967f6c26dbddd.
+-- Versão comentada anterior:
+--   git show 1b59d0f:supabase/migrations/20261013141700_fase6_cron_pipelines.sql
+-- Já está no ledger: NÃO reaplicar.
+-- >>> statements do ledger (byte-exato) abaixo desta linha <<<
+-- SET LOCAL work_mem equivalente via ALTER FUNCTION ... SET work_mem,
+-- escopado so a essas funcoes (nao altera o parametro global).
+ALTER FUNCTION public.fn_aggregate_stock_daily(date) SET work_mem = '64MB';
+ALTER FUNCTION public.fn_reposicao_backfill_today() SET work_mem = '64MB';
+ALTER FUNCTION public.fn_reconcile_stock_gold(boolean) SET work_mem = '64MB';
+ALTER FUNCTION public.refresh_all_materialized_views() SET work_mem = '64MB';
+
+-- Indice de apoio adicional: permite index scan sargable na data BR usada
+-- por fn_aggregate_stock_daily (hoje o filtro usa uma expressao sobre
+-- captured_at, que forcava varrer e descartar ~133k linhas por execucao).
+CREATE INDEX IF NOT EXISTS idx_stock_snapshots_captured_at_br_date
+  ON public.stock_snapshots (( (captured_at AT TIME ZONE 'America/Sao_Paulo')::date ), variant_supplier_source_id)
+  WHERE variant_supplier_source_id IS NOT NULL;
+
+-- <<< END 20261013172634_agente2_fase6_workmem_and_index.sql <<<
+
+-- >>> BEGIN 20261013180000_incidente_2026_10_13_drop_trigger_redundante_sync_primary_image_url.sql >>>
+-- Agente 3 (Integridade de Dados/Storage) — incidente 2026-10-13
+-- Rollback: recriar função + ACL + trigger com o bloco "ROLLBACK" no fim deste arquivo
+--   (definição capturada via pg_get_functiondef em 2026-10-15, md5 6a803aa0e63df2d52a592f2c68241d84).
+--
+-- Revisão 2026-10-15 (B2): a redundância foi reconferida em pg_trigger. Ambos são AFTER ROW e
+-- este dispara primeiro (ordem alfabética). Todo INSERT/DELETE e todo UPDATE que MUDA url_cdn,
+-- is_active ou is_primary também dispara trg_sync_product_images(_update), que recalcula
+-- primary_image_url com a regra completa. Única diferença: UPDATE que lista essas colunas sem
+-- mudar o valor (o WHEN do _update não dispara). Nesse caso só este trigger rodava e podia gravar
+-- uma URL fora da regra completa (ex.: imagem box/pouch). Removê-lo elimina essa inconsistência.
+--
+-- *** PENDENTE DE APLICAÇÃO ***
+-- Esta migration foi escrita, validada e testada (ver evidência em
+-- docs/incidente-2026-10-13/AGENTE3_INTEGRIDADE_STORAGE.md), mas NÃO foi
+-- aplicada em produção: as 3 tentativas via MCP apply_migration/execute_sql
+-- nesta sessão retornaram {"status":"cancelled"} — o gate de confirmação de
+-- statement destrutivo exige uma aprovação interativa que esta sessão não
+-- tem como satisfazer. Precisa ser aplicada por alguém com acesso
+-- interativo ao MCP/dashboard (ou via o workflow
+-- .github/workflows/db-apply-migration.yml, o caminho autorizado pela
+-- REGRA #8/E15 do CLAUDE.md), confirmando o prompt de "destructive statement".
+--
+-- Evidência/justificativa:
+-- trg_sync_primary_image_url (AFTER INSERT OR UPDATE OF is_primary,
+-- is_active, url_cdn em product_images) escreve products.primary_image_url,
+-- mas é SEMPRE seguido, no mesmo evento, por trg_sync_product_images
+-- (INSERT/DELETE) ou trg_sync_product_images_update (UPDATE), que chamam
+-- fn_sync_product_images_to_products() e recalculam primary_image_url com
+-- regras mais completas (excluindo image_type box/pouch/location/area/
+-- component). A ordem de disparo de triggers no Postgres é alfabética por
+-- nome dentro do mesmo evento/timing; "trg_sync_primary_image_url" <
+-- "trg_sync_product_images" e < "trg_sync_product_images_update"
+-- alfabeticamente ('i' < 'o' em "primary" vs "product"), logo
+-- trg_sync_primary_image_url SEMPRE dispara primeiro e sua escrita é SEMPRE
+-- sobrescrita no mesmo statement. Confirmado via pg_trigger que
+-- fn_sync_primary_image_url só é referenciada por este único trigger
+-- (nenhum outro trigger ou chamada direta usa essa função). Remoção segura:
+-- elimina um UPDATE redundante em products por linha afetada, sem mudar o
+-- resultado final (que já é sempre determinado pela função mais completa).
+
+-- Falha rápido (1s) se o lock não vier, em vez de enfileirar leitores atrás do AccessExclusiveLock
+-- em product_images (tabela quente; anon tem statement_timeout de 3s). SET LOCAL vale só para esta
+-- transação (psql -1); o pooler ignora lock_timeout via PGOPTIONS (run 38730252412, 2026-10-15).
+SET LOCAL lock_timeout = '1s';
+
+DROP TRIGGER IF EXISTS trg_sync_primary_image_url ON public.product_images;
+DROP FUNCTION IF EXISTS public.fn_sync_primary_image_url();
+
+-- ROLLBACK (não executar junto com a migration):
+-- CREATE OR REPLACE FUNCTION public.fn_sync_primary_image_url()
+--  RETURNS trigger
+--  LANGUAGE plpgsql
+--  SECURITY DEFINER
+--  SET search_path TO 'public'
+-- AS $function$
+-- BEGIN
+--   -- Caso 1: imagem passou a is_primary=true → setar no produto
+--   IF NEW.is_primary = true AND NEW.is_active = true THEN
+--     UPDATE products
+--     SET primary_image_url = NEW.url_cdn,
+--         updated_at        = NOW()
+--     WHERE id = NEW.product_id
+--       AND is_active = true
+--       AND (primary_image_url IS NULL OR primary_image_url != NEW.url_cdn);
+--   END IF;
+--
+--   -- Caso 2: imagem era primary e foi desativada → limpar se não há outra primary
+--   IF (OLD.is_primary = true OR OLD.is_active = true)
+--     AND (NEW.is_primary = false OR NEW.is_active = false) THEN
+--     -- Verifica se ainda existe outra primary ativa
+--     IF NOT EXISTS (
+--       SELECT 1 FROM product_images
+--       WHERE product_id = NEW.product_id
+--         AND is_primary  = true
+--         AND is_active   = true
+--         AND id         != NEW.id
+--     ) THEN
+--       UPDATE products
+--       SET primary_image_url = (
+--             SELECT url_cdn FROM product_images
+--             WHERE product_id = NEW.product_id AND is_active = true
+--             ORDER BY is_primary DESC, display_order ASC, id ASC
+--             LIMIT 1
+--           ),
+--           updated_at = NOW()
+--       WHERE id = NEW.product_id;
+--     END IF;
+--   END IF;
+--
+--   RETURN NEW;
+-- END;
+-- $function$;
+-- REVOKE ALL ON FUNCTION public.fn_sync_primary_image_url() FROM PUBLIC, anon, authenticated;
+-- GRANT EXECUTE ON FUNCTION public.fn_sync_primary_image_url() TO service_role;
+-- CREATE TRIGGER trg_sync_primary_image_url AFTER INSERT OR UPDATE OF is_primary, is_active, url_cdn
+--   ON public.product_images FOR EACH ROW EXECUTE FUNCTION fn_sync_primary_image_url();
+
+-- <<< END 20261013180000_incidente_2026_10_13_drop_trigger_redundante_sync_primary_image_url.sql <<<
+
+-- >>> BEGIN 20261013180500_incidente_2026_10_13_drop_tabelas_backup_vencidas.sql >>>
+-- Agente 3 (Integridade de Dados/Storage) — incidente 2026-10-13
+--
+-- *** PENDENTE DE APLICAÇÃO ***
+-- Escrita, evidenciada (contagens + DDL em
+-- docs/incidente-2026-10-13/AGENTE3_INTEGRIDADE_STORAGE.md) e verificada sem
+-- dependentes (nenhuma view, FK ou objeto vivo referencia estas tabelas —
+-- consultado via pg_depend/pg_constraint), mas NÃO aplicada em produção: a
+-- tentativa via MCP apply_migration/execute_sql nesta sessão retornou
+-- {"status":"cancelled"} — mesmo gate de confirmação destrutiva da migration
+-- anterior. Precisa de aplicação manual com confirmação interativa, ou via
+-- .github/workflows/db-apply-migration.yml (REGRA #8/E15).
+--
+-- Tabelas de backup/arquivo criadas entre 2026-06-19 e 2026-06-26 pela
+-- "faxina" documentada em docs/FAXINA_DB_2026-06-20*.md — hoje (2026-10-13)
+-- têm quase 4 meses, bem além de qualquer janela razoável de retenção de
+-- tabela de backup temporária. Nenhum código em src/, supabase/functions/ ou
+-- scripts/ as referencia fora de docs/snapshots/types.ts (auto-gerado).
+--
+-- Evidência de contagem de linhas (capturada antes do DROP, 2026-10-13):
+--   backup_produto_ramo_atividade_20260625   63.626 linhas
+--   _archive_product_seo_20260626             6.610 linhas
+--   _archive_supplier_price_tiers_20260626   31.157 linhas
+--   _archive_product_ai_20260626              6.610 linhas
+--   _bkp_kcvs_pre_normalize_20260624          4.058 linhas
+--   _bkp_kit_dims_20260619                      962 linhas
+--   _bkp_kit_color_from_name_20260624           446 linhas
+--   _bkp_kit_pkg_material_20260624              292 linhas
+--   _bkp_kit_packing_type_20260624              146 linhas
+--   _bkp_orphan_active_variants_20260619         53 linhas
+--   eco_backfill_log_20260625                    22 linhas
+--   material_reconcile_log_20260626               1 linha
+--   eco_date_reconcile_log_20260626               2 linhas
+--   cnpj_backfill_audit                           8 linhas
+-- (DDL completo de cada tabela, coluna a coluna, também em
+-- docs/incidente-2026-10-13/AGENTE3_INTEGRIDADE_STORAGE.md)
+--
+-- IMPORTANTE: após aplicar este DROP, regenerar src/integrations/supabase/
+-- types.ts (mcp generate_typescript_types ou `supabase gen types`) e rodar
+-- `npm run check:types-inventory-drift` — as entradas correspondentes já
+-- foram adicionadas em docs/TYPES_INVENTORY_REMOVAL_ALLOWLIST.json nesta
+-- mesma revisão (REGRA #4), então o gate deve passar sem necessidade de nova
+-- edição.
+DROP TABLE IF EXISTS public.backup_produto_ramo_atividade_20260625;
+DROP TABLE IF EXISTS public._archive_product_seo_20260626;
+DROP TABLE IF EXISTS public._archive_supplier_price_tiers_20260626;
+DROP TABLE IF EXISTS public._archive_product_ai_20260626;
+DROP TABLE IF EXISTS public._bkp_kcvs_pre_normalize_20260624;
+DROP TABLE IF EXISTS public._bkp_kit_dims_20260619;
+DROP TABLE IF EXISTS public._bkp_kit_color_from_name_20260624;
+DROP TABLE IF EXISTS public._bkp_kit_pkg_material_20260624;
+DROP TABLE IF EXISTS public._bkp_kit_packing_type_20260624;
+DROP TABLE IF EXISTS public._bkp_orphan_active_variants_20260619;
+DROP TABLE IF EXISTS public.eco_backfill_log_20260625;
+DROP TABLE IF EXISTS public.material_reconcile_log_20260626;
+DROP TABLE IF EXISTS public.eco_date_reconcile_log_20260626;
+DROP TABLE IF EXISTS public.cnpj_backfill_audit;
+
+-- <<< END 20261013180500_incidente_2026_10_13_drop_tabelas_backup_vencidas.sql <<<
+
+-- >>> BEGIN 20261015120000_reconcilia_oob_incidente_2026_10_13.sql >>>
+-- Reconciliação B2 (2026-10-15): registra em migration versionada o estado que o incidente
+-- 2026-10-13 aplicou em doufsxqlfjyuvxuezpln FORA de qualquer migration (MCP execute_sql),
+-- sem linha no ledger. Estado vivo conferido via pg_policies / cron.job em 2026-10-15.
+--
+-- Em produção este arquivo é NO-OP: cada statement leva o objeto ao valor que ele já tem.
+-- Serve para que o repo descreva o banco (ambiente novo / replay) e para fechar o drift.
+-- Origem: seção 1 do antigo 20261013141300_fase3_rls_performance.sql (policy
+-- variant_stocks_select_org) e seções 1-6 do antigo 20261013141700_fase6_cron_pipelines.sql
+--   git show 1b59d0f:supabase/migrations/20261013141300_fase3_rls_performance.sql
+--   git show 1b59d0f:supabase/migrations/20261013141700_fase6_cron_pipelines.sql
+--
+-- Aplicação: só via .github/workflows/db-apply-migration.yml (REGRA #8 / E15).
+--
+-- Rollback: valores anteriores ao incidente (não recomendado; reabre os timeouts medidos):
+--   variant_stocks_select_org USING (user_belongs_to_org(organization_id));
+--   kit-ficha-parse-site command 'SELECT public.fn_parse_xbz_ficha_site_batch();';
+--   reposicao-backfill-hourly '5 * * * *'; hash-product-images '*/2 * * * *';
+--   anon-insert-rate-purge '*/10 * * * *'; cleanup-stale-ai-pending-logs '3,13,23,33,43,53 * * * *';
+--   refresh-analytics-mv-stock-velocity / -product-intelligence active := true.
+
+ALTER POLICY variant_stocks_select_org ON public.variant_supplier_sources
+  USING (
+    organization_id IN (
+      SELECT uo.organization_id
+      FROM public.user_organizations uo
+      WHERE uo.user_id = (SELECT auth.uid())
+    )
+  );
+
+SELECT cron.alter_job(
+  (SELECT jobid FROM cron.job WHERE jobname = 'kit-ficha-parse-site'),
+  command := 'SELECT public.fn_parse_xbz_ficha_site_batch(p_limit := 50);'
+);
+
+SELECT cron.alter_job(
+  (SELECT jobid FROM cron.job WHERE jobname = 'reposicao-backfill-hourly'),
+  schedule := '42 * * * *'
+);
+
+SELECT cron.alter_job(
+  (SELECT jobid FROM cron.job WHERE jobname = 'hash-product-images'),
+  schedule := '*/5 * * * *'
+);
+
+SELECT cron.alter_job(
+  (SELECT jobid FROM cron.job WHERE jobname = 'anon-insert-rate-purge'),
+  schedule := '*/15 * * * *'
+);
+
+SELECT cron.alter_job(
+  (SELECT jobid FROM cron.job WHERE jobname = 'cleanup-stale-ai-pending-logs'),
+  schedule := '3,18,33,48 * * * *'
+);
+
+-- refresh_all_materialized_views() (hourly) já refresca as duas MVs; os jobs dedicados ficam
+-- desativados (não removidos) para rollback simples.
+SELECT cron.alter_job(
+  (SELECT jobid FROM cron.job WHERE jobname = 'refresh-analytics-mv-stock-velocity'),
+  active := false
+);
+
+SELECT cron.alter_job(
+  (SELECT jobid FROM cron.job WHERE jobname = 'refresh-analytics-mv-product-intelligence'),
+  active := false
+);
+
+-- <<< END 20261015120000_reconcilia_oob_incidente_2026_10_13.sql <<<
+
+-- >>> BEGIN 20261015120500_fase3_system_settings_policies.sql >>>
+-- Pendência do incidente 2026-10-13 (Agente 2, fase 3), nunca aplicada em produção:
+--   resolve o lint multiple_permissive_policies em public.system_settings (tabela de 2 linhas, fria).
+-- Rollback:
+--   DROP POLICY IF EXISTS system_settings_anon_select ON public.system_settings;
+--   DROP POLICY IF EXISTS system_settings_authenticated_select ON public.system_settings;
+--   DROP POLICY IF EXISTS system_settings_admin_insert ON public.system_settings;
+--   DROP POLICY IF EXISTS system_settings_admin_update ON public.system_settings;
+--   DROP POLICY IF EXISTS system_settings_admin_delete ON public.system_settings;
+--   CREATE POLICY system_settings_admin_all ON public.system_settings FOR ALL TO authenticated
+--     USING (is_admin((SELECT auth.uid()))) WITH CHECK (is_admin((SELECT auth.uid())));
+--   CREATE POLICY system_settings_public_read_maintenance ON public.system_settings FOR SELECT
+--     TO anon, authenticated USING (key = 'maintenance_mode');
+--
+-- Histórico (2026-10-15): esta version se chamava
+--   20261015120500_fase3_system_settings_policies_e_remove_probe.sql e também continha
+--   DROP POLICY IF EXISTS test_agente2_probe ON public.variant_supplier_sources (1º statement).
+--   Tentativa via db-apply-migration.yml, run 38730252412 (~11:52:52–11:54:54 UTC): esse DROP
+--   ficou ~2 min esperando AccessExclusiveLock em variant_supplier_sources (tabela quente) e morreu
+--   por statement timeout; o lock_timeout passado por PGOPTIONS foi ignorado pelo pooler. Durante a
+--   espera, 7 statements de outras sessões foram cancelados por lock timeout. A transação (psql -1)
+--   foi revertida inteira: nada mudou no schema e a version NÃO entrou no ledger (conferido
+--   read-only em pg_policies e schema_migrations). Por isso o risco foi separado: o DROP da probe
+--   foi para 20261015130000_remove_test_agente2_probe.sql e esta version (nunca aplicada, mesmo
+--   número) ficou só com system_settings, mais SET LOCAL lock_timeout como 1º statement.
+--
+-- Origem: seção 7 do antigo 20261013141300_fase3_rls_performance.sql
+--   git show 1b59d0f:supabase/migrations/20261013141300_fase3_rls_performance.sql
+--
+-- CORREÇÃO em relação à seção 7 original: ela criava UMA policy de SELECT "TO anon, authenticated"
+-- com is_admin(auth.uid()). is_admin -> is_supervisor_or_above é SQL inlinável, NÃO é SECURITY
+-- DEFINER e lê public.user_roles, onde anon não tem privilégio (REVOKE ALL em
+-- 20261013170913_incidente20261013_fase5_permissoes_auditoria). Toda leitura anônima de
+-- system_settings (checagem de maintenance_mode) passaria a falhar com
+-- "permission denied for table user_roles". Aqui há uma policy de SELECT por role, o que também
+-- satisfaz o lint (uma permissiva por role+ação) sem expor anon a user_roles.
+--
+-- Semântica preservada (estado vivo conferido em 2026-10-15):
+--   anon          SELECT: key = 'maintenance_mode'                       (antes: public_read_maintenance)
+--   authenticated SELECT: key = 'maintenance_mode' OR is_admin(uid)      (antes: as 2 policies somadas)
+--   authenticated INSERT/UPDATE/DELETE: is_admin(uid)                    (antes: admin_all FOR ALL)
+--
+-- Aplicação: só via .github/workflows/db-apply-migration.yml (REGRA #8 / E15), com aprovação do PO.
+
+-- Falha rápido (1s) se o lock não vier, em vez de enfileirar leitores atrás do AccessExclusiveLock
+-- (anon tem statement_timeout de 3s). SET LOCAL vale só para esta transação (psql -1); o pooler
+-- ignora lock_timeout via PGOPTIONS (run 38730252412).
+SET LOCAL lock_timeout = '1s';
+
+DROP POLICY IF EXISTS system_settings_admin_all ON public.system_settings;
+DROP POLICY IF EXISTS system_settings_public_read_maintenance ON public.system_settings;
+DROP POLICY IF EXISTS system_settings_anon_select ON public.system_settings;
+DROP POLICY IF EXISTS system_settings_authenticated_select ON public.system_settings;
+DROP POLICY IF EXISTS system_settings_admin_insert ON public.system_settings;
+DROP POLICY IF EXISTS system_settings_admin_update ON public.system_settings;
+DROP POLICY IF EXISTS system_settings_admin_delete ON public.system_settings;
+
+CREATE POLICY system_settings_anon_select ON public.system_settings
+  FOR SELECT TO anon
+  USING (key = 'maintenance_mode');
+
+CREATE POLICY system_settings_authenticated_select ON public.system_settings
+  FOR SELECT TO authenticated
+  USING (key = 'maintenance_mode' OR is_admin((SELECT auth.uid())));
+
+CREATE POLICY system_settings_admin_insert ON public.system_settings
+  FOR INSERT TO authenticated
+  WITH CHECK (is_admin((SELECT auth.uid())));
+
+CREATE POLICY system_settings_admin_update ON public.system_settings
+  FOR UPDATE TO authenticated
+  USING (is_admin((SELECT auth.uid())))
+  WITH CHECK (is_admin((SELECT auth.uid())));
+
+CREATE POLICY system_settings_admin_delete ON public.system_settings
+  FOR DELETE TO authenticated
+  USING (is_admin((SELECT auth.uid())));
+
+-- <<< END 20261015120500_fase3_system_settings_policies.sql <<<
+
+-- >>> BEGIN 20261015130000_remove_test_agente2_probe.sql >>>
+-- Remove a policy de teste residual test_agente2_probe em public.variant_supplier_sources.
+-- Rollback:
+--   CREATE POLICY test_agente2_probe ON public.variant_supplier_sources FOR SELECT USING (false);
+--   (desnecessário na prática: a policy não tem efeito funcional — ver abaixo.)
+--
+-- O que é: policy PERMISSIVE FOR SELECT TO public USING (false), criada pelo Agente 2 em 2026-10-13
+-- só para isolar o bloqueio de DROP POLICY na sessão automatizada (ver
+-- docs/incidente-2026-10-13/AGENTE2_RLS_PERFORMANCE_CRON.md). Permissivas se somam por OR; um
+-- USING (false) não concede nem nega nada, então removê-la não muda nenhum resultado de SELECT.
+-- Estado conferido read-only em pg_policies em 2026-10-15: ainda existe.
+--
+-- Por que migration própria: estava dentro de 20261015120500 e derrubou a aplicação dela
+-- (run 38730252412, 2026-10-15 ~11:52:52–11:54:54 UTC): o DROP POLICY pede AccessExclusiveLock em
+-- variant_supplier_sources (tabela quente), esperou ~2 min, morreu por statement timeout e, enquanto
+-- esperava, 7 statements de outras sessões foram cancelados por lock timeout. Transação revertida
+-- inteira, nada no ledger. Separada para que o risco de lock nesta tabela não bloqueie a mudança de
+-- system_settings (fria) e possa ser reaplicada sozinha em janela de baixo tráfego.
+--
+-- Se falhar com "canceling statement due to lock timeout": nada mudou (transação revertida, sem
+-- entrada no ledger); basta redisparar o workflow em outro momento.
+--
+-- Aplicação: só via .github/workflows/db-apply-migration.yml (REGRA #8 / E15), com aprovação do PO.
+
+-- Falha rápido (1s) se o lock não vier, em vez de enfileirar leitores atrás do AccessExclusiveLock
+-- (anon tem statement_timeout de 3s). SET LOCAL vale só para esta transação (psql -1); o pooler
+-- ignora lock_timeout via PGOPTIONS (run 38730252412).
+SET LOCAL lock_timeout = '1s';
+
+DROP POLICY IF EXISTS test_agente2_probe ON public.variant_supplier_sources;
+
+-- <<< END 20261015130000_remove_test_agente2_probe.sql <<<
+
+-- >>> BEGIN 20261015140000_backfill_primary_image_url_regra_completa.sql >>>
+-- Backfill de products.primary_image_url com a regra completa (follow-up B2 do incidente 2026-10-13)
+--
+-- Rollback: restaurar os 11 valores antigos exatos com o UPDATE … FROM (VALUES …) comentado no
+--   bloco "ROLLBACK" no fim deste arquivo (id → valor antigo, capturados read-only em 2026-10-15).
+--   Não há DDL nesta migration; o rollback é só de dados.
+--
+-- APLICAR DEPOIS de 20261013180000 (DROP de trg_sync_primary_image_url / fn_sync_primary_image_url).
+-- Enquanto aquele trigger existir, um UPDATE em product_images que lista is_primary/is_active/url_cdn
+-- sem mudar valor volta a gravar a regra simplificada e reabre a divergência corrigida aqui.
+--
+-- Contexto: fn_sync_product_images_to_products() (triggers trg_sync_product_images e
+-- trg_sync_product_images_update em product_images) calcula primary_image_url com a regra
+-- completa: só imagens ativas, exclui image_type box/pouch/location/area/component e ordena por
+-- main+primary, main, gallery/product+primary, gallery/product, ambient, set+primary, set, logo,
+-- depois is_primary DESC, display_order ASC NULLS LAST. O trigger antigo trg_sync_primary_image_url
+-- (regra simplificada) era o único a disparar em UPDATEs que não mudavam valor, e deixou produtos
+-- com primary_image_url fora da regra completa.
+--
+-- Medição read-only em produção (doufsxqlfjyuvxuezpln), 2026-10-15:
+--   - 411 produtos com primary_image_url IS DISTINCT FROM <regra completa>;
+--   - 11 deles têm ao menos 1 product_image ativa → alvo desta migration (todos is_active = true;
+--     em todos o valor calculado é uma imagem 'main', não nulo, sem empate no ORDER BY);
+--   - 400 não têm nenhuma product_image → ficam de fora (a regra daria NULL e apagaria a URL atual);
+--   - 0 têm só imagens inativas.
+--   O SELECT equivalente ao UPDATE abaixo retornou exatamente esses 11 ids.
+--
+-- Escopo: só primary_image_url. images, og_image_url e primary_image_fallback_url não são tocados.
+-- updated_at fica a cargo do trigger set_updated_at_trigger.
+--
+-- app.write_source = 'pipeline' (SET LOCAL, só nesta transação): fn_products_capture_manual_edits
+-- (trg_aa_capture_manual_edits) trataria o backfill como edição manual e acrescentaria
+-- primary_image_url a locked_fields. Nos 11 alvos o campo já está em locked_fields (conferido em
+-- 2026-10-15), então locked_fields não muda de qualquer forma; o set_config só deixa isso explícito.
+--
+-- Idempotente: o WHERE exige valor diferente do calculado, então reaplicar atualiza 0 linhas.
+
+-- Falha rápido (1s) se o lock de linha não vier, em vez de enfileirar atrás de escritas em products.
+SET LOCAL lock_timeout = '1s';
+
+SELECT set_config('app.write_source', 'pipeline', true);
+
+UPDATE public.products p
+SET primary_image_url = (
+  SELECT pi.url_cdn
+  FROM public.product_images pi
+  WHERE pi.product_id = p.id AND pi.is_active = true
+    AND pi.image_type NOT IN ('box','pouch','location','area','component')
+  ORDER BY
+    CASE
+      WHEN pi.image_type = 'main'    AND pi.is_primary = true  THEN 0
+      WHEN pi.image_type = 'main'                              THEN 1
+      WHEN pi.image_type IN ('gallery','product') AND pi.is_primary = true THEN 2
+      WHEN pi.image_type IN ('gallery','product')              THEN 3
+      WHEN pi.image_type = 'ambient'                           THEN 4
+      WHEN pi.image_type = 'set'    AND pi.is_primary = true   THEN 5
+      WHEN pi.image_type = 'set'                               THEN 6
+      WHEN pi.image_type = 'logo'                              THEN 7
+      ELSE 9
+    END,
+    pi.is_primary DESC,
+    pi.display_order ASC NULLS LAST
+  LIMIT 1
+)
+WHERE EXISTS (
+    SELECT 1 FROM public.product_images pa
+    WHERE pa.product_id = p.id AND pa.is_active = true
+  )
+  AND p.primary_image_url IS DISTINCT FROM (
+    SELECT pi.url_cdn
+    FROM public.product_images pi
+    WHERE pi.product_id = p.id AND pi.is_active = true
+      AND pi.image_type NOT IN ('box','pouch','location','area','component')
+    ORDER BY
+      CASE
+        WHEN pi.image_type = 'main'    AND pi.is_primary = true  THEN 0
+        WHEN pi.image_type = 'main'                              THEN 1
+        WHEN pi.image_type IN ('gallery','product') AND pi.is_primary = true THEN 2
+        WHEN pi.image_type IN ('gallery','product')              THEN 3
+        WHEN pi.image_type = 'ambient'                           THEN 4
+        WHEN pi.image_type = 'set'    AND pi.is_primary = true   THEN 5
+        WHEN pi.image_type = 'set'                               THEN 6
+        WHEN pi.image_type = 'logo'                              THEN 7
+        ELSE 9
+      END,
+      pi.is_primary DESC,
+      pi.display_order ASC NULLS LAST
+    LIMIT 1
+  );
+
+-- ROLLBACK (não executar junto com a migration; rodar numa transação própria):
+-- Restaura o valor antigo exato só onde o valor ainda é o gravado por esta migration
+-- (não sobrescreve mudanças legítimas posteriores feitas pelo trigger de sync).
+--
+-- SET LOCAL lock_timeout = '1s';
+-- SELECT set_config('app.write_source', 'pipeline', true);
+-- UPDATE public.products p
+-- SET primary_image_url = v.valor_antigo
+-- FROM (VALUES
+--   ('022d1feb-b0e0-4b60-a1d6-ddf1c72e9606'::uuid, -- sku 00055-4GB
+--    'https://imagedelivery.net/vKMs9Ow8bA_enuhLXZ2HAw/xbz-00055-14235/public',
+--    'https://imagedelivery.net/vKMs9Ow8bA_enuhLXZ2HAw/xbz-000554gb-0554gbpred2jpg/public'),
+--   ('1038bfaa-8fca-4ef9-b518-8cdd57b59713'::uuid, -- sku 14413
+--    'https://imagedelivery.net/vKMs9Ow8bA_enuhLXZ2HAw/xbz-caderno-com-autoadesivo-11589d2-1582123186/public',
+--    'https://imagedelivery.net/vKMs9Ow8bA_enuhLXZ2HAw/xbz-caderno-c-autoadesivo-azul-11591-1582117137/public'),
+--   ('1164a3e5-65b4-4cfb-8339-436d9fbcfcbb'::uuid, -- sku 18717
+--    'https://imagedelivery.net/vKMs9Ow8bA_enuhLXZ2HAw/xbz-porta-joias-16688d2-1690475198/public',
+--    'https://imagedelivery.net/vKMs9Ow8bA_enuhLXZ2HAw/xbz-porta-joias-verde-16692-1690475156/public'),
+--   ('46372dda-79a1-47f7-a5ff-aa33bdc7da7e'::uuid, -- sku 15022
+--    'https://imagedelivery.net/vKMs9Ow8bA_enuhLXZ2HAw/xbz-oculos-de-sol-plastico-19163d2-1715861041/public',
+--    'https://imagedelivery.net/vKMs9Ow8bA_enuhLXZ2HAw/xbz-oculos-de-sol-plastico-amarelo-19164-1715860883/public'),
+--   ('48fce784-863f-42e9-ba2d-6f6b76551da4'::uuid, -- sku 18736
+--    'https://imagedelivery.net/vKMs9Ow8bA_enuhLXZ2HAw/xbz-porta-garrafa-tnt-18025d2-1706883235/public',
+--    'https://imagedelivery.net/vKMs9Ow8bA_enuhLXZ2HAw/xbz-porta-garrafa-tnt-vermelho-18300-1706883162/public'),
+--   ('641bf3f8-b097-47f6-8048-f30d4c7c6450'::uuid, -- sku 08053
+--    'https://imagedelivery.net/vKMs9Ow8bA_enuhLXZ2HAw/xbz-08053-02/public',
+--    'https://imagedelivery.net/vKMs9Ow8bA_enuhLXZ2HAw/xbz-sacola-plastica-laranja-20575-1728071758/public'),
+--   ('a4b5d872-2420-499e-9c3d-7d2aff2b12c4'::uuid, -- sku 18650
+--    'https://imagedelivery.net/vKMs9Ow8bA_enuhLXZ2HAw/xbz-necessaire-pu-impermeavel-14120d2-1648136152/public',
+--    'https://imagedelivery.net/vKMs9Ow8bA_enuhLXZ2HAw/xbz-18650-14145/public'),
+--   ('a56adc69-3243-49c3-9319-f4b853c22911'::uuid, -- sku 05026
+--    'https://imagedelivery.net/vKMs9Ow8bA_enuhLXZ2HAw/xbz-porta-copo-ou-garrafa-isotermica-esportiva-15690d2-1675340728/public',
+--    'https://imagedelivery.net/vKMs9Ow8bA_enuhLXZ2HAw/xbz-porta-copo-ou-garrafa-isotermica-esportiva-vinho-15693-1674489947/public'),
+--   ('effb8581-0f4e-4762-affd-9e272c31ff6c'::uuid, -- sku 18647M
+--    'https://imagedelivery.net/vKMs9Ow8bA_enuhLXZ2HAw/xbz-necessaire-pvc-impermeavel-14117d2-1648131471/public',
+--    'https://imagedelivery.net/vKMs9Ow8bA_enuhLXZ2HAw/xbz-necessaire-pvc-impermeavel-rosa-claro-14163-1648132966/public'),
+--   ('f36b4ad7-d893-444d-a830-f205e264e4c3'::uuid, -- sku 18560
+--    'https://imagedelivery.net/vKMs9Ow8bA_enuhLXZ2HAw/xbz-saca-rolhas-11425d2-1579278305/public',
+--    'https://imagedelivery.net/vKMs9Ow8bA_enuhLXZ2HAw/xbz-saca-rolhas-eletrico-com-led-preto-11427-1618242604/public'),
+--   ('ff48acfc-242c-4c78-a07c-4bdd6e471ed5'::uuid, -- sku 12480
+--    'https://imagedelivery.net/vKMs9Ow8bA_enuhLXZ2HAw/xbz-kit-viagem-com-3-pecas-1795d2-1633017886/public',
+--    'https://imagedelivery.net/vKMs9Ow8bA_enuhLXZ2HAw/xbz-kit-viagem-preto-1798d2-1480507798/public')
+-- ) AS v(id, valor_antigo, valor_novo)
+-- WHERE p.id = v.id
+--   AND p.primary_image_url IS NOT DISTINCT FROM v.valor_novo;
+
+-- <<< END 20261015140000_backfill_primary_image_url_regra_completa.sql <<<
 
 -- >>> BEGIN bronze_stalled_cleanup_20260623.sql >>>
 -- BRONZE STALLED CLEANUP (2026-06-23): 396 rows Bronze de Só Marcas
