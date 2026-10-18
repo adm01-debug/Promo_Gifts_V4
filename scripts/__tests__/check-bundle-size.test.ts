@@ -192,8 +192,11 @@ describe('scripts/check-bundle-size.mjs', () => {
     // Labels preservados
     expect(updated.criticalChunks['react-vendor'].label).toBe('React + ReactDOM');
     expect(updated.criticalChunks['ui-vendor'].label).toBe('Radix UI');
-    // Limites atualizados com +20% de margem
-    expect(updated.criticalChunks['react-vendor'].maxBytes).toBe(Math.ceil(150_000 * 1.2));
+    // E04: ratchet só desce — min(atual×1.2, prev)
+    // react-vendor: atual 150k > prev 100k → min(180k, 100k) = 100k (sem aumento)
+    expect(updated.criticalChunks['react-vendor'].maxBytes).toBe(100_000);
+    // ui-vendor: atual 300k < prev 500k → min(360k, 500k) = 360k (desce)
+    expect(updated.criticalChunks['ui-vendor'].maxBytes).toBe(Math.ceil(300_000 * 1.2));
   });
 
   it('não falha quando chunk crítico está ausente do build (apenas info)', () => {
