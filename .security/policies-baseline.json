@@ -1,9 +1,9 @@
 {
   "version": 1,
   "pending_seed": false,
-  "generated_at": "2026-10-18T16:10:44.178Z",
+  "generated_at": "2026-10-18T17:08:00.000Z",
   "project_ref": "doufsxqlfjyuvxuezpln",
-  "sha256": "7e379ec149967330d209dcace457fd474596b83a0b3d13b01680d5d50efe3677",
+  "sha256": "9642e974cba7b728bb3d7616394aee04b0939a81007e53c1ed86423212e9239c",
   "policies": [
     {
       "schemaname": "public",
@@ -9554,7 +9554,57 @@
       "cmd": "ALL",
       "qual": "true",
       "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "notification_preferences",
+      "policyname": "rls_restrictive_notification_preferences",
+      "permissive": "RESTRICTIVE",
+      "roles": "{authenticated,service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "push_subscriptions",
+      "policyname": "rls_restrictive_push_subscriptions",
+      "permissive": "RESTRICTIVE",
+      "roles": "{authenticated,service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "recently_viewed_products",
+      "policyname": "rls_restrictive_recently_viewed_products",
+      "permissive": "RESTRICTIVE",
+      "roles": "{authenticated,service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "kit_collaborators",
+      "policyname": "rls_restrictive_kit_collaborators",
+      "permissive": "RESTRICTIVE",
+      "roles": "{authenticated,service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "ai_usage_quotas",
+      "policyname": "rls_restrictive_ai_usage_quotas",
+      "permissive": "RESTRICTIVE",
+      "roles": "{authenticated,service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": ""
     }
   ],
-  "policies_count": 955
+  "policies_count": 960
 }
