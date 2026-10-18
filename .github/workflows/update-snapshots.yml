@@ -104,9 +104,11 @@ jobs:
         env:
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+          INPUT_SPEC: ${{ github.event.inputs.spec }}
+          INPUT_PROJECT: ${{ github.event.inputs.project }}
         run: |
-          npx playwright test ${{ github.event.inputs.spec }} \
-            --project=${{ github.event.inputs.project }} \
+          npx playwright test $INPUT_SPEC \
+            --project="$INPUT_PROJECT" \
             --update-snapshots \
             --reporter=list
 
