@@ -14,11 +14,12 @@
  * Tags: @freight @quote @e2e @smoke
  */
 import { test, expect, type Page } from "@playwright/test";
+import { waitForRouteIdle } from "../helpers/nav";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-async function waitForNetworkIdle(page: Page, timeout = 3000) {
-  await page.waitForLoadState("networkidle", { timeout }).catch(() => {});
+async function waitForNetworkIdle(page: Page) {
+  await waitForRouteIdle(page);
 }
 
 async function fillQuoteStep1(page: Page) {

@@ -402,8 +402,7 @@ test.describe("mobile: responsividade sem overflow @mobile", () => {
 
   for (const route of MOBILE_ROUTES) {
     test(`${route}: sem overflow horizontal em 375px`, async ({ page }) => {
-      await page.goto(route);
-      await waitForRouteIdle(page);
+      await gotoAndSettle(page, route);
 
       const scrollWidth = await page.evaluate(() => document.body.scrollWidth);
       const clientWidth = await page.evaluate(() => document.body.clientWidth);
