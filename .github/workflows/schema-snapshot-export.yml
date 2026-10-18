@@ -195,6 +195,38 @@ jobs:
           count=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/cron_jobs.json','utf8')).length)")
           echo "::notice::${count} cron job(s) exportados → ${B}_cron_jobs.json"
 
+      # E072: Recovery dump semanal — schema-only (reaproveitando o baseline) + ledger +
+      # checksums SHA256. Arquivos vão para /tmp/e072-recovery/ e são enviados como
+      # artifact separado (não misturar com supabase/baseline/ para não mudar o
+      # common-prefix do artifact principal e quebrar os cp existentes).
+      - name: Export recovery dump (E072)
+        if: env.SUPABASE_DB_PASSWORD != ''
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          bases=(supabase/baseline/*_baseline_schema.sql)
+          if [ "${#bases[@]}" -ne 1 ]; then
+            echo "::notice::E072: Sem baseline SQL gerado — pulando recovery dump."
+            exit 0
+          fi
+          TODAY=$(date -u +"%Y-%m-%d")
+          mkdir -p /tmp/e072-recovery
+          # Schema-only: reaproveita o baseline já gerado nesta execução (evita 2º pg_dump)
+          cp "${bases[0]}" "/tmp/e072-recovery/BACKUP_SCHEMA_ONLY_${TODAY}.sql"
+          # Ledger de migrations
+          PGPASSWORD="${SUPABASE_DB_PASSWORD}" psql \
+            -h "db.${SUPABASE_PROJECT_REF}.supabase.co" \
+            -U postgres \
+            -d postgres \
+            -c "COPY (SELECT version, inserted_at FROM supabase_migrations.schema_migrations ORDER BY version) TO STDOUT WITH CSV HEADER;" \
+            > "/tmp/e072-recovery/LEDGER_DATA_${TODAY}.sql"
+          # Checksums SHA256
+          sha256sum \
+            "/tmp/e072-recovery/BACKUP_SCHEMA_ONLY_${TODAY}.sql" \
+            "/tmp/e072-recovery/LEDGER_DATA_${TODAY}.sql" \
+            > "/tmp/e072-recovery/BACKUP_CHECKSUMS_${TODAY}.txt"
+          echo "::notice::E072: Recovery dump → BACKUP_SCHEMA_ONLY_${TODAY}.sql + LEDGER_DATA_${TODAY}.sql + checksums OK."
+
       - name: Upload snapshot artifacts
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
@@ -204,6 +236,14 @@ jobs:
             supabase/baseline/
           if-no-files-found: ignore
           retention-days: 14
+
+      - name: Upload recovery dump artifact (E072)
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
+        with:
+          name: recovery-dump-${{ github.run_number }}
+          path: /tmp/e072-recovery/
+          if-no-files-found: ignore
+          retention-days: 30  # R6: recovery — 30 dias
 
   # E84: commita snapshot na branch fixa bot/schema-snapshot e mantém ≤ 1 PR aberta.
   commit-snapshot:
@@ -233,6 +273,17 @@ jobs:
         with:
           name: schema-snapshot-${{ github.run_number }}
           path: ${{ runner.temp }}/snapshot
+
+      # E072: recovery dump (schema-only + ledger + checksums). Artifact ausente
+      # quando o baseline não foi gerado (ex.: primeiro run sem supabase CLI) — nesse
+      # caso o continue-on-error=true impede falha do job e o bloco de cópia é no-op.
+      - name: Baixa o recovery dump (E072)
+        id: download_recovery
+        continue-on-error: true
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: recovery-dump-${{ github.run_number }}
+          path: ${{ runner.temp }}/e072-recovery
 
       # O download não apaga arquivos que já estão no checkout: troca o baseline
       # só quando o export gerou um novo (senão ficariam dois baselines e o
@@ -273,6 +324,25 @@ jobs:
             exit 1
           fi
 
+          # E072: copia recovery dump para docs/db/ (substitui versões datadas anteriores)
+          RECOV="${{ runner.temp }}/e072-recovery"
+          if compgen -G "${RECOV}/BACKUP_SCHEMA_ONLY_*.sql" > /dev/null 2>&1; then
+            mkdir -p docs/db
+            find docs/db -maxdepth 1 \
+              \( -name 'BACKUP_SCHEMA_ONLY_*.sql' \
+                 -o -name 'LEDGER_DATA_*.sql' \
+                 -o -name 'BACKUP_CHECKSUMS_*.txt' \) \
+              -delete 2>/dev/null || true
+            cp "${RECOV}"/BACKUP_SCHEMA_ONLY_*.sql \
+               "${RECOV}"/LEDGER_DATA_*.sql \
+               "${RECOV}"/BACKUP_CHECKSUMS_*.txt \
+               docs/db/
+            ls docs/db/BACKUP_SCHEMA_ONLY_*.sql docs/db/LEDGER_DATA_*.sql docs/db/BACKUP_CHECKSUMS_*.txt
+            echo "::notice::E072: Recovery dump copiado para docs/db/."
+          else
+            echo "::notice::E072: Recovery dump ausente — docs/db/ não atualizado."
+          fi
+
       - name: Credencial de push sem token em disco (E32)
         run: |
           # persist-credentials:false nao grava token; o helper le GIT_PUSH_TOKEN so no passo de push.
@@ -285,8 +355,8 @@ jobs:
           RUN_ID: ${{ github.run_id }}
         run: |
           set -euo pipefail
-          if ! git --no-pager diff --quiet -- supabase/migrations-snapshot/ supabase/baseline/ \
-            || [ -n "$(git ls-files --others --exclude-standard -- supabase/baseline/)" ]; then
+          if ! git --no-pager diff --quiet -- supabase/migrations-snapshot/ supabase/baseline/ docs/db/ \
+            || [ -n "$(git ls-files --others --exclude-standard -- supabase/baseline/ docs/db/)" ]; then
             echo "Snapshot mudou — commitando."
           else
             echo "::notice::Nenhuma mudança detectada no snapshot — nada a commitar."
@@ -299,7 +369,7 @@ jobs:
           # Cria ou reseta bot/schema-snapshot a partir do HEAD atual de main
           git checkout -B bot/schema-snapshot
 
-          git add -A supabase/migrations-snapshot/ supabase/baseline/
+          git add -A supabase/migrations-snapshot/ supabase/baseline/ docs/db/
           WEEK=$(date -u +"%Y-W%V")
           git commit -m "chore(schema-snapshot): snapshot semanal $WEEK (run $RUN_ID)" \
             -m "Auto-gerado por schema-snapshot-export.yml (E84). Snapshot do schema canônico doufsxqlfjyuvxuezpln."
