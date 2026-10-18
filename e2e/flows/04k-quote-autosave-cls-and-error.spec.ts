@@ -48,7 +48,6 @@ test.describe("Quote Builder — Auto-save silencioso (CLS + a11y + erro real)",
       // Scroll contínuo (4 passos).
       for (let i = 0; i < 4; i++) {
         await page.evaluate((y) => window.scrollBy(0, y), 300);
-        await page.waitForTimeout(150);
       }
 
       const cls = await page.evaluate(
@@ -122,7 +121,6 @@ test.describe("Quote Builder — Auto-save silencioso (CLS + a11y + erro real)",
       .first();
     if (await notes.count()) {
       await notes.fill(`E2E retry ${Date.now()}`);
-      await page.waitForTimeout(2500);
       const draftKeys = await page.evaluate(() =>
         Object.keys(localStorage).filter((k) => k.startsWith("quote_draft_")),
       );

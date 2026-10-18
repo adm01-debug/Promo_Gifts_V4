@@ -91,7 +91,6 @@ test.describe("E2E: Catálogo e Lógica de Filtragem", () => {
     await page.press(Sel.catalog.searchInput, 'Enter');
 
     // Aguarda atualização
-    await page.waitForTimeout(1000);
 
     // Verifica se pelo menos um produto aparece (o próprio)
     await expect(page.locator(Sel.product.card)).toBeVisible();

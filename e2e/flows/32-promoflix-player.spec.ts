@@ -30,7 +30,6 @@ test.describe('PromoFlix Video Player', () => {
     await expect(playOverlay).toBeHidden();
 
     // Wait a bit and check if playing (currentTime should increase)
-    await page.waitForTimeout(1000);
     const timeAfterPlay = await video.evaluate((v: HTMLVideoElement) => v.currentTime);
     expect(timeAfterPlay).toBeGreaterThan(0);
 
@@ -48,19 +47,16 @@ test.describe('PromoFlix Video Player', () => {
     
     // Start playback
     await page.keyboard.press(' ');
-    await page.waitForTimeout(500);
 
     const initialTime = await video.evaluate((v: HTMLVideoElement) => v.currentTime);
     
     // Seek forward 10s (L)
     await page.keyboard.press('l');
-    await page.waitForTimeout(200);
     const afterForward = await video.evaluate((v: HTMLVideoElement) => v.currentTime);
     expect(afterForward).toBeGreaterThanOrEqual(initialTime + 9); // Allow small buffer diff
 
     // Seek backward 10s (J)
     await page.keyboard.press('j');
-    await page.waitForTimeout(200);
     const afterBackward = await video.evaluate((v: HTMLVideoElement) => v.currentTime);
     expect(afterBackward).toBeLessThanOrEqual(afterForward - 9);
   });
@@ -74,13 +70,11 @@ test.describe('PromoFlix Video Player', () => {
 
     // Increase rate (>) - in most browsers it's Shift+.
     await page.keyboard.press('>');
-    await page.waitForTimeout(200);
     rate = await video.evaluate((v: HTMLVideoElement) => v.playbackRate);
     expect(rate).toBeGreaterThan(1);
 
     // Decrease rate (<)
     await page.keyboard.press('<');
-    await page.waitForTimeout(200);
     rate = await video.evaluate((v: HTMLVideoElement) => v.playbackRate);
     expect(rate).toBe(1);
   });

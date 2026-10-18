@@ -107,7 +107,7 @@ test.describe("Mockup History E2E Flow", () => {
       
       await searchInput.fill(firstWord);
       // Wait for debounce/reload
-      await page.waitForTimeout(1000); 
+ 
       
       const results = page.locator('[data-testid="mockup-history-item"]');
       const count = await results.count();

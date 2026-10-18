@@ -40,7 +40,6 @@ test.describe("Fluxo: Tratamento de erro", () => {
     await context.setOffline(true);
     await page.reload({ waitUntil: "domcontentloaded" }).catch(() => {});
     // Não exigimos comportamento específico, só que não trave
-    await page.waitForTimeout(2000);
     await context.setOffline(false);
   });
 });

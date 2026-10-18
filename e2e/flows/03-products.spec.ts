@@ -20,7 +20,6 @@ test.describe("Fluxo: Produtos", () => {
     const search = page.locator(Sel.catalog.searchInput).first();
     if (await search.count()) {
       await search.fill("caneta");
-      await page.waitForTimeout(1500);
       await expect(page).toHaveURL(/produtos|filtros/);
     }
   });
@@ -30,7 +29,6 @@ test.describe("Fluxo: Produtos", () => {
     const card = page.locator(`${Sel.product.card} a`).first();
     if ((await card.count()) > 0) {
       await card.click();
-      await page.waitForTimeout(1500);
       await expect(page).not.toHaveURL(/\/login/);
     }
   });

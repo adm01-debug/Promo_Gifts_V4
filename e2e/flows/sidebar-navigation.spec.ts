@@ -92,7 +92,6 @@ test.describe('Sidebar Navigation Reorganization', () => {
     // Interact: scroll within sidebar if possible
     const nav = sidebar.locator('nav');
     await nav.evaluate(node => node.scrollTo(0, 100));
-    await page.waitForTimeout(300);
     
     // Snapshot after scroll
     await expect(sidebar).toHaveScreenshot('sidebar-layout-scrolled.png');

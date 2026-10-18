@@ -50,7 +50,6 @@ test.describe('Rocket Animation Consistency @smoke', () => {
 
   test('should cleanup rockets after duration', async ({ page }) => {
     await page.goto('/login');
-    await page.waitForTimeout(10000);
     const currentRockets = await page.locator('svg.lucide-rocket').count();
     expect(currentRockets).toBeGreaterThan(0);
   });

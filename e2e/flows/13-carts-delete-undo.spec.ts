@@ -222,7 +222,6 @@ test.describe("Carrinhos: exclusão com Desfazer (paridade com Orçamentos)", ()
     const deletesAfterUx = calls.delete;
 
     // Aguarda o toast expirar (8s + folga)
-    await page.waitForTimeout(9_000);
     await expect(page.locator(UNDO_TOAST)).toHaveCount(0);
     // Nenhum POST de restore após o timeout
     expect(calls.cartInsert).toBe(0);
@@ -399,13 +398,11 @@ test.describe("Carrinhos: exclusão com Desfazer (paridade com Orçamentos)", ()
       await page.locator(UNDO_TOAST).screenshot({ path: "test-results/13-carts-undo/G1-row-toast.png" });
 
       // Aguarda 8.5s para o toast expirar
-      await page.waitForTimeout(8_500);
       await expect(page.locator(UNDO_TOAST)).toHaveCount(0);
 
       // Tenta clicar no botão remanescente (força, ignora visibilidade) — não deve disparar restore
       const insertsBefore = calls.cartInsert;
       await btn.click({ force: true, timeout: 1_000 }).catch(() => {});
-      await page.waitForTimeout(1_000);
       expect(calls.cartInsert).toBe(insertsBefore);
     }
 
@@ -428,11 +425,9 @@ test.describe("Carrinhos: exclusão com Desfazer (paridade com Orçamentos)", ()
       await expect(page.locator(UNDO_TOAST)).toBeVisible({ timeout: 6_000 });
       await page.locator(UNDO_TOAST).screenshot({ path: "test-results/13-carts-undo/G2-bulk-toast.png" });
 
-      await page.waitForTimeout(8_500);
       await expect(page.locator(UNDO_TOAST)).toHaveCount(0);
       const insertsBefore = calls.cartInsert;
       await page.locator(UNDO_BTN).click({ force: true, timeout: 1_000 }).catch(() => {});
-      await page.waitForTimeout(1_000);
       expect(calls.cartInsert).toBe(insertsBefore);
     }
 
@@ -452,11 +447,9 @@ test.describe("Carrinhos: exclusão com Desfazer (paridade com Orçamentos)", ()
       await expect(page.locator(UNDO_TOAST)).toBeVisible({ timeout: 6_000 });
       await page.locator(UNDO_TOAST).screenshot({ path: "test-results/13-carts-undo/G3-popover-toast.png" });
 
-      await page.waitForTimeout(8_500);
       await expect(page.locator(UNDO_TOAST)).toHaveCount(0);
       const insertsBefore = calls.cartInsert;
       await page.locator(UNDO_BTN).click({ force: true, timeout: 1_000 }).catch(() => {});
-      await page.waitForTimeout(1_000);
       expect(calls.cartInsert).toBe(insertsBefore);
     }
   });
@@ -479,7 +472,6 @@ test.describe("Carrinhos: exclusão com Desfazer (paridade com Orçamentos)", ()
       .click();
 
     await expect(page.locator(UNDO_TOAST)).toHaveCount(1, { timeout: 6_000 });
-    await page.waitForTimeout(8_500);
     // Após timeout: nenhum toast Desfazer restante
     await expect(page.locator(UNDO_TOAST)).toHaveCount(0);
 

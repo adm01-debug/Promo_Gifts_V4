@@ -102,10 +102,9 @@ async function stabilizePdfPreview(page: import('@playwright/test').Page) {
       .catch(() => false);
 
     if (fontsReady && imagesReady) {
-      await page.waitForTimeout(wait); // debounce final para lazy-render.
+ // debounce final para lazy-render.
       return;
     }
-    await page.waitForTimeout(wait);
   }
   // Fallback: aceita mesmo assim — asserts subsequentes falharão claro.
 }
@@ -272,7 +271,6 @@ test.describe('PdfGenerationDialog · fluxo completo', () => {
 
     // Fechamento limpo — dialog sai do DOM e trigger reaparece.
     await page.keyboard.press('Escape').catch(() => undefined);
-    await page.waitForTimeout(300);
     await page.keyboard.press('Escape').catch(() => undefined);
     await expect(page.getByRole('dialog')).toHaveCount(0, { timeout: 15_000 });
     await expect(page.getByTestId('pdf-generate-confirm')).toHaveCount(0);
@@ -367,7 +365,6 @@ test.describe('PdfGenerationDialog · fluxo completo', () => {
 
     // Escape fecha e devolve foco ao trigger (contrato Radix).
     await page.keyboard.press('Escape').catch(() => undefined);
-    await page.waitForTimeout(300);
     await page.keyboard.press('Escape').catch(() => undefined);
     await expect(page.getByRole('dialog')).toHaveCount(0, { timeout: 15_000 });
 
@@ -436,7 +433,6 @@ test.describe('PdfGenerationDialog · fluxo completo', () => {
         .waitFor({ state: 'visible', timeout: 3_000 })
         .catch(() => undefined);
     }
-    await page.waitForTimeout(200);
 
     const dialog = page.getByRole('dialog').first();
     // Máscara sobre o miolo do preview (varia por fixture/data) e sobre o
