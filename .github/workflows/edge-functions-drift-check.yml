@@ -305,22 +305,36 @@ jobs:
             body += '\n_Antes de mergear: aplicar PR conciliador trazendo o source canônico para o repo, ou redeployar o branch do PR._';
             github.rest.issues.createComment({ issue_number: context.issue.number, owner: context.repo.owner, repo: context.repo.repo, body });
 
-      - name: Open issue (scheduled drift)
+      - name: Compute issue body (scheduled drift)
+        id: drift_issue_body
         if: (github.event_name == 'schedule' || github.event_name == 'workflow_run') && (steps.hash_diff.outputs.drift_count != '0' || steps.hash_diff.outputs.missing_in_dl != '0' || steps.slug_diff.outputs.has_orphans == 'true' || steps.slug_diff.outputs.has_missing == 'true')
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        run: |
+          node <<'NODEEOF' >> "$GITHUB_OUTPUT"
+          const fs = require('fs');
+          const DELIM = 'BODY_EOF_DRIFT';
+          const csv = fs.readFileSync('/tmp/drift_report.csv', 'utf-8');
+          const drifted = csv.split('\n').filter(l => l.includes(',DRIFT,'));
+          const downloadFailed = csv.split('\n').filter(l => l.includes(',download_failed,'));
+          const today = new Date().toISOString().slice(0, 10);
+          const title = `[drift-check] ${drifted.length} divergência(s), ${downloadFailed.length} download(s) inconclusivo(s) em ${today}`;
+          const body = `Detectadas ${drifted.length} divergências no cron diário.\n\n`
+            + drifted.map(l => `- \`${l.split(',')[0]}\``).join('\n')
+            + (downloadFailed.length ? `\n\nDownloads inconclusivos: ${downloadFailed.map(l => `\`${l.split(',')[0]}\``).join(', ')}` : '')
+            + '\n\nVer artefato `drift-report` desta execução para os hashes.';
+          process.stdout.write(`title=${title}\n`);
+          process.stdout.write(`body<<${DELIM}\n${body}\n${DELIM}\n`);
+          NODEEOF
+
+      - name: Open issue (scheduled drift)
+        # E12 — ci-issue action com dedupe por marcador <!-- ci-issue:edge-functions-drift -->
+        if: (github.event_name == 'schedule' || github.event_name == 'workflow_run') && (steps.hash_diff.outputs.drift_count != '0' || steps.hash_diff.outputs.missing_in_dl != '0' || steps.slug_diff.outputs.has_orphans == 'true' || steps.slug_diff.outputs.has_missing == 'true')
+        uses: ./.github/actions/ci-issue
         with:
-          script: |
-            const fs = require('fs');
-            const csv = fs.readFileSync('/tmp/drift_report.csv', 'utf-8');
-            const drifted = csv.split('\n').filter(l => l.includes(',DRIFT,'));
-            const downloadFailed = csv.split('\n').filter(l => l.includes(',download_failed,'));
-            const today = new Date().toISOString().slice(0,10);
-            const title = `[drift-check] ${drifted.length} divergência(s), ${downloadFailed.length} download(s) inconclusivo(s) em ${today}`;
-            const existing = await github.rest.issues.listForRepo({ owner: context.repo.owner, repo: context.repo.repo, state: 'open', labels: 'drift-check' });
-            const dup = existing.data.find(i => i.title.startsWith('[drift-check]'));
-            const body = `Detectadas ${drifted.length} divergências no cron diário.\n\n` + drifted.map(l => `- \`${l.split(',')[0]}\``).join('\n') + (downloadFailed.length ? `\n\nDownloads inconclusivos: ${downloadFailed.map(l => `\`${l.split(',')[0]}\``).join(', ')}` : '') + '\n\nVer artefato `drift-report` desta execução para os hashes.';
-            if (dup) { await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: dup.number, body: `Atualização do dia ${today}:\n\n${body}` }); }
-            else { await github.rest.issues.create({ owner: context.repo.owner, repo: context.repo.repo, title, body, labels: ['drift-check','priority/high'] }); }
+          key: edge-functions-drift
+          title: ${{ steps.drift_issue_body.outputs.title }}
+          body: ${{ steps.drift_issue_body.outputs.body }}
+          labels: drift-check,priority/high
+          state: open
 
       - name: Fail if drift detected
         if: steps.hash_diff.outputs.drift_count != '0' || steps.hash_diff.outputs.missing_in_dl != '0' || steps.slug_diff.outputs.has_orphans == 'true' || steps.slug_diff.outputs.has_missing == 'true'
