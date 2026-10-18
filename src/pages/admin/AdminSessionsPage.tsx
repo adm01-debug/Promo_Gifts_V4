@@ -179,7 +179,7 @@ export default function AdminSessionsPage() {
                           title={
                             s.user_id === user?.id
                               ? 'Você não pode revogar a própria sessão por aqui'
-                              : 'Revogar todas as sessões deste usuário'
+                              : 'Revogar toda sessão deste usuário'
                           }
                           onClick={() => setTarget(s)}
                         >
@@ -201,8 +201,8 @@ export default function AdminSessionsPage() {
               Revogar sessões de {target?.email ?? 'usuário sem e-mail'}?
             </AlertDialogTitle>
             <AlertDialogDescription>
-              Todos os tokens deste usuário serão revogados: as edges protegidas passam a rejeitar
-              as sessões dele e ele precisará fazer login novamente. A ação fica registrada na
+              Todos os tokens deste usuário serão revogados: sessões dele passam a ser rejeitadas
+              pelas edge functions e ele precisará fazer login novamente. A ação fica registrada na
               auditoria.
             </AlertDialogDescription>
           </AlertDialogHeader>
