@@ -85,13 +85,17 @@ export function changedMigrationFilenames(diffOutput) {
  */
 export function countVersionOccurrences(logContent) {
   const counts = new Map();
-  // Só conta versões em linhas de tabela markdown (| ... |) para evitar
-  // falsos duplicados em texto narrativo que menciona versões.
+  // Conta versões apenas na PRIMEIRA célula (coluna de versão) de cada linha de
+  // tabela markdown, evitando falsos positivos de versões citadas em descrições
+  // ou outras colunas. Ex: | `20260923` | applied | menciona `20260923` na desc |
+  // → conta 1 vez (só 1ª célula), não 2 vezes.
   const tableLines = logContent.split('\n').filter((l) => l.trimStart().startsWith('|'));
-  const tableContent = tableLines.join('\n');
-  for (const match of tableContent.matchAll(REGISTERED_VERSION_RE)) {
-    const v = match[1];
-    counts.set(v, (counts.get(v) ?? 0) + 1);
+  for (const line of tableLines) {
+    const firstCell = line.split('|')[1] ?? '';
+    for (const match of firstCell.matchAll(REGISTERED_VERSION_RE)) {
+      const v = match[1];
+      counts.set(v, (counts.get(v) ?? 0) + 1);
+    }
   }
   return counts;
 }

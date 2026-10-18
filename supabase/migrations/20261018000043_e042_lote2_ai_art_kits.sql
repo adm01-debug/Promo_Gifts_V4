@@ -48,24 +48,25 @@ CREATE POLICY "Users view own art files"
   USING ((user_id = auth.uid()));
 
 -- kit_collaborators (4 policies)
+-- is_kit_owner(_kit_id uuid, _user_id uuid) requer 2 args — baseline linha 61114
 DROP POLICY IF EXISTS "Owner can invite collaborators" ON public.kit_collaborators;
 CREATE POLICY "Owner can invite collaborators"
   ON public.kit_collaborators FOR INSERT TO authenticated
-  WITH CHECK (is_kit_owner(kit_id));
+  WITH CHECK (is_kit_owner(kit_id, (SELECT auth.uid())));
 
 DROP POLICY IF EXISTS "Owner can remove collaborators" ON public.kit_collaborators;
 CREATE POLICY "Owner can remove collaborators"
   ON public.kit_collaborators FOR DELETE TO authenticated
-  USING (is_kit_owner(kit_id));
+  USING (is_kit_owner(kit_id, (SELECT auth.uid())));
 
 DROP POLICY IF EXISTS "Owner can update collaborators" ON public.kit_collaborators;
 CREATE POLICY "Owner can update collaborators"
   ON public.kit_collaborators FOR UPDATE TO authenticated
-  USING (is_kit_owner(kit_id));
+  USING (is_kit_owner(kit_id, (SELECT auth.uid())));
 
 DROP POLICY IF EXISTS "View collaborators if owner or self" ON public.kit_collaborators;
 CREATE POLICY "View collaborators if owner or self"
   ON public.kit_collaborators FOR SELECT TO authenticated
-  USING ((is_kit_owner(kit_id) OR (user_id = auth.uid())));
+  USING ((is_kit_owner(kit_id, (SELECT auth.uid())) OR (user_id = auth.uid())));
 
 COMMIT;
