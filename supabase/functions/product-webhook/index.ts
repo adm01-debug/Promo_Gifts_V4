@@ -522,6 +522,11 @@ async function upsertProducts(
   for (const [index, chunk] of chunks.entries()) {
     const chunkStart = Date.now();
     let chunkRoundtrips = 0;
+    // Fora do try: o catch soma os batches já confirmados — falha no 2º
+    // upsert não esconde as gravações do 1º (partial ≠ zero).
+    let chunkPersisted = 0;
+    let chunkPersistedCreated = 0;
+    let chunkPersistedUpdated = 0;
     try {
       const skus = Array.from(new Set(chunk.map((item) => item.sku).filter(Boolean)));
 
@@ -579,9 +584,6 @@ async function upsertProducts(
       // Os 2 batches são requisições separadas, sem transação — contabiliza
       // cada batch confirmado antes de tentar o seguinte: falha no 2º não
       // esconde as gravações do 1º (partial, não zero).
-      let chunkPersisted = 0;
-      let chunkPersistedCreated = 0;
-      let chunkPersistedUpdated = 0;
       try {
         for (const batch of [
           { rows: withFeatured, created: wFCreated, updated: wFUpdated },
@@ -627,18 +629,25 @@ async function upsertProducts(
       );
     } catch (err) {
       const errMsg = err instanceof Error ? err.message : 'Unknown error';
-      failed += chunk.length;
+      const remaining = chunk.length - chunkPersisted;
+      // Batches confirmados antes da falha contam como sucesso; só o
+      // restante não gravado vira failed — resposta/log não contradizem
+      // o que o banco realmente persistiu.
+      created += chunkPersistedCreated;
+      updated += chunkPersistedUpdated;
+      processed += chunkPersisted;
+      failed += remaining;
       errors.push(`chunk_${index + 1}: ${errMsg}`);
       db_roundtrips += chunkRoundtrips;
       chunk_metrics.push({
         chunk: index + 1,
         received: chunk.length,
-        processed: 0,
+        processed: chunkPersisted,
         duration_ms: Date.now() - chunkStart,
         db_roundtrips: chunkRoundtrips,
-        created: 0,
-        updated: 0,
-        failed: chunk.length,
+        created: chunkPersistedCreated,
+        updated: chunkPersistedUpdated,
+        failed: remaining,
       });
       console.error(`[product-webhook][chunk ${index + 1}] failed:`, err);
     }
