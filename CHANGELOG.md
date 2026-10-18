@@ -5,6 +5,52 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.2.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.1.0...v1.2.0) (2026-10-18)
+
+
+### Features
+
+* **ci:** drift-check replaya baseline do schema vivo; conserta composite actions ([#2168](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2168)) ([ee0a467](https://github.com/adm01-debug/Promo_Gifts_V4/commit/ee0a46775bc51a27134ced0f408839091ab016e5))
+* **drift:** baseline replay robusto — keywords, dollar-quote, quotes-templates fix ([#2171](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2171)) ([c41dfe7](https://github.com/adm01-debug/Promo_Gifts_V4/commit/c41dfe7e7a56fbbc4c58f9d2d45f218811bcf962))
+* **E12:** ci-issue composite action + labels hygiene ([3f66fbf](https://github.com/adm01-debug/Promo_Gifts_V4/commit/3f66fbf2255903030f95e91481fc9e6827c78c42))
+* **E18:** cache-prune weekly workflow + SHA-pin actions/cache in e2e-setup ([5cef26e](https://github.com/adm01-debug/Promo_Gifts_V4/commit/5cef26e1c8c38395a1640552fba8569671e691f9))
+* **E42:** check-playwright-min-executed — --max-skipped-ratio e composite action ([cfea89b](https://github.com/adm01-debug/Promo_Gifts_V4/commit/cfea89b068d75adcfa662a1ba868932578623957))
+
+
+### Bug Fixes
+
+* **ci/db:** causa raiz dos locks (snapshot sem dump em PR), backfill primary_image_url, recibos ([12fda66](https://github.com/adm01-debug/Promo_Gifts_V4/commit/12fda6661e2d6f510c6d16ba657ac34878ae2804))
+* **ci/db:** causa raiz dos locks, backfill primary_image_url, recibos ([#2163](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2163)) ([12fda66](https://github.com/adm01-debug/Promo_Gifts_V4/commit/12fda6661e2d6f510c6d16ba657ac34878ae2804))
+* **ci/db:** lock_timeout real no apply, push E32 restaurado e migrations separadas ([1a07395](https://github.com/adm01-debug/Promo_Gifts_V4/commit/1a07395613ca8bb6fde5ed7b40c5347ce21801b8))
+* **ci/db:** lock_timeout real no apply, push E32 restaurado e migrations separadas ([#2159](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2159)) ([1a07395](https://github.com/adm01-debug/Promo_Gifts_V4/commit/1a07395613ca8bb6fde5ed7b40c5347ce21801b8))
+* **ci/E15:** lock_timeout e statement_timeout valem de verdade no apply ([b3e2ce6](https://github.com/adm01-debug/Promo_Gifts_V4/commit/b3e2ce6f65fc4d3e5fe9fab9d0508404a41ad84e))
+* **ci/E32:** actionlint limpo nos 16 workflows de push ([79af538](https://github.com/adm01-debug/Promo_Gifts_V4/commit/79af538d6f23fa375833c689bdc804f3c6f06ff4))
+* **ci/E32:** restaura git push nos 17 jobs que perderam credencial ([aa940e5](https://github.com/adm01-debug/Promo_Gifts_V4/commit/aa940e5982b258cdb1f4850087a33e9fd453ff52))
+* **ci:** corrige persist-credentials em 45 workflows — C10 sistemático ([71dac91](https://github.com/adm01-debug/Promo_Gifts_V4/commit/71dac91385dd5e4fe695c27bdf0aa8d819069b77))
+* **ci:** corrige persist-credentials nos checkouts de deploy-gates.yml (C10) ([c6a62b0](https://github.com/adm01-debug/Promo_Gifts_V4/commit/c6a62b0198f3c45409f4cfea2ec5b403a393911e))
+* **ci:** policies-baseline abre o PR com o label existente "automated" ([69b500a](https://github.com/adm01-debug/Promo_Gifts_V4/commit/69b500a449fea5f34902bf13398c358fa86b1ff2))
+* **ci:** policies-baseline abre o PR com o label existente "automated" ([9c077a5](https://github.com/adm01-debug/Promo_Gifts_V4/commit/9c077a5a71cd52b4732330c147cdf5217556d39a))
+* **ci:** policies-baseline usa o label "automated" ([#2167](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2167)) ([69b500a](https://github.com/adm01-debug/Promo_Gifts_V4/commit/69b500a449fea5f34902bf13398c358fa86b1ff2))
+* **ci:** schema-snapshot-export só faz dump ao vivo em schedule/dispatch ([f47fefc](https://github.com/adm01-debug/Promo_Gifts_V4/commit/f47fefcfbbeb384e15a255eaddcd035ce9d15292))
+* **db/B2:** reconcilia ledger × repo das migrations do incidente 2026-10-13 ([0a64ef3](https://github.com/adm01-debug/Promo_Gifts_V4/commit/0a64ef316e4fed7a44c0b8791b8058fae2bb43bd))
+* **db/B2:** reconcilia ledger × repo das migrations do incidente 2026-10-13 ([#2157](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2157)) ([0a64ef3](https://github.com/adm01-debug/Promo_Gifts_V4/commit/0a64ef316e4fed7a44c0b8791b8058fae2bb43bd))
+* **db/B2:** reconcilia ledger x repo das migrations do incidente 2026-10-13 ([ff4997e](https://github.com/adm01-debug/Promo_Gifts_V4/commit/ff4997e090e7098ee6249dee981abff575c9ccc2))
+* **db:** backfill de primary_image_url nos 11 produtos com valor da regra antiga ([be60981](https://github.com/adm01-debug/Promo_Gifts_V4/commit/be609810df72df66c6c1d04a34a2f1c37ab4abe6))
+* **db:** cabeçalho de rollback na 20261013180000 e veto revisado da 180500 ([82cc69c](https://github.com/adm01-debug/Promo_Gifts_V4/commit/82cc69c3ba82c808f6997a77e0cf5472742f0afc))
+* **db:** rollback da 20261013180000 restaura o ACL exato ([d279ca2](https://github.com/adm01-debug/Promo_Gifts_V4/commit/d279ca2b3e6b331ddf94e85630973112046f45f2))
+* **db:** rollback na 20261013180000 + veto revisado da 180500 ([8491f62](https://github.com/adm01-debug/Promo_Gifts_V4/commit/8491f623efb9d4aef08092764622dee49966ae65))
+* **db:** rollback na 20261013180000 + veto revisado da 180500 ([#2158](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2158)) ([8491f62](https://github.com/adm01-debug/Promo_Gifts_V4/commit/8491f623efb9d4aef08092764622dee49966ae65))
+* **db:** separa o DROP da policy de teste e põe lock_timeout nas migrations pendentes ([9775d22](https://github.com/adm01-debug/Promo_Gifts_V4/commit/9775d22481008b1efa0ec4163786a84de886aebd))
+* **deps:** E95 — override tmp &gt;=0.2.6 para fechar GHSA-52f5-9888-hmc6/GHSA-ph9p-34f9-6g65 ([01b58fb](https://github.com/adm01-debug/Promo_Gifts_V4/commit/01b58fb0739628ae6408d506d5bed331b687a61c))
+* **drift:** replay do baseline descarta ALTER/COMMENT ON EVENT TRIGGER ([#2170](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2170)) ([d6cdb44](https://github.com/adm01-debug/Promo_Gifts_V4/commit/d6cdb442a1b5f2e4d7ff66f5656a126a50c37ecf))
+* **E04:** bundle ratchet só desce — min(atual×1.2, prev) em todos os campos ([62f75f6](https://github.com/adm01-debug/Promo_Gifts_V4/commit/62f75f68317848613fd58d5137eddb3e0b81eacc))
+* **E40:** secrets-inventory ignora linhas de comentário YAML ao extrair refs ([6522953](https://github.com/adm01-debug/Promo_Gifts_V4/commit/652295306365dee59d697d2665c00463febcd1d7))
+* **E46:** freight-quality-gates — pisos reais, cancelled = falha ([fded800](https://github.com/adm01-debug/Promo_Gifts_V4/commit/fded8007cf2a1ed9b3a80d3661a9522a524896f3))
+* **E47:** flakiness medida sem retry; postgres-contracts com setup-node ([cff94e4](https://github.com/adm01-debug/Promo_Gifts_V4/commit/cff94e441485b21fc084cf302b40e5301052a652))
+* **E50:** e2e-customization-collapse — 4 defeitos estruturais ([c559221](https://github.com/adm01-debug/Promo_Gifts_V4/commit/c559221fbdbaf531af4031ce489c4f318d194834))
+* **E85:** uptime-monitor --max-time 30, prod-health nome honesto ([3f1594e](https://github.com/adm01-debug/Promo_Gifts_V4/commit/3f1594e3ee9e86e42864110a0a8d498c875de5ff))
+* **E86:** delete-orphan-edges — not found = skip, recibo de deleção ([02785a4](https://github.com/adm01-debug/Promo_Gifts_V4/commit/02785a4fc41b6acf8975dfb39c166f3a2b98f91a))
+
 ## [1.1.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.0.6...v1.1.0) (2026-10-14)
 
 
