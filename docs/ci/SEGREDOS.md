@@ -125,7 +125,6 @@ Não precisam de entrada na tabela acima; estão no allowlist de `check-secrets-
 | Segredo | Motivo do allowlist |
 |---|---|
 | `PGPORT` | Fallback hardcoded: `${{ secrets.PGPORT \|\| '5432' }}` — porta padrão 5432 usada se ausente |
-| `EXAMPLE_API_KEY` | `_template.yml` — arquivo de template de workflow, não um workflow real |
 | `BRANCH_PROTECTION_READ_TOKEN` | Fallback: `${{ secrets.BRANCH_PROTECTION_READ_TOKEN \|\| github.token }}` |
 | `LHCI_GITHUB_APP_TOKEN` | Gate 4 opcional (Lighthouse) — allowlistado também em check-workflow-contracts |
 
