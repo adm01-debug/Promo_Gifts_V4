@@ -21,6 +21,10 @@ import { ArrowLeft, CheckCircle2, XCircle, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 import { sanitizeError } from '@/lib/security/sanitize-error';
 import { DiscountApprovalAuditTrail } from '@/components/admin/DiscountApprovalAuditTrail';
+import {
+  assertDiscountApprovalTransition,
+  darDecisionTarget,
+} from '@/lib/discount-approval-status-config';
 
 interface RequestRow {
   id: string;
@@ -80,11 +84,15 @@ export default function DiscountRequestDetailPage() {
   const respond = useMutation({
     mutationFn: async (approved: boolean) => {
       if (!id || !data) return;
+      // Máquina do DAR: só pending -> approved/rejected (ver
+      // src/lib/discount-approval-status-config.ts).
+      const targetStatus = darDecisionTarget(approved);
+      assertDiscountApprovalTransition(data.status, targetStatus);
       const { data: u } = await supabase.auth.getUser();
       const { error } = await supabase
         .from('discount_approval_requests') // rls-allow: admin (admin-routes); decisão de desconto; RLS admin policy
         .update({
-          status: approved ? 'approved' : 'rejected',
+          status: targetStatus,
           admin_id: u.user?.id ?? null,
           admin_notes: adminNotes || null,
           responded_at: new Date().toISOString(),

@@ -6,10 +6,17 @@
 
 export const REQUEST_ID_HEADER = "X-Request-Id";
 
-/** Lê o request-id do header ou gera um novo. */
-export function getOrCreateRequestId(req: Request): string {
+/** Lê o request-id do header SEM gerar fallback — para quem só ecoa o id. */
+export function getIncomingRequestId(req: Request): string | null {
   const incoming = req.headers.get(REQUEST_ID_HEADER) || req.headers.get("x-request-id");
   if (incoming && incoming.length >= 8 && incoming.length <= 128) return incoming;
+  return null;
+}
+
+/** Lê o request-id do header ou gera um novo. */
+export function getOrCreateRequestId(req: Request): string {
+  const incoming = getIncomingRequestId(req);
+  if (incoming) return incoming;
   if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
     return crypto.randomUUID();
   }

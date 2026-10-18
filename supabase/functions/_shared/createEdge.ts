@@ -92,7 +92,7 @@ export function createEdge(
     // CORS headers — modo public usa buildPublicCorsHeaders
     const corsHeaders =
       config.auth === "public"
-        ? buildPublicCorsHeaders()
+        ? buildPublicCorsHeaders({ req })
         : getCorsHeaders(req);
 
     // Preflight OPTIONS — responde sempre (inclui X-Request-Id para correlação)

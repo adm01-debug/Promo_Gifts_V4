@@ -1,6 +1,7 @@
 import { getCorsHeaders } from '../_shared/cors.ts';
 import { runBotProtection } from '../_shared/bot-protection.ts';
 import { fetchWithBreaker, CircuitOpenError, circuitOpenResponse } from '../_shared/external-fetch.ts';
+import { z } from '../_shared/zod-validate.ts';
 
 // BUG-A04 FIX (26/05/2026): Expanded ALLOWED_DOMAINS to include all active suppliers.
 // Previously only 'spotgifts.com.br' was allowed — XBZ, Asia Import, Só Marcas and
@@ -46,6 +47,11 @@ const VERCEL_TEAM_PATTERN = /^[\w-]+-juca1\.vercel\.app$/i;
 // A wildcard *.lovable.app / *.lovableproject.com would allow any Lovable tenant to hotlink.
 
 const ALLOW_LOCALHOST = Deno.env.get('IMAGE_PROXY_ALLOW_LOCALHOST') === 'true';
+
+// O único input do proxy é o query param `url`. z.string().url() tem a
+// mesma aceitação do new URL() que o handler já usava — preserva o
+// contrato e deixa o critério explícito no schema.
+const urlParamSchema = z.string().url();
 
 function isAllowedReferer(referer: string | null): boolean {
   if (!referer) return false;
@@ -95,15 +101,13 @@ Deno.serve(async (req) => {
       });
     }
 
-    let parsedUrl: URL;
-    try {
-      parsedUrl = new URL(imageUrl);
-    } catch {
+    if (!urlParamSchema.safeParse(imageUrl).success) {
       return new Response(JSON.stringify({ error: 'Invalid URL' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
+    const parsedUrl = new URL(imageUrl);
 
     if (!ALLOWED_DOMAINS.includes(parsedUrl.hostname)) {
       return new Response(JSON.stringify({ error: 'Domain not allowed', hostname: parsedUrl.hostname }), {

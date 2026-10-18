@@ -362,6 +362,6 @@ Deno.serve(async (req) => {
       status: 200,
     });
   } catch (e) {
-    return safeErrorResponse(e, { corsHeaders, publicMessage: "internal", logLabel: "rls-audit error:" });
+    return safeErrorResponse(e, { corsHeaders, req, publicMessage: "internal", logLabel: "rls-audit error:" });
   }
 });

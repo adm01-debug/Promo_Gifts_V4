@@ -180,15 +180,21 @@ Deno.serve(async (req: Request) => {
       lastAttemptId = attemptRows[attemptRows.length - 1].id;
       const ids = attemptRows.filter(isAttemptMatch).map((r) => r.id);
       if (ids.length === 0) continue;
-      const { error: delErr, count } = await supabaseAdmin
-        .from("login_attempts")
-        .delete({ count: "exact" })
-        .in("id", ids);
-      if (delErr) {
-        attemptsErr = delErr;
-        break;
+      // Lotes de 200: `.in()` com até 1000 UUIDs gera URL de ~40KB e
+      // estoura o limite de request-line do PostgREST — o delete falharia
+      // e a página ficaria marcada como purgada sem estar.
+      for (let off = 0; off < ids.length && !attemptsErr; off += 200) {
+        const slice = ids.slice(off, off + 200);
+        const { error: delErr, count } = await supabaseAdmin
+          .from("login_attempts")
+          .delete({ count: "exact" })
+          .in("id", slice);
+        if (delErr) {
+          attemptsErr = delErr;
+          break;
+        }
+        attemptsWiped += count ?? slice.length;
       }
-      attemptsWiped += count ?? ids.length;
     }
     if (!attemptsErr && !exhausted) {
       // Bound atingido não prova nem falha nem sucesso — só uma

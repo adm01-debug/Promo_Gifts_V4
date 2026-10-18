@@ -11,6 +11,8 @@
  *   and must not be granted CORS access to edge functions.
  */
 
+import { getIncomingRequestId } from "./request-id.ts";
+
 // --- Configuration ---
 
 const EXACT_ALLOWED_ORIGINS = new Set([
@@ -169,10 +171,15 @@ function logPreflightFromRequest(req: Request, origin: string): void {
 /**
  * Returns CORS headers with origin validation.
  * If the request origin is in the allowlist, it is reflected back.
+ *
+ * Também ecoa `x-request-id` recebido do cliente (tracing ponta-a-ponta):
+ * como praticamente toda resposta das edges é construída com esses headers,
+ * o correlation-id volta ao cliente em sucessos e erros sem editar cada edge.
  */
 export function getCorsHeaders(req?: Request): Record<string, string> {
   const origin = req?.headers.get('origin') || req?.headers.get('Origin') || '';
-  
+  const requestId = req ? getIncomingRequestId(req) : null;
+
   if (req?.method === 'OPTIONS') {
     logPreflightFromRequest(req, origin);
   }
@@ -181,6 +188,7 @@ export function getCorsHeaders(req?: Request): Record<string, string> {
     ...CORS_HEADERS_BASE,
     ...SECURITY_HEADERS,
     'Access-Control-Allow-Origin': getBestAllowedOrigin(origin),
+    ...(requestId ? { 'x-request-id': requestId } : {}),
   };
 }
 
@@ -202,6 +210,10 @@ export interface PublicCorsOptions {
    * Override Access-Control-Allow-Methods (default: same as restricted helper).
    */
   allowMethods?: string;
+  /**
+   * Request atual — quando presente, ecoa `x-request-id` (tracing).
+   */
+  req?: Request;
 }
 
 /**
@@ -213,13 +225,15 @@ export function buildPublicCorsHeaders(opts: PublicCorsOptions = {}): Record<str
     const t = h.trim().toLowerCase();
     if (t) merged.add(t);
   }
-  
+  const requestId = opts.req ? getIncomingRequestId(opts.req) : null;
+
   return {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': Array.from(merged).join(', '),
     'Access-Control-Allow-Methods': opts.allowMethods ?? CORS_HEADERS_BASE['Access-Control-Allow-Methods'],
     'Access-Control-Expose-Headers': 'x-request-id',
     ...SECURITY_HEADERS,
+    ...(requestId ? { 'x-request-id': requestId } : {}),
   };
 }
 
@@ -235,7 +249,7 @@ export function handleCorsPreflight(
   if (opts.public) {
     const origin = req.headers.get('origin') || req.headers.get('Origin') || '';
     logPreflightFromRequest(req, origin);
-    return new Response(null, { headers: buildPublicCorsHeaders(opts) });
+    return new Response(null, { headers: buildPublicCorsHeaders({ ...opts, req }) });
   }
   
   return new Response(null, { headers: getCorsHeaders(req) });
