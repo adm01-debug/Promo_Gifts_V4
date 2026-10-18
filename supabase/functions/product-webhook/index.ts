@@ -443,7 +443,12 @@ async function upsertProducts(
   const startedAt = Date.now();
   const resolvers = await buildEntityResolvers(supabase);
   const normalized = products.map((p) => normalizeProduct(p, resolvers));
-  const unresolved = { category: [] as string[], supplier: [] as string[], featured_dropped: [] as string[] };
+  const unresolved = {
+    category: [] as string[],
+    supplier: [] as string[],
+    featured_no_expires: [] as string[],
+    featured_cleared: [] as string[],
+  };
   const valid: NormalizedProduct[] = [];
   const rejected: string[] = [];
   for (const [i, n] of normalized.entries()) {
@@ -452,9 +457,13 @@ async function upsertProducts(
       unresolved.category.push(p.sku);
     if (n.supplier_id === null && (p.supplier_id !== undefined || p.supplier_name))
       unresolved.supplier.push(p.sku);
-    // featured:true sem expires no payload: produto novo fica sem destaque;
-    // existente preserva o destaque atual (colunas omitidas no upsert).
-    if (p.featured === true && !n.is_featured) unresolved.featured_dropped.push(p.sku);
+    if (p.featured === true && !n.is_featured) {
+      // expires ausente: produto novo fica sem destaque; existente preserva
+      // (colunas fora do DO UPDATE). expires null explícito: o upsert
+      // DESLIGA o destaque — warning próprio, não promete preservação.
+      if (p.featured_expires_at === null) unresolved.featured_cleared.push(p.sku);
+      else unresolved.featured_no_expires.push(p.sku);
+    }
     // NOT NULL no banco: linha sem categoria/fornecedor resolvido falha 23502 —
     // exclui do chunk para um produto ruim não derrubar os bons do lote.
     const missing = [
@@ -464,16 +473,22 @@ async function upsertProducts(
     if (missing.length) rejected.push(`${n.sku}(sem ${missing.join(',')})`);
     else valid.push(n);
   }
-  if (unresolved.category.length || unresolved.supplier.length || unresolved.featured_dropped.length) {
+  if (
+    unresolved.category.length ||
+    unresolved.supplier.length ||
+    unresolved.featured_no_expires.length ||
+    unresolved.featured_cleared.length
+  ) {
     console.warn(
       `[product-webhook] ids externos não resolvidos: ` +
         `category=${unresolved.category.length} (ex: ${unresolved.category.slice(0, 3).join(',')}) ` +
         `supplier=${unresolved.supplier.length} (ex: ${unresolved.supplier.slice(0, 3).join(',')}) ` +
-        `featured_dropped=${unresolved.featured_dropped.length} (ex: ${unresolved.featured_dropped.slice(0, 3).join(',')})`,
+        `featured_no_expires=${unresolved.featured_no_expires.length} ` +
+        `featured_cleared=${unresolved.featured_cleared.length} (ex: ${[...unresolved.featured_no_expires, ...unresolved.featured_cleared].slice(0, 3).join(',')})`,
     );
   }
   // Warnings vão na resposta — rejected/error já eram visíveis mas ids não
-  // resolvidos e featured preservado eram só console.warn (invisível pro caller).
+  // resolvidos e featured preservado/desligado eram só console.warn (invisível pro caller).
   const warnings: string[] = [];
   if (unresolved.category.length)
     warnings.push(
@@ -483,10 +498,15 @@ async function upsertProducts(
     warnings.push(
       `supplier_id não resolvido p/ ${unresolved.supplier.length} sku(s) (ex: ${unresolved.supplier.slice(0, 5).join(', ')})`,
     );
-  if (unresolved.featured_dropped.length)
+  if (unresolved.featured_no_expires.length)
     warnings.push(
-      `featured sem featured_expires_at p/ ${unresolved.featured_dropped.length} sku(s) — ` +
-        `novos ficam sem destaque; existentes preservam o destaque atual (ex: ${unresolved.featured_dropped.slice(0, 5).join(', ')})`,
+      `featured sem featured_expires_at p/ ${unresolved.featured_no_expires.length} sku(s) — ` +
+        `novos ficam sem destaque; existentes preservam o destaque atual (ex: ${unresolved.featured_no_expires.slice(0, 5).join(', ')})`,
+    );
+  if (unresolved.featured_cleared.length)
+    warnings.push(
+      `featured:true com featured_expires_at:null p/ ${unresolved.featured_cleared.length} sku(s) — ` +
+        `destaque DESLIGADO no upsert (ex: ${unresolved.featured_cleared.slice(0, 5).join(', ')})`,
     );
 
   const chunks = chunkArray(valid, chunkSize);
@@ -505,24 +525,16 @@ async function upsertProducts(
     try {
       const skus = Array.from(new Set(chunk.map((item) => item.sku).filter(Boolean)));
 
-      let existingRows: Array<{
-        id: string;
-        sku: string | null;
-        is_featured: boolean | null;
-        is_featured_expires_at: string | null;
-      }> = [];
+      let existingRows: Array<{ id: string; sku: string | null }> = [];
       if (skus.length > 0) {
         // SECURITY (CWE-943): never interpolate caller-controlled sku into the
         // PostgREST `.or()` filter DSL — a value containing ',', ')' or '.' breaks out of
         // the in.(...) list and injects arbitrary filter expressions. Use parameterized
         // `.in()` probes (supabase-js URL-encodes the values) and merge results by id.
-        const byId = new Map<
-          string,
-          { id: string; sku: string | null; is_featured: boolean | null; is_featured_expires_at: string | null }
-        >();
+        const byId = new Map<string, { id: string; sku: string | null }>();
         const { data, error } = await supabase
           .from('products')
-          .select('id,sku,is_featured,is_featured_expires_at')
+          .select('id,sku')
           .in('sku', skus);
         chunkRoundtrips += 1;
         if (error) throw error;
@@ -537,24 +549,30 @@ async function upsertProducts(
       let chunkCreated = 0;
       let chunkUpdated = 0;
 
+      // PostgREST upsert (merge-duplicates) trata chave ausente como NULL e
+      // copiar o valor lido antes do upsert tem corrida: edição de featured
+      // feita entre o probe e a gravação seria revertida. Preservação atômica
+      // = particionar o upsert: linhas sem decisão de featured vão num batch
+      // SEM as duas colunas — o DO UPDATE não as inclui e o valor atual
+      // sobrevive qualquer edição concorrente no momento da escrita.
+      const withFeatured: NormalizedProduct[] = [];
+      const noFeatured: NormalizedProduct[] = [];
       for (const item of chunk) {
         // 'variations' is NOT a products column (variant data lives in product_variants).
         // Leaving it in the upsert payload 400s the entire chunk (PGRST204), so strip it.
         delete (item as Record<string, unknown>).variations;
         const existing = existingBySku.get(item.sku);
 
-        // PostgREST upsert (merge-duplicates) trata chave ausente como NULL —
-        // "omitir" featured NÃO preserva o valor, apaga. Preservação real =
-        // read-merge-write: sem decisão no payload, copia os valores atuais
-        // do banco; produto novo sem featured grava o default sem destaque.
-        if (item.is_featured === undefined) {
-          if (existing) {
-            item.is_featured = existing.is_featured ?? false;
-            item.is_featured_expires_at = existing.is_featured_expires_at;
-          } else {
+        if (item.is_featured === undefined && existing) {
+          delete (item as Record<string, unknown>).is_featured_expires_at;
+          noFeatured.push(item);
+        } else {
+          // Produto novo sem decisão (ou payload decidiu): grava o valor.
+          if (item.is_featured === undefined) {
             item.is_featured = false;
             item.is_featured_expires_at = null;
           }
+          withFeatured.push(item);
         }
 
         if (existing) {
@@ -564,10 +582,11 @@ async function upsertProducts(
         }
       }
 
-      if (chunk.length > 0) {
+      for (const batch of [withFeatured, noFeatured]) {
+        if (batch.length === 0) continue;
         const { error: upsertBySkuError } = await supabase
           .from('products')
-          .upsert(chunk as never, { onConflict: 'sku', ignoreDuplicates: false });
+          .upsert(batch as never, { onConflict: 'sku', ignoreDuplicates: false });
         chunkRoundtrips += 1;
         if (upsertBySkuError) throw upsertBySkuError;
       }
