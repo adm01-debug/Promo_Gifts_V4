@@ -58,15 +58,7 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: npm
-      - name: Cache node_modules
-        id: cache-nm
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-nm-${{ hashFiles('package-lock.json') }}
-          restore-keys: ${{ runner.os }}-nm-
       - name: Install dependencies
-        if: steps.cache-nm.outputs.cache-hit != 'true'
         run: npm ci
       - name: Typecheck (baseline ratchet)
         run: npm run typecheck
@@ -88,14 +80,7 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: npm
-      - name: Cache node_modules
-        id: cache-nm
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-nm-${{ hashFiles('package-lock.json') }}
       - name: Install dependencies
-        if: steps.cache-nm.outputs.cache-hit != 'true'
         run: npm ci
       - name: Run freight unit tests (incluindo property-based)
         # Sem --coverage de propósito: estes 3 arquivos espelham a lógica do frete
@@ -121,14 +106,7 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: npm
-      - name: Cache node_modules
-        id: cache-nm
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-nm-${{ hashFiles('package-lock.json') }}
       - name: Install dependencies
-        if: steps.cache-nm.outputs.cache-hit != 'true'
         run: npm ci
       - name: Run freight integration tests
         run: |
@@ -162,14 +140,7 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: npm
-      - name: Cache node_modules
-        id: cache-nm
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-nm-${{ hashFiles('package-lock.json') }}
       - name: Install dependencies
-        if: steps.cache-nm.outputs.cache-hit != 'true'
         run: npm ci
       - name: Run fuzzing test suite
         run: TZ=America/Sao_Paulo npx vitest run tests/fuzz/freight-quest-fuzzer.test.ts --reporter=verbose
@@ -199,14 +170,7 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: npm
-      - name: Cache node_modules
-        id: cache-nm
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-nm-${{ hashFiles('package-lock.json') }}
       - name: Install dependencies
-        if: steps.cache-nm.outputs.cache-hit != 'true'
         run: npm ci
       - name: Run core test suite with coverage
         run: npm run test:ci-core:coverage
@@ -245,14 +209,7 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: npm
-      - name: Cache node_modules
-        id: cache-nm
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-nm-${{ hashFiles('package-lock.json') }}
       - name: Install dependencies
-        if: steps.cache-nm.outputs.cache-hit != 'true'
         run: npm ci
       - name: Run freight load test (dry-run)
         run: node scripts/freight-quest-load-test.mjs
@@ -276,14 +233,7 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: npm
-      - name: Cache node_modules
-        id: cache-nm
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-nm-${{ hashFiles('package-lock.json') }}
       - name: Install dependencies
-        if: steps.cache-nm.outputs.cache-hit != 'true'
         run: npm ci
       - name: Credential audit (baseline)
         run: npm run audit:credentials
@@ -317,14 +267,7 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: npm
-      - name: Cache node_modules
-        id: cache-nm
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-nm-${{ hashFiles('package-lock.json') }}
       - name: Install dependencies
-        if: steps.cache-nm.outputs.cache-hit != 'true'
         run: npm ci
       - name: Run regression suite
         run: TZ=America/Sao_Paulo npx vitest run tests/regression/ --reporter=verbose
@@ -342,14 +285,7 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: npm
-      - name: Cache node_modules
-        id: cache-nm
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-nm-${{ hashFiles('package-lock.json') }}
       - name: Install dependencies
-        if: steps.cache-nm.outputs.cache-hit != 'true'
         run: npm ci
       - name: Run property-based tests
         run: TZ=America/Sao_Paulo npx vitest run tests/unit/freight-quest/freight-property-based.test.ts --reporter=verbose
