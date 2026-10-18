@@ -25,6 +25,7 @@ name: Deploy Gates
 #  1.13 policies-baseline  — policies live vs baseline
 #  1.14 secrets-inventory  — secrets/vars referenciados todos documentados em SEGREDOS.md (E40/E98)
 #  E23  secrets-check      — verifica presença de secrets E2E (saída has_e2e)
+#  E89  cron-spacing       — workflows privilegiados espaçados ≥ 20 min (GAP-4)
 #  2    unit-tests         — vitest
 #  2.5  pg-integrity       — integridade transacional PostgreSQL
 #  3    e2e-smoke          — Playwright smoke (login + dashboard), se has_e2e=true
@@ -273,6 +274,12 @@ jobs:
         env:
           VITE_SUPABASE_URL: https://placeholder.supabase.co
           VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
+      # E89/GAP-4 — Cron spacing gate (bloqueante)
+      # scripts/ci-cron-table.mjs existe desde E89 mas nunca foi chamado em CI:
+      # colisões de cron ≤ 20 min entre workflows privilegiados passavam sem bloqueio.
+      # Não precisa de secrets — lê .github/workflows/ diretamente via fs.
+      - name: Gate E89 — Cron spacing ≥ 20 min entre workflows privilegiados (bloqueante)
+        run: node scripts/ci-cron-table.mjs --min-spacing 20
 
   unit-tests:
     name: Gate 2 - Unit Tests

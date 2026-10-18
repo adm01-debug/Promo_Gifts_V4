@@ -33,8 +33,6 @@ permissions:
 concurrency:
   group: e2e-dialogs-pr-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}  # E19: PR cancela; dispatch não
-env:
-
 
 defaults:
   run:
