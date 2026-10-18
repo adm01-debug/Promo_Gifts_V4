@@ -240,10 +240,12 @@ jobs:
                  -o -name '*_event_triggers.json' -o -name '*_cron_jobs.json' \) -delete
             cp "$SNAP"/baseline/*_baseline_schema.sql "$SNAP"/baseline/*_ledger_versions.json supabase/baseline/
             # E036/E037: copia snapshots de event triggers e cron jobs quando presentes
-            compgen -G "$SNAP/baseline/*_event_triggers.json" > /dev/null && \
-              cp "$SNAP"/baseline/*_event_triggers.json supabase/baseline/ || true
-            compgen -G "$SNAP/baseline/*_cron_jobs.json" > /dev/null && \
-              cp "$SNAP"/baseline/*_cron_jobs.json supabase/baseline/ || true
+            if compgen -G "$SNAP/baseline/*_event_triggers.json" > /dev/null; then
+              cp "$SNAP"/baseline/*_event_triggers.json supabase/baseline/
+            fi
+            if compgen -G "$SNAP/baseline/*_cron_jobs.json" > /dev/null; then
+              cp "$SNAP"/baseline/*_cron_jobs.json supabase/baseline/
+            fi
           else
             echo "::warning::Export sem baseline novo — baseline atual mantido."
           fi
