@@ -13,6 +13,7 @@ import {
 } from '@/types/magazine';
 import type { Product } from '@/types/product-catalog';
 import { validateBranding } from '@/lib/security/magazine-guard';
+import { assertMagazineTransition } from '@/lib/magazine-status-config';
 import { EditorPersistence, type EditorPatch } from './editorPersistence';
 import { isMagazinePageOrderV2 } from './pagination';
 import {
@@ -283,6 +284,23 @@ export function useMagazineEditor(id: string | undefined) {
     },
     [user?.id],
   );
+  // Transições de status (publish/unpublish/archive/reactivate) passam pela
+  // máquina de magazine-status-config.ts — SSOT das transições válidas.
+  const transitionTo = useCallback(
+    async (
+      action: (key: string, expectedEditVersion: number) => Promise<Magazine | null>,
+      targetStatus: Magazine['status'],
+    ) => {
+      const current = session.current;
+      if (!current) throw new Error('A revista ainda não foi carregada.');
+      if (current.magazine.ownerId !== user?.id) {
+        throw new Error('Somente o proprietário pode alterar esta revista.');
+      }
+      assertMagazineTransition(current.magazine.status, targetStatus);
+      return current.mutate(action);
+    },
+    [user?.id],
+  );
   const addProducts = useCallback(
     async (products: Product[]) => {
       await mutate(
@@ -322,19 +340,19 @@ export function useMagazineEditor(id: string | undefined) {
     [mutate],
   );
   const publish = useCallback(
-    () => mutate((key, expected) => magazineService.publish(key, expected), ['draft', 'published']),
-    [mutate],
+    () => transitionTo((key, expected) => magazineService.publish(key, expected), 'published'),
+    [transitionTo],
   );
   const unpublish = useCallback(async () => {
-    await mutate((key, expected) => magazineService.unpublish(key, expected), ['published']);
-  }, [mutate]);
+    await transitionTo((key, expected) => magazineService.unpublish(key, expected), 'draft');
+  }, [transitionTo]);
   const archive = useCallback(
-    () => mutate((key, expected) => magazineService.archive(key, expected), ['draft', 'published']),
-    [mutate],
+    () => transitionTo((key, expected) => magazineService.archive(key, expected), 'archived'),
+    [transitionTo],
   );
   const reactivate = useCallback(
-    () => mutate((key, expected) => magazineService.reactivate(key, expected), ['archived']),
-    [mutate],
+    () => transitionTo((key, expected) => magazineService.reactivate(key, expected), 'draft'),
+    [transitionTo],
   );
 
   return {
