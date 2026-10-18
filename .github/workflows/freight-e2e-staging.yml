@@ -25,8 +25,6 @@ concurrency:
   group: freight-e2e-staging-${{ github.ref }}  # E19: sem run_id
   cancel-in-progress: false
 
-env:
-
 
 defaults:
   run:
