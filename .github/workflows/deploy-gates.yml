@@ -57,6 +57,52 @@ defaults:
 
 jobs:
   # ============================================================
+  # E14: Detecta se PR modifica apenas documentação (sem código).
+  # Gates caros reportam success sem executar — nunca skipped.
+  # ============================================================
+  changes:
+    name: Detectar mudanças (docs-only bypass E14)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    outputs:
+      docs_only: ${{ steps.result.outputs.docs_only }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
+        id: filter
+        if: github.event_name == 'pull_request'
+        with:
+          filters: |
+            code:
+              - 'src/**'
+              - 'scripts/**'
+              - 'supabase/**'
+              - 'tests/**'
+              - 'e2e/**'
+              - 'playwright/**'
+              - '.github/workflows/**'
+              - '.github/actions/**'
+              - 'package.json'
+              - 'package-lock.json'
+              - 'tsconfig*.json'
+              - 'vite.config.*'
+              - 'playwright.config.*'
+              - '.nvmrc'
+              - 'eslint.config*'
+      - name: Determinar docs_only
+        id: result
+        run: |
+          CODE_CHANGED="${{ steps.filter.outputs.code }}"
+          if [[ "${{ github.event_name }}" == "pull_request" && "$CODE_CHANGED" == "false" ]]; then
+            echo "docs_only=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::E14 — docs-only PR detectado; gates de código bypassados (success)"
+          else
+            echo "docs_only=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  # ============================================================
   # GATE 0: SSOT Supabase — DEVE PASSAR antes de todos os outros
   # Previne reincidência do incidente 401 de produção (2026-06-11).
   # Lovable reverteu CURRENT_PROJECT_ID 6+ vezes sem que CI detectasse.
@@ -118,25 +164,35 @@ jobs:
     name: Gate 1 - Lint + TypeScript
     runs-on: ubuntu-24.04
     timeout-minutes: 15
-    needs: [ssot-gate]
+    needs: [ssot-gate, changes]
     env:
       NODE_OPTIONS: --max-old-space-size=4096
     steps:
+      - name: E14 — bypass docs-only PR
+        if: needs.changes.outputs.docs_only == 'true'
+        run: |
+          echo "## ✅ Gate 1 — Lint + TypeScript (docs-only bypass)" >> "$GITHUB_STEP_SUMMARY"
+          echo "PR modifica apenas documentação — sem arquivos de código alterados." >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        if: needs.changes.outputs.docs_only != 'true'
         with:
           persist-credentials: false  # E32
           fetch-depth: 0
       - name: Setup Node CI
+        if: needs.changes.outputs.docs_only != 'true'
         uses: ./.github/actions/setup-node-ci
       - run: npm run typecheck
+        if: needs.changes.outputs.docs_only != 'true'
         env:
           VITE_SUPABASE_URL: https://placeholder.supabase.co
           VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
       - run: npm run lint:baseline
+        if: needs.changes.outputs.docs_only != 'true'
       # REGRA #2 — Product type fields (bloqueante)
       # Previne remoção silenciosa de price/sale_price/shortDescription/category_id
       # durante merge (gap C2) ou renomeação pelo Lovable (gap L3).
       - name: Gate 1.1 — Product type fields (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true'
         run: node scripts/check-product-type-fields.mjs
         env:
           VITE_SUPABASE_URL: https://placeholder.supabase.co
@@ -145,12 +201,14 @@ jobs:
       # Previne remoção de Tables/Views/Functions/Enums de types.ts sem allowlist.
       # Incidente: 7716ae9 Lovable removeu magazine_* → 80+ erros TS.
       - name: Gate 1.2 — Types inventory drift (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true'
         run: |
           BASE="${{ github.event.pull_request.base.sha || 'HEAD~1' }}"
           node scripts/check-types-inventory-drift.mjs --base "$BASE"
       # Migration contracts (bloqueante) — previne referências a arquivos inexistentes,
       # nomes sem timestamp UTC e RPCs/tabelas não catalogadas.
       - name: Gate 1.3 — Migration contracts (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true'
         run: |
           set -euo pipefail
           node scripts/check-migration-path-references.mjs
@@ -160,11 +218,13 @@ jobs:
       # Previne remoção de PNGs de baseline de specs rodadas em CI sem
       # --update-snapshots (e2e-dialogs-pr-check, ui-visual-a11y, etc.)
       - name: Gate 1.4 — Visual baselines commitados (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true'
         run: node scripts/check-visual-baselines.mjs
       # E55 — "Salvar Alterações" em fluxo de rascunho (bloqueante)
       # Previne que o Lovable reintroduza o pattern draft-lock detectado nos
       # rascunhos do fluxo de orçamentos.
       - name: Gate 1.5 — Sem "Salvar Alterações" em fluxos de rascunho (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true'
         run: node scripts/check-no-salvar-alteracoes-draft.mjs
         env:
           VITE_SUPABASE_URL: https://placeholder.supabase.co
@@ -173,7 +233,7 @@ jobs:
       # Previne que um PR aumente .tsc-ratchet-baseline sem label ratchet-override.
       # Não roda TSC — apenas compara o ARQUIVO de baseline contra o base do PR.
       - name: Gate 1.7 — TSC ratchet file guard (bloqueante em PR)
-        if: github.event_name == 'pull_request'
+        if: needs.changes.outputs.docs_only != 'true' && github.event_name == 'pull_request'
         run: sh scripts/tsc-unused-ratchet.sh --check-ratchet
         env:
           GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
@@ -182,6 +242,7 @@ jobs:
       # Heurística: linha ≥ 200 chars de alfabeto base64 puro em arquivo texto.
       # Integrado ao gate para bloquear via "Gate Final - Deploy Ready".
       - name: Gate 1.8 — Detect accidentally base64-encoded files (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true'
         env:
           EVENT: ${{ github.event_name }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
@@ -216,6 +277,7 @@ jobs:
       # Ratchets de dívida técnica (auditoria 20-dim 2026-10-02) — falham só
       # em REGRESSÃO vs baselines commitadas; drift positivo apenas avisa.
       - name: Gate 1.9 — Dívida técnica (ratchets TODO / as / file-size)
+        if: needs.changes.outputs.docs_only != 'true'
         run: |
           set -euo pipefail
           node scripts/check-todo-baseline.mjs
@@ -223,14 +285,17 @@ jobs:
           node scripts/check-file-size-baseline.mjs
 
       - name: Gate 1.9.1 — console.* baseline (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true'
         run: node scripts/check-console-baseline.mjs
 
       - name: Gate 1.9.2 — boundary cross-domain entre pages (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true'
         run: node scripts/check-boundary-baseline.mjs
       # Contract coverage + soft-delete policy (auditoria 20-dim Onda 2) —
       # aqui e no quality-gate.yml (2.3.5/2.3.6) porque o check obrigatório
       # "Gate Final - Deploy Ready" agrega só jobs DESTE workflow.
       - name: Gate 1.12 — Contract coverage + soft-delete policy (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true'
         run: |
           set -euo pipefail
           node scripts/check-contract-coverage.mjs
@@ -243,6 +308,7 @@ jobs:
       # Bloqueante quando credenciado; sem SUPABASE_ACCESS_TOKEN (forks) ou com
       # baseline pendente de seed inicial, degrada para static-pass.
       - name: Gate 1.13 — Policies baseline vs pg_policies live (bloqueante c/ credenciais)
+        if: needs.changes.outputs.docs_only != 'true'
         run: node scripts/check-policies-baseline.mjs
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
@@ -252,11 +318,13 @@ jobs:
       # E15: Gate 1.10 promovido de advisory para bloqueante — dívida congelada
       # em .indexed-access-baseline.json; falha só em regressão (novo código).
       - name: Gate 1.10 — Indexed-access ratchet (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true'
         run: node scripts/check-indexed-access-ratchet.mjs
       # E55 — Contratos estruturais dos workflows (E11, bloqueante)
       # Garante que todo workflow segue as 8 regras do Padrão E12
       # (permissions, concurrency, timeout, node-version-file, etc.)
       - name: Gate 1.11 — Workflow contracts (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true'
         # --gate: sem o flag o script só reporta e sai 0 — o step dizia
         # "bloqueante" mas não bloqueava nada (workflow-lint ficava vermelho
         # em main sem travar deploy).
@@ -265,12 +333,15 @@ jobs:
       # Garante que todo secrets.NAME / vars.NAME referenciado nos workflows
       # está documentado em docs/ci/SEGREDOS.md.
       - name: Gate 1.14 — Secrets inventory (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true'
         run: node scripts/check-secrets-inventory.mjs --gate
       # E15: Gates migrados de quality-gate.yml (agora removido) para evitar duplicação.
       # Gate 2.6 e 2.7 eram únicos naquele arquivo; os demais já existiam aqui.
       - name: Gate 1.15 — overflow-x-clip em MainLayout (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true'
         run: node scripts/check-overflow-x-clip.mjs
       - name: Gate 1.16 — Quotes list invariants (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true'
         run: node scripts/validate-quotes-list.mjs
         env:
           VITE_SUPABASE_URL: https://placeholder.supabase.co
@@ -279,29 +350,40 @@ jobs:
       # sem ser chamado em CI: gate files podiam mudar sem revisão @adm01-debug.
       # (achado auditoria de governança 2026-10-18, agente a9c0d304d5417a6d1).
       - name: Gate 1.17 — CODEOWNERS coverage de gate files (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true'
         run: node scripts/check-codeowners-coverage.mjs --gate
       # E89/GAP-4 — Cron spacing gate (bloqueante)
       # scripts/ci-cron-table.mjs existe desde E89 mas nunca foi chamado em CI:
       # colisões de cron ≤ 20 min entre workflows privilegiados passavam sem bloqueio.
       # Não precisa de secrets — lê .github/workflows/ diretamente via fs.
       - name: Gate E89 — Cron spacing ≥ 20 min entre workflows privilegiados (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true'
         run: node scripts/ci-cron-table.mjs --min-spacing 20
 
   unit-tests:
     name: Gate 2 - Unit Tests
     runs-on: ubuntu-24.04
     timeout-minutes: 15  # E24: unitário+contrato Zod — 2 suites vitest puro, 0 HTTP (≤ 15 min)
-    needs: [ssot-gate]
+    needs: [ssot-gate, changes]
     steps:
+      - name: E14 — bypass docs-only PR
+        if: needs.changes.outputs.docs_only == 'true'
+        run: |
+          echo "## ✅ Gate 2 — Unit Tests (docs-only bypass)" >> "$GITHUB_STEP_SUMMARY"
+          echo "PR modifica apenas documentação — sem arquivos de código alterados." >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        if: needs.changes.outputs.docs_only != 'true'
         with:
           persist-credentials: false  # E32
       - name: Setup Node CI
+        if: needs.changes.outputs.docs_only != 'true'
         uses: ./.github/actions/setup-node-ci
       # Gate rapido de regressao. Suites amplas seguem no CI principal:
       # `test:quality`, `Hook tests` e `Test Coverage`.
       - run: npm run test:deploy-gate
+        if: needs.changes.outputs.docs_only != 'true'
       - name: Webhook scenario matrix (contratos Zod, 0 HTTP)
+        if: needs.changes.outputs.docs_only != 'true'
         run: |
           set -euo pipefail
           TZ=America/Sao_Paulo npx vitest run \
@@ -475,26 +557,35 @@ jobs:
       needs.lint-typecheck.result == 'success' &&
       needs.seo-sanity.result == 'success' &&
       needs.restore-cart-rpc-gate.result != 'failure'
-    needs: [lint-typecheck, seo-sanity, restore-cart-rpc-gate]
+    needs: [lint-typecheck, seo-sanity, restore-cart-rpc-gate, changes]
     permissions:
       contents: read
       id-token: write      # necessário para attest-build-provenance (E99)
       attestations: write  # necessário para attest-build-provenance (E99)
     steps:
+      - name: E14 — bypass docs-only PR
+        if: needs.changes.outputs.docs_only == 'true'
+        run: |
+          echo "## ✅ Gate 6 — Build (docs-only bypass)" >> "$GITHUB_STEP_SUMMARY"
+          echo "PR modifica apenas documentação — sem arquivos de código alterados." >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      # E04 — fetch base SHA para o ratchet funcionar em PRs (git show $BASE_SHA:baseline.json)
+        if: needs.changes.outputs.docs_only != 'true'
+        # E04 — fetch base SHA para o ratchet funcionar em PRs (git show $BASE_SHA:baseline.json)
         with:
           persist-credentials: false  # E32
       - name: Fetch base SHA for bundle ratchet
-        if: github.event_name == 'pull_request' && github.event.pull_request.base.sha != ''
+        if: needs.changes.outputs.docs_only != 'true' && github.event_name == 'pull_request' && github.event.pull_request.base.sha != ''
         run: git fetch --no-tags --depth=1 origin ${{ github.event.pull_request.base.sha }}
       - name: Setup Node CI
+        if: needs.changes.outputs.docs_only != 'true'
         uses: ./.github/actions/setup-node-ci
       - run: npm run build
+        if: needs.changes.outputs.docs_only != 'true'
       # E55 — Bundle size (bloqueante)
       # Roda após o build para garantir que dist/assets/ existe.
       # E41 — Bundle ratchet: em PR também verifica se o ARQUIVO de baseline aumentou.
       - name: Gate 1.6 — Bundle size dentro dos limites (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true'
         run: node scripts/check-bundle-size.mjs --check-ratchet
         env:
           VITE_SUPABASE_URL: https://placeholder.supabase.co
@@ -502,6 +593,7 @@ jobs:
           GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
           GITHUB_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
       - name: Upload dist artifact
+        if: needs.changes.outputs.docs_only != 'true'
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: dist-${{ github.run_id }}
@@ -511,14 +603,14 @@ jobs:
       # Gera SBOM SPDX-JSON do dist/ e atesta proveniência do build no GHCR.
       # Skipped em PRs e workflow_dispatch — sem impacto no tempo de CI de PRs.
       - name: Generate SBOM (E99)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: needs.changes.outputs.docs_only != 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: anchore/sbom-action@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
         with:
           artifact-name: sbom-${{ github.run_id }}.spdx.json
           path: dist/
           format: spdx-json
       - name: Attest build provenance (E99)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: needs.changes.outputs.docs_only != 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4
         with:
           subject-path: 'dist/**/*.js'
@@ -576,6 +668,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 2
     needs:
+      - changes
       - ssot-gate
       - dependency-audit
       - dependency-review

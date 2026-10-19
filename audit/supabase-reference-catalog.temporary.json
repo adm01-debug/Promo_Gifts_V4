@@ -794,6 +794,30 @@
       "occurrences": 1,
       "stage": 53,
       "reason": "Despacho dinâmico legado inventariado na etapa 053; nova ocorrência exige revisão de contrato."
+    },
+    {
+      "kind": "relation",
+      "file": "src/hooks/intelligence/useSalesHistory.ts",
+      "receiver": "supabase",
+      "occurrences": 1,
+      "stage": 100,
+      "reason": "Despacho dinâmico: `.from(table)` onde table = \"orders\" | \"quotes\" — parâmetro de tipo union controlado em useSalesHistory; inventariado na etapa 100 do PLANO_WORKFLOWS_CI_V2."
+    },
+    {
+      "kind": "relation",
+      "file": "src/hooks/intelligence/useSalesHistoryMacro.ts",
+      "receiver": "supabase",
+      "occurrences": 2,
+      "stage": 100,
+      "reason": "Despacho dinâmico: `.from(table)` onde table é parâmetro genérico controlado em useSalesHistoryMacro (2 ocorrências); inventariado na etapa 100 do PLANO_WORKFLOWS_CI_V2."
+    },
+    {
+      "kind": "relation",
+      "file": "src/hooks/products/useNovelties.helpers.ts",
+      "receiver": "untypedFrom",
+      "occurrences": 1,
+      "stage": 100,
+      "reason": "Despacho dinâmico: `untypedFrom(resolveTable(table))` — resolveTable converte slug para nome de tabela; inventariado na etapa 100 do PLANO_WORKFLOWS_CI_V2."
     }
   ]
 }
