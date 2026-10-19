@@ -153,3 +153,17 @@ supabase/MIGRATIONS_SYNC_LOG.md
 # Allowlist de remoção de types — define quais tabelas/views/funções foram intencionalmente removidas.
 # Sobrescrever anula proteção do Gate 1.2 (drift estrutural de types.ts).
 docs/TYPES_INVENTORY_REMOVAL_ALLOWLIST.json
+
+# ============================================================
+# CORS snapshot das edge functions — gerado pelo script de auditoria.
+# Sobrescrever invalida o baseline de policies de CORS; regenerar com o script.
+# ============================================================
+supabase/functions/_shared/cors-snapshot.json
+
+# ============================================================
+# Snapshots de teste (vitest/jest) — gerados por `npm test -- -u`.
+# Sobrescrever silencia regressões visuais/contratuais.
+# ============================================================
+src/**/__snapshots__/
+tests/**/__snapshots__/
+tests/snapshots/__snapshots__/
