@@ -334,7 +334,7 @@ export function ProductFormFullscreen({
     clearDraft();
     handleSubmit(async (data) => {
       if (skuStatus === 'duplicate' || skuStatus === 'checking') return;
-      await onSubmit(data, images);
+      await onSubmit(data as ProductFormData, images);
     })(e);
   };
 
