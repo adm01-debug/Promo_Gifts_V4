@@ -25,6 +25,11 @@
           "name": "Gate E23 - Secret Scan (gitleaks)",
           "workflow": ".github/workflows/deploy-gates.yml",
           "rationale": "E172: gitleaks bloqueante via deploy-gates.yml — PR com segredo vazado reprova o Gate Final. O check autônomo security.yml não era required; este job interno é."
+        },
+        {
+          "name": "Assert Gate Final is required on main",
+          "workflow": ".github/workflows/required-checks-guard.yml",
+          "rationale": "E176: o guarda que verifica a proteção de branch é ele mesmo um required check — se a proteção for desligada, aparece como X bloqueante em vez de aviso silencioso. paths filter removido do pull_request trigger para garantir execução em todo PR."
         }
       ]
     }

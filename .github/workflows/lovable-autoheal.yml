@@ -47,7 +47,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          persist-credentials: false  # E32
+          persist-credentials: true  # E179: autoheal precisa de credencial para git push
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 2
 
