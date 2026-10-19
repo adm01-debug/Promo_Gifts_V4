@@ -82,14 +82,17 @@ export function useSalesHistoryMacro(days = 30) {
         const rows: T[] = [];
         for (const batch of idBatches) {
           const page = await fetchAllPages<T>((from, to) => {
-            let q = supabase
+            const baseQuery = supabase
               .from(table)
               .select(select)
               .gte('created_at', cutoffStr)
               .order('created_at', { ascending: true })
               .order('id', { ascending: true });
-            if (batch) q = q.in(fkColumn, batch);
-            return q.range(from, to);
+            // Dynamic select string anchors return type to GenericStringError[] — T is proven at call sites
+            return (batch ? baseQuery.in(fkColumn, batch) : baseQuery).range(
+              from,
+              to,
+            ) as unknown as PromiseLike<{ data: T[] | null; error: unknown }>;
           });
           rows.push(...page);
         }
