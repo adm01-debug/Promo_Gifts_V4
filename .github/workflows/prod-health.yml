@@ -148,7 +148,7 @@ jobs:
             echo "   \`git log --oneline -5 -- src/integrations/supabase/client.ts\`"
             echo "2. Reverter o commit específico:"
             echo "   \`git revert <sha> && git push origin main\`"
-            echo "3. Verificar se o Gate 0 do quality-gate passou no PR anterior"
+            echo "3. Verificar se o Gate 0 do deploy-gates.yml (Gate Final) passou no PR anterior"
             echo ""
             echo "Documentação: [CLAUDE.md](CLAUDE.md) | [.lovableignore](.lovableignore)"
           } >> "$GITHUB_STEP_SUMMARY"

@@ -73,7 +73,7 @@ Levou 3 commits extras para restaurar (`aca0f6f`, `14f6d6a`, `0a31ef9`).
    - Mesmo se o main não tiver o comentário → manter o comentário
 
 3. **Nunca classifique como "dead code" sem verificar:**
-   - `git log --all -S "envPointsToForbidden"` — verifica história da função
+   - `git log --all -S "validate-supabase-config"` — verifica história da função
    - Uma função pode ter existido por 3+ meses por uma razão documentada
 
 4. **Padrão de commit para resolução de conflito:**
