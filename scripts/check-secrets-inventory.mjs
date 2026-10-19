@@ -37,6 +37,15 @@ const ALLOWLIST = new Set([
 ]);
 
 // ---------------------------------------------------------------------------
+// TODO E194: Estender para escanear Deno.env.get() em supabase/functions/**/*.ts
+// e comparar contra a seção "Segredos de Edge Functions" em docs/ci/SEGREDOS.md.
+// Estratégia: usar regex /Deno\.env\.get\(['"]([A-Z][A-Z0-9_]+)['"]\)/g nos .ts,
+// extrair a seção "## Segredos de Edge Functions" do SEGREDOS.md, e reportar
+// segredos não documentados. Não bloqueante (--gate) na primeira versão;
+// promover a bloqueante após revisar a cobertura com o PO.
+// ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
 // Coleta todos os arquivos YAML dos workflows e actions
 // ---------------------------------------------------------------------------
 function collectYamlFiles(dir) {

@@ -375,43 +375,49 @@ O único check required no branch protection de `main` é **"Gate Final - Deploy
 (`.github/workflows/deploy-gates.yml`). Esse job agrega todos os gates abaixo em
 sequência; se qualquer um falhar, o deploy é bloqueado.
 
-| Gate | Descrição | Bloqueante |
-|---|---|---|
-| Gate 0 | SSOT — ID canônico `doufsxqlfjyuvxuezpln` (`validate-supabase-config.mjs`) | sim |
-| Gate 0.5 | `npm audit --audit-level high` — sem dependências com CVE high/critical | sim |
-| Gate 0.6 | Dependency Review — deps com CVE severity ≥ high bloqueiam o PR (E97, PR-only) | sim (PR-only) |
-| Gate 1 | Lint (ESLint) + TypeScript sem erros | sim |
-| Gate 1.1 | Campos críticos do tipo `Product` presentes (REGRA #2) | sim |
-| Gate 1.2 | Drift estrutural de `types.ts` (nenhuma tabela/view/function/enum sumiu sem allowlist) | sim |
-| Gate 1.3 | Contratos de migration (preflight — E15) | sim |
-| Gate 1.4 | Visual baselines commitados | sim |
-| Gate 1.5 | Sem "Salvar Alterações" em fluxos de rascunho | sim |
-| Gate 1.6 | Bundle size dentro dos limites | sim |
-| Gate 1.7 | TSC ratchet file guard — baseline não aumenta sem label `ratchet-override` (E41, PR-only) | sim (PR-only) |
-| Gate 1.8 | Detect accidentally base64-encoded files — texto encodado em base64 acidentalmente | sim |
-| Gate 1.9 | Dívida técnica — ratchets TODO/FIXME/`as any`/file-size não aumentam | sim |
-| Gate 1.9.1 | `console.*` baseline — número de chamadas não aumenta sem justificativa | sim |
-| Gate 1.9.2 | Boundary cross-domain — sem import novo entre `src/pages/*` de domínios diferentes | sim |
-| Gate 1.10 | indexed-access ratchet — `object[key]` não aumenta (E15: promovido de advisory para bloqueante) | sim |
-| Gate 1.11 | Workflow contracts `check-workflow-contracts --gate` (C10–C26) | sim |
-| Gate 1.12 | Contract coverage + soft-delete policy commitada | sim |
-| Gate 1.13 | RLS policies baseline vs pg_policies live (bloqueante com credenciais) | sim |
-| Gate 1.13.1 | Tabelas com RLS habilitada e zero policies (deny-all silencioso) — `check-rls-no-policy-drift.mjs --gate` (E045) | sim |
-| Gate 1.13.2 | Anon-insert rate guard manifest (E049) — 7 tabelas com INSERT anônimo têm trigger de rate guard | sim |
-| Gate 1.13.3 | Migration receipts (E055) — migrations sem recibo há >24h | sim |
-| Gate 1.14 | Secrets inventory `check-secrets-inventory --gate` — todos `secrets.*`/`vars.*` documentados em SEGREDOS.md (E40/E98) | sim |
-| Gate 1.15 | `overflow-x-clip` em MainLayout — regressão visual de layout horizontal | sim |
-| Gate 1.16 | Quotes list invariants — integridade da listagem de orçamentos | sim |
-| Gate 1.17 | CODEOWNERS coverage de gate files (E72) | sim |
-| Gate 1.18 | Ledger de conflitos semânticos (E188) — PRs de agentes diferentes bloqueados sem aprovação | sim |
-| Gate E23 | Secrets check — sem referências a segredos não declarados em `SEGREDOS.md` | sim |
-| Gate 2 | Testes unitários (`vitest`) | sim |
-| Gate 2.5 | Integridade transacional PostgreSQL | sim |
-| Gate 3 | E2E Smoke (Playwright, chromium) | sim |
-| Gate 4 | Lighthouse CI (performance/acessibilidade) | opcional |
-| Gate 5 | SEO sanity check | sim |
-| Gate 5.5 | RPC `restore_seller_cart` presente no canônico | sim |
-| Gate 6 | Build Vite sem erro + SBOM SPDX-JSON + build provenance attestation (E99, push-only) | sim |
+> **E192 — Tipo de cada gate:** `job` = executado como job independente no GitHub Actions
+> (tem `runs-on:`, `timeout-minutes:` e falha isolada); `step` = passo dentro de um job
+> agregador (`static-gates`, `drift-gates`, `security-gates` ou `build`), compartilha o
+> runner e o log do job pai. Agentes de IA: para mapear um gate ao YAML, procure pelo
+> `name:` do job (tipo `job`) ou pelo `- name:` do step dentro do job agregador (tipo `step`).
+
+| Gate | Descrição | Tipo | Bloqueante |
+|---|---|---|---|
+| Gate 0 | SSOT — ID canônico `doufsxqlfjyuvxuezpln` (`validate-supabase-config.mjs`) | job | sim |
+| Gate 0.5 | `npm audit --audit-level high` — sem dependências com CVE high/critical | job | sim |
+| Gate 0.6 | Dependency Review — deps com CVE severity ≥ high bloqueiam o PR (E97, PR-only) | job | sim (PR-only) |
+| Gate 1 | Lint (ESLint) + TypeScript sem erros — job `static-gates` | job | sim |
+| Gate 1.1 | Campos críticos do tipo `Product` presentes (REGRA #2) | step | sim |
+| Gate 1.2 | Drift estrutural de `types.ts` (nenhuma tabela/view/function/enum sumiu sem allowlist) | step | sim |
+| Gate 1.3 | Contratos de migration (preflight — E15) | step | sim |
+| Gate 1.4 | Visual baselines commitados | step | sim |
+| Gate 1.5 | Sem "Salvar Alterações" em fluxos de rascunho | step | sim |
+| Gate 1.6 | Bundle size dentro dos limites — step dentro do job `build` | step | sim |
+| Gate 1.7 | TSC ratchet file guard — baseline não aumenta sem label `ratchet-override` (E41, PR-only) | step | sim (PR-only) |
+| Gate 1.8 | Detect accidentally base64-encoded files — texto encodado em base64 acidentalmente | step | sim |
+| Gate 1.9 | Dívida técnica — ratchets TODO/FIXME/`as any`/file-size não aumentam | step | sim |
+| Gate 1.9.1 | `console.*` baseline — número de chamadas não aumenta sem justificativa | step | sim |
+| Gate 1.9.2 | Boundary cross-domain — sem import novo entre `src/pages/*` de domínios diferentes | step | sim |
+| Gate 1.10 | indexed-access ratchet — `object[key]` não aumenta (E15: promovido de advisory para bloqueante) | step | sim |
+| Gate 1.11 | Workflow contracts `check-workflow-contracts --gate` (C10–C26) | step | sim |
+| Gate 1.12 | Contract coverage + soft-delete policy commitada | step | sim |
+| Gate 1.13 | RLS policies baseline vs pg_policies live (bloqueante com credenciais) | step | sim |
+| Gate 1.13.1 | Tabelas com RLS habilitada e zero policies (deny-all silencioso) — `check-rls-no-policy-drift.mjs --gate` (E045) | step | sim |
+| Gate 1.13.2 | Anon-insert rate guard manifest (E049) — 7 tabelas com INSERT anônimo têm trigger de rate guard | step | sim |
+| Gate 1.13.3 | Migration receipts (E055) — migrations sem recibo há >24h | step | sim |
+| Gate 1.14 | Secrets inventory `check-secrets-inventory --gate` — todos `secrets.*`/`vars.*` documentados em SEGREDOS.md (E40/E98) | step | sim |
+| Gate 1.15 | `overflow-x-clip` em MainLayout — regressão visual de layout horizontal | step | sim |
+| Gate 1.16 | Quotes list invariants — integridade da listagem de orçamentos | step | sim |
+| Gate 1.17 | CODEOWNERS coverage de gate files (E72) | step | sim |
+| Gate 1.18 | Ledger de conflitos semânticos (E188) — PRs de agentes diferentes bloqueados sem aprovação | step | sim |
+| Gate E23 | Secrets check — sem referências a segredos não declarados em `SEGREDOS.md` | job | sim |
+| Gate 2 | Testes unitários (`vitest`) — job `unit-tests` | job | sim |
+| Gate 2.5 | Integridade transacional PostgreSQL — job `database-integrity` | job | sim |
+| Gate 3 | E2E Smoke (Playwright, chromium) — job `e2e-smoke` | job | sim |
+| Gate 4 | Lighthouse CI (performance/acessibilidade) — job `lighthouse` | job | opcional |
+| Gate 5 | SEO sanity check — job `seo-sanity` | job | sim |
+| Gate 5.5 | RPC `restore_seller_cart` presente no canônico — job `restore-cart-rpc-gate` | job | sim |
+| Gate 6 | Build Vite sem erro + SBOM SPDX-JSON + build provenance attestation (E99, push-only) — job `build` | job | sim |
 
 O `required-checks.json` (`.github/required-checks.json`) é a SSOT da lista —
 qualquer PR que altere um `name:` de job em `deploy-gates.yml` deve atualizar
@@ -421,7 +427,7 @@ esse arquivo ao mesmo tempo ou o Branch Protection Sentinel vai alertar.
 
 | Trigger | Workflows principais | Propósito |
 |---|---|---|
-| **PR** | `deploy-gates.yml` (Gate Final) | Todos os gates obrigatórios |
+| **PR** | `deploy-gates.yml` (Gate Final) | Todos os gates obrigatórios — `paths-ignore: docs/**` (E197: PRs só-de-docs ignorados; CLAUDE.md na raiz continua disparando) |
 | **PR** | `workflow-lint.yml` | actionlint + shellcheck |
 | **PR** | `required-checks-guard.yml` | Checks fantasmas + divergência required-checks.json |
 | **push: main** | `deploy-gates.yml` + `codeql.yml` | Gate Final + scan de segurança |
@@ -445,12 +451,12 @@ Todo workflow em `.github/workflows/` deve seguir as regras documentadas em
 **R1–R8 (estrutura básica):**
 1. **R1** — `permissions:` explícito no topo (`contents: read` mínimo)
 2. **R2** — `concurrency:` com `cancel-in-progress: true` em PRs; `false` em push/schedule (E19: deploy/cron nunca cancelado)
-3. **R3** — `timeout-minutes:` em todo job (gates ≤ 10 min; E2E ≤ 30 min; crons ≤ 60 min)
+3. **R3** — `timeout-minutes:` em todo job. Classes canônicas (E24, SSOT em `docs/ci/PADRAO_WORKFLOW.md`): estático/lint ≤ 5 min, unitário ≤ 10 min, E2E shard ≤ 20 min, E2E full/nightly ≤ 60 min, cron pesado ≤ 60 min. O job `unit-tests` usa 45 min (classe "Full job" — E24). Não usar o resumo simplificado "gates ≤ 10; E2E ≤ 30" — ele diverge da tabela E24.
 4. **R4** — `node-version-file: .nvmrc` — nunca literais como `'22'`
 5. **R5** — Segredos via `env:` no step, jamais como argumento CLI
 6. **R6** — `retention-days` por tier: 14 (padrão), 30 (relatórios semanais), 90 (auditoria com comentário `# E88`) — E88
 7. **R7** — Sem `master` ou `develop` nos triggers (branches inexistentes)
-8. **R8** — ID de job em snake-case, estável; mudar o ID quebra required checks silenciosamente
+8. **R8** — ID de job em kebab-case (ex.: `ssot-gate`, `unit-tests`), estável; mudar o ID quebra required checks silenciosamente. IDs de steps não têm restrição de convenção (kebab e snake são ambos aceitos). Nota: o CLAUDE.md anterior dizia "snake-case", mas todos os jobs reais em `deploy-gates.yml` usam kebab-case — kebab é a convenção adotada.
 
 **R9–R14 (segurança e checkout):**
 9. **R9** — `persist-credentials: false` em todo `actions/checkout` com token de escrita (E32)
