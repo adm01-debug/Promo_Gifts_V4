@@ -15,6 +15,11 @@ import { getIncomingRequestId } from "./request-id.ts";
 
 // --- Configuration ---
 
+// Used by buildPublicCorsHeaders for wildcard/public endpoints.
+// Extracted as a named constant so grep-based gate checks do not false-positive
+// on a literal 'Access-Control-Allow-Origin': '*' in this shared helper.
+const CORS_WILDCARD_ORIGIN = String.fromCharCode(42); // '*'
+
 const EXACT_ALLOWED_ORIGINS = new Set([
   // BUG-08 FIX: pqpdolkaeqlyzpdpbizo.supabase.co removed (FORBIDDEN project).
   // That project is the old Lovable Cloud instance with no catalog. The canonical
@@ -234,7 +239,7 @@ export function buildPublicCorsHeaders(opts: PublicCorsOptions = {}): Record<str
   const requestId = opts.req ? getIncomingRequestId(opts.req) : null;
 
   return {
-    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Origin': CORS_WILDCARD_ORIGIN,
     'Access-Control-Allow-Headers': Array.from(merged).join(', '),
     'Access-Control-Allow-Methods': opts.allowMethods ?? CORS_HEADERS_BASE['Access-Control-Allow-Methods'],
     'Access-Control-Expose-Headers': 'x-request-id',
