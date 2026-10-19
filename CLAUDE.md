@@ -440,6 +440,7 @@ esse arquivo ao mesmo tempo ou o Branch Protection Sentinel vai alertar.
 | **workflow_dispatch** | `deploy-edge-functions.yml` | ÚNICO caminho para deploy de edge function |
 | **workflow_dispatch** | `schema-snapshot-export.yml` | Gira baseline do drift-check |
 
+
 **Regra geral:** nenhum job com trigger `pull_request` pode ter `permissions.contents: write`
 ou referenciar segredo de escrita (R11). Exceção: labels/checks automáticos via `github.token` read-only.
 
