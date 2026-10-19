@@ -39,10 +39,6 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
-      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-      E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-      E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
-      E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
       E2E_BASE_URL: http://localhost:8080
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -56,6 +52,11 @@ jobs:
       - name: Install Chromium (Playwright)
         run: npx playwright install --with-deps chromium
       - name: Run undo/restore E2E
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+          E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
+          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
         run: |
           npx playwright test \
             e2e/flows/13b-carts-undo-rpc-atomic.spec.ts \
