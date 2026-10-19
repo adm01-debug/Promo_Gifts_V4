@@ -187,7 +187,7 @@ jobs:
         id: locate
         run: |
           set -euo pipefail
-          mapfile -t FILES < <(ls supabase/migrations/"${MIGRATION_VERSION}"_*.sql 2>/dev/null | grep -v '_rollback\.sql$' || true)  # ok: ls com glob retorna non-zero se nenhum arquivo encontrado; rollbacks vivem em supabase/rollbacks/
+          mapfile -t FILES < <(find supabase/migrations -maxdepth 1 -name "${MIGRATION_VERSION}_*.sql" ! -name "*_rollback.sql" 2>/dev/null || true)
           if [ "${#FILES[@]}" -ne 1 ]; then
             echo "::error::esperava exatamente 1 arquivo supabase/migrations/${MIGRATION_VERSION}_*.sql (excluindo _rollback.sql), encontrei ${#FILES[@]} (o job 'preflight' deveria ter barrado isso antes)."
             exit 1

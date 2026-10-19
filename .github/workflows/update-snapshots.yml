@@ -107,7 +107,7 @@ jobs:
           INPUT_SPEC: ${{ github.event.inputs.spec }}
           INPUT_PROJECT: ${{ github.event.inputs.project }}
         run: |
-          npx playwright test $INPUT_SPEC \
+          npx playwright test ${INPUT_SPEC:+"$INPUT_SPEC"} \
             --project="$INPUT_PROJECT" \
             --update-snapshots \
             --reporter=list
