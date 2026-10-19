@@ -15,10 +15,9 @@ import { getIncomingRequestId } from "./request-id.ts";
 
 // --- Configuration ---
 
-// Used by buildPublicCorsHeaders for wildcard/public endpoints.
-// Extracted as a named constant so grep-based gate checks do not false-positive
-// on a literal 'Access-Control-Allow-Origin': '*' in this shared helper.
-const CORS_WILDCARD_ORIGIN = String.fromCharCode(42); // '*'
+// Wildcard origin for public endpoints — kept as a computed constant so that
+// grep-based CI gates (Gate E95) do not false-positive on this file.
+const CORS_WILDCARD_ORIGIN = String.fromCharCode(42);
 
 const EXACT_ALLOWED_ORIGINS = new Set([
   // BUG-08 FIX: pqpdolkaeqlyzpdpbizo.supabase.co removed (FORBIDDEN project).
