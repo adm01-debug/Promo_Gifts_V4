@@ -1458,62 +1458,62 @@ E usar o `CODEOWNERS` para particionar domínio entre os 6 agentes que escrevem 
 
 442 arquivos `.md` em `docs/`, 187 (42%) com data no nome, e uma amostra de 25 `AUDITORIA*`/`E*.md` com **um único commit cada** — escritos uma vez, nunca revisitados. O problema não é volume: é que o documento que todo agente lê ao iniciar contém erros.
 
-#### P200-E191 · [A] · P1 · Gerar a tabela de gates por script
+#### P200-E191 · [A] · P1 · Gerar a tabela de gates por script ✅
 **Arquivo:** `CLAUDE.md:342-345`, `.github/workflows/deploy-gates.yml:7-33`
 **Fazer:** a tabela de gates do `CLAUDE.md` — o documento que todo agente lê ao iniciar a sessão — **duplica o Gate 1.13** (linhas 342 e 344, mesmo gate com dois textos, com o 1.14 encravado entre as duas) e **omite os Gates 1.15 e 1.16**, criados no mesmo commit E15 que ela cita. O cabeçalho do YAML, por sua vez, omite o Gate 1.6 (bundle size, que está no job `build`), o 1.15 e o 1.16, diz "1.10 advisory" quando o step é bloqueante desde o E15, e diz "C10–C24" onde o `CLAUDE.md` diz "C10–C23" e o script implementa C1–C24. A numeração é mantida à mão em 3 lugares sem nenhum gate de consistência — e 3 commits de "fix de comentário" (`1ab295e5c`, `84f81b63f`, `1aa1792ca`) não resolveram. Gerar o índice a partir dos `name:` dos steps e reprovar o CI quando os 3 divergirem.
 **Pronto:** `node scripts/check-gates-table.mjs` sai `0` e reprova ao se remover um gate do YAML sem atualizar o `CLAUDE.md`
 **Origem:** A5-51, A1-14, A1-15, A1-49, A1-50, A1-51
 
-#### P200-E192 · [A] · P2 · Deixar claro o que é job e o que é step
+#### P200-E192 · [A] · P2 · Deixar claro o que é job e o que é step ✅
 **Arquivo:** `CLAUDE.md` (seção CI), `.github/workflows/deploy-gates.yml`
 **Fazer:** `deploy-gates.yml` tem 13 jobs com `name:`, mas os "Gates 1.1 a 1.16" são **steps dentro** do job "Gate 1" — a tabela faz 20 gates parecerem checks independentes, quando no GitHub eles são invisíveis. Explicitar a distinção na tabela, ou promover os bloqueantes a jobs. Depende de E162, que já quebra o job em 3.
 **Pronto:** a tabela do `CLAUDE.md` marca cada linha como job ou step, batendo com o YAML
 **Origem:** A5-52, A1-13
 
-#### P200-E193 · [A] · P2 · Unificar os limites de timeout e a regra de nome de job
+#### P200-E193 · [A] · P2 · Unificar os limites de timeout e a regra de nome de job ✅
 **Arquivo:** `CLAUDE.md` (R3), `docs/ci/_template.yml.example` (R8), `docs/ci/PADRAO_WORKFLOW.md:49-63,156-164`
 **Fazer:** três versões conflitantes dos limites de timeout: `CLAUDE.md` e o template dizem "gates ≤10, E2E ≤30, crons ≤60"; a tabela E24 do `PADRAO_WORKFLOW` diz "Estático ≤5 / Unitário ≤10 / E2E leg ≤20 / Full ≤60". Alinhar à tabela E24, que é a mais recente. E a R8 exige job id em `snake_case`, mas a contagem real nos 127 arquivos é **144 ids kebab-case contra 16 snake_case** e 68 de palavra única — e o `check-workflow-contracts.mjs` nem implementa R8. O `deploy-gates.yml` usa kebab nos 13 jobs. Reescrever a R8 para aceitar kebab-case (a convenção de fato) e implementar o check, enfatizando o que importa de verdade: a **estabilidade** do id, porque mudá-lo quebra required checks em silêncio.
 **Pronto:** os 3 arquivos citam os mesmos limites; a R8 descreve kebab-case e tem check implementado
 **Origem:** A1-52, A1-53
 
-#### P200-E194 · [A] · P1 · Inventário de segredos cobrindo as edge functions
+#### P200-E194 · [A] · P1 · Inventário de segredos cobrindo as edge functions ✅
 **Arquivo:** `docs/ci/SEGREDOS.md:19,21,22`, `scripts/check-secrets-inventory.mjs`
 **Fazer:** duas lacunas. A SSOT cita `ci.yml` como consumidor de `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_ANON_KEY` e `SUPABASE_URL` — arquivo renomeado para `ci-security-drift.yml` no E15, e o gate valida segredo→doc mas nunca doc→workflow existente. E mais grave: o Gate 1.14 valida só `secrets.*`/`vars.*` de workflows, então **35 dos 44 `Deno.env.get()` das edge functions não têm dono, escopo nem rotação documentados em lugar nenhum** — entre eles `ADMIN_BATCH_TOKEN`, `WEBHOOK_DISPATCHER_SECRET`, `TURNSTILE_SECRET_KEY`, `CF_ORIGIN_SECRET`, `CSRF_SECRET`, `SIMULATION_BYPASS_KEY`, `MAGAZINE_IP_SALT` e `EXTERNAL_*_SERVICE_ROLE_KEY`. Corrigir as 3 linhas, estender o script para varrer `Deno.env.get` em `supabase/functions/`, criar a seção "Segredos de Edge Function" e acrescentar a validação inversa (todo `.yml` citado deve existir).
 **Pronto:** `node scripts/check-secrets-inventory.mjs --gate` sai `0` cobrindo os 44 `Deno.env.get` e reprova um `.yml` inexistente citado na doc
 **Origem:** A1-46, A4-34
 
-#### P200-E195 · [A] · P2 · Apagar as referências mortas
+#### P200-E195 · [A] · P2 · Apagar as referências mortas ✅
 **Arquivo:** `.github/workflows/deploy-gates.yml:225`, `prod-health.yml:151`, `.lovableignore`, `CLAUDE.md` (REGRA #3 §3)
 **Fazer:** quatro ponteiros para coisas que não existem. (1) `deploy-gates.yml:225` diz "aqui e no quality-gate.yml (2.3.5/2.3.6)" enquanto a linha 263 do **mesmo arquivo** diz "quality-gate.yml (agora removido)" — contradição interna. (2) `prod-health.yml:151` instrui, num runbook de incidente de produção, "Verificar se o Gate 0 do quality-gate passou no PR anterior" — orientação operacional morta; trocar por `deploy-gates.yml`. (3) `.lovableignore` lista `.github/workflows/quality-gate.yml`, apagado em `eb2d7aec2`; remover e varrer o arquivo por paths inexistentes num gate. (4) A REGRA #3 §3 do `CLAUDE.md` usa `envPointsToForbidden` como exemplo canônico de "nunca classifique como dead code sem verificar" — e `grep -rn envPointsToForbidden src/ scripts/ supabase/functions/` devolve **0**: a função não existe. Trocar por `validateEnv`/`guard-canonical-project.mjs`, ou remover a linha. O exemplo que ensina a não apagar código vivo não pode apontar para código que não existe.
 **Pronto:** `grep -rc "quality-gate.yml" .github/ .lovableignore` → `0` e `grep -c envPointsToForbidden CLAUDE.md` → `0`
 **Origem:** A1-47, A1-48, A5-30, A5-24
 
-#### P200-E196 · [A] · P1 · Proteger a classe "arquivo gerado", não o arquivo após o incidente
+#### P200-E196 · [A] · P1 · Proteger a classe "arquivo gerado", não o arquivo após o incidente ✅
 **Arquivo:** `.lovableignore`, `scripts/check-generated-files-protected.mjs` (novo)
 **Fazer:** `types.ts` foi destruído **duas vezes**: em `7716ae9` (2026-07-16, incidente da REGRA #4) e de novo dentro desta janela, em `ad3ef0351` e `23d4b3ff1` (2026-08-31), caindo de 63.167 para 8.223 linhas — menos 60.726 linhas cada, com as mensagens "Work in progress" e "Update plan". O arquivo só entrou no `.lovableignore` em `1c2aa28af` (2026-09-27): **27 dias após a reincidência e 2,5 meses após a primeira vez**. E o Gate 1.2, que o detectaria, nasceu em `33475f483` (2026-09-17), 17 dias **depois** da reincidência. O padrão é consistente: a proteção chega depois do incidente, nomeando o arquivo específico. Proteger a **classe**: todo arquivo gerado (`types.ts`, baselines, snapshots, `cors-snapshot.json`) entra no `.lovableignore` e num gate que reprova redução de mais de 20% de linhas sem label. Nota de método: `.lovableignore` **não é barreira** — o bot tocou `client.ts` depois de `fa6ee116b` protegê-lo, no mesmo dia; o gate é a defesa real.
 Acrescentar também um workflow que anote o commit do bot com um resumo do diff, ou abra issue quando ele tocar arquivo protegido: 100% das mensagens do Lovable são não-descritivas (`Changes` ×30+, `Work in progress`, `Update plan`, `Visual edit in Lovable`), então auditar o que ele fez exige abrir o diff à mão — foi assim que a destruição de `types.ts` passou duas vezes.
 **Pronto:** o gate reprova uma redução de 30% em `types.ts` sem label; todos os arquivos gerados estão no `.lovableignore`; commit do bot em arquivo protegido gera issue
 **Origem:** A5-25, A5-26, A5-27, A5-21, A5-32
 
-#### P200-E197 · [A] · P2 · Baratear a governança por recibo
+#### P200-E197 · [A] · P2 · Baratear a governança por recibo ✅
 **Arquivo:** `.github/workflows/` (os que abrem PR de recibo)
 **Fazer:** 41 commits de `github-actions` na janela, a maioria recibos E15/E66, com 10 PRs de recibo em um único dia (#2062–#2071); e um PR só de documentação dispara 68 runs em 21 workflows. A governança por recibo-em-PR está certa na intenção e caríssima na execução. Agregar os recibos num PR diário e acrescentar `paths-ignore` para mudanças só de documentação.
 **Pronto:** PR só de `docs/` dispara ≤10 workflows; os recibos do dia entram num PR só
 **Origem:** A5-48, A1-26
 
-#### P200-E198 · [A] · P2 · Usar o template de postmortem
+#### P200-E198 · [A] · P2 · Usar o template de postmortem ✅
 **Arquivo:** `docs/postmortems/`, `POSMORTEM_COMMITS_LOCAIS_2026-09-17.md` (raiz), `POSTMORTEM_TEMPLATE.md`
 **Fazer:** `docs/postmortems/` contém **apenas** `_TEMPLATE.md` — zero postmortems arquivados, inclusive para o incidente de produção de 2026-10-13 (que gerou as PRs #2141–#2145) e para a destruição de `types.ts` em 31/08. E há duas grafias ("POSMORTEM"/"POSTMORTEM") em três locais para a mesma coisa. Um local, uma grafia, um template; e postmortem obrigatório para todo incidente que gere 2+ PRs no mesmo dia. Escrever os 2 postmortems em atraso, com o que os documentos de incidente já registram.
 **Pronto:** `ls docs/postmortems/*.md | wc -l` ≥ 3 e não existe arquivo de postmortem fora do diretório
 **Origem:** A5-42, A5-43
 
-#### P200-E199 · [A] · P2 · Separar documento vivo de arquivo morto
+#### P200-E199 · [A] · P2 · Separar documento vivo de arquivo morto ✅
 **Arquivo:** `docs/` (442 `.md`), `docs/vivos/`, `docs/arquivo/<ano-mes>/`
 **Fazer:** 187 dos 442 têm data no nome e a amostra mostra um commit cada — relatórios escritos uma vez. Pior: a própria auditoria de 2026-10-11 §8 catalogou **11 contradições** que induzem erro (ADR 0001 "Accepted" com bridge retornando 410; `medallion/README` mandando rodar camada removida; PLANO-20-ETAPAS registrando 11/20 contra 19/20; RBAC_MATRIX 108 contra 110; design-system-audit "15/15" com 3 revertidas) e **nenhuma foi corrigida desde então**. E `docs/RUNBOOK.md`, que define SLA e fluxo de ownership, tem último commit em 2026-05-25 — 5 meses defasado num repositório que trocou de processo 3 vezes. Mover o datado para `docs/arquivo/<ano-mes>/`, manter em `docs/` só documento vivo com dono e data de revisão, corrigir as 11 contradições (uma por commit, com o comando de verificação), e marcar o `RUNBOOK.md` como revisado ou `[DESATUALIZADO]` no topo. Arquivar também os 2 planos em 0% (`PLANO_PENDENCIAS...2026-08-29`, 47 dias; `KIT_MAKER_PLANO_CORRECOES...2026-09-27`).
 **Pronto:** `ls docs/*.md | wc -l` ≤ 40; as 11 contradições fechadas; os 2 planos em `docs/plans/arquivados/`
 **Origem:** A5-50, A5-54, A5-53, A5-03, A5-04
 
-#### P200-E200 · [A] · P1 · Registro único de dívida crônica, on-call e release
+#### P200-E200 · [A] · P1 · Registro único de dívida crônica, on-call e release ✅
 **Arquivo:** `docs/DIVIDA_CRONICA.md` (novo, único `.md` novo autorizado por este plano), `docs/ONCALL.md`, `docs/RELEASE.md`
 **Fazer:** três buracos de cobertura, medidos. (1) **Dívida crônica:** 10 temas reaparecem plano após plano sem fechar — "conta de teste E2E" aparece em **8 planos** desde 2026-09-09 (e é um segredo, não um projeto); "lockfile duplo" em 8 documentos; "staging inexistente" desde 2026-08-26. Esses itens não pertencem a plano numerado nenhum: criar um registro único, fora de plano, com dono e data de revisão por item. (2) **On-call:** `docs/ONCALL.md` não existe; criar com 2 nomes e a rotação. (3) **Release:** `docs/RELEASE.md` não existe, e `git tag` devolve vazio neste clone embora o CHANGELOG registre releases 1.0.x e 1.1.0 — confirmar com `git fetch --tags` se as tags existem no remoto e, se não existirem, religar a criação de tag no release-please. Escrever a política apontando para o release-please em vez de descrever o processo à mão.
 **Pronto:** os 3 arquivos existem com conteúdo real (dono nomeado, não "a definir"); `git ls-remote --tags origin | wc -l` > 0
