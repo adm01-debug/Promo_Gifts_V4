@@ -75,9 +75,14 @@ function stripSqlComments(sql) {
       continue;
     }
     if (c === '/' && sql[i + 1] === '*') {
+      // Postgres permite block comments ANINHADOS — depth, não primeiro */.
+      let depth = 1;
       i += 2;
-      while (i < n && !(sql[i] === '*' && sql[i + 1] === '/')) i++;
-      i += 2;
+      while (i < n && depth > 0) {
+        if (sql[i] === '/' && sql[i + 1] === '*') { depth++; i += 2; continue; }
+        if (sql[i] === '*' && sql[i + 1] === '/') { depth--; i += 2; continue; }
+        i++;
+      }
       continue;
     }
     if (c === "'") {
@@ -109,7 +114,10 @@ function stripSqlComments(sql) {
       if (tag) {
         const end = sql.indexOf(tag, i + tag.length);
         if (end === -1) { out += sql.slice(i); break; }
-        out += sql.slice(i, end + tag.length);
+        // Corpo $tag$ é código (função PL/pgSQL, comando de cron) — comentários
+        // dentro dele também não são executáveis: strip recursivo. O corpo não
+        // pode conter a própria tag, então `end` é sempre o fechamento real.
+        out += tag + stripSqlComments(sql.slice(i + tag.length, end)) + tag;
         i = end + tag.length;
         continue;
       }
