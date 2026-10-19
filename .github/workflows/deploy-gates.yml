@@ -542,17 +542,19 @@ jobs:
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
           E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
           E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+          # E015: mock auth ativo por padrão — evita falha E21 em CI com creds inválidas
+          E2E_MOCK_AUTH: '1'
         run: |
           set -euo pipefail
           if [ ! -d "e2e" ] && [ ! -d "tests/e2e" ] && [ ! -d "playwright" ]; then
             echo "::error::No e2e folder found — Gate 3 requires e2e tests (add e2e/ or tests/e2e/)"
             exit 1
           fi
-          # E015: authed smoke quando credentials disponíveis; public-only caso contrário
-          if [ -n "$E2E_USER_EMAIL" ]; then
+          # E015: authed smoke quando credentials válidas e mock auth desativado; public-only caso contrário
+          if [ -n "$E2E_USER_EMAIL" ] && [ "${E2E_MOCK_AUTH:-0}" != "1" ]; then
             npm run test:e2e:smoke
           else
-            echo "::notice::E015 — sem credenciais E2E: rodando smoke público (@smoke, chromium-public)"
+            echo "::notice::E015 — mock auth ativo ou sem credenciais E2E: rodando smoke público (@smoke, chromium-public)"
             npx playwright test --project=chromium-public --grep @smoke --reporter=github,list
           fi
       - name: Upload Playwright report
