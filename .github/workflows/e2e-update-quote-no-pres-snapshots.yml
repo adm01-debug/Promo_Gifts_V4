@@ -22,10 +22,6 @@ permissions:
 concurrency:
   group: e2e-update-quote-no-pres-${{ github.event.inputs.branch }}
   cancel-in-progress: false  # E19: dispatch-only nunca cancelado
-env:
-  E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-  E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-
 
 defaults:
   run:
@@ -61,6 +57,9 @@ jobs:
         if: ${{ github.event.inputs.safe_mode != 'false' }}
         id: dryrun
         continue-on-error: true
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
         run: |
           npx playwright test e2e/quotes/quote-view-no-presentation-mode.spec.ts \
             --project=chromium-public --reporter=list
@@ -89,6 +88,9 @@ jobs:
 
       - name: Regenerar snapshots
         if: ${{ github.event.inputs.safe_mode == 'false' || (steps.dryrun.outcome == 'failure' && steps.classify.outputs.kind == 'visual') }}
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
         run: |
           npx playwright test e2e/quotes/quote-view-no-presentation-mode.spec.ts \
             --project=chromium-public --update-snapshots --reporter=list

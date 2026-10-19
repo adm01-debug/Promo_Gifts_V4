@@ -28,11 +28,6 @@ concurrency:
 permissions:
   contents: read
 
-env:
-  E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-  E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-
-
 defaults:
   run:
     shell: bash
@@ -66,6 +61,9 @@ jobs:
       - name: Install Playwright (${{ matrix.browser }})
         run: npx playwright install --with-deps ${{ matrix.browser }}
       - name: Run header spec on ${{ matrix.browser }}-public
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
         run: |
           npx playwright test \
             e2e/quotes/quote-items-table-header-radius.spec.ts \

@@ -3,11 +3,17 @@ import { getCorsHeaders } from "../_shared/cors.ts";
 import { createStructuredLogger } from "../_shared/structured-logger.ts";
 import { getOrCreateRequestId } from "../_shared/request-id.ts";
 import { z } from "../_shared/zod-validate.ts";
+import { authorize } from "../_shared/authorize.ts";
 
+// E021: concurrency e totalRequests limitados para prevenir uso como DDoS amplifier.
+// targetEndpoint restrito a caminhos relativos (sem domínio externo).
 const bodySchema = z.object({
-  concurrency: z.number().int().min(1).max(1000).optional(),
-  totalRequests: z.number().int().min(1).max(100_000).optional(),
-  targetEndpoint: z.string().max(2048).optional(),
+  concurrency: z.number().int().min(1).max(10).optional(),
+  totalRequests: z.number().int().min(1).max(100).optional(),
+  targetEndpoint: z.string().max(256).refine(
+    (v) => !v.startsWith("http://") && !v.startsWith("https://"),
+    { message: "targetEndpoint deve ser caminho relativo (sem http/https)" }
+  ).optional(),
   method: z.string().max(16).optional(),
   body: z.unknown().optional(),
   headers: z.record(z.string()).optional(),
@@ -26,6 +32,10 @@ Deno.serve(async (req: Request) => {
 
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
+  // E021: exige role 'dev' — apenas desenvolvedores autenticados podem disparar load test.
+  const authResult = await authorize(req, { requireRole: "dev", enforceServerSide: true });
+  if (!authResult.ok) return authResult.response;
+
   try {
     const parsed = await req.json().catch(() => ({}));
     // Guard: if body is null/array/primitive, fall back to empty object so
@@ -36,8 +46,8 @@ Deno.serve(async (req: Request) => {
     const bodyParsed = bodySchema.safeParse(guarded);
     const safeBody: Record<string, unknown> = bodyParsed.success ? bodyParsed.data : {};
     const {
-      concurrency = 10,
-      totalRequests = 100,
+      concurrency = 5,
+      totalRequests = 20,
       targetEndpoint = "/health-check",
       method = "GET",
       body = null,
@@ -53,8 +63,9 @@ Deno.serve(async (req: Request) => {
       useIdempotency?: boolean;
     };
 
+    // E021: targetEndpoint validado no schema como relativo; constrói URL interna apenas.
     const baseUrl = Deno.env.get("SUPABASE_URL")!.replace(".supabase.co", ".supabase.co/functions/v1");
-    const targetUrl = targetEndpoint.startsWith("http") ? targetEndpoint : `${baseUrl}${targetEndpoint}`;
+    const targetUrl = `${baseUrl}${targetEndpoint.startsWith("/") ? targetEndpoint : `/${targetEndpoint}`}`;
 
     log.info('load-test starting', { totalRequests, method, targetUrl, concurrency, useIdempotency });
 
@@ -73,10 +84,11 @@ Deno.serve(async (req: Request) => {
         const idempotencyKey = useIdempotency ? `load-test-${Math.floor(idx / 2)}` : crypto.randomUUID();
         
         try {
+          // E021: usa anon key — nunca repassa service_role para URL externa.
           const fetchOptions: RequestInit = {
             method,
             headers: {
-              "Authorization": `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
+              "Authorization": `Bearer ${Deno.env.get("SUPABASE_ANON_KEY")}`,
               "Content-Type": "application/json",
               "X-Request-Id": requestId,
               "X-Internal-Call": "true",
