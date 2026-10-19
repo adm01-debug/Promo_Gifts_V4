@@ -33,7 +33,7 @@ SELECT
 FROM public.products p JOIN public.suppliers s ON s.id=p.supplier_id
 GROUP BY s.name;
 
-CREATE TABLE IF NOT EXISTS public.medallion_coverage_snapshots (
+CREATE TABLE IF NOT EXISTS public.medallion_coverage_snapshots ( -- soft-delete-exempt: append-only monitoring snapshot
   id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   captured_at timestamptz NOT NULL DEFAULT now(),
   fornecedor text NOT NULL,
