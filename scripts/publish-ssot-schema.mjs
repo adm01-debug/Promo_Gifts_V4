@@ -151,13 +151,23 @@ if (immutableViolations.length > 0) {
 
 if (CHECK) {
   const drift = [];
+  // E106: normaliza metadados de execução (updatedAt, generatedAt) que variam a cada
+  // run mas não representam mudança de conteúdo do schema.
+  const normSchema = (s) => {
+    try {
+      const o = JSON.parse(s);
+      if (o['x-published']) delete o['x-published'].updatedAt;
+      delete o.generatedAt;
+      return JSON.stringify(o);
+    } catch { return s; }
+  };
   const cmp = (filePath, expected) => {
     let cur;
     try { cur = readFileSync(filePath, 'utf8'); } catch (e) {
       if (e.code === 'ENOENT') { drift.push(`ausente: ${filePath}`); return; }
       throw e;
     }
-    if (cur !== expected) drift.push(`stale: ${filePath}`);
+    if (normSchema(cur) !== normSchema(expected)) drift.push(`stale: ${filePath}`);
   };
   cmp(LATEST_OUT, publishedText);
   cmp(versionedOut, publishedText);
@@ -182,9 +192,17 @@ if (CHECK) {
 }
 
 mkdirSync(dirname(LATEST_OUT), { recursive: true });
-writeFileSync(LATEST_OUT, publishedText);
-writeFileSync(versionedOut, publishedText);
-writeFileSync(INDEX_OUT, indexText);
+
+// E106: evita sujar árvore versionada quando só generatedAt/updatedAt mudou
+const normJson = (s) => { try { const o = JSON.parse(s); delete o.generatedAt; if (o['x-published']) delete o['x-published'].updatedAt; return JSON.stringify(o); } catch { return s; } };
+const writeIfChanged = (path, content) => {
+  try { if (normJson(readFileSync(path, 'utf8')) === normJson(content)) return; } catch {}
+  writeFileSync(path, content);
+};
+
+writeIfChanged(LATEST_OUT, publishedText);
+writeIfChanged(versionedOut, publishedText);
+writeIfChanged(INDEX_OUT, indexText);
 
 if (JSON_ONLY) process.stdout.write(JSON.stringify({ ok: true, ...plan }, null, 2) + '\n');
 else process.stderr.write(`[publish-ssot-schema] ✓ publicado v${version} → ${OUT_DIR}/\n`);

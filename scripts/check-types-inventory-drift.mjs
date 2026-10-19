@@ -84,8 +84,16 @@ import {
 
 export const DEFAULT_BASE_REF = 'HEAD~1';
 export const DEFAULT_ALLOWLIST_PATH = resolve(ROOT, 'docs/TYPES_INVENTORY_REMOVAL_ALLOWLIST.json');
-/** Categorias comparadas no diff (b) ao vivo. `Functions` fica de fora — ver header. */
+/** Categorias comparadas no diff (b) ao vivo — direção banco→types.ts. `Functions` fica de fora (ver header). */
 const LIVE_COMPARABLE_CATEGORIES = ['Tables', 'Views', 'Enums'];
+
+/**
+ * E079: Categorias comparadas na direção inversa (types.ts→banco) como AVISO.
+ * Captura types.ts gerado de outro projeto (function declarada em types mas
+ * inexistente no banco canônico). Não bloqueia (warning), pois assinaturas
+ * pg_proc → PostgREST divergem por design — só nomes são comparados.
+ */
+const TYPES_VS_LIVE_WARNING_CATEGORIES = ['Functions'];
 
 // ─── (a) diff local: working tree vs. commit-base ──────────────────────────
 
@@ -225,6 +233,13 @@ const LIVE_QUERY = `
     from pg_type t
     join pg_namespace n on n.oid = t.typnamespace
    where n.nspname = 'public' and t.typtype = 'e'
+  union all
+  -- E079: funções públicas expostas no banco (para diff inverso types→banco).
+  -- Normalização: só nome, sem sobrecarga — basta confirmar existência.
+  select distinct 'Functions' as category, p.proname as name
+    from pg_proc p
+    join pg_namespace n on n.oid = p.pronamespace
+   where n.nspname = 'public'
 `;
 
 /**
@@ -283,6 +298,27 @@ export function diffLiveVsTypes(liveRows, currentInventory) {
     }
   }
   return missing.sort(
+    (a, b) => a.category.localeCompare(b.category, 'en') || a.name.localeCompare(b.name, 'en'),
+  );
+}
+
+/**
+ * E079: direção inversa — nomes declarados em `types.ts` que não existem no
+ * banco. Aplicado a `TYPES_VS_LIVE_WARNING_CATEGORIES` (atualmente: Functions).
+ * Retorna aviso, não erro fatal: assinaturas pg_proc×PostgREST divergem por
+ * design, mas um nome em types.ts completamente ausente do banco indica
+ * types.ts gerado de outro projeto.
+ */
+export function diffTypesVsLive(liveRows, currentInventory) {
+  const currentPublic = currentInventory.public ?? {};
+  const phantom = [];
+  for (const category of TYPES_VS_LIVE_WARNING_CATEGORIES) {
+    const liveNames = new Set(liveRows.filter((r) => r.category === category).map((r) => r.name));
+    for (const name of currentPublic[category] ?? []) {
+      if (!liveNames.has(name)) phantom.push({ schema: 'public', category, name });
+    }
+  }
+  return phantom.sort(
     (a, b) => a.category.localeCompare(b.category, 'en') || a.name.localeCompare(b.name, 'en'),
   );
 }
@@ -362,7 +398,9 @@ export async function runCheck({
   const live_ = live ? await queryLive() : { ok: false, reason: 'Não solicitado (use --live).' };
   if (live_.ok) {
     const missing = diffLiveVsTypes(live_.rows, currentInventory);
-    report.liveDiff = { skipped: false, missing };
+    // E079: direção inversa (types→banco) como aviso; não altera report.ok.
+    const phantom = diffTypesVsLive(live_.rows, currentInventory);
+    report.liveDiff = { skipped: false, missing, phantom };
     if (missing.length > 0) report.ok = false;
   } else if (live) {
     // Pedido explicitamente e indisponível: isso é falha de ferramental, não
@@ -422,6 +460,14 @@ function formatReport(report) {
     lines.push(`diff ao vivo (pg_catalog, public.Tables/Views/Enums): ${report.liveDiff.missing.length} ausente(s) em types.ts`);
     for (const entry of report.liveDiff.missing) {
       lines.push(`    ✗ ${formatObject(entry)} — existe no banco mas não em types.ts`);
+    }
+    // E079: aviso de Functions em types.ts que não existem no banco.
+    const phantom = report.liveDiff.phantom ?? [];
+    if (phantom.length > 0) {
+      lines.push(`⚠️  E079 diff inverso (types.ts→banco, aviso): ${phantom.length} function(s) em types.ts sem correspondência no banco`);
+      for (const entry of phantom) {
+        lines.push(`    ⚠ ${formatObject(entry)} — declarada em types.ts mas ausente no banco (possível types.ts de outro projeto)`);
+      }
     }
   }
 

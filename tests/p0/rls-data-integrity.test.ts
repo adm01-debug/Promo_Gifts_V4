@@ -84,7 +84,7 @@ describe("P0 — RLS e integridade", () => {
     expect(/DROP POLICY IF EXISTS "Allow all" ON public\.suppliers/i.test(migrationCorpus)).toBe(true);
   });
 
-  it.skip("quotes: aprovação pública por token NÃO expõe outros orçamentos via JOIN", () => {
+  it.todo("quotes: aprovação pública por token NÃO expõe outros orçamentos via JOIN", () => {
     // TODO(P0): exige seed + execução real — vive em tests/rls/ quando habilitado.
   });
 
@@ -103,9 +103,7 @@ describe("P0 — RLS e integridade", () => {
   });
 
   // ─── companies (CRM) ──────────────────────────────────────────────────
-  it.skip("companies (external): RLS bloqueia acesso a CNPJ/contatos sem auth válida", async () => {
-    expect(true).toBe(true);
-  });
+  it.skip("companies (external): RLS bloqueia acesso a CNPJ/contatos sem auth válida");
 
   // ─── mcp_keys (segurança crítica) ─────────────────────────────────────
   // 2026-06-11: a tabela mcp_keys foi REMOVIDA (fase 1.1, substituída por
@@ -133,15 +131,10 @@ describe("P0 — RLS e integridade", () => {
   });
 
   // ─── realtime ──────────────────────────────────────────────────────────
-  it.skip("realtime: tópicos sem prefixo `user:<uid>:` são bloqueados", async () => {
-    // TODO(P0): mem://security/realtime-channel-authorization.
-    expect(true).toBe(true);
-  });
+  it.todo("realtime: tópicos sem prefixo `user:<uid>:` são bloqueados");
 
   // ─── Integridade transacional ─────────────────────────────────────────
-  it.skip("orçamento aprovado → order: criado em transação atômica (rollback se falha)", async () => {
-    expect(true).toBe(true);
-  });
+  it.todo("orçamento aprovado → order: criado em transação atômica (rollback se falha)");
 
   it("ownership-repair: repair_ownership_orphans tem _dry_run=true por default e guarda IF NOT _dry_run em cada mutação", () => {
     // Camada 1: contrato sobre a migration. Garante que (a) o default é dry-run

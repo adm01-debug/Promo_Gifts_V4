@@ -56,7 +56,7 @@ const DEFAULT_CRITICAL_CHUNKS = {
   'query-vendor':    { maxBytes: 200_000, label: 'TanStack Query' },
   'supabase-vendor': { maxBytes: 350_000, label: 'Supabase SDK' },
   'ui-vendor':       { maxBytes: 500_000, label: 'Radix UI + cmdk' },
-  'icons-vendor':    { maxBytes: 250_000, label: 'lucide-react' },
+  'critical-icons':  { maxBytes: 250_000, label: 'lucide-react' },
   'date-vendor':     { maxBytes: 200_000, label: 'date-fns' },
   'charts-vendor':   { maxBytes: 700_000, label: 'Recharts + D3' },
 };

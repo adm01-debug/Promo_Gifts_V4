@@ -9,6 +9,7 @@
  *   node scripts/plan-status.mjs --wave 0
  *   node scripts/plan-status.mjs --priority P0
  *   node scripts/plan-status.mjs --trail A
+ *   node scripts/plan-status.mjs --json
  */
 
 import { readFileSync } from 'node:fs';
@@ -20,9 +21,10 @@ const ROOT = path.resolve(__dirname, '..');
 const PLAN_PATH = path.join(ROOT, 'docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md');
 
 const args = process.argv.slice(2);
-const filterWave = args.includes('--wave') ? args[args.indexOf('--wave') + 1] : null;
-const filterPri = args.includes('--priority') ? args[args.indexOf('--priority') + 1] : null;
-const filterTrail = args.includes('--trail') ? args[args.indexOf('--trail') + 1] : null;
+const filterWave  = args.includes('--wave')     ? args[args.indexOf('--wave') + 1]     : null;
+const filterPri   = args.includes('--priority') ? args[args.indexOf('--priority') + 1] : null;
+const filterTrail = args.includes('--trail')    ? args[args.indexOf('--trail') + 1]    : null;
+const jsonMode    = args.includes('--json');
 
 let plan;
 try {
@@ -32,77 +34,87 @@ try {
   process.exit(1);
 }
 
-// Parse etapas: linhas que começam com #### E001..E200
-// Formato: #### E001 [A] P0 — Título
-// Status: Pronto marcado com ✅ ou **Pronto:** no bloco
+// Formato real do plano: #### P200-E001 · [C] · P0 · Título
+const HEADING_RE = /^#### P200-(E\d{3}) · \[([ABCD])\] · (P[0-3]) · (.+)/;
 
-const etapaRe = /^#### (E\d{3})\s+\[([ABCD])\]\s+(P[0-3])\s+—\s+(.+)/m;
 const etapas = [];
+const sections = plan.split(/^(?=#### P200-E\d{3})/m);
 
-const sections = plan.split(/^(?=#### E\d{3})/m);
 for (const section of sections) {
-  const m = section.match(/^#### (E\d{3})\s+\[([ABCD])\]\s+(P[0-3])\s+—\s+(.+)/);
+  const firstLine = section.split('\n')[0];
+  const m = firstLine.match(HEADING_RE);
   if (!m) continue;
   const [, id, trail, priority, title] = m;
-  
-  // Detect wave from preceding context (not reliable in this approach — use ID range)
-  const num = parseInt(id.slice(1));
-  let wave;
-  if (num <= 10) wave = 0;
-  else if (num <= 25) wave = 1;
-  else if (num <= 40) wave = 2;
-  else if (num <= 55) wave = 3;
-  else if (num <= 70) wave = 4;
-  else if (num <= 85) wave = 5;
-  else if (num <= 100) wave = 6;
-  else if (num <= 115) wave = 7;
-  else if (num <= 130) wave = 8;
-  else if (num <= 145) wave = 9;
-  else if (num <= 160) wave = 10;
-  else if (num <= 175) wave = 11;
-  else wave = Math.floor((num - 176) / 5) + 12;
 
-  // Check status: look for Pronto block
-  const done = /\*\*Pronto(?:\s+comportamental)?:\*\*/.test(section) ||
-               /✅/.test(section.split('\n').slice(0, 3).join('\n'));
-  const blocked = /\[C\]/.test(`[${trail}]`) &&
-                  !/\*\*Pronto/.test(section);
+  const num = parseInt(id.slice(1), 10); // 1-200
+  const wave = Math.floor((num - 1) / 10); // 0-19, 10 etapas por onda
 
-  etapas.push({ id, trail, priority, title: title.trim(), wave, done, blocked: trail === 'C' && !done });
+  // "Concluída" = heading contém ✅ (marcado manualmente ao fechar)
+  const done = firstLine.includes('✅');
+  // "Bloqueada PO" = trilha C e não concluída
+  const blocked = trail === 'C' && !done;
+
+  etapas.push({ id, trail, priority, title: title.trim(), wave, done, blocked });
 }
 
 // Apply filters
 let filtered = etapas;
-if (filterWave !== null) filtered = filtered.filter(e => e.wave === parseInt(filterWave));
-if (filterPri) filtered = filtered.filter(e => e.priority === filterPri);
-if (filterTrail) filtered = filtered.filter(e => e.trail === filterTrail.toUpperCase());
+if (filterWave  !== null) filtered = filtered.filter(e => e.wave === parseInt(filterWave, 10));
+if (filterPri)             filtered = filtered.filter(e => e.priority === filterPri);
+if (filterTrail)           filtered = filtered.filter(e => e.trail === filterTrail.toUpperCase());
 
-// Summary
-const done = filtered.filter(e => e.done).length;
-const blocked = filtered.filter(e => e.blocked).length;
-const todo = filtered.filter(e => !e.done && !e.blocked).length;
+const doneCount    = filtered.filter(e => e.done).length;
+const blockedCount = filtered.filter(e => e.blocked).length;
+const todoCount    = filtered.filter(e => !e.done && !e.blocked).length;
 
-console.log(`\n📊 Plano de 200 Etapas — Status${filterWave !== null ? ` (Onda ${filterWave})` : ''}${filterPri ? ` (${filterPri})` : ''}${filterTrail ? ` (trilha ${filterTrail.toUpperCase()})` : ''}`);
-console.log(`   Total: ${filtered.length} | ✅ Concluídas: ${done} | 🔒 Aguardam PO [C]: ${blocked} | ⏳ Pendentes: ${todo}`);
+if (jsonMode) {
+  const byWave = {};
+  for (const e of filtered) {
+    if (!byWave[e.wave]) byWave[e.wave] = { wave: e.wave, total: 0, done: 0, blocked: 0, todo: 0 };
+    byWave[e.wave].total++;
+    if (e.done)    byWave[e.wave].done++;
+    else if (e.blocked) byWave[e.wave].blocked++;
+    else           byWave[e.wave].todo++;
+  }
+  console.log(JSON.stringify({
+    total:   filtered.length,
+    done:    doneCount,
+    blocked: blockedCount,
+    todo:    todoCount,
+    waves:   Object.values(byWave).sort((a, b) => a.wave - b.wave),
+    etapas:  filtered.map(e => ({ id: e.id, trail: e.trail, priority: e.priority, wave: e.wave, done: e.done, blocked: e.blocked, title: e.title })),
+  }, null, 2));
+  process.exit(0);
+}
+
+// Human-readable output
+const label = [
+  filterWave  !== null       ? ` (Onda ${filterWave})`           : '',
+  filterPri                  ? ` (${filterPri})`                 : '',
+  filterTrail                ? ` (trilha ${filterTrail.toUpperCase()})` : '',
+].join('');
+
+console.log(`\n📊 Plano de 200 Etapas — Status${label}`);
+console.log(`   Total: ${filtered.length} | ✅ Concluídas: ${doneCount} | 🔒 Aguardam PO [C]: ${blockedCount} | ⏳ Pendentes: ${todoCount}`);
 console.log('');
 
-// Group by wave if no wave filter
-if (filterWave === null) {
+if (filterWave === null && !filterPri && !filterTrail) {
+  // Agrupado por onda
   const byWave = {};
   for (const e of filtered) {
     if (!byWave[e.wave]) byWave[e.wave] = [];
     byWave[e.wave].push(e);
   }
-  for (const wave of Object.keys(byWave).sort((a, b) => +a - +b)) {
-    const ws = byWave[wave];
-    const wd = ws.filter(e => e.done).length;
-    const wb = ws.filter(e => e.blocked).length;
-    const wt = ws.filter(e => !e.done && !e.blocked).length;
+  for (const w of Object.keys(byWave).sort((a, b) => +a - +b)) {
+    const ws  = byWave[w];
+    const wd  = ws.filter(e => e.done).length;
+    const wb  = ws.filter(e => e.blocked).length;
+    const wt  = ws.filter(e => !e.done && !e.blocked).length;
     const pct = Math.round(wd / ws.length * 100);
-    console.log(`  Onda ${wave.padStart(2)}: ${pct}% (${wd}/${ws.length}) ✅  ${wb} PO  ${wt} pending`);
+    console.log(`  Onda ${String(w).padStart(2)}: ${String(pct).padStart(3)}% (${wd}/${ws.length}) ✅  ${wb} PO  ${wt} pending`);
   }
 } else {
-  // Show each step
+  // Detalhe de cada etapa
   for (const e of filtered) {
     const icon = e.done ? '✅' : e.blocked ? '🔒' : '⏳';
     console.log(`  ${icon} ${e.id} [${e.trail}] ${e.priority} — ${e.title}`);

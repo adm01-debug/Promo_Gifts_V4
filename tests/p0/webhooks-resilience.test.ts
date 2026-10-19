@@ -27,7 +27,7 @@ describe("P0 — Webhooks resilientes", () => {
   afterEach(() => resetExternalMocks());
 
   // ─── Bitrix24 ──────────────────────────────────────────────────────────
-  it.skip("bitrix-sync: cria deal com sucesso (200)", async () => {
+  it.todo("bitrix-sync: cria deal com sucesso (200)", async () => {
     mockEdgeFunctionFetch({ [BITRIX_PATH]: bitrixWebhookOk });
     const res = await fetch(`https://x/functions/v1${BITRIX_PATH}`, { method: "POST" });
     const data = await res.json();
@@ -55,21 +55,14 @@ describe("P0 — Webhooks resilientes", () => {
   it.skip("bitrix-sync: aborta após timeout de 25s e enfileira para retry", async () => {
     mockEdgeFunctionFetch({ [BITRIX_PATH]: bitrixWebhookTimeout });
     // TODO(P0): validar AbortController + persistência em retry_queue.
-    expect(true).toBe(true);
   });
 
-  it.skip("bitrix-sync: idempotência — mesmo quote_id não cria 2 deals", async () => {
-    // TODO(P0): testar com chave de idempotência (quote_id + version).
-    expect(true).toBe(true);
-  });
+  it.skip("bitrix-sync: idempotência — mesmo quote_id não cria 2 deals");
 
-  it.skip("bitrix-sync: rejeita payload sem campos obrigatórios (400)", async () => {
-    // TODO(P0): cobrir Zod validation da edge function.
-    expect(true).toBe(true);
-  });
+  it.todo("bitrix-sync: rejeita payload sem campos obrigatórios (400)");
 
   // ─── n8n ───────────────────────────────────────────────────────────────
-  it.skip("n8n-trigger: dispara workflow e retorna executionId", async () => {
+  it.todo("n8n-trigger: dispara workflow e retorna executionId", async () => {
     mockEdgeFunctionFetch({ [N8N_PATH]: n8nWebhookOk });
     const res = await fetch(`https://x/functions/v1${N8N_PATH}`, { method: "POST" });
     const data = await res.json();
@@ -90,8 +83,5 @@ describe("P0 — Webhooks resilientes", () => {
     expect(JSON.stringify(data)).not.toMatch(/api[_-]?key|secret/i);
   });
 
-  it.skip("webhook handler: rejeita assinatura HMAC inválida", async () => {
-    // TODO(P0): validar X-Hub-Signature-256 / X-Bitrix-Signature.
-    expect(true).toBe(true);
-  });
+  it.skip("webhook handler: rejeita assinatura HMAC inválida");
 });

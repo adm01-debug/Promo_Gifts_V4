@@ -6,7 +6,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { mockEdgeFunctionFetch, resetExternalMocks, type EdgeFnResponseSpec } from "../../p0/_mocks";
 
-const BASE = "https://nmojwpihnslkssljowjh.supabase.co/functions/v1";
+const BASE = "https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1";
 
 const VALID_CNPJ_BODY = { cnpj: "00.000.000/0001-91" };
 const VALID_CNPJ_SUCCESS = {

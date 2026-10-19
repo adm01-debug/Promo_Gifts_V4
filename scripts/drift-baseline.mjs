@@ -32,15 +32,31 @@ import { parseSupabaseMigrationLedgerOutput } from './check-supabase-migration-l
 
 export const BASELINE_DIR = join('supabase', 'baseline');
 export const BASELINE_NAME_RE = /^(\d{14})_baseline_schema\.sql$/;
-// Mesma regra do CLI (`^([0-9]+)_(.*)\`.sql$`): a versão é o prefixo numérico, de
+// Mesma regra do CLI (`^([0-9]+)_(.*)\.sql$`): a versão é o prefixo numérico, de
 // qualquer largura. Produção tem versões de 3, 8 e 19 dígitos no ledger
 // (001, 20260712, 2026062311292414001); exigir 14 dígitos aqui descartaria em
 // silêncio uma migration dessas aplicada depois do dump e o drift-check
 // acusaria drift falso.
 const MIGRATION_RE = /^(\d+)_[^/]+\.sql$/;
+
+// E077: lê a major do PostgreSQL de supabase/config.toml (fonte única).
+// Se ausente, cai para 17 como fallback seguro, mas o drift-check loga aviso.
+function readShadowMajorVersionFromConfig() {
+  try {
+    const configPath = join(process.cwd(), 'supabase', 'config.toml');
+    const content = readFileSync(configPath, 'utf8');
+    const m = content.match(/^\[db\][\s\S]*?major_version\s*=\s*(\d+)/m);
+    if (m) return parseInt(m[1], 10);
+  } catch {
+    // config.toml ausente ou ilegível — fallback
+  }
+  return 17;
+}
+
 // Produção roda PG 17.6; sem isto o shadow do CLI usa PG 15 e os GRANTs com
 // MAINTAIN (privilégio do PG 17) falham no replay.
-export const SHADOW_MAJOR_VERSION = 17;
+// E077: valor lido de supabase/config.toml[db].major_version (não mais literal).
+export const SHADOW_MAJOR_VERSION = readShadowMajorVersionFromConfig();
 
 // O shadow do CLI concede ALL em tabelas/sequências/funções novas de `public` a
 // anon/authenticated/service_role (privilégios padrão da imagem). O dump só
@@ -256,7 +272,7 @@ const EVENT_TRIGGER_STATEMENT = /^\s*(?:ALTER|COMMENT\s+ON)\s+EVENT\s+TRIGGER\b/
 // plataforma (supabase_realtime — o replay do baseline atual passa por ela);
 // qualquer outra que passe a existir em produção quebraria o replay com
 // `publication "..." does not exist`.
-const PUBLICATION_STATEMENT = /^\s*(?:ALTER|COMMENT\s+ON)\s+PUBLICATION\s+(?:"((?:[^"]|"")*)"|(\S+))/i;
+const PUBLICATION_STATEMENT = /^\s*(?:ALTER|COMMENT\s+ON)\s+PUBLICATION\s+(?:"((?:[^"]|"")+)"|([^\s;]+))/i;
 const PUBLICATIONS_IN_SHADOW = new Set(['supabase_realtime']);
 
 function isStatementMissingFromDump(line) {
@@ -316,7 +332,7 @@ function scanLine(line, state) {
 // 2026-10-15 (baseline 20261015140000), cada uma neutralizada reescrevendo o
 // texto de replay para a forma que reproduz o catálogo de produção:
 //
-// 1. `(ARRAY['a'::character varying, …])::\"text\"[]` — o parser achata o cast
+// 1. `(ARRAY['a'::character varying, …])::"text"[]` — o parser achata o cast
 //    quando ele incide direto sobre o ARRAY[] e guarda `ARRAY[('a')::text, …]`;
 //    produção guarda o ArrayCoerceExpr. Passar por `::character varying[]`
 //    antes impede o achatamento e o catálogo fica idêntico ao remoto
@@ -327,9 +343,9 @@ function scanLine(line, state) {
 //    o `db diff` compara o array bruto; ordenar alfabeticamente reproduz
 //    produção.
 const VARCHAR_ARRAY_CAST =
-  /\(ARRAY\[((?:'(?:[^']|'')*'::character varying(?:, )?)+)\])::"text"\[\]/g;
+  /\(ARRAY\[((?:'(?:[^']|'')*'::character varying(?:, )?)+)\]\)::"text"\[\]/g;
 const POLICY_ROLES =
-  /^(CREATE POLICY "((?:[^"]|"")+)" ON (?:"((?:[^"]|"")+)"\.)?"((?:[^"]|"")+)"(?: AS (?:PERMISSIVE|RESTRICTIVE))?(?: FOR (?:ALL|SELECT|INSERT|UPDATE|DELETE))? TO )((?:"((?:[^"]|"")+)"|[A-Za-z_][A-Za-z_0-9]*)(?:, (?:"((?:[^"]|"")+)"|[A-Za-z_][A-Za-z_0-9]*))*)/;
+  /^(CREATE POLICY "(?<name>(?:[^"]|"")+)" ON (?:"(?:[^"]|"")+"\.)?"(?<table>(?:[^"]|"")+)"(?: AS (?:PERMISSIVE|RESTRICTIVE))?(?: FOR (?:ALL|SELECT|INSERT|UPDATE|DELETE))? TO )((?:"(?:[^"]|"")+"|[A-Za-z_][A-Za-z_0-9]*)(?:, (?:"(?:[^"]|"")+"|[A-Za-z_][A-Za-z_0-9]*))*)(?=\s|;|$)/;
 
 // As duas únicas policies de produção cujo array de roles NÃO está em ordem
 // alfabética (pg_policy, 2026-10-15: 2 de 1010). O dump já as imprime na ordem
@@ -352,11 +368,8 @@ function roundTripRewrite(line, counts) {
     return `((ARRAY[${elements}])::character varying[])::"text"[]`;
   });
   out = out.replace(POLICY_ROLES, (...match) => {
-    const [_all, head] = match;
-    const groups = match.at(-1);
-    const name = groups[1] ?? groups[0];
-    const table = groups[3] ?? groups[2];
-    const roles = match[6];
+    const [_all, head, , , roles] = match;
+    const { name, table } = match.at(-1);
     if (POLICY_ROLE_ORDER_KEPT.has(`${table}.${name}`)) return _all;
     const list = roles.split(', ');
     const sorted = [...list].sort((a, b) => byCodeUnit(roleName(a), roleName(b)));
@@ -941,30 +954,66 @@ export function dropDumpLossyFunctions(diffSql, shadowSql) {
   return { sql: out, dropped };
 }
 
-export function filterDiff(diffSql, allowlist) {
-  const lines = diffSql
-    .split('\n')
-    .filter((l) => l.trim() && !l.trim().startsWith('--'));
-
-  // Agrupa linhas em statements (acumula até ';' terminal).
-  const statements = [];
+// E038: agrupa linhas em statements SQL antes de filtrar. Sem agrupamento,
+// um statement multi-linha como `CREATE INDEX … ON … (col);` teria só a
+// primeira linha removida pela allowlist, deixando as continuações como ruído.
+export function splitDiffStatements(sql) {
+  const stmts = [];
+  const lines = sql.split('\n');
   let current = [];
+  let dollarTag = null;
+
   for (const line of lines) {
+    const t = line.trim();
+
+    // Fora de qualquer statement: pular linhas de ruído/cabeçalho
+    if (!current.length) {
+      if (!t) continue;
+      if (t.startsWith('--')) continue;
+      if (/^no schema changes found[.;]?\s*$/i.test(t)) continue;
+    }
+
+    // Rastrear abertura de dollar-quote
+    if (!dollarTag) {
+      const dm = line.match(/\bAS\s+(\$[A-Za-z0-9_]*\$)/i) ?? line.match(/^(\$[A-Za-z0-9_]*\$)/);
+      if (dm) {
+        const tag = dm[1];
+        const tagRe = new RegExp(tag.replace(/\$/g, '\\$'), 'g');
+        const occurrences = (line.match(tagRe) ?? []).length;
+        // Número ímpar = abre sem fechar nesta linha; par = função inline, sem estado
+        if (occurrences % 2 === 1) dollarTag = tag;
+      }
+    }
+
     current.push(line);
-    if (line.trimEnd().endsWith(';')) {
-      statements.push(current);
+
+    if (dollarTag) {
+      // Dentro de dollar-quote: esperar o fechamento
+      const opens = (line.match(new RegExp(dollarTag.replace(/\$/g, '\\$'), 'g')) ?? []).length;
+      // Se esta linha fecha o dollar-quote (número ímpar de ocorrências) E termina com ';'
+      if (opens % 2 === 1 && current.length > 1) {
+        dollarTag = null;
+        if (t.endsWith(';')) { stmts.push(current.join('\n')); current = []; }
+      }
+      continue;
+    }
+
+    // Fora de dollar-quote: ';' final do statement
+    if (t.endsWith(';')) {
+      stmts.push(current.join('\n'));
       current = [];
     }
   }
-  if (current.length > 0) statements.push(current);
 
-  return statements
-    .filter((stmt) => {
-      const header = stmt[0];
-      if (/^\s*no schema changes found[.;]?\s*$/i.test(header)) return false;
-      return !allowlist.some((re) => re.test(header));
-    })
-    .map((stmt) => stmt.join('\n'));
+  if (current.some((l) => l.trim())) stmts.push(current.join('\n'));
+  return stmts;
+}
+
+export function filterDiff(diffSql, allowlist) {
+  return splitDiffStatements(diffSql).filter((stmt) => {
+    const first = stmt.split('\n').find((l) => l.trim() && !l.trim().startsWith('--')) ?? '';
+    return !allowlist.some((re) => re.test(first.trim()));
+  });
 }
 
 function arg(argv, name) {

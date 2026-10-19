@@ -57,7 +57,9 @@ export const MIGRATION_PATH_PREFIX = `${MIGRATIONS_RELATIVE_DIR}/`;
 export const REGISTERED_VERSION_RE = /`(\d{8,19}(?:_[A-Za-z0-9]+)*)`/g;
 
 export function extractMigrationVersion(filename) {
-  const match = /^(\d{6,19})_/.exec(filename);
+  // B2 fix: alinhar com REGISTERED_VERSION_RE ({8,19}); versões 6-7 dígitos
+  // nunca aparecem no log (todos os migrations Supabase usam 14 dígitos).
+  const match = /^(\d{8,19})_/.exec(filename);
   return match ? match[1] : null;
 }
 
@@ -80,13 +82,82 @@ export function changedMigrationFilenames(diffOutput) {
 }
 
 /**
+ * Conta quantas vezes cada versão aparece em backticks no log.
+ * Retorna Map<version, count>.
+ *
+ * A contagem é feita POR SEÇÃO (delimitada por linhas que começam com `#`).
+ * Uma versão que aparece em seções distintas (ex: tabela principal de backfill
+ * E48 + tabela "Recibos — E15") é intencional por design e NÃO é duplicata.
+ * Só é duplicata quando a mesma versão aparece mais de 1 vez dentro da MESMA
+ * seção — isso indica erro de escrita no log.
+ */
+export function countVersionOccurrences(logContent) {
+  // maxCountPerVersion[v] = máximo de ocorrências de v em qualquer seção única.
+  const maxCountPerVersion = new Map();
+  let sectionCounts = new Map();
+
+  const flushSection = () => {
+    for (const [v, count] of sectionCounts) {
+      if (count > (maxCountPerVersion.get(v) ?? 0)) {
+        maxCountPerVersion.set(v, count);
+      }
+    }
+    sectionCounts = new Map();
+  };
+
+  for (const line of logContent.split('\n')) {
+    if (line.startsWith('#')) {
+      flushSection();
+      continue;
+    }
+    if (!line.trimStart().startsWith('|')) continue;
+    // Conta só na PRIMEIRA célula (coluna de versão) — evita falsos positivos
+    // de versões citadas em descrições ou outras colunas.
+    const firstCell = line.split('|')[1] ?? '';
+    for (const match of firstCell.matchAll(REGISTERED_VERSION_RE)) {
+      const v = match[1];
+      sectionCounts.set(v, (sectionCounts.get(v) ?? 0) + 1);
+    }
+  }
+  flushSection(); // flush da última seção
+  return maxCountPerVersion;
+}
+
+/**
+ * E75: verifica se uma versão tem APENAS entrada "pendente" (sem "aplicada").
+ * Linha "pendente" = contém a versão em backtick E contém a palavra "pendente"
+ * (sem "aplicada" na mesma linha).
+ */
+export function isOnlyPending(logContent, version) {
+  const versionTag = `\`${version}\``;
+  const hasApplied = logContent.split('\n').some(
+    (l) => l.includes(versionTag) && /aplicada/i.test(l) && !/pendente/i.test(l),
+  );
+  const hasPending = logContent.split('\n').some(
+    (l) => l.includes(versionTag) && /pendente/i.test(l),
+  );
+  return hasPending && !hasApplied;
+}
+
+/**
  * Função pura central do gate: dado o conjunto de arquivos de migration
  * alterados (nome, não caminho completo) e o conteúdo de
  * MIGRATIONS_SYNC_LOG.md, decide quais não têm recibo.
+ *
+ * E75: também detecta versões duplicadas no log (mais de 1 ocorrência) e
+ * rejeita entradas com APENAS status "pendente" para migrations que não estão
+ * sendo adicionadas neste PR (apenas modificadas).
  */
-export function evaluateSyncLogGate({ changedFilenames, logContent }) {
+export function evaluateSyncLogGate({ changedFilenames, logContent, addedFilenames = null }) {
   const registered = extractRegisteredVersions(logContent);
+  const versionCounts = countVersionOccurrences(logContent);
   const missing = [];
+  const duplicates = [];
+
+  // E75: versões duplicadas no log são erro independente das migrations do PR
+  for (const [v, count] of versionCounts) {
+    if (count > 1) duplicates.push({ version: v, count });
+  }
 
   for (const filename of changedFilenames) {
     const version = extractMigrationVersion(filename);
@@ -96,12 +167,22 @@ export function evaluateSyncLogGate({ changedFilenames, logContent }) {
     }
     if (!registered.has(version)) {
       missing.push({ filename, version, reason: 'version_not_registered' });
+      continue;
+    }
+    // E75: "pendente" é recibo válido apenas quando a migration está sendo
+    // adicionada neste PR (não só modificada). Se addedFilenames não foi
+    // injetado (compatibilidade), aceita pendente.
+    if (addedFilenames !== null && isOnlyPending(logContent, version)) {
+      if (!addedFilenames.includes(filename)) {
+        missing.push({ filename, version, reason: 'pendente_sem_adicao_no_pr' });
+      }
     }
   }
 
   return {
-    ok: missing.length === 0,
+    ok: missing.length === 0 && duplicates.length === 0,
     missing,
+    duplicates,
     checkedCount: changedFilenames.length,
     registeredCount: registered.size,
   };
@@ -185,7 +266,22 @@ export function runCheck({
     };
   }
 
-  const result = evaluateSyncLogGate({ changedFilenames, logContent });
+  // E75: extrai filenames com diff-filter A (adicionados) para validação pendente
+  let addedFilenames = null;
+  if (injectedDiffOutput === null) {
+    try {
+      const addedOutput = execFileSync(
+        'git',
+        ['diff', '--name-only', '--diff-filter=A', `origin/${baseRef}...HEAD`, '--', MIGRATIONS_RELATIVE_DIR],
+        { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] },
+      );
+      addedFilenames = changedMigrationFilenames(addedOutput);
+    } catch {
+      addedFilenames = null;
+    }
+  }
+
+  const result = evaluateSyncLogGate({ changedFilenames, logContent, addedFilenames });
 
   if (result.ok) {
     return {
@@ -197,12 +293,17 @@ export function runCheck({
     };
   }
 
+  const parts = [];
+  if (result.missing.length > 0) {
+    parts.push(`${result.missing.length}/${changedFilenames.length} migration(ões) alterada(s) SEM recibo válido: ${result.missing.map((m) => `${m.filename}(${m.reason})`).join(', ')}`);
+  }
+  if (result.duplicates.length > 0) {
+    parts.push(`versões duplicadas no log: ${result.duplicates.map((d) => `${d.version}(×${d.count})`).join(', ')}`);
+  }
   return {
     status: CHECK_RESULT_STATUS.FAILED,
-    summary:
-      `${result.missing.length}/${changedFilenames.length} migration(ões) alterada(s) SEM recibo em ` +
-      `${LOG_RELATIVE_PATH}: ${result.missing.map((m) => m.filename).join(', ')}`,
-    details: { baseRef, missing: result.missing },
+    summary: parts.join('; '),
+    details: { baseRef, missing: result.missing, duplicates: result.duplicates },
   };
 }
 

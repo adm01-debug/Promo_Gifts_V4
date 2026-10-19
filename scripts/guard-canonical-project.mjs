@@ -81,6 +81,7 @@ const HISTORICAL_PATH_PATTERNS = [
   /^qa\/migrations-draft\//,
   /^qa\/CANONICAL_PROJECT_REPORT\.md$/,
   /^\.lovable\//,
+  /^supabase\/MIGRATIONS_SYNC_LOG\.md$/, // log histórico de reconciliação de migrations
 ];
 
 // Padrões que caracterizam INSTRUÇÃO OPERACIONAL (aumentam severidade se
@@ -105,6 +106,7 @@ const OPERATIONAL_HINTS = [
 const DOC_EXCLUDE_DIRS = new Set([
   'node_modules', '.git', 'dist', 'build', '.next', 'coverage',
   '.turbo', '.cache', 'playwright-report', 'test-results',
+  'worktrees', // .claude/worktrees/ — sessões de agente históricas, não docs operacionais
 ]);
 
 // ── Helpers ───────────────────────────────────────────────────────────────
