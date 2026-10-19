@@ -396,7 +396,7 @@ jobs:
               fail=1
             fi
           done
-          literal=$(grep -rl "'Access-Control-Allow-Origin': '\*'" supabase/functions/ || true)
+          literal=$(grep -rl "'Access-Control-Allow-Origin': '*'" supabase/functions/ || true)
           if [ -n "$literal" ]; then
             echo "FAIL: literal 'Access-Control-Allow-Origin: *' em:"
             echo "$literal"
@@ -848,7 +848,7 @@ jobs:
           fail_gate() { echo "::error::$1" >&2; FAIL=1; }
 
           # ── Gates sempre bloqueantes ───────────────────────────────────────────────────────
-          [[ "$R_SSOT"      == "success" ]] || fail_gate "Gate 0 SSOT falhou (${R_SSOT})"
+          [[  "$R_SSOT"      == "success" ]] || fail_gate "Gate 0 SSOT falhou (${R_SSOT})"
           [[ "$R_DEP_AUDIT" == "success" ]] || fail_gate "Gate 0.5 Dependency Audit falhou (${R_DEP_AUDIT})"
           [[ "$R_LINT"      == "success" ]] || fail_gate "Gate 1 Lint+TypeScript falhou (${R_LINT})"
           [[ "$R_UNIT"      == "success" ]] || fail_gate "Gate 2 Unit Tests falhou (${R_UNIT})"
