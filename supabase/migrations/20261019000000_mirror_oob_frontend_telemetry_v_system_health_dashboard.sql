@@ -1,4 +1,5 @@
 -- mirror: DDL aplicada em produção fora do fluxo de migration (out-of-band)
+-- Rollback: see supabase/rollbacks/20261019000000_rollback.sql
 -- Detectado por: db-schema-drift-check run 39251404944 em 2026-10-19
 -- Objetos:
 --   1. frontend_telemetry_size_caps_check — constraint com campos adicionais (url/user_agent/session_id/metadata)
