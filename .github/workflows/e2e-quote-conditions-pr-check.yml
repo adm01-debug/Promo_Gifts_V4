@@ -34,31 +34,10 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false  # E32
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      - name: Setup E2E
+        uses: ./.github/actions/e2e-setup
         with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-      - name: Cache Playwright browsers
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-playwright-
-      - name: Bootstrap (install deps + chromium)
-        run: npm run e2e:bootstrap
-      - name: Start Vite (background)
-        run: |
-          nohup npm run dev > /tmp/vite.log 2>&1 &
-          for _ in $(seq 1 60); do
-            if curl -sf http://localhost:8080 >/dev/null; then
-              echo "vite up"; exit 0
-            fi
-            sleep 1
-          done
-          echo "vite não subiu em 60s" >&2
-          tail -n 100 /tmp/vite.log >&2
-          exit 1
+          start-vite: "true"
       - name: Run quote-conditions spec (fail-on-diff, trace+video on failure)
         env:
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}

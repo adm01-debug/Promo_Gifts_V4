@@ -98,3 +98,14 @@ supabase/functions/sync-quote-bitrix/           @adm01-debug
 supabase/functions/dropbox-list/                @adm01-debug
 supabase/functions/elevenlabs-tts/              @adm01-debug
 supabase/functions/generate-mockup/             @adm01-debug
+
+# ============================================================
+# E183 (P200): tipos críticos + catch-all para cobertura total
+# ============================================================
+# src/types/ contém Product type (REGRA #2) — incidente 2026-06-11 removeu campos críticos
+# e não havia CODEOWNER para este diretório.
+src/types/                                      @adm01-debug
+
+# Catch-all: qualquer arquivo não coberto pelas regras acima requer aprovação.
+# Garante que src/components, src/hooks, src/pages, src/services tenham dono.
+*                                               @adm01-debug
