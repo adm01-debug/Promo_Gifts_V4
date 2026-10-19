@@ -95,7 +95,7 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
       - run: npm ci
-      - run: npx playwright install --with-deps $(echo "${{ matrix.browser }}" | cut -d'-' -f1)
+      - run: npx playwright install --with-deps "$(echo "${{ matrix.browser }}" | cut -d'-' -f1)"
       - name: Functional + a11y em ${{ matrix.browser }}
         env:
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
