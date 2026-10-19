@@ -133,3 +133,24 @@ src/integrations/supabase/types.ts
 # permitindo que PRs que alteram SSOT/client.ts passem sem @adm01-debug.
 # ============================================================
 .github/CODEOWNERS
+
+# ============================================================
+# Arquivos GERADOS — não devem ser sobrescritos pelo Lovable (E196)
+# Regeneração controlada exige gate/workflow específico.
+# ============================================================
+
+# Grafo de conhecimento gerado por graphify (tool externa).
+# Sobrescrever manualmente invalida as relações AST; regenerar com: graphify update .
+graphify-out/
+
+# Baseline de alertas CodeQL — gerado pelo CI (codeql.yml, Gate E96).
+# Editado à mão invalida o ratchet; atualizar apenas via script do CI.
+.codeql-alerts-baseline.json
+
+# Log de auditoria de migrations — escrito pelo workflow db-apply-migration.yml (REGRA #8/E15).
+# Lovable não deve sobrescrever; é um recibo de produção.
+supabase/MIGRATIONS_SYNC_LOG.md
+
+# Allowlist de remoção de types — define quais tabelas/views/funções foram intencionalmente removidas.
+# Sobrescrever anula proteção do Gate 1.2 (drift estrutural de types.ts).
+docs/TYPES_INVENTORY_REMOVAL_ALLOWLIST.json

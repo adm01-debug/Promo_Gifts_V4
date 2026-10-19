@@ -131,6 +131,97 @@ Não precisam de entrada na tabela acima; estão no allowlist de `check-secrets-
 
 ---
 
+## Segredos de Edge Functions (E194)
+
+> **Atenção:** estes segredos são configurados via `supabase secrets set` (não em GitHub Actions Secrets).
+> São acessados em runtime via `Deno.env.get("NOME")` nas edge functions em `supabase/functions/`.
+> O script `check-secrets-inventory.mjs` **não** verifica edge functions — este inventário é manual.
+>
+> Última atualização: 2026-10-19 (E194 — P200 Onda 19)
+>
+> **TODO (E194):** Estender `check-secrets-inventory.mjs` para também escanear `Deno.env.get()` em
+> `supabase/functions/**/*.ts` e comparar com esta seção. Ver seção `# TODO E194` no script.
+
+### Auto-injetados pelo Supabase (sempre disponíveis)
+
+Estes segredos são injetados automaticamente pelo Supabase em toda edge function — não precisam de `supabase secrets set`.
+
+| Segredo | Tipo | Usado em |
+|---|---|---|
+| `SUPABASE_URL` | Supabase Auto | 81+ funções (praticamente todas) |
+| `SUPABASE_ANON_KEY` | Supabase Auto | 32+ funções via `_shared/credentials.ts` |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase Auto | 73+ funções via `_shared/credentials.ts` |
+| `SUPABASE_DB_URL` | Supabase Auto | `cnpj-lookup`, `tests/` |
+
+### Segredos de serviços externos
+
+Configurados via `supabase secrets set`; obrigatórios para as funções listadas.
+
+| Segredo | Tipo | Rotação | Funções consumidoras |
+|---|---|---|---|
+| `BITRIX24_WEBHOOK_URL` | Supabase Secret | 12 meses | `bitrix-sync` |
+| `CRM_CALLBACK_API_KEY` | Supabase Secret | 6 meses | `receive-crm-callback` |
+| `CRM_SUPABASE_ANON_KEY` | Supabase Secret | — | `crm-db-bridge` (Supabase CRM externo) |
+| `CRM_SUPABASE_SERVICE_KEY` | Supabase Secret | 6 meses | `crm-db-bridge` (Supabase CRM externo) |
+| `CRM_SUPABASE_URL` | Supabase Secret | — | `crm-db-bridge` (Supabase CRM externo) |
+| `EXTERNAL_PROMOBRIND_SERVICE_ROLE_KEY` | Supabase Secret | 6 meses | `_shared/credentials.ts` → múltiplas |
+| `EXTERNAL_PROMOBRIND_URL` | Supabase Secret | — | `_shared/credentials.ts` → múltiplas |
+| `EXTERNAL_SUPABASE_SERVICE_KEY` | Supabase Secret | 6 meses | `_shared/credentials.ts`, `commemorative-dates` |
+| `EXTERNAL_SUPABASE_SERVICE_ROLE_KEY` | Supabase Secret | 6 meses | `_shared/credentials.ts` (alias de SERVICE_KEY) |
+| `EXTERNAL_SUPABASE_URL` | Supabase Secret | — | `_shared/credentials.ts`, `commemorative-dates` |
+| `LOVABLE_API_KEY` | Supabase Secret | 6 meses | `_shared/ai-router`, `bi-copilot` |
+| `N8N_QUOTE_WEBHOOK_URL` | Supabase Secret | — | `quote-sync` |
+| `PROMO_CHAMPIONS_WEBHOOK_SECRET` | Supabase Secret | 6 meses | `quote-sync-promo-champions` |
+| `TURNSTILE_SECRET_KEY` | Supabase Secret | 12 meses | `check-login` (Cloudflare Turnstile) |
+| `WEBHOOK_DISPATCHER_SECRET` | Supabase Secret | 6 meses | `_shared/dispatcher-auth.ts` → `webhook-dispatcher` |
+| `CSRF_SECRET` | Supabase Secret | 6 meses | `_shared/security.ts` → múltiplas |
+| `CF_ORIGIN_SECRET` | Supabase Secret | 12 meses | `check-login` (Cloudflare Origin Secret) |
+| `MAGAZINE_IP_SALT` | Supabase Secret | 12 meses | `magazine-public-react` |
+| `ANON_KEY` | Supabase Secret | — | `_shared/credentials.ts` (alias de SUPABASE_ANON_KEY) |
+
+### Segredos de instâncias Supabase alternativas
+
+Para o bridge com outros projetos Supabase (ex: CRM externo em outra organização).
+
+| Segredo | Tipo | Rotação | Funções consumidoras |
+|---|---|---|---|
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | Supabase Secret | — | `crm-db-bridge`, `mcp-keys-issue`, `secrets-manager`, `tests/` |
+| `VITE_SUPABASE_URL` | Supabase Secret | — | `crm-db-bridge`, `mcp-keys-issue`, `secrets-manager`, `tests/` |
+
+### Flags e configuração de runtime
+
+Não são segredos verdadeiros — são variáveis de ambiente que controlam comportamento.
+
+| Segredo | Tipo | Valores | Funções consumidoras |
+|---|---|---|---|
+| `AI_ROUTER_DISABLE` | Env Flag | `"true"` / ausente | `_shared/ai-router` — desativa AI router |
+| `ALLOW_HTTP_FETCH` | Env Flag | `"true"` / ausente | `_shared/external-fetch` — permite HTTP (não HTTPS) |
+| `ENVIRONMENT` | Env Var | `"production"` / `"staging"` | `cnpj-lookup` |
+| `E2E_CLEANUP_RATE_LIMIT_MAX` | Env Var | número | `e2e-cleanup` — limite de operações |
+| `E2E_CLEANUP_RATE_LIMIT_WINDOW_SECONDS` | Env Var | número | `e2e-cleanup` — janela de rate limit |
+| `IMAGE_PROXY_ALLOW_LOCALHOST` | Env Flag | `"true"` / ausente | `image-proxy` — permite localhost em dev |
+| `IMAGE_PROXY_MAX_BYTES` | Env Var | número | `image-proxy` — tamanho máximo de imagem |
+| `LOG_CREDENTIAL_RESOLUTION` | Env Flag | `"true"` / ausente | `_shared/credentials.ts` — verbose logging |
+| `LOG_CRM_BRIDGE_VERBOSE` | Env Flag | `"true"` / ausente | `crm-db-bridge` — verbose logging |
+| `PRODUCT_WEBHOOK_ALLOWED_ORIGINS` | Env Var | CSV de origens | `product-webhook` |
+| `PRODUCT_WEBHOOK_BATCH_SIZE` | Env Var | número | `product-webhook` |
+| `SIMULATION_BYPASS_KEY` | Supabase Secret | token | `cnpj-lookup`, `tests/` — bypass de simulação |
+| `ASIA_BASE_URL` | Env Var | URL | `asia-ingestion` |
+
+### Segredos de teste (apenas ambiente de teste)
+
+**Nunca configurar em produção.**
+
+| Segredo | Tipo | Funções consumidoras |
+|---|---|---|
+| `TEST_ADMIN_JWT` | Test Secret | `secrets-manager` |
+| `TEST_SELLER_A_JWT` | Test Secret | `tests/` |
+| `TEST_SELLER_B_JWT` | Test Secret | `tests/` |
+| `TEST_USER_EMAIL` | Test Secret | `mcp-keys-issue` |
+| `TEST_USER_PASSWORD` | Test Secret | `mcp-keys-issue` |
+
+---
+
 ## Regras de uso (Padrão E12 — R5)
 
 > **R5:** Segredos via `env:` no step, jamais como argumento CLI.
