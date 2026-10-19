@@ -1,0 +1,112 @@
+name: Update Quote Visual Snapshots
+
+# Workflow manual: regenera as baselines visuais dos specs:
+#   - e2e/quotes/quote-reset-stepper-layout.spec.ts
+#   - e2e/quotes/quote-number-subtitle.spec.ts (todos os breakpoints)
+#   - e2e/quotes/quote-pdf-header-snapshot.spec.ts (768/1024)
+# Use APENAS quando a mudança visual for intencional (refactor de layout,
+# novo step, novo subtítulo de quote_number, novo cabeçalho do PDF, etc.).
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch destino do commit (default: branch atual)'
+        required: false
+        default: ''
+      commit_message:
+        description: 'Mensagem do commit de baselines'
+        required: false
+        default: 'test(e2e): update quote visual snapshots'
+
+concurrency:
+  group: update-quote-reset-snapshots
+  cancel-in-progress: false
+
+env:
+  TZ: America/Sao_Paulo
+  CI: 'true'
+
+permissions:
+  contents: read
+
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  update-snapshots:
+    name: Regerar baselines (--update-snapshots)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    env:
+      E2E_BASE_URL: http://localhost:8080
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false  # E32
+          ref: ${{ inputs.branch || github.ref }}
+          fetch-depth: 0
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npm run test:e2e:install
+
+      - name: Run Playwright with --update-snapshots
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+        run: |
+          npx playwright test \
+            e2e/quotes/quote-reset-stepper-layout.spec.ts \
+            e2e/quotes/quote-number-subtitle.spec.ts \
+            e2e/quotes/quote-pdf-header-snapshot.spec.ts \
+            e2e/quotes/quote-new-fab.spec.ts \
+            --project=chromium-authed \
+            --update-snapshots \
+            --reporter=list
+
+      - name: Credencial de push sem token em disco (E32)
+        run: |
+          # persist-credentials:false nao grava token; o helper le GIT_PUSH_TOKEN so no passo de push.
+          # shellcheck disable=SC2016 # aspas simples intencionais: $1 e GIT_PUSH_TOKEN expandem quando o git chama o helper
+          git config --local credential.helper '!f() { test "$1" = get || exit 0; echo username=x-access-token; echo "password=${GIT_PUSH_TOKEN}"; }; f'
+      - name: Commit & push baselines
+        env:
+          GIT_PUSH_TOKEN: ${{ github.token }}
+          INPUT_COMMIT_MESSAGE: ${{ inputs.commit_message }}
+          INPUT_BRANCH: ${{ inputs.branch || github.ref_name }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add e2e/quotes/quote-reset-stepper-layout.spec.ts-snapshots/ \
+                  e2e/quotes/quote-number-subtitle.spec.ts-snapshots/ \
+                  e2e/quotes/quote-pdf-header-snapshot.spec.ts-snapshots/ \
+                  e2e/quotes/quote-new-fab.spec.ts-snapshots/ || true  # ok: sem snapshots novos é resultado válido — verificado por git diff --cached abaixo
+          if git diff --cached --quiet; then
+            echo "Nenhuma baseline nova/alterada — nada para commitar."
+            exit 0
+          fi
+          git commit -m "$INPUT_COMMIT_MESSAGE"
+          git push origin "HEAD:$INPUT_BRANCH"
+
+      - name: Upload HTML report (debug)
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: playwright-report-update-snapshots
+          path: playwright-report/
+          retention-days: 14
+          if-no-files-found: ignore

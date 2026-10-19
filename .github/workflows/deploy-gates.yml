@@ -73,7 +73,7 @@ jobs:
     outputs:
       docs_only: ${{ steps.result.outputs.docs_only }}
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
@@ -118,7 +118,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 3
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false  # E32
       - name: Setup Node CI
@@ -137,7 +137,7 @@ jobs:
     timeout-minutes: 5
     needs: [ssot-gate]
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false  # E32
       - name: Setup Node CI
@@ -157,7 +157,7 @@ jobs:
       github.actor != 'dependabot[bot]' &&
       !github.event.pull_request.head.repo.fork
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false  # E32
       - name: Dependency Review — falha em deps com CVE severity ≥ high (E97)
@@ -179,7 +179,7 @@ jobs:
         run: |
           echo "## ✅ Gate 1 — Lint + TypeScript (docs-only bypass)" >> "$GITHUB_STEP_SUMMARY"
           echo "PR modifica apenas documentação — sem arquivos de código alterados." >> "$GITHUB_STEP_SUMMARY"
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         if: needs.changes.outputs.docs_only != 'true'
         with:
           persist-credentials: false  # E32
@@ -458,7 +458,7 @@ jobs:
         run: |
           echo "## ✅ Gate 2 — Unit Tests (docs-only bypass)" >> "$GITHUB_STEP_SUMMARY"
           echo "PR modifica apenas documentação — sem arquivos de código alterados." >> "$GITHUB_STEP_SUMMARY"
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         if: needs.changes.outputs.docs_only != 'true'
         with:
           persist-credentials: false  # E32
@@ -488,7 +488,7 @@ jobs:
       github.actor != 'dependabot[bot]' &&
       (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false  # E32
       - name: Validate discount approval, grants and trigger races on PG17
@@ -522,7 +522,7 @@ jobs:
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false  # E32
       - name: Setup Node CI
@@ -576,7 +576,7 @@ jobs:
       VITE_SUPABASE_URL: https://placeholder.supabase.co
       VITE_SUPABASE_PUBLISHABLE_KEY: lighthouse-placeholder-key
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false  # E32
           fetch-depth: 0
@@ -623,7 +623,7 @@ jobs:
     timeout-minutes: 5
     needs: [ssot-gate]
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false  # E32
       - name: Setup Node CI
@@ -643,7 +643,7 @@ jobs:
       github.actor != 'dependabot[bot]' &&
       (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false  # E32
       - name: Setup Node CI
@@ -679,7 +679,7 @@ jobs:
         run: |
           echo "## ✅ Gate 6 — Build (docs-only bypass)" >> "$GITHUB_STEP_SUMMARY"
           echo "PR modifica apenas documentação — sem arquivos de código alterados." >> "$GITHUB_STEP_SUMMARY"
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         if: needs.changes.outputs.docs_only != 'true'
         # E04 — fetch base SHA para o ratchet funcionar em PRs (git show $BASE_SHA:baseline.json)
         with:
@@ -735,7 +735,7 @@ jobs:
     outputs:
       changed: ${{ steps.detect.outputs.changed }}
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           fetch-depth: 0   # necessário para git diff com BASE_SHA de PRs
@@ -781,7 +781,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false  # E32
           fetch-depth: 0
