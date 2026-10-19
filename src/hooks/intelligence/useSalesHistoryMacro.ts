@@ -87,10 +87,9 @@ export function useSalesHistoryMacro(days = 30) {
               .select(select)
               .gte('created_at', cutoffStr)
               .order('created_at', { ascending: true })
-              .order('id', { ascending: true })
-              .range(from, to);
+              .order('id', { ascending: true });
             if (batch) q = q.in(fkColumn, batch);
-            return q;
+            return q.range(from, to);
           });
           rows.push(...page);
         }

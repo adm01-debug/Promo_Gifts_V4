@@ -172,3 +172,48 @@ exige atualizar este inventário no mesmo PR.
 - `public.get_sitemap_public(p_limit integer, p_offset integer)` — Sitemap público read-only: projeção SEO fixa de revistas publicadas, não apagadas e com token; paginação limitada a 1.000, `search_path` fixo e views subjacentes sem `SELECT` para `anon`.
 - `public.get_quote_token_public(_token text)` — Portal de aprovação de orçamento (SEC-009, 2026-09-04): substituto seguro de get_quote_token_by_value (revogado em 20260904111000). Campos retornados: id, quote_id, token, status, expires_at, client_name, viewed_at, responded_at, response, response_notes, created_at, signer_name, signed_at. Campos redactados (PII): client_email, signer_document, signer_ip, signer_user_agent, signature_hash, ip_address, user_agent, attempts, used_at, is_used, approved, seller_id. Grant anon intencional — portal acessado via link de token sem autenticação.
 - `public.submit_quote_response(_token text, _response text, _response_notes text)` — Resposta pública de orçamento protegida por token opaco e validação interna. Grant canônico confirmado em pg_catalog em 2026-08-29.
+
+---
+
+## Allowlist 0042 — Edge Functions com `verify_jwt = false`
+
+> Fonte: `.security/edge-functions-verify-jwt-false-allowlist.json`
+> Adicionado: 2026-10-19 (P200 validação — todas as funções inspecionadas e justificativas confirmadas)
+> Cada função nesta lista tem JWT verification desabilitada por necessidade operacional documentada.
+
+- `ai-recommendations` — recomendações públicas de catálogo sem sessão de usuário
+- `asia-ingestion` — ingestão de dados externos, autenticação gerenciada pelo caller
+- `backfill-image-dimensions` — job interno de backfill, protegido por secret de serviço
+- `check-login` — pré-autenticação: valida bloqueios antes da sessão existir
+- `cleanup-notifications` — job de limpeza interno, chamado por cron com service role
+- `cleanup-novelties` — job de limpeza interno, chamado por cron com service role
+- `collections-watcher` — watcher de coleções, protegido por secret interno
+- `comparison-price-watcher` — watcher de preços, protegido por secret interno
+- `connections-auto-test` — teste automático de conexões, sem contexto de usuário
+- `connections-health-check` — health check de conexões externas, sem contexto de usuário
+- `crm-callback-alerts` — callback do CRM externo, autenticação via HMAC do webhook
+- `crm-callback-reprocess` — reprocessamento de callbacks do CRM, job interno
+- `crm-db-bridge` — bridge para CRM externo, autenticação gerenciada pelo caller
+- `e2e-cleanup` — limpeza de dados de testes E2E, ambiente de teste
+- `external-db-inspect` — inspeção de BD externo, autenticação gerenciada pelo caller
+- `favorites-watcher` — watcher de favoritos, protegido por secret interno
+- `get-visitor-info` — informações de visitante público sem sessão
+- `image-proxy` — proxy de imagens público, sem contexto de autenticação
+- `log-login-attempt` — log de tentativas de login, pré-autenticação
+- `magazine-import-local` — importação de revistas, job interno com service role
+- `magazine-public-react` — renderização pública de revistas, acesso sem autenticação
+- `magazine-public-view` — visualização pública de revistas, acesso sem autenticação
+- `magazine-reader-state-read` — leitura de estado de leitor, token próprio de sessão de leitura
+- `magazine-reader-state-write` — escrita de estado de leitor, token próprio de sessão de leitura
+- `mcp-server` — servidor MCP interno, autenticação gerenciada pelo protocolo MCP
+- `ownership-audit` — auditoria de propriedade, job interno com service role
+- `process-queue` — processamento de fila interna, chamado por cron com service role
+- `process-scheduled-reports` — processamento de relatórios agendados, job interno
+- `quote-followup-reminders` — lembretes de orçamento, job cron com service role
+- `receive-crm-callback` — recebimento de callbacks do CRM, autenticação via HMAC
+- `send-digest` — envio de digest, job cron com service role
+- `send-notification` — envio de notificações, chamado internamente com service role
+- `send-scheduled-reports` — envio de relatórios agendados, job cron com service role
+- `sync-external-db` — sincronização de BD externo, autenticação gerenciada pelo caller
+- `webhook-dispatcher` — dispatcher de webhooks internos, protegido por secret
+- `webhook-inbound` — recebimento de webhooks externos, autenticação via HMAC do payload

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-05T18:20:45.921Z",
+  "generatedAt": "2026-10-19T10:00:07.690Z",
   "description": "Baseline de marcadores TODO/FIXME/HACK em src/ (excluindo testes). Falha apenas em REGRESSÃO (contagem cresce).",
   "productionTodoCount": 51,
   "counts": {
@@ -22,7 +22,7 @@
     "src/hooks/kit-builder/useKitBuilderQueries.ts": 2,
     "src/hooks/products/dailyCatalogDefaults.ts": 1,
     "src/hooks/products/novelty-core.ts": 1,
-    "src/hooks/products/useNovelties.ts": 1,
+    "src/hooks/products/useNovelties.helpers.ts": 1,
     "src/hooks/products/useProductsLightweight.ts": 1,
     "src/hooks/quotes/useDiscountApproval.ts": 1,
     "src/hooks/ui/use-toast.ts": 1,
@@ -49,10 +49,5 @@
     "src/utils/br-schemas.ts": 1,
     "src/utils/masks.ts": 1,
     "src/utils/proposalPdfReactGenerator.ts": 1
-  },
-  "meta": {
-    "target": 30,
-    "deadline": "2027-01-31",
-    "note": "Resolver TODOs legacy por área"
   }
 }
