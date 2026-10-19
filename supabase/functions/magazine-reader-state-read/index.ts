@@ -14,11 +14,13 @@ import { createStructuredLogger } from "../_shared/structured-logger.ts";
 import { getOrCreateRequestId } from "../_shared/request-id.ts";
 import { RateLimiter } from "../_shared/rate-limiter.ts";
 
-const querySchema = z.object({
+const bodySchema = z.object({
   token: z.string().min(24).max(64).regex(/^[a-f0-9]+$/i),
-  fingerprint: z.string().min(8).max(128),
+  // E090: fingerprint mín 32 chars — previne brute-force de fingerprints curtos
+  fingerprint: z.string().min(32).max(128),
 });
 
+// E090: rate limit chaveado em IP+token, não no fingerprint (rotação de fingerprint dava escrita ilimitada)
 const readLimiter = new RateLimiter({ maxRequests: 30, windowMs: 60_000, keyPrefix: "mag-reader-read" });
 
 async function sha256Hex(input: string): Promise<string> {
@@ -35,11 +37,13 @@ Deno.serve(async (req) => {
   const jsonHeaders = { ...buildPublicCorsHeaders(), "Content-Type": "application/json" };
 
   try {
-    const url = new URL(req.url);
-    const parsed = querySchema.safeParse({
-      token: url.searchParams.get("token"),
-      fingerprint: url.searchParams.get("fingerprint"),
-    });
+    // E090: fingerprint não deve trafegar em query string (entra em logs de acesso e Referer)
+    if (req.method !== "POST") {
+      return log.respond(new Response(JSON.stringify({ error: "method_not_allowed", request_id: requestId }), { status: 405, headers: jsonHeaders }));
+    }
+
+    const body = await req.json().catch(() => null);
+    const parsed = bodySchema.safeParse(body);
     if (!parsed.success) {
       return log.respond(new Response(
         JSON.stringify({ error: "invalid_request", request_id: requestId, details: parsed.error.flatten().fieldErrors }),
@@ -47,8 +51,11 @@ Deno.serve(async (req) => {
       ));
     }
 
-    const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() || "0.0.0.0";
-    const rl = await readLimiter.check(ip);
+    // E090: rate limit em IP+token (não em fingerprint — rotação de fingerprint contornaria)
+    const xffRaw = req.headers.get("x-forwarded-for") ?? "";
+    const xffParts = xffRaw.split(",").map((s) => s.trim()).filter(Boolean);
+    const ip = xffParts[xffParts.length - 1] || "0.0.0.0";
+    const rl = await readLimiter.check(`${ip}:${parsed.data.token.slice(0, 8)}`);
     if (!rl.allowed) {
       return log.respond(new Response(JSON.stringify({ error: "rate_limited", request_id: requestId }), { status: 429, headers: jsonHeaders }));
     }

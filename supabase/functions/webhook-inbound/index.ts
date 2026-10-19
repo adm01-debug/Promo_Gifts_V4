@@ -199,31 +199,24 @@ Deno.serve(async (req) => {
   }
 
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
-  const authorization = req.headers.get("authorization") ?? "";
-  const bearer = authorization.startsWith("Bearer ")
-    ? authorization.slice(7).trim()
-    : authorization.trim();
-  const isInternalServiceCall = req.headers.get("x-internal-call") === "true" &&
-    serviceRoleKey.length > 0 &&
-    bearer === serviceRoleKey;
 
-  if (!isInternalServiceCall) {
-    const protection = await runBotProtection(
-      req,
-      {
-        endpoint: "webhook-inbound",
-        maxRequests: 500,
-        windowSeconds: 60,
-        blockSeconds: 1800,
-        allowSearchBots: false,
-        // Endpoint HMAC below authenticates the automation. Keep IP controls and
-        // DB-backed rate limiting, but do not reject legitimate curl/undici UAs.
-        skipUserAgentCheck: true,
-      },
-      corsHeaders,
-    );
-    if (!protection.allowed) return protection.blockResponse!;
-  }
+  // E087: bypass de chamada interna removido — toda requisição passa por bot-protection e HMAC.
+  // Chamadas internas devem usar x-dispatcher-secret (dispatcher-auth.ts).
+  const protection = await runBotProtection(
+    req,
+    {
+      endpoint: "webhook-inbound",
+      maxRequests: 500,
+      windowSeconds: 60,
+      blockSeconds: 1800,
+      allowSearchBots: false,
+      // Endpoint HMAC below authenticates the automation. Keep IP controls and
+      // DB-backed rate limiting, but do not reject legitimate curl/undici UAs.
+      skipUserAgentCheck: true,
+    },
+    corsHeaders,
+  );
+  if (!protection.allowed) return protection.blockResponse!;
 
   const url = new URL(req.url);
   const slug = url.searchParams.get("slug")?.trim() ?? "";
@@ -304,9 +297,26 @@ Deno.serve(async (req) => {
       );
     }
 
+    // E088: rejeitar bodies acima de 1 MB antes de materializar
+    const BODY_LIMIT_BYTES = 1_048_576; // 1 MB
+    const contentLength = parseInt(req.headers.get("content-length") ?? "0", 10);
+    if (contentLength > BODY_LIMIT_BYTES) {
+      return jsonResponse({
+        code: "payload_too_large",
+        message: "Request body exceeds 1 MB limit",
+      }, 413);
+    }
+
     let rawBody: string;
     try {
       rawBody = await req.text();
+      // Double-check materialised size (Content-Length may be absent or wrong)
+      if (new TextEncoder().encode(rawBody).length > BODY_LIMIT_BYTES) {
+        return jsonResponse({
+          code: "payload_too_large",
+          message: "Request body exceeds 1 MB limit",
+        }, 413);
+      }
     } catch {
       return jsonResponse({
         code: "invalid_body",
@@ -324,24 +334,35 @@ Deno.serve(async (req) => {
     }
     const signature = signatureResult.signature;
 
-    if (!isInternalServiceCall) {
-      const secret = await readCredential(endpoint.hmac_secret_ref);
-      if (!secret) {
-        return jsonResponse(
-          {
-            code: "webhook_not_configured",
-            message: "Webhook signing secret is not configured",
-          },
-          503,
-        );
-      }
-      if (!(await verifyHmac(rawBody, signature, secret))) {
-        await updateStats(endpoint.id, true);
-        return jsonResponse({
-          code: "invalid_signature",
-          message: "Invalid webhook signature",
-        }, 401);
-      }
+    // E088: hmac_secret_ref deve ter prefixo WEBHOOK_HMAC_ para evitar env var injection
+    const hmacRef = endpoint.hmac_secret_ref ?? "";
+    if (!hmacRef.startsWith("WEBHOOK_HMAC_")) {
+      console.error("[webhook-inbound] hmac_secret_ref sem prefixo WEBHOOK_HMAC_:", hmacRef);
+      return jsonResponse(
+        {
+          code: "webhook_misconfigured",
+          message: "Webhook signing secret reference is misconfigured",
+        },
+        503,
+      );
+    }
+    const secret = await readCredential(hmacRef);
+    if (!secret) {
+      return jsonResponse(
+        {
+          code: "webhook_not_configured",
+          message: "Webhook signing secret is not configured",
+        },
+        503,
+      );
+    }
+    if (!(await verifyHmac(rawBody, signature, secret))) {
+      await updateStats(endpoint.id, true);
+      return jsonResponse({
+        code: "invalid_signature",
+        message: "Invalid webhook signature",
+      }, 401);
+    }
     }
 
     const contract = await parseContract(req, WebhookInboundSchemas, {

@@ -26,7 +26,9 @@ async function sha256Hex(input: string): Promise<string> {
   return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 async function hashIp(ip: string): Promise<string> {
-  const salt = Deno.env.get("MAGAZINE_IP_SALT") ?? "promo-gifts-v4-fallback-salt-2026";
+  // E090: sem MAGAZINE_IP_SALT a pseudonimização LGPD deixa de existir silenciosamente — fail com 503
+  const salt = Deno.env.get("MAGAZINE_IP_SALT");
+  if (!salt) throw new Error("MAGAZINE_IP_SALT env var ausente — não é possível pseudonimizar IP");
   const truncated = ip.includes(".") ? ip.split(".").slice(0, 3).join(".") + ".0" : ip;
   return sha256Hex(truncated + salt);
 }
@@ -122,6 +124,11 @@ Deno.serve(async (req) => {
     return log.respond(new Response(JSON.stringify({ toggled: "added", request_id: requestId }), { status: 200, headers: jsonHeaders }));
   } catch (err) {
     log.error("unhandled_exception", { err });
+    // E090: MAGAZINE_IP_SALT ausente → 503 (configuração obrigatória; não deve degradar silenciosamente)
+    const msg = err instanceof Error ? err.message : "";
+    if (msg.includes("MAGAZINE_IP_SALT")) {
+      return log.respond(new Response(JSON.stringify({ error: "service_misconfigured", request_id: requestId }), { status: 503, headers: jsonHeaders }));
+    }
     return log.respond(new Response(JSON.stringify({ error: "internal_error", request_id: requestId }), { status: 500, headers: jsonHeaders }));
   }
 });
