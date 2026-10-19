@@ -57,13 +57,8 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false  # E32
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: '.nvmrc'
-          cache: npm
-      - run: npm ci
-      - name: Install Playwright (chromium)
-        run: npx playwright install --with-deps chromium
+      - name: Setup E2E
+        uses: ./.github/actions/e2e-setup
       - name: Run ColorSwatch grid suite
         env:
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}

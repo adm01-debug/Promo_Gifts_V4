@@ -45,6 +45,10 @@ docs/TYPES_INVENTORY_REMOVAL_ALLOWLIST.json    @adm01-debug
 .invoke-direct-baseline.json                  @adm01-debug
 .outline-none-baseline.json                   @adm01-debug
 .security/supabase-linter-baseline.json       @adm01-debug
+.security/                                    @adm01-debug
+.security/policies-baseline.json             @adm01-debug
+.security/lint-0029-allowlist.json            @adm01-debug
+.security/anon-insert-rate-guard-manifest.json @adm01-debug
 
 # ============================================================
 # Inventário de segredos (E98) — SSOT de secrets.* e vars.*
@@ -94,3 +98,14 @@ supabase/functions/sync-quote-bitrix/           @adm01-debug
 supabase/functions/dropbox-list/                @adm01-debug
 supabase/functions/elevenlabs-tts/              @adm01-debug
 supabase/functions/generate-mockup/             @adm01-debug
+
+# ============================================================
+# E183 (P200): tipos críticos + catch-all para cobertura total
+# ============================================================
+# src/types/ contém Product type (REGRA #2) — incidente 2026-06-11 removeu campos críticos
+# e não havia CODEOWNER para este diretório.
+src/types/                                      @adm01-debug
+
+# Catch-all: qualquer arquivo não coberto pelas regras acima requer aprovação.
+# Garante que src/components, src/hooks, src/pages, src/services tenham dono.
+*                                               @adm01-debug

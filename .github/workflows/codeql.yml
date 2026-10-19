@@ -3,9 +3,12 @@ name: CodeQL
 on:
   push:
     branches: [main]
-  # 2026-09-27: pull_request removido — CodeQL em todo PR adicionava 12min/2 jobs
-  # ao fan-out do repo (123 workflows). Varredura continua em cada push na main e
-  # na segunda 09:33 UTC. Sem branch protection, não bloqueia nenhuma PR.
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'supabase/functions/**'
+      - '.github/workflows/codeql.yml'  # R12: self-reference
   schedule:
     - cron: '33 9 * * 1'  # segunda 09:33 UTC (E89)
 
@@ -25,7 +28,7 @@ defaults:
 
 jobs:
   analyze:
-    name: Analyze (${{ matrix.language }})
+    name: Analyze (javascript-typescript)
     runs-on: ubuntu-24.04
     timeout-minutes: 30
 
@@ -77,14 +80,14 @@ jobs:
 
       - name: Initialize CodeQL
         if: steps.code-security.outputs.enabled == 'true'
-        uses: github/codeql-action/init@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee # v4
+        uses: github/codeql-action/init@24c54180a607b1449ed407dd24f251e4e9147c8d # v4
         with:
           languages: ${{ matrix.language }}
           queries: security-extended
 
       - name: Perform CodeQL Analysis
         if: steps.code-security.outputs.enabled == 'true'
-        uses: github/codeql-action/analyze@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee # v4
+        uses: github/codeql-action/analyze@24c54180a607b1449ed407dd24f251e4e9147c8d # v4
         with:
           category: "/language:${{ matrix.language }}"
 

@@ -193,29 +193,9 @@ jobs:
       - name: Install Playwright Chromium
         run: npm run test:e2e:install
 
-      # Smoke rápido do sidebar (sem painéis legados). Falha cedo se alguém
-      # reintroduzir "Saúde do carrinho" / "Inteligência de vendas" / etc.
-      - name: E2E smoke — CartSidebar sem painéis legados
-        env:
-          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-        run: npx playwright test e2e/carrinhos/sidebar-no-legacy-labels.spec.ts --project=chromium-authed --retries=1
-
-      # Smoke dos handoffs Carrinho/URL → QuoteBuilder (BUG-CART-HANDOFF).
-      # Falha cedo se o autosave voltar a sobrescrever dados vindos do carrinho
-      # ou de URL params ao trocar de aba ou recarregar a página.
-      - name: E2E smoke — Handoffs QuoteBuilder (carrinho + URL params)
-        env:
-          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-        run: |
-          npx playwright test \
-            e2e/carrinhos/cart-to-quote-handoff.spec.ts \
-            e2e/carrinhos/cart-to-quote-handoff-persistence.spec.ts \
-            e2e/carrinhos/quote-handoff-url-params.spec.ts \
-            --project=chromium-authed --retries=1
-
       # Suíte completa de carrinhos (popover footer matrix, limite 10, etc.).
+      # sidebar-no-legacy-labels e cart-to-quote-handoff* já cobertos por
+      # e2e-cart.yml; removidos aqui para evitar execução triplicada (E152).
       - name: Run E2E — Carrinhos (suíte completa)
         env:
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}

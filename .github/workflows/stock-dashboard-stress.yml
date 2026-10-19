@@ -1,4 +1,4 @@
-name: Estoque — Stress Loop (anti-flake)
+name: Estoque — Stress Loop Nightly (anti-flake)
 
 # Roda os 4 specs do /estoque em loop (N repetições) para detectar flakiness
 # antes que chegue ao main. Falha se qualquer iteração quebrar OU se o tempo

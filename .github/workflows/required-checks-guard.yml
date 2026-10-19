@@ -8,12 +8,9 @@ on:
   push:
     branches: [main]
   pull_request:
-    paths:
-      - '.github/workflows/**'
-      - '.github/required-checks.json'
-      - '.github/workflows/required-checks-guard.yml'
-      - 'scripts/check-secrets-inventory.mjs'
-      - 'docs/ci/SEGREDOS.md'
+    # E176: sem paths filter — assert-required-checks precisa rodar em todo PR
+    # para ser um required check efetivo (check com paths filter que não dispara = PR bloqueado)
+    branches: [main]
   schedule:
     - cron: '45 8 * * *'  # diário 08:45 UTC — E89: ≥20min de edge-functions-drift-check (09:06)
   workflow_dispatch:
@@ -44,6 +41,7 @@ jobs:
       - name: Check required_status_checks in active main rulesets
         env:
           GH_TOKEN: ${{ secrets.BRANCH_PROTECTION_READ_TOKEN || github.token }}
+          HAS_PAT: ${{ secrets.BRANCH_PROTECTION_READ_TOKEN != '' }}
           REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
@@ -69,6 +67,10 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
           if [[ "$HTTP" != "200" ]]; then
+            if [[ "$HAS_PAT" != "true" ]]; then
+              echo "::warning::BRANCH_PROTECTION_READ_TOKEN não configurado (usando github.token sem permissão admin — HTTP $HTTP). Verificação de rulesets pulada. Configure o PAT em Settings → Secrets and variables → Actions."
+              exit 0
+            fi
             echo "::error::Não foi possível ler repository rulesets (HTTP $HTTP); estado remoto inconclusivo."
             exit 1
           fi
@@ -146,9 +148,8 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
-          cache: npm
       - name: Install js-yaml
-        run: npm ci --ignore-scripts
+        run: npm i --no-save js-yaml@4.3.2
       - name: Check for phantom required checks (E71)
         run: node scripts/check-required-checks.mjs
 
