@@ -29,7 +29,7 @@ name: wraparound-monitor-report
 
 on:
   schedule:
-    - cron: '15 6 * * *' # diário, 06:15 UTC (E177: reativado — workflow degrada graciosamente sem a migration)
+    - cron: '20 7 * * *' # diário, 07:20 UTC (E89: movido de 06:15 — evita colisão com quote-number-hardening-verify (15 */6) e supabase-linter-gate (06:57))
   workflow_dispatch:
 
 permissions:

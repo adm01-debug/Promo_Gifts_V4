@@ -28,7 +28,7 @@ name: capacity-growth-report
 
 on:
   schedule:
-    - cron: '16 9 * * 1' # semanal, segunda 09:16 UTC (E177: reativado — workflow degrada graciosamente sem a migration)
+    - cron: '47 7 * * 1' # semanal, segunda 07:47 UTC (E89: movido de 09:16 — evita colisão com edge-functions-drift-check (09:06) e db-schema-drift-check (09:29))
   workflow_dispatch:
 
 permissions:
