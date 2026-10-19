@@ -28,13 +28,13 @@ export function useGoldSyncStatus() {
     queryFn: async () => {
       const [ordersRes, quotesRes] = await Promise.all([
         supabase
-          .from('orders')
+          .from('orders') // rls-allow: admin dashboard — last record timestamp; RLS aplica seller scope
           .select('created_at')
           .order('created_at', { ascending: false })
           .limit(1)
           .maybeSingle(),
         supabase
-          .from('quotes')
+          .from('quotes') // rls-allow: admin dashboard — last record timestamp; RLS aplica seller scope
           .select('created_at')
           .order('created_at', { ascending: false })
           .limit(1)

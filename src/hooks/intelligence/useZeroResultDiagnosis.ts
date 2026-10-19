@@ -48,7 +48,7 @@ async function countQuotesInWindow(sinceIso: string, productIds: string[] | null
 
   if (!productIds) {
     const { count } = await supabase
-      .from('quotes')
+      .from('quotes') // rls-allow: diagnóstico de zero resultados; RLS aplica seller scope
       .select('id', { count: 'exact', head: true })
       .gte('created_at', sinceIso);
     return count ?? 0;
@@ -72,7 +72,7 @@ async function countOrdersInWindow(sinceIso: string, productIds: string[] | null
 
   if (!productIds) {
     const { count } = await supabase
-      .from('orders')
+      .from('orders') // rls-allow: diagnóstico de zero resultados; RLS aplica seller scope
       .select('id', { count: 'exact', head: true })
       .gte('created_at', sinceIso);
     return count ?? 0;

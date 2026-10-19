@@ -989,7 +989,7 @@ export function useQuoteBuilderState() {
         // mais recente; qualquer nova corrida entre esta leitura e a RPC será
         // rejeitada pelo _expected_version no banco.
         const { data: remote, error: refreshError } = await supabase
-          .from('quotes')
+          .from('quotes') // rls-allow: filtrado por quoteId; RLS garante seller scope
           .select('updated_at,version')
           .eq('id', quoteId)
           .single();

@@ -75,7 +75,7 @@ export function classifyDegradable(error: unknown): DegradationReason | null {
 /**
  * Degrada ou propaga. Use no lugar de `if (error) throw error;`:
  *
- *   const { data, error } = await supabase.from('orders').select('...');
+ *   const { data, error } = await supabase.from('table_name').select('...');
  *   if (error) return degradeOrThrow(error, 'segments.orders', [] as SegmentData[]);
  *
  * @param error    erro retornado pelo client
