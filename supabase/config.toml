@@ -1,5 +1,9 @@
 project_id = "doufsxqlfjyuvxuezpln"
 
+[db]
+# E077: fonte única da major do PostgreSQL. Atualizar aqui quando produção migrar.
+major_version = 17
+
 [functions.crm-db-bridge]
 verify_jwt = false
 
