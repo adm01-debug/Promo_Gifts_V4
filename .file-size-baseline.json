@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-18T17:14:24.534Z",
+  "generatedAt": "2026-10-18T23:38:11.052Z",
   "description": "Baseline de arquivos src/ com mais de 500 linhas (excluindo testes). Falha em arquivo novo acima do limite ou em crescimento.",
   "maxLines": 500,
   "files": {

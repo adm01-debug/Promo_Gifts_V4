@@ -800,24 +800,24 @@
       "file": "src/hooks/intelligence/useSalesHistory.ts",
       "receiver": "supabase",
       "occurrences": 1,
-      "stage": 53,
-      "reason": "Despacho dinâmico bounded: table ∈ {orders,quotes} (união literal) no batching .in() de 200 ids (#2222); revisar em próxima atualização do catálogo."
+      "stage": 100,
+      "reason": "Despacho dinâmico: `.from(table)` onde table = \"orders\" | \"quotes\" — parâmetro de tipo union controlado em useSalesHistory; inventariado na etapa 100 do PLANO_WORKFLOWS_CI_V2."
     },
     {
       "kind": "relation",
       "file": "src/hooks/intelligence/useSalesHistoryMacro.ts",
       "receiver": "supabase",
       "occurrences": 2,
-      "stage": 53,
-      "reason": "Despacho dinâmico bounded: table ∈ {orders,quotes} (união literal) no batching .in() de 200 ids (#2222); revisar em próxima atualização do catálogo."
+      "stage": 100,
+      "reason": "Despacho dinâmico: `.from(table)` onde table é parâmetro genérico controlado em useSalesHistoryMacro (2 ocorrências); inventariado na etapa 100 do PLANO_WORKFLOWS_CI_V2."
     },
     {
       "kind": "relation",
       "file": "src/hooks/products/useNovelties.helpers.ts",
       "receiver": "untypedFrom",
       "occurrences": 1,
-      "stage": 53,
-      "reason": "Despacho dinâmico bounded: resolveTable() restringe a união de tabelas do catálogo de produtos; helper extraído de useNovelties.ts (entrada legada movida) (#2222)."
+      "stage": 100,
+      "reason": "Despacho dinâmico: `untypedFrom(resolveTable(table))` — resolveTable converte slug para nome de tabela; inventariado na etapa 100 do PLANO_WORKFLOWS_CI_V2."
     }
   ]
 }
