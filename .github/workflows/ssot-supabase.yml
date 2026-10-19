@@ -9,6 +9,8 @@ on:
       - 'scripts/validate-supabase-config.mjs'
       - 'scripts/guard-canonical-project.mjs'
       - 'scripts/check-docs-supabase-hosts.mjs'
+      - 'scripts/ssot-report*.mjs'
+      - 'scripts/validate-ssot-report.mjs'
       - '.github/workflows/ssot-supabase.yml'
       - 'package.json'
   push:

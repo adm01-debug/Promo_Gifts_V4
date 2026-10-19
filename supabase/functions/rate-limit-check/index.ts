@@ -1,44 +1,36 @@
 import { getCorsHeaders, handleCorsPreflightIfNeeded } from '../_shared/cors.ts';
 import { safeErrorResponse } from '../_shared/error-response.ts';
 import { logSecurityEvent } from '../_shared/security.ts';
+import { RateLimiter } from '../_shared/rate-limiter.ts';
 import { z } from "https://deno.land/x/zod@v3.23.8/mod.ts";
 
 const BodySchema = z.object({
   endpoint: z.enum(['login', 'api', 'ai', 'approval']).default('api'),
 }).partial();
 
-// Rate limit configuration
-const RATE_LIMITS: Record<string, { maxRequests: number; windowMs: number }> = {
-  login: { maxRequests: 5, windowMs: 60 * 1000 },
-  api: { maxRequests: 100, windowMs: 60 * 1000 },
-  ai: { maxRequests: 20, windowMs: 60 * 1000 },
-  approval: { maxRequests: 5, windowMs: 60 * 1000 },
+// E018: RateLimiter persistente via DB (RPC check_edge_rate_limit).
+// Antes: Map em memória por isolate — "5/min" era por réplica, não global.
+// failClosed nos endpoints de autenticação; fail-open só em 'api' de alta disponibilidade.
+const LIMITERS: Record<string, RateLimiter> = {
+  login:    new RateLimiter({ maxRequests: 5,   windowMs: 60_000, keyPrefix: 'rlck:login',    failClosed: true }),
+  approval: new RateLimiter({ maxRequests: 5,   windowMs: 60_000, keyPrefix: 'rlck:approval', failClosed: true }),
+  ai:       new RateLimiter({ maxRequests: 20,  windowMs: 60_000, keyPrefix: 'rlck:ai',       failClosed: true }),
+  api:      new RateLimiter({ maxRequests: 100, windowMs: 60_000, keyPrefix: 'rlck:api',      failClosed: false }),
 };
-
-// In-memory store (note: resets on function cold start)
-const requestCounts = new Map<string, { count: number; resetAt: number }>();
 
 function getClientIP(req: Request): string {
   const forwarded = req.headers.get('x-forwarded-for');
-  if (forwarded) {
-    return forwarded.split(',')[0].trim();
-  }
+  if (forwarded) return forwarded.split(',')[0].trim();
   return req.headers.get('x-real-ip') || 'anonymous';
 }
 
 Deno.serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
+  if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
 
   try {
     let rawBody: unknown = {};
-    try {
-      rawBody = await req.json();
-    } catch {
-      // Empty body is fine — defaults apply
-    }
+    try { rawBody = await req.json(); } catch { /* body vazio — defaults */ }
 
     const parsed = BodySchema.safeParse(rawBody);
     if (!parsed.success) {
@@ -50,90 +42,48 @@ Deno.serve(async (req) => {
 
     const endpoint = parsed.data.endpoint || 'api';
     const clientIP = getClientIP(req);
-    const config = RATE_LIMITS[endpoint] || RATE_LIMITS.api;
-    
-    const key = `${endpoint}:${clientIP}`;
-    const now = Date.now();
-    
-    let record = requestCounts.get(key);
-    
-    // Reset if window expired
-    if (!record || now > record.resetAt) {
-      record = { count: 0, resetAt: now + config.windowMs };
-    }
-    
-    record.count++;
-    requestCounts.set(key, record);
-    
-    // Clean old entries periodically
-    if (Math.random() < 0.01) {
-      for (const [k, v] of requestCounts.entries()) {
-        if (now > v.resetAt) requestCounts.delete(k);
-      }
-    }
-    
-    const allowed = record.count <= config.maxRequests;
-    const remaining = Math.max(0, config.maxRequests - record.count);
-    const retryAfter = Math.ceil((record.resetAt - now) / 1000);
+    const limiter = LIMITERS[endpoint] ?? LIMITERS.api;
 
-    if (!allowed) {
-      console.log(`Rate limit exceeded for ${clientIP} on ${endpoint}`);
-      
-      // Log suspicious activity
+    const result = await limiter.check(clientIP);
+
+    if (!result.allowed) {
+      const retryAfter = Math.ceil((result.resetAt - Date.now()) / 1000);
       await logSecurityEvent('RATE_LIMIT_EXCEEDED', endpoint, clientIP, {
-        count: record.count,
-        limit: config.maxRequests,
+        remaining: result.remaining,
+        suspicious: result.suspicious,
         userAgent: req.headers.get('user-agent'),
       });
-      
       return new Response(
-        JSON.stringify({
-          allowed: false,
-          error: 'Rate limit exceeded',
-          remaining: 0,
-          retryAfter,
-          resetAt: new Date(record.resetAt).toISOString(),
-        }),
+        JSON.stringify({ allowed: false, error: 'Rate limit exceeded', remaining: 0, retryAfter }),
         {
           status: 429,
           headers: {
             ...corsHeaders,
             'Content-Type': 'application/json',
-            'X-RateLimit-Limit': config.maxRequests.toString(),
-            'X-RateLimit-Remaining': '0',
-            'X-RateLimit-Reset': record.resetAt.toString(),
             'Retry-After': retryAfter.toString(),
+            'X-RateLimit-Remaining': '0',
+            'X-RateLimit-Reset': result.resetAt.toString(),
           },
         }
       );
     }
 
     return new Response(
-      JSON.stringify({
-        allowed: true,
-        remaining,
-        resetAt: new Date(record.resetAt).toISOString(),
-      }),
+      JSON.stringify({ allowed: true, remaining: result.remaining, resetAt: new Date(result.resetAt).toISOString() }),
       {
         status: 200,
-        headers: {
-          ...corsHeaders,
-          'Content-Type': 'application/json',
-          'X-RateLimit-Limit': config.maxRequests.toString(),
-          'X-RateLimit-Remaining': remaining.toString(),
-          'X-RateLimit-Reset': record.resetAt.toString(),
-        },
+        headers: { ...corsHeaders, 'Content-Type': 'application/json', 'X-RateLimit-Remaining': result.remaining.toString() },
       }
     );
   } catch (error) {
-    // Fail-open: em erro interno liberamos a requisição, sem vazar o motivo.
+    // E018: fail-closed no catch — erro interno → 503, nunca 200/allowed:true.
     return safeErrorResponse(error, {
       corsHeaders,
       req,
-      status: 200,
+      status: 503,
       publicMessage: 'rate_limit_unavailable',
       logLabel: 'Rate limit check error:',
-      extra: { allowed: true },
+      extra: { allowed: false },
     });
   }
 });

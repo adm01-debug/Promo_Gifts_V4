@@ -274,10 +274,12 @@ Deno.serve(async (req) => {
             scanDetails.reason = "Arquivo limpo (base VirusTotal)";
           }
         } else if (vtRes.status === 404) {
-          scanDetails.reason =
-            "Arquivo novo no VirusTotal (análise pendente). Permitido upload inicial.";
+          // E020: hash desconhecido no VT → quarentena até veredito, nunca "permitido".
+          // Malware novo ou dirigido nunca está na base do VT na primeira vez.
+          isSuspicious = true;
+          scanDetails.reason = "Hash desconhecido no VirusTotal — quarentena preventiva até análise.";
           scanDetails.pending_review = true;
-          log.warn("upload_pending_vt_scan", { user_id: auth.userId });
+          log.warn("upload_quarantined_unknown_hash", { user_id: auth.userId });
         } else {
           throw new Error(`Falha na API de segurança (Status: ${vtRes.status})`);
         }
@@ -314,9 +316,10 @@ Deno.serve(async (req) => {
     const fileName = `${targetPrefix}/${folder}/${Date.now()}-${
       Math.random().toString(36).substring(7)
     }.${ext}`;
+    // E020: usa declaredMime (já validado contra ALLOWED_MIME) em vez de file.type raw.
     const { data: uploadData, error: uploadError } = await supabaseAdmin.storage
       .from(targetBucket)
-      .upload(fileName, fileBuffer, { contentType: file.type, upsert: false });
+      .upload(fileName, fileBuffer, { contentType: declaredMime, upsert: false });
 
     if (uploadError) throw uploadError;
 
