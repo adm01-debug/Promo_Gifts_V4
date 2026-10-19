@@ -7,7 +7,7 @@
  */
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { productFormSchema, type ProductFormData, defaultFormValues } from './ProductFormSchema';
 import { useSystemSettings } from '@/hooks/admin/useSystemSettings';
@@ -163,7 +163,7 @@ export function ProductFormFullscreen({
     getValues,
     formState: { errors },
   } = useForm<ProductFormData>({
-    resolver: zodResolver(productFormSchema),
+    resolver: zodResolver(productFormSchema) as unknown as Resolver<ProductFormData>,
     defaultValues: { ...defaultFormValues, ...initialData },
   });
 

@@ -25,6 +25,27 @@ regexes = [
   # Substituído por VITE_SUPABASE_PUBLISHABLE_KEY em 2026-05-23.
   # Chave anon é pública por design (role sem privilégios, embutida nos bundles).
   '''eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRvdWZzeHFsZmp5dXZ4dWV6cGxuIiwicm9sZSI6ImFub24i''',
+  # Placeholder fake JWT nos workflows de CI — formato header.placeholder (não é segredo real)
+  '''eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.placeholder''',
+  # Chaves de localStorage / property keys em código de app — não são segredos
+  '''promobrind\.(magazines|cart|filters|quotes)\.[a-z0-9._-]+''',
+  # Property keys de filtro (minSupplierSales90d, minPromoSales90d, etc.)
+  '''min(Supplier|Promo)Sales[0-9]+d''',
+]
+paths = [
+  # Documentação e auditorias — contêm exemplos, logs e curl com tokens de exemplo
+  '''docs/.*''',
+  '''audit/.*''',
+  # Testes — tokens e chaves são mock/fixture, não segredos reais
+  '''tests/.*''',
+  '''src/.*__tests__.*''',
+  '''src/pages/__tests__/.*''',
+  '''src/pages/magazine/hooks/__tests__/.*''',
+  '''src/services/__tests__/.*''',
+  # Amostras de payload para testes de webhook (mock data)
+  '''src/lib/webhook-events-payload-samples\.ts''',
+  # Teste de credenciais da edge function (fixture)
+  '''supabase/functions/_shared/credentials\.test\.ts''',
 ]
 
 # Commit histórico com service_role hardcoded (E002 removeu do código fonte).
