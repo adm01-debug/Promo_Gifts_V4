@@ -123,56 +123,6 @@ export function QuoteAutoSave({
     onChangeRef.current?.(false);
   }, [serverSavedAt]);
 
-  // Detectar mudanças
-  useEffect(() => {
-    dataRef.current = data;
-
-    const currentData = JSON.stringify(data);
-    const hasChanges = currentData !== initialDataRef.current;
-
-    setHasUnsavedChanges(hasChanges);
-    onChangeRef.current?.(hasChanges);
-
-    // Debounce auto-save
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-
-    if (hasChanges) {
-      setStatus('idle');
-      timeoutRef.current = setTimeout(() => {
-        saveDraft();
-      }, debounceMs);
-    }
-
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, [data, debounceMs, saveDraft]);
-
-  // Verificar conectividade
-  useEffect(() => {
-    const handleOnline = () => {
-      if (status === 'offline') {
-        setStatus('idle');
-      }
-    };
-
-    const handleOffline = () => {
-      setStatus('offline');
-    };
-
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
-  }, [status]);
-
   const saveDraft = useCallback(() => {
     if (!navigator.onLine) {
       setStatus('offline');
@@ -245,6 +195,56 @@ export function QuoteAutoSave({
       setStatus('error');
     }
   }, [storageKey, quoteId]);
+
+  // Detectar mudanças
+  useEffect(() => {
+    dataRef.current = data;
+
+    const currentData = JSON.stringify(data);
+    const hasChanges = currentData !== initialDataRef.current;
+
+    setHasUnsavedChanges(hasChanges);
+    onChangeRef.current?.(hasChanges);
+
+    // Debounce auto-save
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    if (hasChanges) {
+      setStatus('idle');
+      timeoutRef.current = setTimeout(() => {
+        saveDraft();
+      }, debounceMs);
+    }
+
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [data, debounceMs, saveDraft]);
+
+  // Verificar conectividade
+  useEffect(() => {
+    const handleOnline = () => {
+      if (status === 'offline') {
+        setStatus('idle');
+      }
+    };
+
+    const handleOffline = () => {
+      setStatus('offline');
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, [status]);
 
   const getStatusIcon = () => {
     switch (status) {

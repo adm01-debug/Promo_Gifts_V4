@@ -63,7 +63,7 @@ export function useRevokeUserSessions() {
     },
     onError: (error) => {
       logger.error('revoke_sessions falhou:', error);
-      toast.error(error instanceof Error ? error.message : 'Falha ao revogar sessões.');
+      toast.error('Falha ao revogar sessões. Tente novamente.');
     },
   });
 }

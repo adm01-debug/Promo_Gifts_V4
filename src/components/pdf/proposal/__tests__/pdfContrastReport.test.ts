@@ -12,15 +12,23 @@
 import { describe, it, expect } from 'vitest';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
+import { tmpdir } from 'node:os';
 import { GREEN, PDF_TOKENS } from '../../ProposalStyles';
 
-const REPORT_PATH = join(process.cwd(), 'qa', 'reports', 'pdf-contrast-report.md');
+// E106: escreve em tmpdir para não sujar a árvore versionada
+const REPORT_PATH = join(tmpdir(), 'pdf-contrast-report.md');
 const WCAG_AA_TEXT = 4.5;
 const WCAG_AA_UI = 3.0;
 
 function hexToRgb(hex: string): [number, number, number] {
   const h = hex.replace('#', '');
-  const full = h.length === 3 ? h.split('').map((c) => c + c).join('') : h;
+  const full =
+    h.length === 3
+      ? h
+          .split('')
+          .map((c) => c + c)
+          .join('')
+      : h;
   return [
     parseInt(full.slice(0, 2), 16),
     parseInt(full.slice(2, 4), 16),
@@ -30,7 +38,7 @@ function hexToRgb(hex: string): [number, number, number] {
 function relativeLuminance(hex: string): number {
   const [r, g, b] = hexToRgb(hex).map((v) => {
     const c = v / 255;
-    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055)**2.4;
+    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
   });
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
@@ -50,17 +58,65 @@ interface Pair {
 }
 
 const PAIRS: Pair[] = [
-  { label: 'Header — texto preto sobre GREEN', fg: PDF_TOKENS.textOnGreen, bg: GREEN, min: WCAG_AA_TEXT, kind: 'text' },
+  {
+    label: 'Header — texto preto sobre GREEN',
+    fg: PDF_TOKENS.textOnGreen,
+    bg: GREEN,
+    min: WCAG_AA_TEXT,
+    kind: 'text',
+  },
   // labelOnGreen: rótulo Montserrat 700 uppercase 13-15px sobre GREEN.
   // Avaliado no threshold "large text / UI" (3.0:1) por ser bold destacado —
   // NÃO atende AA para texto normal (4.5:1) por decisão de design (cinza claro).
-  { label: 'Header — rótulo (labelOnGreen) sobre GREEN', fg: PDF_TOKENS.labelOnGreen, bg: GREEN, min: WCAG_AA_UI, kind: 'ui' },
-  { label: 'Corpo — texto sobre linha par (branca)', fg: PDF_TOKENS.textBody, bg: PDF_TOKENS.rowEven, min: WCAG_AA_TEXT, kind: 'text' },
-  { label: 'Corpo — texto sobre linha ímpar (cinza claro)', fg: PDF_TOKENS.textBody, bg: PDF_TOKENS.rowOdd, min: WCAG_AA_TEXT, kind: 'text' },
-  { label: 'Swatch — borda sobre linha par', fg: PDF_TOKENS.swatchBorder, bg: PDF_TOKENS.rowEven, min: WCAG_AA_UI, kind: 'ui' },
-  { label: 'Swatch — borda sobre linha ímpar', fg: PDF_TOKENS.swatchBorder, bg: PDF_TOKENS.rowOdd, min: WCAG_AA_UI, kind: 'ui' },
-  { label: 'Swatch — borda sobre fallback #ccc', fg: PDF_TOKENS.swatchBorder, bg: PDF_TOKENS.swatchFallback, min: WCAG_AA_UI, kind: 'ui' },
-  { label: 'Swatch — borda sobre branco puro', fg: PDF_TOKENS.swatchBorder, bg: '#ffffff', min: WCAG_AA_UI, kind: 'ui' },
+  {
+    label: 'Header — rótulo (labelOnGreen) sobre GREEN',
+    fg: PDF_TOKENS.labelOnGreen,
+    bg: GREEN,
+    min: WCAG_AA_UI,
+    kind: 'ui',
+  },
+  {
+    label: 'Corpo — texto sobre linha par (branca)',
+    fg: PDF_TOKENS.textBody,
+    bg: PDF_TOKENS.rowEven,
+    min: WCAG_AA_TEXT,
+    kind: 'text',
+  },
+  {
+    label: 'Corpo — texto sobre linha ímpar (cinza claro)',
+    fg: PDF_TOKENS.textBody,
+    bg: PDF_TOKENS.rowOdd,
+    min: WCAG_AA_TEXT,
+    kind: 'text',
+  },
+  {
+    label: 'Swatch — borda sobre linha par',
+    fg: PDF_TOKENS.swatchBorder,
+    bg: PDF_TOKENS.rowEven,
+    min: WCAG_AA_UI,
+    kind: 'ui',
+  },
+  {
+    label: 'Swatch — borda sobre linha ímpar',
+    fg: PDF_TOKENS.swatchBorder,
+    bg: PDF_TOKENS.rowOdd,
+    min: WCAG_AA_UI,
+    kind: 'ui',
+  },
+  {
+    label: 'Swatch — borda sobre fallback #ccc',
+    fg: PDF_TOKENS.swatchBorder,
+    bg: PDF_TOKENS.swatchFallback,
+    min: WCAG_AA_UI,
+    kind: 'ui',
+  },
+  {
+    label: 'Swatch — borda sobre branco puro',
+    fg: PDF_TOKENS.swatchBorder,
+    bg: '#ffffff',
+    min: WCAG_AA_UI,
+    kind: 'ui',
+  },
 ];
 
 describe('PDF contraste WCAG — relatório', () => {
