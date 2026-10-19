@@ -74,14 +74,30 @@ function walkSql(dir) {
   return files;
 }
 
+// Migrations já aplicadas em produção são imutáveis (E184): o ref legado
+// nelas é registro histórico do que rodou — não pode ser editado nem
+// "substituído pelo canônico". Ficam na allowlist; o gate segue pegando
+// qualquer NOVA migration que referencie o projeto proibido.
+const LEGACY_APPLIED_MIGRATIONS = new Set([
+  'supabase/migrations/20260514112149_edge_function_secrets_callers_hardening.sql',
+  'supabase/migrations/20260522151608_fase_4_gate_ci_drift_check_sql_native.sql',
+  'supabase/migrations/20260522160000_align_wave_3_5_5_drift_allowlist.sql',
+  'supabase/migrations/20260525113000_runtime_edge_function_base_url.sql',
+  'supabase/migrations/20260601140100_fix_cron_connections_auto_test_hardcode_url.sql',
+  'supabase/migrations/20260602020000_fix_hardcoded_api_key_cron.sql',
+  'supabase/migrations-snapshot/ALL_IN_ONE.sql',
+]);
+
 const migrationFiles = MIGRATIONS_DIRS.flatMap(walkSql);
 const migrationViolations = [];
 
 for (const f of migrationFiles) {
+  const rel = f.replace(ROOT + '/', '');
+  if (LEGACY_APPLIED_MIGRATIONS.has(rel)) continue;
   const raw = readFileSync(f, 'utf-8');
   const code = stripSqlComments(raw);
   if (code.includes(FORBIDDEN_ID)) {
-    migrationViolations.push(f.replace(ROOT + '/', ''));
+    migrationViolations.push(rel);
   }
 }
 
