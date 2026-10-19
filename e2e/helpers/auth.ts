@@ -191,13 +191,20 @@ function createNetworkLog(page: Page) {
  * variáveis de ambiente não estiverem configuradas.
  */
 export async function loginAs(page: Page, role: Role = "user"): Promise<void> {
-  const email = role === "dev" ? process.env.E2E_DEV_EMAIL : 
-                role === "admin" ? process.env.E2E_ADMIN_EMAIL : 
-                role === "editor" ? (process.env.E2E_MANAGER_EMAIL || process.env.E2E_ADMIN_EMAIL) : 
+  // E015: smoke público sem creds reais — salta testes autenticados imediatamente
+  // para evitar timeout de 75s × N testes em CI com E2E_MOCK_AUTH=1.
+  if (process.env.E2E_MOCK_AUTH === "1") {
+    test.skip(true, "E2E_MOCK_AUTH=1 — smoke público, teste autenticado ignorado");
+    return;
+  }
+
+  const email = role === "dev" ? process.env.E2E_DEV_EMAIL :
+                role === "admin" ? process.env.E2E_ADMIN_EMAIL :
+                role === "editor" ? (process.env.E2E_MANAGER_EMAIL || process.env.E2E_ADMIN_EMAIL) :
                 process.env.E2E_USER_EMAIL;
-  const password = role === "dev" ? process.env.E2E_DEV_PASSWORD : 
-                   role === "admin" ? process.env.E2E_ADMIN_PASSWORD : 
-                   role === "editor" ? (process.env.E2E_MANAGER_PASSWORD || process.env.E2E_ADMIN_PASSWORD) : 
+  const password = role === "dev" ? process.env.E2E_DEV_PASSWORD :
+                   role === "admin" ? process.env.E2E_ADMIN_PASSWORD :
+                   role === "editor" ? (process.env.E2E_MANAGER_PASSWORD || process.env.E2E_ADMIN_PASSWORD) :
                    process.env.E2E_USER_PASSWORD;
 
   if (!email || !password) {
