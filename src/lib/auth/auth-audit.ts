@@ -1,9 +1,8 @@
-import { getSupabaseClient } from '../../integrations/supabase/lazy-client';
+import { supabase } from '../../integrations/supabase/client';
 import { logger } from '@/lib/logger';
 
 export async function runAuthAudit() {
   try {
-    const supabase = await getSupabaseClient();
     // A RPC check_auth_config_status ainda NÃO existe em public (re-verificado
     // 2026-06-11 via pg_proc no SSOT doufsxqlfjyuvxuezpln). A chamada degrada
     // graciosamente (error tratado abaixo). Cast via unknown necessário pois

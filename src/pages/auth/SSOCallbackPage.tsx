@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { getSupabaseClient } from '@/integrations/supabase/lazy-client';
+import { supabase } from '@/integrations/supabase/client';
 import type { Session } from '@supabase/supabase-js';
 import { CheckCircle2, Loader2, AlertCircle } from 'lucide-react';
 import { PageSEO } from '@/components/seo/PageSEO';
@@ -240,7 +240,6 @@ export default function SSOCallbackPage() {
 
     const run = async () => {
       try {
-        const supabase = await getSupabaseClient();
         const code = searchParams.get('code');
 
         // (2) Fluxo PKCE — troca o code por sessão
@@ -275,7 +274,7 @@ export default function SSOCallbackPage() {
         // ou supabase-js já parseou o hash fragment automaticamente).
         const {
           data: { session },
-        } = await (await getSupabaseClient()).auth.getSession();
+        } = await supabase.auth.getSession();
         tracer.step('session-check-initial', { hasSession: !!session });
         if (session) {
           tracer.setFlow(hash ? 'implicit' : 'unknown');

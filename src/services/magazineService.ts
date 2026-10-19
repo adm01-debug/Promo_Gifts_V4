@@ -435,7 +435,7 @@ export const magazineService = {
     const { data, error } = await magazineDb.rpc('magazine_create_v2', {
       // PostgreSQL parameters are nullable unless declared otherwise, but the
       // generated PostgREST type cannot express argument nullability.
-      p_organization_id: (input.organizationId ?? null) as unknown as string,
+      p_organization_id: (input.organizationId ?? null)!, // nullable em PG; PostgREST não modela nullability
       p_title: input.title?.trim() || 'Nova Revista',
       p_template_id: input.templateId ?? 'editorial-vogue',
     });

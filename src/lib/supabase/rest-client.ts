@@ -3,7 +3,7 @@
  * Fixes issues where HEAD requests fail with 403/401 when checking cache.
  */
 
-import { getSupabaseClient } from '@/integrations/supabase/lazy-client';
+import { supabase } from '@/integrations/supabase/client';
 
 /**
  * Configuration for HEAD request retry behavior.
@@ -24,7 +24,6 @@ export async function headRequestWithFallback(
   url: string,
   options?: RequestInit,
 ): Promise<Response> {
-  const supabase = await getSupabaseClient();
   const token = (await supabase.auth.getSession()).data.session?.access_token;
 
   const headers: Record<string, string> = {
@@ -90,7 +89,6 @@ export function getSupabaseQueryConfig() {
       queryKey: readonly unknown[];
       signal?: AbortSignal;
     }) => {
-      const supabase = await getSupabaseClient();
       const [, table, filters] = queryKey;
 
       if (!table) throw new Error('Missing table in query key');

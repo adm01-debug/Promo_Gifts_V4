@@ -17,15 +17,15 @@ const mocks = vi.hoisted(() => ({
 }));
 const { refreshSession, signOut, getSession, getUser } = mocks;
 
-vi.mock('@/integrations/supabase/lazy-client', () => ({
-  getSupabaseClient: vi.fn().mockResolvedValue({
+vi.mock('@/integrations/supabase/client', () => ({
+  supabase: {
     auth: {
       refreshSession: mocks.refreshSession,
       signOut: mocks.signOut,
       getSession: mocks.getSession,
       getUser: mocks.getUser,
     },
-  }),
+  },
 }));
 
 vi.mock('@/lib/telemetry/structuredLogger', () => ({

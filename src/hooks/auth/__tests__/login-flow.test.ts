@@ -24,8 +24,8 @@ const signInMock = vi.fn();
 const getAuthenticatorAssuranceLevelMock = vi.fn();
 const listFactorsMock = vi.fn();
 
-vi.mock('@/integrations/supabase/lazy-client', () => ({
-  getSupabaseClient: vi.fn().mockResolvedValue({
+vi.mock('@/integrations/supabase/client', () => ({
+  supabase: {
     auth: {
       signInWithPassword: signInMock,
       mfa: {
@@ -33,9 +33,9 @@ vi.mock('@/integrations/supabase/lazy-client', () => ({
         listFactors: listFactorsMock,
       },
     },
-    // Supabase rpc() — usada pela nova RPC get_profile_and_roles
+    // Supabase rpc( — usada pela nova RPC get_profile_and_roles
     rpc: rpcMock,
-  }),
+  },
 }));
 
 vi.mock('@/services/authService', () => ({

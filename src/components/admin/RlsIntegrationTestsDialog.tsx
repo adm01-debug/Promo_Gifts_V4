@@ -131,8 +131,11 @@ export function RlsIntegrationTestsDialog() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {data.results.map((r, i) => (
-                  <TableRow key={i} className={r.pass ? '' : 'bg-destructive/5'}>
+                {data.results.map((r) => (
+                  <TableRow
+                    key={`${r.table}-${r.actor}-${r.op}`}
+                    className={r.pass ? '' : 'bg-destructive/5'}
+                  >
                     <TableCell className="font-mono text-xs">{r.table}</TableCell>
                     <TableCell>
                       <Badge variant={r.actor === 'admin' ? 'secondary' : 'outline'}>

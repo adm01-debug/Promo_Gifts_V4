@@ -16,8 +16,8 @@ vi.mock('@/lib/telemetry/structuredLogger', async () => {
 });
 
 const mockInvoke = vi.fn();
-vi.mock('@/integrations/supabase/lazy-client', () => ({
-  getSupabaseClient: () => Promise.resolve({ functions: { invoke: mockInvoke } }),
+vi.mock('@/integrations/supabase/client', () => ({
+  supabase: { functions: { invoke: mockInvoke } },
 }));
 
 import {

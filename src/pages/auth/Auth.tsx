@@ -30,7 +30,7 @@ import { LegalFooter } from '@/components/auth/LegalFooter';
 
 import { useDevGate } from '@/hooks/admin/useDevGate';
 import { useIPValidation } from '@/hooks/admin/useIPValidation';
-import { getSupabaseClient } from '@/integrations/supabase/lazy-client';
+import { supabase } from '@/integrations/supabase/client';
 import { SocialLoginButtons } from '@/components/auth/SocialLoginButtons';
 import { AppLogo } from '@/components/layout/AppLogo';
 import { isSupabaseLighthousePlaceholder } from '@/lib/env/supabase-placeholder';
@@ -346,8 +346,6 @@ export default function Auth() {
       } catch {
         logger.warn('[AUTH_CRED_STORE] Credential store failed');
       }
-
-      const supabase = await getSupabaseClient();
       const { data: sessionData } = await supabase.auth.getSession();
       const session = sessionData?.session;
       const userId = session?.user?.id;

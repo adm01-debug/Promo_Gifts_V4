@@ -15,8 +15,8 @@ const mockAuth = {
   signInWithOAuth: vi.fn(),
   exchangeCodeForSession: vi.fn(),
 };
-vi.mock('@/integrations/supabase/lazy-client', () => ({
-  getSupabaseClient: () => Promise.resolve({ auth: mockAuth }),
+vi.mock('@/integrations/supabase/client', () => ({
+  supabase: { auth: mockAuth },
 }));
 
 import { authService } from '@/services/authService';
