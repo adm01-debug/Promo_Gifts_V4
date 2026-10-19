@@ -1,5 +1,4 @@
 import { readFileSync, readdirSync, statSync } from 'fs';
-import { createHash } from 'crypto';
 import { join } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -50,16 +49,75 @@ try {
 
 // \u2500\u2500 E064: varrer supabase/migrations/** em busca do project-ref proibido \u2500\u2500\u2500\u2500\u2500
 const FORBIDDEN_ID = 'pqpdolkaeqlyzpdpbizo';
+// Prefixo do ID — pega o ref montado por concatenação de literais
+// ('pqpdolkaeqlyzpd' || 'pbizo'), que nunca aparece como literal inteiro.
+// Evasão residual (chr()/format()/reverse) fica fora do escopo do gate.
+const FORBIDDEN_FRAGMENT = 'pqpdolkae';
 const MIGRATIONS_DIRS = [
   join(ROOT, 'supabase', 'migrations'),
   join(ROOT, 'supabase', 'migrations-snapshot'),
 ];
 
+// Lexer SQL single-pass: devolve a visão "código" — comentários removidos,
+// conteúdo de strings/identificadores/dollar-quoting preservado (ref dentro
+// de literal é uso executável e DEVE flagrar). Substituir sequencialmente
+// `--` e depois `/* */` truncava a linha quando `--` aparecia dentro de
+// string ('a--b'), de block comment (/* -- */) ou de dollar-quote
+// ($$a--b$$), deixando o ref "vivo" depois do corte.
 function stripSqlComments(sql) {
-  // Remove single-line SQL comments (-- ...) and C-style block comments (/* ... */)
-  return sql
-    .replace(/--[^\n]*/g, '')
-    .replace(/\/\*[\s\S]*?\*\//g, '');
+  let out = '';
+  let i = 0;
+  const n = sql.length;
+  while (i < n) {
+    const c = sql[i];
+    if (c === '-' && sql[i + 1] === '-') {
+      while (i < n && sql[i] !== '\n') i++;
+      continue;
+    }
+    if (c === '/' && sql[i + 1] === '*') {
+      i += 2;
+      while (i < n && !(sql[i] === '*' && sql[i + 1] === '/')) i++;
+      i += 2;
+      continue;
+    }
+    if (c === "'") {
+      out += c;
+      i++;
+      while (i < n) {
+        out += sql[i];
+        if (sql[i] === "'") {
+          if (sql[i + 1] === "'") { out += "'"; i += 2; continue; }
+          i++;
+          break;
+        }
+        i++;
+      }
+      continue;
+    }
+    if (c === '"') {
+      out += c;
+      i++;
+      while (i < n) {
+        out += sql[i];
+        if (sql[i] === '"') { i++; break; }
+        i++;
+      }
+      continue;
+    }
+    if (c === '$') {
+      const tag = /^\$[A-Za-z_0-9]*\$/.exec(sql.slice(i))?.[0];
+      if (tag) {
+        const end = sql.indexOf(tag, i + tag.length);
+        if (end === -1) { out += sql.slice(i); break; }
+        out += sql.slice(i, end + tag.length);
+        i = end + tag.length;
+        continue;
+      }
+    }
+    out += c;
+    i++;
+  }
+  return out;
 }
 
 function walkSql(dir) {
@@ -67,7 +125,9 @@ function walkSql(dir) {
   try {
     for (const entry of readdirSync(dir)) {
       const full = join(dir, entry);
-      if (statSync(full).isFile() && entry.endsWith('.sql')) files.push(full);
+      const st = statSync(full);
+      if (st.isDirectory()) files = files.concat(walkSql(full));
+      else if (st.isFile() && entry.toLowerCase().endsWith('.sql')) files.push(full);
     }
   } catch {
     // directory may not exist
@@ -75,37 +135,13 @@ function walkSql(dir) {
   return files;
 }
 
-// Migrations já aplicadas em produção são imutáveis (E184): o ref legado
-// nelas é registro histórico do que rodou — não pode ser editado nem
-// "substituído pelo canônico". A isenção é fixada por hash do conteúdo
-// aprovado: qualquer edição posterior no arquivo sai da allowlist e
-// volta a ser varrida — impedir refs legadas NOVAS entrando disfarçadas
-// num nome isento. Qualquer NOVA migration que referencie o projeto
-// proibido segue flagrada.
-const LEGACY_APPLIED_MIGRATION_HASHES = new Map([
-  ['supabase/migrations/20260514112149_edge_function_secrets_callers_hardening.sql',
-    'bdd80a18a5c68fec108c7548c6a9f05b28a157776d9f121c9f62c0b7ffcdf8ce'],
-  ['supabase/migrations/20260522151608_fase_4_gate_ci_drift_check_sql_native.sql',
-    '15037e7fab2c2a0ffa1312c104b42374cd8aeccb4bdc37025bf891e922cb8fdc'],
-  ['supabase/migrations/20260522160000_align_wave_3_5_5_drift_allowlist.sql',
-    'fee80e90450256188574c38a1b33a0d9ae87e15754033c8dd9e01674a7fa1b6c'],
-  ['supabase/migrations/20260525113000_runtime_edge_function_base_url.sql',
-    'c3e35ed0f33f5cb5702bc5e4e8903be27e513f593f0965bd781e010a927dcfc1'],
-  ['supabase/migrations/20260601140100_fix_cron_connections_auto_test_hardcode_url.sql',
-    'fdfb537e7f8f5ebf2177eac8a51e7c98c3cafcf9b8e908ee79b5e133bd05b830'],
-  ['supabase/migrations/20260602020000_fix_hardcoded_api_key_cron.sql',
-    'c01f2bf94c386559749c9ca52ed265097ce9d1614d8119d77991c587fc19fd26'],
-]);
-
 // ALL_IN_ONE.sql é artefato REGENERADO a partir das migrations
 // (export-schema-snapshot.mjs → buildAllInOne) — o conteúdo muda a cada
-// regen, então não dá pra fixar hash. Fica isento por nome; a garantia
-// real está nas migrations-fonte pinadas acima.
+// regen, então fica isento por nome; a garantia real está na varredura das
+// migrations-fonte. Nenhuma migration aplicada guarda o ref em código
+// executável hoje (F6 de #2228 saneou todas), então não há allowlist:
+// qualquer ref novo em posição executável é flagrado.
 const LEGACY_GENERATED_SNAPSHOT = 'supabase/migrations-snapshot/ALL_IN_ONE.sql';
-
-function sha256(content) {
-  return createHash('sha256').update(content).digest('hex');
-}
 
 const migrationFiles = MIGRATIONS_DIRS.flatMap(walkSql);
 const migrationViolations = [];
@@ -113,10 +149,8 @@ const migrationViolations = [];
 for (const f of migrationFiles) {
   const rel = f.replace(ROOT + '/', '');
   if (rel === LEGACY_GENERATED_SNAPSHOT) continue;
-  const raw = readFileSync(f, 'utf-8');
-  if (LEGACY_APPLIED_MIGRATION_HASHES.get(rel) === sha256(raw)) continue;
-  const code = stripSqlComments(raw);
-  if (code.includes(FORBIDDEN_ID)) {
+  const code = stripSqlComments(readFileSync(f, 'utf-8'));
+  if (code.includes(FORBIDDEN_ID) || code.includes(FORBIDDEN_FRAGMENT)) {
     migrationViolations.push(rel);
   }
 }

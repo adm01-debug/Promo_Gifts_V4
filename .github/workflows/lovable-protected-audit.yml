@@ -79,12 +79,16 @@ jobs:
       - name: Abrir issue de auditoria
         if: steps.detect.outputs.no_hits == 'false'
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        env:
+          AUDIT_HITS: ${{ steps.detect.outputs.hits }}
+          HEAD_AUTHOR: ${{ github.event.head_commit.author.name }}
+          HEAD_MESSAGE: ${{ github.event.head_commit.message }}
         with:
           script: |
-            const hits = `${{ steps.detect.outputs.hits }}`;
+            const hits = process.env.AUDIT_HITS;
             const sha = context.sha.slice(0, 8);
-            const author = `${{ github.event.head_commit.author.name }}`;
-            const msg = `${{ github.event.head_commit.message }}`.split('\n')[0];
+            const author = process.env.HEAD_AUTHOR;
+            const msg = (process.env.HEAD_MESSAGE || '').split('\n')[0];
 
             await github.rest.issues.create({
               owner: context.repo.owner,
