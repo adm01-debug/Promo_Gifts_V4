@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-19T20:54:48.256Z",
+  "generatedAt": "2026-10-19T20:55:16.512Z",
   "description": "Baseline de double-casts `as unknown as` em src/ (excluindo testes). Falha em qualquer AUMENTO. Meta: reduzir continuamente.",
   "productionAsUnknownCount": 250,
   "counts": {
