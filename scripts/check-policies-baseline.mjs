@@ -141,7 +141,7 @@ const RECONCILED_MANIFEST = path.join(
   'docs/MANIFESTO_MIGRATIONS_RECONCILIADAS_2026-09-11.json',
 );
 const POLICY_STMT_RE =
-  /(create|drop)\s+policy\s+(?:if\s+(?:not\s+)?exists\s+)?["']?([\w\s-]+?)["']?\s+on\s+(?:(\w+)\.)?(\w+)/gi;
+  /(create|drop)\s+policy\s+(?:if\s+(?:not\s+)?exists\s+)?["']?([\w\s-]+?)["']?\s+on\s+(?:["']?(\w+)["']?\.)?["']?(\w+)["']?/gi;
 
 /**
  * Versão remota (ledger) de um arquivo de migration: prefixo
@@ -204,10 +204,39 @@ function plannedPolicyKeys(appliedVersions) {
     }
     const sql = readFileSync(path.join(MIGRATIONS_DIR, file), 'utf8');
     for (const stmt of sql.matchAll(POLICY_STMT_RE)) {
+      const op = stmt[1].toLowerCase();
       const name = stmt[2].trim();
       const schema = stmt[3] ?? 'public';
       const table = stmt[4];
-      if (schema === 'public') planned.add(`public.${table}.${name}`);
+      if (schema === 'public') {
+        const baseKey = `public.${table}.${name}`;
+        if (op === 'create') {
+          // E048: extrair FOR cmd e USING (qual) do contexto do statement.
+          const afterMatch = sql.slice(stmt.index + stmt[0].length);
+          const nextSemi = afterMatch.indexOf(';');
+          const stmtRest = nextSemi >= 0 ? afterMatch.slice(0, nextSemi + 1) : afterMatch;
+          const cmdMatch = stmtRest.match(/\bfor\s+(select|insert|update|delete|all)\b/i);
+          // Extrai USING (...) — captura até parêntese balanceado
+          const usingMatch = stmtRest.match(/\busing\s*\(([^)]*(?:\([^)]*\)[^)]*)*)\)/i);
+          const qualNorm = usingMatch ? usingMatch[1].trim() : null;
+          if (cmdMatch) {
+            const cmdKey = baseKey + '|' + cmdMatch[1].toUpperCase();
+            if (qualNorm !== null) {
+              // E048: quando qual foi extraído da migration, só aceita match exato (cmd+qual).
+              // Não adicionar base|cmd isolado para não tolerar qual diferente.
+              planned.add(cmdKey + '|' + qualNorm);
+            } else {
+              // Migration sem USING clause: tolerância por cmd apenas.
+              planned.add(cmdKey);
+            }
+          } else {
+            planned.add(baseKey); // sem FOR explícito: chave legada (backward compat)
+          }
+        } else {
+          // DROP POLICY: não tem cmd — chave base para tolerar remoção
+          planned.add(baseKey);
+        }
+      }
     }
   }
   return planned;
@@ -240,6 +269,31 @@ function describePolicy(p) {
   return `${policyKey(p)} [${p.cmd}|${p.permissive}|roles=${p.roles}]`;
 }
 
+// E043: policy nova com roles={public}/anon + PERMISSIVE + USING(true) ou WITH_CHECK(true)
+// é sempre recusada. As policies existentes no baseline (legado) passam; só novas são bloqueadas.
+// W1 fix: INSERT policies têm qual='' e with_check='(true)' — checar ambos.
+function isPublicOpenPolicy(p) {
+  const r = p.roles.toLowerCase();
+  const hasPublicOrAnon = r === '{public}' || r === '{}' || r.includes('anon');
+  const isPermissive = p.permissive.toUpperCase() === 'PERMISSIVE';
+  const hasOpenQual = p.qual === '(true)' || p.qual === 'true'
+    || p.with_check === '(true)' || p.with_check === 'true';
+  return hasPublicOrAnon && isPermissive && hasOpenQual;
+}
+
+// E048: chave de tolerância que inclui cmd quando disponível nas migrations.
+// E048: casar cmd + qual + chave; fallback para backward compat.
+// Ordem: mais específico (cmd+qual) → cmd apenas → sem cmd (legado).
+function isAddedPlanned(p, plannedKeys) {
+  const base = policyKey(p);
+  const qualNorm = (p.qual ?? '').replace(/^\(|\)$/g, '').trim();
+  return (
+    plannedKeys.has(base + '|' + p.cmd.toUpperCase() + '|' + qualNorm) ||
+    plannedKeys.has(base + '|' + p.cmd.toUpperCase()) ||
+    plannedKeys.has(base)
+  );
+}
+
 async function main() {
   let actual;
   let source = 'from-file';
@@ -249,12 +303,31 @@ async function main() {
     const raw = JSON.parse(readFileSync(p, 'utf8'));
     const rows = Array.isArray(raw) ? raw : raw.policies || [];
     actual = rows.map(normalizeRow);
-    // Sem ledger nesse modo de teste: trata as migrations do repo como
-    // pendentes (mesma tolerância do caminho live).
-    plannedKeys = plannedPolicyKeys(new Set());
+    // B3 fix: passar new Set() causava maxApplied=null, tolerando TODAS as
+    // migrations como pendentes — falso negativo. Em modo --from-file, não há
+    // ledger real; usamos todas as versões de migration do repo como "aplicadas"
+    // (maxApplied = versão mais recente). Assim nenhuma migration é "pendente"
+    // neste modo — tolerância desativada, comportamento estrito.
+    const allVersions = new Set();
+    try {
+      for (const f of readdirSync(MIGRATIONS_DIR)) {
+        const m = /^(\d{8,19})_/.exec(f);
+        if (m) allVersions.add(m[1]);
+      }
+    } catch (_) { /* pasta ausente — allVersions vazio, equivale ao comportamento anterior */ }
+    plannedKeys = plannedPolicyKeys(allVersions);
   } else {
     const live = await fetchLive();
     if (live.kind !== 'live') {
+      // Com requireLive=false a consulta live é best-effort: credenciais
+      // ausentes OU falha transitória da Management API (network/http —
+      // rate-limit, 5xx) não podem falhar o gate; a razão fica em details.
+      // Respostas que chegaram mas vieram quebradas (invalid-json/response)
+      // seguem inconclusive — indicam contrato de API alterado.
+      // E56: 429/5xx → INCONCLUSIVE após retries (supabase-read-only-query.mjs
+      // retenta 3×); só missing-config e network-error são soft (sem credenciais
+      // ou rede inacessível). 4xx (401/403/404) sempre INCONCLUSIVE — esconder
+      // credencial errada aprovaria drift real sem testar nada.
       const isSoft =
         live.kind === 'missing-config' ||
         live.kind === 'network-error';
@@ -288,7 +361,7 @@ async function main() {
       pending_seed: false,
       generated_at: new Date().toISOString(),
       project_ref: process.env.SUPABASE_PROJECT_REF ?? null,
-      schemas_checked: APP_SCHEMAS,
+      schemas_checked: APP_SCHEMAS,  // E044: schemas cobertos neste snapshot
       sha256: hashPolicies(actual),
       policies: actual,
     };
@@ -301,6 +374,10 @@ async function main() {
 
   const { doc, policies: baseline } = loadBaseline();
 
+  // Bootstrap: baseline commitada como `pending_seed` (sem snapshot real
+  // ainda, porque a seed exige credenciais do projeto canônico). O gate fica
+  // dormente — static-pass com aviso — até o seed inicial via
+  // `--update-baseline` (workflow policies-baseline, dispatch com seed=true).
   if (doc.pending_seed === true) {
     return concludeCheck({
       check: 'policies-baseline',
@@ -310,6 +387,9 @@ async function main() {
     });
   }
 
+  // Integridade do arquivo assinado: hash gravado deve bater com as linhas
+  // gravadas — se alguém editar a baseline sem regerar o hash, o drift
+  // aparente vira suspeita de adulteração manual.
   const recordedHash = doc.sha256;
   const recomputedHash = hashPolicies(baseline);
   if (typeof recordedHash !== 'string' || recordedHash.length === 0) {
@@ -332,16 +412,37 @@ async function main() {
   const baselineByKey = new Map(baseline.map((p) => [policyKey(p), p]));
   const actualByKey = new Map(actual.map((p) => [policyKey(p), p]));
 
+  // Idem para adições: migration pendente DROPa a policy — o live ainda a
+  // tem e a baseline já não, então ela aparece como `added` até o db-apply.
   const addedAll = actual.filter((p) => !baselineByKey.has(policyKey(p)));
-  const added = addedAll.filter((p) => !plannedKeys.has(policyKey(p)));
-  const plannedAdded = addedAll.filter((p) => plannedKeys.has(policyKey(p)));
+  // E043: policies novas públicas/abertas são recusadas — EXCETO as que têm DROP
+  // pendente em plannedKeys (policy pré-existente sendo fase-out, não uma nova
+  // adição), para não bloquear o PR que as remove (Codex P1 2026-10-18).
+  const e043Violations = addedAll.filter(
+    (p) => isPublicOpenPolicy(p) && !isAddedPlanned(p, plannedKeys),
+  );
+  const addedNonE043 = addedAll.filter((p) => !isPublicOpenPolicy(p));
+  // E048: verifica cmd além do nome na chave de tolerância (fallback para chave legada sem cmd).
+  const added = addedNonE043.filter((p) => !isAddedPlanned(p, plannedKeys));
+  const plannedAdded = addedNonE043.filter((p) => isAddedPlanned(p, plannedKeys));
+  // Policies ausentes no live que uma migration pendente cria/remove —
+  // mudança planejada (PR com migration + baseline atualizada), não drift.
   const removedAll = baseline.filter((p) => !actualByKey.has(policyKey(p)));
-  const removed = removedAll.filter((p) => !plannedKeys.has(policyKey(p)));
-  const plannedRemoved = removedAll.filter((p) => plannedKeys.has(policyKey(p)));
+  // E048: além da chave base, verifica se qualquer planned key cmd-qualificada
+  // começa com o mesmo prefixo (migration criando a policy ainda não aplicada).
+  const isRemovedPlanned = (p) => {
+    const base = policyKey(p);
+    if (plannedKeys.has(base)) return true;
+    for (const k of plannedKeys) { if (k.startsWith(base + '|')) return true; }
+    return false;
+  };
+  const removed = removedAll.filter((p) => !isRemovedPlanned(p));
+  const plannedRemoved = removedAll.filter((p) => isRemovedPlanned(p));
   const changedAll = actual.filter((p) => {
     const base = baselineByKey.get(policyKey(p));
     return base && hashPolicies([base]) !== hashPolicies([p]);
   });
+  // Idem para alterações: migration pendente recria a policy (drop+create).
   const changed = changedAll.filter((p) => !plannedKeys.has(policyKey(p)));
   const plannedChanged = changedAll.filter((p) => plannedKeys.has(policyKey(p)));
 
@@ -355,21 +456,14 @@ async function main() {
     );
   }
 
-  function isForbiddenNewPolicy(p) {
-    const roles = (p.roles ?? '').replace(/[{}]/g, '');
-    const roleList = roles.split(',').map((r) => r.trim());
-    if (roleList.includes('public')) return true;
-    if (roleList.includes('anon') && (p.qual ?? '').trim() === 'true') return true;
-    return false;
-  }
-  const forbiddenNew = added.filter(isForbiddenNewPolicy);
-
   const problems = [];
-  if (forbiddenNew.length) {
+  // E043: policies novas com acesso público/anon aberto — recusadas sempre,
+  // mesmo se estiverem em plannedKeys (migration não pode autorizar policy aberta).
+  if (e043Violations.length) {
     problems.push(
-      `🚨 E043: ${forbiddenNew.length} policy(ies) NOVA(S) com padrão proibido (roles=public ou anon+USING(true)):\n` +
-        forbiddenNew.map((p) => `   - ${describePolicy(p)}`).join('\n') +
-        '\n   Reescreva usando TO authenticated / TO service_role antes de commitar o baseline.',
+      `🚨 ${e043Violations.length} policy(ies) NOVA(S) rejeitada(s) — roles={public}/anon + USING(true) (E043):\n` +
+        e043Violations.map((p) => `   - ${describePolicy(p)}`).join('\n') +
+        '\n   Policies públicas/abertas não são aceitas. Use migration revisada e regenere o baseline após aprovação do PO.',
     );
   }
   if (added.length) {
@@ -402,9 +496,10 @@ async function main() {
     return concludeCheck({
       check: 'policies-baseline',
       status: CHECK_RESULT_STATUS.FAILED,
-      summary: `drift de policies: +${added.length} / -${removed.length} / ~${changed.length}`,
+      summary: `drift de policies: e043=${e043Violations.length} +${added.length} / -${removed.length} / ~${changed.length}`,
       details: {
         source,
+        e043: e043Violations.map(policyKey),
         added: added.map(policyKey),
         removed: removed.map(policyKey),
         changed: changed.map(policyKey),

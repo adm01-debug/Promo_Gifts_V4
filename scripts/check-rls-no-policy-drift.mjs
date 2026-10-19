@@ -45,8 +45,10 @@ const argv = process.argv.slice(2);
 const fromFileArg = argv.find((a) => a.startsWith('--from-file='));
 const UPDATE = argv.includes('--update-allowlist');
 const REQUIRE_LIVE = shouldRequireLive(argv);
+// --gate: valida integridade da allowlist (sem live DB)
 const GATE_MODE = argv.includes('--gate');
 
+// E045: lê schemas de aplicação do SSOT (schemas.txt — mesmo do check-policies-baseline)
 function loadAppSchemas() {
   try {
     const raw = readFileSync(SCHEMAS_TXT, 'utf8');
@@ -105,6 +107,10 @@ function loadAllowlist() {
   return { doc, set: new Set(doc.tables.map((e) => e.table)) };
 }
 
+/**
+ * Valida integridade da allowlist sem precisar de live DB.
+ * Retorna array de problemas encontrados (vazio = OK).
+ */
 function validateAllowlistIntegrity(doc) {
   const problems = [];
   for (const entry of doc.tables) {
@@ -124,6 +130,7 @@ function validateAllowlistIntegrity(doc) {
 async function main() {
   const { doc, set: allowed } = loadAllowlist();
 
+  // ── Gate mode (sem live DB): valida só a integridade da allowlist ──────────
   if (GATE_MODE && !fromFileArg) {
     const integrityProblems = validateAllowlistIntegrity(doc);
     if (integrityProblems.length) {
@@ -143,6 +150,7 @@ async function main() {
     });
   }
 
+  // ── Live ou --from-file ────────────────────────────────────────────────────
   let actual;
   if (fromFileArg) {
     const p = fromFileArg.slice('--from-file='.length);
@@ -201,6 +209,7 @@ async function main() {
     process.exit(0);
   }
 
+  // Integridade da allowlist (reasons pendentes)
   const integrityProblems = validateAllowlistIntegrity(doc);
 
   const problems = [];

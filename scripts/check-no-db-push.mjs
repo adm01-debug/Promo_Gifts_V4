@@ -89,6 +89,42 @@ const ALLOWLIST = [
   'docs/AUDITORIA_EXAUSTIVA_E_PLANO_100_ETAPAS_2026-08-26.md',
   'docs/motor-v2-test-report.md',
   'docs/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.md',
+
+  // ─── Arquivos raiz que citam o comando como PROIBIDO (guias de governança) ──
+  'CLAUDE.md',     // instruções para Claude Code — proíbe explicitamente supabase db push
+  'AGENTS.md',     // instruções multi-agente — reitera a proibição
+
+  // ─── Workflow que documenta o ÚNICO caminho autorizado (substitui db push) ──
+  '.github/workflows/db-apply-migration.yml',  // menciona o comando como anti-padrão (C19)
+
+  // ─── Scripts que verificam a proibição ──
+  'scripts/check-workflow-contracts.mjs',  // valida C19 (ban de supabase db push em workflows)
+
+  // ─── Docs de dívida, disaster recovery e políticas (citam o comando) ──
+  'docs/DIVIDA_CRONICA.md',
+  'docs/DISASTER_RECOVERY.md',
+  'docs/CONTRADIÇÕES_DOCUMENTADAS.md',
+  'docs/RELEASE.md',
+  'docs/db/POLITICA_DDL.md',     // política DDL — proíbe o caminho antigo
+  'docs/ci/PADRAO_WORKFLOW.md',  // R18 — supabase db push proibido em workflows
+
+  // ─── Diretórios de planos e arquivo (apenas .md, documentam a proibição) ──
+  'docs/plans/',   // todos os planos de engenharia referenciam a proibição
+  'docs/arquivo/', // histórico de sessões e decisões — menciona o anti-padrão
+  'docs/auditoria-planejado-nao-executado-2026-10-11/',  // auditoria 2026-10-11
+
+  // ─── Migrations .sql (set 2026-09-17 — citam o comando em comentário explicativo) ──
+  'supabase/migrations/20260917060000_e18_revoke_authenticated_mcp_kv_get.sql',
+  'supabase/migrations/20260917061500_e18_revoke_authenticated_authz_gaps.sql',
+  'supabase/migrations/20260917070000_e38_unschedule_dead_cron_jobs.sql',
+  'supabase/migrations/20260917080000_e35_fix_reposicao_backfill_perf.sql',
+  'supabase/migrations/20260917090000_e47_fix_schema_drift_cron_split.sql',
+  'supabase/migrations/20260917100000_e37_split_genuine_multistatement_cron.sql',
+  'supabase/migrations/20260917110000_e45_fix_products_comment.sql',
+  'supabase/migrations/20260920120000_fix_handle_new_user_missing_profiles_user_id.sql',
+  // Migrations adicionais com referência histórica ao comando proibido:
+  'supabase/migrations/20260511235900_mirror_categories_bitrix_id_out_of_band.sql',
+  'supabase/migrations/20260623120001_harden_get_favorite_list_counts_revoke_anon.sql',
 ];
 
 function isAllowed(path) {
@@ -106,6 +142,7 @@ const PATTERN = 'supabase[[:space:]]+db[[:space:]]+push';
 const EXCLUDE_DIRS = [
   'node_modules', '.git', 'dist', 'build', 'coverage',
   'playwright-report', 'e2e-artifacts', '.next', '.cache',
+  '.claude',  // agent worktrees e configs — docs temporários, não código executável
 ];
 
 let raw = '';

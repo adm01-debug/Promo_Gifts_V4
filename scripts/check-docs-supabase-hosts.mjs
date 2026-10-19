@@ -50,6 +50,7 @@ const HISTORICAL_PATH_PATTERNS = [
 const EXCLUDE_DIRS = new Set([
   'node_modules', '.git', 'dist', 'build', '.next', 'coverage',
   '.turbo', '.cache', 'playwright-report', 'test-results',
+  'worktrees', // .claude/worktrees/ — sessões de agente históricas, não docs operacionais
 ]);
 
 const LEGACY_MARKERS = [

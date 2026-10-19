@@ -70,6 +70,41 @@ export function appendReceiptRow({ logContent, heading = SECTION_HEADING, row })
   return newLines.join('\n');
 }
 
+/**
+ * E75: upsert seguro — se já existe uma linha "pendente" para a versão,
+ * substitui ela pela nova linha "aplicada" em vez de criar um duplicado.
+ *
+ * Regra: detecta linha com `\`<version>\`` E a palavra "pendente" (case-
+ * insensitive) na mesma linha. Se encontrada dentro da seção heading, troca.
+ * Caso contrário, appenda normalmente.
+ *
+ * Retorna { content: string, replaced: boolean }.
+ */
+export function upsertReceiptRow({ logContent, version, heading = SECTION_HEADING, row }) {
+  const lines = logContent.split('\n');
+  const headingIdx = lines.findIndex((l) => l.trim() === heading);
+  if (headingIdx === -1) {
+    throw new Error(`seção "${heading}" não encontrada em MIGRATIONS_SYNC_LOG.md.`);
+  }
+
+  const versionTag = `\`${version}\``;
+  let sectionEnd = lines.length;
+  for (let i = headingIdx + 1; i < lines.length; i += 1) {
+    if (lines[i].startsWith('## ')) { sectionEnd = i; break; }
+  }
+
+  for (let i = headingIdx + 1; i < sectionEnd; i += 1) {
+    const l = lines[i];
+    if (l.includes(versionTag) && /pendente/i.test(l)) {
+      const newLines = [...lines];
+      newLines[i] = row;
+      return { content: newLines.join('\n'), replaced: true };
+    }
+  }
+
+  return { content: appendReceiptRow({ logContent, heading, row }), replaced: false };
+}
+
 export function parseCliOptions(argv) {
   const opts = { logPath: DEFAULT_LOG_PATH };
   for (const arg of argv) {
@@ -106,8 +141,12 @@ export function runCli(argv = process.argv.slice(2)) {
   const row = formatReceiptRow(opts);
 
   let updated;
+  let replaced = false;
   try {
-    updated = appendReceiptRow({ logContent, row });
+    // E75: upsert — substitui linha "pendente" existente em vez de duplicar
+    const result = upsertReceiptRow({ logContent, version: opts.version, row });
+    updated = result.content;
+    replaced = result.replaced;
   } catch (error) {
     process.stderr.write(`[append-migration-receipt] erro: ${error.message}\n`);
     process.exit(1);
@@ -115,7 +154,8 @@ export function runCli(argv = process.argv.slice(2)) {
   }
 
   writeFileSync(logPath, updated, 'utf8');
-  process.stdout.write(`[append-migration-receipt] recibo de ${opts.version} adicionado a ${logPath}.\n`);
+  const action = replaced ? 'atualizado (pendente→aplicada)' : 'adicionado';
+  process.stdout.write(`[append-migration-receipt] recibo de ${opts.version} ${action} em ${logPath}.\n`);
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
