@@ -34,6 +34,8 @@ const ALLOWLIST = new Set([
   'secrets.BRANCH_PROTECTION_READ_TOKEN',
   // Allowlistado em check-workflow-contracts (Gate 4 opcional)
   'secrets.LHCI_GITHUB_APP_TOKEN',
+  // Padrão didático R5 em _template.yml — não é segredo real
+  'secrets.EXAMPLE_API_KEY',
 ]);
 
 const isScanEdge = process.argv.includes('--scan-edge');
