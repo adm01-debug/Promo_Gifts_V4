@@ -110,6 +110,8 @@ jobs:
     env:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
       SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
+      # E68: TODO(E31) — migrar para token da App (CI_APP_ID/CI_APP_PRIVATE_KEY)
+      # para que a PR criada aqui dispare o Gate Final - Deploy Ready.
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Verify required secrets

@@ -1,0 +1,85 @@
+name: PR Size Guard (E185)
+
+# E185 (P200): PR com >50 arquivos exige label large-pr-approved + razão no corpo.
+# Workflow crítico nunca viaja com migration ou plano de etapas no mesmo PR.
+
+on:
+  pull_request:
+    # E185: sem paths filter — gate deve rodar em todo PR para ser required check efetivo
+    branches: [main]
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: pr-size-guard-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  pr-size-check:
+    name: PR Size Check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Check PR size and label
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          # Contar arquivos modificados no PR
+          FILES=$(curl -sS \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/$REPO/pulls/$PR_NUMBER/files?per_page=100" | \
+            jq 'length')
+
+          echo "Arquivos modificados neste PR: $FILES"
+
+          if [[ "$FILES" -le 50 ]]; then
+            echo "✅ PR dentro do limite (≤50 arquivos). Nenhuma validação adicional."
+            exit 0
+          fi
+
+          echo "⚠️  PR grande: $FILES arquivos (limite: 50)"
+
+          # Verificar label large-pr-approved
+          LABELS=$(curl -sS \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/$REPO/pulls/$PR_NUMBER" | \
+            jq -r '.labels[].name' 2>/dev/null || echo "")
+
+          if ! echo "$LABELS" | grep -qxF "large-pr-approved"; then
+            echo "::error::PR com $FILES arquivos (>50) exige o label 'large-pr-approved'."
+            echo "::error::Adicione o label e inclua a razão no corpo do PR (E185/P200)."
+            echo "::error::Se este PR mistura workflow crítico com migration ou plano, separe em PRs distintos."
+            exit 1
+          fi
+
+          # Verificar se o corpo do PR contém uma razão
+          PR_BODY=$(curl -sS \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/$REPO/pulls/$PR_NUMBER" | \
+            jq -r '.body // ""')
+
+          # Corpo mínimo: >50 chars não-espaço (razão substantiva)
+          BODY_TRIMMED=$(echo -n "$PR_BODY" | tr -d '[:space:]')
+          if [[ ${#BODY_TRIMMED} -lt 50 ]]; then
+            echo "::error::PR com label 'large-pr-approved' exige razão substantiva no corpo (≥50 chars)."
+            exit 1
+          fi
+
+          echo "✅ PR grande aprovado: label 'large-pr-approved' + razão no corpo presentes."

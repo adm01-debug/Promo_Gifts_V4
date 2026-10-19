@@ -182,55 +182,9 @@ jobs:
 
   e2e-smoke:
     name: "Gate 5 — E2E Smoke (Playwright)"
-    runs-on: ubuntu-24.04
-    timeout-minutes: 30
     needs: [unit-tests-freight, integration-tests-freight]
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-        with:
-          persist-credentials: false  # E32
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: '.nvmrc'
-          cache: npm
-      - name: Cache node_modules
-        id: cache-nm
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-nm-${{ hashFiles('package-lock.json') }}
-      - name: Install dependencies
-        if: steps.cache-nm.outputs.cache-hit != 'true'
-        run: npm ci
-      - name: Cache Playwright browsers
-        id: cache-pw
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-pw-${{ hashFiles('package-lock.json') }}
-      - name: Install Playwright browsers
-        if: steps.cache-pw.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps chromium
-      - name: Run freight E2E (skip when no credentials)
-        run: |
-          npx playwright test \
-            e2e/flows/freight-quest-complete-flow.spec.ts \
-            --project=chromium-public \
-            --reporter=github,html
-        env:
-          CI: true
-          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-          CI_SKIP_FREIGHT_E2E: ${{ vars.CI_SKIP_FREIGHT_E2E || (secrets.VITE_SUPABASE_URL == '' && '1' || '0') }}
-      - name: Upload Playwright report
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        if: always()
-        with:
-          name: playwright-freight-report
-          path: |
-            playwright-report/
-            e2e-artifacts/
-          retention-days: 14
+    uses: ./.github/workflows/_freight-e2e.yml
+    secrets: inherit
 
   coverage-gate:
     name: "Gate 6 — Coverage Threshold"

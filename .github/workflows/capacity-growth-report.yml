@@ -27,10 +27,8 @@ name: capacity-growth-report
 # =============================================================================
 
 on:
-  # schedule:
-  #   - cron: '16 9 * * 1' # semanal, segunda 09:16 UTC (06:16 BRT)
-  # E31: schedule desabilitado — aguardando migration [DBA-E30] (ops.table_size_history).
-  # Reativar após aplicação via .github/workflows/db-apply-migration.yml.
+  schedule:
+    - cron: '16 9 * * 1' # semanal, segunda 09:16 UTC (E177: reativado — workflow degrada graciosamente sem a migration)
   workflow_dispatch:
 
 permissions:
