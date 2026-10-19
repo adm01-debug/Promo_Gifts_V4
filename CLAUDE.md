@@ -344,6 +344,27 @@ ao terminar. Ver `docs/plans/PLANO_ENGENHARIA_SENIOR_50_ETAPAS_2026-09-17.md`
 
 ---
 
+## REGRA #10 — MERGE CROSS-AGENTE EXIGE PR (E189)
+
+Seis agentes escrevem neste repositório (Claude, Codex, Devin, Lovable, github-actions, cline).
+Merge direto entre branches de agentes diferentes (ex: `claude/*` → `codex/*`) sem PR foi
+observado em 2026-08-31 (`9ffb69651`, `bd59a447d`) e representa risco de conflito sem revisão.
+
+### NUNCA faça:
+- Mergear diretamente uma branch `claude/*` em uma branch `codex/*` (ou qualquer combinação
+  de prefixos de agentes diferentes) sem abrir PR
+- Resolver conflitos entre agents sem registrar no `docs/coordenacao/conflitos-semanticos.md`
+
+### SEMPRE faça:
+- Abrir PR quando precisar incorporar trabalho de outro agente
+- Usar o formato `merge(pr-NNN): resolve conflitos — [lista de arquivos]` ao resolver conflitos (REGRA #3)
+- Registrar toda resolução não trivial no ledger `docs/coordenacao/conflitos-semanticos.md`
+
+**Sentinel automatizado:** `scripts/sentinel-check.sh` recusa merge commit cujo subject é
+`Merge branch 'X' into 'Y'` onde X e Y têm prefixos de agentes diferentes (Regra 8 do sentinel, E189).
+
+---
+
 ## CI — ESTRUTURA DE GATES E PADRÃO E12
 
 > Atualizado 2026-10-02 (E100 — PLANO_WORKFLOWS_CI_100_ETAPAS_2026-09-26).

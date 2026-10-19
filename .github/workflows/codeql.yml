@@ -8,6 +8,7 @@ on:
     paths:
       - 'src/**'
       - 'supabase/functions/**'
+      - '.github/workflows/codeql.yml'  # R12: self-reference
   schedule:
     - cron: '33 9 * * 1'  # segunda 09:33 UTC (E89)
 

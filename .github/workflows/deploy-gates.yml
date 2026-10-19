@@ -287,6 +287,11 @@ jobs:
         run: node scripts/check-secrets-inventory.mjs --gate
       - name: Gate 1.17 — CODEOWNERS coverage de gate files (bloqueante)
         run: node scripts/check-codeowners-coverage.mjs --gate
+      - name: Gate 1.18 — Ledger de conflitos semânticos (E188)
+        env:
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+          GITHUB_HEAD_REF: ${{ github.head_ref }}
+        run: node scripts/check-conflict-ledger.mjs --gate
 
   security-gates:
     name: Gate 1 — Security & Policy Gates

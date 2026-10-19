@@ -441,6 +441,24 @@ Ver R4. `node-version: '22'` é proibido. Usar sempre `node-version-file: .nvmrc
 
 ---
 
+### R24 — Mudança em >10 workflows no mesmo commit exige execução no mesmo PR (E190 — C27)
+
+Padrão "editar N workflows → fix imediato" repetiu em 3 ondas na janela P200:
+- `202f76148` (120 workflows) → `7e74a8734` (fix em 2h)
+- `6b880a059` (83 workflows) → `a79944b53` (fix em 28h)
+- `64a75418c` (101 workflows) → 5 commits de correção em 28h
+
+Quando mais de 10 workflows mudam no mesmo commit, a probabilidade de regressão aumenta.
+A ordem correta é: deleção/consolidação **antes** de hardening no mesmo arquivo.
+
+**Regra:** commit que toca mais de 10 arquivos em `.github/workflows/` deve ter pelo menos um
+workflow alterado executado no mesmo PR (`workflow_dispatch` ou `push`-triggered no range).
+
+**Check CI:** C27 em `scripts/check-workflow-contracts.mjs` (aviso, não bloqueante).
+O bloqueio virá quando o padrão for estabilizado (meta: 0 ocorrências de "bulk-edit → fix" por mês).
+
+---
+
 ### R23 — Workflows com `pull_request` e `push` em `main` devem declarar `paths-ignore` para docs (E14)
 
 Workflows que rodam em todo PR **e** em push em `main` devem excluir mudanças docs-only
@@ -493,7 +511,10 @@ Tabela de referência rápida. Todos verificados por `scripts/check-workflow-con
 | C23 | R22 | `actions/setup-node` usa `node-version-file:`, não `node-version:` literal | sim |
 | C24 | — | `npm install` em steps `run:` proibido; usar `npm ci` (ou ação composta) | sim |
 
+| C27 | R24 | Mudança em >10 workflows no mesmo commit exige execução no mesmo PR (E190) | aviso |
+
 **Nota:** C25 (`|| true` só com `# ok:`) e C26 (`npx <pkg>` fora do lockfile) verificados pelo script (E92/E96).
+C27 verificado por `scripts/check-workflow-contracts.mjs` (aviso, não bloqueante).
 
 ---
 

@@ -584,6 +584,24 @@ export function checkC25E2ECredsOnlyInAuthedJobs({ file, text, doc }) {
 // Filesystem helpers
 // ---------------------------------------------------------------------------
 
+/**
+ * C27 (E190 — R24): avisa quando mais de 10 workflows foram modificados
+ * no mesmo commit (sinal de "bulk-edit sem execução prévia no PR").
+ * Não bloqueante: exit 0 mesmo com aviso (histórico mostra que bulk-edit
+ * sem execução → regressão em 3 casos consecutivos na janela P200).
+ */
+export function checkC27BulkWorkflowEdit(workflows) {
+  const THRESHOLD = 10;
+  if (workflows.length > THRESHOLD) {
+    return [
+      `[C27-warn] ${workflows.length} workflows carregados — se este PR toca >10 workflows de uma vez, ` +
+      `executar ao menos um no mesmo PR antes do merge (R24/E190). ` +
+      `Isso é aviso (não bloqueante); o limite virá quando o padrão bulk-edit→fix parar de ocorrer.`,
+    ];
+  }
+  return [];
+}
+
 export function readWorkflowFiles(rootDir) {
   const yaml = _require('js-yaml');
   const dir = join(rootDir, '.github', 'workflows');
@@ -659,6 +677,8 @@ export function runChecks(rootDir = ROOT) {
     );
   }
   all.push(...checkC9DuplicateJobNames(workflows));
+  // C27 (E190): mudança em >10 workflows no mesmo commit → aviso (não bloqueante)
+  all.push(...checkC27BulkWorkflowEdit(workflows));
 
   return {
     violations: all,
@@ -689,6 +709,7 @@ export function runChecks(rootDir = ROOT) {
       C24: all.filter((v) => v.includes('npm install in run')).length,
       C25: all.filter((v) => v.includes('E2E_USER_*')).length,
       C26: all.filter((v) => v.includes('npx') && v.includes('node_modules/.bin')).length,
+      C27: all.filter((v) => v.includes('[C27-warn]')).length,
     },
     workflowCount: workflows.length,
   };
@@ -762,7 +783,9 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
     console.log('Run with --gate to enforce.');
   }
 
-  if (gateMode && fresh.length > 0) {
+  // Avisos [C27-warn] são informativos — não bloqueiam em modo gate (R24/E190)
+  const blockingFresh = fresh.filter((v) => !v.startsWith('[C27-warn]'));
+  if (gateMode && blockingFresh.length > 0) {
     console.error('\nGATE FAIL: fresh violations found — fix or add to allowlist with justification.');
     process.exit(1);
   }
