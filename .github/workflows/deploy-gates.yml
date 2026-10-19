@@ -624,6 +624,27 @@ jobs:
     uses: ./.github/workflows/db-schema-drift-check.yml
     secrets: inherit
 
+  secret-scan:
+    name: Gate E23 - Secret Scan (gitleaks)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    needs: [ssot-gate]
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false  # E32
+          fetch-depth: 0
+      - name: Run gitleaks
+        run: |
+          # E172: bloqueante — falha se encontrar segredo
+          if [ -f .gitleaks.toml ]; then
+            npx --yes gitleaks detect --source . --config .gitleaks.toml --exit-code 1 --no-git
+          else
+            npx --yes gitleaks detect --source . --exit-code 1 --no-git
+          fi
+
   deploy-ready:
     name: Gate Final - Deploy Ready
     if: always()
@@ -640,6 +661,7 @@ jobs:
       - database-integrity
       - secrets-check
       - e2e-smoke
+      - secret-scan
       # lighthouse removido de needs (Gate 4 optional, continue-on-error:true — E03)
       - seo-sanity
       - restore-cart-rpc-gate
@@ -662,6 +684,7 @@ jobs:
           R_SEO:           ${{ needs.seo-sanity.result }}
           R_RESTORE:       ${{ needs.restore-cart-rpc-gate.result }}
           R_BUILD:         ${{ needs.build.result }}
+          R_SECRET_SCAN:   ${{ needs.secret-scan.result }}
           R_SCHEMA_DRIFT:  ${{ needs.schema-drift-gate.result }}
           IS_DEPENDABOT: ${{ github.actor == 'dependabot[bot]' }}
           # IS_FORK: true quando PR de fork externo (sem acesso a secrets live — E59)
@@ -681,6 +704,7 @@ jobs:
           [[ "$R_SEO"       == "success" ]] || fail_gate "Gate 5 SEO Sanity falhou (${R_SEO})"
           [[ "$R_BUILD"        == "success" ]] || fail_gate "Gate 6 Build falhou (${R_BUILD})"
           [[ "$R_SECRETS"      == "success" ]] || fail_gate "Gate E23 Secrets Check falhou (${R_SECRETS})"
+          [[ "$R_SECRET_SCAN"  == "success" ]] || fail_gate "Gate E23 Secret Scan (gitleaks) falhou (${R_SECRET_SCAN})"
           # E040: schema-drift-gate é bloqueante quando mudanças de schema foram detectadas; skip = sem mudança
           [[ "$R_SCHEMA_DRIFT" == "success" || "$R_SCHEMA_DRIFT" == "skipped" ]] || \
             fail_gate "Gate E40 Schema Drift falhou (${R_SCHEMA_DRIFT})"

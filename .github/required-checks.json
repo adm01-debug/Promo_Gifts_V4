@@ -15,6 +15,16 @@
           "name": "Compare GitHub × Canonical",
           "workflow": ".github/workflows/edge-functions-drift-check.yml",
           "rationale": "E74: verifica que o código das edge functions no GitHub bate com o deployado no projeto canônico doufsxqlfjyuvxuezpln. Previne divergência silenciosa entre git e produção (casos reais: kit-ai-builder 2026-09-23, magazine-reader-state-read 2026-09-24). Paths filter removido em PR #2233 para não bloquear PRs que não tocam supabase/functions/**."
+        },
+        {
+          "name": "Analyze (javascript-typescript)",
+          "workflow": ".github/workflows/codeql.yml",
+          "rationale": "E171: SAST bloqueante em PR — CodeQL reintroduzido em pull_request com paths filter (src/**,supabase/functions/**). Previne merge de vulnerabilidades HIGH/CRITICAL sem análise estática."
+        },
+        {
+          "name": "Gate E23 - Secret Scan (gitleaks)",
+          "workflow": ".github/workflows/deploy-gates.yml",
+          "rationale": "E172: gitleaks bloqueante via deploy-gates.yml — PR com segredo vazado reprova o Gate Final. O check autônomo security.yml não era required; este job interno é."
         }
       ]
     }
