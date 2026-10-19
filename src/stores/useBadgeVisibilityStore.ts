@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { getSupabaseClient } from '@/integrations/supabase/lazy-client';
+import { supabase } from '@/integrations/supabase/client';
 import type { Json } from '@/integrations/supabase/types';
 
 import { logger } from '@/lib/logger';
@@ -52,7 +52,6 @@ export const useBadgeVisibilityStore = create<BadgeVisibilityStore>()(
 
         if (userId) {
           try {
-            const supabase = await getSupabaseClient();
             const { data: profile, error: fetchError } = await supabase
               .from('profiles')
               .select('preferences')
@@ -96,7 +95,6 @@ export const useBadgeVisibilityStore = create<BadgeVisibilityStore>()(
 
         if (userId) {
           try {
-            const supabase = await getSupabaseClient();
             const { data: profile, error: fetchError } = await supabase
               .from('profiles')
               .select('preferences')

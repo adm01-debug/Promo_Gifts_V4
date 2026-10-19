@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect, useState } from 'react';
-import { getSupabaseClient } from '@/integrations/supabase/lazy-client';
+import { supabase } from '@/integrations/supabase/client';
 import { AlertTriangle, RefreshCw } from 'lucide-react';
 import { isSupabaseLighthousePlaceholder } from '@/lib/env/supabase-placeholder';
 
@@ -15,7 +15,6 @@ export function AppBootstrap({ children }: { children: ReactNode }) {
 
     const checkMaintenance = async () => {
       try {
-        const supabase = await getSupabaseClient();
         const { data, error } = await supabase
           .from('system_settings')
           .select('value')

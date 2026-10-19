@@ -332,8 +332,8 @@ export function PresentationMode({
                   )}
                   {slide.details && slide.details.length > 0 && (
                     <div className="space-y-2 border-t border-white/10 pt-4">
-                      {slide.details.map((d, i) => (
-                        <div key={i} className="flex justify-between">
+                      {slide.details.map((d) => (
+                        <div key={d.label} className="flex justify-between">
                           <span className="text-sm text-white/40">{d.label}</span>
                           <span className="text-sm font-medium text-white/80">{d.value}</span>
                         </div>
@@ -361,7 +361,7 @@ export function PresentationMode({
           <div className="flex gap-1.5">
             {Array.from({ length: totalSlides }, (_, i) => (
               <button
-                key={i}
+                key={`dot-${i}`}
                 onClick={() => goTo(i)}
                 className={cn(
                   'h-1.5 rounded-full transition-all',

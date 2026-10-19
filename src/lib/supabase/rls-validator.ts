@@ -5,7 +5,7 @@
  */
 
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { getSupabaseClient } from '@/integrations/supabase/lazy-client';
+import { supabase } from '@/integrations/supabase/client';
 import { createClientLogger } from '@/lib/telemetry/structuredLogger';
 
 interface RLSCheck {
@@ -43,7 +43,6 @@ export async function validateRLSPolicies(): Promise<RLSValidationResult> {
   let isHealthy = true;
 
   try {
-    const supabase = await getSupabaseClient();
     const session = await supabase.auth.getSession();
 
     if (!session.data.session) {
@@ -123,7 +122,6 @@ export async function canAccessTable(
   table: string,
 ): Promise<{ canAccess: boolean; reason?: string }> {
   try {
-    const supabase = await getSupabaseClient();
     const session = await supabase.auth.getSession();
 
     if (!session.data.session) {

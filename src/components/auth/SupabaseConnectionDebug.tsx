@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getSupabaseClient } from '@/integrations/supabase/lazy-client';
+import { supabase } from '@/integrations/supabase/client';
 import { CheckCircle2, Database, Globe, Wifi, Search, Activity, Server } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
@@ -16,9 +16,9 @@ export const SupabaseConnectionDebug = () => {
   } | null>(null);
 
   useEffect(() => {
-    const check = async () => {
+    const check = () => {
       try {
-        const client = await getSupabaseClient();
+        const client = supabase;
         const url = (client as unknown as { supabaseUrl?: string }).supabaseUrl || 'N/A';
         const envUrl = import.meta.env.VITE_SUPABASE_URL || 'N/A';
         const projectRef = url.split('//')[1]?.split('.')[0] || 'N/A';

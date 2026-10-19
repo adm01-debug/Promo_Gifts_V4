@@ -58,6 +58,10 @@ export function QuoteAutoSave({
   const mountedRef = useRef(true);
   const dataRef = useRef(data);
   const initialDataRef = useRef<string | null>(null);
+  const onChangeRef = useRef(onChange);
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
 
   // Storage key único para este orçamento
   const storageKey = `${STORAGE_KEY_PREFIX}${quoteId || 'new'}`;
@@ -81,10 +85,11 @@ export function QuoteAutoSave({
             }
           }
           keysToRemove.forEach((k) => localStorage.removeItem(k));
-        } catch { /* ignore storage errors on unmount */ }
+        } catch {
+          /* ignore storage errors on unmount */
+        }
       }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quoteId, storageKey]);
 
   // BUG-J FIX: snapshot initial data AFTER the first real render, not on storageKey change.
@@ -105,8 +110,7 @@ export function QuoteAutoSave({
       initialSnapshottedRef.current = true;
       initialDataRef.current = JSON.stringify(data);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  });
+  }, [data, storageKey]);
 
   // BUG-SERVER-SAVED-AT FIX: when the parent reports a successful server save,
   // reset the "unsaved changes" baseline to the current snapshot so the badge
@@ -116,8 +120,7 @@ export function QuoteAutoSave({
     if (!serverSavedAt) return;
     initialDataRef.current = JSON.stringify(dataRef.current);
     setHasUnsavedChanges(false);
-    onChange?.(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    onChangeRef.current?.(false);
   }, [serverSavedAt]);
 
   // Detectar mudanças
@@ -128,7 +131,7 @@ export function QuoteAutoSave({
     const hasChanges = currentData !== initialDataRef.current;
 
     setHasUnsavedChanges(hasChanges);
-    onChange?.(hasChanges);
+    onChangeRef.current?.(hasChanges);
 
     // Debounce auto-save
     if (timeoutRef.current) {
@@ -147,8 +150,7 @@ export function QuoteAutoSave({
         clearTimeout(timeoutRef.current);
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, debounceMs, onChange]);
+  }, [data, debounceMs, saveDraft]);
 
   // Verificar conectividade
   useEffect(() => {
