@@ -73,7 +73,7 @@ test.describe("MfaChallengeDialog — botão Voltar", () => {
       try {
         await dialog.waitFor({ state: "visible", timeout: 6_000 });
       } catch {
-        test.skip(true, "MfaChallengeDialog não abriu — admin sem MFA enrolado.");
+        expect(false, "[E108] MfaChallengeDialog não abriu — admin sem MFA enrolado.").toBeTruthy();
       }
 
       // Snapshot do `idx` do React Router antes do clique: em aba nova

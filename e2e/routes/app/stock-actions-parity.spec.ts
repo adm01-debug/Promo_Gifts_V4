@@ -34,7 +34,7 @@ async function gotoStock(page: Page) {
   }
   const empty = page.getByText(/Nenhum.*encontrad/i);
   if (await empty.isVisible().catch(() => false)) {
-    test.skip(true, "sem dados seedados para validar paridade");
+    expect(false, "[E108] sem dados seedados para validar paridade").toBeTruthy();
   }
 }
 

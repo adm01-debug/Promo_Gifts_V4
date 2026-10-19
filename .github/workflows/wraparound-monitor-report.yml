@@ -28,10 +28,8 @@ name: wraparound-monitor-report
 # =============================================================================
 
 on:
-  # schedule:
-  #   - cron: '15 6 * * *' # diário, 06:15 UTC
-  # E31: schedule desabilitado — aguardando migration [DBA-E33] (ops.wraparound_monitor_log).
-  # Reativar após aplicação via .github/workflows/db-apply-migration.yml.
+  schedule:
+    - cron: '15 6 * * *' # diário, 06:15 UTC (E177: reativado — workflow degrada graciosamente sem a migration)
   workflow_dispatch:
 
 permissions:

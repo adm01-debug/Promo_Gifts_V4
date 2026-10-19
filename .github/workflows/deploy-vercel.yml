@@ -68,6 +68,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     needs: check-secrets
+    environment: production  # E173: required reviewer antes de deploy em produção
     if: needs.check-secrets.outputs.can_deploy == 'true'
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

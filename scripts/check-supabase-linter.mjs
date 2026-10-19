@@ -116,20 +116,26 @@ export async function runLinter({
     return 2;
   }
 
-  // Carrega funções aceitas de .security/supabase-linter-baseline.json (E97)
-  const baselinePath = resolve(".security/supabase-linter-baseline.json");
+  // E050: lê funções aceitas de .security/lint-0029-allowlist.json (SSOT unificada).
+  // supabase-linter-baseline.json foi absorvido nesse arquivo e removido.
+  const lint0029Path = resolve(".security/lint-0029-allowlist.json");
   const acceptedFunctions = new Set();
-  if (existsSync(baselinePath)) {
+  if (existsSync(lint0029Path)) {
     try {
-      const baseline = JSON.parse(readFileSync(baselinePath, "utf8"));
-      if (Array.isArray(baseline.accepted)) {
-        for (const entry of baseline.accepted) {
-          if (entry.name) acceptedFunctions.add(entry.name);
+      const al = JSON.parse(readFileSync(lint0029Path, "utf8"));
+      if (Array.isArray(al.functions)) {
+        for (const entry of al.functions) {
+          if (entry.fn) {
+            // "public.fn_name(_arg type)" → "fn_name"
+            const bare = entry.fn.split('(')[0];
+            const name = bare.split('.').pop();
+            if (name) acceptedFunctions.add(name);
+          }
         }
       }
-      logger.log(`🔐 Baseline E97: ${acceptedFunctions.size} funções aceitas carregadas.`);
+      logger.log(`🔐 lint-0029 allowlist (E050): ${acceptedFunctions.size} funções aceitas carregadas.`);
     } catch {
-      logger.warn("⚠️  Não foi possível ler .security/supabase-linter-baseline.json; nenhuma exceção carregada.");
+      logger.warn("⚠️  Não foi possível ler .security/lint-0029-allowlist.json; nenhuma exceção carregada.");
     }
   }
 

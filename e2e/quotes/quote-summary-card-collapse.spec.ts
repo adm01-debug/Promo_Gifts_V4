@@ -30,7 +30,7 @@ test.describe('Quote Builder · colapso individual de cards no Resumo', () => {
     // do escopo desta spec (validado em flows/04-quotes.spec.ts).
     const firstCard = page.getByTestId('quote-summary-item-0');
     if ((await firstCard.count()) === 0) {
-      test.skip(true, 'Nenhum item no resumo — adicionar produto está fora do escopo.');
+      expect(false, '[E108] Nenhum item no resumo — adicionar produto está fora do escopo.').toBeTruthy();
     }
     await expect(firstCard).toBeVisible({ timeout: 10_000 });
 

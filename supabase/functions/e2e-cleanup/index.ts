@@ -14,7 +14,7 @@
 // @ts-ignore - Deno runtime
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { castRpcResult } from "../_shared/supabase-client-adapter.ts";
-import { buildPublicCorsHeaders } from "../_shared/cors.ts";
+import { getCorsHeaders } from "../_shared/cors.ts";
 import { parseContract } from "../_shared/contracts/index.ts";
 import { E2eCleanupSchemas } from "../_shared/contracts/schemas/e2e-cleanup.ts";
 import { resolveCredential } from "../_shared/credentials.ts";
@@ -25,13 +25,15 @@ type E2ERateLimitRow = {
   current_count?: number;
 };
 
-const corsHeaders = buildPublicCorsHeaders({ extraAllowHeaders: ["x-e2e-cleanup-token"], allowMethods: "POST, OPTIONS" });
 let contractResponseHeaders: Record<string, string> = {};
+
+// E094: corsHeaders calculado por request — origem restrita; definido dentro do Deno.serve
+let _reqCorsHeaders: Record<string, string> = {};
 
 function jsonResponse(body: unknown, status = 200, extraHeaders: Record<string, string> = {}) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, ...contractResponseHeaders, ...extraHeaders, "Content-Type": "application/json" },
+    headers: { ..._reqCorsHeaders, ...contractResponseHeaders, ...extraHeaders, "Content-Type": "application/json" },
   });
 }
 
@@ -59,7 +61,9 @@ function timingSafeEqual(a: string, b: string): boolean {
 }
 
 Deno.serve(async (req: Request) => {
-  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+  // E094: origem restrita por request — não mais Access-Control-Allow-Origin: *
+  _reqCorsHeaders = getCorsHeaders(req);
+  if (req.method === "OPTIONS") return new Response("ok", { headers: _reqCorsHeaders });
 
   const startMs = Date.now();
   const clientIp = getClientIp(req);

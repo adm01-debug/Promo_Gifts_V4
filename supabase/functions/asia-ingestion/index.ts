@@ -3,6 +3,7 @@ import { authorizeCron } from '../_shared/dispatcher-auth.ts';
 import { createStructuredLogger } from '../_shared/structured-logger.ts';
 import { getOrCreateRequestId } from '../_shared/request-id.ts';
 import { resolveCredential } from '../_shared/credentials.ts';
+import { getCorsHeaders } from '../_shared/cors.ts';
 
 const SUPABASE_URL  = Deno.env.get('SUPABASE_URL')!;
 const SERVICE_KEY   = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
@@ -79,7 +80,7 @@ Deno.serve(async (req: Request) => {
   const __reqId = getOrCreateRequestId(req);
   const log = createStructuredLogger({ fn: 'asia-ingestion', requestId: __reqId, req });
   log.info('request_start');
-  const cors = { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' };
+  const cors = { ...getCorsHeaders(req), 'Content-Type': 'application/json' };
   if (req.method === 'OPTIONS') return new Response(null, { headers: cors });
 
   // Auth: cron/service secret (P0 fix)

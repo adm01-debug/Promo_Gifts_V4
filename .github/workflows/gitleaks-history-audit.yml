@@ -15,7 +15,7 @@ on:
 
 permissions:
   contents: read
-  # security-events: write — removido E92 (SARIF salvo como artefato, não no Security Dashboard)
+  security-events: write  # E174: upload SARIF ao Security Dashboard
   issues: write                # para abrir issue automatica em finding
 
 concurrency:
@@ -49,6 +49,13 @@ jobs:
           # como secret quando o repo for privatizado (Etapa 1 do plano).
         with:
           config-path: .gitleaks.toml
+
+      - name: Upload SARIF to Security Dashboard (E174)
+        if: always()
+        uses: github/codeql-action/upload-sarif@24c54180a607b1449ed407dd24f251e4e9147c8d # v4
+        with:
+          sarif_file: results.sarif
+          category: gitleaks
 
       - name: Upload report as artifact
         if: always()

@@ -58,6 +58,10 @@ export function QuoteAutoSave({
   const mountedRef = useRef(true);
   const dataRef = useRef(data);
   const initialDataRef = useRef<string | null>(null);
+  const onChangeRef = useRef(onChange);
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
 
   // Storage key único para este orçamento
   const storageKey = `${STORAGE_KEY_PREFIX}${quoteId || 'new'}`;
@@ -81,10 +85,11 @@ export function QuoteAutoSave({
             }
           }
           keysToRemove.forEach((k) => localStorage.removeItem(k));
-        } catch { /* ignore storage errors on unmount */ }
+        } catch {
+          /* ignore storage errors on unmount */
+        }
       }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quoteId, storageKey]);
 
   // BUG-J FIX: snapshot initial data AFTER the first real render, not on storageKey change.
@@ -105,8 +110,7 @@ export function QuoteAutoSave({
       initialSnapshottedRef.current = true;
       initialDataRef.current = JSON.stringify(data);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  });
+  }, [data, storageKey]);
 
   // BUG-SERVER-SAVED-AT FIX: when the parent reports a successful server save,
   // reset the "unsaved changes" baseline to the current snapshot so the badge
@@ -116,60 +120,8 @@ export function QuoteAutoSave({
     if (!serverSavedAt) return;
     initialDataRef.current = JSON.stringify(dataRef.current);
     setHasUnsavedChanges(false);
-    onChange?.(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    onChangeRef.current?.(false);
   }, [serverSavedAt]);
-
-  // Detectar mudanças
-  useEffect(() => {
-    dataRef.current = data;
-
-    const currentData = JSON.stringify(data);
-    const hasChanges = currentData !== initialDataRef.current;
-
-    setHasUnsavedChanges(hasChanges);
-    onChange?.(hasChanges);
-
-    // Debounce auto-save
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-
-    if (hasChanges) {
-      setStatus('idle');
-      timeoutRef.current = setTimeout(() => {
-        saveDraft();
-      }, debounceMs);
-    }
-
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, debounceMs, onChange]);
-
-  // Verificar conectividade
-  useEffect(() => {
-    const handleOnline = () => {
-      if (status === 'offline') {
-        setStatus('idle');
-      }
-    };
-
-    const handleOffline = () => {
-      setStatus('offline');
-    };
-
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
-  }, [status]);
 
   const saveDraft = useCallback(() => {
     if (!navigator.onLine) {
@@ -243,6 +195,56 @@ export function QuoteAutoSave({
       setStatus('error');
     }
   }, [storageKey, quoteId]);
+
+  // Detectar mudanças
+  useEffect(() => {
+    dataRef.current = data;
+
+    const currentData = JSON.stringify(data);
+    const hasChanges = currentData !== initialDataRef.current;
+
+    setHasUnsavedChanges(hasChanges);
+    onChangeRef.current?.(hasChanges);
+
+    // Debounce auto-save
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    if (hasChanges) {
+      setStatus('idle');
+      timeoutRef.current = setTimeout(() => {
+        saveDraft();
+      }, debounceMs);
+    }
+
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [data, debounceMs, saveDraft]);
+
+  // Verificar conectividade
+  useEffect(() => {
+    const handleOnline = () => {
+      if (status === 'offline') {
+        setStatus('idle');
+      }
+    };
+
+    const handleOffline = () => {
+      setStatus('offline');
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, [status]);
 
   const getStatusIcon = () => {
     switch (status) {

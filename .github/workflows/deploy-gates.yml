@@ -16,15 +16,21 @@ name: Deploy Gates
 #  1.5  drafts-save       — sem "Salvar Alterações" em fluxos de rascunho
 #  1.7  tsc-ratchet       — baseline de noUnusedLocals não aumenta sem label
 #  1.8  base64-detect     — sem arquivos texto encodados em base64 acidentalmente
-#  1.9  tech-debt         — ratchets TODO/as/file-size
+#  1.6  bundle-size       — bundle dentro dos limites (ver build job)
+#  1.9  tech-debt         — ratchets TODO/as/file-size/eslint-disable
 #  1.9.1 console-baseline — console.* não aumenta sem justificativa
 #  1.9.2 boundary          — sem import cross-domain novo entre src/pages/*
 #  1.10 indexed-access    — indexed-access ratchet (advisory)
 #  1.11 workflow-contracts — check-workflow-contracts --gate (C10–C24)
 #  1.12 contract-coverage  — soft-delete policy + contrato de cobertura
 #  1.13 policies-baseline  — policies live vs baseline
+#  1.13.1 rls-no-policy    — tabelas RLS com zero policies (deny-all silencioso, E045)
+#  1.13.2 anon-rate-guard  — 7 tabelas INSERT anônimo com trigger rate guard (E049)
+#  1.13.3 migration-receipts — migrations sem recibo há >24h (E055)
 #  1.14 secrets-inventory  — secrets/vars referenciados todos documentados em SEGREDOS.md (E40/E98)
 #  1.17 codeowners-coverage — CODEOWNERS coverage de gate files (E72/GAP 2026-10)
+#  1.18 conflict-ledger   — ledger de conflitos semânticos (E188)
+#  E23  secret-scan       — gitleaks bloqueante (E172)
 #  E23  secrets-check      — verifica presença de secrets E2E (saída has_e2e)
 #  E89  cron-spacing       — workflows privilegiados espaçados ≥ 20 min (GAP-4)
 #  2    unit-tests         — vitest
@@ -276,13 +282,15 @@ jobs:
           exit $(( FOUND > 0 ))
       # Ratchets de dívida técnica (auditoria 20-dim 2026-10-02) — falham só
       # em REGRESSÃO vs baselines commitadas; drift positivo apenas avisa.
-      - name: Gate 1.9 — Dívida técnica (ratchets TODO / as / file-size)
+      - name: Gate 1.9 — Dívida técnica (ratchets TODO / as / file-size / eslint-disable)
         if: needs.changes.outputs.docs_only != 'true'
         run: |
           set -euo pipefail
           node scripts/check-todo-baseline.mjs
           node scripts/check-as-assertions-baseline.mjs
+          node scripts/check-as-unknown-baseline.mjs
           node scripts/check-file-size-baseline.mjs
+          node scripts/check-eslint-disable-baseline.mjs
 
       - name: Gate 1.9.1 — console.* baseline (bloqueante)
         if: needs.changes.outputs.docs_only != 'true'
@@ -310,6 +318,21 @@ jobs:
       - name: Gate 1.13 — Policies baseline vs pg_policies live (bloqueante c/ credenciais)
         if: needs.changes.outputs.docs_only != 'true'
         run: node scripts/check-policies-baseline.mjs
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
+      - name: Gate 1.13.1 — RLS sem policy (E045)
+        if: needs.changes.outputs.docs_only != 'true'
+        run: node scripts/check-rls-no-policy-drift.mjs --gate
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
+      - name: Gate 1.13.2 — Anon-insert rate guard manifest (E049)
+        if: needs.changes.outputs.docs_only != 'true'
+        run: node scripts/check-anon-insert-rate-guard.mjs --gate
+      - name: Gate 1.13.3 — Migration receipts (E055)
+        if: needs.changes.outputs.docs_only != 'true'
+        run: node scripts/check-migration-receipts.mjs --gate
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
@@ -359,6 +382,70 @@ jobs:
       - name: Gate E89 — Cron spacing ≥ 20 min entre workflows privilegiados (bloqueante)
         if: needs.changes.outputs.docs_only != 'true'
         run: node scripts/ci-cron-table.mjs --min-spacing 20
+      - name: Gate E95 — CORS snapshot (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true'
+        run: |
+          set -euo pipefail
+          fail=0
+          for f in supabase/functions/bulk-random-passwords/index.ts \
+                   supabase/functions/audit-suite/index.ts \
+                   supabase/functions/e2e-cleanup/index.ts; do
+            count=$(grep -c "buildPublicCorsHeaders" "$f" || true)
+            if [ "$count" -gt 0 ]; then
+              echo "FAIL: buildPublicCorsHeaders encontrado em $f ($count vez(es))"
+              fail=1
+            fi
+          done
+          literal=$(grep -rl "'Access-Control-Allow-Origin': '\*'" supabase/functions/ || true)
+          if [ -n "$literal" ]; then
+            echo "FAIL: literal 'Access-Control-Allow-Origin: *' em:"
+            echo "$literal"
+            fail=1
+          fi
+          [ "$fail" -eq 0 ] || exit 1
+          echo "OK: CORS snapshot limpo"
+      - name: Gate E113 — Toast leaks (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true'
+        run: node scripts/check-toast-leaks.mjs
+      - name: Gate E118a — asChild nesting (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true'
+        run: node scripts/check-aschild-nesting.mjs
+      - name: Gate E118b — route-ref-usage (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true'
+        run: node scripts/check-route-ref-usage.mjs
+      - name: Gate E118c — route-error-element (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true'
+        run: node scripts/check-route-error-element.mjs
+      - name: Gate E118d — no-inline-cors (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true'
+        run: node scripts/check-no-inline-cors.mjs
+      - name: Gate E118e — summary-color-tokens (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true'
+        run: node scripts/check-summary-color-tokens.mjs
+      - name: Gate E118f — seller-scope (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true'
+        run: node scripts/check-seller-scope.mjs
+      - name: Gate E118g — client-structured-logging (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true'
+        run: node scripts/check-client-structured-logging.mjs
+      - name: Gate E118h — schema-reference-drift (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true'
+        run: node scripts/check-schema-reference-drift.mjs
+      - name: Gate E118i — public-views-drift (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true'
+        run: node scripts/check-public-views-drift.mjs
+      - name: Gate E118j — proposed-configs (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true'
+        run: node scripts/check-eslint-config-current.mjs --strict
+      - name: Gate E119 — Product interface ratchet (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true'
+        run: node scripts/check-product-type-duplicates.mjs
+      - name: Gate 1.18 — Ledger de conflitos semânticos (E188)
+        if: needs.changes.outputs.docs_only != 'true'
+        env:
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+          GITHUB_HEAD_REF: ${{ github.head_ref }}
+        run: node scripts/check-conflict-ledger.mjs --gate
 
   unit-tests:
     name: Gate 2 - Unit Tests
@@ -490,15 +577,37 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false  # E32
+          fetch-depth: 0
+      - name: Check if src/ changed (E161)
+        id: src-check
+        run: |
+          BASE="${{ github.event.pull_request.base.sha }}"
+          if [ -z "$BASE" ]; then
+            BASE="${{ github.event.before }}"
+          fi
+          if [ -z "$BASE" ] || ! git rev-parse "$BASE" >/dev/null 2>&1; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            CHANGED=$(git diff --name-only "$BASE" HEAD -- src/ | wc -l)
+            if [ "$CHANGED" -gt 0 ]; then
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "changed=false" >> "$GITHUB_OUTPUT"
+              echo "::notice::Nenhuma mudança em src/ — Lighthouse CI pulado."
+            fi
+          fi
       - name: Setup Node CI
+        if: steps.src-check.outputs.changed == 'true'
         uses: ./.github/actions/setup-node-ci
-      - run: npm run build
+      - if: steps.src-check.outputs.changed == 'true'
+        run: npm run build
       - name: Run Lighthouse CI
+        if: steps.src-check.outputs.changed == 'true'
         run: npx lhci autorun --config=.lighthouserc.json
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
       - name: Upload Lighthouse report
-        if: always()
+        if: always() && steps.src-check.outputs.changed == 'true'
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: lighthouse-report-${{ github.run_id }}
@@ -662,6 +771,27 @@ jobs:
     uses: ./.github/workflows/db-schema-drift-check.yml
     secrets: inherit
 
+  secret-scan:
+    name: Gate E23 - Secret Scan (gitleaks)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    needs: [ssot-gate]
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false  # E32
+          fetch-depth: 0
+      - name: Run gitleaks
+        run: |
+          # E172: bloqueante — falha se encontrar segredo
+          if [ -f .gitleaks.toml ]; then
+            npx --yes gitleaks detect --source . --config .gitleaks.toml --exit-code 1 --no-git
+          else
+            npx --yes gitleaks detect --source . --exit-code 1 --no-git
+          fi
+
   deploy-ready:
     name: Gate Final - Deploy Ready
     if: always()
@@ -677,6 +807,7 @@ jobs:
       - database-integrity
       - secrets-check
       - e2e-smoke
+      - secret-scan
       # lighthouse removido de needs (Gate 4 optional, continue-on-error:true — E03)
       - seo-sanity
       - restore-cart-rpc-gate
@@ -697,6 +828,7 @@ jobs:
           R_SEO:           ${{ needs.seo-sanity.result }}
           R_RESTORE:       ${{ needs.restore-cart-rpc-gate.result }}
           R_BUILD:         ${{ needs.build.result }}
+          R_SECRET_SCAN:   ${{ needs.secret-scan.result }}
           R_SCHEMA_DRIFT:  ${{ needs.schema-drift-gate.result }}
           IS_DEPENDABOT: ${{ github.actor == 'dependabot[bot]' }}
           # IS_FORK: true quando PR de fork externo (sem acesso a secrets live — E59)
@@ -714,6 +846,7 @@ jobs:
           [[ "$R_SEO"       == "success" ]] || fail_gate "Gate 5 SEO Sanity falhou (${R_SEO})"
           [[ "$R_BUILD"        == "success" ]] || fail_gate "Gate 6 Build falhou (${R_BUILD})"
           [[ "$R_SECRETS"      == "success" ]] || fail_gate "Gate E23 Secrets Check falhou (${R_SECRETS})"
+          [[ "$R_SECRET_SCAN"  == "success" ]] || fail_gate "Gate E23 Secret Scan (gitleaks) falhou (${R_SECRET_SCAN})"
           # E040: schema-drift-gate é bloqueante quando mudanças de schema foram detectadas; skip = sem mudança
           [[ "$R_SCHEMA_DRIFT" == "success" || "$R_SCHEMA_DRIFT" == "skipped" ]] || \
             fail_gate "Gate E40 Schema Drift falhou (${R_SCHEMA_DRIFT})"

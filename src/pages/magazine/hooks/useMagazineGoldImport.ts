@@ -20,7 +20,7 @@
  */
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { getSupabaseClient } from '@/integrations/supabase/lazy-client';
+import { supabase } from '@/integrations/supabase/client';
 import { createClientLogger } from '@/lib/telemetry/structuredLogger';
 import type { Magazine } from '@/types/magazine';
 
@@ -139,7 +139,6 @@ export function useMagazineGoldImport(userId: string | undefined): {
     (async () => {
       setImporting(true);
       try {
-        const supabase = await getSupabaseClient();
         const { data: sessionData } = await supabase.auth.getSession();
         const accessToken = sessionData.session?.access_token;
         if (!accessToken) {

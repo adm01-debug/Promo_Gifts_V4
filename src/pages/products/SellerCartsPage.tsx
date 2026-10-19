@@ -226,7 +226,9 @@ export function CartStatusSelect({
             itemCount: isEmpty ? 0 : 1,
           });
           if (!decision.allowed) {
-            toast.error(EMPTY_CART_BLOCK_TITLE, { description: decision.message });
+            toast.error(EMPTY_CART_BLOCK_TITLE, {
+              description: 'Adicione itens ao carrinho antes de continuar.',
+            });
             setLiveMessage(
               'Não é possível marcar o carrinho como pronto para orçamento: ele está vazio.',
             );

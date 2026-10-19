@@ -6,21 +6,27 @@
  * Rodado em CI + local. Ver `scripts/simulate-daily-flows.mjs`.
  */
 import { execFileSync } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, mkdtempSync, rmSync } from "node:fs";
 import { join } from "node:path";
-import { describe, expect, it } from "vitest";
+import { tmpdir } from "node:os";
+import { describe, expect, it, afterEach } from "vitest";
 
 const SCRIPT = join(process.cwd(), "scripts/simulate-daily-flows.mjs");
 
 describe("Daily flows simulation harness", () => {
+  // E106: usa tmpdir para não sujar a árvore versionada
+  let outDir: string;
+  afterEach(() => { try { rmSync(outDir, { recursive: true, force: true }); } catch {} });
+
   it("runs 600+ scenarios and holds every invariant", () => {
     if (!existsSync(SCRIPT)) throw new Error(`Missing script: ${SCRIPT}`);
+    outDir = mkdtempSync(join(tmpdir(), "daily-flows-"));
     // Executa o simulador em SCALE=1; falha se algum invariante violar.
-    execFileSync("node", [SCRIPT], { stdio: "pipe", encoding: "utf8" });
+    execFileSync("node", [SCRIPT, `--out-dir=${outDir}`], { stdio: "pipe", encoding: "utf8" });
 
     // Verifica que o JSON de relatório foi emitido e tem os fluxos esperados.
     const today = new Date().toISOString().slice(0, 10);
-    const jsonPath = join(process.cwd(), "qa", "reports", `daily-flows-simulation-${today}.json`);
+    const jsonPath = join(outDir, `daily-flows-simulation-${today}.json`);
     const report = JSON.parse(readFileSync(jsonPath, "utf8"));
 
     expect(report.totalScenarios).toBeGreaterThanOrEqual(600);

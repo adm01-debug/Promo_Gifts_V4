@@ -43,25 +43,10 @@ defaults:
 
 jobs:
   secrets_check:
-    name: Verify E2E secrets (Freight)
-    runs-on: ubuntu-24.04
-    timeout-minutes: 2
-    permissions:
-      contents: read
-    steps:
-      - name: Check required secrets
-        env:
-          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-        run: |
-          missing=()
-          [ -z "$E2E_USER_EMAIL" ]    && missing+=(E2E_USER_EMAIL)
-          [ -z "$E2E_USER_PASSWORD" ] && missing+=(E2E_USER_PASSWORD)
-          if [ ${#missing[@]} -gt 0 ]; then
-            echo "::error::Secrets ausentes: ${missing[*]} — configure em Settings › Secrets › Actions"
-            exit 1
-          fi
-          echo "Secrets OK"
+    uses: ./.github/workflows/_secrets-check.yml
+    secrets: inherit
+    with:
+      fail_if_missing: true
 
   e2e_freight:
     name: E2E Freight · ${{ matrix.suite }}
@@ -93,22 +78,8 @@ jobs:
         with:
           persist-credentials: false  # E32
 
-      # R4 — node-version-file: .nvmrc
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-
-      - run: npm ci --no-audit --no-fund
-
-      - name: Cache Playwright browsers
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-          restore-keys: playwright-${{ runner.os }}-
-
-      - run: npx playwright install --with-deps chromium
+      - name: Setup E2E
+        uses: ./.github/actions/e2e-setup
 
       - name: Filtrar suite
         if: github.event.inputs.suite != '' && github.event.inputs.suite != matrix.suite

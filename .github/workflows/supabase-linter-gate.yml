@@ -43,28 +43,29 @@ jobs:
         with:
           node-version-file: '.nvmrc'
 
-      # PR mode: validação contra baseline estático apenas — não chama a API live.
-      # Evita falha espúria (71% hit rate) quando os advisors live divergem do baseline.
-      - name: Validate static baseline (PR only)
+      # PR mode: validação contra allowlist estática apenas — não chama a API live.
+      # Evita falha espúria (71% hit rate) quando os advisors live divergem da allowlist.
+      # E050 (2026-10-18): migrado de supabase-linter-baseline.json para lint-0029-allowlist.json.
+      - name: Validate static allowlist (PR only)
         if: github.event_name == 'pull_request'
         run: |
           set -euo pipefail
-          BASELINE=".security/supabase-linter-baseline.json"
-          if [ ! -f "$BASELINE" ]; then
-            echo "::error::${BASELINE} não encontrado — baseline ausente."
+          ALLOWLIST=".security/lint-0029-allowlist.json"
+          if [ ! -f "$ALLOWLIST" ]; then
+            echo "::error::${ALLOWLIST} não encontrado — allowlist ausente."
             exit 1
           fi
           node --input-type=module <<'EOF'
             import { readFileSync } from 'fs';
-            const b = JSON.parse(readFileSync('.security/supabase-linter-baseline.json', 'utf8'));
-            if (!Array.isArray(b.accepted)) {
-              console.error('❌ Baseline inválido: campo accepted ausente');
+            const b = JSON.parse(readFileSync('.security/lint-0029-allowlist.json', 'utf8'));
+            if (!Array.isArray(b.functions)) {
+              console.error('❌ Allowlist inválida: campo functions ausente');
               process.exit(1);
             }
-            const at = b.generated_at ?? 'N/A';
-            console.log(`✅ Baseline estático válido: ${b.accepted.length} items aceitos (generated_at: ${at})`);
+            const at = b.description ?? 'N/A';
+            console.log(`✅ Allowlist estática válida: ${b.functions.length} funções documentadas (${at})`);
           EOF
-          echo "ℹ️ PR mode: somente baseline estático verificado — gate live roda em push/schedule."
+          echo "ℹ️ PR mode: somente allowlist estática verificada — gate live roda em push/schedule."
 
       # Push/schedule mode: comparação live, mas items do baseline são aceitos.
       - name: Check Security Advisors and live catalog gates
@@ -78,10 +79,10 @@ jobs:
           node scripts/check-supabase-linter.mjs
           echo "lint_passed=true" >> "$GITHUB_OUTPUT"
 
-      - name: Upload baseline artifact
+      - name: Upload allowlist artifact
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: supabase-linter-baseline-${{ github.run_number }}
-          path: .security/supabase-linter-baseline.json
+          name: supabase-linter-allowlist-${{ github.run_number }}
+          path: .security/lint-0029-allowlist.json
           retention-days: 14  # E88

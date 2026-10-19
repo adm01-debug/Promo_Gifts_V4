@@ -24,7 +24,7 @@ test.describe('Novidades — loader de paginação infinita (scroll interno)', (
 
     const items = await page.locator('div[role="listitem"]').count();
     if (items === 0) {
-      test.skip(true, 'Sem novidades no dataset — paginação não aplicável.');
+      expect(false, '[E108] Sem novidades no dataset — paginação não aplicável.').toBeTruthy();
       return;
     }
 
@@ -35,7 +35,7 @@ test.describe('Novidades — loader de paginação infinita (scroll interno)', (
       await scroller.evaluate((el) => el.scrollTo({ top: el.scrollHeight }));
       await page.waitForTimeout(400);
       if ((await loader.count()) === 0) {
-        test.skip(true, 'Dataset pequeno — hasMore é sempre false.');
+        expect(false, '[E108] Dataset pequeno — hasMore é sempre false.').toBeTruthy();
         return;
       }
     }

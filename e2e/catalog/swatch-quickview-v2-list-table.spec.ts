@@ -176,7 +176,7 @@ test.describe('Swatch V2 → QuickView (Lista e Tabela)', () => {
           return false;
         });
       if (!switched) {
-        test.skip(true, `Toolbar de layout ausente em ${r.path} (rota satélite sem dados).`);
+        expect(false, `[E108] Toolbar de layout ausente em ${r.path} (rota satélite sem dados).`).toBeTruthy();
         return;
       }
 
@@ -187,7 +187,7 @@ test.describe('Swatch V2 → QuickView (Lista e Tabela)', () => {
         .then(() => true)
         .catch(() => false);
       if (!r.required && !hasRows) {
-        test.skip(true, `Sem itens em ${r.path} (rota satélite sem dados).`);
+        expect(false, `[E108] Sem itens em ${r.path} (rota satélite sem dados).`).toBeTruthy();
         return;
       }
       expect(hasRows, `nenhum item em ${r.path}`).toBe(true);

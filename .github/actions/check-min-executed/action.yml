@@ -1,0 +1,39 @@
+name: Check Playwright min executed
+description: >
+  Valida que o JSON reporter do Playwright registrou ≥ N testes executados
+  e que a proporção de skipped está dentro do limite. Detecta suites que
+  passam verde com 0 testes (secrets ausentes, requireAuth bloqueando tudo).
+
+  Chamar com `if: always()` após `npx playwright test` para que a falha
+  de setup não mascare um resultado verde vazio.
+
+inputs:
+  results-file:
+    description: 'Caminho para o results.json gerado pelo reporter json do Playwright'
+    required: false
+    default: 'playwright-report/results.json'
+  min:
+    description: 'Mínimo de testes executados (expected + unexpected + flaky)'
+    required: false
+    default: '1'
+  max-skipped-ratio:
+    description: 'Proporção máxima de skipped/total (0–1). Default 0.5 = falha se >50% skipped.'
+    required: false
+    default: '0.5'
+
+runs:
+  using: composite
+  steps:
+    - name: Verificar mínimo de testes executados
+      if: always()
+      shell: bash
+      env:
+        RESULTS_FILE: ${{ inputs.results-file }}
+        MIN: ${{ inputs.min }}
+        MAX_SKIPPED: ${{ inputs.max-skipped-ratio }}
+      run: |
+        set -euo pipefail
+        node scripts/check-playwright-min-executed.mjs \
+          "$RESULTS_FILE" \
+          --min "$MIN" \
+          --max-skipped-ratio "$MAX_SKIPPED"

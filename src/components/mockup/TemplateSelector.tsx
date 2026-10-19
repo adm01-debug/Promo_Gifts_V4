@@ -105,8 +105,11 @@ export function TemplateSelector({
               {customTemplates.map((template) => (
                 <HoverCard key={template.id} openDelay={200} closeDelay={100}>
                   <HoverCardTrigger asChild>
-                    <DropdownMenuItem className="group cursor-pointer">
-                      <div className="flex flex-1 items-center" onClick={() => onApply(template)}>
+                    <DropdownMenuItem
+                      className="group cursor-pointer"
+                      onSelect={() => onApply(template)}
+                    >
+                      <div className="flex flex-1 items-center">
                         <User aria-hidden="true" className="mr-2 h-4 w-4 text-primary" />
                         {template.name}
                         <Badge variant="secondary" className="ml-auto mr-2 text-[10px]">
@@ -118,6 +121,7 @@ export function TemplateSelector({
                         size="icon"
                         aria-label={`Excluir template ${template.name}`}
                         className="h-5 w-5 text-destructive opacity-0 hover:text-destructive group-hover:opacity-100"
+                        onPointerDown={(e) => e.stopPropagation()}
                         onClick={(e) => {
                           e.stopPropagation();
                           onDeleteCustom(template.id);

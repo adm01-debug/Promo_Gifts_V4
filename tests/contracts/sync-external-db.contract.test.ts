@@ -24,7 +24,7 @@ describe('contract: sync-external-db (Reposição Module)', () => {
   it('v1: aceita campos opcionais', async () => {
     const req = makeRequest({
       body: {
-        table: 'inventory_replenishment',
+        table: 'products',
         direction: 'from-external',
         since: '2026-01-01',
       },

@@ -27,7 +27,7 @@ async function openFirstCart(page: import('@playwright/test').Page) {
   });
   const total = await rows.count();
   if (total === 0) {
-    test.skip(true, 'nenhum carrinho disponível para o teste');
+    expect(false, '[E108] nenhum carrinho disponível para o teste').toBeTruthy();
   }
   const tid = await rows.first().getAttribute('data-testid');
   const id = tid?.replace('cart-row-', '');

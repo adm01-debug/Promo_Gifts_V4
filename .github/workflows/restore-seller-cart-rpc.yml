@@ -8,7 +8,7 @@ name: E2E · restore_seller_cart RPC (multi-env)
 # ANTES do usuário reclamar do toast "Não foi possível restaurar o carrinho".
 #
 # Fonte da verdade: tests/security/restore-seller-cart-rpc.test.ts
-# Cron: diário 09:48 UTC (06:48 BRT). Manual via workflow_dispatch.
+# Cron: diário 09:49 UTC (06:49 BRT). Manual via workflow_dispatch.
 
 on:
   schedule:

@@ -44,7 +44,7 @@ test.describe('Carrinhos · empty-cart bloqueia "Pronto p/ orçamento" @carrinho
     await loginAs(page, 'seller');
 
     const id = await findEmptyCart(page);
-    if (!id) test.skip(true, 'nenhum carrinho vazio disponível no seed');
+    if (!id) expect(false, '[E108] nenhum carrinho vazio disponível no seed').toBeTruthy();
 
     // Rede: qualquer PATCH em seller_carts durante este teste é uma
     // regressão — o guard deve impedir o round-trip.

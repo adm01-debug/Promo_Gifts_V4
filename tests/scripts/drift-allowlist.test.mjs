@@ -1,8 +1,8 @@
 // E038: Testa loadAllowlist (entrada genérica, regex inválida com nº de linha)
 // e filterDiff (DDL multi-linha agrupado por statement).
-// Roda com: node --test tests/scripts/drift-allowlist.test.mjs
+// Roda com: npx vitest run tests/scripts/drift-allowlist.test.mjs
 import { strict as assert } from 'node:assert';
-import { describe, it } from 'node:test';
+import { describe, it } from 'vitest';
 import { loadAllowlist, filterDiff } from '../../scripts/drift-baseline.mjs';
 
 describe('loadAllowlist — entrada genérica', () => {
@@ -64,6 +64,7 @@ describe('filterDiff — DDL multi-linha agrupado por statement', () => {
       '  on "public"."t" (col1);',
       'create table "public"."t2" (id int);',
     ].join('\n');
+    // entrada válida com dot escapado
     const al = loadAllowlist('^create index "public"\\."idx_x"');
     const residue = filterDiff(diff, al);
     assert.equal(residue.length, 1, `Esperado 1 statement, obteve ${residue.length}: ${JSON.stringify(residue)}`);
@@ -89,6 +90,7 @@ describe('filterDiff — DDL multi-linha agrupado por statement', () => {
       'alter table "public"."other_table"',
       '  add column val int;',
     ].join('\n');
+    // remove large_table, mantém other_table
     const al = loadAllowlist('^alter table "public"\\."large_table"');
     const residue = filterDiff(diff, al);
     assert.equal(residue.length, 1, `Esperado 1, obteve: ${JSON.stringify(residue)}`);

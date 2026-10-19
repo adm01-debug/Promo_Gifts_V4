@@ -1,5 +1,5 @@
 import { createClient, type SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
-import { buildPublicCorsHeaders, handleCorsPreflight } from "../_shared/cors.ts";
+import { getCorsHeaders, handleCorsPreflight } from "../_shared/cors.ts";
 import { authorize } from "../_shared/authorize.ts";
 import { createStructuredLogger } from '../_shared/structured-logger.ts';
 import { getOrCreateRequestId } from '../_shared/request-id.ts';
@@ -137,12 +137,12 @@ Deno.serve(async (req) => {
       status: results.every(r => r.passed) ? "PASSED" : "FAILED",
       timestamp: new Date().toISOString(),
       results
-    }), { status: 200, headers: { ...buildPublicCorsHeaders(), "Content-Type": "application/json", "X-Request-Id": __reqId } });
+    }), { status: 200, headers: { ...getCorsHeaders(req), "Content-Type": "application/json", "X-Request-Id": __reqId } });
 
   } catch (e) {
-    return new Response(JSON.stringify({ error: (e as Error).message }), { 
-      status: 500, 
-      headers: { ...buildPublicCorsHeaders(), "Content-Type": "application/json", "X-Request-Id": __reqId } 
+    return new Response(JSON.stringify({ error: (e as Error).message }), {
+      status: 500,
+      headers: { ...getCorsHeaders(req), "Content-Type": "application/json", "X-Request-Id": __reqId }
     });
   } finally {
     // E023: cleanup em finally — garante remoção mesmo em exceção

@@ -42,7 +42,7 @@ test.describe("Analytics — `source` de cart.company_switched por UI de origem"
       gotoUrl: "/produtos",
     });
     if (!cartB) {
-      test.skip(true, "cartB ausente — configuração inesperada");
+      expect(false, "[E108] cartB ausente — configuração inesperada").toBeTruthy();
       return;
     }
 
@@ -51,7 +51,7 @@ test.describe("Analytics — `source` de cart.company_switched por UI de origem"
     // ---------- FASE 1: troca via CartSelectorDialog (QuickAdd) ----------
     const card = page.locator(Sel.product.card).first();
     if (!(await card.isVisible().catch(() => false))) {
-      test.skip(true, "Catálogo vazio neste ambiente");
+      expect(false, "[E108] Catálogo vazio neste ambiente").toBeTruthy();
       return;
     }
 
@@ -61,7 +61,7 @@ test.describe("Analytics — `source` de cart.company_switched por UI de origem"
     }
     const cartTrigger = card.locator(Sel.product.cartTrigger).first();
     if (!(await cartTrigger.isVisible().catch(() => false))) {
-      test.skip(true, "Card sem trigger de carrinho neste ambiente");
+      expect(false, "[E108] Card sem trigger de carrinho neste ambiente").toBeTruthy();
       return;
     }
     await cartTrigger.click();
@@ -75,13 +75,13 @@ test.describe("Analytics — `source` de cart.company_switched por UI de origem"
         .then(() => "selector"),
     ]).catch(() => null);
     if (!first) {
-      test.skip(true, "Popover do QuickAdd não abriu");
+      expect(false, "[E108] Popover do QuickAdd não abriu").toBeTruthy();
       return;
     }
     if (first === "quantity") {
       const trocar = page.getByRole("button", { name: /^trocar$/i }).first();
       if (!(await trocar.isVisible().catch(() => false))) {
-        test.skip(true, "Botão Trocar ausente");
+        expect(false, "[E108] Botão Trocar ausente").toBeTruthy();
         return;
       }
       await trocar.click();

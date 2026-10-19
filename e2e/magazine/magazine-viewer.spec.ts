@@ -223,7 +223,7 @@ test.describe('Magazine viewer — swipe mobile', () => {
     // Encontra o container swipe (main dentro do viewer)
     const surface = page.locator('main').first();
     const box = await surface.boundingBox();
-    if (!box) test.skip(true, 'surface sem bounding box');
+    if (!box) expect(false, '[E108] surface sem bounding box').toBeTruthy();
 
     // Swipe da direita para a esquerda (avança)
     await page.touchscreen.tap(box!.x + box!.width - 20, box!.y + box!.height / 2);

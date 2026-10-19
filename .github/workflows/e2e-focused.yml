@@ -1,11 +1,10 @@
 name: E2E Focused UI — Matrix (E78)
 
 # Consolidação de workflows de UI focados em PRs e schedule semanal.
-# Substitui: e2e-cnpj, e2e-pdf-print-cross-browser, e2e-pdf-dialog,
-#   e2e-color-swatch-grid, e2e-magazine-header, e2e-thumb-quickview,
-#   e2e-dialogs-pr-check.
-# Estes suites podem ter baselines incompletos ou ser flaky — continue-on-error
-# está ativo na matriz de testes. O job secrets_check é sempre bloqueante.
+# Substitui: e2e-cnpj, e2e-pdf-print-cross-browser, e2e-thumb-quickview.
+# Suites com toMatchSnapshot (pdf-dialog, color-swatch, magazine-header,
+# dialogs) foram movidas para nightly-full.yml (E159) — aqui ficam apenas
+# suites funcionais sem baseline visual, todas bloqueantes (E159).
 
 on:
   pull_request:
@@ -41,25 +40,10 @@ defaults:
 
 jobs:
   secrets_check:
-    name: Verify E2E secrets (Focused)
-    runs-on: ubuntu-24.04
-    timeout-minutes: 2
-    permissions:
-      contents: read
-    steps:
-      - name: Check required secrets
-        env:
-          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-        run: |
-          missing=()
-          [ -z "$E2E_USER_EMAIL" ]    && missing+=(E2E_USER_EMAIL)
-          [ -z "$E2E_USER_PASSWORD" ] && missing+=(E2E_USER_PASSWORD)
-          if [ ${#missing[@]} -gt 0 ]; then
-            echo "::error::Secrets ausentes: ${missing[*]} — configure em Settings › Secrets › Actions"
-            exit 1
-          fi
-          echo "Secrets OK"
+    uses: ./.github/workflows/_secrets-check.yml
+    secrets: inherit
+    with:
+      fail_if_missing: true
 
   e2e_focused:
     name: E2E Focused · ${{ matrix.suite }}
@@ -70,14 +54,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # E159: suites com toMatchSnapshot/toHaveScreenshot movidas para
+        # nightly-full.yml (pdf-dialog, color-swatch, magazine-header, dialogs).
+        # Aqui ficam apenas suites funcionais sem baseline visual.
         suite:
           - cnpj
           - pdf-print
-          - pdf-dialog
-          - color-swatch
-          - magazine-header
           - thumb-quickview
-          - dialogs
         include:
           - suite: cnpj
             spec: 'e2e/ui/cnpj-*.spec.ts'
@@ -85,31 +68,10 @@ jobs:
           - suite: pdf-print
             spec: 'e2e/flows/pdf-print-cross-browser.spec.ts'
             project: chromium-public
-          - suite: pdf-dialog
-            spec: 'e2e/flows/pdf-dialog.spec.ts'
-            project: chromium-public
-          - suite: color-swatch
-            spec: >-
-              e2e/catalog/color-swatch-selected-no-clip.spec.ts
-              e2e/catalog/color-swatch-two-lines-grid.spec.ts
-              e2e/catalog/color-swatch-wrap-visual.spec.ts
-            project: chromium-public
-          - suite: magazine-header
-            spec: >-
-              e2e/flows/magazine-header-align.spec.ts
-              e2e/flows/magazine-header-responsive.spec.ts
-            project: chromium-public
           - suite: thumb-quickview
             spec: >-
               e2e/flows/03b-product-thumb-quickview.spec.ts
               e2e/flows/03b-thumb-quickview.smoke.spec.ts
-            project: chromium-public
-          - suite: dialogs
-            spec: >-
-              e2e/ui/dialog-visual.spec.ts
-              e2e/ui/confirm-dialog-visual.spec.ts
-              e2e/ui/alert-dialog-visual.spec.ts
-              e2e/ui/undo-toast-visual.spec.ts
             project: chromium-public
     # R5 — secrets via env:
     env:
@@ -122,22 +84,8 @@ jobs:
         with:
           persist-credentials: false  # E32
 
-      # R4 — node-version-file: .nvmrc
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-
-      - run: npm ci --no-audit --no-fund
-
-      - name: Cache Playwright browsers
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-          restore-keys: playwright-${{ runner.os }}-
-
-      - run: npx playwright install --with-deps chromium
+      - name: Setup E2E
+        uses: ./.github/actions/e2e-setup
 
       - name: Filtrar suite
         if: github.event.inputs.suite != '' && github.event.inputs.suite != matrix.suite
@@ -148,8 +96,6 @@ jobs:
           exit 0
 
       - name: Run E2E Focused · ${{ matrix.suite }}
-        # Suites focados podem ter baselines faltando ou ser conhecidamente flaky (C17: step-level OK)
-        continue-on-error: true
         env:
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}

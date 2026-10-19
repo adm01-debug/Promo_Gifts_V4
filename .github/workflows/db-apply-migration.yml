@@ -36,6 +36,11 @@ on:
         options:
           - apply
           - repair-only
+      ack_baseline_rotation:
+        description: 'E051: confirma que você agendará rotação do baseline (schema-snapshot-export force_rotate=true) APÓS este repair-only. Obrigatório para mode=repair-only.'
+        required: false
+        type: boolean
+        default: false
 
 concurrency:
   group: db-apply-migration
@@ -66,6 +71,26 @@ jobs:
         with:
           persist-credentials: false  # E32
           ref: main  # E35: checkout sempre de main, nunca de branch de PR
+
+      - name: E051 — repair-only exige ack de rotação do baseline
+        if: inputs.mode == 'repair-only'
+        run: |
+          set -euo pipefail
+          {
+            echo "## ⚠️ repair-only: ação pós-aplicação obrigatória (E051)"
+            echo ""
+            echo "\`mode: repair-only\` registra a versão no ledger **sem executar SQL**."
+            echo "Se existir um baseline (\`supabase/baseline/*_baseline_schema.sql\`), o replay"
+            echo "baseline + migrations subsequentes ficará **dessincronizado** até uma rotação forçada."
+            echo ""
+            echo "**Ação obrigatória após este workflow:**"
+            echo "Disparar \`schema-snapshot-export.yml\` com \`force_rotate: true\` para gerar novo baseline."
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ "${{ inputs.ack_baseline_rotation }}" != "true" ]; then
+            echo "::error::repair-only requer ack_baseline_rotation=true — confirme que você agendará a rotação do baseline (schema-snapshot-export force_rotate=true) antes de prosseguir. Ver E051."
+            exit 1
+          fi
+          echo "ack_baseline_rotation confirmado — prosseguindo com repair-only."
 
       - name: Valida approved_by não-vazio (E35 — rejeição antecipada)
         env:
@@ -162,9 +187,9 @@ jobs:
         id: locate
         run: |
           set -euo pipefail
-          mapfile -t FILES < <(ls supabase/migrations/"${MIGRATION_VERSION}"_*.sql 2>/dev/null || true)  # ok: ls com glob retorna non-zero se nenhum arquivo encontrado — tamanho do array é verificado abaixo
+          mapfile -t FILES < <(ls supabase/migrations/"${MIGRATION_VERSION}"_*.sql 2>/dev/null | grep -v '_rollback\.sql$' || true)  # ok: ls com glob retorna non-zero se nenhum arquivo encontrado; rollbacks vivem em supabase/rollbacks/
           if [ "${#FILES[@]}" -ne 1 ]; then
-            echo "::error::esperava exatamente 1 arquivo supabase/migrations/${MIGRATION_VERSION}_*.sql, encontrei ${#FILES[@]} (o job 'preflight' deveria ter barrado isso antes)."
+            echo "::error::esperava exatamente 1 arquivo supabase/migrations/${MIGRATION_VERSION}_*.sql (excluindo _rollback.sql), encontrei ${#FILES[@]} (o job 'preflight' deveria ter barrado isso antes)."
             exit 1
           fi
           echo "file=${FILES[0]}" >> "$GITHUB_OUTPUT"
@@ -212,6 +237,13 @@ jobs:
               exit 1
             fi
           done
+          # E078: transaction: none + pooler transaction (6543) perdem os SET de sessão.
+          # Reprovar antes de aplicar para evitar lock silencioso sem timeout.
+          if [ "$NO_TX" = "true" ] && [ "${PGPORT:-5432}" != "5432" ]; then
+            echo "::error::E078: PGPORT=${PGPORT} (pooler transaction) incompatível com 'transaction: none' — os SET lock_timeout/statement_timeout não persistiriam. Use a porta session (5432) ou remova o cabeçalho 'transaction: none'."
+            exit 1
+          fi
+
           if [ "$NO_TX" = "true" ]; then
             # transaction: none declarado — sem -1 para permitir operações não-transacionais
             # (CONCURRENTLY, ALTER TYPE ADD VALUE, etc.) aprovadas no preflight.
@@ -301,15 +333,26 @@ jobs:
       - name: Monta o recibo em MIGRATIONS_SYNC_LOG.md
         env:
           APPROVED_BY: ${{ inputs.approved_by }}
+          MIGRATION_MODE: ${{ inputs.mode }}
         run: |
+          # E052: recibo distingue aplicação real de registro puro (repair-only)
+          if [ "$MIGRATION_MODE" = "repair-only" ]; then
+            METODO="repair"
+            STATUS="registrada-sem-aplicar"
+            POS_CHECK="repair-only: SQL não executado; apenas registro no ledger (E052)"
+          else
+            METODO="E15"
+            STATUS="aplicada"
+            POS_CHECK="job post-check da run ${{ github.run_id }} confirmou a version no ledger"
+          fi
           node scripts/append-migration-receipt.mjs \
             --version="$MIGRATION_VERSION" \
             --sha256="${{ needs.apply.outputs.sha256 }}" \
             --executor="GitHub Actions (db-apply-migration.yml, disparado por ${{ github.actor }}, aprovado por $APPROVED_BY)" \
-            --metodo="E15" \
+            --metodo="$METODO" \
             --data-utc="${{ needs.apply.outputs.applied_at }}" \
-            --pos-check="job post-check da run ${{ github.run_id }} confirmou a version no ledger" \
-            --status="aplicada"
+            --pos-check="$POS_CHECK" \
+            --status="$STATUS"
 
       - name: Credencial de push sem token em disco (E32)
         run: |

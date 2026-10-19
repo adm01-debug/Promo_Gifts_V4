@@ -78,19 +78,9 @@ jobs:
             echo "✅ Todos os secrets obrigatórios presentes."
           fi
 
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      - name: Setup E2E
         if: steps.crm-check.outputs.skip != 'true'
-        with:
-          node-version-file: '.nvmrc'
-          cache: "npm"
-
-      - name: Install dependencies
-        if: steps.crm-check.outputs.skip != 'true'
-        run: npm ci
-
-      - name: Install Playwright browsers
-        if: steps.crm-check.outputs.skip != 'true'
-        run: npx playwright install --with-deps chromium
+        uses: ./.github/actions/e2e-setup
 
       - name: Run E2E — approved → V4 → CRM (sem mocking)
         if: steps.crm-check.outputs.skip != 'true'

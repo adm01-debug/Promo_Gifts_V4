@@ -34,11 +34,17 @@ const EXACT_ALLOWED_ORIGINS = new Set([
   'http://127.0.0.1:3000',
 ]);
 
+// E093: padrões restritos — hospedagem compartilhada (qualquer subdomínio *.vercel.app /
+// *.lovable.app) substituída por padrões específicos do projeto. Mesma abordagem de
+// image-proxy/index.ts que resolveu o mesmo problema com VERCEL_TEAM_PATTERN.
 const ALLOWED_ORIGIN_PATTERNS = [
-  /^https:\/\/[a-z0-9-]+\.lovable\.app$/i,
-  /^https:\/\/[a-z0-9-]+\.lovableproject\.com$/i,
+  // Apenas preview do projeto Lovable deste time (UUID fixo do projeto)
+  /^https:\/\/[a-z0-9-]+-1be35a65-1f65-4c2b-9a79-7d563930aacd\.lovable\.app$/i,
+  // Apenas o preview ID canônico do projeto Lovable
+  /^https:\/\/id-preview--1be35a65-1f65-4c2b-9a79-7d563930aacd\.lovable\.app$/i,
+  // Apenas deployments Vercel do time -juca1 (mesmo padrão de image-proxy)
+  /^https:\/\/[\w-]+-juca1\.vercel\.app$/i,
   /^https:\/\/[a-z0-9-]+\.atomicabr\.com\.br$/i,
-  /^https:\/\/[a-z0-9-]+\.vercel\.app$/i,
   /^http:\/\/localhost(?::\d+)?$/i,
   /^http:\/\/127\.0\.0\.1(?::\d+)?$/i,
 ];

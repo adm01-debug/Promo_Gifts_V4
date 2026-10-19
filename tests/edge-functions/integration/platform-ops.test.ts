@@ -9,7 +9,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { mockEdgeFunctionFetch, resetExternalMocks, type EdgeFnResponseSpec } from "../../p0/_mocks";
 
-const BASE = "https://nmojwpihnslkssljowjh.supabase.co/functions/v1";
+const BASE = "https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1";
 const AUTH = { Authorization: "Bearer service-role-key" };
 const CT = { "Content-Type": "application/json" };
 const OK200: EdgeFnResponseSpec = { status: 200, body: { ok: true } };

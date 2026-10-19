@@ -24,7 +24,7 @@ async function maybeSkipIfEmpty(page: Page) {
   }
   const empty = page.getByText(/Nenhum produto encontrado/i);
   if (await empty.isVisible().catch(() => false)) {
-    test.skip(true, "sem dados seedados para validar sticky");
+    expect(false, "[E108] sem dados seedados para validar sticky").toBeTruthy();
   }
 }
 
@@ -132,7 +132,7 @@ test.describe("@regression /estoque — tabela sticky (toolbar + thead)", () => 
       const toolbarBefore = await toolbar.boundingBox();
       const theadBefore = await thead.boundingBox();
       if (!toolbarBefore || !theadBefore) {
-        test.skip(true, "bounding boxes indisponíveis");
+        expect(false, "[E108] bounding boxes indisponíveis").toBeTruthy();
         return;
       }
 
@@ -161,7 +161,7 @@ test.describe("@regression /estoque — tabela sticky (toolbar + thead)", () => 
       trail(vp.name, "scroll.metrics", metrics);
 
       if (metrics.scrolled <= 0) {
-        test.skip(true, "conteúdo não excede a altura interna — sem scroll a validar");
+        expect(false, "[E108] conteúdo não excede a altura interna — sem scroll a validar").toBeTruthy();
         return;
       }
 

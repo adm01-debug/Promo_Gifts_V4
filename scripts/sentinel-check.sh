@@ -124,6 +124,33 @@ if echo "$FULL_MSG" | grep -qE '\[skip-sentinel\]'; then
 fi
 
 # ----------------------------------------------------------------------------
+# Regra 8 (E189 — P200): Merge cross-agente sem referência a PR é rejeitado.
+# Branches de agentes: claude/*, codex/*, devin/*, cline/*, lovable/*
+# Um commit de merge cujos dois pais pertencem a prefixos de agentes diferentes
+# sem menção de PR (#NNN) é indício de merge direto fora de PR.
+# O subject de um merge de PR contém "(#NNN)" ou "#NNN" — Regra 2 já aceita isso.
+# Esta regra só chega aqui se as regras anteriores não bateram:
+#   - não é squash (Regra 1)
+#   - não é merge PR padrão (Regra 2)
+#   - não é bot oficial (Regra 3+)
+# Se o SUBJECT começa com "Merge branch" (merge manual) e menciona prefixos
+# de agentes diferentes → rejeita.
+# ----------------------------------------------------------------------------
+AGENT_PREFIXES="(claude|codex|devin|cline|lovable)/"
+if echo "$SUBJECT" | grep -qiE "^Merge branch '${AGENT_PREFIXES}"; then
+  # Extrai os dois nomes de branch do subject "Merge branch 'X' into 'Y'"
+  BRANCH_A=$(echo "$SUBJECT" | grep -oE "'[^']+'" | head -1 | tr -d "'")
+  BRANCH_B=$(echo "$SUBJECT" | grep -oE "'[^']+'" | tail -1 | tr -d "'")
+  PREFIX_A=$(echo "$BRANCH_A" | grep -oE "^(claude|codex|devin|cline|lovable)" || echo "")
+  PREFIX_B=$(echo "$BRANCH_B" | grep -oE "^(claude|codex|devin|cline|lovable)" || echo "")
+
+  if [[ -n "$PREFIX_A" && -n "$PREFIX_B" && "$PREFIX_A" != "$PREFIX_B" ]]; then
+    echo "ERRO: merge cross-agente (${PREFIX_A}/* → ${PREFIX_B}/*) sem PR. Abra um PR em vez de mergear diretamente entre branches de agentes diferentes (P200-E189)."
+    exit 1
+  fi
+fi
+
+# ----------------------------------------------------------------------------
 # Nenhuma regra bateu → rejeita
 # ----------------------------------------------------------------------------
 echo "sem-padrao-aceito"

@@ -67,7 +67,7 @@ export function detectBot(userAgent: string | null): BotCheckResult {
 /** Extract the best-effort client IP from a request. */
 export function getClientIp(req: Request): string {
   const xff = req.headers.get('x-forwarded-for');
-  if (xff) return xff.split(',')[0].trim();
+  if (xff) return xff.split(',').pop()!.trim(); // SEC_0001: último elemento (gateway-appended), não o primeiro (forjável)
   return req.headers.get('cf-connecting-ip')
     || req.headers.get('x-real-ip')
     || 'unknown';

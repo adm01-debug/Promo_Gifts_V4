@@ -20,11 +20,13 @@
 // Atualizado em 2026-05-24 (fase 2): anon key + timeout + corsHeaders param.
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
-// Anon key é seguro aqui — RLS + policy pública garantem que só SELECT funciona.
+// E041 (2026-10-18): anon SELECT de system_kill_switches foi removida.
+// Usar service_role key para garantir que kill switches continuem funcionando
+// mesmo após endurecimento de RLS. Fail-open preservado (L16).
 const ANON_KEY =
+  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ??
   Deno.env.get("SUPABASE_ANON_KEY") ??
-  Deno.env.get("ANON_KEY") ??
-  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+  Deno.env.get("ANON_KEY") ?? "";
 
 interface KillSwitchRow {
   enabled: boolean;

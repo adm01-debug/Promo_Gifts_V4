@@ -13,7 +13,7 @@
  * fecha o loop visual e dá um caminho acionável imediato.
  */
 
-import { getSupabaseClient } from '@/integrations/supabase/lazy-client';
+import { supabase } from '@/integrations/supabase/client';
 
 const THROTTLE_KEY_PREFIX = 'dev_access_request_at:';
 const THROTTLE_MS = 5 * 60_000;
@@ -90,7 +90,6 @@ export async function requestDevAccess(
   const mailtoUrl = buildMailto(input);
 
   // Notificação pessoal — RLS permite (user_id = auth.uid()).
-  const supabase = await getSupabaseClient();
   const { error } = await supabase.from('workspace_notifications').insert({
     user_id: input.userId,
     title: 'Solicitação de acesso a Dev enviada',

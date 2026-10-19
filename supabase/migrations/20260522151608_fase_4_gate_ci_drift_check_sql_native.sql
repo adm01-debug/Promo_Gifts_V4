@@ -1,6 +1,6 @@
 -- Fase 4 v2 - Drift check SQL nativo via pg_net
 INSERT INTO public.system_settings (key,value,description) VALUES
-  ('lovable_url','"https://pqpdolkaeqlyzpdpbizo.supabase.co"','Fase 4: URL do Supabase interno do Lovable Cloud.'),
+  ('lovable_url','"https://doufsxqlfjyuvxuezpln.supabase.co"','Fase 4: URL do Supabase interno do Lovable Cloud.'),
   ('lovable_anon_key','null','Fase 4: ANON KEY do Lovable Cloud. Preencher manualmente.')
 ON CONFLICT (key) DO NOTHING;
 

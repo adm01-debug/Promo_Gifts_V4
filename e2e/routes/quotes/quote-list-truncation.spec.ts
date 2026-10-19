@@ -17,7 +17,7 @@ test.describe("[module:quotes] [component:quotes-list] [owner:team-growth] @regr
     const statusBadge = page.locator('[data-testid^="quote-status-badge-"]').first();
 
     if ((await clientCell.count()) === 0) {
-      test.skip(true, "Sem orçamentos para validar truncamento.");
+      expect(false, "[E108] Sem orçamentos para validar truncamento.").toBeTruthy();
     }
 
     // Truncamento via classe utilitária `truncate` em ambos.

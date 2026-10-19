@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getSupabaseClient } from '@/integrations/supabase/lazy-client';
+import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/ui/use-toast';
 import { sanitizeError } from '@/lib/security/sanitize-error';
 import { authService } from '@/services/authService';
@@ -25,7 +25,6 @@ export function usePasswordResetRequests() {
 
   const fetchRequests = async () => {
     try {
-      const supabase = await getSupabaseClient();
       const { data, error } = await supabase
         .from('password_reset_requests')
         .select(
@@ -58,7 +57,6 @@ export function usePasswordResetRequests() {
       assertPasswordResetTransition(request.status, 'approved');
 
       // Atualizar status
-      const supabase = await getSupabaseClient();
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -119,8 +117,6 @@ export function usePasswordResetRequests() {
       const request = requests.find((r) => r.id === requestId);
       if (!request) throw new Error('Solicitação não encontrada');
       assertPasswordResetTransition(request.status, 'rejected');
-
-      const supabase = await getSupabaseClient();
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -158,7 +154,6 @@ export function usePasswordResetRequests() {
     try {
       const normalizedEmail = email.trim().toLowerCase();
       // Verificar se já existe uma solicitação pendente para este email
-      const supabase = await getSupabaseClient();
       // BUG-PASSWORDRESET-DUPCHECK-SELECT-SILENT-FAIL FIX: { data: existing } without error
       // check — RLS failure silently set existing=null, bypassing the dup-check gate and
       // allowing duplicate reset requests to be inserted. PGRST116 (no rows = no dup) is

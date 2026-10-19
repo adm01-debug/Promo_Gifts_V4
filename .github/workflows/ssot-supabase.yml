@@ -11,6 +11,7 @@ on:
       - 'scripts/check-docs-supabase-hosts.mjs'
       - 'scripts/ssot-report*.mjs'
       - 'scripts/validate-ssot-report.mjs'
+      - 'schemas/ssot-report.schema.json'
       - '.github/workflows/ssot-supabase.yml'
       - 'package.json'
   push:

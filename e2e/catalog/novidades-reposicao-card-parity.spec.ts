@@ -74,7 +74,7 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
       page,
       'div[role="list"][aria-label="Grade de novidades"]',
     );
-    if (!novelty?.box) test.skip(true, 'Sem novidades no dataset.');
+    if (!novelty?.box) expect(false, '[E108] Sem novidades no dataset.').toBeTruthy();
     await testInfo.attach('novidades.png', {
       body: await page.screenshot({ fullPage: false }),
       contentType: 'image/png',
@@ -87,7 +87,7 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
       page,
       'div[role="list"][aria-label="Grade de produtos repostos"]',
     );
-    if (!repl?.box) test.skip(true, 'Sem reposições no dataset.');
+    if (!repl?.box) expect(false, '[E108] Sem reposições no dataset.').toBeTruthy();
     await testInfo.attach('reposicao.png', {
       body: await page.screenshot({ fullPage: false }),
       contentType: 'image/png',
@@ -166,7 +166,7 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
       page,
       'div[role="list"][aria-label="Grade de novidades"]',
     );
-    if (!novelty?.box || !novelty.footerBox) test.skip(true, 'Sem novidades / footer não encontrado.');
+    if (!novelty?.box || !novelty.footerBox) expect(false, '[E108] Sem novidades / footer não encontrado.').toBeTruthy();
 
     await gotoAndSettle(page, '/reposicao');
     await expect(page.getByTestId('page-title-reposicao')).toBeVisible();
@@ -174,7 +174,7 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
       page,
       'div[role="list"][aria-label="Grade de produtos repostos"]',
     );
-    if (!repl?.box || !repl.footerBox) test.skip(true, 'Sem reposições / footer não encontrado.');
+    if (!repl?.box || !repl.footerBox) expect(false, '[E108] Sem reposições / footer não encontrado.').toBeTruthy();
 
     // Distância entre bottom do footer e bottom do card = padding interno.
     // Em ambos os módulos deve ser ~igual (mesmo p-3 do BaseProductGridCard).
@@ -227,7 +227,7 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
         `div[role="list"][aria-label="${listLabel}"] >> [role="listitem"]`,
       );
       if ((await items.count()) === 0) {
-        test.skip(true, `Sem itens em ${route} para screenshot diff.`);
+        expect(false, `[E108] Sem itens em ${route} para screenshot diff.`).toBeTruthy();
       }
       const card = items.first();
       await testInfo.attach(`card-${label}-${projectName}-${vpLabel}.png`, {
@@ -257,7 +257,7 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
         'div[role="list"][aria-label="Grade de produtos repostos"] >> [role="listitem"]',
       );
       const count = await items.count();
-      if (count === 0) test.skip(true, `Sem reposições em ${vp.label}.`);
+      if (count === 0) expect(false, `[E108] Sem reposições em ${vp.label}.`).toBeTruthy();
       const sampleSize = Math.min(count, 6);
       const heights: number[] = [];
       for (let i = 0; i < sampleSize; i++) {
@@ -296,7 +296,7 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
 
       const option = page.getByTestId(`column-option-${cols}`);
       if ((await option.count()) === 0) {
-        test.skip(true, `column-option-${cols} indisponível neste viewport.`);
+        expect(false, `[E108] column-option-${cols} indisponível neste viewport.`).toBeTruthy();
       }
       await option.click();
       // Aguarda re-render do grid após troca de colunas.
@@ -306,7 +306,7 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
         'div[role="list"][aria-label="Grade de produtos repostos"] >> [role="listitem"]',
       );
       const count = await items.count();
-      if (count === 0) test.skip(true, `Sem reposições no modo ${cols} colunas.`);
+      if (count === 0) expect(false, `[E108] Sem reposições no modo ${cols} colunas.`).toBeTruthy();
 
       const sampleSize = Math.min(count, cols * 2);
       const heights: number[] = [];
@@ -410,7 +410,7 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
           'div[role="list"][aria-label="Grade de produtos repostos"] >> [role="listitem"]',
         );
         const count = await items.count();
-        if (count === 0) test.skip(true, `Sem reposições em dsf=${dsf}.`);
+        if (count === 0) expect(false, `[E108] Sem reposições em dsf=${dsf}.`).toBeTruthy();
         const sampleSize = Math.min(count, 6);
         const heights: number[] = [];
         for (let i = 0; i < sampleSize; i++) {
@@ -444,7 +444,7 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
       'div[role="list"][aria-label="Grade de produtos repostos"] >> [role="listitem"]',
     );
     const count = await items.count();
-    if (count === 0) test.skip(true, 'Sem reposições no dataset (modo lista).');
+    if (count === 0) expect(false, '[E108] Sem reposições no dataset (modo lista).').toBeTruthy();
     const sampleSize = Math.min(count, 6);
     const { heights, widths } = await sampleHeights(items, sampleSize);
     const hSpread = Math.max(...heights) - Math.min(...heights);

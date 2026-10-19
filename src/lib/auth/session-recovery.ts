@@ -16,7 +16,7 @@
  * Sem alterações de schema, sem mexer no cliente Supabase auto-gerado.
  */
 import { toast } from 'sonner';
-import { getSupabaseClient } from '@/integrations/supabase/lazy-client';
+import { supabase } from '@/integrations/supabase/client';
 import { createClientLogger } from '@/lib/telemetry/structuredLogger';
 
 /** Padrões de erro que indicam JWT inválido/rejeitado pelo servidor. */
@@ -81,7 +81,6 @@ export function recoverSession(reason: string): Promise<boolean> {
     const log = createClientLogger('auth.sessionRecovery');
     log.info('start', { reason, attempt: recoveryAttemptCount, max: MAX_RECOVERY_ATTEMPTS });
     try {
-      const supabase = await getSupabaseClient();
       const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
 
       if (!refreshError && refreshData?.session) {
@@ -150,7 +149,6 @@ export function attachSessionRevalidation(): () => void {
     if (revalidating) return;
     revalidating = true;
     try {
-      const supabase = await getSupabaseClient();
       const { data: sessionData } = await supabase.auth.getSession();
 
       // BUG-FIX: Se detectarmos que não há sessão mas o localStorage tem resquícios,

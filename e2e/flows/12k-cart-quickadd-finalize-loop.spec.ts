@@ -50,7 +50,7 @@ test.describe("Regressão em loop: QuickAdd → finalizar 5x sem seletor", () =>
       gotoUrl: "/produtos",
     });
     if (!cartB) {
-      test.skip(true, "cartB ausente — configuração inesperada do helper");
+      expect(false, "[E108] cartB ausente — configuração inesperada do helper").toBeTruthy();
       return;
     }
 

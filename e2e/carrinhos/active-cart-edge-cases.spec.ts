@@ -53,7 +53,7 @@ test.describe('Carrinhos · resiliência de carrinho ativo @carrinhos', () => {
     await gotoAndSettle(page, '/carrinhos');
 
     const ids = await collectCartIds(page);
-    if (ids.length < 2) test.skip(true, 'precisa de 2+ carrinhos');
+    if (ids.length < 2) expect(false, '[E108] precisa de 2+ carrinhos').toBeTruthy();
 
     // 3 navegações encadeadas sem esperar assentar entre elas.
     await page.goto(`/carrinhos/${ids[0]}`);
@@ -74,7 +74,7 @@ test.describe('Carrinhos · resiliência de carrinho ativo @carrinhos', () => {
     await gotoAndSettle(page, '/carrinhos');
 
     const ids = await collectCartIds(page);
-    if (ids.length === 0) test.skip(true, 'sem carrinhos para testar');
+    if (ids.length === 0) expect(false, '[E108] sem carrinhos para testar').toBeTruthy();
 
     // Procura um carrinho vazio; se não houver, skipamos com clareza.
     let emptyId: string | null = null;
@@ -89,7 +89,7 @@ test.describe('Carrinhos · resiliência de carrinho ativo @carrinhos', () => {
       }
     }
 
-    if (!emptyId) test.skip(true, 'nenhum carrinho vazio disponível — cenário não reproduzível');
+    if (!emptyId) expect(false, '[E108] nenhum carrinho vazio disponível — cenário não reproduzível').toBeTruthy();
 
     // Header do vazio: 0 SKUs, 0 unidades, SEM moeda (currency oculto quando subtotal = 0).
     const meta = await readHeaderMeta(page);
@@ -107,7 +107,7 @@ test.describe('Carrinhos · resiliência de carrinho ativo @carrinhos', () => {
     await gotoAndSettle(page, '/carrinhos');
 
     const ids = await collectCartIds(page);
-    if (ids.length < 2) test.skip(true, 'precisa de 2+ carrinhos');
+    if (ids.length < 2) expect(false, '[E108] precisa de 2+ carrinhos').toBeTruthy();
 
     // Encontra até 2 carrinhos com subtotal > 0 (moeda visível no header).
     const withMoney: string[] = [];
@@ -120,7 +120,7 @@ test.describe('Carrinhos · resiliência de carrinho ativo @carrinhos', () => {
     }
 
     if (withMoney.length < 2) {
-      test.skip(true, 'precisa de 2+ carrinhos com subtotal > 0 para validar moeda');
+      expect(false, '[E108] precisa de 2+ carrinhos com subtotal > 0 para validar moeda').toBeTruthy();
     }
 
     // Carrinho 1 → formato pt-BR válido.

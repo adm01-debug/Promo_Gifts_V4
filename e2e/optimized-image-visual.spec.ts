@@ -53,7 +53,7 @@ test.describe('OptimizedImage Visual Regression', () => {
       await expect(errorCard).toHaveScreenshot('image-error-state.png');
     } else {
       // No toggle available and no spontaneous error — skip gracefully
-      test.skip(true, 'Error state not reproducible without "Simular Erro" toggle');
+      expect(false, '[E108] Error state not reproducible without "Simular Erro" toggle').toBeTruthy();
     }
   });
 

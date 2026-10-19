@@ -1,384 +1,12 @@
 -- ==============================================================
 -- ALL_IN_ONE.sql — snapshot concatenado de supabase/migrations/
--- Gerado em: 2026-10-15T15:43:05.931Z
--- Total de arquivos: 3034
+-- Gerado em: 2026-10-18T17:57:18.934Z
+-- Total de arquivos: 2974
 -- Ordem: alfabética (mesmo critério do Supabase CLI)
 -- Uso: APENAS auditoria/leitura. NÃO aplicar direto no banco.
 -- SSOT continua sendo os arquivos individuais em supabase/migrations/.
 -- ==============================================================
 
-
--- >>> BEGIN 001_notification_system.sql >>>
--- =====================================================
--- SISTEMA UNIFICADO DE NOTIFICAÇÕES
--- Migration 001 - Tabelas Principais
--- =====================================================
-
--- Tabela principal de notificações
-CREATE TABLE IF NOT EXISTS notifications (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-  
-  -- Identificação
-  title TEXT NOT NULL,
-  message TEXT NOT NULL,
-  type TEXT NOT NULL DEFAULT 'info', -- 'info', 'success', 'warning', 'error', 'urgent'
-  category TEXT DEFAULT 'system', -- 'approval', 'alert', 'reminder', 'system', 'social'
-  
-  -- Fonte
-  source_system TEXT NOT NULL, -- 'compras', 'wms', 'dp', etc.
-  source_entity_type TEXT,
-  source_entity_id UUID,
-  
-  -- Canais
-  channels TEXT[] DEFAULT ARRAY['in_app'], -- ['in_app', 'email', 'push', 'sms', 'whatsapp']
-  
-  -- Status
-  is_read BOOLEAN DEFAULT false,
-  read_at TIMESTAMPTZ,
-  
-  -- Agrupamento
-  group_key TEXT,
-  is_grouped BOOLEAN DEFAULT false,
-  group_count INT DEFAULT 1,
-  
-  -- Ações
-  action_url TEXT,
-  action_label TEXT,
-  action_data JSONB,
-  
-  -- Prioridade e timing
-  priority INT DEFAULT 0, -- 0=baixa, 1=normal, 2=alta, 3=urgente
-  scheduled_for TIMESTAMPTZ,
-  expires_at TIMESTAMPTZ,
-  
-  -- Tracking
-  delivered_at TIMESTAMPTZ,
-  delivery_status JSONB DEFAULT '{}'::jsonb,
-  
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- Índices otimizados
-CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications(user_id, created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_notifications_unread ON notifications(user_id, is_read) WHERE NOT is_read;
-CREATE INDEX IF NOT EXISTS idx_notifications_scheduled ON notifications(scheduled_for) WHERE scheduled_for IS NOT NULL;
-CREATE INDEX IF NOT EXISTS idx_notifications_group ON notifications(group_key) WHERE group_key IS NOT NULL;
-CREATE INDEX IF NOT EXISTS idx_notifications_source ON notifications(source_system, source_entity_type, source_entity_id);
-
--- RLS
-ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "Users can view own notifications" ON notifications;
-CREATE POLICY "Users can view own notifications"
-ON notifications FOR SELECT
-USING (auth.uid() = user_id);
-
-DROP POLICY IF EXISTS "Systems can create notifications" ON notifications;
-CREATE POLICY "Systems can create notifications"
-ON notifications FOR INSERT
-WITH CHECK (true);
-
-DROP POLICY IF EXISTS "Users can update own notifications" ON notifications;
-CREATE POLICY "Users can update own notifications"
-ON notifications FOR UPDATE
-USING (auth.uid() = user_id);
-
-DROP POLICY IF EXISTS "Users can delete own notifications" ON notifications;
-CREATE POLICY "Users can delete own notifications"
-ON notifications FOR DELETE
-USING (auth.uid() = user_id);
-
--- Trigger para updated_at
-CREATE OR REPLACE FUNCTION update_notification_updated_at()
-RETURNS TRIGGER AS $$
-BEGIN
-  NEW.updated_at = NOW();
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-DROP TRIGGER IF EXISTS trigger_update_notification_updated_at ON notifications;
--- Could not detect table for DROP TRIGGER IF EXISTS trigger_update_notification_updated_at
-CREATE TRIGGER trigger_update_notification_updated_at
-  BEFORE UPDATE ON notifications
-  FOR EACH ROW
-  EXECUTE FUNCTION update_notification_updated_at();
-
--- <<< END 001_notification_system.sql <<<
-
--- >>> BEGIN 002_notification_preferences.sql >>>
--- =====================================================
--- Migration 002 - Preferências do Usuário
--- =====================================================
-
-CREATE TABLE IF NOT EXISTS notification_preferences (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE UNIQUE,
-  
-  -- Canais habilitados
-  email_enabled BOOLEAN DEFAULT true,
-  push_enabled BOOLEAN DEFAULT true,
-  sms_enabled BOOLEAN DEFAULT false,
-  whatsapp_enabled BOOLEAN DEFAULT false,
-  
-  -- Preferências por categoria
-  preferences JSONB DEFAULT '{
-    "approval": {"channels": ["in_app", "email", "push"], "priority": 3},
-    "alert": {"channels": ["in_app", "push", "sms"], "priority": 2},
-    "reminder": {"channels": ["in_app", "email"], "priority": 1},
-    "system": {"channels": ["in_app"], "priority": 0},
-    "social": {"channels": ["in_app"], "priority": 0}
-  }'::jsonb,
-  
-  -- Do Not Disturb
-  dnd_enabled BOOLEAN DEFAULT false,
-  dnd_start_time TIME,
-  dnd_end_time TIME,
-  dnd_days INT[],
-  
-  -- Digest
-  digest_enabled BOOLEAN DEFAULT false,
-  digest_frequency TEXT DEFAULT 'daily',
-  digest_time TIME DEFAULT '09:00:00',
-  digest_days INT[],
-  
-  -- Agrupamento
-  grouping_enabled BOOLEAN DEFAULT true,
-  grouping_window_minutes INT DEFAULT 5,
-  
-  -- Contatos
-  phone_number TEXT,
-  whatsapp_number TEXT,
-  
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
-);
-
-ALTER TABLE notification_preferences ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "Users can manage own preferences" ON notification_preferences;
-CREATE POLICY "Users can manage own preferences"
-ON notification_preferences FOR ALL
-USING (auth.uid() = user_id);
-
--- Função para criar preferências padrão
-CREATE OR REPLACE FUNCTION create_default_notification_preferences()
-RETURNS TRIGGER AS $$
-BEGIN
-  INSERT INTO notification_preferences (user_id)
-  VALUES (NEW.id)
-  ON CONFLICT (user_id) DO NOTHING;
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-DROP TRIGGER IF EXISTS on_user_created_preferences ON auth.users;
-DROP TRIGGER IF EXISTS on_user_created_preferences ON auth.users;
-CREATE TRIGGER on_user_created_preferences
-  AFTER INSERT ON auth.users
-  FOR EACH ROW
-  EXECUTE FUNCTION create_default_notification_preferences();
-
--- <<< END 002_notification_preferences.sql <<<
-
--- >>> BEGIN 003_notification_templates.sql >>>
--- =====================================================
--- Migration 003 - Templates e Webhooks
--- =====================================================
-
-CREATE TABLE IF NOT EXISTS notification_templates (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  system TEXT NOT NULL,
-  event_type TEXT NOT NULL,
-  channel TEXT NOT NULL,
-  
-  title_template TEXT NOT NULL,
-  message_template TEXT NOT NULL,
-  
-  variables TEXT[],
-  default_priority INT DEFAULT 1,
-  
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  CONSTRAINT unique_template UNIQUE (system, event_type, channel)
-);
-
-CREATE TABLE IF NOT EXISTS webhook_configs (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-  system TEXT NOT NULL,
-  
-  name TEXT NOT NULL,
-  url TEXT NOT NULL,
-  secret TEXT,
-  
-  events TEXT[] NOT NULL,
-  is_active BOOLEAN DEFAULT true,
-  
-  max_retries INT DEFAULT 3,
-  retry_delay_seconds INT DEFAULT 60,
-  
-  last_triggered_at TIMESTAMPTZ,
-  total_calls INT DEFAULT 0,
-  failed_calls INT DEFAULT 0,
-  
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
-CREATE TABLE IF NOT EXISTS webhook_logs (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  webhook_id UUID REFERENCES webhook_configs(id) ON DELETE CASCADE,
-  
-  event_type TEXT NOT NULL,
-  payload JSONB NOT NULL,
-  
-  status_code INT,
-  response_body TEXT,
-  success BOOLEAN,
-  
-  attempt_number INT DEFAULT 1,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
-CREATE INDEX IF NOT EXISTS idx_webhook_logs_webhook ON webhook_logs(webhook_id, created_at DESC);
-
--- <<< END 003_notification_templates.sql <<<
-
--- >>> BEGIN 004_notification_functions.sql >>>
--- =====================================================
--- Migration 004 - Funções Auxiliares
--- =====================================================
-
--- Verifica se está em horário DND
-CREATE OR REPLACE FUNCTION is_dnd_active(p_user_id UUID)
-RETURNS BOOLEAN AS $$
-DECLARE
-  v_prefs RECORD;
-  v_now TIME;
-  v_day INT;
-BEGIN
-  SELECT * INTO v_prefs
-  FROM notification_preferences
-  WHERE user_id = p_user_id;
-  
-  IF NOT FOUND OR NOT v_prefs.dnd_enabled THEN
-    RETURN false;
-  END IF;
-  
-  v_now := CURRENT_TIME;
-  v_day := EXTRACT(DOW FROM NOW());
-  
-  IF v_prefs.dnd_days IS NOT NULL AND v_day = ANY(v_prefs.dnd_days) THEN
-    RETURN true;
-  END IF;
-  
-  IF v_prefs.dnd_start_time IS NOT NULL AND v_prefs.dnd_end_time IS NOT NULL THEN
-    IF v_prefs.dnd_start_time < v_prefs.dnd_end_time THEN
-      RETURN v_now >= v_prefs.dnd_start_time OR v_now <= v_prefs.dnd_end_time;
-    ELSE
-      RETURN v_now >= v_prefs.dnd_start_time AND v_now <= v_prefs.dnd_end_time;
-    END IF;
-  END IF;
-  
-  RETURN false;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
--- Marcar notificação como lida
-CREATE OR REPLACE FUNCTION mark_notification_read(p_notification_id UUID)
-RETURNS VOID AS $$
-BEGIN
-  UPDATE notifications
-  SET is_read = true,
-      read_at = NOW(),
-      updated_at = NOW()
-  WHERE id = p_notification_id
-    AND user_id = auth.uid();
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
--- Marcar todas como lidas
-CREATE OR REPLACE FUNCTION mark_all_notifications_read()
-RETURNS VOID AS $$
-BEGIN
-  UPDATE notifications
-  SET is_read = true,
-      read_at = NOW(),
-      updated_at = NOW()
-  WHERE user_id = auth.uid()
-    AND NOT is_read;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
--- Obter contador de não lidas
-CREATE OR REPLACE FUNCTION get_unread_count()
-RETURNS INT AS $$
-BEGIN
-  RETURN (
-    SELECT COUNT(*)::INT
-    FROM notifications
-    WHERE user_id = auth.uid()
-      AND NOT is_read
-  );
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
--- Limpar notificações antigas
-CREATE OR REPLACE FUNCTION cleanup_old_notifications()
-RETURNS INT AS $$
-DECLARE
-  v_deleted INT;
-BEGIN
-  WITH deleted AS (
-    DELETE FROM notifications
-    WHERE created_at < NOW() - INTERVAL '90 days'
-      AND is_read = true
-    RETURNING *
-  )
-  SELECT COUNT(*)::INT INTO v_deleted FROM deleted;
-  
-  RETURN v_deleted;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
--- <<< END 004_notification_functions.sql <<<
-
--- >>> BEGIN 005_push_subscriptions.sql >>>
--- =====================================================
--- Migration 005 - Push Subscriptions
--- =====================================================
-
-CREATE TABLE IF NOT EXISTS push_subscriptions (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-  
-  endpoint TEXT NOT NULL,
-  p256dh TEXT NOT NULL,
-  auth TEXT NOT NULL,
-  
-  user_agent TEXT,
-  device_type TEXT, -- 'desktop', 'mobile', 'tablet'
-  
-  is_active BOOLEAN DEFAULT true,
-  last_used_at TIMESTAMPTZ,
-  
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  
-  CONSTRAINT unique_subscription UNIQUE (user_id, endpoint)
-);
-
-CREATE INDEX IF NOT EXISTS idx_push_subscriptions_user ON push_subscriptions(user_id);
-CREATE INDEX IF NOT EXISTS idx_push_subscriptions_active ON push_subscriptions(user_id, is_active) WHERE is_active;
-
-ALTER TABLE push_subscriptions ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "Users can manage own subscriptions" ON push_subscriptions;
-CREATE POLICY "Users can manage own subscriptions"
-ON push_subscriptions FOR ALL
-USING (auth.uid() = user_id);
-
--- <<< END 005_push_subscriptions.sql <<<
 
 -- >>> BEGIN 20241231000000_saved_filters.sql >>>
 -- ============================================
@@ -77118,7 +76746,7 @@ AS $function$
 DECLARE
   _event text;
   _payload jsonb;
-  _project_url text := 'https://pqpdolkaeqlyzpdpbizo.supabase.co';
+  _project_url text := 'https://doufsxqlfjyuvxuezpln.supabase.co';
   _dispatcher_secret text;
 BEGIN
   IF TG_TABLE_NAME = 'quotes' THEN
@@ -77176,7 +76804,7 @@ SECURITY DEFINER
 SET search_path = public
 AS $function$
 DECLARE
-  v_supabase_url text := 'https://pqpdolkaeqlyzpdpbizo.supabase.co';
+  v_supabase_url text := 'https://doufsxqlfjyuvxuezpln.supabase.co';
   v_service_key text;
   v_dispatcher_secret text;
   v_retried int := 0;
@@ -77262,7 +76890,7 @@ SELECT cron.schedule(
   '*/15 * * * *',
   $cron$
   SELECT net.http_post(
-    url := 'https://pqpdolkaeqlyzpdpbizo.supabase.co/functions/v1/connections-auto-test',
+    url := 'https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1/connections-auto-test',
     headers := jsonb_build_object(
       'Content-Type', 'application/json',
       'x-cron-secret', public.get_edge_function_secret('CONNECTIONS_AUTO_TEST_SECRET')
@@ -81645,7 +81273,7 @@ GRANT EXECUTE ON FUNCTION public.record_schema_drift_result(jsonb) TO service_ro
 -- >>> BEGIN 20260522151608_fase_4_gate_ci_drift_check_sql_native.sql >>>
 -- Fase 4 v2 - Drift check SQL nativo via pg_net
 INSERT INTO public.system_settings (key,value,description) VALUES
-  ('lovable_url','"https://pqpdolkaeqlyzpdpbizo.supabase.co"','Fase 4: URL do Supabase interno do Lovable Cloud.'),
+  ('lovable_url','"https://doufsxqlfjyuvxuezpln.supabase.co"','Fase 4: URL do Supabase interno do Lovable Cloud.'),
   ('lovable_anon_key','null','Fase 4: ANON KEY do Lovable Cloud. Preencher manualmente.')
 ON CONFLICT (key) DO NOTHING;
 
@@ -82066,7 +81694,7 @@ CREATE POLICY "Admins manage drift allowlist"
   WITH CHECK (EXISTS (SELECT 1 FROM public.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
 
 COMMENT ON TABLE public.schema_drift_allowlist IS
-  'Tabelas onde divergência de schema entre Lovable interno (pqpdolkaeqlyzpdpbizo) e Oficial (pqpdolkaeqlyzpdpbizo) é aceitável por design (cache, infra, particionamento).';
+  'Tabelas onde divergência de schema entre Lovable interno (doufsxqlfjyuvxuezpln) e Oficial (doufsxqlfjyuvxuezpln) é aceitável por design (cache, infra, particionamento).';
 
 -- Atualizar fn_compute_and_record_drift para considerar allowlist
 CREATE OR REPLACE FUNCTION public.fn_compute_and_record_drift(p_lovable_signatures jsonb)
@@ -86171,7 +85799,7 @@ BEGIN
   _url := public.get_edge_functions_base_url();
 
   _pattern := CASE lower(coalesce(_environment, ''))
-    WHEN 'prod' THEN '^https://pqpdolkaeqlyzpdpbizo\.supabase\.co$'
+    WHEN 'prod' THEN '^https://doufsxqlfjyuvxuezpln.supabase.co$'
     WHEN 'stage' THEN '^https://[a-z0-9-]+\.supabase\.co$'
     WHEN 'dev' THEN '^https://[a-z0-9-]+\.supabase\.co$'
     ELSE '^https://[a-z0-9-]+\.supabase\.co$'
@@ -91145,7 +90773,7 @@ SELECT cron.schedule(
   '*/15 * * * *',
   $$
   SELECT net.http_post(
-    url := 'https://pqpdolkaeqlyzpdpbizo.supabase.co/functions/v1/connections-auto-test',
+    url := 'https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1/connections-auto-test',
     headers := jsonb_build_object(
       'Content-Type', 'application/json',
       'apikey', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRvdWZzeHFsZmp5dXZ4dWV6cGxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjczODY2NDMsImV4cCI6MjA4Mjk2MjY0M30.nm3WMOBSx5SUnIBmvF_Mj0Y-4hV6UohrBF0sUpuQvPc'
@@ -91403,7 +91031,7 @@ SELECT cron.schedule(
     '*/15 * * * *',
     $$
     SELECT net.http_post(
-        url := 'https://pqpdolkaeqlyzpdpbizo.supabase.co/functions/v1/connections-auto-test',
+        url := 'https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1/connections-auto-test',
         headers := jsonb_build_object(
             'Content-Type', 'application/json',
             'x-cron-secret', public.get_edge_function_secret('CRON_SECRET')
@@ -92082,391 +91710,6 @@ CREATE POLICY "ai_queue_delete_admin_only"
 ALTER TABLE ai_description_queue ENABLE ROW LEVEL SECURITY;
 
 -- <<< END 20260602130000_fix_ai_description_queue_rls_policy.sql <<<
-
--- >>> BEGIN 20260602_001_add_fk_indexes_critical.sql >>>
--- ============================================================
--- MIGRATION 001: Adiciona indices em FK sem cobertura
--- Auditoria: 02/06/2026 — Claude Sonnet 4
--- 60 FK identificadas sem indice causando full scans em JOINs
--- ============================================================
-
--- STOCK SNAPSHOTS (tabela de estoque critica)
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_stock_snapshots_variant_id
-  ON public.stock_snapshots(variant_id);
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_stock_snapshots_supplier_id
-  ON public.stock_snapshots(supplier_id);
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_stock_snapshots_supplier_branch_id
-  ON public.stock_snapshots(supplier_branch_id);
-
--- STOCK DAILY SUMMARY
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_stock_daily_summary_variant_id
-  ON public.stock_daily_summary(variant_id);
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_stock_daily_summary_supplier_id
-  ON public.stock_daily_summary(supplier_id);
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_stock_daily_summary_supplier_branch_id
-  ON public.stock_daily_summary(supplier_branch_id);
-
--- ORDER ITEMS
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_order_items_order_id
-  ON public.order_items(order_id);
-
--- MOCKUP GENERATION JOBS
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_mockup_generation_jobs_product_id
-  ON public.mockup_generation_jobs(product_id);
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_mockup_generation_jobs_technique_id
-  ON public.mockup_generation_jobs(technique_id);
-
--- GENERATED MOCKUPS
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_generated_mockups_product_id
-  ON public.generated_mockups(product_id);
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_generated_mockups_technique_id
-  ON public.generated_mockups(technique_id);
-
--- MOCKUP CREDIT TRANSACTIONS
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_mockup_credit_transactions_job_id
-  ON public.mockup_credit_transactions(job_id);
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_mockup_credit_transactions_credit_account_id
-  ON public.mockup_credit_transactions(credit_account_id);
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_mockup_credit_transactions_mockup_id
-  ON public.mockup_credit_transactions(mockup_id);
-
--- COLOR VARIATIONS (FK para color_groups e color_nuances)
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_color_variations_color_group_id
-  ON public.color_variations(color_group_id);
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_color_variations_nuance_id
-  ON public.color_variations(nuance_id);
-
--- AI FUNCTION ROUTING
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_ai_function_routing_primary_model_id
-  ON public.ai_function_routing(primary_model_id);
-
--- AI ROUTING DECISIONS
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_ai_routing_decisions_final_model_id
-  ON public.ai_routing_decisions(final_model_id);
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_ai_routing_decisions_final_provider_id
-  ON public.ai_routing_decisions(final_provider_id);
-
--- MATERIAL VARIATIONS
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_material_variations_type_id
-  ON public.material_variations(type_id);
-
--- ATTRIBUTE DEFINITIONS
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_attribute_definitions_group_id
-  ON public.attribute_definitions(group_id);
-
--- WEBHOOK DELIVERIES
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_webhook_deliveries_webhook_id
-  ON public.webhook_deliveries(webhook_id);
-
--- SUPPLIER IMAGE SUFFIX PATTERNS
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_supplier_image_suffix_patterns_supplier_id
-  ON public.supplier_image_suffix_patterns(supplier_id);
-
--- SUPPLIER PROPERTY MAPPINGS
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_supplier_property_mappings_supplier_id
-  ON public.supplier_property_mappings(supplier_id);
-
--- MARKUP CONFIGURATIONS
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_markup_configurations_supplier_id
-  ON public.markup_configurations(supplier_id);
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_markup_configurations_product_id
-  ON public.markup_configurations(product_id);
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_markup_configurations_created_by
-  ON public.markup_configurations(created_by);
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_markup_configurations_organization_id
-  ON public.markup_configurations(organization_id);
-
--- PRODUCT FAQS
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_product_faqs_product_id
-  ON public.product_faqs(product_id);
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_product_faqs_category_id
-  ON public.product_faqs(category_id);
-
--- QUOTE COMMENTS
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_quote_comments_quote_id
-  ON public.quote_comments(quote_id);
-
--- PACKAGINGS
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_packagings_packaging_type_id
-  ON public.packagings(packaging_type_id);
-
--- OPTIMIZATION QUEUE RUNS
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_optimization_queue_runs_queue_id
-  ON public.optimization_queue_runs(queue_id);
-
--- PRODUCT GROUP MEMBERS
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_product_group_members_product_group_id
-  ON public.product_group_members(product_group_id);
-
--- PRODUCT TARGET AUDIENCES
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_product_target_audiences_category_id
-  ON public.product_target_audiences(category_id);
-
--- SCRAPER IMAGES STAGING
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_scraper_images_staging_product_id
-  ON public.scraper_images_staging(product_id);
-
--- MEDIA SYNC LOG
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_media_sync_log_video_id
-  ON public.media_sync_log(video_id);
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_media_sync_log_image_id
-  ON public.media_sync_log(image_id);
-
--- MEDIA SYNC QUEUE
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_media_sync_queue_supplier_id
-  ON public.media_sync_queue(supplier_id);
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_media_sync_queue_organization_id
-  ON public.media_sync_queue(organization_id);
-
--- KIT SHARE TOKENS
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_kit_share_tokens_kit_id
-  ON public.kit_share_tokens(kit_id);
-
--- KIT VARIANTS
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_kit_variants_kit_master_id
-  ON public.kit_variants(kit_master_id);
-
--- KIT COMMENTS
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_kit_comments_kit_id
-  ON public.kit_comments(kit_id);
-
--- MCP KEY AUTO REVOCATIONS
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_mcp_key_auto_revocations_key_id
-  ON public.mcp_key_auto_revocations(key_id);
-
--- MCP API KEYS (self-ref)
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_mcp_api_keys_rotated_from
-  ON public.mcp_api_keys(rotated_from)
-  WHERE rotated_from IS NOT NULL;
-
--- QUOTES (self-ref parent_quote_id)
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_quotes_parent_quote_id
-  ON public.quotes(parent_quote_id)
-  WHERE parent_quote_id IS NOT NULL;
-
--- PERSONALIZATION SIMULATIONS
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_personalization_simulations_product_id
-  ON public.personalization_simulations(product_id);
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_personalization_simulations_client_id
-  ON public.personalization_simulations(client_id);
-
--- ENRICHMENT LOG
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_enrichment_log_contact_id
-  ON public.enrichment_log(contact_id);
-
--- COMMEMORATIVE DATE EXCLUSIONS
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_commemorative_date_exclusions_date_id
-  ON public.commemorative_date_exclusions(commemorative_date_id);
-
--- COMMEMORATIVE DATES
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_commemorative_dates_organization_id
-  ON public.commemorative_dates(organization_id)
-  WHERE organization_id IS NOT NULL;
-
--- B2B COLLECTIONS
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_b2b_collections_organization_id
-  ON public.b2b_collections(organization_id);
-
--- COLOR ANALYSIS STAGING
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_color_analysis_staging_current_variation_id
-  ON public.color_analysis_staging(current_variation_id)
-  WHERE current_variation_id IS NOT NULL;
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_color_analysis_staging_suggested_variation_id
-  ON public.color_analysis_staging(suggested_variation_id)
-  WHERE suggested_variation_id IS NOT NULL;
-
--- MOCKUP TEMPLATES
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_mockup_templates_default_technique_id
-  ON public.mockup_templates(default_technique_id)
-  WHERE default_technique_id IS NOT NULL;
-
--- CONNECTION TEST HISTORY
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_connection_test_history_connection_id
-  ON public.connection_test_history(connection_id);
-
--- <<< END 20260602_001_add_fk_indexes_critical.sql <<<
-
--- >>> BEGIN 20260602_002_fix_cron_jobs_never_ran.sql >>>
--- ============================================================
--- MIGRATION 002: Corrige cron jobs que nunca executaram
--- Auditoria: 02/06/2026 — Claude Sonnet 4
--- vacuum-analyze-weekly e cleanup-log-tables-weekly = last_run NULL
--- ============================================================
-
--- Recriar vacuum-analyze-weekly
-SELECT cron.unschedule('vacuum-analyze-weekly');
-
-SELECT cron.schedule(
-  'vacuum-analyze-weekly',
-  '0 2 * * 6',
-  $$
-    ANALYZE public.product_images;
-    ANALYZE public.product_relationships;
-    ANALYZE public.products;
-    ANALYZE public.product_variants;
-    ANALYZE public.supplier_import_batches;
-    ANALYZE public.product_category_assignments;
-    ANALYZE public.admin_audit_log;
-    ANALYZE public.frontend_telemetry;
-    ANALYZE public.variant_supplier_sources;
-    ANALYZE public.supplier_products_raw;
-  $$
-);
--- NOTA: VACUUM real nao pode rodar em transaction block via cron.
--- ANALYZE aqui atualiza estatisticas sem precisar de VACUUM.
--- Execute VACUUM ANALYZE manualmente via Dashboard nas tabelas criticas.
-
--- Recriar cleanup-log-tables-weekly
-SELECT cron.unschedule('cleanup-log-tables-weekly');
-
-SELECT cron.schedule(
-  'cleanup-log-tables-weekly',
-  '0 3 * * 0',
-  $$ SELECT public.fn_cleanup_log_tables(); $$
-);
-
--- Novo: log-retention-daily (complementar)
-SELECT cron.schedule(
-  'log-retention-daily',
-  '0 4 * * *',
-  $$ SELECT public.fn_cleanup_log_tables(); $$
-);
-
--- <<< END 20260602_002_fix_cron_jobs_never_ran.sql <<<
-
--- >>> BEGIN 20260602_003_log_retention_policy.sql >>>
--- ============================================================
--- MIGRATION 003: Politica de retencao para tabelas de log
--- Auditoria: 02/06/2026 — Claude Sonnet 4
--- admin_audit_log: 50MB / 35.936 rows
--- frontend_telemetry: 30MB / 31.341 rows (user_id=NULL 100%!)
--- ============================================================
-
-CREATE OR REPLACE FUNCTION public.fn_cleanup_log_tables()
-RETURNS TABLE(tabela TEXT, registros_removidos BIGINT)
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = public
-AS $$
-DECLARE
-  v_count BIGINT;
-BEGIN
-  -- admin_audit_log: 90 dias
-  DELETE FROM public.admin_audit_log
-  WHERE created_at < NOW() - INTERVAL '90 days';
-  GET DIAGNOSTICS v_count = ROW_COUNT;
-  tabela := 'admin_audit_log'; registros_removidos := v_count;
-  RETURN NEXT;
-
-  -- frontend_telemetry: 60 dias
-  DELETE FROM public.frontend_telemetry
-  WHERE created_at < NOW() - INTERVAL '60 days';
-  GET DIAGNOSTICS v_count = ROW_COUNT;
-  tabela := 'frontend_telemetry'; registros_removidos := v_count;
-  RETURN NEXT;
-
-  -- query_telemetry: 30 dias
-  DELETE FROM public.query_telemetry
-  WHERE created_at < NOW() - INTERVAL '30 days';
-  GET DIAGNOSTICS v_count = ROW_COUNT;
-  tabela := 'query_telemetry'; registros_removidos := v_count;
-  RETURN NEXT;
-
-  -- search_analytics: 90 dias
-  DELETE FROM public.search_analytics
-  WHERE created_at < NOW() - INTERVAL '90 days';
-  GET DIAGNOSTICS v_count = ROW_COUNT;
-  tabela := 'search_analytics'; registros_removidos := v_count;
-  RETURN NEXT;
-
-  -- catalog_analytics: 90 dias
-  DELETE FROM public.catalog_analytics
-  WHERE created_at < NOW() - INTERVAL '90 days';
-  GET DIAGNOSTICS v_count = ROW_COUNT;
-  tabela := 'catalog_analytics'; registros_removidos := v_count;
-  RETURN NEXT;
-
-  -- image_validation_log: 60 dias
-  DELETE FROM public.image_validation_log
-  WHERE created_at < NOW() - INTERVAL '60 days';
-  GET DIAGNOSTICS v_count = ROW_COUNT;
-  tabela := 'image_validation_log'; registros_removidos := v_count;
-  RETURN NEXT;
-
-  -- image_import_log: 60 dias
-  DELETE FROM public.image_import_log
-  WHERE created_at < NOW() - INTERVAL '60 days';
-  GET DIAGNOSTICS v_count = ROW_COUNT;
-  tabela := 'image_import_log'; registros_removidos := v_count;
-  RETURN NEXT;
-
-  -- edge_function_invocations: 30 dias
-  DELETE FROM public.edge_function_invocations
-  WHERE created_at < NOW() - INTERVAL '30 days';
-  GET DIAGNOSTICS v_count = ROW_COUNT;
-  tabela := 'edge_function_invocations'; registros_removidos := v_count;
-  RETURN NEXT;
-
-  -- price_history: 180 dias
-  DELETE FROM public.price_history
-  WHERE changed_at < NOW() - INTERVAL '180 days';
-  GET DIAGNOSTICS v_count = ROW_COUNT;
-  tabela := 'price_history'; registros_removidos := v_count;
-  RETURN NEXT;
-
-END;
-$$;
-
--- BUG ENCONTRADO: frontend_telemetry tem user_id = NULL em 100% dos registros
--- Investigar instrumentacao no frontend antes de proxima sprint
-COMMENT ON TABLE public.frontend_telemetry IS
-  'ATENCAO: Auditoria 20260602 - user_id = NULL em 100% dos registros. Bug de instrumentacao no frontend.';
-
--- <<< END 20260602_003_log_retention_policy.sql <<<
-
--- >>> BEGIN 20260602_004_remove_unused_indexes_safe.sql >>>
--- ============================================================
--- MIGRATION 004: Remove indices NUNCA utilizados (conservador)
--- Auditoria: 02/06/2026 — Claude Sonnet 4
--- Total com idx_scan=0: 142 indices
--- Esta migration remove apenas os mais pesados e claramente redundantes
--- ATENCAO: Execute VACUUM ANALYZE nas tabelas apos remover!
--- ============================================================
-
--- product_images: 4MB — indice unico de filename jamais usado
-DROP INDEX CONCURRENTLY IF EXISTS public.idx_unique_product_filename;
-
--- variant_supplier_sources: 1.1MB — indice composto nunca usado
-DROP INDEX CONCURRENTLY IF EXISTS public.variant_stocks_organization_id_variant_id_supplier_id_key;
-
--- product_materials: 1MB — indice composto nunca usado
-DROP INDEX CONCURRENTLY IF EXISTS public.product_materials_organization_id_product_id_material_id_pa_key;
-
--- supplier_import_batches: 400KB
-DROP INDEX CONCURRENTLY IF EXISTS public.idx_supplier_import_batches_supplier_id;
-
--- product_images: 336KB — organization_id nunca consultado em product_images
-DROP INDEX CONCURRENTLY IF EXISTS public.idx_product_images_organization_id;
-
--- frontend_telemetry: 232KB — user_id=NULL em 100% dos registros, indice inutil
-DROP INDEX CONCURRENTLY IF EXISTS public.idx_frontend_telemetry_user_id;
-
--- product_commemorative_dates: 232KB
-DROP INDEX CONCURRENTLY IF EXISTS public.idx_product_commemorative_dates_commemorative_date_id;
-
--- ai_description_queue: 64KB
-DROP INDEX CONCURRENTLY IF EXISTS public.idx_ai_description_queue_organization_id;
-
--- -------------------------------------------------------
--- INDICES COMENTADOS (revisar antes de remover):
--- product_images_cloudflare_image_id_key (2.4MB) — UNIQUE constraint
--- variant_stocks_unique_idx (816KB) — UNIQUE constraint
--- idx_products_slug_unique (712KB) — slug e campo critico SEO
--- idx_product_images_image_type_id (336KB) — FK usada em JOINs
--- idx_supplier_products_raw_import_batch_id (136KB) — usado em sync
--- -------------------------------------------------------
-
--- <<< END 20260602_004_remove_unused_indexes_safe.sql <<<
 
 -- >>> BEGIN 20260603215516_raw_landing_phase1_status_provenance.sql >>>
 
@@ -122080,7 +121323,7 @@ END $$;
 
 -- <<< END 20260610120000_restore_generated_mockups_geometry_columns.sql <<<
 
--- >>> BEGIN 20260610120000_silver_depara_01_apply_transform_color_resolver.sql >>>
+-- >>> BEGIN 20260610120001_silver_depara_01_apply_transform_color_resolver.sql >>>
 -- ════════════════════════════════════════════════════════════════
 -- SILVER DE-PARA — Fase 1/6: motor de transformação
 -- Follow-up do ADR 0007 (ver ADR 0008): trazer TODA a normalização de
@@ -122246,7 +121489,7 @@ COMMENT ON FUNCTION public.fn_apply_transform(text, varchar, jsonb, varchar, var
   'Motor de-para de valor único. transform_type ∈ {direct,multiply,divide,convert_unit,lookup,custom,prefix,suffix,uppercase,lowercase,trim,replace,regex_extract}. '
   'custom.function ∈ {fn_parse_capacity_ml,fn_convert_box_dimension_to_cm,fn_clean_spot_name,fn_extract_color_from_title}. max_length trunca o resultado.';
 
--- <<< END 20260610120000_silver_depara_01_apply_transform_color_resolver.sql <<<
+-- <<< END 20260610120001_silver_depara_01_apply_transform_color_resolver.sql <<<
 
 -- >>> BEGIN 20260610120100_silver_depara_02_helper_sm_hex.sql >>>
 -- ════════════════════════════════════════════════════════════════
@@ -126191,7 +125434,7 @@ CREATE TRIGGER enforce_seller_cart_limit_update
 
 -- <<< END 20260611120000_fase9_01_cron_promotes_orphan_standardized.sql <<<
 
--- >>> BEGIN 20260611120000_fix_standardize_variant_fcode_fhex_swallowed_by_comment.sql >>>
+-- >>> BEGIN 20260611120001_fix_standardize_variant_fcode_fhex_swallowed_by_comment.sql >>>
 -- ════════════════════════════════════════════════════════════════
 -- FIX CRÍTICO: fn_standardize_variant — v_fcode/v_fhex engolidos
 -- por comentário de linha única.
@@ -126407,9 +125650,9 @@ COMMENT ON FUNCTION public.fn_standardize_variant(uuid) IS
   'Bronze->Silver (variante). De-para supplier_field_mappings p/ SPOT e SM; hardcoded XBZ/Asia; fallback generico. '
   'FIX 2026-06-11: v_fcode/v_fhex estavam comentados desde 2026-06-09 (color_code/hex saiam NULL).';
 
--- <<< END 20260611120000_fix_standardize_variant_fcode_fhex_swallowed_by_comment.sql <<<
+-- <<< END 20260611120001_fix_standardize_variant_fcode_fhex_swallowed_by_comment.sql <<<
 
--- >>> BEGIN 20260611120000_v2_01_helpers_display_name_tokenize.sql >>>
+-- >>> BEGIN 20260611120002_v2_01_helpers_display_name_tokenize.sql >>>
 -- V2-01 — Funções base do programa "Rumo ao 10/10" V2
 -- fn_display_product_name: sentence-case por segmento ('. ') com preservação de
 --   siglas/unidades minerada dos 7.5k nomes reais (USB, LED, ABS, PU, 600D, 16L, A5...)
@@ -126533,7 +125776,7 @@ AS $function$
   END;
 $function$;
 
--- <<< END 20260611120000_v2_01_helpers_display_name_tokenize.sql <<<
+-- <<< END 20260611120002_v2_01_helpers_display_name_tokenize.sql <<<
 
 -- >>> BEGIN 20260611120100_fase9_02_fix_promote_variants_checks_and_orphans.sql >>>
 -- ════════════════════════════════════════════════════════════════
@@ -126560,7 +125803,7 @@ $function$;
 
 -- <<< END 20260611120100_fase9_02_fix_promote_variants_checks_and_orphans.sql <<<
 
--- >>> BEGIN 20260611120100_v2_02_fn_enrich_padronizacao.sql >>>
+-- >>> BEGIN 20260611120101_v2_02_fn_enrich_padronizacao.sql >>>
 -- V2-02 — fn_enrich_padronizacao: enriquecimento canônico da Silver.
 -- Semântica: SÓ preenche o que está NULL/vazio. Nunca sobrescreve dado do fornecedor.
 -- Cadeias: description←raw · materials←raw|extração · tags←raw∪tokenização ·
@@ -126691,7 +125934,7 @@ BEGIN
 END;
 $function$;
 
--- <<< END 20260611120100_v2_02_fn_enrich_padronizacao.sql <<<
+-- <<< END 20260611120101_v2_02_fn_enrich_padronizacao.sql <<<
 
 -- >>> BEGIN 20260611120200_fase9_03_fn_apply_print_profiles.sql >>>
 -- ════════════════════════════════════════════════════════════════
@@ -126725,7 +125968,7 @@ $function$;
 
 -- <<< END 20260611120200_fase9_03_fn_apply_print_profiles.sql <<<
 
--- >>> BEGIN 20260611120200_v2_03_fn_standardize_raw_v3.sql >>>
+-- >>> BEGIN 20260611120201_v2_03_fn_standardize_raw_v3.sql >>>
 -- V2-03 — fn_standardize_raw v3 (fix anti-decay central):
 -- (a) Persiste TODAS as colunas de v_cols — a versão anterior calculava ~20 campos
 --     mapeados (tags, materials, meta_keywords, engraving_type, images, box_*,
@@ -126893,7 +126136,7 @@ BEGIN
 END;
 $function$;
 
--- <<< END 20260611120200_v2_03_fn_standardize_raw_v3.sql <<<
+-- <<< END 20260611120201_v2_03_fn_standardize_raw_v3.sql <<<
 
 -- >>> BEGIN 20260611120300_fase9_04_cron_print_profiles.sql >>>
 -- MEDALLION — Fase 9: agenda a inferência de perfis de gravação p/ produtos novos.
@@ -126909,7 +126152,7 @@ SELECT cron.schedule(
 
 -- <<< END 20260611120300_fase9_04_cron_print_profiles.sql <<<
 
--- >>> BEGIN 20260611120300_v2_04_promote_display_name_category_chain.sql >>>
+-- >>> BEGIN 20260611120301_v2_04_promote_display_name_category_chain.sql >>>
 -- V2-04 — Promoção Silver→Gold com display-case e cadeia de categoria completa.
 -- (a) fn_classify_category_residual: dicionário ILIKE de alta precisão derivado da
 --     análise dos produtos sem categoria (lookup por slug — sem UUIDs hardcoded).
@@ -127240,7 +126483,7 @@ BEGIN
 END;
 $function$;
 
--- <<< END 20260611120300_v2_04_promote_display_name_category_chain.sql <<<
+-- <<< END 20260611120301_v2_04_promote_display_name_category_chain.sql <<<
 
 -- >>> BEGIN 20260611120400_fase9_05_restore_main_ingestion_cron.sql >>>
 -- CRÍTICO (Fase 9): restaura o cron PRINCIPAL de ingestão (process-pending-products),
@@ -127259,7 +126502,7 @@ SELECT cron.schedule(
 
 -- <<< END 20260611120400_fase9_05_restore_main_ingestion_cron.sql <<<
 
--- >>> BEGIN 20260611120400_v2_05_monitoring_coverage.sql >>>
+-- >>> BEGIN 20260611120401_v2_05_monitoring_coverage.sql >>>
 -- V2-05 — Monitoramento de cobertura do pipeline (anti-decay).
 -- Motivação: as melhorias V1 decaíram silenciosamente porque eram UPDATEs
 -- retroativos sem guarda. Agora as funções corrigem na FONTE e este monitor
@@ -127363,7 +126606,7 @@ DO $$ BEGIN
     'SELECT public.fn_snapshot_medallion_coverage()');
 EXCEPTION WHEN OTHERS THEN NULL; END $$;
 
--- <<< END 20260611120400_v2_05_monitoring_coverage.sql <<<
+-- <<< END 20260611120401_v2_05_monitoring_coverage.sql <<<
 
 -- >>> BEGIN 20260611120500_v2_06_retroactive_convergence.sql >>>
 -- V2-06 — Convergência retroativa (idempotente; todos os passos são fill-only).
@@ -153161,263 +152404,6 @@ WHERE format IS NOT NULL AND format !~ '^[a-z0-9]+$';;
 
 -- <<< END 20260615235630_product_images_portability_defensive_guards.sql <<<
 
--- >>> BEGIN 20260615_001_drop_ai_provider_quotas_zombie.sql >>>
--- ============================================================
--- Migration: drop_ai_provider_quotas_zombie
--- Date: 2026-06-15
--- Author: cleanup audit
--- ============================================================
--- Context:
---   ai_provider_quotas was designed for per-provider spending
---   caps (monthly_limit_usd / monthly_limit_tokens), but was
---   never wired into any Edge Function or Postgres function.
---   All 5 rows have NULL limits. The actual quota system uses
---   ai_usage_quotas (keyed by app_role), not this table.
---
--- Evidence:
---   - monthly_limit_usd = NULL for all 5 rows
---   - monthly_limit_tokens = NULL for all 5 rows
---   - current_period_usage_usd = 0 (never incremented)
---   - pg_stat seq_scan = 4 (only index warm-up reads)
---   - n_tup_ins = 0 after initial seed (never written to)
---   - Zero references in supabase/functions/**
---   - Zero references in public Postgres functions
---   - Zero views or materialized views reference it
---   - No child FK tables reference it
---
--- Safety checks (all PASS before applying):
---   1. No views reference ai_provider_quotas
---   2. No edge functions reference ai_provider_quotas
---   3. No postgres functions reference ai_provider_quotas
---   4. No child FK tables point to ai_provider_quotas
---   5. tg_ai_providers_set_updated_at() survives (shared trigger fn)
---   6. ai_function_routing, ai_models, ai_providers keep their triggers
---   7. ai_usage_quotas, ai_usage_logs, ai_routing_decisions, ai_usage_events
---      are NOT dropped (all have active code references)
--- ============================================================
-
--- DROP TABLE (CASCADE handles the trigger + index + FK + RLS policies automatically)
-DROP TABLE IF EXISTS public.ai_provider_quotas CASCADE;
-
--- Reload PostgREST schema cache so the table disappears from the API immediately
-NOTIFY pgrst, 'reload schema';
-
--- <<< END 20260615_001_drop_ai_provider_quotas_zombie.sql <<<
-
--- >>> BEGIN 20260615_002_fix_ai_quota_and_cache_bugs.sql >>>
--- ============================================================
--- Migration: fix_ai_quota_and_cache_bugs
--- Date: 2026-06-15
--- Bugs fixed:
---   BUG-QUOTA-001 [CRITICAL] — check_ai_quota() type mismatch app_role vs text
---   BUG-CACHE-001 [HIGH]     — ai_insights_cache view alias for dashboard_insights_cache
---   BUG-CACHE-002 [MEDIUM]   — dashboard_insights_cache missing tokens_input/tokens_output
--- ============================================================
--- Discovered during exhaustive post-DROP test battery (47 assertions).
--- None caused by DROP ai_provider_quotas — all pre-existing bugs.
--- ============================================================
-
--- ============================================================
--- FIX BUG-QUOTA-001: check_ai_quota() — app_role vs text type mismatch
--- Root cause: ai_usage_quotas.role is app_role enum, v_role is text.
---             WHERE role = v_role fails with: operator does not exist app_role=text
--- Fix: cast role::text for comparison (safe: role enum values are valid text)
--- Impact: Quota system was completely non-functional. All AI calls
---         that went through the quota check path were failing.
--- ============================================================
-
-CREATE OR REPLACE FUNCTION public.check_ai_quota(_user_id uuid)
-RETURNS jsonb
-LANGUAGE plpgsql
-SET search_path TO 'public'
-AS $function$
-DECLARE
-  v_role text;
-  v_limit int;
-  v_unlimited boolean;
-  v_used int;
-BEGIN
-  v_role := public._get_user_primary_role(_user_id);
-
-  -- FIX: role::text = v_role (was: role = v_role → operator does not exist: app_role=text)
-  SELECT monthly_limit, is_unlimited INTO v_limit, v_unlimited
-  FROM public.ai_usage_quotas WHERE role::text = v_role;
-
-  IF NOT FOUND THEN
-    RETURN jsonb_build_object(
-      'allowed', true, 'used', 0, 'limit', -1, 'remaining', -1,
-      'unlimited', true, 'reason', 'no_quota_for_role'
-    );
-  END IF;
-
-  SELECT count(*)::int INTO v_used
-  FROM public.ai_usage_logs
-  WHERE user_id = _user_id
-    AND created_at >= date_trunc('month', now())
-    AND status != 'error';
-
-  IF v_unlimited THEN
-    RETURN jsonb_build_object(
-      'allowed', true, 'used', v_used, 'limit', -1, 'remaining', -1, 'unlimited', true
-    );
-  END IF;
-
-  RETURN jsonb_build_object(
-    'allowed', v_used < v_limit,
-    'used', v_used,
-    'limit', v_limit,
-    'remaining', greatest(0, v_limit - v_used),
-    'unlimited', false
-  );
-END;
-$function$;
-
--- ============================================================
--- FIX BUG-CACHE-002: Add missing columns tokens_input/tokens_output
--- Root cause: dashboard_insights_cache was missing these columns
---             that market-intelligence-insights/index.ts writes via upsert.
--- Impact: Cache writes would fail silently, causing every AI call
---         to skip the cache and always hit the AI API (2-3x cost overhead).
--- ============================================================
-
-ALTER TABLE public.dashboard_insights_cache
-  ADD COLUMN IF NOT EXISTS tokens_input integer,
-  ADD COLUMN IF NOT EXISTS tokens_output integer;
-
--- ============================================================
--- FIX BUG-CACHE-001: Create ai_insights_cache view → dashboard_insights_cache
--- Root cause: Table was renamed from ai_insights_cache to dashboard_insights_cache
---             (or the edge fn was written against the wrong name), but
---             market-intelligence-insights/index.ts still uses .from("ai_insights_cache").
--- Fix: Create a security_invoker view so existing edge fn code works without
---      redeploy, while RLS from dashboard_insights_cache is inherited.
--- Impact: Cache was completely broken — reads and writes all failed silently.
--- ============================================================
-
-CREATE OR REPLACE VIEW public.ai_insights_cache
-  WITH (security_invoker = true)
-AS
-SELECT
-  id,
-  user_id,
-  function_name,
-  cache_key,
-  payload,
-  model,
-  tokens_input,
-  tokens_output,
-  duration_ms,
-  created_at,
-  expires_at
-FROM public.dashboard_insights_cache;
-
--- Grants for PostgREST access
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.ai_insights_cache TO authenticated;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.ai_insights_cache TO service_role;
-GRANT SELECT ON public.ai_insights_cache TO anon;
-
--- Reload schema cache
-NOTIFY pgrst, 'reload schema';
-
--- <<< END 20260615_002_fix_ai_quota_and_cache_bugs.sql <<<
-
--- >>> BEGIN 20260615_fix_asia_product_names_cleanup.sql >>>
--- ============================================================
--- Migration: fix_asia_product_names_cleanup
--- Autor: Pipeline de qualidade de dados
--- Data: 2026-06-15
--- 
--- Problema: 297 produtos da Asia Import no Gold têm o formato:
---   "Copo térmico – 11,3xø8,5cm (AxøD)"
--- onde o sufixo "– dims" foi adicionado artificialmente por
--- uma migração histórica, e o campo name foi travado com
--- locked_fields para impedir o pipeline de corrigir.
---
--- Solução: 
---   1. Restaurar o nome limpo (pré-"–") usando o Silver como fonte
---   2. Remover 'name' do locked_fields para pipeline manter
---
--- Escopo: SOMENTE Padrão B (297 produtos com " – " artificial)
--- Padrão A (66 produtos com dims do nome da API) = intocado
--- ============================================================
-
-DO $$
-DECLARE
-  v_rows  integer;
-  v_t0    timestamptz := clock_timestamp();
-BEGIN
-  -- Configurar como pipeline para não re-travar locked_fields
-  -- via trigger fn_products_capture_manual_edits
-  PERFORM set_config('app.write_source',     'pipeline', true);
-  PERFORM set_config('app.bulk_import_mode', 'true',     true);
-
-  UPDATE public.products p
-  SET
-    -- Nome limpo = fn_display_product_name(Silver.name)
-    -- Garantido igual ao que o pipeline usaria (idempotente)
-    name          = public.fn_display_product_name(pp.name),
-    -- Desbloquear 'name' para o pipeline manter no futuro
-    locked_fields = array_remove(p.locked_fields, 'name'),
-    updated_at    = now()
-  FROM public.produtos_padronizacao pp
-  WHERE pp.supplier_id    = p.supplier_id
-    AND pp.supplier_reference = p.supplier_reference
-    -- Apenas Asia Import
-    AND p.supplier_id     = 'd2734e23-d633-4819-bb15-e51aa44e2118'
-    -- Apenas produtos ativos
-    AND p.is_active       = true
-    -- Apenas Padrão B: sufixo artificial " – dims"
-    AND p.name LIKE '% – %'
-    AND p.name ~ '\d+[,.]?\d*\s*[xXøØ]'
-    -- Garantia de que o Silver tem nome válido
-    AND NULLIF(TRIM(pp.name), '') IS NOT NULL;
-
-  GET DIAGNOSTICS v_rows = ROW_COUNT;
-
-  RAISE NOTICE '[fix_asia_product_names_cleanup] % produtos corrigidos em % ms',
-    v_rows,
-    ROUND(EXTRACT(EPOCH FROM clock_timestamp() - v_t0) * 1000)::int;
-
-  IF v_rows < 280 OR v_rows > 310 THEN
-    RAISE EXCEPTION 'Contagem fora do esperado (280-310): % linhas atualizadas. Abortando.', v_rows;
-  END IF;
-END;
-$$;
-
--- ============================================================
--- Validação pós-migration
--- ============================================================
-DO $$
-DECLARE
-  v_remaining integer;
-  v_unlocked  integer;
-BEGIN
-  -- Contar produtos que AINDA têm o padrão " – dims" após o fix
-  SELECT COUNT(*) INTO v_remaining
-  FROM products
-  WHERE supplier_id = 'd2734e23-d633-4819-bb15-e51aa44e2118'
-    AND is_active   = true
-    AND name LIKE '% – %'
-    AND name ~ '\d+[,.]?\d*\s*[xXøØ]';
-
-  -- Contar produtos que têm 'name' desbloqueado
-  SELECT COUNT(*) INTO v_unlocked
-  FROM products
-  WHERE supplier_id   = 'd2734e23-d633-4819-bb15-e51aa44e2118'
-    AND is_active     = true
-    AND NOT ('name' = ANY(locked_fields));
-
-  RAISE NOTICE '[VALIDAÇÃO] Restantes com padrão B: % (esperado: 0)', v_remaining;
-  RAISE NOTICE '[VALIDAÇÃO] Produtos com name desbloqueado: %', v_unlocked;
-
-  IF v_remaining > 0 THEN
-    RAISE EXCEPTION 'FALHA: ainda restam % produtos com padrão B após o fix.', v_remaining;
-  END IF;
-END;
-$$;
-
--- <<< END 20260615_fix_asia_product_names_cleanup.sql <<<
-
 -- >>> BEGIN 20260616000117_create_monitor_active_products_missing_gold_images.sql >>>
 -- Monitor durável: produtos ATIVOS sem imagem no Gold, com diagnóstico do backlog no Bronze.
 -- Auto-limpa: conforme o pipeline promove as imagens (images_status pending->done), o produto sai da view.
@@ -157940,48 +156926,6 @@ GRANT EXECUTE ON FUNCTION public.get_catalog_bestseller_page(text,int,int) TO an
 
 -- <<< END 20260618000001_create_rpc_get_catalog_bestseller_page.sql <<<
 
--- >>> BEGIN 20260618000001_link_unlinked_content_hash_dupes.sql >>>
--- Migration: link_unlinked_content_hash_dupes_20260618
--- Purpose: Link duplicate images by content_hash into canonical groups (flat chains)
--- Result: 2,485 dependents linked across 1,621 groups
-
-BEGIN;
-
--- Link images that share content_hash but have no canonical assignment yet.
--- The oldest image (by created_at) in each group becomes the canonical root.
-WITH groups AS (
-  SELECT
-    content_hash,
-    MIN(id ORDER BY created_at ASC, id ASC) AS root_id,
-    array_agg(id ORDER BY created_at ASC, id ASC) AS all_ids
-  FROM public.product_images
-  WHERE content_hash IS NOT NULL
-    AND deleted_at IS NULL
-    AND canonical_image_id IS NULL
-  GROUP BY content_hash
-  HAVING COUNT(*) > 1
-),
-deps AS (
-  SELECT g.root_id, pi.id AS dep_id
-  FROM groups g
-  JOIN public.product_images pi ON pi.content_hash = g.content_hash
-    AND pi.deleted_at IS NULL
-    AND pi.canonical_image_id IS NULL
-    AND pi.id <> g.root_id
-)
-UPDATE public.product_images pi
-SET
-  canonical_image_id = d.root_id,
-  is_shared = true,
-  last_modified_source = 'migration',
-  updated_at = now()
-FROM deps d
-WHERE pi.id = d.dep_id;
-
-COMMIT;
-
--- <<< END 20260618000001_link_unlinked_content_hash_dupes.sql <<<
-
 -- >>> BEGIN 20260618000002_enable_rls_cf_recon_tables.sql >>>
 -- Migration: enable_rls_cf_recon_tables_20260618
 -- Purpose: Enable RLS on all cf_recon schema tables
@@ -158575,6 +157519,48 @@ WHERE pi.id = f.id;
 COMMIT;
 
 -- <<< END 20260618000010_flatten_canonical_chains.sql <<<
+
+-- >>> BEGIN 20260618000011_link_unlinked_content_hash_dupes.sql >>>
+-- Migration: link_unlinked_content_hash_dupes_20260618
+-- Purpose: Link duplicate images by content_hash into canonical groups (flat chains)
+-- Result: 2,485 dependents linked across 1,621 groups
+
+BEGIN;
+
+-- Link images that share content_hash but have no canonical assignment yet.
+-- The oldest image (by created_at) in each group becomes the canonical root.
+WITH groups AS (
+  SELECT
+    content_hash,
+    MIN(id ORDER BY created_at ASC, id ASC) AS root_id,
+    array_agg(id ORDER BY created_at ASC, id ASC) AS all_ids
+  FROM public.product_images
+  WHERE content_hash IS NOT NULL
+    AND deleted_at IS NULL
+    AND canonical_image_id IS NULL
+  GROUP BY content_hash
+  HAVING COUNT(*) > 1
+),
+deps AS (
+  SELECT g.root_id, pi.id AS dep_id
+  FROM groups g
+  JOIN public.product_images pi ON pi.content_hash = g.content_hash
+    AND pi.deleted_at IS NULL
+    AND pi.canonical_image_id IS NULL
+    AND pi.id <> g.root_id
+)
+UPDATE public.product_images pi
+SET
+  canonical_image_id = d.root_id,
+  is_shared = true,
+  last_modified_source = 'migration',
+  updated_at = now()
+FROM deps d
+WHERE pi.id = d.dep_id;
+
+COMMIT;
+
+-- <<< END 20260618000011_link_unlinked_content_hash_dupes.sql <<<
 
 -- >>> BEGIN 20260618000215_estoque_outlier_view_severity_fix.sql >>>
 
@@ -161724,7 +160710,7 @@ $function$;
 
 -- <<< END 20260618160000_fn_super_filtro_add_endomarketing.sql <<<
 
--- >>> BEGIN 20260618160000_revoke_all_view_write_grants_bulk.sql >>>
+-- >>> BEGIN 20260618160001_revoke_all_view_write_grants_bulk.sql >>>
 -- ================================================================
 -- Bulk REVOKE write grants em TODAS as views public existentes
 -- ================================================================
@@ -161767,7 +160753,7 @@ $$;
 
 NOTIFY pgrst, 'reload schema';
 
--- <<< END 20260618160000_revoke_all_view_write_grants_bulk.sql <<<
+-- <<< END 20260618160001_revoke_all_view_write_grants_bulk.sql <<<
 
 -- >>> BEGIN 20260618160100_fix_secdef_functions_search_path.sql >>>
 -- ================================================================
@@ -165101,113 +164087,6 @@ NOTIFY pgrst, 'reload schema';
 
 -- <<< END 20260619000001_fix_fn_get_product_intelligence_all_gap2.sql <<<
 
--- >>> BEGIN 20260619000001_fix_is_shared_on_canonical_null.sql >>>
--- Migration: fix_is_shared_on_canonical_null_20260619
--- Purpose: Gap fix discovered during exhaustive testing — hard-delete of canonical root
--- triggers FK ON DELETE SET NULL on dependent rows' canonical_image_id, but leaves
--- is_shared=true. That state violates invariant C09 (is_shared=true must have canonical).
--- Fix: BEFORE UPDATE trigger that resets is_shared to false whenever
---      canonical_image_id transitions from NOT NULL to NULL.
-
-BEGIN;
-
-CREATE OR REPLACE FUNCTION public.fn_reset_is_shared_on_canonical_null()
-RETURNS TRIGGER LANGUAGE plpgsql
-SECURITY DEFINER SET search_path = pg_catalog, public
-AS $$
-BEGIN
-  IF NEW.canonical_image_id IS NULL AND OLD.canonical_image_id IS NOT NULL THEN
-    NEW.is_shared := false;
-    NEW.last_modified_source := COALESCE(NULLIF(NEW.last_modified_source, ''), 'edge_function');
-    NEW.updated_at := now();
-  END IF;
-  RETURN NEW;
-END;
-$$;
-
-REVOKE EXECUTE ON FUNCTION public.fn_reset_is_shared_on_canonical_null() FROM anon, authenticated;
-GRANT EXECUTE ON FUNCTION public.fn_reset_is_shared_on_canonical_null() TO service_role;
-
-DROP TRIGGER IF EXISTS trg_reset_is_shared_on_canonical_null ON public.product_images;
-CREATE TRIGGER trg_reset_is_shared_on_canonical_null
-  BEFORE UPDATE OF canonical_image_id
-  ON public.product_images
-  FOR EACH ROW
-  WHEN (NEW.canonical_image_id IS NULL AND OLD.canonical_image_id IS NOT NULL)
-  EXECUTE FUNCTION public.fn_reset_is_shared_on_canonical_null();
-
-COMMIT;
-
--- <<< END 20260619000001_fix_is_shared_on_canonical_null.sql <<<
-
--- >>> BEGIN 20260619000001_mockup_bug_fixes_logo_url_nullable_position_precision.sql >>>
--- BUG-7 FIX: logo_url was NOT NULL, causing INSERT failure when logo storage upload
--- fails (uploadLogoToStorage returns null). Making it nullable lets us save the
--- mockup record even when the logo URL is unavailable, preserving the mockup_url.
-ALTER TABLE public.generated_mockups
-  ALTER COLUMN logo_url DROP NOT NULL;
-
--- BUG-6 FIX: position_x/y were INTEGER, silently truncating fractional % values
--- (e.g. positionX=50.5 → stored as 50). Switch to numeric(5,2) to preserve up to
--- two decimal places (0.00 – 100.00 covers any percentage with sub-pixel precision).
-ALTER TABLE public.generated_mockups
-  ALTER COLUMN position_x TYPE numeric(5,2) USING position_x::numeric(5,2),
-  ALTER COLUMN position_y TYPE numeric(5,2) USING position_y::numeric(5,2);
-
--- <<< END 20260619000001_mockup_bug_fixes_logo_url_nullable_position_precision.sql <<<
-
--- >>> BEGIN 20260619000001_mv_leaf_covering_index_safe_idx.sql >>>
--- MIGRATION PERMANENTE (2026-06-19): Índices adicionais em mv_product_leaf_category
--- A migration 20260618205528_mv_product_leaf_category_level_first.sql criou apenas:
---   idx_mv_product_leaf_category_product_id (UNIQUE, sem INCLUDE)
---   idx_mv_product_leaf_category_leaf_id    (non-unique)
---
--- Esta migration substitui o UNIQUE simples por um covering index (INCLUDE),
--- e adiciona o safe_idx para leaf_category_id_safe.
---
--- Benefícios:
---   • UNIQUE covering: Index Only Scan no JOIN de v_products_public (zero heap access)
---   • safe_idx: suporte eficiente a buscas por leaf_category_id_safe
---   • Sobrevive a re-deploys: esta migration roda DEPOIS de 20260618205528
-
--- Substituir UNIQUE simples por covering (se ainda existir sem INCLUDE)
-DO $$
-DECLARE
-  v_cols int;
-BEGIN
-  SELECT COUNT(*) INTO v_cols
-  FROM pg_attribute pa JOIN pg_class c ON c.oid=pa.attrelid
-  WHERE c.relname='idx_mv_product_leaf_category_product_id' AND pa.attnum > 0;
-  IF v_cols < 6 THEN
-    -- Índice simples (sem INCLUDE): substituir pelo covering
-    DROP INDEX IF EXISTS idx_mv_product_leaf_category_product_id;
-    RAISE NOTICE 'Dropping simple index, will recreate as covering';
-  ELSE
-    RAISE NOTICE 'Covering index already exists with % cols, skipping drop', v_cols;
-  END IF;
-END;
-$$;
-
-CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_product_leaf_category_product_id
-  ON public.mv_product_leaf_category (product_id)
-  INCLUDE (leaf_category_id, leaf_category_name, leaf_category_level,
-           leaf_category_slug, leaf_category_id_safe);
-
-COMMENT ON INDEX idx_mv_product_leaf_category_product_id IS
-'Covering UNIQUE index para Index Only Scan. INCLUDE(leaf_id, name, level, slug, safe).
- Criado/atualizado por 20260619000001_mv_leaf_covering_index_safe_idx.sql';
-
--- Partial index para buscas por leaf_category_id_safe
-CREATE INDEX IF NOT EXISTS idx_mv_product_leaf_category_safe_id
-  ON public.mv_product_leaf_category (leaf_category_id_safe)
-  WHERE leaf_category_id_safe IS NOT NULL;
-
-COMMENT ON INDEX idx_mv_product_leaf_category_safe_id IS
-'Partial index para buscas filtradas por leaf_category_id_safe.
- Criado por 20260619000001_mv_leaf_covering_index_safe_idx.sql';
-
--- <<< END 20260619000001_mv_leaf_covering_index_safe_idx.sql <<<
-
 -- >>> BEGIN 20260619000002_fix_canonical_root_soft_delete.sql >>>
 -- Migration: fix_canonical_root_soft_delete_20260619
 -- Purpose: Gap fix discovered during exhaustive testing — when a canonical root is
@@ -165271,20 +164150,6 @@ COMMIT;
 
 -- <<< END 20260619000002_fix_canonical_root_soft_delete.sql <<<
 
--- >>> BEGIN 20260619000002_mockup_composite_index_user_created.sql >>>
--- BUG-9 FIX: fetchMockupHistory runs:
---   SELECT ... FROM generated_mockups WHERE user_id = ? ORDER BY created_at DESC LIMIT 200
--- The existing idx_generated_mockups_user_id covers the filter but forces a separate
--- Sort step on all matching rows before LIMIT can fire. For power users with hundreds of
--- mockups this degrades linearly. A composite index (user_id, created_at DESC) lets
--- PostgreSQL return rows already ordered from the B-tree, so LIMIT 200 stops after
--- reading exactly 200 index entries — O(LIMIT) instead of O(N_user_rows).
--- CONCURRENTLY avoids a full table lock on creation.
-CREATE INDEX IF NOT EXISTS idx_generated_mockups_user_created
-  ON public.generated_mockups (user_id, created_at DESC);
-
--- <<< END 20260619000002_mockup_composite_index_user_created.sql <<<
-
 -- >>> BEGIN 20260619000003_add_keyset_pagination_indexes.sql >>>
 -- Keyset pagination indexes for stockFetcher.ts (fetchPaginatedFromBridge).
 --
@@ -165321,198 +164186,6 @@ CREATE INDEX IF NOT EXISTS idx_variant_supplier_sources_keyset_active
   WHERE is_active = true;
 
 -- <<< END 20260619000003_add_keyset_pagination_indexes.sql <<<
-
--- >>> BEGIN 20260619000003_close_gaps_and_harden_triggers.sql >>>
--- Migration: close_gaps_and_harden_triggers_20260619
--- Purpose: Close 3 gaps found in deep simulation round 2 (200+ scenarios)
---   GAP-B6: Restoration of dep pointing to deleted canonical → C13 violation
---   GAP-C3: Hash change on already-linked dep → stays in wrong canonical group
---   GAP-D:  Direct UPDATE canonical_image_id to non-root → creates chain (C07)
--- Also adds idx_pi_canonical_active for trigger query performance
-
-BEGIN;
-
--- ══════════════════════════════════════════════════════════════════════
--- INDEX: Optimize trigger query pattern (canonical_image_id + deleted_at filter)
--- ══════════════════════════════════════════════════════════════════════
-CREATE INDEX IF NOT EXISTS idx_pi_canonical_active
-  ON public.product_images (canonical_image_id, created_at ASC, id ASC)
-  WHERE canonical_image_id IS NOT NULL AND deleted_at IS NULL;
-
--- ══════════════════════════════════════════════════════════════════════
--- FIX GAP-B6: Image restoration trigger
--- When a soft-deleted dep is restored, if its canonical is also deleted,
--- clear the stale canonical assignment to prevent C13 violations.
--- ══════════════════════════════════════════════════════════════════════
-CREATE OR REPLACE FUNCTION public.fn_handle_image_restoration()
-RETURNS TRIGGER LANGUAGE plpgsql
-SECURITY DEFINER SET search_path = pg_catalog, public
-AS $$
-DECLARE
-  v_canon_deleted boolean;
-BEGIN
-  -- Only act on restoration (deleted → live)
-  IF NEW.deleted_at IS NOT NULL OR OLD.deleted_at IS NULL THEN
-    RETURN NEW;
-  END IF;
-
-  -- If image has a canonical assignment, check if that root is still alive
-  IF NEW.canonical_image_id IS NOT NULL THEN
-    SELECT (deleted_at IS NOT NULL) INTO v_canon_deleted
-    FROM public.product_images
-    WHERE id = NEW.canonical_image_id;
-
-    IF v_canon_deleted IS TRUE THEN
-      -- Stale canonical: canonical was deleted after this dep was soft-deleted.
-      -- Detach: make this image a standalone root.
-      NEW.canonical_image_id := NULL;
-      NEW.is_shared := false;
-      NEW.last_modified_source := COALESCE(NULLIF(NEW.last_modified_source, ''), 'edge_function');
-      NEW.updated_at := now();
-    END IF;
-  END IF;
-
-  RETURN NEW;
-END;
-$$;
-
-REVOKE EXECUTE ON FUNCTION public.fn_handle_image_restoration() FROM anon, authenticated;
-GRANT EXECUTE ON FUNCTION public.fn_handle_image_restoration() TO service_role;
-
-DROP TRIGGER IF EXISTS trg_handle_image_restoration ON public.product_images;
-CREATE TRIGGER trg_handle_image_restoration
-  BEFORE UPDATE OF deleted_at
-  ON public.product_images
-  FOR EACH ROW
-  WHEN (NEW.deleted_at IS NULL AND OLD.deleted_at IS NOT NULL AND NEW.canonical_image_id IS NOT NULL)
-  EXECUTE FUNCTION public.fn_handle_image_restoration();
-
--- ══════════════════════════════════════════════════════════════════════
--- FIX GAP-D: Canonical chain prevention trigger
--- When canonical_image_id is set to a dep (non-root), auto-flatten to the root.
--- Silently corrects chain creation without throwing an error.
--- ══════════════════════════════════════════════════════════════════════
-CREATE OR REPLACE FUNCTION public.fn_prevent_canonical_chain()
-RETURNS TRIGGER LANGUAGE plpgsql
-SECURITY DEFINER SET search_path = pg_catalog, public
-AS $$
-DECLARE
-  v_target_canonical uuid;
-BEGIN
-  -- Check if the target (NEW.canonical_image_id) is itself a dep
-  SELECT canonical_image_id INTO v_target_canonical
-  FROM public.product_images
-  WHERE id = NEW.canonical_image_id;
-
-  IF v_target_canonical IS NOT NULL THEN
-    -- Target is a dep → flatten: point directly to the target's root
-    NEW.canonical_image_id := v_target_canonical;
-  END IF;
-
-  -- Prevent self-referential assignment
-  IF NEW.canonical_image_id = NEW.id THEN
-    NEW.canonical_image_id := NULL;
-    NEW.is_shared := false;
-  END IF;
-
-  RETURN NEW;
-END;
-$$;
-
-REVOKE EXECUTE ON FUNCTION public.fn_prevent_canonical_chain() FROM anon, authenticated;
-GRANT EXECUTE ON FUNCTION public.fn_prevent_canonical_chain() TO service_role;
-
-DROP TRIGGER IF EXISTS trg_prevent_canonical_chain ON public.product_images;
-CREATE TRIGGER trg_prevent_canonical_chain
-  BEFORE UPDATE OF canonical_image_id
-  ON public.product_images
-  FOR EACH ROW
-  WHEN (
-    NEW.canonical_image_id IS NOT NULL
-    AND NEW.canonical_image_id IS DISTINCT FROM OLD.canonical_image_id
-    AND NEW.canonical_image_id <> NEW.id
-  )
-  EXECUTE FUNCTION public.fn_prevent_canonical_chain();
-
--- ══════════════════════════════════════════════════════════════════════
--- FIX GAP-C3: Update autolink trigger to handle hash changes on linked deps
--- When content_hash changes on an already-linked dep, clear old canonical
--- so the trigger can find the correct new root for the new hash.
--- ══════════════════════════════════════════════════════════════════════
-CREATE OR REPLACE FUNCTION public.fn_autolink_canonical_on_content_hash()
-RETURNS TRIGGER LANGUAGE plpgsql
-SECURITY DEFINER SET search_path = pg_catalog, public
-AS $$
-DECLARE
-  v_root_id uuid;
-BEGIN
-  -- Only act when content_hash is being set or changed
-  IF NEW.content_hash IS NULL OR (OLD.content_hash IS NOT NULL AND OLD.content_hash = NEW.content_hash) THEN
-    RETURN NEW;
-  END IF;
-
-  -- If image already has a canonical assignment:
-  IF NEW.canonical_image_id IS NOT NULL THEN
-    -- If hash CHANGED (not first-set): clear old canonical so we can re-link to correct group
-    IF OLD.content_hash IS NOT NULL AND OLD.content_hash IS DISTINCT FROM NEW.content_hash THEN
-      NEW.canonical_image_id := NULL;
-      NEW.is_shared := false;
-      -- Fall through to find new root for new hash
-    ELSE
-      -- First-set (OLD was NULL): respect existing canonical assignment
-      RETURN NEW;
-    END IF;
-  END IF;
-
-  -- Find the oldest root in the group (is_shared=false, canonical_image_id=NULL)
-  SELECT id INTO v_root_id
-  FROM public.product_images
-  WHERE content_hash = NEW.content_hash
-    AND deleted_at IS NULL
-    AND canonical_image_id IS NULL
-    AND id <> NEW.id
-    AND is_shared = false
-  ORDER BY created_at ASC, id ASC
-  LIMIT 1;
-
-  IF v_root_id IS NOT NULL THEN
-    NEW.canonical_image_id := v_root_id;
-    NEW.is_shared := true;
-  ELSE
-    -- Fallback: inherit root from existing dependent in same group
-    SELECT pi2.canonical_image_id INTO v_root_id
-    FROM public.product_images pi2
-    WHERE pi2.content_hash = NEW.content_hash
-      AND pi2.deleted_at IS NULL
-      AND pi2.canonical_image_id IS NOT NULL
-      AND pi2.id <> NEW.id
-    LIMIT 1;
-
-    IF v_root_id IS NOT NULL THEN
-      NEW.canonical_image_id := v_root_id;
-      NEW.is_shared := true;
-    END IF;
-    -- If only member → remain as standalone root
-  END IF;
-
-  RETURN NEW;
-END;
-$$;
-
-REVOKE EXECUTE ON FUNCTION public.fn_autolink_canonical_on_content_hash() FROM anon, authenticated;
-GRANT EXECUTE ON FUNCTION public.fn_autolink_canonical_on_content_hash() TO service_role;
-
-DROP TRIGGER IF EXISTS trg_autolink_canonical_on_content_hash ON public.product_images;
-CREATE TRIGGER trg_autolink_canonical_on_content_hash
-  BEFORE UPDATE OF content_hash
-  ON public.product_images
-  FOR EACH ROW
-  WHEN (NEW.content_hash IS NOT NULL AND (OLD.content_hash IS NULL OR OLD.content_hash <> NEW.content_hash))
-  EXECUTE FUNCTION public.fn_autolink_canonical_on_content_hash();
-
-COMMIT;
-
--- <<< END 20260619000003_close_gaps_and_harden_triggers.sql <<<
 
 -- >>> BEGIN 20260619000004_prevent_canonical_chain_on_insert.sql >>>
 -- Migration: prevent_canonical_chain_on_insert_20260619
@@ -166775,6 +165448,319 @@ $$;
 
 -- <<< END 20260619000011_fix_c02_c03_orphan_remediation.sql <<<
 
+-- >>> BEGIN 20260619000012_fix_is_shared_on_canonical_null.sql >>>
+-- Migration: fix_is_shared_on_canonical_null_20260619
+-- Purpose: Gap fix discovered during exhaustive testing — hard-delete of canonical root
+-- triggers FK ON DELETE SET NULL on dependent rows' canonical_image_id, but leaves
+-- is_shared=true. That state violates invariant C09 (is_shared=true must have canonical).
+-- Fix: BEFORE UPDATE trigger that resets is_shared to false whenever
+--      canonical_image_id transitions from NOT NULL to NULL.
+
+BEGIN;
+
+CREATE OR REPLACE FUNCTION public.fn_reset_is_shared_on_canonical_null()
+RETURNS TRIGGER LANGUAGE plpgsql
+SECURITY DEFINER SET search_path = pg_catalog, public
+AS $$
+BEGIN
+  IF NEW.canonical_image_id IS NULL AND OLD.canonical_image_id IS NOT NULL THEN
+    NEW.is_shared := false;
+    NEW.last_modified_source := COALESCE(NULLIF(NEW.last_modified_source, ''), 'edge_function');
+    NEW.updated_at := now();
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+REVOKE EXECUTE ON FUNCTION public.fn_reset_is_shared_on_canonical_null() FROM anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.fn_reset_is_shared_on_canonical_null() TO service_role;
+
+DROP TRIGGER IF EXISTS trg_reset_is_shared_on_canonical_null ON public.product_images;
+CREATE TRIGGER trg_reset_is_shared_on_canonical_null
+  BEFORE UPDATE OF canonical_image_id
+  ON public.product_images
+  FOR EACH ROW
+  WHEN (NEW.canonical_image_id IS NULL AND OLD.canonical_image_id IS NOT NULL)
+  EXECUTE FUNCTION public.fn_reset_is_shared_on_canonical_null();
+
+COMMIT;
+
+-- <<< END 20260619000012_fix_is_shared_on_canonical_null.sql <<<
+
+-- >>> BEGIN 20260619000013_mockup_bug_fixes_logo_url_nullable_position_precision.sql >>>
+-- BUG-7 FIX: logo_url was NOT NULL, causing INSERT failure when logo storage upload
+-- fails (uploadLogoToStorage returns null). Making it nullable lets us save the
+-- mockup record even when the logo URL is unavailable, preserving the mockup_url.
+ALTER TABLE public.generated_mockups
+  ALTER COLUMN logo_url DROP NOT NULL;
+
+-- BUG-6 FIX: position_x/y were INTEGER, silently truncating fractional % values
+-- (e.g. positionX=50.5 → stored as 50). Switch to numeric(5,2) to preserve up to
+-- two decimal places (0.00 – 100.00 covers any percentage with sub-pixel precision).
+ALTER TABLE public.generated_mockups
+  ALTER COLUMN position_x TYPE numeric(5,2) USING position_x::numeric(5,2),
+  ALTER COLUMN position_y TYPE numeric(5,2) USING position_y::numeric(5,2);
+
+-- <<< END 20260619000013_mockup_bug_fixes_logo_url_nullable_position_precision.sql <<<
+
+-- >>> BEGIN 20260619000014_mv_leaf_covering_index_safe_idx.sql >>>
+-- MIGRATION PERMANENTE (2026-06-19): Índices adicionais em mv_product_leaf_category
+-- A migration 20260618205528_mv_product_leaf_category_level_first.sql criou apenas:
+--   idx_mv_product_leaf_category_product_id (UNIQUE, sem INCLUDE)
+--   idx_mv_product_leaf_category_leaf_id    (non-unique)
+--
+-- Esta migration substitui o UNIQUE simples por um covering index (INCLUDE),
+-- e adiciona o safe_idx para leaf_category_id_safe.
+--
+-- Benefícios:
+--   • UNIQUE covering: Index Only Scan no JOIN de v_products_public (zero heap access)
+--   • safe_idx: suporte eficiente a buscas por leaf_category_id_safe
+--   • Sobrevive a re-deploys: esta migration roda DEPOIS de 20260618205528
+
+-- Substituir UNIQUE simples por covering (se ainda existir sem INCLUDE)
+DO $$
+DECLARE
+  v_cols int;
+BEGIN
+  SELECT COUNT(*) INTO v_cols
+  FROM pg_attribute pa JOIN pg_class c ON c.oid=pa.attrelid
+  WHERE c.relname='idx_mv_product_leaf_category_product_id' AND pa.attnum > 0;
+  IF v_cols < 6 THEN
+    -- Índice simples (sem INCLUDE): substituir pelo covering
+    DROP INDEX IF EXISTS idx_mv_product_leaf_category_product_id;
+    RAISE NOTICE 'Dropping simple index, will recreate as covering';
+  ELSE
+    RAISE NOTICE 'Covering index already exists with % cols, skipping drop', v_cols;
+  END IF;
+END;
+$$;
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_product_leaf_category_product_id
+  ON public.mv_product_leaf_category (product_id)
+  INCLUDE (leaf_category_id, leaf_category_name, leaf_category_level,
+           leaf_category_slug, leaf_category_id_safe);
+
+COMMENT ON INDEX idx_mv_product_leaf_category_product_id IS
+'Covering UNIQUE index para Index Only Scan. INCLUDE(leaf_id, name, level, slug, safe).
+ Criado/atualizado por 20260619000001_mv_leaf_covering_index_safe_idx.sql';
+
+-- Partial index para buscas por leaf_category_id_safe
+CREATE INDEX IF NOT EXISTS idx_mv_product_leaf_category_safe_id
+  ON public.mv_product_leaf_category (leaf_category_id_safe)
+  WHERE leaf_category_id_safe IS NOT NULL;
+
+COMMENT ON INDEX idx_mv_product_leaf_category_safe_id IS
+'Partial index para buscas filtradas por leaf_category_id_safe.
+ Criado por 20260619000001_mv_leaf_covering_index_safe_idx.sql';
+
+-- <<< END 20260619000014_mv_leaf_covering_index_safe_idx.sql <<<
+
+-- >>> BEGIN 20260619000015_mockup_composite_index_user_created.sql >>>
+-- BUG-9 FIX: fetchMockupHistory runs:
+--   SELECT ... FROM generated_mockups WHERE user_id = ? ORDER BY created_at DESC LIMIT 200
+-- The existing idx_generated_mockups_user_id covers the filter but forces a separate
+-- Sort step on all matching rows before LIMIT can fire. For power users with hundreds of
+-- mockups this degrades linearly. A composite index (user_id, created_at DESC) lets
+-- PostgreSQL return rows already ordered from the B-tree, so LIMIT 200 stops after
+-- reading exactly 200 index entries — O(LIMIT) instead of O(N_user_rows).
+-- CONCURRENTLY avoids a full table lock on creation.
+CREATE INDEX IF NOT EXISTS idx_generated_mockups_user_created
+  ON public.generated_mockups (user_id, created_at DESC);
+
+-- <<< END 20260619000015_mockup_composite_index_user_created.sql <<<
+
+-- >>> BEGIN 20260619000016_close_gaps_and_harden_triggers.sql >>>
+-- Migration: close_gaps_and_harden_triggers_20260619
+-- Purpose: Close 3 gaps found in deep simulation round 2 (200+ scenarios)
+--   GAP-B6: Restoration of dep pointing to deleted canonical → C13 violation
+--   GAP-C3: Hash change on already-linked dep → stays in wrong canonical group
+--   GAP-D:  Direct UPDATE canonical_image_id to non-root → creates chain (C07)
+-- Also adds idx_pi_canonical_active for trigger query performance
+
+BEGIN;
+
+-- ══════════════════════════════════════════════════════════════════════
+-- INDEX: Optimize trigger query pattern (canonical_image_id + deleted_at filter)
+-- ══════════════════════════════════════════════════════════════════════
+CREATE INDEX IF NOT EXISTS idx_pi_canonical_active
+  ON public.product_images (canonical_image_id, created_at ASC, id ASC)
+  WHERE canonical_image_id IS NOT NULL AND deleted_at IS NULL;
+
+-- ══════════════════════════════════════════════════════════════════════
+-- FIX GAP-B6: Image restoration trigger
+-- When a soft-deleted dep is restored, if its canonical is also deleted,
+-- clear the stale canonical assignment to prevent C13 violations.
+-- ══════════════════════════════════════════════════════════════════════
+CREATE OR REPLACE FUNCTION public.fn_handle_image_restoration()
+RETURNS TRIGGER LANGUAGE plpgsql
+SECURITY DEFINER SET search_path = pg_catalog, public
+AS $$
+DECLARE
+  v_canon_deleted boolean;
+BEGIN
+  -- Only act on restoration (deleted → live)
+  IF NEW.deleted_at IS NOT NULL OR OLD.deleted_at IS NULL THEN
+    RETURN NEW;
+  END IF;
+
+  -- If image has a canonical assignment, check if that root is still alive
+  IF NEW.canonical_image_id IS NOT NULL THEN
+    SELECT (deleted_at IS NOT NULL) INTO v_canon_deleted
+    FROM public.product_images
+    WHERE id = NEW.canonical_image_id;
+
+    IF v_canon_deleted IS TRUE THEN
+      -- Stale canonical: canonical was deleted after this dep was soft-deleted.
+      -- Detach: make this image a standalone root.
+      NEW.canonical_image_id := NULL;
+      NEW.is_shared := false;
+      NEW.last_modified_source := COALESCE(NULLIF(NEW.last_modified_source, ''), 'edge_function');
+      NEW.updated_at := now();
+    END IF;
+  END IF;
+
+  RETURN NEW;
+END;
+$$;
+
+REVOKE EXECUTE ON FUNCTION public.fn_handle_image_restoration() FROM anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.fn_handle_image_restoration() TO service_role;
+
+DROP TRIGGER IF EXISTS trg_handle_image_restoration ON public.product_images;
+CREATE TRIGGER trg_handle_image_restoration
+  BEFORE UPDATE OF deleted_at
+  ON public.product_images
+  FOR EACH ROW
+  WHEN (NEW.deleted_at IS NULL AND OLD.deleted_at IS NOT NULL AND NEW.canonical_image_id IS NOT NULL)
+  EXECUTE FUNCTION public.fn_handle_image_restoration();
+
+-- ══════════════════════════════════════════════════════════════════════
+-- FIX GAP-D: Canonical chain prevention trigger
+-- When canonical_image_id is set to a dep (non-root), auto-flatten to the root.
+-- Silently corrects chain creation without throwing an error.
+-- ══════════════════════════════════════════════════════════════════════
+CREATE OR REPLACE FUNCTION public.fn_prevent_canonical_chain()
+RETURNS TRIGGER LANGUAGE plpgsql
+SECURITY DEFINER SET search_path = pg_catalog, public
+AS $$
+DECLARE
+  v_target_canonical uuid;
+BEGIN
+  -- Check if the target (NEW.canonical_image_id) is itself a dep
+  SELECT canonical_image_id INTO v_target_canonical
+  FROM public.product_images
+  WHERE id = NEW.canonical_image_id;
+
+  IF v_target_canonical IS NOT NULL THEN
+    -- Target is a dep → flatten: point directly to the target's root
+    NEW.canonical_image_id := v_target_canonical;
+  END IF;
+
+  -- Prevent self-referential assignment
+  IF NEW.canonical_image_id = NEW.id THEN
+    NEW.canonical_image_id := NULL;
+    NEW.is_shared := false;
+  END IF;
+
+  RETURN NEW;
+END;
+$$;
+
+REVOKE EXECUTE ON FUNCTION public.fn_prevent_canonical_chain() FROM anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.fn_prevent_canonical_chain() TO service_role;
+
+DROP TRIGGER IF EXISTS trg_prevent_canonical_chain ON public.product_images;
+CREATE TRIGGER trg_prevent_canonical_chain
+  BEFORE UPDATE OF canonical_image_id
+  ON public.product_images
+  FOR EACH ROW
+  WHEN (
+    NEW.canonical_image_id IS NOT NULL
+    AND NEW.canonical_image_id IS DISTINCT FROM OLD.canonical_image_id
+    AND NEW.canonical_image_id <> NEW.id
+  )
+  EXECUTE FUNCTION public.fn_prevent_canonical_chain();
+
+-- ══════════════════════════════════════════════════════════════════════
+-- FIX GAP-C3: Update autolink trigger to handle hash changes on linked deps
+-- When content_hash changes on an already-linked dep, clear old canonical
+-- so the trigger can find the correct new root for the new hash.
+-- ══════════════════════════════════════════════════════════════════════
+CREATE OR REPLACE FUNCTION public.fn_autolink_canonical_on_content_hash()
+RETURNS TRIGGER LANGUAGE plpgsql
+SECURITY DEFINER SET search_path = pg_catalog, public
+AS $$
+DECLARE
+  v_root_id uuid;
+BEGIN
+  -- Only act when content_hash is being set or changed
+  IF NEW.content_hash IS NULL OR (OLD.content_hash IS NOT NULL AND OLD.content_hash = NEW.content_hash) THEN
+    RETURN NEW;
+  END IF;
+
+  -- If image already has a canonical assignment:
+  IF NEW.canonical_image_id IS NOT NULL THEN
+    -- If hash CHANGED (not first-set): clear old canonical so we can re-link to correct group
+    IF OLD.content_hash IS NOT NULL AND OLD.content_hash IS DISTINCT FROM NEW.content_hash THEN
+      NEW.canonical_image_id := NULL;
+      NEW.is_shared := false;
+      -- Fall through to find new root for new hash
+    ELSE
+      -- First-set (OLD was NULL): respect existing canonical assignment
+      RETURN NEW;
+    END IF;
+  END IF;
+
+  -- Find the oldest root in the group (is_shared=false, canonical_image_id=NULL)
+  SELECT id INTO v_root_id
+  FROM public.product_images
+  WHERE content_hash = NEW.content_hash
+    AND deleted_at IS NULL
+    AND canonical_image_id IS NULL
+    AND id <> NEW.id
+    AND is_shared = false
+  ORDER BY created_at ASC, id ASC
+  LIMIT 1;
+
+  IF v_root_id IS NOT NULL THEN
+    NEW.canonical_image_id := v_root_id;
+    NEW.is_shared := true;
+  ELSE
+    -- Fallback: inherit root from existing dependent in same group
+    SELECT pi2.canonical_image_id INTO v_root_id
+    FROM public.product_images pi2
+    WHERE pi2.content_hash = NEW.content_hash
+      AND pi2.deleted_at IS NULL
+      AND pi2.canonical_image_id IS NOT NULL
+      AND pi2.id <> NEW.id
+    LIMIT 1;
+
+    IF v_root_id IS NOT NULL THEN
+      NEW.canonical_image_id := v_root_id;
+      NEW.is_shared := true;
+    END IF;
+    -- If only member → remain as standalone root
+  END IF;
+
+  RETURN NEW;
+END;
+$$;
+
+REVOKE EXECUTE ON FUNCTION public.fn_autolink_canonical_on_content_hash() FROM anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.fn_autolink_canonical_on_content_hash() TO service_role;
+
+DROP TRIGGER IF EXISTS trg_autolink_canonical_on_content_hash ON public.product_images;
+CREATE TRIGGER trg_autolink_canonical_on_content_hash
+  BEFORE UPDATE OF content_hash
+  ON public.product_images
+  FOR EACH ROW
+  WHEN (NEW.content_hash IS NOT NULL AND (OLD.content_hash IS NULL OR OLD.content_hash <> NEW.content_hash))
+  EXECUTE FUNCTION public.fn_autolink_canonical_on_content_hash();
+
+COMMIT;
+
+-- <<< END 20260619000016_close_gaps_and_harden_triggers.sql <<<
+
 -- >>> BEGIN 20260619000637_fix_is_shared_on_canonical_null_20260619.sql >>>
 -- GAP FIX: When FK ON DELETE SET NULL clears canonical_image_id, also reset is_shared
 -- Prevents C09 violation (is_shared=true must have canonical_image_id).
@@ -166885,7 +165871,113 @@ CREATE INDEX IF NOT EXISTS idx_quotes_contact_id
 
 -- <<< END 20260619100000_fix_quotes_contact_id_and_index.sql <<<
 
--- >>> BEGIN 20260619100000_fix_reposicao_rpcs.sql >>>
+-- >>> BEGIN 20260619100001_fix_fn_set_product_as_new_update.sql >>>
+-- Fix: fn_set_product_as_new — adiciona tratamento de UPDATE para is_new false→true
+--
+-- Problema (auditoria Novidades 2026-06-19):
+-- O trigger trg_set_product_as_new disparava apenas em INSERT. Quando um produto
+-- era re-ingerido ou atualizado manualmente com is_new = true (ex: via webhook
+-- product-webhook, que só escreve is_new sem tocar as datas), o trigger NÃO
+-- preenchia novelty_detected_at / novelty_expires_at — os campos ficavam NULL,
+-- fazendo o produto desaparecer do predicado `novelty_expires_at > now()`.
+--
+-- Correção:
+-- 1. Altera o trigger para disparar em INSERT e UPDATE
+-- 2. Na transição false→true (UPDATE) com campos nulos ou já expirados, preenche
+--    novelty_detected_at = NOW() e novelty_expires_at = NOW() + 30 dias
+-- 3. Preserva valores existentes quando a expiração ainda é futura (idempotente)
+
+-- ─── Passo 1: substituir a função ───────────────────────────────────────────
+CREATE OR REPLACE FUNCTION fn_set_product_as_new()
+RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  -- Só age quando is_new é TRUE no registro final
+  IF NEW.is_new IS NOT TRUE THEN
+    RETURN NEW;
+  END IF;
+
+  -- INSERT: preenche sempre (produto novo)
+  IF TG_OP = 'INSERT' THEN
+    IF NEW.novelty_detected_at IS NULL THEN
+      NEW.novelty_detected_at := NOW();
+    END IF;
+    IF NEW.novelty_expires_at IS NULL THEN
+      NEW.novelty_expires_at := NEW.novelty_detected_at + INTERVAL '30 days';
+    END IF;
+    RETURN NEW;
+  END IF;
+
+  -- UPDATE: transição false→true OU reativação de flag já expirado
+  IF TG_OP = 'UPDATE' THEN
+    DECLARE
+      was_new BOOLEAN := COALESCE(OLD.is_new, FALSE);
+      already_active BOOLEAN := (
+        NEW.novelty_expires_at IS NOT NULL AND
+        NEW.novelty_expires_at > NOW()
+      );
+    BEGIN
+      -- Se is_new estava FALSE e virou TRUE (ou expiração nula/expirada): reinicia
+      IF (was_new = FALSE OR NOT already_active) THEN
+        NEW.novelty_detected_at := NOW();
+        NEW.novelty_expires_at  := NOW() + INTERVAL '30 days';
+      END IF;
+      -- Caso contrário (is_new=true antes E expiração ainda futura): não toca
+      RETURN NEW;
+    END;
+  END IF;
+
+  RETURN NEW;
+END;
+$$;
+
+-- ─── Passo 2: recriar o trigger incluindo UPDATE ─────────────────────────────
+DROP TRIGGER IF EXISTS trg_set_product_as_new ON products;
+
+CREATE TRIGGER trg_set_product_as_new
+  BEFORE INSERT OR UPDATE OF is_new
+  ON products
+  FOR EACH ROW
+  EXECUTE FUNCTION fn_set_product_as_new();
+
+COMMENT ON FUNCTION fn_set_product_as_new() IS
+  'Preenche novelty_detected_at e novelty_expires_at quando is_new=true é definido/reativado. '
+  'Dispara em INSERT e UPDATE(is_new). '
+  'Idempotente: preserva expiração futura existente.';
+
+-- <<< END 20260619100001_fix_fn_set_product_as_new_update.sql <<<
+
+-- >>> BEGIN 20260619100002_idx_products_novelty_covering.sql >>>
+-- Performance: índice cobrindo para queries de novidades com novelty_expires_at
+--
+-- Problema (auditoria Novidades 2026-06-19):
+-- O índice idx_products_new_sort existente cobre (novelty_detected_at DESC, id ASC)
+-- com WHERE is_new = true, mas não inclui novelty_expires_at na condição nem nas
+-- colunas cobertas. A query do hook useNoveltiesWithDetails filtra por
+-- `novelty_expires_at > NOW()`, forçando uma verificação de heap para cada linha
+-- encontrada pelo índice — O(n) heap fetches onde n = total de is_new = true.
+--
+-- Correção:
+-- Cria índice parcial que inclui novelty_expires_at na predicado e nas colunas
+-- para eliminar heap fetches no filtro de expiração, tornando a query index-only.
+
+-- Remove versão anterior se existir (evita conflito de nome)
+DROP INDEX IF EXISTS idx_products_new_active_sort;
+
+CREATE INDEX idx_products_new_active_sort
+  ON products (novelty_detected_at DESC, id ASC)
+  INCLUDE (novelty_expires_at, sale_price, stock_quantity, is_stockout, primary_image_url, category_id, supplier_id)
+  WHERE is_new = true;
+
+COMMENT ON INDEX idx_products_new_active_sort IS
+  'Índice cobrindo para queries de novidades ativas. '
+  'Predicate: is_new=true. Include: colunas lidas por useNoveltiesWithDetails. '
+  'Evita heap fetch para filtro novelty_expires_at > NOW() e filtros de qualidade.';
+
+-- <<< END 20260619100002_idx_products_novelty_covering.sql <<<
+
+-- >>> BEGIN 20260619100003_fix_reposicao_rpcs.sql >>>
 -- ============================================================
 -- Migration: fix_reposicao_rpcs
 -- Date: 2026-06-19
@@ -167348,113 +166440,7 @@ GRANT  EXECUTE ON FUNCTION public.fn_get_reposicao_metrics() TO authenticated;
 -- Reload PostgREST schema cache
 NOTIFY pgrst, 'reload schema';
 
--- <<< END 20260619100000_fix_reposicao_rpcs.sql <<<
-
--- >>> BEGIN 20260619100001_fix_fn_set_product_as_new_update.sql >>>
--- Fix: fn_set_product_as_new — adiciona tratamento de UPDATE para is_new false→true
---
--- Problema (auditoria Novidades 2026-06-19):
--- O trigger trg_set_product_as_new disparava apenas em INSERT. Quando um produto
--- era re-ingerido ou atualizado manualmente com is_new = true (ex: via webhook
--- product-webhook, que só escreve is_new sem tocar as datas), o trigger NÃO
--- preenchia novelty_detected_at / novelty_expires_at — os campos ficavam NULL,
--- fazendo o produto desaparecer do predicado `novelty_expires_at > now()`.
---
--- Correção:
--- 1. Altera o trigger para disparar em INSERT e UPDATE
--- 2. Na transição false→true (UPDATE) com campos nulos ou já expirados, preenche
---    novelty_detected_at = NOW() e novelty_expires_at = NOW() + 30 dias
--- 3. Preserva valores existentes quando a expiração ainda é futura (idempotente)
-
--- ─── Passo 1: substituir a função ───────────────────────────────────────────
-CREATE OR REPLACE FUNCTION fn_set_product_as_new()
-RETURNS trigger
-LANGUAGE plpgsql
-AS $$
-BEGIN
-  -- Só age quando is_new é TRUE no registro final
-  IF NEW.is_new IS NOT TRUE THEN
-    RETURN NEW;
-  END IF;
-
-  -- INSERT: preenche sempre (produto novo)
-  IF TG_OP = 'INSERT' THEN
-    IF NEW.novelty_detected_at IS NULL THEN
-      NEW.novelty_detected_at := NOW();
-    END IF;
-    IF NEW.novelty_expires_at IS NULL THEN
-      NEW.novelty_expires_at := NEW.novelty_detected_at + INTERVAL '30 days';
-    END IF;
-    RETURN NEW;
-  END IF;
-
-  -- UPDATE: transição false→true OU reativação de flag já expirado
-  IF TG_OP = 'UPDATE' THEN
-    DECLARE
-      was_new BOOLEAN := COALESCE(OLD.is_new, FALSE);
-      already_active BOOLEAN := (
-        NEW.novelty_expires_at IS NOT NULL AND
-        NEW.novelty_expires_at > NOW()
-      );
-    BEGIN
-      -- Se is_new estava FALSE e virou TRUE (ou expiração nula/expirada): reinicia
-      IF (was_new = FALSE OR NOT already_active) THEN
-        NEW.novelty_detected_at := NOW();
-        NEW.novelty_expires_at  := NOW() + INTERVAL '30 days';
-      END IF;
-      -- Caso contrário (is_new=true antes E expiração ainda futura): não toca
-      RETURN NEW;
-    END;
-  END IF;
-
-  RETURN NEW;
-END;
-$$;
-
--- ─── Passo 2: recriar o trigger incluindo UPDATE ─────────────────────────────
-DROP TRIGGER IF EXISTS trg_set_product_as_new ON products;
-
-CREATE TRIGGER trg_set_product_as_new
-  BEFORE INSERT OR UPDATE OF is_new
-  ON products
-  FOR EACH ROW
-  EXECUTE FUNCTION fn_set_product_as_new();
-
-COMMENT ON FUNCTION fn_set_product_as_new() IS
-  'Preenche novelty_detected_at e novelty_expires_at quando is_new=true é definido/reativado. '
-  'Dispara em INSERT e UPDATE(is_new). '
-  'Idempotente: preserva expiração futura existente.';
-
--- <<< END 20260619100001_fix_fn_set_product_as_new_update.sql <<<
-
--- >>> BEGIN 20260619100002_idx_products_novelty_covering.sql >>>
--- Performance: índice cobrindo para queries de novidades com novelty_expires_at
---
--- Problema (auditoria Novidades 2026-06-19):
--- O índice idx_products_new_sort existente cobre (novelty_detected_at DESC, id ASC)
--- com WHERE is_new = true, mas não inclui novelty_expires_at na condição nem nas
--- colunas cobertas. A query do hook useNoveltiesWithDetails filtra por
--- `novelty_expires_at > NOW()`, forçando uma verificação de heap para cada linha
--- encontrada pelo índice — O(n) heap fetches onde n = total de is_new = true.
---
--- Correção:
--- Cria índice parcial que inclui novelty_expires_at na predicado e nas colunas
--- para eliminar heap fetches no filtro de expiração, tornando a query index-only.
-
--- Remove versão anterior se existir (evita conflito de nome)
-DROP INDEX IF EXISTS idx_products_new_active_sort;
-
-CREATE INDEX idx_products_new_active_sort
-  ON products (novelty_detected_at DESC, id ASC)
-  INCLUDE (novelty_expires_at, sale_price, stock_quantity, is_stockout, primary_image_url, category_id, supplier_id)
-  WHERE is_new = true;
-
-COMMENT ON INDEX idx_products_new_active_sort IS
-  'Índice cobrindo para queries de novidades ativas. '
-  'Predicate: is_new=true. Include: colunas lidas por useNoveltiesWithDetails. '
-  'Evita heap fetch para filtro novelty_expires_at > NOW() e filtros de qualidade.';
-
--- <<< END 20260619100002_idx_products_novelty_covering.sql <<<
+-- <<< END 20260619100003_fix_reposicao_rpcs.sql <<<
 
 -- >>> BEGIN 20260619103311_expand_security_definer_acl_whitelist_20260619.sql >>>
 -- ============================================================================
@@ -173827,7 +172813,7 @@ COMMIT;
 
 -- <<< END 20260620000001_fix_c07_new_chain_violations.sql <<<
 
--- >>> BEGIN 20260620000001_mockup_client_logo_rotation_cols.sql >>>
+-- >>> BEGIN 20260620000002_mockup_client_logo_rotation_cols.sql >>>
 -- Adds missing top-level columns to generated_mockups and tightens storage security.
 --
 -- Bugs fixed:
@@ -173923,7 +172909,7 @@ SET
   allowed_mime_types = ARRAY['image/jpeg', 'image/png', 'image/webp', 'image/gif']
 WHERE id = 'mockup-assets';
 
--- <<< END 20260620000001_mockup_client_logo_rotation_cols.sql <<<
+-- <<< END 20260620000002_mockup_client_logo_rotation_cols.sql <<<
 
 -- >>> BEGIN 20260620005056_20260619140600_cf_recon_enrich_health_dashboard.sql >>>
 
@@ -175631,7 +174617,7 @@ end $$;
 
 -- <<< END 20260620150000_faxina_tier1_archive_orphan_tables.sql <<<
 
--- >>> BEGIN 20260620150000_fix_catalog_critical_bugs.sql >>>
+-- >>> BEGIN 20260620150001_fix_catalog_critical_bugs.sql >>>
 -- ============================================================
 -- Catalog Critical Bug Fixes — 2026-06-20
 -- ============================================================
@@ -175854,7 +174840,7 @@ CREATE INDEX IF NOT EXISTS idx_product_target_audiences_category_id
 CREATE INDEX IF NOT EXISTS idx_supplier_products_raw_import_batch_id
   ON public.supplier_products_raw (import_batch_id);
 
--- <<< END 20260620150000_fix_catalog_critical_bugs.sql <<<
+-- <<< END 20260620150001_fix_catalog_critical_bugs.sql <<<
 
 -- >>> BEGIN 20260620150500_faxina_tier1b_revoke_archived_grants.sql >>>
 -- FAXINA DB — Tier 1b: harden the archive/backup schemas (remove from API attack surface)
@@ -175946,7 +174932,7 @@ $function$;
 
 -- <<< END 20260620160000_comparador_hardening.sql <<<
 
--- >>> BEGIN 20260620160000_faxina_tier3_archive_dead_views.sql >>>
+-- >>> BEGIN 20260620160001_faxina_tier3_archive_dead_views.sql >>>
 -- FAXINA DB — Tier 3: archive provably-dead VIEWS (reversible: ALTER VIEW ... SET SCHEMA)
 --
 -- Applied to production (doufsxqlfjyuvxuezpln) on 2026-06-20 via Supabase MCP. Mirrors DB state.
@@ -176001,9 +174987,9 @@ begin
   raise notice 'Tier-3 archived % views', n;
 end $$;
 
--- <<< END 20260620160000_faxina_tier3_archive_dead_views.sql <<<
+-- <<< END 20260620160001_faxina_tier3_archive_dead_views.sql <<<
 
--- >>> BEGIN 20260620160000_fix_favorites_bugs_all.sql >>>
+-- >>> BEGIN 20260620160002_fix_favorites_bugs_all.sql >>>
 -- ================================================================
 -- fix_favorites_bugs_all
 -- BUG-DB-1: restore_favorite_from_trash data loss on conflict
@@ -176185,9 +175171,9 @@ $$;
 
 GRANT EXECUTE ON FUNCTION public.get_favorite_list_counts(uuid) TO authenticated;
 
--- <<< END 20260620160000_fix_favorites_bugs_all.sql <<<
+-- <<< END 20260620160002_fix_favorites_bugs_all.sql <<<
 
--- >>> BEGIN 20260620160000_fix_update_quote_client_cnpj_clearable.sql >>>
+-- >>> BEGIN 20260620160003_fix_update_quote_client_cnpj_clearable.sql >>>
 -- Migration: fix_update_quote_client_cnpj_clearable
 -- Date: 2026-06-20
 --
@@ -176389,7 +175375,7 @@ BEGIN
 END;
 $function$;
 
--- <<< END 20260620160000_fix_update_quote_client_cnpj_clearable.sql <<<
+-- <<< END 20260620160003_fix_update_quote_client_cnpj_clearable.sql <<<
 
 -- >>> BEGIN 20260620160500_faxina_tier3_archive_dead_functions.sql >>>
 -- FAXINA DB — Tier 3: archive provably-dead FUNCTIONS (reversible: ALTER FUNCTION ... SET SCHEMA)
@@ -176495,7 +175481,7 @@ end $$;
 
 -- <<< END 20260620170000_faxina_tier3c_archive_safe_utility_functions.sql <<<
 
--- >>> BEGIN 20260620170000_fix_favorites_gaps_11_12.sql >>>
+-- >>> BEGIN 20260620170001_fix_favorites_gaps_11_12.sql >>>
 -- =============================================================================
 -- GAP-11: Block addItem to archived list (DB trigger)
 -- GAP-12: Atomic position assignment for createList (replace race-prone MAX+1)
@@ -176565,9 +175551,9 @@ CREATE TRIGGER trg_fi_assign_position
 REVOKE EXECUTE ON FUNCTION public.fn_favorite_items_no_archived_list() FROM anon, authenticated, PUBLIC;
 REVOKE EXECUTE ON FUNCTION public.fn_favorite_items_assign_position() FROM anon, authenticated, PUBLIC;
 
--- <<< END 20260620170000_fix_favorites_gaps_11_12.sql <<<
+-- <<< END 20260620170001_fix_favorites_gaps_11_12.sql <<<
 
--- >>> BEGIN 20260620170000_fix_update_quote_contact_fields_clearable.sql >>>
+-- >>> BEGIN 20260620170002_fix_update_quote_contact_fields_clearable.sql >>>
 -- Migration: fix_update_quote_contact_fields_clearable
 -- Date: 2026-06-20
 --
@@ -176779,7 +175765,7 @@ BEGIN
 END;
 $function$;
 
--- <<< END 20260620170000_fix_update_quote_contact_fields_clearable.sql <<<
+-- <<< END 20260620170002_fix_update_quote_contact_fields_clearable.sql <<<
 
 -- >>> BEGIN 20260620170500_faxina_harden_function_search_path.sql >>>
 -- FAXINA DB — Security hardening: pin search_path on mutable-search_path functions.
@@ -176970,7 +175956,48 @@ NOTIFY pgrst, 'reload schema';
 
 -- <<< END 20260620190000_faxina_tier1c_archive_orphan_tables.sql <<<
 
--- >>> BEGIN 20260620190000_faxina_tier3b_b1_archive_dead_fns_views.sql >>>
+-- >>> BEGIN 20260620190001_populate_quotes_sent_at.sql >>>
+-- Populate quotes.sent_at so the quote-followup-reminders cron actually fires.
+--
+-- Bug: the edge fn filters `.not('sent_at','is',null).lte('sent_at', twoDaysAgo)`, but
+-- NOTHING ever wrote quotes.sent_at — the send flows only set status='sent', and no trigger
+-- populated it. The query therefore returned zero rows for every real quote and no follow-up
+-- reminder was ever created. We populate sent_at at the DB layer (one source of truth) instead
+-- of patching each send call site.
+
+create or replace function public.set_quote_sent_at()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  -- Stamp the first time a quote enters 'sent' (covers INSERT-as-sent and UPDATE-to-sent),
+  -- and never overwrite an existing timestamp.
+  if new.status = 'sent' and new.sent_at is null
+     and (tg_op = 'INSERT' or old.status is distinct from 'sent') then
+    new.sent_at := now();
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists trg_set_quote_sent_at on public.quotes;
+create trigger trg_set_quote_sent_at
+  before insert or update on public.quotes
+  for each row
+  execute function public.set_quote_sent_at();
+
+-- Backfill quotes already in 'sent' so they re-enter the reminder window. updated_at is the
+-- best available proxy for when the status was set; created_at is the fallback.
+update public.quotes
+set sent_at = coalesce(updated_at, created_at)
+where sent_at is null
+  and status = 'sent';
+
+-- <<< END 20260620190001_populate_quotes_sent_at.sql <<<
+
+-- >>> BEGIN 20260620190002_faxina_tier3b_b1_archive_dead_fns_views.sql >>>
 -- Faxina Tier 3b · batch 1 — arquiva (reversível) funções/views comprovadamente mortas.
 --
 -- Continuação de:
@@ -177058,9 +176085,9 @@ begin
   raise notice 'Tier3b-b1 OK: % funções, % views arquivadas', n_fn, n_vw;
 end $$;
 
--- <<< END 20260620190000_faxina_tier3b_b1_archive_dead_fns_views.sql <<<
+-- <<< END 20260620190002_faxina_tier3b_b1_archive_dead_fns_views.sql <<<
 
--- >>> BEGIN 20260620190000_heal_faxina_live_tables.sql >>>
+-- >>> BEGIN 20260620190003_heal_faxina_live_tables.sql >>>
 -- HEAL: reverse the part of the faxina (20260620150000_faxina_tier1) that archived three
 -- LIVE tables, and re-run the backfills/objects affected. Idempotent and safe on a fresh DB
 -- (the orphans list no longer archives these, so no `archive.<t>` copy exists and every
@@ -177127,9 +176154,9 @@ set
 where area_config is not null
   and (area_config ? 'logoRotation' or area_config ? 'logoScale');
 
--- <<< END 20260620190000_heal_faxina_live_tables.sql <<<
+-- <<< END 20260620190003_heal_faxina_live_tables.sql <<<
 
--- >>> BEGIN 20260620190000_reposicao_revoke_anon_grants.sql >>>
+-- >>> BEGIN 20260620190004_reposicao_revoke_anon_grants.sql >>>
 -- ============================================================================
 -- Reposição — fecha brecha de exposição a `anon` (regressão de BUG-SEC-1)
 --
@@ -177176,48 +176203,7 @@ GRANT  SELECT ON public.vw_product_availability TO authenticated;
 -- Recarrega o cache de schema do PostgREST para refletir os grants imediatamente
 NOTIFY pgrst, 'reload schema';
 
--- <<< END 20260620190000_reposicao_revoke_anon_grants.sql <<<
-
--- >>> BEGIN 20260620190001_populate_quotes_sent_at.sql >>>
--- Populate quotes.sent_at so the quote-followup-reminders cron actually fires.
---
--- Bug: the edge fn filters `.not('sent_at','is',null).lte('sent_at', twoDaysAgo)`, but
--- NOTHING ever wrote quotes.sent_at — the send flows only set status='sent', and no trigger
--- populated it. The query therefore returned zero rows for every real quote and no follow-up
--- reminder was ever created. We populate sent_at at the DB layer (one source of truth) instead
--- of patching each send call site.
-
-create or replace function public.set_quote_sent_at()
-returns trigger
-language plpgsql
-security definer
-set search_path = public
-as $$
-begin
-  -- Stamp the first time a quote enters 'sent' (covers INSERT-as-sent and UPDATE-to-sent),
-  -- and never overwrite an existing timestamp.
-  if new.status = 'sent' and new.sent_at is null
-     and (tg_op = 'INSERT' or old.status is distinct from 'sent') then
-    new.sent_at := now();
-  end if;
-  return new;
-end;
-$$;
-
-drop trigger if exists trg_set_quote_sent_at on public.quotes;
-create trigger trg_set_quote_sent_at
-  before insert or update on public.quotes
-  for each row
-  execute function public.set_quote_sent_at();
-
--- Backfill quotes already in 'sent' so they re-enter the reminder window. updated_at is the
--- best available proxy for when the status was set; created_at is the fallback.
-update public.quotes
-set sent_at = coalesce(updated_at, created_at)
-where sent_at is null
-  and status = 'sent';
-
--- <<< END 20260620190001_populate_quotes_sent_at.sql <<<
+-- <<< END 20260620190004_reposicao_revoke_anon_grants.sql <<<
 
 -- >>> BEGIN 20260620190500_faxina_tier3b_archive_dead_functions_bulk.sql >>>
 -- FAXINA DB — Tier 3b: archive provably-dead FUNCTIONS (reversible: ALTER FUNCTION ... SET SCHEMA).
@@ -177420,7 +176406,23 @@ REVOKE EXECUTE ON FUNCTION public.fn_favorite_items_assign_position() FROM anon,
 
 -- <<< END 20260621000000_fix_favorite_position_race.sql <<<
 
--- >>> BEGIN 20260621000000_fix_favorites_security_position.sql >>>
+-- >>> BEGIN 20260621000001_seller_carts_compound_indexes.sql >>>
+-- Composite indexes for seller_carts queries
+-- The main query is: WHERE seller_id = ? ORDER BY updated_at DESC
+-- The current single-column index on seller_id forces a sort step after filtering.
+-- A compound (seller_id, updated_at DESC) index satisfies both clauses in one scan.
+CREATE INDEX IF NOT EXISTS idx_seller_carts_seller_updated
+  ON public.seller_carts(seller_id, updated_at DESC);
+
+-- Composite index for seller_cart_items nested sort
+-- PostgREST query: WHERE cart_id = ? ORDER BY sort_order ASC
+-- A compound (cart_id, sort_order) index avoids a sort after the cart_id filter.
+CREATE INDEX IF NOT EXISTS idx_seller_cart_items_cart_sort
+  ON public.seller_cart_items(cart_id, sort_order ASC);
+
+-- <<< END 20260621000001_seller_carts_compound_indexes.sql <<<
+
+-- >>> BEGIN 20260621000002_fix_favorites_security_position.sql >>>
 -- Migration: fix_favorites_security_position
 -- 2026-06-21
 --
@@ -177480,23 +176482,7 @@ CREATE TRIGGER trg_fl_assign_position
   BEFORE INSERT ON public.favorite_lists
   FOR EACH ROW EXECUTE FUNCTION public.fn_favorite_lists_assign_position();
 
--- <<< END 20260621000000_fix_favorites_security_position.sql <<<
-
--- >>> BEGIN 20260621000001_seller_carts_compound_indexes.sql >>>
--- Composite indexes for seller_carts queries
--- The main query is: WHERE seller_id = ? ORDER BY updated_at DESC
--- The current single-column index on seller_id forces a sort step after filtering.
--- A compound (seller_id, updated_at DESC) index satisfies both clauses in one scan.
-CREATE INDEX IF NOT EXISTS idx_seller_carts_seller_updated
-  ON public.seller_carts(seller_id, updated_at DESC);
-
--- Composite index for seller_cart_items nested sort
--- PostgREST query: WHERE cart_id = ? ORDER BY sort_order ASC
--- A compound (cart_id, sort_order) index avoids a sort after the cart_id filter.
-CREATE INDEX IF NOT EXISTS idx_seller_cart_items_cart_sort
-  ON public.seller_cart_items(cart_id, sort_order ASC);
-
--- <<< END 20260621000001_seller_carts_compound_indexes.sql <<<
+-- <<< END 20260621000002_fix_favorites_security_position.sql <<<
 
 -- >>> BEGIN 20260621100000_faxina_restore_ai_function_routing_and_view.sql >>>
 -- FAXINA ROLLBACK: restore ai_function_routing to public + recreate v_ai_function_routing_effective
@@ -177559,7 +176545,7 @@ GRANT ALL   ON public.ai_function_routing TO service_role;
 
 -- <<< END 20260621100000_faxina_restore_ai_function_routing_and_view.sql <<<
 
--- >>> BEGIN 20260621100000_restore_broken_trigger_dependencies.sql >>>
+-- >>> BEGIN 20260621100001_restore_broken_trigger_dependencies.sql >>>
 -- Restore 5 tables incorrectly archived that are referenced by active trigger functions.
 -- Without these tables in public, INSERTs/UPDATEs on core tables fail.
 
@@ -177569,7 +176555,7 @@ ALTER TABLE archive.favorite_items_trash SET SCHEMA public;      -- fn_favorite_
 ALTER TABLE archive.mockup_credits SET SCHEMA public;            -- charge_mockup_credits_for_job AFTER INSERT/UPDATE trigger
 ALTER TABLE archive.mockup_credit_transactions SET SCHEMA public; -- charge_mockup_credits_for_job AFTER INSERT/UPDATE trigger
 
--- <<< END 20260621100000_restore_broken_trigger_dependencies.sql <<<
+-- <<< END 20260621100001_restore_broken_trigger_dependencies.sql <<<
 
 -- >>> BEGIN 20260621100100_faxina_restore_active_tables_from_archive.sql >>>
 -- FAXINA ROLLBACK: restore 15 tables actively referenced in app/edge-function code
@@ -177776,7 +176762,7 @@ ALTER FUNCTION archive.cleanup_security_logs() SET SCHEMA public;
 
 -- <<< END 20260621120000_fix_cron_broken_function.sql <<<
 
--- >>> BEGIN 20260621120000_reconcile_unarchive_live_rpcs.sql >>>
+-- >>> BEGIN 20260621120001_reconcile_unarchive_live_rpcs.sql >>>
 -- Reconcile: un-archive 7 LIVE RPC functions wrongly moved to schema `archive`
 -- by the FAXINA DB Tier-3 stats-gated cleanup (2026-06-20).
 --
@@ -177854,7 +176840,7 @@ begin
   raise notice 'reconcile: % function(s) moved back to public', moved;
 end $$;
 
--- <<< END 20260621120000_reconcile_unarchive_live_rpcs.sql <<<
+-- <<< END 20260621120001_reconcile_unarchive_live_rpcs.sql <<<
 
 -- >>> BEGIN 20260621130000_archive_empty_unused_tables.sql >>>
 -- Archive 6 empty public tables confirmed safe via 4-check safety gate:
@@ -178264,7 +177250,7 @@ NOTIFY pgrst, 'reload schema';
 
 -- <<< END 20260621210000_faxina_complete_archive_restore_11_tables_APLICADO.sql <<<
 
--- >>> BEGIN 20260621210000_onboarding_auto_assign_org_canonica.sql >>>
+-- >>> BEGIN 20260621210001_onboarding_auto_assign_org_canonica.sql >>>
 -- APLICADO 2026-06-21 (Supabase MCP execute_sql, projeto doufsxqlfjyuvxuezpln).
 -- Documenta migração JÁ APLICADA em produção (convenção: aplicar + versionar com header APLICADO).
 --
@@ -178317,7 +177303,7 @@ d1 AS (DELETE FROM public.user_organizations uo USING orf WHERE uo.user_id=orf.u
 d2 AS (DELETE FROM public.organization_members om USING orf WHERE om.user_id=orf.user_id RETURNING 1)
 SELECT (SELECT count(*) FROM d1) AS removidos_uo, (SELECT count(*) FROM d2) AS removidos_om;
 
--- <<< END 20260621210000_onboarding_auto_assign_org_canonica.sql <<<
+-- <<< END 20260621210001_onboarding_auto_assign_org_canonica.sql <<<
 
 -- >>> BEGIN 20260621211000_rename_org_canonica_promo_brindes.sql >>>
 -- APLICADO 2026-06-21 (Supabase MCP execute_sql, projeto doufsxqlfjyuvxuezpln).
@@ -179521,243 +178507,6 @@ ALTER TABLE public.search_analytics
   CHECK (results_count IS NULL OR (results_count >= -1 AND results_count <= 1000000));
 
 -- <<< END 20260621235900_widen_search_analytics_results_count_check_APLICADO.sql <<<
-
--- >>> BEGIN 20260621_fix_console_bugs_404_403.sql >>>
--- APLICADO 2026-06-21
--- =============================================================================
--- FIX: Bugs do console do frontend (promogifts.com.br)
--- =============================================================================
--- Contexto: 4 erros distintos no console em produção:
---   404 mv_stock_rupture_alert | 403 get_collections_weekly_count
---   "Falha ao carregar" HEAD discount_approval_requests / workspace_notifications
---
--- DIAGNÓSTICO (causa raiz por bug):
---   BUG 1 (404): matview mv_stock_rupture_alert criada por sessão concorrente
---                COM dados+índices+cron, porém SEM GRANT SELECT → PostgREST
---                não expõe o objeto → 404.
---   BUG 2 (403): get_collections_weekly_count era SECURITY INVOKER e acessa
---                archive.collection_items; 'authenticated' NÃO tem USAGE no
---                schema archive → 42501 → PostgREST mapeia para HTTP 403.
---   BUG 3+4: tabelas/colunas/RLS/grants íntegros. Falha coincide com
---                'colecoes → 503' no mesmo log = evento transitório de
---                infraestrutura (pooler), NÃO bug persistente. Sem ação de DB.
--- =============================================================================
-
--- -----------------------------------------------------------------------------
--- FIX #1 — get_collections_weekly_count: SECURITY INVOKER → SECURITY DEFINER
--- -----------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.get_collections_weekly_count(
-  _weeks integer DEFAULT 8
-)
-RETURNS TABLE(week_start date, item_count bigint)
-LANGUAGE sql
-STABLE
-SECURITY DEFINER
-SET search_path = public, archive
-AS $$
-  WITH weeks AS (
-    SELECT generate_series(
-      date_trunc('week', now())::date - (GREATEST(_weeks, 1) - 1) * 7,
-      date_trunc('week', now())::date,
-      '7 days'::interval
-    )::date AS week_start
-  )
-  SELECT
-    w.week_start,
-    COALESCE(COUNT(ci.id), 0)::bigint AS item_count
-  FROM weeks w
-  LEFT JOIN archive.collection_items ci
-    ON date_trunc('week', ci.created_at)::date = w.week_start
-    AND EXISTS (
-      SELECT 1 FROM public.collections c
-      WHERE c.id = ci.collection_id
-        AND c.user_id = auth.uid()
-    )
-  GROUP BY w.week_start
-  ORDER BY w.week_start ASC;
-$$;
-
-GRANT EXECUTE ON FUNCTION public.get_collections_weekly_count(integer) TO authenticated;
-GRANT EXECUTE ON FUNCTION public.get_collections_weekly_count(integer) TO anon;
-
--- -----------------------------------------------------------------------------
--- FIX #2 — mv_stock_rupture_alert: conceder SELECT (matview já existia)
--- (objeto, dados, índices [incl. UNIQUE p/ CONCURRENTLY] e cron 148 já presentes)
--- -----------------------------------------------------------------------------
-GRANT SELECT ON public.mv_stock_rupture_alert TO authenticated;
-GRANT SELECT ON public.mv_stock_rupture_alert TO anon;
-GRANT SELECT ON public.mv_stock_rupture_alert TO service_role;
-
--- -----------------------------------------------------------------------------
--- Recarregar schema cache do PostgREST (obrigatório após grant/redefinição)
--- -----------------------------------------------------------------------------
-NOTIFY pgrst, 'reload schema';
-
--- =============================================================================
--- VERIFICAÇÃO (executada — 7/7 PASS):
---   FIX1_func_executa .......... PASS  função roda sem 403
---   FIX1_security_definer ...... PASS  prosecdef=true, search_path=public,archive
---   FIX2_matview_acessivel ..... PASS  18.457 linhas preferred
---   FIX2_grants_select ......... PASS  anon+authenticated com SELECT
---   FIX2_unique_idx_refresh .... PASS  uidx_..._vss_id presente
---   FIX2_cron_refresh_ativo .... PASS  job 148 (15 */1 * * *) ativo
---   BUG34_tabelas_sas .......... PASS  estruturalmente sãs (causa: transitório)
---   fn_run_smoke_tests() ....... PASS  0 falhas (23/23 PASS) — sem regressão
---
--- DADOS VALIDADOS:
---   quantity == stock_main+stock_other em 100% (18.458/18.458) -> stock_total OK
---   Distribuição: RUPTURA 3.701 | CRÍTICO 702 | ALERTA 247 | ATENÇÃO 196 | OK 13.611
--- =============================================================================
-
--- <<< END 20260621_fix_console_bugs_404_403.sql <<<
-
--- >>> BEGIN 20260621_fix_create_rpc_get_favorite_list_counts.sql >>>
--- APLICADO: 2026-06-21
--- Fix: cria função get_favorite_list_counts
--- Resolve: HTTP 404 em /rest/v1/rpc/get_favorite_list_counts
-
-CREATE OR REPLACE FUNCTION public.get_favorite_list_counts()
-RETURNS TABLE (
-  list_id    uuid,
-  item_count bigint
-)
-LANGUAGE sql
-STABLE
-SECURITY DEFINER
-SET search_path = public
-AS $$
-  SELECT
-    fl.id          AS list_id,
-    COUNT(fi.id)::bigint AS item_count
-  FROM favorite_lists fl
-  LEFT JOIN favorite_items fi ON fi.list_id = fl.id
-  WHERE fl.user_id = (SELECT auth.uid())
-    AND fl.is_archived = false
-  GROUP BY fl.id
-  ORDER BY fl.position ASC NULLS LAST, fl.created_at ASC;
-$$;
-
-GRANT EXECUTE ON FUNCTION public.get_favorite_list_counts()
-  TO authenticated;
-
-COMMENT ON FUNCTION public.get_favorite_list_counts() IS
-  'Retorna list_id + contagem de itens para todas as listas de favoritos ativas do usuário autenticado. SECURITY DEFINER: cada usuário vê somente suas próprias listas.';
-
-NOTIFY pgrst, 'reload schema';
-
--- <<< END 20260621_fix_create_rpc_get_favorite_list_counts.sql <<<
-
--- >>> BEGIN 20260621_fix_create_rpc_get_promo_sales_90d_by_product.sql >>>
--- APLICADO: 2026-06-21
--- Fix: cria função get_promo_sales_90d_by_product
--- Resolve: HTTP 404 em /rest/v1/rpc/get_promo_sales_90d_by_product
-
-CREATE OR REPLACE FUNCTION public.get_promo_sales_90d_by_product()
-RETURNS TABLE (
-  product_id     uuid,
-  total_quantity bigint,
-  total_revenue  numeric,
-  order_count    bigint
-)
-LANGUAGE sql
-STABLE
-SECURITY DEFINER
-SET search_path = public
-AS $$
-  SELECT
-    oi.product_id,
-    SUM(oi.quantity)::bigint          AS total_quantity,
-    SUM(oi.subtotal)::numeric         AS total_revenue,
-    COUNT(DISTINCT oi.order_id)::bigint AS order_count
-  FROM order_items oi
-  JOIN orders o ON o.id = oi.order_id
-  WHERE
-    o.created_at >= (NOW() - INTERVAL '90 days')
-    AND o.status NOT IN ('cancelled', 'refunded', 'cancelado', 'estornado')
-    AND oi.product_id IS NOT NULL
-  GROUP BY oi.product_id
-  HAVING SUM(oi.quantity) > 0;
-$$;
-
-GRANT EXECUTE ON FUNCTION public.get_promo_sales_90d_by_product()
-  TO authenticated, service_role;
-
-COMMENT ON FUNCTION public.get_promo_sales_90d_by_product() IS
-  'Retorna total de unidades vendidas, receita e número de pedidos dos últimos 90 dias, agrupados por product_id. Pedidos cancelados/estornados são excluídos.';
-
-NOTIFY pgrst, 'reload schema';
-
--- <<< END 20260621_fix_create_rpc_get_promo_sales_90d_by_product.sql <<<
-
--- >>> BEGIN 20260621_fix_product_variants_add_next_entry_alias_columns.sql >>>
--- APLICADO: 2026-06-21
--- Fix: adiciona colunas geradas next_entry_date e next_entry_quantity
--- que o frontend requisitava mas não existiam em product_variants
--- Resolve: HTTP 400 em /rest/v1/product_variants (todas as requisições do grid)
-
-ALTER TABLE public.product_variants
-  ADD COLUMN IF NOT EXISTS next_entry_date    date
-    GENERATED ALWAYS AS (next_date_1) STORED,
-  ADD COLUMN IF NOT EXISTS next_entry_quantity integer
-    GENERATED ALWAYS AS (next_quantity_1) STORED;
-
-CREATE INDEX IF NOT EXISTS idx_pv_next_entry_date_nonnull
-  ON public.product_variants (next_entry_date)
-  WHERE next_entry_date IS NOT NULL;
-
-COMMENT ON COLUMN public.product_variants.next_entry_date IS
-  'Alias gerado de next_date_1 (primeira data de entrada prevista). Somente leitura — GENERATED STORED.';
-
-COMMENT ON COLUMN public.product_variants.next_entry_quantity IS
-  'Alias gerado de next_quantity_1 (quantidade da primeira entrada prevista). Somente leitura — GENERATED STORED.';
-
-NOTIFY pgrst, 'reload schema';
-
--- <<< END 20260621_fix_product_variants_add_next_entry_alias_columns.sql <<<
-
--- >>> BEGIN 20260621_fix_rls_coverage_missing_tables.sql >>>
--- APLICADO: 2026-06-21
--- Fix: habilita RLS nas 4 tabelas que quebravam smoke test rls_coverage
--- category_ancestors: SELECT público (dados de taxonomia, sem PII)
--- Tabelas _backup/_bkp: acesso exclusivo service_role
-
-ALTER TABLE public.category_ancestors ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "category_ancestors_select_public"
-  ON public.category_ancestors
-  FOR SELECT
-  TO public
-  USING (true);
-
-CREATE POLICY "category_ancestors_write_service_only"
-  ON public.category_ancestors
-  FOR ALL
-  TO service_role
-  USING (true)
-  WITH CHECK (true);
-
-ALTER TABLE public._backup_stock_daily_summary_20260618 ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public._bkp_kit_dims_20260619               ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public._bkp_orphan_active_variants_20260619 ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "backup_stock_service_only"
-  ON public._backup_stock_daily_summary_20260618
-  FOR ALL TO service_role
-  USING (true) WITH CHECK (true);
-
-CREATE POLICY "bkp_kit_dims_service_only"
-  ON public._bkp_kit_dims_20260619
-  FOR ALL TO service_role
-  USING (true) WITH CHECK (true);
-
-CREATE POLICY "bkp_orphan_variants_service_only"
-  ON public._bkp_orphan_active_variants_20260619
-  FOR ALL TO service_role
-  USING (true) WITH CHECK (true);
-
-NOTIFY pgrst, 'reload schema';
-
--- <<< END 20260621_fix_rls_coverage_missing_tables.sql <<<
 
 -- >>> BEGIN 20260622100902_add_fn_system_health_summary_and_extended_smoke_tests.sql >>>
 
@@ -183800,7 +182549,7 @@ NOTIFY pgrst, 'reload schema';
 
 -- <<< END 20260622130000_fix_color_swatches_column_and_view_plus_favorites_grant.sql <<<
 
--- >>> BEGIN 20260622130000_smoke_tests_v30_trends_fix.sql >>>
+-- >>> BEGIN 20260622130001_smoke_tests_v30_trends_fix.sql >>>
 -- ============================================================
 -- MIGRATION: smoke_tests_v30_trends_fix
 -- STATUS: APLICADO em produção via execute_sql 2026-06-22
@@ -183827,7 +182576,7 @@ NOTIFY pgrst, 'reload schema';
 -- SELECT COUNT(*) FILTER (WHERE result LIKE '%PASS%') FROM fn_run_smoke_tests();
 -- Resultado esperado: 30
 
--- <<< END 20260622130000_smoke_tests_v30_trends_fix.sql <<<
+-- <<< END 20260622130001_smoke_tests_v30_trends_fix.sql <<<
 
 -- >>> BEGIN 20260622131000_ai_queue_cleanup_cron.sql >>>
 -- ============================================================
@@ -185518,776 +184267,6 @@ COMMENT ON FUNCTION public.notify_quote_status_change IS
 
 -- <<< END 20260622220000_fix_qbp_audit_novo_orcamento.sql <<<
 
--- >>> BEGIN 20260622_ai_usage_logs_hardening_observability.sql >>>
--- =============================================================================
--- MIGRATION: ai_usage_logs_hardening_observability
--- APLICADO: 2026-06-22
--- AMBIENTE: production (doufsxqlfjyuvxuezpln)
--- SMOKE TESTS: 23/23 PASS após aplicação
--- =============================================================================
--- Conjunto de melhorias em ai_usage_logs relacionadas a:
---   1. Performance (índice parcial para check_ai_quota)
---   2. Observabilidade (updated_at + trigger + monitoring function)
---   3. Corretude (fix quota phantom para pending órfãos)
---   4. Segurança (RLS confirmado ativo + revoke indevidos)
--- =============================================================================
-
--- ---------------------------------------------------------------------------
--- 1. ÍNDICE PARCIAL PARA check_ai_quota
--- ---------------------------------------------------------------------------
--- A query crítica: WHERE user_id = X AND created_at >= month AND status != 'error'
--- O índice idx_ai_usage_logs_user_created existente não filtra status →
--- planner faz Seq Scan. O novo índice parcial (WHERE status <> 'error') é
--- menor (exclui todos os 'error') e cobre exatamente a condição da quota query.
--- Com tabela pequena (2 rows) o planner usa Seq Scan (correto).
--- Com tabela grande (>1000 rows/user/month), Index Scan será ativado.
--- ---------------------------------------------------------------------------
-CREATE INDEX IF NOT EXISTS idx_ai_usage_logs_quota_check
-ON public.ai_usage_logs (user_id, created_at DESC)
-WHERE status <> 'error';
-
--- ---------------------------------------------------------------------------
--- 2. COLUNA updated_at + TRIGGER + ÍNDICE
--- ---------------------------------------------------------------------------
--- Permite rastrear quando uma row 'pending' foi atualizada para 'error'
--- (via updateAiLog em-lifecycle vs pg_cron job 149).
--- Essencial para auditoria e debugging do ciclo de vida das requests de IA.
--- ---------------------------------------------------------------------------
-ALTER TABLE public.ai_usage_logs
-  ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT now();
-
-CREATE OR REPLACE FUNCTION public.fn_set_updated_at()
-RETURNS TRIGGER
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = public
-AS $$
-BEGIN
-  NEW.updated_at = now();
-  RETURN NEW;
-END;
-$$;
-
-CREATE TRIGGER trg_ai_usage_logs_updated_at
-  BEFORE UPDATE ON public.ai_usage_logs
-  FOR EACH ROW
-  EXECUTE FUNCTION public.fn_set_updated_at();
-
-CREATE INDEX IF NOT EXISTS idx_ai_usage_logs_updated_at
-ON public.ai_usage_logs (updated_at DESC);
-
--- ---------------------------------------------------------------------------
--- 3. pg_cron JOB 149: CLEANUP DE PENDING ÓRFÃOS (a cada 10 min)
--- ---------------------------------------------------------------------------
--- Rows 'pending' > 5 min = request cujo isolate foi morto pela plataforma
--- antes de updateAiLog rodar. Sem limpeza, essas rows consumiriam quota
--- indefinidamente (check_ai_quota conta status != 'error').
--- Threshold 5 min alinhado com fix BUG-QUOTA-002 em check_ai_quota.
--- NOTA: cron.schedule() é idempotente pelo nome do job.
--- ---------------------------------------------------------------------------
--- SELECT cron.schedule(
---   'cleanup-stale-ai-pending-logs',
---   '*/10 * * * *',
---   $$
---   UPDATE public.ai_usage_logs
---   SET
---     status        = 'error',
---     error_message = 'orphaned_pending: isolate killed before updateAiLog ran'
---   WHERE status = 'pending'
---     AND created_at < NOW() - INTERVAL '5 minutes';
---   $$
--- );
--- JÁ APLICADO via execute_sql — job 149 ACTIVE em cron.job
-
--- ---------------------------------------------------------------------------
--- 4. FIX BUG-QUOTA-002: check_ai_quota exclui pending órfãos
--- ---------------------------------------------------------------------------
--- Antes: contava TODOS os 'pending' (incluindo órfãos > 5 min).
--- Depois: exclui 'pending' > 5 min da contagem (não devem queimar quota).
--- Coerente com: pg_cron job 149 + AbortController em _shared/ai-usage.ts.
--- ---------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.check_ai_quota(_user_id uuid)
-RETURNS jsonb
-LANGUAGE plpgsql
-SET search_path TO 'public'
-AS $$
-DECLARE
-  v_role       text;
-  v_limit      int;
-  v_unlimited  boolean;
-  v_used       int;
-BEGIN
-  v_role := public._get_user_primary_role(_user_id);
-
-  -- FIX BUG-QUOTA-001: cast role::text para comparar com v_role text
-  SELECT monthly_limit, is_unlimited INTO v_limit, v_unlimited
-  FROM public.ai_usage_quotas WHERE role::text = v_role;
-
-  IF NOT FOUND THEN
-    RETURN jsonb_build_object(
-      'allowed', true, 'used', 0, 'limit', -1, 'remaining', -1,
-      'unlimited', true, 'reason', 'no_quota_for_role'
-    );
-  END IF;
-
-  -- FIX BUG-QUOTA-002: excluir rows 'pending' órfãs (> 5 min) da contagem.
-  -- status='success' → conta; status='pending' < 5 min → conta (em-voo);
-  -- status='pending' > 5 min → NÃO conta (morreu sem updateAiLog).
-  SELECT count(*)::int INTO v_used
-  FROM public.ai_usage_logs
-  WHERE user_id = _user_id
-    AND created_at >= date_trunc('month', now())
-    AND status != 'error'
-    AND (
-      status != 'pending'
-      OR created_at >= NOW() - INTERVAL '5 minutes'
-    );
-
-  IF v_unlimited THEN
-    RETURN jsonb_build_object(
-      'allowed', true, 'used', v_used, 'limit', -1, 'remaining', -1, 'unlimited', true
-    );
-  END IF;
-
-  RETURN jsonb_build_object(
-    'allowed', v_used < v_limit,
-    'used', v_used,
-    'limit', v_limit,
-    'remaining', greatest(0, v_limit - v_used),
-    'unlimited', false
-  );
-END;
-$$;
-
--- ---------------------------------------------------------------------------
--- 5. FUNÇÃO DE MONITORAMENTO: fn_ai_quota_summary
--- ---------------------------------------------------------------------------
--- SECURITY DEFINER para acessar auth.users (schema privado).
--- Acesso via service_role (admin dashboard) ou authenticated (com gateamento
--- de role no edge function que a expõe).
--- Inclui BUG-QUOTA-002 fix: exclui pending > 5 min do usado_este_mes.
--- ---------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.fn_ai_quota_summary()
-RETURNS TABLE (
-  user_id          uuid,
-  email            text,
-  role             text,
-  monthly_limit    int,
-  is_unlimited     boolean,
-  used_this_month  int,
-  remaining        int,
-  success_month    int,
-  error_month      int,
-  pending_count    int,
-  last_activity    timestamptz
-)
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = public, auth
-AS $$
-BEGIN
-  RETURN QUERY
-  SELECT
-    ur.user_id,
-    u.email::text,
-    ur.role::text,
-    COALESCE(aq.monthly_limit, 0)              AS monthly_limit,
-    COALESCE(aq.is_unlimited, false)           AS is_unlimited,
-    COALESCE(SUM(
-      CASE WHEN al.status != 'error'
-                AND al.created_at >= date_trunc('month', NOW())
-                AND (al.status != 'pending' OR al.created_at >= NOW() - INTERVAL '5 minutes')
-           THEN 1 ELSE 0 END
-    ), 0)::int                                 AS used_this_month,
-    CASE
-      WHEN COALESCE(aq.is_unlimited, false) THEN -1
-      ELSE GREATEST(0, COALESCE(aq.monthly_limit, 0) -
-        COALESCE(SUM(
-          CASE WHEN al.status != 'error'
-                    AND al.created_at >= date_trunc('month', NOW())
-                    AND (al.status != 'pending' OR al.created_at >= NOW() - INTERVAL '5 minutes')
-               THEN 1 ELSE 0 END
-        ), 0)::int)
-    END                                        AS remaining,
-    COALESCE(SUM(
-      CASE WHEN al.status = 'success' AND al.created_at >= date_trunc('month', NOW())
-           THEN 1 ELSE 0 END
-    ), 0)::int                                 AS success_month,
-    COALESCE(SUM(
-      CASE WHEN al.status = 'error' AND al.created_at >= date_trunc('month', NOW())
-           THEN 1 ELSE 0 END
-    ), 0)::int                                 AS error_month,
-    COALESCE(SUM(
-      CASE WHEN al.status = 'pending' THEN 1 ELSE 0 END
-    ), 0)::int                                 AS pending_count,
-    MAX(al.updated_at)                         AS last_activity
-  FROM public.user_roles ur
-  JOIN auth.users u ON u.id = ur.user_id AND u.deleted_at IS NULL
-  LEFT JOIN public.ai_usage_quotas aq ON aq.role = ur.role
-  LEFT JOIN public.ai_usage_logs al ON al.user_id = ur.user_id
-  GROUP BY ur.user_id, u.email, ur.role, aq.monthly_limit, aq.is_unlimited
-  ORDER BY used_this_month DESC NULLS LAST, u.email;
-END;
-$$;
-
-REVOKE EXECUTE ON FUNCTION public.fn_ai_quota_summary() FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION public.fn_ai_quota_summary() TO authenticated, service_role;
-
--- ---------------------------------------------------------------------------
--- 6. SEGURANÇA: RLS em ai_usage_logs + REVOKE indevidos
--- ---------------------------------------------------------------------------
--- RLS já estava ATIVO com policy 'ai_usage_logs_user_own':
---   dev/admin/supervisor: veem TODOS os logs
---   outros: veem apenas seus próprios logs
--- NOVO (defense in depth): REVOKE INSERT/UPDATE/DELETE de authenticated e anon.
--- Escrita é feita EXCLUSIVAMENTE por service_role (via edge functions).
--- NOTA: service_role bypassa RLS por design — edge functions não são afetadas.
--- ---------------------------------------------------------------------------
-ALTER TABLE public.ai_usage_logs ENABLE ROW LEVEL SECURITY;
-
--- REVOKE write access de authenticated (edge functions usam service_role)
-REVOKE INSERT, UPDATE, DELETE ON public.ai_usage_logs FROM authenticated;
--- REVOKE acesso total de anon (logs são dados privados por design)
-REVOKE ALL ON public.ai_usage_logs FROM anon;
--- Manter service_role com acesso completo
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.ai_usage_logs TO service_role;
-
-NOTIFY pgrst, 'reload schema';
-
--- ---------------------------------------------------------------------------
--- ARTEFATOS RELACIONADOS (código fonte)
--- ---------------------------------------------------------------------------
--- supabase/functions/_shared/ai-usage.ts @ 13fcff6:
---   AbortController 45s no legacy fetch + legacyTimeoutMs por caller
--- supabase/functions/semantic-search/index.ts @ 38284e8:
---   legacyTimeoutMs: 9_000 (< AI_TIMEOUT_MS 12s) para garantir updateAiLog in-lifecycle
--- supabase/functions/word-magic/index.ts @ e0011dc:
---   AbortController 60s no fetch DeepSeek V4-Flash
--- pg_cron job 149 (LIVE):
---   cleanup-stale-ai-pending-logs — a cada 10 min — converte pending > 5 min para error
--- =============================================================================
-
--- <<< END 20260622_ai_usage_logs_hardening_observability.sql <<<
-
--- >>> BEGIN 20260622_categories_active_generated_compat.sql >>>
--- ============================================================
--- categories.active — coluna gerada para compatibilidade retroativa
--- Data: 2026-06-22
---
--- CONTEXTO:
---   categories.active foi dropada em 20260622_drop_categories_active_legacy.sql.
---   A build em produção (c894b26e0, Vercel READY) ainda filtra por
---   active=eq.true → PostgREST retornava 400 Bad Request.
---   Builds novas estão bloqueadas (PR #1338 pendente).
---
--- SOLUÇÃO:
---   Recriar 'active' como GENERATED ALWAYS AS (is_active) STORED.
---   Leitura idêntica à antiga coluna, sem nenhum write manual.
---   Quando o PR #1338 fizer deploy, o código frontend migrará para
---   is_active; esta coluna gerada se tornará redundante mas inofensiva.
---
--- CLEANUP FUTURO:
---   Após deploy bem-sucedido do PR #1338, dropar com:
---   ALTER TABLE categories DROP COLUMN IF EXISTS active;
--- ============================================================
-
-ALTER TABLE public.categories
-  ADD COLUMN IF NOT EXISTS active boolean
-    GENERATED ALWAYS AS (is_active) STORED;
-
--- Invariante: divergência deve ser sempre 0
-DO $$
-DECLARE
-  v_divergencia integer;
-BEGIN
-  SELECT COUNT(*) INTO v_divergencia
-  FROM public.categories
-  WHERE active IS DISTINCT FROM is_active;
-
-  IF v_divergencia > 0 THEN
-    RAISE EXCEPTION 'BUG: categories.active diverge de is_active em % linhas', v_divergencia;
-  END IF;
-END $$;
-
--- <<< END 20260622_categories_active_generated_compat.sql <<<
-
--- >>> BEGIN 20260622_color_swatches.sql >>>
--- ============================================================
--- MIGRATION: color_swatches feature
--- APLICADO: 2026-06-22 (via execute_sql direto no projeto doufsxqlfjyuvxuezpln)
--- Autor: Claude (PhD-level DB engineering)
--- ============================================================
-
--- PASSO 1: Nova coluna em products
--- ALTER TABLE products ADD COLUMN IF NOT EXISTS color_swatches jsonb DEFAULT '[]'::jsonb;
--- COMMENT ON COLUMN products.color_swatches IS
---   'Array JSONB com swatches de cor. [{variant_id, sku, color_id, color_name, color_hex, stock_quantity (SUM), image_url, is_in_stock}]';
--- NOTIFY pgrst, 'reload schema';
-
--- PASSO 2: Função rebuild (stock = SUM por color_id; imagem P1→P4)
--- CREATE OR REPLACE FUNCTION fn_rebuild_color_swatches(p_product_id uuid) ...
--- Ver implementação completa no banco de dados.
-
--- PASSO 3: Trigger em product_variants
--- trg_rebuild_swatches_on_variant
--- AFTER INSERT OR UPDATE OF color_id, color_name, color_hex, stock_quantity, is_active OR DELETE
--- Guards: bulk_import_mode + DISTINCT check (só update se mudou)
-
--- PASSO 4: Trigger em product_images
--- trg_rebuild_swatches_on_image
--- AFTER INSERT OR UPDATE OF variant_id, color_id, url_cdn, is_primary, is_active, image_type OR DELETE
--- Guards: bulk_import_mode + variant_id/color_id IS NOT NULL + image_type IN ('main','gallery','product') + DISTINCT check
-
--- PASSO 5: Backfill de 7.153 produtos (has_colors=true, is_active=true)
--- Triggers desativados durante backfill: search_vector, seo_autofill, extract_materials, auto_materials
--- Executado em 8 lotes de 900 produtos
--- Resultado: 7.153/7.153 processados (0 restantes)
-
--- PASSO 6: RPC fn_get_color_swatches_batch(p_product_ids uuid[])
--- Lazy-load para frontend; usado quando color_swatches estiver vazio
-
--- HIERARQUIA DE IMAGEM:
--- P1: product_images WHERE variant_id = pv.id AND image_type IN ('main','gallery','product') → url_cdn (CF Images)
--- P2: product_images WHERE color_id = pv.color_id AND variant_id IS NULL → url_cdn (CF Images)
--- P3: product_variants.images->0 (supplier CDN JSONB)
--- P4: products.primary_image_url (fallback genérico)
-
--- COBERTURA PÓS-BACKFILL:
--- 7.153 produtos com color_swatches preenchido
--- 182 produtos sem cores (color_swatches = '[]')
--- Triggers ativos e mantendo o campo automaticamente
-
--- SMOKE TESTS: fn_run_smoke_tests() mantém 23/23 PASS
-
--- ARQUIVOS FRONTEND CRIADOS:
--- src/hooks/useProductColorSwatch.ts
--- src/components/ui/ColorSwatchPicker.tsx
--- src/types/colorSwatch.ts
--- Commit: cb7cc8b1b3c3048c88143f6f78eee80f7be04f79
-
--- <<< END 20260622_color_swatches.sql <<<
-
--- >>> BEGIN 20260622_drop_categories_active_legacy.sql >>>
--- ============================================================
--- categories.active — DROP COLUMN (campo legado Bitrix24)
--- Data: 2026-06-22
--- Motivo: 100% redundante com is_active. Zero consumidores
---         verificados em 16 dimensões (views, functions, triggers,
---         RLS, cron, indexes, edge functions, 3.257 arquivos TS).
---         Divergências ativas: 0/477 linhas.
--- ============================================================
-
--- Pré-condição: active == is_active em 100% das linhas
--- (verificado e corrigido em sessão anterior via P2)
--- DROP aplicado em produção em 2026-06-22 após dry-run BEGIN/ROLLBACK
-
-ALTER TABLE public.categories DROP COLUMN IF EXISTS active;
-
--- Atualizar documentação do campo canônico
-COMMENT ON COLUMN public.categories.is_active IS
-'CAMPO CANÔNICO de status de categoria. Controla visibilidade no catálogo, filtros e índices.
-Ao inativar uma categoria, setar is_active=false e propagar para subcategorias se necessário.
-O campo legado "active" (Bitrix24) foi eliminado em 2026-06-22 após verificação de zero consumidores.';
-
--- <<< END 20260622_drop_categories_active_legacy.sql <<<
-
--- >>> BEGIN 20260622_fix_categories_active_column_alias.sql >>>
--- APLICADO: 2026-06-22 via execute_sql (bug-fix session)
--- BUG-CAT-400: categories tabela tem coluna 'is_active' mas frontend
--- (Lovable-generated code) faz queries com .eq('active', true) -> 400.
--- Fix: adicionar 'active' como GENERATED ALWAYS AS (is_active) STORED.
--- Forward-compatible: codigo existente com is_active continua funcionando;
--- queries com active=eq.true agora tambem funcionam corretamente.
--- Semantica preservada: active=true <=> is_active=true (NULL propaga NULL).
-
-ALTER TABLE public.categories
-ADD COLUMN IF NOT EXISTS active boolean GENERATED ALWAYS AS (is_active) STORED;
-
--- Recarregar schema cache do PostgREST para expor nova coluna e
--- corrigir simultaneamente o 404 em get_favorite_list_counts (cache stale).
-SELECT pg_notify('pgrst', 'reload schema');
-
--- <<< END 20260622_fix_categories_active_column_alias.sql <<<
-
--- >>> BEGIN 20260622_fix_fn_system_health_summary_security_invoker.sql >>>
--- APLICADO: 2026-06-22
--- BUG DETECTADO DURANTE VALIDAÇÃO EXAUSTIVA:
--- fn_system_health_summary() era SECURITY DEFINER e chamava
--- fn_run_smoke_tests() internamente.
--- fn_run_smoke_tests() usa EXECUTE 'RESET role' internamente
--- o que é PROIBIDO em contexto SECURITY DEFINER no PostgreSQL.
--- ERROR: cannot set parameter "role" within security-definer function
---
--- FIX: Mudar para SECURITY INVOKER + substituir chamada a
--- fn_run_smoke_tests() por checks diretos para evitar o RESET role.
--- Função de monitoramento não precisa de SECURITY DEFINER.
-
-CREATE OR REPLACE FUNCTION public.fn_system_health_summary()
-RETURNS jsonb
-LANGUAGE plpgsql
-STABLE
-SECURITY INVOKER  -- corrigido de SECURITY DEFINER
-SET search_path = public
-AS $$
-DECLARE
-  v_result          jsonb;
-  v_rls_gap         int;
-  v_variants_active bigint;
-  v_variants_restock bigint;
-  v_products_total  bigint;
-  v_products_ai_done bigint;
-  v_sales_products  bigint;
-  v_sales_revenue   numeric;
-  v_fav_lists       bigint;
-  v_smoke_pass      int := 0;
-  v_smoke_fail      int := 0;
-  v_smoke_total     int;
-BEGIN
-  -- Checks internos diretos (não chama fn_run_smoke_tests para
-  -- evitar o RESET role proibido em SECURITY DEFINER)
-  IF EXISTS(SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
-    WHERE n.nspname='public' AND c.relname IN ('products','product_variants','product_images','orders'))
-  THEN v_smoke_pass := v_smoke_pass + 1; ELSE v_smoke_fail := v_smoke_fail + 1; END IF;
-
-  IF (SELECT COUNT(*) FROM information_schema.columns
-    WHERE table_schema='public' AND table_name='product_variants'
-    AND column_name IN ('next_entry_date','next_entry_quantity') AND is_generated='ALWAYS') = 2
-  THEN v_smoke_pass := v_smoke_pass + 1; ELSE v_smoke_fail := v_smoke_fail + 1; END IF;
-
-  IF (SELECT COUNT(*) FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace
-    WHERE n.nspname='public' AND p.proname IN
-    ('get_promo_sales_90d_by_product','get_favorite_list_counts')) = 2
-  THEN v_smoke_pass := v_smoke_pass + 1; ELSE v_smoke_fail := v_smoke_fail + 1; END IF;
-
-  IF NOT EXISTS(SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
-    WHERE c.relkind='r' AND n.nspname='public' AND c.relrowsecurity=false)
-  THEN v_smoke_pass := v_smoke_pass + 1; ELSE v_smoke_fail := v_smoke_fail + 1; END IF;
-
-  IF EXISTS(SELECT 1 FROM pg_indexes WHERE schemaname='public'
-    AND tablename='product_variants' AND indexname='idx_pv_next_entry_date_nonnull')
-  THEN v_smoke_pass := v_smoke_pass + 1; ELSE v_smoke_fail := v_smoke_fail + 1; END IF;
-
-  IF NOT has_table_privilege('anon','public._bkp_kit_dims_20260619','SELECT')
-    AND NOT has_table_privilege('authenticated','public._bkp_kit_dims_20260619','SELECT')
-  THEN v_smoke_pass := v_smoke_pass + 1; ELSE v_smoke_fail := v_smoke_fail + 1; END IF;
-
-  v_smoke_total := v_smoke_pass + v_smoke_fail;
-
-  SELECT COUNT(*) INTO v_rls_gap
-  FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
-  WHERE c.relkind='r' AND n.nspname='public' AND c.relrowsecurity=false;
-
-  SELECT
-    COUNT(*) FILTER (WHERE is_active=true),
-    COUNT(*) FILTER (WHERE is_active=true AND next_entry_date IS NOT NULL AND next_entry_date > CURRENT_DATE)
-  INTO v_variants_active, v_variants_restock
-  FROM product_variants;
-
-  SELECT
-    COUNT(*) FILTER (WHERE is_active=true),
-    COUNT(*) FILTER (WHERE is_active=true AND ai_title IS NOT NULL)
-  INTO v_products_total, v_products_ai_done
-  FROM products;
-
-  SELECT
-    COUNT(DISTINCT oi.product_id)::bigint,
-    COALESCE(SUM(oi.subtotal),0)
-  INTO v_sales_products, v_sales_revenue
-  FROM order_items oi
-  JOIN orders o ON o.id = oi.order_id
-  WHERE o.created_at >= NOW() - INTERVAL '90 days'
-    AND o.status NOT IN ('cancelled','refunded','cancelado','estornado')
-    AND oi.product_id IS NOT NULL;
-
-  SELECT COUNT(*) INTO v_fav_lists FROM favorite_lists WHERE is_archived=false;
-
-  v_result := jsonb_build_object(
-    'generated_at',       NOW(),
-    'health_checks',      jsonb_build_object(
-      'pass',             v_smoke_pass,
-      'fail',             v_smoke_fail,
-      'total',            v_smoke_total,
-      'healthy',          v_smoke_fail = 0,
-      'note',             'Checks internos diretos. Para smoke completo: SELECT * FROM fn_run_smoke_tests()'
-    ),
-    'rls_coverage',       jsonb_build_object(
-      'tables_without_rls', v_rls_gap,
-      'healthy',            v_rls_gap = 0
-    ),
-    'product_variants',   jsonb_build_object(
-      'active',              v_variants_active,
-      'with_restock_date',   v_variants_restock,
-      'generated_cols_ok',   true
-    ),
-    'products',           jsonb_build_object(
-      'total_active',        v_products_total,
-      'ai_enriched',         v_products_ai_done,
-      'pending_enrichment',  v_products_total - v_products_ai_done,
-      'enrichment_pct',      CASE WHEN v_products_total > 0
-                             THEN ROUND((v_products_ai_done::numeric / v_products_total)*100,1)
-                             ELSE 0 END
-    ),
-    'sales_90d',          jsonb_build_object(
-      'products_sold',    v_sales_products,
-      'total_revenue',    v_sales_revenue
-    ),
-    'favorite_lists',     jsonb_build_object(
-      'active_lists',     v_fav_lists
-    ),
-    'new_rpcs',           jsonb_build_object(
-      'get_promo_sales_90d_by_product', true,
-      'get_favorite_list_counts',       true
-    )
-  );
-
-  RETURN v_result;
-END;
-$$;
-
-GRANT EXECUTE ON FUNCTION public.fn_system_health_summary()
-  TO authenticated, service_role;
-
-COMMENT ON FUNCTION public.fn_system_health_summary() IS
-  'SECURITY INVOKER (fix 2026-06-22): fn_run_smoke_tests() usa RESET role '
-  'que é proibido em SECURITY DEFINER. Checks internos diretos + métricas do sistema. '
-  'Para smoke tests completos: SELECT * FROM fn_run_smoke_tests()';
-
-NOTIFY pgrst, 'reload schema';
-
--- <<< END 20260622_fix_fn_system_health_summary_security_invoker.sql <<<
-
--- >>> BEGIN 20260622_get_favorite_list_counts_user_id_overload.sql >>>
--- ============================================================
--- get_favorite_list_counts(_user_id uuid) — overload com parâmetro
--- Data: 2026-06-22
---
--- CONTEXTO:
---   O hook useFavoriteLists.ts chama:
---     untypedRpc('get_favorite_list_counts', { _user_id: user.id })
---   PostgREST faz match por assinatura: busca get_favorite_list_counts(_user_id uuid).
---   A versão () (sem args) existe, mas gera 404 para calls com body {_user_id: "..."}.
---
--- SOLUÇÃO:
---   Criar overload com _user_id uuid.
---   - Mantém a versão () intacta (outros callers podem usá-la via auth.uid() interno).
---   - Novo overload é SECURITY DEFINER com guard explícito:
---       _user_id = auth.uid()            → acessa só as próprias listas
---       OR is_admin_or_above(auth.uid()) → admin vê qualquer lista
---   - Retorna TABLE(list_id uuid, item_count bigint) — mesmo contrato.
---   - anon revogado: retorno vazio garantido pelo guard, mas melhor ser explícito.
--- ============================================================
-
-CREATE OR REPLACE FUNCTION public.get_favorite_list_counts(_user_id uuid)
-RETURNS TABLE(list_id uuid, item_count bigint)
-LANGUAGE sql
-STABLE
-SECURITY DEFINER
-SET search_path TO 'public'
-AS $$
-  SELECT
-    fl.id                    AS list_id,
-    COUNT(fi.id)::bigint     AS item_count
-  FROM favorite_lists fl
-  LEFT JOIN favorite_items fi ON fi.list_id = fl.id
-  WHERE fl.user_id = _user_id
-    AND (
-         _user_id = (SELECT auth.uid())
-      OR is_admin_or_above((SELECT auth.uid()))
-    )
-    AND fl.is_archived = false
-  GROUP BY fl.id
-  ORDER BY fl.position ASC NULLS LAST, fl.created_at ASC;
-$$;
-
-GRANT EXECUTE ON FUNCTION public.get_favorite_list_counts(uuid) TO authenticated;
-GRANT EXECUTE ON FUNCTION public.get_favorite_list_counts(uuid) TO service_role;
-REVOKE EXECUTE ON FUNCTION public.get_favorite_list_counts(uuid) FROM anon;
-
--- <<< END 20260622_get_favorite_list_counts_user_id_overload.sql <<<
-
--- >>> BEGIN 20260622_icon_semantic_improvements.sql >>>
--- APLICADO: 2026-06-22 (sessões de auditoria)
--- Autor: Claude AI (dev senior audit)
--- Descrição: Migração completa do sistema de ícones de categorias
---             de emojis para nomes PascalCase do Lucide React.
---             Inclui 48+ correções semânticas em 3 fases.
-
--- =============================================================
--- FASE 1: MIGRAÇÃO EMOJI -> LUCIDE (412 registros)
--- Commit: f425e552
--- =============================================================
--- Todos os 412 registros em category_icons foram migrados
--- de emojis/texto legado para nomes PascalCase Lucide.
--- Aplicação inicial via UPDATE em lote (ver sessão anterior).
-
--- =============================================================
--- FASE 2: 17 NOVOS ÍCONES + 32 CORREÇÕES SEMÂNTICAS
--- Commit: 0519c137 (build FALHOU) / f49d0360 (bugfix)
--- =============================================================
-
--- Novos ícones adicionados ao ICON_MAP:
--- AlarmClock, Calculator, Car, CircleDot, Clock, Cpu,
--- Glasses, Image, Lamp, Laptop, Lock, Luggage, Pill, Pin,
--- Sprout, Thermometer, Umbrella
-
--- 32 correções semânticas - Fase 2:
-UPDATE category_icons SET icon = CASE category_name
-  WHEN 'Lanternas'              THEN 'Flashlight'
-  WHEN 'Luminárias'             THEN 'Lamp'
-  WHEN 'Calculadoras'           THEN 'Calculator'
-  WHEN 'Porta Comprimido'       THEN 'Pill'
-  WHEN 'Malas'                  THEN 'Luggage'
-  WHEN 'Óculos de Sol'           THEN 'Glasses'
-  WHEN 'Futebol'                THEN 'CircleDot'
-  WHEN 'Vôlei'                  THEN 'CircleDot'
-  WHEN 'Veículos'               THEN 'Car'
-  WHEN 'Mochila Anti Furto'     THEN 'Lock'
-  WHEN 'Guarda Chuva'           THEN 'Umbrella'
-  WHEN 'Guarda Sol'             THEN 'Umbrella'
-  WHEN 'Garrafa Térmica'        THEN 'Thermometer'
-  WHEN 'Garrafas | Isotérmica'  THEN 'Thermometer'
-  WHEN 'Bolsa Térmica'          THEN 'Thermometer'
-  WHEN 'Caixa | Térmica'        THEN 'Thermometer'
-  WHEN 'Coolers'                THEN 'Thermometer'
-  WHEN 'Agro'                   THEN 'Sprout'
-  WHEN 'Kit Cultivo'            THEN 'Sprout'
-  WHEN 'Lápis Semente'          THEN 'Sprout'
-  WHEN 'Tecnologia | Eletrônicos' THEN 'Cpu'
-  WHEN 'Mochila Notebook'       THEN 'Laptop'
-  WHEN 'Porta | Retrato'        THEN 'Image'
-  WHEN 'Relógios | Mesa'        THEN 'AlarmClock'
-  WHEN 'Relógio | Parede | Plástico' THEN 'Clock'
-  WHEN 'Relógios | Parede'      THEN 'Clock'
-  WHEN 'Viseiras'               THEN 'Sun'
-  WHEN 'Acessórios'             THEN 'Tag'
-  WHEN 'Chaveiros | Premium'    THEN 'Crown'
-  WHEN 'Motivacional | Premiações' THEN 'Trophy'
-  WHEN 'Mochila Executiva'      THEN 'Backpack'
-  WHEN 'Manta | Mini Cobertor'  THEN 'Layers'
-  ELSE icon
-END
-WHERE category_name IN (
-  'Lanternas','Luminárias','Calculadoras','Porta Comprimido','Malas',
-  'Óculos de Sol','Futebol','Vôlei','Veículos','Mochila Anti Furto',
-  'Guarda Chuva','Guarda Sol','Garrafa Térmica','Garrafas | Isotérmica',
-  'Bolsa Térmica','Caixa | Térmica','Coolers','Agro','Kit Cultivo',
-  'Lápis Semente','Tecnologia | Eletrônicos','Mochila Notebook',
-  'Porta | Retrato','Relógios | Mesa','Relógio | Parede | Plástico',
-  'Relógios | Parede','Viseiras','Acessórios','Chaveiros | Premium',
-  'Motivacional | Premiações','Mochila Executiva','Manta | Mini Cobertor'
-);
-
--- =============================================================
--- FASE 3: CORREÇÕES ADICIONAIS DETECTADAS EM AUDITORIA PROFUNDA
--- Commit: [sessão 2026-06-22]
--- =============================================================
-
--- 16 correções adicionais - Fase 3:
-UPDATE category_icons SET icon = CASE category_name
-
-  -- PET (3 categorias pet com ícone errado)
-  WHEN 'Bebedouro | Pet'         THEN 'PawPrint'
-  WHEN 'Comedouros | Pet'        THEN 'PawPrint'
-  WHEN 'Kit Higiene | Pet'       THEN 'PawPrint'
-
-  -- ÁUDIO (caixa de som ≠ fone)
-  WHEN 'Caixa de Som'            THEN 'Speaker'
-
-  -- TECLADO (apoio de teclado ≠ mouse)
-  WHEN 'Apoio Teclado'           THEN 'Keyboard'
-
-  -- MOCHILA (mochila esportiva é backpack)
-  WHEN 'Mochila Esportiva'       THEN 'Backpack'
-
-  -- TÉRMICOS (sacola e térmicos costáveis devem ser Thermometer)
-  WHEN 'Sacola Térmica'          THEN 'Thermometer'
-  WHEN 'Térmicos | Costúraveis'  THEN 'Thermometer'
-
-  -- LAZER (é esporte, não água)
-  WHEN 'Lazer'                   THEN 'Dumbbell'
-
-  -- ECO MATERIAL (bambu/cortiça não é caderno)
-  WHEN 'Bambu | Cortiça'         THEN 'TreePine'
-
-  -- MALETA DE MAQUIAGEM (≠ pasta executiva)
-  WHEN 'Maleta | Maquiagem'      THEN 'Sparkles'
-
-  -- TOALHAS (produto em camadas = Layers)
-  WHEN 'Kit Toalha'              THEN 'Layers'
-  WHEN 'Roupão | Atoalhado'      THEN 'Layers'
-  WHEN 'Roupão | Microfibra'     THEN 'Layers'
-  WHEN 'Toalha | Banho'          THEN 'Layers'
-  WHEN 'Toalha | Rosto'          THEN 'Layers'
-  WHEN 'Toalhas | Praia'         THEN 'Layers'
-
-  ELSE icon
-END
-WHERE category_name IN (
-  'Bebedouro | Pet','Comedouros | Pet','Kit Higiene | Pet',
-  'Caixa de Som','Apoio Teclado','Mochila Esportiva',
-  'Sacola Térmica','Térmicos | Costúraveis','Lazer',
-  'Bambu | Cortiça','Maleta | Maquiagem',
-  'Kit Toalha','Roupão | Atoalhado','Roupão | Microfibra',
-  'Toalha | Banho','Toalha | Rosto','Toalhas | Praia'
-);
-
--- Sync categories.icon após cada fase
-UPDATE categories c
-SET icon = ci.icon
-FROM category_icons ci
-WHERE lower(trim(ci.category_name)) = lower(trim(c.name))
-  AND ci.icon IS NOT NULL
-  AND ci.icon != COALESCE(c.icon, '');
-
--- =============================================================
--- VALIDAÇÃO FINAL ESPERADA
--- =============================================================
--- SELECT COUNT(*) FROM category_icons;                              -- 412
--- SELECT COUNT(*) FROM category_icons WHERE icon !~ '^[A-Z][a-zA-Z0-9]+$'; -- 0
--- SELECT COUNT(*) FROM category_icons WHERE icon IS NULL;           -- 0
--- SELECT COUNT(*) FROM fn_run_smoke_tests() WHERE result NOT LIKE '%PASS%'; -- 0
-
--- <<< END 20260622_icon_semantic_improvements.sql <<<
-
--- >>> BEGIN 20260622_restore_get_favorite_list_counts_noarg.sql >>>
--- ============================================================
--- get_favorite_list_counts() — restauração do overload sem args
--- Data: 2026-06-22
---
--- CONTEXTO: Durante a bateria de validação pós-correção, detectou-se
--- que a overload () (sem parâmetros) havia desaparecido do banco.
--- Causa provável: alguma migration anterior (drop_dead_cols_step3 ou
--- equivalente) que usou CASCADE em objetos dependentes pode ter criado
--- um efeito colateral. O overload (_user_id uuid) estava correto.
--- Esta migration restaura a versão sem args com body e grants originais.
---
--- Body original reconstruído da captura feita no início da sessão.
--- Grants originais: postgres/authenticated/service_role/anon = EXECUTE
--- ============================================================
-CREATE OR REPLACE FUNCTION public.get_favorite_list_counts()
-RETURNS TABLE(list_id uuid, item_count bigint)
-LANGUAGE sql
-STABLE
-SECURITY DEFINER
-SET search_path TO 'public'
-AS $$
-  SELECT
-    fl.id                    AS list_id,
-    COUNT(fi.id)::bigint     AS item_count
-  FROM favorite_lists fl
-  LEFT JOIN favorite_items fi ON fi.list_id = fl.id
-  WHERE fl.user_id = (SELECT auth.uid())
-    AND fl.is_archived = false
-  GROUP BY fl.id
-  ORDER BY fl.position ASC NULLS LAST, fl.created_at ASC;
-$$;
-
-GRANT EXECUTE ON FUNCTION public.get_favorite_list_counts() TO authenticated;
-GRANT EXECUTE ON FUNCTION public.get_favorite_list_counts() TO service_role;
-GRANT EXECUTE ON FUNCTION public.get_favorite_list_counts() TO anon;
-
--- <<< END 20260622_restore_get_favorite_list_counts_noarg.sql <<<
-
 -- >>> BEGIN 20260623000000_fix_audit_novo_orcamento_batch2.sql >>>
 -- ==================================================================
 -- MIGRATION: Auditoria completa módulo Novo Orçamento — 2026-06-23
@@ -186594,20 +184573,6 @@ ORDER BY routine_name;
 
 -- <<< END 20260623000001_fix_gravacao_rpc_grants_and_security.sql <<<
 
--- >>> BEGIN 20260623000001_products_name_m1_add_column_comment.sql >>>
--- M1: COMMENT oficial na coluna products.name
-COMMENT ON COLUMN public.products.name IS
-'Nome comercial do produto exibido no catalogo e na busca.
-Tipo: text irrestrito, NOT NULL, sem default, posicao ordinal 2.
-Constraint: chk_products_name_not_empty CHECK(length(TRIM(name)) > 0).
-Origem por fornecedor: XBZ NomeProduto (avg 24), Spot Name (avg 52, max 183), Asia nome, So Marcas nome.
-Downstream de 8 triggers: slug, meta_title, meta_description, og_title, og_description, canonical_url, search_vector (Peso A), capacity_ml, dimensions, weight_g, meta_keywords, category_id, materials.
-Protecao manual: trg_aa_capture_manual_edits adiciona name a locked_fields quando write_source != pipeline.
-NAO confundir com product_variants.name que eh UPPER via fn_normalize_product_name (design intencional).
-7 indices: 1 GIN trigram + 6 btree compostos.';
-
--- <<< END 20260623000001_products_name_m1_add_column_comment.sql <<<
-
 -- >>> BEGIN 20260623000002_products_name_m2_fix_medallion_coverage.sql >>>
 -- M2: FIX vw_medallion_coverage.display_name_pct
 -- BUG: comparava name com fn_normalize_product_name()=UPPER() => 100% falso positivo
@@ -186795,6 +184760,20 @@ ALTER TABLE public.products
 ALTER TABLE public.products VALIDATE CONSTRAINT chk_products_name_max_length;
 
 -- <<< END 20260623000008_products_name_m8_max_length.sql <<<
+
+-- >>> BEGIN 20260623000009_products_name_m1_add_column_comment.sql >>>
+-- M1: COMMENT oficial na coluna products.name
+COMMENT ON COLUMN public.products.name IS
+'Nome comercial do produto exibido no catalogo e na busca.
+Tipo: text irrestrito, NOT NULL, sem default, posicao ordinal 2.
+Constraint: chk_products_name_not_empty CHECK(length(TRIM(name)) > 0).
+Origem por fornecedor: XBZ NomeProduto (avg 24), Spot Name (avg 52, max 183), Asia nome, So Marcas nome.
+Downstream de 8 triggers: slug, meta_title, meta_description, og_title, og_description, canonical_url, search_vector (Peso A), capacity_ml, dimensions, weight_g, meta_keywords, category_id, materials.
+Protecao manual: trg_aa_capture_manual_edits adiciona name a locked_fields quando write_source != pipeline.
+NAO confundir com product_variants.name que eh UPPER via fn_normalize_product_name (design intencional).
+7 indices: 1 GIN trigram + 6 btree compostos.';
+
+-- <<< END 20260623000009_products_name_m1_add_column_comment.sql <<<
 
 -- >>> BEGIN 20260623101524_add_analyze_cron_supplemental_tables.sql >>>
 
@@ -189444,17 +187423,6 @@ COMMENT ON COLUMN public.categories.icon IS
 
 -- <<< END 20260623112825_add_icon_lucide_format_constraint_to_categories.sql <<<
 
--- >>> BEGIN 2026062311292414001_add_full_path_readable_propagation_triggers.sql >>>
-CREATE OR REPLACE FUNCTION public.calculate_category_hierarchy() ... (adicionado full_path_readable);
-CREATE OR REPLACE FUNCTION public.fn_trigger_propagate_fpr() ... (nova função de propagação);
-DROP TRIGGER IF EXISTS trigger_calculate_hierarchy ON categories;
-CREATE TRIGGER trigger_calculate_hierarchy BEFORE INSERT OR UPDATE OF name, parent_id ON categories ...;
-DROP TRIGGER IF EXISTS trg_propagate_fpr ON categories;
-CREATE TRIGGER trg_propagate_fpr AFTER UPDATE OF name, parent_id ON categories ...;
-CREATE OR REPLACE FUNCTION public.fn_resync_full_path_readable(UUID DEFAULT NULL) ... (função de resync manual);
-
--- <<< END 2026062311292414001_add_full_path_readable_propagation_triggers.sql <<<
-
 -- >>> BEGIN 20260623113125_upgrade_category_icons_uuid_fk_and_sync_trigger.sql >>>
 
 -- ═══════════════════════════════════════════════════════════════════════════
@@ -190269,7 +188237,7 @@ NOTIFY pgrst, 'reload schema';
 
 -- <<< END 20260623120000_fix_get_top_collected_products_security_definer.sql <<<
 
--- >>> BEGIN 20260623120000_harden_get_favorite_list_counts_revoke_anon.sql >>>
+-- >>> BEGIN 20260623120001_harden_get_favorite_list_counts_revoke_anon.sql >>>
 -- Hardening: garante anon SEM EXECUTE em get_favorite_list_counts de forma deterministica.
 -- Contexto: a funcao consta na whitelist de fn_auto_revoke_secdef_public_execute, entao aquele
 -- event trigger NAO a revoga. Um (re)CREATE pela migration canonica 20260622200000 (DROP+CREATE+GRANT,
@@ -190290,7 +188258,7 @@ BEGIN
 END $$;
 NOTIFY pgrst, 'reload schema';
 
--- <<< END 20260623120000_harden_get_favorite_list_counts_revoke_anon.sql <<<
+-- <<< END 20260623120001_harden_get_favorite_list_counts_revoke_anon.sql <<<
 
 -- >>> BEGIN 20260623120006_fix_restore_trigger_notify_quote_status_change_20260623.sql >>>
 
@@ -191040,7 +189008,7 @@ GRANT EXECUTE ON FUNCTION public.fn_batch_update_cart_item_sort_order(jsonb) TO 
 
 -- <<< END 20260623130000_cart_batch_sort_order_rpc.sql <<<
 
--- >>> BEGIN 20260623130000_fix_restore_trigger_notify_discount_approval.sql >>>
+-- >>> BEGIN 20260623130001_fix_restore_trigger_notify_discount_approval.sql >>>
 -- =============================================================================
 -- FIX: Restaurar trigger trg_notify_discount_approval em discount_approval_requests
 -- =============================================================================
@@ -191069,7 +189037,7 @@ CREATE TRIGGER trg_notify_discount_approval
   FOR EACH ROW
   EXECUTE FUNCTION public.notify_discount_approval_request();
 
--- <<< END 20260623130000_fix_restore_trigger_notify_discount_approval.sql <<<
+-- <<< END 20260623130001_fix_restore_trigger_notify_discount_approval.sql <<<
 
 -- >>> BEGIN 20260623130516_tighten_icon_constraint_require_lowercase_second_char.sql >>>
 
@@ -197971,126 +195939,6 @@ Spot/Stricker: default_is_imported NULL → true;
 Todos os 5 suppliers ativos agora têm settings completos sem NULL em campos críticos;
 
 -- <<< END 20260623210003_fix_supplier_settings_spot_default_is_imported_null.sql <<<
-
--- >>> BEGIN 20260623_fix_generated_always_columns_batch.sql >>>
--- ================================================================
--- Migration: fix_generated_always_columns_batch
--- Date: 2026-06-23
---
--- PostgREST v12 (Supabase) exclui GENERATED ALWAYS STORED do schema cache.
--- 3 tabelas afetadas causando 400 ou dados incorretos via REST API:
---
--- 1. product_variants: next_entry_date, next_entry_quantity → 400 em páginas de produto
--- 2. workspace_notifications: search_vector → 400 na busca de notificações
--- 3. ai_usage_logs: total_tokens → NaN no painel AI (select('*') retorna undefined)
---
--- Fix: DROP GENERATED ALWAYS → ADD regular column + populate + BEFORE INSERT OR UPDATE trigger
--- ================================================================
-
--- ① product_variants
-ALTER TABLE public.product_variants DROP COLUMN IF EXISTS next_entry_date;
-ALTER TABLE public.product_variants DROP COLUMN IF EXISTS next_entry_quantity;
-ALTER TABLE public.product_variants ADD COLUMN next_entry_date date;
-ALTER TABLE public.product_variants ADD COLUMN next_entry_quantity integer;
-UPDATE public.product_variants SET next_entry_date = next_date_1, next_entry_quantity = next_quantity_1;
-CREATE INDEX IF NOT EXISTS idx_pv_next_entry_date_nonnull ON public.product_variants USING btree (next_entry_date) WHERE next_entry_date IS NOT NULL;
-CREATE OR REPLACE FUNCTION public.fn_sync_product_variants_next_entry() RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$ BEGIN NEW.next_entry_date := NEW.next_date_1; NEW.next_entry_quantity := NEW.next_quantity_1; RETURN NEW; END; $$;
-DROP TRIGGER IF EXISTS trg_zzz_sync_next_entry_cols ON public.product_variants;
-CREATE TRIGGER trg_zzz_sync_next_entry_cols BEFORE INSERT OR UPDATE ON public.product_variants FOR EACH ROW EXECUTE FUNCTION public.fn_sync_product_variants_next_entry();
-
--- ② workspace_notifications
-ALTER TABLE public.workspace_notifications DROP COLUMN IF EXISTS search_vector;
-ALTER TABLE public.workspace_notifications ADD COLUMN search_vector tsvector;
-UPDATE public.workspace_notifications SET search_vector = to_tsvector('portuguese', COALESCE(title, '') || ' ' || COALESCE(message, ''));
-CREATE INDEX IF NOT EXISTS idx_workspace_notifications_search_vector ON public.workspace_notifications USING gin (search_vector);
-CREATE OR REPLACE FUNCTION public.fn_sync_workspace_notifications_search_vector() RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER SET search_path = public, extensions AS $$ BEGIN NEW.search_vector := to_tsvector('portuguese', COALESCE(NEW.title, '') || ' ' || COALESCE(NEW.message, '')); RETURN NEW; END; $$;
-DROP TRIGGER IF EXISTS trg_sync_workspace_notifications_search_vector ON public.workspace_notifications;
-CREATE TRIGGER trg_sync_workspace_notifications_search_vector BEFORE INSERT OR UPDATE OF title, message ON public.workspace_notifications FOR EACH ROW EXECUTE FUNCTION public.fn_sync_workspace_notifications_search_vector();
-
--- ③ ai_usage_logs
-ALTER TABLE public.ai_usage_logs DROP COLUMN IF EXISTS total_tokens;
-ALTER TABLE public.ai_usage_logs ADD COLUMN total_tokens integer;
-UPDATE public.ai_usage_logs SET total_tokens = COALESCE(input_tokens, 0) + COALESCE(output_tokens, 0);
-CREATE OR REPLACE FUNCTION public.fn_sync_ai_usage_logs_total_tokens() RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$ BEGIN NEW.total_tokens := COALESCE(NEW.input_tokens, 0) + COALESCE(NEW.output_tokens, 0); RETURN NEW; END; $$;
-DROP TRIGGER IF EXISTS trg_sync_ai_usage_logs_total_tokens ON public.ai_usage_logs;
-CREATE TRIGGER trg_sync_ai_usage_logs_total_tokens BEFORE INSERT OR UPDATE OF input_tokens, output_tokens ON public.ai_usage_logs FOR EACH ROW EXECUTE FUNCTION public.fn_sync_ai_usage_logs_total_tokens();
-
-NOTIFY pgrst, 'reload schema';
-
--- <<< END 20260623_fix_generated_always_columns_batch.sql <<<
-
--- >>> BEGIN 20260623_fix_search_analytics_add_seller_id.sql >>>
--- fix_search_analytics_add_seller_id_20260623
--- seller_id GENERATED ALWAYS AS (user_id) STORED
--- HTTP 400 fix for CommercialIntelligencePage + TrendsPage
-ALTER TABLE public.search_analytics
-  ADD COLUMN IF NOT EXISTS seller_id uuid GENERATED ALWAYS AS (user_id) STORED;
-CREATE INDEX IF NOT EXISTS idx_search_analytics_seller_created
-  ON public.search_analytics (seller_id, created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_search_analytics_seller_term_created
-  ON public.search_analytics (seller_id, search_term, created_at DESC);
-COMMENT ON COLUMN public.search_analytics.seller_id IS
-  'Alias gerado de user_id. GENERATED ALWAYS AS (user_id) STORED.';
-
--- <<< END 20260623_fix_search_analytics_add_seller_id.sql <<<
-
--- >>> BEGIN 20260623_fix_search_analytics_seller_id_not_generated.sql >>>
--- ================================================================
--- Migration: fix_search_analytics_seller_id_not_generated
--- Date: 2026-06-23
---
--- BUG: A migration anterior (20260623_fix_search_analytics_add_seller_id.sql)
--- adicionou seller_id como GENERATED ALWAYS AS (user_id) STORED.
--- PostgREST v12 (Supabase) EXCLUI colunas GENERATED ALWAYS do schema cache,
--- causando HTTP 400 em todas as queries REST com seller_id no select.
--- Afetava: TrendsPage.tsx (3 padrões de query), commercial intelligence.
---
--- FIX: Substituir a coluna gerada por coluna regular uuid + trigger BEFORE INSERT
---      para auto-popular seller_id = user_id. Padrão idêntico a product_views.
--- ================================================================
-
--- STEP 1: Drop da coluna gerada (CASCADE remove índices dependentes)
-ALTER TABLE public.search_analytics DROP COLUMN IF EXISTS seller_id;
-
--- STEP 2: Adicionar coluna regular
-ALTER TABLE public.search_analytics ADD COLUMN seller_id uuid;
-
--- STEP 3: Popular dados existentes
-UPDATE public.search_analytics SET seller_id = user_id;
-
--- STEP 4: Recriar índices
-CREATE INDEX IF NOT EXISTS idx_search_analytics_seller_created
-  ON public.search_analytics USING btree (seller_id, created_at DESC);
-
-CREATE INDEX IF NOT EXISTS idx_search_analytics_seller_term_created
-  ON public.search_analytics USING btree (seller_id, search_term, created_at DESC);
-
--- STEP 5: Trigger para manter seller_id sincronizado com user_id
-CREATE OR REPLACE FUNCTION public.fn_sync_search_analytics_seller_id()
-RETURNS TRIGGER
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = public
-AS $$
-BEGIN
-  NEW.seller_id := NEW.user_id;
-  RETURN NEW;
-END;
-$$;
-
-DROP TRIGGER IF EXISTS trg_sync_search_analytics_seller_id
-  ON public.search_analytics;
-
-CREATE TRIGGER trg_sync_search_analytics_seller_id
-  BEFORE INSERT OR UPDATE OF user_id
-  ON public.search_analytics
-  FOR EACH ROW
-  EXECUTE FUNCTION public.fn_sync_search_analytics_seller_id();
-
--- STEP 6: Reload schema PostgREST
-NOTIFY pgrst, 'reload schema';
-
--- <<< END 20260623_fix_search_analytics_seller_id_not_generated.sql <<<
 
 -- >>> BEGIN 20260624102939_0c9b9295-f36f-435e-83bb-7580204b0321.sql >>>
 ALTER TABLE public.quote_items
@@ -212666,155 +210514,6 @@ CREATE INDEX IF NOT EXISTS idx_org_members_org_user
 
 -- <<< END 20260712231546_magazine_fix_indexes_and_rls_initplan.sql <<<
 
--- >>> BEGIN 20260712_fix_rls_policies_critical.sql >>>
--- ============================================================================
--- SUPABASE RLS POLICIES FIX — Promo Gifts V4 [CRITICAL]
--- Database: doufsxqlfjyuvxuezpln
--- Severity: 🔴 CRITICAL — Security + Functionality
--- ============================================================================
--- Applied: 2026-07-12 PhD-level DB audit
--- Impact: Unblocks HEAD requests, secures user data isolation
-
--- FIX #1: discount_approval_requests — Missing RLS Policy
--- ────────────────────────────────────────────────────────
--- Before: No policy → 403 on HEAD (anon can't read), but authenticated can read ALL
--- After: User can only read own approvals
-
-CREATE POLICY "enable_read_for_requesting_user"
-  ON public.discount_approval_requests
-  FOR SELECT
-  TO authenticated
-  USING (requesting_user_id = auth.uid());
-
-CREATE POLICY "enable_insert_for_requesting_user"
-  ON public.discount_approval_requests
-  FOR INSERT
-  TO authenticated
-  WITH CHECK (requesting_user_id = auth.uid());
-
-CREATE POLICY "enable_update_for_requesting_user"
-  ON public.discount_approval_requests
-  FOR UPDATE
-  TO authenticated
-  USING (requesting_user_id = auth.uid())
-  WITH CHECK (requesting_user_id = auth.uid());
-
--- FIX #2: workspace_notifications — User Scope Missing
--- ─────────────────────────────────────────────────────
--- Before: No policy OR too restrictive → 403 on HEAD
--- After: User can only read own notifications
-
-CREATE POLICY "user_sees_own_notifications"
-  ON public.workspace_notifications
-  FOR SELECT
-  TO authenticated
-  USING (user_id = auth.uid());
-
-CREATE POLICY "user_can_insert_own_notifications"
-  ON public.workspace_notifications
-  FOR INSERT
-  TO authenticated
-  WITH CHECK (user_id = auth.uid());
-
-CREATE POLICY "user_can_delete_own_notifications"
-  ON public.workspace_notifications
-  FOR DELETE
-  TO authenticated
-  USING (user_id = auth.uid());
-
--- ============================================================================
--- INDEXES for RLS filtering performance
--- ============================================================================
--- Critical for HEAD requests performance (O(1) instead of O(n) scan)
-
-CREATE INDEX IF NOT EXISTS idx_discount_approval_requests_requesting_user_id
-  ON public.discount_approval_requests(requesting_user_id DESC)
-  WHERE requesting_user_id IS NOT NULL;
-
-CREATE INDEX IF NOT EXISTS idx_workspace_notifications_user_id
-  ON public.workspace_notifications(user_id, created_at DESC)
-  WHERE user_id IS NOT NULL;
-
-CREATE INDEX IF NOT EXISTS idx_workspace_notifications_user_unread
-  ON public.workspace_notifications(user_id)
-  WHERE user_id IS NOT NULL AND is_read = false;
-
--- ============================================================================
--- ENABLE RLS (safety: use ALTER TABLE, never DISABLE without backup)
--- ============================================================================
-
-ALTER TABLE public.discount_approval_requests ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.workspace_notifications ENABLE ROW LEVEL SECURITY;
-
--- ============================================================================
--- Logging this migration for audit trail
--- ============================================================================
-INSERT INTO public.migrations_log (name, applied_at, category, severity)
-VALUES (
-  '20260712_fix_rls_policies_critical',
-  NOW(),
-  'security/rls',
-  'critical'
-) ON CONFLICT DO NOTHING;
-
--- <<< END 20260712_fix_rls_policies_critical.sql <<<
-
--- >>> BEGIN 20260712_legacy_initial.sql >>>
--- STUB: migration legacy aplicada antes da formalização do ledger de migrations.
--- Versão: 20260712 (formato curto — registrada em supabase_migrations.schema_migrations)
---
--- Este arquivo não contém DDL executável. Existe apenas para documentar que a versão
--- 20260712 está presente no banco de produção (doufsxqlfjyuvxuezpln) como legacy,
--- aplicada antes do fluxo formal de migrations via Supabase CLI.
---
--- NOTA: O Supabase CLI v2.x ignora arquivos com timestamp de 8 dígitos (YYYYMMDD)
--- no diretório supabase/migrations/. Por isso esta versão é listada em
--- scripts/migration-ledger-remote-only-allowlist.json como exceção conhecida.
--- Ref: E04 — PLANO_WORKFLOWS_CI_100_ETAPAS_2026-09-26
-
--- <<< END 20260712_legacy_initial.sql <<<
-
--- >>> BEGIN 20260712_performance_indexes.sql >>>
--- ============================================================================
--- PERFORMANCE INDEXES: Applied 2026-07-12 to doufsxqlfjyuvxuezpln
--- ============================================================================
--- Audit findings that motivated these indexes:
--- 1. idx_user_roles_user_id had 109,337 scans — every RLS check on
---    discount_approval_requests calls is_supervisor_or_above() which queries
---    user_roles WHERE user_id = X AND role IN ('dev','supervisor','admin','manager')
--- 2. workspace_notifications badge query (user_id + is_read=false) was using
---    a composite (user_id, created_at, is_read) — suboptimal for unread counts
-
--- INDEX 1: Partial composite on user_roles for faster RLS policy evaluation
--- Before: idx_user_roles_user_id (user_id only) → filter on role at heap level
--- After: idx_user_roles_user_id_role (user_id, role) WHERE elevated → index-only scan
-CREATE INDEX IF NOT EXISTS idx_user_roles_user_id_role
-  ON public.user_roles(user_id, role)
-  WHERE role IN ('dev', 'supervisor', 'admin', 'manager');
-
--- INDEX 2: Partial index for fast unread notification badge queries
--- Query: WHERE user_id = X AND is_read = false ORDER BY created_at DESC
--- Before: idx_workspace_notifications_user_unread (user_id, created_at, is_read)
--- After: partial index only covers unread rows → tiny, fast, exact
-CREATE INDEX IF NOT EXISTS idx_workspace_notifications_user_unread_v2
-  ON public.workspace_notifications(user_id, created_at DESC)
-  WHERE is_read = false;
-
--- Run ANALYZE to update planner statistics
-ANALYZE public.user_roles;
-ANALYZE public.workspace_notifications;
-
--- ============================================================================
--- Verification
--- ============================================================================
--- SELECT i.relname, pg_size_pretty(pg_relation_size(i.oid)) FROM pg_class i
--- JOIN pg_index ix ON i.oid = ix.indexrelid
--- JOIN pg_class t ON t.oid = ix.indrelid
--- WHERE t.relname IN ('user_roles', 'workspace_notifications')
---   AND i.relname IN ('idx_user_roles_user_id_role', 'idx_workspace_notifications_user_unread_v2');
-
--- <<< END 20260712_performance_indexes.sql <<<
-
 -- >>> BEGIN 20260713101342_f9c0414f-6bbb-47d2-b199-c3659dc21e10.sql >>>
 -- =============================================================================
 -- RESTORE SELLER CART — restauração atômica de carrinho excluído (Undo)
@@ -212990,10 +210689,6 @@ GRANT  EXECUTE ON FUNCTION public.release_webhook_delivery_lock(uuid, text) TO s
 REVOKE EXECUTE ON FUNCTION public.cleanup_stale_webhook_locks() FROM PUBLIC, anon, authenticated;
 GRANT  EXECUTE ON FUNCTION public.cleanup_stale_webhook_locks() TO service_role;
 -- <<< END 20260713163543_040fac6f-a3dc-4b49-8814-c7911c20d176.sql <<<
-
--- >>> BEGIN 20260713_001_secdef_revoke_webhook_locks.sql >>>
-LS0gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQotLSBEcmFmdCAoTsODTyBleGVjdXRhciBzZW0gYXByb3Zhw6fDo28gZG8gUE8g4oCUIENMQVVERS5tZCAjQ29tcG9ydGFtZW50byBvYnJpZ2F0w7NyaW8pCi0tIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KLS0gQ29udGV4dG8KLS0gICBzdXBhYmFzZS0tbGludGVyICgyMDI2LTA3LTEzKSBhcG9udG91IDU3IGZpbmRpbmdzIDAwMjgvMDAyOSAoU0VDVVJJVFkKLS0gICBERUZJTkVSIGV4ZWN1dMOhdmVsIHBvciBQVUJMSUMvYW5vbi9hdXRoZW50aWNhdGVkKS4gQmFzZWxpbmUgYWNlaXRvIGVtCi0tICAgLnNlY3VyaXR5L3N1cGFiYXNlLWxpbnRlci1iYXNlbGluZS5qc29uIGNvYnJlIDQ4IGZ1bsOnw7VlcyAoUkxTIGhlbHBlcnMgKwotLSAgIFJQQ3MgZG8gZnJvbnRlbmQpLiBPIGRpZmYgYXR1YWwgaWRlbnRpZmljYSA0IGZ1bsOnw7VlcyBmb3JhIGRvIGJhc2VsaW5lOgotLQotLSAgICAgU8OzIGVkZ2UvY3JvbiAoc2VydmljZV9yb2xlKSDigJQgZGV2ZW0gdGVyIEVYRUNVVEUgcmV2b2dhZG86Ci0tICAgICAgIOKAoiBjbGFpbV93ZWJob29rX2RlbGl2ZXJ5KHBfd2ViaG9va19pZCB1dWlkLCBwX3BheWxvYWRfaGFzaCB0ZXh0KQotLSAgICAgICDigKIgcmVsZWFzZV93ZWJob29rX2RlbGl2ZXJ5X2xvY2socF93ZWJob29rX2lkIHV1aWQsIHBfcGF5bG9hZF9oYXNoIHRleHQpCi0tICAgICAgIOKAoiBjbGVhbnVwX3N0YWxlX3dlYmhvb2tfbG9ja3MoKQotLQotLSAgICAgRnJvbnRlbmQgUlBDIGludGVuY2lvbmFsIOKAlCBtYW50w6ltLCBzw7MgYWRpY2lvbmFyIGFvIGJhc2VsaW5lOgotLSAgICAgICDigKIgcmVzdG9yZV9zZWxsZXJfY2FydChfc25hcHNob3QganNvbmIpICAgLS0gY2hhbWFkYSBlbQotLSAgICAgICAgIHNyYy9ob29rcy9wcm9kdWN0cy91c2VTZWxsZXJDYXJ0cy50czozMjUKLS0KLS0gQ2FsbGVycyB2ZXJpZmljYWRvcwotLSAgIHN1cGFiYXNlL2Z1bmN0aW9ucy93ZWJob29rLWRpc3BhdGNoZXIvaW5kZXgudHM6MjU0LDM3MwotLSAgICAgKHJwYygnY2xhaW1fd2ViaG9va19kZWxpdmVyeScgLyAncmVsZWFzZV93ZWJob29rX2RlbGl2ZXJ5X2xvY2snKSkKLS0gICBFZGdlIGZ1bmN0aW9ucyByb2RhbSBjb21vIHNlcnZpY2Vfcm9sZSDihpIgbsOjbyBzw6NvIGFmZXRhZGFzIHBlbG8gUkVWT0tFLgotLSAgIGNsZWFudXBfc3RhbGVfd2ViaG9va19sb2NrcyDDqSBhY2lvbmFkYSBwb3IgY3Jvbi9lZGdlIChtZXNtYSBjbGFzc2UpLgotLQotLSBFZmVpdG8gZXNwZXJhZG8KLS0gICDigKIgRmVjaGEgMyBmaW5kaW5ncyAoMiBkZSAwMDI4ICsgMyBkZSAwMDI5LCBjb250YW5kbyBvdmVybG9hZHMpLgotLSAgIOKAoiBOZW5odW1hIHF1ZWJyYSBkZSBzdXBlcmbDrWNpZSBww7pibGljYS9hdXRlbnRpY2FkYS4KLS0KLS0gUm9sbGJhY2sKLS0gICBHUkFOVCBFWEVDVVRFIE9OIEZVTkNUSU9OIHB1YmxpYy48Zm4+KC4uLikgVE8gYXV0aGVudGljYXRlZCwgYW5vbjsKLS0KLS0gQXByb3Zhw6fDo28KLS0gICBQTyBkZXZlIGNvbmZpcm1hciBhbnRlcyBkZSBhcGxpY2FyIHZpYSBzdXBhYmFzZS0tbWlncmF0aW9uLiBFc3RlIGFycXVpdm8KLS0gICBmaWNhIGVtIHFhL21pZ3JhdGlvbnMtZHJhZnQvIGNvbmZvcm1lIGNvbnZlbsOnw6NvIChtZXNtbyBwYWRyw6NvIGRlCi0tICAgMjAyNi0wNi0xOF9zZWN1cml0eV9kZWZpbmVyX2FjbC5zcWwgZSAyMDI2LTA2LTIwX3Jldm9rZV9zZWNkZWZfZnJvbV9hdXRoZW50aWNhdGVkLnNxbCkuCi0tID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KCkJFR0lOOwoKLS0gMSkgY2xhaW1fd2ViaG9va19kZWxpdmVyeSDigJQgYXRvbWljIGRlbGl2ZXJ5IGxvY2ssIGNoYW1hZGEgc8OzIGVtIGVkZ2UKUkVWT0tFIEVYRUNVVEUgT04gRlVOQ1RJT04gcHVibGljLmNsYWltX3dlYmhvb2tfZGVsaXZlcnkodXVpZCwgdGV4dCkgRlJPTSBQVUJMSUMsIGFub24sIGF1dGhlbnRpY2F0ZWQ7CkdSQU5UICBFWEVDVVRFIE9OIEZVTkNUSU9OIHB1YmxpYy5jbGFpbV93ZWJob29rX2RlbGl2ZXJ5KHV1aWQsIHRleHQpIFRPIHNlcnZpY2Vfcm9sZTsKCi0tIDIpIHJlbGVhc2Vfd2ViaG9va19kZWxpdmVyeV9sb2NrIOKAlCBsaWJlcmEgbG9jayBhcMOzcyBlbnRyZWdhClJFVk9LRSBFWEVDVVRFIE9OIEZVTkNUSU9OIHB1YmxpYy5yZWxlYXNlX3dlYmhvb2tfZGVsaXZlcnlfbG9jayh1dWlkLCB0ZXh0KSBGUk9NIFBVQkxJQywgYW5vbiwgYXV0aGVudGljYXRlZDsKR1JBTlQgIEVYRUNVVEUgT04gRlVOQ1RJT04gcHVibGljLnJlbGVhc2Vfd2ViaG9va19kZWxpdmVyeV9sb2NrKHV1aWQsIHRleHQpIFRPIHNlcnZpY2Vfcm9sZTsKCi0tIDMpIGNsZWFudXBfc3RhbGVfd2ViaG9va19sb2NrcyDigJQgbGltcGV6YSBkZSBsb2NrcyBleHBpcmFkb3MgKGNyb24pClJFVk9LRSBFWEVDVVRFIE9OIEZVTkNUSU9OIHB1YmxpYy5jbGVhbnVwX3N0YWxlX3dlYmhvb2tfbG9ja3MoKSBGUk9NIFBVQkxJQywgYW5vbiwgYXV0aGVudGljYXRlZDsKR1JBTlQgIEVYRUNVVEUgT04gRlVOQ1RJT04gcHVibGljLmNsZWFudXBfc3RhbGVfd2ViaG9va19sb2NrcygpIFRPIHNlcnZpY2Vfcm9sZTsKCkNPTU1JVDsKCi0tIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KLS0gUGFzc28gcMOzcy1taWdyYcOnw6NvIChOw4NPIGFwbGljYXIgYXTDqSBQTyBhcHJvdmFyIGEgbWlncmHDp8OjbyBhY2ltYSk6Ci0tCi0tIEF0dWFsaXphciAuc2VjdXJpdHkvc3VwYWJhc2UtbGludGVyLWJhc2VsaW5lLmpzb24gcGFyYSBhY2VpdGFyCi0tIHJlc3RvcmVfc2VsbGVyX2NhcnQgY29tbyBSUEMgaW50ZW5jaW9uYWwgZG8gZnJvbnRlbmQuIERpZmY6Ci0tCi0tICAgeyAibGludCI6ICIwMDI5X2F1dGhlbnRpY2F0ZWRfc2VjdXJpdHlfZGVmaW5lcl9mdW5jdGlvbl9leGVjdXRhYmxlIiwKLS0gICAgICJuYW1lIjogInJlc3RvcmVfc2VsbGVyX2NhcnQiIH0KLS0KLS0gSnVzdGlmaWNhdGl2YSBubyBjb21taXQ6Ci0tICAgInJlc3RvcmVfc2VsbGVyX2NhcnQgw6kgUlBDIHDDumJsaWNhIGRvIGZyb250ZW5kICh1c2VTZWxsZXJDYXJ0cy50czozMjUpLgotLSAgICBSTFMgaW50ZXJuYSDDoCBmdW7Dp8OjbyBmaWx0cmEgcG9yIGF1dGgudWlkKCkuIFNFQ1VSSVRZIERFRklORVIgbmVjZXNzw6FyaW8KLS0gICAgcGFyYSBieXBhc3MgZGUgUkxTIGNvbnRyb2xhZG8gbm8gSU5TRVJUIGRvIGNhcnQraXRlbXMuIgotLSA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Cg==
--- <<< END 20260713_001_secdef_revoke_webhook_locks.sql <<<
 
 -- >>> BEGIN 20260714112457_fix_auth_hydration_rpc_and_rls.sql >>>
 
@@ -213790,68 +211485,6 @@ $$;
 ;
 
 -- <<< END 20260714151156_fix_rename_unique_cart_item_variant_constraint.sql <<<
-
--- >>> BEGIN 20260714_fix_rename_unique_cart_item_variant_constraint.sql >>>
--- ============================================================
--- BUG FIX CRÍTICO: ON CONFLICT ON CONSTRAINT unique_cart_item_variant
--- Detectado na auditoria exaustiva pós-deploy de restore_seller_cart.
---
--- PROBLEMA:
---   A RPC restore_seller_cart usa:
---     ON CONFLICT ON CONSTRAINT unique_cart_item_variant DO NOTHING
---
---   Mas o único índice existente se chamava 'seller_cart_items_uniq_item'
---   e foi criado com CREATE UNIQUE INDEX (não com ADD CONSTRAINT).
---
---   Em PostgreSQL, ON CONFLICT ON CONSTRAINT funciona SOMENTE com
---   named constraints (pg_constraint), não com standalone unique indexes.
---   Resultado: erro em runtime "constraint does not exist".
---
--- FIX:
---   1. Verifica ausência de duplicatas (segurança)
---   2. DROP do unique index existente
---   3. ADD CONSTRAINT UNIQUE NULLS NOT DISTINCT com nome correto
---
--- COMPORTAMENTO PRESERVADO: NULLS NOT DISTINCT idêntico ao índice anterior.
--- ============================================================
-
--- Pré-condição: sem duplicatas
-DO $$
-DECLARE cnt int;
-BEGIN
-  SELECT COUNT(*) INTO cnt FROM (
-    SELECT cart_id, product_id, COALESCE(color_name,'__NULL__')
-    FROM public.seller_cart_items
-    GROUP BY cart_id, product_id, COALESCE(color_name,'__NULL__')
-    HAVING COUNT(*) > 1
-  ) t;
-  IF cnt > 0 THEN
-    RAISE EXCEPTION 'Existem % linhas duplicadas — abortar!', cnt;
-  END IF;
-END;
-$$;
-
-DROP INDEX IF EXISTS public.seller_cart_items_uniq_item;
-
-ALTER TABLE public.seller_cart_items
-  ADD CONSTRAINT unique_cart_item_variant
-  UNIQUE NULLS NOT DISTINCT (cart_id, product_id, color_name);
-
--- Guard pós-migration
-DO $$
-BEGIN
-  IF NOT EXISTS (
-    SELECT 1 FROM pg_constraint
-    WHERE conname = 'unique_cart_item_variant'
-      AND conrelid = 'public.seller_cart_items'::regclass
-  ) THEN
-    RAISE EXCEPTION 'unique_cart_item_variant NAO foi criada!';
-  END IF;
-  RAISE NOTICE 'OK: unique_cart_item_variant criada como named constraint com NULLS NOT DISTINCT';
-END;
-$$;
-
--- <<< END 20260714_fix_rename_unique_cart_item_variant_constraint.sql <<<
 
 -- >>> BEGIN 20260715164347_b0eabb91-413b-40e9-83c6-9c1c5cce2ded.sql >>>
 -- =========================================================
@@ -220624,199 +218257,6 @@ $validate$;
 
 -- <<< END 20260716000041_fix_fn_super_filtro_cost_price_exposure_and_category_breadcrumb.sql <<<
 
--- >>> BEGIN 20260716000041_revoke_anon_b2b_catalog_secdef_functions.sql >>>
--- Migration 041: Revoke anon EXECUTE from B2B catalog SECURITY DEFINER functions
---
--- Source: 200-commit audit — follow-up on migration 005 whitelist review
--- Findings addressed: anon_security_definer_function_executable (~17 functions)
---
--- ─── Context ─────────────────────────────────────────────────────────────────
---
--- Migration 005 built a whitelist for anon EXECUTE that included two categories:
---   A) Legitimate anon functions (login rate-limit, quote sharing) — KEEP
---   B) "Public catalog (storefront, no auth required)" functions — WRONG for B2B
---
--- This platform is a B2B wholesale gifting catalog. The frontend wraps ALL product
--- catalog, filter, quote, simulator, mockup, and collection pages inside
--- <ProtectedRoute /> (AppRoutes.tsx:175). There is no unauthenticated storefront.
---
--- Functions in category B were kept for anon in migration 005 on the assumption
--- of a public storefront — a false assumption for this B2B architecture.
--- Revoking anon EXECUTE eliminates the `anon_security_definer_function_executable`
--- Supabase advisor finding for these functions without affecting authenticated users.
---
--- FUNCTIONS TO REVOKE FROM ANON:
---   Product filter & search:
---     fn_super_filtro, fn_super_filtro_facets, fn_super_filtro_opcoes,
---     fn_super_filtro_price_range, fn_super_filtro_product_ids,
---     fn_get_category_breadcrumb, fn_get_all_leaf_categories,
---     fn_global_search, fn_get_similar_products, fn_get_color_swatches_batch
---   Product customization/pricing (STAY SECURITY DEFINER, anon removed):
---     fn_get_product_customization_options, fn_get_customization_price
---   Analytics/catalog support:
---     fn_log_search_analytics, get_catalog_bestseller_page,
---     get_top_collected_products, get_promo_sales_ranking,
---     get_collections_weekly_count
---
--- FUNCTIONS KEPT FOR ANON (legitimate, unchanged):
---   check_login_rate_limit, fn_check_login_allowed,
---   enforce_password_reset_rate_limit, get_quote_token_by_value,
---   submit_quote_response
---   + all RLS helper functions (required by PG for USING clause evaluation)
---
--- Safety for fn_get_customization_price / fn_get_product_customization_options:
---   These MUST remain SECURITY DEFINER (print_area_techniques RLS blocks
---   authenticated callers without DEFINER elevation — confirmed production incident).
---   However, anon DOES NOT need EXECUTE because the simulator/customization pages
---   are fully behind <ProtectedRoute />. Revoking anon EXECUTE is safe.
-
--- ═══════════════════════════════════════════════════════════════════════════════
--- Revoke anon EXECUTE from B2B-only catalog SECURITY DEFINER functions
--- ═══════════════════════════════════════════════════════════════════════════════
-
-DO $$
-DECLARE
-  r         RECORD;
-  v_ok      int := 0;
-  v_skip    int := 0;
-  v_fail    int := 0;
-  v_target  text[] := ARRAY[
-    -- Product filter & search
-    'fn_super_filtro',
-    'fn_super_filtro_facets',
-    'fn_super_filtro_opcoes',
-    'fn_super_filtro_price_range',
-    'fn_super_filtro_product_ids',
-    'fn_get_category_breadcrumb',
-    'fn_get_all_leaf_categories',
-    'fn_global_search',
-    'fn_get_similar_products',
-    'fn_get_color_swatches_batch',
-    -- Product customization & pricing (STAY SECURITY DEFINER, anon removed)
-    'fn_get_product_customization_options',
-    'fn_get_customization_price',
-    -- Analytics & catalog support
-    'fn_log_search_analytics',
-    'get_catalog_bestseller_page',
-    'get_top_collected_products',
-    'get_promo_sales_ranking',
-    'get_collections_weekly_count'
-  ];
-BEGIN
-  FOR r IN
-    SELECT
-      p.oid,
-      p.proname,
-      pg_get_function_identity_arguments(p.oid) AS args
-    FROM pg_proc p
-    JOIN pg_namespace n ON n.oid = p.pronamespace
-    WHERE n.nspname = 'public'
-      AND p.proname = ANY(v_target)
-      AND p.prokind = 'f'
-    ORDER BY p.proname, p.oid
-  LOOP
-    -- Only revoke if anon actually has EXECUTE
-    IF has_function_privilege('anon', r.oid, 'EXECUTE') THEN
-      BEGIN
-        EXECUTE format(
-          'REVOKE EXECUTE ON FUNCTION public.%I(%s) FROM anon',
-          r.proname, r.args
-        );
-        v_ok := v_ok + 1;
-        RAISE NOTICE '✓ [anon_security_definer] REVOKE EXECUTE ON %(%) FROM anon',
-          r.proname, r.args;
-      EXCEPTION WHEN OTHERS THEN
-        v_fail := v_fail + 1;
-        RAISE WARNING '✗ [anon_security_definer] Could not revoke %(%)): %',
-          r.proname, r.args, SQLERRM;
-      END;
-    ELSE
-      v_skip := v_skip + 1;
-      RAISE NOTICE '- %(%): anon already lacks EXECUTE — skipping', r.proname, r.args;
-    END IF;
-  END LOOP;
-
-  RAISE NOTICE 'Migration 041 summary: revoked=%, skipped=%, failed=%', v_ok, v_skip, v_fail;
-
-  IF v_fail > 0 THEN
-    RAISE WARNING '[041] % function(s) could not be revoked — review warnings above', v_fail;
-  END IF;
-END;
-$$;
-
--- ─── Validation ───────────────────────────────────────────────────────────────
-DO $$
-DECLARE
-  v_still_callable int;
-  v_fn             text;
-  v_target         text[] := ARRAY[
-    'fn_super_filtro', 'fn_super_filtro_facets', 'fn_super_filtro_opcoes',
-    'fn_super_filtro_price_range', 'fn_super_filtro_product_ids',
-    'fn_get_category_breadcrumb', 'fn_get_all_leaf_categories',
-    'fn_global_search', 'fn_get_similar_products', 'fn_get_color_swatches_batch',
-    'fn_get_product_customization_options', 'fn_get_customization_price',
-    'fn_log_search_analytics', 'get_catalog_bestseller_page',
-    'get_top_collected_products', 'get_promo_sales_ranking',
-    'get_collections_weekly_count'
-  ];
-BEGIN
-  -- Count functions anon can still EXECUTE from our revoke list
-  SELECT count(*) INTO v_still_callable
-  FROM pg_proc p
-  JOIN pg_namespace n ON n.oid = p.pronamespace
-  WHERE n.nspname = 'public'
-    AND p.proname = ANY(v_target)
-    AND p.prokind = 'f'
-    AND has_function_privilege('anon', p.oid, 'EXECUTE');
-
-  IF v_still_callable > 0 THEN
-    -- Report which ones still have access
-    FOR v_fn IN
-      SELECT p.proname
-      FROM pg_proc p
-      JOIN pg_namespace n ON n.oid = p.pronamespace
-      WHERE n.nspname = 'public'
-        AND p.proname = ANY(v_target)
-        AND p.prokind = 'f'
-        AND has_function_privilege('anon', p.oid, 'EXECUTE')
-    LOOP
-      RAISE WARNING '[041] anon still has EXECUTE on %', v_fn;
-    END LOOP;
-    RAISE WARNING '[041] % B2B catalog function(s) still callable by anon', v_still_callable;
-  ELSE
-    RAISE NOTICE '✓ [041] All 17 B2B catalog functions no longer callable by anon';
-  END IF;
-
-  -- Verify authenticated still has access to fn_super_filtro (spot check)
-  IF EXISTS (
-    SELECT 1 FROM pg_proc p
-    JOIN pg_namespace n ON n.oid = p.pronamespace
-    WHERE n.nspname = 'public' AND p.proname = 'fn_super_filtro'
-    AND has_function_privilege('authenticated', p.oid, 'EXECUTE')
-  ) THEN
-    RAISE NOTICE '✓ [041] authenticated role retains EXECUTE on fn_super_filtro';
-  ELSE
-    RAISE WARNING '[041] authenticated lost EXECUTE on fn_super_filtro — investigate!';
-  END IF;
-
-  -- Verify fn_get_customization_price is still SECURITY DEFINER
-  IF EXISTS (
-    SELECT 1 FROM pg_proc p
-    JOIN pg_namespace n ON n.oid = p.pronamespace
-    WHERE n.nspname = 'public' AND p.proname = 'fn_get_customization_price'
-    AND p.prosecdef = true
-  ) THEN
-    RAISE NOTICE '✓ [041] fn_get_customization_price still SECURITY DEFINER (required)';
-  ELSE
-    RAISE WARNING '[041] fn_get_customization_price is NO LONGER SECURITY DEFINER — check migration!';
-  END IF;
-
-  RAISE NOTICE 'Migration 041 complete — anon_security_definer_function_executable reduced by up to 17.';
-END;
-$$;
-
--- <<< END 20260716000041_revoke_anon_b2b_catalog_secdef_functions.sql <<<
-
 -- >>> BEGIN 20260716000042_dynamic_pin_all_function_search_paths.sql >>>
 -- Migration 042: Dynamic search_path pinning for ALL remaining public functions
 --
@@ -221031,149 +218471,6 @@ $$;
 
 -- <<< END 20260716000042_dynamic_pin_all_function_search_paths.sql <<<
 
--- >>> BEGIN 20260716000042_fix_fn_global_search_quote_data_exposure.sql >>>
--- Migration 042: Fix fn_global_search exposing all quotes to anon
---
--- VULNERABILITY: fn_global_search is SECURITY DEFINER callable by anon.
--- The quote search branch had NO auth filter → any anon user calling
---   SELECT * FROM fn_global_search('pending', 20, ARRAY['quote'])
--- would see quote_number, status, total, URL for ALL quotes system-wide.
---
--- FIX:
---   1. Gate the quote branch on auth.uid() IS NOT NULL (skip for anon)
---   2. Add q.created_by = auth.uid() so users only see their own quotes
---
--- Scenario simulation:
---   - anon calls fn_global_search('pending') → products return, quotes skip ✓
---   - authenticated user calls → sees only own quotes ✓
---   - admin sees all quotes → needs separate privileged function (existing behavior
---     was already broken from a security standpoint, so this is net improvement)
-
-DO $migration$
-BEGIN
-  RAISE NOTICE '[042] Applying: fn_global_search quote data exposure fix';
-END;
-$migration$;
-
-CREATE OR REPLACE FUNCTION public.fn_global_search(
-  p_term   text,
-  p_limit  integer DEFAULT 12,
-  p_types  text[]  DEFAULT ARRAY['product'::text, 'quote'::text]
-)
-RETURNS TABLE(
-  result_id          text,
-  result_type        text,
-  result_title       text,
-  result_description text,
-  result_url         text,
-  result_image_url   text,
-  result_metadata    jsonb,
-  result_relevance   numeric
-)
-LANGUAGE plpgsql
-STABLE
-SECURITY DEFINER
-SET search_path TO 'public', 'extensions'
-AS $fn_global_search$
-DECLARE
-  v_term_norm text;
-  v_tsquery   tsquery;
-  v_lim_each  integer;
-BEGIN
-  IF p_term IS NULL OR length(trim(p_term)) < 2 THEN RETURN; END IF;
-  IF p_limit IS NULL OR p_limit <= 0 THEN RETURN; END IF;
-
-  v_term_norm := lower(unaccent(trim(p_term)));
-  v_lim_each  := GREATEST(1, p_limit / GREATEST(array_length(p_types, 1), 1));
-
-  BEGIN
-    v_tsquery := websearch_to_tsquery('portuguese', unaccent(trim(p_term)));
-  EXCEPTION WHEN OTHERS THEN v_tsquery := NULL;
-  END;
-
-  PERFORM set_config('pg_trgm.similarity_threshold', '0.2', true);
-
-  -- ── Product search (public, available to anon) ──────────────
-  IF 'product' = ANY(p_types) THEN
-    RETURN QUERY
-    SELECT p.id::text, 'product'::text, p.name::text,
-      ('SKU: ' || p.sku || CASE WHEN c.name IS NOT NULL THEN ' · ' || c.name ELSE '' END)::text,
-      ('/produtos/' || p.slug)::text, p.primary_image_url,
-      jsonb_build_object('sku', p.sku, 'price', p.sale_price,
-                         'stock', COALESCE(vs.total_stock, 0), 'category', COALESCE(c.name, '')),
-      (CASE WHEN v_tsquery IS NOT NULL AND p.search_vector @@ v_tsquery
-            THEN ts_rank_cd(p.search_vector, v_tsquery, 32) * 2.0 ELSE 0 END +
-       word_similarity(v_term_norm, lower(unaccent(p.name))) * 1.0 +
-       CASE WHEN lower(p.sku) LIKE '%' || v_term_norm || '%' THEN 0.8 ELSE 0 END +
-       CASE WHEN COALESCE(vs.total_stock, 0) > 0 THEN 0.2 ELSE 0 END)::numeric
-    FROM products p
-    LEFT JOIN product_category_assignments pca ON pca.product_id = p.id AND pca.is_primary = true
-    LEFT JOIN categories c ON c.id = pca.category_id
-    LEFT JOIN LATERAL (
-      SELECT COALESCE(SUM(pv.stock_quantity), 0)::int AS total_stock
-      FROM product_variants pv
-      WHERE pv.product_id = p.id AND pv.is_active = true
-    ) vs ON true
-    WHERE p.is_active = true
-      AND p.is_deleted IS NOT TRUE
-      AND p.sale_price IS NOT NULL
-      AND p.slug IS NOT NULL AND p.slug != ''
-      AND (
-        (v_tsquery IS NOT NULL AND p.search_vector @@ v_tsquery)
-        OR p.name % v_term_norm
-        OR lower(p.sku) LIKE '%' || v_term_norm || '%'
-      )
-    ORDER BY 8 DESC LIMIT v_lim_each;
-  END IF;
-
-  -- ── Quote search (authenticated only; scoped to caller's quotes) ──
-  -- SECURITY/042: gate on auth.uid() IS NOT NULL — anon gets no quote data.
-  -- Row filter q.created_by = auth.uid() prevents cross-user data leakage.
-  -- This function is SECURITY DEFINER so RLS is bypassed; the explicit
-  -- WHERE clause is the only row-level guard here.
-  IF 'quote' = ANY(p_types) AND auth.uid() IS NOT NULL THEN
-    RETURN QUERY
-    SELECT q.id::text, 'quote'::text, COALESCE(q.quote_number, 'Orçamento')::text,
-      ('Status: ' || COALESCE(q.status, '—') ||
-       CASE WHEN q.total IS NOT NULL THEN ' · R$ ' || to_char(q.total, 'FM999G999G990D00') ELSE '' END)::text,
-      ('/orcamentos/' || q.id::text)::text, NULL::text,
-      jsonb_build_object('status', q.status, 'total', q.total, 'created_at', q.created_at),
-      CASE WHEN lower(COALESCE(q.quote_number, '')) LIKE '%' || v_term_norm || '%' THEN 0.9
-           WHEN lower(COALESCE(q.status, ''))        LIKE '%' || v_term_norm || '%' THEN 0.5
-           ELSE 0.3 END::numeric
-    FROM quotes q
-    WHERE q.created_by = auth.uid()   -- SECURITY/042: scope to caller's quotes only
-      AND (
-        lower(COALESCE(q.quote_number, '')) LIKE '%' || v_term_norm || '%'
-        OR lower(COALESCE(q.status, ''))    LIKE '%' || v_term_norm || '%'
-      )
-    ORDER BY 8 DESC, q.created_at DESC LIMIT v_lim_each;
-  END IF;
-END;
-$fn_global_search$;
-
--- ── VALIDATION ────────────────────────────────────────────────
-DO $validate$
-DECLARE
-  v_def text;
-BEGIN
-  SELECT pg_get_functiondef(p.oid) INTO v_def
-  FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
-  WHERE n.nspname = 'public' AND p.proname = 'fn_global_search';
-
-  IF v_def NOT LIKE '%auth.uid() IS NOT NULL%' THEN
-    RAISE EXCEPTION '[042] FAIL: anon guard not present in fn_global_search';
-  END IF;
-  IF v_def NOT LIKE '%created_by = auth.uid()%' THEN
-    RAISE EXCEPTION '[042] FAIL: row-level filter not present in fn_global_search';
-  END IF;
-  RAISE NOTICE '[042] OK: fn_global_search has auth guard + row filter';
-  RAISE NOTICE '[042] Migration 042 applied successfully';
-END;
-$validate$;
-
--- <<< END 20260716000042_fix_fn_global_search_quote_data_exposure.sql <<<
-
 -- >>> BEGIN 20260716000043_dynamic_security_invoker_remaining_views.sql >>>
 -- Migration 043: Dynamic security_invoker=on for all remaining public views
 --
@@ -221326,119 +218623,6 @@ END;
 $$;
 
 -- <<< END 20260716000043_dynamic_security_invoker_remaining_views.sql <<<
-
--- >>> BEGIN 20260716000043_fn_get_similar_products_security_invoker.sql >>>
--- Migration 043: Convert fn_get_similar_products to SECURITY INVOKER
---
--- CURRENT STATE:
---   fn_get_similar_products is SECURITY DEFINER callable by anon.
---   It is currently flagged as anon_security_definer_function_executable.
---
--- FUNCTION ANALYSIS:
---   Signature: fn_get_similar_products(p_product_id uuid, p_limit int)
---   Returns:   TABLE(similar_product_id uuid, direction text)
---   Access:    ONLY reads public.product_relationships (bidirectional lookup)
---              Returns ONLY IDs + direction; product details fetched separately
---              by the TypeScript caller (useSimilarProducts.ts).
---
--- WHY SECURITY INVOKER IS SAFE HERE:
---   1) public.product_relationships has RLS enabled.
---   2) Migration 20260531140000 created policy "product_relationships_select_public"
---      granting anon SELECT with USING (true) — so anon sees ALL rows.
---   3) The function does NOT access products, suppliers, or any table where
---      anon has no SELECT policy. (Contrast: fn_get_customization_price accesses
---      print_area_techniques whose RLS requires authenticated; that stayed DEFINER.)
---   4) With SECURITY INVOKER, the function runs with the CALLER's privileges.
---      anon has SELECT on product_relationships → same result as DEFINER.
---
--- SCENARIO SIMULATION (hundreds of scenarios considered):
---   anon calls fn_get_similar_products(X, 50)
---     → INVOKER runs as anon → hits product_relationships RLS
---     → RLS policy product_relationships_select_public: USING (true) → all rows
---     → Returns similar product IDs correctly ✓
---
---   authenticated calls fn_get_similar_products(X, 50)
---     → INVOKER runs as authenticated → same RLS policy applies → same result ✓
---
---   No other tables accessed → no privilege escalation risk ✓
---
--- GAP ANALYSIS:
---   - fn_get_category_breadcrumb: already SECURITY INVOKER (migration 041) ✓
---   - fn_get_customization_price: MUST stay DEFINER (print_area_techniques RLS) ✓
---   - fn_get_product_customization_options: MUST stay DEFINER (same reason) ✓
---   - fn_get_similar_products: CAN become INVOKER (product_relationships has anon policy) ✓
---
--- IMPACT:
---   anon_security_definer_function_executable count: 18 → 17
-
-DO $migration$
-BEGIN
-  RAISE NOTICE '[043] Applying: fn_get_similar_products → SECURITY INVOKER';
-END;
-$migration$;
-
-DO $$
-BEGIN
-  IF EXISTS (
-    SELECT 1 FROM pg_proc p
-    JOIN pg_namespace n ON n.oid = p.pronamespace
-    WHERE n.nspname = 'public' AND p.proname = 'fn_get_similar_products'
-  ) THEN
-    ALTER FUNCTION public.fn_get_similar_products(uuid, integer) SECURITY INVOKER;
-    RAISE NOTICE '[043] ✓ fn_get_similar_products converted to SECURITY INVOKER';
-  ELSE
-    RAISE NOTICE '[043] - fn_get_similar_products not found — skipping (no-op)';
-  END IF;
-END;
-$$;
-
--- ── VALIDATION ────────────────────────────────────────────────────────────────
-DO $validate$
-DECLARE
-  v_secdef boolean;
-BEGIN
-  SELECT p.prosecdef INTO v_secdef
-  FROM pg_proc p
-  JOIN pg_namespace n ON n.oid = p.pronamespace
-  WHERE n.nspname = 'public' AND p.proname = 'fn_get_similar_products';
-
-  IF v_secdef IS NULL THEN
-    RAISE NOTICE '[043] SKIP: fn_get_similar_products not found in database — nothing to validate';
-    RETURN;
-  END IF;
-
-  IF v_secdef THEN
-    RAISE EXCEPTION '[043] FAIL: fn_get_similar_products is still SECURITY DEFINER';
-  END IF;
-
-  RAISE NOTICE '[043] OK: fn_get_similar_products is SECURITY INVOKER';
-
-  -- Verify anon still has EXECUTE (must not have been accidentally revoked)
-  IF NOT has_function_privilege('anon', 'public.fn_get_similar_products(uuid, integer)', 'EXECUTE') THEN
-    RAISE WARNING '[043] WARN: anon lost EXECUTE on fn_get_similar_products — re-granting';
-    GRANT EXECUTE ON FUNCTION public.fn_get_similar_products(uuid, integer) TO anon;
-    RAISE NOTICE '[043] ✓ EXECUTE re-granted to anon on fn_get_similar_products';
-  ELSE
-    RAISE NOTICE '[043] OK: anon retains EXECUTE on fn_get_similar_products';
-  END IF;
-
-  -- Verify product_relationships anon SELECT policy exists (prerequisite)
-  IF NOT EXISTS (
-    SELECT 1 FROM pg_policies
-    WHERE schemaname = 'public'
-      AND tablename   = 'product_relationships'
-      AND policyname  = 'product_relationships_select_public'
-  ) THEN
-    RAISE WARNING '[043] WARN: product_relationships_select_public policy not found — anon may get 0 rows';
-  ELSE
-    RAISE NOTICE '[043] OK: product_relationships_select_public policy confirmed';
-  END IF;
-
-  RAISE NOTICE '[043] Migration 043 applied successfully';
-END;
-$validate$;
-
--- <<< END 20260716000043_fn_get_similar_products_security_invoker.sql <<<
 
 -- >>> BEGIN 20260716000044_move_extensions_to_extensions_schema.sql >>>
 -- Migration 044: Move relocatable extensions from public to extensions schema
@@ -221647,114 +218831,6 @@ END;
 $$;
 
 -- <<< END 20260716000044_move_extensions_to_extensions_schema.sql <<<
-
--- >>> BEGIN 20260716000044_revoke_anon_fn_log_search_analytics.sql >>>
--- Migration 044: Revoke anon EXECUTE on fn_log_search_analytics
---
--- FINDING: anon_security_definer_function_executable
--- TARGET:  public.fn_log_search_analytics
---
--- ANALYSIS:
---   fn_log_search_analytics is a SECURITY DEFINER RPC callable by anon.
---   It writes search events to public.search_analytics.
---
--- WHY REVOKE IS SAFE:
---   1) Neither TypeScript call-site calls this function:
---      - src/hooks/products/useProductAnalytics.ts:53 guards on (!user?.id) → anon path returns early
---      - src/components/search/useGlobalSearch.ts:748 guards on (!userId) → anon path returns early
---      Both insert DIRECTLY into search_analytics (not via this RPC),
---      and both are gated on having an authenticated user.id.
---
---   2) No Edge Functions call fn_log_search_analytics (grep confirmed).
---
---   3) The anon INSERT policy "Anyone can log searches" on search_analytics
---      was dropped by migration 20260416231145 — so even if anon could call
---      the function with INVOKER semantics, the INSERT would be blocked by RLS.
---      The function remains SECURITY DEFINER but anon no longer holds EXECUTE.
---
---   4) Authenticated callers retain EXECUTE — the function continues to work
---      for any future authenticated-only path that might call it.
---
--- SCENARIO SIMULATION (hundreds of scenarios considered):
---   anon browses catalog → TypeScript fires search → useGlobalSearch inserts
---     directly into search_analytics → BUT only if userId exists → skips for anon ✓
---   anon calls RPC fn_log_search_analytics directly (e.g. via API abuse) →
---     EXECUTE denied → 403 → no data written ✓
---   authenticated seller searches → useProductAnalytics inserts directly → ✓
---   authenticated seller calls fn_log_search_analytics RPC →
---     EXECUTE retained for authenticated → still works ✓
---   Edge Function or cron calls fn_log_search_analytics →
---     uses service_role → bypasses RLS anyway → unaffected by anon revoke ✓
---
--- IMPACT:
---   anon_security_definer_function_executable count: 17 → 16
-
-DO $migration$
-BEGIN
-  RAISE NOTICE '[044] Applying: REVOKE anon EXECUTE on fn_log_search_analytics';
-END;
-$migration$;
-
-DO $$
-BEGIN
-  IF EXISTS (
-    SELECT 1 FROM pg_proc p
-    JOIN pg_namespace n ON n.oid = p.pronamespace
-    WHERE n.nspname = 'public' AND p.proname = 'fn_log_search_analytics'
-  ) THEN
-    REVOKE EXECUTE ON FUNCTION public.fn_log_search_analytics FROM anon;
-    RAISE NOTICE '[044] ✓ REVOKE EXECUTE ON fn_log_search_analytics FROM anon';
-  ELSE
-    RAISE NOTICE '[044] - fn_log_search_analytics not found — skipping (no-op)';
-  END IF;
-END;
-$$;
-
--- ── VALIDATION ────────────────────────────────────────────────────────────────
-DO $validate$
-DECLARE
-  v_exists  boolean;
-  v_anon_ex boolean;
-  v_auth_ex boolean;
-BEGIN
-  SELECT EXISTS (
-    SELECT 1 FROM pg_proc p
-    JOIN pg_namespace n ON n.oid = p.pronamespace
-    WHERE n.nspname = 'public' AND p.proname = 'fn_log_search_analytics'
-  ) INTO v_exists;
-
-  IF NOT v_exists THEN
-    RAISE NOTICE '[044] SKIP: fn_log_search_analytics not found in database — nothing to validate';
-    RETURN;
-  END IF;
-
-  -- Check anon no longer has EXECUTE
-  SELECT has_function_privilege('anon', 'public.fn_log_search_analytics', 'EXECUTE')
-  INTO v_anon_ex;
-
-  IF v_anon_ex THEN
-    RAISE EXCEPTION '[044] FAIL: anon still has EXECUTE on fn_log_search_analytics';
-  END IF;
-  RAISE NOTICE '[044] OK: anon no longer has EXECUTE on fn_log_search_analytics';
-
-  -- Check authenticated still has EXECUTE (must not have been accidentally revoked)
-  BEGIN
-    SELECT has_function_privilege('authenticated', 'public.fn_log_search_analytics', 'EXECUTE')
-    INTO v_auth_ex;
-    IF NOT v_auth_ex THEN
-      RAISE WARNING '[044] WARN: authenticated lost EXECUTE on fn_log_search_analytics';
-    ELSE
-      RAISE NOTICE '[044] OK: authenticated retains EXECUTE on fn_log_search_analytics';
-    END IF;
-  EXCEPTION WHEN OTHERS THEN
-    RAISE NOTICE '[044] NOTE: could not verify authenticated EXECUTE (function signature lookup failed)';
-  END;
-
-  RAISE NOTICE '[044] Migration 044 applied successfully';
-END;
-$validate$;
-
--- <<< END 20260716000044_revoke_anon_fn_log_search_analytics.sql <<<
 
 -- >>> BEGIN 20260716000045_dynamic_fix_auth_rls_initplan_remaining.sql >>>
 -- Migration 045: Dynamic auth_rls_initplan fix — ALL remaining public policies
@@ -222012,236 +219088,6 @@ $$;
 
 -- <<< END 20260716000045_dynamic_fix_auth_rls_initplan_remaining.sql <<<
 
--- >>> BEGIN 20260716000045_revoke_anon_catalog_authenticated_only_functions.sql >>>
--- Migration 045: Revoke anon EXECUTE on 4 authenticated-only catalog RPCs
---
--- FINDING: anon_security_definer_function_executable (×4)
--- TARGETS:
---   1. public.get_catalog_bestseller_page
---   2. public.get_promo_sales_ranking
---   3. public.get_top_collected_products
---   4. public.get_collections_weekly_count
---
--- ARCHITECTURE CONTEXT:
---   This is a B2B platform. The entire product catalog sits behind
---   ProtectedRoute (src/routes/AppRoutes.tsx:175). There are ZERO public
---   catalog pages — even the homepage requires a login. The anon role
---   is only used on: /auth, /login, /reset-password, /forgot-password-confirmation,
---   /auth/callback, /unauthorized, /termos, /privacidade,
---   /revista-publica/:token (magazine), and /__test/* harnesses.
---
--- EVIDENCE TRAIL (grep + route analysis):
---
--- 1. get_catalog_bestseller_page
---    Caller: src/hooks/products/useProductsLightweight.ts:207
---      → Used in IntelligenceFilterBar + useCatalogState → ALL under ProtectedRoute
---    Edge functions: 0 callers (grep confirmed empty)
---    Public routes: 0 callers
---
--- 2. get_promo_sales_ranking
---    Caller: src/hooks/products/usePromoSalesRanking.ts:30
---      → Used in useCatalogState.ts:159 → product catalog → ProtectedRoute
---    Edge functions: 0 callers (grep confirmed empty)
---    Public routes: 0 callers
---
--- 3. get_top_collected_products
---    Caller: src/components/collections/CollectionsEmptyStateSmart.tsx:24
---      → CollectionsPage at /colecoes → product-routes.tsx (comment: "Mounted
---        under ProtectedRoute (authenticated users only)") → ProtectedRoute
---    Edge functions: 0 callers (grep confirmed empty)
---    Public routes: 0 callers
---
--- 4. get_collections_weekly_count
---    Caller: src/components/collections/CollectionsHeatmap.tsx:21
---      → CollectionsPage at /colecoes → same ProtectedRoute path as above
---    Edge functions: 0 callers (grep confirmed empty)
---    Public routes: 0 callers
---
--- WHY REVOKE IS SAFE:
---   anon cannot navigate to any page that calls these functions.
---   If anon somehow calls these RPCs directly via API, they would hit
---   EXECUTE denied → 403 → no data leakage. Authenticated callers retain
---   EXECUTE — normal usage is completely unaffected.
---
--- SCENARIO SIMULATION (hundreds of scenarios considered):
---
---   anon user opens browser → /login page → no catalog RPCs called ✓
---   anon calls get_catalog_bestseller_page directly (API abuse):
---     → EXECUTE denied → 403 → no inventory intelligence leaked ✓
---   anon calls get_promo_sales_ranking directly (API abuse):
---     → EXECUTE denied → 403 → no sales ranking data leaked ✓
---   anon calls get_top_collected_products directly (API abuse):
---     → EXECUTE denied → 403 → no collection trends leaked ✓
---   anon calls get_collections_weekly_count directly (API abuse):
---     → EXECUTE denied → 403 → no behavioral data leaked ✓
---   authenticated seller opens /catalog → useProductsLightweight calls
---     get_catalog_bestseller_page → EXECUTE retained → works normally ✓
---   authenticated seller opens /colecoes → CollectionsPage calls
---     get_top_collected_products + get_collections_weekly_count → works ✓
---   authenticated seller in catalog → useCatalogState calls
---     get_promo_sales_ranking → works normally ✓
---   Edge Function or cron uses service_role → bypasses anon revoke ✓
---   Supabase Studio (postgres role) → unaffected by anon revoke ✓
---
---   REGRESSION CHECK — search for callers via any path not caught above:
---   - No migrations reference these functions as prerequisites
---   - No seed scripts call these RPCs
---   - No test fixtures call these RPCs (checked supabase/functions/ dir)
---   - No server-side rendering path exists (pure Vite SPA)
---
--- IMPACT:
---   anon_security_definer_function_executable count: 16 → 12
-
-DO $migration$
-BEGIN
-  RAISE NOTICE '[045] Applying: REVOKE anon EXECUTE on 4 authenticated-only catalog functions';
-END;
-$migration$;
-
--- ── 1) get_catalog_bestseller_page ───────────────────────────────────────────
-DO $$
-BEGIN
-  IF EXISTS (
-    SELECT 1 FROM pg_proc p
-    JOIN pg_namespace n ON n.oid = p.pronamespace
-    WHERE n.nspname = 'public' AND p.proname = 'get_catalog_bestseller_page'
-  ) THEN
-    REVOKE EXECUTE ON FUNCTION public.get_catalog_bestseller_page FROM anon;
-    RAISE NOTICE '[045] ✓ REVOKE EXECUTE ON get_catalog_bestseller_page FROM anon';
-  ELSE
-    RAISE NOTICE '[045] - get_catalog_bestseller_page not found — skipping (no-op)';
-  END IF;
-END;
-$$;
-
--- ── 2) get_promo_sales_ranking ────────────────────────────────────────────────
-DO $$
-BEGIN
-  IF EXISTS (
-    SELECT 1 FROM pg_proc p
-    JOIN pg_namespace n ON n.oid = p.pronamespace
-    WHERE n.nspname = 'public' AND p.proname = 'get_promo_sales_ranking'
-  ) THEN
-    REVOKE EXECUTE ON FUNCTION public.get_promo_sales_ranking FROM anon;
-    RAISE NOTICE '[045] ✓ REVOKE EXECUTE ON get_promo_sales_ranking FROM anon';
-  ELSE
-    RAISE NOTICE '[045] - get_promo_sales_ranking not found — skipping (no-op)';
-  END IF;
-END;
-$$;
-
--- ── 3) get_top_collected_products ─────────────────────────────────────────────
-DO $$
-BEGIN
-  IF EXISTS (
-    SELECT 1 FROM pg_proc p
-    JOIN pg_namespace n ON n.oid = p.pronamespace
-    WHERE n.nspname = 'public' AND p.proname = 'get_top_collected_products'
-  ) THEN
-    REVOKE EXECUTE ON FUNCTION public.get_top_collected_products FROM anon;
-    RAISE NOTICE '[045] ✓ REVOKE EXECUTE ON get_top_collected_products FROM anon';
-  ELSE
-    RAISE NOTICE '[045] - get_top_collected_products not found — skipping (no-op)';
-  END IF;
-END;
-$$;
-
--- ── 4) get_collections_weekly_count ──────────────────────────────────────────
-DO $$
-BEGIN
-  IF EXISTS (
-    SELECT 1 FROM pg_proc p
-    JOIN pg_namespace n ON n.oid = p.pronamespace
-    WHERE n.nspname = 'public' AND p.proname = 'get_collections_weekly_count'
-  ) THEN
-    REVOKE EXECUTE ON FUNCTION public.get_collections_weekly_count FROM anon;
-    RAISE NOTICE '[045] ✓ REVOKE EXECUTE ON get_collections_weekly_count FROM anon';
-  ELSE
-    RAISE NOTICE '[045] - get_collections_weekly_count not found — skipping (no-op)';
-  END IF;
-END;
-$$;
-
--- ── VALIDATION ────────────────────────────────────────────────────────────────
-DO $validate$
-DECLARE
-  v_name    text;
-  v_anon_ex boolean;
-  v_auth_ex boolean;
-  v_targets text[] := ARRAY[
-    'get_catalog_bestseller_page',
-    'get_promo_sales_ranking',
-    'get_top_collected_products',
-    'get_collections_weekly_count'
-  ];
-  v_missing int := 0;
-  v_still_granted int := 0;
-BEGIN
-  FOREACH v_name IN ARRAY v_targets LOOP
-    IF NOT EXISTS (
-      SELECT 1 FROM pg_proc p
-      JOIN pg_namespace n ON n.oid = p.pronamespace
-      WHERE n.nspname = 'public' AND p.proname = v_name
-    ) THEN
-      RAISE NOTICE '[045] SKIP: % not found in database — nothing to validate', v_name;
-      v_missing := v_missing + 1;
-      CONTINUE;
-    END IF;
-
-    -- Verify anon lost EXECUTE (using overloaded-safe method via pg_proc)
-    BEGIN
-      SELECT has_function_privilege(
-        'anon',
-        (SELECT p.oid FROM pg_proc p
-         JOIN pg_namespace n ON n.oid = p.pronamespace
-         WHERE n.nspname = 'public' AND p.proname = v_name
-         LIMIT 1),
-        'EXECUTE'
-      ) INTO v_anon_ex;
-
-      IF v_anon_ex THEN
-        RAISE WARNING '[045] FAIL: anon still has EXECUTE on %', v_name;
-        v_still_granted := v_still_granted + 1;
-      ELSE
-        RAISE NOTICE '[045] OK: anon no longer has EXECUTE on %', v_name;
-      END IF;
-    EXCEPTION WHEN OTHERS THEN
-      RAISE NOTICE '[045] NOTE: could not check anon EXECUTE on % — %', v_name, SQLERRM;
-    END;
-
-    -- Spot-check authenticated still has EXECUTE
-    BEGIN
-      SELECT has_function_privilege(
-        'authenticated',
-        (SELECT p.oid FROM pg_proc p
-         JOIN pg_namespace n ON n.oid = p.pronamespace
-         WHERE n.nspname = 'public' AND p.proname = v_name
-         LIMIT 1),
-        'EXECUTE'
-      ) INTO v_auth_ex;
-
-      IF NOT v_auth_ex THEN
-        RAISE WARNING '[045] WARN: authenticated lost EXECUTE on % — unexpected', v_name;
-      ELSE
-        RAISE NOTICE '[045] OK: authenticated retains EXECUTE on %', v_name;
-      END IF;
-    EXCEPTION WHEN OTHERS THEN
-      RAISE NOTICE '[045] NOTE: could not check authenticated EXECUTE on % — %', v_name, SQLERRM;
-    END;
-  END LOOP;
-
-  IF v_still_granted > 0 THEN
-    RAISE EXCEPTION '[045] FAIL: % function(s) still grant EXECUTE to anon', v_still_granted;
-  END IF;
-
-  RAISE NOTICE '[045] Summary: % function(s) skipped (not found), % revoked successfully',
-    v_missing, array_length(v_targets, 1) - v_missing;
-  RAISE NOTICE '[045] Migration 045 applied successfully';
-END;
-$validate$;
-
--- <<< END 20260716000045_revoke_anon_catalog_authenticated_only_functions.sql <<<
-
 -- >>> BEGIN 20260716000046_dynamic_enable_rls_remaining_tables.sql >>>
 -- Migration 046: Dynamic enable RLS on all remaining public tables
 --
@@ -222470,383 +219316,6 @@ END;
 $$;
 
 -- <<< END 20260716000046_dynamic_enable_rls_remaining_tables.sql <<<
-
--- >>> BEGIN 20260716000046_revoke_anon_all_remaining_catalog_functions.sql >>>
--- Migration 046: Revoke anon EXECUTE on 9 remaining catalog-only SECURITY DEFINER functions
---
--- FINDING: anon_security_definer_function_executable (×9)
--- TARGETS:
---   1. public.fn_super_filtro
---   2. public.fn_super_filtro_facets
---   3. public.fn_super_filtro_opcoes
---   4. public.fn_super_filtro_price_range
---   5. public.fn_super_filtro_product_ids
---   6. public.fn_get_all_leaf_categories
---   7. public.fn_get_color_swatches_batch
---   8. public.fn_get_product_customization_options
---   9. public.fn_get_customization_price
---
--- ─── ARCHITECTURE CONTEXT ────────────────────────────────────────────────────
---
--- This is a B2B wholesale platform. ALL product catalog functionality sits
--- behind ProtectedRoute (AppRoutes.tsx:175). The only anon-accessible pages
--- are: /auth, /login, /reset-password, /forgot-password-confirmation,
--- /auth/callback, /unauthorized, /termos, /privacidade,
--- /revista-publica/:token (public magazine — does NOT use any catalog RPC),
--- and /__test/* harnesses.
---
--- The migration 005 whitelist incorrectly labelled these as "public catalog
--- (storefront, no auth required)". They are authenticated-only B2B functions.
---
--- ─── PER-FUNCTION EVIDENCE ───────────────────────────────────────────────────
---
--- 1. fn_super_filtro (main filter RPC)
---    Caller: 0 direct .rpc() calls found in TypeScript (grep: empty result).
---    Context: Function exists in DB, was in whitelist as "public catalog"
---    but NO TypeScript code calls it directly — callers use fn_super_filtro
---    via the typed Supabase client (types.ts definition). All callers are
---    in catalog hooks → ProtectedRoute.
---    Edge functions: 0 callers (grep confirmed empty).
---
--- 2. fn_super_filtro_facets, fn_super_filtro_opcoes, fn_super_filtro_price_range
---    Callers: 0 .rpc() calls found — these variants appear only in migration
---    files and CI config (grep returned 0 TypeScript callers).
---    Context: Potentially legacy or called via typed client in catalog pages
---    → ALL under ProtectedRoute.
---    Edge functions: 0 callers (grep confirmed empty).
---
--- 3. fn_super_filtro_product_ids
---    Caller: src/hooks/products/useProductsByMetadata.ts:116
---      → Used in useCatalogState.ts:438 + useFiltersPageState.ts:316
---      → Both are catalog/filter pages → ProtectedRoute
---    Edge functions: 0 callers (grep confirmed empty).
---
--- 4. fn_get_all_leaf_categories
---    Caller: src/hooks/products/useProductLeafCategories.tsx:143
---      → Used in ProductDetailHero.tsx:108 → product detail → ProtectedRoute
---    Note: Also reads mv_product_leaf_category whose anon SELECT was revoked
---      by migration 040 — with INVOKER mode anon would get 0 rows anyway.
---      Still SECURITY DEFINER — this revoke removes the EXECUTE privilege.
---    Edge functions: 0 callers (grep confirmed empty).
---
--- 5. fn_get_color_swatches_batch
---    Caller: src/hooks/useProductColorSwatch.ts:60
---      → Used in ProductCard.tsx:77, ProductListItem.tsx:53,
---        ProductTableRow.tsx:32 → product catalog listings → ProtectedRoute
---    Edge functions: 0 callers (grep confirmed empty).
---
--- 6. fn_get_product_customization_options (MUST stay SECURITY DEFINER)
---    Callers:
---      src/hooks/products/useProductCustomizationOptions.ts:90
---      src/hooks/products/useProductEngravingOptions.ts:25
---      src/hooks/mockup/useMockupTechniques.ts:82
---      src/hooks/simulator/useSimulatorWizard.ts:51
---    All lead to: product detail + simulator + mockup → ALL ProtectedRoute
---    (toolsRoutes at /simulador → ProtectedRoute, AppRoutes.tsx:114)
---    IMPORTANT: MUST stay SECURITY DEFINER due to print_area_techniques RLS
---      (proven in-production incident, migration 20260623000001). Only the
---      anon EXECUTE privilege is being revoked here — the function itself
---      stays SECURITY DEFINER.
---    Edge functions: 0 callers (grep confirmed empty).
---
--- 7. fn_get_customization_price (MUST stay SECURITY DEFINER)
---    Callers:
---      src/hooks/simulator/useWizardPricing.ts:60,156
---      src/hooks/simulator/useLivePricePreview.ts:103
---      src/hooks/simulation/useGravacaoPriceV2.ts:274,328
---    All are simulator/engraving tools → toolsRoutes → ProtectedRoute
---    IMPORTANT: Same DEFINER constraint as fn_get_product_customization_options.
---    Edge functions: 0 callers (grep confirmed empty).
---
--- ─── SCENARIO SIMULATION (hundreds of scenarios considered) ──────────────────
---
---   anon user opens /login → authenticates → catalog loads:
---     TypeScript calls fn_super_filtro, fn_get_color_swatches_batch, etc.
---     → These are now post-auth → EXECUTE is retained for authenticated → ✓
---
---   anon hits /produtos directly without auth → React Router redirects to /login
---     → No RPC ever fires → revoke irrelevant → ✓
---
---   anon calls fn_super_filtro via PostgREST API directly (abuse):
---     → EXECUTE denied → 403 → no product data exposed → ✓
---
---   anon calls fn_get_all_leaf_categories via PostgREST:
---     → EXECUTE denied → 403 → even if not, mv_product_leaf_category has
---       anon SELECT revoked (migration 040) → 0 rows anyway → ✓ (double protection)
---
---   anon calls fn_get_customization_price via PostgREST:
---     → EXECUTE denied → 403 → no engraving pricing leaked → ✓
---
---   anon calls fn_get_product_customization_options via PostgREST:
---     → EXECUTE denied → 403 → no print area data leaked → ✓
---
---   authenticated seller opens product detail → useProductCustomizationOptions fires:
---     → EXECUTE retained for authenticated → fn_get_product_customization_options
---       runs SECURITY DEFINER → reads print_area_techniques (bypasses RLS) → ✓
---
---   authenticated seller uses simulator /simulador → fn_get_customization_price fires:
---     → EXECUTE retained for authenticated → works normally → ✓
---
---   authenticated seller browses catalog → fn_super_filtro fires:
---     → EXECUTE retained for authenticated → returns product list → ✓
---
---   service_role (Edge Functions, cron, Supabase Studio) → bypasses RLS + anon
---     grant check → unaffected by this revoke → ✓
---
---   /revista-publica/:token (PublicMagazineView) → uses magazineService,
---     NOT any catalog RPC → unaffected → ✓
---
---   PublicMagazineView edge case: if it ever needed products, it would use
---     the service_role key (server-side) → unaffected by anon revoke → ✓
---
--- ─── IMPACT ──────────────────────────────────────────────────────────────────
---   anon_security_definer_function_executable count: 12 → 3
---   Remaining 3 legitimate anon SECURITY DEFINER functions:
---     - check_login_rate_limit (login flow)
---     - fn_check_login_allowed (login flow)
---     - enforce_password_reset_rate_limit (password reset flow)
---     Note: get_quote_token_by_value, submit_quote_response also remain but
---       may already be SECURITY INVOKER; fn_global_search revoked separately.
-
-DO $migration$
-BEGIN
-  RAISE NOTICE '[046] Applying: REVOKE anon EXECUTE on 9 remaining catalog-only SECURITY DEFINER functions';
-END;
-$migration$;
-
--- ── Helper: revoke with existence check ──────────────────────────────────────
--- Each block is independent so a missing function does not abort the batch.
-
--- ── 1) fn_super_filtro ───────────────────────────────────────────────────────
-DO $$
-BEGIN
-  IF EXISTS (
-    SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
-    WHERE n.nspname = 'public' AND p.proname = 'fn_super_filtro'
-  ) THEN
-    REVOKE EXECUTE ON FUNCTION public.fn_super_filtro FROM anon;
-    RAISE NOTICE '[046] ✓ REVOKE EXECUTE ON fn_super_filtro FROM anon';
-  ELSE
-    RAISE NOTICE '[046] - fn_super_filtro not found — skipping';
-  END IF;
-END;
-$$;
-
--- ── 2) fn_super_filtro_facets ─────────────────────────────────────────────────
-DO $$
-BEGIN
-  IF EXISTS (
-    SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
-    WHERE n.nspname = 'public' AND p.proname = 'fn_super_filtro_facets'
-  ) THEN
-    REVOKE EXECUTE ON FUNCTION public.fn_super_filtro_facets FROM anon;
-    RAISE NOTICE '[046] ✓ REVOKE EXECUTE ON fn_super_filtro_facets FROM anon';
-  ELSE
-    RAISE NOTICE '[046] - fn_super_filtro_facets not found — skipping';
-  END IF;
-END;
-$$;
-
--- ── 3) fn_super_filtro_opcoes ─────────────────────────────────────────────────
-DO $$
-BEGIN
-  IF EXISTS (
-    SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
-    WHERE n.nspname = 'public' AND p.proname = 'fn_super_filtro_opcoes'
-  ) THEN
-    REVOKE EXECUTE ON FUNCTION public.fn_super_filtro_opcoes FROM anon;
-    RAISE NOTICE '[046] ✓ REVOKE EXECUTE ON fn_super_filtro_opcoes FROM anon';
-  ELSE
-    RAISE NOTICE '[046] - fn_super_filtro_opcoes not found — skipping';
-  END IF;
-END;
-$$;
-
--- ── 4) fn_super_filtro_price_range ────────────────────────────────────────────
-DO $$
-BEGIN
-  IF EXISTS (
-    SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
-    WHERE n.nspname = 'public' AND p.proname = 'fn_super_filtro_price_range'
-  ) THEN
-    REVOKE EXECUTE ON FUNCTION public.fn_super_filtro_price_range FROM anon;
-    RAISE NOTICE '[046] ✓ REVOKE EXECUTE ON fn_super_filtro_price_range FROM anon';
-  ELSE
-    RAISE NOTICE '[046] - fn_super_filtro_price_range not found — skipping';
-  END IF;
-END;
-$$;
-
--- ── 5) fn_super_filtro_product_ids ───────────────────────────────────────────
-DO $$
-BEGIN
-  IF EXISTS (
-    SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
-    WHERE n.nspname = 'public' AND p.proname = 'fn_super_filtro_product_ids'
-  ) THEN
-    REVOKE EXECUTE ON FUNCTION public.fn_super_filtro_product_ids FROM anon;
-    RAISE NOTICE '[046] ✓ REVOKE EXECUTE ON fn_super_filtro_product_ids FROM anon';
-  ELSE
-    RAISE NOTICE '[046] - fn_super_filtro_product_ids not found — skipping';
-  END IF;
-END;
-$$;
-
--- ── 6) fn_get_all_leaf_categories ────────────────────────────────────────────
-DO $$
-BEGIN
-  IF EXISTS (
-    SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
-    WHERE n.nspname = 'public' AND p.proname = 'fn_get_all_leaf_categories'
-  ) THEN
-    REVOKE EXECUTE ON FUNCTION public.fn_get_all_leaf_categories FROM anon;
-    RAISE NOTICE '[046] ✓ REVOKE EXECUTE ON fn_get_all_leaf_categories FROM anon';
-  ELSE
-    RAISE NOTICE '[046] - fn_get_all_leaf_categories not found — skipping';
-  END IF;
-END;
-$$;
-
--- ── 7) fn_get_color_swatches_batch ───────────────────────────────────────────
-DO $$
-BEGIN
-  IF EXISTS (
-    SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
-    WHERE n.nspname = 'public' AND p.proname = 'fn_get_color_swatches_batch'
-  ) THEN
-    REVOKE EXECUTE ON FUNCTION public.fn_get_color_swatches_batch FROM anon;
-    RAISE NOTICE '[046] ✓ REVOKE EXECUTE ON fn_get_color_swatches_batch FROM anon';
-  ELSE
-    RAISE NOTICE '[046] - fn_get_color_swatches_batch not found — skipping';
-  END IF;
-END;
-$$;
-
--- ── 8) fn_get_product_customization_options ──────────────────────────────────
--- NOTE: MUST remain SECURITY DEFINER (print_area_techniques RLS constraint,
--- proven production incident in migration 20260623000001). Only the anon
--- EXECUTE privilege is being revoked — the DEFINER mode stays intact.
-DO $$
-BEGIN
-  IF EXISTS (
-    SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
-    WHERE n.nspname = 'public' AND p.proname = 'fn_get_product_customization_options'
-  ) THEN
-    REVOKE EXECUTE ON FUNCTION public.fn_get_product_customization_options FROM anon;
-    RAISE NOTICE '[046] ✓ REVOKE EXECUTE ON fn_get_product_customization_options FROM anon';
-  ELSE
-    RAISE NOTICE '[046] - fn_get_product_customization_options not found — skipping';
-  END IF;
-END;
-$$;
-
--- ── 9) fn_get_customization_price ────────────────────────────────────────────
--- NOTE: MUST remain SECURITY DEFINER (same print_area_techniques RLS constraint).
--- Only the anon EXECUTE privilege is being revoked.
-DO $$
-BEGIN
-  IF EXISTS (
-    SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
-    WHERE n.nspname = 'public' AND p.proname = 'fn_get_customization_price'
-  ) THEN
-    REVOKE EXECUTE ON FUNCTION public.fn_get_customization_price FROM anon;
-    RAISE NOTICE '[046] ✓ REVOKE EXECUTE ON fn_get_customization_price FROM anon';
-  ELSE
-    RAISE NOTICE '[046] - fn_get_customization_price not found — skipping';
-  END IF;
-END;
-$$;
-
--- ── VALIDATION ────────────────────────────────────────────────────────────────
-DO $validate$
-DECLARE
-  v_name      text;
-  v_anon_ex   boolean;
-  v_auth_ex   boolean;
-  v_fn_oid    oid;
-  v_missing   int := 0;
-  v_granted   int := 0;
-  v_auth_lost int := 0;
-  v_targets   text[] := ARRAY[
-    'fn_super_filtro',
-    'fn_super_filtro_facets',
-    'fn_super_filtro_opcoes',
-    'fn_super_filtro_price_range',
-    'fn_super_filtro_product_ids',
-    'fn_get_all_leaf_categories',
-    'fn_get_color_swatches_batch',
-    'fn_get_product_customization_options',
-    'fn_get_customization_price'
-  ];
-BEGIN
-  FOREACH v_name IN ARRAY v_targets LOOP
-    SELECT p.oid INTO v_fn_oid
-    FROM pg_proc p
-    JOIN pg_namespace n ON n.oid = p.pronamespace
-    WHERE n.nspname = 'public' AND p.proname = v_name
-    LIMIT 1;
-
-    IF v_fn_oid IS NULL THEN
-      RAISE NOTICE '[046] SKIP: % not found in database', v_name;
-      v_missing := v_missing + 1;
-      CONTINUE;
-    END IF;
-
-    BEGIN
-      SELECT has_function_privilege('anon', v_fn_oid, 'EXECUTE') INTO v_anon_ex;
-      IF v_anon_ex THEN
-        RAISE WARNING '[046] FAIL: anon still has EXECUTE on %', v_name;
-        v_granted := v_granted + 1;
-      ELSE
-        RAISE NOTICE '[046] OK: anon no longer has EXECUTE on %', v_name;
-      END IF;
-    EXCEPTION WHEN OTHERS THEN
-      RAISE NOTICE '[046] NOTE: could not check anon EXECUTE on % — %', v_name, SQLERRM;
-    END;
-
-    BEGIN
-      SELECT has_function_privilege('authenticated', v_fn_oid, 'EXECUTE') INTO v_auth_ex;
-      IF NOT v_auth_ex THEN
-        RAISE WARNING '[046] WARN: authenticated lost EXECUTE on % — unexpected', v_name;
-        v_auth_lost := v_auth_lost + 1;
-      ELSE
-        RAISE NOTICE '[046] OK: authenticated retains EXECUTE on %', v_name;
-      END IF;
-    EXCEPTION WHEN OTHERS THEN
-      RAISE NOTICE '[046] NOTE: could not check authenticated EXECUTE on % — %', v_name, SQLERRM;
-    END;
-
-    -- Verify fn_get_product_customization_options + fn_get_customization_price
-    -- remain SECURITY DEFINER (critical invariant)
-    IF v_name IN ('fn_get_product_customization_options', 'fn_get_customization_price') THEN
-      DECLARE
-        v_secdef boolean;
-      BEGIN
-        SELECT prosecdef INTO v_secdef
-        FROM pg_proc WHERE oid = v_fn_oid;
-        IF NOT COALESCE(v_secdef, false) THEN
-          RAISE EXCEPTION '[046] CRITICAL: % lost SECURITY DEFINER — this would break engraving pricing', v_name;
-        END IF;
-        RAISE NOTICE '[046] OK: % remains SECURITY DEFINER (invariant preserved)', v_name;
-      END;
-    END IF;
-  END LOOP;
-
-  IF v_granted > 0 THEN
-    RAISE EXCEPTION '[046] FAIL: % function(s) still grant anon EXECUTE', v_granted;
-  END IF;
-
-  IF v_auth_lost > 0 THEN
-    RAISE WARNING '[046] WARN: % function(s) lost authenticated EXECUTE — verify manually', v_auth_lost;
-  END IF;
-
-  RAISE NOTICE '[046] Summary: % skipped (not found), % functions successfully restricted from anon',
-    v_missing, array_length(v_targets, 1) - v_missing;
-  RAISE NOTICE '[046] Migration 046 applied successfully';
-END;
-$validate$;
-
--- <<< END 20260716000046_revoke_anon_all_remaining_catalog_functions.sql <<<
 
 -- >>> BEGIN 20260716000047_revoke_anon_fn_global_search.sql >>>
 -- Migration 047: Revoke anon EXECUTE on fn_global_search
@@ -226337,6 +222806,1170 @@ END;
 $$;
 
 -- <<< END 20260716000062_dynamic_revoke_anon_select_tables.sql <<<
+
+-- >>> BEGIN 20260716000063_revoke_anon_b2b_catalog_secdef_functions.sql >>>
+-- Migration 041: Revoke anon EXECUTE from B2B catalog SECURITY DEFINER functions
+--
+-- Source: 200-commit audit — follow-up on migration 005 whitelist review
+-- Findings addressed: anon_security_definer_function_executable (~17 functions)
+--
+-- ─── Context ─────────────────────────────────────────────────────────────────
+--
+-- Migration 005 built a whitelist for anon EXECUTE that included two categories:
+--   A) Legitimate anon functions (login rate-limit, quote sharing) — KEEP
+--   B) "Public catalog (storefront, no auth required)" functions — WRONG for B2B
+--
+-- This platform is a B2B wholesale gifting catalog. The frontend wraps ALL product
+-- catalog, filter, quote, simulator, mockup, and collection pages inside
+-- <ProtectedRoute /> (AppRoutes.tsx:175). There is no unauthenticated storefront.
+--
+-- Functions in category B were kept for anon in migration 005 on the assumption
+-- of a public storefront — a false assumption for this B2B architecture.
+-- Revoking anon EXECUTE eliminates the `anon_security_definer_function_executable`
+-- Supabase advisor finding for these functions without affecting authenticated users.
+--
+-- FUNCTIONS TO REVOKE FROM ANON:
+--   Product filter & search:
+--     fn_super_filtro, fn_super_filtro_facets, fn_super_filtro_opcoes,
+--     fn_super_filtro_price_range, fn_super_filtro_product_ids,
+--     fn_get_category_breadcrumb, fn_get_all_leaf_categories,
+--     fn_global_search, fn_get_similar_products, fn_get_color_swatches_batch
+--   Product customization/pricing (STAY SECURITY DEFINER, anon removed):
+--     fn_get_product_customization_options, fn_get_customization_price
+--   Analytics/catalog support:
+--     fn_log_search_analytics, get_catalog_bestseller_page,
+--     get_top_collected_products, get_promo_sales_ranking,
+--     get_collections_weekly_count
+--
+-- FUNCTIONS KEPT FOR ANON (legitimate, unchanged):
+--   check_login_rate_limit, fn_check_login_allowed,
+--   enforce_password_reset_rate_limit, get_quote_token_by_value,
+--   submit_quote_response
+--   + all RLS helper functions (required by PG for USING clause evaluation)
+--
+-- Safety for fn_get_customization_price / fn_get_product_customization_options:
+--   These MUST remain SECURITY DEFINER (print_area_techniques RLS blocks
+--   authenticated callers without DEFINER elevation — confirmed production incident).
+--   However, anon DOES NOT need EXECUTE because the simulator/customization pages
+--   are fully behind <ProtectedRoute />. Revoking anon EXECUTE is safe.
+
+-- ═══════════════════════════════════════════════════════════════════════════════
+-- Revoke anon EXECUTE from B2B-only catalog SECURITY DEFINER functions
+-- ═══════════════════════════════════════════════════════════════════════════════
+
+DO $$
+DECLARE
+  r         RECORD;
+  v_ok      int := 0;
+  v_skip    int := 0;
+  v_fail    int := 0;
+  v_target  text[] := ARRAY[
+    -- Product filter & search
+    'fn_super_filtro',
+    'fn_super_filtro_facets',
+    'fn_super_filtro_opcoes',
+    'fn_super_filtro_price_range',
+    'fn_super_filtro_product_ids',
+    'fn_get_category_breadcrumb',
+    'fn_get_all_leaf_categories',
+    'fn_global_search',
+    'fn_get_similar_products',
+    'fn_get_color_swatches_batch',
+    -- Product customization & pricing (STAY SECURITY DEFINER, anon removed)
+    'fn_get_product_customization_options',
+    'fn_get_customization_price',
+    -- Analytics & catalog support
+    'fn_log_search_analytics',
+    'get_catalog_bestseller_page',
+    'get_top_collected_products',
+    'get_promo_sales_ranking',
+    'get_collections_weekly_count'
+  ];
+BEGIN
+  FOR r IN
+    SELECT
+      p.oid,
+      p.proname,
+      pg_get_function_identity_arguments(p.oid) AS args
+    FROM pg_proc p
+    JOIN pg_namespace n ON n.oid = p.pronamespace
+    WHERE n.nspname = 'public'
+      AND p.proname = ANY(v_target)
+      AND p.prokind = 'f'
+    ORDER BY p.proname, p.oid
+  LOOP
+    -- Only revoke if anon actually has EXECUTE
+    IF has_function_privilege('anon', r.oid, 'EXECUTE') THEN
+      BEGIN
+        EXECUTE format(
+          'REVOKE EXECUTE ON FUNCTION public.%I(%s) FROM anon',
+          r.proname, r.args
+        );
+        v_ok := v_ok + 1;
+        RAISE NOTICE '✓ [anon_security_definer] REVOKE EXECUTE ON %(%) FROM anon',
+          r.proname, r.args;
+      EXCEPTION WHEN OTHERS THEN
+        v_fail := v_fail + 1;
+        RAISE WARNING '✗ [anon_security_definer] Could not revoke %(%)): %',
+          r.proname, r.args, SQLERRM;
+      END;
+    ELSE
+      v_skip := v_skip + 1;
+      RAISE NOTICE '- %(%): anon already lacks EXECUTE — skipping', r.proname, r.args;
+    END IF;
+  END LOOP;
+
+  RAISE NOTICE 'Migration 041 summary: revoked=%, skipped=%, failed=%', v_ok, v_skip, v_fail;
+
+  IF v_fail > 0 THEN
+    RAISE WARNING '[041] % function(s) could not be revoked — review warnings above', v_fail;
+  END IF;
+END;
+$$;
+
+-- ─── Validation ───────────────────────────────────────────────────────────────
+DO $$
+DECLARE
+  v_still_callable int;
+  v_fn             text;
+  v_target         text[] := ARRAY[
+    'fn_super_filtro', 'fn_super_filtro_facets', 'fn_super_filtro_opcoes',
+    'fn_super_filtro_price_range', 'fn_super_filtro_product_ids',
+    'fn_get_category_breadcrumb', 'fn_get_all_leaf_categories',
+    'fn_global_search', 'fn_get_similar_products', 'fn_get_color_swatches_batch',
+    'fn_get_product_customization_options', 'fn_get_customization_price',
+    'fn_log_search_analytics', 'get_catalog_bestseller_page',
+    'get_top_collected_products', 'get_promo_sales_ranking',
+    'get_collections_weekly_count'
+  ];
+BEGIN
+  -- Count functions anon can still EXECUTE from our revoke list
+  SELECT count(*) INTO v_still_callable
+  FROM pg_proc p
+  JOIN pg_namespace n ON n.oid = p.pronamespace
+  WHERE n.nspname = 'public'
+    AND p.proname = ANY(v_target)
+    AND p.prokind = 'f'
+    AND has_function_privilege('anon', p.oid, 'EXECUTE');
+
+  IF v_still_callable > 0 THEN
+    -- Report which ones still have access
+    FOR v_fn IN
+      SELECT p.proname
+      FROM pg_proc p
+      JOIN pg_namespace n ON n.oid = p.pronamespace
+      WHERE n.nspname = 'public'
+        AND p.proname = ANY(v_target)
+        AND p.prokind = 'f'
+        AND has_function_privilege('anon', p.oid, 'EXECUTE')
+    LOOP
+      RAISE WARNING '[041] anon still has EXECUTE on %', v_fn;
+    END LOOP;
+    RAISE WARNING '[041] % B2B catalog function(s) still callable by anon', v_still_callable;
+  ELSE
+    RAISE NOTICE '✓ [041] All 17 B2B catalog functions no longer callable by anon';
+  END IF;
+
+  -- Verify authenticated still has access to fn_super_filtro (spot check)
+  IF EXISTS (
+    SELECT 1 FROM pg_proc p
+    JOIN pg_namespace n ON n.oid = p.pronamespace
+    WHERE n.nspname = 'public' AND p.proname = 'fn_super_filtro'
+    AND has_function_privilege('authenticated', p.oid, 'EXECUTE')
+  ) THEN
+    RAISE NOTICE '✓ [041] authenticated role retains EXECUTE on fn_super_filtro';
+  ELSE
+    RAISE WARNING '[041] authenticated lost EXECUTE on fn_super_filtro — investigate!';
+  END IF;
+
+  -- Verify fn_get_customization_price is still SECURITY DEFINER
+  IF EXISTS (
+    SELECT 1 FROM pg_proc p
+    JOIN pg_namespace n ON n.oid = p.pronamespace
+    WHERE n.nspname = 'public' AND p.proname = 'fn_get_customization_price'
+    AND p.prosecdef = true
+  ) THEN
+    RAISE NOTICE '✓ [041] fn_get_customization_price still SECURITY DEFINER (required)';
+  ELSE
+    RAISE WARNING '[041] fn_get_customization_price is NO LONGER SECURITY DEFINER — check migration!';
+  END IF;
+
+  RAISE NOTICE 'Migration 041 complete — anon_security_definer_function_executable reduced by up to 17.';
+END;
+$$;
+
+-- <<< END 20260716000063_revoke_anon_b2b_catalog_secdef_functions.sql <<<
+
+-- >>> BEGIN 20260716000064_fix_fn_global_search_quote_data_exposure.sql >>>
+-- Migration 042: Fix fn_global_search exposing all quotes to anon
+--
+-- VULNERABILITY: fn_global_search is SECURITY DEFINER callable by anon.
+-- The quote search branch had NO auth filter → any anon user calling
+--   SELECT * FROM fn_global_search('pending', 20, ARRAY['quote'])
+-- would see quote_number, status, total, URL for ALL quotes system-wide.
+--
+-- FIX:
+--   1. Gate the quote branch on auth.uid() IS NOT NULL (skip for anon)
+--   2. Add q.created_by = auth.uid() so users only see their own quotes
+--
+-- Scenario simulation:
+--   - anon calls fn_global_search('pending') → products return, quotes skip ✓
+--   - authenticated user calls → sees only own quotes ✓
+--   - admin sees all quotes → needs separate privileged function (existing behavior
+--     was already broken from a security standpoint, so this is net improvement)
+
+DO $migration$
+BEGIN
+  RAISE NOTICE '[042] Applying: fn_global_search quote data exposure fix';
+END;
+$migration$;
+
+CREATE OR REPLACE FUNCTION public.fn_global_search(
+  p_term   text,
+  p_limit  integer DEFAULT 12,
+  p_types  text[]  DEFAULT ARRAY['product'::text, 'quote'::text]
+)
+RETURNS TABLE(
+  result_id          text,
+  result_type        text,
+  result_title       text,
+  result_description text,
+  result_url         text,
+  result_image_url   text,
+  result_metadata    jsonb,
+  result_relevance   numeric
+)
+LANGUAGE plpgsql
+STABLE
+SECURITY DEFINER
+SET search_path TO 'public', 'extensions'
+AS $fn_global_search$
+DECLARE
+  v_term_norm text;
+  v_tsquery   tsquery;
+  v_lim_each  integer;
+BEGIN
+  IF p_term IS NULL OR length(trim(p_term)) < 2 THEN RETURN; END IF;
+  IF p_limit IS NULL OR p_limit <= 0 THEN RETURN; END IF;
+
+  v_term_norm := lower(unaccent(trim(p_term)));
+  v_lim_each  := GREATEST(1, p_limit / GREATEST(array_length(p_types, 1), 1));
+
+  BEGIN
+    v_tsquery := websearch_to_tsquery('portuguese', unaccent(trim(p_term)));
+  EXCEPTION WHEN OTHERS THEN v_tsquery := NULL;
+  END;
+
+  PERFORM set_config('pg_trgm.similarity_threshold', '0.2', true);
+
+  -- ── Product search (public, available to anon) ──────────────
+  IF 'product' = ANY(p_types) THEN
+    RETURN QUERY
+    SELECT p.id::text, 'product'::text, p.name::text,
+      ('SKU: ' || p.sku || CASE WHEN c.name IS NOT NULL THEN ' · ' || c.name ELSE '' END)::text,
+      ('/produtos/' || p.slug)::text, p.primary_image_url,
+      jsonb_build_object('sku', p.sku, 'price', p.sale_price,
+                         'stock', COALESCE(vs.total_stock, 0), 'category', COALESCE(c.name, '')),
+      (CASE WHEN v_tsquery IS NOT NULL AND p.search_vector @@ v_tsquery
+            THEN ts_rank_cd(p.search_vector, v_tsquery, 32) * 2.0 ELSE 0 END +
+       word_similarity(v_term_norm, lower(unaccent(p.name))) * 1.0 +
+       CASE WHEN lower(p.sku) LIKE '%' || v_term_norm || '%' THEN 0.8 ELSE 0 END +
+       CASE WHEN COALESCE(vs.total_stock, 0) > 0 THEN 0.2 ELSE 0 END)::numeric
+    FROM products p
+    LEFT JOIN product_category_assignments pca ON pca.product_id = p.id AND pca.is_primary = true
+    LEFT JOIN categories c ON c.id = pca.category_id
+    LEFT JOIN LATERAL (
+      SELECT COALESCE(SUM(pv.stock_quantity), 0)::int AS total_stock
+      FROM product_variants pv
+      WHERE pv.product_id = p.id AND pv.is_active = true
+    ) vs ON true
+    WHERE p.is_active = true
+      AND p.is_deleted IS NOT TRUE
+      AND p.sale_price IS NOT NULL
+      AND p.slug IS NOT NULL AND p.slug != ''
+      AND (
+        (v_tsquery IS NOT NULL AND p.search_vector @@ v_tsquery)
+        OR p.name % v_term_norm
+        OR lower(p.sku) LIKE '%' || v_term_norm || '%'
+      )
+    ORDER BY 8 DESC LIMIT v_lim_each;
+  END IF;
+
+  -- ── Quote search (authenticated only; scoped to caller's quotes) ──
+  -- SECURITY/042: gate on auth.uid() IS NOT NULL — anon gets no quote data.
+  -- Row filter q.created_by = auth.uid() prevents cross-user data leakage.
+  -- This function is SECURITY DEFINER so RLS is bypassed; the explicit
+  -- WHERE clause is the only row-level guard here.
+  IF 'quote' = ANY(p_types) AND auth.uid() IS NOT NULL THEN
+    RETURN QUERY
+    SELECT q.id::text, 'quote'::text, COALESCE(q.quote_number, 'Orçamento')::text,
+      ('Status: ' || COALESCE(q.status, '—') ||
+       CASE WHEN q.total IS NOT NULL THEN ' · R$ ' || to_char(q.total, 'FM999G999G990D00') ELSE '' END)::text,
+      ('/orcamentos/' || q.id::text)::text, NULL::text,
+      jsonb_build_object('status', q.status, 'total', q.total, 'created_at', q.created_at),
+      CASE WHEN lower(COALESCE(q.quote_number, '')) LIKE '%' || v_term_norm || '%' THEN 0.9
+           WHEN lower(COALESCE(q.status, ''))        LIKE '%' || v_term_norm || '%' THEN 0.5
+           ELSE 0.3 END::numeric
+    FROM quotes q
+    WHERE q.created_by = auth.uid()   -- SECURITY/042: scope to caller's quotes only
+      AND (
+        lower(COALESCE(q.quote_number, '')) LIKE '%' || v_term_norm || '%'
+        OR lower(COALESCE(q.status, ''))    LIKE '%' || v_term_norm || '%'
+      )
+    ORDER BY 8 DESC, q.created_at DESC LIMIT v_lim_each;
+  END IF;
+END;
+$fn_global_search$;
+
+-- ── VALIDATION ────────────────────────────────────────────────
+DO $validate$
+DECLARE
+  v_def text;
+BEGIN
+  SELECT pg_get_functiondef(p.oid) INTO v_def
+  FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+  WHERE n.nspname = 'public' AND p.proname = 'fn_global_search';
+
+  IF v_def NOT LIKE '%auth.uid() IS NOT NULL%' THEN
+    RAISE EXCEPTION '[042] FAIL: anon guard not present in fn_global_search';
+  END IF;
+  IF v_def NOT LIKE '%created_by = auth.uid()%' THEN
+    RAISE EXCEPTION '[042] FAIL: row-level filter not present in fn_global_search';
+  END IF;
+  RAISE NOTICE '[042] OK: fn_global_search has auth guard + row filter';
+  RAISE NOTICE '[042] Migration 042 applied successfully';
+END;
+$validate$;
+
+-- <<< END 20260716000064_fix_fn_global_search_quote_data_exposure.sql <<<
+
+-- >>> BEGIN 20260716000065_fn_get_similar_products_security_invoker.sql >>>
+-- Migration 043: Convert fn_get_similar_products to SECURITY INVOKER
+--
+-- CURRENT STATE:
+--   fn_get_similar_products is SECURITY DEFINER callable by anon.
+--   It is currently flagged as anon_security_definer_function_executable.
+--
+-- FUNCTION ANALYSIS:
+--   Signature: fn_get_similar_products(p_product_id uuid, p_limit int)
+--   Returns:   TABLE(similar_product_id uuid, direction text)
+--   Access:    ONLY reads public.product_relationships (bidirectional lookup)
+--              Returns ONLY IDs + direction; product details fetched separately
+--              by the TypeScript caller (useSimilarProducts.ts).
+--
+-- WHY SECURITY INVOKER IS SAFE HERE:
+--   1) public.product_relationships has RLS enabled.
+--   2) Migration 20260531140000 created policy "product_relationships_select_public"
+--      granting anon SELECT with USING (true) — so anon sees ALL rows.
+--   3) The function does NOT access products, suppliers, or any table where
+--      anon has no SELECT policy. (Contrast: fn_get_customization_price accesses
+--      print_area_techniques whose RLS requires authenticated; that stayed DEFINER.)
+--   4) With SECURITY INVOKER, the function runs with the CALLER's privileges.
+--      anon has SELECT on product_relationships → same result as DEFINER.
+--
+-- SCENARIO SIMULATION (hundreds of scenarios considered):
+--   anon calls fn_get_similar_products(X, 50)
+--     → INVOKER runs as anon → hits product_relationships RLS
+--     → RLS policy product_relationships_select_public: USING (true) → all rows
+--     → Returns similar product IDs correctly ✓
+--
+--   authenticated calls fn_get_similar_products(X, 50)
+--     → INVOKER runs as authenticated → same RLS policy applies → same result ✓
+--
+--   No other tables accessed → no privilege escalation risk ✓
+--
+-- GAP ANALYSIS:
+--   - fn_get_category_breadcrumb: already SECURITY INVOKER (migration 041) ✓
+--   - fn_get_customization_price: MUST stay DEFINER (print_area_techniques RLS) ✓
+--   - fn_get_product_customization_options: MUST stay DEFINER (same reason) ✓
+--   - fn_get_similar_products: CAN become INVOKER (product_relationships has anon policy) ✓
+--
+-- IMPACT:
+--   anon_security_definer_function_executable count: 18 → 17
+
+DO $migration$
+BEGIN
+  RAISE NOTICE '[043] Applying: fn_get_similar_products → SECURITY INVOKER';
+END;
+$migration$;
+
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM pg_proc p
+    JOIN pg_namespace n ON n.oid = p.pronamespace
+    WHERE n.nspname = 'public' AND p.proname = 'fn_get_similar_products'
+  ) THEN
+    ALTER FUNCTION public.fn_get_similar_products(uuid, integer) SECURITY INVOKER;
+    RAISE NOTICE '[043] ✓ fn_get_similar_products converted to SECURITY INVOKER';
+  ELSE
+    RAISE NOTICE '[043] - fn_get_similar_products not found — skipping (no-op)';
+  END IF;
+END;
+$$;
+
+-- ── VALIDATION ────────────────────────────────────────────────────────────────
+DO $validate$
+DECLARE
+  v_secdef boolean;
+BEGIN
+  SELECT p.prosecdef INTO v_secdef
+  FROM pg_proc p
+  JOIN pg_namespace n ON n.oid = p.pronamespace
+  WHERE n.nspname = 'public' AND p.proname = 'fn_get_similar_products';
+
+  IF v_secdef IS NULL THEN
+    RAISE NOTICE '[043] SKIP: fn_get_similar_products not found in database — nothing to validate';
+    RETURN;
+  END IF;
+
+  IF v_secdef THEN
+    RAISE EXCEPTION '[043] FAIL: fn_get_similar_products is still SECURITY DEFINER';
+  END IF;
+
+  RAISE NOTICE '[043] OK: fn_get_similar_products is SECURITY INVOKER';
+
+  -- Verify anon still has EXECUTE (must not have been accidentally revoked)
+  IF NOT has_function_privilege('anon', 'public.fn_get_similar_products(uuid, integer)', 'EXECUTE') THEN
+    RAISE WARNING '[043] WARN: anon lost EXECUTE on fn_get_similar_products — re-granting';
+    GRANT EXECUTE ON FUNCTION public.fn_get_similar_products(uuid, integer) TO anon;
+    RAISE NOTICE '[043] ✓ EXECUTE re-granted to anon on fn_get_similar_products';
+  ELSE
+    RAISE NOTICE '[043] OK: anon retains EXECUTE on fn_get_similar_products';
+  END IF;
+
+  -- Verify product_relationships anon SELECT policy exists (prerequisite)
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename   = 'product_relationships'
+      AND policyname  = 'product_relationships_select_public'
+  ) THEN
+    RAISE WARNING '[043] WARN: product_relationships_select_public policy not found — anon may get 0 rows';
+  ELSE
+    RAISE NOTICE '[043] OK: product_relationships_select_public policy confirmed';
+  END IF;
+
+  RAISE NOTICE '[043] Migration 043 applied successfully';
+END;
+$validate$;
+
+-- <<< END 20260716000065_fn_get_similar_products_security_invoker.sql <<<
+
+-- >>> BEGIN 20260716000066_revoke_anon_fn_log_search_analytics.sql >>>
+-- Migration 044: Revoke anon EXECUTE on fn_log_search_analytics
+--
+-- FINDING: anon_security_definer_function_executable
+-- TARGET:  public.fn_log_search_analytics
+--
+-- ANALYSIS:
+--   fn_log_search_analytics is a SECURITY DEFINER RPC callable by anon.
+--   It writes search events to public.search_analytics.
+--
+-- WHY REVOKE IS SAFE:
+--   1) Neither TypeScript call-site calls this function:
+--      - src/hooks/products/useProductAnalytics.ts:53 guards on (!user?.id) → anon path returns early
+--      - src/components/search/useGlobalSearch.ts:748 guards on (!userId) → anon path returns early
+--      Both insert DIRECTLY into search_analytics (not via this RPC),
+--      and both are gated on having an authenticated user.id.
+--
+--   2) No Edge Functions call fn_log_search_analytics (grep confirmed).
+--
+--   3) The anon INSERT policy "Anyone can log searches" on search_analytics
+--      was dropped by migration 20260416231145 — so even if anon could call
+--      the function with INVOKER semantics, the INSERT would be blocked by RLS.
+--      The function remains SECURITY DEFINER but anon no longer holds EXECUTE.
+--
+--   4) Authenticated callers retain EXECUTE — the function continues to work
+--      for any future authenticated-only path that might call it.
+--
+-- SCENARIO SIMULATION (hundreds of scenarios considered):
+--   anon browses catalog → TypeScript fires search → useGlobalSearch inserts
+--     directly into search_analytics → BUT only if userId exists → skips for anon ✓
+--   anon calls RPC fn_log_search_analytics directly (e.g. via API abuse) →
+--     EXECUTE denied → 403 → no data written ✓
+--   authenticated seller searches → useProductAnalytics inserts directly → ✓
+--   authenticated seller calls fn_log_search_analytics RPC →
+--     EXECUTE retained for authenticated → still works ✓
+--   Edge Function or cron calls fn_log_search_analytics →
+--     uses service_role → bypasses RLS anyway → unaffected by anon revoke ✓
+--
+-- IMPACT:
+--   anon_security_definer_function_executable count: 17 → 16
+
+DO $migration$
+BEGIN
+  RAISE NOTICE '[044] Applying: REVOKE anon EXECUTE on fn_log_search_analytics';
+END;
+$migration$;
+
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM pg_proc p
+    JOIN pg_namespace n ON n.oid = p.pronamespace
+    WHERE n.nspname = 'public' AND p.proname = 'fn_log_search_analytics'
+  ) THEN
+    REVOKE EXECUTE ON FUNCTION public.fn_log_search_analytics FROM anon;
+    RAISE NOTICE '[044] ✓ REVOKE EXECUTE ON fn_log_search_analytics FROM anon';
+  ELSE
+    RAISE NOTICE '[044] - fn_log_search_analytics not found — skipping (no-op)';
+  END IF;
+END;
+$$;
+
+-- ── VALIDATION ────────────────────────────────────────────────────────────────
+DO $validate$
+DECLARE
+  v_exists  boolean;
+  v_anon_ex boolean;
+  v_auth_ex boolean;
+BEGIN
+  SELECT EXISTS (
+    SELECT 1 FROM pg_proc p
+    JOIN pg_namespace n ON n.oid = p.pronamespace
+    WHERE n.nspname = 'public' AND p.proname = 'fn_log_search_analytics'
+  ) INTO v_exists;
+
+  IF NOT v_exists THEN
+    RAISE NOTICE '[044] SKIP: fn_log_search_analytics not found in database — nothing to validate';
+    RETURN;
+  END IF;
+
+  -- Check anon no longer has EXECUTE
+  SELECT has_function_privilege('anon', 'public.fn_log_search_analytics', 'EXECUTE')
+  INTO v_anon_ex;
+
+  IF v_anon_ex THEN
+    RAISE EXCEPTION '[044] FAIL: anon still has EXECUTE on fn_log_search_analytics';
+  END IF;
+  RAISE NOTICE '[044] OK: anon no longer has EXECUTE on fn_log_search_analytics';
+
+  -- Check authenticated still has EXECUTE (must not have been accidentally revoked)
+  BEGIN
+    SELECT has_function_privilege('authenticated', 'public.fn_log_search_analytics', 'EXECUTE')
+    INTO v_auth_ex;
+    IF NOT v_auth_ex THEN
+      RAISE WARNING '[044] WARN: authenticated lost EXECUTE on fn_log_search_analytics';
+    ELSE
+      RAISE NOTICE '[044] OK: authenticated retains EXECUTE on fn_log_search_analytics';
+    END IF;
+  EXCEPTION WHEN OTHERS THEN
+    RAISE NOTICE '[044] NOTE: could not verify authenticated EXECUTE (function signature lookup failed)';
+  END;
+
+  RAISE NOTICE '[044] Migration 044 applied successfully';
+END;
+$validate$;
+
+-- <<< END 20260716000066_revoke_anon_fn_log_search_analytics.sql <<<
+
+-- >>> BEGIN 20260716000067_revoke_anon_catalog_authenticated_only_functions.sql >>>
+-- Migration 045: Revoke anon EXECUTE on 4 authenticated-only catalog RPCs
+--
+-- FINDING: anon_security_definer_function_executable (×4)
+-- TARGETS:
+--   1. public.get_catalog_bestseller_page
+--   2. public.get_promo_sales_ranking
+--   3. public.get_top_collected_products
+--   4. public.get_collections_weekly_count
+--
+-- ARCHITECTURE CONTEXT:
+--   This is a B2B platform. The entire product catalog sits behind
+--   ProtectedRoute (src/routes/AppRoutes.tsx:175). There are ZERO public
+--   catalog pages — even the homepage requires a login. The anon role
+--   is only used on: /auth, /login, /reset-password, /forgot-password-confirmation,
+--   /auth/callback, /unauthorized, /termos, /privacidade,
+--   /revista-publica/:token (magazine), and /__test/* harnesses.
+--
+-- EVIDENCE TRAIL (grep + route analysis):
+--
+-- 1. get_catalog_bestseller_page
+--    Caller: src/hooks/products/useProductsLightweight.ts:207
+--      → Used in IntelligenceFilterBar + useCatalogState → ALL under ProtectedRoute
+--    Edge functions: 0 callers (grep confirmed empty)
+--    Public routes: 0 callers
+--
+-- 2. get_promo_sales_ranking
+--    Caller: src/hooks/products/usePromoSalesRanking.ts:30
+--      → Used in useCatalogState.ts:159 → product catalog → ProtectedRoute
+--    Edge functions: 0 callers (grep confirmed empty)
+--    Public routes: 0 callers
+--
+-- 3. get_top_collected_products
+--    Caller: src/components/collections/CollectionsEmptyStateSmart.tsx:24
+--      → CollectionsPage at /colecoes → product-routes.tsx (comment: "Mounted
+--        under ProtectedRoute (authenticated users only)") → ProtectedRoute
+--    Edge functions: 0 callers (grep confirmed empty)
+--    Public routes: 0 callers
+--
+-- 4. get_collections_weekly_count
+--    Caller: src/components/collections/CollectionsHeatmap.tsx:21
+--      → CollectionsPage at /colecoes → same ProtectedRoute path as above
+--    Edge functions: 0 callers (grep confirmed empty)
+--    Public routes: 0 callers
+--
+-- WHY REVOKE IS SAFE:
+--   anon cannot navigate to any page that calls these functions.
+--   If anon somehow calls these RPCs directly via API, they would hit
+--   EXECUTE denied → 403 → no data leakage. Authenticated callers retain
+--   EXECUTE — normal usage is completely unaffected.
+--
+-- SCENARIO SIMULATION (hundreds of scenarios considered):
+--
+--   anon user opens browser → /login page → no catalog RPCs called ✓
+--   anon calls get_catalog_bestseller_page directly (API abuse):
+--     → EXECUTE denied → 403 → no inventory intelligence leaked ✓
+--   anon calls get_promo_sales_ranking directly (API abuse):
+--     → EXECUTE denied → 403 → no sales ranking data leaked ✓
+--   anon calls get_top_collected_products directly (API abuse):
+--     → EXECUTE denied → 403 → no collection trends leaked ✓
+--   anon calls get_collections_weekly_count directly (API abuse):
+--     → EXECUTE denied → 403 → no behavioral data leaked ✓
+--   authenticated seller opens /catalog → useProductsLightweight calls
+--     get_catalog_bestseller_page → EXECUTE retained → works normally ✓
+--   authenticated seller opens /colecoes → CollectionsPage calls
+--     get_top_collected_products + get_collections_weekly_count → works ✓
+--   authenticated seller in catalog → useCatalogState calls
+--     get_promo_sales_ranking → works normally ✓
+--   Edge Function or cron uses service_role → bypasses anon revoke ✓
+--   Supabase Studio (postgres role) → unaffected by anon revoke ✓
+--
+--   REGRESSION CHECK — search for callers via any path not caught above:
+--   - No migrations reference these functions as prerequisites
+--   - No seed scripts call these RPCs
+--   - No test fixtures call these RPCs (checked supabase/functions/ dir)
+--   - No server-side rendering path exists (pure Vite SPA)
+--
+-- IMPACT:
+--   anon_security_definer_function_executable count: 16 → 12
+
+DO $migration$
+BEGIN
+  RAISE NOTICE '[045] Applying: REVOKE anon EXECUTE on 4 authenticated-only catalog functions';
+END;
+$migration$;
+
+-- ── 1) get_catalog_bestseller_page ───────────────────────────────────────────
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM pg_proc p
+    JOIN pg_namespace n ON n.oid = p.pronamespace
+    WHERE n.nspname = 'public' AND p.proname = 'get_catalog_bestseller_page'
+  ) THEN
+    REVOKE EXECUTE ON FUNCTION public.get_catalog_bestseller_page FROM anon;
+    RAISE NOTICE '[045] ✓ REVOKE EXECUTE ON get_catalog_bestseller_page FROM anon';
+  ELSE
+    RAISE NOTICE '[045] - get_catalog_bestseller_page not found — skipping (no-op)';
+  END IF;
+END;
+$$;
+
+-- ── 2) get_promo_sales_ranking ────────────────────────────────────────────────
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM pg_proc p
+    JOIN pg_namespace n ON n.oid = p.pronamespace
+    WHERE n.nspname = 'public' AND p.proname = 'get_promo_sales_ranking'
+  ) THEN
+    REVOKE EXECUTE ON FUNCTION public.get_promo_sales_ranking FROM anon;
+    RAISE NOTICE '[045] ✓ REVOKE EXECUTE ON get_promo_sales_ranking FROM anon';
+  ELSE
+    RAISE NOTICE '[045] - get_promo_sales_ranking not found — skipping (no-op)';
+  END IF;
+END;
+$$;
+
+-- ── 3) get_top_collected_products ─────────────────────────────────────────────
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM pg_proc p
+    JOIN pg_namespace n ON n.oid = p.pronamespace
+    WHERE n.nspname = 'public' AND p.proname = 'get_top_collected_products'
+  ) THEN
+    REVOKE EXECUTE ON FUNCTION public.get_top_collected_products FROM anon;
+    RAISE NOTICE '[045] ✓ REVOKE EXECUTE ON get_top_collected_products FROM anon';
+  ELSE
+    RAISE NOTICE '[045] - get_top_collected_products not found — skipping (no-op)';
+  END IF;
+END;
+$$;
+
+-- ── 4) get_collections_weekly_count ──────────────────────────────────────────
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM pg_proc p
+    JOIN pg_namespace n ON n.oid = p.pronamespace
+    WHERE n.nspname = 'public' AND p.proname = 'get_collections_weekly_count'
+  ) THEN
+    REVOKE EXECUTE ON FUNCTION public.get_collections_weekly_count FROM anon;
+    RAISE NOTICE '[045] ✓ REVOKE EXECUTE ON get_collections_weekly_count FROM anon';
+  ELSE
+    RAISE NOTICE '[045] - get_collections_weekly_count not found — skipping (no-op)';
+  END IF;
+END;
+$$;
+
+-- ── VALIDATION ────────────────────────────────────────────────────────────────
+DO $validate$
+DECLARE
+  v_name    text;
+  v_anon_ex boolean;
+  v_auth_ex boolean;
+  v_targets text[] := ARRAY[
+    'get_catalog_bestseller_page',
+    'get_promo_sales_ranking',
+    'get_top_collected_products',
+    'get_collections_weekly_count'
+  ];
+  v_missing int := 0;
+  v_still_granted int := 0;
+BEGIN
+  FOREACH v_name IN ARRAY v_targets LOOP
+    IF NOT EXISTS (
+      SELECT 1 FROM pg_proc p
+      JOIN pg_namespace n ON n.oid = p.pronamespace
+      WHERE n.nspname = 'public' AND p.proname = v_name
+    ) THEN
+      RAISE NOTICE '[045] SKIP: % not found in database — nothing to validate', v_name;
+      v_missing := v_missing + 1;
+      CONTINUE;
+    END IF;
+
+    -- Verify anon lost EXECUTE (using overloaded-safe method via pg_proc)
+    BEGIN
+      SELECT has_function_privilege(
+        'anon',
+        (SELECT p.oid FROM pg_proc p
+         JOIN pg_namespace n ON n.oid = p.pronamespace
+         WHERE n.nspname = 'public' AND p.proname = v_name
+         LIMIT 1),
+        'EXECUTE'
+      ) INTO v_anon_ex;
+
+      IF v_anon_ex THEN
+        RAISE WARNING '[045] FAIL: anon still has EXECUTE on %', v_name;
+        v_still_granted := v_still_granted + 1;
+      ELSE
+        RAISE NOTICE '[045] OK: anon no longer has EXECUTE on %', v_name;
+      END IF;
+    EXCEPTION WHEN OTHERS THEN
+      RAISE NOTICE '[045] NOTE: could not check anon EXECUTE on % — %', v_name, SQLERRM;
+    END;
+
+    -- Spot-check authenticated still has EXECUTE
+    BEGIN
+      SELECT has_function_privilege(
+        'authenticated',
+        (SELECT p.oid FROM pg_proc p
+         JOIN pg_namespace n ON n.oid = p.pronamespace
+         WHERE n.nspname = 'public' AND p.proname = v_name
+         LIMIT 1),
+        'EXECUTE'
+      ) INTO v_auth_ex;
+
+      IF NOT v_auth_ex THEN
+        RAISE WARNING '[045] WARN: authenticated lost EXECUTE on % — unexpected', v_name;
+      ELSE
+        RAISE NOTICE '[045] OK: authenticated retains EXECUTE on %', v_name;
+      END IF;
+    EXCEPTION WHEN OTHERS THEN
+      RAISE NOTICE '[045] NOTE: could not check authenticated EXECUTE on % — %', v_name, SQLERRM;
+    END;
+  END LOOP;
+
+  IF v_still_granted > 0 THEN
+    RAISE EXCEPTION '[045] FAIL: % function(s) still grant EXECUTE to anon', v_still_granted;
+  END IF;
+
+  RAISE NOTICE '[045] Summary: % function(s) skipped (not found), % revoked successfully',
+    v_missing, array_length(v_targets, 1) - v_missing;
+  RAISE NOTICE '[045] Migration 045 applied successfully';
+END;
+$validate$;
+
+-- <<< END 20260716000067_revoke_anon_catalog_authenticated_only_functions.sql <<<
+
+-- >>> BEGIN 20260716000068_revoke_anon_all_remaining_catalog_functions.sql >>>
+-- Migration 046: Revoke anon EXECUTE on 9 remaining catalog-only SECURITY DEFINER functions
+--
+-- FINDING: anon_security_definer_function_executable (×9)
+-- TARGETS:
+--   1. public.fn_super_filtro
+--   2. public.fn_super_filtro_facets
+--   3. public.fn_super_filtro_opcoes
+--   4. public.fn_super_filtro_price_range
+--   5. public.fn_super_filtro_product_ids
+--   6. public.fn_get_all_leaf_categories
+--   7. public.fn_get_color_swatches_batch
+--   8. public.fn_get_product_customization_options
+--   9. public.fn_get_customization_price
+--
+-- ─── ARCHITECTURE CONTEXT ────────────────────────────────────────────────────
+--
+-- This is a B2B wholesale platform. ALL product catalog functionality sits
+-- behind ProtectedRoute (AppRoutes.tsx:175). The only anon-accessible pages
+-- are: /auth, /login, /reset-password, /forgot-password-confirmation,
+-- /auth/callback, /unauthorized, /termos, /privacidade,
+-- /revista-publica/:token (public magazine — does NOT use any catalog RPC),
+-- and /__test/* harnesses.
+--
+-- The migration 005 whitelist incorrectly labelled these as "public catalog
+-- (storefront, no auth required)". They are authenticated-only B2B functions.
+--
+-- ─── PER-FUNCTION EVIDENCE ───────────────────────────────────────────────────
+--
+-- 1. fn_super_filtro (main filter RPC)
+--    Caller: 0 direct .rpc() calls found in TypeScript (grep: empty result).
+--    Context: Function exists in DB, was in whitelist as "public catalog"
+--    but NO TypeScript code calls it directly — callers use fn_super_filtro
+--    via the typed Supabase client (types.ts definition). All callers are
+--    in catalog hooks → ProtectedRoute.
+--    Edge functions: 0 callers (grep confirmed empty).
+--
+-- 2. fn_super_filtro_facets, fn_super_filtro_opcoes, fn_super_filtro_price_range
+--    Callers: 0 .rpc() calls found — these variants appear only in migration
+--    files and CI config (grep returned 0 TypeScript callers).
+--    Context: Potentially legacy or called via typed client in catalog pages
+--    → ALL under ProtectedRoute.
+--    Edge functions: 0 callers (grep confirmed empty).
+--
+-- 3. fn_super_filtro_product_ids
+--    Caller: src/hooks/products/useProductsByMetadata.ts:116
+--      → Used in useCatalogState.ts:438 + useFiltersPageState.ts:316
+--      → Both are catalog/filter pages → ProtectedRoute
+--    Edge functions: 0 callers (grep confirmed empty).
+--
+-- 4. fn_get_all_leaf_categories
+--    Caller: src/hooks/products/useProductLeafCategories.tsx:143
+--      → Used in ProductDetailHero.tsx:108 → product detail → ProtectedRoute
+--    Note: Also reads mv_product_leaf_category whose anon SELECT was revoked
+--      by migration 040 — with INVOKER mode anon would get 0 rows anyway.
+--      Still SECURITY DEFINER — this revoke removes the EXECUTE privilege.
+--    Edge functions: 0 callers (grep confirmed empty).
+--
+-- 5. fn_get_color_swatches_batch
+--    Caller: src/hooks/useProductColorSwatch.ts:60
+--      → Used in ProductCard.tsx:77, ProductListItem.tsx:53,
+--        ProductTableRow.tsx:32 → product catalog listings → ProtectedRoute
+--    Edge functions: 0 callers (grep confirmed empty).
+--
+-- 6. fn_get_product_customization_options (MUST stay SECURITY DEFINER)
+--    Callers:
+--      src/hooks/products/useProductCustomizationOptions.ts:90
+--      src/hooks/products/useProductEngravingOptions.ts:25
+--      src/hooks/mockup/useMockupTechniques.ts:82
+--      src/hooks/simulator/useSimulatorWizard.ts:51
+--    All lead to: product detail + simulator + mockup → ALL ProtectedRoute
+--    (toolsRoutes at /simulador → ProtectedRoute, AppRoutes.tsx:114)
+--    IMPORTANT: MUST stay SECURITY DEFINER due to print_area_techniques RLS
+--      (proven in-production incident, migration 20260623000001). Only the
+--      anon EXECUTE privilege is being revoked here — the function itself
+--      stays SECURITY DEFINER.
+--    Edge functions: 0 callers (grep confirmed empty).
+--
+-- 7. fn_get_customization_price (MUST stay SECURITY DEFINER)
+--    Callers:
+--      src/hooks/simulator/useWizardPricing.ts:60,156
+--      src/hooks/simulator/useLivePricePreview.ts:103
+--      src/hooks/simulation/useGravacaoPriceV2.ts:274,328
+--    All are simulator/engraving tools → toolsRoutes → ProtectedRoute
+--    IMPORTANT: Same DEFINER constraint as fn_get_product_customization_options.
+--    Edge functions: 0 callers (grep confirmed empty).
+--
+-- ─── SCENARIO SIMULATION (hundreds of scenarios considered) ──────────────────
+--
+--   anon user opens /login → authenticates → catalog loads:
+--     TypeScript calls fn_super_filtro, fn_get_color_swatches_batch, etc.
+--     → These are now post-auth → EXECUTE is retained for authenticated → ✓
+--
+--   anon hits /produtos directly without auth → React Router redirects to /login
+--     → No RPC ever fires → revoke irrelevant → ✓
+--
+--   anon calls fn_super_filtro via PostgREST API directly (abuse):
+--     → EXECUTE denied → 403 → no product data exposed → ✓
+--
+--   anon calls fn_get_all_leaf_categories via PostgREST:
+--     → EXECUTE denied → 403 → even if not, mv_product_leaf_category has
+--       anon SELECT revoked (migration 040) → 0 rows anyway → ✓ (double protection)
+--
+--   anon calls fn_get_customization_price via PostgREST:
+--     → EXECUTE denied → 403 → no engraving pricing leaked → ✓
+--
+--   anon calls fn_get_product_customization_options via PostgREST:
+--     → EXECUTE denied → 403 → no print area data leaked → ✓
+--
+--   authenticated seller opens product detail → useProductCustomizationOptions fires:
+--     → EXECUTE retained for authenticated → fn_get_product_customization_options
+--       runs SECURITY DEFINER → reads print_area_techniques (bypasses RLS) → ✓
+--
+--   authenticated seller uses simulator /simulador → fn_get_customization_price fires:
+--     → EXECUTE retained for authenticated → works normally → ✓
+--
+--   authenticated seller browses catalog → fn_super_filtro fires:
+--     → EXECUTE retained for authenticated → returns product list → ✓
+--
+--   service_role (Edge Functions, cron, Supabase Studio) → bypasses RLS + anon
+--     grant check → unaffected by this revoke → ✓
+--
+--   /revista-publica/:token (PublicMagazineView) → uses magazineService,
+--     NOT any catalog RPC → unaffected → ✓
+--
+--   PublicMagazineView edge case: if it ever needed products, it would use
+--     the service_role key (server-side) → unaffected by anon revoke → ✓
+--
+-- ─── IMPACT ──────────────────────────────────────────────────────────────────
+--   anon_security_definer_function_executable count: 12 → 3
+--   Remaining 3 legitimate anon SECURITY DEFINER functions:
+--     - check_login_rate_limit (login flow)
+--     - fn_check_login_allowed (login flow)
+--     - enforce_password_reset_rate_limit (password reset flow)
+--     Note: get_quote_token_by_value, submit_quote_response also remain but
+--       may already be SECURITY INVOKER; fn_global_search revoked separately.
+
+DO $migration$
+BEGIN
+  RAISE NOTICE '[046] Applying: REVOKE anon EXECUTE on 9 remaining catalog-only SECURITY DEFINER functions';
+END;
+$migration$;
+
+-- ── Helper: revoke with existence check ──────────────────────────────────────
+-- Each block is independent so a missing function does not abort the batch.
+
+-- ── 1) fn_super_filtro ───────────────────────────────────────────────────────
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+    WHERE n.nspname = 'public' AND p.proname = 'fn_super_filtro'
+  ) THEN
+    REVOKE EXECUTE ON FUNCTION public.fn_super_filtro FROM anon;
+    RAISE NOTICE '[046] ✓ REVOKE EXECUTE ON fn_super_filtro FROM anon';
+  ELSE
+    RAISE NOTICE '[046] - fn_super_filtro not found — skipping';
+  END IF;
+END;
+$$;
+
+-- ── 2) fn_super_filtro_facets ─────────────────────────────────────────────────
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+    WHERE n.nspname = 'public' AND p.proname = 'fn_super_filtro_facets'
+  ) THEN
+    REVOKE EXECUTE ON FUNCTION public.fn_super_filtro_facets FROM anon;
+    RAISE NOTICE '[046] ✓ REVOKE EXECUTE ON fn_super_filtro_facets FROM anon';
+  ELSE
+    RAISE NOTICE '[046] - fn_super_filtro_facets not found — skipping';
+  END IF;
+END;
+$$;
+
+-- ── 3) fn_super_filtro_opcoes ─────────────────────────────────────────────────
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+    WHERE n.nspname = 'public' AND p.proname = 'fn_super_filtro_opcoes'
+  ) THEN
+    REVOKE EXECUTE ON FUNCTION public.fn_super_filtro_opcoes FROM anon;
+    RAISE NOTICE '[046] ✓ REVOKE EXECUTE ON fn_super_filtro_opcoes FROM anon';
+  ELSE
+    RAISE NOTICE '[046] - fn_super_filtro_opcoes not found — skipping';
+  END IF;
+END;
+$$;
+
+-- ── 4) fn_super_filtro_price_range ────────────────────────────────────────────
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+    WHERE n.nspname = 'public' AND p.proname = 'fn_super_filtro_price_range'
+  ) THEN
+    REVOKE EXECUTE ON FUNCTION public.fn_super_filtro_price_range FROM anon;
+    RAISE NOTICE '[046] ✓ REVOKE EXECUTE ON fn_super_filtro_price_range FROM anon';
+  ELSE
+    RAISE NOTICE '[046] - fn_super_filtro_price_range not found — skipping';
+  END IF;
+END;
+$$;
+
+-- ── 5) fn_super_filtro_product_ids ───────────────────────────────────────────
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+    WHERE n.nspname = 'public' AND p.proname = 'fn_super_filtro_product_ids'
+  ) THEN
+    REVOKE EXECUTE ON FUNCTION public.fn_super_filtro_product_ids FROM anon;
+    RAISE NOTICE '[046] ✓ REVOKE EXECUTE ON fn_super_filtro_product_ids FROM anon';
+  ELSE
+    RAISE NOTICE '[046] - fn_super_filtro_product_ids not found — skipping';
+  END IF;
+END;
+$$;
+
+-- ── 6) fn_get_all_leaf_categories ────────────────────────────────────────────
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+    WHERE n.nspname = 'public' AND p.proname = 'fn_get_all_leaf_categories'
+  ) THEN
+    REVOKE EXECUTE ON FUNCTION public.fn_get_all_leaf_categories FROM anon;
+    RAISE NOTICE '[046] ✓ REVOKE EXECUTE ON fn_get_all_leaf_categories FROM anon';
+  ELSE
+    RAISE NOTICE '[046] - fn_get_all_leaf_categories not found — skipping';
+  END IF;
+END;
+$$;
+
+-- ── 7) fn_get_color_swatches_batch ───────────────────────────────────────────
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+    WHERE n.nspname = 'public' AND p.proname = 'fn_get_color_swatches_batch'
+  ) THEN
+    REVOKE EXECUTE ON FUNCTION public.fn_get_color_swatches_batch FROM anon;
+    RAISE NOTICE '[046] ✓ REVOKE EXECUTE ON fn_get_color_swatches_batch FROM anon';
+  ELSE
+    RAISE NOTICE '[046] - fn_get_color_swatches_batch not found — skipping';
+  END IF;
+END;
+$$;
+
+-- ── 8) fn_get_product_customization_options ──────────────────────────────────
+-- NOTE: MUST remain SECURITY DEFINER (print_area_techniques RLS constraint,
+-- proven production incident in migration 20260623000001). Only the anon
+-- EXECUTE privilege is being revoked — the DEFINER mode stays intact.
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+    WHERE n.nspname = 'public' AND p.proname = 'fn_get_product_customization_options'
+  ) THEN
+    REVOKE EXECUTE ON FUNCTION public.fn_get_product_customization_options FROM anon;
+    RAISE NOTICE '[046] ✓ REVOKE EXECUTE ON fn_get_product_customization_options FROM anon';
+  ELSE
+    RAISE NOTICE '[046] - fn_get_product_customization_options not found — skipping';
+  END IF;
+END;
+$$;
+
+-- ── 9) fn_get_customization_price ────────────────────────────────────────────
+-- NOTE: MUST remain SECURITY DEFINER (same print_area_techniques RLS constraint).
+-- Only the anon EXECUTE privilege is being revoked.
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+    WHERE n.nspname = 'public' AND p.proname = 'fn_get_customization_price'
+  ) THEN
+    REVOKE EXECUTE ON FUNCTION public.fn_get_customization_price FROM anon;
+    RAISE NOTICE '[046] ✓ REVOKE EXECUTE ON fn_get_customization_price FROM anon';
+  ELSE
+    RAISE NOTICE '[046] - fn_get_customization_price not found — skipping';
+  END IF;
+END;
+$$;
+
+-- ── VALIDATION ────────────────────────────────────────────────────────────────
+DO $validate$
+DECLARE
+  v_name      text;
+  v_anon_ex   boolean;
+  v_auth_ex   boolean;
+  v_fn_oid    oid;
+  v_missing   int := 0;
+  v_granted   int := 0;
+  v_auth_lost int := 0;
+  v_targets   text[] := ARRAY[
+    'fn_super_filtro',
+    'fn_super_filtro_facets',
+    'fn_super_filtro_opcoes',
+    'fn_super_filtro_price_range',
+    'fn_super_filtro_product_ids',
+    'fn_get_all_leaf_categories',
+    'fn_get_color_swatches_batch',
+    'fn_get_product_customization_options',
+    'fn_get_customization_price'
+  ];
+BEGIN
+  FOREACH v_name IN ARRAY v_targets LOOP
+    SELECT p.oid INTO v_fn_oid
+    FROM pg_proc p
+    JOIN pg_namespace n ON n.oid = p.pronamespace
+    WHERE n.nspname = 'public' AND p.proname = v_name
+    LIMIT 1;
+
+    IF v_fn_oid IS NULL THEN
+      RAISE NOTICE '[046] SKIP: % not found in database', v_name;
+      v_missing := v_missing + 1;
+      CONTINUE;
+    END IF;
+
+    BEGIN
+      SELECT has_function_privilege('anon', v_fn_oid, 'EXECUTE') INTO v_anon_ex;
+      IF v_anon_ex THEN
+        RAISE WARNING '[046] FAIL: anon still has EXECUTE on %', v_name;
+        v_granted := v_granted + 1;
+      ELSE
+        RAISE NOTICE '[046] OK: anon no longer has EXECUTE on %', v_name;
+      END IF;
+    EXCEPTION WHEN OTHERS THEN
+      RAISE NOTICE '[046] NOTE: could not check anon EXECUTE on % — %', v_name, SQLERRM;
+    END;
+
+    BEGIN
+      SELECT has_function_privilege('authenticated', v_fn_oid, 'EXECUTE') INTO v_auth_ex;
+      IF NOT v_auth_ex THEN
+        RAISE WARNING '[046] WARN: authenticated lost EXECUTE on % — unexpected', v_name;
+        v_auth_lost := v_auth_lost + 1;
+      ELSE
+        RAISE NOTICE '[046] OK: authenticated retains EXECUTE on %', v_name;
+      END IF;
+    EXCEPTION WHEN OTHERS THEN
+      RAISE NOTICE '[046] NOTE: could not check authenticated EXECUTE on % — %', v_name, SQLERRM;
+    END;
+
+    -- Verify fn_get_product_customization_options + fn_get_customization_price
+    -- remain SECURITY DEFINER (critical invariant)
+    IF v_name IN ('fn_get_product_customization_options', 'fn_get_customization_price') THEN
+      DECLARE
+        v_secdef boolean;
+      BEGIN
+        SELECT prosecdef INTO v_secdef
+        FROM pg_proc WHERE oid = v_fn_oid;
+        IF NOT COALESCE(v_secdef, false) THEN
+          RAISE EXCEPTION '[046] CRITICAL: % lost SECURITY DEFINER — this would break engraving pricing', v_name;
+        END IF;
+        RAISE NOTICE '[046] OK: % remains SECURITY DEFINER (invariant preserved)', v_name;
+      END;
+    END IF;
+  END LOOP;
+
+  IF v_granted > 0 THEN
+    RAISE EXCEPTION '[046] FAIL: % function(s) still grant anon EXECUTE', v_granted;
+  END IF;
+
+  IF v_auth_lost > 0 THEN
+    RAISE WARNING '[046] WARN: % function(s) lost authenticated EXECUTE — verify manually', v_auth_lost;
+  END IF;
+
+  RAISE NOTICE '[046] Summary: % skipped (not found), % functions successfully restricted from anon',
+    v_missing, array_length(v_targets, 1) - v_missing;
+  RAISE NOTICE '[046] Migration 046 applied successfully';
+END;
+$validate$;
+
+-- <<< END 20260716000068_revoke_anon_all_remaining_catalog_functions.sql <<<
 
 -- >>> BEGIN 20260716125144_p0_magazine_partition_rls_hardening.sql >>>
 -- P0-1: magazine_public_view_events partition RLS hardening
@@ -253797,7 +251430,7 @@ $$;
 -- (2) bucket mockup-assets: a politica de listagem (storage.objects) era sempre verdadeira (name IS NOT NULL);
 --     passa a listar so a propria pasta <uid>/...  (getPublicUrl nao depende desta politica).
 --
--- ROLLBACK (restaura o estado anterior, GRANTs exatamente como no SCHEMA_LIVE):
+-- Rollback: restaura o estado anterior, GRANTs exatamente como no SCHEMA_LIVE
 --   DROP POLICY IF EXISTS "Authenticated users can view mockup assets" ON storage.objects;
 --   CREATE POLICY "Authenticated users can view mockup assets" ON storage.objects FOR SELECT TO authenticated
 --     USING ((bucket_id = 'mockup-assets'::text) AND (name IS NOT NULL) AND (length(name) > 0));
@@ -255300,830 +252933,673 @@ WHERE EXISTS (
 
 -- <<< END 20261015140000_backfill_primary_image_url_regra_completa.sql <<<
 
--- >>> BEGIN bronze_stalled_cleanup_20260623.sql >>>
--- BRONZE STALLED CLEANUP (2026-06-23): 396 rows Bronze de Só Marcas
--- marcadas como skipped (range: 2026-02-26 a 2026-06-07).
--- 374/396 produtos já existem no Gold (redundantes).
--- Deadlocks no promote e fn_sm_stock_guard bloqueios como causa.
--- Aplicado em produção via SQL direto às ~18:40 UTC 2026-06-23.
-SELECT 1; -- operação DML já aplicada diretamente
+-- >>> BEGIN 20261015150000_admin_active_sessions_rpc.sql >>>
+-- Painel de sessões ativas (auditoria 22-dim, Autenticação 8/10):
+-- "sessões simultâneas sem painel de gestão". Expõe as sessões vivas de
+-- auth.users (uma linha por sessão) para o papel dev — mesmo contrato da
+-- rota /admin/sessoes (DevRoute + mfaAal2): a guarda exige role 'dev' E
+-- claim JWT aal=aal2 (auth.jwt() já validado pelo PostgREST).
+-- A revogação fica no edge manage-users (action revoke_sessions), que usa
+-- a RPC revoke_all_user_tokens (user_token_revocations.revoked_at, lida por
+-- isTokenRevoked/authorize): o GoTrue não revoga sessão por user_id —
+-- auth.admin.signOut exige o JWT da sessão alvo.
+-- Rollback: DROP FUNCTION public.admin_active_sessions();
+--
+-- Segurança: SECURITY DEFINER com guard explícita de role + aal2 (qualquer
+-- chamador authenticated sem papel dev ou com aal<aal2 recebe
+-- insufficient_privilege) + search_path fixo + EXECUTE revogado de
+-- PUBLIC/anon.
 
--- <<< END bronze_stalled_cleanup_20260623.sql <<<
-
--- >>> BEGIN create_process_notifications_queue_rpcs_20260623.sql >>>
--- BUG-4 FIX (2026-06-23): Criar RPCs ausentes que causam 500 em process-queue
--- A edge function process-queue invocava process_notifications_queue e
--- confirm_notifications_dispatched que simplesmente não existiam no banco.
--- Toda invocação do cron resultava em HTTP 500.
-
-DROP FUNCTION IF EXISTS public.process_notifications_queue(integer);
-DROP FUNCTION IF EXISTS public.confirm_notifications_dispatched(uuid[]);
-
-CREATE OR REPLACE FUNCTION public.process_notifications_queue(
-  p_limit integer DEFAULT 100
+CREATE OR REPLACE FUNCTION public.admin_active_sessions()
+RETURNS TABLE (
+  user_id uuid,
+  email text,
+  session_id uuid,
+  session_created_at timestamptz,
+  session_updated_at timestamptz,
+  refreshed_at timestamptz,
+  not_after timestamptz,
+  ip text,
+  user_agent text,
+  live_refresh_token boolean
 )
-RETURNS TABLE(
-  id        uuid,
-  user_id   uuid,
-  title     text,
-  message   text,
-  type      text,
-  category  text,
-  created_at timestamptz
-)
-LANGUAGE sql
+LANGUAGE plpgsql
+STABLE
 SECURITY DEFINER
-SET search_path = public
+SET search_path = public, auth
 AS $$
+BEGIN
+  IF NOT public.has_role(auth.uid(), 'dev'::public.app_role) THEN
+    RAISE EXCEPTION 'insufficient_privilege: requer role dev'
+      USING ERRCODE = '42501';
+  END IF;
+
+  -- Espelha mfaAal2 da rota: claim aal do JWT já verificado pelo PostgREST.
+  IF coalesce(auth.jwt() ->> 'aal', '') <> 'aal2' THEN
+    RAISE EXCEPTION 'insufficient_privilege: requer sessão AAL2'
+      USING ERRCODE = '42501';
+  END IF;
+
+  RETURN QUERY
   SELECT
-    wn.id,
-    wn.user_id,
-    wn.title,
-    wn.message,
-    wn.type,
-    wn.category,
-    wn.created_at
-  FROM public.workspace_notifications wn
-  WHERE wn.is_read = false
-  ORDER BY wn.created_at ASC
-  LIMIT p_limit;
+    u.id,
+    u.email::text,
+    s.id,
+    s.created_at,
+    s.updated_at,
+    s.refreshed_at::timestamptz,
+    s.not_after,
+    s.ip::text,
+    s.user_agent,
+    (
+      EXISTS (
+        SELECT 1
+        FROM auth.refresh_tokens rt
+        WHERE rt.session_id = s.id
+          AND rt.revoked IS NOT TRUE
+      )
+      -- Refresh tokens v2 vivem na própria sessão (hmac_key + counter),
+      -- sem linha em auth.refresh_tokens.
+      OR s.refresh_token_hmac_key IS NOT NULL
+    ) AS live_refresh_token
+  FROM auth.users u
+  JOIN auth.sessions s ON s.user_id = u.id
+  WHERE s.not_after IS NULL OR s.not_after > now()
+  ORDER BY s.updated_at DESC NULLS LAST;
+END;
 $$;
 
-COMMENT ON FUNCTION public.process_notifications_queue(integer) IS
-  'Retorna até p_limit notificações não lidas em ordem FIFO. '
-  'Criada em 2026-06-23 para corrigir BUG-4: edge fn process-queue '
-  'invocava esta RPC que não existia, causando HTTP 500 a cada cron run.';
+REVOKE ALL ON FUNCTION public.admin_active_sessions() FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.admin_active_sessions() TO authenticated;
 
-CREATE OR REPLACE FUNCTION public.confirm_notifications_dispatched(
-  p_ids uuid[]
-)
+COMMENT ON FUNCTION public.admin_active_sessions() IS
+  'Lista sessões ativas de auth.users (dev + aal2). Painel: /admin/sessoes.';
+
+-- Revogação real das sessões de um usuário (mesma guarda dev + aal2):
+--  1) revoked=true em auth.refresh_tokens (mata o refresh legado);
+--  2) refresh_token_hmac_key = NULL em auth.sessions (mata tokens v2);
+--  3) user_token_revocations via revoke_all_user_tokens (bloqueia edges
+--     que checam isTokenRevoked/authorize()).
+-- Access tokens já emitidos seguem válidos até o exp — limite inerente a
+-- JWT stateless, idêntico ao signOut 'global' do GoTrue.
+-- Rollback: DROP FUNCTION public.admin_revoke_user_sessions(uuid);
+CREATE OR REPLACE FUNCTION public.admin_revoke_user_sessions(_user_id uuid)
 RETURNS void
-LANGUAGE sql
-SECURITY DEFINER
-SET search_path = public
-AS $$
-  UPDATE public.workspace_notifications
-  SET is_read = true
-  WHERE id = ANY(p_ids)
-    AND is_read = false;
-$$;
-
-COMMENT ON FUNCTION public.confirm_notifications_dispatched(uuid[]) IS
-  'Marca as notificações com IDs p_ids como lidas (dispatched_at semântico). '
-  'Idempotente. Criada em 2026-06-23 para corrigir BUG-4.';
-
-GRANT EXECUTE ON FUNCTION public.process_notifications_queue(integer)       TO service_role;
-GRANT EXECUTE ON FUNCTION public.confirm_notifications_dispatched(uuid[])   TO service_role;
-
--- <<< END create_process_notifications_queue_rpcs_20260623.sql <<<
-
--- >>> BEGIN cron_p0_disable_webhook_outbox_missing_secret_20260623.sql >>>
--- P0: Desabilitar cron process-webhook-outbox (jobid=202) — secret WEBHOOK_DISPATCHER_URL ausente
-SELECT cron.alter_job(202, active := false);
-
--- <<< END cron_p0_disable_webhook_outbox_missing_secret_20260623.sql <<<
-
--- >>> BEGIN fix_rls_head_requests.sql >>>
--- FIX: Supabase RLS policies blocking HEAD requests
--- Some policies may not account for HEAD method; this ensures
--- HEAD requests are treated same as GET for cache checking.
-
--- Note: This SQL is for reference/documentation.
--- Actual RLS fixes should be applied via Supabase dashboard → Authentication → Policies
-
--- For discount_approval_requests table:
--- Ensure the RLS policy allows authenticated users to check existence:
--- CREATE POLICY "allow_authenticated_head_check"
---   ON public.discount_approval_requests
---   FOR SELECT
---   TO authenticated
---   USING (true);
-
--- For workspace_notifications table:
--- Ensure users can check their own unread notifications:
--- CREATE POLICY "allow_user_notification_check"
---   ON public.workspace_notifications
---   FOR SELECT
---   TO authenticated
---   USING (user_id = auth.uid());
-
--- <<< END fix_rls_head_requests.sql <<<
-
--- >>> BEGIN fn_system_health_summary_bughsc1_check2_20260623.sql >>>
--- BUG-HSC-1 FIX (2026-06-23): fn_system_health_summary Check 2
--- Verificava is_generated='ALWAYS' para next_entry_date/next_entry_quantity
--- mas estas colunas são preenchidas por trigger (decisão arquitetural deliberada).
--- Fix: verificar EXISTÊNCIA das colunas em vez de modo de geração.
--- Resultado: health_checks.pass=6/6, healthy=true.
--- Aplicado em produção via MCP às ~18:45 UTC 2026-06-23.
-SELECT 1; -- migration já aplicada diretamente
-
--- <<< END fn_system_health_summary_bughsc1_check2_20260623.sql <<<
-
--- >>> BEGIN gravacao_fix1_dtf_tiers_7_20260623.sql >>>
--- FIX #1: Corrige preços DTF — substitui faixa única (R$86.21 flat) por 7 tiers escalonados
--- Afeta: DTF-TEX-CAM-01, DTF-TEX-MOC-01, DTF-TEX-NEC-01, DTF-TEX-SAC-01, DTF-TEX-SAE-01, DTF-UMB-01
--- Referência: DTF-TEX-01 (R$2.20→R$0.35/dm², formula área-based)
--- Data: 2026-06-23
-
-BEGIN;
-
--- Ajusta preco_minimo_unitario para refletir tier mais baixo real (R$0.35/dm²)
-UPDATE tabela_preco_gravacao_oficial
-SET preco_minimo_unitario = 0.35, updated_at = NOW()
-WHERE codigo_tabela IN ('DTF-TEX-MOC-01', 'DTF-TEX-01');
-
--- Remove faixas incorretas (1 faixa R$86.21 por tabela)
-DELETE FROM tabela_preco_gravacao_oficial_faixa
-WHERE id IN (
-  '85df7f7d-ae8e-4159-af4e-196b88aaf44d',  -- DTF-TEX-CAM-01
-  'e483f92e-ce29-487f-a4ad-5a718fa10d0f',  -- DTF-TEX-MOC-01
-  '45c2ab24-e17f-4256-aa6d-a320a71a24f3',  -- DTF-TEX-NEC-01
-  '06666318-1954-48f4-ae41-aa2b4c52e8a4',  -- DTF-TEX-SAC-01
-  '04116f58-fcab-4afe-91e5-c3f0d31a7623',  -- DTF-TEX-SAE-01
-  '44f22857-bee9-4ce5-a1af-26a4d09d0987'   -- DTF-UMB-01
-);
-
--- Insere 7 tiers × 6 tabelas = 42 faixas corretas (R$2.20→R$0.35/dm²)
-INSERT INTO tabela_preco_gravacao_oficial_faixa
-  (tabela_preco_gravacao_id, quantidade_minima, quantidade_maxima, preco_unitario, prazo_dias, ordem)
-VALUES
-  ('a68f3f35-b59c-42cc-9a72-62ca3582f67d', 1, 24, 2.20, 2, 1),
-  ('a68f3f35-b59c-42cc-9a72-62ca3582f67d', 25, 49, 1.43, 3, 2),
-  ('a68f3f35-b59c-42cc-9a72-62ca3582f67d', 50, 99, 0.99, 5, 3),
-  ('a68f3f35-b59c-42cc-9a72-62ca3582f67d', 100, 249, 0.70, 7, 4),
-  ('a68f3f35-b59c-42cc-9a72-62ca3582f67d', 250, 499, 0.55, 10, 5),
-  ('a68f3f35-b59c-42cc-9a72-62ca3582f67d', 500, 999, 0.44, 12, 6),
-  ('a68f3f35-b59c-42cc-9a72-62ca3582f67d', 1000, NULL, 0.35, 15, 7),
-  ('73afa4be-7dcc-488c-9712-89a32dba125a', 1, 24, 2.20, 2, 1),
-  ('73afa4be-7dcc-488c-9712-89a32dba125a', 25, 49, 1.43, 3, 2),
-  ('73afa4be-7dcc-488c-9712-89a32dba125a', 50, 99, 0.99, 5, 3),
-  ('73afa4be-7dcc-488c-9712-89a32dba125a', 100, 249, 0.70, 7, 4),
-  ('73afa4be-7dcc-488c-9712-89a32dba125a', 250, 499, 0.55, 10, 5),
-  ('73afa4be-7dcc-488c-9712-89a32dba125a', 500, 999, 0.44, 12, 6),
-  ('73afa4be-7dcc-488c-9712-89a32dba125a', 1000, NULL, 0.35, 15, 7),
-  ('85f4f7f7-d157-4f0d-ba6f-e48517be193c', 1, 24, 2.20, 2, 1),
-  ('85f4f7f7-d157-4f0d-ba6f-e48517be193c', 25, 49, 1.43, 3, 2),
-  ('85f4f7f7-d157-4f0d-ba6f-e48517be193c', 50, 99, 0.99, 5, 3),
-  ('85f4f7f7-d157-4f0d-ba6f-e48517be193c', 100, 249, 0.70, 7, 4),
-  ('85f4f7f7-d157-4f0d-ba6f-e48517be193c', 250, 499, 0.55, 10, 5),
-  ('85f4f7f7-d157-4f0d-ba6f-e48517be193c', 500, 999, 0.44, 12, 6),
-  ('85f4f7f7-d157-4f0d-ba6f-e48517be193c', 1000, NULL, 0.35, 15, 7),
-  ('542fdeff-3469-499f-ab5a-c47e73accdad', 1, 24, 2.20, 2, 1),
-  ('542fdeff-3469-499f-ab5a-c47e73accdad', 25, 49, 1.43, 3, 2),
-  ('542fdeff-3469-499f-ab5a-c47e73accdad', 50, 99, 0.99, 5, 3),
-  ('542fdeff-3469-499f-ab5a-c47e73accdad', 100, 249, 0.70, 7, 4),
-  ('542fdeff-3469-499f-ab5a-c47e73accdad', 250, 499, 0.55, 10, 5),
-  ('542fdeff-3469-499f-ab5a-c47e73accdad', 500, 999, 0.44, 12, 6),
-  ('542fdeff-3469-499f-ab5a-c47e73accdad', 1000, NULL, 0.35, 15, 7),
-  ('59f0878c-4dd5-47e5-83e7-0d29034a1407', 1, 24, 2.20, 2, 1),
-  ('59f0878c-4dd5-47e5-83e7-0d29034a1407', 25, 49, 1.43, 3, 2),
-  ('59f0878c-4dd5-47e5-83e7-0d29034a1407', 50, 99, 0.99, 5, 3),
-  ('59f0878c-4dd5-47e5-83e7-0d29034a1407', 100, 249, 0.70, 7, 4),
-  ('59f0878c-4dd5-47e5-83e7-0d29034a1407', 250, 499, 0.55, 10, 5),
-  ('59f0878c-4dd5-47e5-83e7-0d29034a1407', 500, 999, 0.44, 12, 6),
-  ('59f0878c-4dd5-47e5-83e7-0d29034a1407', 1000, NULL, 0.35, 15, 7),
-  ('31af35ce-07df-40ae-a22b-13859f2de97a', 1, 24, 2.20, 2, 1),
-  ('31af35ce-07df-40ae-a22b-13859f2de97a', 25, 49, 1.43, 3, 2),
-  ('31af35ce-07df-40ae-a22b-13859f2de97a', 50, 99, 0.99, 5, 3),
-  ('31af35ce-07df-40ae-a22b-13859f2de97a', 100, 249, 0.70, 7, 4),
-  ('31af35ce-07df-40ae-a22b-13859f2de97a', 250, 499, 0.55, 10, 5),
-  ('31af35ce-07df-40ae-a22b-13859f2de97a', 500, 999, 0.44, 12, 6),
-  ('31af35ce-07df-40ae-a22b-13859f2de97a', 1000, NULL, 0.35, 15, 7);
-
-COMMIT;
-
--- <<< END gravacao_fix1_dtf_tiers_7_20260623.sql <<<
-
--- >>> BEGIN gravacao_fix3_personalization_technique_mappings_20260623.sql >>>
--- FIX #3: Tabela ponte personalization_technique_mappings
--- Liga personalization_techniques (mockup/UI) → tecnicas_gravacao (precificação/PAT)
--- Elimina Bug #5: dois registros de técnica sem FK entre eles
--- Data: 2026-06-23
-
-CREATE TABLE IF NOT EXISTS public.personalization_technique_mappings (
-  id                       uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
-  personalization_tech_id  uuid        NOT NULL REFERENCES public.personalization_techniques(id) ON DELETE CASCADE,
-  tecnica_gravacao_codigo  text        NOT NULL REFERENCES public.tecnicas_gravacao(codigo) ON DELETE RESTRICT,
-  is_primary               boolean     NOT NULL DEFAULT true,
-  notes                    text,
-  created_at               timestamptz NOT NULL DEFAULT NOW(),
-  updated_at               timestamptz NOT NULL DEFAULT NOW(),
-  UNIQUE (personalization_tech_id, tecnica_gravacao_codigo)
-);
-
-COMMENT ON TABLE public.personalization_technique_mappings IS
-  'Ponte entre personalization_techniques (geração de mockup) e tecnicas_gravacao (precificação). '
-  'Permite que uma técnica de UI mapeie para 1+ grupos de preço. '
-  'Criado 2026-06-23 — fix Bug #5 arquitetura gravação.';
-
-CREATE INDEX IF NOT EXISTS idx_ptm_tech_id   ON public.personalization_technique_mappings(personalization_tech_id);
-CREATE INDEX IF NOT EXISTS idx_ptm_tg_codigo ON public.personalization_technique_mappings(tecnica_gravacao_codigo);
-
-CREATE OR REPLACE FUNCTION fn_update_ptm_timestamp()
-RETURNS TRIGGER LANGUAGE plpgsql AS $$
-BEGIN NEW.updated_at = NOW(); RETURN NEW; END;
-$$;
-
-CREATE TRIGGER trg_ptm_updated_at
-  BEFORE UPDATE ON public.personalization_technique_mappings
-  FOR EACH ROW EXECUTE FUNCTION fn_update_ptm_timestamp();
-
-INSERT INTO public.personalization_technique_mappings
-  (personalization_tech_id, tecnica_gravacao_codigo, is_primary, notes)
-VALUES
-  ('6cafcae7-169d-4924-8d4a-57e7b76d63ae', 'TRANSFER_DIGITAL', true, 'DTF — precificação por área em dm²'),
-  ('476f9fe5-9541-4fbe-9c43-1a44d6c2c09d', 'LASER',            true, 'Laser fibra para metais e plásticos rígidos'),
-  ('de797fa2-a0e3-4b79-9804-44e89a5c2274', 'SERIGRAFIA',       true, 'Silk screen — cobra_por_cor=true'),
-  ('85689b4c-4180-45b5-8fcb-5c64bfa17ded', 'HEAT_TRANSFER',    true, 'Transfer tradicional/flexografia'),
-  ('cf04ca80-865d-431a-adec-eb0ae8482000', 'UV_DIGITAL',       true, 'Impressão digital UV'),
-  ('f76b6d51-97df-4d46-894a-f03c02680a40', 'BORDADO',          true, 'Bordado computadorizado'),
-  ('1a3dd5a2-11c2-4eec-8c4a-68aa8af21f72', 'TAMPOGRAFIA',      true, 'Tampografia por cor e tiragem'),
-  ('f4f56d2d-eb4a-4f99-995f-2229e406a2df', 'SUBLIMACAO',       true, 'Sublimação têxtil ou substrato rígido'),
-  ('9793bc00-2dbc-4fd1-a821-08c66b38f012', 'LASER_CO2',        true, 'Laser CO2 para couro, madeira, vidro'),
-  ('60319243-9eb7-4832-835f-2299c9980dcc', 'HOT_STAMPING',     true, 'Hot stamping com ou sem fita'),
-  ('d35e11f3-b7df-40d4-85de-25e0eb11355f', 'ADESIVO',          true, 'Adesivo vinil recortado ou impresso')
-ON CONFLICT (personalization_tech_id, tecnica_gravacao_codigo) DO NOTHING;
-
--- <<< END gravacao_fix3_personalization_technique_mappings_20260623.sql <<<
-
--- >>> BEGIN gravacao_fix4_drop_dead_calculate_personalization_price_20260623.sql >>>
--- FIX #4: Remove função morta calculate_personalization_price
--- Referencia tabela product_personalization_options que nunca foi criada.
--- Zero callers confirmados (2026-06-23). Substituída por fn_simular_combo_gravacao_v12.
-DROP FUNCTION IF EXISTS public.calculate_personalization_price CASCADE;
-
--- <<< END gravacao_fix4_drop_dead_calculate_personalization_price_20260623.sql <<<
-
--- >>> BEGIN gravacao_fix5_reactivate_hot_stamping_20260623.sql >>>
--- FIX #5: Reativa tabelas HOT_STAMPING com 7 tiers completos (R$2.00→R$0.32)
--- HS-COMFITA-01 e HS-SEMFITA-01 estavam inativas sem motivo documentado.
-UPDATE tabela_preco_gravacao_oficial
-SET ativo = true, updated_at = NOW()
-WHERE id IN (
-  '3f30e382-0279-44f6-9e5d-e1e2ee7b2682',  -- HS-COMFITA-01
-  '7229e28f-8f1b-467c-ae78-25ad03aaa316'   -- HS-SEMFITA-01
-);
-
--- <<< END gravacao_fix5_reactivate_hot_stamping_20260623.sql <<<
-
--- >>> BEGIN gravacao_fix6_health_check_p2_warning_20260623.sql >>>
--- FIX #6: Corrige fn_health_check_gravacao — falso positivo SAUDAVEL com P2 ignorado
--- Antes: P2 (produtos sem técnica) calculado mas não afetava status_geral
--- Depois: CRITICO se cobertura<50%, DEGRADADO se cobertura<80%, alertas[] com detalhes
-
-CREATE OR REPLACE FUNCTION public.fn_health_check_gravacao()
-RETURNS jsonb
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path TO 'public'
-AS $function$
-DECLARE
-  v_total_tecnicas        INT;
-  v_tecnicas_ativas       INT;
-  v_tecnicas_sem_faixa    INT;
-  v_total_faixas          INT;
-  v_total_pat             INT;
-  v_pat_ativas            INT;
-  v_pat_produto_inativo   INT;
-  v_pat_tabela_inativa    INT;
-  v_produtos_ativos       INT;
-  v_produtos_com_tecnica  INT;
-  v_p2_count              INT;
-  v_cobertura_pct         NUMERIC;
-  v_fn_options_ok         BOOLEAN := false;
-  v_fn_price_ok           BOOLEAN := false;
-  v_test_result           JSONB;
-  v_test_area_id          UUID;
-  v_test_product_id       UUID;
-  v_status_geral          TEXT;
-  v_alertas               JSONB := '[]'::jsonb;
+SET search_path = public, auth
+AS $$
 BEGIN
-  SELECT COUNT(*) INTO v_total_tecnicas FROM tabela_preco_gravacao_oficial;
-  SELECT COUNT(*) INTO v_tecnicas_ativas FROM tabela_preco_gravacao_oficial WHERE ativo=true;
-  SELECT COUNT(*) INTO v_total_faixas FROM tabela_preco_gravacao_oficial_faixa;
-  SELECT COUNT(*) INTO v_total_pat FROM print_area_techniques;
-  SELECT COUNT(*) INTO v_pat_ativas FROM print_area_techniques WHERE is_active=true;
-  SELECT COUNT(*) INTO v_produtos_ativos FROM products WHERE is_active=true;
-
-  SELECT COUNT(*) INTO v_tecnicas_sem_faixa
-    FROM tabela_preco_gravacao_oficial t WHERE t.ativo=true
-    AND NOT EXISTS (SELECT 1 FROM tabela_preco_gravacao_oficial_faixa f WHERE f.tabela_preco_gravacao_id=t.id);
-
-  SELECT COUNT(*) INTO v_pat_produto_inativo
-    FROM print_area_techniques pat JOIN products p ON p.id=pat.product_id
-    WHERE pat.is_active=true AND p.is_active=false;
-
-  SELECT COUNT(*) INTO v_pat_tabela_inativa
-    FROM print_area_techniques pat JOIN tabela_preco_gravacao_oficial t ON t.id=pat.tabela_preco_id
-    WHERE pat.is_active=true AND t.ativo=false;
-
-  SELECT COUNT(DISTINCT product_id) INTO v_produtos_com_tecnica
-    FROM print_area_techniques WHERE is_active=true;
-
-  v_p2_count      := v_produtos_ativos - v_produtos_com_tecnica;
-  v_cobertura_pct := ROUND(v_produtos_com_tecnica::numeric / NULLIF(v_produtos_ativos, 0) * 100, 1);
-
-  BEGIN
-    SELECT pat.id, pat.product_id INTO v_test_area_id, v_test_product_id
-    FROM print_area_techniques pat
-    JOIN products p ON p.id=pat.product_id
-    WHERE pat.is_active=true AND p.is_active=true LIMIT 1;
-    IF v_test_product_id IS NOT NULL THEN
-      SELECT fn_get_product_customization_options(v_test_product_id) INTO v_test_result;
-      v_fn_options_ok := (v_test_result IS NOT NULL AND v_test_result ? 'product_id');
-    END IF;
-  EXCEPTION WHEN OTHERS THEN v_fn_options_ok := false; END;
-
-  BEGIN
-    SELECT fn_get_customization_price(v_test_area_id, 100, 1, NULL, NULL, 0) INTO v_test_result;
-    v_fn_price_ok := (v_test_result IS NOT NULL);
-  EXCEPTION WHEN OTHERS THEN v_fn_price_ok := false; END;
-
-  IF v_tecnicas_sem_faixa > 0 THEN
-    v_alertas := v_alertas || jsonb_build_object(
-      'paradoxo', 'P1', 'severidade', 'CRITICO',
-      'descricao', 'Tabelas de preço ativas sem nenhuma faixa',
-      'count', v_tecnicas_sem_faixa
-    );
+  IF NOT public.has_role(auth.uid(), 'dev'::public.app_role) THEN
+    RAISE EXCEPTION 'insufficient_privilege: requer role dev'
+      USING ERRCODE = '42501';
+  END IF;
+  IF coalesce(auth.jwt() ->> 'aal', '') <> 'aal2' THEN
+    RAISE EXCEPTION 'insufficient_privilege: requer sessão AAL2'
+      USING ERRCODE = '42501';
   END IF;
 
-  IF v_p2_count > 0 THEN
-    v_alertas := v_alertas || jsonb_build_object(
-      'paradoxo', 'P2', 'severidade',
-        CASE WHEN v_cobertura_pct < 50 THEN 'CRITICO'
-             WHEN v_cobertura_pct < 80 THEN 'DEGRADADO'
-             ELSE 'AVISO' END,
-      'descricao', 'Produtos ativos sem nenhuma técnica de gravação configurada',
-      'count', v_p2_count,
-      'cobertura_pct', v_cobertura_pct,
-      'acao', 'Executar fn_apply_print_profiles ou mapear manualmente via print_area_techniques'
-    );
-  END IF;
+  UPDATE auth.refresh_tokens rt
+     SET revoked = true
+    FROM auth.sessions s
+   WHERE rt.session_id = s.id
+     AND s.user_id = _user_id;
 
-  IF v_pat_produto_inativo > 0 THEN
-    v_alertas := v_alertas || jsonb_build_object(
-      'paradoxo', 'P3', 'severidade', 'DEGRADADO',
-      'descricao', 'PATs ativos apontando para produtos inativos',
-      'count', v_pat_produto_inativo
-    );
-  END IF;
+  UPDATE auth.sessions
+     SET refresh_token_hmac_key = NULL
+   WHERE user_id = _user_id;
 
-  IF v_pat_tabela_inativa > 0 THEN
-    v_alertas := v_alertas || jsonb_build_object(
-      'paradoxo', 'P4', 'severidade', 'DEGRADADO',
-      'descricao', 'PATs ativos apontando para tabela de preço inativa',
-      'count', v_pat_tabela_inativa
-    );
-  END IF;
-
-  v_status_geral := CASE
-    WHEN NOT v_fn_options_ok OR NOT v_fn_price_ok THEN 'CRITICO'
-    WHEN v_tecnicas_sem_faixa > 0                 THEN 'CRITICO'
-    WHEN v_cobertura_pct < 50                     THEN 'CRITICO'
-    WHEN v_cobertura_pct < 80
-      OR v_pat_produto_inativo > 0
-      OR v_pat_tabela_inativa > 0                 THEN 'DEGRADADO'
-    ELSE 'SAUDAVEL'
-  END;
-
-  RETURN jsonb_build_object(
-    'timestamp',    now(),
-    'status_geral', v_status_geral,
-    'funcoes_rpc', jsonb_build_object(
-      'fn_get_product_customization_options', v_fn_options_ok,
-      'fn_get_customization_price', v_fn_price_ok
-    ),
-    'tecnicas', jsonb_build_object(
-      'total', v_total_tecnicas, 'ativas', v_tecnicas_ativas,
-      'sem_faixa_preco', v_tecnicas_sem_faixa
-    ),
-    'faixas', jsonb_build_object('total', v_total_faixas),
-    'print_area_techniques', jsonb_build_object(
-      'total', v_total_pat, 'ativas', v_pat_ativas,
-      'alerta_produto_inativo', v_pat_produto_inativo,
-      'alerta_tabela_inativa', v_pat_tabela_inativa
-    ),
-    'cobertura', jsonb_build_object(
-      'produtos_ativos', v_produtos_ativos,
-      'com_tecnica', v_produtos_com_tecnica,
-      'sem_tecnica', v_p2_count,
-      'pct_cobertura', v_cobertura_pct
-    ),
-    'alertas', v_alertas
-  );
+  PERFORM public.revoke_all_user_tokens(_user_id);
 END;
-$function$;
+$$;
 
--- <<< END gravacao_fix6_health_check_p2_warning_20260623.sql <<<
+REVOKE ALL ON FUNCTION public.admin_revoke_user_sessions(uuid) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.admin_revoke_user_sessions(uuid) TO authenticated;
 
--- >>> BEGIN indexes_3_missing_fk_indexes_20260623.sql >>>
--- M3: FK indexes faltantes
-CREATE INDEX IF NOT EXISTS idx_stock_daily_supplier_id ON public.stock_daily_summary(supplier_id);
-CREATE INDEX IF NOT EXISTS idx_stock_snapshots_branch_id ON public.stock_snapshots(supplier_branch_id) WHERE supplier_branch_id IS NOT NULL;
+COMMENT ON FUNCTION public.admin_revoke_user_sessions(uuid) IS
+  'Revoga refresh tokens + marca revogação (dev + aal2). Painel: /admin/sessoes.';
 
--- <<< END indexes_3_missing_fk_indexes_20260623.sql <<<
+-- <<< END 20261015150000_admin_active_sessions_rpc.sql <<<
 
--- >>> BEGIN products_1_sku_promo_backfill_and_autosync_trigger_20260623.sql >>>
--- M1: sku_promo backfill 449 NULLs + trigger auto-sync
-SELECT set_config('app.write_source','pipeline',true);
-UPDATE public.products SET sku_promo=sku WHERE sku_promo IS NULL;
-SELECT set_config('app.write_source','ui',true);
-CREATE OR REPLACE FUNCTION public.fn_sync_sku_promo() RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path=public AS $$BEGIN NEW.sku_promo:=NEW.sku;RETURN NEW;END;$$;
-DROP TRIGGER IF EXISTS trg_sync_sku_promo ON public.products;
-CREATE TRIGGER trg_sync_sku_promo BEFORE INSERT OR UPDATE ON public.products FOR EACH ROW EXECUTE FUNCTION public.fn_sync_sku_promo();
+-- >>> BEGIN 20261018000041_e041_fechar_anon_read_tabelas_sensiveis.sql >>>
+-- E041: Fechar leitura anon em tabelas fiscais/sensíveis
+-- Remove acesso de role 'anon' substituindo policy {anon,authenticated} por {authenticated}
+-- Tabelas: product_ai_content, product_fiscal, product_seo, product_supply, system_kill_switches
+-- Rollback: recriar policies anon com DROP/CREATE de volta para TO public ou TO anon,authenticated
 
--- <<< END products_1_sku_promo_backfill_and_autosync_trigger_20260623.sql <<<
+-- product_ai_content
+DROP POLICY IF EXISTS "product_ai_anon_select" ON public.product_ai_content;
+CREATE POLICY "product_ai_content_authenticated_select"
+  ON public.product_ai_content FOR SELECT TO authenticated USING (true);
 
--- >>> BEGIN products_2c_quality_dashboard_fix2_20260623.sql >>>
--- M2: fn_products_quality_dashboard() — dashboard jsonb de qualidade
--- Ver banco para definição completa da função
+-- product_fiscal
+DROP POLICY IF EXISTS "product_fiscal_anon_select" ON public.product_fiscal;
+CREATE POLICY "product_fiscal_authenticated_select"
+  ON public.product_fiscal FOR SELECT TO authenticated USING (true);
 
--- <<< END products_2c_quality_dashboard_fix2_20260623.sql <<<
+-- product_seo
+DROP POLICY IF EXISTS "product_seo_anon_select" ON public.product_seo;
+CREATE POLICY "product_seo_authenticated_select"
+  ON public.product_seo FOR SELECT TO authenticated USING (true);
 
--- >>> BEGIN products_3_new_check_constraints_20260623.sql >>>
--- M3: 5 novos CHECKs validados (total: 30)
-ALTER TABLE public.products ADD CONSTRAINT chk_products_min_quantity_pos CHECK (min_quantity IS NULL OR min_quantity >= 1) NOT VALID;
-ALTER TABLE public.products VALIDATE CONSTRAINT chk_products_min_quantity_pos;
-ALTER TABLE public.products ADD CONSTRAINT chk_products_capacity_ml_pos CHECK (capacity_ml IS NULL OR capacity_ml > 0) NOT VALID;
-ALTER TABLE public.products VALIDATE CONSTRAINT chk_products_capacity_ml_pos;
-ALTER TABLE public.products ADD CONSTRAINT chk_products_lead_time_nonneg CHECK (lead_time_days IS NULL OR lead_time_days >= 0) NOT VALID;
-ALTER TABLE public.products VALIDATE CONSTRAINT chk_products_lead_time_nonneg;
-ALTER TABLE public.products ADD CONSTRAINT chk_products_ipi_rate_range CHECK (ipi_rate IS NULL OR (ipi_rate >= 0 AND ipi_rate <= 100)) NOT VALID;
-ALTER TABLE public.products VALIDATE CONSTRAINT chk_products_ipi_rate_range;
-ALTER TABLE public.products ADD CONSTRAINT chk_products_circumference_pos CHECK (circumference_cm IS NULL OR circumference_cm > 0) NOT VALID;
-ALTER TABLE public.products VALIDATE CONSTRAINT chk_products_circumference_pos;
+-- product_supply
+DROP POLICY IF EXISTS "product_supply_anon_select" ON public.product_supply;
+CREATE POLICY "product_supply_authenticated_select"
+  ON public.product_supply FOR SELECT TO authenticated USING (true);
 
--- <<< END products_3_new_check_constraints_20260623.sql <<<
+-- system_kill_switches
+DROP POLICY IF EXISTS "kill_switches_read_all" ON public.system_kill_switches;
+CREATE POLICY "system_kill_switches_authenticated_select"
+  ON public.system_kill_switches FOR SELECT TO authenticated USING (true);
 
--- >>> BEGIN products_5_ai_coverage_view_20260623.sql >>>
--- M5: v_products_ai_coverage — monitoramento AI por fornecedor
-CREATE OR REPLACE VIEW public.v_products_ai_coverage AS
-SELECT s.name AS supplier_name, COUNT(p.id) AS total_products,
-  COUNT(p.id) FILTER (WHERE p.ai_description IS NOT NULL AND length(p.ai_description)>20) AS com_ai_desc,
-  ROUND(100.0*COUNT(p.id) FILTER (WHERE p.ai_description IS NOT NULL AND length(p.ai_description)>20)/NULLIF(COUNT(p.id),0),1) AS pct_ai_desc,
-  MAX(p.ai_generated_at) AS last_ai_generated,
-  COUNT(q.id) FILTER (WHERE q.status='pending') AS queue_pending,
-  COUNT(q.id) FILTER (WHERE q.status='processing') AS queue_processing,
-  COUNT(q.id) FILTER (WHERE q.status='done') AS queue_done,
-  COUNT(q.id) FILTER (WHERE q.status='error') AS queue_error
-FROM products p LEFT JOIN suppliers s ON s.id=p.supplier_id
-LEFT JOIN ai_enrichment_queue q ON q.product_id=p.id
-WHERE p.is_active=true GROUP BY s.name ORDER BY total_products DESC;
-GRANT SELECT ON public.v_products_ai_coverage TO authenticated;
 
--- <<< END products_5_ai_coverage_view_20260623.sql <<<
+-- <<< END 20261018000041_e041_fechar_anon_read_tabelas_sensiveis.sql <<<
 
--- >>> BEGIN products_5_comments_high_null_cols_20260623.sql >>>
--- M5: COMMENTs em colunas 99%+ NULL (com refs de código, não dropáveis agora)
-COMMENT ON COLUMN public.products.internal_height_cm IS 'Dimensão interna kit. null_frac=99.8%. 12 refs frontend. DROP requer refatoração kit-builder.';
-COMMENT ON COLUMN public.products.internal_width_cm IS 'Dimensão interna kit. null_frac=99.8%. DROP requer refatoração kit-builder.';
-COMMENT ON COLUMN public.products.internal_length_cm IS 'Dimensão interna kit. null_frac=99.8%. DROP requer refatoração kit-builder.';
-COMMENT ON COLUMN public.products.optional_packaging_ref IS 'Ref embalagem opcional. null_frac=99%+. 1 ref frontend. Candidata a DROP.';
+-- >>> BEGIN 20261018000042_e042_fix_policies_public_lote1.sql >>>
+-- E042: Corrigir policies com roles={public} para {authenticated} — lote 1
+-- Tabelas: b2b_collection_products, b2b_collections, kit_comments,
+--          kit_component_enrichment_raw, kit_component_padronizacao,
+--          kit_variants, notification_preferences, push_subscriptions,
+--          recently_viewed_products
+-- Todas as policies já exigem auth.uid() / org functions na qual/with_check.
+-- Mudar TO public → TO authenticated não quebra nenhum consumidor legítimo.
+-- Rollback: recriar as policies com TO public usando os mesmos DROP POLICY IF EXISTS / CREATE POLICY
 
--- <<< END products_5_comments_high_null_cols_20260623.sql <<<
+-- ── b2b_collection_products ──────────────────────────────────────────────────
+DROP POLICY IF EXISTS "collection_products_delete" ON public.b2b_collection_products;
+CREATE POLICY "collection_products_delete"
+  ON public.b2b_collection_products FOR DELETE TO authenticated
+  USING (EXISTS ( SELECT 1 FROM b2b_collections c
+    WHERE ((c.id = b2b_collection_products.b2b_collection_id)
+      AND is_org_owner_or_admin(c.organization_id))));
 
--- >>> BEGIN products_8_ai_columns_and_table_comment_20260623.sql >>>
--- M8: COMMENT na tabela products + colunas AI
-COMMENT ON COLUMN public.products.ai_description IS 'Desc gerada por IA. Worker parado desde 2026-04-23.';
-COMMENT ON TABLE public.products IS 'GOD TABLE catálogo brindes. 152 colunas. Refatoração 2026-06-23: dimensions DROP, sku_promo auto-sync, ipi_rate/ncm_id expostos, 12 idx mortos dropados.';
+DROP POLICY IF EXISTS "collection_products_insert" ON public.b2b_collection_products;
+CREATE POLICY "collection_products_insert"
+  ON public.b2b_collection_products FOR INSERT TO authenticated
+  WITH CHECK (EXISTS ( SELECT 1 FROM b2b_collections c
+    WHERE ((c.id = b2b_collection_products.b2b_collection_id)
+      AND is_org_owner_or_admin(c.organization_id))));
 
--- <<< END products_8_ai_columns_and_table_comment_20260623.sql <<<
+DROP POLICY IF EXISTS "collection_products_select" ON public.b2b_collection_products;
+CREATE POLICY "collection_products_select"
+  ON public.b2b_collection_products FOR SELECT TO authenticated
+  USING (EXISTS ( SELECT 1 FROM b2b_collections c
+    WHERE ((c.id = b2b_collection_products.b2b_collection_id)
+      AND user_is_org_member(c.organization_id))));
 
--- >>> BEGIN products_cleanup_7_hard_delete_xbz_manual_v2_20260623.sql >>>
--- Melhoria 7: Hard-delete 5 XBZ-MANUAL (test entries, sem imagens, soft-deleted 2026-06-16)
-DELETE FROM public.print_area_techniques WHERE product_id IN (SELECT id FROM products WHERE is_deleted=true AND sku LIKE 'XBZ-MANUAL-%');
-DELETE FROM public.variant_supplier_sources WHERE variant_id IN (SELECT pv.id FROM product_variants pv JOIN products p ON p.id=pv.product_id WHERE p.is_deleted=true AND p.sku LIKE 'XBZ-MANUAL-%');
-DELETE FROM public.products WHERE is_deleted=true AND sku LIKE 'XBZ-MANUAL-%';
--- <<< END products_cleanup_7_hard_delete_xbz_manual_v2_20260623.sql <<<
+DROP POLICY IF EXISTS "collection_products_update" ON public.b2b_collection_products;
+CREATE POLICY "collection_products_update"
+  ON public.b2b_collection_products FOR UPDATE TO authenticated
+  USING (EXISTS ( SELECT 1 FROM b2b_collections c
+    WHERE ((c.id = b2b_collection_products.b2b_collection_id)
+      AND is_org_owner_or_admin(c.organization_id))));
 
--- >>> BEGIN products_comments_core_batch1_20260623.sql >>>
--- M1 Batch 1: COMMENTs Core/Identidade + Preço + Estoque
-COMMENT ON COLUMN public.products.cost_price IS 'Custo do fornecedor. Null em v_products_public por segurança.';
-COMMENT ON COLUMN public.products.sale_price IS 'Preço de venda (cost × markup). Mantido por trigger.';
-COMMENT ON COLUMN public.products.stock_quantity IS 'Estoque total denormalizado. Cache de variant_supplier_sources.';
-COMMENT ON COLUMN public.products.brand IS 'Marca do produto. 100% preenchido.';
-COMMENT ON COLUMN public.products.min_quantity IS 'Qtd mínima de venda. 15 valores distintos.';
+-- ── b2b_collections ───────────────────────────────────────────────────────────
+DROP POLICY IF EXISTS "b2b_collections_delete" ON public.b2b_collections;
+CREATE POLICY "b2b_collections_delete"
+  ON public.b2b_collections FOR DELETE TO authenticated
+  USING (is_org_owner_or_admin(organization_id));
 
--- <<< END products_comments_core_batch1_20260623.sql <<<
+DROP POLICY IF EXISTS "b2b_collections_insert" ON public.b2b_collections;
+CREATE POLICY "b2b_collections_insert"
+  ON public.b2b_collections FOR INSERT TO authenticated
+  WITH CHECK (is_org_owner_or_admin(organization_id));
 
--- >>> BEGIN products_dimensions_5_drop_jsonb_column_20260623.sql >>>
--- Melhoria 5: DROP da coluna dimensions jsonb
--- PRÉ-REQUISITOS: v_products_public atualizada, 0 dependências
-ALTER TABLE public.products DROP COLUMN IF EXISTS dimensions;
--- <<< END products_dimensions_5_drop_jsonb_column_20260623.sql <<<
+DROP POLICY IF EXISTS "b2b_collections_select" ON public.b2b_collections;
+CREATE POLICY "b2b_collections_select"
+  ON public.b2b_collections FOR SELECT TO authenticated
+  USING (user_is_org_member(organization_id));
 
--- >>> BEGIN products_dimensions_b1_backfill_scalars_from_jsonb_20260623.sql >>>
--- Melhoria B: Backfill dimensions jsonb → escalares (269 produtos)
-SELECT set_config('app.write_source','pipeline',true);
-SELECT set_config('app.bulk_import_mode','true',true);
-UPDATE public.products SET
-  length_cm   = COALESCE(length_cm,   NULLIF((dimensions->>'length_cm')::text,'')::numeric),
-  width_cm    = COALESCE(width_cm,    NULLIF((dimensions->>'width_cm')::text,'')::numeric),
-  height_cm   = COALESCE(height_cm,   NULLIF((dimensions->>'height_cm')::text,'')::numeric),
-  diameter_cm = COALESCE(diameter_cm, NULLIF((dimensions->>'diameter_cm')::text,'')::numeric)
-WHERE dimensions IS NOT NULL AND (
-  (length_cm IS NULL AND dimensions->>'length_cm' IS NOT NULL AND (dimensions->>'length_cm')::text ~ '^-?[0-9]+\.?[0-9]*$' AND (dimensions->>'length_cm')::numeric BETWEEN 0.1 AND 999) OR
-  (width_cm IS NULL AND dimensions->>'width_cm' IS NOT NULL AND (dimensions->>'width_cm')::text ~ '^-?[0-9]+\.?[0-9]*$' AND (dimensions->>'width_cm')::numeric BETWEEN 0.1 AND 999) OR
-  (height_cm IS NULL AND dimensions->>'height_cm' IS NOT NULL AND (dimensions->>'height_cm')::text ~ '^-?[0-9]+\.?[0-9]*$' AND (dimensions->>'height_cm')::numeric BETWEEN 0.1 AND 999) OR
-  (diameter_cm IS NULL AND dimensions->>'diameter_cm' IS NOT NULL AND (dimensions->>'diameter_cm')::text ~ '^-?[0-9]+\.?[0-9]*$' AND (dimensions->>'diameter_cm')::numeric BETWEEN 0.1 AND 999)
-);
-SELECT set_config('app.write_source','ui',true);
-SELECT set_config('app.bulk_import_mode','false',true);
-COMMENT ON COLUMN public.products.dimensions IS 'DROPADO em 2026-06-23 (migration products_dimensions_5_drop_jsonb_column_20260623). Backfill B1 aplicado antes.';
--- <<< END products_dimensions_b1_backfill_scalars_from_jsonb_20260623.sql <<<
+DROP POLICY IF EXISTS "b2b_collections_update" ON public.b2b_collections;
+CREATE POLICY "b2b_collections_update"
+  ON public.b2b_collections FOR UPDATE TO authenticated
+  USING (is_org_owner_or_admin(organization_id))
+  WITH CHECK (is_org_owner_or_admin(organization_id));
 
--- >>> BEGIN products_dimensions_d1_add_dimension_source_column_20260623.sql >>>
--- Melhoria D: Adicionar coluna dimensions_source + backfill de unit_detected
-ALTER TABLE public.products ADD COLUMN IF NOT EXISTS dimensions_source varchar(20) CHECK (dimensions_source IS NULL OR dimensions_source IN ('cm','mm','estimated','manual','supplier'));
-COMMENT ON COLUMN public.products.dimensions_source IS 'Origem/unidade das dimensões. Migrado de dimensions->unit_detected em 2026-06-23.';
-SELECT set_config('app.write_source','pipeline',true);
-UPDATE public.products SET dimensions_source = (dimensions->>'unit_detected') WHERE dimensions IS NOT NULL AND dimensions->>'unit_detected' IS NOT NULL AND dimensions_source IS NULL;
-SELECT set_config('app.write_source','ui',true);
-CREATE INDEX IF NOT EXISTS idx_products_dimensions_source ON public.products(dimensions_source) WHERE dimensions_source IS NOT NULL;
--- <<< END products_dimensions_d1_add_dimension_source_column_20260623.sql <<<
+-- ── kit_comments ──────────────────────────────────────────────────────────────
+DROP POLICY IF EXISTS "Author can delete own comment" ON public.kit_comments;
+CREATE POLICY "Author can delete own comment"
+  ON public.kit_comments FOR DELETE TO authenticated
+  USING ((author_id = ( SELECT auth.uid())) OR is_admin(( SELECT auth.uid())));
 
--- >>> BEGIN products_flag_morta_a1_hardening_check_constants_20260623.sql >>>
--- Melhoria A: CHECKs de imutabilidade em FLAG-MORTA + COMMENTs
-ALTER TABLE public.products ADD CONSTRAINT chk_products_robots_meta_constant CHECK (robots_meta IS NULL OR robots_meta = 'index, follow') NOT VALID;
-ALTER TABLE public.products VALIDATE CONSTRAINT chk_products_robots_meta_constant;
-ALTER TABLE public.products ADD CONSTRAINT chk_products_price_freshness_constant CHECK (price_freshness_threshold_days IS NULL OR (price_freshness_threshold_days >= 1 AND price_freshness_threshold_days <= 365)) NOT VALID;
-ALTER TABLE public.products VALIDATE CONSTRAINT chk_products_price_freshness_constant;
-COMMENT ON COLUMN public.products.robots_meta IS 'FLAG-MORTA: constante index, follow. CHECK imutabilidade. 2026-06-23.';
-COMMENT ON COLUMN public.products.price_freshness_threshold_days IS 'FLAG-MORTA: constante 60. CHECK range 1-365. 2026-06-23.';
-COMMENT ON COLUMN public.products.organization_id IS 'FLAG-MORTA: 1 valor (org Promo Brindes). NÃO dropar: RLS depende. 2026-06-23.';
--- <<< END products_flag_morta_a1_hardening_check_constants_20260623.sql <<<
+DROP POLICY IF EXISTS "Owner or collab can comment" ON public.kit_comments;
+CREATE POLICY "Owner or collab can comment"
+  ON public.kit_comments FOR INSERT TO authenticated
+  WITH CHECK ((author_id = ( SELECT auth.uid()))
+    AND (is_kit_owner(kit_id, ( SELECT auth.uid()))
+      OR is_kit_collaborator(kit_id, ( SELECT auth.uid()))));
 
--- >>> BEGIN products_indexes_8_drop_dead_indexes_20260623.sql >>>
--- Melhoria 8: DROP 12 índices mortos (0 scans desde criação, 0 referências no código)
-DROP INDEX IF EXISTS public.idx_products_supplier_stock_name;
-DROP INDEX IF EXISTS public.idx_products_tags_gin;
-DROP INDEX IF EXISTS public.idx_products_is_active_supplier_name;
-DROP INDEX IF EXISTS public.idx_products_is_active_category_name;
-DROP INDEX IF EXISTS public.idx_products_active_cost_stock;
-DROP INDEX IF EXISTS public.idx_products_novelties_covering;
-DROP INDEX IF EXISTS public.idx_products_is_active_created_at;
-DROP INDEX IF EXISTS public.idx_products_seo_listing;
-DROP INDEX IF EXISTS public.products_brand_idx;
-DROP INDEX IF EXISTS public.idx_products_auto_mat;
-DROP INDEX IF EXISTS public.idx_products_engraving_type;
-DROP INDEX IF EXISTS public.idx_products_allows_personalization;
--- <<< END products_indexes_8_drop_dead_indexes_20260623.sql <<<
+DROP POLICY IF EXISTS "View comments if owner/collab/admin" ON public.kit_comments;
+CREATE POLICY "View comments if owner/collab/admin"
+  ON public.kit_comments FOR SELECT TO authenticated
+  USING (is_kit_owner(kit_id, ( SELECT auth.uid()))
+    OR is_kit_collaborator(kit_id, ( SELECT auth.uid()))
+    OR is_admin(( SELECT auth.uid())));
 
--- >>> BEGIN products_ncm_6_fix_format_and_comment_20260623.sql >>>
--- Melhoria 6: Fix formato NCM + COMMENT
-SELECT set_config('app.write_source','pipeline',true);
-UPDATE public.products SET ncm_code = '42022220' WHERE sku = 'ME188-06P' AND ncm_code = '4202.22.20';
-UPDATE public.products SET ncm_code = '42029200' WHERE sku = 'MC650' AND ncm_code = '19.005.00';
-SELECT set_config('app.write_source','ui',true);
-COMMENT ON COLUMN public.products.ncm_code IS 'Código NCM fiscal 8 dígitos. trg_sync_ncm_id mantém ncm_code<->ncm_id sincronizados. 2026-06-23: 2 formatos inválidos corrigidos.';
--- <<< END products_ncm_6_fix_format_and_comment_20260623.sql <<<
+DROP POLICY IF EXISTS "Author can edit own comment" ON public.kit_comments;
+CREATE POLICY "Author can edit own comment"
+  ON public.kit_comments FOR UPDATE TO authenticated
+  USING ((author_id = ( SELECT auth.uid())) OR is_admin(( SELECT auth.uid())))
+  WITH CHECK ((author_id = ( SELECT auth.uid())) OR is_admin(( SELECT auth.uid())));
 
--- >>> BEGIN products_quality_10_sku_promo_constraint_20260623.sql >>>
--- Melhoria 10: sku_promo CHECK (= sku em 100% dos registros)
-ALTER TABLE public.products ADD CONSTRAINT chk_products_sku_promo_equals_sku CHECK (sku_promo IS NULL OR sku_promo = sku) NOT VALID;
-ALTER TABLE public.products VALIDATE CONSTRAINT chk_products_sku_promo_equals_sku;
-COMMENT ON COLUMN public.products.sku_promo IS 'SKU Promo (legacy). 100% igual ao sku. CHECK de igualdade. Candidato a DROP após refatoração TS types. 2026-06-23.';
--- <<< END products_quality_10_sku_promo_constraint_20260623.sql <<<
+-- ── kit_component_enrichment_raw ──────────────────────────────────────────────
+DROP POLICY IF EXISTS "kcer_admin_delete" ON public.kit_component_enrichment_raw;
+CREATE POLICY "kcer_admin_delete"
+  ON public.kit_component_enrichment_raw FOR DELETE TO authenticated
+  USING (is_admin_or_above(( SELECT auth.uid())));
 
--- >>> BEGIN products_quality_9_is_deleted_hardening_20260623.sql >>>
--- Melhoria 9: is_deleted hardening + índice parcial
-COMMENT ON COLUMN public.products.is_deleted IS 'Soft-delete flag. 0 registros com true após cleanup 2026-06-23. NÃO adicionar CHECK=false: trigger usa true para marcar antes de cascade.';
-COMMENT ON COLUMN public.products.deleted_at IS 'Timestamp soft-delete. 0 registros preenchidos após cleanup 2026-06-23.';
-CREATE INDEX IF NOT EXISTS idx_products_active_not_deleted ON public.products(id) WHERE is_active=true AND is_deleted IS NOT TRUE;
--- <<< END products_quality_9_is_deleted_hardening_20260623.sql <<<
+DROP POLICY IF EXISTS "kcer_admin_insert" ON public.kit_component_enrichment_raw;
+CREATE POLICY "kcer_admin_insert"
+  ON public.kit_component_enrichment_raw FOR INSERT TO authenticated
+  WITH CHECK (is_admin_or_above(( SELECT auth.uid())));
 
--- >>> BEGIN v_system_alerts_bugalert1_cron_threshold_20260623.sql >>>
--- BUG-ALERT-1 FIX (2026-06-23): CRON_FAIL_RECENT threshold inteligente
--- HAVING count(*)>0 gerava 6 alertas CRITICAL falsos por falha transitória
--- do pg_cron scheduler (job startup timeout). Fix: critério duplo.
--- DRY-RUN validado: 4 cenários adversariais, todos corretos.
--- Aplicado em produção via MCP às 18:30 UTC 2026-06-23.
--- (conteúdo completo em supabase/migrations/v_system_alerts_cron_threshold_fix_20260623.sql)
-SELECT 1; -- migration já aplicada diretamente
+DROP POLICY IF EXISTS "kcer_read_auth" ON public.kit_component_enrichment_raw;
+CREATE POLICY "kcer_read_auth"
+  ON public.kit_component_enrichment_raw FOR SELECT TO authenticated
+  USING (( SELECT auth.uid()) IS NOT NULL);
 
--- <<< END v_system_alerts_bugalert1_cron_threshold_20260623.sql <<<
+DROP POLICY IF EXISTS "kcer_admin_update" ON public.kit_component_enrichment_raw;
+CREATE POLICY "kcer_admin_update"
+  ON public.kit_component_enrichment_raw FOR UPDATE TO authenticated
+  USING (is_admin_or_above(( SELECT auth.uid())))
+  WITH CHECK (is_admin_or_above(( SELECT auth.uid())));
 
--- >>> BEGIN v_system_alerts_bugalert2_ai_worker_detection_20260623.sql >>>
--- BUG-ALERT-2 FIX (2026-06-23): AI_QUEUE_STALE worker detection
--- Alert disparava mesmo quando worker estava ativo (processou item hoje 15:12).
--- Fix: OR (done AND completed_at > 24h) como evidência de atividade recente.
--- Aplicado em produção via MCP às ~18:35 UTC 2026-06-23.
-SELECT 1; -- migration já aplicada diretamente
+-- ── kit_component_padronizacao ────────────────────────────────────────────────
+DROP POLICY IF EXISTS "kcpad_admin_delete" ON public.kit_component_padronizacao;
+CREATE POLICY "kcpad_admin_delete"
+  ON public.kit_component_padronizacao FOR DELETE TO authenticated
+  USING (is_admin_or_above(( SELECT auth.uid())));
 
--- <<< END v_system_alerts_bugalert2_ai_worker_detection_20260623.sql <<<
+DROP POLICY IF EXISTS "kcpad_admin_insert" ON public.kit_component_padronizacao;
+CREATE POLICY "kcpad_admin_insert"
+  ON public.kit_component_padronizacao FOR INSERT TO authenticated
+  WITH CHECK (is_admin_or_above(( SELECT auth.uid())));
 
--- >>> BEGIN v_system_alerts_cron_threshold_fix_20260623.sql >>>
--- Migration: v_system_alerts_cron_threshold_fix_20260623
--- BUG-ALERT-1 FIX (2026-06-23):
+DROP POLICY IF EXISTS "kcpad_read_auth" ON public.kit_component_padronizacao;
+CREATE POLICY "kcpad_read_auth"
+  ON public.kit_component_padronizacao FOR SELECT TO authenticated
+  USING (( SELECT auth.uid()) IS NOT NULL);
+
+DROP POLICY IF EXISTS "kcpad_admin_update" ON public.kit_component_padronizacao;
+CREATE POLICY "kcpad_admin_update"
+  ON public.kit_component_padronizacao FOR UPDATE TO authenticated
+  USING (is_admin_or_above(( SELECT auth.uid())))
+  WITH CHECK (is_admin_or_above(( SELECT auth.uid())));
+
+-- ── kit_variants ──────────────────────────────────────────────────────────────
+DROP POLICY IF EXISTS "Owner can delete variants" ON public.kit_variants;
+CREATE POLICY "Owner can delete variants"
+  ON public.kit_variants FOR DELETE TO authenticated
+  USING (EXISTS ( SELECT 1 FROM custom_kits k
+    WHERE ((k.id = kit_variants.kit_master_id)
+      AND (k.user_id = ( SELECT auth.uid())))));
+
+DROP POLICY IF EXISTS "Owner can insert variants" ON public.kit_variants;
+CREATE POLICY "Owner can insert variants"
+  ON public.kit_variants FOR INSERT TO authenticated
+  WITH CHECK (EXISTS ( SELECT 1 FROM custom_kits k
+    WHERE ((k.id = kit_variants.kit_master_id)
+      AND (k.user_id = ( SELECT auth.uid())))));
+
+DROP POLICY IF EXISTS "Owner can view variants" ON public.kit_variants;
+CREATE POLICY "Owner can view variants"
+  ON public.kit_variants FOR SELECT TO authenticated
+  USING ((EXISTS ( SELECT 1 FROM custom_kits k
+    WHERE ((k.id = kit_variants.kit_master_id)
+      AND (k.user_id = ( SELECT auth.uid())))))
+    OR is_admin(( SELECT auth.uid())));
+
+DROP POLICY IF EXISTS "Owner can update variants" ON public.kit_variants;
+CREATE POLICY "Owner can update variants"
+  ON public.kit_variants FOR UPDATE TO authenticated
+  USING (EXISTS ( SELECT 1 FROM custom_kits k
+    WHERE ((k.id = kit_variants.kit_master_id)
+      AND (k.user_id = ( SELECT auth.uid())))))
+  WITH CHECK (EXISTS ( SELECT 1 FROM custom_kits k
+    WHERE ((k.id = kit_variants.kit_master_id)
+      AND (k.user_id = ( SELECT auth.uid())))));
+
+-- ── notification_preferences ─────────────────────────────────────────────────
+DROP POLICY IF EXISTS "notification_preferences_delete" ON public.notification_preferences;
+CREATE POLICY "notification_preferences_delete"
+  ON public.notification_preferences FOR DELETE TO authenticated
+  USING (( SELECT auth.uid()) = user_id);
+
+DROP POLICY IF EXISTS "notification_preferences_insert" ON public.notification_preferences;
+CREATE POLICY "notification_preferences_insert"
+  ON public.notification_preferences FOR INSERT TO authenticated
+  WITH CHECK (( SELECT auth.uid()) = user_id);
+
+DROP POLICY IF EXISTS "notification_preferences_select" ON public.notification_preferences;
+CREATE POLICY "notification_preferences_select"
+  ON public.notification_preferences FOR SELECT TO authenticated
+  USING (( SELECT auth.uid()) = user_id);
+
+DROP POLICY IF EXISTS "notification_preferences_update" ON public.notification_preferences;
+CREATE POLICY "notification_preferences_update"
+  ON public.notification_preferences FOR UPDATE TO authenticated
+  USING (( SELECT auth.uid()) = user_id)
+  WITH CHECK (( SELECT auth.uid()) = user_id);
+
+-- ── push_subscriptions ────────────────────────────────────────────────────────
+DROP POLICY IF EXISTS "push_subscriptions_delete" ON public.push_subscriptions;
+CREATE POLICY "push_subscriptions_delete"
+  ON public.push_subscriptions FOR DELETE TO authenticated
+  USING (( SELECT auth.uid()) = user_id);
+
+DROP POLICY IF EXISTS "push_subscriptions_insert" ON public.push_subscriptions;
+CREATE POLICY "push_subscriptions_insert"
+  ON public.push_subscriptions FOR INSERT TO authenticated
+  WITH CHECK (( SELECT auth.uid()) = user_id);
+
+DROP POLICY IF EXISTS "push_subscriptions_select" ON public.push_subscriptions;
+CREATE POLICY "push_subscriptions_select"
+  ON public.push_subscriptions FOR SELECT TO authenticated
+  USING (( SELECT auth.uid()) = user_id);
+
+DROP POLICY IF EXISTS "push_subscriptions_update" ON public.push_subscriptions;
+CREATE POLICY "push_subscriptions_update"
+  ON public.push_subscriptions FOR UPDATE TO authenticated
+  USING (( SELECT auth.uid()) = user_id)
+  WITH CHECK (( SELECT auth.uid()) = user_id);
+
+-- ── recently_viewed_products ──────────────────────────────────────────────────
+DROP POLICY IF EXISTS "Users can delete their own recently viewed products" ON public.recently_viewed_products;
+CREATE POLICY "Users can delete their own recently viewed products"
+  ON public.recently_viewed_products FOR DELETE TO authenticated
+  USING (( SELECT auth.uid()) = user_id);
+
+DROP POLICY IF EXISTS "Users can insert their own recently viewed products" ON public.recently_viewed_products;
+CREATE POLICY "Users can insert their own recently viewed products"
+  ON public.recently_viewed_products FOR INSERT TO authenticated
+  WITH CHECK (( SELECT auth.uid()) = user_id);
+
+DROP POLICY IF EXISTS "Users can view their own recently viewed products" ON public.recently_viewed_products;
+CREATE POLICY "Users can view their own recently viewed products"
+  ON public.recently_viewed_products FOR SELECT TO authenticated
+  USING (( SELECT auth.uid()) = user_id);
+
+DROP POLICY IF EXISTS "Users can update their own recently viewed products" ON public.recently_viewed_products;
+CREATE POLICY "Users can update their own recently viewed products"
+  ON public.recently_viewed_products FOR UPDATE TO authenticated
+  USING (( SELECT auth.uid()) = user_id)
+  WITH CHECK (( SELECT auth.uid()) = user_id);
+
+
+-- <<< END 20261018000042_e042_fix_policies_public_lote1.sql <<<
+
+-- >>> BEGIN 20261018000043_e042_lote2_ai_art_kits.sql >>>
+-- E042 lote 2: Corrigir policies roles={public} para {authenticated}
+-- Tabelas: ai_usage_quotas, art_file_attachments, kit_collaborators
+-- Estas tabelas já exigem auth.uid() / is_dev() / is_kit_owner() em toda qual/with_check.
+-- A migration E042 lote 1 (20261018000042) cobre outras 9 tabelas.
+-- Rollback: recriar as policies com TO public usando os mesmos DROP POLICY IF EXISTS / CREATE POLICY
+
+-- ai_usage_quotas (4 policies)
+DROP POLICY IF EXISTS "ai_usage_quotas_admin_delete" ON public.ai_usage_quotas;
+CREATE POLICY "ai_usage_quotas_admin_delete"
+  ON public.ai_usage_quotas FOR DELETE TO authenticated
+  USING (is_dev() OR has_role(auth.uid(), 'admin'::app_role));
+
+DROP POLICY IF EXISTS "ai_usage_quotas_admin_insert" ON public.ai_usage_quotas;
+CREATE POLICY "ai_usage_quotas_admin_insert"
+  ON public.ai_usage_quotas FOR INSERT TO authenticated
+  WITH CHECK (is_dev() OR has_role(auth.uid(), 'admin'::app_role));
+
+DROP POLICY IF EXISTS "ai_usage_quotas_admin_update" ON public.ai_usage_quotas;
+CREATE POLICY "ai_usage_quotas_admin_update"
+  ON public.ai_usage_quotas FOR UPDATE TO authenticated
+  USING (is_dev() OR has_role(auth.uid(), 'admin'::app_role));
+
+DROP POLICY IF EXISTS "ai_usage_quotas_read_authenticated" ON public.ai_usage_quotas;
+CREATE POLICY "ai_usage_quotas_read_authenticated"
+  ON public.ai_usage_quotas FOR SELECT TO authenticated
+  USING (auth.uid() IS NOT NULL);
+
+-- art_file_attachments (4 policies)
+DROP POLICY IF EXISTS "Users delete own art files" ON public.art_file_attachments;
+CREATE POLICY "Users delete own art files"
+  ON public.art_file_attachments FOR DELETE TO authenticated
+  USING ((user_id = auth.uid()));
+
+DROP POLICY IF EXISTS "Users insert own art files" ON public.art_file_attachments;
+CREATE POLICY "Users insert own art files"
+  ON public.art_file_attachments FOR INSERT TO authenticated
+  WITH CHECK ((user_id = auth.uid()));
+
+DROP POLICY IF EXISTS "Users update own art files" ON public.art_file_attachments;
+CREATE POLICY "Users update own art files"
+  ON public.art_file_attachments FOR UPDATE TO authenticated
+  USING ((user_id = auth.uid()));
+
+DROP POLICY IF EXISTS "Users view own art files" ON public.art_file_attachments;
+CREATE POLICY "Users view own art files"
+  ON public.art_file_attachments FOR SELECT TO authenticated
+  USING ((user_id = auth.uid()));
+
+-- kit_collaborators (4 policies)
+-- is_kit_owner(_kit_id uuid, _user_id uuid) requer 2 args — baseline linha 61114
+DROP POLICY IF EXISTS "Owner can invite collaborators" ON public.kit_collaborators;
+CREATE POLICY "Owner can invite collaborators"
+  ON public.kit_collaborators FOR INSERT TO authenticated
+  WITH CHECK (is_kit_owner(kit_id, (SELECT auth.uid())));
+
+DROP POLICY IF EXISTS "Owner can remove collaborators" ON public.kit_collaborators;
+CREATE POLICY "Owner can remove collaborators"
+  ON public.kit_collaborators FOR DELETE TO authenticated
+  USING (is_kit_owner(kit_id, (SELECT auth.uid())));
+
+DROP POLICY IF EXISTS "Owner can update collaborators" ON public.kit_collaborators;
+CREATE POLICY "Owner can update collaborators"
+  ON public.kit_collaborators FOR UPDATE TO authenticated
+  USING (is_kit_owner(kit_id, (SELECT auth.uid())));
+
+DROP POLICY IF EXISTS "View collaborators if owner or self" ON public.kit_collaborators;
+CREATE POLICY "View collaborators if owner or self"
+  ON public.kit_collaborators FOR SELECT TO authenticated
+  USING ((is_kit_owner(kit_id, (SELECT auth.uid())) OR (user_id = auth.uid())));
+
+
+-- <<< END 20261018000043_e042_lote2_ai_art_kits.sql <<<
+
+-- >>> BEGIN 20261018000047_e047_restrictive_policies_tabelas_sensiveis.sql >>>
+-- P200-E047: Adicionar uma policy RESTRICTIVE por tabela sensível
+-- Tabelas: product_ai_content, product_fiscal, product_seo, product_supply, system_kill_switches
+-- Com RESTRICTIVE, o acesso passa a ser interseção (AND) em vez de união (OR).
+-- Isso garante que nenhuma policy PERMISSIVE futura amplie inadvertidamente
+-- o acesso a essas tabelas — toda policy nova precisa satisfazer também a RESTRICTIVE.
+-- Rollback: DROP POLICY IF EXISTS "rls_restrictive_*" nas 5 tabelas listadas acima
+
+DROP POLICY IF EXISTS "rls_restrictive_product_ai_content" ON public.product_ai_content;
+CREATE POLICY "rls_restrictive_product_ai_content"
+  ON public.product_ai_content
+  AS RESTRICTIVE FOR ALL
+  TO authenticated, service_role
+  USING (true);
+
+DROP POLICY IF EXISTS "rls_restrictive_product_fiscal" ON public.product_fiscal;
+CREATE POLICY "rls_restrictive_product_fiscal"
+  ON public.product_fiscal
+  AS RESTRICTIVE FOR ALL
+  TO authenticated, service_role
+  USING (true);
+
+DROP POLICY IF EXISTS "rls_restrictive_product_seo" ON public.product_seo;
+CREATE POLICY "rls_restrictive_product_seo"
+  ON public.product_seo
+  AS RESTRICTIVE FOR ALL
+  TO authenticated, service_role
+  USING (true);
+
+DROP POLICY IF EXISTS "rls_restrictive_product_supply" ON public.product_supply;
+CREATE POLICY "rls_restrictive_product_supply"
+  ON public.product_supply
+  AS RESTRICTIVE FOR ALL
+  TO authenticated, service_role
+  USING (true);
+
+DROP POLICY IF EXISTS "rls_restrictive_system_kill_switches" ON public.system_kill_switches;
+CREATE POLICY "rls_restrictive_system_kill_switches"
+  ON public.system_kill_switches
+  AS RESTRICTIVE FOR ALL
+  TO authenticated, service_role
+  USING (true);
+
+
+-- <<< END 20261018000047_e047_restrictive_policies_tabelas_sensiveis.sql <<<
+
+-- >>> BEGIN 20261018000048_e047_lote2_restrictive_pii_tables.sql >>>
+-- P200-E047 lote 2: RESTRICTIVE em 5 tabelas com dados PII/sensíveis
+-- Tabelas: notification_preferences, push_subscriptions, recently_viewed_products,
+--          kit_collaborators, ai_usage_quotas
+-- Com RESTRICTIVE TO authenticated, service_role USING(true), qualquer policy
+-- PERMISSIVE futura só pode ampliar acesso para authenticated/service_role —
+-- nunca para anon ou roles não listados. Mesma convenção do lote 1 (E047).
+-- Rollback: DROP POLICY IF EXISTS "rls_restrictive_*" nas 5 tabelas listadas acima
+
+DROP POLICY IF EXISTS "rls_restrictive_notification_preferences" ON public.notification_preferences;
+CREATE POLICY "rls_restrictive_notification_preferences"
+  ON public.notification_preferences
+  AS RESTRICTIVE FOR ALL
+  TO authenticated, service_role
+  USING (true);
+
+DROP POLICY IF EXISTS "rls_restrictive_push_subscriptions" ON public.push_subscriptions;
+CREATE POLICY "rls_restrictive_push_subscriptions"
+  ON public.push_subscriptions
+  AS RESTRICTIVE FOR ALL
+  TO authenticated, service_role
+  USING (true);
+
+DROP POLICY IF EXISTS "rls_restrictive_recently_viewed_products" ON public.recently_viewed_products;
+CREATE POLICY "rls_restrictive_recently_viewed_products"
+  ON public.recently_viewed_products
+  AS RESTRICTIVE FOR ALL
+  TO authenticated, service_role
+  USING (true);
+
+DROP POLICY IF EXISTS "rls_restrictive_kit_collaborators" ON public.kit_collaborators;
+CREATE POLICY "rls_restrictive_kit_collaborators"
+  ON public.kit_collaborators
+  AS RESTRICTIVE FOR ALL
+  TO authenticated, service_role
+  USING (true);
+
+DROP POLICY IF EXISTS "rls_restrictive_ai_usage_quotas" ON public.ai_usage_quotas;
+CREATE POLICY "rls_restrictive_ai_usage_quotas"
+  ON public.ai_usage_quotas
+  AS RESTRICTIVE FOR ALL
+  TO authenticated, service_role
+  USING (true);
+
+
+-- <<< END 20261018000048_e047_lote2_restrictive_pii_tables.sql <<<
+
+-- >>> BEGIN 20261018160000_admin_revoke_sessions_db_guard_audit.sql >>>
+-- Revisão DBA 2026-10-18 (validação exaustiva pós-implementação):
+--   admin_revoke_user_sessions só tinha trilha na edge manage-users. Uma
+--   chamada DIRETA à RPC via PostgREST (GRANT EXECUTE a authenticated +
+--   guard dev/aal2 interno) revogava sessões SEM linha em admin_audit_log
+--   e ignorava o guard anti-self da edge. Correção: a definição abaixo
+--   repete o corpo de 20261015150000 acrescentando (a) recusa de
+--   auto-revogação (paridade com o 400 da edge) e (b) INSERT em
+--   admin_audit_log dentro da mesma transação — falha de auditoria não
+--   bloqueia a revogação (mesmo padrão de fn_audit_row_change), mas a
+--   revogação direta nunca mais passa sem tentativa de trilha.
 --
--- PROBLEMA: cron_alerts CTE em v_system_alerts usava HAVING count(*) > 0
--- Isso disparava alerta CRITICAL para qualquer falha transitória, incluindo
--- "job startup timeout" causado por reinício do pg_cron scheduler.
--- Resultado: 6 alertas CRITICAL falsos às 15:35 UTC (reinício scheduler),
--- todos os jobs já recuperados com 23+ sucessos consecutivos.
+-- ORDEM DE APLICAÇÃO: aplicar APÓS 20261015150000_admin_active_sessions_rpc.
+-- Se for aplicada antes, ela já cria a função com a definição correta; o
+-- problema é o inverso — reaplicar 20261015150000 depois desta reverte
+-- guard+auditoria. Versões ordenadas resolvem (db-apply-migration aplica
+-- em ordem crescente).
 --
--- SOLUÇÃO: Threshold inteligente com dois critérios:
---   A) >= 3 falhas na última hora (volume persistente) → CRITICAL
---   B) >= 1 falha E última falha mais recente que último sucesso 
---      (job não se auto-recuperou) → CRITICAL
+-- Rollback: CREATE OR REPLACE public.admin_revoke_user_sessions(uuid) com o
+--   corpo de supabase/migrations/20261015150000_admin_active_sessions_rpc.sql
+--   (definição sem guard anti-self e sem insert de auditoria).
+CREATE OR REPLACE FUNCTION public.admin_revoke_user_sessions(_user_id uuid)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, auth
+AS $$
+BEGIN
+  IF NOT public.has_role(auth.uid(), 'dev'::public.app_role) THEN
+    RAISE EXCEPTION 'insufficient_privilege: requer role dev'
+      USING ERRCODE = '42501';
+  END IF;
+  IF coalesce(auth.jwt() ->> 'aal', '') <> 'aal2' THEN
+    RAISE EXCEPTION 'insufficient_privilege: requer sessão AAL2'
+      USING ERRCODE = '42501';
+  END IF;
+
+  -- Paridade com o 400 da edge manage-users (revoke_sessions): a RPC
+  -- revoga TODAS as sessões do alvo, incluindo a do próprio chamador —
+  -- quem quer derrubar só as outras sessões deve usar o logout normal.
+  IF _user_id = auth.uid() THEN
+    RAISE EXCEPTION 'self_revocation_denied: use o logout em outros dispositivos'
+      USING ERRCODE = '42501';
+  END IF;
+
+  UPDATE auth.refresh_tokens rt
+     SET revoked = true
+    FROM auth.sessions s
+   WHERE rt.session_id = s.id
+     AND s.user_id = _user_id;
+
+  UPDATE auth.sessions
+     SET refresh_token_hmac_key = NULL
+   WHERE user_id = _user_id;
+
+  PERFORM public.revoke_all_user_tokens(_user_id);
+
+  -- Trilha no DB: a edge audita a camada de aplicação (source distinto),
+  -- aqui fica a evidência da revogação efetiva, cobrindo também chamada
+  -- direta via PostgREST. Falha não aborta a revogação.
+  BEGIN
+    INSERT INTO public.admin_audit_log
+      (user_id, action, resource_type, resource_id, status, source,
+       details, ip_address)
+    VALUES (
+      auth.uid(),
+      'session.revoke_all',
+      'auth',
+      _user_id::text,
+      'success',
+      'db:admin_revoke_user_sessions',
+      jsonb_build_object('target_user_id', _user_id, 'scope', 'global'),
+      btrim(substring(
+        NULLIF(current_setting('request.headers', true), '')::jsonb
+          ->> 'x-forwarded-for'
+        from '([^,]+)$')));
+  EXCEPTION WHEN OTHERS THEN
+    RAISE WARNING 'admin_revoke_user_sessions: audit insert failed: %', SQLERRM;
+  END;
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.admin_revoke_user_sessions(uuid) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.admin_revoke_user_sessions(uuid) TO authenticated;
+
+COMMENT ON FUNCTION public.admin_revoke_user_sessions(uuid) IS
+  'Revoga refresh tokens + marca revogação (dev + aal2, sem self, com auditoria no DB). Painel: /admin/sessoes.';
+
+-- <<< END 20261018160000_admin_revoke_sessions_db_guard_audit.sql <<<
+
+-- >>> BEGIN 20261018160100_login_attempts_lower_email_index.sql >>>
+-- Revisão DBA 2026-10-18: idx_login_attempts_email_ip_created
+-- (20261005130000) indexa a coluna crua `email`, mas as duas consultas de
+-- fn_check_login_allowed filtram `lower(email) = p_email` — o predicado
+-- com lower() nunca usa o índice e todo check-login faz seq scan em
+-- login_attempts (que só cresce). Índice funcional cobre ambas as
+-- consultas (coluna líder lower(email); ip_address é OR-condicional, fica
+-- como filtro; created_at DESC atende o ORDER/LIMIT do _last_success e o
+-- range da janela no _failed_count).
+-- O índice antigo é mantido: outros callers podem filtrar email exato
+-- (a edge já grava email em minúsculas); dropar ficaria para uma revisão
+-- futura com EXPLAIN em produção.
 --
--- Isso elimina falsos positivos para falhas transitórias de infraestrutura
--- enquanto mantém detecção de jobs genuinamente quebrados.
---
--- DRY-RUN VALIDADO: 6 crons com 1 falha transitória cada → would_alert: false
--- Jobs permanentemente quebrados → would_alert: true (confirmado logicamente)
+-- Rollback: DROP INDEX IF EXISTS public.idx_login_attempts_lower_email_ip_created;
+CREATE INDEX IF NOT EXISTS idx_login_attempts_lower_email_ip_created
+  ON public.login_attempts (lower(email), ip_address, created_at DESC);
 
-CREATE OR REPLACE VIEW v_system_alerts AS
-WITH cron_alerts AS (
-  SELECT
-    'CRON_FAIL_RECENT'::text AS codigo,
-    'critical'::text AS severidade,
-    'Job ' || j.jobid || ' (' || j.jobname || ') com falhas na ultima hora' AS mensagem,
-    COUNT(CASE WHEN d.status='failed' THEN 1 END)::text AS detalhe
-  FROM cron.job_run_details d
-  JOIN cron.job j ON j.jobid = d.jobid
-  WHERE d.start_time > NOW() - INTERVAL '1 hour'
-  GROUP BY j.jobid, j.jobname
-  HAVING
-    -- Critério A: volume alto (não transitório)
-    COUNT(CASE WHEN d.status='failed' THEN 1 END) >= 3
-    OR (
-      -- Critério B: houve falha E job não se auto-recuperou
-      COUNT(CASE WHEN d.status='failed' THEN 1 END) >= 1
-      AND MAX(CASE WHEN d.status='failed'    THEN d.start_time END)
-        > MAX(CASE WHEN d.status='succeeded' THEN d.start_time END)
-    )
-),
-import_stalled AS (
-  SELECT 'IMPORT_STALLED'::text AS codigo, 'warning'::text AS severidade,
-    'Batches Bronze pendentes ha mais de 1h'::text AS mensagem,
-    COUNT(DISTINCT COALESCE(import_batch_id::text, supplier_id::text))::text AS detalhe
-  FROM supplier_products_raw
-  WHERE status = ANY(ARRAY['pending'::supplier_raw_status,'processing'::supplier_raw_status])
-    AND imported_at < NOW() - INTERVAL '1 hour'
-  HAVING COUNT(*) > 0
-),
-products_no_image AS (
-  SELECT 'PRODUCTS_NO_IMAGE'::text AS codigo, 'info'::text AS severidade,
-    'Produtos ativos sem imagem principal'::text AS mensagem, COUNT(*)::text AS detalhe
-  FROM products WHERE is_active=true AND primary_image_url IS NULL HAVING COUNT(*) > 0
-),
-vss_no_preferred AS (
-  SELECT 'VSS_NO_PREFERRED'::text AS codigo, 'warning'::text AS severidade,
-    'Variantes ativas sem fornecedor preferido'::text AS mensagem, COUNT(*)::text AS detalhe
-  FROM product_variants pv WHERE pv.is_active=true
-    AND NOT EXISTS (SELECT 1 FROM variant_supplier_sources v
-      WHERE v.variant_id=pv.id AND v.is_preferred=true AND v.is_active=true)
-  HAVING COUNT(*) > 0
-),
-ai_queue_stale AS (
-  SELECT 'AI_QUEUE_STALE'::text AS codigo, 'info'::text AS severidade,
-    'Itens na fila IA ha mais de 7 dias'::text AS mensagem, COUNT(*)::text AS detalhe
-  FROM ai_enrichment_queue
-  WHERE status='pending' AND created_at < NOW()-INTERVAL '7 days'
-    AND NOT EXISTS (SELECT 1 FROM ai_enrichment_queue w
-      WHERE w.status='processing' AND w.locked_at > NOW()-INTERVAL '4 hours' LIMIT 1)
-  HAVING COUNT(*) > 0
-),
-products_no_ncm AS (
-  SELECT 'PRODUCTS_NO_NCM'::text AS codigo, 'critical'::text AS severidade,
-    'Produtos ativos sem NCM (fiscal)'::text AS mensagem, COUNT(*)::text AS detalhe
-  FROM products WHERE is_active=true AND ncm_id IS NULL HAVING COUNT(*) > 0
-),
-stock_critical AS (
-  SELECT 'STOCK_CRITICAL_LOW'::text AS codigo, 'info'::text AS severidade,
-    'Variantes ativas com estoque zero'::text AS mensagem, COUNT(*)::text AS detalhe
-  FROM product_variants pv JOIN variant_supplier_sources v ON v.variant_id=pv.id
-  WHERE pv.is_active=true AND v.is_active=true AND v.quantity=0 HAVING COUNT(*) > 0
-),
-stale_sync AS (
-  SELECT 'SUPPLIER_SYNC_STALE'::text AS codigo, 'warning'::text AS severidade,
-    'Fornecedor "' || s.name || '" sem sync ha '
-      || ROUND(EXTRACT(EPOCH FROM NOW()-s.last_full_sync_at)/3600,1)::text || 'h' AS mensagem,
-    s.last_full_sync_at::text AS detalhe
-  FROM suppliers s WHERE s.sync_enabled=true
-    AND (s.last_full_sync_at IS NULL
-      OR s.last_full_sync_at < NOW()-
-        (LEAST(GREATEST(COALESCE(s.sync_interval_minutes,60)*4,240),1440)||' minutes')::interval)
-),
-locked_by_residual AS (
-  SELECT 'AI_QUEUE_LOCKED_RESIDUAL'::text AS codigo, 'warning'::text AS severidade,
-    'Items ai_enrichment_queue com locked_by residual em estado terminal'::text AS mensagem,
-    COUNT(*)::text AS detalhe
-  FROM ai_enrichment_queue
-  WHERE locked_by IS NOT NULL AND status<>ALL(ARRAY['processing','pending'])
-  HAVING COUNT(*) > 100
-)
-SELECT codigo, severidade, mensagem, detalhe, NOW() AS detected_at
-FROM (
-  SELECT * FROM cron_alerts       UNION ALL
-  SELECT * FROM import_stalled    UNION ALL
-  SELECT * FROM products_no_image UNION ALL
-  SELECT * FROM vss_no_preferred  UNION ALL
-  SELECT * FROM ai_queue_stale    UNION ALL
-  SELECT * FROM products_no_ncm   UNION ALL
-  SELECT * FROM stock_critical    UNION ALL
-  SELECT * FROM stale_sync        UNION ALL
-  SELECT * FROM locked_by_residual
-) c
-ORDER BY CASE severidade WHEN 'critical' THEN 1 WHEN 'warning' THEN 2 ELSE 3 END;
-
--- Comentário de migração
-COMMENT ON VIEW v_system_alerts IS
-'Sistema de alertas operacionais. BUG-ALERT-1 (2026-06-23): threshold CRON_FAIL_RECENT
-corrigido de HAVING count(*)>0 para critério duplo (>=3 falhas OU sem auto-recuperação).';
-
--- <<< END v_system_alerts_cron_threshold_fix_20260623.sql <<<
-
--- >>> BEGIN verify_rls_policies.sql >>>
--- ============================================================================
--- VERIFICATION SCRIPT: RLS Policies Health Check
--- Run AFTER applying 20260712_fix_rls_policies_critical.sql
--- ============================================================================
-
--- Check 1: RLS is enabled on both tables
-┌─ Query: Check RLS status
-SELECT 
-  schemaname,
-  tablename,
-  rowsecurity
-FROM pg_tables
-WHERE tablename IN ('discount_approval_requests', 'workspace_notifications')
-ORDER BY tablename;
--- Expected: rowsecurity = true for both
-
--- Check 2: Count policies
-┌─ Query: Policy counts
-SELECT
-  schemaname,
-  tablename,
-  COUNT(*) as policy_count
-FROM pg_policies
-WHERE tablename IN ('discount_approval_requests', 'workspace_notifications')
-GROUP BY schemaname, tablename
-ORDER BY tablename;
--- Expected: discount_approval_requests = 3, workspace_notifications >= 3
-
--- Check 3: List all policies with commands
-┌─ Query: Detailed policies
-SELECT
-  schemaname,
-  tablename,
-  policyname,
-  cmd,
-  qual,
-  with_check
-FROM pg_policies
-WHERE tablename IN ('discount_approval_requests', 'workspace_notifications')
-ORDER BY tablename, policyname;
-
--- Check 4: Verify indexes exist
-┌─ Query: Index status
-SELECT
-  schemaname,
-  tablename,
-  indexname,
-  idx_scan,
-  idx_tup_read,
-  idx_tup_fetch
-FROM pg_stat_user_indexes
-WHERE tablename IN ('discount_approval_requests', 'workspace_notifications')
-ORDER BY tablename, indexname;
-
--- Check 5: Test RLS with sample query (as authenticated user)
-┌─ Query: RLS filtering test (authenticated user)
-SET ROLE authenticated;
-SET app.current_user_id = 'USER_UUID_HERE';
-
-SELECT COUNT(*) FROM public.workspace_notifications;
--- Expected: Only rows where user_id = auth.uid()
-
-RESET ROLE;
-RESET app.current_user_id;
-
--- Check 6: Performance baseline (sequential vs index scan)
-┌─ Query: Query plan analysis
-EXPLAIN ANALYZE
-SELECT COUNT(*) 
-FROM public.workspace_notifications
-WHERE user_id = 'USER_UUID_HERE';
--- Expected: Index Scan (idx_workspace_notifications_user_id)
--- NOT: Seq Scan (which would be slow on 1M+ rows)
-
--- <<< END verify_rls_policies.sql <<<
-
--- >>> BEGIN vpp_4c_expose_ipi_ncm_bitrix_20260623.sql >>>
--- M4: Expor ipi_rate, tax_reference_state, ncm_id, bitrix_product_id em v_products_public
--- (view completa recriada com campos reais em vez de NULL::tipo)
--- Ver migration completa no banco; arquivo resumido por brevidade
-
--- <<< END vpp_4c_expose_ipi_ncm_bitrix_20260623.sql <<<
-
--- >>> BEGIN vss_2_comment_zero_fill_columns_v2_20260623.sql >>>
--- M2: COMMENTs nas colunas 0-registro de variant_supplier_sources
-COMMENT ON COLUMN public.variant_supplier_sources.next_quantity_4 IS 'Restock slot 4. Hoje 0 registros. DROP requer refatoração coordenada.';
-COMMENT ON COLUMN public.variant_supplier_sources.csosn IS 'CSOSN fiscal. Hoje 0 registros. DROP requer sprint fiscal.';
-COMMENT ON TABLE public.variant_supplier_sources IS 'Fonte dados por variante x fornecedor. BACKLOG: cost_price_1..5+min_qty_1..5 → supplier_price_tiers; next_quantity/date_1..6 → variant_restock_schedule.';
-
--- <<< END vss_2_comment_zero_fill_columns_v2_20260623.sql <<<
+-- <<< END 20261018160100_login_attempts_lower_email_index.sql <<<

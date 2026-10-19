@@ -1,4 +1,4 @@
-name: Visual Baseline Tests
+name: Visual Baseline Tests — Nightly
 
 # 2026-09-27: paths filter — evita rodar 17+min de Playwright visual em mudanças não-UI
 on:
@@ -44,7 +44,7 @@ jobs:
       matrix:
         shardIndex: [1, 2]
         shardTotal: [2]
-    timeout-minutes: 60
+    timeout-minutes: 20
     runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -69,7 +69,7 @@ jobs:
         rm -rf test-results/
 
     - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
+      run: npx playwright install --with-deps chromium
 
     # Specs que NÃO precisam de sessão: baseline canônico em chromium-public (sem credenciais).
     # O optimized-image-visual dá test.skip fora de chromium-public; 99-auth-ui usa storageState vazio.

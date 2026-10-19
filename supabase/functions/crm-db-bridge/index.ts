@@ -191,6 +191,22 @@ const ALLOWED_TABLES = [
   "contact_emails", "contact_phones", "customers", "suppliers", "carriers",
 ];
 
+// E084: colunas filtráveis por tabela — evita varredura cega de colunas não indexadas
+const FILTERABLE_COLUMNS: Record<string, Set<string>> = {
+  companies: new Set(["id", "name", "owner_id", "created_at", "updated_at", "type"]),
+  contacts: new Set(["id", "name", "owner_id", "company_id", "created_at", "updated_at"]),
+  company_addresses: new Set(["id", "company_id", "owner_id"]),
+  company_social_media: new Set(["id", "company_id", "owner_id"]),
+  contact_emails: new Set(["id", "contact_id", "owner_id", "email"]),
+  contact_phones: new Set(["id", "contact_id", "owner_id", "phone"]),
+  customers: new Set(["id", "name", "owner_id", "created_at", "updated_at"]),
+  suppliers: new Set(["id", "name", "owner_id", "created_at", "updated_at"]),
+  carriers: new Set(["id", "name", "owner_id"]),
+};
+
+// E082: regex para validar select/relations — não permite PostgREST embedding syntax
+const SELECT_SAFE_RE = /^[a-z_*][a-z0-9_,\s*]*$/i;
+
 const VENDOR_WRITE_TABLES: string[] = [];
 const OPTIONAL_QUOTE_TABLES = new Set<string>();
 
@@ -341,24 +357,48 @@ async function authenticateRequest(req: Request): Promise<AuthResult> {
     return { userId: null, userRole: "public", error: jsonResponse({ error: "Token invalido ou expirado" }, 401) };
   }
 
-  // Singleton admin client - evita recriar TLS handshake a cada request
+  // E083: usar .select() sem .single() — 0 rows → 403 (não cair para "vendedor");
+  // 2+ rows possível em edge case → usar role mais alta encontrada.
   const adminClient = getAuthAdminClient();
-  const { data: roleData } = await adminClient
-    .from("user_roles").select("role").eq("user_id", user.id).single();
+  const { data: rolesData, error: rolesError } = await adminClient
+    .from("user_roles").select("role").eq("user_id", user.id);
 
-  const userRole = roleData?.role || "vendedor";
+  if (rolesError) {
+    console.error("CRM role fetch failed:", rolesError.message);
+    return { userId: null, userRole: "public", error: jsonResponse({ error: "Falha ao verificar permissão" }, 403) };
+  }
+  if (!rolesData || rolesData.length === 0) {
+    return { userId: null, userRole: "public", error: jsonResponse({ error: "Usuário sem perfil de acesso" }, 403) };
+  }
+  const ROLE_ORDER = ["supervisor", "gerente", "vendedor"];
+  const roles = rolesData.map((r: { role: string }) => r.role);
+  const userRole = ROLE_ORDER.find((r) => roles.includes(r)) ?? "vendedor";
   console.log(`Authenticated CRM request role=${userRole}`);
   return { userId: user.id, userRole };
 }
 
-function applyFilters(query: any, filters: Record<string, unknown>): any {
+// E084: escapar metacaracteres de ILIKE para evitar varredura por prefixo/suffix
+function escapeLikePattern(term: string): string {
+  return term.replace(/[%_\\]/g, (c) => `\\${c}`);
+}
+
+function validateFilters(filters: Record<string, unknown>, table?: string): string | null {
+  if (!table) return null;
+  const allowed = FILTERABLE_COLUMNS[table];
+  if (!allowed) return null;
+  const bad = Object.keys(filters).find((k) => !allowed.has(k));
+  return bad ? `Coluna '${bad}' não é filtrável em '${table}'` : null;
+}
+
+function applyFilters(query: any, filters: Record<string, unknown>, table?: string): any {
   for (const [key, value] of Object.entries(filters)) {
     if (value === null) {
       query = query.is(key, null);
     } else if (typeof value === "object" && value !== null) {
       const f = value as Record<string, unknown>;
       if ("in" in f) query = query.in(key, f.in as unknown[]);
-      if ("ilike" in f) query = query.ilike(key, f.ilike as string);
+      // E084: escapar metacaracteres do ilike
+      if ("ilike" in f) query = query.ilike(key, `%${escapeLikePattern(String(f.ilike))}%`);
       if ("eq" in f) query = query.eq(key, f.eq);
       if ("neq" in f) query = query.neq(key, f.neq as string);
       if ("gt" in f) query = query.gt(key, f.gt as string);
@@ -450,8 +490,9 @@ async function handleBatch(crm: SupabaseClient, queries: BatchQuery[]): Promise<
       try {
         const queryStart = performance.now();
         let query = crm.from(q.table).select(q.select || "*");
-        if (q.filters) query = applyFilters(query, q.filters);
-        if (q.search?.column && q.search?.term) query = query.ilike(q.search.column, `%${q.search.term}%`);
+        if (q.filters) query = applyFilters(query, q.filters, q.table);
+        // E084: escapar metacaracteres do ilike em batch
+        if (q.search?.column && q.search?.term) query = query.ilike(q.search.column, `%${escapeLikePattern(q.search.term)}%`);
         if (q.orderBy) query = applyOrdering(query, q.orderBy);
         if (q.limit) query = query.limit(q.limit);
         if (q.offset) query = query.range(q.offset, q.offset + (q.limit || 50) - 1);
@@ -518,7 +559,7 @@ async function handleUpdate(crm: SupabaseClient, body: CrmQuery): Promise<Respon
 
   let query = crm.from(table).update(data as any);
   if (id) { query = query.eq("id", id); }
-  else if (filters) { query = applyFilters(query, filters); }
+  else if (filters) { query = applyFilters(query, filters, table); }
 
   const { data: result, error } = await query.select(returning || "*");
   if (!error) {
@@ -538,7 +579,7 @@ async function handleDelete(crm: SupabaseClient, body: CrmQuery): Promise<Respon
   let query = crm.from(table).delete();
 
   if (id) { query = query.eq("id", id); }
-  else if (filters) { query = applyFilters(query, filters); }
+  else if (filters) { query = applyFilters(query, filters, table); }
   else { return jsonResponse({ error: "Delete requires 'id' or 'filters' to prevent mass deletion" }, 400); }
 
   const { error } = await query;
@@ -550,13 +591,25 @@ async function handleDelete(crm: SupabaseClient, body: CrmQuery): Promise<Respon
   return jsonResponse({ data: null, success: true });
 }
 
-async function handleSelect(crm: SupabaseClient, body: CrmQuery): Promise<Response> {
+async function handleSelect(crm: SupabaseClient, body: CrmQuery, userId?: string, userRole?: string): Promise<Response> {
   const { table, id, filters, select, orderBy, limit, offset, search, relations } = body;
-  const selectFields = select || (relations ? `${select || "*"}, ${relations}` : "*");
+  // E082: validar select e relations contra regex sem PostgREST embedding
+  if (select && !SELECT_SAFE_RE.test(select)) {
+    return jsonResponse({ error: "Campo 'select' inválido (embedding não permitido)" }, 400);
+  }
+  if (relations) {
+    return jsonResponse({ error: "Campo 'relations' não permitido (embedding PostgREST desabilitado)" }, 400);
+  }
+  const selectFields = select || "*";
 
   console.log(`[SELECT] table=${table}, select_fields=${selectFields.split(',').length}, filter_keys=${Object.keys(filters ?? {}).length}, limit=${limit ?? 'default'}`);
 
   let query = crm.from(table).select(selectFields);
+  // E081: escopo de ownership — vendedor só vê seus próprios registros
+  const PII_TABLES = new Set(["companies", "contacts", "contact_emails", "contact_phones", "customers"]);
+  if (userRole === "vendedor" && userId && PII_TABLES.has(table)) {
+    query = query.eq("owner_id", userId);
+  }
 
   if (id) {
     const { data, error } = await query.eq("id", id).single();
@@ -568,8 +621,9 @@ async function handleSelect(crm: SupabaseClient, body: CrmQuery): Promise<Respon
     return jsonResponse({ data, count: 1 });
   }
 
-  if (filters) query = applyFilters(query, filters);
-  if (search) query = query.ilike(search.column, `%${search.term}%`);
+  if (filters) query = applyFilters(query, filters, table);
+  // E084: escapar metacaracteres do ilike
+  if (search) query = query.ilike(search.column, `%${escapeLikePattern(search.term)}%`);
   if (orderBy) query = applyOrdering(query, orderBy);
   // Default cap (500) para evitar statement timeout em SELECT sem limite explícito.
   const effectiveLimit = limit ?? 500;
@@ -600,7 +654,8 @@ async function handleSearch(crm: SupabaseClient, body: CrmQuery): Promise<Respon
     return jsonResponse({ error: "Search requires 'column' and 'term'" }, 400);
   }
 
-  let query = crm.from(table).select(select || "*").ilike(search.column, `%${search.term}%`);
+  // E084: escapar metacaracteres do ilike em handleSearch
+  let query = crm.from(table).select(select || "*").ilike(search.column, `%${escapeLikePattern(search.term)}%`);
   if (orderBy) query = applyOrdering(query, orderBy);
   query = query.limit(limit || 50);
 
@@ -753,12 +808,13 @@ Deno.serve((req) => {
       }
     }
 
-    if (operation === "batch") {
-      return handleBatch(crm, body.queries || []);
+    // E083: validar ALLOWED_TABLES ANTES do dispatch de batch (ponto único de decisão)
+    if (operation !== "batch" && !ALLOWED_TABLES.includes(table)) {
+      return jsonResponse({ error: `Table '${table}' is not allowed. Allowed: ${ALLOWED_TABLES.join(", ")}` }, 400);
     }
 
-    if (!ALLOWED_TABLES.includes(table)) {
-      return jsonResponse({ error: `Table '${table}' is not allowed. Allowed: ${ALLOWED_TABLES.join(", ")}` }, 403);
+    if (operation === "batch") {
+      return handleBatch(crm, body.queries || []);
     }
 
     let response: Response;
@@ -766,7 +822,8 @@ Deno.serve((req) => {
       case "insert": response = await handleInsert(crm, body); break;
       case "update": response = await handleUpdate(crm, body); break;
       case "delete": response = await handleDelete(crm, body); break;
-      case "select": response = await handleSelect(crm, body); break;
+      // E081: passar userId e userRole para owner scoping no handleSelect
+      case "select": response = await handleSelect(crm, body, auth.userId ?? undefined, auth.userRole); break;
       case "search": response = await handleSearch(crm, body); break;
       default: return jsonResponse({ error: `Operation '${operation}' not supported.` }, 400);
     }

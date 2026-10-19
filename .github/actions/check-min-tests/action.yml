@@ -11,9 +11,9 @@ inputs:
     required: false
     default: "playwright-report/results.json"
   min:
-    description: "Número mínimo de testes executados (expected + unexpected + flaky)"
+    description: "Número mínimo de testes executados (expected + unexpected + flaky). E109: default 10 para detectar runs quase inteiramente skipados."
     required: false
-    default: "1"
+    default: "10"
   max-skipped-ratio:
     description: >
       Ratio máximo skipped/(executed+skipped), entre 0 e 1.

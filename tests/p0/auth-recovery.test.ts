@@ -10,32 +10,17 @@ describe("P0 — Auth recovery", () => {
   });
   afterEach(() => resetExternalMocks());
 
-  it.skip("login: erro 503 do auth NÃO trava UI — botão volta ao estado idle", async () => {
-    expect(true).toBe(true);
-  });
+  it.todo("login: erro 503 do auth NÃO trava UI — botão volta ao estado idle");
 
-  it.skip("session expired: redireciona para /login preservando returnTo", async () => {
-    expect(true).toBe(true);
-  });
+  it.todo("session expired: redireciona para /login preservando returnTo");
 
-  it.skip("force-global-logout: invalida refresh token de TODAS as sessões do usuário", async () => {
-    expect(true).toBe(true);
-  });
+  it.todo("force-global-logout: invalida refresh token de TODAS as sessões do usuário");
 
-  it.skip("password reset: fluxo de 3 fases (mem://security/password-recovery-flow) não pula etapas", async () => {
-    expect(true).toBe(true);
-  });
+  it.todo("password reset: fluxo de 3 fases (mem://security/password-recovery-flow) não pula etapas");
 
-  it.skip("MFA: totp inválido NÃO conta como tentativa de senha errada", async () => {
-    expect(true).toBe(true);
-  });
+  it.todo("MFA: totp inválido NÃO conta como tentativa de senha errada");
 
-  it.skip("signup público: bloqueado (closed-platform-policy)", async () => {
-    // TODO(P0): mem://auth/closed-platform-policy.
-    expect(true).toBe(true);
-  });
+  it.todo("signup público: bloqueado (closed-platform-policy)");
 
-  it.skip("detect-new-device: dispara notificação no primeiro login de novo IP", async () => {
-    expect(true).toBe(true);
-  });
+  it.todo("detect-new-device: dispara notificação no primeiro login de novo IP");
 });

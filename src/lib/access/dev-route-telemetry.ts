@@ -12,18 +12,11 @@
  *    (30 eventos/min/usuário).
  *  - Falhas são engolidas: telemetria nunca pode quebrar a UX.
  */
-import { getSupabaseClient } from '@/integrations/supabase/lazy-client';
+import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 
 export type DevRouteUxEvent =
-  | 'abandon'
-  | 'back'
-  | 'copy_link'
-  | 'fallback'
-  | 'mail'
-  | 'request_access'
-  | 'retry'
-  | 'view';
+  'abandon' | 'back' | 'copy_link' | 'fallback' | 'mail' | 'request_access' | 'retry' | 'view';
 
 interface RecordParams {
   event: DevRouteUxEvent;
@@ -55,7 +48,6 @@ export async function recordDevRouteTelemetry(params: RecordParams): Promise<voi
   if (shouldDrop(key)) return;
 
   try {
-    const supabase = await getSupabaseClient();
     // BUG-DEVTELEMETRY-SILENT-FAIL FIX: bare RPC await swallowed DB errors.
     const { error: telemetryErr } = await supabase.rpc('record_dev_route_telemetry', {
       _event_type: params.event,

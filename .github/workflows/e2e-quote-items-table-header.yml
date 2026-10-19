@@ -53,13 +53,10 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false  # E32
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      - name: Setup E2E
+        uses: ./.github/actions/e2e-setup
         with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-      - run: npm ci
-      - name: Install Playwright (${{ matrix.browser }})
-        run: npx playwright install --with-deps ${{ matrix.browser }}
+          browsers: ${{ matrix.browser }}
       - name: Run header spec on ${{ matrix.browser }}-public
         env:
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}

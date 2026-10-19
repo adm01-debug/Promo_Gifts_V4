@@ -31,7 +31,7 @@ test.describe("Quotes — Status badges", () => {
     await gotoAndSettle(page, "/orcamentos");
     const seed = await seedQuotesForStatusChips(page);
     if (seed.skipped) {
-      test.skip(true, `seed pulado: ${seed.skipped}`);
+      expect(false, `[E108] seed pulado: ${seed.skipped}`).toBeTruthy();
     }
     // Recarrega para garantir hidratação após seed.
     await gotoAndSettle(page, "/orcamentos");

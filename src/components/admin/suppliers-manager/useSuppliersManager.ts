@@ -527,7 +527,7 @@ export function useSuppliersManager() {
         setCnpjError(cnpjCopy);
         toast.error(cnpjCopy);
       } else if (/telefone|cep|cpf/i.test(hay)) {
-        toast.error(err instanceof Error && err.message ? err.message : hay);
+        toast.error('Verifique os dados de contato informados.');
       } else {
         toast.error('Erro ao salvar fornecedor');
       }

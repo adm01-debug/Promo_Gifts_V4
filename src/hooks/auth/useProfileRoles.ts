@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { getSupabaseClient } from '@/integrations/supabase/lazy-client';
+import { supabase } from '@/integrations/supabase/client';
 import { type AppRole, type Profile } from '@/contexts/AuthContext';
 import { createClientLogger } from '@/lib/telemetry/structuredLogger';
 import type { PostgrestError } from '@supabase/supabase-js';
@@ -103,7 +103,6 @@ export function useProfileRoles() {
       try {
         // BUG-FIX v2: cliente inicializado ANTES do withTimeout para que a
         // inicialização lazy do singleton não consuma o budget do timer.
-        const supabase = await getSupabaseClient();
 
         // FIX PRINCIPAL: RPC get_profile_and_roles = 1 round-trip vs os
         // 2 anteriores (profiles + user_roles paralelos).

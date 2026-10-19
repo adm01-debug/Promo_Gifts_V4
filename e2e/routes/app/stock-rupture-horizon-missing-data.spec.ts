@@ -32,7 +32,7 @@ test.describe('@regression /estoque — Risco de Ruptura com dados ausentes', ()
     }
     const empty = page.getByText(/Nenhum produto encontrado/i);
     if (await empty.isVisible().catch(() => false)) {
-      test.skip(true, 'sem dados seedados para validar fallback de ruptura');
+      expect(false, '[E108] sem dados seedados para validar fallback de ruptura').toBeTruthy();
     }
 
     // Garante alvo vazio — pré-condição inválida da fórmula.
