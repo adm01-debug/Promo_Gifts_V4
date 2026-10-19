@@ -18,8 +18,11 @@ test.describe("Auth Critical Flow @smoke", () => {
   test.use({ storageState: { cookies: [], origins: [] } });
 
   test("deve realizar login com sucesso e redirecionar para a home", async ({ page }) => {
-    const email = process.env.E2E_ADMIN_EMAIL || process.env.E2E_USER_EMAIL;
-    const password = process.env.E2E_ADMIN_PASSWORD || process.env.E2E_USER_PASSWORD;
+    // E2E_USER_EMAIL tem conta CI dedicada (e2e-ci@promobrindes-test.local) que
+    // autentica diariamente. E2E_ADMIN_EMAIL é fallback — admin credentials podem
+    // ser alternativas ao CI user mas devem ser testadas separadamente.
+    const email = process.env.E2E_USER_EMAIL || process.env.E2E_ADMIN_EMAIL;
+    const password = process.env.E2E_USER_PASSWORD || process.env.E2E_ADMIN_PASSWORD;
 
     if (!email || !password) {
       expect(false, "[E108] E2E_ADMIN_EMAIL/PASSWORD ou E2E_USER_EMAIL/PASSWORD não configurados — smoke login pulado em CI sem credenciais").toBeTruthy();
