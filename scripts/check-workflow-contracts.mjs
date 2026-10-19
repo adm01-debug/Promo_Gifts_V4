@@ -249,14 +249,25 @@ export function checkC11ShellStrict({ file, text, doc }) {
 }
 
 // C12 — workflows with pull_request trigger must not have permissions.contents: write (R11)
+// E180: extendido para percorrer jobs.*.permissions além do topo
 export function checkC12NoContentsWriteInPR({ file, text, doc }) {
   if (!/pull_request\s*:/.test(text)) return [];
+  const errors = [];
+  // Top-level permissions
   const perms = doc?.permissions;
-  if (!perms || typeof perms !== 'object') return [];
-  if (perms.contents === 'write') {
-    return [`${file}: pull_request workflow has permissions.contents: write — use read or remove (R11/E61)`];
+  if (perms && typeof perms === 'object' && perms.contents === 'write') {
+    errors.push(`${file}: pull_request workflow has top-level permissions.contents: write — use read or remove (R11/E61)`);
   }
-  return [];
+  // Job-level permissions (E180)
+  const jobs = doc?.jobs;
+  if (jobs && typeof jobs === 'object') {
+    for (const [jobId, job] of Object.entries(jobs)) {
+      if (job?.permissions?.contents === 'write') {
+        errors.push(`${file}: job '${jobId}' has permissions.contents: write in pull_request workflow — use read or add fork-guard (R11/E180)`);
+      }
+    }
+  }
+  return errors;
 }
 
 // C13 — workflows with paths: trigger must include own .github/workflows/FILENAME.yml (R12)

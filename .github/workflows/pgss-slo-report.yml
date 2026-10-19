@@ -1,10 +1,8 @@
 name: pgss-slo-report
 
 on:
-  # schedule:
-  #   - cron: '31 10 * * 1'
-  # E31: schedule desabilitado — aguardando migration [DBA-E40] (ops.pgss_history).
-  # Reativar após aplicação via .github/workflows/db-apply-migration.yml.
+  schedule:
+    - cron: '31 10 * * 1' # semanal, segunda 10:31 UTC (E177: reativado — workflow degrada graciosamente sem a migration)
   workflow_dispatch:
 
 permissions:
