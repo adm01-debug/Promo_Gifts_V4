@@ -75,83 +75,92 @@ export default defineConfig(({ mode }) => {
           codeSplitting: {
             includeDependenciesRecursively: true,
             groups: [
-              { name: 'runtime-vendor', test: /vite[\\/]preload-helper/, priority: 100 },
+              { name: 'runtime-vendor', test: /vite[\/]preload-helper/, priority: 100 },
               {
                 name: 'react-vendor',
-                test: /node_modules[\\/](?:\\.deno[\\/][^/]+[\\/]node_modules[\\/])?(?:react|react-dom)[\\/]/,
+                test: /node_modules[\/](?:\.deno[\/][^/]+[\/]node_modules[\/])?(?:react|react-dom)[\/]/,
                 priority: 90,
               },
               {
                 // Somente os ícones usados pelo shell/login. Agrupá-los evita
                 // dezenas de requests de ~500 B sem puxar toda a biblioteca.
                 name: 'critical-icons',
-                test: /node_modules[\\/](?:\\.deno[\\/][^/]+[\\/]node_modules[\\/])?lucide-react[\\/].*[\\/](?:createLucideIcon|defaultAttributes|Icon|icons[\\/](?:bell|bug|check|chevron-down|chevron-up|circle-alert|copy|file-text|folder-open|heart|house|inbox|package|plus|refresh-cw|rotate-ccw|search|shield-alert|shopping-cart|trash-2|trending-up|triangle-alert|users)|shared[\\/]src[\\/]utils[\\/](?:mergeClasses|toKebabCase|toCamelCase|toPascalCase|hasA11yProp))\.[cm]?[jt]s$/,
+                test: /node_modules[\/](?:\.deno[\/][^/]+[\/]node_modules[\/])?lucide-react[\/].*[\/](?:createLucideIcon|defaultAttributes|Icon|icons[\/](?:bell|bug|check|chevron-down|chevron-up|circle-alert|copy|file-text|folder-open|heart|house|inbox|package|plus|refresh-cw|rotate-ccw|search|shield-alert|shopping-cart|trash-2|trending-up|triangle-alert|users)|shared[\/]src[\/]utils[\/](?:mergeClasses|toKebabCase|toCamelCase|toPascalCase|hasA11yProp))\.[cm]?[jt]s$/,
                 priority: 85,
               },
               {
                 name: 'router-vendor',
-                test: /node_modules[\\/](?:react-router|react-router-dom)[\\/]/,
+                test: /node_modules[\/](?:react-router|react-router-dom)[\/]/,
                 priority: 80,
               },
-              { name: 'query-vendor', test: /node_modules[\\/]@tanstack[\\/]/, priority: 70 },
-              { name: 'supabase-vendor', test: /node_modules[\\/]@supabase[\\/]/, priority: 70 },
+              { name: 'query-vendor', test: /node_modules[\/]@tanstack[\/]/, priority: 70 },
+              { name: 'supabase-vendor', test: /node_modules[\/]@supabase[\/]/, priority: 70 },
               {
                 // Módulos pequenos compartilhados pelo shell e por rotas lazy.
                 // Sem este grupo, o preview HTTP/1 do gate abre mais de vinte
                 // requests antes do primeiro paint, embora somem poucos KiB.
                 name: 'app-shell',
-                test: /src[\\/].*[\\/](?:requestId|structuredLogger|sentry|client|logger|chunk-recovery|VisuallyHidden|lazy-client|sanitize-error|sanitize-message|safeAuthCall|supabase-untyped|to-error-message|authService|AuthContext|providers|DevInfraGate|safeToast|rate-limit|auth-utils|post-login-redirect|session-recovery|supabase-direct|supabase-placeholder|useProfileRoles|useAuthMFA|useProductsColorsBatch|useDevGate|DevOnly|utils|skeleton|ModernSkeletons|skeleton\.config|SkeletonMonitor|SkeletonLoaders|ThemeContext|useCloudStatus|useErrorHandler|bridge-status-events|error-reporter|theme-presets|telemetryService|use-overlay-interactivity)\.(?:ts|tsx)$/,
+                test: /src[\/].*[\/](?:requestId|structuredLogger|sentry|client|logger|chunk-recovery|VisuallyHidden|lazy-client|sanitize-error|sanitize-message|safeAuthCall|supabase-untyped|to-error-message|authService|AuthContext|providers|DevInfraGate|safeToast|rate-limit|auth-utils|post-login-redirect|session-recovery|supabase-direct|supabase-placeholder|useProfileRoles|useAuthMFA|useProductsColorsBatch|useDevGate|DevOnly|utils|skeleton|ModernSkeletons|skeleton\.config|SkeletonMonitor|SkeletonLoaders|ThemeContext|useCloudStatus|useErrorHandler|bridge-status-events|error-reporter|theme-presets|telemetryService|use-overlay-interactivity)\.(?:ts|tsx)$/,
                 priority: 65,
               },
-              { name: 'ui-vendor', test: /node_modules[\\/](?:@radix-ui|cmdk)[\\/]/, priority: 60 },
-              { name: 'date-vendor', test: /node_modules[\\/]date-fns[\\/]/, priority: 50 },
+              { name: 'ui-vendor', test: /node_modules[\/](?:@radix-ui|cmdk)[\/]/, priority: 60 },
+              { name: 'date-vendor', test: /node_modules[\/]date-fns[\/]/, priority: 50 },
               {
                 name: 'charts-vendor',
-                test: /node_modules[\\/](?:recharts|d3-[^/]+)[\\/]/,
+                test: /node_modules[\/](?:recharts|d3-[^/]+)[\/]/,
                 priority: 50,
               },
-              { name: 'zod-vendor', test: /node_modules[\\/]zod[\\/]/, priority: 50 },
+              { name: 'zod-vendor', test: /node_modules[\/]zod[\/]/, priority: 50 },
               {
                 name: 'form-vendor',
-                test: /node_modules[\\/](?:react-hook-form|@hookform)[\\/]/,
+                test: /node_modules[\/](?:react-hook-form|@hookform)[\/]/,
                 priority: 50,
               },
-              { name: 'toast-vendor', test: /node_modules[\\/]sonner[\\/]/, priority: 50 },
+              { name: 'toast-vendor', test: /node_modules[\/]sonner[\/]/, priority: 50 },
               {
                 name: 'export-vendor',
-                test: /node_modules[\\/](?:jspdf|html2canvas)[\\/]/,
+                test: /node_modules[\/](?:jspdf|html2canvas)[\/]/,
                 priority: 40,
               },
               {
                 name: 'xlsx-vendor',
-                test: /node_modules[\\/](?:@e965[\\/]xlsx|xlsx)[\\/]/,
+                test: /node_modules[\/](?:@e965[\/]xlsx|xlsx)[\/]/,
                 priority: 40,
               },
-              { name: 'dnd-vendor', test: /node_modules[\\/]@dnd-kit[\\/]/, priority: 40 },
-              { name: 'sentry-vendor', test: /node_modules[\\/]@sentry[\\/]/, priority: 40 },
+              { name: 'dnd-vendor', test: /node_modules[\/]@dnd-kit[\/]/, priority: 40 },
+              { name: 'sentry-vendor', test: /node_modules[\/]@sentry[\/]/, priority: 40 },
               {
                 name: 'markdown-vendor',
-                test: /node_modules[\\/](?:react-markdown|remark-[^/]+)[\\/]/,
+                test: /node_modules[\/](?:react-markdown|remark-[^/]+)[\/]/,
                 priority: 40,
               },
-              { name: 'pptx-vendor', test: /node_modules[\\/]pptxgenjs[\\/]/, priority: 40 },
+              { name: 'pptx-vendor', test: /node_modules[\/]pptxgenjs[\/]/, priority: 40 },
               {
                 name: 'utils-vendor',
-                test: /node_modules[\\/](?:clsx|tailwind-merge|class-variance-authority)[\\/]/,
+                test: /node_modules[\/](?:clsx|tailwind-merge|class-variance-authority)[\/]/,
                 priority: 30,
               },
-              { name: 'zustand-vendor', test: /node_modules[\\/]zustand[\\/]/, priority: 30 },
+              { name: 'zustand-vendor', test: /node_modules[\/]zustand[\/]/, priority: 30 },
               {
-                // Componentes de filtro usados exclusivamente em rotas de produtos.
-                // Extrai-os do chunk products-*.js → reduz de 856 KB para < 600 KB (E146).
+                // Sub-painel de filtros avançados (filter-panel/) — inclui useFilterPanelState
+                // e as sections (Materials, Ramos, Size, Suppliers). Separado do chunk raiz
+                // de filtros para não ultrapassar o limite de 1011 KB por chunk (E146 v2).
+                name: 'products-filters-panel',
+                test: /src[\/]components[\/]filters[\/]filter-panel[\/]/,
+                priority: 27,
+              },
+              {
+                // Componentes de filtro raiz usados em rotas de produtos.
+                // filter-panel/ vai para products-filters-panel (priority 27).
+                // Juntos reduzem de 856 KB para dois chunks abaixo do limite (E146 v2).
                 name: 'products-filters',
-                test: /src[\\/]components[\\/]filters[\\/]/,
+                test: /src[\/]components[\/]filters[\/]/,
                 priority: 25,
               },
               {
                 // Dialogs/wizards pesados do catálogo (BulkVariantWizard, etc.).
                 name: 'products-catalog',
-                test: /src[\\/]components[\\/](?:products|catalog)[\\/]/,
+                test: /src[\/]components[\/](?:products|catalog)[\/]/,
                 priority: 20,
               },
             ],
