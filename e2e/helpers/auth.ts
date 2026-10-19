@@ -59,6 +59,20 @@ export async function loginViaUI(page: Page, creds: LoginCreds): Promise<boolean
   // sem relaxar o assert: continuar em /login ainda reprova.
   const timeout = creds.timeoutMs ?? (process.env.CI ? 75_000 : 20_000);
   const netLog = createNetworkLog(page);
+
+  // CI bypass: TURNSTILE_SECRET_KEY está configurado na edge function de produção,
+  // mas em CI não há widget Turnstile disponível. Interceptamos check-login para
+  // retornar allowed:true (o signInWithPassword do Supabase ainda roda de verdade).
+  if (process.env.CI) {
+    await page.route('**/functions/v1/check-login**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ allowed: true }),
+      });
+    });
+  }
+
   try {
     await gotoAndSettle(page, "/login");
   } catch (err) {
@@ -115,6 +129,7 @@ export async function loginViaUI(page: Page, creds: LoginCreds): Promise<boolean
         `  Causa original: ${String(err)}`,
     );
   } finally {
+    if (process.env.CI) await page.unroute('**/functions/v1/check-login**').catch(() => undefined);
     netLog.stop();
   }
   await waitForRouteIdle(page);
