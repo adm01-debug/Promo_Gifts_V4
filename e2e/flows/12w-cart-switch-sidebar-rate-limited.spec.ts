@@ -143,7 +143,7 @@ test.describe("Regressão: 429 na troca lateral (SellerCartsPage)", () => {
 
       const card = page.locator(Sel.product.card).first();
       if (!(await card.isVisible().catch(() => false))) {
-        test.skip(true, "Catálogo vazio neste ambiente");
+        expect(false, "[E108] Catálogo vazio neste ambiente").toBeTruthy();
         return;
       }
 
@@ -153,7 +153,7 @@ test.describe("Regressão: 429 na troca lateral (SellerCartsPage)", () => {
       }
       const cartTrigger = card.locator(Sel.product.cartTrigger).first();
       if (!(await cartTrigger.isVisible().catch(() => false))) {
-        test.skip(true, "Card sem trigger de carrinho neste ambiente");
+        expect(false, "[E108] Card sem trigger de carrinho neste ambiente").toBeTruthy();
         return;
       }
       await cartTrigger.click();

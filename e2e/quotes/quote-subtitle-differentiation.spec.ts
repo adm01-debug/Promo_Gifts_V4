@@ -31,7 +31,7 @@ test.describe('Quote subtítulo · diferenciação Novo/Rascunho/Enviada', () =>
     await gotoAndSettle(page, '/orcamentos');
     // Pega o primeiro link de orçamento da listagem (qualquer status).
     const firstLink = page.locator('a[href^="/orcamentos/"][href$="/editar"], a[href*="/orcamentos/"]:not([href$="/novo"])').first();
-    if ((await firstLink.count()) === 0) test.skip(true, 'Sem orçamentos para validar modo edição.');
+    if ((await firstLink.count()) === 0) expect(false, '[E108] Sem orçamentos para validar modo edição.').toBeTruthy();
     await firstLink.click();
 
     const h1 = page.getByTestId('page-title-orcamento-editar');

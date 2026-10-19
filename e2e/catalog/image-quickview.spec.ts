@@ -68,7 +68,7 @@ test.describe('Clique na FOTO → QuickView → restaura scroll + foco', () => {
       const triggers = page.locator(c.triggerSelector);
       const count = await triggers.count();
       if (count === 0) {
-        test.skip(true, `Sem cards visíveis em ${c.route}.`);
+        expect(false, `[E108] Sem cards visíveis em ${c.route}.`).toBeTruthy();
       }
 
       // Pega um card no meio da página (índice ~Math.min(count-1, 6)) para

@@ -30,7 +30,7 @@ test.describe("Discount approval — atualização de status sem reload", () => 
     if (seed.skipped && seed.pendingTotal === 0) {
       await ctxA.close();
       await ctxB.close();
-      test.skip(true, `Sem pending e seed falhou: ${seed.skipped}`);
+      expect(false, `[E108] Sem pending e seed falhou: ${seed.skipped}`).toBeTruthy();
     }
     await setupDiscountAdmin(pageB, testInfo, { minPending: 0 });
 

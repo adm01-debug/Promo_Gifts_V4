@@ -31,7 +31,7 @@ async function setup(page: Page, width: number, height: number) {
 async function skipIfEmpty(page: Page) {
   const firstCard = page.getByTestId('quote-summary-item-0');
   if ((await firstCard.count()) === 0) {
-    test.skip(true, 'Resumo vazio.');
+    expect(false, '[E108] Resumo vazio.').toBeTruthy();
   }
   await expect(firstCard).toBeVisible({ timeout: 10_000 });
 }

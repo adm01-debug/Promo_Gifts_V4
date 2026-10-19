@@ -25,7 +25,7 @@ test.describe('Carrinhos · qty edge cases & sort/pagination @smoke', () => {
     // Obtém UID real do usuário autenticado para montar as chaves corretas
     const uid = await getAuthUserId(page);
     if (!uid) {
-      test.skip(true, 'UID não disponível — sessão não encontrada no localStorage.');
+      expect(false, '[E108] UID não disponível — sessão não encontrada no localStorage.').toBeTruthy();
       return;
     }
     const keys = cartNs(uid);
@@ -97,7 +97,7 @@ test.describe('Carrinhos · qty edge cases & sort/pagination @smoke', () => {
 
     const input = page.locator('[data-testid^="cart-qty-input-"]').first();
     if (!(await input.count())) {
-      test.skip(true, 'Carrinho vazio neste ambiente — caso de borda coberto unitariamente.');
+      expect(false, '[E108] Carrinho vazio neste ambiente — caso de borda coberto unitariamente.').toBeTruthy();
       return;
     }
 
@@ -148,7 +148,7 @@ test.describe('Carrinhos · qty edge cases & sort/pagination @smoke', () => {
 
     const input = page.locator('[data-testid^="cart-qty-input-"]').first();
     if (!(await input.count())) {
-      test.skip(true, 'Carrinho vazio neste ambiente.');
+      expect(false, '[E108] Carrinho vazio neste ambiente.').toBeTruthy();
       return;
     }
 

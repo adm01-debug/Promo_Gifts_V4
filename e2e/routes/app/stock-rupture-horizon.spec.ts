@@ -25,7 +25,7 @@ test.describe('@regression /estoque — horizonte de Risco de Ruptura', () => {
     }
     const empty = page.getByText(/Nenhum produto encontrado/i);
     if (await empty.isVisible().catch(() => false)) {
-      test.skip(true, 'sem dados seedados para validar horizonte de ruptura');
+      expect(false, '[E108] sem dados seedados para validar horizonte de ruptura').toBeTruthy();
     }
 
     // 1. Controle visível (badge "3d" só aparece quando o Switch está ON).

@@ -22,7 +22,7 @@ test.describe("Auth Critical Flow @smoke", () => {
     const password = process.env.E2E_ADMIN_PASSWORD || process.env.E2E_USER_PASSWORD;
 
     if (!email || !password) {
-      test.skip(true, "E2E_ADMIN_EMAIL/PASSWORD ou E2E_USER_EMAIL/PASSWORD não configurados — smoke login pulado em CI sem credenciais");
+      expect(false, "[E108] E2E_ADMIN_EMAIL/PASSWORD ou E2E_USER_EMAIL/PASSWORD não configurados — smoke login pulado em CI sem credenciais").toBeTruthy();
       return;
     }
 

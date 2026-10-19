@@ -81,7 +81,7 @@ test.describe('Carrinhos · cabeçalho reflete carrinho ativo @carrinhos', () =>
     });
     const total = await rows.count();
     if (total < 2) {
-      test.skip(true, 'precisa de ao menos 2 carrinhos para validar alternância');
+      expect(false, '[E108] precisa de ao menos 2 carrinhos para validar alternância').toBeTruthy();
     }
 
     const ids: string[] = [];
@@ -143,7 +143,7 @@ test.describe('Carrinhos · cabeçalho reflete carrinho ativo @carrinhos', () =>
     const cnpjCells = page.locator('[data-testid^="cart-row-cnpj-"]');
     const count = await cnpjCells.count();
     if (count === 0) {
-      test.skip(true, 'nenhum carrinho listado com CNPJ do CRM disponível');
+      expect(false, '[E108] nenhum carrinho listado com CNPJ do CRM disponível').toBeTruthy();
     }
 
     // Toda célula renderizada deve seguir a máscara canônica.
@@ -162,7 +162,7 @@ test.describe('Carrinhos · cabeçalho reflete carrinho ativo @carrinhos', () =>
       hasNot: page.locator('[data-testid^="cart-row-open-"]'),
     });
     if ((await rows.count()) === 0) {
-      test.skip(true, 'nenhum carrinho disponível para inspecionar o header');
+      expect(false, '[E108] nenhum carrinho disponível para inspecionar o header').toBeTruthy();
     }
 
     const firstTid = await rows.first().getAttribute('data-testid');
@@ -185,7 +185,7 @@ test.describe('Carrinhos · cabeçalho reflete carrinho ativo @carrinhos', () =>
       hasNot: page.locator('[data-testid^="cart-row-open-"]'),
     });
     if ((await rows.count()) === 0) {
-      test.skip(true, 'nenhum carrinho disponível para validar layout');
+      expect(false, '[E108] nenhum carrinho disponível para validar layout').toBeTruthy();
     }
     const firstTid = await rows.first().getAttribute('data-testid');
     const id = firstTid?.replace('cart-row-', '');

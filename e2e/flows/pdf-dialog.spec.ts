@@ -36,7 +36,7 @@ async function openPdfDialog(
   scenario: 'enviada' | 'rascunho' = 'enviada',
 ) {
   const ok = await gotoQuoteScenario(page, scenario);
-  if (!ok) test.skip(true, `Sem orçamento no estado "${scenario}" no ambiente.`);
+  if (!ok) expect(false, `[E108] Sem orçamento no estado "${scenario}" no ambiente.`).toBeTruthy();
   const trigger = page.getByTestId('pdf-preview-trigger');
   await expect(trigger).toBeVisible();
   await trigger.click();
@@ -462,10 +462,10 @@ test.describe('PdfGenerationDialog · fluxo completo', () => {
       .catch(() => null);
     await confirm.click();
     const download = await downloadPromise;
-    if (!download) test.skip(true, 'Download não disparou no ambiente.');
+    if (!download) expect(false, '[E108] Download não disparou no ambiente.').toBeTruthy();
 
     const pdfPath = await download!.path();
-    if (!pdfPath) test.skip(true, 'PDF sem path resolvível.');
+    if (!pdfPath) expect(false, '[E108] PDF sem path resolvível.').toBeTruthy();
 
     const pages = await extractPdfPages(pdfPath!);
     if (!pages) {
@@ -473,7 +473,7 @@ test.describe('PdfGenerationDialog · fluxo completo', () => {
         type: 'pdftotext-missing',
         description: 'pdftotext ausente — asserção de RASCUNHO pulada localmente.',
       });
-      test.skip(true, 'pdftotext indisponível.');
+      expect(false, '[E108] pdftotext indisponível.').toBeTruthy();
     }
 
     // Contrato: RASCUNHO deve aparecer em CADA página (não só na primeira).
@@ -505,10 +505,10 @@ test.describe('PdfGenerationDialog · fluxo completo', () => {
       .catch(() => null);
     await confirm.click();
     const download = await downloadPromise;
-    if (!download) test.skip(true, 'Download não disparou no ambiente.');
+    if (!download) expect(false, '[E108] Download não disparou no ambiente.').toBeTruthy();
 
     const pdfPath = await download!.path();
-    if (!pdfPath) test.skip(true, 'PDF sem path resolvível.');
+    if (!pdfPath) expect(false, '[E108] PDF sem path resolvível.').toBeTruthy();
 
     const pages = await extractPdfPages(pdfPath!);
     if (!pages) {
@@ -516,7 +516,7 @@ test.describe('PdfGenerationDialog · fluxo completo', () => {
         type: 'pdftotext-missing',
         description: 'pdftotext ausente — asserção negativa pulada localmente.',
       });
-      test.skip(true, 'pdftotext indisponível.');
+      expect(false, '[E108] pdftotext indisponível.').toBeTruthy();
     }
 
     // Contrato negativo: NENHUMA página pode conter RASCUNHO.

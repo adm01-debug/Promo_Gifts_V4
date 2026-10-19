@@ -197,7 +197,7 @@ test.describe("Fluxo: Carrinho → Checkout", () => {
     const checkoutBtn = page.locator(Sel.cart.checkoutCta).first();
 
     if (!(await checkoutBtn.isVisible().catch(() => false))) {
-      test.skip(true, "Sem item/carrinho disponível para testar checkout com falha");
+      expect(false, "[E108] Sem item/carrinho disponível para testar checkout com falha").toBeTruthy();
       return;
     }
 

@@ -46,7 +46,7 @@ test.describe("ProductCard — Halo e Regressão de Borda", () => {
     const redSwatch = card.locator('[data-testid="color-swatch-vermelho"]');
 
     if (!await blueSwatch.isVisible() || !await redSwatch.isVisible()) {
-      test.skip(true, "Variantes Azul e Vermelho não encontradas para teste de navegação.");
+      expect(false, "[E108] Variantes Azul e Vermelho não encontradas para teste de navegação.").toBeTruthy();
       return;
     }
 
@@ -75,7 +75,7 @@ test.describe("ProductCard — Halo e Regressão de Borda", () => {
     const swatches = card.locator('[data-testid^="color-swatch-"]');
     
     if (await swatches.count() < 2) {
-      test.skip(true, "Menos de 2 cores para testar troca rápida.");
+      expect(false, "[E108] Menos de 2 cores para testar troca rápida.").toBeTruthy();
       return;
     }
 
