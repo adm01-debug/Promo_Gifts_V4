@@ -30,7 +30,7 @@ RETURNS TABLE (
 LANGUAGE plpgsql
 STABLE
 SECURITY DEFINER
-SET search_path = public, auth
+SET search_path = pg_catalog, pg_temp
 AS $$
 BEGIN
   IF NOT public.has_role(auth.uid(), 'dev'::public.app_role) THEN
@@ -91,7 +91,7 @@ CREATE OR REPLACE FUNCTION public.admin_revoke_user_sessions(_user_id uuid)
 RETURNS void
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = public, auth
+SET search_path = pg_catalog, pg_temp
 AS $$
 BEGIN
   IF NOT public.has_role(auth.uid(), 'dev'::public.app_role) THEN
