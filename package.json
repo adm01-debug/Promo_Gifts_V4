@@ -335,7 +335,7 @@
     "@sentry/react": "^8.45.0",
     "@supabase/supabase-js": "^2.118.0",
     "@tanstack/react-query": "^5.104.3",
-    "@tanstack/react-virtual": "^3.14.20",
+    "@tanstack/react-virtual": "^3.14.21",
     "@typescript-eslint/eslint-plugin": "^8.71.2",
     "@typescript-eslint/parser": "^8.59.3",
     "canvas-confetti": "^1.9.4",
