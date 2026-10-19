@@ -123,3 +123,51 @@ jobs:
             echo "::error::$FAIL fixture(s) divergiram do esperado"
             exit 1
           fi
+
+  test-protection-config:
+    name: Test check-protection-config parsing logic
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Fixture — regras completas → OK
+        run: |
+          set -euo pipefail
+          RULES='[{"type":"required_status_checks","parameters":{"required_status_checks":[{"context":"Gate Final - Deploy Ready"}]}},{"type":"pull_request","parameters":{}},{"type":"non_fast_forward","parameters":{}}]'
+          RESULT=$(echo "$RULES" | python3 -c "import sys,json; rules=json.load(sys.stdin); types={r.get('type') for r in rules} if isinstance(rules,list) else set(); gate_ok=any('Gate Final' in c.get('context','') or 'deploy-ready' in c.get('context','').lower() for r in rules if r.get('type')=='required_status_checks' for c in r.get('parameters',{}).get('required_status_checks',[])); missing=[x for x,ok in [('required_status_checks:Gate-Final-Deploy-Ready','required_status_checks' in types and gate_ok),('pull_request','pull_request' in types),('non_fast_forward','non_fast_forward' in types)] if not ok]; print('NONE' if not isinstance(rules,list) or not rules else ('OK' if not missing else 'MISSING:'+','.join(missing)))")
+          if [[ "$RESULT" != "OK" ]]; then
+            echo "::error::regras completas deveriam retornar OK, retornou: $RESULT"
+            exit 1
+          fi
+          echo "✅ regras completas → OK"
+
+      - name: Fixture — sem Gate Final → MISSING
+        run: |
+          set -euo pipefail
+          RULES='[{"type":"pull_request","parameters":{}},{"type":"non_fast_forward","parameters":{}}]'
+          RESULT=$(echo "$RULES" | python3 -c "import sys,json; rules=json.load(sys.stdin); types={r.get('type') for r in rules} if isinstance(rules,list) else set(); gate_ok=any('Gate Final' in c.get('context','') or 'deploy-ready' in c.get('context','').lower() for r in rules if r.get('type')=='required_status_checks' for c in r.get('parameters',{}).get('required_status_checks',[])); missing=[x for x,ok in [('required_status_checks:Gate-Final-Deploy-Ready','required_status_checks' in types and gate_ok),('pull_request','pull_request' in types),('non_fast_forward','non_fast_forward' in types)] if not ok]; print('NONE' if not isinstance(rules,list) or not rules else ('OK' if not missing else 'MISSING:'+','.join(missing)))")
+          if [[ "$RESULT" != "MISSING:required_status_checks:Gate-Final-Deploy-Ready" ]]; then
+            echo "::error::sem Gate Final deveria retornar MISSING:required_status_checks:Gate-Final-Deploy-Ready, retornou: $RESULT"
+            exit 1
+          fi
+          echo "✅ sem Gate Final → MISSING correto"
+
+      - name: Fixture — sem pull_request e non_fast_forward → MISSING múltiplos
+        run: |
+          set -euo pipefail
+          RULES='[{"type":"required_status_checks","parameters":{"required_status_checks":[{"context":"Gate Final - Deploy Ready"}]}}]'
+          RESULT=$(echo "$RULES" | python3 -c "import sys,json; rules=json.load(sys.stdin); types={r.get('type') for r in rules} if isinstance(rules,list) else set(); gate_ok=any('Gate Final' in c.get('context','') or 'deploy-ready' in c.get('context','').lower() for r in rules if r.get('type')=='required_status_checks' for c in r.get('parameters',{}).get('required_status_checks',[])); missing=[x for x,ok in [('required_status_checks:Gate-Final-Deploy-Ready','required_status_checks' in types and gate_ok),('pull_request','pull_request' in types),('non_fast_forward','non_fast_forward' in types)] if not ok]; print('NONE' if not isinstance(rules,list) or not rules else ('OK' if not missing else 'MISSING:'+','.join(missing)))")
+          if [[ "$RESULT" != "MISSING:pull_request,non_fast_forward" ]]; then
+            echo "::error::sem pull_request/non_fast_forward deveria retornar MISSING:pull_request,non_fast_forward, retornou: $RESULT"
+            exit 1
+          fi
+          echo "✅ sem pull_request+non_fast_forward → MISSING múltiplos correto"
+
+      - name: Fixture — lista vazia (sem rulesets) → NONE
+        run: |
+          set -euo pipefail
+          RESULT=$(echo '[]' | python3 -c "import sys,json; rules=json.load(sys.stdin); types={r.get('type') for r in rules} if isinstance(rules,list) else set(); gate_ok=any('Gate Final' in c.get('context','') or 'deploy-ready' in c.get('context','').lower() for r in rules if r.get('type')=='required_status_checks' for c in r.get('parameters',{}).get('required_status_checks',[])); missing=[x for x,ok in [('required_status_checks:Gate-Final-Deploy-Ready','required_status_checks' in types and gate_ok),('pull_request','pull_request' in types),('non_fast_forward','non_fast_forward' in types)] if not ok]; print('NONE' if not isinstance(rules,list) or not rules else ('OK' if not missing else 'MISSING:'+','.join(missing)))")
+          if [[ "$RESULT" != "NONE" ]]; then
+            echo "::error::lista vazia deveria retornar NONE, retornou: $RESULT"
+            exit 1
+          fi
+          echo "✅ lista vazia → NONE correto"

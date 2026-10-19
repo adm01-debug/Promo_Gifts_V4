@@ -64,28 +64,21 @@ const VariationSchema = z.unknown().superRefine((value, ctx) => {
 
 const ProductV1 = z.object({
   external_id: z.string().max(255).optional(),
-  // products.sku_promo é varchar(50) com CHECK sku_promo=sku — sku >50
-  // nunca grava; rejeita aqui com 422 claro em vez de 23502 no banco.
-  sku: z.string().min(1).max(50),
+  sku: z.string().min(1).max(100),
   name: z.string().min(1).max(500),
   description: z.string().max(5000).optional(),
   price: z.number().nonnegative(),
   min_quantity: z.number().int().positive().optional(),
-  // Bitrix envia o ID numérico como número ou string ("47") — ambos resolvidos
-  // para UUID interno pela edge; UUIDs já internos também passam por aqui.
-  category_id: z.union([z.number().int(), z.string().max(50)]).optional(),
+  category_id: z.number().int().optional(),
   category_name: z.string().max(255).optional(),
   subcategory: z.string().max(255).optional(),
-  supplier_id: z.union([z.string().max(255), z.number().int()]).optional(),
+  supplier_id: z.string().max(255).optional(),
   supplier_name: z.string().max(255).optional(),
   stock: z.number().int().nonnegative().optional(),
   stock_status: z.string().max(50).optional(),
   is_kit: z.boolean().optional(),
   is_active: z.boolean().optional(),
   featured: z.boolean().optional(),
-  // chk_products_featured_requires_expires: featured=true sem expiração viola o
-  // CHECK — a edge derruba a flag (com warn) quando ausente para a linha salvar.
-  featured_expires_at: z.string().datetime().optional().nullable(),
   new_arrival: z.boolean().optional(),
   on_sale: z.boolean().optional(),
   images: z.array(z.string().url().max(2000)).max(50).optional(),

@@ -597,13 +597,13 @@ Relatório semanal em `docs/ci/METRICAS_SEMANAIS.md` (gerado por `ci-metrics-wee
 | `07:11` | Seg | `cache-prune.yml` |  |
 | `07:15` | Seg | `ci-metrics-weekly.yml` |  |
 | `08:08` | Seg | `ddl-out-of-band-detector.yml` | ✓ PAT |
+| `08:45` | diário | `required-checks-guard.yml` | ✓ PAT |
 | `08:54` | Seg | `ratchet-weekly.yml` |  |
 | `09:06` | diário | `edge-functions-drift-check.yml` | ✓ PAT |
-| `09:28` | diário | `required-checks-guard.yml` |  |
 | `09:29` | diário | `db-schema-drift-check.yml` | ✓ PAT |
 | `09:33` | Seg | `codeql.yml` |  |
-| `09:48` | diário | `restore-seller-cart-rpc.yml` |  |
-| `10:09` | diário | `security-definer-acl-multi-env.yml` |  |
+| `09:49` | diário | `restore-seller-cart-rpc.yml` | ✓ PAT |
+| `10:09` | diário | `security-definer-acl-multi-env.yml` | ✓ PAT |
 | `10:30` | Seg | `policies-baseline.yml` | ✓ PAT |
 
 ✅ Nenhuma colisão de PAT detectada (intervalo mínimo: 20 min).

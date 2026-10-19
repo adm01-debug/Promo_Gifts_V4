@@ -424,7 +424,7 @@ uniq_commits() { git cherry -v origin/main origin/$1 | grep '^+' | cut -c44-; }
 ### 4E — F6 migrations novas (sem renome)
 
 - **E183** `[L]` Separar as 7 migrations **adicionadas** (`A`) e as 7 **modificadas** (`M`) da #2228. ✅ Lista.
-- **E184** `[L]` Para cada `M` (migration antiga editada, ex. `20260602020000_fix_hardcoded_api_key_cron.sql` trocando `pqpdolkaeqlyzpdpbizo` [LEGACY_INFORMATIVO] → `doufsxqlfjyuvxuezpln`): migration já aplicada **não se edita** — a correção certa é migration nova. Verificar se o cron em produção já usa a URL certa: `SELECT jobname, command FROM cron.job WHERE command ILIKE '%pqpdolkaeqlyzpdpbizo%'` [LEGACY_INFORMATIVO]. ✅ 0 linha = edição é só cosmética (pode entrar como comentário); >0 = precisa migration nova.
+- **E184** [LEGACY_INFORMATIVO] `[L]` Para cada `M` (migration antiga editada, ex. `20260602020000_fix_hardcoded_api_key_cron.sql` trocando `pqpdolkaeqlyzpdpbizo` → `doufsxqlfjyuvxuezpln`): migration já aplicada **não se edita** — a correção certa é migration nova. Verificar se o cron em produção já usa a URL certa: `SELECT jobname, command FROM cron.job WHERE command ILIKE '%pqpdolkaeqlyzpdpbizo%'`. ✅ 0 linha = edição é só cosmética (pode entrar como comentário); >0 = precisa migration nova.
 - **E185** `[W]` Branch `claude/feat-migrations-2228-<AAMMDD-HHMM>` com as 7 `A` (inclui E063/E065–E070, `medallion_coverage_snapshots` soft-delete-exempt). ✅ Gate 1.3 (contratos) verde.
 - **E186** `[PO]` Cada migration nova só vai para produção via `db-apply-migration.yml` com OK do Joaquim (REGRA #8). Listar versão, efeito e risco de cada uma. ✅ Aprovação por versão.
 - **E187** `[M]` Mergear a PR (o merge não aplica DDL; a aplicação é E186). ✅ Merged; recibos E15 registrados.
