@@ -15,8 +15,18 @@ useDefault = true
 # ──────────────────────────────────────────────────────────────────────────────
 
 [allowlist]
-description = "Chaves publishable do Supabase (valores públicos embutidos nos bundles)"
+description = "Chaves publishable do Supabase + falsos-positivos documentados"
+
+# Diretórios excluídos do scan (--no-git varre o filesystem; build artifacts e docs
+# contêm valores de exemplo que disparam falso-positivo)
+paths = [
+  '''dist/''',           # artefatos de build — gerados, não secrets operacionais
+  '''audit/''',          # relatórios de auditoria com UUIDs de exemplo
+  '''docs/''',           # documentação técnica com valores de exemplo (HANDOFF, diagnóstico)
+]
+
 regexes = [
+  # ── Chaves públicas do Supabase ──────────────────────────────────────────
   # Fallback público no e2e.yml — chave publishable do projeto doufsxqlfjyuvxuezpln
   '''sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU''',
   # URL do projeto Supabase (pública — aparece em todas as chamadas de rede)
@@ -25,6 +35,33 @@ regexes = [
   # Substituído por VITE_SUPABASE_PUBLISHABLE_KEY em 2026-05-23.
   # Chave anon é pública por design (role sem privilégios, embutida nos bundles).
   '''eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRvdWZzeHFsZmp5dXZ4dWV6cGxuIiwicm9sZSI6ImFub24i''',
+
+  # ── Falsos-positivos em workflows / docs ─────────────────────────────────
+  # JWTs com payload ".placeholder" em workflows de CI (não são tokens reais)
+  '''\.placeholder''',
+  # Placeholder literal em docs de diagnóstico / setup
+  '''SERVICE_ROLE_KEY''',
+  '''YOUR_JWT_TOKEN''',
+
+  # ── Falsos-positivos em testes e fixtures ────────────────────────────────
+  # Mock tokens com padrão obvio em testes unitários/integração
+  '''abc123def456''',
+  '''anon-key-12345678''',
+  '''sup-tok-abc123''',
+  '''idem-duplicate-test-001''',
+  # Fragment de JWT truncado em testes (h.eyJzdWIiOiJ1MSJ9.s — payload fake)
+  '''h\.eyJzdWIiOiJ1MSJ9\.s''',
+  # JWT de exemplo canônico do jwt.io ({"sub":"1234567890","name":"John Doe",...})
+  '''eyJzdWIiOiIxMjM0NTY3ODkw''',
+  # Namespace do magazine (não é chave de API)
+  '''promobrind\.magazines\.v1''',
+  # Nomes de filtros que disparam heurística generic-api-key (snake_case com sufixo 90d)
+  '''minSupplierSales90d''',
+  '''minPromoSales90d''',
+  # AWS key obviamente falsa (sequencial — padrão de documentação)
+  '''AKIA1234567890ABCDEF''',
+  # Token de teste fuzz em magazinePublish
+  '''a1b2c3d4e5f60718293a4b5c6d7e8f90''',
 ]
 
 # Commit histórico com service_role hardcoded (E002 removeu do código fonte).
