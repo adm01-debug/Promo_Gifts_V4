@@ -4,6 +4,7 @@
 --   1. frontend_telemetry_size_caps_check — constraint com campos adicionais (url/user_agent/session_id/metadata)
 --   2. v_system_health_dashboard — view atualizada com métricas bi/stock_snapshots e stock_daily_summary
 -- Aprovado: REGRA #8 CLAUDE.md — objeto criado em produção sem migration vira migration espelho
+-- Rollback: supabase/rollbacks/20261019000000_rollback.sql
 
 alter table "public"."frontend_telemetry" drop constraint if exists "frontend_telemetry_size_caps_check";
 alter table "public"."frontend_telemetry" add constraint "frontend_telemetry_size_caps_check" CHECK ((((length(COALESCE(event_type, ''::text)) >= 1) AND (length(COALESCE(event_type, ''::text)) <= 64)) AND ((length(COALESCE(name, ''::text)) >= 1) AND (length(COALESCE(name, ''::text)) <= 256)) AND (length(COALESCE(url, ''::text)) <= 2048) AND (length(COALESCE(user_agent, ''::text)) <= 1024) AND (length(COALESCE(session_id, ''::text)) <= 128) AND (length(COALESCE((metadata)::text, ''::text)) <= 8192))) not valid;

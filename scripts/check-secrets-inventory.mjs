@@ -30,11 +30,11 @@ const isUpdate = process.argv.includes('--update');
 const ALLOWLIST = new Set([
   // Tem fallback hardcoded: ${{ secrets.PGPORT || '5432' }}
   'secrets.PGPORT',
-// Tem fallback: ${{ secrets.BRANCH_PROTECTION_READ_TOKEN || github.token }}
+  // Tem fallback: ${{ secrets.BRANCH_PROTECTION_READ_TOKEN || github.token }}
   'secrets.BRANCH_PROTECTION_READ_TOKEN',
   // Allowlistado em check-workflow-contracts (Gate 4 opcional)
   'secrets.LHCI_GITHUB_APP_TOKEN',
-  // Template de exemplo (_template.yml) — não é um secret real em uso
+  // Padrão didático R5 em _template.yml — não é segredo real
   'secrets.EXAMPLE_API_KEY',
 ]);
 
