@@ -585,6 +585,29 @@ export function checkC25E2ECredsOnlyInAuthedJobs({ file, text, doc }) {
 // ---------------------------------------------------------------------------
 
 /**
+ * C28 (E193 — R8): avisa quando um job usa snake_case em vez de kebab-case.
+ * A convenção de fato em deploy-gates.yml é kebab-case (ssot-gate, unit-tests).
+ * Não bloqueante: o que importa é a ESTABILIDADE do id, não o estilo —
+ * mudar um id quebra required checks silenciosamente.
+ */
+export function checkC28JobIdConvention(wf) {
+  const violations = [];
+  const jobs = wf.parsed?.jobs ?? {};
+  for (const [jobId] of Object.entries(jobs)) {
+    // Aceitar: kebab-case (a-z, 0-9, hífen), palavra única e snake_case legado
+    // Avisar: snake_case com underscore que poderia ser migrado para kebab
+    if (/[a-z][a-z0-9]*_[a-z0-9_]+/.test(jobId)) {
+      violations.push(
+        `[C28-warn] ${wf.name}: job '${jobId}' usa snake_case — ` +
+        `convenção é kebab-case (R8/E193). Mudar o id quebra required checks, ` +
+        `então só migrar em PR de governança dedicado com atualização de required-checks.json.`,
+      );
+    }
+  }
+  return violations;
+}
+
+/**
  * C27 (E190 — R24): avisa quando mais de 10 workflows foram modificados
  * no mesmo commit (sinal de "bulk-edit sem execução prévia no PR").
  * Não bloqueante: exit 0 mesmo com aviso (histórico mostra que bulk-edit
@@ -679,6 +702,10 @@ export function runChecks(rootDir = ROOT) {
   all.push(...checkC9DuplicateJobNames(workflows));
   // C27 (E190): mudança em >10 workflows no mesmo commit → aviso (não bloqueante)
   all.push(...checkC27BulkWorkflowEdit(workflows));
+  // C28 (E193): job IDs em snake_case em vez de kebab-case → aviso (não bloqueante)
+  for (const wf of workflows) {
+    all.push(...checkC28JobIdConvention(wf));
+  }
 
   return {
     violations: all,
@@ -710,6 +737,7 @@ export function runChecks(rootDir = ROOT) {
       C25: all.filter((v) => v.includes('E2E_USER_*')).length,
       C26: all.filter((v) => v.includes('npx') && v.includes('node_modules/.bin')).length,
       C27: all.filter((v) => v.includes('[C27-warn]')).length,
+      C28: all.filter((v) => v.includes('[C28-warn]')).length,
     },
     workflowCount: workflows.length,
   };
@@ -772,6 +800,8 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
   console.log(`  C24 npm install in run:   ${counts.C24}`);
   console.log(`  C25 E2E creds isolated:   ${counts.C25}`);
   console.log(`  C26 npx unknown pkg:      ${counts.C26}`);
+  console.log(`  C27 bulk edit (warn):     ${counts.C27}`);
+  console.log(`  C28 snake_case job id(w): ${counts.C28}`);
 
   if (fresh.length > 0) {
     console.log('\nFresh violations (not in allowlist):');
@@ -783,8 +813,8 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
     console.log('Run with --gate to enforce.');
   }
 
-  // Avisos [C27-warn] são informativos — não bloqueiam em modo gate (R24/E190)
-  const blockingFresh = fresh.filter((v) => !v.startsWith('[C27-warn]'));
+  // Avisos [C27-warn] e [C28-warn] são informativos — não bloqueiam em modo gate
+  const blockingFresh = fresh.filter((v) => !v.startsWith('[C27-warn]') && !v.startsWith('[C28-warn]'));
   if (gateMode && blockingFresh.length > 0) {
     console.error('\nGATE FAIL: fresh violations found — fix or add to allowlist with justification.');
     process.exit(1);
