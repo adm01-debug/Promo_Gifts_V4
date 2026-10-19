@@ -785,13 +785,20 @@ jobs:
         with:
           persist-credentials: false  # E32
           fetch-depth: 0
+      - name: Install gitleaks
+        run: |
+          GITLEAKS_VERSION="8.21.2"
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" \
+            -o /tmp/gitleaks.tar.gz
+          tar -xzf /tmp/gitleaks.tar.gz -C /usr/local/bin gitleaks
+          chmod +x /usr/local/bin/gitleaks
       - name: Run gitleaks
         run: |
-          # E172: bloqueante — falha se encontrar segredo
+          # E172: bloqueante — falha se encontrar segredo (gitleaks Go binary, não npm)
           if [ -f .gitleaks.toml ]; then
-            npx --yes gitleaks detect --source . --config .gitleaks.toml --exit-code 1 --no-git
+            gitleaks detect --source . --config .gitleaks.toml --exit-code 1 --no-git
           else
-            npx --yes gitleaks detect --source . --exit-code 1 --no-git
+            gitleaks detect --source . --exit-code 1 --no-git
           fi
 
   deploy-ready:
