@@ -1,0 +1,11 @@
+-- STUB: migration legacy aplicada antes da formalização do ledger de migrations.
+-- Versão: 20260712 (formato curto — registrada em supabase_migrations.schema_migrations)
+--
+-- Este arquivo não contém DDL executável. Existe apenas para documentar que a versão
+-- 20260712 está presente no banco de produção (doufsxqlfjyuvxuezpln) como legacy,
+-- aplicada antes do fluxo formal de migrations via Supabase CLI.
+--
+-- NOTA: O Supabase CLI v2.x ignora arquivos com timestamp de 8 dígitos (YYYYMMDD)
+-- no diretório supabase/migrations/. Por isso esta versão é listada em
+-- scripts/migration-ledger-remote-only-allowlist.json como exceção conhecida.
+-- Ref: E04 — PLANO_WORKFLOWS_CI_100_ETAPAS_2026-09-26

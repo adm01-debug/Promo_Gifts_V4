@@ -13,7 +13,7 @@ SELECT cron.schedule(
   '*/15 * * * *',
   $$
   SELECT net.http_post(
-    url := 'https://pqpdolkaeqlyzpdpbizo.supabase.co/functions/v1/connections-auto-test',
+    url := 'https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1/connections-auto-test',
     headers := jsonb_build_object(
       'Content-Type', 'application/json',
       'apikey', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRvdWZzeHFsZmp5dXZ4dWV6cGxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjczODY2NDMsImV4cCI6MjA4Mjk2MjY0M30.nm3WMOBSx5SUnIBmvF_Mj0Y-4hV6UohrBF0sUpuQvPc'
