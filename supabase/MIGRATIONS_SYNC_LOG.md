@@ -777,6 +777,7 @@ da execução e consulta read-only ao catálogo/ledger, sem reaplicar SQL.
 | `20261018000048` | `2d15a1bd52c8d0252f5e68dc8a44b737636ac9b2b653c6f51b7866bededbbca1` | — | — (aguardando `workflow_dispatch` E15 pelo PO) | E15 | — | pendente: E047 lote 2 — RESTRICTIVE policy em 5 tabelas PII/sensíveis (notification_preferences, push_subscriptions, recently_viewed_products, kit_collaborators, ai_usage_quotas) | **pendente — não aplicada** |
 | `20261018170000` | `6cabab062ea6746dab49dd5d8ddc73dbf8b0ffeb1c66a609ac876cebfb80c8c4` | — | — (aguardando `workflow_dispatch` E15 pelo PO) | E15 | — | pendente: E069/P200 — DROP INDEX CONCURRENTLY `idx_user_organizations_user` (coberto por prefixo de `idx_user_organizations_user_org_covering`); aprovado por comercial@aquarellaprint.com.br | **pendente — não aplicada** |
 | `20261018170100` | `30a5041cbc6b7cd0d74a8145dc3a33a6340cc0522ec9466e0f5686b027dbac2a` | — | — (aguardando `workflow_dispatch` E15 pelo PO) | E15 | — | pendente: E070/P200 — cron.schedule purga mensal de kit_save_requests, kit_quote_requests, magazine_duplicate_requests (30 dias, domingos madrugada UTC); transaction: none — cron.schedule não suporta transação | **pendente — não aplicada** |
+| `20261019000000` | `620a7fc3538e163a05f087632011140146694369d7c6ee680236c131ec213ec0` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | E15 | 2026-10-19 17:51:57 UTC | job post-check da run 39297487656 confirmou a version no ledger | aplicada |
 
 ### Evidências do recibo `20260922170000`
 
