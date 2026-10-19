@@ -3,8 +3,8 @@
 // - Assina o payload com PROMO_CHAMPIONS_WEBHOOK_SECRET (HMAC-SHA256)
 // - POSTa direto em receive-quote-sync do Promo Champions
 //   (ref do projeto Champions: rapjswienfhkobhlamxb)
-import { createClient } from "npm:@supabase/supabase-js@2";
-import { z } from "npm:zod@3";
+import { createClient } from "npm:@supabase/supabase-js@2.49.4";
+import { z } from "npm:zod@3.23.8";
 import { buildPublicCorsHeaders } from "../_shared/cors.ts";
 import { createStructuredLogger } from "../_shared/structured-logger.ts";
 import { resolveCredential } from "../_shared/credentials.ts";

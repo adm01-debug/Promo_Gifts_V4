@@ -14,12 +14,14 @@ import { RateLimiter } from "../_shared/rate-limiter.ts";
 
 const bodySchema = z.object({
   token: z.string().min(24).max(64).regex(/^[a-f0-9]+$/i),
-  fingerprint: z.string().min(8).max(128),
+  // E090: fingerprint mín 32 chars — previne brute-force de fingerprints curtos
+  fingerprint: z.string().min(32).max(128),
   lastPageIndex: z.number().int().min(0).max(9999).optional(),
   bookmarks: z.array(z.number().int().min(0)).max(500).optional(),
   sessionId: z.string().max(128).optional(),
 });
 
+// E090: rate limit keyed em IP+token, não em fingerprint (rotação de fingerprint dava escrita ilimitada)
 const writeLimiter = new RateLimiter({ maxRequests: 5, windowMs: 1_000, keyPrefix: "mag-reader-write" });
 
 async function sha256Hex(input: string): Promise<string> {
@@ -50,7 +52,11 @@ Deno.serve(async (req) => {
     }
     const { token, fingerprint, lastPageIndex, bookmarks, sessionId: _sessionId } = parsed.data;
 
-    const rl = await writeLimiter.check(fingerprint);
+    // E090: rate limit em IP+token, não no fingerprint
+    const xffRaw = req.headers.get("x-forwarded-for") ?? "";
+    const xffParts = xffRaw.split(",").map((s) => s.trim()).filter(Boolean);
+    const ip = xffParts[xffParts.length - 1] || "0.0.0.0";
+    const rl = await writeLimiter.check(`${ip}:${token.slice(0, 8)}`);
     if (!rl.allowed) {
       return log.respond(new Response(JSON.stringify({ error: "rate_limited", request_id: requestId }), { status: 429, headers: jsonHeaders }));
     }

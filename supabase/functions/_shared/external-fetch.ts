@@ -42,6 +42,16 @@ const SERVICE_RETRY_AFTER: Record<string, number> = {
   bitrix: 5,            // Bitrix: normalmente transiente
 };
 
+/** Mapa de timeout de fetch por serviço (ms). Default: 10_000ms.
+ * E091: upstream que pendura nunca registrava falha no breaker — AbortSignal.timeout corrige. */
+const SERVICE_TIMEOUT_MS: Record<string, number> = {
+  cnpja: 15_000,       // CNPJA: resposta pode ser lenta
+  "image-cdn": 5_000,  // CDN de imagens: deve ser rápido
+  elevenlabs: 30_000,  // ElevenLabs: geração de áudio demora
+  "kit-ai": 25_000,    // LLM calls
+};
+const DEFAULT_FETCH_TIMEOUT_MS = 10_000;
+
 export async function fetchWithBreaker(
   service: string,
   url: string | URL,
@@ -55,8 +65,15 @@ export async function fetchWithBreaker(
     throw new CircuitOpenError(service, retryAfter);
   }
 
+  // E091: AbortSignal.timeout para evitar que upstream que pendura nunca registre falha no breaker
+  const timeoutMs = SERVICE_TIMEOUT_MS[service] ?? DEFAULT_FETCH_TIMEOUT_MS;
+  const initWithTimeout: RequestInit = {
+    ...init,
+    signal: init?.signal ?? AbortSignal.timeout(timeoutMs),
+  };
+
   try {
-    const res = await fetch(url, init);
+    const res = await fetch(url, initWithTimeout);
     if (res.status >= 500) {
       breaker.recordFailure();
     } else {

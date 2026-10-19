@@ -166,6 +166,7 @@ async function generateReportData(supabase: any, report: any): Promise<string> {
 async function sendEmailViaResend(apiKey: string, to: string, subject: string, html: string) {
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
+    signal: AbortSignal.timeout(25_000),
     headers: {
       "Authorization": `Bearer ${apiKey}`,
       "Content-Type": "application/json",

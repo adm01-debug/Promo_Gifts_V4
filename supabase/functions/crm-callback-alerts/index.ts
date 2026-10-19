@@ -18,7 +18,7 @@
  * Auth: verify_jwt=false (cron server-side). Sem SENTRY_DSN_SERVER → dry-run.
  */
 // deno-lint-ignore-file no-explicit-any
-import { createClient } from "npm:@supabase/supabase-js@2";
+import { createClient } from "npm:@supabase/supabase-js@2.49.4";
 import { buildPublicCorsHeaders, handleCorsPreflight } from "../_shared/cors.ts";
 import { createStructuredLogger } from "../_shared/structured-logger.ts";
 import { getOrCreateRequestId } from "../_shared/request-id.ts";
