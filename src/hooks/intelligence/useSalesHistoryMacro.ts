@@ -90,8 +90,7 @@ export function useSalesHistoryMacro(days = 30) {
               .order('id', { ascending: true })
               .range(from, to);
             if (batch) q = q.in(fkColumn, batch);
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            return q as any;
+            return q as PromiseLike<{ data: T[] | null; error: unknown }>;
           });
           rows.push(...page);
         }
