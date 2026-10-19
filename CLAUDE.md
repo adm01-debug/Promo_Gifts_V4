@@ -391,14 +391,19 @@ sequência; se qualquer um falhar, o deploy é bloqueado.
 | Gate 1.8 | Detect accidentally base64-encoded files — texto encodado em base64 acidentalmente | sim |
 | Gate 1.9 | Dívida técnica — ratchets TODO/FIXME/`as any`/file-size não aumentam | sim |
 | Gate 1.9.1 | `console.*` baseline — número de chamadas não aumenta sem justificativa | sim |
+| Gate 1.9.2 | Boundary cross-domain — sem import novo entre `src/pages/*` de domínios diferentes | sim |
 | Gate 1.10 | indexed-access ratchet — `object[key]` não aumenta (E15: promovido de advisory para bloqueante) | sim |
 | Gate 1.11 | Workflow contracts `check-workflow-contracts --gate` (C10–C26) | sim |
 | Gate 1.12 | Contract coverage + soft-delete policy commitada | sim |
 | Gate 1.13 | RLS policies baseline vs pg_policies live (bloqueante com credenciais) | sim |
 | Gate 1.13.1 | Tabelas com RLS habilitada e zero policies (deny-all silencioso) — `check-rls-no-policy-drift.mjs --gate` (E045) | sim |
+| Gate 1.13.2 | Anon-insert rate guard manifest (E049) — 7 tabelas com INSERT anônimo têm trigger de rate guard | sim |
+| Gate 1.13.3 | Migration receipts (E055) — migrations sem recibo há >24h | sim |
 | Gate 1.14 | Secrets inventory `check-secrets-inventory --gate` — todos `secrets.*`/`vars.*` documentados em SEGREDOS.md (E40/E98) | sim |
 | Gate 1.15 | `overflow-x-clip` em MainLayout — regressão visual de layout horizontal | sim |
 | Gate 1.16 | Quotes list invariants — integridade da listagem de orçamentos | sim |
+| Gate 1.17 | CODEOWNERS coverage de gate files (E72) | sim |
+| Gate 1.18 | Ledger de conflitos semânticos (E188) — PRs de agentes diferentes bloqueados sem aprovação | sim |
 | Gate E23 | Secrets check — sem referências a segredos não declarados em `SEGREDOS.md` | sim |
 | Gate 2 | Testes unitários (`vitest`) | sim |
 | Gate 2.5 | Integridade transacional PostgreSQL | sim |
