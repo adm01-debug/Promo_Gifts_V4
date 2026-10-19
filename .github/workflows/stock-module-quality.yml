@@ -18,6 +18,7 @@ on:
       - 'tests/components/inventory/**'
       - 'e2e/routes/app/stock-*.spec.ts'
       - 'e2e/admin/stock-*.spec.ts'
+      - 'scripts/__tests__/stock-benchmark.test.ts'
       - '.github/workflows/stock-module-quality.yml'
   push:
     branches: [main]  # E48: necessário para publicar baseline após merge
