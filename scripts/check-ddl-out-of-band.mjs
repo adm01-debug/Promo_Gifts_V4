@@ -33,7 +33,10 @@
  *             1 (failed — >=1 objeto out-of-band), 2 (inconclusive/erro).
  */
 
-import { writeFileSync } from 'fs';
+import { createHash } from 'crypto';
+import { existsSync, readFileSync, writeFileSync } from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import {
   CHECK_RESULT_STATUS,
   concludeCheck,
@@ -41,6 +44,11 @@ import {
   shouldRequireLive,
 } from './check-result-contract.mjs';
 import { querySupabaseReadOnly } from './supabase-read-only-query.mjs';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const ROOT = path.resolve(__dirname, '..');
+const POLICIES_BASELINE_PATH = path.join(ROOT, '.security/policies-baseline.json');
+const CRON_BASELINE_PATH = path.join(ROOT, 'supabase/baseline/cron-jobs-baseline.json');
 
 const argv = process.argv.slice(2);
 const REQUIRE_LIVE = shouldRequireLive(argv);
@@ -170,6 +178,108 @@ async function fetchLogsExcerptBestEffort(object) {
   }
 }
 
+// ─── E076: Detecção de policies e cron.job fora de migration ────────────────
+
+const POLICIES_SQL = `
+  SELECT schemaname, tablename, policyname, permissive,
+         roles::text AS roles, cmd,
+         COALESCE(qual, '') AS qual,
+         COALESCE(with_check, '') AS with_check
+  FROM pg_policies
+  WHERE schemaname = 'public'
+  ORDER BY schemaname, tablename, policyname;
+`.trim();
+
+const CRON_SQL = `
+  SELECT jobname, schedule, command, active
+  FROM cron.job
+  ORDER BY jobname;
+`.trim();
+
+function normalizePolicyRow(row) {
+  return {
+    schemaname: String(row.schemaname ?? ''),
+    tablename: String(row.tablename ?? ''),
+    policyname: String(row.policyname ?? ''),
+    permissive: String(row.permissive ?? ''),
+    roles: String(row.roles ?? ''),
+    cmd: String(row.cmd ?? ''),
+    qual: String(row.qual ?? ''),
+    with_check: String(row.with_check ?? ''),
+  };
+}
+
+function hashRows(rows) {
+  return createHash('sha256').update(JSON.stringify(rows)).digest('hex');
+}
+
+/**
+ * E076: compara pg_policies ao vivo com .security/policies-baseline.json.
+ * Retorna lista de objetos out-of-band (added/removed/changed policies).
+ */
+async function fetchPoliciesDrift() {
+  if (!existsSync(POLICIES_BASELINE_PATH)) return { skipped: true, reason: 'policies-baseline.json ausente' };
+  let baseline;
+  try {
+    baseline = JSON.parse(readFileSync(POLICIES_BASELINE_PATH, 'utf8'));
+  } catch (e) {
+    return { skipped: true, reason: `erro ao ler policies-baseline.json: ${e.message}` };
+  }
+  const result = await querySupabaseReadOnly(POLICIES_SQL);
+  if (result.kind !== 'live') return { skipped: true, reason: result.kind };
+
+  const livePolicies = result.rows.map(normalizePolicyRow);
+  const liveHash = hashRows(livePolicies);
+  if (liveHash === baseline.sha256) return { drift: [] };
+
+  // Hash divergiu — calcular diff por chave
+  const baselineMap = new Map((baseline.policies ?? []).map(normalizePolicyRow).map((p) => [`${p.schemaname}.${p.tablename}.${p.policyname}`, p]));
+  const liveMap = new Map(livePolicies.map((p) => [`${p.schemaname}.${p.tablename}.${p.policyname}`, p]));
+
+  const drift = [];
+  for (const [key, lp] of liveMap) {
+    if (!baselineMap.has(key)) {
+      drift.push({ object: key, kind: 'policy_added' });
+    } else {
+      const bp = baselineMap.get(key);
+      if (JSON.stringify(lp) !== JSON.stringify(bp)) {
+        drift.push({ object: key, kind: 'policy_changed' });
+      }
+    }
+  }
+  for (const key of baselineMap.keys()) {
+    if (!liveMap.has(key)) drift.push({ object: key, kind: 'policy_removed' });
+  }
+  return { drift };
+}
+
+/**
+ * E076: compara cron.job ao vivo com supabase/baseline/cron-jobs-baseline.json.
+ * Detecta jobs criados/removidos sem migration correspondente.
+ */
+async function fetchCronJobsDrift() {
+  if (!existsSync(CRON_BASELINE_PATH)) return { skipped: true, reason: 'cron-jobs-baseline.json ausente' };
+  let baseline;
+  try {
+    baseline = JSON.parse(readFileSync(CRON_BASELINE_PATH, 'utf8'));
+  } catch (e) {
+    return { skipped: true, reason: `erro ao ler cron-jobs-baseline.json: ${e.message}` };
+  }
+  const result = await querySupabaseReadOnly(CRON_SQL);
+  if (result.kind !== 'live') return { skipped: true, reason: result.kind };
+
+  const liveNames = new Set(result.rows.map((r) => String(r.jobname)));
+  const baselineNames = new Set((baseline.jobs ?? []).map((j) => String(j.jobname)));
+  const drift = [];
+  for (const name of liveNames) {
+    if (!baselineNames.has(name)) drift.push({ object: name, kind: 'cron_added' });
+  }
+  for (const name of baselineNames) {
+    if (!liveNames.has(name)) drift.push({ object: name, kind: 'cron_removed' });
+  }
+  return { drift };
+}
+
 async function main() {
   const latest = await fetchLatestDrift();
   if (latest.kind !== 'live') {
@@ -287,15 +397,28 @@ async function main() {
         : excerpt || '(sem dados)';
   }
 
-  const report = { ...baseReport, outOfBand };
+  // E076: checagem adicional de policies e cron.job fora de migration.
+  const [policiesDrift, cronDrift] = await Promise.all([fetchPoliciesDrift(), fetchCronJobsDrift()]);
+  const extendedOutOfBand = [
+    ...outOfBand,
+    ...(policiesDrift.drift ?? []),
+    ...(cronDrift.drift ?? []),
+  ];
+
+  const report = {
+    ...baseReport,
+    outOfBand: extendedOutOfBand,
+    policiesDriftSkipped: policiesDrift.skipped ? policiesDrift.reason : false,
+    cronDriftSkipped: cronDrift.skipped ? cronDrift.reason : false,
+  };
   if (OUT_PATH) writeFileSync(OUT_PATH, JSON.stringify(report, null, 2));
 
-  if (outOfBand.length > 0) {
+  if (extendedOutOfBand.length > 0) {
     return concludeCheck({
       check: 'ddl-out-of-band',
       status: CHECK_RESULT_STATUS.FAILED,
-      summary: `${outOfBand.length} objeto(s) sem correspondência em supabase_migrations.schema_migrations`,
-      details: { objects: outOfBand.map((o) => o.object) },
+      summary: `${extendedOutOfBand.length} objeto(s) fora de migration (tabelas/colunas: ${outOfBand.length}, policies: ${(policiesDrift.drift ?? []).length}, cron: ${(cronDrift.drift ?? []).length})`,
+      details: { objects: extendedOutOfBand.map((o) => o.object) },
     });
   }
 

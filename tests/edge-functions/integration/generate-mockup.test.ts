@@ -16,7 +16,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { mockEdgeFunctionFetch, resetExternalMocks, type EdgeFnResponseSpec } from "../../p0/_mocks";
 
-const BASE = "https://nmojwpihnslkssljowjh.supabase.co/functions/v1";
+const BASE = "https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1";
 
 const PRODUCT_URL = "https://cdn.example.com/products/mug.png";
 const LOGO_URL = "https://cdn.example.com/logos/acme.png";

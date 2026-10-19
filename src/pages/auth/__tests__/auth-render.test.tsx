@@ -34,8 +34,8 @@ vi.mock('@/hooks/ui/use-toast', () => ({
   useToast: () => ({ toast: vi.fn() }),
 }));
 
-vi.mock('@/integrations/supabase/lazy-client', () => ({
-  getSupabaseClient: vi.fn(() => Promise.resolve({
+vi.mock('@/integrations/supabase/client', () => ({
+  supabase: {
     functions: { invoke: vi.fn(() => Promise.resolve({ data: null, error: null })) },
     auth: {
       getSession: vi.fn(() => Promise.resolve({ data: { session: null } })),
@@ -43,7 +43,7 @@ vi.mock('@/integrations/supabase/lazy-client', () => ({
         data: { subscription: { unsubscribe: vi.fn() } },
       })),
     },
-  })),
+  },
 }));
 
 vi.mock('@/lib/env/supabase-placeholder', () => ({
@@ -86,8 +86,6 @@ describe('Auth page — render smoke', () => {
       </MemoryRouter>,
     );
 
-    expect(
-      await screen.findByText('Continue sua jornada rumo ao sucesso.'),
-    ).toBeInTheDocument();
+    expect(await screen.findByText('Continue sua jornada rumo ao sucesso.')).toBeInTheDocument();
   });
 });

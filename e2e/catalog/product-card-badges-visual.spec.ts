@@ -69,7 +69,7 @@ test.describe('ProductCard — Visual regression de badges de Inteligência', ()
     const hot = page.locator('[data-testid="intelligence-badge-hot-item"]').first();
     const visible = (await hot.count()) > 0 && (await hot.isVisible().catch(() => false));
     if (!visible) {
-      test.skip(true, 'Nenhum produto Hot Item no dataset atual.');
+      expect(false, '[E108] Nenhum produto Hot Item no dataset atual.').toBeTruthy();
       return;
     }
     await hot.hover();
@@ -85,7 +85,7 @@ test.describe('ProductCard — Visual regression de badges de Inteligência', ()
     const best = page.locator('[data-testid="intelligence-badge-best-seller"]').first();
     const visible = (await best.count()) > 0 && (await best.isVisible().catch(() => false));
     if (!visible) {
-      test.skip(true, 'Nenhum produto Best-seller no dataset atual.');
+      expect(false, '[E108] Nenhum produto Best-seller no dataset atual.').toBeTruthy();
       return;
     }
     await best.hover();

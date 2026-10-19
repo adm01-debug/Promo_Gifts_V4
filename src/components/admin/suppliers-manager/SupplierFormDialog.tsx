@@ -228,18 +228,22 @@ export function SupplierFormDialog({
                 />
               </div>
               <div className="flex-1">
-                <Label className="text-xs font-semibold">Nome Fantasia</Label>
+                <Label htmlFor="sup-trading-name" className="text-xs font-semibold">
+                  Nome Fantasia
+                </Label>
                 <Input
+                  id="sup-trading-name"
                   value={editingSupplier.trading_name || ''}
                   onChange={(e) => updateField('trading_name', e.target.value)}
                   className={fieldClass}
                 />
               </div>
               <div className="w-40 shrink-0">
-                <Label className="text-xs font-semibold">
+                <Label htmlFor="sup-code" className="text-xs font-semibold">
                   Código <span className="text-destructive">*</span>
                 </Label>
                 <Input
+                  id="sup-code"
                   value={editingSupplier.code || ''}
                   data-testid="admin-code-input"
                   onChange={(e) => updateField('code', e.target.value)}
@@ -248,10 +252,11 @@ export function SupplierFormDialog({
               </div>
             </div>
             <div>
-              <Label className="text-xs font-semibold">
+              <Label htmlFor="sup-name" className="text-xs font-semibold">
                 Razão Social <span className="text-destructive">*</span>
               </Label>
               <Input
+                id="sup-name"
                 value={editingSupplier.name || ''}
                 data-testid="admin-name-input"
                 onChange={(e) => updateField('name', e.target.value)}
@@ -261,9 +266,12 @@ export function SupplierFormDialog({
             {/* CNPJ + INSCRIÇÃO ESTADUAL */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label className="text-xs font-semibold">CNPJ</Label>
+                <Label htmlFor="sup-cnpj" className="text-xs font-semibold">
+                  CNPJ
+                </Label>
                 <div className="flex gap-1.5">
                   <Input
+                    id="sup-cnpj"
                     value={maskCnpj(editingSupplier.cnpj || '')}
                     data-testid="admin-cnpj-input"
                     onChange={(e) => updateField('cnpj', normalizeCnpj(e.target.value))}
@@ -331,8 +339,11 @@ export function SupplierFormDialog({
                 ) : null}
               </div>
               <div>
-                <Label className="text-xs font-semibold">Inscrição Estadual</Label>
+                <Label htmlFor="sup-ie" className="text-xs font-semibold">
+                  Inscrição Estadual
+                </Label>
                 <Input
+                  id="sup-ie"
                   value={inscricaoEstadual}
                   onChange={(e) => setInscricaoEstadual(e.target.value)}
                   placeholder="Ex: 123.456.789.000"
@@ -342,8 +353,11 @@ export function SupplierFormDialog({
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label className="text-xs font-semibold">Fone Fixo 01</Label>
+                <Label htmlFor="sup-fone1" className="text-xs font-semibold">
+                  Fone Fixo 01
+                </Label>
                 <Input
+                  id="sup-fone1"
                   value={foneFixo1}
                   onChange={(e) => setFoneFixo1(maskPhone(e.target.value))}
                   placeholder="(00) 0000-0000"
@@ -352,8 +366,11 @@ export function SupplierFormDialog({
                 />
               </div>
               <div>
-                <Label className="text-xs font-semibold">Fone Fixo 02</Label>
+                <Label htmlFor="sup-fone2" className="text-xs font-semibold">
+                  Fone Fixo 02
+                </Label>
                 <Input
+                  id="sup-fone2"
                   value={foneFixo2}
                   onChange={(e) => setFoneFixo2(maskPhone(e.target.value))}
                   placeholder="(00) 0000-0000"
@@ -365,9 +382,11 @@ export function SupplierFormDialog({
             {/* REGIME TRIBUTÁRIO + ESTADO DE FATURAMENTO */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label className="text-xs font-semibold">Regime Tributário</Label>
+                <Label id="sup-regime-trib-label" className="text-xs font-semibold">
+                  Regime Tributário
+                </Label>
                 <Select value={regimeTributario} onValueChange={setRegimeTributario}>
-                  <SelectTrigger className={fieldClass}>
+                  <SelectTrigger aria-labelledby="sup-regime-trib-label" className={fieldClass}>
                     <SelectValue placeholder="Selecione o regime" />
                   </SelectTrigger>
                   <SelectContent>
@@ -379,9 +398,11 @@ export function SupplierFormDialog({
                 </Select>
               </div>
               <div>
-                <Label className="text-xs font-semibold">Estado de Faturamento</Label>
+                <Label id="sup-estado-fat-label" className="text-xs font-semibold">
+                  Estado de Faturamento
+                </Label>
                 <Select value={estadoFaturamento} onValueChange={setEstadoFaturamento}>
-                  <SelectTrigger className={fieldClass}>
+                  <SelectTrigger aria-labelledby="sup-estado-fat-label" className={fieldClass}>
                     <SelectValue placeholder="Selecione o estado" />
                   </SelectTrigger>
                   <SelectContent>
@@ -395,8 +416,11 @@ export function SupplierFormDialog({
               </div>
             </div>
             <div className="flex items-center justify-between rounded-lg border border-border p-3">
-              <Label className="text-sm">Ativo</Label>
+              <Label htmlFor="sup-ativo" className="text-sm">
+                Ativo
+              </Label>
               <Switch
+                id="sup-ativo"
                 checked={editingSupplier.active ?? true}
                 onCheckedChange={(v) => updateField('active', v)}
               />
@@ -442,12 +466,20 @@ export function SupplierFormDialog({
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <Label className="text-xs font-semibold">Função / Cargo</Label>
+                      <Label
+                        id={`sup-contact-role-label-${contact.id}`}
+                        className="text-xs font-semibold"
+                      >
+                        Função / Cargo
+                      </Label>
                       <Select
                         value={contact.role}
                         onValueChange={(v) => updateContact(contact.id, 'role', v)}
                       >
-                        <SelectTrigger className={`${fieldClass} w-full`}>
+                        <SelectTrigger
+                          aria-labelledby={`sup-contact-role-label-${contact.id}`}
+                          className={`${fieldClass} w-full`}
+                        >
                           <SelectValue placeholder="Selecione..." />
                         </SelectTrigger>
                         <SelectContent>
@@ -460,8 +492,14 @@ export function SupplierFormDialog({
                       </Select>
                     </div>
                     <div>
-                      <Label className="text-xs font-semibold">Nome</Label>
+                      <Label
+                        htmlFor={`sup-contact-name-${contact.id}`}
+                        className="text-xs font-semibold"
+                      >
+                        Nome
+                      </Label>
                       <Input
+                        id={`sup-contact-name-${contact.id}`}
                         value={contact.name}
                         onChange={(e) => updateContact(contact.id, 'name', e.target.value)}
                         placeholder="Ex.: João"
@@ -471,16 +509,28 @@ export function SupplierFormDialog({
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <Label className="text-xs font-semibold">Assinatura</Label>
+                      <Label
+                        htmlFor={`sup-contact-sig-${contact.id}`}
+                        className="text-xs font-semibold"
+                      >
+                        Assinatura
+                      </Label>
                       <Input
+                        id={`sup-contact-sig-${contact.id}`}
                         value={contact.signature}
                         onChange={(e) => updateContact(contact.id, 'signature', e.target.value)}
                         className={fieldClass}
                       />
                     </div>
                     <div>
-                      <Label className="text-xs font-semibold">Apelido</Label>
+                      <Label
+                        htmlFor={`sup-contact-nick-${contact.id}`}
+                        className="text-xs font-semibold"
+                      >
+                        Apelido
+                      </Label>
                       <Input
+                        id={`sup-contact-nick-${contact.id}`}
                         value={contact.nickname}
                         onChange={(e) => updateContact(contact.id, 'nickname', e.target.value)}
                         className={fieldClass}
@@ -489,8 +539,14 @@ export function SupplierFormDialog({
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <Label className="text-xs font-semibold">Telefone</Label>
+                      <Label
+                        htmlFor={`sup-contact-phone-${contact.id}`}
+                        className="text-xs font-semibold"
+                      >
+                        Telefone
+                      </Label>
                       <Input
+                        id={`sup-contact-phone-${contact.id}`}
                         value={contact.phone}
                         onChange={(e) =>
                           updateContact(contact.id, 'phone', maskPhone(e.target.value))
@@ -501,8 +557,14 @@ export function SupplierFormDialog({
                       />
                     </div>
                     <div>
-                      <Label className="text-xs font-semibold">E-mail</Label>
+                      <Label
+                        htmlFor={`sup-contact-email-${contact.id}`}
+                        className="text-xs font-semibold"
+                      >
+                        E-mail
+                      </Label>
                       <Input
+                        id={`sup-contact-email-${contact.id}`}
                         type="email"
                         value={contact.email}
                         onChange={(e) => updateContact(contact.id, 'email', e.target.value)}
@@ -519,8 +581,11 @@ export function SupplierFormDialog({
           <TabsContent value="address" className="space-y-3 pt-3">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label className="text-xs font-semibold">CEP</Label>
+                <Label htmlFor="sup-cep" className="text-xs font-semibold">
+                  CEP
+                </Label>
                 <Input
+                  id="sup-cep"
                   value={editingSupplier.cep || ''}
                   onChange={(e) => handleCepLookup(e.target.value)}
                   placeholder="00000-000"
@@ -529,8 +594,11 @@ export function SupplierFormDialog({
                 />
               </div>
               <div>
-                <Label className="text-xs font-semibold">Tipo Logradouro</Label>
+                <Label htmlFor="sup-tipo-logradouro" className="text-xs font-semibold">
+                  Tipo Logradouro
+                </Label>
                 <select
+                  id="sup-tipo-logradouro"
                   value={editingSupplier.tipo_logradouro || ''}
                   onChange={(e) => updateField('tipo_logradouro', e.target.value)}
                   onBlur={(e) => updateField('tipo_logradouro', e.target.value)}
@@ -557,8 +625,11 @@ export function SupplierFormDialog({
               </div>
             </div>
             <div>
-              <Label className="text-xs font-semibold">Logradouro</Label>
+              <Label htmlFor="sup-logradouro" className="text-xs font-semibold">
+                Logradouro
+              </Label>
               <Input
+                id="sup-logradouro"
                 value={editingSupplier.logradouro || ''}
                 onChange={(e) => updateField('logradouro', e.target.value)}
                 className={fieldClass}
@@ -566,16 +637,22 @@ export function SupplierFormDialog({
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label className="text-xs font-semibold">Número</Label>
+                <Label htmlFor="sup-numero" className="text-xs font-semibold">
+                  Número
+                </Label>
                 <Input
+                  id="sup-numero"
                   value={editingSupplier.numero || ''}
                   onChange={(e) => updateField('numero', e.target.value)}
                   className={fieldClass}
                 />
               </div>
               <div>
-                <Label className="text-xs font-semibold">Complemento</Label>
+                <Label htmlFor="sup-complemento" className="text-xs font-semibold">
+                  Complemento
+                </Label>
                 <Input
+                  id="sup-complemento"
                   value={editingSupplier.complemento || ''}
                   onChange={(e) => updateField('complemento', e.target.value)}
                   className={fieldClass}
@@ -584,16 +661,22 @@ export function SupplierFormDialog({
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label className="text-xs font-semibold">Bairro</Label>
+                <Label htmlFor="sup-bairro" className="text-xs font-semibold">
+                  Bairro
+                </Label>
                 <Input
+                  id="sup-bairro"
                   value={editingSupplier.bairro || ''}
                   onChange={(e) => updateField('bairro', e.target.value)}
                   className={fieldClass}
                 />
               </div>
               <div>
-                <Label className="text-xs font-semibold">Cidade</Label>
+                <Label htmlFor="sup-cidade" className="text-xs font-semibold">
+                  Cidade
+                </Label>
                 <Input
+                  id="sup-cidade"
                   value={editingSupplier.cidade || ''}
                   onChange={(e) => updateField('cidade', e.target.value)}
                   className={fieldClass}
@@ -602,8 +685,11 @@ export function SupplierFormDialog({
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label className="text-xs font-semibold">Estado</Label>
+                <Label htmlFor="sup-estado" className="text-xs font-semibold">
+                  Estado
+                </Label>
                 <select
+                  id="sup-estado"
                   value={editingSupplier.estado || ''}
                   onChange={(e) => updateField('estado', e.target.value)}
                   onBlur={(e) => updateField('estado', e.target.value)}
@@ -618,8 +704,11 @@ export function SupplierFormDialog({
                 </select>
               </div>
               <div>
-                <Label className="text-xs font-semibold">País</Label>
+                <Label htmlFor="sup-pais" className="text-xs font-semibold">
+                  País
+                </Label>
                 <Input
+                  id="sup-pais"
                   value={editingSupplier.pais || 'Brasil'}
                   onChange={(e) => updateField('pais', e.target.value)}
                   className={fieldClass}
@@ -627,8 +716,11 @@ export function SupplierFormDialog({
               </div>
             </div>
             <div>
-              <Label className="text-xs font-semibold">Ponto de Referência</Label>
+              <Label htmlFor="sup-ponto-ref" className="text-xs font-semibold">
+                Ponto de Referência
+              </Label>
               <Input
+                id="sup-ponto-ref"
                 value={editingSupplier.ponto_referencia || ''}
                 onChange={(e) => updateField('ponto_referencia', e.target.value)}
                 className={fieldClass}
@@ -636,8 +728,11 @@ export function SupplierFormDialog({
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label className="text-xs font-semibold">Latitude</Label>
+                <Label htmlFor="sup-latitude" className="text-xs font-semibold">
+                  Latitude
+                </Label>
                 <Input
+                  id="sup-latitude"
                   type="number"
                   step="any"
                   value={editingSupplier.latitude ?? ''}
@@ -648,8 +743,11 @@ export function SupplierFormDialog({
                 />
               </div>
               <div>
-                <Label className="text-xs font-semibold">Longitude</Label>
+                <Label htmlFor="sup-longitude" className="text-xs font-semibold">
+                  Longitude
+                </Label>
                 <Input
+                  id="sup-longitude"
                   type="number"
                   step="any"
                   value={editingSupplier.longitude ?? ''}
@@ -662,16 +760,22 @@ export function SupplierFormDialog({
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label className="text-xs font-semibold">Google Maps URL</Label>
+                <Label htmlFor="sup-gmaps-url" className="text-xs font-semibold">
+                  Google Maps URL
+                </Label>
                 <Input
+                  id="sup-gmaps-url"
                   value={editingSupplier.google_maps_url || ''}
                   onChange={(e) => updateField('google_maps_url', e.target.value)}
                   className={fieldClass}
                 />
               </div>
               <div>
-                <Label className="text-xs font-semibold">Google Place ID</Label>
+                <Label htmlFor="sup-gplace-id" className="text-xs font-semibold">
+                  Google Place ID
+                </Label>
                 <Input
+                  id="sup-gplace-id"
                   value={editingSupplier.google_place_id || ''}
                   onChange={(e) => updateField('google_place_id', e.target.value)}
                   className={fieldClass}
@@ -679,8 +783,11 @@ export function SupplierFormDialog({
               </div>
             </div>
             <div>
-              <Label className="text-xs font-semibold">Horário de Funcionamento</Label>
+              <Label htmlFor="sup-horario" className="text-xs font-semibold">
+                Horário de Funcionamento
+              </Label>
               <Input
+                id="sup-horario"
                 value={editingSupplier.horario_funcionamento || ''}
                 onChange={(e) => updateField('horario_funcionamento', e.target.value)}
                 className={fieldClass}
@@ -688,7 +795,10 @@ export function SupplierFormDialog({
             </div>
             {/* TRANSPORTADORA PADRÃO */}
             <div className="relative">
-              <Label className="flex items-center gap-1.5 text-xs font-semibold">
+              <Label
+                htmlFor="sup-transportadora-search"
+                className="flex items-center gap-1.5 text-xs font-semibold"
+              >
                 <Truck className="h-3.5 w-3.5" />
                 Transportadora Padrão
               </Label>
@@ -716,6 +826,7 @@ export function SupplierFormDialog({
                 <div className="relative mt-1">
                   <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
                   <Input
+                    id="sup-transportadora-search"
                     value={carrierSearch}
                     onChange={(e) => {
                       const val = e.target.value;
@@ -773,8 +884,11 @@ export function SupplierFormDialog({
               )}
             </div>
             <div>
-              <Label className="text-xs font-semibold">Instruções de Entrega</Label>
+              <Label htmlFor="sup-instrucoes-entrega" className="text-xs font-semibold">
+                Instruções de Entrega
+              </Label>
               <Textarea
+                id="sup-instrucoes-entrega"
                 value={editingSupplier.instrucoes_entrega || ''}
                 onChange={(e) => updateField('instrucoes_entrega', e.target.value)}
                 className="mt-1.5 min-h-[60px]"
@@ -785,48 +899,66 @@ export function SupplierFormDialog({
           {/* SOCIAL */}
           <TabsContent value="social" className="space-y-4 pt-3">
             <div>
-              <Label className="text-xs font-semibold">Website</Label>
+              <Label htmlFor="sup-website" className="text-xs font-semibold">
+                Website
+              </Label>
               <Input
+                id="sup-website"
                 value={editingSupplier.website || ''}
                 onChange={(e) => updateField('website', e.target.value)}
                 className={fieldClass}
               />
             </div>
             <div>
-              <Label className="text-xs font-semibold">Instagram</Label>
+              <Label htmlFor="sup-instagram" className="text-xs font-semibold">
+                Instagram
+              </Label>
               <Input
+                id="sup-instagram"
                 value={editingSupplier.instagram || ''}
                 onChange={(e) => updateField('instagram', e.target.value)}
                 className={fieldClass}
               />
             </div>
             <div>
-              <Label className="text-xs font-semibold">Facebook</Label>
+              <Label htmlFor="sup-facebook" className="text-xs font-semibold">
+                Facebook
+              </Label>
               <Input
+                id="sup-facebook"
                 value={editingSupplier.facebook || ''}
                 onChange={(e) => updateField('facebook', e.target.value)}
                 className={fieldClass}
               />
             </div>
             <div>
-              <Label className="text-xs font-semibold">LinkedIn</Label>
+              <Label htmlFor="sup-linkedin" className="text-xs font-semibold">
+                LinkedIn
+              </Label>
               <Input
+                id="sup-linkedin"
                 value={editingSupplier.linkedin || ''}
                 onChange={(e) => updateField('linkedin', e.target.value)}
                 className={fieldClass}
               />
             </div>
             <div>
-              <Label className="text-xs font-semibold">YouTube</Label>
+              <Label htmlFor="sup-youtube" className="text-xs font-semibold">
+                YouTube
+              </Label>
               <Input
+                id="sup-youtube"
                 value={editingSupplier.youtube || ''}
                 onChange={(e) => updateField('youtube', e.target.value)}
                 className={fieldClass}
               />
             </div>
             <div>
-              <Label className="text-xs font-semibold">TikTok</Label>
+              <Label htmlFor="sup-tiktok" className="text-xs font-semibold">
+                TikTok
+              </Label>
               <Input
+                id="sup-tiktok"
                 value={editingSupplier.tiktok || ''}
                 onChange={(e) => updateField('tiktok', e.target.value)}
                 className={fieldClass}
@@ -838,8 +970,11 @@ export function SupplierFormDialog({
           <TabsContent value="commercial" className="space-y-4 pt-3">
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <Label className="text-xs font-semibold">Markup (%)</Label>
+                <Label htmlFor="sup-markup" className="text-xs font-semibold">
+                  Markup (%)
+                </Label>
                 <Input
+                  id="sup-markup"
                   type="number"
                   value={editingSupplier.default_markup_percent ?? ''}
                   onChange={(e) =>
@@ -852,8 +987,11 @@ export function SupplierFormDialog({
                 />
               </div>
               <div>
-                <Label className="text-xs font-semibold">Pedido Mínimo (R$)</Label>
+                <Label htmlFor="sup-min-order" className="text-xs font-semibold">
+                  Pedido Mínimo (R$)
+                </Label>
                 <Input
+                  id="sup-min-order"
                   type="number"
                   value={editingSupplier.min_order_value ?? ''}
                   onChange={(e) =>
@@ -866,8 +1004,11 @@ export function SupplierFormDialog({
                 />
               </div>
               <div>
-                <Label className="text-xs font-semibold">Prazo (dias)</Label>
+                <Label htmlFor="sup-prazo" className="text-xs font-semibold">
+                  Prazo (dias)
+                </Label>
                 <Input
+                  id="sup-prazo"
                   type="number"
                   value={editingSupplier.delivery_time_days ?? ''}
                   onChange={(e) =>
@@ -882,16 +1023,22 @@ export function SupplierFormDialog({
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label className="text-xs font-semibold">Cond. Pagamento</Label>
+                <Label htmlFor="sup-payment-terms" className="text-xs font-semibold">
+                  Cond. Pagamento
+                </Label>
                 <Input
+                  id="sup-payment-terms"
                   value={editingSupplier.payment_terms || ''}
                   onChange={(e) => updateField('payment_terms', e.target.value)}
                   className={fieldClass}
                 />
               </div>
               <div>
-                <Label className="text-xs font-semibold">Cond. Frete</Label>
+                <Label htmlFor="sup-shipping-terms" className="text-xs font-semibold">
+                  Cond. Frete
+                </Label>
                 <Input
+                  id="sup-shipping-terms"
                   value={editingSupplier.shipping_terms || ''}
                   onChange={(e) => updateField('shipping_terms', e.target.value)}
                   className={fieldClass}
@@ -899,8 +1046,11 @@ export function SupplierFormDialog({
               </div>
             </div>
             <div>
-              <Label className="text-xs font-semibold">Prioridade (0-100)</Label>
+              <Label htmlFor="sup-priority" className="text-xs font-semibold">
+                Prioridade (0-100)
+              </Label>
               <Input
+                id="sup-priority"
                 type="number"
                 value={editingSupplier.priority ?? 50}
                 onChange={(e) =>
@@ -912,8 +1062,11 @@ export function SupplierFormDialog({
               />
             </div>
             <div>
-              <Label className="text-xs font-semibold">Observações</Label>
+              <Label htmlFor="sup-notes" className="text-xs font-semibold">
+                Observações
+              </Label>
               <Textarea
+                id="sup-notes"
                 value={editingSupplier.notes || ''}
                 onChange={(e) => updateField('notes', e.target.value)}
                 className="mt-1.5 min-h-[80px]"
@@ -924,8 +1077,14 @@ export function SupplierFormDialog({
           {/* FINANCIAL */}
           <TabsContent value="financial" className="space-y-4 pt-3">
             <div>
-              <Label className="text-xs font-semibold">Formas de Pagamento</Label>
-              <div className="mt-1.5 flex gap-3">
+              <Label id="sup-formas-pagamento-label" className="text-xs font-semibold">
+                Formas de Pagamento
+              </Label>
+              <div
+                role="group"
+                aria-labelledby="sup-formas-pagamento-label"
+                className="mt-1.5 flex gap-3"
+              >
                 {['Boleto', 'PIX', 'Transferência', 'Cartão'].map((method) => (
                   <label key={method} className="flex cursor-pointer items-center gap-1.5 text-sm">
                     <input
@@ -995,12 +1154,20 @@ export function SupplierFormDialog({
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <Label className="text-xs font-semibold">Tipo de Chave</Label>
+                        <Label
+                          id={`sup-pix-tipo-label-${pix.id}`}
+                          className="text-xs font-semibold"
+                        >
+                          Tipo de Chave
+                        </Label>
                         <Select
                           value={pix.tipo}
                           onValueChange={(v) => updatePixKey(pix.id, 'tipo', v)}
                         >
-                          <SelectTrigger className={`${fieldClass} w-full`}>
+                          <SelectTrigger
+                            aria-labelledby={`sup-pix-tipo-label-${pix.id}`}
+                            className={`${fieldClass} w-full`}
+                          >
                             <SelectValue placeholder="Selecione..." />
                           </SelectTrigger>
                           <SelectContent>
@@ -1013,8 +1180,14 @@ export function SupplierFormDialog({
                         </Select>
                       </div>
                       <div>
-                        <Label className="text-xs font-semibold">Chave PIX</Label>
+                        <Label
+                          htmlFor={`sup-pix-chave-${pix.id}`}
+                          className="text-xs font-semibold"
+                        >
+                          Chave PIX
+                        </Label>
                         <Input
+                          id={`sup-pix-chave-${pix.id}`}
                           value={pix.chave}
                           onChange={(e) =>
                             updatePixKey(pix.id, 'chave', applyPixMask(e.target.value, pix.tipo))
@@ -1030,8 +1203,11 @@ export function SupplierFormDialog({
                       </div>
                     </div>
                     <div>
-                      <Label className="text-xs font-semibold">Favorecido (Nome)</Label>
+                      <Label htmlFor={`sup-pix-fav-${pix.id}`} className="text-xs font-semibold">
+                        Favorecido (Nome)
+                      </Label>
                       <Input
+                        id={`sup-pix-fav-${pix.id}`}
                         value={pix.favorecido}
                         onChange={(e) => updatePixKey(pix.id, 'favorecido', e.target.value)}
                         className={fieldClass}

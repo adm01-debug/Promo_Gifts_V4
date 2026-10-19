@@ -102,7 +102,7 @@ test.describe("QuickView na foto — paridade entre módulos", () => {
       await gotoAndSettle(page, mod.route);
       if (mod.view) await switchCatalogView(page, mod.view);
       const thumb = await findFirstThumb(page, mod.thumbs);
-      if (!thumb) test.skip(true, `Nenhum thumb visível em ${mod.route}`);
+      if (!thumb) expect(false, `[E108] Nenhum thumb visível em ${mod.route}`).toBeTruthy();
 
       const urlBefore = page.url();
       await thumb!.click();
@@ -117,7 +117,7 @@ test.describe("QuickView na foto — paridade entre módulos", () => {
       await gotoAndSettle(page, mod.route);
       if (mod.view) await switchCatalogView(page, mod.view);
       const thumb = await findFirstThumb(page, mod.thumbs);
-      if (!thumb) test.skip(true, `Nenhum thumb visível em ${mod.route}`);
+      if (!thumb) expect(false, `[E108] Nenhum thumb visível em ${mod.route}`).toBeTruthy();
 
       await expect(thumb!).toHaveAttribute("role", "button");
       await expect(thumb!).toHaveAttribute("tabindex", "0");
@@ -142,7 +142,7 @@ test.describe("Estoque • QuickView — estados de borda", () => {
   test("sem imagem: thumb continua clicável e abre QuickView", async ({ page }) => {
     await gotoAndSettle(page, "/estoque");
     const thumb = await stockThumb(page);
-    if ((await thumb.count()) === 0) test.skip(true, "Tabela de estoque vazia");
+    if ((await thumb.count()) === 0) expect(false, "[E108] Tabela de estoque vazia").toBeTruthy();
 
     // O wrapper QuickViewThumb mantém role=button mesmo quando a imagem
     // interna cai no fallback (sem src). O clique deve abrir o QuickView.
@@ -161,7 +161,7 @@ test.describe("Estoque • QuickView — estados de borda", () => {
   }) => {
     await gotoAndSettle(page, "/estoque");
     const thumb = await stockThumb(page);
-    if ((await thumb.count()) === 0) test.skip(true, "Tabela de estoque vazia");
+    if ((await thumb.count()) === 0) expect(false, "[E108] Tabela de estoque vazia").toBeTruthy();
 
     // Atrasamos QUALQUER chamada à edge do bridge externa após o page settle,
     // simulando um useProduct lento. O modal só monta quando o produto chega
@@ -191,7 +191,7 @@ test.describe("Estoque • QuickView — estados de borda", () => {
   }) => {
     await gotoAndSettle(page, "/estoque");
     const thumb = await stockThumb(page);
-    if ((await thumb.count()) === 0) test.skip(true, "Tabela de estoque vazia");
+    if ((await thumb.count()) === 0) expect(false, "[E108] Tabela de estoque vazia").toBeTruthy();
 
     // Após o settle inicial, forçamos 500 em todas as próximas chamadas do bridge.
     await page.route("**/functions/v1/external-db-bridge*", (route) =>
@@ -244,7 +244,7 @@ test.describe("Clique fora da thumb navega para PDP (não abre QuickView)", () =
       await switchCatalogView(page, c.view);
       const name = page.locator(c.cardName).first();
       await name.waitFor({ state: "attached", timeout: THUMB_WAIT_MS }).catch(() => undefined);
-      if ((await name.count()) === 0) test.skip(true, `View ${c.label} indisponível`);
+      if ((await name.count()) === 0) expect(false, `[E108] View ${c.label} indisponível`).toBeTruthy();
 
       const urlBefore = page.url();
       await name.click();
@@ -266,7 +266,7 @@ test.describe("QuickView • fechamento e a11y", () => {
   async function openFromStock(page: Page) {
     await gotoAndSettle(page, "/estoque");
     const thumb = await stockThumb(page);
-    if ((await thumb.count()) === 0) test.skip(true, "Tabela de estoque vazia");
+    if ((await thumb.count()) === 0) expect(false, "[E108] Tabela de estoque vazia").toBeTruthy();
     await thumb.click();
     await expect(page.locator(Sel.product.quickViewName).first()).toBeVisible({
       timeout: 10_000,
@@ -322,7 +322,7 @@ test.describe("QuickView • navegação por teclado e focus trap", () => {
   async function focusFirstThumb(page: Page) {
     await gotoAndSettle(page, "/estoque");
     const thumb = await stockThumb(page);
-    if ((await thumb.count()) === 0) test.skip(true, "Tabela de estoque vazia");
+    if ((await thumb.count()) === 0) expect(false, "[E108] Tabela de estoque vazia").toBeTruthy();
     await thumb.focus();
     return thumb;
   }
@@ -374,7 +374,7 @@ test.describe("Estoque • QuickView — paridade de ações (4 botões)", () =>
   test("exibe cart + favorite + compare + share no /estoque", async ({ page }) => {
     await gotoAndSettle(page, "/estoque");
     const thumb = await stockThumb(page);
-    if (!(await thumb.count())) test.skip(true, "Nenhum thumb visível em /estoque");
+    if (!(await thumb.count())) expect(false, "[E108] Nenhum thumb visível em /estoque").toBeTruthy();
 
     await thumb.click();
     await expect(page.locator(Sel.product.quickViewName)).toBeVisible({ timeout: 10_000 });
@@ -398,7 +398,7 @@ test.describe("Estoque • QuickView — abertura/fechamento em sequência", () 
   test("abre e fecha o QuickView 3x sem crash nem testid duplicado", async ({ page }) => {
     await gotoAndSettle(page, "/estoque");
     const thumb = await stockThumb(page);
-    if (!(await thumb.count())) test.skip(true, "Nenhum thumb visível em /estoque");
+    if (!(await thumb.count())) expect(false, "[E108] Nenhum thumb visível em /estoque").toBeTruthy();
 
     for (let i = 0; i < 3; i++) {
       await thumb.click();

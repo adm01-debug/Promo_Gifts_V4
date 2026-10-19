@@ -218,7 +218,7 @@ export function AppHealthDashboard() {
                     </thead>
                     <tbody>
                       {lookupResult.webhook_events.map((ev, i) => (
-                        <tr key={i} className="border-t border-border/40">
+                        <tr key={`${ev.occurred_at}-${i}`} className="border-t border-border/40">
                           <td className="whitespace-nowrap px-2 py-1.5 font-mono">
                             {format(new Date(ev.occurred_at), 'HH:mm:ss.SSS')}
                           </td>
@@ -288,8 +288,11 @@ export function AppHealthDashboard() {
                       </td>
                     </tr>
                   ) : (
-                    topRoutesByError.map((r, i) => (
-                      <tr key={i} className="border-t border-border/40">
+                    topRoutesByError.map((r) => (
+                      <tr
+                        key={`${r.endpoint}-${r.direction}`}
+                        className="border-t border-border/40"
+                      >
                         <td className="max-w-[220px] truncate px-2 py-1.5" title={r.endpoint}>
                           {r.endpoint}
                           <span className="ml-1 text-[10px] text-muted-foreground">
@@ -350,8 +353,8 @@ export function AppHealthDashboard() {
                       </td>
                     </tr>
                   ) : (
-                    webhooksBySource.map((r, i) => (
-                      <tr key={i} className="border-t border-border/40">
+                    webhooksBySource.map((r) => (
+                      <tr key={`${r.source}-${r.direction}`} className="border-t border-border/40">
                         <td className="px-2 py-1.5">
                           {r.source}
                           <span className="ml-1 text-[10px] text-muted-foreground">
@@ -410,8 +413,8 @@ export function AppHealthDashboard() {
                       </td>
                     </tr>
                   ) : (
-                    edgesByLatency.map((r, i) => (
-                      <tr key={i} className="border-t border-border/40">
+                    edgesByLatency.map((r) => (
+                      <tr key={r.edge_function} className="border-t border-border/40">
                         <td className="max-w-[180px] truncate px-2 py-1.5" title={r.edge_function}>
                           {r.edge_function}
                           <span className="ml-1 text-[10px] text-muted-foreground">

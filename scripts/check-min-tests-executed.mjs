@@ -1,18 +1,19 @@
 #!/usr/bin/env node
 /**
- * E23 — Gate: minimo de testes executados.
+ * E23/E109 — Gate: minimo de testes executados.
  * Le o relatorio JSON do Playwright (--reporter=json) e falha se
  * total de specs executados (passed + failed + flaky) < MIN_TESTS.
  *
  * Uso: node scripts/check-min-tests-executed.mjs [relatorio.json] [--min=N]
- * Default: test-results/results.json, --min=1
+ * Default: test-results/results.json, --min 10 (E109: default proporcional ao
+ * projeto; cada workflow deve passar --min explícito para seu contexto)
  */
 import fs from 'fs';
 
 const args = process.argv.slice(2);
 const reportPath = args.find((a) => !a.startsWith('--')) ?? 'test-results/results.json';
 const minArg = args.find((a) => a.startsWith('--min='));
-const MIN_TESTS = minArg ? parseInt(minArg.replace('--min=', ''), 10) : 1;
+const MIN_TESTS = minArg ? parseInt(minArg.replace('--min=', ''), 10) : 10;
 
 if (!fs.existsSync(reportPath)) {
   console.error(`[check-min-tests] Relatorio nao encontrado: ${reportPath}`);

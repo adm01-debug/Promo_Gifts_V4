@@ -85,7 +85,7 @@ test.describe("Catalog & Filters", () => {
     await expect(firstCard).toBeVisible({ timeout: 15_000 });
     const totalCards = await page.locator('[data-testid="product-card"]').count();
     if (totalCards === 0) {
-      test.skip(true, "Sem cards renderizados — provavelmente sem dados.");
+      expect(false, "[E108] Sem cards renderizados — provavelmente sem dados.").toBeTruthy();
       return;
     }
 
@@ -126,7 +126,7 @@ test.describe("Catalog & Filters", () => {
     const opacityZero = await page.locator('[data-testid="product-grid"] img.opacity-0').count();
     const totalImgs = await page.locator('[data-testid="product-grid"] img').count();
     if (totalImgs === 0) {
-      test.skip(true, "Sem <img> no grid — provavelmente sem dados.");
+      expect(false, "[E108] Sem <img> no grid — provavelmente sem dados.").toBeTruthy();
       return;
     }
     // Permitimos até 20% ainda em opacity-0 (cards abaixo do viewport / lazy load).

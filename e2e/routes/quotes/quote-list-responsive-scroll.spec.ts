@@ -32,7 +32,7 @@ test.describe("[module:quotes] [component:quotes-list] [owner:team-growth] @regr
     // Truncamento: cliente e status usam `truncate` (white-space: nowrap).
     const clientCell = page.locator('[data-testid="quote-client-cell"]').first();
     if ((await clientCell.count()) === 0) {
-      test.skip(true, "Sem orçamentos para validar truncamento.");
+      expect(false, "[E108] Sem orçamentos para validar truncamento.").toBeTruthy();
     }
     const clientSpan = clientCell.locator("span").first();
     await expect(clientSpan).toHaveClass(/truncate/);

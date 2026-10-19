@@ -30,13 +30,63 @@ const isUpdate = process.argv.includes('--update');
 const ALLOWLIST = new Set([
   // Tem fallback hardcoded: ${{ secrets.PGPORT || '5432' }}
   'secrets.PGPORT',
-  // Template de exemplo — não é um workflow real
-  'secrets.EXAMPLE_API_KEY',
-  // Tem fallback: ${{ secrets.BRANCH_PROTECTION_READ_TOKEN || github.token }}
+// Tem fallback: ${{ secrets.BRANCH_PROTECTION_READ_TOKEN || github.token }}
   'secrets.BRANCH_PROTECTION_READ_TOKEN',
   // Allowlistado em check-workflow-contracts (Gate 4 opcional)
   'secrets.LHCI_GITHUB_APP_TOKEN',
 ]);
+
+const isScanEdge = process.argv.includes('--scan-edge');
+
+// ---------------------------------------------------------------------------
+// E194: Escaneia Deno.env.get() em supabase/functions/**/*.ts
+// ---------------------------------------------------------------------------
+function collectEdgeFunctionFiles(dir) {
+  const files = [];
+  if (!statSync(dir, { throwIfNoEntry: false })) return files;
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const full = join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...collectEdgeFunctionFiles(full));
+    } else if (entry.isFile() && entry.name.endsWith('.ts')) {
+      files.push(full);
+    }
+  }
+  return files;
+}
+
+function extractDenoEnvRefs(content) {
+  const refs = new Set();
+  const re = /Deno\.env\.get\(['"]([A-Z][A-Z0-9_]+)['"]\)/g;
+  let m;
+  while ((m = re.exec(content)) !== null) {
+    refs.add(m[1]);
+  }
+  return refs;
+}
+
+function extractEdgeDocumented(mdPath) {
+  const documented = new Set();
+  let content;
+  try {
+    content = readFileSync(mdPath, 'utf8');
+  } catch {
+    return documented;
+  }
+  // Encontra a seção "## Segredos de Edge Functions"
+  const sectionStart = content.indexOf('## Segredos de Edge Functions');
+  if (sectionStart === -1) return documented;
+  // Lê até o próximo ## (excluindo ### subsections)
+  const sectionEnd = content.indexOf('\n## ', sectionStart + 1);
+  const section = sectionEnd === -1 ? content.slice(sectionStart) : content.slice(sectionStart, sectionEnd);
+  // Extrai `NOME` das células
+  const tableRe = /`([A-Z][A-Z0-9_]+)`/g;
+  let m;
+  while ((m = tableRe.exec(section)) !== null) {
+    documented.add(m[1]);
+  }
+  return documented;
+}
 
 // ---------------------------------------------------------------------------
 // Coleta todos os arquivos YAML dos workflows e actions
@@ -228,7 +278,63 @@ if (undocumented.length === 0) {
 
 console.log('');
 
+// ---------------------------------------------------------------------------
+// E194 — Edge Functions: Deno.env.get() vs seção "Segredos de Edge Functions"
+// ---------------------------------------------------------------------------
+let edgeExitCode = 0;
+
+if (isScanEdge || isGate) {
+  const functionsDir = join(ROOT, 'supabase', 'functions');
+  const edgeFiles = collectEdgeFunctionFiles(functionsDir);
+  const edgeRefs = new Map(); // VAR_NAME → Set<relPath>
+
+  for (const file of edgeFiles) {
+    const content = readFileSync(file, 'utf8');
+    const refs = extractDenoEnvRefs(content);
+    const relPath = relative(ROOT, file);
+    for (const ref of refs) {
+      if (!edgeRefs.has(ref)) edgeRefs.set(ref, new Set());
+      edgeRefs.get(ref).add(relPath);
+    }
+  }
+
+  const edgeDocumented = extractEdgeDocumented(segredosMd);
+  const edgeUndocumented = [...edgeRefs.keys()].filter(k => !edgeDocumented.has(k)).sort();
+  const edgePhantom = [...edgeDocumented].filter(k => !edgeRefs.has(k)).sort();
+
+  console.log('=== check-secrets-inventory.mjs — Edge Functions (E194) ===\n');
+  console.log(`Arquivos edge escaneados: ${edgeFiles.length}`);
+  console.log(`Deno.env.get() únicos:    ${edgeRefs.size}`);
+  console.log(`Documentados (SEGREDOS):  ${edgeDocumented.size}`);
+  console.log(`Não documentados:         ${edgeUndocumented.length}`);
+  console.log(`Sem referência (phantoms):${edgePhantom.length}`);
+
+  if (edgeUndocumented.length > 0) {
+    console.error('\n⚠️  EDGE FUNCTIONS — Deno.env.get() NÃO DOCUMENTADOS:');
+    for (const k of edgeUndocumented) {
+      const files = [...(edgeRefs.get(k) || [])].slice(0, 3).join(', ');
+      console.error(`  • ${k} — ex: ${files}`);
+    }
+    edgeExitCode = 1;
+  } else {
+    console.log('\n✅ Todos Deno.env.get() das edge functions estão documentados em SEGREDOS.md.');
+  }
+
+  if (edgePhantom.length > 0 && !isGate) {
+    console.log('\n🔍 Edge Functions — Documentados sem referência (possíveis phantoms):');
+    for (const k of edgePhantom) {
+      console.log(`  • ${k}`);
+    }
+  }
+  console.log('');
+}
+
 if (isGate && undocumented.length > 0) {
   console.error(`::error::check-secrets-inventory: ${undocumented.length} segredo(s) referenciado(s) mas não documentado(s) em docs/ci/SEGREDOS.md. Adicione as entradas ou inclua no allowlist de check-secrets-inventory.mjs.`);
+  process.exit(1);
+}
+
+if (isGate && edgeExitCode > 0) {
+  console.error(`::error::check-secrets-inventory: edge functions com Deno.env.get() não documentados em docs/ci/SEGREDOS.md (seção "Segredos de Edge Functions").`);
   process.exit(1);
 }

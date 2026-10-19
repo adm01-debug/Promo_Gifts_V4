@@ -152,6 +152,16 @@ export function useGlobalSearch() {
     commandsRef.current = commands;
   }, [commands]);
 
+  // Rastreia os timers de voice-action para clearTimeout no unmount (E133)
+  const voiceTimersRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
+  useEffect(() => {
+    const timers = voiceTimersRef.current;
+    return () => {
+      timers.forEach(clearTimeout);
+      timers.clear();
+    };
+  }, []);
+
   // ── Voice Agent (ElevenLabs + AI) ──
   const handleVoiceAction = useCallback(
     (action: VoiceAgentAction) => {
@@ -165,10 +175,12 @@ export function useGlobalSearch() {
         case 'navigate':
           if (action.data?.route) {
             const route = action.data.route;
-            setTimeout(() => {
-              setVoiceOverlayOpen(false);
-              navigate(route);
-            }, 500);
+            voiceTimersRef.current.add(
+              setTimeout(() => {
+                setVoiceOverlayOpen(false);
+                navigate(route);
+              }, 500),
+            );
           }
           break;
         case 'search':
@@ -182,44 +194,54 @@ export function useGlobalSearch() {
 
             const finalQuery = searchTerm || filterParts.join(' ');
             if (finalQuery) {
-              setTimeout(() => {
-                setVoiceOverlayOpen(false);
-                setQuery(finalQuery);
-                setOpen(true);
-              }, 500);
+              voiceTimersRef.current.add(
+                setTimeout(() => {
+                  setVoiceOverlayOpen(false);
+                  setQuery(finalQuery);
+                  setOpen(true);
+                }, 500),
+              );
             }
           }
           break;
         case 'clear':
-          setTimeout(() => {
-            setVoiceOverlayOpen(false);
-            setQuery('');
-            setResults([]);
-          }, 500);
+          voiceTimersRef.current.add(
+            setTimeout(() => {
+              setVoiceOverlayOpen(false);
+              setQuery('');
+              setResults([]);
+            }, 500),
+          );
           break;
         case 'sort':
-          setTimeout(() => {
-            setVoiceOverlayOpen(false);
-            if (action.data?.sortBy) {
-              navigate(`/?sort=${action.data.sortBy}`);
-            }
-          }, 500);
+          voiceTimersRef.current.add(
+            setTimeout(() => {
+              setVoiceOverlayOpen(false);
+              if (action.data?.sortBy) {
+                navigate(`/?sort=${action.data.sortBy}`);
+              }
+            }, 500),
+          );
           break;
         case 'answer':
           break;
         case 'open_oracle':
-          setTimeout(() => {
-            setVoiceOverlayOpen(false);
-            useOracleVoiceBridge.getState().openOracle(action.data?.oracleMessage || undefined);
-          }, 500);
+          voiceTimersRef.current.add(
+            setTimeout(() => {
+              setVoiceOverlayOpen(false);
+              useOracleVoiceBridge.getState().openOracle(action.data?.oracleMessage || undefined);
+            }, 500),
+          );
           break;
         case 'open_cart':
-          setTimeout(() => {
-            setVoiceOverlayOpen(false);
-            // BUG-9 FIX: substituído KeyboardEvent Alt+O (conflitava com Alt+O=Orçamentos)
-            // pelo mecanismo correto: evento customizado 'open-seller-cart'.
-            window.dispatchEvent(new CustomEvent('open-seller-cart'));
-          }, 500);
+          voiceTimersRef.current.add(
+            setTimeout(() => {
+              setVoiceOverlayOpen(false);
+              // BUG-9 FIX: substituído KeyboardEvent Alt+O (conflitava com Alt+O=Orçamentos)
+              // pelo mecanismo correto: evento customizado 'open-seller-cart'.
+              window.dispatchEvent(new CustomEvent('open-seller-cart'));
+            }, 500),
+          );
           break;
       }
     },

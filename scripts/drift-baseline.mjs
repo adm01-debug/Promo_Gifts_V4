@@ -38,9 +38,25 @@ export const BASELINE_NAME_RE = /^(\d{14})_baseline_schema\.sql$/;
 // silêncio uma migration dessas aplicada depois do dump e o drift-check
 // acusaria drift falso.
 const MIGRATION_RE = /^(\d+)_[^/]+\.sql$/;
+
+// E077: lê a major do PostgreSQL de supabase/config.toml (fonte única).
+// Se ausente, cai para 17 como fallback seguro, mas o drift-check loga aviso.
+function readShadowMajorVersionFromConfig() {
+  try {
+    const configPath = join(process.cwd(), 'supabase', 'config.toml');
+    const content = readFileSync(configPath, 'utf8');
+    const m = content.match(/^\[db\][\s\S]*?major_version\s*=\s*(\d+)/m);
+    if (m) return parseInt(m[1], 10);
+  } catch {
+    // config.toml ausente ou ilegível — fallback
+  }
+  return 17;
+}
+
 // Produção roda PG 17.6; sem isto o shadow do CLI usa PG 15 e os GRANTs com
 // MAINTAIN (privilégio do PG 17) falham no replay.
-export const SHADOW_MAJOR_VERSION = 17;
+// E077: valor lido de supabase/config.toml[db].major_version (não mais literal).
+export const SHADOW_MAJOR_VERSION = readShadowMajorVersionFromConfig();
 
 // O shadow do CLI concede ALL em tabelas/sequências/funções novas de `public` a
 // anon/authenticated/service_role (privilégios padrão da imagem). O dump só
@@ -938,12 +954,66 @@ export function dropDumpLossyFunctions(diffSql, shadowSql) {
   return { sql: out, dropped };
 }
 
+// E038: agrupa linhas em statements SQL antes de filtrar. Sem agrupamento,
+// um statement multi-linha como `CREATE INDEX … ON … (col);` teria só a
+// primeira linha removida pela allowlist, deixando as continuações como ruído.
+export function splitDiffStatements(sql) {
+  const stmts = [];
+  const lines = sql.split('\n');
+  let current = [];
+  let dollarTag = null;
+
+  for (const line of lines) {
+    const t = line.trim();
+
+    // Fora de qualquer statement: pular linhas de ruído/cabeçalho
+    if (!current.length) {
+      if (!t) continue;
+      if (t.startsWith('--')) continue;
+      if (/^no schema changes found[.;]?\s*$/i.test(t)) continue;
+    }
+
+    // Rastrear abertura de dollar-quote
+    if (!dollarTag) {
+      const dm = line.match(/\bAS\s+(\$[A-Za-z0-9_]*\$)/i) ?? line.match(/^(\$[A-Za-z0-9_]*\$)/);
+      if (dm) {
+        const tag = dm[1];
+        const tagRe = new RegExp(tag.replace(/\$/g, '\\$'), 'g');
+        const occurrences = (line.match(tagRe) ?? []).length;
+        // Número ímpar = abre sem fechar nesta linha; par = função inline, sem estado
+        if (occurrences % 2 === 1) dollarTag = tag;
+      }
+    }
+
+    current.push(line);
+
+    if (dollarTag) {
+      // Dentro de dollar-quote: esperar o fechamento
+      const opens = (line.match(new RegExp(dollarTag.replace(/\$/g, '\\$'), 'g')) ?? []).length;
+      // Se esta linha fecha o dollar-quote (número ímpar de ocorrências) E termina com ';'
+      if (opens % 2 === 1 && current.length > 1) {
+        dollarTag = null;
+        if (t.endsWith(';')) { stmts.push(current.join('\n')); current = []; }
+      }
+      continue;
+    }
+
+    // Fora de dollar-quote: ';' final do statement
+    if (t.endsWith(';')) {
+      stmts.push(current.join('\n'));
+      current = [];
+    }
+  }
+
+  if (current.some((l) => l.trim())) stmts.push(current.join('\n'));
+  return stmts;
+}
+
 export function filterDiff(diffSql, allowlist) {
-  return diffSql
-    .split('\n')
-    .filter((l) => l.trim() && !l.trim().startsWith('--'))
-    .filter((l) => !/^\s*no schema changes found[.;]?\s*$/i.test(l))
-    .filter((l) => !allowlist.some((re) => re.test(l)));
+  return splitDiffStatements(diffSql).filter((stmt) => {
+    const first = stmt.split('\n').find((l) => l.trim() && !l.trim().startsWith('--')) ?? '';
+    return !allowlist.some((re) => re.test(first.trim()));
+  });
 }
 
 function arg(argv, name) {

@@ -13,11 +13,17 @@
  * Extrair o hook para um Provider que monta 1× no App.tsx. Os componentes
  * filhos consomem via `useCloudStatusContext()` → zero instâncias adicionais do scheduler.
  *
- * RETROCOMPATIBILIDADE:
- * `useCloudStatus()` continua funcionando fora do provider (fallback para
- * instância isolada) para não quebrar callers em outros contextos.
+ * E131 (2026-10-18): `useCloudStatus()` era chamado condicionalmente em
+ * `useCloudStatusContext()` (fallback fora do provider) — violação de
+ * react-hooks/rules-of-hooks e potencial React #310. Substituído por default
+ * estático no createContext: fora do provider, o hook retorna o estado inicial
+ * `healthy` / sem polling. Callers que precisam de polling real devem envolver
+ * com `<CloudStatusProvider>`.
+ *
+ * E136 (2026-10-18): Provider value envolvido em useMemo para evitar re-render
+ * da árvore toda a cada re-render do provider.
  */
-import { createContext, useContext, type ReactNode } from 'react';
+import { createContext, useContext, useMemo, type ReactNode } from 'react';
 import { useCloudStatus } from '@/hooks/ui/useCloudStatus';
 import type { CloudStatus, CloudStatusSnapshot } from '@/lib/cloud-status';
 
@@ -28,26 +34,33 @@ interface CloudStatusContextValue {
   isChecking: boolean;
 }
 
-const CloudStatusContext = createContext<CloudStatusContextValue | null>(null);
+const DEFAULT_CLOUD_STATUS: CloudStatusContextValue = {
+  status: 'healthy',
+  snapshot: null,
+  retry: async () => {},
+  isChecking: false,
+};
+
+const CloudStatusContext = createContext<CloudStatusContextValue>(DEFAULT_CLOUD_STATUS);
 
 /**
  * Wraps children with a single cloud-status scheduler.
  * Place high in the component tree (App.tsx) to cover Banner + Dot.
  */
 export function CloudStatusProvider({ children }: { children: ReactNode }) {
-  const value = useCloudStatus();
+  const { status, snapshot, retry, isChecking } = useCloudStatus();
+  const value = useMemo<CloudStatusContextValue>(
+    () => ({ status, snapshot, retry, isChecking }),
+    [status, snapshot, retry, isChecking],
+  );
   return <CloudStatusContext.Provider value={value}>{children}</CloudStatusContext.Provider>;
 }
 
 /**
  * Consumes cloud status from the nearest `CloudStatusProvider`.
- * Falls back to a fresh `useCloudStatus()` instance if used outside a provider
- * (e.g. in tests, Storybook, or admin pages not wrapped by the provider).
+ * Outside a provider returns the static default (status='healthy', no polling).
+ * Wrap with <CloudStatusProvider> if live polling is needed.
  */
 export function useCloudStatusContext(): CloudStatusContextValue {
-  const ctx = useContext(CloudStatusContext);
-  if (ctx) return ctx;
-  // Fallback: hook isolado (mantém retrocompat fora do provider)
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  return useCloudStatus();
+  return useContext(CloudStatusContext);
 }

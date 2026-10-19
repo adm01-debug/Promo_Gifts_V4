@@ -53,7 +53,7 @@ async function waitForStorage(
 async function getFirstCard(page: Page): Promise<{ card: Locator; toggle: Locator }> {
   const card = page.getByTestId('quote-summary-item-0');
   if ((await card.count()) === 0) {
-    test.skip(true, 'Resumo vazio — fluxo de adicionar produto fora do escopo.');
+    expect(false, '[E108] Resumo vazio — fluxo de adicionar produto fora do escopo.').toBeTruthy();
   }
   await expect(card).toBeVisible({ timeout: 10_000 });
   const toggle = page.getByTestId('quote-summary-toggle-0');

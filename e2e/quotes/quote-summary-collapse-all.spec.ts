@@ -36,7 +36,7 @@ test.describe('Quote Builder · botão global Recolher / Expandir', () => {
 
     const firstCard = page.getByTestId('quote-summary-item-0');
     if ((await firstCard.count()) === 0) {
-      test.skip(true, 'Resumo vazio — adicionar produto está fora do escopo desta spec.');
+      expect(false, '[E108] Resumo vazio — adicionar produto está fora do escopo desta spec.').toBeTruthy();
     }
     await expect(firstCard).toBeVisible({ timeout: 10_000 });
 
@@ -100,7 +100,7 @@ test.describe('Quote Builder · botão global Recolher / Expandir', () => {
 
     const firstCard = page.getByTestId('quote-summary-item-0');
     if ((await firstCard.count()) === 0) {
-      test.skip(true, 'Resumo vazio.');
+      expect(false, '[E108] Resumo vazio.').toBeTruthy();
     }
 
     const collapseAll = page.getByTestId('quote-summary-collapse-all');

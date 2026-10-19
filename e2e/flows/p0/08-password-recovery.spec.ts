@@ -119,7 +119,7 @@ test.describe("P0 — Password recovery", () => {
     // Tenta acessar fluxo de "esqueceu a senha" — se o link existir.
     const forgot = page.locator('[data-testid="login-forgot-link"]').first();
     if (!(await forgot.isVisible().catch(() => false))) {
-      test.skip(true, "link de esqueceu-senha não exposto na UI");
+      expect(false, "[E108] link de esqueceu-senha não exposto na UI").toBeTruthy();
     }
     await forgot.click();
 

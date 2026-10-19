@@ -60,7 +60,7 @@ test.describe('Carrinhos · falha de rede durante refresh @carrinhos', () => {
     await gotoAndSettle(page, '/carrinhos');
 
     const ids = await collectCartIds(page);
-    if (ids.length === 0) test.skip(true, 'sem carrinhos disponíveis');
+    if (ids.length === 0) expect(false, '[E108] sem carrinhos disponíveis').toBeTruthy();
     const cartId = ids[0];
     recordCarts(testInfo, { A: cartId });
     recordNav(testInfo, `A:${cartId}`);

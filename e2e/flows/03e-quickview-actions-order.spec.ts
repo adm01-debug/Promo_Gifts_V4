@@ -34,14 +34,14 @@ async function openHarness(page: Page, params = '') {
   const url = `/__test/quickview-actions${params}`;
   const resp = await page.goto(url, { waitUntil: 'domcontentloaded' });
   if (!resp || resp.status() >= 400) {
-    test.skip(true, `Harness route ${url} indisponível (status=${resp?.status() ?? 'n/a'})`);
+    expect(false, `[E108] Harness route ${url} indisponível (status=${resp?.status() ?? 'n/a'})`).toBeTruthy();
   }
   const actions = page.locator(ACTIONS_SELECTOR);
   // Se o harness não montar o QuickView dentro de 3s, pula.
   try {
     await actions.waitFor({ state: 'visible', timeout: 3000 });
   } catch {
-    test.skip(true, 'QuickView harness não montado — rota de teste ausente.');
+    expect(false, '[E108] QuickView harness não montado — rota de teste ausente.').toBeTruthy();
   }
 }
 

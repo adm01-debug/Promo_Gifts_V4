@@ -1,7 +1,7 @@
 import { expect } from "vitest";
 import { mockEdgeFunctionFetch, type EdgeFnResponseSpec } from "../../p0/_mocks";
 
-const DEFAULT_BASE_URL = "https://nmojwpihnslkssljowjh.supabase.co/functions/v1";
+const DEFAULT_BASE_URL = "https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1";
 
 type Primitive = string | number | boolean | null;
 export type Json = Primitive | Json[] | { [k: string]: Json };

@@ -64,7 +64,7 @@ test.describe("[module:quotes] [component:quotes-list] [owner:team-growth] @regr
 
     const banner = page.locator('[data-testid="quotes-table-banner"]').first();
     const scroller = page.locator('[data-testid="quotes-scroll-container"]').first();
-    if ((await scroller.count()) === 0) test.skip(true, "Sem scroll container.");
+    if ((await scroller.count()) === 0) expect(false, "[E108] Sem scroll container.").toBeTruthy();
 
     const before = await banner.boundingBox();
     await scroller.evaluate((el) => {

@@ -41,12 +41,12 @@ test.describe('PDF header · quote_number snapshot (768/1024)', () => {
       await page.setViewportSize({ width: bp.width, height: bp.height });
 
       const ok = await gotoQuoteScenario(page, 'enviada');
-      if (!ok) test.skip(true, 'Sem orçamento enviado no ambiente.');
+      if (!ok) expect(false, '[E108] Sem orçamento enviado no ambiente.').toBeTruthy();
 
       // Abre o dialog de preview do PDF (mesma rota visual do export).
       const trigger = page.getByTestId('pdf-preview-trigger');
       if ((await trigger.count()) === 0) {
-        test.skip(true, 'Trigger de preview indisponível.');
+        expect(false, '[E108] Trigger de preview indisponível.').toBeTruthy();
       }
       await trigger.click();
 

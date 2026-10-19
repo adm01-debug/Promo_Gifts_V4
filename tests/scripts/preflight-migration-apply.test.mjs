@@ -114,6 +114,7 @@ describe('evaluatePreflight — modo padrão (pré-aplicação)', () => {
       sqlContent: `${ROLLBACK_HEADER}CREATE VIEW public.x AS SELECT 1;`,
       isInLedger: false,
       expectApplied: false,
+      rollbackExists: true,
     });
     expect(result.ok).toBe(true);
     expect(result.problems).toEqual([]);
@@ -189,6 +190,7 @@ describe('evaluatePreflight — modo padrão (pré-aplicação)', () => {
       sqlContent: `${optOutHeader}CREATE INDEX CONCURRENTLY idx_x ON public.t(a);`,
       isInLedger: false,
       expectApplied: false,
+      rollbackExists: true,
     });
     expect(result.ok).toBe(true);
   });

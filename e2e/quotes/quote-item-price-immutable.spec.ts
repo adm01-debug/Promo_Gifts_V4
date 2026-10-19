@@ -71,7 +71,7 @@ test.describe('quote_items.unit_price — imutável para sellers comuns', () => 
 
     // Admins/supervisores podem alterar — pula sem falhar.
     if (!result.errorMessage) {
-      test.skip(true, 'Sessão atual tem privilégio admin/supervisor — trigger não bloqueia.');
+      expect(false, '[E108] Sessão atual tem privilégio admin/supervisor — trigger não bloqueia.').toBeTruthy();
       return;
     }
 

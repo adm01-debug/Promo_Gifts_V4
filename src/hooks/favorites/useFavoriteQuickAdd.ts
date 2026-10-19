@@ -72,7 +72,7 @@ export function useFavoriteQuickAdd() {
             user_id: user.id,
             product_id: product.id,
             variant_id: variant?.variant_id ?? null,
-            variant_info: (variant ?? null) as unknown as Json,
+            variant_info: (variant ?? null) as Json, // FavoriteVariantInfo serializa como Json válido
             // Snapshot the effective selling price (sale_price when available, otherwise price)
             price_at_save:
               typeof (product as { sale_price?: number }).sale_price === 'number'

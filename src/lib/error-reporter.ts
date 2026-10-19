@@ -8,7 +8,7 @@
  * - Agora: escreve em frontend_telemetry, que é o lugar semântico correto
  *   → RLS adequada, retenção 30 dias, sem poluir o audit trail
  */
-import { getSupabaseClient } from '@/integrations/supabase/lazy-client';
+import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import { captureException } from '@/lib/sentry';
 import { isColdStartSignal } from '@/lib/external-db/bridge-status-events';
@@ -68,7 +68,6 @@ async function flushErrors() {
   const batch = ERROR_QUEUE.splice(0, MAX_QUEUE);
 
   try {
-    const supabase = await getSupabaseClient();
     const { data: userData } = await supabase.auth.getUser();
     const userId = userData?.user?.id ?? null; // null quando não autenticado (antes era UUID zero)
 

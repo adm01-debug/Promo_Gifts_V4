@@ -25,7 +25,7 @@ test.describe('PDF export · a11y do gatilho (desktop)', () => {
   }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     const ok = await gotoQuoteScenario(page, 'enviada');
-    if (!ok) test.skip(true, 'Sem orçamento enviado no ambiente.');
+    if (!ok) expect(false, '[E108] Sem orçamento enviado no ambiente.').toBeTruthy();
 
     const trigger = page.getByTestId('pdf-preview-trigger');
     await expect(trigger).toHaveCount(1);

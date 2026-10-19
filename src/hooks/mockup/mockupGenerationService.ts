@@ -59,7 +59,7 @@ export interface GeneratedMockup {
   client_id: string | null;
 }
 
-const TECHNIQUE_PROMPTS: Record<string, string> = {
+const TECHNIQUE_PROMPTS: Record<string, string> & { default: string } = {
   bordado: 'as professional machine embroidery with visible thread stitch texture',
   silk: 'as screen printed with flat solid colors, matte finish',
   dtf: 'as DTF printed transfer with vibrant colors, slight glossy finish',
@@ -98,6 +98,40 @@ const MOCKUP_HISTORY_COLUMNS =
   'logo_width_cm, logo_height_cm, logo_rotation, logo_scale, ' +
   'client_id, client_name, area_name, area_config, created_at';
 
+interface MockupHistoryRow {
+  id: string;
+  product_id: string | null;
+  product_name: string;
+  product_sku: string | null;
+  technique_id: string | null;
+  technique_name: string;
+  mockup_url: string;
+  layout_url: string | null;
+  logo_url: string | null;
+  position_x: number | null;
+  position_y: number | null;
+  logo_width_cm: number | null;
+  logo_height_cm: number | null;
+  logo_rotation: number | null;
+  logo_scale: number | null;
+  client_id: string | null;
+  client_name: string | null;
+  area_name: string | null;
+  area_config: {
+    logoUrl?: string | null;
+    positionX?: number | null;
+    positionY?: number | null;
+    logoWidth?: number | null;
+    logoHeight?: number | null;
+    logoRotation?: number | null;
+    logoScale?: number | null;
+    clientName?: string | null;
+    colorsCount?: number | null;
+    annotations?: Array<Record<string, unknown>> | null;
+  } | null;
+  created_at: string;
+}
+
 export async function fetchMockupHistory(userId?: string): Promise<GeneratedMockup[]> {
   let query = untypedFrom('generated_mockups')
     .select(MOCKUP_HISTORY_COLUMNS)
@@ -107,37 +141,37 @@ export async function fetchMockupHistory(userId?: string): Promise<GeneratedMock
   const { data, error } = await query;
   if (error) throw error;
 
-  return ((data as unknown as Record<string, unknown>[] | null) || []).map((row) => {
-    const cfg = (row.area_config ?? {}) as Record<string, unknown>;
+  const rows: MockupHistoryRow[] = Array.isArray(data)
+    ? (data as unknown as MockupHistoryRow[])
+    : [];
+  return rows.map((row) => {
+    const cfg = row.area_config ?? {};
     return {
-      id: row.id as string,
-      product_id: (row.product_id as string | null) ?? null,
-      product_name: row.product_name as string,
-      product_sku: (row.product_sku as string | null) ?? null,
-      technique_id: (row.technique_id as string | null) ?? null,
-      technique_name: row.technique_name as string,
-      mockup_url: row.mockup_url as string,
-      layout_url: (row.layout_url as string | null) ?? null,
-      logo_url: (row.logo_url as string | null) ?? (cfg.logoUrl as string | null) ?? null,
-      position_x: (row.position_x as number | null) ?? (cfg.positionX as number | null) ?? null,
-      position_y: (row.position_y as number | null) ?? (cfg.positionY as number | null) ?? null,
-      logo_width_cm:
-        (row.logo_width_cm as number | null) ?? (cfg.logoWidth as number | null) ?? null,
-      logo_height_cm:
-        (row.logo_height_cm as number | null) ?? (cfg.logoHeight as number | null) ?? null,
+      id: row.id,
+      product_id: row.product_id,
+      product_name: row.product_name,
+      product_sku: row.product_sku,
+      technique_id: row.technique_id,
+      technique_name: row.technique_name,
+      mockup_url: row.mockup_url,
+      layout_url: row.layout_url,
+      logo_url: row.logo_url ?? cfg.logoUrl ?? null,
+      position_x: row.position_x ?? cfg.positionX ?? null,
+      position_y: row.position_y ?? cfg.positionY ?? null,
+      logo_width_cm: row.logo_width_cm ?? cfg.logoWidth ?? null,
+      logo_height_cm: row.logo_height_cm ?? cfg.logoHeight ?? null,
       // BUG-MISSING-COLS FIX: read logo_rotation/logo_scale from top-level columns
       // (added migration 20260620000001), falling back to area_config for older rows.
-      logo_rotation:
-        (row.logo_rotation as number | null) ?? (cfg.logoRotation as number | null) ?? null,
-      logo_scale: (row.logo_scale as number | null) ?? (cfg.logoScale as number | null) ?? null,
+      logo_rotation: row.logo_rotation ?? cfg.logoRotation ?? null,
+      logo_scale: row.logo_scale ?? cfg.logoScale ?? null,
       // BUG-CLIENT-ID FIX: client_id and client_name are now real columns
       // (migration 20260620000001). Fall back to area_config for rows created before the migration.
-      client_id: (row.client_id as string | null) ?? null,
-      client_name: (row.client_name as string | null) ?? (cfg.clientName as string | null) ?? null,
-      location_name: (row.area_name as string | null) ?? null,
-      colors_count: (cfg.colorsCount as number | null) ?? null,
-      annotations: (cfg.annotations as Array<Record<string, unknown>> | null) ?? null,
-      created_at: row.created_at as string,
+      client_id: row.client_id,
+      client_name: row.client_name ?? cfg.clientName ?? null,
+      location_name: row.area_name,
+      colors_count: cfg.colorsCount ?? null,
+      annotations: cfg.annotations ?? null,
+      created_at: row.created_at,
     } satisfies GeneratedMockup;
   });
 }
@@ -486,13 +520,11 @@ export async function deleteMockupFromDb(id: string, userId?: string): Promise<v
   // prevent the DB delete from proceeding.
   // BUG-DELETE-ORPHANED-MOCKUP-PNG FIX: also fetch mockup_url so the composite
   // PNG (${userId}/mockups/${ts}-${uuid}.png) is removed — previously leaked.
+  type MockupUrlsRow = { logo_url: string | null; mockup_url: string | null };
   let selectQuery = untypedFrom('generated_mockups').select('logo_url, mockup_url').eq('id', id);
   if (userId) selectQuery = selectQuery.eq('user_id', userId);
   const { data: rows } = await selectQuery.limit(1);
-  const row =
-    (
-      rows as unknown as Array<{ logo_url: string | null; mockup_url: string | null }> | null
-    )?.[0] ?? null;
+  const row = (rows as MockupUrlsRow[] | null)?.[0] ?? null;
   const logoUrl = row?.logo_url ?? null;
   const mockupUrl = row?.mockup_url ?? null;
 

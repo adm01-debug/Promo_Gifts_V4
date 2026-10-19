@@ -22,7 +22,7 @@ test.describe("@regression /estoque — alternância de filtros (SSOT)", () => {
     }
     const empty = page.getByText(/Nenhum produto encontrado/i);
     if (await empty.isVisible().catch(() => false)) {
-      test.skip(true, "sem dados seedados para validar alternância de filtros");
+      expect(false, "[E108] sem dados seedados para validar alternância de filtros").toBeTruthy();
     }
 
     // 1. Busca por texto → conta linhas resultantes

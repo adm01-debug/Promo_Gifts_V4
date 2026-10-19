@@ -68,7 +68,7 @@ test.describe("Troca de empresa para carrinho VAZIO", () => {
           : cart,
     });
     if (!cartB) {
-      test.skip(true, "cartB ausente — configuração inesperada");
+      expect(false, "[E108] cartB ausente — configuração inesperada").toBeTruthy();
       return;
     }
 

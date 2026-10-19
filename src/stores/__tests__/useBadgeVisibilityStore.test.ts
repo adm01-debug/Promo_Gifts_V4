@@ -11,8 +11,8 @@ const mockSupabase = {
 };
 
 // Mock the lazy client
-vi.mock('@/integrations/supabase/lazy-client', () => ({
-  getSupabaseClient: vi.fn(() => Promise.resolve(mockSupabase)),
+vi.mock('@/integrations/supabase/client', () => ({
+  supabase: mockSupabase,
 }));
 
 describe('useBadgeVisibilityStore', () => {

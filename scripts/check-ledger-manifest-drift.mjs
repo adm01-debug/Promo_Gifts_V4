@@ -49,7 +49,7 @@
  *             2 (inconclusive/erro).
  */
 
-import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
@@ -137,6 +137,14 @@ export function computeDriftCandidates({ ledgerVersions, localSet, baseline }) {
 }
 
 async function main() {
+  if (!existsSync(BASELINE_PATH)) {
+    return concludeCheck({
+      check: 'ledger-manifest-drift',
+      status: CHECK_RESULT_STATUS.INCONCLUSIVE,
+      summary: `Arquivo baseline não encontrado: ${BASELINE_PATH} — checagem inconclusa`,
+      details: { reason: 'missing-baseline' },
+    });
+  }
   const baseline = loadBaseline();
   const live = await fetchLiveLedgerVersions();
 

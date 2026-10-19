@@ -35,7 +35,7 @@ test.describe("Fluxo: Onboarding tour disparo", () => {
 
     // só faz sentido quando o usuário já completou o tour
     if ((await restart.count()) === 0) {
-      test.skip(true, 'Usuário ainda não completou o tour — botão "Reiniciar" não está visível.');
+      expect(false, '[E108] Usuário ainda não completou o tour — botão "Reiniciar" não está visível.').toBeTruthy();
     }
 
     await restart.first().click();

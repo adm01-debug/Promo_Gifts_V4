@@ -5,7 +5,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { mockEdgeFunctionFetch, resetExternalMocks, type EdgeFnResponseSpec } from "../../p0/_mocks";
 
-const BASE = "https://nmojwpihnslkssljowjh.supabase.co/functions/v1";
+const BASE = "https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1";
 
 describe("step-up-verify", () => {
   beforeEach(() => mockEdgeFunctionFetch({}));

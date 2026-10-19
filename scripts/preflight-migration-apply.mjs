@@ -48,6 +48,7 @@ import { querySupabaseReadOnly } from './supabase-read-only-query.mjs';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
 const MIGRATIONS_DIR = join(ROOT, 'supabase/migrations');
+const ROLLBACKS_DIR = join(ROOT, 'supabase/rollbacks');
 
 const NON_TX_DDL = [
   /CREATE\s+INDEX\s+CONCURRENTLY/i,
@@ -69,6 +70,36 @@ const ALTER_TYPE_ADD_VALUE = /ALTER\s+TYPE\s+\S+\s+ADD\s+VALUE\b/i;
 /** Padrões que bloqueiam SEMPRE (sem opt-out). */
 // E97/Codex P2: lookahead inclui \s+ para cobrir múltiplos espaços entre keyword e IF EXISTS
 const DROP_WITHOUT_IF_EXISTS = /DROP\s+(?:TABLE|VIEW|FUNCTION|PROCEDURE|SCHEMA|TYPE|SEQUENCE|POLICY)(?!\s+IF\s+EXISTS\b)/i;
+
+/**
+ * E061/E062: tabelas de produção conhecidas como grandes (>1M linhas).
+ * CREATE INDEX sem CONCURRENTLY nessas tabelas bloqueia escrita por minutos.
+ * A lista cresce à medida que novos casos são confirmados via pg_stat_user_tables.
+ */
+const KNOWN_LARGE_TABLES = [
+  'stock_snapshots',    // 3.6M linhas (P200-E061)
+  'order_items',        // alta cardinalidade histórica
+  'products',           // catálogo principal
+];
+
+/** E061/E062: detecta CREATE INDEX sem CONCURRENTLY no SQL executável. */
+export function detectCreateIndexWithoutConcurrently(sqlContent) {
+  // Remove comments before analysis
+  const executable = sqlContent.replace(/--[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, '');
+  // Match: CREATE [UNIQUE] INDEX [IF NOT EXISTS] [name] ON [schema.]table
+  const re = /CREATE\s+(?:UNIQUE\s+)?INDEX\s+(?:CONCURRENTLY\s+)?(?:IF\s+NOT\s+EXISTS\s+)?(\w+)?\s+ON\s+(?:\w+\.)?(\w+)/gi;
+  const results = [];
+  let m;
+  while ((m = re.exec(executable)) !== null) {
+    const fullMatch = m[0];
+    const tableName = m[2] || '';
+    const hasConcurrently = /CONCURRENTLY/i.test(fullMatch);
+    if (!hasConcurrently) {
+      results.push({ tableName, isLarge: KNOWN_LARGE_TABLES.includes(tableName.toLowerCase()) });
+    }
+  }
+  return results;
+}
 
 const VERSION_RE = /^\d{6,19}(?:_[A-Za-z0-9]+)*$/;
 
@@ -139,12 +170,21 @@ const EXPECT_APPLIED = argv.includes('--expect-applied');
 const versionArg = argv.find((a) => a.startsWith('--version='));
 const VERSION = versionArg ? versionArg.slice('--version='.length) : null;
 
-/** Lista, dentro de `dir`, os arquivos `.sql` cujo nome começa com `<version>_`. */
+/** Lista, dentro de `dir`, os arquivos `.sql` cujo nome começa com `<version>_` (exclui `_rollback.sql` — E058). */
 export function findMigrationFiles(version, dir = MIGRATIONS_DIR) {
   if (!existsSync(dir)) return [];
   return readdirSync(dir)
-    .filter((f) => f.startsWith(`${version}_`) && f.endsWith('.sql'))
+    .filter((f) => f.startsWith(`${version}_`) && f.endsWith('.sql') && !f.endsWith('_rollback.sql'))
     .sort();
+}
+
+/** Retorna o nome do arquivo `<version>_rollback.sql` se existir em `dir` ou em `supabase/rollbacks/`, ou `null`. */
+export function findRollbackFile(version, dir = MIGRATIONS_DIR) {
+  const name = `${version}_rollback.sql`;
+  if (existsSync(dir) && existsSync(join(dir, name))) return name;
+  // E058: rollbacks migrados para supabase/rollbacks/ para evitar prefixo duplicado
+  if (existsSync(ROLLBACKS_DIR) && existsSync(join(ROLLBACKS_DIR, name))) return name;
+  return null;
 }
 
 /** `true` se houver uma linha `-- Rollback:` (case-insensitive) nas primeiras `headLines` linhas. */
@@ -159,11 +199,54 @@ export function detectNonTransactionalDdl(sqlContent) {
 }
 
 /**
+ * E066: detecta funções com SECURITY DEFINER sem pg_temp no SET search_path.
+ * Retorna array de nomes de funções problemáticas.
+ */
+export function detectSecurityDefinerWithoutPgTemp(sqlContent) {
+  const executable = sqlContent.replace(/--[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, '');
+  const results = [];
+  // Captura blocos CREATE [OR REPLACE] FUNCTION ... SECURITY DEFINER
+  const fnRe = /CREATE\s+(?:OR\s+REPLACE\s+)?FUNCTION\s+([\w.]+)\s*\([^)]*\)[^;]*?SECURITY\s+DEFINER/gi;
+  let m;
+  while ((m = fnRe.exec(executable)) !== null) {
+    const fnName = m[1];
+    // Extrai o bloco da função até o próximo $$ ou LANGUAGE
+    const startIdx = m.index;
+    const snippet = executable.slice(startIdx, startIdx + 2000);
+    // Verifica se há SET search_path sem pg_temp
+    const hasSetPath = /SET\s+search_path\s*=/i.test(snippet);
+    const hasPgTemp = /pg_temp/i.test(snippet);
+    if (hasSetPath && !hasPgTemp) {
+      results.push(fnName);
+    } else if (!hasSetPath) {
+      // Sem SET search_path algum — também problemático
+      results.push(fnName);
+    }
+  }
+  return results;
+}
+
+/**
+ * E067: detecta CREATE EXTENSION sem WITH SCHEMA extensions.
+ * Retorna array de nomes de extensões.
+ */
+export function detectExtensionWithoutSchema(sqlContent) {
+  const executable = sqlContent.replace(/--[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, '');
+  const results = [];
+  const re = /CREATE\s+EXTENSION\s+(?:IF\s+NOT\s+EXISTS\s+)?["']?(\w+)["']?(?!\s+WITH\s+SCHEMA)/gi;
+  let m;
+  while ((m = re.exec(executable)) !== null) {
+    results.push(m[1]);
+  }
+  return results;
+}
+
+/**
  * Função pura central — decide passed/failed a partir de fatos já coletados
  * (arquivos encontrados, conteúdo do arquivo, presença no ledger). Sem I/O,
  * testável por mutação (mesmo padrão de computeViolations em E22).
  */
-export function evaluatePreflight({ version, files, sqlContent, isInLedger, expectApplied }) {
+export function evaluatePreflight({ version, files, sqlContent, isInLedger, expectApplied, rollbackExists = undefined }) {
   const problems = [];
 
   if (!VERSION_RE.test(version || '')) {
@@ -180,6 +263,17 @@ export function evaluatePreflight({ version, files, sqlContent, isInLedger, expe
     problems.push('arquivo não tem cabeçalho de rollback lógico ("-- Rollback:" nas primeiras 40 linhas).');
   }
 
+  // E063 — rollback como arquivo, não como comentário (migrations novas)
+  if (files.length === 1 && sqlContent != null && !expectApplied) {
+    const hasRollbackFile = rollbackExists !== undefined ? rollbackExists : !!findRollbackFile(version);
+    if (!hasRollbackFile) {
+      problems.push(
+        `arquivo de rollback ${version}_rollback.sql não encontrado. ` +
+        `Para migrations novas, crie supabase/rollbacks/${version}_rollback.sql com os comandos de reversão (E058: rollbacks vivem em supabase/rollbacks/, não em supabase/migrations/).`,
+      );
+    }
+  }
+
   if (expectApplied) {
     if (!isInLedger) {
       problems.push(`version ${version} ainda NÃO aparece em supabase_migrations.schema_migrations após a aplicação.`);
@@ -189,6 +283,7 @@ export function evaluatePreflight({ version, files, sqlContent, isInLedger, expe
   }
 
   const nonTransactionalDdl = files.length === 1 && sqlContent != null ? detectNonTransactionalDdl(sqlContent) : [];
+  const warnings = [];
 
   // E63 — checagem de DDL bloqueante (nova)
   if (files.length === 1 && sqlContent != null) {
@@ -196,11 +291,51 @@ export function evaluatePreflight({ version, files, sqlContent, isInLedger, expe
     const hasTransactionNoneOptOut = optOut.transactionNone && optOut.approvedBy !== null;
     const blockingDdl = detectBlockingDdl(sqlContent, { hasTransactionNoneOptOut });
     problems.push(...blockingDdl);
+
+    // E061/E062 — CREATE INDEX sem CONCURRENTLY
+    const indexesWithoutConcurrently = detectCreateIndexWithoutConcurrently(sqlContent);
+    for (const { tableName, isLarge } of indexesWithoutConcurrently) {
+      if (isLarge) {
+        // E061: tabela grande conhecida — BLOQUEIA
+        problems.push(
+          `CREATE INDEX sem CONCURRENTLY em tabela grande "${tableName}": ` +
+          'bloqueia escrita por toda a duração da criação do índice. ' +
+          'Use CREATE INDEX CONCURRENTLY com "-- transaction: none" + "-- approved-by:" no cabeçalho.',
+        );
+      } else {
+        // E062: qualquer outra tabela — AVISO (não bloqueia)
+        warnings.push(
+          `CREATE INDEX sem CONCURRENTLY em "${tableName || '(tabela desconhecida)'}" ` +
+          '— considere CONCURRENTLY para tabelas grandes (>1M linhas), com "-- transaction: none".',
+        );
+      }
+    }
+
+    // E066 — SECURITY DEFINER sem pg_temp no search_path
+    const secdefIssues = detectSecurityDefinerWithoutPgTemp(sqlContent);
+    for (const fn of secdefIssues) {
+      problems.push(
+        `SECURITY DEFINER sem "pg_temp" no SET search_path em função "${fn}": ` +
+        'vulnerável a shadowing por objetos em pg_temp. ' +
+        'Adicione SET search_path = pg_catalog, pg_temp (ou inclua pg_temp explicitamente).',
+      );
+    }
+
+    // E067 — CREATE EXTENSION sem WITH SCHEMA extensions
+    const extIssues = detectExtensionWithoutSchema(sqlContent);
+    for (const ext of extIssues) {
+      problems.push(
+        `CREATE EXTENSION "${ext}" sem WITH SCHEMA extensions: ` +
+        'instala objetos no schema default (lint 0014 extension_in_public). ' +
+        'Use CREATE EXTENSION IF NOT EXISTS "' + ext + '" WITH SCHEMA extensions;',
+      );
+    }
   }
 
   return {
     ok: problems.length === 0,
     problems,
+    warnings,
     nonTransactionalDdl,
   };
 }
@@ -258,6 +393,7 @@ async function main() {
     files,
     isInLedger,
     nonTransactionalDdl: result.nonTransactionalDdl,
+    warnings: result.warnings,
     expectApplied: EXPECT_APPLIED,
   };
 
@@ -270,6 +406,10 @@ async function main() {
     });
   }
 
+  const warnSuffix = result.warnings.length
+    ? ` — aviso(s): ${result.warnings.join(' | ')}`
+    : '';
+
   return concludeCheck({
     check: 'preflight-migration-apply',
     status: CHECK_RESULT_STATUS.PASSED,
@@ -277,7 +417,7 @@ async function main() {
       ? `version ${VERSION} confirmada no ledger pós-aplicação.`
       : `version ${VERSION} pronta para aplicação (arquivo único, rollback documentado, ainda não no ledger)${
           result.nonTransactionalDdl.length ? ` — aviso: DDL não-transacional detectada (${result.nonTransactionalDdl.join(', ')})` : ''
-        }.`,
+        }${warnSuffix}.`,
     details,
   });
 }
