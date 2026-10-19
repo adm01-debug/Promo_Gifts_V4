@@ -32,6 +32,7 @@ jobs:
     env:
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
+      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
     steps:
     - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       with:
@@ -43,7 +44,7 @@ jobs:
       run: TZ=America/Sao_Paulo npx vitest run src/pages/__tests__/QuoteBuilderDeliveryTooltip.test.tsx
 
     - name: 🌍 E2E & Visual Regression
-      if: ${{ secrets.E2E_USER_EMAIL != '' }}
+      if: env.E2E_USER_EMAIL != ''
       env:
         CI: true
         E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
@@ -58,5 +59,6 @@ jobs:
         path: |
           playwright-report/
           test-results/
+          !test-results/**/trace.zip  # E26: trace contém dados de formulário (incluindo senhas E2E)
         retention-days: 14
         if-no-files-found: ignore

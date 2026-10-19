@@ -150,6 +150,9 @@ jobs:
       - name: Re-run headed on failure (xvfb + trace/video on)
         if: failure()
         continue-on-error: true
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
         run: |
           sudo apt-get update && sudo apt-get install -y xvfb
           xvfb-run -a npx playwright test \

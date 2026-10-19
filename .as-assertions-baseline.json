@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-19T10:45:57.304Z",
+  "generatedAt": "2026-10-19T12:11:01.706Z",
   "description": "Baseline de asserções `as <Tipo>` em src/ (excluindo testes, `as const`, `as unknown` e `as any`). Falha apenas em REGRESSÃO.",
   "productionAsCount": 2162,
   "counts": {

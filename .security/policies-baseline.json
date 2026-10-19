@@ -1,10 +1,80 @@
 {
   "version": 1,
   "pending_seed": false,
-  "generated_at": "2026-10-18T17:08:00.000Z",
+  "generated_at": "2026-10-19T12:10:51.178Z",
   "project_ref": "doufsxqlfjyuvxuezpln",
-  "sha256": "9642e974cba7b728bb3d7616394aee04b0939a81007e53c1ed86423212e9239c",
+  "schemas_checked": [
+    "public",
+    "analytics",
+    "api",
+    "cf_recon",
+    "classification_audit",
+    "internal",
+    "prod_audit",
+    "supplier_stricker"
+  ],
+  "sha256": "89a33b71303c9a26867ed21a1ff1caf492efee71c377db5f1650d84e13463e8b",
   "policies": [
+    {
+      "schemaname": "cf_recon",
+      "tablename": "action_log",
+      "policyname": "admin_only",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "ALL",
+      "qual": "is_admin_or_above(( SELECT auth.uid() AS uid))",
+      "with_check": "is_admin_or_above(( SELECT auth.uid() AS uid))"
+    },
+    {
+      "schemaname": "cf_recon",
+      "tablename": "cf_ghost_check_queue",
+      "policyname": "admin_only",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "ALL",
+      "qual": "is_admin_or_above(( SELECT auth.uid() AS uid))",
+      "with_check": "is_admin_or_above(( SELECT auth.uid() AS uid))"
+    },
+    {
+      "schemaname": "cf_recon",
+      "tablename": "cf_image",
+      "policyname": "admin_only",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "ALL",
+      "qual": "is_admin_or_above(( SELECT auth.uid() AS uid))",
+      "with_check": "is_admin_or_above(( SELECT auth.uid() AS uid))"
+    },
+    {
+      "schemaname": "cf_recon",
+      "tablename": "crawl_run",
+      "policyname": "admin_only",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "ALL",
+      "qual": "is_admin_or_above(( SELECT auth.uid() AS uid))",
+      "with_check": "is_admin_or_above(( SELECT auth.uid() AS uid))"
+    },
+    {
+      "schemaname": "cf_recon",
+      "tablename": "metric_snapshot",
+      "policyname": "admin_only",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "ALL",
+      "qual": "is_admin_or_above(( SELECT auth.uid() AS uid))",
+      "with_check": "is_admin_or_above(( SELECT auth.uid() AS uid))"
+    },
+    {
+      "schemaname": "cf_recon",
+      "tablename": "remediation",
+      "policyname": "admin_only",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "ALL",
+      "qual": "is_admin_or_above(( SELECT auth.uid() AS uid))",
+      "with_check": "is_admin_or_above(( SELECT auth.uid() AS uid))"
+    },
     {
       "schemaname": "public",
       "tablename": "_archive_product_ai_20260626",
@@ -9606,5 +9676,5 @@
       "with_check": ""
     }
   ],
-  "policies_count": 960
+  "policies_count": 966
 }

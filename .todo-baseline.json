@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-19T10:00:07.690Z",
+  "generatedAt": "2026-10-19T12:11:02.113Z",
   "description": "Baseline de marcadores TODO/FIXME/HACK em src/ (excluindo testes). Falha apenas em REGRESSÃO (contagem cresce).",
   "productionTodoCount": 51,
   "counts": {
