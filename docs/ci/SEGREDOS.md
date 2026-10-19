@@ -16,10 +16,10 @@
 | Segredo | Dono | Escopo | Rotação | Workflows consumidores principais |
 |---|---|---|---|---|
 | `SUPABASE_ACCESS_TOKEN` | DevOps/PO | Repo | 6 meses | `deploy-gates.yml`, `supabase-security-gate.yml`, `supabase-linter-gate.yml`, `db-apply-migration.yml`, `schema-snapshot-export.yml`, `capacity-growth-report.yml` |
-| `SUPABASE_SERVICE_ROLE_KEY` | DevOps/PO | Repo | 6 meses | `deploy-gates.yml` (restore-cart-rpc-gate), `cart-header-quality-gate.yml`, `ci.yml` |
+| `SUPABASE_SERVICE_ROLE_KEY` | DevOps/PO | Repo | 6 meses | `deploy-gates.yml` (restore-cart-rpc-gate), `cart-header-quality-gate.yml`, `ci-security-drift.yml` |
 | `SUPABASE_DB_PASSWORD` | DevOps/PO | Repo | 6 meses | `schema-snapshot-export.yml`, `db-schema-drift-check.yml`, `db-apply-migration.yml` |
-| `SUPABASE_ANON_KEY` | DevOps/PO | Repo | — | `cart-header-quality-gate.yml`, `ci.yml`, `restore-seller-cart-rpc.yml` |
-| `SUPABASE_URL` | DevOps/PO | Repo | — | `cart-header-quality-gate.yml`, `ci.yml`, `restore-seller-cart-rpc.yml` |
+| `SUPABASE_ANON_KEY` | DevOps/PO | Repo | — | `cart-header-quality-gate.yml`, `ci-security-drift.yml`, `restore-seller-cart-rpc.yml` |
+| `SUPABASE_URL` | DevOps/PO | Repo | — | `cart-header-quality-gate.yml`, `ci-security-drift.yml`, `restore-seller-cart-rpc.yml` |
 | `PGHOST` | DevOps/PO | Repo | — | `db-apply-migration.yml`, `drafts-index-check.yml`, `migration-dry-run.yml` |
 | `PGUSER` | DevOps/PO | Repo | — | `db-apply-migration.yml`, `drafts-index-check.yml` |
 | `PGPASSWORD` | DevOps/PO | Repo | 6 meses | `db-apply-migration.yml`, `drafts-index-check.yml`, `migration-dry-run.yml` |
@@ -125,7 +125,6 @@ Não precisam de entrada na tabela acima; estão no allowlist de `check-secrets-
 | Segredo | Motivo do allowlist |
 |---|---|
 | `PGPORT` | Fallback hardcoded: `${{ secrets.PGPORT \|\| '5432' }}` — porta padrão 5432 usada se ausente |
-| `EXAMPLE_API_KEY` | `_template.yml` — arquivo de template de workflow, não um workflow real |
 | `BRANCH_PROTECTION_READ_TOKEN` | Fallback: `${{ secrets.BRANCH_PROTECTION_READ_TOKEN \|\| github.token }}` |
 | `LHCI_GITHUB_APP_TOKEN` | Gate 4 opcional (Lighthouse) — allowlistado também em check-workflow-contracts |
 
@@ -135,12 +134,9 @@ Não precisam de entrada na tabela acima; estão no allowlist de `check-secrets-
 
 > **Atenção:** estes segredos são configurados via `supabase secrets set` (não em GitHub Actions Secrets).
 > São acessados em runtime via `Deno.env.get("NOME")` nas edge functions em `supabase/functions/`.
-> O script `check-secrets-inventory.mjs` **não** verifica edge functions — este inventário é manual.
+> O script `check-secrets-inventory.mjs` verifica edge functions automaticamente (E194 — `--scan-edge`).
 >
 > Última atualização: 2026-10-19 (E194 — P200 Onda 19)
->
-> **TODO (E194):** Estender `check-secrets-inventory.mjs` para também escanear `Deno.env.get()` em
-> `supabase/functions/**/*.ts` e comparar com esta seção. Ver seção `# TODO E194` no script.
 
 ### Auto-injetados pelo Supabase (sempre disponíveis)
 

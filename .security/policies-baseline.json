@@ -1,7 +1,7 @@
 {
   "version": 1,
   "pending_seed": false,
-  "generated_at": "2026-10-18T22:28:43.477Z",
+  "generated_at": "2026-10-19T12:10:51.178Z",
   "project_ref": "doufsxqlfjyuvxuezpln",
   "schemas_checked": [
     "public",
@@ -13,7 +13,7 @@
     "prod_audit",
     "supplier_stricker"
   ],
-  "sha256": "22aa5e485eaabd56c05d024a3ace04d56d520cfe47535b328d808f2becfac659",
+  "sha256": "89a33b71303c9a26867ed21a1ff1caf492efee71c377db5f1650d84e13463e8b",
   "policies": [
     {
       "schemaname": "cf_recon",
@@ -360,9 +360,9 @@
       "tablename": "ai_usage_quotas",
       "policyname": "ai_usage_quotas_admin_delete",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "DELETE",
-      "qual": "(is_dev() OR has_role(( SELECT ( SELECT auth.uid() AS uid) AS uid), 'admin'::app_role))",
+      "qual": "is_dev()",
       "with_check": ""
     },
     {
@@ -370,29 +370,29 @@
       "tablename": "ai_usage_quotas",
       "policyname": "ai_usage_quotas_admin_insert",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "INSERT",
       "qual": "",
-      "with_check": "(is_dev() OR has_role(( SELECT ( SELECT auth.uid() AS uid) AS uid), 'admin'::app_role))"
+      "with_check": "is_dev()"
     },
     {
       "schemaname": "public",
       "tablename": "ai_usage_quotas",
       "policyname": "ai_usage_quotas_admin_update",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "UPDATE",
-      "qual": "(is_dev() OR has_role(( SELECT ( SELECT auth.uid() AS uid) AS uid), 'admin'::app_role))",
-      "with_check": "(is_dev() OR has_role(( SELECT ( SELECT auth.uid() AS uid) AS uid), 'admin'::app_role))"
+      "qual": "is_dev()",
+      "with_check": ""
     },
     {
       "schemaname": "public",
       "tablename": "ai_usage_quotas",
       "policyname": "ai_usage_quotas_read_authenticated",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "SELECT",
-      "qual": "(( SELECT ( SELECT auth.uid() AS uid) AS uid) IS NOT NULL)",
+      "qual": "(auth.uid() IS NOT NULL)",
       "with_check": ""
     },
     {
@@ -470,9 +470,9 @@
       "tablename": "art_file_attachments",
       "policyname": "Users delete own art files",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "DELETE",
-      "qual": "(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)",
+      "qual": "(user_id = auth.uid())",
       "with_check": ""
     },
     {
@@ -480,29 +480,29 @@
       "tablename": "art_file_attachments",
       "policyname": "Users insert own art files",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "INSERT",
       "qual": "",
-      "with_check": "(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)"
+      "with_check": "(user_id = auth.uid())"
     },
     {
       "schemaname": "public",
       "tablename": "art_file_attachments",
       "policyname": "Users update own art files",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "UPDATE",
-      "qual": "(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)",
-      "with_check": "(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)"
+      "qual": "(user_id = auth.uid())",
+      "with_check": ""
     },
     {
       "schemaname": "public",
       "tablename": "art_file_attachments",
       "policyname": "Users view own art files",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "SELECT",
-      "qual": "(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)",
+      "qual": "(user_id = auth.uid())",
       "with_check": ""
     },
     {
@@ -710,7 +710,7 @@
       "tablename": "b2b_collection_products",
       "policyname": "collection_products_delete",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "DELETE",
       "qual": "(EXISTS ( SELECT 1\n   FROM b2b_collections c\n  WHERE ((c.id = b2b_collection_products.b2b_collection_id) AND is_org_owner_or_admin(c.organization_id))))",
       "with_check": ""
@@ -720,7 +720,7 @@
       "tablename": "b2b_collection_products",
       "policyname": "collection_products_insert",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "INSERT",
       "qual": "",
       "with_check": "(EXISTS ( SELECT 1\n   FROM b2b_collections c\n  WHERE ((c.id = b2b_collection_products.b2b_collection_id) AND is_org_owner_or_admin(c.organization_id))))"
@@ -730,7 +730,7 @@
       "tablename": "b2b_collection_products",
       "policyname": "collection_products_select",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "SELECT",
       "qual": "(EXISTS ( SELECT 1\n   FROM b2b_collections c\n  WHERE ((c.id = b2b_collection_products.b2b_collection_id) AND user_is_org_member(c.organization_id))))",
       "with_check": ""
@@ -740,7 +740,7 @@
       "tablename": "b2b_collection_products",
       "policyname": "collection_products_update",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "UPDATE",
       "qual": "(EXISTS ( SELECT 1\n   FROM b2b_collections c\n  WHERE ((c.id = b2b_collection_products.b2b_collection_id) AND is_org_owner_or_admin(c.organization_id))))",
       "with_check": ""
@@ -750,7 +750,7 @@
       "tablename": "b2b_collections",
       "policyname": "b2b_collections_delete",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "DELETE",
       "qual": "is_org_owner_or_admin(organization_id)",
       "with_check": ""
@@ -760,7 +760,7 @@
       "tablename": "b2b_collections",
       "policyname": "b2b_collections_insert",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "INSERT",
       "qual": "",
       "with_check": "is_org_owner_or_admin(organization_id)"
@@ -770,7 +770,7 @@
       "tablename": "b2b_collections",
       "policyname": "b2b_collections_select",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "SELECT",
       "qual": "user_is_org_member(organization_id)",
       "with_check": ""
@@ -780,7 +780,7 @@
       "tablename": "b2b_collections",
       "policyname": "b2b_collections_update",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "UPDATE",
       "qual": "is_org_owner_or_admin(organization_id)",
       "with_check": "is_org_owner_or_admin(organization_id)"
@@ -2930,19 +2930,19 @@
       "tablename": "kit_collaborators",
       "policyname": "Owner can invite collaborators",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "INSERT",
       "qual": "",
-      "with_check": "is_kit_owner(kit_id, ( SELECT ( SELECT auth.uid() AS uid) AS uid))"
+      "with_check": "is_kit_owner(kit_id, ( SELECT auth.uid() AS uid))"
     },
     {
       "schemaname": "public",
       "tablename": "kit_collaborators",
       "policyname": "Owner can remove collaborators",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "DELETE",
-      "qual": "is_kit_owner(kit_id, ( SELECT ( SELECT auth.uid() AS uid) AS uid))",
+      "qual": "is_kit_owner(kit_id, ( SELECT auth.uid() AS uid))",
       "with_check": ""
     },
     {
@@ -2950,19 +2950,19 @@
       "tablename": "kit_collaborators",
       "policyname": "Owner can update collaborators",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "UPDATE",
-      "qual": "is_kit_owner(kit_id, ( SELECT ( SELECT auth.uid() AS uid) AS uid))",
-      "with_check": "is_kit_owner(kit_id, ( SELECT ( SELECT auth.uid() AS uid) AS uid))"
+      "qual": "is_kit_owner(kit_id, ( SELECT auth.uid() AS uid))",
+      "with_check": ""
     },
     {
       "schemaname": "public",
       "tablename": "kit_collaborators",
       "policyname": "View collaborators if owner or self",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "SELECT",
-      "qual": "(is_kit_owner(kit_id, ( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR (user_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR is_admin(( SELECT ( SELECT auth.uid() AS uid) AS uid)))",
+      "qual": "(is_kit_owner(kit_id, ( SELECT auth.uid() AS uid)) OR (user_id = auth.uid()))",
       "with_check": ""
     },
     {
@@ -2970,7 +2970,7 @@
       "tablename": "kit_comments",
       "policyname": "Author can delete own comment",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "DELETE",
       "qual": "((author_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR is_admin(( SELECT ( SELECT auth.uid() AS uid) AS uid)))",
       "with_check": ""
@@ -2980,7 +2980,7 @@
       "tablename": "kit_comments",
       "policyname": "Author can edit own comment",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "UPDATE",
       "qual": "((author_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR is_admin(( SELECT ( SELECT auth.uid() AS uid) AS uid)))",
       "with_check": "((author_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR is_admin(( SELECT ( SELECT auth.uid() AS uid) AS uid)))"
@@ -2990,7 +2990,7 @@
       "tablename": "kit_comments",
       "policyname": "Owner or collab can comment",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "INSERT",
       "qual": "",
       "with_check": "((author_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid)) AND (is_kit_owner(kit_id, ( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR is_kit_collaborator(kit_id, ( SELECT ( SELECT auth.uid() AS uid) AS uid))))"
@@ -3000,7 +3000,7 @@
       "tablename": "kit_comments",
       "policyname": "View comments if owner/collab/admin",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "SELECT",
       "qual": "(is_kit_owner(kit_id, ( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR is_kit_collaborator(kit_id, ( SELECT ( SELECT auth.uid() AS uid) AS uid)) OR is_admin(( SELECT ( SELECT auth.uid() AS uid) AS uid)))",
       "with_check": ""
@@ -3010,7 +3010,7 @@
       "tablename": "kit_component_enrichment_raw",
       "policyname": "kcer_admin_delete",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "DELETE",
       "qual": "is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))",
       "with_check": ""
@@ -3020,7 +3020,7 @@
       "tablename": "kit_component_enrichment_raw",
       "policyname": "kcer_admin_insert",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "INSERT",
       "qual": "",
       "with_check": "is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))"
@@ -3030,7 +3030,7 @@
       "tablename": "kit_component_enrichment_raw",
       "policyname": "kcer_admin_update",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "UPDATE",
       "qual": "is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))",
       "with_check": "is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))"
@@ -3040,7 +3040,7 @@
       "tablename": "kit_component_enrichment_raw",
       "policyname": "kcer_read_auth",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "SELECT",
       "qual": "(( SELECT ( SELECT auth.uid() AS uid) AS uid) IS NOT NULL)",
       "with_check": ""
@@ -3060,7 +3060,7 @@
       "tablename": "kit_component_padronizacao",
       "policyname": "kcpad_admin_delete",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "DELETE",
       "qual": "is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))",
       "with_check": ""
@@ -3070,7 +3070,7 @@
       "tablename": "kit_component_padronizacao",
       "policyname": "kcpad_admin_insert",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "INSERT",
       "qual": "",
       "with_check": "is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))"
@@ -3080,7 +3080,7 @@
       "tablename": "kit_component_padronizacao",
       "policyname": "kcpad_admin_update",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "UPDATE",
       "qual": "is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))",
       "with_check": "is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))"
@@ -3090,7 +3090,7 @@
       "tablename": "kit_component_padronizacao",
       "policyname": "kcpad_read_auth",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "SELECT",
       "qual": "(( SELECT ( SELECT auth.uid() AS uid) AS uid) IS NOT NULL)",
       "with_check": ""
@@ -3310,7 +3310,7 @@
       "tablename": "kit_variants",
       "policyname": "Owner can delete variants",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "DELETE",
       "qual": "(EXISTS ( SELECT 1\n   FROM custom_kits k\n  WHERE ((k.id = kit_variants.kit_master_id) AND (k.user_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid)))))",
       "with_check": ""
@@ -3320,7 +3320,7 @@
       "tablename": "kit_variants",
       "policyname": "Owner can insert variants",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "INSERT",
       "qual": "",
       "with_check": "(EXISTS ( SELECT 1\n   FROM custom_kits k\n  WHERE ((k.id = kit_variants.kit_master_id) AND (k.user_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid)))))"
@@ -3330,7 +3330,7 @@
       "tablename": "kit_variants",
       "policyname": "Owner can update variants",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "UPDATE",
       "qual": "(EXISTS ( SELECT 1\n   FROM custom_kits k\n  WHERE ((k.id = kit_variants.kit_master_id) AND (k.user_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid)))))",
       "with_check": "(EXISTS ( SELECT 1\n   FROM custom_kits k\n  WHERE ((k.id = kit_variants.kit_master_id) AND (k.user_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid)))))"
@@ -3340,7 +3340,7 @@
       "tablename": "kit_variants",
       "policyname": "Owner can view variants",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "SELECT",
       "qual": "((EXISTS ( SELECT 1\n   FROM custom_kits k\n  WHERE ((k.id = kit_variants.kit_master_id) AND (k.user_id = ( SELECT ( SELECT auth.uid() AS uid) AS uid))))) OR is_admin(( SELECT ( SELECT auth.uid() AS uid) AS uid)))",
       "with_check": ""
@@ -4510,7 +4510,7 @@
       "tablename": "notification_preferences",
       "policyname": "notification_preferences_delete",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "DELETE",
       "qual": "(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)",
       "with_check": ""
@@ -4520,7 +4520,7 @@
       "tablename": "notification_preferences",
       "policyname": "notification_preferences_insert",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "INSERT",
       "qual": "",
       "with_check": "(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)"
@@ -4530,7 +4530,7 @@
       "tablename": "notification_preferences",
       "policyname": "notification_preferences_select",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "SELECT",
       "qual": "(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)",
       "with_check": ""
@@ -4540,7 +4540,7 @@
       "tablename": "notification_preferences",
       "policyname": "notification_preferences_update",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "UPDATE",
       "qual": "(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)",
       "with_check": "(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)"
@@ -5208,16 +5208,6 @@
     {
       "schemaname": "public",
       "tablename": "product_ai_content",
-      "policyname": "product_ai_anon_select",
-      "permissive": "PERMISSIVE",
-      "roles": "{anon,authenticated}",
-      "cmd": "SELECT",
-      "qual": "true",
-      "with_check": ""
-    },
-    {
-      "schemaname": "public",
-      "tablename": "product_ai_content",
       "policyname": "product_ai_service_all",
       "permissive": "PERMISSIVE",
       "roles": "{service_role}",
@@ -5523,16 +5513,6 @@
       "roles": "{public}",
       "cmd": "SELECT",
       "qual": "(is_active = true)",
-      "with_check": ""
-    },
-    {
-      "schemaname": "public",
-      "tablename": "product_fiscal",
-      "policyname": "product_fiscal_anon_select",
-      "permissive": "PERMISSIVE",
-      "roles": "{anon,authenticated}",
-      "cmd": "SELECT",
-      "qual": "true",
       "with_check": ""
     },
     {
@@ -6168,16 +6148,6 @@
     {
       "schemaname": "public",
       "tablename": "product_seo",
-      "policyname": "product_seo_anon_select",
-      "permissive": "PERMISSIVE",
-      "roles": "{anon,authenticated}",
-      "cmd": "SELECT",
-      "qual": "true",
-      "with_check": ""
-    },
-    {
-      "schemaname": "public",
-      "tablename": "product_seo",
       "policyname": "product_seo_service_all",
       "permissive": "PERMISSIVE",
       "roles": "{service_role}",
@@ -6201,16 +6171,6 @@
       "policyname": "psg_public_read",
       "permissive": "PERMISSIVE",
       "roles": "{public}",
-      "cmd": "SELECT",
-      "qual": "true",
-      "with_check": ""
-    },
-    {
-      "schemaname": "public",
-      "tablename": "product_supply",
-      "policyname": "product_supply_anon_select",
-      "permissive": "PERMISSIVE",
-      "roles": "{anon,authenticated}",
       "cmd": "SELECT",
       "qual": "true",
       "with_check": ""
@@ -6630,7 +6590,7 @@
       "tablename": "push_subscriptions",
       "policyname": "push_subscriptions_delete",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "DELETE",
       "qual": "(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)",
       "with_check": ""
@@ -6640,7 +6600,7 @@
       "tablename": "push_subscriptions",
       "policyname": "push_subscriptions_insert",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "INSERT",
       "qual": "",
       "with_check": "(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)"
@@ -6650,7 +6610,7 @@
       "tablename": "push_subscriptions",
       "policyname": "push_subscriptions_select",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "SELECT",
       "qual": "(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)",
       "with_check": ""
@@ -6660,7 +6620,7 @@
       "tablename": "push_subscriptions",
       "policyname": "push_subscriptions_update",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "UPDATE",
       "qual": "(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)",
       "with_check": "(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)"
@@ -7060,7 +7020,7 @@
       "tablename": "recently_viewed_products",
       "policyname": "Users can delete their own recently viewed products",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "DELETE",
       "qual": "(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)",
       "with_check": ""
@@ -7070,7 +7030,7 @@
       "tablename": "recently_viewed_products",
       "policyname": "Users can insert their own recently viewed products",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "INSERT",
       "qual": "",
       "with_check": "(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)"
@@ -7080,7 +7040,7 @@
       "tablename": "recently_viewed_products",
       "policyname": "Users can update their own recently viewed products",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "UPDATE",
       "qual": "(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)",
       "with_check": "(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)"
@@ -7090,7 +7050,7 @@
       "tablename": "recently_viewed_products",
       "policyname": "Users can view their own recently viewed products",
       "permissive": "PERMISSIVE",
-      "roles": "{public}",
+      "roles": "{authenticated}",
       "cmd": "SELECT",
       "qual": "(( SELECT ( SELECT auth.uid() AS uid) AS uid) = user_id)",
       "with_check": ""
@@ -8438,16 +8398,6 @@
     {
       "schemaname": "public",
       "tablename": "system_kill_switches",
-      "policyname": "kill_switches_read_all",
-      "permissive": "PERMISSIVE",
-      "roles": "{anon,authenticated}",
-      "cmd": "SELECT",
-      "qual": "true",
-      "with_check": ""
-    },
-    {
-      "schemaname": "public",
-      "tablename": "system_kill_switches",
       "policyname": "kill_switches_update_admin",
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",
@@ -9574,6 +9524,157 @@
       "cmd": "SELECT",
       "qual": "true",
       "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "product_ai_content",
+      "policyname": "product_ai_content_authenticated_select",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "product_fiscal",
+      "policyname": "product_fiscal_authenticated_select",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "product_seo",
+      "policyname": "product_seo_authenticated_select",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "product_supply",
+      "policyname": "product_supply_authenticated_select",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "system_kill_switches",
+      "policyname": "system_kill_switches_authenticated_select",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "product_ai_content",
+      "policyname": "rls_restrictive_product_ai_content",
+      "permissive": "RESTRICTIVE",
+      "roles": "{authenticated,service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "product_fiscal",
+      "policyname": "rls_restrictive_product_fiscal",
+      "permissive": "RESTRICTIVE",
+      "roles": "{authenticated,service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "product_seo",
+      "policyname": "rls_restrictive_product_seo",
+      "permissive": "RESTRICTIVE",
+      "roles": "{authenticated,service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "product_supply",
+      "policyname": "rls_restrictive_product_supply",
+      "permissive": "RESTRICTIVE",
+      "roles": "{authenticated,service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "system_kill_switches",
+      "policyname": "rls_restrictive_system_kill_switches",
+      "permissive": "RESTRICTIVE",
+      "roles": "{authenticated,service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "notification_preferences",
+      "policyname": "rls_restrictive_notification_preferences",
+      "permissive": "RESTRICTIVE",
+      "roles": "{authenticated,service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "push_subscriptions",
+      "policyname": "rls_restrictive_push_subscriptions",
+      "permissive": "RESTRICTIVE",
+      "roles": "{authenticated,service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "recently_viewed_products",
+      "policyname": "rls_restrictive_recently_viewed_products",
+      "permissive": "RESTRICTIVE",
+      "roles": "{authenticated,service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "kit_collaborators",
+      "policyname": "rls_restrictive_kit_collaborators",
+      "permissive": "RESTRICTIVE",
+      "roles": "{authenticated,service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "ai_usage_quotas",
+      "policyname": "rls_restrictive_ai_usage_quotas",
+      "permissive": "RESTRICTIVE",
+      "roles": "{authenticated,service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": ""
     }
-  ]
+  ],
+  "policies_count": 966
 }

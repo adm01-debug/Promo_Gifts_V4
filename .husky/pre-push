@@ -31,7 +31,7 @@ fi
 
 # ─────────────────────────────────────────────────────────────────
 # Aumenta heap do Node para projetos grandes (evita OOM no ESLint).
-export NODE_OPTIONS=${NODE_OPTIONS:-"--max-old-space-size=3584"}
+export NODE_OPTIONS=${NODE_OPTIONS:-"--max-old-space-size=2048"}
 
 # Modo normal
 # ─────────────────────────────────────────────────────────────────

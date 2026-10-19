@@ -73,7 +73,7 @@ Levou 3 commits extras para restaurar (`aca0f6f`, `14f6d6a`, `0a31ef9`).
    - Mesmo se o main não tiver o comentário → manter o comentário
 
 3. **Nunca classifique como "dead code" sem verificar:**
-   - `git log --all -S "envPointsToForbidden"` — verifica história da função
+   - `git log --all -S "validate-supabase-config"` — verifica história da função
    - Uma função pode ter existido por 3+ meses por uma razão documentada
 
 4. **Padrão de commit para resolução de conflito:**
@@ -259,6 +259,34 @@ revisando o diff do baseline na PR do bot antes do merge.
 - `supabase migration repair --status applied` **sem versão explícita** (trunca `schema_migrations`)
 - `supabase migration repair --status reverted` em lote (o CLI sugere isso quando o ledger diverge — não siga)
 
+### Corolário — caminho de reconciliação `repair-only` (E99 — 2026-10-18)
+Quando DDL foi aplicada fora do fluxo de migration (via MCP, dashboard ou emergência)
+e o ledger está dessincronizado, o caminho de reconciliação é:
+1. Criar a migration espelho (arquivo `.sql` em `supabase/migrations/`), nomear com timestamp da aplicação real
+2. Registrar no ledger via `supabase migration repair --status applied <version>` (com versão explícita)
+3. Abrir PR com ambos — o arquivo e o recibo em `supabase/MIGRATIONS_SYNC_LOG.md`
+4. Rodar `schema-snapshot-export.yml` com `force_rotate: true` se o baseline ficou desatualizado
+
+**Modo `repair-only`** (CI): quando uma migration foi aplicada fora do workflow (`db-apply-migration.yml`)
+e precisa apenas do registro no ledger sem reaplicar — o preflight aceita `transaction: none` com `approved-by`
+do PO. Isso não aplica DDL, só registra. Ver `docs/db/POLITICA_DDL.md`.
+
+### Corolário — proibição de DDL via execute_sql em sessão de agente (E056)
+`execute_sql` com DDL (CREATE, ALTER, DROP, GRANT, REVOKE, CREATE POLICY,
+ALTER TABLE, CREATE INDEX, CREATE FUNCTION, `cron.alter_job`, etc.) é
+**proibido em sessão de agente Claude** — mesmo quando o PO ou humano pede
+explicitamente, mesmo em emergência.
+
+DDL via `execute_sql` direto não gera entrada no ledger e não é detectado
+pelo drift-check automaticamente — exatamente o incidente de 2026-10-13
+(8 `cron.alter_job` + `variant_stocks_select_org` aplicados via MCP, só
+convertidos em migration espelho 2 dias depois).
+
+**Regras:**
+- `execute_sql` existe para **leitura** (SELECT, EXPLAIN, `pg_catalog` queries) — nunca para escrita estrutural
+- Toda mudança de `cron.job` (criar, alterar, dropar) nasce como **migration SQL** no mesmo PR que a mudança de código que a motiva. Nunca via MCP direto.
+- Em emergência onde o DDL foi aplicado via MCP por necessidade: criar migration espelho + `migration repair` + abrir PR + rodar `schema-snapshot-export.yml` com `force_rotate: true` **no mesmo dia** — sem exceção. Ver corolário de reconciliação acima.
+
 ### Corolário — caminho único para deploy de edge function
 Deploy de edge function fora de `.github/workflows/deploy-edge-functions.yml`
 (ex.: MCP `deploy_edge_function` direto, dashboard) cria a mesma divergência
@@ -313,6 +341,27 @@ ao terminar. Ver `docs/plans/PLANO_ENGENHARIA_SENIOR_50_ETAPAS_2026-09-17.md`
   não força bruta).
 - Fazer push de arquivos de governança sem abrir PR — push solitário deixa
   proteções reais ocultas da revisão (incidente 2026-09-17: 29 commits locais).
+
+---
+
+## REGRA #10 — MERGE CROSS-AGENTE EXIGE PR (E189)
+
+Seis agentes escrevem neste repositório (Claude, Codex, Devin, Lovable, github-actions, cline).
+Merge direto entre branches de agentes diferentes (ex: `claude/*` → `codex/*`) sem PR foi
+observado em 2026-08-31 (`9ffb69651`, `bd59a447d`) e representa risco de conflito sem revisão.
+
+### NUNCA faça:
+- Mergear diretamente uma branch `claude/*` em uma branch `codex/*` (ou qualquer combinação
+  de prefixos de agentes diferentes) sem abrir PR
+- Resolver conflitos entre agents sem registrar no `docs/coordenacao/conflitos-semanticos.md`
+
+### SEMPRE faça:
+- Abrir PR quando precisar incorporar trabalho de outro agente
+- Usar o formato `merge(pr-NNN): resolve conflitos — [lista de arquivos]` ao resolver conflitos (REGRA #3)
+- Registrar toda resolução não trivial no ledger `docs/coordenacao/conflitos-semanticos.md`
+
+**Sentinel automatizado:** `scripts/sentinel-check.sh` recusa merge commit cujo subject é
+`Merge branch 'X' into 'Y'` onde X e Y têm prefixos de agentes diferentes (Regra 8 do sentinel, E189).
 
 ---
 
@@ -374,7 +423,7 @@ O `required-checks.json` (`.github/required-checks.json`) é a SSOT da lista —
 qualquer PR que altere um `name:` de job em `deploy-gates.yml` deve atualizar
 esse arquivo ao mesmo tempo ou o Branch Protection Sentinel vai alertar.
 
-### Padrão E12 — 8 regras obrigatórias para workflows
+### Quem roda o quê (E99 — 2026-10-18)
 
 | Trigger | Workflows principais | Propósito |
 |---|---|---|
@@ -391,9 +440,16 @@ esse arquivo ao mesmo tempo ou o Branch Protection Sentinel vai alertar.
 | **workflow_dispatch** | `deploy-edge-functions.yml` | ÚNICO caminho para deploy de edge function |
 | **workflow_dispatch** | `schema-snapshot-export.yml` | Gira baseline do drift-check |
 
-Todo workflow em `.github/workflows/` deve seguir as 8 regras documentadas em
-`docs/ci/PADRAO_WORKFLOW.md`. Resumo:
 
+**Regra geral:** nenhum job com trigger `pull_request` pode ter `permissions.contents: write`
+ou referenciar segredo de escrita (R11). Exceção: labels/checks automáticos via `github.token` read-only.
+
+### Padrão E12 — 20 regras obrigatórias para workflows (E99 — atualizado 2026-10-18)
+
+Todo workflow em `.github/workflows/` deve seguir as regras documentadas em
+`docs/ci/PADRAO_WORKFLOW.md`. Resumo das regras (R1–R20, completas no PADRAO_WORKFLOW.md):
+
+**R1–R8 (estrutura básica):**
 1. **R1** — `permissions:` explícito no topo (`contents: read` mínimo)
 2. **R2** — `concurrency:` com `cancel-in-progress: true` em PRs; `false` em push/schedule (E19: deploy/cron nunca cancelado)
 3. **R3** — `timeout-minutes:` em todo job. Classes canônicas (E24, SSOT em `docs/ci/PADRAO_WORKFLOW.md`): estático/lint ≤ 5 min, unitário ≤ 10 min, E2E shard ≤ 20 min, E2E full/nightly ≤ 60 min, cron pesado ≤ 60 min. O job `unit-tests` usa 45 min (classe "Full job" — E24). Não usar o resumo simplificado "gates ≤ 10; E2E ≤ 30" — ele diverge da tabela E24.
@@ -403,8 +459,24 @@ Todo workflow em `.github/workflows/` deve seguir as 8 regras documentadas em
 7. **R7** — Sem `master` ou `develop` nos triggers (branches inexistentes)
 8. **R8** — ID de job em kebab-case (ex.: `ssot-gate`, `unit-tests`), estável; mudar o ID quebra required checks silenciosamente. IDs de steps não têm restrição de convenção (kebab e snake são ambos aceitos). Nota: o CLAUDE.md anterior dizia "snake-case", mas todos os jobs reais em `deploy-gates.yml` usam kebab-case — kebab é a convenção adotada.
 
+**R9–R14 (segurança e checkout):**
+9. **R9** — `persist-credentials: false` em todo `actions/checkout` com token de escrita (E32)
+10. **R10** — `defaults.run.shell: bash` obrigatório em workflows com steps `run:`
+11. **R11** — `permissions.contents: write` **proibido** em workflows com trigger `pull_request` — nenhum segredo de escrita em job de PR
+12. **R12** — Workflows com `paths:` devem incluir o próprio arquivo `.github/workflows/<self>.yml`
+13. **R13** — Artefatos `test-results/` nunca como único path de upload — sempre incluir relatório completo
+14. **R14** — Runner fixo `ubuntu-24.04` (nunca `ubuntu-latest` — migra para Ubuntu 26 em 19/10/2026)
+
+**R15–R20 (supply chain e lint):**
+15. **R15** — Actions externas pinadas por SHA completo de 40 chars (C16)
+16. **R16** — `continue-on-error: true` proibido a nível de job em gates bloqueantes (C17)
+17. **R17** — `cancel-in-progress: ${{ github.event_name == 'pull_request' }}` em workflows com triggers mistos push+PR (C18)
+18. **R18** — `supabase db push` proibido em qualquer step `run:` (C19)
+19. **R19** — Nenhum workflow referencia projeto proibido `pqpdolkaeqlyzpdpbizo` (C20)
+20. **R20** — Todo `upload-artifact` declara `retention-days:` explícito (C21)
+
 Gate de lint de workflows: `actionlint` + `shellcheck` rodando em
-`.github/workflows/workflow-lint.yml` (E11). Rodar antes de abrir PR:
+`.github/workflows/workflow-lint.yml` (E11, E91). Rodar antes de abrir PR:
 ```sh
 npx --yes actionlint .github/workflows/meu-workflow.yml
 ```
@@ -445,7 +517,7 @@ Antes de consultar graphify, verifique se o grafo esta atualizado:
 git rev-parse --short HEAD
 grep "Built from commit" graphify-out/GRAPH_REPORT.md
 ```
-Se divergirem, o auto-sync via N8N deve ter corrigido em ate 15 min.
+Se divergirem, o auto-sync via N8N **não está ativo** (E120, 2026-10-18). Rebuild manual necessário.
 Para forcar rebuild manual: `graphify update . --force`
 
 ## graphify

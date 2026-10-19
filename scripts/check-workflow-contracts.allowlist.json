@@ -13,8 +13,8 @@
     "policies-baseline.yml: job 'seed' has permissions.contents: write in pull_request workflow — use read or add fork-guard (R11/E180)",
     "schema-snapshot-export.yml: job 'commit-snapshot' has permissions.contents: write in pull_request workflow — use read or add fork-guard (R11/E180)",
     "codeql.yml: mixed push+PR workflow has cancel-in-progress: false — must be conditional ${{ github.event_name == 'pull_request' }} (C18/R2)",
-    "deploy-gates.yml:651: npx gitleaks in run: — package not in node_modules/.bin (install as devDep or use bash alternative) (E96/C26)",
-    "deploy-gates.yml:653: npx gitleaks in run: — package not in node_modules/.bin (install as devDep or use bash alternative) (E96/C26)"
+    "deploy-gates.yml:790: npx gitleaks in run: — package not in node_modules/.bin (install as devDep or use bash alternative) (E96/C26)",
+    "deploy-gates.yml:792: npx gitleaks in run: — package not in node_modules/.bin (install as devDep or use bash alternative) (E96/C26)"
   ],
   "_violation_justifications": {
     "deploy-gates.yml/lighthouse/C17": "Gate 4 (Lighthouse CI) é intencionalmente opcional — documentado em CLAUDE.md tabela de gates ('Gate 4 | opcional'). O job lighthouse foi removido de needs: no deploy-ready (E03), portanto falha não bloqueia deploy. continue-on-error:true é necessário para que o workflow geral não fique vermelho quando métricas de Lighthouse variam. Aprovado E19/2026-10-14.",

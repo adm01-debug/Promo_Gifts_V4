@@ -1,0 +1,2095 @@
+{
+  "generatedAt": "2026-10-18",
+  "description": "Snapshot de Labels sem htmlFor/id pré-existentes. Novas violações são bloqueadas pelo gate. Regenerar com UPDATE_BASELINE=1.",
+  "totalAtGeneration": 348,
+  "entries": [
+    {
+      "file": "src/components/admin/access-security/CityWhitelistTab.tsx",
+      "hash": "b60f1f9869eb9fda",
+      "snippet": "<Label className=\"text-xs\">Nome do País</Label>",
+      "line": 83
+    },
+    {
+      "file": "src/components/admin/access-security/CityWhitelistTab.tsx",
+      "hash": "b72f447d0e74cf83",
+      "snippet": "<Label className=\"text-xs\">Código (ISO)</Label>",
+      "line": 73
+    },
+    {
+      "file": "src/components/admin/access-security/IpWhitelistTab.tsx",
+      "hash": "928835c8e8f1d8c7",
+      "snippet": "<Label className=\"text-xs\">Rótulo (opcional)</Label>",
+      "line": 82
+    },
+    {
+      "file": "src/components/admin/access-security/IpWhitelistTab.tsx",
+      "hash": "bdcb77d0d0dca8ae",
+      "snippet": "<Label className=\"text-xs\">Endereço IP</Label>",
+      "line": 73
+    },
+    {
+      "file": "src/components/admin/access-security/SecuritySettingsCard.tsx",
+      "hash": "888aa7600af30d6b",
+      "snippet": "<Label className=\"flex items-center gap-2 font-medium\">",
+      "line": 33
+    },
+    {
+      "file": "src/components/admin/access-security/SecuritySettingsCard.tsx",
+      "hash": "8a1575d60b7426a6",
+      "snippet": "<Label>Máx. tentativas falhadas antes do bloqueio</Label>",
+      "line": 62
+    },
+    {
+      "file": "src/components/admin/access-security/SecuritySettingsCard.tsx",
+      "hash": "ac8ecaddb9082265",
+      "snippet": "<Label>Duração do bloqueio (minutos)</Label>",
+      "line": 72
+    },
+    {
+      "file": "src/components/admin/access-security/SecuritySettingsCard.tsx",
+      "hash": "d05522f8c8fff0b7",
+      "snippet": "<Label className=\"flex items-center gap-2 font-medium\">",
+      "line": 46
+    },
+    {
+      "file": "src/components/admin/badges-manager/BadgeFormDialog.tsx",
+      "hash": "466b5600506cc660",
+      "snippet": "<Label>Posicionamento no card</Label>",
+      "line": 436
+    },
+    {
+      "file": "src/components/admin/badges-manager/BadgeFormDialog.tsx",
+      "hash": "e483f501fcbedb67",
+      "snippet": "<Label>Telas (surfaces)</Label>",
+      "line": 459
+    },
+    {
+      "file": "src/components/admin/connections/AiModelsTab.tsx",
+      "hash": "30929e36a19425b3",
+      "snippet": "<Label>Ativo</Label>",
+      "line": 420
+    },
+    {
+      "file": "src/components/admin/connections/AiModelsTab.tsx",
+      "hash": "8f345819fa26aec2",
+      "snippet": "<Label>Capacidades</Label>",
+      "line": 402
+    },
+    {
+      "file": "src/components/admin/connections/AiProvidersTab.tsx",
+      "hash": "ce10a62d99ab14c7",
+      "snippet": "<Label>Ativo</Label>",
+      "line": 404
+    },
+    {
+      "file": "src/components/admin/connections/AiRoutingTab.tsx",
+      "hash": "c2d4e11ebfbd8b06",
+      "snippet": "<Label>Fallbacks (em ordem)</Label>",
+      "line": 363
+    },
+    {
+      "file": "src/components/admin/connections/AiRoutingTab.tsx",
+      "hash": "e0ee47184ba201f8",
+      "snippet": "<Label>Ativo</Label>",
+      "line": 503
+    },
+    {
+      "file": "src/components/admin/connections/AiRoutingTab.tsx",
+      "hash": "e10793e9f7515d76",
+      "snippet": "<Label>Capacidades requeridas</Label>",
+      "line": 454
+    },
+    {
+      "file": "src/components/admin/connections/IssueMcpKeyForm.tsx",
+      "hash": "b30847b19b3c8baf",
+      "snippet": "<Label className=\"mb-2 block\">Escopos</Label>",
+      "line": 215
+    },
+    {
+      "file": "src/components/admin/connections/McpTab.tsx",
+      "hash": "df0ac42e950e2562",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Endpoint</Label>",
+      "line": 122
+    },
+    {
+      "file": "src/components/admin/connections/SecretField.tsx",
+      "hash": "8171ab66ae5d5e95",
+      "snippet": "<Label className=\"cursor-help text-sm font-medium\">{label}</Label>",
+      "line": 66
+    },
+    {
+      "file": "src/components/admin/connections/SecretImpactTooltip.tsx",
+      "hash": "ee1982e0928bea57",
+      "snippet": "/** Conteúdo a ser envolvido (geralmente o `<Label>` ou o nome). */",
+      "line": 23
+    },
+    {
+      "file": "src/components/admin/connections/WebhookPlaygroundPanel.tsx",
+      "hash": "013a6fc69894f81c",
+      "snippet": "<Label className=\"text-xs\">Payload (JSON editável)</Label>",
+      "line": 204
+    },
+    {
+      "file": "src/components/admin/connections/WebhookPlaygroundPanel.tsx",
+      "hash": "27ae801b6cdbdc06",
+      "snippet": "<Label className=\"text-xs\">Evento</Label>",
+      "line": 167
+    },
+    {
+      "file": "src/components/admin/connections/WebhookPlaygroundPanel.tsx",
+      "hash": "db910f348bd1929d",
+      "snippet": "<Label className=\"text-xs\">Webhook</Label>",
+      "line": 135
+    },
+    {
+      "file": "src/components/admin/connections/WebhooksTab.tsx",
+      "hash": "0f9e12e6e7a4001d",
+      "snippet": "<Label>URL</Label>",
+      "line": 187
+    },
+    {
+      "file": "src/components/admin/connections/WebhooksTab.tsx",
+      "hash": "a59d419f855b8b61",
+      "snippet": "<Label>Nome</Label>",
+      "line": 180
+    },
+    {
+      "file": "src/components/admin/connections/WebhooksTab.tsx",
+      "hash": "b769f2a0c32085a5",
+      "snippet": "<Label className=\"mb-2 block\">Eventos</Label>",
+      "line": 195
+    },
+    {
+      "file": "src/components/admin/connections/WebhooksTab.tsx",
+      "hash": "dd3459a8783cac35",
+      "snippet": "<Label>Nome</Label>",
+      "line": 345
+    },
+    {
+      "file": "src/components/admin/connections/WebhooksTab.tsx",
+      "hash": "ef089b929005fd29",
+      "snippet": "<Label>Sistema de origem</Label>",
+      "line": 352
+    },
+    {
+      "file": "src/components/admin/DiscountManagementPanel.tsx",
+      "hash": "6b547b590b8a9711",
+      "snippet": "<Label>",
+      "line": 782
+    },
+    {
+      "file": "src/components/admin/DiscountManagementPanel.tsx",
+      "hash": "7b1e04a025feaff0",
+      "snippet": "<Label>Notas (opcional)</Label>",
+      "line": 691
+    },
+    {
+      "file": "src/components/admin/DiscountManagementPanel.tsx",
+      "hash": "ec2ffc8fc3569386",
+      "snippet": "<Label>Desconto Máximo (%)</Label>",
+      "line": 665
+    },
+    {
+      "file": "src/components/admin/DiscountNotificationFilterPanel.tsx",
+      "hash": "7b68c85e18203d90",
+      "snippet": "<Label className=\"text-xs\">% mínimo</Label>",
+      "line": 181
+    },
+    {
+      "file": "src/components/admin/DiscountNotificationFilterPanel.tsx",
+      "hash": "aa6df35e81bdac5e",
+      "snippet": "<Label className=\"text-xs\">% máximo</Label>",
+      "line": 194
+    },
+    {
+      "file": "src/components/admin/DiscountNotificationFilterPanel.tsx",
+      "hash": "fd60b9a58306aabd",
+      "snippet": "<Label className=\"text-xs\">Vendedor</Label>",
+      "line": 165
+    },
+    {
+      "file": "src/components/admin/group-personalization/GroupComponentCard.tsx",
+      "hash": "13973c62047601bd",
+      "snippet": "<Label>Área Máx. (cm²)</Label>",
+      "line": 227
+    },
+    {
+      "file": "src/components/admin/group-personalization/GroupComponentCard.tsx",
+      "hash": "24a08622d493e19a",
+      "snippet": "<Label>Largura Máx. (cm)</Label>",
+      "line": 205
+    },
+    {
+      "file": "src/components/admin/group-personalization/GroupComponentCard.tsx",
+      "hash": "406dfebf00cb01e1",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Código</Label>",
+      "line": 127
+    },
+    {
+      "file": "src/components/admin/group-personalization/GroupComponentCard.tsx",
+      "hash": "84d48639db3b3496",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Nome</Label>",
+      "line": 137
+    },
+    {
+      "file": "src/components/admin/group-personalization/GroupComponentCard.tsx",
+      "hash": "b74cfa3fc478cab9",
+      "snippet": "<Label>Altura Máx. (cm)</Label>",
+      "line": 216
+    },
+    {
+      "file": "src/components/admin/group-personalization/GroupComponentCard.tsx",
+      "hash": "cc1c543820f0b8a1",
+      "snippet": "<Label className=\"text-sm\">Ativo</Label>",
+      "line": 159
+    },
+    {
+      "file": "src/components/admin/group-personalization/GroupComponentCard.tsx",
+      "hash": "cd847deb6f23b78b",
+      "snippet": "<Label className=\"text-sm\">Personalizável</Label>",
+      "line": 150
+    },
+    {
+      "file": "src/components/admin/group-personalization/GroupComponentCard.tsx",
+      "hash": "f2afe243d52c37d8",
+      "snippet": "<Label>Código</Label>",
+      "line": 187
+    },
+    {
+      "file": "src/components/admin/group-personalization/GroupComponentCard.tsx",
+      "hash": "f592ddb140afbb5e",
+      "snippet": "<Label>Nome</Label>",
+      "line": 195
+    },
+    {
+      "file": "src/components/admin/group-personalization/GroupLocationCard.tsx",
+      "hash": "089854582f3e509a",
+      "snippet": "<Label className=\"text-xs\">Ativo</Label>",
+      "line": 139
+    },
+    {
+      "file": "src/components/admin/group-personalization/GroupLocationCard.tsx",
+      "hash": "111a1e3845a3e9bc",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Código</Label>",
+      "line": 82
+    },
+    {
+      "file": "src/components/admin/group-personalization/GroupLocationCard.tsx",
+      "hash": "195cd262a4d42d86",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Área (cm²)</Label>",
+      "line": 121
+    },
+    {
+      "file": "src/components/admin/group-personalization/GroupLocationCard.tsx",
+      "hash": "1a398e287c4d8704",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Larg. (cm)</Label>",
+      "line": 99
+    },
+    {
+      "file": "src/components/admin/group-personalization/GroupLocationCard.tsx",
+      "hash": "2c2870993205d5f9",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Nome</Label>",
+      "line": 92
+    },
+    {
+      "file": "src/components/admin/group-personalization/GroupLocationCard.tsx",
+      "hash": "2e6581eb3e1f016d",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Alt. (cm)</Label>",
+      "line": 110
+    },
+    {
+      "file": "src/components/admin/group-personalization/GroupLocationCard.tsx",
+      "hash": "7e34b591c1ae920e",
+      "snippet": "<Label>Máximo de Cores</Label>",
+      "line": 193
+    },
+    {
+      "file": "src/components/admin/group-personalization/GroupLocationCard.tsx",
+      "hash": "9d815e3054d23a25",
+      "snippet": "<Label>Técnica</Label>",
+      "line": 178
+    },
+    {
+      "file": "src/components/admin/mockup-prompts/PromptDialogs.tsx",
+      "hash": "a15b0bf3808ee411",
+      "snippet": "<Label>Técnica</Label>",
+      "line": 179
+    },
+    {
+      "file": "src/components/admin/mockup-prompts/PromptEditor.tsx",
+      "hash": "91c05a0496ae5174",
+      "snippet": "<Label className=\"mb-1 block text-xs text-muted-foreground\">Texto do Prompt</Label>",
+      "line": 117
+    },
+    {
+      "file": "src/components/admin/mockup-prompts/PromptEditor.tsx",
+      "hash": "b41bade3f36f693e",
+      "snippet": "<Label className=\"mb-1 block text-xs text-muted-foreground\">",
+      "line": 128
+    },
+    {
+      "file": "src/components/admin/mockup-prompts/PromptEditor.tsx",
+      "hash": "c38649e358aace3a",
+      "snippet": "<Label className=\"mb-1 block text-xs text-muted-foreground\">Modelo de IA</Label>",
+      "line": 98
+    },
+    {
+      "file": "src/components/admin/personalization-manager/ComponentAccordionItem.tsx",
+      "hash": "16e69314f9bdfb73",
+      "snippet": "<Label>Código</Label>",
+      "line": 198
+    },
+    {
+      "file": "src/components/admin/personalization-manager/ComponentAccordionItem.tsx",
+      "hash": "2757b26c8652f112",
+      "snippet": "<Label>Largura Máx. (cm)</Label>",
+      "line": 216
+    },
+    {
+      "file": "src/components/admin/personalization-manager/ComponentAccordionItem.tsx",
+      "hash": "2ea16ebc7081b833",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Área (cm²)</Label>",
+      "line": 316
+    },
+    {
+      "file": "src/components/admin/personalization-manager/ComponentAccordionItem.tsx",
+      "hash": "3d0fd2b46391ed41",
+      "snippet": "<Label className=\"text-sm\">Ativo</Label>",
+      "line": 164
+    },
+    {
+      "file": "src/components/admin/personalization-manager/ComponentAccordionItem.tsx",
+      "hash": "3f9a57edf10169a5",
+      "snippet": "<Label>Nome</Label>",
+      "line": 206
+    },
+    {
+      "file": "src/components/admin/personalization-manager/ComponentAccordionItem.tsx",
+      "hash": "426feec5581a4a5f",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Código</Label>",
+      "line": 271
+    },
+    {
+      "file": "src/components/admin/personalization-manager/ComponentAccordionItem.tsx",
+      "hash": "60087196bffbffe1",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Nome</Label>",
+      "line": 146
+    },
+    {
+      "file": "src/components/admin/personalization-manager/ComponentAccordionItem.tsx",
+      "hash": "63da0b94355d1407",
+      "snippet": "<Label>Técnica</Label>",
+      "line": 384
+    },
+    {
+      "file": "src/components/admin/personalization-manager/ComponentAccordionItem.tsx",
+      "hash": "6cc566bc86a3923f",
+      "snippet": "<Label>Área Máx. (cm²)</Label>",
+      "line": 238
+    },
+    {
+      "file": "src/components/admin/personalization-manager/ComponentAccordionItem.tsx",
+      "hash": "6f3650b25a37921e",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Larg. (cm)</Label>",
+      "line": 288
+    },
+    {
+      "file": "src/components/admin/personalization-manager/ComponentAccordionItem.tsx",
+      "hash": "8446dfac0d190185",
+      "snippet": "<Label className=\"text-xs\">Ativo</Label>",
+      "line": 337
+    },
+    {
+      "file": "src/components/admin/personalization-manager/ComponentAccordionItem.tsx",
+      "hash": "8d7f06dd2db48077",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Código</Label>",
+      "line": 136
+    },
+    {
+      "file": "src/components/admin/personalization-manager/ComponentAccordionItem.tsx",
+      "hash": "939dfcc08792dd56",
+      "snippet": "<Label>Altura Máx. (cm)</Label>",
+      "line": 227
+    },
+    {
+      "file": "src/components/admin/personalization-manager/ComponentAccordionItem.tsx",
+      "hash": "ab4e83e003b40273",
+      "snippet": "<Label className=\"text-sm\">Personalizável</Label>",
+      "line": 157
+    },
+    {
+      "file": "src/components/admin/personalization-manager/ComponentAccordionItem.tsx",
+      "hash": "d0b8ef8a4b2c5e3b",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Nome</Label>",
+      "line": 281
+    },
+    {
+      "file": "src/components/admin/personalization-manager/ComponentAccordionItem.tsx",
+      "hash": "e624b591162e2b17",
+      "snippet": "<Label>Máximo de Cores</Label>",
+      "line": 399
+    },
+    {
+      "file": "src/components/admin/personalization-manager/ComponentAccordionItem.tsx",
+      "hash": "fadd0e0b17e8b138",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Alt. (cm)</Label>",
+      "line": 302
+    },
+    {
+      "file": "src/components/admin/personalization-manager/ProductPersonalizationManager.tsx",
+      "hash": "307bf7e84ce8e709",
+      "snippet": "<Label>Nome</Label>",
+      "line": 99
+    },
+    {
+      "file": "src/components/admin/personalization-manager/ProductPersonalizationManager.tsx",
+      "hash": "e0ae5f90a8d14da8",
+      "snippet": "<Label>Código</Label>",
+      "line": 89
+    },
+    {
+      "file": "src/components/admin/product-groups/GroupAccordionItem.tsx",
+      "hash": "91b524ae18995659",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Nome</Label>",
+      "line": 78
+    },
+    {
+      "file": "src/components/admin/product-groups/GroupAccordionItem.tsx",
+      "hash": "c4b5ea44cced7722",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Código</Label>",
+      "line": 70
+    },
+    {
+      "file": "src/components/admin/ProductPersonalizationManager.tsx",
+      "hash": "18d75be4168c7de9",
+      "snippet": "<Label>Código</Label>",
+      "line": 247
+    },
+    {
+      "file": "src/components/admin/ProductPersonalizationManager.tsx",
+      "hash": "19eb44f7fe2fb0df",
+      "snippet": "<Label className=\"text-sm\">Personalizável</Label>",
+      "line": 359
+    },
+    {
+      "file": "src/components/admin/ProductPersonalizationManager.tsx",
+      "hash": "238d22ccd672cf19",
+      "snippet": "<Label>Alt. Máx (cm)</Label>",
+      "line": 446
+    },
+    {
+      "file": "src/components/admin/ProductPersonalizationManager.tsx",
+      "hash": "27424060cd3b9a89",
+      "snippet": "<Label>Código</Label>",
+      "line": 405
+    },
+    {
+      "file": "src/components/admin/ProductPersonalizationManager.tsx",
+      "hash": "3116f97516d79913",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">",
+      "line": 536
+    },
+    {
+      "file": "src/components/admin/ProductPersonalizationManager.tsx",
+      "hash": "3aff52c879c7dd55",
+      "snippet": "<Label>Nome</Label>",
+      "line": 255
+    },
+    {
+      "file": "src/components/admin/ProductPersonalizationManager.tsx",
+      "hash": "4ecfddb428d92537",
+      "snippet": "<Label>Técnica</Label>",
+      "line": 660
+    },
+    {
+      "file": "src/components/admin/ProductPersonalizationManager.tsx",
+      "hash": "5db00ba5f459fc91",
+      "snippet": "<Label>Nome</Label>",
+      "line": 418
+    },
+    {
+      "file": "src/components/admin/ProductPersonalizationManager.tsx",
+      "hash": "68999307056474f9",
+      "snippet": "<Label>Área Máx (cm²)</Label>",
+      "line": 459
+    },
+    {
+      "file": "src/components/admin/ProductPersonalizationManager.tsx",
+      "hash": "6ee75dc6d64071e7",
+      "snippet": "<Label>Larg. Máx (cm)</Label>",
+      "line": 433
+    },
+    {
+      "file": "src/components/admin/ProductPersonalizationManager.tsx",
+      "hash": "74311200983bb6be",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">",
+      "line": 568
+    },
+    {
+      "file": "src/components/admin/ProductPersonalizationManager.tsx",
+      "hash": "87e0cc3d99192636",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Código</Label>",
+      "line": 325
+    },
+    {
+      "file": "src/components/admin/ProductPersonalizationManager.tsx",
+      "hash": "8d7de6f2aaeb44e6",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">",
+      "line": 552
+    },
+    {
+      "file": "src/components/admin/ProductPersonalizationManager.tsx",
+      "hash": "9712c0aa2d35c3cf",
+      "snippet": "<Label>Máximo de Cores</Label>",
+      "line": 678
+    },
+    {
+      "file": "src/components/admin/ProductPersonalizationManager.tsx",
+      "hash": "a48c15820d1dc0af",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Nome</Label>",
+      "line": 338
+    },
+    {
+      "file": "src/components/admin/ProductPersonalizationManager.tsx",
+      "hash": "a6dee2e7b193cdf5",
+      "snippet": "<Label className=\"text-xs\">Ativo</Label>",
+      "line": 594
+    },
+    {
+      "file": "src/components/admin/ProductPersonalizationManager.tsx",
+      "hash": "b04eef9e1341ca3d",
+      "snippet": "<Label className=\"text-sm\">Ativo</Label>",
+      "line": 371
+    },
+    {
+      "file": "src/components/admin/ProductPersonalizationManager.tsx",
+      "hash": "b3085b6865969e0d",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">",
+      "line": 522
+    },
+    {
+      "file": "src/components/admin/ProductPersonalizationManager.tsx",
+      "hash": "dc57d4ebad3afaf2",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">",
+      "line": 507
+    },
+    {
+      "file": "src/components/admin/products/kit-components/ComponentForm.tsx",
+      "hash": "23068eda9010193f",
+      "snippet": "<Label className=\"text-xs\">SKU Fornecedor</Label>",
+      "line": 75
+    },
+    {
+      "file": "src/components/admin/products/kit-components/ComponentForm.tsx",
+      "hash": "423859d54d669d87",
+      "snippet": "<Label className=\"text-xs\">SKU</Label>",
+      "line": 66
+    },
+    {
+      "file": "src/components/admin/products/kit-components/ComponentForm.tsx",
+      "hash": "5e3efa2cafbc880b",
+      "snippet": "<Label className=\"text-xs\">Tipo</Label>",
+      "line": 45
+    },
+    {
+      "file": "src/components/admin/products/kit-components/ComponentForm.tsx",
+      "hash": "7f539cac0e798220",
+      "snippet": "<Label className=\"text-xs\">Altura (mm)</Label>",
+      "line": 128
+    },
+    {
+      "file": "src/components/admin/products/kit-components/ComponentForm.tsx",
+      "hash": "90a2889e5540d39a",
+      "snippet": "<Label className=\"text-xs\">Largura (mm)</Label>",
+      "line": 137
+    },
+    {
+      "file": "src/components/admin/products/kit-components/ComponentForm.tsx",
+      "hash": "90f5ec0f5ceacb6e",
+      "snippet": "<Label className=\"text-xs\">Material</Label>",
+      "line": 107
+    },
+    {
+      "file": "src/components/admin/products/kit-components/ComponentForm.tsx",
+      "hash": "acfd3d74c2c5cf75",
+      "snippet": "<Label className=\"text-xs\">Comp. (mm)</Label>",
+      "line": 146
+    },
+    {
+      "file": "src/components/admin/products/kit-components/ComponentForm.tsx",
+      "hash": "b8118a51700cfe4c",
+      "snippet": "<Label className=\"text-xs\">Código</Label>",
+      "line": 54
+    },
+    {
+      "file": "src/components/admin/products/kit-components/ComponentForm.tsx",
+      "hash": "b89f160a4a065abf",
+      "snippet": "<Label className=\"text-xs\">Peso (g)</Label>",
+      "line": 155
+    },
+    {
+      "file": "src/components/admin/products/kit-components/ComponentForm.tsx",
+      "hash": "bd92b5f80978552a",
+      "snippet": "<Label className=\"text-xs\">Descrição</Label>",
+      "line": 193
+    },
+    {
+      "file": "src/components/admin/products/kit-components/ComponentForm.tsx",
+      "hash": "bfc5d2d1faa8d859",
+      "snippet": "<Label className=\"text-xs\">Ordem</Label>",
+      "line": 94
+    },
+    {
+      "file": "src/components/admin/products/kit-components/ComponentForm.tsx",
+      "hash": "c5e8ca8505380a88",
+      "snippet": "<Label className=\"text-xs\">Nome *</Label>",
+      "line": 36
+    },
+    {
+      "file": "src/components/admin/products/kit-components/ComponentForm.tsx",
+      "hash": "c8a0e01180bb1ba1",
+      "snippet": "<Label className=\"text-xs\">Cor</Label>",
+      "line": 116
+    },
+    {
+      "file": "src/components/admin/products/kit-components/ComponentForm.tsx",
+      "hash": "c8d4e5a398b7fdcd",
+      "snippet": "<Label className=\"text-xs\">Quantidade</Label>",
+      "line": 84
+    },
+    {
+      "file": "src/components/admin/products/kit-components/ComponentForm.tsx",
+      "hash": "cc39063234316e10",
+      "snippet": "<Label className=\"text-xs\">Observações</Label>",
+      "line": 214
+    },
+    {
+      "file": "src/components/admin/products/kit-components/ComponentForm.tsx",
+      "hash": "eeaf212b04858f9e",
+      "snippet": "<Label className=\"text-xs\">Notas de Personalização</Label>",
+      "line": 203
+    },
+    {
+      "file": "src/components/admin/products/kit-components/ComponentForm.tsx",
+      "hash": "f036f6d7a39b1f0a",
+      "snippet": "<Label className=\"text-xs\">URL Imagem</Label>",
+      "line": 182
+    },
+    {
+      "file": "src/components/admin/products/kit-components/PrintAreaForm.tsx",
+      "hash": "0798b3f5277325e9",
+      "snippet": "<Label className=\"text-[10px]\">Observações</Label>",
+      "line": 129
+    },
+    {
+      "file": "src/components/admin/products/kit-components/PrintAreaForm.tsx",
+      "hash": "0d52de63f70902f7",
+      "snippet": "<Label className=\"text-[10px]\">ID Tabela Preço</Label>",
+      "line": 108
+    },
+    {
+      "file": "src/components/admin/products/kit-components/PrintAreaForm.tsx",
+      "hash": "53d8edba0df7a74b",
+      "snippet": "<Label className=\"text-[10px]\">Código Local</Label>",
+      "line": 41
+    },
+    {
+      "file": "src/components/admin/products/kit-components/PrintAreaForm.tsx",
+      "hash": "5d44102c500c8bfd",
+      "snippet": "<Label className=\"text-[10px]\">ID Técnica</Label>",
+      "line": 99
+    },
+    {
+      "file": "src/components/admin/products/kit-components/PrintAreaForm.tsx",
+      "hash": "6366b652775c3062",
+      "snippet": "<Label className=\"text-[10px]\">Nome Local *</Label>",
+      "line": 50
+    },
+    {
+      "file": "src/components/admin/products/kit-components/PrintAreaForm.tsx",
+      "hash": "842455e5f610fbc1",
+      "snippet": "<Label className=\"text-[10px]\">Técnica</Label>",
+      "line": 59
+    },
+    {
+      "file": "src/components/admin/products/kit-components/PrintAreaForm.tsx",
+      "hash": "ad55fe029ddabc6f",
+      "snippet": "<Label className=\"text-[10px]\">Larg. Máx (mm)</Label>",
+      "line": 77
+    },
+    {
+      "file": "src/components/admin/products/kit-components/PrintAreaForm.tsx",
+      "hash": "de312097cc334f4f",
+      "snippet": "<Label className=\"text-[10px]\">Alt. Máx (mm)</Label>",
+      "line": 88
+    },
+    {
+      "file": "src/components/admin/products/kit-components/PrintAreaForm.tsx",
+      "hash": "fdfef30a264e1d4f",
+      "snippet": "<Label className=\"text-[10px]\">Ordem</Label>",
+      "line": 117
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/AddressTab.tsx",
+      "hash": "064f8b066a87ed87",
+      "snippet": "<Label className=\"text-xs font-semibold\">Instruções de Entrega</Label>",
+      "line": 273
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/AddressTab.tsx",
+      "hash": "09b7b403ea5bf836",
+      "snippet": "<Label className=\"text-xs font-semibold\">Número</Label>",
+      "line": 71
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/AddressTab.tsx",
+      "hash": "2311c380a1b51d88",
+      "snippet": "<Label className=\"text-xs font-semibold\">País</Label>",
+      "line": 127
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/AddressTab.tsx",
+      "hash": "28178fd3c903afa8",
+      "snippet": "<Label className=\"text-xs font-semibold\">Complemento</Label>",
+      "line": 80
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/AddressTab.tsx",
+      "hash": "3aa44a9fbdfc0821",
+      "snippet": "<Label className=\"text-xs font-semibold\">Longitude</Label>",
+      "line": 157
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/AddressTab.tsx",
+      "hash": "698bcfc27b7d930a",
+      "snippet": "<Label className=\"text-xs font-semibold\">Google Place ID</Label>",
+      "line": 179
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/AddressTab.tsx",
+      "hash": "70f6bd26e7058e19",
+      "snippet": "<Label className=\"text-xs font-semibold\">Ponto de Referência</Label>",
+      "line": 136
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/AddressTab.tsx",
+      "hash": "7341e1dd10f52cd6",
+      "snippet": "<Label className=\"text-xs font-semibold\">Bairro</Label>",
+      "line": 91
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/AddressTab.tsx",
+      "hash": "74783ef524d2f6ec",
+      "snippet": "<Label className=\"text-xs font-semibold\">Latitude</Label>",
+      "line": 146
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/AddressTab.tsx",
+      "hash": "80e374f5549d13f2",
+      "snippet": "<Label className=\"text-xs font-semibold\">Tipo Logradouro</Label>",
+      "line": 33
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/AddressTab.tsx",
+      "hash": "9670d5cc175c8e00",
+      "snippet": "<Label className=\"text-xs font-semibold\">Google Maps URL</Label>",
+      "line": 170
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/AddressTab.tsx",
+      "hash": "a29c49c040d3efbf",
+      "snippet": "<Label className=\"text-xs font-semibold\">Horário de Funcionamento</Label>",
+      "line": 189
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/AddressTab.tsx",
+      "hash": "c1bd536e62371944",
+      "snippet": "<Label className=\"text-xs font-semibold\">Estado</Label>",
+      "line": 111
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/AddressTab.tsx",
+      "hash": "c584d5ef1671bdd2",
+      "snippet": "<Label className=\"text-xs font-semibold\">Logradouro</Label>",
+      "line": 61
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/AddressTab.tsx",
+      "hash": "cf95054a91a38f1e",
+      "snippet": "<Label className=\"text-xs font-semibold\">Cidade</Label>",
+      "line": 100
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/AddressTab.tsx",
+      "hash": "df5357bfd9398666",
+      "snippet": "<Label className=\"text-xs font-semibold\">CEP</Label>",
+      "line": 21
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/AddressTab.tsx",
+      "hash": "f4dd9614a74851fe",
+      "snippet": "<Label className=\"flex items-center gap-1.5 text-xs font-semibold\">",
+      "line": 202
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/BasicDataTab.tsx",
+      "hash": "0ff4b19477ac222b",
+      "snippet": "<Label className=\"text-xs font-semibold\">CNPJ</Label>",
+      "line": 110
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/BasicDataTab.tsx",
+      "hash": "1aa4962322ebee33",
+      "snippet": "<Label className=\"text-xs font-semibold\">Estado de Faturamento</Label>",
+      "line": 200
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/BasicDataTab.tsx",
+      "hash": "4618a31ddaceafb6",
+      "snippet": "<Label className=\"text-xs font-semibold\">Regime Tributário</Label>",
+      "line": 186
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/BasicDataTab.tsx",
+      "hash": "4b224a9acc68e054",
+      "snippet": "<Label className=\"text-xs font-semibold\">Fone Fixo 01</Label>",
+      "line": 158
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/BasicDataTab.tsx",
+      "hash": "6e29b2604386b867",
+      "snippet": "<Label className=\"text-xs font-semibold\">Nome Fantasia</Label>",
+      "line": 70
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/BasicDataTab.tsx",
+      "hash": "766edb6e3587b0ea",
+      "snippet": "<Label className=\"text-xs font-semibold\">Fone Fixo 02</Label>",
+      "line": 170
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/BasicDataTab.tsx",
+      "hash": "7e0f1c6af8193051",
+      "snippet": "<Label className=\"text-sm\">Ativo</Label>",
+      "line": 217
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/BasicDataTab.tsx",
+      "hash": "9e788622b1de488a",
+      "snippet": "<Label className=\"text-xs font-semibold\">",
+      "line": 82
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/BasicDataTab.tsx",
+      "hash": "a5d488478ea16b56",
+      "snippet": "<Label className=\"text-xs font-semibold\">Inscrição Estadual</Label>",
+      "line": 143
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/BasicDataTab.tsx",
+      "hash": "f4ed1465ecda4344",
+      "snippet": "<Label className=\"text-xs font-semibold\">",
+      "line": 96
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/ContactsTab.tsx",
+      "hash": "12d4fc9a9e2d1568",
+      "snippet": "<Label className=\"text-xs font-semibold\">Função / Cargo</Label>",
+      "line": 68
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/ContactsTab.tsx",
+      "hash": "59bbf51a9adc3911",
+      "snippet": "<Label className=\"text-xs font-semibold\">E-mail</Label>",
+      "line": 127
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/ContactsTab.tsx",
+      "hash": "79f69dfd51434eb2",
+      "snippet": "<Label className=\"text-xs font-semibold\">Assinatura</Label>",
+      "line": 97
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/ContactsTab.tsx",
+      "hash": "890b585f2869a181",
+      "snippet": "<Label className=\"text-xs font-semibold\">Apelido</Label>",
+      "line": 106
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/ContactsTab.tsx",
+      "hash": "af1c949234a5ee57",
+      "snippet": "<Label className=\"text-xs font-semibold\">Telefone</Label>",
+      "line": 117
+    },
+    {
+      "file": "src/components/admin/products/new-supplier/tabs/ContactsTab.tsx",
+      "hash": "e5430359c266359e",
+      "snippet": "<Label className=\"text-xs font-semibold\">Nome</Label>",
+      "line": 86
+    },
+    {
+      "file": "src/components/admin/products/NewSupplierDialog.tsx",
+      "hash": "07d01653444aa605",
+      "snippet": "<Label className=\"text-xs font-semibold\">Website</Label>",
+      "line": 109
+    },
+    {
+      "file": "src/components/admin/products/NewSupplierDialog.tsx",
+      "hash": "1319c3c24cc7386d",
+      "snippet": "<Label className=\"text-xs font-semibold\">Instagram</Label>",
+      "line": 118
+    },
+    {
+      "file": "src/components/admin/products/NewSupplierDialog.tsx",
+      "hash": "1827e20240beb9b5",
+      "snippet": "<Label className=\"text-sm\">Fornecedor de Produtos</Label>",
+      "line": 370
+    },
+    {
+      "file": "src/components/admin/products/NewSupplierDialog.tsx",
+      "hash": "19b4bb35830cee00",
+      "snippet": "<Label className=\"text-xs font-semibold\">Pedido Mínimo (R$)</Label>",
+      "line": 179
+    },
+    {
+      "file": "src/components/admin/products/NewSupplierDialog.tsx",
+      "hash": "2492bd8dde7a0db1",
+      "snippet": "<Label className=\"text-sm\">Fornecedor de Gravação</Label>",
+      "line": 380
+    },
+    {
+      "file": "src/components/admin/products/NewSupplierDialog.tsx",
+      "hash": "2a632853a613d502",
+      "snippet": "<Label className=\"text-xs font-semibold\">LinkedIn</Label>",
+      "line": 136
+    },
+    {
+      "file": "src/components/admin/products/NewSupplierDialog.tsx",
+      "hash": "3098b9336502146e",
+      "snippet": "<Label className=\"text-xs font-semibold\">Prioridade (0-100)</Label>",
+      "line": 221
+    },
+    {
+      "file": "src/components/admin/products/NewSupplierDialog.tsx",
+      "hash": "393a0136033044a2",
+      "snippet": "<Label className=\"text-xs font-semibold\">YouTube</Label>",
+      "line": 145
+    },
+    {
+      "file": "src/components/admin/products/NewSupplierDialog.tsx",
+      "hash": "397b13842f09e464",
+      "snippet": "<Label className=\"text-[10px]\">Tipo</Label>",
+      "line": 314
+    },
+    {
+      "file": "src/components/admin/products/NewSupplierDialog.tsx",
+      "hash": "3ecb509b6bec1551",
+      "snippet": "<Label className=\"text-xs font-semibold\">Observações</Label>",
+      "line": 232
+    },
+    {
+      "file": "src/components/admin/products/NewSupplierDialog.tsx",
+      "hash": "4aa026076188fabf",
+      "snippet": "<Label className=\"text-xs font-semibold\">Condições de Pagamento</Label>",
+      "line": 203
+    },
+    {
+      "file": "src/components/admin/products/NewSupplierDialog.tsx",
+      "hash": "52c90ca030c65090",
+      "snippet": "<Label className=\"text-xs font-semibold\">Condições de Frete</Label>",
+      "line": 212
+    },
+    {
+      "file": "src/components/admin/products/NewSupplierDialog.tsx",
+      "hash": "65d326dfe1594fa9",
+      "snippet": "<Label className=\"text-xs font-semibold\">TikTok</Label>",
+      "line": 154
+    },
+    {
+      "file": "src/components/admin/products/NewSupplierDialog.tsx",
+      "hash": "6abbfdad3c3831d3",
+      "snippet": "<Label className=\"text-xs font-semibold\">Markup Padrão (%)</Label>",
+      "line": 168
+    },
+    {
+      "file": "src/components/admin/products/NewSupplierDialog.tsx",
+      "hash": "8e563a40a1a259c7",
+      "snippet": "<Label className=\"text-[10px]\">Favorecido</Label>",
+      "line": 346
+    },
+    {
+      "file": "src/components/admin/products/NewSupplierDialog.tsx",
+      "hash": "8eeaffea783fe612",
+      "snippet": "<Label className=\"text-xs font-semibold\">Prazo Entrega (dias)</Label>",
+      "line": 191
+    },
+    {
+      "file": "src/components/admin/products/NewSupplierDialog.tsx",
+      "hash": "b1f409dae4ef56fc",
+      "snippet": "<Label className=\"mb-2 block text-xs font-semibold\">",
+      "line": 245
+    },
+    {
+      "file": "src/components/admin/products/NewSupplierDialog.tsx",
+      "hash": "bce762e916135642",
+      "snippet": "<Label className=\"text-xs font-semibold\">Facebook</Label>",
+      "line": 127
+    },
+    {
+      "file": "src/components/admin/products/NewSupplierDialog.tsx",
+      "hash": "dedbdb4acd662f75",
+      "snippet": "<Label className=\"text-xs font-semibold\">Chaves PIX</Label>",
+      "line": 269
+    },
+    {
+      "file": "src/components/admin/products/NewSupplierDialog.tsx",
+      "hash": "f0218d2750a25ec0",
+      "snippet": "<Label className=\"text-[10px]\">Chave</Label>",
+      "line": 332
+    },
+    {
+      "file": "src/components/admin/products/ProductFormStepContent.tsx",
+      "hash": "725d012e3633e788",
+      "snippet": "<Label className=\"cursor-pointer text-xs font-medium\">É Kit</Label>",
+      "line": 250
+    },
+    {
+      "file": "src/components/admin/products/ProductVariationAxesConfig.tsx",
+      "hash": "714d188b1d529b37",
+      "snippet": "<Label className=\"mb-1.5 block text-[11px] text-muted-foreground\">Público-alvo</Label>",
+      "line": 373
+    },
+    {
+      "file": "src/components/admin/products/ProductVariationAxesConfig.tsx",
+      "hash": "7b93134ca2ebbb37",
+      "snippet": "<Label className=\"text-[11px] text-muted-foreground\">",
+      "line": 266
+    },
+    {
+      "file": "src/components/admin/products/sections/ProductFlagsSection.tsx",
+      "hash": "dba5d3dcf8d69314",
+      "snippet": "<Label className=\"cursor-pointer text-xs font-medium\">{label}</Label>",
+      "line": 157
+    },
+    {
+      "file": "src/components/admin/products/sections/ProductPackagingSection.tsx",
+      "hash": "ed4251624b1c82d4",
+      "snippet": "<Label className=\"cursor-pointer text-xs font-medium\">{label}</Label>",
+      "line": 99
+    },
+    {
+      "file": "src/components/admin/products/VariantForm.tsx",
+      "hash": "06a9684f0771d96a",
+      "snippet": "<Label className=\"text-xs\">Altura (mm)</Label>",
+      "line": 160
+    },
+    {
+      "file": "src/components/admin/products/VariantForm.tsx",
+      "hash": "2955573cd3b760fe",
+      "snippet": "<Label className=\"text-xs\">Peso (g)</Label>",
+      "line": 193
+    },
+    {
+      "file": "src/components/admin/products/VariantForm.tsx",
+      "hash": "2cd8f7d957e4ff25",
+      "snippet": "<Label className=\"text-xs\">SKU Fornecedor</Label>",
+      "line": 120
+    },
+    {
+      "file": "src/components/admin/products/VariantForm.tsx",
+      "hash": "3ebac9c42f2d03f2",
+      "snippet": "<Label className=\"text-xs\">Cor</Label>",
+      "line": 74
+    },
+    {
+      "file": "src/components/admin/products/VariantForm.tsx",
+      "hash": "714380053f9b1521",
+      "snippet": "<Label className=\"text-xs\">Comp. (mm)</Label>",
+      "line": 182
+    },
+    {
+      "file": "src/components/admin/products/VariantForm.tsx",
+      "hash": "727647fc3c898da3",
+      "snippet": "<Label className=\"text-xs\">Tamanho</Label>",
+      "line": 138
+    },
+    {
+      "file": "src/components/admin/products/VariantForm.tsx",
+      "hash": "73552c66141748e6",
+      "snippet": "<Label className=\"text-xs\">EAN</Label>",
+      "line": 129
+    },
+    {
+      "file": "src/components/admin/products/VariantForm.tsx",
+      "hash": "8f181e99c9825c4d",
+      "snippet": "<Label className=\"text-xs\">Estoque</Label>",
+      "line": 100
+    },
+    {
+      "file": "src/components/admin/products/VariantForm.tsx",
+      "hash": "9a572226f5f23ef4",
+      "snippet": "<Label className=\"text-xs\">Largura (mm)</Label>",
+      "line": 171
+    },
+    {
+      "file": "src/components/admin/products/VariantForm.tsx",
+      "hash": "a3f0116d2a790a05",
+      "snippet": "<Label className=\"text-xs\">Nome *</Label>",
+      "line": 51
+    },
+    {
+      "file": "src/components/admin/products/VariantForm.tsx",
+      "hash": "b765c3a4ffebc24f",
+      "snippet": "<Label className=\"text-xs\">Capacidade (ml)</Label>",
+      "line": 149
+    },
+    {
+      "file": "src/components/admin/products/VariantForm.tsx",
+      "hash": "d291290053fede87",
+      "snippet": "<Label className=\"text-xs\">SKU *</Label>",
+      "line": 61
+    },
+    {
+      "file": "src/components/admin/products/VariantForm.tsx",
+      "hash": "e6d11aa04d079cc4",
+      "snippet": "<Label className=\"text-xs\">Cor (hex)</Label>",
+      "line": 83
+    },
+    {
+      "file": "src/components/admin/security/keys/UpdateMcpKeyDialog.tsx",
+      "hash": "8b019bef3afc85f3",
+      "snippet": "<Label className=\"mb-2 block\">Escopos</Label>",
+      "line": 253
+    },
+    {
+      "file": "src/components/admin/security/RecentAuditTable.tsx",
+      "hash": "3cbdd0798aed3a6a",
+      "snippet": "<Label>Ação</Label>",
+      "line": 240
+    },
+    {
+      "file": "src/components/admin/security/RecentAuditTable.tsx",
+      "hash": "81d352ca5a7f5761",
+      "snippet": "<Label>Quando</Label>",
+      "line": 252
+    },
+    {
+      "file": "src/components/admin/security/RecentAuditTable.tsx",
+      "hash": "82a17bb78c960fd2",
+      "snippet": "<Label>IP</Label>",
+      "line": 258
+    },
+    {
+      "file": "src/components/admin/security/RecentAuditTable.tsx",
+      "hash": "90ad1d2d7e8a9047",
+      "snippet": "<Label>Recurso</Label>",
+      "line": 244
+    },
+    {
+      "file": "src/components/admin/security/RecentAuditTable.tsx",
+      "hash": "b4cae205c9c59611",
+      "snippet": "<Label>ID Recurso</Label>",
+      "line": 248
+    },
+    {
+      "file": "src/components/admin/security/RecentAuditTable.tsx",
+      "hash": "c64c80b0b74966ca",
+      "snippet": "<Label>User-Agent</Label>",
+      "line": 262
+    },
+    {
+      "file": "src/components/admin/security/RecentAuditTable.tsx",
+      "hash": "cd179d30d369547e",
+      "snippet": "<Label>Details (JSON)</Label>",
+      "line": 269
+    },
+    {
+      "file": "src/components/admin/security/role-migration/RoleMigrationPanel.tsx",
+      "hash": "3db13cafee6f780d",
+      "snippet": "<Label>Papel-alvo</Label>",
+      "line": 285
+    },
+    {
+      "file": "src/components/admin/security/role-migration/RoleMigrationPanel.tsx",
+      "hash": "bb7334fb8b6c0206",
+      "snippet": "<Label>Operação</Label>",
+      "line": 262
+    },
+    {
+      "file": "src/components/admin/techniques-manager/TechniqueFormDialog.tsx",
+      "hash": "0a54d2d267e83474",
+      "snippet": "<Label>Mín. Cores</Label>",
+      "line": 210
+    },
+    {
+      "file": "src/components/admin/techniques-manager/TechniqueFormDialog.tsx",
+      "hash": "1b6041f1bfd8efdc",
+      "snippet": "<Label>Nome *</Label>",
+      "line": 142
+    },
+    {
+      "file": "src/components/admin/techniques-manager/TechniqueFormDialog.tsx",
+      "hash": "3617fd4814d9dba4",
+      "snippet": "<Label>Máx. Cores</Label>",
+      "line": 219
+    },
+    {
+      "file": "src/components/admin/techniques-manager/TechniqueFormDialog.tsx",
+      "hash": "851354371e6d028e",
+      "snippet": "<Label>Custo de Manuseio (R$)</Label>",
+      "line": 198
+    },
+    {
+      "file": "src/components/admin/techniques-manager/TechniqueFormDialog.tsx",
+      "hash": "8d11a404f2e1ae52",
+      "snippet": "<Label>Descrição</Label>",
+      "line": 179
+    },
+    {
+      "file": "src/components/admin/techniques-manager/TechniqueFormDialog.tsx",
+      "hash": "955cfa80944fc0d3",
+      "snippet": "<Label className=\"flex items-center gap-1\">",
+      "line": 242
+    },
+    {
+      "file": "src/components/admin/techniques-manager/TechniqueFormDialog.tsx",
+      "hash": "b46e5b8daf949260",
+      "snippet": "<Label>Ordem de Exibição</Label>",
+      "line": 169
+    },
+    {
+      "file": "src/components/admin/techniques-manager/TechniqueFormDialog.tsx",
+      "hash": "c2c51be9be2c4f72",
+      "snippet": "<Label>Código *</Label>",
+      "line": 133
+    },
+    {
+      "file": "src/components/admin/techniques-manager/TechniqueFormDialog.tsx",
+      "hash": "d5669eee9eb3aaab",
+      "snippet": "<Label className=\"text-base\">Tipo de Precificação</Label>",
+      "line": 255
+    },
+    {
+      "file": "src/components/admin/techniques-manager/TechniqueFormDialog.tsx",
+      "hash": "d6c4d1f9330ffc88",
+      "snippet": "<Label>Custo de Setup (R$)</Label>",
+      "line": 188
+    },
+    {
+      "file": "src/components/admin/techniques-manager/TechniqueFormDialog.tsx",
+      "hash": "e76c4de7b8bcd3b6",
+      "snippet": "<Label>Categoria</Label>",
+      "line": 153
+    },
+    {
+      "file": "src/components/admin/techniques-manager/TechniqueFormDialog.tsx",
+      "hash": "f4bff0479114af16",
+      "snippet": "<Label className=\"flex items-center gap-1\">",
+      "line": 230
+    },
+    {
+      "file": "src/components/admin/users/EditUserDialog.tsx",
+      "hash": "e31f52ffe0192acf",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Foto do Usuário</Label>",
+      "line": 124
+    },
+    {
+      "file": "src/components/collections/AddToCollectionModal.tsx",
+      "hash": "29fd1ee8245fd066",
+      "snippet": "<Label>Cor</Label>",
+      "line": 223
+    },
+    {
+      "file": "src/components/collections/AddToCollectionModal.tsx",
+      "hash": "9bb73a4fd96e10e3",
+      "snippet": "<Label>Ícone</Label>",
+      "line": 243
+    },
+    {
+      "file": "src/components/collections/AddToCollectionModal.tsx",
+      "hash": "fe470a5ccef36020",
+      "snippet": "<Label>Nome da coleção</Label>",
+      "line": 213
+    },
+    {
+      "file": "src/components/collections/CollectionFormDialog.tsx",
+      "hash": "566318a674743302",
+      "snippet": "<Label>Cliente CRM (opcional)</Label>",
+      "line": 115
+    },
+    {
+      "file": "src/components/collections/CollectionFormDialog.tsx",
+      "hash": "5673165f5cdb581f",
+      "snippet": "<Label>Nome</Label>",
+      "line": 96
+    },
+    {
+      "file": "src/components/collections/CollectionFormDialog.tsx",
+      "hash": "5dbfa77ef21d68f1",
+      "snippet": "<Label>Ícone</Label>",
+      "line": 150
+    },
+    {
+      "file": "src/components/collections/CollectionFormDialog.tsx",
+      "hash": "74eb682b551cd3c1",
+      "snippet": "<Label>Cor</Label>",
+      "line": 130
+    },
+    {
+      "file": "src/components/collections/CollectionFormDialog.tsx",
+      "hash": "9bc8e96f9368a3be",
+      "snippet": "<Label>Descrição (opcional)</Label>",
+      "line": 106
+    },
+    {
+      "file": "src/components/compare/ComparisonScoreCard.tsx",
+      "hash": "7d43dbdf54f839ab",
+      "snippet": "<Label className=\"text-xs\">{WEIGHT_LABELS[key]}</Label>",
+      "line": 96
+    },
+    {
+      "file": "src/components/compare/ComparisonWeightsPopover.tsx",
+      "hash": "c155e35964dbec53",
+      "snippet": "<Label className=\"text-xs\">{f.label}</Label>",
+      "line": 64
+    },
+    {
+      "file": "src/components/compare/ShareComparisonDialog.tsx",
+      "hash": "27e34d8569d571e4",
+      "snippet": "<Label>Validade do link</Label>",
+      "line": 116
+    },
+    {
+      "file": "src/components/compare/ShareComparisonDialog.tsx",
+      "hash": "32d5519c12d4193d",
+      "snippet": "<Label>Link público</Label>",
+      "line": 133
+    },
+    {
+      "file": "src/components/favorites/CreateListDialog.tsx",
+      "hash": "8987dd774b0f96c8",
+      "snippet": "<Label>Cliente CRM (opcional)</Label>",
+      "line": 125
+    },
+    {
+      "file": "src/components/favorites/CreateListDialog.tsx",
+      "hash": "d6eec8153220b9b2",
+      "snippet": "<Label>Cor</Label>",
+      "line": 134
+    },
+    {
+      "file": "src/components/favorites/ShareListDialog.tsx",
+      "hash": "dc725ae66b577c18",
+      "snippet": "<Label>Link público</Label>",
+      "line": 87
+    },
+    {
+      "file": "src/components/filters/filter-panel/sections/MaterialsFilter.tsx",
+      "hash": "70b7fbf16b2f09ab",
+      "snippet": "<Label className=\"flex-1 cursor-pointer text-xs\">",
+      "line": 227
+    },
+    {
+      "file": "src/components/goals/SalesGoalsCard.tsx",
+      "hash": "3c438a624f434bef",
+      "snippet": "<Label>Meta de Conversões</Label>",
+      "line": 153
+    },
+    {
+      "file": "src/components/goals/SalesGoalsCard.tsx",
+      "hash": "89e9171a65c1e116",
+      "snippet": "<Label>Meta de Orçamentos</Label>",
+      "line": 141
+    },
+    {
+      "file": "src/components/goals/SalesGoalsCard.tsx",
+      "hash": "db844f3ed9604858",
+      "snippet": "<Label>Meta de Valor (R$)</Label>",
+      "line": 127
+    },
+    {
+      "file": "src/components/goals/SalesGoalsCard.tsx",
+      "hash": "e9482f139b1cc1f4",
+      "snippet": "<Label>Período</Label>",
+      "line": 108
+    },
+    {
+      "file": "src/components/inventory/StockFilterToolbar.tsx",
+      "hash": "7f3a3d716ae56b4b",
+      "snippet": "<Label className=\"flex cursor-pointer items-center gap-1.5 text-xs\">",
+      "line": 364
+    },
+    {
+      "file": "src/components/kit-builder/BoxSelector.tsx",
+      "hash": "118b6a88fde5d8f6",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Acabamento</Label>",
+      "line": 741
+    },
+    {
+      "file": "src/components/kit-builder/BoxSelector.tsx",
+      "hash": "2cb55f5e3128cca1",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Material</Label>",
+      "line": 770
+    },
+    {
+      "file": "src/components/kit-builder/BoxSelector.tsx",
+      "hash": "4140bc96a400ff24",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Tipo de embalagem</Label>",
+      "line": 714
+    },
+    {
+      "file": "src/components/kit-builder/BoxSelector.tsx",
+      "hash": "4b5c16926eb50e9f",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Faixa de preço (R$)</Label>",
+      "line": 677
+    },
+    {
+      "file": "src/components/kit-builder/BoxSelector.tsx",
+      "hash": "988c6a5989abfe66",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">",
+      "line": 644
+    },
+    {
+      "file": "src/components/kit-builder/BoxSelector.tsx",
+      "hash": "b1568fcd7d5a6e56",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">",
+      "line": 582
+    },
+    {
+      "file": "src/components/kit-builder/BoxSelector.tsx",
+      "hash": "d657ef88292ead11",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">",
+      "line": 612
+    },
+    {
+      "file": "src/components/kit-builder/FreightEstimator.tsx",
+      "hash": "7e2d7b7389431e4c",
+      "snippet": "<Label className=\"text-xs\">Modalidade</Label>",
+      "line": 125
+    },
+    {
+      "file": "src/components/kit-builder/kit-summary/KitIdentificationCard.tsx",
+      "hash": "031d215bc0fe3b0b",
+      "snippet": "<Label>Objetivo / Etiqueta</Label>",
+      "line": 57
+    },
+    {
+      "file": "src/components/kit-builder/KitIdentityPicker.tsx",
+      "hash": "2a8b0e7d3eb29688",
+      "snippet": "<Label className=\"text-xs\">Ícone</Label>",
+      "line": 109
+    },
+    {
+      "file": "src/components/kit-builder/KitIdentityPicker.tsx",
+      "hash": "580f3d70eb3dd011",
+      "snippet": "<Label className=\"text-xs\">Cor</Label>",
+      "line": 87
+    },
+    {
+      "file": "src/components/kit-builder/PersonalizationConfig.tsx",
+      "hash": "46b95f61e4d234c6",
+      "snippet": "<Label>",
+      "line": 673
+    },
+    {
+      "file": "src/components/kit-builder/PersonalizationConfig.tsx",
+      "hash": "4a68b1104f7e7ee3",
+      "snippet": "<Label>Cores da arte</Label>",
+      "line": 612
+    },
+    {
+      "file": "src/components/kit-builder/PersonalizationConfig.tsx",
+      "hash": "9acbc1c206078cdc",
+      "snippet": "<Label>Técnica de Gravação</Label>",
+      "line": 537
+    },
+    {
+      "file": "src/components/kit-builder/PersonalizationConfig.tsx",
+      "hash": "d2e13dc3a141b00c",
+      "snippet": "<Label>",
+      "line": 643
+    },
+    {
+      "file": "src/components/kit-builder/PersonalizationConfig.tsx",
+      "hash": "e899bffc9414c447",
+      "snippet": "<Label>Número de Cores</Label>",
+      "line": 593
+    },
+    {
+      "file": "src/components/magic-up/MagicUpBrandKitPanel.tsx",
+      "hash": "40e897afcb9b3588",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Tom de voz</Label>",
+      "line": 91
+    },
+    {
+      "file": "src/components/magic-up/MagicUpBrandKitPanel.tsx",
+      "hash": "50d04194f64fe943",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Palavras proibidas</Label>",
+      "line": 120
+    },
+    {
+      "file": "src/components/magic-up/MagicUpBrandKitPanel.tsx",
+      "hash": "524ddcd0836263d4",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Cor primária</Label>",
+      "line": 73
+    },
+    {
+      "file": "src/components/magic-up/MagicUpBrandKitPanel.tsx",
+      "hash": "5e27b5bc08fc40cb",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Cor secundária</Label>",
+      "line": 82
+    },
+    {
+      "file": "src/components/magic-up/MagicUpBrandKitPanel.tsx",
+      "hash": "8a8b1df4c9ba29a7",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Palavras obrigatórias</Label>",
+      "line": 111
+    },
+    {
+      "file": "src/components/magic-up/MagicUpBrandKitPanel.tsx",
+      "hash": "c265102a571be5f6",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Estilo visual</Label>",
+      "line": 100
+    },
+    {
+      "file": "src/components/magic-up/MagicUpCampaignPanel.tsx",
+      "hash": "5c4acd0c205976a9",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">CTA</Label>",
+      "line": 117
+    },
+    {
+      "file": "src/components/magic-up/MagicUpCampaignPanel.tsx",
+      "hash": "6617d4a11e18c3fe",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Título</Label>",
+      "line": 66
+    },
+    {
+      "file": "src/components/magic-up/MagicUpCampaignPanel.tsx",
+      "hash": "a12406238c9cd25b",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Status</Label>",
+      "line": 75
+    },
+    {
+      "file": "src/components/magic-up/MagicUpCampaignPanel.tsx",
+      "hash": "cb4ef4f65b53f461",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">{toHuman(field)}</Label>",
+      "line": 96
+    },
+    {
+      "file": "src/components/magic-up/MagicUpCampaignPanel.tsx",
+      "hash": "d99a73aab7ecb6a6",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Ocasião</Label>",
+      "line": 125
+    },
+    {
+      "file": "src/components/magic-up/MagicUpCreativeControls.tsx",
+      "hash": "6519eb2306c9ece8",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Negative prompt</Label>",
+      "line": 86
+    },
+    {
+      "file": "src/components/magic-up/MagicUpCreativeControls.tsx",
+      "hash": "f7472c410b5e09f4",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">{label}</Label>",
+      "line": 64
+    },
+    {
+      "file": "src/components/magic-up/MagicUpLogoLibrary.tsx",
+      "hash": "21177d7bfbea8a98",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Biblioteca de logos</Label>",
+      "line": 37
+    },
+    {
+      "file": "src/components/magic-up/PromptCustomizationPanel.tsx",
+      "hash": "36d1ae03820bbba1",
+      "snippet": "<Label className=\"flex items-center gap-1 text-[11px] text-muted-foreground\">",
+      "line": 93
+    },
+    {
+      "file": "src/components/magic-up/PromptCustomizationPanel.tsx",
+      "hash": "e2b9ca98855505f0",
+      "snippet": "<Label className=\"flex items-center gap-1 text-[11px] text-muted-foreground\">",
+      "line": 61
+    },
+    {
+      "file": "src/components/magic-up/PromptGenerator.tsx",
+      "hash": "09fce74be0cc99a0",
+      "snippet": "<Label className=\"flex items-center gap-1 text-[11px] text-muted-foreground\">",
+      "line": 266
+    },
+    {
+      "file": "src/components/magic-up/PromptGenerator.tsx",
+      "hash": "170121c9fa38553d",
+      "snippet": "<Label className=\"flex items-center gap-1 text-[11px] text-muted-foreground\">",
+      "line": 284
+    },
+    {
+      "file": "src/components/magic-up/PromptGenerator.tsx",
+      "hash": "5e9b803ee6aaf4e7",
+      "snippet": "<Label className=\"flex items-center gap-1 text-[11px] text-muted-foreground\">",
+      "line": 302
+    },
+    {
+      "file": "src/components/magic-up/PromptGenerator.tsx",
+      "hash": "93eff6ab5cbe72bf",
+      "snippet": "<Label className=\"flex items-center gap-1 text-[11px] text-muted-foreground\">",
+      "line": 320
+    },
+    {
+      "file": "src/components/mockup/MockupConfigPanel.tsx",
+      "hash": "2587b066b39de37b",
+      "snippet": "<Label className=\"flex items-center gap-2\">",
+      "line": 438
+    },
+    {
+      "file": "src/components/mockup/TechniqueColorConfigDialog.tsx",
+      "hash": "51ffaf7e04669aca",
+      "snippet": "<Label className=\"text-sm font-medium\">Tom da Gravação</Label>",
+      "line": 172
+    },
+    {
+      "file": "src/components/mockup/TechniqueColorConfigDialog.tsx",
+      "hash": "b5f9ff82548439d6",
+      "snippet": "<Label className=\"text-sm font-medium\">",
+      "line": 242
+    },
+    {
+      "file": "src/components/mockup/TechniqueColorConfigDialog.tsx",
+      "hash": "f054a477d45596ae",
+      "snippet": "<Label className=\"text-sm font-medium\">Quantidade de Cores</Label>",
+      "line": 223
+    },
+    {
+      "file": "src/components/personalization/TechniqueSelector.tsx",
+      "hash": "bf0a6dfa5b8b8fa7",
+      "snippet": "<Label className=\"text-sm\">Faixa de Preço (p/ {quantity} un.)</Label>",
+      "line": 251
+    },
+    {
+      "file": "src/components/personalization/ThemeCustomization.tsx",
+      "hash": "4eaabfb592657cb9",
+      "snippet": "<Label>Contraste de realce ({value.highlightContrast}%)</Label>",
+      "line": 41
+    },
+    {
+      "file": "src/components/personalization/ThemeCustomization.tsx",
+      "hash": "b176e02daed28832",
+      "snippet": "<Label>Arredondamento ({value.borderRadius}px)</Label>",
+      "line": 31
+    },
+    {
+      "file": "src/components/products/customization/ConfigurationPanel.tsx",
+      "hash": "081078acd24a0945",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Altura (cm)</Label>",
+      "line": 211
+    },
+    {
+      "file": "src/components/products/customization/ConfigurationPanel.tsx",
+      "hash": "3c4216b9f9347891",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Largura (cm)</Label>",
+      "line": 197
+    },
+    {
+      "file": "src/components/products/customization/ConfigurationPanelV6.tsx",
+      "hash": "b62264c72723f330",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Altura (cm)</Label>",
+      "line": 316
+    },
+    {
+      "file": "src/components/products/customization/ConfigurationPanelV6.tsx",
+      "hash": "f90694b2a6098963",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Largura (cm)</Label>",
+      "line": 300
+    },
+    {
+      "file": "src/components/products/gallery/VideoShareWhatsAppDialog.tsx",
+      "hash": "c145870d8be0d654",
+      "snippet": "<Label className=\"text-[11px] font-bold uppercase tracking-wider text-muted-foreground\">",
+      "line": 258
+    },
+    {
+      "file": "src/components/products/gallery/VideoShareWhatsAppDialog.tsx",
+      "hash": "ce35afbf658c84d1",
+      "snippet": "<Label className=\"mb-2 block text-[11px] font-bold uppercase tracking-wider text-muted-foreground\">",
+      "line": 215
+    },
+    {
+      "file": "src/components/products/inline-price/QuantityCalculator.tsx",
+      "hash": "2cba32a44bf74465",
+      "snippet": "<Label className=\"text-sm\">Resultado</Label>",
+      "line": 122
+    },
+    {
+      "file": "src/components/products/inline-price/QuantityCalculator.tsx",
+      "hash": "74d1453bf6568896",
+      "snippet": "<Label className=\"text-[10px] uppercase tracking-wider text-muted-foreground\">",
+      "line": 66
+    },
+    {
+      "file": "src/components/quotes/CompanyContactSelector.tsx",
+      "hash": "986b372b59445f21",
+      "snippet": "<Label className=\"flex items-center gap-2\">",
+      "line": 183
+    },
+    {
+      "file": "src/components/quotes/CompanyContactSelector.tsx",
+      "hash": "fa3eca9092f749d6",
+      "snippet": "<Label className=\"flex items-center gap-2\">",
+      "line": 170
+    },
+    {
+      "file": "src/components/quotes/QuoteBuilderSummaryColumn.tsx",
+      "hash": "9df23c986dfd0124",
+      "snippet": "<Label>",
+      "line": 1582
+    },
+    {
+      "file": "src/components/quotes/QuoteSignaturePad.tsx",
+      "hash": "7036d617c66fa688",
+      "snippet": "<Label>Assine no quadro abaixo</Label>",
+      "line": 112
+    },
+    {
+      "file": "src/components/reports/ScheduledReportsManager.tsx",
+      "hash": "2ad0869ae427be71",
+      "snippet": "<Label>Tipo de Relatório</Label>",
+      "line": 107
+    },
+    {
+      "file": "src/components/reports/ScheduledReportsManager.tsx",
+      "hash": "402ee52a10ad238e",
+      "snippet": "<Label>Nome do Relatório</Label>",
+      "line": 159
+    },
+    {
+      "file": "src/components/reports/ScheduledReportsManager.tsx",
+      "hash": "539b3c89526c1518",
+      "snippet": "<Label>Frequência</Label>",
+      "line": 128
+    },
+    {
+      "file": "src/components/reports/ScheduledReportsManager.tsx",
+      "hash": "bbab337e4dea6d54",
+      "snippet": "<Label>Email de Destino</Label>",
+      "line": 149
+    },
+    {
+      "file": "src/components/security/GeoBlockingManager.tsx",
+      "hash": "242fbab912fbd3c9",
+      "snippet": "<Label>Selecione um País</Label>",
+      "line": 313
+    },
+    {
+      "file": "src/components/security/GeoBlockingManager.tsx",
+      "hash": "55ce086c15860665",
+      "snippet": "<Label>Código (ISO 2)</Label>",
+      "line": 348
+    },
+    {
+      "file": "src/components/security/GeoBlockingManager.tsx",
+      "hash": "b961741fb62a1fde",
+      "snippet": "<Label>Nome do País</Label>",
+      "line": 360
+    },
+    {
+      "file": "src/components/security/IPRestrictionManager.tsx",
+      "hash": "3781f305293ac49e",
+      "snippet": "<Label>Endereço IP</Label>",
+      "line": 235
+    },
+    {
+      "file": "src/components/security/IPRestrictionManager.tsx",
+      "hash": "b99f4b8633bbe11d",
+      "snippet": "<Label>Descrição (opcional)</Label>",
+      "line": 249
+    },
+    {
+      "file": "src/components/security/TwoFactorSetup.tsx",
+      "hash": "752743c1836f8174",
+      "snippet": "<Label>Ou digite o código manualmente:</Label>",
+      "line": 271
+    },
+    {
+      "file": "src/components/security/TwoFactorSetup.tsx",
+      "hash": "f8f06241f13644f9",
+      "snippet": "<Label>Digite o código de 6 dígitos:</Label>",
+      "line": 290
+    },
+    {
+      "file": "src/components/simulator/TechniqueCard.tsx",
+      "hash": "016c62e353cfcd4a",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Altura (cm)</Label>",
+      "line": 510
+    },
+    {
+      "file": "src/components/simulator/TechniqueCard.tsx",
+      "hash": "18257a59351b7cf9",
+      "snippet": "<Label className=\"flex items-center gap-1 text-xs text-muted-foreground\">",
+      "line": 436
+    },
+    {
+      "file": "src/components/simulator/TechniqueCard.tsx",
+      "hash": "4d4218f5fd6f92c0",
+      "snippet": "<Label className=\"flex items-center gap-1 text-xs text-muted-foreground\">",
+      "line": 471
+    },
+    {
+      "file": "src/components/simulator/TechniqueCard.tsx",
+      "hash": "a5e7caa835c61aff",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Largura (cm)</Label>",
+      "line": 499
+    },
+    {
+      "file": "src/components/simulator/TechniqueCard.tsx",
+      "hash": "f7ca19b8c7f34f98",
+      "snippet": "<Label className=\"flex items-center gap-1 text-xs text-muted-foreground\">",
+      "line": 523
+    },
+    {
+      "file": "src/components/simulator/wizard/StepSpecs.tsx",
+      "hash": "32e6529b9d219d79",
+      "snippet": "<Label className=\"font-medium\">Altura</Label>",
+      "line": 301
+    },
+    {
+      "file": "src/components/simulator/wizard/StepSpecs.tsx",
+      "hash": "c44b86120ae38e39",
+      "snippet": "<Label className=\"font-medium\">Largura</Label>",
+      "line": 247
+    },
+    {
+      "file": "src/components/ui/LabeledField.tsx",
+      "hash": "4f84afb53f28631c",
+      "snippet": "* Renders a <Label> + <Input> pair with a shared `id` so the browser",
+      "line": 61
+    },
+    {
+      "file": "src/components/ui/LabeledField.tsx",
+      "hash": "a29a6c2811df0853",
+      "snippet": "*   <Label>Email</Label>",
+      "line": 10
+    },
+    {
+      "file": "src/components/ui/LabeledField.tsx",
+      "hash": "b320a5ae7ffc47bb",
+      "snippet": "* LabeledField — Compound component that correctly links <Label> to <Input>",
+      "line": 2
+    },
+    {
+      "file": "src/components/ui/LabeledField.tsx",
+      "hash": "c6b042af5f6b22f4",
+      "snippet": "* Renders a <Label> + <Textarea> pair with a shared `id`.",
+      "line": 134
+    },
+    {
+      "file": "src/pages/admin/AdminVideoVariantsPage.tsx",
+      "hash": "167cdf21a4424d5e",
+      "snippet": "<Label>Cor (hex)</Label>",
+      "line": 137
+    },
+    {
+      "file": "src/pages/admin/AdminVideoVariantsPage.tsx",
+      "hash": "252c065c5ecd1a27",
+      "snippet": "<Label>Código Fornecedor</Label>",
+      "line": 163
+    },
+    {
+      "file": "src/pages/admin/AdminVideoVariantsPage.tsx",
+      "hash": "9998c0f4a3e6732a",
+      "snippet": "<Label>Nome da Variante</Label>",
+      "line": 129
+    },
+    {
+      "file": "src/pages/admin/AdminVideoVariantsPage.tsx",
+      "hash": "c31710b0dbb4f972",
+      "snippet": "<Label>ID do Produto *</Label>",
+      "line": 113
+    },
+    {
+      "file": "src/pages/admin/AdminVideoVariantsPage.tsx",
+      "hash": "cc207c1306ac92a5",
+      "snippet": "<Label>ID da Variante *</Label>",
+      "line": 121
+    },
+    {
+      "file": "src/pages/admin/AdminVideoVariantsPage.tsx",
+      "hash": "ce03bf396e1a91d7",
+      "snippet": "<Label>ID do Vídeo *</Label>",
+      "line": 155
+    },
+    {
+      "file": "src/pages/admin/KitTemplatesAdminPage.tsx",
+      "hash": "3ce0664a3a2621e3",
+      "snippet": "<Label>Ativo</Label>",
+      "line": 298
+    },
+    {
+      "file": "src/pages/admin/KitTemplatesAdminPage.tsx",
+      "hash": "4fd0ee2ea25ba36c",
+      "snippet": "<Label className=\"text-xs\">Ícone</Label>",
+      "line": 330
+    },
+    {
+      "file": "src/pages/admin/KitTemplatesAdminPage.tsx",
+      "hash": "aecf88e655fa67fe",
+      "snippet": "<Label className=\"text-xs\">Cor</Label>",
+      "line": 309
+    },
+    {
+      "file": "src/pages/admin/PermissionsPage.tsx",
+      "hash": "313dd6e023101fc2",
+      "snippet": "<Label>Descrição</Label>",
+      "line": 244
+    },
+    {
+      "file": "src/pages/admin/PermissionsPage.tsx",
+      "hash": "eec26a496fc8aab5",
+      "snippet": "<Label>Categoria</Label>",
+      "line": 226
+    },
+    {
+      "file": "src/pages/admin/PermissionsPage.tsx",
+      "hash": "ff2599dd134f957e",
+      "snippet": "<Label>Código</Label>",
+      "line": 210
+    },
+    {
+      "file": "src/pages/admin/PermissionsPage.tsx",
+      "hash": "ff8553c29289765c",
+      "snippet": "<Label>Nome</Label>",
+      "line": 218
+    },
+    {
+      "file": "src/pages/admin/RolesPage.tsx",
+      "hash": "5b665d92bc5b5e71",
+      "snippet": "<Label>Nome</Label>",
+      "line": 174
+    },
+    {
+      "file": "src/pages/admin/RolesPage.tsx",
+      "hash": "d7e6ffb1d6a0f653",
+      "snippet": "<Label>Descrição</Label>",
+      "line": 182
+    },
+    {
+      "file": "src/pages/admin/StorageTestPage.tsx",
+      "hash": "7d9c15bb983d1728",
+      "snippet": "<Label className=\"text-white/70\">Nome da Tabela</Label>",
+      "line": 218
+    },
+    {
+      "file": "src/pages/magazine/components/BrandColorPicker.tsx",
+      "hash": "6f47d0dd75accf43",
+      "snippet": "<Label className={cn(PG_LABEL, 'mb-2 block')}>Paletas sugeridas</Label>",
+      "line": 97
+    },
+    {
+      "file": "src/pages/magazine/components/BrandColorPicker.tsx",
+      "hash": "aebcb471995bbc00",
+      "snippet": "<Label className=\"text-[12px] font-medium text-muted-foreground\">{label}</Label>",
+      "line": 188
+    },
+    {
+      "file": "src/pages/magazine/components/BrandColorPicker.tsx",
+      "hash": "cc8f33d65307dc6b",
+      "snippet": "<Label className={PG_OVERLINE}>Hex customizado</Label>",
+      "line": 233
+    },
+    {
+      "file": "src/pages/magic-up/MagicUpConfigPanel.tsx",
+      "hash": "0d7b6813addcb1fb",
+      "snippet": "<Label className=\"flex items-center gap-1.5 text-xs text-muted-foreground\">",
+      "line": 294
+    },
+    {
+      "file": "src/pages/magic-up/MagicUpConfigPanel.tsx",
+      "hash": "895c4fc7fd13869f",
+      "snippet": "<Label className=\"mb-1 block text-xs text-muted-foreground\">",
+      "line": 521
+    },
+    {
+      "file": "src/pages/magic-up/MagicUpConfigPanel.tsx",
+      "hash": "c1692963902d3e64",
+      "snippet": "<Label className=\"flex items-center gap-1.5 text-xs text-muted-foreground\">",
+      "line": 332
+    },
+    {
+      "file": "src/pages/quotes/QuoteBuilderPage.tsx",
+      "hash": "0bb0d04e59944332",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Para o cliente</Label>",
+      "line": 691
+    },
+    {
+      "file": "src/pages/quotes/QuoteBuilderPage.tsx",
+      "hash": "286f504d6e20ba4d",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">",
+      "line": 358
+    },
+    {
+      "file": "src/pages/tools/AdvancedPriceSearchPage.tsx",
+      "hash": "0293455aa88db095",
+      "snippet": "<Label className=\"text-sm\">",
+      "line": 239
+    },
+    {
+      "file": "src/pages/tools/AdvancedPriceSearchPage.tsx",
+      "hash": "37958332ed180742",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Máximo</Label>",
+      "line": 281
+    },
+    {
+      "file": "src/pages/tools/AdvancedPriceSearchPage.tsx",
+      "hash": "c1c4239c2dd47acc",
+      "snippet": "<Label className=\"text-xs text-muted-foreground\">Mínimo</Label>",
+      "line": 267
+    },
+    {
+      "file": "src/pages/tools/OptimizedImageDemo.tsx",
+      "hash": "466b819cea066c20",
+      "snippet": "<Label>Atraso de Rede ({delay}ms)</Label>",
+      "line": 143
+    },
+    {
+      "file": "src/pages/tools/OptimizedImageDemo.tsx",
+      "hash": "ac34adabc71d13ec",
+      "snippet": "<Label>Zoom Amount ({zoom.toFixed(2)}x)</Label>",
+      "line": 117
+    },
+    {
+      "file": "src/pages/tools/OptimizedImageDemo.tsx",
+      "hash": "cbb55a635a93597e",
+      "snippet": "<Label>Duration ({duration}ms)</Label>",
+      "line": 130
+    },
+    {
+      "file": "src/pages/tools/OptimizedImageDemo.tsx",
+      "hash": "dba813a0d8b4a7c9",
+      "snippet": "<Label>Blur Amount ({blur}px)</Label>",
+      "line": 104
+    },
+    {
+      "file": "src/pages/tools/VisualSearchPage.tsx",
+      "hash": "7532973a3769b7c7",
+      "snippet": "<Label className=\"text-[10px] font-bold uppercase text-muted-foreground\">Entendendo o Score</Label>",
+      "line": 704
+    },
+    {
+      "file": "src/pages/tools/VisualSearchPage.tsx",
+      "hash": "8e18b65eb9253085",
+      "snippet": "<Label className=\"text-[11px] font-bold uppercase text-muted-foreground\">Categoria</Label>",
+      "line": 628
+    },
+    {
+      "file": "src/pages/tools/VisualSearchPage.tsx",
+      "hash": "aed61c18f6827cc1",
+      "snippet": "<Label className=\"text-[11px] font-bold uppercase text-muted-foreground\">Cor Predominante</Label>",
+      "line": 644
+    },
+    {
+      "file": "src/pages/tools/VisualSearchPage.tsx",
+      "hash": "e05ecbae43ae20e5",
+      "snippet": "<Label className=\"text-[10px] font-bold uppercase text-muted-foreground whitespace-nowrap\">Exibir Pontos</Label>",
+      "line": 538
+    }
+  ]
+}

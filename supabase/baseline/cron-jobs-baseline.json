@@ -1,0 +1,232 @@
+{
+  "version": 1,
+  "generated_at": "2026-10-18T00:00:00.000Z",
+  "note": "E076: baseline dos cron.job conhecidos via migrations. Qualquer job ativo no banco nao listado aqui indica criacao fora do fluxo de migration.",
+  "jobs": [
+    {
+      "jobname": "ai-enqueue-daily"
+    },
+    {
+      "jobname": "ai-queue-stuck-cleanup"
+    },
+    {
+      "jobname": "anon-catalog-grant-audit-6h"
+    },
+    {
+      "jobname": "asia-enqueue-new-products"
+    },
+    {
+      "jobname": "asia-image-uploader"
+    },
+    {
+      "jobname": "backfill-image-dimensions"
+    },
+    {
+      "jobname": "cf-recon-collect"
+    },
+    {
+      "jobname": "cf-recon-dispatch"
+    },
+    {
+      "jobname": "cleanup-edge-rate-limits"
+    },
+    {
+      "jobname": "cleanup-expired-token-revocations"
+    },
+    {
+      "jobname": "cleanup-log-tables-weekly"
+    },
+    {
+      "jobname": "cleanup-stale-ai-pending-logs"
+    },
+    {
+      "jobname": "collections-watcher"
+    },
+    {
+      "jobname": "color-health-daily"
+    },
+    {
+      "jobname": "connections-auto-test"
+    },
+    {
+      "jobname": "connections-health-check"
+    },
+    {
+      "jobname": "dashboard-insights-cache-cleanup"
+    },
+    {
+      "jobname": "expire-product-novelties"
+    },
+    {
+      "jobname": "expire-stale-password-reset-requests"
+    },
+    {
+      "jobname": "expire-supplier-promises"
+    },
+    {
+      "jobname": "image-dimensions-backfill"
+    },
+    {
+      "jobname": "kit-component-auto-approve"
+    },
+    {
+      "jobname": "kit-component-auto-promote"
+    },
+    {
+      "jobname": "kit-sync-personalization-notes"
+    },
+    {
+      "jobname": "medallion-coverage-daily"
+    },
+    {
+      "jobname": "medallion-promote-tick"
+    },
+    {
+      "jobname": "notebook-specs-daily"
+    },
+    {
+      "jobname": "ops-grants-self-heal"
+    },
+    {
+      "jobname": "pgrst-schema-reload"
+    },
+    {
+      "jobname": "pipeline-classify-categories"
+    },
+    {
+      "jobname": "pipeline-print-profiles"
+    },
+    {
+      "jobname": "pre-generate-market-insights"
+    },
+    {
+      "jobname": "process-pending-products"
+    },
+    {
+      "jobname": "process-queue"
+    },
+    {
+      "jobname": "process-webhook-outbox"
+    },
+    {
+      "jobname": "purge-expired-restock-dates"
+    },
+    {
+      "jobname": "purge-expired-security"
+    },
+    {
+      "jobname": "purge-kit-quote-requests"
+    },
+    {
+      "jobname": "purge-kit-save-requests"
+    },
+    {
+      "jobname": "purge-magazine-duplicate-requests"
+    },
+    {
+      "jobname": "purge-spr-history-daily"
+    },
+    {
+      "jobname": "qa-image-coverage-hourly"
+    },
+    {
+      "jobname": "qa-imageless-products"
+    },
+    {
+      "jobname": "quote-followup-reminders"
+    },
+    {
+      "jobname": "reconcile-stock-gold-daily"
+    },
+    {
+      "jobname": "refresh-all-materialized-views"
+    },
+    {
+      "jobname": "refresh-analytics-mv-product-intelligence"
+    },
+    {
+      "jobname": "refresh-analytics-mv-stock-velocity"
+    },
+    {
+      "jobname": "refresh-backfill-queue-expiry"
+    },
+    {
+      "jobname": "refresh-category-ancestors"
+    },
+    {
+      "jobname": "refresh-mv-ema-kpi-by-level"
+    },
+    {
+      "jobname": "refresh-mv-product-images-audit"
+    },
+    {
+      "jobname": "refresh-mv-product-leaf-category"
+    },
+    {
+      "jobname": "refresh-mv-stock-rupture-alert"
+    },
+    {
+      "jobname": "refresh-mv-supplier-reliability"
+    },
+    {
+      "jobname": "schema-drift-check"
+    },
+    {
+      "jobname": "seo-populate-new-products"
+    },
+    {
+      "jobname": "sm-category-collect"
+    },
+    {
+      "jobname": "sm-category-enqueue"
+    },
+    {
+      "jobname": "sm-session-check"
+    },
+    {
+      "jobname": "sm-site-scrape"
+    },
+    {
+      "jobname": "sm-site-scrape-auth"
+    },
+    {
+      "jobname": "sm-url-discover-collect"
+    },
+    {
+      "jobname": "sm-url-discover-search"
+    },
+    {
+      "jobname": "spot-health-check-daily"
+    },
+    {
+      "jobname": "spot-relink-family-images"
+    },
+    {
+      "jobname": "spot-stock-fast-sync"
+    },
+    {
+      "jobname": "spr-requeue-failed-hourly"
+    },
+    {
+      "jobname": "stock_snapshots_weekly_purge"
+    },
+    {
+      "jobname": "sync-derived-product-flags"
+    },
+    {
+      "jobname": "vacuum-analyze-weekly"
+    },
+    {
+      "jobname": "vacuum-product-novelties"
+    },
+    {
+      "jobname": "video-recover-stuck"
+    },
+    {
+      "jobname": "xbz-enrich-gold-extractors"
+    },
+    {
+      "jobname": "xbz-stock-sync"
+    }
+  ]
+}

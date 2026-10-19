@@ -124,7 +124,6 @@ src/integrations/supabase/types.ts
 # deixando o CI sem proteção para o incidente 401 (REGRA #1).
 # ============================================================
 .github/workflows/deploy-gates.yml
-.github/workflows/quality-gate.yml
 
 # ============================================================
 # Branch Protection e Revisão Obrigatória (REGRA #1 + CLAUDE.md)
@@ -154,3 +153,4 @@ supabase/MIGRATIONS_SYNC_LOG.md
 # Allowlist de remoção de types — define quais tabelas/views/funções foram intencionalmente removidas.
 # Sobrescrever anula proteção do Gate 1.2 (drift estrutural de types.ts).
 docs/TYPES_INVENTORY_REMOVAL_ALLOWLIST.json
+

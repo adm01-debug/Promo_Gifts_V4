@@ -1,4 +1,4 @@
-# Plano de Melhorias e Correções do Catálogo com Jev (TypeSafe System One) — v2
+# [ARQUIVADO] Plano de Melhorias e Correções do Catálogo com Jev (TypeSafe System One) — v2
 
 > **Autor:** Claude (revisão DBA) sobre o plano v1 de Hermes/DeepSeek (PR #1950) · solicitado por Joaquim (PO)
 > **Data:** 2026-09-28 · **Status:** PLANO — **não executar Blocos 1 e 2 até aprovação do PO**

@@ -153,19 +153,19 @@ Esta onda não adiciona nenhum controle novo. Ela conserta o que existe, fecha a
 **Pronto:** PO confirma a rotação por escrito e a data fica registrada em `docs/ci/SEGREDOS.md` na linha do segredo → `grep -c "rotacionada em 2026-10" docs/ci/SEGREDOS.md` ≥ 1
 **Origem:** C-09, A4-01
 
-#### P200-E002 · [A] · P0 · Remover a chave hardcoded dos scripts de enriquecimento
+#### P200-E002 · [A] · P0 · Remover a chave hardcoded dos scripts de enriquecimento ✅
 **Arquivo:** `scripts/kit-enrichment/asia-dims-batch.py:6`, `scripts/kit-enrichment/xbz-dims-batch.py:13`
 **Fazer:** trocar o literal por `os.environ["SUPABASE_SERVICE_ROLE_KEY"]`, com `sys.exit(1)` e mensagem clara se a variável não estiver definida. Não inventar fallback. Não deixar comentário com o valor antigo.
 **Pronto:** `grep -rcE "eyJ[A-Za-z0-9_-]{20,}" scripts/kit-enrichment/` → `0` em todos os arquivos
 **Origem:** C-09, A4-01
 
-#### P200-E003 · [A] · P0 · Dar regras ao gitleaks
+#### P200-E003 · [A] · P0 · Dar regras ao gitleaks ✅
 **Arquivo:** `.gitleaks.toml`
 **Fazer:** acrescentar `[extend]` com `useDefault = true` no topo, antes do `[allowlist]`. Manter as 2 entradas de allowlist existentes (a publishable key e a URL do projeto são públicas de verdade). Rodar o gitleaks localmente no histórico completo e triar o que aparecer: valor público vai para a allowlist com justificativa na linha, segredo real vira etapa de rotação na trilha C.
 **Pronto:** `grep -c "useDefault" .gitleaks.toml` → `1` **e** `docker run --rm -v "$PWD:/p" zricethezav/gitleaks:latest detect -s /p -c /p/.gitleaks.toml --no-banner` detecta a chave de E002 antes do fix e sai `0` depois
 **Origem:** C-08
 
-#### P200-E004 · [B] · P0 · Consertar o `Gate 3 - E2E Smoke`
+#### P200-E004 · [B] · P0 · Consertar o `Gate 3 - E2E Smoke` ✅
 **Arquivo:** `.github/workflows/deploy-gates.yml:355-366`, `scripts/run-smoke-filtered.mjs`, specs com tag `@smoke`
 **Fazer:** baixar o artefato `playwright-report` de um run reprovado (`gh run download`), identificar qual spec `@smoke` falha e por quê, e consertar a causa. Não desabilitar, não remover a tag, não marcar `continue-on-error`, não pular o teste — R3 do `CLAUDE.md` §REGRA #5 vale aqui. Se a falha for de dado em produção (conta E2E sem permissão, produto ausente, carrinho órfão), corrigir o dado e registrar o que foi corrigido.
 **Pronto:** `gh api "repos/adm01-debug/Promo_Gifts_V4/actions/workflows/deploy-gates.yml/runs?per_page=5" --jq '[.workflow_runs[].conclusion]'` mostra `success` nos 2 runs mais recentes de PR
@@ -184,26 +184,26 @@ No mesmo pedido, apagar o ruleset **24121385** ("Protect main branch", criado 20
 **Pronto:** `gh api repos/adm01-debug/Promo_Gifts_V4/branches/main/protection 2>&1 | grep -c "Branch not protected"` → `1`; `gh api repos/adm01-debug/Promo_Gifts_V4/rulesets --jq 'length'` → `1`
 **Origem:** C-03, C-05
 
-#### P200-E007 · [A] · P0 · Fazer o Gate E23 poder falhar
+#### P200-E007 · [A] · P0 · Fazer o Gate E23 poder falhar ✅
 **Arquivo:** `.github/workflows/deploy-gates.yml:323-326`, `.github/workflows/_secrets-check.yml:28`
 **Fazer:** o gate chama o reusable sem `fail_if_missing`, cujo default é `false`, então o job sempre sai 0 e a checagem `[[ "$R_SECRETS" == "success" ]]` na linha 551 é tautológica. Passar `with: { fail_if_missing: true }`, **ou** — se a intenção é só expor o output `has_e2e` — remover o gate da tabela de bloqueantes do `CLAUDE.md` e apagar a linha 551 do agregador. Decidir uma das duas e não deixar as duas meias.
 **Pronto:** `grep -A3 "_secrets-check.yml" .github/workflows/deploy-gates.yml | grep -c "fail_if_missing: true"` → `1`, ou a linha 551 deixa de existir e o `CLAUDE.md` marca E23 como não-bloqueante
 **Origem:** A1-01, A1-15
 
-#### P200-E008 · [A] · P0 · Fazer o Gate 1.13 comparar de verdade
+#### P200-E008 · [A] · P0 · Fazer o Gate 1.13 comparar de verdade ✅
 **Arquivo:** `.github/workflows/deploy-gates.yml:239-243`, `scripts/check-policies-baseline.mjs:233-250`
 **Fazer:** o gate roda sem `--require-live` e o script devolve `STATIC_PASS` exit 0 em `missing-config`, `network-error` e HTTP `429|5xx`. Sem token ou num 5xx transitório, 950 policies de RLS passam sem comparar nada. Acrescentar `--require-live` no step (como `policies-baseline.yml:166` já faz) e restringir o `static-pass` a PR de fork, com `if:` explícito.
 Mesmo padrão em `supabase-security-gate.yml:63-81`: o "Gate 5 — Supabase Security Audit" pula **todos** os passos live em `pull_request` e não é required check, então em PR não audita nada ao vivo. Habilitar os passos live para PRs do próprio repositório (o guard de fork já existe em `:97`).
 **Pronto:** `grep -c "require-live" .github/workflows/deploy-gates.yml` ≥ 1; o gate reprova sem `SUPABASE_ACCESS_TOKEN`; o Gate 5 executa passos live em PR do próprio repo
 **Origem:** A1-02, A2-10, A2-41
 
-#### P200-E009 · [A] · P0 · Reescrever a REGRA #9: governança exige PR, não push
+#### P200-E009 · [A] · P0 · Reescrever a REGRA #9: governança exige PR, não push ✅
 **Arquivo:** `CLAUDE.md` (REGRA #9)
 **Fazer:** o texto atual pede `git push` ao final da sessão e apenas *sugere* abrir PR. O buraco foi usado 69 vezes na janela, quase tudo em `.github/**`. Reescrever: mudança em `.github/**`, `CODEOWNERS`, `supabase/migrations/**`, `scripts/check-*` e `.gitleaks.toml` exige **PR**, inclusive do CODEOWNER; push direto em `main` só para reverter incidente em curso, com postmortem no mesmo dia.
 **Pronto:** `grep -c "exige PR" CLAUDE.md` ≥ 1 **e** `grep -c "git push ao final" CLAUDE.md` → `0`
 **Origem:** A5-41, A5-55, C-04
 
-#### P200-E010 · [A] · P1 · Criar `npm run plan:status`
+#### P200-E010 · [A] · P1 · Criar `npm run plan:status` ✅
 **Arquivo:** `scripts/plan-status.mjs` (novo), `package.json`
 **Fazer:** script que lê este plano, extrai o comando de cada campo `Pronto:`, executa, e imprime o placar: `fechadas / abertas / falhando`, agrupado por onda e trilha. Saída em tabela no stdout e em `--json` para CI. Sem isso a medição deste plano vira outra auditoria de 1.258 linhas seis semanas depois.
 **Pronto:** `npm run plan:status` imprime placar com as 200 etapas e sai `0`; `npm run plan:status -- --json | jq '.total'` → `200`
@@ -217,62 +217,62 @@ Mesmo padrão em `supabase-security-gate.yml:63-81`: o "Gate 5 — Supabase Secu
 
 Gates declarados bloqueantes que terminam verdes sem verificar nada. São a razão pela qual a esteira dá uma falsa sensação de cobertura.
 
-#### P200-E011 · [A] · P0 · Ressuscitar o `merge-reports` do E2E
+#### P200-E011 · [A] · P0 · Ressuscitar o `merge-reports` do E2E ✅
 **Arquivo:** `.github/workflows/e2e.yml:177`
 **Fazer:** `needs: e2e-shard` mas `if: always() && (needs.e2e-gates.result == 'success')`. `needs.e2e-gates` não existe nesse contexto — é o único erro que o `actionlint` 1.7.7 acusa nos 127 workflows. Expressão sempre falsa: o job nunca roda desde o sharding do E17 (`520f25afb`). Trocar por `needs.e2e-shard.result` ou incluir `e2e-gates` em `needs:`.
 **Pronto:** `actionlint .github/workflows/e2e.yml` → exit `0` **e** o job `merge-reports` aparece como executado no run mais recente
 **Origem:** A1-03
 
-#### P200-E012 · [A] · P0 · Mover o guard de suíte vazia para dentro do shard
+#### P200-E012 · [A] · P0 · Mover o guard de suíte vazia para dentro do shard ✅
 **Arquivo:** `.github/workflows/e2e.yml:218-221`
 **Fazer:** o step `Check min tests executed` (E42) e o `🛑 Fail job se algum shard registrou falhas` vivem no job morto do E011 — o anti-falso-verde do E2E de regressão é um no-op. Mover o `check-min-tests` para dentro de `e2e-shard`, para cada shard validar o próprio mínimo executado.
 **Pronto:** um run com `--grep=@naoexiste` forçado reprova o shard, em vez de passar verde
 **Origem:** A1-04
 
-#### P200-E013 · [A] · P0 · Excluir `chromium-authed` da matriz quando não há secret
+#### P200-E013 · [A] · P0 · Excluir `chromium-authed` da matriz quando não há secret ✅
 **Arquivo:** `.github/workflows/e2e.yml:112-141`
 **Fazer:** a matriz roda `[chromium-public, chromium-authed]` e o step de teste tem `if: matrix.project == 'chromium-public' || env.E2E_USER_EMAIL != ''`. Sem o secret, os 4 shards `chromium-authed` terminam verdes com zero testes executados. Usar o output `has_e2e` do `_secrets-check.yml` para montar a matriz via `fromJSON`, em vez de `if:` por step.
 **Pronto:** sem `E2E_USER_EMAIL` no ambiente, o run mostra 4 jobs em vez de 8 — nenhum job verde com zero testes
 **Origem:** A1-05
 
-#### P200-E014 · [B] · P1 · Fazer o Gate 1.2 comparar contra o `pg_catalog`
+#### P200-E014 · [B] · P1 · Fazer o Gate 1.2 comparar contra o `pg_catalog` ✅
 **Arquivo:** `.github/workflows/deploy-gates.yml:147`, `scripts/check-types-inventory-drift.mjs`
 **Fazer:** o gate roda `--base "$BASE"` sem `--live`, então nunca compara `types.ts` contra o banco: só faz git-diff entre base e HEAD. Acrescentar um step (ou cron diário) com `--live` e `DATABASE_URL`, tratando indisponibilidade como `inconclusive` explícito, nunca como passe.
 **Pronto:** `node scripts/check-types-inventory-drift.mjs --live` roda no CI e reprova quando uma tabela viva falta em `types.ts`
 **Origem:** A2-18
 
-#### P200-E015 · [A] · P1 · Fazer o Gate 3 sempre executar alguma coisa
+#### P200-E015 · [A] · P1 · Fazer o Gate 3 sempre executar alguma coisa ✅
 **Arquivo:** `.github/workflows/deploy-gates.yml:334`, `:578-585`
 **Fazer:** o gate é `if: needs.secrets-check.outputs.has_e2e == 'true'`; em PR sem secrets o skip gera só `::warning::` no agregador, então o único E2E do required check pode não rodar em nenhum PR de fork. Rodar o subconjunto `chromium-public` do smoke sem credencial, para o gate sempre executar.
 **Pronto:** um PR sem secrets E2E mostra o `Gate 3` executado com ≥1 teste, não `skipped`
 **Origem:** A1-16
 
-#### P200-E016 · [A] · P1 · `deploy-vercel` não pode terminar verde sem deployar
+#### P200-E016 · [A] · P1 · `deploy-vercel` não pode terminar verde sem deployar ✅
 **Arquivo:** `.github/workflows/deploy-vercel.yml:63-68`
 **Fazer:** quando `can_deploy=false` o job `deploy` fica `skipped` e o workflow termina verde, mascarando secrets Vercel ausentes num caminho de fallback de emergência. Fazer o `check-secrets` sair 1 em vez de emitir output, ou acrescentar job agregador que reprove no skip.
 **Pronto:** com `VERCEL_TOKEN` ausente o workflow conclui `failure`, não `success`
 **Origem:** A1-10
 
-#### P200-E017 · [A] · P1 · CodeQL não pode passar verde sem analisar
+#### P200-E017 · [A] · P1 · CodeQL não pode passar verde sem analisar ✅
 **Arquivo:** `.github/workflows/codeql.yml:~72-90`
 **Fazer:** todos os steps de análise e o ratchet E96 de alertas HIGH/CRITICAL estão sob `if: steps.code-security.outputs.enabled == 'true'`. Se o Code Security não estiver habilitado, o job termina verde sem analisar nem ratchetar. Reprovar com `exit 1` em push para `main` quando `enabled=false`, ou declarar o estado em `required-checks.json` como gate conhecido-ausente.
 **Pronto:** com `enabled=false` simulado o job conclui `failure` em push para `main`
 **Origem:** A1-06
 
-#### P200-E018 · [A] · P1 · Inverter o default do rate limiter para fail-closed
+#### P200-E018 · [A] · P1 · Inverter o default do rate limiter para fail-closed ✅
 **Arquivo:** `supabase/functions/_shared/rate-limiter.ts:45`
 **Fazer:** o fail-open é o default e só o limiter `approval` usa `failClosed`. Um erro no banco desliga **todos** os rate limits do projeto de uma vez. Inverter o default para `failClosed: true` e marcar as exceções explicitamente, uma por uma, com comentário dizendo por quê.
 No mesmo PR, corrigir `rate-limit-check/index.ts:19,129-137`, que mantém o store num `Map` **em memória** — limite por isolate, então os 5/min do login são decorativos — e cujo `catch` devolve `status 200 allowed:true`. Migrar para a RPC `check_edge_rate_limit` do `_shared/rate-limiter` e fail-closed no caminho de login.
 **Pronto:** `grep -c "failClosed = true" supabase/functions/_shared/rate-limiter.ts` ≥ 1; erro de banco devolve 429/503, não 200; `grep -c "new Map" supabase/functions/rate-limit-check/index.ts` → `0`
 **Origem:** A4-25, A4-26
 
-#### P200-E019 · [A] · P1 · `e2e-cleanup` fail-closed na allowlist vazia
+#### P200-E019 · [A] · P1 · `e2e-cleanup` fail-closed na allowlist vazia ✅
 **Arquivo:** `supabase/functions/e2e-cleanup/index.ts:113`
 **Fazer:** `if (ALLOWED_EMAILS.size > 0 && ...)` — com `E2E_CLEANUP_ALLOWED_EMAILS` vazio a allowlist é pulada inteira e o token apaga `quotes`, `orders` e `quote_items` de **qualquer** usuário. Inverter: allowlist vazia devolve 503.
 **Pronto:** sem a env var a função responde 503; com ela, só os e-mails listados são afetados
 **Origem:** A4-15
 
-#### P200-E020 · [A] · P1 · `secure-upload` fail-closed sem antivírus
+#### P200-E020 · [A] · P1 · `secure-upload` fail-closed sem antivírus ✅
 **Arquivo:** `supabase/functions/secure-upload/index.ts:228`, `:251-255`
 **Fazer:** três falhas na mesma função. `if (vtApiKey)` — sem `VIRUSTOTAL_API_KEY` o scan é inteiramente pulado e o arquivo vai para o bucket `verified/` público. E VT 404 (hash desconhecido) é tratado como "permitido upload inicial", o que deixa passar todo malware novo ou dirigido. E o `contentType` em `:295` e `:321-322` vem de `file.type` (multipart, controlado pelo cliente) e o objeto é publicado por `getPublicUrl`: `text/html` ou `image/svg+xml` = XSS armazenado em domínio próprio. Sem credencial: 503. Hash desconhecido: enviar para análise e quarentenar até veredito. `file.type` validado contra allowlist de `image/*`, com o Content-Type forçado no upload.
 **Pronto:** sem `VIRUSTOTAL_API_KEY` a função responde 503; arquivo com hash inédito fica em quarentena; upload de `.svg` ou `.html` → 400
@@ -286,61 +286,61 @@ No mesmo PR, corrigir `rate-limit-check/index.ts:19,129-137`, que mantém o stor
 
 Sete funções deployadas em produção (recibos nos runs `37380000049` e `37449001108`, 2026-10-05/06) sem nenhuma verificação de chamador. O motivo de terem passado verdes está em E030: o gate de autorização só cobre 33 das 109 funções.
 
-#### P200-E021 · [C] · P0 · Decidir o destino da `load-test`
+#### P200-E021 · [C] · P0 · Decidir o destino da `load-test` ✅
 **Arquivo:** `supabase/functions/load-test/index.ts:7-16`, `:57`, `:79-92`, `:126-129`
 **Fazer:** a função não autentica ninguém e envia `Authorization: Bearer SUPABASE_SERVICE_ROLE_KEY` para um `targetEndpoint` arbitrário vindo do corpo da requisição — entrega a chave de produção a qualquer destino que o chamador escolher. E aceita `totalRequests ≤ 100000 × concurrency ≤ 1000`, o que a torna um amplificador de DDoS saindo dos IPs do Supabase. Perguntar ao PO: *"Essa função de teste de carga está em produção, sem autenticação, e repassa a service_role para qualquer URL. Deleto do canônico ou você precisa dela?"* Se precisar: `authorize(req, { requireRole: 'dev' })` + `assertAllowedExternalUrl`, nunca anexando a service_role, e teto de 100×10.
 **Pronto:** a função não aparece em `supabase functions list` do canônico, **ou** `grep -c "requireRole: 'dev'" supabase/functions/load-test/index.ts` → `1` e `grep -c "SERVICE_ROLE" supabase/functions/load-test/index.ts` → `0`
 **Origem:** A4-02, A4-03
 
-#### P200-E022 · [A] · P0 · `audit-suite` — exigir autorização
+#### P200-E022 · [A] · P0 · `audit-suite` — exigir autorização ✅
 **Arquivo:** `supabase/functions/audit-suite/index.ts:28`, `:49-60`
 **Fazer:** sem autenticação, cria usuários via `auth.admin.createUser` e insere em `user_roles` com a service_role, em produção. Pôr `authorize(req, { requireRole: 'dev', enforceServerSide: true })` como primeira linha do handler.
 **Pronto:** `curl -X POST <url>/audit-suite` sem token → 401; `grep -c "authorize(req" supabase/functions/audit-suite/index.ts` ≥ 1
 **Origem:** A4-04
 
-#### P200-E023 · [A] · P0 · `audit-suite` — cleanup em `finally`
+#### P200-E023 · [A] · P0 · `audit-suite` — cleanup em `finally` ✅
 **Arquivo:** `supabase/functions/audit-suite/index.ts:129-130`
 **Fazer:** o `deleteUser` dos 2 usuários de teste está dentro do `try`, sem `finally`. Qualquer exceção deixa usuários e linhas de `user_roles` órfãos em `auth.users` de produção. Mover para `finally`, como `test-cart-*/index.ts` já fazem.
 **Pronto:** `grep -c "finally" supabase/functions/audit-suite/index.ts` ≥ 1; teste com exceção forçada não deixa usuário órfão
 **Origem:** A4-54
 
-#### P200-E024 · [A] · P0 · `test-cart-concurrency` e `test-cart-limit` — autorização e senha aleatória
+#### P200-E024 · [A] · P0 · `test-cart-concurrency` e `test-cart-limit` — autorização e senha aleatória ✅
 **Arquivo:** `supabase/functions/test-cart-concurrency/index.ts:20-27`, `supabase/functions/test-cart-limit/index.ts:29`
 **Fazer:** as duas criam usuário em `auth.users` de produção com senha hardcoded e e-mail de padrão previsível, sem autenticação. Exigir `authorize(req, { requireRole: 'dev' })` e gerar a senha com `crypto.getRandomValues`.
 **Pronto:** `grep -lc "requireRole: 'dev'" supabase/functions/test-cart-{concurrency,limit}/index.ts` → 2 arquivos; nenhuma senha literal nos dois
 **Origem:** A4-05, A4-06
 
-#### P200-E025 · [A] · P0 · `test-cart-rls` — autorização e senha aleatória
+#### P200-E025 · [A] · P0 · `test-cart-rls` — autorização e senha aleatória ✅
 **Arquivo:** `supabase/functions/test-cart-rls/index.ts:30`, `:38-52`
 **Fazer:** mesmo padrão de E024, criando 2 usuários em produção.
 **Pronto:** `curl` sem token → 401; nenhuma senha literal no arquivo
 **Origem:** A4-07
 
-#### P200-E026 · [A] · P0 · `test-contract-orchestrator` — não provisionar webhook em runtime
+#### P200-E026 · [A] · P0 · `test-contract-orchestrator` — não provisionar webhook em runtime ✅
 **Arquivo:** `supabase/functions/test-contract-orchestrator/index.ts:71-75`
 **Fazer:** sem autenticação, faz UPSERT em `inbound_webhook_endpoints` criando o slug `test-automated` com `hmac_secret_ref=SIMULATION_BYPASS_KEY` — ou seja, um anônimo provisiona um ingress de webhook assinado. Exigir `authorize(req, { requireRole: 'dev' })` e remover o provisionamento em runtime: o endpoint de teste deve nascer por migration.
 **Pronto:** `grep -c "inbound_webhook_endpoints" supabase/functions/test-contract-orchestrator/index.ts` → `0`; `curl` sem token → 401
 **Origem:** A4-08
 
-#### P200-E027 · [A] · P0 · `test-inventory-orchestrator` — fechar o oráculo de configuração
+#### P200-E027 · [A] · P0 · `test-inventory-orchestrator` — fechar o oráculo de configuração ✅
 **Arquivo:** `supabase/functions/test-inventory-orchestrator/index.ts:36-50`
 **Fazer:** sem autenticação, devolve o mapa `{name, present, source}` de `SUPABASE_SERVICE_ROLE_KEY`, `WEBHOOK_DISPATCHER_SECRET` e `EXTERNAL_CRM_URL`. Mesmo sem valores, dizer a um anônimo quais segredos existem e de onde vêm é reconhecimento. Exigir `requireRole: 'dev'` ou remover a função.
 **Pronto:** `curl` sem token → 401, ou a função não existe no canônico
 **Origem:** A4-09
 
-#### P200-E028 · [A] · P1 · `bulk-random-passwords` — step-up e auditoria
+#### P200-E028 · [A] · P1 · `bulk-random-passwords` — step-up e auditoria ✅
 **Arquivo:** `supabase/functions/bulk-random-passwords/index.ts:126-142`
 **Fazer:** reset em massa de senha de até 1000 contas protegido apenas por um `x-admin-token` estático, sem role, sem MFA, sem rate limit e sem auditoria. Exigir `authorize(req, { requireRole: 'dev', requireAal2: true })` + `x-step-up-token`, e gravar cada execução em `audit_log`.
 **Pronto:** chamada só com `x-admin-token` → 403; execução autorizada deixa linha em `audit_log`
 **Origem:** A4-19
 
-#### P200-E029 · [A] · P1 · `bulk-random-passwords` — dry-run não dumpa o diretório
+#### P200-E029 · [A] · P1 · `bulk-random-passwords` — dry-run não dumpa o diretório ✅
 **Arquivo:** `supabase/functions/bulk-random-passwords/index.ts:216-219`
 **Fazer:** o `mode` default é `dry_run` e a resposta inclui `users: [{id, email}]` de **todas** as contas. Com o token, um dry-run "inócuo" exporta o diretório de usuários. Devolver apenas contagem.
 **Pronto:** `grep -c "email" supabase/functions/bulk-random-passwords/index.ts` não inclui o campo no payload de resposta do dry-run
 **Origem:** A4-20
 
-#### P200-E030 · [A] · P0 · Fazer o gate de autorização cobrir as 109 funções
+#### P200-E030 · [A] · P0 · Fazer o gate de autorização cobrir as 109 funções ✅
 **Arquivo:** `scripts/check-edge-authorization.mjs:9-16`, `supabase/functions/_shared/edge-authz-manifest.ts`
 **Fazer:** este é o gate que deixou E021–E027 passarem. Hoje ele só verifica funções `supervisor`/`dev` **com** `enforcedBy: "shared-authorize"`. `enforcedBy: "custom"` passa sem nenhuma verificação de código, e as categorias `public`/`authenticated`/`service`/`scoped` — 76 das 109 funções — não têm enforcement algum. Exigir que toda entrada `custom` aponte um teste em `tests/security/edge-authz-bypass.test.ts`, e reprovar quando o `index.ts` não contiver nenhuma primitiva de auth conhecida.
 No mesmo PR, fechar 4 lacunas do gate de edge function: (1) `edge-functions-drift-check.yml` não está em `required-checks.json`, então drift entre git e canônico depende de disciplina humana — acrescentar o job "Compare GitHub × Canonical"; (2) `edge-functions-drift-check.yml:25-28` não tem `supabase/config.toml` nem `.security/edge-functions-verify-jwt-false-allowlist.json` no filtro `paths:`, então PR que só mude `verify_jwt` não dispara o gate E42; (3) em `:200-215` o `repo_manifest` é construído iterando os caminhos **do canônico**, então arquivo presente no repo e ausente no canônico não altera o hash — computar os dois manifestos independentemente e comparar também os conjuntos de caminhos; (4) corrigir os comentários de `config.toml` e do manifest que tratam `verify_jwt=true` como barreira de autenticação: a chave anon é um JWT válido do projeto (`src/integrations/supabase/client.ts:28`) e satisfaz o gateway — `verify_jwt` é anti-ruído, não autorização.
@@ -373,43 +373,43 @@ O único controle de drift de schema nunca rodou. A ordem desta onda importa: le
 **Pronto:** `git log --all -- 'supabase/baseline/*baseline_schema.sql'` devolve ≥1 commit; `node scripts/drift-baseline.mjs` encontra o baseline em vez de `null`
 **Origem:** A2-01
 
-#### P200-E034 · [A] · P0 · Tirar o `allow_missing_baseline` do drift-gate
+#### P200-E034 · [A] · P0 · Tirar o `allow_missing_baseline` do drift-gate ✅
 **Arquivo:** `.github/workflows/schema-snapshot-export.yml:71-76`
 **Fazer:** o `drift-gate` chama o drift-check com `allow_missing_baseline: true`, então sem baseline ele passa vazio. Com E033 fechada, remover a flag — o gate deve reprovar quando não houver baseline, não passar.
 **Pronto:** `grep -c "allow_missing_baseline: true" .github/workflows/schema-snapshot-export.yml` → `0`
 **Origem:** A2-02
 
-#### P200-E035 · [A] · P1 · Drift-check em todos os schemas de aplicação
+#### P200-E035 · [A] · P1 · Drift-check em todos os schemas de aplicação ✅
 **Arquivo:** `.github/workflows/db-schema-drift-check.yml:207`
 **Fazer:** o `db diff` roda só `--schema public`, deixando `ops`, `analytics`, `cf_recon`, `prod_audit`, `internal`, `api`, `supplier_stricker`, `storage`, `vault` e `auth` sem verificação — 19+ schemas por `BACKUP_STATUS.md`. Passar a lista completa, versionada num arquivo único compartilhado com o export (para os dois nunca divergirem).
 **Pronto:** `grep -c "schemas.txt\|SCHEMAS=" .github/workflows/db-schema-drift-check.yml` ≥ 1 e o mesmo arquivo é lido por `schema-snapshot-export.yml`
 **Origem:** A2-05
 
-#### P200-E036 · [A] · P1 · Inventariar event triggers em vez de descartá-los
+#### P200-E036 · [A] · P1 · Inventariar event triggers em vez de descartá-los ✅
 **Arquivo:** `scripts/drift-baseline.mjs:169`, `:204-223`
 **Fazer:** `sanitizeBaselineForReplay()` descarta todo `ALTER EVENT TRIGGER` e `COMMENT ON EVENT TRIGGER` (foi o que o HEAD `d6cdb44` fez), e o dump já não traz `CREATE EVENT TRIGGER`. Resultado: event triggers são 100% invisíveis ao drift-check. Exportar o inventário de `pg_event_trigger` como arquivo auxiliar versionado e comparar em passo próprio.
 **Pronto:** existe `supabase/baseline/<B>_event_triggers.json` e o drift-check reprova quando um event trigger é criado fora de migration
 **Origem:** A2-06
 
-#### P200-E037 · [A] · P1 · Inventariar `cron.job`, publications e `ALTER ROLE`
+#### P200-E037 · [A] · P1 · Inventariar `cron.job`, publications e `ALTER ROLE` ✅
 **Arquivo:** `scripts/drift-baseline.mjs:82-95`
 **Fazer:** o próprio cabeçalho do baseline declara que não contém pg_cron, storage, vault, schema `auth`, publications nem config por role. E foi exatamente `cron.alter_job` fora de migration que produziu o incidente de 2026-10-13. Exportar `cron.job`, publications e `ALTER ROLE ... SET` como inventários JSON versionados (padrão `CRON_JOB_DATA`) com gate de diff.
 **Pronto:** o drift-check reprova quando um `cron.job` é alterado fora de migration
 **Origem:** A2-07
 
-#### P200-E038 · [A] · P1 · Ancorar e validar a allowlist de drift
+#### P200-E038 · [A] · P1 · Ancorar e validar a allowlist de drift ✅
 **Arquivo:** `supabase/baseline/drift-allowlist.txt`, `scripts/drift-baseline.mjs:225-239`
 **Fazer:** `filterDiff` aplica `new RegExp` sem âncora, e a proibição de regex genérica (`^grant`, `^alter table`) existe só como comentário, sem nada no código aplicando. Validar que cada entrada contém identificador qualificado (`schema."objeto"`) e reprovar entrada genérica. Compilar cada regex em `try/catch` próprio, citando número de linha no erro. Agrupar o diff por statement antes de filtrar, para a granularidade não ser a linha.
 **Pronto:** `node --test tests/scripts/drift-allowlist.test.mjs` cobre entrada genérica (reprova), regex inválida (erro com nº de linha) e DDL multi-linha
 **Origem:** A2-08, A2-35, A2-36
 
-#### P200-E039 · [A] · P1 · Bloquear baseline gerado do projeto errado
+#### P200-E039 · [A] · P1 · Bloquear baseline gerado do projeto errado ✅
 **Arquivo:** `scripts/drift-baseline.mjs:57-67`
 **Fazer:** `findSecrets()` bloqueia JWT, PAT e chaves no dump, mas não procura o project-ref proibido `pqpdolkaeqlyzpdpbizo` nem exige a presença do canônico. Baseline gerado do projeto errado passa pelo abort. Acrescentar as duas condições.
 **Pronto:** um dump de teste contendo `pqpdolkaeqlyzpdpbizo` faz o export abortar com exit ≠ 0
 **Origem:** A2-09
 
-#### P200-E040 · [A] · P1 · Tornar o drift-check um required check
+#### P200-E040 · [A] · P1 · Tornar o drift-check um required check ✅
 **Arquivo:** `.github/required-checks.json`
 **Fazer:** só depois de E033 a E039. O job `Migrations x Canonical schema` não é required nem é chamado pelo `deploy-gates.yml`, então pode ficar vermelho indefinidamente sem bloquear merge. Acrescentar ao `required_checks` do ruleset `main` e, no mesmo PR, atualizar o ruleset no GitHub (trilha C se precisar do PO).
 **Pronto:** `node scripts/check-required-checks.mjs --gate` sai `0` com o novo check na lista e o ruleset ao vivo refletindo
@@ -423,31 +423,31 @@ O único controle de drift de schema nunca rodou. A ordem desta onda importa: le
 
 950 policies no baseline assinado. O modelo é quase inteiramente permissivo: só 2 das 950 são `RESTRICTIVE`, o que significa que policy nova sempre amplia acesso e nunca restringe.
 
-#### P200-E041 · [A] · P0 · Fechar leitura anônima de tabelas fiscais e de suprimento
+#### P200-E041 · [A] · P0 · Fechar leitura anônima de tabelas fiscais e de suprimento ✅
 **Arquivo:** `.security/policies-baseline.json`, migration nova
 **Fazer:** 23 policies com role `anon` usam `USING (true)` — leitura anônima irrestrita. Começar por `product_fiscal`, `product_supply`, `system_kill_switches`, `product_ai_content` e `product_seo`. Trocar por view `v_*_public` com colunas explícitas (padrão P6 do `SCHEMA_REFERENCE.md`) ou por predicado de publicação. Uma tabela por PR (R4).
 **Pronto:** `jq '[.policies[]|select(.roles|index("anon"))|select(.qual=="true")]|length' .security/policies-baseline.json` cai de 23 para ≤18 nesta onda, e `product_fiscal`/`product_supply` não estão mais na lista
 **Origem:** A2-12
 
-#### P200-E042 · [A] · P1 · Lote 1 das 248 policies sem `TO` explícito
+#### P200-E042 · [A] · P1 · Lote 1 das 248 policies sem `TO` explícito ✅
 **Arquivo:** migration nova
 **Fazer:** 248 policies têm `roles={public}` (criadas sem `TO`), são avaliadas para todos os roles incluindo `anon`, e a única barreira efetiva passa a ser o GRANT. Recriar com `TO authenticated` / `TO service_role`, em lotes por tabela, priorizando as tabelas com PII e dado financeiro. Lote 1 = 10 tabelas de maior exposição.
 **Pronto:** `jq '[.policies[]|select(.roles==["public"])]|length' .security/policies-baseline.json` desce de 248 para ≤238
 **Origem:** A2-13
 
-#### P200-E043 · [A] · P1 · Reprovar policy nova com `roles={public}`
+#### P200-E043 · [A] · P1 · Reprovar policy nova com `roles={public}` ✅
 **Arquivo:** `scripts/check-policies-baseline.mjs`
 **Fazer:** fechar a porta antes de esvaziar o quarto: o gate deve recusar qualquer policy **nova** com `roles={public}` ou `anon` + `USING (true)`, mantendo as 248 existentes como baseline a drenar. Sem isso, E042 enche de novo.
 **Pronto:** o gate reprova ao se adicionar no baseline de teste uma policy `TO public`
 **Origem:** A2-13
 
-#### P200-E044 · [A] · P1 · Baseline de policies sem filtro de schema
+#### P200-E044 · [A] · P1 · Baseline de policies sem filtro de schema ✅
 **Arquivo:** `scripts/check-policies-baseline.mjs:57-62`
 **Fazer:** a query filtra `schemaname = 'public'`, então policies de `ops`, `analytics`, `cf_recon` e `storage` não entram no baseline assinado nem no gate. Remover o filtro (ou listar todos os schemas de aplicação, compartilhando o arquivo de E035) e regenerar com `--update-baseline`.
 **Pronto:** `jq '[.policies[].schema]|unique|length' .security/policies-baseline.json` > 1
 **Origem:** A2-11
 
-#### P200-E045 · [A] · P1 · Implementar o gate de RLS sem policy
+#### P200-E045 · [A] · P1 · Implementar o gate de RLS sem policy ✅
 **Arquivo:** `scripts/check-rls-no-policy-drift.mjs` (novo), `.security/rls-no-policy-allowlist.json`
 **Fazer:** o próprio arquivo de allowlist declara no campo `description` que "nenhum script de CI lê este arquivo ainda". Tabela nova com RLS ligada e zero policies entra em produção sem gate algum — e fica trancada ou aberta, dependendo do GRANT. Escrever o script no molde de `check-secdef-anon-drift.mjs` e plugar no `deploy-gates.yml`.
 **Pronto:** `node scripts/check-rls-no-policy-drift.mjs --gate` sai `0` hoje e reprova ao se adicionar tabela RLS-sem-policy fora da allowlist
@@ -459,13 +459,13 @@ O único controle de drift de schema nunca rodou. A ordem desta onda importa: le
 **Pronto:** a migration está aplicada com recibo em `MIGRATIONS_SYNC_LOG.md`, **ou** foi movida para `supabase/sql-legacy/` com a razão escrita
 **Origem:** A2-15
 
-#### P200-E047 · [A] · P2 · Uma `RESTRICTIVE` por tabela sensível
+#### P200-E047 · [A] · P2 · Uma `RESTRICTIVE` por tabela sensível ✅
 **Arquivo:** migration nova
 **Fazer:** com só 2 RESTRICTIVE em 950, o default do modelo é união (OR). Introduzir uma RESTRICTIVE por tabela sensível, no padrão de E046, para que o default passe a ser interseção nessas tabelas.
 **Pronto:** `jq '[.policies[]|select(.permissive=="RESTRICTIVE")]|length' .security/policies-baseline.json` ≥ 12
 **Origem:** A2-40
 
-#### P200-E048 · [A] · P2 · `plannedKeys` tem de casar mais que o nome
+#### P200-E048 · [A] · P2 · `plannedKeys` tem de casar mais que o nome ✅
 **Arquivo:** `scripts/check-policies-baseline.mjs:328-347`
 **Fazer:** a tolerância aceita como "mudança planejada" qualquer policy cujo nome apareça em migration não aplicada. Policy inserida fora de migration com nome coincidente passa o gate. Casar também `cmd`, `roles` e `qual`, não só a chave `schema.tabela.policyname`.
 **Pronto:** teste com policy de nome igual e `qual` diferente reprova o gate
@@ -477,7 +477,7 @@ O único controle de drift de schema nunca rodou. A ordem desta onda importa: le
 **Pronto:** o gate de policies reprova se uma das 7 tabelas perder o trigger
 **Origem:** A2-39
 
-#### P200-E050 · [A] · P2 · Unificar as duas allowlists do lint 0029
+#### P200-E050 · [A] · P2 · Unificar as duas allowlists do lint 0029 ✅
 **Arquivo:** `.security/lint-0029-allowlist.json` (93 entradas), `.security/supabase-linter-baseline.json` (50, `generated_at` 2026-07-13)
 **Fazer:** duas allowlists divergentes para o mesmo lint (SECURITY DEFINER executável por `authenticated`), a segunda com justificativa única e 3 meses sem revisão. Unificar em `lint-0029-allowlist.json` com `reason`, `approvedBy` e `date` por função, e fazer `check-supabase-linter.mjs` ler só dela.
 **Pronto:** `.security/supabase-linter-baseline.json` não existe mais e `node scripts/check-supabase-linter.mjs --gate` sai `0`
@@ -609,7 +609,7 @@ O ledger (`supabase_migrations.schema_migrations`) e o schema real divergem em v
 **Pronto:** o lint 0014 não lista `pgstattuple` nem `pg_repack`; o preflight reprova `CREATE EXTENSION` sem schema
 **Origem:** A2-47
 
-#### P200-E068 · [A] · P2 · Índices faltando em FK com `ON DELETE CASCADE`
+#### P200-E068 · [A] · P2 · Índices faltando em FK com `ON DELETE CASCADE` ✅
 **Arquivo:** migration nova; `supabase/migrations/20260911130357_kit_maker_optimistic_persistence.sql:27-32`, `20260911172000:21-28`, `20260909220000_magazine_duplicate_request_indexes.sql:4-8`
 **Fazer:** `kit_save_requests` tem FK `user_id`→`auth.users` e `kit_id`→`custom_kits` com `ON DELETE CASCADE` e nenhum índice além do PK em `request_id` — todo DELETE no pai faz seq scan. Mesmo padrão em `kit_quote_requests` e em `magazine_duplicate_requests.actor_id`. Criar os índices agora, enquanto as tabelas são pequenas.
 **Pronto:** os 4 índices existem e `node scripts/check-fk-indexes.mjs` (ou query de `pg_constraint` sem índice) devolve `0` para essas tabelas
@@ -648,7 +648,7 @@ Não existe backup de dados conhecido. O que está versionado é um dump schema-
 **Pronto:** existe artefato com data da semana corrente e checksum conferido
 **Origem:** A2-34
 
-#### P200-E073 · [B] · P1 · Executar um restore de verdade
+#### P200-E073 · [B] · P1 · Executar um restore de verdade ✅
 **Arquivo:** `docs/DISASTER_RECOVERY.md:76-78`
 **Fazer:** o runbook pede teste de restore pelo menos trimestral e **não há nenhum registro de teste executado**; o RTO de banco está "a definir após confirmação do PO". Restaurar o dump schema-only num projeto descartável, medir a duração e registrar no runbook.
 **Pronto:** `grep -c "Último teste de restore: 2026-" docs/DISASTER_RECOVERY.md` ≥ 1 com duração medida
@@ -660,7 +660,7 @@ Não existe backup de dados conhecido. O que está versionado é um dump schema-
 **Pronto:** `actionlint` sai `0` e a issue é criada no primeiro dispatch
 **Origem:** A2-33
 
-#### P200-E075 · [A] · P1 · Criar o destino do relatório de DDL fora de banda
+#### P200-E075 · [A] · P1 · Criar o destino do relatório de DDL fora de banda ✅
 **Arquivo:** `docs/ci/DDL_OUT_OF_BAND_REPORT.md` (ausente), `.github/workflows/ddl-out-of-band-detector.yml`
 **Fazer:** o arquivo que o `CLAUDE.md` aponta como registro de divergência do detector E12 **não existe**, então nenhuma divergência detectada tem destino persistente. Criar o arquivo e fazer o detector escrever nele via PR de bot, ou corrigir o `CLAUDE.md` para apontar só para a issue rotulada. Escolher um dos dois.
 **Pronto:** o arquivo existe e tem linha gerada pelo detector, **ou** o `CLAUDE.md` não o menciona mais
@@ -799,7 +799,7 @@ No mesmo PR, remover o fallback hardcoded de `MAGAZINE_IP_SALT` em `magazine-pub
 **Pronto:** o gate reprova ao se afrouxar um origin em `cors.ts` sem regenerar o snapshot
 **Origem:** A4-47
 
-#### P200-E096 · [A] · P2 · `image-proxy` — anti-hotlink fail-closed e sem open redirect
+#### P200-E096 · [A] · P2 · `image-proxy` — anti-hotlink fail-closed e sem open redirect ✅
 **Arquivo:** `supabase/functions/image-proxy/index.ts:81`, `:117`
 **Fazer:** `if (referer && !isAllowedReferer(referer))` — requisição **sem** header `Referer` passa, o que anula a proteção anti-hotlink inteira. Exigir `Referer`/`Origin` presente e válido. E `fetchWithBreaker` sem `redirect: 'manual'`: um open redirect em CDN de fornecedor allowlistado leva o proxy a destino arbitrário — passar `redirect: 'manual'` e revalidar o `Location` com `validateExternalUrl`.
 **Pronto:** `curl` sem `Referer` → 403; CDN que responde 302 para host externo não é seguido
@@ -817,7 +817,7 @@ No mesmo PR, remover o fallback hardcoded de `MAGAZINE_IP_SALT` em `magazine-pub
 **Pronto:** sem `TURNSTILE_SECRET` a função reprova ou alerta; a decisão sobre o Auth Hook está registrada
 **Origem:** A4-52, A4-53
 
-#### P200-E099 · [A] · P2 · Parar de vazar erro do Postgres ao cliente
+#### P200-E099 · [A] · P2 · Parar de vazar erro do Postgres ao cliente ✅
 **Arquivo:** `crm-db-bridge:548,591,611,783`; `external-db-inspect:100,114,186`; `sync-external-db:126`; `bulk-random-passwords:225`; `crm-callback-reprocess:128`
 **Fazer:** 9 pontos devolvem `error.message` do Postgres ao cliente, expondo coluna, constraint e código PG. `_shared/log-safety.ts` e `_shared/error-response.ts` **existem** e não são usados aí. Trocar por `safeErrorResponse`/`safeErrorFields`, com mensagem pública genérica + `request_id`.
 **Pronto:** nenhuma resposta de erro dessas funções contém nome de coluna ou código PG; o `request_id` correlaciona com o log
