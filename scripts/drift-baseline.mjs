@@ -939,11 +939,29 @@ export function dropDumpLossyFunctions(diffSql, shadowSql) {
 }
 
 export function filterDiff(diffSql, allowlist) {
-  return diffSql
+  const lines = diffSql
     .split('\n')
-    .filter((l) => l.trim() && !l.trim().startsWith('--'))
-    .filter((l) => !/^\s*no schema changes found[.;]?\s*$/i.test(l))
-    .filter((l) => !allowlist.some((re) => re.test(l)));
+    .filter((l) => l.trim() && !l.trim().startsWith('--'));
+
+  // Agrupa linhas em statements (acumula até ';' terminal).
+  const statements = [];
+  let current = [];
+  for (const line of lines) {
+    current.push(line);
+    if (line.trimEnd().endsWith(';')) {
+      statements.push(current);
+      current = [];
+    }
+  }
+  if (current.length > 0) statements.push(current);
+
+  return statements
+    .filter((stmt) => {
+      const header = stmt[0];
+      if (/^\s*no schema changes found[.;]?\s*$/i.test(header)) return false;
+      return !allowlist.some((re) => re.test(header));
+    })
+    .map((stmt) => stmt.join('\n'));
 }
 
 function arg(argv, name) {
