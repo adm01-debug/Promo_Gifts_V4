@@ -24,6 +24,7 @@
 | `PGUSER` | DevOps/PO | Repo | — | `db-apply-migration.yml`, `drafts-index-check.yml` |
 | `PGPASSWORD` | DevOps/PO | Repo | 6 meses | `db-apply-migration.yml`, `drafts-index-check.yml`, `migration-dry-run.yml` |
 | `PGDATABASE` | DevOps/PO | Repo | — | `db-apply-migration.yml`, `drafts-index-check.yml` |
+| `PGPORT` | DevOps/PO | Repo | — | `db-apply-migration.yml` (3 refs), `drafts-index-check.yml`, `migration-dry-run.yml` — fallback: `5432` se ausente |
 
 > **Nota `SUPABASE_ANON_KEY` vs `VITE_SUPABASE_PUBLISHABLE_KEY`:** dois nomes para o mesmo valor (chave anon/publishable de `doufsxqlfjyuvxuezpln`). Workflows mais antigos usam `SUPABASE_ANON_KEY`; novos usam `VITE_SUPABASE_PUBLISHABLE_KEY`. Ambos são de conhecimento público por design do Supabase — RLS é a camada de segurança real.
 >
