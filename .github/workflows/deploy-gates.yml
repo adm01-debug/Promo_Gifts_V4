@@ -42,6 +42,8 @@ name: Deploy Gates
 on:
   pull_request:
     branches: [main]
+    paths-ignore:  # E197: PRs só-de-docs não disparam o pipeline completo
+      - 'docs/**'  # CLAUDE.md fica na raiz (não em docs/) e continua disparando
   push:
     branches: [main]
   workflow_dispatch:

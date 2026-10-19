@@ -1,4 +1,4 @@
-# Kit Maker — Plano de finalização em 20 etapas
+# [ARQUIVADO] Kit Maker — Plano de finalização em 20 etapas
 
 Data: 23/09/2026. Base: `main` @ `c6a7d2d` (PRs #1882 e #1884 mergeadas e publicadas em `/montar-kit`). Projeto canônico: `doufsxqlfjyuvxuezpln`.
 
