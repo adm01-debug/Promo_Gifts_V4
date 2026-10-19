@@ -15,7 +15,7 @@ test.describe("[module:quotes] [component:quotes-list] [owner:team-growth] @regr
 
     const mais = page.locator('button[aria-label^="Mais opções para o orçamento"]').first();
     if ((await mais.count()) === 0) {
-      test.skip(true, "Sem orçamentos para validar navegação por teclado.");
+      expect(false, "[E108] Sem orçamentos para validar navegação por teclado.").toBeTruthy();
     }
 
     await expect(mais).toHaveAttribute("aria-label", /Mais opções/);

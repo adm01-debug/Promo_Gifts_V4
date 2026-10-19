@@ -31,7 +31,7 @@ async function gotoOrSkip(page: Page) {
   await page.goto(ROUTE);
   await page.waitForLoadState("domcontentloaded");
   if (/\/login/i.test(page.url())) {
-    test.skip(true, "Rota protegida — necessário login admin para o E2E.");
+    expect(false, "[E108] Rota protegida — necessário login admin para o E2E.").toBeTruthy();
   }
   // Garante que a página principal renderizou
   await expect(page.locator("#zone-connections")).toBeVisible({ timeout: 15_000 });

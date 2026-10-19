@@ -68,7 +68,7 @@ test.describe("ProductCard — Cores no Grid", () => {
       .first();
 
     if ((await cardWithColors.count()) === 0) {
-      test.skip(true, "Nenhum card com cores disponível no catálogo.");
+      expect(false, "[E108] Nenhum card com cores disponível no catálogo.").toBeTruthy();
       return;
     }
 
@@ -178,7 +178,7 @@ test.describe("ProductCard — Cores no Grid", () => {
       .first();
 
     if ((await cardWithColors.count()) === 0) {
-      test.skip(true, "Sem cards com cores para testar seleção.");
+      expect(false, "[E108] Sem cards com cores para testar seleção.").toBeTruthy();
       return;
     }
 

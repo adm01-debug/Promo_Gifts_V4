@@ -109,7 +109,7 @@ test.describe('Preview button — visual regression', () => {
       await expect(timeline).toBeVisible();
       await expect(timeline).toHaveScreenshot('quote-timeline-dark.png', opts('VISUAL_THRESHOLD_QUOTE_TIMELINE_DARK'));
     } else {
-      test.skip(true, 'Harness ainda não expõe a timeline (surface=quote-timeline).');
+      expect(false, '[E108] Harness ainda não expõe a timeline (surface=quote-timeline).').toBeTruthy();
     }
   });
 });

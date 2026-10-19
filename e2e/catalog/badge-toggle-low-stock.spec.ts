@@ -25,7 +25,7 @@ test.describe('Header — toggle de badges controla "Estoque baixo"', () => {
     const lowStockBadge = page.locator('text=/^Estoque baixo$/i').first();
     const hasLowStock = await lowStockBadge.count();
     if (!hasLowStock) {
-      test.skip(true, 'Nenhum produto com badge "Estoque baixo" no dataset atual.');
+      expect(false, '[E108] Nenhum produto com badge "Estoque baixo" no dataset atual.').toBeTruthy();
       return;
     }
     await expect(lowStockBadge).toBeVisible();

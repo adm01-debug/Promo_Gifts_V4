@@ -49,7 +49,7 @@ test.describe('Carrinhos · lista → detalhe @smoke', () => {
       hasNot: page.locator('[data-testid^="cart-row-open-"]'),
     });
     if ((await rows.count()) === 0) {
-      test.skip(true, 'sem carrinhos para validar alinhamento');
+      expect(false, '[E108] sem carrinhos para validar alinhamento').toBeTruthy();
     }
 
     // Cabeçalhos esperados na ordem do módulo Orçamentos

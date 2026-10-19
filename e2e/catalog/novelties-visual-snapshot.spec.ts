@@ -28,7 +28,7 @@ for (const vp of VIEWPORTS) {
 
       const items = await page.locator('div[role="listitem"]').count();
       if (items === 0) {
-        test.skip(true, 'Sem novidades no dataset — snapshot não aplicável.');
+        expect(false, '[E108] Sem novidades no dataset — snapshot não aplicável.').toBeTruthy();
         return;
       }
 

@@ -47,7 +47,7 @@ test.describe('Carrinhos · consistência após refresh e retorno @carrinhos', (
     await gotoAndSettle(page, '/carrinhos');
 
     const ids = await collectCartIds(page);
-    if (ids.length === 0) test.skip(true, 'sem carrinhos disponíveis');
+    if (ids.length === 0) expect(false, '[E108] sem carrinhos disponíveis').toBeTruthy();
 
     const cartId = ids[0];
     await gotoAndSettle(page, `/carrinhos/${cartId}`);
@@ -85,7 +85,7 @@ test.describe('Carrinhos · consistência após refresh e retorno @carrinhos', (
     await gotoAndSettle(page, '/carrinhos');
 
     const ids = await collectCartIds(page);
-    if (ids.length < 2) test.skip(true, 'precisa de 2+ carrinhos');
+    if (ids.length < 2) expect(false, '[E108] precisa de 2+ carrinhos').toBeTruthy();
 
     // Captura header do cart A.
     await gotoAndSettle(page, `/carrinhos/${ids[0]}`);
@@ -116,7 +116,7 @@ test.describe('Carrinhos · consistência após refresh e retorno @carrinhos', (
     await gotoAndSettle(page, '/carrinhos');
 
     const ids = await collectCartIds(page);
-    if (ids.length === 0) test.skip(true, 'sem carrinhos');
+    if (ids.length === 0) expect(false, '[E108] sem carrinhos').toBeTruthy();
 
     // Procura carrinho com subtotal > 0.
     let target: string | null = null;
@@ -126,7 +126,7 @@ test.describe('Carrinhos · consistência após refresh e retorno @carrinhos', (
       const { meta } = await readHeader(page);
       if (CURRENCY_RE.test(meta)) { target = id; break; }
     }
-    if (!target) test.skip(true, 'nenhum carrinho com subtotal > 0');
+    if (!target) expect(false, '[E108] nenhum carrinho com subtotal > 0').toBeTruthy();
 
     await gotoAndSettle(page, `/carrinhos/${target}`);
     const before = await readHeader(page);

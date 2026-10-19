@@ -22,7 +22,7 @@ test.describe('@regression /estoque — filtros sem texto', () => {
     }
     const empty = page.getByText(/Nenhum produto encontrado/i);
     if (await empty.isVisible().catch(() => false)) {
-      test.skip(true, 'sem dados seedados');
+      expect(false, '[E108] sem dados seedados').toBeTruthy();
     }
 
     // Total inicial (sem qualquer filtro de texto).
@@ -49,11 +49,11 @@ test.describe('@regression /estoque — filtros sem texto', () => {
 
     const empty = page.getByText(/Nenhum produto encontrado/i);
     if (await empty.isVisible().catch(() => false)) {
-      test.skip(true, 'sem dados seedados');
+      expect(false, '[E108] sem dados seedados').toBeTruthy();
     }
 
     const initialRows = await page.locator('tbody tr').count();
-    if (initialRows === 0) test.skip(true, 'tabela vazia por outra razão');
+    if (initialRows === 0) expect(false, '[E108] tabela vazia por outra razão').toBeTruthy();
 
     // Força um cenário de "0 resultados" com quantidade absurda.
     const qty = page.getByPlaceholder(/Preciso de X un/i);
@@ -79,7 +79,7 @@ test.describe('@regression /estoque — filtros sem texto', () => {
     await gotoAndSettle(page, '/estoque');
 
     const initialRows = await page.locator('tbody tr').count();
-    if (initialRows === 0) test.skip(true, 'sem dados seedados');
+    if (initialRows === 0) expect(false, '[E108] sem dados seedados').toBeTruthy();
 
     const qty = page.getByPlaceholder(/Preciso de X un/i);
     await qty.fill('99999999');
@@ -105,7 +105,7 @@ test.describe('@regression /estoque — filtros sem texto', () => {
     await gotoAndSettle(page, '/estoque');
 
     const initialRows = await page.locator('tbody tr').count();
-    if (initialRows === 0) test.skip(true, 'sem dados seedados');
+    if (initialRows === 0) expect(false, '[E108] sem dados seedados').toBeTruthy();
 
     // Abre o popover de filtros avançados.
     await page.getByRole('button', { name: /^Filtros/i }).first().click();
@@ -116,7 +116,7 @@ test.describe('@regression /estoque — filtros sem texto', () => {
     if (await firstCategory.isVisible().catch(() => false)) {
       await firstCategory.click();
     } else {
-      test.skip(true, 'sem categorias disponíveis no ambiente');
+      expect(false, '[E108] sem categorias disponíveis no ambiente').toBeTruthy();
     }
 
     // Seleciona o primeiro grupo de Cor.
@@ -160,7 +160,7 @@ test.describe('@regression /estoque — filtros sem texto', () => {
     await gotoAndSettle(page, '/estoque');
 
     const initialRows = await page.locator('tbody tr').count();
-    if (initialRows === 0) test.skip(true, 'sem dados seedados');
+    if (initialRows === 0) expect(false, '[E108] sem dados seedados').toBeTruthy();
 
     const search = page.getByPlaceholder(/Buscar no Estoque/i);
     const qty = page.getByPlaceholder(/Preciso de X un/i);
@@ -192,7 +192,7 @@ test.describe('@regression /estoque — filtros sem texto', () => {
     await gotoAndSettle(page, '/estoque');
 
     const initialRows = await page.locator('tbody tr').count();
-    if (initialRows === 0) test.skip(true, 'sem dados seedados');
+    if (initialRows === 0) expect(false, '[E108] sem dados seedados').toBeTruthy();
 
     // 1. Liga Estoque Futuro pelo atalho Shift+F — agora o toggle do toolbar
     //    também ativa minQtyIncludesFutureStock (seção "Estoque" do popover removida).

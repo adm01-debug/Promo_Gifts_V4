@@ -66,7 +66,7 @@ test.describe('Carrinhos · falha intermitente durante mutações @carrinhos', (
     await gotoAndSettle(page, '/carrinhos');
 
     const ids = await collectCartIds(page);
-    if (ids.length < 2) test.skip(true, 'precisa de 2+ carrinhos');
+    if (ids.length < 2) expect(false, '[E108] precisa de 2+ carrinhos').toBeTruthy();
     const [A, B] = ids;
     recordCarts(testInfo, { A, B });
 

@@ -74,7 +74,7 @@ test.describe("SPA rewrite — deep routes serve index.html", () => {
     });
 
     if (!assetHref) {
-      test.skip(true, "Sem /assets/* — dev server inline (esperado em vite dev).");
+      expect(false, "[E108] Sem /assets/* — dev server inline (esperado em vite dev).").toBeTruthy();
       return;
     }
 

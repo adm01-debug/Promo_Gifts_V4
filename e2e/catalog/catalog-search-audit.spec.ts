@@ -237,7 +237,7 @@ test.describe('Catálogo · Busca · acento-insensível (bug #2)', () => {
       const withAccent = await gridCount(page);
       await submitSearch(page, noAccent);
       const without = await gridCount(page);
-      if (withAccent === 0) test.skip(true, `ambiente sem dados para "${accented}"`);
+      if (withAccent === 0) expect(false, `[E108] ambiente sem dados para "${accented}"`).toBeTruthy();
       // Meta: paridade. Enquanto #2 (unaccent server-side) não entrar, o re-rank client mitiga.
       expect(without, `"${noAccent}" trouxe 0 enquanto "${accented}" trouxe ${withAccent} (bug #2 acento-sensível)`).toBeGreaterThan(0);
     });
@@ -250,7 +250,7 @@ test.describe('Catálogo · Busca · tolerância a typo (fuzzy)', () => {
       await submitSearch(page, typo);
       const titles = await gridTitles(page);
       const ok = titles.some((t) => normalize(t).includes(normalize(correct)));
-      if (titles.length === 0) test.skip(true, `sem dados para "${correct}"`);
+      if (titles.length === 0) expect(false, `[E108] sem dados para "${correct}"`).toBeTruthy();
       expect(ok, `typo "${typo}" não recuperou "${correct}" via fuzzy`).toBeTruthy();
     });
   }
@@ -322,7 +322,7 @@ test.describe('Catálogo · Dropdown vs Grade (bugs #4 e #6)', () => {
     const dd = await dropdownResultCount(page);
     await submitSearch(page, 'garrafa');
     const grid = await gridCount(page);
-    if (dd === null) test.skip(true, 'dropdown não expôs contagem neste ambiente');
+    if (dd === null) expect(false, '[E108] dropdown não expôs contagem neste ambiente').toBeTruthy();
     // Documenta o bug #6: dd é limitado (<=12: 6 produtos + 3 cat + 3 forn); a grade tende a ser maior.
     expect(dd!, 'contagem do dropdown deveria ser limitada (<=12)').toBeLessThanOrEqual(12);
     expect(grid, 'grade vazia para "garrafa"').toBeGreaterThan(0);
@@ -392,7 +392,7 @@ test.describe('Catálogo · Busca · relevância por termo (todo card visível c
     test(`relevância: cards de "${term}" casam o termo @search-regression-bug1`, async ({ page }) => {
       await submitSearch(page, term);
       const titles = await gridTitles(page);
-      if (titles.length === 0) test.skip(true, `sem dados para "${term}"`);
+      if (titles.length === 0) expect(false, `[E108] sem dados para "${term}"`).toBeTruthy();
       // tolerante a 1 outlier de ranking: exige que a maioria case
       const matching = titles.filter((t) => normalize(t).includes(normalize(term)) ||
         normalize(term).split(/\s+/).some((w) => w.length >= 3 && normalize(t).includes(w))).length;

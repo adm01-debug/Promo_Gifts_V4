@@ -117,7 +117,7 @@ test.describe("RBAC & Navigation Integrity", () => {
         // Deve redirecionar de volta para a rota original
         await expect(page).toHaveURL(new RegExp(targetPath), { timeout: 15000 });
       } else {
-        test.skip(true, "Credenciais ausentes para teste de Deep Linking");
+        expect(false, "[E108] Credenciais ausentes para teste de Deep Linking").toBeTruthy();
       }
     });
 

@@ -39,14 +39,14 @@ async function gotoOrSkip(page: Page) {
   await page.waitForLoadState('domcontentloaded');
   const url = page.url();
   if (/\/login/i.test(url)) {
-    test.skip(true, 'Rota protegida — necessário login admin para o E2E.');
+    expect(false, '[E108] Rota protegida — necessário login admin para o E2E.').toBeTruthy();
   }
   // Limpa qualquer estado anterior antes de cada teste.
   await page.evaluate((key) => localStorage.removeItem(key), STORAGE_KEY);
   await page.reload();
   await page.waitForLoadState('domcontentloaded');
   if (/\/login/i.test(page.url())) {
-    test.skip(true, 'Sessão admin não disponível.');
+    expect(false, '[E108] Sessão admin não disponível.').toBeTruthy();
   }
 }
 

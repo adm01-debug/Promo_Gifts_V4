@@ -85,7 +85,7 @@ for (const vp of VIEWPORTS) {
       await gotoAndSettle(page, '/carrinhos');
 
       const ids = await collectCartIds(page);
-      if (ids.length < 3) test.skip(true, 'precisa de 3+ carrinhos');
+      if (ids.length < 3) expect(false, '[E108] precisa de 3+ carrinhos').toBeTruthy();
       const [A, B, C] = ids;
 
       setDebugContext(testInfo, { cartA: A, cartB: B, cartC: C });

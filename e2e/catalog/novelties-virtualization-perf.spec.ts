@@ -31,7 +31,7 @@ test.describe('Novidades — virtualização & estabilidade', () => {
 
     const items = await page.locator('div[role="listitem"]').count();
     if (items === 0) {
-      test.skip(true, 'Sem novidades no dataset — virtualização não aplicável.');
+      expect(false, '[E108] Sem novidades no dataset — virtualização não aplicável.').toBeTruthy();
       return;
     }
 

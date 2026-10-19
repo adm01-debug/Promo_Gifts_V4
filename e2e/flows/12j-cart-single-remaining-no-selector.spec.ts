@@ -48,7 +48,7 @@ test.describe("Regressão: 1 carrinho restante após troca → sem seletor no ch
     // `cartB` é o alvo da troca — o TypeScript sabe que pode ser undefined
     // (count < 2 no helper), mas count=2 garante presença. Guard defensivo:
     if (!cartB) {
-      test.skip(true, "setupAuthedWithCarts não gerou cartB (config inesperada)");
+      expect(false, "[E108] setupAuthedWithCarts não gerou cartB (config inesperada)").toBeTruthy();
       return;
     }
 
