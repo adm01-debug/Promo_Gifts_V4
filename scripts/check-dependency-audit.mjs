@@ -21,6 +21,19 @@ const REVIEWED_INCOMPATIBLE_PPTXGENJS_FIXES = new Set(['1.1.5', '2.2.0', '4.0.0'
 const REVIEWED_PPTXGENJS_VULNERABLE_RANGES = new Set(['1.1.5-1 || >=1.1.6', '>=2.3.0', '>=4.0.1-beta.0']);
 const REVIEWED_IMAGE_SIZE_VULNERABLE_RANGES = new Set(['*', '<=2.0.2', '0.6.3 - 2.0.2']);
 
+// vitest test-runner ecosystem — dev-only testing tools, never in the production bundle.
+// vitest ^4.1.11 and @vitest/coverage-v8 ^4.1.11 are direct devDependencies.
+// @vitest/mocker is pulled transitively by vitest.
+// Moderate advisory published 2026-10 affects vitest in browser-mode APIs only — this project
+// runs vitest in node/jsdom mode for unit tests; advisory is not reachable from production.
+// No non-breaking fix exists at 4.x (semver-major upgrade required). Accepted same pattern as
+// ALLOWED_LHCI_PACKAGES. Revisit by RISK_REVIEW_DEADLINE. (E099 — 2026-10-21)
+const ALLOWED_VITEST_PACKAGES = new Set([
+  'vitest',              // direct devDependency (test runner)
+  '@vitest/coverage-v8', // direct devDependency (coverage reporter)
+  '@vitest/mocker',      // transitive devDependency (via vitest)
+]);
+
 // @lhci/cli transitive dependencies — dev-only CI tooling, never in the production bundle.
 // All of these are pulled exclusively by @lhci/cli (Lighthouse CI) and its own transitives
 // (puppeteer-core → @puppeteer/browsers → extract-zip/tar-fs, lighthouse → @sentry/node,
@@ -103,10 +116,20 @@ function hasOnlyExpectedChainAdvisories(vulnerability) {
 const ALL_KNOWN_ACCEPTED_PACKAGES = new Set([
   'image-size',
   'pptxgenjs',
+  ...ALLOWED_VITEST_PACKAGES,
   ...ALLOWED_LHCI_PACKAGES,
   ...ALLOWED_BRACES_CHAIN_DIRECT,
   ...ALLOWED_BRACES_CHAIN_TRANSITIVE,
 ]);
+
+function isAllowedVitestPackage(packageName, vulnerability) {
+  if (!ALLOWED_VITEST_PACKAGES.has(packageName)) return false;
+  if (packageName === 'vitest' || packageName === '@vitest/coverage-v8') {
+    return vulnerability.isDirect === true;
+  }
+  // @vitest/mocker and any other transitive vitest packages must be purely transitive.
+  return vulnerability.isDirect === false;
+}
 
 function isAllowedLhciPackage(packageName, vulnerability) {
   if (!ALLOWED_LHCI_PACKAGES.has(packageName)) return false;
@@ -207,6 +230,10 @@ export function evaluateAuditReport(report, now = new Date()) {
       continue;
     }
     if (packageName === 'pptxgenjs' && isAllowedPptxPropagation(vulnerability)) {
+      accepted.push(packageName);
+      continue;
+    }
+    if (isAllowedVitestPackage(packageName, vulnerability)) {
       accepted.push(packageName);
       continue;
     }
