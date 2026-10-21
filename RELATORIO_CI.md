@@ -42,6 +42,8 @@ SHA de referência: `c7c25848` (último commit em main antes da sessão)
 | 9 | `e2e-personalization.yml` | `39670397345` | `c7c25848` | 2026-10-21T20:27Z | Personalization journey falhou | P9 |
 | 10 | `deploy-gates.yml` (Gates 0.5/1/1.12) | `39670397324` | `c7c25848` | 2026-10-21T20:27Z | lint-0011, lint-0029, contract coverage, prod-health, vitest advisory, E89 | P10–P13, P15 |
 | 11 | `db-schema-drift-check.yml` | `39578751173` | `45545ae5` | 2026-10-21 | Schema drift: DDL fora de fluxo | P14 |
+| 12 | `edge-functions-drift-check.yml` | `39576553816` | `45545ae5` | 2026-10-21T09:23Z | Drift de edge functions deployadas vs. repo | P16 |
+| 13 | `workflow-lint.yml` | `39670397269` | `c7c25848` | 2026-10-21T20:27Z | actionlint errors em `python-package-conda.yml` (deletado em PR #2338 `cb2706ca`) | **Corrigido no PR** |
 
 **Nota P4:** `contract-tests.yml` roda no PR, não tem trigger `push: main`. A falha
 foi diagnosticada em run de PR (cb2706ca). O job `unit` passou; só o job `smoke` falhou
@@ -114,8 +116,9 @@ Todos documentados em `PENDENCIAS.md` com causa raiz e ação necessária.
 | P8 | `e2e-critical-flows.yml` | Catalog→Kit Flow real — requer engenharia |
 | P9 | `e2e-personalization.yml` | Personalization journey real — requer engenharia |
 | P14 | `db-schema-drift-check.yml` | DDL fora de fluxo → requer DBA criar migration espelho + repair |
+| P16 | `edge-functions-drift-check.yml` | Drift de edge functions → requer engenharia commitar código ou rever deploy |
 
-**Nota:** P1–P9 e P14 não são required checks no branch protection de `main`. O único
+**Nota:** P1–P9, P14 e P16 não são required checks no branch protection de `main`. O único
 required check é "Gate Final - Deploy Ready" (`deploy-gates.yml`). Workflows E2E e
 Release Please são independentes do gate de deploy.
 

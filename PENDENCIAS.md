@@ -1,6 +1,6 @@
 # Pendências de CI — Itens que requerem ação do PO/humano
 
-**Atualizado:** 2026-10-21 (v6 — P10–P13 confirmados em run 39687808882; P14 db-schema-drift-check; P15 Gate E89 cron spacing corrigido)
+**Atualizado:** 2026-10-21 (v7 — P10–P13 confirmados em run 39687808882; P14 db-schema-drift-check; P15 Gate E89 corrigido; P16 edge-functions-drift-check; RELATORIO_CI.md criado)
 **Sessão:** https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz
 
 ---
@@ -389,6 +389,38 @@ intencionais — investigar e reconciliar o mais breve possível.
 
 ---
 
+## P16 — edge-functions-drift-check: drift de edge functions ao vivo vs. repositório
+
+**Workflow:** `.github/workflows/edge-functions-drift-check.yml`
+**Run mais recente na main:** `39576553816` (sha `45545ae5`, 2026-10-21T09:23 UTC)
+**Resultado:** Falha (drift detectado entre edge functions deployadas em produção e as do repositório)
+
+**Causa:** Uma ou mais edge functions foram deployadas via MCP ou dashboard sem fazer commit
+do código correspondente no repositório (ou vice-versa: função removida do repo mas ainda
+activa em produção). O workflow compara o código do GitHub com o que está deployado no
+projeto `doufsxqlfjyuvxuezpln` e falha quando divergem.
+
+Casos confirmados anteriormente (REGRA #8, corolário deploy de edge function):
+- `kit-ai-builder` (2026-09-23): timeout de 20s implementado direto em produção, nunca commitado
+- `magazine-reader-state-read` (2026-09-24): fix de segurança deployado via MCP antes de revisão
+
+**Classificação:** Advisory (não gate bloqueante). O drift-check é informativo — não bloqueia
+merge, mas registra divergência.
+
+**O que o PO / Engenharia precisam fazer (REGRA #8, corolário deploy de edge function):**
+1. Identificar quais edge functions causaram o drift (ver log do run `39576553816`)
+2. Para cada função divergente:
+   - Se foi deployada via MCP/dashboard sem commit: commitar o código atual da função no repo
+     e abrir PR, ou reverter o deploy para a versão do repo
+   - Se foi removida do repo mas ainda ativa: ou re-adicionar ao repo, ou deletar da produção
+     via `workflow_dispatch` em `.github/workflows/deploy-edge-functions.yml`
+3. Após corrigir: forçar rerun do `edge-functions-drift-check.yml` para confirmar `success`
+
+**Impacto:** Não bloqueia deploy (advisory). Mas drift acumulado expõe código de produção
+que não passou por revisão de PR — risco de segurança real (caso `magazine-reader-state-read`).
+
+---
+
 ## Resumo de ações necessárias
 
 | # | Item | Prioridade | Tipo | Responsável |
@@ -408,6 +440,7 @@ intencionais — investigar e reconciliar o mais breve possível.
 | P13 | Gate 0.5 — vitest moderate advisory — ✅ CONFIRMADO run `39687808882` (22:38:50Z) | Baixa | CI Config (corrigido) | — |
 | P14 | db-schema-drift-check — drift ao vivo vs. ledger (advisory, não gate) | Baixa | DDL fora de fluxo | DBA / PO |
 | P15 | Gate E89 — 4 colisões de cron corrigidas em PR #2338 — aguarda confirmação | Baixa | CI Config (corrigido) | — |
+| P16 | edge-functions-drift-check — drift ao vivo vs. repo (advisory, não gate) | Média | Código fora de PR | Engenharia / PO |
 
 ### Nota sobre baseline local
 > **Restrição de ambiente (CCR):** O contêiner CCR não tem acesso ao registry npm privado
@@ -419,6 +452,8 @@ intencionais — investigar e reconciliar o mais breve possível.
 
 ---
 
-*Documento atualizado em 2026-10-21 (v6) — P10–P13 confirmados via run `39687808882` (commit `0d1efd27`, PR #2338);
+*Documento atualizado em 2026-10-21 (v7) — P10–P13 confirmados via run `39687808882` (commit `0d1efd27`, PR #2338);
 P14 db-schema-drift-check (advisory, requer reconciliação de DDL fora de fluxo);
-P15 Gate E89 — 4 colisões de cron corrigidas em 3 workflows (wraparound, capacity-growth, pgss-slo), aguarda novo Deploy Gates.*
+P15 Gate E89 — 4 colisões de cron corrigidas em 3 workflows (wraparound, capacity-growth, pgss-slo), aguarda Deploy Gates `39689280022`;
+P16 edge-functions-drift-check (advisory, drift de edge functions — requer engenharia/PO);
+RELATORIO_CI.md criado com inventário completo de 16 workflows failing em main (sha c7c25848).*
