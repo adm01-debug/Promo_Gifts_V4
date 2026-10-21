@@ -1,6 +1,6 @@
 # Pendências de CI — Itens que requerem ação do PO/humano
 
-**Atualizado:** 2026-10-21 (v3 — diagnóstico completo com erros exatos dos 15 workflows)
+**Atualizado:** 2026-10-21 (v4 — adicionados P10–P12: workflows corrigidos em PR #2338 aguardando Deploy Gates)
 **Sessão:** https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz
 
 ---
@@ -237,6 +237,77 @@ no componente de personalização ou nas Edge Functions.
 
 ---
 
+---
+
+## P10 — CI Security & Drift Checks: lint-0029 stale + SECURITY DEFINER sem documentação
+
+**Workflow:** CI Security & Drift Checks (job dentro de `.github/workflows/deploy-gates.yml`)
+**Run na main:** sha `c7c25848` (via Deploy Gates; job sem run ID independente)
+**Erro exato:**
+```
+.security/lint-0029-allowlist.json:
+  - 43 entradas stale (funções removidas do banco mas ainda na allowlist)
+  - 6 funções SECURITY DEFINER presentes no banco sem documentação:
+    admin_active_sessions(), admin_revoke_user_sessions(), fn_backfill_queue_reap_stuck(),
+    fn_detect_recurring_errors_last_hour(), log_access_denied(), record_dev_route_telemetry()
+Gate 1.12 — NO_BODY_EXEMPT incompleto: "magazine-reader-state-read" ausente
+```
+
+**Correção aplicada:** commit `cb2706ca` em PR #2338
+- `.security/lint-0029-allowlist.json`: removidas 43 entradas stale; adicionadas 6 SECURITY DEFINER com razão E099
+- `tests/contracts/webhook-schemas.ts`: `"magazine-reader-state-read"` adicionado ao set `NO_BODY_EXEMPT`
+
+**Confirmação pendente:** Deploy Gates run `39685677081` (commit `0706a3d9`, PR #2338)
+
+---
+
+## P11 — Static Health Checks: ERR_MODULE_NOT_FOUND (typescript) no Check 2
+
+**Workflow:** `.github/workflows/prod-health.yml`
+**Run na main:** sha `c7c25848` (workflow roda em `push: branches: [main]`)
+**Erro exato:**
+```
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'typescript' imported from
+  scripts/check-product-type-fields.mjs
+```
+
+**Causa:** O script `check-product-type-fields.mjs` importa o pacote `typescript` como
+dependência de desenvolvimento, mas `prod-health.yml` não executava `npm ci` antes do Check 2,
+portanto `node_modules/typescript` não estava instalado.
+
+**Correção aplicada:** commit `cb2706ca` em PR #2338
+- `.github/workflows/prod-health.yml`: adicionados steps `cache: 'npm'` no `setup-node` e
+  `npm ci` antes do Check 2 ("Product type fields")
+
+**Confirmação pendente:** Deploy Gates run `39685677081` (commit `0706a3d9`, PR #2338)
+
+---
+
+## P12 — Supabase Linter Gate: lint-0011 vazio (9 funções de extensão sem documentação)
+
+**Workflow:** Supabase Linter Gate (job dentro de `.github/workflows/deploy-gates.yml`)
+**Run na main:** sha `c7c25848` (via Deploy Gates; job sem run ID independente)
+**Erro exato:**
+```
+.security/lint-0011-allowlist.json: arquivo vazio (sem entradas)
+9 funções PostgreSQL de extensão pgstattuple disparam lint 0011
+(function_search_path_mutable) sem documentação na allowlist:
+  - pg_relpages(relname regclass), pg_relpages(relname text)
+  - pgstatginindex, pgstathashindex, pgstatindex (x2), pgstattuple (x2), pgstattuple_approx
+```
+
+**Causa:** Funções instaladas pelo Supabase como extensão do sistema (`pgstattuple`) não
+podem receber `SET search_path` sem recompilar a extensão; a allowlist estava vazia desde
+o snapshot inicial de 2026-07-15 (0 violações), mas o banco agora expõe essas funções.
+
+**Correção aplicada:** commit `cb2706ca` em PR #2338
+- `.security/lint-0011-allowlist.json`: adicionadas 9 funções com razão E099 documentando
+  que são extensões do sistema instaladas pelo Supabase (pgstattuple), não código de usuário
+
+**Confirmação pendente:** Deploy Gates run `39685677081` (commit `0706a3d9`, PR #2338)
+
+---
+
 ## Resumo de ações necessárias
 
 | # | Item | Prioridade | Tipo | Responsável |
@@ -250,6 +321,9 @@ no componente de personalização ou nas Edge Functions.
 | P7 | Rerunnar E2E Thumb QuickView; se persistir, checar auth/fixtures | Baixa | Infra / possível código | Engenharia |
 | P8 | Investigar Catalog→Kit Flow E2E — artefato 38MB disponível | Média | Bug de código/UI | Engenharia |
 | P9 | Investigar Personalization Flow E2E — artefato 341MB disponível | Média | Bug de código/UI | Engenharia |
+| P10 | CI Security & Drift Checks — lint-0029 + Gate 1.12 — **CORRIGIDO em PR #2338**, aguarda confirmação Deploy Gates | Baixa | CI Config (corrigido) | — |
+| P11 | Static Health Checks — ERR_MODULE_NOT_FOUND typescript — **CORRIGIDO em PR #2338**, aguarda confirmação Deploy Gates | Baixa | CI Config (corrigido) | — |
+| P12 | Supabase Linter Gate — lint-0011 vazio — **CORRIGIDO em PR #2338**, aguarda confirmação Deploy Gates | Baixa | CI Config (corrigido) | — |
 
 ### Nota sobre baseline local
 > **Restrição de ambiente (CCR):** O contêiner CCR não tem acesso ao registry npm privado
@@ -261,6 +335,7 @@ no componente de personalização ou nas Edge Functions.
 
 ---
 
-*Documento atualizado em 2026-10-21 (v3) — diagnósticos completos via análise direta dos logs
+*Documento atualizado em 2026-10-21 (v4) — diagnósticos completos via análise direta dos logs
 dos runs 39670397341, 39670397361, 39681462046, 39670397540, 39670397324, 39670397261,
-39670397401, 39670397345.*
+39670397401, 39670397345. P10–P12 adicionados: workflows corrigidos em commit cb2706ca (PR #2338),
+aguardando confirmação via Deploy Gates 39685677081.*
