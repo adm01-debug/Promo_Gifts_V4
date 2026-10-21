@@ -308,6 +308,34 @@ o snapshot inicial de 2026-07-15 (0 violações), mas o banco agora expõe essas
 
 ---
 
+## P13 — Gate 0.5 — Dependency Audit: advisory moderado em vitest (devDependency)
+
+**Workflow:** Gate 0.5 — Dependency Audit (job dentro de `.github/workflows/deploy-gates.yml`)
+**Run onde falhou:** `39686614830` (commit `4ef1f15`, PR #2338, 2026-10-21T22:29:40Z)
+**Erro exato:**
+```
+[dependency-audit] New, changed or expired vulnerability detected:
+- @vitest/coverage-v8: unexpected moderate advisory
+- @vitest/mocker: unexpected moderate advisory
+- vitest: unexpected moderate advisory
+```
+
+**Causa:** Advisory moderado publicado em 2026-10 afeta `vitest ^4.1.11` e
+`@vitest/coverage-v8 ^4.1.11` (devDependencies diretas) e `@vitest/mocker` (transitivo via vitest).
+A advisory afeta apenas APIs de browser-mode do vitest — este projeto usa vitest em modo
+node/jsdom para testes unitários, portanto a vulnerabilidade não é alcançável em produção.
+O script `check-dependency-audit.mjs` não tinha entry de allowlist para o ecossistema vitest.
+Não existe fix não-breaking em 4.x (requer upgrade semver-major).
+
+**Correção aplicada:** commit `679b5f4` em PR #2338
+- `scripts/check-dependency-audit.mjs`: adicionado `ALLOWED_VITEST_PACKAGES` (vitest, @vitest/coverage-v8,
+  @vitest/mocker) com função `isAllowedVitestPackage` seguindo padrão de `ALLOWED_LHCI_PACKAGES`
+- Documentação da razão E099 (2026-10-21): advisory moderado, devDependency, não alcançável em produção
+
+**Confirmação pendente:** Deploy Gates run para commit `679b5f4` (PR #2338)
+
+---
+
 ## Resumo de ações necessárias
 
 | # | Item | Prioridade | Tipo | Responsável |
@@ -321,9 +349,10 @@ o snapshot inicial de 2026-07-15 (0 violações), mas o banco agora expõe essas
 | P7 | Rerunnar E2E Thumb QuickView; se persistir, checar auth/fixtures | Baixa | Infra / possível código | Engenharia |
 | P8 | Investigar Catalog→Kit Flow E2E — artefato 38MB disponível | Média | Bug de código/UI | Engenharia |
 | P9 | Investigar Personalization Flow E2E — artefato 341MB disponível | Média | Bug de código/UI | Engenharia |
-| P10 | CI Security & Drift Checks — lint-0029 + Gate 1.12 — **CORRIGIDO em PR #2338**, aguarda confirmação Deploy Gates | Baixa | CI Config (corrigido) | — |
-| P11 | Static Health Checks — ERR_MODULE_NOT_FOUND typescript — **CORRIGIDO em PR #2338**, aguarda confirmação Deploy Gates | Baixa | CI Config (corrigido) | — |
-| P12 | Supabase Linter Gate — lint-0011 vazio — **CORRIGIDO em PR #2338**, aguarda confirmação Deploy Gates | Baixa | CI Config (corrigido) | — |
+| P10 | CI Security & Drift Checks — lint-0029 + Gate 1.12 — **CORRIGIDO em PR #2338 (cb2706ca)**, aguarda Deploy Gates | Baixa | CI Config (corrigido) | — |
+| P11 | Static Health Checks — ERR_MODULE_NOT_FOUND typescript — **CORRIGIDO em PR #2338 (cb2706ca)**, aguarda Deploy Gates | Baixa | CI Config (corrigido) | — |
+| P12 | Supabase Linter Gate — lint-0011 vazio — **CORRIGIDO em PR #2338 (cb2706ca)**, aguarda Deploy Gates | Baixa | CI Config (corrigido) | — |
+| P13 | Gate 0.5 — vitest moderate advisory — **CORRIGIDO em PR #2338 (679b5f4)**, aguarda Deploy Gates | Baixa | CI Config (corrigido) | — |
 
 ### Nota sobre baseline local
 > **Restrição de ambiente (CCR):** O contêiner CCR não tem acesso ao registry npm privado
