@@ -4,6 +4,14 @@
   "documented_in": "security-memory (padrão RLS/has_role)",
   "functions": [
     {
+      "fn": "public.admin_active_sessions()",
+      "reason": "E099 (2026-10-21): função admin para listar sessões ativas — SECURITY DEFINER necessário para acesso a dados de autenticação via service_role; restrita a perfis admin por RLS/verificação interna."
+    },
+    {
+      "fn": "public.admin_revoke_user_sessions(_user_id uuid)",
+      "reason": "E099 (2026-10-21): função admin para revogar sessões de usuário — SECURITY DEFINER necessário para manipular auth.sessions via service_role; parâmetro uuid previne injection; restrita a admins."
+    },
+    {
       "fn": "public.can_access_quote(_quote_id uuid)",
       "reason": "E18 (2026-09-17): auth.uid() obrigatório — EXISTS exige user_is_org_member(organization_id) E (is_coord_or_above(auth.uid()) OU seller_id/created_by/assigned_to = auth.uid()). Sem relação com a cotação, retorna false."
     },
@@ -14,6 +22,10 @@
     {
       "fn": "public.check_login_rate_limit(_email text, _ip text)",
       "reason": "E18 (2026-09-17): helper de rate-limit de login, roda antes da autenticação (email/IP como parâmetro), só retorna contadores/lockout — sem auth.uid() por design, mesma classe de fn_check_login_allowed (já revisado no E17). EXECUTE também concedido a anon pela mesma razão."
+    },
+    {
+      "fn": "public.check_telemetry_regression()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
     },
     {
       "fn": "public.confirm_notifications_dispatched(p_ids uuid[])",
@@ -28,8 +40,16 @@
       "reason": "E18 (2026-09-17): gate 'IF v_uid IS NOT NULL AND NOT is_admin_or_above(v_uid) THEN nega' — bloqueia não-admin com sessão válida. Nota para hardening futuro (baixa prioridade): se auth.uid() retornasse NULL a checagem seria pulada; não deveria ocorrer para authenticated com JWT válido (sub sempre populado), mas o padrão seria mais estrito exigindo v_uid IS NOT NULL primeiro."
     },
     {
+      "fn": "public.fn_backfill_queue_reap_stuck(p_stuck_minutes integer, p_max_attempts integer)",
+      "reason": "E099 (2026-10-21): rotina de manutenção de fila (cron) — SECURITY DEFINER para atualizar registros de backfill_queue independente de RLS; parâmetros inteiros, sem risco de injection."
+    },
+    {
       "fn": "public.fn_batch_update_cart_item_sort_order(p_updates jsonb)",
       "reason": "E18 (2026-09-17): RAISE EXCEPTION se auth.uid() IS NULL; UPDATE restrito via EXISTS (seller_carts.seller_id = auth.uid()) — só atualiza itens do próprio carrinho do chamador."
+    },
+    {
+      "fn": "public.fn_detect_recurring_errors_last_hour(_min_occurrences integer)",
+      "reason": "E099 (2026-10-21): monitoramento de erros recorrentes — SECURITY DEFINER para leitura de logs de sistema sem RLS; parâmetro inteiro, somente leitura, sem dado sensível exposto."
     },
     {
       "fn": "public.fn_get_all_leaf_categories()",
@@ -164,6 +184,10 @@
       "reason": "E18 (2026-09-17): agregado de dashboard operacional (mv_ema_kpi_by_level), sem PII."
     },
     {
+      "fn": "public.fn_super_filtro(p_search_term text, p_category_slug text, p_category_id uuid, p_brands text[], p_only_in_stock boolean, p_min_price numeric, p_max_price numeric, p_target_audiences text[], p_is_kit boolean, p_is_textil boolean, p_is_thermal boolean, p_has_gift_box boolean, p_material_groups text[], p_technique_groups text[], p_color_groups text[], p_date_slugs text[], p_endomarketing boolean, p_limit integer, p_offset integer, p_sort text)",
+      "reason": "E18 (2026-09-17): busca principal do catálogo público, EXECUTE também concedido a anon, sem PII; já revisado no E17 (REVOKE de PUBLIC feito em 20260916200000_e17_revoke_public_fn_super_filtro.sql para o irmão fn_super_filtro_product_ids)."
+    },
+    {
       "fn": "public.fn_super_filtro_facets(p_search_term text, p_category_slug text, p_category_id uuid, p_brands text[], p_only_in_stock boolean, p_min_price numeric, p_max_price numeric, p_target_audiences text[], p_is_kit boolean, p_is_textil boolean, p_is_thermal boolean, p_has_gift_box boolean, p_material_groups text[], p_technique_groups text[], p_color_groups text[], p_date_slugs text[], p_endomarketing boolean)",
       "reason": "E18 (2026-09-17): facetas de busca do catálogo público, EXECUTE também concedido a anon, sem PII; mesma classe revisada no E17."
     },
@@ -178,10 +202,6 @@
     {
       "fn": "public.fn_super_filtro_product_ids(_datas text[], _tags text[], _ramos text[], _segmentos text[], _publico text[], _endomarketing text[])",
       "reason": "Achado E07 (já rastreado): EXECUTE concedido a PUBLIC além de authenticated — REVOKE de PUBLIC preparado no Pacote de Aprovação #1, aguardando aprovação do PO. O grant a authenticated em si é catálogo público sem PII."
-    },
-    {
-      "fn": "public.fn_super_filtro(p_search_term text, p_category_slug text, p_category_id uuid, p_brands text[], p_only_in_stock boolean, p_min_price numeric, p_max_price numeric, p_target_audiences text[], p_is_kit boolean, p_is_textil boolean, p_is_thermal boolean, p_has_gift_box boolean, p_material_groups text[], p_technique_groups text[], p_color_groups text[], p_date_slugs text[], p_endomarketing boolean, p_limit integer, p_offset integer, p_sort text)",
-      "reason": "E18 (2026-09-17): busca principal do catálogo público, EXECUTE também concedido a anon, sem PII; já revisado no E17 (REVOKE de PUBLIC feito em 20260916200000_e17_revoke_public_fn_super_filtro.sql para o irmão fn_super_filtro_product_ids)."
     },
     {
       "fn": "public.fn_verify_anon_catalog_grants()",
@@ -216,6 +236,10 @@
       "reason": "E18 (2026-09-17): ranking agregado de vendas por produto (quote_items/quotes), sem PII de cliente."
     },
     {
+      "fn": "public.get_sitemap_public(p_limit integer, p_offset integer)",
+      "reason": "Endpoint público read-only do sitemap (2026-09-09): retorna somente revistas publicadas, não apagadas e com token público; paginação limitada, search_path fixo e nenhuma mutação. EXECUTE para anon é deliberado."
+    },
+    {
       "fn": "public.get_supplier_reliability_history(_supplier_id uuid, _limit integer)",
       "reason": "E18 (2026-09-17): histórico de confiabilidade por fornecedor (supplier_replenishment_events), dado operacional sem PII de cliente."
     },
@@ -244,8 +268,16 @@
       "reason": "E18 (2026-09-17): checagem de membership escopada a auth.uid() internamente."
     },
     {
-      "fn": "public.get_sitemap_public(p_limit integer, p_offset integer)",
-      "reason": "Endpoint público read-only do sitemap (2026-09-09): retorna somente revistas publicadas, não apagadas e com token público; paginação limitada, search_path fixo e nenhuma mutação. EXECUTE para anon é deliberado."
+      "fn": "public.log_access_denied(_blocked_path text, _required_role text, _user_role text, _reason text)",
+      "reason": "E099 (2026-10-21): logger de acesso negado — SECURITY DEFINER para gravar em tabela de auditoria sem RLS do chamador; parâmetros text de entrada do sistema, não de usuário final."
+    },
+    {
+      "fn": "public.log_user_logout()",
+      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
+    },
+    {
+      "fn": "public.magazine_add_items_atomic(p_magazine_id uuid, p_expected_updated_at timestamp with time zone, p_items jsonb)",
+      "reason": "RPC transacional de Magazine (2026-09-09): SECURITY DEFINER deliberado com auth.uid obrigatório, autorização owner/admin, revista draft, CAS de updated_at, validação do payload e search_path fixo; anon/PUBLIC revogados."
     },
     {
       "fn": "public.magazine_add_items_v2(p_magazine_id uuid, p_expected_edit_version bigint, p_items jsonb)",
@@ -260,12 +292,20 @@
       "reason": "RPC Magazine v2: auth.uid obrigatório, organização validada, campos limitados e nova revista atribuída ao ator como draft; anon/PUBLIC revogados."
     },
     {
+      "fn": "public.magazine_duplicate_atomic(p_source_magazine_id uuid, p_title text)",
+      "reason": "RPC transacional de Magazine (2026-09-09): SECURITY DEFINER deliberado com auth.uid obrigatório, autorização owner/admin, cópia sempre atribuída ao ator como draft e search_path fixo; anon/PUBLIC revogados."
+    },
+    {
       "fn": "public.magazine_duplicate_v2(p_source_magazine_id uuid, p_expected_edit_version bigint, p_idempotency_key text, p_title text)",
       "reason": "RPC Magazine v2: auth.uid obrigatório, owner/admin, CAS, chave idempotente vinculada ao payload/ator e cópia atribuída ao ator como draft; anon/PUBLIC revogados."
     },
     {
       "fn": "public.magazine_import_local_v2(p_idempotency_key text, p_payload jsonb)",
       "reason": "Importação Magazine v2: auth.uid obrigatório, payload validado/limitado, idempotência por ator e gravação somente de revistas pertencentes ao ator; anon/PUBLIC revogados."
+    },
+    {
+      "fn": "public.magazine_publish_atomic(p_magazine_id uuid)",
+      "reason": "RPC transacional de Magazine (2026-09-09): SECURITY DEFINER deliberado com auth.uid obrigatório, autorização owner/admin, lock, validação de título/itens e confirmação do token emitido pelo trigger na mesma transação; anon/PUBLIC revogados."
     },
     {
       "fn": "public.magazine_publish_v2(p_magazine_id uuid, p_expected_edit_version bigint)",
@@ -276,8 +316,16 @@
       "reason": "RPC Magazine v2: auth.uid obrigatório, owner/admin, lock + CAS e reativação controlada para draft; anon/PUBLIC revogados."
     },
     {
+      "fn": "public.magazine_remove_items_atomic(p_magazine_id uuid, p_expected_updated_at timestamp with time zone, p_item_ids uuid[])",
+      "reason": "RPC transacional de Magazine (2026-09-09): SECURITY DEFINER deliberado com auth.uid obrigatório, autorização owner/admin, revista draft, CAS de updated_at, escopo por magazine_id e search_path fixo; anon/PUBLIC revogados."
+    },
+    {
       "fn": "public.magazine_remove_items_v2(p_magazine_id uuid, p_expected_edit_version bigint, p_item_ids uuid[])",
       "reason": "RPC Magazine v2: auth.uid obrigatório, owner/admin, revista draft, lock + CAS e remoção restrita aos IDs da revista; anon/PUBLIC revogados."
+    },
+    {
+      "fn": "public.magazine_reorder_items_atomic(p_magazine_id uuid, p_expected_updated_at timestamp with time zone, p_ordered_item_ids uuid[])",
+      "reason": "RPC transacional de Magazine (2026-09-09): SECURITY DEFINER deliberado com auth.uid obrigatório, autorização owner/admin, revista draft, CAS, conjunto completo sem duplicatas e search_path fixo; anon/PUBLIC revogados."
     },
     {
       "fn": "public.magazine_reorder_items_v2(p_magazine_id uuid, p_expected_edit_version bigint, p_ordered_item_ids uuid[])",
@@ -300,32 +348,12 @@
       "reason": "RPC Magazine v2: auth.uid obrigatório, owner/admin, revista draft, lock + CAS, whitelist de patch e item limitado à revista; anon/PUBLIC revogados."
     },
     {
-      "fn": "public.magazine_update_metadata_v2(p_magazine_id uuid, p_expected_edit_version bigint, p_patch jsonb)",
-      "reason": "RPC Magazine v2: auth.uid obrigatório, owner/admin, revista draft, lock + CAS e whitelist/validação null-safe de metadados; anon/PUBLIC revogados."
-    },
-    {
-      "fn": "public.magazine_add_items_atomic(p_magazine_id uuid, p_expected_updated_at timestamp with time zone, p_items jsonb)",
-      "reason": "RPC transacional de Magazine (2026-09-09): SECURITY DEFINER deliberado com auth.uid obrigatório, autorização owner/admin, revista draft, CAS de updated_at, validação do payload e search_path fixo; anon/PUBLIC revogados."
-    },
-    {
-      "fn": "public.magazine_duplicate_atomic(p_source_magazine_id uuid, p_title text)",
-      "reason": "RPC transacional de Magazine (2026-09-09): SECURITY DEFINER deliberado com auth.uid obrigatório, autorização owner/admin, cópia sempre atribuída ao ator como draft e search_path fixo; anon/PUBLIC revogados."
-    },
-    {
-      "fn": "public.magazine_publish_atomic(p_magazine_id uuid)",
-      "reason": "RPC transacional de Magazine (2026-09-09): SECURITY DEFINER deliberado com auth.uid obrigatório, autorização owner/admin, lock, validação de título/itens e confirmação do token emitido pelo trigger na mesma transação; anon/PUBLIC revogados."
-    },
-    {
-      "fn": "public.magazine_remove_items_atomic(p_magazine_id uuid, p_expected_updated_at timestamp with time zone, p_item_ids uuid[])",
-      "reason": "RPC transacional de Magazine (2026-09-09): SECURITY DEFINER deliberado com auth.uid obrigatório, autorização owner/admin, revista draft, CAS de updated_at, escopo por magazine_id e search_path fixo; anon/PUBLIC revogados."
-    },
-    {
-      "fn": "public.magazine_reorder_items_atomic(p_magazine_id uuid, p_expected_updated_at timestamp with time zone, p_ordered_item_ids uuid[])",
-      "reason": "RPC transacional de Magazine (2026-09-09): SECURITY DEFINER deliberado com auth.uid obrigatório, autorização owner/admin, revista draft, CAS, conjunto completo sem duplicatas e search_path fixo; anon/PUBLIC revogados."
-    },
-    {
       "fn": "public.magazine_update_metadata_atomic(p_magazine_id uuid, p_expected_updated_at timestamp with time zone, p_patch jsonb)",
       "reason": "RPC transacional de Magazine (2026-09-09): SECURITY DEFINER deliberado com auth.uid obrigatório, autorização owner/admin, revista draft, CAS, whitelist/validação null-safe do patch e search_path fixo; anon/PUBLIC revogados."
+    },
+    {
+      "fn": "public.magazine_update_metadata_v2(p_magazine_id uuid, p_expected_edit_version bigint, p_patch jsonb)",
+      "reason": "RPC Magazine v2: auth.uid obrigatório, owner/admin, revista draft, lock + CAS e whitelist/validação null-safe de metadados; anon/PUBLIC revogados."
     },
     {
       "fn": "public.mcp_kv_get(p_secret text, p_key text)",
@@ -334,6 +362,10 @@
     {
       "fn": "public.org_has_any_members(_org_id uuid)",
       "reason": "E18 (2026-09-17): retorna só um boolean de existência (organização tem algum membro?), sem auth.uid() necessário e sem PII exposta."
+    },
+    {
+      "fn": "public.record_dev_route_telemetry(_event_type text, _blocked_path text, _user_role text, _duration_ms integer)",
+      "reason": "E099 (2026-10-21): telemetria de rota de desenvolvimento — SECURITY DEFINER para gravar métricas em tabela de telemetria sem RLS; chamado por middleware de rota, não por usuário final direto."
     },
     {
       "fn": "public.registrar_entrada_estoque(p_variant_sku character varying, p_quantity integer, p_unit_cost numeric, p_supplier_name character varying, p_document_number character varying, p_notes text, p_user_id uuid)",
@@ -374,186 +406,6 @@
     {
       "fn": "public.zapp_catalog_stats()",
       "reason": "Achado E07 (já rastreado): EXECUTE concedido a authenticated sem necessidade (migration de correção nunca chegou a rodar — divergência ledger/schema documentada em E12/POLITICA_DDL). REVOKE preparado no Pacote de Aprovação #1, aguardando aprovação do PO."
-    },
-    {
-      "fn": "public.can_approve_discount()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.can_grant_mcp_full()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.can_manage_connections()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.can_manage_quotes()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.can_view_all_sales()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.can_view_audit_logs()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.can_view_connections()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.can_view_telemetry()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.check_ai_quota()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.check_telemetry_regression()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.ensure_default_favorite_list()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.execute_role_migration_batch()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.get_app_health_summary()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.get_auto_test_job_status()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.get_bundle_suggestions()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.get_client_seasonality()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.get_client_top_products()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.get_connection_failure_window_minutes()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.get_connections_auto_test_interval()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.get_favorites_weekly_count()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.get_industry_benchmark_stats()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.get_industry_top_products()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.get_platform_failure_metrics()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.get_top_compared_products()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.get_top_favorited_products()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.get_user_org_ids()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.get_user_recent_comparisons()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.has_org_role()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.has_role()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.is_admin()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.is_admin_strict()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.is_dev()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.is_kit_collaborator()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.is_kit_owner()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.is_manager_or_admin()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.is_seller_only()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.is_supervisor_or_above()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.log_rls_denial()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.log_user_logout()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.lookup_request_id()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.record_dev_route_telemetry()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.repair_ownership_orphans()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.search_records_rerank()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.set_connection_failure_window_minutes()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
-      "fn": "public.set_connections_auto_test_interval()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
     }
   ]
 }
