@@ -396,7 +396,9 @@ jobs:
               fail=1
             fi
           done
-          literal=$(grep -rl "'Access-Control-Allow-Origin': '\*'" supabase/functions/ || true)
+          # _shared/ é o helper aprovado — excluir da busca de literal wildcard (E95)
+          literal=$(grep -rl "'Access-Control-Allow-Origin': '\*'" supabase/functions/ \
+                     --exclude-dir=_shared || true)
           if [ -n "$literal" ]; then
             echo "FAIL: literal 'Access-Control-Allow-Origin: *' em:"
             echo "$literal"
