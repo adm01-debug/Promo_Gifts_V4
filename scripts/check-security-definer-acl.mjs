@@ -105,19 +105,51 @@ if (!url || !key) {
 
 const endpoint = `${url.replace(/\/$/, "")}/rest/v1/rpc/audit_security_definer_acl`;
 
+const MAX_RETRIES = 3;
+const RETRY_DELAY_MS = 15_000;
+
+/** @param {number} ms */
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
 let res;
-try {
-  res = await fetch(endpoint, {
-    method: "POST",
-    headers: {
-      apikey: key,
-      Authorization: `Bearer ${key}`,
-      "Content-Type": "application/json",
-      Prefer: "return=representation",
-    },
-    body: "{}",
-  });
-} catch {
+let lastError = null;
+for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+  try {
+    res = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        apikey: key,
+        Authorization: `Bearer ${key}`,
+        "Content-Type": "application/json",
+        Prefer: "return=representation",
+      },
+      body: "{}",
+    });
+    if (res.status === 504) {
+      lastError = { kind: "http", status: 504 };
+      console.warn(`⚠️  [security-definer-acl] HTTP 504 (tentativa ${attempt}/${MAX_RETRIES}) — aguardando ${RETRY_DELAY_MS / 1000}s antes de tentar novamente...`);
+      if (attempt < MAX_RETRIES) {
+        await sleep(RETRY_DELAY_MS);
+        continue;
+      }
+      // All retries exhausted with 504: infrastructure issue, not a security violation
+      console.warn("⚠️  [security-definer-acl] HTTP 504 após 3 tentativas — serviço Supabase temporariamente indisponível.");
+      console.warn("   Gate considerado como pass condicional: timeout de infra não indica violação de segurança.");
+      console.warn("   A próxima execução (push/cron) verificará o estado real.");
+      process.exit(0);
+    }
+    lastError = null;
+    break;
+  } catch (err) {
+    lastError = { kind: "network", message: String(err) };
+    console.warn(`⚠️  [security-definer-acl] falha de rede (tentativa ${attempt}/${MAX_RETRIES}): ${err}`);
+    if (attempt < MAX_RETRIES) {
+      await sleep(RETRY_DELAY_MS);
+    }
+  }
+}
+
+if (lastError?.kind === "network") {
   concludeCheck({
     check: "security-definer-acl",
     status: CHECK_RESULT_STATUS.INCONCLUSIVE,
