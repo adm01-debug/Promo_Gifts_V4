@@ -9,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { sanitizeError } from '@/lib/security/sanitize-error';
+import { createClientLogger } from '@/lib/telemetry/structuredLogger';
 import { CartVersionConflictError } from '@/lib/carts/cart-version-conflict';
 import { isBadJwtError, maybeRecoverFromError } from '@/lib/auth/session-recovery';
 import { SELLER_CART_TOASTS } from './sellerCartToasts';
@@ -59,6 +60,8 @@ export type {
   CreateCartInput,
   CartStatus,
 } from './useSellerCarts.helpers';
+
+const log = createClientLogger('carts.useSellerCarts');
 
 // ============================================
 // HOOK
@@ -113,6 +116,7 @@ export function useSellerCarts() {
   const createCart = useMutation({
     mutationFn: async (input: CreateCartInput) => {
       if (!userId) throw new Error('Não autenticado');
+      log.info('cart_create_start', { company_id: input.company_id });
 
       const { data, error } = await supabase
         .from('seller_carts')
