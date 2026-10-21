@@ -442,18 +442,45 @@ que não passou por revisão de PR — risco de segurança real (caso `magazine-
 | P15 | Gate E89 — 4 colisões de cron corrigidas em PR #2338 — aguarda confirmação | Baixa | CI Config (corrigido) | — |
 | P16 | edge-functions-drift-check — drift ao vivo vs. repo (advisory, não gate) | Média | Código fora de PR | Engenharia / PO |
 
-### Nota sobre baseline local
-> **Restrição de ambiente (CCR):** O contêiner CCR não tem acesso ao registry npm privado
-> do Lovable (`europe-west1-npm.pkg.dev`). O pacote `pngjs-7.0.0.tgz` retorna 403 Forbidden,
-> impedindo `npm ci` completo. Por isso, `vitest`, `vite build` e lint completo (ESLint com
-> dependências) **não puderam ser executados localmente**. As verificações locais realizáveis
-> (TypeScript sem emitir, SSOT, scripts de validação) estão detalhadas em `RELATORIO_CI.md`.
-> Esta limitação é de infraestrutura do contêiner CCR, não das correções aplicadas.
+---
+
+## P17 — Baseline local impossível: registry npm privado retorna 403
+
+**Tipo:** Restrição de ambiente (contêiner CCR)
+**Classificação:** Informativo — não é workflow failure, é limitação de infraestrutura do contêiner
+
+**Causa:** O contêiner CCR não tem acesso ao registry npm privado do Lovable
+(`europe-west1-npm.pkg.dev`). O pacote `pngjs-7.0.0.tgz` retorna `403 Forbidden`,
+impedindo `npm ci` completo.
+
+**Impacto:** As seguintes ferramentas **não puderam ser executadas localmente** nesta sessão:
+- `vitest` (testes unitários)
+- `vite build` (build completo)
+- `eslint` com dependências (lint completo)
+
+**Verificações locais realizadas (independentes de `npm ci`):**
+- `node scripts/validate-supabase-config.mjs` → Gate 0 OK ✅ (SSOT `doufsxqlfjyuvxuezpln`)
+- Inspeção direta de YAML e scripts via `Read` + `Grep` ✅
+- Verificação de conteúdo de arquivos modificados (`.security/`, `scripts/check-dependency-audit.mjs`, etc.) ✅
+
+**Workaround adotado:** todas as validações de build/lint/testes são feitas via Deploy Gates
+(PR CI — GitHub Actions), não localmente. Os runs são referenciados em `RELATORIO_CI.md`.
+
+**O que o PO / infra precisam fazer** (opcional — não bloqueia CI):
+- Configurar o registry npm privado do Lovable no contêiner CCR (secret `NPM_TOKEN` ou `.npmrc`)
+- Isso permitiria validação local mais rápida em sessões futuras
+
+**Impacto:** Não bloqueia deploy. Todas as validações necessárias rodam no CI (GitHub Actions).
+O único efeito é que o baseline local descrito no processo não pôde ser gerado — as
+verificações equivalentes foram feitas via CI.
 
 ---
 
-*Documento atualizado em 2026-10-21 (v7) — P10–P13 confirmados via run `39687808882` (commit `0d1efd27`, PR #2338);
+---
+
+*Documento atualizado em 2026-10-21 (v8) — P17 adicionado (baseline local impossível — registry npm privado 403);
+P10–P13 confirmados via run `39687808882` (commit `0d1efd27`, PR #2338);
 P14 db-schema-drift-check (advisory, requer reconciliação de DDL fora de fluxo);
-P15 Gate E89 — 4 colisões de cron corrigidas em 3 workflows (wraparound, capacity-growth, pgss-slo), aguarda Deploy Gates `39689280022`;
+P15 Gate E89 — 4 colisões de cron corrigidas em 3 workflows (wraparound, capacity-growth, pgss-slo) — ✅ CONFIRMADO run `39689787809`;
 P16 edge-functions-drift-check (advisory, drift de edge functions — requer engenharia/PO);
 RELATORIO_CI.md criado com inventário completo de 16 workflows failing em main (sha c7c25848).*
