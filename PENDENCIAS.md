@@ -1,6 +1,6 @@
 # Pendências de CI — Itens que requerem ação do PO/humano
 
-**Atualizado:** 2026-10-21  
+**Atualizado:** 2026-10-21 (v2 — diagnóstico confirmado via logs reais)
 **Sessão:** https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz
 
 ---
@@ -37,67 +37,114 @@ o deploy** (não é required check no branch protection de `main`).
 
 ---
 
-## P2 — E2E failures: possível falha real em `Carts Undo RPC Atomic`
+## P2 — E2E Carts Undo RPC Atomic: falha REAL de código confirmada
 
-**Workflow:** `.github/workflows/e2e-undo-rpc.yml` (ou equivalente)  
-**Status na main:** ❌ FAILURE (último run: `39670397341`)  
-**Causa provável:** Cancelamento de infra do runner ou falha real no teste de atomicidade do RPC de desfazer carrinho.
+**Workflow:** `.github/workflows/e2e-carts-undo-rpc-atomic.yml`  
+**Run na main:** `39670397341` (2026-10-21T20:27 UTC)  
+**Resultado:** 2 failed, 1 passed (duração total: 4.7 minutos)
+
+**Erro exato (extraído dos logs do run):**
+```
+Error: locator.click: Test timeout of 120000ms exceeded.
+Call log:
+  - waiting for getByRole('button', { name: /excluir/i }).first()
+
+  e2e/flows/13b-carts-undo-rpc-atomic.spec.ts:73:66:
+  > 73 |     await page.getByRole("button", { name: /excluir/i }).first().click();
+```
+
+**Testes que falharam:**
+1. `[chromium-authed] › e2e/flows/13b-carts-undo-rpc-atomic.spec.ts:85:3`  
+   `Carrinhos: Desfazer via RPC atômica › sucesso — Desfazer chama restore_seller_cart e confirma 'Carrinho restaurado.'`
+2. `[chromium-authed] › e2e/flows/13b-carts-undo-rpc-atomic.spec.ts:116:3`  
+   `Carrinhos: Desfazer via RPC atômica › falha RLS — RPC 403 (42501): toast de erro com descrição sanitizada, sem falso positivo`
+
+**Causa raiz provável:** O botão `getByRole('button', { name: /excluir/i })` não aparece
+dentro do timeout de 120s. Possíveis causas:
+- Mudança no Lovable que alterou o rótulo do botão de exclusão no carrinho
+- O componente de carrinho não renderiza o botão de exclusão na UI atual
+- Problema de autenticação que impede o carregamento da página do carrinho
 
 **O que investigar:**
+1. Ver relatório Playwright: https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397341/artifacts/12380390980
+2. Verificar se o botão de exclusão mudou de `<button>` para `<MenuItem>` (a spec já tem branch em `excluirPrimeiraLinha()` na linha 71-73)
+3. Confirmar que `restore_seller_cart` RPC existe no banco (Gate 5.5 protege isso)
+4. Screenshot disponível: `test-results/flows-13b-carts-undo-rpc-a-d38e5-.../test-failed-1.png`
 
-1. Ver os logs completos do run `39670397341`:
-   - https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397341
+**⚠️ NOTA:** Esta é uma falha de código real, **não de infra**. Os testes rodaram por 4.7 minutos
+antes de falhar. Requer investigação de engenharia.
 
-2. Se for falha de infra (runner shutdown, timeout): rerunnar o workflow
-
-3. Se for falha de código: investigar o RPC `restore_seller_cart` (Gate 5.5 protege sua existência)
-   e o teste de atomicidade em `tests/e2e/carts-undo-rpc-atomic.spec.ts` (ou similar)
-
-**Impacto:** O E2E pode ser required check. Se for, bloqueia merge de PRs futuros até ser corrigido.
+**Impacto:** O E2E deste workflow **pode ser required check**. Verificar se é bloqueante no
+branch protection de `main`.
 
 ---
 
-## P3 — E2E failures gerais (Cart Invariants, Playwright, Swatch QuickView, Thumb QuickView)
+## P3 — E2E Cart Invariants: falha real confirmada
 
-**Workflows afetados (últimos runs na main):**
-- Cart Invariants Smoke (Chrome + Firefox): run `39670397361`
-- E2E (Playwright): run `39670397540`
-- E2E • Swatch QuickView (Lista + Tabela): run `39670397324`
-- E2E • Thumb QuickView (paridade + a11y): run `39670397287` (nota: mesmo número que Python Package — pode ser coincidência de listagem)
+**Workflow:** `.github/workflows/cart-invariants-smoke.yml`  
+**Run na main:** `39670397361` (2026-10-21)  
+**Resultado:** Ao menos um shard falhou (exit code 1 no job summary)
 
-**Causa provável:** Cancelamento de infra do runner GitHub Actions — não são falhas de código.
-Os runners foram interrompidos antes de completar os testes.
+**Erro exato (job `cart-invariants-summary`):**
+```
+❌ Ao menos um shard/browser do smoke de invariants falhou.
+```
+
+**Confirmação:** Os shards rodaram e geraram artefatos de falha (ex.: `cart-invariants-failure-chromium-shard1.zip`, 15MB com 18 arquivos de screenshots/videos). Não é cancelamento de infra.
+
+**Shards afetados (4 shards de 2 browsers × 2 shards cada):**
+- `cart-invariants (chromium-authed · shard 1_2)`
+- `cart-invariants (chromium-authed · shard 2_2)` (112KB de log)
+- `cart-invariants (firefox-authed · shard 1_2)` (139KB de log)
+- `cart-invariants (firefox-authed · shard 2_2)` (133KB de log)
 
 **O que fazer:**
-1. Rerunnar os workflows individualmente pelo GitHub Actions
-2. Se persistirem: verificar se há mudanças recentes no Lovable que possam ter quebrado componentes de UI
-3. Monitorar via `.github/workflows/uptime-monitor.yml` (já em sucesso)
+1. Ver os artefatos de falha: https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397361/artifacts/12379932039
+2. Investigar quais invariants falharam nos screenshots
+3. Se for a mesma causa que P2 (botão de exclusão ausente), corrigir em conjunto
 
-**Impacto:** Dependendo de quais são required checks, podem bloquear merge de PRs.
+**Outros E2E na main (Playwright principal, Swatch QuickView, Thumb QuickView):**
+- Runs `39670397540`, `39670397324`, `39670397287`
+- Não confirmados via log detalhado — podem ser infra ou falhas reais relacionadas à mesma causa de P2/P3
+- **Ação:** Rerunnar individualmente; se persistirem, investigar com os logs de shard
+
+**Impacto:** Dependendo de quais são required checks, podem bloquear merge de PRs futuros.
 
 ---
 
-## P4 — Contract Tests Smoke: PGRST205 no stack local Supabase do CI
+## P4 — Contract Tests Smoke: `webhook-inbound` retorna 503
 
 **Workflow:** `.github/workflows/contract-tests.yml` (job: `smoke`)  
-**Status:** ❌ FAILURE (informativo — não é required check)  
-**Erro:** `PGRST205: Could not find the table 'public.products' in the schema cache`
+**Run no PR #2338:** `39681462046` (commit `cb2706ca`, 2026-10-21T21:50 UTC)  
+**Resultado:** 3 falhas de 133 testes (130 passaram)
 
-**Causa:** PostgREST no stack Supabase local do CI não carrega o schema cache da tabela
-`products` dentro do tempo disponível após o fixture ser instalado. Problema de timing
-ou fixture incompleto.
+**Erro exato (extraído dos logs do step "Run contract smoke tests"):**
+```
+📦 webhook-inbound
+  - unknown slug → 404: ❌ FAIL — status not in 404|400, got 503
+  - empty body → 400 missing_body: ❌ FAIL — status not in 400|404, got 503
+  - v2 valid envelope (will fail at HMAC, but contract passes): ❌ FAIL — status not in 200|401|404, got 503
+
+==================================================
+Total: 133  passed: 130  failed: 3
+```
+
+**Causa:** O edge function `webhook-inbound` retorna 503 no stack Supabase local do CI
+(supabase functions serve) em vez dos códigos esperados (404/400/200). O 503 indica
+que a função não consegue inicializar ou que o PostgREST não carregou o schema cache
+da tabela de dependência (ver diagnóstico `Dump diagnostics on failure`, step 10, 510KB).
 
 **O que investigar:**
+1. Verificar se `webhook-inbound` acessa a tabela `products` via PostgREST — se sim,
+   o PGRST205 no schema cache gera o 503
+2. Verificar step "Install contract-only database fixture" — o fixture SQL inclui `products`?
+3. Alternativa: adicionar sleep/retry após `supabase start` antes de servir edge functions
 
-1. Verificar o step "Install contract-only database fixture" no workflow — o fixture SQL inclui a tabela `products`?
+**Relação com as correções do PR #2338:** Nenhuma. As alterações não tocam o schema nem
+o edge function `webhook-inbound`. O job `unit` (Zod schemas) **passou** com sucesso.
+O workflow de contrato é **informativo** (não é required check no branch protection).
 
-2. Se o fixture não inclui `products`: adicionar a migration/seed necessária em
-   `supabase/sql-legacy/` ou criar um fixture específico em `tests/contracts/fixtures/`
-
-3. Alternativa: adicionar um sleep/retry após `supabase start` antes de servir edge functions,
-   para dar tempo ao PostgREST de recarregar o schema cache
-
-**Impacto:** Somente informativo — o `unit` job do Contract Tests passou. Não bloqueia deploy.
+**Impacto:** Somente informativo — não bloqueia deploy. O `unit` job passou.
 
 ---
 
@@ -106,10 +153,10 @@ ou fixture incompleto.
 | # | Item | Prioridade | Tipo | Responsável |
 |---|---|---|---|---|
 | P1 | Criar PAT com `releases:write` e configurar secret | Alta | Config de repositório | PO / admin do repo |
-| P2 | Investigar/rerunnar E2E Carts Undo RPC Atomic | Média | Potencial bug de código | Engenharia |
-| P3 | Rerunnar E2E failures (Cart Invariants, Playwright, Swatch, Thumb) | Baixa | Provavelmente infra | PO / automático |
-| P4 | Corrigir fixture do Contract Tests Smoke | Baixa | Infra de testes | Engenharia |
+| P2 | Corrigir falha real no E2E Carts Undo RPC — botão de exclusão ausente (timeout 120s) | Alta | Bug de código/UI | Engenharia |
+| P3 | Investigar Cart Invariants — artefatos disponíveis, relacionado a P2 | Média | Bug de código/UI | Engenharia |
+| P4 | Corrigir `webhook-inbound` 503 no CI local (fixture ou timing) | Baixa | Infra de testes | Engenharia |
 
 ---
 
-*Documento criado em 2026-10-21 — atualizar quando itens forem resolvidos.*
+*Documento atualizado em 2026-10-21 (v2) — diagnósticos confirmados via análise dos logs reais dos runs.*
