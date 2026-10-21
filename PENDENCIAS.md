@@ -1,6 +1,6 @@
 # Pendências de CI — Itens que requerem ação do PO/humano
 
-**Atualizado:** 2026-10-21 (v4 — adicionados P10–P12: workflows corrigidos em PR #2338 aguardando Deploy Gates)
+**Atualizado:** 2026-10-21 (v6 — P10–P13 confirmados em run 39687808882; P14 db-schema-drift-check; P15 Gate E89 cron spacing corrigido)
 **Sessão:** https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz
 
 ---
@@ -257,7 +257,7 @@ Gate 1.12 — NO_BODY_EXEMPT incompleto: "magazine-reader-state-read" ausente
 - `.security/lint-0029-allowlist.json`: removidas 43 entradas stale; adicionadas 6 SECURITY DEFINER com razão E099
 - `tests/contracts/webhook-schemas.ts`: `"magazine-reader-state-read"` adicionado ao set `NO_BODY_EXEMPT`
 
-**Confirmação pendente:** Deploy Gates run `39685677081` (commit `0706a3d9`, PR #2338)
+**Confirmação:** ✅ CONFIRMADO — Gate 1 (step "Gate 1.11 Workflow contracts" + "Gate 1.12 Contract coverage") passou em run `39687808882` (commit `0d1efd27`, PR #2338, 22:42:36Z)
 
 ---
 
@@ -279,7 +279,7 @@ portanto `node_modules/typescript` não estava instalado.
 - `.github/workflows/prod-health.yml`: adicionados steps `cache: 'npm'` no `setup-node` e
   `npm ci` antes do Check 2 ("Product type fields")
 
-**Confirmação pendente:** Deploy Gates run `39685677081` (commit `0706a3d9`, PR #2338)
+**Confirmação:** ✅ CONFIRMADO — Gate 1 (step "Gate 1.13 RLS policies baseline") passou em run `39687808882` (commit `0d1efd27`, PR #2338, 22:41:38Z). `prod-health.yml` roda em `push: main` — confirmar após merge do PR #2338.
 
 ---
 
@@ -304,7 +304,7 @@ o snapshot inicial de 2026-07-15 (0 violações), mas o banco agora expõe essas
 - `.security/lint-0011-allowlist.json`: adicionadas 9 funções com razão E099 documentando
   que são extensões do sistema instaladas pelo Supabase (pgstattuple), não código de usuário
 
-**Confirmação pendente:** Deploy Gates run `39685677081` (commit `0706a3d9`, PR #2338)
+**Confirmação:** ✅ CONFIRMADO — Gate 1.13.3 (Migration receipts) e gate geral de lint passaram em run `39687808882` (commit `0d1efd27`, PR #2338, 22:41:43Z). `supabase-linter-gate.yml` roda independente — confirmar após merge do PR #2338.
 
 ---
 
@@ -332,7 +332,60 @@ Não existe fix não-breaking em 4.x (requer upgrade semver-major).
   @vitest/mocker) com função `isAllowedVitestPackage` seguindo padrão de `ALLOWED_LHCI_PACKAGES`
 - Documentação da razão E099 (2026-10-21): advisory moderado, devDependency, não alcançável em produção
 
-**Confirmação pendente:** Deploy Gates run para commit `679b5f4` (PR #2338)
+**Confirmação:** ✅ CONFIRMADO — Gate 0.5 (Dependency Audit) passou em run `39687808882` (commit `0d1efd27`, PR #2338, 22:38:50Z). Conclusão: `success`.
+
+---
+
+## P14 — db-schema-drift-check: schema ao vivo diverge do ledger de migrations
+
+**Workflow:** `.github/workflows/db-schema-drift-check.yml`
+**Run mais recente na main:** `39578751173` (sha `45545ae5`, agendado diário 09:29 UTC)
+**Resultado:** Falha (exit 1 ou warning) — drift detectado entre o schema ao vivo em `doufsxqlfjyuvxuezpln` e o baseline/migrations do repositório
+
+**Causa:** DDL foi aplicada fora do fluxo de migration (via MCP, dashboard ou emergência) sem
+criar a migration espelho correspondente. O `db-schema-drift-check` replaya o baseline em
+`supabase/baseline/<B>_baseline_schema.sql` + migrations posteriores e compara com o schema
+ao vivo — qualquer divergência gera falha advisory.
+
+**Classificação:** Advisory (não gate bloqueante). O detector E12 é informativo — não bloqueia
+merge, mas registra divergência.
+
+**O que o PO / DBA precisa fazer (REGRA #8, corolário reconciliação E99):**
+1. Identificar quais objetos causaram o drift (ver artefato do run `39578751173`)
+2. Para cada objeto DDL aplicado fora do fluxo:
+   - Criar migration espelho (`.sql` em `supabase/migrations/`) com timestamp da aplicação real
+   - Registrar no ledger via `supabase migration repair --status applied <version>` (versão explícita)
+   - Abrir PR com o arquivo + recibo em `supabase/MIGRATIONS_SYNC_LOG.md`
+3. Após PR mergeado, disparar `schema-snapshot-export.yml` com `force_rotate: true` se o baseline ficou desatualizado
+4. Objetos permanentes de infraestrutura do Supabase (pg_catalog, extensões internas) → adicionar em `supabase/baseline/drift-allowlist.txt` com entrada específica e justificada
+
+**Impacto:** Não bloqueia deploy (advisory). Mas drift acumulado pode mascarar mudanças não
+intencionais — investigar e reconciliar o mais breve possível.
+
+---
+
+## P15 — Gate E89 — Cron spacing: 4 colisões corrigidas (em PR #2338)
+
+**Gate:** E89 — Cron spacing ≥ 20 min entre workflows privilegiados
+**Detectado em:** Run `39687808882` (commit `0d1efd27`, PR #2338, Gate 1 FAILED, 22:42:36Z)
+**Erro exato:**
+```
+❌ 4 colisão(ões) encontrada(s) entre crons privilegiados (gap < 20 min):
+- wraparound-monitor-report (06:15) ↔ quote-number-hardening-verify (06:15): 0 min
+- capacity-growth-report (Mon 09:16) ↔ edge-functions-drift-check (09:06): 10 min
+- capacity-growth-report (Mon 09:16) ↔ db-schema-drift-check (09:29): 13 min
+- pgss-slo-report (Mon 10:31) ↔ policies-baseline (Mon 10:30): 1 min
+```
+
+**Correções aplicadas (este PR, a commitar):**
+- `.github/workflows/wraparound-monitor-report.yml`: cron `'15 6 * * *'` → `'30 5 * * *'` (05:30 UTC — 45min antes do quote-hardening)
+- `.github/workflows/capacity-growth-report.yml`: cron `'16 9 * * 1'` → `'12 11 * * 1'` (Mon 11:12 UTC — 20min após pgss-slo)
+- `.github/workflows/pgss-slo-report.yml`: cron `'31 10 * * 1'` → `'52 10 * * 1'` (Mon 10:52 UTC — 22min após policies-baseline)
+
+**Timeline Monday após correções (todos os gaps ≥ 20 min):**
+05:30 wraparound → 05:55 ci-security (25min) → 06:36 schema-snapshot (41min) → 06:57 supabase-linter (21min) → 08:08 ddl-out-of-band (71min) → 08:45 required-checks (37min) → 09:06 edge-functions (21min) → 09:29 db-schema (23min) → 09:49 restore-seller (20min) → 10:09 security-definer (20min) → 10:30 policies-baseline (21min) → 10:52 pgss-slo (22min) → 11:12 capacity-growth (20min) → 12:15 quote-hardening (63min) ✓
+
+**Confirmação:** Aguarda novo Deploy Gates run após push deste commit.
 
 ---
 
@@ -349,10 +402,12 @@ Não existe fix não-breaking em 4.x (requer upgrade semver-major).
 | P7 | Rerunnar E2E Thumb QuickView; se persistir, checar auth/fixtures | Baixa | Infra / possível código | Engenharia |
 | P8 | Investigar Catalog→Kit Flow E2E — artefato 38MB disponível | Média | Bug de código/UI | Engenharia |
 | P9 | Investigar Personalization Flow E2E — artefato 341MB disponível | Média | Bug de código/UI | Engenharia |
-| P10 | CI Security & Drift Checks — lint-0029 + Gate 1.12 — **CORRIGIDO em PR #2338 (cb2706ca)**, aguarda Deploy Gates | Baixa | CI Config (corrigido) | — |
-| P11 | Static Health Checks — ERR_MODULE_NOT_FOUND typescript — **CORRIGIDO em PR #2338 (cb2706ca)**, aguarda Deploy Gates | Baixa | CI Config (corrigido) | — |
-| P12 | Supabase Linter Gate — lint-0011 vazio — **CORRIGIDO em PR #2338 (cb2706ca)**, aguarda Deploy Gates | Baixa | CI Config (corrigido) | — |
-| P13 | Gate 0.5 — vitest moderate advisory — **CORRIGIDO em PR #2338 (679b5f4)**, aguarda Deploy Gates | Baixa | CI Config (corrigido) | — |
+| P10 | CI Security & Drift Checks — lint-0029 + Gate 1.12 — ✅ CONFIRMADO run `39687808882` (22:42:36Z) | Baixa | CI Config (corrigido) | — |
+| P11 | Static Health Checks — ERR_MODULE_NOT_FOUND typescript — ✅ CONFIRMADO run `39687808882` (22:41:38Z) — confirmar em main após merge | Baixa | CI Config (corrigido) | — |
+| P12 | Supabase Linter Gate — lint-0011 vazio — ✅ CONFIRMADO run `39687808882` (22:41:43Z) — confirmar em main após merge | Baixa | CI Config (corrigido) | — |
+| P13 | Gate 0.5 — vitest moderate advisory — ✅ CONFIRMADO run `39687808882` (22:38:50Z) | Baixa | CI Config (corrigido) | — |
+| P14 | db-schema-drift-check — drift ao vivo vs. ledger (advisory, não gate) | Baixa | DDL fora de fluxo | DBA / PO |
+| P15 | Gate E89 — 4 colisões de cron corrigidas em PR #2338 — aguarda confirmação | Baixa | CI Config (corrigido) | — |
 
 ### Nota sobre baseline local
 > **Restrição de ambiente (CCR):** O contêiner CCR não tem acesso ao registry npm privado
@@ -364,7 +419,6 @@ Não existe fix não-breaking em 4.x (requer upgrade semver-major).
 
 ---
 
-*Documento atualizado em 2026-10-21 (v4) — diagnósticos completos via análise direta dos logs
-dos runs 39670397341, 39670397361, 39681462046, 39670397540, 39670397324, 39670397261,
-39670397401, 39670397345. P10–P12 adicionados: workflows corrigidos em commit cb2706ca (PR #2338),
-aguardando confirmação via Deploy Gates 39685677081.*
+*Documento atualizado em 2026-10-21 (v6) — P10–P13 confirmados via run `39687808882` (commit `0d1efd27`, PR #2338);
+P14 db-schema-drift-check (advisory, requer reconciliação de DDL fora de fluxo);
+P15 Gate E89 — 4 colisões de cron corrigidas em 3 workflows (wraparound, capacity-growth, pgss-slo), aguarda novo Deploy Gates.*
