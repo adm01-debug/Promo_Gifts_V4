@@ -33,7 +33,7 @@ function requestHeaders() {
 }
 
 const MAX_RETRIES = 3;
-const RETRY_DELAY_MS = 15_000;
+const RETRY_DELAY_MS = parseInt(process.env.CHECK_RETRY_DELAY_MS ?? "15000", 10);
 const RETRYABLE_HTTP_STATUSES = new Set([500, 503, 504, 521]);
 
 /** @param {number} ms */
