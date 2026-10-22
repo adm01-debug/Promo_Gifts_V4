@@ -71,19 +71,36 @@ R_SCHEMA_DRIFT: ❌ (ECR rate limit — pré-existente em baseline)
 ## PRs que Requerem Rebase (ação dos autores)
 
 ### PR #2312 — ci(paths): E197+E24 improvements
-**Base:** `1ac6992` (desatualizada). Rebase em main `8e8053b9` necessário.
+**Branch:** não encontrada via API (404 em compare) — branch pode ter sido apagada ou renomeada.  
+**Base:** `1ac6992` (desatualizada — behind main `57017ba7`).  
+**Evidência:** `get_pull_request` #2312 — base.sha = `1ac6992cecf3a604e401e7c311f43b34e4772a4d`.  
+Rebase em main necessário antes de qualquer análise de conflito.
 
-### PR #2314 — ci(ratchet): productionAsCount 2162→2164
-**Conflito:** mesmo arquivo `.as-assertions-baseline.json` com valor diferente de #2315 (2163 vs 2164).
-Após rebase, reconciliar qual valor é o correto.
+### PR #2314 — fix(ci): atualiza baseline as-assertions — ProductFormFullscreen +2 (double-cast E83)
+**Branch:** `claude/ci-e19-e22-e23-batch2-261019-1930`  
+**Head SHA:** `ae8909d7b259f95cdac0b64e85bc49ceeca8e92b`  
+**Base SHA:** `1ac6992cecf3a604e401e7c311f43b34e4772a4d` (behind main `57017ba7`)  
+**Arquivo alterado:** `.as-assertions-baseline.json` (+4/-4) — bump `ProductFormFullscreen.tsx: 2 → 4`, `productionAsCount: 2162 → 2164`  
+**Evidência:** `get_pull_request` #2314 — `changed_files: 1`, `additions: 4`, `deletions: 4`, `mergeable_state: unknown`  
+**Conflito:** mesmo arquivo com PR #2315 (valores divergentes).  
+Após rebase de ambas, reconciliar qual valor é o correto.
 
-### PR #2315 — ci(e2e): remove credenciais reais (C25)
-**Conflito:** mesmo arquivo `.as-assertions-baseline.json` com valor diferente de #2314.
-Correção de segurança válida; prioridade alta após rebase.
+### PR #2315 — chore(ci): E33 — remove E2E_USER_* de 11 workflows chromium-public (C25)
+**Branch:** `claude/feat-e33-e58-credentials-docs-261019-2000`  
+**Head SHA:** `24edaa539910096180ec51ccbfa72746cefff4c6`  
+**Base SHA:** `1ac6992cecf3a604e401e7c311f43b34e4772a4d` (behind main `57017ba7`)  
+**Arquivos alterados:** 12 (+3/-48) — remove `E2E_USER_EMAIL`/`E2E_USER_PASSWORD` de 11 workflows `*-public`  
+**Evidência:** `get_pull_request` #2315 — `changed_files: 12`, `additions: 3`, `deletions: 48`, `mergeable_state: unknown`  
+**Conflito:** mesmo arquivo `.as-assertions-baseline.json` com PR #2314.  
+Correção de segurança válida (C25 — remove credenciais reais de workflows não-autenticados); prioridade alta após rebase.
 
 ### PR #2316 — fix(ci): Gate 1.12 + cors.ts
-**Conflito semântico com #2338:** abordagem contraditória para `magazine-reader-state-read`.
-Após merge de #2338, autor deve decidir: manter `NO_BODY_EXEMPT` (correto para GET-only) ou schema com body.
+**Branch:** `claude/fix-contract-mag-reader-261019-2110`  
+**Head SHA:** `f9b74053f5f7e525f649979499faa14fc993f76b`  
+**Base main após merge #2338:** `57017ba78eb68c6c72dba336f9c081c4519619c4` ✅  
+**Evidência:** `compare` `main...claude/fix-contract-mag-reader-261019-2110` — `base_commit.sha: 57017ba7` = main atual; commits com `+` = 5 commits não estão em main.  
+**Conflito semântico com #2338:** PR #2338 adicionou `magazine-reader-state-read` ao `NO_BODY_EXEMPT`; PR #2316 adiciona schema com body `{ token, fingerprint }` — abordagens contraditórias.  
+Após merge de #2338, autor deve decidir: manter `NO_BODY_EXEMPT` (correto para GET-only) ou schema com body (se a função realmente recebe body).
 
 ---
 
@@ -121,10 +138,162 @@ Nenhuma dessas PRs altera código do projeto.
 
 ---
 
+## Comentários Sugeridos para Fechamento
+
+> **AÇÃO HUMANA — NÃO POSTAR AUTOMATICAMENTE.**
+> Fechar PRs é uma escrita no GitHub proibida ao agente pelas regras da tarefa.
+> Copiar o texto abaixo e fechar cada PR manualmente.
+
+---
+
+### PR #2319 — Jules bot (NAO_MERGEAR)
+
+**Motivo:** PR gerada automaticamente pelo bot Jules sem nenhum arquivo alterado (0 changed files). Não há conteúdo a revisar ou mergear.
+
+**Comentário sugerido ao fechar:**
+> Esta PR foi gerada automaticamente pelo bot Jules e não contém nenhuma alteração de código (0 arquivos modificados). Fechando por ausência de conteúdo.
+
+---
+
+### PR #2322 — GitHub Actions: Node.js CI template
+
+**Motivo:** Template de CI gerado automaticamente pelo GitHub Actions para stack Node.js genérico. O projeto usa React + TypeScript + Vite + Supabase com pipeline próprio (`deploy-gates.yml`). Este template não adiciona valor.
+
+**Comentário sugerido ao fechar:**
+> Template de workflow gerado automaticamente para stack Node.js genérico. O projeto já possui pipeline de CI próprio (`deploy-gates.yml`). Fechando — não aplicável.
+
+---
+
+### PR #2323 — GitHub Actions: Django CI template
+
+**Motivo:** Template de CI para Django (Python). O projeto é React + TypeScript — Django não é usado em nenhuma parte do stack.
+
+**Comentário sugerido ao fechar:**
+> Template de workflow para Django (Python). Stack do projeto: React + TypeScript + Vite + Supabase. Fechando — stack incorreta.
+
+---
+
+### PR #2324 — GitHub Actions: Python application template
+
+**Motivo:** Template de CI para aplicação Python. Projeto é React + TypeScript.
+
+**Comentário sugerido ao fechar:**
+> Template de workflow para aplicação Python. Stack do projeto: React + TypeScript + Vite + Supabase. Fechando — stack incorreta.
+
+---
+
+### PR #2325 — GitHub Actions: Python package template
+
+**Motivo:** Template de CI para pacote Python. Projeto é React + TypeScript.
+
+**Comentário sugerido ao fechar:**
+> Template de workflow para pacote Python. Stack do projeto: React + TypeScript + Vite + Supabase. Fechando — stack incorreta.
+
+---
+
+### PR #2326 — GitHub Actions: Ruby on Rails template
+
+**Motivo:** Template de CI para Ruby on Rails. Projeto é React + TypeScript.
+
+**Comentário sugerido ao fechar:**
+> Template de workflow para Ruby on Rails. Stack do projeto: React + TypeScript + Vite + Supabase. Fechando — stack incorreta.
+
+---
+
+### PR #2327 — GitHub Actions: Rust template
+
+**Motivo:** Template de CI para Rust. Projeto é React + TypeScript.
+
+**Comentário sugerido ao fechar:**
+> Template de workflow para Rust. Stack do projeto: React + TypeScript + Vite + Supabase. Fechando — stack incorreta.
+
+---
+
+### PR #2328 — GitHub Actions: Go template
+
+**Motivo:** Template de CI para Go. Projeto é React + TypeScript.
+
+**Comentário sugerido ao fechar:**
+> Template de workflow para Go. Stack do projeto: React + TypeScript + Vite + Supabase. Fechando — stack incorreta.
+
+---
+
+### PR #2329 — GitHub Actions: Java with Maven template
+
+**Motivo:** Template de CI para Java com Maven. Projeto é React + TypeScript.
+
+**Comentário sugerido ao fechar:**
+> Template de workflow para Java com Maven. Stack do projeto: React + TypeScript + Vite + Supabase. Fechando — stack incorreta.
+
+---
+
+### PR #2330 — GitHub Actions: Java with Gradle template
+
+**Motivo:** Template de CI para Java com Gradle. Projeto é React + TypeScript.
+
+**Comentário sugerido ao fechar:**
+> Template de workflow para Java com Gradle. Stack do projeto: React + TypeScript + Vite + Supabase. Fechando — stack incorreta.
+
+---
+
+### PR #2331 — GitHub Actions: C/C++ with CMake template
+
+**Motivo:** Template de CI para C/C++ com CMake. Projeto é React + TypeScript.
+
+**Comentário sugerido ao fechar:**
+> Template de workflow para C/C++ com CMake. Stack do projeto: React + TypeScript + Vite + Supabase. Fechando — stack incorreta.
+
+---
+
+### PR #2333 — GitHub Actions: Docker Image CI template
+
+**Motivo:** Template de CI para build de imagem Docker. O projeto usa GitHub Actions com runners ubuntu-24.04 mas não publica imagens Docker.
+
+**Comentário sugerido ao fechar:**
+> Template de workflow para publicação de imagem Docker. Stack do projeto: React + TypeScript + Vite + Supabase (sem build de imagem Docker). Fechando — não aplicável.
+
+---
+
+### PR #2334 — GitHub Actions: Publish Node.js Package template
+
+**Motivo:** Template para publicar pacote npm. O projeto é uma aplicação web, não um pacote npm para publicar.
+
+**Comentário sugerido ao fechar:**
+> Template para publicação de pacote npm. O projeto é uma aplicação web (não um pacote para publicar no npm). Fechando — não aplicável.
+
+---
+
+### PR #2335 — GitHub Actions: Publish Docker Image template
+
+**Motivo:** Template para publicar imagem Docker no registry. Projeto não publica imagens Docker.
+
+**Comentário sugerido ao fechar:**
+> Template para publicação de imagem Docker em registry. Stack do projeto não inclui build/publish de imagens Docker. Fechando — não aplicável.
+
+---
+
+### PR #2336 — GitHub Actions: Blank workflow template
+
+**Motivo:** Arquivo de workflow em branco (sem conteúdo útil). Adicionaria arquivo vazio ao repositório.
+
+**Comentário sugerido ao fechar:**
+> Template de workflow em branco sem conteúdo. Fechando — não adiciona nada ao projeto.
+
+---
+
+### PR #2337 — GitHub Actions: Webpack template
+
+**Motivo:** Template de CI para Webpack. O projeto usa Vite como bundler, não Webpack.
+
+**Comentário sugerido ao fechar:**
+> Template de workflow para Webpack. Stack do projeto usa Vite (não Webpack). Fechando — bundler incorreto.
+
+---
+
 ## Pendências Humanas
 
-1. **Fechar 15 PRs de template** (#2322–#2331, #2333–#2337): escrita no GitHub necessária
-2. **Fechar PR #2319** (Jules bot vazia)
+1. **Fechar 15 PRs de template** (#2322–#2331, #2333–#2337): usar os comentários acima
+2. **Fechar PR #2319** (Jules bot vazia): usar o comentário acima
 3. **Decisão PO:** PR #2290 (ESLint major bump) e #2293 (recharts major bump)
 4. **Rebase dos autores:** PRs #2312, #2314, #2315, #2316
 
