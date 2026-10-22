@@ -364,6 +364,11 @@ O PR adiciona dois arquivos em `supabase/migrations/` que ATIVAM o drift check v
 **Por que não corrigível aqui:** Requer correção de infra de auth/E2E (P3) e reconciliação de schema drift (P-E40), ambos fora do escopo deste PR.  
 **Ação necessária:** PO — ver P3 e P-E40.
 
+### Run `39753032381` — SHA `02f265ec` — `status=queued` (aguardando execução — 2026-10-22T09:3xZ)
+**Deploy Gates** iniciado mas ainda na fila. Outros runs do mesmo SHA já concluídos: `schema-snapshot-export` ✅ (39753032968), `edge-functions-drift-check` ✅ (39753033170), `Security Scan` ✅ (39753033028), `SSOT Supabase Guard` ✅ (39753032631), `Gate 5 — Supabase Security Audit` ✅ (39753032530), `E2E · Carts Undo RPC Atomic` ✅ (39753032063), `Workflow Lint` ✅ (39753032278), `Required Checks Guard` ✅ (39753032441).  
+**Conclusão esperada:** `failure` — Gate 3 (P3) e Gate E40 (P-E40) são pré-existentes.  
+**Aguardar conclusão** para documentar resultado final.
+
 ---
 
 ## P28 — CI Security & Drift Checks — conclusion=failure (testes unitários pré-existentes)
@@ -401,6 +406,56 @@ O PR adiciona dois arquivos em `supabase/migrations/` que ATIVAM o drift check v
 
 ---
 
+## P30 — E2E · view-no-presentation-mode (check individual, auth ausente)
+
+**Status:** ⚠️ Pré-existente — não corrigível neste PR  
+**Check:** `E2E · view-no-presentation-mode`  
+**Run/job:** run [39748643031](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39748643031), job 119728034092 — SHA `ceef4d6b`  
+**Causa:** Check de E2E focado em modo de visualização sem apresentação. Auth e secrets E2E ausentes no CI do PR; mesma causa raiz de P4b (E2E Focused). Workflow standalone — não é required check do `deploy-gates.yml`.  
+**Por que não corrigível aqui:** Depende de infra de auth/secrets E2E fora do escopo deste PR.
+
+---
+
+## P31 — cart-invariants (firefox-authed · shard 2/2) — auth ausente
+
+**Status:** ⚠️ Pré-existente — não corrigível neste PR  
+**Check:** `cart-invariants (firefox-authed · shard 2/2)`  
+**Run/job:** run [39750438061](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39750438061), job 119729759678 — SHA `0f7eb91a`  
+**Causa:** Shard 2/2 do `Cart Invariants Smoke (Chrome + Firefox, sharded)` para Firefox autenticado (ver P17). Auth e secrets E2E ausentes no CI do PR. A falha deste shard causa a falha do job `cart-invariants-summary` (P32).  
+**Por que não corrigível aqui:** Pré-existente em main (P17 já documenta a falha geral do workflow). Auth/secrets ausentes no CI.
+
+---
+
+## P32 — cart-invariants-summary — falha em cascata de P31
+
+**Status:** ⚠️ Pré-existente — não corrigível neste PR  
+**Check:** `cart-invariants-summary`  
+**Run/job:** run [39750438061](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39750438061), job 119734666175 — SHA `0f7eb91a`  
+**Causa:** Job de resumo do `Cart Invariants Smoke (Chrome + Firefox, sharded)`. Falha em cascata direta de P31 (shard 2/2 firefox-authed failure). Quando qualquer shard falha, o job summary falha para refletir o estado real.  
+**Por que não corrigível aqui:** Consequência de P17/P31. Auth/secrets ausentes no CI.
+
+---
+
+## P33 — E2E — Full User Flows (authed) — auth ausente
+
+**Status:** ⚠️ Pré-existente — não corrigível neste PR  
+**Check:** `E2E — Full User Flows (authed)`  
+**Run/job:** run [39750437917](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39750437917), job 119729979546 — SHA `0f7eb91a`  
+**Causa:** Fluxos completos autenticados de E2E. Auth e secrets E2E ausentes no CI do PR; mesma causa raiz de P4d (E2E Critical Flows) e P22 (E2E Carts Undo RPC). Workflow standalone — não é required check do `deploy-gates.yml`.  
+**Por que não corrigível aqui:** Depende de infra de auth/secrets E2E fora do escopo deste PR.
+
+---
+
+## P34 — E2E Focused · thumb-quickview — auth ausente
+
+**Status:** ⚠️ Pré-existente — não corrigível neste PR  
+**Check:** `E2E Focused · thumb-quickview`  
+**Run/job:** run [39750438054](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39750438054), job 119729417299 — SHA `0f7eb91a`  
+**Causa:** Check focado de E2E para thumb-quickview. Auth e secrets E2E ausentes no CI do PR; mesma causa raiz de P4b (`E2E · Thumb QuickView`). Workflow standalone — não é required check do `deploy-gates.yml`.  
+**Por que não corrigível aqui:** Depende de infra de auth/secrets E2E fora do escopo deste PR.
+
+---
+
 ## Itens Concluídos ✅
 
 | Item | Commit | O quê foi corrigido |
@@ -418,4 +473,4 @@ O PR adiciona dois arquivos em `supabase/migrations/` que ATIVAM o drift check v
 
 ---
 
-_Atualizado automaticamente por sessão Claude — 2026-10-22T09:04Z (HEAD a6177339; P27 atualizado: run 39750438156 0f7eb91a → conclusion=failure confirmado (e2e-gates notif 2 08:59:54Z + Gate E40 pré-existente P-E40); P29 adicionado: Gate 8 Security & Credential Audit run 39750438153 → HTTP 503/504 transitório Supabase, inconclusive, não bloqueia Gate Final)_
+_Atualizado automaticamente por sessão Claude — 2026-10-22T09:35Z (HEAD 02f265ec; P27 atualizado: run 39753032381 02f265ec → deploy-gates queued; P29 adicionado: Gate 8 HTTP 503/504 transitório; P30-P34 adicionados: 5 checks E2E individuais sem motivo documentado (view-no-presentation-mode, cart-invariants firefox shard 2/2, cart-invariants-summary, Full User Flows authed, thumb-quickview) — todos pré-existentes por auth/infra ausente)_

@@ -1,9 +1,9 @@
 # RELATÓRIO CI — Branch `claude/laughing-cori-o9w35e`
 
 **Gerado em:** 2026-10-22  
-**HEAD principal:** `a6177339` (PR #2338 → main)  
+**HEAD principal:** `02f265ec` (PR #2338 → main)  
 **Branch de correções CI:** `fix/ci-workflows` (PR #2341 → main, commit `b36f5362`)  
-**Atualizado em:** 2026-10-22T07:35Z → 08:44Z → 09:00Z → 09:04Z — sessão Claude
+**Atualizado em:** 2026-10-22T07:35Z → 08:44Z → 09:00Z → 09:04Z → 09:35Z — sessão Claude
 
 ---
 
@@ -257,6 +257,11 @@
 | 21 | E2E · Cart Delete Popover (cancelled) | ⚠️ **Pré-existente** | PENDENCIAS.md P18 — cancelado por push concorrente |
 | 22 | Deploy Gates Gate 3 E2E Smoke | ⚠️ **Pré-existente** | PENDENCIAS.md P3 — auth Supabase ausente no CI |
 | 23 | Deploy Gates Gate E40 Schema Drift | ⚠️ **Pré-existente** | PENDENCIAS.md P-E40 — `supabase db diff --linked` falha 10+ dias em main |
+| 24 | E2E · view-no-presentation-mode | ⚠️ **Pré-existente** | PENDENCIAS.md P30 — auth/secrets E2E ausentes; run [39748643031](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39748643031) SHA `ceef4d6b` |
+| 25 | cart-invariants (firefox-authed · shard 2/2) | ⚠️ **Pré-existente** | PENDENCIAS.md P31 — auth ausente; run [39750438061](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39750438061) SHA `0f7eb91a` |
+| 26 | cart-invariants-summary | ⚠️ **Pré-existente** | PENDENCIAS.md P32 — cascata de P31; run [39750438061](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39750438061) SHA `0f7eb91a` |
+| 27 | E2E — Full User Flows (authed) | ⚠️ **Pré-existente** | PENDENCIAS.md P33 — auth ausente; run [39750437917](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39750437917) SHA `0f7eb91a` |
+| 28 | E2E Focused · thumb-quickview | ⚠️ **Pré-existente** | PENDENCIAS.md P34 — auth ausente (similar P4b); run [39750438054](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39750438054) SHA `0f7eb91a` |
 
 ---
 
@@ -285,6 +290,10 @@
 | Release Please | ❌ failure (pré-existente) | ❌ failure (pré-existente) | sem mudança |
 | Uptime Monitor | ❌ failure (pré-existente) | ❌ failure (pré-existente) | sem mudança |
 | Kit Coverage — Integration | ❌ failure (pré-existente) | ❌ failure (pré-existente) | sem mudança |
+| E2E · view-no-presentation-mode (P30) | ❌ failure (pré-existente) | ❌ failure (pré-existente) | sem mudança |
+| cart-invariants shard 2/2 + summary (P31/P32) | ❌ failure (pré-existente) | ❌ failure (pré-existente) | sem mudança |
+| E2E Full User Flows authed (P33) | ❌ failure (pré-existente) | ❌ failure (pré-existente) | sem mudança |
+| E2E Focused thumb-quickview (P34) | ❌ failure (pré-existente) | ❌ failure (pré-existente) | sem mudança |
 | **Workflows antes verdes** | ✅ 17 workflows verdes | ✅ **17 workflows verdes** | **sem regressão** |
 
 ---
@@ -302,4 +311,4 @@
 
 ---
 
-_Atualizado em 2026-10-22T09:04Z — sessão Claude (HEAD a6177339; run 39750438156 0f7eb91a → conclusion=failure confirmado (e2e-gates notif 2 09:00Z, P3+P-E40 pré-existentes); Gate 8 run 39750438153 → HTTP 503/504 transitório inconclusive, documentado P29; ci-security-drift run 39748320252 → conclusion=failure step 21 pré-existente; step 16 lint-0011 ✅ 2x confirmado; Gate 1 42/42 ✅, Gate 6 ✅, Gate E23 ✅ todos confirmados)_
+_Atualizado em 2026-10-22T09:35Z — sessão Claude (HEAD 02f265ec; deploy-gates run 39753032381 queued; P30-P34 adicionados em PENDENCIAS.md e tabela 4/5: 5 checks E2E individuais (view-no-presentation-mode, cart-invariants firefox shard 2/2, cart-invariants-summary, Full User Flows authed, thumb-quickview) — todos pré-existentes por auth/infra ausente; seção 5 atualizada com linhas P30-P34 sem regressão)_
