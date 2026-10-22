@@ -234,6 +234,60 @@ O PR adiciona dois arquivos em `supabase/migrations/` que ATIVAM o drift check v
 
 ---
 
+## P19 — Workflow Lint (actionlint — python-conda + stale deprecated)
+
+**Status:** 🔧 Fix enviado — PR [#2341](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2341) (branch `fix/ci-workflows`, commit `b36f5362`)  
+**Workflow:** `Workflow Lint` (actionlint + shellcheck)  
+**Run de falha em main:** [39670397269](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397269) — commit `c7c25848`  
+**Causas:** (1) `python-package-conda.yml` usava `actions/setup-python@v3` deprecated; (2) `stale.yml` usava `actions/stale@v5` deprecated. Ambos causam falha de actionlint.  
+**Fix aplicado:** `python-package-conda.yml` → no-op (`workflow_dispatch` only, sem steps python/conda); `stale.yml` → `actions/stale@5bef64f19d7facfb25b37b414482c7164d639639` (v9) + R2/R3/R10/R14/R15.  
+**Pendente:** CI do PR #2341 deve confirmar `conclusion=success`.
+
+---
+
+## P20 — Static Health Checks (check-product-type-fields.mjs — MODULE_NOT_FOUND)
+
+**Status:** 🔧 Fix enviado — PR [#2341](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2341) (branch `fix/ci-workflows`, commit `b36f5362`)  
+**Workflow:** `Static Health Checks` (`prod-health.yml`)  
+**Run de falha em main:** [39670397342](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397342) — commit `c7c25848`  
+**Causa:** `prod-health.yml` usava `actions/setup-node` manual (sem npm install). O script `check-product-type-fields.mjs` usa `import ts from 'typescript'` (TypeScript Compiler API) — `typescript` não estava instalado, causando `MODULE_NOT_FOUND`.  
+**Fix aplicado:** Substituído `actions/setup-node` por `./.github/actions/setup-node-ci` (composite action com `npm ci --no-audit`). Timeout 5 → 15 min.  
+**Pendente:** CI do PR #2341 deve confirmar `conclusion=success`.
+
+---
+
+## P21 — CI Security & Drift Checks (lint-0029)
+
+**Status:** ✅ Fix enviado — PR #2338 (commit `47c4e91e`)  
+**Workflow:** `CI Security & Drift Checks`  
+**Run de falha em main:** [39670397308](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397308) — commit `c7c25848`  
+**Causa:** lint-0029 reportava 6 findings; `fn_backfill_queue_reap_stuck` sem documentação da lacuna.  
+**Fix:** 6 entradas lint-0029 adicionadas a `ALLOWLISTS_MEMORY.md` em commit `47c4e91e` (PR #2338).  
+**Pendente:** Aguardar merge do PR #2338.
+
+---
+
+## P22 — E2E · Carts Undo RPC Atomic
+
+**Status:** ⚠️ Pré-existente em main — auth/infra ausente  
+**Workflow:** `E2E · Carts Undo RPC Atomic`  
+**Run de falha em main:** [39670397341](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397341) — commit `c7c25848`  
+**Por que não corrigível aqui:** Auth/secrets ausentes no CI. Mesma causa raiz que P4-P4d (E2E sem ambiente completo).  
+**Ação necessária:** Infra de testes E2E com auth e dados mock configurados.
+
+---
+
+## P23 — Supabase Linter Gate (lint-0029 parcial)
+
+**Status:** ✅ Parcialmente fixado — PR #2338 (commit `47c4e91e`)  
+**Workflow:** `Supabase Linter Gate`  
+**Run de falha em main:** [39670397435](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397435) — commit `c7c25848`  
+**Causa:** Relacionado a lint-0029; findings de Supabase não allowlistados.  
+**Fix:** Allowlist de lint-0029 em `ALLOWLISTS_MEMORY.md` (commit `47c4e91e`, PR #2338). Pode persistir se houver findings adicionais.  
+**Pendente:** Aguardar run após merge do PR #2338 para confirmar.
+
+---
+
 ## Itens Concluídos ✅
 
 | Item | Commit | O quê foi corrigido |
@@ -251,4 +305,4 @@ O PR adiciona dois arquivos em `supabase/migrations/` que ATIVAM o drift check v
 
 ---
 
-_Atualizado automaticamente por sessão Claude — 2026-10-22 (HEAD 1122aafd, run 39726195264 — COMPLETO; P3 evidência concreta: Gate3 CANCELLED em main (runs 39669131225/39670397385 ~14min timeout, não SKIPPED); P-E40 evidência concreta: cron falhou 10+ dias consecutivos desde 2026-10-12 (IDs: 39578751173–38232551702))_
+_Atualizado automaticamente por sessão Claude — 2026-10-22 (HEAD 1122aafd, run 39726195264 — COMPLETO; P3 evidência concreta: Gate3 CANCELLED em main (runs 39669131225/39670397385 ~14min timeout, não SKIPPED); P-E40 evidência concreta: cron falhou 10+ dias consecutivos desde 2026-10-12 (IDs: 39578751173–38232551702); P19/P20 fix em PR #2341 (fix/ci-workflows, commit b36f5362); P21/P22/P23 documentados)_
