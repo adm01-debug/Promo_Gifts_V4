@@ -336,19 +336,20 @@ O PR adiciona dois arquivos em `supabase/migrations/` que ATIVAM o drift check v
 
 **Status:** ⚠️ Bloqueado por pré-existentes P3 e P-E40  
 **Workflow:** `Deploy Gates` (`deploy-gates.yml`)  
-**Run mais recente:** [39745982811](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39745982811) — SHA `33cd3d5d` — `in_progress` (08:12Z–08:25Z+)  
+**Run mais recente:** [39748642992](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39748642992) — SHA `ceef4d6b` — `in_progress` (08:33Z+)  
 **Causa:** Gate 3 E2E Smoke (P3) e Gate E40 Schema Drift Check (P-E40) são pré-existentes que falham em todo run. Os outros jobs passam com conclusion=success.  
-**Jobs success confirmados (run 39745982811, SHA 33cd3d5d):**
-- Gate 0 SSOT ✅ (08:16:10Z), Gate 0.5 Dependency Audit ✅ (08:17:15Z)
-- Gate 0.6 Dependency Review ✅ (08:16:45Z), Gate E23 Secret Scan ✅ (08:16:51Z)
-- Gate 2 Unit Tests ✅ (08:17:11Z), Gate 2.5 PostgreSQL ✅ (08:17:42Z)
-- Gate 4 Lighthouse ✅ (08:18:48Z), Gate 5 SEO ✅ (08:16:26Z), Gate 5.5 RPC ✅ (08:17:46Z)
-- **Gate 1 Lint+TypeScript ✅ (08:24:34Z)** — todos 42 steps ✅ incluindo Gate 1.10 indexed-access ratchet ✅ (08:24:22Z), Gate 1.13 policies ✅ (08:23:08Z)
-- Gate 6 Build ✅ (08:25:23Z)
-- Gate E40 Detect (paths) ✅ (08:16:24Z)
+**Jobs success confirmados (run 39748642992, SHA ceef4d6b):**
+- Gate 0 SSOT ✅ (08:35:08Z), Gate 0.5 Dependency Audit ✅ (08:36:45Z)
+- Gate 0.6 Dependency Review ✅ (08:36:52Z), Gate E23 Secret Scan (gitleaks) ✅ (08:37:19Z)
+- Gate E23 Verifica secrets E2E ✅ (08:36:15Z)
+- Gate 2 Unit Tests ✅ (08:37:45Z), Gate 2.5 PostgreSQL ✅ (08:37:43Z)
+- Gate 4 Lighthouse ✅ (08:38:36Z), Gate 5 SEO ✅ (08:37:06Z), Gate 5.5 RPC ✅ (08:35:50Z)
+- **Gate 1 Lint+TypeScript ✅ (08:43:07Z)** — TODOS 42 sub-gates ✅ incluindo Gate 1.10 indexed-access ratchet ✅ (08:42:57Z), Gate 1.13 policies ✅ (08:41:55Z), Gate 1.13.1-1.13.3 ✅, Gates E89/E95/E113/E118a-j/E119/1.18 ✅
+- Gate 6 Build ✅ (08:43:56Z)
+- Gate E40 Detect (paths) ✅ (08:36:20Z)
 **Jobs in_progress (pré-existentes):**
-- Gate E40 Schema Drift: step 9 "Schema drift check" in_progress desde 08:22:49Z (pré-existente P-E40)
-- Gate 3 E2E Smoke: step 7 "Run Playwright smoke tests" in_progress desde 08:17:49Z (pré-existente P3)
+- Gate E40 Schema Drift: step 9 "Schema drift check" in_progress desde 08:40:50Z (pré-existente P-E40)
+- Gate 3 E2E Smoke: step 7 "Run Playwright smoke tests" in_progress desde 08:38:01Z (pré-existente P3)
 **Por que não corrigível aqui:** Requer correção de infra de auth/E2E (P3) e reconciliação de schema drift (P-E40), ambos fora do escopo deste PR.  
 **Ação necessária:** PO — ver P3 e P-E40.
 
@@ -358,7 +359,10 @@ O PR adiciona dois arquivos em `supabase/migrations/` que ATIVAM o drift check v
 
 **Status:** ⚠️ Failure por testes unitários pré-existentes — fix do lint-0011 ✅ confirmado  
 **Workflow:** `CI Security & Drift Checks` (`ci-security-drift.yml`)  
-**Run:** [39744914052](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39744914052) — SHA `5b32ac8d` — `conclusion=failure` (completou 08:26:11Z)  
+**Run anterior:** [39744914052](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39744914052) — SHA `5b32ac8d` — `conclusion=failure` (completou 08:26:11Z)  
+**Run dispatch (validação):** [39748320252](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39748320252) — SHA `d95e19cd` — `in_progress` (criado 08:31:02Z)  
+- `security-audit` ✅ completou 08:31:22Z  
+- `quality-gate`: steps 1-20 ✅ (incluindo **step 16 lint-0011 ✅ 08:35:23Z**); step 21 Unit Tests in_progress (pré-existente)  
 **Job `quality-gate`:** conclusion=failure (job id 119710869379)  
 **Job `security-audit`:** conclusion=success ✅  
 **Resultado por step (quality-gate):**
@@ -391,4 +395,4 @@ O PR adiciona dois arquivos em `supabase/migrations/` que ATIVAM o drift check v
 
 ---
 
-_Atualizado automaticamente por sessão Claude — 2026-10-22T08:13Z (HEAD 5b32ac8d; P27 atualizado para run 39744909966 in_progress; P28 adicionado para ci-security-drift run 39744914052 in_progress; lint-0011 step 16 ✅ 08:08:37Z; lint-0011 OUT params PG17 fix confirmado; Itens Concluídos atualizado com commit correto 5b32ac8d)_
+_Atualizado automaticamente por sessão Claude — 2026-10-22T08:44Z (HEAD ceef4d6b; P27 atualizado para run 39748642992 SHA ceef4d6b — Gate 1 42/42 ✅ 08:43:07Z, Gate 6 ✅ 08:43:56Z, Gate E23 Gitleaks ✅ 08:37:19Z; P28 adicionado run dispatch 39748320252 SHA d95e19cd — step 16 lint-0011 ✅ 08:35:23Z confirmado; testes unitários pré-existentes documentados)_
