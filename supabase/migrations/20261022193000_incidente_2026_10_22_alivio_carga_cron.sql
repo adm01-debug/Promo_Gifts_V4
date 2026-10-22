@@ -21,7 +21,7 @@
 --      este incidente). Retorno e semântica inalterados.
 -- Referência por jobname (não por jobid fixo), idempotente.
 --
--- Rollback (restaura a frequência anterior):
+-- Rollback: supabase/rollbacks/20261022193000_rollback.sql (restaura schedules e função anteriores):
 --   SELECT cron.alter_job(jobid, schedule := '<anterior>') FROM cron.job WHERE jobname = '<nome>';
 --   usando os valores "anterior" da tabela abaixo; para (2), recriar
 --   fn_cron_safe_run sem as duas linhas RAISE WARNING.
@@ -66,12 +66,14 @@ BEGIN
 END $$;
 
 -- (2) Observabilidade de timeouts/erros em fn_cron_safe_run.
--- Corpo idêntico ao vivo em 2026-10-22 (pg_get_functiondef), só com RAISE WARNING.
+-- Corpo idêntico ao vivo em 2026-10-22 (pg_get_functiondef), só com RAISE WARNING;
+-- search_path explicita pg_catalog/pg_temp (E066) — 'public' continua resolvendo
+-- os nomes não qualificados dos jobs exatamente como antes.
 CREATE OR REPLACE FUNCTION public.fn_cron_safe_run(p_key bigint, p_sql text, p_timeout_ms integer DEFAULT 45000, p_job_label text DEFAULT 'cron'::text)
  RETURNS text
  LANGUAGE plpgsql
  SECURITY DEFINER
- SET search_path TO 'public'
+ SET search_path = pg_catalog, public, pg_temp
 AS $function$
 DECLARE v_start timestamptz := clock_timestamp(); v_duration_ms int;
 BEGIN
