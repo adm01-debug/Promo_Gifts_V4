@@ -1,9 +1,9 @@
 # PENDÊNCIAS — Correção de Workflows CI
 
-**Atualizado:** 2026-10-22T16:05 UTC  
+**Atualizado:** 2026-10-22T16:25 UTC  
 **Branch ativa:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD:** `fd5a9ac3` (docs: atualiza PENDENCIAS.md com status reruns 15:40Z)  
-**Gate Final HEAD:** aguardando novo run para `fd5a9ac3`  
+**HEAD:** `bf7db4c1` (docs: Uptime Monitor attempt 2 → conclusion=success 15:37Z)  
+**Gate Final HEAD:** aguardando novo run para `bf7db4c1`  
 **Gate Final anterior:** [run 39798033549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39798033549) — Deploy Gates para `141c915a` — ✅ **`conclusion=success`** (15:00Z) — todos 16 jobs passaram
 
 ### Commits desta sessão
@@ -12,21 +12,22 @@
 | `b442d1ed` | fix(security): corrige allowlist lint-0011 com assinaturas completas pgstattuple (OUT params) | Supabase Linter Gate — mismatch assinaturas OUT params |
 | `a21f6200` | fix(ci): corrige SIGPIPE (exit 141) no guard do daily-flows-simulation | Daily flows simulation — exit 141 SIGPIPE em `gh api --jq` |
 
-### Reruns Disparados (15:12Z) — Aguardando conclusão
+### Reruns Attempt 2 (15:12Z) — Conclusões Confirmadas
 
-| Run | Workflow | SHA main | Attempt | Motivo esperado |
-|---|---|---|---|---|
-| 39757063983 | E2E (Playwright) | 8e8053b9 | 2 | auth/v1/token 504/timeout infra Supabase |
-| 39757063502 | Cart Invariants Smoke | 8e8053b9 | 2 | estado de cart mutações paralelas |
-| 39757063778 | E2E Critical Flows | 8e8053b9 | 2 | auth setup / "Check min tests executed" |
-| 39757064319 | E2E Personalization | 8e8053b9 | 2 | auth setup / artefato 206KB |
-| 39757063628 | Quote Builder Delivery | 8e8053b9 | 2 | tooltip hover flake |
-| 39757064344 | E2E Swatch QuickView | 8e8053b9 | 2 | webkit+chromium suite; firefox timeout |
-| 39757063923 | Supabase Linter Gate | 8e8053b9 | 2 | AbortError Management API (transiente) |
-| 39757064140 | CI Security & Drift | 8e8053b9 | 2 | composto — inclui Supabase Linter |
-| 39757063931 | Deploy Gates (main) | 8e8053b9 | 2 | cascata de falhas dos outros gates |
+| Run | Workflow | Att | Conclusão | Horário | Categoria |
+|---|---|---|---|---|---|
+| 39757063628 | Quote Builder Delivery Quality | 2 | ✅ success | 15:15Z | pré-existente (tooltip flake resolvido) |
+| 39757063923 | Supabase Linter Gate | 2 | ❌ failure | 15:14Z | fix no branch aguardando merge PR |
+| 39757064140 | CI Security & Drift Checks | 2 | ❌ failure | 15:14Z | fix no branch aguardando merge PR |
+| 39757063778 | E2E — Critical Flows & Error Boundaries | 2 | ❌ failure | 15:20Z | pré-existente — Admin Critical Routes + Check min tests |
+| 39757064319 | E2E — Personalization Flow | 2 | ❌ failure | 15:21Z | pré-existente — Check min tests (auth setup) |
+| 39757063502 | Cart Invariants Smoke | 2 | ❌ failure | 15:23Z | pré-existente — cart mutations paralelas |
+| 39757063983 | E2E (Playwright) | 2 | ❌ failure | 15:26Z | pré-existente — header sticky |
+| 39757063931 | Deploy Gates (main) | 2 | ❌ failure | 15:30Z | cascata — bloqueadores humanos |
+| 39757064344 | E2E • Swatch QuickView | 2 | ❌ failure | 15:38Z | pré-existente — visual/auth flake |
+| 39802177763 | Uptime Monitor | 2 | ✅ success | 15:37Z | transiente resolvido |
 
-> Verificação agendada: 15:28Z UTC via trigger `trig_01WyfU3CEWXoc8EP8evC3JiQ`
+> Todos os reruns E2E falharam novamente no attempt 2, **confirmando que são falhas pré-existentes na main** não relacionadas ao branch `claude/laughing-cori-o9w35e`.
 
 ### Status Gates HEAD `141c915a` (run 39798033549 — ✅ CONCLUÍDO 15:00Z)
 
@@ -80,13 +81,13 @@
 | # | Workflow | Run ID | SHA | Categoria | Status (2026-10-22T15:40Z) |
 |---|---|---|---|---|---|
 | 1 | **CI Security & Drift Checks** | 39757064140 | 8e8053b9 | Fix branch | ✅ Fix via `b442d1ed` (allowlist lint-0011 OUT params) + `679b5f45` (vitest allowlist) — aguardando merge PR |
-| 2 | **Cart Invariants Smoke** | 39757063502 | 8e8053b9 | Pré-existente E2E | ⚠️ Auth flake Firefox — documentado §2.6.1 |
+| 2 | **Cart Invariants Smoke** | 39757063502 | 8e8053b9 | Pré-existente E2E | ❌ Att 2 failure confirmada (15:23Z) — cart mutations paralelas pré-existente §2.6.1 |
 | 3 | **Daily flows simulation** | 39735125888 | c7c25848 | ✅ Fix branch + rerun | ✅ Fix SIGPIPE `a21f6200` + rerun attempt 2 → `conclusion=success` (15:25Z) observado via API |
 | 4 | **Deploy Gates** | 39757063931 | 8e8053b9 | Agregado | ⚠️ Falha cascata — itens abaixo |
-| 5 | **E2E (Playwright)** | 39757063983 | 8e8053b9 | Pré-existente E2E | ⚠️ Múltiplos flakes/regressões — §2.6 |
-| 6 | **E2E — Critical Flows & Error Boundaries** | 39757063778 | 8e8053b9 | Pré-existente E2E | ⚠️ Auth/UI flake — §3.5 |
-| 7 | **E2E — Personalization Flow** | 39757064319 | 8e8053b9 | Pré-existente E2E | ⚠️ Auth failure pré-existente — §2.6.3 |
-| 8 | **E2E • Swatch QuickView** | 39757064344 | 8e8053b9 | Pré-existente E2E | ⚠️ Visual/auth flake — §2.6.4 |
+| 5 | **E2E (Playwright)** | 39757063983 | 8e8053b9 | Pré-existente E2E | ❌ Att 2 failure confirmada (15:26Z) — header sticky pré-existente §2.6 |
+| 6 | **E2E — Critical Flows & Error Boundaries** | 39757063778 | 8e8053b9 | Pré-existente E2E | ❌ Att 2 failure confirmada (15:20Z) — Admin Critical Routes + Check min tests pré-existente §2.6.2 |
+| 7 | **E2E — Personalization Flow** | 39757064319 | 8e8053b9 | Pré-existente E2E | ❌ Att 2 failure confirmada (15:21Z) — Check min tests (auth setup) pré-existente §2.6.3 |
+| 8 | **E2E • Swatch QuickView** | 39757064344 | 8e8053b9 | Pré-existente E2E | ❌ Att 2 failure confirmada (15:38Z) — visual/auth pré-existente §2.6.4 |
 | 9 | **Gitleaks — Full History Audit** | [39757063805](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757063805) | 8e8053b9 | **RESOLVIDO na main** | ✅ `conclusion=success` em 8e8053b9 — falha anterior era em c7c25848 |
 | 10 | **Quote Builder Delivery Quality** | 39757063628 | 8e8053b9 | Pré-existente E2E | ✅ `conclusion=success` — attempt 2 rerun confirmado |
 | 11 | **Quote Number Hardening — Verify** | [39735347516](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39735347516) | c7c25848 | ✅ RESOLVIDO (rerun) | ✅ Rerun attempt 2 → `conclusion=success` (15:25Z) observado via API |
@@ -179,12 +180,14 @@
 
 ### 2.6.2 E2E Critical Flows & Error Boundaries — Falha Pré-existente
 
-- **Run na main:** [39757063778](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757063778) — sha `8e8053b9` — `conclusion=failure`
-- **Jobs que falharam:**
-  - `E2E — Error Boundaries (sem auth)` → step `Check min tests executed` — poucos testes executaram (artefato 201KB)
-  - `E2E — Full User Flows (authed)` → step `Run Sidebar Tooltips E2E — desktop (chromium-authed)` + `Check min tests executed`
-- **Causa:** Artefato pequeno (201KB) indica que app iniciou mas testes não executaram em quantidade suficiente; falha de autenticação ou timeout de setup impede execução do suite completo
-- **Pré-existência:** Confirmado na main `8e8053b9` — nenhum commit desta branch toca autenticação ou sidebar
+- **Run na main (att 1):** [39757063778](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757063778) — sha `8e8053b9` — `conclusion=failure`
+- **Run na main (att 2):** [39757063778](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757063778) att 2 — `conclusion=failure` (15:20Z) — **CONFIRMA PRÉ-EXISTÊNCIA**
+- **Jobs que falharam (att 2):**
+  - `E2E — Error Boundaries (sem auth)` (job 119907013865) → step `Check min tests executed` (15:14Z) — falhou após `Run Error Boundaries E2E` completar (sucess mas poucos testes)
+  - `E2E — Full User Flows (authed)` (job 119907012863) → step `Run Admin Critical Routes E2E` (15:19Z failure) + `Check min tests executed`
+  - `E2E — Mobile Critical Routes` (job 119907083547) → ✅ success (09:47Z — att 1, não rerode)
+- **Causa:** Admin Critical Routes falha por autenticação ou permissão RBAC; "Check min tests executed" falha consequente quando poucos testes executam
+- **Pré-existência:** ✅ Confirmado att 2 — nenhum commit desta branch toca autenticação, Admin Routes ou sidebar
 - **Ação necessária:** PO + dev de features investigar setup de autenticação E2E para Admin Critical Routes e Sidebar Tooltips
 
 ### 2.6.3 E2E Personalization Flow — Falha Pré-existente
