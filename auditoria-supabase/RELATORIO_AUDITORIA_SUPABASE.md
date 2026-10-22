@@ -831,7 +831,13 @@ WHERE schemaname = 'public'
 
 **Últimas 5 respostas outbound (2026-10-22):** todas com `status_code=200`, `timed_out=false`. Sistema de notificações outbound funcionando.
 
-**Achado SEG-004 [MÉDIO]:** Ausência de verificação de assinatura HMAC em `webhook-inbound` (verify_jwt=false) — dependência de segurança da lógica interna da edge function. Requer auditoria do código-fonte da função.
+**Achado SEG-004 [FECHADO — código auditado 2026-10-22]:** `webhook-inbound` implementa:
+- HMAC-SHA256 (`x-hub-signature-256`, `x-signature-256`) verificado antes de qualquer processamento ✅
+- Suporte a `x-idempotency-key` — eventos persistidos "exactly once" em `inbound_webhook_events` ✅
+- Bot protection via `runBotProtection()` ✅
+- Validação de schema por `parseContract + WebhookInboundSchemas` ✅
+
+**Resultado:** SEG-004 FECHADO. `webhook-inbound` tem proteção HMAC robusta — o finding era conservador por falta de análise de código, não uma vulnerabilidade real.
 
 ---
 
@@ -1278,7 +1284,7 @@ Esta seção documenta todos os itens que não puderam ser verificados nesta aud
 | Função | Versão | Justificativa |
 |---|---|---|
 | `stripe-webhook` | v310 | Webhook inbound Stripe — deve ser verify_jwt=false; proteger por HMAC |
-| `webhook-inbound` | v308 | Webhook genérico inbound — deve ter verificação HMAC interna |
+| `webhook-inbound` | v308 | Webhook genérico inbound — HMAC-SHA256 + idempotency-key + bot-protection CONFIRMADOS ✅ (código auditado 2026-10-22) |
 | `health-check` | v285 | Endpoint de saúde — leitura pública esperada |
 | `catalog-public` | v292 | Catálogo público — leitura de dados públicos |
 | `seo-sitemap` | v280 | Sitemap SEO — público por natureza |
@@ -1531,7 +1537,7 @@ Esta tabela consolida os achados com avaliação de risco de regressão para cad
 
 ---
 
-*Auditoria concluída em 2026-10-22. Seções 20–26 adicionadas na sessão de continuação para cobrir NÃO VERIFICADO, classificação R0/R1/R2, drift matrix, cron 30d, backup/PITR e plano atualizado.*
+*Auditoria finalizada em 2026-10-22 (sessão 4 + 5). Seções 20–29 adicionadas nas sessões de continuação. Status: **META CUMPRIDA com 7 itens NÃO VERIFICADO documentados** (NV-001..NV-007 — limitações técnicas permanentes ou de MCP). SEG-004 fechado após auditoria de código: webhook-inbound tem HMAC-SHA256 + idempotency-key confirmados. Cron batch 2 falhas/30d: NÃO VERIFICADO (MCP timeout — índice ausente em cron.job_run_details.start_time — roteiro em §6.6).*
 
 ---
 

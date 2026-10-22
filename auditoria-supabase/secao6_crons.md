@@ -18,6 +18,7 @@
 | Jobs com >50 falhas/30d | 14 |
 | Jobs com >100 falhas/30d | 7 |
 | Anomalias de autenticação | 2 (jobids 235, 243) |
+| Falhas 30d (batch 2, ~62 jobs) | **NÃO VERIFICADO** — ver §6.6 |
 
 ---
 
@@ -64,6 +65,7 @@ Legenda de autenticação:
 | 13 | comparison-price-watcher | `40 6 * * *` | sim | net.http_post+cron_secret ✅ | 1 |
 | 211 | connections-auto-test | `9,24,39,54 * * * *` | sim | net.http_post+cron_secret ✅ | 56 |
 | 209 | connections-health-check | `3,18,33,48 * * * *` | sim | net.http_post+cron_secret ✅ | 53 |
+| **—** | **— INÍCIO BATCH 2 (≈62 jobs) —** | — | — | — | **NÃO VERIFICADO¹** |
 | 27 | cron_job_run_details_purge_weekly | `0 4 * * 0` | sim | SQL DML (DELETE) | 0 |
 | 198 | daily-expire-quotes | `30 3 * * *` | sim | direct fn call | 1 |
 | 231 | dashboard-insights-cache-cleanup | `48 * * * *` | sim | fn_cron_safe_run | 20 |
@@ -177,9 +179,10 @@ Legenda de autenticação:
 | 277 | xbz-stock-sync | `8,23,38,53 * * * *` | sim | fn_cron_safe_run (880s timeout!) | — |
 
 **Notas:**
-¹ `pre-generate-market-insights` (jobid=239): UUID `75921d8b-611f-4413-9ce5-afccdb733d26` hardcoded no comando — não é secret mas acopla o job a uma org específica.  
-² jobid=267 passa `NULL::bigint`, jobid=304 passa `0::bigint` como job_id para `fn_cron_safe_run` — logging pode ser silenciosamente ignorado.  
-³ `stock_snapshots_weekly_purge` (jobid=272): nome diz "weekly" mas schedule `11 3 * * *` é diário.
+¹ **BATCH 2 — NÃO VERIFICADO (MCP timeout):** Falhas/30d marcadas com "—" para ~62 jobs (purge-expired-security, purge-kit-quote-requests, purge-kit-save-requests, purge-magazine-duplicate-requests, purge-spr-history-daily, qa-image-coverage-hourly, qa-imageless-products, quote-followup-reminders, reconcile-category-products-count, reconcile-stock-gold-daily, refresh-all-materialized-views, refresh-analytics-mv-product-intelligence, refresh-analytics-mv-stock-velocity, refresh-backfill-queue-expiry, refresh-category-ancestors, refresh-mv-ema-kpi-by-level, refresh-mv-product-images-audit, refresh-mv-product-leaf-category, refresh-mv-stock-rupture-alert, refresh-mv-supplier-reliability, reposicao-backfill-hourly, resync-product-physical-weekly, revoke-truncate-daily, schema-drift-check, send-digest, send-scheduled-reports, seo-populate-new-products, seo-recalculate-stale-scores, sm-category-collect, sm-category-enqueue, sm-session-check, sm-site-scrape, sm-site-scrape-auth, sm-stock-guard, sm-url-discover-collect, sm-url-discover-search, sm-url-map-rebuild, sm-variant-coherence-guard, smoke_tests_monthly, spot-health-check-daily, spot-relink-family-images, spot-stock-fast-sync, spr-requeue-failed-hourly, stock_daily_aggregation, stock_snapshots_weekly_purge, stock-daily-backfill-today, sync-derived-product-flags, sync-dynamic-collections, sync-is-new-expires-at, sync-is-stockout-universal, sync-supplier-timestamps-hourly, vacuum-analyze-weekly, vacuum-high-dead-tuples, vacuum-product-variants-weekly, vacuum-products-weekly, vacuum-request-rate-limits, video-botcheck-heal, video-recover-stuck, xbz-enrich-gold-extractors, xbz-image-uploader, xbz-site-scrape, xbz-stock-sync). **Motivo:** query `SELECT count(*) FROM cron.job_run_details WHERE job_id IN (...) AND start_time > now()-interval '7d'` excede 60s de timeout do MCP. `cron.job_run_details` não tem índice em `start_time`. **Roteiro manual:** executar no Dashboard → SQL Editor: `SELECT jobid, count(*) AS falhas FROM cron.job_run_details WHERE status='failed' AND start_time > now()-interval '30d' GROUP BY jobid ORDER BY falhas DESC;` — requer índice em start_time ou query em janela menor.  
+² `pre-generate-market-insights` (jobid=239): UUID `75921d8b-611f-4413-9ce5-afccdb733d26` hardcoded no comando — não é secret mas acopla o job a uma org específica.  
+³ jobid=267 passa `NULL::bigint`, jobid=304 passa `0::bigint` como job_id para `fn_cron_safe_run` — logging pode ser silenciosamente ignorado.  
+⁴ `stock_snapshots_weekly_purge` (jobid=272): nome diz "weekly" mas schedule `11 3 * * *` é diário.
 
 ---
 
@@ -236,3 +239,31 @@ Legenda de autenticação:
 | ALTO | CRON-003, CRON-NEW-001 |
 | MÉDIO | CRON-002, CRON-NEW-002 |
 | INFO | hardcoded UUID (jobid=239), NULL job_id (jobid=267), nome inconsistente (jobid=272) |
+
+---
+
+## 6.6 NÃO VERIFICADO — Falhas/30d do Batch 2
+
+**Status:** ⚠️ NÃO VERIFICADO (limitação técnica do MCP)
+
+**Escopo:** ~62 jobs (jobids 210, 309, 308, 310, 51, 232, 227, 258, 267, 85, 234, 144, 259, 236, 244, 240, 238, 304, 241, 212, 117, 287, 113, 245, 17, 16, 251, 95, 214, 213, 256, 276, 264, 207, 263, 219, 65, 206, 32, 257, 225, 265, 84, 4, 272, 116, 246, 98, 111, 204, 114, 53, 297, 280, 279, 187, 83, 215, 266, 268, 269, 277)
+
+**Causa técnica:** A tabela `cron.job_run_details` não tem índice na coluna `start_time`. Queries com filtro temporal (`start_time > now()-interval '30d'`) sobre ~60 job IDs resultam em seq scan sobre tabela grande → timeout 60s no MCP.
+
+**Impacto do gap:** O CRON-001 (falha sistêmica ativa) é evidenciado pelos dados do batch 1. Os jobs do batch 2 incluem `stock_daily_aggregation` (NV-001) e vários jobs de refresh de MV que devem ter falhas similares durante o período de CRON-001.
+
+**Roteiro manual (Dashboard → SQL Editor):**
+```sql
+-- Janela menor (24h) para passar dentro do timeout:
+SELECT jobid, count(*) AS falhas_24h
+FROM cron.job_run_details
+WHERE status = 'failed'
+  AND start_time > now() - interval '24h'
+GROUP BY jobid
+ORDER BY falhas_24h DESC;
+
+-- Com índice criado pelo DBA:
+CREATE INDEX CONCURRENTLY idx_cron_job_run_details_start_time
+  ON cron.job_run_details(start_time);
+-- Após: query 30d passa dentro do limite de tempo
+```
