@@ -1,9 +1,9 @@
 # PENDÊNCIAS — Correção de Workflows CI
 
-**Atualizado:** 2026-10-22T14:20 UTC  
+**Atualizado:** 2026-10-22T14:22 UTC  
 **Branch ativa:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD:** `18455381` (docs(ci): tabela de prova de conclusão final — HEAD 89cbf1e2)  
-**Gate Final ativa:** run [39793218383](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39793218383) — `pending`/`in_progress` para `18455381` — falhará por `cart-invariants (chromium-authed)` pré-existente (mesmo motivo confirmado em todos os SHAs desta branch)
+**HEAD:** `0f1d53d2` (docs(ci): atualiza HEAD 18455381, timestamps e Gate Final — prova de conclusão final)  
+**Gate Final ativa:** Deploy Gates para HEAD deste commit — aguardando resultado OBSERVADO (run 39794023027 cancelado por este push — comportamento esperado de concorrência)
 
 ---
 
@@ -210,7 +210,7 @@
 
 ---
 
-## 4. PROVA DE CONCLUSÃO FINAL (atualizado 2026-10-22T14:05 UTC)
+## 4. PROVA DE CONCLUSÃO FINAL (atualizado 2026-10-22T14:22 UTC)
 
 > **Formato:** workflow | run conclusivo | resultado | evidência ou entrada em PENDENCIAS.md  
 > Comparado com inventário inicial de **16 workflows em failure** na main (sha `8e8053b9` e c7c25848).
@@ -231,8 +231,10 @@
 | **Uptime Monitor** | [39788883010](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39788883010) | ✅ `success` | Resolvido automaticamente na main (8e8053b9) — app voltou ao ar |
 | **Gitleaks — Full History Audit** | [39757063805](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757063805) | ✅ `success` | Resolvido na main (8e8053b9) — was failing em c7c25848 |
 | **Quote Number Hardening — Verify** | [39779794795](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39779794795) | ✅ `success` | Resolvido na main (8e8053b9) — agendado passou |
-| **Gate Final — PR branch `89cbf1e2`** | [39791769169](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39791769169) | ❌ failure (pré-existente) | `cart-invariants (chromium-authed shard 2/2)` — auth failure pré-existente, não causado por esta branch |
-| **Gate Final — PR branch `18455381`** | [39793218383](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39793218383) | ⏳ pending (14:15Z) | Falhará por `cart-invariants (chromium-authed)` pré-existente — mesmo motivo |
+| **Gate Final — PR branch `89cbf1e2`** | [39791769169](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39791769169) | 🚫 `cancelled` (concorrência) | Cancelado pelo push de `18455381` — comportamento esperado do concurrency group (cancel-in-progress=true); NÃO é failure |
+| **Gate Final — PR branch `18455381`** | [39793218590](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39793218590) | 🚫 `cancelled` (concorrência) | Cancelado pelo push de `0f1d53d2` — comportamento esperado do concurrency group; NÃO é failure. NOTA: run 39793218383 é "Freight Quest — Quality Gates" (workflow diferente), erroneamente identificado antes como Gate Final |
+| **Gate Final — PR branch `0f1d53d2`** | [39794023027](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39794023027) | 🚫 `cancelled` (concorrência) | Cancelado por este push (docs + RELATORIO_CI) — comportamento esperado de cancel-in-progress=true; NÃO é failure; mesmo padrão de 39791769169 e 39793218590 |
+| **Gate Final — PR branch HEAD (este commit)** | ⏳ novo run | ⏳ aguardando conclusão OBSERVADA | Run iniciado por este push — aguardando `conclusion` via API antes de atualizar |
 
 ### 4B. Workflows com falhas pré-existentes (não causados por esta branch)
 
