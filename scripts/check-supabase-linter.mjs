@@ -84,14 +84,30 @@ export async function runLinter({
     return 2;
   }
 
+  // E103: retry até 3x com backoff para absorver timeouts transitórios da Management API.
+  // Timeouts confirmados em run 39757063923 (job 119751636401) — 15s → AbortError.
   let response;
-  try {
-    response = await fetcher(`https://api.supabase.com/v1/projects/${encodeURIComponent(ref)}/advisors/security`, {
-      headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
-      signal: AbortSignal.timeout(15_000),
-    });
-  } catch (error) {
-    logger.error(`❌ Linter indisponível (${error.name || "erro de rede"}).`);
+  const MAX_ATTEMPTS = 3;
+  const TIMEOUTS_MS = [15_000, 20_000, 25_000];
+  let lastError;
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    try {
+      response = await fetcher(`https://api.supabase.com/v1/projects/${encodeURIComponent(ref)}/advisors/security`, {
+        headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+        signal: AbortSignal.timeout(TIMEOUTS_MS[attempt - 1]),
+      });
+      lastError = null;
+      break;
+    } catch (error) {
+      lastError = error;
+      if (attempt < MAX_ATTEMPTS) {
+        logger.warn(`⚠️  Tentativa ${attempt}/${MAX_ATTEMPTS} falhou (${error.name || "erro de rede"}) — aguardando ${attempt * 5}s...`);
+        await new Promise((r) => setTimeout(r, attempt * 5_000));
+      }
+    }
+  }
+  if (lastError) {
+    logger.error(`❌ Linter indisponível após ${MAX_ATTEMPTS} tentativas (${lastError.name || "erro de rede"}).`);
     return 2;
   }
 
