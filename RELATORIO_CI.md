@@ -254,9 +254,12 @@ Todos documentados em `PENDENCIAS.md` com causa raiz e ação necessária.
 | P21b | `visual-baseline.yml` | Baselines visuais desatualizados — requer PO dispatch de `update-visual-baselines.yml` |
 | P21c | `audit.yml` | Advisory — verificar se é Gate 4 Lighthouse ou workflow separado |
 
-**Nota:** P1–P9, P14, P16, P21a–c não são required checks no branch protection de `main`. O único
-required check é "Gate Final - Deploy Ready" (`deploy-gates.yml`). Workflows E2E e
-Release Please são independentes do gate de deploy.
+**Nota:** P1–P9, P14, P21a–c não são required checks no branch protection de `main`. O único
+required check na branch protection é "Gate Final - Deploy Ready" (`deploy-gates.yml`). Workflows
+E2E e Release Please são independentes do gate de deploy.
+**Exceção P16:** `Compare GitHub × Canonical` (job de `edge-functions-drift-check.yml`) está
+listado em `.github/required-checks.json` como required — drift persistente **pode** bloquear
+merge em PRs afetados enquanto o check falha naquele SHA.
 
 ---
 
@@ -315,7 +318,7 @@ Nenhuma mudança em APIs, schema, edge functions, contratos de negócio ou lógi
 | W10 | `e2e-critical-flows.yml` | Catalog→Kit Flow falhou — requer engenharia | ⚠️ PENDENCIAS.md P8 | [P8 em PENDENCIAS.md](./PENDENCIAS.md#p8) |
 | W11 | `e2e-personalization.yml` | Personalization journey falhou — requer engenharia | ⚠️ PENDENCIAS.md P9 | [P9 em PENDENCIAS.md](./PENDENCIAS.md#p9) |
 | W12 | `db-schema-drift-check.yml` | DDL fora de fluxo — advisory, requer DBA/PO | ⚠️ PENDENCIAS.md P14 | [P14 em PENDENCIAS.md](./PENDENCIAS.md#p14) |
-| W13 | `edge-functions-drift-check.yml` | Drift de edge functions — advisory, requer engenharia | ✅ run `39698881429` (sha `ea0fb09`) → success | [P16 em PENDENCIAS.md](./PENDENCIAS.md#p16) |
+| W13 | `edge-functions-drift-check.yml` | Drift de edge functions — **required check** (`Compare GitHub × Canonical` em `required-checks.json`), requer engenharia | ✅ run `39698881429` (sha `ea0fb09`) → success | [P16 em PENDENCIAS.md](./PENDENCIAS.md#p16) |
 | W14 | `cart-quality.yml` (Cart Quality) | Divergência pré-existente em `SellerCartsPage.tsx:230` (commit `78701e8` em main/2026-10-19) → corrigida em `ea0fb09` | ✅ run `39698881468` (sha `ea0fb09`) → success | [Run CI](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39698881468) |
 | W15 | `cart-header-quality-gate.yml` | `/bin/sh: 1: bunx: not found` — `bunx vitest` → `npx vitest` em `cart-header-fuzz-report.mjs` | ✅ corrigido (commit neste PR) — aguardando run | [P19 em PENDENCIAS.md](./PENDENCIAS.md#p19) |
 | W16 | `Running Copilot Code Review` (`dynamic/agents/copilot-pull-request-reviewer`) | Bot GitHub Copilot (actor=Bot `copilot-pull-request-reviewer`, event=`dynamic`). Reporta `failure` quando tem comentários de revisão no PR — comportamento normal do bot, **não é required check**, não bloqueia merge, não é de nosso controle. Run `39711897784` (sha `c27ee675`, 02:32:00Z→02:32:58Z, 58s). | ⚠️ PENDENCIAS.md P20 — não required check, pré-existente, não controlável | [P20 em PENDENCIAS.md](./PENDENCIAS.md#p20) |

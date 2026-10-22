@@ -26,12 +26,17 @@ declare global {
 /**
  * Lê `?initial=<valor mascarado ou não>` para simular abertura do
  * formulário em modo "Editar" com um CNPJ já persistido (possivelmente
- * mascarado). Normalizamos para dígitos-only ao carregar — o display
- * continua via maskCnpj.
+ * mascarado). Normaliza dígitos para digits-only; valores sem dígitos
+ * (espaços, letras) são mantidos intactos para que a validação os rejeite.
  */
 function readInitialFromQuery(): string {
   if (typeof window === 'undefined') return '';
-  return new URLSearchParams(window.location.search).get('initial') ?? '';
+  const raw = new URLSearchParams(window.location.search).get('initial') ?? '';
+  if (raw === '') return '';
+  // Contém dígitos → normalizar (strip máscara como 02.931.668/0001-88)
+  if (/\d/.test(raw)) return normalizeCnpj(raw);
+  // Sem dígitos mas não-vazio (espaços, letras) → manter para validação rejeitar
+  return raw;
 }
 
 export default function CnpjFormHarness() {

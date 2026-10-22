@@ -26,7 +26,7 @@ const REJECTED: Case[] = [
   { label: 'só letras', input: 'ABCDEFGHIJKLMN', errorRegex: /14 d[ií]gitos/i },
   { label: 'letras + dígitos < 14', input: 'abc02931668000', errorRegex: /14 d[ií]gitos/i },
   { label: 'símbolos + dígitos < 14', input: '###02.931.668/00', errorRegex: /14 d[ií]gitos/i },
-  // Nota: 'apenas espaços' → null (opcional) por design do schema — não é erro.
+  // Nota: 'apenas espaços' → erro "14 dígitos" (whitespace-only não é vazio; normalizeCnpj → "" → refine falha).
   // Contagem inválida.
   { label: 'menos de 14', input: '02931668000', errorRegex: /14 d[ií]gitos/i },
   // DVs inválidos.
@@ -77,9 +77,17 @@ describe('CNPJ — contrato de API (create/edit fornecedor + produto)', () => {
   });
 
   describe('coerção de vazio/null/undefined → null (opcional)', () => {
-    for (const v of ['', '   ', null, undefined] as const) {
+    for (const v of ['', null, undefined] as const) {
       it(`vazio (${JSON.stringify(v)}) → null`, () => {
         expect(assertPersistableCnpj(v)).toBeNull();
+      });
+    }
+  });
+
+  describe('espaços/whitespace-only → erro (não é vazio)', () => {
+    for (const v of ['   ', '\t'] as const) {
+      it(`whitespace ${JSON.stringify(v)} → lança "14 dígitos"`, () => {
+        expect(() => assertPersistableCnpj(v)).toThrow(/14 d[ií]gitos/i);
       });
     }
   });

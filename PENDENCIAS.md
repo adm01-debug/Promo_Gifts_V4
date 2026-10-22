@@ -422,8 +422,9 @@ Casos confirmados anteriormente (REGRA #8, corolário deploy de edge function):
 - `kit-ai-builder` (2026-09-23): timeout de 20s implementado direto em produção, nunca commitado
 - `magazine-reader-state-read` (2026-09-24): fix de segurança deployado via MCP antes de revisão
 
-**Classificação:** Advisory (não gate bloqueante). O drift-check é informativo — não bloqueia
-merge, mas registra divergência.
+**Classificação:** Required check (pode bloquear merge). O `Compare GitHub × Canonical` está
+listado em `.github/required-checks.json` como required no `main` — drift persistente bloqueia
+PRs afetados até que o drift seja corrigido ou o check passe.
 
 **O que o PO / Engenharia precisam fazer (REGRA #8, corolário deploy de edge function):**
 1. Identificar quais edge functions causaram o drift (ver log do run `39576553816`)
@@ -434,8 +435,9 @@ merge, mas registra divergência.
      via `workflow_dispatch` em `.github/workflows/deploy-edge-functions.yml`
 3. Após corrigir: forçar rerun do `edge-functions-drift-check.yml` para confirmar `success`
 
-**Impacto:** Não bloqueia deploy (advisory). Mas drift acumulado expõe código de produção
-que não passou por revisão de PR — risco de segurança real (caso `magazine-reader-state-read`).
+**Impacto:** Bloqueia merge em PRs quando o check `Compare GitHub × Canonical` falha (required
+check). Drift acumulado também expõe código de produção que não passou por revisão de PR —
+risco de segurança real (caso `magazine-reader-state-read`).
 
 ---
 
