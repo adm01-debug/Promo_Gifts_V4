@@ -1,0 +1,26 @@
+# Workflow original do template GitHub (não utilizado neste projeto TypeScript/React).
+# Convertido para no-op para evitar falhas de actionlint (setup-python@v3 deprecated).
+# Remoção definitiva via PR separado — ver PENDENCIAS.md P1.
+name: Python Package using Conda
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: python-conda-${{ github.ref }}
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+    - name: No-op placeholder
+      run: echo "Workflow descontinuado. Ver PENDENCIAS.md P1."
