@@ -136,7 +136,7 @@ test.describe("Carrinhos: Desfazer via RPC atômica (sucesso e falha RLS)", () =
 
     // Toast de erro é exibido — aceita título canônico ou título específico de RLS
     await expect(
-      page.getByText(/Não foi possível restaurar o carrinho\.|Sem permissão para restaurar\./i).first(),
+      page.getByText(/Sem permissão para restaurar\./i).first(),
     ).toBeVisible({ timeout: 6_000 });
 
     // O erro NÃO é engolido: a descrição sanitizada do RPC deve aparecer no DOM

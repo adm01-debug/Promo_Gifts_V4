@@ -80,7 +80,6 @@ export default function CnpjFormHarness() {
           value={maskCnpj(cnpj)}
           onChange={(e) => setCnpj(normalizeCnpj(e.target.value))}
           placeholder="00.000.000/0000-00"
-          maxLength={18}
           inputMode="numeric"
         />
         <div

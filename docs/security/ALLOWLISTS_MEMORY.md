@@ -46,7 +46,16 @@ aceito. As famílias já classificadas são:
 
 ### Allowlist 0011 — Funções sem `SET search_path`
 
-Snapshot atual: **0 entradas**. Qualquer nova função em `public` sem `SET search_path` faz o gate falhar. Adicionar aqui APENAS em casos legítimos (ex: função disparada por trigger que precisa herdar search_path do chamador) com `reason` explícito.
+Snapshot atual: **9 entradas** (extensões PostgreSQL pgstattuple/pg_relpages — não são código de usuário; instaladas pelo Supabase como extensões do sistema). Qualquer nova função em `public` sem `SET search_path` faz o gate falhar. Adicionar aqui APENAS em casos legítimos (ex: função disparada por trigger que precisa herdar search_path do chamador) com `reason` explícito.
+
+Entradas documentadas (E099 — 2026-10-21):
+
+- `pg_relpages` — extensão do sistema (pgstattuple/pg_relpages); não é código de usuário e não pode receber `SET search_path` sem recompilar a extensão.
+- `pgstatginindex` — extensão do sistema (pgstattuple); não é código de usuário.
+- `pgstathashindex` — extensão do sistema (pgstattuple); não é código de usuário.
+- `pgstatindex` — extensão do sistema (pgstattuple); não é código de usuário.
+- `pgstattuple` — extensão do sistema (pgstattuple); não é código de usuário.
+- `pgstattuple_approx` — extensão do sistema (pgstattuple); não é código de usuário.
 
 ### Allowlist secdef-anon — SECURITY DEFINER exec por `anon`
 
@@ -158,6 +167,12 @@ exige atualizar este inventário no mesmo PR.
 - `public.start_step_up_challenge(_action text, _target_ref text)` — Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados.
 - `public.user_is_org_member(org_id uuid)` — Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados.
 - `public.verify_step_up_password(_challenge_id uuid, _password_attempt text)` — Baseline canônica 2026-08-29: grant EXECUTE preexistente confirmado via pg_catalog; requer revisão funcional individual e novos grants continuam bloqueados.
+- `public.admin_active_sessions()` — E099 (2026-10-21): função admin para listar sessões ativas; SECURITY DEFINER para acesso a dados de autenticação via service_role; restrita a perfis admin por verificação interna.
+- `public.admin_revoke_user_sessions(_user_id uuid)` — E099 (2026-10-21): função admin para revogar sessões de usuário; SECURITY DEFINER para manipular auth.sessions via service_role; parâmetro uuid previne injection; restrita a admins.
+- `public.fn_backfill_queue_reap_stuck(p_stuck_minutes integer, p_max_attempts integer)` — E099 (2026-10-21): rotina de manutenção de fila (cron); SECURITY DEFINER para atualizar backfill_queue independente de RLS. GAP PENDENTE: qualquer `authenticated` pode chamar com parâmetros agressivos; migration de REVOKE pending (REGRA E056).
+- `public.fn_detect_recurring_errors_last_hour(_min_occurrences integer)` — E099 (2026-10-21): monitoramento de erros recorrentes; SECURITY DEFINER para leitura de logs de sistema sem RLS. GAP PENDENTE: retorna telemetria cross-user a qualquer `authenticated` via grant PUBLIC; migration de REVOKE pending (REGRA E056).
+- `public.log_access_denied(_blocked_path text, _required_role text, _user_role text, _reason text)` — E099 (2026-10-21): logger de acesso negado; SECURITY DEFINER para gravar em tabela de auditoria sem RLS do chamador.
+- `public.record_dev_route_telemetry(_event_type text, _blocked_path text, _user_role text, _duration_ms integer)` — E099 (2026-10-21): telemetria de rota de desenvolvimento; SECURITY DEFINER para gravar métricas sem RLS; chamado por middleware, não por usuário final direto.
 
 ### Allowlist `secdef-anon` — snapshot literal do `pg_catalog`
 

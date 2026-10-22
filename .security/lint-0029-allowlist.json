@@ -41,7 +41,7 @@
     },
     {
       "fn": "public.fn_backfill_queue_reap_stuck(p_stuck_minutes integer, p_max_attempts integer)",
-      "reason": "E099 (2026-10-21): rotina de manutenção de fila (cron) — SECURITY DEFINER para atualizar registros de backfill_queue independente de RLS; parâmetros inteiros, sem risco de injection."
+      "reason": "E099 (2026-10-21): rotina de manutenção de fila (cron) — SECURITY DEFINER para atualizar registros de backfill_queue independente de RLS. GAP DE SEGURANÇA PENDENTE (Qodo High, 2026-10-22): qualquer authenticated pode chamar com p_stuck_minutes=0 e p_max_attempts=1 para reaper jobs em voo. Migration de REVOKE pending: supabase/migrations/20261022_revoke_fn_backfill_queue_reap_stuck_public_grant.sql (a criar via workflow, REGRA E056)."
     },
     {
       "fn": "public.fn_batch_update_cart_item_sort_order(p_updates jsonb)",
