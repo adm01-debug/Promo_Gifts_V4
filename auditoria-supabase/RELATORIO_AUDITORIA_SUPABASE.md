@@ -41,9 +41,9 @@ O banco de produção está em **estado misto**: a cobertura de segurança de ba
 |---|---|---|
 | **CRÍTICO** | **1** | Intervir agora |
 | **ALTO** | **7** | Esta semana |
-| **MÉDIO** | **22** | Próximas 4 semanas |
+| **MÉDIO** | **27** (+5 advisors) | Próximas 4 semanas |
 | **BAIXO** | **8** | Próximo trimestre |
-| **INFO** | **12** | Monitorar |
+| **INFO** | **13** (+1 RLS matrix) | Monitorar |
 | **NÃO VERIFICADO** | **3** | Verificar via Dashboard |
 
 ---
@@ -185,6 +185,18 @@ O banco de produção está em **estado misto**: a cobertura de segurança de ba
 
 ---
 
+### MÉDIO — Achados dos Performance Advisors (2026-10-22)
+
+| ID | Achado | Objetos | Esforço |
+|---|---|---|---|
+| ADV-PERF-001 | **8 policies RLS com `auth_rls_initplan`** — `auth.uid()` re-avaliado por linha em vez de uma vez por query. Fix: `(SELECT auth.uid())` | `ai_usage_quotas` (4 policies), `art_file_attachments` (4 policies) | Trivial (1 linha por policy) |
+| ADV-PERF-002 | **4 FKs adicionais sem índice** (além das já listadas em INT-001) | `kit_quote_requests.quote_id_fkey`, `kit_quote_requests.user_id_fkey`, `kit_save_requests.kit_id_fkey`, `kit_save_requests.user_id_fkey` | Trivial |
+| ADV-PERF-003 | **461 índices não utilizados** — bloat de disco significativo; candidatos a DROP após revisão | `sm_site_url_map`, `search_analytics`, `products`, `mv_stock_velocity` etc | Médio (revisão antes de dropar) |
+| ADV-PERF-004 | **Bloat em `net._http_response`** — candidato a `VACUUM FULL` (requer downtime) | `net._http_response` | Médio |
+| ADV-PERF-005 | **Auth com 10 conexões fixas** — migrar para estratégia baseada em percentual para auto-scaling | `auth` service config | Pequeno |
+
+---
+
 ### INFO (destaques positivos)
 
 | ID | Achado |
@@ -193,6 +205,7 @@ O banco de produção está em **estado misto**: a cobertura de segurança de ba
 | FUNC-001 | 100% das 570 funções SECURITY DEFINER com `search_path` explícito |
 | RLS-001 | Zero tabelas sem RLS, zero tabelas com RLS sem policies |
 | RLS-002 | Gate CI 1.13.2 (anon INSERT rate guard) ativo e funcionando |
+| RLS-MAT | Matriz RLS tenant A×B: **13/13 PASS** — isolamento cross-tenant confirmado em ambiente local |
 | GAP-007 | `SUPABASE_SERVICE_ROLE_KEY` não exposto no bundle frontend |
 | EF-002 | `_shared/edge-authz-manifest.ts` documenta autenticação de todas as funções sem JWT |
 
@@ -312,8 +325,37 @@ O banco de produção está em **estado misto**: a cobertura de segurança de ba
 | `auditoria-supabase/propostas/P01_storage_buckets_privados.sql` | Fix: art-files e component-media |
 | `auditoria-supabase/propostas/P02_fk_indexes.sql` | Índices para 6 FKs sem suporte |
 | `auditoria-supabase/propostas/P03_analyze_tables.sql` | ANALYZE em tabelas com stats obsoletas |
+| `auditoria-supabase/testes/rls_matrix_tenant_ab.md` | **NOVO** Matriz RLS tenant A×B — 13/13 PASS |
+| `auditoria-supabase/testes/rls_matrix_test.sql` | **NOVO** Script SQL reproduzível do teste RLS |
 | `auditoria-supabase/progresso.json` | Controle de progresso das seções |
 
 ---
 
-*Auditoria conduzida em modo somente leitura. Nenhuma alteração foi feita no banco de produção.*
+## 9. Matriz RLS Tenant A×B — Resultado Final
+
+**Data de execução:** 2026-10-22  
+**Ambiente:** PostgreSQL 16 local temporário (`audit_rls_test`) — isolado de produção  
+**Resultado: 13/13 PASS ✓ — sem vazamento de dados entre tenants**
+
+| Grupo | Teste | Resultado |
+|---|---|---|
+| T1 — user-a-1 (owner Org-A) | 6 asserções de isolamento | **6/6 PASS** |
+| T2 — user-b-1 (owner Org-B) | 3 asserções simétricas | **3/3 PASS** |
+| T3 — user-a-2 (member) | filtro coordinator funciona | **1/1 PASS** |
+| T4 — anon | permission denied em todas as tabelas sensíveis | **3/3 PASS** |
+
+**Conclusão:** As políticas RLS de produção — `user_organizations`, `quotes`, `orders`, `order_items`, `profiles`, e as funções helper `user_is_org_member`, `is_org_owner_or_admin`, `is_coord_or_above` — isolam corretamente dados entre organizações distintas. Nenhum vazamento cross-tenant detectado.
+
+Detalhes completos em `auditoria-supabase/testes/rls_matrix_tenant_ab.md`.
+
+---
+
+## 10. Status de `stock_daily_summary` e `fn_aggregate_stock_daily`
+
+- **`stock_daily_summary`:** `n_live_tup = 0` verificado em 2026-10-22 — tabela vazia (confirmado em 2 momentos).
+- **`fn_aggregate_stock_daily()`:** Função excede 60s de execução — timeout do MCP em ambas as tentativas. Não foi possível executar via MCP.
+- **Ação recomendada:** Executar manualmente via Supabase Dashboard → SQL Editor: `SELECT public.fn_aggregate_stock_daily();` (pode levar vários minutos). Ou aguardar o cron job correspondente ser corrigido (ver CRON-001).
+
+---
+
+*Auditoria conduzida em modo somente leitura (produção). Matriz RLS executada em ambiente local isolado. Nenhuma alteração foi feita no banco de produção.*

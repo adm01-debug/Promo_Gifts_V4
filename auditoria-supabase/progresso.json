@@ -3,7 +3,10 @@
   "url": "https://doufsxqlfjyuvxuezpln.supabase.co",
   "auditoria_iniciada": "2026-10-22",
   "auditoria_concluida": "2026-10-22",
-  "modo": "somente_leitura",
+  "modo": "somente_leitura_producao_local_para_rls",
+  "rls_matrix_resultado": "13/13 PASS — sem vazamento cross-tenant",
+  "stock_daily_summary_status": "vazia_n_live_tup_0",
+  "fn_aggregate_stock_daily_status": "timeout_60s_mcp_nao_executado",
   "secoes": {
     "1_inventario": "concluido",
     "2_drift": "concluido",
@@ -28,9 +31,16 @@
   "resumo_achados": {
     "CRITICO": 1,
     "ALTO": 7,
-    "MEDIO": 22,
+    "MEDIO": 27,
     "BAIXO": 8,
-    "INFO": 12,
+    "INFO": 13,
     "NAO_VERIFICADO": 3
+  },
+  "advisors_performance": {
+    "auth_rls_initplan": 8,
+    "unindexed_fks": 4,
+    "unused_indexes": 461,
+    "table_bloat": 1,
+    "auth_connections": 1
   }
 }
