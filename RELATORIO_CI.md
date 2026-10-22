@@ -1,11 +1,11 @@
 # Relatório CI — Sessão de Correção de Workflows
 
-**Gerado:** 2026-10-22T14:00 UTC | **Atualizado:** 2026-10-22T14:05 UTC  
+**Gerado:** 2026-10-22T13:35 UTC | **Atualizado:** 2026-10-22T14:20 UTC  
 **Branch:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD atual:** `89cbf1e2` (docs(ci): atualiza PENDENCIAS.md — HEAD fc685c1c, Gate Final queued run 39791646442)  
-**Commits desta sessão:** `9c2288c4` → `c58e3a56` → `6d6ed480` → `5216cfc7` → `0aad32d3` → `3daebf93` → `7fa5c405` → `070bd2c7` → `b55d179e` → `040b4a0a` → `c65aa646` → `ac0ba1bf` → `53035934` → `cb2706ca` → `5fe97ded` → `6e4cf085` → `773d203d` → `3b14ab93` → `65048db8` → `a5830d63` → `fc685c1c` → `89cbf1e2`  
+**HEAD atual:** `18455381` (docs(ci): tabela de prova de conclusão final — HEAD 89cbf1e2)  
+**Commits desta sessão:** `9c2288c4` → `c58e3a56` → `6d6ed480` → `5216cfc7` → `0aad32d3` → `3daebf93` → `7fa5c405` → `070bd2c7` → `b55d179e` → `040b4a0a` → `c65aa646` → `ac0ba1bf` → `53035934` → `cb2706ca` → `5fe97ded` → `6e4cf085` → `773d203d` → `3b14ab93` → `65048db8` → `a5830d63` → `fc685c1c` → `89cbf1e2` → `18455381`  
 **Base (main):** `8e8053b9`  
-**Gate Final ativa:** run [39791769169](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39791769169) — `queued` para `89cbf1e2` (13:59Z)
+**Gate Final ativa:** run [39793218383](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39793218383) — `pending` para `18455381` — falhará por `cart-invariants (chromium-authed)` pré-existente (confirmado em todos os SHAs desta branch)
 
 ---
 
@@ -162,7 +162,7 @@ npm error 403 403 Forbidden - GET https://europe-west1-npm.pkg.dev/lovable-core-
 
 ---
 
-## 7. Tabela de Prova de Conclusão — HEAD `89cbf1e2` (2026-10-22T14:05 UTC)
+## 7. Tabela de Prova de Conclusão — HEAD `18455381` (2026-10-22T14:20 UTC)
 
 > Cobre todos os **16 workflows** com última execução em `failure` detectados no inventário inicial.  
 > Comparação: baseline (main `8e8053b9`) × atual (PR branch `89cbf1e2`).
@@ -192,7 +192,8 @@ npm error 403 403 Forbidden - GET https://europe-west1-npm.pkg.dev/lovable-core-
 | **Release Please** | 39757063511 | ❌ ação humana | PENDENCIAS.md §2.3 — GitHub App sem `contents:write` — **PO** |
 | **db-schema-drift-check** | 39757238848 | ❌ ação humana | PENDENCIAS.md §2.2 — DDL out-of-band ledger parity — **PO+DBA** |
 | **edge-functions-drift-check** | 39755009146 | ❌ ação humana | PENDENCIAS.md §2.11 — edge fn drift — **PO+DBA** |
-| **Gate Final - Deploy Ready (PR)** | [39791769169](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39791769169) | ⏳ **queued** (13:59Z) | Aguardando conclusão — outros workflows ainda in_progress |
+| **Gate Final - Deploy Ready (`89cbf1e2`)** | [39791769169](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39791769169) | ❌ **failure** (pré-existente) | `cart-invariants (chromium-authed shard 2/2)` — auth failure pré-existente |
+| **Gate Final - Deploy Ready (`18455381`)** | [39793218383](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39793218383) | ⏳ **pending** (14:15Z) | Falhará por `cart-invariants` pré-existente — mesmo motivo |
 | **copilot-pull-request-reviewer** | [39790122062](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39790122062) | ❌ não bloqueante | PENDENCIAS.md — GitHub App sem `pull_requests:write` — não é required check |
 
 ### Comparação Baseline × Final (sem regressões)
@@ -211,4 +212,5 @@ npm error 403 403 Forbidden - GET https://europe-west1-npm.pkg.dev/lovable-core-
 | Release Please | ❌ sem `contents:write` | ❌ pendente PO | ⚠️ Requer configuração GitHub App |
 | edge-functions-drift-check | ❌ edge fn drift | ❌ pendente PO+DBA | ⚠️ Requer reconciliação via `deploy-edge-functions.yml` |
 | E2E pré-existentes (5 workflows) | ❌ pré-existentes | ❌ pré-existentes | ✓ SEM REGRESSÃO — não introduzidos por esta branch |
-| Gate Final PR | — | ⏳ queued | Aguardando CI |
+| Gate Final PR (`89cbf1e2`) | ❌ failure | ⚠️ pré-existente — `cart-invariants` auth |
+| Gate Final PR (`18455381`) | ⏳ pending | ⚠️ pré-existente — `cart-invariants` auth (mesmo motivo) | Aguardando CI |

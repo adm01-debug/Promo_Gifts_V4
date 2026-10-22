@@ -1,9 +1,9 @@
 # PENDÊNCIAS — Correção de Workflows CI
 
-**Atualizado:** 2026-10-22T14:05 UTC  
+**Atualizado:** 2026-10-22T14:20 UTC  
 **Branch ativa:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD:** `89cbf1e2` (docs(ci): atualiza PENDENCIAS.md — HEAD fc685c1c, Gate Final queued run 39791646442)  
-**Gate Final ativa:** run [39791769169](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39791769169) — queued para `89cbf1e2` (13:59Z)
+**HEAD:** `18455381` (docs(ci): tabela de prova de conclusão final — HEAD 89cbf1e2)  
+**Gate Final ativa:** run [39793218383](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39793218383) — `pending`/`in_progress` para `18455381` — falhará por `cart-invariants (chromium-authed)` pré-existente (mesmo motivo confirmado em todos os SHAs desta branch)
 
 ---
 
@@ -22,7 +22,7 @@
 
 ---
 
-## 1.1 INVENTÁRIO COMPLETO — Workflows em falha na `main` (2026-10-22T14:30 UTC)
+## 1.1 INVENTÁRIO COMPLETO — Workflows em falha na `main` (2026-10-22T14:07 UTC)
 
 > Extraído por query `status=failure&branch=main`. 16 workflows com última run em `conclusion=failure`.
 
@@ -231,7 +231,8 @@
 | **Uptime Monitor** | [39788883010](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39788883010) | ✅ `success` | Resolvido automaticamente na main (8e8053b9) — app voltou ao ar |
 | **Gitleaks — Full History Audit** | [39757063805](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757063805) | ✅ `success` | Resolvido na main (8e8053b9) — was failing em c7c25848 |
 | **Quote Number Hardening — Verify** | [39779794795](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39779794795) | ✅ `success` | Resolvido na main (8e8053b9) — agendado passou |
-| **Gate Final — PR branch atual** | [39791769169](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39791769169) | ⏳ queued (13:59Z) | Aguardando conclusão — outros workflows ainda in_progress no PR |
+| **Gate Final — PR branch `89cbf1e2`** | [39791769169](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39791769169) | ❌ failure (pré-existente) | `cart-invariants (chromium-authed shard 2/2)` — auth failure pré-existente, não causado por esta branch |
+| **Gate Final — PR branch `18455381`** | [39793218383](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39793218383) | ⏳ pending (14:15Z) | Falhará por `cart-invariants (chromium-authed)` pré-existente — mesmo motivo |
 
 ### 4B. Workflows com falhas pré-existentes (não causados por esta branch)
 
