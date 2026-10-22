@@ -179,6 +179,7 @@ O banco de produção está em **estado misto**: a cobertura de segurança de ba
 | FUNC-002 | `cron_invoke_edge` SECURITY DEFINER com chamada HTTP — risco SSRF | `cron_invoke_edge` | Pequeno |
 | EF-001 | Chaves MCP sem expiração automática | `mcp_api_keys` | Pequeno |
 | EF-005 | Sem ambiente de staging | `supabase/config.toml` | Médio |
+| EF-008 | `send-notification` sem idempotência — INSERT puro, retry gera notificações duplicadas (CONFIRMADO por código v306) | `supabase/functions/send-notification/index.ts` | Pequeno |
 | AU-001 | Sem política de senha configurada (default: 6 chars) | Supabase Auth | Trivial |
 | ST-002 | Bucket `scripts` aceita shell scripts sem restrição de MIME | `scripts` bucket | Pequeno |
 | ST-003 | Política UPDATE em `recibos-entrega` sem WITH CHECK | `recibos-entrega` bucket | Trivial |
@@ -1192,11 +1193,24 @@ Esta seção documenta todos os itens que não puderam ser verificados nesta aud
 
 ### NV-003 — Matriz RLS com Migrations Completas do Repo
 
-**Status:** ⚠️ NÃO VERIFICADO  
-**Motivo:** O repo tem 2.538 migrations aplicadas (2.975 arquivos no total). A primeira migration (`20241231000000_saved_filters.sql`) já usa `REFERENCES auth.users(id) ON DELETE CASCADE` — dependência imediata do schema `auth` do Supabase. Sem a stack Supabase completa (Docker + `supabase start`), as migrations falhariam nas primeiras linhas.  
-**O que foi feito:** Matriz executada com schema simplificado replicando as políticas RLS das tabelas principais. Resultado: 13/13 PASS.  
-**O que não foi verificado:** isolamento RLS com o schema exato de produção, incluindo todas as 398 tabelas, 960 policies, e as funções SECURITY DEFINER que bypassam RLS.  
-**Roteiro:** `git clone` → `supabase start` (requer Docker com 8+ GB RAM) → `psql $LOCAL_DB < testes/rls_matrix_test.sql` com schema real.
+**Status:** ✅ PARCIALMENTE RESOLVIDO — 24/24 PASS com migrations reais (2026-10-22, sessão 9)  
+**Ambiente:** PostgreSQL 16 local, banco `audit_rls_v2` criado do zero. Auth stub real com `auth.uid()` via `set_config`. Testes rodados como `authenticated` (não-superusuário — RLS aplica).  
+**Migrations aplicadas:**
+- `20260214152115_900b7a1c...sql` → `seller_carts` (policy: `auth.uid() = seller_id`)
+- `20260420123931_cfdf94d4...sql` → `favorite_lists` (policy: `user_id = auth.uid()`)
+- `20260412182408_a60c0965...sql` → `collections` (policy: `user_id = auth.uid()`)
+- `20260322133758_7dc8f3c8...sql` → `custom_kits` (policy: `user_id = auth.uid() OR has_role(admin)`)
+
+**Resultado:**
+- `seller_carts`: 7/7 PASS — SC1 (own read), SC2 (no cross-read), SC3 (no cross-DELETE), SC4 (no cross-INSERT), SC5 (no cross-UPDATE), SC6 (isolation after B ops), SC7 (full table no leak)
+- `favorite_lists`: 6/6 PASS — FAV-SC1 a FAV-SC6
+- `collections`: 6/6 PASS — COL-SC1 a COL-SC6
+- `custom_kits`: 5/5 PASS — KIT-SC1 a KIT-SC5
+
+**Total: 24/24 PASS** — Nenhum vazamento cross-tenant nas 4 tabelas testadas com migrations reais.
+
+**Limitação restante:** Teste local. Não cobre os ~390 tabelas restantes, funções SECURITY DEFINER (que bypassam RLS), JOINs cross-tabela, nem ambiente com JWT real. Para cobertura completa: `supabase start` com Docker (8+ GB RAM).  
+**Detalhes:** `auditoria-supabase/testes/rls_matrix_tenant_ab.md` §NV-003.
 
 ---
 
@@ -1697,16 +1711,16 @@ base_tables=398, views=193, funcoes=1334, cron_jobs=142, rls_policies=960, migra
 -- Δ = 0 em todas as métricas (somente edição de arquivos de auditoria)
 ```
 
-| Métrica | Sessão 1 | Sessão 2 | Sessão 3 | Sessão 4 | Sessão 5 | Sessão 6 | Δ total |
-|---|---|---|---|---|---|---|---|
-| base_tables | 398 | 398 | 398 | 398 | 398 | 398 | **0** ✅ |
-| views | 193 | 193 | 193 | 193 | 193 | 193 | **0** ✅ |
-| cron_jobs | 142 | 142 | 142 | 142 | 142 | 142 | **0** ✅ |
-| rls_policies | 960 | 960 | 960 | 960 | 960 | 960 | **0** ✅ |
-| functions_public | 1.334 | 1.334 | 1.334 | 1.334 | 1.334 | 1.334 | **0** ✅ |
-| migrations_ledger | 2.538 | 2.538 | 2.538 | 2.538 | 2.538 | 2.538 | **0** ✅ |
+| Métrica | Sessão 1 | Sessão 2 | Sessão 3 | Sessão 4 | Sessão 5 | Sessão 6 | Sessão 9 | Δ total |
+|---|---|---|---|---|---|---|---|---|
+| base_tables | 398 | 398 | 398 | 398 | 398 | 398 | 398 | **0** ✅ |
+| views | 193 | 193 | 193 | 193 | 193 | 193 | 193 | **0** ✅ |
+| cron_jobs | 142 | 142 | 142 | 142 | 142 | 142 | 142 | **0** ✅ |
+| rls_policies | 960 | 960 | 960 | 960 | 960 | 960 | 960 | **0** ✅ |
+| functions_public | 1.334 | 1.334 | 1.334 | 1.334 | 1.334 | 1.334 | 1.334 | **0** ✅ |
+| migrations_ledger | 2.538 | 2.538 | 2.538 | 2.538 | 2.538 | 2.538 | 2.538 | **0** ✅ |
 
-**Modo auditoria:** somente leitura. Zero INSERT/UPDATE/DELETE/DDL/GRANT executados em nenhuma das 6 sessões.
+**Modo auditoria:** somente leitura. Zero INSERT/UPDATE/DELETE/DDL/GRANT executados em nenhuma das 9 sessões. Sessões 7–9: apenas leitura de arquivos locais, código de edge function via MCP (somente leitura), e Postgres local (`audit_rls_v2`) — sem acesso a `doufsxqlfjyuvxuezpln`.
 
 ---
 

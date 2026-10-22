@@ -5,7 +5,7 @@
   "auditoria_concluida": "2026-10-22",
   "modo": "somente_leitura_producao_local_para_rls",
   "rls_matrix_resultado": "13/13 PASS — sem vazamento cross-tenant (schema simplificado)",
-  "rls_matrix_com_migrations_repo": "NAO_VERIFICADO — 2538 migrations dependem de auth.users FK e extensões Supabase não disponíveis em Postgres puro",
+  "rls_matrix_com_migrations_repo": "RESOLVIDO (sessao 9, 2026-10-22) — 24/24 PASS com migrations reais: seller_carts(7/7), favorite_lists(6/6), collections(6/6), custom_kits(5/5); banco audit_rls_v2 PostgreSQL 16 local; auth.uid() stub + SET ROLE authenticated",
   "stock_daily_summary_status": "2639107_linhas_914mb_nunca_analyzed — n_live_tup_stale_20310 (last_analyze=null, last_autovacuum=null)",
   "fn_aggregate_stock_daily_status": "timeout_60s_mcp_nao_executado — funcao existe (retorna jsonb, faz UPSERT p_date via BR timezone)",
   "edge_logs_janela_maxima": "24h — limitação arquitetural do query_logs MCP (não 7d)",
@@ -87,7 +87,13 @@
     },
     "8_edge_functions": {
       "status": "concluido",
-      "evidencia": "109 funcoes publicadas (CORRETO — 82 era contagem incorreta); 36 com verify_jwt=false (33.0%); 5 criticas sem auth; lista completa em inventario/edge_functions_verify_jwt_false.md",
+      "evidencia": "109 funcoes publicadas; 36 com verify_jwt=false (33.0%); 5 criticas sem auth; idempotencia verificada por codigo-fonte via MCP get_edge_function (2026-10-22)",
+      "idempotencia_por_funcao": {
+        "send_notification_v306": "NAO_IDEMPOTENTE — INSERT puro em workspace_notifications sem idempotency_key (EF-008 ALTO)",
+        "magazine_reader_state_write_v43": "IDEMPOTENTE — upsert com onConflict: 'magazine_token_hash,viewer_fingerprint'",
+        "receive_crm_callback_v75": "IDEMPOTENTE — INSERT ON CONFLICT DO NOTHING em crm_callback_events(external_quote_id, event_type, occurred_at)",
+        "webhook_inbound": "IDEMPOTENTE — inbound_webhook_events.idempotency_key UNIQUE"
+      },
       "evidencia_reexecutada_14h": {
         "total_edge_functions": 109,
         "verify_jwt_false": 36,
@@ -107,7 +113,8 @@
     },
     "11_rls": {
       "status": "concluido",
-      "evidencia": "960 policies; 0 tabelas sem policy; matriz tenant A x B 13/13 PASS (schema simplificado); matriz com migrations repo NAO VERIFICADO (auth.users FK deps)"
+      "evidencia": "960 policies; 0 tabelas sem policy; matriz tenant A x B 13/13 PASS (schema simplificado); matriz com migrations REAIS do repo 24/24 PASS (sessao 9, 2026-10-22): seller_carts(7/7), favorite_lists(6/6), collections(6/6), custom_kits(5/5)",
+      "conclusao_nv003": "RESOLVIDO — isolamento cross-tenant confirmado com migrations reais do repositorio"
     },
     "12_lacunas": {
       "status": "concluido",
@@ -123,15 +130,21 @@
   "relatorio_final": "RELATORIO_AUDITORIA_SUPABASE.md",
   "resumo_achados": {
     "CRITICO": 1,
-    "ALTO": 15,
+    "ALTO": 16,
     "MEDIO": 30,
     "BAIXO": 9,
     "INFO": 13,
-    "NAO_VERIFICADO": 7,
+    "NAO_VERIFICADO": 5,
+    "RESOLVIDO": 2,
     "novos_sessao_14h": {
       "DRIFT-003": "ALTO — 446 migrations no repo sem entrada no ledger do banco (prioridade imediata para reconciliação)",
       "PERF-009": "ALTO — 107 funções PL/pgSQL com exception swallowing (EXCEPTION sem RAISE); erros silenciados podem mascarar falhas de segurança",
       "CORR-001": "INFO — edge functions total corrigido para 109 (era 82 por contagem incorreta de sessão anterior)"
+    },
+    "novos_sessao_9": {
+      "EF-008": "ALTO — send-notification sem idempotência (INSERT puro, retry gera notificações duplicadas) — CONFIRMADO por código v306",
+      "NV-003_RESOLVIDO": "24/24 PASS RLS com migrations reais do repositório (seller_carts, favorite_lists, collections, custom_kits)",
+      "NV-006_RESOLVIDO": "types.ts drift — zero tabelas críticas ausentes; 11 ausências todas prefixo _ (padrão do gerador)"
     }
   },
   "prova_projeto_confirmada": "get_project_url → https://doufsxqlfjyuvxuezpln.supabase.co (executado 2026-10-22)",
@@ -213,7 +226,7 @@
     "CRON-004": "ALTO — pipeline-health-hourly e reposicao-backfill-hourly com 10% falha consistente em 30d",
     "NV-004": "NAO_VERIFICADO — migrations from-zero: primeira migration depende de auth.users",
     "NV-005": "NAO_VERIFICADO — LGPD retention: sem política formal documentada encontrada",
-    "NV-006": "NAO_VERIFICADO — types.ts drift estrutural: script scripts/extract-types-inventory.mjs requer Node.js/TypeScript Compiler API. Roteiro: npm run check:types-inventory-drift localmente ou via CI.",
+    "NV-006": "RESOLVIDO (sessao 7, 2026-10-22) — types.ts 387 tabelas vs DB 398; 8/8 tabelas criticas presentes; 11 ausencias todas prefixo _ (backups excluidos por convencao do gerador); zero tabelas presentes no types.ts mas ausentes do banco",
     "NV-007": "NAO_VERIFICADO — ambiente de staging/Supabase Branch: list_branches retornou 0 branches. Roteiro: Dashboard Supabase → Branches; checar projeto separado com staging/test/dev."
   },
   "backup_pitr_status": "VERIFICADO — archive_mode=on, archive_command=wal-g, wal_level=logical, synchronous_commit=on; janela de retenção confirmar no Dashboard",

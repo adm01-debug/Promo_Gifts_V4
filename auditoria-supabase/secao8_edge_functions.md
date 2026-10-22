@@ -146,17 +146,21 @@ Funções invocadas por pg_cron via HTTP são **re-executáveis por design opera
 
 #### Funções com verify_jwt=false — R1 (custom-auth, 28 estimadas)
 
-Essas funções têm autenticação própria mas idempotência depende do design de cada uma:
+Essas funções têm autenticação própria. Idempotência verificada por leitura de código-fonte via MCP `get_edge_function` (2026-10-22):
 
-| Função | Observação sobre idempotência |
-|---|---|
-| `mcp-server` | Operações de query/read — idempotente por natureza das queries |
-| `external-db-inspect` | Inspeção read-only — idempotente |
-| `send-notification` | ⚠️ Escrita — se re-executada, pode reenviar notificação. Requer deduplicação por `notification_id` |
-| `magazine-reader-state-write` | ⚠️ Escrita de estado — requer idempotency-key ou upsert |
-| `receive-crm-callback` | ⚠️ Webhook recebido — requer deduplicação por ID de evento CRM |
+| Função | Idempotência | Mecanismo verificado |
+|---|---|---|
+| `mcp-server` | ✅ IDEMPOTENTE | Operações de query/read only |
+| `external-db-inspect` | ✅ IDEMPOTENTE | Inspeção read-only |
+| `send-notification` | ❌ NÃO IDEMPOTENTE | INSERT direto em `workspace_notifications` sem deduplicação. Re-execução gera notificações duplicadas. |
+| `magazine-reader-state-write` | ✅ IDEMPOTENTE | `upsert` com `onConflict: "magazine_token_hash,viewer_fingerprint"` |
+| `receive-crm-callback` | ✅ IDEMPOTENTE | `INSERT ON CONFLICT DO NOTHING` em `crm_callback_events(external_quote_id, event_type, occurred_at)` |
 
-**Status parcial:** `send-notification`, `magazine-reader-state-write`, `receive-crm-callback` — NÃO VERIFICADO individualmente.
+**Evidência — `send-notification` (version 306):** código lido 2026-10-22. INSERT direto `supabase.from('workspace_notifications').insert({user_id, title, message, type, ...})` sem verificação prévia de `idempotency_key`. Retry automático (por cron, network jitter ou cliente) duplica notificação.
+
+**Evidência — `magazine-reader-state-write` (version 43):** código lido 2026-10-22. `supabase.from("magazine_reader_state").upsert({...}, { onConflict: "magazine_token_hash,viewer_fingerprint" })`. IDEMPOTENTE — re-execução atualiza, não duplica.
+
+**Evidência — `receive-crm-callback` (version 75):** comentário inline "5) idempotência: INSERT ON CONFLICT DO NOTHING" + `supabase.from("crm_callback_events").insert({external_quote_id, event_type, occurred_at, ...})` com constraint única em `(external_quote_id, event_type, occurred_at)`. IDEMPOTENTE.
 
 #### Funções R0 — Públicas por design (11 estimadas)
 
@@ -182,11 +186,23 @@ Funções de leitura pública (`catalog-public`, `seo-sitemap`, `health-check`, 
 
 | Status | Funções | Observação |
 |---|---|---|
-| VERIFICADO — idempotente | 4 | `webhook-inbound`, `health-check`, `catalog-public`, `seo-sitemap` |
+| VERIFICADO — idempotente | 6 | `webhook-inbound`, `health-check`, `catalog-public`, `seo-sitemap`, `magazine-reader-state-write`, `receive-crm-callback` |
+| VERIFICADO — NÃO IDEMPOTENTE | 1 | `send-notification` — INSERT puro, sem deduplicação (ver EF-008 abaixo) |
 | VERIFICADO — read-only (trivialmente idempotente) | ~40 | Funções verify_jwt=true de leitura (catalog, product-search, quote-*, etc.) |
-| NÃO VERIFICADO — funções de escrita | ~20 | `send-notification`, `magazine-reader-state-write`, `receive-crm-callback`, cron-driven de escrita |
+| NÃO VERIFICADO — funções cron de escrita | ~20 | Funções cron-driven de escrita não auditadas individualmente |
 | NÃO VERIFICADO — função ausente no repo | 1 | `stripe-webhook` — não encontrada em `supabase/functions/`; pode estar em outro repo ou deletada |
-| Novo achado | EF-007 | MÉDIO — sem política formal de idempotência para funções de escrita |
+| Achado aberto | EF-007 | MÉDIO — sem política formal de idempotência para funções de escrita |
+| Achado novo | EF-008 | ALTO — `send-notification` sem idempotência confirmada por código |
+
+---
+
+### [ID-EF-008] `send-notification` sem mecanismo de idempotência — CONFIRMADO
+- **Severidade:** ALTO
+- **Objeto:** `supabase/functions/send-notification/index.ts` (version 306)
+- **Evidência:** Código lido 2026-10-22. `supabase.from('workspace_notifications').insert({user_id, title, message, type, ...})` sem verificação prévia. Sem campo `idempotency_key` na query, sem lookup de deduplicação antes do INSERT.
+- **Impacto:** Retry automático por pg_cron (quando chamado como cron job), client-side retry, ou CDN retry resulta em notificações duplicadas enviadas ao usuário.
+- **Correção sugerida:** Adicionar `idempotency_key` ao payload (gerado pelo caller) e verificar `EXISTS(SELECT 1 FROM workspace_notifications WHERE idempotency_key = $1)` antes de inserir. Ou usar `INSERT ... ON CONFLICT (idempotency_key) DO NOTHING`.
+- **Esforço:** Pequeno (1 campo + 1 check)
 
 ---
 
