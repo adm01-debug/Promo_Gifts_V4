@@ -116,6 +116,33 @@ describe('MockupProductSelector — grade responsiva e honestidade', () => {
     vi.clearAllMocks();
     catalog.products = Array.from({ length: 5 }, (_, i) => makeProduct(i + 1));
 
+    // @tanstack/react-virtual v3 chama getBoundingClientRect() em observeElementRect() como
+    // primeira medição para determinar outerSize. O stub global de ResizeObserver em
+    // tests/setup.ts nunca dispara o callback (observe() é no-op), então essa leitura
+    // síncrona é a única chance de dar tamanho não-zero ao container de scroll.
+    // Sem esse mock, outerSize=0 → calculateRange retorna null → nenhuma linha renderizada.
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(
+      function (this: HTMLElement) {
+        const isRow =
+          typeof (this as Element)?.getAttribute === 'function' &&
+          (this as Element).getAttribute('data-testid') === 'mockup-product-row';
+        const height = isRow ? MEASURED_ROW_HEIGHT : SCROLL_VIEWPORT_HEIGHT;
+        return {
+          width: 800,
+          height,
+          top: 0,
+          left: 0,
+          bottom: height,
+          right: 800,
+          x: 0,
+          y: 0,
+          toJSON() {
+            return this;
+          },
+        } as DOMRect;
+      },
+    );
+
     // "Layout" de jsdom: dá dimensões não-zero ao elemento de scroll (senão a virtualização
     // não renderiza nada) e uma altura mensurável às linhas (senão a medição retorna 0).
     Object.defineProperty(HTMLElement.prototype, 'offsetHeight', {
