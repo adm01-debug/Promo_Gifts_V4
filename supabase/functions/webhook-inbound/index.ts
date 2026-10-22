@@ -363,7 +363,6 @@ Deno.serve(async (req) => {
         message: "Invalid webhook signature",
       }, 401);
     }
-    }
 
     const contract = await parseContract(req, WebhookInboundSchemas, {
       corsHeaders,
