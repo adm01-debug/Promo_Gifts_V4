@@ -12,7 +12,3 @@
 #     o remoto não tem) entra aqui; objeto criado em produção sem migration
 #     NÃO entra — vira migration espelho (REGRA #8, docs/db/POLITICA_DDL.md).
 
-# 2026-10-22 — header de sessão PostgreSQL emitido pelo `supabase db diff`
-# em alguns cenários de shadow; não é objeto de schema nem DDL real.
-# Confirmado em run 39770645278 job 119799470385 (schema_drift.clean = 33 bytes).
-^set check_function_bodies = off;$

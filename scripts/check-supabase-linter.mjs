@@ -74,6 +74,7 @@ export async function runLinter({
   fetcher = fetch,
   catalogRunner = runCatalogChecks,
   logger = console,
+  sleepFn = (ms) => new Promise((r) => setTimeout(r, ms)),
 } = {}) {
   if (!token || !ref) {
     logger.error("❌ SUPABASE_ACCESS_TOKEN e SUPABASE_PROJECT_REF são obrigatórios.");
@@ -102,7 +103,7 @@ export async function runLinter({
       lastError = error;
       if (attempt < MAX_ATTEMPTS) {
         logger.warn(`⚠️  Tentativa ${attempt}/${MAX_ATTEMPTS} falhou (${error.name || "erro de rede"}) — aguardando ${attempt * 5}s...`);
-        await new Promise((r) => setTimeout(r, attempt * 5_000));
+        await sleepFn(attempt * 5_000);
       }
     }
   }
