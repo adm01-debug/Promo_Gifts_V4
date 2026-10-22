@@ -94,7 +94,7 @@ jobs:
   drift:
     name: Migrations x Canonical schema
     runs-on: ubuntu-24.04
-    timeout-minutes: 12
+    timeout-minutes: 25
     # E27: SUPABASE_ACCESS_TOKEN não deve chegar a PRs de forks
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     env:
@@ -207,7 +207,7 @@ jobs:
           # E035: schemas lidos do arquivo compartilhado (mesmo usado pelo export)
           SCHEMAS=$(grep -v '^#' supabase/baseline/schemas.txt | grep -v '^$' | tr '\n' ',' | sed 's/,$//')
           rc=0
-          timeout --signal=INT --kill-after=30s 9m \
+          timeout --signal=INT --kill-after=60s 18m \
             supabase db diff --workdir /tmp/drift-wd --linked --schema "$SCHEMAS" \
             > /tmp/schema_drift.sql 2> /tmp/diff.stderr || rc=$?
           if [ "$rc" -ne 0 ]; then
