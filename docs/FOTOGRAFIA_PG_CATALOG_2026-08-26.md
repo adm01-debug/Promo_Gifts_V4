@@ -11,10 +11,10 @@ migrations do ciclo E41+).
 
 | Métrica | Valor |
 |---|---|
-| Relações tabulares (`r` + `p`, incluindo partições) | 390 |
+| Relações tabulares (`r` + `p`, incluindo partições) | 391 |
 | Colunas de todas as relações, incluindo views/MVs | 7.571 |
 | Views | 190 |
-| Materialized views | 5 |
+| Materialized views | 4 |
 | Rotinas públicas chamáveis (`f`/`p`) | 1.277 |
 | Rotinas `SECURITY DEFINER` | 529 |
 | Policies | 906 |

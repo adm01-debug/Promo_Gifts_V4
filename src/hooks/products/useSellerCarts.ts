@@ -116,7 +116,7 @@ export function useSellerCarts() {
   const createCart = useMutation({
     mutationFn: async (input: CreateCartInput) => {
       if (!userId) throw new Error('Não autenticado');
-      log.info('cart_create_start', { company_id: input.company_id });
+      log.warn('cart_create_start', { company_id: input.company_id });
 
       const { data, error } = await supabase
         .from('seller_carts')
