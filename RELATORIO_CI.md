@@ -94,6 +94,21 @@ Corrige Gate E95 (CORS snapshot — wildcard em `_shared/`):
 
 ---
 
+### 3.6 Commits `27aaa57` / `ea0fb09` / `fix-bunx` (PR #2338, 2026-10-22T00:17–00:27Z)
+
+| Commit | Arquivo | Mudança | Gate / Workflow corrigido |
+|---|---|---|---|
+| `27aaa57` | `PENDENCIAS.md` | P19 adicionado: `cart-header-quality-gate` — bunx not found | Documentação |
+| `ea0fb09` | `src/pages/products/SellerCartsPage.tsx` linha 230 | Restaura `'Adicione ao menos um produto antes de marcar como pronto para orçamento.'` (revertido de `78701e8` em main/2026-10-19) | `cart-quality.yml` — CartStatusSelect.emptyCart.test line 169 |
+| `fix-bunx` | `scripts/qa/cart-header-fuzz-report.mjs` linha 53 | `bunx vitest` → `npx vitest` | `cart-header-quality-gate.yml` — `/bin/sh: 1: bunx: not found` |
+| `fix-bunx` | `PENDENCIAS.md` | P19 → corrigido; P20 adicionado (Running Copilot Code Review timeout) | Documentação |
+| `fix-bunx` | `RELATORIO_CI.md` | Atualização com resultado final (v11) | Documentação |
+
+**Resultado Cart Quality (run `39698881468`, sha `ea0fb09`):** `completed/success` ✅
+**Resultado edge-functions-drift-check (run `39698881429`, sha `ea0fb09`):** `completed/success` ✅
+
+---
+
 ### 3.3 Commit `ed29091` (PR #2338, 2026-10-21T22:49Z)
 Corrige Gate E89 (cron spacing):
 
@@ -118,6 +133,8 @@ Corrige Gate E89 (cron spacing):
 | `39694383256` | `0aac37d` | ✅ (23:37:45Z) | ⏳ cancelado no step 18 | ✅ (23:37:32Z) | ✅ (23:38:28Z) | ⏳ cancelado | **cancelado por push `1c5814b`** |
 | `39695326969` | `1c5814b` | ✅ (23:48:01Z) | ✅ todos 42 steps (23:52:27Z) | ✅ (23:47:51Z) | ✅ (23:48:09Z) | ❌ cancelled | **cancelado por concurrency (push `02e4f63` às 00:02:13Z)** |
 | `39697216328` | `02e4f63` | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ | **in_progress desde 00:02:24Z — Gate 3 em execução** |
+| `39698009920` | `53195dcb` | ✅ | ✅ | ✅ | ✅ | ⏳ | **cancelado por push `ea0fb09` (cancel-in-progress)** |
+| `39698881450` | `ea0fb09` | ✅ | ✅ | ✅ | ✅ | ⏳ | **in_progress (00:18:14Z — aguardando Gate 3)** |
 
 **Gate 0 (SSOT)** confirmado em run `39689787809` (22:54:59Z) → `success`
 **Gate 0.5 (Dependency Audit)** confirmado em run `39689787809` (22:55:34Z) → `success`
@@ -186,8 +203,13 @@ Release Please são independentes do gate de deploy.
 4. `prod-health.yml` — adicionou `npm ci` (não quebra)
 5. `stale.yml` — corrigiu SHA e runner (não quebra)
 6. `PENDENCIAS.md` e `RELATORIO_CI.md` — documentação apenas
+7. `src/hooks/products/useSellerCarts.ts` — adicionou `createClientLogger` (E118g, +4 linhas)
+8. 8 hooks — adicionou `// rls-allow:` (E118f, comentário inline)
+9. `docs/FOTOGRAFIA_PG_CATALOG_2026-08-26.md` — criado (E118h)
+10. `src/pages/products/SellerCartsPage.tsx:230` — restaura descrição de toast para valor original pré-regressão do Lovable (`ea0fb09`)
+11. `scripts/qa/cart-header-fuzz-report.mjs:53` — `bunx` → `npx` (fix de infra de CI, não altera lógica)
 
-Nenhuma mudança em código de aplicação, testes, schema, edge functions ou lógica de negócio.
+Nenhuma mudança em APIs, schema, edge functions, contratos de negócio ou lógica de regra.
 
 ---
 
@@ -207,7 +229,7 @@ Nenhuma mudança em código de aplicação, testes, schema, edge functions ou l�
 
 | # | Workflow | Commit/Run de correção | Conclusão | Referência |
 |---|---|---|---|---|
-| W01 | `deploy-gates.yml` (Gate Final) | PR #2338, sha `02e4f63`, run `39697216328` | ⏳ in_progress desde 00:02:24Z — aguardando Gate 3 E2E Smoke | [Run CI](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39697216328) |
+| W01 | `deploy-gates.yml` (Gate Final) | PR #2338, sha `ea0fb09`, run `39698881450` | ⏳ in_progress desde 00:18:14Z — aguardando Gate 3 E2E Smoke | [Run CI](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39698881450) |
 | W02 | `workflow-lint.yml` (actionlint) | commit `cb2706ca` — deletado `python-package-conda.yml` | ✅ corrigido no PR | [Diff PR #2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338) |
 | W03 | `release-please.yml` | Requer PAT com `releases:write` — aguarda PO | ⚠️ PENDENCIAS.md P1 | [P1 em PENDENCIAS.md](./PENDENCIAS.md#p1) |
 | W04 | `e2e-carts-undo-rpc-atomic.yml` | Falha real de UI (botão excluir) — requer engenharia | ⚠️ PENDENCIAS.md P2 | [P2 em PENDENCIAS.md](./PENDENCIAS.md#p2) |
@@ -219,7 +241,10 @@ Nenhuma mudança em código de aplicação, testes, schema, edge functions ou l�
 | W10 | `e2e-critical-flows.yml` | Catalog→Kit Flow falhou — requer engenharia | ⚠️ PENDENCIAS.md P8 | [P8 em PENDENCIAS.md](./PENDENCIAS.md#p8) |
 | W11 | `e2e-personalization.yml` | Personalization journey falhou — requer engenharia | ⚠️ PENDENCIAS.md P9 | [P9 em PENDENCIAS.md](./PENDENCIAS.md#p9) |
 | W12 | `db-schema-drift-check.yml` | DDL fora de fluxo — advisory, requer DBA/PO | ⚠️ PENDENCIAS.md P14 | [P14 em PENDENCIAS.md](./PENDENCIAS.md#p14) |
-| W13 | `edge-functions-drift-check.yml` | Drift de edge functions — advisory, requer engenharia | ⚠️ PENDENCIAS.md P16 | [P16 em PENDENCIAS.md](./PENDENCIAS.md#p16) |
+| W13 | `edge-functions-drift-check.yml` | Drift de edge functions — advisory, requer engenharia | ✅ run `39698881429` (sha `ea0fb09`) → success | [P16 em PENDENCIAS.md](./PENDENCIAS.md#p16) |
+| W14 | `cart-quality.yml` (Cart Quality) | Divergência pré-existente em `SellerCartsPage.tsx:230` (commit `78701e8` em main/2026-10-19) → corrigida em `ea0fb09` | ✅ run `39698881468` (sha `ea0fb09`) → success | [Run CI](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39698881468) |
+| W15 | `cart-header-quality-gate.yml` | `/bin/sh: 1: bunx: not found` — `bunx vitest` → `npx vitest` em `cart-header-fuzz-report.mjs` | ✅ corrigido (commit neste PR) — aguardando run | [P19 em PENDENCIAS.md](./PENDENCIAS.md#p19) |
+| W16 | `running-copilot-code-review.yml` | Timeout SWE agent 20min (Copilot) — orphan processes Playwright | ⚠️ PENDENCIAS.md P20 — não required check | [P20 em PENDENCIAS.md](./PENDENCIAS.md#p20) |
 
 **Nota sobre required checks:** O único required check no branch protection de `main` é o
 `deploy-gates.yml` (W01). Todos os outros workflows (W03–W13) são informativos/opcionais —

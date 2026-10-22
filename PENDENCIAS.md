@@ -421,6 +421,33 @@ que não passou por revisão de PR — risco de segurança real (caso `magazine-
 
 ---
 
+## P20 — Running Copilot Code Review: timeout do SWE agent
+
+**Workflow:** `.github/workflows/copilot-pr-review.yml` (ou equivalente)
+**Run na sha `ea0fb09`:** `39698888694` — `completed/failure`
+**Job:** `copilot-pull-request-reviewer` — step 19 "Processing Request (Linux)"
+
+**Causa exata verificada:**
+```
+COPILOT_AGENT_TIMEOUT_MIN: 20
+Terminate orphan process: pid (2581) (npm exec @playw)
+Terminate orphan process: pid (3754) (npm exec @playw)
+```
+O GitHub Copilot SWE agent (`sweagent-capi:gpt-6.1-sol[ReasoningEffort=high]`) excedeu
+o timeout de 20 minutos durante a revisão automática do PR, causando `failure` na limpeza
+dos processos órfãos (Playwright). Não é relacionado ao código deste PR.
+
+**Pré-existência:** Falha esperada para PRs grandes — o Copilot agent tenta rodar
+testes E2E completos e ultrapassa o timeout de 20 min.
+
+**Classificação:** Não é Required Check de `main` — não bloqueia deploy.
+
+**O que PO / Engenharia podem fazer (opcional):**
+- Aumentar `COPILOT_AGENT_TIMEOUT_MIN` no workflow de review
+- Ou reduzir o escopo do que o Copilot tenta fazer no review
+
+---
+
 ## Resumo de ações necessárias
 
 | # | Item | Prioridade | Tipo | Responsável |
@@ -441,6 +468,8 @@ que não passou por revisão de PR — risco de segurança real (caso `magazine-
 | P14 | db-schema-drift-check — drift ao vivo vs. ledger (advisory, não gate) | Baixa | DDL fora de fluxo | DBA / PO |
 | P15 | Gate E89 — 4 colisões de cron corrigidas em PR #2338 — aguarda confirmação | Baixa | CI Config (corrigido) | — |
 | P16 | edge-functions-drift-check — drift ao vivo vs. repo (advisory, não gate) | Média | Código fora de PR | Engenharia / PO |
+| P19 | cart-header-quality-gate — bunx not found — ✅ CORRIGIDO (bunx → npx, commit neste PR) | Baixa | CI Config (corrigido) | — |
+| P20 | Running Copilot Code Review — timeout SWE agent 20min (não required check) | Baixa | Infra de CI/Copilot | — |
 
 ---
 
@@ -538,22 +567,15 @@ e `53195dcb`) — não foi introduzido por nenhum commit desta sessão.
 
 **Classificação:** Falha de infra de CI — runner não tem `bun` instalado
 
-**O que Engenharia/PO precisam fazer:**
-- Opção A: Substituir `bunx vitest` por `npx vitest` em `scripts/qa/cart-header-fuzz-report.mjs`
-- Opção B: Adicionar step `setup-bun@v2` no workflow antes do step 7
-- Este workflow NÃO é um Required Check de `main` (não bloqueia deploy)
+**Correção aplicada:** commit `fix(ci): cart-header-fuzz-report — substitui bunx por npx`
+- `scripts/qa/cart-header-fuzz-report.mjs` linha 53: `bunx vitest` → `npx vitest`
 
-**Impacto:** Não bloqueia deploy (não é required check). Artefato `cart-header-fuzz-report`
-é gerado parcialmente (951 bytes, sem dados de fuzzing).
+**Impacto:** Não bloqueia deploy (não é required check). Fix aplicado — próximo run deve passar.
 
 ---
 
-*Documento atualizado em 2026-10-22 (v10) — P19 adicionado (cart-header-quality-gate bunx not found);
-P18 adicionado (Gate 3 E2E Smoke — timeout/runner stale no run 39695326969);
-P17 adicionado (baseline local impossível — registry npm privado 403);
-P10–P13 confirmados via run `39687808882` (commit `0d1efd27`, PR #2338);
-P14 db-schema-drift-check (advisory, requer reconciliação de DDL fora de fluxo);
-P15 Gate E89 — 4 colisões de cron corrigidas em 3 workflows — ✅ CONFIRMADO run `39689787809`;
-P16 edge-functions-drift-check (advisory, drift de edge functions — requer engenharia/PO);
-P19 cart-header-quality-gate bunx not found (infra CI, não required check);
-RELATORIO_CI.md criado com inventário completo de workflows failing.*
+*Documento atualizado em 2026-10-22 (v11) — P19 CORRIGIDO (bunx → npx em cart-header-fuzz-report.mjs);
+P20 adicionado (Running Copilot Code Review — timeout SWE agent, não required check);
+Cart Quality (run 39698881468, sha ea0fb09) → success após fix de CartStatusSelect.emptyCart.test;
+edge-functions-drift-check (run 39698881429, sha ea0fb09) → success;
+Deploy Gates (run 39698881450, sha ea0fb09) → in_progress (aguardando conclusão).*
