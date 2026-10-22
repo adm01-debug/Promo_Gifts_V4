@@ -8,18 +8,18 @@ number,title,author,bot,draft,base_is_main,files_changed,veredicto,acao,merge_sh
 2319,"(PR vazia de bot Jules)","Jules",true,false,false,0,NAO_MERGEAR,fechar (requer ação humana),,false,false,,
 2293,"build(deps): bump recharts 2→3","dependabot[bot]",true,false,true,2,DECISAO_HUMANA,PO decide risco de breaking changes UI,,true,,,
 2290,"build(deps): bump @eslint/js 9→10","dependabot[bot]",true,false,true,2,DECISAO_HUMANA,PO decide risco de breaking changes lint,,true,,,
-2322,"GitHub Actions: Node.js CI template","github-actions[bot]",true,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
-2323,"GitHub Actions: Django CI template","github-actions[bot]",true,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
-2324,"GitHub Actions: Python application template","github-actions[bot]",true,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
-2325,"GitHub Actions: Python package template","github-actions[bot]",true,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
-2326,"GitHub Actions: Ruby on Rails template","github-actions[bot]",true,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
-2327,"GitHub Actions: Rust template","github-actions[bot]",true,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
-2328,"GitHub Actions: Go template","github-actions[bot]",true,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
-2329,"GitHub Actions: Java with Maven template","github-actions[bot]",true,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
-2330,"GitHub Actions: Java with Gradle template","github-actions[bot]",true,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
-2331,"GitHub Actions: C/C++ with CMake template","github-actions[bot]",true,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
-2333,"GitHub Actions: Docker Image CI template","github-actions[bot]",true,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
-2334,"GitHub Actions: Publish Node.js Package template","github-actions[bot]",true,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
-2335,"GitHub Actions: Publish Docker Image template","github-actions[bot]",true,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
-2336,"GitHub Actions: Blank workflow template","github-actions[bot]",true,false,true,1,FECHAR,fechar — arquivo em branco,,false,false,false,false
-2337,"GitHub Actions: Webpack template","github-actions[bot]",true,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
+2322,"Add GitHub Actions workflow for Node.js with Webpack",adm01-debug,false,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
+2323,"Add Deno workflow for linting and testing",adm01-debug,false,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
+2324,"Create CI workflow for Jekyll site with Docker",adm01-debug,false,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
+2325,"Add npm publish workflow for Node.js package",adm01-debug,false,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
+2326,"Add GitHub Actions workflow for npm package publishing",adm01-debug,false,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
+2327,"Add Codacy security scan workflow",adm01-debug,false,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
+2328,"Add Dependency Review GitHub Action",adm01-debug,false,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
+2329,"Add GitHub Actions workflow for Python package publishing",adm01-debug,false,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
+2330,"Add Node.js CI workflow for testing and building",adm01-debug,false,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
+2331,"Add manual workflow for greeting",adm01-debug,false,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
+2333,"Add GitHub Actions workflow for greetings",adm01-debug,false,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
+2334,"Add GitHub Actions workflow for GitHub Pages deployment",adm01-debug,false,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
+2335,"Add GitHub Actions workflow for Next.js deployment",adm01-debug,false,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
+2336,"Create main.yml (arquivo em branco)",adm01-debug,false,false,true,1,FECHAR,fechar — arquivo em branco,,false,false,false,false
+2337,"Add Deno workflow for linting and testing (duplicata #2323)",adm01-debug,false,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false

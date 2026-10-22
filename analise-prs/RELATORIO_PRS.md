@@ -11,7 +11,7 @@
 
 | Veredicto | Quantidade | PRs |
 |-----------|-----------|-----|
-| CI_PENDENTE (merge candidate) | 1 | #2338 |
+| MERGEADA | 1 | #2338 (SHA `57017ba78eb68c6c72dba336f9c081c4519619c4`) |
 | AGUARDAR_REBASE | 4 | #2312, #2314, #2315, #2316 |
 | DECISAO_HUMANA | 2 | #2290, #2293 |
 | DRAFT | 1 | #2320 |
@@ -32,15 +32,15 @@ As seguintes falhas existiam em main `8e8053b9` **antes** de qualquer PR — qua
 
 ---
 
-## PR Candidata a Merge
+## PR Mergeada
 
-### PR #2338 — fix(ci): corrige 5 workflows em failure
+### PR #2338 — fix(ci): corrige 5 workflows em failure ✅ MERGEADA
 
 **Branch:** `claude/laughing-cori-o9w35e`  
-**Head atual:** `47dfffdc33fbfe0de85009ddeab688d6e096a543`  
-**Base:** `8e8053b9` ✅ (= main atual)  
-**Label:** `large-pr-approved` ✅  
-**mergeable:** true, **mergeable_state:** blocked (CI pendente)
+**Head:** `47dfffdc33fbfe0de85009ddeab688d6e096a543`  
+**Merge SHA:** `57017ba78eb68c6c72dba336f9c081c4519619c4`  
+**Merged em:** `main` (2026-10-22)  
+**Label:** `large-pr-approved` ✅
 
 **Correções incluídas:**
 1. `stale.yml` — pinado SHA v9.1.0, runner ubuntu-24.04, R3/R8/R14/R15 compliant
@@ -64,7 +64,9 @@ R_SEO: ✅   R_RESTORE: ✅   R_BUILD: ✅       R_SECRET_SCAN: ✅
 R_SCHEMA_DRIFT: ❌ (ECR rate limit — pré-existente em baseline)
 ```
 
-**Ação:** MERGEAR quando Gate Final = success no head atual.
+**Supabase MCP pós-merge (2026-10-22T19:00–23:59Z):** query `logs` → **`{"result":[]}`** — nenhum erro 5xx novo. Produção saudável.
+
+**Resultado:** MERGEADA com sucesso. Gate Final success em check_run `120049718257`.
 
 ---
 
@@ -154,10 +156,30 @@ Em modo draft. Aguardar autor promover para "ready for review" antes de analisar
 0 arquivos alterados. PR gerada automaticamente por bot Jules sem conteúdo.
 
 ### PRs #2322–#2331, #2333–#2337 — Templates de CI (15 PRs)
-Templates gerados pelo GitHub Actions para stacks que o projeto não usa:
-Django, Python, Ruby, Rust, Go, Java (Maven/Gradle), CMake, Docker, Webpack, Node.js, Blank.
+
+Templates criados por `adm01-debug` para stacks que o projeto não usa.
 **Stack do projeto:** React + TypeScript + Vite + Supabase.
-Nenhuma dessas PRs altera código do projeto.
+**Merge-tree:** TODAS as 15 fazem merge CLEAN com main `57017ba7` (additions-only, arquivos novos).
+
+| PR | Branch | Head SHA | Arquivo adicionado | Stack/motivo |
+|---|---|---|---|---|
+| #2322 | adm01-debug-patch-1 | 168e4ef4 | webpack.yml | NodeJS+Webpack |
+| #2323 | adm01-debug-patch-1-1 | d70f66a6 | deno.yml | Deno runtime |
+| #2324 | adm01-debug-patch-1-2 | 3c7844b3 | jekyll-docker.yml | Jekyll/Ruby |
+| #2325 | adm01-debug-patch-1-3 | 9ff8b69a | npm-publish.yml | npm publish |
+| #2326 | adm01-debug-patch-1-4 | 306a9ced | npm-publish-github-packages.yml | GitHub Packages |
+| #2327 | adm01-debug-patch-1-5 | f3650108 | codacy.yml | Codacy security scan |
+| #2328 | adm01-debug-patch-1-6 | cb570c40 | dependency-review.yml | Duplicata Gate 0.6 |
+| #2329 | adm01-debug-patch-1-7 | 43d41bce | python-publish.yml | Python/PyPI |
+| #2330 | adm01-debug-patch-1-8 | 59b09efa | node.js.yml | Node.js CI genérico |
+| #2331 | adm01-debug-patch-1-9 | 8382afd4 | manual.yml | Manual greeting |
+| #2333 | adm01-debug-patch-1-10 | a0f13769 | greetings.yml | GitHub Greetings |
+| #2334 | adm01-debug-patch-1-11 | cd35ef8e | static.yml | GitHub Pages deploy |
+| #2335 | adm01-debug-patch-1-12 | 8e2076d2 | nextjs.yml | Next.js deploy |
+| #2336 | adm01-debug-patch-2 | c1b584d1 | main.yml | Arquivo em branco |
+| #2337 | adm01-debug-patch-4 | 20dba496 | deno.yml | Deno (duplicata #2323) |
+
+Nenhuma altera código do projeto — todas FECHAR.
 
 **Nota:** Fechar essas PRs requer escrita no GitHub além de merge — ação humana necessária ou permissão adicional.
 
@@ -180,138 +202,153 @@ Nenhuma dessas PRs altera código do projeto.
 
 ---
 
-### PR #2322 — GitHub Actions: Node.js CI template
+### PR #2322 — Add GitHub Actions workflow for Node.js with Webpack
 
-**Motivo:** Template de CI gerado automaticamente pelo GitHub Actions para stack Node.js genérico. O projeto usa React + TypeScript + Vite + Supabase com pipeline próprio (`deploy-gates.yml`). Este template não adiciona valor.
+**Arquivo:** `.github/workflows/webpack.yml` | **Merge-tree:** CLEAN  
+**Motivo:** Template Webpack/Node.js. Stack do projeto: Vite, não Webpack.
 
-**Comentário sugerido ao fechar:**
-> Template de workflow gerado automaticamente para stack Node.js genérico. O projeto já possui pipeline de CI próprio (`deploy-gates.yml`). Fechando — não aplicável.
-
----
-
-### PR #2323 — GitHub Actions: Django CI template
-
-**Motivo:** Template de CI para Django (Python). O projeto é React + TypeScript — Django não é usado em nenhuma parte do stack.
-
-**Comentário sugerido ao fechar:**
-> Template de workflow para Django (Python). Stack do projeto: React + TypeScript + Vite + Supabase. Fechando — stack incorreta.
+**Comentário ao fechar:**
+> Template de workflow para NodeJS+Webpack. Stack do projeto usa Vite. Fechando — stack incorreta.
 
 ---
 
-### PR #2324 — GitHub Actions: Python application template
+### PR #2323 — Add Deno workflow for linting and testing
 
-**Motivo:** Template de CI para aplicação Python. Projeto é React + TypeScript.
+**Arquivo:** `.github/workflows/deno.yml` | **Merge-tree:** CLEAN  
+**Motivo:** Template Deno. Projeto usa Node.js/Vite, não Deno.
 
-**Comentário sugerido ao fechar:**
-> Template de workflow para aplicação Python. Stack do projeto: React + TypeScript + Vite + Supabase. Fechando — stack incorreta.
-
----
-
-### PR #2325 — GitHub Actions: Python package template
-
-**Motivo:** Template de CI para pacote Python. Projeto é React + TypeScript.
-
-**Comentário sugerido ao fechar:**
-> Template de workflow para pacote Python. Stack do projeto: React + TypeScript + Vite + Supabase. Fechando — stack incorreta.
+**Comentário ao fechar:**
+> Template para Deno. Stack do projeto: Node.js + Vite. Fechando — runtime incorreta.
 
 ---
 
-### PR #2326 — GitHub Actions: Ruby on Rails template
+### PR #2324 — Create CI workflow for Jekyll site with Docker
 
-**Motivo:** Template de CI para Ruby on Rails. Projeto é React + TypeScript.
+**Arquivo:** `.github/workflows/jekyll-docker.yml` | **Merge-tree:** CLEAN  
+**Motivo:** Template Jekyll (Ruby). Projeto é React + TypeScript.
 
-**Comentário sugerido ao fechar:**
-> Template de workflow para Ruby on Rails. Stack do projeto: React + TypeScript + Vite + Supabase. Fechando — stack incorreta.
-
----
-
-### PR #2327 — GitHub Actions: Rust template
-
-**Motivo:** Template de CI para Rust. Projeto é React + TypeScript.
-
-**Comentário sugerido ao fechar:**
-> Template de workflow para Rust. Stack do projeto: React + TypeScript + Vite + Supabase. Fechando — stack incorreta.
+**Comentário ao fechar:**
+> Template para Jekyll/Ruby. Stack do projeto: React + TypeScript + Vite + Supabase. Fechando — stack incorreta.
 
 ---
 
-### PR #2328 — GitHub Actions: Go template
+### PR #2325 — Add npm publish workflow for Node.js package
 
-**Motivo:** Template de CI para Go. Projeto é React + TypeScript.
+**Arquivo:** `.github/workflows/npm-publish.yml` | **Merge-tree:** CLEAN  
+**Motivo:** Template de publicação npm. O projeto é aplicação web, não pacote npm.
 
-**Comentário sugerido ao fechar:**
-> Template de workflow para Go. Stack do projeto: React + TypeScript + Vite + Supabase. Fechando — stack incorreta.
-
----
-
-### PR #2329 — GitHub Actions: Java with Maven template
-
-**Motivo:** Template de CI para Java com Maven. Projeto é React + TypeScript.
-
-**Comentário sugerido ao fechar:**
-> Template de workflow para Java com Maven. Stack do projeto: React + TypeScript + Vite + Supabase. Fechando — stack incorreta.
+**Comentário ao fechar:**
+> Template para publicação de pacote npm. O projeto é aplicação web. Fechando — não aplicável.
 
 ---
 
-### PR #2330 — GitHub Actions: Java with Gradle template
+### PR #2326 — Add GitHub Actions workflow for npm package publishing (GitHub Packages)
 
-**Motivo:** Template de CI para Java com Gradle. Projeto é React + TypeScript.
+**Arquivo:** `.github/workflows/npm-publish-github-packages.yml` | **Merge-tree:** CLEAN  
+**Motivo:** Template GitHub Packages. O projeto é aplicação web, não pacote npm.
 
-**Comentário sugerido ao fechar:**
-> Template de workflow para Java com Gradle. Stack do projeto: React + TypeScript + Vite + Supabase. Fechando — stack incorreta.
-
----
-
-### PR #2331 — GitHub Actions: C/C++ with CMake template
-
-**Motivo:** Template de CI para C/C++ com CMake. Projeto é React + TypeScript.
-
-**Comentário sugerido ao fechar:**
-> Template de workflow para C/C++ com CMake. Stack do projeto: React + TypeScript + Vite + Supabase. Fechando — stack incorreta.
+**Comentário ao fechar:**
+> Template para publicação em GitHub Packages. O projeto é aplicação web. Fechando — não aplicável.
 
 ---
 
-### PR #2333 — GitHub Actions: Docker Image CI template
+### PR #2327 — Add Codacy security scan workflow
 
-**Motivo:** Template de CI para build de imagem Docker. O projeto usa GitHub Actions com runners ubuntu-24.04 mas não publica imagens Docker.
+**Arquivo:** `.github/workflows/codacy.yml` | **Merge-tree:** CLEAN  
+**Motivo:** Template Codacy. Projeto já usa CodeQL. `secrets.CODACY_PROJECT_TOKEN` não declarado em SEGREDOS.md.
 
-**Comentário sugerido ao fechar:**
-> Template de workflow para publicação de imagem Docker. Stack do projeto: React + TypeScript + Vite + Supabase (sem build de imagem Docker). Fechando — não aplicável.
-
----
-
-### PR #2334 — GitHub Actions: Publish Node.js Package template
-
-**Motivo:** Template para publicar pacote npm. O projeto é uma aplicação web, não um pacote npm para publicar.
-
-**Comentário sugerido ao fechar:**
-> Template para publicação de pacote npm. O projeto é uma aplicação web (não um pacote para publicar no npm). Fechando — não aplicável.
+**Comentário ao fechar:**
+> Template Codacy — projeto já usa CodeQL para security scanning. Segredo `CODACY_PROJECT_TOKEN` não declarado. Fechando.
 
 ---
 
-### PR #2335 — GitHub Actions: Publish Docker Image template
+### PR #2328 — Add Dependency Review GitHub Action
 
-**Motivo:** Template para publicar imagem Docker no registry. Projeto não publica imagens Docker.
+**Arquivo:** `.github/workflows/dependency-review.yml` | **Merge-tree:** CLEAN  
+**Motivo:** Duplicata do Gate 0.6 já existente em `deploy-gates.yml`.
 
-**Comentário sugerido ao fechar:**
-> Template para publicação de imagem Docker em registry. Stack do projeto não inclui build/publish de imagens Docker. Fechando — não aplicável.
-
----
-
-### PR #2336 — GitHub Actions: Blank workflow template
-
-**Motivo:** Arquivo de workflow em branco (sem conteúdo útil). Adicionaria arquivo vazio ao repositório.
-
-**Comentário sugerido ao fechar:**
-> Template de workflow em branco sem conteúdo. Fechando — não adiciona nada ao projeto.
+**Comentário ao fechar:**
+> Dependency Review já implementada como Gate 0.6 no `deploy-gates.yml`. Fechando — funcionalidade duplicada.
 
 ---
 
-### PR #2337 — GitHub Actions: Webpack template
+### PR #2329 — Add GitHub Actions workflow for Python package publishing
 
-**Motivo:** Template de CI para Webpack. O projeto usa Vite como bundler, não Webpack.
+**Arquivo:** `.github/workflows/python-publish.yml` | **Merge-tree:** CLEAN  
+**Motivo:** Template Python/PyPI. Stack é TypeScript, não Python.
 
-**Comentário sugerido ao fechar:**
-> Template de workflow para Webpack. Stack do projeto usa Vite (não Webpack). Fechando — bundler incorreto.
+**Comentário ao fechar:**
+> Template para publicação de pacote Python (PyPI). Stack do projeto: TypeScript. Fechando — stack incorreta.
+
+---
+
+### PR #2330 — Add Node.js CI workflow for testing and building
+
+**Arquivo:** `.github/workflows/node.js.yml` | **Merge-tree:** CLEAN  
+**Motivo:** Template genérico Node.js CI. Funcionalidade já coberta pelo Gate Final (`deploy-gates.yml`).
+
+**Comentário ao fechar:**
+> Template Node.js CI genérico. Funcionalidade já coberta pelo Gate Final em `deploy-gates.yml`. Fechando.
+
+---
+
+### PR #2331 — Add manual workflow for greeting
+
+**Arquivo:** `.github/workflows/manual.yml` | **Merge-tree:** CLEAN  
+**Motivo:** Template de saudação manual ("Hello World"). Sem utilidade para este projeto.
+
+**Comentário ao fechar:**
+> Template demonstrativo de workflow manual (saudação). Sem valor para o projeto. Fechando.
+
+---
+
+### PR #2333 — Add GitHub Actions workflow for greetings
+
+**Arquivo:** `.github/workflows/greetings.yml` | **Merge-tree:** CLEAN  
+**Motivo:** Template de saudação automática para contributors. Projeto de desenvolvimento fechado.
+
+**Comentário ao fechar:**
+> Template de saudação para novos contributors (open-source). Projeto de desenvolvimento fechado. Fechando.
+
+---
+
+### PR #2334 — Add GitHub Actions workflow for GitHub Pages deployment
+
+**Arquivo:** `.github/workflows/static.yml` | **Merge-tree:** CLEAN  
+**Motivo:** Template deploy GitHub Pages. Projeto não faz deploy no GitHub Pages.
+
+**Comentário ao fechar:**
+> Template para deploy no GitHub Pages. Projeto usa outra plataforma de deploy. Fechando — não aplicável.
+
+---
+
+### PR #2335 — Add GitHub Actions workflow for Next.js deployment
+
+**Arquivo:** `.github/workflows/nextjs.yml` | **Merge-tree:** CLEAN  
+**Motivo:** Template Next.js + GitHub Pages. Framework errado (Vite, não Next.js) e plataforma de deploy errada.
+
+**Comentário ao fechar:**
+> Template para Next.js/GitHub Pages. Stack do projeto: Vite (não Next.js), plataforma de deploy diferente. Fechando.
+
+---
+
+### PR #2336 — Create main.yml (arquivo em branco)
+
+**Arquivo:** `.github/workflows/main.yml` | **Merge-tree:** CLEAN  
+**Motivo:** Arquivo contém apenas 1 linha em branco. Seria rejeitado pelo actionlint.
+
+**Comentário ao fechar:**
+> Arquivo de workflow em branco (1 linha vazia). Seria rejeitado pelo lint de workflows. Fechando.
+
+---
+
+### PR #2337 — Add Deno workflow for linting and testing (duplicata do #2323)
+
+**Arquivo:** `.github/workflows/deno.yml` | **Merge-tree:** CLEAN  
+**Motivo:** Conteúdo idêntico ao PR #2323 (mesmo arquivo `deno.yml`). Deno não é a runtime do projeto.
+
+**Comentário ao fechar:**
+> Template Deno duplicado — conteúdo idêntico ao PR #2323. Runtime Deno não usada no projeto. Fechando.
 
 ---
 
