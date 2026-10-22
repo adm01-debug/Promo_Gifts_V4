@@ -198,6 +198,25 @@ jobs:
           # Link da pasta de replay (o link do passo anterior vale só para a raiz do repo).
           supabase link --workdir /tmp/drift-wd --project-ref "$SUPABASE_PROJECT_REF"
 
+      - name: Pre-pull Supabase postgres image (retry ghcr.io rate limits)
+        if: steps.guard.outputs.enabled == 'true' && steps.replay.outputs.skip != 'true'
+        run: |
+          set -euo pipefail
+          # supabase db diff arranca shadow DB local com esta imagem.
+          # ghcr.io aplica rate limit; pre-pull com retry evita falha no step seguinte.
+          # Tag fixa para CLI 2.101.0 — atualizar junto com "Install Supabase CLI".
+          POSTGRES_IMAGE="ghcr.io/supabase/postgres:17.6.1.063"
+          for attempt in 1 2 3 4 5; do
+            if docker pull "$POSTGRES_IMAGE"; then
+              echo "Pre-pull ok (tentativa $attempt)"
+              break
+            fi
+            [ "$attempt" -lt 5 ] || { echo "::error::Pre-pull de $POSTGRES_IMAGE falhou após 5 tentativas"; exit 1; }
+            wait_s=$((attempt * 30))
+            echo "Tentativa $attempt falhou — aguardando ${wait_s}s antes de tentar novamente"
+            sleep "$wait_s"
+          done
+
       - name: Schema drift check (baseline + replay x remote)
         if: steps.guard.outputs.enabled == 'true' && steps.replay.outputs.skip != 'true'
         run: |
