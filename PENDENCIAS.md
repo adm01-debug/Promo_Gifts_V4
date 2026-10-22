@@ -1,9 +1,10 @@
 # PENDÊNCIAS — Correção de Workflows CI
 
-**Atualizado:** 2026-10-22T17:55 UTC  
+**Atualizado:** 2026-10-22T18:25 UTC  
 **Branch ativa:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD atual:** `ac0f4e10` (fix(ci): E104 override ECR em contract-tests + corrige expectativa audit_http_error_exhausted)  
-**Gate Final ac0f4e10:** run [39826162164](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39826162164) — ⏳ `pending` (17:50Z) — aguardando conclusão  
+**HEAD atual:** `580d5187` (docs: atualiza HEAD para ac0f4e10 e Gate Final 39826162164)  
+**Gate Final 580d5187:** run [39826419850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39826419850) — ⚠️ `queued/stuck` (17:52Z, >30min sem runner) — forçando novo run via push  
+**Gate Final ac0f4e10:** run [39826162164](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39826162164) — `cancelled` (superado por 580d5187)  
 **Gate Final c97f4959 (agente inventário):** run [39826030788](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39826030788) — `cancelled` (superado por ac0f4e10)  
 **Gate Final e2bf7804:** run [39824526266](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39824526266) — `queued` (superado por c97f4959)  
 **Gate Final db65121a (E104):** run [39824243692](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39824243692) — `cancelled` (superado por e2bf7804)  
