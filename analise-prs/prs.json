@@ -1,0 +1,223 @@
+{
+  "baseline_sha": "8e8053b9ed85142e85809783cd3acf9a3077ecde",
+  "data_analise": "2026-10-22",
+  "total_open": 24,
+  "prs": [
+    {
+      "numero": 2290,
+      "titulo": "Bump @eslint/js from 9.39.5 to 10.0.1",
+      "autor": "dependabot[bot]",
+      "base": "45545ae",
+      "arquivos": 2,
+      "veredicto": "DECISÃO_HUMANA",
+      "motivo": "Major bump @eslint/js 9→10, breaking changes (Node≥20.19, eslintrc removido), base desatualizada"
+    },
+    {
+      "numero": 2293,
+      "titulo": "Bump recharts from 2.10.3 to 3.10.1",
+      "autor": "dependabot[bot]",
+      "base": "45545ae",
+      "arquivos": 2,
+      "veredicto": "DECISÃO_HUMANA",
+      "motivo": "Major bump recharts 2→3, breaking API changes, remoção de recharts-scale, base desatualizada"
+    },
+    {
+      "numero": 2312,
+      "titulo": "ci(deploy-gates): skip docs-only PRs + timeout unit-tests 45min (E24)",
+      "autor": "adm01-debug",
+      "base": "1ac6992",
+      "arquivos": 1,
+      "veredicto": "AGUARDAR_REBASE",
+      "motivo": "Arquivo protegido deploy-gates.yml, mudança válida E197+E24, base 1ac6992 desatualizada"
+    },
+    {
+      "numero": 2314,
+      "titulo": "ci(ratchet): atualiza .as-assertions-baseline.json productionAsCount 2162→2164",
+      "autor": "adm01-debug",
+      "base": "1ac6992",
+      "arquivos": 1,
+      "veredicto": "AGUARDAR_REBASE",
+      "motivo": "Conflito com PR #2315 no mesmo arquivo (.as-assertions-baseline.json), valores incompatíveis (2163 vs 2164)"
+    },
+    {
+      "numero": 2315,
+      "titulo": "ci(e2e): remove credenciais reais de playwright.config.ts — C25",
+      "autor": "adm01-debug",
+      "base": "1ac6992",
+      "arquivos": 2,
+      "veredicto": "AGUARDAR_REBASE",
+      "motivo": "Correção de segurança válida C25, conflito com PR #2314 no mesmo arquivo, base desatualizada"
+    },
+    {
+      "numero": 2316,
+      "titulo": "fix(ci): Gate 1.12 — magazine-reader-state-read ao contrato + cors.ts",
+      "autor": "adm01-debug",
+      "base": "45545ae",
+      "arquivos": 2,
+      "veredicto": "AGUARDAR_REBASE",
+      "motivo": "Correção válida Gate 1.12, base 45545ae desatualizada, verificar se PR #2338 já inclui esta correção"
+    },
+    {
+      "numero": 2319,
+      "titulo": "Confirm repository access and workflow status",
+      "autor": "jules-bot",
+      "base": "45545ae",
+      "arquivos": 0,
+      "veredicto": "NÃO_MERGEAR",
+      "motivo": "PR vazia (0 arquivos alterados) — artefato de verificação de acesso do bot Jules"
+    },
+    {
+      "numero": 2320,
+      "titulo": "Align ESLint dependency ranges to resolve npm peer conflict in CI",
+      "autor": "copilot[bot]",
+      "base": "45545ae",
+      "arquivos": 2,
+      "veredicto": "DRAFT",
+      "motivo": "Estado DRAFT, base desatualizada, depende de decisão sobre PR #2290"
+    },
+    {
+      "numero": 2322,
+      "titulo": "Node.js CI",
+      "autor": "github-actions-bot",
+      "base": "desconhecida",
+      "arquivos": 1,
+      "veredicto": "FECHAR",
+      "motivo": "Template genérico Node.js irrelevante, viola R1/R2/R3/R14/R15"
+    },
+    {
+      "numero": 2323,
+      "titulo": "Django CI",
+      "autor": "github-actions-bot",
+      "base": "desconhecida",
+      "arquivos": 1,
+      "veredicto": "FECHAR",
+      "motivo": "Template genérico Django irrelevante, viola R1/R2/R3/R14/R15"
+    },
+    {
+      "numero": 2324,
+      "titulo": "Python application",
+      "autor": "github-actions-bot",
+      "base": "desconhecida",
+      "arquivos": 1,
+      "veredicto": "FECHAR",
+      "motivo": "Template genérico Python app irrelevante, viola R1/R2/R3/R14/R15"
+    },
+    {
+      "numero": 2325,
+      "titulo": "Python package",
+      "autor": "github-actions-bot",
+      "base": "desconhecida",
+      "arquivos": 1,
+      "veredicto": "FECHAR",
+      "motivo": "Template genérico Python package irrelevante, viola R1/R2/R3/R14/R15"
+    },
+    {
+      "numero": 2326,
+      "titulo": "Ruby on Rails",
+      "autor": "github-actions-bot",
+      "base": "desconhecida",
+      "arquivos": 1,
+      "veredicto": "FECHAR",
+      "motivo": "Template genérico Ruby irrelevante, viola R1/R2/R3/R14/R15"
+    },
+    {
+      "numero": 2327,
+      "titulo": "Rust",
+      "autor": "github-actions-bot",
+      "base": "desconhecida",
+      "arquivos": 1,
+      "veredicto": "FECHAR",
+      "motivo": "Template genérico Rust irrelevante, viola R1/R2/R3/R14/R15"
+    },
+    {
+      "numero": 2328,
+      "titulo": "Go",
+      "autor": "github-actions-bot",
+      "base": "desconhecida",
+      "arquivos": 1,
+      "veredicto": "FECHAR",
+      "motivo": "Template genérico Go irrelevante, viola R1/R2/R3/R14/R15"
+    },
+    {
+      "numero": 2329,
+      "titulo": "Java with Maven",
+      "autor": "github-actions-bot",
+      "base": "desconhecida",
+      "arquivos": 1,
+      "veredicto": "FECHAR",
+      "motivo": "Template genérico Java Maven irrelevante, viola R1/R2/R3/R14/R15"
+    },
+    {
+      "numero": 2330,
+      "titulo": "Java with Gradle",
+      "autor": "github-actions-bot",
+      "base": "desconhecida",
+      "arquivos": 1,
+      "veredicto": "FECHAR",
+      "motivo": "Template genérico Java Gradle irrelevante, viola R1/R2/R3/R14/R15"
+    },
+    {
+      "numero": 2331,
+      "titulo": "CMake",
+      "autor": "github-actions-bot",
+      "base": "desconhecida",
+      "arquivos": 1,
+      "veredicto": "FECHAR",
+      "motivo": "Template genérico CMake irrelevante, viola R1/R2/R3/R14/R15"
+    },
+    {
+      "numero": 2333,
+      "titulo": "Docker Image CI",
+      "autor": "github-actions-bot",
+      "base": "desconhecida",
+      "arquivos": 1,
+      "veredicto": "FECHAR",
+      "motivo": "Template genérico Docker irrelevante, viola R1/R2/R3/R14/R15"
+    },
+    {
+      "numero": 2334,
+      "titulo": "Publish Node.js Package to GitHub Packages",
+      "autor": "github-actions-bot",
+      "base": "desconhecida",
+      "arquivos": 1,
+      "veredicto": "FECHAR",
+      "motivo": "Template genérico npm publish irrelevante, viola R1/R2/R3/R14/R15"
+    },
+    {
+      "numero": 2335,
+      "titulo": "Create and publish a Docker image",
+      "autor": "github-actions-bot",
+      "base": "desconhecida",
+      "arquivos": 1,
+      "veredicto": "FECHAR",
+      "motivo": "Template genérico GHCR irrelevante, viola R1/R2/R3/R14/R15"
+    },
+    {
+      "numero": 2336,
+      "titulo": "Blank",
+      "autor": "github-actions-bot",
+      "base": "desconhecida",
+      "arquivos": 1,
+      "veredicto": "FECHAR",
+      "motivo": "Template blank — apenas uma linha em branco, sem valor algum"
+    },
+    {
+      "numero": 2337,
+      "titulo": "Webpack",
+      "autor": "github-actions-bot",
+      "base": "desconhecida",
+      "arquivos": 1,
+      "veredicto": "FECHAR",
+      "motivo": "Template genérico Webpack irrelevante, viola R1/R2/R3/R14/R15"
+    },
+    {
+      "numero": 2338,
+      "titulo": "fix(ci): corrige 5 workflows em failure — actionlint, lint-0011/0029, Gate 1.12, prod-health",
+      "autor": "adm01-debug",
+      "base": "8e8053b9",
+      "arquivos": 71,
+      "veredicto": "CI_PENDENTE",
+      "motivo": "PR válida, base = main, label large-pr-approved. Head ac0f4e10: Gate Final não iniciado (82 checks, 16 queued, 3 in_progress)"
+    }
+  ]
+}

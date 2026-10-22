@@ -1,0 +1,21 @@
+{
+  "baseline_sha": "8e8053b9ed85142e85809783cd3acf9a3077ecde",
+  "data_analise": "2026-10-22",
+  "total_open": 24,
+  "analisadas": 24,
+  "mergeadas": 0,
+  "contagem_por_veredicto": {
+    "DECISÃO_HUMANA": 2,
+    "AGUARDAR_REBASE": 4,
+    "NÃO_MERGEAR": 1,
+    "DRAFT": 1,
+    "FECHAR": 15,
+    "CI_PENDENTE": 1
+  },
+  "prs_mergeadas": [],
+  "status": "CI_PENDENTE_2338_HEAD_580d518",
+  "pr2338_head": "580d518776b6d8b225f5c05fd74693fdacc492ce",
+  "pr2338_ci_ultima_verificacao": "2026-10-22T17:54Z",
+  "pr2338_ci_status": "gate_final_nao_iniciado_101checks_13queued_6inprogress",
+  "nota_cancelamentos": "Commits e2bf780 e ac0f4e10: Gate Final failure mas por cancel-in-progress, nao falha de codigo"
+}
