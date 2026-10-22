@@ -1,10 +1,26 @@
 # PENDÊNCIAS — Correção de Workflows CI
 
-**Atualizado:** 2026-10-22T15:10 UTC  
+**Atualizado:** 2026-10-22T15:12 UTC  
 **Branch ativa:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD:** `fdabf4a2` (docs(ci): atualiza PENDENCIAS.md — Deploy Gates e Gate 5 conclusion=success)  
-**Gate Final HEAD:** [run 39801533636](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39801533636) — Deploy Gates para `fdabf4a2` — 🔄 **queued** (15:05Z) — aguardando conclusão  
+**HEAD:** `6f7eab60` (docs(ci): registra Deploy Gates run 39801533636 para fdabf4a2)  
+**Gate Final HEAD:** aguardando novo run para `6f7eab60` — trigger em 15:12Z  
 **Gate Final anterior:** [run 39798033549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39798033549) — Deploy Gates para `141c915a` — ✅ **`conclusion=success`** (15:00Z) — todos 16 jobs passaram
+
+### Reruns Disparados (15:12Z) — Aguardando conclusão
+
+| Run | Workflow | SHA main | Attempt | Motivo esperado |
+|---|---|---|---|---|
+| 39757063983 | E2E (Playwright) | 8e8053b9 | 2 | auth/v1/token 504/timeout infra Supabase |
+| 39757063502 | Cart Invariants Smoke | 8e8053b9 | 2 | estado de cart mutações paralelas |
+| 39757063778 | E2E Critical Flows | 8e8053b9 | 2 | auth setup / "Check min tests executed" |
+| 39757064319 | E2E Personalization | 8e8053b9 | 2 | auth setup / artefato 206KB |
+| 39757063628 | Quote Builder Delivery | 8e8053b9 | 2 | tooltip hover flake |
+| 39757064344 | E2E Swatch QuickView | 8e8053b9 | 2 | webkit+chromium suite; firefox timeout |
+| 39757063923 | Supabase Linter Gate | 8e8053b9 | 2 | AbortError Management API (transiente) |
+| 39757064140 | CI Security & Drift | 8e8053b9 | 2 | composto — inclui Supabase Linter |
+| 39757063931 | Deploy Gates (main) | 8e8053b9 | 2 | cascata de falhas dos outros gates |
+
+> Verificação agendada: 15:28Z UTC via trigger `trig_01WyfU3CEWXoc8EP8evC3JiQ`
 
 ### Status Gates HEAD `141c915a` (run 39798033549 — ✅ CONCLUÍDO 15:00Z)
 
