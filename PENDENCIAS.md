@@ -1,6 +1,6 @@
 # Pendências de CI — Itens que requerem ação do PO/humano
 
-**Atualizado:** 2026-10-21 (v7 — P10–P13 confirmados em run 39687808882; P14 db-schema-drift-check; P15 Gate E89 corrigido; P16 edge-functions-drift-check; RELATORIO_CI.md criado)
+**Atualizado:** 2026-10-22 (v12 — P19 CORRIGIDO (bunx→npx); P20 atualizado com run `39699551037` (sha `0c7ccaf`) + classificação definitiva como não-required-check; RELATORIO_CI.md seção 10 atualizada com 12 successes SHA `0c7ccaf` e tabelas 10.1/10.2/10.3)
 **Sessão:** https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz
 
 ---
@@ -423,9 +423,12 @@ que não passou por revisão de PR — risco de segurança real (caso `magazine-
 
 ## P20 — Running Copilot Code Review: timeout do SWE agent
 
-**Workflow:** `.github/workflows/copilot-pr-review.yml` (ou equivalente)
-**Run na sha `ea0fb09`:** `39698888694` — `completed/failure`
-**Job:** `copilot-pull-request-reviewer` — step 19 "Processing Request (Linux)"
+**Workflow:** `dynamic/agents/copilot-pull-request-reviewer` (workflow dinâmico — não é YAML do repositório)
+**Runs com falha no PR #2338:**
+- sha `ea0fb09`: run `39698888694` — `completed/failure`
+- sha `0c7ccaf`: run `39699551037` — `completed/failure`
+
+**Job:** `copilot-pull-request-reviewer` — step "Processing Request (Linux)"
 
 **Causa exata verificada:**
 ```
@@ -438,9 +441,10 @@ o timeout de 20 minutos durante a revisão automática do PR, causando `failure`
 dos processos órfãos (Playwright). Não é relacionado ao código deste PR.
 
 **Pré-existência:** Falha esperada para PRs grandes — o Copilot agent tenta rodar
-testes E2E completos e ultrapassa o timeout de 20 min.
+testes E2E completos e ultrapassa o timeout de 20 min. Reproduzida em múltiplos SHAs.
 
-**Classificação:** Não é Required Check de `main` — não bloqueia deploy.
+**Classificação:** NÃO é Required Check de `main` — não bloqueia deploy.
+Workflow do tipo `dynamic` (não `.github/workflows/*.yml`) — não aparece no branch protection.
 
 **O que PO / Engenharia podem fazer (opcional):**
 - Aumentar `COPILOT_AGENT_TIMEOUT_MIN` no workflow de review
@@ -574,8 +578,8 @@ e `53195dcb`) — não foi introduzido por nenhum commit desta sessão.
 
 ---
 
-*Documento atualizado em 2026-10-22 (v11) — P19 CORRIGIDO (bunx → npx em cart-header-fuzz-report.mjs);
-P20 adicionado (Running Copilot Code Review — timeout SWE agent, não required check);
-Cart Quality (run 39698881468, sha ea0fb09) → success após fix de CartStatusSelect.emptyCart.test;
-edge-functions-drift-check (run 39698881429, sha ea0fb09) → success;
+*Documento atualizado em 2026-10-22 (v12) — P19 CORRIGIDO (bunx → npx em cart-header-fuzz-report.mjs);
+P20 atualizado: run `39699551037` (sha `0c7ccaf`) adicionado; classificado como workflow dinâmico (não YAML, não required check);
+Cart Quality (run 39698881468, sha ea0fb09) → success; cart-header-quality-gate (run 39699540588, sha 0c7ccaf) → success;
+edge-functions-drift-check (run 39699540565, sha 0c7ccaf) → success;
 Deploy Gates (run 39698881450, sha ea0fb09) → in_progress (aguardando conclusão).*

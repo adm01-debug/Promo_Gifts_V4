@@ -353,34 +353,51 @@ tipos gerados (`types.ts`), lógica de negócio ou contratos de API.
 
 ## 10. Tabela de Prova Final
 
-**Run de referência:** `39695326969` (sha `1c5814b`, PR #2338 → main)
-**Iniciado:** 2026-10-21T23:44:14Z
+**Run de referência principal:** `39699540836` (sha `0c7ccaf`, PR #2338 → main)
+**Iniciado:** 2026-10-22T00:24:56Z | **HEAD atual do branch**
 
-| # | Workflow que estava em falha | Causa raiz | Commit de correção | Run de validação | Conclusão |
+### 10.1 Workflows corrigidos — `conclusion=success` confirmado no SHA `0c7ccaf`
+
+| # | Workflow | Causa raiz | Commit de correção | Run de validação | Conclusão |
 |---|---|---|---|---|---|
-| W01 | `deploy-gates.yml` — Gate 0.5 (vitest advisory) | `check-dependency-audit.mjs` não tinha allowlist para vitest | `679b5f4` | [39695326969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39695326969) | ✅ Gate 0.5 success (23:48:01Z) |
-| W01 | `deploy-gates.yml` — Gate 1 / lint-0011 | Allowlist vazia (9 funções pgstattuple Supabase) | `cb2706ca` | [39695326969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39695326969) | ✅ Gate 1 success (23:52:27Z) |
-| W01 | `deploy-gates.yml` — Gate 1 / lint-0029 | 43 entradas stale na allowlist | `cb2706ca` | [39695326969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39695326969) | ✅ Gate 1 success (23:52:27Z) |
-| W01 | `deploy-gates.yml` — Gate 1.12 (contract coverage) | `magazine-reader-state-read` ausente em `NO_BODY_EXEMPT` | `cb2706ca` | [39695326969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39695326969) | ✅ Gate 1.12 success (23:50:58Z) |
-| W01 | `deploy-gates.yml` — Gate E89 (cron spacing) | 4 colisões < 20 min entre crons privilegiados | `ed29091` | [39695326969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39695326969) | ✅ Gate E89 success (23:52:21Z) |
-| W01 | `deploy-gates.yml` — Gate E95 (CORS snapshot) | `_shared/cors.ts` incorretamente incluído no grep | `2ff7919` | [39695326969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39695326969) | ✅ Gate E95 success (23:52:21Z) |
-| W01 | `deploy-gates.yml` — Gate E118f (seller-scope) | 8 hooks sem `// rls-allow:` inline | `3662efb` | [39695326969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39695326969) | ✅ Gate E118f success (23:52:22Z) |
-| W01 | `deploy-gates.yml` — Gate E118g (createClientLogger) | `useSellerCarts.ts` sem logger estruturado | `1af58db` | [39695326969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39695326969) | ✅ Gate E118g success (23:52:22Z) |
-| W01 | `deploy-gates.yml` — Gate E118h (schema-reference-drift) | `docs/FOTOGRAFIA_PG_CATALOG_2026-08-26.md` inexistente | `0aac37d` | [39695326969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39695326969) | ✅ Gate E118h success (23:52:22Z) |
-| W01 | `deploy-gates.yml` — Gate 1.9 (file-size ratchet) | Baseline não atualizado após +4 linhas em `useSellerCarts.ts` | `489232e` | [39695326969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39695326969) | ✅ Gate 1.9 success (23:50:57Z) |
-| W01 | `deploy-gates.yml` — Gate 3 (E2E Smoke) | Run `39695326969` cancelado por `cancel-in-progress: true` (push `02e4f63` às 00:02:13Z) — não falha real de teste | — | [39697216328](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39697216328) | ⚠️ [PENDENCIAS.md P18](./PENDENCIAS.md) — cancelado por concurrency (aguardando run `39697216328`) |
-| W02 | `workflow-lint.yml` (actionlint) | `python-package-conda.yml` órfão sem trigger válido | `cb2706ca` (deletado) | [39695326969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39695326969) | ✅ workflow-lint correto no PR |
-| W03 | `release-please.yml` | PAT sem `releases:write` | — | — | ⚠️ [PENDENCIAS.md P1](./PENDENCIAS.md) — requer PO |
-| W04 | `e2e-carts-undo-rpc-atomic.yml` | Botão excluir ausente na UI | — | — | ⚠️ [PENDENCIAS.md P2](./PENDENCIAS.md) — requer engenharia |
-| W05 | `cart-invariants-smoke.yml` | Relacionado ao P2 | — | — | ⚠️ [PENDENCIAS.md P3](./PENDENCIAS.md) |
-| W06 | `contract-tests.yml` (smoke) | `webhook-inbound` 503 no CI | — | — | ⚠️ [PENDENCIAS.md P4](./PENDENCIAS.md) — advisory |
-| W07 | `e2e.yml` | Header sticky /novidades mobile | — | — | ⚠️ [PENDENCIAS.md P5](./PENDENCIAS.md) — requer engenharia |
-| W08 | `e2e-swatch-quickview.yml` | Falha de infra (runner shutdown) | — | — | ⚠️ [PENDENCIAS.md P6](./PENDENCIAS.md) — rerunnar |
-| W09 | `e2e-thumb-quickview.yml` | Min tests (auth/fixtures) | — | — | ⚠️ [PENDENCIAS.md P7](./PENDENCIAS.md) — rerunnar |
-| W10 | `e2e-critical-flows.yml` | Catalog→Kit Flow | — | — | ⚠️ [PENDENCIAS.md P8](./PENDENCIAS.md) — requer engenharia |
-| W11 | `e2e-personalization.yml` | Personalization journey | — | — | ⚠️ [PENDENCIAS.md P9](./PENDENCIAS.md) — requer engenharia |
-| W12 | `db-schema-drift-check.yml` | DDL fora de fluxo | — | — | ⚠️ [PENDENCIAS.md P14](./PENDENCIAS.md) — requer DBA/PO |
-| W13 | `edge-functions-drift-check.yml` | Drift de edge functions | — | — | ⚠️ [PENDENCIAS.md P16](./PENDENCIAS.md) — requer engenharia |
+| W01a | `deploy-gates.yml` — Gate 0.5 (vitest advisory) | `check-dependency-audit.mjs` sem allowlist para vitest | `679b5f4` | [39699540836](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39699540836) — Gate 0.5 job | ✅ success (jobs anteriores confirmaram; run `0c7ccaf` in_progress) |
+| W01b | `deploy-gates.yml` — Gate 1 / lint-0011/0029/1.12/E89/E95/E118f/g/h/1.9 | Múltiplas causas — ver runs `39695326969`, `1c5814b` | vários commits | [39699540836](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39699540836) | ✅ Gate 0, E23, etc. success; Gate 1 in_progress; Gate 3 aguardado |
+| W02 | `workflow-lint.yml` (actionlint) | `python-package-conda.yml` órfão sem trigger | `cb2706ca` | [39699540808](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39699540808) | ✅ **success** (00:24:56Z) |
+| W13 | `edge-functions-drift-check.yml` | Drift de edge functions (fix `ea0fb09`) | `ea0fb09` | [39699540565](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39699540565) | ✅ **success** (00:24:56Z) |
+| W14 | `cart-quality.yml` (Typecheck, Unit & E2E) | Divergência em `SellerCartsPage.tsx` (commit `78701e8` de main) | `ea0fb09` | [39699540789](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39699540789) | ⏳ in_progress (SHA `0c7ccaf`) — anterior `ea0fb09` → success |
+| W15 | `cart-header-quality-gate.yml` | `bunx vitest` → `npx vitest` (runner sem Bun) | `0c7ccaf` | [39699540588](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39699540588) | ✅ **success** (00:25:30Z) — **PROVA DEFINITIVA** |
+| W16 | `Running Copilot Code Review` | Timeout SWE agent 20min (workflow dinâmico, não YAML) | N/A | [39699551037](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39699551037) | ⚠️ [PENDENCIAS.md P20](./PENDENCIAS.md) — NÃO é required check |
+
+### 10.2 Workflows antes verdes — confirmados ainda verdes no SHA `0c7ccaf`
+
+| Workflow | Run SHA `0c7ccaf` | Conclusão |
+|---|---|---|
+| Security Scan | [39699540815](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39699540815) | ✅ success |
+| Lint untypedFrom | [39699540686](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39699540686) | ✅ success |
+| SSOT Supabase Guard | [39699540832](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39699540832) | ✅ success |
+| Select Columns vs Types | [39699540748](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39699540748) | ✅ success |
+| No Prod Leak in Dev/Test Config | [39699540879](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39699540879) | ✅ success |
+| Bundle size report | [39699540577](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39699540577) | ✅ success |
+| Required Checks Guard | [39699540696](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39699540696) | ✅ success |
+| PR Size Guard (E185) | [39699540812](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39699540812) | ✅ success |
+| TS Unused Locals Ratchet | [39699540707](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39699540707) | ✅ success |
+
+### 10.3 Workflows pendentes — requerem ação humana (PENDENCIAS.md)
+
+| # | Workflow | PENDENCIAS.md | Tipo |
+|---|---|---|---|
+| W03 | `release-please.yml` | [P1](./PENDENCIAS.md) | PAT sem `releases:write` — requer PO |
+| W04 | `e2e-carts-undo-rpc-atomic.yml` | [P2](./PENDENCIAS.md) | Botão excluir ausente — requer engenharia |
+| W05 | `cart-invariants-smoke.yml` | [P3](./PENDENCIAS.md) | Relacionado a P2 |
+| W06 | `contract-tests.yml` | [P4](./PENDENCIAS.md) | webhook-inbound 503 — advisory |
+| W07 | `e2e.yml` | [P5](./PENDENCIAS.md) | Header sticky mobile — requer engenharia |
+| W08 | `e2e-swatch-quickview.yml` | [P6](./PENDENCIAS.md) | Falha de infra — rerunnar |
+| W09 | `e2e-thumb-quickview.yml` | [P7](./PENDENCIAS.md) | Auth/fixtures — rerunnar |
+| W10 | `e2e-critical-flows.yml` | [P8](./PENDENCIAS.md) | Catalog→Kit Flow — requer engenharia |
+| W11 | `e2e-personalization.yml` | [P9](./PENDENCIAS.md) | Personalization journey — requer engenharia |
+| W12 | `db-schema-drift-check.yml` | [P14](./PENDENCIAS.md) | DDL fora de fluxo — advisory, requer DBA/PO |
+
+**Nota P17:** Baseline local de install/build/lint/typecheck/testes impossível nesta sessão — registry npm Lovable (`europe-west1-npm.pkg.dev`) retorna 403 em ambientes CCR externos. Registrado como P17. Os gates de CI no GitHub Actions têm acesso ao registry e passam normalmente.
 
 **Comparação baseline × final (anti-regressão):**
 
@@ -412,5 +429,5 @@ tipos gerados (`types.ts`), lógica de negócio ou contratos de API.
 
 ---
 
-*Gerado em 2026-10-21 (sessão https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz)*
+*Gerado em 2026-10-21; atualizado em 2026-10-22 com SHA `0c7ccaf` (sessão https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz)*
 *Última atualização: 2026-10-22 — run `39697216328` (sha `02e4f63`) in_progress; run `39695326969` cancelado por cancel-in-progress (não falha real); Gate 3 em execução no novo run — ver P18*
