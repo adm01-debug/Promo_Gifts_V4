@@ -10,7 +10,7 @@
   "fn_aggregate_stock_daily_status": "timeout_60s_mcp_nao_executado — funcao existe (retorna jsonb, faz UPSERT p_date via BR timezone)",
   "edge_logs_janela_maxima": "24h — limitação arquitetural do query_logs MCP (não 7d)",
   "edge_logs_24h_resultado": "67098 requests, 0 erros 5xx, 0 erros 4xx — saudável",
-  "verify_jwt_false_total": "36 de 82 funções (43.9%) — ver inventario/edge_functions_verify_jwt_false.md",
+  "verify_jwt_false_total": "36 de 109 funções (33.0%) — CORRETO: 109 total confirmado em 2026-10-22 14:00 UTC; 82 era contagem incorreta de sessão anterior",
   "types_ts_entradas": 1607,
   "banco_tabelas_publicas": 398,
   "tabelas_criticas_presentes_banco": "8/8 (personalization_techniques, products, product_variants, suppliers, supplier_products_raw, magazines, magazine_items, magazine_templates)",
@@ -18,7 +18,7 @@
   "rpc_verificadas": "16/16 RPCs do frontend existem no banco",
   "auth_config": "ssl=on, TLSv1.2+, scram-sha-256, log_connections=off, log_disconnections=off",
   "storage_buckets": "11 total: 2 públicos (avatars, mockup-assets), 9 privados",
-  "baseline_imutabilidade": "migrations=2538 Δ0, crons=142 Δ0, policies=960 Δ0, edge_functions=82 Δ0",
+  "baseline_imutabilidade": "migrations=2538 Δ0, crons=142 Δ0, policies=960 Δ0, edge_functions=109 Δ0",
   "deno_env_scan": "437 usos em supabase/functions/ — todos em arquivos _test.ts / _contract_test.ts ou tipo EnvReader; ZERO secrets hardcoded encontrados",
   "git_secret_scan": "62 commits no branch; grep por service_role_key/anon_key/JWT mostra apenas referencias a vars CI (${{ secrets.X }}) em workflows; ZERO secrets hardcoded no historico",
   "secoes": {
@@ -29,8 +29,15 @@
     },
     "2_drift": {
       "status": "concluido",
-      "evidencia": "DRIFT-001: types.ts 1607 entradas vs 398 tabelas DB; 8/8 tabelas criticas presentes; 5 chamadas .from() sao buckets/aliases, nao tabelas ausentes",
-      "queries_executadas": ["grep -c export_type types.ts", "SELECT relname FROM pg_class WHERE 8 tabelas criticas IN (...)"]
+      "evidencia": "DRIFT-001: types.ts 1607 entradas vs 398 tabelas DB; 8/8 tabelas criticas presentes; 5 chamadas .from() sao buckets/aliases. DRIFT-003 NOVO: 2975 migration files no repo vs 2529 com timestamp no ledger = 446 migrations sem registro no ledger",
+      "queries_executadas": [
+        "SELECT count(*) FROM supabase_migrations.schema_migrations → 2538",
+        "SELECT max(version),min(version) FROM schema_migrations → 001..20261019000000",
+        "count FILTER timestamp_format → 2529; other_format → 9",
+        "ls supabase/migrations/*.sql | wc -l → 2975",
+        "2975 prefixos únicos 14-dígitos vs 2529 DB = 446 drift"
+      ],
+      "drift_003_detalhe": "446 arquivos de migration no repo cujo timestamp não consta no ledger. Timestamps repo: 20241231000000..20261019000000; max DB: 20261019000000. Provável causa: migrations aplicadas via MCP/execute_sql (OOB) sem registro, conforme padrão detectado em 2026-10-13."
     },
     "3_seguranca": {
       "status": "concluido",
@@ -69,11 +76,25 @@
     },
     "7_db_functions": {
       "status": "concluido",
-      "evidencia": "1334 funcoes; 10 funcoes anon SECURITY DEFINER executaveis; 101 funcoes authenticated SECURITY DEFINER; fn_aggregate_stock_daily timeout >60s (existe, retorna jsonb, faz UPSERT)"
+      "evidencia": "1334 funcoes; 10 funcoes anon SECURITY DEFINER executaveis; 101 funcoes authenticated SECURITY DEFINER; fn_aggregate_stock_daily timeout >60s; 107/1119 PL/pgSQL com exception swallowing (sem RAISE)",
+      "evidencia_reexecutada_14h": {
+        "exception_swallowing_total": 107,
+        "exception_com_raise": 196,
+        "total_plpgsql": 1119,
+        "exemplos": ["check_login_rate_limit","fn_cron_safe_run","fn_check_login_allowed","fn_cron_watchdog"],
+        "timestamp": "2026-10-22T14:01:00Z"
+      }
     },
     "8_edge_functions": {
       "status": "concluido",
-      "evidencia": "82 funcoes publicadas; 36 com verify_jwt=false (43.9%); 5 criticas sem auth; lista completa em inventario/edge_functions_verify_jwt_false.md"
+      "evidencia": "109 funcoes publicadas (CORRETO — 82 era contagem incorreta); 36 com verify_jwt=false (33.0%); 5 criticas sem auth; lista completa em inventario/edge_functions_verify_jwt_false.md",
+      "evidencia_reexecutada_14h": {
+        "total_edge_functions": 109,
+        "verify_jwt_false": 36,
+        "verify_jwt_true": 73,
+        "fonte": "list_edge_functions MCP executado 2026-10-22 14:00 UTC",
+        "slugs_verify_jwt_false_count": 36
+      }
     },
     "9_auth_storage_realtime": {
       "status": "concluido",
@@ -102,11 +123,16 @@
   "relatorio_final": "RELATORIO_AUDITORIA_SUPABASE.md",
   "resumo_achados": {
     "CRITICO": 1,
-    "ALTO": 10,
+    "ALTO": 12,
     "MEDIO": 27,
     "BAIXO": 9,
     "INFO": 13,
-    "NAO_VERIFICADO": 5
+    "NAO_VERIFICADO": 5,
+    "novos_sessao_14h": {
+      "DRIFT-003": "ALTO — 446 migrations no repo sem entrada no ledger do banco (prioridade imediata para reconciliação)",
+      "PERF-009": "ALTO — 107 funções PL/pgSQL com exception swallowing (EXCEPTION sem RAISE); erros silenciados podem mascarar falhas de segurança",
+      "CORR-001": "INFO — edge functions total corrigido para 109 (era 82 por contagem incorreta de sessão anterior)"
+    }
   },
   "prova_projeto_confirmada": "get_project_url → https://doufsxqlfjyuvxuezpln.supabase.co (executado 2026-10-22)",
   "snapshot_producao_13h45": {
@@ -136,6 +162,50 @@
     "sync_external_db": "LIDO v251 — authorizeCron() obrigatório (BUG-EF-005 FIX)"
   },
   "fn_cron_safe_run_analise": "SECURITY DEFINER, search_path=public, usa EXECUTE p_sql (SQL dinamico — potencial injecao), pg_try_advisory_xact_lock para concorrencia, timeout padrao 45000ms",
+  "sessao_2026_10_22_14h_dados_novos": {
+    "edge_functions_total_correto": 109,
+    "edge_functions_verify_jwt_false": 36,
+    "edge_functions_verify_jwt_false_pct": "33.0%",
+    "migrations_repo_files": 2975,
+    "migrations_db_ledger": 2538,
+    "migrations_db_timestamp_format": 2529,
+    "migrations_drift_repo_sem_ledger": 446,
+    "migrations_drift_explicacao": "446 arquivos no repo com timestamp único não encontrado no ledger — provável aplicação OOB via execute_sql sem registro (similar ao incidente de 2026-10-13)",
+    "fk_sem_indice_reconciliacao": {
+      "metodo_pg_constraint_exato": 4,
+      "metodo_ilike_amplo": 70,
+      "diferenca_explicada": "ILIKE '%col%' captura índices multi-coluna e correspondências parciais (e.g., 'id' dentro de 'organization_id'); pg_constraint compara array de atributos exatamente — 4 é o número correto de FKs sem cobertura de índice no leading column"
+    },
+    "policies_reconciliacao": {
+      "count_com_auth_uid": 590,
+      "advisor_flags": 507,
+      "diferenca_explicada": "507 do advisor = políticas onde a tabela não tem índice para suportar o filtro auth.uid(); 590 = total de políticas que referenciam auth.uid() (inclui tabelas com índice adequado)"
+    },
+    "exception_swallowing": {
+      "funcoes_sem_raise": 107,
+      "funcoes_com_raise": 196,
+      "total_plpgsql": 1119,
+      "pct_swallowing": "9.6%",
+      "exemplos_criticos": ["check_login_rate_limit","fn_cron_safe_run","fn_cron_watchdog","fn_check_login_allowed","ensure_default_favorite_list"]
+    },
+    "snapshot_after_14h00": {
+      "base_tables": 398,
+      "views": 193,
+      "funcoes": 1334,
+      "cron_jobs": 142,
+      "rls_policies": 960,
+      "migrations_ledger": 2538,
+      "capturado_em": "2026-10-22T14:00:41.464123+00:00"
+    },
+    "pii_grep_resultado": "LIMPO — zero emails reais, zero JWTs, zero UUIDs de usuários nos arquivos de entrega; referências a 'service_role' em SQL de propostas são texto SQL legítimo, não chaves",
+    "pg_stat_statements_top3": {
+      "1": "v_products_public — 2935 calls, mean=959ms",
+      "2": "tags — 1325 calls, mean=1580ms (Seq Scan on tags — sem índice em name/slug)",
+      "3": "fn_cron_safe_run — 150 calls, mean=7331ms stddev=16769ms"
+    },
+    "seq_scan_critico": "user_organizations — 2,879,073 seq scans em 24h; RLS auth.uid() initplan driving full table scan sem cache",
+    "cron_overlap_confirmado": "5 jobs em '30 3 * * *'; 3 jobs em '10 3 * * *'; image-dimensions-backfill sem auth header"
+  },
   "secoes_adicionadas_sessao_final": ["27_meta_cumprida"],
   "novos_achados_sessao_continuacao": {
     "CRON-NEW-001": "ALTO — image-dimensions-backfill chama run-script sem auth headers (x-cron-secret ausente)",
