@@ -24,7 +24,29 @@
 
 **Passo a passo:** Supabase → projeto `doufsxqlfjyuvxuezpln` → Settings → Compute and Disk → avaliar o próximo tamanho (ex.: Medium) e ver o novo preço antes de confirmar.
 
-## 3. Secret `ASIA_INGESTION_CRON_SECRET` ausente
+## 3. 30 correções antigas que nunca foram aplicadas no banco (decisão)
+
+**O que é:** comparei o repositório com o banco de produção. Desde agosto, 30 migrações foram escritas e aprovadas em PR, mas nunca aplicadas (não constam no registro do banco). Entre elas: `e38` (remove 2 rotinas mortas), `e23`/`e17`/`e18` (endurecimento de segurança), `e25` (particionamento automático de histórico), `20261008230000` (restringir links públicos de aprovação de mockup), além de monitoramentos E30/E33/E40.
+
+**Por que trava:** cada uma exige aprovação do PO pelo mesmo workflow do item 1. Algumas ficaram obsoletas (ex.: `e35` — a lentidão já foi resolvida por um índice criado depois; `e37` aumentaria a carga hoje) e não devem ser aplicadas.
+
+**Passo a passo:** depois que o banco estabilizar, me peça "revise as migrações pendentes" — eu classifico cada uma em aplicar / descartar / reescrever e preparo os PRs, para você só aprovar.
+
+## 4. Painel de estoque sem o card "Risco de ruptura" (decisão de segurança)
+
+**O que é:** em 13/10 o acesso à visão `mv_stock_rupture_alert` foi retirado dos usuários logados (contenção de segurança). A tela de estoque ainda tenta lê-la → 632 erros "acesso negado" hoje e o card não carrega.
+
+**Por que trava:** reabrir o acesso desfaz uma decisão de segurança. Recomendação: criar uma função segura que entregue só os campos do card para perfis internos.
+
+**Passo a passo:** responda "pode criar a função segura do card de ruptura" e eu faço o PR.
+
+## 5. Personalização de produto chamada por visitantes anônimos (decisão)
+
+**O que é:** a função `fn_get_product_customization_options` foi fechada para visitantes em 16/07, mas a tela de regras de personalização ainda a chama sem login → 873 erros hoje.
+
+**Por que trava:** decidir se visitantes devem ver opções de personalização (reabrir) ou se a tela deve exigir login.
+
+## 6. Secret `ASIA_INGESTION_CRON_SECRET` ausente
 
 **O que é:** uma rotina de ingestão do fornecedor Asia reclama 143 vezes/dia que esse segredo não existe no cofre do Supabase.
 
