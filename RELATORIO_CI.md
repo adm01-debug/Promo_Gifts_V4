@@ -95,11 +95,35 @@ Workflows **não encontrados** nos últimos 100 runs de main (não executaram re
 
 ### PR #2338 (`claude/laughing-cori-o9w35e` → main)
 
-| Workflow | Run definitivo | Resultado |
-|---|---|---|
-| Deploy Gates (15/17 jobs) | [39726195264](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39726195264) | 15 ✅ / 2 ❌ pré-existentes |
+#### Run definitivo: `39732557237` (HEAD `e6d822c4`) — iniciado 2026-10-22T06:12:53Z
 
-> Os 2 failures remanescentes (Gate 3 E2E + Gate E40 Drift) são pré-existentes em main e estão documentados em PENDENCIAS.md (P3 e P-E40).
+| Job | Conclusão | Completado |
+|---|---|---|
+| Gate 0 SSOT Supabase | ✅ success | 06:14:49Z |
+| Detectar mudanças (docs-only bypass E14) | ✅ success | 06:14:50Z |
+| Gate 5 SEO Sanity Check | ✅ success | 06:15:09Z |
+| Gate E23 Verifica secrets E2E | ✅ success | 06:15:05Z |
+| Gate 0.5 Dependency Audit | ✅ success | 06:16:10Z |
+| Gate 0.6 Dependency Review | ✅ success | 06:16:14Z |
+| Gate E40 Detect schema file changes | ✅ success | 06:16:07Z |
+| Gate E23 Secret Scan (gitleaks) | ✅ success | 06:16:33Z |
+| Gate 2.5 PostgreSQL Transactional Integrity | ✅ success | 06:17:17Z |
+| Gate 2 Unit Tests | ✅ success | 06:17:14Z |
+| Gate 4 Lighthouse CI | ✅ success | 06:18:13Z |
+| Gate 5.5 RPC restore_seller_cart | ✅ success | 06:18:49Z |
+| **Gate 1 Lint + TypeScript (42 sub-gates)** | ✅ **success** | **06:23:36Z** |
+| **Gate 6 Build** | ✅ **success** | **06:24:14Z** |
+| Gate 3 E2E Smoke | ⏳ in_progress (06:17:28Z→) | pré-existente P3 |
+| Gate E40 Schema Drift Check | ⏳ in_progress (06:22:11Z→) | pré-existente P-E40 |
+
+**Gate 1 — todos 42 sub-gates ✅ incluindo:**
+- Gate 1.12 Contract Coverage ✅ (correção central deste PR)
+- Gate 1.13 Policies baseline vs pg_policies ✅
+- Gate 1.13.1 RLS sem policy ✅
+- Gate 1.13.2 Anon-insert rate guard ✅
+- Gate 1.13.3 Migration receipts ✅
+
+> Os 2 jobs remanescentes (Gate 3 E2E Smoke + Gate E40 Schema Drift) são pré-existentes em main e estão documentados em PENDENCIAS.md (P3 e P-E40). Todos os outros 14/16 jobs concluídos com SUCCESS.
 
 ---
 
