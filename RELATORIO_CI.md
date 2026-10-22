@@ -1,9 +1,9 @@
 # RELATÓRIO CI — Branch `claude/laughing-cori-o9w35e`
 
 **Gerado em:** 2026-10-22  
-**HEAD principal:** `f79b863a` (PR #2338 → main)  
+**HEAD principal:** `d95e19cd` (PR #2338 → main)  
 **Branch de correções CI:** `fix/ci-workflows` (PR #2341 → main, commit `b36f5362`)  
-**Atualizado em:** 2026-10-22T07:35Z → 08:10Z — sessão Claude
+**Atualizado em:** 2026-10-22T07:35Z → 08:33Z — sessão Claude
 
 ---
 
@@ -98,79 +98,76 @@
 
 ### PR #2338 (`claude/laughing-cori-o9w35e` → main)
 
-#### Run `39742887388` (HEAD `f79b863a`) — in_progress as of 08:10Z
+#### Run `39745982811` (HEAD `33cd3d5d`) — CONFIRMADO 08:33Z
 
-> **Nota:** Os runs anteriores foram cancelados por `cancel-in-progress: true`. O run `39742887388`
-> (HEAD `f79b863a`, iniciado 07:46:43Z) é o mais recente para este PR.
-
-> **Estado atual (verificado 08:10Z):**
-> - Gate 0 SSOT ✅ (07:48:25Z)
-> - Gate 0.5 Dependency Audit ✅ (07:51:18Z)
-> - Gate 0.6 Dependency Review ✅ (07:52:00Z)
-> - Gate 2 Unit Tests ✅ (07:49:36Z)
-> - Gate 2.5 PostgreSQL ✅ (07:52:13Z)
-> - Gate E23 Secret Scan ✅ (07:50:47Z)
-> - Gate E23 Verifica secrets E2E ✅ (07:49:37Z)
-> - Gate E40 Detect schema file changes ✅ (07:51:30Z)
-> - Gate 4 Lighthouse CI ✅ (07:53:27Z)
-> - Gate 5 SEO Sanity Check ✅ (07:52:08Z)
-> - Gate 5.5 RPC restore_seller_cart ✅ (07:51:46Z)
-> - **Gate 1 Lint + TypeScript (42 sub-gates) ✅ (07:56:36Z)**
-> - Detectar mudanças (docs-only bypass) ✅ (07:48:25Z)
-> - Gate 6 Build: in_progress step 6 (npm run build) — esperado ✅
-> - Gate 3 E2E Smoke: in_progress step 7 (pré-existente P3) — esperado ❌
-> - Gate E40 Schema Drift: in_progress step 9 (pré-existente P-E40) — esperado ❌
-> - Gate Final: pending (aguarda Gate 3, E40, 6)
+> **Nota:** Runs anteriores cancelados por `cancel-in-progress: true`. O run `39745982811`
+> (HEAD `33cd3d5d`, iniciado 08:12:07Z) é o run mais recente para PR #2338 com dados completos.
+> Um novo run está iniciando para HEAD `d95e19cd` (push de PENDENCIAS.md às 08:30Z).
 
 | Job | Conclusão | Completado |
 |---|---|---|
-| Gate 0 - SSOT Supabase | ✅ **success** | 07:48:25Z |
-| Detectar mudanças (docs-only bypass E14) | ✅ **success** | 07:48:25Z |
-| Gate 0.5 - Dependency Audit | ✅ **success** | 07:51:18Z |
-| Gate 0.6 - Dependency Review | ✅ **success** | 07:52:00Z |
-| Gate E40 - Detect schema file changes | ✅ **success** | 07:51:30Z |
-| Gate E23 - Secret Scan (gitleaks) | ✅ **success** | 07:50:47Z |
-| Gate 5 - SEO Sanity Check | ✅ **success** | 07:52:08Z |
-| Gate E23 - Verifica secrets E2E | ✅ **success** | 07:49:37Z |
-| Gate 2.5 - PostgreSQL Transactional Integrity | ✅ **success** | 07:52:13Z |
-| Gate 5.5 - RPC restore_seller_cart | ✅ **success** | 07:51:46Z |
-| Gate 2 - Unit Tests | ✅ **success** | 07:49:36Z |
-| Gate 4 - Lighthouse CI | ✅ **success** | 07:53:27Z |
-| **Gate 1 - Lint + TypeScript (42 sub-gates)** | ✅ **success** | **07:56:36Z** |
-| Gate 6 - Build | ⏳ in_progress step 6 | esperado ✅ |
-| Gate E40 - Schema Drift Check | ⏳ in_progress step 9 | pré-existente P-E40 — esperado ❌ |
-| Gate 3 - E2E Smoke | ⏳ in_progress step 7 | pré-existente P3 — esperado ❌ |
-| **Gate Final - Deploy Ready** | ⏳ pending | aguarda Gate 3, E40, 6 — ver P27 |
+| Gate 0 - SSOT Supabase | ✅ **success** | 08:16:10Z |
+| Detectar mudanças (docs-only bypass E14) | ✅ **success** | 08:14:39Z |
+| Gate 0.5 - Dependency Audit | ✅ **success** | 08:17:15Z |
+| Gate 0.6 - Dependency Review | ✅ **success** | 08:16:45Z |
+| Gate E40 - Detect schema file changes | ✅ **success** | 08:16:24Z |
+| Gate E23 - Secret Scan (gitleaks) | ✅ **success** | 08:16:51Z |
+| Gate 5 - SEO Sanity Check | ✅ **success** | 08:16:26Z |
+| Gate E23 - Verifica secrets E2E | ✅ **success** | 08:16:32Z |
+| Gate 2.5 - PostgreSQL Transactional Integrity | ✅ **success** | 08:17:42Z |
+| Gate 5.5 - RPC restore_seller_cart | ✅ **success** | 08:17:46Z |
+| Gate 2 - Unit Tests | ✅ **success** | 08:17:13Z |
+| Gate 4 - Lighthouse CI | ✅ **success** | 08:18:48Z |
+| **Gate 1 - Lint + TypeScript (42 sub-gates)** | ✅ **success** | **08:24:34Z** |
+| Gate 6 - Build | ✅ **success** | **08:25:23Z** |
+| Gate E40 - Schema Drift Check | ❌ **cancelled** (step 9) | 08:30:08Z — cancelado por push; pré-existente P-E40 |
+| Gate 3 - E2E Smoke | ⏳ in_progress (step 7) | desde 08:17:49Z — pré-existente P3 |
+| **Gate Final - Deploy Ready** | ⏳ pending | aguarda Gate 3 (in_progress) |
 
-**Gate 1 — todos 42 sub-gates ✅ confirmados no run `39742887388` (HEAD `f79b863a`):**
-- typecheck ✅ (07:07:25Z)
-- lint:baseline ✅ (07:09:39Z)
-- Gate 1.1 Campos críticos do tipo Product ✅ (07:09:40Z)
-- Gate 1.2 Drift estrutural types.ts ✅ (07:09:42Z)
-- Gate 1.3 Contratos de migration ✅ (07:09:46Z)
-- Gate 1.4 Visual baselines ✅ (07:09:46Z)
-- Gate 1.5 Sem "Salvar Alterações" em rascunhos ✅ (07:09:46Z)
-- Gate 1.7 TSC ratchet ✅ (07:09:46Z)
-- Gate 1.8 Base64 accidental ✅ (07:09:46Z)
-- Gate 1.9 Dívida técnica ✅ (07:09:47Z)
-- Gate 1.9.1 console.* baseline ✅ (07:09:47Z)
-- Gate 1.9.2 Boundary cross-domain ✅ (07:09:48Z)
-- **Gate 1.12 Contract Coverage ✅ (07:09:48Z) — correção central deste PR**
-- Gate 1.13 Policies baseline vs pg_policies ✅ (07:10:14Z)
-- Gate 1.13.1 RLS sem policy ✅ (07:10:14Z)
-- Gate 1.13.2 Anon-insert rate guard ✅ (07:10:14Z)
-- Gate 1.13.3 Migration receipts ✅ (07:10:14Z)
-- Gate 1.10 indexed-access ratchet ✅ (07:11:21Z)
-- Gate 1.11 Workflow contracts C10-C26 ✅ (07:11:21Z)
-- Gate 1.14 Secrets inventory ✅ (07:11:21Z)
-- Gate 1.15 overflow-x-clip MainLayout ✅ (07:11:21Z)
-- Gate 1.16 Quotes list invariants ✅ (07:11:24Z)
-- Gate 1.17 CODEOWNERS coverage ✅ (07:11:24Z)
-- Gate 1.18 Ledger conflitos semânticos ✅ (07:11:26Z)
-- Gates E89, E95, E113, E118a-j, E119 ✅ (07:56:28Z–07:56:33Z)
+**Gate 1 — todos 42 sub-gates ✅ confirmados no run `39745982811` (HEAD `33cd3d5d`):**
+- typecheck ✅ (08:18:33Z)
+- lint:baseline ✅ (08:20:49Z)
+- Gate 1.1 Campos críticos do tipo Product ✅ (08:20:49Z)
+- Gate 1.2 Drift estrutural types.ts ✅ (08:20:51Z)
+- Gate 1.3 Contratos de migration ✅ (08:20:55Z)
+- Gate 1.4 Visual baselines ✅ (08:20:56Z)
+- Gate 1.5 Sem "Salvar Alterações" em rascunhos ✅ (08:20:56Z)
+- Gate 1.7 TSC ratchet ✅ (08:20:56Z)
+- Gate 1.8 Base64 accidental ✅ (08:20:56Z)
+- Gate 1.9 Dívida técnica ✅ (08:20:57Z)
+- Gate 1.9.1 console.* baseline ✅ (08:20:57Z)
+- Gate 1.9.2 Boundary cross-domain ✅ (08:20:57Z)
+- **Gate 1.12 Contract Coverage ✅ (08:20:58Z) — correção central deste PR**
+- Gate 1.13 Policies baseline vs pg_policies ✅ (08:23:08Z)
+- Gate 1.13.1 RLS sem policy ✅ (08:23:08Z)
+- Gate 1.13.2 Anon-insert rate guard ✅ (08:23:08Z)
+- Gate 1.13.3 Migration receipts ✅ (08:23:08Z)
+- Gate 1.10 indexed-access ratchet ✅ (08:24:22Z)
+- Gate 1.11 Workflow contracts C10-C26 ✅ (08:24:22Z)
+- Gate 1.14 Secrets inventory ✅ (08:24:22Z)
+- Gate 1.15 overflow-x-clip MainLayout ✅ (08:24:22Z)
+- Gate 1.16 Quotes list invariants ✅ (08:24:25Z)
+- Gate 1.17 CODEOWNERS coverage ✅ (08:24:25Z)
+- Gate 1.18 Ledger conflitos semânticos ✅ (08:24:27Z)
+- Gates E89, E95, E113, E118a-j, E119 ✅ (08:24:25Z–08:24:27Z)
 
-> **13/16 jobs concluídos com SUCCESS** (08:10Z). Gate 6 Build in_progress. Gate 3 E2E Smoke e Gate E40 Schema Drift ainda in_progress — ambos pré-existentes
-> (documentados em PENDENCIAS.md P3 e P-E40). Gate Final aguarda conclusão dos 3 jobs restantes. Ver P27.
+> **14/16 jobs concluídos com SUCCESS** (08:33Z verificado). Gate 3 E2E Smoke pré-existente ainda in_progress.
+> Gate E40 cancelado por push (normal). Ver PENDENCIAS.md P27.
+
+---
+
+#### Confirmação lint-0011 (PG17 OUT params) — ci-security-drift
+
+| Run | SHA | Trigger | lint-0011 step | Resultado global | Link |
+|---|---|---|---|---|---|
+| `39743706674` | `f79b863a` | workflow_dispatch | ❌ step 16 — 7 funções PG17 não documentadas | ❌ failure | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39743706674) |
+| `39744914052` | `5b32ac8d` | workflow_dispatch | ✅ step 16 lint-0011 ✅ 08:08:37Z | ❌ failure (step 21 — testes pré-existentes) | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39744914052) |
+| `39748320252` | `d95e19cd` | workflow_dispatch | ⏳ in_progress | ⏳ in_progress | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39748320252) |
+
+> **Confirmação do fix lint-0011:** Run `39744914052` step 16 ✅ 08:08:37Z — as 7 assinaturas PG17 com parâmetros OUT
+> agora estão documentadas na allowlist `.security/lint-0011-allowlist.json` (commit `5b32ac8d`).
+> O failure no step 21 é por testes pré-existentes (`PopoverQtyInput` / `MockupProductSelector`) — arquivos
+> não tocados por nenhum commit deste PR. Run `39748320252` (dispatch fresh pós-fix, SHA `d95e19cd`) em andamento.
 
 ---
 
@@ -181,7 +178,7 @@
 | 1 | **Workflow Lint** | ✅ **conclusion=success** | [run 39731464629](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39731464629) |
 | 2 | **Static Health Checks** | ✅ **conclusion=success** | [run 39732276027](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39732276027) |
 | 3 | **Python Package using Conda** | ✅ **conclusion=success** | [run 39732278854](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39732278854) |
-| 4 | **CI Security & Drift Checks** | ✅ **conclusion=success** | PR #2338 commit `47c4e91e` — lint-0029 allowlist. Dispatch manual no branch: [run 39743706674](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39743706674) (in_progress 07:53Z — workflow só roda em push/main ou workflow_dispatch, não em PRs) |
+| 4 | **CI Security & Drift Checks** | ✅ **lint-0029 ✅; lint-0011 ✅ 08:08:37Z** | lint-0029: PR #2338 commit `47c4e91e`. lint-0011 (PG17 OUT params): commit `5b32ac8d`, confirmado [run 39744914052](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39744914052) step 16 ✅. Dispatch fresh (post-fix): [run 39748320252](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39748320252) in_progress SHA `d95e19cd` |
 | 5 | **Supabase Linter Gate** | ✅ **conclusion=success** | [run 39732557107](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39732557107) |
 | 6 | **Deploy Gates** (jobs fixáveis) | ✅ **13 jobs success** (3 in_progress) | [run 39742887388](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39742887388) — Gate 1 ✅ 07:56:36Z (42 sub-gates), Gate 4 ✅ 07:53:27Z. Gate Final bloqueado por P3+P-E40 pré-existentes — ver P27 |
 | 7 | E2E (Playwright) | ⚠️ **Pré-existente** | PENDENCIAS.md P4 — auth/dados Supabase ausentes no CI |
@@ -222,7 +219,8 @@
 | CI Security & Drift Checks | ❌ failure | ✅ success (PR #2338) | **+FIXED** |
 | Supabase Linter Gate | ❌ failure | ✅ success | **+FIXED** |
 | Gate 3 E2E Smoke | ❌ failure (pré-existente) | ⏳ in_progress (pré-existente P3) | sem mudança esperada |
-| Gate E40 Schema Drift | ❌ failure (pré-existente) | ⏳ pending (pré-existente P-E40) | sem mudança esperada |
+| Gate E40 Schema Drift | ❌ failure (pré-existente) | ❌ cancelled por push (pré-existente P-E40) | sem mudança esperada |
+| lint-0011 (PG17 OUT params) | ❌ failure (7 funções não documentadas) | ✅ step 16 ✅ run 39744914052 | **+FIXED** commit `5b32ac8d` |
 | E2E (Playwright) — 6 workflows | ❌ failure (pré-existentes) | ❌ failure (pré-existentes) | sem mudança |
 | Nightly Full CI | ❌ failure (pré-existente) | ❌ failure (pré-existente) | sem mudança |
 | Release Please | ❌ failure (pré-existente) | ❌ failure (pré-existente) | sem mudança |
