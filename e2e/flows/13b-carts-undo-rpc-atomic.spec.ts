@@ -47,7 +47,7 @@ async function primeCartsWithRpc(
       });
       return;
     }
-    await route.continue();
+    await route.fallback();
   });
   await page.route(SELLER_CART_ITEMS_REST, async (route) => {
     // Legado do path client-side: se o app ainda chamar por engano, respondemos 201

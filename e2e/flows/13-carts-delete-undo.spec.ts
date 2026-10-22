@@ -52,7 +52,7 @@ async function primeCarts(page: import("@playwright/test").Page, count: number) 
       });
       return;
     }
-    await route.continue();
+    await route.fallback();
   });
   await page.route(SELLER_CART_ITEMS_REST, async (route, request) => {
     if (request.method() === "POST") {
@@ -258,7 +258,7 @@ test.describe("Carrinhos: exclusão com Desfazer (paridade com Orçamentos)", ()
         });
         return;
       }
-      await route.continue();
+      await route.fallback();
     });
     await page.route(SELLER_CART_ITEMS_REST, async (route, request) => {
       if (request.method() === "POST") {
@@ -329,7 +329,7 @@ test.describe("Carrinhos: exclusão com Desfazer (paridade com Orçamentos)", ()
         });
         return;
       }
-      await route.continue();
+      await route.fallback();
     });
     await page.route(SELLER_CART_ITEMS_REST, async (route) => {
       await route.fulfill({ status: 201, contentType: "application/json", body: JSON.stringify([]) });
