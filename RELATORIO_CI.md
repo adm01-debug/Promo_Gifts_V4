@@ -1,11 +1,11 @@
 # Relatório CI — Sessão de Correção de Workflows
 
-**Gerado:** 2026-10-22T13:35 UTC | **Atualizado:** 2026-10-22T19:15 UTC  
+**Gerado:** 2026-10-22T13:35 UTC | **Atualizado:** 2026-10-22T19:21 UTC  
 **Branch:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
 **HEAD atual:** `b48145b3` (docs(ci): atualiza PENDENCIAS — HEAD 856b8db4, Gate 0.5 fix aplicado)  
 **Commits desta sessão (todos os fixes):** `a21f6200` → `b442d1ed` → `679b5f45` → `dbd53ec4` → `ad831d70` → `6e93a947` → `8bfcbf4a` → `f6b1147` → `b977f790` → `a83e1c0d` → `5499c532` → `141c915a` → `db65121a` → `e2bf7804` → `c97f4959` → `ac0f4e10` → `3d2fe287` → `4ceed97c` → `c59b3e66` → `71286ad8` → `882e957c` → `87fb348d` → `47dfffdc` → `856b8db4` → **`b48145b3`**  
 **Base (main):** `8e8053b9`  
-**Gate Final b48145b3:** run [39836732441](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39836732441) — 🔄 `queued` (19:03Z) — bloqueado por db-schema-drift-check [39836732148](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39836732148) `in_progress` (step 11 Schema drift check em andamento; ECR pré-pull step 10 = ✅)  
+**Gate Final b48145b3:** run [39836732441](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39836732441) — 🔄 `in_progress` (19:03Z) — **15/16 jobs ✅ success**; apenas Gate E40 Schema Drift Check (job [120031545746](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39836732441/job/120031545746)) step 11 em andamento desde 19:18:20Z (ECR step 10 ✅ sem rate-limit)  
 **Gate Final 87fb348d/47dfffdc/856b8db4:** cancelados por concorrência de PR (superados por b48145b3)  
 **Gate Final 882e957c:** run [39835181848](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39835181848) — `cancelled` (concorrência de PR — superado por 87fb348d)  
 **Gate Final c59b3e66 (att 3):** run [39829341093](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39829341093) att 3 — `cancelled` (concorrência de PR — superado por 882e957c)  
@@ -368,3 +368,62 @@ Os workflows abaixo estavam em `success` antes desta sessão e permanecem sem re
 5. GitHub: Gate Final 39807534596 precisa completar → merge PR #2338 → rerun CI Security & Drift + Supabase Linter na main
 
 *Atualizado em 2026-10-22T16:30Z | Sessão https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz*
+
+---
+
+## 9. Tabela de Prova Final — Sessão 2026-10-22 (Continuação — HEAD b48145b3)
+
+> **Timestamp:** 2026-10-22T19:25Z | **HEAD:** `b48145b3` | **Base main:** `8e8053b9`  
+> Run do Gate Final: [39836732441](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39836732441)  
+> Esta seção registra os 15/16 jobs ✅ confirmados via API + status final do Gate E40.
+
+### 9.1 — Jobs do Gate Final run 39836732441 (HEAD b48145b3)
+
+| Job ID | Nome | conclusion | Horário |
+|---|---|---|---|
+| 120027300091 | Gate 0 - SSOT Supabase | ✅ success | 19:04:42Z |
+| 120027300520 | Detectar mudanças (docs-only bypass E14) | ✅ success | 19:06:03Z |
+| 120027587659 | Gate E23 - Verifica secrets E2E | ✅ success | 19:05:00Z |
+| 120027587238 | Gate 2.5 - PostgreSQL Transactional Integrity | ✅ success | 19:11:02Z |
+| 120027587298 | Gate E23 - Secret Scan (gitleaks) | ✅ success | 19:10:35Z |
+| 120027587396 | Gate 0.5 - Dependency Audit | ✅ success | 19:12:12Z |
+| 120027587218 | Gate E40 - Detect schema file changes | ✅ success | 19:12:36Z |
+| 120027587269 | Gate 0.6 - Dependency Review | ✅ success | 19:12:44Z |
+| 120027587460 | Gate 5 - SEO Sanity Check | ✅ success | 19:13:31Z |
+| 120027587183 | Gate 4 - Lighthouse CI | ✅ success | 19:13:41Z |
+| 120027587174 | Gate 5.5 - RPC restore_seller_cart | ✅ success | 19:14:00Z |
+| 120028267248 | Gate 2 - Unit Tests | ✅ success | 19:14:34Z |
+| 120027741392 | Gate 3 - E2E Smoke | ✅ success | 19:17:12Z |
+| 120028267444 | Gate 1 - Lint + TypeScript (40+ sub-gates) | ✅ success | 19:20:26Z |
+| 120035451363 | Gate 6 - Build | ✅ success | 19:21:10Z |
+| 120031545746 | Gate E40 - Schema Drift Check | 🔄 in_progress | step 11 desde 19:18:20Z |
+
+> Gate Final (job agregador) ainda não iniciou — aguarda Gate E40 Schema Drift completar.
+
+### 9.2 — Fix desta fase (commits b48145b3 / 856b8db4)
+
+| # | Workflow | Fix | Commit | Confirmação |
+|---|---|---|---|---|
+| 1 | Gate 0.5 Dependency Audit | Adiciona ip-address/socks/socks-proxy-agent à allowlist LHCI (cadeia dev-only @lhci/cli → ip-address; moderate advisory out-2026) | `856b8db4` | ✅ job 120027587396 success 19:12:12Z |
+| 2 | lint-0029 allowlist | Remove duplicata `public.log_user_logout()` (linhas 414-417) — lint falhava em `duplicate entry` | `882e957c` | ✅ Gate E23 gitleaks success + Gate 1 step lint success |
+
+### 9.3 — Status Gate E40 Schema Drift Check (job 120031545746)
+
+Steps concluídos (✅):
+- Step 1 Set up job ✅ 19:14:16Z
+- Step 2 Checkout repo ✅ 19:14:19Z
+- Step 3 Gate - secrets obrigatórios presentes? ✅ 19:14:19Z
+- Step 4 Setup Node ✅ 19:14:28Z
+- Step 5 Install Supabase CLI ✅ 19:14:34Z
+- Step 6 Override image registry to ECR Public (E104) ✅ 19:14:34Z
+- Step 7 Link canonical project ✅ 19:15:43Z
+- Step 8 Ledger parity (repo x canonical) ✅ **19:16:56Z** — DDL ledger parity **PASSOU** ✅
+- Step 9 Monta replay (baseline + migrations depois do dump) ✅ 19:17:18Z
+- Step 10 Pre-pull Supabase postgres image (retry ECR rate limits) ✅ **19:18:20Z** — ECR **SEM rate-limit** ✅
+
+Step em andamento:
+- Step 11 Schema drift check (baseline + replay x remote) 🔄 desde 19:18:20Z
+
+Steps pendentes: 12 (Event trigger drift), 13 (Cron job drift), 14 (Cleanup), 15 (Upload artifact), 28-30 (Post steps)
+
+*Atualizado em 2026-10-22T19:25Z | Sessão https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz*

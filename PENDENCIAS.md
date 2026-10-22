@@ -1,9 +1,9 @@
 # PENDÊNCIAS — Correção de Workflows CI
 
-**Atualizado:** 2026-10-22T19:15 UTC  
+**Atualizado:** 2026-10-22T19:25 UTC  
 **Branch ativa:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
 **HEAD atual:** `b48145b3` (docs(ci): atualiza PENDENCIAS — HEAD 856b8db4, Gate 0.5 fix aplicado)  
-**Gate Final b48145b3:** run [39836732441](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39836732441) — 🔄 `queued` (19:03Z) — bloqueado por db-schema-drift-check [39836732148](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39836732148) `in_progress` (step 11 Schema drift check em andamento; ECR step 10 = ✅ desta vez)  
+**Gate Final b48145b3:** run [39836732441](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39836732441) — 🔄 `in_progress` (19:03Z) — **15/16 jobs ✅ success**; Gate E40 Schema Drift Check (job [120031545746](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39836732441/job/120031545746)) step 11 em andamento desde 19:18:20Z (ECR step 10 ✅ sem rate-limit; ledger parity step 8 ✅)  
 **Gate Final 856b8db4/47dfffdc:** cancelados por concorrência de PR ao push de b48145b3  
 **Gate Final 87fb348d+47dfffdc+856b8db4 (run 39835399695):** run [39835399695](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39835399695) — ❌ `failure` — Gate 0.5 Dependency Audit falhou (ip-address moderate advisory). Fix aplicado em `856b8db4`.  
 **Gate Final 87fb348d:** run [39835399695](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39835399695) — ❌ `failure` (mesmo run — push 47dfffdc não cancelou; Gate 0.5 fez o run falhar)  
