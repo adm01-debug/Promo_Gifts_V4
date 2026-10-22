@@ -32,7 +32,7 @@ on:
   workflow_dispatch:
     inputs:
       total_shards:
-        description: 'Total de shards por browser (padrão: 2, recomendado 2–3).'
+        description: 'Total de shards por browser (padrão: 3, recomendado 2–4).'
         required: false
         default: ''
 
@@ -73,9 +73,9 @@ jobs:
           INPUT_TOTAL_SHARDS: ${{ github.event.inputs.total_shards }}
         run: |
           set -e
-          RAW="${INPUT_TOTAL_SHARDS:-2}"
+          RAW="${INPUT_TOTAL_SHARDS:-3}"
           # Normaliza para inteiro e clampeia entre 1 e 4.
-          if ! [[ "$RAW" =~ ^[0-9]+$ ]]; then RAW=2; fi
+          if ! [[ "$RAW" =~ ^[0-9]+$ ]]; then RAW=3; fi
           if [ "$RAW" -lt 1 ]; then RAW=1; fi
           if [ "$RAW" -gt 4 ]; then RAW=4; fi
           TOTAL="$RAW"
@@ -102,7 +102,7 @@ jobs:
           if [ -n "$INPUT_TOTAL_SHARDS" ]; then
             echo "- **fonte:** workflow_dispatch input" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "- **fonte:** default (2)" >> "$GITHUB_STEP_SUMMARY"
+            echo "- **fonte:** default (3)" >> "$GITHUB_STEP_SUMMARY"
           fi
 
   # ─────────────────────────────────────────────────────────────────────
