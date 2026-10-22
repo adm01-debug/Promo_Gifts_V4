@@ -1,8 +1,9 @@
 # Relatório CI — Sessão de Correção de Workflows
 
-**Gerado:** 2026-10-22T14:00 UTC  
+**Gerado:** 2026-10-22T14:00 UTC | **Atualizado:** 2026-10-22T13:15 UTC  
 **Branch:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD atual:** `a23edb77` + pendentes de commit  
+**HEAD atual:** `7fa5c405` (Gate 5 retry HTTP 521 fix)  
+**Commits desta sessão:** `9c2288c4` → `c58e3a56` → `6d6ed480` → `5216cfc7` → `0aad32d3` → `3daebf93` → `7fa5c405`  
 **Base (main):** `8e8053b9`
 
 ---
@@ -60,6 +61,8 @@ npm error 403 403 Forbidden - GET https://europe-west1-npm.pkg.dev/lovable-core-
 | 13 | **Uptime Monitor** | [39776635316](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39776635316) | 4 falhas consecutivas no health check — HTTP timeout/connection refused no endpoint monitorado | Verificar se o app está no ar; re-trigger automático no próximo schedule (a cada 30min) | PO / Infra |
 | 14 | **db-schema-drift-check** | [39757238848](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757238848) | `Ledger parity check failed` — DDL aplicada out-of-band sem migration espelho em `supabase_migrations.schema_migrations`; falso positivo do `SESSION_NOISE_EXACT` corrigido no commit `9c2288c4` | Criar migration espelho + `migration repair --status applied <version>` + PR (caminho E99) | PO + DBA |
 | 15 | **Release Please** | [39757063511](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757063511) | `Resource not accessible by integration` — GitHub App Release Please sem permissão `contents:write` configurada para o repositório | Settings → GitHub Apps → Release Please → Permissions → `contents: write` | PO (owner do repo) |
+| 16 | **Gitleaks — Full History Audit** | [39737833719](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39737833719) | Segredos encontrados no histórico git — issue #2261 criada automaticamente pelo workflow | PO revisar issue #2261, rotacionar credenciais expostas, avaliar rewrite de histórico (BFG) | PO (security owner) |
+| 17 | **edge-functions-drift-check** | [39755009146](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39755009146) | Drift entre GitHub e canônico Supabase — edge function(s) deployadas via MCP/dashboard sem commit | PO/DBA verificar artefato drift-report.csv e sincronizar via `deploy-edge-functions.yml` | PO + DBA |
 
 ---
 
@@ -75,7 +78,10 @@ npm error 403 403 Forbidden - GET https://europe-west1-npm.pkg.dev/lovable-core-
 | `6d6ed480` | `scripts/check-security-definer-acl.mjs` | HTTP 500 adicionado à lista de status retentáveis | **Gate 8 Security ACL** |
 | `5216cfc7` | `scripts/check-security-definer-acl.mjs` | HTTP 500 exaurido → `INCONCLUSIVE` via `concludeCheck` (Codex P2) | **Gate 8 Security ACL** |
 | `0aad32d3` | `.github/workflows/e2e-update-quote-missing-fields-snapshots.yml` | Novo step valida auth state antes de regenerar baselines — falha se `E2E_USER_EMAIL` ausente ou storageState vazio | **Qodo finding High** |
-| pendente commit | `.github/workflows/daily-flows-simulation.yml` | `\| head -1 \|\| true` — previne SIGPIPE (exit 141) quando `head -1` fecha o pipe antes do `git log` terminar | **Daily Flows Simulation** |
+| `3daebf93` | `.github/workflows/daily-flows-simulation.yml` | `\| head -1 \|\| true` — previne SIGPIPE (exit 141) | **Daily Flows Simulation** |
+| `3daebf93` | `.github/workflows/e2e-update-quote-missing-fields-snapshots.yml` | Auth state check: `sb-*-auth-token` em localStorage além de cookies | **Qodo finding — auth snapshot** |
+| `7fa5c405` | `scripts/check-rpc-get-profile-and-roles.mjs` | Retry para HTTP 521 (Cloudflare Web Server Down) | **Gate 5 SEO / RPC** |
+| pendente commit | `scripts/verify-quote-number-hardening.mjs` | Retry 3× com backoff 15s para HTTP 500/503/504/521/544 (Management API timeout) | **Quote Number Hardening — Verify** |
 
 ---
 

@@ -1,8 +1,8 @@
 # PENDÊNCIAS — Correção de Workflows CI
 
-**Atualizado:** 2026-10-22T14:00 UTC  
+**Atualizado:** 2026-10-22T14:30 UTC  
 **Branch ativa:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD:** `a23edb77` + pendentes de commit (daily-flows-simulation.yml SIGPIPE fix)
+**HEAD:** `7fa5c405` + pendentes de commit (quote-number retry + 3 novos bloqueios documentados)
 
 ---
 
@@ -18,6 +18,31 @@
   - `npm run build` — BLOQUEADO
 - **Validação:** Feita exclusivamente via CI do GitHub Actions
 - **Ação necessária:** Acesso ao registry privado do Lovable requer configuração no ambiente cloud (fora do escopo desta sessão)
+
+---
+
+## 1.1 INVENTÁRIO COMPLETO — Workflows em falha na `main` (2026-10-22T14:30 UTC)
+
+> Extraído por query `status=failure&branch=main`. 16 workflows com última run em `conclusion=failure`.
+
+| # | Workflow | Run ID | SHA | Categoria | Status |
+|---|---|---|---|---|---|
+| 1 | **CI Security & Drift Checks** | 39757064140 | 8e8053b9 | Fix branch | ✅ Fix via `9c2288c4` |
+| 2 | **Cart Invariants Smoke** | 39757063502 | 8e8053b9 | Pré-existente E2E | ⚠️ Auth flake Firefox |
+| 3 | **Daily flows simulation** | 39735125888 | c7c25848 | Fix branch | ✅ Fix SIGPIPE via `3daebf93` |
+| 4 | **Deploy Gates** | 39757063931 | 8e8053b9 | Agregado | ⚠️ Contém falhas abaixo |
+| 5 | **E2E (Playwright)** | 39757063983 | 8e8053b9 | Pré-existente E2E | ⚠️ Múltiplos flakes/regressões |
+| 6 | **E2E — Critical Flows & Error Boundaries** | 39757063778 | 8e8053b9 | Pré-existente E2E | ⚠️ Auth/UI flake |
+| 7 | **E2E — Personalization Flow** | 39757064319 | 8e8053b9 | Pré-existente E2E | ⚠️ Auth failure pré-existente |
+| 8 | **E2E • Swatch QuickView** | 39757064344 | 8e8053b9 | Pré-existente E2E | ⚠️ Visual/auth flake |
+| 9 | **Gitleaks — Full History Audit** | 39737833719 | c7c25848 | Ação humana | ❌ Secrets na history — ver §2.10 |
+| 10 | **Quote Builder Delivery Quality** | 39757063628 | 8e8053b9 | Pré-existente E2E | ⚠️ Tooltip visual flake |
+| 11 | **Quote Number Hardening — Verify** | 39735347516 | c7c25848 | Fix branch | ✅ Fix retry 544/timeout via commit pendente |
+| 12 | **Release Please** | 39757063511 | 8e8053b9 | Ação humana | ❌ Requer `contents:write` — ver §2.3 |
+| 13 | **Supabase Linter Gate** | 39757063923 | 8e8053b9 | Fix branch | ✅ Fix retry via `9c2288c4` |
+| 14 | **Uptime Monitor** | 39776635316 | 8e8053b9 | Ação humana | ❌ App offline/transient — ver §2.1 |
+| 15 | **db-schema-drift-check** | 39757238848 | 8e8053b9 | Ação humana | ❌ Ledger parity — ver §2.2 |
+| 16 | **edge-functions-drift-check** | 39755009146 | c7c25848 | Ação humana | ❌ Edge fn drift — ver §2.11 |
 
 ---
 
@@ -108,6 +133,28 @@
 
 ---
 
+## 2.10 Gitleaks — Full History Audit — Secrets no Histórico
+
+- **Run:** [39737833719](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39737833719)
+- **Causa:** Gitleaks encontrou segredos no histórico do git (SHA `c7c25848`)
+- **Evidência:** Issue [#2261](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2261) criada automaticamente pelo workflow com detalhes dos achados
+- **Fix possível:** NÃO resolvível por code push — requer rewrite do histórico (BFG Repo Cleaner ou `git filter-repo`)
+- **Ação necessária:** PO revisar issue #2261, rotacionar TODAS as credenciais expostas, avaliar rewrite de histórico
+- **Responsável:** PO (security owner)
+
+---
+
+## 2.11 edge-functions-drift-check — Edge Function Drift
+
+- **Run:** [39755009146](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39755009146)
+- **Causa:** "Drift detectado entre GitHub e canônico" — edge function(s) deployadas diretamente no Supabase (via MCP ou dashboard) sem commit no repo
+- **Evidência:** Step "Fail if drift detected" falhou; artefato `drift-report.csv` contém funções afetadas
+- **Fix possível:** Dispatch manual de `deploy-edge-functions.yml` (caminho único autorizado — REGRA #8 §corolário deploy de edge function)
+- **Ação necessária:** PO/DBA identificar funções drifted via artefato `drift-report.csv` e sincronizar via workflow `deploy-edge-functions.yml`
+- **Responsável:** PO + DBA
+
+---
+
 ## 3. FALHAS NA BRANCH `claude/laughing-cori-o9w35e` (commit `c58e3a56`) — Status
 
 ### 3.0 Qodo Finding High — Auth State Vazio em Snapshot Regeneration
@@ -143,12 +190,16 @@
 
 | Workflow | Status objetivo | Evidência |
 |---|---|---|
-| Uptime Monitor | ✅ ou ⚠️ transient | Próxima execução automática |
-| db-schema-drift-check | ✅ após merge + dispatch | Fix commit `9c2288c4` |
-| Release Please | ⚠️ requer ação PO | Permissão `contents:write` |
+| Uptime Monitor | ⚠️ ação humana | PO/Infra verificar app |
+| db-schema-drift-check | ⚠️ ação humana | Fix falso positivo: `9c2288c4`; ledger parity → PO+DBA via E99 |
+| Release Please | ⚠️ ação humana | PO configurar `contents:write` no GitHub App |
 | Supabase Linter Gate | ✅ após nova execução | Fix commit `9c2288c4` (retry 3×) |
-| CI Security & Drift Checks | ✅ após merge | Fix composto acima |
-| E2E (Playwright) | ⚠️ falhas pré-existentes | Documentadas acima |
-| Quote Builder Delivery Quality | ⏳ a investigar | Próxima sessão |
-| Gate 8 Security ACL | ✅ retry para HTTP 500 | Fix commitado |
-| Gate Final deploy-gates | ⏳ in_progress | Run 39778555326 |
+| CI Security & Drift Checks | ✅ após merge | Fix composto `9c2288c4` |
+| E2E (Playwright) | ⚠️ pré-existentes | Documentadas §2.6–2.8 acima |
+| Quote Builder Delivery Quality | ⚠️ pré-existente | Flake tooltip pré-existente — §2.7 |
+| Gate 8 Security ACL | ✅ retry + INCONCLUSIVE | Fix commits `6d6ed480`+`5216cfc7` |
+| Gate Final deploy-gates | ⏳ aguardando CI | HEAD `7fa5c405` |
+| Daily Flows Simulation | ✅ fix SIGPIPE | Commit `3daebf93` — `\|\| true` após `head -1` |
+| Quote Number Hardening | ✅ fix timeout 544 | Retry Management API — commit pendente |
+| Gitleaks Full History | ❌ ação humana urgente | Issue #2261 — rotacionar credenciais — §2.10 |
+| edge-functions-drift-check | ❌ ação humana | Drift detectado — sincronizar via deploy-edge-functions.yml — §2.11 |
