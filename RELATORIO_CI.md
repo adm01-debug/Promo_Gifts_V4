@@ -1,13 +1,15 @@
 # Relatório CI — Sessão de Correção de Workflows
 
-**Gerado:** 2026-10-22T13:35 UTC | **Atualizado:** 2026-10-22T18:37 UTC  
+**Gerado:** 2026-10-22T13:35 UTC | **Atualizado:** 2026-10-22T19:05 UTC  
 **Branch:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD atual:** `4ceed97c` (fix(ci): corrige 5 workflows em failure — actionlint, lint-0011/0029, Gate 1.12, prod-health)  
-**Commits desta sessão (compactação 4→7):** `a21f6200` → `b442d1ed` → `679b5f45` → `dbd53ec4` → `ad831d70` → `6e93a947` → `8bfcbf4a` → `f6b1147` → `b977f790` → `a83e1c0d` → `5499c532` → `141c915a` → `db65121a` → `e2bf7804` → `c97f4959` → `ac0f4e10` → `3d2fe287` → **`4ceed97c`**  
+**HEAD atual:** `87fb348d` (docs(ci): atualiza PENDENCIAS — HEAD mais recente da sessão)  
+**Commits desta sessão (todos os fixes):** `a21f6200` → `b442d1ed` → `679b5f45` → `dbd53ec4` → `ad831d70` → `6e93a947` → `8bfcbf4a` → `f6b1147` → `b977f790` → `a83e1c0d` → `5499c532` → `141c915a` → `db65121a` → `e2bf7804` → `c97f4959` → `ac0f4e10` → `3d2fe287` → `4ceed97c` → `c59b3e66` → `71286ad8` → `882e957c` → **`87fb348d`**  
 **Base (main):** `8e8053b9`  
-**Gate Final 4ceed97c att 2:** run [39829341093](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39829341093) att 2 → 🔄 `in_progress` — 15/16 ✅ — Gate 3 E2E ✅ (18:33:49Z) — Gate E40 🔄 step 7 (18:35:09Z)  
-**Gate Final 4ceed97c att 1:** run [39829341093](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39829341093) att 1 → ❌ `failure` — Gate E40 step 10 ECR Public `toomanyrequests: Data limit exceeded` (500GB/mês anônimo) após 5 retries; 14 outros jobs ✅  
-**Gate Final precedente de sucesso:** run [39798033549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39798033549) para `141c915a` → ✅ `conclusion=success` (16 jobs ✅, 15:00Z)
+**Gate Final 87fb348d:** run [39835399695](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39835399695) — 🔄 `queued` (19:05Z) — aguardando runner disponível  
+**Gate Final 882e957c:** run [39835181848](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39835181848) — `cancelled` (concorrência de PR — superado por 87fb348d)  
+**Gate Final c59b3e66 (att 3):** run [39829341093](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39829341093) att 3 — `cancelled` (concorrência de PR — superado por 882e957c)  
+**Gate Final 4ceed97c att 1:** run [39829341093](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39829341093) att 1 — ❌ `failure` — Gate E40 step 10 ECR Public `toomanyrequests: Data limit exceeded` (500GB/mês anônimo) após 5 retries; 14 outros jobs ✅  
+**Gate Final precedente de sucesso:** run [39798033549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39798033549) para `141c915a` — ✅ `conclusion=success` (16 jobs ✅, 15:00Z)
 
 ---
 
@@ -33,7 +35,42 @@ npm error 403 403 Forbidden - GET https://europe-west1-npm.pkg.dev/lovable-core-
 
 ## 2. Inventário Completo — Workflows com última execução em FAILURE
 
-> Atualizado: 2026-10-22T14:00 UTC. Estado verificado nos commits `8e8053b9` (main) e anteriores.
+> Atualizado: 2026-10-22T19:05 UTC. Estado verificado nos commits `8e8053b9` (main HEAD) e `87fb348d` (PR HEAD).
+
+## 2.0. Inventário COMPLETO — Última execução de cada workflow na main (`8e8053b9`)
+
+| Workflow | Run ID | SHA8 | Status | Conclusion |
+|---|---|---|---|---|
+| Deployment Failure Alert | 39757134040 | 8e8053b9 | completed | skipped |
+| E2E · restore_seller_cart RPC (multi-env) | 39759036308 | 8e8053b9 | pending | — |
+| Lovable Autoheal | 39757064002 | 8e8053b9 | completed | ✅ success |
+| Mark stale issues and pull requests | 39770375870 | 8e8053b9 | completed | ✅ success |
+| Quote Number Hardening — Verify (canonical DB) | 39831967008 | 8e8053b9 | completed | ✅ success |
+| SECURITY DEFINER ACL — Multi-Env | 39762572805 | 8e8053b9 | pending | — |
+| Select Columns vs Types | 39757063638 | 8e8053b9 | completed | ✅ success |
+| UI · Visual & A11y | 39757063251 | 8e8053b9 | completed | ✅ success |
+| **Uptime Monitor** | 39833646360 | 8e8053b9 | completed | ❌ **failure** |
+| **db-schema-drift-check** | 39757238848 | 8e8053b9 | completed | ❌ **failure** |
+
+> **Nota:** A API retornou apenas 30 runs da main — workflows com última execução pré-`8e8053b9` não aparecem aqui. Os 2 workflows em `failure` são os únicos com última run em falha para a main HEAD atual.
+
+### Workflows em failure na main — Diagnóstico
+
+| # | Workflow | Run ID | Causa Raiz | Bloqueador |
+|---|---|---|---|---|
+| 1 | **Uptime Monitor** | [39833646360](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39833646360) | Alerta transiente de uptime (serviço momentaneamente não respondeu) | ⚠️ Transiente — auto-recuperável no próximo schedule (30 min) |
+| 2 | **db-schema-drift-check** | [39757238848](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757238848) | ECR Public `toomanyrequests: Data limit exceeded` (500GB/mês anônimo) ao puxar imagem Postgres | 🔴 Bloqueador de infra — não corrigível sem autenticação ECR ou aguardar reset mensal |
+
+### Workflows em failure no PR branch (`claude/laughing-cori-o9w35e`) — Corrigidos
+
+| # | Workflow | Status Pré-Fix | Fix | Status Pós-Fix |
+|---|---|---|---|---|
+| 1 | Workflow Lint | ❌ failure (stale.yml + python-package) | commits `c59b3e66` + `71286ad8` | ✅ success (run 39835399781) |
+| 2 | Supabase Linter Gate | ❌ failure (lint-0011 OUT params + lint-0029 SECURITY DEFINER) | commits `b442d1ed` + múltiplos | ✅ aguardando Gate Final 87fb348d |
+| 3 | CI Security & Drift Checks | ❌ failure (cascata Supabase Linter) | commit `9c2288c4` | ✅ aguardando Gate Final 87fb348d |
+| 4 | Gate 1.12 contract coverage | ❌ failure (magazine-reader-state-read) | commit `4ceed97c` | ✅ aguardando Gate Final 87fb348d |
+| 5 | migrations-sync-log-gate | ✅ success | — | ✅ success (run 39835399657) |
+| 6 | No Prod Leak in Dev/Test Config | ✅ success | — | ✅ success (run 39835399523) |
 
 ### 2A. Workflows que requerem fix de código (corrigidos nesta sessão)
 
