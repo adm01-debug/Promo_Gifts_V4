@@ -17,8 +17,27 @@
   "pr2338_merge_sha": "57017ba78eb68c6c72dba336f9c081c4519619c4",
   "pr2338_merged_at": "2026-10-22T19:23Z",
   "pr2338_ci_status": "MERGEADA",
-  "status": "pr2338_mergeada_verificando_ci_main",
-  "proxima_acao": "verificar_Gate_Final_no_main_pos_merge",
+  "status": "CONCLUIDO_com_alerta_sentinel",
+  "proxima_acao": "aguardar_decisao_humana_sobre_sentinel",
+  "ultima_atualizacao": "2026-10-22T19:35Z",
+  "alerta_sentinel": {
+    "check": "Verify push to main matches accepted patterns",
+    "check_run_id": 120036831874,
+    "run_url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609513/job/120036831874",
+    "conclusao": "failure",
+    "commit": "57017ba78eb68c6c72dba336f9c081c4519619c4",
+    "pr": 2338,
+    "causa_raiz": "O sentinel verifica TODOS os 162 commits no range PUSH_BEFORE..PUSH_AFTER. Os commits do branch claude/laughing-cori-o9w35e têm mensagens do tipo 'fix(ci): corrige...' que não casam com nenhum dos 7 padrões aceitos para push em main. Não é regressão de código — é incompatibilidade de formato de mensagem de commit de branch Claude vs. padrão esperado pelo sentinel.",
+    "eh_gate_bloqueante": false,
+    "esta_nos_gates_0_a_6": false,
+    "eh_regressao_de_codigo": false,
+    "estava_no_baseline_8e8053b9": false,
+    "opcoes_correcao": [
+      "Squash merge futuros PRs de agentes Claude (branch commits somem — só o commit de merge fica visível no range)",
+      "Adicionar 'fix(ci):' e outros prefixos semânticos de commitizen ao sentinel allowlist (regra R20 revisão)",
+      "Aceitar como advisory e documentar — não é gate bloqueante"
+    ]
+  },
   "pre_existing_failures_baseline": [
     "Gate Final - Deploy Ready",
     "Gate 0.5 - Dependency Audit",
