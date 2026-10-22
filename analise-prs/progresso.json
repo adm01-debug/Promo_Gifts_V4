@@ -1,14 +1,14 @@
 {
   "baseline_sha": "8e8053b9ed85142e85809783cd3acf9a3077ecde",
-  "total_open": 28,
-  "analisadas": 28,
+  "total_open": 25,
+  "analisadas": 25,
   "mergeadas": 4,
-  "ultima_atualizacao": "2026-10-22T22:45Z",
+  "ultima_atualizacao": "2026-10-22T23:05Z",
   "contagem_por_veredicto": {
-    "CI_PENDENTE": 0,
+    "CI_PENDENTE": 1,
     "AGUARDAR_REBASE": 5,
     "DECISAO_HUMANA": 2,
-    "DRAFT": 1,
+    "DRAFT": 2,
     "NAO_MERGEAR": 1,
     "FECHAR": 15,
     "MERGEADA": 3,
@@ -87,7 +87,8 @@
     "2334": {"veredicto": "FECHAR", "acao": "GitHub Pages static — projeto usa Vercel"},
     "2335": {"veredicto": "FECHAR", "acao": "Next.js GitHub Pages — framework errado (Vite não Next.js)"},
     "2336": {"veredicto": "FECHAR", "acao": "Arquivo em branco (1 byte) — workflow inválido"},
-    "2337": {"veredicto": "FECHAR", "acao": "Deno CI — duplicata byte-a-byte do PR #2323"}
+    "2337": {"veredicto": "FECHAR", "acao": "Deno CI — duplicata byte-a-byte do PR #2323"},
+    "2356": {"veredicto": "CI_PENDENTE", "acao": "aguardar Gate Final SHA c5a008e5", "head": "c5a008e5", "branch": "claude/session-guard-remaining-callers", "ssot_gates": "SUCCESS"}
   },
   "pendencias_humanas": [
     "Fechar 15 PRs de template (#2322–#2337 exceto #2332): requer escrita no GitHub além de merge",
