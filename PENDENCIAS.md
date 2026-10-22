@@ -1,7 +1,7 @@
 # PENDÊNCIAS — Branch `claude/laughing-cori-o9w35e` / PR #2338
 
-**Atualizado em:** 2026-10-22  
-**HEAD:** `1122aafd`  
+**Atualizado em:** 2026-10-22T06:42Z  
+**HEAD:** `7bc82aff`  
 
 ---
 
@@ -236,34 +236,31 @@ O PR adiciona dois arquivos em `supabase/migrations/` que ATIVAM o drift check v
 
 ## P19 — Workflow Lint (actionlint — python-conda + stale deprecated)
 
-**Status:** 🔧 Fix enviado — PR [#2341](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2341) (branch `fix/ci-workflows`, commit `b36f5362`)  
+**Status:** ✅ **CONCLUÍDO** — [run 39731464629](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39731464629) `conclusion=success`  
 **Workflow:** `Workflow Lint` (actionlint + shellcheck)  
 **Run de falha em main:** [39670397269](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397269) — commit `c7c25848`  
 **Causas:** (1) `python-package-conda.yml` usava `actions/setup-python@v3` deprecated; (2) `stale.yml` usava `actions/stale@v5` deprecated. Ambos causam falha de actionlint.  
-**Fix aplicado:** `python-package-conda.yml` → no-op (`workflow_dispatch` only, sem steps python/conda); `stale.yml` → `actions/stale@5bef64f19d7facfb25b37b414482c7164d639639` (v9) + R2/R3/R10/R14/R15.  
-**Pendente:** CI do PR #2341 deve confirmar `conclusion=success`.
+**Fix aplicado:** `python-package-conda.yml` → no-op (`workflow_dispatch` only, sem steps python/conda); `stale.yml` → `actions/stale@5bef64f19d7facfb25b37b414482c7164d639639` (v9) + R2/R3/R10/R14/R15. PR #2341 commit `b36f5362`.
 
 ---
 
 ## P20 — Static Health Checks (check-product-type-fields.mjs — MODULE_NOT_FOUND)
 
-**Status:** 🔧 Fix enviado — PR [#2341](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2341) (branch `fix/ci-workflows`, commit `b36f5362`)  
+**Status:** ✅ **CONCLUÍDO** — [run 39732276027](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39732276027) `conclusion=success`  
 **Workflow:** `Static Health Checks` (`prod-health.yml`)  
 **Run de falha em main:** [39670397342](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397342) — commit `c7c25848`  
 **Causa:** `prod-health.yml` usava `actions/setup-node` manual (sem npm install). O script `check-product-type-fields.mjs` usa `import ts from 'typescript'` (TypeScript Compiler API) — `typescript` não estava instalado, causando `MODULE_NOT_FOUND`.  
-**Fix aplicado:** Substituído `actions/setup-node` por `./.github/actions/setup-node-ci` (composite action com `npm ci --no-audit`). Timeout 5 → 15 min.  
-**Pendente:** CI do PR #2341 deve confirmar `conclusion=success`.
+**Fix aplicado:** Substituído `actions/setup-node` por `./.github/actions/setup-node-ci` (composite action com `npm ci --no-audit`). Timeout 5 → 15 min. PR #2341 commit `b36f5362`.
 
 ---
 
 ## P21 — CI Security & Drift Checks (lint-0029)
 
-**Status:** ✅ Fix enviado — PR #2338 (commit `47c4e91e`)  
+**Status:** ✅ **CONCLUÍDO** — PR #2338 commit `47c4e91e`; confirmado em [run 39733876712](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39733876712) Gate 1 ✅  
 **Workflow:** `CI Security & Drift Checks`  
 **Run de falha em main:** [39670397308](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397308) — commit `c7c25848`  
 **Causa:** lint-0029 reportava 6 findings; `fn_backfill_queue_reap_stuck` sem documentação da lacuna.  
-**Fix:** 6 entradas lint-0029 adicionadas a `ALLOWLISTS_MEMORY.md` em commit `47c4e91e` (PR #2338).  
-**Pendente:** Aguardar merge do PR #2338.
+**Fix:** 6 entradas lint-0029 adicionadas a `ALLOWLISTS_MEMORY.md` em commit `47c4e91e` (PR #2338).
 
 ---
 
@@ -279,12 +276,11 @@ O PR adiciona dois arquivos em `supabase/migrations/` que ATIVAM o drift check v
 
 ## P23 — Supabase Linter Gate (lint-0029 parcial)
 
-**Status:** ✅ Parcialmente fixado — PR #2338 (commit `47c4e91e`)  
+**Status:** ✅ **CONCLUÍDO** — [run 39732557107](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39732557107) `conclusion=success`  
 **Workflow:** `Supabase Linter Gate`  
 **Run de falha em main:** [39670397435](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397435) — commit `c7c25848`  
 **Causa:** Relacionado a lint-0029; findings de Supabase não allowlistados.  
-**Fix:** Allowlist de lint-0029 em `ALLOWLISTS_MEMORY.md` (commit `47c4e91e`, PR #2338). Pode persistir se houver findings adicionais.  
-**Pendente:** Aguardar run após merge do PR #2338 para confirmar.
+**Fix:** Allowlist de lint-0029 em `ALLOWLISTS_MEMORY.md` (commit `47c4e91e`, PR #2338).
 
 ---
 
