@@ -608,3 +608,28 @@ Com apenas 2 shards por browser, o Firefox ficava com work desequilibrado.
 | `.github/workflows/release-please.yml` | `token: RELEASE_PLEASE_TOKEN \|\| GITHUB_TOKEN` |
 | `.github/workflows/cart-invariants-smoke.yml` | `total_shards` default 2 → 3 |
 | `PENDENCIAS.md` | §6 — diagnóstico E2E definitivo + correções |
+
+---
+
+## §7 — Correção Gate 1.14 (commit 56f5cc10) — 2026-10-22
+
+### 7.1 Falha detectada no commit be34b633
+
+**Check:** `Secrets Inventory Check (E40)` — Gate 1.14 (bloqueante)
+**Motivo:** O commit `be34b633` adicionou `secrets.RELEASE_PLEASE_TOKEN` em
+`.github/workflows/release-please.yml` sem registrar o segredo no inventário
+`docs/ci/SEGREDOS.md`. O script `check-secrets-inventory.mjs --gate` falhou
+com o token não documentado.
+
+### 7.2 Fix aplicado
+
+**Arquivo:** `docs/ci/SEGREDOS.md` — linha adicionada na seção "Segredos opcionais":
+```
+| `RELEASE_PLEASE_TOKEN` | PO/DevOps | Repo | Anual | PAT com escopo `repo`...
+```
+
+**Commit:** `56f5cc10` — push em `2026-10-22T~20:23Z`
+
+### 7.3 Status do Gate Final para 56f5cc10
+
+Aguardando resultado do CI (push às ~20:23Z — Gate Final leva ~30–45min).
