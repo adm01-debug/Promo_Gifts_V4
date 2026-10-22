@@ -258,3 +258,38 @@ Total: **~200 tabelas** com pelo menos um privilege de WRITE (INSERT/UPDATE/DELE
 | A-G01 | Grants excessivos anon | ALTO | ~200 tabelas com anon INSERT/UPDATE/DELETE; proteção depende 100% de RLS |
 | A-B01 | Buckets públicos | MÉDIO | 2 buckets públicos (avatars, mockup-assets) sem restrição de URL |
 | A-M01 | Crons inativos | BAIXO | 7+ jobs desativados (possíveis órfãos) |
+
+---
+
+## Atualização Sessão 15 — 2026-10-22T16:40:55Z
+
+### Contagem por Schema (fresco S15)
+
+| Schema | Tabelas |
+|---|---|
+| public | 398 |
+| auth | 27 |
+| supplier_stricker | 17 |
+| realtime | 10 |
+| storage | 8 |
+| cf_recon | 6 |
+| prod_audit | 5 |
+| cron | 2 |
+| supabase_functions | 2 |
+| net | 2 |
+| vault | 1 |
+| pgmq | 1 |
+| extensions | 1 |
+| supabase_migrations | 1 |
+| classification_audit | 1 |
+
+### Totais (public schema)
+- **Tabelas:** 398
+- **Views:** 193
+- **Funções:** 1.334
+- **Triggers:** 1.870
+- **Índices:** 1.189
+- **Políticas RLS:** 960
+- **Crons ativos:** 135 (7 inativos = 142 total)
+- **Edge Functions:** 109 (36 com verify_jwt=false)
+- **Migrations ledger:** 2.538
