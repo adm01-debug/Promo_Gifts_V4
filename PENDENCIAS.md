@@ -126,7 +126,8 @@
 | 17 | **Kit Coverage — Integration** | [39719136176](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39719136176) | c7c25848 | ❌ Bloqueador humano | ❌ `permission denied for view v_kit_component_complete` + `permission denied for table product_kit_components` — ver §2.12 |
 | 18 | **Nightly Full CI** | [39713855139](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39713855139) | c7c25848 | Pré-existente E2E | ❌ Playwright E2E (2) cancelled + E2E Visual Focused magazine-header falhou — ver §2.14 |
 | 19 | **Python Package using Conda** | [39670397287](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397287) | c7c25848 | Phantom workflow | ❌ `environment.yml` not found — workflow template padrão do GitHub não pertence a este projeto — ver §2.15 |
-| 20 | **E2E • Thumb QuickView** | [39670397261](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397261) | c7c25848 | Pré-existente E2E | ❌ Pré-existente visual/interação — ver §2.6 |
+| 20 | **E2E • Thumb QuickView** | [39670397261](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397261) | c7c25848 | Pré-existente E2E | ❌ Pré-existente visual/interação — ver §2.17 |
+| 21 | **E2E · Cart Delete Popover** | [39669131378](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39669131378) | 4f0d2474 | Pré-existente E2E | ❌ Timeout aguardando `cart-delete-exh-8` — ver §2.16 |
 
 ---
 
@@ -325,6 +326,52 @@
   - **Orphan (live, not in git):** decidir se deve ser incorporado ao repo ou removido do Supabase; nunca deploiar de git sem verificar.
 - **Ação necessária:** PO/DBA inspecionar artefato `drift-report.csv`, identificar o tipo de cada drift e aplicar a remediação específica acima
 - **Responsável:** PO + DBA
+
+---
+
+## 2.14 Nightly Full CI — Falha Pré-existente
+
+- **Run:** [39713855139](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39713855139) — sha `c7c25848` — `conclusion=failure`
+- **Jobs que falharam:** Playwright E2E (2) cancelado + E2E Visual Focused (`magazine-header`) falhou
+- **Causa:** Playwright E2E (2) foi cancelado por dependência (outro job falhou). E2E Visual Focused falhou por regressão visual no componente `magazine-header` — comportamento aguardado: snapshot de baseline desatualizado ou mudança cosmética no componente.
+- **Pré-existência:** SHA `c7c25848` — nenhum commit desta branch toca Nightly CI, magazine flows ou snapshots visuais de `magazine-header`.
+- **É required check?** NÃO — workflow agendado (`schedule`), separado do Gate Final. Não bloqueia merge nem deploy.
+- **Ação necessária:** PO + dev investigar regressão visual em `magazine-header` e atualizar snapshot de baseline (1 commit agregado — REGRA #5).
+- **Responsável:** PO + dev de features
+
+---
+
+## 2.15 Python Package using Conda — Phantom Workflow
+
+- **Run:** [39670397287](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397287) — sha `c7c25848` — `conclusion=failure`
+- **Causa exata:** `environment.yml` not found — o workflow tenta criar environment Conda mas o arquivo não existe neste repo (Node.js/TypeScript/React, não Python).
+- **Diagnóstico:** Este workflow é o **template padrão do GitHub para projetos Python/Conda** adicionado acidentalmente via UI do GitHub (botão "Suggest workflows") ou por engano no passado. Não pertence ao projeto `promo-gifts-v4`.
+- **É required check?** NÃO — não é required check em `main`; não bloqueia Gate Final.
+- **Ação necessária:** PO pode desativar ou deletar `.github/workflows/python-package-conda.yml` (se existir no repo). Se o arquivo não estiver no repo, o workflow pode ser um trigger externo — verificar em Settings → Actions → Workflows.
+- **Responsável:** PO
+
+---
+
+## 2.16 E2E · Cart Delete Popover — Falha Pré-existente
+
+- **Run:** [39669131378](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39669131378) — sha `4f0d2474` — `conclusion=failure`
+- **Causa exata:** Timeout 120s aguardando `getByTestId('cart-delete-exh-8')` — o seletor não encontrou o elemento no DOM dentro do limite de tempo.
+- **Padrão:** Idêntico ao §5.5 (E2E Cart Matrix E79) e §2.6.1 (Cart Invariants Smoke) — componente `cart-delete-exh-8` com timing instável em CI.
+- **Pré-existência:** Nenhum commit desta branch toca componentes de carrinho, cart-delete popover ou o test id `cart-delete-exh-8`. SHA `4f0d2474` é pré-existente.
+- **É required check?** NÃO — não bloqueia Gate Final.
+- **Ação necessária:** PO + dev investigar timing do componente `cart-delete-exh-8` (aumentar timeout ou aguardar condition explícita antes de renderizar o popover).
+- **Responsável:** PO + dev de features
+
+---
+
+## 2.17 E2E • Thumb QuickView — Falha Pré-existente
+
+- **Run:** [39670397261](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397261) — sha `c7c25848` — `conclusion=failure`
+- **Causa:** Falha visual ou de interação no componente Thumb QuickView — padrão idêntico ao §2.6.4 (Swatch QuickView), que também falha em chromium/webkit por seletores de hover ou ausência de elemento.
+- **Pré-existência:** Nenhum commit desta branch toca componentes de thumbnail ou QuickView. SHA `c7c25848` é anterior a qualquer commit desta sessão.
+- **É required check?** NÃO — não bloqueia Gate Final.
+- **Ação necessária:** PO + dev investigar componente Thumb/QuickView — possível seletor de hover instável ou timeout de renderização em webkit/chromium no ambiente de CI.
+- **Responsável:** PO + dev de features
 
 ---
 
@@ -573,7 +620,7 @@ token: ${{ secrets.GITHUB_TOKEN }}
 ```
 para:
 ```yaml
-token: ${{ secrets.RELEASE_PLEASE_TOKEN || secrets.RELEASE_PLEASE_TOKEN }}
+token: ${{ secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN }}
 ```
 
 **Ação remanescente (humana):** O PO deve criar um PAT (Personal Access Token) com escopo `repo` no
