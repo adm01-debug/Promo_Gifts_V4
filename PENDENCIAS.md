@@ -1,7 +1,7 @@
 # PENDÊNCIAS — Branch `claude/laughing-cori-o9w35e` / PR #2338
 
-**Atualizado em:** 2026-10-22T06:42Z  
-**HEAD:** `7bc82aff`  
+**Atualizado em:** 2026-10-22T08:13Z  
+**HEAD:** `5b32ac8d`  
 
 ---
 
@@ -336,18 +336,29 @@ O PR adiciona dois arquivos em `supabase/migrations/` que ATIVAM o drift check v
 
 **Status:** ⚠️ Bloqueado por pré-existentes P3 e P-E40  
 **Workflow:** `Deploy Gates` (`deploy-gates.yml`)  
-**Run mais recente:** [39742887388](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39742887388) — SHA `f79b863a`  
-**Causa:** Gate 3 E2E Smoke (P3) e Gate E40 Schema Drift Check (P-E40) são pré-existentes que falham em todo run desde 10+ dias. Quando esses 2 jobs falham, `Gate Final - Deploy Ready` também falha. Os outros **13 jobs do Deploy Gates passam com conclusion=success**, incluindo Gate 1 com todos 42 sub-gates (07:56:36Z).  
-**Jobs success confirmados (run 39742887388):**
+**Run mais recente:** [39744909966](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39744909966) — SHA `5b32ac8d` — `in_progress` (08:10Z)  
+**Causa:** Gate 3 E2E Smoke (P3) e Gate E40 Schema Drift Check (P-E40) são pré-existentes que falham em todo run desde 10+ dias. Quando esses 2 jobs falham, `Gate Final - Deploy Ready` também falha. Os outros jobs do Deploy Gates passam com conclusion=success.  
+**Jobs success confirmados (run 39744909966, 08:10Z):**
 - Gate 0 SSOT ✅, Gate 0.5 Dependency Audit ✅, Gate 0.6 Dependency Review ✅
-- Gate 1 Lint+TS (42 sub-gates todos ✅) ✅ 07:56:36Z
-- Gate 2 Unit Tests ✅, Gate 2.5 PostgreSQL ✅
-- Gate 4 Lighthouse CI ✅, Gate 5 SEO ✅, Gate 5.5 RPC ✅
-- Gate E23 Secret Scan ✅, Gate E23 Verifica secrets E2E ✅
-- Gate E40 Detect schema file changes ✅
-- Gate 6 Build: in_progress (esperado ✅)
+- Gate 2.5 PostgreSQL ✅, Gate 5 SEO ✅, Gate E23 Secret Scan ✅, Gate E40 Detect ✅
+- Gate 4 Lighthouse CI: in_progress, Gate 5.5 RPC: in_progress
+- static-gates (Gate 1), unit-tests (Gate 2), e2e-smoke (Gate 3), Gate Final: pending
 **Por que não corrigível aqui:** Requer correção de infra de auth/E2E (P3) e reconciliação de schema drift (P-E40), ambos fora do escopo deste PR de governança/allowlists.  
 **Ação necessária:** PO — ver P3 e P-E40.
+
+---
+
+## P28 — CI Security & Drift Checks — Aguardando conclusão (08:13Z)
+
+**Status:** ⏳ In progress — aguardando conclusion  
+**Workflow:** `CI Security & Drift Checks` (`ci-security-drift.yml`)  
+**Run:** [39744914052](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39744914052) — SHA `5b32ac8d` — `in_progress` (08:13Z)  
+**Progresso (job `quality-gate`):**
+- Steps 1-20 todos ✅ — incluindo step 16 lint-0011 ✅ (08:08:37Z) — fix das assinaturas PG17 funcionou
+- Step 21 (Unit & Integration Tests): in_progress desde 08:08:39Z
+- Steps 22-26 (Hook tests, Guard E2E, Playwright, E2E specs): pending
+**Bloqueio esperado:** Steps 24-26 (Playwright E2E) provavelmente falharão por ausência de credenciais E2E no PR — mesma causa do P3. O ci-security-drift não é required check do Gate Final; o Gate Final depende apenas do `deploy-gates.yml`.  
+**Nota:** Este workflow foi disparado via `workflow_dispatch` para validar o fix do lint-0011. A conclusão final (success ou failure em E2E) não impacta o Gate Final do PR.
 
 ---
 
@@ -359,7 +370,7 @@ O PR adiciona dois arquivos em `supabase/migrations/` que ATIVAM o drift check v
 | ALLOWLISTS_MEMORY.md | `47c4e91e` | 9 entradas lint-0011 + 6 entradas lint-0029 adicionadas |
 | Spec 13b regex | `47c4e91e` | Toast RLS restringido ao título canônico |
 | lint-0029 reason | `47c4e91e` | fn_backfill_queue_reap_stuck — gap documentado |
-| lint-0011 OUT params | `bd851bb4` | 9 funções pgstattuple/pg_relpages sem OUT params na allowlist |
+| lint-0011 OUT params PG17 | `5b32ac8d` | 7 funções pgstattuple com assinaturas PG17 (com OUT) substituem entradas obsoletas PG14/PG15; step 16 ci-security-drift ✅ 08:08:37Z |
 | Gate 1.12 CONTRACTS | `cb2706ca` | `magazine-reader-state-read` adicionado a NO_BODY_EXEMPT |
 | migrations-sync-log-gate | `305e4763` | Recibos E15 adicionados em MIGRATIONS_SYNC_LOG.md |
 | Gate E40 allowlist | `205c5688` | 634 versões remote_only allowlistadas |
@@ -368,4 +379,4 @@ O PR adiciona dois arquivos em `supabase/migrations/` que ATIVAM o drift check v
 
 ---
 
-_Atualizado automaticamente por sessão Claude — 2026-10-22T08:10Z (P25/P26/P27 adicionados; HEAD f79b863a; run 39742887388 — Gate 1 ✅ 42/42 sub-gates às 07:56:36Z; ci-security-drift dispatch run 39743706674 in_progress)_
+_Atualizado automaticamente por sessão Claude — 2026-10-22T08:13Z (HEAD 5b32ac8d; P27 atualizado para run 39744909966 in_progress; P28 adicionado para ci-security-drift run 39744914052 in_progress; lint-0011 step 16 ✅ 08:08:37Z; lint-0011 OUT params PG17 fix confirmado; Itens Concluídos atualizado com commit correto 5b32ac8d)_
