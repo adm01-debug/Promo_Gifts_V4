@@ -2,7 +2,7 @@
 
 **Atualizado:** 2026-10-22  
 **Branch ativa:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD:** `c58e3a56`
+**HEAD:** `0aad32d3`
 
 ---
 
@@ -100,6 +100,13 @@
 ---
 
 ## 3. FALHAS NA BRANCH `claude/laughing-cori-o9w35e` (commit `c58e3a56`) — Status
+
+### 3.0 Qodo Finding High — Auth State Vazio em Snapshot Regeneration
+
+- **Arquivo:** `.github/workflows/e2e-update-quote-missing-fields-snapshots.yml` (linhas 89-96)
+- **Causa:** O step "Regenerar snapshots" rodava sem validar se `auth.setup.ts` produziu credenciais reais ou estado vazio — capturia páginas não-autenticadas como baseline aprovado
+- **Fix commit `0aad32d3`:** Novo step "Verificar auth state antes de regenerar baselines" — falha com erro descritivo se `E2E_USER_EMAIL` ausente ou se `storageState.json` tiver 0 cookies
+- **Status:** ✅ Fix commitado — aguardando CI confirmar
 
 ### 3.1 Gate 8 — Security & Credential Audit (freight-quality-gates.yml)
 
