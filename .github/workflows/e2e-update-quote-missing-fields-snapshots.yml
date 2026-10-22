@@ -97,12 +97,21 @@ jobs:
           fi
           STORAGE="e2e/.auth/storageState.json"
           if [ -f "$STORAGE" ]; then
-            COOKIE_COUNT=$(node -pe "JSON.parse(require('fs').readFileSync('$STORAGE','utf8')).cookies.length" 2>/dev/null || echo "0")
-            if [ "$COOKIE_COUNT" = "0" ]; then
-              echo "::error title=Empty auth state::storageState.json contém 0 cookies — autenticação E2E produziu estado vazio. Regenerar baselines agora capturaria páginas não-autenticadas ou de redirecionamento como baseline aprovado. Verifique E2E_USER_EMAIL e E2E_USER_PASSWORD."
+            AUTH_VALID=$(node -pe "
+              const s = JSON.parse(require('fs').readFileSync('$STORAGE','utf8'));
+              const hasCookies = s.cookies && s.cookies.length > 0;
+              const hasSupabaseToken = (s.origins || []).some(function(o) {
+                return Object.keys(o.localStorage || {}).some(function(k) {
+                  return k.startsWith('sb-') && k.endsWith('-auth-token');
+                });
+              });
+              hasCookies || hasSupabaseToken ? 'valid' : 'empty'
+            " 2>/dev/null || echo "error")
+            if [ "$AUTH_VALID" != "valid" ]; then
+              echo "::error title=Empty auth state::storageState.json não contém cookies nem token Supabase em localStorage (sb-*-auth-token) — autenticação E2E produziu estado vazio. Regenerar baselines agora capturaria páginas não-autenticadas como baseline aprovado. Verifique E2E_USER_EMAIL e E2E_USER_PASSWORD."
               exit 1
             fi
-            echo "✅ storageState válido: $COOKIE_COUNT cookie(s) — prosseguindo com regeneração."
+            echo "✅ Auth state válido (cookies ou token Supabase em localStorage) — prosseguindo com regeneração."
           else
             echo "ℹ️  storageState ainda não existe (será criado pelo auth setup do Playwright na etapa seguinte)."
           fi

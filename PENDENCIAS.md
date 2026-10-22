@@ -1,8 +1,8 @@
 # PENDÊNCIAS — Correção de Workflows CI
 
-**Atualizado:** 2026-10-22  
+**Atualizado:** 2026-10-22T14:00 UTC  
 **Branch ativa:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD:** `0aad32d3`
+**HEAD:** `a23edb77` + pendentes de commit (daily-flows-simulation.yml SIGPIPE fix)
 
 ---
 
@@ -96,6 +96,15 @@
 - **Status:** Pré-existente na `main` (commit `8e8053b9`) — não causado por nenhuma mudança desta branch
 - **Ação necessária:** Investigar regressão de UI no componente de tooltip de entrega no QuoteBuilderPage; pode ser flake de autenticação ou regressão real de componente introduzida pelo Lovable
 - **Responsável:** PO + dev de features
+
+---
+
+## 2.9 Daily Flows Simulation — SIGPIPE (exit 141)
+
+- **Causa:** Step "Git diff guard" linha 47 — `git log ... | head -1` causava SIGPIPE (exit 141) quando `head -1` encerrava o pipe antes do `git log` terminar. Com bash `set -eo pipefail` (implícito), o step falhava com exit code 141.
+- **Fix desta sessão:** `| head -1 || true` — o `|| true` neutraliza o exit 141
+- **Arquivo:** `.github/workflows/daily-flows-simulation.yml` linha 47
+- **Status:** ✅ Fix aplicado — aguardando commit e push
 
 ---
 
