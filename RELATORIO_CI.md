@@ -9,16 +9,17 @@
 
 ## 1. Baseline local
 
-| Etapa | Status | Observação |
-|---|---|---|
-| `npm ci` | ❌ IMPOSSÍVEL localmente | Falha com 403 — registro privado `europe-west1-npm.pkg.dev` inacessível neste container cloud |
-| TypeScript (`tsc`) | ❌ IMPOSSÍVEL localmente | Requer npm ci |
-| ESLint | ❌ IMPOSSÍVEL localmente | Requer npm ci |
-| Vitest | ❌ IMPOSSÍVEL localmente | Requer npm ci |
-| Build Vite | ❌ IMPOSSÍVEL localmente | Requer npm ci |
+> **Contexto:** Esta sessão roda num container cloud (Claude Code Remote). O projeto usa um npm registry privado (`europe-west1-npm.pkg.dev`) que exige autenticação de GCP não disponível neste container. Por isso, `npm ci` falha com HTTP 403 e todo o baseline de build/lint/typecheck/testes foi realizado exclusivamente via GitHub Actions CI, que tem as credenciais do registry configuradas como secrets.
 
-> **Todos os gates verificados exclusivamente via GitHub Actions CI**, que tem acesso ao registry privado.
-> A baseline "final" equivale ao resultado do run `39733876712` no CI, que tem acesso completo às dependências.
+| Etapa | Status local | Proxy via CI (substituto) |
+|---|---|---|
+| `npm ci` | ❌ HTTP 403 — `europe-west1-npm.pkg.dev` inacessível | ✅ CI roda npm ci em todo run — confirma 0 falhas de install nos 3+ runs do PR |
+| TypeScript (`tsc`) | ❌ Impossível sem npm ci | ✅ Gate 1 step `typecheck` — ✅ em todos os runs (08:18:33Z, 08:42:57Z, 08:57:05Z) |
+| ESLint | ❌ Impossível sem npm ci | ✅ Gate 1 step `lint:baseline` — ✅ em todos os runs |
+| Vitest | ❌ Impossível sem npm ci | ✅ Gate 2 Unit Tests — ✅ em todos os runs (08:37:45Z, 08:51:36Z) |
+| Build Vite | ❌ Impossível sem npm ci | ✅ Gate 6 Build — ✅ em todos os runs (08:43:56Z, 08:57:58Z) |
+
+**Resumo:** Nenhuma das etapas de build/lint/typecheck/testes pode ser executada localmente neste container cloud. O GitHub Actions CI serve como substituto completo e verificável — todos os gates passaram (ver seção 3 e 4). Esta limitação não afeta a validade das correções, que foram validadas via CI em 3+ SHAs distintos.
 
 ---
 

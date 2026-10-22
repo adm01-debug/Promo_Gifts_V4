@@ -364,10 +364,12 @@ O PR adiciona dois arquivos em `supabase/migrations/` que ATIVAM o drift check v
 **Por que não corrigível aqui:** Requer correção de infra de auth/E2E (P3) e reconciliação de schema drift (P-E40), ambos fora do escopo deste PR.  
 **Ação necessária:** PO — ver P3 e P-E40.
 
-### Run `39753032381` — SHA `02f265ec` — `status=queued` (aguardando execução — 2026-10-22T09:3xZ)
-**Deploy Gates** iniciado mas ainda na fila. Outros runs do mesmo SHA já concluídos: `schema-snapshot-export` ✅ (39753032968), `edge-functions-drift-check` ✅ (39753033170), `Security Scan` ✅ (39753033028), `SSOT Supabase Guard` ✅ (39753032631), `Gate 5 — Supabase Security Audit` ✅ (39753032530), `E2E · Carts Undo RPC Atomic` ✅ (39753032063), `Workflow Lint` ✅ (39753032278), `Required Checks Guard` ✅ (39753032441).  
-**Conclusão esperada:** `failure` — Gate 3 (P3) e Gate E40 (P-E40) são pré-existentes.  
-**Aguardar conclusão** para documentar resultado final.
+### Run `39753032381` — SHA `02f265ec` — `status=cancelado` (cancel-in-progress por push b9c63d2f)
+**Deploy Gates** cancelado automaticamente pelo push do commit `b9c63d2f` (`cancel-in-progress: true` configurado para PRs). Schema-snapshot-export ✅, edge-functions-drift-check ✅ e outros 6 workflows já haviam passado para este SHA (ver acima).
+
+### Run `39753877367` — SHA `b9c63d2f` — `status=pending` (09:15Z — 2026-10-22)
+**Deploy Gates** na fila para o HEAD atual `b9c63d2f`. Runs simultâneos já iniciados: `schema-snapshot-export` ✅ (39753877346), `CI - Replenishment Module Quality Gate` in_progress (39753877269).  
+**Conclusão esperada:** `failure` — Gate 3 (P3) e Gate E40 (P-E40) são pré-existentes e falham em 100% dos runs neste PR.
 
 ---
 
@@ -456,6 +458,27 @@ O PR adiciona dois arquivos em `supabase/migrations/` que ATIVAM o drift check v
 
 ---
 
+## P-MERGE — Bloqueio de merge: PR #2338 e PR #2341 aguardam PO
+
+**Status:** ⚠️ Bloqueado — ação do PO necessária  
+**O que está pronto:**
+- PR #2338 (`claude/laughing-cori-o9w35e` → main) — todas as correções corrigíveis por este PR estão commitadas e passando. Gates 0, 1 (42/42), 2, 2.5, 4, 5, 5.5, 6, E23 passam ✅ em 100% dos runs (confirmado em `ceef4d6b`, `0f7eb91a`).
+- PR #2341 (`fix/ci-workflows` → main) — Workflow Lint ✅, Static Health Checks ✅, Python Package using Conda ✅ (confirmado em [run 39731464629](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39731464629), [run 39732276027](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39732276027)).
+
+**Por que o merge está bloqueado:** O único required check do branch protection em `main` é `Gate Final - Deploy Ready` (workflow `deploy-gates.yml`). Este gate inclui Gate 3 E2E Smoke (P3) e Gate E40 Schema Drift Check (P-E40), ambos pré-existentes e impossíveis de corrigir neste PR. Enquanto P3 e P-E40 não forem resolvidos (requer PO), o gate final falha em todo run e o merge não pode ser completado automaticamente.
+
+**Impacto:** A condição "PR mergeado + reexecução na main confirmando success" está bloqueada por P3 e P-E40. Todos os workflows que este PR corrigiu já estão passando em checks individuais (evidências nas seções 3 e 4 do RELATORIO_CI.md).
+
+**Ação necessária:** PO deve:
+1. Corrigir Gate 3 E2E Smoke (P3) — configurar secrets E2E no CI ou excluir os specs de auth do gate
+2. Corrigir Gate E40 Schema Drift (P-E40) — `schema-snapshot-export.yml` com `force_rotate: true`
+3. Após ambos passarem, mergear PR #2341 (primeiro) e PR #2338 (segundo)
+4. Após merge de PR #2338, reexecutar `ci-security-drift.yml` na main para confirmar lint-0011 ✅
+
+**Nota sobre baseline local:** `npm ci` falha com HTTP 403 no registro privado `europe-west1-npm.pkg.dev` neste container cloud. Todo o baseline foi verificado via GitHub Actions CI, que tem acesso ao registry (ver RELATORIO_CI.md seção 1). Não é possível executar install/build/lint/typecheck/testes localmente neste ambiente.
+
+---
+
 ## Itens Concluídos ✅
 
 | Item | Commit | O quê foi corrigido |
@@ -473,4 +496,4 @@ O PR adiciona dois arquivos em `supabase/migrations/` que ATIVAM o drift check v
 
 ---
 
-_Atualizado automaticamente por sessão Claude — 2026-10-22T09:35Z (HEAD 02f265ec; P27 atualizado: run 39753032381 02f265ec → deploy-gates queued; P29 adicionado: Gate 8 HTTP 503/504 transitório; P30-P34 adicionados: 5 checks E2E individuais sem motivo documentado (view-no-presentation-mode, cart-invariants firefox shard 2/2, cart-invariants-summary, Full User Flows authed, thumb-quickview) — todos pré-existentes por auth/infra ausente)_
+_Atualizado automaticamente por sessão Claude — 2026-10-22T09:15Z (HEAD b9c63d2f; P27 atualizado: run 39753032381 02f265ec → cancelado por cancel-in-progress; run 39753877367 b9c63d2f → pending; P-MERGE adicionado: bloqueio de merge PR #2338+#2341 por Gate 3 P3 + Gate E40 P-E40 pré-existentes — requer PO; nota baseline local: npm ci 403 no container cloud, CI substitui baseline local)_
