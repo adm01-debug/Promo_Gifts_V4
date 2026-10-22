@@ -1,13 +1,12 @@
 # Relatório CI — Sessão de Correção de Workflows
 
-**Gerado:** 2026-10-22T13:35 UTC | **Atualizado:** 2026-10-22T17:55 UTC  
+**Gerado:** 2026-10-22T13:35 UTC | **Atualizado:** 2026-10-22T18:37 UTC  
 **Branch:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD atual:** `ac0f4e10` (fix(ci): E104 override ECR em contract-tests + corrige expectativa audit_http_error_exhausted)  
-**Commits desta sessão (compactação 4→6):** `a21f6200` → `b442d1ed` → `679b5f45` → `dbd53ec4` → `ad831d70` → `6e93a947` → `8bfcbf4a` → `f6b1147` → `b977f790` → `a83e1c0d` → `5499c532` → `141c915a` → `db65121a` → `e2bf7804` → `c97f4959` → **`ac0f4e10`**  
+**HEAD atual:** `4ceed97c` (fix(ci): corrige 5 workflows em failure — actionlint, lint-0011/0029, Gate 1.12, prod-health)  
+**Commits desta sessão (compactação 4→7):** `a21f6200` → `b442d1ed` → `679b5f45` → `dbd53ec4` → `ad831d70` → `6e93a947` → `8bfcbf4a` → `f6b1147` → `b977f790` → `a83e1c0d` → `5499c532` → `141c915a` → `db65121a` → `e2bf7804` → `c97f4959` → `ac0f4e10` → `3d2fe287` → **`4ceed97c`**  
 **Base (main):** `8e8053b9`  
-**Gate Final ac0f4e10:** run [39826162164](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39826162164) — ⏳ `pending` (17:50Z) — aguardando conclusão  
-**Gate Final a83e1c0d att 1:** run [39818934114](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39818934114) att 1 → ❌ `failure` — **somente Gate E40 Schema Drift falhou**: ECR rate limit transiente (`toomanyrequests: retry-after: 670µs`); todos os outros 15/16 jobs ✅  
-**Gate Final a83e1c0d att 2:** run [39818934114](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39818934114) att 2 → `cancelled` (superado por 5499c532)  
+**Gate Final 4ceed97c att 2:** run [39829341093](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39829341093) att 2 → 🔄 `in_progress` — 15/16 ✅ — Gate 3 E2E ✅ (18:33:49Z) — Gate E40 🔄 step 7 (18:35:09Z)  
+**Gate Final 4ceed97c att 1:** run [39829341093](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39829341093) att 1 → ❌ `failure` — Gate E40 step 10 ECR Public `toomanyrequests: Data limit exceeded` (500GB/mês anônimo) após 5 retries; 14 outros jobs ✅  
 **Gate Final precedente de sucesso:** run [39798033549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39798033549) para `141c915a` → ✅ `conclusion=success` (16 jobs ✅, 15:00Z)
 
 ---

@@ -1,9 +1,11 @@
 # PENDÊNCIAS — Correção de Workflows CI
 
-**Atualizado:** 2026-10-22T18:24 UTC  
+**Atualizado:** 2026-10-22T18:37 UTC  
 **Branch ativa:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD atual:** `3d2fe287` (docs: atualiza PENDENCIAS)  
-**Gate Final 3d2fe287:** run [39828704640](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39828704640) — 🔄 `in_progress` — Gate 0 ✅, Detectar mudanças ✅, Gate 0.5 ✅, Gate 0.6 ✅, Gate E23-E2E ✅ — Gate 1 🔄 (lint:baseline 18:11Z), Gate 5.5 🔄, Gate 2 🔄, Gate 5 🔄 — check-in 18:40Z  
+**HEAD atual:** `4ceed97c` (fix(ci): corrige 5 workflows em failure — actionlint, lint-0011/0029, Gate 1.12, prod-health)  
+**Gate Final 4ceed97c (attempt 2):** run [39829341093](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39829341093) — 🔄 `in_progress` — 15/16 jobs ✅ — Gate 3 E2E Smoke ✅ (18:33:49Z) — Gate E40 Schema Drift 🔄 step 7 (18:35:09Z) — Gate Final aguarda E40  
+**Gate Final 4ceed97c (attempt 1):** run [39829341093](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39829341093) att 1 — ❌ failure — Gate E40 falhou na step 10 "Pre-pull Supabase postgres image" com `toomanyrequests: Data limit exceeded` (ECR Public 500GB/mês para anônimos) após 5 tentativas — 14/16 jobs ✅, Gate 3 ✅, Gate E40 ❌  
+**Gate Final 3d2fe287:** run [39828704640](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39828704640) — ❌ cancelado por rerun do 4ceed97c  
 **Gate Final de9e220f:** run [39827875237](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39827875237) — `cancelled` (superado por push 3d2fe287)  
 **Gate Final b83a5487:** run [39827039880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39827039880) — ⚠️ `queued/runner-capacity` cancelado por push de9e220f (Gate 0 ✅, Gate 5.5 ✅, demais jobs sem runner por 42+ min)  
 **Gate Final 580d5187:** run [39826419850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39826419850) — `cancelled` (superado por b83a5487)  
