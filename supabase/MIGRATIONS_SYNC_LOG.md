@@ -1470,4 +1470,75 @@ no repo mas NÃO estão aplicadas no banco — decisão registrada no ADR 0009
 (aplicá-las regrediria a fn_standardize_variant viva). Reconciliar antes de
 qualquer `supabase db push`.
 
+---
+
+## 2026-10-22 — Auditoria DRIFT-003: 448 migrations sem ledger identificadas
+
+**Tipo:** Auditoria documental (`[GIT]`) — nenhuma escrita no banco.
+**Sessão:** https://claude.ai/code/session_01GfYDwdVBZip5FzMr8MZ4Be
+**Relatório completo:** `supabase/MIGRATIONS_DRIFT_REPORT.md`
+
+### Resumo do drift identificado
+
+| Métrica | Valor |
+|---|---|
+| Arquivos `.sql` no repo | 2975 |
+| Entradas no ledger (`schema_migrations`) | 2528 |
+| **Migrations sem ledger (drift)** | **448** |
+| Período do drift | 2026-05-11 a 2026-10-13 |
+
+### Distribuição por tipo
+
+| Tipo | Quantidade |
+|---|---|
+| OTHER (DO $precondition$ / idempotentes) | 144 |
+| POLICY (CREATE/DROP POLICY, REVOKE, GRANT) | 88 |
+| FUNCTION (CREATE OR REPLACE FUNCTION) | 73 |
+| DDL_TABLE (CREATE/ALTER/DROP TABLE) | 71 |
+| DML (INSERT/UPDATE/backfill) | 36 |
+| DDL_INDEX (CREATE/DROP INDEX) | 26 |
+| CRON (cron.schedule/alter_job) | 10 |
+
+### 5 migrations mais críticas sem ledger (repair-only markers criados)
+
+| Versão | Arquivo | Impacto |
+|---|---|---|
+| `20260525232003` | `fix_339_personalization_missing_columns.sql` | 6 colunas ausentes em personalization_techniques |
+| `20260622111500` | `supplier_reliability_pipeline_v1.sql` | Pipeline completo supplier_replenishment_events |
+| `20260622130000` | `fix_color_swatches_column_and_view_plus_favorites_grant.sql` | `products.color_swatches` — HTTP 400 sem ela |
+| `20260623000008` | `products_name_m8_max_length.sql` | CHECK constraint em `products` |
+| `20260902220800` | `rls_enable_spr_history_partitions_and_fix_creator.sql` | RLS em partições supplier_products_raw_history |
+
+### Próximo passo
+
+Para cada migration, obter aprovação do PO e executar:
+```bash
+gh workflow run db-apply-migration.yml \
+  -f version=<VERSAO> \
+  -f mode=repair-only \
+  -f approved_by=PO_EMAIL
+```
+
+Ver `supabase/MIGRATIONS_DRIFT_REPORT.md` §Plano de Reconciliação para prioridade completa.
+
 Detalhes, métricas antes/depois e one-shots: docs/EXECUCAO_CORRECOES_MEDALLION_2026-06-10.md
+
+---
+
+## 2026-10-22 — Auditoria de Segurança e Performance (sessão P17/P18/P19)
+
+**Tipo:** Migrations criadas em PR — **não aplicadas ainda** (pendentes de `workflow_dispatch` em `db-apply-migration.yml`).
+**Sessão:** https://claude.ai/code/session_01GfYDwdVBZip5FzMr8MZ4Be
+**Branch:** `claude/happy-faraday-0vgza3`
+**Aprovação necessária:** PO via REGRA #8 / E15 antes de `workflow_dispatch`.
+
+### Recibos pendentes (placeholder Gate 1.3.3)
+
+| versão | sha256 arquivo | md5 statements | executor | método | data UTC | pós-check |
+|---|---|---|---|---|---|---|
+| `20261022100001` | `91404707c71551f6060fc1845cfdd24b608cb6338a2685a92f6b4f98f1f9334f` | `—` (não aplicado) | Claude sessão P17/auditoria | E15 (pendente) | pendente | pendente — REVOKE EXECUTE anon/PUBLIC em fn_cron_guard (FUNC-NEW-001 CRÍTICO) |
+| `20261022100010` | `8ff71060a255026b55cfd1a7bbd817b7a0de05b79aac68a2b2d8a3d766a35ac7` | `—` (não aplicado) | Claude sessão P18/auditoria | E15 (pendente) | pendente | pendente — 50 ALTER POLICY auth.uid() → (SELECT auth.uid()) em 24 tabelas (ADV-PERF-001) |
+| `20261022100011` | `19392e733d888cb4147bf5ccaace6007d99f4b7870eb8d7c1eaa7b07cf90670d` | `—` (não aplicado) | Claude sessão P18/auditoria | E15 (pendente) | pendente | pendente — 13 DROP INDEX unused (~779 MB); 7 deferred (unique/GIN — aprovação PO) |
+| `20261022100020` | `c429599dc3becf972269b08c994cef994a28c591ba47c41524b5390019546d8a` | `—` (não aplicado) | Claude sessão P19/auditoria | E15 (pendente) | pendente | pendente — dispatcher-failure-alert: */5 → 3,13,23,33,43,53 (offset +3min, P19) |
+| `20261022100021` | `4c3ddf72ef90ac779830893686099c48ef1eb6c524c0269a7b2551665816c888` | `—` (não aplicado) | Claude sessão P19/auditoria | E15 (pendente) | pendente | pendente — hash-product-images: */5 → 4,14,24,34,44,54 (offset +4min, P19) |
+| `20261022100022` | `2cc1e34477a862cccd3c0b7d5925179a755cdda50a7e646bad41e40f277675c7` | `—` (não aplicado) | Claude sessão P19/auditoria | E15 (pendente) | pendente | pendente — sync-is-stockout-universal: */5 → */10 (frequência reduzida, P19) |

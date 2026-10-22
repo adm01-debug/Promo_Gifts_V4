@@ -1,0 +1,12 @@
+-- REPAIR-ONLY: Esta migration foi aplicada diretamente em produção (OOB DDL)
+-- Arquivo original: 20260622130000_fix_color_swatches_column_and_view_plus_favorites_grant.sql
+-- Data de aplicação estimada: 2026-06-22 13:00 UTC
+-- Tabelas afetadas: public.products (ADD COLUMN color_swatches jsonb),
+--                   view public.v_products_public (recreated)
+-- Descrição: Adiciona coluna color_swatches jsonb DEFAULT '[]' na tabela products.
+--            Sem ela PostgREST retornava HTTP 400 em 100% das queries de produto.
+--            STATUS COMENTADO NO ORIGINAL: "Aplicado via apply_migration no projeto doufsxqlfjyuvxuezpln"
+-- Reconciliação pendente: registrar no ledger via db-apply-migration.yml mode=repair-only
+-- Aprovação necessária: PO deve autorizar via workflow_dispatch
+-- Referência: supabase/MIGRATIONS_DRIFT_REPORT.md — DRIFT-003
+-- Sessão: https://claude.ai/code/session_01GfYDwdVBZip5FzMr8MZ4Be — 2026-10-22
