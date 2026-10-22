@@ -18,6 +18,10 @@
       "ref": "supabase/migrations-snapshot/SCHEMA_DRIFT.sql"
     },
     {
+      "file": "auditoria-supabase/A5_VALIDATION_REPORT.md",
+      "ref": "supabase/migrations/20261022100001...100022.sql"
+    },
+    {
       "file": "CONTRIBUTING.md",
       "ref": "supabase/migrations/README.md"
     },
