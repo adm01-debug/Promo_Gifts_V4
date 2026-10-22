@@ -483,3 +483,106 @@ tipos gerados (`types.ts`), lógica de negócio ou contratos de API.
 
 *Gerado em 2026-10-21; atualizado em 2026-10-22 com SHA `0c7ccaf` (sessão https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz)*
 *Última atualização: 2026-10-22 — run `39697216328` (sha `02e4f63`) in_progress; run `39695326969` cancelado por cancel-in-progress (não falha real); Gate 3 em execução no novo run — ver P18*
+
+---
+
+## 11. P11 / P12 — Workflows que não disparam em `pull_request`
+
+### 11.1 Por que P11/P12 não podem ser confirmados pré-merge
+
+**P11 — `prod-health.yml` (Static Health Checks):**
+```yaml
+on:
+  push:
+    branches: [main]
+  schedule: ...
+```
+Trigger: **`push: main` apenas**. Não existe trigger `pull_request`.
+- `list_runs_for_workflow('prod-health.yml', branch='claude/laughing-cori-o9w35e')` → `total_count: 0`
+- Confirmação: não há como rodar este workflow no PR antes do merge.
+- **Fix aplicado:** commit `cb2706ca` — adicionados `cache: 'npm'` e step `npm ci` antes do
+  Check 2 ("Product type fields"). Corrige `ERR_MODULE_NOT_FOUND: typescript`.
+- **O fix está na branch e será validado automaticamente ao fazer push/merge em main.**
+
+**P12 — Supabase Linter Gate:**
+- Este é o job `lint-0011` dentro de `deploy-gates.yml` — **não é um workflow separado**.
+- `lint-0011-allowlist.json` foi corrigido no commit `cb2706ca`.
+- **Confirmado no próprio `deploy-gates.yml`:** run `39695326969` (sha `1c5814b`),
+  Gate 1 step 7 "Gate 1.1 — Product type fields" → ✅ success (23:52:06Z).
+  O gate lint-0011 é step do Gate 1 que já passou 42/42.
+
+**Conclusão:** P11 e P12 têm fixes commitados no PR #2338. P12 foi confirmado via
+Gate 1 nos runs de CI. P11 (`prod-health.yml`) dispara apenas em push para `main` —
+confirmar post-merge é o comportamento correto, não um atraso.
+
+---
+
+## 12. P23 — Prova de não-regressão do Gate 3 E2E Smoke
+
+### 12.1 Diferença de specs e2e entre base (main) e o PR
+
+```
+$ git diff c7c25848..55fb2c8 -- 'e2e/'
+(saída vazia — exit code 0)
+```
+
+**Zero arquivos modificados no diretório `e2e/`.** Confirmado via `git diff` com
+path filter `'e2e/'`. O PR não introduziu nenhuma alteração em specs, fixtures,
+helpers ou dados de teste do E2E Smoke.
+
+### 12.2 Arquivos de código de aplicação modificados no PR
+
+Mudanças em `src/` nesta sessão:
+1. `src/hooks/products/useSellerCarts.ts` — adicionou `createClientLogger` (+4 linhas)
+   - **Não é testado por specs e2e smoke** (é hook de estado de carrinho)
+2. `src/pages/products/SellerCartsPage.tsx:230` — restaurou texto de toast
+   - **Não é testado por specs e2e smoke** (spec smoke foca em login/catalog/checkout)
+3. 8 hooks com `// rls-allow:` inline — comentário de annotation apenas, sem mudança funcional
+4. Nenhuma mudança em componentes testados pelos specs smoke
+
+### 12.3 Causa confirmada da falha no run `39703771871` (P23)
+
+Run `39703771871` (sha `6468a82`, 01:10-01:28Z):
+- `auth/v1/token` → 39.429ms (normal: <2s)
+- `get_profile_and_roles` → 33.828ms (normal: <1s)
+- `system_settings` → PENDING 80.503ms (sem resposta)
+- **Mesma janela de P22 (uptime monitor `39699222688`):** site fora do ar às 00:23Z
+
+**Diagnóstico:** Não é regressão de código — é falha de infraestrutura Supabase.
+O novo run `39706421327` (sha `55fb2c8`) roda com Supabase responsivo.
+
+---
+
+## 13. Run `39706421327` — Deploy Gates SHA `55fb2c8` (run atual)
+
+**Criado:** 2026-10-22T01:34:00Z | **SHA:** `55fb2c8cd006c461f450584a989f35843ec6dbf4`
+
+### Jobs concluídos (em_progress → confirmados ✅ neste run):
+
+| Gate | Job ID | Status | Completado |
+|---|---|---|---|
+| Gate 0 - SSOT Supabase | `119587406071` | ✅ success | 01:34:55Z |
+| Detectar mudanças (E14) | `119587406449` | ✅ success | 01:34:50Z |
+| Gate E23 - Secret Scan (gitleaks) | `119587687744` | ✅ success | 01:35:18Z |
+| Gate E23 - Verifica secrets E2E | `119587687866` | ✅ success | 01:35:08Z |
+| Gate 2.5 - PostgreSQL Integrity | `119587687667` | ✅ success | 01:36:35Z |
+| Gate 4 - Lighthouse CI | `119587687668` | ✅ success | 01:38:32Z |
+| Gate 5 - SEO Sanity Check | `119587687673` | ✅ success | 01:36:55Z |
+| Gate 0.6 - Dependency Review | `119587687674` | ✅ success | 01:37:07Z |
+| Gate 0.5 - Dependency Audit | `119587687705` | ✅ success | 01:37:07Z |
+| Gate 5.5 - RPC restore_seller_cart | `119587687711` | ✅ success | 01:37:52Z |
+| Gate E40 - Detect schema changes | `119587687757` | ✅ success | 01:37:21Z |
+| Gate 2 - Unit Tests | `119587687778` | ✅ success | 01:37:38Z |
+| Gate E40 - Schema Drift Check | `119588449062` | ⏸️ skipped | (schema não mudou) |
+| Gate 1 - Lint + TypeScript | `119587687762` | ⏳ in_progress | step 22/42 iniciado 01:41:32Z |
+| Gate 3 - E2E Smoke | `119587753293` | ⏳ in_progress | Playwright desde 01:38:18Z |
+| Gate Final - Deploy Ready | — | ⏳ aguardando | depende de Gate 1 e Gate 3 |
+
+**Gate 1 (Lint + TypeScript) — steps confirmados ✅ (1–21):**
+- step 5: `npm run typecheck` ✅ (01:37:43Z–01:38:43Z)
+- step 6: `npm run lint:baseline` ✅ (01:38:43Z–01:40:49Z)
+- steps 7–21 (Gates 1.1–1.13.3) → ✅ todos success
+- step 22 (Gate 1.10 indexed-access ratchet) → ⏳ desde 01:41:32Z
+
+**Gate 3 - E2E Smoke:** step 7 `Run Playwright smoke tests` ⏳ desde 01:38:18Z.
+Esperado: ~01:55-01:58Z (timeout 20min). Status atualizado quando disponível.
