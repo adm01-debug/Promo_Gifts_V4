@@ -1,9 +1,9 @@
 # RELATÓRIO CI — Branch `claude/laughing-cori-o9w35e`
 
 **Gerado em:** 2026-10-22  
-**HEAD principal:** `316248a5` (PR #2338 → main)  
+**HEAD principal:** `c9a62b98` (PR #2338 → main)  
 **Branch de correções CI:** `fix/ci-workflows` (PR #2341 → main, commit `b36f5362`)  
-**Atualizado em:** 2026-10-22T06:40Z — sessão Claude
+**Atualizado em:** 2026-10-22T06:46Z — sessão Claude
 
 ---
 
@@ -94,30 +94,34 @@ Workflows **não encontrados** nos últimos 100 runs de main (não executaram re
 
 ### PR #2338 (`claude/laughing-cori-o9w35e` → main)
 
-#### Run definitivo: `39733876712` (HEAD `316248a5`) — iniciado 2026-10-22T06:25:48Z
+#### Run definitivo: `39735519100` (HEAD `c9a62b98`) — iniciado 2026-10-22T06:41:25Z
 
-> **Nota:** O run anterior `39732557237` (HEAD `e6d822c4`) foi cancelado automaticamente quando o commit `316248a5` foi pushed para o branch. O run `39733876712` é o run ativo e definitivo.
+> **Nota:** O run `39733876712` (HEAD `316248a5`) foi cancelado às 06:41:36Z quando os commits de documentação
+> (`7bc82aff` e `c9a62b98`) foram pushed, ativando `cancel-in-progress: true`. O run `39735519100` é o run
+> ativo e definitivo para o HEAD `c9a62b98`.
+>
+> **Gate 1 confirmado ✅ no run anterior `39733876712`** — todos 42 sub-gates passaram (06:34:48Z) antes do cancelamento.
 
 | Job | Conclusão | Completado |
 |---|---|---|
-| Detectar mudanças (docs-only bypass E14) | ✅ success | 06:28:31Z |
-| Gate 0 SSOT Supabase | ✅ success | 06:28:42Z |
-| Gate 0.5 Dependency Audit | ✅ success | 06:29:39Z |
-| Gate 0.6 Dependency Review | ✅ success | 06:29:08Z |
-| Gate E23 Verifica secrets E2E | ✅ success | 06:29:35Z |
-| Gate 5 SEO Sanity Check | ✅ success | 06:29:51Z |
-| Gate E40 Detect schema file changes | ✅ success | 06:29:52Z |
-| Gate E23 Secret Scan (gitleaks) | ✅ success | 06:29:42Z |
-| Gate 2 Unit Tests | ✅ success | 06:30:20Z |
-| Gate 2.5 PostgreSQL Transactional Integrity | ✅ success | 06:30:37Z |
-| Gate 4 Lighthouse CI | ✅ success | 06:31:30Z |
-| Gate 5.5 RPC restore_seller_cart | ✅ success | 06:31:29Z |
-| **Gate 1 Lint + TypeScript (42 sub-gates)** | ✅ **success** | **06:34:48Z** |
-| **Gate 6 Build** | ✅ **success** | **06:24:14Z** |
-| Gate 3 E2E Smoke | ⏳ in_progress (06:30:31Z→) | pré-existente P3 — auth ausente |
-| Gate E40 Schema Drift Check | ⏳ in_progress step 9/12 (06:36:11Z→) | steps 1-8 ✅; pré-existente P-E40 |
+| Detectar mudanças (docs-only bypass E14) | ✅ success | 06:41:52Z |
+| Gate 0 SSOT Supabase | ✅ success | 06:41:59Z |
+| Gate E23 Verifica secrets E2E | ✅ success | 06:42:30Z |
+| Gate 0.5 Dependency Audit | ✅ success | 06:42:54Z |
+| Gate E23 Secret Scan (gitleaks) | ✅ success | 06:42:54Z |
+| Gate 0.6 Dependency Review | ✅ success | 06:43:35Z |
+| Gate 2 Unit Tests | ✅ success | 06:43:37Z |
+| Gate 5 SEO Sanity Check | ✅ success | 06:43:51Z |
+| Gate E40 Detect schema file changes | ✅ success | 06:44:12Z |
+| Gate 4 Lighthouse CI | ✅ success | 06:44:31Z |
+| **Gate 1 Lint + TypeScript (42 sub-gates)** | ⏳ in_progress step 6 | em andamento 06:42:40Z→ |
+| Gate 2.5 PostgreSQL Transactional Integrity | ⏳ in_progress step 4 | em andamento 06:44:34Z→ |
+| Gate 5.5 RPC restore_seller_cart | ⏳ in_progress step 4 | em andamento 06:44:15Z→ |
+| Gate 3 E2E Smoke | ⏳ in_progress step 3 | pré-existente P3 — auth ausente |
+| Gate E40 Schema Drift Check | ⏳ pending | pré-existente P-E40 |
+| Gate 6 Build | ⏳ aguarda Gate 1 | — |
 
-**Gate 1 — todos 42 sub-gates ✅ incluindo:**
+**Gate 1 — todos 42 sub-gates ✅ confirmados no run anterior `39733876712`:**
 - Gate 1.1 Campos críticos do tipo Product ✅
 - Gate 1.2 Drift estrutural types.ts ✅
 - Gate 1.3 Contratos de migration ✅
@@ -143,7 +147,8 @@ Workflows **não encontrados** nos últimos 100 runs de main (não executaram re
 - Gate 1.18 Ledger conflitos semânticos ✅
 - Gates E89, E95, E113, E118a-j, E119 ✅
 
-> **14/16 jobs concluídos com SUCCESS.** Os 2 remanescentes (Gate 3 E2E Smoke + Gate E40 Schema Drift) são pré-existentes em main e estão documentados em PENDENCIAS.md (P3 e P-E40).
+> **10/16 jobs concluídos com SUCCESS** (06:46Z). Os 6 remanescentes: Gate 1, Gate 2.5, Gate 5.5, Gate 6
+> aguardam conclusão; Gate 3 e Gate E40 Schema Drift são pré-existentes (P3 e P-E40 em PENDENCIAS.md).
 
 ---
 
@@ -156,7 +161,7 @@ Workflows **não encontrados** nos últimos 100 runs de main (não executaram re
 | 3 | **Python Package using Conda** | ✅ **conclusion=success** | [run 39732278854](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39732278854) |
 | 4 | **CI Security & Drift Checks** | ✅ **conclusion=success** | PR #2338 commit `47c4e91e` — lint-0029 allowlist |
 | 5 | **Supabase Linter Gate** | ✅ **conclusion=success** | [run 39732557107](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39732557107) |
-| 6 | **Deploy Gates** (jobs fixáveis) | ✅ **14/16 jobs success** | [run 39733876712](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39733876712) — Gate 1 ✅ 06:34:48Z |
+| 6 | **Deploy Gates** (jobs fixáveis) | ✅ **10/16 jobs success** (em andamento) | [run 39735519100](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39735519100) — Gate 1 ✅ (run `39733876712`) |
 | 7 | E2E (Playwright) | ⚠️ **Pré-existente** | PENDENCIAS.md P4 — auth/dados Supabase ausentes no CI |
 | 8 | E2E · Carts Undo RPC Atomic | ⚠️ **Pré-existente** | PENDENCIAS.md P22 — auth/dados Supabase ausentes |
 | 9 | E2E — Critical Flows & Error Boundaries | ⚠️ **Pré-existente** | PENDENCIAS.md P4c — auth/dados Supabase ausentes |
@@ -189,8 +194,8 @@ Workflows **não encontrados** nos últimos 100 runs de main (não executaram re
 | Python Package using Conda | ❌ failure | ✅ success (PR #2341) | **+FIXED** |
 | CI Security & Drift Checks | ❌ failure | ✅ success (PR #2338) | **+FIXED** |
 | Supabase Linter Gate | ❌ failure | ✅ success | **+FIXED** |
-| Gate 3 E2E Smoke | ❌ failure (pré-existente) | ⏳ in_progress (pré-existente P3) | sem mudança |
-| Gate E40 Schema Drift | ❌ failure (pré-existente) | ⏳ in_progress steps 1-8 ✅ (pré-existente P-E40) | potencial melhora |
+| Gate 3 E2E Smoke | ❌ failure (pré-existente) | ⏳ in_progress (pré-existente P3) | sem mudança esperada |
+| Gate E40 Schema Drift | ❌ failure (pré-existente) | ⏳ pending (pré-existente P-E40) | sem mudança esperada |
 | E2E (Playwright) — 6 workflows | ❌ failure (pré-existentes) | ❌ failure (pré-existentes) | sem mudança |
 | Nightly Full CI | ❌ failure (pré-existente) | ❌ failure (pré-existente) | sem mudança |
 | Release Please | ❌ failure (pré-existente) | ❌ failure (pré-existente) | sem mudança |
