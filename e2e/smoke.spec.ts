@@ -47,10 +47,11 @@ test.describe("Auth Critical Flow @smoke", () => {
 
   test("deve bloquear acesso a rotas protegidas quando deslogado", async ({ page }) => {
     // Tenta acessar /produtos diretamente
-    console.log("[Smoke] Testando bloqueio de rota protegida");
+    const targetPath = "/produtos";
+    console.log(`[Smoke] Testando bloqueio de rota protegida: ${targetPath}`);
     // Em AppRoutes.tsx, as rotas protegidas estão sob <ProtectedRoute />
     // /produtos (productRoutes) é protegida.
-    await gotoAndSettle(page, "/produtos");
+    await gotoAndSettle(page, targetPath);
     
     // Deve redirecionar para /auth ou /login
     await expect(page, "deveria redirecionar para /auth ou /login").toHaveURL(

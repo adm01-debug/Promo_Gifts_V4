@@ -17,6 +17,10 @@ async function open(page: Page) {
 }
 
 test('@smoke MainLayout root e html/body NÃO usam overflow-x:hidden', async ({ page }) => {
+  test.skip(
+    process.env.E2E_MOCK_AUTH === '1',
+    '[E108] Rota /__visual/* só disponível em DEV mode — não existe no build de produção',
+  );
   await open(page);
   const styles = await page.evaluate(() => {
     const root = document.querySelector('[role="document"]') as HTMLElement | null;
