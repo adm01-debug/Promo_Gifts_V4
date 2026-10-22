@@ -1,9 +1,9 @@
 # RELATÓRIO CI — Branch `claude/laughing-cori-o9w35e`
 
 **Gerado em:** 2026-10-22  
-**HEAD principal:** `0f7eb91a` (PR #2338 → main)  
+**HEAD principal:** `a6177339` (PR #2338 → main)  
 **Branch de correções CI:** `fix/ci-workflows` (PR #2341 → main, commit `b36f5362`)  
-**Atualizado em:** 2026-10-22T07:35Z → 08:44Z → 09:00Z — sessão Claude
+**Atualizado em:** 2026-10-22T07:35Z → 08:44Z → 09:00Z → 09:04Z — sessão Claude
 
 ---
 
@@ -238,7 +238,8 @@
 | 3 | **Python Package using Conda** | ✅ **conclusion=success** | [run 39732278854](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39732278854) |
 | 4 | **CI Security & Drift Checks** | ✅ **lint-0029 ✅; lint-0011 ✅ 08:08:37Z** | lint-0029: PR #2338 commit `47c4e91e`. lint-0011 (PG17 OUT params): commit `5b32ac8d`, confirmado [run 39744914052](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39744914052) step 16 ✅ + [run 39748320252](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39748320252) step 16 ✅ (conclusion=failure por step 21 pré-existente, notif 22 08:52Z) |
 | 5 | **Supabase Linter Gate** | ✅ **conclusion=success** | [run 39732557107](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39732557107) |
-| 6 | **Deploy Gates** (jobs fixáveis) | ✅ **14 jobs success** (2 in_progress) | [run 39750438156](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39750438156) SHA `0f7eb91a` — Gate 1 ✅ 08:57:05Z (42/42 sub-gates), Gate 6 Build ✅ 08:57:58Z, Gate E23 Gitleaks ✅ 08:51:45Z. Gate Final bloqueado por P3+P-E40 pré-existentes — ver P27 |
+| 6 | **Deploy Gates** (jobs fixáveis) | ✅ **14 jobs success** (conclusion=failure por P3+P-E40) | [run 39750438156](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39750438156) SHA `0f7eb91a` — Gate 1 ✅ 08:57:05Z (42/42 sub-gates), Gate 6 Build ✅ 08:57:58Z, Gate E23 Gitleaks ✅ 08:51:45Z. e2e-gates failure notif 2 08:59:54Z (P3). Gate Final bloqueado por P3+P-E40 pré-existentes — ver P27 |
+| 6b | **Gate 8 — Security & Credential Audit** | ⚠️ **Pré-existente P29** | [run 39750438153](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39750438153) SHA `0f7eb91a` — `check:security-definer-acl` HTTP 503/504 transitório Supabase (3 tentativas, inconclusive). Não parte do deploy-gates. |
 | 7 | E2E (Playwright) | ⚠️ **Pré-existente** | PENDENCIAS.md P4 — auth/dados Supabase ausentes no CI |
 | 8 | E2E · Carts Undo RPC Atomic | ⚠️ **Pré-existente** | PENDENCIAS.md P22 — auth/dados Supabase ausentes |
 | 9 | E2E — Critical Flows & Error Boundaries | ⚠️ **Pré-existente** | PENDENCIAS.md P4d — auth/dados Supabase ausentes |
@@ -301,4 +302,4 @@
 
 ---
 
-_Atualizado em 2026-10-22T09:00Z — sessão Claude (HEAD 0f7eb91a; run 39750438156 — Gate 1 ✅ 42/42 sub-gates 08:57:05Z, Gate 6 ✅ 08:57:58Z, Gate E23 Gitleaks ✅ 08:51:45Z, 14/16 jobs success; run 39748642992 conclusion=failure confirmado notif 20 08:49Z; ci-security-drift run 39748320252 conclusion=failure confirmado notif 22 08:52Z step 21 pré-existente; step 16 lint-0011 ✅ 2x confirmado)_
+_Atualizado em 2026-10-22T09:04Z — sessão Claude (HEAD a6177339; run 39750438156 0f7eb91a → conclusion=failure confirmado (e2e-gates notif 2 09:00Z, P3+P-E40 pré-existentes); Gate 8 run 39750438153 → HTTP 503/504 transitório inconclusive, documentado P29; ci-security-drift run 39748320252 → conclusion=failure step 21 pré-existente; step 16 lint-0011 ✅ 2x confirmado; Gate 1 42/42 ✅, Gate 6 ✅, Gate E23 ✅ todos confirmados)_

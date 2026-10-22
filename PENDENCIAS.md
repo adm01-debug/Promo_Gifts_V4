@@ -348,8 +348,8 @@ O PR adiciona dois arquivos em `supabase/migrations/` que ATIVAM o drift check v
 - **Gate 1 Lint+TypeScript ✅ (08:43:07Z)** — TODOS 42 sub-gates ✅ incluindo Gate 1.10 indexed-access ratchet ✅ (08:42:57Z), Gate 1.13 policies ✅ (08:41:55Z), Gate 1.13.1-1.13.3 ✅, Gates E89/E95/E113/E118a-j/E119/1.18 ✅
 - Gate 6 Build ✅ (08:43:56Z), Gate E40 Detect (paths) ✅ (08:36:20Z)
 
-### Run `39750438156` — SHA `0f7eb91a` — `in_progress` (08:47:52Z+, verificado 08:57Z)
-**14 de 16 jobs `success`; 2 in_progress (ambos pré-existentes):**
+### Run `39750438156` — SHA `0f7eb91a` — `conclusion=failure` (e2e-gates notif 2 09:00Z + pré-existentes P3+P-E40)
+**14 de 16 jobs `success`; e2e-gates falhou (P3 pré-existente), Gate E40 falhou (P-E40 pré-existente):**
 - Gate 0 SSOT ✅ (08:50:11Z), Gate 0.5 Dependency Audit ✅ (08:52:11Z)
 - Gate 0.6 Dependency Review ✅ (08:51:36Z), Gate E23 Secret Scan (gitleaks) ✅ (08:51:45Z)
 - Gate E23 Verifica secrets E2E ✅ (08:50:27Z)
@@ -389,6 +389,18 @@ O PR adiciona dois arquivos em `supabase/migrations/` que ATIVAM o drift check v
 
 ---
 
+## P29 — Gate 8 — Security & Credential Audit — HTTP 503/504 transitório
+
+**Status:** ⚠️ Pré-existente — falha de infra transitória, não é bug de código  
+**Workflow:** `Gate 8 — Security & Credential Audit` (run [39750438153](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39750438153), job 119732527299)  
+**SHA:** `0f7eb91a`  
+**Causa:** `check:security-definer-acl` (script `audit-credentials.mjs + check-security-definer-acl.mjs`) — as etapas `audit:credentials` e `check:edge-cors` passaram ✅. A etapa `check:security-definer-acl --require-live` falhou com HTTP 504 (tentativas 1 e 2, ~08:57Z e ~09:00Z) e HTTP 503 (tentativa 3, 09:01:22Z). O script marcou o resultado como `status=inconclusive, reason=http-error` e saiu com exit code 2. "Quality Gates Summary" (job 119735228343) também falhou como consequência.  
+**Por que não é bug de código:** O PR não toca em `check-security-definer-acl.mjs`, `.security-definer-acl-baseline.json`, nem em nenhuma função SECURITY DEFINER. A falha é um timeout/unavailability da API Supabase (`doufsxqlfjyuvxuezpln`) durante a janela de execução do job — exatamente o mesmo padrão do P25 (HTTP 500). Workflow standalone — **não faz parte do `deploy-gates.yml` (Gate Final)**.  
+**Impacto no Gate Final:** NENHUM — este workflow é independente do required check `deploy-gates.yml`.  
+**Ação necessária:** PO monitorar disponibilidade da API Supabase. Em caso de falha persistente, investigar se `audit_security_definer_acl` está com timeout configurado adequadamente.
+
+---
+
 ## Itens Concluídos ✅
 
 | Item | Commit | O quê foi corrigido |
@@ -406,4 +418,4 @@ O PR adiciona dois arquivos em `supabase/migrations/` que ATIVAM o drift check v
 
 ---
 
-_Atualizado automaticamente por sessão Claude — 2026-10-22T09:00Z (HEAD 0f7eb91a; P27 atualizado: run 39748642992 ceef4d6b → conclusion=failure confirmado notif 20 08:49Z; run 39750438156 0f7eb91a in_progress 14/16 jobs ✅ Gate 1 42/42 ✅ 08:57:05Z Gate 6 ✅ 08:57:58Z; P28 run 39748320252 → conclusion=failure confirmado notif 22 08:52Z step 21 pré-existente)_
+_Atualizado automaticamente por sessão Claude — 2026-10-22T09:04Z (HEAD a6177339; P27 atualizado: run 39750438156 0f7eb91a → conclusion=failure confirmado (e2e-gates notif 2 08:59:54Z + Gate E40 pré-existente P-E40); P29 adicionado: Gate 8 Security & Credential Audit run 39750438153 → HTTP 503/504 transitório Supabase, inconclusive, não bloqueia Gate Final)_
