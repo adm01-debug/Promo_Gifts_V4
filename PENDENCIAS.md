@@ -73,6 +73,19 @@
 - **Fix desta sessão:** `mkdir -p playwright-report &&` antes do `touch` em `e2e-gates` (commit `c58e3a56`) resolve false-negative no gate header-sticky
 - **Status:** Falhas pré-existentes confirmadas; não são regressões introduzidas por esta branch
 
+### 2.8 E2E PDF Exportado — quote_number (pré-existente)
+
+- **Run:** [39780983106](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39780983106), job 119832065424
+- **Check:** `E2E PDF exportado · quote_number`
+- **Commit afetado:** `55adfac3` (mudou apenas `PENDENCIAS.md` — zero código)
+- **Testes que falharam:**
+  1. `view NÃO quebra grid layout` — chromium-authed
+  2. `é comercial e sem frase legada` — chromium-authed
+  3. `r e não contém frase legada` (2 variantes) — chromium-authed
+- **Conclusão:** Pré-existente — commit não tocou código; falha não causada por esta branch
+- **Ação necessária:** Investigar regressão no componente de PDF/quote number; provável flake de autenticação ou regressão do Lovable
+- **Responsável:** PO + dev de features
+
 ### 2.7 Quote Builder Delivery Quality — E2E Tooltip Pré-existente
 
 - **Run:** [39757063628](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757063628)
