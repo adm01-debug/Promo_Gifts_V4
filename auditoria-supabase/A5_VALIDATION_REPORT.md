@@ -17,7 +17,7 @@ Dois problemas bloqueantes identificados:
 ## Gate 0 SSOT: PASSOU
 
 ```
-grep -r "pqpdolkaeqlyzpdpbizo" supabase/migrations/ --include="2026102210*.sql"
+grep -r "pqpdolkaeqlyzpdpbizo" supabase/migrations/ --include="2026102210*.sql"  # legado — esperado: 0 ocorrências
 → ZERO ocorrências
 ```
 
