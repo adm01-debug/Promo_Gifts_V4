@@ -312,4 +312,4 @@
 
 ---
 
-_Atualizado em 2026-10-22T09:35Z — sessão Claude (HEAD 02f265ec; deploy-gates run 39753032381 queued; P30-P34 adicionados em PENDENCIAS.md e tabela 4/5: 5 checks E2E individuais (view-no-presentation-mode, cart-invariants firefox shard 2/2, cart-invariants-summary, Full User Flows authed, thumb-quickview) — todos pré-existentes por auth/infra ausente; seção 5 atualizada com linhas P30-P34 sem regressão)_
+_Atualizado em 2026-10-22T09:28Z — sessão Claude (HEAD d71da4cb; P27 confirmado: run 39754501446 f4529b1e conclusion=failure; d71da4cb deploy-gates esperado failure por P3+P-E40 pré-existentes; P35-P38 adicionados: E2E PDF (run 39754681438), E2E Popover Campos Pendentes (run 39754681438), Smoke HTTP (run 39754681565), E2E Personalization Journey (run 39754681367) — todos pré-existentes confirmados para SHA d71da4cb)_

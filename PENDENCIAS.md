@@ -1,7 +1,7 @@
 # PENDÊNCIAS — Branch `claude/laughing-cori-o9w35e` / PR #2338
 
-**Atualizado em:** 2026-10-22T09:22Z  
-**HEAD:** `f4529b1e`  
+**Atualizado em:** 2026-10-22T09:28Z  
+**HEAD:** `d71da4cb`  
 
 ---
 
@@ -370,9 +370,11 @@ O PR adiciona dois arquivos em `supabase/migrations/` que ATIVAM o drift check v
 ### Run `39753877367` — SHA `b9c63d2f` — `status=cancelado` (cancel-in-progress por push f4529b1e)
 **Deploy Gates** cancelado automaticamente pelo push do commit `f4529b1e` (`cancel-in-progress: true` configurado para PRs). O commit `f4529b1e` contém apenas docs (PENDENCIAS.md P-MERGE + RELATORIO_CI.md seção 1 expandida).
 
-### Run `39754501446` — SHA `f4529b1e` — `status=pending` (09:19Z — 2026-10-22)
-**Deploy Gates** na fila para o HEAD atual `f4529b1e` (docs-only). Runs simultâneos: db-schema-drift-check (39754501327), Workflow Lint (39754501310), Lint untypedFrom (39754501601), E2E Cart Matrix (39754501515), PR Size Guard (39754501542), E2E Quotes Matrix (39754501379), Cart Invariants Smoke (39754501371), CI - Novo Orçamento E2E (39754501435), Running Copilot Code Review (39754514958).  
-**Conclusão esperada:** `failure` — Gate 3 (P3) e Gate E40 (P-E40) são pré-existentes e falham em 100% dos runs neste PR. Commit f4529b1e é docs-only e não altera código que pudesse corrigir P3 ou P-E40.
+### Run `39754501446` — SHA `f4529b1e` — `conclusion=failure` CONFIRMADO (notif 12/batch3, 09:21:23Z)
+**Deploy Gates** completou com `conclusion=failure` (check_run_id 119743592003). Gate 3 E2E Smoke (P3) e Gate E40 Schema Drift (P-E40) falharam — pré-existentes confirmados.
+
+### Run para SHA `d71da4cb` — `conclusion=failure` ESPERADA
+**Deploy Gates** para o HEAD atual `d71da4cb` (docs-only, push ~09:21Z). SSOT Guard ✅ confirmado (run 39754681460, 09:21:56Z). Gate 3 E2E Smoke (P3) e Gate E40 Schema Drift (P-E40) são pré-existentes em 100% dos runs e falham independentemente do código deste PR. Outros checks confirmados para d71da4cb: Gate 5 DB Security Audit ❌ pré-existente (run 39754681489, P25), E2E PDF/Popover ❌ pré-existentes (run 39754681438, P35+P36), Smoke HTTP ❌ pré-existente (run 39754681565, P37), cart-invariants firefox shard 1/2 ❌ pré-existente (run 39754681315, P17), E2E Personalization Journey ❌ pré-existente (run 39754681367, P38).
 
 ---
 
@@ -482,6 +484,47 @@ O PR adiciona dois arquivos em `supabase/migrations/` que ATIVAM o drift check v
 
 ---
 
+## P35 — E2E PDF exportado · quote_number
+
+**Status:** ⚠️ Pré-existente — não corrigível neste PR  
+**Check:** `E2E PDF exportado · quote_number`  
+**Run/job:** run [39754681438](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39754681438), job 119743653406 — SHA `d71da4cb` (notif 21/batch3)  
+**Confirmado também em:** SHAs `02f265ec` e `b9c63d2f` — mesma falha antes do commit d71da4cb  
+**Causa:** E2E que testa exportação de PDF com campo `quote_number`. Auth e secrets E2E ausentes no CI do PR; mesma causa raiz de P4b/P30. Workflow standalone — não é required check do `deploy-gates.yml`.  
+**Por que não corrigível aqui:** Depende de infra de auth/secrets E2E fora do escopo deste PR. Pré-existente em main.
+
+---
+
+## P36 — E2E Popover Campos Pendentes
+
+**Status:** ⚠️ Pré-existente — não corrigível neste PR  
+**Check:** `E2E Popover Campos Pendentes`  
+**Run/job:** run [39754681438](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39754681438), job 119743653181 — SHA `d71da4cb` (notif 4/batch4, 09:26:41Z)  
+**Causa:** E2E que testa popover de campos pendentes no fluxo de orçamento. Auth e secrets E2E ausentes no CI do PR; mesma causa raiz de P4b/P30. Workflow standalone — não é required check do `deploy-gates.yml`.  
+**Por que não corrigível aqui:** Depende de infra de auth/secrets E2E fora do escopo deste PR. Pré-existente em main.
+
+---
+
+## P37 — Smoke — HTTP against supabase functions serve
+
+**Status:** ⚠️ Pré-existente — não corrigível neste PR  
+**Check:** `Smoke — HTTP against supabase functions serve`  
+**Run/job:** run [39754681565](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39754681565), job 119744273163 — SHA `d71da4cb` (notif 3/batch4, 09:26:38Z)  
+**Causa:** Smoke test HTTP contra Supabase edge functions serve local. Requer infra de edge functions rodando localmente no runner — não disponível no CI do PR. Workflow standalone — não é required check do `deploy-gates.yml`.  
+**Por que não corrigível aqui:** Depende de infra de edge functions serve (secrets + docker) fora do escopo deste PR.
+
+---
+
+## P38 — E2E — Personalization Journey
+
+**Status:** ⚠️ Pré-existente — não corrigível neste PR  
+**Check:** `E2E — Personalization Journey`  
+**Run/job:** run [39754681367](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39754681367), job 119744088892 — SHA `d71da4cb` (notif 2/batch4, 09:26:21Z)  
+**Causa:** Jornada completa E2E de personalização. Auth e secrets E2E ausentes no CI do PR; mesma causa raiz de P16 (E2E Personalization Flow). Workflow standalone — não é required check do `deploy-gates.yml`.  
+**Por que não corrigível aqui:** Depende de infra de auth/secrets E2E fora do escopo deste PR. Pré-existente em main.
+
+---
+
 ## Itens Concluídos ✅
 
 | Item | Commit | O quê foi corrigido |
@@ -499,4 +542,4 @@ O PR adiciona dois arquivos em `supabase/migrations/` que ATIVAM o drift check v
 
 ---
 
-_Atualizado automaticamente por sessão Claude — 2026-10-22T09:22Z (HEAD f4529b1e; P27 atualizado: run 39753877367 b9c63d2f → cancelado por cancel-in-progress push f4529b1e; run 39754501446 f4529b1e → pending)_
+_Atualizado automaticamente por sessão Claude — 2026-10-22T09:28Z (HEAD d71da4cb; P27: run 39754501446 f4529b1e → conclusion=failure CONFIRMADO (notif 12/batch3); d71da4cb deploy-gates esperado failure por P3+P-E40; P35-P38 adicionados: E2E PDF, Popover Campos Pendentes, Smoke HTTP, Personalization Journey — todos pré-existentes para SHA d71da4cb)_
