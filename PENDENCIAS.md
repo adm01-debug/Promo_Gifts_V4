@@ -1,9 +1,11 @@
 # PENDÊNCIAS — Correção de Workflows CI
 
-**Atualizado:** 2026-10-22T18:10 UTC  
+**Atualizado:** 2026-10-22T17:55 UTC  
 **Branch ativa:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD atual:** `e2bf7804` (docs — diagnósticos E104 + atualização PENDENCIAS.md)  
-**Gate Final e2bf7804:** run [39824526266](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39824526266) — ⏳ `queued` (17:38Z) — aguardando conclusão  
+**HEAD atual:** `ac0f4e10` (fix(ci): E104 override ECR em contract-tests + corrige expectativa audit_http_error_exhausted)  
+**Gate Final ac0f4e10:** run [39826162164](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39826162164) — ⏳ `pending` (17:50Z) — aguardando conclusão  
+**Gate Final c97f4959 (agente inventário):** run [39826030788](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39826030788) — `cancelled` (superado por ac0f4e10)  
+**Gate Final e2bf7804:** run [39824526266](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39824526266) — `queued` (superado por c97f4959)  
 **Gate Final db65121a (E104):** run [39824243692](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39824243692) — `cancelled` (superado por e2bf7804)  
 **Gate Final a83e1c0d:** run [39818934114](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39818934114) — `cancelled` (superado por 5499c532)  
 **Gate Final precedente (sucesso):** run [39798033549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39798033549) — `141c915a` — ✅ **`conclusion=success`** (15:00Z, 16 jobs)  
@@ -17,6 +19,7 @@
 | `a21f6200` | fix(ci): corrige SIGPIPE (exit 141) no guard do daily-flows-simulation | Daily flows simulation — exit 141 SIGPIPE em `gh api --jq` |
 | `f6b1147` | fix(ci): pre-pull com retry para ghcr.io rate limit no drift check | db-schema-drift-check — `toomanyrequests` (44000/min) ao puxar `ghcr.io/supabase/postgres:17.6.1.063` |
 | `db65121a` | ci(drift-check): override SUPABASE_INTERNAL_IMAGE_REGISTRY para ECR Public (E104) | db-schema-drift-check — `supabase/setup-cli` action define `SUPABASE_INTERNAL_IMAGE_REGISTRY=ghcr.io` via `$GITHUB_ENV`, sobrescrevendo pre-pull ECR. Fix: novo step exporta `SUPABASE_INTERNAL_IMAGE_REGISTRY=public.ecr.aws` após setup-cli |
+| `ac0f4e10` | fix(ci): E104 override ECR em contract-tests + corrige expectativa audit_http_error_exhausted | contract-tests job smoke rate limit (E104) + Codex P2: reason exhausted + extraEnv CHECK_RETRY_DELAY_MS |
 
 ### Reruns Attempt 2 (15:12Z) — Conclusões Confirmadas
 
