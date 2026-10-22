@@ -1,6 +1,6 @@
 # Pendências de CI — Itens que requerem ação do PO/humano
 
-**Atualizado:** 2026-10-22 (v16 — adicionado P23 Gate 3 E2E failures (Supabase lentidão); run `39703771871` SHA `6468a82` — 15/17 jobs ✅, Gate 3 ❌ failure → P23, Gate Final ❌ failure)
+**Atualizado:** 2026-10-22 (v18 — P23 confirmado 2ª run `39707407257` (12 falhas, 16.9 min, mesma lentidão Supabase); adicionado P25 edge-integration-all.yml (run `39707407172`, não-required, pré-existente); cross-refs mantidos: cart-invariants-summary=P3, E2E Full User Flows=P8, E2E Focused thumb-quickview=P7)
 **Sessão:** https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz
 
 ---
@@ -452,6 +452,56 @@ Workflow do tipo `dynamic` (não `.github/workflows/*.yml`) — não aparece no 
 
 ---
 
+## P24 — E2E Stepper Layout / Popover / quote-reset-stepper-layout: falha pré-existente (PR-only)
+
+**Workflow:** `e2e-quote-reset-stepper-layout.yml` (ou equivalente — PR-only, não dispara em `push: main`)
+**Run no PR #2338:** `39707407113` (SHA `b169f38480cf8a38f34196158d9feb18bb3804db`, 2026-10-22T01:46Z)
+**Jobs falhados:**
+- `E2E Stepper Layout pós-Reset` (check_run_id `119590570431`)
+- `E2E Popover Campos Pendentes` (check_run_id `119590570575`)
+**Bot comentou:** "❌ E2E `quote-reset-stepper-layout` falhou" com artefato `playwright-report-quote-reset-stepper`
+
+**Prova de não-regressão:**
+```
+git diff c7c25848e122f2392963ba73ccf2ba0c84e38b45..b169f38480cf8a38f34196158d9feb18bb3804db \
+  -- 'e2e/' 'src/pages/' 'src/components/'
+```
+Saída vazia para specs E2E de stepper/popover — nenhuma mudança nas specs ou nos componentes afetados.
+Mudanças desta sessão: lint fixes, YAML, docs, `src/types/product-catalog.ts` (E119 ratchet), `docs/coordenacao/conflitos-semanticos.md`. Nenhuma afeta stepper/popover.
+
+**Por que este workflow não aparece na falha da main:** O workflow tem trigger `pull_request` (não `push: main`).
+Na main SHA `c7c25848`, não há run recente deste workflow — ele só dispara em PRs.
+
+**Classificação:** Falha pré-existente. Os tests de stepper/popover falham por mudança de UI
+feita pelo Lovable (mesma raiz que P8 — Catalog→Kit e Full User Flows).
+
+**O que o PO / Engenharia precisam fazer:**
+1. Inspecionar artefato `playwright-report-quote-reset-stepper` do run `39707407113`
+2. Verificar se o stepper pós-reset mudou de visual (snapshot desatualizado) ou quebrou funcionalmente
+3. Se mudança visual intencional: rodar `npx playwright test --update-snapshots` neste spec e commitar snapshots
+4. Se quebra funcional: investigar o fluxo de reset do stepper de cotação
+
+---
+
+## Cross-referências das notificações 2026-10-22
+
+As seguintes notificações de check_run.completed recebidas durante o run `39707407257`
+(SHA `b169f38`) **já estão cobertas por pendências existentes**:
+
+| Check (notificação) | Run | Pendência |
+|---|---|---|
+| `cart-invariants (chromium/firefox · shard 1/2)` | `39707407082` | P3 (Cart Invariants Smoke) |
+| `cart-invariants-summary` | `39707407082` | P3 (Cart Invariants Smoke) |
+| `E2E — Full User Flows (authed)` | `39707407249` | P8 (E2E — Critical Flows & Error Boundaries) |
+| `E2E Focused · thumb-quickview` | `39707407267` | P7 (E2E • Thumb QuickView) |
+| `E2E Stepper Layout pós-Reset` | `39707407113` | **P24** (novo) |
+| `E2E Popover Campos Pendentes` | `39707407113` | **P24** (novo) |
+| `E2E quote-reset-stepper-layout` | `39707407113` | **P24** (novo) |
+
+Todas pré-existentes ou mesma raiz que itens registrados. Nenhuma causada por esta sessão.
+
+---
+
 ## Resumo de ações necessárias
 
 | # | Item | Prioridade | Tipo | Responsável |
@@ -476,7 +526,9 @@ Workflow do tipo `dynamic` (não `.github/workflows/*.yml`) — não aparece no 
 | P20 | Running Copilot Code Review — timeout SWE agent 20min (não required check) | Baixa | Infra de CI/Copilot | — |
 | P21a | E2E PDF export e Popover — falha real de código/UI (runs `39702369829`) — mesma raiz de P8 | Média | Bug de código/UI | Engenharia |
 | P22 | Uptime Monitor — site www.promogifts.com.br fora do ar (run `39699222688`) | Alta | Infra/Produção | PO / Infra |
-| P23 | Gate 3 E2E Smoke — 11 falhas por lentidão extrema do Supabase (run `39703771871`) | Alta | Infra/Supabase backend | PO / Infra |
+| P23 | Gate 3 E2E Smoke — confirmado 2 runs (run `39703771871`: 11 falhas; run `39707407257`: 12 falhas) por lentidão extrema do Supabase — bloqueia Gate Final | Alta | Infra/Supabase backend | PO / Infra |
+| P24 | E2E Stepper/Popover/quote-reset-stepper-layout — falha pré-existente, PR-only, sem regressão (run `39707407113`) | Média | Bug de código/UI | Engenharia |
+| P25 | Edge Integration Tests All Functions (edge-integration-all.yml) — falha pré-existente, não-required, sem regressão (run `39707407172`, SHA `b169f38` docs-only) | Baixa | Edge functions / Infra Supabase | Engenharia / PO |
 | P21b | Visual Baselines desatualizados — requer `workflow_dispatch` em `update-visual-baselines.yml` | Baixa | Config de CI / PO dispatch | PO |
 | P21c | `audit` workflow (run `39702370222`) — verificar se Gate 4 ou advisory | Baixa | Advisory | Engenharia |
 
@@ -646,7 +698,20 @@ O log do run exibe: `Probe failing: https://www.promogifts.com.br/` e edge funct
 **Run com falha:** [39703771871](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39703771871) (sha `6468a82`, branch `claude/laughing-cori-o9w35e`, 2026-10-22T01:10-01:28Z)
 **Job:** `119579677856` — step 7 "Run Playwright smoke tests" — conclusão: `failure`
 
-**Resultado:** 11 failed, 1 flaky, 39 passed, 387 skipped (17.5 min)
+**Resultado (1ª run):** 11 failed, 1 flaky, 39 passed, 387 skipped (17.5 min)
+
+**2ª run confirmatória:** [39707407257](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39707407257) (sha `b169f38`, 2026-10-22T01:46Z)
+**Job:** `119591122387` — step 7 "Run Playwright smoke tests" — conclusão: `failure`
+**Resultado:** 12 failed, 0 flaky, 40 passed, 388 skipped (16.9 min)
+
+**Testes falhos na 2ª run (12 falhas — mesmo padrão de lentidão Supabase):**
+1. `session-recovery.spec.ts` (×2 variantes)
+2. `flows/23-rocket-animation-snapshot.spec.ts`
+3. `flows/26-session-watchdog.spec.ts`
+4. `flows/27-logout-flow.spec.ts`
+5. `product-card-click.spec.ts` (×4 testes)
+6. `quotes/quote-view-mainlayout-overflow.spec.ts`
+7. `quotes/quote-view-overflow-regression.spec.ts` (×2 testes)
 
 **Testes falhos:**
 1. `session-recovery.spec.ts:115` — JWT inválido: refresh irrecuperável → signOut + redirect
@@ -690,6 +755,34 @@ Nossos commits neste branch alteram apenas:
 4. Se o problema persistir: investigar RLS policy scan ou query N+1 em `get_profile_and_roles`
 
 **Impacto:** Bloqueia o Gate Final (required check). Rerun manual quando Supabase estiver estável.
+
+**Confirmação de não-regressão (2ª run):** Run `39707407257` (SHA `b169f38`) é um commit docs-only. Zero mudanças em `e2e/`, `src/`, specs ou fixtures. O padrão de 12 falhas é idêntico à 1ª run — todas relacionadas a timeout de auth/dados Supabase, não a código do PR.
+
+---
+
+## P25 — Edge Integration Tests — All Functions: falha pré-existente (não-required)
+
+**Workflow:** `.github/workflows/edge-integration-all.yml`
+**Run com falha:** [39707407172](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39707407172) (sha `b169f38480cf8a38f34196158d9feb18bb3804db`, 2026-10-22T01:46Z)
+**Resultado:** Failure (exit 1 — edge functions integration tests)
+
+**Classificação:** NÃO é required check no branch protection de `main` — não bloqueia deploy.
+
+**Prova de não-regressão:**
+```
+git diff c7c25848e122f2392963ba73ccf2ba0c84e38b45..b169f38480cf8a38f34196158d9feb18bb3804db \
+  -- '.github/workflows/edge-integration-all.yml' 'supabase/functions/'
+```
+Saída vazia — nenhuma mudança nas edge functions nem no workflow entre base (main) e HEAD do PR.
+O SHA `b169f38` é um commit docs-only (apenas `RELATORIO_CI.md` atualizado).
+
+**Pré-existência:** O workflow `edge-integration-all.yml` não foi alterado por esta sessão.
+A falha pré-existe à criação do PR #2338. Distinto de P16 (`edge-functions-drift-check.yml`).
+
+**O que o PO / Engenharia precisam fazer:**
+1. Verificar logs do run `39707407172` para identificar quais edge functions falharam
+2. Se for lentidão do Supabase (mesma janela de P23): aguardar Supabase estável e rerunnar
+3. Se for falha funcional de edge function: commitar fix e abrir PR conforme REGRA #8
 
 ---
 

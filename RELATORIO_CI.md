@@ -140,6 +140,7 @@ Corrige Gate E89 (cron spacing):
 | `39702296699` | `1b13f7a` | ✅ | ✅ | ✅ | ✅ | ⏳ | **cancelado por push `c901645c` (cancel-in-progress)** |
 | `39702370300` | `c901645c` | ✅ (00:53:46Z) | ✅ 42 steps todos success (00:58:51Z) | ✅ (00:54:29Z) | ✅ (00:55:12Z) | ❌ cancelled | **cancelado por push `6468a82` (cancel-in-progress: true)** |
 | `39703771871` | `6468a82` | ✅ (01:09Z) | ✅ 42 steps success (01:14:26Z) | ✅ (01:10:12Z) | ✅ (01:09:00Z) | ❌ failure — 11 testes / lentidão Supabase (01:10:40-01:28:08Z) | **failure — Gate 3 falhou (P23) — 15/17 ✅** |
+| `39707407257` | `b169f38` | ✅ (01:47Z) | ✅ 42 steps success (01:51:40Z) | ✅ (01:47:30Z) | ✅ (01:48:00Z) | ❌ failure — 12 testes / lentidão Supabase (01:48:15-02:05:05Z) | **failure — Gate 3 falhou (P23 2ª run) — 15/17 ✅, 1 ⏭️** |
 
 **Gate 0 (SSOT)** confirmado em run `39689787809` (22:54:59Z) → `success`
 **Gate 0.5 (Dependency Audit)** confirmado em run `39689787809` (22:55:34Z) → `success`
@@ -281,7 +282,7 @@ Nenhuma mudança em APIs, schema, edge functions, contratos de negócio ou lógi
 
 | # | Workflow | Commit/Run de correção | Conclusão | Referência |
 |---|---|---|---|---|
-| W01 | `deploy-gates.yml` (Gate Final) | PR #2338, sha `ea0fb09`, run `39698881450` | ⏳ in_progress desde 00:18:14Z — aguardando Gate 3 E2E Smoke | [Run CI](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39698881450) |
+| W01 | `deploy-gates.yml` (Gate Final) | SHA `b169f38`, run `39707407257` — Gate 3 falhou (P23 2ª run confirmada: 12 falhas lentidão Supabase) | ❌ failure — Gate 3 cascateia para Gate Final; 15 jobs ✅, 1 ⏭️ skipped, 1 ❌ Gate 3 | [Run CI](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39707407257) |
 | W02 | `workflow-lint.yml` (actionlint) | commit `cb2706ca` — deletado `python-package-conda.yml` | ✅ corrigido no PR | [Diff PR #2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338) |
 | W03 | `release-please.yml` | Requer PAT com `releases:write` — aguarda PO | ⚠️ PENDENCIAS.md P1 | [P1 em PENDENCIAS.md](./PENDENCIAS.md#p1) |
 | W04 | `e2e-carts-undo-rpc-atomic.yml` | Falha real de UI (botão excluir) — requer engenharia | ⚠️ PENDENCIAS.md P2 | [P2 em PENDENCIAS.md](./PENDENCIAS.md#p2) |
@@ -481,8 +482,42 @@ tipos gerados (`types.ts`), lógica de negócio ou contratos de API.
 
 ---
 
+---
+
+## 14. Run `39707407257` — Deploy Gates SHA `b169f38` (2ª confirmação P23)
+
+**Criado:** 2026-10-22T01:46:48Z | **SHA:** `b169f38480cf8a38f34196158d9feb18bb3804db` (docs-only)
+
+### Jobs do run `39707407257` — resultado final
+
+| Gate | Job ID | Status | Completado |
+|---|---|---|---|
+| Detectar mudanças (E14) | — | ✅ success | 01:47:11Z |
+| Gate 0 - SSOT Supabase | — | ✅ success | 01:47:18Z |
+| Gate 0.5 - Dependency Audit | — | ✅ success | 01:47:52Z |
+| Gate 0.6 - Dependency Review | — | ✅ success | 01:47:27Z |
+| Gate 1 - Lint + TypeScript (42 steps) | — | ✅ success | 01:51:40Z |
+| Gate 2 - Unit Tests | — | ✅ success | 01:47:30Z |
+| Gate 2.5 - PostgreSQL Transactional Integrity | — | ✅ success | 01:48:00Z |
+| Gate 3 - E2E Smoke | `119591122387` | ❌ failure — 12 falhas lentidão Supabase | 02:05:05Z |
+| Gate 4 - Lighthouse CI | — | ✅ success | 01:49:06Z |
+| Gate 5 - SEO Sanity Check | — | ✅ success | 01:47:15Z |
+| Gate 5.5 - RPC restore_seller_cart | — | ✅ success | 01:47:44Z |
+| Gate 6 - Build | — | ✅ success | 01:52:17Z |
+| Gate E23 - Secret Scan (gitleaks) | — | ✅ success | 01:47:49Z |
+| Gate E23 - Verifica secrets E2E | — | ✅ success | 01:47:23Z |
+| Gate E40 - Detect schema changes | — | ✅ success | 01:47:24Z |
+| Gate E40 - Schema Drift Check | — | ⏸️ skipped | (schema não mudou) |
+| Gate Final - Deploy Ready | — | ❌ failure | cascateia de Gate 3 |
+
+**Resumo:** 15 jobs ✅ success, 1 ⏭️ skipped, 1 ❌ failure (Gate 3), 1 ❌ failure (Gate Final — cascata)
+
+**Conclusão:** P23 confirmado por 2 runs independentes. Única causa bloqueante: lentidão extrema do Supabase backend. Nenhuma regressão de código introduzida pelo PR.
+
+---
+
 *Gerado em 2026-10-21; atualizado em 2026-10-22 com SHA `0c7ccaf` (sessão https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz)*
-*Última atualização: 2026-10-22 — run `39697216328` (sha `02e4f63`) in_progress; run `39695326969` cancelado por cancel-in-progress (não falha real); Gate 3 em execução no novo run — ver P18*
+*Última atualização: 2026-10-22 (v18) — run `39707407257` (SHA `b169f38`) concluído: P23 confirmado 2ª run (12 falhas Gate 3 lentidão Supabase); P25 edge-integration-all.yml adicionado (não-required, pré-existente)*
 
 ---
 
