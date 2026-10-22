@@ -7,11 +7,10 @@
 
 ## P1 — `python-package-conda.yml` obsoleto em main
 
-**Status:** ⚠️ Bloqueado — ação de PO/eng necessária  
+**Status:** ✅ Resolvido por este PR  
 **Workflow:** `Python Package using Conda`  
-**Causa:** `python-package-conda.yml` existe em main com `actions/setup-python@v3` (obsoleto). O arquivo NÃO existe no branch `claude/laughing-cori-o9w35e` — o workflow Lint passa no PR. Run de falha em main: [39670397287](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397287) — `setup-python@v3` deprecated.  
-**Por que não corrigido aqui:** O arquivo não existe neste branch; a correção é em main diretamente.  
-**Ação necessária:** Criar PR separado para deletar `python-package-conda.yml` de main.
+**Causa original:** `python-package-conda.yml` existia em main com `actions/setup-python@v3` (obsoleto). Run de falha em main: [39670397287](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397287).  
+**Resolução:** Este PR (`claude/laughing-cori-o9w35e`) já deleta `.github/workflows/python-package-conda.yml`. Após o merge, o arquivo não existirá mais em main. Nenhuma ação adicional necessária.
 
 ---
 
