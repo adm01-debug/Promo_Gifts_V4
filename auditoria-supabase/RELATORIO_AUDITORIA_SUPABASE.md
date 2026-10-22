@@ -358,4 +358,127 @@ Detalhes completos em `auditoria-supabase/testes/rls_matrix_tenant_ab.md`.
 
 ---
 
+## 11. Top Queries por Tempo Total — `pg_stat_statements`
+
+**Data de coleta:** 2026-10-22  
+**Fonte:** `pg_stat_statements` (schema `extensions`) via MCP `execute_sql`
+
+### Top 3 mais críticos
+
+| Rank | Query / Objeto | % Tempo Total DB | Mean (ms) | Calls |
+|---|---|---|---|---|
+| 1 | `v_products_public` (SELECT) | **25,47%** | 3.381 ms | 22.540 |
+| 2 | `fn_cron_safe_run` (SELECT) | **18,41%** | 41.811 ms | 1.318 |
+| 14 | `v_super_filtro_options` (SELECT) | ~5% | 9.916 ms | 345 |
+
+**Achado CRÍTICO — `fn_cron_safe_run`:** Média de **41,8 segundos** por chamada. Com 1.318 chamadas, consumiu ~15h de tempo CPU do banco. Esta é a causa raiz do problema CRON-001 (jobs excedendo timeout de 30s do pg_cron). Cada execução do cron chama essa função e demora mais do que o window permitido, causando falhas em cascata.
+
+**Achado ALTO — `v_products_public`:** 25% do tempo total do banco em 22.540 chamadas. É a view principal do catálogo de produtos. O EXPLAIN (ver seção 12) mostra que é eficiente para consultas com LIMIT, mas o volume absoluto de chamadas sobrecarrega o banco.
+
+**Achado ALTO — `v_super_filtro_options`:** Mean de 9,9s por chamada com Seq Scans em múltiplas tabelas (ver EXPLAIN — seção 12). 345 chamadas × 9,9s = ~56 min de tempo CPU.
+
+### Evidência (query executada)
+
+```sql
+SELECT 
+  left(query, 120) AS query_trunc,
+  calls,
+  round((total_exec_time / sum(total_exec_time) OVER () * 100)::numeric, 2) AS pct_total,
+  round(mean_exec_time::numeric, 0) AS mean_ms
+FROM extensions.pg_stat_statements
+ORDER BY total_exec_time DESC
+LIMIT 20;
+```
+
+---
+
+## 12. EXPLAIN — Análise das Views Críticas
+
+**Data de coleta:** 2026-10-22  
+**Fonte:** `EXPLAIN` (sem ANALYZE — somente leitura) via MCP `execute_sql`
+
+### `v_products_public` — EFICIENTE para queries com LIMIT
+
+```
+Merge Left Join  (cost=0.56..5641.41 rows=1 width=...)
+  → Index Scan using idx_products_active_not_deleted on products
+  → Index Scan using product_variants_product_id_idx on product_variants
+```
+
+**Análise:** O planner usa índice `idx_products_active_not_deleted` para LIMIT queries — eficiente. O custo alto em absolutolado vem do volume (22.540 calls/dia). Sem regressão de plan detectada.
+
+**Recomendação:** Monitorar se o planner continuar usando o índice após crescimento de dados. Considerar `pg_stat_statements` reset periódico para manter baseline limpa.
+
+---
+
+### `v_super_filtro_options` — CARO: 7 subqueries + Seq Scans
+
+```
+Append  (cost=5446.02..31002.23 rows=...)
+  → HashAggregate on product_variants (Seq Scan)
+  → HashAggregate on product_materials (Seq Scan)
+  → HashAggregate on print_area_techniques (Seq Scan)
+  → HashAggregate on product_tags (Seq Scan)
+  → HashAggregate on product_commemorative_dates (Seq Scan)
+  → HashAggregate on personalization_techniques (Seq Scan)
+  → Sort → Seq Scan on product_categories
+```
+
+**Análise:** 7 subqueries com `UNION ALL`, cada uma fazendo Seq Scan em tabela diferente sem índice nas condições de join. Mean de 9.916ms por chamada. Com 345 chamadas = ~56 minutos de tempo de CPU.
+
+**Recomendação (ALTO):** Materializar como `MATERIALIZED VIEW` com refresh periódico (a cada 5 min via pg_cron). Reduz 345 × 9.916ms de scans para 1 refresh periódico. Criar índices em `product_variants(organization_id)`, `product_materials(organization_id)`, `product_tags(organization_id)` para acesso filtrado.
+
+---
+
+## 13. Drift Edge Functions — Repositório vs Produção
+
+**Data de coleta:** 2026-10-22
+
+| Métrica | Valor |
+|---|---|
+| Edge functions deployadas em produção | **82** |
+| Pastas em `supabase/functions/` no repositório | **113** (inclui `_shared` e `README.md`) |
+| Funções no repositório (descontando não-funções) | ~111 |
+
+**Análise:** 82 funções deployadas vs ~111 no repositório = ~29 funções existem no repositório mas **não estão deployadas** em produção. Isso pode ser:
+- Funções em desenvolvimento ainda não deployadas
+- Funções obsoletas não removidas do repositório
+- Funções deployadas manualmente sem passar pelo workflow (`deploy-edge-functions.yml`)
+
+**Recomendação:** Rodar o job "Compare GitHub × Canonical" do workflow `deploy-edge-functions.yml` para identificar quais funções estão fora de sincronia. Verificar se há funções deployadas em produção que não existem no repositório (drift inverso — maior risco).
+
+---
+
+## 14. Imutabilidade de Produção — Verificação Final
+
+**Propósito:** Confirmar que nenhuma ferramenta desta auditoria alterou o banco de produção.
+
+| Métrica | Início (2026-10-22 12:55 UTC) | Final (2026-10-22) | Diferença |
+|---|---|---|---|
+| Migrations aplicadas | 2.538 | 2.538 | **0** ✅ |
+| Cron jobs | 142 | 142 | **0** ✅ |
+| RLS Policies (public) | 960 | 960 | **0** ✅ |
+| Edge functions publicadas | 82 | 82 | **0** ✅ |
+
+**Ferramentas usadas:** apenas `execute_sql` (SELECT/EXPLAIN), `get_advisors`, `list_*`, `query_logs`, `get_*`. Nenhuma ferramenta de escrita utilizada.
+
+Detalhes completos em `auditoria-supabase/inventario/baseline_imutabilidade.md`.
+
+---
+
+## 15. Resumo Final — Contagem por Severidade
+
+| Severidade | Quantidade | Status |
+|---|---|---|
+| **CRÍTICO** | 1 | CRON-001: falha sistêmica de pg_cron (57% de falha, >1.400 jobs/h) |
+| **ALTO** | 7 | NET-001, CRON-003, PERF-001, ST-001, SEC-001, SEC-002, FUNC-001 |
+| **MÉDIO** | 27 | Ver tabela em §3 |
+| **BAIXO** | 8 | Ver tabela em §3 |
+| **INFO** | 13 | Ver §3 |
+| **NÃO VERIFICADO** | 3 | PITR (requer Dashboard), security advisors (timeout), cron history 30d (timeout) |
+
+**Prioridade máxima:** Resolver CRON-001 (fn_cron_safe_run demorando 41s de média) desbloqueará: stock_daily_summary, taxa de falha pg_net de 57%, e restaurará jobs de limpeza.
+
+---
+
 *Auditoria conduzida em modo somente leitura (produção). Matriz RLS executada em ambiente local isolado. Nenhuma alteração foi feita no banco de produção.*
