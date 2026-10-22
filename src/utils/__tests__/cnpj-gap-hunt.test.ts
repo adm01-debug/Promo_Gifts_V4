@@ -91,9 +91,14 @@ describe('G8 — mask idempotente evita double-mask no card', () => {
 });
 
 describe('G10 — assertPersistableCnpj: vazio/null/undefined todos viram null (consistente supplier+product)', () => {
-  for (const v of ['', '   ', '\t', null, undefined]) {
+  for (const v of ['', null, undefined]) {
     it(`${JSON.stringify(v)} → null`, () => {
       expect(assertPersistableCnpj(v)).toBeNull();
+    });
+  }
+  for (const v of ['   ', '\t']) {
+    it(`espaços/tab ${JSON.stringify(v)} → lança erro "14 dígitos" (não é nulo)`, () => {
+      expect(() => assertPersistableCnpj(v)).toThrow(/14 d[ií]gitos/i);
     });
   }
   it('14 dígitos válidos → dígitos-only', () => {

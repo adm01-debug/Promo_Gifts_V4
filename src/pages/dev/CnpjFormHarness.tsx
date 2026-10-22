@@ -31,8 +31,7 @@ declare global {
  */
 function readInitialFromQuery(): string {
   if (typeof window === 'undefined') return '';
-  const raw = new URLSearchParams(window.location.search).get('initial') ?? '';
-  return normalizeCnpj(raw);
+  return new URLSearchParams(window.location.search).get('initial') ?? '';
 }
 
 export default function CnpjFormHarness() {
