@@ -451,7 +451,7 @@ Steps restantes 12-15 e post-steps: todos ✅ (Gate Final passou = job inteiro p
 
 ---
 
-## 11. Gate Final PR #2349 — HEAD 505853eb (docs only)
+## 11. Gate Final PR #2349 — Commit 505853eb (snapshot docs-only)
 
 > **Timestamp verificação:** 2026-10-22T19:52Z  
 > Run ID: [39842217850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39842217850)  
@@ -461,7 +461,7 @@ Steps restantes 12-15 e post-steps: todos ✅ (Gate Final passou = job inteiro p
 
 Resultado: **14/16 jobs ✅ success + Gate E40 skipped (docs-only E14 bypass) + Gate 3 E2E Smoke ✅**
 
-> Gate E40 skipped é o comportamento correto: este PR toca apenas `RELATORIO_CI.md` e `PENDENCIAS.md` — o bypass E14 (docs-only) está funcionando corretamente.
+> Gate E40 skipped é o comportamento correto **para o commit `505853eb`**: naquele snapshot o PR tocava apenas `RELATORIO_CI.md` e `PENDENCIAS.md`, satisfazendo o bypass E14 (docs-only). **Atenção:** commits posteriores adicionaram arquivos em `.github/workflows/` (vitest fix, rAF fix, required-checks fix), de modo que o bypass docs-only **não se aplica** ao HEAD atual `210abbfe`. Para o HEAD atual o Gate Final deve rodar completo — incluindo Gate E40.
 
 ---
 
@@ -482,7 +482,7 @@ Resultado: **14/16 jobs ✅ success + Gate E40 skipped (docs-only E14 bypass) + 
 | 7 | **Gate 0.5 Dependency Audit** | job 120027587396 (run 39836732441) | ip-address/socks/socks-proxy-agent na allowlist LHCI | [run](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39836732441) |
 | 8 | **Gate Final PR #2338** | [39836732441](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39836732441) | Todos os fixes consolidados | ✅ 16/16 jobs |
 | 9 | **Gate Final main (merge commit)** | [39839609893](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609893) | Push do merge em main | ✅ 16/16 jobs |
-| 10 | **Gate Final PR #2349** | [39842217850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39842217850) | PR de docs (RELATORIO_CI + PENDENCIAS) | ✅ 14/16 ✅ + E40 skipped |
+| 10 | **Gate Final PR #2349** | [39842217850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39842217850) | Commit `505853eb` (snapshot docs-only; HEAD atual `210abbfe` tem `.github/workflows/` → Gate Final roda completo) | ✅ 14/16 ✅ + E40 skipped |
 
 ### 12.2 — Bloqueadores humanos documentados em PENDENCIAS.md
 

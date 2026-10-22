@@ -721,6 +721,30 @@ para criar releases e tags em repos com proteção de branch. O PAT `RELEASE_PLE
 
 ---
 
+### 6.2.1 Riscos Identificados — Qodo Review (P3 + P4)
+
+**Qodo P3 (Medium) — "Release updates can flood pull request CI"**  
+`release-please.yml` usa `RELEASE_PLEASE_TOKEN` (PAT) ao invés de `GITHUB_TOKEN`. Atualizações
+feitas com PAT são autenticadas como autor humano, não como GitHub Actions bot — isso dispara
+eventos `pull_request` nos workflows do repositório. O plano CI registra 31 workflows por
+atualização do release-please, com meta de ≤ 5. Risco: CI sobrecarregado a cada release.  
+**Bloqueador:** decisão do PO sobre estratégia (supressão de workflows para PRs do release-please
+via `if: github.actor != 'google-github-actions[bot]'`, ou switch para GitHub App token).
+
+**Qodo P4 (Medium) — "The release action gains broad access"**  
+A instrução em §6.2 orienta o PO a criar um PAT com escopo `repo` (escopo amplo), passado a uma
+ação de terceiro (`googleapis/release-please-action`). As permissões declaradas no workflow
+(`contents: write`, `pull-requests: write`) não restringem a autoridade do PAT — o PAT continua
+com escopo `repo` completo dentro da action.  
+**Risco:** vazamento ou comprometimento do PAT teria acesso amplo ao repositório.  
+**Bloqueador:** decisão do PO — alternativas: (a) usar GitHub App token com escopo mínimo,
+(b) usar PAT com escopo `contents` + `pull_requests` apenas (fine-grained PAT), ou (c) aceitar
+o risco documentado.
+
+**Ambos os riscos estão documentados em `docs/ci/SEGREDOS.md` (linha 107) e aguardam decisão do PO.**
+
+---
+
 ### 6.3 Cart Invariants Smoke — Timeout Firefox Corrigido
 
 **Problema:** Firefox shard #1 durou 583s > 480s (SHARD_WARN_SECONDS) → warning de timeout no job `invariants-summary`.
