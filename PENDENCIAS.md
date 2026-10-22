@@ -38,7 +38,7 @@
 - `e2e/product-card-click.spec.ts:12,42,58,77` — hover/click/focus/visual
 - `e2e/quotes/quote-view-mainlayout-overflow.spec.ts:19` — MainLayout overflow-x
 - `e2e/quotes/quote-view-overflow-regression.spec.ts:27,66` — aside sticky (timeout: `locator('aside').first()` não encontrado em 120s)  
-**Causa:** Tests executam (Gate E23 Verifica secrets E2E ✅), mas app não renderiza `<aside>` / infra de auth ausente no ambiente CI. No PR, os secrets Supabase estão disponíveis, os testes efetivamente rodam e expõem falhas latentes de infra pré-existentes.  
+**Causa:** Tests executam, mas infra de auth/app ausente no ambiente CI. Gate E23 (`_secrets-check.yml`) retornou exit 0, porém esse job pode passar com warnings sobre secrets ausentes sem falhar — exit 0 não confirma disponibilidade de secrets E2E. O estado real de secrets no CI do PR é inconclusivo; a causa raiz das falhas é infra de auth/app ausente (consistente com P4b/P4d/P22 que indicam "Secrets E2E ausentes no CI do PR").  
 **Prova de pré-existência (evidência concreta de main):**
 - Run [39669131225](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39669131225) (main SHA `4f0d2474`, 2026-10-21): Gate 3 step 7 "Run Playwright smoke tests" iniciou às 20:19:50 UTC e foi **CANCELLED às 20:34:17 UTC** (14 min de execução — timeout, nunca completou). Não é SKIPPED — foi iniciado e cancelado por timeout.
 - Run [39670397385](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397385) (main SHA `c7c25848`, 2026-10-21): step 7 idem — **CANCELLED** após ~14 min de execução. Nenhum dos spec files falhados neste PR foi bem-sucedido em main nesta data.
@@ -281,6 +281,26 @@ O PR adiciona dois arquivos em `supabase/migrations/` que ATIVAM o drift check v
 **Run de falha em main:** [39670397435](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397435) — commit `c7c25848`  
 **Causa:** Relacionado a lint-0029; findings de Supabase não allowlistados.  
 **Fix:** Allowlist de lint-0029 em `ALLOWLISTS_MEMORY.md` (commit `47c4e91e`, PR #2338).
+
+---
+
+## P25 — Gate 5 — DB Security Audit (RPC get_profile_and_roles)
+
+**Status:** ⚠️ Pré-existente — infra HTTP 500 no Supabase API  
+**Workflow:** `Gate 5 — DB Security Audit` (job `119697849212`, run [39740982948](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39740982948))  
+**SHA:** `acb3a0bf`  
+**Causa:** `check-security-definer-audit.mjs` passou ✅ (570 funções auditadas, todas com search_path), mas `check-rpc-get-profile-and-roles.mjs --require-live` retornou `status=inconclusive, reason=audit_http_error, httpStatus=500` — erro de infraestrutura na API Supabase, não relacionado ao código desta PR.  
+**Por que não corrigível aqui:** Falha de conectividade HTTP 500 ao chamar a API Supabase externamente; não causada por nenhuma mudança desta PR (que adiciona só migrations/rollbacks). Workflow standalone — não bloqueia Gate Final.
+
+---
+
+## P26 — E2E · Reposição Stress & Load Testing
+
+**Status:** ⚠️ Pré-existente — não corrigível neste PR  
+**Workflow:** `audit` — job de E2E stress (job `119697848928`, run [39740982870](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39740982870))  
+**SHA:** `acb3a0bf`  
+**Causa:** `e2e/replenishment-stress.spec.ts:9` — "Deve carregar grid de reposição com milhares de registros simulados e paginação estável" — 1 falha, 2 passaram. Teste de stress/carga que requer dados mock de produção + auth.  
+**Por que não corrigível aqui:** PR não toca em `replenishment-stress.spec.ts`. Falha de stress test pre-existente que requer infra de dados/auth não disponível no CI do PR. Workflow standalone — não bloqueia Gate Final.
 
 ---
 
