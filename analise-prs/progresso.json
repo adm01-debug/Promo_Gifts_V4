@@ -5,17 +5,23 @@
   "analisadas": 24,
   "mergeadas": 0,
   "contagem_por_veredicto": {
-    "DECISÃO_HUMANA": 2,
+    "CI_PENDENTE": 1,
     "AGUARDAR_REBASE": 4,
-    "NÃO_MERGEAR": 1,
+    "DECISÃO_HUMANA": 2,
     "DRAFT": 1,
+    "NÃO_MERGEAR": 1,
     "FECHAR": 15,
-    "CI_PENDENTE": 1
+    "MERGEADA": 0
   },
   "prs_mergeadas": [],
-  "status": "CI_PENDENTE_2338_HEAD_580d518",
-  "pr2338_head": "580d518776b6d8b225f5c05fd74693fdacc492ce",
-  "pr2338_ci_ultima_verificacao": "2026-10-22T17:54Z",
-  "pr2338_ci_status": "gate_final_nao_iniciado_101checks_13queued_6inprogress",
-  "nota_cancelamentos": "Commits e2bf780 e ac0f4e10: Gate Final failure mas por cancel-in-progress, nao falha de codigo"
+  "pr2338_head": "4ceed97c95baaf6992572d0956ad00de62350a06",
+  "pr2338_run": "39829341093",
+  "pr2338_attempt": 2,
+  "pr2338_ci_ultima_verificacao": "2026-10-22T18:34Z",
+  "pr2338_ci_status": "attempt2_in_progress_12_13_gates_green_R_SCHEMA_DRIFT_rerun",
+  "pr2338_gates_green_attempt1": ["R_SSOT","R_DEP_AUDIT","R_DEP_REVIEW","R_LINT","R_UNIT","R_DB_INT","R_SECRETS","R_E2E","R_SEO","R_RESTORE","R_BUILD","R_SECRET_SCAN"],
+  "pr2338_gates_pending": ["R_SCHEMA_DRIFT"],
+  "pr2338_schema_drift_causa": "ECR_rate_limit_infra_flakiness_pre_existente_no_baseline",
+  "status": "aguardando_Gate_Final_attempt2",
+  "ultima_atualizacao": "2026-10-22T18:35Z"
 }
