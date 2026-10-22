@@ -1,9 +1,37 @@
 # PENDÊNCIAS — Correção de Workflows CI
 
-**Atualizado:** 2026-10-22T14:45 UTC  
+**Atualizado:** 2026-10-22T15:05 UTC  
 **Branch ativa:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD:** `986b37c0` (docs(ci): registra run 39796246518 (HEAD e9c1b99a) em PENDENCIAS.md)  
-**Gate Final ativa:** [run 39796843703](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39796843703) — Deploy Gates para `986b37c0` — `queued` às 14:34Z — aguardando conclusão OBSERVADA via API
+**HEAD:** `141c915a` (docs(ci): motivos exatos E2E pré-existentes via API)  
+**Gate Final ativa:** [run 39798033549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39798033549) — Deploy Gates para `141c915a` — ✅ **`conclusion=success`** (15:00Z) — todos 16 jobs passaram
+
+### Status Gates HEAD `141c915a` (run 39798033549 — ✅ CONCLUÍDO 15:00Z)
+
+| Gate | Job | Status | Observado |
+|---|---|---|---|
+| Gate 0 — SSOT | job 119891313235 | ✅ success | 14:44Z |
+| Detectar mudanças | job 119891313750 | ✅ success | 14:44Z |
+| Gate 0.5 — Dependency Audit | job 119891511976 | ✅ success | 14:46Z |
+| Gate 0.6 — Dependency Review | job 119891511999 | ✅ success | 14:48Z |
+| Gate 2 — Unit Tests | job 119891511988 | ✅ success | 14:47Z |
+| Gate 5 — SEO Sanity Check | job 119891511996 | ✅ success | 14:46Z |
+| Gate 5.5 — RPC restore_seller_cart | job 119891512025 | ✅ success | 14:49Z |
+| Gate 4 — Lighthouse CI | job 119891512052 | ✅ success | 14:49Z |
+| Gate 2.5 — PostgreSQL Integrity | job 119891512065 | ✅ success | 14:48Z |
+| Gate 1 — Lint + TypeScript (42 sub-gates) | job 119891512076 | ✅ success | 14:54Z |
+| Gate E40 — Schema file changes | job 119891512127 | ✅ success | 14:48Z |
+| Gate E23 — Secrets E2E | job 119891512162 | ✅ success | 14:47Z |
+| Gate E23 — Gitleaks | job 119891512174 | ✅ success | 14:49Z |
+| Gate 3 — E2E Smoke | job 119893058790 | ✅ success | 14:53Z |
+| Gate 6 — Build | job 119897045825 | ✅ success | 14:55Z |
+| Gate E40 — Schema Drift Check | job 119894032658 | ✅ success | 15:00Z |
+
+> Gate 1 — Lint + TypeScript: todos 42 sub-gates passaram (1.1 a 1.18, E89, E95, E113, E118a-j, E119).
+
+**Gate 5 — Supabase Security Audit** (workflow separado `supabase-security-gate.yml`, attempt 2, run 39798033576):
+- ✅ **`conclusion=success`** (15:03Z) — attempt 2 concluiu com sucesso
+- attempt 1 falhou por HTTP 500 da Supabase API (transiente, não regressão de código)
+- `check-security-definer-audit.mjs`: ✅ PASSOU (570 funções auditadas, todas com search_path)
 
 ---
 
