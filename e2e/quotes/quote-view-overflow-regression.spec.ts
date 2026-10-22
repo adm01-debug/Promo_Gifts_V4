@@ -97,6 +97,10 @@ test('@smoke sticky da sidebar sobrevive em múltiplas resoluções', async ({ p
 test('teclado: setas/PageDown/Home/End movem o scroll interno e anunciam estado', async ({
   page,
 }) => {
+  test.skip(
+    process.env.E2E_MOCK_AUTH === '1',
+    '[E108] Rota /__visual/* só disponível em DEV mode — não existe no build de produção',
+  );
   await open(page);
   const scroller = page
     .getByTestId('quote-items-table-fixture-many')
@@ -168,6 +172,10 @@ test('@smoke thead permanece fixo durante rolagem interna em md e lg', async ({ 
 test('Tab percorre controles dentro da região rolável sem perder foco após scroll', async ({
   page,
 }) => {
+  test.skip(
+    process.env.E2E_MOCK_AUTH === '1',
+    '[E108] Rota /__visual/* só disponível em DEV mode — não existe no build de produção',
+  );
   await open(page);
   const scroller = page
     .getByTestId('quote-items-table-fixture-many')

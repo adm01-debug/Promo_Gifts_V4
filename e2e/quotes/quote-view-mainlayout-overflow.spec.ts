@@ -43,6 +43,10 @@ test('@smoke MainLayout root e html/body NÃO usam overflow-x:hidden', async ({ 
 });
 
 test('sticky do aside continua ativo após rolar o conteúdo', async ({ page }) => {
+  test.skip(
+    process.env.E2E_MOCK_AUTH === '1',
+    '[E108] Rota /__visual/* só disponível em DEV mode — não existe no build de produção',
+  );
   await open(page);
   const aside = page.locator('aside').first();
   const brand = page.getByTestId('sidebar-brand-header').first();
