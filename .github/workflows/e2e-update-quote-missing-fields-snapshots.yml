@@ -86,6 +86,27 @@ jobs:
           echo "✅ Spec já passa contra baselines atuais — nada a fazer."
           exit 0
 
+      - name: Verificar auth state antes de regenerar baselines
+        if: ${{ github.event.inputs.safe_mode == 'false' || (steps.dryrun.outcome == 'failure' && steps.classify.outputs.kind == 'visual') }}
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+        run: |
+          if [ -z "$E2E_USER_EMAIL" ]; then
+            echo "::error title=Auth credentials missing::E2E_USER_EMAIL não está configurado — regenerar baselines autenticados com estado de login vazio capturaria páginas não-autenticadas como baseline aprovado. Configure E2E_USER_EMAIL e E2E_USER_PASSWORD nos secrets do repositório."
+            exit 1
+          fi
+          STORAGE="e2e/.auth/storageState.json"
+          if [ -f "$STORAGE" ]; then
+            COOKIE_COUNT=$(node -pe "JSON.parse(require('fs').readFileSync('$STORAGE','utf8')).cookies.length" 2>/dev/null || echo "0")
+            if [ "$COOKIE_COUNT" = "0" ]; then
+              echo "::error title=Empty auth state::storageState.json contém 0 cookies — autenticação E2E produziu estado vazio. Regenerar baselines agora capturaria páginas não-autenticadas ou de redirecionamento como baseline aprovado. Verifique E2E_USER_EMAIL e E2E_USER_PASSWORD."
+              exit 1
+            fi
+            echo "✅ storageState válido: $COOKIE_COUNT cookie(s) — prosseguindo com regeneração."
+          else
+            echo "ℹ️  storageState ainda não existe (será criado pelo auth setup do Playwright na etapa seguinte)."
+          fi
+
       - name: Regenerar snapshots
         if: ${{ github.event.inputs.safe_mode == 'false' || (steps.dryrun.outcome == 'failure' && steps.classify.outputs.kind == 'visual') }}
         env:
