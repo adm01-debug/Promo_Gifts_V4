@@ -18,7 +18,7 @@
 | Jobs com >50 falhas/30d | 14 |
 | Jobs com >100 falhas/30d | 7 |
 | Anomalias de autenticação | 2 (jobids 235, 243) |
-| Falhas 30d (batch 2, ~62 jobs) | **NÃO VERIFICADO** — ver §6.6 |
+| Falhas 30d (batch 2-4, ~105 jobs) | **VERIFICADO** — sessão 10, 2026-10-22 15:40 UTC |
 
 ---
 
@@ -242,11 +242,65 @@ Legenda de autenticação:
 
 ---
 
-## 6.6 NÃO VERIFICADO — Falhas/30d do Batch 2
+## 6.6 VERIFICADO — Falhas/30d Completo (sessão 10, 2026-10-22 15:40 UTC)
 
-**Status:** ⚠️ NÃO VERIFICADO (limitação técnica do MCP)
+**Status:** ✅ VERIFICADO — query com GROUP BY jobname (sem HAVING que filtrava zero-falhas) obteve dados para 135/142 jobs ativos.
 
-**Escopo:** ~62 jobs (jobids 210, 309, 308, 310, 51, 232, 227, 258, 267, 85, 234, 144, 259, 236, 244, 240, 238, 304, 241, 212, 117, 287, 113, 245, 17, 16, 251, 95, 214, 213, 256, 276, 264, 207, 263, 219, 65, 206, 32, 257, 225, 265, 84, 4, 272, 116, 246, 98, 111, 204, 114, 53, 297, 280, 279, 187, 83, 215, 266, 268, 269, 277)
+**Método:** `SELECT j.jobname, COUNT(*) FILTER (WHERE jrd.status='failed') AS fail, COUNT(*) AS total FROM cron.job j LEFT JOIN cron.job_run_details jrd ON j.jobid=jrd.jobid AND jrd.start_time > NOW()-INTERVAL '30 days' WHERE j.active=true GROUP BY j.jobname ORDER BY fail DESC` — executado em 3 lotes com OFFSET (LIMIT 30 por vez para evitar timeout)
+
+### Top 30 por falhas/30d (completo)
+
+| jobname | fail/30d | total/30d | taxa% |
+|---|---|---|---|
+| dispatcher-failure-alert | 168 | 5314 | 3.2% |
+| process-pending-products | 162 | 5313 | 3.0% |
+| sync-is-stockout-universal | 161 | 5314 | 3.0% |
+| sm-variant-coherence-guard | 159 | 5313 | 3.0% |
+| sm-stock-guard | 154 | 5316 | 2.9% |
+| backfill-image-dimensions | 151 | 5313 | 2.8% |
+| hash-product-images | 150 | 9441 | 1.6% |
+| fantasmas-deactivate-guard | 145 | 5317 | 2.7% |
+| auto-block-offenders | 129 | 5317 | 2.4% |
+| sm-url-discover-search | 93 | 2659 | 3.5% |
+| xbz-image-uploader | 80 | 2658 | 3.0% |
+| sm-site-scrape | 77 | 2659 | 2.9% |
+| process-queue | 77 | 2659 | 2.9% |
+| medallion-promote-tick | 74 | 2659 | 2.8% |
+| xbz-enrich-gold-extractors | 74 | 2659 | 2.8% |
+| xbz-site-scrape | 66 | 2658 | 2.5% |
+| sm-url-discover-collect | 66 | 2658 | 2.5% |
+| asia-stock-sync | 64 | 1772 | 3.6% |
+| anon-insert-rate-purge | 62 | 2229 | 2.8% |
+| sm-category-collect | 59 | 1771 | 3.3% |
+| **backfill-queue-reap-stuck** | **57** | **854** | **6.7%** |
+| connections-auto-test | 56 | 1773 | 3.2% |
+| reconcile-category-products-count | 54 | 1771 | 3.0% |
+| cleanup-stale-ai-pending-logs | 53 | 2230 | 2.4% |
+| connections-health-check | 53 | 1771 | 3.0% |
+| xbz-stock-sync | 49 | 1773 | 2.8% |
+| sm-category-enqueue | 47 | 1773 | 2.7% |
+| **reposicao-backfill-hourly** | **47** | **444** | **10.6%** |
+| refresh-mv-supplier-reliability | 46 | 1773 | 2.6% |
+| **pipeline-health-hourly** | **45** | **443** | **10.2%** |
+
+### Jobs com falha ≥5% (alta taxa relativa)
+
+| jobname | fail | total | taxa% | nível |
+|---|---|---|---|---|
+| reposicao-backfill-hourly | 47 | 444 | **10.6%** | ⚠️ ALTO |
+| pipeline-health-hourly | 45 | 443 | **10.2%** | ⚠️ ALTO |
+| kit-ficha-parse-site | 36 | 444 | **8.1%** | ⚠️ ALTO |
+| kit-ficha-fetch | 11 | 148 | **7.4%** | ⚠️ ALTO |
+| backfill-queue-reap-stuck | 57 | 854 | **6.7%** | ⚠️ ALTO |
+| anon-catalog-grant-audit-6h | 5 | 74 | **6.8%** | ⚠️ ALTO |
+| kit-component-variant-skus-refresh | 4 | 73 | **5.5%** | MÉDIO |
+| sync-supplier-timestamps-hourly | 22 | 443 | **5.0%** | MÉDIO |
+| novelties-sync-bihourly | 11 | 219 | **5.0%** | MÉDIO |
+| refresh-mv-stock-rupture-alert | 21 | 443 | **4.7%** | MÉDIO |
+
+### Jobs com 0 falhas/30d (saudáveis)
+
+vacuum-products-weekly, kill_switch_hits_purge_weekly, ops-grants-self-heal, sm-session-check, sync-derived-product-flags, send-digest, cleanup-notifications, favorites-watcher, sync-dynamic-collections, expire-supplier-promises, refresh-category-ancestors, dispatcher-log-cleanup, stock_snapshots_weekly_purge, purge-kit-quote-requests, cleanup-skipped-backfill-items, expire-product-novelties, cleanup-novelties, analyze-weekly-supplement, collections-watcher, cron_job_run_details_purge_weekly, seo-recalculate-stale-scores, resync-product-physical-weekly, alert-products-without-images, color-health-daily, quote-followup-reminders, magazine-partition-maintenance, vacuum-analyze-weekly, smoke_tests_monthly, category-resync-weekly, seo-populate-new-products, populate-novelties-from-supplier, spot-health-check-daily, purge-magazine-duplicate-requests, video-botcheck-heal, vacuum-product-variants-weekly, purge_crm_callback_events_daily, vacuum-high-dead-tuples, cleanup-log-tables-weekly, pipeline-run-log-purge-weekly, ai-enqueue-daily, notebook-specs-daily, expire-stale-password-reset-requests, kit-enrich-daily, purge-kit-save-requests, analyze-dictionaries-daily
 
 **Causa técnica:** A tabela `cron.job_run_details` não tem índice na coluna `start_time`. Queries com filtro temporal (`start_time > now()-interval '30d'`) sobre ~60 job IDs resultam em seq scan sobre tabela grande → timeout 60s no MCP.
 

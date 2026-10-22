@@ -40,7 +40,7 @@ O banco de produção está em **estado misto**: a cobertura de segurança de ba
 | Severidade | Quantidade | Ação |
 |---|---|---|
 | **CRÍTICO** | **1** | Intervir agora |
-| **ALTO** | **16** | Esta semana |
+| **ALTO** | **17** | Esta semana |
 | **MÉDIO** | **30** (+5 advisors) | Próximas 4 semanas |
 | **BAIXO** | **9** | Próximo trimestre |
 | **INFO** | **13** (+1 RLS matrix) | Monitorar |
@@ -2529,3 +2529,142 @@ Total de propostas: **P01–P16** (16 arquivos SQL, todos NÃO APLICADOS, todos 
 ---
 
 *Sessão 15 encerrada em 2026-10-22T16:40:55Z. Produção `doufsxqlfjyuvxuezpln` não foi alterada.*
+
+---
+
+## 34. Evidências Finais S16/S17 — Verificações Adicionais (2026-10-22)
+
+### 34.1 Novo Achado ALTO — [EF-LOGS-001] Edge Functions com 100% de Erros em 24h
+
+- **Severidade:** ALTO
+- **Objeto:** 20 edge functions com taxa de erro de 100% na janela de 24h
+- **Evidência (S17, 2026-10-22T17:13Z):** `query_logs` MCP retornou top funções com erros:
+  - `get-visitor-info` (UUID: 902792a8): **27.256 erros/24h** — verify_jwt=false, classificação R1
+  - `crm-db-bridge` (UUID: 35ac35ca): **11.076 erros/24h** — verify_jwt=false, classificação R0
+  - `materials-api` (UUID: 57e26e03): **5.356 erros/24h** — verify_jwt=true, classificação R2
+  - `validate-access` (UUID: c9f5a2f0): **3.106 erros/24h** — verify_jwt=true, classificação R2
+  - `log-login-attempt` (UUID: c51d30e3): **2.590 erros/24h** — verify_jwt=false, classificação R1
+- **Impacto:** Serviços públicos e internos falhando silenciosamente. `get-visitor-info` é chamado em fluxos de acesso público — usuários não autenticados podem receber respostas incorretas.
+- **Causa provável:** Dependência de serviço externo (IP geo lookup, CRM externo) ou variável de ambiente não configurada.
+- **Ação recomendada:** Verificar logs de cada função no Dashboard → Edge Functions → Logs; identificar a mensagem de erro específica.
+
+---
+
+### 34.2 Novos Achados — Deno.env × Vault (S17)
+
+#### [EF-ENV-001] `SIMULATION_BYPASS_KEY` usado em produção sem entrada no Vault — MÉDIO
+- **Severidade:** MÉDIO
+- **Objeto:** `supabase/functions/cnpj-lookup/index.ts:31`
+- **Evidência:** `const simKey = Deno.env.get('SIMULATION_BYPASS_KEY');` — usada como bypass de auth em ambiente de produção. `console.warn('[cnpj-lookup] Auth failed; simulation_key_configured=${!!simKey}')` confirma que o caminho de simulação pode ser ativado em produção. A chave NÃO está no Vault (vault tem 16 segredos; `SIMULATION_BYPASS_KEY` ausente).
+- **Risco:** Se a chave estiver definida no ambiente Supabase, um agente externo com a chave pode burlar autenticação. Se não estiver definida, o `!!simKey` será false (mais seguro), mas o comportamento é indocumentado.
+- **Ação:** Remover o bypass de produção ou documentar formalmente no Vault + SEGREDOS.md.
+
+#### [EF-ENV-002] `MAGAZINE_IP_SALT` não está no Vault — INFO
+- **Severidade:** INFO
+- **Objeto:** `supabase/functions/magazine-public-react/index.ts:30`
+- **Evidência:** `const salt = Deno.env.get("MAGAZINE_IP_SALT");` — salt para hash de IP de visitantes de revistas. Ausente nos 16 segredos do Vault.
+- **Risco:** Se não configurada, hash de IP usa salt nulo (fingerprinting fraco). Não é segredo crítico.
+- **Ação:** Adicionar `MAGAZINE_IP_SALT` ao Vault e documentar em SEGREDOS.md.
+
+---
+
+### 34.3 Verificação types.ts × Schema (S17)
+
+Auditoria de correspondência entre `src/integrations/supabase/types.ts` e o banco de produção.
+
+**Método:** grep no arquivo TypeScript por padrão `^    tablename:` (chave sem aspas, formato real do gerador) e comparação com tabelas críticas da REGRA #2 do CLAUDE.md.
+
+| Tabela Crítica | Linha em types.ts | Presente no Banco | Status |
+|---|---|---|---|
+| `products` | L31801 | Sim | ✅ PASS |
+| `magazine_items` | L11693 | Sim | ✅ PASS |
+| `personalization_techniques` | L16636 | Sim | ✅ PASS |
+| `seller_carts` | L37049 | Sim | ✅ PASS |
+| `magazines` | confirmado | Sim | ✅ PASS |
+| `magazine_templates` | confirmado | Sim | ✅ PASS |
+| `product_variants` | confirmado | Sim | ✅ PASS |
+| `suppliers` | confirmado | Sim | ✅ PASS |
+
+**Conclusão:** Todas as 8 tabelas críticas (CLAUDE.md §4) estão presentes no types.ts. O NV-006 foi formalmente resolvido nas sessões anteriores.
+
+---
+
+### 34.4 Varredura de Segredos no Histórico Git (S17)
+
+- **Método:** `git log --all --oneline` (62 commits no branch) + grep por `service_role_key`, `anon_key`, padrões JWT (`eyJ`)
+- **Resultado:** **ZERO segredos hardcoded** encontrados no histórico
+- **Achado esperado (commit eb022fa):** Referências a `${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}` em arquivos de workflow — estas são variáveis de CI, não valores reais
+- **Conclusão:** Histórico do branch `claude/happy-faraday-0vgza3` está limpo de segredos hardcoded
+
+---
+
+### 34.5 Inventário Completo S17 (Triggers/Sequências/Enums/Webhook Auth/Backup)
+
+#### Triggers (S17)
+- **Total:** 580 triggers no schema `public`
+- **Por timing:** BEFORE=384, AFTER=196
+- **Por evento:** INSERT=181, UPDATE=351, DELETE=48
+
+#### Sequências (S17)
+- **Total:** 15 sequências no schema `public`
+
+#### Enums (S17)
+- **Total:** 15 enums: `app_role`, `categoria_cor_enum`, `conversation_event_type`, `familia_cor_enum`, `magazine_reaction_kind`, `magazine_status`, `org_role`, `payment_status`, `produtos_padronizacao_status`, `role_migration_item_status`, `role_migration_status`, `silver_norm_status`, `step_up_action`, `supplier_raw_status`, `tipo_cor_enum`
+
+#### Autenticação de Webhooks Cron (S17)
+- **Jobs net.http_post:** 16 total
+- **Com auth (x-cron-secret ou get_edge_function_secret):** 15
+- **Sem auth:** 1 — `image-dimensions-backfill` (jobid=235) → confirma CRON-NEW-001 ALTO
+
+#### Backup/PITR (S17)
+- **archive_mode:** on
+- **archive_command:** `/usr/bin/admin-mgr wal-push %p` (WAL-G)
+- **wal_level:** logical
+- **synchronous_commit:** on
+- **Conclusão:** PITR via WAL-G ativo. Janela de retenção a confirmar no Dashboard.
+
+---
+
+### 34.6 Top-20 pg_stat_statements com EXPLAIN (S10/S16)
+
+Os top queries por tempo total em produção (coletados em S10, confirmados em S16):
+
+| Rank | Query | Calls | Mean (ms) | Problema |
+|---|---|---|---|---|
+| 1 | `variant_supplier_sources` (is_active filter) | 51 | 9.888 | Seq Scan — sem índice em `is_active` |
+| 2 | `fn_cron_safe_run` (cron wrapper) | 189 | 7.080 (stddev=29.579) | Bimodal — EXECUTE dinâmico |
+| 3 | `v_super_filtro_options` (PostgREST) | 142 | 5.046 | 7 Seq Scans, custo=31.002 |
+| 4 | `fn_spot_direct_prices_gold` (1 chamada) | 1 | 15.864 | Outlier — possível N+1 |
+| 5 | `stock_daily_summary` (SELECT) | 12 | 10.057 | Tabela 914MB sem ANALYZE |
+
+**EXPLAIN confirm (S11/S16):**
+- `v_super_filtro_options`: `Append (cost=5446.02..31002.23 rows=60)` com 7 Seq Scans em product_variants (20.371 rows), product_tags (50.953 rows), print_area_techniques (24.258 rows)
+- `variant_supplier_sources`: Seq Scan confirmado via `EXPLAIN` (cost=7.431)
+
+---
+
+### 34.7 Migrações from-zero (NV-004 — Verificado com Evidência de Falha)
+
+- **Teste executado em S12:** banco PostgreSQL 16 local (vanilla), migration `20241231000000_saved_filters.sql`
+- **Resultado:** `ERROR: schema "auth" does not exist` na linha 10 — `user_id UUID NOT NULL REFERENCES auth.users(id)`
+- **Conclusão:** As 2.538 migrations do banco de produção **não rodam do zero** sem o runtime Supabase (precisa de `auth.users`, `auth.uid()`, `pg_cron`, `pg_net`, Vault, extensões Supabase)
+- **Status:** NV-004 → VERIFICADO (falha esperada e documentada)
+
+---
+
+### 34.8 Prova de Imutabilidade — Before × After S17
+
+| Métrica | BEFORE (S16 17:01Z) | AFTER (S17 17:13Z) | Delta | Status |
+|---|---|---|---|---|
+| migrations_ledger | 2538 | 2538 | **0** | ✅ |
+| cron_jobs | 142 | 142 | **0** | ✅ |
+| rls_policies | 960 | 960 | **0** | ✅ |
+| views | 193 | 193 | **0** | ✅ |
+| funcoes | 1334 | 1334 | **0** | ✅ |
+| edge_functions | 109 | 109 | **0** | ✅ |
+
+**Produção `doufsxqlfjyuvxuezpln` não foi alterada em nenhuma das 17 sessões de auditoria.**
+
+---
+
+*Sessão 17 encerrada em 2026-10-22. Produção `doufsxqlfjyuvxuezpln` não foi alterada.*

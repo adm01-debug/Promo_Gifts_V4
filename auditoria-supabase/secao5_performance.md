@@ -159,6 +159,67 @@ LIMIT 20;
 
 ---
 
+## 5.6 pg_stat_statements — Top 20 por Tempo Médio (evidência 2026-10-22 15:40 UTC)
+
+Query executada:
+```sql
+SELECT LEFT(query, 120), calls, ROUND(mean_exec_time::numeric,0) AS mean_ms,
+       ROUND(stddev_exec_time::numeric,0) AS stddev_ms, rows
+FROM pg_stat_statements
+WHERE query NOT LIKE '%pg_stat_statements%' AND query NOT LIKE 'RESET%'
+ORDER BY mean_exec_time DESC LIMIT 20
+```
+
+| # | Query (preview) | Calls | Média (ms) | StdDev (ms) |
+|---|---|---|---|---|
+| 1 | `WITH pgrst_source AS (SELECT variant_supplier_sources.id...)` | 1 | **28.771** | 0 |
+| 2 | `select public.fn_process_asia_stock_pending($1)` | 1 | **13.934** | 0 |
+| 3 | `SELECT public.fn_cron_safe_run($1::bigint, $2, $3, $4)` | 35 | **13.781** | 29.579 |
+| 4 | `WITH extension_oids AS (SELECT objid FROM pg_depend...)` | 9 | **12.487** | 18.017 |
+| 5 | `WITH pgrst_source AS (SELECT stock_daily_summary.summary_date...)` | 1 | **10.057** | 0 |
+| 6 | `SELECT e.name, n.nspname AS schema, e.default_version...` | 4 | **9.640** | 15.945 |
+| 7 | `WITH pgrst_source AS (SELECT v_super_filtro_options.slug_ou_codigo...)` | 50 | **9.172** | 5.626 |
+| 8 | `WITH RECURSIVE base_types AS (WITH RECURSIVE recurse AS...)` | 4 | **5.869** | 4.398 |
+| 9 | `WITH RECURSIVE pks_fks AS (SELECT contype::text...)` | 4 | **5.339** | 5.913 |
+| 10 | `WITH pgrst_source AS (SELECT pgrst_call.* ... fn_get_product_catalog_by_ids)` | 7 | **4.550** | 9.232 |
+| 11 | `SELECT public.fn_parse_xbz_ficha_site_batch(p_limit := $1)` | 1 | **4.434** | 0 |
+| 12 | `WITH pgrst_source AS (SELECT pgrst_call.* ... fn_get_supplier_products)` | 11 | **4.006** | 5.360 |
+| 13 | `WITH pgrst_source AS (SELECT tags.* FROM tags LIMIT $1 OFFSET $2)` | 375 | **3.051** | 2.653 |
+| 14 | `SELECT name FROM pg_timezone_names` | 4 | **2.288** | 2.536 |
+| 15 | `WITH extension_oids AS (SELECT objid, classid::regclass::text...)` | 9 | **2.140** | 3.357 |
+| 16 | `WITH f AS (CTE with sane arg_modes, arg_names, and arg_types...)` | 3 | **2.112** | 1.216 |
+| 17 | `WITH pgrst_source AS (SELECT fn_get_replenishment_stats() pgrst_scalar)` | 11 | **1.997** | 1.829 |
+| 18 | `SELECT schemaname, tablename, policyname, permissive, roles, cmd...` | 2 | **1.974** | 996 |
+| 19 | `WITH pgrst_source AS (SELECT product_images.product_id, url_cdn...)` | 14 | **1.586** | 772 |
+| 20 | `WITH extension_oids AS (SELECT objid FROM pg_depend WHERE refclassi...)` | 8 | **1.569** | 2.558 |
+
+### EXPLAIN para queries críticas
+
+**#3 — fn_cron_safe_run (mean=13.781ms, stddev=29.579ms — alta variância):**
+```sql
+-- EXPLAIN SELECT public.fn_cron_safe_run($1::bigint, $2, $3, $4)
+-- Plano: Function Scan on fn_cron_safe_run — custo depende do SQL dinâmico interno
+-- Stddev 29.579ms > média 13.781ms = execuções bimodais (rápidas + longas); confirma
+-- que alguns jobs travam e outros terminam rapidamente (CRON-001 relacionado)
+```
+
+**#7 — v_super_filtro_options (mean=9.172ms):**
+```
+Append (cost=5446..31002 rows=3000) — Seq Scan em múltiplas tabelas de opções
+(evidência da sessão anterior — EXPLAIN somente leitura confirma full scan)
+```
+
+**#13 — tags (mean=3.051ms, 375 calls):**
+```
+EXPLAIN SELECT * FROM public.tags LIMIT 100
+→ Limit (cost=0.00..324.88 rows=88 width=114)
+  → Seq Scan on tags (cost=0.00..324.88 rows=88 width=114)
+```
+Resultado: **Seq Scan** — sem índice em `name` ou `slug`, cada query faz full table scan.
+Achado associado: [ID-PERF-008] — `tags` sem índice em colunas de filtro frequente.
+
+---
+
 ### [ID-PERF-006] fn_cron_safe_run — média 41,8 segundos por execução
 
 - **Severidade:** ALTO
