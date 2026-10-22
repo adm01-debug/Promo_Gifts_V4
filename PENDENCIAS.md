@@ -219,12 +219,11 @@
 | **db-schema-drift-check** | ⚠️ ação humana | Fix falso positivo `9c2288c4`; ledger parity → PO+DBA via E99 |
 | **Release Please** | ❌ ação humana | PO configurar `contents:write` no GitHub App |
 | **Gitleaks Full History** | ❌ ação humana urgente | Issue #2261 — rotacionar credenciais — §2.10 |
-| **Supabase Linter Gate** | ✅ SUCCESS `53035934` + ⏳ `in_progress` `7b023fa7` | Run [39786612132](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39786612132) — HEAD `53035934` ✅; run [39787853767](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39787853767) — HEAD `7b023fa7` em andamento |
+| **Supabase Linter Gate** | ✅ **CONFIRMADO SUCCESS** | Run [39786612132](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39786612132) — HEAD `53035934` ✅ (referência); HEAD `773d203d` aguardando Gate Final |
 | **Daily Flows Simulation** | ✅ **CONFIRMADO SUCCESS** | Run [39785415433](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39785415433) — commit `7fa5c405` |
 | **Gate 5 — Supabase Security Audit** | ✅ **CONFIRMADO SUCCESS** | Run [39784863177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784863177) — commit `7fa5c405` |
-| **CI Security & Drift Checks** | ⏳ `in_progress` | Run [39785427236](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39785427236) — security-audit ✅, quality-gate: 20 steps ✅, unit tests in progress |
-| **Supabase Linter Gate** | ⏳ `in_progress` | Run [39787853767](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39787853767) — HEAD `7b023fa7` |
-| **Gate Final deploy-gates** | ⏳ `queued` | Run [39787853790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39787853790) — HEAD `7b023fa7` (13:33Z) |
+| **CI Security & Drift Checks** | ✅ **CONFIRMADO SUCCESS** | Run [39788658792](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39788658792) — SSOT 3/3 gates OK, HEAD `773d203d` |
+| **Gate Final deploy-gates** | ⏳ `queued` | Run [39788658712](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39788658712) — HEAD `773d203d` (13:38Z) |
 | **edge-functions-drift-check** | ✅ **CONFIRMADO SUCCESS** | HEAD `53035934` — era failure antes desta branch |
 | **Edge Integration Tests** | ⚠️ pré-existente | Bug em `validate-access` retorna 200 para number input — §3.4 |
 | **E2E — Critical Flows** | ⚠️ pré-existente | Auth failure admin routes — §3.5 |
