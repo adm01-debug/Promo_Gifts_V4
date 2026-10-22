@@ -1,94 +1,48 @@
 {
   "baseline_sha": "8e8053b9ed85142e85809783cd3acf9a3077ecde",
-  "total_open": 24,
-  "analisadas": 24,
-  "mergeadas": 1,
-  "ultima_atualizacao": "2026-10-22T22:30Z",
+  "total_open": 28,
+  "analisadas": 28,
+  "mergeadas": 3,
+  "ultima_atualizacao": "2026-10-22T21:30Z",
   "contagem_por_veredicto": {
     "CI_PENDENTE": 0,
-    "AGUARDAR_REBASE": 4,
+    "AGUARDAR_REBASE": 5,
     "DECISAO_HUMANA": 2,
     "DRAFT": 1,
-    "NAO_MERGEAR": 1,
+    "NAO_MERGEAR": 2,
     "FECHAR": 15,
-    "MERGEADA": 1
+    "MERGEADA": 3
+  },
+  "main_atual": {
+    "sha": "3e006427eb19247d2e99c03a8140193d3f763a8e",
+    "gate_final": "SUCCESS",
+    "gate_final_check_run_id": 120094756727,
+    "gate_final_completed_at": "2026-10-22T21:18:24Z",
+    "gate_final_run_id": 39854917747
   },
   "pr2338_head": "b48145b366041354dc0ee8a20a0bd6217b1289f1",
   "pr2338_merge_sha": "57017ba78eb68c6c72dba336f9c081c4519619c4",
   "pr2338_merged_at": "2026-10-22T19:23Z",
   "pr2338_ci_status": "MERGEADA",
+  "pr2351_head": "9bca9b5a",
+  "pr2351_merge_sha": "3e06378a5e4f53e00a2c6826fdf667692b307882",
+  "pr2351_merged_at": "2026-10-22T21:08Z",
+  "pr2354_head": "dcaf0bab",
+  "pr2354_merge_sha": "3e006427eb19247d2e99c03a8140193d3f763a8e",
+  "pr2354_merged_at": "2026-10-22T21:09Z",
   "status": "CONCLUIDO",
   "proxima_acao": "aguardar_decisao_humana_PRs_restantes",
-  "ultima_atualizacao_detalhes": "2026-10-22T22:30Z",
+  "worktrees_extras": "nenhum — git worktree list mostra só /home/user/Promo_Gifts_V4 [claude/quirky-keller-owezvt]",
   "alerta_sentinel": {
     "check": "Verify push to main matches accepted patterns",
     "check_run_id": 120036831874,
-    "run_url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609513/job/120036831874",
     "conclusao": "failure",
     "commit": "57017ba78eb68c6c72dba336f9c081c4519619c4",
     "pr": 2338,
-    "causa_raiz": "O sentinel verifica TODOS os 162 commits no range PUSH_BEFORE..PUSH_AFTER. Os commits do branch claude/laughing-cori-o9w35e têm mensagens do tipo 'fix(ci): corrige...' que não casam com nenhum dos 7 padrões aceitos para push em main. Não é regressão de código — é incompatibilidade de formato de mensagem de commit de branch Claude vs. padrão esperado pelo sentinel.",
+    "causa_raiz": "Commits do branch claude/laughing-cori-o9w35e com mensagens tipo 'fix(ci):' não casam com padrões do sentinel. Não é regressão de código.",
     "eh_gate_bloqueante": false,
     "esta_nos_gates_0_a_6": false,
-    "eh_regressao_de_codigo": false,
-    "estava_no_baseline_8e8053b9": false,
-    "evidencia_baseline_sentinel": {
-      "check_run_id_baseline": 119751639439,
-      "sha_baseline": "8e8053b9ed85142e85809783cd3acf9a3077ecde",
-      "conclusion_baseline": "success",
-      "completed_at_baseline": "2026-10-22T09:40:11Z",
-      "check_run_id_pos_merge": 120036831874,
-      "sha_pos_merge": "57017ba78eb68c6c72dba336f9c081c4519619c4",
-      "conclusion_pos_merge": "failure",
-      "veredicto": "FALHA_NOVA_nao_pre_existente"
-    },
-    "opcoes_correcao": [
-      "Squash merge futuros PRs de agentes Claude (branch commits somem — só o commit de merge fica visível no range)",
-      "Adicionar 'fix(ci):' e outros prefixos semânticos de commitizen ao sentinel allowlist (regra R20 revisão)",
-      "Aceitar como advisory e documentar — não é gate bloqueante"
-    ]
-  },
-  "ci_pos_merge_57017ba7": {
-    "timestamp_verificacao": "2026-10-22T19:48Z",
-    "gate_final_status": "SUCCESS — check_run 120049718257, completado 19:48:22Z",
-    "gate_final_check_run_id": 120049718257,
-    "gate_final_conclusion": "success",
-    "gate_final_completed_at": "2026-10-22T19:48:22Z",
-    "total_checks": 102,
-    "success": 51,
-    "failure": 5,
-    "cancelled": 1,
-    "skipped": 9,
-    "in_progress_queued": 34,
-    "falhas_classificadas": {
-      "E2E — Personalization Journey": {
-        "check_run_id": 120036831363,
-        "classificacao": "PRE_EXISTENTE",
-        "evidencia": "Listada em checks-main-8e8053b9.json failures list"
-      },
-      "release-please": {
-        "check_run_id": 120036831493,
-        "classificacao": "PRE_EXISTENTE",
-        "evidencia": "check_run 119751634750 = failure em 8e8053b9"
-      },
-      "Verify push to main matches accepted patterns": {
-        "check_run_id": 120036831874,
-        "classificacao": "NOVA_FALHA — alerta registrado em alerta_sentinel",
-        "evidencia": "check_run 119751639439 = success em 8e8053b9; failure somente pós-merge"
-      },
-      "E2E Subtítulo quote_number (visual)": {
-        "check_run_id": 120036834763,
-        "classificacao": "PRE_EXISTENTE_INFERIDO",
-        "evidencia": "Falhava em b48145b3 (PR head pré-merge, check_run 120027056318). PR #2338 não altera código de UI ou testes visuais (só CI configs, allowlists, contrato REST). Not found na API em 8e8053b9 (total_count=0) — ausência explicada por run diferente em push vs PR event. Não é regressão de código."
-      },
-      "chromium • swatch→QV": {
-        "check_run_id": 120036833069,
-        "classificacao": "PRE_EXISTENTE — mascarado por cancelamento",
-        "evidencia": "check_run 119907054904 em 8e8053b9 = conclusion:cancelled. Mudança de cancelled→failure não é regressão de código — CI fixes do PR #2338 permitiram o job rodar e revelar falha pré-existente."
-      }
-    },
-    "regressao_de_codigo": false,
-    "nota": "Gate Final ainda não criado. Falhas novas: 1 (sentinel — não-bloqueante, não Gates 0-6). Falhas pré-existentes: 4. Aguardando conclusão do CI para confirmar Gate Final."
+    "eh_regressao_de_codigo": false
   },
   "pre_existing_failures_baseline": [
     "Gate Final - Deploy Ready",
@@ -105,35 +59,40 @@
     "E2E PDF exportado · quote_number"
   ],
   "prs": {
-    "2338": {"veredicto": "MERGEADA", "acao": "MERGEADA", "head": "b48145b3", "merge_sha": "57017ba78eb68c6c72dba336f9c081c4519619c4", "merged_at": "2026-10-22T19:23Z"},
+    "2338": {"veredicto": "MERGEADA", "acao": "MERGEADA", "head": "b48145b3", "merge_sha": "57017ba78eb68c6c72dba336f9c081c4519619c4", "merged_at": "2026-10-22T19:23Z", "gate_final_run": 39848498577},
+    "2351": {"veredicto": "MERGEADA", "acao": "MERGEADA", "head": "9bca9b5a", "merge_sha": "3e06378a5e4f53e00a2c6826fdf667692b307882", "merged_at": "2026-10-22T21:08Z", "gate_final_run": 39848498577},
+    "2354": {"veredicto": "MERGEADA", "acao": "MERGEADA", "head": "dcaf0bab", "merge_sha": "3e006427eb19247d2e99c03a8140193d3f763a8e", "merged_at": "2026-10-22T21:09Z", "gate_final_run": 39852198657},
     "2316": {"veredicto": "AGUARDAR_REBASE", "acao": "conflito_semantico_com_2338", "base": "45545ae"},
     "2315": {"veredicto": "AGUARDAR_REBASE", "acao": "rebase + resolver conflito com #2314", "base": "1ac6992"},
     "2314": {"veredicto": "AGUARDAR_REBASE", "acao": "rebase + reconciliar valor com #2315", "base": "1ac6992"},
-    "2312": {"veredicto": "AGUARDAR_REBASE", "acao": "rebase em main 8e8053b9", "base": "1ac6992"},
-    "2320": {"veredicto": "DRAFT", "acao": "aguardar autor promover para ready", "base": "desatualizada"},
+    "2312": {"veredicto": "AGUARDAR_REBASE", "acao": "rebase em main", "base": "1ac6992"},
+    "2349": {"veredicto": "AGUARDAR_REBASE", "acao": "rebase em main (base stale: 57017ba7)", "head": "d8f7934d", "base": "57017ba7"},
+    "2320": {"veredicto": "DRAFT", "acao": "aguardar autor promover para ready"},
     "2319": {"veredicto": "NAO_MERGEAR", "acao": "PR vazia de bot (Jules) — fechar", "files": 0},
+    "2352": {"veredicto": "NAO_MERGEAR", "acao": "DROP INDEX × 13 em migration — DDL destrutiva proibida pela regra da sessão", "head": "f38d5caf", "migrations_destrutivas": ["20261022100011_perf_drop_unused_indexes.sql"]},
     "2293": {"veredicto": "DECISAO_HUMANA", "acao": "recharts 2→3 major bump — depende de PO"},
     "2290": {"veredicto": "DECISAO_HUMANA", "acao": "@eslint/js 9→10 major bump — depende de PO"},
-    "2322": {"veredicto": "FECHAR", "acao": "Webpack CI — runtime incompatível com Vite", "head": "168e4ef49627d95cfa38a39747f841090e978478", "file_added": ".github/workflows/webpack.yml", "merge_test": "CLEAN", "violacoes_e12": ["R2","R3","R4","R14","R15"]},
-    "2323": {"veredicto": "FECHAR", "acao": "Deno CI — runtime incompatível com npm/Vite", "head": "d70f66a67c1bc09ab8b0c7d93ab0ac7ecd3e7bf9", "file_added": ".github/workflows/deno.yml", "merge_test": "CLEAN", "violacoes_e12": ["R2","R3","R14","R15"]},
-    "2324": {"veredicto": "FECHAR", "acao": "Jekyll Docker — stack errada (não é site Jekyll)", "head": "3c7844b3e405557c06fd91366ebe3400982f8f3f", "file_added": ".github/workflows/jekyll-docker.yml", "merge_test": "CLEAN", "violacoes_e12": ["R2","R3","R14","R15"]},
-    "2325": {"veredicto": "FECHAR", "acao": "npm publish — projeto não é pacote npm publicável; NPM_TOKEN não em SEGREDOS.md", "head": "9ff8b69a5d2cb2aaa8d4183fbb41f5bc1d690625", "file_added": ".github/workflows/npm-publish.yml", "merge_test": "CLEAN", "violacoes_e12": ["R2","R3","R4","R14","R15"]},
-    "2326": {"veredicto": "FECHAR", "acao": "npm publish GitHub Packages — projeto não é pacote npm publicável", "head": "306a9ced6c703a462f3e3dbe68d1117f9111ac81", "file_added": ".github/workflows/npm-publish-github-packages.yml", "merge_test": "CLEAN", "violacoes_e12": ["R2","R3","R4","R14","R15"]},
-    "2327": {"veredicto": "FECHAR", "acao": "Codacy SAST — serviço não configurado no projeto; CODACY_PROJECT_TOKEN não em SEGREDOS.md", "head": "f3650108a69696f2a22b74e4d8ac2598f6543e61", "file_added": ".github/workflows/codacy.yml", "merge_test": "CLEAN", "violacoes_e12": ["R15_parcial"]},
-    "2328": {"veredicto": "FECHAR", "acao": "Dependency Review — duplicata do Gate 0.6 já existente", "head": "cb570c40de44a8e7dcb8f16d67994b09c2c86171", "file_added": ".github/workflows/dependency-review.yml", "merge_test": "CLEAN", "violacoes_e12": ["R2","R3","R14","R15"]},
-    "2329": {"veredicto": "FECHAR", "acao": "Python publish PyPI — projeto não é Python; pypa/gh-action-pypi-publish usa ref mutável", "head": "43d41bce4c6f7b96ac4794c6b760c28183162c9c", "file_added": ".github/workflows/python-publish.yml", "merge_test": "CLEAN", "violacoes_e12": ["R3","R14","R15"]},
-    "2330": {"veredicto": "FECHAR", "acao": "Node.js CI matrix — npm test não existe no projeto", "head": "59b09efabe7427cca61657905957d5198adc399c", "file_added": ".github/workflows/node.js.yml", "merge_test": "CLEAN", "violacoes_e12": ["R2","R3","R4","R10","R14","R15"]},
-    "2331": {"veredicto": "FECHAR", "acao": "Manual greeting workflow — decorativo, sem valor operacional", "head": "8382afd4ac18e0e36350a2d811b00c8866121fcb", "file_added": ".github/workflows/manual.yml", "merge_test": "CLEAN", "violacoes_e12": ["R1","R2","R3","R10","R14"]},
-    "2333": {"veredicto": "FECHAR", "acao": "First-interaction bot — projeto B2B fechado; pull_request_target + action@v1 sem SHA = risco supply chain", "head": "a0f137692c2cbd07acfd68118002e231864f20d3", "file_added": ".github/workflows/greetings.yml", "merge_test": "CLEAN", "violacoes_e12": ["R2","R3","R14","R15"]},
-    "2334": {"veredicto": "FECHAR", "acao": "GitHub Pages static — projeto usa Vercel; path:'.' envia fonte sem build", "head": "cd35ef8e4c009e3fdebdbc06252f38a10e56cbed", "file_added": ".github/workflows/static.yml", "merge_test": "CLEAN", "violacoes_e12": ["R3","R14","R15"]},
-    "2335": {"veredicto": "FECHAR", "acao": "Next.js GitHub Pages — framework errado (Vite não Next.js); next build inexistente", "head": "8e2076d270640306d45c83936650f70fdbb02a4c", "file_added": ".github/workflows/nextjs.yml", "merge_test": "CLEAN", "violacoes_e12": ["R3","R4","R10","R14","R15"]},
-    "2336": {"veredicto": "FECHAR", "acao": "Arquivo em branco (1 byte) — workflow inválido, actionlint falharia", "head": "c1b584d1289966a1b5730f6d73ad93bd5b787adf", "file_added": ".github/workflows/main.yml", "merge_test": "CLEAN", "violacoes_e12": ["arquivo_invalido"]},
-    "2337": {"veredicto": "FECHAR", "acao": "Deno CI — duplicata byte-a-byte do PR #2323; runtime incompatível com npm/Vite", "head": "20dba4960c02d50b626bb5a3cd973dcd8be52095", "file_added": ".github/workflows/deno.yml", "merge_test": "CLEAN", "violacoes_e12": ["R2","R3","R10","R14","R15_parcial"]}
+    "2322": {"veredicto": "FECHAR", "acao": "Webpack CI — runtime incompatível com Vite"},
+    "2323": {"veredicto": "FECHAR", "acao": "Deno CI — runtime incompatível com npm/Vite"},
+    "2324": {"veredicto": "FECHAR", "acao": "Jekyll Docker — stack errada (não é site Jekyll)"},
+    "2325": {"veredicto": "FECHAR", "acao": "npm publish — projeto não é pacote npm publicável"},
+    "2326": {"veredicto": "FECHAR", "acao": "npm publish GitHub Packages — projeto não é pacote npm publicável"},
+    "2327": {"veredicto": "FECHAR", "acao": "Codacy SAST — serviço não configurado no projeto"},
+    "2328": {"veredicto": "FECHAR", "acao": "Dependency Review — duplicata do Gate 0.6 já existente"},
+    "2329": {"veredicto": "FECHAR", "acao": "Python publish PyPI — projeto não é Python"},
+    "2330": {"veredicto": "FECHAR", "acao": "Node.js CI matrix — npm test não existe no projeto"},
+    "2331": {"veredicto": "FECHAR", "acao": "Manual greeting workflow — decorativo, sem valor operacional"},
+    "2333": {"veredicto": "FECHAR", "acao": "First-interaction bot — risco supply chain"},
+    "2334": {"veredicto": "FECHAR", "acao": "GitHub Pages static — projeto usa Vercel"},
+    "2335": {"veredicto": "FECHAR", "acao": "Next.js GitHub Pages — framework errado (Vite não Next.js)"},
+    "2336": {"veredicto": "FECHAR", "acao": "Arquivo em branco (1 byte) — workflow inválido"},
+    "2337": {"veredicto": "FECHAR", "acao": "Deno CI — duplicata byte-a-byte do PR #2323"}
   },
   "pendencias_humanas": [
     "Fechar 15 PRs de template (#2322–#2337 exceto #2332): requer escrita no GitHub além de merge",
     "Fechar PR #2319 (Jules bot vazia)",
     "Decisão PO: PR #2290 (ESLint major bump) e #2293 (recharts major bump)",
-    "Rebase PRs #2312, #2314, #2315, #2316 — autores precisam agir"
+    "Rebase PRs #2312, #2314, #2315, #2316, #2349 — autores precisam agir",
+    "PR #2352: PO decidir se DROP INDEX × 13 deve ser autorizado separadamente via workflow E15"
   ]
 }
