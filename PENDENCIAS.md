@@ -1,6 +1,6 @@
 # Pendências de CI — Itens que requerem ação do PO/humano
 
-**Atualizado:** 2026-10-22 (v14 — inventário completo de workflows em failure para SHA `c901645c`; Gate Final run `39702370300` — 13/14 jobs ✅ success, Gate 3 ⏳ in_progress com timeout 20 min; todos os failures novos identificados são continuações de P2–P9)
+**Atualizado:** 2026-10-22 (v16 — adicionado P23 Gate 3 E2E failures (Supabase lentidão); run `39703771871` SHA `6468a82` — 15/17 jobs ✅, Gate 3 ❌ failure → P23, Gate Final ❌ failure)
 **Sessão:** https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz
 
 ---
@@ -475,6 +475,8 @@ Workflow do tipo `dynamic` (não `.github/workflows/*.yml`) — não aparece no 
 | P19 | cart-header-quality-gate — bunx not found — ✅ CORRIGIDO (bunx → npx, commit neste PR) | Baixa | CI Config (corrigido) | — |
 | P20 | Running Copilot Code Review — timeout SWE agent 20min (não required check) | Baixa | Infra de CI/Copilot | — |
 | P21a | E2E PDF export e Popover — falha real de código/UI (runs `39702369829`) — mesma raiz de P8 | Média | Bug de código/UI | Engenharia |
+| P22 | Uptime Monitor — site www.promogifts.com.br fora do ar (run `39699222688`) | Alta | Infra/Produção | PO / Infra |
+| P23 | Gate 3 E2E Smoke — 11 falhas por lentidão extrema do Supabase (run `39703771871`) | Alta | Infra/Supabase backend | PO / Infra |
 | P21b | Visual Baselines desatualizados — requer `workflow_dispatch` em `update-visual-baselines.yml` | Baixa | Config de CI / PO dispatch | PO |
 | P21c | `audit` workflow (run `39702370222`) — verificar se Gate 4 ou advisory | Baixa | Advisory | Engenharia |
 
@@ -611,6 +613,83 @@ ser disparado (workflow_dispatch) para regerar os baselines.
 Não identificado como required check nos gates documentados em CLAUDE.md.
 **Tipo:** Advisory — não bloqueia deploy
 **Responsável:** Engenharia (investigar se é Gate 4 Lighthouse ou workflow separado)
+
+---
+
+## P22 — Uptime Monitor: site www.promogifts.com.br fora do ar (infra/produção)
+
+**Workflow:** `.github/workflows/uptime-monitor.yml`
+**Run com falha:** [39699222688](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39699222688) (sha `c7c25848`, main, 2026-10-22T00:23Z)
+**Issue criada automaticamente:** [#2339](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2339) — "Uptime: falha de disponibilidade detectada"
+
+**Causa:**
+O site de produção `https://www.promogifts.com.br/` estava inacessível às 2026-10-22T00:23:33Z.
+O workflow de monitoramento probe o endpoint e, ao receber falha, cria uma issue automaticamente.
+O log do run exibe: `Probe failing: https://www.promogifts.com.br/` e edge functions inacessíveis.
+
+**Classificação:** Falha de infraestrutura/produção — **não é bug de código**.
+**Não é required check** no branch protection — não bloqueia deploy.
+
+**O que o PO / Infra precisam fazer:**
+1. Verificar o servidor web, CDN (Cloudflare, CloudFront, etc.) ou DNS de `www.promogifts.com.br`
+2. Verificar o dashboard do provedor de hospedagem (Vercel, Netlify, AWS, etc.)
+3. Fechar a issue [#2339](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2339) após confirmar que o site está acessível novamente
+4. Se o site continuar fora do ar: contatar o provedor de hospedagem
+
+**Impacto:** O workflow Uptime Monitor continuará criando issues enquanto o site estiver fora do ar.
+
+---
+
+## P23 — Gate 3 E2E Smoke: 11 falhas por lentidão extrema do Supabase backend
+
+**Workflow:** `.github/workflows/deploy-gates.yml` — job `Gate 3 - E2E Smoke`
+**Run com falha:** [39703771871](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39703771871) (sha `6468a82`, branch `claude/laughing-cori-o9w35e`, 2026-10-22T01:10-01:28Z)
+**Job:** `119579677856` — step 7 "Run Playwright smoke tests" — conclusão: `failure`
+
+**Resultado:** 11 failed, 1 flaky, 39 passed, 387 skipped (17.5 min)
+
+**Testes falhos:**
+1. `session-recovery.spec.ts:115` — JWT inválido: refresh irrecuperável → signOut + redirect
+2. `flows/23-rocket-animation-snapshot.spec.ts:51` — Rocket Animation: cleanup after duration
+3. `flows/26-session-watchdog.spec.ts:15` — Session Watchdog: warning toast 2 min before expiry
+4. `flows/27-logout-flow.spec.ts:14` — Logout Flow: sign out and redirect to login
+5-8. `product-card-click.spec.ts:12/42/58/77` — ProductCard: 4 testes de interação/a11y
+9. `quotes/quote-view-mainlayout-overflow.spec.ts:19` — MainLayout overflow-x:hidden
+10. `quotes/quote-view-overflow-regression.spec.ts:27` — sticky via overflow/containing block
+11. `quotes/quote-view-overflow-regression.spec.ts:66` — sticky sidebar em múltiplas resoluções
+
+**Causa raiz — lentidão extrema do Supabase backend:**
+Log do teste `session-recovery.spec.ts:139` (marcado como "flaky") mostra:
+```
+POST auth/v1/token -> 200 (39429ms)          ← 39 segundos!
+POST rest/v1/rpc/get_profile_and_roles -> 200 (33828ms)  ← 33 segundos!
+GET rest/v1/system_settings -> PENDENTE há 80503ms       ← 80 segundos pendente
+GET rest/v1/profiles -> PENDENTE há 35565ms
+GET rest/v1/products -> PENDENTE há 35533ms
+```
+
+Todos os testes com autenticação falharam porque o Supabase demorou 30-80s para responder.
+Os testes de overflow/sticky falharam porque `aside` não apareceu (app preso na tela de login).
+É o mesmo padrão de lentidão do incidente P22 (site fora do ar às 00:23Z — 47 min antes).
+
+**Classificação:**
+- **Não é regressão de código** — nosso PR não tocou nenhum dos spec files nem o código por eles testado
+- **Não é falha de design dos testes** — 39 testes passaram normalmente
+- **É lentidão de infraestrutura Supabase** — respostas de 30-80s em horário de baixa madrugada
+
+**Evidência de que não é regressão do PR:**
+Nossos commits neste branch alteram apenas:
+- Arquivos de workflow (`.github/workflows/`) — não afetam testes E2E
+- `scripts/qa/cart-header-fuzz-report.mjs` — não afeta testes E2E
+- `PENDENCIAS.md` / `RELATORIO_CI.md` — docs
+
+**O que o PO / Infra precisam fazer:**
+1. Verificar métricas do Supabase project `doufsxqlfjyuvxuezpln` na janela 2026-10-22T00:00-02:00Z
+2. Confirmar se havia lentidão/throttling/incident no Supabase entre 01:10-01:28Z
+3. Rerunnar o Gate 3 quando o Supabase estiver responsivo (< 2s por chamada)
+4. Se o problema persistir: investigar RLS policy scan ou query N+1 em `get_profile_and_roles`
+
+**Impacto:** Bloqueia o Gate Final (required check). Rerun manual quando Supabase estiver estável.
 
 ---
 

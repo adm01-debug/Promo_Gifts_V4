@@ -44,6 +44,7 @@ SHA de referência: `c7c25848` (último commit em main antes da sessão)
 | 11 | `db-schema-drift-check.yml` | `39578751173` | `45545ae5` | 2026-10-21 | Schema drift: DDL fora de fluxo | P14 |
 | 12 | `edge-functions-drift-check.yml` | `39576553816` | `45545ae5` | 2026-10-21T09:23Z | Drift de edge functions deployadas vs. repo | P16 |
 | 13 | `workflow-lint.yml` | `39670397269` | `c7c25848` | 2026-10-21T20:27Z | actionlint errors em `python-package-conda.yml` (deletado em PR #2338 `cb2706ca`) | **Corrigido no PR** |
+| 14 | `uptime-monitor.yml` | `39699222688` | `c7c25848` | 2026-10-22T00:23Z | Site `www.promogifts.com.br` fora do ar (infra/produção) | P22 |
 
 **Nota P4:** `contract-tests.yml` roda no PR, não tem trigger `push: main`. A falha
 foi diagnosticada em run de PR (cb2706ca). O job `unit` passou; só o job `smoke` falhou
@@ -137,7 +138,8 @@ Corrige Gate E89 (cron spacing):
 | `39698881450` | `ea0fb09` | ✅ | ✅ | ✅ | ✅ | ⏳ | **cancelado por push `e6405e0` (cancel-in-progress)** |
 | `39700336039` | `e6405e0` | ✅ | ✅ | ✅ | ✅ | ❌ cancelled (timeout 15min) | **failure — Gate 3 cancelado em 14:28min (P18)** |
 | `39702296699` | `1b13f7a` | ✅ | ✅ | ✅ | ✅ | ⏳ | **cancelado por push `c901645c` (cancel-in-progress)** |
-| `39702370300` | `c901645c` | ✅ (00:53:46Z) | ✅ 42 steps todos success (00:58:51Z) | ✅ (00:54:29Z) | ✅ (00:55:12Z) | ⏳ in_progress (desde 00:54:22Z, timeout 20min) | **in_progress — Gate 3 rodando Playwright** |
+| `39702370300` | `c901645c` | ✅ (00:53:46Z) | ✅ 42 steps todos success (00:58:51Z) | ✅ (00:54:29Z) | ✅ (00:55:12Z) | ❌ cancelled | **cancelado por push `6468a82` (cancel-in-progress: true)** |
+| `39703771871` | `6468a82` | ✅ (01:09Z) | ✅ 42 steps success (01:14:26Z) | ✅ (01:10:12Z) | ✅ (01:09:00Z) | ❌ failure — 11 testes / lentidão Supabase (01:10:40-01:28:08Z) | **failure — Gate 3 falhou (P23) — 15/17 ✅** |
 
 **Gate 0 (SSOT)** confirmado em run `39689787809` (22:54:59Z) → `success`
 **Gate 0.5 (Dependency Audit)** confirmado em run `39689787809` (22:55:34Z) → `success`
