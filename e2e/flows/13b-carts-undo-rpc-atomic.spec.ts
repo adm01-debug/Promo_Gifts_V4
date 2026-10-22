@@ -63,17 +63,8 @@ async function primeCartsWithRpc(
 }
 
 async function excluirPrimeiraLinha(page: import("@playwright/test").Page) {
-  const firstRowMenu = page
-    .locator(
-      '[aria-label*="Ações"], [aria-label*="Mais opções"], [data-testid^="cart-row-menu-"], [data-testid^="cart-row-more-"]',
-    )
-    .first();
-  if (await firstRowMenu.count()) {
-    await firstRowMenu.click();
-    await page.getByRole("menuitem", { name: /excluir/i }).first().click();
-  } else {
-    await page.getByRole("button", { name: /excluir/i }).first().click();
-  }
+  await page.locator('[data-testid^="cart-row-more-"]').first().click();
+  await page.getByRole("menuitem", { name: /excluir/i }).first().click();
   const dialog = page.getByTestId("cart-row-delete-dialog");
   await expect(dialog).toBeVisible();
   await dialog.getByRole("button", { name: /confirmar exclusão|excluir/i }).click();
