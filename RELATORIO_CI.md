@@ -583,12 +583,22 @@ Resultado: **14/16 jobs ✅ success + Gate E40 skipped (docs-only E14 bypass) + 
 | Branch Protection Sentinel | N/A (não existia no baseline) | ❌ failure | ✓ Comportamento esperado pós-merge (§5.1) |
 | Regressões introduzidas por PR #2338 | — | **0** | ✅ ZERO regressões |
 
-### 13.4 — Não-required checks confirmados
+### 13.4 — Required checks vs. checks não-bloqueantes
 
-Os 16 workflows em failure são todos **não-bloqueantes** para merge:
+**`required-checks.json` (SSOT) lista 5 required checks para `main`:**
 
-- O único required check em `main` é **"Gate Final - Deploy Ready"** (`.github/workflows/deploy-gates.yml`), confirmado no `required-checks.json`.
-- Gate Final run [39839609893](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609893): ✅ `conclusion=success` — **prova que nenhum dos 16 workflows acima bloqueia merge**.
-- PR #2338 foi mergeado em 2026-10-22T19:23:07Z **com os 16 workflows acima em failure**, confirmando que nenhum deles é required check.
+| Check | Status no merge de #2338 |
+|---|---|
+| `Gate Final - Deploy Ready` | ✅ success |
+| `Compare GitHub × Canonical` | ❌ failure (pré-existente: drift de 97 edge functions não tocadas pelo PR) |
+| `Analyze (javascript-typescript)` | ✅ success |
+| `Gate E23 - Secret Scan (gitleaks)` | ✅ success (embutido no Gate Final) |
+| `Assert Gate Final is required on main` | ✅ success |
+
+**Discrepância detectada:** `Compare GitHub × Canonical` está em `required-checks.json` mas o PR #2338 foi mergeado com ele em failure, indicando que a proteção de branch no GitHub pode não estar sincronizada com o SSOT. Esta divergência precisa de reconciliação humana (ver PENDENCIAS.md §2 — bloqueadores humanos).
+
+**Gate Final run [39839609893](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609893):** ✅ `conclusion=success` — nenhuma regressão introduzida pelo PR #2338.
+
+**`Compare GitHub × Canonical`:** failure pré-existente com 97 edge functions divergentes (drift de conteúdo entre git e Supabase canônico). Não tocado por este PR. Documentado em PENDENCIAS.md §2.4 como bloqueador que requer ação via `deploy-edge-functions.yml`.
 
 *Inventário fresco gerado em 2026-10-22T20:xxZ via subagente (46 runs SHA `57017ba7` verificados) | Sessão https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz*
