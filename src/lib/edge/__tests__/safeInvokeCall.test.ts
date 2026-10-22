@@ -15,7 +15,7 @@ vi.mock('@/lib/telemetry/structuredLogger', async () => {
   return mod.structuredLoggerMockFactory();
 });
 
-const mockInvoke = vi.fn();
+const { mockInvoke } = vi.hoisted(() => ({ mockInvoke: vi.fn() }));
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: { functions: { invoke: mockInvoke } },
 }));
