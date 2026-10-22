@@ -1,62 +1,121 @@
-# Regras de Negócio Identificadas — Análise de PRs (2026-10-22)
+# Regras de Negócio — Promo Gifts V4
 
-**Baseline main:** `8e8053b9ed85142e85809783cd3acf9a3077ecde`
-**Total PRs analisadas:** 24
+**Baseline main:** `8e8053b9ed85142e85809783cd3acf9a3077ecde`  
+**Data:** 2026-10-22  
+**Fontes:** CLAUDE.md, src/types/product-catalog.ts, src/integrations/supabase/client.ts, .github/workflows/deploy-gates.yml, tests/contracts/webhook-schemas.ts, docs/SCHEMA_REFERENCE.md
 
-## RN-001: Projeto Canônico Supabase (SSOT)
-**Fonte:** CLAUDE.md REGRA #1, PR #2338
-O `CURRENT_PROJECT_ID` em `src/integrations/supabase/client.ts` DEVE ser `doufsxqlfjyuvxuezpln`.
-Qualquer PR que altere este valor para `pqpdolkaeqlyzpdpbizo` deve ser bloqueada.
-**Verificado em:** PR #2338 não toca `client.ts` — ✅ SSOT preservado.
+---
 
-## RN-002: Allowlist de Funções SECURITY DEFINER (lint-0029)
-**Fonte:** PR #2338 diff `.security/lint-0029-allowlist.json`
-Toda função com `SECURITY DEFINER` no banco `doufsxqlfjyuvxuezpln` deve ter entrada no allowlist com `reason` documentado (não "TODO").
-43 entradas stale foram removidas; 6 novas funções adicionadas com reasons reais.
-**Funções novas:** `admin_active_sessions`, `admin_revoke_user_sessions`, `fn_backfill_queue_reap_stuck`, `fn_detect_recurring_errors_last_hour`, `log_access_denied`, `record_dev_route_telemetry`.
+## 1. Identidade do Projeto
 
-## RN-003: Allowlist de Extensões PostgreSQL (lint-0011)
-**Fonte:** PR #2338 diff `.security/lint-0011-allowlist.json`
-Funções de extensão PostgreSQL (`pgstattuple`, `pgstatindex`, `pgstathashindex`, `pgstatginindex`, `pg_relpages`) são código de extensão, não de usuário — não podem ter `SET search_path` e devem ser allowlistadas com reason documentado.
-9 funções adicionadas ao allowlist.
+- **Produto:** Promo Brindes — catálogo B2B de brindes corporativos
+- **Stack:** React + TypeScript + Vite + Supabase (PG17)
+- **Projeto canônico:** `doufsxqlfjyuvxuezpln` (Gold/Medallion)
+- **Projeto proibido:** `pqpdolkaeqlyzpdpbizo` — qualquer PR que referencie este ID não é mergeada (REGRA #1)
+- **UI builder:** Lovable (gpt-engineer-app[bot]) commita em `main` diretamente
 
-## RN-004: Cobertura de Contratos de Edge Functions (Gate 1.12)
-**Fonte:** PR #2338 diff `tests/contracts/webhook-schemas.ts`, PR #2316
-Toda edge function deve estar presente no mapa `CONTRACTS` ou no set `NO_BODY_EXEMPT` em `tests/contracts/webhook-schemas.ts`.
-`magazine-reader-state-read` é GET-only sem body — deve estar em `NO_BODY_EXEMPT`.
-**Decisão:** Abordagem via `NO_BODY_EXEMPT` (PR #2338) é a correta para funções GET-only.
-PR #2316 adicionou schema `{token, fingerprint}` — abordagem contraditória, aguarda rebase para reconciliar.
+---
 
-## RN-005: Dependências de npm em Scripts de Health Check
-**Fonte:** PR #2338 diff `.github/workflows/prod-health.yml`
-Scripts que importam módulos npm (ex: `import ts from 'typescript'`) requerem `npm ci` antes da execução.
-`prod-health.yml` executava `check-product-type-fields.mjs` sem instalar dependências — corrigido com step `npm ci` + `cache: npm`.
+## 2. SSOT Supabase (REGRA #1 — imutável)
 
-## RN-006: Runners e Versões de Actions em Workflows CI
-**Fonte:** PR #2338 diff `.github/workflows/stale.yml`, CLAUDE.md Padrão E12
-- Runner deve ser `ubuntu-24.04` (não `ubuntu-latest` — migra para Ubuntu 26 em 19/10/2026) — R14
-- Actions externas pinadas por SHA completo de 40 chars — R15
-- Workflows devem ter `timeout-minutes:` em todo job — R3
-- `concurrency:` com `cancel-in-progress: true` em PRs — R2
+| Regra | Descrição |
+|---|---|
+| `CURRENT_PROJECT_ID` | Deve ser `doufsxqlfjyuvxuezpln` em `src/integrations/supabase/client.ts` |
+| Gate 0 | Valida SSOT no CI — bloqueante |
+| Evidência de incidente | 2026-06-11: Lovable reverteu o arquivo 6x em 10 min causando erro 401 em produção |
 
-## RN-007: Remoção de Workflows Irrelevantes
-**Fonte:** PR #2338 diff (remove `python-package-conda.yml`)
-Workflows que testam stacks não usadas no projeto (Python/Conda para projeto React/TypeScript) devem ser removidos.
-Mantê-los gera falhas de lint sem valor e polui o histórico de CI.
+---
 
-## RN-008: Credenciais Hardcoded em Configurações de Teste
-**Fonte:** PR #2315 diff `playwright.config.ts`
-Credenciais reais nunca devem ser hardcoded em arquivos de configuração versionados.
-Gate E23 detecta e bloqueia. PR #2315 corrige C25 compliance — correção de segurança válida, aguarda rebase.
+## 3. Tipo `Product` — Campos Críticos (REGRA #2)
 
-## RN-009: Dependências com Major Version Bump
-**Fonte:** PR #2290 (@eslint/js 9→10), PR #2293 (recharts 2→3)
-Major bumps de dependências requerem aprovação do PO, pois podem:
-- Alterar APIs públicas (recharts: componentes renomeados/removidos)
-- Introduzir breaking changes em regras de lint (@eslint/js: regras novas podem bloquear CI)
-Não mergear sem decisão explícita do responsável pelo produto.
+Localização: `src/types/product-catalog.ts` (ou equivalente)
 
-## RN-010: PRs de Templates de CI (GitHub Actions)
-**Fonte:** PRs #2322–#2337
-Templates gerados automaticamente para stacks diferentes da do projeto (Django, Ruby, Go, Rust, Java, Python, CMake, Docker) devem ser fechados sem merge.
-Nenhum altera código do projeto — são ruído de automação.
+```typescript
+price: number           // preço original — obrigatório
+sale_price?: number     // preço de venda
+shortDescription: string
+category_id?: string
+category_name?: string
+```
+
+PR que remove esses campos: NÃO MERGEAR.
+
+---
+
+## 4. CI — Gates Obrigatórios
+
+O único required check em `main` é **"Gate Final - Deploy Ready"** (`.github/workflows/deploy-gates.yml`). Agrega:
+
+| Gate | Bloqueante | Descrição |
+|---|---|---|
+| Gate 0 | sim | SSOT `doufsxqlfjyuvxuezpln` |
+| Gate 0.5 | sim | `npm audit --audit-level high` |
+| Gate 1 | sim | ESLint + TypeScript |
+| Gate 1.1–1.18 | sim | Campos Product, drift types.ts, secrets, etc. |
+| Gate E23 | sim | Secrets scan (gitleaks) |
+| Gate 2 | sim | Testes unitários (vitest) |
+| Gate 2.5 | sim | Integridade transacional PostgreSQL |
+| Gate 3 | sim | E2E Smoke (Playwright) |
+| Gate 5 | sim | SEO sanity |
+| Gate 5.5 | sim | RPC `restore_seller_cart` |
+| Gate 6 | sim | Build Vite |
+| Gate 4 | opcional | Lighthouse CI |
+
+---
+
+## 5. Regras de Merge
+
+- **Migration:** só se aditiva e não destrutiva (sem DROP, RENAME, ALTER TYPE, DELETE/UPDATE em massa), idempotente
+- **Edge function:** só com testes passando, sem afrouxar autenticação
+- **RLS/permissões:** só se testes em Postgres temporário comprovarem zero expansão de acesso
+- **Qualquer falha nova pós-merge → PARAR todos os merges**
+
+---
+
+## 6. Falhas Pré-Existentes em `main` (baseline `8e8053b9`)
+
+As seguintes falhas existiam em `main` ANTES de qualquer PR desta análise:
+
+- `Gate Final - Deploy Ready` (agregador)
+- `Gate 0.5 - Dependency Audit`
+- `Gate 1 - Lint + TypeScript`
+- `E2E — Personalization Journey`
+- `Migrations x Canonical schema (Gate E40)` — ECR rate limit
+- `E2E · webkit-authed`
+- `cart-invariants (firefox-authed · shard 1/2 e 2/2)`
+- `cart-invariants (chromium-authed · shard 1/2)`
+- `E2E — Full User Flows (authed)`
+- `E2E Subtítulo quote_number (visual)` (cancelada no baseline; failing pré-merge)
+- `E2E PDF exportado · quote_number`
+- `release-please`
+- `chromium • swatch→QV` (cancelada no baseline → failure pós CI-fix)
+
+---
+
+## 7. Restrições de Deploy via MCP
+
+- `execute_sql` com DDL é **proibido** em sessão de agente (REGRA #8/E056)
+- Deploy de edge function: **apenas** via `.github/workflows/deploy-edge-functions.yml`
+- Migration nova: **apenas** via `.github/workflows/db-apply-migration.yml`
+- `supabase db push` é **proibido**
+- SINGU é **READ-ONLY** e fora do escopo
+
+---
+
+## 8. Agentes que escrevem no repo
+
+Claude, Codex, Devin, Lovable (gpt-engineer-app[bot]), github-actions, cline. Merge cross-agente exige PR (REGRA #10/E189).
+
+---
+
+## 9. Contratos de Edge Functions
+
+Arquivo: `tests/contracts/webhook-schemas.ts`  
+Map `CONTRACTS`: mapeia nome de edge function → schema JSON Schema  
+Set `NO_BODY_EXEMPT`: edge functions GET-only sem body
+
+`magazine-reader-state-read` → em `NO_BODY_EXEMPT` (adicionado pelo PR #2338)
+
+---
+
+*Fontes primárias: CLAUDE.md (raiz), src/integrations/supabase/client.ts, tests/contracts/webhook-schemas.ts, docs/SCHEMA_REFERENCE.md, .github/workflows/deploy-gates.yml*
