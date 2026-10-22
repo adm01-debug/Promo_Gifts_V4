@@ -1,7 +1,7 @@
 # PENDÊNCIAS — Branch `claude/laughing-cori-o9w35e` / PR #2338
 
-**Atualizado em:** 2026-10-22T08:57Z  
-**HEAD:** `0f7eb91a`  
+**Atualizado em:** 2026-10-22T09:22Z  
+**HEAD:** `f4529b1e`  
 
 ---
 
@@ -367,9 +367,12 @@ O PR adiciona dois arquivos em `supabase/migrations/` que ATIVAM o drift check v
 ### Run `39753032381` — SHA `02f265ec` — `status=cancelado` (cancel-in-progress por push b9c63d2f)
 **Deploy Gates** cancelado automaticamente pelo push do commit `b9c63d2f` (`cancel-in-progress: true` configurado para PRs). Schema-snapshot-export ✅, edge-functions-drift-check ✅ e outros 6 workflows já haviam passado para este SHA (ver acima).
 
-### Run `39753877367` — SHA `b9c63d2f` — `status=pending` (09:15Z — 2026-10-22)
-**Deploy Gates** na fila para o HEAD atual `b9c63d2f`. Runs simultâneos já iniciados: `schema-snapshot-export` ✅ (39753877346), `CI - Replenishment Module Quality Gate` in_progress (39753877269).  
-**Conclusão esperada:** `failure` — Gate 3 (P3) e Gate E40 (P-E40) são pré-existentes e falham em 100% dos runs neste PR.
+### Run `39753877367` — SHA `b9c63d2f` — `status=cancelado` (cancel-in-progress por push f4529b1e)
+**Deploy Gates** cancelado automaticamente pelo push do commit `f4529b1e` (`cancel-in-progress: true` configurado para PRs). O commit `f4529b1e` contém apenas docs (PENDENCIAS.md P-MERGE + RELATORIO_CI.md seção 1 expandida).
+
+### Run `39754501446` — SHA `f4529b1e` — `status=pending` (09:19Z — 2026-10-22)
+**Deploy Gates** na fila para o HEAD atual `f4529b1e` (docs-only). Runs simultâneos: db-schema-drift-check (39754501327), Workflow Lint (39754501310), Lint untypedFrom (39754501601), E2E Cart Matrix (39754501515), PR Size Guard (39754501542), E2E Quotes Matrix (39754501379), Cart Invariants Smoke (39754501371), CI - Novo Orçamento E2E (39754501435), Running Copilot Code Review (39754514958).  
+**Conclusão esperada:** `failure` — Gate 3 (P3) e Gate E40 (P-E40) são pré-existentes e falham em 100% dos runs neste PR. Commit f4529b1e é docs-only e não altera código que pudesse corrigir P3 ou P-E40.
 
 ---
 
@@ -496,4 +499,4 @@ O PR adiciona dois arquivos em `supabase/migrations/` que ATIVAM o drift check v
 
 ---
 
-_Atualizado automaticamente por sessão Claude — 2026-10-22T09:15Z (HEAD b9c63d2f; P27 atualizado: run 39753032381 02f265ec → cancelado por cancel-in-progress; run 39753877367 b9c63d2f → pending; P-MERGE adicionado: bloqueio de merge PR #2338+#2341 por Gate 3 P3 + Gate E40 P-E40 pré-existentes — requer PO; nota baseline local: npm ci 403 no container cloud, CI substitui baseline local)_
+_Atualizado automaticamente por sessão Claude — 2026-10-22T09:22Z (HEAD f4529b1e; P27 atualizado: run 39753877367 b9c63d2f → cancelado por cancel-in-progress push f4529b1e; run 39754501446 f4529b1e → pending)_

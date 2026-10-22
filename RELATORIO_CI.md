@@ -1,9 +1,9 @@
 # RELATÓRIO CI — Branch `claude/laughing-cori-o9w35e`
 
 **Gerado em:** 2026-10-22  
-**HEAD principal:** `02f265ec` (PR #2338 → main)  
+**HEAD principal:** `f4529b1e` (PR #2338 → main)  
 **Branch de correções CI:** `fix/ci-workflows` (PR #2341 → main, commit `b36f5362`)  
-**Atualizado em:** 2026-10-22T07:35Z → 08:44Z → 09:00Z → 09:04Z → 09:35Z — sessão Claude
+**Atualizado em:** 2026-10-22T07:35Z → 08:44Z → 09:00Z → 09:04Z → 09:35Z → 09:22Z — sessão Claude
 
 ---
 
