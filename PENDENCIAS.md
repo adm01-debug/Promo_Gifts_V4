@@ -1,7 +1,25 @@
 # Pendências de CI — Itens que requerem ação do PO/humano
 
-**Atualizado:** 2026-10-22 (v19 — adicionados P26-P31: Gitleaks Full History Audit, Kit Coverage Integration, Nightly Full CI, Quote Builder Delivery Quality, E2E Cart Delete Popover, Daily flows simulation; corrigidos seletores E2E cart-row em 13-carts-delete-undo.spec.ts e 13b-carts-undo-rpc-atomic.spec.ts)
+**Atualizado:** 2026-10-22 (v20 — MCP `doufsxqlfjyuvxuezpln` conectado; P23 agora diagnosticável via queries ao vivo)
 **Sessão:** https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz
+
+---
+
+## AMBIENTE — MCP Supabase Canônico disponível desde 2026-10-22
+
+O MCP **`SUPABASE - GESTÃO DE PRODUTOS - PROMO GIFTS V4`** foi conectado ao projeto
+canônico `doufsxqlfjyuvxuezpln`. URL confirmada: `https://doufsxqlfjyuvxuezpln.supabase.co`.
+
+**Impacto nas pendências:**
+- **P23 (Gate 3 E2E Smoke — latência Supabase):** agora é possível verificar latência ao vivo via
+  `execute_sql` (SELECT simples com timing) antes de pedir rerun do CI, economizando runs pagos.
+- **P14 (Schema drift):** queries `pg_catalog` ao vivo permitem confirmar se o drift é real ou
+  ruído antes de acionar DBA.
+- **Gate 5.5 (RPC `restore_seller_cart`):** assinatura da função pode ser verificada localmente.
+
+**Restrições mantidas (REGRA #8 corolário E056):**
+- `execute_sql` = apenas leitura (SELECT/EXPLAIN/pg_catalog). DDL proibido.
+- Qualquer migração continua exigindo `db-apply-migration.yml` via `workflow_dispatch`.
 
 ---
 

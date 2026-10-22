@@ -1,7 +1,7 @@
 # Relatório de CI — Promo Gifts V4
 
 **Sessão:** https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz
-**Data:** 2026-10-21
+**Data:** 2026-10-21 / atualizado 2026-10-22
 **Branch de trabalho:** `claude/laughing-cori-o9w35e`
 **PR:** #2338 → main
 **SHA base (main):** `c7c25848e122f2392963ba73ccf2ba0c84e38b45`
@@ -22,6 +22,23 @@ Verificações locais realizáveis (executadas e confirmadas OK):
 
 **Workaround adotado:** todas as validações são feitas via Deploy Gates (PR CI),
 não localmente. Os runs são referenciados abaixo com run_id e SHA.
+
+### 1.1 MCP Supabase Canônico — 2026-10-22
+
+**MCP `SUPABASE - GESTÃO DE PRODUTOS - PROMO GIFTS V4`** conectado ao projeto
+canônico `doufsxqlfjyuvxuezpln` a partir de 2026-10-22.
+
+Verificação: `get_project_url` retornou `https://doufsxqlfjyuvxuezpln.supabase.co` ✅
+
+Uso permitido (REGRA #8 corolário E056): **somente SELECTs de leitura** via `execute_sql`
+— pg_catalog, audit queries, diagnósticos de P23 (latência). DDL continua **proibido** via
+MCP direto; único caminho autorizado é `db-apply-migration.yml` via `workflow_dispatch`.
+
+Este MCP desbloqueia diagnósticos que antes eram impossíveis na sessão, incluindo:
+- Verificação de latência Supabase em tempo real (P23)
+- Contagem de tabelas/views ao vivo (validação do baseline `FOTOGRAFIA_PG_CATALOG_2026-08-26.md`)
+- Confirmação da existência/assinatura da RPC `restore_seller_cart` (Gate 5.5)
+- Queries `pg_catalog` para drift check manual
 
 ---
 
