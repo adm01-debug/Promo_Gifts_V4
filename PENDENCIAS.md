@@ -192,8 +192,9 @@ O PR adiciona dois arquivos em `supabase/migrations/` que ATIVAM o drift check v
 
 **Status:** ⚠️ Pré-existente em main — commit mais antigo  
 **Workflow:** `Gitleaks — Full History Audit`  
-**Run de falha:** [39559250174](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39559250174) — commit `45545ae5`  
-**Por que não corrigível aqui:** Falha em commit anterior. Gitleaks full history pode detectar secrets históricos não relacionados a este PR.
+**Run de falha (mais recente):** [39737833719](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39737833719) — 2026-10-22T07:02Z (run semanal)  
+**Run de falha anterior:** [39559250174](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39559250174) — commit `45545ae5`  
+**Por que não corrigível aqui:** Falha em commit anterior. Gitleaks full history escaneia todo o histórico e pode detectar secrets históricos não relacionados a este PR. O scan semanal de 07:02Z de hoje confirma a falha continuada.
 
 ---
 
@@ -283,6 +284,16 @@ O PR adiciona dois arquivos em `supabase/migrations/` que ATIVAM o drift check v
 
 ---
 
+## P24 — Quote Number Hardening — Verify
+
+**Status:** ⚠️ Pré-existente em main — não corrigível neste PR  
+**Workflow:** `Quote Number Hardening — Verify`  
+**Run de falha:** [39735347516](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39735347516) — 2026-10-22T06:39:50Z  
+**Por que não corrigível aqui:** Falha na verificação de número de orçamento no BD canônico. Workflow independente de CI de PR; falha em execução autônoma antes de qualquer push deste PR neste dia. Requer investigação do estado da tabela de orçamentos em `doufsxqlfjyuvxuezpln`.  
+**Ação necessária:** PO investigar e corrigir discrepância no número de orçamento no BD canônico.
+
+---
+
 ## Itens Concluídos ✅
 
 | Item | Commit | O quê foi corrigido |
@@ -300,4 +311,4 @@ O PR adiciona dois arquivos em `supabase/migrations/` que ATIVAM o drift check v
 
 ---
 
-_Atualizado automaticamente por sessão Claude — 2026-10-22 (HEAD 1122aafd, run 39726195264 — COMPLETO; P3 evidência concreta: Gate3 CANCELLED em main (runs 39669131225/39670397385 ~14min timeout, não SKIPPED); P-E40 evidência concreta: cron falhou 10+ dias consecutivos desde 2026-10-12 (IDs: 39578751173–38232551702); P19/P20 fix em PR #2341 (fix/ci-workflows, commit b36f5362); P21/P22/P23 documentados)_
+_Atualizado automaticamente por sessão Claude — 2026-10-22T08:00Z (P14 atualizado com run 39737833719; P24 adicionado — Quote Number Hardening Verify run 39735347516; inventário completo: 20+1 workflows)_

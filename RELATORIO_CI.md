@@ -3,7 +3,7 @@
 **Gerado em:** 2026-10-22  
 **HEAD principal:** `93f61bcd` (PR #2338 → main)  
 **Branch de correções CI:** `fix/ci-workflows` (PR #2341 → main, commit `b36f5362`)  
-**Atualizado em:** 2026-10-22T07:20Z — sessão Claude
+**Atualizado em:** 2026-10-22T07:35Z → 08:00Z — sessão Claude
 
 ---
 
@@ -24,44 +24,48 @@
 
 ## 2. Inventário completo — última execução em main (SHA `c7c25848`, 2026-10-21)
 
-### 2a. Workflows com falha (17) + 1 cancelado
+### 2a. Workflows com falha (20) + 1 cancelado
 
-| # | Workflow | Run ID | Conclusão | Causa raiz | Ação |
+> **Inventário atualizado em 07:40Z (100 runs de main via API)** — 20 workflows com `conclusion=failure` na última execução em main.
+
+| # | Workflow | Run ID (main) | Conclusão | Causa raiz | Ação |
 |---|---|---|---|---|---|
 | 1 | Workflow Lint | [39670397269](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397269) | ❌ failure | `setup-python@v3` deprecated + `stale@v5` deprecated (actionlint) | ✅ **CORRIGIDO** — PR #2341 |
 | 2 | Static Health Checks | [39670397342](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397342) | ❌ failure | `check-product-type-fields.mjs` usa `import ts from 'typescript'`; sem npm ci instalado | ✅ **CORRIGIDO** — PR #2341 |
 | 3 | Python Package using Conda | [39670397287](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397287) | ❌ failure | `setup-python@v3` deprecated; workflow de template Go nunca usado neste projeto TS | ✅ **CORRIGIDO** — PR #2341 (no-op) |
 | 4 | CI Security & Drift Checks | [39670397308](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397308) | ❌ failure | lint-0029: 6 findings sem allowlist | ✅ **CORRIGIDO** — PR #2338 (commit `47c4e91e`) |
-| 5 | Supabase Linter Gate | [39670397435](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397435) | ❌ failure | Relacionado a lint-0029; allowlist parcial | ✅ **CORRIGIDO** — PR #2338 |
+| 5 | Supabase Linter Gate | [39738404094](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39738404094) | ❌ failure | Relacionado a lint-0029; allowlist parcial (run mais recente: 07:08 hoje) | ✅ **CORRIGIDO** no PR — PENDENCIAS.md P23 |
 | 6 | Deploy Gates | [39670397385](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397385) | ❌ failure | Cascata: lint-0029 + Gate 1.12 + Gate 3 E2E + Gate E40 | ✅ **CORRIGIDO** (gates fixáveis) — PR #2338 |
 | 7 | E2E (Playwright) | [39670397540](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397540) | ❌ failure | Auth/dados ausentes no CI | ⚠️ Pré-existente — PENDENCIAS.md P4 |
 | 8 | E2E · Carts Undo RPC Atomic | [39670397341](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397341) | ❌ failure | Auth/dados ausentes no CI | ⚠️ Pré-existente — PENDENCIAS.md P22 |
-| 9 | E2E — Critical Flows & Error Boundaries | [39670397401](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397401) | ❌ failure | Auth/dados ausentes no CI | ⚠️ Pré-existente — PENDENCIAS.md P4c |
+| 9 | E2E — Critical Flows & Error Boundaries | [39670397401](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397401) | ❌ failure | Auth/dados ausentes no CI | ⚠️ Pré-existente — PENDENCIAS.md P4d |
 | 10 | E2E — Personalization Flow | [39670397345](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397345) | ❌ failure | Auth/dados ausentes no CI | ⚠️ Pré-existente — PENDENCIAS.md P16 |
 | 11 | Cart Invariants Smoke | [39670397361](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397361) | ❌ failure | Auth/dados ausentes no CI (4 shards) | ⚠️ Pré-existente — PENDENCIAS.md P17 |
-| 12 | Kit Coverage — Integration | [39719136176](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39719136176) | ❌ failure | Infra de testes de integração ausente | ⚠️ Pré-existente — PENDENCIAS.md P11 |
-| 13 | Nightly Full CI | [39713855139](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39713855139) | ❌ failure | Snapshots visuais desatualizados + kit-builder timeout | ⚠️ Pré-existente — PENDENCIAS.md P2 + P9 |
-| 14 | Release Please | [39670397513](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397513) | ❌ failure | GitHub App sem `contents: write` | ⚠️ Pré-existente — PENDENCIAS.md P7 |
-| 15 | Uptime Monitor | [39729264975](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39729264975) | ❌ failure | Serviço externo indisponível (monitor externo) | ⚠️ Pré-existente — PENDENCIAS.md P8 |
-| 16 | E2E · Cart Delete Popover | [39670397273](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397273) | ⚠️ cancelled | Cancelado durante push | ⚠️ Pré-existente — PENDENCIAS.md P18 |
+| 12 | E2E • Swatch QuickView | [39670397324](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397324) | ❌ failure | webkit: runner shutdown signal; auth ausente | ⚠️ Pré-existente — PENDENCIAS.md P4c |
+| 13 | E2E • Thumb QuickView | [39670397261](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397261) | ❌ failure | Check min tests: 5 executados, mínimo 10; secrets E2E ausentes | ⚠️ Pré-existente — PENDENCIAS.md P4b |
+| 14 | Kit Coverage — Integration | [39719136176](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39719136176) | ❌ failure | Infra de testes de integração ausente | ⚠️ Pré-existente — PENDENCIAS.md P11 |
+| 15 | Nightly Full CI | [39713855139](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39713855139) | ❌ failure | Snapshots visuais desatualizados + kit-builder timeout | ⚠️ Pré-existente — PENDENCIAS.md P2 + P9 |
+| 16 | Release Please | [39670397513](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397513) | ❌ failure | GitHub App sem `contents: write` | ⚠️ Pré-existente — PENDENCIAS.md P7 |
+| 17 | Uptime Monitor | [39739219460](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39739219460) | ❌ failure | Serviço externo indisponível (monitor externo) | ⚠️ Pré-existente — PENDENCIAS.md P8 |
+| 18 | Quote Number Hardening — Verify | [39735347516](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39735347516) | ❌ failure | Falha na verificação do número de orçamento no BD canônico | ⚠️ Pré-existente — PENDENCIAS.md P24 |
+| 19 | Gitleaks — Full History Audit | [39737833719](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39737833719) | ❌ failure | Scan histórico de secrets; run semanal (07:02 hoje) | ⚠️ Pré-existente — PENDENCIAS.md P14 |
+| 20 | Daily flows simulation | [39735125888](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39735125888) | ❌ failure | Simulação diária de fluxos; auth/infra ausente | ⚠️ Pré-existente — PENDENCIAS.md P15 |
+| 21 | E2E · Cart Delete Popover | [39670397273](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397273) | ⚠️ cancelled | Cancelado durante push | ⚠️ Pré-existente — PENDENCIAS.md P18 |
 
-Workflows **não encontrados** nos últimos 100 runs de main (não executaram recentemente):
-- E2E • Swatch QuickView
-- E2E • Thumb QuickView
+### 2b. Workflows verdes em main (últimas execuções, 100-run query 07:40Z) — devem permanecer verdes
 
-### 2b. Workflows verdes em main (SHA `c7c25848`) — devem permanecer verdes
+> **Nota:** Gitleaks e Quote Number Hardening apareciam como ✅ na baseline `c7c25848` mas têm runs mais recentes com ❌ (hoje). Movidos para seção 2a como pré-existentes (P14/P24). Não são regressões deste PR.
 
 | Workflow | Status |
 |---|---|
 | Branch Protection Sentinel | ✅ success |
 | CodeQL | ✅ success |
-| Gitleaks — Full History Audit | ✅ success |
+| E2E — CRM Callback (approved → V4 → CRM) | ✅ success |
 | Lovable Autoheal | ✅ success |
 | Lovable Edit Tracker | ✅ success |
 | No Prod Leak in Dev/Test Config | ✅ success |
 | Policies Baseline | ✅ success |
 | Quote Builder Delivery Quality | ✅ success |
-| Quote Number Hardening — Verify | ✅ success |
 | Required Checks Guard | ✅ success |
 | SSOT Supabase Guard | ✅ success |
 | Security Scan | ✅ success |
@@ -94,11 +98,22 @@ Workflows **não encontrados** nos últimos 100 runs de main (não executaram re
 
 ### PR #2338 (`claude/laughing-cori-o9w35e` → main)
 
-#### Run definitivo: `39737587676` (HEAD `93f61bcd`) — iniciado 2026-10-22T07:00:48Z
+#### Run `39737587676` (HEAD `93f61bcd`) — concluído parcialmente (cancelado por push de `c3f0d0b4`)
 
 > **Nota:** Os runs `39733876712` (HEAD `316248a5`) e `39735519100` (HEAD `c9a62b98`) foram cancelados
-> por `cancel-in-progress: true` quando novos commits foram pushed. O run `39737587676` é o run
-> ativo para o HEAD `93f61bcd` (commit de rollback headers para as migrations de REVOKE).
+> por `cancel-in-progress: true`. O run `39737587676` (HEAD `93f61bcd`) teve 14/16 gates ✅ mas foi
+> cancelado quando o push de RELATORIO_CI.md (`c3f0d0b4`) disparou novo run. Gate 3 e Gate E40 não
+> chegaram a conclusão neste run (foram cancelados in_progress — confirmando comportamento pré-existente).
+>
+> **Run atual:** `39739410440` (HEAD `c3f0d0b4`, docs-only) — **in_progress** as of 07:30Z.
+> Gate 0 ✅ (07:18:36Z), docs-only bypass ✅ (07:19:14Z), Gate 0.5 ✅ (07:21:08Z), Gate 0.6 ✅ (07:21:55Z),
+> Gate E23 Verifica secrets ✅ (07:19:19Z), Gate E23 Secret Scan ✅ (07:22:26Z),
+> Gate 5 SEO ✅ (07:21:22Z), Gate 4 Lighthouse ✅ (07:22:07Z), Gate E40 Detect ✅ (07:20:02Z),
+> Gate 2 Unit Tests ✅ (07:23:04Z), Gate 2.5 PostgreSQL ✅ (07:22:52Z), Gate 5.5 RPC ✅ (07:24:36Z).
+> Gate 1: in_progress step 22 (Gate 1.10 indexed-access) desde 07:27:32Z — steps 1-21 ✅.
+> Gate 3 E2E Smoke: in_progress step 7 desde 07:23:42Z (pré-existente P3).
+> Gate E40 Schema Drift: in_progress step 9 desde 07:26:10Z (pré-existente P-E40).
+> Resultado esperado: Gate 1 ✅, Gate 3 ❌ (P3), Gate E40 ❌ (P-E40), Gate Final ❌ (bloqueado por P3+P-E40).
 
 | Job | Conclusão | Completado |
 |---|---|---|
@@ -164,16 +179,21 @@ Workflows **não encontrados** nos últimos 100 runs de main (não executaram re
 | 6 | **Deploy Gates** (jobs fixáveis) | ✅ **14/16 jobs success** (in_progress P3+P-E40) | [run 39737587676](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39737587676) — Gate 1 ✅ 07:11:29Z, Gate 6 ✅ 07:12:15Z |
 | 7 | E2E (Playwright) | ⚠️ **Pré-existente** | PENDENCIAS.md P4 — auth/dados Supabase ausentes no CI |
 | 8 | E2E · Carts Undo RPC Atomic | ⚠️ **Pré-existente** | PENDENCIAS.md P22 — auth/dados Supabase ausentes |
-| 9 | E2E — Critical Flows & Error Boundaries | ⚠️ **Pré-existente** | PENDENCIAS.md P4c — auth/dados Supabase ausentes |
+| 9 | E2E — Critical Flows & Error Boundaries | ⚠️ **Pré-existente** | PENDENCIAS.md P4d — auth/dados Supabase ausentes |
 | 10 | E2E — Personalization Flow | ⚠️ **Pré-existente** | PENDENCIAS.md P16 — auth/dados Supabase ausentes |
 | 11 | Cart Invariants Smoke | ⚠️ **Pré-existente** | PENDENCIAS.md P17 — auth/dados Supabase ausentes (4 shards) |
-| 12 | Kit Coverage — Integration | ⚠️ **Pré-existente** | PENDENCIAS.md P11 — infra de testes de integração ausente |
-| 13 | Nightly Full CI | ⚠️ **Pré-existente** | PENDENCIAS.md P2+P9 — snapshots visuais desatualizados + kit-builder timeout |
-| 14 | Release Please | ⚠️ **Pré-existente** | PENDENCIAS.md P7 — GitHub App sem `contents: write`; requer ação do PO |
-| 15 | Uptime Monitor | ⚠️ **Pré-existente** | PENDENCIAS.md P8 — serviço externo; falha intermitente |
-| 16 | E2E · Cart Delete Popover (cancelled) | ⚠️ **Pré-existente** | PENDENCIAS.md P18 — cancelado por push concorrente |
-| 17 | Deploy Gates Gate 3 E2E Smoke | ⚠️ **Pré-existente** | PENDENCIAS.md P3 — auth Supabase ausente no CI |
-| 18 | Deploy Gates Gate E40 Schema Drift | ⏳ **Em andamento** | PENDENCIAS.md P-E40 — steps 1-8 ✅; step 9 in_progress |
+| 12 | E2E • Swatch QuickView | ⚠️ **Pré-existente** | PENDENCIAS.md P4c — webkit: runner shutdown signal; [run 39670397324](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397324) |
+| 13 | E2E • Thumb QuickView | ⚠️ **Pré-existente** | PENDENCIAS.md P4b — check min tests: 5 exec, mínimo 10; [run 39670397261](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397261) |
+| 14 | Kit Coverage — Integration | ⚠️ **Pré-existente** | PENDENCIAS.md P11 — infra de testes de integração ausente |
+| 15 | Nightly Full CI | ⚠️ **Pré-existente** | PENDENCIAS.md P2+P9 — snapshots visuais desatualizados + kit-builder timeout |
+| 16 | Release Please | ⚠️ **Pré-existente** | PENDENCIAS.md P7 — GitHub App sem `contents: write`; requer ação do PO |
+| 17 | Uptime Monitor | ⚠️ **Pré-existente** | PENDENCIAS.md P8 — serviço externo; falha intermitente |
+| 18 | Quote Number Hardening — Verify | ⚠️ **Pré-existente** | PENDENCIAS.md P24 — falha verificação nº orçamento no BD canônico; [run 39735347516](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39735347516) |
+| 19 | Gitleaks — Full History Audit | ⚠️ **Pré-existente** | PENDENCIAS.md P14 — secrets históricos; scan semanal [run 39737833719](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39737833719) |
+| 20 | Daily flows simulation | ⚠️ **Pré-existente** | PENDENCIAS.md P15 — auth/infra ausente; [run 39735125888](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39735125888) |
+| 21 | E2E · Cart Delete Popover (cancelled) | ⚠️ **Pré-existente** | PENDENCIAS.md P18 — cancelado por push concorrente |
+| 22 | Deploy Gates Gate 3 E2E Smoke | ⚠️ **Pré-existente** | PENDENCIAS.md P3 — auth Supabase ausente no CI |
+| 23 | Deploy Gates Gate E40 Schema Drift | ⚠️ **Pré-existente** | PENDENCIAS.md P-E40 — `supabase db diff --linked` falha 10+ dias em main |
 
 ---
 
@@ -218,4 +238,4 @@ Workflows **não encontrados** nos últimos 100 runs de main (não executaram re
 
 ---
 
-_Atualizado em 2026-10-22T07:25Z — sessão Claude_
+_Atualizado em 2026-10-22T08:00Z — sessão Claude (inventário completo: 20+1 workflows; P24 adicionado; seção 4 com 23 linhas)_
