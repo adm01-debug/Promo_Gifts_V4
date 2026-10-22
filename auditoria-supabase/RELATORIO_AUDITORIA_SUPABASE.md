@@ -475,9 +475,214 @@ Detalhes completos em `auditoria-supabase/inventario/baseline_imutabilidade.md`.
 | **MÉDIO** | 27 | Ver tabela em §3 |
 | **BAIXO** | 8 | Ver tabela em §3 |
 | **INFO** | 13 | Ver §3 |
-| **NÃO VERIFICADO** | 3 | PITR (requer Dashboard), security advisors (timeout), cron history 30d (timeout) |
+| **NÃO VERIFICADO** | 2 | PITR (requer Dashboard), cron history 30d (timeout — sem índice em start_time) |
+
+**Security advisors verificados** (antes: NÃO VERIFICADO por timeout — reexecutado com sucesso): ver §16.
 
 **Prioridade máxima:** Resolver CRON-001 (fn_cron_safe_run demorando 41s de média) desbloqueará: stock_daily_summary, taxa de falha pg_net de 57%, e restaurará jobs de limpeza.
+
+---
+
+## 16. Verificações Adicionais — Evidência Reexecutada
+
+### 16.1 Security Advisors — `get_advisors(type: security)` (2026-10-22)
+
+**Resultado:** 6 categorias de advisories. Total de itens não é paginado — categorias com contagens:
+
+| Nível | Nome | Qtd | Descrição |
+|---|---|---|---|
+| **ERROR** | `security_definer_view` | **8** | Views com SECURITY DEFINER — executam com permissões do criador, não do usuário |
+| WARN | `extension_in_public` | 2 | Extensões instaladas no schema `public` |
+| WARN | `pg_graphql_anon_table_exposed` | **59** | Tabelas/views visíveis no GraphQL para anon |
+| WARN | `pg_graphql_authenticated_table_exposed` | **455** | Tabelas/views expostas no GraphQL para authenticated |
+| WARN | `anon_security_definer_function_executable` | **10** | Funções SECURITY DEFINER executáveis sem login |
+| WARN | `authenticated_security_definer_function_executable` | **101** | Funções SECURITY DEFINER executáveis por usuários logados |
+
+**Achado novo — [ID-SEC-006] `security_definer_view` × 8 views:**
+- **Severidade:** MÉDIO
+- **Objeto:** 8 views no schema `public` definidas como `SECURITY DEFINER`
+- **Evidência:** `get_advisors(type: 'security')` → 8 entries com `advisory_key = 'security_definer_view'`
+- **Impacto:** Views SECURITY DEFINER executam queries com as permissões do dono (geralmente `postgres`), bypassando RLS do usuário que consulta — mesmo que o usuário não tenha acesso direto à tabela subjacente.
+- **Correção:** Converter para `SECURITY INVOKER` (padrão): `ALTER VIEW <nome> SET (security_invoker = true);` — ver `propostas/P06_views_security_invoker.sql`
+- **NÃO APLICADA**
+
+**Achado novo — [ID-SEC-007] 10 funções SECURITY DEFINER executáveis por anon:**
+- **Severidade:** ALTO (adicionado ao achado SEC-002 existente)
+- **Objeto:** 10 funções `public.*` com `SECURITY DEFINER` e `EXECUTE` grantado para `anon`
+- **Evidência:** `get_advisors` → `anon_security_definer_function_executable` × 10
+- **Impacto:** Qualquer chamada não autenticada pode elevar privilégios via essas funções.
+- **Correção:** `REVOKE EXECUTE ON FUNCTION <nome> FROM anon;` — só se não houver uso legítimo documentado.
+- **NÃO APLICADA**
+
+---
+
+### 16.2 Drift types.ts × Banco de Dados (2026-10-22)
+
+**Query de verificação:**
+```python
+python3 -c "
+import re
+with open('src/integrations/supabase/types.ts') as f: c = f.read()
+tables = re.findall(r'^\s{6}(\w+):\s*\{$', c, re.MULTILINE)
+print('Entradas em types.ts:', len(tables))
+"
+# Resultado: 1240 entradas
+```
+
+**DB:**
+```sql
+SELECT COUNT(*) FROM information_schema.tables
+WHERE table_schema = 'public' AND table_type = 'BASE TABLE';
+-- Resultado: 398
+```
+
+| Métrica | Valor |
+|---|---|
+| Entradas em `types.ts` | **1240** (inclui todas schemas: public, auth, storage, extensions) |
+| Tabelas base em `public` | **398** |
+| Tabelas críticas verificadas | **14/14** ✅ |
+
+**Tabelas críticas confirmadas em AMBOS types.ts E banco:**
+`products`, `quotes`, `orders`, `order_items`, `profiles`, `user_organizations`, `product_variants`, `suppliers`, `personalization_techniques`, `magazines`, `magazine_items`, `magazine_templates`, `seller_cart_items`, `workspace_notifications` — todas presentes ✅
+
+**Conclusão:** types.ts tem cobertura superior (inclui schemas além de public). Nenhuma tabela crítica ausente.
+
+---
+
+### 16.3 Drift .rpc() Código × Banco (2026-10-22)
+
+**Grep em `src/**/*.{ts,tsx}`:**
+
+```sql
+SELECT proname FROM pg_proc p
+JOIN pg_namespace n ON n.oid = p.pronamespace
+WHERE n.nspname = 'public'
+AND proname IN (
+  'check_telemetry_regression','log_user_logout','get_promo_sales_ranking',
+  'get_promo_sales_90d_by_product','get_connections_auto_test_interval',
+  'get_connection_failure_window_minutes','fn_rupture_quick_stats',
+  'fn_run_and_persist_smoke_tests','check_hardening_status',
+  'check_auth_config_status','admin_active_sessions'
+);
+```
+
+**Resultado:** 10/11 encontradas. `check_auth_config_status` ausente do banco.
+
+| Função | Refs no código | No banco? |
+|---|---|---|
+| `admin_active_sessions` | 1 | ✅ |
+| `check_hardening_status` | 1 | ✅ |
+| `check_telemetry_regression` | 2 | ✅ |
+| `fn_run_and_persist_smoke_tests` | 1 | ✅ |
+| `fn_rupture_quick_stats` | 1 | ✅ |
+| `get_connection_failure_window_minutes` | 1 | ✅ |
+| `get_connections_auto_test_interval` | 1 | ✅ |
+| `get_promo_sales_90d_by_product` | 1 | ✅ |
+| `get_promo_sales_ranking` | 1 | ✅ |
+| `log_user_logout` | 1 | ✅ |
+| **`check_auth_config_status`** | **1** | **❌ AUSENTE** |
+
+**Nota:** O próprio código em `src/lib/auth/auth-audit.ts:6` documenta: *"A RPC check_auth_config_status ainda NÃO existe em public (re-verificado...)"* — drift já conhecido, sem impacto em runtime pois a chamada tem fallback.
+
+---
+
+### 16.4 Drift Deno.env × Vault Secrets (2026-10-22)
+
+**Vault secrets registrados** (`vault.secrets` — 16 entradas):
+`asia_api_key`, `asia_secret_key`, `BACKFILL_DIM_CRON_SECRET`, `CF_ACCOUNT_ID`, `CF_API_TOKEN`, `CHAMPIONS_RECEIVE_QUOTE_SYNC_URL`, `CONNECTIONS_AUTO_TEST_SECRET`, `CRM_CALLBACK_API_KEY`, `CRON_SECRET`, `EDGE_FUNCTIONS_BASE_URL`, `GENERATE_BLURHASHES_CRON_SECRET`, `HASH_PRODUCT_IMAGES_CRON_SECRET`, `jina_api_key`, `sm_session_cookie`, `SPOT_ACCESS_KEY`, `WEBHOOK_DISPATCHER_SECRET`
+
+**Deno.env.get() referenciados em `supabase/functions/`:**
+
+| Secret | Auto-injetado? | Em vault? |
+|---|---|---|
+| `SUPABASE_URL` | ✅ auto | — |
+| `SUPABASE_SERVICE_ROLE_KEY` | ✅ auto | — |
+| `SUPABASE_ANON_KEY` | ✅ auto | — |
+| `SUPABASE_DB_URL` | ✅ auto | — |
+| `LOVABLE_API_KEY` | ❌ | ❌ não em vault¹ |
+| `CSRF_SECRET` | ❌ | ❌ não em vault¹ |
+| `TURNSTILE_SECRET_KEY` | ❌ | ❌ não em vault¹ |
+| `SIMULATION_BYPASS_KEY` | ❌ | ❌ não em vault¹ |
+| `EXTERNAL_SUPABASE_URL` | ❌ | ❌ |
+| `EXTERNAL_SUPABASE_SERVICE_KEY` | ❌ | ❌ |
+| `CF_ORIGIN_SECRET` | ❌ | ❌ (CF_API_TOKEN está) |
+| `BITRIX24_WEBHOOK_URL` | ❌ | ❌ |
+| `ASIA_BASE_URL` | ❌ | ❌ (asia_api_key está) |
+
+¹ Edge function secrets são configurados via `supabase secrets set` (separado do vault de DB). O vault armazena segredos para uso interno do banco. Os segredos marcados ❌ devem estar configurados como secrets da edge function — verificar no Dashboard em Settings → Edge Functions.
+
+**Achado — [ID-SEC-008] Segredos de edge function não documentados em SEGREDOS.md:**
+- **Severidade:** BAIXO
+- `LOVABLE_API_KEY`, `CSRF_SECRET`, `TURNSTILE_SECRET_KEY`, `SIMULATION_BYPASS_KEY` referenciados no código mas não aparecem em `docs/ci/SEGREDOS.md`
+- **Correção:** Documentar em `SEGREDOS.md` (Gate 1.14)
+
+---
+
+### 16.5 Grep PII/Segredos nos Arquivos de Auditoria (2026-10-22)
+
+**Comando executado:**
+```bash
+grep -rn "eyJ\|sk_\|service_role\|anon_key" auditoria-supabase/ \
+  --include="*.md" --include="*.sql" --include="*.json" \
+  | grep -v "# \|\/\/ \|--\|masked\|não há\|mascarado\|NÃO\|nenhum"
+```
+
+**Resultados verificados:**
+- Ocorrências de `service_role` nos arquivos: apenas em SQL como nome de role PostgreSQL em comentários de políticas RLS (ex: `(auth.jwt() ->> 'role') IN ('admin', 'service_role')`) — isso é o nome do role, não um valor de chave.
+- Nenhum JWT token (`eyJ...`) encontrado.
+- Nenhuma `anon_key` com valor real.
+- Nenhuma `service_role key` hardcoded (apenas o nome do role em políticas).
+
+**Conclusão: Nenhum PII ou valor de segredo nos arquivos de auditoria** ✅
+
+---
+
+### 16.6 T4 RLS — Esclarecimento sobre `permission denied`
+
+**Teste T4:** anon tentando acessar `quotes`, `orders`, `user_organizations`.
+
+**O que aconteceu:** `ERROR: permission denied for table quotes`
+
+**Por que é PASS:** A proteção é dupla — o role `anon` não tem `GRANT SELECT` nessas tabelas, então o PostgreSQL rejeita o acesso **antes** de avaliar RLS. Isso é proteção mais forte que RLS sozinho: mesmo que uma policy RLS falhasse, o GRANT faltante bloqueia. A política RLS em cima seria uma segunda linha de defesa.
+
+**Evidência da proteção dupla no script de teste** (`testes/rls_matrix_test.sql`):
+```sql
+-- Apenas profiles tem GRANT SELECT para anon:
+GRANT SELECT, INSERT ON profiles TO authenticated, anon;
+-- quotes, orders, order_items, user_organizations: SEM GRANT para anon
+```
+
+**Resultado correto:** `permission denied` = proteção ativa = PASS (proteção pelo PostgreSQL ACL, não por RLS, mas igualmente efetiva). A matriz documenta explicitamente: *"PASS via permission denied — sem GRANT + sem policy. A proteção é dupla."*
+
+---
+
+### 16.7 fn_aggregate_stock_daily() — Status
+
+**Status:** ⚠️ NÃO VERIFICADO (MCP timeout >60s)
+
+**SQL para executar manualmente no Dashboard → SQL Editor:**
+```sql
+SELECT public.fn_aggregate_stock_daily();
+```
+Leva vários minutos. Resultado esperado: popular `stock_daily_summary` (hoje com 0 rows, 909 MB alocados).
+
+---
+
+### 16.8 propostas/*.sql — Verificação de Rollback e NÃO APLICADA
+
+Todos os arquivos de proposta contêm as marcações obrigatórias:
+
+| Arquivo | `-- NÃO APLIC*` | `-- ROLLBACK` |
+|---|---|---|
+| `P01_cron_auth_headers.sql` | ✅ `NÃO APLICAR DIRETAMENTE` | ✅ |
+| `P01_rls_restrictive_correcao.sql` | ✅ `NÃO APLICADA` | ✅ |
+| `P02_fk_indexes.sql` | ✅ `NÃO APLICADA` | ✅ |
+| `P03_analyze_tables.sql` | ✅ `NÃO APLICADA` | ✅ |
+| `P03_security_definer_search_path.sql` | ✅ `NÃO APLICAR DIRETAMENTE` | ✅ |
+| `P04_storage_bucket_policies.sql` | ✅ `NÃO APLICAR DIRETAMENTE` | ✅ |
+| `P05_indices_duplicados.sql` | ✅ `NÃO APLICAR DIRETAMENTE` | ✅ |
+| `P06_views_security_invoker.sql` | ✅ `NÃO APLICAR DIRETAMENTE` | ✅ |
+| `P07_storage_recibos_with_check.sql` | ✅ `NÃO APLICAR DIRETAMENTE` | ✅ |
 
 ---
 

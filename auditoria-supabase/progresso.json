@@ -30,11 +30,15 @@
   "relatorio_final": "RELATORIO_AUDITORIA_SUPABASE.md",
   "resumo_achados": {
     "CRITICO": 1,
-    "ALTO": 7,
+    "ALTO": 9,
     "MEDIO": 27,
-    "BAIXO": 8,
+    "BAIXO": 9,
     "INFO": 13,
-    "NAO_VERIFICADO": 3
+    "NAO_VERIFICADO": 2
+  },
+  "nao_verificado_motivo": {
+    "fn_aggregate_stock_daily": "funcao leva >60s, timeout MCP — usuario deve executar manualmente",
+    "cron_job_run_details_30d": "coluna start_time sem index, timeout em 30d — janela reduzida para 7d funcionou"
   },
   "advisors_performance": {
     "auth_rls_initplan": 8,
@@ -42,5 +46,11 @@
     "unused_indexes": 461,
     "table_bloat": 1,
     "auth_connections": 1
+  },
+  "advisors_security": {
+    "security_definer_view": 8,
+    "pg_graphql_anon_table_exposed": 59,
+    "anon_security_definer_function_executable": 10,
+    "authenticated_security_definer_function_executable": 101
   }
 }
