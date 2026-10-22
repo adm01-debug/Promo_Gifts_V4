@@ -1,8 +1,11 @@
 # Relatório de Análise de Pull Requests — Promo Gifts V4
 
 **Data:** 2026-10-22  
-**Baseline main:** `8e8053b9ed85142e85809783cd3acf9a3077ecde`  
-**Total de PRs abertas analisadas:** 24  
+**Baseline main:** `8bafc7d5a0a1f0f6a06d88adc6577098f873dfcb` (após merge PR #2356)
+**Typecheck baseline:** 1 erro pré-existente (TS2688 `node`) — Gate Final = success  
+**Total de PRs abertas analisadas:** 25  
+**PRs mergeadas nesta sessão:** 1 (#2356)  
+**Total mergeadas (todas as sessões):** 5 (#2338, #2351, #2354, #2352, #2356)  
 **Sessão principal:** https://claude.ai/code/session_012WyySbh2tj8vhRQLBf3mHo
 
 ---
@@ -11,12 +14,21 @@
 
 | Veredicto | Quantidade | PRs |
 |-----------|-----------|-----|
-| MERGEADA | 1 | #2338 (SHA `57017ba78eb68c6c72dba336f9c081c4519619c4`) |
-| AGUARDAR_REBASE | 4 | #2312, #2314, #2315, #2316 |
+| MERGEADA | 4 | #2338, #2351, #2354, #2356 (SHAs abaixo) |
+| MERGEADA_PELO_OWNER | 1 | #2352 (owner adm01-debug, SHA `92a4d3bc`) |
+| CI_PENDENTE | 1 | #2357 (security REVOKE E30/E40/E18 — aguardar Gate Final) |
+| AGUARDAR_CI | 5 | #2312, #2314, #2315, #2316, #2349 (rebase + CI necessários) |
 | DECISAO_HUMANA | 2 | #2290, #2293 |
 | DRAFT | 1 | #2320 |
 | NAO_MERGEAR | 1 | #2319 |
 | FECHAR | 15 | #2322–#2331, #2333–#2337 |
+
+**SHAs de merge:**
+- #2338 → `57017ba78eb68c6c72dba336f9c081c4519619c4`
+- #2351 → `3e06378a5e4f53e00a2c6826fdf667692b307882`
+- #2354 → `3e006427eb19247d2e99c03a8140193d3f763a8e`
+- #2352 → `92a4d3bc...` (owner)
+- #2356 → `8bafc7d5a0a1f0f6a06d88adc6577098f873dfcb` (session guard callers)
 
 ---
 

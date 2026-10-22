@@ -1,8 +1,9 @@
-# Baseline de CI — main `8e8053b9ed85142e85809783cd3acf9a3077ecde`
+# Baseline de CI — main `8bafc7d5a0a1f0f6a06d88adc6577098f873dfcb`
 
 **Data:** 2026-10-22
-**SHA fixado:** `8e8053b9ed85142e85809783cd3acf9a3077ecde`
-**Fonte:** GitHub Actions check runs via API (CI local inviável — registro npm privado `europe-west1-npm.pkg.dev` retorna 403 no container cloud)
+**SHA fixado:** `8bafc7d5a0a1f0f6a06d88adc6577098f873dfcb` (após merge PR #2356, sessão session_012WyySbh2tj8vhRQLBf3mHo)
+**SHA anterior:** `8e8053b9ed85142e85809783cd3acf9a3077ecde` (sessão anterior)
+**Fonte:** GitHub Actions check runs via API + `npx tsc --noEmit` rodado no container cloud
 
 ## Resultado do Gate Final
 

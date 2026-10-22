@@ -1,25 +1,25 @@
 {
-  "baseline_sha": "8e8053b9ed85142e85809783cd3acf9a3077ecde",
+  "baseline_sha": "8bafc7d5a0a1f0f6a06d88adc6577098f873dfcb",
   "total_open": 25,
   "analisadas": 25,
   "mergeadas": 5,
-  "ultima_atualizacao": "2026-10-22T23:31Z",
+  "ultima_atualizacao": "2026-10-22T23:35Z",
   "contagem_por_veredicto": {
-    "CI_PENDENTE": 0,
-    "AGUARDAR_REBASE": 5,
+    "CI_PENDENTE": 1,
+    "AGUARDAR_CI": 5,
     "DECISAO_HUMANA": 2,
-    "DRAFT": 2,
+    "DRAFT": 1,
     "NAO_MERGEAR": 1,
     "FECHAR": 15,
     "MERGEADA": 4,
     "MERGEADA_PELO_OWNER": 1
   },
   "main_atual": {
-    "sha": "3e006427eb19247d2e99c03a8140193d3f763a8e",
+    "sha": "8bafc7d5a0a1f0f6a06d88adc6577098f873dfcb",
     "gate_final": "SUCCESS",
-    "gate_final_check_run_id": 120094756727,
-    "gate_final_completed_at": "2026-10-22T21:18:24Z",
-    "gate_final_run_id": 39854917747
+    "gate_final_check_run_id": 120142508825,
+    "gate_final_completed_at": "2026-10-22T23:12:21Z",
+    "gate_final_run_id": 39869261220
   },
   "pr2338_head": "b48145b366041354dc0ee8a20a0bd6217b1289f1",
   "pr2338_merge_sha": "57017ba78eb68c6c72dba336f9c081c4519619c4",
@@ -85,30 +85,39 @@
       "gate_final_run": 39852198657
     },
     "2316": {
-      "veredicto": "AGUARDAR_REBASE",
-      "acao": "conflito_semantico_com_2338",
+      "veredicto": "AGUARDAR_CI",
+      "acao": "rebase + resolver conflito semântico com #2338 (Gate Final failure vs base stale 45545ae5)",
       "base": "45545ae"
     },
     "2315": {
-      "veredicto": "AGUARDAR_REBASE",
-      "acao": "rebase + resolver conflito com #2314",
+      "veredicto": "AGUARDAR_CI",
+      "acao": "rebase + resolver conflito com #2314 (Gate Final failure vs base stale 1ac6992c)",
       "base": "1ac6992"
     },
     "2314": {
-      "veredicto": "AGUARDAR_REBASE",
-      "acao": "rebase + reconciliar valor com #2315",
+      "veredicto": "AGUARDAR_CI",
+      "acao": "rebase + reconciliar baseline com #2315 (Gate Final failure vs base stale 1ac6992c)",
       "base": "1ac6992"
     },
     "2312": {
-      "veredicto": "AGUARDAR_REBASE",
-      "acao": "rebase em main",
+      "veredicto": "AGUARDAR_CI",
+      "acao": "rebase necessário + CI (Gate Final failure vs base stale 1ac6992c)",
       "base": "1ac6992"
     },
     "2349": {
-      "veredicto": "AGUARDAR_REBASE",
-      "acao": "rebase em main (base stale: 57017ba7)",
+      "veredicto": "AGUARDAR_CI",
+      "acao": "aguardar Gate Final (0 check runs após rebase recente)",
       "head": "d8f7934d",
-      "base": "57017ba7"
+      "base": "8bafc7d5"
+    },
+    "2357": {
+      "veredicto": "CI_PENDENTE",
+      "acao": "aguardar Gate Final — merge quando CI verde (REVOKE segurança E30/E40/E18)",
+      "head": "26451e05d6e8",
+      "base": "8bafc7d5a0a1f0f6a06d88adc6577098f873dfcb",
+      "autor": "adm01-debug",
+      "analisado_em": "2026-10-22T23:32Z",
+      "sessao": "session_012WyySbh2tj8vhRQLBf3mHo"
     },
     "2320": {
       "veredicto": "DRAFT",

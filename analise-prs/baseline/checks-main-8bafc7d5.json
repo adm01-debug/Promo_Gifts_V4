@@ -1,0 +1,15 @@
+{
+  "sha": "8bafc7d5a0a1f0f6a06d88adc6577098f873dfcb",
+  "captured_at": "2026-10-22T23:32Z",
+  "session": "session_012WyySbh2tj8vhRQLBf3mHo",
+  "typecheck_errors": 1,
+  "typecheck_errors_detail": [
+    "TS2688: Cannot find type definition file for 'node' (pré-existente no main)"
+  ],
+  "gate_final": "success",
+  "gate_final_check_run_id": 120142508825,
+  "gate_final_run_id": 39869261220,
+  "gate_final_completed_at": "2026-10-22T23:12:21Z",
+  "note": "Baseline capturado após merge do PR #2356 (session guard 5 callers). Um erro TS2688 pré-existente no main.",
+  "how_captured": "npx tsc --noEmit rodado no working tree com origin/main checado; Gate Final verificado via mcp__GITHUB_-_MCP_-_FOREVER__github_list_check_runs(ref=cfabab26) conclusion=success"
+}

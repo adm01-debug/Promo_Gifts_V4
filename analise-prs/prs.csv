@@ -23,3 +23,5 @@ number,title,author,bot,draft,base_is_main,files_changed,veredicto,acao,merge_sh
 2335,"Add GitHub Actions workflow for Next.js deployment",adm01-debug,false,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
 2336,"Create main.yml (arquivo em branco)",adm01-debug,false,false,true,1,FECHAR,fechar — arquivo em branco,,false,false,false,false
 2337,"Add Deno workflow for linting and testing (duplicata #2323)",adm01-debug,false,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
+2349,"fix(ci): release-please RELEASE_PLEASE_TOKEN + cart-invariants shards 2→3 + diagnóstico E2E",adm01-debug,false,false,true,6,AGUARDAR_CI,aguardar Gate Final (0 check runs após rebase),,true,false,false,true
+2357,"security: revoga brechas E30/E40/E18",adm01-debug,false,false,true,8,CI_PENDENTE,aguardar Gate Final — merge quando CI verde,,true,false,false,true
