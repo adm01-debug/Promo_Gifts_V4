@@ -41,7 +41,7 @@
     },
     {
       "fn": "public.fn_backfill_queue_reap_stuck(p_stuck_minutes integer, p_max_attempts integer)",
-      "reason": "E099 (2026-10-21): rotina de manutenção de fila (cron) — SECURITY DEFINER para atualizar registros de backfill_queue independente de RLS. GAP DE SEGURANÇA PENDENTE (Qodo High, 2026-10-22): qualquer authenticated pode chamar com p_stuck_minutes=0 e p_max_attempts=1 para reaper jobs em voo. Migration de REVOKE pending: supabase/migrations/20261022_revoke_fn_backfill_queue_reap_stuck_public_grant.sql (a criar via workflow, REGRA E056)."
+      "reason": "E099 (2026-10-21): rotina de manutenção de fila (cron) — SECURITY DEFINER para atualizar registros de backfill_queue independente de RLS. GAP DE SEGURANÇA PENDENTE (Qodo High, 2026-10-22): qualquer authenticated pode chamar com p_stuck_minutes=0 e p_max_attempts=1 para reaper jobs em voo. Migration de REVOKE criada: supabase/migrations/20261022000000_revoke_fn_backfill_queue_reap_stuck_public_grant.sql (aplicar via workflow db-apply-migration.yml, REGRA E056)."
     },
     {
       "fn": "public.fn_batch_update_cart_item_sort_order(p_updates jsonb)",
@@ -49,7 +49,7 @@
     },
     {
       "fn": "public.fn_detect_recurring_errors_last_hour(_min_occurrences integer)",
-      "reason": "E099 (2026-10-21): monitoramento de erros recorrentes — SECURITY DEFINER para leitura de logs de sistema sem RLS. GAP DE SEGURANÇA PENDENTE (Qodo High, 2026-10-22): retorna mensagens de erro de telemetria cross-user a qualquer authenticated via grant PUBLIC padrão (além de service_role). Risco: authenticated pode passar _min_occurrences=0 para ler mensagens de erro da última hora. Migration de REVOKE pending: supabase/migrations/20261022_revoke_fn_detect_recurring_errors_public_grant.sql (a criar via workflow, REGRA E056)."
+      "reason": "E099 (2026-10-21): monitoramento de erros recorrentes — SECURITY DEFINER para leitura de logs de sistema sem RLS. GAP DE SEGURANÇA PENDENTE (Qodo High, 2026-10-22): retorna mensagens de erro de telemetria cross-user a qualquer authenticated via grant PUBLIC padrão (além de service_role). Risco: authenticated pode passar _min_occurrences=0 para ler mensagens de erro da última hora. Migration de REVOKE criada: supabase/migrations/20261022000100_revoke_fn_detect_recurring_errors_public_grant.sql (aplicar via workflow db-apply-migration.yml, REGRA E056)."
     },
     {
       "fn": "public.fn_get_all_leaf_categories()",
