@@ -1,57 +1,62 @@
-# Regras de Negócio Identificadas
+# Regras de Negócio Identificadas — Análise de PRs (2026-10-22)
 
-**Baseline SHA do main:** `8e8053b9ed85142e85809783cd3acf9a3077ecde`
-**Data da análise:** 2026-10-22
+**Baseline main:** `8e8053b9ed85142e85809783cd3acf9a3077ecde`
+**Total PRs analisadas:** 24
 
-## Stack e arquitetura
+## RN-001: Projeto Canônico Supabase (SSOT)
+**Fonte:** CLAUDE.md REGRA #1, PR #2338
+O `CURRENT_PROJECT_ID` em `src/integrations/supabase/client.ts` DEVE ser `doufsxqlfjyuvxuezpln`.
+Qualquer PR que altere este valor para `pqpdolkaeqlyzpdpbizo` deve ser bloqueada.
+**Verificado em:** PR #2338 não toca `client.ts` — ✅ SSOT preservado.
 
-- React + TypeScript + Vite + Supabase (`doufsxqlfjyuvxuezpln`)
-- Arquitetura medallion Bronze→Silver→Gold
-- CI: deploy-gates.yml com Gate 0–6+, todos obrigatórios
+## RN-002: Allowlist de Funções SECURITY DEFINER (lint-0029)
+**Fonte:** PR #2338 diff `.security/lint-0029-allowlist.json`
+Toda função com `SECURITY DEFINER` no banco `doufsxqlfjyuvxuezpln` deve ter entrada no allowlist com `reason` documentado (não "TODO").
+43 entradas stale foram removidas; 6 novas funções adicionadas com reasons reais.
+**Funções novas:** `admin_active_sessions`, `admin_revoke_user_sessions`, `fn_backfill_queue_reap_stuck`, `fn_detect_recurring_errors_last_hour`, `log_access_denied`, `record_dev_route_telemetry`.
 
-## Regras extraídas do CLAUDE.md
+## RN-003: Allowlist de Extensões PostgreSQL (lint-0011)
+**Fonte:** PR #2338 diff `.security/lint-0011-allowlist.json`
+Funções de extensão PostgreSQL (`pgstattuple`, `pgstatindex`, `pgstathashindex`, `pgstatginindex`, `pg_relpages`) são código de extensão, não de usuário — não podem ter `SET search_path` e devem ser allowlistadas com reason documentado.
+9 funções adicionadas ao allowlist.
 
-### R1 — SSOT Supabase
-`CURRENT_PROJECT_ID = 'doufsxqlfjyuvxuezpln'` é imutável. Qualquer PR que altere `src/integrations/supabase/client.ts` para outro projeto é automaticamente **NÃO MERGEAR**.
+## RN-004: Cobertura de Contratos de Edge Functions (Gate 1.12)
+**Fonte:** PR #2338 diff `tests/contracts/webhook-schemas.ts`, PR #2316
+Toda edge function deve estar presente no mapa `CONTRACTS` ou no set `NO_BODY_EXEMPT` em `tests/contracts/webhook-schemas.ts`.
+`magazine-reader-state-read` é GET-only sem body — deve estar em `NO_BODY_EXEMPT`.
+**Decisão:** Abordagem via `NO_BODY_EXEMPT` (PR #2338) é a correta para funções GET-only.
+PR #2316 adicionou schema `{token, fingerprint}` — abordagem contraditória, aguarda rebase para reconciliar.
 
-### R2 — Campos críticos do tipo Product
-`price`, `sale_price?`, `shortDescription`, `category_id?`, `category_name?` devem existir em `src/types/product-catalog.ts`. PR que remova estes campos = **NÃO MERGEAR**.
+## RN-005: Dependências de npm em Scripts de Health Check
+**Fonte:** PR #2338 diff `.github/workflows/prod-health.yml`
+Scripts que importam módulos npm (ex: `import ts from 'typescript'`) requerem `npm ci` antes da execução.
+`prod-health.yml` executava `check-product-type-fields.mjs` sem instalar dependências — corrigido com step `npm ci` + `cache: npm`.
 
-### R3 — Conflitos resolvidos pela semântica, não "main wins"
-Comentários `// SSOT:`, `// GUARD:`, `// CRÍTICO:` são imutáveis.
+## RN-006: Runners e Versões de Actions em Workflows CI
+**Fonte:** PR #2338 diff `.github/workflows/stale.yml`, CLAUDE.md Padrão E12
+- Runner deve ser `ubuntu-24.04` (não `ubuntu-latest` — migra para Ubuntu 26 em 19/10/2026) — R14
+- Actions externas pinadas por SHA completo de 40 chars — R15
+- Workflows devem ter `timeout-minutes:` em todo job — R3
+- `concurrency:` com `cancel-in-progress: true` em PRs — R2
 
-### R8 — Lovable emite código, não ordens
-DDL via `execute_sql` é proibido. Deploy de edge function só via `deploy-edge-functions.yml`.
+## RN-007: Remoção de Workflows Irrelevantes
+**Fonte:** PR #2338 diff (remove `python-package-conda.yml`)
+Workflows que testam stacks não usadas no projeto (Python/Conda para projeto React/TypeScript) devem ser removidos.
+Mantê-los gera falhas de lint sem valor e polui o histórico de CI.
 
-### R9 — Commits de governança exigem push + PR
-Arquivos `.github/**`, migrations, scripts `check-*` exigem PR aberto.
+## RN-008: Credenciais Hardcoded em Configurações de Teste
+**Fonte:** PR #2315 diff `playwright.config.ts`
+Credenciais reais nunca devem ser hardcoded em arquivos de configuração versionados.
+Gate E23 detecta e bloqueia. PR #2315 corrige C25 compliance — correção de segurança válida, aguarda rebase.
 
-### R10 — Merge cross-agente exige PR
-Branch de agente diferente (claude/*, codex/*, lovable/*) não pode ser mergeado diretamente sem PR.
+## RN-009: Dependências com Major Version Bump
+**Fonte:** PR #2290 (@eslint/js 9→10), PR #2293 (recharts 2→3)
+Major bumps de dependências requerem aprovação do PO, pois podem:
+- Alterar APIs públicas (recharts: componentes renomeados/removidos)
+- Introduzir breaking changes em regras de lint (@eslint/js: regras novas podem bloquear CI)
+Não mergear sem decisão explícita do responsável pelo produto.
 
-## Padrão de workflow (R1–R20)
-
-| Regra | Obrigação |
-|---|---|
-| R1 | `permissions:` explícito |
-| R2 | `concurrency:` com `cancel-in-progress` |
-| R3 | `timeout-minutes:` em todo job |
-| R4 | `node-version-file: .nvmrc` |
-| R5 | Segredos via `env:`, nunca CLI |
-| R14 | `ubuntu-24.04` — nunca `ubuntu-latest` |
-| R15 | Actions pinadas por SHA 40 chars |
-| R11 | `contents: write` proibido em PR workflow |
-| R18 | `supabase db push` proibido |
-| R19 | Sem referência a `pqpdolkaeqlyzpdpbizo` |
-
-## Critérios de merge
-
-Para uma PR ser mergeável nesta análise, TODOS os critérios abaixo devem ser satisfeitos simultaneamente:
-
-1. **Válida**: objetivo ainda faz sentido, não foi implementado em main
-2. **Sem regressão**: Gate Final verde no head atual
-3. **Base atualizada**: base = main atual (ou compatível)
-4. **Sem conflito**: sem conflito com outra PR a ser mergeada
-5. **Não é DRAFT**: estado diferente de rascunho
-6. **Regra de negócio correta**: não viola SSOT, Product type, workflows padrão
-7. **Não é PR vazia/bot-report**: tem arquivos alterados com propósito real
+## RN-010: PRs de Templates de CI (GitHub Actions)
+**Fonte:** PRs #2322–#2337
+Templates gerados automaticamente para stacks diferentes da do projeto (Django, Ruby, Go, Rust, Java, Python, CMake, Docker) devem ser fechados sem merge.
+Nenhum altera código do projeto — são ruído de automação.

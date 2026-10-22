@@ -1,25 +1,25 @@
-numero,titulo,autor,base,arquivos,veredicto,motivo
-2290,"Bump @eslint/js from 9.39.5 to 10.0.1",dependabot[bot],45545ae,2,DECISÃO_HUMANA,"Major bump @eslint/js 9→10, breaking changes (Node≥20.19, eslintrc removido), base desatualizada"
-2293,"Bump recharts from 2.10.3 to 3.10.1",dependabot[bot],45545ae,2,DECISÃO_HUMANA,"Major bump recharts 2→3, breaking API changes, remoção de recharts-scale, base desatualizada"
-2312,"ci(deploy-gates): skip docs-only PRs + timeout unit-tests 45min (E24)",adm01-debug,1ac6992,1,AGUARDAR_REBASE,"Arquivo protegido deploy-gates.yml, mudança válida E197+E24, base 1ac6992 desatualizada"
-2314,"ci(ratchet): atualiza .as-assertions-baseline.json productionAsCount 2162→2164",adm01-debug,1ac6992,1,AGUARDAR_REBASE,"Conflito com PR #2315 no mesmo arquivo (.as-assertions-baseline.json), valores incompatíveis (2163 vs 2164)"
-2315,"ci(e2e): remove credenciais reais de playwright.config.ts — C25",adm01-debug,1ac6992,2,AGUARDAR_REBASE,"Correção de segurança válida C25, conflito com PR #2314 no mesmo arquivo, base desatualizada"
-2316,"fix(ci): Gate 1.12 — magazine-reader-state-read ao contrato + cors.ts",adm01-debug,45545ae,2,AGUARDAR_REBASE,"Correção válida Gate 1.12, base 45545ae desatualizada, verificar se PR #2338 já inclui esta correção"
-2319,"Confirm repository access and workflow status",jules-bot,45545ae,0,NÃO_MERGEAR,"PR vazia (0 arquivos alterados) — artefato de verificação de acesso do bot Jules"
-2320,"Align ESLint dependency ranges to resolve npm peer conflict in CI",copilot[bot],45545ae,2,DRAFT,"Estado DRAFT, base desatualizada, depende de decisão sobre PR #2290"
-2322,"Node.js CI",github-actions-bot,desconhecida,1,FECHAR,"Template genérico Node.js irrelevante, viola R1/R2/R3/R14/R15"
-2323,"Django CI",github-actions-bot,desconhecida,1,FECHAR,"Template genérico Django irrelevante, viola R1/R2/R3/R14/R15"
-2324,"Python application",github-actions-bot,desconhecida,1,FECHAR,"Template genérico Python app irrelevante, viola R1/R2/R3/R14/R15"
-2325,"Python package",github-actions-bot,desconhecida,1,FECHAR,"Template genérico Python package irrelevante, viola R1/R2/R3/R14/R15"
-2326,"Ruby on Rails",github-actions-bot,desconhecida,1,FECHAR,"Template genérico Ruby irrelevante, viola R1/R2/R3/R14/R15"
-2327,"Rust",github-actions-bot,desconhecida,1,FECHAR,"Template genérico Rust irrelevante, viola R1/R2/R3/R14/R15"
-2328,"Go",github-actions-bot,desconhecida,1,FECHAR,"Template genérico Go irrelevante, viola R1/R2/R3/R14/R15"
-2329,"Java with Maven",github-actions-bot,desconhecida,1,FECHAR,"Template genérico Java Maven irrelevante, viola R1/R2/R3/R14/R15"
-2330,"Java with Gradle",github-actions-bot,desconhecida,1,FECHAR,"Template genérico Java Gradle irrelevante, viola R1/R2/R3/R14/R15"
-2331,"CMake",github-actions-bot,desconhecida,1,FECHAR,"Template genérico CMake irrelevante, viola R1/R2/R3/R14/R15"
-2333,"Docker Image CI",github-actions-bot,desconhecida,1,FECHAR,"Template genérico Docker irrelevante, viola R1/R2/R3/R14/R15"
-2334,"Publish Node.js Package to GitHub Packages",github-actions-bot,desconhecida,1,FECHAR,"Template genérico npm publish irrelevante, viola R1/R2/R3/R14/R15"
-2335,"Create and publish a Docker image",github-actions-bot,desconhecida,1,FECHAR,"Template genérico GHCR irrelevante, viola R1/R2/R3/R14/R15"
-2336,"Blank",github-actions-bot,desconhecida,1,FECHAR,"Template blank — apenas uma linha em branco, sem valor algum"
-2337,"Webpack",github-actions-bot,desconhecida,1,FECHAR,"Template genérico Webpack irrelevante, viola R1/R2/R3/R14/R15"
-2338,"fix(ci): corrige 5 workflows em failure — actionlint, lint-0011/0029, Gate 1.12, prod-health",adm01-debug,8e8053b9,71,CI_PENDENTE,"PR válida, base = main, label large-pr-approved. Head ac0f4e10: Gate Final não iniciado (82 checks, 16 queued, 3 in_progress)"
+numero,titulo,veredicto,acao,ainda_valida,traz_regressao,ja_em_main,regra_negocio_correta
+2338,"fix(ci): corrige 5 workflows em failure — actionlint, lint-0011/0029, Gate 1.12, prod-health",CI_PENDENTE,MERGEAR quando Gate Final = success,true,false,false,true
+2316,"fix(ci): Gate 1.12 — adiciona magazine-reader-state-read ao contrato + cors.ts sem literal '*'",AGUARDAR_REBASE,Conflito semântico com #2338 — rebase após merge de #2338,true,false,false,PARCIAL
+2315,"ci(e2e): remove credenciais reais de playwright.config.ts — C25 compliance",AGUARDAR_REBASE,Rebase + resolver conflito com #2314,true,false,false,true
+2314,"ci(ratchet): atualiza .as-assertions-baseline.json — productionAsCount 2162→2164",AGUARDAR_REBASE,Rebase + reconciliar valor com #2315,CONDICIONAL,false,false,NAO_VERIFICAVEL
+2312,"ci(paths): E197+E24 improvements",AGUARDAR_REBASE,Rebase em main 8e8053b9,true,false,false,true
+2320,"(draft)",DRAFT,Aguardar autor promover para ready,null,null,null,null
+2319,"PR vazia de bot (Jules)",NAO_MERGEAR,Fechar — PR vazia sem arquivos alterados,false,false,false,false
+2293,"chore(deps): recharts 2→3 major bump",DECISAO_HUMANA,Decisão do PO sobre major bump,true,null,false,null
+2290,"chore(deps): @eslint/js 9→10 major bump",DECISAO_HUMANA,Decisão do PO sobre major bump,true,null,false,null
+2322,"template Node.js GitHub Actions",FECHAR,Template de CI irrelevante,false,false,false,false
+2323,"template Django",FECHAR,Stack errada — projeto é React/TypeScript,false,false,false,false
+2324,"template Python app",FECHAR,Stack errada — projeto é React/TypeScript,false,false,false,false
+2325,"template Python package",FECHAR,Stack errada — projeto é React/TypeScript,false,false,false,false
+2326,"template Ruby on Rails",FECHAR,Stack errada — projeto é React/TypeScript,false,false,false,false
+2327,"template Rust",FECHAR,Stack errada — projeto é React/TypeScript,false,false,false,false
+2328,"template Go",FECHAR,Stack errada — projeto é React/TypeScript,false,false,false,false
+2329,"template Java Maven",FECHAR,Stack errada — projeto é React/TypeScript,false,false,false,false
+2330,"template Java Gradle",FECHAR,Stack errada — projeto é React/TypeScript,false,false,false,false
+2331,"template CMake",FECHAR,Stack errada — projeto é React/TypeScript,false,false,false,false
+2333,"template Docker Image CI",FECHAR,Stack errada — projeto é React/TypeScript,false,false,false,false
+2334,"template Publish Node.js pkg",FECHAR,Stack errada — projeto é React/TypeScript,false,false,false,false
+2335,"template Docker image publish",FECHAR,Stack errada — projeto é React/TypeScript,false,false,false,false
+2336,"template Blank",FECHAR,Arquivo em branco — sem conteúdo,false,false,false,false
+2337,"template Webpack",FECHAR,Stack errada — projeto é React/TypeScript,false,false,false,false
