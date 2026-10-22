@@ -412,10 +412,6 @@
       "reason": "E18 (2026-09-17): UPDATE restrito a id=_challenge_id AND user_id=auth.uid() AND consumed=false AND expires_at>now() — só o dono do challenge, ainda válido, pode confirmá-lo."
     },
     {
-      "fn": "public.log_user_logout()",
-      "reason": "Função SECURITY DEFINER com EXECUTE concedido a authenticated ainda existe no banco canônico doufsxqlfjyuvxuezpln. Restaurada na allowlist enquanto migration de REVOKE não for aplicada via db-apply-migration.yml (REGRA #8 corolário). Remoção deste PR revertida para evitar falha no Gate 5."
-    },
-    {
       "fn": "public.zapp_catalog_stats()",
       "reason": "Achado E07 (já rastreado): EXECUTE concedido a authenticated sem necessidade (migration de correção nunca chegou a rodar — divergência ledger/schema documentada em E12/POLITICA_DDL). REVOKE preparado no Pacote de Aprovação #1, aguardando aprovação do PO."
     }
