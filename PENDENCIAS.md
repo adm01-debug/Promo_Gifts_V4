@@ -71,9 +71,9 @@
 **Gap:** Qualquer `authenticated` pode chamar essas funções SECURITY DEFINER.  
 **Motivo do bloqueio:** Requer migration via `db-apply-migration.yml` (REGRA E056). Arquivos SQL precisam ser criados e aprovados pelo PO.  
 **Ação necessária:**  
-1. Criar `supabase/migrations/20261022_revoke_fn_backfill_queue_reap_stuck_public_grant.sql`  
-2. Criar `supabase/migrations/20261022_revoke_fn_detect_recurring_errors_public_grant.sql`  
-3. Disparar `db-apply-migration.yml` com versão explícita após aprovação do PO.
+1. ✅ Arquivo criado: `supabase/migrations/20261022000000_revoke_fn_backfill_queue_reap_stuck_public_grant.sql`  
+2. ✅ Arquivo criado: `supabase/migrations/20261022000100_revoke_fn_detect_recurring_errors_public_grant.sql`  
+3. PO: Disparar `db-apply-migration.yml` com versão explícita para aplicar em prod.
 
 ---
 

@@ -101,6 +101,8 @@ Deploy Gates não apareceu na lista de runs concluídos até o momento desta an�
 | `47c4e91e` | `e2e/flows/13b-carts-undo-rpc-atomic.spec.ts` | Regex de toast RLS restringido ao título canônico |
 | `bd851bb4` | `.security/lint-0011-allowlist.json` | Remove OUT params das 9 assinaturas — alinha com `pg_get_function_identity_arguments` |
 | `cb2706ca` | `tests/contracts/webhook-schemas.ts` | `magazine-reader-state-read` adicionado a NO_BODY_EXEMPT (Gate 1.12) |
+| `c05430ce` | `PENDENCIAS.md`, `RELATORIO_CI.md` | Diagnóstico completo de todos os 15 workflows em falha em main |
+| `(próximo)` | `supabase/migrations/20261022000000_*.sql`, `20261022000100_*.sql` | Migrations REVOKE criadas — corrige Gate 1.3 (check-migration-path-references) |
 
 ---
 
