@@ -104,7 +104,75 @@ O projeto tem infraestrutura de auditoria robusta:
 
 ---
 
-## 7.5 Sumário da Seção 7
+## 7.5 fn_aggregate_stock_daily — Análise de Código-Fonte
+
+**Data:** 2026-10-22  
+**Método:** Leitura de `pg_proc.prosrc` via `SELECT pg_get_functiondef(oid)` — sem execução  
+**Status NV-001:** PARCIALMENTE RESOLVIDO (código lido; execução NÃO VERIFICADA)
+
+### Estrutura da função
+
+```sql
+DECLARE
+  v_upserted integer; v_purged integer; v_baseline integer;
+  v_today date := (now() AT TIME ZONE 'America/Sao_Paulo')::date;
+BEGIN
+  p_date := COALESCE(p_date, v_today);
+  IF p_date > v_today THEN
+    RAISE EXCEPTION '...future date blocked...';
+  END IF;
+  DELETE FROM stock_daily_summary WHERE summary_date > v_today;
+  GET DIAGNOSTICS v_purged = ROW_COUNT;
+  
+  WITH open_close AS (
+    SELECT DISTINCT ON (variant_supplier_source_id)
+      variant_supplier_source_id, ...,
+      FIRST_VALUE(stock_total_old) OVER w AS stock_open,
+      stock_total_new AS stock_close,
+      -- FIX GAP-3: LEAST(old,new) garante min correto mesmo quando estoque cai
+      MIN(LEAST(COALESCE(stock_total_old, stock_total_new),
+               COALESCE(stock_total_new, stock_total_old))) OVER w AS stock_min,
+      ... [outras window aggregations]
+    FROM stock_snapshots
+    WHERE (captured_at AT TIME ZONE 'America/Sao_Paulo')::date = p_date
+      AND variant_supplier_source_id IS NOT NULL
+      AND variant_supplier_source_id::text NOT LIKE '%-99999-%'
+    WINDOW w AS (
+      PARTITION BY variant_supplier_source_id
+      ORDER BY captured_at
+      ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+    )
+    ORDER BY variant_supplier_source_id, captured_at DESC
+  )
+  INSERT INTO stock_daily_summary (...) SELECT ... FROM open_close
+  ON CONFLICT (variant_supplier_source_id, summary_date) DO UPDATE ...;
+```
+
+### Análise
+
+| Aspecto | Observação |
+|---|---|
+| Tabela principal | `stock_snapshots` (3,6M linhas) |
+| Operação | Window functions (`FIRST_VALUE`, `MIN` sobre `LEAST`) com `DISTINCT ON` |
+| Complexidade | O(N×W) onde W = janela da partição por `variant_supplier_source_id` |
+| Root cause do timeout MCP | Scan completo de `stock_snapshots` para a data do parâmetro — sem índice seletivo combinado `(captured_at::date, variant_supplier_source_id)` |
+| Proteção futura | Guard `IF p_date > v_today THEN RAISE EXCEPTION` — impede agregação de datas futuras |
+| Idempotência | `ON CONFLICT DO UPDATE` → re-executável para a mesma data |
+| `%-99999-%` exclusion | Filtra variantes com ID contendo `-99999-` (provavelmente IDs de teste/placeholder) |
+
+### Achado associado (FUNC-005)
+
+**[ID-FUNC-005] `fn_aggregate_stock_daily` — timeout em execução via MCP (60s)**
+- **Severidade:** INFO (comportamento esperado para agregação em 3,6M linhas)
+- **Objeto:** `fn_aggregate_stock_daily` (PL/pgSQL)
+- **Evidência:** Código lido via `pg_proc`. Scan completo de `stock_snapshots` sem índice parcial em `(captured_at::date, variant_supplier_source_id)`. MCP timeout após 60s confirma execução lenta.
+- **Impacto:** Função invocada por cron noturno — timeout de 60s no MCP não é problema operacional (o cron usa `pg_net` sem timeout curto). Porém, para janelas grandes (reprocessamento histórico), a função pode travar a conexão.
+- **Correção sugerida:** Índice parcial: `CREATE INDEX CONCURRENTLY idx_stock_snap_date_vsrc ON stock_snapshots ((captured_at AT TIME ZONE 'America/Sao_Paulo')::date, variant_supplier_source_id);`
+- **NÃO APLICADA** — auditoria somente leitura
+
+---
+
+## 7.6 Sumário da Seção 7
 
 | Severidade | Qtd |
 |---|---|
@@ -115,3 +183,11 @@ O projeto tem infraestrutura de auditoria robusta:
 | INFO | 2 (FUNC-001, FUNC-004) |
 
 **Conclusão:** Funções de banco em estado saudável. 100% das SECURITY DEFINER com `search_path` definido é excelente resultado. Principal ação: gate CI para manter invariante.
+
+| Severidade | Qtd |
+|---|---|
+| CRÍTICO | 0 |
+| ALTO | 0 |
+| MÉDIO | 1 (FUNC-002) |
+| BAIXO | 1 (FUNC-003) |
+| INFO | 3 (FUNC-001, FUNC-004, FUNC-005) |

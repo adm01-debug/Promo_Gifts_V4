@@ -126,10 +126,11 @@ Listagem das funções com JWT desativado e seus mecanismos de autenticação al
 | Função | Mecanismo | Evidência |
 |---|---|---|
 | `webhook-inbound` | `x-idempotency-key` armazenado em `inbound_webhook_events` + deduplication query antes de processar | Código lido 2026-10-22; tabela `inbound_webhook_events` tem coluna `idempotency_key` UNIQUE; processamento só ocorre se `idempotency_key` não existe. "Exactly once" delivery confirmado. |
-| `stripe-webhook` | Stripe envia `stripe-signature` com timestamp; SDK valida replay window de 5 min; `stripe_events` table com `stripe_event_id` UNIQUE | Padrão Stripe → idempotência por `id` do evento |
 | `health-check` | Leitura pura — sem escrita de estado | Trivialmente idempotente |
 | `catalog-public` | SELECT puro sobre catálogo público | Trivialmente idempotente |
 | `seo-sitemap` | Geração de sitemap a partir de dados vivos | Trivialmente idempotente |
+
+**⚠️ Correção:** A função `stripe-webhook` foi incorretamente listada como VERIFICADA em rascunho anterior. `ls supabase/functions/ | grep stripe` → vazio. A função **não existe neste repositório**. Ver §8.5.4 para o status correto.
 
 ---
 
@@ -181,7 +182,62 @@ Funções de leitura pública (`catalog-public`, `seo-sitemap`, `health-check`, 
 
 | Status | Funções | Observação |
 |---|---|---|
-| VERIFICADO — idempotente | 5 | `webhook-inbound`, `stripe-webhook`, `health-check`, `catalog-public`, `seo-sitemap` |
+| VERIFICADO — idempotente | 4 | `webhook-inbound`, `health-check`, `catalog-public`, `seo-sitemap` |
 | VERIFICADO — read-only (trivialmente idempotente) | ~40 | Funções verify_jwt=true de leitura (catalog, product-search, quote-*, etc.) |
 | NÃO VERIFICADO — funções de escrita | ~20 | `send-notification`, `magazine-reader-state-write`, `receive-crm-callback`, cron-driven de escrita |
+| NÃO VERIFICADO — função ausente no repo | 1 | `stripe-webhook` — não encontrada em `supabase/functions/`; pode estar em outro repo ou deletada |
 | Novo achado | EF-007 | MÉDIO — sem política formal de idempotência para funções de escrita |
+
+---
+
+## 8.6 Testes de Edge Functions no Repositório
+
+**Data de análise:** 2026-10-22  
+**Método:** leitura de código-fonte das funções de teste via Read tool
+
+### 8.6.1 `rls-integration-tests` — Matriz RLS para tabelas de cliente
+
+**Arquivo:** `supabase/functions/rls-integration-tests/index.ts`  
+**Tabelas testadas:** `favorite_lists`, `collections`, `custom_kits`  
+**Auth:** Requer role `dev` ou `admin` em `user_roles`
+
+Cenários por tabela (coluna `ownerCol: "user_id"`):
+
+| Actor | Op | Scope | Expected |
+|---|---|---|---|
+| seller | SELECT | own | allow |
+| seller | SELECT | other | deny |
+| seller | UPDATE | own | allow |
+| seller | UPDATE | other | deny |
+| seller | DELETE | other | deny |
+| admin | SELECT | own | allow |
+| admin | SELECT | other | allow |
+
+**Evidência:** Código lido 2026-10-22, linhas 158–177 (array `scenarios`) e linhas 207–216 (matriz de expectativas). `classify()` trata 0 rows em SELECT como "deny" — correto. Função `signInClient()` cria sessão autenticada real para cada actor.
+
+### 8.6.2 `test-cart-rls` — Testes de isolamento de `seller_carts`
+
+**Arquivo:** `supabase/functions/test-cart-rls/index.ts`  
+**Tabela testada:** `seller_carts`  
+**Método:** 2 usuários temporários com senha aleatória (`crypto.getRandomValues`)
+
+| Cenário | Descrição | Expected |
+|---|---|---|
+| A | user1 lê próprios carts | allow |
+| B | user2 lê carts de user1 | deny (0 rows) |
+| C | user2 deleta cart de user1 | deny |
+
+**Evidência:** Código lido 2026-10-22, linhas 1–80. Sem credenciais hardcoded — senha gerada com `crypto.getRandomValues`. Requer `role: 'dev'` via `authorize()` compartilhada.
+
+### 8.6.3 Cobertura de Testes de Edge Function
+
+| Tabela | Coberta por teste | Arquivo |
+|---|---|---|
+| `favorite_lists` | ✅ | `rls-integration-tests` |
+| `collections` | ✅ | `rls-integration-tests` |
+| `custom_kits` | ✅ | `rls-integration-tests` |
+| `seller_carts` | ✅ | `test-cart-rls` |
+| `quotes`, `orders` | ✅ | RLS matrix local (testes/rls_matrix_tenant_ab.md) |
+| `send-notification`, `receive-crm-callback` | ❌ NÃO VERIFICADO | Sem teste de idempotência em repo |
+
+**Observação positiva:** O projeto tem testes de RLS integrados como edge functions — padrão incomum e robusto, que permite testar as políticas com auth real (JWT válido, roles reais) em ambiente próximo ao de produção.
