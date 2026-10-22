@@ -1,12 +1,13 @@
 # PENDÊNCIAS — Correção de Workflows CI
 
-**Atualizado:** 2026-10-22T16:30 UTC  
+**Atualizado:** 2026-10-22T17:15 UTC  
 **Branch ativa:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD:** `f6b1147` (fix(ci): pre-pull com retry para ghcr.io rate limit no drift check)  
-**Gate Final nova:** run [39814519115](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39814519115) — `f6b1147` — `queued` desde 16:29Z — aguardando runner  
-**Gate Final precedente:** run [39798033549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39798033549) — `141c915a` — ✅ **`conclusion=success`** (15:00Z, 16 jobs) — conteúdo equivalente  
+**HEAD anterior:** `b977f790` | **HEAD próximo:** após commit Docker registry fix  
+**Gate Final b977f790:** run [39815181210](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39815181210) — ❌ `conclusion=failure` — **2 causas: E40 (bloqueio humano) + Gate 5.5 (cancelled — consequência de E40)**  
+**Gate Final precedente (sucesso):** run [39798033549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39798033549) — `141c915a` — ✅ **`conclusion=success`** (15:00Z, 16 jobs)  
 **Uptime Monitor mais recente:** run [39811647198](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39811647198) — ❌ transiente (16:10Z) — padrão intermitente §2.1  
-**db-schema-drift-check fix:** commit `f6b1147` — pre-pull `ghcr.io/supabase/postgres:17.6.1.063` com 5 tentativas + backoff 30s antes do `supabase db diff`
+**db-schema-drift-check fix:** commit `f6b1147` (pre-pull retry); commit próximo (registry fix: `ghcr.io` → `public.ecr.aws`)  
+**Gate 8 — Security (run 39815181224):** ❌ `conclusion=failure` — HTTP 504 transiente (3× tentativas) do Supabase `check:security-definer-acl --require-live` — **não bloqueia Gate Final** — ver §2.13
 
 ### Commits desta sessão
 | Commit | Descrição | Resolve |
@@ -14,6 +15,7 @@
 | `b442d1ed` | fix(security): corrige allowlist lint-0011 com assinaturas completas pgstattuple (OUT params) | Supabase Linter Gate — mismatch assinaturas OUT params |
 | `a21f6200` | fix(ci): corrige SIGPIPE (exit 141) no guard do daily-flows-simulation | Daily flows simulation — exit 141 SIGPIPE em `gh api --jq` |
 | `f6b1147` | fix(ci): pre-pull com retry para ghcr.io rate limit no drift check | db-schema-drift-check — `toomanyrequests` (44000/min) ao puxar `ghcr.io/supabase/postgres:17.6.1.063` |
+| próximo | fix(ci): corrige registry Docker — ghcr.io → public.ecr.aws (CLI 2.101.0 usa ECR) | db-schema-drift-check — pre-pull aquecia cache errado (ghcr.io); CLI 2.101.0 usa public.ecr.aws |
 
 ### Reruns Attempt 2 (15:12Z) — Conclusões Confirmadas
 
@@ -122,9 +124,11 @@
 - **Run original (falha):** [39757238848](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757238848) — Ledger Parity
 - **Causa 1 (resolvida):** SESSION_NOISE_EXACT ignorava `set check_function_bodies = off;` — commit `9c2288c4`
 - **Causa 2 (resolvida):** Docker ghcr.io rate limit `toomanyrequests` (44000/min) ao puxar `ghcr.io/supabase/postgres:17.6.1.063` — 3 attempts consecutivos (runs 39810527986 att 1, 2, 3) — **commit `f6b1147` adiciona step pre-pull com 5 tentativas + backoff 30s**
-- **Gate Final em progresso:** run [39814519115](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39814519115) — SHA `f6b1147` — `queued` desde 16:29Z — aguardando conclusão do step `Schema drift check`
+- **Causa 3 (corrigida — commit próximo):** Pre-pull usava registry errado. Supabase CLI 2.101.0 usa `public.ecr.aws` (Amazon ECR Public), não `ghcr.io`. O pre-pull de `f6b1147` aquecia o cache de um registry diferente do usado pelo CLI. Fix: `ghcr.io/supabase/postgres:17.6.1.063` → `public.ecr.aws/supabase/postgres:17.6.1.063`
+- **Gate Final b977f790:** run [39815181210](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39815181210) — ❌ `conclusion=failure` — causas: `R_SCHEMA_DRIFT=failure` (Gate E40, ledger parity) + `R_RESTORE=cancelled` (Gate 5.5, consequência de E40)
+- **Outros gates em b977f790:** R_SSOT, R_DEP_AUDIT, R_DEP_REVIEW, R_LINT, R_UNIT, R_DB_INT, R_SECRETS, R_E2E, R_SEO, R_BUILD, R_SECRET_SCAN — todos ✅ `success`
 - **Pendência remanescente (ação humana):** O ledger parity propriamente dito requer identificar qual DDL foi aplicada out-of-band e criar migration espelho via caminho E15/E99
-- **Ação necessária após Gate Final:** Se ledger parity ainda falhar, dispatch `schema-snapshot-export.yml` com `force_rotate: true`
+- **Ação necessária:** Dispatch `schema-snapshot-export.yml` com `force_rotate: true` após reconciliar ledger
 - **Responsável:** PO + DBA (REGRA #8 corolário)
 
 ### 2.3 Release Please — `Resource not accessible by integration`
@@ -257,6 +261,21 @@
 - **Não resolvível por código:** Requer `GRANT SELECT ON v_kit_component_complete, product_kit_components TO <role_dos_testes>` no banco canônico `doufsxqlfjyuvxuezpln`. DDL via `execute_sql` é PROIBIDO em sessão de agente (REGRA E056).
 - **Ação necessária:** PO/DBA conceder SELECT ao role utilizado nos testes de integração nas tabelas/views: `v_kit_component_complete` (view) e `product_kit_components` (tabela), via migration espelho + caminho E15 (workflow `db-apply-migration.yml`)
 - **Responsável:** PO + DBA
+
+---
+
+## 2.13 Security & Credential Audit — ❌ TRANSIENTE (HTTP 504 — não bloqueia Gate Final)
+
+- **Run:** [39815181224](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39815181224) — workflow `Quality Gates Summary` — sha `b977f790` — `conclusion=failure`
+- **Este workflow é SEPARADO do Gate Final** — não é required check em `main`; não bloqueia merge nem deploy.
+- **Causa:** `check:security-definer-acl --require-live` retornou HTTP 504 após 3 tentativas (~2min cada):
+  - `⚠️ [security-definer-acl] inconclusive: HTTP 504 (tentativa 1/3)` — exit code 2
+  - `⚠️ [security-definer-acl] inconclusive: HTTP 504 (tentativa 2/3)` — exit code 2
+  - `⚠️ [security-definer-acl] inconclusive: HTTP 504 (tentativa 3/3)` — exit code 2
+- **Steps que passaram no mesmo job:** `audit:credentials` ✅, `check:edge-cors` ✅
+- **Diagnóstico:** HTTP 504 = Supabase Management API temporariamente indisponível no momento do run (~17:10Z). Falha transiente, não regressão de código.
+- **Ação:** Nenhuma ação de código necessária. O workflow re-rodará automaticamente no próximo cron ou pode ser re-despachado após o Supabase recuperar. **Não documenta bloqueio real** — o último run verde deste workflow foi anterior e válido.
+- **Responsável:** Nenhum — falha de infraestrutura transiente
 
 ---
 

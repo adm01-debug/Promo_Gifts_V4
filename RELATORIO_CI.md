@@ -1,14 +1,13 @@
 # Relatório CI — Sessão de Correção de Workflows
 
-**Gerado:** 2026-10-22T13:35 UTC | **Atualizado:** 2026-10-22T16:30 UTC  
+**Gerado:** 2026-10-22T13:35 UTC | **Atualizado:** 2026-10-22T17:30 UTC  
 **Branch:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD atual:** `f6b1147` (fix(ci): pre-pull com retry para ghcr.io rate limit no drift check)  
-**Commits desta sessão (compactação 3):** `a21f6200` → `b442d1ed` → `679b5f45` → `dbd53ec4` → `ad831d70` → `6e93a947` → `8bfcbf4a` → `f6b1147`  
+**HEAD após próximo commit:** registry fix (`ghcr.io` → `public.ecr.aws`)  
+**HEAD anterior:** `b977f790` | **Commits desta sessão (compactação 4):** `a21f6200` → `b442d1ed` → `679b5f45` → `dbd53ec4` → `ad831d70` → `6e93a947` → `8bfcbf4a` → `f6b1147` → `b977f790` → próximo commit  
 **Base (main):** `8e8053b9`  
-**Gate Final — NOVA RUN (pós-fix Docker rate limit):**  
-- run [39814519115](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39814519115) para `f6b1147` → `queued` desde 16:29Z — aguardando runner  
-- **Precedente de sucesso:** run [39798033549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39798033549) para `141c915a` → `conclusion=success` (16 jobs ✅, 15:00Z) — conteúdo equivalente  
-- **Razão do novo push:** 3 attempts consecutivos (runs 39810527986 att 1, 2, 3) falharam por `toomanyrequests` no ghcr.io ao puxar `ghcr.io/supabase/postgres:17.6.1.063`. Fix: step pre-pull com 5 tentativas + backoff 30s adicionado ANTES do `supabase db diff`.
+**Gate Final b977f790:** run [39815181210](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39815181210) → ❌ `conclusion=failure` — **causas: E40 (ledger parity, bloqueio humano) + Gate 5.5 (cancelled por consequência)**  
+**Gate Final precedente de sucesso:** run [39798033549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39798033549) para `141c915a` → ✅ `conclusion=success` (16 jobs ✅, 15:00Z)  
+**Fix em andamento (próximo commit):** `db-schema-drift-check.yml` — registry Docker `ghcr.io/supabase/postgres:17.6.1.063` → `public.ecr.aws/supabase/postgres:17.6.1.063` (CLI 2.101.0 usa ECR, não ghcr.io)
 
 ---
 
@@ -127,6 +126,27 @@ npm error 403 403 Forbidden - GET https://europe-west1-npm.pkg.dev/lovable-core-
 | **E2E — Critical Flows & Error Boundaries** | [39784863168](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784863168) | Auth failure em Admin Critical Routes | Presente na main (run 39757063778) |
 | **webkit • swatch→QV** | [119845281230](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784862875/job/119845281230) | Failure em `7fa5c405` | Pré-existente — webkit flake em swatch/QV |
 | **cart-invariants (firefox-authed · shard 2/2)** | [119845594432](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784863292/job/119845594432) | Failure em `7fa5c405` | Pré-existente — Firefox auth flake recorrente |
+
+## 4.3 Gate Final — Status `b977f790` (última run antes do Docker registry fix)
+
+| Gate | Job ID | Status | Notas |
+|---|---|---|---|
+| Gate 0 — SSOT | - | ✅ success | CURRENT_PROJECT_ID = `doufsxqlfjyuvxuezpln` |
+| Gate 0.5 — Dependency Audit | - | ✅ success | npm audit sem CVE high/critical |
+| Gate 0.6 — Dependency Review | - | ✅ success | (PR-only) |
+| Gate 1 — Lint + TypeScript | - | ✅ success | todos 42 sub-gates |
+| Gate 2 — Unit Tests | - | ✅ success | vitest |
+| Gate 2.5 — DB Integrity | - | ✅ success | PostgreSQL integrity |
+| Gate 3 — E2E Smoke | - | ✅ success | chromium smoke |
+| Gate 5 — SEO Sanity | - | ✅ success | |
+| Gate 5.5 — RPC restore_seller_cart | - | ❌ **cancelled** | Cancelado por E40 falhar antes |
+| Gate 4 — Lighthouse CI | - | ✅ success | (opcional) |
+| Gate 6 — Build | - | ✅ success | Vite build sem erro |
+| Gate E23 — Secrets | - | ✅ success | |
+| Gate E40 — Schema Drift | - | ❌ **failure** | Ledger parity divergente — **bloqueio humano** (PO+DBA, caminho E99) |
+
+**Resultado:** ❌ `conclusion=failure` — 2 itens não-green (E40 bloqueio humano + Gate 5.5 cancelled por E40)  
+**Precedente de sucesso confirmado:** run [39798033549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39798033549) para `141c915a` → ✅ 16/16 gates success
 
 ---
 
