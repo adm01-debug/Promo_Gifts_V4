@@ -1,9 +1,10 @@
 # PENDÊNCIAS — Correção de Workflows CI
 
-**Atualizado:** 2026-10-22T18:40 UTC  
+**Atualizado:** 2026-10-22T18:08 UTC  
 **Branch ativa:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD atual:** `b83a5487` (docs: run stuck push)  
-**Gate Final b83a5487:** run [39827039880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39827039880) — ⚠️ `queued/runner-capacity` — Gate 0 ✅, Gate 5.5 ✅ (17:59Z), Gate 1 e outros 10 jobs aguardando runner há 42+ min — problema de infra GitHub Actions  
+**HEAD atual:** `de9e220f` (docs: run stuck push)  
+**Gate Final de9e220f:** run [39827875237](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39827875237) — 🔄 `in_progress` — Gate 0 ✅ (18:07:15Z), Detectar mudanças ✅ (18:07:05Z), 11 jobs em `queued` (18:07:16Z) — run progredindo normalmente  
+**Gate Final b83a5487:** run [39827039880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39827039880) — ⚠️ `queued/runner-capacity` cancelado por push de9e220f (Gate 0 ✅, Gate 5.5 ✅, demais jobs sem runner por 42+ min)  
 **Gate Final 580d5187:** run [39826419850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39826419850) — `cancelled` (superado por b83a5487)  
 **Gate Final ac0f4e10:** run [39826162164](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39826162164) — `cancelled` (superado por 580d5187)  
 **Gate Final c97f4959 (agente inventário):** run [39826030788](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39826030788) — `cancelled` (superado por ac0f4e10)  
