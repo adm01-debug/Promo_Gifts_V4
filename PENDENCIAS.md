@@ -1,10 +1,11 @@
 # PENDÊNCIAS — Correção de Workflows CI
 
-**Atualizado:** 2026-10-22T19:30 UTC  
+**Atualizado:** 2026-10-22T19:15 UTC  
 **Branch ativa:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD atual:** `856b8db4` (fix(gate-0.5): ip-address/socks/socks-proxy-agent → allowlist LHCI)  
-**Gate Final 856b8db4:** run pendente (aguardando trigger pelo push)  
-**Gate Final 47dfffdc:** run [39835399695](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39835399695) — ❌ `failure` — Gate 0.5 Dependency Audit falhou (ip-address moderate advisory). Fix aplicado em `856b8db4`.  
+**HEAD atual:** `b48145b3` (docs(ci): atualiza PENDENCIAS — HEAD 856b8db4, Gate 0.5 fix aplicado)  
+**Gate Final b48145b3:** run [39836732441](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39836732441) — 🔄 `queued` (19:03Z) — bloqueado por db-schema-drift-check [39836732148](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39836732148) `in_progress` (step 11 Schema drift check em andamento; ECR step 10 = ✅ desta vez)  
+**Gate Final 856b8db4/47dfffdc:** cancelados por concorrência de PR ao push de b48145b3  
+**Gate Final 87fb348d+47dfffdc+856b8db4 (run 39835399695):** run [39835399695](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39835399695) — ❌ `failure` — Gate 0.5 Dependency Audit falhou (ip-address moderate advisory). Fix aplicado em `856b8db4`.  
 **Gate Final 87fb348d:** run [39835399695](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39835399695) — ❌ `failure` (mesmo run — push 47dfffdc não cancelou; Gate 0.5 fez o run falhar)  
 **Gate Final 882e957c:** run [39835181848](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39835181848) — `cancelled` (cancelado por push de 87fb348d via concorrência de PR)  
 **Gate Final c59b3e66 (att 3):** run [39829341093](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39829341093) — `cancelled` (cancelado por push de 882e957c via concorrência de PR, não por falha)  

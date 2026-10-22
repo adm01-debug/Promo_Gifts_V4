@@ -1,11 +1,12 @@
 # Relatório CI — Sessão de Correção de Workflows
 
-**Gerado:** 2026-10-22T13:35 UTC | **Atualizado:** 2026-10-22T19:05 UTC  
+**Gerado:** 2026-10-22T13:35 UTC | **Atualizado:** 2026-10-22T19:15 UTC  
 **Branch:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD atual:** `87fb348d` (docs(ci): atualiza PENDENCIAS — HEAD mais recente da sessão)  
-**Commits desta sessão (todos os fixes):** `a21f6200` → `b442d1ed` → `679b5f45` → `dbd53ec4` → `ad831d70` → `6e93a947` → `8bfcbf4a` → `f6b1147` → `b977f790` → `a83e1c0d` → `5499c532` → `141c915a` → `db65121a` → `e2bf7804` → `c97f4959` → `ac0f4e10` → `3d2fe287` → `4ceed97c` → `c59b3e66` → `71286ad8` → `882e957c` → **`87fb348d`**  
+**HEAD atual:** `b48145b3` (docs(ci): atualiza PENDENCIAS — HEAD 856b8db4, Gate 0.5 fix aplicado)  
+**Commits desta sessão (todos os fixes):** `a21f6200` → `b442d1ed` → `679b5f45` → `dbd53ec4` → `ad831d70` → `6e93a947` → `8bfcbf4a` → `f6b1147` → `b977f790` → `a83e1c0d` → `5499c532` → `141c915a` → `db65121a` → `e2bf7804` → `c97f4959` → `ac0f4e10` → `3d2fe287` → `4ceed97c` → `c59b3e66` → `71286ad8` → `882e957c` → `87fb348d` → `47dfffdc` → `856b8db4` → **`b48145b3`**  
 **Base (main):** `8e8053b9`  
-**Gate Final 87fb348d:** run [39835399695](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39835399695) — 🔄 `queued` (19:05Z) — aguardando runner disponível  
+**Gate Final b48145b3:** run [39836732441](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39836732441) — 🔄 `queued` (19:03Z) — bloqueado por db-schema-drift-check [39836732148](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39836732148) `in_progress` (step 11 Schema drift check em andamento; ECR pré-pull step 10 = ✅)  
+**Gate Final 87fb348d/47dfffdc/856b8db4:** cancelados por concorrência de PR (superados por b48145b3)  
 **Gate Final 882e957c:** run [39835181848](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39835181848) — `cancelled` (concorrência de PR — superado por 87fb348d)  
 **Gate Final c59b3e66 (att 3):** run [39829341093](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39829341093) att 3 — `cancelled` (concorrência de PR — superado por 882e957c)  
 **Gate Final 4ceed97c att 1:** run [39829341093](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39829341093) att 1 — ❌ `failure` — Gate E40 step 10 ECR Public `toomanyrequests: Data limit exceeded` (500GB/mês anônimo) após 5 retries; 14 outros jobs ✅  
