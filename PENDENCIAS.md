@@ -1,9 +1,9 @@
 # PENDÊNCIAS — Correção de Workflows CI
 
-**Atualizado:** 2026-10-22T13:40 UTC  
+**Atualizado:** 2026-10-22T14:15 UTC  
 **Branch ativa:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD:** `7b023fa7` (docs: corrige runbook de edge-function drift — remediação por tipo)  
-**Gate Final ativa:** run [39787853790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39787853790) — queued (13:33Z) aguardando conclusão
+**HEAD:** `37b2c2e2` (docs: atualiza PENDENCIAS.md — HEAD 7b023fa7)  
+**Gate Final ativa:** run [39788258875](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39788258875) — queued (13:36Z) aguardando runner disponível
 
 ---
 
