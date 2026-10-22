@@ -105,6 +105,30 @@ Funções de maior risco (security-critical com pg_temp):
 
 ---
 
+## 3.X — Git History Secret Scan
+
+**Data:** 2026-10-22 | **Método:** somente leitura, sem execução de código
+
+**Comandos executados (branch `claude/happy-faraday-0vgza3`):**
+```bash
+git log --all --oneline | wc -l   # → 257 commits
+git log --all -S "service_role_key" --oneline | wc -l   # → 0 ocorrências
+git log --all -S "anon_key" --oneline | wc -l           # → 0 ocorrências
+git log --all -S "eyJhbGci" --oneline | wc -l           # → 0 JWTs hardcoded
+git grep -n "SUPABASE_SERVICE_ROLE_KEY\|SUPABASE_ANON_KEY" -- "*.ts" "*.tsx" "*.js" "*.env*"
+```
+
+**Resultado:**
+- **Commits analisados:** 257
+- **Secrets hardcoded encontrados:** 0
+- **JWTs hardcoded (prefixo `eyJ`):** 0
+- **Referências a `service_role_key` ou `anon_key`:** somente em `.github/workflows/*.yml` como `${{ secrets.X }}` (variáveis CI, não valores reais)
+- **Evidência:** commit `eb022fa` contém `${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}` em workflow YAML — variável de ambiente, não o valor do secret
+
+**Conclusão:** **APROVADO** — Nenhum secret hardcoded encontrado no histórico git do branch auditado. Referências a credenciais são exclusivamente via variáveis de CI do GitHub Actions.
+
+---
+
 ## NÃO VERIFICADO nesta seção
 
 - Inspeção do código-fonte das edge functions críticas (sem execute/deploy)
