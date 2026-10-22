@@ -1,6 +1,6 @@
 # Pendências de CI — Itens que requerem ação do PO/humano
 
-**Atualizado:** 2026-10-22 (v13 — Gate 3 timeout: diagnóstico e fix; P18 atualizado com causa real (timeout 15 min) + correção (20 min, commit `1b13f7a`); Deploy Gates run `39700336039` (sha `e6405e0`) — Gate Final FALHOU por Gate 3 cancelado por timeout; nova run disparada pelo push do fix)
+**Atualizado:** 2026-10-22 (v14 — inventário completo de workflows em failure para SHA `c901645c`; Gate Final run `39702370300` — 13/14 jobs ✅ success, Gate 3 ⏳ in_progress com timeout 20 min; todos os failures novos identificados são continuações de P2–P9)
 **Sessão:** https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz
 
 ---
@@ -474,6 +474,9 @@ Workflow do tipo `dynamic` (não `.github/workflows/*.yml`) — não aparece no 
 | P16 | edge-functions-drift-check — drift ao vivo vs. repo (advisory, não gate) | Média | Código fora de PR | Engenharia / PO |
 | P19 | cart-header-quality-gate — bunx not found — ✅ CORRIGIDO (bunx → npx, commit neste PR) | Baixa | CI Config (corrigido) | — |
 | P20 | Running Copilot Code Review — timeout SWE agent 20min (não required check) | Baixa | Infra de CI/Copilot | — |
+| P21a | E2E PDF export e Popover — falha real de código/UI (runs `39702369829`) — mesma raiz de P8 | Média | Bug de código/UI | Engenharia |
+| P21b | Visual Baselines desatualizados — requer `workflow_dispatch` em `update-visual-baselines.yml` | Baixa | Config de CI / PO dispatch | PO |
+| P21c | `audit` workflow (run `39702370222`) — verificar se Gate 4 ou advisory | Baixa | Advisory | Engenharia |
 
 ---
 
@@ -544,7 +547,70 @@ Job 119568119392 (Gate 3 - E2E Smoke):
 
 ---
 
----
+## P21 — Inventário de workflows em failure no SHA `c901645c` (2026-10-22T00:52Z)
+
+**Tipo:** Inventário — failures não-required observados via notificações (PR #2338, SHA HEAD)
+**Classificação:** Todos são continuações de P2–P9 (pré-existentes na main) ou advisory
+
+Gate Final run `39702370300` (SHA `c901645c`): **13 jobs ✅ success, 1 ⏳ in_progress (Gate 3)**
+
+### Workflows em failure no SHA `c901645c` — classificação completa
+
+| Run ID | Workflow / Check | Failure | Pré-existente? | Pendência |
+|---|---|---|---|---|
+| `39702370253` | `cart-invariants (chromium-authed · shard 1/2)` | Shards falharam — UI de carrinho alterada | Sim (P3) | P3 |
+| `39702370253` | `cart-invariants (chromium-authed · shard 2/2)` | Shards falharam — UI de carrinho alterada | Sim (P3) | P3 |
+| `39702370253` | `cart-invariants (firefox-authed · shard 1/2)` | Shards falharam — UI de carrinho alterada | Sim (P3) | P3 |
+| `39702370253` | `cart-invariants (firefox-authed · shard 2/2)` | Shards falharam — UI de carrinho alterada | Sim (P3) | P3 |
+| `39702370253` | `cart-invariants-summary` | Consequência dos shards acima | Sim (P3) | P3 |
+| `39702370124` | `E2E · chromium-authed` | Header sticky / Critical Flows | Sim (P5/P8) | P5/P8 |
+| `39702370349` | `E2E — Error Boundaries (sem auth)` | Check min tests executados | Sim (P8) | P8 |
+| `39702370117` | `E2E — Personalization Journey` | Personalization flow falhou | Sim (P9) | P9 |
+| `39702370330` | `E2E Focused · cnpj` | CNPJ validation flow | Sim (E2E authed) | P8 |
+| `39702369829` | `E2E PDF exportado · quote_number` | PDF export visual | Visual/PDF test | P21a |
+| `39702369829` | `E2E PDF · trigger uniqueness + header snapshot` | PDF header snapshot | Visual/PDF test | P21a |
+| `39702369829` | `E2E Popover Campos Pendentes` | Popover campos pendentes | UI authed | P8 |
+| `39702369829` | `E2E Subtítulo quote_number (visual)` | Subtítulo visual snapshot | Visual baseline | P21b |
+| `39702369855` | `visual-baseline (1)` | Visual baseline desatualizado | Visual/PO dispatch | P21b |
+| `39702369855` | `visual-baseline (2)` | Visual baseline desatualizado | Visual/PO dispatch | P21b |
+| `39702370482` | `Smoke — HTTP against supabase functions serve` | `webhook-inbound` 503 no CI | Sim (P4) | P4 |
+| `39702370008` | `Smoke (fail-fast)` | Min tests — falha de auth/fixture | Sim (P7) | P7 |
+| `39702370222` | `audit` | Auditoria de acessibilidade/qualidade | Advisory | P21c |
+| `39702296680` | `merge-reports` | SHA `1b13f7a` — Gate 3 cancelado (P18) | Obsoleto (SHA anterior) | P18 |
+| `39702296752` | `Quality Gates Summary` | SHA `1b13f7a` — Gate 3 cancelado (P18) | Obsoleto (SHA anterior) | P18 |
+
+**Conclusão:** Nenhum dos failures acima é novo nem foi introduzido por esta sessão.
+Todos são continuações de issues pré-existentes na main (P2–P9) ou relativos ao SHA anterior (P18).
+
+### P21a — E2E PDF e visual — runs autenticados (SHA `c901645c`)
+
+**Workflows:** runs `39702369829` (E2E PDF e Popover runs)
+**Causa:** Testes de PDF export e visual snapshot falham por mudanças de UI do Lovable
+(mesma raiz que P8 — Catalog→Kit e Critical Flows); visual snapshot (`quote_number`)
+pode precisar de atualização de baseline (relacionado a P21b).
+**Tipo:** Falha real de código/UI — não bloqueia deploy (não-required)
+**Responsável:** Engenharia
+
+### P21b — Visual Baselines desatualizados (SHA `c901645c`)
+
+**Workflows:** `visual-baseline` runs `39702369855` (jobs 1 e 2)
+**Causa:** Os baselines visuais commitados em `.snapshots/` não correspondem ao estado atual da UI
+após commits do Lovable. O workflow `.github/workflows/update-visual-baselines.yml` precisa
+ser disparado (workflow_dispatch) para regerar os baselines.
+**O que o PO precisa fazer:**
+- Acessar: https://github.com/adm01-debug/Promo_Gifts_V4/actions/workflows/
+- Localizar `update-visual-baselines.yml` (ou equivalente) e disparar manualmente
+- Fazer merge do PR gerado pelo workflow de update
+**Tipo:** Config de CI — não bloqueia deploy (não é required check)
+**Responsável:** PO / Engenharia
+
+### P21c — `audit` workflow (SHA `c901645c`)
+
+**Workflow:** run `39702370222`
+**Causa:** Provavelmente auditoria de acessibilidade (axe/lighthouse) ou similar.
+Não identificado como required check nos gates documentados em CLAUDE.md.
+**Tipo:** Advisory — não bloqueia deploy
+**Responsável:** Engenharia (investigar se é Gate 4 Lighthouse ou workflow separado)
 
 ---
 

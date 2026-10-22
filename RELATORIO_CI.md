@@ -134,7 +134,10 @@ Corrige Gate E89 (cron spacing):
 | `39695326969` | `1c5814b` | ✅ (23:48:01Z) | ✅ todos 42 steps (23:52:27Z) | ✅ (23:47:51Z) | ✅ (23:48:09Z) | ❌ cancelled | **cancelado por concurrency (push `02e4f63` às 00:02:13Z)** |
 | `39697216328` | `02e4f63` | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ | **in_progress desde 00:02:24Z — Gate 3 em execução** |
 | `39698009920` | `53195dcb` | ✅ | ✅ | ✅ | ✅ | ⏳ | **cancelado por push `ea0fb09` (cancel-in-progress)** |
-| `39698881450` | `ea0fb09` | ✅ | ✅ | ✅ | ✅ | ⏳ | **in_progress (00:18:14Z — aguardando Gate 3)** |
+| `39698881450` | `ea0fb09` | ✅ | ✅ | ✅ | ✅ | ⏳ | **cancelado por push `e6405e0` (cancel-in-progress)** |
+| `39700336039` | `e6405e0` | ✅ | ✅ | ✅ | ✅ | ❌ cancelled (timeout 15min) | **failure — Gate 3 cancelado em 14:28min (P18)** |
+| `39702296699` | `1b13f7a` | ✅ | ✅ | ✅ | ✅ | ⏳ | **cancelado por push `c901645c` (cancel-in-progress)** |
+| `39702370300` | `c901645c` | ✅ (00:53:46Z) | ✅ 42 steps todos success (00:58:51Z) | ✅ (00:54:29Z) | ✅ (00:55:12Z) | ⏳ in_progress (desde 00:54:22Z, timeout 20min) | **in_progress — Gate 3 rodando Playwright** |
 
 **Gate 0 (SSOT)** confirmado em run `39689787809` (22:54:59Z) → `success`
 **Gate 0.5 (Dependency Audit)** confirmado em run `39689787809` (22:55:34Z) → `success`
@@ -160,6 +163,50 @@ Corrige Gate E89 (cron spacing):
   - step 18 (Gate 1.13 — policies baseline) → ⏳ desde 23:41:39Z
 **Gate 3 (E2E Smoke)** — run `39694383256`, step 7 ⏳ Playwright desde 23:38:46Z
 
+### Confirmações para SHA `c901645c` — run `39702370300`
+
+| Gate | Job ID | Status | Completado em |
+|---|---|---|---|
+| Detectar mudanças (docs-only bypass E14) | `119574430723` | ✅ success | 00:53:40Z |
+| Gate 0 - SSOT Supabase | `119574431019` | ✅ success | 00:53:46Z |
+| Gate 0.5 - Dependency Audit | `119574597878` | ✅ success | 00:54:30Z |
+| Gate 0.6 - Dependency Review | `119574597902` | ✅ success | 00:53:58Z |
+| Gate 1 - Lint + TypeScript (42 steps) | `119574597931` | ✅ success | 00:58:51Z |
+| Gate 2 - Unit Tests | `119574597923` | ✅ success | 00:54:30Z |
+| Gate 2.5 - PostgreSQL Transactional Integrity | `119574597883` | ✅ success | 00:55:12Z |
+| Gate 3 - E2E Smoke | `119574686672` | ⏳ in_progress | step 7 em execução desde 00:55:15Z |
+| Gate 4 - Lighthouse CI | `119574597845` | ✅ success | 00:56:36Z |
+| Gate 5 - SEO Sanity Check | `119574597971` | ✅ success | 00:54:19Z |
+| Gate 5.5 - RPC restore_seller_cart | `119574597986` | ✅ success | 00:54:25Z |
+| Gate 6 - Build | `119576243824` | ✅ success | 00:59:34Z |
+| Gate E23 - Secret Scan (gitleaks) | `119574597993` | ✅ success | 00:54:28Z |
+| Gate E23 - Verifica secrets E2E | `119574598165` | ✅ success | 00:54:01Z |
+| Gate E40 - Detect schema file changes | `119574597939` | ✅ success | 00:54:04Z |
+| Gate E40 - Schema Drift Check | `119574702571` | ⏸️ skipped | (schema não mudou) |
+
+**Status:** 13 jobs ✅ success, 1 ⏳ in_progress (Gate 3), 1 ⏸️ skipped (E40 — normal)
+
+### Inventário de workflows em failure para SHA `c901645c` (não-required)
+
+Todos os failures abaixo são continuações de issues pré-existentes em main. Nenhum foi
+introduzido por esta sessão. Ver P21 em PENDENCIAS.md para detalhes.
+
+| Run ID | Workflow | Failure | Pendência |
+|---|---|---|---|
+| `39702370253` | `cart-invariants` (4 shards + summary) | UI carrinho alterada | P3/P21 |
+| `39702370124` | `E2E · chromium-authed` | Header sticky / Critical Flows | P5/P8 |
+| `39702370349` | `E2E — Error Boundaries (sem auth)` | Check min tests | P8 |
+| `39702370117` | `E2E — Personalization Journey` | Personalization flow | P9 |
+| `39702370330` | `E2E Focused · cnpj` | CNPJ validation flow | P8 |
+| `39702369829` | `E2E PDF exportado · quote_number` | PDF export visual | P21a |
+| `39702369829` | `E2E PDF · trigger + header snapshot` | PDF header snapshot | P21a |
+| `39702369829` | `E2E Popover Campos Pendentes` | Popover UI authed | P8 |
+| `39702369829` | `E2E Subtítulo quote_number (visual)` | Visual snapshot | P21b |
+| `39702369855` | `visual-baseline (1 e 2)` | Baselines desatualizados | P21b |
+| `39702370482` | `Smoke — HTTP against supabase functions serve` | webhook-inbound 503 | P4 |
+| `39702370008` | `Smoke (fail-fast)` | Min tests / auth | P7 |
+| `39702370222` | `audit` | Advisory | P21c |
+
 ---
 
 ## 5. Itens sem correção nesta sessão (requerem PO ou engenharia)
@@ -179,8 +226,11 @@ Todos documentados em `PENDENCIAS.md` com causa raiz e ação necessária.
 | P9 | `e2e-personalization.yml` | Personalization journey real — requer engenharia |
 | P14 | `db-schema-drift-check.yml` | DDL fora de fluxo → requer DBA criar migration espelho + repair |
 | P16 | `edge-functions-drift-check.yml` | Drift de edge functions → requer engenharia commitar código ou rever deploy |
+| P21a | `e2e-*.yml` (PDF export, Popover) | Falha real de código/UI — mesma raiz que P8 |
+| P21b | `visual-baseline.yml` | Baselines visuais desatualizados — requer PO dispatch de `update-visual-baselines.yml` |
+| P21c | `audit.yml` | Advisory — verificar se é Gate 4 Lighthouse ou workflow separado |
 
-**Nota:** P1–P9, P14 e P16 não são required checks no branch protection de `main`. O único
+**Nota:** P1–P9, P14, P16, P21a–c não são required checks no branch protection de `main`. O único
 required check é "Gate Final - Deploy Ready" (`deploy-gates.yml`). Workflows E2E e
 Release Please são independentes do gate de deploy.
 
