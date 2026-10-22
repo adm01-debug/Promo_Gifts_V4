@@ -17,9 +17,9 @@
   "pr2338_merge_sha": "57017ba78eb68c6c72dba336f9c081c4519619c4",
   "pr2338_merged_at": "2026-10-22T19:23Z",
   "pr2338_ci_status": "MERGEADA",
-  "status": "CONCLUIDO_com_alerta_sentinel",
-  "proxima_acao": "aguardar_decisao_humana_sobre_sentinel",
-  "ultima_atualizacao": "2026-10-22T20:10Z",
+  "status": "CONCLUIDO",
+  "proxima_acao": "aguardar_decisao_humana_PRs_restantes",
+  "ultima_atualizacao": "2026-10-22T19:49Z",
   "alerta_sentinel": {
     "check": "Verify push to main matches accepted patterns",
     "check_run_id": 120036831874,
@@ -49,8 +49,11 @@
     ]
   },
   "ci_pos_merge_57017ba7": {
-    "timestamp_verificacao": "2026-10-22T19:44Z",
-    "gate_final_status": "AGUARDANDO — 15 checks ainda in_progress às 19:44Z",
+    "timestamp_verificacao": "2026-10-22T19:48Z",
+    "gate_final_status": "SUCCESS — check_run 120049718257, completado 19:48:22Z",
+    "gate_final_check_run_id": 120049718257,
+    "gate_final_conclusion": "success",
+    "gate_final_completed_at": "2026-10-22T19:48:22Z",
     "total_checks": 102,
     "success": 51,
     "failure": 5,
