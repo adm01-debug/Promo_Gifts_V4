@@ -2,21 +2,23 @@
   "baseline_sha": "8e8053b9ed85142e85809783cd3acf9a3077ecde",
   "total_open": 24,
   "analisadas": 24,
-  "mergeadas": 0,
-  "ultima_atualizacao": "2026-10-22T19:15Z",
+  "mergeadas": 1,
+  "ultima_atualizacao": "2026-10-22T19:23Z",
   "contagem_por_veredicto": {
-    "CI_PENDENTE": 1,
+    "CI_PENDENTE": 0,
     "AGUARDAR_REBASE": 4,
     "DECISAO_HUMANA": 2,
     "DRAFT": 1,
     "NAO_MERGEAR": 1,
     "FECHAR": 15,
-    "MERGEADA": 0
+    "MERGEADA": 1
   },
   "pr2338_head": "b48145b366041354dc0ee8a20a0bd6217b1289f1",
-  "pr2338_ci_status": "em_andamento_gate_final_nao_criado_ainda",
-  "status": "aguardando_Gate_Final_head_b48145b3",
-  "proxima_acao": "merge_pr2338_quando_Gate_Final_success",
+  "pr2338_merge_sha": "57017ba78eb68c6c72dba336f9c081c4519619c4",
+  "pr2338_merged_at": "2026-10-22T19:23Z",
+  "pr2338_ci_status": "MERGEADA",
+  "status": "pr2338_mergeada_verificando_ci_main",
+  "proxima_acao": "verificar_Gate_Final_no_main_pos_merge",
   "pre_existing_failures_baseline": [
     "Gate Final - Deploy Ready",
     "Gate 0.5 - Dependency Audit",
@@ -32,7 +34,7 @@
     "E2E PDF exportado · quote_number"
   ],
   "prs": {
-    "2338": {"veredicto": "CI_PENDENTE", "acao": "MERGEAR quando Gate Final = success", "head": "b48145b3"},
+    "2338": {"veredicto": "MERGEADA", "acao": "MERGEADA", "head": "b48145b3", "merge_sha": "57017ba78eb68c6c72dba336f9c081c4519619c4", "merged_at": "2026-10-22T19:23Z"},
     "2316": {"veredicto": "AGUARDAR_REBASE", "acao": "conflito_semantico_com_2338", "base": "45545ae"},
     "2315": {"veredicto": "AGUARDAR_REBASE", "acao": "rebase + resolver conflito com #2314", "base": "1ac6992"},
     "2314": {"veredicto": "AGUARDAR_REBASE", "acao": "rebase + reconciliar valor com #2315", "base": "1ac6992"},
