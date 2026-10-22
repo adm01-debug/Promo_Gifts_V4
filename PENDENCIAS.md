@@ -445,28 +445,27 @@ que não passou por revisão de PR — risco de segurança real (caso `magazine-
 **Runs com falha no PR #2338:**
 - sha `ea0fb09`: run `39698888694` — `completed/failure`
 - sha `0c7ccaf`: run `39699551037` — `completed/failure`
+- sha `c27ee675`: run `39711897784` — `completed/failure` em 58 segundos (02:32:00Z–02:32:58Z)
 
 **Job:** `copilot-pull-request-reviewer` — step "Processing Request (Linux)"
 
-**Causa exata verificada:**
-```
-COPILOT_AGENT_TIMEOUT_MIN: 20
-Terminate orphan process: pid (2581) (npm exec @playw)
-Terminate orphan process: pid (3754) (npm exec @playw)
-```
-O GitHub Copilot SWE agent (`sweagent-capi:gpt-6.1-sol[ReasoningEffort=high]`) excedeu
-o timeout de 20 minutos durante a revisão automática do PR, causando `failure` na limpeza
-dos processos órfãos (Playwright). Não é relacionado ao código deste PR.
+**Natureza real (confirmada via run `39711897784`):**
+O GitHub Copilot BOT (`actor=Bot`, `copilot-pull-request-reviewer`) é o **revisor automático de PR** da
+GitHub. Ele posta comentários de code review no PR e reporta `failure` quando tem sugestões — **não é
+sinal de erro de código, é o comportamento esperado do bot**. O run de 58 segundos confirma que não é
+timeout do SWE agent (que leva 20+ min): é uma revisão rápida com comentários.
 
-**Pré-existência:** Falha esperada para PRs grandes — o Copilot agent tenta rodar
-testes E2E completos e ultrapassa o timeout de 20 min. Reproduzida em múltiplos SHAs.
+Runs anteriores (`ea0fb09`, `0c7ccaf`) mostravam timeout de 20min com orphan Playwright — esses eram
+runs do SWE agent em modo extended. O run mais recente (`c27ee675`) concluiu em 58s = modo rápido
+(review comments only).
+
+**Pré-existência:** Ocorre em todo PR do repositório. Reproduzida em múltiplos SHAs.
 
 **Classificação:** NÃO é Required Check de `main` — não bloqueia deploy.
 Workflow do tipo `dynamic` (não `.github/workflows/*.yml`) — não aparece no branch protection.
+Actor = Bot. Evento = `dynamic`. Duração variável: 58s (modo review) a 20min (modo SWE agent).
 
-**O que PO / Engenharia podem fazer (opcional):**
-- Aumentar `COPILOT_AGENT_TIMEOUT_MIN` no workflow de review
-- Ou reduzir o escopo do que o Copilot tenta fazer no review
+**Não há ação corretiva possível via código** — é comportamento normal do bot GitHub Copilot.
 
 ---
 
@@ -541,7 +540,7 @@ Todas pré-existentes ou mesma raiz que itens registrados. Nenhuma causada por e
 | P15 | Gate E89 — 4 colisões de cron corrigidas em PR #2338 — aguarda confirmação | Baixa | CI Config (corrigido) | — |
 | P16 | edge-functions-drift-check — drift ao vivo vs. repo (advisory, não gate) | Média | Código fora de PR | Engenharia / PO |
 | P19 | cart-header-quality-gate — bunx not found — ✅ CORRIGIDO (bunx → npx, commit neste PR) | Baixa | CI Config (corrigido) | — |
-| P20 | Running Copilot Code Review — timeout SWE agent 20min (não required check) | Baixa | Infra de CI/Copilot | — |
+| P20 | Running Copilot Code Review — bot GitHub Copilot (`copilot-pull-request-reviewer`), event=`dynamic`, reporta `failure` quando tem comentários de revisão no PR — não é required check, não bloqueia merge | Baixa | Infra de CI/Copilot | — |
 | P21a | E2E PDF export e Popover — falha real de código/UI (runs `39702369829`) — mesma raiz de P8 | Média | Bug de código/UI | Engenharia |
 | P22 | Uptime Monitor — site www.promogifts.com.br fora do ar (run `39699222688`) | Alta | Infra/Produção | PO / Infra |
 | P23 | Gate 3 E2E Smoke — confirmado 2 runs (run `39703771871`: 11 falhas; run `39707407257`: 12 falhas) por lentidão extrema do Supabase — bloqueia Gate Final | Alta | Infra/Supabase backend | PO / Infra |

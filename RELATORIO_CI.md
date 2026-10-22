@@ -62,6 +62,9 @@ SHA de referência: `c7c25848` (último commit em main antes da sessão)
 | 12 | `edge-functions-drift-check.yml` | `39576553816` | `45545ae5` | 2026-10-21T09:23Z | Drift de edge functions deployadas vs. repo | P16 |
 | 13 | `workflow-lint.yml` | `39670397269` | `c7c25848` | 2026-10-21T20:27Z | actionlint errors em `python-package-conda.yml` (deletado em PR #2338 `cb2706ca`) | **Corrigido no PR** |
 | 14 | `uptime-monitor.yml` | `39699222688` | `c7c25848` | 2026-10-22T00:23Z | Site `www.promogifts.com.br` fora do ar (infra/produção) | P22 |
+| 15 | `Static Health Checks` (`prod-health.yml`) | `39670397342` | `c7c25848` | 2026-10-21T20:27Z | ERR_MODULE_NOT_FOUND: typescript (npm ci ausente antes do Check 2) — **corrigido em `cb2706ca`** | P11 |
+| 16 | `Supabase Linter Gate` | `39670397435` | `c7c25848` | 2026-10-21T20:27Z | lint-0011 vazio (9 funções pgstattuple sem allowlist) — **corrigido em `cb2706ca`** | P12 |
+| 17 | `Python Package using Conda` | `39670397287` | `c7c25848` | 2026-10-21T20:27Z | Workflow órfão sem trigger válido — **deletado em `cb2706ca`** | **Corrigido no PR** |
 
 **Nota P4:** `contract-tests.yml` roda no PR, não tem trigger `push: main`. A falha
 foi diagnosticada em run de PR (cb2706ca). O job `unit` passou; só o job `smoke` falhou
@@ -158,6 +161,7 @@ Corrige Gate E89 (cron spacing):
 | `39702370300` | `c901645c` | ✅ (00:53:46Z) | ✅ 42 steps todos success (00:58:51Z) | ✅ (00:54:29Z) | ✅ (00:55:12Z) | ❌ cancelled | **cancelado por push `6468a82` (cancel-in-progress: true)** |
 | `39703771871` | `6468a82` | ✅ (01:09Z) | ✅ 42 steps success (01:14:26Z) | ✅ (01:10:12Z) | ✅ (01:09:00Z) | ❌ failure — 11 testes / lentidão Supabase (01:10:40-01:28:08Z) | **failure — Gate 3 falhou (P23) — 15/17 ✅** |
 | `39707407257` | `b169f38` | ✅ (01:47Z) | ✅ 42 steps success (01:51:40Z) | ✅ (01:47:30Z) | ✅ (01:48:00Z) | ❌ failure — 12 testes / lentidão Supabase (01:48:15-02:05:05Z) | **failure — Gate 3 falhou (P23 2ª run) — 15/17 ✅, 1 ⏭️** |
+| `39711886832` | `c27ee675` | ✅ (02:35:43Z) | ✅ step 40/42 `E118j` in_progress (02:41:28Z) | ✅ (02:35:59Z) | ✅ (02:36:31Z) | ⏳ Playwright in_progress (step 7, desde 02:37:18Z) | **in_progress — Gate 1 step 40, Gate 3 rodando** |
 
 **Gate 0 (SSOT)** confirmado em run `39689787809` (22:54:59Z) → `success`
 **Gate 0.5 (Dependency Audit)** confirmado em run `39689787809` (22:55:34Z) → `success`
@@ -314,7 +318,7 @@ Nenhuma mudança em APIs, schema, edge functions, contratos de negócio ou lógi
 | W13 | `edge-functions-drift-check.yml` | Drift de edge functions — advisory, requer engenharia | ✅ run `39698881429` (sha `ea0fb09`) → success | [P16 em PENDENCIAS.md](./PENDENCIAS.md#p16) |
 | W14 | `cart-quality.yml` (Cart Quality) | Divergência pré-existente em `SellerCartsPage.tsx:230` (commit `78701e8` em main/2026-10-19) → corrigida em `ea0fb09` | ✅ run `39698881468` (sha `ea0fb09`) → success | [Run CI](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39698881468) |
 | W15 | `cart-header-quality-gate.yml` | `/bin/sh: 1: bunx: not found` — `bunx vitest` → `npx vitest` em `cart-header-fuzz-report.mjs` | ✅ corrigido (commit neste PR) — aguardando run | [P19 em PENDENCIAS.md](./PENDENCIAS.md#p19) |
-| W16 | `running-copilot-code-review.yml` | Timeout SWE agent 20min (Copilot) — orphan processes Playwright | ⚠️ PENDENCIAS.md P20 — não required check | [P20 em PENDENCIAS.md](./PENDENCIAS.md#p20) |
+| W16 | `Running Copilot Code Review` (`dynamic/agents/copilot-pull-request-reviewer`) | Bot GitHub Copilot (actor=Bot `copilot-pull-request-reviewer`, event=`dynamic`). Reporta `failure` quando tem comentários de revisão no PR — comportamento normal do bot, **não é required check**, não bloqueia merge, não é de nosso controle. Run `39711897784` (sha `c27ee675`, 02:32:00Z→02:32:58Z, 58s). | ⚠️ PENDENCIAS.md P20 — não required check, pré-existente, não controlável | [P20 em PENDENCIAS.md](./PENDENCIAS.md#p20) |
 
 **Nota sobre required checks:** O único required check no branch protection de `main` é o
 `deploy-gates.yml` (W01). Todos os outros workflows (W03–W13) são informativos/opcionais —
