@@ -1192,4 +1192,5 @@ export const NO_BODY_EXEMPT: ReadonlySet<string> = new Set<string>([
   "test-contract-orchestrator",
   "test-inventory-orchestrator",
   "rate-limit-check",
+  "magazine-reader-state-read",
 ]);

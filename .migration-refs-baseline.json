@@ -1886,10 +1886,6 @@
       "ref": "supabase/migrations/20260623120000_harden_get_favorite_list_counts_revoke_anon.sql"
     },
     {
-      "file": "scripts/migration-ledger-remote-only-allowlist.json",
-      "ref": "supabase/migrations/20260712_legacy_initial.sql"
-    },
-    {
       "file": "src/lib/external-db/product-types.ts",
       "ref": "supabase/migrations/20250103070000"
     },

@@ -25,34 +25,57 @@ import { execSync } from 'node:child_process';
 const projectRef = process.env.SUPABASE_PROJECT_REF;
 const accessToken = process.env.SUPABASE_ACCESS_TOKEN;
 
+const RETRYABLE_STATUSES = new Set([500, 503, 504, 521, 544]);
+const MAX_RETRIES = 3;
+const RETRY_DELAY_MS = 15_000;
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
 const query = async (sql) => {
   if (accessToken && projectRef) {
-    const response = await fetch(
-      `https://api.supabase.com/v1/projects/${encodeURIComponent(projectRef)}/database/query/read-only`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ query: sql }),
-      },
-    );
+    let lastErr = null;
+    for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+      let response;
+      try {
+        response = await fetch(
+          `https://api.supabase.com/v1/projects/${encodeURIComponent(projectRef)}/database/query/read-only`,
+          {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ query: sql }),
+          },
+        );
+      } catch (err) {
+        lastErr = new Error(`Management API network error: ${err}`);
+        if (attempt < MAX_RETRIES) { console.warn(`⚠️  network error (tentativa ${attempt}/${MAX_RETRIES}) — aguardando ${RETRY_DELAY_MS / 1000}s...`); await sleep(RETRY_DELAY_MS); }
+        continue;
+      }
 
-    if (!response.ok) {
-      const detail = (await response.text()).slice(0, 500);
-      throw new Error(`Management API ${response.status}: ${detail}`);
+      if (RETRYABLE_STATUSES.has(response.status)) {
+        const detail = (await response.text()).slice(0, 200);
+        lastErr = new Error(`Management API ${response.status}: ${detail}`);
+        if (attempt < MAX_RETRIES) { console.warn(`⚠️  HTTP ${response.status} (tentativa ${attempt}/${MAX_RETRIES}) — aguardando ${RETRY_DELAY_MS / 1000}s...`); await sleep(RETRY_DELAY_MS); continue; }
+        throw lastErr;
+      }
+
+      if (!response.ok) {
+        const detail = (await response.text()).slice(0, 500);
+        throw new Error(`Management API ${response.status}: ${detail}`);
+      }
+
+      const rows = await response.json();
+      if (!Array.isArray(rows)) {
+        throw new Error('Management API retornou payload inesperado');
+      }
+
+      return rows
+        .map((row) => Object.values(row).map((value) => value ?? '').join('|'))
+        .join('\n')
+        .trim();
     }
-
-    const rows = await response.json();
-    if (!Array.isArray(rows)) {
-      throw new Error('Management API retornou payload inesperado');
-    }
-
-    return rows
-      .map((row) => Object.values(row).map((value) => value ?? '').join('|'))
-      .join('\n')
-      .trim();
+    throw lastErr;
   }
 
   return execSync(`psql -At -F '|' -c ${JSON.stringify(sql)}`, {

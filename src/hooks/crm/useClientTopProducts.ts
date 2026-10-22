@@ -22,7 +22,7 @@ export function useClientTopProducts(clientId?: string) {
       // rls-allow: filtrado por client_id; RLS aplica seller scope
       const orders = await fetchAllPages<{ id: string }>((from, to) =>
         supabase
-          .from('orders')
+          .from('orders') // rls-allow: filtrado por client_id; RLS aplica seller scope
           .select('id')
           .eq('client_id', clientId)
           .order('id', { ascending: true })

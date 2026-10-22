@@ -28,7 +28,7 @@ defaults:
 jobs:
   quality-gate:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 20  # E104: +5min para absorver --retries=2 no E2E (75s/tentativa × 2 retries)
     env:
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
@@ -49,7 +49,10 @@ jobs:
         CI: true
         E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
         E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-      run: npx playwright test e2e/quote-builder-delivery.spec.ts --project=chromium-authed
+      # E104: --retries=2 → 3 tentativas totais. A 4ª chamada ao Supabase auth
+      # degrada após ~7min de CI (3 loginAs anteriores sobrecarregam o endpoint).
+      # Com retry, a nova tentativa acontece 75s depois — API geralmente recupera.
+      run: npx playwright test e2e/quote-builder-delivery.spec.ts --project=chromium-authed --retries=2
 
     - name: 📦 Upload Report
       if: always()

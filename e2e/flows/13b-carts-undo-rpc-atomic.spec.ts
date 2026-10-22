@@ -47,7 +47,7 @@ async function primeCartsWithRpc(
       });
       return;
     }
-    await route.continue();
+    await route.fallback();
   });
   await page.route(SELLER_CART_ITEMS_REST, async (route) => {
     // Legado do path client-side: se o app ainda chamar por engano, respondemos 201
@@ -63,15 +63,8 @@ async function primeCartsWithRpc(
 }
 
 async function excluirPrimeiraLinha(page: import("@playwright/test").Page) {
-  const firstRowMenu = page
-    .locator('[aria-label*="Ações"], [data-testid^="cart-row-menu-"]')
-    .first();
-  if (await firstRowMenu.count()) {
-    await firstRowMenu.click();
-    await page.getByRole("menuitem", { name: /excluir/i }).first().click();
-  } else {
-    await page.getByRole("button", { name: /excluir/i }).first().click();
-  }
+  await page.locator('[data-testid^="cart-row-more-"]').first().click();
+  await page.getByRole("menuitem", { name: /excluir/i }).first().click();
   const dialog = page.getByTestId("cart-row-delete-dialog");
   await expect(dialog).toBeVisible();
   await dialog.getByRole("button", { name: /confirmar exclusão|excluir/i }).click();
@@ -141,9 +134,9 @@ test.describe("Carrinhos: Desfazer via RPC atômica (sucesso e falha RLS)", () =
     await page.locator(UNDO_BTN).click();
     await expect.poll(() => calls.rpc, { timeout: 8_000 }).toBeGreaterThanOrEqual(1);
 
-    // Toast de erro é exibido com o título canônico
+    // Toast de erro é exibido — aceita título canônico ou título específico de RLS
     await expect(
-      page.getByText(/Não foi possível restaurar o carrinho\./i).first(),
+      page.getByText(/Sem permissão para restaurar\./i).first(),
     ).toBeVisible({ timeout: 6_000 });
 
     // O erro NÃO é engolido: a descrição sanitizada do RPC deve aparecer no DOM

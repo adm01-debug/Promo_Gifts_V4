@@ -24,8 +24,8 @@ test.describe("Auth Critical Flow @smoke", () => {
     const email = process.env.E2E_USER_EMAIL || process.env.E2E_ADMIN_EMAIL;
     const password = process.env.E2E_USER_PASSWORD || process.env.E2E_ADMIN_PASSWORD;
 
-    if (!email || !password) {
-      expect(false, "[E108] E2E_ADMIN_EMAIL/PASSWORD ou E2E_USER_EMAIL/PASSWORD não configurados — smoke login pulado em CI sem credenciais").toBeTruthy();
+    if (!email || !password || process.env.E2E_MOCK_AUTH === '1') {
+      test.skip(true, "[E108] Credenciais ausentes ou E2E_MOCK_AUTH=1 — smoke login requer auth real");
       return;
     }
 
@@ -47,10 +47,11 @@ test.describe("Auth Critical Flow @smoke", () => {
 
   test("deve bloquear acesso a rotas protegidas quando deslogado", async ({ page }) => {
     // Tenta acessar /produtos diretamente
-    console.log("[Smoke] Testando bloqueio de rota protegida");
+    const targetPath = "/produtos";
+    console.log(`[Smoke] Testando bloqueio de rota protegida: ${targetPath}`);
     // Em AppRoutes.tsx, as rotas protegidas estão sob <ProtectedRoute />
     // /produtos (productRoutes) é protegida.
-    await gotoAndSettle(page, "/produtos");
+    await gotoAndSettle(page, targetPath);
     
     // Deve redirecionar para /auth ou /login
     await expect(page, "deveria redirecionar para /auth ou /login").toHaveURL(

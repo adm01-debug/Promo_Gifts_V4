@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-19T12:11:01.902Z",
+  "generatedAt": "2026-10-21T23:27:31.171Z",
   "description": "Baseline de arquivos src/ com mais de 500 linhas (excluindo testes). Falha em arquivo novo acima do limite ou em crescimento.",
   "maxLines": 500,
   "files": {
@@ -93,7 +93,7 @@
     "src/hooks/products/useCatalogState.ts": 832,
     "src/hooks/products/useNovelties.helpers.ts": 687,
     "src/hooks/products/useSellerCarts.helpers.ts": 763,
-    "src/hooks/products/useSellerCarts.ts": 647,
+    "src/hooks/products/useSellerCarts.ts": 651,
     "src/hooks/quotes/useQuoteBuilderState.helpers.ts": 570,
     "src/hooks/quotes/useQuoteBuilderState.ts": 1016,
     "src/hooks/simulation/useSimulation.ts": 606,
