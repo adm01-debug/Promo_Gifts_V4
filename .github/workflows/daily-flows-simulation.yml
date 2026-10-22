@@ -44,7 +44,7 @@ jobs:
             echo "Nenhum run bem-sucedido anterior — rodando simulação incondicional"
             echo "skip=false" >> "$GITHUB_OUTPUT"
           else
-            CHANGED=$(git log --after="$LAST_SUCCESS" -1 --oneline -- src/ scripts/simulate-daily-flows.mjs supabase/migrations/ 2>/dev/null || true)
+            CHANGED=$(git log --after="$LAST_SUCCESS" -1 --oneline -- src/ scripts/simulate-daily-flows.mjs supabase/migrations/)
             if [ -z "$CHANGED" ]; then
               echo "skip=true" >> "$GITHUB_OUTPUT"
               echo "Nenhuma mudança relevante desde o último run bem-sucedido ($LAST_SUCCESS) — pulando simulação"
