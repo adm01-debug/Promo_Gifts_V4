@@ -32,7 +32,6 @@ import {
 import { exportToExcel, exportToPDF } from '@/utils/personalizationExport';
 import { toast } from 'sonner';
 import { logger } from '@/lib/logger';
-import { useAuth } from '@/contexts/AuthContext';
 
 interface RpcTechniqueOption {
   technique_id: string;
@@ -125,10 +124,6 @@ export function ProductPersonalizationRules({
   productSku,
   productName,
 }: ProductPersonalizationRulesProps) {
-  // fn_get_product_customization_options não é executável por anon (REVOKE
-  // 20260716000068). Sem sessão a chamada só gerava 401 + 3 retries.
-  const { isAuthenticated } = useAuth();
-
   // Check if product uses group rules or has custom rules
   const { data: productData, isLoading: loadingProduct } = useQuery({
     queryKey: ['product-personalization-source', productSku],
@@ -168,10 +163,10 @@ export function ProductPersonalizationRules({
     },
   });
 
-  // Fetch product-specific rules via external DB
   const { data: productComponents, isLoading: loadingProductRules } = useQuery({
     queryKey: ['product-custom-rules', productData?.productDbId],
     queryFn: async () => {
+      if (!(await supabase.auth.getSession()).data.session) return null; // anon: sem EXECUTE
       if (!productData?.productDbId || productData.source !== 'product') return null;
 
       try {
@@ -208,7 +203,7 @@ export function ProductPersonalizationRules({
         return null;
       }
     },
-    enabled: isAuthenticated && productData?.source === 'product',
+    enabled: productData?.source === 'product',
   });
 
   // Fetch group rules — group products also use the v6 API since the
