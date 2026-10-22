@@ -43,4 +43,36 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE
   public.outbound_webhooks
 TO service_role;
 
+-- Tabela products: necessária para product-webhook edge function (upsert + select).
+-- Colunas mapeadas 1-to-1 com NormalizedProduct em supabase/functions/product-webhook/index.ts.
+CREATE TABLE IF NOT EXISTS public.products (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  sku text NOT NULL,
+  name text NOT NULL DEFAULT '',
+  description text,
+  sale_price numeric,
+  min_quantity integer NOT NULL DEFAULT 1,
+  category_id uuid,
+  supplier_id uuid,
+  brand text,
+  stock_quantity integer NOT NULL DEFAULT 0,
+  is_stockout boolean NOT NULL DEFAULT false,
+  sync_status text NOT NULL DEFAULT 'synced',
+  is_kit boolean NOT NULL DEFAULT false,
+  is_active boolean NOT NULL DEFAULT true,
+  is_featured boolean NOT NULL DEFAULT false,
+  is_new boolean NOT NULL DEFAULT false,
+  is_on_sale boolean NOT NULL DEFAULT false,
+  images text[] NOT NULL DEFAULT ARRAY[]::text[],
+  videos jsonb NOT NULL DEFAULT '[]'::jsonb,
+  colors jsonb NOT NULL DEFAULT '[]'::jsonb,
+  materials text[] NOT NULL DEFAULT ARRAY[]::text[],
+  tags jsonb NOT NULL DEFAULT '{}'::jsonb,
+  schema_json jsonb NOT NULL DEFAULT '{}'::jsonb,
+  last_sync_at timestamptz,
+  UNIQUE (sku)
+);
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.products TO service_role;
+
 NOTIFY pgrst, 'reload schema';
