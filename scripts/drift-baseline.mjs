@@ -1009,9 +1009,16 @@ export function splitDiffStatements(sql) {
   return stmts;
 }
 
+// Session-level SET statements emitted by `supabase db diff` in some shadow
+// scenarios — not schema objects, strip before allowlist validation.
+const SESSION_NOISE_EXACT = new Set([
+  'set check_function_bodies = off;',
+]);
+
 export function filterDiff(diffSql, allowlist) {
   return splitDiffStatements(diffSql).filter((stmt) => {
     const first = stmt.split('\n').find((l) => l.trim() && !l.trim().startsWith('--')) ?? '';
+    if (SESSION_NOISE_EXACT.has(first.trim().toLowerCase())) return false;
     return !allowlist.some((re) => re.test(first.trim()));
   });
 }

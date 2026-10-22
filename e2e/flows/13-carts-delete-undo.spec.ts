@@ -52,7 +52,7 @@ async function primeCarts(page: import("@playwright/test").Page, count: number) 
       });
       return;
     }
-    await route.continue();
+    await route.fallback();
   });
   await page.route(SELLER_CART_ITEMS_REST, async (route, request) => {
     if (request.method() === "POST") {
@@ -80,14 +80,8 @@ test.describe("Carrinhos: exclusão com Desfazer (paridade com Orçamentos)", ()
     await gotoAndSettle(page, "/carrinhos");
 
     // Abre menu de ações da 1ª linha e dispara "Excluir".
-    const firstRowMenu = page.locator('[aria-label*="Ações"], [data-testid^="cart-row-menu-"]').first();
-    if (await firstRowMenu.count()) {
-      await firstRowMenu.click();
-      await page.getByRole("menuitem", { name: /excluir/i }).first().click();
-    } else {
-      // Fallback: acha o botão Excluir diretamente
-      await page.getByRole("button", { name: /excluir/i }).first().click();
-    }
+    await page.locator('[data-testid^="cart-row-more-"]').first().click();
+    await page.getByRole("menuitem", { name: /excluir/i }).first().click();
 
     // Copy SSOT do diálogo (guarda anti-regressão)
     const dialog = page.getByTestId("cart-row-delete-dialog");
@@ -264,7 +258,7 @@ test.describe("Carrinhos: exclusão com Desfazer (paridade com Orçamentos)", ()
         });
         return;
       }
-      await route.continue();
+      await route.fallback();
     });
     await page.route(SELLER_CART_ITEMS_REST, async (route, request) => {
       if (request.method() === "POST") {
@@ -335,7 +329,7 @@ test.describe("Carrinhos: exclusão com Desfazer (paridade com Orçamentos)", ()
         });
         return;
       }
-      await route.continue();
+      await route.fallback();
     });
     await page.route(SELLER_CART_ITEMS_REST, async (route) => {
       await route.fulfill({ status: 201, contentType: "application/json", body: JSON.stringify([]) });
@@ -382,13 +376,8 @@ test.describe("Carrinhos: exclusão com Desfazer (paridade com Orçamentos)", ()
       const { calls } = await primeCarts(page, 2);
       await gotoAndSettle(page, "/carrinhos");
 
-      const firstRowMenu = page.locator('[aria-label*="Ações"], [data-testid^="cart-row-menu-"]').first();
-      if (await firstRowMenu.count()) {
-        await firstRowMenu.click();
-        await page.getByRole("menuitem", { name: /excluir/i }).first().click();
-      } else {
-        await page.getByRole("button", { name: /excluir/i }).first().click();
-      }
+      await page.locator('[data-testid^="cart-row-more-"]').first().click();
+      await page.getByRole("menuitem", { name: /excluir/i }).first().click();
       const dialog = page.getByTestId("cart-row-delete-dialog");
       await expect(dialog).toBeVisible();
       await dialog.getByRole("button", { name: /confirmar exclusão|excluir/i }).click();
@@ -459,13 +448,8 @@ test.describe("Carrinhos: exclusão com Desfazer (paridade com Orçamentos)", ()
     await gotoAndSettle(page, "/carrinhos");
 
     // Fluxo 1: linha
-    const firstRowMenu = page.locator('[aria-label*="Ações"], [data-testid^="cart-row-menu-"]').first();
-    if (await firstRowMenu.count()) {
-      await firstRowMenu.click();
-      await page.getByRole("menuitem", { name: /excluir/i }).first().click();
-    } else {
-      await page.getByRole("button", { name: /excluir/i }).first().click();
-    }
+    await page.locator('[data-testid^="cart-row-more-"]').first().click();
+    await page.getByRole("menuitem", { name: /excluir/i }).first().click();
     await page
       .getByTestId("cart-row-delete-dialog")
       .getByRole("button", { name: /confirmar exclusão|excluir/i })

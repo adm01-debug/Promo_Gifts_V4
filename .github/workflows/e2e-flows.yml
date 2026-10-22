@@ -70,6 +70,7 @@ jobs:
         uses: ./.github/actions/check-min-tests
         with:
           results-json: 'playwright-report/results-error-boundaries.json'
+          min: '7'
 
       - name: Upload report
         if: always()

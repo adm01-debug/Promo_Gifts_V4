@@ -63,12 +63,7 @@ jobs:
         uses: ./.github/actions/e2e-setup
         with:
           browsers: "chromium,firefox,webkit"
-      - run: npm run build
-      - name: Start preview server
-        run: |
-          npx vite preview --port 8080 --host 127.0.0.1 &
-          # E96/C26: substituído npx wait-on (não está no lockfile) por loop bash nativo
-          timeout 60 bash -c 'until curl -sf http://localhost:8080 > /dev/null; do sleep 1; done'
+          start-vite: "true"
       - name: Run Playwright (${{ matrix.project }})
         run: |
           npx playwright test \

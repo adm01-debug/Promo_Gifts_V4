@@ -108,8 +108,8 @@ async function expectRedirectedToLoginWithNext(page: Page, expectedNext: string)
 
 test.describe("@smoke Session Recovery — JWT inválido (localStorage real)", () => {
   test.skip(
-    !E2E_EMAIL || !E2E_PASSWORD,
-    "Requer E2E_USER_EMAIL/E2E_USER_PASSWORD para login real (não mocked).",
+    !E2E_EMAIL || !E2E_PASSWORD || process.env.E2E_MOCK_AUTH === '1',
+    "Requer E2E_USER_EMAIL/E2E_USER_PASSWORD e auth real (sem E2E_MOCK_AUTH=1).",
   );
 
   test("refresh irrecuperável → signOut + redirect /login?next=<rota original>", async ({

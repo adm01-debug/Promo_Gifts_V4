@@ -81,6 +81,14 @@ jobs:
         with:
           version: 2.101.0
 
+      - name: Override image registry to ECR Public (E104)
+        run: |
+          set -euo pipefail
+          # supabase/setup-cli action define SUPABASE_INTERNAL_IMAGE_REGISTRY=ghcr.io via
+          # $GITHUB_ENV, causando rate limit no supabase start. CLI 2.101.0 usa ECR Public
+          # nativamente — sobrescreve aqui para evitar toomanyrequests do ghcr.io.
+          echo "SUPABASE_INTERNAL_IMAGE_REGISTRY=public.ecr.aws" >> "$GITHUB_ENV"
+
       - run: npm ci --no-audit --no-fund
 
       - name: Start Supabase stack

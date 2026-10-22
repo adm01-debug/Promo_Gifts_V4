@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 
-const hasAuth = !!(process.env.E2E_USER_EMAIL && process.env.E2E_USER_PASSWORD);
+const hasAuth = !!(process.env.E2E_USER_EMAIL && process.env.E2E_USER_PASSWORD)
+  && process.env.E2E_MOCK_AUTH !== '1';
 
 /**
  * Teste E2E para o Session Watchdog

@@ -27,6 +27,10 @@ async function open(page: Page, width = 1280, height = 900) {
 test('@smoke nenhum ancestral da sidebar quebra sticky via overflow ou containing block', async ({
   page,
 }) => {
+  test.skip(
+    process.env.E2E_MOCK_AUTH === '1',
+    '[E108] Rota /__visual/* só disponível em DEV mode — não existe no build de produção',
+  );
   await open(page);
   const violations = await page.evaluate(({ badCb }) => {
     const aside = document.querySelector('aside');
@@ -64,6 +68,10 @@ test('@smoke nenhum ancestral da sidebar quebra sticky via overflow ou containin
 });
 
 test('@smoke sticky da sidebar sobrevive em múltiplas resoluções', async ({ page }) => {
+  test.skip(
+    process.env.E2E_MOCK_AUTH === '1',
+    '[E108] Rota /__visual/* só disponível em DEV mode — não existe no build de produção',
+  );
   for (const [w, h] of [
     [1024, 768],
     [1280, 900],
@@ -89,6 +97,10 @@ test('@smoke sticky da sidebar sobrevive em múltiplas resoluções', async ({ p
 test('teclado: setas/PageDown/Home/End movem o scroll interno e anunciam estado', async ({
   page,
 }) => {
+  test.skip(
+    process.env.E2E_MOCK_AUTH === '1',
+    '[E108] Rota /__visual/* só disponível em DEV mode — não existe no build de produção',
+  );
   await open(page);
   const scroller = page
     .getByTestId('quote-items-table-fixture-many')
@@ -123,6 +135,10 @@ test('teclado: setas/PageDown/Home/End movem o scroll interno e anunciam estado'
 });
 
 test('@smoke thead permanece fixo durante rolagem interna em md e lg', async ({ page }) => {
+  test.skip(
+    process.env.E2E_MOCK_AUTH === '1',
+    '[E108] Rota /__visual/* só disponível em DEV mode — não existe no build de produção',
+  );
   for (const [w, h] of [
     [768, 900],
     [1280, 900],
@@ -156,6 +172,10 @@ test('@smoke thead permanece fixo durante rolagem interna em md e lg', async ({ 
 test('Tab percorre controles dentro da região rolável sem perder foco após scroll', async ({
   page,
 }) => {
+  test.skip(
+    process.env.E2E_MOCK_AUTH === '1',
+    '[E108] Rota /__visual/* só disponível em DEV mode — não existe no build de produção',
+  );
   await open(page);
   const scroller = page
     .getByTestId('quote-items-table-fixture-many')

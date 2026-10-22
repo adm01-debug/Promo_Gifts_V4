@@ -110,7 +110,7 @@ export function useProductInsights(productId?: string, productSku?: string) {
             // rls-allow: seller-scope enforced by RLS policy; orderIds filtered from seller's own items
             const batch = await fetchAllPages<{ client_id: string | null }>((from, to) =>
               supabase
-                .from('orders')
+                .from('orders') // rls-allow: seller-scope enforced by RLS policy; orderIds filtered from seller's own items
                 .select('client_id')
                 .in('id', idBatch)
                 .order('id', { ascending: true })

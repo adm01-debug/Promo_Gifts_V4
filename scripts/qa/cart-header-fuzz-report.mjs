@@ -50,7 +50,7 @@ const INVARIANTS = [
 console.log('▶ Rodando fuzzer com reporter JSON...');
 try {
   execSync(
-    `bunx vitest run ${SPECS.join(' ')} --reporter=json --outputFile=${JSON_TMP}`,
+    `npx vitest run ${SPECS.join(' ')} --reporter=json --outputFile=${JSON_TMP}`,
     { stdio: ['ignore', 'ignore', 'inherit'], cwd: ROOT },
   );
 } catch (err) {
