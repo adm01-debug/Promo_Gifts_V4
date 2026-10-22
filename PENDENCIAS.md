@@ -1,55 +1,65 @@
 # PENDÊNCIAS — Branch `claude/laughing-cori-o9w35e` / PR #2338
 
 **Atualizado em:** 2026-10-22  
-**HEAD:** `dc2baf69`  
+**HEAD:** `479c1d8f`  
 
 ---
 
 ## P1 — `python-package-conda.yml` obsoleto em main
 
 **Status:** ⚠️ Bloqueado — ação de PO/eng necessária  
-**Causa:** `python-package-conda.yml` existe em main com `actions/setup-python@v3` (obsoleto). O arquivo NÃO existe no nosso branch — o Workflow Lint passa no nosso PR.  
-**Ação necessária:** Criar PR adicional para deletar `python-package-conda.yml` de main.
+**Workflow:** `Python Package using Conda`  
+**Causa:** `python-package-conda.yml` existe em main com `actions/setup-python@v3` (obsoleto). O arquivo NÃO existe no branch `claude/laughing-cori-o9w35e` — o workflow Lint passa no PR. Run de falha em main: [39670397287](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397287) — `setup-python@v3` deprecated.  
+**Por que não corrigido aqui:** O arquivo não existe neste branch; a correção é em main diretamente.  
+**Ação necessária:** Criar PR separado para deletar `python-package-conda.yml` de main.
 
 ---
 
 ## P2 — Visual Snapshot Baselines
 
 **Status:** ⚠️ Bloqueado — ação do PO necessária  
+**Workflow:** `Nightly Full CI` (visual snapshots), gate 1.4  
 **Causa:** Snapshots visuais desatualizados. Workflow `update-snapshots.yml` precisa ser disparado via `workflow_dispatch`.  
-**Ação necessária:** PO dispara `.github/workflows/update-snapshots.yml` via GitHub Actions UI.
+**Run de falha:** [39713855139](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39713855139) — `visual snapshots desatualizados + kit-builder timeout`.  
+**Por que não corrigido aqui:** Requer secrets e runner E2E que não estão disponíveis no CI do PR. A atualização deve ser disparada manualmente pelo PO.  
+**Ação necessária:** PO dispara `.github/workflows/update-snapshots.yml` via GitHub Actions UI → merge snapshots resultantes.
 
 ---
 
 ## P4 — E2E (Playwright) — Header Sticky
 
-**Status:** ⚠️ Pré-existente em main  
-**Causa:** `e2e/flows/22-header-sticky.spec.ts` — falha em main run 39670397540 (anterior ao PR). O PR não tocou em `MainLayout.tsx`.  
-**Motivo do bloqueio:** Pré-existente em main. Não introduzido por este PR.
+**Status:** ⚠️ Pré-existente em main — não corrigível neste PR  
+**Workflow:** `E2E (Playwright)`  
+**Causa:** `e2e/flows/22-header-sticky.spec.ts:132` falhou em run [39670397540](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397540) (anterior ao PR, em main commit `c7c25848`). O PR **não toca** em `MainLayout.tsx`.  
+**Prova de pré-existência:** Falha confirmada no run main 39670397540 antes de qualquer commit deste PR; `git log --diff-filter=M -- src/components/layout/MainLayout.tsx` retorna vazio.  
+**Por que não corrigível aqui:** Auth/infra ausente no CI; falha pré-existente em main. Corrigir regressão de MainLayout está fora do escopo deste PR.
 
 ---
 
 ## P4b — E2E • Thumb QuickView
 
-**Status:** ⚠️ Pré-existente em main  
-**Causa:** Run 39670397261 — "Check min tests executed": 5 testes executados, mínimo 10. Secrets E2E ausentes.  
-**Motivo do bloqueio:** Pré-existente em main.
+**Status:** ⚠️ Pré-existente em main — não corrigível neste PR  
+**Workflow:** `E2E · Thumb QuickView`  
+**Causa:** Run [39670397261](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397261) — "Check min tests executed": 5 testes executados, mínimo 10. Secrets E2E ausentes no CI do PR.  
+**Por que não corrigível aqui:** Depende de secrets E2E (`PLAYWRIGHT_*`) não disponíveis no CI de PR — pré-existente em main.
 
 ---
 
 ## P4c — E2E • Swatch QuickView
 
-**Status:** ⚠️ Pré-existente em main  
-**Causa:** Run 39670397324 — webkit runner shutdown signal.  
-**Motivo do bloqueio:** Pré-existente em main.
+**Status:** ⚠️ Pré-existente em main — não corrigível neste PR  
+**Workflow:** `E2E · Swatch QuickView`  
+**Causa:** Run [39670397324](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397324) — webkit: runner recebeu shutdown signal.  
+**Por que não corrigível aqui:** Falha de runner externo, pré-existente em main.
 
 ---
 
 ## P4d — E2E — Critical Flows & Error Boundaries
 
-**Status:** ⚠️ Pré-existente em main  
-**Causa:** Run 39670397401 — check min tests falhou. Auth/secrets ausentes.  
-**Motivo do bloqueio:** Pré-existente em main.
+**Status:** ⚠️ Pré-existente em main — não corrigível neste PR  
+**Workflow:** `E2E — Critical Flows & Error Boundaries`  
+**Causa:** Run [39670397401](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397401) — check min tests falhou. Auth/secrets ausentes.  
+**Por que não corrigível aqui:** Pré-existente em main. Requer secrets E2E.
 
 ---
 
@@ -59,47 +69,51 @@
 **Arquivos criados:**
 1. ✅ `supabase/migrations/20261022000000_revoke_fn_backfill_queue_reap_stuck_public_grant.sql`
 2. ✅ `supabase/migrations/20261022000100_revoke_fn_detect_recurring_errors_public_grant.sql`  
+**Por que não aplicado aqui:** REGRA E056 — DDL via `execute_sql` proibido em sessão de agente. O único caminho autorizado é `.github/workflows/db-apply-migration.yml` (REGRA #8 / E15).  
 **Ação necessária:** PO dispara `db-apply-migration.yml` com versão explícita para aplicar em prod.
 
 ---
 
 ## P6 — Vulnerabilidades Dependabot (3 high, 3 moderate)
 
-**Status:** ⚠️ Monitoramento  
-**Causa:** 6 vulnerabilidades pré-existentes (não introduzidas por este PR).  
-**Gate afetado:** Gate 0.5 — passa em main também.
+**Status:** ⚠️ Monitoramento — pré-existente em main  
+**Workflow:** Gate 0.5 (`npm audit`)  
+**Causa:** 6 vulnerabilidades pré-existentes (não introduzidas por este PR). Gate 0.5 passa em main também (as vulns existem lá).  
+**Por que não corrigível aqui:** Dependências pré-existentes; atualização major exige verificação de quebra de compatibilidade — fora do escopo deste PR.
 
 ---
 
 ## P7 — Release Please
 
 **Status:** ⚠️ Fora do escopo — pré-existente em main  
-**Causa:** Run 39670397513 — `Resource not accessible by integration`. Token do GitHub App sem `contents: write`.  
-**Motivo:** Configuração do repositório/GitHub App. Não relacionado a este PR.
+**Workflow:** `Release Please`  
+**Causa:** Run [39670397513](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397513) — `Resource not accessible by integration`. Token do GitHub App sem `contents: write`.  
+**Por que não corrigível aqui:** Configuração do repositório/GitHub App — não relacionado a este PR. PO deve conceder permissão `contents: write` ao App.
 
 ---
 
 ## P8 — Uptime Monitor
 
 **Status:** ⚠️ Externo — pré-existente em main  
-**Causa:** Run 39715372439 — site ou edge functions com problema de disponibilidade. Monitor externo.  
-**Motivo:** Infra externa. Não relacionado a este PR.
+**Workflow:** `Uptime Monitor`  
+**Causa:** Run [39715372439](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39715372439) — site ou edge functions com problema de disponibilidade. Monitor externo (schedule 30 min).  
+**Por que não corrigível aqui:** Infra externa — não relacionado a este PR.
 
 ---
 
 ## P9 — Nightly Full CI — Visual Snapshots + Kit Builder Timeout
 
 **Status:** ⚠️ Pré-existente em main (mesma causa que P2)  
-**Causa:** Run 39713855139 — visual snapshots desatualizados + kit-builder timeout.  
-**Motivo:** Pré-existente em main. Requer PO disparar `update-snapshots.yml`.
+**Workflow:** `Nightly Full CI`  
+**Causa:** Run [39713855139](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39713855139) — visual snapshots desatualizados + kit-builder timeout.  
+**Por que não corrigível aqui:** Pré-existente em main. Requer PO disparar `update-snapshots.yml`.
 
 ---
 
 ## P10 — Gate E40 Schema Drift (Running Copilot Code Review)
 
-**Status:** ✅ Fix enviado — aguardando CI  
-**Commit:** `205c5688` — allowlist 634 versões remote_only em `migration-ledger-remote-only-allowlist.json`  
-**Deploy Gates run:** 39723328396 (queued em 2026-10-22T04:36:37Z)
+**Status:** ✅ Fix enviado — CI em andamento (commit `205c5688`)  
+**Commit:** `205c5688` — allowlist 634 versões remote_only em `migration-ledger-remote-only-allowlist.json`
 
 ---
 
@@ -115,7 +129,9 @@
 | Gate 1.12 CONTRACTS | `cb2706ca` | `magazine-reader-state-read` adicionado a NO_BODY_EXEMPT |
 | migrations-sync-log-gate | `305e4763` | Recibos E15 adicionados em MIGRATIONS_SYNC_LOG.md |
 | Gate E40 allowlist | `205c5688` | 634 versões remote_only allowlistadas |
+| Gate 1.3 stale entry | `dc2baf69` | Entrada stale removida de .migration-refs-baseline.json |
+| Gate 1.3 falso positivo doc | `479c1d8f` | Referência literal ao path inexistente removida de RELATORIO_CI.md |
 
 ---
 
-_Atualizado automaticamente por sessão Claude — 2026-10-22_
+_Atualizado automaticamente por sessão Claude — 2026-10-22 (HEAD 479c1d8f)_
