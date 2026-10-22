@@ -73,12 +73,16 @@
 - **Fix desta sessão:** `mkdir -p playwright-report &&` antes do `touch` em `e2e-gates` (commit `c58e3a56`) resolve false-negative no gate header-sticky
 - **Status:** Falhas pré-existentes confirmadas; não são regressões introduzidas por esta branch
 
-### 2.7 Quote Builder Delivery Quality — A Investigar
+### 2.7 Quote Builder Delivery Quality — E2E Tooltip Pré-existente
 
 - **Run:** [39757063628](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757063628)
-- **Causa:** Não investigada nesta sessão
-- **Ação necessária:** Verificar logs do run — pode ser falha de E2E ou outro check do workflow
-- **Responsável:** Próxima sessão
+- **Job que falhou:** `quality-gate` → step `🌍 E2E & Visual Regression`
+- **Causa confirmada:**
+  1. `[chromium-authed] › e2e/quote-builder-delivery.spec.ts:14:3 › should show and hide delivery tooltip on hover` — FAIL
+  2. `[chromium-authed] › e2e/quote-builder-delivery.spec.ts:86:3 › should verify warning guidance via delivery tooltip` — FAIL (com retry)
+- **Status:** Pré-existente na `main` (commit `8e8053b9`) — não causado por nenhuma mudança desta branch
+- **Ação necessária:** Investigar regressão de UI no componente de tooltip de entrega no QuoteBuilderPage; pode ser flake de autenticação ou regressão real de componente introduzida pelo Lovable
+- **Responsável:** PO + dev de features
 
 ---
 
