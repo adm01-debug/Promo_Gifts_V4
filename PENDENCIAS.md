@@ -1,13 +1,13 @@
 # PENDÊNCIAS — Correção de Workflows CI
 
-**Atualizado:** 2026-10-22T17:15 UTC  
+**Atualizado:** 2026-10-22T17:20 UTC  
 **Branch ativa:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD anterior:** `b977f790` | **HEAD próximo:** após commit Docker registry fix  
-**Gate Final b977f790:** run [39815181210](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39815181210) — ❌ `conclusion=failure` — **2 causas: E40 (bloqueio humano) + Gate 5.5 (cancelled — consequência de E40)**  
+**HEAD atual:** `a83e1c0d` (fix Docker registry `ghcr.io` → `public.ecr.aws`)  
+**Gate Final a83e1c0d att 1:** run [39818934114](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39818934114) — ❌ `failure` — **apenas Gate E40 step 10 falhou por rate limit transiente ECR** (`toomanyrequests: retry-after: 670µs`); 15/17 jobs ✅ — re-run (att 2) disparado ~17:15Z  
+**Gate Final a83e1c0d att 2:** run [39818934114](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39818934114) — ⏳ `in_progress` (17:15:34Z) — 15/16 ✅, aguardando Gate E40 Schema Drift (step 6 "Link canonical" ~17:16Z)  
 **Gate Final precedente (sucesso):** run [39798033549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39798033549) — `141c915a` — ✅ **`conclusion=success`** (15:00Z, 16 jobs)  
-**Uptime Monitor mais recente:** run [39811647198](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39811647198) — ❌ transiente (16:10Z) — padrão intermitente §2.1  
-**db-schema-drift-check fix:** commit `f6b1147` (pre-pull retry); commit próximo (registry fix: `ghcr.io` → `public.ecr.aws`)  
-**Gate 8 — Security (run 39815181224):** ❌ `conclusion=failure` — HTTP 504 transiente (3× tentativas) do Supabase `check:security-definer-acl --require-live` — **não bloqueia Gate Final** — ver §2.13
+**Gate Final b977f790:** run [39815181210](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39815181210) — ❌ `conclusion=failure` — causas: E40 (ledger parity) + Gate 5.5 (cancelled)  
+**Gate 8 — Security (run 39815181224):** ❌ `conclusion=failure` — HTTP 504 transiente — **não bloqueia Gate Final** — ver §2.13
 
 ### Commits desta sessão
 | Commit | Descrição | Resolve |

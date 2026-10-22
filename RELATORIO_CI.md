@@ -2,12 +2,12 @@
 
 **Gerado:** 2026-10-22T13:35 UTC | **Atualizado:** 2026-10-22T17:30 UTC  
 **Branch:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD após próximo commit:** registry fix (`ghcr.io` → `public.ecr.aws`)  
-**HEAD anterior:** `b977f790` | **Commits desta sessão (compactação 4):** `a21f6200` → `b442d1ed` → `679b5f45` → `dbd53ec4` → `ad831d70` → `6e93a947` → `8bfcbf4a` → `f6b1147` → `b977f790` → próximo commit  
+**HEAD atual:** `a83e1c0d` (fix: registry Docker `ghcr.io` → `public.ecr.aws`)  
+**Commits desta sessão (compactação 4→5):** `a21f6200` → `b442d1ed` → `679b5f45` → `dbd53ec4` → `ad831d70` → `6e93a947` → `8bfcbf4a` → `f6b1147` → `b977f790` → **`a83e1c0d`**  
 **Base (main):** `8e8053b9`  
-**Gate Final b977f790:** run [39815181210](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39815181210) → ❌ `conclusion=failure` — **causas: E40 (ledger parity, bloqueio humano) + Gate 5.5 (cancelled por consequência)**  
-**Gate Final precedente de sucesso:** run [39798033549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39798033549) para `141c915a` → ✅ `conclusion=success` (16 jobs ✅, 15:00Z)  
-**Fix em andamento (próximo commit):** `db-schema-drift-check.yml` — registry Docker `ghcr.io/supabase/postgres:17.6.1.063` → `public.ecr.aws/supabase/postgres:17.6.1.063` (CLI 2.101.0 usa ECR, não ghcr.io)
+**Gate Final a83e1c0d att 1:** run [39818934114](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39818934114) att 1 → ❌ `failure` — **somente Gate E40 Schema Drift falhou**: ECR rate limit transiente (`toomanyrequests: retry-after: 670µs`); todos os outros 15/16 jobs ✅  
+**Gate Final a83e1c0d att 2:** run [39818934114](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39818934114) att 2 → ⏳ `in_progress` (17:15:34Z) — **15/16 ✅** (Gate 0, 0.5, 0.6, 1 42 sub-gates, 2, 2.5, 3 E2E Smoke, 4 Lighthouse, 5, 5.5, 6 Build, E23×2, E40 detect) — aguardando Gate E40 Schema Drift (step 6 "Link canonical" ~17:16Z)  
+**Gate Final precedente de sucesso:** run [39798033549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39798033549) para `141c915a` → ✅ `conclusion=success` (16 jobs ✅, 15:00Z)
 
 ---
 
