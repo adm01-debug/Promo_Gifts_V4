@@ -1,0 +1,36 @@
+{
+  "projeto": "doufsxqlfjyuvxuezpln",
+  "url": "https://doufsxqlfjyuvxuezpln.supabase.co",
+  "auditoria_iniciada": "2026-10-22",
+  "auditoria_concluida": "2026-10-22",
+  "modo": "somente_leitura",
+  "secoes": {
+    "1_inventario": "concluido",
+    "2_drift": "concluido",
+    "3_seguranca": "concluido",
+    "4_integridade": "concluido",
+    "5_performance": "concluido",
+    "6_crons": "concluido",
+    "7_db_functions": "concluido",
+    "8_edge_functions": "concluido",
+    "9_auth_storage_realtime": "concluido",
+    "10_logs": "concluido",
+    "11_rls": "concluido",
+    "12_lacunas": "concluido"
+  },
+  "agentes": {
+    "A": "secoes_1_2",
+    "B": "secoes_3_4",
+    "C": "secoes_5_6_7",
+    "D": "secoes_8_9_10_11_12"
+  },
+  "relatorio_final": "RELATORIO_AUDITORIA_SUPABASE.md",
+  "resumo_achados": {
+    "CRITICO": 1,
+    "ALTO": 7,
+    "MEDIO": 22,
+    "BAIXO": 8,
+    "INFO": 12,
+    "NAO_VERIFICADO": 3
+  }
+}
