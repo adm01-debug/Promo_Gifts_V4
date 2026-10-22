@@ -28,12 +28,13 @@
 
 ### PR #2338 — fix(ci): corrige 5 workflows em failure
 - **Branch:** `claude/laughing-cori-o9w35e`
-- **Head atual:** `ac0f4e10fc9d0197980f1ff3e140578d708f38a9`
+- **Head atual:** `3d2fe287c954e8fbe39d98df4d86dacb808742f9` (18:08:02Z)
 - **Base:** `8e8053b9` (= main ✅)
 - **Label:** `large-pr-approved`
-- **CI status (17:51 UTC):** Gate Final não iniciado — 82 checks, 16 queued, 3 in_progress, 1 skipped
-- **Commit anterior** (`e2bf780`): Gate Final = failure
-- **Ação:** Aguardar Gate Final no head `ac0f4e10`. Se `success` → mergear.
+- **CI status (18:10 UTC):** Gate Final não iniciado — CI em andamento para `3d2fe287`
+- **Bloqueio:** adm01-debug empurra commits continuamente (~4 min/commit, 153 total). Cada push cancela CI anterior via `concurrency: cancel-in-progress: true`.
+- **Ação:** Sessão subscrita a eventos do PR. Safety-net 19:04 UTC. Quando Gate Final = `success` → mergear imediatamente.
+- **Constraints aplicadas:** proibido comentar na PR para pedir pausa nos pushes.
 
 ---
 
