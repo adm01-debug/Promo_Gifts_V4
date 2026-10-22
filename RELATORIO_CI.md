@@ -1,9 +1,9 @@
 # Relatório CI — Sessão de Correção de Workflows
 
-**Gerado:** 2026-10-22T14:00 UTC | **Atualizado:** 2026-10-22T13:15 UTC  
+**Gerado:** 2026-10-22T14:00 UTC | **Atualizado:** 2026-10-22T13:25 UTC  
 **Branch:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD atual:** `7fa5c405` (Gate 5 retry HTTP 521 fix)  
-**Commits desta sessão:** `9c2288c4` → `c58e3a56` → `6d6ed480` → `5216cfc7` → `0aad32d3` → `3daebf93` → `7fa5c405`  
+**HEAD atual:** `c65aa646` (fix daily-flows: git log -1 sem SIGPIPE)  
+**Commits desta sessão:** `9c2288c4` → `c58e3a56` → `6d6ed480` → `5216cfc7` → `0aad32d3` → `3daebf93` → `7fa5c405` → `070bd2c7` → `b55d179e` → `040b4a0a` → `c65aa646`  
 **Base (main):** `8e8053b9`
 
 ---
@@ -87,13 +87,14 @@ npm error 403 403 Forbidden - GET https://europe-west1-npm.pkg.dev/lovable-core-
 
 ## 4. Status do Gate Final (PR branch → Gate Final - Deploy Ready)
 
-> Última verificação: 15:00 UTC
+> Última verificação: 13:25 UTC
 
 | Run | HEAD | Status | Notas |
 |---|---|---|---|
 | [39778555326](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39778555326) | `c58e3a56` | Cancelado por push seguinte | Comportamento esperado de concorrência |
 | [39782946071](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39782946071) | `a23edb77` | Cancelado por push seguinte | Comportamento esperado de concorrência |
-| [39784863088](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784863088) | `7fa5c405` | **queued** → em andamento | HEAD atual |
+| [39784863088](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784863088) | `7fa5c405` | Cancelado por push seguinte | Comportamento esperado de concorrência |
+| Novo run (HEAD `c65aa646`) | `c65aa646` | **in_progress** (13:25 UTC) | HEAD atual — aguardando Gate Final |
 
 ## 4.1 Workflows Confirmados SUCCESS em `7fa5c405` (2026-10-22T15:00 UTC)
 
@@ -119,7 +120,8 @@ npm error 403 403 Forbidden - GET https://europe-west1-npm.pkg.dev/lovable-core-
 |---|---|---|---|
 | **Edge Integration Tests — All Functions** | [39784863282](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784863282) | `validate-access` retorna 200 para number input, deveria retornar 4xx | Branch não toca edge functions |
 | **E2E — Critical Flows & Error Boundaries** | [39784863168](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784863168) | Auth failure em Admin Critical Routes | Presente na main (run 39757063778) |
-| Novo run (HEAD `070bd2c7`) | `070bd2c7` | Aguardando CI (push às 14:3x UTC) | A confirmar |
+| **webkit • swatch→QV** | [119845281230](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784862875/job/119845281230) | Failure em `7fa5c405` | Pré-existente — webkit flake em swatch/QV |
+| **cart-invariants (firefox-authed · shard 2/2)** | [119845594432](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784863292/job/119845594432) | Failure em `7fa5c405` | Pré-existente — Firefox auth flake recorrente |
 
 ---
 
