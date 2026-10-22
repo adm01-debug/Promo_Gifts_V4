@@ -19,7 +19,7 @@
   "pr2338_ci_status": "MERGEADA",
   "status": "CONCLUIDO_com_alerta_sentinel",
   "proxima_acao": "aguardar_decisao_humana_sobre_sentinel",
-  "ultima_atualizacao": "2026-10-22T19:35Z",
+  "ultima_atualizacao": "2026-10-22T20:10Z",
   "alerta_sentinel": {
     "check": "Verify push to main matches accepted patterns",
     "check_run_id": 120036831874,
@@ -32,11 +32,60 @@
     "esta_nos_gates_0_a_6": false,
     "eh_regressao_de_codigo": false,
     "estava_no_baseline_8e8053b9": false,
+    "evidencia_baseline_sentinel": {
+      "check_run_id_baseline": 119751639439,
+      "sha_baseline": "8e8053b9ed85142e85809783cd3acf9a3077ecde",
+      "conclusion_baseline": "success",
+      "completed_at_baseline": "2026-10-22T09:40:11Z",
+      "check_run_id_pos_merge": 120036831874,
+      "sha_pos_merge": "57017ba78eb68c6c72dba336f9c081c4519619c4",
+      "conclusion_pos_merge": "failure",
+      "veredicto": "FALHA_NOVA_nao_pre_existente"
+    },
     "opcoes_correcao": [
       "Squash merge futuros PRs de agentes Claude (branch commits somem — só o commit de merge fica visível no range)",
       "Adicionar 'fix(ci):' e outros prefixos semânticos de commitizen ao sentinel allowlist (regra R20 revisão)",
       "Aceitar como advisory e documentar — não é gate bloqueante"
     ]
+  },
+  "ci_pos_merge_57017ba7": {
+    "timestamp_verificacao": "2026-10-22T20:10Z",
+    "gate_final_status": "AGUARDANDO — 34 checks ainda em fila/em execução",
+    "total_checks": 102,
+    "success": 51,
+    "failure": 5,
+    "cancelled": 1,
+    "skipped": 9,
+    "in_progress_queued": 34,
+    "falhas_classificadas": {
+      "E2E — Personalization Journey": {
+        "check_run_id": 120036831363,
+        "classificacao": "PRE_EXISTENTE",
+        "evidencia": "Listada em checks-main-8e8053b9.json failures list"
+      },
+      "release-please": {
+        "check_run_id": 120036831493,
+        "classificacao": "PRE_EXISTENTE",
+        "evidencia": "check_run 119751634750 = failure em 8e8053b9"
+      },
+      "Verify push to main matches accepted patterns": {
+        "check_run_id": 120036831874,
+        "classificacao": "NOVA_FALHA — alerta registrado em alerta_sentinel",
+        "evidencia": "check_run 119751639439 = success em 8e8053b9; failure somente pós-merge"
+      },
+      "E2E Subtítulo quote_number (visual)": {
+        "check_run_id": 120036834763,
+        "classificacao": "PRE_EXISTENTE_INFERIDO",
+        "evidencia": "Falhava em b48145b3 (PR head pré-merge, check_run 120027056318). PR #2338 não altera código de UI ou testes visuais (só CI configs, allowlists, contrato REST). Not found na API em 8e8053b9 (total_count=0) — ausência explicada por run diferente em push vs PR event. Não é regressão de código."
+      },
+      "chromium • swatch→QV": {
+        "check_run_id": 120036833069,
+        "classificacao": "PRE_EXISTENTE — mascarado por cancelamento",
+        "evidencia": "check_run 119907054904 em 8e8053b9 = conclusion:cancelled. Mudança de cancelled→failure não é regressão de código — CI fixes do PR #2338 permitiram o job rodar e revelar falha pré-existente."
+      }
+    },
+    "regressao_de_codigo": false,
+    "nota": "Gate Final ainda não criado. Falhas novas: 1 (sentinel — não-bloqueante, não Gates 0-6). Falhas pré-existentes: 4. Aguardando conclusão do CI para confirmar Gate Final."
   },
   "pre_existing_failures_baseline": [
     "Gate Final - Deploy Ready",
