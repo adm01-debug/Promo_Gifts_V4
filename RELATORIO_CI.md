@@ -1,11 +1,11 @@
 # Relatório CI — Sessão de Correção de Workflows
 
-**Gerado:** 2026-10-22T13:35 UTC | **Atualizado:** 2026-10-22T16:30 UTC  
+**Gerado:** 2026-10-22T13:35 UTC | **Atualizado:** 2026-10-22T17:00 UTC  
 **Branch:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD atual:** `dbd53ec4` (docs(pendencias): confirma att 2 E2E Critical Flows + tabela reruns conclusões 16:25Z)  
-**Commits desta sessão (compactação 2):** `a21f6200` (daily-flows SIGPIPE fix) → `b442d1ed` (lint-0011 allowlist + CI Security) → `679b5f45` (Supabase Linter Gate fixes) → `dbd53ec4` (docs)  
+**HEAD atual:** `ad831d70` (docs(ci): atualiza RELATORIO_CI.md — seção 8 prova final att 2 16:30Z)  
+**Commits desta sessão (compactação 2):** `a21f6200` (daily-flows SIGPIPE fix) → `b442d1ed` (lint-0011 allowlist + CI Security) → `679b5f45` (Supabase Linter Gate fixes) → `dbd53ec4` (docs) → `ad831d70` (RELATORIO_CI seção 8)  
 **Base (main):** `8e8053b9`  
-**Gate Final ativa:** run [39807534596](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39807534596) — Deploy Gates para `dbd53ec4` — `queued` desde 15:43Z — aguardando conclusão OBSERVADA
+**Gate Final ativa:** run [39808637240](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39808637240) — Deploy Gates para `ad831d70` — `queued` desde 15:50Z — aguardando conclusão OBSERVADA (39807534596 = `cancelled` por concorrência — esperado)
 
 ---
 
