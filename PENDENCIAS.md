@@ -1,9 +1,9 @@
 # PENDÊNCIAS — Correção de Workflows CI
 
-**Atualizado:** 2026-10-22T13:35 UTC  
+**Atualizado:** 2026-10-22T13:40 UTC  
 **Branch ativa:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD:** `53035934` (docs: atualiza PENDENCIAS.md — HEAD ac0ba1bf, Gate Final run 39786612440)  
-**Gate Final ativa:** run [39787169407](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39787169407) — queued (13:28Z) aguardando conclusão
+**HEAD:** `7b023fa7` (docs: corrige runbook de edge-function drift — remediação por tipo)  
+**Gate Final ativa:** run [39787853790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39787853790) — queued (13:33Z) aguardando conclusão
 
 ---
 
@@ -219,11 +219,12 @@
 | **db-schema-drift-check** | ⚠️ ação humana | Fix falso positivo `9c2288c4`; ledger parity → PO+DBA via E99 |
 | **Release Please** | ❌ ação humana | PO configurar `contents:write` no GitHub App |
 | **Gitleaks Full History** | ❌ ação humana urgente | Issue #2261 — rotacionar credenciais — §2.10 |
-| **Supabase Linter Gate** | ✅ **CONFIRMADO SUCCESS** | Run [39786612132](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39786612132) — HEAD `53035934` |
+| **Supabase Linter Gate** | ✅ SUCCESS `53035934` + ⏳ `in_progress` `7b023fa7` | Run [39786612132](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39786612132) — HEAD `53035934` ✅; run [39787853767](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39787853767) — HEAD `7b023fa7` em andamento |
 | **Daily Flows Simulation** | ✅ **CONFIRMADO SUCCESS** | Run [39785415433](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39785415433) — commit `7fa5c405` |
 | **Gate 5 — Supabase Security Audit** | ✅ **CONFIRMADO SUCCESS** | Run [39784863177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784863177) — commit `7fa5c405` |
-| **CI Security & Drift Checks** | ⏳ `in_progress` | Run [39785427236](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39785427236) |
-| **Gate Final deploy-gates** | ⏳ `pending` | Run [39787169407](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39787169407) — HEAD `53035934` |
+| **CI Security & Drift Checks** | ⏳ `in_progress` | Run [39785427236](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39785427236) — security-audit ✅, quality-gate: 20 steps ✅, unit tests in progress |
+| **Supabase Linter Gate** | ⏳ `in_progress` | Run [39787853767](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39787853767) — HEAD `7b023fa7` |
+| **Gate Final deploy-gates** | ⏳ `queued` | Run [39787853790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39787853790) — HEAD `7b023fa7` (13:33Z) |
 | **edge-functions-drift-check** | ✅ **CONFIRMADO SUCCESS** | HEAD `53035934` — era failure antes desta branch |
 | **Edge Integration Tests** | ⚠️ pré-existente | Bug em `validate-access` retorna 200 para number input — §3.4 |
 | **E2E — Critical Flows** | ⚠️ pré-existente | Auth failure admin routes — §3.5 |
