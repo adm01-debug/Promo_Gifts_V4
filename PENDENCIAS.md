@@ -1,9 +1,9 @@
 # PENDÊNCIAS — Correção de Workflows CI
 
-**Atualizado:** 2026-10-22T13:58 UTC  
+**Atualizado:** 2026-10-22T14:02 UTC  
 **Branch ativa:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD:** `65048db8` (docs(ci): atualiza RELATORIO_CI.md — HEAD 3b14ab93, tabela de prova de conclusão)  
-**Gate Final ativa:** em progresso para `65048db8` (iniciado 13:53Z); Gate Final `773d203d` (run 39788658712) → ❌ FAILURE — superado pelo push de `3b14ab93`
+**HEAD:** `a5830d63` (docs(ci): atualiza PENDENCIAS.md — entradas e2e-gates/Full-User-Flows/Subtítulo/copilot com motivo verificado)  
+**Gate Final ativa:** run [39791498918](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39791498918) — pending para `a5830d63` (13:57Z)
 
 ---
 
@@ -224,7 +224,8 @@
 | **Gate 5 — Supabase Security Audit** | ✅ **CONFIRMADO SUCCESS** | Run [39784863177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784863177) |
 | **CI Security & Drift Checks (SSOT Guard)** | ✅ **CONFIRMADO SUCCESS** | Run [39790111533](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39790111533) — 3/3 gates OK, HEAD `3b14ab93` (13:49Z) |
 | **Gate Final deploy-gates `773d203d`** | ❌ FAILURE — **SUPERADO** | Run [39788658712](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39788658712) — concluiu FAILURE (13:50Z) para SHA `773d203d`; causa: `e2e-gates` falhou (falhas pré-existentes — documentadas abaixo). SHA superado pelo push `3b14ab93`. Gate Final para `65048db8` em progresso. |
-| **Gate Final deploy-gates `65048db8`** | ⏳ in_progress | Iniciado 13:53Z — aguardando conclusão |
+| **Gate Final deploy-gates `65048db8`** | ❌ cancelled — **SUPERADO** | Run [39790785088](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39790785088) — cancelado pelo push de `a5830d63` (concurrency cancel-in-progress). |
+| **Gate Final deploy-gates `a5830d63`** | ⏳ pending | Run [39791498918](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39791498918) — iniciado 13:57Z — aguardando conclusão |
 | **e2e-gates `773d203d`** | ❌ FAILURE — **SUPERADO** | Run [39788658583](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39788658583) — job `e2e-gates` falhou para SHA `773d203d`; causa raiz: falhas pré-existentes em jobs de E2E (cart-invariants firefox, E2E Full User Flows, E2E Subtítulo visual). SHA `773d203d` superado por `3b14ab93`. Pré-existente na main — nenhum código de teste foi modificado por este PR. |
 | **E2E — Full User Flows (authed) `773d203d`** | ❌ FAILURE — **SUPERADO** | Run [39788659038](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39788659038) — falha de autenticação E2E no job `E2E — Full User Flows (authed)`; SHA `773d203d` superado por `3b14ab93`. Pré-existente confirmado: presente em commits anteriores a esta branch. |
 | **E2E Subtítulo quote_number visual `773d203d`** | ❌ FAILURE — **SUPERADO** | Run [39788658872](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39788658872) — check `E2E Subtítulo quote_number (visual)` concluiu `failure` para SHA `773d203d`. O bot de reporte apontou todos os 5 breakpoints como ✅ OK; a falha pode ser em step de setup/teardown. SHA `773d203d` superado por `3b14ab93`; pré-existente (não há mudança em `e2e/quotes/quote-number-subtitle.spec.ts` nem em baselines neste PR). |
