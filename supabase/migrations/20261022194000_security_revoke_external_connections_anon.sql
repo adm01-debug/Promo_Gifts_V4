@@ -25,3 +25,4 @@ REVOKE INSERT, UPDATE, DELETE, REFERENCES, TRIGGER
 -- WHERE table_name = 'external_connections' AND table_schema = 'public'
 --   AND grantee IN ('anon', 'authenticated', 'public');
 -- Esperado: anon sem INSERT/UPDATE/DELETE/REFERENCES/TRIGGER
+-- Esperado: anon sem INSERT/UPDATE/DELETE/REFERENCES/TRIGGER

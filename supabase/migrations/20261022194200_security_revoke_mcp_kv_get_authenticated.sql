@@ -28,3 +28,4 @@ REVOKE EXECUTE
 -- FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
 -- WHERE n.nspname = 'public' AND p.proname = 'mcp_kv_get';
 -- Esperado: somente postgres=X/postgres, service_role=X/postgres
+-- Esperado: somente postgres=X/postgres, service_role=X/postgres

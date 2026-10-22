@@ -9,3 +9,4 @@ SET search_path = pg_catalog, public, pg_temp;
 GRANT INSERT, UPDATE, DELETE, REFERENCES, TRIGGER
   ON public.external_connections
   TO anon;
+  TO anon;
