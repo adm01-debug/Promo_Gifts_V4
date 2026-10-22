@@ -49,8 +49,8 @@
     ]
   },
   "ci_pos_merge_57017ba7": {
-    "timestamp_verificacao": "2026-10-22T20:10Z",
-    "gate_final_status": "AGUARDANDO — 34 checks ainda em fila/em execução",
+    "timestamp_verificacao": "2026-10-22T19:44Z",
+    "gate_final_status": "AGUARDANDO — 15 checks ainda in_progress às 19:44Z",
     "total_checks": 102,
     "success": 51,
     "failure": 5,
