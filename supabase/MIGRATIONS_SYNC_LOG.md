@@ -1467,4 +1467,55 @@ no repo mas NÃO estão aplicadas no banco — decisão registrada no ADR 0009
 (aplicá-las regrediria a fn_standardize_variant viva). Reconciliar antes de
 qualquer `supabase db push`.
 
+---
+
+## 2026-10-22 — Auditoria DRIFT-003: 448 migrations sem ledger identificadas
+
+**Tipo:** Auditoria documental (`[GIT]`) — nenhuma escrita no banco.
+**Sessão:** https://claude.ai/code/session_01GfYDwdVBZip5FzMr8MZ4Be
+**Relatório completo:** `supabase/MIGRATIONS_DRIFT_REPORT.md`
+
+### Resumo do drift identificado
+
+| Métrica | Valor |
+|---|---|
+| Arquivos `.sql` no repo | 2975 |
+| Entradas no ledger (`schema_migrations`) | 2528 |
+| **Migrations sem ledger (drift)** | **448** |
+| Período do drift | 2026-05-11 a 2026-10-13 |
+
+### Distribuição por tipo
+
+| Tipo | Quantidade |
+|---|---|
+| OTHER (DO $precondition$ / idempotentes) | 144 |
+| POLICY (CREATE/DROP POLICY, REVOKE, GRANT) | 88 |
+| FUNCTION (CREATE OR REPLACE FUNCTION) | 73 |
+| DDL_TABLE (CREATE/ALTER/DROP TABLE) | 71 |
+| DML (INSERT/UPDATE/backfill) | 36 |
+| DDL_INDEX (CREATE/DROP INDEX) | 26 |
+| CRON (cron.schedule/alter_job) | 10 |
+
+### 5 migrations mais críticas sem ledger (repair-only markers criados)
+
+| Versão | Arquivo | Impacto |
+|---|---|---|
+| `20260525232003` | `fix_339_personalization_missing_columns.sql` | 6 colunas ausentes em personalization_techniques |
+| `20260622111500` | `supplier_reliability_pipeline_v1.sql` | Pipeline completo supplier_replenishment_events |
+| `20260622130000` | `fix_color_swatches_column_and_view_plus_favorites_grant.sql` | `products.color_swatches` — HTTP 400 sem ela |
+| `20260623000008` | `products_name_m8_max_length.sql` | CHECK constraint em `products` |
+| `20260902220800` | `rls_enable_spr_history_partitions_and_fix_creator.sql` | RLS em partições supplier_products_raw_history |
+
+### Próximo passo
+
+Para cada migration, obter aprovação do PO e executar:
+```bash
+gh workflow run db-apply-migration.yml \
+  -f version=<VERSAO> \
+  -f mode=repair-only \
+  -f approved_by=PO_EMAIL
+```
+
+Ver `supabase/MIGRATIONS_DRIFT_REPORT.md` §Plano de Reconciliação para prioridade completa.
+
 Detalhes, métricas antes/depois e one-shots: docs/EXECUCAO_CORRECOES_MEDALLION_2026-06-10.md

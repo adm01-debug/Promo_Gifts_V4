@@ -1,0 +1,13 @@
+-- REPAIR-ONLY: Esta migration foi aplicada diretamente em produção (OOB DDL)
+-- Arquivo original: 20260622111500_supplier_reliability_pipeline_v1.sql
+-- Data de aplicação estimada: 2026-06-22 11:15 UTC
+-- Tabelas afetadas: supplier_replenishment_events, mv_supplier_reliability,
+--                   triggers trg_csp_insert/update, trg_resolve_supplier_arrivals,
+--                   8 índices, 5 CHECK constraints, 2 cron jobs pg_cron
+-- Descrição: Pipeline completo de confiabilidade de fornecedores. Aplicado
+--            via apply_migration + execute_sql conforme comentário no arquivo.
+--            STATUS COMENTADO NO ORIGINAL: "APLICADO em produção via apply_migration + execute_sql"
+-- Reconciliação pendente: registrar no ledger via db-apply-migration.yml mode=repair-only
+-- Aprovação necessária: PO deve autorizar via workflow_dispatch
+-- Referência: supabase/MIGRATIONS_DRIFT_REPORT.md — DRIFT-003
+-- Sessão: https://claude.ai/code/session_01GfYDwdVBZip5FzMr8MZ4Be — 2026-10-22

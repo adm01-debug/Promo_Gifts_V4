@@ -1,0 +1,11 @@
+-- REPAIR-ONLY: Esta migration foi aplicada diretamente em produção (OOB DDL)
+-- Arquivo original: 20260623000008_products_name_m8_max_length.sql
+-- Data de aplicação estimada: 2026-06-23 00:00 UTC
+-- Tabelas afetadas: public.products
+-- Descrição: Adiciona CHECK constraint chk_products_name_max_length (length(name) <= 250).
+--            Aplicada como NOT VALID + VALIDATE para evitar lock total na tabela.
+--            Max observado no momento: 183 chars. Limit 250 é 36% acima do pior caso real.
+-- Reconciliação pendente: registrar no ledger via db-apply-migration.yml mode=repair-only
+-- Aprovação necessária: PO deve autorizar via workflow_dispatch
+-- Referência: supabase/MIGRATIONS_DRIFT_REPORT.md — DRIFT-003
+-- Sessão: https://claude.ai/code/session_01GfYDwdVBZip5FzMr8MZ4Be — 2026-10-22

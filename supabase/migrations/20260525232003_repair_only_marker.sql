@@ -1,0 +1,11 @@
+-- REPAIR-ONLY: Esta migration foi aplicada diretamente em produção (OOB DDL)
+-- Arquivo original: 20260525232003_fix_339_personalization_missing_columns.sql
+-- Data de aplicação estimada: 2026-05-25 23:20 UTC
+-- Tabelas afetadas: personalization_techniques (e sub-tabelas de personalização)
+-- Descrição: Adiciona 6 colunas ausentes (area_image_url, is_default, max_area_cm2,
+--            is_personalizable, etc.) que o front-end referenciava. Sem elas, writes
+--            falhavam silenciosamente (PGRST204). Issue #339.
+-- Reconciliação pendente: registrar no ledger via db-apply-migration.yml mode=repair-only
+-- Aprovação necessária: PO deve autorizar via workflow_dispatch
+-- Referência: supabase/MIGRATIONS_DRIFT_REPORT.md — DRIFT-003
+-- Sessão: https://claude.ai/code/session_01GfYDwdVBZip5FzMr8MZ4Be — 2026-10-22
