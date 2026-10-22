@@ -37,6 +37,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          set +o pipefail  # E099: gh api --jq emite SIGPIPE (exit 141) quando jq fecha antes do gh; || true não basta sozinho
           # E81: guard "desde o último success" via API (mais robusto que --since="25h")
           LAST_SUCCESS=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/daily-flows-simulation.yml/runs?status=success&per_page=1" \
             --jq '.workflow_runs[0].created_at // empty' 2>/dev/null || true)  # ok: primeiro run não tem histórico
@@ -44,7 +45,7 @@ jobs:
             echo "Nenhum run bem-sucedido anterior — rodando simulação incondicional"
             echo "skip=false" >> "$GITHUB_OUTPUT"
           else
-            CHANGED=$(git log --after="$LAST_SUCCESS" --oneline -- src/ scripts/simulate-daily-flows.mjs supabase/migrations/ 2>/dev/null | head -1)
+            CHANGED=$(git log --after="$LAST_SUCCESS" -1 --oneline -- src/ scripts/simulate-daily-flows.mjs supabase/migrations/)
             if [ -z "$CHANGED" ]; then
               echo "skip=true" >> "$GITHUB_OUTPUT"
               echo "Nenhuma mudança relevante desde o último run bem-sucedido ($LAST_SUCCESS) — pulando simulação"

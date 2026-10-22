@@ -11,11 +11,15 @@ describe('cnpjOptionalSchema', () => {
     expect(cnpjOptionalSchema.parse('02931668000188')).toBe('02931668000188');
   });
 
-  it('coerces empty / whitespace / null / undefined to null', () => {
+  it('coerces empty / null / undefined to null', () => {
     expect(cnpjOptionalSchema.parse('')).toBeNull();
-    expect(cnpjOptionalSchema.parse('   ')).toBeNull();
     expect(cnpjOptionalSchema.parse(null)).toBeNull();
     expect(cnpjOptionalSchema.parse(undefined)).toBeNull();
+  });
+
+  it('rejects whitespace-only as invalid (not coerced to null)', () => {
+    expect(() => cnpjOptionalSchema.parse('   ')).toThrow();
+    expect(() => cnpjOptionalSchema.parse('\t')).toThrow();
   });
 
   it('rejects partial (< 14 digits) after normalization', () => {
@@ -35,7 +39,11 @@ describe('assertPersistableCnpj', () => {
     expect(assertPersistableCnpj(null)).toBeNull();
     expect(assertPersistableCnpj(undefined)).toBeNull();
     expect(assertPersistableCnpj('')).toBeNull();
-    expect(assertPersistableCnpj('   ')).toBeNull();
+  });
+
+  it('throws for whitespace-only input', () => {
+    expect(() => assertPersistableCnpj('   ')).toThrow(/14 d[ií]gitos/i);
+    expect(() => assertPersistableCnpj('\t')).toThrow(/14 d[ií]gitos/i);
   });
 
   it('returns digits-only for masked input', () => {

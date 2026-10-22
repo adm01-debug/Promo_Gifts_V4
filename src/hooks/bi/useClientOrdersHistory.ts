@@ -49,7 +49,7 @@ export function useClientOrdersHistory(clientId?: string) {
       // rls-allow: filtrado por client_id; RLS aplica seller scope
       const orders = (await fetchAllPages((from, to) =>
         supabase
-          .from('orders')
+          .from('orders') // rls-allow: filtrado por client_id; RLS aplica seller scope
           .select(
             'id, order_number, status, total, client_id, client_name, client_company, notes, seller_id, created_at, updated_at',
           )

@@ -31,7 +31,7 @@ defaults:
 jobs:
   linter:
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    timeout-minutes: 8  # E103: 3x retry no fetch (15s+5s+20s+10s+25s) + catalog checks + overhead
     # E27: SUPABASE_ACCESS_TOKEN não deve chegar a PRs de forks
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     steps:

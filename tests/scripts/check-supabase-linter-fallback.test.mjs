@@ -47,7 +47,7 @@ describe('Supabase Security Advisors gate', () => {
   });
 
   it('bloqueia timeout, JSON inválido e ERROR não revisado', async () => {
-    const base = { token: 'test-token', ref: 'doufsxqlfjyuvxuezpln', logger: logger() };
+    const base = { token: 'test-token', ref: 'doufsxqlfjyuvxuezpln', logger: logger(), sleepFn: () => Promise.resolve() };
     expect(await runLinter({ ...base, fetcher: async () => { throw new Error('timeout'); } })).toBe(2);
     expect(await runLinter({ ...base, fetcher: async () => ({ ...response(200), json: async () => ({}) }) })).toBe(2);
     expect(await runLinter({

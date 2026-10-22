@@ -39,6 +39,8 @@ export interface MockCart {
   created_at: string;
   updated_at: string;
   shipping_deadline: string | null;
+  /** Espelha seller_carts.version (trigger trg_seller_carts_version). */
+  version: number;
   seller_cart_items: MockCartItem[];
 }
 
@@ -80,6 +82,7 @@ export function makeMockCart(idx: number, itemCount = 3): MockCart {
     created_at: ts(86400000 * (idx + 1)),
     updated_at: ts(3600000 * idx),
     shipping_deadline: null,
+    version: 1,
     seller_cart_items: Array.from({ length: itemCount }, (_, j) => makeMockItem(id, idx, j)),
   };
 }

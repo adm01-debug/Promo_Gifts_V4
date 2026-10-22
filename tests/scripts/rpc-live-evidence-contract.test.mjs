@@ -41,7 +41,7 @@ async function startServer(handler) {
   return `http://127.0.0.1:${address.port}`;
 }
 
-function runCheck(script, { url, includeCredentials = true } = {}) {
+function runCheck(script, { url, includeCredentials = true, extraEnv = {} } = {}) {
   return new Promise((resolveRun, rejectRun) => {
     const child = spawn(
       process.execPath,
@@ -52,6 +52,7 @@ function runCheck(script, { url, includeCredentials = true } = {}) {
           PATH: process.env.PATH ?? "",
           ...(url ? { SUPABASE_URL: url } : {}),
           ...(includeCredentials ? { SUPABASE_SERVICE_KEY: "fixture-read-key" } : {}),
+          ...extraEnv,
         },
       },
     );
@@ -200,12 +201,17 @@ describe("RPC live-evidence checks", () => {
   it("não aceita audit inacessível como smoke aprovado", async () => {
     const url = await startServer((_request, response) => json(response, 503, { message: "unavailable" }));
 
-    const outcome = await runCheck("check-rpc-get-profile-and-roles.mjs", { url });
+    // CHECK_RETRY_DELAY_MS=0: evita 3×15s de espera no CI; a lógica de retry
+    // ainda executa as 3 tentativas e produz "audit_http_error_exhausted".
+    const outcome = await runCheck("check-rpc-get-profile-and-roles.mjs", {
+      url,
+      extraEnv: { CHECK_RETRY_DELAY_MS: "0" },
+    });
 
     expect(outcome.exitCode).toBe(2);
     expect(outcome.result).toMatchObject({
       status: "inconclusive",
-      reason: "audit_http_error",
+      reason: "audit_http_error_exhausted",
       httpStatus: 503,
     });
   });
