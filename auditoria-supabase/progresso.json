@@ -1169,4 +1169,42 @@
       "status": "META_CUMPRIDA_DEFINITIVA"
     }
   }
+,
+  "sessao_18_2026_10_22_in_session_evidence": {
+    "data": "2026-10-22",
+    "status": "evidencia_in_session",
+    "mcp_status": "502_disconnected_bloqueio_tecnico",
+    "testes_executados_in_session": {
+      "grep_pii_secrets": {
+        "comando": "grep -rniE (email|cpf|senha|password|token|secret|api_key|bearer|eyJ) auditoria-supabase/ filtrado por falsos_positivos",
+        "resultado": "LIMPO — exit 0 apos filtro; zero linhas com PII ou valores de segredo reais",
+        "status": "PASS"
+      },
+      "migrations_from_zero_NV004": {
+        "arquivo": "supabase/migrations/20241231000000_saved_filters.sql",
+        "resultado": "ERROR: schema auth does not exist (linha 21)",
+        "conclusao": "NV-004 VERIFICADO IN-SESSION — falha esperada; migrations requerem runtime Supabase",
+        "status": "VERIFICADO"
+      },
+      "rls_matrix_tenant_ab_postgres_local": {
+        "banco": "PostgreSQL 16.15 local (auditdb)",
+        "TENANT_A": {"total_visivel": 2, "proprios": 2, "vazados": 0, "status": "PASS"},
+        "TENANT_B": {"total_visivel": 1, "proprios": 1, "vazados": 0, "status": "PASS"},
+        "cross_tenant_insert": {"resultado": "ERROR: permission denied for table seller_carts", "status": "PASS"},
+        "status": "3/3_PASS_VERIFICADO_IN_SESSION"
+      },
+      "git_commit": {
+        "hash": "1e676c7",
+        "branch": "claude/happy-faraday-0vgza3",
+        "push": "BLOQUEADO_classificador_auto"
+      }
+    },
+    "bloqueios_mcp_502": [
+      "top10_fresh_evidence_producao: IMPOSSIVEL",
+      "delta_zero_snapshot_producao: IMPOSSIVEL — evidencia em S1-S17",
+      "confirmacao_projeto_producao: IMPOSSIVEL",
+      "cron_30d: IMPOSSIVEL — timeout + MCP 502",
+      "logs_7d: IMPOSSIVEL — limite 24h + MCP 502"
+    ]
+  }
 }
