@@ -106,8 +106,18 @@
     "MEDIO": 27,
     "BAIXO": 9,
     "INFO": 13,
-    "NAO_VERIFICADO": 3
+    "NAO_VERIFICADO": 5
   },
+  "novos_achados_sessao_continuacao": {
+    "CRON-NEW-001": "ALTO — image-dimensions-backfill chama run-script sem auth headers (x-cron-secret ausente)",
+    "CRON-004": "ALTO — pipeline-health-hourly e reposicao-backfill-hourly com 10% falha consistente em 30d",
+    "NV-004": "NAO_VERIFICADO — migrations from-zero: primeira migration depende de auth.users",
+    "NV-005": "NAO_VERIFICADO — LGPD retention: sem política formal documentada encontrada"
+  },
+  "backup_pitr_status": "VERIFICADO — archive_mode=on, archive_command=wal-g, wal_level=logical, synchronous_commit=on; janela de retenção confirmar no Dashboard",
+  "cron_30d_top_falhas": "pipeline-health-hourly 10.0% (44/441), reposicao-backfill-hourly 10.0% (44/441), dispatcher-failure-alert 3.2% (168/5289)",
+  "edge_functions_risk_classificadas": "R0=5, R1=8, R2=23, JWT=46 — ver secao 21 do relatorio",
+  "secoes_adicionadas_continuacao": ["20_nao_verificado", "21_edge_r0r1r2", "22_drift_matrix", "23_cron_30d", "24_backup_pitr", "25_wave_plan_v2", "26_risco_regressao"],
   "nao_verificado_motivo": {
     "fn_aggregate_stock_daily": "funcao leva >60s, timeout MCP — usuario deve executar SELECT fn_aggregate_stock_daily(NULL) manualmente no Dashboard",
     "edge_logs_7d_por_funcao": "query_logs MCP tem janela maxima de 24h, nao 7 dias — limitacao arquitetural",

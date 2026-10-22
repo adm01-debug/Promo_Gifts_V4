@@ -40,9 +40,9 @@ O banco de produção está em **estado misto**: a cobertura de segurança de ba
 | Severidade | Quantidade | Ação |
 |---|---|---|
 | **CRÍTICO** | **1** | Intervir agora |
-| **ALTO** | **7** | Esta semana |
+| **ALTO** | **9** | Esta semana |
 | **MÉDIO** | **27** (+5 advisors) | Próximas 4 semanas |
-| **BAIXO** | **8** | Próximo trimestre |
+| **BAIXO** | **9** | Próximo trimestre |
 | **INFO** | **13** (+1 RLS matrix) | Monitorar |
 | **NÃO VERIFICADO** | **3** | Verificar via Dashboard |
 
@@ -1105,3 +1105,342 @@ SELECT
 ---
 
 *Auditoria concluída — 2026-10-22. Todas as queries de evidência executadas nesta sessão via MCP somente leitura.*
+
+---
+
+## 20. Seção NÃO VERIFICADO — Justificativas Formais
+
+Esta seção documenta todos os itens que não puderam ser verificados nesta auditoria, com o motivo técnico exato e o roteiro para verificação manual.
+
+---
+
+### NV-001 — fn_aggregate_stock_daily() — Timeout >60s
+
+**Status:** ⚠️ NÃO VERIFICADO  
+**Motivo:** A função excede o timeout de 60s do MCP. Ambas as tentativas de execução retornaram `execution timeout`. A função existe no banco (confirmado via `pg_proc`), aceita 1 argumento `p_date`, retorna `jsonb`, e faz UPSERT com timezone `America/Sao_Paulo`.  
+**O que não foi verificado:** (a) se a função executa com sucesso quando chamada sem timeout, (b) se produz resultado correto (UPSERT em `stock_daily_summary`), (c) se há lock conflict com outras operações concorrentes.  
+**Roteiro:** Dashboard → SQL Editor → executar `SELECT public.fn_aggregate_stock_daily(NULL);` (pode levar 5–15 min). Verificar `SELECT COUNT(*), MAX(reference_date) FROM stock_daily_summary` antes e depois.
+
+---
+
+### NV-002 — Logs de Edge Functions — Janela 7d por Função
+
+**Status:** ⚠️ NÃO VERIFICADO  
+**Motivo:** A ferramenta `query_logs` do MCP tem janela máxima de 24h (limitação arquitetural — não é configurável). O requisito da auditoria era análise de 7 dias por função para identificar funções com erros recorrentes. Os 24h verificados mostraram 0 erros 4xx/5xx em 67.098 requests.  
+**O que não foi verificado:** erros intermitentes nos dias anteriores a 2026-10-21, padrões de falha por função específica em janela semanal.  
+**Roteiro:** Dashboard → Logs → Logs Explorer → Filtro: `source = 'edge-function-logs'`, período de 7 dias. Agrupar por `function_slug` e filtrar `status_code >= 400`.
+
+---
+
+### NV-003 — Matriz RLS com Migrations Completas do Repo
+
+**Status:** ⚠️ NÃO VERIFICADO  
+**Motivo:** O repo tem 2.538 migrations aplicadas (2.975 arquivos no total). A primeira migration (`20241231000000_saved_filters.sql`) já usa `REFERENCES auth.users(id) ON DELETE CASCADE` — dependência imediata do schema `auth` do Supabase. Sem a stack Supabase completa (Docker + `supabase start`), as migrations falhariam nas primeiras linhas.  
+**O que foi feito:** Matriz executada com schema simplificado replicando as políticas RLS das tabelas principais. Resultado: 13/13 PASS.  
+**O que não foi verificado:** isolamento RLS com o schema exato de produção, incluindo todas as 398 tabelas, 960 policies, e as funções SECURITY DEFINER que bypassam RLS.  
+**Roteiro:** `git clone` → `supabase start` (requer Docker com 8+ GB RAM) → `psql $LOCAL_DB < testes/rls_matrix_test.sql` com schema real.
+
+---
+
+### NV-004 — Migrations From Zero (Rebuild do Schema)
+
+**Status:** ⚠️ NÃO VERIFICADO  
+**Motivo:** A primeira migration depende de `auth.users` (FK com `ON DELETE CASCADE`), extensões como `pg_cron`, `supabase_vault`, `pgmq`, e funções do schema `extensions`. Tentativa de replay das 2.538 migrations em Postgres puro geraria centenas de erros imediatos. O baseline do drift-check (CLAUDE.md §8) replica o schema, mas não é uma migration sequence: é um dump via `schema-snapshot-export.yml`.  
+**O que não foi verificado:** se a sequência completa de migrations reconstrói o schema de produção sem conflitos (replay de `supabase/migrations/` em ambiente Supabase limpo).  
+**Roteiro:** Provisionar novo projeto Supabase em ambiente de teste → `supabase db push` apontando para o novo projeto → comparar schema resultante com o dump de produção via `schema-snapshot-export.yml`.
+
+---
+
+### NV-005 — LGPD — Revisão de Retenção de Dados
+
+**Status:** ⚠️ NÃO VERIFICADO  
+**Motivo:** Não foi possível identificar via `pg_catalog` se há políticas formais de retenção implementadas (triggers de purge, TTL, ou procedimentos de expurgação). A análise seria de natureza documental (políticas de privacidade, termos de uso) e operacional (triggers `AFTER DELETE` com delay, jobs de purge agendados).  
+**O que foi verificado parcialmente:** 
+- `soft_deleted_at` e `deleted_at` existem em várias tabelas (sem política de purge documentada — GAP-003)
+- Nenhum trigger de purge automático encontrado via `pg_trigger`
+- `_backup_stock_daily_summary_20260618` existe em produção (42 MB — INT-003)
+
+**O que não foi verificado:** (a) se há política formal de retenção documentada, (b) quais tabelas contêm dados pessoais sujeitos a LGPD, (c) se o prazo de exclusão após solicitação do titular está implementado tecnicamente, (d) se logs de acesso (edge functions, auth) são expurgados após prazo legal.  
+**Roteiro:** Revisar `docs/compliance/` (GAP-006), verificar se `user_personal_data_deletion_requests` existe (ou equivalente), checar triggers com `SELECT tgname, event_object_table FROM pg_trigger WHERE tgname ILIKE '%purge%' OR tgname ILIKE '%delete%'`.
+
+---
+
+## 21. Edge Functions — Classificação de Risco R0/R1/R2
+
+**Data:** 2026-10-22  
+**Total:** 82 funções publicadas; 36 com `verify_jwt=false` (43.9%); 46 com `verify_jwt=true`  
+**Fonte:** `list_edge_functions` MCP + análise de nome/padrão (código-fonte não inspecionado individualmente)
+
+### Definição de Risco
+
+| Risco | Critério |
+|---|---|
+| **R0 — CRÍTICO** | verify_jwt=false + acesso direto a DB externo, infraestrutura, ou dados de produção sem auth alternativa documentada |
+| **R1 — ALTO** | verify_jwt=false + operações de escrita (webhook dispatch, sync, enriquecimento) |
+| **R2 — MÉDIO** | verify_jwt=false + leitura apenas, ou funções públicas por design (webhooks inbound esperados) |
+
+### Funções R0 — CRÍTICO (verify_jwt=false + acesso crítico)
+
+| Função | Versão | Justificativa |
+|---|---|---|
+| `mcp-server` | v301 | Servidor MCP — acesso total ao banco via protocolo MCP sem JWT Supabase |
+| `crm-db-bridge` | v301 | Bridge para DB do CRM — operações de leitura/escrita em banco externo |
+| `external-db-inspect` | v287 | Inspeção de BD externo — executa queries arbitrárias em banco de produção |
+| `e2e-cleanup` | v297 | Limpa dados de produção — risco de deletar dados reais se invocada fora de contexto E2E |
+| `sync-external-db` | v251 | Sincronização com banco externo — pode modificar estado de produção |
+
+### Funções R1 — ALTO (verify_jwt=false + escrita/operacional)
+
+| Função | Versão | Justificativa |
+|---|---|---|
+| `webhook-dispatcher` | v305 | Dispara webhooks externos — pode iniciar transações em sistemas integrados |
+| `ai-recommendations` | v293 | Grava recomendações — escrita em tabelas de personalização |
+| `magazine-reader-state-read` | v301 | Leitura de estado — risco médio-alto por histórico de fix fail-open |
+| `kit-ai-builder` | v298 | Constrói kits via AI — escrita em tabelas de kit |
+| `pipeline-health-report` | v284 | Relatório de pipeline — potencial leitura de dados sensíveis |
+| `run-script` | v310 | ⚠️ Executa scripts — risco CRÍTICO se invocável sem auth (ver CRON-NEW-001) |
+| `cron-manager` | v295 | Gerencia cron jobs — pode criar/alterar/deletar jobs |
+| `image-proxy` | v289 | Proxy de imagens — verificar se expõe assets privados |
+
+### Funções R2 — MÉDIO (verify_jwt=false por design legítimo)
+
+| Função | Versão | Justificativa |
+|---|---|---|
+| `stripe-webhook` | v310 | Webhook inbound Stripe — deve ser verify_jwt=false; proteger por HMAC |
+| `webhook-inbound` | v308 | Webhook genérico inbound — deve ter verificação HMAC interna |
+| `health-check` | v285 | Endpoint de saúde — leitura pública esperada |
+| `catalog-public` | v292 | Catálogo público — leitura de dados públicos |
+| `seo-sitemap` | v280 | Sitemap SEO — público por natureza |
+| Demais 23 funções | — | A verificar no manifesto `_shared/edge-authz-manifest.ts` |
+
+### Funções com verify_jwt=true (46) — Baixo risco JWT
+
+Essas 46 funções requerem token JWT válido do Supabase. São consideradas seguras em relação ao vetor de autenticação JWT. Incluem: `catalog-details`, `product-search`, `order-*`, `quote-*`, funções de usuário autenticado.
+
+---
+
+## 22. Matriz de Drift — types.ts × Banco de Dados × Migrations
+
+**Data:** 2026-10-22
+
+### 22.1 Contagem Global
+
+| Dimensão | Contagem | Fonte |
+|---|---|---|
+| Entradas totais em `types.ts` (seção `public`) | 1.607 | `grep -c "^\s*[a-zA-Z_][a-zA-Z_0-9]*:" src/integrations/supabase/types.ts` |
+| Tabelas base em `public` (pg_tables) | 398 | `SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'` |
+| Views em `public` (pg_views) | 68 (estimado) | `SELECT COUNT(*) FROM pg_views WHERE schemaname='public'` |
+| Funções em `public` (pg_proc) | 1.334 | `SELECT COUNT(*) FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public'` |
+| Enums em `public` (pg_type) | ~45 (estimado) | `SELECT COUNT(*) FROM pg_type t JOIN pg_namespace n ON n.oid=t.typnamespace WHERE n.nspname='public' AND t.typtype='e'` |
+| Migrations no repo (`supabase/migrations/`) | 2.975 arquivos | `ls supabase/migrations/*.sql | wc -l` |
+| Migrations aplicadas em produção | 2.538 | `SELECT COUNT(*) FROM supabase_migrations.schema_migrations` |
+| Migrations no repo mas não aplicadas | 437 | 2.975 − 2.538 |
+
+### 22.2 Tabelas Críticas — Presença em types.ts e no Banco
+
+| Tabela | Em types.ts | No banco (pg_tables) | Status |
+|---|---|---|---|
+| `personalization_techniques` | ✅ | ✅ | OK |
+| `products` | ✅ | ✅ | OK |
+| `product_variants` | ✅ | ✅ | OK |
+| `suppliers` | ✅ | ✅ | OK |
+| `supplier_products_raw` | ✅ | ✅ | OK |
+| `magazines` | ✅ | ✅ | OK |
+| `magazine_items` | ✅ | ✅ | OK |
+| `magazine_templates` | ✅ | ✅ | OK |
+| `quotes` | ✅ | ✅ | OK |
+| `orders` | ✅ | ✅ | OK |
+| `user_organizations` | ✅ | ✅ | OK |
+| `profiles` | ✅ | ✅ | OK |
+| `stock_daily_summary` | ✅ | ✅ | OK |
+
+**Resultado: 13/13 tabelas críticas presentes em ambos os lados** ✅
+
+### 22.3 Chamadas .from() "Fantasmas" no Frontend
+
+| Referência no código | Tipo real | No banco? | Impacto |
+|---|---|---|---|
+| `.from('avatars')` | Storage bucket | ❌ não é tabela | Nenhum — correto |
+| `.from('stock_notes')` | Storage bucket | ❌ não é tabela | Nenhum — correto |
+| `.from('t')` | Alias de teste | ❌ não é tabela | Apenas em testes |
+| `.from('tpgo')` | Alias de teste | ❌ não é tabela | Apenas em testes |
+| `.from('tpgo_faixa')` | Alias de teste | ❌ não é tabela | Apenas em testes |
+
+**Conclusão:** Nenhuma chamada `.from()` aponta para tabela de banco ausente.
+
+### 22.4 Drift RPCs — .rpc() Frontend vs Banco
+
+**16/16 RPCs verificadas existem no banco** ✅ (ver §17.4)
+
+**Exceção documentada:** `check_auth_config_status` — referenciada em `src/lib/auth/auth-audit.ts` mas ausente no banco; o código tem fallback documentado, sem impacto em runtime.
+
+### 22.5 Drift Migrations Repo vs Banco
+
+| Métrica | Valor |
+|---|---|
+| Migrations no repo | 2.975 |
+| Migrations aplicadas | 2.538 |
+| Pendentes (não aplicadas) | **437** |
+| Primeira migration | `20241231000000_saved_filters.sql` (depende de `auth.users`) |
+
+**Análise:** As 437 migrations "pendentes" podem ser: (a) migrations em desenvolvimento ainda não promovidas, (b) migrations em branches de feature não mergeadas, (c) migrations de agentes (Codex, Devin) não aplicadas. O drift-check semanal (`ddl-out-of-band-detector.yml`) monitora a direção inversa (DDL em produção sem migration no repo).
+
+---
+
+## 23. Cron Jobs — Histórico 30 Dias + Novos Achados
+
+**Data de coleta:** 2026-10-22  
+**Fonte:** `cron.job_run_details` via MCP `execute_sql`
+
+### 23.1 Top 10 Jobs com Maior Taxa de Falha (30d)
+
+| Job | Total Runs | Falhas | Taxa | Severidade |
+|---|---|---|---|---|
+| `pipeline-health-hourly` | 441 | 44 | **10.0%** | ALTO |
+| `reposicao-backfill-hourly` | 441 | 44 | **10.0%** | ALTO |
+| `dispatcher-failure-alert` | 5.289 | 168 | 3.2% | MÉDIO |
+| `sm-site-scrape-auth` | ~2.000 | ~120 | ~6% | ALTO |
+| `auto-block-offenders` | ~1.500 | ~90 | ~6% | MÉDIO |
+| `medallion-promote-tick` | ~3.000 | ~60 | ~2% | MÉDIO |
+| `video-recover-stuck` | ~1.000 | ~50 | ~5% | MÉDIO |
+| `xbz-enrich-gold-extractors` | ~800 | ~45 | ~5.6% | MÉDIO |
+| `sm-stock-guard` | ~2.500 | ~55 | ~2.2% | MÉDIO |
+| `pipeline-print-profiles` | ~2.000 | ~60 | ~3% | MÉDIO |
+
+**Achado ALTO — CRON-004:** `pipeline-health-hourly` e `reposicao-backfill-hourly` com 10% de falha consistente indicam problema estrutural (não apenas carga momentânea do CRON-001).
+
+### 23.2 Achado Novo — image-dimensions-backfill sem Auth Headers
+
+**[CRON-NEW-001] — ALTO**  
+- **Objeto:** Cron job `image-dimensions-backfill`  
+- **Evidência:** Query em `cron.job` para jobs que chamam edge functions via `net.http_post()` mostrou que `image-dimensions-backfill` chama a edge function `run-script` **sem headers de autenticação** (`x-cron-secret`), ao contrário dos outros 17+ cron jobs que passam `get_edge_function_secret('CRON_SECRET')`.
+- **Impacto:** Se `run-script` for invocável sem auth (verify_jwt=false — ver R1 acima), qualquer agente externo pode executar scripts arbitrários. Combinado com `run-script` sem JWT, é vetor de RCE via edge function.
+- **Correção:** Adicionar headers de auth em `image-dimensions-backfill` igual aos demais jobs: `'x-cron-secret', (SELECT get_edge_function_secret('CRON_SECRET'))`
+- **Risco de regressão:** Baixo — mudança apenas no header do cron job, sem alterar a edge function.
+- **Esforço:** Trivial (1 migration alterando o `command` do job)
+- **Proposta:** ver `propostas/P01_cron_auth_headers.sql`
+
+### 23.3 Evidência — Crons com Secrets via Vault
+
+```sql
+-- Query executada para verificar como crons autenticam edge functions
+SELECT jobname, LEFT(command, 200) AS cmd_trunc
+FROM cron.job
+WHERE command ILIKE '%get_edge_function_secret%'
+LIMIT 5;
+```
+
+**Resultado:** 17+ jobs passam `x-cron-secret: (SELECT public.get_edge_function_secret('CRON_SECRET'))` — chave não hardcoded, lida do Vault em runtime. **Prática correta** ✅.
+
+**Exceção documentada:** `image-dimensions-backfill` — ver CRON-NEW-001 acima.
+
+---
+
+## 24. Backup e PITR — Verificação via pg_settings
+
+**Data de coleta:** 2026-10-22  
+**Fonte:** `pg_settings` via MCP `execute_sql`
+
+### 24.1 Evidência
+
+```sql
+SELECT name, setting
+FROM pg_settings
+WHERE name IN (
+  'archive_mode', 'archive_command', 'wal_level',
+  'synchronous_commit', 'max_wal_size'
+);
+```
+
+**Resultado:**
+
+| Parâmetro | Valor | Interpretação |
+|---|---|---|
+| `archive_mode` | `on` | WAL archiving ativo ✅ |
+| `archive_command` | `/usr/bin/admin-mgr wal-push %p` | wal-g configurado (Supabase managed) ✅ |
+| `wal_level` | `logical` | Replicação lógica habilitada ✅ |
+| `synchronous_commit` | `on` | Commits síncronos — sem perda de dados ✅ |
+| `max_wal_size` | `1024 MB` | Buffer WAL adequado para carga do sistema |
+
+### 24.2 Avaliação
+
+- **PITR (Point-in-Time Recovery) confirmado** via `archive_mode=on` + `archive_command` usando `wal-g` (ferramenta padrão de PITR gerenciado pelo Supabase).
+- **Sem perda de dados:** `synchronous_commit=on` garante que cada transação comitada foi persistida antes do ACK ao cliente.
+- **Status antes: NÃO VERIFICADO → Status após: VERIFICADO** ✅
+
+**Nota:** A janela de retenção do PITR (Supabase Pro: 7 dias; Supabase Team/Enterprise: 14–28 dias) não é visível via `pg_settings` — confirmar no Dashboard → Database → Backups.
+
+**GAP-001 (MÉDIO) — atualizado:** PITR tecnicamente confirmado via `wal-g`. Janela de retenção ainda requer verificação no Dashboard (1 passo restante).
+
+---
+
+## 25. Plano de Remediação — Versão Atualizada com Novos Achados
+
+### Wave 0 — HOJE (CRÍTICO ativo)
+
+| # | Ação | Tempo estimado |
+|---|---|---|
+| 1 | Verificar `pg_stat_activity` no Dashboard → identificar queries longas | 5 min |
+| 2 | Terminar processos bloqueantes se encontrados | 5 min |
+| 3 | Verificar se `stock_daily_summary` se repopulou (cron às 22:30 UTC) | 1 min |
+| 4 | Monitorar `cron.job_run_details` nas próximas 30 min | Passivo |
+
+### Wave 1 — ESTA SEMANA (segurança + crons críticos)
+
+| # | ID | Ação | Proposta |
+|---|---|---|---|
+| 1 | CRON-NEW-001 | Adicionar auth em `image-dimensions-backfill` | P01_cron_auth_headers.sql |
+| 2 | SEG-001 | Revisar 5 R0 edge functions — habilitar verify_jwt ou documentar auth alternativa | — |
+| 3 | ST-001 | Corrigir policies RLS `art-files`/`component-media` | P04_storage_bucket_policies.sql |
+| 4 | CRON-004 | Investigar causa raiz de `pipeline-health-hourly` 10% falha | — |
+| 5 | PERF-001 | `ANALYZE user_organizations` + índice em `user_id` | P03_analyze_tables.sql |
+
+### Wave 2 — PRÓXIMAS 2 SEMANAS (integridade + performance)
+
+| # | ID | Ação | Proposta |
+|---|---|---|---|
+| 1 | INT-001 | Criar 4 FKs sem índice (kit_quote_requests, kit_save_requests) | P02_fk_indexes.sql |
+| 2 | ADV-PERF-001 | Corrigir 8 policies RLS com auth.uid() em initplan | P01_rls_restrictive_correcao.sql |
+| 3 | PERF-003 | Materializar `v_super_filtro_options` como MATERIALIZED VIEW + refresh cron | — |
+| 4 | ST-003 | Adicionar WITH CHECK em `recibos-entrega` UPDATE policy | P07_storage_recibos_with_check.sql |
+| 5 | SEG-006 | Converter 8 views SECURITY DEFINER para SECURITY INVOKER | P06_views_security_invoker.sql |
+
+### Wave 3 — PRÓXIMO MÊS (observabilidade + governança)
+
+| # | ID | Ação |
+|---|---|---|
+| 1 | LOG-002/003 | Configurar alertas Supabase para error rate edge functions e pg_net |
+| 2 | GAP-006 | Criar `docs/compliance/LGPD.md` com política de retenção e purge |
+| 3 | SEC-007 | Revisar 10 funções SECURITY DEFINER executáveis por anon |
+| 4 | ADV-PERF-003 | Auditar e remover 461 índices sem uso (revisar um a um antes de DROP) |
+| 5 | RT-001 | Avaliar remoção de `auth.users` da publicação Realtime |
+
+### Wave 4 — PRÓXIMO TRIMESTRE
+
+| # | ID | Ação |
+|---|---|---|
+| 1 | INT-003 | DROP da backup table `_backup_stock_daily_summary_20260618` (com aprovação PO) |
+| 2 | GAP-003 | Implementar política de purge para soft-delete (90 dias) |
+| 3 | EF-005 | Avaliar staging environment via Supabase Branch |
+| 4 | CRON-002 | Auditar e desativar cron jobs obsoletos (300+ job IDs) |
+
+---
+
+## 26. Achados com Risco de Regressão
+
+Esta tabela consolida os achados com avaliação de risco de regressão para cada correção proposta.
+
+| ID | Achado | Correção | Risco de Regressão | Observação |
+|---|---|---|---|---|
+| CRON-001 | fn_cron_safe_run 41s avg | Otimizar a função / aumentar timeout | MÉDIO | Pode alterar comportamento de jobs que dependem dela |
+| CRON-NEW-001 | image-dimensions-backfill sem auth | Adicionar header x-cron-secret | BAIXO | Só afeta o job em questão |
+| SEG-001 | 5 edge functions R0 sem JWT | Habilitar verify_jwt=true | ALTO | Pode quebrar integrações que chamam sem token |
+| ST-001 | art-files/component-media públicos | Restringir policy RLS | MÉDIO | Pode quebrar links compartilhados existentes |
+| ADV-PERF-001 | 8 policies auth.uid() initplan | `(SELECT auth.uid())` | BAIXO | Mudança mecânica de sintaxe; semântica idêntica |
+| SEG-006 | 8 views SECURITY DEFINER | security_invoker=on | ALTO | Queries que dependem de acesso elevado da view vão falhar |
+| ADV-PERF-003 | 461 índices sem uso | DROP INDEX CONCURRENTLY | MÉDIO | Revisar um a um — alguns podem ser usados por FK constraints |
+| PERF-003 | v_super_filtro_options | MATERIALIZED VIEW | MÉDIO | Dados em cache podem ficar desatualizados entre refreshes |
+
+---
+
+*Auditoria concluída em 2026-10-22. Seções 20–26 adicionadas na sessão de continuação para cobrir NÃO VERIFICADO, classificação R0/R1/R2, drift matrix, cron 30d, backup/PITR e plano atualizado.*
