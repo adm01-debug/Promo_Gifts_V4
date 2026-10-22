@@ -6,8 +6,8 @@
   "modo": "somente_leitura_producao_local_para_rls",
   "rls_matrix_resultado": "13/13 PASS — sem vazamento cross-tenant (schema simplificado)",
   "rls_matrix_com_migrations_repo": "NAO_VERIFICADO — 2538 migrations dependem de auth.users FK e extensões Supabase não disponíveis em Postgres puro",
-  "stock_daily_summary_status": "vazia_n_live_tup_0",
-  "fn_aggregate_stock_daily_status": "timeout_60s_mcp_nao_executado",
+  "stock_daily_summary_status": "2639107_linhas_914mb_nunca_analyzed — n_live_tup_stale_20310 (last_analyze=null, last_autovacuum=null)",
+  "fn_aggregate_stock_daily_status": "timeout_60s_mcp_nao_executado — funcao existe (retorna jsonb, faz UPSERT p_date via BR timezone)",
   "edge_logs_janela_maxima": "24h — limitação arquitetural do query_logs MCP (não 7d)",
   "edge_logs_24h_resultado": "67098 requests, 0 erros 5xx, 0 erros 4xx — saudável",
   "verify_jwt_false_total": "36 de 82 funções (43.9%) — ver inventario/edge_functions_verify_jwt_false.md",
@@ -19,18 +19,29 @@
   "auth_config": "ssl=on, TLSv1.2+, scram-sha-256, log_connections=off, log_disconnections=off",
   "storage_buckets": "11 total: 2 públicos (avatars, mockup-assets), 9 privados",
   "baseline_imutabilidade": "migrations=2538 Δ0, crons=142 Δ0, policies=960 Δ0, edge_functions=82 Δ0",
+  "deno_env_scan": "437 usos em supabase/functions/ — todos em arquivos _test.ts / _contract_test.ts ou tipo EnvReader; ZERO secrets hardcoded encontrados",
+  "git_secret_scan": "62 commits no branch; grep por service_role_key/anon_key/JWT mostra apenas referencias a vars CI (${{ secrets.X }}) em workflows; ZERO secrets hardcoded no historico",
   "secoes": {
     "1_inventario": {
       "status": "concluido",
-      "evidencia": "inventario/secao1_inventario.md — 398 tabelas, 82 edge functions, 1334 DB functions, 960 RLS policies, 142 cron jobs, 18 extensoes, 11 buckets"
+      "evidencia": "inventario/secao1_inventario.md — 398 tabelas, 82 edge functions, 1334 DB functions, 960 RLS policies, 142 cron jobs, 18 extensoes, 11 buckets",
+      "queries_executadas": ["SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='public'", "list_edge_functions MCP", "SELECT COUNT(*) FROM pg_proc WHERE nspname='public'", "SELECT COUNT(*) FROM pg_policies WHERE schemaname='public'", "SELECT COUNT(*) FROM cron.job", "SELECT COUNT(*) FROM pg_extension"]
     },
     "2_drift": {
       "status": "concluido",
-      "evidencia": "DRIFT-001: types.ts 1607 entradas vs 398 tabelas DB; 8/8 tabelas criticas presentes; 5 chamadas .from() sao buckets/aliases, nao tabelas ausentes"
+      "evidencia": "DRIFT-001: types.ts 1607 entradas vs 398 tabelas DB; 8/8 tabelas criticas presentes; 5 chamadas .from() sao buckets/aliases, nao tabelas ausentes",
+      "queries_executadas": ["grep -c export_type types.ts", "SELECT relname FROM pg_class WHERE 8 tabelas criticas IN (...)"]
     },
     "3_seguranca": {
       "status": "concluido",
-      "evidencia": "SEG-001 a SEG-006: 36 funcoes verify_jwt=false (5 criticas); 8 views SECURITY DEFINER; 59 tabelas anon via pg_graphql; 101 funcoes auth SECURITY DEFINER"
+      "evidencia": "SEG-001 a SEG-006: 36 funcoes verify_jwt=false (5 criticas); 8 views SECURITY DEFINER (advisor); 55 tabelas anon SELECT grant (59 via pg_graphql advisor); 101 funcoes auth SECURITY DEFINER; 10 funcoes anon SECURITY DEFINER",
+      "evidencia_reexecutada_13h30": {
+        "total_tabelas_anon_select_grant": 55,
+        "total_auth_secdef_pg_proc": 101,
+        "total_anon_secdef_information_schema": 10,
+        "total_views_sem_security_invoker": 193,
+        "timestamp": "2026-10-22T13:30:32Z"
+      }
     },
     "4_integridade": {
       "status": "concluido",
@@ -38,15 +49,27 @@
     },
     "5_performance": {
       "status": "concluido",
-      "evidencia": "8 politicas com auth.uid() no initplan sem index; 461 indexes sem uso (acima de 30 dias); bloat moderado em stock_snapshots"
+      "evidencia": "507 policies com auth.uid() initplan pattern (8 especificamente flagradas pelo advisor sem index); 446 indexes sem uso em public (advisor: 461); bloat moderado em stock_snapshots",
+      "evidencia_reexecutada_13h30": {
+        "total_rls_uid_initplan_pattern": 507,
+        "total_unused_indexes_pg_stat": 446,
+        "timestamp": "2026-10-22T13:30:32Z"
+      }
     },
     "6_crons": {
       "status": "concluido",
-      "evidencia": "CRON-001 CRITICO: 20+ jobs com job_pid=null na janela 12:03-12:12 UTC; 10 jobs com 82-147 falhas em 7d (7% taxa de falha); 142 jobs totais"
+      "evidencia": "CRON-001 CRITICO: 10 jobs com job startup timeout em 12:56-12:59 UTC hoje; 15 jobs com 69-147 falhas/7d (7-10% taxa de falha); 142 jobs totais",
+      "evidencia_reexecutada": {
+        "jobs_com_timeout_7d": 15,
+        "maior_taxa_falha": "dispatcher-failure-alert: 147/2007 (7.3%)",
+        "jobs_startup_timeout_24h": 10,
+        "janela_24h": "12:56-12:59 UTC 2026-10-22",
+        "jobs_listados_24h": ["sm-site-scrape-auth","qa-imageless-products","fantasmas-deactivate-guard","pipeline-print-profiles","video-recover-stuck","sm-stock-guard","sm-url-discover-collect","auto-block-offenders","xbz-enrich-gold-extractors","medallion-promote-tick"]
+      }
     },
     "7_db_functions": {
       "status": "concluido",
-      "evidencia": "1334 funcoes; 10 funcoes anon SECURITY DEFINER executaveis; 101 funcoes authenticated SECURITY DEFINER; fn_aggregate_stock_daily timeout >60s"
+      "evidencia": "1334 funcoes; 10 funcoes anon SECURITY DEFINER executaveis; 101 funcoes authenticated SECURITY DEFINER; fn_aggregate_stock_daily timeout >60s (existe, retorna jsonb, faz UPSERT)"
     },
     "8_edge_functions": {
       "status": "concluido",
@@ -54,7 +77,7 @@
     },
     "9_auth_storage_realtime": {
       "status": "concluido",
-      "evidencia": "39 usuarios autenticados; ssl=on TLSv1.2; scram-sha-256; 11 buckets (2 publicos); log_connections=off (AUTH-001 MEDIO)"
+      "evidencia": "39 usuarios autenticados; ssl=on TLSv1.2; scram-sha-256; 11 buckets (2 publicos: avatars, mockup-assets); log_connections=off (AUTH-001 MEDIO)"
     },
     "10_logs": {
       "status": "concluido",
@@ -67,7 +90,7 @@
     },
     "12_lacunas": {
       "status": "concluido",
-      "evidencia": "stock_daily_summary vazia; fn_aggregate_stock_daily timeout; crons com falhas sem alertas; pg_net sem HMAC em webhooks inbound; log_connections desabilitado"
+      "evidencia": "fn_aggregate_stock_daily timeout; stock_daily_summary com 2.6M linhas mas NUNCA analisada (last_analyze=null); crons com falhas sem alertas; pg_net sem HMAC em webhooks inbound; log_connections desabilitado"
     }
   },
   "agentes": {
@@ -86,21 +109,61 @@
     "NAO_VERIFICADO": 3
   },
   "nao_verificado_motivo": {
-    "fn_aggregate_stock_daily": "funcao leva >60s, timeout MCP — usuario deve executar manualmente no Dashboard",
+    "fn_aggregate_stock_daily": "funcao leva >60s, timeout MCP — usuario deve executar SELECT fn_aggregate_stock_daily(NULL) manualmente no Dashboard",
     "edge_logs_7d_por_funcao": "query_logs MCP tem janela maxima de 24h, nao 7 dias — limitacao arquitetural",
     "rls_matrix_com_migrations_repo": "2538 migrations dependem de auth.users (69 FKs) e extensoes Supabase nao disponiveis em Postgres puro — usar supabase start localmente"
   },
   "top10_achados": [
-    {"rank": 1, "id": "CRON-001", "sev": "CRITICO", "desc": "20+ cron jobs com job_pid=null em 12:03-12:12 UTC — workers nao iniciando"},
-    {"rank": 2, "id": "SEG-001", "sev": "ALTO", "desc": "5 edge functions criticas sem verify_jwt: mcp-server, crm-db-bridge, external-db-inspect, e2e-cleanup, sync-external-db"},
-    {"rank": 3, "id": "SEG-002", "sev": "ALTO", "desc": "36/82 edge functions com verify_jwt=false (43.9%)"},
-    {"rank": 4, "id": "SEG-003", "sev": "ALTO", "desc": "59 tabelas expostas ao role anon via pg_graphql sem restricao de schema"},
-    {"rank": 5, "id": "PERF-001", "sev": "ALTO", "desc": "8 RLS policies com auth.uid() em initplan sem index de suporte — varredura completa por query"},
-    {"rank": 6, "id": "CRON-002", "sev": "ALTO", "desc": "10 cron jobs com taxa de falha 7-10% em 7 dias (82-147 falhas cada) sem alertas"},
-    {"rank": 7, "id": "SEG-004", "sev": "ALTO", "desc": "101 funcoes SECURITY DEFINER executaveis por authenticated sem restricao"},
-    {"rank": 8, "id": "SEG-005", "sev": "ALTO", "desc": "8 views com SECURITY DEFINER (expoe dados do owner ao viewer)"},
-    {"rank": 9, "id": "PERF-002", "sev": "ALTO", "desc": "461 indexes sem uso em 30+ dias consumindo espaco e degradando writes"},
-    {"rank": 10, "id": "INT-001", "sev": "MEDIO", "desc": "fn_aggregate_stock_daily() nao executa (>60s timeout) — stock_daily_summary vazia com 909 MB alocados"}
+    {
+      "rank": 1, "id": "CRON-001", "sev": "CRITICO",
+      "desc": "10 cron jobs com job startup timeout em 12:56-12:59 UTC (2026-10-22); 15 jobs com 69-147 falhas/7d",
+      "evidencia_reexecutada": "SELECT j.jobname, r.runid, r.return_message FROM cron.job_run_details r JOIN cron.job j ON j.jobid=r.jobid WHERE r.return_message='job startup timeout' AND r.start_time > now()-interval '24h' — retornou 10 jobs"
+    },
+    {
+      "rank": 2, "id": "SEG-001", "sev": "ALTO",
+      "desc": "5 edge functions criticas sem verify_jwt: mcp-server, crm-db-bridge, external-db-inspect, e2e-cleanup, sync-external-db",
+      "evidencia_reexecutada": "list_edge_functions MCP (2026-10-22) — 36 de 82 com verify_jwt=false; 5 identificadas como criticas por acesso a DB/infra"
+    },
+    {
+      "rank": 3, "id": "SEG-002", "sev": "ALTO",
+      "desc": "36/82 edge functions com verify_jwt=false (43.9%)",
+      "evidencia_reexecutada": "list_edge_functions MCP retornou 82 funcoes; contagem verify_jwt=false=36; lista completa em inventario/edge_functions_verify_jwt_false.md"
+    },
+    {
+      "rank": 4, "id": "SEG-003", "sev": "ALTO",
+      "desc": "55 tabelas com SELECT grant para role anon em public (59 via pg_graphql advisor)",
+      "evidencia_reexecutada": "SELECT COUNT(DISTINCT grantee||'.'+table_schema+'.'+table_name) FROM information_schema.role_table_grants WHERE grantee='anon' AND privilege_type='SELECT' AND table_schema='public' — resultado: 55 (2026-10-22T13:30Z)"
+    },
+    {
+      "rank": 5, "id": "PERF-001", "sev": "ALTO",
+      "desc": "507 policies com auth.uid() em initplan; 8 especificamente flagradas pelo advisor sem index de suporte",
+      "evidencia_reexecutada": "SELECT COUNT(*) FROM pg_policies WHERE schemaname='public' AND (qual ~ initplan_pattern OR with_check ~ initplan_pattern) — resultado: 507 (2026-10-22T13:30Z)"
+    },
+    {
+      "rank": 6, "id": "CRON-002", "sev": "ALTO",
+      "desc": "15 jobs com taxa de falha 7-10% em 7 dias (69-147 falhas cada) sem alertas configurados",
+      "evidencia_reexecutada": "SELECT j.jobname, COUNT(*) AS total_runs, SUM(CASE WHEN r.return_message ILIKE '%timeout%' THEN 1 ELSE 0 END) AS timeouts FROM cron.job_run_details r JOIN cron.job j ON j.jobid=r.jobid WHERE r.start_time > now()-interval '7d' GROUP BY j.jobname HAVING SUM(...)>50 ORDER BY timeouts DESC — retornou 15 jobs"
+    },
+    {
+      "rank": 7, "id": "SEG-004", "sev": "ALTO",
+      "desc": "101 funcoes SECURITY DEFINER executaveis por authenticated sem restricao adicional",
+      "evidencia_reexecutada": "SELECT COUNT(*) FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.prosecdef=true AND has_function_privilege('authenticated',p.oid,'EXECUTE') — resultado: 101 (2026-10-22T13:30Z)"
+    },
+    {
+      "rank": 8, "id": "SEG-005", "sev": "ALTO",
+      "desc": "8 views com SECURITY DEFINER flagradas pelo advisor Supabase; 193 views sem security_invoker=on",
+      "evidencia_reexecutada": "SELECT COUNT(*) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE c.relkind='v' AND n.nspname='public' AND NOT ('security_invoker=on' = ANY(c.reloptions)) — resultado: 193 (2026-10-22T13:30Z); advisor: 8 especificas"
+    },
+    {
+      "rank": 9, "id": "PERF-002", "sev": "ALTO",
+      "desc": "446 indexes sem uso em public (advisor: 461 — diferenca por filtro de unique/PK)",
+      "evidencia_reexecutada": "SELECT COUNT(*) FROM pg_stat_user_indexes WHERE idx_scan=0 AND schemaname='public' AND NOT unique/PK — resultado: 446 (2026-10-22T13:30Z)"
+    },
+    {
+      "rank": 10, "id": "INT-001", "sev": "MEDIO",
+      "desc": "fn_aggregate_stock_daily() nao executa (>60s timeout); stock_daily_summary tem 2.6M linhas e 914 MB mas NUNCA foi analisada (last_analyze=null, last_autovacuum=null) — stats obsoletas",
+      "evidencia_reexecutada": "SELECT COUNT(*) FROM stock_daily_summary — resultado: 2639107 linhas, 914 MB (CORRECAO: tabela NAO esta vazia — erro na estimativa anterior via n_live_tup stale=20310 por ausencia de ANALYZE) (2026-10-22T13:30Z)"
+    }
   ],
   "advisors_performance": {
     "auth_rls_initplan": 8,
@@ -114,6 +177,13 @@
     "pg_graphql_anon_table_exposed": 59,
     "anon_security_definer_function_executable": 10,
     "authenticated_security_definer_function_executable": 101
+  },
+  "evidencia_imutabilidade_final": {
+    "timestamp": "2026-10-22T13:31:19Z",
+    "migrations": 2538,
+    "cron_jobs": 142,
+    "rls_policies_public": 960,
+    "delta_vs_inicio": "Δ=0 em todas as metricas — nenhuma mudanca estrutural durante a auditoria"
   },
   "arquivos_entregues": {
     "relatorio": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
