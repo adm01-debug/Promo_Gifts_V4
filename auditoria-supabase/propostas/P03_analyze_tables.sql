@@ -28,3 +28,12 @@ ANALYZE public.categories;
 -- Se user_organizations continuar com 0 rows após ANALYZE, a tabela está de fato vazia.
 -- Nesse caso, investigar quais queries ainda acessam a tabela (podem estar causando
 -- carga desnecessária) via pg_stat_activity ou extensão pg_stat_statements.
+
+-- === ROLLBACK ===
+-- ANALYZE é operação somente de leitura que atualiza pg_statistic (metadados internos).
+-- Não há transação a reverter: não altera linhas, não cria objetos, não remove nada.
+-- "Rollback" neste contexto = aguardar o próximo autovacuum recalcular as estatísticas
+-- naturalmente (ocorre automaticamente em 24-48h com carga de escrita normal).
+-- Se o ANALYZE produzir plano de execução pior (raro), executar:
+--   VACUUM ANALYZE public.user_organizations; -- força recompilação completa
+-- Não há ação de rollback destrutiva necessária ou possível.

@@ -1667,7 +1667,22 @@ base_tables=398, views=193, funcoes=1334, cron_jobs=142, rls_policies=960, migra
 | functions_public | 1.334 | 1.334 | 1.334 | 1.334 | **0** ✅ |
 | migrations_ledger | 2.538 | 2.538 | 2.538 | 2.538 | **0** ✅ |
 
-**Modo auditoria:** somente leitura. Zero INSERT/UPDATE/DELETE/DDL/GRANT executados em nenhuma das 4 sessões.
+**Snapshot DEPOIS (sessão 5)** — 2026-10-22 15:05:24 UTC (re-execução de evidências top-10):
+
+```
+base_tables=398, views=193, funcoes=1334, cron_jobs=142, rls_policies=960, migrations_ledger=2538
+```
+
+| Métrica | Sessão 1 | Sessão 2 | Sessão 3 | Sessão 4 | Sessão 5 | Δ total |
+|---|---|---|---|---|---|---|
+| base_tables | 398 | 398 | 398 | 398 | 398 | **0** ✅ |
+| views | 193 | 193 | 193 | 193 | 193 | **0** ✅ |
+| cron_jobs | 142 | 142 | 142 | 142 | 142 | **0** ✅ |
+| rls_policies | 960 | 960 | 960 | 960 | 960 | **0** ✅ |
+| functions_public | 1.334 | 1.334 | 1.334 | 1.334 | 1.334 | **0** ✅ |
+| migrations_ledger | 2.538 | 2.538 | 2.538 | 2.538 | 2.538 | **0** ✅ |
+
+**Modo auditoria:** somente leitura. Zero INSERT/UPDATE/DELETE/DDL/GRANT executados em nenhuma das 5 sessões.
 
 ---
 
